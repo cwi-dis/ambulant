@@ -76,6 +76,7 @@ class gstreamer_audio_renderer : public common::renderer_playable {
 	common::duration get_dur();
 	void start(double where);
 	void stop();
+	void stopped();
 	void seek(double t);
 	void pause();
 	void resume();
@@ -94,6 +95,7 @@ class gstreamer_audio_renderer : public common::renderer_playable {
   private:
 	void _start(double where);
 	void _stop();
+	void _stopped();
 	void _seek(double t);
 	void _pause();
 	void _resume();

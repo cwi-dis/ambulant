@@ -505,8 +505,15 @@ dnl	GTK_PREFIX="`pkg-config --variable=exec_prefix gtk+-2.0`"
 	fi
 	PKG_CHECK_MODULES(DBUS, dbus-glib-1 >= 0.23.4)
 	PKG_CHECK_MODULES(OSSO, libosso >= 0.8.4, test_nokia770=true, test_nokia770=false)
+	PKG_CHECK_MODULES(HILDONBASE, hildon-base-lib >= 0.9.4, test_nokia770=true, test_nokia770=false)
+	PKG_CHECK_MODULES(HILDONLIBS, hildon-libs >= 0.12.20, test_nokia770=true, test_nokia770=false)
+	serviceentrydir=/usr/share/dbus-1/services
 	AC_SUBST(OSSO_LIBS)
 	AC_SUBST(OSSO_CFLAGS)
+	AC_SUBST(HILDONBASE_LIBS)
+	AC_SUBST(HILDONBASE_CFLAGS)
+	AC_SUBST(HILDONLIBS_LIBS)
+	AC_SUBST(HILDONLIBS_CFLAGS)
 
  fi
 

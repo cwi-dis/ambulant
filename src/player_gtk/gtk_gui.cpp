@@ -53,6 +53,8 @@
 #define AMBULANT_DATADIR "/usr/share/ambulant"
 #endif/*AMBULANT_DATADIR*/
 #define UI_FILENAME AMBULANT_DATADIR "/ui_manager.xml"
+#include <hildon-widgets/hildon-program.h>
+#include <glib-object.h>
 #else /*WITH_NOKIA770*/
 #define UI_FILENAME "ui_manager.xml"
 #endif/*WITH_NOKIA770*/
@@ -416,6 +418,7 @@ gtk_gui::~gtk_gui() {
 		gtk_widget_destroy(GTK_WIDGET (menubar));
 		menubar = NULL;
 	}
+/*KB these seem to be destroyed already by destroying m_toplevelcontainer
 	if (m_guicontainer) {
 		gtk_widget_destroy(GTK_WIDGET (m_guicontainer));
 		m_guicontainer = NULL;
@@ -424,6 +427,7 @@ gtk_gui::~gtk_gui() {
 		gtk_widget_destroy(GTK_WIDGET (m_documentcontainer));
 		m_documentcontainer = NULL;
 	}
+*/
 	if (m_actions) {
 		g_object_unref(G_OBJECT (m_actions));
 		m_actions = NULL;
@@ -980,19 +984,24 @@ main (int argc, char*argv[]) {
 	osso_context_t *ctxt;
 	osso_return_t ret;
 	GtkWindow *window;
+	HildonProgram* hildon_program;
+	HildonWindow* hildon_window;
+#endif/*WITH_NOKIA770*/
 	
 	printf ("AmbulantPlayer: starting up\n");
 	
-	ctxt = osso_initialize ("AmbulantPlayer_app", PACKAGE_VERSION, TRUE, NULL);
+#ifdef	WITH_NOKIA770
+	ctxt = osso_initialize ("ambulantplayer_app", PACKAGE_VERSION, TRUE, NULL);
 	if (ctxt == NULL){
-		  fprintf (stderr, "osso_initialize failed.\n");
-		  exit (1);
+		fprintf (stderr, "osso_initialize failed.\n");
+		exit (1);
 	}
 	if (chdir(AMBULANT_DATADIR) < 0) {
-		printf("AmbulantPlayer: cannot chdir(%s) errno=%d\n", AMBULANT_DATADIR, errno);
+		fprintf(stderr, "AmbulantPlayer: cannot chdir(%s) errno=%d\n", AMBULANT_DATADIR, errno);
 		return -1;
 	}
 #endif/*WITH_NOKIA770*/
+
 #ifdef	WITH_GSTREAMER
 	/* initialize GStreamer */
 	AM_DBG fprintf(stderr, "initialize GStreamer\n");
@@ -1029,6 +1038,21 @@ main (int argc, char*argv[]) {
 	/* Setup widget */
 	gtk_gui *mywidget = new gtk_gui(argv[0], argc > 1 ? argv[1] : "AmbulantPlayer");
 
+#ifdef	WITH_HILDON
+	/* Hildonize AmbulantPlayer */
+	hildon_program = HILDON_PROGRAM(hildon_program_get_instance());
+	g_set_application_name("AmbulantPlayer");
+	hildon_window = HILDON_WINDOW(hildon_window_new());
+	hildon_program_add_window(hildon_program, hildon_window);
+	/*XXX
+	gtk_container_add (GTK_CONTAINER(hildon_window),
+			   GTK_WIDGET(gtk_label_new("HildonAmbulantPlayer")));
+	gtk_widget_show_all(GTK_WIDGET(hildon_window));
+	g_signal_connect(G_OBJECT(hildon_window), "delete_event", 
+			 G_CALLBACK(g_main_loop_quit), &mywidget->main_loop);
+	*/
+#endif/*WITH_HILDON*/
+	
 	// take log level from preferences	
 	gtk_logger::set_gtk_logger_gui(mywidget);
 	gtk_logger* gtk_logger = gtk_logger::get_gtk_logger();
@@ -1074,18 +1098,6 @@ main (int argc, char*argv[]) {
 	}	
 	g_timeout_add(100, (GSourceFunc) gtk_C_callback_timer, NULL);
 	g_main_loop_run(mywidget->main_loop);
-	g_main_loop_unref(mywidget->main_loop);
-//	if (exec_flag){
-//		gtk_main();
-//		g_main_loop_run(mywidget->main_loop);	
-//	}else if (argc > 1) {
-//		std::string error_message = gettext("Cannot open: ");
-//		error_message = error_message + "\"" + argv[1] + "\"";
-//		std::cerr << error_message << std::endl;
-//		g_timeout_add(100, (GSourceFunc) gtk_C_callback_timer, NULL);
-//		g_main_loop_run(mywidget->main_loop);	
-//		gtk_main();
-//	}
 
 	unix_prefs.save_preferences();
 	delete gtk_logger::get_gtk_logger();
@@ -1097,6 +1109,10 @@ main (int argc, char*argv[]) {
 	AM_DBG fprintf(stderr, "finalize GStreamer\n");
 	gstreamer_player_finalize();
 #endif/*WITH_GSTREAMER*/
+	
+#ifdef	WITH_NOKIA770
+	if (ctxt) osso_deinitialize (ctxt);
+#endif/*WITH_NOKIA770*/
 	std::cout << "Exiting program" << std::endl;
 	return exec_flag ? 0 : -1;
 }

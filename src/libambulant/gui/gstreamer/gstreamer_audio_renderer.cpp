@@ -46,7 +46,6 @@ gstreamer_audio_renderer::gstreamer_audio_renderer
 	common::factories *factory)
 :	common::renderer_playable(context, cookie, node, evp),
 	m_player(NULL),
-	m_pipeline(NULL),
 	m_is_playing(false),
 	m_is_paused(false),
 	m_read_ptr_called(false),
@@ -68,7 +67,6 @@ gstreamer_audio_renderer::gstreamer_audio_renderer
 	net::audio_datasource *ds)
 :	common::renderer_playable(context, cookie, node, evp),
 	m_player(NULL),
-	m_pipeline(NULL),
 	m_is_playing(false),
 	m_is_paused(false),
 	m_read_ptr_called(false),
@@ -83,8 +81,6 @@ gstreamer_audio_renderer::~gstreamer_audio_renderer()
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_audio_renderer::~gstreamer_audio_renderer(0x%x) m_url=%s",  this, m_url.get_url().c_str());		
-	//stop the player
-	_stop();
 	if (m_transition_engine) {
 		delete m_transition_engine;
 		m_transition_engine = NULL;
@@ -182,6 +178,14 @@ gstreamer_audio_renderer::stop()
 }
 
 void
+gstreamer_audio_renderer::stopped()
+{
+	m_lock.enter();
+	_stopped();
+	m_lock.leave();
+}
+
+void
 gstreamer_audio_renderer::pause()
 {
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_audio_renderer.pause(0x%x)", (void *)this);
@@ -193,7 +197,7 @@ gstreamer_audio_renderer::pause()
 void
 gstreamer_audio_renderer::resume()
 {
-	m_lock.leave();
+	m_lock.enter();
 	_resume();
 	m_lock.leave();
 }
@@ -217,22 +221,18 @@ gstreamer_audio_renderer::seek(double where)
 common::duration 
 gstreamer_audio_renderer::get_dur()
 {
-	gint64 length = -1;
-	GstFormat fmtTime = GST_FORMAT_TIME;
 	common::duration rv(false, 0.0);
+	double dur = 0.0;
 
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_audio_renderer.get_dur(0x%x)", (void *)this);
 	m_lock.enter();
 	if (m_player) {
-		GstElement* gst_player = m_player->gst_player();
-		if (gst_player)
-			gst_element_query_duration( gst_player, &fmtTime, &length);
+		dur = m_player->get_dur();
 	}
 	m_lock.leave();
 
-	if (length != -1) {
-	        double nanosec = 1e9, microsec = 1e6;
-		double dur = double(length) / nanosec;
+	if (dur != 0.0) {
+	        double microsec = 1e6;
 		double clip_begin = m_clip_begin / microsec;
 		double clip_end = m_clip_end / microsec;
 
@@ -265,7 +265,15 @@ gstreamer_audio_renderer::_stop()
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_audio_renderer::stop(0x%x)",(void*)this);
 	if (m_player) {
 		m_player->stop_player();
+		m_player = NULL;
 	}
+	_stopped();
+}
+
+void
+gstreamer_audio_renderer::_stopped()
+{
+	AM_DBG lib::logger::get_logger()->debug("gstreamer_audio_renderer::stopedp(0x%x)",(void*)this);
 	if (m_is_playing) {
 		// inform scheduler 
 		m_context->stopped(m_cookie, 0);
@@ -295,17 +303,11 @@ gstreamer_audio_renderer::_resume()
 void
 gstreamer_audio_renderer::_seek(double where)
 {
+       	double microsec = 1e6;
+	if (1) return;
 	AM_DBG  lib::logger::get_logger()->trace("gstreamer_audio_renderer: seek(%f) NOT YET IMPLEMENETD", where);
- 	if (1) return;
-	if (m_player) {
-        	double microsec = 1e6;
-		guint64 where_guint64;
-		where += (m_clip_begin / microsec);
-		where_guint64 = llrint(where)* GST_SECOND;	      
-		lib::logger::get_logger()->trace("gstreamer_audio_renderer: seek() where=%f, where_guint64=%lu", where, where_guint64);
-		if ( ! gst_element_seek(GST_ELEMENT(m_player->gst_player()), 1.0, GST_FORMAT_TIME, GST_SEEK_FLAG_FLUSH, GST_SEEK_TYPE_SET, where_guint64, GST_SEEK_TYPE_NONE, 0)) {
-		        lib::logger::get_logger()->trace("gstreamer_audio_renderer: seek() failed.");
-		}
-	}
+ 	where += (m_clip_begin / microsec);
+	if (m_player)
+		m_player->seek(where);
 }
 

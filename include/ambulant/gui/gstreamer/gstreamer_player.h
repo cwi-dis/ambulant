@@ -22,11 +22,12 @@
 #ifndef __GSTREAMER_PLAYER_h
 #define __GSTREAMER_PLAYER_h
 
-#include <gst/gst.h>
 #include <iostream>
+#include <gst/gst.h>
 
 #include "ambulant/common/factory.h"
 #include "ambulant/lib/mtsync.h"
+
 #include "ambulant/common/factory.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/renderer_impl.h"
@@ -59,7 +60,6 @@ class gstreamer_audio_renderer;
 #ifdef  WITH_NOKIA770
 static pthread_mutex_t s_main_nokia770_mutex;
 #endif//WITH_NOKIA770
-static bool s_initialized = false;
 
 // gstreamer_player: interface to low-level gstreamer code
 
@@ -68,10 +68,12 @@ class gstreamer_player :  public lib::unix::thread {
  public:
 	gstreamer_player(const char* uri,  gstreamer_audio_renderer* rend); 
 	~gstreamer_player(); 
-	GstElement* gst_player();
+
 	void pause();
 	void play();
 	void stop_player();
+	void seek(double where);
+	double get_dur();
 	void mutex_acquire(const char* id);
 	void mutex_release(const char* id);
 
@@ -90,7 +92,7 @@ class gstreamer_player :  public lib::unix::thread {
 	// and destoying the mutex.
 	// all other access to the gstreamer playerd is done using this mutex protection
 	pthread_mutex_t m_gst_player_mutex;
- };
+};
 
 } // end namespace gstreamer
 } // end namespace gui

@@ -37,13 +37,13 @@ extern "C" {
 static gboolean
 gst_bus_callback (GstBus* bus, GstMessage *msg, gpointer data)
 {
-	GMainLoop* loop = (GMainLoop*) data;
-
+	GMainLoop* main_loop = (GMainLoop*)data;
+	
 	switch (GST_MESSAGE_TYPE (msg)) {
 
 	case GST_MESSAGE_EOS:
 		AM_DBG g_print ("End-of-stream\n");
-		g_main_loop_quit (loop);
+		g_main_loop_quit (main_loop);
 		break;
 
 	case GST_MESSAGE_ERROR: 
@@ -57,7 +57,7 @@ gst_bus_callback (GstBus* bus, GstMessage *msg, gpointer data)
 		g_print ("Error: %s\n", err->message);
 		g_error_free (err);
 
-		g_main_loop_quit (loop);
+		g_main_loop_quit (main_loop);
 		break;
 	}
 	default:
@@ -98,27 +98,24 @@ gstreamer_player::gstreamer_player(const char* uri, gstreamer_audio_renderer* re
 
 gstreamer_player::~gstreamer_player() {
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_player::~gstreamer_player()(0x%x) m_uri=%s", (void*)this, m_uri);
-	stop_player();
+	pthread_mutex_lock(&m_gst_player_mutex); 
+	m_audio_renderer = NULL;
 	if (m_uri) free(m_uri);
 	m_uri = NULL;
-}
-
-GstElement*
-gstreamer_player::gst_player() {
-	return m_gst_player;
+	pthread_mutex_unlock(&m_gst_player_mutex); 
+	pthread_mutex_destroy(&m_gst_player_mutex);
 }
 
 unsigned long
 gstreamer_player::run() {
-	GstElement *source=NULL,*sink=NULL, *pipeline=NULL;
+  GstElement *source=NULL,*sink=NULL;
 	GstStateChangeReturn gst_state_changed;
-	char **files = NULL;
-	const char* id = "gst_mp3_player";
+	const char* id = "gsteamer_player::run()";
 
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_player::run(0x%x)m_uri=%s", (void*)this, m_uri);
 
 	m_gst_mainloop = g_main_loop_new (NULL, FALSE);
-	AM_DBG g_print ("%s: %s=0x%x, %s=0x%x\n", id, "starting, m_gst_player", m_gst_player,"m_gst_mainloop=",m_gst_mainloop);
+	AM_DBG g_print ("%s: %s=0x%x, %s=0x%x\n", id, "starting, m_gst_player", (void*) m_gst_player,"m_gst_mainloop=", (void*) m_gst_mainloop);
 #ifdef  WITH_NOKIA770
 	/* On Nokia770 we use a dedicated gstreamer module "dspmp3sink" which most
 	   efficiently playes mp3 clips using the DSP signal co-processor
@@ -148,7 +145,7 @@ gstreamer_player::run() {
 	gst_bin_add_many (GST_BIN(m_gst_player), source, sink, NULL);
 	/* link the elements */
 	if ( ! gst_element_link (source, sink)) {
-		g_print ("gst_element_link (source=%s, sink%s) failed\n", source, sink);
+	  g_print ("gst_element_link (source=%s, sink%s) failed\n", (void*) source, (void*) sink);
 		abort();
 	}
 #else //WITH_NOKIA770
@@ -157,8 +154,7 @@ gstreamer_player::run() {
 	AM_DBG g_print ("%s: %s\n", id, "gst_element_factory_make()");
 	source   = gst_element_factory_make ("playbin", "playbin"); 
 	if ( !( m_gst_player && source)) {
-		g_print ("%s:", "gst_mp3_player");
-		if ( ! m_gst_player) g_print (" %s() failed", "get_pipeline_new");
+		g_print ("%s:", "gstreamer_player::run()");
 		if ( ! m_gst_player) g_print (" %s() failed", "get_pipeline_new");
 		if ( ! source) g_print (" %s=%s(%s) failed", "source", "gst_element_factory_make", "playbin");
 		g_print ("\n");
@@ -198,7 +194,6 @@ gstreamer_player::run() {
 
 	/* lock for cleanup */
 	pthread_mutex_lock(&m_gst_player_mutex);
-	g_main_loop_unref(m_gst_mainloop);
 	m_gst_mainloop = NULL;
 
 	/* stop the pipeline */
@@ -217,26 +212,23 @@ gstreamer_player::run() {
 	if (gst_state_changed != GST_STATE_CHANGE_SUCCESS) {
 	  //g_print("gst_element_set_state(..%s) returned %d\n", "GST_STATE_NULL", gst_state_changed);
 	}
-
+	// inform the scheduler that the gstreamer player has terminated
+	if (m_audio_renderer) {
+		m_audio_renderer->stopped();
+		m_audio_renderer = NULL;
+	}
 	/* cleanup */
 	gst_object_unref (GST_OBJECT(m_gst_player));
 	m_gst_player = NULL;
 	pthread_mutex_unlock(&m_gst_player_mutex);
-	pthread_mutex_destroy(&m_gst_player_mutex);
   
 #ifdef  WITH_NOKIA770
-	//KB experimental 10 sec delay
-	//usleep(10000000);
 	if (pthread_mutex_unlock(&s_main_nokia770_mutex) < 0) {
-		lib::logger::get_logger()->fatal("gst_mp3_player:: pthread_mutex_unlock(s_main_nokia770_mutex) failed: %s", strerror(errno));
+		lib::logger::get_logger()->fatal("gstreamer_player::run():: pthread_mutex_unlock(s_main_nokia770_mutex) failed: %s", strerror(errno));
 		abort();
 	}
 #endif//WITH_NOKIA770
-
-	// inform the scheduler that the gstreamer player has terminated
-	if (m_audio_renderer)
-		m_audio_renderer->stop();
-	pthread_exit(NULL);
+	return 0;
 }
 
 void
@@ -276,4 +268,34 @@ gstreamer_player::play() {
 		}
 	}
 	pthread_mutex_unlock(&m_gst_player_mutex);
+}
+
+void
+gstreamer_player::seek(double where) {
+	guint64 where_guint64;
+	where_guint64 = llrint(where)* GST_SECOND;	      
+	pthread_mutex_lock(&m_gst_player_mutex);
+	lib::logger::get_logger()->trace("gstreamer_player: seek() where=%f, where_guint64=%lu", where, where_guint64);
+	if (m_gst_player) {
+		if ( ! gst_element_seek((m_gst_player), 1.0, GST_FORMAT_TIME, GST_SEEK_FLAG_FLUSH, GST_SEEK_TYPE_SET, where_guint64, GST_SEEK_TYPE_NONE, 0)) {
+		        lib::logger::get_logger()->trace("gstreamer_player: seek() failed.");
+		}
+	}
+	pthread_mutex_unlock(&m_gst_player_mutex);
+}
+
+double
+gstreamer_player::get_dur() {
+	gint64 length = -1;
+	GstFormat fmtTime = GST_FORMAT_TIME;
+	double dur = 0.0, nanosec = 1e9;
+
+	pthread_mutex_lock(&m_gst_player_mutex);
+	if (m_gst_player)
+		gst_element_query_duration(m_gst_player, &fmtTime, &length);
+	
+	pthread_mutex_unlock(&m_gst_player_mutex);
+	if (length != -1)
+		dur  = double(length) / nanosec;
+	return dur;
 }

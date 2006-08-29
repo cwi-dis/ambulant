@@ -98,11 +98,15 @@ endif # WITH_GTK
 
 #------------------------------------------------------
 if WITH_NOKIA770
-extra_nokia770_DEFINES=-DWITH_NOKIA770 $(HILDON_CFLAGS) $(OSSO_CFLAGS)
-extra_nokia770_LDADD=$(OSSO_LIBS)
+extra_nokia770_DEFINES=-DWITH_NOKIA770 $(HILDONBASE_CFLAGS)  $(HILDONLIBS_CFLAGS) $(OSSO_CFLAGS)
+extra_nokia770_LDADD=$(OSSO_LIBS) $(HILDONBASE_LIBS) $(HILDONLIBS_LIBS)
+# -s no symbol table in executable
+# extra_nokia770_ldflags=-s
+extra_nokia770_ldflags=
 else
 extra_nokia770_DEFINES=
 extra_nokia770_LDADD=
+extra_nokia770_ldflags=
 endif # WITH_NOKIA770
 
 #------------------------------------------------------
@@ -138,6 +142,7 @@ AM_LDFLAGS=$(extra_arts_ldflags) \
 	   $(extra_gstreamer_ldflags) \
 	   $(extra_sdl_ldflags) \
 	   $(extra_ffmpeg_ldflags) \
+	   $(extra_nokia770_ldflags) \
 	   -export-dynamic \
        $(livelibs)
  
