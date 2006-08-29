@@ -234,7 +234,7 @@ gstreamer_audio_renderer::get_dur()
 	if (dur != 0.0) {
 	        double microsec = 1e6;
 		double clip_begin = m_clip_begin / microsec;
-		double clip_end = m_clip_end / microsec;
+		double clip_end   = m_clip_end / microsec;
 
 		if (clip_end > 0 && dur > clip_end)
 	               dur = clip_end;
@@ -251,7 +251,6 @@ gstreamer_audio_renderer::get_dur()
 void
 gstreamer_audio_renderer::_start(double where)
 {
-	double microsec = 1e6;
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_audio_renderer.start(0x%x): url=%s, where=%f", (void *)this, m_url.get_url().c_str(),where);
 	_pause();
 	_seek(where);
@@ -304,7 +303,6 @@ void
 gstreamer_audio_renderer::_seek(double where)
 {
        	double microsec = 1e6;
-	if (1) return;
 	AM_DBG  lib::logger::get_logger()->trace("gstreamer_audio_renderer: seek(%f) NOT YET IMPLEMENETD", where);
  	where += (m_clip_begin / microsec);
 	if (m_player)

@@ -68,17 +68,30 @@ open_web_browser(const std::string &href)
 {
 	// The only standard I could find (sigh): use the $BROWSER variable.
 	// This code is a big hack, because we assume it'll be replaced soon. haha! :-)
+	char cmdbuf[2048];
 	char *browserlist = getenv("BROWSER");
+	int rv;
+
+#ifdef	WITH_NOKIA770
+	// Nokia770's browser doesn't react on a commandline argument as an URL,
+	// but it does so properlye on the following commands 
+	snprintf(cmdbuf, sizeof(cmdbuf), "dus-send --print-reply --dest=com.nokia.osso_browser /com/nokia/osso_browser com.nokia.osso_browser.open_new_window;dbus-send --print-reply --dest=com.nokia.osso_browser /com/nokia/osso_browser com.nokia.osso_browser.load_url string:%s", href.c_str());
+	rv = ::system(cmdbuf);
+	if (rv) {
+		lib::logger::get_logger()->error(gettext("Attempt to start browser returned status %d. Command: %s"), rv, cmdbuf);
+	}
+	return;
+#endif/*WITH_NOKIA770*/
+
 	if (browserlist == NULL) {
 		lib::logger::get_logger()->error(gettext("$BROWSER not set: cannot open webpage <%s>"), href.c_str());
 		return;
 	}
 	char *colon = index(browserlist, ':');
 	if (colon) *colon = 0; // Brrrr...
-	char cmdbuf[2048];
 	snprintf(cmdbuf, sizeof(cmdbuf), "%s %s &", browserlist, href.c_str());
 	AM_DBG lib::logger::get_logger()->debug("Starting command: %s", cmdbuf);
-	int rv = ::system(cmdbuf);
+	rv = ::system(cmdbuf);
 	if (rv) {
 		lib::logger::get_logger()->error(gettext("Attempt to start browser returned status %d. Command: %s"), rv, cmdbuf);
 	}

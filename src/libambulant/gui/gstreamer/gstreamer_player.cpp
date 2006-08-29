@@ -273,11 +273,13 @@ gstreamer_player::play() {
 void
 gstreamer_player::seek(double where) {
 	guint64 where_guint64;
-	where_guint64 = llrint(where)* GST_SECOND;	      
+	where_guint64 = llrint(where)* GST_SECOND;
+	// gst_element_seek hangs inside gstmp3sink, therefore it is disabled.
+	if (1) return;
 	pthread_mutex_lock(&m_gst_player_mutex);
 	lib::logger::get_logger()->trace("gstreamer_player: seek() where=%f, where_guint64=%lu", where, where_guint64);
 	if (m_gst_player) {
-		if ( ! gst_element_seek((m_gst_player), 1.0, GST_FORMAT_TIME, GST_SEEK_FLAG_FLUSH, GST_SEEK_TYPE_SET, where_guint64, GST_SEEK_TYPE_NONE, 0)) {
+		if ( ! gst_element_seek(m_gst_player, 1.0, GST_FORMAT_TIME, GST_SEEK_FLAG_FLUSH, GST_SEEK_TYPE_SET, where_guint64, GST_SEEK_TYPE_NONE, 0)) {
 		        lib::logger::get_logger()->trace("gstreamer_player: seek() failed.");
 		}
 	}
