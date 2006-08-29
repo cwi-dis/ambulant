@@ -109,7 +109,7 @@ class time_node : public schedulable {
 	virtual bool end_cond(qtime_type timestamp);
 
 	// Feedback
-	void time_node::node_started();
+	void node_started();
 
 	// Forced transitions
 	virtual void reset(qtime_type timestamp, time_node *oproot);
