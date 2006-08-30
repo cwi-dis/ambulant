@@ -197,13 +197,19 @@ gstreamer_player::run() {
 	m_gst_mainloop = NULL;
 
 	/* stop the pipeline */
-	gst_state_changed = gst_element_set_state (m_gst_player, GST_STATE_NULL);
 	if (gst_state_changed != GST_STATE_CHANGE_SUCCESS) {
 		if (gst_state_changed == GST_STATE_CHANGE_ASYNC) {
-			// wait for element state change completion
 			gst_state_changed = gst_element_get_state (GST_ELEMENT(m_gst_player), NULL, NULL, GST_CLOCK_TIME_NONE);
 		}
-//		g_print("gst_element_set_state(..%s) returned %d\n", "GST_STATE_NULL", gst_state_changed);
+		// g_print("gst_element_set_state(..%s) returned %d\n", "GST_STATE_PAUSED", gst_state_changed);
+	}
+	gst_state_changed = gst_element_set_state (m_gst_player, GST_STATE_READY);
+	if (gst_state_changed != GST_STATE_CHANGE_SUCCESS) {
+	  //g_print("gst_element_set_state(..%s) returned %d\n", "GST_STATE_REA", gst_state_changed);
+	}
+	gst_state_changed = gst_element_set_state (m_gst_player, GST_STATE_NULL);
+	if (gst_state_changed != GST_STATE_CHANGE_SUCCESS) {
+	  //g_print("gst_element_set_state(..%s) returned %d\n", "GST_STATE_NULL", gst_state_changed);
 	}
 	// inform the scheduler that the gstreamer player has terminated
 	if (m_audio_renderer) {

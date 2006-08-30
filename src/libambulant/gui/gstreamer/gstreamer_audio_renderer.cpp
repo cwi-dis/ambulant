@@ -302,8 +302,8 @@ gstreamer_audio_renderer::_resume()
 void
 gstreamer_audio_renderer::_seek(double where)
 {
-       	double microsec = 1e6;
-	AM_DBG  lib::logger::get_logger()->trace("gstreamer_audio_renderer: seek(%f) NOT YET IMPLEMENETD", where);
+	double microsec = 1e6;
+ 	AM_DBG  lib::logger::get_logger()->trace("gstreamer_audio_renderer: seek(%f) NOT YET IMPLEMENETD", where);
  	where += (m_clip_begin / microsec);
 	if (m_player)
 		m_player->seek(where);
