@@ -858,8 +858,8 @@ void time_node::get_pending_events(std::map<time_type, std::list<time_node*> >& 
 		qtime_type timestamp = m_update_event.second;
 		events[timestamp.to_doc()].push_back(this);
 	}
-	
-	if(m_transout_sr) {
+
+	if(m_transout_sr && !m_ffwd_mode) {
 		time_mset set;
 		m_transout_sr->get_instance_times(set);
 		if(!set.empty()) {
