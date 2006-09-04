@@ -238,6 +238,7 @@ gstreamer_player::stop_player() {
 		g_main_loop_quit (m_gst_mainloop);
 		m_gst_mainloop = NULL;
 	}
+	m_audio_renderer = NULL;
 	pthread_mutex_unlock(&m_gst_player_mutex);
 }
 
