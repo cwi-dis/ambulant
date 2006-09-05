@@ -643,7 +643,7 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 	
 	timestamp_t frame_duration = frameduration(); 
 	assert (frame_duration > 0);
-	lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame:  timestamp=%lld, now=%lld, frameduration = %lld",m_old_frame.first,now, frame_duration);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame:  timestamp=%lld, now=%lld, frameduration = %lld",m_old_frame.first,now, frame_duration);
 
 
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame(now=%lld): %lld (m_old_frame.first) <  %lld (now - frame_duration)",  now, m_old_frame.first, now - frame_duration );
