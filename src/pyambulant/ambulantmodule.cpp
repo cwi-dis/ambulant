@@ -30,6 +30,8 @@
 #include "ambulant/net/stdio_datasource.h"
 #include "ambulant/net/posix_datasource.h"
 #include "ambulant/gui/qt/qt_factory.h"
+#include "ambulant/gui/SDL/sdl_factory.h"
+#include "ambulant/net/ffmpeg_factory.h"
 
 
 #include "ambulantinterface.h"
@@ -13626,20 +13628,6 @@ static PyObject *PyAm_create_posix_datasource_factory(PyObject *_self, PyObject 
 	return _res;
 }
 
-static PyObject *PyAm_get_stdio_datasource_factory(PyObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	ambulant::net::raw_datasource_factory* _rv;
-	if (!PyArg_ParseTuple(_args, ""))
-		return NULL;
-	PyThreadState *_save = PyEval_SaveThread();
-	_rv = ambulant::net::get_stdio_datasource_factory();
-	PyEval_RestoreThread(_save);
-	_res = Py_BuildValue("O&",
-	                     raw_datasource_factoryObj_New, _rv);
-	return _res;
-}
-
 static PyObject *PyAm_create_stdio_datasource_factory(PyObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -13829,8 +13817,6 @@ static PyMethodDef PyAm_methods[] = {
 	{"read_data_from_datasource", (PyCFunction)PyAm_read_data_from_datasource, 1,
 	 PyDoc_STR("(ambulant::net::datasource* src, Buffer result) -> (bool _rv, Buffer result)")},
 	{"create_posix_datasource_factory", (PyCFunction)PyAm_create_posix_datasource_factory, 1,
-	 PyDoc_STR("() -> (ambulant::net::raw_datasource_factory* _rv)")},
-	{"get_stdio_datasource_factory", (PyCFunction)PyAm_get_stdio_datasource_factory, 1,
 	 PyDoc_STR("() -> (ambulant::net::raw_datasource_factory* _rv)")},
 	{"create_stdio_datasource_factory", (PyCFunction)PyAm_create_stdio_datasource_factory, 1,
 	 PyDoc_STR("() -> (ambulant::net::raw_datasource_factory* _rv)")},

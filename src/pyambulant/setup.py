@@ -12,9 +12,19 @@ ldflags=os.getenv("LDFLAGS")
 if ldflags:
     EXTRA_LINK_ARGS=ldflags.split()
 if sys.platform == 'darwin':
-    EXTRA_LINK_ARGS += ['-framework', 'CoreFoundation']
+    EXTRA_LINK_ARGS += ['-framework', 'CoreFoundation', '-framework', 'Cocoa']
 
 LIBRARIES=['ambulant', 'expat']
+if True:
+    DEFS.append(('WITH_QT', '1'))
+    LIBRARIES.append('ambulant_qt')
+if True:
+    DEFS.append(('WITH_FFMPEG', '1'))
+    LIBRARIES.append('ambulant_ffmpeg')
+if True:
+    DEFS.append(('WITH_SDL', '1'))
+    LIBRARIES.append('ambulant_sdl')
+
 LIBDIRS=['../../third_party_packages/expat-unix/lib']
 if sys.platform == 'darwin':
     LIBRARIES += ['intl']

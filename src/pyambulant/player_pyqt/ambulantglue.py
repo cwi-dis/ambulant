@@ -51,14 +51,20 @@ class Glue(ambulant.gui_player, ambulant.factories):
         self.set_window_factory(wf)
         
     def init_playable_factory(self):
-        pf = ambulant.get_global_playable_factory()
-        qt_pf = ambulant.create_qt_playable_factory(self)
-        pf.add_factory(qt_pf)
-        self.set_playable_factory(pf)
+        gpf = ambulant.get_global_playable_factory()
+        gpf.add_factory(ambulant.create_qt_playable_factory(self))
+        gpf.add_factory(ambulant.create_sdl_playable_factory(self))
+        self.set_playable_factory(gpf)
         
     def init_datasource_factory(self):
-        df = ambulant.datasource_factory()
-        self.set_datasource_factory(df)
+        gdf = ambulant.datasource_factory()
+        #gdf.add_raw_factory(ambulant.create_posix_datasource_factory())
+        gdf.add_raw_factory(ambulant.get_ffmpeg_raw_datasource_factory())
+        gdf.add_video_factory(ambulant.get_ffmpeg_video_datasource_factory())
+        gdf.add_audio_factory(ambulant.get_ffmpeg_audio_datasource_factory())
+        #gdf.add_audio_parser_finder(get_ffmpeg_audio_parser_finder())
+        #gdf.add_audio_filter_finder(get_ffmpeg_audio_filter_finder())
+        self.set_datasource_factory(gdf)
         
     def init_parser_factory(self):
         pf = ambulant.get_parser_factory()
