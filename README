@@ -1,14 +1,14 @@
 Ambulant Player README
 ======================
 
-This directory contains version 1.7 (non-release) of the Ambulant Player,
+This directory contains version 1.8 of the Ambulant Player,
 a playback engine for SMIL documents. This release supports SMIL 2.1.
-The Ambulant homepage at <http://www.ambulantplayer.org> has more information,
-also on exploring SMIL 2.1.
+The Ambulant homepage at <http://www.ambulantplayer.org> has more information.
 
 Ambulant consists of a core library implementing the engine,
 a number of GUI-toolkit specific libraries implementing renderers,
-and a number of player applications.
+a number of player applications. The core library is also available
+for embedding into C++ or Python programs.
 
 Ambulant is distributed as either a source distribution or a
 binary installer for a specific platform. This README file
@@ -45,12 +45,14 @@ Currently we have support for:
 - MacOSX
 - Linux
 - Windows CE
+- Nokia 770
 
 The specific platforms that have been used for testing are:
 - Windows: Windows 2000 and Windows XP on fairly recent Intel hardware
-- MacOSX: 10.3. 10.2 or earlier will not work.
-- Linux: RedHat 9/Fedora Core on fairly recent Intel hardware
+- MacOSX: 10.4. 10.2 or earlier will not work.
+- Linux: Fedora Core on fairly recent Intel hardware
 - Windows CE: PocketPC 2002 on Compaq IPAQ hardware (Strong Arm processors)
+- Nokia 770: 2006 edition OS
 
 Linux for handhelds (Zaurus, Sharp SL-5600 PDA) is no longer supported,
 mainly due to staffing constraints. This distribution may or may not
@@ -65,8 +67,9 @@ Supported media types
   platforms. Other formats are supported on some platforms.
 - Audio:
   - Windows supports audio through DirectX, so all DirectX-compatible
-    formats are supported.
-  - Windows CE supports only MP3, and cannot mix multiple audio
+    formats are supported. Installing DirectX plugins for new audio codecs
+    will work.
+  - Windows CE and Nokia 770 support only MP3, and cannot mix multiple audio
     streams in this release.
   - MacOSX and Linux support audio through FFMPEG and SDL,
     giving support for MP3 and many other formats, but not
@@ -74,7 +77,8 @@ Supported media types
 - Video:
   - Windows supports video through DirectX.
   - Windows CE does not support video in this release.
-  - MacOSX supports video through QuickTime and FFMPEG.
+  - Nokia 770 video support is preliminary and possibly buggy.
+  - MacOSX supports video through QuickTime or FFMPEG.
   - Linux supports video through FFMPEG. The number of codecs is limited.
 
 Networking support
@@ -85,6 +89,8 @@ media items can be retrieved via HTTP on most platforms,
 static media items and the SMIL file itself can be retrieved via HTTP.
 RTSP support is available on Linux and MacOSX, but it has not been tested
 very thoroughly, feedback is requested.
+RTSP is not supported natively on Windows, but installing a DirectX
+RTSP plugin should work.
 
 SMIL 2.1 support
 ----------------
@@ -145,6 +151,20 @@ it via the Help menu.
 The DemoPresentation document is a slightly more elaborate example with
 some variations to show off various features of SMIL, a readme
 file is included.
+
+Extending and embedding
+-----------------------
+
+Ambulant can be extended with plugins written in either C++ or Python,
+and it can also be embedded in your own C++ or Python program. The API
+documentation mentioned above is valid for both languages.
+
+C++ programmers should look at src/plugins/rot13plugin.cpp for an
+example plugin and at the various src/player_* directories for examples
+of embedding.
+
+Python programmers should look at src/pyambulant/player_pyqt for an
+embedding example.
 
 Known problems
 --------------

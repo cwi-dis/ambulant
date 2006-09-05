@@ -31,14 +31,10 @@ class Glue(ambulant.gui_player, ambulant.factories):
         
     def qwidget_to_ambulant(self, widget):
         """Hack: convert QWidget to CObject (which Ambulant can handle)"""
-        print 'QWidget', widget
         import sip
         widget_address = sip.unwrapinstance(widget)
-        print 'address', hex(widget_address)
         widget_vptr = sip.voidptr(widget_address)
-        print 'voidptr', widget_vptr
         widget_cobj = widget_vptr.ascobject()
-        print 'cobject', widget_cobj
         return widget_cobj
     
     #
@@ -69,16 +65,4 @@ class Glue(ambulant.gui_player, ambulant.factories):
     def init_parser_factory(self):
         pf = ambulant.get_parser_factory()
         self.set_parser_factory(pf)
-                
-class GlueWindowFactory(ambulant.pycppbridge):
-    def __init__(self, widget):
-        self.widget = widget
-        
-    def new_window(self, *args):
-        print 'new_window', `args`
-        return None
-        
-    def new_background_renderer(self, *args):
-        print 'new_background_renderer', `args`
-        return None
         

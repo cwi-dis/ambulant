@@ -1,49 +1,11 @@
 
-What's new in Ambulant Player 1.6.1?
-------------------------------------
-Changes between 1.6 and 1.6.1:
+What's new in Ambulant Player 1.8?
+----------------------------------
+Changes between 1.6.1 and 1.8:
 
-- Network playback was broken on Windows. Fixed.
-
-- Validation with Xerces was broken on the Mac. Fixed.
-  The build procedure was also adapted so this "shouldn't
-  happen" in the future.
-
-- The Ambulant Firefox plugin for Windows and the
-  Ambulant Safari plugin for MacOSX are now distributed.
-
-- Various minor fixes.
-
-Changes between 1.4.5 and 1.6:
-
-- SMIL 2.1 support has been adapted to the final standard.
-
-- clipBegin and clipEnd are now supported for most continuous media types on
-  most platforms.
+- Embedding and extending Ambulant has become a lot easier: the Python
+  interfaces have been enhanced, examples are provided and the API
+  documentation has been updated.
   
-- Rendering of HTML media items has been added, although with restrictions.
+- The Nokia 770 is supported.
 
-- Audio, video and rtsp support on Linux and MacOSX are greatly improved.
-
-- Optionally Ambulant can use the BBC Dirac video codec.
-
-- The build procedure for Linux/Mac has been enhanced, and support for
-  pkg-config has been added.
-  
-- An experimental Mozilla/Firefox plugin is available for Windows.
-
-- Developers: Initial support is provided for a plug-in version of Ambulant.
-  At present, an experimental Firefox plug-in is available, along
-  with a series of demo versions of documents. Many restrictions
-  apply to this work, and feedback is appreciated.
-
-- Developers: Ambulant is now distributed with an LGPL license instead of
-  the previous GPL-with-exceptions licence.
-
-- Developers: Ambulant can now play back from an external DOM tree.
-
-- Developers: the Ambulant API is now available in Python. Both embedding
-  in Python and extending in Python are suppported.
-  
-- Developers: the API has been rationalized in various places to support
-  the two changes mentioned above.
