@@ -1,3 +1,736 @@
+2006-09-06 00:20  jackjansen
+
+	* Started on updating the readme's.
+
+2006-09-05 23:47  jackjansen
+
+	* Python-Qt based example player works!
+
+2006-09-05 15:21  keesblom
+
+	* Added AM_DBG for debug messages generated for each video frame
+
+2006-09-05 13:15  keesblom
+
+	* #define AM_DBG turned off
+
+2006-09-05 11:10  keesblom
+
+	* Update preparing for 1.8 release
+
+2006-09-04 17:43  jackjansen
+
+	* Don't schedule out transitions when fast-forwarding a node.
+
+	  Fixes #1501707.
+
+2006-09-04 16:54  keesblom
+
+	* Eliminated potential crash by suppressing unnessary calls to
+	  stopped()
+
+2006-08-30 14:50  keesblom
+
+	* Reset the multiple calls to gst_element_set_state() back because
+	  it seems less stable without them. The succesive states were
+	  found on Nokia770 using: gst-launch-0.10 gnomevfssrc
+	  location=<filename> ! dspmp3sink
+
+2006-08-30 11:01  keesblom
+
+	* Removed some superfluous(?) calls to gst_element_set_state()
+	  According to gstreamer documentation, all intermediate state
+	  changes are done automatically by gstreamer
+
+2006-08-29 16:25  keesblom
+
+	* Made the Menu items Help->AmbulantPlayer Help/Website work using
+	  some suitable commands on the dbus.
+
+2006-08-29 14:47  keesblom
+
+	* Omitted extra qualifier to get gcc satisfied
+
+2006-08-29 10:05  keesblom
+
+	* AmbulantPlayer now installs and plays on Nokia withour problems.
+
+2006-08-24 16:47  jackjansen
+
+	* Allow for HTML to be timed, for example when it has to go to a
+	  text-to-speech engine.
+
+2006-08-24 16:46  jackjansen
+
+	* The document class needs the Win32 export mumbo-jumbo.
+
+2006-08-24 16:46  jackjansen
+
+	* del_attribute() modified the attribute list while iterating over
+	  it. Fixed.
+
+2006-08-24 16:45  jackjansen
+
+	* - Special treatment of discrete nodes wrt. timing calculations is
+	  not only   against the SMIL spec, but also turned out to be a
+	  problem for Amis,   where text nodes may need to be rendered
+	  through a speech synth.    WARNING: this fix may cause documents
+	  to hang, if there are renderers    that do not call
+	  context->stopped().  - node_started callbacks were given a bit
+	  late. Fixed.
+
+2006-08-23 16:41  keesblom
+
+	* Some more cleanup
+
+2006-08-23 15:01  keesblom
+
+	* Some cleanup as suggested by valgrind
+
+2006-08-22 17:40  jackjansen
+
+	* A few more minor fixes to the mass factory checkin.
+
+2006-08-22 17:32  jackjansen
+
+	* Forgt another file.
+
+2006-08-22 17:31  keesblom
+
+	* Small fix to make it compile again
+
+2006-08-22 17:04  keesblom
+
+	* Small fix to make it compile again
+
+2006-08-22 16:43  ishanvaishnavi
+
+	* dded framerate to video_datasource. Added some jitter handling
+	  capability. Ishan
+
+2006-08-22 16:40  ishanvaishnavi
+
+	* Added framerate function to video_datasource class. Added some
+	  capability for jitter related issues. Ishan
+
+2006-08-22 16:08  jackjansen
+
+	* Forgot to add this file.
+
+2006-08-22 16:00  jackjansen
+
+	* Mass checkin: added factory functions for all factories. This
+	  allows use to hide the factory classes, which in turn means you
+	  don't need to include any cruft (such as SDL headers when you
+	  only need the SDL factory).
+
+2006-08-22 14:02  jackjansen
+
+	* Builds both with and without QT support.
+
+2006-08-22 13:37  jackjansen
+
+	* Various third party libraries were included notonly when linking
+	  libambulant, but also libambulant_qt and such. This not only made
+	  the libraries huge, but also caused problems for the python
+	  plugin.
+
+2006-08-22 10:59  jackjansen
+
+	* QWidget definition guard changed.
+
+2006-08-21 17:49  jackjansen
+
+	* Exported the newly available qt factory functionality to Python.
+
+2006-08-21 17:28  jackjansen
+
+	* Split implementation details out of qt_factory.h and moved them
+	  to qt_factory_impl.h.
+
+2006-08-21 15:05  keesblom
+
+	* mp3 audio on Nokia 770 doesn't crash any more (well... I hope
+	  so).	m_gst_player_mutex was added to protect the gstreamer
+	  player.  All extern "C" { code } was recodeed into C++.  Usage of
+	  "#ifdef NOKIA770" was minimized.
+
+2006-08-21 14:32  ishanvaishnavi
+
+	* Added mpeg2 support. Works now slightly flickery. Ishan.
+
+2006-08-21 14:31  ishanvaishnavi
+
+	* Added frame alignment. Mpeg2 video works now but is slightly
+	  flickery (late frames ?). Ishan
+
+2006-08-18 17:18  jackjansen
+
+	* Adapted for changes to factory.
+
+2006-08-18 16:18  jackjansen
+
+	* Adapted for changes in factory.
+
+2006-08-18 15:43  jackjansen
+
+	* Fixed factory objects to be more Python-compatible: a couple of
+	  methods needed to be virtual (so they can be overridden in
+	  python) and instance variables need to be private.
+
+2006-08-18 15:30  jackjansen
+
+	* Works using the none_gui windows and playables.
+
+2006-08-17 17:29  ishanvaishnavi
+
+	* Called tearDownSession to cleanly exit.Ishan
+
+2006-08-17 17:03  jackjansen
+
+	* Got started on some instructions.
+
+2006-08-17 16:44  keesblom
+
+	* Restructured code a little bit to despaghettize the locking
+	  mechanism Nokia770 still dumps core, but maybe not because of
+	  gstreamer_player, but because of bugs in drawing code: stack
+	  backtraces suggest so.
+
+2006-08-17 16:41  ishanvaishnavi
+
+	* Freed memory which I forgot in my last check in. Ishan.
+
+2006-08-17 16:36  ishanvaishnavi
+
+	* Fixed typo.
+
+2006-08-17 16:18  jackjansen
+
+	* Started on the Python example program: a minimal Qt player.  At
+	  the moment it's a boilerplate Qt app.
+
+2006-08-17 15:07  ishanvaishnavi
+
+	* Added Mpeg4 support for RTSP. Ishan.
+
+2006-08-17 11:55  jackjansen
+
+	* Minor mods to make qt-player work (after some hacking) with Mac
+	  Qt.
+
+2006-08-16 23:22  jackjansen
+
+	* The code for handling file: urls had become badly broken by fix
+	  upon fix.  It couldn't handle URLs for files with spaces in the
+	  name anymore, such as the Welcome document:-)
+
+	  Fixed, but I'm not 100% sure I didn't break anything else...
+
+2006-08-15 17:09  jackjansen
+
+	* Got rid of some unneeded copying and other dead wood.
+
+2006-08-15 17:06  jackjansen
+
+	* Got rid of debug image dumping code.
+
+2006-08-15 15:59  keesblom
+
+	* Attempt to satisfy valgrind somewhet
+
+2006-08-15 15:57  keesblom
+
+	* Caught a crash on 770 by running valgrind using gstreamer-0.10 on
+	  FC 5
+
+2006-08-15 15:54  keesblom
+
+	* dapted for gcc 4.1 used on Fedora Core 5
+
+2006-08-15 14:05  jackjansen
+
+	* Finished documentation for 1.8 (I think).
+
+2006-08-14 17:44  jackjansen
+
+	* More documentation fixes.
+
+2006-08-14 16:06  jackjansen
+
+	* More bits of documentation updated.
+
+2006-08-14 16:04  jackjansen
+
+	* Unsure (fix was sitting on my disk): may have to do with filename
+	  escaping on MacOS.
+
+2006-08-14 00:11  jackjansen
+
+	* Started on fixing API documentation.
+
+2006-08-13 20:56  keesblom
+
+	* gstreamer audio on Nokia 770 now dosn't hnag, but crashes after
+	  some time.
+
+2006-08-10 13:30  jackjansen
+
+	* Don't use strdup(), wince doesn't like it.
+
+2006-08-10 13:23  jackjansen
+
+	* Got rid of USE_SMIL21.
+
+2006-08-10 13:23  jackjansen
+
+	* Some pathnames got corrupted. Fixed.
+
+2006-08-10 11:32  jackjansen
+
+	* Got rid of USE_SMIL21.
+
+2006-08-10 00:09  jackjansen
+
+	* Getting rid of USE_SMIL21
+
+2006-08-09 23:59  jackjansen
+
+	* Getting rid of entries for SMIL 2.1 in WD, CR, PR and RC forms,
+	  which are no longer relevant.
+
+2006-08-09 23:56  jackjansen
+
+	* Mass commit: getting rid of USE_SMIL21, which is now always on.
+
+	  Compiles on Mac, but that's about all that has been tested so
+	  far.
+
+2006-08-07 13:28  keesblom
+
+	* Adapted to gstreamer-0.10.
+
+2006-08-07 12:10  keesblom
+
+	* Adapted to gstreamer-0.10. Do not use this version, ist is not
+	  yet tested.
+
+2006-08-04 13:32  keesblom
+
+	* Ported to Maemo 2.0 (PC version). It seems that the system takes
+	  care of removing the logger window on exit.
+
+2006-08-02 17:08  keesblom
+
+	* Implemented video transitions for qt and gtk.  Continued bug hunt
+	  why the player hangs skppin videos in Flashlight.
+
+2006-07-27 14:35  keesblom
+
+	* Implemented triangle, arrowhead, pentagon and hexagon wipes for
+	  Windows XP. The state of in-transition implementation  for
+	  Windows XP is now the same as for the other platforms (no
+	  subtypes, for each class at least one transition type
+	  implemented).
+
+2006-07-27 14:07  keesblom
+
+	* Implemented bowTieWipe for Windows XP.
+
+2006-07-27 11:59  keesblom
+
+	* Implemented irisWipe (which is a required type) for Windows XP.
+	  Also repaired a problem appearing in Windows XP with
+	  diagonalWipe: m_newpolygon was computed corretcly but not cleared
+	  between transition steps. This was not observed on other
+	  platforms because of winding rule parameter selection.
+
+2006-07-19 11:19  jackjansen
+
+	* html widget was always created at topleft of the window. Fixed.
+
+2006-07-18 17:07  keesblom
+
+	* data:, URL proiduced error message, although it did work, except
+	  on Window when > c16 chars, because the std::string returned by
+	  url.get_url() was already reclaimed before an allocated copy was
+	  made
+
+2006-07-18 14:11  keesblom
+
+	* Modified dx implementation of r1r2r3r4 transitions
+	  (push,slide)Wipe s.t. these more or less work the same way as
+	  qt/gtk players do.  Note that they are all wrong because they
+	  transition the whole region in which the media is rendered, not
+	  the subregion occupied by the media. This holds for all
+	  transition types, see EUROshow.smil when EURO 50 image is
+	  rendered.
+
+2006-07-18 13:54  keesblom
+
+	* Removed warning that polylist was not tested
+
+2006-07-18 11:12  jackjansen
+
+	* Build shared library builds with xerces builtin, no expat. This
+	  is a stopgap to get AmisAmbulant to work better.
+
+2006-07-18 11:12  jackjansen
+
+	* Builds without USE_SMIL21 were broken. Fixed.
+
+2006-07-18 10:49  jackjansen
+
+	* Allow for builds with WITH_XERCES_BUILTIN and without WITH_EXPAT,
+	  they will use xerces as the default parser.
+
+2006-07-18 10:48  jackjansen
+
+	* Added a flag to url::from_filename() that allows honoring of
+	  #fragment.
+
+2006-07-10 15:31  keesblom
+
+	* Added a call to pthread_mutex_lock() in
+	  gtk_gui::do_internal_message() to prevent multiple threads
+	  simultaneously access the logger buffer, and crash with a cryptic
+	  error message. This happened often in the logger when AM_DBG was
+	  enabled.  Although far less frequently, alas! this still happens
+	  now and then and I can't understand why: the call to
+	  pthread_mutex_lock() is checked for errors and these are not
+	  reported when the crash happens.
+
+2006-07-10 09:47  jackjansen
+
+	* Fixes for document_loaded()
+
+2006-07-10 01:49  jackjansen
+
+	* Added a document_loaded() callback that is called after the tree
+	  has been read but before the timegraph is created. Embedding apps
+	  can use this to modify the tree.
+
+	  For this reason, player::initialize() is always used (not only
+	  when USE_SMIL21 is defined) and does most of the work the
+	  constructor used to do. If the embedder wants the
+	  document_loaded() callback it should call set_embedder() before
+	  initialize().
+
+	  Mods	untested for Windows/Linux.
+
+2006-07-07 18:13  keesblom
+
+	* Re-arranged call to gdk_pixbuf_loader_close() to handle small
+	  images correctly
+
+2006-07-07 16:00  keesblom
+
+	* Started on creating a list of tests to be done before a
+	  distribution.  These tests are supposed to be done on all
+	  supported platforms, for the stand-alone players and the browser
+	  plugins, when applicable.  Also a list of missing tests and known
+	  unimplemented features is added.
+
+2006-07-06 16:22  keesblom
+
+	* Added some debug messages to hunt the Flashlight bug
+
+2006-07-04 16:02  keesblom
+
+	* Reload didn't work properly: it never(gtk) or often(qt) reparsed
+	  the document
+
+2006-07-04 15:18  keesblom
+
+	* Renamed the Linux players to AmbulantPlayer_gtk and
+	  AmbulantPlayer_qt.  For the time being, "make install" also adds
+	  the link AmbulantPlayer to AmbulantPlayer_qt to achieve
+	  compatability.  AM_DBG was commented out in ffmpeg*.cpp,
+	  otherwise player crashes.
+
+2006-07-03 14:34  keesblom
+
+	* Merging gtk transitions with trunk
+
+2006-07-01 00:18  jackjansen
+
+	* Handle #frag for unknown protocols. Not 100% sure this is a good
+	  idea, but it's needed for AmisAmbulant.
+
+2006-06-30 10:41  jackjansen
+
+	* Squashed Windows warnings about dll-enabled classes that contain
+	  non-dll-enabled objects. Don't like this, but the workaround is
+	  severe.
+
+2006-06-27 13:40  p_cesar
+
+	* get screenshot done
+
+2006-06-26 16:54  ishanvaishnavi
+
+	* Added new audio codec for dynamic RTP stream. ffmpeg doesn't seem
+	  to have support for this yet.
+
+2006-06-26 15:49  ishanvaishnavi
+
+	* hanged to support live. Should work now!
+
+2006-06-23 18:06  ishanvaishnavi
+
+	* Trying to add support for audio via viewing a RTSP video stream.
+	  This code wasn't written completely before. This change is not
+	  complete. But it makes the audio work for atleast mpeg2 video
+	  streams.
+
+2006-06-23 16:38  jackjansen
+
+	* pause() method had the wrong signature so it was never called.
+	  Fixed.
+
+2006-06-23 13:27  keesblom
+
+	* Bug#1505278 revisited: media do not play when local path on
+	  commandline now solved in gui_player.cpp instead of the platform
+	  specific players
+
+2006-06-22 16:19  jackjansen
+
+	* context->nstreams was used for two distinct things: counting the
+	  number One variable was used for botgh counting the number of
+	  streams and the number of active streams. fixed.
+
+2006-06-22 16:13  keesblom
+
+	* Fixed bug#1505278 by making the path absolute in openSMILfile.
+	  In both qt_gui and gtk_gui,m_smilfilename is now a dynamic data
+	  structure
+
+2006-06-22 12:10  jackjansen
+
+	* Disabled more debugging.
+
+2006-06-21 14:31  keesblom
+
+	* Turned off AM_DBG debugging flag
+
+2006-06-21 14:26  keesblom
+
+	* Solved bug#1508660: the motion_notify_event was connected to the
+	  toplevel widget, but in the destructor an attempt was done to
+	  remove it from a lower level widget, which failed.
+
+2006-06-20 15:14  jackjansen
+
+	* Disabling debug prints and other details.
+
+2006-06-20 15:12  jackjansen
+
+	* Found and fixed the last problem that caused navigation not to
+	  work on Windows: the renderers didn't all call context->stopped()
+	  on a call to stop(). Fixed.
+
+2006-06-20 13:26  keesblom
+
+	* More detailed instructions how to create a installable debian
+	  package,
+
+2006-06-20 12:57  jackjansen
+
+	* Details.
+
+2006-06-19 18:03  jackjansen
+
+	* Accidentally commented out killing of playables during ffwd.
+	  Fixed.
+
+2006-06-19 16:05  jackjansen
+
+	* Brought over some of the multi-threading fixes from AmisAmbulant.
+
+2006-06-19 16:04  jackjansen
+
+	* Don't crash when trying to view source on remote document. In
+	  stead, give an error message:-)
+
+2006-06-19 14:52  jackjansen
+
+	* - Continuous media duration was always ignored (in stead of only
+	  while fast-forwarding). Fixed.  - Fixed some debug output.
+
+2006-06-19 14:03  keesblom
+
+	* Added an explicit test for pkg-config, otherwise in the configure
+	  script the PKG_CONFIG variable doesn't get properly initialized
+	  when the first occurence of the PKG_CHECK_MODULES in configure.in
+	  is inside a conditional section (--with-qt) and the condition is
+	  false (--without-qt)
+
+2006-06-16 12:46  keesblom
+
+	* With --without-qt explicitly set do not try to use QTDIR
+	  environment variable
+
+2006-06-14 16:58  keesblom
+
+	* Reorganized memory management for qt internal messages
+
+2006-06-14 15:38  keesblom
+
+	* AM_DBG turned off
+
+2006-06-14 15:30  keesblom
+
+	* Made "Reload" work with GTK and Qt
+
+2006-06-12 11:54  jackjansen
+
+	* Give fatal error message if the (shared) library is configured
+	  for HTML support but the main program is not.
+
+2006-06-12 11:54  jackjansen
+
+	* Various build settings were incorrect for DebugShlib.
+
+2006-06-12 10:17  jackjansen
+
+	* Details.
+
+2006-06-10 23:12  jackjansen
+
+	* More aggressive fix, which seems to work for Daisy books: when
+	  setting a node to fast-forward mode also do this to the
+	  descendent nodes. In addition, for playable nodes also kill the
+	  playable, if it exists.
+
+	  Not sure whether SMIL semantics haven't completely gone out the
+	  window, though...
+
+2006-06-10 22:55  jackjansen
+
+	* - Added various debug statements to the fast-forward code.  -
+	  Fixed one bug: when fast-forwarding, ignore duration of
+	  continuous-media children   when determining whether a time
+	  container can finish.
+
+	  Unfortunately this fix is (a) not necessarily correct and (b)
+	  good enough for my test document but not for real Daisy books:-(
+
+2006-06-09 17:25  jackjansen
+
+	* The scheduler didn't lock anything, but at the same time it
+	  appears to be non-reentrant. Fixed this by adding a real lock,
+	  plus a warning message whenever a potential deadlock is detected.
+
+	  Also undid the 1.10 change, but I'm not sure this makes much of a
+	  difference.
+
+2006-06-09 14:52  jackjansen
+
+	* - Minor changes to rtsp handling (incomplete) - Additions to the
+	  scheduler to facilitate debugging - Unknown changes to the
+	  project.
+
+2006-06-07 15:07  ishanvaishnavi
+
+	* Modified so that it compile with gcc 4.1.  Ishan
+
+2006-06-07 13:12  keesblom
+
+	* little optimization in show_frame()
+
+2006-06-06 14:35  keesblom
+
+	* Added locking in gtk_video_renderer::redraw() as well with a
+	  comment: locking at this point may result in deadly embrace with
+	  internal lock but as far as we know this has never happened
+
+2006-06-06 14:16  keesblom
+
+	* Added a lock in qt_video_renderer::redraw() to prevent
+	  segmentation violations
+
+2006-06-02 16:12  keesblom
+
+	* Implemented Arrow/Hand cursors for gtk. Cursors are cached by
+	  gtk_window_factory
+
+2006-06-01 15:35  keesblom
+
+	* Got rid of an ugly cast by re-defining qt_mainloop() constructor
+	  as suggested by Jack
+
+2006-06-01 15:05  keesblom
+
+	* Made Play-Pause-Stop work for player_gtk
+
+2006-05-31 15:47  jackjansen
+
+	* Added interface to allow plugins to export a data structure to
+	  Ambulant.  Added a call to plugin_engine that allows ambulant
+	  plugins or embedders to obtain a pointer to this data structure
+	  for a given, named plugin.
+
+2006-05-30 16:39  keesblom
+
+	* Repaired PointingHand cursor by remembering qt_mainloop* as
+	  m_gui-player
+
+2006-05-30 15:47  keesblom
+
+	* Added new files to the documentation
+
+2006-05-30 10:46  keesblom
+
+	* Adapted PATH to reflect that on apps.cwi.nl 'rsync' is stored in
+	  a weird place
+
+2006-05-24 15:15  jackjansen
+
+	* ReleaseShlib was missing HTML widget.  Enabled goto-node code.
+
+2006-05-24 14:49  keesblom
+
+	* Added backup script adapted to the new sourgeforge 'rsync' only
+	  policy
+
+2006-05-22 14:17  keesblom
+
+	* Update for Nokia 770. Occasional deadlock when opening new file
+	  persists.
+
+2006-05-19 16:55  marisademeglio
+
+	* small bug fix regarding guesstype()
+
+2006-05-17 16:37  keesblom
+
+	* Added some tips for software development on the Nokia 770
+	  (networking, debugging)
+
+2006-05-17 15:08  keesblom
+
+	* Turned off debugging
+
+2006-05-17 15:05  keesblom
+
+	* Added a global lock for the Nokia 770 s.t. the DSP processor will
+	  only be accessed by one thread at a time (audio must have
+	  released hardware before next audio can be initiated).
+
+2006-05-17 14:27  jackjansen
+
+	* Minor fixes for handling urls with #fragment
+
+2006-05-16 11:42  jackjansen
+
+	* Got rid of the bug-workaround for amis-ambulant hanging on close,
+	  the problem has been fixed in amis.
+
+2006-05-02 02:06  koelimoe
+
+	* Automated Changelog Update
+
 2006-05-01 17:25  jackjansen
 
 	* Pass the datasource factory to html_bridge::goto_url, so the
@@ -11,6 +744,10 @@
 2006-05-01 12:10  jackjansen
 
 	* Get puglins to link on Windows. Untested.
+
+2006-04-28 02:06  koelimoe
+
+	* Automated Changelog Update
 
 2006-04-27 23:52  jackjansen
 
@@ -38,6 +775,10 @@
 
 	  Need to backport.
 
+2006-04-27 02:06  koelimoe
+
+	* Automated Changelog Update
+
 2006-04-26 14:59  jackjansen
 
 	* Got plugins to work also for ReleaseShLib build.
@@ -54,6 +795,10 @@
 2006-04-26 10:17  jackjansen
 
 	* sigh, more locking had to be commented out because of deadlocks.
+
+2006-04-25 02:07  koelimoe
+
+	* Automated Changelog Update
 
 2006-04-24 16:42  jackjansen
 
@@ -75,6 +820,10 @@
 	* More leaks. AmbulantPlayer now playes NewYork on Nokia770
 	  fluently without oops.
 
+2006-04-22 02:07  koelimoe
+
+	* Automated Changelog Update
+
 2006-04-21 16:51  jackjansen
 
 	* Added raw_filter datasources: a datasource that filters data
@@ -92,6 +841,10 @@
 
 	* More cleanup, no more Megabytes definitely lost by
 	  gtk_image_renderer
+
+2006-04-21 02:06  koelimoe
+
+	* Automated Changelog Update
 
 2006-04-21 00:21  jackjansen
 
@@ -114,6 +867,10 @@
 
 	* AMBULANTAPI is now also used after class sometimes.
 
+2006-04-20 02:06  koelimoe
+
+	* Automated Changelog Update
+
 2006-04-20 00:08  jackjansen
 
 	* Const in argument dictionaries seems to have disappeared for
@@ -124,10 +881,18 @@
 	* Changed image drawing code to get rid of vague images and memory
 	  leakes
 
+2006-04-19 02:06  koelimoe
+
+	* Automated Changelog Update
+
 2006-04-18 15:58  jackjansen
 
 	* std::string could be deleted while the c_str() was still in use.
 	  Fixed.
+
+2006-04-14 02:07  koelimoe
+
+	* Automated Changelog Update
 
 2006-04-13 16:53  keesblom
 
@@ -137,6 +902,10 @@
 
 	* More changes for amis-ambulant integration.
 
+2006-04-13 02:06  koelimoe
+
+	* Automated Changelog Update
+
 2006-04-12 17:19  jackjansen
 
 	* - Revamped html_browser interface organisation so it can be used
@@ -144,6 +913,10 @@
 	  AMBULANTAPI keywords, for using Ambulant in a DLL - Got DLL
 	  version of Ambulant to work again.  - Added a couple of methods
 	  tha Amis need to url.
+
+2006-04-12 02:06  koelimoe
+
+	* Automated Changelog Update
 
 2006-04-12 00:07  jackjansen
 
@@ -154,6 +927,10 @@
 
 	  The AVCodecContext object was never freed. Fixed.
 
+2006-04-09 02:07  koelimoe
+
+	* Automated Changelog Update
+
 2006-04-09 01:12  jackjansen
 
 	* prepare_playables() did some pretty aggressive preloading of
@@ -161,6 +938,10 @@
 	  the code for the time being.
 
 	  Fixes #1079413.
+
+2006-04-08 02:07  koelimoe
+
+	* Automated Changelog Update
 
 2006-04-07 16:03  p_cesar
 
@@ -172,6 +953,10 @@
 
 	  Still:  - Overlay images are not supported  - Full screen mode is
 	  not working  - icons (stop/play) are not implemented
+
+2006-04-07 02:07  koelimoe
+
+	* Automated Changelog Update
 
 2006-04-06 16:44  jackjansen
 
@@ -189,6 +974,10 @@
 2006-04-06 11:39  jackjansen
 
 	* More changes because of implementation of pause_display.
+
+2006-04-06 02:09  koelimoe
+
+	* Automated Changelog Update
 
 2006-04-05 23:53  jackjansen
 
@@ -214,12 +1003,20 @@
 
 	* Temporarily disable hand cursor.
 
+2006-03-29 02:06  koelimoe
+
+	* Automated Changelog Update
+
 2006-03-28 14:13  jackjansen
 
 	* The unicode-based release build had gotten rather broken after a
 	  long time of using only the mbcs-based debug build. Fixed it, and
 	  also set the debug build to use unicode so this shouldn't happen
 	  again in future.
+
+2006-03-28 02:06  koelimoe
+
+	* Automated Changelog Update
 
 2006-03-27 14:05  jackjansen
 
@@ -236,6 +1033,10 @@
 	* Machine-independent impleentation of memfile using datasources,
 	  replacing win32-specific one.
 
+2006-03-25 02:08  koelimoe
+
+	* Automated Changelog Update
+
 2006-03-24 16:41  jackjansen
 
 	* Minor fix to make things compile for WinCE.
@@ -244,6 +1045,10 @@
 
 	* Show link destination and some other interesting information in
 	  the status line at the bottom of the window.
+
+2006-03-24 02:07  koelimoe
+
+	* Automated Changelog Update
 
 2006-03-23 16:52  jackjansen
 
@@ -281,9 +1086,17 @@
 
 	  Only tested on mac, so far.
 
+2006-03-21 02:07  koelimoe
+
+	* Automated Changelog Update
+
 2006-03-20 11:37  jackjansen
 
 	* Got rid of a few leaks.
+
+2006-03-20 02:07  koelimoe
+
+	* Automated Changelog Update
 
 2006-03-20 00:02  jackjansen
 
@@ -291,6 +1104,10 @@
 	  auxiliary presentations to use the size of the main presentation
 	  by simply not specifying a root-layout size. It should even allow
 	  centering and such, I hope.
+
+2006-03-18 02:07  koelimoe
+
+	* Automated Changelog Update
 
 2006-03-17 14:15  jackjansen
 
@@ -301,6 +1118,10 @@
 	* Attempting to delete a thread before it had actually started
 	  caused a crash.  Fixed.
 
+2006-03-17 02:07  koelimoe
+
+	* Automated Changelog Update
+
 2006-03-17 00:33  jackjansen
 
 	* Aux_open() wasn't virtual (sigh), fixed.
@@ -310,6 +1131,10 @@
 	* Started on experimental support for playing a second (control)
 	  presentation on top of the first one. Does not work yet, but
 	  neither does it appear to break anything:-)
+
+2006-03-16 02:07  koelimoe
+
+	* Automated Changelog Update
 
 2006-03-16 00:09  jackjansen
 
@@ -337,6 +1162,10 @@
 2006-03-15 11:46  jackjansen
 
 	* Fullscreen mode works, but no input yet.
+
+2006-03-15 02:07  koelimoe
+
+	* Automated Changelog Update
 
 2006-03-15 00:23  jackjansen
 
@@ -366,12 +1195,20 @@
 
 	* Qt didn't include ffmpeg video. Fixed.
 
+2006-03-14 02:07  koelimoe
+
+	* Automated Changelog Update
+
 2006-03-13 17:40  jackjansen
 
 	* Fixed ffmpeg video timing. Main problem was the use of two
 	  distinct timers in video_renderer and ffmpeg_video_datasource,
 	  with deltas from the one being used to calculate delays for the
 	  other. Also fixed a few minor issues.
+
+2006-03-11 02:09  koelimoe
+
+	* Automated Changelog Update
 
 2006-03-10 18:11  jackjansen
 
@@ -381,12 +1218,20 @@
 
 	* Also allow goto_node() while the document is playing.
 
+2006-03-10 02:08  koelimoe
+
+	* Automated Changelog Update
+
 2006-03-09 16:47  jackjansen
 
 	* - Got rid of xerces and live for the annotator project (they were
 	  causing problems on the intel mac that I don't want to bother
 	  with right now).  - Added pause/resume to the quicktime video
 	  renderer.
+
+2006-03-07 02:07  koelimoe
+
+	* Automated Changelog Update
 
 2006-03-06 14:15  jackjansen
 
@@ -402,6 +1247,10 @@
 	  while I was at it, using tab/return to navigate over anchors and
 	  hyperlinks and follow them. Only tested on Mac, so far.
 
+2006-02-28 02:06  koelimoe
+
+	* Automated Changelog Update
+
 2006-02-28 00:25  jackjansen
 
 	* - Added node_focussed call to player_feedback. This is called by
@@ -412,6 +1261,10 @@
 2006-02-27 17:14  p_cesar
 
 	* [no log message]
+
+2006-02-25 02:06  koelimoe
+
+	* Automated Changelog Update
 
 2006-02-24 17:59  jackjansen
 
@@ -428,9 +1281,17 @@
 	* Started on implementing accesskey. Works on the mac, and only for
 	  events.
 
+2006-02-24 02:07  koelimoe
+
+	* Automated Changelog Update
+
 2006-02-23 18:53  p_cesar
 
 	* add image from URL
+
+2006-02-23 16:29  koelimoe
+
+	* Automated Changelog Update
 
 2006-02-23 16:16  jackjansen
 
@@ -457,6 +1318,10 @@
 	  mainloop over the    actual GTK widget (rendering area or
 	  documentcontainer)	     in order to get screenshots
 
+2006-02-22 02:07  koelimoe
+
+	* Automated Changelog Update
+
 2006-02-21 18:31  p_cesar
 
 	* First trial to get screenshot from GTK player
@@ -474,12 +1339,24 @@
 
 	* GTK player works again.
 
+2006-02-21 02:06  koelimoe
+
+	* Automated Changelog Update
+
+2006-02-18 02:07  koelimoe
+
+	* Automated Changelog Update
+
 2006-02-17 14:19  jackjansen
 
 	* More bits and pieces of getting gtk_player and qt_player back in
 	  shape.
 
 	  qt_player should work, gtk_player is still broken.
+
+2006-02-17 02:07  koelimoe
+
+	* Automated Changelog Update
 
 2006-02-16 17:08  jackjansen
 
@@ -489,6 +1366,10 @@
 	  Tweaked many interfaces to allow better access from Python.
 
 	  This checkin may well break builds for a few days.
+
+2006-02-16 02:06  koelimoe
+
+	* Automated Changelog Update
 
 2006-02-15 18:18  p_cesar
 
@@ -520,6 +1401,10 @@
 
 	* gtk_player does not need of the ui xml file
 
+2006-02-15 02:06  koelimoe
+
+	* Automated Changelog Update
+
 2006-02-14 16:06  p_cesar
 
 	* Modified delete/free error in gtk_logger (m_logger_window)
@@ -533,9 +1418,17 @@
 	* Several trials with g_thread and add_idle still video is not
 	  working properly
 
+2006-02-11 02:07  koelimoe
+
+	* Automated Changelog Update
+
 2006-02-10 17:08  p_cesar
 
 	* Several tries, video is not ready yet
+
+2006-02-09 02:06  koelimoe
+
+	* Automated Changelog Update
 
 2006-02-07 14:37  p_cesar
 
@@ -561,6 +1454,10 @@
 
 	* Video works (but, it skips many frames.... ??)
 
+2006-02-07 02:06  koelimoe
+
+	* Automated Changelog Update
+
 2006-02-06 16:31  p_cesar
 
 	* More debug printings unset
@@ -573,9 +1470,17 @@
 
 	* Image rendering
 
+2006-02-04 02:07  koelimoe
+
+	* Automated Changelog Update
+
 2006-02-03 13:34  p_cesar
 
 	* Ambulant does not crash with images
+
+2006-02-02 02:07  koelimoe
+
+	* Automated Changelog Update
 
 2006-02-01 13:53  p_cesar
 
@@ -593,9 +1498,17 @@
 
 	* Brush working Text working (only single line) Image on the way
 
+2006-01-31 02:06  koelimoe
+
+	* Automated Changelog Update
+
 2006-01-30 18:33  p_cesar
 
 	* Brush and Background color in the regions are starting to work
+
+2006-01-28 02:07  koelimoe
+
+	* Automated Changelog Update
 
 2006-01-27 17:26  p_cesar
 
@@ -605,6 +1518,10 @@
 
 	* Merging exp-pablo-gtk branch Initial implementation of GTK
 	  support - GTK gui is working - GTK renderers are on the way
+
+2006-01-24 02:07  koelimoe
+
+	* Automated Changelog Update
 
 2006-01-23 16:49  jackjansen
 
@@ -639,6 +1556,10 @@
 	* Tweaks for: - Using accessors for factory objects - WinCE port of
 	  datasource mods.
 
+2006-01-21 02:07  koelimoe
+
+	* Automated Changelog Update
+
 2006-01-21 00:37  jackjansen
 
 	* Step 1 towards a self-contained player: add accessor methods to
@@ -648,9 +1569,17 @@
 
 	* Squashed warning.
 
+2006-01-20 02:06  koelimoe
+
+	* Automated Changelog Update
+
 2006-01-19 17:37  keesblom
 
 	* Added mp3 codec_id as produced by the Helix RTSP Server
+
+2006-01-13 02:07  koelimoe
+
+	* Automated Changelog Update
 
 2006-01-12 22:11  jackjansen
 
@@ -666,6 +1595,10 @@
 	  provide a file-like interface.  In addition, a helper routine
 	  read_data_from_datasource has been added that gets all the data
 	  from a datasource in one fell swoop.
+
+2006-01-11 02:07  koelimoe
+
+	* Automated Changelog Update
 
 2006-01-10 16:15  jackjansen
 
@@ -687,6 +1620,10 @@
 	  that enables checking URLs for illegal characters (space, \,
 	  etc).
 
+2006-01-07 02:06  koelimoe
+
+	* Automated Changelog Update
+
 2006-01-06 17:00  jackjansen
 
 	* Merging changes for 1.6.1 (from ambulant-release-16-branch) back
@@ -699,6 +1636,10 @@
 2006-01-06 12:08  jackjansen
 
 	* Got video colors correct on the Intel mac.
+
+2005-12-17 02:06  koelimoe
+
+	* Automated Changelog Update
 
 2005-12-16 15:07  jackjansen
 
@@ -722,6 +1663,10 @@
 
 	  Bugfix candidate.
 
+2005-12-16 02:06  koelimoe
+
+	* Automated Changelog Update
+
 2005-12-15 16:02  jackjansen
 
 	* - @executable_path is also okay as a dependency - modify the
@@ -732,6 +1677,10 @@
 	* During the build process, test for dependencies on non-Apple
 	  libraries.  These are probably a signal of a problem (such as
 	  inadvertently having linked with a library in /usr/local).
+
+2005-12-14 02:06  koelimoe
+
+	* Automated Changelog Update
 
 2005-12-13 16:58  jackjansen
 
@@ -764,6 +1713,10 @@
 	* Merging changes from release-ambulant-16-branch back to the
 	  trunk.
 
+2005-12-13 02:06  koelimoe
+
+	* Automated Changelog Update
+
 2005-12-12 16:01  koelimoe
 
 	* changed the live.com into live555.com
@@ -772,6 +1725,10 @@
 
 	* Sleep/hibernate fixes (1.36 and 1.36) broke fullscreen
 	  transitions. Fixed.
+
+2005-12-10 02:06  koelimoe
+
+	* Automated Changelog Update
 
 2005-12-09 17:09  dcab
 
@@ -790,9 +1747,17 @@
 	* Flashlight video plays again. I had to anable a hack to get it
 	  working.
 
+2005-12-09 02:06  koelimoe
+
+	* Automated Changelog Update
+
 2005-12-08 12:10  keesblom
 
 	* Updated readme
+
+2005-12-08 02:07  koelimoe
+
+	* Automated Changelog Update
 
 2005-12-07 16:32  keesblom
 
@@ -805,9 +1770,17 @@
 	* Removed initial version of the plugin, to replace it with a
 	  scriptable one.
 
+2005-12-07 02:06  koelimoe
+
+	* Automated Changelog Update
+
 2005-12-06 11:53  koelimoe
 
 	*  removed a unnecessary delete. this caused a crash.
+
+2005-12-06 02:06  koelimoe
+
+	* Automated Changelog Update
 
 2005-12-05 16:14  jackjansen
 
@@ -831,10 +1804,18 @@
 
 	* Added some cleanup code, and test some error conditions.
 
+2005-12-03 02:06  koelimoe
+
+	* Automated Changelog Update
+
 2005-12-02 16:07  keesblom
 
 	* Plugin now also loads into Firefox in reasonable time, thanks to
 	  Jacks' black magic.
+
+2005-12-02 02:07  koelimoe
+
+	* Automated Changelog Update
 
 2005-12-02 00:46  jackjansen
 
@@ -844,6 +1825,10 @@
 
 	* With xerces builtin, it was initialized too late leading to an
 	  error message while parsing the settings file. Fixed.
+
+2005-12-01 02:06  koelimoe
+
+	* Automated Changelog Update
 
 2005-11-30 23:49  jackjansen
 
@@ -865,6 +1850,10 @@
 
 	* removed some unnessary files in live_VC7
 
+2005-11-30 02:06  koelimoe
+
+	* Automated Changelog Update
+
 2005-11-29 23:49  jackjansen
 
 	* Squashed a few more gcc4 warnings.
@@ -872,6 +1861,10 @@
 2005-11-29 16:11  jackjansen
 
 	* Minor updates.
+
+2005-11-26 02:06  koelimoe
+
+	* Automated Changelog Update
 
 2005-11-25 17:17  jackjansen
 
@@ -888,6 +1881,10 @@
 2005-11-25 16:41  jackjansen
 
 	* Third party packages for Windows updated.
+
+2005-11-25 11:44  koelimoe
+
+	* Automated Changelog Update
 
 2005-11-25 11:09  keesblom
 
@@ -908,10 +1905,18 @@
 	  from Mozilla's GeckoPluginSDK-samples which must be downloaded
 	  and build first in third_party_packages.
 
+2005-11-23 11:51  koelimoe
+
+	* Automated Changelog Update
+
 2005-11-22 15:35  jackjansen
 
 	* Added targets DebugNoHtmlNoXerces and ReleaseNoHtmlNoXerces for
 	  the firefox plugin.
+
+2005-11-22 14:40  koelimoe
+
+	* Automated Changelog Update
 
 2005-11-21 17:42  jackjansen
 
@@ -921,14 +1926,26 @@
 
 	* Updated to Xerces 2.7.0
 
+2005-11-21 15:55  koelimoe
+
+	* Automated Changelog Update
+
 2005-11-21 15:52  jackjansen
 
 	* Merged noxerces projects and solution into the standard one.
+
+2005-11-21 15:24  koelimoe
+
+	* Automated Changelog Update
 
 2005-11-21 15:24  jackjansen
 
 	* Xerces and non-xerces versions of the Visual Studio files were
 	  confused.  Fixed.
+
+2005-11-21 15:08  koelimoe
+
+	* Automated Changelog Update
 
 2005-11-21 14:20  jackjansen
 
@@ -2261,6 +3278,10 @@
 
 	* clip_end implementation. (untested)
 
+2005-05-23 16:22  koelimoe
+
+	* Updated the Changelog
+
 2005-05-23 16:15  koelimoe
 
 	* updated version numbers
@@ -2300,6 +3321,10 @@
 2005-05-02 17:40  keesblom
 
 	* Modification for Fedora Core 3 (gcc 3.4.3)
+
+2005-04-29 13:55  koelimoe
+
+	* New Changelog (29/4/05)
 
 2005-04-29 13:37  jackjansen
 
@@ -3388,6 +4413,10 @@
 	* Workaround for a bug in the OSX compiler (optimizer? linker?)
 	  that caused plugins to crash.
 
+2004-12-01 16:59  koelimoe
+
+	* a new and compacter Changelog
+
 2004-11-30 17:11  jackjansen
 
 	* Started work on getting make dist/make distcheck to work.
@@ -3437,6 +4466,10 @@
 	* Implemented linked documents. It doesn't work really as it should
 	  do, but neither does the windows implementation, from which it
 	  was copied.
+
+2004-11-19 12:43  koelimoe
+
+	* a chanlog created with cvs2cl
 
 2004-11-18 23:41  jackjansen
 
