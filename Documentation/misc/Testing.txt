@@ -2,12 +2,12 @@ Ambulant Acceptance testing.
 ---------------------------
 
 This document attempts to lists all tests that need to be passed
-before an Ambulant distribution can be considered thustworty.
+before an Ambulant distribution can be considered thrustworty.
 Since this goal ("all tests") can never be fully achieved, please add 
 new tests to cover new features / bugs, or replace inadequate
 tests with more appropriate ones.
 
-Try to make these new tests as concise, yet complete as possible.
+Try to make these new tests as concise, yet as complete as possible.
 
 Platforms and variants.
 -----------------------
@@ -15,19 +15,23 @@ Platforms and variants.
 All tests are applicable to all platforms and variants, except as
 noted. 
 
-Currently these platforms are:
+Currently these platforms/variants are:
 
 Mac OS 10
-Linux Fedora Core 4
+        /AmbulantPlayer program
+Linux Fedora Core 5
+        /AmbulantPlayer program
 Windows XP
+	/AmbulantPlayer program
+	/AmbulantPlayer plugin for Firefox
+	/AmbulantPlayer installer
 Windows CE
-(Nokia 770 2005 Edition)
-(Nokia 770 2006 Edition)
+	/AmbulantPlayer program
+	/AmbulantPlayer installer
+Nokia 770 2006 Edition
+	/AmbulantPlayer program
+	/AmbulantPlayer installer
 
-Currently the variants are:
-
-AmbulantPlayer program
-AmbulantPlayer plugin for Firefox (Windws XP only)
 
 Tests (for each platform/variant).
 ----------------------------------
@@ -59,7 +63,7 @@ Tests (for each platform/variant).
    Select: "Help->Play Welcome Document" and repeat the
    menu check under 1. above.
 
-3. Run with argument .../Extras/DemoPresentation/NYC-SMIL2.smil
+3. Run the program with argument .../Extras/DemoPresentation/NYC-SMIL2.smil
    Let it run completely.
    Try "View->Load Settings" select MultiAudio.xml, and select
    Play->Stop,  Play->Play
@@ -112,7 +116,7 @@ Tests (for each platform/variant).
 7. Download and extract from www.ambulantplayer.org->SMIL 2.1 Tests the
    test suite covering new features only (4MB download). This contains
    about 70 small tests. These can be examined most easily by opening the file 
-   NewS21functionalities.html an a Web browser after the browser has been setup
+   NewS21functionalities.html and a Web browser after the browser has been setup
    to use the installed AmbulantPlayer for files with .smil extension.
    Then open each individual test as SMIL, it will play in a separate window.
    On all platforms keyboard shortcuts are available.
