@@ -138,6 +138,11 @@ html_browser_imp::~html_browser_imp() {
 
 }
 
+bool 
+html_browser_imp::uses_screen_reader() {
+	return false;
+}
+
 void
 html_browser_imp::goto_url(std::string url, ambulant::net::datasource_factory *df) {
 	CString CSurl(url.c_str());

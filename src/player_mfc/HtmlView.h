@@ -74,6 +74,7 @@ public:
 	void show();
 	void hide();
 	void redraw();
+	bool uses_screen_reader();
 private:
 	HtmlView *m_browser;
 };
@@ -82,6 +83,7 @@ inline html_browser *new_html_browser(int left, int top, int width, int height)
 {
 	return new html_browser_imp(left, top, width, height);
 }
+
 #else // WITH_HTML_WIDGET
 inline html_browser *new_html_browser(int left, int top, int width, int height)
 {
