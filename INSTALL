@@ -16,7 +16,7 @@ For Windows you need Microsoft Visual Studio .NET version 7.1.
 For Linux desktop you need GNU gcc, at least version 3.2.
 For MacOSX you need the Apple Developer tools (gcc 3.3-based).
 For Windows CE you need Microsoft Embedded Visual C++ version 3.0.
-For Zaurus you need qtopia 1.5 with gcc 2.95.2.
+For Nokia770 you need "maemo" development environment, see www.maemo.org.
 
 You also need to build and install several third party packages
 that Ambulant depends on. All these are supplied in the third_party_packages
