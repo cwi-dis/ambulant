@@ -81,6 +81,8 @@ xerces_sax_parser::xerces_sax_parser(sax_content_handler*content_handler,
 	m_saxparser = new SAXParser();
 	
 	common::preferences* prefs = common::preferences::get_preferences();
+	// Don't attempt to load external DTD if validation is off
+	m_saxparser->setLoadExternalDTD(false);
 	// Val_Never, Val_Always, Val_Auto
 	m_saxparser->setValidationScheme(ambulant_val_scheme_2_xerces_ValSchemes(prefs->m_validation_scheme));
 	
