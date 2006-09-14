@@ -71,7 +71,7 @@ filepath2urlpath(const std::string& fparg, bool handle_frag=false)
 		size_t fragpos = filepath.find('#');
 		if (fragpos != std::string::npos) {
 			fragment = filepath.substr(fragpos);
-			filepath = filepath.substr(0, fragpos-1);
+			filepath = filepath.substr(0, fragpos);
 		}
 	}
 	if (!InternetCanonicalizeUrl(lib::textptr(filepath.c_str()), urlbuf, &urlbufsizearg, 0)) {
