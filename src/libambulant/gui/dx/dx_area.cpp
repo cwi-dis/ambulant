@@ -72,6 +72,8 @@ void gui::dx::dx_area::start(double t) {
 	m_dest->show(this);
 	m_dest->need_events(m_wantclicks);
 	m_activated = true;
+	m_context->started(m_cookie);
+	// XXXJACK: m_context->stopped(m_cookie);
 }
 
 void gui::dx::dx_area::stop() {
@@ -81,6 +83,7 @@ void gui::dx::dx_area::stop() {
 		delete m_rgn;
 		m_rgn = 0;
 	}
+	m_context->stopped(m_cookie);
 }
 
 void gui::dx::dx_area::redraw(const lib::rect &dirty, 

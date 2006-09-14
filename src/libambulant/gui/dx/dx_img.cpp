@@ -69,13 +69,14 @@ void gui::dx::dx_img_renderer::start(double t) {
 	net::url url = m_node->get_url("src");
 	net::datasource *src = m_factory->get_datasource_factory()->new_raw_datasource(url);
 	if (src == NULL) {
-		// XXX Should we give an error if this fails?
+		m_context->stopped(m_cookie);
 		return;
 	}
 	common::surface *surf = get_surface();
 	if(!surf) {
 		lib::logger::get_logger()->show("No surface [%s]",
 			url.get_url().c_str());
+		m_context->stopped(m_cookie);
 		return;
 	}
 	dx_window *dxwindow = static_cast<dx_window*>(surf->get_gui_window());
@@ -100,7 +101,8 @@ void gui::dx::dx_img_renderer::start(double t) {
 		m_dest->need_redraw();
 		return;	
 	}
-	
+	m_context->started(m_cookie);
+
 	// Activate this renderer.
 	// Add this renderer to the display list of the region
 	m_dest->show(this);

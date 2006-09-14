@@ -114,7 +114,7 @@ void gui::dx::dx_text_renderer::start(double t) {
 		m_dest->need_redraw();
 		return;	
 	}
-	
+	m_context->started(m_cookie);
 	// Activate this renderer.
 	// Add this renderer to the display list of the region
 	m_dest->show(this);

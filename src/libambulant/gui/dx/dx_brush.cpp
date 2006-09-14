@@ -77,6 +77,7 @@ void gui::dx::dx_brush::start(double t) {
 		
 	// Request a redraw
 	m_dest->need_redraw();
+	m_context->started(m_cookie);
 }
 
 
@@ -85,6 +86,7 @@ void gui::dx::dx_brush::stop() {
 	m_dest->renderer_done(this);
 	m_activated = false;
 	m_dxplayer->stopped(this);
+	m_context->stopped(m_cookie);
 }
 
 void gui::dx::dx_brush::user_event(const lib::point& pt, int what) {
