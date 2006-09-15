@@ -1450,7 +1450,7 @@ void time_node::raise_begin_event(qtime_type timestamp) {
 void time_node::node_started()
 {
 	if(is_root()) m_context->started_playback();
-	m_context->node_started(m_node);
+	 if(!m_ffwd_mode) m_context->node_started(m_node);
 }
 
 // Called when this node repeats.
