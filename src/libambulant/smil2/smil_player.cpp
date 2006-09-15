@@ -755,7 +755,9 @@ bool smil_player::goto_node(const lib::node *target)
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(target->get_numid());
 	
 	if(it != m_dom2tn->end()) {
+		bool already_running = m_root->is_active();
 		m_scheduler->start((*it).second);
+		if (!already_running) update();
 		return true;
 	}
 	return false;
