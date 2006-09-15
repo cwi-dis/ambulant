@@ -71,6 +71,8 @@ class dx_audio_renderer : public common::renderer_playable {
  	lib::critical_section m_cs;
 };
 
+/// Change the overall soundlevel
+AMBULANTAPI double change_global_level(double factor);
 } // namespace dx
 
 } // namespace gui

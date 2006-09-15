@@ -39,6 +39,8 @@
 
 using namespace ambulant;
 
+double s_global_level = 1.0;
+
 gui::dx::dx_audio_renderer::dx_audio_renderer(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
@@ -131,6 +133,7 @@ void gui::dx::dx_audio_renderer::update_levels() {
 	if (!m_dest) return;
 	const common::region_info *info = m_dest->get_info();
 	double level = info ? info->get_soundlevel() : 1;
+	level = level * s_global_level;
 
 	if (m_intransition || m_outtransition) {
 		level = m_transition_engine->get_volume(level);
@@ -229,4 +232,12 @@ void gui::dx::dx_audio_renderer::schedule_update() {
 	m_update_event = new lib::no_arg_callback<dx_audio_renderer>(this, 
 		&dx_audio_renderer::update_callback);
 	m_event_processor->add_event(m_update_event, 100, lib::ep_high);
+}
+
+double
+gui::dx::change_global_level(double factor)
+{
+	s_global_level *= factor;
+	// XXXX Should also adapt currently existing volumes
+	return s_global_level;
 }
