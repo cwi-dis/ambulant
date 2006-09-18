@@ -8,6 +8,13 @@ follow later.
 
 2. Install expat, ffmpeg and sdl, as explained in third_party_packages/readme.txt.
 
+2b (for mac). install libtool
+	% ./configure --program-prefix=g
+	% make
+	% make install
+	% cd /usr/local/bin
+	% ln -s glibtoolize libtoolize
+
 3. Run autoconf, aclocal, automake and configure::
 
     % ./autogen.sh
