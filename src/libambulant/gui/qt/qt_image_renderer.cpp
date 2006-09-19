@@ -42,7 +42,6 @@ qt_image_renderer::~qt_image_renderer() {
 	AM_DBG lib::logger::get_logger()->debug("qt_image_renderer::~qt_image_renderer(0x%x)", this);
 	m_lock.leave();
 }
-	
 
 void
 qt_image_renderer::redraw_body(const rect &dirty,

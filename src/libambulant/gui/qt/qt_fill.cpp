@@ -64,6 +64,10 @@ qt_fill_renderer::start(double where)
 		m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 	}
 	m_dest->show(this);
+	assert(m_context);
+	if (m_context) {
+		m_context->started(m_cookie);
+	}
 	m_lock.leave();
 }
 
@@ -90,6 +94,10 @@ qt_fill_renderer::stop()
 	} else {
 		m_is_showing = false;
 		if (m_dest) m_dest->renderer_done(this);
+	}
+	assert(m_context);
+	if (m_context) {
+		m_context->stopped(m_cookie);
 	}
 	m_lock.leave();
 }

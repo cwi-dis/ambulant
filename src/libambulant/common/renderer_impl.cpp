@@ -180,6 +180,7 @@ renderer_playable_ds::start(double t)
 	if (m_src) {
 		lib::event *e = new readdone_callback(this, &renderer_playable_ds::readdone);
 		m_src->start(m_event_processor, e);
+		m_context->started(m_cookie, 0);
 	} else {
 		lib::logger::get_logger()->trace("renderer_playable_ds.start: no datasource, skipping media item");
 		m_context->stopped(m_cookie, 0);
@@ -202,6 +203,8 @@ renderer_playable_ds::stop()
 		m_src->release();
 	}
 	m_src = NULL;
+	if (m_context)
+		m_context->stopped(m_cookie, 0);
 }
 
 renderer_playable_dsall::~renderer_playable_dsall()

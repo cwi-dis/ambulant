@@ -66,7 +66,7 @@ class qt_image_renderer : public qt_renderer<renderer_playable_dsall> {
 
 	void redraw_body(const rect &dirty,
 			 gui_window *window);
-    
+
  private:
 	QImage m_image;
 	bool m_image_loaded;
