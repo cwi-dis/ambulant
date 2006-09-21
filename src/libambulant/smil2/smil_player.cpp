@@ -300,11 +300,14 @@ AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable(0x%x)cs.ente
 		
 	std::map<const lib::node*, common::playable *>::iterator it = 
 		m_playables.find(n);
+	std::pair<const lib::node*, common::playable*> victim(NULL,NULL);
 	if(it != m_playables.end()) {
-		destroy_playable((*it).second, (*it).first);
+		victim = *it;
 		m_playables.erase(it);
 	}
 	m_playables_cs.leave();
+	if (victim.first)
+		destroy_playable(victim.second, victim.first);
 AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable(0x%x)cs.leave", (void*)n);
 }
 

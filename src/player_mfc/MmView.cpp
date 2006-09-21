@@ -215,12 +215,12 @@ END_MESSAGE_MAP()
 MmView::MmView()
 :
 #ifndef WITHOUT_LOG_WINDOW
-	m_logwindow(NULL)
+	m_logwindow(NULL),
 #endif // WITHOUT_LOG_WINDOW
+	m_timer_id(0),
+	m_cursor_id(0),
+	m_autoplay(true)
 {
-	m_timer_id = 0;
-	m_cursor_id = 0;
-	m_autoplay = true;
 	lib::logger::get_logger()->set_show_message(log_show_message);
 #ifdef WITHOUT_LOG_WINDOW
 	lib::logger::get_logger()->set_std_ostream(log_os);
