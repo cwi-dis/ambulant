@@ -166,6 +166,7 @@ const char * nsPluginInstance::getVersion()
 class ambulant_player_callbacks : public ambulant::gui::dx::dx_player_callbacks {
 	HWND new_os_window();
 	void destroy_os_window(HWND);
+	html_browser *new_html_browser(int left, int top, int width, int height);
 };
 
 HWND 
@@ -180,11 +181,17 @@ ambulant_player_callbacks::destroy_os_window(HWND hwnd)
 	s_hwnd = NULL;
 }
 
+html_browser*
+ambulant_player_callbacks::new_html_browser(int left, int top, int width, int height)
+{
+	return NULL; // not implementrd, is it needed?
+}
+
 // this will start AmbulantPLayer
 void nsPluginInstance::startPlayer()
 {
 	if (m_ambulant_player)
-		m_ambulant_player->start();
+		m_ambulant_player->play();
 	InvalidateRect(mhWnd, NULL, TRUE);
 	UpdateWindow(mhWnd);
 }
@@ -203,7 +210,7 @@ void nsPluginInstance::restartPlayer()
 //  UpdateWindow(mhWnd);
 	if (m_ambulant_player) {
 		m_ambulant_player->stop();
-		m_ambulant_player->start();
+		m_ambulant_player->play();
 	}
 	InvalidateRect(mhWnd, NULL, TRUE);
 	UpdateWindow(mhWnd);
@@ -215,7 +222,7 @@ void nsPluginInstance::resumePlayer()
 //  InvalidateRect(mhWnd, NULL, TRUE);
 //  UpdateWindow(mhWnd);
 	if (m_ambulant_player)
-		m_ambulant_player->resume();
+		m_ambulant_player->play();
 	InvalidateRect(mhWnd, NULL, TRUE);
 	UpdateWindow(mhWnd);
 }
@@ -338,7 +345,7 @@ static LRESULT CALLBACK PluginWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 #else // AMBULANT_FIREFOX_PLUGIN
 
 static ambulant_player_callbacks s_ambulant_player_callbacks;
-
+static ambulant::net::url s_url;
 static LRESULT CALLBACK PluginWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	nsPluginInstance *plugin = (nsPluginInstance *)GetWindowLong(hWnd, GWL_USERDATA);
@@ -352,17 +359,20 @@ static LRESULT CALLBACK PluginWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 				GetClientRect(hWnd, &rc);
 				FrameRect(hdc, &rc, GetStockBrush(BLACK_BRUSH));
 				EndPaint(hWnd, &ps);
-				// get our plugin instance object and ask it for the value of the "src" string
-				const char * str = plugin->getValue("src");
-				if (str == NULL)
-					break; //XXXX Error msg "no src attribute"
-				ambulant::net::url url(str);
 				if ( ! plugin->m_ambulant_player) {
+					// get our plugin instance object and ask it for the value of the "src" string
+					const char * s = plugin->getValue("src");
+					if (s == NULL)
+						break; //XXXX Error msg "no src attribute"
+					std::string str(s);
+					if (str.find("://") != std::string.npos)
+						s_url = ambulant::net::url::from_url(str);
+					else s_url = ambulant::net::url::from_filename(str);
 					if ( ! s_hwnd)
 						s_hwnd = hWnd;
-						plugin->m_ambulant_player = new ambulant::gui::dx::dx_player(s_ambulant_player_callbacks, NULL, url);
+						plugin->m_ambulant_player = new ambulant::gui::dx::dx_player(s_ambulant_player_callbacks, NULL, s_url);
 					if (plugin->m_ambulant_player)
-						plugin->m_ambulant_player->start();
+						plugin->m_ambulant_player->play();
 				} else {
 					if (plugin->m_ambulant_player)
 						plugin->m_ambulant_player->redraw(hWnd, hdc);
