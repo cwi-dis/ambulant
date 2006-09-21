@@ -44,9 +44,6 @@
 
 //#define AMBULANT_FIREFOX_PLUGIN
 #ifdef AMBULANT_FIREFOX_PLUGIN
-#include <ambulant/version.h>
-#include <ambulant/gui/dx/dx_player.h>
-#include <ambulant/net/url.h>
 #endif // AMBULANT_FIREFOX_PLUGIN
 
 //////////////////////////////////////
@@ -106,9 +103,10 @@ nsPluginInstance::~nsPluginInstance()
   // so releasing it here does not guarantee that it is over
   // we should take precaution in case it will be called later
   // and zero its mPlugin member
-  mScriptablePeer->SetInstance(NULL);
-  NS_IF_RELEASE(mScriptablePeer);
-
+	if (mScriptablePeer) {
+		mScriptablePeer->SetInstance(NULL);
+		NS_IF_RELEASE(mScriptablePeer);
+	}
 #ifdef AMBULANT_FIREFOX_PLUGIN
 	if (m_ambulant_player) {
 		m_ambulant_player->stop();
@@ -156,29 +154,34 @@ NPBool nsPluginInstance::isInitialized()
 }
 
 #ifdef AMBULANT_FIREFOX_PLUGIN
-static HWND s_hwnd;
 
 const char * nsPluginInstance::getVersion()
 {
 	return ambulant::get_version();
 }
 
-class ambulant_player_callbacks : public ambulant::gui::dx::dx_player_callbacks {
-	HWND new_os_window();
-	void destroy_os_window(HWND);
-	html_browser *new_html_browser(int left, int top, int width, int height);
-};
+ambulant_player_callbacks::ambulant_player_callbacks()
+:	m_hwnd(NULL)
+{
+}
+
+void
+ambulant_player_callbacks::set_os_window(HWND hwnd)
+{
+	m_hwnd = hwnd;
+}
+
 
 HWND 
 ambulant_player_callbacks::new_os_window()
 {
-	return s_hwnd;
+	return m_hwnd;
 }
 
 void
 ambulant_player_callbacks::destroy_os_window(HWND hwnd)
 {
-	s_hwnd = NULL;
+	m_hwnd = NULL;
 }
 
 html_browser*
@@ -345,7 +348,7 @@ static LRESULT CALLBACK PluginWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 #else // AMBULANT_FIREFOX_PLUGIN
 
 static ambulant_player_callbacks s_ambulant_player_callbacks;
-static ambulant::net::url s_url;
+
 static LRESULT CALLBACK PluginWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	nsPluginInstance *plugin = (nsPluginInstance *)GetWindowLong(hWnd, GWL_USERDATA);
@@ -366,11 +369,11 @@ static LRESULT CALLBACK PluginWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 						break; //XXXX Error msg "no src attribute"
 					std::string str(s);
 					if (str.find("://") != std::string.npos)
-						s_url = ambulant::net::url::from_url(str);
-					else s_url = ambulant::net::url::from_filename(str);
-					if ( ! s_hwnd)
-						s_hwnd = hWnd;
-						plugin->m_ambulant_player = new ambulant::gui::dx::dx_player(s_ambulant_player_callbacks, NULL, s_url);
+						plugin->m_url = ambulant::net::url::from_url(str);
+					else plugin->m_url = ambulant::net::url::from_filename(str);
+					plugin->m_hwnd = hWnd;
+					plugin->m_player_callbacks.set_os_window(hWnd);
+					plugin->m_ambulant_player = new ambulant::gui::dx::dx_player(plugin->m_player_callbacks, NULL, plugin->m_url);
 					if (plugin->m_ambulant_player)
 						plugin->m_ambulant_player->play();
 				} else {

@@ -43,13 +43,19 @@
 
 #define AMBULANT_FIREFOX_PLUGIN
 #ifdef   AMBULANT_FIREFOX_PLUGIN
-namespace ambulant {
-	namespace gui {
-		namespace dx {
-			class dx_player;
-		}
-	}
-}
+#include <ambulant/version.h>
+#include <ambulant/gui/dx/dx_player.h>
+#include <ambulant/net/url.h>
+class ambulant_player_callbacks : public ambulant::gui::dx::dx_player_callbacks {
+
+public:
+	ambulant_player_callbacks();
+	void set_os_window(HWND hwnd);
+	HWND new_os_window();
+	void destroy_os_window(HWND);
+	html_browser *new_html_browser(int left, int top, int width, int height);
+	HWND m_hwnd;
+};
 #endif // AMBULANT_FIREFOX_PLUGIN
 
 class nsPluginInstance : public nsPluginInstanceBase
@@ -90,6 +96,10 @@ public:
 #ifdef   AMBULANT_FIREFOX_PLUGIN
   nsPluginCreateData mCreateData;
   ambulant::gui::dx::dx_player* m_ambulant_player;
+  ambulant::net::url m_url;
+  ambulant_player_callbacks m_player_callbacks;
+  HWND m_hwnd;
+
   int m_cursor_id;
 
   NPP getNPP();
