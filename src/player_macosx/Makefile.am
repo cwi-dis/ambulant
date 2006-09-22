@@ -110,7 +110,7 @@ if WITH_XERCES_PLUGIN
 	mkdir -p $(BUILDAPPNAME).app/Contents/Frameworks
 	cp $(top_builddir)/third_party_packages/xerces-unix/lib/libxerces-c.27.dylib $(BUILDAPPNAME).app/Contents/Frameworks
 	install_name_tool -change `otool -D $(top_builddir)/third_party_packages/xerces-unix/lib/libxerces-c.27.dylib | tail -n 1` \
-		@executable_path/../Frameworks/libxerces-c.27.dylib $(BUILDAPPNAME).app/Contents/PlugIns/libamplugin_xerces
+		@executable_path/../Frameworks/libxerces-c.27.dylib $(BUILDAPPNAME).app/Contents/PlugIns/libamplugin_xerces.so
 	install_name_tool -id @executable_path/../Frameworks/libxerces-c.27.dylib $(BUILDAPPNAME).app/Contents/Frameworks/libxerces-c.27.dylib
 endif
 

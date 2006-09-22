@@ -22,6 +22,7 @@
 #define AM_DBG if(0)
 #endif
 
+#undef HAVE_ICONV
 #include "ambulant/gui/SDL/sdl_audio.h"
 #include "ambulant/net/posix_datasource.h"
 #include "ambulant/common/region_info.h"

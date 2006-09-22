@@ -172,20 +172,26 @@ Zaurus needs:
 Creating the MacOSX installer
 =============================
 
+- First build all the needed third party packages as universal
+  binaries: ffmpeg, live, sdl, expat, xerces.
+  third_party_packages/readme.txt has (terse) instructions on
+  how to do this.
+  SDL needs to be installed, the others are used in-place.
 - Build the whole source tree, don't forget options for
   enabling xerces, etc. You want to build with Xerces in a plugin,
   live support, no Python support, only fast internal DOM acces,
   i.e. with
     ../configure -C --with-ffmpeg --without-external-dom \
         --without-python --with-live \
-        --with-xerces --with-xerces-plugin
+        --with-xerces --with-xerces-plugin \
+        --with-universalsdk --disable-dependency-tracking
 - Install the player in src/player_macos.
 - Create a folder called something like "Ambulant Player 1.6", 
   and copy the items mentioned above into it.
 - Use Applications->Utilities->Disk Utilities to create a .dmg
   disk image from this folder (read only, compressed). Make sure the
   version number is part of the disk image name.
-
+  
 Creating the Windows desktop installer
 ======================================
 

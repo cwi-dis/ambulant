@@ -2,6 +2,11 @@ from distutils.core import setup, Extension
 import sys
 import os
 
+# Set these variable identical to your configure options.
+WITH_QT= not not os.getenv("QTDIR")
+WITH_FFMPEG=True
+WITH_SDL=True
+
 DEFS =  [
     ('WITH_EXTERNAL_DOM', '1'),
     ('ENABLE_NLS', '1'),
@@ -15,13 +20,13 @@ if sys.platform == 'darwin':
     EXTRA_LINK_ARGS += ['-framework', 'CoreFoundation', '-framework', 'Cocoa']
 
 LIBRARIES=['ambulant', 'expat']
-if True:
+if WITH_QT:
     DEFS.append(('WITH_QT', '1'))
     LIBRARIES.append('ambulant_qt')
-if True:
+if WITH_FFMPEG:
     DEFS.append(('WITH_FFMPEG', '1'))
     LIBRARIES.append('ambulant_ffmpeg')
-if True:
+if WITH_SDL:
     DEFS.append(('WITH_SDL', '1'))
     LIBRARIES.append('ambulant_sdl')
 

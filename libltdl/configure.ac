@@ -76,4 +76,37 @@ AC_LIB_LTDL
 ## Outputs. ##
 ## -------- ##
 AC_CONFIG_FILES([Makefile])
+#
+# Do we want MacOSX universal (ppc/intel) binary support?
+#
+AC_MSG_CHECKING(for --with-universalsdk)
+AC_ARG_WITH(universalsdk,
+    AC_HELP_STRING([--with-universalsdk], [Build MacOSX universal binary]),
+[
+    case $withval in
+    yes)
+        withval=/Developer/SDKs/MacOSX10.4u.sdk
+        ;;
+    esac
+    case $withval in
+    no)
+        with_universalsdk=false
+        ;;
+    *)
+        with_universalsdk=true
+        CFLAGS="-arch ppc -arch i386 -isysroot ${withval} -I/usr/local/include ${CFLAGS}"
+        CXXFLAGS="-arch ppc -arch i386 -isysroot ${withval} -I/usr/local/include ${CXXFLAGS}"
+        OBJCFLAGS="-arch ppc -arch i386 -isysroot ${withval} -I/usr/local/include ${OBJCFLAGS}"
+        #LDFLAGS="-arch ppc -arch i386 -isysroot ${withval} -L/usr/local/lib ${LDFLAGS}"
+        # The following is a nasty trick to make sure that
+        # ltdl also gets configure for universal support:
+        export CFLAGS
+        ;;
+    esac
+],
+[
+    with_universalsdk=false
+])
+AC_MSG_RESULT($with_universalsdk)
+
 AC_OUTPUT

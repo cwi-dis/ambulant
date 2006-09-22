@@ -143,13 +143,13 @@ initialize_logger()
 	ambulant::lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english; user requested %s)"), locale);
 #endif
 
-#if 0
+#if 1
 	// Initialize the plugins, so we can parser the system test settings file
 	{
 		ambulant::common::factories fact;
-		fact.pf = ambulant::lib::global_parser_factory::get_parser_factory();
+		fact.set_parser_factory(ambulant::lib::global_parser_factory::get_parser_factory());
 #ifdef WITH_XERCES_BUILTIN
-		fact.pf->add_factory(new ambulant::lib::xerces_factory());
+		fact.get_parser_factory()->add_factory(new ambulant::lib::xerces_factory());
 #endif
 		ambulant::common::plugin_engine *pe = ambulant::common::plugin_engine::get_plugin_engine();
 		pe->add_plugins(&fact, NULL);

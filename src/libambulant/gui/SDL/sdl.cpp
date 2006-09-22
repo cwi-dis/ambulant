@@ -23,6 +23,7 @@
 #endif
 
 // SDL.h is needed here to solve a compile problem with gcc 4.0
+#undef HAVE_ICONV
 #include <SDL.h>
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/gui/SDL/sdl_gui.h"

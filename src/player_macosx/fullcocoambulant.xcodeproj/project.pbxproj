@@ -473,9 +473,6 @@
 		041655D508F331530017F91F /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB44806258FE500A75828 /* ApplicationServices.framework */; };
 		041655D608F331530017F91F /* libltdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B9F6120700518600B78CC4 /* libltdl.a */; };
 		041655D708F331530017F91F /* libxerces-c.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0480D5E907208FB600D39BB5 /* libxerces-c.dylib */; };
-		041655DA08F331530017F91F /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0459E7FD08DACE2600BF6ED5 /* libavformat.a */; };
-		041655DB08F331530017F91F /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0459E7FF08DACE5D00BF6ED5 /* libavcodec.a */; };
-		041655DC08F331530017F91F /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0459E80108DACE8100BF6ED5 /* libavutil.a */; };
 		041655DD08F331530017F91F /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 048399DD08ED2FDC008505C3 /* WebKit.framework */; };
 		0416853F065D4B6000E060C1 /* cocoa_dsvideo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0416853E065D4B6000E060C1 /* cocoa_dsvideo.mm */; };
 		04168541065D4B7D00E060C1 /* cocoa_dsvideo.h in Headers */ = {isa = PBXBuildFile; fileRef = 04168540065D4B7D00E060C1 /* cocoa_dsvideo.h */; };
@@ -840,6 +837,9 @@
 		04508B440507E3A900F0FD74 /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04508B430507E3A900F0FD74 /* mainloop.cpp */; };
 		04508B4E0507E42D00F0FD74 /* mainloop.h in Headers */ = {isa = PBXBuildFile; fileRef = 04508B4D0507E42D00F0FD74 /* mainloop.h */; };
 		04508B640507E68200F0FD74 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04508B630507E68200F0FD74 /* libexpat.a */; };
+		0452B4480AB567C1001566DE /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0452B4470AB567C1001566DE /* libavcodec.a */; };
+		0452B44A0AB567D5001566DE /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0452B4490AB567D5001566DE /* libavformat.a */; };
+		0452B44C0AB567DE001566DE /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0452B44B0AB567DE001566DE /* libavutil.a */; };
 		04532D9C06DCAB5400B7FC96 /* LogController.h in Headers */ = {isa = PBXBuildFile; fileRef = 04532D9A06DCAB5400B7FC96 /* LogController.h */; };
 		04532D9D06DCAB5400B7FC96 /* LogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04532D9B06DCAB5400B7FC96 /* LogController.mm */; };
 		04532DAC06DCDBFB00B7FC96 /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 04532DAA06DCDBFB00B7FC96 /* Log.nib */; };
@@ -1928,6 +1928,9 @@
 		04508B430507E3A900F0FD74 /* mainloop.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = mainloop.cpp; sourceTree = "<group>"; };
 		04508B4D0507E42D00F0FD74 /* mainloop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mainloop.h; sourceTree = "<group>"; };
 		04508B630507E68200F0FD74 /* libexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libexpat.a; path = "../../third_party_packages/expat-unix/lib/libexpat.a"; sourceTree = SOURCE_ROOT; };
+		0452B4470AB567C1001566DE /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = "../../../../packages/ffmpeg-universal/libavcodec/libavcodec.a"; sourceTree = SOURCE_ROOT; };
+		0452B4490AB567D5001566DE /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = "../../../../packages/ffmpeg-universal/libavformat/libavformat.a"; sourceTree = SOURCE_ROOT; };
+		0452B44B0AB567DE001566DE /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavutil.a; path = "../../../../packages/ffmpeg-universal/libavutil/libavutil.a"; sourceTree = SOURCE_ROOT; };
 		04532D9A06DCAB5400B7FC96 /* LogController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = LogController.h; sourceTree = "<group>"; };
 		04532D9B06DCAB5400B7FC96 /* LogController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = LogController.mm; sourceTree = "<group>"; };
 		04532DAB06DCDBFB00B7FC96 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Log.nib; sourceTree = "<group>"; };
@@ -2116,15 +2119,15 @@
 				041655D508F331530017F91F /* ApplicationServices.framework in Frameworks */,
 				041655D608F331530017F91F /* libltdl.a in Frameworks */,
 				041655D708F331530017F91F /* libxerces-c.dylib in Frameworks */,
-				041655DA08F331530017F91F /* libavformat.a in Frameworks */,
-				041655DB08F331530017F91F /* libavcodec.a in Frameworks */,
-				041655DC08F331530017F91F /* libavutil.a in Frameworks */,
 				041655DD08F331530017F91F /* WebKit.framework in Frameworks */,
 				044FD77D08F5D12600ED79BF /* libBasicUsageEnvironment.a in Frameworks */,
 				044FD77E08F5D12700ED79BF /* libliveMedia.a in Frameworks */,
 				044FD77F08F5D12700ED79BF /* libUsageEnvironment.a in Frameworks */,
 				044FD78008F5D2D700ED79BF /* libgroupsock.a in Frameworks */,
 				043FA591097275AB007EA0C2 /* AudioUnit.framework in Frameworks */,
+				0452B4480AB567C1001566DE /* libavcodec.a in Frameworks */,
+				0452B44A0AB567D5001566DE /* libavformat.a in Frameworks */,
+				0452B44C0AB567DE001566DE /* libavutil.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2794,10 +2797,13 @@
 				0427B2210625FD160071CD58 /* libavformat.a */,
 				0493211408951A8A00F38A0A /* libavformat.a */,
 				0459E7FD08DACE2600BF6ED5 /* libavformat.a */,
+				0452B4490AB567D5001566DE /* libavformat.a */,
 				0427B21F0625FCF20071CD58 /* libavcodec.a */,
 				0493211608951AAE00F38A0A /* libavcodec.a */,
 				0459E7FF08DACE5D00BF6ED5 /* libavcodec.a */,
+				0452B4470AB567C1001566DE /* libavcodec.a */,
 				0459E80108DACE8100BF6ED5 /* libavutil.a */,
+				0452B44B0AB567DE001566DE /* libavutil.a */,
 				0440807509E9B8FE00527A4F /* libvorbis.a */,
 				0440807609E9B8FE00527A4F /* libogg.a */,
 				0440807B09E9B93600527A4F /* libvorbisfile.a */,
@@ -6089,9 +6095,9 @@
 					../../include,
 					"../../third_party_packages/expat-unix/include",
 					/usr/local/include/SDL,
-					"../../third_party_packages/ffmpeg-cvs/libavcodec",
-					"../../third_party_packages/ffmpeg-cvs/libavutil",
-					"../../third_party_packages/ffmpeg-cvs/libavformat",
+					"../../third_party_packages/ffmpeg-universal/libavcodec",
+					"../../third_party_packages/ffmpeg-universal/libavutil",
+					"../../third_party_packages/ffmpeg-universal/libavformat",
 					../../third_party_packages/live/liveMedia/include,
 					../../third_party_packages/live/UsageEnvironment/include,
 					../../third_party_packages/live/groupsock/include,
@@ -6115,7 +6121,13 @@
 					"/Users/jack/packages/ffmpeg-cvs/libavformat",
 					"/Users/jack/packages/ffmpeg-cvs/libavcodec",
 					"/Users/jack/packages/ffmpeg-cvs/libavutil",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavcodec\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavformat\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavutil\"";
 				LIBRARY_STYLE = Static;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OPTIMIZATION_CFLAGS = "-O0";
@@ -6204,7 +6216,13 @@
 					"/Users/jack/packages/ffmpeg-cvs/libavformat",
 					"/Users/jack/packages/ffmpeg-cvs/libavcodec",
 					"/Users/jack/packages/ffmpeg-cvs/libavutil",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavcodec\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavformat\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavutil\"";
 				LIBRARY_STYLE = Static;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
@@ -6290,7 +6308,13 @@
 					"/Users/jack/packages/ffmpeg-cvs/libavformat",
 					"/Users/jack/packages/ffmpeg-cvs/libavcodec",
 					"/Users/jack/packages/ffmpeg-cvs/libavutil",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavcodec\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavformat\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavutil\"";
 				LIBRARY_STYLE = Static;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";

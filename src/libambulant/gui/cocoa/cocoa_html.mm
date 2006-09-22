@@ -143,7 +143,7 @@ cocoa_html_renderer::start(double where) {
 	m_lock.enter();
 	renderer_playable::start(where);
 	if (m_dest) {
-		assert(m_html_view == NULL);
+//		assert(m_html_view == NULL);
 		m_html_view = _get_html_view(m_dest);
 		WebViewController *wvc = m_html_view->show();
 		WebView *view = [wvc view];
@@ -172,6 +172,8 @@ cocoa_html_renderer::start(double where) {
 		}
 	}
 	m_lock.leave();
+	m_context->started(m_cookie);
+	m_context->stopped(m_cookie);
 	[pool release];
 }
 
@@ -183,11 +185,13 @@ cocoa_html_renderer::stop() {
 		AM_DBG lib::logger::get_logger()->debug("cocoa_html_renderer: stop display");
 		// Unhook the view from the view hierarchy.
 		m_html_view->hide(m_event_processor);
+		m_html_view = NULL;
 //		lib::logger::get_logger()->debug("cocoa_html_renderer: %f%% done", [view estimatedProgress]);
 //		if ([[view mainFrame] dataSource] == nil) lib::logger::get_logger()->debug("cocoa_html_renderer: not complete yet!");
 //		// [view removeFromSuperviewWithoutNeedingDisplay]; 
 	}
 	renderer_playable::stop();
+	m_context->stopped(m_cookie);
 	m_lock.leave();
 	[pool release];
 }

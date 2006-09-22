@@ -51,7 +51,7 @@ Unix (Linux, MacOSX)
 	
 expat-unix:	
 	Build from source. Download the expat source via
-	<http://expat.sourceforge.net> and extract into expat-1.95.7 in this
+	<http://expat.sourceforge.net> and extract into expat-2.0.0 in this
 	directory (.../ambulant/third_party_packages).
 	Then do the following:
 		$ tppdir=`pwd`  # or setenv tppdir `pwd` if you use tcsh
@@ -59,15 +59,6 @@ expat-unix:
 		$ ./configure --prefix=$tppdir/expat-unix
 		$ make
 		$ make install
-
-	Note that you really want expat-1.95.7, not 1.95.6: the older
-	version has a bug in the expat.h header file that causes compile
-	time errors for Ambulant.
-
-	Note that if you want to install expat 1.95.7 somewhere else (or you
-	have already installed it) you should specify the location to the
-	--with-expat option on the main ambulant configure: it will normally
-	only look in third_party_packages/expat-unix.
 
 xerces-unix:
 	Download xerces-C++ Version 2.7.0 Source Release from
@@ -98,7 +89,7 @@ xerces-unix:
 
 	To run Ambulantplayer make sure that you have set LD_LIBRARY_PATH to
 	the directory containing libxerces-c.so.
-
+	
 ffmpeg:
     The best option is to use the the fairly recent frozen cvs-ffmpeg
     that was created especially for Ambulant. You find this on the
@@ -136,7 +127,7 @@ ffmpeg:
 	X) or no audio and video (Linux).
 	
 sdl:
-	Ambulant has been tested with sdl 1.2.5 thru 1.2.9. You find this at
+	Ambulant has been tested with sdl 1.2.5 thru 1.2.11. You find this at
 	<http://www.libsdl.org>. Build and install normally, and make sure
 	the sdl-config utility is on your $PATH when running the configure
 	for Ambulant.
@@ -146,6 +137,9 @@ sdl:
 	  pathname *of the source directory pathname*.
 	- You may need to use "./configure --disable-cdrom" to build SDL
 	  if you've installed xcode 2.2.
+	- SDL always seems to build the dynamic libraries. IF YOU WANT TO
+	  CREATE A SELFCONTAINED INSTALLER YOU MUST REMOVE THESE BEFORE BUILDING,
+	  use "sudo rm /usr/local/bin/libSDL*dylib".
 	
 arts:
 	Linux only.
