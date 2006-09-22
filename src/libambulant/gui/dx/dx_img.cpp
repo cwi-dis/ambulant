@@ -114,7 +114,7 @@ void gui::dx::dx_img_renderer::start(double t) {
 	// m_dest->need_redraw();
 
 	// Notify scheduler that we're done playing
-// XXXKEES:	m_context->stopped(m_cookie);
+	m_context->stopped(m_cookie);
 }
 
 void gui::dx::dx_img_renderer::stop() {
