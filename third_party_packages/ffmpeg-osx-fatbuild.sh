@@ -62,6 +62,8 @@ if $mkdirs; then
     mkdir libavformat
     mkdir libavcodec
     mkdir libavutil
+else
+    echo $0: skipping mkdirs
 fi
 
 if $mklinks; then
@@ -69,6 +71,8 @@ if $mklinks; then
     ( cd libavformat ; ln -s $srcdir/libavformat/*.h .)
     ( cd libavcodec ; ln -s $srcdir/libavcodec/*.h .)
     ( cd libavutil ; ln -s $srcdir/libavutil/*.h .)
+else
+    echo $0: skipping mklinks
 fi
 
 if $configure; then
@@ -86,8 +90,10 @@ if $configure; then
         $srcdir/configure \
             --extra-cflags="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch ppc" \
             --extra-ldflags="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch ppc" \
-            --cpu=ppc --enable-shared
+            --cpu=powerpc --enable-shared
     )
+else
+    echo $0: skipping configure
 fi
 
 if $clean; then
@@ -95,6 +101,8 @@ if $clean; then
     ( cd build-i386; make clean)
     echo $0: clean ppc
     ( cd build-ppc; make clean)
+else
+    echo $0: skipping clean
 fi
 
 if $build; then
@@ -102,6 +110,8 @@ if $build; then
     ( cd build-i386; make)
     echo $0: build ppc
     ( cd build-ppc; make)
+else
+    echo $0: skipping build
 fi
 
 if $merge; then
@@ -110,10 +120,14 @@ if $merge; then
     lipo -create -output libavcodec/libavcodec.a build-{i386,ppc}/libavcodec/libavcodec.a
     lipo -create -output libavutil/libavutil.a build-{i386,ppc}/libavutil/libavutil.a
     # XXXX Should also do the dynamic libraries?
+else
+    echo $0: skipping merge
 fi
 
 if $install; then
     echo $0: install
     echo Sorry, cannot do yet.
     exit 1
+else
+    echo $0: skipping install
 fi
