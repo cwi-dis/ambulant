@@ -1,3 +1,12 @@
+2006-09-22 16:29  keesblom
+
+	* Undo of an undesirable experimental modification accidentally
+	  committed
+
+2006-09-22 12:56  jackjansen
+
+	* - ppc builds on intel now work too.  - cleanup.
+
 2006-09-22 11:15  jackjansen
 
 	* Merging branch exp-jack-osx-universal: enable building universal
