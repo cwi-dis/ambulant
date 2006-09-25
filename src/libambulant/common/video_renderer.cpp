@@ -286,7 +286,7 @@ video_renderer::data_avail()
 	// If we have a frame and it should be on-screen already we show it.
 	// If the frame's timestamp is still in the future we fall through, and schedule another
 	// callback at the time this frame is due.
-	if (buf && (frame_ts_micros <= now_micros + (2*frame_duration)) && (frame_ts_micros >= m_clip_begin-frame_duration)) {
+	if (buf && (frame_ts_micros <= now_micros + (frame_duration)) && (frame_ts_micros >= m_clip_begin-frame_duration)) {
 		// It could be we're displaying this frame already. In that case there's no point in
 		// re-displaying.
 		if (frame_ts_micros > m_last_frame_timestamp ) {
