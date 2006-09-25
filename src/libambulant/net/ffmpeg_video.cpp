@@ -654,7 +654,7 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 	bool firstdrop = true;
 	while ( m_frames.size() && m_old_frame.first < now - (2*frame_duration)) { //HACK:Due to jitter, the previous condition of dropping frames older than one frameduration was too strict!
 		//A better method to tolerate jitter required ??? This hack may still fail for high fps videos
-		lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: discarding m_old_frame timestamp=%lld, now=%lld, data ptr = 0x%x", m_old_frame.first,now, m_old_frame.second);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: discarding m_old_frame timestamp=%lld, now=%lld, data ptr = 0x%x", m_old_frame.first,now, m_old_frame.second);
 		_pop_top_frame();
 		if (!firstdrop) m_dropped_count++;
 		firstdrop = false;

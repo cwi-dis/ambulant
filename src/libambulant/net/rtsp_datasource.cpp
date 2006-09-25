@@ -80,12 +80,20 @@ rtsp_context_t::~rtsp_context_t()
 	//Have to tear down session here, so that the server is not left hanging till timeout.
 	rtsp_client->teardownMediaSession(*media_session);//Just to be sure
 	//deleting stuff
-	free(scheduler);
-	free(sdp);
-	free(sinks);
-	free(media_session);//has destructor 
-	free(rtsp_client);//has destructor
-	free(vbuffer);
+	if (scheduler)
+		free(scheduler);
+	if (sdp)
+		free(sdp);
+	for (int i=0; i < MAX_STREAMS; i++) {
+		if (sinks[i] != NULL)
+			free(sinks[i]);
+	}
+	if (media_session)
+		free(media_session);//has destructor 
+	if (rtsp_client)
+		free(rtsp_client);//has destructor
+	if (vbuffer)
+		free(vbuffer);
 	
 }
 
@@ -117,7 +125,9 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 	context->need_video = true;
 	context->need_audio = true;
 	context->nsinks = 0;
-	
+	context->vbuffer = NULL;
+	context->vbufferlen = 0;
+
 	memset(context->sinks, 0, sizeof context->sinks);
 	
 	// setup the basics.
@@ -148,7 +158,7 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 	assert(ch_url);
 	context->sdp = context->rtsp_client->describeURL(ch_url);
 	if (!context->sdp) {
-		lib::logger::get_logger()->error("%s: describeURL failed (not rtsp, or url not found?)", ch_url);
+		lib::logger::get_logger()->error("%s: describeURL failed (no server available, not rtsp, or url not found?)", ch_url);
 		//lib::logger::get_logger()->error("RTSP Connection Failed");
 		delete context;	
 		return NULL;
