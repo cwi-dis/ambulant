@@ -35,6 +35,33 @@
 
 #define POLL_INTERVAL 200  /* milliseconds */
 
+// Helper class to create QTMovie in main thread
+@interface MovieCreator : NSObject
+{
+	QTMovie *movie;
+}
+- (QTMovie *)movie;
+- (void)movieWithURL: (NSURL*)url;
++ (void)removeFromSuperview: (NSView *)view;
+@end
+@implementation MovieCreator
+- (QTMovie *)movie
+{
+	return movie;
+}
+
+- (void)movieWithURL: (NSURL*)url
+{
+	movie = NULL;
+	movie = [[QTMovie movieWithURL:url error:nil] retain];
+}
+
++ (void)removeFromSuperview: (NSView *)view
+{
+	[view removeFromSuperview];
+}
+@end
+
 namespace ambulant {
 
 using namespace lib;
@@ -45,6 +72,17 @@ namespace cocoa {
 
 typedef lib::no_arg_callback<cocoa_video_renderer> poll_callback;
 
+// Helper routine to forward quicktime redraw notifications to the cocoa_video_renderer
+// object. This is installed when needed (when we go to offscreen mode). According
+// to the QT docs installing such a redraw handler may slowdown rendering.
+static OSErr
+movieDidDrawFrame(Movie theMovie, long refCon)
+{
+	cocoa_video_renderer *r = reinterpret_cast<cocoa_video_renderer*> (refCon);
+	r->_qt_did_redraw();
+	return 0;
+}
+
 cocoa_video_renderer::cocoa_video_renderer(
 	playable_notification *context,
 	playable_notification::cookie_type cookie,
@@ -53,7 +91,9 @@ cocoa_video_renderer::cocoa_video_renderer(
 :	renderer_playable(context, cookie, node, evp),
 	m_url(node->get_url("src")),
 	m_movie(NULL),
-	m_movie_view(NULL)
+	m_movie_view(NULL),
+	m_offscreen_window(NULL),
+	m_offscreen(false)
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSURL *nsurl = [NSURL URLWithString: [NSString stringWithCString: m_url.get_url().c_str()]];
@@ -62,7 +102,12 @@ cocoa_video_renderer::cocoa_video_renderer(
 		lib::logger::get_logger()->error(gettext("%s: cannot convert to URL"), m_url.get_url().c_str());
 		return;
 	}
-	m_movie = [[NSMovie alloc] initWithURL: nsurl byReference: YES];
+	
+	MovieCreator *mc = [[MovieCreator alloc] init];
+	[mc performSelectorOnMainThread: @selector(movieWithURL:) withObject: nsurl waitUntilDone: YES];
+	m_movie = [mc movie];
+	[mc release];
+	
 	if (!m_movie) {
 		lib::logger::get_logger()->error(gettext("%s: cannot open movie"), [[nsurl absoluteString] cString]);
 		return;
@@ -70,13 +115,21 @@ cocoa_video_renderer::cocoa_video_renderer(
 	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer: m_movie=0x%x", m_movie);
 	
 	_init_clip_begin_end();
+	Movie mov = [m_movie quickTimeMovie];
+	TimeValue movtime;
 	if (m_clip_begin) {
-		Movie mov = (Movie)[m_movie QTMovie];
 		TimeScale movscale = GetMovieTimeScale(mov);
-		TimeValue movtime = (TimeValue)(m_clip_begin*(double)movscale/1000000.0);
+		movtime = (TimeValue)(m_clip_begin*(double)movscale/1000000.0);
 		SetMovieTimeValue(mov, movtime);
+	} else {
+		movtime = GetMovieTime(mov, nil);
 	}
-
+#if 0
+	Fixed playRate = GetMoviePreferredRate(mov);
+	PrePrerollMovie(mov, movtime, playRate, nil, nil);
+	PrerollMovie(mov, movtime, playRate);
+	SetMovieRate(mov, playRate);
+#endif
 	[pool release];
 }
 
@@ -89,9 +142,12 @@ cocoa_video_renderer::~cocoa_video_renderer()
 		m_movie = NULL;
 	}
 	if (m_movie_view) {
-		[m_movie_view stop: NULL];
-		[m_movie_view removeFromSuperview];
+		[MovieCreator performSelectorOnMainThread: @selector(removeFromSuperview:) withObject: m_movie_view waitUntilDone: NO];
 		m_movie_view = NULL;
+	}
+	if (m_offscreen_window) {
+		[m_offscreen_window release];
+		m_offscreen_window = NULL;
 	}
 	[pool release];
 	m_lock.leave();
@@ -104,7 +160,7 @@ cocoa_video_renderer::get_dur()
 	common::duration rv(false, 0);
 	m_lock.enter();
 	if (m_movie) {
-		Movie mov = (Movie)[m_movie QTMovie];
+		Movie mov = [m_movie quickTimeMovie];
 		AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer::get_dur QTMovie is 0x%x", (void *)mov);
 		TimeValue movdur = GetMovieDuration(mov);
 		TimeScale movscale = GetMovieTimeScale(mov);
@@ -142,8 +198,9 @@ cocoa_video_renderer::stop()
 	if (m_dest) m_dest->renderer_done(this);
 	if (m_movie_view) {
 		AM_DBG logger::get_logger()->debug("cocoa_video_renderer.stop: removing m_movie_view 0x%x", (void *)m_movie_view);
-		[m_movie_view stop: NULL];
-		[m_movie_view removeFromSuperview];
+		[m_movie_view pause: NULL];
+		//[m_movie_view removeFromSuperview];
+		[MovieCreator performSelectorOnMainThread: @selector(removeFromSuperview:) withObject: m_movie_view waitUntilDone: NO];
 		m_movie_view = NULL;
 	}
 	if (m_movie) {
@@ -160,12 +217,14 @@ void
 cocoa_video_renderer::pause(pause_display d)
 {
 	m_lock.enter();
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer::pause(%s)", m_node->get_sig().c_str());
 	if (m_movie && m_movie_view) {
-		[m_movie_view stop: NULL];
+		[m_movie_view pause: NULL];
 		if (d == display_hide)
 			[m_movie_view setHidden: YES];
 	}
+	[pool release];
 	m_lock.leave();
 }
 
@@ -173,11 +232,13 @@ void
 cocoa_video_renderer::resume()
 {
 	m_lock.enter();
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer::resume()");
 	if (m_movie && m_movie_view) {
 		if ([m_movie_view isHidden]) [m_movie_view setHidden: NO];
-		[m_movie_view start: NULL];
+		[m_movie_view play: NULL];
 	}
+	[pool release];
 	m_lock.leave();
 }
 
@@ -190,7 +251,7 @@ cocoa_video_renderer::seek(double where)
 }
 
 void
-cocoa_video_renderer::poll_playing()
+cocoa_video_renderer::_poll_playing()
 {
 	m_lock.enter();
 	if (m_movie == NULL || m_movie_view == NULL) {
@@ -198,24 +259,26 @@ cocoa_video_renderer::poll_playing()
 		m_lock.leave();
 		return;
 	}
-	bool is_stopped = ![m_movie_view isPlaying];
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	bool is_stopped = ([m_movie rate] == 0);
 	if (!is_stopped && m_clip_end > 0) {
-		Movie mov = (Movie)[m_movie QTMovie];
+		Movie mov = [m_movie quickTimeMovie];
 		TimeValue movtime = GetMovieTime(mov, NULL);
 		TimeScale movscale = GetMovieTimeScale(mov);
 		double curtime = (double)movtime / (double)movscale;
 		if ( curtime > (m_clip_end/1000000.0)) {
 			is_stopped = true;
-			if (m_movie_view) [m_movie_view stop: NULL];
+			if (m_movie_view) [m_movie_view pause: NULL];
 		}
 	}
 	
 	if (!is_stopped) {
 		// schedule another call in a while
-		ambulant::lib::event *e = new poll_callback(this, &cocoa_video_renderer::poll_playing);
+		ambulant::lib::event *e = new poll_callback(this, &cocoa_video_renderer::_poll_playing);
 		m_event_processor->add_event(e, POLL_INTERVAL, ambulant::lib::ep_low);
 	}
-	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer::poll_playing: is_stopped=%d", is_stopped);
+	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer::_poll_playing: is_stopped=%d", is_stopped);
+	[pool release];
 	m_lock.leave();
 	if (is_stopped)
 		m_context->stopped(m_cookie);
@@ -225,31 +288,120 @@ void
 cocoa_video_renderer::redraw(const rect &dirty, gui_window *window)
 {
 	m_lock.enter();
-	const rect &r = m_dest->get_rect();
-	rect dstrect = r;
+	if (!m_movie) {
+		m_lock.leave();
+		return;
+	}
+	NSValue *value = [m_movie attributeForKey:QTMovieNaturalSizeAttribute];
+	NSSize nssize = [value sizeValue];
+	size srcsize = size(int(nssize.width), int(nssize.height));
+	rect srcrect;
+	rect dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
 	dstrect.translate(m_dest->get_global_topleft());
-	AM_DBG logger::get_logger()->debug("cocoa_video_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
+	NSRect frameRect = [view NSRectForAmbulantRect: &dstrect];
 
 	if (m_movie && !m_movie_view) {
 		AM_DBG logger::get_logger()->debug("cocoa_video_renderer.redraw: creating movie view");
 		// Create the movie view and link it in
-		NSRect frameRect = [view NSRectForAmbulantRect: &dstrect];
 		
-		m_movie_view = [[NSMovieView alloc] initWithFrame: frameRect];
-		[m_movie_view showController: NO adjustingSize: NO];
+		m_movie_view = [[QTMovieView alloc] initWithFrame: frameRect];
+		[m_movie_view setControllerVisible: NO];
 		[view addSubview: m_movie_view];
+		[m_movie_view release];
 		// Set the movie playing
 		[m_movie_view setMovie: m_movie];
-		[m_movie_view start: NULL];
+		[m_movie_view play: NULL];
 		// And start the poll task
-		ambulant::lib::event *e = new poll_callback(this, &cocoa_video_renderer::poll_playing);
+		ambulant::lib::event *e = new poll_callback(this, &cocoa_video_renderer::_poll_playing);
 		m_event_processor->add_event(e, POLL_INTERVAL, ambulant::lib::ep_low);
 	}
 	
+	_copy_bits(view, frameRect);
 	m_lock.leave();
+}
+
+void
+cocoa_video_renderer::_qt_did_redraw()
+{
+	if (!m_offscreen) return;
+	if (!m_dest) return;
+	m_dest->need_redraw();
+}
+	
+void
+cocoa_video_renderer::_copy_bits(NSView *dst, NSRect& dstrect)
+{
+	if (!m_offscreen) return;
+	NSLog(@"_copy_bits()");
+	[m_movie_view lockFocus];
+	NSBitmapImageRep *src = [[NSBitmapImageRep alloc] initWithFocusedViewRect: [m_movie_view bounds]];
+	NSRect srcrect = [m_movie_view bounds];
+	[m_movie_view unlockFocus];
+	[dst lockFocus];
+#if 0
+	[src drawInRect: dstrect
+		fromRect: srcrect
+		operation: NSCompositeSourceOver
+		fraction: 1.0];
+#else
+	[src drawInRect: dstrect];
+#endif
+	[dst unlockFocus];
+	[src release];
+}
+
+void cocoa_video_renderer::_go_offscreen()
+{
+	if (m_offscreen) return;
+	m_offscreen = true;
+	
+	// Set up the redraw-done callback.
+    MovieDrawingCompleteUPP myUpp = NewMovieDrawingCompleteUPP (movieDidDrawFrame);
+	if (!m_movie) return;
+	Movie mov = [m_movie quickTimeMovie];
+	if (!mov) return;
+	SetMovieDrawingCompleteProc(mov,
+		movieDrawingCallWhenChanged,
+		myUpp,
+		(long)this);
+	DisposeMovieDrawingCompleteUPP (myUpp);
+	
+	// Create the offscreen window, if it isn't there already.
+	// For easy coding we make it as big as the normal rect.
+	if (!m_offscreen_window) {
+		m_onscreen_window = [m_movie_view window];
+		NSRect rect = NSMakeRect(0,0,2000,2000); // XXXJACK
+		m_offscreen_window = [[NSWindow alloc] initWithContentRect: rect 
+			styleMask: NSBorderlessWindowMask 
+			backing: NSBackingStoreNonretained
+			defer: NO];
+	}
+	
+	// Move the display offscreen
+	NSView *contentview = [m_offscreen_window contentView];
+	[contentview addSubview: m_movie_view];
+}
+
+void
+cocoa_video_renderer::_go_onscreen()
+{
+	if (!m_offscreen) return;
+	m_offscreen = false;
+	
+	// Clear the redraw-done callback
+	if (!m_movie) return;
+	Movie mov = [m_movie quickTimeMovie];
+	if (!mov) return;
+	SetMovieDrawingCompleteProc(mov, movieDrawingCallWhenChanged, nil, nil);
+	
+	// Move the display onscreen.
+	assert(m_offscreen_window);
+	assert(m_onscreen_window);
+	NSView *contentview = [m_onscreen_window contentView];
+	[contentview addSubview: m_movie_view];
 }
 
 } // namespace cocoa

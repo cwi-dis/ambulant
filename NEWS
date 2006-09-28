@@ -14,7 +14,9 @@ Changes between 1.6.1 and 1.8:
   
 - (Mac only) Fullscreen mode has been added.
   
-- (Linux and Mac with ffmpeg) Video rendering has greatly improved.
+- (Linux and Mac) FFMPEG video rendering has greatly improved.
+
+- (Mac) QuickTime video rendering has improved.
 
 - (Windows) Networked media item support has improved.
 

@@ -29,6 +29,7 @@
 #include "ambulant/common/renderer_impl.h"
 #include "ambulant/lib/mtsync.h"
 #include <Cocoa/Cocoa.h>
+#include <QTKit/QTKit.h>
 
 namespace ambulant {
 
@@ -61,11 +62,18 @@ class cocoa_video_renderer :
 	void redraw(const rect &dirty, gui_window *window);
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};
+	void _qt_did_redraw();
   private:
-	void poll_playing();
+	void _poll_playing();
+	void _go_onscreen();
+	void _go_offscreen();
+	void _copy_bits(NSView *view, NSRect& rect);
 	net::url m_url;
-	NSMovie *m_movie;
-	NSMovieView *m_movie_view;
+	QTMovie *m_movie;
+	QTMovieView *m_movie_view;
+	NSWindow *m_offscreen_window;
+	NSWindow *m_onscreen_window;
+	bool m_offscreen;
 	critical_section m_lock;
 };
 

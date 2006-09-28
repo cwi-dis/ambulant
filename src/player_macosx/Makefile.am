@@ -20,7 +20,6 @@ extra_sdl_DEFINES=-DWITH_SDL
 extra_sdl_ldflags=-static `sdl-config --libs` \
 	-framework Carbon \
 	-framework IOKit \
-	-framework QuickTime \
 	-framework OpenGL \
 	-framework AudioUnit \
 	-framework AudioToolbox
@@ -189,7 +188,11 @@ LDADD = \
 	$(LIBINTL) \
     $(top_builddir)/src/libambulant/.libs/libambulant.a \
     -lstdc++
-AM_LDFLAGS=$(extra_sdl_ldflags) $(extra_ffmpeg_ldflags) -framework Cocoa -framework QuickTime -framework WebKit
+AM_LDFLAGS=$(extra_sdl_ldflags) $(extra_ffmpeg_ldflags) \
+    -framework Cocoa \
+    -framework QTKit \
+    -framework QuickTime \
+    -framework WebKit
 
 INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include \
     $(extra_expat_DEFINES) \

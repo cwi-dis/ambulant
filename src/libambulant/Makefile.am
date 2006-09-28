@@ -43,7 +43,7 @@ endif
 
 if WITH_COCOA
 toolkit_cocoa_libraries = libambulant_cocoa.la
-platlibs = -framework WebKit -framework CoreFoundation
+platlibs = -framework WebKit -framework QTKit -framework CoreFoundation
 libambulant_cocoa_la_SOURCES = \
 	gui/cocoa/cocoa_fill.m \
 	gui/cocoa/cocoa_gui.m \
