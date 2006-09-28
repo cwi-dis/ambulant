@@ -27,7 +27,7 @@
 {
 }
 - (BOOL) applicationShouldOpenUntitledFile: (id) sender;
-- (void) applicationDidFinishLaunching:(NSNotification *)aNotification;
+- (void) applicationWillFinishLaunching:(NSNotification *)aNotification;
 - (IBAction)loadFilter:(id)sender;
 - (IBAction)playWelcome:(id)sender;
 - (IBAction)showHomepage:(id)sender;

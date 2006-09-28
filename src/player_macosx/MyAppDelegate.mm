@@ -98,7 +98,7 @@ initialize_logger()
 	return NO;
 }
 
-- (void) applicationDidFinishLaunching:(NSNotification *)aNotification
+- (void) applicationWillFinishLaunching:(NSNotification *)aNotification
 {
 	// First get our bundle, various initializations need it.
 	NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
