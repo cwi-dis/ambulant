@@ -1,3 +1,20 @@
+2006-09-28 16:58  jackjansen
+
+	* Major rewrite of cocoa_video using QTKit in stead of the older
+	  NSMovie and NSMovieView classes. This makes things behave a lot
+	  better when going to/from fullscreen mode, and also enables
+	  future modifications for allowing transitions and overlays on
+	  video.
+
+	  Also create the video in the correct size wrt. fit attributes.
+
+2006-09-28 16:56  jackjansen
+
+	* Use applicationWillFinishLaunching in stead of
+	  applicationDidFinishLaunching for initialization: this gets the
+	  initialization done before the first document is opened when
+	  staring by double-clicking a document.
+
 2006-09-25 16:56  keesblom
 
 	* Fixed a core dump on rtsp to a server that is down
