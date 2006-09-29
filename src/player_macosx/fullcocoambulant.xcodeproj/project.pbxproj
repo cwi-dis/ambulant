@@ -712,6 +712,9 @@
 		042D9BDE061D8A69002F255F /* none_video_renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042D9BDC061D8A69002F255F /* none_video_renderer.cpp */; };
 		042D9BE2061D8AC9002F255F /* raw_video_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 042D9BE1061D8AC9002F255F /* raw_video_datasource.h */; };
 		042D9BE4061D8AE0002F255F /* raw_video_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042D9BE3061D8AE0002F255F /* raw_video_datasource.cpp */; };
+		042E61C10ACD4F5400E9D087 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0452B4470AB567C1001566DE /* libavcodec.a */; };
+		042E61C20ACD4F6200E9D087 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0452B4490AB567D5001566DE /* libavformat.a */; };
+		042E61C30ACD4F6300E9D087 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0452B44B0AB567DE001566DE /* libavutil.a */; };
 		042EBB4508EC849700DB2F0E /* cocoa_html.h in Headers */ = {isa = PBXBuildFile; fileRef = 042EBB4408EC849700DB2F0E /* cocoa_html.h */; };
 		042EBB4608EC849700DB2F0E /* cocoa_html.h in Headers */ = {isa = PBXBuildFile; fileRef = 042EBB4408EC849700DB2F0E /* cocoa_html.h */; };
 		042EBB4708EC849700DB2F0E /* cocoa_html.h in Headers */ = {isa = PBXBuildFile; fileRef = 042EBB4408EC849700DB2F0E /* cocoa_html.h */; };
@@ -1646,9 +1649,6 @@
 		04D3360D0992B50200BAEEA7 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB38A0625526900A75828 /* OpenGL.framework */; };
 		04D3360E0992B50200BAEEA7 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB44806258FE500A75828 /* ApplicationServices.framework */; };
 		04D3360F0992B50200BAEEA7 /* libltdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B9F6120700518600B78CC4 /* libltdl.a */; };
-		04D336110992B50200BAEEA7 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0459E7FD08DACE2600BF6ED5 /* libavformat.a */; };
-		04D336120992B50200BAEEA7 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0459E7FF08DACE5D00BF6ED5 /* libavcodec.a */; };
-		04D336130992B50200BAEEA7 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0459E80108DACE8100BF6ED5 /* libavutil.a */; };
 		04D336140992B50200BAEEA7 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 048399DD08ED2FDC008505C3 /* WebKit.framework */; };
 		04D336190992B50200BAEEA7 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043FA58B097275AB007EA0C2 /* AudioUnit.framework */; };
 		04D336560992CADA00BAEEA7 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D15AC360486D014006FF6A4 /* Info.plist */; };
@@ -2223,12 +2223,12 @@
 				04D3360D0992B50200BAEEA7 /* OpenGL.framework in Frameworks */,
 				04D3360E0992B50200BAEEA7 /* ApplicationServices.framework in Frameworks */,
 				04D3360F0992B50200BAEEA7 /* libltdl.a in Frameworks */,
-				04D336110992B50200BAEEA7 /* libavformat.a in Frameworks */,
-				04D336120992B50200BAEEA7 /* libavcodec.a in Frameworks */,
-				04D336130992B50200BAEEA7 /* libavutil.a in Frameworks */,
 				04D336140992B50200BAEEA7 /* WebKit.framework in Frameworks */,
 				04D336190992B50200BAEEA7 /* AudioUnit.framework in Frameworks */,
 				0428624A0ACAA7FA00640C74 /* QTKit.framework in Frameworks */,
+				042E61C10ACD4F5400E9D087 /* libavcodec.a in Frameworks */,
+				042E61C20ACD4F6200E9D087 /* libavformat.a in Frameworks */,
+				042E61C30ACD4F6300E9D087 /* libavutil.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6400,9 +6400,9 @@
 					../../include,
 					"../../third_party_packages/expat-unix/include",
 					/usr/local/include/SDL,
-					"../../third_party_packages/ffmpeg-cvs/libavcodec",
-					"../../third_party_packages/ffmpeg-cvs/libavutil",
-					"../../third_party_packages/ffmpeg-cvs/libavformat",
+					"../../third_party_packages/ffmpeg-universal/libavcodec",
+					"../../third_party_packages/ffmpeg-universal/libavutil",
+					"../../third_party_packages/ffmpeg-universal/libavformat",
 					../../third_party_packages/live/liveMedia/include,
 					../../third_party_packages/live/UsageEnvironment/include,
 					../../third_party_packages/live/groupsock/include,
@@ -6415,18 +6415,14 @@
 				LIBRARY_SEARCH_PATHS = (
 					/usr/lib/gcc/darwin/3.3,
 					"../../third_party_packages/expat-unix/lib",
-					"../../third_party_packages/ffmpeg-cvs/libavformat",
-					"../../third_party_packages/ffmpeg-cvs/libavcodec",
+					"../../third_party_packages/ffmpeg-universal/libavformat",
+					"../../third_party_packages/ffmpeg-universal/libavutil",
+					"../../third_party_packages/ffmpeg-universal/libavcodec",
 					"../../third_party_packages/xerces-unix/lib",
 					/Users/jack/src/ambulant/third_party_packages/live/liveMedia,
 					/Users/jack/src/ambulant/third_party_packages/live/BasicUsageEnvironment,
 					/Users/jack/src/ambulant/third_party_packages/live/groupsock,
 					/Users/jack/src/ambulant/third_party_packages/live/UsageEnvironment,
-					"/Users/jack/packages/ffmpeg-0.4.9-pre1/libavformat",
-					"/Users/jack/packages/ffmpeg-0.4.9-pre1/libavcodec",
-					"/Users/jack/packages/ffmpeg-cvs/libavformat",
-					"/Users/jack/packages/ffmpeg-cvs/libavcodec",
-					"/Users/jack/packages/ffmpeg-cvs/libavutil",
 					"$(SRCROOT)/../../../../packages/xerces-unix/lib",
 				);
 				LIBRARY_STYLE = Static;
@@ -6518,7 +6514,13 @@
 					"/Users/jack/packages/ffmpeg-cvs/libavcodec",
 					"/Users/jack/packages/ffmpeg-cvs/libavutil",
 					"$(SRCROOT)/../../../../packages/xerces-unix/lib",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavcodec\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavformat\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavutil\"";
 				LIBRARY_STYLE = Static;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
@@ -6605,7 +6607,13 @@
 					"/Users/jack/packages/ffmpeg-cvs/libavcodec",
 					"/Users/jack/packages/ffmpeg-cvs/libavutil",
 					"$(SRCROOT)/../../../../packages/xerces-unix/lib",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavcodec\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavformat\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavutil\"";
 				LIBRARY_STYLE = Static;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";

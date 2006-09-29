@@ -44,6 +44,7 @@ mypreferences::load_preferences()
 		[NSNumber numberWithBool: false], @"prefer_ffmpeg",
 		[NSNumber numberWithBool: false], @"strict_url_parsing",
 		[NSNumber numberWithBool: false], @"tabbed_links",
+		[NSNumber numberWithBool: false], @"fullScreen",
 		@"", @"plugin_dir",
 		nil];
 	[prefs registerDefaults: defaultDefaults];
@@ -77,6 +78,7 @@ mypreferences::save_preferences()
 	[prefs setBool: m_prefer_ffmpeg forKey: @"prefer_ffmpeg"];
 	[prefs setBool: m_strict_url_parsing forKey: @"strict_url_parsing"];
 	[prefs setBool: m_tabbed_links forKey: @"tabbed_links"];
+	[prefs setBool: NO forKey: @"fullScreen"]; // Only allow setting this on the command line for now
 	ambulant::net::url::set_strict_url_parsing(m_strict_url_parsing);
 	return true;
 }

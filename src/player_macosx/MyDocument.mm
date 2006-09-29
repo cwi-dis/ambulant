@@ -140,6 +140,11 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		[self openTheDocument];
 	}
 	[self validateButtons: self];
+	// Go fullscreen if either the -fullScreen argument was given on the command
+	// line or the user defaults were edited manually.
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	if ( [defaults boolForKey: @"fullScreen"] )
+		[self goFullScreen: self];
 }
 
 - (void)askForURL: (id)sender
