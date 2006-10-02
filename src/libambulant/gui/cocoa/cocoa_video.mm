@@ -39,12 +39,23 @@
 @interface MovieCreator : NSObject
 {
 	QTMovie *movie;
+	ambulant::net::timestamp_t clip_begin;
 }
+- (MovieCreator *)init: (ambulant::net::timestamp_t)begintime;
 - (QTMovie *)movie;
 - (void)movieWithURL: (NSURL*)url;
-+ (void)removeFromSuperview: (NSView *)view;
++ (void)removeFromSuperview: (QTMovieView *)view;
++ (void)removeFromSuperview: (QTMovieView *)view;
++ (void)removeFromSuperview: (QTMovieView *)view;
 @end
 @implementation MovieCreator
+- (MovieCreator *)init: (ambulant::net::timestamp_t)begintime
+{
+	self = [super init];
+	clip_begin = begintime;
+	return self;
+}
+
 - (QTMovie *)movie
 {
 	return movie;
@@ -54,10 +65,27 @@
 {
 	movie = NULL;
 	movie = [[QTMovie movieWithURL:url error:nil] retain];
+	Movie mov = [movie quickTimeMovie];
+	TimeValue movtime;
+	if (clip_begin) {
+		TimeScale movscale = GetMovieTimeScale(mov);
+		movtime = (TimeValue)(clip_begin*(double)movscale/1000000.0);
+		SetMovieTimeValue(mov, movtime);
+	} else {
+		movtime = GetMovieTime(mov, nil);
+	}
+	MoviesTask(mov, 0);
+#if 0
+	Fixed playRate = GetMoviePreferredRate(mov);
+	PrePrerollMovie(mov, movtime, playRate, nil, nil);
+	PrerollMovie(mov, movtime, playRate);
+	MoviesTask(mov, 0);
+#endif
 }
 
-+ (void)removeFromSuperview: (NSView *)view
++ (void)removeFromSuperview: (QTMovieView *)view
 {
+	[view pause: self];
 	[view removeFromSuperview];
 }
 @end
@@ -103,7 +131,8 @@ cocoa_video_renderer::cocoa_video_renderer(
 		return;
 	}
 	
-	MovieCreator *mc = [[MovieCreator alloc] init];
+	_init_clip_begin_end();
+	MovieCreator *mc = [[MovieCreator alloc] init: m_clip_begin];
 	[mc performSelectorOnMainThread: @selector(movieWithURL:) withObject: nsurl waitUntilDone: YES];
 	m_movie = [mc movie];
 	[mc release];
@@ -114,9 +143,14 @@ cocoa_video_renderer::cocoa_video_renderer(
 	}
 	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer: m_movie=0x%x", m_movie);
 	
-	_init_clip_begin_end();
 	Movie mov = [m_movie quickTimeMovie];
 	TimeValue movtime;
+#if 0
+	// Calling SetMovieTimeValue here can cause deadlocks, it seems, probably due to
+	// a misunderstanding of QT threading intricacies on my side. The workaround
+	// is that we call it later, just after we've started playback (in the redraw
+	// routine). But: this feels like a hack so I'm not sure this is a real solution
+	// and not merely masks the problem.
 	if (m_clip_begin) {
 		TimeScale movscale = GetMovieTimeScale(mov);
 		movtime = (TimeValue)(m_clip_begin*(double)movscale/1000000.0);
@@ -124,11 +158,10 @@ cocoa_video_renderer::cocoa_video_renderer(
 	} else {
 		movtime = GetMovieTime(mov, nil);
 	}
-#if 0
 	Fixed playRate = GetMoviePreferredRate(mov);
 	PrePrerollMovie(mov, movtime, playRate, nil, nil);
 	PrerollMovie(mov, movtime, playRate);
-	SetMovieRate(mov, playRate);
+	//SetMovieRate(mov, playRate);
 #endif
 	[pool release];
 }
@@ -198,8 +231,6 @@ cocoa_video_renderer::stop()
 	if (m_dest) m_dest->renderer_done(this);
 	if (m_movie_view) {
 		AM_DBG logger::get_logger()->debug("cocoa_video_renderer.stop: removing m_movie_view 0x%x", (void *)m_movie_view);
-		[m_movie_view pause: NULL];
-		//[m_movie_view removeFromSuperview];
 		[MovieCreator performSelectorOnMainThread: @selector(removeFromSuperview:) withObject: m_movie_view waitUntilDone: NO];
 		m_movie_view = NULL;
 	}
@@ -306,7 +337,6 @@ cocoa_video_renderer::redraw(const rect &dirty, gui_window *window)
 	if (m_movie && !m_movie_view) {
 		AM_DBG logger::get_logger()->debug("cocoa_video_renderer.redraw: creating movie view");
 		// Create the movie view and link it in
-		
 		m_movie_view = [[QTMovieView alloc] initWithFrame: frameRect];
 		[m_movie_view setControllerVisible: NO];
 		[view addSubview: m_movie_view];
@@ -319,7 +349,7 @@ cocoa_video_renderer::redraw(const rect &dirty, gui_window *window)
 		m_event_processor->add_event(e, POLL_INTERVAL, ambulant::lib::ep_low);
 	}
 	
-	_copy_bits(view, frameRect);
+	//_copy_bits(view, frameRect);
 	m_lock.leave();
 }
 
