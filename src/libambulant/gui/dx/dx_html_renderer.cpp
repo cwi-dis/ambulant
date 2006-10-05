@@ -109,7 +109,12 @@ void
 gui::dx::dx_html_renderer::start(double t) {
  	AM_DBG lib::logger::get_logger()->debug("dx_html_renderer::start(0x%x)", this);
 
-	assert(!m_html_browser);
+//	assert(!m_html_browser);
+	if (m_html_browser) {
+		lib::logger::get_logger()->trace("dx_html_renderer: programmer error: attempt to start() again.\n");
+		m_context->stopped(m_cookie);
+		return;
+	}
 	m_html_browser = dynamic_cast<browser_container*>(m_dest->get_renderer_private_data(my_renderer_id));
 	if (m_html_browser == NULL) {
 //		dx_window *dxwindow = static_cast<dx_window*>(m_window);
