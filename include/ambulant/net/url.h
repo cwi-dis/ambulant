@@ -175,6 +175,9 @@ class AMBULANTAPI url {
 	/// Return a URL with the #fragment stripped.
 	url get_document() const;
 
+	/// Return a URL with a new #fragment.
+	url add_fragment(string fragment) const;
+
 	/// Return true if two URLs refer to the same document.
 	/// In other words, if they only differ in fragment.
 	bool same_document(const url &base) const;
