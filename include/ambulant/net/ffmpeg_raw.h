@@ -98,27 +98,27 @@ class ffmpeg_raw_datasource:
 	virtual public lib::ref_counted_obj
 {
   public:
-	 ffmpeg_raw_datasource(const net::url& url, URLContext *context,
-		detail::ffmpeg_rawreader *thread);
-    ~ffmpeg_raw_datasource();
+	ffmpeg_raw_datasource(const net::url& url, URLContext *context,
+			      detail::ffmpeg_rawreader *thread);
+	~ffmpeg_raw_datasource();
 
-    void start(lib::event_processor *evp, lib::event *callback);  
+	void start(lib::event_processor *evp, lib::event *callback);  
 	void stop();
 	
 	char* get_read_ptr();
-    void readdone(int len);
-    bool end_of_file();
+	void readdone(int len);
+	bool end_of_file();
 	int size() const;   
 
-    int get_sinkbuffer(uint8_t **datap);
+	int get_sinkbuffer(uint8_t **datap);
 	void pushdata(int size);
 
   private:
-    bool _end_of_file();
+	bool _end_of_file();
 	const net::url m_url;
 	URLContext *m_con;
 	bool m_src_end_of_file;
-    lib::event_processor *m_event_processor;
+	lib::event_processor *m_event_processor;
 
 	databuffer m_buffer;
 	detail::ffmpeg_rawreader *m_thread;

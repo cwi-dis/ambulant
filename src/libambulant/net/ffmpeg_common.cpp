@@ -200,7 +200,7 @@ ffmpeg_demux::supported(const net::url& url)
 	if (url.is_local_file())
 		ffmpeg_name = url.get_file();
 	
-#if 1
+#if 0
 	// There appears to be some support for RTSP in ffmpeg, but it doesn'
 	// seem to work yet. Disable it so we don't get confused by error messages.
 	if (url_str.substr(0, 5) == "rtsp:") return NULL;

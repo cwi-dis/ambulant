@@ -76,7 +76,6 @@ class posix_datasource : virtual public datasource, virtual public lib::ref_coun
 		
 	char* get_read_ptr();
 	int size() const;
-
   
 	void read(char *data, int size);
   	

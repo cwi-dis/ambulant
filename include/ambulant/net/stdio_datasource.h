@@ -80,12 +80,11 @@ class stdio_datasource : virtual public datasource, virtual public lib::ref_coun
   	void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback);
 	void stop();
 	void readdone(int len);
-    bool end_of_file();
+	bool end_of_file();
 	
 		
 	char* get_read_ptr();
 	int size() const;
-
   
 	void read(char *data, int size);
   	

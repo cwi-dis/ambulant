@@ -49,12 +49,13 @@ class mem_datasource : virtual public datasource, virtual public ambulant::lib::
 	void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback) {
 		evp->add_event(callback, 0, ambulant::lib::ep_med);
 	};
-    void readdone(int len) { m_databuf.readdone(len); };
+	void readdone(int len) { m_databuf.readdone(len); };
 	void stop() {};
 
-    bool end_of_file() { return m_databuf.size() == 0; };
+	bool end_of_file() { return m_databuf.size() == 0; };
 	char* get_read_ptr() { return m_databuf.get_read_ptr(); };
 	int size() const { return m_databuf.size(); } ;
+
   private:
 	databuffer m_databuf;
 };
@@ -301,6 +302,13 @@ datasource_factory::add_audio_parser_finder(audio_parser_finder *df)
 {
 	AM_DBG lib::logger::get_logger()->debug("datasource_factory: add_audio_parser_finder(0x%x)", (void*)df);
 	m_audio_parser_finders.push_back(df);
+}
+
+void
+datasource_factory::add_audio_decoder_finder(audio_decoder_finder *df)
+{
+	AM_DBG lib::logger::get_logger()->debug("datasource_factory: add_audio_decoder_finder(0x%x)", (void*)df);
+	m_audio_decoder_finders.push_back(df);
 }
 
 void

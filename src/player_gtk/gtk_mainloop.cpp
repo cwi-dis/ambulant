@@ -183,8 +183,8 @@ gtk_mainloop::init_datasource_factory()
 #ifdef WITH_FFMPEG
     	AM_DBG m_logger->debug("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
 	df->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
-    	AM_DBG m_logger->debug("gtk_mainloop::gtk_mainloop: add ffmpeg_audio_parser_finder");
-	df->add_audio_parser_finder(net::get_ffmpeg_audio_parser_finder());
+    	AM_DBG m_logger->debug("gtk_mainloop::gtk_mainloop: add ffmpeg_audio_decoder_finder");
+	df->add_audio_decoder_finder(net::get_ffmpeg_audio_decoder_finder());
     	AM_DBG m_logger->debug("gtk_mainloop::gtk_mainloop: add ffmpeg_audio_filter_finder");
 	df->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
 	AM_DBG m_logger->debug("mainloop::mainloop: add ffmpeg_video_datasource_factory");

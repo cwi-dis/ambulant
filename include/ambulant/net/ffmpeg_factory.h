@@ -33,7 +33,7 @@ namespace net {
 AMBULANTAPI raw_datasource_factory *get_ffmpeg_raw_datasource_factory();
 AMBULANTAPI video_datasource_factory *get_ffmpeg_video_datasource_factory();
 AMBULANTAPI audio_datasource_factory *get_ffmpeg_audio_datasource_factory();
-AMBULANTAPI audio_parser_finder *get_ffmpeg_audio_parser_finder();
+AMBULANTAPI audio_decoder_finder *get_ffmpeg_audio_decoder_finder();
 AMBULANTAPI audio_filter_finder *get_ffmpeg_audio_filter_finder();
 
 }	// end namespace net
