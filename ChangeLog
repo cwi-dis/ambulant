@@ -1,3 +1,12 @@
+2006-10-10 17:52  jackjansen
+
+	* Added an add_fragment() method. (The more consistent name add_ref
+	  has too many refcounting connotations).
+
+2006-10-10 17:30  keesblom
+
+	* Merged the branch for packet datasouce with trunk
+
 2006-10-05 17:17  jackjansen
 
 	* Somehow the scheduler appears to reuse html widgets on seeking.
