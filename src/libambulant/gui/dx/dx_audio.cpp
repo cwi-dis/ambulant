@@ -62,7 +62,7 @@ gui::dx::dx_audio_renderer::dx_audio_renderer(
 	if(url.is_local_file() && lib::win32::file_exists(url.get_file()))
 		m_player = new gui::dx::audio_player(url.get_file());
 	else if(url.is_absolute())
-		m_player = new gui::dx::audio_player(url);
+		m_player = new gui::dx::audio_player(url.get_url());
 	else {
 		lib::logger::get_logger()->error("The location specified for the data source does not exist. [%s]",
 			url.get_url().c_str());

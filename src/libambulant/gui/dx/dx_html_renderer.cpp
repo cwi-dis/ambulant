@@ -136,7 +136,7 @@ gui::dx::dx_html_renderer::start(double t) {
 	AM_DBG lib::logger::get_logger()->debug("dx_html_renderer::start(0x%x) html_widget=0x%x", this, it);
 
 	net::url url = m_node->get_url("src");
-	it->goto_url(url, m_df);
+	it->goto_url(url.get_url(), m_df);
 
 	it->show();
 
