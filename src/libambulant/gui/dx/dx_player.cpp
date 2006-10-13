@@ -421,7 +421,8 @@ gui::dx::dx_playable_factory::new_playable(
 	if(tag == "text") {
 #ifdef	WITH_HTML_WIDGET
 		net::url url = net::url(node->get_url("src"));
-		if (url.guesstype() == "text/html") {
+		std::string mimetype = url.guesstype();
+		if (mimetype == "text/html" || mimetype == "application/xml") {
 			p = new dx_html_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
 			AM_DBG lib::logger::get_logger()->debug("dx_player: node 0x%x: returning dx_html_renderer 0x%x", (void*) node, (void*) p);
 		} else 
