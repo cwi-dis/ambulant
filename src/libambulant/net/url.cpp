@@ -562,6 +562,8 @@ net::url::guesstype() const
 		return "text/html";
 	if (ext == ".smi" || ext == ".SMI" || ext == ".smil" || ext == ".SMIL")
 		return "application/smil";
+	if (ext == ".xml" || ext == ".XML")
+		return "application/xml";
 	if (ext == ".mp3" || ext == ".MP3")
 		return "audio/mpeg";
 	if (ext == ".wav" || ext == ".WAV")
