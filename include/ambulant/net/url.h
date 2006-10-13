@@ -162,8 +162,8 @@ class AMBULANTAPI url {
 	/// Return the whole URL as a string.
 	string get_url() const;
 
-	/// Return the whole URL as a string.
-	operator string() const { return get_url(); }
+//	/// Return the whole URL as a string.
+//	operator string() const { return get_url(); }
 	
 	/// Join a relative URL to a base URL.
 	/// An absolute URL is returned as-is.
