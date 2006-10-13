@@ -362,7 +362,12 @@ void time_attrs::parse_nmtoken_offset(const std::string& s, sync_value_struct& s
 		return;
 	}
 	std::string nmtoken = parser.m_result;
-	
+
+#ifdef CHECK_EVENT_NAMES
+	// Careful re-reading of the SMIL standard by Sjoerd and Jack
+	// seems to indicate that the set of event names is open-ended.
+	// Therefore, don't check the names.
+
 	// the nmtoken suffix
 	static std::set<std::string> events;
 	if(events.empty()) {
@@ -379,6 +384,7 @@ void time_attrs::parse_nmtoken_offset(const std::string& s, sync_value_struct& s
 		events.insert("click");
 		events.insert("marker");
 	}
+#endif // CHECK_EVENT_NAMES
 	
 	std::string event;
 	size_type last_dot_ix = nmtoken.find_last_of(".");
@@ -439,12 +445,16 @@ void time_attrs::parse_nmtoken_offset(const std::string& s, sync_value_struct& s
 		svs.base = nmtoken.substr(0, last_dot_ix);
 		event = nmtoken.substr(last_dot_ix+1);
 	}
-	
+
+#ifdef CHECK_EVENT_NAMES
 	if(events.find(event) == events.end()) {
 		m_logger->trace("%s[%s].%s invalid event [%s]", 
 			m_tag.c_str(), m_id.c_str(), time_spec_id(sl), s.c_str());
 		m_logger->warn(gettext("Error in SMIL timing info in document"));
 	} else {
+#else
+	{
+#endif // CHECK_EVENT_NAMES
 		svs.event = event;
 		AM_DBG m_logger->debug("%s[%s].%s += [%s]", 
 			m_tag.c_str(), m_id.c_str(), time_spec_id(sl), repr(svs).c_str());
