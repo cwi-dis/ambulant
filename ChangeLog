@@ -1,3 +1,28 @@
+2006-10-13 15:47  jackjansen
+
+	* Explicitly call get_url() when converting a url to a string.
+
+2006-10-13 15:46  jackjansen
+
+	* Careful reading of the SMIL spec (by me and Sjoerd) seems to
+	  indicate that the set of event names is open-ended in the
+	  Language Profile.  Hence, don't check the names, allowing
+	  user-defined names (even though the events don't actually do
+	  anything).
+
+2006-10-13 15:44  jackjansen
+
+	* Send XML documents to the IE widget.
+
+2006-10-13 15:44  jackjansen
+
+	* Add mimetype application/xml for .xml extension.
+
+2006-10-13 15:43  jackjansen
+
+	* Disabled automatic conversion of url to strings, it masks too
+	  many errors.
+
 2006-10-10 17:52  jackjansen
 
 	* Added an add_fragment() method. (The more consistent name add_ref
