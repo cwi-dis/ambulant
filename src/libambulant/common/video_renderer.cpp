@@ -208,10 +208,12 @@ video_renderer::now()
 	assert( m_timer );
 	// private method - no locking
 	double rv;
+
 	if (m_is_paused)
 		rv = (double)(m_paused_epoch - m_epoch) / 1000;
 	else
 		rv = ((double)m_timer->elapsed() - m_epoch)/1000;
+	AM_DBG lib::logger::get_logger()->trace("video_renderer: now(): m_paused_epoch=%d, m_epoch=%d rv=%lf", m_paused_epoch,  m_epoch, rv);
 	return rv;
 }
 

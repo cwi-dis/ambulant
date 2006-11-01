@@ -651,11 +651,22 @@ fi
 dnl old tests which can hopefully be deemded redundant 
 dnl at some point
 dnl ====================================================
+FFMPEG_CFLAGS=
+FFMPEG_LIBS=
 
 if test "x$test_ffmpeg" = "xtrue"; then
-        PKG_CHECK_MODULES(FFMPEG,[ffmpeg >= 0.4.9], test_ffmpeg=true, test_ffmpeg=manual)
+        PKG_CHECK_MODULES(LIBAVCODEC,[libavcodec >= 0.4.9], test_ffmpeg=true, test_ffmpeg=manual)
+fi
+if test "x$test_ffmpeg" = "xtrue"; then
+        PKG_CHECK_MODULES(LIBAVFORMAT,[libavformat >= 0.4.9], test_ffmpeg=true, test_ffmpeg=manual)
+fi
+if test "x$test_ffmpeg" = "xtrue"; then
+        PKG_CHECK_MODULES(LIBAVUTIL,[libavutil >= 0.4.9], test_ffmpeg=true, test_ffmpeg=manual)
+	FFMPEG_CFLAGS="${LIBAVFORMAT_CFLAGS} ${LIBAVCODEC_CFLAGS} ${LIBAVUTIL_CFLAGS}"
+	FFMPEG_LIBS="${LIBAVFORMAT_LIBS} ${LIBAVCODEC_LIBS} ${LIBAVUTIL_LIBS}"
         inst_style="found through pkgconfig"        
 fi
+
 
 dnl
 dnl Need to check for post 0.4.9 cvs-style pkg-config support here too

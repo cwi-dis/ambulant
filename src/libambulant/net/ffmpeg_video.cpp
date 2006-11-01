@@ -32,7 +32,7 @@
 // WARNING: turning on AM_DBG globally for the ffmpeg code seems to trigger
 // a condition that makes the whole player hang or collapse. So you probably
 // shouldn't do it:-)
-//#define AM_DBG
+// #define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif 
@@ -366,7 +366,14 @@ int ffmpeg_video_decoder_datasource::frameduration()
 {
 	if(m_fmt.frameduration <=0)
 		_need_fmt_uptodate();
-	if(m_fmt.frameduration <= 0)
+	/* frame rates > 100 fps are unlikely
+	   For mp4 H263 video, ffmpeg fills its time_base.den with 1000,
+	   resulting in frameduration == 1000 musec, which is wrong.
+	   ffplay gets the correct frame rate from its stream, only takes
+	   it from the codec if the stream doesn't have that information
+	   See: ffmpeg/libavformat/utils.c, function dump_format().
+	*/
+	if(m_fmt.frameduration <= 9999)
 		m_fmt.frameduration = 33000;
 	return m_fmt.frameduration;
 }

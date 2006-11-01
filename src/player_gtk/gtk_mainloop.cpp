@@ -288,7 +288,7 @@ gtk_mainloop::open(net::url newdoc, bool start, common::player *old)
 	std::string msg("");
 	msg += start ? "S-" : "  ";
 	msg += old   ? "O-" : "  ";
-	msg += newdoc;
+	msg += newdoc.get_url();
 	m_gui->internal_message(gtk_logger::CUSTOM_NEW_DOCUMENT,
 				strdup(msg.c_str()));
 }

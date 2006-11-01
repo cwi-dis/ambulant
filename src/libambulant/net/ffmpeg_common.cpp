@@ -210,7 +210,12 @@ ffmpeg_demux::supported(const net::url& url)
 	probe_data.buf_size = 0;
 	fmt = av_probe_input_format(&probe_data, 0);
 	if (!fmt && url.is_local_file()) {
-		fmt = av_find_input_format(ffmpeg_name.c_str());
+		// get the file extension
+		std::string short_name = ffmpeg_name.substr(ffmpeg_name.length()-3,3);
+		if (short_name == "mov" || short_name == "mp4")
+			// ffmpeg's id for QuickTime/MPEG4/Motion JPEG 2000 format
+			short_name = "mov,mp4,m4a,3gp,3g2,mj2";
+		fmt = av_find_input_format(short_name.c_str());
 		
 	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported(%s): (%s) av_probe_input_format: 0x%x", url_str.c_str(), ffmpeg_name.c_str(), (void*)fmt);

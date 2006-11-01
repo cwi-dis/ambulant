@@ -434,7 +434,7 @@ after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval 
 
 		// Send the data to our sink, which is responsible for copying/saving it before returning.
 		if(context->sinks[context->video_stream]) {
-			lib::logger::get_logger()->debug("Video packet length %d", context->vbufferlen);
+			AM_DBG lib::logger::get_logger()->debug("Video packet length %d", context->vbufferlen);
 			context->sinks[context->video_stream]->data_avail(context->last_pts, (uint8_t*) context->vbuffer , context->vbufferlen);
 		}
 		
