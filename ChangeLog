@@ -1,3 +1,8 @@
+2006-11-01 14:34  keesblom
+
+	* Accidently worked on an abandoned branch, merged it back with
+	  trunk
+
 2006-10-13 15:47  jackjansen
 
 	* Explicitly call get_url() when converting a url to a string.
