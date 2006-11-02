@@ -606,6 +606,7 @@ ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 		}
 		m_con = avcodec_alloc_context();
 		
+		m_con->channels = 0;
 		if(avcodec_open(m_con,codec) < 0) {
 				lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Failed to open avcodec for %s(0x%x)", fmt.name.c_str(), enc->codec_id);
 				av_free(m_con);
@@ -631,6 +632,7 @@ ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 		}
 	
 		m_con = avcodec_alloc_context();	
+		m_con->channels = 0;
 		if((avcodec_open(m_con,codec) < 0) ) {
 			//lib::logger::get_logger()->error(gettext("%s: Cannot open audio codec %d(%s)"), repr(url).c_str(), m_con->codec_id, m_con->codec_name);
 			av_free(m_con);

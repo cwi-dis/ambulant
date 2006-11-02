@@ -192,12 +192,10 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 				context->audio_stream = context->nstream;
 				context->audio_codec_name = subsession->codecName();
 				AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), audio codecname :%s ",context->audio_codec_name);
-			  	//Let the decoder (ffmpeg) find out the number of channels
-				context->audio_fmt.channels = 2; //XXXX KB
-				context->audio_fmt.samplerate = 44100; //XXXX KB
+				context->audio_fmt.channels = 0; //Let the decoder (ffmpeg) find out the channels subsession->numChannels() returns channels -1 ???
 				context->audio_fmt.bits = 16;
-				//context->fmt.samplerate = subsession->rtpSource()->timestampFrequency();
-				
+				//context->audio_fmt.samplerate = subsession->rtpSource()->timestampFrequency();
+				context->audio_fmt.samplerate = 0;
 			}
 		} else if (strcmp(subsession->mediumName(), "video") == 0) {
 			desired_buf_size = 200000;
@@ -309,14 +307,16 @@ ambulant::net::rtsp_demux::run()
 					assert(!m_context->video_packet);
 					m_context->configDataLen=0;//Required by after_reading_video
 					if(firstTime==0){
-						//For MP4V-ES video format we need to insert a header into the RTSP stream which should be present in the 'config' MIME parameter which should be present hopefully in the SDP description
+						//For MP4V-ES video format we need to insert a header into the RTSP stream
+					        //which should be present in the 'config' MIME parameter which should be present hopefully in the SDP description
 						//this idea was copied from mplayer libmpdemux/demux_rtp.cpp
 						firstTime=1;		
-						//if(strcmp(gettext(m_context->video_codec_name), "MP4V-ES")==0)//Optional check(therefore removed), since it should not matter for other formats.
+						//if(strcmp(gettext(m_context->video_codec_name), "MP4V-ES")==0)
+						//Optional check(therefore removed), since it should not matter for other formats.
 						//{
 							AM_DBG lib::logger::get_logger()->debug("Came here good %s", m_context->video_codec_name);
 							unsigned configLen;
-							unsigned char* configData 
+		    				unsigned char* configData 
        							= parseGeneralConfigStr(subsession->fmtp_config(), configLen);
 							m_context->configData = configData;
 							m_context->configDataLen = configLen;
@@ -338,10 +338,7 @@ ambulant::net::rtsp_demux::run()
 		
 		AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() blocking_flag: 0x%x, %d, need_audio %d", &m_context->blocking_flag, m_context->blocking_flag, m_context->need_audio);		
 		TaskScheduler& scheduler = m_context->media_session->envir().taskScheduler();
-		if (m_context->blocking_flag != 0) 
-			m_context->eof = true;
-		else 
-			scheduler.doEventLoop(&m_context->blocking_flag);
+		scheduler.doEventLoop(&m_context->blocking_flag);
 		m_context->blocking_flag = 0;
 	}
 	return 0;
@@ -360,24 +357,14 @@ static void
 after_reading_audio(void* data, unsigned sz, unsigned truncated, struct timeval pts, unsigned duration)
 {
 
-	AM_DBG lib::logger::get_logger()->debug("after_reading_audio: called data = 0x%x, sz = %d, truncated = %d, pts.tv_sec=%lld, duration=%d", data, sz, truncated, pts.tv_sec, duration);
+	AM_DBG lib::logger::get_logger()->debug("after_reading_audio: called data = 0x%x, sz = %d, truncated = %d", data, sz, truncated);
 	rtsp_context_t* context = NULL;
 	if (data) {
 		context = (rtsp_context_t*) data;
 	} 
 	AM_DBG lib::logger::get_logger()->debug("after_reading_audio: audio data available (client data: 0x%x", data);
 	if (context) {
-		// For the first packet, we remember the timestamp so we can convert
-		// live's wallclock timestamps to our zero-based timestamps.
-		if (context->first_sync_time.tv_sec == 0 && context->first_sync_time.tv_usec == 0 ) {
-			context->audio_fmt.channels = 2; //XXXX KB probe ?
-			context->audio_fmt.samplerate = 44100; //XXXX KB probe ?
-			context->first_sync_time.tv_sec = pts.tv_sec;
-			context->first_sync_time.tv_usec = pts.tv_usec;
-			context->last_pts=0;
-		}
-		timestamp_t rpts = (pts.tv_sec - context->first_sync_time.tv_sec)* 1000000
-		  +  (timestamp_t) (pts.tv_usec - context->first_sync_time.tv_usec);
+		timestamp_t rpts = (pts.tv_sec* 1000000 )+  pts.tv_usec;
 		if(context->sinks[context->audio_stream]) {
 			AM_DBG lib::logger::get_logger()->debug("after_reading_audio: calling data_avail");
 			context->sinks[context->audio_stream]->data_avail(rpts, (uint8_t*) context->audio_packet, sz);
@@ -465,7 +452,6 @@ on_source_close(void* data)
 {
 	rtsp_context_t* context = (rtsp_context_t*) data;
 	if (context) {
-		AM_DBG lib::logger::get_logger()->debug("on_source_close() blocking_flag=%d",context->blocking_flag);
 		context->eof = true;
 		context->blocking_flag = ~0;
 	}
