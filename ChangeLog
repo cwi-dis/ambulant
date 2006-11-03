@@ -1,3 +1,10 @@
+2006-11-02 15:35  keesblom
+
+	* Made rtsp mp4 with H263 video and AAC audio work. Apperently, the
+	  ffmpeg function avcodec_alloc_context() (which creates an
+	  AVCodecContext pointer) initializes the 'channels' field to '1'
+	  (Mono) which is not always correct.
+
 2006-11-01 14:34  keesblom
 
 	* Accidently worked on an abandoned branch, merged it back with
