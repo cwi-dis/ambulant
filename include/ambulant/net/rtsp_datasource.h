@@ -88,6 +88,8 @@ struct rtsp_context_t {
 	bool eof;
 	timestamp_t clip_end;
 	bool is_clip_end;
+	float duration;
+	timestamp_t time_left;
 	const char* audio_codec_name;
 	const char* video_codec_name;
 	timeval first_sync_time;

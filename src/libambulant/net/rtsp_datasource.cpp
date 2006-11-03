@@ -51,10 +51,68 @@ ambulant::net::rtsp_demux::rtsp_demux(rtsp_context_t* context, timestamp_t clip_
 	m_context->vbuffer = (unsigned char*)malloc(20000);
 	m_context->vbufferlen = 0;
 	
-	
+	if ( m_clip_end < 0 || m_clip_end > m_context->time_left) 
+		m_clip_end = m_context->time_left;	
 }
 
+#define	DUMMYTASK
+#ifdef	DUMMYTASK
+/*
+[Live-devel] Shutdown of testRTSPonDemandServer
+Ross Finlayson finlayson at live555.com
+Fri Mar 31 11:01:58 PST 2006
 
+    * Previous message: [Live-devel] Non Blocking doGetNextFrame
+    * Messages sorted by: [ date ] [ thread ] [ subject ] [ author ]
+
+>  I need to shutdown my hardware cleanly when the program terminates so I
+>have added a watch variable to Eventloop. The variable gets set when a
+>signal handler is invoked.
+>That should stop the eventloop and then I shutdown my hardware.
+>
+>This works well when the RTSP server is streaming to clients. However,
+>when there are no clients the eventloop does not seem respond to the
+>watch variable.
+>
+>Is this to be expected?
+
+This was unexpected, but not really a bug.  It happens because - when 
+the server is sitting around waiting for a request - no 'events' are 
+happening (no incoming packets, no delayed tasks), so the server sits 
+forever in "select()", and so never gets to check the watch variable.
+
+>  Is there a way to get around this?
+
+Yes.  You can schedule a dummy task (that does nothing) to run 
+periodically (e.g., every 100 ms).  This will ensure that the server 
+leaves "select()" (to check the watch variable) at least every 100ms
+
+Add the following just before "main()":
+
+static void dummyTask(void* / * clientData * /) {
+   // Call this again, after a brief delay:
+   int uSecsToDelay = 100000; // 100 ms
+   env->taskScheduler().scheduleDelayedTask(uSecsToDelay,
+                                            (TaskFunc*)dummyTask, NULL);
+}
+
+And then, just before the call to "doEventLoop()", do
+
+   dummyTask(NULL);
+
+
+	Ross Finlayson
+	Live Networks, Inc. (LIVE555.COM)
+	<http://www.live555.com/>
+
+*/
+static void dummyTask (UsageEnvironment* env /*clientData*/) {
+	// Call this again, after a brief delay:
+	int uSecsToDelay = 100000; // 100 ms
+	env->taskScheduler().scheduleDelayedTask(uSecsToDelay,
+						 (TaskFunc*)dummyTask, env);
+}
+#endif/*DUMMYTASK*/
 
 void 
 ambulant::net::rtsp_demux::add_datasink(demux_datasink *parent, int stream_index)
@@ -172,7 +230,9 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 		delete context;		
 		return NULL;
 	}	
-	
+	context->duration = context->media_session->playEndTime();
+	context->time_left = (timestamp_t) (context->duration*1000000)-40000; // skip last frame
+	lib::logger::get_logger()->debug("rtps_demux_supported: time_left = %ld", context->time_left);
 	// next set up the rtp subsessions.
 	
 	unsigned int desired_buf_size;
@@ -203,6 +263,7 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 				context->video_stream = context->nstream;
 				context->video_codec_name = subsession->codecName();
 				AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), video codecname :%s ",context->video_codec_name);
+				//KB getting video_fmt from RTSP doesn't work 
 				context->video_fmt.frameduration = (timestamp_t) (1000000.0/subsession->videoFPS());
 				context->video_fmt.width = subsession->videoWidth();
 				context->video_fmt.height = subsession->videoHeight();
@@ -277,7 +338,6 @@ ambulant::net::rtsp_demux::run()
 		lib::logger::get_logger()->error("playing RTSP connection failed");
 		return 1;
 	}
-	
 	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() starting the loop ");
 	
 	int firstTime=0;
@@ -330,6 +390,7 @@ ambulant::net::rtsp_demux::run()
 					m_context->need_video = false;
 					AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() video_packet 0x%x", m_context->video_packet);
 					subsession->readSource()->getNextFrame(m_context->video_packet, MAX_RTP_FRAME_SIZE, after_reading_video, m_context, on_source_close,m_context);
+					
 				}
 			} else {
 				AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() not interested in this data");
@@ -337,10 +398,19 @@ ambulant::net::rtsp_demux::run()
 		}
 		
 		AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() blocking_flag: 0x%x, %d, need_audio %d", &m_context->blocking_flag, m_context->blocking_flag, m_context->need_audio);		
-		TaskScheduler& scheduler = m_context->media_session->envir().taskScheduler();
+		TaskScheduler& scheduler = m_context->env->taskScheduler();
+#ifdef	DUMMYTASK
+		dummyTask (m_context->env);
+#endif/*DUMMYTASK*/
 		scheduler.doEventLoop(&m_context->blocking_flag);
 		m_context->blocking_flag = 0;
 	}
+	for (int i=0; i<MAX_STREAMS; i++) {
+		demux_datasink *sink = m_context->sinks[i];
+		if (sink)
+			sink->data_avail(0, 0, 0);
+	}
+	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run(): returning");
 	return 0;
 	
 }
@@ -348,9 +418,13 @@ ambulant::net::rtsp_demux::run()
 void
 ambulant::net::rtsp_demux::cancel()
 {
-	if (is_running())
-		stop();
-	release();
+	if (m_context) {
+	 	m_context->eof = true;
+		m_context->blocking_flag = 0;
+	}
+	//if (is_running())
+	//	stop();
+	//release();
 }
 
 static void 
@@ -430,10 +504,7 @@ after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval 
 		memcpy(context->vbuffer, context->video_packet, sz);
 		context->vbufferlen=sz;
 	} 
-
-
-
-
+	 
 
 		 // Tell the main demux loop that we're ready for another packet.
 	context->need_video = true;
@@ -443,6 +514,11 @@ after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval 
 		context->configData = NULL;
 	}
 	context->video_packet  = NULL;
+
+	if (context->last_pts >= context->time_left) {
+		lib::logger::get_logger()->debug("after_reading_video: last_pts = %ld", context->last_pts);
+	 	context->eof = true;
+	}
 	context->blocking_flag = ~0;
 	//XXX Do we need to free data here ?
 }
