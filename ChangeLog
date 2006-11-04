@@ -1,3 +1,10 @@
+2006-11-03 16:34  keesblom
+
+	* RTSP video now works somewhat better, the player doesn't hang
+	  anymore.  But the costs are: last video frame is always skipped,
+	  and an ugly DummyTask was introduced to get liveMedia out of its
+	  select() system call.
+
 2006-11-02 15:35  keesblom
 
 	* Made rtsp mp4 with H263 video and AAC audio work. Apperently, the
