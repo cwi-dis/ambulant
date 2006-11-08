@@ -102,7 +102,7 @@ struct rtsp_context_t {
 class rtsp_demux : public abstract_demux {
   public:
 	rtsp_demux(rtsp_context_t* context, timestamp_t clip_begin, timestamp_t clip_end);
-	
+	~rtsp_demux();
 	static rtsp_context_t* supported(const net::url& url);
 	
 	void add_datasink(demux_datasink *parent, int stream_index);
@@ -122,6 +122,8 @@ class rtsp_demux : public abstract_demux {
   protected:
 	unsigned long run();
   private:	
+	void _cancel();
+	lib::critical_section m_critical_section;
 	rtsp_context_t* m_context;
   	timestamp_t m_clip_begin;
 	timestamp_t m_clip_end;

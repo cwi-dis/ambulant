@@ -45,6 +45,7 @@ ambulant::net::rtsp_demux::rtsp_demux(rtsp_context_t* context, timestamp_t clip_
 	m_clip_begin(clip_begin),
 	m_clip_end(clip_end),
 	m_clip_begin_set(false)
+//,	m_critical_section()
 {
 	m_context->audio_fmt.parameters = (void*) m_context->audio_codec_name;
 	m_context->video_fmt.parameters = (void*) m_context->video_codec_name;
@@ -53,6 +54,11 @@ ambulant::net::rtsp_demux::rtsp_demux(rtsp_context_t* context, timestamp_t clip_
 	
 	if ( m_clip_end < 0 || m_clip_end > m_context->time_left) 
 		m_clip_end = m_context->time_left;	
+}
+
+ambulant::net::rtsp_demux::~rtsp_demux() {
+	/*AM_DBG*/ lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::~rtsp_demux()");
+	delete m_context;
 }
 
 #define	DUMMYTASK
@@ -117,25 +123,30 @@ static void dummyTask (UsageEnvironment* env /*clientData*/) {
 void 
 ambulant::net::rtsp_demux::add_datasink(demux_datasink *parent, int stream_index)
 {
+	m_critical_section.enter();
 	assert(stream_index >= 0 && stream_index < MAX_STREAMS);
 	assert(m_context->sinks[stream_index] == 0);
 	m_context->sinks[stream_index] = parent;
 	m_context->nsinks++;
+	m_critical_section.leave();
 }
 
 void
 ambulant::net::rtsp_demux::remove_datasink(int stream_index)
 {
+	m_critical_section.enter();
 	assert(stream_index >= 0 && stream_index < MAX_STREAMS);
 	assert(m_context->sinks[stream_index] != 0);
 	m_context->sinks[stream_index] = 0;
 	m_context->nsinks--;
-	if (m_context->nsinks <= 0) cancel();
+	if (m_context->nsinks <= 0) _cancel();
+	m_critical_section.leave();
 }
 
 rtsp_context_t::~rtsp_context_t()
 {
 	//Have to tear down session here, so that the server is not left hanging till timeout.
+	AM_DBG  lib::logger::get_logger()->debug("ambulant::net::rtsp_context_t::~rtsp_context_t()");
 	rtsp_client->teardownMediaSession(*media_session);//Just to be sure
 	//deleting stuff
 	if (scheduler)
@@ -146,13 +157,14 @@ rtsp_context_t::~rtsp_context_t()
 		if (sinks[i] != NULL)
 			free(sinks[i]);
 	}
-	if (media_session)
-		free(media_session);//has destructor 
-	if (rtsp_client)
-		free(rtsp_client);//has destructor
+	if (media_session) {
+		free(media_session);//has private destructor 
+	}
+	if (rtsp_client) {
+		free(rtsp_client);//has private destructor
+	}
 	if (vbuffer)
 		free(vbuffer);
-	
 }
 
 rtsp_context_t*
@@ -231,8 +243,9 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 		return NULL;
 	}	
 	context->duration = context->media_session->playEndTime();
-	context->time_left = (timestamp_t) (context->duration*1000000)-40000; // skip last frame
-	lib::logger::get_logger()->debug("rtps_demux_supported: time_left = %ld", context->time_left);
+	context->time_left = (timestamp_t) (context->duration*1000000 - 40000); // skip last frame
+//	context->time_left = (timestamp_t) (context->duration*1000000); // do not skip last frame
+	AM_DBG lib::logger::get_logger()->debug("rtps_demux::supported: time_left = %ld", context->time_left);
 	// next set up the rtp subsessions.
 	
 	unsigned int desired_buf_size;
@@ -288,26 +301,38 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 		}
 	}
 	
+	lib::logger::get_logger()->debug("rtps_demux::supported(%s): duration=%ld", ch_url, context->time_left);
 	return context;
 		
-}
-timestamp_t
-ambulant::net::rtsp_demux::get_clip_end()
-{
-	return m_clip_end;
 }
 
 timestamp_t
 ambulant::net::rtsp_demux::get_clip_begin()
 {
-	return m_clip_begin;
+	timestamp_t rv;
+	m_critical_section.enter();
+	rv = m_clip_begin;
+	m_critical_section.leave();
+	return rv;
 }
+
+timestamp_t
+ambulant::net::rtsp_demux::get_clip_end()
+{
+	timestamp_t rv;
+	m_critical_section.enter();
+	rv = m_clip_end;
+	m_critical_section.leave();
+	return rv;
+}
+
 void
 ambulant::net::rtsp_demux::seek(timestamp_t time)
-{
-	
+{	
+	m_critical_section.enter();
 	m_clip_begin = time;
 	m_clip_begin_set = false;
+	m_critical_section.leave();
 }
 
 void
@@ -315,12 +340,14 @@ ambulant::net::rtsp_demux::set_position(timestamp_t time)
 {
 	float time_sec;
 	
+	m_critical_section.enter();
 	time_sec = time / 1000000.0;
 	MediaSubsession* subsession;
 	MediaSubsessionIterator iter(*m_context->media_session);
 	while (( subsession = iter.next() ) != NULL) {
 		m_context->rtsp_client->playMediaSubsession(*subsession, time_sec);
 	}
+	m_critical_section.leave();
 }
 
 
@@ -410,21 +437,30 @@ ambulant::net::rtsp_demux::run()
 		if (sink)
 			sink->data_avail(0, 0, 0);
 	}
-	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run(): returning");
+	/*AM_DBG*/ lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run(): returning");
 	return 0;
-	
+}
+
+void
+ambulant::net::rtsp_demux::_cancel()
+{
+/*AM_DBG*/ lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::cancel(0x%x): m_context=0x%x rtspClient=0x%x mediaSession=0x%x", m_context, m_context?m_context->rtsp_client:0,m_context?m_context->media_session:0);
+	if (m_context) {
+	 	m_context->eof = true;
+		m_context->blocking_flag = 0;
+	}
+	if (is_running())
+		stop();
+	release();
 }
 
 void
 ambulant::net::rtsp_demux::cancel()
 {
-	if (m_context) {
-	 	m_context->eof = true;
-		m_context->blocking_flag = 0;
-	}
-	//if (is_running())
-	//	stop();
-	//release();
+/*AM_DBG*/ lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::cancel(0x%x): m_context=0x%x rtspClient=0x%x mediaSession=0x%x", m_context, m_context?m_context->rtsp_client:0,m_context?m_context->media_session:0);
+	m_critical_section.enter();
+	_cancel();
+	m_critical_section.leave();
 }
 
 static void 
