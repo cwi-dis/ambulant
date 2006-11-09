@@ -1,3 +1,13 @@
+2006-11-08 16:47  keesblom
+
+	* Improved video over rtsp. Added ciritcal section locking for
+	  public methods.  In most cases, rtsp_demux destructor is now
+	  properly called and the just shown can be correctly replayed. But
+	  sometimes a replayed video is still a couple of seconds ahead
+	  (Birthday-rtsp: Frans play correct, but Willimijn and Mrs.A. do
+	  not). Still silently ignoring last video frame and adding an ugly
+	  dummyTask.
+
 2006-11-03 16:34  keesblom
 
 	* RTSP video now works somewhat better, the player doesn't hang
