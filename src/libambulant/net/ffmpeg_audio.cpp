@@ -671,8 +671,6 @@ ffmpeg_decoder_datasource::_need_fmt_uptodate()
 	}
 }
 
-
-
 common::duration
 ffmpeg_decoder_datasource::get_dur()
 {

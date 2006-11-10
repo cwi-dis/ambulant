@@ -105,7 +105,7 @@ ffmpeg_codec_id::ffmpeg_codec_id()
 	add_codec("L16", CODEC_ID_PCM_S16LE);
 	add_codec("MP4V-ES", CODEC_ID_MPEG4);
 	add_codec("MPEG4-GENERIC", CODEC_ID_MPEG4AAC);
-	
+	add_codec("X-QT", CODEC_ID_MP3); //XXXX
 }
 
 // **************************** ffmpeg_demux *****************************

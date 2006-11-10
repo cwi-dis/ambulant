@@ -249,8 +249,8 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 		return NULL;
 	}	
 	context->duration = context->media_session->playEndTime();
-//	context->time_left = (timestamp_t) (context->duration*1000000 - 40000); // skip last frame
-	context->time_left = (timestamp_t) (context->duration*1000000); // do not skip last frame
+	context->time_left = (timestamp_t) (context->duration*1000000 - 40000); // skip last frame
+//	context->time_left = (timestamp_t) (context->duration*1000000); // do not skip last frame
 	AM_DBG lib::logger::get_logger()->debug("rtps_demux::supported: time_left = %ld", context->time_left);
 	// next set up the rtp subsessions.
 	
@@ -372,7 +372,7 @@ ambulant::net::rtsp_demux::run()
 		return 1;
 	}
 	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() starting the loop ");
-	
+	add_ref();
 	int firstTime=0;
 		
 	while(!m_context->eof && !exit_requested()) {
@@ -444,6 +444,7 @@ ambulant::net::rtsp_demux::run()
 			sink->data_avail(0, 0, 0);
 	}
 	/*AM_DBG*/ lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run(0x%x): returning", (void*)this);
+	release();
 	return 0;
 }
 
@@ -455,8 +456,8 @@ ambulant::net::rtsp_demux::_cancel()
 	 	m_context->eof = true;
 		m_context->blocking_flag = 0;
 	}
-	if (is_running())
-		stop();
+//	if (is_running())
+//		stop();
 	release();
 }
 
