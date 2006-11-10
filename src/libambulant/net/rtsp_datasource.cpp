@@ -62,7 +62,7 @@ ambulant::net::rtsp_demux::~rtsp_demux() {
 	delete m_context;
 }
 
-#define	DUMMYTASK
+//#define	DUMMYTASK
 #ifdef	DUMMYTASK
 /*
 [Live-devel] Shutdown of testRTSPonDemandServer
@@ -112,7 +112,10 @@ And then, just before the call to "doEventLoop()", do
 	Live Networks, Inc. (LIVE555.COM)
 	<http://www.live555.com/>
 
+-----------------
+Also see: http://lists.live555.com/pipermail/live-devel/2006-April/004215.html
 */
+
 static void dummyTask (UsageEnvironment* env /*clientData*/) {
 	// Call this again, after a brief delay:
 	int uSecsToDelay = 100000; // 100 ms
@@ -146,26 +149,28 @@ ambulant::net::rtsp_demux::remove_datasink(int stream_index)
 
 rtsp_context_t::~rtsp_context_t()
 {
-	//Have to tear down session here, so that the server is not left hanging till timeout.
 	/*AM_DBG*/  lib::logger::get_logger()->debug("ambulant::net::rtsp_context_t::~rtsp_context_t()");
-	rtsp_client->teardownMediaSession(*media_session);//Just to be sure
-	//deleting stuff
-	if (scheduler)
-		free(scheduler);
-	if (sdp)
-		free(sdp);
-	for (int i=0; i < MAX_STREAMS; i++) {
-		if (sinks[i] != NULL)
-			free(sinks[i]);
-	}
-	if (media_session) {
-		free(media_session);//has private destructor 
-	}
-	if (rtsp_client) {
-		free(rtsp_client);//has private destructor
-	}
+	//Have to tear down session here, so that the server is not left hanging till timeout.
+	rtsp_client->teardownMediaSession(*media_session);
+	//deleting stuff, in reverse order as created in rtsp_demux::supported()
 	if (vbuffer)
 		free(vbuffer);
+	for (int i=0; i < MAX_STREAMS; i++) {
+		if (sinks[i] != NULL)
+			delete sinks[i];
+	}
+	if (media_session) {
+		Medium::close(media_session);
+	}
+	if (sdp)
+		free(sdp);
+	if (rtsp_client) {
+		Medium::close(rtsp_client);
+	}
+	if (env)
+		env->reclaim();
+	if (scheduler)
+		delete scheduler;
 }
 
 rtsp_context_t*
@@ -244,8 +249,8 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 		return NULL;
 	}	
 	context->duration = context->media_session->playEndTime();
-	context->time_left = (timestamp_t) (context->duration*1000000 - 40000); // skip last frame
-//	context->time_left = (timestamp_t) (context->duration*1000000); // do not skip last frame
+//	context->time_left = (timestamp_t) (context->duration*1000000 - 40000); // skip last frame
+	context->time_left = (timestamp_t) (context->duration*1000000); // do not skip last frame
 	AM_DBG lib::logger::get_logger()->debug("rtps_demux::supported: time_left = %ld", context->time_left);
 	// next set up the rtp subsessions.
 	
