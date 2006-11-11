@@ -1,3 +1,16 @@
+2006-11-10 17:45  keesblom
+
+	* Added "X-QT" as as a "live" codec id for "mp3" Added a refcount
+	  for the rtsp datasource thread.  Audio via rtsp now also works.
+
+2006-11-10 14:42  keesblom
+
+	* In ~rtsp_context_t(), use proper cleanup functions, as specified
+	  in the header files of the various classes (instead of free()),
+	  in (what I think is) the right order Disabled ugly DummyTask.
+	  Nevertheless the problems with 2nd time playing Willemijn and
+	  Mrs.A.  still remain.
+
 2006-11-09 10:41  keesblom
 
 	* Added instance id's to debug messages
