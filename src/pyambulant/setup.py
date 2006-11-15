@@ -17,7 +17,7 @@ ldflags=os.getenv("LDFLAGS")
 if ldflags:
     EXTRA_LINK_ARGS=ldflags.split()
 if sys.platform == 'darwin':
-    EXTRA_LINK_ARGS += ['-framework', 'CoreFoundation', '-framework', 'Cocoa']
+    EXTRA_LINK_ARGS += ['-framework', 'QuickTime', '-framework', 'CoreFoundation', '-framework', 'Cocoa']
 
 LIBRARIES=['ambulant', 'expat']
 if WITH_QT:

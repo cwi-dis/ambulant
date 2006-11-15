@@ -492,7 +492,8 @@ class AMBULANTAPI datasource_factory :
 	/// Semi-private interface: obtain an audio filter datasource.
 	audio_datasource* new_audio_filter(const net::url& url, const audio_format_choices& fmt, audio_datasource* ds);
 
-	audio_datasource* new_audio_decoder(const net::url& url, const audio_format_choices& fmt, pkt_audio_datasource* ds);
+// XXX No implementation?
+//	audio_datasource* new_audio_decoder(const net::url& url, const audio_format_choices& fmt, pkt_audio_datasource* ds);
 	
 	/// Provider interface: add a raw_datasource_factory.
   	void add_raw_factory(raw_datasource_factory *df);

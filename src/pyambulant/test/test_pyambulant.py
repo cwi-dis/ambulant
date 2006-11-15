@@ -5,7 +5,7 @@ import time
 import os
 import urllib
 
-VERSION="1.7" # Ambulant version
+VERSION="1.8" # Ambulant version
 WELCOME="../../Extras/Welcome/Welcome.smil"
 DOCUMENT="""<?xml version="1.0"?>
 <!DOCTYPE smil PUBLIC "-//W3C//DTD SMIL 2.0//EN"
@@ -171,7 +171,12 @@ class TestBasics(unittest.TestCase):
         player.stop()
         
     def test_09_datasource(self):
-        rdf = ambulant.get_stdio_datasource_factory()
+        if hasattr(ambulant, 'get_posix_datasource_factory'):
+            rdf = ambulant.get_posix_datasource_factory()
+        elif hasattr(ambulant, 'get_stdio_datasource_factory'):
+            rdf = ambulant.get_stdio_datasource_factory()
+        else:
+            rdf = ambulant.get_ffmpeg_raw_datasource_factory()
         df = ambulant.datasource_factory()
         df.add_raw_factory(rdf)
         welcome_path = os.path.abspath(os.path.join(os.getcwd(), WELCOME))

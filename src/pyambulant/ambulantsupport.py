@@ -592,6 +592,13 @@ datasource_object.othermethods = [
     "long get_ref_count() const { return 1; }",
     "char *get_read_ptr() { abort(); return NULL;}", # XXX
 ]
+pkt_datasource_object.othermethods = [
+    "long add_ref() { return 1; }",
+    "long release() { return 1;}",
+    "long get_ref_count() const { return 1; }",
+    "char *get_read_ptr() { abort(); return NULL;}", # XXX
+    "ambulant::net::ts_packet_t pkt_datasource::get_ts_packet_t() { abort(); }", # XXX
+]
 
 print "=== Generating C++->Python callback interfaces (.h file) ==="
 

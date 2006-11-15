@@ -186,6 +186,7 @@ LDADD = \
 	$(extra_expat_LDADD) \
 	$(extra_xerces_LDADD) \
 	$(LIBINTL) \
+	$(LIBICONV) \
     $(top_builddir)/src/libambulant/.libs/libambulant.a \
     -lstdc++
 AM_LDFLAGS=$(extra_sdl_ldflags) $(extra_ffmpeg_ldflags) \
