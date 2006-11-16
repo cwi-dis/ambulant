@@ -1,3 +1,9 @@
+2006-11-15 15:59  jackjansen
+
+	* - Adapted Python interface to new pkt_dtasource changes - Fixed
+	  Python unittests - Added libintl and libiconv to the libambulant
+	  link command.
+
 2006-11-10 17:45  keesblom
 
 	* Added "X-QT" as as a "live" codec id for "mp3" Added a refcount
