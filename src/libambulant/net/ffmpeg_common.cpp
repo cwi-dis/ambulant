@@ -336,6 +336,9 @@ ffmpeg_demux::remove_datasink(int stream_index)
 	m_lock.enter();
 	assert(stream_index >= 0 && stream_index < MAX_STREAMS);
 	assert(m_sinks[stream_index] != 0);
+	if (m_sinks[stream_index])
+		// signal EOF
+		m_sinks[stream_index]->data_avail(0, 0, 0);
 	m_sinks[stream_index] = 0;
 	m_nstream--;
 	m_lock.leave();
@@ -379,6 +382,7 @@ ffmpeg_demux::run()
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: Drop data for stream %d (%lld, 0x%x, %d)", pkt->stream_index, pkt->pts ,pkt->data, pkt->size);
 		} else {
 			AM_DBG lib::logger::get_logger ()->debug ("ffmpeg_parser::run sending data to datasink (stream %d) (%lld, 0x%x, %d)",pkt->stream_index, pkt->pts ,pkt->data, pkt->size);
+			/* XXXX not needed for pkt_datasource
 			// Wait until there is room in the buffer
 			//while (sink->buffer_full() && !exit_requested()) {
 			while (sink && sink->buffer_full() && !exit_requested()) {
@@ -388,6 +392,7 @@ ffmpeg_demux::run()
 				m_lock.enter();
 				sink = m_sinks[pkt->stream_index];
 			}
+			*/
 			if (sink && !exit_requested()) {
 				
 				pts = 0;

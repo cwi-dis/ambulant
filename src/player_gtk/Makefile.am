@@ -60,9 +60,26 @@ else
 dirac_libraries=
 endif # WITH_DIRAC
 
+
+#------------------------------------------------------
+if WITH_FAAC
+faac_defines=-I$(FAAC_PREFIX)/include
+faac_libraries=-L$(FAAC_PREFIX)/lib -lfaac
+else
+faac_libraries=
+endif
+
+#------------------------------------------------------
+if WITH_FAAD
+faad_defines=-I$(FAAD_PREFIX)/include
+faad_libraries=-L$(FAAD_PREFIX)/lib -lfaad
+else
+faad_libraries=
+endif
+
 #------------------------------------------------------
 if WITH_FFMPEG
-extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a $(FFMPEG_LIBS)
+extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a $(FFMPEG_LIBS) $(faac_libraries) $(faad_libraries) 
 extra_ffmpeg_ldflags=$(dirac_libraries)
 extra_ffmpeg_DEFINES=-DWITH_FFMPEG -DWITH_FFMPEG_AVFORMAT $(FFMPEG_CFLAGS)
 else

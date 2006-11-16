@@ -189,13 +189,16 @@ bool
 demux_audio_datasource::_end_of_file()
 {
 	// private method - no need to lock
-	return false;
+	return m_src_end_of_file && m_queue.empty();
 }
 
 bool 
 demux_audio_datasource::buffer_full()
 {
-	return false;
+	m_lock.enter();
+	bool rv = ! m_queue.empty();
+	m_lock.leave();
+	return rv;
 }	
 
 ts_packet_t

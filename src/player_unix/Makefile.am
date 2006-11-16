@@ -62,12 +62,26 @@ else
 dirac_libraries=
 endif
 
+if WITH_FAAC
+faac_defines=-I$(FAAC_PREFIX)/include
+faac_libraries=-L$(FAAC_PREFIX)/lib -lfaac
+else
+faac_libraries=
+endif
+
+if WITH_FAAD
+faad_defines=-I$(FAAD_PREFIX)/include
+faad_libraries=-L$(FAAD_PREFIX)/lib -lfaad
+else
+faad_libraries=
+endif
+
 if WITH_FFMPEG
-extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a $(FFMPEG_LIBS)
+extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a $(FFMPEG_LIBS) $(faac_libraries) $(faad_libraries) 
 	
 	
 extra_ffmpeg_ldflags=$(dirac_libraries)
-extra_ffmpeg_DEFINES=-DWITH_FFMPEG -DWITH_FFMPEG_AVFORMAT $(FFMPEG_CFLAGS)
+extra_ffmpeg_DEFINES=-DWITH_FFMPEG -DWITH_FFMPEG_AVFORMAT $(FFMPEG_CFLAGS) $(faac_defines) $(faad_defines)
 else
 extra_ffmpeg_LDADD=
 extra_ffmpeg_ldflags=
@@ -100,31 +114,31 @@ endif
 LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_qt.a	\
 	$(extra_arts_LDADD)					\
 	$(extra_sdl_LDADD)					\
-	$(extra_live_LDADD) 				\
-	$(extra_ffmpeg_LDADD)				\
-	$(extra_xerces_LDADD)				\
+	$(extra_live_LDADD) 					\
+	$(extra_ffmpeg_LDADD)					\
+	$(extra_xerces_LDADD)					\
 	$(top_builddir)/src/libambulant/.libs/libambulant.a	\
 	$(EXPAT_PREFIX)/lib/libexpat.a				\
-	$(qt_libs)							\
+	$(qt_libs)						\
 	$(LIBLTDL)  
 
 AM_LDFLAGS=$(extra_arts_ldflags)				\
 	   $(extra_sdl_ldflags)					\
-       $(livelibs)  \
 	   $(extra_ffmpeg_ldflags)				\
+       	   $(livelibs)						\
 	   -export-dynamic
  
 AM_CPPFLAGS = \
-		-DAMBULANT_DATADIR=\"$(pkgdatadir)\" \
+		-DAMBULANT_DATADIR=\"$(pkgdatadir)\"		\
 		$(extra_arts_DEFINES)				\
 		$(extra_sdl_DEFINES)				\
 		$(extra_ffmpeg_DEFINES)				\
 		$(extra_nls_DEFINES)				\
-		$(extra_xerces_DEFINES)			\
-		$(extra_live_DEFINES)	\
-		-I$(top_builddir)/include				\
+		$(extra_xerces_DEFINES)				\
+		$(extra_live_DEFINES)				\
+		-I$(top_builddir)/include			\
 		-I$(top_srcdir)/include				\
-		-I$(top_builddir)/include/ambulant/gui/qt		\
+		-I$(top_builddir)/include/ambulant/gui/qt	\
 		-I$(top_srcdir)/include/ambulant/gui/qt		\
 	    $(XERCES_INCLUDES) 	                                \
 	    $(qt_includes) \
