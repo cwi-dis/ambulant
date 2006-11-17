@@ -1,3 +1,21 @@
+2006-11-16 16:58  keesblom
+
+	* Implemented demux_audio_datasource::buffer_full() and
+	  demux_audio_datasource::_end_of_file(). Both functions always
+	  returned false since the transition to pkt_datasource, causing
+	  bug #1597007.
+
+	  With the current fixes, now there is no limit on the size of the
+	  packet queue, this is probably not a good idea, but for now it
+	  works.
+
+	  Also commented out the "Wait until there is room in the buffer"
+	  in ffmpeg_demux::run().
+
+	  Finally, in ffmpeg_demux::remove_datasink(int stream_index) added
+	  a call to the data_avail() function of the appropriate sink to
+	  indicate that no more data will be available.
+
 2006-11-15 15:59  jackjansen
 
 	* - Adapted Python interface to new pkt_dtasource changes - Fixed
