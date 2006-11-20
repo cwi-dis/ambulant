@@ -31,6 +31,12 @@
 // How many video frames we would like to buffer at most
 #define MAX_VIDEO_FRAMES 300
 
+// How many audio packets we would like to buffer at most
+// This limit is indicative: if demux_audio_datasource::buffer_full()
+// returns true, you are advised not to throw in more data; but if
+// you nevertheless do, no data is lost and a DEBUG message is printed
+#define MAX_AUDIO_PACKETS 300
+
 //#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -172,6 +178,10 @@ demux_audio_datasource::data_avail(timestamp_t pts, const uint8_t *inbuf, int sz
 	memcpy(data, inbuf, sz);
 	ts_packet_t tsp(pts,data,sz);
 	m_queue.push(tsp);
+	int new_queue_size = m_queue.size();
+	if (m_queue.size() > MAX_AUDIO_PACKETS) {
+		AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource.data_avail: m_queue.size()(=%d) exceeds desired maximum(=%d)", m_queue.size(), MAX_AUDIO_PACKETS);
+	}
 	m_lock.leave();
 }
 
@@ -196,7 +206,7 @@ bool
 demux_audio_datasource::buffer_full()
 {
 	m_lock.enter();
-	bool rv = ! m_queue.empty();
+	bool rv = m_queue.size() >= MAX_AUDIO_PACKETS;
 	m_lock.leave();
 	return rv;
 }	
@@ -205,10 +215,12 @@ ts_packet_t
 demux_audio_datasource::get_ts_packet_t()
 {
 	ts_packet_t tsp(0,NULL,0);
+	m_lock.enter();
 	if (m_queue.size() > 0) {
 		tsp = m_queue.front();
 		m_queue.pop();
 	}
+	m_lock.leave();
 	return tsp;
 }
 

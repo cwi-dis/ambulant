@@ -382,17 +382,20 @@ ffmpeg_demux::run()
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: Drop data for stream %d (%lld, 0x%x, %d)", pkt->stream_index, pkt->pts ,pkt->data, pkt->size);
 		} else {
 			AM_DBG lib::logger::get_logger ()->debug ("ffmpeg_parser::run sending data to datasink (stream %d) (%lld, 0x%x, %d)",pkt->stream_index, pkt->pts ,pkt->data, pkt->size);
-			/* XXXX not needed for pkt_datasource
 			// Wait until there is room in the buffer
-			//while (sink->buffer_full() && !exit_requested()) {
 			while (sink && sink->buffer_full() && !exit_requested()) {
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", pkt->stream_index);
 				m_lock.leave();
-				sleep(1);   // This is overdoing it
+				 // sleep 10 millisec, hardly noticeable
+#ifdef	AMBULANT_PLATFORM_WIN32
+				ambulant::lib::sleep_msec(10); // XXXX should be woken by readdone()
+#else
+				usleep(10000);
+#endif//AMBULANT_PLATFORM_WIN32
+//				sleep(1);   // This is overdoing it
 				m_lock.enter();
 				sink = m_sinks[pkt->stream_index];
 			}
-			*/
 			if (sink && !exit_requested()) {
 				
 				pts = 0;

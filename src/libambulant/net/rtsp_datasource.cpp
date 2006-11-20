@@ -129,7 +129,7 @@ ambulant::net::rtsp_demux::add_datasink(demux_datasink *parent, int stream_index
 {
 	m_critical_section.enter();
 	assert(stream_index >= 0 && stream_index < MAX_STREAMS);
-	assert(m_context->sinks[stream_index] == 0);
+	assert(m_context && m_context->sinks && m_context->sinks[stream_index] == 0);
 	m_context->sinks[stream_index] = parent;
 	m_context->nsinks++;
 	m_critical_section.leave();
@@ -140,7 +140,10 @@ ambulant::net::rtsp_demux::remove_datasink(int stream_index)
 {
 	m_critical_section.enter();
 	assert(stream_index >= 0 && stream_index < MAX_STREAMS);
-	assert(m_context->sinks[stream_index] != 0);
+	assert(m_context && m_context->sinks && m_context->sinks[stream_index] != 0);
+	if (m_context->sinks[stream_index])
+		// signal EOF
+		m_context->sinks[stream_index]->data_avail(0, 0, 0);
 	m_context->sinks[stream_index] = 0;
 	m_context->nsinks--;
 	if (m_context->nsinks <= 0) _cancel();
