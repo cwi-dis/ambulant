@@ -1,3 +1,10 @@
+2006-11-20 12:37  keesblom
+
+	* Implemented an advisory limit on the size of the packet queue: if
+	  demux_audio_datasource::buffer_full() returns true, you are
+	  advised not to throw in more data; but if you nevertheless do, no
+	  data is lost and a DEBUG message is printed
+
 2006-11-16 16:58  keesblom
 
 	* Implemented demux_audio_datasource::buffer_full() and
