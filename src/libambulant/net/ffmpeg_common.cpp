@@ -379,9 +379,9 @@ ffmpeg_demux::run()
 		assert(pkt->stream_index >= 0 && pkt->stream_index < MAX_STREAMS);
 		demux_datasink *sink = m_sinks[pkt->stream_index];
 		if (sink == NULL) {
-			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: Drop data for stream %d (%lld, 0x%x, %d)", pkt->stream_index, pkt->pts ,pkt->data, pkt->size);
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: Drop data for stream %d (%lld, 0x%x, %d)", pkt->stream_index, pts, pkt->pts ,pkt->data, pkt->size);
 		} else {
-			AM_DBG lib::logger::get_logger ()->debug ("ffmpeg_parser::run sending data to datasink (stream %d) (%lld, 0x%x, %d)",pkt->stream_index, pkt->pts ,pkt->data, pkt->size);
+			AM_DBG lib::logger::get_logger ()->debug ("ffmpeg_parser::run sending data to datasink (stream %d) (%lld, %lld, 0x%x, %d)", pts, pkt->stream_index, pkt->pts ,pkt->data, pkt->size);
 			// Wait until there is room in the buffer
 			while (sink && sink->buffer_full() && !exit_requested()) {
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", pkt->stream_index);

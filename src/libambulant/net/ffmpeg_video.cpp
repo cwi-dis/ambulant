@@ -32,7 +32,7 @@
 // WARNING: turning on AM_DBG globally for the ffmpeg code seems to trigger
 // a condition that makes the whole player hang or collapse. So you probably
 // shouldn't do it:-)
-// #define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif 
@@ -201,8 +201,11 @@ ffmpeg_video_decoder_datasource::stop()
 	}
 	m_src = NULL;
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::stop(0x%x)", (void*)this);
-	m_con = NULL;
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::stop: thread stopped");
+	if (m_con) {
+		avcodec_close(m_con);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::stop(): avcodec_close(m_con=0x%x) called", m_con);
+		m_con = NULL;
+	}
 	if (m_client_callback) delete m_client_callback;
 	m_client_callback = NULL;
 	// And delete any frames left

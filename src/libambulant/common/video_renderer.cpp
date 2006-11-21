@@ -85,10 +85,11 @@ video_renderer::video_renderer(
 }
 
 video_renderer::~video_renderer() {
+	// m_audio_ds released by audio renderer
+	stop(); // releases m_src, m_audio_renderer (in most cases)
 	AM_DBG lib::logger::get_logger()->debug("~video_renderer(0x%x)", (void*)this);
 	m_lock.enter();
 	if (m_audio_renderer) m_audio_renderer->release();
-	// m_audio_ds released by audio renderer
 	if (m_src) m_src->release();
 	m_src = NULL;
 	m_lock.leave();

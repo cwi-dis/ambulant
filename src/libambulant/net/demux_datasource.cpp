@@ -37,6 +37,9 @@
 // you nevertheless do, no data is lost and a DEBUG message is printed
 #define MAX_AUDIO_PACKETS 300
 
+// WARNING: turning on AM_DBG globally in this file seems to trigger
+// a condition that makes the whole player hang or collapse. So you probably
+// shouldn't do it:-)
 //#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -304,25 +307,26 @@ demux_video_datasource::demux_video_datasource(const net::url& url, abstract_dem
 	m_audio_src(NULL),
 	m_frame_nr(0)
 {
-    assert(m_thread);
+	assert(m_thread);
 	m_thread->add_datasink(this, stream_index);
 	int audio_stream_idx = m_thread->audio_stream_nr();
 	if (audio_stream_idx >= 0) 
 		m_audio_src = new demux_audio_datasource(m_url, m_thread, audio_stream_idx);
+	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::demux_video_datasource(0x%x) m_audio_src=0x%x url=%s", (void*)this, m_audio_src, url.get_url().c_str());
 	
 }
 
 demux_video_datasource::~demux_video_datasource()
 {
-	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::~demux_video_datasource(0x%x)", (void*)this);
 	stop();
+	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::~demux_video_datasource(0x%x)", (void*)this);
 }
 
 void
 demux_video_datasource::stop()
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::stop(0x%x)", (void*)this);
+	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::stop(0x%x): m_thread=0x%x, m_client_callback=0x%x, m_frames.size()=%d", (void*)this, m_thread, m_client_callback,m_frames.size());
 	if (m_thread) {
 		abstract_demux *tmpthread = m_thread;
 		m_thread = NULL;
@@ -336,6 +340,17 @@ demux_video_datasource::stop()
 	//m_con = NULL; // owned by the thread
 	if (m_client_callback) delete m_client_callback;
 	m_client_callback = NULL;
+	if (m_old_frame.second.data) 
+		m_frames.push(m_old_frame);
+	while (m_frames.size() > 0) {
+		// flush frame queue
+		ts_frame_pair element = m_frames.front();
+		if (element.second.data) {
+			free (element.second.data);
+			element.second.data = NULL;
+		}
+		m_frames.pop();
+	}
 	m_lock.leave();
 	
 }	
@@ -436,6 +451,12 @@ void
 demux_video_datasource::data_avail(timestamp_t pts, const uint8_t *inbuf, int sz)
 {
 	m_lock.enter();
+
+	if ( ! m_thread) {
+		// video stopped
+		m_lock.leave();
+		return;
+	}
 
 	m_src_end_of_file = (sz == 0);
 	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::data_avail(): recieving data sz=%d ,pts=%lld", sz, pts);

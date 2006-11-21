@@ -51,14 +51,14 @@ ambulant::net::rtsp_demux::rtsp_demux(rtsp_context_t* context, timestamp_t clip_
 	m_context->video_fmt.parameters = (void*) m_context->video_codec_name;
 	m_context->vbuffer = (unsigned char*)malloc(20000);
 	m_context->vbufferlen = 0;
-	/*AM_DBG*/ lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::rtsp_demux(0x%x)", (void*) this);
+	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::rtsp_demux(0x%x)", (void*) this);
 	
 	if ( m_clip_end < 0 || m_clip_end > m_context->time_left) 
 		m_clip_end = m_context->time_left;	
 }
 
 ambulant::net::rtsp_demux::~rtsp_demux() {
-	/*AM_DBG*/ lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::~rtsp_demux(0x%x)", (void*) this);
+	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::~rtsp_demux(0x%x)", (void*) this);
 	delete m_context;
 }
 
@@ -152,7 +152,7 @@ ambulant::net::rtsp_demux::remove_datasink(int stream_index)
 
 rtsp_context_t::~rtsp_context_t()
 {
-	/*AM_DBG*/  lib::logger::get_logger()->debug("ambulant::net::rtsp_context_t::~rtsp_context_t()");
+	AM_DBG  lib::logger::get_logger()->debug("ambulant::net::rtsp_context_t::~rtsp_context_t()");
 	//Have to tear down session here, so that the server is not left hanging till timeout.
 	rtsp_client->teardownMediaSession(*media_session);
 	//deleting stuff, in reverse order as created in rtsp_demux::supported()
@@ -446,7 +446,7 @@ ambulant::net::rtsp_demux::run()
 		if (sink)
 			sink->data_avail(0, 0, 0);
 	}
-	/*AM_DBG*/ lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run(0x%x): returning", (void*)this);
+	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run(0x%x): returning", (void*)this);
 	release();
 	return 0;
 }
@@ -454,7 +454,7 @@ ambulant::net::rtsp_demux::run()
 void
 ambulant::net::rtsp_demux::_cancel()
 {
-/*AM_DBG*/ lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::_cancel(0x%x): m_context=0x%x rtspClient=0x%x mediaSession=0x%x", (void*)this, m_context, m_context?m_context->rtsp_client:0,m_context?m_context->media_session:0);
+	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::_cancel(0x%x): m_context=0x%x rtspClient=0x%x mediaSession=0x%x", (void*)this, m_context, m_context?m_context->rtsp_client:0,m_context?m_context->media_session:0);
 	if (m_context) {
 	 	m_context->eof = true;
 		m_context->blocking_flag = 0;

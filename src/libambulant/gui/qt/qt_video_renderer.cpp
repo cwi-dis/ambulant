@@ -27,6 +27,10 @@
 #include <stdlib.h>
 #include "ambulant/common/playable.h"
 
+
+// WARNING: turning on AM_DBG globally in this file seems to trigger
+// a condition that makes the whole player hang or collapse. So you probably
+// shouldn't do it:-)
 //#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -48,10 +52,12 @@ qt_video_renderer::qt_video_renderer(
 	m_datasize(1)
 {
 	m_data =(uchar*) malloc(1);
+	AM_DBG lib::logger::get_logger()->debug("qt_video_renderer::qt_video_renderer(0x%x): context=0x%x, cookie=%d, node=0x%x evp=0x%x factory=0x%x", (void*) this, (void*)context, cookie, node, evp, factory);
 }
 
 qt_video_renderer::~qt_video_renderer()
 {
+	AM_DBG lib::logger::get_logger()->debug("qt_video_renderer::~qt_video_renderer(0x%x) m_data=0x%x m_image=0x%x", (void*) this, (void*)m_data);
 	m_lock.enter();
     if (m_data) free(m_data);
 	if ( m_image) delete m_image;
