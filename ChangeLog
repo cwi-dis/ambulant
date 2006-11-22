@@ -1,3 +1,8 @@
+2006-11-21 17:27  keesblom
+
+	* Added code to cleanup m_frames in demux_video_data_source.  Added
+	  some debug prints in constructors/destructors
+
 2006-11-20 12:37  keesblom
 
 	* Implemented an advisory limit on the size of the packet queue: if
