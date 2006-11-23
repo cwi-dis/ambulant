@@ -731,46 +731,12 @@ AC_ARG_WITH(dirac,
 AM_CONDITIONAL(WITH_DIRAC, test x$dirac = xtrue)
 AC_MSG_RESULT($dirac)
 
-dnl Testing for FAAC
-dnl ======================================================================
-
-AC_MSG_CHECKING(for FAAC support)
-AC_ARG_WITH(faac,
-    [  --with-faac		Turn on FAAC audio encoder if ffmpeg is enabled],
-    [case "${withval}" in
-        yes) faac=true; withval="/usr/local/include" ;;
-        no) faac=false ;;
-        *) if test "x$withval" = "x"; then faac=false; else faac=true; fi ;;
-    esac], [
-        faac=false
-    ])
-if test "x$faac" = "xtrue"; then
-        withvalabs="?"
-	FAAC_PREFIX="?"
-	if test -f `pwd`/third_party_packages/faac/include/faac.h; then
-		# Prefer a faac installation in third_party_packages
-		withvalabs=`pwd`/third_party_packages/faac
-		FAAC_PREFIX=${withvalabs}
-	fi
-	if test x$FAAC_PREFIX = "x?"; then
-		if test -f ${withval}/include/faac.h; then
-			withvalabs=$withval
-			FAAC_PREFIX=${withvalabs}
-		fi
-	fi
-	if  test x$FAAC_PREFIX = "x?"; then
-		faac=false;
-	fi
-fi
-AM_CONDITIONAL(WITH_FAAC, test x$faac = xtrue)
-AC_MSG_RESULT($faac)
-
 dnl Testing for FAAD
 dnl ======================================================================
 
 AC_MSG_CHECKING(for FAAD support)
 AC_ARG_WITH(faad,
-    [  --with-faad		Turn on FAAD auio decoder if ffmpeg is enabled],
+    [  --with-faad		Turn on FAAD audio decoder if ffmpeg is enabled],
     [case "${withval}" in
         yes) faad=true; withval="/usr/local/include" ;;
         no) faad=false ;;
@@ -794,6 +760,11 @@ if test "x$faad" = "xtrue"; then
 	fi
 	if  test x$FAAD_PREFIX = "x?"; then
 		faad=false;
+	elif test "x$test_ffmpeg" = "xfalse"; then
+	        AC_MSG_ERROR("ffmpeg not found or disabled: FAAD support cannot be enabled")
+	else 
+		FFMPEG_CFLAGS="-I${FAAD_PREFIX}/include $FFMPEG_CFLAGS"
+		FFMPEG_LIBS="-I${FAAD_PREFIX}/lib -lfaad $FFMPEG_LIBS"
 	fi
 fi
 AM_CONDITIONAL(WITH_FAAD, test x$faad = xtrue)
@@ -1083,7 +1054,6 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
 	Enable Xerces as plugin:	${xerces_plugin}
 	Build with ffmpeg:     		${test_ffmpeg}	${ffmpeg_path}
 	Turn on ffmpeg Dirac support:	${dirac}
-	Turn on ffmpeg FAAC support:	${faac}
 	Turn on ffmpeg FAAD support:	${faad}
 	Build Qtopia frontend:		${qtopia}
 	Build Qt frontend:              ${test_qt}
