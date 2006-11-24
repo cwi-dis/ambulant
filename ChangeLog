@@ -1,3 +1,15 @@
+2006-11-23 14:42  keesblom
+
+	* Removed #define WITH_HTML_WIDGET for solution configuration
+	  ReleaseNoXercesNoHtml
+
+2006-11-23 14:01  keesblom
+
+	* Modified configure.in s.t. Makefiles.am do not need modifications
+	  when another ffmpeg feature is enabled (as per suggestion from
+	  Jack).  Note that also --with-dirac (from which the previous
+	  approach was taken) could be redone in this fashion.
+
 2006-11-21 17:27  keesblom
 
 	* Added code to cleanup m_frames in demux_video_data_source.  Added
