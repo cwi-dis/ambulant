@@ -25,16 +25,16 @@ Prequisites.
    nsIAmbulantPlugin.xpt
    Then start Firefox and File->Open File WelcomeButtons.html
    This .html file works if you have the Welcome document stored
-   in C:\Program Files\AmbulantPlayer-1.6\Extras\Welcome.
+   in C:\Program Files\AmbulantPlayer-1.8\Extras\Welcome.
 
 4. To create a distribution:
    - Build the plugin in release mode
-   - Create a folder ambulant-16-firefox-win32
+   - Create a folder ambulant-18-firefox-win32
    - Copy \Program Files\Mozilla Firefox\plugins\npambulant.dll there.
    - Copy \Program Files\Mozilla Firefox\plugins\nsIAmbulantPlugin.xpt there.
    - Copy INSTALL.txt there.
    - Copy toplevel COPYING there.
-   - Zip the ambulant-16-firefox-win32 folder and distribute.
+   - Zip the ambulant-18-firefox-win32 folder and distribute.
 
 
 

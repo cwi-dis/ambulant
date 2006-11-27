@@ -230,7 +230,7 @@ void gui::dx::dx_player::restart(bool reparse) {
 	}
 	AM_DBG m_logger->debug("Creating player instance for: %s", m_url.get_url().c_str());	
 	m_player = new smil2::smil_player(m_doc, this, m_embedder);	
-	
+	m_player->initialize();
 	if(playing) play();	
 }
 
