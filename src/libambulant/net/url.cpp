@@ -38,7 +38,7 @@
 
 using namespace ambulant;
 
-bool ambulant::net::url::s_strict = true;
+bool ambulant::net::url::s_strict = false;
 const std::string url_delim = ":/?#,";
 // Characters to be escaped in pathnames. Note that ~ and ? have special meanings in
 // http: urls, but not specifically in file: urls.
