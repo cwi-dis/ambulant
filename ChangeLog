@@ -1,3 +1,11 @@
+2006-11-27 18:06  keesblom
+
+	* Reset accidental checkin of "strict=true" back to "strict=false"
+
+2006-11-27 16:45  keesblom
+
+	* Adapted Firefox plugin for Windows to version 1.8
+
 2006-11-23 14:42  keesblom
 
 	* Removed #define WITH_HTML_WIDGET for solution configuration
