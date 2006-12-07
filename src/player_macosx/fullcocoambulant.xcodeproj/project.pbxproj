@@ -1104,6 +1104,43 @@
 		04600F4E0894F7A100B553A2 /* libBasicUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04600F4D0894F7A100B553A2 /* libBasicUsageEnvironment.a */; };
 		04600F550894FA8D00B553A2 /* libgroupsock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04600F540894FA8D00B553A2 /* libgroupsock.a */; };
 		04600F570894FA9A00B553A2 /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04600F560894FA9A00B553A2 /* libUsageEnvironment.a */; };
+		04608D6A0B2833BF002D844C /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 042862480ACAA7FA00640C74 /* QTKit.framework */; };
+		04608D6D0B2833CB002D844C /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 042862480ACAA7FA00640C74 /* QTKit.framework */; };
+		04608D6E0B2833CB002D844C /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043FA58B097275AB007EA0C2 /* AudioUnit.framework */; };
+		04608D6F0B2833CB002D844C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 048399DD08ED2FDC008505C3 /* WebKit.framework */; };
+		04608D700B2833CB002D844C /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB44806258FE500A75828 /* ApplicationServices.framework */; };
+		04608D710B2833CB002D844C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB38A0625526900A75828 /* OpenGL.framework */; };
+		04608D720B2833CB002D844C /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB3670625518E00A75828 /* QuickTime.framework */; };
+		04608D730B2833CB002D844C /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB2CA0625516700A75828 /* IOKit.framework */; };
+		04608D740B2833CB002D844C /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB2320625514E00A75828 /* Carbon.framework */; };
+		04608D750B2833CB002D844C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
+		04608D760B2833CD002D844C /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 042862480ACAA7FA00640C74 /* QTKit.framework */; };
+		04608D770B2833CD002D844C /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043FA58B097275AB007EA0C2 /* AudioUnit.framework */; };
+		04608D780B2833CD002D844C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 048399DD08ED2FDC008505C3 /* WebKit.framework */; };
+		04608D790B2833CD002D844C /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB44806258FE500A75828 /* ApplicationServices.framework */; };
+		04608D7A0B2833CD002D844C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB38A0625526900A75828 /* OpenGL.framework */; };
+		04608D7B0B2833CD002D844C /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB3670625518E00A75828 /* QuickTime.framework */; };
+		04608D7C0B2833CD002D844C /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB2CA0625516700A75828 /* IOKit.framework */; };
+		04608D7D0B2833CD002D844C /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB2320625514E00A75828 /* Carbon.framework */; };
+		04608D7E0B2833CD002D844C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
+		04608D7F0B2833CE002D844C /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 042862480ACAA7FA00640C74 /* QTKit.framework */; };
+		04608D800B2833CE002D844C /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043FA58B097275AB007EA0C2 /* AudioUnit.framework */; };
+		04608D810B2833CE002D844C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 048399DD08ED2FDC008505C3 /* WebKit.framework */; };
+		04608D820B2833CE002D844C /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB44806258FE500A75828 /* ApplicationServices.framework */; };
+		04608D830B2833CE002D844C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB38A0625526900A75828 /* OpenGL.framework */; };
+		04608D840B2833CE002D844C /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB3670625518E00A75828 /* QuickTime.framework */; };
+		04608D850B2833CE002D844C /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB2CA0625516700A75828 /* IOKit.framework */; };
+		04608D860B2833CE002D844C /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB2320625514E00A75828 /* Carbon.framework */; };
+		04608D870B2833CE002D844C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
+		04608D880B2833CF002D844C /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 042862480ACAA7FA00640C74 /* QTKit.framework */; };
+		04608D890B2833CF002D844C /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043FA58B097275AB007EA0C2 /* AudioUnit.framework */; };
+		04608D8A0B2833CF002D844C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 048399DD08ED2FDC008505C3 /* WebKit.framework */; };
+		04608D8B0B2833CF002D844C /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB44806258FE500A75828 /* ApplicationServices.framework */; };
+		04608D8C0B2833CF002D844C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB38A0625526900A75828 /* OpenGL.framework */; };
+		04608D8D0B2833CF002D844C /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB3670625518E00A75828 /* QuickTime.framework */; };
+		04608D8E0B2833CF002D844C /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB2CA0625516700A75828 /* IOKit.framework */; };
+		04608D8F0B2833CF002D844C /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045BB2320625514E00A75828 /* Carbon.framework */; };
+		04608D900B2833CF002D844C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		046718F205219EFA0010C447 /* MyAppDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 046718F005219EFA0010C447 /* MyAppDelegate.h */; };
 		0469447206249C0D0007093B /* none_area.h in Headers */ = {isa = PBXBuildFile; fileRef = 0469447106249C0D0007093B /* none_area.h */; };
 		0469447606249D3C0007093B /* none_area.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0469447506249D3B0007093B /* none_area.cpp */; };
@@ -2104,6 +2141,15 @@
 				04161465072078C400A8B0B6 /* libltdl.a in Frameworks */,
 				048399E008ED2FDD008505C3 /* WebKit.framework in Frameworks */,
 				043FA58E097275AB007EA0C2 /* AudioUnit.framework in Frameworks */,
+				04608D760B2833CD002D844C /* QTKit.framework in Frameworks */,
+				04608D770B2833CD002D844C /* AudioUnit.framework in Frameworks */,
+				04608D780B2833CD002D844C /* WebKit.framework in Frameworks */,
+				04608D790B2833CD002D844C /* ApplicationServices.framework in Frameworks */,
+				04608D7A0B2833CD002D844C /* OpenGL.framework in Frameworks */,
+				04608D7B0B2833CD002D844C /* QuickTime.framework in Frameworks */,
+				04608D7C0B2833CD002D844C /* IOKit.framework in Frameworks */,
+				04608D7D0B2833CD002D844C /* Carbon.framework in Frameworks */,
+				04608D7E0B2833CD002D844C /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2155,6 +2201,7 @@
 				0459E80208DACE8100BF6ED5 /* libavutil.a in Frameworks */,
 				048399DE08ED2FDD008505C3 /* WebKit.framework in Frameworks */,
 				043FA590097275AB007EA0C2 /* AudioUnit.framework in Frameworks */,
+				04608D6A0B2833BF002D844C /* QTKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2182,6 +2229,15 @@
 				04A4F66E0A35CF4E004099A9 /* libavformat.a in Frameworks */,
 				04A4F66F0A35CF54004099A9 /* libavcodec.a in Frameworks */,
 				04A4F6700A35CF62004099A9 /* libavutil.a in Frameworks */,
+				04608D7F0B2833CE002D844C /* QTKit.framework in Frameworks */,
+				04608D800B2833CE002D844C /* AudioUnit.framework in Frameworks */,
+				04608D810B2833CE002D844C /* WebKit.framework in Frameworks */,
+				04608D820B2833CE002D844C /* ApplicationServices.framework in Frameworks */,
+				04608D830B2833CE002D844C /* OpenGL.framework in Frameworks */,
+				04608D840B2833CE002D844C /* QuickTime.framework in Frameworks */,
+				04608D850B2833CE002D844C /* IOKit.framework in Frameworks */,
+				04608D860B2833CE002D844C /* Carbon.framework in Frameworks */,
+				04608D870B2833CE002D844C /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2206,6 +2262,15 @@
 				0442DEB80896553B008D10AE /* libdirac_encoder.a in Frameworks */,
 				048399E208ED2FDD008505C3 /* WebKit.framework in Frameworks */,
 				043FA58C097275AB007EA0C2 /* AudioUnit.framework in Frameworks */,
+				04608D880B2833CF002D844C /* QTKit.framework in Frameworks */,
+				04608D890B2833CF002D844C /* AudioUnit.framework in Frameworks */,
+				04608D8A0B2833CF002D844C /* WebKit.framework in Frameworks */,
+				04608D8B0B2833CF002D844C /* ApplicationServices.framework in Frameworks */,
+				04608D8C0B2833CF002D844C /* OpenGL.framework in Frameworks */,
+				04608D8D0B2833CF002D844C /* QuickTime.framework in Frameworks */,
+				04608D8E0B2833CF002D844C /* IOKit.framework in Frameworks */,
+				04608D8F0B2833CF002D844C /* Carbon.framework in Frameworks */,
+				04608D900B2833CF002D844C /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2251,6 +2316,15 @@
 				04F7E4DE08A23A0200D68AEA /* libxerces-c.dylib in Frameworks */,
 				048399DF08ED2FDD008505C3 /* WebKit.framework in Frameworks */,
 				043FA58D097275AB007EA0C2 /* AudioUnit.framework in Frameworks */,
+				04608D6D0B2833CB002D844C /* QTKit.framework in Frameworks */,
+				04608D6E0B2833CB002D844C /* AudioUnit.framework in Frameworks */,
+				04608D6F0B2833CB002D844C /* WebKit.framework in Frameworks */,
+				04608D700B2833CB002D844C /* ApplicationServices.framework in Frameworks */,
+				04608D710B2833CB002D844C /* OpenGL.framework in Frameworks */,
+				04608D720B2833CB002D844C /* QuickTime.framework in Frameworks */,
+				04608D730B2833CB002D844C /* IOKit.framework in Frameworks */,
+				04608D740B2833CB002D844C /* Carbon.framework in Frameworks */,
+				04608D750B2833CB002D844C /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2700,6 +2774,7 @@
 		1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				042862480ACAA7FA00640C74 /* QTKit.framework */,
 				043FA58B097275AB007EA0C2 /* AudioUnit.framework */,
 				048399DD08ED2FDC008505C3 /* WebKit.framework */,
 				045BB44806258FE500A75828 /* ApplicationServices.framework */,
@@ -2799,7 +2874,6 @@
 		2A37F4C3FDCFA73011CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				042862480ACAA7FA00640C74 /* QTKit.framework */,
 				0427B2210625FD160071CD58 /* libavformat.a */,
 				0493211408951A8A00F38A0A /* libavformat.a */,
 				0459E7FD08DACE2600BF6ED5 /* libavformat.a */,
