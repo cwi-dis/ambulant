@@ -497,6 +497,7 @@ void gui::dx::dx_player::update_transitions() {
 	assert(m_player);
 	lib::timer::time_type pt = m_player->get_timer()->elapsed();
 	//lock_redraw();
+	AM_DBG lib::logger::get_logger()->debug("update_transitions: updating %d transitions", m_trmap.size());
 	for(trmap_t::iterator it=m_trmap.begin();it!=m_trmap.end();it++) {
 		if(!(*it).second->next_step(pt)) {
 			delete (*it).second;

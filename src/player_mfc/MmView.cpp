@@ -155,7 +155,7 @@ class my_player_feedback : public common::player_feedback {
 			set_status_line(msg.c_str());
 			return;
 		}
-		set_status_line("???");
+		set_status_line("");
 	}
  
 };
