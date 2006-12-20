@@ -316,6 +316,7 @@ SOURCE=.\AmbulantPlayerView.cpp
 DEP_CPP_AMBULAN=\
 	"..\..\include\ambulant\common\embedder.h"\
 	"..\..\include\ambulant\common\factory.h"\
+	"..\..\include\ambulant\common\gui_player.h"\
 	"..\..\include\ambulant\common\layout.h"\
 	"..\..\include\ambulant\common\playable.h"\
 	"..\..\include\ambulant\common\player.h"\
@@ -361,6 +362,7 @@ DEP_CPP_AMBULAN=\
 	"..\..\include\ambulant\lib\win32\win32_asb.h"\
 	"..\..\include\ambulant\lib\win32\win32_fstream.h"\
 	"..\..\include\ambulant\lib\win32\win32_mtsync.h"\
+	"..\..\include\ambulant\net\databuffer.h"\
 	"..\..\include\ambulant\net\datasource.h"\
 	"..\..\include\ambulant\net\url.h"\
 	"..\..\include\ambulant\smil2\test_attrs.h"\

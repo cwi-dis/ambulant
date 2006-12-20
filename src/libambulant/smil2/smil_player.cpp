@@ -302,7 +302,11 @@ AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable(0x%x)cs.ente
 		m_playables.find(n);
 	std::pair<const lib::node*, common::playable*> victim(NULL,NULL);
 	if(it != m_playables.end()) {
+#ifdef AMBULANT_PLATFORM_WIN32_WCE
+		victim = std::pair<const lib::node*, common::playable*>((*it).first, (*it).second);
+#else
 		victim = *it;
+#endif
 		m_playables.erase(it);
 	}
 	m_playables_cs.leave();
