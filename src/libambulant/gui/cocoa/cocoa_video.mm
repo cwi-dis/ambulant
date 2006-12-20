@@ -121,7 +121,8 @@ cocoa_video_renderer::cocoa_video_renderer(
 	m_movie(NULL),
 	m_movie_view(NULL),
 	m_offscreen_window(NULL),
-	m_offscreen(false)
+	m_offscreen(false),
+	m_paused(false)
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSURL *nsurl = [NSURL URLWithString: [NSString stringWithCString: m_url.get_url().c_str()]];
@@ -141,7 +142,7 @@ cocoa_video_renderer::cocoa_video_renderer(
 		lib::logger::get_logger()->error(gettext("%s: cannot open movie"), [[nsurl absoluteString] cString]);
 		return;
 	}
-	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer: m_movie=0x%x", m_movie);
+	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer: cocoa_video_renderer(0x%x), m_movie=0x%x", this, m_movie);
 	
 	Movie mov = [m_movie quickTimeMovie];
 	TimeValue movtime;
@@ -169,6 +170,7 @@ cocoa_video_renderer::cocoa_video_renderer(
 cocoa_video_renderer::~cocoa_video_renderer()
 {
 	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer: ~cocoa_video_renderer(0x%x), m_movie=0x%x", this, m_movie);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	if (m_movie) {
 		[m_movie release];
@@ -212,13 +214,14 @@ cocoa_video_renderer::get_dur()
 void
 cocoa_video_renderer::start(double where)
 {
-	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer::start()");
+	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer::start(0x%x)", this);
 	if (!m_dest) {
 		lib::logger::get_logger()->debug("cocoa_video_renderer::start: no destination surface");
 		m_context->stopped(m_cookie);
 		return;
 	}
 	m_lock.enter();
+	m_paused = false;
 	m_dest->show(this); // XXX Do we need this?
 	m_lock.leave();
 }
@@ -227,6 +230,7 @@ void
 cocoa_video_renderer::stop()
 {
 	m_lock.enter();
+	AM_DBG logger::get_logger()->debug("cocoa_video_renderer::stop(0x%x)", this);
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	if (m_dest) m_dest->renderer_done(this);
 	if (m_movie_view) {
@@ -250,6 +254,7 @@ cocoa_video_renderer::pause(pause_display d)
 	m_lock.enter();
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer::pause(%s)", m_node->get_sig().c_str());
+	m_paused = true;
 	if (m_movie && m_movie_view) {
 		[m_movie_view pause: NULL];
 		if (d == display_hide)
@@ -265,6 +270,7 @@ cocoa_video_renderer::resume()
 	m_lock.enter();
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer::resume()");
+	m_paused = false;
 	if (m_movie && m_movie_view) {
 		if ([m_movie_view isHidden]) [m_movie_view setHidden: NO];
 		[m_movie_view play: NULL];

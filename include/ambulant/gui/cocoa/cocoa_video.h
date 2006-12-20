@@ -74,6 +74,7 @@ class cocoa_video_renderer :
 	NSWindow *m_offscreen_window;
 	NSWindow *m_onscreen_window;
 	bool m_offscreen;
+	bool m_paused;
 	critical_section m_lock;
 };
 

@@ -49,7 +49,7 @@ lib::timer_control_impl::timer_control_impl(lib::timer* parent, double speed /* 
 	m_period(infinite),
 	m_listeners(0)
 {	
-	AM_DBG lib::logger::get_logger()->debug("lib::timer_control_impl()");
+	AM_DBG lib::logger::get_logger()->debug("lib::timer_control_impl(0x%x), parent=0x%x", this, parent);
 }
 
 lib::timer_control_impl::~timer_control_impl()
@@ -100,10 +100,17 @@ void lib::timer_control_impl::resume() {
 }
 
 void lib::timer_control_impl::set_time(time_type t) {
+	
 	if(!m_running) {
+		if (t < m_local_epoch) {
+			AM_DBG lib::logger::get_logger()->debug("timer: setting timer 0x%x from %d to %d", this, m_local_epoch, t);
+		}
 		m_local_epoch = t;
 	} else {
 		pause();
+		if (t < m_local_epoch) {
+			AM_DBG lib::logger::get_logger()->debug("timer: setting timer 0x%x from %d to %d", this, m_local_epoch, t);
+		}
 		m_local_epoch = t;
 		resume();
 	}

@@ -77,6 +77,10 @@ void scheduler::start(time_node *tn) {
 	unlock();
 }
 
+void scheduler::update_horizon(time_type t) {
+	m_horizon = std::max(m_horizon, t);
+}
+
 // Activates a node that has a valid scheduled 
 // interval after the current time. 
 void scheduler::activate_node(time_node *tn) {
@@ -192,6 +196,7 @@ void scheduler::restart(time_node *tn) {
 	const time_node::interval_type& i = tn->get_current_interval();
 	time_node::time_type bt = i.begin;
 	q_smil_time b(tn->sync_node(), bt);
+	AM_DBG lib::logger::get_logger()->debug("scheduler::restart: horizon %d -> %d", m_horizon, b.as_doc_time()());
 	m_horizon = b.as_doc_time()();
 	m_timer->set_time(m_horizon);
 	tn->get_timer()->set_time(0);
@@ -229,17 +234,19 @@ scheduler::time_type scheduler::_exec() {
 scheduler::time_type scheduler::_exec(time_type now) {
 	assert(locked());
 	time_type next = infinity;
-	m_events.clear();
+	typedef std::map<time_node::time_type, std::list<time_node*> > event_map_t;
+	event_map_t events;
+	// events.clear();
 	if(!m_root->is_active())
 		return next;
 	// get all the pending events from the timegraph
-	m_root->get_pending_events(m_events);
-	if(m_events.empty())
+	m_root->get_pending_events(events);
+	if(events.empty())
 		return next;
-	event_map_t::iterator eit = m_events.begin();
+	event_map_t::iterator eit = events.begin();
 	next = (*eit).first();
 	std::list<time_node*>& elist = (*eit).second;
-	AM_DBG lib::logger::get_logger()->debug("scheduler::_exec: now=%d next=%d ", now, next);
+	AM_DBG lib::logger::get_logger()->debug("scheduler::_exec: now=%d next=%d got %d events", now, next, events.size());
 	next = std::max(m_horizon, next);
 	if(now >= next) {
 		time_traits::qtime_type timestamp(m_root, next);
@@ -248,10 +255,11 @@ scheduler::time_type scheduler::_exec(time_type now) {
 			time_node *nitp = *nit;
 			nitp->exec(timestamp);
 		}
+		AM_DBG lib::logger::get_logger()->debug("scheduler::_exec: horizon %d -> %d", m_horizon, next);
 		m_horizon = next;
 		if(m_timer) m_timer->set_time(next);
 		eit++;
-		if(eit != m_events.end()) {
+		if(eit != events.end()) {
 			next = (*eit).first();
 			next = std::max(m_horizon, next);
 		}

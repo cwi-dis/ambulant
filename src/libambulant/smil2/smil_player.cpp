@@ -356,7 +356,9 @@ void smil_player::clicked(int n, double t) {
 	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> dom_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end() && (*it).second->wants_activate_event()) {
-		q_smil_time timestamp(m_root, m_root->get_simple_time());
+		time_node::value_type root_time = m_root->get_simple_time();
+		m_scheduler->update_horizon(root_time);
+		q_smil_time timestamp(m_root, root_time);
 		dom_event_cb *cb = new dom_event_cb((*it).second, 
 			&time_node::raise_activate_event, timestamp);
 		schedule_event(cb, 0, ep_high);
@@ -398,14 +400,18 @@ smil_player::after_mousemove()
 		
 		if (tn->wants_outofbounds_event()) {
 			AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.outOfBoundsEvent", (void*)tn);
-			q_smil_time timestamp(m_root, m_root->get_simple_time());
+			time_node::value_type root_time = m_root->get_simple_time();
+			m_scheduler->update_horizon(root_time);
+			q_smil_time timestamp(m_root, root_time);
 			dom_event_cb *cb = new dom_event_cb(tn, 
 				&time_node::raise_outofbounds_event, timestamp);
 			schedule_event(cb, 0, ep_high);
 		}
 		if (tn->wants_focusout_event()) {
 			AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.focusOutEvent", (void*)tn);
-			q_smil_time timestamp(m_root, m_root->get_simple_time());
+			time_node::value_type root_time = m_root->get_simple_time();
+			m_scheduler->update_horizon(root_time);
+			q_smil_time timestamp(m_root, root_time);
 			dom_event_cb *cb = new dom_event_cb(tn, 
 				&time_node::raise_focusout_event, timestamp);
 			schedule_event(cb, 0, ep_high);
@@ -439,14 +445,18 @@ smil_player::after_mousemove()
 		// Send it the focusin and inbounds event, if it wants them.
 		if (tn->wants_inbounds_event()) {
 				AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.inBoundsEvent", (void*)tn);
-				q_smil_time timestamp(m_root, m_root->get_simple_time());
+				time_node::value_type root_time = m_root->get_simple_time();
+				m_scheduler->update_horizon(root_time);
+				q_smil_time timestamp(m_root, root_time);
 				dom_event_cb *cb = new dom_event_cb(tn, 
 					&time_node::raise_inbounds_event, timestamp);
 				schedule_event(cb, 0, ep_high);
 		}
 		if (tn->wants_focusin_event()) {
 				AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.focusInEvent", (void*)tn);
-				q_smil_time timestamp(m_root, m_root->get_simple_time());
+				time_node::value_type root_time = m_root->get_simple_time();
+				m_scheduler->update_horizon(root_time);
+				q_smil_time timestamp(m_root, root_time);
 				dom_event_cb *cb = new dom_event_cb(tn, 
 					&time_node::raise_focusin_event, timestamp);
 				schedule_event(cb, 0, ep_high);
@@ -478,14 +488,18 @@ void smil_player::pointed(int n, double t) {
 			// not 100% correct.
 			if (m_pointed_node->wants_outofbounds_event()) {
 				AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.outOfBoundsEvent", (void*)m_pointed_node);
-				q_smil_time timestamp(m_root, m_root->get_simple_time());
+				time_node::value_type root_time = m_root->get_simple_time();
+				m_scheduler->update_horizon(root_time);
+				q_smil_time timestamp(m_root, root_time);
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_outofbounds_event, timestamp);
 				schedule_event(cb, 0, ep_high);
 			}
 			if (m_pointed_node->wants_focusout_event()) {
 				AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.focusOutEvent", (void*)m_pointed_node);
-				q_smil_time timestamp(m_root, m_root->get_simple_time());
+				time_node::value_type root_time = m_root->get_simple_time();
+				m_scheduler->update_horizon(root_time);
+				q_smil_time timestamp(m_root, root_time);
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_focusout_event, timestamp);
 				schedule_event(cb, 0, ep_high);
@@ -507,14 +521,18 @@ void smil_player::pointed(int n, double t) {
 		// not 100% correct.
 		if (changed_focus && m_pointed_node->wants_inbounds_event()) {
 				AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.inBoundsEvent", (void*)m_pointed_node);
-				q_smil_time timestamp(m_root, m_root->get_simple_time());
+				time_node::value_type root_time = m_root->get_simple_time();
+				m_scheduler->update_horizon(root_time);
+				q_smil_time timestamp(m_root, root_time);
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_inbounds_event, timestamp);
 				schedule_event(cb, 0, ep_high);
 		}
 		if (changed_focus && m_pointed_node->wants_focusin_event()) {
 				AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.focusInEvent", (void*)m_pointed_node);
-				q_smil_time timestamp(m_root, m_root->get_simple_time());
+				time_node::value_type root_time = m_root->get_simple_time();
+				m_scheduler->update_horizon(root_time);
+				q_smil_time timestamp(m_root, root_time);
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_focusin_event, timestamp);
 				schedule_event(cb, 0, ep_high);
@@ -525,14 +543,18 @@ void smil_player::pointed(int n, double t) {
 			// not 100% correct.
 			if (m_pointed_node->wants_outofbounds_event()) {
 				AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.outOfBoundsEvent", (void*)m_pointed_node);
-				q_smil_time timestamp(m_root, m_root->get_simple_time());
+				time_node::value_type root_time = m_root->get_simple_time();
+				m_scheduler->update_horizon(root_time);
+				q_smil_time timestamp(m_root, root_time);
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_outofbounds_event, timestamp);
 				schedule_event(cb, 0, ep_high);
 			}
 			if (m_pointed_node->wants_focusout_event()) {
 				AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.focusOutEvent", (void*)m_pointed_node);
-				q_smil_time timestamp(m_root, m_root->get_simple_time());
+				time_node::value_type root_time = m_root->get_simple_time();
+				m_scheduler->update_horizon(root_time);
+				q_smil_time timestamp(m_root, root_time);
 				dom_event_cb *cb = new dom_event_cb((*it).second, 
 					&time_node::raise_focusout_event, timestamp);
 				schedule_event(cb, 0, ep_high);
@@ -551,7 +573,9 @@ void smil_player::started(int n, double t) {
 	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> bom_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end() && !(*it).second->is_discrete()) {
-		q_smil_time timestamp(m_root, m_root->get_simple_time());
+		time_node::value_type root_time = m_root->get_simple_time();
+		m_scheduler->update_horizon(root_time);
+		q_smil_time timestamp(m_root, root_time);
 		bom_event_cb *cb = new bom_event_cb((*it).second, 
 			&time_node::on_bom, timestamp);
 		schedule_event(cb, 0, ep_high);
@@ -560,11 +584,13 @@ void smil_player::started(int n, double t) {
 
 // Playable notification for a stop event.
 void smil_player::stopped(int n, double t) {
-	AM_DBG m_logger->debug("smil_player::stopped(%d, %f)", n, t);
+	AM_DBG m_logger->debug("smil_player::stopped(%d, %f) roottime=%d", n, t, m_root->get_simple_time());
 	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> eom_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end() && !(*it).second->is_discrete()) {
-		q_smil_time timestamp(m_root, m_root->get_simple_time());
+		time_node::value_type root_time = m_root->get_simple_time();
+		m_scheduler->update_horizon(root_time);
+		q_smil_time timestamp(m_root, root_time);
 		eom_event_cb *cb = new eom_event_cb((*it).second, 
 			&time_node::on_eom, timestamp);
 		schedule_event(cb, 0, ep_high);
@@ -579,7 +605,9 @@ void smil_player::transitioned(int n, double t) {
 	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> transitioned_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end()) {
-		q_smil_time timestamp(m_root, m_root->get_simple_time());
+		time_node::value_type root_time = m_root->get_simple_time();
+		m_scheduler->update_horizon(root_time);
+		q_smil_time timestamp(m_root, root_time);
 		transitioned_event_cb *cb = new transitioned_event_cb((*it).second, 
 			&time_node::on_transitioned, timestamp);
 		schedule_event(cb, 0, ep_high);
@@ -615,7 +643,9 @@ void smil_player::on_char(int ch) {
 
 	typedef std::pair<q_smil_time, int> accesskey;
 	typedef scalar_arg_callback_event<time_node, accesskey> accesskey_cb;
-	q_smil_time timestamp(m_root, m_root->get_simple_time());
+	time_node::value_type root_time = m_root->get_simple_time();
+	m_scheduler->update_horizon(root_time);
+	q_smil_time timestamp(m_root, root_time);
 	AM_DBG m_logger->debug("smil_player::on_char(): '%c' [%d] at %ld", char(ch), ch, timestamp.second());
 	accesskey ak(timestamp, ch);
 	accesskey_cb *cb = new accesskey_cb(m_root, &time_node::raise_accesskey, ak);

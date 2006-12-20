@@ -227,6 +227,6 @@ mainloop::node_focussed(const lib::node *n)
 		return;
 	}
 	AM_DBG lib::logger::get_logger()->debug("node_focussed: nothing to show");
-	set_statusline(m_view, "???");
+//	set_statusline(m_view, "???");
 }
 			
