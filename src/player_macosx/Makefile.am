@@ -4,7 +4,7 @@ EXTRA_DIST=MyAmbulantView.mm MyDocument.mm LogController.mm mainloop.cpp MyAppDe
 	cocoambulant_Prefix.pch \
 	English.lproj Dutch.lproj Japanese.lproj \
 	Info.plist version.plist \
-	cocoambulant.pbproj fullcocoambulant.pbproj \
+	fullcocoambulant.xcodeproj \
 	cocoambulant.icns \
 	play.png \
 	pause.png \
