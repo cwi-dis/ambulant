@@ -185,8 +185,6 @@ ffmpeg_video_decoder_datasource::~ffmpeg_video_decoder_datasource()
 {
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::~ffmpeg_video_decoder_datasource(0x%x)", (void*)this);
 	stop();
-	if (m_src) delete m_src;
-	m_src = 0;
 	if (m_dropped_count) lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropped %d of %d frames", m_dropped_count, m_frame_count);
 }
 
