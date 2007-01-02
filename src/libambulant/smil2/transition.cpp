@@ -135,9 +135,9 @@ transition_engine_barwipe::compute()
 {
 	// XXX Only does horizontal left-to-right at the moment
 	lib::rect dstrect = m_dst->get_rect();
-	int wcur = int(m_progress*dstrect.width() + 0.5);
+	int wcur = round(m_progress*dstrect.width());
 	m_stepcount = dstrect.width();
-//	int ycur = dstrect.top() + int(m_progress*(dstrect.bottom() - dstrect.top()) + 0.5);
+//	int ycur = dstrect.top() + round(m_progress*(dstrect.bottom() - dstrect.top()));
 	m_newrect = lib::rect(dstrect.left_top(), lib::size(wcur, dstrect.height()));
 }
 
@@ -146,8 +146,8 @@ transition_engine_boxwipe::compute()
 {
 	// XXX Only does box from topleft right now
 	lib::rect dstrect = m_dst->get_rect();
-	int wcur = int(m_progress*dstrect.width() + 0.5);
-	int hcur = int(m_progress*dstrect.height() + 0.5);
+	int wcur = round(m_progress*dstrect.width());
+	int hcur = round(m_progress*dstrect.height());
 	m_stepcount = dstrect.width();
 	m_newrect = lib::rect(dstrect.left_top(), lib::size(wcur, hcur));
 }
@@ -159,8 +159,8 @@ transition_engine_fourboxwipe::compute()
 	lib::rect dstrect = m_dst->get_rect();
 	int xmid = (dstrect.left() + dstrect.right())/2;
 	int ymid = (dstrect.top() + dstrect.bottom())/2;
-	int half_width = int(m_progress*(xmid - dstrect.left()) + 0.5);
-	int half_height = int(m_progress*(ymid - dstrect.top()) + 0.5);
+	int half_width = round(m_progress*(xmid - dstrect.left()));
+	int half_height = round(m_progress*(ymid - dstrect.top()));
 	lib::size half_size(half_width, half_height);
 	m_stepcount = (dstrect.width())/2;
 	clear();
@@ -185,8 +185,8 @@ transition_engine_barndoorwipe::compute()
 	lib::rect dstrect = m_dst->get_rect();
 	int xmid = (dstrect.left() + dstrect.right())/2;
 //	int ymid = (dstrect.top() + dstrect.bottom())/2;
-	int half_width = int(m_progress*(xmid - dstrect.left()) + 0.5);
-//	int half_height = int(m_progress*(ymid - dstrect.top()) + 0.5);
+	int half_width = round(m_progress*(xmid - dstrect.left()));
+//	int half_height = round(m_progress*(ymid - dstrect.top()));
 	m_stepcount = (dstrect.width())/2;
 	m_newrect = lib::rect(
 		lib::point(xmid-half_width, dstrect.top()),
@@ -557,13 +557,13 @@ detail::angle_computer::angle2edge(double angle, lib::point &edgepoint)
 	// Next compute the intersection point
 	int l = m_rect.left(), r = m_rect.right(), t = m_rect.top(), b = m_rect.bottom();
 	if (edge == edge_topleft || edge == edge_topright)
-		edgepoint = lib::point((int)(m_xmid + m_xdist/tan(angle) + 0.5), t);
+		edgepoint = lib::point(round(m_xmid + m_xdist/tan(angle)), t);
 	else if (edge == edge_right)
-		edgepoint = lib::point(r, (int)(m_ymid - m_ydist*tan(angle) + 0.5));
+		edgepoint = lib::point(r, round(m_ymid - m_ydist*tan(angle)));
 	else if (edge == edge_bottom)
-		edgepoint = lib::point((int)(m_xmid - m_xdist/tan(angle) + 0.5), b);
+		edgepoint = lib::point(round(m_xmid - m_xdist/tan(angle)), b);
 	else
-		edgepoint = lib::point(l, (int)(m_ymid + m_ydist*tan(angle) + 0.5));
+		edgepoint = lib::point(l, round(m_ymid + m_ydist*tan(angle)));
 	return edge;
 }
 
@@ -719,8 +719,8 @@ void
 transition_engine_pushwipe::compute()
 {
 	lib::rect dstrect = m_dst->get_rect();
-	int half_width = int(m_progress*(dstrect.width()) + 0.5);
-//	int half_height = int(m_progress*(ymid - dstrect.top()) + 0.5);
+	int half_width = round(m_progress*dstrect.width());
+//	int half_height = round(m_progress*(ymid - dstrect.top()));
 	m_stepcount = dstrect.width();
 	m_oldsrcrect = lib::rect(
 		dstrect.left_top(),
@@ -740,8 +740,8 @@ void
 transition_engine_slidewipe::compute()
 {
 	lib::rect dstrect = m_dst->get_rect();
-	int half_width = int(m_progress*(dstrect.width()) + 0.5);
-//	int half_height = int(m_progress*(ymid - dstrect.top()) + 0.5);
+	int half_width = round(m_progress*dstrect.width());
+//	int half_height = round(m_progress*(ymid - dstrect.top()));
 	m_stepcount = dstrect.width();
 	m_oldsrcrect = lib::rect(
 		lib::point(dstrect.left()+half_width, dstrect.top()),
@@ -754,7 +754,7 @@ transition_engine_slidewipe::compute()
 		lib::size(half_width, dstrect.height()));
 	m_newdstrect = lib::rect(
 		dstrect.left_top(),
-		lib::size(half_width+half_width, dstrect.height()));
+		lib::size(half_width, dstrect.height()));
 }
 
 void
