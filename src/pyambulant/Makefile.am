@@ -29,6 +29,17 @@ else
 extra_qt_cflags=
 extra_qt_ldflags=
 endif
+if WITH_FFMPEG
+extra_ffmpeg_ldflags=-lambulant_ffmpeg $(FFMPEG_LIBS)
+else
+extra_ffmpeg_ldflags=
+endif
+if WITH_SDL
+sdl_config=`sdl-config --libs`
+extra_sdl_ldflags=-lambulant_sdl $(sdl_config)
+else
+extra_sdl_ldflags=
+endif
 
 # Get all the extra bits together
 # XXXX Why does this not work??? EXTRA_LDFLAGS=$(extra_qt_ldflags)
@@ -68,7 +79,7 @@ BUILDLIBDIR=`echo ./build/lib.*`
 build-pyambulant: $(srcdir)/setup.py $(BGENOUTPUT) $(srcdir)/ambulantutilities.cpp $(srcdir)/ambulantutilities.h $(srcdir)/ambulantmodule.h
 	( a=`cd $(ambulantlibdir); pwd` ; \
 	  cd $(srcdir) ; \
-	  LDFLAGS="-L$$a $(extra_qt_ldflags)" CFLAGS="$(EXTRA_CFLAGS)" $(PYTHON) setup.py build ; \
+	  LDFLAGS="-L$$a $(extra_qt_ldflags) $(extra_ffmpeg_ldflags) $(extra_sdl_ldflags)" CFLAGS="$(EXTRA_CFLAGS)" $(PYTHON) setup.py build ; \
 	)
 
 check-pyambulant:

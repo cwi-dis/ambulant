@@ -19,7 +19,7 @@ if ldflags:
 if sys.platform == 'darwin':
     EXTRA_LINK_ARGS += ['-framework', 'QuickTime', '-framework', 'CoreFoundation', '-framework', 'Cocoa']
 
-LIBRARIES=['ambulant', 'expat']
+LIBRARIES=[]
 if WITH_QT:
     DEFS.append(('WITH_QT', '1'))
     LIBRARIES.append('ambulant_qt')
@@ -29,6 +29,8 @@ if WITH_FFMPEG:
 if WITH_SDL:
     DEFS.append(('WITH_SDL', '1'))
     LIBRARIES.append('ambulant_sdl')
+LIBRARIES.append('ambulant')
+LIBRARIES.append('expat')
 
 LIBDIRS=['../../third_party_packages/expat-unix/lib']
 if sys.platform == 'darwin':
