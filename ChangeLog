@@ -1,3 +1,28 @@
+2007-01-02 16:36  jackjansen
+
+	* Removed duplicate code (m_src was cleared in destructor, but
+	  stop() has already done that).
+
+2007-01-02 16:20  jackjansen
+
+	* Fixed buglet in method name that FC5 gcc barfed on.
+
+2007-01-02 16:14  jackjansen
+
+	*  Building pyambulant mow works on FC4 with Python 2.4.
+
+2007-01-02 14:42  jackjansen
+
+	* Adding libintl and libiconv to the link line is not a good idea:
+	  it breaks builds on some platforms. Reverted for now, need to
+	  investigate why it needed adding in the first place.
+
+2007-01-02 13:40  jackjansen
+
+	* - slidewipe had off-by-factor-2 width for destination rectangle.
+	  Fixes   #1619483.  - Used round() macro to round things, in stead
+	  of duplicating code	everywhere.
+
 2006-12-20 16:43  jackjansen
 
 	* details.
