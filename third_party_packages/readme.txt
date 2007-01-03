@@ -167,6 +167,10 @@ live555.com:
 gettext:
 	On Linux you will usually have gettext pre-installed, on Mac OS X probably
 	not. Download from <http://www.gnu.org> and install in the normal way.
+
+	On some systems (Fedora Core 6, for example) you may have to install
+	the gettext-devel package (in addition to the usually pre-installed
+	gettext package).
 	
 	Alternatively, configure Ambulant with --disable-nls to disable libintl
 	support (and, therefore, localization).
