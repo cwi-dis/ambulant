@@ -78,6 +78,7 @@ void gui::dx::dx_brush::start(double t) {
 	// Request a redraw
 	m_dest->need_redraw();
 	m_context->started(m_cookie);
+	m_context->stopped(m_cookie);
 }
 
 

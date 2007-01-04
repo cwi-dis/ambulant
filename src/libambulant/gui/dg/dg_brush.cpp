@@ -77,6 +77,8 @@ void gui::dg::dg_brush::start(double t) {
 	m_dest->need_events(m_wantclicks);
 	m_activated = true;
 		
+	m_context->started(m_cookie);
+	m_context->stopped(m_cookie);
 	// Request a redraw
 	// Currently done by show()
 	// m_dest->need_redraw();
@@ -87,6 +89,7 @@ void gui::dg::dg_brush::stop() {
 	AM_DBG lib::logger::get_logger()->debug("dg_brush::stop(0x%x)", this);
 	m_dest->renderer_done(this);
 	m_activated = false;
+	m_context->stopped(m_cookie);
 }
 
 void gui::dg::dg_brush::user_event(const lib::point& pt, int what) {
