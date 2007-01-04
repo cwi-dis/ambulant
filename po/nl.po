@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AmbulantPlayer 1.1\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2006-07-03 17:09+0200\n"
+"POT-Creation-Date: 2007-01-02 14:59+0100\n"
 "PO-Revision-Date: 2004-09-12 15:09+0200\n"
 "Last-Translator: Jack Jansen <Jack.Jansen@cwi.nl>\n"
 "Language-Team: Dutch <Jack.Jansen@cwi.nl>\n"
@@ -16,29 +16,29 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:89
+#: src/libambulant/gui/SDL/sdl_audio.cpp:90
 msgid "Cannot initialize SDL audio library"
 msgstr "SDL audio-library kan niet geïnitialiseerd worden"
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:107
+#: src/libambulant/gui/SDL/sdl_audio.cpp:108
 msgid "Cannot open SDL audio output stream"
 msgstr "SDL audiokanaal kan niet geopend worden"
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:116
+#: src/libambulant/gui/SDL/sdl_audio.cpp:117
 msgid "Cannot open SDL audio output stream with required characteristics"
 msgstr "SDL audiokanaal kan niet geopend worden met de juiste eigenschappen"
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:242
+#: src/libambulant/gui/SDL/sdl_audio.cpp:238
 #, c-format
 msgid "%s: cannot open audio file"
 msgstr "Audiobestand kan niet geopend worden: %s"
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:244
+#: src/libambulant/gui/SDL/sdl_audio.cpp:240
 #, c-format
 msgid "%s: audio format not supported"
 msgstr "Onbekend audio formaat in: %s"
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:276
+#: src/libambulant/gui/SDL/sdl_audio.cpp:269
 #, c-format
 msgid "%s: cannot open"
 msgstr "Bestand kan niet geopend worden: %s"
@@ -58,18 +58,18 @@ msgstr "%s: Fout opgetreden tijdens parseren"
 msgid "transition: no `type' attribute"
 msgstr "Transition: `type' attribute ontbreekt"
 
-#: src/libambulant/lib/transition_info.cpp:94
+#: src/libambulant/lib/transition_info.cpp:92
 #, c-format
 msgid "transition: unknown type=\"%s\""
 msgstr "Transition: onbekend type=\"%s\""
 
-#: src/libambulant/lib/transition_info.cpp:117
+#: src/libambulant/lib/transition_info.cpp:114
 #, c-format
 msgid "transition: unknown scope=\"%s\""
 msgstr "Transition: onbekend scope=\"%s\""
 
-#: src/libambulant/lib/transition_info.cpp:184
-#: src/libambulant/lib/transition_info.cpp:202
+#: src/libambulant/lib/transition_info.cpp:178
+#: src/libambulant/lib/transition_info.cpp:196
 #, c-format
 msgid "transition: illegal value for %s attribute (%s)"
 msgstr "Transition: foute waarde voor %s attribuut (%s)"
@@ -88,116 +88,115 @@ msgstr "Geen enkele XML parser gevonden (configuratiefout?)"
 msgid "%s: Error parsing document"
 msgstr "%s: Fout opgetreden tijdens parseren"
 
-#: src/libambulant/mms/timeline_builder.cpp:87
+#: src/libambulant/mms/timeline_builder.cpp:85
 msgid "MMS player: ignoring XML namespace"
 msgstr "MMS speler: XML namespace wordt genegeerd"
 
-#: src/libambulant/mms/timeline_builder.cpp:100
-#: src/libambulant/mms/timeline_builder.cpp:145
+#: src/libambulant/mms/timeline_builder.cpp:98
+#: src/libambulant/mms/timeline_builder.cpp:143
 #, c-format
 msgid "MMS player: unknown tag \"%s\""
 msgstr "MMS speler: onbekende tag \"%s\""
 
-#: src/libambulant/mms/timeline_builder.cpp:205
+#: src/libambulant/mms/timeline_builder.cpp:203
 #, c-format
 msgid "Internal error: timeline_builder.build_node: unknown nodetype %d"
 msgstr "Intern probleem: onbekend nodetype %d"
 
-#: src/libambulant/mms/timeline_builder.cpp:243
+#: src/libambulant/mms/timeline_builder.cpp:241
 msgid "MMS Player: empty seq not allowed in MMS"
 msgstr "MMS speler: lege seq niet toegestaan in MMS"
 
-#: src/libambulant/mms/timeline_builder.cpp:279
+#: src/libambulant/mms/timeline_builder.cpp:277
 msgid "MMS Player: empty par not allowed in MMS"
 msgstr "MMS speler: lege par niet toegestaan in MMS"
 
-#: src/libambulant/mms/timeline_builder.cpp:286
+#: src/libambulant/mms/timeline_builder.cpp:284
 msgid "MMS Player: par must have explicit delay in MMS"
 msgstr "MMS speler: par zonder expliciete delay niet toegestaan in MMS"
 
-#: src/libambulant/mms/timeline_builder.cpp:291
+#: src/libambulant/mms/timeline_builder.cpp:289
 msgid "MMS Player: dur attribute must be of form \"1000ms\""
 msgstr "MMS speler: dur attribute is niet van de vorm \"1000ms\""
 
-#: src/libambulant/net/datasource.cpp:343
+#: src/libambulant/net/datasource.cpp:352
 #, c-format
 msgid "%s: Cannot open, not supported by any datasource"
 msgstr "%s: Kan niet geopend worden, geen ondersteuning voor dit formaat"
 
-#: src/libambulant/net/datasource.cpp:389
+#: src/libambulant/net/datasource.cpp:398
 #, c-format
 msgid "%s: Cannot open, no compatible parser"
 msgstr "%s: Kan niet decodeerd worden"
 
-#: src/libambulant/net/datasource.cpp:408
-#: src/libambulant/net/datasource.cpp:433
+#: src/libambulant/net/datasource.cpp:417
+#: src/libambulant/net/datasource.cpp:442
 #, c-format
 msgid "%s: Cannot open, cannot find conversion filter"
 msgstr "Audiobestand kan niet geopend worden: %s"
 
-#: src/libambulant/net/datasource.cpp:448
+#: src/libambulant/net/datasource.cpp:457
 #, c-format
 msgid "%s: Cannot open, not supported by any video datasource"
 msgstr "%s: Kan niet geopend worden, geen ondersteuning voor dit video-formaat"
 
-#: src/libambulant/net/datasource.cpp:525
+#: src/libambulant/net/datasource.cpp:538
 msgid "datasource_reader: out of memory"
 msgstr "datasource_reader: geen geheugen meer"
 
-#: src/libambulant/net/demux_datasource.cpp:58
-#: src/libambulant/net/demux_datasource.cpp:309
+#: src/libambulant/net/demux_datasource.cpp:67
+#: src/libambulant/net/demux_datasource.cpp:289
 #, c-format
 msgid "%s: no more audio streams"
 msgstr "%s: kan geen audiokanaal meer aanmaken"
 
-#: src/libambulant/net/demux_datasource.cpp:130
-#: src/libambulant/net/demux_datasource.cpp:188
-#: src/libambulant/net/ffmpeg_audio.cpp:327
-#: src/libambulant/net/ffmpeg_audio.cpp:376
-#: src/libambulant/net/ffmpeg_audio.cpp:439
-#: src/libambulant/net/ffmpeg_audio.cpp:765
-#: src/libambulant/net/ffmpeg_audio.cpp:803
-#: src/libambulant/net/ffmpeg_audio.cpp:971
+#: src/libambulant/net/demux_datasource.cpp:139
+#: src/libambulant/net/ffmpeg_audio.cpp:318
+#: src/libambulant/net/ffmpeg_audio.cpp:365
+#: src/libambulant/net/ffmpeg_audio.cpp:430
+#: src/libambulant/net/ffmpeg_audio.cpp:752
+#: src/libambulant/net/ffmpeg_audio.cpp:790
+#: src/libambulant/net/ffmpeg_audio.cpp:958
 msgid "Programmer error encountered during audio playback"
 msgstr "Er is een interne fout opgetreden tijdens het spelen van audio"
 
-#: src/libambulant/net/demux_datasource.cpp:405
-#: src/libambulant/net/ffmpeg_video.cpp:269
-#: src/libambulant/net/ffmpeg_video.cpp:718
-#: src/libambulant/net/ffmpeg_video.cpp:723
-#: src/libambulant/net/ffmpeg_video.cpp:731
-#: src/libambulant/net/ffmpeg_video.cpp:738
+#: src/libambulant/net/demux_datasource.cpp:397
+#: src/libambulant/net/ffmpeg_video.cpp:274
+#: src/libambulant/net/ffmpeg_video.cpp:736
+#: src/libambulant/net/ffmpeg_video.cpp:741
+#: src/libambulant/net/ffmpeg_video.cpp:749
+#: src/libambulant/net/ffmpeg_video.cpp:756
 msgid "Programmer error encountered during video playback"
 msgstr "Er is een interne fout opgetreden tijdens het spelen van video"
 
-#: src/libambulant/net/demux_datasource.cpp:634
+#: src/libambulant/net/demux_datasource.cpp:638
 #, c-format
 msgid "%s: Ignoring audio, unsupported encoding"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:158
-#: src/libambulant/net/rtsp_factory.cpp:95
+#: src/libambulant/net/ffmpeg_audio.cpp:155
+#: src/libambulant/net/rtsp_factory.cpp:97
 #, c-format
 msgid "%s: unable to create audio resampler"
 msgstr "%s: audio resampler kan niet gecreëerd worden"
 
-#: src/libambulant/net/ffmpeg_audio.cpp:192
+#: src/libambulant/net/ffmpeg_audio.cpp:183
 #, c-format
 msgid "No support for %d-bit audio, only 16"
 msgstr "Geen ondersteuning voor %d-bit audio, alleen 16-bit"
 
-#: src/libambulant/net/ffmpeg_audio.cpp:261
+#: src/libambulant/net/ffmpeg_audio.cpp:252
 #, c-format
 msgid "%s: audio decoder \"%s\" not supported"
 msgstr "%s: audio decoder \"%s\" wordt niet ondersteund"
 
-#: src/libambulant/net/ffmpeg_audio.cpp:278
+#: src/libambulant/net/ffmpeg_audio.cpp:269
 #, c-format
 msgid "ffmpeg_decoder_datasource: could not select %s(0x%x) decoder"
 msgstr "ffmpeg_decoder_datasource: kan %s(0x%x) decoder niet selecteren"
 
-#: src/libambulant/net/ffmpeg_audio.cpp:588
-#: src/libambulant/net/ffmpeg_audio.cpp:595
+#: src/libambulant/net/ffmpeg_audio.cpp:575
+#: src/libambulant/net/ffmpeg_audio.cpp:582
 #, c-format
 msgid "No support for \"%s\" audio"
 msgstr "Geen ondersteuning voor \"%s\" audio"
@@ -216,12 +215,12 @@ msgstr "Interne fout gedetecteerd"
 msgid "ffmpeg_video_decoder_datasource: could not select %s(0x%x) decoder"
 msgstr "ffmpeg_video_decoder_datasource: kan %s(0x%x) decoder niet selecteren"
 
-#: src/libambulant/net/ffmpeg_video.cpp:542
+#: src/libambulant/net/ffmpeg_video.cpp:562
 msgid "error decoding video frame"
 msgstr "fout tijdens decoderen videoframe"
 
-#: src/libambulant/net/ffmpeg_video.cpp:695
-#: src/libambulant/net/ffmpeg_video.cpp:702
+#: src/libambulant/net/ffmpeg_video.cpp:713
+#: src/libambulant/net/ffmpeg_video.cpp:720
 #, fuzzy, c-format
 msgid "No support for \"%s\" video"
 msgstr "Geen ondersteuning voor \"%s\" audio"
@@ -231,17 +230,17 @@ msgstr "Geen ondersteuning voor \"%s\" audio"
 msgid "Error encountered while reading file %s"
 msgstr "Er is een fout opgetreden tijdens het lezen van %s"
 
-#: src/libambulant/net/url.cpp:320
+#: src/libambulant/net/url.cpp:338
 #, c-format
 msgid "%s: Cannot parse URL"
 msgstr "Kan netwerklocatie (URL) niet interpreteren: %s"
 
-#: src/libambulant/smil2/smil_player.cpp:723
+#: src/libambulant/smil2/smil_player.cpp:761
 #, c-format
 msgid "Link destination not found: %s"
 msgstr "Linkbestemming niet gevonden: %s"
 
-#: src/libambulant/smil2/smil_player.cpp:729
+#: src/libambulant/smil2/smil_player.cpp:767
 #, c-format
 msgid "This implementation cannot open <%s> in new window"
 msgstr "Deze versie kan <%s> niet in een nieuw venster openen"
@@ -261,99 +260,99 @@ msgstr "DOM-tree kan niet gebouwd worden: %s"
 msgid "%s: node ID not found"
 msgstr "%s: Node ID niet gevonden"
 
-#: src/player_unix/qt_gui.cpp:135
+#: src/player_unix/qt_gui.cpp:136
 msgid "&Open..."
 msgstr "&Open..."
 
-#: src/player_unix/qt_gui.cpp:136
+#: src/player_unix/qt_gui.cpp:137
 msgid "Open &URL..."
 msgstr "Open &URL..."
 
-#: src/player_unix/qt_gui.cpp:137
+#: src/player_unix/qt_gui.cpp:138
 msgid "&Reload..."
 msgstr "&Laad Opnieuw"
 
-#: src/player_unix/qt_gui.cpp:145
+#: src/player_unix/qt_gui.cpp:146
 msgid "&Settings"
 msgstr "&Instellingen...."
 
-#: src/player_unix/qt_gui.cpp:148
+#: src/player_unix/qt_gui.cpp:149
 msgid "&Quit"
 msgstr "&Stop"
 
-#: src/player_unix/qt_gui.cpp:149
+#: src/player_unix/qt_gui.cpp:150
 msgid "&File"
 msgstr "&Bestand"
 
-#: src/player_unix/qt_gui.cpp:154 src/player_unix/qt_gui.cpp:159
+#: src/player_unix/qt_gui.cpp:155 src/player_unix/qt_gui.cpp:160
 msgid "Pla&y"
 msgstr "&Speel"
 
-#: src/player_unix/qt_gui.cpp:156
+#: src/player_unix/qt_gui.cpp:157
 msgid "&Pause"
 msgstr "&Pauzeer"
 
-#: src/player_unix/qt_gui.cpp:158
+#: src/player_unix/qt_gui.cpp:159
 msgid "&Stop"
 msgstr "&Stop"
 
-#: src/player_unix/qt_gui.cpp:163
+#: src/player_unix/qt_gui.cpp:164
 msgid "&Full Screen"
 msgstr "&Hele Scherm"
 
-#: src/player_unix/qt_gui.cpp:164
+#: src/player_unix/qt_gui.cpp:165
 msgid "&Window"
 msgstr "&Venster"
 
-#: src/player_unix/qt_gui.cpp:166
+#: src/player_unix/qt_gui.cpp:167
 msgid "&Load settings..."
 msgstr "&Instellingen...."
 
-#: src/player_unix/qt_gui.cpp:169
+#: src/player_unix/qt_gui.cpp:170
 msgid "&Log Window..."
 msgstr "Logboek"
 
-#: src/player_unix/qt_gui.cpp:171
+#: src/player_unix/qt_gui.cpp:172
 msgid "&View"
 msgstr "&Weergave"
 
-#: src/player_unix/qt_gui.cpp:176
+#: src/player_unix/qt_gui.cpp:177
 msgid "&About AmbulantPlayer"
 msgstr "&Over AmbulantPlayer"
 
-#: src/player_unix/qt_gui.cpp:177
+#: src/player_unix/qt_gui.cpp:178
 msgid "AmbulantPlayer &Help"
 msgstr "AmbulantPlayer &Help..."
 
-#: src/player_unix/qt_gui.cpp:179
+#: src/player_unix/qt_gui.cpp:180
 msgid "AmbulantPlayer &Website..."
 msgstr "AmbulantPlayer &Website..."
 
-#: src/player_unix/qt_gui.cpp:180
+#: src/player_unix/qt_gui.cpp:181
 msgid "&Play Welcome Document"
 msgstr "Speel Welkom-document"
 
-#: src/player_unix/qt_gui.cpp:181
+#: src/player_unix/qt_gui.cpp:182
 msgid "&Help"
 msgstr "&Help"
 
-#: src/player_unix/qt_gui.cpp:213
+#: src/player_unix/qt_gui.cpp:214
 msgid "About AmbulantPlayer"
 msgstr "Over AmbulantPlayer"
 
-#: src/player_unix/qt_gui.cpp:215 src/player_unix/qt_gui.cpp:492
+#: src/player_unix/qt_gui.cpp:216 src/player_unix/qt_gui.cpp:492
 msgid "OK"
 msgstr "OK"
 
-#: src/player_unix/qt_gui.cpp:233
+#: src/player_unix/qt_gui.cpp:234
 msgid "Cannot find Welcome.smil document"
 msgstr "Welcome.smil document niet gevonden"
 
-#: src/player_unix/qt_gui.cpp:245
+#: src/player_unix/qt_gui.cpp:246
 msgid "Cannot find Ambulant Player Help"
 msgstr "AmbulantPlayer Help is niet gevonden"
 
-#: src/player_unix/qt_gui.cpp:271
+#: src/player_unix/qt_gui.cpp:272
 #, c-format
 msgid "%s: Cannot open file: %s"
 msgstr "%s: Bestand kan niet geopend worden: %s"
@@ -469,16 +468,16 @@ msgstr "Gebruik insteekmodules"
 msgid "Plugin directory:\n"
 msgstr "Map voor insteekmodules:\n"
 
-#: src/libambulant/gui/cocoa/cocoa_gui.mm:220
+#: src/libambulant/gui/cocoa/cocoa_gui.mm:232
 msgid "Unsupported: AmbulantPlayer cannot open second toplevel window yet"
 msgstr "Openen van meerdere vensters nog niet ondersteund door AmbulantPlayer"
 
-#: src/libambulant/gui/cocoa/cocoa_video.mm:62
+#: src/libambulant/gui/cocoa/cocoa_video.mm:131
 #, c-format
 msgid "%s: cannot convert to URL"
 msgstr "Geen correcte internetlocatie (URL): %s"
 
-#: src/libambulant/gui/cocoa/cocoa_video.mm:67
+#: src/libambulant/gui/cocoa/cocoa_video.mm:142
 #, c-format
 msgid "%s: cannot open movie"
 msgstr "Videobestand kan niet geopend worden: %s"

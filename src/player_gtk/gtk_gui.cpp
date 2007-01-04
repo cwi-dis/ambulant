@@ -411,7 +411,19 @@ gtk_gui::~gtk_gui() {
 		m_settings = NULL;
 	}
 	if (m_toplevelcontainer) {
+		/*
+		  Although it seems a good idea to destroy the top-level
+		  widget at this point, by some unrevealed magic
+		  it seems already been done by gtk, resulting in cryptic
+		  error messages like: 
+		  GLib-GObject-WARNING **: invalid uninstantiatable type `(null)' in cast to `GtkWidget'
+		  Gtk-CRITICAL **: gtk_widget_destroy: assertion `GTK_IS_WIDGET (widget)' failed
+		  Commenting out next line doesn't seem to contribute to
+		  any extra memory leaks, gtk_init() alone is responsible
+		  for almost all of them
+
 		gtk_widget_destroy(GTK_WIDGET (m_toplevelcontainer));
+		 */
 		m_toplevelcontainer = NULL;
 	}
 	if (menubar) {
