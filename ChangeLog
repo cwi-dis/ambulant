@@ -1,3 +1,8 @@
+2007-01-03 15:32  jackjansen
+
+	* Added a note about installing gettext-devel, if applicable. Fixes
+	  #1626191
+
 2007-01-02 16:36  jackjansen
 
 	* Removed duplicate code (m_src was cleared in destructor, but
