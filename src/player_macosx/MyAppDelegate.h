@@ -28,6 +28,7 @@
 }
 - (BOOL) applicationShouldOpenUntitledFile: (id) sender;
 - (void) applicationWillFinishLaunching:(NSNotification *)aNotification;
+- (void)handleGetURLEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent;
 - (IBAction)loadFilter:(id)sender;
 - (IBAction)playWelcome:(id)sender;
 - (IBAction)showHomepage:(id)sender;

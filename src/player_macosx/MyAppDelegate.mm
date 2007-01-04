@@ -166,9 +166,32 @@ initialize_logger()
 		std::string resourcedir([nsresourcedir cString]);
 		ambulant::net::url::set_datafile_directory(resourcedir);
 	}
+#if 0
+	// Ask for notification when preferences change.
+	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+	[nc addObserver:self
+		selector:@selector(preferencesChanged:)
+		name:NSUserDefaultsDidChangeNotification
+		object:nil];
+	// And these don't work either:-(
+	[defaults addObserver:self forKeyPath:@"observingKeyPath" options:NSKeyValueObservingOptionNew context:nil];
+	[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.log_level" options:NSKeyValueObservingOptionNew context:nil];
+	[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"log_level" options:NSKeyValueObservingOptionNew context:nil];
+#endif
+	// Install our "open URL" handler.
+	NSAppleEventManager *appleEventManager = [NSAppleEventManager sharedAppleEventManager];
+	// There seem to be two similar events gurl/gurl (official one) and GURL/GURL (used by "open" command line tool).
+	[appleEventManager setEventHandler:self andSelector:@selector(handleGetURLEvent:withReplyEvent:) 
+		forEventClass:kAEInternetSuite
+		andEventID:kAEISGetURL];
+	[appleEventManager setEventHandler:self andSelector:@selector(handleGetURLEvent:withReplyEvent:) 
+		forEventClass:'GURL'
+		andEventID:'GURL'];
+		
 	// Test whether we want to run the welcome document (on first run only)
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	if ( [defaults boolForKey: @"welcomeDocumentSeen"] ) return;
+	if ( [defaults boolForKey: @"welcomeDocumentSeen"] )
+		return;
 	NSString *welcomePath = [thisBundle pathForResource:@"Welcome" ofType:@"smil"];
 	if (welcomePath) {
 		id sender = [aNotification object];
@@ -184,19 +207,24 @@ initialize_logger()
 	} else {
 		ambulant::lib::logger::get_logger()->error(gettext("No Welcome.smil in application bundle"));
 	}
-	// Ask for notification when preferences change.
-#if 0
-	// This doesn't work;-(
-	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-	[nc addObserver:self
-		selector:@selector(preferencesChanged:)
-		name:NSUserDefaultsDidChangeNotification
-		object:nil];
-	// And these don't work either:-(
-	[defaults addObserver:self forKeyPath:@"observingKeyPath" options:NSKeyValueObservingOptionNew context:nil];
-	[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.log_level" options:NSKeyValueObservingOptionNew context:nil];
-	[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"log_level" options:NSKeyValueObservingOptionNew context:nil];
-#endif
+}
+
+- (void)handleGetURLEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent
+{
+	NSLog(@"GetURLEvent called\n");
+	NSAppleEventDescriptor *obj = [event paramDescriptorForKeyword: keyDirectObject];
+	if (!obj) {
+		NSLog(@"handleGetURLEvent: No direct object!\n");
+		return;
+	}
+	NSString *urlstr = [obj stringValue];
+	NSLog(@"handleGetURLEvent: %@\n", urlstr);
+	NSURL *url = [NSURL URLWithString:urlstr];
+	NSDocumentController *controller = [NSDocumentController sharedDocumentController];
+	NSError *error;
+	MyDocument *doc = [controller openDocumentWithContentsOfURL:url display:YES error:&error];
+	if (!doc)
+		NSLog(@"handleGetURLEvent: error: %@\n", error);
 }
 
 - (IBAction)loadFilter:(id)sender
