@@ -62,6 +62,8 @@ cocoa_fill_renderer::start(double where)
 		return;
 	}
 	m_dest->show(this);
+	m_context->started(m_cookie);
+	m_context->stopped(m_cookie);
 	m_lock.leave();
 }
 

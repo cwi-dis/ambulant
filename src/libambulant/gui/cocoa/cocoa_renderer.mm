@@ -69,8 +69,9 @@ void
 cocoa_transition_renderer::start(double where)
 {
 	m_lock.enter();
-	AM_DBG logger::get_logger()->debug("cocoa_transition_renderer.start()");
+	AM_DBG logger::get_logger()->debug("cocoa_transition_renderer.start(%f)", where);
 	if (m_intransition && m_transition_dest) {
+		AM_DBG logger::get_logger()->debug("cocoa_transition_renderer.start: with intransition");
 		m_trans_engine = cocoa_transition_engine(m_transition_dest, false, m_intransition);
 		if (m_trans_engine) {
 			gui_window *window = m_transition_dest->get_gui_window();
