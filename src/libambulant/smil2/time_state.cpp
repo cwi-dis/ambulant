@@ -277,7 +277,6 @@ void active_state::sync_update(qtime_type timestamp) {
 	if(end != m_interval.end) {
 		m_self->update_interval_end(timestamp, end);
 	}
-	
 	restart_behavior rb = m_attrs.get_restart();
 	if(rb == restart_always && !m_self->sync_node()->is_seq()) {
 		interval_type candidate(m_interval.begin, timestamp.second); 
@@ -288,9 +287,17 @@ void active_state::sync_update(qtime_type timestamp) {
 				m_attrs.get_id().c_str(),
 				::repr(i).c_str()); 
 			m_self->set_state(ts_postactive, timestamp, m_self);
+#if 1
+			// XXX Attempt by Jack to fix bug #1627916:
+			// The original code here is completely different from what happens in
+			// postactive/preactive. Try to run the original code by getting our
+			// time_node to do sync_update recursively.
+			m_self->sync_update(timestamp);
+#else
 			m_self->set_begin_event_inst(timestamp.second);
 			m_self->raise_update_event(timestamp);
 			//m_self->sync_update(timestamp);
+#endif
 		}
 	}
 }
