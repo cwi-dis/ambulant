@@ -1,3 +1,36 @@
+2007-01-04 17:10  jackjansen
+
+	* Catch gurl/gurl and GURL/GURL appleevents, and open the document
+	  corresponding to that URL.
+
+	  Fixes #1189379.
+
+2007-01-04 16:04  keesblom
+
+	* Added an argument to a call to stopped() in gtk_fill.cpp to make
+	  it compile Found a kludge in gtk_gui.cpp to get rid of bug #
+	  1627008
+
+2007-01-04 15:19  jackjansen
+
+	* Added -lintl to the link line for the shared library only on
+	  Darwin.  (Actually, the dependency is on Cocoa, but that should
+	  be fine for now).
+
+	  Should fix #1626178.
+
+2007-01-04 14:59  jackjansen
+
+	* Brush renderers didn't emit stopped() callback when started.
+
+	  Fixes #1627056.
+
+2007-01-04 14:56  jackjansen
+
+	* brush renderer didn't emit stopped() events when started.
+
+	  Fixes #1627056.
+
 2007-01-03 15:32  jackjansen
 
 	* Added a note about installing gettext-devel, if applicable. Fixes
