@@ -1,3 +1,15 @@
+2007-01-05 16:59  jackjansen
+
+	* Tentative (partial?) fix for #1627916: when a sync_update()
+	  happens in active_state we advance to postactive_state and then
+	  get our time_node to do sync_update() again. This will execute
+	  the postactive_state::sync_update(), which does the right thing.
+
+	  At least: when using the QuickTime renderer on the Mac. With the
+	  builtin (ffmpeg) renderer Kees' second problem (all frames
+	  considered early) pops up, but I think this may be an unrelated
+	  bug.
+
 2007-01-04 17:10  jackjansen
 
 	* Catch gurl/gurl and GURL/GURL appleevents, and open the document
