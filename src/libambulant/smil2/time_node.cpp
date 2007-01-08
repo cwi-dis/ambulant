@@ -2211,7 +2211,7 @@ excl::get_active_child() {
 	
 	std::list<time_node*>::iterator it;
 	for(it=cl.begin();it!=cl.end();it++) {
-		if((*it)->is_active()) {
+		if((*it)->is_active() && !(*it)->paused()) {
 			assert(candidate == NULL);
 			candidate = *it;
 		}
@@ -2348,9 +2348,12 @@ void excl::on_child_normal_end(time_node *c, qtime_type timestamp) {
 	
 	// if its active resume else start
 	if(nxt->paused()) {
+		c->remove(timestamp);
 		nxt->resume(timestamp);
 	} else if(nxt->deferred()) { 
-		// When an element is deferred, the begin time is deferred as well
+		// When an element is deferred, the begin time is deferred as well.
+		// Note that we don't need the c->remove() here, it is done later
+		// in interrupt().
 		nxt->set_deferred_interval(timestamp);
 	} else {
 		assert(false);

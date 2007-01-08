@@ -334,7 +334,7 @@ class time_node : public schedulable {
 	bool is_active() const { return m_active;}
 	
 	// For excl children, mainly: return true if the node is in fill mode
-	bool is_filled() const { return m_needs_remove; }
+	bool is_filled() const { return !m_active && m_needs_remove; }
 
 	// Returns the current interval associated with this (maybe invalid)
 	const interval_type& get_current_interval() const {
