@@ -253,7 +253,7 @@ cocoa_video_renderer::pause(pause_display d)
 {
 	m_lock.enter();
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer::pause(%s)", m_node->get_sig().c_str());
+	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer::pause(0x%x)", this);
 	m_paused = true;
 	if (m_movie && m_movie_view) {
 		[m_movie_view pause: NULL];
@@ -269,7 +269,7 @@ cocoa_video_renderer::resume()
 {
 	m_lock.enter();
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer::resume()");
+	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer::resume(0x%x)", this);
 	m_paused = false;
 	if (m_movie && m_movie_view) {
 		if ([m_movie_view isHidden]) [m_movie_view setHidden: NO];
@@ -297,7 +297,7 @@ cocoa_video_renderer::_poll_playing()
 		return;
 	}
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	bool is_stopped = ([m_movie rate] == 0);
+	bool is_stopped = ([m_movie rate] == 0) && !m_paused;
 	if (!is_stopped && m_clip_end > 0) {
 		Movie mov = [m_movie quickTimeMovie];
 		TimeValue movtime = GetMovieTime(mov, NULL);
@@ -317,8 +317,10 @@ cocoa_video_renderer::_poll_playing()
 	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer::_poll_playing: is_stopped=%d", is_stopped);
 	[pool release];
 	m_lock.leave();
-	if (is_stopped)
+	if (is_stopped) {
+		AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer(0x%x): calling stopped()", this);
 		m_context->stopped(m_cookie);
+	}
 }
 
 void
