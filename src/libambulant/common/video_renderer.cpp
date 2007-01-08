@@ -139,7 +139,7 @@ video_renderer::start (double where)
 	m_epoch = m_timer->elapsed() - (long)(m_clip_begin/1000) - (int)(where*1000);
 
 	lib::event * e = new dataavail_callback (this, &video_renderer::data_avail);
-	AM_DBG lib::logger::get_logger ()->debug ("video_renderer::start(%f) this = 0x%x, dest=0x%x, timer=0x%x, epoch=%d", where, (void *) this, (void*)m_dest, m_timer, m_epoch);
+	/*AM_DBG*/ lib::logger::get_logger ()->debug ("video_renderer::start(%f) this = 0x%x, cookie=%d, dest=0x%x, timer=0x%x, epoch=%d", where, (void *) this, (int)m_cookie, (void*)m_dest, m_timer, m_epoch);
 	m_src->start_frame (m_event_processor, e, 0);
 	if (m_audio_renderer) 
 		m_audio_renderer->start(where);
@@ -153,7 +153,7 @@ void
 video_renderer::stop()
 { 
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("video_renderer::stop() this=0x%x, dest=0x%x", (void *) this, (void*)m_dest);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("video_renderer::stop() this=0x%x, dest=0x%x", (void *) this, (void*)m_dest);
 	if (!m_activated) {
 		lib::logger::get_logger()->trace("video_renderer.stop(0x%x): not started", (void*)this);
 		m_lock.leave();
@@ -228,7 +228,7 @@ void
 video_renderer::pause(pause_display d)
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("video_renderer::pause() this=0x%x, dest=0x%x", (void *) this, (void*)m_dest);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("video_renderer::pause() this=0x%x, dest=0x%x", (void *) this, (void*)m_dest);
 	// XXX if d==display_hide we should hide the content
 	if (m_activated && !m_is_paused) {
 		if (m_audio_renderer) 

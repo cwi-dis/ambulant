@@ -595,9 +595,12 @@ void smil_player::stopped(int n, double t) {
 		time_node::value_type root_time = m_root->get_simple_time();
 		m_scheduler->update_horizon(root_time);
 		q_smil_time timestamp(m_root, root_time);
-		eom_event_cb *cb = new eom_event_cb((*it).second, 
-			&time_node::on_eom, timestamp);
-		schedule_event(cb, 0, ep_high);
+		time_node* tn = (*it).second;
+		if (tn->want_on_eom()) {
+			eom_event_cb *cb = new eom_event_cb(tn, 
+				&time_node::on_eom, timestamp);
+			schedule_event(cb, 0, ep_high);
+		}
 	}
 }
 

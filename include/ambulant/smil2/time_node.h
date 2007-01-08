@@ -127,6 +127,9 @@ class time_node : public schedulable {
 	// End of media update
 	void on_eom(qtime_type timestamp);
 	
+	// Return true if the node is waiting for on on_eom callback.
+	bool want_on_eom();
+	
 	// Pause of media update
 	void on_pom(qtime_type timestamp);
 	

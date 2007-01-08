@@ -1094,6 +1094,18 @@ void time_node::on_eom(qtime_type timestamp) {
 	}
 }
 
+// Return true if we want on on_eom callback.
+// This is a hack, really. The problem it tries to solve is that sometimes the
+// on_eom notification comes in late (because it goes through the event processor)
+// and by the time we get to on_eom we've already started with a next iteration.
+// The on_eom callback will then erronuously terminte the new iteration.
+// But: this solution is a hack, it would be much better if we (a) could make sure
+// this situation could never occur or (b) could detect this situation in on_eom().
+bool time_node::want_on_eom()
+{
+	return is_active() && !m_eom_flag;
+}
+
 // End of transition
 // This notification is sent when a transition ends. It is sent to
 // all nodes that overlap the transition that just finished.
