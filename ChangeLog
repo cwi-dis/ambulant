@@ -1,3 +1,26 @@
+2007-01-08 17:07  jackjansen
+
+	* Fixes for #1626168: there were various minor issues with excl
+	  interrupt and pause semantics.
+
+2007-01-08 17:05  jackjansen
+
+	* Pausing a quicktime video caused a stopped() callback. Fixed.
+
+2007-01-08 16:12  jackjansen
+
+	* Another piece of the fix for #1627916. Actually, it is more than
+	  a workaround than a fix.  When scheduler::stopped() is called for
+	  a node it schedules a callback to time_node::on_eom(). But, if
+	  the node is restarted before that callback is executed the
+	  on_eom() will inadvertantly be interpreted as termination for
+	  that new interation.	Unfortunately this situation is difficult
+	  to detect in on_eom, and also difficult to forestall altogether.
+	  This checkin is a partial fix: in stopped() we determine whether
+	  the node is interested in on_eom() at all, and if not we don't
+	  schedule it. In the context of bug #1627916 this appears to be
+	  good enough.
+
 2007-01-05 16:59  jackjansen
 
 	* Tentative (partial?) fix for #1627916: when a sync_update()
