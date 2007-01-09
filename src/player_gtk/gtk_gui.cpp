@@ -957,7 +957,7 @@ gtk_gui::internal_message(int level, char* msg) {
 void
 gtk_gui::_update_menus()
 {
-    AM_DBG printf("gtk_gui::_update_menus(0x%x) play_enabled=%d play_active=%d pause_enabled=%d pause_active=%d stop_enabled=%d stop_active=%d \n", this, m_mainloop->is_play_enabled(), m_mainloop->is_play_active(), m_mainloop->is_pause_enabled(), m_mainloop->is_pause_active(), m_mainloop->is_stop_enabled(), m_mainloop->is_stop_active());
+  AM_DBG if (m_mainloop) printf("gtk_gui::_update_menus(0x%x) play_enabled=%d play_active=%d pause_enabled=%d pause_active=%d stop_enabled=%d stop_active=%d \n", this, m_mainloop->is_play_enabled(), m_mainloop->is_play_active(), m_mainloop->is_pause_enabled(), m_mainloop->is_pause_active(), m_mainloop->is_stop_enabled(), m_mainloop->is_stop_active());
     gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "play"),
         m_mainloop && m_mainloop->is_play_enabled() && ! m_mainloop->is_play_active());
     gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "pause"),
