@@ -96,7 +96,42 @@ void gtk_C_callback_do_motion_notify_event(void *userdata, GdkEventMotion *event
 extern "C" {
 void gtk_C_callback_do_button_release_event(void *userdata, GdkEventButton *event, GtkWidget *widget)
 {
-	((gtk_ambulant_widget*) userdata)->do_button_release_event(event);
+	gint s_x, s_y, d_x, d_y;
+	gtk_ambulant_widget* gaw = (gtk_ambulant_widget*) userdata;
+	GdkWindow* s_gdkw; /* source window */
+	GtkWidget* d_gtkw; /* destination widget */
+	GtkWidget* t_gtkw; /* toplevel widget */
+	
+	/* Find in the widget stack the widget in which window
+	   the event source coordinates (s_x,s_y) are defined
+	*/
+	if (gaw == NULL || event == NULL)
+		return; /* cannot handle */ 
+	s_x = (gint) round (event->x);
+	s_y = (gint) round (event->y);
+	s_gdkw = event->window;
+
+	d_gtkw = gaw->get_gtk_widget ();
+	t_gtkw = gtk_widget_get_toplevel (d_gtkw);
+	
+	for (GtkWidget* a_gtkw = d_gtkw; a_gtkw != NULL; 
+	     a_gtkw = gtk_widget_get_parent (a_gtkw)) {
+		if (s_gdkw == a_gtkw->window) {
+			/* found corresponding GdkWindow in GtkWidget stack */
+			/* translate if necessary */
+	    		if (a_gtkw != d_gtkw 
+			    && gtk_widget_translate_coordinates (a_gtkw, d_gtkw,
+								 s_x, s_y,
+								 &d_x, &d_y)) {
+				event->x = d_x;
+				event->y = d_y;
+			}
+			gaw->do_button_release_event (event);
+			break;
+		}
+		if (a_gtkw == t_gtkw)
+			break; /* not found */
+	}
 }
 }
 
@@ -804,7 +839,7 @@ gtk_ambulant_widget::do_button_release_event(GdkEventButton *e) {
 		return;
 	}
 	if (e->type == GDK_BUTTON_RELEASE){
-	  lib::point amwhere = lib::point((int)e->x, (int)e->y);
+		lib::point amwhere = lib::point((int)e->x, (int)e->y);
 		m_gtk_window->user_event(amwhere);
 	}
 }
