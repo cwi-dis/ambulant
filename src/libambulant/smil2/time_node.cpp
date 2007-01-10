@@ -271,7 +271,7 @@ time_node::get_implicit_dur() {
 	assert(!is_time_container());
 	
 	// If this is a discrete leaf node, we know the answer
-	if(is_really_discrete()) {
+	if(is_discrete()) {
 		AM_DBG m_logger->debug("get_implicit_dur(%s[%s]) return 0 for discrete", m_attrs.get_tag().c_str(), 
 			m_attrs.get_id().c_str());
 		return time_type(0);

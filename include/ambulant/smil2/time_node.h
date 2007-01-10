@@ -252,22 +252,17 @@ class time_node : public schedulable {
 	bool is_seq() const { return m_type == tc_seq;}
 	bool is_par() const { return m_type == tc_par;}
 	bool is_excl() const { return m_type == tc_excl;}
-#if 0
+#if 1
 	// Handling discrete media different than continuous media
 	// is a bad idea from a SMIL point of view (the tag name
 	// really is documentary only), and practically it
 	// caused problems with AmisAmbulant, which wants to
 	// pause after putting up a text node to allow the screen
 	// reader to do its thing.
+	// Code temporarily re-enabled because of bug #1553249.
 	bool is_discrete() const { return m_discrete;}
-	bool is_really_discrete() const { return m_discrete;}
 #else
 	bool is_discrete() const { return false;}
-	// The use of is_really_discrete() is a bug workaround for #1553249. It disables
-	// using unresolved duration for discrete media during time calculations,
-	// while still allowing them to be dynamically determined during playback.
-	// This is a hack that makes goto_prev() work.
-	bool is_really_discrete() const { return m_discrete;}
 #endif
 	bool is_root() const { return !up();}
 	bool is_cmedia() const {return !is_time_container() && !is_discrete();}
