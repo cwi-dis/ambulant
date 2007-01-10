@@ -1,3 +1,20 @@
+2007-01-09 16:50  keesblom
+
+	* Limit the size of a pixmap we want to get to tha actual available
+	  size to prevent gtk errors such as: assertion `src_x + width <=
+	  src_width && src_y + height <= src_height' failed Should fix
+	  Bug#1627953.
+
+2007-01-09 14:42  keesblom
+
+	* Cosmetic change.
+
+2007-01-09 14:34  keesblom
+
+	* In gtk_C_callback_do_button_release_event(..), added code to
+	  compute the proper (x,y) coordinates in the destination widget.
+	  Should fix Bug#1627927.
+
 2007-01-08 17:07  jackjansen
 
 	* Fixes for #1626168: there were various minor issues with excl
