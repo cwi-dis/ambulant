@@ -271,18 +271,28 @@ time_node::get_implicit_dur() {
 	assert(!is_time_container());
 	
 	// If this is a discrete leaf node, we know the answer
-	if(is_discrete()) return time_type(0);
+	if(is_really_discrete()) {
+		AM_DBG m_logger->debug("get_implicit_dur(%s[%s]) return 0 for discrete", m_attrs.get_tag().c_str(), 
+			m_attrs.get_id().c_str());
+		return time_type(0);
+	}
 	
 	// Was the implicit duration calculated before?
 	// If yes, avoid the overhead of querring
-	if(m_impldur != time_type::unresolved)
-		return m_impldur;	
+	if(m_impldur != time_type::unresolved) {
+		AM_DBG m_logger->debug("get_implicit_dur(%s[%s]) return cached %s", m_attrs.get_tag().c_str(), 
+			m_attrs.get_id().c_str(), ::repr(m_impldur).c_str());
+		return m_impldur;
+	}
 	
 	// Can the associated playable provide the implicit duration? 
 	m_impldur = get_playable_dur();
 	
-	if(m_ffwd_mode && m_impldur == time_type::unresolved) 
+	if(m_ffwd_mode && m_impldur == time_type::unresolved) {
+		AM_DBG m_logger->debug("get_implicit_dur(%s[%s]) return 1000 for ffwd_mode", m_attrs.get_tag().c_str(), 
+			m_attrs.get_id().c_str());
 		return 1000;
+	}
 		
 	// Trace the return value of this function
 	AM_DBG m_logger->debug("%s[%s].get_implicit_dur(): %s", m_attrs.get_tag().c_str(), 

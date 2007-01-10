@@ -260,8 +260,14 @@ class time_node : public schedulable {
 	// pause after putting up a text node to allow the screen
 	// reader to do its thing.
 	bool is_discrete() const { return m_discrete;}
+	bool is_really_discrete() const { return m_discrete;}
 #else
 	bool is_discrete() const { return false;}
+	// The use of is_really_discrete() is a bug workaround for #1553249. It disables
+	// using unresolved duration for discrete media during time calculations,
+	// while still allowing them to be dynamically determined during playback.
+	// This is a hack that makes goto_prev() work.
+	bool is_really_discrete() const { return m_discrete;}
 #endif
 	bool is_root() const { return !up();}
 	bool is_cmedia() const {return !is_time_container() && !is_discrete();}

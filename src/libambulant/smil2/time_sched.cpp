@@ -237,12 +237,16 @@ scheduler::time_type scheduler::_exec(time_type now) {
 	typedef std::map<time_node::time_type, std::list<time_node*> > event_map_t;
 	event_map_t events;
 	// events.clear();
-	if(!m_root->is_active())
+	if(!m_root->is_active()) {
+		AM_DBG lib::logger::get_logger()->debug("scheduler::_exec: now=%d root no longer active", now);
 		return next;
+	}
 	// get all the pending events from the timegraph
 	m_root->get_pending_events(events);
-	if(events.empty())
+	if(events.empty()) {
+		AM_DBG lib::logger::get_logger()->debug("scheduler::_exec: now=%d no events", now);
 		return next;
+	}
 	event_map_t::iterator eit = events.begin();
 	next = (*eit).first();
 	std::list<time_node*>& elist = (*eit).second;

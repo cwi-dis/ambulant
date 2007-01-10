@@ -593,7 +593,7 @@ void smil_player::stopped(int n, double t) {
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end() && !(*it).second->is_discrete()) {
 		time_node::value_type root_time = m_root->get_simple_time();
-		m_scheduler->update_horizon(root_time);
+		// XXXJACK m_scheduler->update_horizon(root_time);
 		q_smil_time timestamp(m_root, root_time);
 		time_node* tn = (*it).second;
 		if (tn->want_on_eom()) {
