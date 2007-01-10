@@ -185,6 +185,8 @@ Creating the MacOSX installer
         --without-python --with-live \
         --with-xerces --with-xerces-plugin \
         --with-universalsdk --disable-dependency-tracking
+- The build will fail at the cocoambulant_executable link. See
+  src/player_macosx/README on how to proceed.
 - Install the player in src/player_macos.
 - Create a folder called something like "Ambulant Player 1.6", 
   and copy the items mentioned above into it.

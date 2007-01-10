@@ -134,10 +134,19 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	[[view window] makeFirstResponder: view];
 	[[view window] setAcceptsMouseMovedEvents: YES];
 
-	if ([self fileURL] == nil) {
-		[self askForURL: self];
+	BOOL compat103 = ![self respondsToSelector: @selector(fileURL)];
+	if (compat103) {
+		if ([self fileName] == nil) {
+			[self askForURL: self];
+		} else {
+			[self openTheDocument];
+		}
 	} else {
-		[self openTheDocument];
+		if ([self fileURL] == nil) {
+			[self askForURL: self];
+		} else {
+			[self openTheDocument];
+		}
 	}
 	[self validateButtons: self];
 	// Go fullscreen if either the -fullScreen argument was given on the command
@@ -168,7 +177,12 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 {
 	if (returnCode == NSOKButton && [[url_field stringValue] length] > 0) {
 		AM_DBG NSLog(@"ask_for_url: User said OK: %@", [url_field stringValue]);
-		[self setFileURL: [NSURL URLWithString: [url_field stringValue]]];
+		BOOL compat103 = ![self respondsToSelector: @selector(fileURL)];
+		if (compat103) {
+			[self setFileName: [url_field stringValue]];
+		} else {
+			[self setFileURL: [NSURL URLWithString: [url_field stringValue]]];
+		}
 		[self openTheDocument];
 	} else {
 		AM_DBG NSLog(@"ask_for_url: User said cancel");
@@ -178,7 +192,13 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 - (void)openTheDocument
 {
-    NSString *url = [[self fileURL] absoluteString];
+    NSString *url;
+	BOOL compat103 = ![self respondsToSelector: @selector(fileURL)];
+	if (compat103) {
+		url = [self fileName];
+	} else {
+		url = [[self fileURL] absoluteString];
+	}
 #if 0
 	// XXX This is incorrect
 	if ( [[self fileURL] isFileURL] && ![[self fileURL] fragment]) {
