@@ -1,3 +1,36 @@
+2007-01-10 16:18  jackjansen
+
+	* These are long dead, really.
+
+2007-01-10 16:06  jackjansen
+
+	* Fix for #1438496: player doesn't run on OSX 10.3.
+
+	  The only 10.4-specific calls we use (afaik) are fileURL and
+	  setFileURL.  These can easily be worked around using fileName and
+	  setFileName.
+
+2007-01-10 14:11  jackjansen
+
+	* Reverted is_really_discrete() workaround, and in stead disabled
+	  the mod introduced in time_node.h r1.42.
+
+	  That mod got rid of special treatment for discrete media items,
+	  but also introduced bug #1553249.
+
+2007-01-10 13:58  jackjansen
+
+	* Tentative workaround for #1553249.  During fast-forward from
+	  beginning of document (which is also what happens during
+	  goto_prev, but not during goto_next) something goes wrong with
+	  the time-dependency calculation and for some documents we wait
+	  for something that never happens.
+
+	  This workaround make the scheduler use 0 duration for discrete
+	  nodes in dependency calculations, while still allowing dynamic
+	  durations during runtime (which is needed for AmisAmbulant, or
+	  screen readers and such in general).
+
 2007-01-09 16:50  keesblom
 
 	* Limit the size of a pixmap we want to get to tha actual available
