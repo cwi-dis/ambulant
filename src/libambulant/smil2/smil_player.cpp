@@ -482,8 +482,8 @@ smil_player::after_mousemove()
 void smil_player::pointed(int n, double t) {
 #if 1
 	AM_DBG m_logger->debug("smil_player(0x%x)::pointed(%d, %f) m_new_focussed_nodes=0x%x", this, n, t, m_new_focussed_nodes);
-	if (m_new_focussed_nodes) // Can be 0 when before_mouse() was not called
-		m_new_focussed_nodes->insert(n);
+	assert(m_new_focussed_nodes);
+	m_new_focussed_nodes->insert(n);
 #else
 	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> dom_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
