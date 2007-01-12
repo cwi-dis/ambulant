@@ -783,6 +783,8 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& src_rc,
 	smil2::blitter_type bt = tr->get_blitter_type();
 	
 	if(bt == smil2::bt_r1r2r3r4) {
+#ifdef XXXX 
+// r.1.40 leads to #1619481
 		smil2::transition_blitclass_r1r2r3r4 *p = tr->get_as_r1r2r3r4_blitter();
 		r1r2r3r4_adapter *r1r2r3r4 = (r1r2r3r4_adapter*)p;
 		assert(r1r2r3r4);
@@ -801,6 +803,13 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& src_rc,
 		dst_rc_v &= new_dst;
 		dst_rc_v.w = src_rc_v.w; //XXXX
 		draw(src, src_rc_v, dst_rc_v, keysrc, m_surface);		
+#else /*XXXX*/
+// r.1.39 doesn't have the problem
+		lib::rect src_rc_v = src_rc;
+		lib::rect dst_rc_v = dst_rc;
+		clipto_r1r2r3r4(tr, src_rc_v, dst_rc_v);
+		draw(src, src_rc_v, dst_rc_v, keysrc, m_surface);
+#endif/*XXXX*/
 		return;
 	} else if(bt == smil2::bt_fade) {
 		IDirectDrawSurface* s1 = create_surface();
