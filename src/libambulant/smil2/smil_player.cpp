@@ -38,7 +38,7 @@
 #include "ambulant/smil2/time_sched.h"
 #include "ambulant/smil2/animate_e.h"
 
-//#define AM_DBG if(1)
+#define AM_DBG if(1)
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -78,7 +78,7 @@ smil_player::smil_player(lib::document *doc, common::factories *factory, common:
 {
 	
 	m_logger = lib::logger::get_logger();
-	AM_DBG m_logger->debug("smil_player::smil_player()");
+	AM_DBG m_logger->debug("smil_player::smil_player(0x%x)", this);
 }
 
 void
@@ -95,7 +95,7 @@ smil_player::initialize()
 }
 
 smil_player::~smil_player() {
-	AM_DBG m_logger->debug("smil_player::~smil_player()");
+	AM_DBG m_logger->debug("smil_player::~smil_player(0x%x)", this);
 	
 	// sync destruction
 	m_timer->pause();
@@ -376,6 +376,7 @@ smil_player::before_mousemove(int cursorid)
 	m_cursorid = cursorid;
 	delete m_new_focussed_nodes;
 	m_new_focussed_nodes = new std::set<int>();
+	AM_DBG m_logger->debug("smil_player(0x%x)::before_mousemove(%d) m_new_focussed_nodes=0x%x", this, cursorid, m_new_focussed_nodes);
 }
 
 int
@@ -480,9 +481,10 @@ smil_player::after_mousemove()
 // Playable notification for a point (mouse over) event.
 void smil_player::pointed(int n, double t) {
 #if 1
-	m_new_focussed_nodes->insert(n);
+	AM_DBG m_logger->debug("smil_player(0x%x)::pointed(%d, %f) m_new_focussed_nodes=0x%x", this, n, t, m_new_focussed_nodes);
+	if (m_new_focussed_nodes) // Can be 0 when before_mouse() was not called
+		m_new_focussed_nodes->insert(n);
 #else
-	AM_DBG m_logger->debug("smil_player::pointed(%d, %f)", n, t);
 	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> dom_event_cb;
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end()) {
