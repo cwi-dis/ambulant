@@ -92,18 +92,6 @@ gtk_transition_blitclass_fade::update()
         	W = newrect_whole.width(), H = newrect_whole.height();
 	setup_transition(m_outtrans, agw, &opm, &npm);
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_fade::update(%f) agw=0x%x, opm=0x%x,npm0x%x", m_progress, agw, opm, npm);
-	gint pix_w, pix_h;
-	/* if the pixmap we want to get some part of is actually smaller than we think,
-	   restrict the part that we try to get to the actual size of the pixmap (but
-	   make sure that this size is the same both for the old and the new pixmap).
-	*/
-	gdk_drawable_get_size(opm, &pix_w, &pix_h);
-	W = std::min (pix_w-L, W);
-	H = std::min (pix_h-T, H);
-	gdk_drawable_get_size(npm, &pix_w, &pix_h);
-	W = std::min (pix_w-L, W);
-	H = std::min (pix_h-T, H);
-
 	GdkPixbuf* old_pixbuf = gdk_pixbuf_get_from_drawable(NULL, opm, NULL, L, T, 0, 0, W, H);
 	GdkPixbuf* new_pixbuf = gdk_pixbuf_get_from_drawable(NULL, npm, NULL, L, T, 0, 0, W, H);
 	GdkPixbuf* tmp_pixbuf = gdk_pixbuf_copy(new_pixbuf);
