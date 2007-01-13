@@ -1,3 +1,24 @@
+2007-01-12 15:07  keesblom
+
+	* Undid the changes of r.1.5 because #1627953 was re-opened.
+
+2007-01-12 13:47  keesblom
+
+	* Reverted back to 1.39 code to get rid of #1619481 but left the
+	  1.40 code in an undefined #ifdef XXXX. It was an attempt to
+	  streamline, improve and eventually factor out this piece of code
+	  both for windows, qt and gtk.
+
+2007-01-12 12:18  keesblom
+
+	* Changed the temp. fix for #1627950 into an assertion.
+
+2007-01-12 11:33  keesblom
+
+	* Added a test for m_new_focussed_nodes not being zero.  This can
+	  happen when before_mousemove() was not called.  This fixes
+	  #1627950, but is not really a solution.
+
 2007-01-10 16:18  jackjansen
 
 	* These are long dead, really.
