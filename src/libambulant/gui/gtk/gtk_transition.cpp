@@ -69,9 +69,7 @@ finalize_transition(bool outtrans, ambulant_gtk_window *agw,  common::surface *d
 		// copy the pixels in m_tmppixmap to the on-screen pixmap
 		GdkPixmap* dest_pixmap = agw->get_ambulant_pixmap();
 		GdkPixmap* temp_pixmap = agw->get_ambulant_surface();
-		const lib::rect &cr=  dest->get_rect();
-		lib::rect r=cr;
-		r.translate(dest->get_global_topleft());
+		const lib::rect &r=  dest->get_clipped_screen_rect();
 		AM_DBG logger::get_logger()->debug("finalize_transition: dest_pixmap=0x%x: temp_pixmap=0x%x (L,T,W,H)=(%d,%d,%d,%d)", dest_pixmap, temp_pixmap,r.left(),r.top(),r.width(), r.height());
 		GdkGC *gc = gdk_gc_new (dest_pixmap);
 		gdk_draw_pixmap(dest_pixmap, gc, temp_pixmap, r.left(),r.top(),r.left(),r.top(),r.width(), r.height());
@@ -86,8 +84,7 @@ gtk_transition_blitclass_fade::update()
         AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_fade::update(%f)", m_progress);
 	ambulant_gtk_window *agw = (ambulant_gtk_window *)m_dst->get_gui_window();
 	GdkPixmap *npm, *opm;
-	rect newrect_whole =  m_dst->get_rect();
-	newrect_whole.translate(m_dst->get_global_topleft());
+	const rect& newrect_whole =  m_dst->get_clipped_screen_rect();
 	int L = newrect_whole.left(), T = newrect_whole.top(),
         	W = newrect_whole.width(), H = newrect_whole.height();
 	setup_transition(m_outtrans, agw, &opm, &npm);
@@ -119,6 +116,7 @@ gtk_transition_blitclass_rect::update()
 
 	rect newrect_whole = m_newrect;
 	newrect_whole.translate(m_dst->get_global_topleft());
+	newrect_whole &= m_dst->get_clipped_screen_rect();
 	int L = newrect_whole.left(), T = newrect_whole.top(),
         	W = newrect_whole.width(), H = newrect_whole.height();
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_rect: opm=0x%x, npm=0x%x, (L,T,W,H)=(%d,%d,%d,%d)",opm,npm,L,T,W,H);
@@ -141,9 +139,13 @@ gtk_transition_blitclass_r1r2r3r4::update()
 	rect newsrcrect_whole = m_newsrcrect;
 	rect newdstrect_whole = m_newdstrect;
 	oldsrcrect_whole.translate(m_dst->get_global_topleft());
+	oldsrcrect_whole &= m_dst->get_clipped_screen_rect();
 	olddstrect_whole.translate(m_dst->get_global_topleft());
+	olddstrect_whole &= m_dst->get_clipped_screen_rect();
 	newsrcrect_whole.translate(m_dst->get_global_topleft());
+	newsrcrect_whole &= m_dst->get_clipped_screen_rect();
 	newdstrect_whole.translate(m_dst->get_global_topleft());
+	newdstrect_whole &= m_dst->get_clipped_screen_rect();
 	int	Loldsrc = oldsrcrect_whole.left(),
 		Toldsrc = oldsrcrect_whole.top(),
 		Woldsrc = oldsrcrect_whole.width(),
@@ -179,8 +181,7 @@ gtk_transition_blitclass_rectlist::update()
 	ambulant_gtk_window *agw = (ambulant_gtk_window *)m_dst->get_gui_window();
 	GdkPixmap *npm, *opm;
 	setup_transition(m_outtrans, agw, &opm, &npm);
-	rect dstrect_whole = m_dst->get_rect();
-	dstrect_whole.translate(m_dst->get_global_topleft());
+	const rect& dstrect_whole = m_dst->get_clipped_screen_rect();
 	int Ldst = dstrect_whole.left(), Tdst = dstrect_whole.top(),
 		Wdst = dstrect_whole.width(), Hdst = dstrect_whole.height();
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_rectlist: (L,T,W,H)=(%d,%d,%d,%d)",Ldst,Tdst,Wdst,Hdst);
@@ -190,6 +191,7 @@ gtk_transition_blitclass_rectlist::update()
 	for(newrect=m_newrectlist.begin(); newrect != m_newrectlist.end(); newrect++) {
 		rect corner_rect = *newrect;
 		corner_rect.translate(m_dst->get_global_topleft());
+		corner_rect &= m_dst->get_clipped_screen_rect();
 		int L = corner_rect.left(), T = corner_rect.top(),
         		W = corner_rect.width(), H = corner_rect.height();
 		GdkRectangle rectangle;
@@ -233,8 +235,7 @@ gtk_transition_blitclass_poly::update()
 	free(points);
 	GdkGC *gc = gdk_gc_new (opm);
 	gdk_gc_set_clip_region(gc, region);
-	rect newrect_whole =  m_dst->get_rect();
-	newrect_whole.translate(dst_global_topleft);
+	const rect& newrect_whole =  m_dst->get_clipped_screen_rect();
 	int Ldst= newrect_whole.left(), Tdst = newrect_whole.top(),
         	Wdst = newrect_whole.width(), Hdst = newrect_whole.height();
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_poly::update(): ltwh=(%d,%d,%d,%d)",Ldst,Tdst,Wdst,Hdst);
@@ -281,6 +282,7 @@ gtk_transition_blitclass_polylist::update()
 	}
 	rect newrect_whole =  m_dst->get_rect();
 	newrect_whole.translate(dst_global_topleft);
+	newrect_whole &= m_dst->get_clipped_screen_rect();
 	int Ldst= newrect_whole.left(), Tdst = newrect_whole.top(),
         	Wdst = newrect_whole.width(), Hdst = newrect_whole.height();
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_polylist::update(): ltwh=(%d,%d,%d,%d)",Ldst,Tdst,Wdst,Hdst);
