@@ -65,7 +65,7 @@ smil_surface_factory::new_topsurface(
 surface_impl::surface_impl(const std::string &name, surface_impl *parent, rect bounds,
 	const region_info *info, bgrenderer *bgrenderer)
 :	m_name(name),
-	m_bounds_inited(true),
+	m_bounds_inited(false),
 	m_highlighting(false),
 	m_inner_bounds(bounds.innercoordinates(bounds)),
 	m_outer_bounds(bounds),
@@ -337,6 +337,13 @@ surface_impl::get_global_topleft() const
 	return m_window_topleft;
 }
 
+const lib::rect&
+surface_impl::get_clipped_screen_rect() const
+{
+	const_cast<surface_impl*>(this)->need_bounds();
+	return m_clipped_screen_bounds;
+}	
+
 void
 surface_impl::need_bounds()
 {
@@ -347,7 +354,16 @@ surface_impl::need_bounds()
 		m_outer_bounds.left(), m_outer_bounds.top(), m_outer_bounds.right(), m_outer_bounds.bottom());
 	m_inner_bounds = m_outer_bounds.innercoordinates(m_outer_bounds);
 	m_window_topleft = m_outer_bounds.left_top();
-	if (m_parent) m_window_topleft += m_parent->get_global_topleft();
+	if (m_parent) {
+		m_parent->need_bounds();
+		m_window_topleft += m_parent->get_global_topleft();
+	}
+	m_clipped_screen_bounds = m_inner_bounds;
+	m_clipped_screen_bounds.translate(m_window_topleft);
+	if (m_parent) {
+		// need_bounds already called
+		m_clipped_screen_bounds = m_clipped_screen_bounds & m_parent->m_clipped_screen_bounds;
+	}
 	m_bounds_inited = true;
 }
 

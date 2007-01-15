@@ -653,6 +653,7 @@ public:
 	void transition_done();
 	void keep_as_background();
 	const ambulant::lib::rect& get_rect() const;
+	const ambulant::lib::rect& get_clipped_screen_rect() const;
 	const ambulant::lib::point& get_global_topleft() const;
 	ambulant::lib::rect get_fit_rect(const ambulant::lib::size& src_size, ambulant::lib::rect* out_src_rect, const ambulant::common::alignment* align) const;
 	const ambulant::common::region_info* get_info() const;
@@ -666,6 +667,7 @@ public:
   private:
 	PyObject *py_surface;
 	ambulant::lib::rect get_rect_rvkeepref;
+	ambulant::lib::rect get_clipped_screen_rect_rvkeepref;
 	ambulant::lib::point get_global_topleft_rvkeepref;
 
 	friend PyObject *surfaceObj_New(ambulant::common::surface *itself);

@@ -7144,6 +7144,19 @@ static PyObject *surfaceObj_get_rect(surfaceObject *_self, PyObject *_args)
 	return _res;
 }
 
+static PyObject *surfaceObj_get_clipped_screen_rect(surfaceObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	const ambulant::lib::rect& _rv = _self->ob_itself->get_clipped_screen_rect();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O",
+	                     ambulant_rect_New(_rv));
+	return _res;
+}
+
 static PyObject *surfaceObj_get_global_topleft(surfaceObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -7294,6 +7307,8 @@ static PyMethodDef surfaceObj_methods[] = {
 	{"keep_as_background", (PyCFunction)surfaceObj_keep_as_background, 1,
 	 PyDoc_STR("() -> None")},
 	{"get_rect", (PyCFunction)surfaceObj_get_rect, 1,
+	 PyDoc_STR("() -> (const ambulant::lib::rect& _rv)")},
+	{"get_clipped_screen_rect", (PyCFunction)surfaceObj_get_clipped_screen_rect, 1,
 	 PyDoc_STR("() -> (const ambulant::lib::rect& _rv)")},
 	{"get_global_topleft", (PyCFunction)surfaceObj_get_global_topleft, 1,
 	 PyDoc_STR("() -> (const ambulant::lib::point& _rv)")},

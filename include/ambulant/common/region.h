@@ -60,6 +60,7 @@ class surface_impl : public surface_template, public surface, public gui_events 
 	void need_redraw();
 	virtual void need_events(bool want);
 	const rect& get_rect() const { return m_inner_bounds; }
+	const rect& get_clipped_screen_rect() const;
 	virtual const point &get_global_topleft() const;
 	rect get_fit_rect(const size& src_size, rect* out_src_rect, const common::alignment *align) const;
 	bool is_tiled() const;
@@ -97,6 +98,7 @@ class surface_impl : public surface_template, public surface, public gui_events 
 	bool m_highlighting;
   	rect m_inner_bounds;	// region rectangle (0, 0) based
   	rect m_outer_bounds;	// region rectangle in parent coordinate space
+	rect m_clipped_screen_bounds;	// Clipped region rectangle in screen coordinates
 	point m_window_topleft;				// region top-left in window coordinate space
 
   	surface_impl *m_parent;			// parent region

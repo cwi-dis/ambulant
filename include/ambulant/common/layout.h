@@ -208,6 +208,9 @@ class surface {
 	/// Returns the region rectangle, (0, 0) based.
 	virtual const lib::rect& get_rect() const = 0;
 	
+	/// Returns the region rectangle, topwindow-coordinate based and clipped.
+	virtual const lib::rect& get_clipped_screen_rect() const = 0;
+	
 	/// Returns the gui_window coordinates for (0, 0).
 	virtual const lib::point &get_global_topleft() const = 0;
 	

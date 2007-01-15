@@ -3727,6 +3727,7 @@ surface::surface(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "transition_done")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: transition_done");
 		if (!PyObject_HasAttrString(itself, "keep_as_background")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: keep_as_background");
 		if (!PyObject_HasAttrString(itself, "get_rect")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: get_rect");
+		if (!PyObject_HasAttrString(itself, "get_clipped_screen_rect")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: get_clipped_screen_rect");
 		if (!PyObject_HasAttrString(itself, "get_global_topleft")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: get_global_topleft");
 		if (!PyObject_HasAttrString(itself, "get_fit_rect")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: get_fit_rect");
 		if (!PyObject_HasAttrString(itself, "get_info")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: get_info");
@@ -3893,6 +3894,31 @@ const ambulant::lib::rect& surface::get_rect() const
 	PyGILState_Release(_GILState);
 	const_cast<surface *>(this)->get_rect_rvkeepref = get_rect;
 	return get_rect_rvkeepref;
+}
+
+const ambulant::lib::rect& surface::get_clipped_screen_rect() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::rect get_clipped_screen_rect;
+
+	PyObject *py_rv = PyObject_CallMethod(py_surface, "get_clipped_screen_rect", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during surface::get_clipped_screen_rect() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", ambulant_rect_Convert, &get_clipped_screen_rect))
+	{
+		PySys_WriteStderr("Python exception during surface::get_clipped_screen_rect() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	const_cast<surface *>(this)->get_clipped_screen_rect_rvkeepref = get_clipped_screen_rect;
+	return get_clipped_screen_rect_rvkeepref;
 }
 
 const ambulant::lib::point& surface::get_global_topleft() const
