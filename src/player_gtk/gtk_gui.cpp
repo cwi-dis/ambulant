@@ -548,13 +548,6 @@ gtk_gui::do_logger_window() {
 		gtk_widget_show(GTK_WIDGET (logger_window));
 }
 
-bool 
-checkFilename(const gchar* filename, int mode) {
-	FILE * file;
-	if (mode==0)
-  	return fopen (filename,"r");
-}
-
 void
 gtk_gui::fileError(const gchar* smilfilename) {
  	char buf[1024];
@@ -577,11 +570,6 @@ gtk_gui::openSMILfile(const char *smilfilename, int mode, bool dupFlag) {
 	if (smilfilename==NULL)
 		return false;
 	
-	if (mode == 0)
-		if (! checkFilename(smilfilename, mode)) {
-			fileError(smilfilename);
-			return false;
-		}
 	gtk_window_set_title(GTK_WINDOW (m_toplevelcontainer), smilfilename);
 	if (dupFlag) {
 	  if (m_smilfilename) free ((void*)m_smilfilename);
