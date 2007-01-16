@@ -1,3 +1,29 @@
+2007-01-15 16:03  jackjansen
+
+	* Updated user help.
+
+2007-01-15 15:55  jackjansen
+
+	* Fixed up translations.
+
+2007-01-15 15:47  jackjansen
+
+	* Oops, forgot to check this file in. Fix for #1627953.
+
+2007-01-15 15:28  jackjansen
+
+	* Second portion of fix for #1627953: use get_clipped_screen_rect()
+	  as the destination rectangle for transitions.
+
+2007-01-15 14:57  jackjansen
+
+	* Added method get_clipped_screen_rect() to surface. This returns
+	  the clipped on-screen rectangle occupied by the surface.  Use
+	  this functionality in cocoa_transition to make sure transitions
+	  are clipped to the correct screen area.
+
+	  First step towards fixing #1627953.
+
 2007-01-12 15:07  keesblom
 
 	* Undid the changes of r.1.5 because #1627953 was re-opened.
