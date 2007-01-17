@@ -195,8 +195,8 @@ uninstall-local:
 desktopdir = $(datadir)/applications/hildon
 desktop_DATA = AmbulantPlayer.desktop
 
-servicedir = $(libdir)/dbus-1.0/services
-service_DATA = com.nokia.AmbulantPlayer_app.service
+servicedir = $(datadir)/dbus-1/services
+service_DATA = com.nokia.ambulantplayer_app.service
 
 
 # The backup/restore configuration
