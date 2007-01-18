@@ -1,3 +1,9 @@
+2007-01-17 17:08  keesblom
+
+	* Directory for DBUS service file was changed in OS2006. Also, the
+	  name of this service file is restricted to lowercase letters and
+	  '_'.
+
 2007-01-16 16:07  jackjansen
 
 	* On Open/Open URL there was a call to check that the file exists,
