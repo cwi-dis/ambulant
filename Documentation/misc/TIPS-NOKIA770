@@ -8,7 +8,6 @@ Here are some pointers how to work with Nokia 770 (2006 Software Edition).
 
 2. Other useful material is found in:
    http://www.maemo.org/platform/docs/how-to.html
-
    and 
    http://maemo.org/maemowiki/FrequentlyAskedQuestions
 
@@ -16,12 +15,16 @@ Here are some pointers how to work with Nokia 770 (2006 Software Edition).
    http://maemo.org/platform/docs/howtos/howto_making_an_application_package.html
    In the ambulant home directory, there exists a directory debian which contains
    the necessary control files to build a downloadable and installable debian package
-   for the Nokia 770 (2006 Software Edition). In the scratchbox ambulant home directory,
-   use the command:  dpkg-buildpackage -rfakeroot -b
-   The resulting file ../ambulantplayer-app_1.8_arm.deb can be installed on the Nokia 770
-   by its Application Installer e.g. by copying this file to a web-visible location.
+   for the Nokia 770 (2006 Software Edition).
+   Refer to debian/README for more precise information.
 
-4. Remote debugging is possible as follows (once you have USB networking):
+4. Setting up USB networking (Fedora Core 5).
+   I made 2 handy little scripts in sandbox/Nokia770Scripts, both to be run as root:
+	- usbnet: to be run on Nokia770, to make the Nokia look like a network
+		  connection to the PC rather than an extra removable disc.
+	- usbNokia770: to be run on the PC. 
+
+5. Remote debugging is possible as follows (once you have USB networking):
    a. From the scratchbox (in ARMEL mode) copy /usr/bin/gdbserver to the Nokia 770
       device. 
    b. Compile all sources of your program with -g -O0 flags.
@@ -62,3 +65,4 @@ Here are some pointers how to work with Nokia 770 (2006 Software Edition).
 
 Kees Blom May 17, 2006.
 	  Sept.8, 2006. (updated for 2006 Software Edition)
+	  Jan.18, 2007  (updated for ambulant-1.8 release)
