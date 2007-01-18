@@ -1,0 +1,20 @@
+This directory is supposed to contain everything necessary
+to create an Ambulant installer for the Nokia770.
+
+It is *NOT* intended for "normal" debian installers.
+The files in ambulantplayer-app.tar needs to be extracted:
+
+tar xf ambulantplayer-app.tar
+
+This creates a directory  ambulantplayer-app which
+a.o. contains a partial mirror filesystem which will
+be copied verbatim during installation on the Nokia770.
+
+To create an installer for Nokia770, go to the top-level
+ambulant directory inside the scratchbox and type:
+
+dpkg-buildpackage -rfakeroot -b
+
+The installer will be deposited in the parent directory
+of  the top-level ambulant directory.
+
