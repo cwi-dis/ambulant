@@ -1,3 +1,17 @@
+2007-01-18 15:16  keesblom
+
+	* Updated TIPS-NOKIA770 with references to new scripts for
+	  establishing USB networking and a new file debian/README how to
+	  create an installer for the NOKIA770.
+
+2007-01-18 15:07  keesblom
+
+	* Added a README and a tarfile containing necessary files to create
+	  an installer for the Nokia770. The reason for putting these files
+	  in a tarball is, that it contains a partial filesystem that will
+	  be copied verbatim during installation time on the Nokia770, and
+	  should not have any other files, e.g. CVS directories.
+
 2007-01-17 17:08  keesblom
 
 	* Directory for DBUS service file was changed in OS2006. Also, the
