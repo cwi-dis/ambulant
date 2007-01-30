@@ -203,6 +203,13 @@ class AMBULANTAPI url {
 
 	static void init_statics();
 
+	/// convert string containing uri escape sequences ("% hex hex")
+	/// to normal string as per RFC 3986
+	static std::string uri2string(const std::string);
+	/// convert string containing special characters to uri string 
+	/// (with "% hex hex" escape sequences) as per RFC 3986
+	static std::string string2uri(const std::string);
+
   private:
 
 	// protocols to ports map
@@ -242,7 +249,13 @@ class AMBULANTAPI url {
 	
 	// pat: "n:"
 	void set_from_scheme(ambulant::lib::scanner& sc, const std::string& pat);
-	
+
+	// hexadecimal conversions
+	static std::string hexDigits;
+	static bool isHex(std::string&);
+	static unsigned int hex2uint(std::string&);
+	static std::string uint2hex(unsigned int);
+
 };
 
 // workaround for g++ 2.95

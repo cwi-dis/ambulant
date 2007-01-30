@@ -91,6 +91,14 @@ void gui::dx::text_renderer::open(net::datasource_factory *df) {
 		if (data) free(data);
 		return;
 	}
+	if (data) {
+		std::string uri = data;
+		uri[datalen] = '\0';
+		std::string str = net::url::uri2string(uri);
+		free (data);
+		data = strdup(str.c_str());
+		datalen = strlen(data);
+	}
 	m_viewport->clear_surface(m_ddsurf, RGB(255,255,255));
 	
 	//////////////

@@ -71,6 +71,7 @@ lib::win32::event_processor::run() {
 // wait until some thread calls wakeup
 void lib::win32::event_processor::wait_event() {
 	ResetEvent(m_wait_event);
+
 	WaitForSingleObject(m_wait_event, RESOLUTION);
 }
 	
