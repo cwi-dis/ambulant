@@ -87,6 +87,10 @@ gtk_text_renderer::redraw_body(const lib::rect &r,
 			(const char*) m_data,
 			m_data_size);
 		m_text_storage[m_data_size] = '\0';
+		std::string uri = m_text_storage;
+		std::string str = net::url::uri2string(uri);
+		free (m_text_storage);
+		m_text_storage = strdup(str.c_str());
 	}
 	AM_DBG lib::logger::get_logger()->debug(
 		"gtk_text_renderer.redraw(0x%x):"

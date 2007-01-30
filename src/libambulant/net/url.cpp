@@ -472,10 +472,7 @@ void net::url::set_parts(lib::scanner& sc, const std::string& pat) {
 std::string net::url::hexDigits("0123456789ABCDEFabcdef");
 
 /*private static*/ bool
-net::url::isHex (std::string& as) {
-	std::string s = as;
-	std::string startstr;
-	startstr = s.substr(0,2);
+net::url::isHex (std::string& s) {
 
 	for (size_t i = 0; i < s.size(); i++) {
 		if (net::url::hexDigits.find(s[i]) == std::string::npos)

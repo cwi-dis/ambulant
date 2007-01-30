@@ -340,7 +340,7 @@ ambulant_qt_window::redraw(const lib::rect &r)
 	m_handler->redraw(r, this);
 	_screenTransitionPostRedraw(r);
 	bitBlt(m_ambulant_widget,r.left(),r.top(), m_pixmap,r.left(),r.top(), r.right(),r.bottom());
-    DUMPPIXMAP(m_pixmap, "top");
+	DUMPPIXMAP(m_pixmap, "top");
 }
 
 void
