@@ -1,3 +1,17 @@
+2007-01-30 16:43  keesblom
+
+	* Adapted gtk and qt to use the new url::uri2string for rendering
+	  text
+
+2007-01-30 16:30  keesblom
+
+	* Fixed #1639918 by adding 2 new static functions in net::url for
+	  use by renderes: uri2string and string2uri. Renderers can decide
+	  when to convert a % escaped strings to native representions
+	  (RFC3986).  Also added code and patterns to parse legal data
+	  URI's correctly, like: data:[mimetype/subtype][;base64],some_text
+	  However, the mimetype is still ignored). (RFC2397)
+
 2007-01-18 15:16  keesblom
 
 	* Updated TIPS-NOKIA770 with references to new scripts for
