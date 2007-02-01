@@ -396,7 +396,11 @@ smil_layout_manager::get_region_node_for(const lib::node *n, bool nodeoverride)
 		}
 	}
 	const char *prname = NULL;
-	if(n->get_local_name() == "area" && n->up()) {
+	if (n->get_local_name() == "a" && n->down()) {
+		// XXX This is not 100% correct: it does not take subregion positioning into account
+		prname = n->down()->get_attribute("region");
+	} else if (n->get_local_name() == "area" && n->up()) {
+		// XXX This is not 100% correct: it does not take subregion positioning into account
 		prname = n->up()->get_attribute("region");
 	} else {
 		prname = n->get_attribute("region");

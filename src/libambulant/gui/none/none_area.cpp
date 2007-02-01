@@ -49,8 +49,9 @@ none_area_renderer::start(double starttime) {
 	const char *coords = m_node->get_attribute("coords");
 	const char *shape = m_node->get_attribute("shape");
 	if(!coords || !coords[0]) {
-		AM_DBG lib::logger::get_logger()->debug("none_area_renderer::start: no coords, whole area");
 		m_rgn = new lib::rect(m_dest->get_rect());
+		AM_DBG lib::logger::get_logger()->debug("none_area_renderer::start: no coords, whole area, lt=(%d, %d) wh=(%d, %d)",
+				m_rgn->x, m_rgn->y, m_rgn->w, m_rgn->h);
 	} else {
 		common::region_dim_spec rds(coords, shape);
 		rds.convert(rrc);
