@@ -181,6 +181,132 @@ urlpath2filepath(const std::string& urlpath)
 }
 #endif // AMBULANT_PLATFORM_WIN32
 
+/* static data and helper functions for URI %-en/decoding( RFC3986) */
+std::string hex_digits("0123456789ABCDEFabcdef");
+std::string gen_delims(":/?#[]@");
+std::string sub_delims("!$&'()*+,;=");
+std::string reserved(gen_delims+sub_delims);
+std::string unreserved(hex_digits+"GHIJKLMNOPQRSTUVWXYZghijklmnopqrstuvwxyz-._~");
+
+static bool
+is_hex (std::string& s) {
+
+	for (size_t i = 0; i < s.size(); i++) {
+		if (hex_digits.find(s[i]) == std::string::npos)
+			return false;
+	}
+	return true;
+}
+
+static std::string
+uint2hex (unsigned int val) {
+	std::string rv = "";
+	unsigned int v = val;
+
+	if (v == 0) rv += '0';
+	do {
+		unsigned int pos = v&0xf; // get rightmost 4 bits
+		rv.insert(0, hex_digits,pos,1);
+		v >>= 4;
+	} while (v != 0);
+	if (rv.size() < 2) // ensure at least 2 chars
+		rv.insert(0, "0");
+	return (rv);
+}
+
+static unsigned int
+hex2uint (std::string& s) {
+	unsigned int rv = 0;
+	
+	for (size_t i = 0; i < s.size(); i++) {
+		char c = s[i];
+		rv *= 16;
+		unsigned int pos = (unsigned int) hex_digits.find(c);
+		if (pos == std::string::npos) // not found, terminate
+			break;
+		if (pos >= 16) // lowercase a-f
+			pos -= 6;
+		rv += pos; // position in hex_digits is value of char
+	}
+	return (rv);
+}
+
+static bool
+is_reserved (unsigned int c) {
+	const char cc = c;
+	std::string s(1,cc);
+
+	if (s.find_first_of(reserved) == std::string::npos)
+		return false;
+	return true;
+}
+
+static bool
+is_unreserved (unsigned int c) {
+	const char cc = c;
+	std::string s(1,cc);
+	
+	if (s.find_first_of(unreserved) == std::string::npos)
+		return false;
+	return true;
+}
+
+static std::string
+uri2string(const std::string uri) {
+	std::string rv = "";
+	std::string s  = uri;
+	size_t pos;
+
+	while ((pos = s.substr().find("%")) != std::string::npos 
+	       && (pos < s.size()-2)) {
+		// pick next 2 characters
+		std::string hex_chars = s.substr(pos+1,2);
+
+		rv += s.substr(0,pos);
+		if (is_hex(hex_chars))
+			rv += hex2uint(hex_chars);
+		else  {
+			rv += "%"; // '%' not followed by 2 hex digits;
+			pos -= 2;  // continue next char after '%'
+		}
+		s = s.substr(pos+3); // skip "%xx"
+	}
+	rv += s; // concat tail
+	return rv;
+}
+
+static std::string
+string2uri(const std::string str) {
+	std::string rv = "";
+	
+	for (size_t i = 0; i < str.size(); i++) {
+		unsigned char c = str[i];
+
+		if (is_reserved(c) || is_unreserved(c)) {
+			rv += c;
+		} else if (c == '%') {
+			if (i < str.size()-2) {
+				// pick next 2 characters
+				std::string ss = str.substr(i+1,2);
+				if (is_hex(ss)) {
+					unsigned int hc = hex2uint(ss);
+					if (is_unreserved(hc)) {
+					// convert unreserved %xx to char
+				 	        rv += hc;
+						i +=2 ;
+						continue;
+					}
+				}
+			}
+			rv += c;
+		} else { // convert to '%' followed by 2 hex digits
+			rv += '%';
+			rv += uint2hex(c);
+		}
+	}
+	return rv;
+}
+
 // static 
 //std::list< std::pair<std::string, net::url::HANDLER> > net::url::s_handlers;
 // workaround for g++ 2.95
@@ -338,15 +464,13 @@ void net::url::set_from_spec(const string& spec) {
 		if(*(ph->first) == '\0' || lib::starts_with(sig, ph->first)) {
 			//HANDLER h = (*it).second;
 			(this->*(ph->second))(sc, ph->first);
+			m_path = uri2string(m_path);
+			m_query = uri2string(m_query);
+			m_ref = uri2string(m_ref);
 			return;
 		}
 	}
-	lib::logger::get_logger()->error(gettext("%s: Cannot parse URL"), spec.c_str());
-	m_host = string2uri(m_host);
-	m_path = string2uri(m_path);
-	m_query = string2uri(m_query);
-	m_ref = string2uri(m_ref);
-	
+	lib::logger::get_logger()->error(gettext("%s: Cannot parse URL"), spec.c_str());	
 }
 
 // pat: "n://n:d/"
@@ -428,7 +552,7 @@ void net::url::set_from_data_uri(lib::scanner& sc, const std::string& pat) {
 	m_port = 0;
 	size_type tok, n_tok = sc.get_values().size();
 	for (tok = 2; tok < n_tok; tok++)
-	  if (sc.val_at(tok) == ",")
+		if (sc.val_at(tok) == ",")
 			break;
 	m_path = sc.join(++tok);  // Skip data:[mimetype/subtype][;parameter],
 	if (s_strict) _checkurl();
@@ -469,89 +593,6 @@ void net::url::set_parts(lib::scanner& sc, const std::string& pat) {
 	if (s_strict) _checkurl();
 }
 
-std::string net::url::hexDigits("0123456789ABCDEFabcdef");
-
-/*private static*/ bool
-net::url::isHex (std::string& s) {
-
-	for (size_t i = 0; i < s.size(); i++) {
-		if (net::url::hexDigits.find(s[i]) == std::string::npos)
-			return false;
-	}
-	return true;
-}
-
-/*private static*/ std::string
-net::url::uint2hex (unsigned int val) {
-	std::string rv = "";
-	unsigned int v = val;
-	if (v == 0) rv += '0';
-	while (v != 0) {
-		unsigned int pos = v&0xf; // get rightmost 4 bits
-		rv.insert(0,net::url::hexDigits,pos,1);
-		v >>= 4;
-	}
-	return (rv);
-}
-
-/*private static*/ unsigned int
-net::url::hex2uint (std::string& s) {
-	unsigned int rv = 0;
-	
-	for (size_t i = 0; i < s.size(); i++) {
-		char c = s[i];
-		rv *= 16;
-		unsigned int pos = (unsigned int) net::url::hexDigits.find(c);
-		if (pos == std::string::npos) // not found, terminate
-			break;
-		if (pos >= 16) //lowercase a-f
-			pos -= 6;
-		rv += pos; // position in hexDigits is value of char
-	}
-	return (rv);
-}
-
-/*public static*/ std::string
-net::url::uri2string(const std::string uri) {
-	std::string rv = "";
-	std::string s  = uri;
-	size_t pos;
-
-	while ((pos = s.substr().find("%")) != std::string::npos 
-	       && (pos < s.size()-2)) {
-		if ((pos+3) > s.size())
-			break;
-		std::string hex_chars = s.substr(pos+1,2);
-
-		rv += s.substr(0,pos);
-		if (net::url::isHex(hex_chars))
-			rv += net::url::hex2uint(hex_chars);
-		else  {
-			rv += "%"; // '%' not followed by 2 hex digits;
-			pos -= 2;  // continue next char after '%'
-		}
-		s = s.substr(pos+3); // skip "%xx"
-	}
-	rv += s; // concat tail
-	return rv;
-}
-
-/*public static*/ std::string
-net::url::string2uri(const std::string str) {
-	std::string rv = "";
-	
-	for (size_t i = 0; i < str.size(); i++) {
-		char c = str[i];
-		if (isgraph(c) && ! (isspace(c) || c == '%')) 
-			rv += c;
-		else { // convert to '%' followed by 2 hex digits
-			rv += '%';
-			rv += net::url::uint2hex(c);
-		}
-	}
-	return rv;
-}
-
 bool net::url::is_local_file() const
 {
 	if (m_protocol == "file" && (m_host == "localhost" || m_host == ""))
@@ -569,6 +610,7 @@ std::string net::url::get_url() const
 	std::string rv = repr(*this);
 	if (!m_absolute)
 		lib::logger::get_logger()->trace("url::get_url(): URL not absolute: \"%s\"", rv.c_str());
+	rv = string2uri(rv);
 	return rv;
 }
 
@@ -634,7 +676,7 @@ net::url net::url::get_document() const
 
 net::url net::url::add_fragment(string fragment) const
 {
-	net::url rv = net::url(m_protocol, m_host, m_port, m_path, m_query, fragment);
+	net::url rv = net::url(m_protocol, m_host, m_port, m_path, m_query, uri2string(fragment));
 	rv.m_absolute = m_absolute;
 	return rv;
 }
