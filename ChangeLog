@@ -1,3 +1,30 @@
+2007-02-01 17:32  keesblom
+
+	* Adapted to updated %escape handling in net::url
+
+2007-02-01 17:20  keesblom
+
+	* Changed %-escape handling to be done only locally in net::url
+	  such that:
+
+	  m_path, m_query and m_ref (fragment) will be %-decoded
+	  url::get_url() will produce the %-encoded version
+
+2007-02-01 16:12  jackjansen
+
+	* Fixed #1639931 - <a> anchors are active in the whole window in
+	  stead of the relevant region only.
+
+2007-02-01 16:05  keesblom
+
+	* Oops, forgot to remove an old hack intended to skip initial
+	  "data:,"
+
+2007-02-01 15:55  keesblom
+
+	* Changed get_url() into get_path() in mem_datasource because for
+	  the data:, URL we need the data without %-escapes
+
 2007-01-30 16:43  keesblom
 
 	* Adapted gtk and qt to use the new url::uri2string for rendering
