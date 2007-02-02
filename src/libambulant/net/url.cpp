@@ -342,9 +342,6 @@ void net::url::init_statics() {
 	
 	static url_handler_pair h3 = { "n:///", &url::set_from_localhost_file_uri};
 	s_handlers.push_back(&h3);
-	
-	static url_handler_pair h4 = { "n:///", &url::set_from_localhost_file_uri};
-	s_handlers.push_back(&h4);
 
 	static url_handler_pair h4a = { "n:,", &url::set_from_data_uri};
 	s_handlers.push_back(&h4a);
