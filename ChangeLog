@@ -1,3 +1,8 @@
+2007-02-02 11:27  keesblom
+
+	* Removed duplicate url_handler_pair entry in in the list
+	  s_handlers url_handler_pair h4 was an exact copy of h3.
+
 2007-02-01 17:32  keesblom
 
 	* Adapted to updated %escape handling in net::url
