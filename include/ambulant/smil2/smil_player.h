@@ -137,8 +137,8 @@ class smil_player : public common::player, /* public common::player_feedback,*/ 
 	virtual void cancel_event(lib::event *ev, lib::event_priority ep = ep_low) 
 		{ m_event_processor->cancel_event(ev, ep);}
 	virtual void cancel_all_events() { m_event_processor->cancel_all_events();}
-	virtual bool wait_for_eom() const { return m_eom_flag;}
-	virtual void set_wait_for_eom(bool b) { m_eom_flag = b;}
+	virtual bool wait_for_eom() const { return m_wait_for_eom_flag;}
+	virtual void set_wait_for_eom(bool b) { m_wait_for_eom_flag = b;}
 	
 	// Feedback stuff
 	void set_feedback(common::player_feedback *h) { m_feedback_handler = h; }
@@ -195,7 +195,7 @@ class smil_player : public common::player, /* public common::player_feedback,*/ 
 	common::play_state m_state;
 	int m_cursorid;
 	const time_node *m_pointed_node;
-	bool m_eom_flag;
+	bool m_wait_for_eom_flag;
 	std::map<const lib::node*, common::playable *> m_playables;
 	critical_section m_playables_cs;
 	std::map<const node*, double> m_playables_dur;

@@ -215,7 +215,7 @@ scheduler::time_type scheduler::exec() {
 scheduler::time_type scheduler::_exec() {
 	time_type now = m_timer->elapsed();
 	time_type next = _exec(now);
-#if 1
+#if 0
 	// This line was taken out a long time ago (rev 1.10, dec 2004) because it seemed to be
 	// soaking up CPU cycles. I'm now putting it back in, tentatively, to see if that fixes
 	// the seek problems we have:

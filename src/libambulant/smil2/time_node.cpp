@@ -1083,6 +1083,8 @@ void time_node::on_rom(qtime_type timestamp) {
 // This notification is taken into account when this node is still active
 // and the implicit duration is involved in timing calculations.
 void time_node::on_eom(qtime_type timestamp) {
+	AM_DBG m_logger->debug("%s[%s].on_eom()", m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str());
 	m_eom_flag = true;
 	if(is_playable() && !is_discrete()) {
 		if(m_impldur == time_type::unresolved) {

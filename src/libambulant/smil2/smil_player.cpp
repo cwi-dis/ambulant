@@ -69,7 +69,7 @@ smil_player::smil_player(lib::document *doc, common::factories *factory, common:
 	m_state(common::ps_idle),
 	m_cursorid(0), 
 	m_pointed_node(0), 
-	m_eom_flag(true),
+	m_wait_for_eom_flag(true),
 	m_focus(0),
 	m_focussed_nodes(new std::set<int>()),
 	m_new_focussed_nodes(0)
@@ -596,6 +596,7 @@ void smil_player::stopped(int n, double t) {
 		// XXXJACK m_scheduler->update_horizon(root_time);
 		q_smil_time timestamp(m_root, root_time);
 		time_node* tn = (*it).second;
+		AM_DBG m_logger->debug("smil_player::stopped(%d), want_on_eom()=%d", n, tn->want_on_eom());
 		if (tn->want_on_eom()) {
 			eom_event_cb *cb = new eom_event_cb(tn, 
 				&time_node::on_eom, timestamp);
