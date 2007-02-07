@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.8
+Type=Application
+Name=AmbulantPlayer 1.8
+Exec=/usr/bin/AmbulantPlayer_gtk
+Icon=pkg_AmbulantPlayer-app
+X-Window-Icon=tn-bookmarks-link
+X-HildonDesk-ShowInToolbar=true
+X-Osso-Service=ambulantplayer_app
+X-Osso-Type=application/x-executable
+Terminal=false

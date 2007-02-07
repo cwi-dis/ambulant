@@ -1,0 +1,14 @@
+This directory is intended to contain all stuff needed to produce
+an installer for the nokia770 (OS2006 Jun release)
+
+On scratchbox, run: ./create_installer
+When it runs succesfullt, the script tells you where
+you'll find the package.
+
+Currently, AmbulantPlayer works with the following limitations:
+- the GUI is not 'hildonized'
+- video is not working properly (far too slow or hangs)
+- rtsp is not implemented
+
+Kees Blom, Feb. 5th, 2007
+

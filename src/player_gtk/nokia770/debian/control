@@ -1,0 +1,12 @@
+Source: ambulantplayer-app
+Section: user/multimedia
+Priority: optional
+Maintainer: Kees Blom <Kees.Blom@cwi.nl>
+Build-Depends: debhelper (>= 4.0.0)
+Standards-Version: 3.6.0
+
+Package: ambulantplayer-app
+Architecture: any
+Pre-Depends: maemo-select-menu-location
+Depends: gstreamer0.10-gnomevfs
+Description: AmbulantPlayer is a SMIL 2.1 player for the  Nokia 770.
