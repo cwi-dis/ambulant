@@ -1,3 +1,10 @@
+2007-02-06 17:00  jackjansen
+
+	* - Tentative fix for #1626168: remove the while(next==now) loop in
+	  time_sched::_exec(), which was a quick hack anyway. BUT: this may
+	  affect seeking, need to do testing.  - Renamed a member variable
+	  to be a bit more clear.
+
 2007-02-02 11:27  keesblom
 
 	* Removed duplicate url_handler_pair entry in in the list
