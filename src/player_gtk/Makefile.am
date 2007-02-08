@@ -172,21 +172,21 @@ if WITH_NOKIA770
 icondir = $(datadir)/icons/hicolor
 
 install-data-local:
-	i=pkg_AmbulantPlayer-app; \
+	i=AmbulantPlayer-app; \
 	$(mkinstalldirs) $(DESTDIR)$(icondir)/26x26/hildon; \
 	$(mkinstalldirs) $(DESTDIR)$(icondir)/40x40/hildon; \
 	$(mkinstalldirs) $(DESTDIR)$(icondir)/scalable/hildon; \
-	$(INSTALL_DATA) $(srcdir)/$$i.26.png $(DESTDIR)$(icondir)/26x26/hildon/$$i.png; \
-	$(INSTALL_DATA) $(srcdir)/$$i.40.png $(DESTDIR)$(icondir)/40x40/hildon/$$i.png; \
-	$(INSTALL_DATA) $(srcdir)/$$i.64.png $(DESTDIR)$(icondir)/scalable/hildon/$$i.png;
+	$(INSTALL_DATA) $(srcdir)/$$i.26.png $(DESTDIR)$(icondir)/26x26/hildon/pkg_$$i.png; \
+	$(INSTALL_DATA) $(srcdir)/$$i.40.png $(DESTDIR)$(icondir)/40x40/hildon/pkg_$$i.png; \
+	$(INSTALL_DATA) $(srcdir)/$$i.64.png $(DESTDIR)$(icondir)/scalable/hildon/pkg_$$i.png;
 	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir);
 	$(INSTALL_DATA) $(srcdir)/ui_manager.xml $(DESTDIR)$(pkgdatadir);
 
 uninstall-local:
-	i=pkg_AmbulantPlayer-app; \
-	rm $(DESTDIR)$(icondir)/26x26/hildon/$$i.png; \
-	rm $(DESTDIR)$(icondir)/40x40/hildon/$$i.png; \
-	rm $(DESTDIR)$(icondir)/scalable/hildon/$$i.png;
+	i=AmbulantPlayer-app; \
+	rm $(DESTDIR)$(icondir)/26x26/hildon/pkg_$$i.png; \
+	rm $(DESTDIR)$(icondir)/40x40/hildon/pkg_$$i.png; \
+	rm $(DESTDIR)$(icondir)/scalable/hildon/pkg_$$i.png;
 	rm $(DESTDIR)$(pkgdatadir)/ui_manager.xml;
 
 
@@ -213,7 +213,7 @@ EXTRA_DIST = \
         AmbulantPlayer.desktop \
         AmbulantPlayer.conf \
         com.nokia.AmbulantPlayer_app.service \
-        pkg_AmbulantPlayer-app.26.png \
-        pkg_AmbulantPlayer-app.40.png \
-        pkg_AmbulantPlayer-app.64.png
+        AmbulantPlayer-app.26.png \
+        AmbulantPlayer-app.40.png \
+        AmbulantPlayer-app.64.png
 endif # WITH_NOKIA770

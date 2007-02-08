@@ -60,9 +60,9 @@ cp $SRC_DIR/com.nokia.ambulantplayer_app.service $SERVICE
 # 4. Generate the package
 #
 # SRC_DIR is used in debian/rules to tell the installer where to find the sources
-(export SRC_DIR=$AMBULANT_TOPDIR;dpkg-buildpackage -rfakeroot -b)
-(cd ..;echo The installer is created as: `pwd`/$APPLICATION-app_$VERSION_armel.deb)
-
+(export SRC_DIR=$AMBULANT_TOPDIR;if [ dpkg-buildpackage -rfakeroot -b] ;
+then (cd ..;echo The installer is created as: `pwd`/$APPLICATION-app_$VERSION_armel.deb)
+fi
 # 5. Cleanup intermediate stuff
 #
 rm -fr $DST_DIR
