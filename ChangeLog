@@ -1,3 +1,25 @@
+2007-02-07 17:24  keesblom
+
+	* Removed top-level directory 'debian' which contained a huge
+	  tar-file used as a template for debian packaging for Nokia'2 770
+	  Internet Tablet.  It has been replaced by a directory 'nokia770'
+	  in 'src/player_gtk' containing control files (in
+	  'nokia770/debian') and a script 'create_installer' which creates
+	  the tree that used to be in the tar-file during packaging and
+	  removes all intermediate files when packaging is done.  Also
+	  moved icons in 'src/player_gtk' to the new directory and renamed
+	  them as they are useed by the new script.
+
+2007-02-07 15:57  keesblom
+
+	* Removed top-level directory 'debian' which contained a huge
+	  tar-file used as a template for debian packaging for Nokia'2 770
+	  Internet Tablet.  It has been replaced by a directory 'nokia770'
+	  src/player_gtk containing control files (in 'nokia770/debian')
+	  and a script 'create_installer' which creates the tree that used
+	  to be in the tar-file during packaging and removes all
+	  intermediate files when packaging is done.
+
 2007-02-06 17:00  jackjansen
 
 	* - Tentative fix for #1626168: remove the while(next==now) loop in
@@ -56,14 +78,6 @@
 	* Updated TIPS-NOKIA770 with references to new scripts for
 	  establishing USB networking and a new file debian/README how to
 	  create an installer for the NOKIA770.
-
-2007-01-18 15:07  keesblom
-
-	* Added a README and a tarfile containing necessary files to create
-	  an installer for the Nokia770. The reason for putting these files
-	  in a tarball is, that it contains a partial filesystem that will
-	  be copied verbatim during installation time on the Nokia770, and
-	  should not have any other files, e.g. CVS directories.
 
 2007-01-17 17:08  keesblom
 
