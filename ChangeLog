@@ -1,3 +1,8 @@
+2007-02-08 16:25  keesblom
+
+	* A few changes in the Nokia 770 inataller and removal from the
+	  repository of some generated files
+
 2007-02-07 17:24  keesblom
 
 	* Removed top-level directory 'debian' which contained a huge
