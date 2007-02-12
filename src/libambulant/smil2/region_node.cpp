@@ -161,7 +161,7 @@ region_node::fix_from_dom_node()
 	else if (strcmp(bgcolor_attr, "inherit") == 0) inherit = true;
 	else if (!lib::is_color(bgcolor_attr)) {
 		lib::logger::get_logger()->trace("%s: Invalid color: %s", m_node->get_sig().c_str(), bgcolor_attr);
-		lib::logger::get_logger()->warn(gettext("Ignoring invalid color in document"));
+		lib::logger::get_logger()->warn(gettext("Ignoring minor errors in document"));
 	} else {
 		bgcolor = lib::to_color(bgcolor_attr);
 		transparent = false;
@@ -180,7 +180,7 @@ region_node::fix_from_dom_node()
 		else if (strcmp(sbg_attr, "always") == 0) sbg = true;
 		else {
 			lib::logger::get_logger()->error("%s: Invalid showBackground value: %s", m_node->get_sig().c_str(), sbg_attr);
-			lib::logger::get_logger()->warn(gettext("Ignoring invalid background in document"));
+			lib::logger::get_logger()->warn(gettext("Ignoring minor errors in document"));
 		}
 	}
 	if (sbg != m_showbackground) {
@@ -200,7 +200,7 @@ region_node::fix_from_dom_node()
 		else if (strcmp(fit_attr, "slice") == 0) fit = common::fit_slice;
 		else {
 			lib::logger::get_logger()->trace("%s: Invalid fit value: %s", m_node->get_sig().c_str(), fit_attr);
-			lib::logger::get_logger()->warn(gettext("Ignoring invalid fit value in document"));
+			lib::logger::get_logger()->warn(gettext("Ignoring minor errors in document"));
 		}
 	}
 	if (fit != m_fit) {
@@ -252,7 +252,7 @@ region_node::fix_from_dom_node()
 		sa = common::sa_right;
 	else {
 		lib::logger::get_logger()->trace("%s: Invalid soundAlign value: %s", m_node->get_sig().c_str(), soundalign_attr);
-		lib::logger::get_logger()->warn(gettext("Ignoring invalid soundAlign value in document"));
+		lib::logger::get_logger()->warn(gettext("Ignoring minor errors in document"));
 	}
 	AM_DBG lib::logger::get_logger()->debug("region_node::reset: soundAlign=%d", (int)sa);
 	if (sa != m_soundalign) {
@@ -284,7 +284,7 @@ region_node::fix_from_dom_node()
 		m_tiling = common::tiling_inherit;
 	} else {
 		lib::logger::get_logger()->trace("%s: Invalid backgroundRepeat value: %s", m_node->get_sig().c_str(), bgrepeat_attr);
-		lib::logger::get_logger()->warn(gettext("Ignoring invalid backgroundRepeat value in document"));
+		lib::logger::get_logger()->warn(gettext("Ignoring minor errors in document"));
 	}
 	// Don't need to set changed
 	

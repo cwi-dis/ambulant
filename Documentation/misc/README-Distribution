@@ -118,7 +118,10 @@ Before creating the distribution
   Read and check the documentation for consistency, errors and missing items.
 
 - Update the translations:
+  - grep for source files using "gettext" and update POTFILES.in
   - in po, run "make ambulant.pot-update"
+  - Then "make en.po" (or "make ../../po/en.po if running in a separate build tree)
+    and the same for all other languages.
   - Edit the various ".po" files. Especially check empty strings
     and fuzzy matches.
 

@@ -571,7 +571,7 @@ lib::smpte_p::parse(const_iterator& it, const const_iterator& end)
 	d = opt_space_inst.parse(tit, end);
 	sd += (d == -1)?0:d;
 	if (d == -1) {
-		logger::get_logger()->debug(gettext("Failed to parse optional space "));
+		logger::get_logger()->debug("Failed to parse optional space ");
 	}
 	
 	d = literal_cstr_p("smpte").parse(tit,end);
@@ -587,11 +587,11 @@ lib::smpte_p::parse(const_iterator& it, const const_iterator& end)
 		int r = ip.m_result;
 		if (r == 25) 
 		{	
-			AM_DBG logger::get_logger()->debug(gettext("smpte-25"));
+			AM_DBG logger::get_logger()->debug("smpte-25");
 			m_frame_rate = 25;
 			m_drop = false;
 		} else {
-			AM_DBG logger::get_logger()->debug(gettext("smpte-30"));
+			AM_DBG logger::get_logger()->debug("smpte-30");
 			m_frame_rate = 30;
 			m_drop = false;
 		}
@@ -605,7 +605,7 @@ lib::smpte_p::parse(const_iterator& it, const const_iterator& end)
 	if (d == -1) {
 		m_drop = false;
 	} else {
-		AM_DBG logger::get_logger()->debug(gettext("drop"));
+		AM_DBG logger::get_logger()->debug("drop");
 		m_drop = true;
 	}
 	
@@ -613,7 +613,7 @@ lib::smpte_p::parse(const_iterator& it, const const_iterator& end)
 	d = literal_p<'='>().parse(tit,end);
 	sd += (d == -1)?0:d;
 	if (d == -1) {
-		AM_DBG logger::get_logger()->debug(gettext("smpte parser failed to parse literal = "));
+		AM_DBG logger::get_logger()->debug("smpte parser failed to parse literal = ");
 	}
 	
 	
@@ -622,13 +622,13 @@ lib::smpte_p::parse(const_iterator& it, const const_iterator& end)
 	for(int i=0; i<3; i++) {
 		d = ip.parse(tit,end);
 		if (d == -1) { 
-			AM_DBG logger::get_logger()->debug(gettext("smpte parser failed to parse smtpe (i=%d)"),i);
+			AM_DBG logger::get_logger()->debug("smpte parser failed to parse smtpe (i=%d)")i);
 			return -1;
 		}
 		
 		m_result[i] = ip.m_result;
 		if ( (i > 0) && ( (m_result[i] < 0) || (m_result[i] > 59)) ) {
-			logger::get_logger()->warn(gettext("Failed to parse smpte minutes/seconds. Value out of range [0,59]"));
+			logger::get_logger()->trace("Failed to parse smpte minutes/seconds. Value out of range [0,59]");
 			m_result[i] = 0;
 		}
 
@@ -646,7 +646,7 @@ lib::smpte_p::parse(const_iterator& it, const const_iterator& end)
 		if ( (result >= 0) && (result < m_frame_rate)) // range [0, framerate-1]
 			m_result[3] = ip.m_result;
 		else {
-			logger::get_logger()->warn(gettext("Failed to parse smpte frames. Value out of range [0,%d]"),m_frame_rate-1);
+			logger::get_logger()->trace("Failed to parse smpte frames. Value out of range [0,%d]",m_frame_rate-1);
 			m_result[3] = 0;
 		}
 			
@@ -665,7 +665,7 @@ lib::smpte_p::parse(const_iterator& it, const const_iterator& end)
 		if ( (result >= 0) && (result < 2) ) // range [0,1]
 			m_result[4] = ip.m_result;
 		else {
-			logger::get_logger()->warn(gettext("Failed to parse smpte sub-frames. Value out of range [0,1]"));
+			logger::get_logger()->trace("Failed to parse smpte sub-frames. Value out of range [0,1]");
 			m_result[4] = 0;
 		}
 		m_result[4] = ip.m_result;
@@ -711,9 +711,9 @@ lib::npt_p::parse(const_iterator& it, const const_iterator& end)
 	sd += (d == -1)?0:d;
 	AM_DBG {
 		if (d == -1) {
-			logger::get_logger()->debug(gettext("ntp parser failed to parse optional space"));
+			logger::get_logger()->debug("ntp parser failed to parse optional space");
 		} else {
-			logger::get_logger()->debug(gettext("ntp parser succeded to parse optional space"));
+			logger::get_logger()->debug("ntp parser succeded to parse optional space");
 		}
 	}
 	
@@ -724,9 +724,9 @@ lib::npt_p::parse(const_iterator& it, const const_iterator& end)
 	sd += (d == -1)?0:d;
 	AM_DBG { 
 		if (d == -1) {
-			logger::get_logger()->debug(gettext("ntp parser failed to parse literal = "));
+			logger::get_logger()->debug("ntp parser failed to parse literal = ");
 		} else {
-			logger::get_logger()->debug(gettext("ntp parser succeded to parse literal = "));
+			logger::get_logger()->debug("ntp parser succeded to parse literal = ");
 		}
 	}
 	
@@ -736,11 +736,11 @@ lib::npt_p::parse(const_iterator& it, const const_iterator& end)
 	d = parser.parse(tit,end);
 	sd+= (d == -1)?0:d;
 	if (d == -1) {
-		AM_DBG logger::get_logger()->debug(gettext("ntp parser failed to parse time"));
+		AM_DBG logger::get_logger()->debug("ntp parser failed to parse time");
 		return -1;
 	} else {
 		m_result = parser.get_value();
-		AM_DBG logger::get_logger()->debug(gettext("ntp parser succeded to parse time %ld"),m_result);
+		AM_DBG logger::get_logger()->debug("ntp parser succeded to parse time %ld",m_result);
 
 	}
 	

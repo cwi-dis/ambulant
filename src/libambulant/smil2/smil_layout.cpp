@@ -103,7 +103,7 @@ smil_layout_manager::get_document_layout(lib::document *doc)
 		const char *layout_type = layout_root->get_attribute("type");
 		if (layout_type && strcmp(layout_type, "text/smil-basic-layout") != 0 ) {
 			lib::logger::get_logger()->trace("smil_layout_manager: <layout type=\"%s\"> not supported", layout_type);
-			lib::logger::get_logger()->warn(gettext("No supported layout information in document"));
+			lib::logger::get_logger()->warn(gettext("Problem with layout in SMIL document"));
 			return NULL;
 		}
 		AM_DBG lib::logger::get_logger()->debug("smil_layout_manager: returning node 0x%x", layout_root);
@@ -119,7 +119,7 @@ smil_layout_manager::get_document_layout(lib::document *doc)
 			// Check that it is indeed a <layout> node
 			if (m_schema->get_layout_type((layout_root)->get_qname()) != common::l_layout) {
 				lib::logger::get_logger()->trace("smil_layout_manager: <switch> in <head> should contain only <layout>s");
-				lib::logger::get_logger()->warn(gettext("Document layout section is invalid"));
+				lib::logger::get_logger()->warn(gettext("Problem with layout in SMIL document"));
 				continue;
 			}
 			// Check that the type is supported
@@ -139,7 +139,8 @@ smil_layout_manager::get_document_layout(lib::document *doc)
 			layout_root = layout_root->next();
 		}
 	}
-	lib::logger::get_logger()->warn(gettext("No supported layout information in document"));
+	
+	lib::logger::get_logger()->warn(gettext("Problem with layout in SMIL document"));
 	return NULL;
 }
 
@@ -233,7 +234,7 @@ smil_layout_manager::build_body_regions(lib::document *doc) {
 	lib::node *doc_root = doc->get_root();
 	lib::node *body = doc_root->get_first_child("body");
 	if (!body) {
-		lib::logger::get_logger()->error(gettext("Document has no <body> section"));
+		lib::logger::get_logger()->error(gettext("Document has no <body> section, nothing to play"));
 		return;
 	}
 	lib::node::const_iterator it;
@@ -325,7 +326,7 @@ smil_layout_manager::build_surfaces(common::window_factory *wf) {
 				if (!stack.empty()) {
 					if (tag != common::l_region) {
 						lib::logger::get_logger()->trace("%s: topLayout element inside other element", n->get_sig().c_str());
-						lib::logger::get_logger()->error(gettext("Layout error in document"));
+						lib::logger::get_logger()->error(gettext("Problem with layout in SMIL document"));
 						tag = common::l_region;
 					}
 				}
@@ -559,7 +560,7 @@ smil_layout_manager::get_alignment(const lib::node *n)
 		std::map<std::string, lib::node*>::iterator it = m_id2regpoint.find(regPoint);
 		if (it == m_id2regpoint.end()) {
 			lib::logger::get_logger()->trace("%s: unknown %s value: %s", n->get_sig().c_str(), rpname, regPoint);
-			lib::logger::get_logger()->warn(gettext("Syntax error in regPoint/mediaAlign"));
+			lib::logger::get_logger()->warn(gettext("Syntax error in SMIL document"));
 		} else {
 			regpoint_node = (*it).second;
 			// XXX Just for now:-)
@@ -577,7 +578,7 @@ smil_layout_manager::get_alignment(const lib::node *n)
 		}
 		if (!found && regAlign != NULL) {
 			lib::logger::get_logger()->trace("%s: unknown %s value: %s", n->get_sig().c_str(), raname, regAlign);
-			lib::logger::get_logger()->warn(gettext("Syntax error in regAlign/mediaAlign"));
+			lib::logger::get_logger()->warn(gettext("Syntax error in SMIL document"));
 		}
 	}
 	return new common::smil_alignment(image_fixpoint, surface_fixpoint);
