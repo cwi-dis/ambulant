@@ -117,6 +117,12 @@ Before creating the distribution
 - Update the API documentation in Documentation/API by running doxygen
   Read and check the documentation for consistency, errors and missing items.
 
+- Update the copyright year:
+  If a year has passed since the last distribution you must update all licenses and
+  other references to the year:
+  - See README-Fixlicense for updating the license text
+  - Check all places the version number has changed (see above), a lot of them will
+    have a copyright year too.
 - Update the translations:
   - grep for source files using "gettext" and update POTFILES.in
   - in po, run "make ambulant.pot-update"

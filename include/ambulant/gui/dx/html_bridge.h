@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2005 Stichting CWI, 
+ * Copyright (C) 2003-2007 Stichting CWI, 
  * Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -18,6 +18,7 @@
  * along with Ambulant Player; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
 #ifndef AMBULANT_GUI_DX_HTML_BRIDGE_H
 #define AMBULANT_GUI_DX_HTML_BRIDGE_H
 

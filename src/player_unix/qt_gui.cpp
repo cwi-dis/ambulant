@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2005 Stichting CWI, 
+// Copyright (C) 2003-2007 Stichting CWI, 
 // Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -46,7 +46,7 @@
 
 const QString about_text = 
 	"Ambulant SMIL 2.1 player.\n"
-	"Copyright Stichting CWI, 2003-2005.\n\n"
+	"Copyright Stichting CWI, 2003-2007.\n\n"
 	"License: LGPL.";
 
 
