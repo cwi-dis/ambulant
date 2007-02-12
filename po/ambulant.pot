@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2007-02-12 13:27+0100\n"
+"POT-Creation-Date: 2007-02-12 14:17+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -87,69 +87,6 @@ msgstr ""
 #: src/libambulant/lib/document.cpp:115 src/libambulant/lib/document.cpp:142
 #, c-format
 msgid "%s: Not a valid XML document"
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:574
-msgid "Failed to parse optional space "
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:590
-msgid "smpte-25"
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:594
-msgid "smpte-30"
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:608
-msgid "drop"
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:616
-msgid "smpte parser failed to parse literal = "
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:625
-#, c-format
-msgid "smpte parser failed to parse smtpe (i=%d)"
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:631
-msgid "Failed to parse smpte minutes/seconds. Value out of range [0,59]"
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:649
-#, c-format
-msgid "Failed to parse smpte frames. Value out of range [0,%d]"
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:668
-msgid "Failed to parse smpte sub-frames. Value out of range [0,1]"
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:714
-msgid "ntp parser failed to parse optional space"
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:716
-msgid "ntp parser succeded to parse optional space"
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:727
-msgid "ntp parser failed to parse literal = "
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:729
-msgid "ntp parser succeded to parse literal = "
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:739
-msgid "ntp parser failed to parse time"
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:743
-#, c-format
-msgid "ntp parser succeded to parse time %ld"
 msgstr ""
 
 #: src/libambulant/lib/parser_factory.cpp:123
@@ -358,57 +295,33 @@ msgid "Error in SMIL animation"
 msgstr ""
 
 #: src/libambulant/smil2/region_node.cpp:72
-#: src/libambulant/smil2/smil_layout.cpp:508
+#: src/libambulant/smil2/smil_layout.cpp:509
+#: src/libambulant/smil2/smil_layout.cpp:563
+#: src/libambulant/smil2/smil_layout.cpp:581
 msgid "Syntax error in SMIL document"
 msgstr ""
 
 #: src/libambulant/smil2/region_node.cpp:164
-msgid "Ignoring invalid color in document"
-msgstr ""
-
 #: src/libambulant/smil2/region_node.cpp:183
-msgid "Ignoring invalid background in document"
-msgstr ""
-
 #: src/libambulant/smil2/region_node.cpp:203
-msgid "Ignoring invalid fit value in document"
-msgstr ""
-
 #: src/libambulant/smil2/region_node.cpp:255
-msgid "Ignoring invalid soundAlign value in document"
-msgstr ""
-
 #: src/libambulant/smil2/region_node.cpp:287
-msgid "Ignoring invalid backgroundRepeat value in document"
+msgid "Ignoring minor errors in document"
 msgstr ""
 
 #: src/libambulant/smil2/smil_layout.cpp:106
-#: src/libambulant/smil2/smil_layout.cpp:142
-msgid "No supported layout information in document"
-msgstr ""
-
 #: src/libambulant/smil2/smil_layout.cpp:122
-msgid "Document layout section is invalid"
+#: src/libambulant/smil2/smil_layout.cpp:143
+#: src/libambulant/smil2/smil_layout.cpp:329
+msgid "Problem with layout in SMIL document"
 msgstr ""
 
-#: src/libambulant/smil2/smil_layout.cpp:236
-msgid "Document has no <body> section"
+#: src/libambulant/smil2/smil_layout.cpp:237
+msgid "Document has no <body> section, nothing to play"
 msgstr ""
 
-#: src/libambulant/smil2/smil_layout.cpp:328
-msgid "Layout error in document"
-msgstr ""
-
-#: src/libambulant/smil2/smil_layout.cpp:445
+#: src/libambulant/smil2/smil_layout.cpp:446
 msgid "Programmer error encountered, attempting to continue"
-msgstr ""
-
-#: src/libambulant/smil2/smil_layout.cpp:562
-msgid "Syntax error in regPoint/mediaAlign"
-msgstr ""
-
-#: src/libambulant/smil2/smil_layout.cpp:580
-msgid "Syntax error in regAlign/mediaAlign"
 msgstr ""
 
 #: src/libambulant/smil2/smil_player.cpp:765

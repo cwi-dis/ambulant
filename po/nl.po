@@ -6,51 +6,50 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: AmbulantPlayer 1.1\n"
+"Project-Id-Version: AmbulantPlayer 1.8\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2007-02-12 13:27+0100\n"
+"POT-Creation-Date: 2007-02-12 14:17+0100\n"
 "PO-Revision-Date: 2004-09-12 15:09+0200\n"
 "Last-Translator: Jack Jansen <Jack.Jansen@cwi.nl>\n"
-"Language-Team: Dutch <Jack.Jansen@cwi.nl>\n"
+"Language-Team: English <Jack.Jansen@cwi.nl>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/libambulant/common/gui_player.cpp:60
 msgid "Cannot play document: no player"
-msgstr ""
+msgstr "Kan document niet spelen: geen speler"
 
 #: src/libambulant/common/plugin_engine.cpp:79
 msgid "Plugin loader encountered problem: plugins disabled"
-msgstr ""
+msgstr "Plugins uitgeschakeld: plugin-lader werkt niet"
 
 #: src/libambulant/common/plugin_engine.cpp:206
 #: src/libambulant/common/plugin_engine.cpp:217
 #: src/libambulant/common/plugin_engine.cpp:265
 #, c-format
 msgid "Plugin skipped due to errors: %s "
-msgstr ""
+msgstr "Plugin niet geladen vanwege fout: %s "
 
 #: src/libambulant/common/plugin_engine.cpp:245
 #, c-format
 msgid "Error reading plugin directory: %s: 0x%x"
-msgstr ""
+msgstr "Plugin map %s kan niet worden gelezen: 0x%x"
 
 #: src/libambulant/common/plugin_engine.cpp:277
 #, c-format
 msgid "Plugin skipped due to errors: %s"
-msgstr ""
+msgstr "Plugin niet geladen vanwege fout: %s"
 
 #: src/libambulant/common/region.cpp:741 src/libambulant/common/region.cpp:752
 #: src/libambulant/lib/parselets.cpp:380
-#, fuzzy
 msgid "Programmer error encountered, will attempt to continue"
 msgstr "Interne fout gedetecteerd"
 
 #: src/libambulant/common/video_renderer.cpp:69
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot open video: %s"
-msgstr "Bestand kan niet geopend worden: %s"
+msgstr "Video-bestand kan niet geopend worden: %s"
 
 #: src/libambulant/gui/SDL/sdl_audio.cpp:90
 msgid "Cannot initialize SDL audio library"
@@ -81,83 +80,19 @@ msgstr "Bestand kan niet geopend worden: %s"
 
 #: src/libambulant/lib/document.cpp:94 src/libambulant/lib/document.cpp:128
 #: src/libambulant/lib/document.cpp:147 src/libambulant/lib/document.cpp:160
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Not a SMIL document"
 msgstr "%s: Is geen SMIL document"
 
 #: src/libambulant/lib/document.cpp:115 src/libambulant/lib/document.cpp:142
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Not a valid XML document"
 msgstr "%s: Is geen XML document"
-
-#: src/libambulant/lib/parselets.cpp:574
-#, fuzzy
-msgid "Failed to parse optional space "
-msgstr "Document kan niet geparseerd worden: %s"
-
-#: src/libambulant/lib/parselets.cpp:590
-msgid "smpte-25"
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:594
-msgid "smpte-30"
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:608
-msgid "drop"
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:616
-msgid "smpte parser failed to parse literal = "
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:625
-#, c-format
-msgid "smpte parser failed to parse smtpe (i=%d)"
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:631
-msgid "Failed to parse smpte minutes/seconds. Value out of range [0,59]"
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:649
-#, c-format
-msgid "Failed to parse smpte frames. Value out of range [0,%d]"
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:668
-msgid "Failed to parse smpte sub-frames. Value out of range [0,1]"
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:714
-msgid "ntp parser failed to parse optional space"
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:716
-msgid "ntp parser succeded to parse optional space"
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:727
-msgid "ntp parser failed to parse literal = "
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:729
-msgid "ntp parser succeded to parse literal = "
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:739
-msgid "ntp parser failed to parse time"
-msgstr ""
-
-#: src/libambulant/lib/parselets.cpp:743
-#, c-format
-msgid "ntp parser succeded to parse time %ld"
-msgstr ""
 
 #: src/libambulant/lib/parser_factory.cpp:123
 #, c-format
 msgid "Parser \"%s\" not available, using \"%s\""
-msgstr ""
+msgstr "Parser \"%s\" niet beschikbaar, \"%s\" wordt gebruikt"
 
 #: src/libambulant/lib/transition_info.cpp:47
 msgid "transition: no `type' attribute"
@@ -196,7 +131,7 @@ msgstr "%s: Fout opgetreden tijdens parseren"
 #: src/libambulant/lib/xerces_parser.cpp:143
 #, c-format
 msgid "%s: Unexpected exception during parsing"
-msgstr ""
+msgstr "%s: onverwachte fout tijdens parseren"
 
 #: src/libambulant/mms/timeline_builder.cpp:85
 msgid "MMS player: ignoring XML namespace"
@@ -268,7 +203,7 @@ msgstr "%s: kan geen audiokanaal meer aanmaken"
 #: src/libambulant/net/ffmpeg_audio.cpp:790
 #: src/libambulant/net/ffmpeg_audio.cpp:958
 msgid "Programmer error encountered during audio playback"
-msgstr "Er is een interne fout opgetreden tijdens het spelen van audio"
+msgstr "Interne fout gedetecteerd tijdens het spelen van audio"
 
 #: src/libambulant/net/demux_datasource.cpp:397
 #: src/libambulant/net/ffmpeg_video.cpp:272
@@ -277,7 +212,7 @@ msgstr "Er is een interne fout opgetreden tijdens het spelen van audio"
 #: src/libambulant/net/ffmpeg_video.cpp:747
 #: src/libambulant/net/ffmpeg_video.cpp:754
 msgid "Programmer error encountered during video playback"
-msgstr "Er is een interne fout opgetreden tijdens het spelen van video"
+msgstr "Interne fout gedetecteerd tijdens het spelen van video"
 
 #: src/libambulant/net/demux_datasource.cpp:638
 #, c-format
@@ -331,7 +266,7 @@ msgstr "fout tijdens decoderen videoframe"
 
 #: src/libambulant/net/ffmpeg_video.cpp:711
 #: src/libambulant/net/ffmpeg_video.cpp:718
-#, fuzzy, c-format
+#, c-format
 msgid "No support for \"%s\" video"
 msgstr "Geen ondersteuning voor \"%s\" video"
 
@@ -357,64 +292,39 @@ msgstr "Kan netwerklocatie (URL) niet interpreteren: %s"
 #: src/libambulant/smil2/animate_a.cpp:362
 #: src/libambulant/smil2/animate_a.cpp:466
 msgid "Error in SMIL animation"
-msgstr ""
+msgstr "Fout in SMIL animatie"
 
 #: src/libambulant/smil2/region_node.cpp:72
-#: src/libambulant/smil2/smil_layout.cpp:508
-#, fuzzy
+#: src/libambulant/smil2/smil_layout.cpp:509
+#: src/libambulant/smil2/smil_layout.cpp:563
+#: src/libambulant/smil2/smil_layout.cpp:581
 msgid "Syntax error in SMIL document"
-msgstr "%s: Is geen SMIL document"
+msgstr "Fout in SMIL document"
 
 #: src/libambulant/smil2/region_node.cpp:164
-msgid "Ignoring invalid color in document"
-msgstr ""
-
 #: src/libambulant/smil2/region_node.cpp:183
-msgid "Ignoring invalid background in document"
-msgstr ""
-
 #: src/libambulant/smil2/region_node.cpp:203
-msgid "Ignoring invalid fit value in document"
-msgstr ""
-
 #: src/libambulant/smil2/region_node.cpp:255
-msgid "Ignoring invalid soundAlign value in document"
-msgstr ""
-
 #: src/libambulant/smil2/region_node.cpp:287
-msgid "Ignoring invalid backgroundRepeat value in document"
-msgstr ""
+#
+msgid "Ignoring minor errors in document"
+msgstr "Kleine fouten in SMIL document, genegeerd"
 
 #: src/libambulant/smil2/smil_layout.cpp:106
-#: src/libambulant/smil2/smil_layout.cpp:142
-msgid "No supported layout information in document"
-msgstr ""
-
 #: src/libambulant/smil2/smil_layout.cpp:122
-msgid "Document layout section is invalid"
-msgstr ""
+#: src/libambulant/smil2/smil_layout.cpp:143
+#: src/libambulant/smil2/smil_layout.cpp:329
+msgid "Problem with layout in SMIL document"
+msgstr "Document bevat geen correcte opmaak-sectie"
 
-#: src/libambulant/smil2/smil_layout.cpp:236
-msgid "Document has no <body> section"
-msgstr ""
+#: src/libambulant/smil2/smil_layout.cpp:237
+#
+msgid "Document has no <body> section, nothing to play"
+msgstr "Document bevat geen <body> gedeelte, er kan niets gespeeld worden"
 
-#: src/libambulant/smil2/smil_layout.cpp:328
-#, fuzzy
-msgid "Layout error in document"
-msgstr "%s: Fout opgetreden tijdens parseren"
-
-#: src/libambulant/smil2/smil_layout.cpp:445
-#, fuzzy
+#: src/libambulant/smil2/smil_layout.cpp:446
 msgid "Programmer error encountered, attempting to continue"
-msgstr "Er is een interne fout opgetreden tijdens het spelen van audio"
-
-#: src/libambulant/smil2/smil_layout.cpp:562
-msgid "Syntax error in regPoint/mediaAlign"
-msgstr ""
-
-#: src/libambulant/smil2/smil_layout.cpp:580
-msgid "Syntax error in regAlign/mediaAlign"
-msgstr ""
+msgstr "Interne fout gedetecteerd"
 
 #: src/libambulant/smil2/smil_player.cpp:765
 #, c-format
@@ -434,7 +344,6 @@ msgstr "Deze versie kan <%s> niet in een nieuw venster openen"
 #: src/libambulant/smil2/sync_rule.cpp:260
 #: src/libambulant/smil2/sync_rule.cpp:271
 #: src/libambulant/smil2/sync_rule.cpp:282
-#, fuzzy
 msgid "Programmer error, attempting to continue"
 msgstr "Interne fout gedetecteerd"
 
@@ -455,24 +364,24 @@ msgstr "Tijdens het lezen van de instellingen: %s: Kan geen DOM-tree bouwen"
 #: src/libambulant/smil2/time_attrs.cpp:453
 #: src/libambulant/smil2/time_attrs.cpp:486
 msgid "Error in SMIL timing info in document"
-msgstr ""
+msgstr "SMIL-timing fout in document"
 
 #: src/libambulant/smil2/time_attrs.cpp:292
 msgid "Ignoring wallclock in document"
-msgstr ""
+msgstr "Wallclock niet ondersteund, genegeerd"
 
 #: src/libambulant/smil2/time_attrs.cpp:303
 #: src/libambulant/smil2/time_attrs.cpp:312
 #: src/libambulant/smil2/time_attrs.cpp:327
 msgid "Error in SMIL interaction info in document"
-msgstr ""
+msgstr "Fout in SMIL interactie in document"
 
 #: src/libambulant/smil2/time_attrs.cpp:605
 #: src/libambulant/smil2/time_attrs.cpp:611
 #: src/libambulant/smil2/time_attrs.cpp:622
 #: src/libambulant/smil2/time_attrs.cpp:627
 msgid "Error in SMIL transition info in document"
-msgstr ""
+msgstr "Fout in SMIL transitie in document"
 
 #: src/player_gtk/gtk_gui.cpp:554 src/player_unix/qt_gui.cpp:272
 #, c-format
@@ -486,9 +395,9 @@ msgid "Ambulant Player: compile time version %s, runtime version %s"
 msgstr "Ambulant Player: gebouwd voor versie %s, draait met versie %s"
 
 #: src/player_gtk/gtk_gui.cpp:1062
-#, fuzzy, c-format
+#, c-format
 msgid "Ambulant Player: built on %s for Unix/GTK"
-msgstr "Ambulant Player: gebouwd op %s voor Unix/Qt"
+msgstr "Ambulant Player: gebouwd op %s voor Unix/GTK"
 
 #: src/player_gtk/gtk_gui.cpp:1064 src/player_unix/qt_gui.cpp:659
 msgid "Ambulant Player: localization enabled (english)"
@@ -503,12 +412,12 @@ msgstr "Logboekbestand kan niet geopend worden: %s"
 #: src/player_unix/qt_mainloop.cpp:83
 #, c-format
 msgid "Attempt to start browser returned status %d. Command: %s"
-msgstr ""
+msgstr "Fout %d tijdens starten van webbrowser %s"
 
 #: src/player_gtk/gtk_mainloop.cpp:87 src/player_unix/qt_mainloop.cpp:73
 #, c-format
 msgid "$BROWSER not set: cannot open webpage <%s>"
-msgstr ""
+msgstr "$BROWSER niet gespecificeerd, kan webpagina <%s> niet openen"
 
 #: src/player_gtk/gtk_mainloop.cpp:283 src/player_macosx/mainloop.cpp:75
 #: src/player_unix/qt_mainloop.cpp:234
@@ -520,29 +429,29 @@ msgstr "DOM-tree kan niet gebouwd worden: %s"
 #: src/player_unix/unix_preferences.cpp:147
 #, c-format
 msgid "Invalid value from preference file: %s=%s"
-msgstr ""
+msgstr "Fout in voorkeuren-bestand: %s=%s"
 
 #: src/player_gtk/unix_preferences.cpp:177
 #: src/player_unix/unix_preferences.cpp:177
 #, c-format
 msgid "Invalid preference name: %s"
-msgstr ""
+msgstr "Onbekende voorkeursspecificatie: %s"
 
 #: src/player_gtk/unix_preferences.cpp:227
 #: src/player_unix/unix_preferences.cpp:227
 msgid "Invalid preference file format"
-msgstr ""
+msgstr "Voorkeuren-bestand niet in het juiste formaat"
 
 #: src/player_gtk/unix_preferences.cpp:288
 #: src/player_unix/unix_preferences.cpp:288
 msgid "HOME environment variable not set"
-msgstr ""
+msgstr "HOME omgevingsvariabele niet gespecificeerd"
 
 #: src/player_gtk/unix_preferences.cpp:303
 #: src/player_unix/unix_preferences.cpp:303
 #, c-format
 msgid "mkdir(\"%s\") failed: %s"
-msgstr ""
+msgstr "mkdir(\"%s\") mislukt: %s"
 
 #: src/player_macosx/mainloop.cpp:90
 #, c-format
@@ -741,7 +650,7 @@ msgstr "Map voor insteekmodules:\n"
 #: src/libambulant/gui/cocoa/cocoa_dsvideo.mm:79
 #: src/libambulant/gui/cocoa/cocoa_dsvideo.mm:101
 msgid "Out of memory while showing video"
-msgstr ""
+msgstr "Geheugen vol (tijdens afspelen van video)"
 
 #: src/libambulant/gui/cocoa/cocoa_gui.mm:232
 msgid "Unsupported: AmbulantPlayer cannot open second toplevel window yet"
