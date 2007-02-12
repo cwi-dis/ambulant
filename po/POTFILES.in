@@ -1,12 +1,13 @@
-# src/libambulant/common/plugin_engine.cpp
+src/libambulant/common/gui_player.cpp
+src/libambulant/common/plugin_engine.cpp
 # src/libambulant/common/preferences.cpp
-# src/libambulant/common/region.cpp
+src/libambulant/common/region.cpp
 # src/libambulant/common/renderer.cpp
 # src/libambulant/common/renderer_impl.cpp
 # src/libambulant/common/schema.cpp
 # src/libambulant/common/smil_alignment.cpp
 # src/libambulant/common/smil_handler.cpp
-# src/libambulant/common/video_renderer.cpp
+src/libambulant/common/video_renderer.cpp
 # src/libambulant/get_version.cpp
 # src/libambulant/gui/arts/arts.cpp
 # src/libambulant/gui/arts/arts_audio.cpp
@@ -62,11 +63,12 @@ src/libambulant/lib/document.cpp
 # src/libambulant/lib/expat_parser.cpp
 # src/libambulant/lib/gpaths.cpp
 # src/libambulant/lib/logger.cpp
+# src/libambulant/lib/memfile.cpp
 # src/libambulant/lib/nfa.cpp
 # src/libambulant/lib/node.cpp
 # src/libambulant/lib/node_dummy.cpp
-# src/libambulant/lib/parselets.cpp
-# src/libambulant/lib/parser_factory.cpp
+src/libambulant/lib/parselets.cpp
+src/libambulant/lib/parser_factory.cpp
 # src/libambulant/lib/string_util.cpp
 # src/libambulant/lib/timer.cpp
 src/libambulant/lib/transition_info.cpp
@@ -83,7 +85,7 @@ src/libambulant/lib/tree_builder.cpp
 # src/libambulant/lib/win32/win32_memfile.cpp
 # src/libambulant/lib/win32/win32_thread.cpp
 # src/libambulant/lib/win32/win32_timer.cpp
-# src/libambulant/lib/xerces_parser.cpp
+src/libambulant/lib/xerces_parser.cpp
 # src/libambulant/mms/mms_player.cpp
 src/libambulant/mms/timeline_builder.cpp
 # src/libambulant/mms/timelines.cpp
@@ -91,26 +93,26 @@ src/libambulant/mms/timeline_builder.cpp
 src/libambulant/net/datasource.cpp
 src/libambulant/net/demux_datasource.cpp
 src/libambulant/net/ffmpeg_audio.cpp
-src/libambulant/net/ffmpeg_common.cpp
+# src/libambulant/net/ffmpeg_common.cpp
 src/libambulant/net/ffmpeg_raw.cpp
 src/libambulant/net/ffmpeg_video.cpp
 src/libambulant/net/posix_datasource.cpp
 # src/libambulant/net/raw_video_datasource.cpp
 src/libambulant/net/rtsp_datasource.cpp
 src/libambulant/net/rtsp_factory.cpp
-# src/libambulant/net/stdio_datasource.cpp
+src/libambulant/net/stdio_datasource.cpp
 src/libambulant/net/url.cpp
-# src/libambulant/smil2/animate_a.cpp
+src/libambulant/smil2/animate_a.cpp
 # src/libambulant/smil2/animate_e.cpp
 # src/libambulant/smil2/animate_n.cpp
 # src/libambulant/smil2/params.cpp
-# src/libambulant/smil2/region_node.cpp
-# src/libambulant/smil2/smil_layout.cpp
+src/libambulant/smil2/region_node.cpp
+src/libambulant/smil2/smil_layout.cpp
 src/libambulant/smil2/smil_player.cpp
 # src/libambulant/smil2/smil_time.cpp
-# src/libambulant/smil2/sync_rule.cpp
+src/libambulant/smil2/sync_rule.cpp
 src/libambulant/smil2/test_attrs.cpp
-# src/libambulant/smil2/time_attrs.cpp
+src/libambulant/smil2/time_attrs.cpp
 # src/libambulant/smil2/time_calc.cpp
 # src/libambulant/smil2/time_node.cpp
 # src/libambulant/smil2/time_sched.cpp
@@ -118,6 +120,11 @@ src/libambulant/smil2/test_attrs.cpp
 # src/libambulant/smil2/timegraph.cpp
 # src/libambulant/smil2/trace_player.cpp
 # src/libambulant/smil2/transition.cpp
+src/player_gtk/gtk_gui.cpp
+src/player_gtk/gtk_logger.cpp
+src/player_gtk/gtk_mainloop.cpp
+# src/player_gtk/gtk_settings.cpp
+src/player_gtk/unix_preferences.cpp
 src/player_macosx/mainloop.cpp
 # src/player_mfc/AmbulantPlayer.cpp
 # src/player_mfc/HtmlView.cpp
@@ -131,9 +138,9 @@ src/player_macosx/mainloop.cpp
 # src/player_mfc/stdafx.cpp
 src/player_unix/qt_gui.cpp
 src/player_unix/qt_logger.cpp
-# src/player_unix/qt_mainloop.cpp
+src/player_unix/qt_mainloop.cpp
 src/player_unix/qt_settings.cpp
-# src/player_unix/unix_preferences.cpp
+src/player_unix/unix_preferences.cpp
 # src/player_wince/AmbulantPlayer.cpp
 # src/player_wince/AmbulantPlayerDoc.cpp
 # src/player_wince/AmbulantPlayerView.cpp
@@ -146,7 +153,7 @@ src/player_unix/qt_settings.cpp
 # src/plugins/plugin.cpp
 src/plugins/xercesplugin.cpp
 # src/libambulant/gui/cocoa/cocoa_audio.mm
-# src/libambulant/gui/cocoa/cocoa_dsvideo.mm
+src/libambulant/gui/cocoa/cocoa_dsvideo.mm
 # src/libambulant/gui/cocoa/cocoa_fill.mm
 src/libambulant/gui/cocoa/cocoa_gui.mm
 # src/libambulant/gui/cocoa/cocoa_image.mm
