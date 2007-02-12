@@ -622,7 +622,7 @@ lib::smpte_p::parse(const_iterator& it, const const_iterator& end)
 	for(int i=0; i<3; i++) {
 		d = ip.parse(tit,end);
 		if (d == -1) { 
-			AM_DBG logger::get_logger()->debug("smpte parser failed to parse smtpe (i=%d)")i);
+			AM_DBG logger::get_logger()->debug("smpte parser failed to parse smtpe (i=%d)", i);
 			return -1;
 		}
 		
