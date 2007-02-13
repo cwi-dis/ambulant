@@ -67,7 +67,7 @@ const char *ui_description =
 				"<menuitem action=\"openurl\"/> \n"
 				"<menuitem action=\"reload\"/> \n"
 				"<separator/> \n"
-				"<menuitem action=\"settings\"/> \n"
+				"<menuitem action=\"preferences\"/> \n"
 				"<separator/> \n"
 				"<menuitem action=\"quit\"/> \n"
 			"</menu> \n"
@@ -274,29 +274,29 @@ gtk_gui::gtk_gui(const char* title,
 	// Initialization of the Menu Bar Items
 	// There is a problem in here because the callbacks in Actions go like g_signal_connect (but, we need g_sginal_connect_swapped)
 	static GtkActionEntry entries[] = {
-	{ "FileMenu", NULL, "_File"},
-	{ "open", GTK_STOCK_OPEN, "_Open...", "<alt>F", "Open a file", NULL},
-	{ "openurl", NULL, "Open _URL...", "<alt>U", "Open a url", NULL},
-	{ "reload", GTK_STOCK_REFRESH, "_Reload...", "<alt>R", "Reload a document", NULL},
-	{ "settings", GTK_STOCK_PREFERENCES , "_Settings", "<alt>S", "Launch settings window", NULL},
-	{ "quit", GTK_STOCK_QUIT, "_Quit", "<alt>Q", "Quit ambulant", NULL},	
+	{ "FileMenu", NULL, gettext_noop("File")},
+	{ "open", GTK_STOCK_OPEN, gettext_noop("Open..."), "<alt>F", gettext_noop("Open a file"), NULL},
+	{ "openurl", NULL, gettext_noop("Open URL..."), "<alt>U", gettext_noop("Open a url"), NULL},
+	{ "reload", GTK_STOCK_REFRESH, gettext_noop("Reload"), "<alt>R", gettext_noop("Reload a document"), NULL},
+	{ "preferences", GTK_STOCK_PREFERENCES , gettext_noop("Preferences"), "<alt>S", gettext_noop("Launch preferences window"), NULL},
+	{ "quit", GTK_STOCK_QUIT, gettext_noop("Quit"), "<alt>Q", gettext_noop("Quit ambulant"), NULL},	
 	// Play Menu
-	{ "PlayMenu", "<alt>Y", "Pla_y"},
-	{ "play", GTK_STOCK_MEDIA_PLAY, "Pla_y", "<alt>Y", "Play document", NULL},
-	{ "pause", GTK_STOCK_MEDIA_PAUSE, "_Pause", "<alt>P", "Pause document", NULL},
-	{ "stop", GTK_STOCK_MEDIA_STOP, "_Stop", "<alt>S", "Stop document", NULL},
+	{ "PlayMenu", "<alt>Y", gettext_noop("Play")},
+	{ "play", GTK_STOCK_MEDIA_PLAY, gettext_noop("Play"), "<alt>Y", gettext_noop("Play document"), NULL},
+	{ "pause", GTK_STOCK_MEDIA_PAUSE, gettext_noop("Pause"), "<alt>P", gettext_noop("Pause document"), NULL},
+	{ "stop", GTK_STOCK_MEDIA_STOP, gettext_noop("Stop"), "<alt>S", gettext_noop("Stop document"), NULL},
 	// View Menu
-	{ "ViewMenu", "<alt>V", "_View"},
-	{ "fullscreen", NULL, "_Full Screen", "<alt>F", "Full Screen", NULL},
-	{ "window", NULL, "_Window", "<alt>W", "Normal Screen", NULL},
-	{ "loadsettings", GTK_STOCK_PROPERTIES, "_Load Settings...", "<alt>R", "Launch the settings window", NULL},
-	{ "logwindow", NULL, "_Log Window...", "<alt>L", "Launch log window", NULL},
+	{ "ViewMenu", "<alt>V", gettext_noop("View")},
+	{ "fullscreen", NULL, gettext_noop("Full Screen"), "<alt>F", gettext_noop("Full Screen"), NULL},
+	{ "window", NULL, gettext_noop("Window"), "<alt>W", gettext_noop("Normal Screen"), NULL},
+	{ "loadsettings", GTK_STOCK_PROPERTIES, gettext_noop("Load Settings..."), "<alt>R", gettext_noop("Launch the settings window"), NULL},
+	{ "logwindow", NULL, gettext_noop("Log Window..."), "<alt>L", gettext_noop("Launch log window"), NULL},
 	// Help Menu
-	{ "HelpMenu", "<alt>H", "_Help"},
-	{ "about", GTK_STOCK_ABOUT, "_About AmbulantPlayer", "<alt>A", "Information about Ambulant", NULL},
-	{ "help", GTK_STOCK_HELP, "AmbulantPlayer _Help", "<alt>H", "Help in AmbulantPlayer Webpage", NULL},
-	{ "website", NULL, "AmbulantPlayer _Website...", "<alt>W", "Open the Ambulant Webpage", NULL},
-	{ "welcome", GTK_STOCK_HOME, "_Play Welcome Document", "<alt>P", "Plays a simple SMIL file", NULL}
+	{ "HelpMenu", "<alt>H", gettext_noop("Help")},
+	{ "about", GTK_STOCK_ABOUT, gettext_noop("About AmbulantPlayer"), "<alt>A", gettext_noop("Information about Ambulant"), NULL},
+	{ "help", GTK_STOCK_HELP, gettext_noop("AmbulantPlayer Help"), "<alt>H", gettext_noop("Help in AmbulantPlayer Webpage"), NULL},
+	{ "website", NULL, gettext_noop("AmbulantPlayer Website..."), "<alt>W", gettext_noop("Open the Ambulant Webpage"), NULL},
+	{ "welcome", GTK_STOCK_HOME, gettext_noop("Play Welcome Document"), "<alt>P", gettext_noop("Plays a simple SMIL file"), NULL}
 	};
 
 	int n_entries = G_N_ELEMENTS(entries);
@@ -340,6 +340,8 @@ gtk_gui::gtk_gui(const char* title,
 	
 	/* The Action Group that includes the menu bar */
 	m_actions = gtk_action_group_new("Actions");
+	AM_DBG printf("%s0x%X\n", "gtk_gui::gtk_gui(), PACKAGE=", PACKAGE);
+	gtk_action_group_set_translation_domain(m_actions, PACKAGE);
 	gtk_action_group_add_actions(m_actions, entries, n_entries, (void*)this);
 
 	/* The Gtk UI Manager */
@@ -360,7 +362,7 @@ gtk_gui::gtk_gui(const char* title,
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "open"), "activate",  G_CALLBACK (gtk_C_callback_open), (void *) this );	
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "openurl"), "activate",  G_CALLBACK (gtk_C_callback_open_url), (void*)this);		
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "reload"), "activate",  G_CALLBACK (gtk_C_callback_reload), (void*)this);		
-	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "settings"), "activate",  G_CALLBACK (gtk_C_callback_settings_select), (void *) this );	
+	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "preferences"), "activate",  G_CALLBACK (gtk_C_callback_settings_select), (void *) this );	
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "quit"), "activate",  G_CALLBACK (gtk_C_callback_quit), (void*)this);		
 
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "play"), "activate",  G_CALLBACK (gtk_C_callback_play), (void*)this);
@@ -489,7 +491,7 @@ gtk_gui::do_about() {
          GTK_DIALOG_DESTROY_WITH_PARENT,
          GTK_MESSAGE_INFO,
          GTK_BUTTONS_OK,
-	 "About AmbulantPlayer");
+         gettext("About AmbulantPlayer"));
 	gtk_message_dialog_format_secondary_text(dialog,about_text);
  	gtk_dialog_run (GTK_DIALOG (dialog));
  	gtk_widget_destroy (GTK_WIDGET (dialog));
@@ -514,7 +516,7 @@ gtk_gui::do_welcome() {
          	GTK_DIALOG_DESTROY_WITH_PARENT,
          	GTK_MESSAGE_ERROR,
          	GTK_BUTTONS_OK,
-	 	"Cannot find Welcome.smil document");
+	 	gettext("Cannot find Welcome.smil document"));
  		gtk_dialog_run (GTK_DIALOG (dialog));
  		gtk_widget_destroy (GTK_WIDGET (dialog));
 	}
@@ -532,7 +534,7 @@ gtk_gui::do_help() {
          	GTK_DIALOG_DESTROY_WITH_PARENT,
          	GTK_MESSAGE_ERROR,
          	GTK_BUTTONS_OK,
-	 	"Cannot find Ambulant Player Help");
+	        gettext("Cannot find Ambulant Player Help"));
  		gtk_dialog_run (GTK_DIALOG (dialog));
  		gtk_widget_destroy (GTK_WIDGET (dialog));
 	}
@@ -551,7 +553,7 @@ gtk_gui::do_logger_window() {
 void
 gtk_gui::fileError(const gchar* smilfilename) {
  	char buf[1024];
-	sprintf(buf, gettext("%s: Cannot open file: %s"),
+	sprintf(buf, gettext(gettext("%s: Cannot open file: %s")),
 		(const char*) smilfilename, strerror(errno));
 	GtkMessageDialog* dialog = 
 	(GtkMessageDialog*) gtk_message_dialog_new (NULL,
@@ -585,22 +587,22 @@ gtk_gui::openSMILfile(const char *smilfilename, int mode, bool dupFlag) {
 
 void 
 gtk_gui::do_open(){
-	m_file_chooser = GTK_FILE_CHOOSER (gtk_file_chooser_dialog_new("Please, select a file", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL));
+  m_file_chooser = GTK_FILE_CHOOSER (gtk_file_chooser_dialog_new(gettext("Please, select a file"), NULL, GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL));
 
 	GtkFileFilter *filter_smil = gtk_file_filter_new();
-	gtk_file_filter_set_name(filter_smil, "SMIL files");
+	gtk_file_filter_set_name(filter_smil, gettext("SMIL files"));
 	gtk_file_filter_add_pattern(filter_smil, "*.smil");
 	gtk_file_filter_add_pattern(filter_smil, "*.smi");
 	gtk_file_chooser_add_filter(m_file_chooser, filter_smil);
 	GtkFileFilter *filter_all = gtk_file_filter_new();
-	gtk_file_filter_set_name(filter_all, "All files");
+	gtk_file_filter_set_name(filter_all, gettext("All files"));
 	gtk_file_filter_add_pattern(filter_all, "*.smil");
 	gtk_file_filter_add_pattern(filter_all, "*.smi");	
 	gtk_file_filter_add_pattern(filter_all, "*.mms");	
 	gtk_file_filter_add_pattern(filter_all, "*.grins");	
 	gtk_file_chooser_add_filter(m_file_chooser, filter_all);
 	GtkFileFilter *filter_any = gtk_file_filter_new();
-	gtk_file_filter_set_name(filter_any, "Any file");
+	gtk_file_filter_set_name(filter_any, gettext("Any file"));
 	gtk_file_filter_add_pattern(filter_any, "*");
 	gtk_file_chooser_add_filter(m_file_chooser, filter_any);
 
@@ -649,10 +651,10 @@ gtk_gui::do_load_settings() {
 	if (m_mainloop && m_mainloop->is_open())
 		do_stop();
 	
-	m_settings_chooser = GTK_FILE_CHOOSER (gtk_file_chooser_dialog_new("Please, select a settings file", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL));
+	m_settings_chooser = GTK_FILE_CHOOSER (gtk_file_chooser_dialog_new(gettext("Please, select a settings file"), NULL, GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL));
 
 	GtkFileFilter *filter_xml = gtk_file_filter_new();
-	gtk_file_filter_set_name(filter_xml, "XML files");
+	gtk_file_filter_set_name(filter_xml, gettext("XML files"));
 	gtk_file_filter_add_pattern(filter_xml, "*.xml");
 	gtk_file_chooser_add_filter(m_settings_chooser, filter_xml);
 
@@ -688,7 +690,7 @@ gtk_gui::do_open_url() {
 	GtkDialog* url_dialog =  GTK_DIALOG (gtk_dialog_new_with_buttons
 	("AmbulantPlayer", NULL, GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL));
 	
-	GtkLabel* label = GTK_LABEL (gtk_label_new("URL to open:"));
+	GtkLabel* label = GTK_LABEL (gtk_label_new(gettext("URL to open:")));
 		gtk_misc_set_alignment (GTK_MISC (label), 0, 0);
 	gtk_widget_show(GTK_WIDGET (label));
 	

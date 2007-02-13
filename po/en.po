@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AmbulantPlayer 1.1\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2007-02-12 14:17+0100\n"
+"POT-Creation-Date: 2007-02-13 16:50+0100\n"
 "PO-Revision-Date: 2004-09-12 15:09+0200\n"
 "Last-Translator: Jack Jansen <Jack.Jansen@cwi.nl>\n"
 "Language-Team: English <Jack.Jansen@cwi.nl>\n"
@@ -381,23 +381,196 @@ msgstr ""
 msgid "Error in SMIL transition info in document"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:554 src/player_unix/qt_gui.cpp:272
+#: src/player_gtk/gtk_gui.cpp:277
+msgid "File"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:278
+msgid "Open..."
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:278
+msgid "Open a file"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:279
+msgid "Open URL..."
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:279
+msgid "Open a url"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:280
+msgid "Reload"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:280
+msgid "Reload a document"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:281
+msgid "Preferences"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:281
+msgid "Launch preferences window"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:282
+msgid "Quit"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:282
+msgid "Quit ambulant"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:284 src/player_gtk/gtk_gui.cpp:285
+msgid "Play"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:285
+msgid "Play document"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:286
+msgid "Pause"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:286
+msgid "Pause document"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:287
+msgid "Stop"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:287
+msgid "Stop document"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:289
+msgid "View"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:290
+msgid "Full Screen"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:291
+msgid "Window"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:291
+msgid "Normal Screen"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:292
+msgid "Load Settings..."
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:292
+msgid "Launch the settings window"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:293
+msgid "Log Window..."
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:293
+msgid "Launch log window"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:295
+msgid "Help"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:296 src/player_gtk/gtk_gui.cpp:494
+#: src/player_unix/qt_gui.cpp:214
+msgid "About AmbulantPlayer"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:296
+msgid "Information about Ambulant"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:297
+msgid "AmbulantPlayer Help"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:297
+msgid "Help in AmbulantPlayer Webpage"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:298
+msgid "AmbulantPlayer Website..."
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:298
+msgid "Open the Ambulant Webpage"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:299
+msgid "Play Welcome Document"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:299
+msgid "Plays a simple SMIL file"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:519 src/player_unix/qt_gui.cpp:234
+msgid "Cannot find Welcome.smil document"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:537 src/player_unix/qt_gui.cpp:246
+msgid "Cannot find Ambulant Player Help"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:556 src/player_unix/qt_gui.cpp:272
 #, c-format
 msgid "%s: Cannot open file: %s"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:1061 src/player_unix/qt_gui.cpp:656
+#: src/player_gtk/gtk_gui.cpp:590
+msgid "Please, select a file"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:593
+msgid "SMIL files"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:598
+msgid "All files"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:605
+msgid "Any file"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:654
+msgid "Please, select a settings file"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:657
+msgid "XML files"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:693 src/player_unix/qt_gui.cpp:420
+msgid "URL to open:"
+msgstr ""
+
+#: src/player_gtk/gtk_gui.cpp:1063 src/player_unix/qt_gui.cpp:656
 #: src/player_macosx/MyAppDelegate.mm:140
 #, c-format
 msgid "Ambulant Player: compile time version %s, runtime version %s"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:1062
+#: src/player_gtk/gtk_gui.cpp:1064
 #, c-format
 msgid "Ambulant Player: built on %s for Unix/GTK"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:1064 src/player_unix/qt_gui.cpp:659
+#: src/player_gtk/gtk_gui.cpp:1066 src/player_unix/qt_gui.cpp:659
 msgid "Ambulant Player: localization enabled (english)"
 msgstr ""
 
@@ -532,20 +705,8 @@ msgstr ""
 msgid "&Help"
 msgstr ""
 
-#: src/player_unix/qt_gui.cpp:214
-msgid "About AmbulantPlayer"
-msgstr ""
-
 #: src/player_unix/qt_gui.cpp:216 src/player_unix/qt_gui.cpp:492
 msgid "OK"
-msgstr ""
-
-#: src/player_unix/qt_gui.cpp:234
-msgid "Cannot find Welcome.smil document"
-msgstr ""
-
-#: src/player_unix/qt_gui.cpp:246
-msgid "Cannot find Ambulant Player Help"
 msgstr ""
 
 #: src/player_unix/qt_gui.cpp:305
@@ -572,10 +733,6 @@ msgstr ""
 
 #: src/player_unix/qt_gui.cpp:386
 msgid "Double Click a settings file to open"
-msgstr ""
-
-#: src/player_unix/qt_gui.cpp:420
-msgid "URL to open:"
 msgstr ""
 
 #: src/player_unix/qt_gui.cpp:432
@@ -648,7 +805,7 @@ msgstr ""
 msgid "Out of memory while showing video"
 msgstr ""
 
-#: src/libambulant/gui/cocoa/cocoa_gui.mm:232
+#: src/libambulant/gui/cocoa/cocoa_gui.mm:231
 msgid "Unsupported: AmbulantPlayer cannot open second toplevel window yet"
 msgstr ""
 
