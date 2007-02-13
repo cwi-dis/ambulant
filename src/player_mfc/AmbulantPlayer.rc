@@ -103,32 +103,32 @@ BEGIN
     POPUP "&File"
     BEGIN
         MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
-        MENUITEM "Open URL...\tCtrl+L",         ID_FILE_OPENURL
+        MENUITEM "Open &URL...\tCtrl+L",        ID_FILE_OPENURL
         MENUITEM SEPARATOR
-        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1
+        MENUITEM "&Recent File",                ID_FILE_MRU_FILE1
         , CHECKED, GRAYED
         MENUITEM SEPARATOR
-        MENUITEM "Preferences...",              ID_FILE_PREFERENCES
+        MENUITEM "&Preferences...",             ID_FILE_PREFERENCES
+        MENUITEM "Load &document settings...",  ID_VIEW_TESTS
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       ID_APP_EXIT
     END
-    POPUP "Play"
+    POPUP "&Play"
     BEGIN
         MENUITEM "&Play",                       ID_FILE_PLAY
         MENUITEM "Pa&use",                      ID_FILE_PAUSE
         MENUITEM "&Stop",                       ID_FILE_STOP
         MENUITEM SEPARATOR
-        MENUITEM "Advance Focus\tTAB",          ID_PLAY_ADVANCEFOCUS
-        MENUITEM "Activate Focus\tRET",         ID_PLAY_ACTIVATEFOCUS
+        MENUITEM "&Autoplay",                   ID_VIEW_AUTOPLAY, CHECKED
+        MENUITEM SEPARATOR
+        MENUITEM "A&dvance Focus\tTAB",         ID_PLAY_ADVANCEFOCUS
+        MENUITEM "A&ctivate Focus\tRET",        ID_PLAY_ACTIVATEFOCUS
     END
     POPUP "&View"
     BEGIN
         MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
         MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
-        MENUITEM "Full Screen\tCtrl-F",         ID_VIEW_FULLSCREEN
-        MENUITEM SEPARATOR
-        MENUITEM "&Autoplay",                   ID_VIEW_AUTOPLAY, CHECKED
-        MENUITEM "Load se&ttings...",           ID_VIEW_TESTS
+        MENUITEM "&Full Screen\tCtrl-F",        ID_VIEW_FULLSCREEN
         MENUITEM SEPARATOR
         MENUITEM "Sou&rce",                     ID_VIEW_SOURCE
         MENUITEM "&Current settings",           ID_VIEW_FILTER
@@ -521,7 +521,7 @@ BEGIN
     ID_FILE_STOP            "Stop playback\nStop"
     ID_VIEW_SOURCE          "View the source of the current document\nView source"
     ID_VIEW_LOG             "View playback log"
-    ID_VIEW_TESTS           "Load settings...\nSettings"
+    ID_VIEW_TESTS           "Load Document settings...\nSettings"
     ID_VIEW_FILTER          "View current settings\nCurrent settings"
     ID_VIEW_AUTOPLAY        "Enable/disable auto playback\nAuto playback"
 END
