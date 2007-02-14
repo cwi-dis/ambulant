@@ -1,7 +1,7 @@
 {
     IBClasses = (
         {
-            ACTIONS = {myAction = id; }; 
+            ACTIONS = {myAction = id; toggleFullScreen = id; }; 
             CLASS = FirstResponder; 
             LANGUAGE = ObjC; 
             SUPERCLASS = NSObject; 
