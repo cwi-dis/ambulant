@@ -1,3 +1,22 @@
+2007-02-13 17:18  jackjansen
+
+	* Removed silly separator.
+
+2007-02-13 17:17  jackjansen
+
+	* Renamed Load Filter to Load Document Settings and moved to
+	  application menu.
+
+2007-02-13 17:11  jackjansen
+
+	* Changed "Settings" to "Document settings" and moved some menu
+	  entries to different places. Also added & shortcuts to everything
+	  that was missing them.
+
+2007-02-13 17:03  keesblom
+
+	* Add Dutch translations to AmbulantPlayer_gtk
+
 2007-02-12 15:46  jackjansen
 
 	* Typo.
