@@ -68,7 +68,7 @@ qt_settings::settings_select() {
 //printf("qt_settings::settings_select() m_parser_val=%d\n", m_parser_val);
   	unix_preferences* m_preferences = (unix_preferences*)
 		common::preferences::get_preferences();
-	m_settings_vg = new QVGroupBox("Settings", 0);
+	m_settings_vg = new QVGroupBox(gettext("Preferences"), 0);
 	m_settings_vg->move(160,120);
 	
 	// This part takes care of the loglevel

@@ -79,7 +79,7 @@ gtk_settings::gtk_settings() {
 	gtk_widget_set_uposition (GTK_WIDGET (m_dialog), 160, 120);
 
 	// Settings frame
-	m_settings_fr = GTK_FRAME (gtk_frame_new("Settings"));
+	m_settings_fr = GTK_FRAME (gtk_frame_new(gettext("Preferences")));
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(m_dialog)->vbox), GTK_WIDGET (m_settings_fr));
 
 	// VBox to include loglevel, XML parsers...
@@ -90,7 +90,7 @@ gtk_settings::gtk_settings() {
 	m_loglevel_hb	= GTK_HBOX (gtk_hbox_new(false, 10));
 	gtk_box_pack_start (GTK_BOX (m_settings_vb), GTK_WIDGET (m_loglevel_hb), FALSE, FALSE, 0);
 
-	m_loglevel_lb	= GTK_LABEL (gtk_label_new("Log level:"));
+	m_loglevel_lb	= GTK_LABEL (gtk_label_new(gettext("Log level:")));
 	gtk_box_pack_start (GTK_BOX (m_loglevel_hb), GTK_WIDGET (m_loglevel_lb), FALSE, FALSE, 0);
 
 	n_entries = G_N_ELEMENTS(loglevels);
@@ -107,7 +107,7 @@ gtk_settings::gtk_settings() {
 	m_parser_hb	= GTK_HBOX (gtk_hbox_new(false, 10));
 	gtk_box_pack_start (GTK_BOX (m_settings_vb), GTK_WIDGET (m_parser_hb), FALSE, FALSE, 0);
 
-	m_parser_lb = GTK_LABEL (gtk_label_new("XML parser:"));
+	m_parser_lb = GTK_LABEL (gtk_label_new(gettext("XML parser:")));
 	gtk_box_pack_start (GTK_BOX (m_parser_hb), GTK_WIDGET (m_parser_lb), FALSE, FALSE, 0);
 
 	n_entries = G_N_ELEMENTS(parsers);
@@ -123,7 +123,7 @@ gtk_settings::gtk_settings() {
 	gtk_box_pack_start (GTK_BOX (m_parser_hb), GTK_WIDGET (m_parser_co), TRUE, TRUE, 0);
 
 	// Xerces Options
-	m_xerces_fr = GTK_FRAME (gtk_frame_new("Xerces Options:"));
+	m_xerces_fr = GTK_FRAME (gtk_frame_new(gettext("Xerces Options:")));
 	gtk_box_pack_start (GTK_BOX (m_settings_vb), GTK_WIDGET(m_xerces_fr), TRUE, TRUE, 10);
 
 	// vbox for the Xerces Options: checkbox, radiobutton...
@@ -131,7 +131,7 @@ gtk_settings::gtk_settings() {
 	gtk_container_add(GTK_CONTAINER(m_xerces_fr), GTK_WIDGET (m_xerces_vb));
 
 	// Enable XML namespace checkbutton
-	m_namespace_cb = GTK_CHECK_BUTTON (gtk_check_button_new_with_label ("Enable XML namespace support"));
+	m_namespace_cb = GTK_CHECK_BUTTON (gtk_check_button_new_with_label (gettext("Enable XML namespace support")));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (m_namespace_cb), m_preferences->m_do_namespaces);
 	gtk_box_pack_start (GTK_BOX (m_xerces_vb), GTK_WIDGET (m_namespace_cb), FALSE, FALSE, 0);
 
@@ -139,7 +139,7 @@ gtk_settings::gtk_settings() {
 	m_validation_hb	= GTK_HBOX (gtk_hbox_new(false, 10));
 	gtk_box_pack_start (GTK_BOX (m_xerces_vb), GTK_WIDGET (m_validation_hb), FALSE, FALSE, 0);
 
-	m_validation_lb	= GTK_LABEL (gtk_label_new("Enable XML Validation:"));
+	m_validation_lb	= GTK_LABEL (gtk_label_new(gettext("Enable XML Validation:")));
 	gtk_box_pack_start (GTK_BOX (m_validation_hb), GTK_WIDGET (m_validation_lb), FALSE, TRUE, 0);
 
 	n_entries = G_N_ELEMENTS(val_schemes);
@@ -157,20 +157,20 @@ gtk_settings::gtk_settings() {
 	// Radio Buttons: using Schema Vs. DTD
 	m_schema_dtd_hb = GTK_HBUTTON_BOX (gtk_hbutton_box_new()); // Placeholder of the buttons
 	gtk_box_pack_start (GTK_BOX (m_xerces_vb), GTK_WIDGET (m_schema_dtd_hb), FALSE, TRUE, 0);
-	m_schema_rb = GTK_RADIO_BUTTON (gtk_radio_button_new_with_label(NULL, "Using Schema"));
-	m_dtd_rb = GTK_RADIO_BUTTON (gtk_radio_button_new_with_label(gtk_radio_button_get_group (m_schema_rb), "Using DTD"));
+	m_schema_rb = GTK_RADIO_BUTTON (gtk_radio_button_new_with_label(NULL, gettext("Using Schema")));
+	m_dtd_rb = GTK_RADIO_BUTTON (gtk_radio_button_new_with_label(gtk_radio_button_get_group (m_schema_rb), gettext("Using DTD")));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (m_dtd_rb), ! m_preferences->m_do_schema);
 	gtk_box_pack_start (GTK_BOX (m_schema_dtd_hb), GTK_WIDGET (m_schema_rb), FALSE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (m_schema_dtd_hb), GTK_WIDGET (m_dtd_rb), FALSE, TRUE, 0);	
 
 
 	// Validation schema full checking checkbox
-	m_full_check_cb = GTK_CHECK_BUTTON (gtk_check_button_new_with_label ("Validation Schema full checking"));
+	m_full_check_cb = GTK_CHECK_BUTTON (gtk_check_button_new_with_label (gettext("Validation Schema full checking")));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (m_full_check_cb), m_preferences->m_validation_schema_full_checking);
 	gtk_box_pack_start (GTK_BOX (m_xerces_vb), GTK_WIDGET (m_full_check_cb), FALSE, TRUE, 0);
 
 	// Plugin options frame	
-	m_plugins_fr = GTK_FRAME (gtk_frame_new("Plugin Options:"));
+	m_plugins_fr = GTK_FRAME (gtk_frame_new(gettext("Plugin Options:")));
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(m_dialog)->vbox), GTK_WIDGET (m_plugins_fr));
 
 	// the vbox needed for the items of this frame
@@ -178,12 +178,12 @@ gtk_settings::gtk_settings() {
 	gtk_container_add(GTK_CONTAINER(m_plugins_fr), GTK_WIDGET (m_plugins_vb));
 
 	// Use Plugins check button
-	m_use_plugins_cb = GTK_CHECK_BUTTON (gtk_check_button_new_with_label ("Use plugins"));
+	m_use_plugins_cb = GTK_CHECK_BUTTON (gtk_check_button_new_with_label (gettext("Use plugins")));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (m_use_plugins_cb), m_preferences->m_use_plugins);
 	gtk_box_pack_start (GTK_BOX (m_plugins_vb), GTK_WIDGET (m_use_plugins_cb), FALSE, FALSE, 0);
 
 	// Plugin Directory Label
-	m_plugins_dir_lb = GTK_LABEL(gtk_label_new("Plugin Directory:"));
+	m_plugins_dir_lb = GTK_LABEL(gtk_label_new(gettext("Plugin Directory:")));
 	gtk_misc_set_alignment (GTK_MISC (m_plugins_dir_lb), 0, 0);
 	gtk_box_pack_start (GTK_BOX (m_plugins_vb), GTK_WIDGET (m_plugins_dir_lb), FALSE, FALSE, 0);
 

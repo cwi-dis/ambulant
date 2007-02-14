@@ -123,7 +123,7 @@ src/libambulant/smil2/time_attrs.cpp
 src/player_gtk/gtk_gui.cpp
 src/player_gtk/gtk_logger.cpp
 src/player_gtk/gtk_mainloop.cpp
-# src/player_gtk/gtk_settings.cpp
+src/player_gtk/gtk_settings.cpp
 src/player_gtk/unix_preferences.cpp
 src/player_macosx/mainloop.cpp
 # src/player_mfc/AmbulantPlayer.cpp
