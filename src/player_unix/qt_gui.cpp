@@ -143,7 +143,8 @@ qt_gui::qt_gui(const char* title,
 #endif/*QT_NO_FILEDIALOG*/
 		m_filemenu->insertSeparator();
 		
-		m_filemenu->insertItem(gettext("&Settings"), this, SLOT(slot_settings_select()));
+		m_filemenu->insertItem(gettext("&Preferences..."), this, SLOT(slot_settings_select()));
+		m_filemenu->insertItem(gettext("&Document Settings..."), this, SLOT(slot_load_settings()));
 		m_filemenu->insertSeparator();
 		
 		m_filemenu->insertItem(gettext("&Quit"), this, SLOT(slot_quit()));
@@ -164,9 +165,7 @@ qt_gui::qt_gui(const char* title,
 		m_viewmenu->insertItem(gettext("&Full Screen"), this, SLOT(showFullScreen()));
 		m_viewmenu->insertItem(gettext("&Window"), this, SLOT(showNormal()));
 		m_viewmenu->insertSeparator();
-		m_viewmenu->insertItem(gettext("&Load settings..."), this, SLOT(slot_load_settings()));
 #ifdef	WITH_QT_LOGGER
-		m_viewmenu->insertSeparator();
 		m_viewmenu->insertItem(gettext("&Log Window..."), this, SLOT(slot_logger_window()));
 #endif/*WITH_QT_LOGGER*/
 		m_menubar->insertItem(gettext("&View"), m_viewmenu);
@@ -175,7 +174,7 @@ qt_gui::qt_gui(const char* title,
 		m_helpmenu = new QPopupMenu (this, "HelpA");
 		assert(m_helpmenu);
 		m_helpmenu->insertItem(gettext("&About AmbulantPlayer"), this, SLOT(slot_about()));
-		m_helpmenu->insertItem(gettext("AmbulantPlayer &Help"), this, SLOT(slot_help()));
+		m_helpmenu->insertItem(gettext("AmbulantPlayer &Help..."), this, SLOT(slot_help()));
 		m_helpmenu->insertSeparator();
 		m_helpmenu->insertItem(gettext("AmbulantPlayer &Website..."), this, SLOT(slot_homepage()));
 		m_helpmenu->insertItem(gettext("&Play Welcome Document"), this, SLOT(slot_welcome()));

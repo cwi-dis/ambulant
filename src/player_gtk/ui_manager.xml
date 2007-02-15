@@ -6,6 +6,7 @@
 	  <menuitem action="reload"/>
 	  <separator/>
 	  <menuitem action="settings"/>
+	  <menuitem action="loadsettings"/>
 	  <separator/>
 	  <menuitem action="quit"/>
   </menu>
@@ -17,8 +18,6 @@
   <menu action="ViewMenu">
 	  <menuitem action="fullscreen"/>
 	  <menuitem action="window"/>
-	  <separator/>
-	  <menuitem action="loadsettings"/>
 	  <separator/>
 	  <menuitem action="logwindow"/>  
   </menu>

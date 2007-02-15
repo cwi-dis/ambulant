@@ -68,6 +68,7 @@ const char *ui_description =
 				"<menuitem action=\"reload\"/> \n"
 				"<separator/> \n"
 				"<menuitem action=\"preferences\"/> \n"
+				"<menuitem action=\"loadsettings\"/> \n"
 				"<separator/> \n"
 				"<menuitem action=\"quit\"/> \n"
 			"</menu> \n"
@@ -79,8 +80,6 @@ const char *ui_description =
 			"<menu action=\"ViewMenu\"> \n"
 				"<menuitem action=\"fullscreen\"/> \n"
 				"<menuitem action=\"window\"/> \n"
-				"<separator/> \n"
-				"<menuitem action=\"loadsettings\"/> \n"
 				"<separator/> \n"
 				"<menuitem action=\"logwindow\"/> \n" 
 			"</menu> \n"
@@ -274,29 +273,30 @@ gtk_gui::gtk_gui(const char* title,
 	// Initialization of the Menu Bar Items
 	// There is a problem in here because the callbacks in Actions go like g_signal_connect (but, we need g_sginal_connect_swapped)
 	static GtkActionEntry entries[] = {
-	{ "FileMenu", NULL, gettext_noop("File")},
-	{ "open", GTK_STOCK_OPEN, gettext_noop("Open..."), "<alt>F", gettext_noop("Open a file"), NULL},
-	{ "openurl", NULL, gettext_noop("Open URL..."), "<alt>U", gettext_noop("Open a url"), NULL},
-	{ "reload", GTK_STOCK_REFRESH, gettext_noop("Reload"), "<alt>R", gettext_noop("Reload a document"), NULL},
-	{ "preferences", GTK_STOCK_PREFERENCES , gettext_noop("Preferences"), "<alt>S", gettext_noop("Launch preferences window"), NULL},
-	{ "quit", GTK_STOCK_QUIT, gettext_noop("Quit"), "<alt>Q", gettext_noop("Quit ambulant"), NULL},	
+	{ "FileMenu", NULL, gettext_noop("_File")},
+	{ "open", GTK_STOCK_OPEN, gettext_noop("_Open..."), "<alt>F", gettext_noop("Open a file"), NULL},
+	{ "openurl", NULL, gettext_noop("Open _URL..."), "<alt>U", gettext_noop("Open a url"), NULL},
+	{ "reload", GTK_STOCK_REFRESH, gettext_noop("_Reload"), "<alt>R", gettext_noop("Reload a document"), NULL},
+	{ "preferences", GTK_STOCK_PREFERENCES , gettext_noop("_Preferences"), "<alt>P", gettext_noop("Launch preferences window"), NULL},
+	{ "loadsettings", GTK_STOCK_PROPERTIES, gettext_noop("_Load Settings..."), "<alt>L", gettext_noop("Launch the document settings window"), NULL},
+	{ "quit", GTK_STOCK_QUIT, gettext_noop("_Quit"), "<alt>Q", gettext_noop("Quit AmbulantPlayer"), NULL},	
+
 	// Play Menu
-	{ "PlayMenu", "<alt>Y", gettext_noop("Play")},
-	{ "play", GTK_STOCK_MEDIA_PLAY, gettext_noop("Play"), "<alt>Y", gettext_noop("Play document"), NULL},
-	{ "pause", GTK_STOCK_MEDIA_PAUSE, gettext_noop("Pause"), "<alt>P", gettext_noop("Pause document"), NULL},
-	{ "stop", GTK_STOCK_MEDIA_STOP, gettext_noop("Stop"), "<alt>S", gettext_noop("Stop document"), NULL},
+	{ "PlayMenu", "<alt>Y", gettext_noop("Pla_y")},
+	{ "play", GTK_STOCK_MEDIA_PLAY, gettext_noop("Pla_y"), "<alt>Y", gettext_noop("Play document"), NULL},
+	{ "pause", GTK_STOCK_MEDIA_PAUSE, gettext_noop("_Pause"), "<alt>P", gettext_noop("Pause document"), NULL},
+	{ "stop", GTK_STOCK_MEDIA_STOP, gettext_noop("_Stop"), "<alt>S", gettext_noop("Stop document"), NULL},
 	// View Menu
-	{ "ViewMenu", "<alt>V", gettext_noop("View")},
-	{ "fullscreen", NULL, gettext_noop("Full Screen"), "<alt>F", gettext_noop("Full Screen"), NULL},
-	{ "window", NULL, gettext_noop("Window"), "<alt>W", gettext_noop("Normal Screen"), NULL},
-	{ "loadsettings", GTK_STOCK_PROPERTIES, gettext_noop("Load Settings..."), "<alt>R", gettext_noop("Launch the settings window"), NULL},
-	{ "logwindow", NULL, gettext_noop("Log Window..."), "<alt>L", gettext_noop("Launch log window"), NULL},
+	{ "ViewMenu", "<alt>V", gettext_noop("_View")},
+	{ "fullscreen", NULL, gettext_noop("_Full Screen"), "<alt>F", gettext_noop("Full Screen"), NULL},
+	{ "window", NULL, gettext_noop("_Window"), "<alt>W", gettext_noop("Normal Screen"), NULL},
+	{ "logwindow", NULL, gettext_noop("_Log Window..."), "<alt>L", gettext_noop("Launch log window"), NULL},
 	// Help Menu
-	{ "HelpMenu", "<alt>H", gettext_noop("Help")},
-	{ "about", GTK_STOCK_ABOUT, gettext_noop("About AmbulantPlayer"), "<alt>A", gettext_noop("Information about Ambulant"), NULL},
-	{ "help", GTK_STOCK_HELP, gettext_noop("AmbulantPlayer Help"), "<alt>H", gettext_noop("Help in AmbulantPlayer Webpage"), NULL},
-	{ "website", NULL, gettext_noop("AmbulantPlayer Website..."), "<alt>W", gettext_noop("Open the Ambulant Webpage"), NULL},
-	{ "welcome", GTK_STOCK_HOME, gettext_noop("Play Welcome Document"), "<alt>P", gettext_noop("Plays a simple SMIL file"), NULL}
+	  { "HelpMenu", "<alt>H", gettext_noop("_Help")},
+	{ "about", GTK_STOCK_ABOUT, gettext_noop("_About AmbulantPlayer"), "<alt>A", gettext_noop("Information about Ambulant"), NULL},
+	{ "help", GTK_STOCK_HELP, gettext_noop("AmbulantPlayer _Help..."), "<alt>H", gettext_noop("Help in AmbulantPlayer Webpage"), NULL},
+	{ "website", NULL, gettext_noop("AmbulantPlayer _Website..."), "<alt>W", gettext_noop("Open the Ambulant Webpage"), NULL},
+	{ "welcome", GTK_STOCK_HOME, gettext_noop("_Play Welcome Document"), "<alt>P", gettext_noop("Plays a simple SMIL file"), NULL}
 	};
 
 	int n_entries = G_N_ELEMENTS(entries);
@@ -363,6 +363,7 @@ gtk_gui::gtk_gui(const char* title,
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "openurl"), "activate",  G_CALLBACK (gtk_C_callback_open_url), (void*)this);		
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "reload"), "activate",  G_CALLBACK (gtk_C_callback_reload), (void*)this);		
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "preferences"), "activate",  G_CALLBACK (gtk_C_callback_settings_select), (void *) this );	
+	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "loadsettings"), "activate",  G_CALLBACK (gtk_C_callback_load_settings), (void*)this);		
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "quit"), "activate",  G_CALLBACK (gtk_C_callback_quit), (void*)this);		
 
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "play"), "activate",  G_CALLBACK (gtk_C_callback_play), (void*)this);
@@ -371,7 +372,6 @@ gtk_gui::gtk_gui(const char* title,
 
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "fullscreen"), "activate",  G_CALLBACK (gtk_C_callback_full_screen), (void*)this);
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "window"), "activate",  G_CALLBACK (gtk_C_callback_normal_screen), (void*)this);		
-	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "loadsettings"), "activate",  G_CALLBACK (gtk_C_callback_load_settings), (void*)this);		
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "logwindow"), "activate",  G_CALLBACK (gtk_C_callback_logger_window), (void*)this);		
 
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "about"), "activate",  G_CALLBACK (gtk_C_callback_about), (void*)this);
