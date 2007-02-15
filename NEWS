@@ -7,12 +7,13 @@ Changes between 1.6.1 and 1.8:
   interfaces have been enhanced, examples are provided, the API
   documentation has been updated and embedding now also works on Windows.
   
-- The Nokia 770 is supported.
+- The Nokia 770 and 800 are supported.
 
 - Gtk can be used as the GUI toolkit for Linux, in addition
   to Qt.
   
-- (Mac only) Fullscreen mode has been added.
+- Fullscreen mode has been added. Works best on Mac, somewhat on Linux,
+  not at all on Windows.
   
 - (Linux and Mac) FFMPEG video rendering has greatly improved.
 

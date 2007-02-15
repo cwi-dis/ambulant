@@ -44,20 +44,20 @@ Currently we have support for:
 - Windows
 - MacOSX
 - Linux
-- Windows CE
-- Nokia 770
+- Nokia 770/800
 
 The specific platforms that have been used for testing are:
 - Windows: Windows 2000 and Windows XP on fairly recent Intel hardware
 - MacOSX: 10.4. 10.2 or earlier will not work.
 - Linux: Fedora Core on fairly recent Intel hardware
-- Windows CE: PocketPC 2002 on Compaq IPAQ hardware (Strong Arm processors)
 - Nokia 770: 2006 edition OS
 
+Windows CE support is broken for this release, we will try to revive it
+soon. If you feel you could help with this please drop us a line.
+
 Linux for handhelds (Zaurus, Sharp SL-5600 PDA) is no longer supported,
-mainly due to staffing constraints. This distribution may or may not
-work. If you are interested in helping out to support this platform
-please contact us.
+mainly due to staffing constraints. If you are interested in helping out 
+to support this platform please contact us.
 
 Supported media types
 ---------------------

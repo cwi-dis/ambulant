@@ -2026,7 +2026,6 @@
 		0478D955060B382C004224C0 /* stdio_datasource.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = stdio_datasource.h; sourceTree = "<group>"; };
 		0478D957060B383E004224C0 /* stdio_datasource.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = stdio_datasource.cpp; sourceTree = "<group>"; };
 		0480D5E907208FB600D39BB5 /* libxerces-c.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libxerces-c.dylib"; path = "../../../../packages/xerces-unix/lib/libxerces-c.dylib"; sourceTree = SOURCE_ROOT; };
-		048255E406F15DCF008A283F /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Japanese; path = Japanese.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		048255F706F16299008A283F /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		048399DD08ED2FDC008505C3 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = /System/Library/Frameworks/WebKit.framework; sourceTree = "<absolute>"; };
 		04878D3C061AB9A5008573FA /* systemTestSettings.xml */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = systemTestSettings.xml; sourceTree = "<group>"; };
@@ -4951,7 +4950,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				2A37F4B7FDCFA73011CA2CEA /* English */,
-				048255E406F15DCF008A283F /* Japanese */,
 				048255F706F16299008A283F /* Dutch */,
 			);
 			name = MainMenu.nib;

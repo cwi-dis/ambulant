@@ -2,7 +2,7 @@ EXTRA_DIST=MyAmbulantView.mm MyDocument.mm LogController.mm mainloop.cpp MyAppDe
 	mypreferences.mm mypreferences.h \
 	MyAmbulantView.h MyAppDelegate.h MyDocument.h LogController.h mainloop.h \
 	cocoambulant_Prefix.pch \
-	English.lproj Dutch.lproj Japanese.lproj \
+	English.lproj Dutch.lproj Hindi.lproj \
 	Info.plist version.plist \
 	fullcocoambulant.xcodeproj \
 	cocoambulant.icns \
@@ -139,15 +139,15 @@ endif
 #	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Dutch.lproj/Log.nib
 #	$(INSTALL_DATA) $(srcdir)/Dutch.lproj/Log.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/Dutch.lproj/Log.nib
 
-	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Japanese.lproj
-#	$(INSTALL_DATA) $(srcdir)/Japanese.lproj/Credits.rtf $(BUILDAPPNAME).app/Contents/Resources/Japanese.lproj
-#	$(INSTALL_DATA) $(srcdir)/Japanese.lproj/InfoPlist.strings $(BUILDAPPNAME).app/Contents/Resources/Japanese.lproj
-	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Japanese.lproj/MainMenu.nib
-	$(INSTALL_DATA) $(srcdir)/Japanese.lproj/MainMenu.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/Japanese.lproj/MainMenu.nib
-#	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Japanese.lproj/MyDocument.nib
-#	$(INSTALL_DATA) $(srcdir)/Japanese.lproj/MyDocument.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/Japanese.lproj/MyDocument.nib
-#	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Japanese.lproj/Log.nib
-#	$(INSTALL_DATA) $(srcdir)/Japanese.lproj/Log.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/Japanese.lproj/Log.nib
+##	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Hindi.lproj
+##	$(INSTALL_DATA) $(srcdir)/Hindi.lproj/Credits.rtf $(BUILDAPPNAME).app/Contents/Resources/Hindi.lproj
+##	$(INSTALL_DATA) $(srcdir)/Hindi.lproj/InfoPlist.strings $(BUILDAPPNAME).app/Contents/Resources/Hindi.lproj
+##	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Hindi.lproj/MainMenu.nib
+##	$(INSTALL_DATA) $(srcdir)/Hindi.lproj/MainMenu.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/Hindi.lproj/MainMenu.nib
+##	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Hindi.lproj/MyDocument.nib
+##	$(INSTALL_DATA) $(srcdir)/Hindi.lproj/MyDocument.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/Hindi.lproj/MyDocument.nib
+##	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Hindi.lproj/Log.nib
+##	$(INSTALL_DATA) $(srcdir)/Hindi.lproj/Log.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/Hindi.lproj/Log.nib
 
 #	$(INSTALL_DATA) $(srcdir)/*.png $(BUILDAPPNAME).app/Contents/Resources
 
