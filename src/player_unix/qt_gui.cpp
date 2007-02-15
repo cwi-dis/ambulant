@@ -44,10 +44,11 @@
 
 #define	WITH_QT_LOGGER
 
-const QString about_text = 
-	"Ambulant SMIL 2.1 player.\n"
-	"Copyright Stichting CWI, 2003-2007.\n\n"
-	"License: LGPL.";
+const QString about_text1 = 
+	"Ambulant SMIL 2.1 player.\nVersion: ";
+const QString about_text2 = 
+	"\nCopyright Stichting CWI, 2003-2007.\n\n"
+	"License: LGPL";
 
 
 // Places where to look for the Welcome document
@@ -220,7 +221,7 @@ qt_gui::~qt_gui() {
 void 
 qt_gui::slot_about() {
 	int but = QMessageBox::information(this, gettext("About AmbulantPlayer"),
-					   about_text,
+					   about_text1+get_version()+about_text2,
 					   gettext("OK"));
 }
 

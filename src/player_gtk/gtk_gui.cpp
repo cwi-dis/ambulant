@@ -97,8 +97,9 @@ const char *ui_description =
 
 const char *about_text = 
 	"Ambulant SMIL 2.1 player.\n"
+        "Version: %s\n"
 	"Copyright Stichting CWI, 2003-2007.\n\n"
-	"License: LGPL.";
+	"License: LGPL";
 
 
 // Places where to look for the Welcome document
@@ -492,7 +493,7 @@ gtk_gui::do_about() {
          GTK_MESSAGE_INFO,
          GTK_BUTTONS_OK,
          gettext("About AmbulantPlayer"));
-	gtk_message_dialog_format_secondary_text(dialog,about_text);
+	gtk_message_dialog_format_secondary_text(dialog,about_text,get_version());
  	gtk_dialog_run (GTK_DIALOG (dialog));
  	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
