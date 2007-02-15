@@ -102,9 +102,11 @@ gtk_logger::gtk_logger()
 		} else setbuf(m_log_FILE, NULL); // no buffering
 	}
 	
+	// Connect logger to our message displayer and output processor
+	logger->set_show_message(show_message);
 	// Tell the logger about the output level preference
-	//int level = prefs->m_log_level;
-	//logger->set_level(level);
+	int level = prefs->m_log_level;
+	logger->set_level(level);
 	logger->set_ostream(new gtk_logger_ostream);
 	
 	// create the GUI object

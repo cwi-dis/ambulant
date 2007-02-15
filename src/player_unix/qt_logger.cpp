@@ -104,7 +104,7 @@ qt_logger::qt_logger()
 	}
 	// Connect logger to our message displayer and output processor
 #ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
-	//logger->set_show_message(show_message);
+	logger->set_show_message(show_message);
 #endif/*QT_NO_FILEDIALOG*/
 
 	// Tell the logger about the output level preference
