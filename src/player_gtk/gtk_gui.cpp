@@ -275,29 +275,45 @@ gtk_gui::gtk_gui(const char* title,
 	// There is a problem in here because the callbacks in Actions go like g_signal_connect (but, we need g_sginal_connect_swapped)
 	static GtkActionEntry entries[] = {
 	{ "FileMenu", NULL, gettext_noop("_File")},
-	{ "open", GTK_STOCK_OPEN, gettext_noop("_Open..."), "<alt>F", gettext_noop("Open a file"), NULL},
-	{ "openurl", NULL, gettext_noop("Open _URL..."), "<alt>U", gettext_noop("Open a url"), NULL},
-	{ "reload", GTK_STOCK_REFRESH, gettext_noop("_Reload"), "<alt>R", gettext_noop("Reload a document"), NULL},
-	{ "preferences", GTK_STOCK_PREFERENCES , gettext_noop("_Preferences"), "<alt>P", gettext_noop("Launch preferences window"), NULL},
-	{ "loadsettings", GTK_STOCK_PROPERTIES, gettext_noop("_Load Settings..."), "<alt>L", gettext_noop("Launch the document settings window"), NULL},
-	{ "quit", GTK_STOCK_QUIT, gettext_noop("_Quit"), "<alt>Q", gettext_noop("Quit AmbulantPlayer"), NULL},	
+	{ "open", GTK_STOCK_OPEN, gettext_noop("_Open..."),
+	    "<Control>O", gettext_noop("Open a document from local disk"), NULL},
+	{ "openurl", NULL, gettext_noop("Open _URL..."),
+	    "<Control>L", gettext_noop("Open a document from the network"), NULL},
+	{ "reload", GTK_STOCK_REFRESH, gettext_noop("_Reload"),
+	    NULL, gettext_noop("Reload current document"), NULL},
+	{ "preferences", GTK_STOCK_PREFERENCES , gettext_noop("_Preferences"),
+	    NULL, gettext_noop("Change application preferences"), NULL},
+	{ "loadsettings", GTK_STOCK_PROPERTIES, gettext_noop("_Load Settings..."),
+	    NULL, gettext_noop("Open SMIL playback settings document"), NULL},
+	{ "quit", GTK_STOCK_QUIT, gettext_noop("_Quit"),
+	    "<Control>Q", gettext_noop("Quit Ambulant Player"), NULL},	
 
 	// Play Menu
-	{ "PlayMenu", "<alt>Y", gettext_noop("Pla_y")},
-	{ "play", GTK_STOCK_MEDIA_PLAY, gettext_noop("Pla_y"), "<alt>Y", gettext_noop("Play document"), NULL},
-	{ "pause", GTK_STOCK_MEDIA_PAUSE, gettext_noop("_Pause"), "<alt>P", gettext_noop("Pause document"), NULL},
-	{ "stop", GTK_STOCK_MEDIA_STOP, gettext_noop("_Stop"), "<alt>S", gettext_noop("Stop document"), NULL},
+	{ "PlayMenu", NULL, gettext_noop("Pla_y")},
+	{ "play", GTK_STOCK_MEDIA_PLAY, gettext_noop("Pla_y"), 
+	    "<Control>P", gettext_noop("Start document playback"), NULL},
+	{ "pause", GTK_STOCK_MEDIA_PAUSE, gettext_noop("_Pause"),
+	    "<Control><Shift>P", gettext_noop("Pause document playback"), NULL},
+	{ "stop", GTK_STOCK_MEDIA_STOP, gettext_noop("_Stop"),
+	    "<Control>S", gettext_noop("Stop document playback"), NULL},
 	// View Menu
-	{ "ViewMenu", "<alt>V", gettext_noop("_View")},
-	{ "fullscreen", NULL, gettext_noop("_Full Screen"), "<alt>F", gettext_noop("Full Screen"), NULL},
-	{ "window", NULL, gettext_noop("_Window"), "<alt>W", gettext_noop("Normal Screen"), NULL},
-	{ "logwindow", NULL, gettext_noop("_Log Window..."), "<alt>L", gettext_noop("Launch log window"), NULL},
+	{ "ViewMenu", NULL, gettext_noop("_View")},
+	{ "fullscreen", NULL, gettext_noop("_Full Screen"),
+	    "<Control>F", gettext_noop("Full Screen"), NULL},
+	{ "window", NULL, gettext_noop("_Window"),
+	    "<Control><Alt>F", gettext_noop("Normal Screen"), NULL},
+	{ "logwindow", NULL, gettext_noop("_Log Window..."),
+	    "<Control>L", gettext_noop("Show status output window"), NULL},
 	// Help Menu
-	  { "HelpMenu", "<alt>H", gettext_noop("_Help")},
-	{ "about", GTK_STOCK_ABOUT, gettext_noop("_About AmbulantPlayer"), "<alt>A", gettext_noop("Information about Ambulant"), NULL},
-	{ "help", GTK_STOCK_HELP, gettext_noop("AmbulantPlayer _Help..."), "<alt>H", gettext_noop("Help in AmbulantPlayer Webpage"), NULL},
-	{ "website", NULL, gettext_noop("AmbulantPlayer _Website..."), "<alt>W", gettext_noop("Open the Ambulant Webpage"), NULL},
-	{ "welcome", GTK_STOCK_HOME, gettext_noop("_Play Welcome Document"), "<alt>P", gettext_noop("Plays a simple SMIL file"), NULL}
+	  { "HelpMenu", NULL, gettext_noop("_Help")},
+	{ "about", GTK_STOCK_ABOUT, gettext_noop("_About AmbulantPlayer"),
+	    NULL, gettext_noop("Information about Ambulant"), NULL},
+	{ "help", GTK_STOCK_HELP, gettext_noop("AmbulantPlayer _Help..."),
+	    NULL, gettext_noop("Help in AmbulantPlayer Webpage"), NULL},
+	{ "website", NULL, gettext_noop("AmbulantPlayer _Website..."), 
+	    NULL, gettext_noop("Open the Ambulant Webpage"), NULL},
+	{ "welcome", GTK_STOCK_HOME, gettext_noop("_Play Welcome Document"),
+	    "<Control><shift>H", gettext_noop("Plays a simple SMIL file"), NULL}
 	};
 
 	int n_entries = G_N_ELEMENTS(entries);
@@ -352,6 +368,7 @@ gtk_gui::gtk_gui(const char* title,
 	if (!gtk_ui_manager_add_ui_from_string(ui, ui_description, -1, &error))
 		g_error("Could not merge UI, error was: %s\n", error->message);
 	gtk_ui_manager_insert_action_group(ui, m_actions, 0);
+	gtk_window_add_accel_group(m_toplevelcontainer, gtk_ui_manager_get_accel_group(ui));
 	
 	/* Disable and make invisible menus and menu items */
 #ifdef GTK_NO_FILEDIALOG
