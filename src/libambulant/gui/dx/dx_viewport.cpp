@@ -615,6 +615,22 @@ void gui::dx::viewport::redraw(const lib::rect& rc) {
 	}
 }
 
+void gui::dx::viewport::schedule_redraw() {
+#ifdef DO_REDRAW_WITH_EVENTS
+	::InvalidateRect(m_hwnd, NULL, 0);
+#else
+	redraw();
+#endif // DO_REDRAW_WITHOUT_EVENTS
+}
+void gui::dx::viewport::schedule_redraw(const lib::rect& rc) {
+#ifdef DO_REDRAW_WITH_EVENTS
+	RECT src_rc = {rc.left(), rc.top(), rc.right(), rc.bottom()};
+	::InvalidateRect(m_hwnd, &src_rc, 0);
+#else
+	redraw(rc);
+#endif // DO_REDRAW_WITHOUT_EVENTS
+}
+
 // Clears the back buffer using this viewport bgd color
 void gui::dx::viewport::clear() {
 	if(!m_surface) return;

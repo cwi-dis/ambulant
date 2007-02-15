@@ -81,6 +81,8 @@ class viewport {
 	void redraw();
 	void redraw(const lib::rect& rc);
 	void redraw(HDC hdc) { redraw();}
+	void schedule_redraw();
+	void schedule_redraw(const lib::rect& rc);
 	
 	// Clears the back buffer using this viewport bgd color
 	void clear();

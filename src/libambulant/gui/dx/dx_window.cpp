@@ -60,7 +60,7 @@ void gui::dx::dx_window::need_redraw(const lib::rect &r) {
 	m_viewport->set_fullscreen_transition(NULL);
 	m_rgn->redraw(rc, this);
 	if(!m_locked)
-		m_viewport->redraw(rc);
+		m_viewport->schedule_redraw(rc);
 	else {
 		if(m_isnew_redraw_rect) {
 			m_redraw_rect = rc;
@@ -71,7 +71,7 @@ void gui::dx::dx_window::need_redraw(const lib::rect &r) {
 
 void gui::dx::dx_window::need_redraw() {
 	m_rgn->redraw(m_viewrc, this);
-	m_viewport->redraw();
+	m_viewport->schedule_redraw();
 }
 
 void gui::dx::dx_window::lock_redraw() {
@@ -81,5 +81,5 @@ void gui::dx::dx_window::lock_redraw() {
 
 void gui::dx::dx_window::unlock_redraw() {
 	m_locked = false;
-	m_viewport->redraw(m_redraw_rect);
+	m_viewport->schedule_redraw(m_redraw_rect);
 }
