@@ -134,7 +134,9 @@ qt_gui::qt_gui(const char* title,
 		m_filemenu = new QPopupMenu (this);
 		assert(m_filemenu);
 		int open_id = m_filemenu->insertItem(gettext("&Open..."), this, SLOT(slot_open()));
+		m_filemenu->setAccel(CTRL+Key_O, open_id);
 		int url_id = m_filemenu->insertItem(gettext("Open &URL..."), this, SLOT(slot_open_url()));
+		m_filemenu->setAccel(CTRL+Key_L, url_id);
 		m_reload_id = m_filemenu->insertItem(gettext("&Reload..."), this, SLOT(slot_reload()));
 #ifdef QT_NO_FILEDIALOG	/* Assume embedded Qt */
 		// Disable unavailable menu entries
@@ -147,23 +149,29 @@ qt_gui::qt_gui(const char* title,
 		m_filemenu->insertItem(gettext("&Document Settings..."), this, SLOT(slot_load_settings()));
 		m_filemenu->insertSeparator();
 		
-		m_filemenu->insertItem(gettext("&Quit"), this, SLOT(slot_quit()));
+		int quit_id = m_filemenu->insertItem(gettext("&Quit"), this, SLOT(slot_quit()));
+		m_filemenu->setAccel(CTRL+Key_Q, quit_id);
 		m_menubar->insertItem(gettext("&File"), m_filemenu);
 		
 		/* Play */
 		m_playmenu = new QPopupMenu (this, "PlayA");
 		assert(m_playmenu);
 		m_play_id = m_playmenu->insertItem(gettext("Pla&y"), this, SLOT(slot_play()));
+		m_playmenu->setAccel(CTRL+Key_P, m_play_id);
 		m_playmenu->setItemEnabled(m_play_id, false);
 		m_pause_id = m_playmenu->insertItem(gettext("&Pause"), this, SLOT(slot_pause()));
+		m_playmenu->setAccel(CTRL+Key_Space, m_pause_id);
 		m_playmenu->setItemEnabled(m_pause_id, false);
 		m_stop_id = m_playmenu->insertItem(gettext("&Stop"), this, SLOT(slot_stop()));
+		m_playmenu->setAccel(CTRL+Key_S, m_stop_id);
 		m_menubar->insertItem(gettext("Pla&y"), m_playmenu);
 		
 		/* View */
 		m_viewmenu = new QPopupMenu(this, "View");
-		m_viewmenu->insertItem(gettext("&Full Screen"), this, SLOT(showFullScreen()));
-		m_viewmenu->insertItem(gettext("&Window"), this, SLOT(showNormal()));
+		int fullscreen_id = m_viewmenu->insertItem(gettext("&Full Screen"), this, SLOT(showFullScreen()));
+		m_viewmenu->setAccel(CTRL+Key_F, fullscreen_id);
+		int window_id = m_viewmenu->insertItem(gettext("&Window"), this, SLOT(showNormal()));
+		m_viewmenu->setAccel(CTRL+SHIFT+Key_F, window_id);
 		m_viewmenu->insertSeparator();
 #ifdef	WITH_QT_LOGGER
 		m_viewmenu->insertItem(gettext("&Log Window..."), this, SLOT(slot_logger_window()));
@@ -174,7 +182,8 @@ qt_gui::qt_gui(const char* title,
 		m_helpmenu = new QPopupMenu (this, "HelpA");
 		assert(m_helpmenu);
 		m_helpmenu->insertItem(gettext("&About AmbulantPlayer"), this, SLOT(slot_about()));
-		m_helpmenu->insertItem(gettext("AmbulantPlayer &Help..."), this, SLOT(slot_help()));
+		int help_id = m_helpmenu->insertItem(gettext("AmbulantPlayer &Help..."), this, SLOT(slot_help()));
+		m_helpmenu->setAccel(CTRL+Key_Question, help_id);
 		m_helpmenu->insertSeparator();
 		m_helpmenu->insertItem(gettext("AmbulantPlayer &Website..."), this, SLOT(slot_homepage()));
 		m_helpmenu->insertItem(gettext("&Play Welcome Document"), this, SLOT(slot_welcome()));
