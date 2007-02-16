@@ -1,3 +1,38 @@
+2007-02-15 15:32  jackjansen
+
+	* - Final touches to readme and news - Got rid of non-functional
+	  japanese translation.
+
+2007-02-15 15:26  jackjansen
+
+	* Got keyboard shortcuts to work on gtk too.
+
+2007-02-15 15:02  keesblom
+
+	* Added version number in About dialog. Fixes #1660567.
+
+2007-02-15 14:14  jackjansen
+
+	* Added common keyboard shortcuts for Qt player.
+
+2007-02-15 14:03  keesblom
+
+	* logger->set_show_message() was not called by gtk-player and
+	  commented out in qt-player. Fixes #1658169
+
+2007-02-15 13:25  jackjansen
+
+	* Added code to schedule redraws via the event loop, in stead of
+	  directly from need_redraw(). Then disabled the code because it
+	  seems to make little or no difference for the problem at hand.
+
+2007-02-15 12:29  keesblom
+
+	* Adapted mnemonic shortcuts (<ALT>key) seqences so that they at
+	  least work properly for AmbulantPlayer_qt. For AmbulantPlayer_gtk
+	  they do only work partially. Neither of the 2 players have
+	  keyboard shortcuts (<CTL>key).  Filed bug report #1660492
+
 2007-02-14 12:08  keesblom
 
 	* Renamed "Settings" to "Preferences" for program preferences to
