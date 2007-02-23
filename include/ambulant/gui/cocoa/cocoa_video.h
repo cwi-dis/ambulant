@@ -62,12 +62,14 @@ class cocoa_video_renderer :
 	void redraw(const rect &dirty, gui_window *window);
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};
-	void _qt_did_redraw();
   private:
 	void _poll_playing();
+#ifdef OLD_OFFSCREEN_CODE
+	void _qt_did_redraw();
 	void _go_onscreen();
 	void _go_offscreen();
 	void _copy_bits(NSView *view, NSRect& rect);
+#endif
 	net::url m_url;
 	QTMovie *m_movie;
 	QTMovieView *m_movie_view;

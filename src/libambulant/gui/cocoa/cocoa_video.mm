@@ -100,6 +100,7 @@ namespace cocoa {
 
 typedef lib::no_arg_callback<cocoa_video_renderer> poll_callback;
 
+#ifdef OLD_OFFSCREEN_CODE
 // Helper routine to forward quicktime redraw notifications to the cocoa_video_renderer
 // object. This is installed when needed (when we go to offscreen mode). According
 // to the QT docs installing such a redraw handler may slowdown rendering.
@@ -110,6 +111,7 @@ movieDidDrawFrame(Movie theMovie, long refCon)
 	r->_qt_did_redraw();
 	return 0;
 }
+#endif
 
 cocoa_video_renderer::cocoa_video_renderer(
 	playable_notification *context,
@@ -357,10 +359,13 @@ cocoa_video_renderer::redraw(const rect &dirty, gui_window *window)
 		m_event_processor->add_event(e, POLL_INTERVAL, ambulant::lib::ep_low);
 	}
 	
-	//_copy_bits(view, frameRect);
+#ifdef OLD_OFFSCREEN_CODE
+	_copy_bits(view, frameRect);
+#endif
 	m_lock.leave();
 }
 
+#ifdef OLD_OFFSCREEN_CODE
 void
 cocoa_video_renderer::_qt_did_redraw()
 {
@@ -379,14 +384,7 @@ cocoa_video_renderer::_copy_bits(NSView *dst, NSRect& dstrect)
 	NSRect srcrect = [m_movie_view bounds];
 	[m_movie_view unlockFocus];
 	[dst lockFocus];
-#if 0
-	[src drawInRect: dstrect
-		fromRect: srcrect
-		operation: NSCompositeSourceOver
-		fraction: 1.0];
-#else
 	[src drawInRect: dstrect];
-#endif
 	[dst unlockFocus];
 	[src release];
 }
@@ -441,6 +439,7 @@ cocoa_video_renderer::_go_onscreen()
 	NSView *contentview = [m_onscreen_window contentView];
 	[contentview addSubview: m_movie_view];
 }
+#endif /* OLD_OFFSCREEN_CODE */
 
 } // namespace cocoa
 
