@@ -211,14 +211,14 @@ initialize_logger()
 
 - (void)handleGetURLEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent
 {
-	NSLog(@"GetURLEvent called\n");
+	AM_DBG NSLog(@"GetURLEvent called\n");
 	NSAppleEventDescriptor *obj = [event paramDescriptorForKeyword: keyDirectObject];
 	if (!obj) {
 		NSLog(@"handleGetURLEvent: No direct object!\n");
 		return;
 	}
 	NSString *urlstr = [obj stringValue];
-	NSLog(@"handleGetURLEvent: %@\n", urlstr);
+	AM_DBG NSLog(@"handleGetURLEvent: %@\n", urlstr);
 	NSURL *url = [NSURL URLWithString:urlstr];
 	NSDocumentController *controller = [NSDocumentController sharedDocumentController];
 	NSError *error;
@@ -276,7 +276,7 @@ initialize_logger()
 
 - (IBAction)applyPreferences:(id)sender
 {
-	NSLog(@"Apply Preferences Window");
+	AM_DBG NSLog(@"Apply Preferences Window");
 	ambulant::common::preferences::get_preferences()->load_preferences();
 	// Set log level
 	int level = ambulant::common::preferences::get_preferences()->m_log_level;

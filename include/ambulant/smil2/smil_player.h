@@ -130,7 +130,7 @@ class smil_player : public common::player, /* public common::player_feedback,*/ 
 	
 	lib::timer* get_timer() { return m_timer;}
 	void show_link(const lib::node *n, const net::url& href, 
-		src_playstate srcstate=src_replace, dst_playstate dststate=dst_play);
+		src_playstate srcstate, dst_playstate dststate, const char *target);
 	lib::event_processor* get_evp() { return m_event_processor;}	
 	virtual time_value_type elapsed() const { return m_timer->elapsed();}
 	virtual void schedule_event(lib::event *ev, lib::timer::time_type t, lib::event_priority ep);

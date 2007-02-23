@@ -70,6 +70,15 @@ document_embedder::close(ambulant::common::player *p)
 void
 document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common::player *old)
 {
+#ifdef WITH_OVERLAY_WINDOW
+	if (newdoc.get_protocol() == "ambulant_aux") {
+		std::string aux_url = newdoc.get_url();
+		aux_url = aux_url.substr(13);
+		ambulant::net::url auxdoc = ambulant::net::url::from_url(aux_url);
+		aux_open(auxdoc);
+	}
+#endif
+		
 	if (old) {
 		AM_DBG NSLog(@"performSelectorOnMainThread: close: on 0x%x", (void*)m_mydocument);
 		[m_mydocument performSelectorOnMainThread: @selector(close:) withObject: nil waitUntilDone: NO];
@@ -87,24 +96,24 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	
 }
 
-#ifdef WITH_AUX_DOCUMENT
+#ifdef WITH_OVERLAY_WINDOW
 bool
 document_embedder::aux_open(const ambulant::net::url& auxdoc)
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	if (auxdoc.get_url() == "") {
-		NSLog(@"aux_open: closing");
+		AM_DBG NSLog(@"aux_open: closing");
 		[m_mydocument closeAuxDocument];
 		return true;
 	}
 	NSString *str_url = [NSString stringWithCString: auxdoc.get_url().c_str()];
 	NSURL *url = [NSURL URLWithString: str_url];
-	NSLog(@"aux_open: open %@", url);
+	AM_DBG NSLog(@"aux_open: open %@", url);
 	BOOL rv = [m_mydocument openAuxDocument: url];
 	[pool release];
 	return (bool)rv;
 }
-#endif // WITH_AUX_DOCUMENT
+#endif // WITH_OVERLAY_WINDOW
 
 @implementation MyDocument
 
@@ -345,7 +354,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	play_button = nil;
 	stop_button = nil;
 	pause_button = nil;
-#ifdef WITH_AUX_MAINLOOP
+#ifdef WITH_OVERLAY_WINDOW
 	delete myAuxMainloop;
 	myAuxMainloop = NULL;
 #endif
@@ -364,7 +373,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 - (void)fixMouse: (id)dummy
 {
 	mainloop *ml = myMainloop;
-#ifdef WITH_AUX_MAINLOOP
+#ifdef WITH_OVERLAY_WINDOW
 	if (myAuxMainloop) ml = myAuxMainloop;
 #endif
 	if (!ml) return;
@@ -390,7 +399,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 - (void)resetMouse: (id)dummy
 {
 	mainloop *ml = myMainloop;
-#ifdef WITH_AUX_MAINLOOP
+#ifdef WITH_OVERLAY_WINDOW
 	if (myAuxMainloop) ml = myAuxMainloop;
 #endif
 	if (ml) ml->before_mousemove(0);
@@ -399,7 +408,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 - (void)keyDown: (NSEvent *)ev
 {
 	mainloop *ml = myMainloop;
-#ifdef WITH_AUX_MAINLOOP
+#ifdef WITH_OVERLAY_WINDOW
 	if (myAuxMainloop) ml = myAuxMainloop;
 #endif
 	NSString *chars = [ev characters];
@@ -489,7 +498,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	if (screen == NULL) screen = [NSScreen mainScreen]; 
     NSDictionary* screenInfo = [screen deviceDescription]; 
     NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
-	NSLog(@"goFullScreen: screenID = %@", screenID);
+	AM_DBG NSLog(@"goFullScreen: screenID = %@", screenID);
  
     // Capture the screen.
     CGDirectDisplayID displayID = (CGDirectDisplayID)[screenID longValue]; 
@@ -564,7 +573,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		[self goFullScreen:sender];
 }
 
-#ifdef WITH_AUX_DOCUMENT
+#ifdef WITH_OVERLAY_WINDOW
 - (BOOL)openAuxDocument: (NSURL *)auxUrl
 {
 //	embedder = new document_embedder(self);
@@ -576,7 +585,8 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	myAuxView = [[MyAmbulantView alloc] initWithFrame: [view bounds]];
 	[view addSubview: myAuxView];
 	[[view window] makeFirstResponder: myAuxView];
-	NSLog(@"openAuxDocument %@", auxUrl);
+	AM_DBG NSLog(@"openAuxDocument %@", auxUrl);
+	AM_DBG NSLog(@"Orig view 0x%x, auxView 0x%x", (void*)view, (void*)myAuxView);
 	myAuxMainloop = new mainloop([[auxUrl absoluteString] UTF8String], myAuxView, false, NULL);
 	myAuxMainloop->play();
 	return true;
@@ -584,7 +594,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 - (void)closeAuxDocument
 {
-	NSLog(@"closeAuxDocument");
+	AM_DBG NSLog(@"closeAuxDocument");
 	delete myAuxMainloop;
 	myAuxMainloop = NULL;
 	if (myAuxView) {
@@ -593,5 +603,5 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		[[view window] makeFirstResponder: view];
 	}
 }
-#endif // WITH_AUX_DOCUMENT
+#endif // WITH_OVERLAY_WINDOW
 @end

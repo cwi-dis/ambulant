@@ -56,7 +56,7 @@ class time_node_context : public common::player_feedback {
 	virtual time_traits::value_type elapsed() const = 0;
 	virtual lib::timer* get_timer() = 0;
 	virtual void show_link(const lib::node *n, const net::url& href, 
-		src_playstate srcstate=src_replace, dst_playstate dststate=dst_play) = 0;
+		src_playstate srcstate, dst_playstate dststate, const char * target) = 0;
 	virtual animation_engine* get_animation_engine() = 0;
 	virtual bool wait_for_eom() const = 0;
 	virtual void set_wait_for_eom(bool b) = 0;
@@ -101,7 +101,7 @@ class dummy_time_node_context : public time_node_context {
 	
 	virtual lib::timer* get_timer() {return 0;}
 	virtual void show_link(const lib::node *n, const net::url& href, 
-		src_playstate srcstate=src_replace, dst_playstate dststate=dst_play) {}
+		src_playstate srcstate, dst_playstate dststate, const char * target) {}
 	virtual smil2::animation_engine* get_animation_engine() { return 0;}
 	virtual bool wait_for_eom() const { return false;}
 	virtual void set_wait_for_eom(bool b) {}

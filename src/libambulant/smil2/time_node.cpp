@@ -779,7 +779,7 @@ void time_node::pause_playable(common::pause_display d) {
 
 void time_node::resume_playable() {
 	if(!is_playable() || m_ffwd_mode) return;
-	m_logger->debug("%s[%s].resume()", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->debug("%s[%s].resume()", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str());
 	m_context->resume_playable(m_node);
 }
@@ -2446,6 +2446,7 @@ void time_node::follow_link(qtime_type timestamp) {
 	const char *destinationplaystate = m_node->get_attribute("destinationPlaystate");
 	const char *show = m_node->get_attribute("show");
 	const char *external = m_node->get_attribute("external");
+	const char *target = m_node->get_attribute("target");
 	
 	src_playstate source_state = src_replace;
 	dst_playstate destination_state = dst_play;
@@ -2472,11 +2473,13 @@ void time_node::follow_link(qtime_type timestamp) {
 	} else if (show && strcmp(show, "replace") == 0) {
 		source_state = src_replace;
 	}
+	// XXX Should ignore show if target is set, according to the spec. But the spec is
+	// not very clear, so I have asked for clarification and don't clear show right now.
 	
 	if (external && strcmp(external, "true") == 0) {
 		destination_state = dst_external;
 	}
 	
-	m_context->show_link(m_node, href, source_state, destination_state);
+	m_context->show_link(m_node, href, source_state, destination_state, target);
 }
 

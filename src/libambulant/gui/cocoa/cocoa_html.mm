@@ -54,14 +54,14 @@
 - (void)create: (NSRectHolder *)rect
 {
 	view = [[WebView alloc] initWithFrame: [rect rect] frameName: nil groupName: nil];
-	NSLog(@"Created new html viewer %@", view);
+	AM_DBG NSLog(@"Created new html viewer %@", view);
 }
 
 - (void)load: (NSURL *)url
 {
 		NSURLRequest *req = [NSURLRequest requestWithURL: url];
 		[[view mainFrame] loadRequest: req];
-		NSLog(@"viewer %@: loading %@", view, url);
+		AM_DBG NSLog(@"viewer %@: loading %@", view, url);
 }
 
 @end

@@ -313,6 +313,7 @@ region_node::get_rect() const {
 	}
 	lib::rect rc;
 	if(inherit_region == NULL) {
+		// XXX Incorrect: should be gotten from window factory
 		rc = lib::rect(lib::size(common::default_layout_width, common::default_layout_height)); 
 	} else {
 		rc = inherit_region->get_rect();

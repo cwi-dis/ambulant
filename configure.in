@@ -180,6 +180,22 @@ then
 fi
 AC_MSG_RESULT($with_external_dom)
 
+#
+# Do we want overlay window support support?
+#
+test_overlay=false
+AC_MSG_CHECKING(for --with-overlay-window)
+AC_ARG_WITH([overlay-window],[
+    AC_HELP_STRING([--with-overlay-window],
+                   [Enable a secondary document overlaying the main document])
+    ],[with_overlay_window=${withval}], [with_overlay_window=yes])
+if test "x$with_overlay_window" = xyes;
+then
+    AC_DEFINE(WITH_OVERLAY_WINDOW, 1, [Define to enable secondary document overlaying the main document])
+   test_overlay=true
+fi
+AC_MSG_RESULT($with_overlay_window)
+
 dnl
 dnl Check for external/internal copy of expat
 dnl
@@ -1049,6 +1065,7 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
 	compiler:                       ${CC}
 
 	Enable external DOM:		${test_dom}
+	Enable overlay window:		${test_overlay}
 	Use expat XML library:		${test_expat}	${expat_path}
 	Use xerces XML library:		${test_xerces}	${xerces_path}
 	Enable Xerces as plugin:	${xerces_plugin}

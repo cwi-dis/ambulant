@@ -751,16 +751,18 @@ void smil_player::destroy_playable(common::playable *np, const lib::node *n) {
 	if (rem) m_logger->debug("smil_player::destroy_playable: playable 0x%x still has refcount of %d", np, rem);
 }
 
-void smil_player::show_link(const lib::node *n, const net::url& href, src_playstate srcstate, dst_playstate dststate) {
+void smil_player::show_link(const lib::node *n, const net::url& href, 
+	src_playstate srcstate, dst_playstate dststate, const char *target)
+{
 	AM_DBG lib::logger::get_logger()->debug("show_link(\"%s\"), srcplaystate=%d, dstplaystate=%d",
 		href.get_url().c_str(), (int)srcstate, (int)dststate);
 	net::url our_url(m_doc->get_src_url()); 
 	if(srcstate == src_replace && href.same_document(our_url)) {
 		// This is an internal hyperjump
 		std::string anchor = href.get_ref();
-		const lib::node *target = m_doc->get_node(anchor);
-		if(target) {
-			goto_node(target);
+		const lib::node *tnode = m_doc->get_node(anchor);
+		if(tnode) {
+			goto_node(tnode);
 		} else {
 			m_logger->error(gettext("Link destination not found: %s"), href.get_url().c_str());
 		}
@@ -787,7 +789,16 @@ void smil_player::show_link(const lib::node *n, const net::url& href, src_playst
 			m_system->close(to_replace);
 		m_system->show_file(href);
 	} else {
-		m_system->open(href, dststate == dst_play, to_replace);
+#ifdef WITH_OVERLAY_WINDOW
+		if ( target && strcmp(target, "overlay") == 0) {
+			m_system->aux_open(href);
+		} else 
+#endif
+		{
+			if (target)
+				lib::logger::get_logger()->trace("show_link: ignoring unknown target \"%s\"", target);
+			m_system->open(href, dststate == dst_play, to_replace);
+		}
 	}
 }
 

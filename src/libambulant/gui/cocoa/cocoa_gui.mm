@@ -495,10 +495,10 @@ cocoa_gui_screen::clear_overlay()
 	NSPoint where = [theEvent locationInWindow];
 	where = [self convertPoint: where fromView: nil];
 	if (!NSPointInRect(where, [self bounds])) {
-		AM_DBG NSLog(@"mouseDown outside our frame");
+		AM_DBG NSLog(@"mouseMoved outside our frame");
 		return;
 	}
-	AM_DBG NSLog(@"mouseMoved at ambulant-point(%f, %f)", where.x, where.y);
+	AM_DBG NSLog(@"0x%x: mouseMoved at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
 	[[NSApplication sharedApplication] sendAction: SEL("resetMouse:") to: nil from: self];
 	if (ambulant_window) ambulant_window->user_event(amwhere, 1);

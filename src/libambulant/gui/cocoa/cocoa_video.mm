@@ -378,7 +378,7 @@ void
 cocoa_video_renderer::_copy_bits(NSView *dst, NSRect& dstrect)
 {
 	if (!m_offscreen) return;
-	NSLog(@"_copy_bits()");
+	AM_DBG NSLog(@"_copy_bits()");
 	[m_movie_view lockFocus];
 	NSBitmapImageRep *src = [[NSBitmapImageRep alloc] initWithFocusedViewRect: [m_movie_view bounds]];
 	NSRect srcrect = [m_movie_view bounds];
