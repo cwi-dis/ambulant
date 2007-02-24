@@ -1,3 +1,23 @@
+2007-02-23 15:33  jackjansen
+
+	* Got overlay documents working again on the Mac, and added a
+	  configure option --with-overlay-window (and WITH_OVERLAY_WINDOW
+	  define) to enable the global bits for all platforms.
+
+	  Added support for target attribute op hyperlinks, with "overlay"
+	  the only currently defined target.
+
+2007-02-23 11:20  jackjansen
+
+	* Anchors (both a and area) with actuate=onLoad and not children of
+	  a media item would cause a hang. Fixed.
+
+	  backport candidate!
+
+2007-02-23 10:30  jackjansen
+
+	* Commented out old offscreen code.
+
 2007-02-15 15:32  jackjansen
 
 	* - Final touches to readme and news - Got rid of non-functional
