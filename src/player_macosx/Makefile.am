@@ -2,7 +2,7 @@ EXTRA_DIST=MyAmbulantView.mm MyDocument.mm LogController.mm mainloop.cpp MyAppDe
 	mypreferences.mm mypreferences.h \
 	MyAmbulantView.h MyAppDelegate.h MyDocument.h LogController.h mainloop.h \
 	cocoambulant_Prefix.pch \
-	English.lproj Dutch.lproj Hindi.lproj \
+	English.lproj Dutch.lproj \
 	Info.plist version.plist \
 	fullcocoambulant.xcodeproj \
 	cocoambulant.icns \

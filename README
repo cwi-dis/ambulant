@@ -47,10 +47,10 @@ Currently we have support for:
 - Nokia 770/800
 
 The specific platforms that have been used for testing are:
-- Windows: Windows 2000 and Windows XP on fairly recent Intel hardware
+- Windows: Windows 2000, Windows XP and Windows Vista on fairly recent Intel hardware
 - MacOSX: 10.4. 10.2 or earlier will not work.
 - Linux: Fedora Core on fairly recent Intel hardware
-- Nokia 770: 2006 edition OS
+- Nokia 770/800: 2006/2007 edition OS
 
 Windows CE support is broken for this release, we will try to revive it
 soon. If you feel you could help with this please drop us a line.

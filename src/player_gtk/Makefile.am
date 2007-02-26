@@ -172,23 +172,31 @@ if WITH_NOKIA770
 icondir = $(datadir)/icons/hicolor
 
 install-data-local:
-	i=AmbulantPlayer-app; \
+	i=pkg_AmbulantPlayer-app; \
 	$(mkinstalldirs) $(DESTDIR)$(icondir)/26x26/hildon; \
 	$(mkinstalldirs) $(DESTDIR)$(icondir)/40x40/hildon; \
 	$(mkinstalldirs) $(DESTDIR)$(icondir)/scalable/hildon; \
-	$(INSTALL_DATA) $(srcdir)/$$i.26.png $(DESTDIR)$(icondir)/26x26/hildon/pkg_$$i.png; \
-	$(INSTALL_DATA) $(srcdir)/$$i.40.png $(DESTDIR)$(icondir)/40x40/hildon/pkg_$$i.png; \
-	$(INSTALL_DATA) $(srcdir)/$$i.64.png $(DESTDIR)$(icondir)/scalable/hildon/pkg_$$i.png;
+	$(INSTALL_DATA) $(srcdir)/nokia770/$$i.26.png $(DESTDIR)$(icondir)/26x26/hildon/$$i.png; \
+	$(INSTALL_DATA) $(srcdir)/nokia770/$$i.40.png $(DESTDIR)$(icondir)/40x40/hildon/$$i.png; \
+	$(INSTALL_DATA) $(srcdir)/nokia770/$$i.64.png $(DESTDIR)$(icondir)/scalable/hildon/$$i.png;
 	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir);
 	$(INSTALL_DATA) $(srcdir)/ui_manager.xml $(DESTDIR)$(pkgdatadir);
+#	Install gettext localizations
+	localedir=$(DESTDIR)/$(datadir)/locale \
+	cd ../../po ; \
+	$(MAKE) $(AM_MAKEFLAGS) localedir=$$localedir install
 
 uninstall-local:
-	i=AmbulantPlayer-app; \
-	rm $(DESTDIR)$(icondir)/26x26/hildon/pkg_$$i.png; \
-	rm $(DESTDIR)$(icondir)/40x40/hildon/pkg_$$i.png; \
-	rm $(DESTDIR)$(icondir)/scalable/hildon/pkg_$$i.png;
+	i=pkg_AmbulantPlayer-app; \
+	rm $(DESTDIR)$(icondir)/26x26/hildon/$$i.png; \
+	rm $(DESTDIR)$(icondir)/40x40/hildon/$$i.png; \
+	rm $(DESTDIR)$(icondir)/scalable/hildon/$$i.png;
 	rm $(DESTDIR)$(pkgdatadir)/ui_manager.xml;
 
+#	Install gettext localizations
+	localedir=$(DESTDIR)/$(datadir)/locale \
+	pwd;cd ../../po ; \
+	$(MAKE) $(AM_MAKEFLAGS) localedir=$$localedir install
 
 # XXXX Jack thinks the rest of this file looks like leftovers from a previous life:
 
@@ -202,18 +210,18 @@ service_DATA = com.nokia.ambulantplayer_app.service
 # The backup/restore configuration
 
 EXTRA_DIST = \
-        autogen.sh \
-	    ui_manager.xml \
-        debian/changelog \
-        debian/compat \
-        debian/copyright \
-        debian/control \
-        debian/rules \
-        debian/AmbulantPlayer-app.links \
-        AmbulantPlayer.desktop \
-        AmbulantPlayer.conf \
-        com.nokia.AmbulantPlayer_app.service \
-        AmbulantPlayer-app.26.png \
-        AmbulantPlayer-app.40.png \
-        AmbulantPlayer-app.64.png
+	autogen.sh \
+	ui_manager.xml \
+	debian/changelog \
+	debian/compat \
+	debian/copyright \
+	debian/control \
+	debian/rules \
+	debian/AmbulantPlayer-app.links \
+	AmbulantPlayer.desktop \
+	AmbulantPlayer.conf \
+	com.nokia.AmbulantPlayer_app.service \
+	pkg_AmbulantPlayer-app.26.png \
+	pkg_AmbulantPlayer-app.40.png \
+	pkg_AmbulantPlayer-app.64.png
 endif # WITH_NOKIA770

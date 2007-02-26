@@ -3,6 +3,7 @@ library_include_HEADERS= \
 	cocoa_audio.h \
 	cocoa_fill.h \
 	cocoa_gui.h \
+	cocoa_html.h \
 	cocoa_image.h \
 	cocoa_text.h \
 	cocoa_renderer.h \

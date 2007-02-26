@@ -16,11 +16,11 @@ xerces:
 	content in the directory .../ambulant/third_party_packages/
 
 	Next read the Readme.html included in the xerces distribution and
-	follow the MSVC Version 7 buil instructions. After building xerces
+	follow the MSVC Version 7.1 build instructions. After building xerces
 	copy xerces-c_2_7.dll and xerces-depcom_2_7.dll to
 	ambulant/bin/win32 and the xerces-c_2.lib and xerces-depdom_2.lib to
-	ambulant/lib.win32. The files are located in
-	xerces-c-src_2_7_0\Build\Win32\VC7\Release.
+	ambulant/lib/win32. The files are located in
+	xerces-c-src_2_7_0\Build\Win32\VC7.1\Release.
 
 	If you want to compile AmbulantPlayer without xerces support use the
 	NoXerces configurations in the Ambulant solution.

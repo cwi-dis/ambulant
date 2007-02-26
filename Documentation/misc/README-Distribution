@@ -13,6 +13,12 @@ work for everyone (including you:-).
 Version numbers, release branches and tags
 ==========================================
 
+!!=============================================================================!!
+!! NOTE: RELEASE 1.8 IS NAMED: release-new-ambulant-18-branch                  !!
+!! Any derived tag from this release (merge,bugfix, etc.) has to be named      !!
+!! accordingly (release-new-ambulant-18-merge, release-new-ambulant-181, etc.).!!
+!!=============================================================================!!
+
 We use a strict numbering scheme for versions. Development versions have
 an odd minor number, releases an even one. For example, "1.5" is a development
 version, and is a moving target. Once development is finished and we're

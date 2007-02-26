@@ -315,6 +315,12 @@ EXTRA_DIST= \
 	gui/qt \
 	gui/gstreamer \
 	gui/gtk \
+	net/win32_datasource.cpp \
+	lib/memfile.cpp \
+	lib/win32
+
+CLEANFILES=demux_datasource.loT ffmpeg_common.loT sdl.loT
+
 	lib/win32
 
 CLEANFILES=demux_datasource.loT ffmpeg_common.loT sdl.loT

@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: AmbulantPlayer 1.8\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2007-02-15 11:58+0100\n"
+"POT-Creation-Date: 2007-02-21 11:39+0100\n"
 "PO-Revision-Date: 2004-09-12 15:09+0200\n"
 "Last-Translator: Jack Jansen <Jack.Jansen@cwi.nl>\n"
 "Language-Team: English <Jack.Jansen@cwi.nl>\n"
@@ -276,7 +275,7 @@ msgstr "Geen ondersteuning voor \"%s\" video"
 msgid "Error encountered while reading file %s"
 msgstr "Er is een fout opgetreden tijdens het lezen van %s"
 
-#: src/libambulant/net/url.cpp:470
+#: src/libambulant/net/url.cpp:473
 #, c-format
 msgid "%s: Cannot parse URL"
 msgstr "Kan netwerklocatie (URL) niet interpreteren: %s"
@@ -383,203 +382,203 @@ msgstr "Fout in SMIL interactie in document"
 msgid "Error in SMIL transition info in document"
 msgstr "Fout in SMIL transitie in document"
 
-#: src/player_gtk/gtk_gui.cpp:276
+#: src/player_gtk/gtk_gui.cpp:277
 msgid "_File"
 msgstr "_Bestand"
 
-#: src/player_gtk/gtk_gui.cpp:277
+#: src/player_gtk/gtk_gui.cpp:278
 msgid "_Open..."
 msgstr "_Open..."
 
-#: src/player_gtk/gtk_gui.cpp:277
-msgid "Open a file"
-msgstr "Open een bestand"
+#: src/player_gtk/gtk_gui.cpp:279
+msgid "Open a document from local disk"
+msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:278
+#: src/player_gtk/gtk_gui.cpp:280
 msgid "Open _URL..."
 msgstr "Open _URL..."
 
-#: src/player_gtk/gtk_gui.cpp:278
-msgid "Open a url"
-msgstr "Open een url"
+#: src/player_gtk/gtk_gui.cpp:281
+msgid "Open a document from the network"
+msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:279
+#: src/player_gtk/gtk_gui.cpp:282
 msgid "_Reload"
 msgstr "_Laad Opnieuw"
 
-#: src/player_gtk/gtk_gui.cpp:279
-msgid "Reload a document"
+#: src/player_gtk/gtk_gui.cpp:283
+msgid "Reload current document"
 msgstr "Laad het huidige document opnieuw"
 
-#: src/player_gtk/gtk_gui.cpp:280
+#: src/player_gtk/gtk_gui.cpp:284
 msgid "_Preferences"
 msgstr "_Voorkeuren"
 
-#: src/player_gtk/gtk_gui.cpp:280
-msgid "Launch preferences window"
-msgstr "Open het venster om voorkeuren aan te passen"
+#: src/player_gtk/gtk_gui.cpp:285
+msgid "Change application preferences"
+msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:281
+#: src/player_gtk/gtk_gui.cpp:286
 msgid "_Load Settings..."
 msgstr "_Instellingen...."
 
-#: src/player_gtk/gtk_gui.cpp:281
-msgid "Launch the document settings window"
-msgstr "Open het venster om document-instellingen aan te passen"
+#: src/player_gtk/gtk_gui.cpp:287
+msgid "Open SMIL playback settings document"
+msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:282
+#: src/player_gtk/gtk_gui.cpp:288
 msgid "_Quit"
 msgstr "_Stop"
 
-#: src/player_gtk/gtk_gui.cpp:282
-msgid "Quit AmbulantPlayer"
-msgstr "Over AmbulantPlayer"
+#: src/player_gtk/gtk_gui.cpp:289
+msgid "Quit Ambulant Player"
+msgstr "Stop AmbulantPlayer"
 
-#: src/player_gtk/gtk_gui.cpp:285 src/player_gtk/gtk_gui.cpp:286
+#: src/player_gtk/gtk_gui.cpp:292 src/player_gtk/gtk_gui.cpp:293
 msgid "Pla_y"
 msgstr "Spee_l"
 
-#: src/player_gtk/gtk_gui.cpp:286
-msgid "Play document"
+#: src/player_gtk/gtk_gui.cpp:294
+msgid "Start document playback"
 msgstr "Speel het document"
 
-#: src/player_gtk/gtk_gui.cpp:287
+#: src/player_gtk/gtk_gui.cpp:295
 msgid "_Pause"
 msgstr "_Pauzeer"
 
-#: src/player_gtk/gtk_gui.cpp:287
-msgid "Pause document"
-msgstr "pauzeer het document"
+#: src/player_gtk/gtk_gui.cpp:296
+msgid "Pause document playback"
+msgstr "Pauzeer het document"
 
-#: src/player_gtk/gtk_gui.cpp:288
+#: src/player_gtk/gtk_gui.cpp:297
 msgid "_Stop"
 msgstr "_Stop"
 
-#: src/player_gtk/gtk_gui.cpp:288
-msgid "Stop document"
+#: src/player_gtk/gtk_gui.cpp:298
+msgid "Stop document playback"
 msgstr "Stop het document"
 
-#: src/player_gtk/gtk_gui.cpp:290
+#: src/player_gtk/gtk_gui.cpp:300
 msgid "_View"
 msgstr "_Weergave"
 
-#: src/player_gtk/gtk_gui.cpp:291
+#: src/player_gtk/gtk_gui.cpp:301
 msgid "_Full Screen"
 msgstr "_Hele Scherm"
 
-#: src/player_gtk/gtk_gui.cpp:291
+#: src/player_gtk/gtk_gui.cpp:302
 msgid "Full Screen"
 msgstr "Hele Scherm"
 
-#: src/player_gtk/gtk_gui.cpp:292
+#: src/player_gtk/gtk_gui.cpp:303
 msgid "_Window"
 msgstr "_Venster"
 
-#: src/player_gtk/gtk_gui.cpp:292
+#: src/player_gtk/gtk_gui.cpp:304
 msgid "Normal Screen"
 msgstr "Gewoon Scherm"
 
-#: src/player_gtk/gtk_gui.cpp:293
+#: src/player_gtk/gtk_gui.cpp:305
 msgid "_Log Window..."
 msgstr "_Logboek"
 
-#: src/player_gtk/gtk_gui.cpp:293
-msgid "Launch log window"
-msgstr "Open het venster om het logboek te zien"
+#: src/player_gtk/gtk_gui.cpp:306
+msgid "Show status output window"
+msgstr "Toon statusvenster"
 
-#: src/player_gtk/gtk_gui.cpp:295
+#: src/player_gtk/gtk_gui.cpp:308
 msgid "_Help"
 msgstr "_Help"
 
-#: src/player_gtk/gtk_gui.cpp:296
+#: src/player_gtk/gtk_gui.cpp:309
 msgid "_About AmbulantPlayer"
 msgstr "Over _AmbulantPlayer"
 
-#: src/player_gtk/gtk_gui.cpp:296
+#: src/player_gtk/gtk_gui.cpp:310
 msgid "Information about Ambulant"
 msgstr "Informatie ove Ambulant"
 
-#: src/player_gtk/gtk_gui.cpp:297
+#: src/player_gtk/gtk_gui.cpp:311
 msgid "AmbulantPlayer _Help..."
 msgstr "AmbulantPlayer _Help..."
 
-#: src/player_gtk/gtk_gui.cpp:297
+#: src/player_gtk/gtk_gui.cpp:312
 msgid "Help in AmbulantPlayer Webpage"
 msgstr "Hulp uit de AmbulantPlayer WebPagina"
 
-#: src/player_gtk/gtk_gui.cpp:298
+#: src/player_gtk/gtk_gui.cpp:313
 msgid "AmbulantPlayer _Website..."
 msgstr "AmbulantPlayer _WebPagina..."
 
-#: src/player_gtk/gtk_gui.cpp:298
+#: src/player_gtk/gtk_gui.cpp:314
 msgid "Open the Ambulant Webpage"
 msgstr "Open de Ambulant WebPagina"
 
-#: src/player_gtk/gtk_gui.cpp:299
+#: src/player_gtk/gtk_gui.cpp:315
 msgid "_Play Welcome Document"
 msgstr "_Speel Welkom-document"
 
-#: src/player_gtk/gtk_gui.cpp:299
+#: src/player_gtk/gtk_gui.cpp:316
 msgid "Plays a simple SMIL file"
 msgstr "Speelt een eenvoudige SMIL file"
 
-#: src/player_gtk/gtk_gui.cpp:494 src/player_unix/qt_gui.cpp:213
+#: src/player_gtk/gtk_gui.cpp:512 src/player_unix/qt_gui.cpp:223
 msgid "About AmbulantPlayer"
 msgstr "Over AmbulantPlayer"
 
-#: src/player_gtk/gtk_gui.cpp:519 src/player_unix/qt_gui.cpp:233
+#: src/player_gtk/gtk_gui.cpp:537 src/player_unix/qt_gui.cpp:243
 msgid "Cannot find Welcome.smil document"
 msgstr "Welcome.smil document niet gevonden"
 
-#: src/player_gtk/gtk_gui.cpp:537 src/player_unix/qt_gui.cpp:245
+#: src/player_gtk/gtk_gui.cpp:555 src/player_unix/qt_gui.cpp:255
 msgid "Cannot find Ambulant Player Help"
 msgstr "AmbulantPlayer Help is niet gevonden"
 
-#: src/player_gtk/gtk_gui.cpp:556 src/player_unix/qt_gui.cpp:271
+#: src/player_gtk/gtk_gui.cpp:574 src/player_unix/qt_gui.cpp:281
 #, c-format
 msgid "%s: Cannot open file: %s"
 msgstr "%s: Bestand kan niet geopend worden: %s"
 
-#: src/player_gtk/gtk_gui.cpp:590
+#: src/player_gtk/gtk_gui.cpp:608
 msgid "Please, select a file"
 msgstr "Selecteer een bestand a.u.b."
 
-#: src/player_gtk/gtk_gui.cpp:593
+#: src/player_gtk/gtk_gui.cpp:611
 msgid "SMIL files"
 msgstr "SMIL bestanden"
 
-#: src/player_gtk/gtk_gui.cpp:598
+#: src/player_gtk/gtk_gui.cpp:616
 msgid "All files"
 msgstr "Alle bestanden"
 
-#: src/player_gtk/gtk_gui.cpp:605
+#: src/player_gtk/gtk_gui.cpp:623
 msgid "Any file"
 msgstr "Alles (*)"
 
-#: src/player_gtk/gtk_gui.cpp:654
+#: src/player_gtk/gtk_gui.cpp:672
 msgid "Please, select a settings file"
 msgstr "Selecteer een instellingen-bestand"
 
-#: src/player_gtk/gtk_gui.cpp:657
+#: src/player_gtk/gtk_gui.cpp:675
 msgid "XML files"
 msgstr "XML bestanden"
 
-#: src/player_gtk/gtk_gui.cpp:693 src/player_unix/qt_gui.cpp:419
+#: src/player_gtk/gtk_gui.cpp:711 src/player_unix/qt_gui.cpp:429
 msgid "URL to open:"
 msgstr "Open URL:"
 
-#: src/player_gtk/gtk_gui.cpp:1063 src/player_unix/qt_gui.cpp:655
+#: src/player_gtk/gtk_gui.cpp:1081 src/player_unix/qt_gui.cpp:665
 #: src/player_macosx/MyAppDelegate.mm:140
 #, c-format
 msgid "Ambulant Player: compile time version %s, runtime version %s"
 msgstr "Ambulant Player: gebouwd voor versie %s, draait met versie %s"
 
-#: src/player_gtk/gtk_gui.cpp:1064
+#: src/player_gtk/gtk_gui.cpp:1082
 #, c-format
 msgid "Ambulant Player: built on %s for Unix/GTK"
 msgstr "Ambulant Player: gebouwd op %s voor Unix/GTK"
 
-#: src/player_gtk/gtk_gui.cpp:1066 src/player_unix/qt_gui.cpp:658
+#: src/player_gtk/gtk_gui.cpp:1084 src/player_unix/qt_gui.cpp:668
 msgid "Ambulant Player: localization enabled (english)"
 msgstr "Ambulant Player: met taalondersteuning (nederlands)"
 
@@ -686,87 +685,87 @@ msgstr "mkdir(\"%s\") mislukt: %s"
 msgid "%s: node ID not found"
 msgstr "%s: Node ID niet gevonden"
 
-#: src/player_unix/qt_gui.cpp:136
+#: src/player_unix/qt_gui.cpp:137
 msgid "&Open..."
 msgstr "&Open..."
 
-#: src/player_unix/qt_gui.cpp:137
+#: src/player_unix/qt_gui.cpp:139
 msgid "Open &URL..."
 msgstr "Open &URL..."
 
-#: src/player_unix/qt_gui.cpp:138
+#: src/player_unix/qt_gui.cpp:141
 msgid "&Reload..."
 msgstr "Laad Opnieuw (Alt-L)"
 
-#: src/player_unix/qt_gui.cpp:146
+#: src/player_unix/qt_gui.cpp:149
 msgid "&Preferences..."
 msgstr "&Voorkeuren..."
 
-#: src/player_unix/qt_gui.cpp:147
+#: src/player_unix/qt_gui.cpp:150
 msgid "&Document Settings..."
 msgstr "&Documentinstellingen..."
 
-#: src/player_unix/qt_gui.cpp:150
+#: src/player_unix/qt_gui.cpp:153
 msgid "&Quit"
 msgstr "&Stop"
 
-#: src/player_unix/qt_gui.cpp:151
+#: src/player_unix/qt_gui.cpp:155
 msgid "&File"
 msgstr "&Bestand"
 
-#: src/player_unix/qt_gui.cpp:156 src/player_unix/qt_gui.cpp:161
+#: src/player_unix/qt_gui.cpp:160 src/player_unix/qt_gui.cpp:168
 msgid "Pla&y"
 msgstr "&Speel"
 
-#: src/player_unix/qt_gui.cpp:158
+#: src/player_unix/qt_gui.cpp:163
 msgid "&Pause"
 msgstr "&Pauzeer"
 
-#: src/player_unix/qt_gui.cpp:160
+#: src/player_unix/qt_gui.cpp:166
 msgid "&Stop"
 msgstr "&Stop"
 
-#: src/player_unix/qt_gui.cpp:165
+#: src/player_unix/qt_gui.cpp:172
 msgid "&Full Screen"
 msgstr "&Hele Scherm"
 
-#: src/player_unix/qt_gui.cpp:166
+#: src/player_unix/qt_gui.cpp:174
 msgid "&Window"
 msgstr "&Venster"
 
-#: src/player_unix/qt_gui.cpp:169
+#: src/player_unix/qt_gui.cpp:178
 msgid "&Log Window..."
 msgstr "Logboek"
 
-#: src/player_unix/qt_gui.cpp:171
+#: src/player_unix/qt_gui.cpp:180
 msgid "&View"
 msgstr "&Weergave"
 
-#: src/player_unix/qt_gui.cpp:176
+#: src/player_unix/qt_gui.cpp:185
 msgid "&About AmbulantPlayer"
 msgstr "&Over AmbulantPlayer"
 
-#: src/player_unix/qt_gui.cpp:177
+#: src/player_unix/qt_gui.cpp:186
 msgid "AmbulantPlayer &Help..."
 msgstr "AmbulantPlayer &Help..."
 
-#: src/player_unix/qt_gui.cpp:179
+#: src/player_unix/qt_gui.cpp:189
 msgid "AmbulantPlayer &Website..."
 msgstr "AmbulantPlayer &Website..."
 
-#: src/player_unix/qt_gui.cpp:180
+#: src/player_unix/qt_gui.cpp:190
 msgid "&Play Welcome Document"
 msgstr "&Speel Welkom-document"
 
-#: src/player_unix/qt_gui.cpp:181
+#: src/player_unix/qt_gui.cpp:191
 msgid "&Help"
 msgstr "&Help"
 
-#: src/player_unix/qt_gui.cpp:215 src/player_unix/qt_gui.cpp:491
+#: src/player_unix/qt_gui.cpp:225 src/player_unix/qt_gui.cpp:501
 msgid "OK"
 msgstr "OK"
 
-#: src/player_unix/qt_gui.cpp:304
+#: src/player_unix/qt_gui.cpp:314
 msgid ""
 "SMIL files (*.smil *.smi);; All files (*.smil *.smi *.mms *.grins);; Any "
 "file (*)"
@@ -774,44 +773,44 @@ msgstr ""
 "SMIL bestanden (*.smil *.smi);; Alle bestanden (*.smil *.smi *.mms *."
 "grins);; Alles (*)"
 
-#: src/player_unix/qt_gui.cpp:306
+#: src/player_unix/qt_gui.cpp:316
 msgid "open file dialog"
 msgstr "Open Bestand"
 
-#: src/player_unix/qt_gui.cpp:307
+#: src/player_unix/qt_gui.cpp:317
 msgid "Double Click a file to open"
 msgstr "Dubbelklik om een bestand te openen"
 
-#: src/player_unix/qt_gui.cpp:382
+#: src/player_unix/qt_gui.cpp:392
 msgid "Settings files (*.xml)"
 msgstr "Instellingenbestanden (*.xml)"
 
-#: src/player_unix/qt_gui.cpp:384
+#: src/player_unix/qt_gui.cpp:394
 msgid "open settings file dialog"
 msgstr "open instellingen-bestand"
 
-#: src/player_unix/qt_gui.cpp:385
+#: src/player_unix/qt_gui.cpp:395
 msgid "Double Click a settings file to open"
 msgstr "Dubbelklik om een instellingen-bestand te openen"
 
-#: src/player_unix/qt_gui.cpp:431
+#: src/player_unix/qt_gui.cpp:441
 msgid "Open URL not implemented for Embedded Qt"
 msgstr "Open URL niet ondersteund voor Embedded Qt"
 
-#: src/player_unix/qt_gui.cpp:454
+#: src/player_unix/qt_gui.cpp:464
 msgid "No file open: Please first select File->Open"
 msgstr "Geen document open: gebruik Bestand->Open"
 
-#: src/player_unix/qt_gui.cpp:493
+#: src/player_unix/qt_gui.cpp:503
 msgid "Cancel"
 msgstr "Annuleer"
 
-#: src/player_unix/qt_gui.cpp:656
+#: src/player_unix/qt_gui.cpp:666
 #, c-format
 msgid "Ambulant Player: built on %s for Unix/Qt"
 msgstr "Ambulant Player: gebouwd op %s voor Unix/Qt"
 
-#: src/player_unix/qt_gui.cpp:697
+#: src/player_unix/qt_gui.cpp:707
 msgid "Cannot open: "
 msgstr "Bestand kan niet geopend worden: "
 
@@ -879,3 +878,20 @@ msgstr "Kan http://www.ambulantplayer.org niet openen"
 msgid "Cannot open: %s"
 msgstr "Bestand kan niet geopend worden: %s"
 
+#~ msgid "Open a file"
+#~ msgstr "Open een bestand"
+
+#~ msgid "Open a url"
+#~ msgstr "Open een url"
+
+#~ msgid "Launch preferences window"
+#~ msgstr "Open het venster om voorkeuren aan te passen"
+
+#~ msgid "Launch the document settings window"
+#~ msgstr "Open het venster om document-instellingen aan te passen"
+
+#~ msgid "Play document"
+#~ msgstr "Speel het document"
+
+#~ msgid "Launch log window"
+#~ msgstr "Open het venster om het logboek te zien"

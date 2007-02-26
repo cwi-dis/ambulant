@@ -1801,6 +1801,11 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=c:\Program Files\Microsoft Visual Studio .NET 2003\Sdk\v1.1\Bin\msvcp71.dll
+  Destination=%MAINDIR%\msvcp71.dll
+  Flags=0000000010000011
+end
+item: Install File
   Source=c:\Program Files\Microsoft Visual Studio .NET 2003\Sdk\v1.1\Bin\msvcr71.dll
   Destination=%MAINDIR%\msvcr71.dll
   Flags=0000000010000011

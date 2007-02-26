@@ -123,11 +123,11 @@ gtk_mainloop::~gtk_mainloop()
 {
 	AM_DBG m_logger->debug("gtk_mainloop::~gtk_mainloop() m_player=0x%x", m_player);
 //	delete m_gui_screen;
-	delete m_gtk_widget;
 	if (m_player) {
 		delete m_player;
 		m_player = NULL;
 	}
+	delete m_gtk_widget;
 	//delete m_window_factory;
 }
 

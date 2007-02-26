@@ -11,12 +11,21 @@ Here are some pointers how to work with Nokia 770 (2006 Software Edition).
    and 
    http://maemo.org/maemowiki/FrequentlyAskedQuestions
 
-3. Creation of a web-installable debian package is described in:
-   http://maemo.org/platform/docs/howtos/howto_making_an_application_package.html
-   In the ambulant home directory, there exists a directory debian which contains
-   the necessary control files to build a downloadable and installable debian package
-   for the Nokia 770 (2006 Software Edition).
-   Refer to debian/README for more precise information.
+3. Creation of a web-installable debian package for the
+   Nokia 770/800 (OS2006/OS2007 Software Edition).
+
+   First, ffmpeg-cvs needs to be obtained from the www.AmbulantPlayer.org seperately 
+   and unpacked in 'third_party_packages'. In 'third_party_packages/ffmpeg-cvs', type:
+   ./configure  --cpu=arm;make
+
+   Next, in toplevel ambulant directory type:
+   ./autogen.sh --prefix=/usr --with-qt=no --with-gtk --with-nokia770 --host=i386 --with-gstreamer --build=arm
+   make
+   Then in 'src/player_gtk/nokia770', type: ./create_installer
+
+   Finally, copy 'src/player_gtk/ambulantplayer-app_1.8_armel.deb' to a website
+   and point the webbrowser on the Nikia770/800 to that website.
+   It will hen install automatically.
 
 4. Setting up USB networking (Fedora Core 5).
    I made 2 handy little scripts in sandbox/Nokia770Scripts, both to be run as root:
