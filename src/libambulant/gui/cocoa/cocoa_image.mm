@@ -97,7 +97,7 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 			cocoa_srcrect = NSMakeRect(srcrect.left(), srcrect.top(), srcrect.width(), srcrect.height());
 			cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
 			AM_DBG logger::get_logger()->debug("cocoa_image_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", cocoa_srcsize.width, cocoa_srcsize.height, NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect), NSMaxX(cocoa_dstrect), NSMaxY(cocoa_dstrect));
-			[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceAtop fraction: 1.0];
+			[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceOver fraction: 1.0];
 		}
 		m_lock.leave();
 		return;
@@ -106,9 +106,8 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	cocoa_srcrect = NSMakeRect(0, 0, srcrect.width(), srcrect.height());
 	dstrect.translate(m_dest->get_global_topleft());
 	cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
-
 	AM_DBG logger::get_logger()->debug("cocoa_image_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", cocoa_srcsize.width, cocoa_srcsize.height, NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect), NSMaxX(cocoa_dstrect), NSMaxY(cocoa_dstrect));
-	[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceAtop fraction: 1.0];
+	[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceOver fraction: 1.0];
 	
 	m_lock.leave();
 }
