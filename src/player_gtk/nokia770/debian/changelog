@@ -1,4 +1,4 @@
-ambulantplayer-app (1.8) unstable; urgency=low
+ambulantplayer-app (1.9) unstable; urgency=low
 
   * Initial Release for Nokia 770.Has gstreamer audio, no video/rtsp yet
 

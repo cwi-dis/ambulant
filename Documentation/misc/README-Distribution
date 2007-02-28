@@ -35,10 +35,13 @@ to the trunk and "cvs up -jrelease-ambulant-16-branch". Test and commit.
 Next, we want to tag the _branch_ to show that we have merged up to here:
 set your working copy to the branch, and tag with "release-ambulant-16-merge".
 
-Now go back to the trunk, set version numbers to "1.7" and start working on
-wonderful new ideas. But first: do all the tests you did for the release
-on the trunk as well, to make sure that all fixes you made on the release
-branch have been propagated to the trunk correctly.
+
+Now go back to the trunk, and tag it too with  "release-ambulant-16-merge-trunk"
+Next set ALL version numbers manually to "1.7"(see below which files)
+and start working on wonderful new ideas.
+But first: do all the tests you did for the release on the trunk as well,
+to make sure that all fixes you made on the release branch have been propagated
+to the trunk correctly.
 
 Some time later a bug fix release "1.6.1" will have to be done. Switch your working
 copy to the "release-ambulant-16-branch" and fix the bugs. Do not add new features,
@@ -84,6 +87,12 @@ Before creating the distribution
   - src/player_macosx/*.lproj/InfoPlist.strings
   - src/player_wince/AmbulantPlayer.rc
   - src/player_mfc/AmbulantPlayer.rc (Dialog IDD_ABOUTBOX)
+  - src/player_gtk/nokia770/AmbulantPlayer.desktop
+  - src/player_gtk/AmbulantPlayer.desktop
+  - src/player_gtk/nokia770/AmbulantPlayer.desktop
+  - src/player_gtk/nokia770/debian/changelog
+  - src/player_gtk/nokia770/debian/create_installer
+  - src/player_gtk/nokia770/debian/files
   - src/AmbulantWin32Installer/AmbulantWiseInstaller.wse
   	- Product Details->Default Directory
   	- General Information->Installation Version
