@@ -728,7 +728,11 @@ bool time_node::is_playable() const {
 
 // Returns true when this node is an animation
 bool time_node::is_animation() const {
-	return common::schema::get_instance()->is_animation(m_node->get_qname());
+	const common::schema *sch = common::schema::get_instance();
+	AM_DBG lib::logger::get_logger()->debug("is_animation: 0x%x %s\n", m_node, m_node->get_sig().c_str());
+	const lib::q_name_pair& qn = m_node->get_qname();
+	AM_DBG lib::logger::get_logger()->debug("is_animation: 0x%x %s ok\n", m_node, m_node->get_sig().c_str());
+	return sch->is_animation(qn);
 }
 
 //////////////////////////

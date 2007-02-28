@@ -385,6 +385,13 @@ smil_player::after_mousemove()
 
 	m_pointed_node = 0;
 
+	if (m_new_focussed_nodes == NULL) {
+		// This "cannot happen", but it turns out it can:-)
+		// The scenario is that if a window shows up or disappear during
+		// a mouse move, depending on the GUI toolkit it can happen.
+		m_logger->debug("after_mousemove: called without corresponding before_mousemove\n");
+		return m_cursorid;
+	}
 	// First we send outOfBounds and focusOut events to all
 	// the nodes that were in the focus but no longer are.
 	for (i=m_focussed_nodes->begin(); i!=m_focussed_nodes->end(); i++) {
@@ -480,7 +487,12 @@ smil_player::after_mousemove()
 void smil_player::pointed(int n, double t) {
 #if 1
 	AM_DBG m_logger->debug("smil_player(0x%x)::pointed(%d, %f) m_new_focussed_nodes=0x%x", this, n, t, m_new_focussed_nodes);
-	assert(m_new_focussed_nodes);
+	if (m_new_focussed_nodes == NULL) {
+		// This "cannot happen", but it turns out it can:-)
+		// The scenario is that if a window shows up or disappear during
+		// a mouse move, depending on the GUI toolkit it can happen.
+		return;
+	}
 	m_new_focussed_nodes->insert(n);
 #else
 	typedef lib::scalar_arg_callback_event<time_node, q_smil_time> dom_event_cb;
