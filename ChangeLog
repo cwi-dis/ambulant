@@ -1,3 +1,8 @@
+2007-02-27 16:20  jackjansen
+
+	* Replaced NSCompositeSourceAtop by NSCompositeSourceOver: the
+	  latter also works correct in case of transparent windows.
+
 2007-02-26 12:57  keesblom
 
 	* Merged release-new-ambulant-18-branch with trunk
