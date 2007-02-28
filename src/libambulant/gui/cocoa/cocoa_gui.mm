@@ -114,6 +114,8 @@ cocoa_window::user_event(const point &where, int what)
 void
 cocoa_window::need_events(bool want)
 {
+#if 0
+	// This code needs to be run in the main thread.
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
 	AM_DBG logger::get_logger()->debug("cocoa_window::need_events(0x%x, %d)", (void *)this, want);
@@ -142,6 +144,7 @@ cocoa_window::need_events(bool want)
 	// XXX Set correct cursor
 	[[NSApplication sharedApplication] sendAction: SEL("fixMouse:") to: nil from: my_view];
 	[pool release];
+#endif
 }
 
 playable *
@@ -482,10 +485,10 @@ cocoa_gui_screen::clear_overlay()
 	NSPoint where = [theEvent locationInWindow];
 	where = [self convertPoint: where fromView: nil];
 	if (!NSPointInRect(where, [self bounds])) {
-		AM_DBG NSLog(@"mouseDown outside our frame");
+		/*AM_DBG*/ NSLog(@"0x%x: mouseDown outside our frame", (void*)self);
 		return;
 	}
-	AM_DBG NSLog(@"mouseDown at ambulant-point(%f, %f)", where.x, where.y);
+	/*AM_DBG*/ NSLog(@"0x%x: mouseDown at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
 	if (ambulant_window) ambulant_window->user_event(amwhere);
 }
@@ -498,7 +501,7 @@ cocoa_gui_screen::clear_overlay()
 		AM_DBG NSLog(@"mouseMoved outside our frame");
 		return;
 	}
-	AM_DBG NSLog(@"0x%x: mouseMoved at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
+	/*AM_DBG*/ NSLog(@"0x%x: mouseMoved at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
 	[[NSApplication sharedApplication] sendAction: SEL("resetMouse:") to: nil from: self];
 	if (ambulant_window) ambulant_window->user_event(amwhere, 1);
