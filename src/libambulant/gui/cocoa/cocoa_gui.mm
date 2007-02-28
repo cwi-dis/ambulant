@@ -114,7 +114,6 @@ cocoa_window::user_event(const point &where, int what)
 void
 cocoa_window::need_events(bool want)
 {
-#if 0
 	// This code needs to be run in the main thread.
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
@@ -123,28 +122,17 @@ cocoa_window::need_events(bool want)
 	AmbulantView *my_view = (AmbulantView *)m_view;
 	NSWindow *my_window = [my_view window];
 	AM_DBG NSLog(@"my_window acceptsMouseMovedEvents = %d", [my_window acceptsMouseMovedEvents]);
-	// Synthesize a mouseMoved event
+	// See whether the mouse is actually in our area
 	NSPoint where = [my_window mouseLocationOutsideOfEventStream];
 	if (!NSPointInRect(where, [my_view frame])) {
 		AM_DBG NSLog(@"mouse outside our frame");
 		return;
 	}
-	// Convert from window to frame coordinates
-	where.x -= NSMinX([my_view frame]);
-	where.y -= NSMinY([my_view frame]);
-#ifndef USE_COCOA_BOTLEFT
-	// Mouse clicks are not flipped, even if the view is
-	where.y = NSMaxY([my_view bounds]) - where.y;
-#endif
-	AM_DBG NSLog(@"pseudoMouseMoved at (%f, %f)", where.x, where.y);
-	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
-	// XXX Set correct cursor
-	[[NSApplication sharedApplication] sendAction: SEL("resetMouse:") to: nil from: my_view];
-	user_event(amwhere, 1);
-	// XXX Set correct cursor
-	[[NSApplication sharedApplication] sendAction: SEL("fixMouse:") to: nil from: my_view];
+	// Get the main thread to do the real work
+	[my_view performSelectorOnMainThread: @selector(pseudoMouseMove:) 
+		withObject: nil waitUntilDone: NO];
+	
 	[pool release];
-#endif
 }
 
 playable *
@@ -502,6 +490,23 @@ cocoa_gui_screen::clear_overlay()
 		return;
 	}
 	/*AM_DBG*/ NSLog(@"0x%x: mouseMoved at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
+	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
+	[[NSApplication sharedApplication] sendAction: SEL("resetMouse:") to: nil from: self];
+	if (ambulant_window) ambulant_window->user_event(amwhere, 1);
+	// XXX Set correct cursor
+	[[NSApplication sharedApplication] sendAction: SEL("fixMouse:") to: nil from: self];
+}
+
+- (void)pseudoMouseMove: (id)dummy
+{
+	NSPoint where = [[self window] mouseLocationOutsideOfEventStream];
+	where = [self convertPoint: where fromView: nil];
+	AM_DBG NSLog(@"pseudoMouseMoved at (%f, %f)", where.x, where.y);
+	if (!NSPointInRect(where, [self bounds])) {
+		AM_DBG NSLog(@"mouseMoved outside our frame");
+		return;
+	}
+	/*AM_DBG*/ NSLog(@"0x%x: pseudoMouseMove at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
 	[[NSApplication sharedApplication] sendAction: SEL("resetMouse:") to: nil from: self];
 	if (ambulant_window) ambulant_window->user_event(amwhere, 1);

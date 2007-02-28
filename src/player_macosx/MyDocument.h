@@ -65,6 +65,9 @@ class document_embedder : public ambulant::common::embedder {
 #ifdef WITH_OVERLAY_WINDOW
 	mainloop *myAuxMainloop;
 	MyAmbulantView *myAuxView;
+#ifndef WITH_OVERLAY_WINDOW_IN_VIEW
+	NSWindow *myAuxWindow;
+#endif
 #endif
 	NSTimer *uitimer;
 	document_embedder *embedder;

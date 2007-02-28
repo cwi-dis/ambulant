@@ -158,6 +158,7 @@ AMBULANTAPI common::playable_factory *create_cocoa_renderer_factory(common::fact
 
 - (void)mouseDown: (NSEvent *)theEvent;
 - (void)mouseMoved: (NSEvent *)theEvent;
+- (void)pseudoMouseMove: (id)dummy;
 
 - (void)dumpToImageID: (char *)ident;
 - (void)dump: (id)image toImageID: (char *)ident;
