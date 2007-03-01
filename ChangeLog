@@ -1,3 +1,29 @@
+2007-02-28 17:07  jackjansen
+
+	* Reimplemented the auxiliary overlay document in a different way:
+	  using a separate (transparent) window overlaying the main window
+	  in stead of with a view.
+
+	  Quicktime movies are displayed on top of the view hierarchy, so
+	  any movie obscured the auxiliary document. Playing the auxiliary
+	  document in another window solves this.
+
+2007-02-28 14:27  jackjansen
+
+	* Made after_mousemove a bit more robust: there are scenarios where
+	  it can be called without the corresponding before_mousemove (if
+	  the GUI toolkit pops up or removes a window while we're doing the
+	  mouse-moved dance).
+
+2007-02-28 14:24  jackjansen
+
+	* Pseudo mouse-moved code in need_events() disabled: it should only
+	  be run in the main thread.  Will really fix later.
+
+2007-02-28 12:10  keesblom
+
+	* Changed version numbers to 1.9 on trunk
+
 2007-02-27 16:20  jackjansen
 
 	* Replaced NSCompositeSourceAtop by NSCompositeSourceOver: the
