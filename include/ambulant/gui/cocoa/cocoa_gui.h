@@ -35,6 +35,12 @@
 #include <Cocoa/Cocoa.h>
 #endif
 
+// The following define enables code that allows drawing things
+// on top of quicktime movies, using a separate overlay window.
+// Not defining this means that anything drawn on top of a quicktime
+// movie is simply not seen.
+#define WITH_QUICKTIME_OVERLAY
+
 namespace ambulant {
 
 namespace gui {
@@ -140,6 +146,14 @@ AMBULANTAPI common::playable_factory *create_cocoa_renderer_factory(common::fact
 	NSImage *fullscreen_oldimage;
 	ambulant::smil2::transition_engine *fullscreen_engine;
 	ambulant::lib::transition_info::time_type fullscreen_now;
+#ifdef WITH_QUICKTIME_OVERLAY
+	NSWindow *overlay_window;
+	BOOL overlay_window_needs_unlock;
+	BOOL overlay_window_needs_reparent;
+	BOOL overlay_window_needs_flush;
+	BOOL overlay_window_needs_clear;
+//	int overlay_window_count;
+#endif // WITH_QUICKTIME_OVERLAY
 }
 
 - (id)initWithFrame:(NSRect)frameRect;
@@ -199,6 +213,20 @@ AMBULANTAPI common::playable_factory *create_cocoa_renderer_factory(common::fact
 		
 - (void) _screenTransitionPreRedraw;
 - (void) _screenTransitionPostRedraw;
+
+// Called by a renderer if it requires an overlay window.
+// The overlay window is refcounted.
+- (void) requireOverlayWindow;
+
+// Called by a renderer redraw() if subsequent redraws in the current redraw sequence
+// should go to the overlay window
+- (void) useOverlayWindow;
+
+// Called by a renderer if the overlay window is no longer required.
+- (void) releaseOverlayWindow; 
+
+// Called when the view hierarchy has changed
+- (void) viewDidMoveToSuperview;
 @end
 
 #endif // __OBJC__

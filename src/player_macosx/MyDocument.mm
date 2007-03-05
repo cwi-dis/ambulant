@@ -677,8 +677,8 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	[[view window] addChildWindow: myAuxWindow ordered: NSWindowAbove];
 //	[myAuxWindow makeKeyAndOrderFront: self];
 #endif
-	/*AM_DBG*/ NSLog(@"openAuxDocument %@", auxUrl);
-	/*AM_DBG*/ NSLog(@"Orig view 0x%x, auxView 0x%x", (void*)view, (void*)myAuxView);
+	AM_DBG NSLog(@"openAuxDocument %@", auxUrl);
+	AM_DBG NSLog(@"Orig view 0x%x, auxView 0x%x", (void*)view, (void*)myAuxView);
 	myAuxMainloop = new mainloop([[auxUrl absoluteString] UTF8String], myAuxView, false, NULL);
 	myAuxMainloop->play();
 #ifndef WITH_OVERLAY_WINDOW_IN_VIEW

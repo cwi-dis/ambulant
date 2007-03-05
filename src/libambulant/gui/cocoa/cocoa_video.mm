@@ -181,6 +181,7 @@ cocoa_video_renderer::~cocoa_video_renderer()
 	if (m_movie_view) {
 		[MovieCreator performSelectorOnMainThread: @selector(removeFromSuperview:) withObject: m_movie_view waitUntilDone: NO];
 		m_movie_view = NULL;
+		// XXXJACK Should call releaseOverlayWindow here
 	}
 	if (m_offscreen_window) {
 		[m_offscreen_window release];
@@ -239,6 +240,7 @@ cocoa_video_renderer::stop()
 		AM_DBG logger::get_logger()->debug("cocoa_video_renderer.stop: removing m_movie_view 0x%x", (void *)m_movie_view);
 		[MovieCreator performSelectorOnMainThread: @selector(removeFromSuperview:) withObject: m_movie_view waitUntilDone: NO];
 		m_movie_view = NULL;
+		// XXXJACK Should call releaseOverlayWindow here
 	}
 	if (m_movie) {
 		AM_DBG logger::get_logger()->debug("cocoa_video_renderer.stop: release m_movie 0x%x", (void *)m_movie);
@@ -345,8 +347,8 @@ cocoa_video_renderer::redraw(const rect &dirty, gui_window *window)
 	NSRect frameRect = [view NSRectForAmbulantRect: &dstrect];
 
 	if (m_movie && !m_movie_view) {
-		AM_DBG logger::get_logger()->debug("cocoa_video_renderer.redraw: creating movie view");
 		// Create the movie view and link it in
+		AM_DBG logger::get_logger()->debug("cocoa_video_renderer.redraw: creating movie view");
 		m_movie_view = [[QTMovieView alloc] initWithFrame: frameRect];
 		[m_movie_view setControllerVisible: NO];
 		[view addSubview: m_movie_view];
@@ -354,10 +356,16 @@ cocoa_video_renderer::redraw(const rect &dirty, gui_window *window)
 		// Set the movie playing
 		[m_movie_view setMovie: m_movie];
 		[m_movie_view play: NULL];
+		// Create the overlay window
+		[view requireOverlayWindow];
 		// And start the poll task
 		ambulant::lib::event *e = new poll_callback(this, &cocoa_video_renderer::_poll_playing);
 		m_event_processor->add_event(e, POLL_INTERVAL, ambulant::lib::ep_low);
+	} else {
+		// XXXJACK Need to compare frameRect to current Qt rect and move if needed
 	}
+	// Set things up so subsequent redraws go to the overlay window
+	[view useOverlayWindow];
 	
 #ifdef OLD_OFFSCREEN_CODE
 	_copy_bits(view, frameRect);
