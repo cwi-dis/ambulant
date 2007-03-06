@@ -4958,49 +4958,11 @@ static PyObject *gui_screenObj_get_screenshot(gui_screenObject *_self, PyObject 
 	return _res;
 }
 
-static PyObject *gui_screenObj_set_overlay(gui_screenObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	char* type;
-	char *data__in__;
-	size_t data__len__;
-	int data__in_len__;
-	if (!PyArg_ParseTuple(_args, "ss#",
-	                      &type,
-	                      &data__in__, &data__in_len__))
-		return NULL;
-	data__len__ = data__in_len__;
-	PyThreadState *_save = PyEval_SaveThread();
-	bool _rv = _self->ob_itself->set_overlay(type,
-	                                         data__in__, data__len__);
-	PyEval_RestoreThread(_save);
-	_res = Py_BuildValue("O&",
-	                     bool_New, _rv);
-	return _res;
-}
-
-static PyObject *gui_screenObj_clear_overlay(gui_screenObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	if (!PyArg_ParseTuple(_args, ""))
-		return NULL;
-	PyThreadState *_save = PyEval_SaveThread();
-	bool _rv = _self->ob_itself->clear_overlay();
-	PyEval_RestoreThread(_save);
-	_res = Py_BuildValue("O&",
-	                     bool_New, _rv);
-	return _res;
-}
-
 static PyMethodDef gui_screenObj_methods[] = {
 	{"get_size", (PyCFunction)gui_screenObj_get_size, 1,
 	 PyDoc_STR("() -> (int width, int height)")},
 	{"get_screenshot", (PyCFunction)gui_screenObj_get_screenshot, 1,
 	 PyDoc_STR("(char* type, Buffer out_data) -> (bool _rv, Buffer out_data)")},
-	{"set_overlay", (PyCFunction)gui_screenObj_set_overlay, 1,
-	 PyDoc_STR("(char* type, Buffer data) -> (bool _rv)")},
-	{"clear_overlay", (PyCFunction)gui_screenObj_clear_overlay, 1,
-	 PyDoc_STR("() -> (bool _rv)")},
 	{NULL, NULL, 0}
 };
 

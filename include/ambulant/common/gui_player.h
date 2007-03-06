@@ -44,13 +44,6 @@ class gui_screen {
 	/// for freeing out_data when done.
 	virtual bool get_screenshot(const char *type, char **out_data, size_t *out_size) = 0;
 	
-	/// Not implemented: Overlay an image on the current ambulant window.
-    /// The overlay will remain in-place until replaced or cleared. The caller
-    /// is reponsible for eventually freeing data.
-	virtual bool set_overlay(const char *type, const char *data, size_t size) = 0;
-
-    /// Not implemented: clear overlay image.
-	virtual bool clear_overlay() = 0;
 };
 
 /// Complete Ambulant Player, base class for GUI.

@@ -708,6 +708,9 @@ net::url::guesstype() const
 		return "audio/mpeg";
 	if (ext == ".wav" || ext == ".WAV")
 		return "audio/wav";
+	// Ambulant-only line drawing art
+	if (ext == ".ink" || ext == ".INK")
+		return "image/vnd.ambulant-ink";
 	return "";
 }
 

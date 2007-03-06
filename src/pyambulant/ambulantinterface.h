@@ -431,8 +431,6 @@ public:
 
 	void get_size(int* width, int* height);
 	bool get_screenshot(const char* type, char* *out_data__out__, size_t* out_data__len__);
-	bool set_overlay(const char* type, const char *data__in__, size_t data__len__);
-	bool clear_overlay();
   private:
 	PyObject *py_gui_screen;
 

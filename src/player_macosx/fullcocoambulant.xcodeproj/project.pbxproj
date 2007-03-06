@@ -1155,6 +1155,20 @@
 		046E9BD909C066840084E401 /* smil_handler.h in Headers */ = {isa = PBXBuildFile; fileRef = 0471BD6C089E23E700C44EA0 /* smil_handler.h */; };
 		046E9BDA09C066850084E401 /* smil_handler.h in Headers */ = {isa = PBXBuildFile; fileRef = 0471BD6C089E23E700C44EA0 /* smil_handler.h */; };
 		046E9BDB09C066860084E401 /* smil_handler.h in Headers */ = {isa = PBXBuildFile; fileRef = 0471BD6C089E23E700C44EA0 /* smil_handler.h */; };
+		046ECCF80B9DB9DA002E50E6 /* cocoa_ink.h in Headers */ = {isa = PBXBuildFile; fileRef = 046ECCF70B9DB9DA002E50E6 /* cocoa_ink.h */; };
+		046ECCF90B9DB9DA002E50E6 /* cocoa_ink.h in Headers */ = {isa = PBXBuildFile; fileRef = 046ECCF70B9DB9DA002E50E6 /* cocoa_ink.h */; };
+		046ECCFA0B9DB9DA002E50E6 /* cocoa_ink.h in Headers */ = {isa = PBXBuildFile; fileRef = 046ECCF70B9DB9DA002E50E6 /* cocoa_ink.h */; };
+		046ECCFB0B9DB9DA002E50E6 /* cocoa_ink.h in Headers */ = {isa = PBXBuildFile; fileRef = 046ECCF70B9DB9DA002E50E6 /* cocoa_ink.h */; };
+		046ECCFC0B9DB9DA002E50E6 /* cocoa_ink.h in Headers */ = {isa = PBXBuildFile; fileRef = 046ECCF70B9DB9DA002E50E6 /* cocoa_ink.h */; };
+		046ECCFD0B9DB9DA002E50E6 /* cocoa_ink.h in Headers */ = {isa = PBXBuildFile; fileRef = 046ECCF70B9DB9DA002E50E6 /* cocoa_ink.h */; };
+		046ECCFE0B9DB9DA002E50E6 /* cocoa_ink.h in Headers */ = {isa = PBXBuildFile; fileRef = 046ECCF70B9DB9DA002E50E6 /* cocoa_ink.h */; };
+		046ECD000B9DB9F6002E50E6 /* cocoa_ink.mm in Sources */ = {isa = PBXBuildFile; fileRef = 046ECCFF0B9DB9F6002E50E6 /* cocoa_ink.mm */; };
+		046ECD010B9DB9F6002E50E6 /* cocoa_ink.mm in Sources */ = {isa = PBXBuildFile; fileRef = 046ECCFF0B9DB9F6002E50E6 /* cocoa_ink.mm */; };
+		046ECD020B9DB9F6002E50E6 /* cocoa_ink.mm in Sources */ = {isa = PBXBuildFile; fileRef = 046ECCFF0B9DB9F6002E50E6 /* cocoa_ink.mm */; };
+		046ECD030B9DB9F6002E50E6 /* cocoa_ink.mm in Sources */ = {isa = PBXBuildFile; fileRef = 046ECCFF0B9DB9F6002E50E6 /* cocoa_ink.mm */; };
+		046ECD040B9DB9F6002E50E6 /* cocoa_ink.mm in Sources */ = {isa = PBXBuildFile; fileRef = 046ECCFF0B9DB9F6002E50E6 /* cocoa_ink.mm */; };
+		046ECD050B9DB9F6002E50E6 /* cocoa_ink.mm in Sources */ = {isa = PBXBuildFile; fileRef = 046ECCFF0B9DB9F6002E50E6 /* cocoa_ink.mm */; };
+		046ECD060B9DB9F6002E50E6 /* cocoa_ink.mm in Sources */ = {isa = PBXBuildFile; fileRef = 046ECCFF0B9DB9F6002E50E6 /* cocoa_ink.mm */; };
 		04707B8906DC86B400C3B6BA /* preferences.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04707B8806DC86B400C3B6BA /* preferences.cpp */; };
 		0471BD6A089E23CF00C44EA0 /* renderer_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 0471BD68089E23CF00C44EA0 /* renderer_impl.h */; };
 		0471BD6B089E23CF00C44EA0 /* video_renderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 0471BD69089E23CF00C44EA0 /* video_renderer.h */; };
@@ -2006,6 +2020,8 @@
 		046B0A40098E75E200A7D964 /* node_impl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = node_impl.h; sourceTree = "<group>"; };
 		046C3FA40676052300F22EF7 /* cocoa_renderer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cocoa_renderer.h; sourceTree = "<group>"; };
 		046C3FA60676062900F22EF7 /* cocoa_renderer.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = cocoa_renderer.mm; sourceTree = "<group>"; };
+		046ECCF70B9DB9DA002E50E6 /* cocoa_ink.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cocoa_ink.h; sourceTree = "<group>"; };
+		046ECCFF0B9DB9F6002E50E6 /* cocoa_ink.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = cocoa_ink.mm; sourceTree = "<group>"; };
 		04707B8806DC86B400C3B6BA /* preferences.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = preferences.cpp; sourceTree = "<group>"; };
 		0471BD68089E23CF00C44EA0 /* renderer_impl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = renderer_impl.h; sourceTree = "<group>"; };
 		0471BD69089E23CF00C44EA0 /* video_renderer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = video_renderer.h; sourceTree = "<group>"; };
@@ -2457,6 +2473,7 @@
 		04382B0F05D7AEE600CFA029 /* cocoa */ = {
 			isa = PBXGroup;
 			children = (
+				046ECCF70B9DB9DA002E50E6 /* cocoa_ink.h */,
 				042EBB4408EC849700DB2F0E /* cocoa_html.h */,
 				046C3FA40676052300F22EF7 /* cocoa_renderer.h */,
 				04168540065D4B7D00E060C1 /* cocoa_dsvideo.h */,
@@ -2636,6 +2653,7 @@
 		0444D324051F2EEF0010C447 /* cocoa */ = {
 			isa = PBXGroup;
 			children = (
+				046ECCFF0B9DB9F6002E50E6 /* cocoa_ink.mm */,
 				042EBB4A08EC84B500DB2F0E /* cocoa_html.mm */,
 				046C3FA60676062900F22EF7 /* cocoa_renderer.mm */,
 				0416853E065D4B6000E060C1 /* cocoa_dsvideo.mm */,
@@ -3038,6 +3056,7 @@
 				042EBB4708EC849700DB2F0E /* cocoa_html.h in Headers */,
 				047846B80989712000A3E39F /* gui_player.h in Headers */,
 				046B0A43098E75E200A7D964 /* node_impl.h in Headers */,
+				046ECCFD0B9DB9DA002E50E6 /* cocoa_ink.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3175,6 +3194,7 @@
 				047846BC0989712000A3E39F /* gui_player.h in Headers */,
 				046B0A46098E75E200A7D964 /* node_impl.h in Headers */,
 				046E9BDA09C066850084E401 /* smil_handler.h in Headers */,
+				046ECCF80B9DB9DA002E50E6 /* cocoa_ink.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3310,6 +3330,7 @@
 				047846BB0989712000A3E39F /* gui_player.h in Headers */,
 				046B0A45098E75E200A7D964 /* node_impl.h in Headers */,
 				046E9BD909C066840084E401 /* smil_handler.h in Headers */,
+				046ECCFA0B9DB9DA002E50E6 /* cocoa_ink.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3447,6 +3468,7 @@
 				042EBB4808EC849700DB2F0E /* cocoa_html.h in Headers */,
 				047846B90989712000A3E39F /* gui_player.h in Headers */,
 				046B0A44098E75E200A7D964 /* node_impl.h in Headers */,
+				046ECCFC0B9DB9DA002E50E6 /* cocoa_ink.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3582,6 +3604,7 @@
 				042EBB4908EC849700DB2F0E /* cocoa_html.h in Headers */,
 				047846BA0989712000A3E39F /* gui_player.h in Headers */,
 				046B0A41098E75E200A7D964 /* node_impl.h in Headers */,
+				046ECCFB0B9DB9DA002E50E6 /* cocoa_ink.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3717,6 +3740,7 @@
 				04D3359A0992B50200BAEEA7 /* gui_player.h in Headers */,
 				04D3359B0992B50200BAEEA7 /* node_impl.h in Headers */,
 				046E9BDB09C066860084E401 /* smil_handler.h in Headers */,
+				046ECCF90B9DB9DA002E50E6 /* cocoa_ink.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3852,6 +3876,7 @@
 				042EBB4608EC849700DB2F0E /* cocoa_html.h in Headers */,
 				047846B70989712000A3E39F /* gui_player.h in Headers */,
 				046B0A42098E75E200A7D964 /* node_impl.h in Headers */,
+				046ECCFE0B9DB9DA002E50E6 /* cocoa_ink.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4353,6 +4378,7 @@
 				042EBB4D08EC84B500DB2F0E /* cocoa_html.mm in Sources */,
 				04F844810986E7CA00398A72 /* factory.cpp in Sources */,
 				047846B10989710900A3E39F /* gui_player.cpp in Sources */,
+				046ECD050B9DB9F6002E50E6 /* cocoa_ink.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4448,6 +4474,7 @@
 				044FD77B08F335A300ED79BF /* rtsp_factory.cpp in Sources */,
 				04F844850986E7CA00398A72 /* factory.cpp in Sources */,
 				047846B50989710900A3E39F /* gui_player.cpp in Sources */,
+				046ECD000B9DB9F6002E50E6 /* cocoa_ink.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4541,6 +4568,7 @@
 				042EBB4B08EC84B500DB2F0E /* cocoa_html.mm in Sources */,
 				04F844840986E7CA00398A72 /* factory.cpp in Sources */,
 				047846B40989710900A3E39F /* gui_player.cpp in Sources */,
+				046ECD020B9DB9F6002E50E6 /* cocoa_ink.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4636,6 +4664,7 @@
 				042EBB4E08EC84B500DB2F0E /* cocoa_html.mm in Sources */,
 				04F844820986E7CA00398A72 /* factory.cpp in Sources */,
 				047846B20989710900A3E39F /* gui_player.cpp in Sources */,
+				046ECD040B9DB9F6002E50E6 /* cocoa_ink.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4729,6 +4758,7 @@
 				042EBB4F08EC84B500DB2F0E /* cocoa_html.mm in Sources */,
 				04F844830986E7CA00398A72 /* factory.cpp in Sources */,
 				047846B30989710900A3E39F /* gui_player.cpp in Sources */,
+				046ECD030B9DB9F6002E50E6 /* cocoa_ink.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4822,6 +4852,7 @@
 				04D336000992B50200BAEEA7 /* cocoa_html.mm in Sources */,
 				04D336030992B50200BAEEA7 /* factory.cpp in Sources */,
 				04D336040992B50200BAEEA7 /* gui_player.cpp in Sources */,
+				046ECD010B9DB9F6002E50E6 /* cocoa_ink.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4915,6 +4946,7 @@
 				042EBB4C08EC84B500DB2F0E /* cocoa_html.mm in Sources */,
 				04F844800986E7CA00398A72 /* factory.cpp in Sources */,
 				047846B00989710800A3E39F /* gui_player.cpp in Sources */,
+				046ECD060B9DB9F6002E50E6 /* cocoa_ink.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

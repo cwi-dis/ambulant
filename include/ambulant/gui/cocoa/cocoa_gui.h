@@ -110,8 +110,6 @@ class cocoa_gui_screen : public common::gui_screen {
 	{}
 	void get_size(int *width, int *height);
 	bool get_screenshot(const char *type, char **out_data, size_t *out_size);
-	bool set_overlay(const char *type, const char *data, size_t size);
-	bool clear_overlay();
   private:
 	void *m_view;
 };

@@ -24,6 +24,7 @@
 #include "ambulant/gui/cocoa/cocoa_text.h"
 #include "ambulant/gui/cocoa/cocoa_html.h"
 #include "ambulant/gui/cocoa/cocoa_image.h"
+#include "ambulant/gui/cocoa/cocoa_ink.h"
 #include "ambulant/gui/cocoa/cocoa_fill.h"
 #include "ambulant/gui/cocoa/cocoa_video.h"
 #include "ambulant/gui/cocoa/cocoa_dsvideo.h"
@@ -146,8 +147,14 @@ cocoa_renderer_factory::new_playable(
 	
 	xml_string tag = node->get_qname().second;
 	if (tag == "img") {
-		rv = new cocoa_image_renderer(context, cookie, node, evp, m_factory);
-		AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_image_renderer 0x%x", (void *)node, (void *)rv);
+		net::url url = net::url(node->get_url("src"));
+		if (url.guesstype() == "image/vnd.ambulant-ink") {
+			rv = new cocoa_ink_renderer(context, cookie, node, evp, m_factory);
+			AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_ink_renderer 0x%x", (void *)node, (void *)rv);
+		} else {
+			rv = new cocoa_image_renderer(context, cookie, node, evp, m_factory);
+			AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_image_renderer 0x%x", (void *)node, (void *)rv);
+		}
 	} else if ( tag == "text") {
 		net::url url = net::url(node->get_url("src"));
 		if (url.guesstype() == "text/html") {
@@ -317,23 +324,6 @@ bad:
 	[pool release];
 	return false;
 }
-
-bool
-cocoa_gui_screen::set_overlay(const char *type, const char *data, size_t size)
-{
-	AmbulantView *view = (AmbulantView *)m_view;
-	lib::logger::get_logger()->trace("set_overlay: not implemented yet");
-	return false;
-}
-
-bool
-cocoa_gui_screen::clear_overlay()
-{
-	AmbulantView *view = (AmbulantView *)m_view;
-	lib::logger::get_logger()->trace("clear_overlay: not implemented yet");
-	return false;
-}
-
 
 } // namespace cocoa
 

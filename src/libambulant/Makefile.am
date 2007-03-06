@@ -50,6 +50,7 @@ libambulant_cocoa_la_SOURCES = \
 	gui/cocoa/cocoa_gui.m \
 	gui/cocoa/cocoa_html.m \
 	gui/cocoa/cocoa_image.m \
+	gui/cocoa/cocoa_ink.m \
 	gui/cocoa/cocoa_text.m \
 	gui/cocoa/cocoa_renderer.m \
 	gui/cocoa/cocoa_transition.m \

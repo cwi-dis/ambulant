@@ -2486,8 +2486,6 @@ gui_screen::gui_screen(PyObject *itself)
 	{
 		if (!PyObject_HasAttrString(itself, "get_size")) PyErr_Warn(PyExc_Warning, "gui_screen: missing attribute: get_size");
 		if (!PyObject_HasAttrString(itself, "get_screenshot")) PyErr_Warn(PyExc_Warning, "gui_screen: missing attribute: get_screenshot");
-		if (!PyObject_HasAttrString(itself, "set_overlay")) PyErr_Warn(PyExc_Warning, "gui_screen: missing attribute: set_overlay");
-		if (!PyObject_HasAttrString(itself, "clear_overlay")) PyErr_Warn(PyExc_Warning, "gui_screen: missing attribute: clear_overlay");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -2550,58 +2548,6 @@ bool gui_screen::get_screenshot(const char* type, char* *out_data__out__, size_t
 	Py_XDECREF(py_rv);
 	Py_XDECREF(py_type);
 	Py_XDECREF(py_out_data);
-
-	PyGILState_Release(_GILState);
-	return _rv;
-}
-
-bool gui_screen::set_overlay(const char* type, const char *data__in__, size_t data__len__)
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	bool _rv;
-	PyObject *py_type = Py_BuildValue("s", type);
-	PyObject *py_data = Py_BuildValue("s#", data__in__, (int)data__len__);
-
-	PyObject *py_rv = PyObject_CallMethod(py_gui_screen, "set_overlay", "(OO)", py_type, py_data);
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during gui_screen::set_overlay() callback:\n");
-		PyErr_Print();
-	}
-
-	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
-	{
-		PySys_WriteStderr("Python exception during gui_screen::set_overlay() return:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-	Py_XDECREF(py_type);
-	Py_XDECREF(py_data);
-
-	PyGILState_Release(_GILState);
-	return _rv;
-}
-
-bool gui_screen::clear_overlay()
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	bool _rv;
-
-	PyObject *py_rv = PyObject_CallMethod(py_gui_screen, "clear_overlay", "()");
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during gui_screen::clear_overlay() callback:\n");
-		PyErr_Print();
-	}
-
-	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
-	{
-		PySys_WriteStderr("Python exception during gui_screen::clear_overlay() return:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
 
 	PyGILState_Release(_GILState);
 	return _rv;
