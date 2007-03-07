@@ -1,3 +1,27 @@
+2007-03-06 21:28  jackjansen
+
+	* Forgot to add the actual new files for the inkml renderer.
+
+2007-03-06 21:17  jackjansen
+
+	* - Got rid of old overlay-image interfaces, that were never
+	  implemented anyway.  - Got started on a renderer for minimal
+	  inkml-like line drawing images.
+
+2007-03-05 16:18  jackjansen
+
+	* Enabled drawing things on top of movies played with the Quicktime
+	  renderer, through a second, transparent window on top of the main
+	  presentation.  The quicktime redraw routine will redirect all
+	  future drawing (in the current redraw callback) to that
+	  transparent window, which makes it show up on top of the movie.
+
+	  Interaction with transitions is untested, and there may be
+	  problems.
+
+	  All the code can be disabled by commenting out
+	  WITH_QUICKTIME_OVERLAY in cocoa_gui.h.
+
 2007-02-28 17:07  jackjansen
 
 	* Reimplemented the auxiliary overlay document in a different way:
