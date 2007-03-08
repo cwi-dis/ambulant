@@ -52,6 +52,9 @@ class cocoa_ink_renderer : public cocoa_renderer<renderer_playable_dsall> {
     void redraw_body(const rect &dirty, gui_window *window);
   private:
 	const lib::node *m_tree;
+	NSBezierPath *m_path;
+	NSColor *m_color;
+	float m_linewidth;
 	critical_section m_lock;
 };
 

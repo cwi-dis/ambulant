@@ -48,48 +48,36 @@ cocoa_ink_renderer::cocoa_ink_renderer(
 		event_processor *evp,
 		common::factories *factory)
 :	cocoa_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory),
-	m_tree(NULL)
+	m_tree(NULL),
+	m_path(NULL),
+	m_color(NULL),
+	m_linewidth(1)
 {
-#if 0
-	// XXX These parameter names are tentative
 	smil2::params *params = smil2::params::for_node(node);
-	color_t text_color = lib::to_color(0, 0, 0);
+	color_t color = lib::to_color(0, 0, 0);
 	if (params) {
-		const char *fontname = params->get_str("font-family");
-//		const char *fontstyle = params->get_str("font-style");
-		float fontsize = 0.0;
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		text_color = params->get_color("color", text_color);
-		fontsize = params->get_float("font-size", 0.0);
-		AM_DBG NSLog(@"params found, color=(%d, %d, %d), font-family=%s, font-size=%g", 
-			redc(text_color), greenc(text_color), bluec(text_color), fontname, fontsize);
-		if (fontname) {
-			NSString *nsfontname = [NSString stringWithCString: fontname];
-			m_text_font = [NSFont fontWithName: nsfontname size: fontsize];
-			if (m_text_font == NULL)
-				lib::logger::get_logger()->trace("param: font-family \"%s\" unknown", fontname);
-		} else if (fontsize) {
-			m_text_font = [NSFont userFontOfSize: fontsize];
-			if (m_text_font == NULL)
-				lib::logger::get_logger()->trace("param: font-size \"%g\" unknown", fontsize);
+		color = params->get_color("color", color);
+		float fontsize = params->get_float("font-size", 1.0); // XXXJACK Abuse fontsize, for now.
+		if (fontsize) {
+			m_linewidth = fontsize;
 		}
 		delete params;
-		[pool release];
 	}
-	m_text_color = [NSColor colorWithCalibratedRed:redf(text_color)
-					green:greenf(text_color)
-					blue:bluef(text_color)
+	m_color = [NSColor colorWithCalibratedRed:redf(color)
+					green:greenf(color)
+					blue:bluef(color)
 					alpha:1.0];
-#endif
 }
 
 cocoa_ink_renderer::~cocoa_ink_renderer()
 {
 	m_lock.enter();
-#if 0
-	[m_text_storage release];
-	m_text_storage = NULL;
-#endif
+	delete m_tree;
+	m_tree = NULL;
+	if (m_path) {
+		[m_path release];
+		m_path = NULL;
+	}
 	m_lock.leave();
 }
 
@@ -98,7 +86,7 @@ cocoa_ink_renderer::redraw_body(const rect &dirty, gui_window *window)
 {
 	m_lock.enter();
 	const rect &r = m_dest->get_rect();
-	/*AM_DBG*/ logger::get_logger()->debug("cocoa_ink_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG logger::get_logger()->debug("cocoa_ink_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	if (m_tree == NULL) {
 		// Build the tree first
 		const char *str_begin = (const char *)m_data;
@@ -109,33 +97,55 @@ cocoa_ink_renderer::redraw_body(const rect &dirty, gui_window *window)
 			m_context->stopped(m_cookie);
 			return;
 		}
-		m_tree = builder.get_tree();
+		m_tree = builder.detach();
 	}
-#if 0
-	// Check root of the tree
-	if (m_tree->get_local_name() != "ink") {
-		lib::logger::get_logger()->error(gettext("cocoa_ink_renderer: no <ink> found"));
-		m_context->stopped(m_cookie);
-		return;
-	}
-#endif
-	lib::node::const_iterator it;
-	lib::node::const_iterator end = m_tree->end();
-	for(it = m_tree->begin(); it != end; it++) {
-		if(!(*it).first) continue;
-		const lib::node *n = (*it).second;
-		const std::string& tag = n->get_local_name();
-		if (tag == "trace") {
-			/*AM_DBG*/ lib::logger::get_logger()->debug("cocoa_ink_renderer: trace");
-		} else
-		if (tag == "point") {
-			const char *x_str = n->get_attribute("x");
-			const char *y_str = n->get_attribute("y");
-			/*AM_DBG*/ lib::logger::get_logger()->debug("cocoa_ink_renderer:     point (%s,%s)", x_str, y_str);
-		} else {
-			/*AM_DBG*/ lib::logger::get_logger()->debug("cocoa_ink_renderer: ignoring %s", tag.c_str());
+	if (m_path == NULL) {
+		m_path = [[NSBezierPath bezierPath] retain];
+		[m_path setLineWidth: m_linewidth];
+		// XXXJACK These look good for our use cases
+		[m_path setLineCapStyle: NSRoundLineCapStyle];
+		[m_path setLineJoinStyle: NSRoundLineJoinStyle];
+		bool start_new_trace = true;
+		
+		// Check root of the tree
+		if (m_tree->get_local_name() != "ink") {
+			lib::logger::get_logger()->error(gettext("cocoa_ink_renderer: no <ink> found"));
+			m_context->stopped(m_cookie);
+			return;
+		}
+		lib::node::const_iterator it;
+		lib::node::const_iterator end = m_tree->end();
+		for(it = m_tree->begin(); it != end; it++) {
+			if(!(*it).first) continue;
+			const lib::node *n = (*it).second;
+			const std::string& tag = n->get_local_name();
+			if (tag == "ink") {
+				/* Ignore ink tag */
+			} else
+			if (tag == "trace") {
+				AM_DBG lib::logger::get_logger()->debug("cocoa_ink_renderer: trace");
+				start_new_trace = true;
+			} else
+			if (tag == "point") {
+				const char *x_str = n->get_attribute("x");
+				const char *y_str = n->get_attribute("y");
+				double x = strtod(x_str, NULL);
+				double y = strtod(y_str, NULL);
+				AM_DBG lib::logger::get_logger()->debug("cocoa_ink_renderer:     point (%f,%f)", x, y);
+				NSPoint pt = NSMakePoint(x, y);
+				if (start_new_trace) {
+					[m_path moveToPoint: pt];
+					start_new_trace = false;
+				} else {
+					[m_path lineToPoint: pt];
+				}
+			} else {
+				lib::logger::get_logger()->debug("cocoa_ink_renderer: ignoring %s", tag.c_str());
+			}
 		}
 	}
+	if (m_color) [m_color set];
+	[m_path stroke];
 	m_lock.leave();
 }
 
