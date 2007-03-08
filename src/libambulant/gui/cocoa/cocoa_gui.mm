@@ -651,12 +651,29 @@ bad:
 
 - (NSImage *)_getOnScreenImage
 {
+	NSView *src_view = self;
+	NSWindow *tmp_window = NULL;
+	if (overlay_window) {
+		tmp_window = [[NSWindow alloc] initWithContentRect:[overlay_window frame] styleMask:NSBorderlessWindowMask
+					backing:NSBackingStoreNonretained defer:NO];
+		[tmp_window setBackgroundColor:[NSColor clearColor]];
+		[tmp_window setLevel:NSScreenSaverWindowLevel + 1];
+		[tmp_window setHasShadow:NO];
+		[tmp_window setAlphaValue:0.0];
+		src_view = [[NSView alloc] initWithFrame:[self bounds]];
+		[tmp_window setContentView:src_view];
+		[tmp_window orderFront:self];
+	}
 	NSRect bounds = [self bounds];
 	NSSize size = NSMakeSize(NSWidth(bounds), NSHeight(bounds));
 	NSImage *rv = [[NSImage alloc] initWithSize: size];
-	[self lockFocus];
+	[src_view lockFocus];
 	NSBitmapImageRep *bits = [[NSBitmapImageRep alloc] initWithFocusedViewRect: [self bounds]];
-	[self unlockFocus];
+	[src_view unlockFocus];
+	if (tmp_window) {
+		[tmp_window orderOut: self];
+		[tmp_window close];
+	}
 	[rv addRepresentation: [bits autorelease]];
 	[rv setFlipped: YES];
 #ifdef DUMP_TRANSITION
@@ -668,11 +685,28 @@ bad:
 
 - (NSImage *)getOnScreenImageForRect: (NSRect)bounds
 {
+	NSView *src_view = self;
+	NSWindow *tmp_window = NULL;
+	if (overlay_window) {
+		tmp_window = [[NSWindow alloc] initWithContentRect:[overlay_window frame] styleMask:NSBorderlessWindowMask
+					backing:NSBackingStoreNonretained defer:NO];
+		[tmp_window setBackgroundColor:[NSColor clearColor]];
+		[tmp_window setLevel:NSScreenSaverWindowLevel + 1];
+		[tmp_window setHasShadow:NO];
+		[tmp_window setAlphaValue:0.0];
+		src_view = [[NSView alloc] initWithFrame:[self bounds]];
+		[tmp_window setContentView:src_view];
+		[tmp_window orderFront:self];
+	}
 	NSSize size = NSMakeSize(NSWidth(bounds), NSHeight(bounds));
 	NSImage *rv = [[NSImage alloc] initWithSize: size];
-	[self lockFocus];
+	[src_view lockFocus];
 	NSBitmapImageRep *bits = [[NSBitmapImageRep alloc] initWithFocusedViewRect: bounds];
-	[self unlockFocus];
+	[src_view unlockFocus];
+	if (tmp_window) {
+		[tmp_window orderOut: self];
+		[tmp_window close];
+	}
 	[rv addRepresentation: [bits autorelease]];
 	[rv setFlipped: YES];
 #ifdef DUMP_TRANSITION
