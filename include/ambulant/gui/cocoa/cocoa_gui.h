@@ -216,6 +216,9 @@ AMBULANTAPI common::playable_factory *create_cocoa_renderer_factory(common::fact
 // The overlay window is refcounted.
 - (void) requireOverlayWindow;
 
+// Helper
+- (void) _createOverlayWindow: (id)dummy;
+
 // Called by a renderer redraw() if subsequent redraws in the current redraw sequence
 // should go to the overlay window
 - (void) useOverlayWindow;
