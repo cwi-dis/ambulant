@@ -198,10 +198,10 @@ AMBULANTAPI common::playable_factory *create_cocoa_renderer_factory(common::fact
 // i.e. the pixels the transitioning element drew into getTransitionSurface.
 - (NSImage *)getTransitionNewSource;
 
-// Return the current on-screen image
+// Return the current on-screen image, caters for quicktime movies
 - (NSImage *)_getOnScreenImage;
 
-// Return part of the onscreen image
+// Return part of the onscreen image, does not cater for quicktime
 - (NSImage *)getOnScreenImageForRect: (NSRect)bounds;
 
 - (void) startScreenTransition;

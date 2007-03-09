@@ -624,7 +624,7 @@ bad:
 {
 	if (!transition_surface) {
 		// It does not exist yet. Create it.
-		transition_surface = [self _getOnScreenImage];
+		transition_surface = [self getOnScreenImageForRect: [self bounds]];
 		[transition_surface retain];
 	}
 	return transition_surface;
@@ -642,7 +642,7 @@ bad:
 {
 	if (!transition_tmpsurface) {
 		// It does not exist yet. Create it.
-		transition_tmpsurface = [self _getOnScreenImage];
+		transition_tmpsurface = [self getOnScreenImageForRect: [self bounds]];
 		[transition_tmpsurface retain];
 		[transition_tmpsurface setFlipped: NO];
 	}
@@ -653,17 +653,19 @@ bad:
 {
 	NSView *src_view = self;
 	NSWindow *tmp_window = NULL;
+#ifdef WITH_QUICKTIME_OVERLAY
 	if (overlay_window) {
 		tmp_window = [[NSWindow alloc] initWithContentRect:[overlay_window frame] styleMask:NSBorderlessWindowMask
 					backing:NSBackingStoreNonretained defer:NO];
 		[tmp_window setBackgroundColor:[NSColor clearColor]];
-		[tmp_window setLevel:[overlay_window level]];
+		[tmp_window setLevel:[overlay_window level]+1];
 		[tmp_window setHasShadow:NO];
 		[tmp_window setAlphaValue:0.0];
 		src_view = [[NSView alloc] initWithFrame:[self bounds]];
 		[tmp_window setContentView:src_view];
 		[tmp_window orderFront:self];
 	}
+#endif /* WITH_QUICKTIME_OVERLAY */
 	NSRect bounds = [self bounds];
 	NSSize size = NSMakeSize(NSWidth(bounds), NSHeight(bounds));
 	NSImage *rv = [[NSImage alloc] initWithSize: size];
@@ -685,28 +687,13 @@ bad:
 
 - (NSImage *)getOnScreenImageForRect: (NSRect)bounds
 {
-	NSView *src_view = self;
-	NSWindow *tmp_window = NULL;
-	if (overlay_window) {
-		tmp_window = [[NSWindow alloc] initWithContentRect:[overlay_window frame] styleMask:NSBorderlessWindowMask
-					backing:NSBackingStoreNonretained defer:NO];
-		[tmp_window setBackgroundColor:[NSColor clearColor]];
-		[tmp_window setLevel:[overlay_window level]];
-		[tmp_window setHasShadow:NO];
-		[tmp_window setAlphaValue:0.0];
-		src_view = [[NSView alloc] initWithFrame:[self bounds]];
-		[tmp_window setContentView:src_view];
-		[tmp_window orderFront:self];
-	}
+	// Note: this method does not take overlaying things such as Quicktime
+	// movies into account.
 	NSSize size = NSMakeSize(NSWidth(bounds), NSHeight(bounds));
 	NSImage *rv = [[NSImage alloc] initWithSize: size];
-	[src_view lockFocus];
+	[self lockFocus];
 	NSBitmapImageRep *bits = [[NSBitmapImageRep alloc] initWithFocusedViewRect: bounds];
-	[src_view unlockFocus];
-	if (tmp_window) {
-		[tmp_window orderOut: self];
-		[tmp_window close];
-	}
+	[self unlockFocus];
 	[rv addRepresentation: [bits autorelease]];
 	[rv setFlipped: YES];
 #ifdef DUMP_TRANSITION
@@ -720,7 +707,7 @@ bad:
 {
 	if (fullscreen_count && fullscreen_oldimage)
 		return fullscreen_oldimage;
-	return [self _getOnScreenImage];
+	return [self getOnScreenImageForRect: [self bounds]];
 }
 
 - (NSImage *)getTransitionNewSource
@@ -781,7 +768,7 @@ bad:
 		// Neither in fullscreen transition nor wrapping one up.
 		// Take a snapshot of the screen and return.
 		if (fullscreen_previmage) [fullscreen_previmage release];
-		fullscreen_previmage = [[self _getOnScreenImage] retain];
+		fullscreen_previmage = [[self getOnScreenImageForRect: [self bounds]] retain];
 		/*DBG	[self dump: fullscreen_previmage toImageID: "fsprev"]; */
 		return;
 	}
@@ -828,6 +815,11 @@ bad:
 // Called by a renderer if it requires an overlay window.
 // The overlay window is refcounted.
 - (void) requireOverlayWindow
+{
+	[self performSelectorOnMainThread:@selector(_createOverlayWindow:) withObject: nil waitUntilDone:YES];
+}
+
+- (void) _createOverlayWindow: (id)dummy
 {
 #ifdef WITH_QUICKTIME_OVERLAY
 	AM_DBG NSLog(@"requireOverlayWindow");
