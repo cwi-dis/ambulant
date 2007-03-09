@@ -1,3 +1,17 @@
+2007-03-08 21:39  jackjansen
+
+	* Attempt to make fullscreen screndumps work. Unfortunately taking
+	  a screendump with video still regularly crashes the player.
+
+2007-03-08 17:00  jackjansen
+
+	* Fixed screenshots to work with quicktime movies and overlay
+	  windows.  Fullscreen still TBD.
+
+2007-03-08 15:41  jackjansen
+
+	* Ink renderer works.
+
 2007-03-06 21:28  jackjansen
 
 	* Forgot to add the actual new files for the inkml renderer.
