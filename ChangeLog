@@ -1,3 +1,13 @@
+2007-03-09 13:37  jackjansen
+
+	* Missed file in checkin for creating overlay windows in main
+	  thread.
+
+2007-03-09 13:35  jackjansen
+
+	* Creating the overlay window in the main thread: this forestalls
+	  some crashes.
+
 2007-03-08 21:39  jackjansen
 
 	* Attempt to make fullscreen screndumps work. Unfortunately taking
