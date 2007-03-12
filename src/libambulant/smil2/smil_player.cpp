@@ -820,8 +820,13 @@ bool smil_player::goto_node(const lib::node *target)
 	
 	if(it != m_dom2tn->end()) {
 		bool already_running = m_root->is_active();
+		if (!already_running) {
+			if (m_system) m_system->starting(this);
+		}
 		m_scheduler->start((*it).second);
-		if (!already_running) update();
+		if (!already_running) {
+			update();
+		}
 		return true;
 	}
 	return false;
