@@ -655,10 +655,11 @@ bad:
 	NSWindow *tmp_window = NULL;
 #ifdef WITH_QUICKTIME_OVERLAY
 	if (overlay_window) {
+		NSLog(@"Doing screenshot with overlay window");
 		tmp_window = [[NSWindow alloc] initWithContentRect:[overlay_window frame] styleMask:NSBorderlessWindowMask
 					backing:NSBackingStoreNonretained defer:NO];
 		[tmp_window setBackgroundColor:[NSColor clearColor]];
-		[tmp_window setLevel:[overlay_window level]+1];
+		[tmp_window setLevel:[overlay_window level]];
 		[tmp_window setHasShadow:NO];
 		[tmp_window setAlphaValue:0.0];
 		src_view = [[NSView alloc] initWithFrame:[self bounds]];
