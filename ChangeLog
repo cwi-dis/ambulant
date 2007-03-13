@@ -1,3 +1,12 @@
+2007-03-12 13:53  jackjansen
+
+	* When starting playback through goto_node() also emit the
+	  started() callback to the embedder.
+
+2007-03-12 11:02  jackjansen
+
+	* Screenshot window level was off-by-one. fixed.
+
 2007-03-09 13:37  jackjansen
 
 	* Missed file in checkin for creating overlay windows in main
