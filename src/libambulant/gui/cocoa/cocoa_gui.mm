@@ -246,15 +246,21 @@ cocoa_window_factory::init_window_size(cocoa_window *window, const std::string &
 	// Get the position of our view in window coordinates
 	NSPoint origin = NSMakePoint(0,0);
 	NSView *superview = [view superview];
-	if (superview) {
-		NSRect rect = [superview convertRect: [view frame] toView: nil];
-		origin = rect.origin;
+	int32_t     shieldLevel = CGShieldingWindowLevel();
+	if ([[view window] level] >= shieldLevel) {
+		// We don't muck around with fullscreen windows. What we should actually do is recenter
+		// the content, but that is for later.
+	} else {
+		if (superview) {
+			NSRect rect = [superview convertRect: [view frame] toView: nil];
+			origin = rect.origin;
+		}
+		// And set the window size
+		AM_DBG NSLog(@"Size changed request: (%d, %d)", bounds.w, bounds.h);
+		NSSize cocoa_size = NSMakeSize(bounds.w + origin.x, bounds.h + origin.y);
+		[[view window] setContentSize: cocoa_size];
+		AM_DBG NSLog(@"Size changed on %@ to (%f, %f)", [view window], cocoa_size.width, cocoa_size.height);
 	}
-	// And set the window size
-	AM_DBG NSLog(@"Size changed request: (%d, %d)", bounds.w, bounds.h);
-	NSSize cocoa_size = NSMakeSize(bounds.w + origin.x, bounds.h + origin.y);
-	[[view window] setContentSize: cocoa_size];
-	AM_DBG NSLog(@"Size changed on %@ to (%f, %f)", [view window], cocoa_size.width, cocoa_size.height);
 	[[view window] makeKeyAndOrderFront: view];
 }
 
@@ -656,6 +662,7 @@ bad:
 #ifdef WITH_QUICKTIME_OVERLAY
 	if (overlay_window) {
 		NSLog(@"Doing screenshot with overlay window");
+		[[self window] makeKeyAndOrderFront: self];
 		tmp_window = [[NSWindow alloc] initWithContentRect:[overlay_window frame] styleMask:NSBorderlessWindowMask
 					backing:NSBackingStoreNonretained defer:NO];
 		[tmp_window setBackgroundColor:[NSColor clearColor]];
