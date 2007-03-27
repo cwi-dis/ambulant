@@ -1,3 +1,8 @@
+2007-03-26 17:05  jackjansen
+
+	* If we're re-opening a document in fullscreen mode don't try to
+	  change the size of the toplevel window.
+
 2007-03-12 13:53  jackjansen
 
 	* When starting playback through goto_node() also emit the
