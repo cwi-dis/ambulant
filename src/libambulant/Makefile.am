@@ -321,7 +321,3 @@ EXTRA_DIST= \
 	lib/win32
 
 CLEANFILES=demux_datasource.loT ffmpeg_common.loT sdl.loT
-
-	lib/win32
-
-CLEANFILES=demux_datasource.loT ffmpeg_common.loT sdl.loT

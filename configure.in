@@ -196,6 +196,32 @@ then
 fi
 AC_MSG_RESULT($with_overlay_window)
 
+
+dnl
+dnl Do we want special default layout for SMIL test suites ?
+dnl
+test_smil_test=false
+AC_MSG_CHECKING(for --with-smil-test)
+AC_ARG_WITH([smil-test],
+    [AC_HELP_STRING([--with-smil-test],[Enable special default layout for SMIL interop test suites (default: disabled)])
+	],[
+	case "${withval}" in
+	yes)		with_smil_test=true
+			;;
+	no)		with_smil_test=false
+			;;
+	*)		AC_MSG_ERROR("--with-smil-test takes no argument")
+			;;
+	esac],[
+	with_smil_test=false])
+if test "x$with_smil_test" = xtrue;
+then
+    test_smil_test=true
+    AC_DEFINE(WITH_SMIL_TEST, 1, [Define to enable special default layout for SMIL test suites])
+fi
+AM_CONDITIONAL(WITH_SMIL_TEST, test x$with_smil_test = xtrue)
+AC_MSG_RESULT($with_smil_test)
+
 dnl
 dnl Check for external/internal copy of expat
 dnl
@@ -1066,6 +1092,7 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
 
 	Enable external DOM:		${test_dom}
 	Enable overlay window:		${test_overlay}
+	Enable SMIL test layout:	${test_smil_test}
 	Use expat XML library:		${test_expat}	${expat_path}
 	Use xerces XML library:		${test_xerces}	${xerces_path}
 	Enable Xerces as plugin:	${xerces_plugin}

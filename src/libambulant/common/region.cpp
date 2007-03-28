@@ -47,7 +47,7 @@ smil_surface_factory::new_topsurface(
 	common::bgrenderer *bgrend,
 	common::window_factory *wf)
 {
-	lib::size bounds;
+	lib::size bounds(0,0);
 	if (info) {
 		rect rect = info->get_rect();
 		bounds = lib::size(rect.width(), rect.height());
@@ -129,6 +129,15 @@ surface_impl::activate()
 	return this;
 }
 
+#ifdef	WITH_SMIL_TEST
+common::surface *
+surface_impl::new_default_subsurface()
+{
+	assert(0);
+	return this;
+}
+#endif/*WITH_SMIL_TEST*/
+
 void
 surface_impl::animated()
 {
@@ -155,9 +164,10 @@ surface_impl::show(gui_events *cur)
 	m_renderers.push_back(cur);
 	m_children_cs.leave();
 	AM_DBG lib::logger::get_logger()->debug("surface_impl[0x%x].show(0x%x)", (void *)this, (void *)cur);
-	
+	zindex_t z = 0;
+	if (m_info) z = m_info->get_zindex();
 	if(m_parent) {
-		m_parent->add_subregion(m_info->get_zindex(), this);
+		m_parent->add_subregion(z, this);
 	}
 	need_redraw();
 }
@@ -179,8 +189,10 @@ surface_impl::renderer_done(gui_events *cur)
 	}
 	m_children_cs.leave();
 	
+	zindex_t z = 0;
+	if (m_info) z = m_info->get_zindex();
 	if(m_parent) {
-		m_parent->del_subregion(m_info->get_zindex(), this);
+		m_parent->del_subregion(z, this);
 	}
 
 	need_redraw(m_inner_bounds);
@@ -234,7 +246,8 @@ surface_impl::redraw(const lib::rect &r, gui_window *window)
 		for(children_list_t::iterator it2=cl.begin();it2!=cl.end();it2++) {
 			
 			AM_DBG lib::logger::get_logger()->debug("surface_impl.redraw(0x%x %s) ->subregion 0x%x", (void *)this, m_name.c_str(), (void *)(*it2));
-			if (!(*it2)->get_info()->is_subregion()) {
+			const region_info *ri = (*it2)->get_info();
+			if (ri && !ri->is_subregion()) {
 				AM_DBG lib::logger::get_logger()->debug("surface_impl.redraw(0x%x): subregion 0x%x is not a subregion", (void*)this, (void*)(*it2));
 				//(*it2)->redraw(our_rect, window);
 			}
@@ -249,7 +262,8 @@ surface_impl::redraw(const lib::rect &r, gui_window *window)
 		AM_DBG lib::logger::get_logger()->debug("surface_impl.redraw(0x%x %s) examining next z-order list", (void*)this, m_name.c_str());
 		children_list_t& cl = (*it2).second;
 		for(children_list_t::iterator it3=cl.begin();it3!=cl.end();it3++) {
-			if(!(*it3)->get_info()->is_subregion()) {
+			const region_info *ri = (*it3)->get_info();
+			if(!ri || !ri->is_subregion()) {
 				AM_DBG lib::logger::get_logger()->debug("surface_impl.redraw(0x%x %s) -> child 0x%x", (void *)this, m_name.c_str(), (void *)(*it3));
 				(*it3)->redraw(our_rect, window);
 			}
@@ -718,7 +732,12 @@ surface_impl::highlight(bool onoff)
 // toplevel_surface_impl
 
 toplevel_surface_impl::toplevel_surface_impl(const region_info *info, lib::size bounds, bgrenderer *bgrenderer, window_factory *wf)
-:   surface_impl(info?info->get_name():"topLayout", NULL, rect(point(0, 0), bounds), info, bgrenderer)
+:
+#ifdef	WITH_SMIL_TEST
+	m_info(info),
+	m_level(0),
+#endif/*WITH_SMIL_TEST*/
+	surface_impl(info?info->get_name():"topLayout", NULL, rect(point(0, 0), bounds), info, bgrenderer)
 {
 	m_gui_window = wf->new_window(m_name, bounds, this);
 	AM_DBG lib::logger::get_logger()->debug("toplevel_surface_impl(0x%x, \"%s\"): window=0x%x", (void *)this, m_name.c_str(), (void *)m_gui_window);
@@ -753,3 +772,25 @@ toplevel_surface_impl::need_events(bool want)
 		lib::logger::get_logger()->warn(gettext("Programmer error encountered, will attempt to continue"));
 	}
 }
+
+#ifdef	WITH_SMIL_TEST
+
+common::surface *
+toplevel_surface_impl::new_default_subsurface()
+{
+	lib::size size(300,400);
+	point p(m_level*100, m_level*100);
+	m_level++;
+	lib::rect bounds(p, size);
+	zindex_t z = 0;
+	surface_impl *rv = new surface_impl("default_subsurface", this, bounds, m_info, NULL);
+//	AM_DBG lib::logger::get_logger()->debug("new_default_subsurface: returning 0x%x", (void*)rv);
+	m_children_cs.enter();
+	m_active_children[zindex_t(z)].push_back(rv);
+	m_children_cs.leave();
+	need_redraw(bounds);
+	return rv->activate();
+}
+#endif/*WITH_SMIL_TEST*/
+
+
