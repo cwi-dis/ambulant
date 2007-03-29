@@ -1,3 +1,11 @@
+2007-03-28 13:00  keesblom
+
+	* Added --with-smil-test configure option.  When set (default:
+	  off), AmbulantPlayer chooses a different default region each time
+	  one is needed. This is not according to the SMIL2.1 standard, but
+	  useful when evaluting the W3C SMIL test suites, because otherwise
+	  the images rendered in the default region completely overlap.
+
 2007-03-26 17:05  jackjansen
 
 	* If we're re-opening a document in fullscreen mode don't try to
