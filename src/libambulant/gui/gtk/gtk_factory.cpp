@@ -26,9 +26,9 @@
 #include "ambulant/gui/gtk/gtk_factory.h"
 #include "ambulant/gui/gtk/gtk_includes.h"
 #include "ambulant/gui/gtk/gtk_image_renderer.h"
-#ifdef	WITH_QT_HTML_WIDGET
+#ifdef	WITH_GTK_HTML_WIDGET
 #include "ambulant/gui/gtk/gtk_html_renderer.h"
-#endif/*WITH_QT_HTML_WIDGET*/
+#endif/*WITH_GTK_HTML_WIDGET*/
 #include "ambulant/gui/gtk/gtk_text_renderer.h"
 #include "ambulant/gui/gtk/gtk_video_renderer.h"
 
