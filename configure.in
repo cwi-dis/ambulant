@@ -359,9 +359,11 @@ then
 	fi
 	# Disable builtin xerces support
 	AM_CONDITIONAL(WITH_XERCES, test false)
+else
+    AC_DEFINE(WITH_XERCES_BUILTIN, 1, [Define to include xerces parser in core])
 fi
 AM_CONDITIONAL(WITH_XERCES_PLUGIN, test x$xerces_plugin = xtrue)
-AM_CONDITIONAL(WITH_XERCES_BUILTIN, test x$xerces = xtrue -a x$xerces_plugin = xfalse)
+AM_CONDITIONAL(WITH_XERCES_BUILTIN, test x$test_xerces = xtrue -a x$xerces_plugin = xfalse)
 AC_MSG_RESULT($xerces_plugin)
 
 #
