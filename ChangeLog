@@ -1,3 +1,16 @@
+2007-03-29 15:27  jackjansen
+
+	* Support for xerces builtin to the core library was broken (at
+	  least on the mac) at some point in the past. Fixed.
+
+	  Backport candidate.
+
+2007-03-29 14:57  keesblom
+
+	* Added missing file qt_html_renderer.h to distribution (backport
+	  candidate).  Removed gtk_html_renderer, because it cannot work
+	  without major redesign.
+
 2007-03-28 13:00  keesblom
 
 	* Added --with-smil-test configure option.  When set (default:
