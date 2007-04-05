@@ -51,8 +51,8 @@ void gui::dx::dx_bgrenderer::keep_as_background() {
 
 	dx_window *dxwindow = (dx_window *)m_dst->get_gui_window();
 	viewport *v = dxwindow->get_viewport();	
-	rect dstrect = m_dst->get_rect();
-	rect srcrect = dstrect;
+	lib::rect dstrect = m_dst->get_rect();
+	lib::rect srcrect = dstrect;
 	srcrect.translate(m_dst->get_global_topleft());
 	RECT d_srcrect, d_dstrect;
 	set_rect(dstrect, &d_dstrect);
@@ -69,7 +69,7 @@ void gui::dx::dx_bgrenderer::redraw(const lib::rect &dirty, common::gui_window *
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();	
 	if (m_bg_image) {
-		rect dstrect_whole = m_dst->get_rect();
+		lib::rect dstrect_whole = m_dst->get_rect();
 		dstrect_whole.translate(m_dst->get_global_topleft());
 		AM_DBG lib::logger::get_logger()->debug("dx_bgrenderer::redraw: clear to image");
 		v->draw(m_bg_image, dstrect_whole);	
@@ -87,7 +87,7 @@ void gui::dx::dx_bgrenderer::redraw(const lib::rect &dirty, common::gui_window *
 void gui::dx::dx_bgrenderer::highlight(common::gui_window *window)
 {
 	// Find rectangle to highlight
-	rect r = m_dst->get_rect();
+	lib::rect r = m_dst->get_rect();
 	lib::point pt = m_dst->get_global_topleft();
 	r.translate(pt);
 

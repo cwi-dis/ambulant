@@ -41,7 +41,7 @@ gui::dg::dg_window::dg_window(const std::string& name,
 :	common::gui_window(rgn),
 	m_rgn(rgn),
 	m_name(name),
-	m_viewrc(point(0, 0), size(bounds.w, bounds.h)),
+	m_viewrc(lib::point(0, 0), lib::size(bounds.w, bounds.h)),
 	m_wf(wf),
 	m_viewport(v) {
 }

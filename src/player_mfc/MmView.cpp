@@ -168,7 +168,7 @@ create_player_instance(const net::url& u, common::player_feedback *feedback) {
 }
 
 static dg_or_dx_player *player = 0;
-static needs_done_redraw = false;
+static bool needs_done_redraw = false;
 
 CWnd* topView = NULL;
 

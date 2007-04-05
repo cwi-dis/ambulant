@@ -21,8 +21,13 @@
  * @$Id$ 
  */
 
+#include "ambulant/config/config.h"
 #include <objbase.h>
+#ifdef AMBULANT_DDRAW_EX
 #include <ddrawex.h>
+#else
+#include <ddraw.h>
+#endif
 #include <windows.h>
 
 #include "ambulant/gui/dx/dx_text_renderer.h"
