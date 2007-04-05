@@ -12,10 +12,12 @@ Prerequisites
 -------------
 
 Obviously you will need a compiler/linker/development environment.
-For Windows you need Microsoft Visual Studio .NET version 7.1.
-For Linux desktop you need GNU gcc, at least version 3.2.
-For MacOSX you need the Apple Developer tools (gcc 3.3-based).
-For Windows CE you need Microsoft Embedded Visual C++ version 3.0.
+For Windows you need one of:
+- Microsoft Visual Studio .NET version 7.1 or
+- Microsoft Visual Studio .NET 2005 + Service Pack 1.
+For Linux desktop you need GNU gcc, at least version 3.2 (XXX True?)
+For MacOSX you need the Apple Developer tools (gcc 3.3 or gcc 4-based).
+For Windows CE you need Microsoft Embedded Visual C++ version 3.0 (XXX not true).
 For Nokia770 you need "maemo" development environment, see www.maemo.org.
 
 You also need to build and install several third party packages
@@ -100,18 +102,26 @@ is only a few megabytes.
 Building for Windows
 --------------------
 
+As of Ambulant 1.9 and later all projects are located in the "projects" folder
+at the toplevel folder. "vc71" are projects for Visual Studio .NET 2003, a.k.a.
+Visual C++ 7.1. "vc8" are projects for Visual Studio .NET 2005, of which you
+want at least Service Pack 1.
+
+Aside from Visual Studio you must probably also install (at least for VS 2005)
+the following two packages from Microsoft:
+- Microsoft Plaftorm SDK for Windows Server 2003 R2
+- Microsoft DirectX SDK (August 2006), or newer.
+The include and lib files for these have to be added for searching. This is easiest
+done in VS through Tools->Options->Projects and Solutions->VC++ Directories.
+Then select "Include files" and add the include dirs, "Library files" and add the
+library dirs.
+
 Installing and building the third party packages on Windows is more of a
 pain than it is on unix. For this reason, read these instructions *very carefully*,
 please. We hope these instructions are complete, otherwise
 please report back.
 
-It is possible to build the various packages AmbulantPlayer depends on from
-source (but read on for an easier solution).
-Install the following distributions into directories in third_party_packages:
-expat, jpeg, lpng128, mp3lib, zlib, xerces. Third_party_packages\readme.txt
-has the exact version info you need.
-As some of these need some fiddling (missing Visual Studio projects, that
-sort of things) you are best off downloading the
+From the ambulant sourcefore download page, obtain
 third_party_packages_win_20051212.zip archive, it contains versions that
 are known to work on at least one machine. Download and unzip in a temporary
 location, then move the directories named above into third_party_packages
@@ -120,23 +130,22 @@ third_party_packages_win_20051212.zip, see third_party_packages/readme.txt
 for installation instructions. 
 
 Next, build these by opening
-third_party_packages\third_party_packages.sln in Visual Studio,
-selecting the "Release" configuration and doing Build->Build Solution.
+projects\XXXX\third_party_packages.sln in Visual Studio. XXXX will be either
+vc71 or vc8, depending on your version of Visual Studio.
+Select the "Release" configuration,  and do Build->Build Solution.
 (Note that it was stated above that you need Visual Studio 7.1, trying to
 open the solution file in 7.0 or earlier will not work, unfortunately).
 
 When this succeeds double-click the batchfile
-third_party_packages\copy_tpp_win32.bat, which copies the various
+projects\XXXX\copy_tpp_win32.bat, which copies the various
 libraries (libexpat.lib, libjpeg.lib, libpng13.lib and zlib.lib) to
 lib\win32 in the toplevel Ambulant directory. The corresponding DLLs are
 copied to bin\win32 in the toplevel directory.
-NOTE: if this step fails please inspect the script and do the
-needed copies by hand.
 
-After these steps you are ready to build AmbulantPlayer itself:to build it 
-with xerces support open src\Ambulant-win32.sln in Visual Studio, select the Release configuration
-and do Build->Build Solution. Alternatively, if you don't want xerces support,
-there are configurations for building Ambulant without xerces.
+After these steps you are ready to build AmbulantPlayer itself. Open
+projects\XXXX\Ambulant-win32.sln and select "Ambulant Player" as the default
+project (right-click on it for the context menu that allows you to do this).
+Select the build type, use "Release" in case of doubt.
 
 The resulting application is deposited in bin\win32 in the toplevel
 directory.
@@ -145,26 +154,10 @@ The solutions and projects also have experimental targets that build the
 Ambulant Player as a shared library (and, therefore with support for
 plugin modules, as on Unix/Mac) but this has not been tested very thoroughly yet.
 
-Building for Zaurus
--------------------
-
-You will first need to install the needed (cross-)development tools:
-qtopia 1.5.0, gcc 2.95 for strongarm and accompanying libraries and
-some method to talk between the host and the zaurus (over USB or network
-connection).
-
-Next you need to get the source for the third party packages needed (see
-third_party_packages.txt/readme), and crosscompile them (using --host and
---build options to configure).
-
-Now you can use "configure --host=.... --build=..." and "make" to create
-the executable, which ends up in src/player_unix.
-
-More details on the exact packages to install, where to find them and how
-to build them can be found in the "README-ZAURUS" file (in Documentation/misc).
-
 Building for Windows CE
 -----------------------
+
+XXXX THESE ARE OLD INSTRUCTIONS. TO BE UPDATED.
 
 Installing and building the third party packages for Windows CE is even more of a
 pain than it is for Windows desktop. For this reason, read these instructions
