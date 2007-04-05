@@ -58,15 +58,24 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CFrameWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
-	
+#if 0 // XXXJACK wm5 may want this:
+	if (!m_wndCommandBar.Create(this) ||
+	    !m_wndCommandBar.InsertMenuBar(IDR_MAINFRAME) ||
+	    !m_wndCommandBar.AddAdornments(dwAdornmentFlags) ||
+	    !m_wndCommandBar.LoadToolBar(IDR_MAINFRAME))
+#else
 	// Add the buttons and adornments to the CommandBar.
 	if (!InsertButtons(tbButtons, nNumButtons, IDR_MAINFRAME, nNumImages) ||
 	    !AddAdornments(dwAdornmentFlags))
+#endif
 	{
 		TRACE0("Failed to add toolbar buttons\n");
 		return -1;
 	}
 
+#if 0 // XXXXJACK wm5
+	m_wndCommandBar.SetBarStyle(m_wndCommandBar.GetBarStyle() | CBRS_SIZE_FIXED);
+#endif
 	return 0;
 }
 
@@ -90,17 +99,12 @@ void CMainFrame::AssertValid() const
 {
 	CFrameWnd::AssertValid();
 }
-
-void CMainFrame::Dump(CDumpContext& dc) const
-{
-	CFrameWnd::Dump(dc);
-}
-
 #endif //_DEBUG
 
 /////////////////////////////////////////////////////////////////////////////
 // CMainFrame message handlers
 
+#if 1 // XXXJACK wm5 may not want this
 void CMainFrame::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized) 
 {
 	CFrameWnd::OnActivate(nState, pWndOther, bMinimized);
@@ -108,3 +112,4 @@ void CMainFrame::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 	if(nState == WA_INACTIVE && otherOwner && otherOwner != this) 
 		PostMessage(WM_CLOSE);
 }
+#endif

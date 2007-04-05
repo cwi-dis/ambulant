@@ -52,6 +52,19 @@ CAmbulantPlayerApp theApp;
 
 BOOL CAmbulantPlayerApp::InitInstance()
 {
+#if 1 // wce5
+    // SHInitExtraControls should be called once during your application's initialization to initialize any
+    // of the Windows Mobile specific controls such as CAPEDIT and SIPPREF.
+    SHInitExtraControls();
+
+	if (!AfxSocketInit())
+	{
+		AfxMessageBox(IDP_SOCKETS_INIT_FAILED);
+		return FALSE;
+	}
+
+	AfxEnableControlContainer();
+#endif
 	// Standard initialization
 	// If you are not using these features and wish to reduce the size
 	//  of your final executable, you should remove from the following
@@ -117,9 +130,10 @@ public:
 
 // Implementation
 protected:
-	//{{AFX_MSG(CAboutDlg)
-	virtual BOOL OnInitDialog();		// Added for WCE apps
-	//}}AFX_MSG
+#ifdef _DEVICE_RESOLUTION_AWARE
+	afx_msg void OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/);
+#endif
+	virtual BOOL OnInitDialog();
 	DECLARE_MESSAGE_MAP()
 };
 
@@ -137,11 +151,32 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 	//}}AFX_DATA_MAP
 }
 
+BOOL CAboutDlg::OnInitDialog()
+{
+	CDialog::OnInitDialog();
+
+	return TRUE;	// return TRUE unless you set the focus to a control
+			// EXCEPTION: OCX Property Pages should return FALSE
+}
+
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
-	//{{AFX_MSG_MAP(CAboutDlg)
-		// No message handlers
-	//}}AFX_MSG_MAP
+#ifdef _DEVICE_RESOLUTION_AWARE
+	ON_WM_SIZE()
+#endif
 END_MESSAGE_MAP()
+
+#ifdef _DEVICE_RESOLUTION_AWARE
+void CAboutDlg::OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/)
+{
+	if (AfxIsDRAEnabled())
+    	{
+		DRA::RelayoutDialog(
+			AfxGetResourceHandle(), 
+			this->m_hWnd, 
+			DRA::GetDisplayMode() != DRA::Portrait ? MAKEINTRESOURCE(IDD_ABOUTBOX_WIDE) : MAKEINTRESOURCE(IDD_ABOUTBOX));
+	}
+}
+#endif
 
 // App command to run the dialog
 void CAmbulantPlayerApp::OnAppAbout()

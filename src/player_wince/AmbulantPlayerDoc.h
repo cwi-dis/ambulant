@@ -27,7 +27,9 @@ public:
 	//{{AFX_VIRTUAL(CAmbulantPlayerDoc)
 	public:
 	virtual BOOL OnNewDocument();
+#ifndef _WIN32_WCE_NO_ARCHIVE_SUPPORT
 	virtual void Serialize(CArchive& ar);
+#endif // !_WIN32_WCE_NO_ARCHIVE_SUPPORT
 	virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
 	//}}AFX_VIRTUAL
 
@@ -36,7 +38,6 @@ public:
 	virtual ~CAmbulantPlayerDoc();
 #ifdef _DEBUG
 	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
 #endif
 
 protected:

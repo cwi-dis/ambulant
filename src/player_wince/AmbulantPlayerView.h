@@ -17,7 +17,7 @@ protected: // create from serialization only
 
 // Attributes
 public:
-	CAmbulantPlayerDoc* GetDocument();
+	CAmbulantPlayerDoc* GetDocument() const;
 
 	void SetMMDocument(LPCTSTR lpszPathName);
 	UINT_PTR m_timer_id;
@@ -43,7 +43,6 @@ public:
 	virtual ~CAmbulantPlayerView();
 #ifdef _DEBUG
 	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
 #endif
 
 protected:
@@ -71,7 +70,7 @@ protected:
 };
 
 #ifndef _DEBUG  // debug version in AmbulantPlayerView.cpp
-inline CAmbulantPlayerDoc* CAmbulantPlayerView::GetDocument()
+inline CAmbulantPlayerDoc* CAmbulantPlayerView::GetDocument() const
    { return (CAmbulantPlayerDoc*)m_pDocument; }
 #endif
 

@@ -32,7 +32,6 @@ public:
 	virtual ~CMainFrame();
 #ifdef _DEBUG
 	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
 #endif
 
 protected:  // control bar embedded members

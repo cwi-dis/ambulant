@@ -54,17 +54,13 @@ BOOL CAmbulantPlayerDoc::OnNewDocument()
 /////////////////////////////////////////////////////////////////////////////
 // CAmbulantPlayerDoc serialization
 
+#ifndef _WIN32_WCE_NO_ARCHIVE_SUPPORT
 void CAmbulantPlayerDoc::Serialize(CArchive& ar)
 {
-	if (ar.IsStoring())
-	{
-		// TODO: add storing code here
-	}
-	else
-	{
-		// TODO: add loading code here
-	}
+	(ar);
 }
+#endif // !_WIN32_WCE_NO_ARCHIVE_SUPPORT
+
 
 /////////////////////////////////////////////////////////////////////////////
 // CAmbulantPlayerDoc diagnostics
@@ -73,11 +69,6 @@ void CAmbulantPlayerDoc::Serialize(CArchive& ar)
 void CAmbulantPlayerDoc::AssertValid() const
 {
 	CDocument::AssertValid();
-}
-
-void CAmbulantPlayerDoc::Dump(CDumpContext& dc) const
-{
-	CDocument::Dump(dc);
 }
 #endif //_DEBUG
 

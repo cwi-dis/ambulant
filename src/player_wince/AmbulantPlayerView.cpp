@@ -162,12 +162,7 @@ void CAmbulantPlayerView::AssertValid() const
 	CView::AssertValid();
 }
 
-void CAmbulantPlayerView::Dump(CDumpContext& dc) const
-{
-	CView::Dump(dc);
-}
-
-CAmbulantPlayerDoc* CAmbulantPlayerView::GetDocument() // non-debug version is inline
+CAmbulantPlayerDoc* CAmbulantPlayerView::GetDocument() const // non-debug version is inline
 {
 	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CAmbulantPlayerDoc)));
 	return (CAmbulantPlayerDoc*)m_pDocument;
