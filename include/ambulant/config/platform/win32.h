@@ -49,10 +49,11 @@
 
 /////////////////////////////
 // BEGIN WIN32 WINCE SECTION
-#ifdef _WIN32_WCE
+#if defined(_WIN32_WCE)
 
 #define AMBULANT_PLATFORM_WIN32_WCE
 
+#if _WIN32_WCE < 5
 #define AMBULANT_PLATFORM_WIN32_WCE_3
 
 // The following symbol has been used with a different 
@@ -96,7 +97,12 @@ inline bool operator != (const std::string& s, const char *p) {
 
 #endif
 
-#endif // _WIN32_WCE
+#else
+// Windows Mobile 5
+#define AMBULANT_PLATFORM_WIN32_WCE_5
+#define abort() exit(1)
+#endif // _win32_WCE < 5
+#endif // defined(_WIN32_WCE)
 // END WIN32 WINCE SECTION
 
 /////////////////////////////

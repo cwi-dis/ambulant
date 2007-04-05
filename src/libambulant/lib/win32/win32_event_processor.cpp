@@ -54,14 +54,14 @@ unsigned long
 lib::win32::event_processor::run() {
 	lib::logger* logger = lib::logger::get_logger();
 	AM_DBG logger->debug("event_processor::run(=0x%x)", this);
-#ifndef AMBULANT_PLATFORM_WIN32_WCE_3
+#ifndef AMBULANT_PLATFORM_WIN32_WCE
 	CoInitialize(NULL);
 #endif
 	while(!exit_requested()) {	
 		serve_events();		
 		wait_event();
 	}
-#ifndef AMBULANT_PLATFORM_WIN32_WCE_3
+#ifndef AMBULANT_PLATFORM_WIN32_WCE
 	CoUninitialize();
 #endif
 	AM_DBG logger->debug("event_processor::~run(=0x%x)", this);
