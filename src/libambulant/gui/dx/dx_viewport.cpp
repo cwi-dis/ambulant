@@ -390,8 +390,8 @@ gui::dx::viewport::~viewport() {
 		(*it)->Release();
 	RELEASE(m_surface);
 	RELEASE(m_primary_surface);
-	RELEASE(m_direct_draw);
 	RELEASE(m_fstr_surface);
+	RELEASE(m_direct_draw);
 	if(palette_entries != 0)
 		delete[] palette_entries;
 	RedrawWindow(m_hwnd, NULL, NULL, RDW_INVALIDATE | RDW_ERASE | RDW_ALLCHILDREN);
