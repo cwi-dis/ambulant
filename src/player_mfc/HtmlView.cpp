@@ -20,6 +20,7 @@
 // MmView.cpp : implementation of the MmView class
 //
 
+#include "ambulant/config/config.h"
 #include "stdafx.h"
 #include "ambulant/gui/dx/html_bridge.h"
 

@@ -69,8 +69,10 @@
 #  define AMBULANT_DDRAW_EX
 #endif
 
-#if _MSC_VER <= 1310
+#if _MSC_VER > 1310
 // XXXJACK: Unsure for VC8. Will add definitions as we find things.
+// These unsafe warnings are very obnoxious:
+#define _CRT_SECURE_NO_WARNINGS
 #endif
 
 #ifndef _NATIVE_WCHAR_T_DEFINED

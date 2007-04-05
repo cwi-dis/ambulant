@@ -21,10 +21,9 @@
  * @$Id$ 
  */
 
+#include "ambulant/config/config.h"
 #include <windows.h>
-
 #include "ambulant/gui/dg/dg_viewport.h"
-
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/colors.h"
 #include "ambulant/lib/gtypes.h"

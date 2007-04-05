@@ -21,7 +21,8 @@
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
- 
+
+#include "ambulant/config/config.h"
 #include "ambulant/gui/none/none_factory.h"
 #include "ambulant/gui/none/none_video_renderer.h"
 

@@ -21,6 +21,7 @@
  * @$Id$ 
  */
 
+#include "ambulant/config/config.h"
 #include "ambulant/lib/xerces_parser.h"
 #include "ambulant/common/preferences.h"
 #include "ambulant/lib/logger.h"

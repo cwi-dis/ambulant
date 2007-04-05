@@ -1,6 +1,7 @@
 // OpenUrlDlg.cpp : implementation file
 //
 
+#include "ambulant/config/config.h"
 #include "stdafx.h"
 #include <wininet.h>
 

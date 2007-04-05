@@ -21,6 +21,7 @@
  * @$Id$ 
  */
 
+#include "ambulant/config/config.h"
 #include "ambulant/gui/dx/dx_player.h"
 #include "ambulant/gui/dx/dx_viewport.h"
 #include "ambulant/gui/dx/dx_window.h"

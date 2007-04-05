@@ -27,7 +27,7 @@
 #define AM_DBG if(0)
 #endif
 
-
+#include "ambulant/config/config.h"
 #include "ambulant/gui/dg/dg_player.h"
 #include "ambulant/gui/dg/dg_viewport.h"
 #include "ambulant/gui/dg/dg_window.h"

@@ -21,6 +21,7 @@
  * @$Id$ 
  */
 
+#include "ambulant/config/config.h"
 #include <objbase.h>
 #include <windows.h>
 

@@ -20,6 +20,7 @@
 // AmbulantPlayer.cpp : Defines the class behaviors for the application.
 //
 
+#include "ambulant/config/config.h"
 #include "stdafx.h"
 #include "AmbulantPlayer.h"
 #include "MainFrm.h"
