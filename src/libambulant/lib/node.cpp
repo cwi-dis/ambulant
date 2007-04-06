@@ -384,13 +384,15 @@ lib::node_impl::get_trimmed_data() const {
 	return trim(m_data);
 }
 
-#ifndef _WIN32_WCE
 bool 
-lib::node_impl::has_graph_data() const { 
+lib::node_impl::has_graph_data() const {
+#ifdef AMBULANT_PLATFORM_WIN32_WCE
+	return false;
+#else
 	if(m_data.empty()) return false;
 	return std::find_if(m_data.begin(), m_data.end(), isgraph) != m_data.end();
-}
 #endif
+}
 
 const char *
 lib::node_impl::get_attribute(const char *name) const {

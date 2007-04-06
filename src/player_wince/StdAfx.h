@@ -14,7 +14,6 @@
 
 #define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers
 
-#if 1 // XXXJACK new for ce5
 #define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS	// some CString constructors will be explicit
 #ifdef _CE_DCOM
 #define _ATL_APARTMENT_THREADED

@@ -100,6 +100,7 @@ inline bool operator != (const std::string& s, const char *p) {
 #else
 // Windows Mobile 5
 #define AMBULANT_PLATFORM_WIN32_WCE_5
+#define AMBULANT_NO_TIME_H
 #define abort() exit(1)
 #endif // _win32_WCE < 5
 #endif // defined(_WIN32_WCE)

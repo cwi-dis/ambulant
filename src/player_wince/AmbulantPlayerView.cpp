@@ -75,7 +75,7 @@ void lib::win32::show_message(int level, const char *message) {
 }
 
 static  gui_player *player = 0;
-static needs_done_redraw = false;
+static bool needs_done_redraw = false;
 
 /////////////////////////////////////////////////////////////////////////////
 // CAmbulantPlayerView

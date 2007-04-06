@@ -35,6 +35,8 @@ public:
 #endif
 
 protected:  // control bar embedded members
+	CCommandBar m_wndCommandBar;
+
 
 // Generated message map functions
 protected:

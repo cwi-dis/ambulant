@@ -213,5 +213,4 @@ class dg_player :
 } // namespace gui
  
 } // namespace ambulant
-
 #endif // AMBULANT_GUI_DG_PLAYER_H

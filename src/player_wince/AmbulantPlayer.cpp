@@ -52,7 +52,7 @@ CAmbulantPlayerApp theApp;
 
 BOOL CAmbulantPlayerApp::InitInstance()
 {
-#if 1 // wce5
+#if 0 // wce5
     // SHInitExtraControls should be called once during your application's initialization to initialize any
     // of the Windows Mobile specific controls such as CAPEDIT and SIPPREF.
     SHInitExtraControls();
@@ -74,9 +74,6 @@ BOOL CAmbulantPlayerApp::InitInstance()
 	// You should modify this string to be something appropriate
 	// such as the name of your company or organization.
 	SetRegistryKey(_T("Ambulant"));
-
-	LoadStdProfileSettings();  // Load standard INI file options (including MRU)
-
 
 	// Register the application's document templates.  Document templates
 	//  serve as the connection between documents, frame windows and views.
@@ -160,12 +157,12 @@ BOOL CAboutDlg::OnInitDialog()
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
-#ifdef _DEVICE_RESOLUTION_AWARE
+#ifdef xxxjack_DEVICE_RESOLUTION_AWARE
 	ON_WM_SIZE()
 #endif
 END_MESSAGE_MAP()
 
-#ifdef _DEVICE_RESOLUTION_AWARE
+#ifdef xxxjack_DEVICE_RESOLUTION_AWARE
 void CAboutDlg::OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/)
 {
 	if (AfxIsDRAEnabled())
@@ -192,12 +189,3 @@ void CAmbulantPlayerApp::OnAppAbout()
 // CAmbulantPlayerApp commands
 // Added for WCE apps
 
-BOOL CAboutDlg::OnInitDialog() 
-{
-	CDialog::OnInitDialog();
-	
-	CenterWindow();
-	
-	return TRUE;  // return TRUE unless you set the focus to a control
-	              // EXCEPTION: OCX Property Pages should return FALSE
-}

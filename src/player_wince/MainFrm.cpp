@@ -58,7 +58,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CFrameWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
-#if 0 // XXXJACK wm5 may want this:
+#if 1 // XXXJACK wm5 may want this:
 	if (!m_wndCommandBar.Create(this) ||
 	    !m_wndCommandBar.InsertMenuBar(IDR_MAINFRAME) ||
 	    !m_wndCommandBar.AddAdornments(dwAdornmentFlags) ||
@@ -73,7 +73,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 	}
 
-#if 0 // XXXXJACK wm5
+#if 1 // XXXXJACK wm5
 	m_wndCommandBar.SetBarStyle(m_wndCommandBar.GetBarStyle() | CBRS_SIZE_FIXED);
 #endif
 	return 0;

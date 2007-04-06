@@ -17,8 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
-			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
+			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)-$(PlatformName)"
+			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)-$(PlatformName)"
 			ConfigurationType="4"
 			CharacterSet="1"
 			>
@@ -92,8 +92,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
-			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
+			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)-$(PlatformName)"
+			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)-$(PlatformName)"
 			ConfigurationType="4"
 			CharacterSet="1"
 			>
