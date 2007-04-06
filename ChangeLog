@@ -1,3 +1,43 @@
+2007-04-06 01:50  jackjansen
+
+	* Modified our existing code based on what the current
+	  template-based Windows Mobile 5 app looks like.
+
+2007-04-06 01:19  jackjansen
+
+	* Slowly getting started with Windows Mobile 5.
+
+2007-04-06 00:34  jackjansen
+
+	* Somewhat updated.
+
+2007-04-06 00:14  jackjansen
+
+	* Getting rid of old projects.
+
+2007-04-06 00:10  jackjansen
+
+	* - Added vc8 projects - Got rid of various stupid "unsafe"
+	  warnings - streamlined a couple of things.
+
+2007-04-05 23:25  jackjansen
+
+	* Reordered destruction of two objects to fix a crash.
+
+2007-04-05 22:45  jackjansen
+
+	* Minor tweak to where build results and temporaries are stored.
+
+2007-04-05 22:40  jackjansen
+
+	* Merging relevant portions of exp-jack-vc8 branch, with some
+	  modifications.  This should have all source file changes for vc8
+	  and still be vc71 compatible.
+
+2007-04-05 17:05  jackjansen
+
+	* Refactoring project layout.
+
 2007-03-29 15:27  jackjansen
 
 	* Support for xerces builtin to the core library was broken (at
