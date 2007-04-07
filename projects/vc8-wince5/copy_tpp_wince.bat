@@ -18,18 +18,18 @@ if not exist %AMB_HOME%\bin md %AMB_HOME%\bin
 if not exist %AMB_HOME%\bin\wince md %AMB_HOME%\bin\wince
 
 REM Expat static library
-copy %TPP_HOME%\expat\lib\ARMRel\libexpat.lib %WCE_ARM_LIB%\libexpat.lib
+copy %TPP_HOME%\"expat\lib\Windows Mobile 5.0 Pocket PC SDK (ARMV4I)\Release"\libexpat.lib %WCE_ARM_LIB%\libexpat.lib
 
 REM PNG static library
-copy %TPP_HOME%\lpng128\projects\emvc3\ARMRel\libpng.lib %WCE_ARM_LIB%\libpng.lib
+copy %TPP_HOME%\"lpng128\projects\emvc3\Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"\Release\libpng.lib %WCE_ARM_LIB%\libpng.lib
 
 REM ZLib static library
-copy %TPP_HOME%\lpng128\projects\emvc3\zlib\ARMRel\zlib.lib %WCE_ARM_LIB%\zlibce.lib
+copy %TPP_HOME%\"lpng128\projects\emvc3\zlib\Windows Mobile 5.0 Pocket PC SDK (ARMV4I)\Release"\zlib.lib %WCE_ARM_LIB%\zlibce.lib
 
 REM JPEG static library
-copy %TPP_HOME%\jpeg\wince\libjpeg\ARMRel\libjpeg.lib %WCE_ARM_LIB%\libjpeg.lib
+copy %TPP_HOME%\"jpeg\wince\libjpeg\Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"\Release\libjpeg.lib %WCE_ARM_LIB%\libjpeg.lib
 
 REM MP3LIB static library
-copy %TPP_HOME%\mp3lib\ARMRel\mp3lib.lib %WCE_ARM_LIB%\mp3lib.lib
+copy %TPP_HOME%\"mp3lib\Windows Mobile 5.0 Pocket PC SDK (ARMV4I)\Release"\mp3lib.lib %WCE_ARM_LIB%\mp3lib.lib
 
 @echo on
