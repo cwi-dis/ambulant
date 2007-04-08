@@ -1,3 +1,8 @@
+2007-04-08 01:09  jackjansen
+
+	* Got as far as running the player on the emulator, at which point
+	  it crashes.
+
 2007-04-07 01:03  jackjansen
 
 	* A few more steps towards getting wince to work again.
