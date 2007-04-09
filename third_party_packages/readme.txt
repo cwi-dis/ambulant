@@ -5,11 +5,11 @@ README file (section "building for Windows") for details.
 
 Here is a list of the packages, where they come from, plus the versions:
 
-Windows Desktop, Windows CE
-===========================
+Windows Desktop, Windows Mobile 5
+=================================
 
 xerces:
-	windows only.
+	windows desktop only.
 	
 	Download xerces-C++ Version 2.7.0 Source Release from
 	<http://xerces.apache.org> and extract xerces-c-src_2_7_0 and put its
@@ -34,17 +34,17 @@ others:
 	
 	After downloading and unpacking the zipfile move the 4 individual
 	folders from "INTO_third_party_packages" into this directory. Then
-	open third_party_packages.sln (windows desktop) or third_party_packages.vcw
-	(Windows CE), and build "Release". NOTE THAT LAST SENTENCE: you must
+	goto either projects\vc7, projects\vc8 or projects\vc8-wince5, depending
+	on the platform you are interested in.
+	Ppen third_party_packages.sln and build "Release".
+	NOTE THAT LAST SENTENCE: you must
 	build the Release configuration, the default configuration opened is
 	not what you want (and we don't know how to fix this).
 	
-	If you really want to build from original distributions: the directory
-	win32_diff has all the project files that you need, move them into
-	the corresponding place in a freshly downloaded distribution of
-	{jpeg, zlib, mp3lib, libpng}. You'll probably need to fix them.
-	
-	RELEASE!
+	If you really want to build from original distributions: don't do this.
+	If you still want it after this warning, and it turns out to be easy:
+	please let us know.
+
 	
 Unix (Linux, MacOSX)
 ====================
