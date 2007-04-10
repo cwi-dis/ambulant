@@ -84,7 +84,7 @@ enum transition_scope {
 std::string repr(transition_type t);
 
 /// Stores all information regarind a specific transition.
-class transition_info {
+class AMBULANTAPI transition_info {
   public:
 	typedef int time_type;
 	typedef double progress_type;

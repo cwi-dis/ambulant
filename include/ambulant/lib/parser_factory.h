@@ -33,7 +33,7 @@ namespace ambulant {
 namespace lib {
 
 /// Interface to create XML parsers.
-class parser_factory {
+class AMBULANTAPI parser_factory {
   public:
 	  
 	virtual ~parser_factory() {};
@@ -45,7 +45,7 @@ class parser_factory {
 };
 
 /// Implementation of parser_factory plus provider interface.
-class global_parser_factory : public parser_factory {
+class AMBULANTAPI global_parser_factory : public parser_factory {
   public:
     /// Returns (singleton?) global_parser_factory object.
   	static global_parser_factory* get_parser_factory();

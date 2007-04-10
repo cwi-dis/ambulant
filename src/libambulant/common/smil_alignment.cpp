@@ -21,6 +21,7 @@
  * @$Id$ 
  */
 
+#include "ambulant/config/config.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/document.h"
 #include "ambulant/common/smil_alignment.h"

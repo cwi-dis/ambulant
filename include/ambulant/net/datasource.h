@@ -153,7 +153,7 @@ struct video_format {
 // The design assumes that support for various sample rates, channels and
 // bits are independent variables. In addition, an audio_format_choices
 // can support both various linear formats and named formats.
-class audio_format_choices {
+class AMBULANTAPI audio_format_choices {
   public:
   
 	/// Default constructor: support no formats.

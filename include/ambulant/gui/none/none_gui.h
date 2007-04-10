@@ -48,7 +48,7 @@ class none_window : public common::gui_window {
 };
 
 /// Implementation of window_factory that returns none_window objects.
-class none_window_factory : public common::window_factory {
+class AMBULANTAPI none_window_factory : public common::window_factory {
   public:
   	none_window_factory() {}
   	

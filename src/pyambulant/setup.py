@@ -4,13 +4,18 @@ import os
 
 # Set these variable identical to your configure options.
 WITH_QT= not not os.getenv("QTDIR")
-WITH_FFMPEG=True
-WITH_SDL=True
+if sys.platform == 'win32':
+    WITH_FFMPEG=False
+    WITH_SDL=False
+else:
+    WITH_FFMPEG=True
+    WITH_SDL=True
 
 DEFS =  [
     ('WITH_EXTERNAL_DOM', '1'),
-    ('ENABLE_NLS', '1'),
     ]
+if sys.platform != 'win32':
+    DEFS.append(('ENABLE_NLS', '1'))
     
 EXTRA_LINK_ARGS=[]
 ldflags=os.getenv("LDFLAGS")
@@ -20,6 +25,7 @@ if sys.platform == 'darwin':
     EXTRA_LINK_ARGS += ['-framework', 'QuickTime', '-framework', 'CoreFoundation', '-framework', 'Cocoa']
 
 LIBRARIES=[]
+LIBDIRS=[]
 if WITH_QT:
     DEFS.append(('WITH_QT', '1'))
     LIBRARIES.append('ambulant_qt')
@@ -29,10 +35,16 @@ if WITH_FFMPEG:
 if WITH_SDL:
     DEFS.append(('WITH_SDL', '1'))
     LIBRARIES.append('ambulant_sdl')
-LIBRARIES.append('ambulant')
-LIBRARIES.append('expat')
 
-LIBDIRS=['../../third_party_packages/expat-unix/lib']
+if sys.platform == 'win32':
+    LIBRARIES.append('libambulant_shwin32')
+    LIBRARIES.append('libexpat')
+    LIBDIRS.append('../../lib/win32')
+else:
+    LIBRARIES.append('ambulant')
+    LIBRARIES.append('expat')
+    LIBDIRS.append('../../third_party_packages/expat-unix/lib')
+    
 if sys.platform == 'darwin':
     LIBRARIES += ['intl']
     
