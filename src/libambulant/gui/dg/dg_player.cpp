@@ -127,10 +127,12 @@ gui::dg::dg_player::~dg_player() {
 void
 gui::dg::dg_player::init_playable_factory()
 {
+	common::gui_window *window = get_window(get_main_window());
+	assert(window);
 	common::global_playable_factory *pf = common::get_global_playable_factory();
 	set_playable_factory(pf);
 	// Add the playable factory
-	pf->add_factory(new dg_playable_factory(this, m_logger, this));
+	pf->add_factory(new dg_playable_factory(this, m_logger, this, window));
 }
 
 void
@@ -341,26 +343,24 @@ gui::dg::dg_playable_factory::new_playable(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
-	lib::event_processor *const evp) {
-	
-	common::gui_window *window = NULL; // get_window(node);
-	assert(window);
+	lib::event_processor *const evp)
+{
 	common::playable *p = 0;
 	lib::xml_string tag = node->get_qname().second;
 	if(tag == "text") {
-		p = new dg_text_renderer(context, cookie, node, evp, m_factory, window);
+		p = new dg_text_renderer(context, cookie, node, evp, m_factory, m_window);
 	} else if(tag == "img") {
-		p = new dg_img_renderer(context, cookie, node, evp, m_factory, window, m_dgplayer);
+		p = new dg_img_renderer(context, cookie, node, evp, m_factory, m_window, m_dgplayer);
 	} else if(tag == "audio") {
-		p = new dg_audio_renderer(context, cookie, node, evp, window, 0/*m_worker_processor*/);
+		p = new dg_audio_renderer(context, cookie, node, evp, m_window, 0/*m_worker_processor*/);
 	} else if(tag == "video") {
-		p = new dg_area(context, cookie, node, evp, window);
+		p = new dg_area(context, cookie, node, evp, m_window);
 	} else if(tag == "area") {
-		p = new dg_area(context, cookie, node, evp, window);
+		p = new dg_area(context, cookie, node, evp, m_window);
 	} else if(tag == "brush") {
-		p = new dg_brush(context, cookie, node, evp, window);
+		p = new dg_brush(context, cookie, node, evp, m_window);
 	} else {
-		p = new dg_area(context, cookie, node, evp, window);
+		p = new dg_area(context, cookie, node, evp, m_window);
 	}
 	return p;
 }
