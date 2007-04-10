@@ -128,7 +128,7 @@
 				ExecutionBucket="7"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../third_party_packages/zlib"
-				PreprocessorDefinitions="DEBUG;_WIN32_WCE=$(CEVER);$(CePlatform);ARM;_ARM_;UNDER_CE=$(CEVER);UNICODE;_LIB"
+				PreprocessorDefinitions="DEBUG;_WIN32_WCE=$(CEVER);$(CePlatform);ARM;_ARM_;UNDER_CE=$(CEVER);UNICODE;_LIB;abort=_cexit"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile="BUILD\$(ProjectName)-$(ConfigurationName)-$(PlatformName)/libpng.pch"
@@ -403,6 +403,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="strtod=private_strtod"
 						UsePrecompiledHeader="0"
 						BrowseInformation="1"
 					/>
@@ -413,6 +414,7 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="strtod=private_strtod"
 						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
