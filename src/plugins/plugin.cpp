@@ -86,7 +86,7 @@ basic_plugin_factory::new_playable(
 	common::playable *rv;
 	
 	lib::xml_string tag = node->get_qname().second;
-    AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
+    AM_DBG lib::logger::get_logger()->debug("basic_plugin_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "plugindatatype") /*or any other tag ofcourse */ {
 		rv = new basic_plugin(context, cookie, node, evp, m_factory);
 		//rv = NULL;
@@ -160,11 +160,11 @@ void initialize(
     if ( !ambulant::check_version() )
         lib::logger::get_logger()->warn("basic_plugin: built for different Ambulant version (%s)", AMBULANT_VERSION);
 	factory = bug_workaround(factory);
-    AM_DBG lib::logger::get_logger()->debug("basic_plugin: loaded.");
+    lib::logger::get_logger()->debug("basic_plugin: loaded.");
 	common::global_playable_factory *pf = factory->get_playable_factory();
     if (pf) {
     	basic_plugin_factory *bpf = new basic_plugin_factory(factory);
 		pf->add_factory(bpf);
-    	AM_DBG lib::logger::get_logger()->trace("basic_plugin: registered");
+    	lib::logger::get_logger()->trace("basic_plugin: registered");
     }
 }
