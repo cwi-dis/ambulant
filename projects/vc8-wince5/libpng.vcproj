@@ -127,7 +127,7 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../../zlib"
+				AdditionalIncludeDirectories="../../third_party_packages/zlib"
 				PreprocessorDefinitions="DEBUG;_WIN32_WCE=$(CEVER);$(CePlatform);ARM;_ARM_;UNDER_CE=$(CEVER);UNICODE;_LIB"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
@@ -151,7 +151,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\lib\wince-arm\libpng.lib"
+				OutputFile="..\..\lib\wince-arm\libpng_D.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

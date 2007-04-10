@@ -67,7 +67,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\lib\wince-arm\zlib.lib"
+				OutputFile="..\..\lib\wince-arm\zlib_D.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

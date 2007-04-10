@@ -119,7 +119,7 @@
 				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\xerces-c-src_2_7_0\src\&quot;;..\..\include;..\..\third_party_packages\expat\lib;..\..\third_party_packages\jpeg;..\..\third_party_packages\lpng128;..\..\third_party_packages\zlib;..\..\third_party_packages\mp3lib"
 				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;_LIB;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;_AMBULANT;WITH_EXPAT;XML_STATIC;WITH_XERCES;WITH_XERCES_BUILTIN;WITH_EXTERNAL_DOM=1;WITH_HTML_WIDGET"
 				RuntimeLibrary="0"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -214,12 +214,28 @@
 								Name="VCCLCompilerTool"
 							/>
 						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_audio.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
 							ExcludedFromBuild="true"
 							>
 							<Tool
@@ -238,12 +254,28 @@
 								Name="VCCLCompilerTool"
 							/>
 						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_bgrenderer.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
 							ExcludedFromBuild="true"
 							>
 							<Tool
@@ -262,12 +294,28 @@
 								Name="VCCLCompilerTool"
 							/>
 						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_html_renderer.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
 							ExcludedFromBuild="true"
 							>
 							<Tool
@@ -302,12 +350,28 @@
 								Name="VCCLCompilerTool"
 							/>
 						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_img.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
 							ExcludedFromBuild="true"
 							>
 							<Tool
@@ -326,12 +390,28 @@
 								Name="VCCLCompilerTool"
 							/>
 						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_text.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
 							ExcludedFromBuild="true"
 							>
 							<Tool
@@ -350,12 +430,28 @@
 								Name="VCCLCompilerTool"
 							/>
 						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_transition.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
 							ExcludedFromBuild="true"
 							>
 							<Tool
@@ -374,12 +470,28 @@
 								Name="VCCLCompilerTool"
 							/>
 						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_video_player.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
 							ExcludedFromBuild="true"
 							>
 							<Tool
@@ -398,12 +510,28 @@
 								Name="VCCLCompilerTool"
 							/>
 						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_window.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
 							ExcludedFromBuild="true"
 							>
 							<Tool
@@ -751,6 +879,14 @@
 				<File
 					RelativePath="..\..\src\libambulant\lib\xerces_parser.cpp"
 					>
+					<FileConfiguration
+						Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
 					<FileConfiguration
 						Name="DebugNoXerces|Win32"
 						ExcludedFromBuild="true"

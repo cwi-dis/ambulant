@@ -149,7 +149,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\lib\wince-arm\libjpeg.lib"
+				OutputFile="..\..\lib\wince-arm\libjpeg_D.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

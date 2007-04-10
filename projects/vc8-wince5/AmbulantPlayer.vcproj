@@ -77,7 +77,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/ALIGN:4096 /subsystem:$(CESubsystem)  "
-				AdditionalDependencies="libambulant_wince.lib libexpat.lib libjpeg.lib zlibce.lib libpng.lib"
+				AdditionalDependencies="libexpat.lib libjpeg.lib zlib.lib libpng.lib mp3lib.lib"
 				OutputFile="..\..\bin\wince\AmbulantPlayer.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -179,7 +179,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/ALIGN:4096 /subsystem:$(CESubsystem)  "
-				AdditionalDependencies="libexpat.lib libjpeg.lib zlibce.lib libpng.lib"
+				AdditionalDependencies="libexpat_D.lib libjpeg_D.lib zlib_D.lib libpng_D.lib mp3lib_D.lib"
 				OutputFile="..\..\bin\wince\AmbulantPlayer.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"

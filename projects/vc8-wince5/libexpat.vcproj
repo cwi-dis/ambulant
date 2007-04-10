@@ -67,7 +67,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\lib\wince-arm\libexpat.lib"
+				OutputFile="..\..\lib\wince-arm\libexpat_D.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

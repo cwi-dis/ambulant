@@ -43,8 +43,8 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FPM_DEFAULT"
-				MinimalRebuild="true"
+				PreprocessorDefinitions="_DEBUG;_LIB;FPM_DEFAULT;_WIN32_WCE=$(CEVER);$(CePlatform);ARM;_ARM_;UNDER_CE=$(CEVER);UNICODE;abort=_cexit"
+				MinimalRebuild="false"
 				RuntimeLibrary="1"
 				PrecompiledHeaderFile="BUILD\$(ProjectName)-$(ConfigurationName)-$(PlatformName)/mp3lib.pch"
 				AssemblerListingLocation="BUILD\$(ProjectName)-$(ConfigurationName)-$(PlatformName)\"
@@ -52,6 +52,7 @@
 				ProgramDataBaseFileName="BUILD\$(ProjectName)-$(ConfigurationName)-$(PlatformName)\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -66,7 +67,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\lib\wince-arm\mp3lib.lib"
+				OutputFile="..\..\lib\wince-arm\mp3lib_D.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
