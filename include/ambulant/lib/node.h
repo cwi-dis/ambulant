@@ -274,7 +274,7 @@ typedef node_impl node;
 #endif
 
 /// Interface of document class accesible to nodes.
-class node_context {
+class AMBULANTAPI node_context {
   public:
 	typedef std::map<std::string, custom_test> custom_test_map;
     
