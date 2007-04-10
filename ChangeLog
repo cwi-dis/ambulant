@@ -1,3 +1,25 @@
+2007-04-10 00:01  jackjansen
+
+	* Breakdown of the projects.
+
+2007-04-09 23:54  jackjansen
+
+	* Getting rid of old projects.
+
+2007-04-09 23:53  jackjansen
+
+	* Getting started on xcode projects.
+
+2007-04-09 22:38  jackjansen
+
+	* Got rid of old projects, updated readme.
+
+2007-04-09 22:31  jackjansen
+
+	* Copied wince projects to the project folder. They deposit the
+	  results right in lib/wince-arm, so no more need for the copy_tpp
+	  script.
+
 2007-04-08 01:09  jackjansen
 
 	* Got as far as running the player on the emulator, at which point
