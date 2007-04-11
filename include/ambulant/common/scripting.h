@@ -26,6 +26,7 @@
 #ifndef AMBULANT_SMIL2_SCRIPTING_H
 #define AMBULANT_SMIL2_SCRIPTING_H
 
+#ifdef WITH_SMIL30
 #include "ambulant/lib/node.h"
 
 namespace ambulant {
@@ -100,5 +101,5 @@ AMBULANTAPI global_script_component_factory *get_global_script_component_factory
 } // namespace common
  
 } // namespace ambulant
-
+#endif
 #endif // AMBULANT_SMIL2_SCRIPTING_H

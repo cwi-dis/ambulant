@@ -52,8 +52,10 @@ public:
 	virtual void init_parser_factory();
 	/// Create the node factory.
 	virtual void init_node_factory();
+#ifdef WITH_SMIL30
 	/// Create the scripting factory.
 	virtual void init_script_component_factory();
+#endif
 	
 	/// Return the playable factory.
 	virtual global_playable_factory *get_playable_factory() const { return m_playable_factory; }
@@ -65,9 +67,10 @@ public:
 	virtual lib::global_parser_factory *get_parser_factory() const { return m_parser_factory; }
 	/// Return the node factory.
 	virtual lib::node_factory *get_node_factory() const { return m_node_factory; }
+#ifdef WITH_SMIL30
 	/// Return the scripting factory.
 	virtual global_script_component_factory *get_script_component_factory() const { return m_script_component_factory; }
-	
+#endif
 	/// Override the playable factory. Deletes the old one, if needed.
 	virtual void set_playable_factory(global_playable_factory *pf) { delete m_playable_factory; m_playable_factory = pf; }
 	/// Override the playable factory.
@@ -78,16 +81,19 @@ public:
 	virtual void set_parser_factory(lib::global_parser_factory *pf) { m_parser_factory = pf; }
 	/// Override the playable factory.
 	virtual void set_node_factory(lib::node_factory *nf) { m_node_factory = nf; }
+#ifdef WITH_SMIL30
 	/// Override the scripting factory.
 	virtual void set_script_component_factory(global_script_component_factory *sf) { delete m_script_component_factory; m_script_component_factory = sf; }
-
+#endif
 private:
 	global_playable_factory *m_playable_factory;
 	window_factory *m_window_factory;
 	net::datasource_factory *m_datasource_factory;
 	lib::global_parser_factory *m_parser_factory;
 	lib::node_factory *m_node_factory;
+#ifdef WITH_SMIL30
 	common::global_script_component_factory *m_script_component_factory;
+#endif
 };
 
 } // end namespaces

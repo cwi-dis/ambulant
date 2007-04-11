@@ -712,6 +712,9 @@
 					RelativePath="..\..\src\libambulant\lib\node.cpp">
 				</File>
 				<File
+					RelativePath="..\..\src\libambulant\lib\nscontext.cpp">
+				</File>
+				<File
 					RelativePath="..\..\src\libambulant\lib\parselets.cpp">
 				</File>
 				<File
@@ -1314,6 +1317,9 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\common\schema.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\common\scripting.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\common\smil_alignment.h">
