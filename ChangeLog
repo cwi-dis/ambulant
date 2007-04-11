@@ -1,3 +1,37 @@
+2007-04-10 17:45  jackjansen
+
+	* Bits and pieces to get the Python interface working on windows.
+	  Mainly adding AMBULANTAPI and suchlike things.
+
+2007-04-10 16:53  jackjansen
+
+	* First attempt at VS 2003 python-plugin project.
+
+2007-04-10 16:46  jackjansen
+
+	* Getting started with python plugin on Windows.
+
+2007-04-10 15:58  jackjansen
+
+	* Got shared library build to work too.
+
+2007-04-10 15:19  jackjansen
+
+	* Got shared library build to work too.
+
+2007-04-10 14:25  jackjansen
+
+	* [no log message]
+
+2007-04-10 14:24  jackjansen
+
+	* DG code was incomplete since the exp_jack_playerobj merge (feb
+	  2006!). Added a stopgap that may make it work again.
+
+2007-04-10 12:23  jackjansen
+
+	* Details.
+
 2007-04-10 00:01  jackjansen
 
 	* Breakdown of the projects.
