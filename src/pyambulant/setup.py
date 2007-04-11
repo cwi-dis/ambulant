@@ -57,7 +57,8 @@ setup(name='ambulant',
             extra_link_args=EXTRA_LINK_ARGS,
             library_dirs=LIBDIRS,
             include_dirs=['../../include'],
-            define_macros=DEFS
+            define_macros=DEFS,
+            export_symbols=['initambulant', 'factoriesObj_New', 'gui_playerObj_New']
         )
       ]
 )

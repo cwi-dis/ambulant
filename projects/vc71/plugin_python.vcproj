@@ -32,6 +32,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				IgnoreImportLibrary="TRUE"
 				OutputFile="../../bin/win32/libampluginD_python.dll"
 				LinkIncremental="0"
 				AdditionalLibraryDirectories="E:\Python25\libs"
@@ -68,7 +69,7 @@
 			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			ConfigurationType="2"
-			CharacterSet="2">
+			CharacterSet="1">
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="E:\Python25\include;..\..\include;..\..\src\pyambulant"
@@ -82,6 +83,8 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				IgnoreImportLibrary="TRUE"
+				AdditionalDependencies="../../src/pyambulant/build/temp.win32-2.5/Release/ambulant.lib"
 				OutputFile="../../bin/win32/libamplugin_python.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="E:/Python25/libs"

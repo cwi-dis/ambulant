@@ -135,11 +135,11 @@
 			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="2"
-			CharacterSet="2">
+			CharacterSet="1">
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;AMBULANT_USE_DLL;WITH_WINDOWS_PLUGINS"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;AMBULANT_USE_DLL;WITH_WINDOWS_PLUGINS;WITH_EXTERNAL_DOM"
 				MinimalRebuild="FALSE"
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="TRUE"
@@ -196,7 +196,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;AMBULANT_USE_DLL;WITH_WINDOWS_PLUGINS;WITH_HTML_WIDGET"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;AMBULANT_USE_DLL;WITH_WINDOWS_PLUGINS;WITH_HTML_WIDGET;WITH_EXTERNAL_DOM"
 				MinimalRebuild="FALSE"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="TRUE"
@@ -249,7 +249,7 @@
 			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="2"
-			CharacterSet="2">
+			CharacterSet="1">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
@@ -367,7 +367,7 @@
 			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="2"
-			CharacterSet="2">
+			CharacterSet="1">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"

@@ -32,6 +32,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				IgnoreImportLibrary="TRUE"
 				OutputFile="../../bin/win32/libampluginD_plugin.dll"
 				LinkIncremental="0"
 				IgnoreDefaultLibraryNames="LIBC.lib"
@@ -67,7 +68,7 @@
 			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			ConfigurationType="2"
-			CharacterSet="2">
+			CharacterSet="1">
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\include"
@@ -81,6 +82,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				IgnoreImportLibrary="TRUE"
 				OutputFile="../../bin/win32/libamplugin_plugin.dll"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
