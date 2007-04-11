@@ -18,6 +18,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "plugin_python", "plugin_pyt
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785} = {DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pyambulant", "pyambulant.vcproj", "{ABB895C0-7435-406D-A44F-8C68B6DB7093}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -88,6 +92,22 @@ Global
 		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.ReleaseNoXercesNoHtml.Build.0 = Release|Win32
 		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.ReleaseShlib.ActiveCfg = Release|Win32
 		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.ReleaseShlib.Build.0 = Release|Win32
+		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.Debug.ActiveCfg = Debug|Win32
+		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.Debug.Build.0 = Debug|Win32
+		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.DebugNoXerces.ActiveCfg = Debug|Win32
+		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.DebugNoXerces.Build.0 = Debug|Win32
+		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.DebugNoXercesNoHtml.ActiveCfg = Debug|Win32
+		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.DebugNoXercesNoHtml.Build.0 = Debug|Win32
+		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.DebugShlib.ActiveCfg = Debug|Win32
+		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.DebugShlib.Build.0 = Debug|Win32
+		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.Release.ActiveCfg = Release|Win32
+		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.Release.Build.0 = Release|Win32
+		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.ReleaseNoXerces.ActiveCfg = Release|Win32
+		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.ReleaseNoXerces.Build.0 = Release|Win32
+		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.ReleaseNoXercesNoHtml.ActiveCfg = Release|Win32
+		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.ReleaseNoXercesNoHtml.Build.0 = Release|Win32
+		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.ReleaseShlib.ActiveCfg = Release|Win32
+		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.ReleaseShlib.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
