@@ -26,7 +26,11 @@ class MyScriptComponent(ambulant.script_component):
         
     def declare_state(self, state):
         print 'declare_state, node=', state
-        statements = state.get_trimmed_data()
+        statements = state.get_trimmed_data() + "\n"
+        child = state.down_1()
+        while child:
+            statements += child.get_trimmed_data() + "\n"
+            child = child.next_1()
         exec statements in self.scope, self.globscope
         #import pdb
         #pdb.set_trace()
