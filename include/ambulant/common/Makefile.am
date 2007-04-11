@@ -12,6 +12,7 @@ library_include_HEADERS= \
 	region.h \
 	renderer_impl.h \
 	schema.h \
+	scripting.h \
 	smil_alignment.h \
 	smil_handler.h \
 	embedder.h \

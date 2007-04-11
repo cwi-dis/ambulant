@@ -50,7 +50,7 @@ sdl_renderer_factory::new_playable(
 		lib::event_processor *evp)
 {
 	common::playable *rv;
-	lib::xml_string tag = node->get_qname().second;
+	lib::xml_string tag = node->get_local_name();
     AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "audio") {
 		rv = new gui::sdl::sdl_audio_renderer(context, cookie, node, evp, m_factory);
@@ -71,7 +71,7 @@ sdl_renderer_factory::new_aux_audio_playable(
 		net::audio_datasource *src)
 {
 	common::playable *rv;
-	lib::xml_string tag = node->get_qname().second;
+	lib::xml_string tag = node->get_local_name();
     AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory:new_aux_audio_playable: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
 	rv = new gui::sdl::sdl_audio_renderer(context, cookie, node, evp, m_factory, src);
 	AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x: returning sdl_audio_renderer 0x%x", (void *)node, (void *)rv);

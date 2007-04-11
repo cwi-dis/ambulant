@@ -28,6 +28,9 @@
 #include "ambulant/gui/cocoa/cocoa_fill.h"
 #include "ambulant/gui/cocoa/cocoa_video.h"
 #include "ambulant/gui/cocoa/cocoa_dsvideo.h"
+#ifdef WITH_SMIL30
+#include "ambulant/gui/cocoa/cocoa_smiltext.h"
+#endif
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/common/preferences.h"
 
@@ -145,7 +148,7 @@ cocoa_renderer_factory::new_playable(
 {
 	playable *rv;
 	
-	xml_string tag = node->get_qname().second;
+	xml_string tag = node->get_local_name();
 	if (tag == "img") {
 		net::url url = net::url(node->get_url("src"));
 		if (url.guesstype() == "image/vnd.ambulant-ink") {
@@ -194,6 +197,11 @@ cocoa_renderer_factory::new_playable(
 				AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_dsvideo_renderer 0x%x", (void *)node, (void *)rv);
 			}
 		}
+#ifdef WITH_SMIL30
+	} else if ( tag == "smiltext") {
+		rv = new cocoa_smiltext_renderer(context, cookie, node, evp);
+		/*AM_DBG*/ logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_smiltext_renderer 0x%x", (void *)node, (void *)rv);
+#endif // WITH_SMIL30
 	} else {
 		// logger::get_logger()->error(gettext("cocoa_renderer_factory: no Cocoa renderer for tag \"%s\""), tag.c_str());
 		return NULL;

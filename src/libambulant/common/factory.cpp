@@ -28,7 +28,8 @@ factories::factories()
 	m_window_factory(NULL),
 	m_datasource_factory(NULL),
 	m_parser_factory(NULL),
-	m_node_factory(NULL)
+	m_node_factory(NULL),
+	m_script_component_factory(NULL)
 {
 }
 
@@ -39,6 +40,7 @@ factories::~factories()
 	delete m_datasource_factory;
 	// delete m_parser_factory; singleton
 	// delete m_node_factory; singleton
+	// delete m_script_component_factory; singleton
 }
 
 void
@@ -49,6 +51,7 @@ factories::init_factories()
 	init_datasource_factory();
 	init_parser_factory();
 	init_node_factory();
+	init_script_component_factory();
 }
 
 void
@@ -75,5 +78,11 @@ void
 factories::init_node_factory()
 {
 	m_node_factory = lib::get_builtin_node_factory();
+}
+
+void
+factories::init_script_component_factory()
+{
+	m_script_component_factory = get_global_script_component_factory();
 }
 

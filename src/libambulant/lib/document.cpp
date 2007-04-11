@@ -39,6 +39,9 @@ using namespace ambulant;
 lib::document::document()
 :	m_root(NULL),
 	m_root_owned(false)
+#ifdef WITH_SMIL30
+	, m_state(NULL)
+#endif // WITH_SMIL30
 {
 }
 
@@ -46,6 +49,9 @@ lib::document::document()
 lib::document::document(node *root, bool owned) 
 :	m_root(root),
 	m_root_owned(owned)
+#ifdef WITH_SMIL30
+	, m_state(NULL)
+#endif // WITH_SMIL30
 {
 	build_id2node_map();
 	read_custom_attributes();
@@ -55,6 +61,9 @@ lib::document::document(node *root, const net::url& src_url)
 :	m_root(root),
 	m_root_owned(xxx),
 	m_src_url(src_url)
+#ifdef WITH_SMIL30
+	, m_state(NULL)
+#endif // WITH_SMIL30
 {
 	build_id2node_map();
 	read_custom_attributes();
@@ -63,6 +72,7 @@ lib::document::document(node *root, const net::url& src_url)
 
 lib::document::~document() {
 	if (m_root_owned) delete m_root;
+	// m_state is borrowed.
 }
 
 lib::node* 
@@ -172,9 +182,19 @@ lib::document::set_prefix_mapping(const std::string& prefix, const std::string& 
 	m_namespaces.set_prefix_mapping(prefix, uri);
 }
 
-const char* 
+const lib::xml_string& 
 lib::document::get_namespace_prefix(const xml_string& uri) const {
 	return m_namespaces.get_namespace_prefix(uri);
+}
+
+bool 
+lib::document::is_supported_prefix(const xml_string& prefix) const {
+	return m_namespaces.is_supported_prefix(prefix) || m_namespaces.is_supported_namespace(prefix);
+}
+
+bool 
+lib::document::is_supported_namespace(const xml_string& uri) const {
+	return m_namespaces.is_supported_namespace(uri);
 }
 
 net::url 
@@ -254,3 +274,33 @@ void lib::document::read_custom_attributes() {
 		}
 	}
 }
+
+#ifdef WITH_SMIL30
+lib::xml_string
+lib::document::apply_avt(const xml_string& name, const xml_string& value) const
+{
+	if (!m_state) return value;
+	/* XXXJACK Check that applying AVT to attribute "name" is allowed */
+	xml_string rv = "";
+	xml_string rest = value;
+	while (rest != "") {
+		int openpos = rest.find('{');
+		int closepos = rest.find('}');
+		if (openpos == std::string::npos && closepos == std::string::npos) {
+			rv += rest;
+			rest = "";
+			break;
+		}
+		if (openpos == std::string::npos || closepos == std::string::npos ||
+				openpos > closepos) {
+			lib::logger::get_logger()->trace("Unmatched {} in %s=\"%s\"", name.c_str(), value.c_str());
+			return value;
+		}
+		rv += rest.substr(0, openpos);
+		xml_string expr = rest.substr(openpos+1, closepos-openpos-1);
+		rv += m_state->string_expression(expr.c_str());
+		rest = rest.substr(closepos+1);
+	}
+	return rv;		
+}
+#endif // WITH_SMIL30

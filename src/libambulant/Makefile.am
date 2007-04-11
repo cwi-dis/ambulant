@@ -53,6 +53,7 @@ libambulant_cocoa_la_SOURCES = \
 	gui/cocoa/cocoa_ink.m \
 	gui/cocoa/cocoa_text.m \
 	gui/cocoa/cocoa_renderer.m \
+	gui/cocoa/cocoa_smiltext.m \
 	gui/cocoa/cocoa_transition.m \
 	gui/cocoa/cocoa_audio.m \
 	gui/cocoa/cocoa_video.m \
@@ -236,6 +237,7 @@ libambulant_la_SOURCES = \
 	lib/logger.cpp \
 	lib/nfa.cpp \
 	lib/node.cpp \
+	lib/nscontext.cpp \
 	lib/parselets.cpp \
 	lib/string_util.cpp \
 	lib/timer.cpp \
@@ -261,6 +263,7 @@ libambulant_la_SOURCES = \
 	common/region.cpp \
 	common/renderer_impl.cpp \
 	common/schema.cpp \
+	common/scripting.cpp \
 	common/smil_alignment.cpp \
 	common/smil_handler.cpp \
 	common/plugin_engine.cpp \
@@ -271,6 +274,7 @@ libambulant_la_SOURCES = \
 	smil2/animate_n.cpp \
 	smil2/params.cpp \
 	smil2/region_node.cpp \
+	smil2/smiltext.cpp \
 	smil2/smil_layout.cpp \
 	smil2/smil_player.cpp \
 	smil2/smil_time.cpp \
@@ -294,14 +298,6 @@ libambulant_la_SOURCES = \
 	gui/none/none_video_renderer.cpp \
 	gui/none/none_factory.cpp
 
-## EXTRA_DIST= \
-## 	gui/cocoa/cocoa_fill.m gui/cocoa/cocoa_fill.mm \
-## 	gui/cocoa/cocoa_gui.m gui/cocoa/cocoa_gui.mm \
-## 	gui/cocoa/cocoa_image.m gui/cocoa/cocoa_image.mm \
-## 	gui/cocoa/cocoa_mouse.m gui/cocoa/cocoa_mouse.mm \
-## 	gui/cocoa/cocoa_text.m gui/cocoa/cocoa_text.mm \
-## 	gui/cocoa/cocoa_audio.m gui/cocoa/cocoa_audio.mm \
-## 	gui/cocoa/cocoa_audio.m gui/cocoa/cocoa_video.mm
 EXTRA_DIST= \
     lib/expat_parser.cpp \
     lib/xerces_parser.cpp \

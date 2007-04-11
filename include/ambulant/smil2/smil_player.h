@@ -179,6 +179,11 @@ class smil_player : public common::player, /* public common::player_feedback,*/ 
 	// timegraph sampling
 	void update();
 	
+#ifdef WITH_SMIL30
+	void create_state_engine();
+	common::script_component *m_state_engine;
+#endif // WITH_SMIL30
+
 	lib::document *m_doc;
 	common::factories *m_factory;
 	//common::window_factory *m_wf;

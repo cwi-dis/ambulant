@@ -92,6 +92,7 @@ unsigned_int = Type("unsigned int", "l")
 progress_type = Type("ambulant::lib::transition_info::progress_type", "d")
 std_string = StdStringType()
 xml_string = StdStringType("ambulant::lib::xml_string")
+lib_xml_string = xml_string
 const_xml_string_ref = StdStringType("const ambulant::lib::xml_string&")
 q_name_pair = StdPairType(xml_string, xml_string, "ambulant::lib::q_name_pair")
 const_q_name_pair_ref = StdPairType(xml_string, xml_string, 
@@ -342,6 +343,7 @@ methods_node_interface = methods_node
 lib_event_processor_ptr = event_processor_ptr
 ambulant_lib_event_processor_ptr = event_processor_ptr
 lib_transition_info_ptr = transition_info_ptr
+lib_xml_string = xml_string
 
 common_duration = duration
 common_surface_ptr = surface_ptr
@@ -353,6 +355,7 @@ common_bgrenderer_ptr = bgrenderer_ptr
 common_gui_player_ptr = gui_player_ptr
 common_playable_factory_ptr = playable_factory_ptr
 common_window_factory_ptr = window_factory_ptr
+common_script_component_ptr = script_component_ptr
 lib_document_ptr = document_ptr
 lib_event_ptr = event_ptr
 ambulant_lib_event_ptr = event_ptr
@@ -585,6 +588,10 @@ animation_destination_object.othermethods = [
 global_playable_factory_object.othermethods = [
     "ambulant::common::playable* new_playable(ambulant::common::playable_notification*, int, const ambulant::lib::node*, ambulant::lib::event_processor*) { abort(); }", # XXX
     "ambulant::common::playable* new_aux_audio_playable(ambulant::common::playable_notification *context, int, const ambulant::lib::node *node, ambulant::lib::event_processor *evp, ambulant::net::audio_datasource *src) { abort(); }", # XXX
+]
+
+global_script_component_factory_object.othermethods = [
+    "ambulant::common::script_component* new_script_component(const char*) { abort(); }", # XXX
 ]
 datasource_object.othermethods = [
     "long add_ref() { return 1; }",

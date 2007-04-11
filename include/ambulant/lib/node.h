@@ -58,6 +58,12 @@
 
 namespace ambulant {
 
+#ifdef WITH_SMIL30
+namespace common {
+class script_component;
+};
+#endif // WITH_SMIL30
+
 namespace lib {
 
 class custom_test;
@@ -195,17 +201,15 @@ class node_interface {
 	/// Note: attrs are as per expat parser
 	/// e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
 	virtual void set_attributes(const char **attrs) = 0;
-	
-	/// Set the namespace for this node.
-	virtual void set_namespace(const xml_string& ns) = 0;
-	
+		
 	/////////////////////
 	// data queries
 
 	/// Return the namespace part of the tag for this node.
 	virtual const xml_string& get_namespace() const = 0;
 	
-	/// Return the local part of the tag for this node.
+	/// Return the local part of the tag for this node IFF the namespace
+	/// part refers to a namespace we implement.
 	virtual const xml_string& get_local_name() const = 0;
 	
 	/// Return namespace and local part of the tag for this node.
@@ -216,6 +220,9 @@ class node_interface {
 	
 	/// Return the data for this node.
 	virtual const xml_string& get_data() const = 0;
+	
+	/// Return true if this is a pure data node (i.e. no tag/attrs)
+	virtual bool is_data_node() const = 0;
 	
 	/// Return the trimmed data for this node.
 	virtual xml_string get_trimmed_data() const = 0;
@@ -284,7 +291,10 @@ class AMBULANTAPI node_context {
 	virtual void set_prefix_mapping(const std::string& prefix, const std::string& uri) = 0;
 	
 	/// Return the default XML namespace URI for the document.
-	virtual const char*get_namespace_prefix(const xml_string& uri) const = 0;
+	virtual const xml_string& get_namespace_prefix(const xml_string& uri) const = 0;
+	
+	/// Is this namespace prefix one that we understand?
+	virtual bool is_supported_prefix(const xml_string& prefix) const = 0;
 	
 	/// Resolve relative URLs.
 	virtual net::url resolve_url(const net::url& rurl) const = 0;
@@ -297,6 +307,14 @@ class AMBULANTAPI node_context {
 
 	/// Return node with a given ID.
 	virtual const node* get_node(const std::string& idd) const = 0;
+	
+#ifdef WITH_SMIL30
+	/// Return the state engine.
+	virtual common::script_component *get_state() const = 0;
+	
+	/// Apply XSLT Attribute Value Template
+	virtual lib::xml_string apply_avt(const lib::xml_string& name, const lib::xml_string& value) const = 0;
+#endif
 };
 
 /// Interface for factory class that creates node objects.
@@ -318,6 +336,8 @@ class node_factory {
 
 	// shallow copy from other.
 	virtual node *new_node(const node* other) = 0;
+	
+	virtual node *new_data_node(const char *data, int size) = 0;
 };
 
 /// Return singleton node_factory object that returns node_impl nodes.

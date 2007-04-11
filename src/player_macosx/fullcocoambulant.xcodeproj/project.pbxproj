@@ -476,6 +476,20 @@
 		041655DD08F331530017F91F /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 048399DD08ED2FDC008505C3 /* WebKit.framework */; };
 		0416853F065D4B6000E060C1 /* cocoa_dsvideo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0416853E065D4B6000E060C1 /* cocoa_dsvideo.mm */; };
 		04168541065D4B7D00E060C1 /* cocoa_dsvideo.h in Headers */ = {isa = PBXBuildFile; fileRef = 04168540065D4B7D00E060C1 /* cocoa_dsvideo.h */; };
+		041C3C360BB094EA002E9997 /* smiltext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 041C3C350BB094EA002E9997 /* smiltext.cpp */; };
+		041C3C370BB094EA002E9997 /* smiltext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 041C3C350BB094EA002E9997 /* smiltext.cpp */; };
+		041C3C380BB094EA002E9997 /* smiltext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 041C3C350BB094EA002E9997 /* smiltext.cpp */; };
+		041C3C390BB094EA002E9997 /* smiltext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 041C3C350BB094EA002E9997 /* smiltext.cpp */; };
+		041C3C3A0BB094EA002E9997 /* smiltext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 041C3C350BB094EA002E9997 /* smiltext.cpp */; };
+		041C3C3B0BB094EA002E9997 /* smiltext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 041C3C350BB094EA002E9997 /* smiltext.cpp */; };
+		041C3C3C0BB094EA002E9997 /* smiltext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 041C3C350BB094EA002E9997 /* smiltext.cpp */; };
+		041C3C410BB09520002E9997 /* smiltext.h in Headers */ = {isa = PBXBuildFile; fileRef = 041C3C400BB09520002E9997 /* smiltext.h */; };
+		041C3C420BB09520002E9997 /* smiltext.h in Headers */ = {isa = PBXBuildFile; fileRef = 041C3C400BB09520002E9997 /* smiltext.h */; };
+		041C3C430BB09520002E9997 /* smiltext.h in Headers */ = {isa = PBXBuildFile; fileRef = 041C3C400BB09520002E9997 /* smiltext.h */; };
+		041C3C440BB09520002E9997 /* smiltext.h in Headers */ = {isa = PBXBuildFile; fileRef = 041C3C400BB09520002E9997 /* smiltext.h */; };
+		041C3C450BB09520002E9997 /* smiltext.h in Headers */ = {isa = PBXBuildFile; fileRef = 041C3C400BB09520002E9997 /* smiltext.h */; };
+		041C3C460BB09520002E9997 /* smiltext.h in Headers */ = {isa = PBXBuildFile; fileRef = 041C3C400BB09520002E9997 /* smiltext.h */; };
+		041C3C470BB09520002E9997 /* smiltext.h in Headers */ = {isa = PBXBuildFile; fileRef = 041C3C400BB09520002E9997 /* smiltext.h */; };
 		042125AE07A7DFBE00D20F9D /* params.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042125AD07A7DFBE00D20F9D /* params.cpp */; };
 		042125AF07A7DFBE00D20F9D /* params.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042125AD07A7DFBE00D20F9D /* params.cpp */; };
 		042125B107A7DFD300D20F9D /* params.h in Headers */ = {isa = PBXBuildFile; fileRef = 042125B007A7DFD300D20F9D /* params.h */; };
@@ -806,6 +820,20 @@
 		04382C5605D7AEE700CFA029 /* time_state.h in Headers */ = {isa = PBXBuildFile; fileRef = 04382B9005D7AEE600CFA029 /* time_state.h */; };
 		04382C5705D7AEE700CFA029 /* timegraph.h in Headers */ = {isa = PBXBuildFile; fileRef = 04382B9105D7AEE600CFA029 /* timegraph.h */; };
 		04382C5805D7AEE700CFA029 /* version.h in Headers */ = {isa = PBXBuildFile; fileRef = 04382B9205D7AEE600CFA029 /* version.h */; };
+		043EA8580BB01610009C20D2 /* cocoa_smiltext.h in Headers */ = {isa = PBXBuildFile; fileRef = 043EA8570BB01610009C20D2 /* cocoa_smiltext.h */; };
+		043EA8590BB01610009C20D2 /* cocoa_smiltext.h in Headers */ = {isa = PBXBuildFile; fileRef = 043EA8570BB01610009C20D2 /* cocoa_smiltext.h */; };
+		043EA85A0BB01610009C20D2 /* cocoa_smiltext.h in Headers */ = {isa = PBXBuildFile; fileRef = 043EA8570BB01610009C20D2 /* cocoa_smiltext.h */; };
+		043EA85B0BB01610009C20D2 /* cocoa_smiltext.h in Headers */ = {isa = PBXBuildFile; fileRef = 043EA8570BB01610009C20D2 /* cocoa_smiltext.h */; };
+		043EA85C0BB01610009C20D2 /* cocoa_smiltext.h in Headers */ = {isa = PBXBuildFile; fileRef = 043EA8570BB01610009C20D2 /* cocoa_smiltext.h */; };
+		043EA85D0BB01610009C20D2 /* cocoa_smiltext.h in Headers */ = {isa = PBXBuildFile; fileRef = 043EA8570BB01610009C20D2 /* cocoa_smiltext.h */; };
+		043EA85E0BB01610009C20D2 /* cocoa_smiltext.h in Headers */ = {isa = PBXBuildFile; fileRef = 043EA8570BB01610009C20D2 /* cocoa_smiltext.h */; };
+		043EA8630BB01656009C20D2 /* cocoa_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043EA8620BB01656009C20D2 /* cocoa_smiltext.mm */; };
+		043EA8640BB01656009C20D2 /* cocoa_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043EA8620BB01656009C20D2 /* cocoa_smiltext.mm */; };
+		043EA8650BB01656009C20D2 /* cocoa_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043EA8620BB01656009C20D2 /* cocoa_smiltext.mm */; };
+		043EA8660BB01656009C20D2 /* cocoa_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043EA8620BB01656009C20D2 /* cocoa_smiltext.mm */; };
+		043EA8670BB01656009C20D2 /* cocoa_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043EA8620BB01656009C20D2 /* cocoa_smiltext.mm */; };
+		043EA8680BB01656009C20D2 /* cocoa_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043EA8620BB01656009C20D2 /* cocoa_smiltext.mm */; };
+		043EA8690BB01656009C20D2 /* cocoa_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043EA8620BB01656009C20D2 /* cocoa_smiltext.mm */; };
 		043FA58C097275AB007EA0C2 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043FA58B097275AB007EA0C2 /* AudioUnit.framework */; };
 		043FA58D097275AB007EA0C2 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043FA58B097275AB007EA0C2 /* AudioUnit.framework */; };
 		043FA58E097275AB007EA0C2 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043FA58B097275AB007EA0C2 /* AudioUnit.framework */; };
@@ -1198,6 +1226,13 @@
 		047846BC0989712000A3E39F /* gui_player.h in Headers */ = {isa = PBXBuildFile; fileRef = 047846B60989712000A3E39F /* gui_player.h */; };
 		0478D956060B382C004224C0 /* stdio_datasource.h in Headers */ = {isa = PBXBuildFile; fileRef = 0478D955060B382C004224C0 /* stdio_datasource.h */; };
 		0478D958060B383E004224C0 /* stdio_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0478D957060B383E004224C0 /* stdio_datasource.cpp */; };
+		048142AB0BAEAB0A006A8BF1 /* nscontext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 048142AA0BAEAB0A006A8BF1 /* nscontext.cpp */; };
+		048142AC0BAEAB0A006A8BF1 /* nscontext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 048142AA0BAEAB0A006A8BF1 /* nscontext.cpp */; };
+		048142AD0BAEAB0A006A8BF1 /* nscontext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 048142AA0BAEAB0A006A8BF1 /* nscontext.cpp */; };
+		048142AE0BAEAB0A006A8BF1 /* nscontext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 048142AA0BAEAB0A006A8BF1 /* nscontext.cpp */; };
+		048142AF0BAEAB0A006A8BF1 /* nscontext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 048142AA0BAEAB0A006A8BF1 /* nscontext.cpp */; };
+		048142B00BAEAB0A006A8BF1 /* nscontext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 048142AA0BAEAB0A006A8BF1 /* nscontext.cpp */; };
+		048142B10BAEAB0A006A8BF1 /* nscontext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 048142AA0BAEAB0A006A8BF1 /* nscontext.cpp */; };
 		048399DE08ED2FDD008505C3 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 048399DD08ED2FDC008505C3 /* WebKit.framework */; };
 		048399DF08ED2FDD008505C3 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 048399DD08ED2FDC008505C3 /* WebKit.framework */; };
 		048399E008ED2FDD008505C3 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 048399DD08ED2FDC008505C3 /* WebKit.framework */; };
@@ -1437,9 +1472,23 @@
 		0498476A058DE47100D855A9 /* string_util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04984769058DE47100D855A9 /* string_util.cpp */; };
 		049F6F4C061430590082B27A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 049F6F4B061430590082B27A /* libz.dylib */; };
 		04A107730748E0A6002EA347 /* factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 04A107720748E0A6002EA347 /* factory.h */; };
-		04A4F66E0A35CF4E004099A9 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0459E7FD08DACE2600BF6ED5 /* libavformat.a */; };
-		04A4F66F0A35CF54004099A9 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0459E7FF08DACE5D00BF6ED5 /* libavcodec.a */; };
-		04A4F6700A35CF62004099A9 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0459E80108DACE8100BF6ED5 /* libavutil.a */; };
+		04A156520BA6FA1D00E09D93 /* scripting.h in Headers */ = {isa = PBXBuildFile; fileRef = 04A156510BA6FA1D00E09D93 /* scripting.h */; };
+		04A156530BA6FA1D00E09D93 /* scripting.h in Headers */ = {isa = PBXBuildFile; fileRef = 04A156510BA6FA1D00E09D93 /* scripting.h */; };
+		04A156540BA6FA1D00E09D93 /* scripting.h in Headers */ = {isa = PBXBuildFile; fileRef = 04A156510BA6FA1D00E09D93 /* scripting.h */; };
+		04A156550BA6FA1D00E09D93 /* scripting.h in Headers */ = {isa = PBXBuildFile; fileRef = 04A156510BA6FA1D00E09D93 /* scripting.h */; };
+		04A156560BA6FA1D00E09D93 /* scripting.h in Headers */ = {isa = PBXBuildFile; fileRef = 04A156510BA6FA1D00E09D93 /* scripting.h */; };
+		04A156570BA6FA1D00E09D93 /* scripting.h in Headers */ = {isa = PBXBuildFile; fileRef = 04A156510BA6FA1D00E09D93 /* scripting.h */; };
+		04A156580BA6FA1D00E09D93 /* scripting.h in Headers */ = {isa = PBXBuildFile; fileRef = 04A156510BA6FA1D00E09D93 /* scripting.h */; };
+		04A1566D0BA6FD5700E09D93 /* scripting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04A1566C0BA6FD5700E09D93 /* scripting.cpp */; };
+		04A1566E0BA6FD5700E09D93 /* scripting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04A1566C0BA6FD5700E09D93 /* scripting.cpp */; };
+		04A1566F0BA6FD5700E09D93 /* scripting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04A1566C0BA6FD5700E09D93 /* scripting.cpp */; };
+		04A156700BA6FD5700E09D93 /* scripting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04A1566C0BA6FD5700E09D93 /* scripting.cpp */; };
+		04A156710BA6FD5700E09D93 /* scripting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04A1566C0BA6FD5700E09D93 /* scripting.cpp */; };
+		04A156720BA6FD5700E09D93 /* scripting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04A1566C0BA6FD5700E09D93 /* scripting.cpp */; };
+		04A156730BA6FD5700E09D93 /* scripting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04A1566C0BA6FD5700E09D93 /* scripting.cpp */; };
+		04A554A40BBBF708002A147A /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0452B4470AB567C1001566DE /* libavcodec.a */; };
+		04A554A50BBBF718002A147A /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0452B4490AB567D5001566DE /* libavformat.a */; };
+		04A554A60BBBF724002A147A /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0452B44B0AB567DE001566DE /* libavutil.a */; };
 		04AC5D0B05FF6C04003CD4DC /* document.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04AC5D0A05FF6C04003CD4DC /* document.cpp */; };
 		04AD6626060A5A9200487334 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 04AD6622060A5A9200487334 /* pause.png */; };
 		04AD6627060A5A9200487334 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 04AD6623060A5A9200487334 /* play.png */; };
@@ -1860,6 +1909,8 @@
 		041655E008F331530017F91F /* cocoambulant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cocoambulant.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0416853E065D4B6000E060C1 /* cocoa_dsvideo.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = cocoa_dsvideo.mm; sourceTree = "<group>"; };
 		04168540065D4B7D00E060C1 /* cocoa_dsvideo.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cocoa_dsvideo.h; sourceTree = "<group>"; };
+		041C3C350BB094EA002E9997 /* smiltext.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = smiltext.cpp; sourceTree = "<group>"; };
+		041C3C400BB09520002E9997 /* smiltext.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = smiltext.h; sourceTree = "<group>"; };
 		042125AD07A7DFBE00D20F9D /* params.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = params.cpp; sourceTree = "<group>"; };
 		042125B007A7DFD300D20F9D /* params.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = params.h; sourceTree = "<group>"; };
 		042125D607A7EBF900D20F9D /* event_processor.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = event_processor.cpp; sourceTree = "<group>"; };
@@ -1957,6 +2008,8 @@
 		04382B9205D7AEE600CFA029 /* version.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = version.h; sourceTree = "<group>"; };
 		04383C7706F4600F006338F5 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = Dutch; path = Dutch.lproj/Credits.rtf; sourceTree = "<group>"; };
 		04383CCD06F4639B006338F5 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		043EA8570BB01610009C20D2 /* cocoa_smiltext.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cocoa_smiltext.h; sourceTree = "<group>"; };
+		043EA8620BB01656009C20D2 /* cocoa_smiltext.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = cocoa_smiltext.mm; sourceTree = "<group>"; };
 		043FA58B097275AB007EA0C2 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = /System/Library/Frameworks/AudioUnit.framework; sourceTree = "<absolute>"; };
 		0440807509E9B8FE00527A4F /* libvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbis.a; path = /usr/local/lib/libvorbis.a; sourceTree = "<absolute>"; };
 		0440807609E9B8FE00527A4F /* libogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libogg.a; path = /usr/local/lib/libogg.a; sourceTree = "<absolute>"; };
@@ -2042,6 +2095,7 @@
 		0478D955060B382C004224C0 /* stdio_datasource.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = stdio_datasource.h; sourceTree = "<group>"; };
 		0478D957060B383E004224C0 /* stdio_datasource.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = stdio_datasource.cpp; sourceTree = "<group>"; };
 		0480D5E907208FB600D39BB5 /* libxerces-c.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libxerces-c.dylib"; path = "../../../../packages/xerces-unix/lib/libxerces-c.dylib"; sourceTree = SOURCE_ROOT; };
+		048142AA0BAEAB0A006A8BF1 /* nscontext.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = nscontext.cpp; sourceTree = "<group>"; };
 		048255F706F16299008A283F /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		048399DD08ED2FDC008505C3 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = /System/Library/Frameworks/WebKit.framework; sourceTree = "<absolute>"; };
 		04878D3C061AB9A5008573FA /* systemTestSettings.xml */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = systemTestSettings.xml; sourceTree = "<group>"; };
@@ -2063,6 +2117,8 @@
 		04984769058DE47100D855A9 /* string_util.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = string_util.cpp; sourceTree = "<group>"; };
 		049F6F4B061430590082B27A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		04A107720748E0A6002EA347 /* factory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = factory.h; sourceTree = "<group>"; };
+		04A156510BA6FA1D00E09D93 /* scripting.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = scripting.h; sourceTree = "<group>"; };
+		04A1566C0BA6FD5700E09D93 /* scripting.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = scripting.cpp; sourceTree = "<group>"; };
 		04AC5D0A05FF6C04003CD4DC /* document.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = document.cpp; sourceTree = "<group>"; };
 		04AD6622060A5A9200487334 /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pause.png; sourceTree = "<group>"; };
 		04AD6623060A5A9200487334 /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play.png; sourceTree = "<group>"; };
@@ -2241,9 +2297,6 @@
 				04600F570894FA9A00B553A2 /* libUsageEnvironment.a in Frameworks */,
 				048399E108ED2FDD008505C3 /* WebKit.framework in Frameworks */,
 				043FA58F097275AB007EA0C2 /* AudioUnit.framework in Frameworks */,
-				04A4F66E0A35CF4E004099A9 /* libavformat.a in Frameworks */,
-				04A4F66F0A35CF54004099A9 /* libavcodec.a in Frameworks */,
-				04A4F6700A35CF62004099A9 /* libavutil.a in Frameworks */,
 				04608D7F0B2833CE002D844C /* QTKit.framework in Frameworks */,
 				04608D800B2833CE002D844C /* AudioUnit.framework in Frameworks */,
 				04608D810B2833CE002D844C /* WebKit.framework in Frameworks */,
@@ -2253,6 +2306,9 @@
 				04608D850B2833CE002D844C /* IOKit.framework in Frameworks */,
 				04608D860B2833CE002D844C /* Carbon.framework in Frameworks */,
 				04608D870B2833CE002D844C /* Cocoa.framework in Frameworks */,
+				04A554A40BBBF708002A147A /* libavcodec.a in Frameworks */,
+				04A554A50BBBF718002A147A /* libavformat.a in Frameworks */,
+				04A554A60BBBF724002A147A /* libavutil.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2349,6 +2405,7 @@
 		042AF8F8053C2F020010C447 /* common */ = {
 			isa = PBXGroup;
 			children = (
+				04A1566C0BA6FD5700E09D93 /* scripting.cpp */,
 				047846AF0989710800A3E39F /* gui_player.cpp */,
 				04F8447F0986E7CA00398A72 /* factory.cpp */,
 				0471BDAE089E272700C44EA0 /* renderer_impl.cpp */,
@@ -2391,6 +2448,7 @@
 		04382ABC05D7AEE600CFA029 /* common */ = {
 			isa = PBXGroup;
 			children = (
+				04A156510BA6FA1D00E09D93 /* scripting.h */,
 				047846B60989712000A3E39F /* gui_player.h */,
 				0471BD6C089E23E700C44EA0 /* smil_handler.h */,
 				0471BD68089E23CF00C44EA0 /* renderer_impl.h */,
@@ -2473,6 +2531,7 @@
 		04382B0F05D7AEE600CFA029 /* cocoa */ = {
 			isa = PBXGroup;
 			children = (
+				043EA8570BB01610009C20D2 /* cocoa_smiltext.h */,
 				046ECCF70B9DB9DA002E50E6 /* cocoa_ink.h */,
 				042EBB4408EC849700DB2F0E /* cocoa_html.h */,
 				046C3FA40676052300F22EF7 /* cocoa_renderer.h */,
@@ -2600,6 +2659,7 @@
 		04382B8605D7AEE600CFA029 /* smil2 */ = {
 			isa = PBXGroup;
 			children = (
+				041C3C400BB09520002E9997 /* smiltext.h */,
 				042125B007A7DFD300D20F9D /* params.h */,
 				049580E90652BBF000CDAB3B /* time_nctx.h */,
 				049580EA0652BBF000CDAB3B /* time_sched.h */,
@@ -2653,6 +2713,7 @@
 		0444D324051F2EEF0010C447 /* cocoa */ = {
 			isa = PBXGroup;
 			children = (
+				043EA8620BB01656009C20D2 /* cocoa_smiltext.mm */,
 				046ECCFF0B9DB9F6002E50E6 /* cocoa_ink.mm */,
 				042EBB4A08EC84B500DB2F0E /* cocoa_html.mm */,
 				046C3FA60676062900F22EF7 /* cocoa_renderer.mm */,
@@ -2682,6 +2743,7 @@
 		0444D328051F2EEF0010C447 /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				048142AA0BAEAB0A006A8BF1 /* nscontext.cpp */,
 				042125D607A7EBF900D20F9D /* event_processor.cpp */,
 				04C65256071FC0AF001E3C7B /* parser_factory.cpp */,
 				04E976BB067FA5F500AE60D0 /* gpaths.cpp */,
@@ -2766,6 +2828,7 @@
 		04EA7C3E05D7C48600487047 /* smil2 */ = {
 			isa = PBXGroup;
 			children = (
+				041C3C350BB094EA002E9997 /* smiltext.cpp */,
 				042125AD07A7DFBE00D20F9D /* params.cpp */,
 				049580E70652BBD500CDAB3B /* time_sched.cpp */,
 				04E6A8A4064A863000763D79 /* animate_a.cpp */,
@@ -3057,6 +3120,9 @@
 				047846B80989712000A3E39F /* gui_player.h in Headers */,
 				046B0A43098E75E200A7D964 /* node_impl.h in Headers */,
 				046ECCFD0B9DB9DA002E50E6 /* cocoa_ink.h in Headers */,
+				04A156570BA6FA1D00E09D93 /* scripting.h in Headers */,
+				043EA85D0BB01610009C20D2 /* cocoa_smiltext.h in Headers */,
+				041C3C460BB09520002E9997 /* smiltext.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3195,6 +3261,9 @@
 				046B0A46098E75E200A7D964 /* node_impl.h in Headers */,
 				046E9BDA09C066850084E401 /* smil_handler.h in Headers */,
 				046ECCF80B9DB9DA002E50E6 /* cocoa_ink.h in Headers */,
+				04A156520BA6FA1D00E09D93 /* scripting.h in Headers */,
+				043EA8580BB01610009C20D2 /* cocoa_smiltext.h in Headers */,
+				041C3C420BB09520002E9997 /* smiltext.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3331,6 +3400,9 @@
 				046B0A45098E75E200A7D964 /* node_impl.h in Headers */,
 				046E9BD909C066840084E401 /* smil_handler.h in Headers */,
 				046ECCFA0B9DB9DA002E50E6 /* cocoa_ink.h in Headers */,
+				04A156540BA6FA1D00E09D93 /* scripting.h in Headers */,
+				043EA85A0BB01610009C20D2 /* cocoa_smiltext.h in Headers */,
+				041C3C430BB09520002E9997 /* smiltext.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3469,6 +3541,9 @@
 				047846B90989712000A3E39F /* gui_player.h in Headers */,
 				046B0A44098E75E200A7D964 /* node_impl.h in Headers */,
 				046ECCFC0B9DB9DA002E50E6 /* cocoa_ink.h in Headers */,
+				04A156560BA6FA1D00E09D93 /* scripting.h in Headers */,
+				043EA85C0BB01610009C20D2 /* cocoa_smiltext.h in Headers */,
+				041C3C450BB09520002E9997 /* smiltext.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3605,6 +3680,9 @@
 				047846BA0989712000A3E39F /* gui_player.h in Headers */,
 				046B0A41098E75E200A7D964 /* node_impl.h in Headers */,
 				046ECCFB0B9DB9DA002E50E6 /* cocoa_ink.h in Headers */,
+				04A156550BA6FA1D00E09D93 /* scripting.h in Headers */,
+				043EA85B0BB01610009C20D2 /* cocoa_smiltext.h in Headers */,
+				041C3C440BB09520002E9997 /* smiltext.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3741,6 +3819,9 @@
 				04D3359B0992B50200BAEEA7 /* node_impl.h in Headers */,
 				046E9BDB09C066860084E401 /* smil_handler.h in Headers */,
 				046ECCF90B9DB9DA002E50E6 /* cocoa_ink.h in Headers */,
+				04A156530BA6FA1D00E09D93 /* scripting.h in Headers */,
+				043EA8590BB01610009C20D2 /* cocoa_smiltext.h in Headers */,
+				041C3C410BB09520002E9997 /* smiltext.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3877,6 +3958,9 @@
 				047846B70989712000A3E39F /* gui_player.h in Headers */,
 				046B0A42098E75E200A7D964 /* node_impl.h in Headers */,
 				046ECCFE0B9DB9DA002E50E6 /* cocoa_ink.h in Headers */,
+				04A156580BA6FA1D00E09D93 /* scripting.h in Headers */,
+				043EA85E0BB01610009C20D2 /* cocoa_smiltext.h in Headers */,
+				041C3C470BB09520002E9997 /* smiltext.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4379,6 +4463,10 @@
 				04F844810986E7CA00398A72 /* factory.cpp in Sources */,
 				047846B10989710900A3E39F /* gui_player.cpp in Sources */,
 				046ECD050B9DB9F6002E50E6 /* cocoa_ink.mm in Sources */,
+				04A156720BA6FD5700E09D93 /* scripting.cpp in Sources */,
+				048142B00BAEAB0A006A8BF1 /* nscontext.cpp in Sources */,
+				043EA8680BB01656009C20D2 /* cocoa_smiltext.mm in Sources */,
+				041C3C3B0BB094EA002E9997 /* smiltext.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4475,6 +4563,10 @@
 				04F844850986E7CA00398A72 /* factory.cpp in Sources */,
 				047846B50989710900A3E39F /* gui_player.cpp in Sources */,
 				046ECD000B9DB9F6002E50E6 /* cocoa_ink.mm in Sources */,
+				04A1566D0BA6FD5700E09D93 /* scripting.cpp in Sources */,
+				048142AB0BAEAB0A006A8BF1 /* nscontext.cpp in Sources */,
+				043EA8630BB01656009C20D2 /* cocoa_smiltext.mm in Sources */,
+				041C3C370BB094EA002E9997 /* smiltext.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4569,6 +4661,10 @@
 				04F844840986E7CA00398A72 /* factory.cpp in Sources */,
 				047846B40989710900A3E39F /* gui_player.cpp in Sources */,
 				046ECD020B9DB9F6002E50E6 /* cocoa_ink.mm in Sources */,
+				04A1566F0BA6FD5700E09D93 /* scripting.cpp in Sources */,
+				048142AD0BAEAB0A006A8BF1 /* nscontext.cpp in Sources */,
+				043EA8650BB01656009C20D2 /* cocoa_smiltext.mm in Sources */,
+				041C3C380BB094EA002E9997 /* smiltext.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4665,6 +4761,10 @@
 				04F844820986E7CA00398A72 /* factory.cpp in Sources */,
 				047846B20989710900A3E39F /* gui_player.cpp in Sources */,
 				046ECD040B9DB9F6002E50E6 /* cocoa_ink.mm in Sources */,
+				04A156710BA6FD5700E09D93 /* scripting.cpp in Sources */,
+				048142AF0BAEAB0A006A8BF1 /* nscontext.cpp in Sources */,
+				043EA8670BB01656009C20D2 /* cocoa_smiltext.mm in Sources */,
+				041C3C3A0BB094EA002E9997 /* smiltext.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4759,6 +4859,10 @@
 				04F844830986E7CA00398A72 /* factory.cpp in Sources */,
 				047846B30989710900A3E39F /* gui_player.cpp in Sources */,
 				046ECD030B9DB9F6002E50E6 /* cocoa_ink.mm in Sources */,
+				04A156700BA6FD5700E09D93 /* scripting.cpp in Sources */,
+				048142AE0BAEAB0A006A8BF1 /* nscontext.cpp in Sources */,
+				043EA8660BB01656009C20D2 /* cocoa_smiltext.mm in Sources */,
+				041C3C390BB094EA002E9997 /* smiltext.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4853,6 +4957,10 @@
 				04D336030992B50200BAEEA7 /* factory.cpp in Sources */,
 				04D336040992B50200BAEEA7 /* gui_player.cpp in Sources */,
 				046ECD010B9DB9F6002E50E6 /* cocoa_ink.mm in Sources */,
+				04A1566E0BA6FD5700E09D93 /* scripting.cpp in Sources */,
+				048142AC0BAEAB0A006A8BF1 /* nscontext.cpp in Sources */,
+				043EA8640BB01656009C20D2 /* cocoa_smiltext.mm in Sources */,
+				041C3C360BB094EA002E9997 /* smiltext.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4947,6 +5055,10 @@
 				04F844800986E7CA00398A72 /* factory.cpp in Sources */,
 				047846B00989710800A3E39F /* gui_player.cpp in Sources */,
 				046ECD060B9DB9F6002E50E6 /* cocoa_ink.mm in Sources */,
+				04A156730BA6FD5700E09D93 /* scripting.cpp in Sources */,
+				048142B10BAEAB0A006A8BF1 /* nscontext.cpp in Sources */,
+				043EA8690BB01656009C20D2 /* cocoa_smiltext.mm in Sources */,
+				041C3C3C0BB094EA002E9997 /* smiltext.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5433,8 +5545,9 @@
 					../../include,
 					"../../third_party_packages/expat-unix/include",
 					/usr/local/include/SDL,
-					"../../third_party_packages/ffmpeg-0.4.8/libavcodec",
-					"../../third_party_packages/ffmpeg-0.4.8/libavformat",
+					"../../third_party_packages/ffmpeg-universal/libavcodec",
+					"../../third_party_packages/ffmpeg-universal/libavutil",
+					"../../third_party_packages/ffmpeg-universal/libavformat",
 					../../third_party_packages/live/liveMedia/include,
 					../../third_party_packages/live/UsageEnvironment/include,
 					../../third_party_packages/live/groupsock/include,
@@ -5446,8 +5559,9 @@
 				LIBRARY_SEARCH_PATHS = (
 					/usr/lib/gcc/darwin/3.3,
 					"../../third_party_packages/expat-unix/lib",
-					"../../third_party_packages/ffmpeg-0.4.8/libavformat",
-					"../../third_party_packages/ffmpeg-0.4.8/libavcodec",
+					"../../third_party_packages/ffmpeg-universal/libavformat",
+					"../../third_party_packages/ffmpeg-universal/libavutil",
+					"../../third_party_packages/ffmpeg-universal/libavcodec",
 					"../../third_party_packages/xerces-unix/lib",
 					/Users/jack/src/ambulant/third_party_packages/live/liveMedia,
 					/Users/jack/src/ambulant/third_party_packages/live/BasicUsageEnvironment,
@@ -5456,10 +5570,16 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_5)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_6)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavformat\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavcodec\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavutil\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavcodec\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_5 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavformat\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_6 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavutil\"";
 				LIBRARY_STYLE = Static;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OPTIMIZATION_CFLAGS = "-O0";
@@ -5544,10 +5664,16 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_5)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_6)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavformat\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavcodec\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavutil\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavcodec\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_5 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavformat\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_6 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavutil\"";
 				LIBRARY_STYLE = Static;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
@@ -5629,10 +5755,16 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_5)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_6)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavformat\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavcodec\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavutil\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavcodec\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_5 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavformat\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_6 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavutil\"";
 				LIBRARY_STYLE = Static;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
@@ -6475,6 +6607,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = cocoambulant_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					"WITH_SMIL30=1",
 					"WITH_EXTERNAL_DOM=1",
 					"WITH_LTDL_PLUGINS=1",
 					"AM_PREFER_FFMPEG=1",

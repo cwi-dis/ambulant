@@ -68,7 +68,7 @@ class AmbulantDocumentPlayer:
         window_f = WrapWindowFactory(real_window_f)
         parser_f = ambulant.get_parser_factory()
         datasource_f = ambulant.datasource_factory()
-        datasource_f.add_raw_factory(ambulant.get_stdio_datasource_factory())
+        datasource_f.add_raw_factory(ambulant.get_ffmpeg_raw_datasource_factory())
         real_playable_f = ambulant.get_global_playable_factory()
         playable_f = WrapPlayableFactory(real_playable_f)
         self.factories = (playable_f, window_f, datasource_f, parser_f)

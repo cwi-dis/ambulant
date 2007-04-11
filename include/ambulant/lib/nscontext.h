@@ -32,6 +32,7 @@
 #include "ambulant/lib/sax_types.h"
 
 #include <map>
+#include <set>
 
 namespace ambulant {
 
@@ -50,17 +51,29 @@ class nscontext {
 	// Return true if long name uri is known.
 	bool is_known_namespace(const xml_string& uri) const;
 	
+	/// Return true if short name prefix is known and supported.
+	bool is_supported_prefix(const xml_string& prefix) const;
+	
+	// Return true if long name uri is supported.
+	bool is_supported_namespace(const xml_string& uri) const;
+	
 	/// Return the uri for a given short name prefix (or NULL).
-	const char* get_namespace(const xml_string& prefix) const;
+	const xml_string& get_namespace(const xml_string& prefix) const;
 	
 	/// Return the uri for the default name space.
-	const char* get_default_namespace() const;
+	const xml_string& get_default_namespace() const;
 	 
 	/// Return the short name for a given uri.
-	const char* get_namespace_prefix(const xml_string& uri) const;
+	const xml_string& get_namespace_prefix(const xml_string& uri) const;
+	
+	/// Add a namespace that the player understands natively
+	static void add_supported_namespace(const char *uri);
+	
+	/// Add all the standard supported namespaces
+	static void init_supported_namespaces();
 	
 	/// Convenience function version of get_namespace_prefix method.
-	static const char* 
+	static const xml_string& 
 	get_namespace_prefix(const nscontext *p, const xml_string& uri);
 	
 	/// Return map of short names to long names.
@@ -73,7 +86,10 @@ class nscontext {
 	
   private:
 	std::map<xml_string, xml_string> m_pre2uri;
-	std::map<xml_string, xml_string> m_uri2pre;  
+	std::map<xml_string, xml_string> m_uri2pre;
+	
+	static xml_string s_empty;
+	static std::set<xml_string> *s_supported_namespaces;
 };
 
 
@@ -82,14 +98,14 @@ inline void nscontext::set_prefix_mapping(const xml_string& prefix, const xml_st
 	m_uri2pre[uri] = prefix;
 }
 
-inline const char* nscontext::get_namespace(const xml_string& prefix) const {
+inline const xml_string& nscontext::get_namespace(const xml_string& prefix) const {
 	std::map<xml_string, xml_string>::const_iterator it = m_pre2uri.find(prefix);
-	return (it == m_pre2uri.end())?0:(*it).second.c_str();
+	return (it == m_pre2uri.end())?s_empty:(*it).second;
 }
 
-inline const char* nscontext::get_default_namespace() const {
+inline const xml_string& nscontext::get_default_namespace() const {
 	std::map<xml_string, xml_string>::const_iterator it = m_pre2uri.find(xml_string());
-	return (it == m_pre2uri.end())?0:(*it).second.c_str();
+	return (it == m_pre2uri.end())?s_empty:(*it).second;
 }
 
 inline bool nscontext::is_known_prefix(const xml_string& prefix) const {
@@ -102,15 +118,28 @@ inline bool nscontext::is_known_namespace(const xml_string& uri) const {
 	return it != m_uri2pre.end();
 }
 
-inline const char* nscontext::get_namespace_prefix(const xml_string& uri) const {
+inline const xml_string& nscontext::get_namespace_prefix(const xml_string& uri) const {
 	std::map<xml_string, xml_string>::const_iterator it = m_uri2pre.find(uri);
-	return (it == m_uri2pre.end())?0:(*it).second.c_str();
+	return (it == m_uri2pre.end())?s_empty:(*it).second;
+}
+
+/// Return true if short name prefix is known and supported.
+inline bool nscontext::is_supported_prefix(const xml_string& prefix) const {
+	std::map<xml_string, xml_string>::const_iterator it = m_pre2uri.find(prefix);
+	if (it == m_pre2uri.end()) return false;
+	return is_supported_namespace((*it).second);
+}
+
+// Return true if long name uri is supported.
+inline bool nscontext::is_supported_namespace(const xml_string& uri) const {
+	if (s_supported_namespaces == NULL) init_supported_namespaces();
+	return s_supported_namespaces->find(uri) != s_supported_namespaces->end();
 }
 
 // static
-inline const char* 
+inline const xml_string& 
 nscontext::get_namespace_prefix(const nscontext *p, const xml_string& uri) {
-	return p?p->get_namespace_prefix(uri):0;
+	return p?p->get_namespace_prefix(uri):s_empty;
 }
 
 } // namespace lib

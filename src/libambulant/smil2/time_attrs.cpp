@@ -262,6 +262,10 @@ void time_attrs::parse_sync_list(
 			parse_wallclock(*it, svs, svslist);
 		} else if(starts_with((*it), "accesskey")) {
 			parse_accesskey(*it, svs, svslist);
+#ifdef WITH_SMIL30
+		} else if(starts_with((*it), "stateChange")) {
+			parse_statechange(*it, svs, svslist);
+#endif // WITH_SMIL30
 		} else if((*it) == "indefinite") {
 			svs.type = sv_indefinite;
 			svs.offset = time_type::indefinite();
@@ -292,6 +296,32 @@ void time_attrs::parse_wallclock(const std::string& s, sync_value_struct& svs, s
 	m_logger->warn(gettext("Ignoring wallclock in document"));
 	//sl.push_back(svs);	
 }
+
+#ifdef WITH_SMIL30
+// statechange-value  ::= "stateChange(" ref ")"
+void time_attrs::parse_statechange(const std::string& s, sync_value_struct& svs, sync_list& sl) {
+	// state-change-value
+	svs.type = sv_state_change;
+//	svs.base = nmtoken.substr(0, last_dot_ix);
+//	event = "statechange";
+	bool succeeded = false;
+	size_type open_par_ix = s.find('(');
+	size_type close_par_ix = s.find(')');
+	if(open_par_ix != std::string::npos && close_par_ix != std::string::npos) {
+		svs.sparam = trim(s.substr(open_par_ix+1, close_par_ix - open_par_ix - 1));
+		succeeded = true;
+	}
+	if(!succeeded) {
+		m_logger->trace("%s[%s].%s invalid stateChange [%s]", 
+			m_tag.c_str(), m_id.c_str(), time_spec_id(sl), s.c_str());
+		m_logger->warn(gettext("Error in SMIL timing info in document"));
+		return;
+	}	
+	AM_DBG m_logger->debug("%s[%s].%s += [%s] (for state-variable %d)", 
+		m_tag.c_str(), m_id.c_str(), time_spec_id(sl), repr(svs).c_str(), svs.sparam.c_str());
+	sl.push_back(svs);
+}
+#endif // WITH_SMIL30
 
 // Accesskey-value  ::= "accesskey(" character ")" ( S? ("+"|"-") S? Clock-value )? 
 void time_attrs::parse_accesskey(const std::string& s, sync_value_struct& svs, sync_list& sl) {
@@ -681,6 +711,9 @@ std::string smil2::repr(sync_value_type sv) {
 		case sv_repeat: return "repeat";
 		case sv_accesskey: return "accesskey";
 		case sv_media_marker: return "marker";
+#ifdef WITH_SMIL30
+		case sv_state_change: return "statechange";
+#endif
 		case sv_wallclock: return "wallclock";
 		case sv_indefinite: return "indefinite";
 	}

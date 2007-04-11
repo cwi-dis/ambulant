@@ -699,6 +699,9 @@ void time_node::activate(qtime_type timestamp) {
 	// Start node
 	if(!paused()) {
 		if(is_animation()) start_animation(sd_offset);
+#ifdef WITH_SMIL30
+		else if(is_statecommand()) start_statecommand(sd_offset);
+#endif // WITH_SMIL30
 		else start_playable(sd_offset);
 		if(m_timer) m_timer->resume();
 	}
@@ -721,20 +724,74 @@ void time_node::stop_animation() {
 	ae->stopped((animate_node*)this);
 }
 
+#ifdef WITH_SMIL30
+void time_node::start_statecommand(time_type offset) {
+	qtime_type timestamp(this, offset);
+	AM_DBG m_logger->debug("%s[%s].start_statecommand(%ld) DT:%ld", m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str(), offset(), timestamp.as_doc_time_value());
+	/* XXXJACK Inline implementation should go somewhere else, at some point */
+	common::script_component *sc = m_node->get_context()->get_state();
+	if (!sc) {
+		lib::logger::get_logger()->trace("%s: no state engine, ignoring", m_node->get_sig().c_str());
+		return;
+	}
+	std::string tag = m_node->get_local_name();
+	if (tag == "setvalue") {
+		const char *ref = m_node->get_attribute("ref");
+		if (!ref) {
+			lib::logger::get_logger()->trace("%s: missing required ref attribute", m_node->get_sig().c_str());
+			return;
+		}
+		const char *value = m_node->get_attribute("value");
+		if (!value) {
+			lib::logger::get_logger()->trace("%s: missing required value attribute", m_node->get_sig().c_str());
+			return;
+		}
+		sc->set_value(ref, value);
+		// XXXJACK Raising the state_change_event here is also a bit of a hack
+		time_node *root = get_root();
+		assert(root);
+		root->raise_state_change(std::pair<qtime_type, std::string>(timestamp, ref));
+	} else if (tag == "send") {
+		const char *submission = m_node->get_attribute("submission");
+		if (!submission) {
+			lib::logger::get_logger()->trace("%s: missing required submission attribute", m_node->get_sig().c_str());
+			return;
+		}
+	} else {
+		assert(0);
+	}
+}
+#endif // WITH_SMIL30
+
 // Returns true when this node is associated with a playable
 bool time_node::is_playable() const {
+#ifdef WITH_SMIL30
+	return !is_time_container() && !is_animation() && !is_statecommand();
+#else
 	return !is_time_container() && !is_animation();
+#endif
 }
 
 // Returns true when this node is an animation
 bool time_node::is_animation() const {
 	const common::schema *sch = common::schema::get_instance();
 	AM_DBG lib::logger::get_logger()->debug("is_animation: 0x%x %s\n", m_node, m_node->get_sig().c_str());
-	const lib::q_name_pair& qn = m_node->get_qname();
+	const lib::xml_string& qn = m_node->get_local_name();
 	AM_DBG lib::logger::get_logger()->debug("is_animation: 0x%x %s ok\n", m_node, m_node->get_sig().c_str());
 	return sch->is_animation(qn);
 }
 
+#ifdef WITH_SMIL30
+// Returns true when this node is a state command
+bool time_node::is_statecommand() const {
+	const common::schema *sch = common::schema::get_instance();
+	AM_DBG lib::logger::get_logger()->debug("is_statecommand: 0x%x %s\n", m_node, m_node->get_sig().c_str());
+	const lib::xml_string& qn = m_node->get_local_name();
+	AM_DBG lib::logger::get_logger()->debug("is_statecommand: 0x%x %s ok\n", m_node, m_node->get_sig().c_str());
+	return sch->is_statecommand(qn);
+}
+#endif // WITH_SMIL30
 //////////////////////////
 // Playables shell
 
@@ -993,7 +1050,11 @@ bool time_node::end_cond(qtime_type timestamp) {
 	// e) due to not controled delays the video is still playing
 	
 	bool specified_dur = m_attrs.specified_dur() || m_attrs.specified_rdur();
-	if(is_cmedia() && !is_animation() && tc && !specified_dur && m_time_calc->uses_dur()) {
+	if(is_cmedia() && !is_animation() 
+#ifdef WITH_SMIL30
+			&& !is_statecommand()
+#endif
+			&& tc && !specified_dur && m_time_calc->uses_dur()) {
 		if(m_context->wait_for_eom() && !m_eom_flag) {
 			tc = false;
 			AM_DBG m_logger->debug("%s[%s].end_cond() waiting media end", 
@@ -1353,6 +1414,9 @@ void time_node::remove(qtime_type timestamp) {
 			(*it)->remove(qt);
 	} 
 	if(is_animation()) stop_animation();
+#ifdef WITH_SMIL30
+	/* else nothing to do for statecommands */
+#endif
 	else if(is_playable()) stop_playable();
 	if(m_timer) m_timer->stop();
 	m_needs_remove = false;
@@ -1465,6 +1529,81 @@ void time_node::on_add_instance(qtime_type timestamp, smil2::sync_event ev,
 		}
 	}
 }
+
+#ifdef WITH_SMIL30
+// XXXJACK I *know* this can be done with templates, but how: this method is
+// 100% identical to the previous one.
+// Update dependents for an event instance
+// Asserts that the same event is not used to update the same element twice.
+void time_node::on_add_instance(qtime_type timestamp, smil2::sync_event ev, 
+	time_node::time_type instance, std::string data, time_node *filter) {
+	dependency_map::iterator dit = m_dependents.find(ev);
+	if(dit == m_dependents.end() || (*dit).second == 0) {
+		AM_DBG m_logger->debug("No dependents for on_add_instance event on 0x%x", (void*)this);
+		// no dependents
+		return;
+	}
+	
+	// List of rules to update 
+	rule_list *p = (*dit).second;
+	
+	// Set of dependents
+	std::set<time_node*> dset;
+	
+	// 1. add event to not active
+	// 1.1 begin
+	rule_list::iterator it;
+	for(it=p->begin();it!=p->end();it++) {
+		time_node* owner = (*it)->get_target();
+		AM_DBG m_logger->debug("%s[%s 0x%x].on_add_instance() --> %s[%s 0x%x]", 
+			m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), (void*)this,
+			owner->get_time_attrs()->get_tag().c_str(), owner->get_time_attrs()->get_id().c_str(),
+			(void*)owner); 
+		rule_type rt = (*it)->get_target_attr();
+		if(!owner->is_active() && rt == rt_begin && dset.find(owner) == dset.end()) {
+			if(!filter || !nnhelper::is_descendent(owner, filter)) {
+				(*it)->add_instance(timestamp, instance, data);
+				dset.insert(owner);
+			}
+		}
+	}
+	// 1.2 end
+	for(it=p->begin();it!=p->end();it++) {
+		time_node* owner = (*it)->get_target();
+		rule_type rt = (*it)->get_target_attr();
+		if(!owner->is_active() && rt == rt_end && dset.find(owner) == dset.end()) {
+			if(!filter || !nnhelper::is_descendent(owner, filter)) {
+				(*it)->add_instance(timestamp, instance, data);
+				dset.insert(owner);
+			}
+		}
+	}
+	
+	// 2. add event to active
+	// 2.1 end
+	for(it=p->begin();it!=p->end();it++) {
+		time_node* owner = (*it)->get_target();
+		rule_type rt = (*it)->get_target_attr();
+		if(owner->is_active() && rt == rt_end && dset.find(owner) == dset.end()) {
+			if(!filter || !nnhelper::is_descendent(owner, filter)) {
+				(*it)->add_instance(timestamp, instance, data);
+				dset.insert(owner);
+			}
+		}
+	}
+	// 2.2 begin
+	for(it=p->begin();it!=p->end();it++) {
+		time_node* owner = (*it)->get_target();
+		rule_type rt = (*it)->get_target_attr();
+		if(owner->is_active() && rt == rt_begin && dset.find(owner) == dset.end()) {
+			if(!filter || !nnhelper::is_descendent(owner, filter)) {
+				(*it)->add_instance(timestamp, instance, data);
+				dset.insert(owner);
+			}
+		}
+	}
+}
+#endif // WITH_SMIL30
 
 ////////////////////
 // Raising events: 
@@ -1612,13 +1751,30 @@ void time_node::raise_accesskey(std::pair<qtime_type, int> accesskey) {
 	qtime_type timestamp = accesskey.first;
 	int ch = accesskey.second;
 	timestamp.to_descendent(sync_node());
-	AM_DBG m_logger->debug("%s[%s].raise_activate_event() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->debug("%s[%s].raise_accesskey_event(%c) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), 
+		ch,
 		timestamp.as_time_value_down_to(this),
 		timestamp.second(), 
 		timestamp.as_doc_time_value());
 	on_add_instance(timestamp, accesskey_event, timestamp.second, ch);
 }
+
+#ifdef WITH_SMIL30
+void time_node::raise_state_change(std::pair<qtime_type, std::string> statearg) {
+	qtime_type timestamp = statearg.first;
+	std::string statevar = statearg.second;
+	timestamp.to_ancestor(sync_node());
+	// ??timestamp.to_node
+	AM_DBG m_logger->debug("%s[%s].raise_state_change_event(%s) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str(),
+		statevar.c_str(),
+		timestamp.as_time_value_down_to(this),
+		timestamp.second(), 
+		timestamp.as_doc_time_value());
+	on_add_instance(timestamp, state_change_event, timestamp.second, statevar);
+}
+#endif
 
 void time_node::raise_update_event(qtime_type timestamp) {
 	m_update_event.first = true;

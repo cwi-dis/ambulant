@@ -135,7 +135,7 @@ common::surface *
 mms_layout_manager::get_surface(const lib::node *node)
 {
 	common::surface *rgn;
-	lib::xml_string tag = node->get_qname().second;
+	lib::xml_string tag = node->get_local_name();
 	if (tag == "img" || tag == "video") rgn = m_image_rgn->activate();
 	else if ( tag == "text") rgn = m_text_rgn->activate();
 	else if ( tag == "audio") rgn = m_audio_rgn->activate();

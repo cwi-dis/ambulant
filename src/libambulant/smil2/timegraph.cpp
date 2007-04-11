@@ -181,17 +181,17 @@ time_node*
 timegraph::create_time_node(const node* n, time_node* tparent) const {
 	time_node *tn = 0;
 	time_container_type tct =
-		m_schema->get_time_type(n->get_qname());
+		m_schema->get_time_type(n->get_local_name());
 	if(tct == tc_seq) 
 		tn = new seq(m_context, n);
 	else if(tct == tc_par) 
 		tn = new par(m_context, n);
 	else if(tct == tc_excl) 
 		tn = new excl(m_context, n);
-	else if(m_schema->is_animation(n->get_qname())) 
+	else if(m_schema->is_animation(n->get_local_name())) 
 		tn = animate_node::new_instance(m_context, n, tparent->dom_node());
 	else 
-		tn = new time_node(m_context, n, tc_none, m_schema->is_discrete(n->get_qname()));
+		tn = new time_node(m_context, n, tc_none, m_schema->is_discrete(n->get_local_name()));
 	(*m_dom2tn)[n->get_numid()] = tn;
 	return tn;
 }
@@ -349,6 +349,12 @@ void timegraph::add_begin_sync_rules(time_node *tn) {
 			tn->want_accesskey(true);
 			sync_rule *sr = new event_rule(m_root, accesskey_event, svs.offset, svs.iparam);
 			tn->add_begin_rule(sr);
+#ifdef WITH_SMIL30
+		} else if(svs.type == sv_state_change) {
+			AM_DBG m_logger->debug("Adding state change event to 0x%x\n", m_root);
+			sync_rule *sr = new event_rule(m_root, state_change_event, svs.offset, svs.sparam);
+			tn->add_begin_rule(sr);
+#endif // WITH_SMIL30
 		} else if(svs.type == sv_media_marker) {
 			sync_rule *sr = new event_rule(tn, tn_marker_event, svs.offset, svs.sparam);
 			tn->add_begin_rule(sr);
@@ -422,6 +428,11 @@ void timegraph::add_end_sync_rules(time_node *tn) {
 			tn->want_accesskey(true);
 			sync_rule *sr = new event_rule(m_root, accesskey_event, svs.offset, svs.iparam);
 			tn->add_end_rule(sr);
+#ifdef WITH_SMIL30
+		} else if(svs.type == sv_state_change) {
+			sync_rule *sr = new event_rule(m_root, state_change_event, svs.offset, svs.sparam);
+			tn->add_end_rule(sr);
+#endif
 		} else if(svs.type == sv_media_marker) {
 			sync_rule *sr = new event_rule(tn, tn_marker_event, svs.offset, svs.sparam);
 			tn->add_end_rule(sr);

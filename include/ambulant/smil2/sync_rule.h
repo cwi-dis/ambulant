@@ -64,6 +64,11 @@ enum sync_event {
 	// Media marker event
 	tn_marker_event,
 	
+#ifdef WITH_SMIL30
+	// State change event
+	state_change_event,
+#endif
+	
 	// DOM calls
 	tn_dom_call,
 	

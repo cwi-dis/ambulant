@@ -27,7 +27,9 @@
 #include "ambulant/common/gui_player.h"
 
 #define AMBULANT_PLUGIN_API_VERSION 2
- 
+#ifndef WITH_PYTHON_PLUGIN
+#define WITH_PYTHON_PLUGIN
+#endif
 namespace ambulant {
 
 namespace common {
@@ -62,7 +64,11 @@ class AMBULANTAPI plugin_engine {
 
 	/// Get extra-data for a named plugin, if available.
 	void *get_extra_data(std::string name);
-    
+	
+#ifdef WITH_PYTHON_PLUGIN
+	/// Get list of plugins that need the Python plugin.
+	const std::vector<std::string>& get_python_plugins() const { return m_python_plugins; }
+#endif
   private:
     
     plugin_engine();
@@ -72,6 +78,9 @@ class AMBULANTAPI plugin_engine {
     
     /// Load all plugins from directory dirname.
     void load_plugins(std::string dirname);
+	
+	/// Load a single plugin
+	void load_plugin(const char *filename);
 
 	/// The list of directories to search for plugins.
   	std::vector< std::string > m_plugindirs;
@@ -82,6 +91,15 @@ class AMBULANTAPI plugin_engine {
 	/// All available extra data.
 	std::map< std::string, plugin_extra_data* > m_extra_data;
     static plugin_engine *s_singleton;
+	
+#ifdef WITH_PYTHON_PLUGIN
+	/// The pathname of the engine for running the Python plugins
+	std::string m_python_plugin_engine;
+	
+	/// The pathnames of the plugins written in Python
+	std::vector<std::string> m_python_plugins;
+
+#endif // WITH_PYTHON_PLUGIN
 };
 
 }

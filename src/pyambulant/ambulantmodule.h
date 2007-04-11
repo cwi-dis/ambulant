@@ -112,6 +112,18 @@ extern int region_infoObj_Convert(PyObject *v, ambulant::common::region_info* *p
 extern PyObject *animation_destinationObj_New(ambulant::common::animation_destination* itself);
 extern int animation_destinationObj_Convert(PyObject *v, ambulant::common::animation_destination* *p_itself);
 
+extern PyObject *state_test_methodsObj_New(ambulant::common::state_test_methods* itself);
+extern int state_test_methodsObj_Convert(PyObject *v, ambulant::common::state_test_methods* *p_itself);
+
+extern PyObject *script_componentObj_New(ambulant::common::script_component* itself);
+extern int script_componentObj_Convert(PyObject *v, ambulant::common::script_component* *p_itself);
+
+extern PyObject *script_component_factoryObj_New(ambulant::common::script_component_factory* itself);
+extern int script_component_factoryObj_Convert(PyObject *v, ambulant::common::script_component_factory* *p_itself);
+
+extern PyObject *global_script_component_factoryObj_New(ambulant::common::global_script_component_factory* itself);
+extern int global_script_component_factoryObj_Convert(PyObject *v, ambulant::common::global_script_component_factory* *p_itself);
+
 extern PyObject *none_windowObj_New(ambulant::gui::none::none_window* itself);
 extern int none_windowObj_Convert(PyObject *v, ambulant::gui::none::none_window* *p_itself);
 

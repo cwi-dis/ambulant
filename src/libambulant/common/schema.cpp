@@ -34,6 +34,9 @@ static const char* time_containers[] = {
 };
 static const char* discrete_leafs[] = {
 	"text", "img", "ref", "brush"
+#ifdef WITH_SMIL30
+	, "smiltext"
+#endif
 };
 
 static const char* continuous_leafs[] = {
@@ -48,6 +51,11 @@ static const char* layout_elements[] = {
 	"root-layout", "topLayout", "region"
 };
 
+#ifdef WITH_SMIL30
+static const char* statecommand_elements[] = {
+	"setvalue", "send"
+};
+#endif // WITH_SMIL30
 // Create the smplest possible schema factory
 // Its sole purpose is to create privately the schema singleton.
 namespace ambulant {
@@ -93,6 +101,15 @@ schema::schema() {
 		m_animations.insert(animate_elements[i]);
 	}
 		
+#ifdef WITH_SMIL30
+	n = sizeof(statecommand_elements)/sizeof(const char *);
+	for(i =0;i<n;i++) {
+		m_time_elements.insert(statecommand_elements[i]);
+		m_discrete.insert(statecommand_elements[i]);
+		m_statecommands.insert(statecommand_elements[i]);
+	}
+#endif // WITH_SMIL30
+		
 	n = sizeof(layout_elements)/sizeof(const char *);
 	for(i=0; i<n; i++) {
 		m_layout_elements.insert(layout_elements[i]);
@@ -105,21 +122,27 @@ schema::~schema() {
 
 // Returns one of: tc_par | tc_seq | tc_excl | tc_none
 time_container_type 
-schema::get_time_type(const lib::q_name_pair& qname) const {
+schema::get_time_type(const lib::xml_string& tag) const {
 	time_container_type type = tc_none;
-	if(qname.second == "seq" || qname.second == "body") type = tc_seq;
-	else if(qname.second == "par") type = tc_par;
-	else if(qname.second == "excl") type = tc_excl;
+	if(tag == "seq" || tag == "body") type = tc_seq;
+	else if(tag == "par") type = tc_par;
+	else if(tag == "excl") type = tc_excl;
 	return type;
 }
 
-bool schema::is_discrete(const lib::q_name_pair& qname) const {
-	return m_discrete.find(qname.second) != m_discrete.end();
+bool schema::is_discrete(const lib::xml_string& tag) const {
+	return m_discrete.find(tag) != m_discrete.end();
 }
 
-bool schema::is_animation(const lib::q_name_pair& qname) const {
-	return m_animations.find(qname.second) != m_animations.end();
+bool schema::is_animation(const lib::xml_string& tag) const {
+	return m_animations.find(tag) != m_animations.end();
 }
+
+#ifdef WITH_SMIL30
+bool schema::is_statecommand(const lib::xml_string& tag) const {
+	return m_statecommands.find(tag) != m_statecommands.end();
+}
+#endif // WITH_SMIL30
 
 const char* 
 ambulant::common::time_container_type_as_str(time_container_type t) {
@@ -133,15 +156,15 @@ ambulant::common::time_container_type_as_str(time_container_type t) {
 
 // Returns one of: l_rootlayout, l_region or l_none
 layout_type 
-schema::get_layout_type(const lib::q_name_pair& qname) const {
+schema::get_layout_type(const lib::xml_string& tag) const {
 	layout_type type = l_none;
-	if(qname.second == "layout" ) type = l_layout;
-	else if(qname.second == "root-layout" ) type = l_rootlayout;
-	else if(qname.second == "topLayout") type = l_toplayout;
-	else if(qname.second == "region") type = l_region;
-	else if(qname.second == "regPoint") type = l_regpoint;
-	else if(m_discrete.find(qname.second) != m_discrete.end()) type = l_media;
-	else if(m_continuous.find(qname.second) != m_continuous.end()) type = l_media;
+	if(tag == "layout" ) type = l_layout;
+	else if(tag == "root-layout" ) type = l_rootlayout;
+	else if(tag == "topLayout") type = l_toplayout;
+	else if(tag == "region") type = l_region;
+	else if(tag == "regPoint") type = l_regpoint;
+	else if(m_discrete.find(tag) != m_discrete.end()) type = l_media;
+	else if(m_continuous.find(tag) != m_continuous.end()) type = l_media;
 	return type;
 }
 

@@ -51,7 +51,10 @@ enum sync_value_type {
 	sv_event, 
 	sv_repeat, 
 	sv_accesskey, 
-	sv_media_marker, 
+	sv_media_marker,
+#ifdef WITH_SMIL30
+	sv_state_change,
+#endif
 	sv_wallclock, 
 	sv_indefinite
 };
@@ -163,6 +166,9 @@ class time_attrs : public time_traits {
 	void parse_plain_offset(const std::string& s, sync_value_struct& svs, sync_list& sl);
 	void parse_wallclock(const std::string& s, sync_value_struct& svs, sync_list& sl);
 	void parse_accesskey(const std::string& s, sync_value_struct& svs, sync_list& sl);
+#ifdef WITH_SMIL30
+	void parse_statechange(const std::string& s, sync_value_struct& svs, sync_list& sl);
+#endif
 	void parse_nmtoken_offset(const std::string& s, sync_value_struct& svs, sync_list& sl); 
 	const sync_list& get_begin_list() const { return m_blist;}
 	const sync_list& get_end_list() const { return m_elist;}

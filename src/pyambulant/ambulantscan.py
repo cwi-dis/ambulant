@@ -29,6 +29,7 @@ def main():
         AMBULANT+ "common/playable.h",
         AMBULANT+ "common/player.h",
         AMBULANT+ "common/region_info.h",
+        AMBULANT+ "common/scripting.h",
         AMBULANT+ "gui/none/none_gui.h",
         AMBULANT+ "gui/qt/qt_factory.h",
         AMBULANT+ "gui/SDL/sdl_factory.h",
@@ -154,6 +155,12 @@ class MyScanner(CxxScanner):
             ('#ifdef WITH_AMBULANT_TEST', [
                 'new_default_subsurface',
                 
+                ]
+            ),
+            ('#ifdef WITH_SMIL30', [
+                'apply_avt',
+                'set_state',
+                'get_state',
                 ]
             ),
         ]

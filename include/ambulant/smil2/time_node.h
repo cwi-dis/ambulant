@@ -152,6 +152,9 @@ class time_node : public schedulable {
 	virtual void raise_focusin_event(qtime_type timestamp);
 	virtual void raise_focusout_event(qtime_type timestamp);
 	virtual void raise_accesskey(std::pair<qtime_type, int> accesskey);
+#ifdef WITH_SMIL30
+	virtual void raise_state_change(std::pair<qtime_type, std::string> statearg);
+#endif
 	virtual void raise_update_event(qtime_type timestamp);
 	
 	// Interval manipulators	
@@ -192,6 +195,10 @@ class time_node : public schedulable {
 	// Animations are special internal playables
 	void start_animation(time_type offset);
 	void stop_animation();
+#ifdef WITH_SMIL30
+	// State commands (setvalue, send) are special internal playables
+	void start_statecommand(time_type offset);
+#endif // WITH_SMIL30
 	
 	// Std xml tree navigation interface
 	const time_node *down() const { return m_child;}
@@ -270,6 +277,9 @@ class time_node : public schedulable {
 	bool is_a() const { return m_attrs.get_tag() == "a";}
 	bool is_link() const { return is_area() || is_a();}
 	bool is_animation() const;
+#ifdef WITH_SMIL30
+	bool is_statecommand() const;
+#endif
 	bool is_playable() const;
 
 	const time_attrs* get_time_attrs() const { return &m_attrs;}
@@ -307,6 +317,7 @@ class time_node : public schedulable {
 	void on_cancel_instance(qtime_type timestamp, sync_event ev, time_type instance, time_node *filter=0);
 	void on_update_instance(qtime_type timestamp, sync_event ev, time_type instance, time_type old_instance, time_node *filter=0);
 	void on_add_instance(qtime_type timestamp, sync_event ev, time_type instance, int data = 0, time_node *filter=0);
+	void on_add_instance(qtime_type timestamp, sync_event ev, time_type instance, std::string data, time_node *filter=0);
 		
 	// Returns the lifetime state handler object of this time node
 	time_state* get_state() { return m_state;}

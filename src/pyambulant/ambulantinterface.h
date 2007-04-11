@@ -22,6 +22,7 @@
 #include "ambulant/common/player.h"
 #include "ambulant/common/region_dim.h"
 #include "ambulant/common/region_info.h"
+#include "ambulant/common/scripting.h"
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/net/datasource.h"
 #include "ambulant/net/stdio_datasource.h"
@@ -63,13 +64,21 @@ public:
 	virtual ~node_context();
 
 	void set_prefix_mapping(const std::string& prefix, const std::string& uri);
-	const char * get_namespace_prefix(const ambulant::lib::xml_string& uri) const;
+	const ambulant::lib::xml_string& get_namespace_prefix(const ambulant::lib::xml_string& uri) const;
+	bool is_supported_prefix(const ambulant::lib::xml_string& prefix) const;
 	ambulant::net::url resolve_url(const ambulant::net::url& rurl) const;
 	const ambulant::lib::node* get_root() const;
 	const ambulant::lib::node* get_node(const std::string& idd) const;
+#ifdef WITH_SMIL30
+	ambulant::common::script_component* get_state() const;
+#endif
+#ifdef WITH_SMIL30
+	ambulant::lib::xml_string apply_avt(const ambulant::lib::xml_string& name, const ambulant::lib::xml_string& value) const;
+#endif
 	const custom_test_map* get_custom_tests() const { return NULL; }
   private:
 	PyObject *py_node_context;
+	ambulant::lib::xml_string get_namespace_prefix_rvkeepref;
 
 	friend PyObject *node_contextObj_New(ambulant::lib::node_context *itself);
 };
@@ -113,12 +122,12 @@ public:
 	void append_data(const ambulant::lib::xml_string& str);
 	void set_attribute(const char* name, const char* value);
 	void set_attribute(const char* name, const ambulant::lib::xml_string& value);
-	void set_namespace(const ambulant::lib::xml_string& ns);
 	const ambulant::lib::xml_string& get_namespace() const;
 	const ambulant::lib::xml_string& get_local_name() const;
 	const ambulant::lib::q_name_pair& get_qname() const;
 	int get_numid() const;
 	const ambulant::lib::xml_string& get_data() const;
+	bool is_data_node() const;
 	ambulant::lib::xml_string get_trimmed_data() const;
 	const char * get_attribute(const char* name) const;
 	const char * get_attribute(const std::string& name) const;
@@ -158,6 +167,7 @@ public:
 
 	ambulant::lib::node* new_node(const ambulant::lib::q_name_pair& qn, const ambulant::lib::q_attributes_list& qattrs, const ambulant::lib::node_context* ctx);
 	ambulant::lib::node* new_node(const ambulant::lib::node* other);
+	ambulant::lib::node* new_data_node(const char* data, int size);
 	ambulant::lib::node *new_node(const char *local_name, const char **attrs = 0, const ambulant::lib::node_context *ctx = 0) { abort(); };
 	ambulant::lib::node *new_node(const ambulant::lib::xml_string& local_name, const char **attrs = 0, const ambulant::lib::node_context *ctx = 0) { abort(); };
   private:
@@ -399,16 +409,19 @@ public:
 	void init_datasource_factory();
 	void init_parser_factory();
 	void init_node_factory();
+	void init_script_component_factory();
 	ambulant::common::global_playable_factory* get_playable_factory() const;
 	ambulant::common::window_factory* get_window_factory() const;
 	ambulant::net::datasource_factory* get_datasource_factory() const;
 	ambulant::lib::global_parser_factory* get_parser_factory() const;
 	ambulant::lib::node_factory* get_node_factory() const;
+	ambulant::common::global_script_component_factory* get_script_component_factory() const;
 	void set_playable_factory(ambulant::common::global_playable_factory* pf);
 	void set_window_factory(ambulant::common::window_factory* wf);
 	void set_datasource_factory(ambulant::net::datasource_factory* df);
 	void set_parser_factory(ambulant::lib::global_parser_factory* pf);
 	void set_node_factory(ambulant::lib::node_factory* nf);
+	void set_script_component_factory(ambulant::common::global_script_component_factory* sf);
   private:
 	PyObject *py_factories;
 
@@ -1011,6 +1024,108 @@ inline animation_destination *Py_WrapAs_animation_destination(PyObject *o)
 	animation_destination *rv = dynamic_cast<animation_destination*>(pycppbridge_getwrapper(o));
 	if (rv) return rv;
 	rv = new animation_destination(o);
+	pycppbridge_setwrapper(o, rv);
+	return rv;
+}
+
+class state_test_methods : public cpppybridge, public ambulant::common::state_test_methods {
+public:
+	state_test_methods(PyObject *itself);
+	virtual ~state_test_methods();
+
+	bool smil_audio_desc() const;
+	int smil_bitrate() const;
+	bool smil_captions() const;
+	bool smil_component(std::string uri) const;
+	bool smil_custom_test(std::string name) const;
+	std::string smil_cpu() const;
+	bool smil_language(std::string lang) const;
+	std::string smil_operating_system() const;
+	std::string smil_overdub_or_subtitle() const;
+	bool smil_required(std::string uri) const;
+	int smil_screen_depth() const;
+	int smil_screen_height() const;
+	int smil_screen_width() const;
+  private:
+	PyObject *py_state_test_methods;
+
+	friend PyObject *state_test_methodsObj_New(ambulant::common::state_test_methods *itself);
+};
+#define BGEN_BACK_SUPPORT_state_test_methods
+inline state_test_methods *Py_WrapAs_state_test_methods(PyObject *o)
+{
+	state_test_methods *rv = dynamic_cast<state_test_methods*>(pycppbridge_getwrapper(o));
+	if (rv) return rv;
+	rv = new state_test_methods(o);
+	pycppbridge_setwrapper(o, rv);
+	return rv;
+}
+
+class script_component : public cpppybridge, public ambulant::common::script_component {
+public:
+	script_component(PyObject *itself);
+	virtual ~script_component();
+
+	void register_state_test_methods(ambulant::common::state_test_methods* stm);
+	void declare_state(const ambulant::lib::node* state);
+	bool bool_expression(const char* expr);
+	void set_value(const char* var, const char* expr);
+	void send(const char* submission);
+	std::string string_expression(const char* expr);
+  private:
+	PyObject *py_script_component;
+
+	friend PyObject *script_componentObj_New(ambulant::common::script_component *itself);
+};
+#define BGEN_BACK_SUPPORT_script_component
+inline script_component *Py_WrapAs_script_component(PyObject *o)
+{
+	script_component *rv = dynamic_cast<script_component*>(pycppbridge_getwrapper(o));
+	if (rv) return rv;
+	rv = new script_component(o);
+	pycppbridge_setwrapper(o, rv);
+	return rv;
+}
+
+class script_component_factory : public cpppybridge, public ambulant::common::script_component_factory {
+public:
+	script_component_factory(PyObject *itself);
+	virtual ~script_component_factory();
+
+	ambulant::common::script_component* new_script_component(const char* uri);
+  private:
+	PyObject *py_script_component_factory;
+
+	friend PyObject *script_component_factoryObj_New(ambulant::common::script_component_factory *itself);
+};
+#define BGEN_BACK_SUPPORT_script_component_factory
+inline script_component_factory *Py_WrapAs_script_component_factory(PyObject *o)
+{
+	script_component_factory *rv = dynamic_cast<script_component_factory*>(pycppbridge_getwrapper(o));
+	if (rv) return rv;
+	rv = new script_component_factory(o);
+	pycppbridge_setwrapper(o, rv);
+	return rv;
+}
+
+class global_script_component_factory : public script_component_factory, public ambulant::common::global_script_component_factory {
+public:
+	global_script_component_factory(PyObject *itself);
+	virtual ~global_script_component_factory();
+
+	void add_factory(ambulant::common::script_component_factory* sf);
+	ambulant::common::script_component* new_script_component(const char*) { abort(); }
+  private:
+	PyObject *py_global_script_component_factory;
+
+	friend PyObject *global_script_component_factoryObj_New(ambulant::common::global_script_component_factory *itself);
+};
+#define BGEN_BACK_SUPPORT_global_script_component_factory
+inline global_script_component_factory *Py_WrapAs_global_script_component_factory(PyObject *o)
+{
+	global_script_component_factory *rv = dynamic_cast<global_script_component_factory*>(pycppbridge_getwrapper(o));
+	if (rv) return rv;
+	rv = new global_script_component_factory(o);
 	pycppbridge_setwrapper(o, rv);
 	return rv;
 }

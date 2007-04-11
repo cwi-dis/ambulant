@@ -29,6 +29,9 @@
 #include "ambulant/config/config.h"
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/node.h"
+#ifdef WITH_SMIL30
+#include "ambulant/common/scripting.h"
+#endif
 
 #include <string>
 #include <map>
@@ -43,6 +46,7 @@ class document;
 namespace smil2 {
 
 using lib::custom_test;
+class state_test_methods_impl;
 
 class AMBULANTAPI test_attrs {
   public:
@@ -63,17 +67,21 @@ class AMBULANTAPI test_attrs {
 	const std::string& get_tag() const { return m_tag;}
 	const std::string& get_id() const { return m_id;}
 
-  private:
+#ifdef WITH_SMIL30
+	static common::state_test_methods *get_state_test_methods();
+#endif // WITH_SMIL30
+  protected:
 	typedef std::string::size_type size_type;
-	bool test_on_off_attr(const std::string& attr,const char *value) const;
-	bool test_exact_str_attr(const std::string& attr,const char *value) const;
-	bool test_exact_str_list_attr(const std::string& attr,const char *value) const;
+	static bool test_on_off_attr(const std::string& attr,const char *value);
+	static bool test_exact_str_attr(const std::string& attr,const char *value);
+	static bool test_exact_str_list_attr(const std::string& attr,const char *value);
 	
-	bool test_system_language(const char *lang) const;
-	bool test_system_component(const char *value) const;
-	bool test_system_bitrate(const char *value) const;
-	bool test_system_screen_depth(const char *value) const;
-	bool test_system_screen_size(const char *value) const;
+	static bool test_system_language(const char *lang);
+	static bool test_system_component(const char *value);
+	static bool test_system_bitrate(const char *value);
+	static bool test_system_screen_depth(const char *value);
+	static bool test_system_screen_size(const char *value);
+	static bool test_system_required(const char *value, const lib::node_context *ctx);
 	bool test_custom_attribute(const char *value) const;
 	
 	// the target node
@@ -84,6 +92,7 @@ class AMBULANTAPI test_attrs {
 	std::string m_id;
 	std::string m_tag;
 	lib::logger *m_logger;
+	friend class state_test_methods_impl;
 };
 
 } // namespace smil2

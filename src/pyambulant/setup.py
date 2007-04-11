@@ -13,6 +13,7 @@ else:
 
 DEFS =  [
     ('WITH_EXTERNAL_DOM', '1'),
+    ('WITH_SMIL30', '1'),
     ]
 if sys.platform != 'win32':
     DEFS.append(('ENABLE_NLS', '1'))

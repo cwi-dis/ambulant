@@ -50,9 +50,12 @@
 
 #ifdef _DEBUG
 #define PLUGIN_PREFIX "libampluginD_"
+#define PYTHON_PLUGIN_ENGINE_PREFIX "libampluginD_python"
 #else
 #define PLUGIN_PREFIX "libamplugin_"
+#define PYTHON_PLUGIN_ENGINE_PREFIX "libamplugin_python"
 #endif
+#define PYTHON_PLUGIN_PREFIX "pyamplugin_"
 
 using namespace ambulant;
 using namespace common;
@@ -94,6 +97,17 @@ plugin_engine::plugin_engine()
 		if (count == 0) {
 			lib::logger::get_logger()->trace("plugin_engine: no plugin directories configured");
 		}
+#ifdef WITH_PYTHON_PLUGIN
+		if (m_python_plugins.size() > 0) {
+			if (m_python_plugin_engine == "") {
+				lib::logger::get_logger()->trace("plugin_engine: Python plugins not loaded: no engine found");
+			} else {
+				// Load the Python engine. It will use get_python_plugins() to get at the
+				// pathnames for the plugins and load those.
+				load_plugin(m_python_plugin_engine.c_str());
+			}
+		}
+#endif // WITH_PYTHON_PLUGIN
 	} else {
 		lib::logger::get_logger()->trace("plugin_engine: plugins disabled by user preference");
 	}
@@ -106,7 +120,12 @@ void
 plugin_engine::collect_plugin_directories()
 {
 #ifdef WITH_PLUGINS
-	// First dir to search is set per user preferences
+	// First plugin dir is set through the environment
+	const char *env_plugins = getenv("AMBULANT_PLUGIN_DIR");
+	if (env_plugins)
+		m_plugindirs.push_back(env_plugins);
+		
+	// Second dir to search is set per user preferences
 	std::string& plugin_dir = common::preferences::get_preferences()->m_plugin_dir;
 	if(plugin_dir != "")
 		m_plugindirs.push_back(plugin_dir);
@@ -151,12 +170,39 @@ static int filter(MAYBE_CONST struct dirent* filen)
 {
 	int len;
 	len = strlen(filen->d_name);
-	if (!strncmp(filen->d_name+(len-3),".la",3) ) {
+	if (strncmp(filen->d_name+(len-3),".la",3) == 0 ||
+			strncmp(filen->d_name, PYTHON_PLUGIN_PREFIX, sizeof(PYTHON_PLUGIN_PREFIX)-1) == 0) {
 		return 1;
 	} else {
 		return 0;
 	}
 	return 0;
+}
+
+void plugin_engine::load_plugin(const char *filename)
+{
+	// Load the plugin
+	lib::logger::get_logger()->trace("plugin_engine: loading %s", filename);
+	lt_dlhandle handle = lt_dlopen(filename);
+	if (handle) {
+		AM_DBG lib::logger::get_logger()->debug("plugin_engine: reading plugin SUCCES [ %s ]",filename);
+		AM_DBG lib::logger::get_logger()->debug("Registering  plugin's factory");
+		initfuncptr init = (initfuncptr) lt_dlsym(handle,"initialize");
+		if (!init) {
+			lib::logger::get_logger()->trace("plugin_engine: %s: no initialize routine", filename);
+			lib::logger::get_logger()->warn(gettext("Plugin skipped due to errors: %s "), filename);
+		} else {
+			m_initfuncs.push_back(init);
+		}
+		plugin_extra_data *extra = (plugin_extra_data *)lt_dlsym(handle, "plugin_extra_data");
+		if (extra) {
+			std::string name = extra->m_plugin_name;
+			m_extra_data[name] = extra;
+		}
+	} else {
+		lib::logger::get_logger()->trace("plugin_engine: lt_dlopen(%s) failed: %s",filename, lt_dlerror());
+		lib::logger::get_logger()->warn(gettext("Plugin skipped due to errors: %s "), filename);
+	}
 }
 
 void
@@ -177,11 +223,34 @@ plugin_engine::load_plugins(std::string dirname)
             if (strcmp(namelist[nr_of_files]->d_name, ".")  &&
                     strcmp(namelist[nr_of_files]->d_name, "..")) {
                 char *pluginname = namelist[nr_of_files]->d_name;
+#ifdef WITH_PYTHON_PLUGIN
+				bool is_python_plugin = false;
+				bool is_python_engine = false;
+#endif // WITH_PYTHON_PLUGIN
                 
                 // Check the name is valid
-                if (strncmp(PLUGIN_PREFIX, pluginname, sizeof(PLUGIN_PREFIX)-1) != 0) {
+                if (strncmp(PYTHON_PLUGIN_PREFIX, pluginname, sizeof(PYTHON_PLUGIN_PREFIX)-1) == 0) {
+#ifdef WITH_PYTHON_PLUGIN
+					is_python_plugin = true;
+                    lib::logger::get_logger()->trace("plugin_engine: recording Python plugin %s", pluginname);
+#else
+                    lib::logger::get_logger()->trace("plugin_engine: skipping Python plugin %s", pluginname);
+					continue;
+#endif // WITH_PYTHON_PLUGIN
+                } else
+				if (strncmp(PLUGIN_PREFIX, pluginname, sizeof(PLUGIN_PREFIX)-1) != 0) {
                     lib::logger::get_logger()->trace("plugin_engine: skipping %s", pluginname);
                     continue;
+                }
+				// Check whether this is the Python engine
+                if (strncmp(PYTHON_PLUGIN_ENGINE_PREFIX, pluginname, sizeof(PYTHON_PLUGIN_ENGINE_PREFIX)-1) == 0) {
+#ifdef WITH_PYTHON_PLUGIN
+					is_python_engine = true;
+                    lib::logger::get_logger()->trace("plugin_engine: recording Python engine %s", pluginname);
+#else
+                    lib::logger::get_logger()->trace("plugin_engine: skipping Python engine %s", pluginname);
+                    continue;
+#endif // WITH_PYTHON_PLUGIN
                 }
                 
                 // Construct the full pathname
@@ -194,29 +263,21 @@ plugin_engine::load_plugins(std::string dirname)
 					setenv(LIBRARY_PATH_ENVVAR, dirname.c_str(), 1);
 					ldpath_added = true;
 				}
-
-                // Load the plugin
-                lib::logger::get_logger()->trace("plugin_engine: loading %s", pluginname);
- 	            lt_dlhandle handle = lt_dlopen(filename);
-                if (handle) {
-                    AM_DBG lib::logger::get_logger()->debug("plugin_engine: reading plugin SUCCES [ %s ]",filename);
-                    AM_DBG lib::logger::get_logger()->debug("Registering  plugin's factory");
-                    initfuncptr init = (initfuncptr) lt_dlsym(handle,"initialize");
-                    if (!init) {
-                        lib::logger::get_logger()->trace("plugin_engine: %s: no initialize routine", filename);
-                        lib::logger::get_logger()->warn(gettext("Plugin skipped due to errors: %s "), pluginname);
-                    } else {
-                        m_initfuncs.push_back(init);
-                    }
-					plugin_extra_data *extra = (plugin_extra_data *)lt_dlsym(handle, "plugin_extra_data");
-					if (extra) {
-						std::string name = extra->m_plugin_name;
-						m_extra_data[name] = extra;
-					}
-                } else {
-                    lib::logger::get_logger()->trace("plugin_engine: lt_dlopen(%s) failed: %s",filename, lt_dlerror());
-					lib::logger::get_logger()->warn(gettext("Plugin skipped due to errors: %s "), pluginname);
-                }
+#ifdef WITH_PYTHON_PLUGIN
+				// If it is the Python engine we don't load it but remember it for later
+				if (is_python_engine) {
+					m_python_plugin_engine = filename;
+					continue;
+				}
+				// And similar for a Python plugin
+				if (is_python_plugin) {
+					std::string filename_str = filename;
+					m_python_plugins.push_back(filename_str);
+					continue;
+				}
+#endif // WITH_PYTHON_PLUGIN
+				// Finally we get to load the plugin
+				load_plugin(filename);
             }
             free(namelist[nr_of_files]);
         }
@@ -228,6 +289,34 @@ plugin_engine::load_plugins(std::string dirname)
 }
 
 #elif WITH_WINDOWS_PLUGINS
+void plugin_engine::load_plugin(const char *filename)
+{
+	lib::textptr pn_conv(filename);
+	// Load the plugin
+	lib::logger::get_logger()->trace("plugin_engine: loading %s", filename);
+	HMODULE handle = LoadLibrary(pn_conv);
+	if (handle) {
+		AM_DBG lib::logger::get_logger()->debug("plugin_engine: reading plugin SUCCES [ %s ]",filename);
+		AM_DBG lib::logger::get_logger()->debug("Registering test plugin's factory");
+		initfuncptr init = (initfuncptr) GetProcAddress(handle, "initialize");
+		if (!init) {
+			lib::logger::get_logger()->trace("plugin_engine: %s: no initialize routine", filename);
+			lib::logger::get_logger()->warn(gettext("Plugin skipped due to errors: %s "), filename);
+		} else {
+			m_initfuncs.push_back(init);
+		}
+		plugin_extra_data *extra = (plugin_extra_data *)GetProcAddress(handle, "plugin_extra_data");
+		if (extra) {
+			std::string name = extra->m_plugin_name;
+			m_extra_data[name] = extra;
+		}
+   } else {
+		DWORD err = GetLastError();
+		lib::logger::get_logger()->trace("plugin_engine: %s: LoadLibrary returned error 0x%x", filename, err);
+		lib::logger::get_logger()->warn(gettext("Plugin skipped due to errors: %s"), filename);
+	}
+}
+
 void
 plugin_engine::load_plugins(std::string dirname)
 {
@@ -253,33 +342,47 @@ plugin_engine::load_plugins(std::string dirname)
 				dirname +
  				"\\" +
 				fn_conv.c_str();
-			lib::textptr pn_conv(pathname.c_str());
-            // Load the plugin
-            lib::logger::get_logger()->trace("plugin_engine: loading %s", pathname.c_str());
- 	        HMODULE handle = LoadLibrary(pn_conv);
-            if (handle) {
-                AM_DBG lib::logger::get_logger()->debug("plugin_engine: reading plugin SUCCES [ %s ]",pathname.c_str());
-                AM_DBG lib::logger::get_logger()->debug("Registering test plugin's factory");
-                initfuncptr init = (initfuncptr) GetProcAddress(handle, "initialize");
-                if (!init) {
-                    lib::logger::get_logger()->trace("plugin_engine: %s: no initialize routine", pathname.c_str());
-					lib::logger::get_logger()->warn(gettext("Plugin skipped due to errors: %s "), pathname.c_str());
-                } else {
-                    m_initfuncs.push_back(init);
-                }
-				plugin_extra_data *extra = (plugin_extra_data *)GetProcAddress(handle, "plugin_extra_data");
-				if (extra) {
-					std::string name = extra->m_plugin_name;
-					m_extra_data[name] = extra;
-				}
-	       } else {
-				DWORD err = GetLastError();
-				lib::logger::get_logger()->trace("plugin_engine: %s: LoadLibrary returned error 0x%x", pathname.c_str(), err);
-				lib::logger::get_logger()->warn(gettext("Plugin skipped due to errors: %s"), pathname.c_str());
-            }
-
+			if (strncmp(PYTHON_PLUGIN_ENGINE_PREFIX, fn_conv.c_str(), sizeof(PYTHON_PLUGIN_ENGINE_PREFIX)-1) == 0) {
+#ifdef WITH_PYTHON_PLUGIN
+				m_python_plugin_engine = pathname;
+#else
+				lib::logger::get_logger()->trace("plugin_engine: skipping Python engine %s", pluginname);
+#endif // WITH_PYTHON_PLUGIN
+				continue;
+			}
+			// Load the plugin
+			load_plugin(pathname.c_str());
 		} while(FindNextFile(dirHandle, &dirData));
 	}
+#ifdef WITH_PYTHON_PLUGIN
+	{
+		std::string filepattern = 
+			dirname +
+	//		"\\" +
+			PYTHON_PLUGIN_PREFIX +
+			"*";
+		lib::textptr fp_conv(filepattern.c_str());
+		WIN32_FIND_DATA dirData;
+		HANDLE dirHandle = FindFirstFile(fp_conv, &dirData);
+		if (dirHandle == INVALID_HANDLE_VALUE) {
+			DWORD err = GetLastError();
+			if (err != 2) // Don't report "No such file"
+				lib::logger::get_logger()->error(gettext("Error reading plugin directory: %s: 0x%x"), dirname.c_str(), err);
+			return;
+		} else {
+			do {
+				// Construct the full pathname
+				lib::textptr fn_conv(dirData.cFileName);
+				std::string pathname =
+					dirname +
+					"\\" +
+					fn_conv.c_str();
+				// Remember the plugin
+				m_python_plugins.push_back(pathname);
+			} while(FindNextFile(dirHandle, &dirData));
+		}
+	}
+#endif // WITH_PYTHON_PLUGIN
  	lib::logger::get_logger()->trace("plugin_engine: Done with plugin directory: %s", dirname.c_str());
 }
 

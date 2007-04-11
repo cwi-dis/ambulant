@@ -256,6 +256,14 @@ gui_player::create_document(const net::url& url)
 	if (rv) {
 		lib::logger::get_logger()->trace("%s: Parser done", m_url.get_url().c_str());
 		rv->set_src_url(m_url);
+		// Check that the <smil> tag does not use unsupported features
+		const lib::node *root = rv->get_root();
+		smil2::test_attrs ta(root);
+		if (!ta.selected()) {
+			lib::logger::get_logger()->trace("%s: systemTest attributes on <smil> node not satisfied", m_url.get_url().c_str());
+			lib::logger::get_logger()->warn(gettext("%s: Requires unavailable features, will attempt to continue anyway"),
+				m_url.get_url().c_str());
+		}
 	} else {
 		lib::logger::get_logger()->trace("%s: Failed to parse document ", m_url.get_url().c_str());
 	}

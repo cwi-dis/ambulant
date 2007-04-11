@@ -141,6 +141,8 @@ int lib::node_impl::node_counter = 0;
 
 lib::node_impl::node_impl(const char *local_name, const char **attrs, const node_context *ctx)
 :	m_qname("",(local_name?local_name:"error")),
+	m_local_name(local_name?local_name:"error"),
+	m_is_data_node(false),
 	m_context(ctx),
 	m_parent(0), m_next(0), m_child(0) {
 	set_attributes(attrs);
@@ -149,6 +151,8 @@ lib::node_impl::node_impl(const char *local_name, const char **attrs, const node
 
 lib::node_impl::node_impl(const xml_string& local_name, const char **attrs, const node_context *ctx)
 :   m_qname("", local_name),
+	m_local_name(local_name),
+	m_is_data_node(false),
 	m_context(ctx),
 	m_parent(0), m_next(0), m_child(0) {
 	set_attributes(attrs);
@@ -156,17 +160,43 @@ lib::node_impl::node_impl(const xml_string& local_name, const char **attrs, cons
 }
 
 lib::node_impl::node_impl(const q_name_pair& qn, const q_attributes_list& qattrs, const node_context *ctx)
-:	m_qname(qn), m_qattrs(qattrs), m_context(ctx),
-	m_parent(0), m_next(0), m_child(0){
+:	m_qname(qn),
+	m_qattrs(qattrs),
+	m_is_data_node(false),
+	m_context(ctx),
+	m_parent(0), m_next(0), m_child(0)
+{
+	if (m_context) {
+		if(m_context->is_supported_prefix(m_qname.first))
+			m_local_name = m_qname.second;
+		else
+		if (m_qname.first == "")
+			m_local_name = m_qname.second;
+		else
+			m_local_name = m_qname.first + ":" + m_qname.second;
+	} else
+		m_local_name = m_qname.second;
 	m_numid = ++node_counter;
 }
 
 // shallow copy from other
 lib::node_impl::node_impl(const node_impl* other)
 :   m_qname(other->get_qname()),
+	m_local_name(other->get_local_name()),
 	m_qattrs(other->get_attrs()),
 	m_data(other->get_data()),
+	m_is_data_node(false),
 	m_context(other->get_context()),
+	m_parent(0), m_next(0), m_child(0) {
+	m_numid = ++node_counter;
+}
+
+// Data node
+lib::node_impl::node_impl(const char *data, int size)
+:	m_local_name(""),
+	m_data(lib::xml_string(data, size)),
+	m_is_data_node(true),
+	m_context(0),
 	m_parent(0), m_next(0), m_child(0) {
 	m_numid = ++node_counter;
 }
@@ -211,10 +241,10 @@ lib::node_impl*
 lib::node_impl::get_first_child(const char *name) {
 	node_impl *e = down();
 	if(!e) return 0;
-	if(e->m_qname.second == name) return e;
+	if(e->m_local_name == name) return e;
 	e = e->next();
 	while(e != 0) {
-		if(e->m_qname.second == name) 
+		if(e->m_local_name == name) 
 			return e;
 		e = e->next();
 	}
@@ -225,10 +255,10 @@ const lib::node_impl*
 lib::node_impl::get_first_child(const char *name) const {
 	const node_impl *e = down();
 	if(!e) return 0;
-	if(e->m_qname.second == name) return e;
+	if(e->m_local_name == name) return e;
 	e = e->next();
 	while(e != 0) {
-		if(e->m_qname.second == name) 
+		if(e->m_local_name == name) 
 			return e;
 		e = e->next();
 	}
@@ -355,10 +385,6 @@ void lib::node_impl::set_attributes(const char **attrs) {
 		set_attribute(attrs[i], attrs[i+1]);
 }
 	
-void lib::node_impl::set_namespace(const xml_string& ns) {
-	m_qname.first = ns;
-}
-
 // create a deep copy of this
 lib::node_impl* 
 lib::node_impl::clone() const {
@@ -399,7 +425,19 @@ lib::node_impl::get_attribute(const char *name) const {
 	if(!name || !name[0]) return 0;
 	q_attributes_list::const_iterator it;
 	for(it = m_qattrs.begin(); it != m_qattrs.end(); it++)
-		if((*it).first.second == name) return (*it).second.c_str();
+		if((*it).first.second == name) {
+#ifdef WITH_SMIL30
+			if (m_context) {
+				const xml_string ns = name;
+				const xml_string& attrval = (*it).second;
+				if (attrval.find('{') != std::string::npos) {
+					const_cast<lib::node_impl*>(this)->m_avtcache[ns] = m_context->apply_avt(ns, attrval);
+					return const_cast<lib::node_impl*>(this)->m_avtcache[ns].c_str();
+				}
+			}
+#endif
+			return (*it).second.c_str();
+		}
 	return 0;
 }
 
@@ -468,7 +506,7 @@ lib::node_impl::xmlrepr() const {
 
 std::string lib::node_impl::get_sig() const {
 	std::string s = "<";
-	s += m_qname.second;
+	s += m_local_name;
 	const char *pid = get_attribute("id");
 	if (pid) {
 		s += " id=\"";
@@ -595,7 +633,9 @@ void output_visitor<Node>::operator()(std::pair<bool, const Node*> x) {
 	const Node*& pe = x.second;
 	if(x.first) {
 		// start tag
-		if(!pe->down()) 
+		if(pe->is_data_node())
+			os << pe->get_data();
+		else if(!pe->down()) 
 			write_start_tag_no_children(pe);
 		else 
 			write_start_tag_with_children(pe);
@@ -684,6 +724,7 @@ class builtin_node_factory : public lib::node_factory {
 	lib::node *new_node(const lib::xml_string& local_name, const char **attrs = 0, const lib::node_context *ctx = 0);
 	lib::node *new_node(const lib::q_name_pair& qn, const lib::q_attributes_list& qattrs, const lib::node_context *ctx = 0);
 	lib::node *new_node(const lib::node* other);
+	lib::node *new_data_node(const char *data, int size);
 };
 
 // If we are building a player with an (optional) external DOM implementation
@@ -726,6 +767,13 @@ builtin_node_factory::new_node(const lib::node* other)
 #else
 	return new lib::node_impl(other);
 #endif
+}
+
+// create data node
+lib::node *
+builtin_node_factory::new_data_node(const char *data, int size)
+{
+	return new lib::node_impl(data, size);
 }
 
 lib::node_factory *lib::get_builtin_node_factory()

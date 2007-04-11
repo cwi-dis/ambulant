@@ -235,6 +235,26 @@ void active_state::enter(qtime_type timestamp) {
 				prev->remove(timestamp);
 		 }
 	}
+#ifdef WITH_SMIL30
+	// We have to implement expr testing somewhere, and this seems like
+	// a likely place. But note that I (Jack) picked this spoot without
+	// thinking too hard about it, so if it turns out to be a silly place
+	// there's no deeper philosophy behind it:-)
+	const node *n = m_self->dom_node();
+	const char *expr = n->get_attribute("expr");
+	if (expr) {
+		common::script_component *sc = n->get_context()->get_state();
+		if (sc) {
+			if (!sc->bool_expression(expr)) {
+				/* expr is false: skip the node */
+				m_self->set_state(ts_postactive, timestamp, m_self);
+				return;
+			}
+		} else {
+			lib::logger::get_logger()->trace("No script engine, ignoring expr on %s", n->get_sig().c_str());
+		}
+	}
+#endif // WITH_SMIL30
 	// Send feedback to the upper layers about what we're doing
 	m_self->node_started();
 		

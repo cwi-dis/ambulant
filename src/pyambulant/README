@@ -24,6 +24,14 @@ source code will have to be rebuilt. This is done by running
 "make regenerate-pyambulant". This depends on a number of Python sourcefiles
 that may also need some adjustments, see below.
 
+Quick instructions for adding new interfaces to the bridge:
+1. Add the include file to genobjects.py. Also add the new objects there.
+2. Add the include file to ambulantscan.py.
+3. make regenerate-pyambulant
+4. Fix missing types in ambulantsupport.py.
+5. Check that the new objects/methods show up in ambulantgen.py
+6. Try it.
+
 The source files in this directory are:
 
 bgenBackSupport.py and bgenCxxSupport.py:

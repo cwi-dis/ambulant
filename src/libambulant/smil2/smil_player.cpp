@@ -55,7 +55,11 @@ common::create_smil2_player(
 }
 
 smil_player::smil_player(lib::document *doc, common::factories *factory, common::embedder *sys)
-:	m_doc(doc),
+:	
+#ifdef WITH_SMIL30
+	m_state_engine(0),
+#endif
+	m_doc(doc),
 	m_factory(factory),
 	m_system(sys),
 	m_feedback_handler(0),
@@ -85,6 +89,9 @@ smil_player::initialize()
 	document_loaded(m_doc);
 	
 	m_event_processor = event_processor_factory(m_timer);
+#ifdef WITH_SMIL30
+	create_state_engine();
+#endif // WITH_SMIL30
 	// build the layout (we need the top-level layout)
 	build_layout();
 	// Build the timegraph using the current filter
@@ -143,6 +150,34 @@ void smil_player::build_timegraph() {
 	m_dom2tn = tg.detach_dom2tn();
 	m_scheduler = new scheduler(m_root, m_timer);
 }
+
+#ifdef WITH_SMIL30
+void smil_player::create_state_engine() {
+	if (m_state_engine) delete m_state_engine;
+	lib::node *doc_root = m_doc->get_root();
+	if (!doc_root) return;
+	lib::node *head = doc_root->get_first_child("head");
+	if (!head) return;
+	lib::node *state = head->get_first_child("state");
+	if (!state) return;
+	const char *language = state->get_attribute("language");
+	/* XXXX Could we pick up xmlns: declaration here? */
+	if (!language) language = "http://www.ambulantplayer.org/components/pyscript";
+	common::script_component_factory *scf = m_factory->get_script_component_factory();
+	if (!scf) {
+		lib::logger::get_logger()->error(gettext("Document uses state, but no scripting support configured"));
+		return;
+	}
+	m_state_engine = scf->new_script_component(language);
+	if (!m_state_engine) {
+		lib::logger::get_logger()->error(gettext("No scripting support for language %s"), language);
+		return;
+	}
+	m_state_engine->declare_state(state);
+	m_state_engine->register_state_test_methods(smil2::test_attrs::get_state_test_methods());
+	m_doc->set_state(m_state_engine);
+}
+#endif
 
 void smil_player::schedule_event(lib::event *ev, lib::timer::time_type t, event_priority ep) {
 	m_event_processor->add_event(ev, t, ep);

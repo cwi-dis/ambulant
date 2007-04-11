@@ -117,7 +117,7 @@ smil_layout_manager::get_document_layout(lib::document *doc)
 		while (layout_root) {
 			AM_DBG lib::logger::get_logger()->debug("smil_layout_manager: examining node 0x%x", layout_root);
 			// Check that it is indeed a <layout> node
-			if (m_schema->get_layout_type((layout_root)->get_qname()) != common::l_layout) {
+			if (m_schema->get_layout_type((layout_root)->get_local_name()) != common::l_layout) {
 				lib::logger::get_logger()->trace("smil_layout_manager: <switch> in <head> should contain only <layout>s");
 				lib::logger::get_logger()->warn(gettext("Problem with layout in SMIL document"));
 				continue;
@@ -161,9 +161,9 @@ smil_layout_manager::build_layout_tree(lib::node *layout_root)
 			lib::node *n = pair.second;
 			const char *pid = n->get_attribute("id");
 			AM_DBG lib::logger::get_logger()->debug("smil_layout_manager::get_document_layout: examining %s %s", 
-				n->get_qname().second.c_str(), (pid?pid:"no-id"));
+				n->get_local_name().c_str(), (pid?pid:"no-id"));
 			// Find node type
-			common::layout_type tp = m_schema->get_layout_type(n->get_qname());
+			common::layout_type tp = m_schema->get_layout_type(n->get_local_name());
 			// First we handle regPoint nodes, which we only store
 			if (tp == common::l_regpoint) {
 				if (pid) {
@@ -243,6 +243,7 @@ smil_layout_manager::build_body_regions(lib::document *doc) {
 		std::pair<bool, const lib::node*> pair = *it;
 		if (!pair.first) continue;
 		const lib::node *n = pair.second;
+		if (n->is_data_node()) continue;
 #ifdef OLD_SUBREGIONS		
 		if (!region_node::needs_region_node(n)) continue;
 #else
@@ -296,8 +297,8 @@ smil_layout_manager::build_surfaces(common::window_factory *wf) {
 			std::pair<bool, region_node*> pair = *it;
 			region_node *rn = pair.second;
 			const lib::node *n = rn->dom_node();
-			AM_DBG lib::logger::get_logger()->debug("smil_layout_manager: examining %s node 0x%x", n->get_qname().second.c_str(), rn);
-			common::layout_type tag = m_schema->get_layout_type(n->get_qname());
+			AM_DBG lib::logger::get_logger()->debug("smil_layout_manager: examining %s node 0x%x", n->get_local_name().c_str(), rn);
+			common::layout_type tag = m_schema->get_layout_type(n->get_local_name());
 			if(tag == common::l_rootlayout) {
 				continue;
 			}
@@ -306,7 +307,7 @@ smil_layout_manager::build_surfaces(common::window_factory *wf) {
 			if (tag == common::l_none ) {
 				// XXXX Will need to handle switch here too
 				// Assume subregion positioning.
-				AM_DBG lib::logger::get_logger()->trace("smil_layout_manager: skipping <%s> in layout", n->get_qname().second.c_str());
+				AM_DBG lib::logger::get_logger()->trace("smil_layout_manager: skipping <%s> in layout", n->get_local_name().c_str());
 				continue;
 			}
 			if (tag == common::l_media) {

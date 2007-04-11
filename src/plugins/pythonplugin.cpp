@@ -58,7 +58,7 @@ void initambulant();
 #endif
 using namespace ambulant;
 
-#define AMPYTHON_MODULE_NAME "pyamplugin"
+#define AMPYTHON_MODULE_NAME "pyamplugin_scripting"
 #define AMPYTHON_METHOD_NAME "initialize"
 
 static ambulant::common::factories * 
@@ -85,11 +85,10 @@ void initialize(
         lib::logger::get_logger()->warn("python_plugin: built for different Ambulant version (%s)", AMBULANT_VERSION);
 	factory = bug_workaround(factory);
     AM_DBG lib::logger::get_logger()->debug("python_plugin: loaded.");
-    if (getenv("AMBULANT_ENABLE_PYTHON") == 0) {
-        lib::logger::get_logger()->trace("python_plugin: skipped. Run with AMBULANT_ENABLE_PYTHON=1 to enable.");
-        return;
-    }
-    
+
+    //
+    // Step 1 - Initialize the Python engine and insert the "ambulant" module.
+    //
     // Starting up Python is a bit difficult because we want to release the
     // lock before we return. So the first time we're here we initialze and then
     // release the GIL only to re-acquire it immediately.
@@ -104,34 +103,67 @@ void initialize(
     PyGILState_STATE _GILState = PyGILState_Ensure();
 	AM_DBG lib::logger::get_logger()->debug("python_plugin: acquired GIL.");
 	
+	// Step 2 - Check that we actually do have the ambulant module..
 	PyObject *mod = PyImport_ImportModule("ambulant");
     if (mod == NULL) {
         PyErr_Print();
         lib::logger::get_logger()->debug("python_plugin: import ambulant failed.");
+        PyGILState_Release(_GILState);
         return;
     }
     AM_DBG lib::logger::get_logger()->debug("python_plugin: imported ambulant.");
 	
-    mod = PyImport_ImportModule(AMPYTHON_MODULE_NAME);
-    if (mod == NULL) {
-        PyErr_Print();
-        lib::logger::get_logger()->debug("python_plugin: import %s failed.", AMPYTHON_MODULE_NAME);
-        return;
-    }
-    AM_DBG lib::logger::get_logger()->debug("python_plugin: imported %s.", AMPYTHON_MODULE_NAME);
+	// Now we loop over all the Python modules the plugin engine has found.
+	PyObject *sys_path = PySys_GetObject("path");
+	
+	ambulant::common::plugin_engine *pe = ambulant::common::plugin_engine::get_plugin_engine();
+	const std::vector<std::string>& all_modules = pe->get_python_plugins();
+	std::vector<std::string>::const_iterator i;
+    for(i=all_modules.begin(); i!=all_modules.end(); i++) {
     
-    PyObject *rv = PyObject_CallMethod(mod, AMPYTHON_METHOD_NAME, "iO&O&", 
-        api_version,
-        factoriesObj_New, factory,
-        gui_playerObj_New, player
-        );
-    if (rv == NULL) {
-        PyErr_Print();
-        lib::logger::get_logger()->debug("python_plugin: calling of %s failed.", AMPYTHON_METHOD_NAME);
-        return;
+        // Step 3 - Split into directory and module name
+        int last_fsep = (*i).find_last_of("/\\");
+        if (last_fsep == std::string::npos) {
+            lib::logger::get_logger()->trace("python_plugin: cannot find dirpath for %s", (*i).c_str());
+            continue;
+        }
+        std::string dirname = (*i).substr(0, last_fsep);
+        std::string modname = (*i).substr(last_fsep+1);
+        int last_dot = modname.find_last_of(".");
+        if (last_dot != std::string::npos) {
+            modname = modname.substr(0, last_dot);
+        }
+	    // Step 4 - Add directory to sys.path
+	    PyObject *dirname_obj = PyString_FromString(dirname.c_str());
+	    if (!PySequence_Contains(sys_path, dirname_obj))
+	        if (PyList_Append(sys_path, dirname_obj) <= 0)
+	            lib::logger::get_logger()->trace("python_plugin: could not append \"%s\" to sys.path", dirname.c_str());
+	    Py_DECREF(dirname_obj);
+	    
+	    // Step 5 - Import the module
+        mod = PyImport_ImportModule(modname.c_str());
+        if (mod == NULL) {
+            PyErr_Print();
+            lib::logger::get_logger()->trace("python_plugin: plugin file %s", (*i).c_str());
+            lib::logger::get_logger()->debug("python_plugin: import %s failed.", modname.c_str());
+            continue;
+        }
+        AM_DBG lib::logger::get_logger()->debug("python_plugin: imported %s.", modname.c_str());
+        
+        // Step 6 - Call the initialization method
+        PyObject *rv = PyObject_CallMethod(mod, const_cast<char*>(modname.c_str()), "iO&O&", 
+            api_version,
+            factoriesObj_New, factory,
+            gui_playerObj_New, player
+            );
+        if (rv == NULL) {
+            PyErr_Print();
+            lib::logger::get_logger()->trace("python_plugin: calling of %s.%s failed.", modname.c_str(), modname.c_str());
+            continue;
+        }
+        Py_DECREF(rv);
     }
-    AM_DBG lib::logger::get_logger()->debug("python_plugin: %s returned, about to release GIL", AMPYTHON_METHOD_NAME);
+    AM_DBG lib::logger::get_logger()->debug("python_plugin: about to release GIL");
     PyGILState_Release(_GILState);
-    Py_DECREF(rv);
     AM_DBG lib::logger::get_logger()->debug("python_plugin: returning.");
 }

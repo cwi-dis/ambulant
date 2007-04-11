@@ -106,7 +106,9 @@ class AMBULANTAPI document : public node_context {
 	
 	// node_context interface
 	void set_prefix_mapping(const std::string& prefix, const std::string& uri);	
-	const char* get_namespace_prefix(const xml_string& uri) const;
+	const xml_string& get_namespace_prefix(const xml_string& uri) const;
+	bool is_supported_prefix(const xml_string& prefix) const;
+	bool is_supported_namespace(const xml_string& uri) const;
 	net::url resolve_url(const net::url& rurl) const;
 	// Returns the node with the provided id or null on none
 	const node* get_node(const std::string& idd) const {
@@ -120,6 +122,17 @@ class AMBULANTAPI document : public node_context {
 	
 	/// Set the source URL of the document.
 	void set_src_url(ambulant::net::url u) { m_src_url = u;}
+#ifdef WITH_SMIL30
+	/// Return the state engine.
+	common::script_component *get_state() const { return m_state;}
+	
+	/// Set the state engine.
+	void set_state(common::script_component *state) { m_state = state; }	
+
+	/// Apply XSLT Attribute Value Template
+	lib::xml_string apply_avt(const lib::xml_string& name, const lib::xml_string& value) const;
+#endif // WITH_SMIL30
+
   protected:
 	document();
 //	document(node *root = 0, bool owned=true);
@@ -158,7 +171,9 @@ class AMBULANTAPI document : public node_context {
 	// map of id to nodes
 	std::map<std::string, const node*> m_id2node;
 
-	
+#ifdef WITH_SMIL30
+	common::script_component *m_state;
+#endif // WITH_SMIL30
 };
 
 } // namespace lib

@@ -48,7 +48,7 @@ none_video_factory::new_playable(
 		lib::event_processor *evp)
 {
 	common::playable *rv;
-	lib::xml_string tag = node->get_qname().second;
+	lib::xml_string tag = node->get_local_name();
     AM_DBG lib::logger::get_logger()->debug("none_video_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "video") {
 		rv = new gui::none::none_video_renderer(context, cookie, node, evp, m_factory);

@@ -26,6 +26,7 @@
 #include "ambulant/net/datasource.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/common/layout.h"
+#include "ambulant/common/scripting.h"
 #include "ambulant/lib/node.h"
 
 namespace ambulant {
@@ -51,6 +52,8 @@ public:
 	virtual void init_parser_factory();
 	/// Create the node factory.
 	virtual void init_node_factory();
+	/// Create the scripting factory.
+	virtual void init_script_component_factory();
 	
 	/// Return the playable factory.
 	virtual global_playable_factory *get_playable_factory() const { return m_playable_factory; }
@@ -62,6 +65,8 @@ public:
 	virtual lib::global_parser_factory *get_parser_factory() const { return m_parser_factory; }
 	/// Return the node factory.
 	virtual lib::node_factory *get_node_factory() const { return m_node_factory; }
+	/// Return the scripting factory.
+	virtual global_script_component_factory *get_script_component_factory() const { return m_script_component_factory; }
 	
 	/// Override the playable factory. Deletes the old one, if needed.
 	virtual void set_playable_factory(global_playable_factory *pf) { delete m_playable_factory; m_playable_factory = pf; }
@@ -73,6 +78,8 @@ public:
 	virtual void set_parser_factory(lib::global_parser_factory *pf) { m_parser_factory = pf; }
 	/// Override the playable factory.
 	virtual void set_node_factory(lib::node_factory *nf) { m_node_factory = nf; }
+	/// Override the scripting factory.
+	virtual void set_script_component_factory(global_script_component_factory *sf) { delete m_script_component_factory; m_script_component_factory = sf; }
 
 private:
 	global_playable_factory *m_playable_factory;
@@ -80,6 +87,7 @@ private:
 	net::datasource_factory *m_datasource_factory;
 	lib::global_parser_factory *m_parser_factory;
 	lib::node_factory *m_node_factory;
+	common::global_script_component_factory *m_script_component_factory;
 };
 
 } // end namespaces

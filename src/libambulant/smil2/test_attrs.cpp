@@ -129,12 +129,17 @@ bool test_attrs::selected() const {
 	if(value && !test_custom_attribute(value))
 		return false;
 	
+	// systemRequired, rather different from the others
+	value = m_node->get_attribute("systemRequired");
+	if(value && !test_system_required(value, m_node->get_context()))
+		return false;
+	
 	return true;
 }
 
 // systemLanguage ::= (languageTag (S? ',' S? languageTag)*)?
 // return true when any in the list stars with the argument
-bool test_attrs::test_system_language(const char *value) const {
+bool test_attrs::test_system_language(const char *value) {
 	std::string langs = get_test_attribute("systemLanguage");
 	if(langs.empty()) return false;
 	std::list<std::string> list;
@@ -146,7 +151,7 @@ bool test_attrs::test_system_language(const char *value) const {
 	return false;
 }
 
-bool test_attrs::test_system_component(const char *value) const {
+bool test_attrs::test_system_component(const char *value) {
 	std::string s = get_test_attribute("systemComponent");
 	if(s.empty()) return false;
 	std::list<std::string> list;
@@ -158,7 +163,17 @@ bool test_attrs::test_system_component(const char *value) const {
 	return false;
 }
 
-bool test_attrs::test_system_bitrate(const char *value) const {
+bool test_attrs::test_system_required(const char *value, const lib::node_context *ctx) {
+	std::list<std::string> list;
+	lib::split_trim_list(value, list, '+');
+	std::list<std::string>::const_iterator it;
+	for(it = list.begin(); it!=list.end();it++) {
+		if(!ctx->is_supported_prefix((*it))) return false;
+	}
+	return true;
+}
+
+bool test_attrs::test_system_bitrate(const char *value) {
 	std::string s = get_test_attribute("systemBitrate");
 	if(s.empty()) return false;
 	int sys_bitrate = atoi(s.c_str());
@@ -166,17 +181,17 @@ bool test_attrs::test_system_bitrate(const char *value) const {
 	return sys_bitrate >= sel_value;
 }
 
-bool test_attrs::test_on_off_attr(const std::string& attr,const char *value) const {
+bool test_attrs::test_on_off_attr(const std::string& attr,const char *value) {
 	std::string s = get_test_attribute(attr);
 	return (s.empty() || (s != "on" && s != "off"))?false:(s == value);
 }
 
-bool test_attrs::test_exact_str_attr(const std::string& attr,const char *value) const {
+bool test_attrs::test_exact_str_attr(const std::string& attr,const char *value) {
 	std::string s = get_test_attribute(attr);
 	return s.empty()?false:(s == value);
 }
 
-bool test_attrs::test_exact_str_list_attr(const std::string& attr,const char *value) const {
+bool test_attrs::test_exact_str_list_attr(const std::string& attr,const char *value) {
 	std::string s = get_test_attribute(attr);
 	if(s.empty()) return false;
 	std::list<std::string> list;
@@ -189,7 +204,7 @@ bool test_attrs::test_exact_str_list_attr(const std::string& attr,const char *va
 }
 
 // systemScreenDepth
-bool test_attrs::test_system_screen_depth(const char *value) const {
+bool test_attrs::test_system_screen_depth(const char *value) {
 	std::string s = get_test_attribute("systemScreenDepth");
 	if(s.empty()) return false;
 	int sys_bpp = atoi(s.c_str());
@@ -197,11 +212,11 @@ bool test_attrs::test_system_screen_depth(const char *value) const {
 	return sys_bpp >= sel_bpp;
 }
 
-bool test_attrs::test_system_screen_size(const char *value) const {
+bool test_attrs::test_system_screen_size(const char *value) {
 	std::string s = get_test_attribute("systemScreenSize");
 	if(s.empty()) return false;
 	lib::tokens_vector sys_v(s.c_str(), "Xx");
-	lib::tokens_vector sel_v(s.c_str(), "Xx");
+	lib::tokens_vector sel_v(value, "Xx");
 	if(sys_v.size() != 2 || sel_v.size() != 2) 
 		return false;
 	return (atoi(sys_v[0].c_str())>atoi(sel_v[0].c_str())) && 
@@ -329,5 +344,71 @@ void test_attrs::set_default_tests_attrs() {
 	active_tests_attrs_map["systemScreenDepth"] = "32";
 }
 
+#ifdef WITH_SMIL30
 
+class smil2::state_test_methods_impl : public common::state_test_methods {
+  public:
+	bool smil_audio_desc() const {
+		return test_attrs::test_on_off_attr("systemAudioDesc", "on");
+	}
+	int smil_bitrate() const {
+		return atoi(get_test_attribute("systemBitrate").c_str());
+	}
+	bool smil_captions() const {
+		return test_attrs::test_on_off_attr("systemCaptions", "on");
+	}
+	bool smil_component(std::string uri) const {
+		return test_attrs::test_system_component(uri.c_str());
+	}
+	bool smil_custom_test(std::string name) const {
+		lib::logger::get_logger()->trace("smil-customTest() not implemented yet");
+		return true;
+	}
+	std::string smil_cpu() const {
+		return get_test_attribute("systemCPU");
+	}
+	bool smil_language(std::string lang) const {
+		return test_attrs::test_system_language(lang.c_str());
+	}
+	std::string smil_operating_system() const {
+		return get_test_attribute("systemOperatingSystem");
+	}
+	std::string smil_overdub_or_subtitle() const {
+		return get_test_attribute("systemOverdubOrSubtitle");
+	}
+	bool smil_required(std::string uri) const {
+		lib::logger::get_logger()->trace("smil-required() not implemented yet");
+		return true;
+	}
+	int smil_screen_depth() const {
+		return atoi(get_test_attribute("systemScreenDepth").c_str());
+	}
+	int smil_screen_height() const {
+		std::string s = get_test_attribute("systemScreenSize");
+		if(s.empty()) return 0;
+		lib::tokens_vector sys_v(s.c_str(), "Xx");
+		if(sys_v.size() != 2) 
+			return 0;
+		return atoi(sys_v[0].c_str());
+	}
+	int smil_screen_width() const {
+		std::string s = get_test_attribute("systemScreenSize");
+		if(s.empty()) return 0;
+		lib::tokens_vector sys_v(s.c_str(), "Xx");
+		if(sys_v.size() != 2) 
+			return 0;
+		return atoi(sys_v[1].c_str());
+	}
+};
+
+common::state_test_methods *
+test_attrs::get_state_test_methods()
+{
+	static smil2::state_test_methods_impl *singleton;
+	
+	if (singleton == NULL)
+		singleton = new smil2::state_test_methods_impl();
+	return singleton;
+}
+#endif // WITH_SMIL30
 

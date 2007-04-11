@@ -71,9 +71,9 @@ class schema {
 	}
 	
 	/// Returns the time_container_type of the element with tag qname.
-	time_container_type get_time_type(const lib::q_name_pair& qname) const;
+	time_container_type get_time_type(const lib::xml_string& qname) const;
 	
-	bool is_discrete(const lib::q_name_pair& qname) const;
+	bool is_discrete(const lib::xml_string& qname) const;
 	
 	/// Returns a ref to the set of layout elements.
 	/// Currently local names.
@@ -82,14 +82,19 @@ class schema {
 	}
 	
 	// Returns the layout_type of the element with tag qname.
-	layout_type get_layout_type(const lib::q_name_pair& qname) const;
+	layout_type get_layout_type(const lib::xml_string& qname) const;
 	
 	/// Allow schema_factory classes to create instances.
 	friend class schema_factory;
 	
 	/// Return true if an element with tag qname is an animation.
-	bool is_animation(const lib::q_name_pair& qname) const;
+	bool is_animation(const lib::xml_string& qname) const;
 	
+#ifdef WITH_SMIL30
+	/// Return true if an element with tag qname is a state command.
+	bool is_statecommand(const lib::xml_string& qname) const;
+#endif // WITH_SMIL30
+
  	schema();
  	~schema();
 	
@@ -99,6 +104,9 @@ class schema {
 	std::set<std::string> m_continuous;
 	std::set<std::string> m_animations;
 	std::set<std::string> m_layout_elements;
+#ifdef WITH_SMIL30
+	std::set<std::string> m_statecommands;
+#endif // WITH_SMIL30
 };
 
 } // namespace common

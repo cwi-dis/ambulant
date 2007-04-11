@@ -208,15 +208,21 @@ lib::tree_builder::end_element(const q_name_pair& qn) {
 
 void 
 lib::tree_builder::characters(const char *buf, size_t len) {
-	if(m_current != 0)
+	if(m_current != 0) {
+#ifdef WITH_SMIL30
+		// The <smiltext> tag has embedded data and tags 
+		lib::node *p = m_node_factory->new_data_node(buf, len);
+		m_current->append_child(p);
+#else
 		m_current->append_data(buf, len);
-	else
+#endif // WITH_SMIL30
+	} else
 		m_well_formed = false;
 }
 
 void 
 lib::tree_builder::start_prefix_mapping(const std::string& prefix, const std::string& uri) {
-	AM_DBG lib::logger::get_logger()->debug("xmlns:%s=\"%s\"", prefix.c_str(), uri.c_str());
+	/*AM_DBG*/ lib::logger::get_logger()->debug("xmlns:%s=\"%s\"", prefix.c_str(), uri.c_str());
 	if(m_context)
 		m_context->set_prefix_mapping(prefix, uri);
 }
