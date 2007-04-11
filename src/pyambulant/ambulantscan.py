@@ -138,11 +138,22 @@ class MyScanner(CxxScanner):
                 'get_ffmpeg_audio_datasource_factory',
                 'get_ffmpeg_audio_parser_finder',
                 'get_ffmpeg_audio_filter_finder',
+                'get_ffmpeg_audio_decoder_finder',
                 ]
             ),
             ('#ifdef WITH_LIVE', [
                 'create_live_video_datasource_factory',
                 'create_live_audio_datasource_factory',
+                ]
+            ),
+            ('#ifndef AMBULANT_PLATFORM_WIN32', [
+                'create_posix_datasource_factory',
+                
+                ]
+            ),
+            ('#ifdef WITH_AMBULANT_TEST', [
+                'new_default_subsurface',
+                
                 ]
             ),
         ]

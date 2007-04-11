@@ -7718,11 +7718,32 @@ static PyObject *surface_templateObj_activate(surface_templateObject *_self, PyO
 	return _res;
 }
 
+#ifdef WITH_AMBULANT_TEST
+
+static PyObject *surface_templateObj_new_default_subsurface(surface_templateObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::surface* _rv = _self->ob_itself->new_default_subsurface();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     surfaceObj_New, _rv);
+	return _res;
+}
+#endif
+
 static PyMethodDef surface_templateObj_methods[] = {
 	{"new_subsurface", (PyCFunction)surface_templateObj_new_subsurface, 1,
 	 PyDoc_STR("(ambulant::common::region_info* info, ambulant::common::bgrenderer* bgrend) -> (ambulant::common::surface_template* _rv)")},
 	{"activate", (PyCFunction)surface_templateObj_activate, 1,
 	 PyDoc_STR("() -> (ambulant::common::surface* _rv)")},
+
+#ifdef WITH_AMBULANT_TEST
+	{"new_default_subsurface", (PyCFunction)surface_templateObj_new_default_subsurface, 1,
+	 PyDoc_STR("() -> (ambulant::common::surface* _rv)")},
+#endif
 	{NULL, NULL, 0}
 };
 
@@ -14348,6 +14369,8 @@ static PyObject *PyAm_read_data_from_datasource(PyObject *_self, PyObject *_args
 	return _res;
 }
 
+#ifndef AMBULANT_PLATFORM_WIN32
+
 static PyObject *PyAm_create_posix_datasource_factory(PyObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -14361,6 +14384,7 @@ static PyObject *PyAm_create_posix_datasource_factory(PyObject *_self, PyObject 
 	                     raw_datasource_factoryObj_New, _rv);
 	return _res;
 }
+#endif
 
 static PyObject *PyAm_create_stdio_datasource_factory(PyObject *_self, PyObject *_args)
 {
@@ -14427,6 +14451,8 @@ static PyObject *PyAm_get_ffmpeg_audio_datasource_factory(PyObject *_self, PyObj
 }
 #endif
 
+#ifdef WITH_FFMPEG
+
 static PyObject *PyAm_get_ffmpeg_audio_decoder_finder(PyObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -14440,6 +14466,7 @@ static PyObject *PyAm_get_ffmpeg_audio_decoder_finder(PyObject *_self, PyObject 
 	                     audio_decoder_finderObj_New, _rv);
 	return _res;
 }
+#endif
 
 #ifdef WITH_FFMPEG
 
@@ -14547,8 +14574,11 @@ static PyMethodDef PyAm_methods[] = {
 	 PyDoc_STR("(ambulant::net::url url, ambulant::net::datasource_factory* df, Buffer result) -> (bool _rv, Buffer result)")},
 	{"read_data_from_datasource", (PyCFunction)PyAm_read_data_from_datasource, 1,
 	 PyDoc_STR("(ambulant::net::datasource* src, Buffer result) -> (bool _rv, Buffer result)")},
+
+#ifndef AMBULANT_PLATFORM_WIN32
 	{"create_posix_datasource_factory", (PyCFunction)PyAm_create_posix_datasource_factory, 1,
 	 PyDoc_STR("() -> (ambulant::net::raw_datasource_factory* _rv)")},
+#endif
 	{"create_stdio_datasource_factory", (PyCFunction)PyAm_create_stdio_datasource_factory, 1,
 	 PyDoc_STR("() -> (ambulant::net::raw_datasource_factory* _rv)")},
 
@@ -14566,8 +14596,11 @@ static PyMethodDef PyAm_methods[] = {
 	{"get_ffmpeg_audio_datasource_factory", (PyCFunction)PyAm_get_ffmpeg_audio_datasource_factory, 1,
 	 PyDoc_STR("() -> (ambulant::net::audio_datasource_factory* _rv)")},
 #endif
+
+#ifdef WITH_FFMPEG
 	{"get_ffmpeg_audio_decoder_finder", (PyCFunction)PyAm_get_ffmpeg_audio_decoder_finder, 1,
 	 PyDoc_STR("() -> (ambulant::net::audio_decoder_finder* _rv)")},
+#endif
 
 #ifdef WITH_FFMPEG
 	{"get_ffmpeg_audio_filter_finder", (PyCFunction)PyAm_get_ffmpeg_audio_filter_finder, 1,
