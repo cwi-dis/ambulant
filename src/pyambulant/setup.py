@@ -27,6 +27,7 @@ if sys.platform == 'darwin':
 
 LIBRARIES=[]
 LIBDIRS=[]
+INCDIRS=['../../include']
 if WITH_QT:
     DEFS.append(('WITH_QT', '1'))
     LIBRARIES.append('ambulant_qt')
@@ -48,6 +49,7 @@ else:
     
 if sys.platform == 'darwin':
     LIBRARIES += ['intl']
+    INCDIRS += ['/usr/local/include']
     
 setup(name='ambulant',
       version='0.1',
@@ -57,7 +59,7 @@ setup(name='ambulant',
             libraries=LIBRARIES,
             extra_link_args=EXTRA_LINK_ARGS,
             library_dirs=LIBDIRS,
-            include_dirs=['../../include'],
+            include_dirs=INCDIRS,
             define_macros=DEFS,
             export_symbols=['initambulant', 'factoriesObj_New', 'gui_playerObj_New']
         )

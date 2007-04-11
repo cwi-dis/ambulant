@@ -584,7 +584,7 @@ class StdStringType(Type):
         
     def getargsPreCheck(self, name):
         name = name.replace('.', '_')
-        Output("%s *%s_cstr;", self.celement, name)
+        Output('%s *%s_cstr="";', self.celement, name)
         
     def getargsArgs(self, name):
         name = name.replace('.', '_')

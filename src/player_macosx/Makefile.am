@@ -99,7 +99,16 @@ cocoambulant_bundle: cocoambulant_executable
 #	if test -d ../plugins/.libs; then cp -R ../plugins/.libs $(BUILDAPPNAME).app/Contents/PlugIns; fi
 	pkglibdir=`pwd`/$(BUILDAPPNAME).app/Contents/PlugIns; \
 	cd ../plugins; \
-	$(MAKE) $(AM_MAKEFLAGS) pkglibdir=$$pkglibdir install
+	$(MAKE) $(AM_MAKEFLAGS) pkglibdir=$$pkglibdir install 
+	
+if WITH_PYTHON_PLUGIN
+#   Install python-based plugins, when applicable
+if WITH_SMIL30
+#   Install the SMIL State plugin
+	cp -r $(top_srcdir)/src/plugins/pyamplugin_scripting $(BUILDAPPNAME).app/Contents/PlugIns
+	$(PYTHON) -c "import compileall;compileall.main()" $(BUILDAPPNAME).app/Contents/PlugIns
+endif
+endif
 
 #	The next bit is gross. Xerces only builds as a dynamic library. This means
 #	we must copy that library into the .app bundle (in the Frameworks dir) and

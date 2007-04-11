@@ -75,7 +75,7 @@ const ambulant::lib::xml_string& node_context::get_namespace_prefix(const ambula
 		PyErr_Print();
 	}
 
-	char *get_namespace_prefix_cstr;
+	char *get_namespace_prefix_cstr="";
 	if (py_rv && !PyArg_Parse(py_rv, "s", &get_namespace_prefix_cstr))
 	{
 		PySys_WriteStderr("Python exception during node_context::get_namespace_prefix() return:\n");
@@ -234,7 +234,7 @@ ambulant::lib::xml_string node_context::apply_avt(const ambulant::lib::xml_strin
 		PyErr_Print();
 	}
 
-	char *_rv_cstr;
+	char *_rv_cstr="";
 	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv_cstr))
 	{
 		PySys_WriteStderr("Python exception during node_context::apply_avt() return:\n");
@@ -897,7 +897,7 @@ const ambulant::lib::xml_string& node::get_namespace() const
 		PyErr_Print();
 	}
 
-	char *get_namespace_cstr;
+	char *get_namespace_cstr="";
 	if (py_rv && !PyArg_Parse(py_rv, "s", &get_namespace_cstr))
 	{
 		PySys_WriteStderr("Python exception during node::get_namespace() return:\n");
@@ -924,7 +924,7 @@ const ambulant::lib::xml_string& node::get_local_name() const
 		PyErr_Print();
 	}
 
-	char *get_local_name_cstr;
+	char *get_local_name_cstr="";
 	if (py_rv && !PyArg_Parse(py_rv, "s", &get_local_name_cstr))
 	{
 		PySys_WriteStderr("Python exception during node::get_local_name() return:\n");
@@ -953,8 +953,8 @@ const ambulant::lib::q_name_pair& node::get_qname() const
 
 	ambulant::lib::xml_string get_qname_first;
 	ambulant::lib::xml_string get_qname_second;
-	char *get_qname_first_cstr;
-	char *get_qname_second_cstr;
+	char *get_qname_first_cstr="";
+	char *get_qname_second_cstr="";
 	if (py_rv && !PyArg_Parse(py_rv, "(ss)", &get_qname_first_cstr, &get_qname_second_cstr))
 	{
 		PySys_WriteStderr("Python exception during node::get_qname() return:\n");
@@ -1007,7 +1007,7 @@ const ambulant::lib::xml_string& node::get_data() const
 		PyErr_Print();
 	}
 
-	char *get_data_cstr;
+	char *get_data_cstr="";
 	if (py_rv && !PyArg_Parse(py_rv, "s", &get_data_cstr))
 	{
 		PySys_WriteStderr("Python exception during node::get_data() return:\n");
@@ -1058,7 +1058,7 @@ ambulant::lib::xml_string node::get_trimmed_data() const
 		PyErr_Print();
 	}
 
-	char *_rv_cstr;
+	char *_rv_cstr="";
 	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv_cstr))
 	{
 		PySys_WriteStderr("Python exception during node::get_trimmed_data() return:\n");
@@ -1204,7 +1204,7 @@ std::string node::get_path_display_desc() const
 		PyErr_Print();
 	}
 
-	char *_rv_cstr;
+	char *_rv_cstr="";
 	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv_cstr))
 	{
 		PySys_WriteStderr("Python exception during node::get_path_display_desc() return:\n");
@@ -1230,7 +1230,7 @@ std::string node::get_sig() const
 		PyErr_Print();
 	}
 
-	char *_rv_cstr;
+	char *_rv_cstr="";
 	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv_cstr))
 	{
 		PySys_WriteStderr("Python exception during node::get_sig() return:\n");
@@ -1256,7 +1256,7 @@ ambulant::lib::xml_string node::xmlrepr() const
 		PyErr_Print();
 	}
 
-	char *_rv_cstr;
+	char *_rv_cstr="";
 	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv_cstr))
 	{
 		PySys_WriteStderr("Python exception during node::xmlrepr() return:\n");
@@ -1649,7 +1649,7 @@ std::string parser_factory::get_parser_name()
 		PyErr_Print();
 	}
 
-	char *_rv_cstr;
+	char *_rv_cstr="";
 	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv_cstr))
 	{
 		PySys_WriteStderr("Python exception during parser_factory::get_parser_name() return:\n");
@@ -5801,7 +5801,7 @@ std::string region_info::get_name() const
 		PyErr_Print();
 	}
 
-	char *_rv_cstr;
+	char *_rv_cstr="";
 	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv_cstr))
 	{
 		PySys_WriteStderr("Python exception during region_info::get_name() return:\n");
@@ -6515,7 +6515,7 @@ std::string state_test_methods::smil_cpu() const
 		PyErr_Print();
 	}
 
-	char *_rv_cstr;
+	char *_rv_cstr="";
 	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv_cstr))
 	{
 		PySys_WriteStderr("Python exception during state_test_methods::smil_cpu() return:\n");
@@ -6567,7 +6567,7 @@ std::string state_test_methods::smil_operating_system() const
 		PyErr_Print();
 	}
 
-	char *_rv_cstr;
+	char *_rv_cstr="";
 	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv_cstr))
 	{
 		PySys_WriteStderr("Python exception during state_test_methods::smil_operating_system() return:\n");
@@ -6593,7 +6593,7 @@ std::string state_test_methods::smil_overdub_or_subtitle() const
 		PyErr_Print();
 	}
 
-	char *_rv_cstr;
+	char *_rv_cstr="";
 	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv_cstr))
 	{
 		PySys_WriteStderr("Python exception during state_test_methods::smil_overdub_or_subtitle() return:\n");
@@ -6848,7 +6848,7 @@ std::string script_component::string_expression(const char* expr)
 		PyErr_Print();
 	}
 
-	char *_rv_cstr;
+	char *_rv_cstr="";
 	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv_cstr))
 	{
 		PySys_WriteStderr("Python exception during script_component::string_expression() return:\n");

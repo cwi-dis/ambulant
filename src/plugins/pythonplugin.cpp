@@ -151,14 +151,14 @@ void initialize(
         AM_DBG lib::logger::get_logger()->debug("python_plugin: imported %s.", modname.c_str());
         
         // Step 6 - Call the initialization method
-        PyObject *rv = PyObject_CallMethod(mod, const_cast<char*>(modname.c_str()), "iO&O&", 
+        PyObject *rv = PyObject_CallMethod(mod, "initialize", "iO&O&", 
             api_version,
             factoriesObj_New, factory,
             gui_playerObj_New, player
             );
         if (rv == NULL) {
             PyErr_Print();
-            lib::logger::get_logger()->trace("python_plugin: calling of %s.%s failed.", modname.c_str(), modname.c_str());
+            lib::logger::get_logger()->trace("python_plugin: calling of %s.%s failed.", modname.c_str(), "initialize");
             continue;
         }
         Py_DECREF(rv);

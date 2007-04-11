@@ -79,7 +79,7 @@ BUILDLIBDIR=`echo ./build/lib.*`
 build-pyambulant: $(srcdir)/setup.py $(BGENOUTPUT) $(srcdir)/ambulantutilities.cpp $(srcdir)/ambulantutilities.h $(srcdir)/ambulantmodule.h
 	( a=`cd $(ambulantlibdir); pwd` ; \
 	  cd $(srcdir) ; \
-	  LDFLAGS="-L$$a $(extra_qt_ldflags) $(extra_ffmpeg_ldflags) $(extra_sdl_ldflags)" CFLAGS="$(EXTRA_CFLAGS)" $(PYTHON) setup.py build ; \
+	  LDFLAGS="-L$$a $(extra_qt_ldflags) $(extra_ffmpeg_ldflags) $(extra_sdl_ldflags)" $(PYTHON) setup.py build ; \
 	)
 
 check-pyambulant:

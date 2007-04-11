@@ -206,8 +206,8 @@ static PyObject *node_contextObj_set_prefix_mapping(node_contextObject *_self, P
 	PyObject *_res = NULL;
 	std::string prefix;
 	std::string uri;
-	char *prefix_cstr;
-	char *uri_cstr;
+	char *prefix_cstr="";
+	char *uri_cstr="";
 	if (!PyArg_ParseTuple(_args, "ss",
 	                      &prefix_cstr,
 	                      &uri_cstr))
@@ -227,7 +227,7 @@ static PyObject *node_contextObj_get_namespace_prefix(node_contextObject *_self,
 {
 	PyObject *_res = NULL;
 	ambulant::lib::xml_string uri;
-	char *uri_cstr;
+	char *uri_cstr="";
 	if (!PyArg_ParseTuple(_args, "s",
 	                      &uri_cstr))
 		return NULL;
@@ -244,7 +244,7 @@ static PyObject *node_contextObj_is_supported_prefix(node_contextObject *_self, 
 {
 	PyObject *_res = NULL;
 	ambulant::lib::xml_string prefix;
-	char *prefix_cstr;
+	char *prefix_cstr="";
 	if (!PyArg_ParseTuple(_args, "s",
 	                      &prefix_cstr))
 		return NULL;
@@ -289,7 +289,7 @@ static PyObject *node_contextObj_get_node(node_contextObject *_self, PyObject *_
 {
 	PyObject *_res = NULL;
 	std::string idd;
-	char *idd_cstr;
+	char *idd_cstr="";
 	if (!PyArg_ParseTuple(_args, "s",
 	                      &idd_cstr))
 		return NULL;
@@ -325,8 +325,8 @@ static PyObject *node_contextObj_apply_avt(node_contextObject *_self, PyObject *
 	PyObject *_res = NULL;
 	ambulant::lib::xml_string name;
 	ambulant::lib::xml_string value;
-	char *name_cstr;
-	char *value_cstr;
+	char *name_cstr="";
+	char *value_cstr="";
 	if (!PyArg_ParseTuple(_args, "ss",
 	                      &name_cstr,
 	                      &value_cstr))
@@ -841,7 +841,7 @@ static PyObject *nodeObj_append_data_3(nodeObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
 	ambulant::lib::xml_string str;
-	char *str_cstr;
+	char *str_cstr="";
 	if (!PyArg_ParseTuple(_args, "s",
 	                      &str_cstr))
 		return NULL;
@@ -877,7 +877,7 @@ static PyObject *nodeObj_set_attribute_2(nodeObject *_self, PyObject *_args)
 	PyObject *_res = NULL;
 	char* name;
 	ambulant::lib::xml_string value;
-	char *value_cstr;
+	char *value_cstr="";
 	if (!PyArg_ParseTuple(_args, "ss",
 	                      &name,
 	                      &value_cstr))
@@ -1002,7 +1002,7 @@ static PyObject *nodeObj_get_attribute_2(nodeObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
 	std::string name;
-	char *name_cstr;
+	char *name_cstr="";
 	if (!PyArg_ParseTuple(_args, "s",
 	                      &name_cstr))
 		return NULL;
@@ -1378,8 +1378,8 @@ static PyObject *node_factoryObj_new_node_1(node_factoryObject *_self, PyObject 
 	ambulant::lib::node_context* ctx;
 	ambulant::lib::xml_string qn_first;
 	ambulant::lib::xml_string qn_second;
-	char *qn_first_cstr;
-	char *qn_second_cstr;
+	char *qn_first_cstr="";
+	char *qn_second_cstr="";
 	if (!PyArg_ParseTuple(_args, "(ss)O&O&",
 	                      &qn_first_cstr, &qn_second_cstr,
 	                      ambulant_attributes_list_Convert, &qattrs,
@@ -1687,8 +1687,8 @@ static PyObject *documentObj_set_prefix_mapping(documentObject *_self, PyObject 
 	PyObject *_res = NULL;
 	std::string prefix;
 	std::string uri;
-	char *prefix_cstr;
-	char *uri_cstr;
+	char *prefix_cstr="";
+	char *uri_cstr="";
 	if (!PyArg_ParseTuple(_args, "ss",
 	                      &prefix_cstr,
 	                      &uri_cstr))
@@ -1708,7 +1708,7 @@ static PyObject *documentObj_get_namespace_prefix(documentObject *_self, PyObjec
 {
 	PyObject *_res = NULL;
 	ambulant::lib::xml_string uri;
-	char *uri_cstr;
+	char *uri_cstr="";
 	if (!PyArg_ParseTuple(_args, "s",
 	                      &uri_cstr))
 		return NULL;
@@ -1725,7 +1725,7 @@ static PyObject *documentObj_is_supported_prefix(documentObject *_self, PyObject
 {
 	PyObject *_res = NULL;
 	ambulant::lib::xml_string prefix;
-	char *prefix_cstr;
+	char *prefix_cstr="";
 	if (!PyArg_ParseTuple(_args, "s",
 	                      &prefix_cstr))
 		return NULL;
@@ -1742,7 +1742,7 @@ static PyObject *documentObj_is_supported_namespace(documentObject *_self, PyObj
 {
 	PyObject *_res = NULL;
 	ambulant::lib::xml_string uri;
-	char *uri_cstr;
+	char *uri_cstr="";
 	if (!PyArg_ParseTuple(_args, "s",
 	                      &uri_cstr))
 		return NULL;
@@ -1774,7 +1774,7 @@ static PyObject *documentObj_get_node(documentObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
 	std::string idd;
-	char *idd_cstr;
+	char *idd_cstr="";
 	if (!PyArg_ParseTuple(_args, "s",
 	                      &idd_cstr))
 		return NULL;
@@ -1843,8 +1843,8 @@ static PyObject *documentObj_apply_avt(documentObject *_self, PyObject *_args)
 	PyObject *_res = NULL;
 	ambulant::lib::xml_string name;
 	ambulant::lib::xml_string value;
-	char *name_cstr;
-	char *value_cstr;
+	char *name_cstr="";
+	char *value_cstr="";
 	if (!PyArg_ParseTuple(_args, "ss",
 	                      &name_cstr,
 	                      &value_cstr))
@@ -7715,7 +7715,7 @@ static PyObject *window_factoryObj_new_window(window_factoryObject *_self, PyObj
 	std::string name;
 	ambulant::lib::size bounds;
 	ambulant::common::gui_events* handler;
-	char *name_cstr;
+	char *name_cstr="";
 	if (!PyArg_ParseTuple(_args, "sO&O&",
 	                      &name_cstr,
 	                      ambulant_size_Convert, &bounds,
@@ -7751,7 +7751,7 @@ static PyObject *window_factoryObj_window_done(window_factoryObject *_self, PyOb
 {
 	PyObject *_res = NULL;
 	std::string name;
-	char *name_cstr;
+	char *name_cstr="";
 	if (!PyArg_ParseTuple(_args, "s",
 	                      &name_cstr))
 		return NULL;
@@ -10631,7 +10631,7 @@ static PyObject *animation_destinationObj_get_region_dim(animation_destinationOb
 	PyObject *_res = NULL;
 	std::string which;
 	bool fromdom;
-	char *which_cstr;
+	char *which_cstr="";
 	if (!PyArg_ParseTuple(_args, "sO&",
 	                      &which_cstr,
 	                      bool_Convert, &fromdom))
@@ -10651,7 +10651,7 @@ static PyObject *animation_destinationObj_get_region_color(animation_destination
 	PyObject *_res = NULL;
 	std::string which;
 	bool fromdom;
-	char *which_cstr;
+	char *which_cstr="";
 	if (!PyArg_ParseTuple(_args, "sO&",
 	                      &which_cstr,
 	                      bool_Convert, &fromdom))
@@ -10716,7 +10716,7 @@ static PyObject *animation_destinationObj_set_region_dim(animation_destinationOb
 	PyObject *_res = NULL;
 	std::string which;
 	ambulant::common::region_dim rd;
-	char *which_cstr;
+	char *which_cstr="";
 	if (!PyArg_ParseTuple(_args, "sO&",
 	                      &which_cstr,
 	                      ambulant_region_dim_Convert, &rd))
@@ -10736,7 +10736,7 @@ static PyObject *animation_destinationObj_set_region_color(animation_destination
 	PyObject *_res = NULL;
 	std::string which;
 	ambulant::lib::color_t clr;
-	char *which_cstr;
+	char *which_cstr="";
 	if (!PyArg_ParseTuple(_args, "sl",
 	                      &which_cstr,
 	                      &clr))
@@ -11020,7 +11020,7 @@ static PyObject *state_test_methodsObj_smil_component(state_test_methodsObject *
 {
 	PyObject *_res = NULL;
 	std::string uri;
-	char *uri_cstr;
+	char *uri_cstr="";
 	if (!PyArg_ParseTuple(_args, "s",
 	                      &uri_cstr))
 		return NULL;
@@ -11037,7 +11037,7 @@ static PyObject *state_test_methodsObj_smil_custom_test(state_test_methodsObject
 {
 	PyObject *_res = NULL;
 	std::string name;
-	char *name_cstr;
+	char *name_cstr="";
 	if (!PyArg_ParseTuple(_args, "s",
 	                      &name_cstr))
 		return NULL;
@@ -11067,7 +11067,7 @@ static PyObject *state_test_methodsObj_smil_language(state_test_methodsObject *_
 {
 	PyObject *_res = NULL;
 	std::string lang;
-	char *lang_cstr;
+	char *lang_cstr="";
 	if (!PyArg_ParseTuple(_args, "s",
 	                      &lang_cstr))
 		return NULL;
@@ -11110,7 +11110,7 @@ static PyObject *state_test_methodsObj_smil_required(state_test_methodsObject *_
 {
 	PyObject *_res = NULL;
 	std::string uri;
-	char *uri_cstr;
+	char *uri_cstr="";
 	if (!PyArg_ParseTuple(_args, "s",
 	                      &uri_cstr))
 		return NULL;
@@ -12049,7 +12049,7 @@ static int none_windowObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_k
 		std::string name;
 		ambulant::lib::size bounds;
 		ambulant::common::gui_events* handler;
-		char *name_cstr;
+		char *name_cstr="";
 		if (PyArg_ParseTuple(_args, "sO&O&",
 		                     &name_cstr,
 		                     ambulant_size_Convert, &bounds,
@@ -12205,7 +12205,7 @@ static PyObject *none_window_factoryObj_new_window(none_window_factoryObject *_s
 	std::string name;
 	ambulant::lib::size bounds;
 	ambulant::common::gui_events* handler;
-	char *name_cstr;
+	char *name_cstr="";
 	if (!PyArg_ParseTuple(_args, "sO&O&",
 	                      &name_cstr,
 	                      ambulant_size_Convert, &bounds,
@@ -15045,7 +15045,7 @@ static PyObject *audio_format_choicesObj_add_named_format(audio_format_choicesOb
 {
 	PyObject *_res = NULL;
 	std::string name;
-	char *name_cstr;
+	char *name_cstr="";
 	if (!PyArg_ParseTuple(_args, "s",
 	                      &name_cstr))
 		return NULL;
@@ -15062,8 +15062,8 @@ static PyObject *audio_format_choicesObj_contains(audio_format_choicesObject *_s
 {
 	PyObject *_res = NULL;
 	ambulant::net::audio_format fmt;
-	char *fmt_mime_type_cstr;
-	char *fmt_name_cstr;
+	char *fmt_mime_type_cstr="";
+	char *fmt_name_cstr="";
 	if (!PyArg_ParseTuple(_args, "(ssiii)",
 	                      &fmt_mime_type_cstr, &fmt_name_cstr, &fmt.samplerate, &fmt.channels, &fmt.bits))
 		return NULL;
@@ -15116,8 +15116,8 @@ static int audio_format_choicesObj_tp_init(PyObject *_self, PyObject *_args, PyO
 
 	{
 		ambulant::net::audio_format fmt;
-		char *fmt_mime_type_cstr;
-		char *fmt_name_cstr;
+		char *fmt_mime_type_cstr="";
+		char *fmt_name_cstr="";
 		if (PyArg_ParseTuple(_args, "(ssiii)",
 		                     &fmt_mime_type_cstr, &fmt_name_cstr, &fmt.samplerate, &fmt.channels, &fmt.bits))
 		{
@@ -15146,7 +15146,7 @@ static int audio_format_choicesObj_tp_init(PyObject *_self, PyObject *_args, PyO
 
 	{
 		std::string name;
-		char *name_cstr;
+		char *name_cstr="";
 		if (PyArg_ParseTuple(_args, "s",
 		                     &name_cstr))
 		{
@@ -15277,7 +15277,7 @@ static PyObject *PyAm_create_from_file(PyObject *_self, PyObject *_args)
 	ambulant::lib::document* _rv;
 	ambulant::common::factories* factory;
 	std::string filename;
-	char *filename_cstr;
+	char *filename_cstr="";
 	if (!PyArg_ParseTuple(_args, "O&s",
 	                      factoriesObj_Convert, &factory,
 	                      &filename_cstr))
@@ -15299,8 +15299,8 @@ static PyObject *PyAm_create_from_string(PyObject *_self, PyObject *_args)
 	ambulant::common::factories* factory;
 	std::string smil_src;
 	std::string src_id;
-	char *smil_src_cstr;
-	char *src_id_cstr;
+	char *smil_src_cstr="";
+	char *src_id_cstr="";
 	if (!PyArg_ParseTuple(_args, "O&ss",
 	                      factoriesObj_Convert, &factory,
 	                      &smil_src_cstr,

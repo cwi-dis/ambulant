@@ -178,6 +178,7 @@ then
     AC_DEFINE(WITH_SMIL30, 1, [Define to enable SMIL 3.0 WD support])
    test_smil30=true
 fi
+AM_CONDITIONAL(WITH_SMIL30, test x$with_smil30 = xyes)
 AC_MSG_RESULT($with_smil30)
 
 #
