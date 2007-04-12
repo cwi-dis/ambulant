@@ -19,10 +19,10 @@
 				Name="VCNMakeTool"
 				BuildCommandLine="del ..\..\bin\win32\pyamplugin_scripting
 copy /y ..\..\src\plugins\pyamplugin_scripting ..\..\bin\win32\pyamplugin_scripting
-del ..\..\bin\win32\pyamplugin_scripting\CVS"
+"
 				ReBuildCommandLine="del ..\..\bin\win32\pyamplugin_scripting
 copy /y ..\..\src\plugins\pyamplugin_scripting ..\..\bin\win32\pyamplugin_scripting
-del ..\..\bin\win32\pyamplugin_scripting\CVS"
+"
 				CleanCommandLine="del ..\..\bin\win32\pyamplugin_scripting"
 				Output="pyamplugin_scripting"/>
 		</Configuration>
@@ -33,6 +33,9 @@ del ..\..\bin\win32\pyamplugin_scripting\CVS"
 			ConfigurationType="0">
 			<Tool
 				Name="VCNMakeTool"
+				BuildCommandLine="del ..\..\bin\win32\pyamplugin_scripting"
+				ReBuildCommandLine="del ..\..\bin\win32\pyamplugin_scripting"
+				CleanCommandLine="del ..\..\bin\win32\pyamplugin_scripting"
 				Output="pyamplugin_scripting"/>
 		</Configuration>
 	</Configurations>

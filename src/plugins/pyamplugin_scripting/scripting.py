@@ -28,7 +28,9 @@ class MyScriptComponent(ambulant.script_component):
         print 'declare_state, node=', state
         statements = state.get_trimmed_data() + "\n"
         child = state.down_1()
+        print 'node statements:', state.get_trimmed_data()
         while child:
+            print 'child statements:', child.get_trimmed_data()
             statements += child.get_trimmed_data() + "\n"
             child = child.next_1()
         exec statements in self.scope, self.globscope
