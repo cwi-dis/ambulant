@@ -26,7 +26,11 @@
 #include "ambulant/common/factory.h"
 #include "ambulant/common/gui_player.h"
 
+#ifdef WITH_SMIL30
+#define AMBULANT_PLUGIN_API_VERSION 3
+#else
 #define AMBULANT_PLUGIN_API_VERSION 2
+#endif
 #ifndef WITH_PYTHON_PLUGIN
 #define WITH_PYTHON_PLUGIN
 #endif

@@ -21,8 +21,9 @@
  * @$Id$ 
  */
 
+#include "ambulant/config/config.h"
 #include "ambulant/common/scripting.h"
-
+#ifdef WITH_SMIL30
 //#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -72,3 +73,4 @@ common::get_global_script_component_factory()
 	if (gscf == NULL) gscf = new global_script_component_factory_impl();
 	return gscf;
 }
+#endif // WITH_SMIL30

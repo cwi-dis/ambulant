@@ -41,6 +41,7 @@
 #include "ambulant/common/player.h"
 #include "ambulant/common/region_dim.h"
 #include "ambulant/common/region_info.h"
+#include "ambulant/common/scripting.h"
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/net/datasource.h"
 #include "ambulant/net/stdio_datasource.h"
