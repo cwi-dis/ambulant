@@ -27,7 +27,7 @@
 #include "ambulant/net/datasource.h"
 
 #include <string>
-
+#include <stdexcept>
 
 namespace ambulant {
 
