@@ -7,6 +7,31 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		040EAA200BCE6BFB00DEE37B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA140BCE6BFB00DEE37B /* Credits.rtf */; };
+		040EAA220BCE6BFB00DEE37B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA180BCE6BFB00DEE37B /* InfoPlist.strings */; };
+		040EAA230BCE6BFB00DEE37B /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA1A0BCE6BFB00DEE37B /* MyDocument.nib */; };
+		040EAA240BCE6BFB00DEE37B /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA1C0BCE6BFB00DEE37B /* MainMenu.nib */; };
+		040EAA250BCE6BFB00DEE37B /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA1E0BCE6BFB00DEE37B /* Log.nib */; };
+		040EAA370BCE6CF600DEE37B /* nscontext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 040EAA360BCE6CF600DEE37B /* nscontext.cpp */; };
+		040EAA380BCE6CF600DEE37B /* nscontext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 040EAA360BCE6CF600DEE37B /* nscontext.cpp */; };
+		040EAA3B0BCE6D8C00DEE37B /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA1A0BCE6BFB00DEE37B /* MyDocument.nib */; };
+		040EAA400BCE6DBE00DEE37B /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA1C0BCE6BFB00DEE37B /* MainMenu.nib */; };
+		040EAA410BCE6DC800DEE37B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA140BCE6BFB00DEE37B /* Credits.rtf */; };
+		040EAA420BCE6DC800DEE37B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA180BCE6BFB00DEE37B /* InfoPlist.strings */; };
+		040EAA430BCE6DC800DEE37B /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA1A0BCE6BFB00DEE37B /* MyDocument.nib */; };
+		040EAA440BCE6DC800DEE37B /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA1C0BCE6BFB00DEE37B /* MainMenu.nib */; };
+		040EAA450BCE6DC800DEE37B /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA1E0BCE6BFB00DEE37B /* Log.nib */; };
+		040EAA460BCE6DC800DEE37B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 049650760BCAE0AE002C00DF /* Info.plist */; };
+		040EAA860BCE7B0F00DEE37B /* Ambulant.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA810BCE7B0F00DEE37B /* Ambulant.icns */; };
+		040EAA870BCE7B0F00DEE37B /* AmbulantDocDaisy.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA820BCE7B0F00DEE37B /* AmbulantDocDaisy.icns */; };
+		040EAA880BCE7B0F00DEE37B /* AmbulantDocGrins.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA830BCE7B0F00DEE37B /* AmbulantDocGrins.icns */; };
+		040EAA890BCE7B0F00DEE37B /* AmbulantDocMms.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA840BCE7B0F00DEE37B /* AmbulantDocMms.icns */; };
+		040EAA8A0BCE7B0F00DEE37B /* AmbulantDocSmil.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA850BCE7B0F00DEE37B /* AmbulantDocSmil.icns */; };
+		040EAA8B0BCE7B0F00DEE37B /* Ambulant.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA810BCE7B0F00DEE37B /* Ambulant.icns */; };
+		040EAA8C0BCE7B0F00DEE37B /* AmbulantDocDaisy.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA820BCE7B0F00DEE37B /* AmbulantDocDaisy.icns */; };
+		040EAA8D0BCE7B0F00DEE37B /* AmbulantDocGrins.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA830BCE7B0F00DEE37B /* AmbulantDocGrins.icns */; };
+		040EAA8E0BCE7B0F00DEE37B /* AmbulantDocMms.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA840BCE7B0F00DEE37B /* AmbulantDocMms.icns */; };
+		040EAA8F0BCE7B0F00DEE37B /* AmbulantDocSmil.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA850BCE7B0F00DEE37B /* AmbulantDocSmil.icns */; };
 		049650620BCADE2B002C00DF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 049650610BCADE2B002C00DF /* main.m */; };
 		0496506D0BCADE62002C00DF /* LogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049650640BCADE62002C00DF /* LogController.mm */; };
 		0496506E0BCADE62002C00DF /* MyAmbulantView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049650660BCADE62002C00DF /* MyAmbulantView.mm */; };
@@ -15,15 +40,6 @@
 		049650710BCADE62002C00DF /* mypreferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0496506C0BCADE62002C00DF /* mypreferences.mm */; };
 		049650740BCADE83002C00DF /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049650720BCADE83002C00DF /* mainloop.cpp */; };
 		049650770BCAE0AE002C00DF /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 049650760BCAE0AE002C00DF /* Info.plist */; };
-		049650B40BCAE1D3002C00DF /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0496509D0BCAE1D3002C00DF /* Credits.rtf */; };
-		049650B50BCAE1D3002C00DF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0496509F0BCAE1D3002C00DF /* InfoPlist.strings */; };
-		049650B60BCAE1D3002C00DF /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 049650A10BCAE1D3002C00DF /* MainMenu.nib */; };
-		049650B70BCAE1D3002C00DF /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 049650A40BCAE1D3002C00DF /* Credits.rtf */; };
-		049650B80BCAE1D3002C00DF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 049650A60BCAE1D3002C00DF /* InfoPlist.strings */; };
-		049650B90BCAE1D3002C00DF /* locversion.plist in Resources */ = {isa = PBXBuildFile; fileRef = 049650A80BCAE1D3002C00DF /* locversion.plist */; };
-		049650BA0BCAE1D3002C00DF /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 049650AA0BCAE1D3002C00DF /* Log.nib */; };
-		049650BB0BCAE1D3002C00DF /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 049650AC0BCAE1D3002C00DF /* MainMenu.nib */; };
-		049650BD0BCAE1D3002C00DF /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 049650B00BCAE1D3002C00DF /* MyDocument.nib */; };
 		049652340BCAE333002C00DF /* Makefile.am in Resources */ = {isa = PBXBuildFile; fileRef = 049651D00BCAE333002C00DF /* Makefile.am */; };
 		049652350BCAE333002C00DF /* Makefile.in in Resources */ = {isa = PBXBuildFile; fileRef = 049651D10BCAE333002C00DF /* Makefile.in */; };
 		049652F20BCAE3C5002C00DF /* factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0496523E0BCAE3C5002C00DF /* factory.cpp */; };
@@ -129,15 +145,6 @@
 		049656230BCAEA43002C00DF /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656170BCAEA42002C00DF /* libSDL.a */; };
 		049656240BCAEA43002C00DF /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656180BCAEA42002C00DF /* libz.dylib */; };
 		0496562D0BCAEA7D002C00DF /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 049650760BCAE0AE002C00DF /* Info.plist */; };
-		0496562E0BCAEA7D002C00DF /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0496509D0BCAE1D3002C00DF /* Credits.rtf */; };
-		0496562F0BCAEA7D002C00DF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0496509F0BCAE1D3002C00DF /* InfoPlist.strings */; };
-		049656300BCAEA7D002C00DF /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 049650A10BCAE1D3002C00DF /* MainMenu.nib */; };
-		049656310BCAEA7D002C00DF /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 049650A40BCAE1D3002C00DF /* Credits.rtf */; };
-		049656320BCAEA7D002C00DF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 049650A60BCAE1D3002C00DF /* InfoPlist.strings */; };
-		049656330BCAEA7D002C00DF /* locversion.plist in Resources */ = {isa = PBXBuildFile; fileRef = 049650A80BCAE1D3002C00DF /* locversion.plist */; };
-		049656340BCAEA7D002C00DF /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 049650AA0BCAE1D3002C00DF /* Log.nib */; };
-		049656350BCAEA7D002C00DF /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 049650AC0BCAE1D3002C00DF /* MainMenu.nib */; };
-		049656360BCAEA7D002C00DF /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 049650B00BCAE1D3002C00DF /* MyDocument.nib */; };
 		049656370BCAEA7D002C00DF /* Makefile.am in Resources */ = {isa = PBXBuildFile; fileRef = 049651D00BCAE333002C00DF /* Makefile.am */; };
 		049656380BCAEA7D002C00DF /* Makefile.in in Resources */ = {isa = PBXBuildFile; fileRef = 049651D10BCAE333002C00DF /* Makefile.in */; };
 		0496563A0BCAEA7D002C00DF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 049650610BCADE2B002C00DF /* main.m */; };
@@ -256,6 +263,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		040EAA150BCE6BFB00DEE37B /* English */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = English; path = ../../src/player_macosx/English.lproj/Credits.rtf; sourceTree = SOURCE_ROOT; };
+		040EAA190BCE6BFB00DEE37B /* English */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.strings; name = English; path = ../../src/player_macosx/English.lproj/InfoPlist.strings; sourceTree = SOURCE_ROOT; };
+		040EAA1B0BCE6BFB00DEE37B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = ../../src/player_macosx/English.lproj/MyDocument.nib; sourceTree = SOURCE_ROOT; };
+		040EAA1D0BCE6BFB00DEE37B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = ../../src/player_macosx/English.lproj/MainMenu.nib; sourceTree = SOURCE_ROOT; };
+		040EAA1F0BCE6BFB00DEE37B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = ../../src/player_macosx/English.lproj/Log.nib; sourceTree = SOURCE_ROOT; };
+		040EAA260BCE6C0C00DEE37B /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = Dutch; path = ../../src/player_macosx/Dutch.lproj/Credits.rtf; sourceTree = SOURCE_ROOT; };
+		040EAA290BCE6C0C00DEE37B /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = ../../src/player_macosx/Dutch.lproj/MainMenu.nib; sourceTree = SOURCE_ROOT; };
+		040EAA2A0BCE6C0C00DEE37B /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Dutch; path = ../../src/player_macosx/Dutch.lproj/InfoPlist.strings; sourceTree = SOURCE_ROOT; };
+		040EAA360BCE6CF600DEE37B /* nscontext.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = nscontext.cpp; sourceTree = "<group>"; };
+		040EAA810BCE7B0F00DEE37B /* Ambulant.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Ambulant.icns; path = ../../src/player_macosx/Ambulant.icns; sourceTree = SOURCE_ROOT; };
+		040EAA820BCE7B0F00DEE37B /* AmbulantDocDaisy.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = AmbulantDocDaisy.icns; path = ../../src/player_macosx/AmbulantDocDaisy.icns; sourceTree = SOURCE_ROOT; };
+		040EAA830BCE7B0F00DEE37B /* AmbulantDocGrins.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = AmbulantDocGrins.icns; path = ../../src/player_macosx/AmbulantDocGrins.icns; sourceTree = SOURCE_ROOT; };
+		040EAA840BCE7B0F00DEE37B /* AmbulantDocMms.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = AmbulantDocMms.icns; path = ../../src/player_macosx/AmbulantDocMms.icns; sourceTree = SOURCE_ROOT; };
+		040EAA850BCE7B0F00DEE37B /* AmbulantDocSmil.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = AmbulantDocSmil.icns; path = ../../src/player_macosx/AmbulantDocSmil.icns; sourceTree = SOURCE_ROOT; };
 		049650600BCADE2B002C00DF /* Ambulant.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Ambulant.pch; path = ../../src/player_macosx/Ambulant.pch; sourceTree = SOURCE_ROOT; };
 		049650610BCADE2B002C00DF /* main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../../src/player_macosx/main.m; sourceTree = SOURCE_ROOT; };
 		049650630BCADE62002C00DF /* LogController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = LogController.h; path = ../../src/player_macosx/LogController.h; sourceTree = SOURCE_ROOT; };
@@ -271,15 +292,6 @@
 		049650720BCADE83002C00DF /* mainloop.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mainloop.cpp; path = ../../src/player_macosx/mainloop.cpp; sourceTree = SOURCE_ROOT; };
 		049650730BCADE83002C00DF /* mainloop.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mainloop.h; path = ../../src/player_macosx/mainloop.h; sourceTree = SOURCE_ROOT; };
 		049650760BCAE0AE002C00DF /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; name = Info.plist; path = ../../src/player_macosx/Info.plist; sourceTree = SOURCE_ROOT; };
-		0496509E0BCAE1D3002C00DF /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = Dutch; path = Credits.rtf; sourceTree = "<group>"; };
-		049650A00BCAE1D3002C00DF /* Dutch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.strings; name = Dutch; path = InfoPlist.strings; sourceTree = "<group>"; };
-		049650A20BCAE1D3002C00DF /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = MainMenu.nib; sourceTree = "<group>"; };
-		049650A50BCAE1D3002C00DF /* English */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = English; path = Credits.rtf; sourceTree = "<group>"; };
-		049650A70BCAE1D3002C00DF /* English */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.strings; name = English; path = InfoPlist.strings; sourceTree = "<group>"; };
-		049650A90BCAE1D3002C00DF /* English */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; name = English; path = locversion.plist; sourceTree = "<group>"; };
-		049650AB0BCAE1D3002C00DF /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Log.nib; sourceTree = "<group>"; };
-		049650AD0BCAE1D3002C00DF /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = MainMenu.nib; sourceTree = "<group>"; };
-		049650B10BCAE1D3002C00DF /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = MyDocument.nib; sourceTree = "<group>"; };
 		049650C40BCAE333002C00DF /* embedder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = embedder.h; sourceTree = "<group>"; };
 		049650C50BCAE333002C00DF /* factory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = factory.h; sourceTree = "<group>"; };
 		049650C60BCAE333002C00DF /* gui_player.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = gui_player.h; sourceTree = "<group>"; };
@@ -739,7 +751,6 @@
 		049656170BCAEA42002C00DF /* libSDL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL.a; path = /usr/local/lib/libSDL.a; sourceTree = "<absolute>"; };
 		049656180BCAEA42002C00DF /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		049656AC0BCAEA7D002C00DF /* Ambulant-mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ambulant-mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		049656AE0BCAEA7D002C00DF /* Info copy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = "Info copy.plist"; path = "../../src/player_macosx/Info copy.plist"; sourceTree = "<group>"; };
 		049656B10BCAEC13002C00DF /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
@@ -817,31 +828,6 @@
 			name = ambulant;
 			path = ../..;
 			sourceTree = "<group>";
-		};
-		0496509C0BCAE1D3002C00DF /* Dutch.lproj */ = {
-			isa = PBXGroup;
-			children = (
-				0496509F0BCAE1D3002C00DF /* InfoPlist.strings */,
-				0496509D0BCAE1D3002C00DF /* Credits.rtf */,
-				049650A10BCAE1D3002C00DF /* MainMenu.nib */,
-			);
-			name = Dutch.lproj;
-			path = ../../src/player_macosx/Dutch.lproj;
-			sourceTree = SOURCE_ROOT;
-		};
-		049650A30BCAE1D3002C00DF /* English.lproj */ = {
-			isa = PBXGroup;
-			children = (
-				049650A60BCAE1D3002C00DF /* InfoPlist.strings */,
-				049650A40BCAE1D3002C00DF /* Credits.rtf */,
-				049650A80BCAE1D3002C00DF /* locversion.plist */,
-				049650AA0BCAE1D3002C00DF /* Log.nib */,
-				049650AC0BCAE1D3002C00DF /* MainMenu.nib */,
-				049650B00BCAE1D3002C00DF /* MyDocument.nib */,
-			);
-			name = English.lproj;
-			path = ../../src/player_macosx/English.lproj;
-			sourceTree = SOURCE_ROOT;
 		};
 		049650C00BCAE2B8002C00DF /* include */ = {
 			isa = PBXGroup;
@@ -1513,6 +1499,7 @@
 		049652A80BCAE3C5002C00DF /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				040EAA360BCE6CF600DEE37B /* nscontext.cpp */,
 				049652A90BCAE3C5002C00DF /* colors.cpp */,
 				049652AA0BCAE3C5002C00DF /* delta_timer.cpp */,
 				049652AB0BCAE3C5002C00DF /* document.cpp */,
@@ -1716,10 +1703,17 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				0496509C0BCAE1D3002C00DF /* Dutch.lproj */,
-				049650A30BCAE1D3002C00DF /* English.lproj */,
+				040EAA810BCE7B0F00DEE37B /* Ambulant.icns */,
+				040EAA820BCE7B0F00DEE37B /* AmbulantDocDaisy.icns */,
+				040EAA830BCE7B0F00DEE37B /* AmbulantDocGrins.icns */,
+				040EAA840BCE7B0F00DEE37B /* AmbulantDocMms.icns */,
+				040EAA850BCE7B0F00DEE37B /* AmbulantDocSmil.icns */,
+				040EAA140BCE6BFB00DEE37B /* Credits.rtf */,
+				040EAA180BCE6BFB00DEE37B /* InfoPlist.strings */,
+				040EAA1A0BCE6BFB00DEE37B /* MyDocument.nib */,
+				040EAA1C0BCE6BFB00DEE37B /* MainMenu.nib */,
+				040EAA1E0BCE6BFB00DEE37B /* Log.nib */,
 				049650760BCAE0AE002C00DF /* Info.plist */,
-				049656AE0BCAEA7D002C00DF /* Info copy.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1802,17 +1796,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				0496562D0BCAEA7D002C00DF /* Info.plist in Resources */,
-				0496562E0BCAEA7D002C00DF /* Credits.rtf in Resources */,
-				0496562F0BCAEA7D002C00DF /* InfoPlist.strings in Resources */,
-				049656300BCAEA7D002C00DF /* MainMenu.nib in Resources */,
-				049656310BCAEA7D002C00DF /* Credits.rtf in Resources */,
-				049656320BCAEA7D002C00DF /* InfoPlist.strings in Resources */,
-				049656330BCAEA7D002C00DF /* locversion.plist in Resources */,
-				049656340BCAEA7D002C00DF /* Log.nib in Resources */,
-				049656350BCAEA7D002C00DF /* MainMenu.nib in Resources */,
-				049656360BCAEA7D002C00DF /* MyDocument.nib in Resources */,
 				049656370BCAEA7D002C00DF /* Makefile.am in Resources */,
 				049656380BCAEA7D002C00DF /* Makefile.in in Resources */,
+				040EAA3B0BCE6D8C00DEE37B /* MyDocument.nib in Resources */,
+				040EAA400BCE6DBE00DEE37B /* MainMenu.nib in Resources */,
+				040EAA410BCE6DC800DEE37B /* Credits.rtf in Resources */,
+				040EAA420BCE6DC800DEE37B /* InfoPlist.strings in Resources */,
+				040EAA430BCE6DC800DEE37B /* MyDocument.nib in Resources */,
+				040EAA440BCE6DC800DEE37B /* MainMenu.nib in Resources */,
+				040EAA450BCE6DC800DEE37B /* Log.nib in Resources */,
+				040EAA460BCE6DC800DEE37B /* Info.plist in Resources */,
+				040EAA8B0BCE7B0F00DEE37B /* Ambulant.icns in Resources */,
+				040EAA8C0BCE7B0F00DEE37B /* AmbulantDocDaisy.icns in Resources */,
+				040EAA8D0BCE7B0F00DEE37B /* AmbulantDocGrins.icns in Resources */,
+				040EAA8E0BCE7B0F00DEE37B /* AmbulantDocMms.icns in Resources */,
+				040EAA8F0BCE7B0F00DEE37B /* AmbulantDocSmil.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1821,17 +1819,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				049650770BCAE0AE002C00DF /* Info.plist in Resources */,
-				049650B40BCAE1D3002C00DF /* Credits.rtf in Resources */,
-				049650B50BCAE1D3002C00DF /* InfoPlist.strings in Resources */,
-				049650B60BCAE1D3002C00DF /* MainMenu.nib in Resources */,
-				049650B70BCAE1D3002C00DF /* Credits.rtf in Resources */,
-				049650B80BCAE1D3002C00DF /* InfoPlist.strings in Resources */,
-				049650B90BCAE1D3002C00DF /* locversion.plist in Resources */,
-				049650BA0BCAE1D3002C00DF /* Log.nib in Resources */,
-				049650BB0BCAE1D3002C00DF /* MainMenu.nib in Resources */,
-				049650BD0BCAE1D3002C00DF /* MyDocument.nib in Resources */,
 				049652340BCAE333002C00DF /* Makefile.am in Resources */,
 				049652350BCAE333002C00DF /* Makefile.in in Resources */,
+				040EAA200BCE6BFB00DEE37B /* Credits.rtf in Resources */,
+				040EAA220BCE6BFB00DEE37B /* InfoPlist.strings in Resources */,
+				040EAA230BCE6BFB00DEE37B /* MyDocument.nib in Resources */,
+				040EAA240BCE6BFB00DEE37B /* MainMenu.nib in Resources */,
+				040EAA250BCE6BFB00DEE37B /* Log.nib in Resources */,
+				040EAA860BCE7B0F00DEE37B /* Ambulant.icns in Resources */,
+				040EAA870BCE7B0F00DEE37B /* AmbulantDocDaisy.icns in Resources */,
+				040EAA880BCE7B0F00DEE37B /* AmbulantDocGrins.icns in Resources */,
+				040EAA890BCE7B0F00DEE37B /* AmbulantDocMms.icns in Resources */,
+				040EAA8A0BCE7B0F00DEE37B /* AmbulantDocSmil.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1932,6 +1931,7 @@
 				049656910BCAEA7D002C00DF /* timegraph.cpp in Sources */,
 				049656920BCAEA7D002C00DF /* trace_player.cpp in Sources */,
 				049656930BCAEA7D002C00DF /* transition.cpp in Sources */,
+				040EAA380BCE6CF600DEE37B /* nscontext.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2029,82 +2029,54 @@
 				049653920BCAE3C6002C00DF /* timegraph.cpp in Sources */,
 				049653930BCAE3C6002C00DF /* trace_player.cpp in Sources */,
 				049653940BCAE3C6002C00DF /* transition.cpp in Sources */,
+				040EAA370BCE6CF600DEE37B /* nscontext.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		0496509D0BCAE1D3002C00DF /* Credits.rtf */ = {
+		040EAA140BCE6BFB00DEE37B /* Credits.rtf */ = {
 			isa = PBXVariantGroup;
 			children = (
-				0496509E0BCAE1D3002C00DF /* Dutch */,
+				040EAA150BCE6BFB00DEE37B /* English */,
+				040EAA260BCE6C0C00DEE37B /* Dutch */,
 			);
 			name = Credits.rtf;
 			sourceTree = "<group>";
 		};
-		0496509F0BCAE1D3002C00DF /* InfoPlist.strings */ = {
+		040EAA180BCE6BFB00DEE37B /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				049650A00BCAE1D3002C00DF /* Dutch */,
+				040EAA190BCE6BFB00DEE37B /* English */,
+				040EAA2A0BCE6C0C00DEE37B /* Dutch */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		049650A10BCAE1D3002C00DF /* MainMenu.nib */ = {
+		040EAA1A0BCE6BFB00DEE37B /* MyDocument.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				049650A20BCAE1D3002C00DF /* Dutch */,
-			);
-			name = MainMenu.nib;
-			sourceTree = "<group>";
-		};
-		049650A40BCAE1D3002C00DF /* Credits.rtf */ = {
-			isa = PBXVariantGroup;
-			children = (
-				049650A50BCAE1D3002C00DF /* English */,
-			);
-			name = Credits.rtf;
-			sourceTree = "<group>";
-		};
-		049650A60BCAE1D3002C00DF /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				049650A70BCAE1D3002C00DF /* English */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		049650A80BCAE1D3002C00DF /* locversion.plist */ = {
-			isa = PBXVariantGroup;
-			children = (
-				049650A90BCAE1D3002C00DF /* English */,
-			);
-			name = locversion.plist;
-			sourceTree = "<group>";
-		};
-		049650AA0BCAE1D3002C00DF /* Log.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				049650AB0BCAE1D3002C00DF /* English */,
-			);
-			name = Log.nib;
-			sourceTree = "<group>";
-		};
-		049650AC0BCAE1D3002C00DF /* MainMenu.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				049650AD0BCAE1D3002C00DF /* English */,
-			);
-			name = MainMenu.nib;
-			sourceTree = "<group>";
-		};
-		049650B00BCAE1D3002C00DF /* MyDocument.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				049650B10BCAE1D3002C00DF /* English */,
+				040EAA1B0BCE6BFB00DEE37B /* English */,
 			);
 			name = MyDocument.nib;
+			sourceTree = "<group>";
+		};
+		040EAA1C0BCE6BFB00DEE37B /* MainMenu.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				040EAA1D0BCE6BFB00DEE37B /* English */,
+				040EAA290BCE6C0C00DEE37B /* Dutch */,
+			);
+			name = MainMenu.nib;
+			sourceTree = "<group>";
+		};
+		040EAA1E0BCE6BFB00DEE37B /* Log.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				040EAA1F0BCE6BFB00DEE37B /* English */,
+			);
+			name = Log.nib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
