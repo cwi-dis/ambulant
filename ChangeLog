@@ -1,3 +1,39 @@
+2007-04-11 17:36  jackjansen
+
+	* Added a couple of WITH_SMIL30 ifdefs.
+
+2007-04-11 17:03  jackjansen
+
+	* Node data (characters) can now be stored in children too.
+
+2007-04-11 16:50  jackjansen
+
+	* Modifications to be able to create a fat (intel/ppc) player for
+	  the Mac with Python support.
+
+2007-04-11 14:50  jackjansen
+
+	* Merging exp-jack-smil30: - Initial version of SMIL State, with
+	  theonly language supported being Python.  - Initial version of
+	  SMILText, with exact tag and atttribute names incorrect.
+
+	  All this is only enabled when configuring with --with-smil30.
+
+2007-04-11 14:02  jackjansen
+
+	* Attempt at automatic creation of ambulant module through a
+	  Makefile vcproj. Failed, so far.
+
+2007-04-11 12:57  jackjansen
+
+	* Python interface and python plugin now compile on windows. Next:
+	  get them to run:-)
+
+2007-04-11 12:40  jackjansen
+
+	* Fixed a few issues that showed up when building the bridge for
+	  Windows.
+
 2007-04-10 17:45  jackjansen
 
 	* Bits and pieces to get the Python interface working on windows.
