@@ -1,4 +1,8 @@
-print 'pyamplugin_scripting: imported __init__'
+import sys
+import time
+if sys.platform == 'win32':
+	sys.stdout = sys.stderr = open('AmbulantPlayerPythonPlugin.log', 'a')
+print 'pyamplugin_scripting: imported __init__ at ', time.asctime()
 
 import pyamplugin_scripting.scripting
 import ambulant

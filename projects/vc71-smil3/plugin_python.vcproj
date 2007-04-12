@@ -33,10 +33,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="TRUE"
+				AdditionalDependencies="../../src/pyambulant/build/temp.win32-2.5/Debug/ambulant_d.lib"
 				OutputFile="../../bin/win32/libampluginD_python.dll"
 				LinkIncremental="0"
-				AdditionalLibraryDirectories="E:\Python25\libs"
-				IgnoreDefaultLibraryNames="LIBC.lib"
+				AdditionalLibraryDirectories="..\..\..\Python-2.5\PCBuild"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/plugin_python.pdb"
 				GenerateMapFile="TRUE"

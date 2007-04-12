@@ -24,6 +24,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pyambulant", "pyambulant.vc
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785} = {DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pyamplugin_scripting", "pyamplugin_scripting.vcproj", "{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -98,6 +102,22 @@ Global
 		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.ReleaseNoXercesNoHtml.ActiveCfg = Release|Win32
 		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.ReleaseShlib.ActiveCfg = Release|Win32
 		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.ReleaseShlib.Build.0 = Release|Win32
+		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.Debug.ActiveCfg = Debug|Win32
+		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.Debug.Build.0 = Debug|Win32
+		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.DebugNoXerces.ActiveCfg = Debug|Win32
+		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.DebugNoXerces.Build.0 = Debug|Win32
+		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.DebugNoXercesNoHtml.ActiveCfg = Debug|Win32
+		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.DebugNoXercesNoHtml.Build.0 = Debug|Win32
+		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.DebugShlib.ActiveCfg = Debug|Win32
+		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.DebugShlib.Build.0 = Debug|Win32
+		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.Release.ActiveCfg = Release|Win32
+		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.Release.Build.0 = Release|Win32
+		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.ReleaseNoXerces.ActiveCfg = Release|Win32
+		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.ReleaseNoXerces.Build.0 = Release|Win32
+		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.ReleaseNoXercesNoHtml.ActiveCfg = Release|Win32
+		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.ReleaseNoXercesNoHtml.Build.0 = Release|Win32
+		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.ReleaseShlib.ActiveCfg = Release|Win32
+		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.ReleaseShlib.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

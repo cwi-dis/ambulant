@@ -51,6 +51,42 @@ setup.py clean --all
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
+			<File
+				RelativePath="..\..\src\pyambulant\ambulantinterface.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\pyambulant\ambulantinterface.h">
+			</File>
+			<File
+				RelativePath="..\..\src\pyambulant\ambulantmodule.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\pyambulant\ambulantmodule.h">
+			</File>
+			<File
+				RelativePath="..\..\src\pyambulant\ambulantscan.py">
+			</File>
+			<File
+				RelativePath="..\..\src\pyambulant\ambulantsupport.py">
+			</File>
+			<File
+				RelativePath="..\..\src\pyambulant\ambulantutilities.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\pyambulant\ambulantutilities.h">
+			</File>
+			<File
+				RelativePath="..\..\src\pyambulant\bgenBackSupport.py">
+			</File>
+			<File
+				RelativePath="..\..\src\pyambulant\bgenCxxSupport.py">
+			</File>
+			<File
+				RelativePath="..\..\src\pyambulant\genobjects.py">
+			</File>
+			<File
+				RelativePath="..\..\src\pyambulant\setup.py">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
