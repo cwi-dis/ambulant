@@ -6,3 +6,5 @@ Makefile
 .libs
 cocoambulant_executable
 cocoambulant.app
+.gdb_history
+.DS_Store

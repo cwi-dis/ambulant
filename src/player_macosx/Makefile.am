@@ -88,7 +88,11 @@ cocoambulant_bundle: cocoambulant_executable
 	mkdir -p $(BUILDAPPNAME).app/Contents/Resources
 	echo -n "APPLAmbl" > $(BUILDAPPNAME).app/Contents/PkgInfo
 	$(INSTALL_DATA) $(srcdir)/Info.plist $(BUILDAPPNAME).app/Contents/Info.plist
-	$(INSTALL_DATA) $(srcdir)/cocoambulant.icns $(BUILDAPPNAME).app/Contents/Resources
+	$(INSTALL_DATA) $(srcdir)/Ambulant.icns $(BUILDAPPNAME).app/Contents/Resources
+	$(INSTALL_DATA) $(srcdir)/AmbulantDocDaisy.icns $(BUILDAPPNAME).app/Contents/Resources
+	$(INSTALL_DATA) $(srcdir)/AmbulantDocGrins.icns $(BUILDAPPNAME).app/Contents/Resources
+	$(INSTALL_DATA) $(srcdir)/AmbulantDocMms.icns $(BUILDAPPNAME).app/Contents/Resources
+	$(INSTALL_DATA) $(srcdir)/AmbulantDocSmil.icns $(BUILDAPPNAME).app/Contents/Resources
 	$(INSTALL_DATA) $(srcdir)/systemTestSettings.xml $(BUILDAPPNAME).app/Contents/Resources
 	$(INSTALL_DATA) $(srcdir)/play.png $(BUILDAPPNAME).app/Contents/Resources
 	$(INSTALL_DATA) $(srcdir)/pause.png $(BUILDAPPNAME).app/Contents/Resources
@@ -180,11 +184,11 @@ endif
 	$(INSTALL_DATA) $(top_srcdir)/Extras/DTDCache/SMIL21/*.* $(BUILDAPPNAME).app/Contents/Resources/DTDCache/SMIL21
 
 #	Install executable
-	$(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) cocoambulant_executable `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/cocoambulant
-	strip -x `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/cocoambulant
+	$(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) cocoambulant_executable `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/Ambulant-mac
+	strip -x `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/Ambulant-mac
 	
 #   Test for problematic dependencies
-	$(TESTDEP) `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/cocoambulant
+	$(TESTDEP) `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/Ambulant-mac
 	$(TESTDEP) `pwd`/$(BUILDAPPNAME).app/Contents/PlugIns/*
 	$(TESTDEP) `pwd`/$(BUILDAPPNAME).app/Contents/Frameworks/*
 	
