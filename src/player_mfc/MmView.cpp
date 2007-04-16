@@ -410,7 +410,10 @@ void MmView::OnUpdateFilePause(CCmdUI *pCmdUI)
 
 void MmView::OnFileStop()
 {
-
+#ifdef WITH_SMIL30
+	if (player)
+		player->stop();
+#else
 	if(player) {
 		net::url u = player->get_url();
 		dg_or_dx_player *dummy = player;
@@ -425,6 +428,7 @@ void MmView::OnFileStop()
 		InvalidateRect(NULL); 
 		needs_done_redraw = false;
 	}
+#endif
 }
 
 void MmView::OnUpdateFileStop(CCmdUI *pCmdUI)
