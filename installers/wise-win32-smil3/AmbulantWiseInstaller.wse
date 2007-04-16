@@ -24,11 +24,11 @@ item: Global
   Patch Memory=4000
   MIF PDF Version=1.0
   MIF SMS Version=2.0
-  EXE Filename=..\..\bin\win32\Ambulant-1.9-win32.exe
+  EXE Filename=..\..\bin\win32\Ambulant-1.9S3WD1-win32.exe
   FTP Cluster Size=20
   Per-User Version ID=1
   Dialogs Version=7
-  Version File=1.9
+  Version File=1.9-S3WD1
   Version Description=Ambulant Player for SMIL 3.0WD
   Version Copyright=Copyright (c) 2004-2007
   Version Company=Stichting CWI
@@ -42,7 +42,7 @@ item: Global
   Variable Default2=C:\WINDOWS
   Variable Flags2=00001000
   Variable Name3=_WISE_
-  Variable Default3=C:\PROGRA~1\WISEIN~2
+  Variable Default3=E:\PROGRA~1\WISEIN~1
   Variable Flags3=00001000
   Variable Name4=_ALIASNAME_
   Variable Flags4=00001000
@@ -114,7 +114,7 @@ item: Remark
 end
 item: Set Variable
   Variable=MAINDIR
-  Value=AmbulantPlayer-1.9
+  Value=AmbulantPlayer-1.9-S3WD1
   Flags=10000000
 end
 item: Remark
@@ -1696,6 +1696,11 @@ item: If/While Statement
   Flags=00001010
 end
 item: Install File
+  Source=f:\jack\ambulant\bin\win32\ambulant.pyd
+  Destination=%MAINDIR%\ambulant.pyd
+  Flags=0000000010000010
+end
+item: Install File
   Source=..\..\Extras\DTDCache\Smil21\SMIL-transition.mod
   Destination=%MAINDIR%\Extras\DTDCache\Smil21\SMIL-transition.mod
   Flags=0000000010000010
@@ -1811,12 +1816,12 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\Program Files\Microsoft Visual Studio .NET 2003\Sdk\v1.1\Bin\msvcp71.dll
+  Source=e:\Program Files\Microsoft Visual Studio .NET 2003\Sdk\v1.1\Bin\msvcp71.dll
   Destination=%MAINDIR%\msvcp71.dll
   Flags=0000000010000011
 end
 item: Install File
-  Source=c:\Program Files\Microsoft Visual Studio .NET 2003\Sdk\v1.1\Bin\msvcr71.dll
+  Source=e:\Program Files\Microsoft Visual Studio .NET 2003\Sdk\v1.1\Bin\msvcr71.dll
   Destination=%MAINDIR%\msvcr71.dll
   Flags=0000000010000011
 end
@@ -1953,12 +1958,12 @@ end
 item: Install File
   Source=..\..\bin\win32\libambulant_shwin32.dll
   Destination=%MAINDIR%\libambulant_shwin32.dll
-  Flags=0000000010000011
+  Flags=0000000010000010
 end
 item: Install File
   Source=..\..\bin\win32\libamplugin_python.dll
   Destination=%MAINDIR%\libamplugin_python.dll
-  Flags=0000000010000011
+  Flags=0000000010000010
 end
 item: Install File
   Source=..\..\bin\win32\pyamplugin_scripting\__init__.py
@@ -2461,7 +2466,7 @@ end
 item: Edit Registry
   Total Keys=1
   Key=Software\Microsoft\Windows\CurrentVersion\Uninstall\%APPTITLE%
-  New Value=1.9
+  New Value=1.9-S3WD1
   Value Name=DisplayVersion
   Root=2
 end
