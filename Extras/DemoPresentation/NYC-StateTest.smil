@@ -25,7 +25,7 @@ where=0
   <body>
    <seq>
     <text expr="where != 0" src="data:,Restarting at slide {where}, bitrate={smil_bitrate()}..." region="Captions" dur="2s">
-      <param name="color" value="white"/>
+      <param name="color" value="yellow"/>
     </text>
     <par id="AdvancedPPCSlideshow">
       <audio id="NYStateOfMind" region="audio_2" src="NYCdata/NYStateOfMind.mp3" systemComponent="multiChannelAudio"/>
