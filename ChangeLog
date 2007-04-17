@@ -1,3 +1,20 @@
+2007-04-16 13:06  jackjansen
+
+	* There is a strange problem with param color=white on windows. For
+	  now use yellow:-)
+
+2007-04-16 13:05  jackjansen
+
+	* If user selects "Stop" don't automatically re-read the document.
+
+2007-04-16 12:56  jackjansen
+
+	* Both the normal and the shared/smil3 installer seem to work.
+
+2007-04-16 11:43  jackjansen
+
+	* Also moving installers to new locations.
+
 2007-04-12 17:12  jackjansen
 
 	* Added missing include.
