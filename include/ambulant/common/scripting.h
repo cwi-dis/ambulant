@@ -26,7 +26,28 @@
 #ifndef AMBULANT_SMIL2_SCRIPTING_H
 #define AMBULANT_SMIL2_SCRIPTING_H
 
-#ifdef WITH_SMIL30
+#ifndef WITH_SMIL30
+// We declare an empty class state_test_methods. This is because
+// the Python interface expects it, and this is the easiest way
+// to satisfy that.
+namespace ambulant {
+namespace common {
+class state_test_methods {
+	int dummy;
+};
+class script_component {
+	int dummy;
+};
+class script_component_factory {
+	int dummy;
+};
+class global_script_component_factory {
+	int dummy;
+};
+}
+}
+
+#else
 #include "ambulant/lib/node.h"
 
 namespace ambulant {
