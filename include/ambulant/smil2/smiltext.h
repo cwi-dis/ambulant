@@ -60,6 +60,7 @@ struct smiltext_params {
 	
 /// Layout commands that the engine can send to the renderer
 enum smiltext_command {
+	stc_none,
 	stc_data,
 	stc_break
 };
@@ -114,9 +115,9 @@ class smiltext_run {
 	smiltext_direction		m_direction;
 };
 
-/// A vector of smiltext_run objects is what the renderer is
+/// A list of smiltext_run objects is what the renderer is
 /// supposed to draw on the screen.
-typedef std::vector<smiltext_run> smiltext_runs;
+typedef std::list<smiltext_run> smiltext_runs;
 
 /// Interface that engine of the client should provide. The
 /// engine will use this to notify the client that the text has
