@@ -1,3 +1,8 @@
+2007-04-17 17:29  jackjansen
+
+	* Added dummy declarations to make the ambulantmodule also compile
+	  without WITH_SMIL30
+
 2007-04-16 13:06  jackjansen
 
 	* There is a strange problem with param color=white on windows. For
