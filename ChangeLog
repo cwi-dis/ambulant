@@ -1,3 +1,8 @@
+2007-04-18 10:37  keesblom
+
+	* Changed representation of smiltext_runs from vector into list
+	  because iterators on vector are invalid after expansion
+
 2007-04-17 17:29  jackjansen
 
 	* Added dummy declarations to make the ambulantmodule also compile
