@@ -111,7 +111,7 @@ void
 smiltext_engine::_update() {
 	assert(m_node);
 	lib::timer::time_type next_update_needed = 0;
-	/*AM_DBG*/ lib::logger::get_logger()->debug("smiltext_engine::_update()");
+	AM_DBG lib::logger::get_logger()->debug("smiltext_engine::_update()");
 	m_update_event = NULL;
 	for( ; !m_tree_iterator.is_end(); m_tree_iterator++) {
 		assert(!m_run_stack.empty());

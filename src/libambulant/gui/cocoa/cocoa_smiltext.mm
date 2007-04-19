@@ -144,7 +144,7 @@ cocoa_smiltext_renderer::smiltext_changed()
 			i = m_engine.newbegin();
 		}
 		while (i != m_engine.end()) {
-			/*AM_DBG*/ lib::logger::get_logger()->debug("cocoa_smiltext: another run");
+			AM_DBG lib::logger::get_logger()->debug("cocoa_smiltext: another run");
 			NSRange newrange;
 			// Add the new characters
 			newrange.location = [m_text_storage length];
@@ -199,7 +199,7 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 {
 	m_lock.enter();
 	const rect &r = m_dest->get_rect();
-	/*AM_DBG*/ logger::get_logger()->debug("cocoa_smiltext_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG logger::get_logger()->debug("cocoa_smiltext_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 
 	// Determine current position and size.
 	cocoa_window *cwindow = (cocoa_window *)window;
@@ -277,7 +277,7 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	// for ticker tape, so we adjust.
 	NSRect logical_rect = NSMakeRect(logical_origin.x, logical_origin.y, visible_size.width, visible_size.height);
 	NSRange glyph_range = [m_layout_manager glyphRangeForBoundingRect: logical_rect inTextContainer: m_text_container];
-	NSLog(@"Glyph range was %d, %d, origin-x %f", glyph_range.location, glyph_range.length, logical_origin.x);
+	AM_DBG NSLog(@"Glyph range was %d, %d, origin-x %f", glyph_range.location, glyph_range.length, logical_origin.x);
 #if 0
 	float fraction;
 	unsigned leftpoint = [ m_layout_manager glyphIndexForPoint: logical_origin inTextContainer: m_text_container 
@@ -291,7 +291,7 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 		NSRect used_rect = [m_layout_manager boundingRectForGlyphRange: glyph_range inTextContainer: m_text_container];
 		visible_origin.x -= used_rect.origin.x;
 	}
-	NSLog(@"Glyph range is now %d, %d", glyph_range.location, glyph_range.length);
+	AM_DBG NSLog(@"Glyph range is now %d, %d", glyph_range.location, glyph_range.length);
 #endif
 #endif
 	if (glyph_range.location >= 0 && glyph_range.length > 0) {

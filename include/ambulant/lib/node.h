@@ -337,7 +337,7 @@ class node_factory {
 	// shallow copy from other.
 	virtual node *new_node(const node* other) = 0;
 	
-	virtual node *new_data_node(const char *data, int size) = 0;
+	virtual node *new_data_node(const char *data, int size, const node_context *ctx) = 0;
 };
 
 /// Return singleton node_factory object that returns node_impl nodes.

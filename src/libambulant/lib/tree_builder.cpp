@@ -211,7 +211,7 @@ lib::tree_builder::characters(const char *buf, size_t len) {
 	if(m_current != 0) {
 #ifdef WITH_SMIL30
 		// The <smiltext> tag has embedded data and tags 
-		lib::node *p = m_node_factory->new_data_node(buf, len);
+		lib::node *p = m_node_factory->new_data_node(buf, len, m_context);
 		m_current->append_child(p);
 #else
 		m_current->append_data(buf, len);
