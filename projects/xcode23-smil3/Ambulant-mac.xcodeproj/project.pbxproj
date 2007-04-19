@@ -14,8 +14,6 @@
 		040EAA250BCE6BFB00DEE37B /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA1E0BCE6BFB00DEE37B /* Log.nib */; };
 		040EAA370BCE6CF600DEE37B /* nscontext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 040EAA360BCE6CF600DEE37B /* nscontext.cpp */; };
 		040EAA380BCE6CF600DEE37B /* nscontext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 040EAA360BCE6CF600DEE37B /* nscontext.cpp */; };
-		040EAA3B0BCE6D8C00DEE37B /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA1A0BCE6BFB00DEE37B /* MyDocument.nib */; };
-		040EAA400BCE6DBE00DEE37B /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA1C0BCE6BFB00DEE37B /* MainMenu.nib */; };
 		040EAA410BCE6DC800DEE37B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA140BCE6BFB00DEE37B /* Credits.rtf */; };
 		040EAA420BCE6DC800DEE37B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA180BCE6BFB00DEE37B /* InfoPlist.strings */; };
 		040EAA430BCE6DC800DEE37B /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA1A0BCE6BFB00DEE37B /* MyDocument.nib */; };
@@ -32,6 +30,20 @@
 		040EAA8D0BCE7B0F00DEE37B /* AmbulantDocGrins.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA830BCE7B0F00DEE37B /* AmbulantDocGrins.icns */; };
 		040EAA8E0BCE7B0F00DEE37B /* AmbulantDocMms.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA840BCE7B0F00DEE37B /* AmbulantDocMms.icns */; };
 		040EAA8F0BCE7B0F00DEE37B /* AmbulantDocSmil.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA850BCE7B0F00DEE37B /* AmbulantDocSmil.icns */; };
+		043902490BD78B0500E13028 /* Welcome.smil in Resources */ = {isa = PBXBuildFile; fileRef = 0439020C0BD78B0500E13028 /* Welcome.smil */; };
+		043902760BD78B0500E13028 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 0439023C0BD78B0500E13028 /* pause.png */; };
+		043902770BD78B0500E13028 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 0439023D0BD78B0500E13028 /* play.png */; };
+		043902780BD78B0500E13028 /* playactive.png in Resources */ = {isa = PBXBuildFile; fileRef = 0439023E0BD78B0500E13028 /* playactive.png */; };
+		043902790BD78B0500E13028 /* stop.png in Resources */ = {isa = PBXBuildFile; fileRef = 0439023F0BD78B0500E13028 /* stop.png */; };
+		043902830BD78B0500E13028 /* Welcome.smil in Resources */ = {isa = PBXBuildFile; fileRef = 0439020C0BD78B0500E13028 /* Welcome.smil */; };
+		043902B00BD78B0500E13028 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 0439023C0BD78B0500E13028 /* pause.png */; };
+		043902B10BD78B0500E13028 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 0439023D0BD78B0500E13028 /* play.png */; };
+		043902B20BD78B0500E13028 /* playactive.png in Resources */ = {isa = PBXBuildFile; fileRef = 0439023E0BD78B0500E13028 /* playactive.png */; };
+		043902B30BD78B0500E13028 /* stop.png in Resources */ = {isa = PBXBuildFile; fileRef = 0439023F0BD78B0500E13028 /* stop.png */; };
+		043902D30BD7955000E13028 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 043902C80BD7955000E13028 /* data */; };
+		043902D40BD7955000E13028 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 043902C80BD7955000E13028 /* data */; };
+		043903070BD7956400E13028 /* DTDCache in Resources */ = {isa = PBXBuildFile; fileRef = 043902D50BD7956400E13028 /* DTDCache */; };
+		043903080BD7956400E13028 /* DTDCache in Resources */ = {isa = PBXBuildFile; fileRef = 043902D50BD7956400E13028 /* DTDCache */; };
 		049650620BCADE2B002C00DF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 049650610BCADE2B002C00DF /* main.m */; };
 		0496506D0BCADE62002C00DF /* LogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049650640BCADE62002C00DF /* LogController.mm */; };
 		0496506E0BCADE62002C00DF /* MyAmbulantView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049650660BCADE62002C00DF /* MyAmbulantView.mm */; };
@@ -40,8 +52,6 @@
 		049650710BCADE62002C00DF /* mypreferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0496506C0BCADE62002C00DF /* mypreferences.mm */; };
 		049650740BCADE83002C00DF /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049650720BCADE83002C00DF /* mainloop.cpp */; };
 		049650770BCAE0AE002C00DF /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 049650760BCAE0AE002C00DF /* Info.plist */; };
-		049652340BCAE333002C00DF /* Makefile.am in Resources */ = {isa = PBXBuildFile; fileRef = 049651D00BCAE333002C00DF /* Makefile.am */; };
-		049652350BCAE333002C00DF /* Makefile.in in Resources */ = {isa = PBXBuildFile; fileRef = 049651D10BCAE333002C00DF /* Makefile.in */; };
 		049652F20BCAE3C5002C00DF /* factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0496523E0BCAE3C5002C00DF /* factory.cpp */; };
 		049652F30BCAE3C5002C00DF /* gui_player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0496523F0BCAE3C5002C00DF /* gui_player.cpp */; };
 		049652F40BCAE3C5002C00DF /* plugin_engine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652400BCAE3C5002C00DF /* plugin_engine.cpp */; };
@@ -144,9 +154,6 @@
 		049656220BCAEA43002C00DF /* libgroupsock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656160BCAEA42002C00DF /* libgroupsock.a */; };
 		049656230BCAEA43002C00DF /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656170BCAEA42002C00DF /* libSDL.a */; };
 		049656240BCAEA43002C00DF /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656180BCAEA42002C00DF /* libz.dylib */; };
-		0496562D0BCAEA7D002C00DF /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 049650760BCAE0AE002C00DF /* Info.plist */; };
-		049656370BCAEA7D002C00DF /* Makefile.am in Resources */ = {isa = PBXBuildFile; fileRef = 049651D00BCAE333002C00DF /* Makefile.am */; };
-		049656380BCAEA7D002C00DF /* Makefile.in in Resources */ = {isa = PBXBuildFile; fileRef = 049651D10BCAE333002C00DF /* Makefile.in */; };
 		0496563A0BCAEA7D002C00DF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 049650610BCADE2B002C00DF /* main.m */; };
 		0496563B0BCAEA7D002C00DF /* LogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049650640BCADE62002C00DF /* LogController.mm */; };
 		0496563C0BCAEA7D002C00DF /* MyAmbulantView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049650660BCADE62002C00DF /* MyAmbulantView.mm */; };
@@ -283,6 +290,13 @@
 		040EAA830BCE7B0F00DEE37B /* AmbulantDocGrins.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = AmbulantDocGrins.icns; path = ../../src/player_macosx/AmbulantDocGrins.icns; sourceTree = SOURCE_ROOT; };
 		040EAA840BCE7B0F00DEE37B /* AmbulantDocMms.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = AmbulantDocMms.icns; path = ../../src/player_macosx/AmbulantDocMms.icns; sourceTree = SOURCE_ROOT; };
 		040EAA850BCE7B0F00DEE37B /* AmbulantDocSmil.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = AmbulantDocSmil.icns; path = ../../src/player_macosx/AmbulantDocSmil.icns; sourceTree = SOURCE_ROOT; };
+		0439020C0BD78B0500E13028 /* Welcome.smil */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; name = Welcome.smil; path = ../../Extras/Welcome/Welcome.smil; sourceTree = SOURCE_ROOT; };
+		0439023C0BD78B0500E13028 /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pause.png; path = ../../src/player_macosx/pause.png; sourceTree = SOURCE_ROOT; };
+		0439023D0BD78B0500E13028 /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = play.png; path = ../../src/player_macosx/play.png; sourceTree = SOURCE_ROOT; };
+		0439023E0BD78B0500E13028 /* playactive.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = playactive.png; path = ../../src/player_macosx/playactive.png; sourceTree = SOURCE_ROOT; };
+		0439023F0BD78B0500E13028 /* stop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stop.png; path = ../../src/player_macosx/stop.png; sourceTree = SOURCE_ROOT; };
+		043902C80BD7955000E13028 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = ../../Extras/Welcome/data; sourceTree = SOURCE_ROOT; };
+		043902D50BD7956400E13028 /* DTDCache */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DTDCache; path = ../../Extras/DTDCache; sourceTree = SOURCE_ROOT; };
 		049650600BCADE2B002C00DF /* Ambulant.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Ambulant.pch; path = ../../src/player_macosx/Ambulant.pch; sourceTree = SOURCE_ROOT; };
 		049650610BCADE2B002C00DF /* main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../../src/player_macosx/main.m; sourceTree = SOURCE_ROOT; };
 		049650630BCADE62002C00DF /* LogController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = LogController.h; path = ../../src/player_macosx/LogController.h; sourceTree = SOURCE_ROOT; };
@@ -831,6 +845,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		043902010BD78B0500E13028 /* Welcome */ = {
+			isa = PBXGroup;
+			children = (
+				043902C80BD7955000E13028 /* data */,
+				0439020C0BD78B0500E13028 /* Welcome.smil */,
+			);
+			name = Welcome;
+			sourceTree = "<group>";
+		};
 		0496505D0BCADD73002C00DF /* ambulant */ = {
 			isa = PBXGroup;
 			children = (
@@ -1721,6 +1744,12 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				043902D50BD7956400E13028 /* DTDCache */,
+				0439023C0BD78B0500E13028 /* pause.png */,
+				0439023D0BD78B0500E13028 /* play.png */,
+				0439023E0BD78B0500E13028 /* playactive.png */,
+				0439023F0BD78B0500E13028 /* stop.png */,
+				043902010BD78B0500E13028 /* Welcome */,
 				040EAA810BCE7B0F00DEE37B /* Ambulant.icns */,
 				040EAA820BCE7B0F00DEE37B /* AmbulantDocDaisy.icns */,
 				040EAA830BCE7B0F00DEE37B /* AmbulantDocGrins.icns */,
@@ -1813,11 +1842,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0496562D0BCAEA7D002C00DF /* Info.plist in Resources */,
-				049656370BCAEA7D002C00DF /* Makefile.am in Resources */,
-				049656380BCAEA7D002C00DF /* Makefile.in in Resources */,
-				040EAA3B0BCE6D8C00DEE37B /* MyDocument.nib in Resources */,
-				040EAA400BCE6DBE00DEE37B /* MainMenu.nib in Resources */,
 				040EAA410BCE6DC800DEE37B /* Credits.rtf in Resources */,
 				040EAA420BCE6DC800DEE37B /* InfoPlist.strings in Resources */,
 				040EAA430BCE6DC800DEE37B /* MyDocument.nib in Resources */,
@@ -1829,6 +1853,13 @@
 				040EAA8D0BCE7B0F00DEE37B /* AmbulantDocGrins.icns in Resources */,
 				040EAA8E0BCE7B0F00DEE37B /* AmbulantDocMms.icns in Resources */,
 				040EAA8F0BCE7B0F00DEE37B /* AmbulantDocSmil.icns in Resources */,
+				043902830BD78B0500E13028 /* Welcome.smil in Resources */,
+				043902B00BD78B0500E13028 /* pause.png in Resources */,
+				043902B10BD78B0500E13028 /* play.png in Resources */,
+				043902B20BD78B0500E13028 /* playactive.png in Resources */,
+				043902B30BD78B0500E13028 /* stop.png in Resources */,
+				043902D40BD7955000E13028 /* data in Resources */,
+				043903080BD7956400E13028 /* DTDCache in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1837,8 +1868,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				049650770BCAE0AE002C00DF /* Info.plist in Resources */,
-				049652340BCAE333002C00DF /* Makefile.am in Resources */,
-				049652350BCAE333002C00DF /* Makefile.in in Resources */,
 				040EAA200BCE6BFB00DEE37B /* Credits.rtf in Resources */,
 				040EAA220BCE6BFB00DEE37B /* InfoPlist.strings in Resources */,
 				040EAA230BCE6BFB00DEE37B /* MyDocument.nib in Resources */,
@@ -1849,6 +1878,13 @@
 				040EAA880BCE7B0F00DEE37B /* AmbulantDocGrins.icns in Resources */,
 				040EAA890BCE7B0F00DEE37B /* AmbulantDocMms.icns in Resources */,
 				040EAA8A0BCE7B0F00DEE37B /* AmbulantDocSmil.icns in Resources */,
+				043902490BD78B0500E13028 /* Welcome.smil in Resources */,
+				043902760BD78B0500E13028 /* pause.png in Resources */,
+				043902770BD78B0500E13028 /* play.png in Resources */,
+				043902780BD78B0500E13028 /* playactive.png in Resources */,
+				043902790BD78B0500E13028 /* stop.png in Resources */,
+				043902D30BD7955000E13028 /* data in Resources */,
+				043903070BD7956400E13028 /* DTDCache in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

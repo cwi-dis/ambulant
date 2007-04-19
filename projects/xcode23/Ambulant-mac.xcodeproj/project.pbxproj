@@ -14,14 +14,11 @@
 		040EAA250BCE6BFB00DEE37B /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA1E0BCE6BFB00DEE37B /* Log.nib */; };
 		040EAA370BCE6CF600DEE37B /* nscontext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 040EAA360BCE6CF600DEE37B /* nscontext.cpp */; };
 		040EAA380BCE6CF600DEE37B /* nscontext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 040EAA360BCE6CF600DEE37B /* nscontext.cpp */; };
-		040EAA3B0BCE6D8C00DEE37B /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA1A0BCE6BFB00DEE37B /* MyDocument.nib */; };
-		040EAA400BCE6DBE00DEE37B /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA1C0BCE6BFB00DEE37B /* MainMenu.nib */; };
 		040EAA410BCE6DC800DEE37B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA140BCE6BFB00DEE37B /* Credits.rtf */; };
 		040EAA420BCE6DC800DEE37B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA180BCE6BFB00DEE37B /* InfoPlist.strings */; };
 		040EAA430BCE6DC800DEE37B /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA1A0BCE6BFB00DEE37B /* MyDocument.nib */; };
 		040EAA440BCE6DC800DEE37B /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA1C0BCE6BFB00DEE37B /* MainMenu.nib */; };
 		040EAA450BCE6DC800DEE37B /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA1E0BCE6BFB00DEE37B /* Log.nib */; };
-		040EAA460BCE6DC800DEE37B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 049650760BCAE0AE002C00DF /* Info.plist */; };
 		040EAA860BCE7B0F00DEE37B /* Ambulant.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA810BCE7B0F00DEE37B /* Ambulant.icns */; };
 		040EAA870BCE7B0F00DEE37B /* AmbulantDocDaisy.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA820BCE7B0F00DEE37B /* AmbulantDocDaisy.icns */; };
 		040EAA880BCE7B0F00DEE37B /* AmbulantDocGrins.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA830BCE7B0F00DEE37B /* AmbulantDocGrins.icns */; };
@@ -32,6 +29,20 @@
 		040EAA8D0BCE7B0F00DEE37B /* AmbulantDocGrins.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA830BCE7B0F00DEE37B /* AmbulantDocGrins.icns */; };
 		040EAA8E0BCE7B0F00DEE37B /* AmbulantDocMms.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA840BCE7B0F00DEE37B /* AmbulantDocMms.icns */; };
 		040EAA8F0BCE7B0F00DEE37B /* AmbulantDocSmil.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA850BCE7B0F00DEE37B /* AmbulantDocSmil.icns */; };
+		043901710BD7899900E13028 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 0439016D0BD7899900E13028 /* pause.png */; };
+		043901720BD7899900E13028 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 0439016E0BD7899900E13028 /* play.png */; };
+		043901730BD7899900E13028 /* playactive.png in Resources */ = {isa = PBXBuildFile; fileRef = 0439016F0BD7899900E13028 /* playactive.png */; };
+		043901740BD7899900E13028 /* stop.png in Resources */ = {isa = PBXBuildFile; fileRef = 043901700BD7899900E13028 /* stop.png */; };
+		043901750BD7899900E13028 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 0439016D0BD7899900E13028 /* pause.png */; };
+		043901760BD7899900E13028 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 0439016E0BD7899900E13028 /* play.png */; };
+		043901770BD7899900E13028 /* playactive.png in Resources */ = {isa = PBXBuildFile; fileRef = 0439016F0BD7899900E13028 /* playactive.png */; };
+		043901780BD7899900E13028 /* stop.png in Resources */ = {isa = PBXBuildFile; fileRef = 043901700BD7899900E13028 /* stop.png */; };
+		043901AD0BD789F700E13028 /* DTDCache in Resources */ = {isa = PBXBuildFile; fileRef = 0439017B0BD789F600E13028 /* DTDCache */; };
+		043901AE0BD789F700E13028 /* DTDCache in Resources */ = {isa = PBXBuildFile; fileRef = 0439017B0BD789F600E13028 /* DTDCache */; };
+		043901EF0BD78A5D00E13028 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 043901E30BD78A5D00E13028 /* data */; };
+		043901F00BD78A5D00E13028 /* Welcome.smil in Resources */ = {isa = PBXBuildFile; fileRef = 043901EE0BD78A5D00E13028 /* Welcome.smil */; };
+		043901F10BD78A5D00E13028 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 043901E30BD78A5D00E13028 /* data */; };
+		043901F20BD78A5D00E13028 /* Welcome.smil in Resources */ = {isa = PBXBuildFile; fileRef = 043901EE0BD78A5D00E13028 /* Welcome.smil */; };
 		049650620BCADE2B002C00DF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 049650610BCADE2B002C00DF /* main.m */; };
 		0496506D0BCADE62002C00DF /* LogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049650640BCADE62002C00DF /* LogController.mm */; };
 		0496506E0BCADE62002C00DF /* MyAmbulantView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049650660BCADE62002C00DF /* MyAmbulantView.mm */; };
@@ -40,8 +51,6 @@
 		049650710BCADE62002C00DF /* mypreferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0496506C0BCADE62002C00DF /* mypreferences.mm */; };
 		049650740BCADE83002C00DF /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049650720BCADE83002C00DF /* mainloop.cpp */; };
 		049650770BCAE0AE002C00DF /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 049650760BCAE0AE002C00DF /* Info.plist */; };
-		049652340BCAE333002C00DF /* Makefile.am in Resources */ = {isa = PBXBuildFile; fileRef = 049651D00BCAE333002C00DF /* Makefile.am */; };
-		049652350BCAE333002C00DF /* Makefile.in in Resources */ = {isa = PBXBuildFile; fileRef = 049651D10BCAE333002C00DF /* Makefile.in */; };
 		049652F20BCAE3C5002C00DF /* factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0496523E0BCAE3C5002C00DF /* factory.cpp */; };
 		049652F30BCAE3C5002C00DF /* gui_player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0496523F0BCAE3C5002C00DF /* gui_player.cpp */; };
 		049652F40BCAE3C5002C00DF /* plugin_engine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652400BCAE3C5002C00DF /* plugin_engine.cpp */; };
@@ -145,8 +154,6 @@
 		049656230BCAEA43002C00DF /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656170BCAEA42002C00DF /* libSDL.a */; };
 		049656240BCAEA43002C00DF /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656180BCAEA42002C00DF /* libz.dylib */; };
 		0496562D0BCAEA7D002C00DF /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 049650760BCAE0AE002C00DF /* Info.plist */; };
-		049656370BCAEA7D002C00DF /* Makefile.am in Resources */ = {isa = PBXBuildFile; fileRef = 049651D00BCAE333002C00DF /* Makefile.am */; };
-		049656380BCAEA7D002C00DF /* Makefile.in in Resources */ = {isa = PBXBuildFile; fileRef = 049651D10BCAE333002C00DF /* Makefile.in */; };
 		0496563A0BCAEA7D002C00DF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 049650610BCADE2B002C00DF /* main.m */; };
 		0496563B0BCAEA7D002C00DF /* LogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049650640BCADE62002C00DF /* LogController.mm */; };
 		0496563C0BCAEA7D002C00DF /* MyAmbulantView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049650660BCADE62002C00DF /* MyAmbulantView.mm */; };
@@ -277,6 +284,13 @@
 		040EAA830BCE7B0F00DEE37B /* AmbulantDocGrins.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = AmbulantDocGrins.icns; path = ../../src/player_macosx/AmbulantDocGrins.icns; sourceTree = SOURCE_ROOT; };
 		040EAA840BCE7B0F00DEE37B /* AmbulantDocMms.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = AmbulantDocMms.icns; path = ../../src/player_macosx/AmbulantDocMms.icns; sourceTree = SOURCE_ROOT; };
 		040EAA850BCE7B0F00DEE37B /* AmbulantDocSmil.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = AmbulantDocSmil.icns; path = ../../src/player_macosx/AmbulantDocSmil.icns; sourceTree = SOURCE_ROOT; };
+		0439016D0BD7899900E13028 /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pause.png; path = ../../src/player_macosx/pause.png; sourceTree = SOURCE_ROOT; };
+		0439016E0BD7899900E13028 /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = play.png; path = ../../src/player_macosx/play.png; sourceTree = SOURCE_ROOT; };
+		0439016F0BD7899900E13028 /* playactive.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = playactive.png; path = ../../src/player_macosx/playactive.png; sourceTree = SOURCE_ROOT; };
+		043901700BD7899900E13028 /* stop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stop.png; path = ../../src/player_macosx/stop.png; sourceTree = SOURCE_ROOT; };
+		0439017B0BD789F600E13028 /* DTDCache */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DTDCache; path = ../../Extras/DTDCache; sourceTree = SOURCE_ROOT; };
+		043901E30BD78A5D00E13028 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = ../../Extras/Welcome/data; sourceTree = SOURCE_ROOT; };
+		043901EE0BD78A5D00E13028 /* Welcome.smil */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; name = Welcome.smil; path = ../../Extras/Welcome/Welcome.smil; sourceTree = SOURCE_ROOT; };
 		049650600BCADE2B002C00DF /* Ambulant.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Ambulant.pch; path = ../../src/player_macosx/Ambulant.pch; sourceTree = SOURCE_ROOT; };
 		049650610BCADE2B002C00DF /* main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../../src/player_macosx/main.m; sourceTree = SOURCE_ROOT; };
 		049650630BCADE62002C00DF /* LogController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = LogController.h; path = ../../src/player_macosx/LogController.h; sourceTree = SOURCE_ROOT; };
@@ -752,6 +766,12 @@
 		049656180BCAEA42002C00DF /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		049656AC0BCAEA7D002C00DF /* Ambulant-mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ambulant-mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		049656B10BCAEC13002C00DF /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		04E13B230BD786120074AF09 /* scripting.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = scripting.cpp; sourceTree = "<group>"; };
+		04E13B270BD786380074AF09 /* cocoa_smiltext.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = cocoa_smiltext.mm; sourceTree = "<group>"; };
+		04E13B2A0BD786560074AF09 /* scripting.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = scripting.h; sourceTree = "<group>"; };
+		04E13B2B0BD786680074AF09 /* cocoa_smiltext.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cocoa_smiltext.h; sourceTree = "<group>"; };
+		04E13B2D0BD7868C0074AF09 /* smiltext.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = smiltext.h; sourceTree = "<group>"; };
+		04E13B340BD786A40074AF09 /* smiltext.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = smiltext.cpp; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -819,6 +839,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		043901E20BD78A4500E13028 /* Welcome */ = {
+			isa = PBXGroup;
+			children = (
+				043901E30BD78A5D00E13028 /* data */,
+				043901EE0BD78A5D00E13028 /* Welcome.smil */,
+			);
+			name = Welcome;
+			sourceTree = "<group>";
+		};
 		0496505D0BCADD73002C00DF /* ambulant */ = {
 			isa = PBXGroup;
 			children = (
@@ -868,6 +897,7 @@
 		049650C20BCAE333002C00DF /* common */ = {
 			isa = PBXGroup;
 			children = (
+				04E13B2A0BD786560074AF09 /* scripting.h */,
 				049650C40BCAE333002C00DF /* embedder.h */,
 				049650C50BCAE333002C00DF /* factory.h */,
 				049650C60BCAE333002C00DF /* gui_player.h */,
@@ -1019,6 +1049,7 @@
 		0496511C0BCAE333002C00DF /* cocoa */ = {
 			isa = PBXGroup;
 			children = (
+				04E13B2B0BD786680074AF09 /* cocoa_smiltext.h */,
 				0496511E0BCAE333002C00DF /* cocoa_audio.h */,
 				0496511F0BCAE333002C00DF /* cocoa_dsvideo.h */,
 				049651200BCAE333002C00DF /* cocoa_fill.h */,
@@ -1305,6 +1336,7 @@
 		049651ED0BCAE333002C00DF /* smil2 */ = {
 			isa = PBXGroup;
 			children = (
+				04E13B2D0BD7868C0074AF09 /* smiltext.h */,
 				049651EE0BCAE333002C00DF /* animate_a.h */,
 				049651EF0BCAE333002C00DF /* animate_e.h */,
 				049651F00BCAE333002C00DF /* animate_f.h */,
@@ -1334,6 +1366,7 @@
 		0496523D0BCAE3C5002C00DF /* common */ = {
 			isa = PBXGroup;
 			children = (
+				04E13B230BD786120074AF09 /* scripting.cpp */,
 				0496523E0BCAE3C5002C00DF /* factory.cpp */,
 				0496523F0BCAE3C5002C00DF /* gui_player.cpp */,
 				049652400BCAE3C5002C00DF /* plugin_engine.cpp */,
@@ -1377,6 +1410,7 @@
 		049652530BCAE3C5002C00DF /* cocoa */ = {
 			isa = PBXGroup;
 			children = (
+				04E13B270BD786380074AF09 /* cocoa_smiltext.mm */,
 				049652550BCAE3C5002C00DF /* cocoa_audio.mm */,
 				049652570BCAE3C5002C00DF /* cocoa_dsvideo.mm */,
 				049652590BCAE3C5002C00DF /* cocoa_fill.mm */,
@@ -1583,6 +1617,7 @@
 		049652DF0BCAE3C5002C00DF /* smil2 */ = {
 			isa = PBXGroup;
 			children = (
+				04E13B340BD786A40074AF09 /* smiltext.cpp */,
 				049652E00BCAE3C5002C00DF /* animate_a.cpp */,
 				049652E10BCAE3C5002C00DF /* animate_e.cpp */,
 				049652E20BCAE3C5002C00DF /* animate_n.cpp */,
@@ -1703,6 +1738,12 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				043901E20BD78A4500E13028 /* Welcome */,
+				0439017B0BD789F600E13028 /* DTDCache */,
+				0439016D0BD7899900E13028 /* pause.png */,
+				0439016E0BD7899900E13028 /* play.png */,
+				0439016F0BD7899900E13028 /* playactive.png */,
+				043901700BD7899900E13028 /* stop.png */,
 				040EAA810BCE7B0F00DEE37B /* Ambulant.icns */,
 				040EAA820BCE7B0F00DEE37B /* AmbulantDocDaisy.icns */,
 				040EAA830BCE7B0F00DEE37B /* AmbulantDocGrins.icns */,
@@ -1716,7 +1757,8 @@
 				049650760BCAE0AE002C00DF /* Info.plist */,
 			);
 			name = Resources;
-			sourceTree = "<group>";
+			path = ../../src/player_macosx;
+			sourceTree = SOURCE_ROOT;
 		};
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
@@ -1796,21 +1838,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				0496562D0BCAEA7D002C00DF /* Info.plist in Resources */,
-				049656370BCAEA7D002C00DF /* Makefile.am in Resources */,
-				049656380BCAEA7D002C00DF /* Makefile.in in Resources */,
-				040EAA3B0BCE6D8C00DEE37B /* MyDocument.nib in Resources */,
-				040EAA400BCE6DBE00DEE37B /* MainMenu.nib in Resources */,
 				040EAA410BCE6DC800DEE37B /* Credits.rtf in Resources */,
 				040EAA420BCE6DC800DEE37B /* InfoPlist.strings in Resources */,
 				040EAA430BCE6DC800DEE37B /* MyDocument.nib in Resources */,
 				040EAA440BCE6DC800DEE37B /* MainMenu.nib in Resources */,
 				040EAA450BCE6DC800DEE37B /* Log.nib in Resources */,
-				040EAA460BCE6DC800DEE37B /* Info.plist in Resources */,
 				040EAA8B0BCE7B0F00DEE37B /* Ambulant.icns in Resources */,
 				040EAA8C0BCE7B0F00DEE37B /* AmbulantDocDaisy.icns in Resources */,
 				040EAA8D0BCE7B0F00DEE37B /* AmbulantDocGrins.icns in Resources */,
 				040EAA8E0BCE7B0F00DEE37B /* AmbulantDocMms.icns in Resources */,
 				040EAA8F0BCE7B0F00DEE37B /* AmbulantDocSmil.icns in Resources */,
+				043901750BD7899900E13028 /* pause.png in Resources */,
+				043901760BD7899900E13028 /* play.png in Resources */,
+				043901770BD7899900E13028 /* playactive.png in Resources */,
+				043901780BD7899900E13028 /* stop.png in Resources */,
+				043901AE0BD789F700E13028 /* DTDCache in Resources */,
+				043901F10BD78A5D00E13028 /* data in Resources */,
+				043901F20BD78A5D00E13028 /* Welcome.smil in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1819,8 +1863,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				049650770BCAE0AE002C00DF /* Info.plist in Resources */,
-				049652340BCAE333002C00DF /* Makefile.am in Resources */,
-				049652350BCAE333002C00DF /* Makefile.in in Resources */,
 				040EAA200BCE6BFB00DEE37B /* Credits.rtf in Resources */,
 				040EAA220BCE6BFB00DEE37B /* InfoPlist.strings in Resources */,
 				040EAA230BCE6BFB00DEE37B /* MyDocument.nib in Resources */,
@@ -1831,6 +1873,13 @@
 				040EAA880BCE7B0F00DEE37B /* AmbulantDocGrins.icns in Resources */,
 				040EAA890BCE7B0F00DEE37B /* AmbulantDocMms.icns in Resources */,
 				040EAA8A0BCE7B0F00DEE37B /* AmbulantDocSmil.icns in Resources */,
+				043901710BD7899900E13028 /* pause.png in Resources */,
+				043901720BD7899900E13028 /* play.png in Resources */,
+				043901730BD7899900E13028 /* playactive.png in Resources */,
+				043901740BD7899900E13028 /* stop.png in Resources */,
+				043901AD0BD789F700E13028 /* DTDCache in Resources */,
+				043901EF0BD78A5D00E13028 /* data in Resources */,
+				043901F00BD78A5D00E13028 /* Welcome.smil in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2117,29 +2166,21 @@
 					../../third_party_packages/live/BasicUsageEnvironment/include,
 					"../../third_party_packages/xerces-unix/include",
 				);
-				INFOPLIST_FILE = "/Users/jack/src/ambulant/projects/xcode23/../../src/player_macosx/Info copy.plist";
+				INFOPLIST_FILE = /Users/jack/src/ambulant/projects/xcode23/../../src/player_macosx/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_4)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_5)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_6)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_7)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_8)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_9)",
+					"../../third_party_packages/ffmpeg-universal/libavformat",
+					"../../third_party_packages/ffmpeg-universal/libavcodec",
+					"../../third_party_packages/ffmpeg-universal/libavutil",
+					"../../third_party_packages/expat-unix/lib",
+					"../../third_party_packages/xerces-unix/lib",
+					../../third_party_packages/live/liveMedia,
+					../../third_party_packages/live/UsageEnvironment,
+					../../third_party_packages/live/BasicUsageEnvironment,
+					/usr/local/lib,
+					../../third_party_packages/live/groupsock,
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavformat\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavcodec\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavutil\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/../../third_party_packages/expat-unix/lib\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_5 = "\"$(SRCROOT)/../../../../packages/xerces-unix/lib\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_6 = "\"$(SRCROOT)/../../third_party_packages/live/liveMedia\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_7 = "\"$(SRCROOT)/../../third_party_packages/live/UsageEnvironment\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_8 = "\"$(SRCROOT)/../../third_party_packages/live/BasicUsageEnvironment\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_9 = "\"$(SRCROOT)/../../third_party_packages/live/groupsock\"";
 				PRODUCT_NAME = "Ambulant-mac";
 				USER_HEADER_SEARCH_PATHS = "../../third_party_packages/expat-unix/lib ../../third_party_packages/ffmpeg-universal/libavformat ../../third_party_packages/ffmpeg-universal/libavutil ../../third_party_packages/ffmpeg-universal/libavcodec ../../third_party_packages/xerces-unix/lib ../../third_party_packages/live/liveMedia ./../third_party_packages/live/BasicUsageEnvironment ./../third_party_packages/live/groupsock ./../third_party_packages/live/UsageEnvironment";
 				WRAPPER_EXTENSION = app;
@@ -2177,7 +2218,7 @@
 					../../third_party_packages/live/BasicUsageEnvironment/include,
 					"../../third_party_packages/xerces-unix/include",
 				);
-				INFOPLIST_FILE = "/Users/jack/src/ambulant/projects/xcode23/../../src/player_macosx/Info copy.plist";
+				INFOPLIST_FILE = /Users/jack/src/ambulant/projects/xcode23/../../src/player_macosx/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2192,15 +2233,6 @@
 					/usr/local/lib,
 					../../third_party_packages/live/groupsock,
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavformat\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavcodec\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavutil\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/../../third_party_packages/expat-unix/lib\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_5 = "\"$(SRCROOT)/../../../../packages/xerces-unix/lib\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_6 = "\"$(SRCROOT)/../../third_party_packages/live/liveMedia\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_7 = "\"$(SRCROOT)/../../third_party_packages/live/UsageEnvironment\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_8 = "\"$(SRCROOT)/../../third_party_packages/live/BasicUsageEnvironment\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_9 = "\"$(SRCROOT)/../../third_party_packages/live/groupsock\"";
 				PRODUCT_NAME = "Ambulant-mac";
 				USER_HEADER_SEARCH_PATHS = "../../third_party_packages/expat-unix/lib ../../third_party_packages/ffmpeg-universal/libavformat ../../third_party_packages/ffmpeg-universal/libavutil ../../third_party_packages/ffmpeg-universal/libavcodec ../../third_party_packages/xerces-unix/lib ../../third_party_packages/live/liveMedia ./../third_party_packages/live/BasicUsageEnvironment ./../third_party_packages/live/groupsock ./../third_party_packages/live/UsageEnvironment";
 				WRAPPER_EXTENSION = app;
@@ -2246,25 +2278,17 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_4)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_5)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_6)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_7)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_8)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_9)",
+					"../../third_party_packages/ffmpeg-universal/libavformat",
+					"../../third_party_packages/ffmpeg-universal/libavcodec",
+					"../../third_party_packages/ffmpeg-universal/libavutil",
+					"../../third_party_packages/expat-unix/lib",
+					"../../third_party_packages/xerces-unix/lib",
+					../../third_party_packages/live/liveMedia,
+					../../third_party_packages/live/UsageEnvironment,
+					../../third_party_packages/live/BasicUsageEnvironment,
+					/usr/local/lib,
+					../../third_party_packages/live/groupsock,
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavformat\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavcodec\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../../../../packages/ffmpeg-universal/libavutil\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/../../third_party_packages/expat-unix/lib\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_5 = "\"$(SRCROOT)/../../../../packages/xerces-unix/lib\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_6 = "\"$(SRCROOT)/../../third_party_packages/live/liveMedia\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_7 = "\"$(SRCROOT)/../../third_party_packages/live/UsageEnvironment\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_8 = "\"$(SRCROOT)/../../third_party_packages/live/BasicUsageEnvironment\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_9 = "\"$(SRCROOT)/../../third_party_packages/live/groupsock\"";
 				PRODUCT_NAME = "Ambulant-mac";
 				USER_HEADER_SEARCH_PATHS = "../../third_party_packages/expat-unix/lib ../../third_party_packages/ffmpeg-universal/libavformat ../../third_party_packages/ffmpeg-universal/libavutil ../../third_party_packages/ffmpeg-universal/libavcodec ../../third_party_packages/xerces-unix/lib ../../third_party_packages/live/liveMedia ./../third_party_packages/live/BasicUsageEnvironment ./../third_party_packages/live/groupsock ./../third_party_packages/live/UsageEnvironment";
 				WRAPPER_EXTENSION = app;
