@@ -53,13 +53,17 @@ class text_renderer {
 	text_renderer(const net::url& u, const lib::size& bounds, viewport* v);
 	~text_renderer();
 	void open(net::datasource_factory *df);
+	SIZE render(LONG x=0, LONG y=0, UINT uFormat= DT_CENTER | DT_WORDBREAK);
 	bool can_play() const { return m_ddsurf != 0;}
 	bool is_transparent() const { return true;}
 	const lib::size& get_size() const { return m_size;}
 	IDirectDrawSurface *get_ddsurf() { return m_ddsurf;}
 	void set_text_color(lib::color_t color);
+	void set_text_bgcolor(lib::color_t color);
 	void set_text_size(float size);
 	void set_text_font(const char *font);
+	void set_text_data(const char* data, size_t datalen);
+	void free_text_data();
 	
   private:
 	lib::size m_size;
@@ -67,8 +71,11 @@ class text_renderer {
 	viewport* m_viewport;
 	IDirectDrawSurface *m_ddsurf;
 	lib::color_t m_text_color;
+	lib::color_t m_text_bgcolor;
 	float m_text_size;
 	const char *m_text_font;
+	char* m_text_data;
+	size_t m_text_datalen;
 };
 
 } // namespace dx

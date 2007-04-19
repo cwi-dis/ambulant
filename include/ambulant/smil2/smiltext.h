@@ -60,7 +60,6 @@ struct smiltext_params {
 	
 /// Layout commands that the engine can send to the renderer
 enum smiltext_command {
-	stc_none,
 	stc_data,
 	stc_break
 };
