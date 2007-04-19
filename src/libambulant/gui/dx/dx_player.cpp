@@ -50,6 +50,9 @@
 #include "ambulant/gui/dx/html_bridge.h"
 #include "ambulant/gui/dx/dx_bgrenderer.h"
 #include "ambulant/gui/dx/dx_text.h"
+#ifdef  WITH_SMIL30
+#include "ambulant/gui/dx/dx_smiltext.h"
+#endif/*WITH_SMIL30*/
 #include "ambulant/gui/dx/dx_html_renderer.h"
 #include "ambulant/gui/dx/dx_img.h"
 #include "ambulant/gui/dx/dx_audio.h"
@@ -429,6 +432,10 @@ gui::dx::dx_playable_factory::new_playable(
 		} else 
 #endif/*WITH_HTML_WIDGET*/
 		p = new dx_text_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
+#ifdef WITH_SMIL30
+	} else if(tag == "smiltext") {
+		p = new dx_smiltext_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
+#endif/*WITH_SMIL30*/
 	} else if(tag == "img") {
 		p = new dx_img_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
 	} else if(tag == "audio") {

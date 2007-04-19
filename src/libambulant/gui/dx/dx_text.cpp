@@ -93,6 +93,7 @@ void gui::dx::dx_text_renderer::set_surface(common::surface *dest) {
 	}
 
 	m_text->open(m_df);
+	m_text->render();
 }
 
 gui::dx::dx_text_renderer::~dx_text_renderer() {

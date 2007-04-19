@@ -24,6 +24,7 @@
 #include "ambulant/smil2/smiltext.h"
 #include "ambulant/lib/callback.h"
 
+#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -52,6 +53,7 @@ smiltext_engine::smiltext_engine(const lib::node *n, lib::event_processor *ep, s
 	// Initialize the global para
 	// Initialize the default formatting and apply node attributes
 	smiltext_run stdrun;
+	stdrun.m_command = (smiltext_command)0;//6228874;
 	_get_default_formatting(stdrun);
 	_get_default_params(m_params);
 	const char *rgn = n->get_attribute("region");
@@ -194,7 +196,7 @@ smiltext_engine::_update() {
 	if (m_params.m_rate > 0 && m_update_event == NULL) {
 		// We need to schedule another update event to keep the scrolling/crawling going.
 		// In principle we do a callback per pixel scrolled, but clamp at 25 per second.
-		int delay = 1000 / m_params.m_rate;
+		unsigned int delay = 1000 / m_params.m_rate;
 		if (delay < 40) delay = 40;
 		if (next_update_needed > delay || next_update_needed == 0) {
 			next_update_needed = delay;
@@ -296,7 +298,7 @@ smiltext_engine::_get_formatting(smiltext_run& dst, const lib::node *src)
 	}
 }
 
-// Fill a run with the defaulty formatting.
+// Fill a run with the default formatting.
 void
 smiltext_engine::_get_default_formatting(smiltext_run& dst)
 {

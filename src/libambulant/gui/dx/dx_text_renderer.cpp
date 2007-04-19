@@ -59,8 +59,11 @@ gui::dx::text_renderer::text_renderer(const net::url& u, const lib::size& bounds
 	m_viewport(v),
 	m_ddsurf(0),
 	m_text_color(GetSysColor(COLOR_WINDOWTEXT)),
+	m_text_bgcolor(GetSysColor(COLOR_WINDOW)),
 	m_text_size(0),
-	m_text_font(NULL)
+	m_text_font(NULL),
+	m_text_data(NULL),
+	m_text_datalen(0)
 {
 }
 
@@ -69,8 +72,32 @@ gui::dx::text_renderer::~text_renderer() {
 }
 
 void
+gui::dx::text_renderer::set_text_data(const char* data, size_t datalen) {
+	if (data != NULL && datalen > 0) {
+		m_text_data = (char*) malloc(datalen+1);
+		strncpy(m_text_data, data, datalen);
+		m_text_datalen = datalen;
+		m_text_data[m_text_datalen] = '\0';
+	}
+}
+
+void
+gui::dx::text_renderer::free_text_data() {
+	if (m_text_data) {
+		free((void*)m_text_data);
+	    m_text_data = NULL;
+	}
+	m_text_datalen = 0;
+}
+
+void
 gui::dx::text_renderer::set_text_color(lib::color_t color) {
 	m_text_color = color;
+}
+
+void
+gui::dx::text_renderer::set_text_bgcolor(lib::color_t color) {
+	m_text_bgcolor = color;
 }
 
 void
@@ -83,20 +110,34 @@ gui::dx::text_renderer::set_text_font(const char *fontname) {
 	m_text_font = fontname;
 }
 
-void gui::dx::text_renderer::open(net::datasource_factory *df) {
-	char *data;
-	size_t datalen;
-	if (!net::read_data_from_url(m_url, df, &data, &datalen)) {
-		// Error message has already been produced
-		data = NULL;
-		datalen = 0;
-	}
+void 
+gui::dx::text_renderer::open(net::datasource_factory *df) {
 	m_ddsurf = m_viewport->create_surface(m_size);
 	if(!m_ddsurf) {
-		if (data) free(data);
+		free_text_data();
 		return;
 	}
 	m_viewport->clear_surface(m_ddsurf, RGB(255,255,255));
+	if (!net::read_data_from_url(m_url, df, &m_text_data, &m_text_datalen)) {
+		// Error message has already been produced
+		m_text_data = NULL;
+		m_text_datalen = 0;
+	}
+	return;
+}
+
+SIZE
+gui::dx::text_renderer::render(LONG x, LONG y, UINT uFormat) {
+	SIZE rv;
+	rv.cx = rv.cy = 0;
+	if ( ! m_ddsurf) {
+		m_ddsurf = m_viewport->create_surface(m_size);
+		m_viewport->clear_surface(m_ddsurf, RGB(255,255,255));
+	}
+	if ( ! m_ddsurf) {
+		free_text_data();
+		return rv;
+	}
 	
 	//////////////
 	// Draw text 
@@ -105,14 +146,17 @@ void gui::dx::text_renderer::open(net::datasource_factory *df) {
 	HRESULT hr = m_ddsurf->GetDC(&hdc);
 	if (FAILED(hr)) {
 		win_report_error("DirectDrawSurface::GetDC()", hr);
-		if (data) free(data);
-		return;
+		free_text_data();
+		return rv;
 	}
 
 	// Set the passed <param> values in the device context
-	SetBkMode(hdc, TRANSPARENT);
+				// set color
+//	SetBkMode(hdc, TRANSPARENT);
 	COLORREF crTextColor = (m_text_color == CLR_INVALID)?::GetSysColor(COLOR_WINDOWTEXT):m_text_color;
 	::SetTextColor(hdc, crTextColor);
+	COLORREF crBkColor = (m_text_bgcolor == CLR_INVALID)?::GetSysColor(COLOR_WINDOW):m_text_bgcolor;
+	::SetBkColor(hdc, crBkColor);
 	
 	DWORD family = FF_DONTCARE | DEFAULT_PITCH;
 	const char *fontname = m_text_font;
@@ -151,14 +195,33 @@ void gui::dx::text_renderer::open(net::datasource_factory *df) {
 			family,				// pitch and family
 			STR_TO_TSTR(fontname));			// typeface name
 	::SelectObject(hdc, fontobj);
-	RECT dstRC = {0, 0, m_size.w, m_size.h};
-	UINT uFormat = DT_CENTER | DT_WORDBREAK;
-	if (data) {
-		lib::textptr tp(data, datalen);
-		int res = ::DrawText(hdc, tp, (int)tp.length(), &dstRC, uFormat); 
+	RECT dstRC = {x, y, m_size.w, m_size.h};
+	if (m_text_data) {
+		lib::textptr tp(m_text_data, m_text_datalen);
+		int res = ::GetTextExtentPoint32(hdc, tp, (int)tp.length(), &rv);
+		if(res == 0)
+			win_report_last_error("GetTextExtentPoint32()");
+		if (x+rv.cx > m_size.w) { //should also work for DT_RTLREADING
+			y += rv.cy;
+			dstRC.left = 0;
+			dstRC.top = y;
+			rv.cx -= x;
+		} else rv.cy = 0;
+		res = ::DrawText(hdc, tp, (int)tp.length(), &dstRC, uFormat);
+#ifdef JUNK
+		UINT fMode = 0;
+		if (uFormat|DT_LEFT) fMode |= TA_LEFT;
+		if (uFormat|DT_RIGHT) fMode |= TA_RIGHT;
+		if (uFormat|DT_CENTER) fMode |= TA_CENTER;
+		if (uFormat|DT_RTLREADING) fMode |= TA_RTLREADING;
+		::SetTextAlign(hdc, fMode);
+		::TextOut(hdc, x, y, tp, (int)tp.length());
+#endif/*JUNK*/
 		if(res == 0)
 			win_report_last_error("DrawText()");
-		free(data);
+
+		free_text_data();
+
 	}
 	m_ddsurf->ReleaseDC(hdc);
 		
@@ -174,6 +237,7 @@ void gui::dx::text_renderer::open(net::datasource_factory *df) {
 	if (FAILED(hr)) {
 		win_report_error("SetColorKey()", hr);
 	}
+	return rv;
 }
  
 
