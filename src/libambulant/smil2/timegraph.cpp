@@ -508,6 +508,7 @@ timegraph::select_switch_child(const node* sn) const {
 	std::list<const node*>::const_iterator it;
 	sn->get_children(cl);
 	for(it=cl.begin();it!=cl.end();it++) {
+		if ((*it)->is_data_node()) continue;
 		test_attrs ta(*it);
 		if(!ta.selected()) {
 			AM_DBG m_logger->debug("Filtering out node: %s[%s]", 
