@@ -38,6 +38,14 @@
           </smiltext>
         </par>
 -->
+<!--KB-->
+        <par id="ImageTextAudio-1">
+          <img id="TitleB" region="Images" dur="5s" src="NYCdata/TitleB.gif" transIn="fade"/>
+          <audio id="SIF-Intro" region="audio_1" src="NYCdata/SIF-Intro.mp3"/>
+          <text id="CapF0" region="Captions" dur="5s"
+		src="data:,We start our tour with a ride on the famous Staten Island Ferry."/>
+        </par>
+<!--KB-->
         <par id="ImageTextAudio-2">
           <img id="Ferry1" region="Images" dur="5s" src="NYCdata/Ferry1.gif" transIn="fade"/>
           <smiltext id="CapF1" region="Captions" dur="5s" >
@@ -78,6 +86,9 @@
           <smiltext id="CapF2" region="Captions" dur="5s" textMode="crawl" textRate="20">
             The <span textFontFamily="serif" textFontSize="xx-large" textColor="green">artwork </span> also flows <br/>along the passenger loading platforms.
           </smiltext>
+<!--
+	  <text id="CapF2" region="Captions" src="data:,smiltext%20crash%20omitted"/>
+-->
           <audio id="SIF-0" region="audio_1" src="NYCdata/SIF-2.mp3"/>
         </par>
         <par id="ImageTextAudio-4">

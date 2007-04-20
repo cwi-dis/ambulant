@@ -454,6 +454,9 @@
 						RelativePath="..\..\src\libambulant\gui\dx\dx_player.cpp">
 					</File>
 					<File
+						RelativePath="..\..\src\libambulant\gui\dx\dx_smiltext.cpp">
+					</File>
+					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_text.cpp">
 					</File>
 					<File
@@ -863,6 +866,9 @@
 					RelativePath="..\..\src\libambulant\smil2\smil_time.cpp">
 				</File>
 				<File
+					RelativePath="..\..\src\libambulant\smil2\smiltext.cpp">
+				</File>
+				<File
 					RelativePath="..\..\src\libambulant\smil2\sync_rule.cpp">
 				</File>
 				<File
@@ -972,6 +978,9 @@
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_rgn.h">
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dx\dx_smiltext.h">
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_surface.h">
@@ -1508,6 +1517,9 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\smil2\smil_time.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\smil2\smiltext.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\smil2\sync_rule.h">
