@@ -60,6 +60,7 @@ gui::dx::text_renderer::text_renderer(const net::url& u, const lib::size& bounds
 	m_ddsurf(0),
 	m_text_color(GetSysColor(COLOR_WINDOWTEXT)),
 	m_text_bgcolor(GetSysColor(COLOR_WINDOW)),
+	m_default_bgcolor(GetSysColor(COLOR_WINDOW)),
 	m_text_size(0),
 	m_text_font(NULL),
 	m_text_data(NULL),
@@ -184,7 +185,7 @@ gui::dx::text_renderer::render(LONG x, LONG y, UINT uFormat) {
 			0,					// average character width
 			0,					// angle of escapement
 			0,					// base-line orientation angle
-			0,					// font weight
+			FW_NORMAL,			// font weight
 			0,					// italic attribute option
 			0,					// underline attribute option
 			0,					// strikeout attribute option
@@ -208,18 +209,9 @@ gui::dx::text_renderer::render(LONG x, LONG y, UINT uFormat) {
 			rv.cx -= x;
 		} else rv.cy = 0;
 		res = ::DrawText(hdc, tp, (int)tp.length(), &dstRC, uFormat);
-#ifdef JUNK
-		UINT fMode = 0;
-		if (uFormat|DT_LEFT) fMode |= TA_LEFT;
-		if (uFormat|DT_RIGHT) fMode |= TA_RIGHT;
-		if (uFormat|DT_CENTER) fMode |= TA_CENTER;
-		if (uFormat|DT_RTLREADING) fMode |= TA_RTLREADING;
-		::SetTextAlign(hdc, fMode);
-		::TextOut(hdc, x, y, tp, (int)tp.length());
-#endif/*JUNK*/
 		if(res == 0)
 			win_report_last_error("DrawText()");
-
+		m_text_bgcolor = m_default_bgcolor;
 		free_text_data();
 
 	}

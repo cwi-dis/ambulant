@@ -72,6 +72,7 @@ class text_renderer {
 	IDirectDrawSurface *m_ddsurf;
 	lib::color_t m_text_color;
 	lib::color_t m_text_bgcolor;
+	lib::color_t m_default_bgcolor;
 	float m_text_size;
 	const char *m_text_font;
 	char* m_text_data;

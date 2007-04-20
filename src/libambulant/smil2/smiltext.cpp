@@ -36,11 +36,12 @@ namespace smil2 {
 
 typedef lib::no_arg_callback<smiltext_engine> update_callback;
 
-smiltext_engine::smiltext_engine(const lib::node *n, lib::event_processor *ep, smiltext_notification *client)
+smiltext_engine::smiltext_engine(const lib::node *n, lib::event_processor *ep, smiltext_notification *client, bool word_mode)
 :	m_node(n),
 	m_tree_iterator(n->begin()),
 	m_event_processor(ep),
 	m_client(client),
+	m_word_mode(word_mode),
 	m_newbegin_valid(false),
 	m_update_event(NULL)
 {
@@ -110,6 +111,31 @@ smiltext_engine::stop() {
 }
 
 void
+smiltext_engine::_split_into_words(lib::xml_string data) {
+	size_t first_nonblank;
+	std::string blanks(" \f\n\r\t\v");
+	while ((first_nonblank = data.find_first_not_of(blanks)) != std::string::npos) {
+		size_t first_blank = data.find_first_of(blanks, first_nonblank);
+		if (first_blank == std::string::npos)
+			first_blank = data.length();
+		if (first_blank > 0) {
+			smiltext_run run = m_run_stack.top();
+			run.m_command = stc_data;
+			run.m_data = data.substr(first_nonblank, first_blank-first_nonblank);
+			smiltext_runs::const_iterator where = m_runs.insert( m_runs.end(), run);
+			if (!m_newbegin_valid) {
+				m_newbegin = where;
+				m_newbegin_valid = true;
+			}
+//			m_runs.push_back(run);
+			data = data.substr(first_blank);
+		} else {
+			data = data.substr(data.length());
+		}
+	}
+}
+
+void
 smiltext_engine::_update() {
 	assert(m_node);
 	lib::timer::time_type next_update_needed = 0;
@@ -133,6 +159,10 @@ smiltext_engine::_update() {
 			// end leave one space there.
 			lib::xml_string data = item->get_data();
 			// XXX <pre>!
+			if (m_word_mode) {
+				_split_into_words(data);
+				continue;
+			}
 			size_t first_nonblank = data.find_first_not_of(" \t\r\n");
 			size_t last_nonblank = data.find_last_not_of(" \t\r\n");
 			bool space_at_end = last_nonblank < data.size()-1;

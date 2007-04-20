@@ -55,7 +55,7 @@ gui::dx::dx_smiltext_renderer::dx_smiltext_renderer(
 	m_x(0),
 	m_y(0),
 	m_df(factory->get_datasource_factory()),
-	m_engine(smil2::smiltext_engine(node, evp, this)),
+	m_engine(smil2::smiltext_engine(node, evp, this, true)),
 	m_params(m_engine.get_params())
 {
 	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_renderer(0x%x)", this);
@@ -105,33 +105,6 @@ void gui::dx::dx_smiltext_renderer::start(double t) {
 	m_epoch = m_event_processor->get_timer()->elapsed();
 	m_engine.start(t);
 	renderer_playable::start(t);
-#ifdef JUNK
-	if(!m_text) {
-		// Notify scheduler
-		m_context->stopped(m_cookie);
-		return;
-	}
-		
-	// Has this been activated
-	if(m_activated) {
-		// repeat
-		m_dest->need_redraw();
-		return;	
-	}
-	m_context->started(m_cookie);
-	// Activate this renderer.
-	// Add this renderer to the display list of the region
-	m_dest->show(this);
-	m_dest->need_events(m_wantclicks);
-	m_activated = true;
-		
-	// Request a redraw
-	// Currently already done by show()
-	// m_dest->need_redraw();
-
-	// Notify scheduler that we're done playing
-	m_context->stopped(m_cookie);
-#endif/*JUNK*/
 }
 
 void gui::dx::dx_smiltext_renderer::stop() {
@@ -171,6 +144,7 @@ void gui::dx::dx_smiltext_renderer::smiltext_changed() {
 				newdata = "";
 			}
 			m_text_storage += newdata;
+			m_text_storage += ' ';
 			// Set font, colot and attributes
 			m_text->set_text_font((*i).m_font_family);
 			m_text->set_text_size((*i).m_font_size);
@@ -221,7 +195,7 @@ void gui::dx::dx_smiltext_renderer::smiltext_changed() {
 				m_y += sz.cy;
 			}
 			i++;
-		}
+		}//while
 		m_engine.done();
 	}
 	m_lock.leave();

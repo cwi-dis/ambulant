@@ -132,7 +132,7 @@ class smiltext_notification {
 /// Engine to process smiltext.
 class smiltext_engine {
   public:
-	smiltext_engine(const lib::node *n, lib::event_processor *ep, smiltext_notification *client);
+	smiltext_engine(const lib::node *n, lib::event_processor *ep, smiltext_notification *client, bool word_mode);
 	~smiltext_engine();
 	
 	/// Get the mode parameters
@@ -177,13 +177,17 @@ class smiltext_engine {
 	void _update();
 	// Fill a run with the formatting parameters from a node.
 	void _get_formatting(smiltext_run& dst, const lib::node *src);
-	// Fill a run with the defaulty formatting.
+	// Fill a run with the default formatting.
 	void _get_default_formatting(smiltext_run& dst);
 	// Fill smiltext_params from a node
 	void _get_params(smiltext_params& params, const lib::node *src);
 	// Fill default smiltext_params
 	void _get_default_params(smiltext_params& params);
-	
+	// generate a sequence of runs each containing a single word
+	// without spacing but with the formatting and styling parameters
+	void _split_into_words(lib::xml_string data);	
+
+	const bool m_word_mode;
 	const lib::node *m_node;			// The root of the smiltext nodes
 	lib::node::const_iterator m_tree_iterator;	// Where we currently are in that tree
 	lib::event_processor *m_event_processor;
