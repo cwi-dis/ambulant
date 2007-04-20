@@ -1,3 +1,29 @@
+2007-04-19 17:43  keesblom
+
+	* initial attempt to add smiltext for Windows.
+
+2007-04-19 17:41  keesblom
+
+	* [no log message]
+
+2007-04-19 16:33  jackjansen
+
+	* New icons. They look pretty bad on Windows:-(
+
+2007-04-19 16:32  jackjansen
+
+	* - Data nodes now also have a context. This fixes the problem Dick
+	  had with flashlight-ce.  - Removed various bits of debug output.
+
+2007-04-19 15:33  jackjansen
+
+	* Fixed various issues with the xcode projects: resources not being
+	  copied, bad build instructions, etc.
+
+2007-04-19 13:19  jackjansen
+
+	* Added an xcode project to build WITH_SMIL3 player.
+
 2007-04-18 10:37  keesblom
 
 	* Changed representation of smiltext_runs from vector into list
