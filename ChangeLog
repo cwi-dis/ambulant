@@ -1,3 +1,22 @@
+2007-04-20 15:21  keesblom
+
+	* Added 'word_mode' to smiltext_engine() to generate smiltext_runs
+	  with a single word of data only, without spaces, but with all
+	  formatting and styling parameters.
+
+2007-04-20 15:04  jackjansen
+
+	* Shell script to help with creating a Mac installer.
+
+2007-04-20 11:04  keesblom
+
+	* Added dx_smiltext.h and dx_smiltext.cpp to the repositoty
+
+2007-04-20 10:51  jackjansen
+
+	* When looking for the child of a switch to select ignore the (new)
+	  data nodes.
+
 2007-04-19 17:43  keesblom
 
 	* initial attempt to add smiltext for Windows.
