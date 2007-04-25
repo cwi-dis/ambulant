@@ -39,6 +39,30 @@ namespace gui {
 
 namespace dx {
 
+class dx_smiltext_run : 
+	public smil2::smiltext_run
+{
+public:
+	dx_smiltext_run(smiltext_run);
+	~dx_smiltext_run();
+	void dx_smiltext_run_set_attr();
+	void dx_smiltext_run_get_extent();
+//private:
+	// left,top of final destination
+	LONG m_left;
+	LONG m_top;
+	// text extent
+	LONG m_width;
+//	LONG m_height;
+	// Font metrics
+	LONG m_ascent;
+	LONG m_descent;
+	// Direct X stuff: fonts etc.
+	HFONT m_dx_font;
+};
+typedef std::list<dx_smiltext_run> dx_smiltext_runs;
+typedef dx_smiltext_runs::iterator dx_smiltext_runs_itr;
+
 class smiltext_renderer;
 
 class dx_smiltext_renderer : 
@@ -63,12 +87,11 @@ class dx_smiltext_renderer :
 	void redraw(const lib::rect &dirty, common::gui_window *window);
 	void set_surface(common::surface *dest);
   private:
-//X LPTSTR m_text_storage;
-//X	DWORD m_text_size;
-	std::string m_text_storage;
+	void smiltext_changed(bool);
+	void horizontal_layout(dx_smiltext_runs* runs, lib::rect* r);
+	void vertical_layout(dx_smiltext_runs* runs, lib::rect* r);
+	void dx_smiltext_render(dx_smiltext_run* run);
 	text_renderer *m_text;
-	LONG m_x;
-	LONG m_y;
 	net::datasource_factory *m_df;
 // from cocoa_smiltext.h
 	smil2::smiltext_engine m_engine;

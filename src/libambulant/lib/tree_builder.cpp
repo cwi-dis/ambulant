@@ -222,7 +222,7 @@ lib::tree_builder::characters(const char *buf, size_t len) {
 
 void 
 lib::tree_builder::start_prefix_mapping(const std::string& prefix, const std::string& uri) {
-	/*AM_DBG*/ lib::logger::get_logger()->debug("xmlns:%s=\"%s\"", prefix.c_str(), uri.c_str());
+	AM_DBG lib::logger::get_logger()->debug("xmlns:%s=\"%s\"", prefix.c_str(), uri.c_str());
 	if(m_context)
 		m_context->set_prefix_mapping(prefix, uri);
 }

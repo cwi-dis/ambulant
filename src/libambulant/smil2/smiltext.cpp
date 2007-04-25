@@ -24,7 +24,7 @@
 #include "ambulant/smil2/smiltext.h"
 #include "ambulant/lib/callback.h"
 
-#define AM_DBG if(1)
+//#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -54,7 +54,7 @@ smiltext_engine::smiltext_engine(const lib::node *n, lib::event_processor *ep, s
 	// Initialize the global para
 	// Initialize the default formatting and apply node attributes
 	smiltext_run stdrun;
-	stdrun.m_command = (smiltext_command)0;//6228874;
+	stdrun.m_command = (smiltext_command)0;
 	_get_default_formatting(stdrun);
 	_get_default_params(m_params);
 	const char *rgn = n->get_attribute("region");
@@ -122,12 +122,12 @@ smiltext_engine::_split_into_words(lib::xml_string data) {
 			smiltext_run run = m_run_stack.top();
 			run.m_command = stc_data;
 			run.m_data = data.substr(first_nonblank, first_blank-first_nonblank);
+			AM_DBG lib::logger::get_logger()->debug("dx_smiltext_changed(): bg_col=0x%x, color=0x%x, data=%s", run.m_bg_color, run.m_color, run.m_data.c_str());
 			smiltext_runs::const_iterator where = m_runs.insert( m_runs.end(), run);
 			if (!m_newbegin_valid) {
 				m_newbegin = where;
 				m_newbegin_valid = true;
 			}
-//			m_runs.push_back(run);
 			data = data.substr(first_blank);
 		} else {
 			data = data.substr(data.length());

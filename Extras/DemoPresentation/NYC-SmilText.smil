@@ -12,7 +12,7 @@
       <region id="audio_2"/>
       <region id="bkgd_image" left="0" width="240" top="0" height="270"/>
       <region id="Images" left="18" width="220" top="6" height="240" z-index="1" fit="meet"/>
-      <region id="Captions" left="19" width="140" top="184" height="85" z-index="2"/>
+      <region id="Captions" left="19" width="220" top="184" height="85" z-index="2"/>
     </layout>
     <transition id="slideover" type="slideWipe"/>
     <transition id="fade" type="fade"/>
@@ -22,7 +22,6 @@
     <par id="AdvancedPPCSlideshow">
       <audio id="NYStateOfMind" region="audio_2" src="NYCdata/NYStateOfMind.mp3" systemComponent="multiChannelAudio"/>
       <seq id="ImagesAndAudioSequence">
-<!--
         <par id="ImageTextAudio" dur="8s">
           <img id="TitleA" region="Images" dur="8s" fill="transition" src="NYCdata/TitleA.gif"/>
           <audio id="Welcome" region="audio_1" begin="0" src="NYCdata/Welcome.mp3"/>
@@ -30,6 +29,7 @@
         <par id="ImageTextAudio-0" begin="0">
           <img id="TitleA1" region="Images" begin="0" dur="7s" src="NYCdata/TitleA1.gif" transIn="fade"/>
         </par>
+<!--
         <par id="ImageTextAudio-1">
           <img id="TitleB" region="Images" dur="5s" src="NYCdata/TitleB.gif" transIn="fade"/>
           <audio id="SIF-Intro" region="audio_1" src="NYCdata/SIF-Intro.mp3"/>
@@ -38,14 +38,13 @@
           </smiltext>
         </par>
 -->
-<!--KB-->
+
         <par id="ImageTextAudio-1">
           <img id="TitleB" region="Images" dur="5s" src="NYCdata/TitleB.gif" transIn="fade"/>
           <audio id="SIF-Intro" region="audio_1" src="NYCdata/SIF-Intro.mp3"/>
           <text id="CapF0" region="Captions" dur="5s"
 		src="data:,We start our tour with a ride on the famous Staten Island Ferry."/>
         </par>
-<!--KB-->
         <par id="ImageTextAudio-2">
           <img id="Ferry1" region="Images" dur="5s" src="NYCdata/Ferry1.gif" transIn="fade"/>
           <smiltext id="CapF1" region="Captions" dur="5s" >
@@ -69,7 +68,9 @@
             <tev next="2.20"/>
             a 
             <tev next="2.25"/>
+            <span textColor="brown" textFontSize="x-large" textFontStyle="italic" textFontFamily="serif"  textFontWeight="bold">
             honeycomb 
+            </span>
             <tev next="2.75"/>
             pattern 
             <tev next="3.15"/>
@@ -84,12 +85,9 @@
         <par id="ImageTextAudio-3">
           <img id="Ferry2" region="Images" dur="5s" src="NYCdata/Ferry2.gif"/>
           <smiltext id="CapF2" region="Captions" dur="5s" textMode="crawl" textRate="20">
-            The <span textFontFamily="serif" textFontSize="xx-large" textColor="green">artwork </span> also flows <br/>along the passenger loading platforms.
+            The <span textFontFamily="serif" textFontSize="xx-large" textColor="green">artwork </span> also flows <br/> <br/>along the passenger loading platforms.
           </smiltext>
-<!--
-	  <text id="CapF2" region="Captions" src="data:,smiltext%20crash%20omitted"/>
--->
-          <audio id="SIF-0" region="audio_1" src="NYCdata/SIF-2.mp3"/>
+         <audio id="SIF-0" region="audio_1" src="NYCdata/SIF-2.mp3"/>
         </par>
         <par id="ImageTextAudio-4">
           <img id="Ferry3" region="Images" dur="5s" src="NYCdata/Ferry3.gif"/>
@@ -112,9 +110,10 @@
         </par>
         <par id="ImageTextAudio-7">
           <img id="NY1" region="Images" dur="5s" src="NYCdata/NY1.gif"/>
-          <smiltext id="CapN1" region="Captions" dur="5s">
-            <param name="fgcolor" value="#ff8000"/>
-            In Memoriam: September 11, 2001.
+          <smiltext id="CapN1" region="Captions" dur="5s" textColor="#ff8000">
+<!--        <param name="fgcolor" value="#ff8000"/> -->
+     
+	    In Memoriam: September 11, 2001.
           
           </smiltext>
         </par>
@@ -152,8 +151,8 @@
         </par>
         <par id="ImageTextAudio-13">
           <img id="Train4" region="Images" dur="5s" src="NYCdata/Train4.gif"/>
-          <smiltext id="CapT4" region="Captions" dur="5s">
-            <param name="fgcolor" value="#ff8000"/>
+          <smiltext id="CapT4" region="Captions" dur="5s" textColor="#ff8800">
+<!--        <param name="fgcolor" value="#ff8000"/> -->
             Before you know it, we pull into the elevated station. Now we are on our own in the new world.
           </smiltext>
           <audio id="Train-3" region="audio_1" src="NYCdata/Train-4.mp3"/>
@@ -172,8 +171,8 @@
         </par>
         <par id="ImageTextAudio-16">
           <img id="JH2" region="Images" dur="5s" src="NYCdata/JH2.gif"/>
-          <smiltext id="CapJ2" region="Captions" dur="5s">
-            <param name="fgcolor" value="#ff8000"/>
+          <smiltext id="CapJ2" region="Captions" dur="5s" textColor="#ff8000">
+           <param name="fgcolor" value="#ff8000"/>
             Any yes, walking up means walking up.
           </smiltext>
           <audio id="JH-1" region="audio_1" src="NYCdata/JH-2.mp3"/>

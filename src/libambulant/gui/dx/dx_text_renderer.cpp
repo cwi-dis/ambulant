@@ -127,17 +127,15 @@ gui::dx::text_renderer::open(net::datasource_factory *df) {
 	return;
 }
 
-SIZE
-gui::dx::text_renderer::render(LONG x, LONG y, UINT uFormat) {
-	SIZE rv;
-	rv.cx = rv.cy = 0;
+void
+gui::dx::text_renderer::render(LONG x, LONG y, HFONT hfont) {
 	if ( ! m_ddsurf) {
 		m_ddsurf = m_viewport->create_surface(m_size);
 		m_viewport->clear_surface(m_ddsurf, RGB(255,255,255));
 	}
 	if ( ! m_ddsurf) {
 		free_text_data();
-		return rv;
+		return;
 	}
 	
 	//////////////
@@ -148,18 +146,18 @@ gui::dx::text_renderer::render(LONG x, LONG y, UINT uFormat) {
 	if (FAILED(hr)) {
 		win_report_error("DirectDrawSurface::GetDC()", hr);
 		free_text_data();
-		return rv;
+		return;
 	}
-
 	// Set the passed <param> values in the device context
-				// set color
-//	SetBkMode(hdc, TRANSPARENT);
+	// set color
+//KB SetBkMode(hdc, TRANSPARENT);
 	COLORREF crTextColor = (m_text_color == CLR_INVALID)?::GetSysColor(COLOR_WINDOWTEXT):m_text_color;
 	::SetTextColor(hdc, crTextColor);
 	COLORREF crBkColor = (m_text_bgcolor == CLR_INVALID)?::GetSysColor(COLOR_WINDOW):m_text_bgcolor;
 	::SetBkColor(hdc, crBkColor);
 	
 	DWORD family = FF_DONTCARE | DEFAULT_PITCH;
+	UINT uFormat = DT_NOPREFIX | DT_WORDBREAK;
 	const char *fontname = m_text_font;
 	if (m_text_font) {
 		if (strcmp(m_text_font, "serif") == 0) {
@@ -179,44 +177,38 @@ gui::dx::text_renderer::render(LONG x, LONG y, UINT uFormat) {
 			fontname = NULL;
 		}
 	}
-
-	HFONT fontobj = ::CreateFont(
-			-(int)m_text_size,	// height of font
-			0,					// average character width
-			0,					// angle of escapement
-			0,					// base-line orientation angle
-			FW_NORMAL,			// font weight
-			0,					// italic attribute option
-			0,					// underline attribute option
-			0,					// strikeout attribute option
-			ANSI_CHARSET,		// character set identifier
-			OUT_DEFAULT_PRECIS, // output precision
-			CLIP_DEFAULT_PRECIS, // clipping precision
-			DEFAULT_QUALITY,	// output quality
-			family,				// pitch and family
-			STR_TO_TSTR(fontname));			// typeface name
-	::SelectObject(hdc, fontobj);
+	HFONT hfp = hfont;
+	if (hfp == NULL) {
+		hfp	= ::CreateFont(
+				-(int)m_text_size,	// height of font
+				0,					// average character width
+				0,					// angle of escapement
+				0,					// base-line orientation angle
+				0,					// font weight
+				0,					// italic attribute option
+				0,					// underline attribute option
+				0,					// strikeout attribute option
+				ANSI_CHARSET,		// character set identifier
+				OUT_DEFAULT_PRECIS, // output precision
+				CLIP_DEFAULT_PRECIS, // clipping precision
+				DEFAULT_QUALITY,	// output quality
+				family,				// pitch and family
+				STR_TO_TSTR(fontname));	// typeface name
+	}
+	::SelectObject(hdc, hfp);
 	RECT dstRC = {x, y, m_size.w, m_size.h};
 	if (m_text_data) {
 		lib::textptr tp(m_text_data, m_text_datalen);
-		int res = ::GetTextExtentPoint32(hdc, tp, (int)tp.length(), &rv);
-		if(res == 0)
-			win_report_last_error("GetTextExtentPoint32()");
-		if (x+rv.cx > m_size.w) { //should also work for DT_RTLREADING
-			y += rv.cy;
-			dstRC.left = 0;
-			dstRC.top = y;
-			rv.cx -= x;
-		} else rv.cy = 0;
-		res = ::DrawText(hdc, tp, (int)tp.length(), &dstRC, uFormat);
+		HRESULT res = ::DrawText(hdc, tp, (int)tp.length(), &dstRC, uFormat);
 		if(res == 0)
 			win_report_last_error("DrawText()");
 		m_text_bgcolor = m_default_bgcolor;
 		free_text_data();
-
 	}
+	m_text_bgcolor = m_default_bgcolor;
 	m_ddsurf->ReleaseDC(hdc);
-		
+	if (hfont == NULL)
+		DeleteObject(hfp);
 	//////////////
 	// Text is always transparent; set the color
 	
@@ -229,7 +221,6 @@ gui::dx::text_renderer::render(LONG x, LONG y, UINT uFormat) {
 	if (FAILED(hr)) {
 		win_report_error("SetColorKey()", hr);
 	}
-	return rv;
 }
  
 

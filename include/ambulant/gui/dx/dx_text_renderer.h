@@ -53,7 +53,7 @@ class text_renderer {
 	text_renderer(const net::url& u, const lib::size& bounds, viewport* v);
 	~text_renderer();
 	void open(net::datasource_factory *df);
-	SIZE render(LONG x=0, LONG y=0, UINT uFormat= DT_CENTER | DT_WORDBREAK);
+	void render(LONG x=0, LONG y=0, HFONT h=NULL);
 	bool can_play() const { return m_ddsurf != 0;}
 	bool is_transparent() const { return true;}
 	const lib::size& get_size() const { return m_size;}
