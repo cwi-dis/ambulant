@@ -1416,15 +1416,18 @@ static PyObject *node_factoryObj_new_node_2(node_factoryObject *_self, PyObject 
 static PyObject *node_factoryObj_new_data_node(node_factoryObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
-	char* data;
-	int size;
-	if (!PyArg_ParseTuple(_args, "si",
-	                      &data,
-	                      &size))
+	char *data__in__;
+	size_t data__len__;
+	int data__in_len__;
+	ambulant::lib::node_context* ctx;
+	if (!PyArg_ParseTuple(_args, "s#O&",
+	                      &data__in__, &data__in_len__,
+	                      node_contextObj_Convert, &ctx))
 		return NULL;
+	data__len__ = data__in_len__;
 	PyThreadState *_save = PyEval_SaveThread();
-	ambulant::lib::node* _rv = _self->ob_itself->new_data_node(data,
-	                                                           size);
+	ambulant::lib::node* _rv = _self->ob_itself->new_data_node(data__in__, data__len__,
+	                                                           ctx);
 	PyEval_RestoreThread(_save);
 	_res = Py_BuildValue("O&",
 	                     nodeObj_New, _rv);
@@ -1437,7 +1440,7 @@ static PyMethodDef node_factoryObj_methods[] = {
 	{"new_node_2", (PyCFunction)node_factoryObj_new_node_2, 1,
 	 PyDoc_STR("(ambulant::lib::node* other) -> (ambulant::lib::node* _rv)")},
 	{"new_data_node", (PyCFunction)node_factoryObj_new_data_node, 1,
-	 PyDoc_STR("(char* data, int size) -> (ambulant::lib::node* _rv)")},
+	 PyDoc_STR("(Buffer data, ambulant::lib::node_context* ctx) -> (ambulant::lib::node* _rv)")},
 	{NULL, NULL, 0}
 };
 

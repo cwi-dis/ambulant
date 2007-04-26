@@ -24,7 +24,6 @@
 #include "ambulant/smil2/smiltext.h"
 #include "ambulant/lib/callback.h"
 
-//#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif

@@ -1395,14 +1395,14 @@ ambulant::lib::node* node_factory::new_node(const ambulant::lib::node* other)
 	return _rv;
 }
 
-ambulant::lib::node* node_factory::new_data_node(const char* data, int size)
+ambulant::lib::node* node_factory::new_data_node(const char *data__in__, size_t data__len__, const ambulant::lib::node_context* ctx)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
 	ambulant::lib::node* _rv;
-	PyObject *py_data = Py_BuildValue("s", data);
-	PyObject *py_size = Py_BuildValue("i", size);
+	PyObject *py_data = Py_BuildValue("s#", data__in__, (int)data__len__);
+	PyObject *py_ctx = Py_BuildValue("O&", node_contextObj_New, ctx);
 
-	PyObject *py_rv = PyObject_CallMethod(py_node_factory, "new_data_node", "(OO)", py_data, py_size);
+	PyObject *py_rv = PyObject_CallMethod(py_node_factory, "new_data_node", "(OO)", py_data, py_ctx);
 	if (PyErr_Occurred())
 	{
 		PySys_WriteStderr("Python exception during node_factory::new_data_node() callback:\n");
@@ -1417,7 +1417,7 @@ ambulant::lib::node* node_factory::new_data_node(const char* data, int size)
 
 	Py_XDECREF(py_rv);
 	Py_XDECREF(py_data);
-	Py_XDECREF(py_size);
+	Py_XDECREF(py_ctx);
 
 	PyGILState_Release(_GILState);
 	return _rv;

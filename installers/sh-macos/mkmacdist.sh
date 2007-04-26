@@ -24,9 +24,11 @@ ln -s /Applications $dirname/Applications
 cp -r $topdir/Extras/DemoPresentation $dirname/DemoPresentation
 find $dirname/DemoPresentation -name 'CVS' -a -exec rm -r '{}' ';'
 cp $topdir/COPYING $dirname/COPYING
+mkdir $dirname/.folderbg
+cp $scriptdir/folderbg.png $dirname/.folderbg/folderbg.png
 
 hdiutil create -srcfolder $dirname $dirname-rw.dmg -format UDRW -attach
-echo Please give the folder the layout you want, unmount, press return.
+echo Please give the folder the layout you want, select bgimage from \".folderbg\", unmount, press return.
 read a
 
 hdiutil convert $dirname-rw.dmg -format UDZO -o $dirname.dmg

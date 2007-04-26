@@ -1,8 +1,40 @@
 Ambulant Player README
 ======================
 
-This directory contains version 1.8 of the Ambulant Player,
-a playback engine for SMIL documents. This release supports SMIL 2.1.
+This directory contains version 1.9 of the Ambulant Player,
+a playback engine for SMIL documents. This release supports SMIL 2.1 and some
+bits and pieces of SMIL 3.0WD. It is not intended for general distribution
+yet, and requires a bit of work to get it to do interesting things.
+
+On Mac and Windows, SMIL State is supported, but only with Python as the
+state language, not with XPath yet. Also, <send> is not implemented yet.
+
+On the Mac, there is preliminary support for SMILText. Scrolling/marquee/crawling
+are only partially implemented.
+
+To use the new features you must do the following things:
+1. Install Python 2.5 from www.python.org. You must use the standard distribution
+   for Mac or Windows.
+2. Install Ambulant Player.
+3. Open Ambulant Player, go to the Preferences and make the following two
+   settings (which may not be enabled by default):
+   - set "validate documents" to "never"
+   - set "Enable plugin support" to "on".
+
+There are two minimal test documents in the DemoPresentation folder (on Windows
+this'll be somewhere in c:\Program Files\AmbulantPlayer-1.9-S3WD1)
+- NYC-SmilText.smil is the NYC demo document but using smiltext, with some
+  funny timings, fonts, etc.
+- NYC-StateTest.smil is the NYC demo with one addition: if you "stop" and then
+  "play" again the document will restart not at the beginning but where you left
+  off. It will first show a 2-second slide telling you where it will start.
+  
+If these documents fail to work as expected: please let us know. The output of
+the logger window is interesting: it may show why things failed to work.
+
+The rest of this file is the "normal" readme, and probably not 100% correct.
+------------------------------
+
 The Ambulant homepage at <http://www.ambulantplayer.org> has more information.
 
 Ambulant consists of a core library implementing the engine,

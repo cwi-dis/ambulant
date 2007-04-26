@@ -724,7 +724,7 @@ class builtin_node_factory : public lib::node_factory {
 	lib::node *new_node(const lib::xml_string& local_name, const char **attrs = 0, const lib::node_context *ctx = 0);
 	lib::node *new_node(const lib::q_name_pair& qn, const lib::q_attributes_list& qattrs, const lib::node_context *ctx = 0);
 	lib::node *new_node(const lib::node* other);
-	lib::node *new_data_node(const char *data, int size, const lib::node_context *ctx);
+	lib::node *new_data_node(const char *data, size_t size, const lib::node_context *ctx);
 };
 
 // If we are building a player with an (optional) external DOM implementation
@@ -771,7 +771,7 @@ builtin_node_factory::new_node(const lib::node* other)
 
 // create data node
 lib::node *
-builtin_node_factory::new_data_node(const char *data, int size, const lib::node_context *ctx)
+builtin_node_factory::new_data_node(const char *data, size_t size, const lib::node_context *ctx)
 {
 	return new lib::node_impl(data, size, ctx);
 }

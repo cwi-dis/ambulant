@@ -167,7 +167,7 @@ public:
 
 	ambulant::lib::node* new_node(const ambulant::lib::q_name_pair& qn, const ambulant::lib::q_attributes_list& qattrs, const ambulant::lib::node_context* ctx);
 	ambulant::lib::node* new_node(const ambulant::lib::node* other);
-	ambulant::lib::node* new_data_node(const char* data, int size);
+	ambulant::lib::node* new_data_node(const char *data__in__, size_t data__len__, const ambulant::lib::node_context* ctx);
 	ambulant::lib::node *new_node(const char *local_name, const char **attrs = 0, const ambulant::lib::node_context *ctx = 0) { abort(); };
 	ambulant::lib::node *new_node(const ambulant::lib::xml_string& local_name, const char **attrs = 0, const ambulant::lib::node_context *ctx = 0) { abort(); };
   private:
