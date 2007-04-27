@@ -1,3 +1,8 @@
+2007-04-26 22:10  jackjansen
+
+	* - Slight change to new_data_node signature to make Python
+	  interface happy.  - README modified for symm-distribution.
+
 2007-04-25 16:10  keesblom
 
 	* Most of smiltext has been implemented now on Windows and
