@@ -110,7 +110,7 @@
         </par>
         <par id="ImageTextAudio-7">
           <img id="NY1" region="Images" dur="5s" src="NYCdata/NY1.gif"/>
-          <smiltext id="CapN1" region="Captions" dur="5s" textColor="#ff8000">
+          <smiltext id="CapN1" region="Captions" dur="5s" textFontSize="x-large" textColor="#fffffe" textFontWeight="bold">
 <!--        <param name="fgcolor" value="#ff8000"/> -->
      
 	    In Memoriam: September 11, 2001.

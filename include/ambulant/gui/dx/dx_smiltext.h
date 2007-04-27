@@ -46,7 +46,7 @@ public:
 	dx_smiltext_run(smiltext_run);
 	~dx_smiltext_run();
 	void dx_smiltext_run_set_attr();
-	void dx_smiltext_run_get_extent();
+	void dx_smiltext_run_get_extent(HDC);
 //private:
 	// left,top of final destination
 	LONG m_left;
@@ -91,7 +91,8 @@ class dx_smiltext_renderer :
 	void horizontal_layout(dx_smiltext_runs* runs, lib::rect* r);
 	void vertical_layout(dx_smiltext_runs* runs, lib::rect* r);
 	void dx_smiltext_render(dx_smiltext_run* run);
-	text_renderer *m_text;
+	IDirectDrawSurface* get_dd_surface();
+//XXtext_renderer *m_text;
 	net::datasource_factory *m_df;
 // from cocoa_smiltext.h
 	smil2::smiltext_engine m_engine;
@@ -99,6 +100,12 @@ class dx_smiltext_renderer :
 	bool m_render_offscreen; // True if m_params does not allows rendering in-place
 	lib::timer::time_type m_epoch;
 	critical_section m_lock;
+	// Windows GDI data
+	ambulant::lib::size m_size;
+	viewport* m_viewport;
+	HDC m_hdc_dummy;
+	IDirectDrawSurface* m_ddsurf_dummy;
+	IDirectDrawSurface* m_ddsurf;
 };
 
 } // namespace dx

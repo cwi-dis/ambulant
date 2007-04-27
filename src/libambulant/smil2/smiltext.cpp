@@ -44,7 +44,7 @@ smiltext_engine::smiltext_engine(const lib::node *n, lib::event_processor *ep, s
 	m_newbegin_valid(false),
 	m_update_event(NULL)
 {
-	lib::logger::get_logger()->debug("smiltext_engine(0x%x).smiltext_engine(%s)", this, m_node->get_sig().c_str());
+	AM_DBG lib::logger::get_logger()->debug("smiltext_engine(0x%x).smiltext_engine(%s)", this, m_node->get_sig().c_str());
 	// Initialize the iterators to the correct place
 	m_tree_iterator++;
 	m_newbegin = m_runs.end();
@@ -83,7 +83,7 @@ smiltext_engine::~smiltext_engine()
 void
 smiltext_engine::start(double t) {
 	// XXX Need to allow for "t"
-	lib::logger::get_logger()->debug("smiltext_engine(0x%x).start(%s)", this, m_node->get_sig().c_str());
+	AM_DBG lib::logger::get_logger()->debug("smiltext_engine(0x%x).start(%s)", this, m_node->get_sig().c_str());
 	m_epoch = m_event_processor->get_timer()->elapsed();
 	m_tree_time = 0;
 	_update();

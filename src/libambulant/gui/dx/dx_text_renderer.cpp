@@ -150,7 +150,7 @@ gui::dx::text_renderer::render(LONG x, LONG y, HFONT hfont) {
 	}
 	// Set the passed <param> values in the device context
 	// set color
-//KB SetBkMode(hdc, TRANSPARENT);
+	SetBkMode(hdc, TRANSPARENT);
 	COLORREF crTextColor = (m_text_color == CLR_INVALID)?::GetSysColor(COLOR_WINDOWTEXT):m_text_color;
 	::SetTextColor(hdc, crTextColor);
 	COLORREF crBkColor = (m_text_bgcolor == CLR_INVALID)?::GetSysColor(COLOR_WINDOW):m_text_bgcolor;

@@ -22,7 +22,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;WITH_HTML_WIDGET;WITH_SMIL30"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;WITH_HTML_WIDGET;WITH_SMIL30;WITHOUT_LOG_WINDOW"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"

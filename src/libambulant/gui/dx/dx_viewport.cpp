@@ -929,6 +929,7 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& src_rc,
 	
 	DWORD flags = DDBLT_WAIT;
 	if(keysrc) flags |= DDBLT_KEYSRC;
+	AM_DBG lib::logger::get_logger()->debug("dx_viewport::redraw(0x%x): src=0x%x, flags=0x%x, dstRC(%d,%d,%d,%d), srcRC(%d,%d,%d,%d)", dstview, src, flags, dstRC.top,dstRC.bottom,dstRC.left,dstRC.right,srcRC.top,srcRC.bottom,srcRC.left,srcRC.right);
 	HRESULT hr = dstview->Blt(&dstRC, src, &srcRC, flags, NULL);
 	if (FAILED(hr)) {
 		seterror(":viewport::clear/DirectDrawSurface::Blt()", hr);
