@@ -1,3 +1,12 @@
+2007-04-27 17:16  keesblom
+
+	* dx_smiltext is now completelty independent of the old
+	  dx_text/dx_text_renderer combo. We could now get rid of this.
+	  Took me a day to figure out that
+	  IDirectDrawSurface*.SetColorKey() was essential for a call
+	  IDirectDrawSurface*.Blt() to succeed, otherwise you always get
+	  DDERR_INVALIDPARAMS
+
 2007-04-26 22:10  jackjansen
 
 	* - Slight change to new_data_node signature to make Python
