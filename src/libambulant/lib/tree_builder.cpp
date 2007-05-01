@@ -196,6 +196,13 @@ lib::tree_builder::start_element(const q_name_pair& qn, const q_attributes_list&
 		m_current = p;
 	} else
 		m_well_formed = false;
+#ifdef WITH_EXTERNAL_DOM
+	while (m_pending_namespaces.size()) {
+		std::pair<std::string, std::string>& item = m_pending_namespaces.back();
+		m_current->set_prefix_mapping(item.first, item.second);
+		m_pending_namespaces.pop_back();
+	}
+#endif // WITH_EXTERNAL_DOM
 }
 
 void 
@@ -225,6 +232,10 @@ lib::tree_builder::start_prefix_mapping(const std::string& prefix, const std::st
 	AM_DBG lib::logger::get_logger()->debug("xmlns:%s=\"%s\"", prefix.c_str(), uri.c_str());
 	if(m_context)
 		m_context->set_prefix_mapping(prefix, uri);
+#ifdef WITH_EXTERNAL_DOM
+	std::pair<std::string,std::string> item(prefix, uri);
+	m_pending_namespaces.push_back(item);
+#endif // WITH_EXTERNAL_DOM
 }
 
 void 

@@ -892,6 +892,28 @@ static PyObject *nodeObj_set_attribute_2(nodeObject *_self, PyObject *_args)
 	return _res;
 }
 
+static PyObject *nodeObj_set_prefix_mapping(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	std::string prefix;
+	std::string uri;
+	char *prefix_cstr="";
+	char *uri_cstr="";
+	if (!PyArg_ParseTuple(_args, "ss",
+	                      &prefix_cstr,
+	                      &uri_cstr))
+		return NULL;
+	prefix = prefix_cstr;
+	uri = uri_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_prefix_mapping(prefix,
+	                                     uri);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyObject *nodeObj_get_namespace(nodeObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -1176,6 +1198,8 @@ static PyMethodDef nodeObj_methods[] = {
 	 PyDoc_STR("(char* name, char* value) -> None")},
 	{"set_attribute_2", (PyCFunction)nodeObj_set_attribute_2, 1,
 	 PyDoc_STR("(char* name, ambulant::lib::xml_string value) -> None")},
+	{"set_prefix_mapping", (PyCFunction)nodeObj_set_prefix_mapping, 1,
+	 PyDoc_STR("(std::string prefix, std::string uri) -> None")},
 	{"get_namespace", (PyCFunction)nodeObj_get_namespace, 1,
 	 PyDoc_STR("() -> (const ambulant::lib::xml_string& _rv)")},
 	{"get_local_name", (PyCFunction)nodeObj_get_local_name, 1,

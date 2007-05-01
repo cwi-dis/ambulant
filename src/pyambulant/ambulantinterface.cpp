@@ -283,6 +283,7 @@ node::node(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "append_data")) PyErr_Warn(PyExc_Warning, "node: missing attribute: append_data");
 		if (!PyObject_HasAttrString(itself, "set_attribute")) PyErr_Warn(PyExc_Warning, "node: missing attribute: set_attribute");
 		if (!PyObject_HasAttrString(itself, "set_attribute")) PyErr_Warn(PyExc_Warning, "node: missing attribute: set_attribute");
+		if (!PyObject_HasAttrString(itself, "set_prefix_mapping")) PyErr_Warn(PyExc_Warning, "node: missing attribute: set_prefix_mapping");
 		if (!PyObject_HasAttrString(itself, "get_namespace")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_namespace");
 		if (!PyObject_HasAttrString(itself, "get_local_name")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_local_name");
 		if (!PyObject_HasAttrString(itself, "get_qname")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_qname");
@@ -881,6 +882,26 @@ void node::set_attribute(const char* name, const ambulant::lib::xml_string& valu
 	Py_XDECREF(py_rv);
 	Py_XDECREF(py_name);
 	Py_XDECREF(py_value);
+
+	PyGILState_Release(_GILState);
+}
+
+void node::set_prefix_mapping(const std::string& prefix, const std::string& uri)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_prefix = Py_BuildValue("s", prefix.c_str());
+	PyObject *py_uri = Py_BuildValue("s", uri.c_str());
+
+	PyObject *py_rv = PyObject_CallMethod(py_node, "set_prefix_mapping", "(OO)", py_prefix, py_uri);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during node::set_prefix_mapping() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_prefix);
+	Py_XDECREF(py_uri);
 
 	PyGILState_Release(_GILState);
 }

@@ -122,6 +122,7 @@ public:
 	void append_data(const ambulant::lib::xml_string& str);
 	void set_attribute(const char* name, const char* value);
 	void set_attribute(const char* name, const ambulant::lib::xml_string& value);
+	void set_prefix_mapping(const std::string& prefix, const std::string& uri);
 	const ambulant::lib::xml_string& get_namespace() const;
 	const ambulant::lib::xml_string& get_local_name() const;
 	const ambulant::lib::q_name_pair& get_qname() const;

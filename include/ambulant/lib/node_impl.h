@@ -197,6 +197,8 @@ class node_impl : public node_interface {
 	/// e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
 	void set_attributes(const char **attrs);
 		
+	/// Override prefix mapping for this node and descendents
+	virtual void set_prefix_mapping(const std::string& prefix, const std::string& uri) {};
 	/////////////////////
 	// data queries
 

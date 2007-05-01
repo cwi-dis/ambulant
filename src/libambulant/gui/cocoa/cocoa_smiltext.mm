@@ -84,7 +84,7 @@ cocoa_smiltext_renderer::cocoa_smiltext_renderer(
 	m_text_storage(NULL),
 	m_layout_manager(NULL),
 	m_text_container(NULL),
-	m_engine(smil2::smiltext_engine(node, evp, this)),
+	m_engine(smil2::smiltext_engine(node, evp, this, false)),
 	m_params(m_engine.get_params())
 {
 	m_text_storage = [[NSTextStorage alloc] initWithString:@""];
