@@ -1,3 +1,13 @@
+2007-05-01 16:37  jackjansen
+
+	* Added a set_prefix_mapping() method to node. Empty for node_impl
+	  nodes, but external implementations can override this. If they do
+	  then the method will be called if there are any xmlns
+	  declarations on the node.
+
+	  The Annotator uses this to remember namespace information
+	  per-node, so it can regenerate it on export.
+
 2007-04-27 17:16  keesblom
 
 	* dx_smiltext is now completelty independent of the old
