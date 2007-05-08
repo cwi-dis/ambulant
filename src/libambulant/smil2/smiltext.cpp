@@ -120,7 +120,7 @@ smiltext_engine::_split_into_words(lib::xml_string data) {
 		if (first_blank > 0) {
 			smiltext_run run = m_run_stack.top();
 			run.m_command = stc_data;
-			run.m_data = data.substr(first_nonblank, first_blank-first_nonblank);
+			run.m_data = data.substr(first_nonblank, first_blank-first_nonblank)+" ";
 			AM_DBG lib::logger::get_logger()->debug("dx_smiltext_changed(): bg_col=0x%x, color=0x%x, data=%s", run.m_bg_color, run.m_color, run.m_data.c_str());
 			smiltext_runs::const_iterator where = m_runs.insert( m_runs.end(), run);
 			if (!m_newbegin_valid) {

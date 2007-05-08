@@ -39,29 +39,23 @@ namespace gui {
 
 namespace dx {
 
-class dx_smiltext_run : 
-	public smil2::smiltext_run
-{
-public:
-	dx_smiltext_run(smiltext_run);
-	~dx_smiltext_run();
-	void dx_smiltext_run_set_attr();
-	void dx_smiltext_run_get_extent(HDC);
-//private:
-	// left,top of final destination
-	LONG m_left;
-	LONG m_top;
-	// text extent
-	LONG m_width;
-//	LONG m_height;
-	// Font metrics
-	LONG m_ascent;
-	LONG m_descent;
-	// Direct X stuff: fonts etc.
-	HFONT m_dx_font;
+class a_extent {
+  public:
+	a_extent(unsigned int ascent, unsigned int descent, unsigned int width)
+	  :	m_ascent(ascent), 
+		m_descent(descent), 
+		m_width(width) {}
+		~a_extent() {}
+
+	unsigned int get_ascent() { return m_ascent; }
+	unsigned int get_descent() { return m_descent; };
+	unsigned int get_width() { return m_width; };
+
+  private:
+	unsigned int m_ascent;
+	unsigned int m_descent;
+	unsigned int m_width;	
 };
-typedef std::list<dx_smiltext_run> dx_smiltext_runs;
-typedef dx_smiltext_runs::iterator dx_smiltext_runs_itr;
 
 class smiltext_renderer;
 
@@ -88,18 +82,22 @@ class dx_smiltext_renderer :
 	void set_surface(common::surface *dest);
   private:
 	void smiltext_changed(bool);
-	void horizontal_layout(dx_smiltext_runs* runs, lib::rect* r);
-	void vertical_layout(dx_smiltext_runs* runs, lib::rect* r);
-	void dx_smiltext_render(dx_smiltext_run* run);
+	bool dx_smiltext_fits(const smil2::smiltext_run run, lib::rect r);
+	a_extent dx_smiltext_get_a_extent(const smil2::smiltext_run run, HDC hdc);
+	lib::rect dx_smiltext_compute(const smil2::smiltext_run run, lib::rect r);
+	void dx_smiltext_render(const smil2::smiltext_run run, lib::rect r);
+	void dx_smiltext_set_font(const smil2::smiltext_run run, HDC hdc);
 	IDirectDrawSurface* get_dd_surface();
-//XXtext_renderer *m_text;
 	net::datasource_factory *m_df;
-// from cocoa_smiltext.h
 	smil2::smiltext_engine m_engine;
 	const smil2::smiltext_params& m_params;
 	bool m_render_offscreen; // True if m_params does not allows rendering in-place
 	lib::timer::time_type m_epoch;
 	critical_section m_lock;
+	int m_x;
+	int m_y;
+	unsigned int m_max_ascent;
+	unsigned int m_max_descent;
 	// Windows GDI data
 	ambulant::lib::size m_size;
 	viewport* m_viewport;

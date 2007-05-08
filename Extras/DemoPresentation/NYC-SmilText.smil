@@ -37,9 +37,8 @@
             We start our tour with a ride on the famous Staten Island Ferry.
           </smiltext>
         </par>
--->
-
-        <par id="ImageTextAudio-1">
+ -->
+       <par id="ImageTextAudio-1">
           <img id="TitleB" region="Images" dur="5s" src="NYCdata/TitleB.gif" transIn="fade"/>
           <audio id="SIF-Intro" region="audio_1" src="NYCdata/SIF-Intro.mp3"/>
           <text id="CapF0" region="Captions" dur="5s"
