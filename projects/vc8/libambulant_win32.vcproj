@@ -1013,6 +1013,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\libambulant\lib\nscontext.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\libambulant\lib\parselets.cpp"
 					>
 				</File>
