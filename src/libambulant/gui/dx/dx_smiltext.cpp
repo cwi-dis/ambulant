@@ -165,7 +165,7 @@ gui::dx::dx_smiltext_renderer::smiltext_changed() {
 }
 
 bool
-gui::dx::dx_smiltext_renderer::dx_smiltext_fits(const smil2::smiltext_run strun, lib::rect r) {
+gui::dx::dx_smiltext_renderer::dx_smiltext_fits(const smil2::smiltext_run strun, const lib::rect r) {
 	bool rv = true;
 	a_extent ax = dx_smiltext_get_a_extent (strun, m_hdc_dummy);
 
@@ -173,14 +173,14 @@ gui::dx::dx_smiltext_renderer::dx_smiltext_fits(const smil2::smiltext_run strun,
 		m_max_ascent = ax.get_ascent();
 	if (ax.get_descent() > m_max_descent)
 		m_max_descent = ax.get_descent();
-	if (m_x + ax.get_width() > r.right())
+	if (m_x + (int) ax.get_width() > r.right())
 		rv = false;
 	m_x += ax.get_width();
 	return rv;
 }
 
 lib::rect
-gui::dx::dx_smiltext_renderer::dx_smiltext_compute(const smil2::smiltext_run strun, lib::rect r) {
+gui::dx::dx_smiltext_renderer::dx_smiltext_compute(const smil2::smiltext_run strun, const lib::rect r) {
 	lib::rect rv = lib::rect(lib::point(0,0),lib::size(100,100));
 	a_extent ax = dx_smiltext_get_a_extent (strun, m_hdc_dummy);
 
@@ -219,7 +219,7 @@ gui::dx::dx_smiltext_renderer::dx_smiltext_get_a_extent(const smil2::smiltext_ru
 }
 
 void
-gui::dx::dx_smiltext_renderer::dx_smiltext_render(const smil2::smiltext_run strun, lib::rect r) {
+gui::dx::dx_smiltext_renderer::dx_smiltext_render(const smil2::smiltext_run strun, const lib::rect r) {
 	if (strun.m_command != smil2::stc_data)
 		return;
 	/*AM_DBG*/ lib::logger::get_logger()->debug("dx_smiltext_render(): command=%d data=%s color=0x%x",strun.m_command,strun.m_data.c_str()==NULL?"(null)":strun.m_data.c_str(),strun.m_color);

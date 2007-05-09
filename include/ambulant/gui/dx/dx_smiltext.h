@@ -82,10 +82,10 @@ class dx_smiltext_renderer :
 	void set_surface(common::surface *dest);
   private:
 	void smiltext_changed(bool);
-	bool dx_smiltext_fits(const smil2::smiltext_run run, lib::rect r);
+	bool dx_smiltext_fits(const smil2::smiltext_run run, const lib::rect r);
 	a_extent dx_smiltext_get_a_extent(const smil2::smiltext_run run, HDC hdc);
-	lib::rect dx_smiltext_compute(const smil2::smiltext_run run, lib::rect r);
-	void dx_smiltext_render(const smil2::smiltext_run run, lib::rect r);
+	lib::rect dx_smiltext_compute(const smil2::smiltext_run run, const lib::rect r);
+	void dx_smiltext_render(const smil2::smiltext_run run, const lib::rect r);
 	void dx_smiltext_set_font(const smil2::smiltext_run run, HDC hdc);
 	IDirectDrawSurface* get_dd_surface();
 	net::datasource_factory *m_df;
