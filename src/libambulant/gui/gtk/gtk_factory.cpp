@@ -29,6 +29,9 @@
 #ifdef	WITH_GTK_HTML_WIDGET
 #include "ambulant/gui/gtk/gtk_html_renderer.h"
 #endif/*WITH_GTK_HTML_WIDGET*/
+#ifdef  WITH_SMIL30
+#include "ambulant/gui/gtk/gtk_smiltext.h"
+#endif/*WITH_SMIL30*/
 #include "ambulant/gui/gtk/gtk_text_renderer.h"
 #include "ambulant/gui/gtk/gtk_video_renderer.h"
 
@@ -207,6 +210,10 @@ gtk_renderer_factory::new_playable(
 					  evp, m_factory);
 		AM_DBG lib::logger::get_logger()->debug("gtk_renderer_factory: node 0x%x: returning gtk_fill_renderer 0x%x", 
 			(void*) node, (void*) rv);
+#ifdef WITH_SMIL30
+	} else if(tag == "smiltext") {
+	  rv = new gtk_smiltext_renderer(context, cookie, node, evp);//, m_factory);
+#endif/*WITH_SMIL30*/
 	} else if ( tag == "text") {
 #ifdef	WITH_GTK_HTML_WIDGET
 		net::url url = net::url(node->get_url("src"));
@@ -222,7 +229,7 @@ gtk_renderer_factory::new_playable(
 
 #ifdef	WITH_GTK_HTML_WIDGET
 		}
-#endif/*WITH_QT_HTML_WIDGET*/
+#endif/*WITH_GTK_HTML_WIDGET*/
 	} else {
 		return NULL;
 	}

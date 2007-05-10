@@ -22,6 +22,7 @@
     <par id="AdvancedPPCSlideshow">
       <audio id="NYStateOfMind" region="audio_2" src="NYCdata/NYStateOfMind.mp3" systemComponent="multiChannelAudio"/>
       <seq id="ImagesAndAudioSequence">
+<!--
         <par id="ImageTextAudio" dur="8s">
           <img id="TitleA" region="Images" dur="8s" fill="transition" src="NYCdata/TitleA.gif"/>
           <audio id="Welcome" region="audio_1" begin="0" src="NYCdata/Welcome.mp3"/>
@@ -29,7 +30,6 @@
         <par id="ImageTextAudio-0" begin="0">
           <img id="TitleA1" region="Images" begin="0" dur="7s" src="NYCdata/TitleA1.gif" transIn="fade"/>
         </par>
-<!--
         <par id="ImageTextAudio-1">
           <img id="TitleB" region="Images" dur="5s" src="NYCdata/TitleB.gif" transIn="fade"/>
           <audio id="SIF-Intro" region="audio_1" src="NYCdata/SIF-Intro.mp3"/>

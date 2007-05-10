@@ -71,6 +71,7 @@ libambulant_gtk_la_SOURCES = 		\
 	gui/gtk/gtk_renderer.cpp	\
 	gui/gtk/gtk_fill.cpp		\
 	gui/gtk/gtk_image_renderer.cpp	\
+	gui/gtk/gtk_smiltext.cpp 	\
 	gui/gtk/gtk_text_renderer.cpp 	\
 	gui/gtk/gtk_transition.cpp 	\
 	gui/gtk/gtk_video_renderer.cpp	\
