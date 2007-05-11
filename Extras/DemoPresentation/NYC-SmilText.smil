@@ -46,7 +46,7 @@
         </par>
         <par id="ImageTextAudio-2">
           <img id="Ferry1" region="Images" dur="5s" src="NYCdata/Ferry1.gif" transIn="fade"/>
-          <smiltext id="CapF1" region="Captions" dur="5s" >
+          <smiltext id="CapF1" region="Captions" dur="5s"  textFontFamily="roman" >
             The 
             <tev next="0.25"/>
             <span textBackgroundColor="blue">

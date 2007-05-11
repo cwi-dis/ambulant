@@ -60,16 +60,28 @@ class gtk_smiltext_renderer :
 	// Callback from the engine
 	void smiltext_changed();
   private:
-	void gtk_smiltext_render(const lib::rect r, ambulant_gtk_window* window);
+	void _gtk_smiltext_render(const lib::rect r, ambulant_gtk_window* window);
 //JUNK	ambulant_gtk_window* m_gtk_window;
 	std::string m_text_storage;
 	smil2::smiltext_engine m_engine;
 	const smil2::smiltext_params& m_params;
-//JUNK	bool m_render_offscreen; // True if m_params does not allow rendering in-place
+//TBD 	bool m_render_offscreen; // True if m_params does not allow rendering in-place
 	lib::timer::time_type m_epoch;
 	critical_section m_lock;
+
 // pango specific stuff
-	PangoAttrList* m_attr;
+	void _gtk_set_color_attr(lib::color_t smiltext_color,
+		PangoAttribute* (*pango_attr_color)(guint16 r,guint16 g,guint16 b),
+		unsigned int start_index, unsigned int end_index);
+	void _gtk_set_font_attr(const char* smiltext_font_family,
+		smil2::smiltext_font_style smiltext_font_style,
+		smil2::smiltext_font_weight smiltext_font_weight,
+		int smiltext_font_size,
+		unsigned int start_index, unsigned int end_index);
+
+	PangoAttrList* m_pango_attr_list;
+	PangoContext* m_context;
+	PangoLayout* m_layout;
 };
 
 } // namespace gtk
