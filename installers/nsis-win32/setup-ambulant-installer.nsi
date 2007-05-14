@@ -29,7 +29,7 @@
 ; Welcome page
 !insertmacro MUI_PAGE_WELCOME
 ; License page
-!insertmacro MUI_PAGE_LICENSE "lgpl.txt"
+!insertmacro MUI_PAGE_LICENSE "..\..\COPYING"
 ; Directory page
 !insertmacro MUI_PAGE_DIRECTORY
 ; Instfiles page
@@ -59,7 +59,7 @@ Section "MainSection" SEC01
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
   File "..\..\bin\win32\AmbulantPlayer.exe"
-;  File "..\..\bin\win32\AmbulantPlayer_shared.exe" AmbulantPlayer.exe
+;  File /ONAME=AmbulantPlayer.exe "..\..\bin\win32\AmbulantPlayer_shared.exe"
   CreateDirectory "$SMPROGRAMS\Ambulant"
   CreateDirectory "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION}"
   CreateShortCut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION}\Ambulant Player.lnk" "$INSTDIR\AmbulantPlayer.exe"
@@ -68,16 +68,25 @@ Section "MainSection" SEC01
 ;  File "..\..\bin\win32\libambulant_shwin32.dll"
 ;  File "..\..\bin\win32\libamplugin_python.dll"
   File "..\..\bin\win32\settings.xml"
+  File /ONAME=license.txt "..\..\COPYING"
+  File /ONAME=Readme.txt "..\..\README"
+  File "..\..\Documentation\user-htmlhelp\AmbulantPlayerHelp.chm"
 ; XXX Copy pyamplugin_scripting
+  SetOutPath "$INSTDIR\Extras\DTDCache"
+  File "..\..\Extras\DTDCache\mapping.txt"
+  SetOutPath "$INSTDIR\Extras\DTDCache\Smil20"
+  File "..\..\Extras\DTDCache\Smil20\*.*"
+  SetOutPath "$INSTDIR\Extras\DTDCache\Smil21"
+  File "..\..\Extras\DTDCache\Smil21\*.*"
 
   SetOutPath "$INSTDIR\Extras\DemoPresentation"
   File "..\..\Extras\DemoPresentation\*.smil"
   File "..\..\Extras\DemoPresentation\*.xml"
   File "..\..\Extras\DemoPresentation\NYC-ReadMe.txt"
   SetOutPath "$INSTDIR\Extras\DemoPresentation\NYCdata"
-  File "..\..\Extras\DemoPresentation\*.gif"
-  File "..\..\Extras\DemoPresentation\*.txt"
-  File "..\..\Extras\DemoPresentation\*.mp3"
+  File "..\..\Extras\DemoPresentation\NYCdata\*.gif"
+  File "..\..\Extras\DemoPresentation\NYCdata\*.txt"
+  File "..\..\Extras\DemoPresentation\NYCdata\*.mp3"
 
   SetOutPath "$INSTDIR\Extras\Welcome"
   File "..\..\Extras\Welcome\Welcome.smil"
@@ -85,12 +94,6 @@ Section "MainSection" SEC01
   File "..\..\Extras\Welcome\data\*.png"
   File "..\..\Extras\Welcome\data\*.mp3"
 
-  SetOutPath "$INSTDIR\Extras\DTDCache"
-  File "..\..\Extras\DTDCache\mapping.txt"
-  SetOutPath "$INSTDIR\Extras\DTDCache\Smil20"
-  File "..\..\Extras\DTDCache\Smil20\*.*"
-  SetOutPath "$INSTDIR\Extras\DTDCache\Smil21"
-  File "..\..\Extras\DTDCache\Smil21\*.*"
 
   
 ; *** The all critical MSVC7 Dependencies
@@ -111,6 +114,7 @@ Section -AdditionalIcons
   WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
   CreateShortCut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION}\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
   CreateShortCut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION}\Uninstall.lnk" "$INSTDIR\uninst.exe"
+; XXXJACK: need help, readme, demo document
 SectionEnd
 
 Section -Post
@@ -118,7 +122,7 @@ Section -Post
   WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\AmbulantPlayer.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\AMIS.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\AmbulantPlayer.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
@@ -138,71 +142,8 @@ FunctionEnd
 
 Section Uninstall
 ; XXXJack need to check the filenames here too
-  Delete "$INSTDIR\${PRODUCT_NAME}.url"
   Delete "$INSTDIR\uninst.exe"
-  Delete "$INSTDIR\settings\lang\eng-US\help\ncc.html"
-  Delete "$INSTDIR\settings\lang\eng-US\help\master.smil"
-  Delete "$INSTDIR\settings\lang\eng-US\help\img\*.*"
-  Delete "$INSTDIR\settings\lang\eng-US\help\amis*.smil"
-  Delete "$INSTDIR\settings\lang\eng-US\help\amishelp.html"
-  Delete "$INSTDIR\settings\lang\eng-US\help\*.mp3"
-  Delete "$INSTDIR\settings\lang\eng-US\audio\*.mp3"
-  Delete "$INSTDIR\settings\lang\eng-US\start\1_AMIS.mp3"
-  Delete "$INSTDIR\settings\lang\eng-US\start\amis.gif"
-  Delete "$INSTDIR\settings\lang\eng-US\start\amis-splash-screen.html"
-  Delete "$INSTDIR\settings\lang\eng-US\start\dfa-log.jpg"
-  Delete "$INSTDIR\settings\lang\eng-US\start\master.smil"
-  Delete "$INSTDIR\settings\lang\eng-US\start\ncc.html"
-  Delete "$INSTDIR\settings\lang\eng-US\start\nipponfoundation.gif"
-  Delete "$INSTDIR\settings\lang\eng-US\start\welc0001.smil"
-  Delete "$INSTDIR\settings\lang\eng-US\us_english.ico"
-  Delete "$INSTDIR\settings\lang\eng-US\moduleDesc.xml"
-  Delete "$INSTDIR\settings\lang\eng-US\thislang.mp3"
-  Delete "$INSTDIR\settings\lang\eng-US\AmisLangpack.dll"
-  Delete "$INSTDIR\settings\lang\eng-US\resource.h.ini"
-  Delete "$INSTDIR\settings\lang\eng-US\flag.ico"
-  Delete "$INSTDIR\settings\lang\eng-US\AmisAccessibleUi.xml"
-  Delete "$INSTDIR\settings\plugins\readme.txt"
-  Delete "$INSTDIR\settings\img\*.ico"
-  Delete "$INSTDIR\settings\config\amisPrefs.xml"
-  Delete "$INSTDIR\settings\config\amisRecentBooks.xml"
-  Delete "$INSTDIR\settings\bmk\readme.txt"
-  Delete "$INSTDIR\xerces-c_2_7.dll"
-  Delete "$INSTDIR\SmilEngine.dll"
-  Delete "$INSTDIR\NavParse.dll"
-  Delete "$INSTDIR\fftw3.dll"
-  Delete "$INSTDIR\audiere.dll"
-  Delete "$INSTDIR\AmisCommon.dll"
-  Delete "$INSTDIR\AmisAudio.dll"
-  Delete "$INSTDIR\AMIS.exe"
-  Delete "$INSTDIR\libambulant_shwin32.dll"
-  Delete "$INSTDIR\libamplugin_pdtb.dll"
-  Delete "$INSTDIR\amlog.txt"
-
-; XXXJack: should we unregister this? I guess so...
-  Delete "$INSTDIR\PdtbIePlugin.dll"
-
-  Delete "$INSTDIR\settings\bmk\*.bmk"
-
-  Delete "$SMPROGRAMS\AMIS\Uninstall.lnk"
-  Delete "$SMPROGRAMS\AMIS\Website.lnk"
-  Delete "$DESKTOP\AMIS.lnk"
-  Delete "$SMPROGRAMS\AMIS\AMIS.lnk"
-
-  RMDir "$SMPROGRAMS\AMIS"
-  RMDir "$INSTDIR\settings\lang\eng-US\help\img"
-  RMDir "$INSTDIR\settings\lang\eng-US\help"
-  RMDir "$INSTDIR\settings\lang\eng-US\audio"
-  RMDir "$INSTDIR\settings\lang\eng-US\start"
-  RMDir "$INSTDIR\settings\lang\eng-US"
-  RMDir "$INSTDIR\settings\lang"
-  RMDir "$INSTDIR\settings\plugins"
-  RMDir "$INSTDIR\settings\img"
-  RMDir "$INSTDIR\settings\config"
-  RMDir "$INSTDIR\settings\bmk"
-  RMDir "$INSTDIR\settings"
-  RMDir "$INSTDIR"
-
+ 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
   SetAutoClose true
