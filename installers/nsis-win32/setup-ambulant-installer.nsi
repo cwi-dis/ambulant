@@ -70,7 +70,9 @@ Section "MainSection" SEC01
   File "..\..\bin\win32\settings.xml"
   File /ONAME=license.txt "..\..\COPYING"
   File /ONAME=Readme.txt "..\..\README"
+  CreateShortcut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION}\Read Me.lnk" "$INSTDIR\Readme.txt"
   File "..\..\Documentation\user-htmlhelp\AmbulantPlayerHelp.chm"
+  CreateShortcut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION}\Documentation.lnk" "$INSTDIR\AmbulantPlayerHelp.chm"
 ; XXX Copy pyamplugin_scripting
   SetOutPath "$INSTDIR\Extras\DTDCache"
   File "..\..\Extras\DTDCache\mapping.txt"
@@ -79,23 +81,12 @@ Section "MainSection" SEC01
   SetOutPath "$INSTDIR\Extras\DTDCache\Smil21"
   File "..\..\Extras\DTDCache\Smil21\*.*"
 
-  SetOutPath "$INSTDIR\Extras\DemoPresentation"
-  File "..\..\Extras\DemoPresentation\*.smil"
-  File "..\..\Extras\DemoPresentation\*.xml"
-  File "..\..\Extras\DemoPresentation\NYC-ReadMe.txt"
-  SetOutPath "$INSTDIR\Extras\DemoPresentation\NYCdata"
-  File "..\..\Extras\DemoPresentation\NYCdata\*.gif"
-  File "..\..\Extras\DemoPresentation\NYCdata\*.txt"
-  File "..\..\Extras\DemoPresentation\NYCdata\*.mp3"
-
   SetOutPath "$INSTDIR\Extras\Welcome"
   File "..\..\Extras\Welcome\Welcome.smil"
   SetOutPath "$INSTDIR\Extras\Welcome\data"
   File "..\..\Extras\Welcome\data\*.png"
   File "..\..\Extras\Welcome\data\*.mp3"
 
-
-  
 ; *** The all critical MSVC7 Dependencies
 ; *** Ideally this list is complete?
 
@@ -107,6 +98,18 @@ Section "MainSection" SEC01
   File "${BUILD_SYSDIR}\msvcrt.dll"
   File "${BUILD_SYSDIR}\mfc71u.dll"
   File "${BUILD_SYSDIR}\MFC71ENU.DLL"
+SectionEnd
+
+Section DemoPresentation
+  SetOutPath "$INSTDIR\Extras\DemoPresentation"
+  File "..\..\Extras\DemoPresentation\*.smil"
+  File "..\..\Extras\DemoPresentation\*.xml"
+  File "..\..\Extras\DemoPresentation\NYC-ReadMe.txt"
+  SetOutPath "$INSTDIR\Extras\DemoPresentation\NYCdata"
+  File "..\..\Extras\DemoPresentation\NYCdata\*.gif"
+  File "..\..\Extras\DemoPresentation\NYCdata\*.txt"
+  File "..\..\Extras\DemoPresentation\NYCdata\*.mp3"
+  CreateShortcut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION}\Demo Presentation.lnk" "$INSTDIR\Extras\DemoPresentation\NYC-SMIL2.smil"
 SectionEnd
 
 Section -AdditionalIcons
