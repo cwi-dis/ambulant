@@ -27,18 +27,20 @@
 !define MUI_UNICON "AmbulantUninstallerIcon.ico"
 !define MUI_WELCOMEFINISHPAGE_BITMAP "image.bmp"
 
-
-; Welcome page
+; These macros define which pages the installer will have.
+;
+; The Welcome page
 !insertmacro MUI_PAGE_WELCOME
 ; License page
 !insertmacro MUI_PAGE_LICENSE "..\..\COPYING"
+; Component selection page
+!insertmacro MUI_PAGE_COMPONENTS
 ; Directory page
 !insertmacro MUI_PAGE_DIRECTORY
 ; Instfiles page
 !insertmacro MUI_PAGE_INSTFILES
 ; Finish page
-; XXXJack
-; !define MUI_FINISHPAGE_RUN "$INSTDIR\AmbulantPlayer.exe"
+!define MUI_FINISHPAGE_RUN "$INSTDIR\AmbulantPlayer.exe"
 !insertmacro MUI_PAGE_FINISH
 
 ; Uninstaller pages
@@ -47,6 +49,8 @@
 ; Language files
 !insertmacro MUI_LANGUAGE "English"
 
+; Also see the very end of the file, where the MUI descriptions are
+; defined.
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
@@ -56,7 +60,7 @@ InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
 
-Section "MainSection" SEC01
+Section "Core Components" CoreSection
 
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
@@ -102,7 +106,7 @@ Section "MainSection" SEC01
   File "${BUILD_SYSDIR}\MFC71ENU.DLL"
 SectionEnd
 
-Section DemoPresentation
+Section "Demo Presentation" DemoSection
   SetOutPath "$INSTDIR\Extras\DemoPresentation"
   File "..\..\Extras\DemoPresentation\*.smil"
   File "..\..\Extras\DemoPresentation\*.xml"
@@ -154,3 +158,14 @@ Section Uninstall
   SetAutoClose true
   
 SectionEnd
+
+; And define the text for the "description" boxes in the selection
+; page.
+
+LangString DESC_CoreSection ${LANG_ENGLISH} "The player, help files, readme and other required components."
+LangString DESC_DemoSection ${LANG_ENGLISH} "A simple slideshow example document."
+
+!insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
+ !insertmacro MUI_DESCRIPTION_TEXT ${CoreSection} $(DESC_CoreSection)
+ !insertmacro MUI_DESCRIPTION_TEXT ${DemoSection} $(DESC_DemoSection)
+!insertmacro MUI_FUNCTION_DESCRIPTION_END
