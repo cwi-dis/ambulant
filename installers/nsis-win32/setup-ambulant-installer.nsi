@@ -14,16 +14,18 @@
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
 ; Where the system directory is on the machine where we are building the installer
-!define BUILD_SYSDIR "C:\WINDOWS\system32"  ; Most machines
-; !define BUILD_SYSDIR "E:\WINNT\system32"   ; Jack's CWI desktop machine
+
+; !define BUILD_SYSDIR "C:\WINDOWS\system32"  ; Most machines
+!define BUILD_SYSDIR "E:\WINNT\system32"   ; Jack's CWI desktop machine
 
 ; MUI 1.67 compatible ------
 !include "MUI.nsh"
 
 ; MUI Settings
 !define MUI_ABORTWARNING
-!define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\modern-install.ico"
-!define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
+!define MUI_ICON "AmbulantInstallerIcon.ico"
+!define MUI_UNICON "AmbulantUninstallerIcon.ico"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "image.bmp"
 
 
 ; Welcome page
