@@ -32,4 +32,7 @@ REM Xerces lib, if it exists
 set XER_BUILD=%TPP_HOME%\xerces-c-src_2_7_0\Build\Win32\VC7.1\Release
 if exist %XER_BUILD% copy %XER_BUILD%\xerces-c_2.lib %AMB_HOME%\lib\win32\xerces-c_2.lib
 if exist %XER_BUILD% copy %XER_BUILD%\xerces-c_2_7.dll %AMB_HOME%\bin\win32\xerces-c_2_7.dll
+set XER_BUILD=%TPP_HOME%\xerces-c-src_2_7_0\Build\Win32\VC7.1\Debug
+if exist %XER_BUILD% copy %XER_BUILD%\xerces-c_2D.lib %AMB_HOME%\lib\win32\xerces-c_2D.lib
+if exist %XER_BUILD% copy %XER_BUILD%\xerces-c_2_7D.dll %AMB_HOME%\bin\win32\xerces-c_2_7D.dll
 @echo on
