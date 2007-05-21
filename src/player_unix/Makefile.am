@@ -90,9 +90,8 @@ if WITH_QTOPIA
 qt_libs=-L$(QT_PREFIX)/lib -lqpe -lqte
 qt_includes=-I$(QT_PREFIX)/include -I$(QT_PREFIX)/include/qpe
 else
-qt_includes=-I$(QT_PREFIX)/include				
-#qt_libs=-L$(QT_PREFIX)/lib -lqt
-qt_libs=-L$(QT_PREFIX)/lib -lqt-mt
+qt_includes=$(LIBQT_INCLUDES)
+qt_libs=$(LIBQT_LIBS)
 endif
 
 LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_qt.a	\

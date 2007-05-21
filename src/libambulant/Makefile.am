@@ -87,7 +87,7 @@ endif
 
 if WITH_QT
 toolkit_qt_libraries = libambulant_qt.la
-qtincludes = -I$(QT_PREFIX)/include
+qtincludes = $(LIBQT_INCLUDES)
 
 libambulant_qt_la_SOURCES = 		\
 	gui/qt/qt_renderer.cpp		\
