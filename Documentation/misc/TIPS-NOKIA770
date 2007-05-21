@@ -2,14 +2,18 @@ Here are some pointers how to work with Nokia 770 (2006 Software Edition).
 
 1. For software development, you need a Linux box with root access, download
    and install scratxhbox as described in: 
-   http://www.maemo.org/platform/docs/tutorials/Maemo_tutorial.html
+   http://maemo.org/development/sdks/maemo-3-x--bora-.html
+   Use the following installers scripts found there in this order:
+   - Scratbox installer script
+   - SDK installer script
+
    For the scratchbox to work, I had to boot FC5 kernel and as root:
    # echo 0 > /proc/sys/kernel/vdso
 
 2. Other useful material is found in:
-   http://www.maemo.org/platform/docs/how-to.html
+   http://maemo.org/development/documentation/tutorials/Maemo_tutorial_bora.html
    and 
-   http://maemo.org/maemowiki/FrequentlyAskedQuestions
+   http://maemo.org/development/documentation/how-tos/3-x/
 
 3. Creation of a web-installable debian package for the
    Nokia 770/800 (OS2006/OS2007 Software Edition).
