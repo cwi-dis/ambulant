@@ -22,7 +22,6 @@
     <par id="AdvancedPPCSlideshow">
       <audio id="NYStateOfMind" region="audio_2" src="NYCdata/NYStateOfMind.mp3" systemComponent="multiChannelAudio"/>
       <seq id="ImagesAndAudioSequence">
-<!--
         <par id="ImageTextAudio" dur="8s">
           <img id="TitleA" region="Images" dur="8s" fill="transition" src="NYCdata/TitleA.gif"/>
           <audio id="Welcome" region="audio_1" begin="0" src="NYCdata/Welcome.mp3"/>
@@ -37,13 +36,14 @@
             We start our tour with a ride on the famous Staten Island Ferry.
           </smiltext>
         </par>
- -->
-       <par id="ImageTextAudio-1">
+<!--
+        <par id="ImageTextAudio-1">
           <img id="TitleB" region="Images" dur="5s" src="NYCdata/TitleB.gif" transIn="fade"/>
           <audio id="SIF-Intro" region="audio_1" src="NYCdata/SIF-Intro.mp3"/>
           <text id="CapF0" region="Captions" dur="5s"
 		src="data:,We start our tour with a ride on the famous Staten Island Ferry."/>
         </par>
+ -->
         <par id="ImageTextAudio-2">
           <img id="Ferry1" region="Images" dur="5s" src="NYCdata/Ferry1.gif" transIn="fade"/>
           <smiltext id="CapF1" region="Captions" dur="5s"  textFontFamily="roman" >
@@ -90,7 +90,7 @@
         </par>
         <par id="ImageTextAudio-4">
           <img id="Ferry3" region="Images" dur="5s" src="NYCdata/Ferry3.gif"/>
-          <smiltext id="CapF3" region="Captions" dur="5s" textMode="scroll" textRate="20">
+          <smiltext id="CapF3" region="Captions" dur="5s" textMode="scroll" textRate="10">
             <span textColor="red">The <span textFontSize="x-large">engines </span> start</span>
             and all of the lines seem to move in different directions.
           </smiltext>

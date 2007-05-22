@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2007-02-21 11:39+0100\n"
+"POT-Creation-Date: 2007-05-21 16:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,28 +20,34 @@ msgstr ""
 msgid "Cannot play document: no player"
 msgstr ""
 
-#: src/libambulant/common/plugin_engine.cpp:79
+#: src/libambulant/common/gui_player.cpp:264
+#, c-format
+msgid "%s: Requires unavailable features, will attempt to continue anyway"
+msgstr ""
+
+#: src/libambulant/common/plugin_engine.cpp:83
 msgid "Plugin loader encountered problem: plugins disabled"
 msgstr ""
 
-#: src/libambulant/common/plugin_engine.cpp:206
-#: src/libambulant/common/plugin_engine.cpp:217
-#: src/libambulant/common/plugin_engine.cpp:265
+#: src/libambulant/common/plugin_engine.cpp:193
+#: src/libambulant/common/plugin_engine.cpp:204
+#: src/libambulant/common/plugin_engine.cpp:304
 #, c-format
 msgid "Plugin skipped due to errors: %s "
 msgstr ""
 
-#: src/libambulant/common/plugin_engine.cpp:245
-#, c-format
-msgid "Error reading plugin directory: %s: 0x%x"
-msgstr ""
-
-#: src/libambulant/common/plugin_engine.cpp:277
+#: src/libambulant/common/plugin_engine.cpp:316
 #, c-format
 msgid "Plugin skipped due to errors: %s"
 msgstr ""
 
-#: src/libambulant/common/region.cpp:741 src/libambulant/common/region.cpp:752
+#: src/libambulant/common/plugin_engine.cpp:335
+#: src/libambulant/common/plugin_engine.cpp:370
+#, c-format
+msgid "Error reading plugin directory: %s: 0x%x"
+msgstr ""
+
+#: src/libambulant/common/region.cpp:761 src/libambulant/common/region.cpp:772
 #: src/libambulant/lib/parselets.cpp:380
 msgid "Programmer error encountered, will attempt to continue"
 msgstr ""
@@ -78,13 +84,13 @@ msgstr ""
 msgid "%s: cannot open"
 msgstr ""
 
-#: src/libambulant/lib/document.cpp:94 src/libambulant/lib/document.cpp:128
-#: src/libambulant/lib/document.cpp:147 src/libambulant/lib/document.cpp:160
+#: src/libambulant/lib/document.cpp:104 src/libambulant/lib/document.cpp:138
+#: src/libambulant/lib/document.cpp:157 src/libambulant/lib/document.cpp:170
 #, c-format
 msgid "%s: Not a SMIL document"
 msgstr ""
 
-#: src/libambulant/lib/document.cpp:115 src/libambulant/lib/document.cpp:142
+#: src/libambulant/lib/document.cpp:125 src/libambulant/lib/document.cpp:152
 #, c-format
 msgid "%s: Not a valid XML document"
 msgstr ""
@@ -123,12 +129,12 @@ msgstr ""
 msgid "Could not create any XML parser (configuration error?)"
 msgstr ""
 
-#: src/libambulant/lib/tree_builder.cpp:233
+#: src/libambulant/lib/tree_builder.cpp:250
 #, c-format
 msgid "%s: Error parsing document"
 msgstr ""
 
-#: src/libambulant/lib/xerces_parser.cpp:143
+#: src/libambulant/lib/xerces_parser.cpp:144
 #, c-format
 msgid "%s: Unexpected exception during parsing"
 msgstr ""
@@ -164,28 +170,28 @@ msgstr ""
 msgid "MMS Player: dur attribute must be of form \"1000ms\""
 msgstr ""
 
-#: src/libambulant/net/datasource.cpp:352
+#: src/libambulant/net/datasource.cpp:353
 #, c-format
 msgid "%s: Cannot open, not supported by any datasource"
 msgstr ""
 
-#: src/libambulant/net/datasource.cpp:398
+#: src/libambulant/net/datasource.cpp:399
 #, c-format
 msgid "%s: Cannot open, no compatible parser"
 msgstr ""
 
-#: src/libambulant/net/datasource.cpp:417
-#: src/libambulant/net/datasource.cpp:442
+#: src/libambulant/net/datasource.cpp:418
+#: src/libambulant/net/datasource.cpp:443
 #, c-format
 msgid "%s: Cannot open, cannot find conversion filter"
 msgstr ""
 
-#: src/libambulant/net/datasource.cpp:457
+#: src/libambulant/net/datasource.cpp:458
 #, c-format
 msgid "%s: Cannot open, not supported by any video datasource"
 msgstr ""
 
-#: src/libambulant/net/datasource.cpp:538
+#: src/libambulant/net/datasource.cpp:539
 msgid "datasource_reader: out of memory"
 msgstr ""
 
@@ -271,7 +277,7 @@ msgid "No support for \"%s\" video"
 msgstr ""
 
 #: src/libambulant/net/posix_datasource.cpp:175
-#: src/libambulant/net/stdio_datasource.cpp:169
+#: src/libambulant/net/stdio_datasource.cpp:171
 #, c-format
 msgid "Error encountered while reading file %s"
 msgstr ""
@@ -295,9 +301,9 @@ msgid "Error in SMIL animation"
 msgstr ""
 
 #: src/libambulant/smil2/region_node.cpp:72
-#: src/libambulant/smil2/smil_layout.cpp:509
-#: src/libambulant/smil2/smil_layout.cpp:563
-#: src/libambulant/smil2/smil_layout.cpp:581
+#: src/libambulant/smil2/smil_layout.cpp:510
+#: src/libambulant/smil2/smil_layout.cpp:564
+#: src/libambulant/smil2/smil_layout.cpp:582
 msgid "Syntax error in SMIL document"
 msgstr ""
 
@@ -312,7 +318,7 @@ msgstr ""
 #: src/libambulant/smil2/smil_layout.cpp:106
 #: src/libambulant/smil2/smil_layout.cpp:122
 #: src/libambulant/smil2/smil_layout.cpp:143
-#: src/libambulant/smil2/smil_layout.cpp:329
+#: src/libambulant/smil2/smil_layout.cpp:330
 msgid "Problem with layout in SMIL document"
 msgstr ""
 
@@ -320,16 +326,25 @@ msgstr ""
 msgid "Document has no <body> section, nothing to play"
 msgstr ""
 
-#: src/libambulant/smil2/smil_layout.cpp:446
+#: src/libambulant/smil2/smil_layout.cpp:447
 msgid "Programmer error encountered, attempting to continue"
 msgstr ""
 
-#: src/libambulant/smil2/smil_player.cpp:765
+#: src/libambulant/smil2/smil_player.cpp:168
+msgid "Document uses state, but no scripting support configured"
+msgstr ""
+
+#: src/libambulant/smil2/smil_player.cpp:173
+#, c-format
+msgid "No scripting support for language %s"
+msgstr ""
+
+#: src/libambulant/smil2/smil_player.cpp:814
 #, c-format
 msgid "Link destination not found: %s"
 msgstr ""
 
-#: src/libambulant/smil2/smil_player.cpp:771
+#: src/libambulant/smil2/smil_player.cpp:820
 #, c-format
 msgid "This implementation cannot open <%s> in new window"
 msgstr ""
@@ -345,7 +360,7 @@ msgstr ""
 msgid "Programmer error, attempting to continue"
 msgstr ""
 
-#: src/libambulant/smil2/test_attrs.cpp:265
+#: src/libambulant/smil2/test_attrs.cpp:280
 #, c-format
 msgid "While loading settings: %s: Could not create DOM tree"
 msgstr ""
@@ -355,29 +370,30 @@ msgstr ""
 #: src/libambulant/smil2/time_attrs.cpp:170
 #: src/libambulant/smil2/time_attrs.cpp:196
 #: src/libambulant/smil2/time_attrs.cpp:225
-#: src/libambulant/smil2/time_attrs.cpp:281
-#: src/libambulant/smil2/time_attrs.cpp:361
-#: src/libambulant/smil2/time_attrs.cpp:417
-#: src/libambulant/smil2/time_attrs.cpp:439
-#: src/libambulant/smil2/time_attrs.cpp:453
-#: src/libambulant/smil2/time_attrs.cpp:486
+#: src/libambulant/smil2/time_attrs.cpp:285
+#: src/libambulant/smil2/time_attrs.cpp:317
+#: src/libambulant/smil2/time_attrs.cpp:391
+#: src/libambulant/smil2/time_attrs.cpp:447
+#: src/libambulant/smil2/time_attrs.cpp:469
+#: src/libambulant/smil2/time_attrs.cpp:483
+#: src/libambulant/smil2/time_attrs.cpp:516
 msgid "Error in SMIL timing info in document"
 msgstr ""
 
-#: src/libambulant/smil2/time_attrs.cpp:292
+#: src/libambulant/smil2/time_attrs.cpp:296
 msgid "Ignoring wallclock in document"
 msgstr ""
 
-#: src/libambulant/smil2/time_attrs.cpp:303
-#: src/libambulant/smil2/time_attrs.cpp:312
-#: src/libambulant/smil2/time_attrs.cpp:327
+#: src/libambulant/smil2/time_attrs.cpp:333
+#: src/libambulant/smil2/time_attrs.cpp:342
+#: src/libambulant/smil2/time_attrs.cpp:357
 msgid "Error in SMIL interaction info in document"
 msgstr ""
 
-#: src/libambulant/smil2/time_attrs.cpp:605
-#: src/libambulant/smil2/time_attrs.cpp:611
-#: src/libambulant/smil2/time_attrs.cpp:622
-#: src/libambulant/smil2/time_attrs.cpp:627
+#: src/libambulant/smil2/time_attrs.cpp:635
+#: src/libambulant/smil2/time_attrs.cpp:641
+#: src/libambulant/smil2/time_attrs.cpp:652
+#: src/libambulant/smil2/time_attrs.cpp:657
 msgid "Error in SMIL transition info in document"
 msgstr ""
 
@@ -832,16 +848,16 @@ msgstr ""
 msgid "Out of memory while showing video"
 msgstr ""
 
-#: src/libambulant/gui/cocoa/cocoa_gui.mm:231
+#: src/libambulant/gui/cocoa/cocoa_gui.mm:237
 msgid "Unsupported: AmbulantPlayer cannot open second toplevel window yet"
 msgstr ""
 
-#: src/libambulant/gui/cocoa/cocoa_video.mm:131
+#: src/libambulant/gui/cocoa/cocoa_video.mm:133
 #, c-format
 msgid "%s: cannot convert to URL"
 msgstr ""
 
-#: src/libambulant/gui/cocoa/cocoa_video.mm:142
+#: src/libambulant/gui/cocoa/cocoa_video.mm:144
 #, c-format
 msgid "%s: cannot open movie"
 msgstr ""
@@ -869,7 +885,7 @@ msgstr ""
 msgid "Cannot open http://www.ambulantplayer.org"
 msgstr ""
 
-#: src/player_macosx/MyDocument.mm:60 src/player_macosx/MyDocument.mm:83
+#: src/player_macosx/MyDocument.mm:60 src/player_macosx/MyDocument.mm:92
 #, c-format
 msgid "Cannot open: %s"
 msgstr ""

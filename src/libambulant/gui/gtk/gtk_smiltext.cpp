@@ -163,36 +163,33 @@ gtk_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	m_lock.enter();
 	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
-	_gtk_smiltext_render(r, (ambulant_gtk_window*)window);
-#ifdef	JUNK
 	// Determine current position and size.
-	gtk_window *cwindow = (gtk_window *)window;
-	AmbulantView *view = (AmbulantView *)cwindow->view();
-	rect dstrect = r;
-	dstrect.translate(m_dest->get_global_topleft());
-	NSRect gtk_dstrect = [view NSRectForAmbulantRect: &dstrect];
-	NSPoint visible_origin = NSMakePoint(NSMinX(gtk_dstrect), NSMinY(gtk_dstrect));
-	NSSize visible_size = NSMakeSize(NSWidth(gtk_dstrect), NSHeight(gtk_dstrect));
+	ambulant_gtk_window *cwindow = (ambulant_gtk_window *)window;
+	rect dst_rect = r;
+	dst_rect.translate(m_dest->get_global_topleft());
+	lib::point visible_origin(dst_rect.x, dst_rect.y);
+	lib::size visible_size(dst_rect.w, dst_rect.h);
 
 // Determine text container layout size. This depends on the type of container.
 #define INFINITE_WIDTH 1000000
 #define INFINITE_HEIGHT 1000000
-	NSSize layout_size = visible_size;
+	lib::size layout_size = visible_size;
 	switch(m_params.m_mode) {
 	case smil2::stm_replace:
 	case smil2::stm_append:
 		if (!m_params.m_wrap)
-			layout_size.width = INFINITE_WIDTH;
+			layout_size.w = INFINITE_WIDTH;
 		break;
 	case smil2::stm_scroll:
 	case smil2::stm_jump:
-		layout_size.height = INFINITE_HEIGHT;
+		layout_size.h = INFINITE_HEIGHT;
 		break;
 	case smil2::stm_crawl:
-		layout_size.width = INFINITE_WIDTH;
+		layout_size.w = INFINITE_WIDTH;
 		break;
 	}
-
+	AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw: layout_size(%d,%d), visible_size(%d,%d)", layout_size.w, layout_size.h, visible_size.w, visible_size.h);
+#ifdef	JUNK
 	NSSize old_layout_size;
 	// Initialize the text engine if we have not already done so.
 	if (!m_layout_manager) {
@@ -220,6 +217,9 @@ gtk_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 
 	// Next compute the layout position of what we want to draw at visible_origin
 	NSPoint logical_origin = NSMakePoint(0, 0);
+#endif	//JUNK
+	// Next compute the layout position of what we want to draw at visible_origin
+	lib::point logical_origin(0, 0);
 	if (m_params.m_mode == smil2::stm_crawl) {
 		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
 		logical_origin.x += now * m_params.m_rate / 1000;
@@ -230,7 +230,8 @@ gtk_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 		logical_origin.y += now * m_params.m_rate / 1000;
 		visible_origin.y -= now * m_params.m_rate / 1000;
 	}
-	AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw at Gtk-point (%f, %f)", visible_origin.x, visible_origin.y);
+	AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw: logical_origin(%d,%d), visible_origin(%d,%d)", logical_origin.x, logical_origin.y, visible_origin.x, visible_origin.y);
+#ifdef	JUNK
 	if (m_render_offscreen) {
 	}
 #if 0
@@ -266,6 +267,8 @@ gtk_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	if (m_render_offscreen) {
 	}
 #endif//JUNK
+
+	_gtk_smiltext_render(r, logical_origin,(ambulant_gtk_window*)window);
 	m_lock.leave();
 }
 
@@ -343,7 +346,7 @@ gtk_smiltext_renderer::_gtk_set_color_attr(lib::color_t smiltext_color,
 }
 		   
 void
-gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, ambulant_gtk_window* window )
+gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point offset, ambulant_gtk_window* window )
 {
 	const lib::point p = m_dest->get_global_topleft();
         const char* data = m_text_storage.c_str();
@@ -359,10 +362,18 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, ambulant_gtk_wind
 		    W = r.width(),
 		    H = r.height();
 		GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (window->get_ambulant_pixmap()));
+		if (offset.x || offset.y) {
+			GdkRectangle gdk_rectangle;(L, T, W, H);
+			gdk_rectangle.x = L;
+			gdk_rectangle.y = T;
+			gdk_rectangle.width = W;
+			gdk_rectangle.height = H;
+			gdk_gc_set_clip_rectangle(gc, &gdk_rectangle);
+		}
 		// include the text
 		pango_layout_set_width(m_layout, W*1000);
   		gdk_draw_layout(GDK_DRAWABLE (window->get_ambulant_pixmap()),
-				gc , L, T, m_layout);
+				gc , L-offset.x, T-offset.y, m_layout);
 		g_object_unref (G_OBJECT (gc));
 	}
 }

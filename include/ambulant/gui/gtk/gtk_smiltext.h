@@ -60,7 +60,7 @@ class gtk_smiltext_renderer :
 	// Callback from the engine
 	void smiltext_changed();
   private:
-	void _gtk_smiltext_render(const lib::rect r, ambulant_gtk_window* window);
+	void _gtk_smiltext_render(const lib::rect r, const lib::point offset, ambulant_gtk_window* window);
 //JUNK	ambulant_gtk_window* m_gtk_window;
 	std::string m_text_storage;
 	smil2::smiltext_engine m_engine;
