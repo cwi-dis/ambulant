@@ -894,9 +894,9 @@ then
            PYTHON_LIBS="-framework Python"
            ;;
        *)
-           pylibdir=`python -c 'from distutils.sysconfig import *; print parse_makefile(get_makefile_filename()).get("LIBDIR")'`
+           pylibdir=`python -c 'from distutils.sysconfig import *; print parse_makefile(get_makefile_filename()).get("LIBPL")'`
            pyversion=`python -c 'import distutils.sysconfig ; print distutils.sysconfig.get_python_version()'`
-           PYTHON_LIBS="-L${libdir} -lpython${pyversion}"
+           PYTHON_LIBS="-L${libdir} -L${pylibdir} -lpython${pyversion}"
            ;;
        esac
 	fi

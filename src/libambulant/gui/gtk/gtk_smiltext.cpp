@@ -222,13 +222,13 @@ gtk_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	lib::point logical_origin(0, 0);
 	if (m_params.m_mode == smil2::stm_crawl) {
 		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
-		logical_origin.x += now * m_params.m_rate / 1000;
-		visible_origin.x -= now * m_params.m_rate / 1000;
+		logical_origin.x += (int) now * m_params.m_rate / 1000;
+		visible_origin.x -= (int) now * m_params.m_rate / 1000;
 	}
 	if (m_params.m_mode == smil2::stm_scroll) {
 		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
-		logical_origin.y += now * m_params.m_rate / 1000;
-		visible_origin.y -= now * m_params.m_rate / 1000;
+		logical_origin.y += (int) now * m_params.m_rate / 1000;
+		visible_origin.y -= (int) now * m_params.m_rate / 1000;
 	}
 	AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw: logical_origin(%d,%d), visible_origin(%d,%d)", logical_origin.x, logical_origin.y, visible_origin.x, visible_origin.y);
 #ifdef	JUNK

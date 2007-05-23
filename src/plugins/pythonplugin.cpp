@@ -134,15 +134,17 @@ void initialize(
         if (last_dot != std::string::npos) {
             modname = modname.substr(0, last_dot);
         }
-	    // Step 4 - Add directory to sys.path
-	    PyObject *dirname_obj = PyString_FromString(dirname.c_str());
-	    if (!PySequence_Contains(sys_path, dirname_obj))
-	        if (PyList_Append(sys_path, dirname_obj) <= 0)
-	            lib::logger::get_logger()->trace("python_plugin: could not append \"%s\" to sys.path", dirname.c_str());
-	    Py_DECREF(dirname_obj);
+	// Step 4 - Add directory to sys.path
+	PyObject *dirname_obj = PyString_FromString(dirname.c_str());
+	if (!PySequence_Contains(sys_path, dirname_obj))
+	    if (PyList_Append(sys_path, dirname_obj) <= 0)
+	        lib::logger::get_logger()->trace("python_plugin: could not append \"%s\" to sys.path", dirname.c_str());
+	Py_DECREF(dirname_obj);
 	    
-	    // Step 5 - Import the module
-        mod = PyImport_ImportModule(modname.c_str());
+	// Step 5 - Import the module
+	char* module_name = strdup(modname.c_str());
+        mod = PyImport_ImportModule(module_name);
+	free (module_name);
         if (mod == NULL) {
             PyErr_Print();
             lib::logger::get_logger()->trace("python_plugin: plugin file %s", (*i).c_str());
