@@ -142,9 +142,7 @@ void initialize(
 	Py_DECREF(dirname_obj);
 	    
 	// Step 5 - Import the module
-	char* module_name = strdup(modname.c_str());
-        mod = PyImport_ImportModule(module_name);
-	free (module_name);
+        mod = PyImport_ImportModule(const_cast<char*>(modname.c_str()));
         if (mod == NULL) {
             PyErr_Print();
             lib::logger::get_logger()->trace("python_plugin: plugin file %s", (*i).c_str());
