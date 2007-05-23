@@ -164,7 +164,9 @@ class renderer_playable_dsall : public renderer_playable_ds {
 		common::factories *factory)
 	:	renderer_playable_ds(context, cookie, node, evp, factory),
 		m_data(NULL),
-		m_data_size(0) {};
+		m_data_size(0),
+		m_partial_data(NULL),
+		m_partial_data_size(0) {};
 	virtual ~renderer_playable_dsall();
 	
 	virtual void seek(double t) {}  // Assume dsall playables are images and such
@@ -172,6 +174,9 @@ class renderer_playable_dsall : public renderer_playable_ds {
 	void readdone();
 	void *m_data;			///< The data to be rendered.
 	unsigned m_data_size;	///< The size of m_data.
+  private:
+	void *m_partial_data;	///< The data while it is being read.
+	unsigned m_partial_data_size;	///< Size of the above.
 };
 
 /// Implementation of playable_factory.

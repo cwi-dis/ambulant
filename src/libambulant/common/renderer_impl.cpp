@@ -210,6 +210,7 @@ renderer_playable_ds::stop()
 renderer_playable_dsall::~renderer_playable_dsall()
 {
 	if (m_data) free(m_data);
+	if (m_partial_data) free(m_partial_data);
 }
 
 void
@@ -219,12 +220,12 @@ renderer_playable_dsall::readdone()
 	unsigned cur_size = m_src->size();
 	AM_DBG lib::logger::get_logger()->debug("renderer_playable_dsall.readdone(0x%x, size=%d) cookie=%d", (void *)this, cur_size, m_cookie);
 	
-	if (!m_data)
-		m_data = malloc(cur_size);
+	if (!m_partial_data)
+		m_partial_data = malloc(cur_size);
 	else
-		m_data = realloc(m_data, m_data_size + cur_size);
+		m_partial_data = realloc(m_partial_data, m_partial_data_size + cur_size);
 	
-	if (m_data == NULL) {
+	if (m_partial_data == NULL) {
 		lib::logger::get_logger()->fatal("renderer_playable_dsall.readdone: cannot allocate %d bytes", cur_size);
 		// What else can we do...
 		m_context->stopped(m_cookie, 0);
@@ -232,13 +233,17 @@ renderer_playable_dsall::readdone()
 	AM_DBG lib::logger::get_logger()->debug("renderer_playable_dsall.readdone(0x%x): calling m_src->get_read_ptr() m_src=0x%x", (void *)this,m_src);
 	char *cur_data = m_src->get_read_ptr();
 
-	memcpy((char *)m_data + m_data_size, cur_data, cur_size);
-	m_data_size += cur_size;
-	AM_DBG lib::logger::get_logger()->debug("renderer_playable_dsall.readdone(0x%x): calling m_src->readdone(%d)", (void *)this,m_data_size);
+	memcpy((char *)m_partial_data + m_partial_data_size, cur_data, cur_size);
+	m_partial_data_size += cur_size;
+	AM_DBG lib::logger::get_logger()->debug("renderer_playable_dsall.readdone(0x%x): calling m_src->readdone(%d)", (void *)this,cur_size);
 	m_src->readdone(cur_size);
 	
 	if (m_src->end_of_file()) {
-		// All done
+		// All done. Move staging area data to the real place.
+		assert(!m_data);
+		m_data_size = m_partial_data_size;
+		m_data = m_partial_data;
+		m_partial_data = NULL;
 		AM_DBG lib::logger::get_logger()->debug("renderer_playable_dsall.readdone(0x%x):  all done, calling need_redraw() and stopped_callback", (void *)this);
 		if (m_dest)
 			m_dest->need_redraw();
