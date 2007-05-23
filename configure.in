@@ -883,7 +883,7 @@ then
 		AC_MSG_ERROR("--with-python-plugin requires --with-python")
 		with_python_plugin=false
 	else
-	   PYTHON_INCLUDES=-I`python -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc()"`
+	   PYTHON_INCLUDES=-I`$PYTHON -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc()"`
        # Trick to determine whether we're using a Mac framework build, in which
        # case we need to specify the library differently.
        case x$PYTHON_INCLUDES in
@@ -894,8 +894,8 @@ then
            PYTHON_LIBS="-framework Python"
            ;;
        *)
-           pylibdir=`python -c 'from distutils.sysconfig import *; print parse_makefile(get_makefile_filename()).get("LIBPL")'`
-           pyversion=`python -c 'import distutils.sysconfig ; print distutils.sysconfig.get_python_version()'`
+           pylibdir=`$PYTHON -c 'from distutils.sysconfig import *; print parse_makefile(get_makefile_filename()).get("LIBPL")'`
+           pyversion=`$PYTHON -c 'import distutils.sysconfig ; print distutils.sysconfig.get_python_version()'`
            PYTHON_LIBS="-L${libdir} -L${pylibdir} -lpython${pyversion}"
            ;;
        esac
