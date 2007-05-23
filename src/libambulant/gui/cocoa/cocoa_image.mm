@@ -23,9 +23,7 @@
 
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 #include "ambulant/gui/cocoa/cocoa_image.h"
-//#include "ambulant/gui/cocoa/cocoa_transition.h"
-//#include "ambulant/common/region_info.h"
-//#include "ambulant/common/smil_alignment.h"
+#include "ambulant/common/region_dim.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -102,8 +100,31 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 		m_lock.leave();
 		return;
 	}
+#ifdef WITH_SMIL30
+	rect croprect(point(0,0), srcsize);
+	// XXX Note: this code does not take animation into account, yet.
+	const char *cropinfo = m_node->get_attribute("viewBox");
+	if (cropinfo && srcsize.w && srcsize.h) {
+		// Get the viewbox and convert any relative coordinates to absolute.
+		common::region_dim_spec rds(cropinfo, "viewBoxRect");
+		rds.convert(croprect);
+		// Unfortunately (well, for us, in this case) Cocoa does some magic scaling on the image.
+		// I.e. [m_image size] can lie about the size. We have to adjust our coordinates too.
+		NSImageRep *bestrep = [m_image bestRepresentationForDevice: nil];
+		double x_factor = (double)srcsize.w / (double)[bestrep pixelsWide];
+		double y_factor = (double)srcsize.h / (double)[bestrep pixelsHigh];
+		croprect.x = (int)(x_factor * rds.left.get_as_int() + 0.5);
+		croprect.y = (int)(y_factor * rds.top.get_as_int() + 0.5);
+		croprect.w = (int)(x_factor * rds.width.get_as_int() + 0.5);
+		croprect.h = (int)(y_factor * rds.height.get_as_int() + 0.5);
+	}
+	dstrect = m_dest->get_fit_rect(croprect, srcsize, &srcrect, m_alignment);
+//	cocoa_srcrect = NSMakeRect(srcrect.left(), srcrect.top(), srcrect.width(), srcrect.height());
+	cocoa_srcrect = NSMakeRect(srcrect.left(), srcsize.h-srcrect.bottom(), srcrect.width(), srcrect.height());
+#else
 	dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
 	cocoa_srcrect = NSMakeRect(0, 0, srcrect.width(), srcrect.height());
+#endif
 	dstrect.translate(m_dest->get_global_topleft());
 	cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
 	AM_DBG logger::get_logger()->debug("cocoa_image_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", cocoa_srcsize.width, cocoa_srcsize.height, NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect), NSMaxX(cocoa_dstrect), NSMaxY(cocoa_dstrect));

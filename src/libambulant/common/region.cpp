@@ -453,9 +453,23 @@ surface_impl::get_fit_rect_noalign(const lib::size& src_size, lib::rect* out_src
 	return rect(lib::point(0, 0), lib::size(proposed_width, proposed_height));
 }
 
+#ifdef WITH_SMIL30
 lib::rect 
 surface_impl::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, const common::alignment *align) const
 {
+	lib::rect src_clip_rect(lib::point(0,0), src_size);
+	return get_fit_rect(src_clip_rect, src_size, out_src_rect, align);
+}
+
+lib::rect 
+surface_impl::get_fit_rect(const lib::rect& src_clip_rect, const lib::size& src_real_size, lib::rect* out_src_rect, const common::alignment *align) const
+{
+	const lib::size src_size(src_clip_rect.width(), src_clip_rect.height());
+#else
+lib::rect 
+surface_impl::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, const common::alignment *align) const
+{
+#endif // WITH_SMIL30
 	if (align == NULL)
 		return get_fit_rect_noalign(src_size, out_src_rect);
 		
@@ -562,10 +576,37 @@ surface_impl::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, c
 	int x_region_for_image_right = x_region_for_image_left + (int)((image_width * scale_horizontal) + 0.5);
 	int y_region_for_image_top = xy_region.y - y_image_scaled;
 	int y_region_for_image_bottom = y_region_for_image_top + (int)((image_height * scale_vertical) + 0.5);
+#ifdef WITH_SMIL30
+	int x_image_for_region_left = src_clip_rect.left();
+	int x_image_for_region_right = src_clip_rect.right();
+	int y_image_for_region_top = src_clip_rect.top();
+	int y_image_for_region_bottom = src_clip_rect.bottom();
+	// Now we need to clamp the image values: the viewBox coordinates could be outside the
+	// real image coordinate space.
+	if (x_image_for_region_left < 0) {
+		x_region_for_image_left = (int)((-x_image_for_region_left * scale_horizontal) + 0.5);
+		x_image_for_region_left = 0;
+	}
+	if (x_image_for_region_right > src_real_size.w) {
+		int overshoot = x_image_for_region_right - src_real_size.w;
+		x_image_for_region_right = src_real_size.w;
+		x_region_for_image_right = x_region_for_image_right - (int)((overshoot * scale_horizontal) + 0.5);
+	}
+	if (y_image_for_region_top < 0) {
+		y_region_for_image_top = (int)((-y_image_for_region_top * scale_horizontal) + 0.5);
+		y_image_for_region_top = 0;
+	}
+	if (y_image_for_region_bottom > src_real_size.h) {
+		int overshoot = y_image_for_region_bottom - src_real_size.h;
+		y_image_for_region_bottom = src_real_size.h;
+		y_region_for_image_bottom = y_region_for_image_bottom - (int)((overshoot * scale_vertical) + 0.5);
+	}
+#else
 	int x_image_for_region_left = 0;
 	int x_image_for_region_right = image_width;
 	int y_image_for_region_top = 0;
 	int y_image_for_region_bottom = image_height;
+#endif // WITH_SMIL30
 	AM_DBG lib::logger::get_logger()->debug("get_fit_rect: full image would  have region lrtb=(%d, %d, %d, %d)", 
 		x_region_for_image_left, y_region_for_image_top, x_region_for_image_right, y_region_for_image_bottom);
 	// Finally clamp all values

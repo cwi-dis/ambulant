@@ -309,6 +309,13 @@ inline region_dim_spec::region_dim_spec(const std::string& coords, const char *s
 		top = region_dim(*it++);
 		width = region_dim(*it++) - left;
 		height = region_dim(*it++) - top;
+#ifdef WITH_SMIL30
+	} else if(((shape && strcmp(shape, "viewBoxRect")==0)) && list.size() == 4) {
+		left = region_dim(*it++);
+		top = region_dim(*it++);
+		width = region_dim(*it++);
+		height = region_dim(*it++);
+#endif // WITH_SMIL30
 	} else if((shape && strcmp(shape, "circle")==0) && list.size() == 3) {
 		region_dim x(*it++);
 		region_dim y(*it++);
