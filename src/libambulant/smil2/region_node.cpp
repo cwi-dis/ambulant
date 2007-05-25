@@ -44,6 +44,9 @@ static char *subregionattrs[] = {
 	"fit",
 	"soundLevel",
 	"soundAlign",
+#ifdef WITH_SMIL30
+	"viewBox",
+#endif
 	NULL
 };
 
@@ -260,6 +263,16 @@ region_node::fix_from_dom_node()
 	}
 	set_soundalign(sa);
 	
+#ifdef WITH_SMIL30
+	const char *viewbox_attr = m_node->get_attribute("viewBox");
+	common::region_dim_spec rds;
+	if (viewbox_attr) rds = common::region_dim_spec(viewbox_attr, "viewBoxRect");
+	if (rds != m_viewbox) {
+		changed = true;
+	}
+	set_viewbox(rds);
+		
+#endif // WITH_SMIL30
 	// backgroundImage
 	
 	// Note: we simply share a reference to the char* in the DOM tree,
@@ -372,6 +385,20 @@ region_node::get_tiling() const
 	return m_tiling;
 }
 
+#ifdef WITH_SMIL30
+lib::rect
+region_node::get_crop_rect(const lib::size& srcsize) const
+{
+	common::region_dim_spec rds(m_display_viewbox);
+	lib::rect croprect(lib::point(0,0), srcsize);
+	rds.convert(croprect);
+	if (rds.left.defined()) croprect.x = rds.left.get_as_int();
+	if (rds.top.defined()) croprect.y = rds.top.get_as_int();
+	if (rds.width.defined()) croprect.w = rds.width.get_as_int();
+	if (rds.height.defined()) croprect.h = rds.height.get_as_int();
+	return croprect;
+}
+#endif // WITH_SMIL30
 const char *
 region_node::get_bgimage() const
 {
@@ -500,3 +527,10 @@ void region_node::set_region_soundalign(common::sound_alignment sa) {
 	AM_DBG lib::logger::get_logger()->debug("region_node::set_region_soundalign()");
 	m_display_soundalign = sa;
 }
+
+#ifdef WITH_SMIL30
+void region_node::set_region_viewbox(const common::region_dim_spec& rds) {
+	AM_DBG lib::logger::get_logger()->debug("region_node::set_region_viewbox()");
+	m_display_viewbox = rds;
+}
+#endif // WITH_SMIL30

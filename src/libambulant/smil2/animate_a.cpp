@@ -122,6 +122,10 @@ void animate_attrs::locate_target_attr() {
 		m_attrtype = "color";
 	} else if (m_attrname == "soundAlign") {
 		m_attrtype = "soundAlign";
+#ifdef WITH_SMIL30
+	} else if (m_attrname == "viewBox") {
+		m_attrtype = "int_tuple";
+#endif // WITH_SMIL30
 	} else {
 		m_logger->trace("<%s id=\"%s\" attributeName=\"%s\">: attribute cannot be animated", 
 			m_tag.c_str(), m_id.c_str(), m_attrname.c_str());

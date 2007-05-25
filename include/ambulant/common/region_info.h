@@ -93,6 +93,11 @@ class region_info {
 
 	/// Return the background image
 	virtual const char *get_bgimage() const = 0;
+
+#ifdef WITH_SMIL30
+	/// Return the image crop area
+	virtual rect get_crop_rect(const size& srcsize) const = 0;
+#endif
 };
 
 /// Interface to animate region information.

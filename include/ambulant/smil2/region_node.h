@@ -108,6 +108,9 @@ class region_node : public common::animation_destination {
 	common::sound_alignment get_soundalign() const { return m_display_soundalign; }
 	const char *get_bgimage() const;
 	common::tiling get_tiling() const;
+#ifdef WITH_SMIL30
+	lib::rect get_crop_rect(const lib::size& srcsize) const;
+#endif
 
 	// And corresponding setting interface
 	void reset() {(void)fix_from_dom_node(); };
@@ -118,6 +121,9 @@ class region_node : public common::animation_destination {
 	void set_zindex(common::zindex_t z) { m_zindex = z; m_display_zindex = z; }
 	void set_soundlevel(double l) { m_soundlevel = l; m_display_soundlevel = l; }
 	void set_soundalign(common::sound_alignment sa) { m_soundalign = sa; m_display_soundalign = sa; }
+#ifdef WITH_SMIL30
+	void set_viewbox(const common::region_dim_spec& rds) { m_viewbox = rds; m_display_viewbox = rds; }
+#endif // WITH_SMIL30
 	void set_as_subregion(bool b) { m_is_subregion = b; }
 	
 	// animation_destination interface
@@ -132,6 +138,9 @@ class region_node : public common::animation_destination {
 	void set_region_zindex(common::zindex_t z);
 	void set_region_soundlevel(double level);
 	void set_region_soundalign(common::sound_alignment sa);
+#ifdef WITH_SMIL30
+	void set_region_viewbox(const common::region_dim_spec& rds);
+#endif // WITH_SMIL30
 	
 	// sets explicitly the dimensions of this region
 	template <class L, class W, class R, class T, class H, class B>
@@ -192,6 +201,9 @@ class region_node : public common::animation_destination {
 	lib::color_t m_bgcolor;
 	double m_soundlevel;
 	common::sound_alignment m_soundalign;
+#ifdef WITH_SMIL30
+	common::region_dim_spec m_viewbox;
+#endif // WITH_SMIL30
 	const char *m_bgimage;
 	common::tiling m_tiling;
 	bool m_inherit_bgrepeat;
@@ -208,6 +220,9 @@ class region_node : public common::animation_destination {
 	lib::color_t m_display_color;
 	double m_display_soundlevel;
 	common::sound_alignment m_display_soundalign;
+#ifdef WITH_SMIL30
+	common::region_dim_spec m_display_viewbox;
+#endif // WITH_SMIL30
 	
 	// verifier
 	static int node_counter;

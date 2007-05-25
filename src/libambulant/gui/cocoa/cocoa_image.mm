@@ -101,25 +101,19 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 		return;
 	}
 #ifdef WITH_SMIL30
-	rect croprect(point(0,0), srcsize);
-	// XXX Note: this code does not take animation into account, yet.
-	const char *cropinfo = m_node->get_attribute("viewBox");
-	if (cropinfo && srcsize.w && srcsize.h) {
-		// Get the viewbox and convert any relative coordinates to absolute.
-		common::region_dim_spec rds(cropinfo, "viewBoxRect");
-		rds.convert(croprect);
-		// Unfortunately (well, for us, in this case) Cocoa does some magic scaling on the image.
-		// I.e. [m_image size] can lie about the size. We have to adjust our coordinates too.
-		NSImageRep *bestrep = [m_image bestRepresentationForDevice: nil];
-		double x_factor = (double)srcsize.w / (double)[bestrep pixelsWide];
-		double y_factor = (double)srcsize.h / (double)[bestrep pixelsHigh];
-		croprect.x = (int)(x_factor * rds.left.get_as_int() + 0.5);
-		croprect.y = (int)(y_factor * rds.top.get_as_int() + 0.5);
-		croprect.w = (int)(x_factor * rds.width.get_as_int() + 0.5);
-		croprect.h = (int)(y_factor * rds.height.get_as_int() + 0.5);
-	}
+	// Unfortunately (well, for us, in this case) Cocoa does some magic scaling on the image.
+	// I.e. [m_image size] can lie about the size. We have to adjust our coordinates too.
+	NSImageRep *bestrep = [m_image bestRepresentationForDevice: nil];
+	lib::size realsrcsize([bestrep pixelsWide], [bestrep pixelsHigh]);
+	lib::rect croprect = m_dest->get_crop_rect(realsrcsize);
+	double x_factor = realsrcsize.w == 0 ? 1 : (double)srcsize.w / (double)realsrcsize.w;
+	double y_factor = realsrcsize.h == 0 ? 1 : (double)srcsize.h / (double)realsrcsize.h;
+	croprect.x = (int)(x_factor * croprect.x + 0.5);
+	croprect.w = (int)(x_factor * croprect.w + 0.5);
+	croprect.y = (int)(y_factor * croprect.y + 0.5);
+	croprect.h = (int)(y_factor * croprect.h + 0.5);
+
 	dstrect = m_dest->get_fit_rect(croprect, srcsize, &srcrect, m_alignment);
-//	cocoa_srcrect = NSMakeRect(srcrect.left(), srcrect.top(), srcrect.width(), srcrect.height());
 	cocoa_srcrect = NSMakeRect(srcrect.left(), srcsize.h-srcrect.bottom(), srcrect.width(), srcrect.height());
 #else
 	dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);

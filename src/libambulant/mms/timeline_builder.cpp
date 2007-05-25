@@ -68,6 +68,9 @@ class mms_region_info : public common::region_info {
 	const char *get_bgimage() const { return NULL; }
 	bool get_showbackground() const { return false; }
 	bool is_subregion() const { return false; }
+#ifdef WITH_SMIL30
+	lib::rect get_crop_rect(const lib::size& srcsize) const { return lib::rect(lib::point(0,0), srcsize); }
+#endif
   private:
 	std::string m_name;
 	lib::rect m_bounds;

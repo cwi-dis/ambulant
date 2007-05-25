@@ -70,6 +70,7 @@ class surface_impl : public surface_template, public surface, public gui_events 
 	rect get_fit_rect(const size& src_size, rect* out_src_rect, const common::alignment *align) const;
 #ifdef WITH_SMIL30
 	rect get_fit_rect(const rect& src_clip_rect, const size& src_size, rect* out_src_rect, const common::alignment *align) const;
+	rect get_crop_rect(const size& src_size) const;
 #endif // WITH_SMIL30
 	bool is_tiled() const;
 	tile_positions get_tiles(lib::size image_size, lib::rect surface_rect) const;

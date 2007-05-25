@@ -642,6 +642,10 @@ animate_node* animate_node::new_instance(context_type *ctx, const node *n, const
 		return new_position_animation(ctx, n, aattrs);
 	} else if(aattrs->get_target_attr() == "soundAlign") {
 		return new_soundalign_animation(ctx, n, aattrs);
+#ifdef WITH_SMIL30
+	} else if (aattrs->get_target_attr() == "viewBox") {
+		return new_regdim_animation(ctx, n, aattrs);
+#endif // WITH_SMIL30
 	}
 	
 	// Not implemented

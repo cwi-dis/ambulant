@@ -224,6 +224,8 @@ class surface {
 	/// For a given image size, return portion of source image to display, and where
 	/// to display it. The renderer must do the scaling.
 	virtual lib::rect get_fit_rect(const lib::rect& src_crop_rect, const lib::size& src_size, lib::rect* out_src_rect, const alignment *align) const = 0;
+
+	virtual lib::rect get_crop_rect(const lib::size& src_size) const = 0;
 #endif
 	
 	/// Get object holding SMIL region parameters for querying.

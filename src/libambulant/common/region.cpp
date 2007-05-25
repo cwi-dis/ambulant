@@ -454,6 +454,12 @@ surface_impl::get_fit_rect_noalign(const lib::size& src_size, lib::rect* out_src
 }
 
 #ifdef WITH_SMIL30
+lib::rect
+surface_impl::get_crop_rect(const lib::size& srcsize) const
+{
+	return m_info->get_crop_rect(srcsize);
+}
+
 lib::rect 
 surface_impl::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, const common::alignment *align) const
 {
