@@ -63,6 +63,10 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 			logger::get_logger()->error("%s: could not create NSImage", m_node->get_url("src").get_url().c_str());
 		[m_image setFlipped: true];
 		// XXXX Could free data and m_data again here...
+		// Now we need to remember the real image size, which will be trampled soon.
+		NSImageRep *bestrep = [m_image bestRepresentationForDevice: nil];
+		m_size = lib::size([bestrep pixelsWide], [bestrep pixelsHigh]);
+		
 	}
 
 	cocoa_window *cwindow = (cocoa_window *)window;
@@ -103,15 +107,15 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 #ifdef WITH_SMIL30
 	// Unfortunately (well, for us, in this case) Cocoa does some magic scaling on the image.
 	// I.e. [m_image size] can lie about the size. We have to adjust our coordinates too.
-	NSImageRep *bestrep = [m_image bestRepresentationForDevice: nil];
-	lib::size realsrcsize([bestrep pixelsWide], [bestrep pixelsHigh]);
-	lib::rect croprect = m_dest->get_crop_rect(realsrcsize);
-	double x_factor = realsrcsize.w == 0 ? 1 : (double)srcsize.w / (double)realsrcsize.w;
-	double y_factor = realsrcsize.h == 0 ? 1 : (double)srcsize.h / (double)realsrcsize.h;
+	lib::rect croprect = m_dest->get_crop_rect(m_size);
+	AM_DBG logger::get_logger()->debug("0x%x (%d %d) -> (%d, %d, %d, %d)", m_dest, m_size.w, m_size.h, croprect.x, croprect.y, croprect.w, croprect.h);
+	double x_factor = m_size.w == 0 ? 1 : (double)srcsize.w / (double)m_size.w;
+	double y_factor = m_size.h == 0 ? 1 : (double)srcsize.h / (double)m_size.h;
 	croprect.x = (int)(x_factor * croprect.x + 0.5);
 	croprect.w = (int)(x_factor * croprect.w + 0.5);
 	croprect.y = (int)(y_factor * croprect.y + 0.5);
 	croprect.h = (int)(y_factor * croprect.h + 0.5);
+	AM_DBG logger::get_logger()->debug("factors %f %f, croprect (%d, %d, %d, %d)", x_factor, y_factor, croprect.x, croprect.y, croprect.w, croprect.h);
 
 	dstrect = m_dest->get_fit_rect(croprect, srcsize, &srcrect, m_alignment);
 	cocoa_srcrect = NSMakeRect(srcrect.left(), srcsize.h-srcrect.bottom(), srcrect.width(), srcrect.height());
@@ -121,7 +125,9 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 #endif
 	dstrect.translate(m_dest->get_global_topleft());
 	cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
-	AM_DBG logger::get_logger()->debug("cocoa_image_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", cocoa_srcsize.width, cocoa_srcsize.height, NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect), NSMaxX(cocoa_dstrect), NSMaxY(cocoa_dstrect));
+	AM_DBG logger::get_logger()->debug("cocoa_image_renderer.redraw: draw image (%f, %f, %f %f) -> (%f, %f, %f, %f)",
+		NSMinX(cocoa_srcrect), NSMinY(cocoa_srcrect), NSMaxX(cocoa_srcrect), NSMaxY(cocoa_srcrect),
+		NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect), NSMaxX(cocoa_dstrect), NSMaxY(cocoa_dstrect));
 	[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceOver fraction: 1.0];
 	
 	m_lock.leave();
