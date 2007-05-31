@@ -467,6 +467,7 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 //XXXX	if ( ! isEqualToPrevious(m_pixmap))
 	_screenTransitionPostRedraw(r);
 	gdk_pixmap_bitblt(m_ambulant_widget->get_gtk_widget()->window, r.left(), r.top(), m_pixmap, r.left(), r.top(), r.width(), r.height());
+#ifdef WITH_SCREENSHOTS
 	GError *error = NULL;
 	gint width; gint height;
 
@@ -488,6 +489,7 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 #ifdef	DUMPPIXMAP
 	gdk_pixmap_dump(m_pixmap, "top");
 #endif/*DUMPPIXMAP*/
+#endif //WITH_SCREENSHOTS
 }
 
 void
@@ -858,7 +860,9 @@ void gtk_ambulant_widget::get_size(int *width, int *height){
 bool gtk_ambulant_widget::get_screenshot(const char *type, char **out_data, size_t *out_size){
 	*out_data = NULL;
 	*out_size = 0;
-
+#ifndef WITH_SCREENSHOTS
+	lib::logger::get_logger()->error("get_screenshot: no support for screenshots");
+#endif // WITH_SCREENSHOTS
 	*out_data= m_screenshot_data;
 	*out_size = m_screenshot_size;
 	return TRUE;
