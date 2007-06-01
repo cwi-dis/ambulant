@@ -280,6 +280,10 @@ struct region_dim_spec {
 	
 	/// Default constructor, sets all values to auto.
 	region_dim_spec() {}
+	region_dim_spec(const region_dim_spec &other) {
+		left = other.left; width = other.width; right = other.right;
+		top = other.top; height = other.height; bottom = other.bottom;
+	}
 	
 	/// Constructor using SMIL anchor coords string.
 	/// For non-rectangular coords values this will set the region_dim_spec
@@ -296,13 +300,41 @@ struct region_dim_spec {
 	/// Convert all relative parameters to absolute.
 	void convert(const lib::rect& rc);
 #ifdef WITH_SMIL30
-	region_dim_spec& operator+=(const region_dim_spec& other);
-	region_dim_spec& operator-=(const region_dim_spec& other);
-	region_dim_spec operator+(const region_dim_spec& other) const;
-	region_dim_spec operator-(const region_dim_spec& other) const;
-	region_dim_spec operator*(int t) const;
-	region_dim_spec operator/(int t) const;
-	bool operator<(const region_dim_spec& other) const;
+	region_dim_spec& operator+=(const region_dim_spec& other) {
+		left += other.left; right += other.right; top += other.top;
+		bottom += other.bottom; width += other.width; height += other.height;
+		return *this;
+	}
+	region_dim_spec& operator-=(const region_dim_spec& other) {
+		left -= other.left; right -= other.right; top -= other.top;
+		bottom -= other.bottom; width -= other.width; height -= other.height;
+		return *this;
+	}
+	region_dim_spec& operator*=(int t) {
+		left *= t; right *= t; top *= t;
+		bottom *= t; width *= t; height *= t;
+		return *this;
+	}
+	region_dim_spec& operator/=(int t) {
+		left /= t; right /= t; top /= t;
+		bottom /= t; width /= t; height /= t;
+		return *this;
+	}
+	region_dim_spec operator+(const region_dim_spec& other) const {
+		region_dim_spec rv(*this); rv += other; return rv;
+	}
+	region_dim_spec operator-(const region_dim_spec& other) const {
+		region_dim_spec rv(*this); rv -= other; return rv;
+	}
+	region_dim_spec operator*(int t) const {
+		region_dim_spec rv(*this); rv *= t; return rv;
+	}
+	region_dim_spec operator/(int t) const {
+		region_dim_spec rv(*this); rv /= t; return rv;
+	}
+	bool operator<(const region_dim_spec& other) const {
+		abort();
+	}
 #endif // WITH_SMIL30
 };
 

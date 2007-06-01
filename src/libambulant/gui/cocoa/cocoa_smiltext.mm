@@ -105,6 +105,7 @@ cocoa_smiltext_renderer::start(double t)
 	m_epoch = m_event_processor->get_timer()->elapsed();
 	m_engine.start(t);
 	renderer_playable::start(t);
+	m_context->started(m_cookie);
 }
 
 void
@@ -119,6 +120,7 @@ cocoa_smiltext_renderer::stop()
 {
 	m_engine.stop();
 	renderer_playable::stop();
+	m_context->stopped(m_cookie);
 }
 
 void
@@ -189,9 +191,12 @@ cocoa_smiltext_renderer::smiltext_changed()
 		[m_text_storage endEditing];
 		m_engine.done();
 	}
+	bool finished = m_engine.is_finished();
 	[pool release];
 	m_lock.leave();
 	m_dest->need_redraw();
+	if (finished)
+		m_context->stopped(m_cookie);
 }
 
 void
