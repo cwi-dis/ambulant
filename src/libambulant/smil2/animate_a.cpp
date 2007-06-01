@@ -458,6 +458,59 @@ void animate_attrs::get_values(std::vector<common::sound_alignment>& v) {
 	v.push_back(sa);
 }
 
+// point := S? (? x S? , S? y S? )?
+lib::point animate_attrs::to_point(const std::string& s) {
+	lib::point_p parser;
+	std::string::const_iterator b = s.begin();
+	std::string::const_iterator e = s.end();
+	std::ptrdiff_t d = parser.parse(b, e);
+	if(d == -1) {
+		m_logger->error("<%s id=\"%s\">: invalid point \"%s\"", 
+			m_tag.c_str(), m_id.c_str(), s.c_str());
+		m_logger->warn(gettext("Error in SMIL animation"));
+		return lib::point();
+	}
+	return lib::point(parser.get_x(), parser.get_y());
+}
+
+void animate_attrs::get_values(std::vector<lib::point>& v) {
+	if(m_animtype == "path") {
+		const char *ppath = m_node->get_attribute("path");
+		lib::gpath_descr pd(ppath?ppath:"m 0 0");
+		lib::polyline_builder builder; 
+		lib::gpath *path = builder.build_path(&pd);
+		path->get_pivot_points(v);
+	} else if(m_animtype == "values") {
+		const char *pvalues = m_node->get_attribute("values");
+		std::list<std::string> c;
+		if(pvalues) 
+			lib::split_trim_list(pvalues, c, ';');
+		for(std::list<std::string>::iterator it=c.begin();it!=c.end();it++)
+			v.push_back(to_point(*it));
+	} else if(m_animtype == "from-to") {
+		const char *pfrom = m_node->get_attribute("from");
+		const char *pto = m_node->get_attribute("to");
+		v.push_back(to_point(pfrom));
+		v.push_back(to_point(pto));
+	} else if(m_animtype == "from-by") {
+		const char *pfrom = m_node->get_attribute("from");
+		const char *pby = m_node->get_attribute("by");
+		lib::point v1 = to_point(pfrom);
+		lib::point dv = to_point(pby);
+		v.push_back(v1);
+		v.push_back(v1+dv);
+	} else if(m_animtype == "to") {
+		const char *pto = m_node->get_attribute("to");
+		v.push_back(to_point(pto));
+	} else if(m_animtype == "by") {
+		const char *pby = m_node->get_attribute("by");
+		v.push_back(lib::point(0, 0));
+		v.push_back(to_point(pby));
+	} else {
+		assert(false);
+	}
+}
+
 #ifdef WITH_SMIL30
 // point := S? (? x S? , S? y S? )?
 common::region_dim_spec animate_attrs::to_rds(const std::string& s) {
