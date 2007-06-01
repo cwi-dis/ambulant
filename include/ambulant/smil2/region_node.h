@@ -132,6 +132,9 @@ class region_node : public common::animation_destination {
 	common::zindex_t get_region_zindex(bool fromdom = false) const;
 	double get_region_soundlevel(bool fromdom = false) const;
 	common::sound_alignment get_region_soundalign(bool fromdom = false) const;
+#ifdef WITH_SMIL30
+	const common::region_dim_spec& get_region_viewbox(bool fromdom = false) const;
+#endif
 	
 	void set_region_dim(const std::string& which, const common::region_dim& rd);
 	void set_region_color(const std::string& which, lib::color_t clr);

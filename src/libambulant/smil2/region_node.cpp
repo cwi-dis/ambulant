@@ -492,6 +492,12 @@ common::sound_alignment region_node::get_region_soundalign(bool fromdom) const {
 	return fromdom?m_soundalign:m_display_soundalign;
 }
 
+#ifdef WITH_SMIL30
+const common::region_dim_spec& region_node::get_region_viewbox(bool fromdom) const {
+	return fromdom?m_viewbox:m_display_viewbox;
+}
+#endif // WITH_SMIL30
+
 // Sets the display value of a region dimension
 void region_node::set_region_dim(const std::string& which, const common::region_dim& rd) {
 	AM_DBG lib::logger::get_logger()->debug("region_node::set_region_dim(\"%s\", \"%s\") to %s", m_node->get_attribute("id"), which.c_str(), repr(rd).c_str());

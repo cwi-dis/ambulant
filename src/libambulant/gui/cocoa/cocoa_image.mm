@@ -73,6 +73,7 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 
 	if (!m_image) {
+		AM_DBG logger::get_logger()->debug("cocoa_image_renderer.redraw: nothing to draw");
 		m_lock.leave();
 		return;
 	}
@@ -108,7 +109,7 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	// Unfortunately (well, for us, in this case) Cocoa does some magic scaling on the image.
 	// I.e. [m_image size] can lie about the size. We have to adjust our coordinates too.
 	lib::rect croprect = m_dest->get_crop_rect(m_size);
-	AM_DBG logger::get_logger()->debug("0x%x (%d %d) -> (%d, %d, %d, %d)", m_dest, m_size.w, m_size.h, croprect.x, croprect.y, croprect.w, croprect.h);
+	AM_DBG logger::get_logger()->debug("cocoa_image::redraw, clip 0x%x (%d %d) -> (%d, %d, %d, %d)", m_dest, m_size.w, m_size.h, croprect.x, croprect.y, croprect.w, croprect.h);
 	double x_factor = m_size.w == 0 ? 1 : (double)srcsize.w / (double)m_size.w;
 	double y_factor = m_size.h == 0 ? 1 : (double)srcsize.h / (double)m_size.h;
 	croprect.x = (int)(x_factor * croprect.x + 0.5);
@@ -125,7 +126,7 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 #endif
 	dstrect.translate(m_dest->get_global_topleft());
 	cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
-	AM_DBG logger::get_logger()->debug("cocoa_image_renderer.redraw: draw image (%f, %f, %f %f) -> (%f, %f, %f, %f)",
+	/*AM_DBG*/ logger::get_logger()->debug("cocoa_image_renderer.redraw: draw image (%f, %f, %f %f) -> (%f, %f, %f, %f)",
 		NSMinX(cocoa_srcrect), NSMinY(cocoa_srcrect), NSMaxX(cocoa_srcrect), NSMaxY(cocoa_srcrect),
 		NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect), NSMaxX(cocoa_dstrect), NSMaxY(cocoa_dstrect));
 	[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceOver fraction: 1.0];

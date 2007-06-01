@@ -295,6 +295,15 @@ struct region_dim_spec {
 	
 	/// Convert all relative parameters to absolute.
 	void convert(const lib::rect& rc);
+#ifdef WITH_SMIL30
+	region_dim_spec& operator+=(const region_dim_spec& other);
+	region_dim_spec& operator-=(const region_dim_spec& other);
+	region_dim_spec operator+(const region_dim_spec& other) const;
+	region_dim_spec operator-(const region_dim_spec& other) const;
+	region_dim_spec operator*(int t) const;
+	region_dim_spec operator/(int t) const;
+	bool operator<(const region_dim_spec& other) const;
+#endif // WITH_SMIL30
 };
 
 

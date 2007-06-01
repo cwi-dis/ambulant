@@ -124,7 +124,7 @@ void animate_attrs::locate_target_attr() {
 		m_attrtype = "soundAlign";
 #ifdef WITH_SMIL30
 	} else if (m_attrname == "viewBox") {
-		m_attrtype = "int_tuple";
+		m_attrtype = "viewBox";
 #endif // WITH_SMIL30
 	} else {
 		m_logger->trace("<%s id=\"%s\" attributeName=\"%s\">: attribute cannot be animated", 
@@ -458,57 +458,123 @@ void animate_attrs::get_values(std::vector<common::sound_alignment>& v) {
 	v.push_back(sa);
 }
 
+#ifdef WITH_SMIL30
 // point := S? (? x S? , S? y S? )?
-lib::point animate_attrs::to_point(const std::string& s) {
-	lib::point_p parser;
+common::region_dim_spec animate_attrs::to_rds(const std::string& s) {
+	common::region_dim_spec rds;
 	std::string::const_iterator b = s.begin();
 	std::string::const_iterator e = s.end();
-	std::ptrdiff_t d = parser.parse(b, e);
-	if(d == -1) {
-		m_logger->error("<%s id=\"%s\">: invalid point \"%s\"", 
-			m_tag.c_str(), m_id.c_str(), s.c_str());
-		m_logger->warn(gettext("Error in SMIL animation"));
-		return lib::point();
+	lib::region_dim_p parser;
+	std::ptrdiff_t d;
+	bool has_pars = false;
+	lib::delimiter_p space(" \t\r\n");
+	lib::literal_p<','> comma;
+	lib::star_p<lib::delimiter_p> opt_space_inst = make_star(space);
+		
+	// S?
+	d = opt_space_inst.parse(b, e);
+	if (b == e) goto bad;
+	d = lib::literal_p<'('>().parse(b, e);
+	if (d > 0) {
+		has_pars = true;
 	}
-	return lib::point(parser.get_x(), parser.get_y());
+	if (b == e) goto bad;
+	// Parse x
+	d = parser.parse(b, e);
+	if(d == -1) goto bad;
+	if(parser.is_relative())
+		rds.left = common::region_dim(parser.get_relative_val());
+	else
+		rds.left = common::region_dim(parser.get_px_val());
+	d = opt_space_inst.parse(b, e);
+	d = comma.parse(b, e);
+	if (d <= 0) goto bad;
+	// Parse y
+	d = parser.parse(b, e);
+	if(d == -1) goto bad;
+	if(parser.is_relative())
+		rds.top = common::region_dim(parser.get_relative_val());
+	else
+		rds.top = common::region_dim(parser.get_px_val());
+	d = opt_space_inst.parse(b, e);
+	d = comma.parse(b, e);
+	if (d <= 0) goto bad;
+	// Parse w
+	d = parser.parse(b, e);
+	if(d == -1) goto bad;
+	if(parser.is_relative())
+		rds.width = common::region_dim(parser.get_relative_val());
+	else
+		rds.width = common::region_dim(parser.get_px_val());
+	d = opt_space_inst.parse(b, e);
+	d = comma.parse(b, e);
+	if (d <= 0) goto bad;
+	// Parse h
+	d = parser.parse(b, e);
+	if(d == -1) goto bad;
+	if(parser.is_relative())
+		rds.height = common::region_dim(parser.get_relative_val());
+	else
+		rds.height = common::region_dim(parser.get_px_val());
+	d = opt_space_inst.parse(b, e);
+	if (has_pars) {
+		d = lib::literal_p<')'>().parse(b, e);
+		if (d <= 0) goto bad;
+	}
+	return rds;
+	
+bad:
+	m_logger->trace("<%s id=\"%s\">: invalid region dim spec\"%s\"", 
+		m_tag.c_str(), m_id.c_str(), s.c_str());
+	m_logger->warn(gettext("Error in SMIL animation"));
+	return common::region_dim_spec();
+
 }
 
-void animate_attrs::get_values(std::vector<lib::point>& v) {
+void animate_attrs::get_values(std::vector<common::region_dim_spec>& v) {
+#if 0 // Only "to" animation for now
 	if(m_animtype == "path") {
 		const char *ppath = m_node->get_attribute("path");
 		lib::gpath_descr pd(ppath?ppath:"m 0 0");
 		lib::polyline_builder builder; 
 		lib::gpath *path = builder.build_path(&pd);
 		path->get_pivot_points(v);
-	} else if(m_animtype == "values") {
+	} else 
+	if(m_animtype == "values") {
 		const char *pvalues = m_node->get_attribute("values");
 		std::list<std::string> c;
 		if(pvalues) 
 			lib::split_trim_list(pvalues, c, ';');
 		for(std::list<std::string>::iterator it=c.begin();it!=c.end();it++)
 			v.push_back(to_point(*it));
-	} else if(m_animtype == "from-to") {
+	} else 
+	if(m_animtype == "from-to") {
 		const char *pfrom = m_node->get_attribute("from");
 		const char *pto = m_node->get_attribute("to");
 		v.push_back(to_point(pfrom));
 		v.push_back(to_point(pto));
-	} else if(m_animtype == "from-by") {
+	} else 
+	if(m_animtype == "from-by") {
 		const char *pfrom = m_node->get_attribute("from");
 		const char *pby = m_node->get_attribute("by");
 		lib::point v1 = to_point(pfrom);
 		lib::point dv = to_point(pby);
 		v.push_back(v1);
 		v.push_back(v1+dv);
-	} else if(m_animtype == "to") {
+	} else
+#endif // 0
+	if(m_animtype == "to") {
 		const char *pto = m_node->get_attribute("to");
-		v.push_back(to_point(pto));
-	} else if(m_animtype == "by") {
+		v.push_back(to_rds(pto));
+#if 0
+	} else
+	if(m_animtype == "by") {
 		const char *pby = m_node->get_attribute("by");
 		v.push_back(lib::point(0, 0));
 		v.push_back(to_point(pby));
+#endif
 	} else {
 		assert(false);
 	}
 }
-
-
+#endif // WITH_SMIL30

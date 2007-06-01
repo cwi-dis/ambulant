@@ -561,6 +561,70 @@ soundalign_animation::apply_self_effect(animate_registers& regs) const
 	regs.sa = m_values[0];
 }
 
+#ifdef WITH_SMIL30
+////////////////////////////////////
+// regdim_animation
+//
+// A viewbox_animation may be used for all viewBox animations except for "to" animations
+// 
+template <class F>
+class viewbox_animation : public linear_values_animation<F, common::region_dim_spec> {
+  public:
+	  viewbox_animation(time_node_context *ctx, const node *n, animate_attrs *aattrs)
+	:	linear_values_animation<F, common::region_dim_spec>(ctx, n, aattrs) {}
+	
+	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
+		regs.viewbox = dst->get_region_viewbox(true);
+	}
+
+	bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const {
+		const common::region_dim_spec& rds = dst->get_region_viewbox(false);
+		if(rds != regs.viewbox || IGNORE_ATTR_COMP) {
+			dst->set_region_viewbox(regs.viewbox);
+			return true;
+		}
+		return false;
+	}
+
+	void apply_self_effect(animate_registers& regs) const {
+		if(!this->m_animate_f) return;
+		lib::timer::time_type t = this->m_timer->elapsed();
+		common::region_dim_spec viewbox = this->m_animate_f->at(t);
+		if(this->m_aattrs->is_additive())
+			regs.viewbox += viewbox; // add
+			
+		else
+			regs.viewbox = viewbox; // override
+	}
+};
+
+class underlying_to_viewbox_animation : public underlying_to_animation<common::region_dim_spec> {
+  public:
+	underlying_to_viewbox_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
+	:	underlying_to_animation<common::region_dim_spec>(ctx, n, aattrs) {}
+	
+	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
+		regs.viewbox = dst->get_region_viewbox(true);
+	}
+
+	bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const {
+		const common::region_dim_spec viewbox = dst->get_region_viewbox(false);
+		if(viewbox != regs.viewbox || IGNORE_ATTR_COMP) {
+			dst->set_region_viewbox(regs.viewbox);
+			return true;
+		}
+		return false;
+	}
+
+	void apply_self_effect(animate_registers& regs) const {
+		if(!m_animate_f) return;
+		lib::timer::time_type t = m_timer->elapsed();
+		common::region_dim_spec viewbox = m_animate_f->at(t, regs.viewbox);
+		regs.viewbox = viewbox; // override
+	}
+};
+#endif // WITH_SMIL30
+
 ////////////////////////////////////
 // animate_node factory functions
 
@@ -623,6 +687,22 @@ animate_node* animate_node::new_position_animation(context_type *ctx, const node
 	return new values_motion_animation<F>(ctx, n, aattrs);
 }
 
+#ifdef WITH_SMIL30
+// private static 
+animate_node* animate_node::new_viewbox_animation(context_type *ctx, const node *n, animate_attrs *aattrs) {
+	typedef common::region_dim_spec attr_t;
+	if(aattrs->is_discrete()) {
+		typedef discrete_map_f<attr_t> F;
+		return new viewbox_animation<F>(ctx, n, aattrs);
+	} else if(aattrs->get_animate_type() == "to") {
+		return new underlying_to_viewbox_animation(ctx, n, aattrs);
+	}
+	typedef linear_map_f<attr_t> F;
+	return new viewbox_animation<F>(ctx, n, aattrs);
+}
+#endif // WITH_SMIL30
+
+
 // public static 
 animate_node* animate_node::new_instance(context_type *ctx, const node *n, const node* tparent) {
 	animate_attrs *aattrs = new animate_attrs(n, tparent);
@@ -644,7 +724,7 @@ animate_node* animate_node::new_instance(context_type *ctx, const node *n, const
 		return new_soundalign_animation(ctx, n, aattrs);
 #ifdef WITH_SMIL30
 	} else if (aattrs->get_target_attr() == "viewBox") {
-		return new_regdim_animation(ctx, n, aattrs);
+		return new_viewbox_animation(ctx, n, aattrs);
 #endif // WITH_SMIL30
 	}
 	

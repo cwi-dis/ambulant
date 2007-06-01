@@ -52,6 +52,9 @@ struct animate_registers {
 	int iv;
 	double dv;
 	common::sound_alignment sa;
+#ifdef WITH_SMIL30
+	common::region_dim_spec viewbox;
+#endif
 };
 
 // An animate_node is the base class for all animation node flavors
@@ -81,6 +84,9 @@ class animate_node : public time_node {
 	static animate_node* new_position_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
 	// XXXX Need to add soundlevel animation (similar to zindex)
 	static animate_node* new_soundalign_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
+#ifdef WITH_SMIL30
+	static animate_node* new_viewbox_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
+#endif // WITH_SMIL30
   protected:
 	// The set of animation related attributes of this node.
 	// Attributes parsing helper
