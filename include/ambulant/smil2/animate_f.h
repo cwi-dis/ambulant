@@ -363,14 +363,14 @@ class animate_f {
 	:	m_f(f), m_sd(sd), m_ad(ad), m_cum(cum) {}
 	
 	value_type at(time_type t) const {
-		if(t<=m_ad) return m_cum?(m_f.at(m_sd)*(t/m_sd) + m_f.at(t%m_sd)):m_f.at(t%m_sd);
+		if(t<m_ad) return m_cum?(m_f.at(m_sd)*(t/m_sd) + m_f.at(t%m_sd)):m_f.at(t%m_sd);
 		if((m_ad%m_sd) != 0) return this->at(m_ad);
 		assert((m_ad%m_sd) == 0);
 		return m_cum?m_f.at(m_sd)*(m_ad/m_sd):m_f.at(m_sd);
 	}
 	
 	value_type at(time_type t, const value_type& u) const {
-		if(t<=m_ad) return m_cum?(m_f.at(m_sd, u)*(t/m_sd) + m_f.at(t%m_sd, u)):m_f.at(t%m_sd, u);
+		if(t<m_ad) return m_cum?(m_f.at(m_sd, u)*(t/m_sd) + m_f.at(t%m_sd, u)):m_f.at(t%m_sd, u);
 		if((m_ad%m_sd) != 0) return this->at(m_ad, u);
 		assert((m_ad%m_sd) == 0);
 		return m_cum?m_f.at(m_sd, u)*(m_ad/m_sd):m_f.at(m_sd, u);

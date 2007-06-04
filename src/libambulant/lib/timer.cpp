@@ -103,13 +103,15 @@ void lib::timer_control_impl::set_time(time_type t) {
 	
 	if(!m_running) {
 		if (t < m_local_epoch) {
-			AM_DBG lib::logger::get_logger()->debug("timer: setting timer 0x%x from %d to %d", this, m_local_epoch, t);
+			AM_DBG lib::logger::get_logger()->debug("timer: setting paused timer 0x%x from %d to %d", this, m_local_epoch, t);
 		}
 		m_local_epoch = t;
 	} else {
 		pause();
+		// XXXJACK: Hard-setting a running clock is a bad idea: it makes things like animations and
+		// transitions "stutter". One possible solution would be to skew the clock if 
 		if (t < m_local_epoch) {
-			AM_DBG lib::logger::get_logger()->debug("timer: setting timer 0x%x from %d to %d", this, m_local_epoch, t);
+			AM_DBG lib::logger::get_logger()->debug("timer: setting running timer 0x%x from %d to %d", this, m_local_epoch, t);
 		}
 		m_local_epoch = t;
 		resume();

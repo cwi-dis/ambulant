@@ -78,6 +78,8 @@ void animation_engine::stopped(animate_node *animator) {
 	const lib::node *target = animator->get_animation_target();
 	if(!target) return;
 	const std::string aattr = animator->get_animation_attr();
+	AM_DBG lib::logger::get_logger()->debug("animation_engine: stopped targeting %s.%s",
+		target->get_local_name().c_str(), aattr.c_str());
 	node_animators_t& na = m_animators[target];
 	attribute_animators_t& aa = na[aattr];
 	aa.remove(animator);

@@ -126,7 +126,7 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 #endif
 	dstrect.translate(m_dest->get_global_topleft());
 	cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
-	/*AM_DBG*/ logger::get_logger()->debug("cocoa_image_renderer.redraw: draw image (%f, %f, %f %f) -> (%f, %f, %f, %f)",
+	AM_DBG logger::get_logger()->debug("cocoa_image_renderer.redraw: draw image (%f, %f, %f %f) -> (%f, %f, %f, %f)",
 		NSMinX(cocoa_srcrect), NSMinY(cocoa_srcrect), NSMaxX(cocoa_srcrect), NSMaxY(cocoa_srcrect),
 		NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect), NSMaxX(cocoa_dstrect), NSMaxY(cocoa_dstrect));
 	[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceOver fraction: 1.0];

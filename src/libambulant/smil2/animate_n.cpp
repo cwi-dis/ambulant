@@ -617,9 +617,13 @@ class underlying_to_viewbox_animation : public underlying_to_animation<common::r
 	}
 
 	void apply_self_effect(animate_registers& regs) const {
-		if(!m_animate_f) return;
+		if(!m_animate_f) {
+			AM_DBG lib::logger::get_logger()->debug("viewbox_anim: m_animate_f==NULL");
+			return;
+		}
 		lib::timer::time_type t = m_timer->elapsed();
 		common::region_dim_spec viewbox = m_animate_f->at(t, regs.viewbox);
+		AM_DBG lib::logger::get_logger()->debug("viewbox_anim: timer=0x%x t=%d", (void*)m_timer, t);
 		regs.viewbox = viewbox; // override
 	}
 };
