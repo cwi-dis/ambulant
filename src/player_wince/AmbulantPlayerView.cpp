@@ -29,7 +29,7 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace ambulant;
 
-typedef gui::dg::dg_player gui_player;
+typedef gui::dg::dg_player dg_or_dx_player;
 typedef gui::dg::dg_player_callbacks gui_callbacks;
 
 // The handle of the single window instance
@@ -61,9 +61,9 @@ HWND my_player_callbacks::get_main_window() {
 }
 
 
-static gui_player* 
+static dg_or_dx_player* 
 create_player_instance(const net::url& u) {
-	return new gui_player(s_player_callbacks, u);
+	return new dg_or_dx_player(s_player_callbacks, NULL, u);
 }
 
 void lib::win32::show_message(int level, const char *message) {
@@ -74,7 +74,7 @@ void lib::win32::show_message(int level, const char *message) {
 	MessageBox(NULL, textptr(message), text_str("AmbulantPlayer"), type);
 }
 
-static  gui_player *player = 0;
+static  dg_or_dx_player *player = 0;
 static bool needs_done_redraw = false;
 
 /////////////////////////////////////////////////////////////////////////////
@@ -173,7 +173,7 @@ CAmbulantPlayerDoc* CAmbulantPlayerView::GetDocument() const // non-debug versio
 // CAmbulantPlayerView message handlers
 
 void CAmbulantPlayerView::SetMMDocument(LPCTSTR lpszPathName) {
-	gui_player *dummy = player;
+	dg_or_dx_player *dummy = player;
 	player = 0;
 	if(dummy) {
 		dummy->stop();
@@ -222,7 +222,7 @@ void CAmbulantPlayerView::OnStop()
 {
 	if(player) {
 		net::url u = player->get_url();
-		gui_player *dummy = player;
+		dg_or_dx_player *dummy = player;
 		player = 0;
 		if(dummy) {
 			dummy->stop();
