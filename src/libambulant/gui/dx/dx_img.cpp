@@ -176,18 +176,7 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 		return;
 	}
 #ifdef WITH_SMIL30
-	lib::rect croprect(lib::point(0,0), srcsize);
-	// XXX Note: this code does not take animation into account, yet.
-	const char *cropinfo = m_node->get_attribute("viewBox");
-	if (cropinfo && srcsize.w && srcsize.h) {
-		// Get the viewbox and convert any relative coordinates to absolute.
-		common::region_dim_spec rds(cropinfo, "viewBoxRect");
-		rds.convert(croprect);
-		croprect.x = rds.left.get_as_int();
-		croprect.y = rds.top.get_as_int();
-		croprect.w = rds.width.get_as_int();
-		croprect.h = rds.height.get_as_int();
-	}
+	lib::rect croprect = m_dest->get_crop_rect(srcsize);
 	img_reg_rc = m_dest->get_fit_rect(croprect, srcsize, &img_rect1, m_alignment);
 #else
 	// Get fit rectangles
