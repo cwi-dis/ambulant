@@ -47,22 +47,26 @@ gui::dg::dg_text_renderer::dg_text_renderer(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
-	common::factories* factory,
-	common::gui_window *window)
+	common::factories* factory)
 :   common::renderer_playable(context, cookie, node, evp),
-	m_window(window),
 	m_fontname(NULL),
 	m_fontsize(0),
-	m_color(CLR_INVALID)
+	m_color(CLR_INVALID),
+	m_factory(factory)
 { 
 	
 	AM_DBG lib::logger::get_logger()->debug("dg_text_renderer(0x%x)", this);
-	dg_window *dgwindow = static_cast<dg_window*>(window);
+}
+
+void gui::dg::dg_text_renderer::set_surface(common::surface *dest)
+{
+	m_dest = dest;
+	dg_window *dgwindow = static_cast<dg_window*>(m_dest->get_gui_window());
 	viewport *v = dgwindow->get_viewport();	
 	net::url url = m_node->get_url("src");
 	char *data;
 	size_t datasize;
-	if (!net::read_data_from_url(url, factory->get_datasource_factory(), &data, &datasize))
+	if (!net::read_data_from_url(url, m_factory->get_datasource_factory(), &data, &datasize))
 		return;
 
 #ifndef UNICODE

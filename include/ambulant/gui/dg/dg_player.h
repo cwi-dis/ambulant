@@ -88,12 +88,10 @@ class dg_playable_factory : public common::playable_factory {
 	  dg_playable_factory(
 			common::factories *factory,
 			lib::logger *logger,
-			dg_playables_context *ctx,
-			common::gui_window *window)
+			dg_playables_context *ctx)
 	:	m_factory(factory),
 		m_logger(logger),
-		m_dgplayer(ctx),
-		m_window(window) {}
+		m_dgplayer(ctx) {}
 	////////////////////
 	// common::playable_factory implementation
 	
@@ -113,7 +111,6 @@ class dg_playable_factory : public common::playable_factory {
 	common::factories *m_factory;
 	lib::logger *m_logger;
 	dg_playables_context *m_dgplayer;
-	common::gui_window *m_window;
 };
 
 class dg_player : 
@@ -123,7 +120,7 @@ class dg_player :
 	public common::embedder {
 	
   public:
-	dg_player(dg_player_callbacks &hoster, const net::url& u);
+	dg_player(dg_player_callbacks &hoster, common::player_feedback *feedback, const net::url& u);
 	~dg_player();
 	
 	////////////////////

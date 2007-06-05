@@ -47,7 +47,6 @@ class dg_img_renderer : public dg_renderer_playable {
 		const lib::node *node,
 		lib::event_processor* evp,
 		common::factories* factory,
-		common::gui_window *window, 
 		dg_playables_context *dgplayer);
 	~dg_img_renderer();
 	void start(double t);
@@ -59,6 +58,7 @@ class dg_img_renderer : public dg_renderer_playable {
 	image_renderer *m_image;
 	lib::rect m_msg_rect;
 	dg_gui_region *m_rgn;
+	common::factories* m_factory;
 };
 
 } // namespace dg

@@ -73,7 +73,7 @@ using namespace ambulant;
 
 int gui::dg::dg_gui_region::s_counter = 0;
 
-gui::dg::dg_player::dg_player(dg_player_callbacks &hoster, const net::url& u) 
+gui::dg::dg_player::dg_player(dg_player_callbacks &hoster, common::player_feedback *feedback, const net::url& u) 
 :	m_hoster(hoster),
 	m_timer(new timer_control_impl(realtime_timer_factory(), 1.0, false)),
 	m_worker_processor(0),
@@ -96,6 +96,7 @@ gui::dg::dg_player::dg_player(dg_player_callbacks &hoster, const net::url& u)
 	// Create a player instance
 	AM_DBG m_logger->debug("Creating player instance for: %s", u.get_url().c_str());
 	m_player = new smil2::smil_player(m_doc, this, m_embedder);
+	if (feedback) m_player->set_feedback(feedback);
 	m_player->initialize();
 
 	// Create the worker processor
@@ -114,6 +115,7 @@ gui::dg::dg_player::~dg_player() {
 		stop();
 		delete m_player;
 	}
+	m_player = NULL;
 	m_timer->pause();
 	if(m_worker_processor)
 		m_worker_processor->cancel_all_events();
@@ -127,12 +129,10 @@ gui::dg::dg_player::~dg_player() {
 void
 gui::dg::dg_player::init_playable_factory()
 {
-	common::gui_window *window = get_window(get_main_window());
-	assert(window);
 	common::global_playable_factory *pf = common::get_global_playable_factory();
 	set_playable_factory(pf);
 	// Add the playable factory
-	pf->add_factory(new dg_playable_factory(this, m_logger, this, window));
+	pf->add_factory(new dg_playable_factory(this, m_logger, this));
 }
 
 void
@@ -348,19 +348,19 @@ gui::dg::dg_playable_factory::new_playable(
 	common::playable *p = 0;
 	lib::xml_string tag = node->get_qname().second;
 	if(tag == "text") {
-		p = new dg_text_renderer(context, cookie, node, evp, m_factory, m_window);
+		p = new dg_text_renderer(context, cookie, node, evp, m_factory);
 	} else if(tag == "img") {
-		p = new dg_img_renderer(context, cookie, node, evp, m_factory, m_window, m_dgplayer);
+		p = new dg_img_renderer(context, cookie, node, evp, m_factory, m_dgplayer);
 	} else if(tag == "audio") {
-		p = new dg_audio_renderer(context, cookie, node, evp, m_window, 0/*m_worker_processor*/);
+		p = new dg_audio_renderer(context, cookie, node, evp, 0/*m_worker_processor*/);
 	} else if(tag == "video") {
-		p = new dg_area(context, cookie, node, evp, m_window);
+		p = new dg_area(context, cookie, node, evp);
 	} else if(tag == "area") {
-		p = new dg_area(context, cookie, node, evp, m_window);
+		p = new dg_area(context, cookie, node, evp);
 	} else if(tag == "brush") {
-		p = new dg_brush(context, cookie, node, evp, m_window);
+		p = new dg_brush(context, cookie, node, evp);
 	} else {
-		p = new dg_area(context, cookie, node, evp, m_window);
+		p = new dg_area(context, cookie, node, evp);
 	}
 	return p;
 }

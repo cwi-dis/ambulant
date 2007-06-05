@@ -45,8 +45,7 @@ class dg_text_renderer : public common::renderer_playable {
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp,
-		common::factories* factory,
-		common::gui_window *window);
+		common::factories* factory);
 	~dg_text_renderer();
 	void start(double t);
 	void stop();
@@ -55,12 +54,13 @@ class dg_text_renderer : public common::renderer_playable {
 	void redraw(const lib::rect &dirty, common::gui_window *window);
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};
+	void set_surface(common::surface *dest);
   private:
 	std::basic_string<text_char> m_text;
-	common::gui_window *m_window;
 	const char *m_fontname;
 	float m_fontsize;
 	lib::color_t m_color;
+	common::factories* m_factory;
 };
 
 } // namespace dg

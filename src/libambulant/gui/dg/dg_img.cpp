@@ -49,27 +49,12 @@ gui::dg::dg_img_renderer::dg_img_renderer(
 	const lib::node *node,
 	lib::event_processor* evp,
 		common::factories* factory,
-	common::gui_window *window,
 	dg_playables_context *dgplayer)
-:   dg_renderer_playable(context, cookie, node, evp, window, dgplayer),
-	m_image(0) {
-	
+:   dg_renderer_playable(context, cookie, node, evp, dgplayer),
+	m_factory(factory),
+	m_image(0)
+{	
 	AM_DBG lib::logger::get_logger()->debug("dg_img_renderer::ctr(0x%x)", this);
-	net::url url = m_node->get_url("src");
-	net::datasource *src = factory->get_datasource_factory()->new_raw_datasource(url);
-	if (src == NULL) {
-		// XXX Should we give an error if this fails?
-		return;
-	}
-	if(!window) {
-		lib::logger::get_logger()->show("get_window() failed. [%s]",
-			url.get_url().c_str());
-		return;
-	}
-	dg_window *dgwindow = static_cast<dg_window*>(window);
-	viewport *v = dgwindow->get_viewport();
-	m_image = new image_renderer(url, src, v);
-	
 }
 
 gui::dg::dg_img_renderer::~dg_img_renderer() {
@@ -80,6 +65,22 @@ gui::dg::dg_img_renderer::~dg_img_renderer() {
 
 void gui::dg::dg_img_renderer::start(double t) {
 	AM_DBG lib::logger::get_logger()->debug("dg_img_renderer::start(0x%x)", this);
+	net::url url = m_node->get_url("src");
+	net::datasource *src = m_factory->get_datasource_factory()->new_raw_datasource(url);
+	if (src == NULL) {
+		// XXX Should we give an error if this fails?
+		return;
+	}
+	common::surface *surf = get_surface();
+	if(!surf) {
+		lib::logger::get_logger()->show("No surface [%s]",
+			url.get_url().c_str());
+		m_context->stopped(m_cookie);
+		return;
+	}
+	dg_window *dgwindow = static_cast<dg_window*>(surf->get_gui_window());
+	viewport *v = dgwindow->get_viewport();
+	m_image = new image_renderer(url, src, v);
 	if(!m_image) {
 		// Notify scheduler
 		m_context->stopped(m_cookie);

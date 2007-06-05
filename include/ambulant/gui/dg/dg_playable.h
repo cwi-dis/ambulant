@@ -54,10 +54,9 @@ class dg_renderer_playable : public common::renderer_playable {
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp,
-		common::gui_window *window, 
 		dg_playables_context *dgplayer) 
 	:	common::renderer_playable(context, cookie, node, evp), 
-		m_window(window), m_dgplayer(dgplayer), m_transitioning(false) {}
+		m_dgplayer(dgplayer), m_transitioning(false) {}
 	
 	void set_intransition(const lib::transition_info *info) {
 		//m_transitioning = true; 
@@ -76,7 +75,6 @@ class dg_renderer_playable : public common::renderer_playable {
 //		return NULL;
 //	}
  protected:
-	common::gui_window *m_window;
 	dg_playables_context *m_dgplayer;
 	bool m_transitioning;
 };
