@@ -450,8 +450,9 @@ ambulant_gtk_window::need_redraw(const lib::rect &r)
 	if ( ! gtk_widget_translate_coordinates (this_widget, dirty->widget, r.left(), r.top(), &dirty->area.x, &dirty->area.y)) {
 		AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw(0x%x): gtk_widget_translate_coordinates failed.", (void *)this);
 	}
-	g_idle_add((GSourceFunc) gtk_C_callback_helper_queue_draw_area, (void *)dirty);
-
+//KB	g_timeout_add(0,(GSourceFunc) gtk_C_callback_helper_queue_draw_area, (void *)dirty);
+//KB	g_idle_add((GSourceFunc) gtk_C_callback_helper_queue_draw_area, (void *)dirty);
+	g_idle_add_full(G_PRIORITY_HIGH_IDLE, (GSourceFunc) gtk_C_callback_helper_queue_draw_area, (void *)dirty, NULL);
 //	gtk_widget_queue_draw_area(m_ambulant_widget->get_gtk_widget(), r.left(), r.top(), r.width(), r.height());
 //	gdk_threads_leave ();
 //	g_main_context_dispatch(g_main_loop_get_context(m_main_loop)); 

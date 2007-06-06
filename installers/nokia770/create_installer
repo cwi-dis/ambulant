@@ -9,7 +9,7 @@ APPLICATION=ambulantplayer
 VERSION=1.9
 SRC_DIR=`pwd`
 DST_DIR="`pwd`/debian/$APPLICATION-app"
-AMBULANT_TOPDIR="$SRC_DIR/../../.."
+AMBULANT_TOPDIR="$SRC_DIR/../.."
 DEBIAN="$DST_DIR/DEBIAN"
 HICOLOR="$DST_DIR/usr/share/icons/hicolor"
 

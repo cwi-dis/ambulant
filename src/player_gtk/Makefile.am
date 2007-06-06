@@ -170,15 +170,19 @@ if WITH_NOKIA770
 # The icons
 
 icondir = $(datadir)/icons/hicolor
+installerdir = $(srcdir)/../../installers
 
+# 	i=pkg_AmbulantPlayer-app;
 install-data-local:
-	i=pkg_AmbulantPlayer-app; \
+	pwd; \
+	i=AmbulantPlayer; \
+	echo "DESTDIR=" $(DESTDIR) " icondir=" $(icondir) " " $i $$i; \
 	$(mkinstalldirs) $(DESTDIR)$(icondir)/26x26/hildon; \
 	$(mkinstalldirs) $(DESTDIR)$(icondir)/40x40/hildon; \
 	$(mkinstalldirs) $(DESTDIR)$(icondir)/scalable/hildon; \
-	$(INSTALL_DATA) $(srcdir)/nokia770/$$i.26.png $(DESTDIR)$(icondir)/26x26/hildon/$$i.png; \
-	$(INSTALL_DATA) $(srcdir)/nokia770/$$i.40.png $(DESTDIR)$(icondir)/40x40/hildon/$$i.png; \
-	$(INSTALL_DATA) $(srcdir)/nokia770/$$i.64.png $(DESTDIR)$(icondir)/scalable/hildon/$$i.png;
+	$(INSTALL_DATA) $(installerdir)/nokia770/$$i-26x26.png $(DESTDIR)$(icondir)/26x26/hildon/pkg_$$i-app.png; \
+	$(INSTALL_DATA) $(installerdir)/nokia770/$$i-40x40.png $(DESTDIR)$(icondir)/40x40/hildon/pkg_$$i-app.png; \
+	$(INSTALL_DATA) $(installerdir)/nokia770/$$i-scalable.png $(DESTDIR)$(icondir)/scalable/hildon/pkg_$$i-app.png;
 	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir);
 	$(INSTALL_DATA) $(srcdir)/ui_manager.xml $(DESTDIR)$(pkgdatadir);
 #	Install gettext localizations

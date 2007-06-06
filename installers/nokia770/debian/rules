@@ -3,7 +3,7 @@
 # debian/rules that uses debhelper.
 
 # Uncomment this to turn on verbose mode.
-# export DH_VERBOSE=1
+export DH_VERBOSE=1
 
 CFLAGS = -Wall -g
 ifeq (,$(SRC_DIR))
@@ -55,6 +55,7 @@ install: build
 
 	# Add here commands to install the package
 	(cd $(SRC_DIR);$(MAKE) install DESTDIR=$(CURDIR)/debian/ambulantplayer-app)
+	(cd $(SRC_DIR)/src/player_gtk; $(MAKE) install-data-local DESTDIR=$(CURDIR)/debian/ambulantplayer-app)
 
 
 # Build architecture-independent files here.
