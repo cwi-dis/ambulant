@@ -71,11 +71,12 @@ create_player_instance(const net::url& u) {
 }
 
 void lib::win32::show_message(int level, const char *message) {
-	unsigned int type = MB_OK;
+	unsigned int type = MB_OK|MB_TASKMODAL|MB_ICONERROR;
 	if (level == lib::logger::LEVEL_WARN) type |= MB_ICONWARNING;
 	if (level == lib::logger::LEVEL_ERROR) type |= MB_ICONERROR;
 	if (level == lib::logger::LEVEL_FATAL) type |= MB_ICONERROR;
-	MessageBox(NULL, textptr(message), text_str("AmbulantPlayer"), type);
+	HWND top = GetForegroundWindow();
+	MessageBox(top, textptr(message), text_str("AmbulantPlayer"), type);
 }
 
 static  dg_or_dx_player *player = 0;
@@ -114,6 +115,7 @@ CAmbulantPlayerView::CAmbulantPlayerView()
 	m_timer_id = 0;
 	m_cursor_id = 0;
 	m_autoplay = true;
+	lib::logger::get_logger()->set_show_message(lib::win32::show_message);
 }
 
 CAmbulantPlayerView::~CAmbulantPlayerView()

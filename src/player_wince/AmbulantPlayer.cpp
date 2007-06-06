@@ -52,19 +52,22 @@ CAmbulantPlayerApp theApp;
 
 BOOL CAmbulantPlayerApp::InitInstance()
 {
-#if 0 // wce5
     // SHInitExtraControls should be called once during your application's initialization to initialize any
     // of the Windows Mobile specific controls such as CAPEDIT and SIPPREF.
     SHInitExtraControls();
 
+#if 0
 	if (!AfxSocketInit())
 	{
 		AfxMessageBox(IDP_SOCKETS_INIT_FAILED);
 		return FALSE;
 	}
+#endif
+	
+	// XXXJACK Desktop version inits a few more things. CE needs that too?
 
 	AfxEnableControlContainer();
-#endif
+
 	// Standard initialization
 	// If you are not using these features and wish to reduce the size
 	//  of your final executable, you should remove from the following
