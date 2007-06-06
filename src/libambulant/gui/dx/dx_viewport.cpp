@@ -22,8 +22,10 @@
  */
 
 
-#define INITGUID
 #include "ambulant/config/config.h"
+#ifndef AMBULANT_PLATFORM_WIN32_WCE
+#define INITGUID
+#endif
 #include <objbase.h>
 #ifdef AMBULANT_DDRAW_EX
 #include <ddrawex.h>
@@ -37,9 +39,11 @@
 #include "ambulant/gui/dx/dx_viewport.h"
 
 
+#ifndef AMBULANT_PLATFORM_WIN32_WCE
 #pragma comment (lib,"winmm.lib")
-#pragma comment (lib,"ddraw.lib")
 #pragma comment (lib,"dxguid.lib")
+#endif
+#pragma comment (lib,"ddraw.lib")
 
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/colors.h"

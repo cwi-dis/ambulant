@@ -244,7 +244,7 @@ void gui::dg::viewport::draw(const std::basic_string<text_char>& text,
 		win_report_last_error("DrawText()");
 }
 
-#ifdef _WIN32_WCE
+#ifdef AMBULANT_PLATFORM_WIN32_WCE
 static int wce_FrameRect(HDC hdc, const RECT* lprc, HBRUSH hbr)
 {
   // Fill a "line-size" rectangle for each edge of the frame, using hbr
@@ -278,7 +278,7 @@ void gui::dg::viewport::frame_rect(const lib::rect& rc, lib::color_t clr) {
 	if(!m_memdc) return;
 	RECT RC = {rc.left(), rc.top(), rc.right(), rc.bottom()};
 	HBRUSH hbr = CreateSolidBrush(clr);
-#ifdef _WIN32_WCE
+#ifdef AMBULANT_PLATFORM_WIN32_WCE
 	if(wce_FrameRect(m_memdc, &RC, hbr) == 0)
 		win_report_last_error("FrameRect()");
 #else

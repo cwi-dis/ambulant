@@ -34,7 +34,7 @@
 #include <mmsystem.h>
 #endif
 
-#ifndef _WIN32_WCE
+#ifndef AMBULANT_PLATFORM_WIN32_WCE
 #pragma comment (lib,"winmm.lib")
 #endif
 

@@ -507,7 +507,7 @@ gui::dg::dg_player::get_window(const lib::node* n) {
 }
 #endif
 void gui::dg::dg_player::show_file(const net::url& href) {
-#ifndef _WIN32_WCE
+#ifndef AMBULANT_PLATFORM_WIN32_WCE
 	std::string s = href.get_url();
 	ShellExecute(GetDesktopWindow(), text_str("open"), textptr(s.c_str()), NULL, NULL, SW_SHOWNORMAL);
 #else

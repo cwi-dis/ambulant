@@ -42,11 +42,12 @@
 // CLSID_FilterGraph
 #include <uuids.h>
 
+#ifndef AMBULANT_PLATFORM_WIN32_WCE
 #pragma comment (lib,"winmm.lib")
 #pragma comment (lib,"amstrmid.lib")
-
-#pragma comment (lib,"uuid.lib")
+#endif
 #pragma comment (lib,"strmiids.lib")
+#pragma comment (lib,"uuid.lib")
 
 namespace ambulant {
 

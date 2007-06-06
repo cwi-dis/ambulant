@@ -403,7 +403,6 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="strtod=private_strtod"
 						UsePrecompiledHeader="0"
 						BrowseInformation="1"
 					/>
@@ -414,7 +413,6 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="strtod=private_strtod"
 						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>

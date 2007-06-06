@@ -9,11 +9,11 @@
 #include "SelectDlg.h"
 
 // DG Player
-#include "ambulant/gui/dg/dg_player.h"
-#include "ambulant/gui/dg/dg_wmuser.h"
+//#include "ambulant/gui/dg/dg_player.h"
+//#include "ambulant/gui/dg/dg_wmuser.h"
 // DX player
-//#include "ambulant/gui/dx/dx_player.h"
-//#include "ambulant/gui/dx/dx_wmuser.h"
+#include "ambulant/gui/dx/dx_player.h"
+#include "ambulant/gui/dx/dx_wmuser.h"
 
 #include "ambulant/common/preferences.h"
 #include "ambulant/lib/logger.h"
@@ -36,8 +36,8 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace ambulant;
 
-typedef gui::dg::dg_player dg_or_dx_player;
-typedef gui::dg::dg_player_callbacks gui_callbacks;
+typedef gui::dx::dx_player dg_or_dx_player;
+typedef gui::dx::dx_player_callbacks gui_callbacks;
 
 // The handle of the single window instance
 static HWND s_hwnd;
@@ -48,6 +48,7 @@ class my_player_callbacks : public gui_callbacks {
 	HWND new_os_window();
 	void destroy_os_window(HWND hwnd);
 	HWND get_main_window();
+	html_browser *new_html_browser(int left, int top, int width, int height);
 };
 
 my_player_callbacks s_player_callbacks;
@@ -67,6 +68,11 @@ HWND my_player_callbacks::get_main_window() {
 	return AfxGetMainWnd()->GetSafeHwnd();
 }
 
+html_browser *
+my_player_callbacks::new_html_browser(int left, int top, int width, int height)
+{
+	return NULL;
+}
 
 static dg_or_dx_player* 
 create_player_instance(const net::url& u) {
