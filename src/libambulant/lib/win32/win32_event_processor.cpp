@@ -30,6 +30,9 @@
 
 //#define AM_DBG
 
+// Define this for desktop windows or Windows Mobile 5 or higher:
+#define AMBULANT_WITH_DIRECTX
+
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -54,14 +57,14 @@ unsigned long
 lib::win32::event_processor::run() {
 	lib::logger* logger = lib::logger::get_logger();
 	AM_DBG logger->debug("event_processor::run(=0x%x)", this);
-#ifndef AMBULANT_PLATFORM_WIN32_WCE
-	CoInitialize(NULL);
+#ifdef AMBULANT_WITH_DIRECTX
+	CoInitializeEx(NULL, COINIT_APARTMENTTHREADED); // XXXJACK or MULTITHREADED?
 #endif
 	while(!exit_requested()) {	
 		serve_events();		
 		wait_event();
 	}
-#ifndef AMBULANT_PLATFORM_WIN32_WCE
+#ifdef AMBULANT_WITH_DIRECTX
 	CoUninitialize();
 #endif
 	AM_DBG logger->debug("event_processor::~run(=0x%x)", this);
