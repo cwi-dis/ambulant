@@ -117,7 +117,7 @@
 				ExecutionBucket="7"
 				Optimization="2"
 				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\xerces-c-src_2_7_0\src\&quot;;..\..\include;..\..\third_party_packages\expat\lib;..\..\third_party_packages\jpeg;..\..\third_party_packages\lpng128;..\..\third_party_packages\zlib;..\..\third_party_packages\mp3lib"
-				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;_LIB;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;_AMBULANT;WITH_EXPAT;XML_STATIC;WITH_XERCES;WITH_XERCES_BUILTIN;WITH_EXTERNAL_DOM=1;WITH_HTML_WIDGET"
+				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;_LIB;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;_AMBULANT;WITH_EXPAT;XML_STATIC"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
