@@ -626,8 +626,11 @@ gui::dx::dx_player::get_window(const lib::node* n) {
 #endif
 
 void gui::dx::dx_player::show_file(const net::url& href) {
+#ifdef AMBULANT_PLATFORM_WIN32_WCE
+	m_logger->error("Not implemented: opening external file %s", href.get_url().c_str());
+#else
 	ShellExecute(GetDesktopWindow(), text_str("open"), textptr(href.get_url().c_str()), NULL, NULL, SW_SHOWNORMAL);
-	
+#endif
 	// Or for smil
 	//std::string this_exe = lib::win32::get_module_filename();
 	//std::string cmd = this_exe + " " + newdoc.get_url();

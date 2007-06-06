@@ -179,6 +179,28 @@ gui::dx::text_renderer::render(LONG x, LONG y, HFONT hfont) {
 	}
 	HFONT hfp = hfont;
 	if (hfp == NULL) {
+#ifdef AMBULANT_PLATFORM_WIN32_WCE
+		LOGFONT lfFont;
+		lfFont.lfHeight         = -(int)m_text_size;
+		lfFont.lfWidth          = 0;
+		lfFont.lfEscapement     = 0;
+		lfFont.lfOrientation    = 0;
+		lfFont.lfWeight         = 0;
+		lfFont.lfItalic         = 0;
+		lfFont.lfUnderline      = 0;
+		lfFont.lfStrikeOut      = 0;
+		lfFont.lfCharSet        = ANSI_CHARSET;
+		lfFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
+		lfFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
+		lfFont.lfQuality        = DEFAULT_QUALITY;
+		lfFont.lfPitchAndFamily = family;
+		lfFont.lfFaceName[0]    = '\0';
+		if (fontname) {
+			_tcscpy(lfFont.lfFaceName, STR_TO_TSTR(fontname));
+		}
+
+		hfp = CreateFontIndirect(&lfFont);
+#else
 		hfp	= ::CreateFont(
 				-(int)m_text_size,	// height of font
 				0,					// average character width
@@ -194,6 +216,7 @@ gui::dx::text_renderer::render(LONG x, LONG y, HFONT hfont) {
 				DEFAULT_QUALITY,	// output quality
 				family,				// pitch and family
 				STR_TO_TSTR(fontname));	// typeface name
+#endif
 	}
 	::SelectObject(hdc, hfp);
 	RECT dstRC = {x, y, m_size.w, m_size.h};

@@ -50,6 +50,19 @@
 #include <algorithm>
 #include <cassert>
 
+// Windows Mobile 5 has some different names:
+#ifdef DDLOCK_WAIT
+#define AM_DDLOCK_WAIT DDLOCK_WAIT
+#else
+#define AM_DDLOCK_WAIT DDLOCK_WAITNOTBUSY
+#endif
+
+#ifdef DDBLT_WAIT
+#define AM_DDBLT_WAIT DDBLT_WAIT
+#else
+#define AM_DDBLT_WAIT DDBLT_WAITNOTBUSY
+#endif
+
 using namespace ambulant;
 
 #ifndef AM_DBG
@@ -66,6 +79,7 @@ static struct error {
 	HRESULT hr;
 	char *name;
 } errorlist [] = {
+#ifndef AMBULANT_PLATFORM_WIN32_WCE
 	{DDERR_ALREADYINITIALIZED, "DDERR_ALREADYINITIALIZED"},
 	{DDERR_CANNOTATTACHSURFACE,"DDERR_CANNOTATTACHSURFACE"},
 	{DDERR_CANNOTDETACHSURFACE,"DDERR_CANNOTDETACHSURFACE"},
@@ -209,6 +223,9 @@ static struct error {
 #endif
 	{DDERR_DEVICEDOESNTOWNSURFACE, "DDERR_DEVICEDOESNTOWNSURFACE"},
 	{DDERR_NOTINITIALIZED, "DDERR_NOTINITIALIZED"},
+#else
+	{0, "null"},
+#endif
 };
 
 #define RELEASE(x) if(x) x->Release();x=NULL;
@@ -299,6 +316,10 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 		seterror("CreateDirectDraw()", hr);
 		return;
 	}
+#ifdef AMBULANT_PLATFORM_WIN32_WCE
+	// XXXJACK: Guessing here that we don't have DD1 on WM5 and get a DD2 surface directly.
+	m_direct_draw = pDD1;
+#else
 	hr = pDD1->QueryInterface(IID_IDirectDraw2, (void**)&m_direct_draw);
 	if (FAILED(hr)){
 		seterror("QueryInterface(IID_IDirectDraw2,...)", hr);
@@ -306,6 +327,7 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 		return;
 	}
 	pDD1->Release();
+#endif // AMBULANT_PLATFORM_WIN32_WCE
 	DWORD flags = DDSCL_NORMAL;
 	hr = m_direct_draw->SetCooperativeLevel(m_hwnd, flags);
 	if (FAILED(hr)) {
@@ -343,7 +365,12 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 	memset(&sd, 0, sizeof(DDSURFACEDESC));
 	sd.dwSize = sizeof(DDSURFACEDESC);
 	sd.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
+#ifdef DDSCAPS_OFFSCREENPLAIN
 	sd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
+#else
+	// XXXJACK: for WinCE. Maybe we need DDSCAPS_BACKBUFFER or something?
+	sd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY;
+#endif
 	sd.dwWidth = m_width;
 	sd.dwHeight = m_height;
 	hr = m_direct_draw->CreateSurface(&sd, &m_surface, NULL);
@@ -362,7 +389,12 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 	memset(&sd, 0, sizeof(DDSURFACEDESC));
 	sd.dwSize = sizeof(DDSURFACEDESC);
 	sd.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
+#ifdef DDSCAPS_OFFSCREENPLAIN
 	sd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
+#else
+	// XXXJACK: for WinCE. Maybe we need DDSCAPS_BACKBUFFER or something?
+	sd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY;
+#endif
 	sd.dwWidth = m_width;
 	sd.dwHeight = m_height;
 	hr = m_direct_draw->CreateSurface(&sd, &surf, NULL);
@@ -374,7 +406,12 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 	memset(&sd, 0, sizeof(DDSURFACEDESC));
 	sd.dwSize = sizeof(DDSURFACEDESC);
 	sd.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
+#ifdef DDSCAPS_OFFSCREENPLAIN
 	sd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
+#else
+	// XXXJACK: for WinCE. Maybe we need DDSCAPS_BACKBUFFER or something?
+	sd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY;
+#endif
 	sd.dwWidth = m_width;
 	sd.dwHeight = m_height;
 	hr = m_direct_draw->CreateSurface(&sd, &m_fstr_surface, NULL);
@@ -412,7 +449,12 @@ gui::dx::viewport::create_surface(DWORD w, DWORD h) {
 	memset(&sd, 0, sizeof(DDSURFACEDESC));
 	sd.dwSize = sizeof(DDSURFACEDESC);
 	sd.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
+#ifdef DDSCAPS_OFFSCREENPLAIN
 	sd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
+#else
+	// XXXJACK: for WinCE. Maybe we need DDSCAPS_BACKBUFFER or something?
+	sd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY;
+#endif
 	sd.dwWidth = w;
 	sd.dwHeight = h;
 	HRESULT hr = m_direct_draw->CreateSurface(&sd, &surface, NULL);
@@ -445,7 +487,7 @@ void gui::dx::viewport::redraw() {
 	RECT src_rc = {0, 0, m_width, m_height};
 	RECT dst_rc = {0, 0, m_width, m_height};
 	lib::rect ourrect(lib::point(0,0), lib::size(m_width, m_height));
-	DWORD flags = DDBLT_WAIT;
+	DWORD flags = AM_DDBLT_WAIT;
 
 	if (m_fstransition) {
 		AM_DBG lib::logger::get_logger()->debug("viewport::redraw: Applying fullscreen transition");
@@ -545,7 +587,7 @@ void gui::dx::viewport::redraw(const lib::rect& rc) {
 		
 	// Blit:
 	lib::rect ourrect(lib::point(0,0), lib::size(m_width, m_height));
-	DWORD flags = DDBLT_WAIT;
+	DWORD flags = AM_DDBLT_WAIT;
 
 	if (m_fstransition) {
 		AM_DBG lib::logger::get_logger()->debug("viewport::redraw: Applying fullscreen transition");
@@ -651,7 +693,7 @@ void gui::dx::viewport::clear() {
 	bltfx.dwSize = sizeof(bltfx);
 	bltfx.dwFillColor = m_ddbgd; 
 	RECT dst_rc = {0, 0, m_width, m_height};
-	HRESULT hr = m_surface->Blt(&dst_rc, 0, 0, DDBLT_COLORFILL | DDBLT_WAIT, &bltfx);
+	HRESULT hr = m_surface->Blt(&dst_rc, 0, 0, DDBLT_COLORFILL | AM_DDBLT_WAIT, &bltfx);
 	if (FAILED(hr)) {
 		seterror(":viewport::clear/DirectDrawSurface::Blt()", hr);
 	}
@@ -751,7 +793,7 @@ void gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, IDirectDraw
 	if(!IntersectRect(&dstRC, &dstRC, &vrc) || IsRectEmpty(&dstRC))
 		return;
 		
-	HRESULT hr = dstview->Blt(&dstRC, 0, 0, DDBLT_COLORFILL | DDBLT_WAIT, &bltfx);
+	HRESULT hr = dstview->Blt(&dstRC, 0, 0, DDBLT_COLORFILL | AM_DDBLT_WAIT, &bltfx);
 	if (FAILED(hr)) {
 		seterror(":viewport::clear/DirectDrawSurface::Blt()", hr);
 	}
@@ -768,7 +810,7 @@ void gui::dx::viewport::clear_surface(IDirectDrawSurface* p, lib::color_t clr) {
 	bltfx.dwFillColor = (clr == CLR_INVALID)?m_ddbgd:convert(clr);
 	RECT dst_rc;
 	set_rect(p, &dst_rc);	
-	HRESULT hr = p->Blt(&dst_rc, 0, 0, DDBLT_COLORFILL | DDBLT_WAIT, &bltfx);
+	HRESULT hr = p->Blt(&dst_rc, 0, 0, DDBLT_COLORFILL | AM_DDBLT_WAIT, &bltfx);
 	if (FAILED(hr)) {
 		seterror("DirectDrawSurface::Blt()", hr);
 	}
@@ -777,7 +819,7 @@ void gui::dx::viewport::clear_surface(IDirectDrawSurface* p, lib::color_t clr) {
 // Draw the whole DD surface to the back buffer and destination rectangle
 void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& dst_rc, bool keysrc) {
 	if(!m_surface || !src) return;
-	DWORD flags = DDBLT_WAIT;
+	DWORD flags = AM_DDBLT_WAIT;
 	if(keysrc) flags |= DDBLT_KEYSRC;
 	
 	// Set srcRC to surf rect
@@ -927,7 +969,7 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& src_rc,
 	if(!IntersectRect(&dstRC, &dstRC, &vrc) || IsRectEmpty(&dstRC))
 		return;
 	
-	DWORD flags = DDBLT_WAIT;
+	DWORD flags = AM_DDBLT_WAIT;
 	if(keysrc) flags |= DDBLT_KEYSRC;
 	AM_DBG lib::logger::get_logger()->debug("dx_viewport::redraw(0x%x): src=0x%x, flags=0x%x, dstRC(%d,%d,%d,%d), srcRC(%d,%d,%d,%d)", dstview, src, flags, dstRC.top,dstRC.bottom,dstRC.left,dstRC.right,srcRC.top,srcRC.bottom,srcRC.left,srcRC.right);
 	HRESULT hr = dstview->Blt(&dstRC, src, &srcRC, flags, NULL);
@@ -968,8 +1010,12 @@ void gui::dx::viewport::frame_rect(const lib::rect& rc, lib::color_t clr) {
 	}
 	RECT RC = {rc.left(), rc.top(), rc.right(), rc.bottom()};
 	HBRUSH hbr = CreateSolidBrush(clr);
+#ifdef AMBULANT_PLATFORM_WIN32_WCE
+	lib::logger::get_logger()->trace("frame_rect: not implemented on Windows Mobile");
+#else
 	if(FrameRect(hdc, &RC, hbr) == 0)
 		win_report_last_error("FrameRect()");
+#endif
 	DeleteObject((HGDIOBJ) hbr);
 	m_surface->ReleaseDC(hdc);
 }
@@ -1007,7 +1053,7 @@ void gui::dx::viewport::blit(IDirectDrawSurface* src, const lib::rect& src_rc,
 	if(!IntersectRect(&dstRC, &dstRC, &dstSurfRC) || IsRectEmpty(&dstRC))
 		return;
 			
-	DWORD flags = DDBLT_WAIT;
+	DWORD flags = AM_DDBLT_WAIT;
 	HRESULT hr = dst->Blt(&dstRC, src, &srcRC, flags, NULL);
 	if (FAILED(hr)) {
 		seterror("viewport::blit/DirectDrawSurface::Blt()", hr);
@@ -1018,7 +1064,7 @@ void gui::dx::viewport::blit(IDirectDrawSurface* src, const lib::rect& src_rc,
 // Copies to the DD surface the back buffer within the from rect
 void gui::dx::viewport::rdraw(IDirectDrawSurface* dst, const lib::rect& from_rc) {
 	if(!m_surface || !dst) return;
-	DWORD flags = DDBLT_WAIT;
+	DWORD flags = AM_DDBLT_WAIT;
 	
 	// Set srcRC to surf rect
 	RECT surfRC;
@@ -1040,7 +1086,7 @@ void gui::dx::viewport::rdraw(IDirectDrawSurface* dst, const lib::rect& from_rc)
 
 void gui::dx::viewport::copy_bgd_to(IDirectDrawSurface* surf, const lib::rect& rc) { 
 	if(!m_surface || !surf) return;
-	DWORD flags = DDBLT_WAIT;
+	DWORD flags = AM_DDBLT_WAIT;
 	RECT RC = {rc.left(), rc.top(), rc.right(), rc.bottom()};
 	RECT vrc = {0, 0, m_width, m_height};
 	if(!IntersectRect(&RC, &RC, &vrc) || IsRectEmpty(&RC)) return;
@@ -1052,7 +1098,7 @@ void gui::dx::viewport::copy_bgd_to(IDirectDrawSurface* surf, const lib::rect& r
 
 void gui::dx::viewport::draw_to_bgd(IDirectDrawSurface* surf, const lib::rect& rc, HRGN hrgn) {
 	if(!m_surface) return;
-	DWORD flags = DDBLT_WAIT;
+	DWORD flags = AM_DDBLT_WAIT;
 	RECT RC = {rc.left(), rc.top(), rc.right(), rc.bottom()};
 	RECT vrc = {0, 0, m_width, m_height};
 	if(!IntersectRect(&RC, &RC, &vrc) || IsRectEmpty(&RC)) return;
@@ -1179,11 +1225,11 @@ HRESULT gui::dx::viewport::blt_blend32(const lib::rect& rc, double progress,
 	desc1.dwSize = sizeof(desc1);
 	ZeroMemory(&desc2, sizeof(desc2));
 	desc2.dwSize = sizeof(desc2);
-	
-	HRESULT hr = surf1->Lock(0, &desc1, DDLOCK_WAIT | DDLOCK_READONLY, 0);
+
+	HRESULT hr = surf1->Lock(0, &desc1, AM_DDLOCK_WAIT | DDLOCK_READONLY, 0);
 	if(hr!=DD_OK) return hr;
 	
-	hr = surf2->Lock(0, &desc2, DDLOCK_WAIT, 0);
+	hr = surf2->Lock(0, &desc2, AM_DDLOCK_WAIT, 0);
 	if(hr != DD_OK) {	
 		surf1->Unlock(0);
 		return hr;
@@ -1224,10 +1270,10 @@ HRESULT gui::dx::viewport::blt_blend24(const lib::rect& rc, double progress,
 	ZeroMemory(&desc2, sizeof(desc2));
 	desc2.dwSize = sizeof(desc2);
 	
-	HRESULT hr = surf1->Lock(0, &desc1, DDLOCK_WAIT | DDLOCK_READONLY, 0);
+	HRESULT hr = surf1->Lock(0, &desc1, AM_DDLOCK_WAIT | DDLOCK_READONLY, 0);
 	if(hr!=DD_OK) return hr;
 	
-	hr = surf2->Lock(0, &desc2, DDLOCK_WAIT, 0);
+	hr = surf2->Lock(0, &desc2, AM_DDLOCK_WAIT, 0);
 	if(hr != DD_OK) {	
 		surf1->Unlock(0);
 		return hr;
@@ -1294,10 +1340,10 @@ HRESULT gui::dx::viewport::blt_blend16(const lib::rect& rc, double progress,
 	ZeroMemory(&desc2, sizeof(desc2));
 	desc2.dwSize = sizeof(desc2);
 	
-	HRESULT hr = surf1->Lock(0, &desc1, DDLOCK_WAIT | DDLOCK_READONLY, 0);
+	HRESULT hr = surf1->Lock(0, &desc1, AM_DDLOCK_WAIT | DDLOCK_READONLY, 0);
 	if(hr!=DD_OK) return hr;
 	
-	hr = surf2->Lock(0, &desc2, DDLOCK_WAIT, 0);
+	hr = surf2->Lock(0, &desc2, AM_DDLOCK_WAIT, 0);
 	if(hr != DD_OK) {	
 		surf1->Unlock(0);
 		return hr;

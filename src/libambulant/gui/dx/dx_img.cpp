@@ -229,7 +229,12 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 		RECT bgrect_image, bgrect_screen;
 		set_rect(img_rect_dirty, &bgrect_image);
 		set_rect(dirty_screen, &bgrect_screen);
-		bgimage->Blt(&bgrect_image, v->get_surface(), &bgrect_screen, DDBLT_WAIT, NULL);
+#ifdef DDBLT_WAIT
+#define WAITFLAG DDBLT_WAIT
+#else
+#define WAITFLAG DDBLT_WAITNOTBUSY
+#endif
+		bgimage->Blt(&bgrect_image, v->get_surface(), &bgrect_screen, WAITFLAG, NULL);
 		// Then draw the image
 		v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), (dx_transition*)0);
 		// And finally transition in the background bits saved previously

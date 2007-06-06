@@ -61,7 +61,12 @@ void gui::dx::dx_bgrenderer::keep_as_background() {
 	if (m_bg_image) m_bg_image->Release();
 	m_bg_image = v->create_surface(dstrect.width(), dstrect.height());
 	
-	m_bg_image->Blt(&d_dstrect, v->get_surface(), &d_srcrect, DDBLT_WAIT, NULL);
+#ifdef DDBLT_WAIT
+#define WAITFLAG DDBLT_WAIT
+#else
+#define WAITFLAG DDBLT_WAITNOTBUSY
+#endif
+	m_bg_image->Blt(&d_dstrect, v->get_surface(), &d_srcrect, WAITFLAG, NULL);
 }
 	
 void gui::dx::dx_bgrenderer::redraw(const lib::rect &dirty, common::gui_window *window) {

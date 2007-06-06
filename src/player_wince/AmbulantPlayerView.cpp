@@ -11,6 +11,9 @@
 // DG Player
 #include "ambulant/gui/dg/dg_player.h"
 #include "ambulant/gui/dg/dg_wmuser.h"
+// DX player
+//#include "ambulant/gui/dx/dx_player.h"
+//#include "ambulant/gui/dx/dx_wmuser.h"
 
 #include "ambulant/common/preferences.h"
 #include "ambulant/lib/logger.h"
