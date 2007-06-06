@@ -19,7 +19,11 @@
 #include "ambulant/smil2/test_attrs.h"
 #include "ambulant/net/url.h"
 
+#ifdef _DEBUG
+#pragma comment (lib,"mp3lib_D.lib")
+#else
 #pragma comment (lib,"mp3lib.lib")
+#endif
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

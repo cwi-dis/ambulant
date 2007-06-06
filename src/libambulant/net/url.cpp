@@ -92,6 +92,14 @@ filepath2urlpath(const std::string& fparg, bool handle_frag=false)
 		else
 			*i = tolower(c);
 	}
+#ifdef AMBULANT_PLATFORM_WIN32_WCE
+	// On WinCE InternetCanonicalizeUrl also turns backslash into %5c (sigh).
+	while(1) {
+		size_t bspos = rv.find("%5c");
+		if (bspos == std::string::npos) break;
+		rv.replace(bspos, 3, "/");
+	}
+#endif // AMBULANT_PLATFORM_WIN32_WCE
 	free(urlbuf);
 	// Finally re-apply the fragment id, if there is one
 	if (fragment != "") {
@@ -634,12 +642,14 @@ net::url net::url::join_to_base(const net::url &base) const
 	if (m_absolute) return *this;
 	std::string basepath = base.get_path();
 	std::string newpath = get_path();
+	/*AM_DBG*/ lib::logger::get_logger()->debug("join_to_base: base='%s', new='%s'",basepath.c_str(), newpath.c_str());
 	if (newpath == "") {
 		// New path is, for instance, only #anchor.
 		newpath = basepath; 
 	} else if (newpath[0] != '/') {
 		// New_path is not absolute. Prepend base of basepath
 		basepath = lib::filesys::get_base(basepath);
+		/*AM_DBG*/ lib::logger::get_logger()->debug("join_to_base: get_base returned '%s'", basepath.c_str());
 		// Convert basepath from Windows to URL, if needed.
 		// XXXX Incomplete?
 //		if (base.m_absolute && basepath[0] != '/')

@@ -27,7 +27,11 @@
 #define MP3LIB_STATIC
 #include "mp3lib.h"
 
+#ifdef _DEBUG
+#pragma comment (lib,"mp3lib_D.lib")
+#else
 #pragma comment (lib,"mp3lib.lib")
+#endif
 
 //#define AM_DBG if(1)
 

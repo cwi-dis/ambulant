@@ -1,4 +1,4 @@
-//Microsoft Developer Studio generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -28,19 +28,19 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE DISCARDABLE 
+1 TEXTINCLUDE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE DISCARDABLE 
+2 TEXTINCLUDE 
 BEGIN
     "#include ""afxres.h""\r\n"
     "#include ""newres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE DISCARDABLE 
+3 TEXTINCLUDE 
 BEGIN
     "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
     "#define _AFX_NO_OLE_RESOURCES\r\n"
@@ -54,7 +54,6 @@ BEGIN
     "#endif //_WIN32\r\n"
     "#include ""res\\AmbulantPlayer.rc2""  // non-Microsoft eMbedded Visual C++ edited resources\r\n"
     "#include ""afxres.rc""         // Standard components\r\n"
-//    "#include ""wceres.rc""         // WCE-specific components\r\n"
     "#endif\r\n"
     "\0"
 END
@@ -69,21 +68,21 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON    DISCARDABLE     "res\\AmbulantPlayer.ico"
+IDR_MAINFRAME           ICON                    "res\\AmbulantPlayer.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Bitmap
 //
 
-IDR_MAINFRAME           BITMAP  MOVEABLE PURE   "res\\Cmdbar.bmp"
+IDR_MAINFRAME           BITMAP                  "res\\Cmdbar.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Toolbar
 //
 
-IDR_MAINFRAME TOOLBAR DISCARDABLE  16, 16
+IDR_MAINFRAME TOOLBAR  16, 16
 BEGIN
     BUTTON      ID_FILE_OPEN
     SEPARATOR
@@ -97,10 +96,10 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// Menubar
+// Menu
 //
 
-IDR_MAINFRAME MENU PRELOAD DISCARDABLE 
+IDR_MAINFRAME MENU 
 BEGIN
     POPUP "&File"
     BEGIN
@@ -130,7 +129,7 @@ END
 // Accelerator
 //
 
-IDR_MAINFRAME ACCELERATORS PRELOAD MOVEABLE PURE 
+IDR_MAINFRAME ACCELERATORS 
 BEGIN
     "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
@@ -153,35 +152,31 @@ END
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 136, 71
-STYLE WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_ABOUTBOX DIALOG  0, 0, 136, 71
+STYLE DS_SETFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU
 EXSTYLE 0x80000000L
 CAPTION "About AmbulantPlayer"
 FONT 8, "System"
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
-    LTEXT           "Ambulant Player v.1.9",IDC_AM_VERSION,31,17,78,8,
-                    SS_NOPREFIX
+    LTEXT           "Ambulant Player v.1.9",IDC_AM_VERSION,31,17,78,8,SS_NOPREFIX
     LTEXT           "(C) 2004-2007, Stichting CWI",IDC_STATIC,7,47,115,8
     CTEXT           "www.ambulantPlayer.org",IDC_STATIC,30,28,82,8
     LTEXT           "License: LGPL",IDC_STATIC,7,56,70,8
 END
 
-IDD_SELECT DIALOG DISCARDABLE  0, 0, 142, 154
-STYLE WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_SELECT DIALOG  0, 0, 142, 154
+STYLE DS_SETFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Select presentation"
 FONT 8, "System"
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,6,130,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,81,129,50,14
-    LISTBOX         IDC_FILE_LIST,6,33,126,91,LBS_SORT | 
-                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
-    COMBOBOX        IDC_DIR_COMBO,6,7,126,30,CBS_DROPDOWN | CBS_SORT | 
-                    WS_VSCROLL | WS_TABSTOP
+    LISTBOX         IDC_FILE_LIST,6,33,126,91,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_DIR_COMBO,6,7,126,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
 END
 
 
-#ifndef _MAC
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version
@@ -204,15 +199,13 @@ BEGIN
     BEGIN
         BLOCK "040904B0"
         BEGIN
-            VALUE "CompanyName", "\0"
-            VALUE "FileDescription", "AmbulantPlayer WCE MFC Application\0"
-            VALUE "FileVersion", "1, 0, 0, 1\0"
-            VALUE "InternalName", "AmbulantPlayer\0"
-            VALUE "LegalCopyright", "Copyright (C) 2007\0"
-            VALUE "LegalTrademarks", "\0"
-            VALUE "OriginalFilename", "AmbulantPlayer.EXE\0"
-            VALUE "ProductName", "AmbulantPlayer Application\0"
-            VALUE "ProductVersion", "1, 0, 0, 1\0"
+            VALUE "FileDescription", "AmbulantPlayer WCE MFC Application"
+            VALUE "FileVersion", "1, 0, 0, 1"
+            VALUE "InternalName", "AmbulantPlayer"
+            VALUE "LegalCopyright", "Copyright (C) 2007"
+            VALUE "OriginalFilename", "AmbulantPlayer.EXE"
+            VALUE "ProductName", "AmbulantPlayer Application"
+            VALUE "ProductVersion", "1, 0, 0, 1"
         END
     END
     BLOCK "VarFileInfo"
@@ -221,8 +214,6 @@ BEGIN
     END
 END
 
-#endif    // !_MAC
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -230,7 +221,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO DISCARDABLE 
+GUIDELINES DESIGNINFO 
 BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
@@ -256,17 +247,17 @@ END
 // String Table
 //
 
-STRINGTABLE PRELOAD DISCARDABLE 
+STRINGTABLE 
 BEGIN
     IDR_MAINFRAME           "AmbulantPlayer\n\nAmbulantPlayer\nSMIL documents\n.smil,.grins\nAmbulantPlayer.Document\nAmbulantPlayer Document"
 END
 
-STRINGTABLE PRELOAD DISCARDABLE 
+STRINGTABLE 
 BEGIN
     AFX_IDS_IDLEMESSAGE     "Ready"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_FILE_NEW             "Create a new document\nNew"
     ID_FILE_OPEN            "Open an existing document\nOpen"
@@ -275,13 +266,13 @@ BEGIN
     ID_FILE_SAVE_AS         "Save the active document with a new name\nSave As"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
     ID_APP_EXIT             "Quit the application; prompts to save documents\nExit"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_FILE_MRU_FILE1       "Open this document"
     ID_FILE_MRU_FILE2       "Open this document"
@@ -301,18 +292,18 @@ BEGIN
     ID_FILE_MRU_FILE16      "Open this document"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
     ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_EDIT_CLEAR           "Erase the selection\nErase"
     ID_EDIT_CLEAR_ALL       "Erase everything\nErase All"
@@ -327,22 +318,22 @@ BEGIN
     ID_EDIT_REDO            "Redo the previously undone action\nRedo"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     AFX_IDS_SCTASKLIST      "Activate Task List"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_INDICATOR_CAPS       "CAP"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     ID_PLAY                 "Start playback\nPlay"
     ID_PAUSE                "Pause playback\nPause"
@@ -374,7 +365,6 @@ LANGUAGE 9, 1
 #endif //_WIN32
 #include "res\AmbulantPlayer.rc2"  // non-Microsoft eMbedded Visual C++ edited resources
 #include "afxres.rc"         // Standard components
-//#include "wceres.rc"         // WCE-specific components
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
