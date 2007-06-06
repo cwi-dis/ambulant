@@ -101,25 +101,30 @@ END
 
 IDR_MAINFRAME MENU 
 BEGIN
-    POPUP "&File"
+    POPUP "Menu"
     BEGIN
-        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
-        MENUITEM "Select...",                   ID_FILE_SELECT
-        MENUITEM SEPARATOR
-        MENUITEM "Load settings...",            ID_FILE_LOADSETTINGS
-        MENUITEM SEPARATOR
-        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
-        MENUITEM SEPARATOR
-        MENUITEM "&Play",                       ID_PLAY
-        MENUITEM "Pa&use",                      ID_PAUSE
-        MENUITEM "&Stop",                       ID_STOP
-        MENUITEM SEPARATOR
-        MENUITEM "E&xit",                       ID_APP_EXIT
-    END
-    POPUP "&Help"
-    BEGIN
-        MENUITEM "&Welcome",                    ID_HELP_WELCOME
-        MENUITEM "&About AmbulantPlayer...",    ID_APP_ABOUT
+        POPUP "&File"
+        BEGIN
+            MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+            MENUITEM "Select...",                   ID_FILE_SELECT
+            MENUITEM SEPARATOR
+            MENUITEM "Load settings...",            ID_FILE_LOADSETTINGS
+            MENUITEM SEPARATOR
+            MENUITEM "Recent File",                 ID_FILE_MRU_FILE1
+            MENUITEM SEPARATOR
+            MENUITEM "E&xit",                       ID_APP_EXIT
+        END
+        POPUP "Play"
+        BEGIN
+            MENUITEM "&Play",                       ID_PLAY
+            MENUITEM "Pa&use",                      ID_PAUSE
+            MENUITEM "&Stop",                       ID_STOP
+        END
+        POPUP "&Help"
+        BEGIN
+            MENUITEM "&Welcome",                    ID_HELP_WELCOME
+            MENUITEM "&About AmbulantPlayer...",    ID_APP_ABOUT
+        END
     END
 END
 

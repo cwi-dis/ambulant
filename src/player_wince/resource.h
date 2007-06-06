@@ -1,5 +1,5 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
+// Microsoft Visual C++ generated include file.
 // Used by AmbulantPlayer.rc
 //
 #define IDD_ABOUTBOX                    100
@@ -14,13 +14,15 @@
 #define ID_HELP_WELCOME                 32774
 #define ID_FILE_SELECT                  32775
 #define ID_FILE_LOADSETTINGS            32776
+#define ID_MENU_FILE                    32777
+#define ID_MENU_PLAY                    32778
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        131
-#define _APS_NEXT_COMMAND_VALUE         32777
+#define _APS_NEXT_COMMAND_VALUE         32779
 #define _APS_NEXT_CONTROL_VALUE         1005
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
