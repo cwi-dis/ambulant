@@ -167,106 +167,18 @@ gtk_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	ambulant_gtk_window *cwindow = (ambulant_gtk_window *)window;
 	rect dst_rect = r;
 	dst_rect.translate(m_dest->get_global_topleft());
-	lib::point visible_origin(dst_rect.x, dst_rect.y);
-	lib::size visible_size(dst_rect.w, dst_rect.h);
 
-// Determine text container layout size. This depends on the type of container.
-#define INFINITE_WIDTH 1000000
-#define INFINITE_HEIGHT 1000000
-	lib::size layout_size = visible_size;
-	switch(m_params.m_mode) {
-	case smil2::stm_replace:
-	case smil2::stm_append:
-		if (!m_params.m_wrap)
-			layout_size.w = INFINITE_WIDTH;
-		break;
-	case smil2::stm_scroll:
-	case smil2::stm_jump:
-		layout_size.h = INFINITE_HEIGHT;
-		break;
-	case smil2::stm_crawl:
-		layout_size.w = INFINITE_WIDTH;
-		break;
-	}
-	AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw: layout_size(%d,%d), visible_size(%d,%d)", layout_size.w, layout_size.h, visible_size.w, visible_size.h);
-#ifdef	JUNK
-	NSSize old_layout_size;
-	// Initialize the text engine if we have not already done so.
-	if (!m_layout_manager) {
-		// Initialize the text engine
-		m_layout_manager = [[NSLayoutManager alloc] init];
-		m_text_container = [[NSTextContainer alloc] initWithContainerSize: layout_size];
-		old_layout_size = layout_size;	// Force resize
-		[m_text_container setHeightTracksTextView: false];
-		[m_text_container setWidthTracksTextView: false];
-		[m_layout_manager addTextContainer:m_text_container];
-		[m_text_container release];	// The layoutManager will retain the textContainer
-		[m_text_storage addLayoutManager:m_layout_manager];
-		[m_layout_manager release];	// The textStorage will retain the layoutManager
-	} else {
-		old_layout_size = [m_text_container containerSize];
-	}
-	assert(m_layout_manager);
-	assert(m_text_container);
-	assert(m_text_storage);
-	
-	// If the layout size has changed (due to smil animation or so) change it
-	if (!NSEqualSizes(old_layout_size, layout_size)) {
-		[m_text_container setContainerSize: layout_size];
-	}
-
-	// Next compute the layout position of what we want to draw at visible_origin
-	NSPoint logical_origin = NSMakePoint(0, 0);
-#endif	//JUNK
 	// Next compute the layout position of what we want to draw at visible_origin
 	lib::point logical_origin(0, 0);
 	if (m_params.m_mode == smil2::stm_crawl) {
 		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
 		logical_origin.x += (int) now * m_params.m_rate / 1000;
-		visible_origin.x -= (int) now * m_params.m_rate / 1000;
 	}
 	if (m_params.m_mode == smil2::stm_scroll) {
 		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
 		logical_origin.y += (int) now * m_params.m_rate / 1000;
-		visible_origin.y -= (int) now * m_params.m_rate / 1000;
 	}
-	AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw: logical_origin(%d,%d), visible_origin(%d,%d)", logical_origin.x, logical_origin.y, visible_origin.x, visible_origin.y);
-#ifdef	JUNK
-	if (m_render_offscreen) {
-	}
-#if 0
-	NSRange glyph_range = [m_layout_manager glyphRangeForTextContainer: m_text_container];
-#else
-	// Now we need to determine which glyphs to draw. Unfortunately glyphRangeForBoundingRect gives us
-	// full lines (which is apparently more efficient, google for details) which is not good enough
-	// for ticker tape, so we adjust.
-	NSRect logical_rect = NSMakeRect(logical_origin.x, logical_origin.y, visible_size.width, visible_size.height);
-	NSRange glyph_range = [m_layout_manager glyphRangeForBoundingRect: logical_rect inTextContainer: m_text_container];
-	AM_DBG NSLog(@"Glyph range was %d, %d, origin-x %f", glyph_range.location, glyph_range.length, logical_origin.x);
-#if 0
-	float fraction;
-	unsigned leftpoint = [ m_layout_manager glyphIndexForPoint: logical_origin inTextContainer: m_text_container 
-		fractionOfDistanceThroughGlyph: &fraction];
-	if (fraction > 0.01) leftpoint++;
-	if (leftpoint > glyph_range.location) {
-		glyph_range.length += (glyph_range.location-leftpoint); // XXXX unsigned
-		glyph_range.location = leftpoint;
-	}
-	if (glyph_range.location > 0 && glyph_range.length > 0) {
-		NSRect used_rect = [m_layout_manager boundingRectForGlyphRange: glyph_range inTextContainer: m_text_container];
-		visible_origin.x -= used_rect.origin.x;
-	}
-	AM_DBG NSLog(@"Glyph range is now %d, %d", glyph_range.location, glyph_range.length);
-#endif
-#endif
-	if (glyph_range.location >= 0 && glyph_range.length > 0) {
-		[m_layout_manager drawBackgroundForGlyphRange: glyph_range atPoint: visible_origin];
-		[m_layout_manager drawGlyphsForGlyphRange: glyph_range atPoint: visible_origin];
-	}
-	layout_size = [m_text_container containerSize];
-	if (m_render_offscreen) {
-	}
-#endif//JUNK
+	AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw: logical_origin(%d,%d)", logical_origin.x, logical_origin.y);
 
 	_gtk_smiltext_render(r, logical_origin,(ambulant_gtk_window*)window);
 	m_lock.leave();
