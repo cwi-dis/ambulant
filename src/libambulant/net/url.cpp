@@ -789,11 +789,16 @@ net::url::get_local_datafile() const
 
 // Places where to look for (cached) datafiles
 static const char *datafile_locations[] = {
+#ifdef AMBULANT_PLATFORM_WIN32_WCE
+	"\\Program Files\\Ambulant\\",
+	"\\Windows\\Ambulant\\",
+#else
 	"Extras\\",
 	"..\\..\\Extras\\",
 	"",
 	"..\\",
 	"..\\Extras\\",
+#endif
 	NULL
 };
 

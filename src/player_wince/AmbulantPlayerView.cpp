@@ -295,8 +295,19 @@ void CAmbulantPlayerView::OnTimer(UINT nIDEvent)
 
 void CAmbulantPlayerView::OnHelpWelcome() 
 {
-	CString welcomeFilename("\\Windows\\Ambulant\\Welcome.smil");
+#if 0
+	ambulant::net::url wurl = ambulant::net::url::from_filename("Welcome/Welcome.smil");
+	std::pair<bool, net::url> absolute_url = wurl.get_local_datafile();
+	if (!absolute_url.first) {
+		lib::logger::get_logger()->error("Welcome document not found");
+		return;
+	}
+	std::string urlstr = absolute_url.second.get_url();
+	SetMMDocument(lib::textptr(urlstr->c_str()).c_wstr());
+#else
+	CString welcomeFilename("\\Program Files\\Ambulant\\Welcome\\Welcome.smil");
 	SetMMDocument(welcomeFilename);
+#endif
 	if(!m_autoplay)
 		PostMessage(WM_COMMAND, ID_PLAY);
 
