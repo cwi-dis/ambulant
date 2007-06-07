@@ -1,3 +1,4 @@
 BUILD
 *.suo
 *.user
+*.ncb

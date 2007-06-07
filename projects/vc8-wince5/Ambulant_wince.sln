@@ -8,6 +8,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AmbulantPlayer", "AmbulantP
 		{B2643C6C-B5BE-40FB-B127-320E15D9D09E} = {B2643C6C-B5BE-40FB-B127-320E15D9D09E}
 	EndProjectSection
 EndProject
+Project("{B900F1C2-3D47-4FEC-85B3-04AAF18C3634}") = "ambulant-wince5-installer", "ambulant-wince5-installer.vddproj", "{2BA24983-F764-4257-935C-471EEDEBD494}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I) = Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
@@ -26,6 +28,10 @@ Global
 		{3E3BABBD-DCB0-4CD2-9DD3-26B96A7A856E}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 		{3E3BABBD-DCB0-4CD2-9DD3-26B96A7A856E}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Build.0 = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 		{3E3BABBD-DCB0-4CD2-9DD3-26B96A7A856E}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Deploy.0 = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{2BA24983-F764-4257-935C-471EEDEBD494}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Debug
+		{2BA24983-F764-4257-935C-471EEDEBD494}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Build.0 = Debug
+		{2BA24983-F764-4257-935C-471EEDEBD494}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Release
+		{2BA24983-F764-4257-935C-471EEDEBD494}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
