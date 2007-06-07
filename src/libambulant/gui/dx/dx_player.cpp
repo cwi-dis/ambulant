@@ -506,16 +506,27 @@ void gui::dx::dx_player::update_transitions() {
 	lib::timer::time_type pt = m_player->get_timer()->elapsed();
 	//lock_redraw();
 	AM_DBG lib::logger::get_logger()->debug("update_transitions: updating %d transitions", m_trmap.size());
+	// First make all transitions do a step.
+	std::vector<common::playable*> finished_transitions;
 	for(trmap_t::iterator it=m_trmap.begin();it!=m_trmap.end();it++) {
 		if(!(*it).second->next_step(pt)) {
-			delete (*it).second;
-			common::playable *p = (*it).first;
-			it = m_trmap.erase(it);
-			common::renderer *r = p->get_renderer();
-			if (r) {
-				common::surface *surf = r->get_surface();
-				if (surf) surf->transition_done();
-			}
+			finished_transitions.push_back((*it).first);
+		}
+	}
+	// Next clean up all finished transitions
+	std::vector<common::playable*>::iterator pit;
+	for (pit=finished_transitions.begin(); pit!= finished_transitions.end(); pit++) {
+		// Find the transition map entry and clear it
+		trmap_t::iterator it=m_trmap.find(*pit);
+		assert(it != m_trmap.end());
+		if (it == m_trmap.end()) continue;
+		delete (*it).second;
+		it = m_trmap.erase(it);
+		// Find the surface and tell it a transition has finished.
+		common::renderer *r = (*pit)->get_renderer();
+		if (r) {
+			common::surface *surf = r->get_surface();
+			if (surf) surf->transition_done();
 		}
 	}
 	//unlock_redraw();

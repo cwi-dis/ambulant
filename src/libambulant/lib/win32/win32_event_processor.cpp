@@ -55,10 +55,13 @@ lib::win32::event_processor::run() {
 	lib::logger* logger = lib::logger::get_logger();
 	AM_DBG logger->debug("event_processor::run(=0x%x)", this);
 #ifdef AMBULANT_PLATFORM_WIN32_WCE
-	CoInitializeEx(NULL, COINIT_MULTITHREADED);
+	HRESULT hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
 #else
-	CoInitialize(NULL);
+	HRESULT hr = CoInitialize(NULL);
 #endif
+	if (hr) {
+		lib::logger::get_logger()->trace("win32_event_processor::run: CoInitializeEx failed with 0x%x", hr);
+	}
 	while(!exit_requested()) {	
 		serve_events();		
 		wait_event();
