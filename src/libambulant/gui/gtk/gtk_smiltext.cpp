@@ -163,12 +163,8 @@ gtk_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	m_lock.enter();
 	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
-	// Determine current position and size.
-	ambulant_gtk_window *cwindow = (ambulant_gtk_window *)window;
-	rect dst_rect = r;
-	dst_rect.translate(m_dest->get_global_topleft());
 
-	// Next compute the layout position of what we want to draw at visible_origin
+	// Compute the shifted position of what we want to draw w.r.t. the visible origin
 	lib::point logical_origin(0, 0);
 	if (m_params.m_mode == smil2::stm_crawl) {
 		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
@@ -260,6 +256,7 @@ gtk_smiltext_renderer::_gtk_set_color_attr(lib::color_t smiltext_color,
 void
 gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point offset, ambulant_gtk_window* window )
 {
+	// Determine current position and size.
 	const lib::point p = m_dest->get_global_topleft();
         const char* data = m_text_storage.c_str();
 
