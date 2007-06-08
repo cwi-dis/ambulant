@@ -49,7 +49,7 @@
           <smiltext id="CapF1" region="Captions" dur="5s"  textFontFamily="roman" >
             The 
             <tev next="0.25"/>
-            <span textBackgroundColor="blue">
+            <span textBackgroundColor="blue" textColor="white">
             lines 
             </span>
             <tev next="0.75"/>

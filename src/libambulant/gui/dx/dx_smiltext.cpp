@@ -20,7 +20,7 @@
 /* 
  * @$Id$ 
  */
-
+#ifdef  WITH_SMIL30
 #include "ambulant/gui/dx/dx_viewport.h"
 #include "ambulant/gui/dx/dx_window.h"
 #include "ambulant/gui/dx/dx_smiltext.h"
@@ -77,6 +77,7 @@ gui::dx::dx_smiltext_renderer::dx_smiltext_renderer(
 	m_y(0),
 	m_max_ascent(0),
 	m_max_descent(0),
+	m_hdc(NULL),
 	m_hdc_dummy(NULL),
 	m_viewport(NULL),
 	m_ddsurf(NULL),
@@ -90,6 +91,7 @@ gui::dx::dx_smiltext_renderer::dx_smiltext_renderer(
 
 void 
 gui::dx::dx_smiltext_renderer::set_surface(common::surface *dest) {
+	m_lock.enter();
 	m_dest = dest;
 	
 	lib::rect rc = dest->get_rect();
@@ -97,51 +99,87 @@ gui::dx::dx_smiltext_renderer::set_surface(common::surface *dest) {
 	m_size = bounds;
 	dx_window *dxwindow = static_cast<dx_window*>(m_dest->get_gui_window());
 	m_viewport = dxwindow->get_viewport();
+	m_lock.leave();
 }
 
 gui::dx::dx_smiltext_renderer::~dx_smiltext_renderer() {
 	AM_DBG lib::logger::get_logger()->debug("~dx_smiltext_renderer(0x%x)", this);
+	m_lock.enter();
+	if (m_hdc) {
+ 		m_ddsurf->ReleaseDC(m_hdc);
+		m_hdc = NULL;
+	}
 	if (m_hdc_dummy) {
 		DeleteDC(m_hdc_dummy);
 		m_hdc_dummy = NULL;
 	}
+	m_lock.leave();
 }
 
 void
 gui::dx::dx_smiltext_renderer::start(double t) {
 	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_renderer::start(0x%x)", this);
 		
+	m_lock.enter();
 	m_epoch = m_event_processor->get_timer()->elapsed();
 	m_engine.start(t);
 	renderer_playable::start(t);
+	m_lock.leave();
 }
 
 void 
 gui::dx::dx_smiltext_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_renderer::stop(0x%x)", this);
+	m_lock.enter();
 	m_dest->renderer_done(this);
 	m_activated = false;
 	m_dxplayer->stopped(this);
+	m_lock.leave();
 }
 
 void
 gui::dx::dx_smiltext_renderer::smiltext_changed() {
 	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_renderer::smiltext_changed(0x%x)", this);
 	m_lock.enter();
-	if (m_engine.is_changed()) {
+	if (m_hdc == NULL) {
+		_dx_smiltext_get_dd_surface();
+		HRESULT hr = m_ddsurf->GetDC(&m_hdc);
+		if (FAILED(hr)) {
+			win_report_error("DirectDrawSurface::GetDC()", hr);
+			return;
+		}
+	}
+	// Compute the shifted position of what we want to draw w.r.t. the visible origin
+	lib::point logical_origin(0, 0);
+	if (m_params.m_mode == smil2::stm_crawl) {
+		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
+		logical_origin.x += (int) now * m_params.m_rate / 1000;
+		if (logical_origin.x < 0)
+			AM_DBG lib::logger::get_logger()->debug("dx_smiltext_renderer::smiltext_changed(0x%x): strange: logical_x=%d !", this, logical_origin.x);
+	}
+	if (m_params.m_mode == smil2::stm_scroll) {
+		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
+		logical_origin.y += (int) now * m_params.m_rate / 1000;
+	}
+	AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw: logical_origin(%d,%d)", logical_origin.x, logical_origin.y);
+
+	if (logical_origin.x || logical_origin.y)
+		_dx_smiltext_shift( m_dest->get_rect(), logical_origin);
+	if (true) { //m_engine.is_changed()) {
 		// Always re-compute and re-render everything when new text is added.
 		// Thus, m_engine.newbegin() is NOT used
 		lib::xml_string data;
 		smil2::smiltext_runs::const_iterator cur = m_engine.begin();
 		m_x = m_dest->get_rect().x;
 		m_y = m_dest->get_rect().y;
+
 		while (cur != m_engine.end()) {
-			smil2::smiltext_runs::const_iterator bol = cur;
+			smil2::smiltext_runs::const_iterator bol = cur; // begin of line pointer
 			AM_DBG lib::logger::get_logger()->debug("dx_smiltext_changed(): command=%d data=%s",cur->m_command,cur->m_data.c_str()==NULL?"(null)":cur->m_data.c_str());
 			while (cur != m_engine.end()) {
 				// layout line-by-line
 				if (cur->m_command == smil2::stc_break 
-					|| ! dx_smiltext_fits(*cur, m_dest->get_rect())) {
+					|| ! _dx_smiltext_fits(*cur, m_dest->get_rect())) {
 					if (cur->m_command == smil2::stc_break)
 						cur++;
 					break;
@@ -150,8 +188,8 @@ gui::dx::dx_smiltext_renderer::smiltext_changed() {
 			}
 			m_x = m_dest->get_rect().x; // was used by dx_smiltext_fits()
 			while (bol != cur) {
-				lib::rect r = dx_smiltext_compute(*bol, m_dest->get_rect());
-				dx_smiltext_render(*bol, r);
+				lib::rect r = _dx_smiltext_compute(*bol, m_dest->get_rect());
+				_dx_smiltext_render(*bol, r, logical_origin);
 				bol++;
 			}
 			m_y = m_y + m_max_ascent + m_max_descent;
@@ -160,14 +198,16 @@ gui::dx::dx_smiltext_renderer::smiltext_changed() {
 		}
 		m_engine.done();
 	}
+	m_ddsurf->ReleaseDC(m_hdc);
+	m_hdc = NULL;
 	m_lock.leave();
 	m_dest->need_redraw();
 }
 
 bool
-gui::dx::dx_smiltext_renderer::dx_smiltext_fits(const smil2::smiltext_run strun, const lib::rect r) {
+gui::dx::dx_smiltext_renderer::_dx_smiltext_fits(const smil2::smiltext_run strun, const lib::rect r) {
 	bool rv = true;
-	a_extent ax = dx_smiltext_get_a_extent (strun, m_hdc_dummy);
+	a_extent ax = _dx_smiltext_get_a_extent (strun, m_hdc_dummy);
 
 	if (ax.get_ascent() > m_max_ascent)
 		m_max_ascent = ax.get_ascent();
@@ -180,9 +220,9 @@ gui::dx::dx_smiltext_renderer::dx_smiltext_fits(const smil2::smiltext_run strun,
 }
 
 lib::rect
-gui::dx::dx_smiltext_renderer::dx_smiltext_compute(const smil2::smiltext_run strun, const lib::rect r) {
+gui::dx::dx_smiltext_renderer::_dx_smiltext_compute(const smil2::smiltext_run strun, const lib::rect r) {
 	lib::rect rv = lib::rect(lib::point(0,0),lib::size(100,100));
-	a_extent ax = dx_smiltext_get_a_extent (strun, m_hdc_dummy);
+	a_extent ax = _dx_smiltext_get_a_extent (strun, m_hdc_dummy);
 
 	rv.x = m_x;
 	m_x += ax.get_width();
@@ -193,14 +233,14 @@ gui::dx::dx_smiltext_renderer::dx_smiltext_compute(const smil2::smiltext_run str
 }
 
 gui::dx::a_extent
-gui::dx::dx_smiltext_renderer::dx_smiltext_get_a_extent(const smil2::smiltext_run strun, HDC hdc) {
+gui::dx::dx_smiltext_renderer::_dx_smiltext_get_a_extent(const smil2::smiltext_run strun, HDC hdc) {
 	unsigned int ascent, descent, width;
 
 	if (strun.m_command != smil2::stc_data || hdc == NULL 
 		|| strun.m_data.length() == 0)
 		return a_extent(0,0,0);
 
-	dx_smiltext_set_font (strun, hdc);
+	_dx_smiltext_set_font (strun, hdc);
 	TEXTMETRIC tm;
 	BOOL res = ::GetTextMetrics(hdc, &tm);
 	if (res == 0)
@@ -219,33 +259,23 @@ gui::dx::dx_smiltext_renderer::dx_smiltext_get_a_extent(const smil2::smiltext_ru
 }
 
 void
-gui::dx::dx_smiltext_renderer::dx_smiltext_render(const smil2::smiltext_run strun, const lib::rect r) {
+gui::dx::dx_smiltext_renderer::_dx_smiltext_render(const smil2::smiltext_run strun, const lib::rect r, lib::point p) {
 	if (strun.m_command != smil2::stc_data)
 		return;
-	/*AM_DBG*/ lib::logger::get_logger()->debug("dx_smiltext_render(): command=%d data=%s color=0x%x",strun.m_command,strun.m_data.c_str()==NULL?"(null)":strun.m_data.c_str(),strun.m_color);
-	// get the offscreen drawing context
-	IDirectDrawSurface* dd_surf = get_dd_surface();
-	if (dd_surf == NULL)
-		return;
-	HDC hdc;
-	HRESULT hr = dd_surf->GetDC(&hdc);
-	if (FAILED(hr)) {
-		win_report_error("DirectDrawSurface::GetDC()", hr);
-		return;
-	}
+	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_render(): command=%d data=%s color=0x%x",strun.m_command,strun.m_data.c_str()==NULL?"(null)":strun.m_data.c_str(),strun.m_color);
 	// set the foreground color
 	if( ! strun.m_transparent) {
 		COLORREF crTextColor = (strun.m_color == CLR_INVALID)?::GetSysColor(COLOR_WINDOWTEXT):strun.m_color;;
-		::SetTextColor(hdc, crTextColor);
+		::SetTextColor(m_hdc, crTextColor);
 	}
 	// set the background color
 	if( ! strun.m_bg_transparent) {
 		COLORREF crBkColor = (strun.m_bg_color == CLR_INVALID)?::GetSysColor(COLOR_WINDOW):strun.m_bg_color;
-		::SetBkColor(hdc, crBkColor);
-	} // else SetBkMode(hdc, TRANSPARENT);
+		::SetBkColor(m_hdc, crBkColor);
+	} // else SetBkMode(m_hdc, TRANSPARENT);
 
 	// set the font
-	dx_smiltext_set_font(strun, hdc);
+	_dx_smiltext_set_font(strun, m_hdc);
 
 	// draw the text
 	const char* text = strun.m_data.c_str();
@@ -256,10 +286,9 @@ gui::dx::dx_smiltext_renderer::dx_smiltext_render(const smil2::smiltext_run stru
 	dstRC.right  = r.right();
 	dstRC.bottom = r.bottom();
 	UINT uFormat = DT_NOPREFIX | DT_WORDBREAK;
-	HRESULT res = ::DrawText(hdc, tp, (int)tp.length(), &dstRC, uFormat);
+	HRESULT res = ::DrawText(m_hdc, tp, (int)tp.length(), &dstRC, uFormat);
 	if(res == 0)
 		win_report_last_error("DrawText()");
-	dd_surf->ReleaseDC(hdc);
 
 	// Text is always transparent; set the color
 	DWORD ddTranspColor = m_viewport->convert(RGB(255,255,255));
@@ -267,14 +296,30 @@ gui::dx::dx_smiltext_renderer::dx_smiltext_render(const smil2::smiltext_run stru
 	DDCOLORKEY ck;
 	ck.dwColorSpaceLowValue = ddTranspColor;
 	ck.dwColorSpaceHighValue = ddTranspColor;
-	hr = dd_surf->SetColorKey(dwFlags, &ck);
+	HRESULT hr = m_ddsurf->SetColorKey(dwFlags, &ck);
 	if (FAILED(hr)) {
 		win_report_error("SetColorKey()", hr);
 	}
+	// reset the background color
+	if( ! strun.m_bg_transparent) {
+		//XX KB I don't know whether it's a good idea to re-set bgcolor here
+		COLORREF crBkColor = ::GetSysColor(COLOR_WINDOW);
+		::SetBkColor(m_hdc, crBkColor);
+	} 
 }
 
 void
-gui::dx::dx_smiltext_renderer::dx_smiltext_set_font(const smil2::smiltext_run strun, HDC hdc) {
+gui::dx::dx_smiltext_renderer::_dx_smiltext_shift(const lib::rect r, const lib::point p) {
+	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_shift(): r=(%d,%d,%d,%d) p=%d,%d,",r.left(),r.top(),r.right(),r.bottom(),p.x,p.y);
+	// ref: http://msdn2.microsoft.com/en-us/library/ms532661.aspx
+	// shift the logical window w.r.t to the final viewport
+	BOOL res = ::SetWindowOrgEx(m_hdc, p.x, p.y, NULL);
+	if( ! res)
+		win_report_last_error("SetWindowOrgEx()");
+}
+
+void
+gui::dx::dx_smiltext_renderer::_dx_smiltext_set_font(const smil2::smiltext_run strun, HDC hdc) {
 	DWORD family = FF_DONTCARE | DEFAULT_PITCH;
 	const char *fontname = strun.m_font_family;
 	if (strun.m_font_family) {
@@ -341,22 +386,27 @@ gui::dx::dx_smiltext_renderer::dx_smiltext_set_font(const smil2::smiltext_run st
 
 void
 gui::dx::dx_smiltext_renderer::user_event(const lib::point& pt, int what) {
+	m_lock.enter();
 	if(what == common::user_event_click)
 		m_context->clicked(m_cookie);
 	else if(what == common::user_event_mouse_over) {
 		m_context->pointed(m_cookie);
 	}
+	m_lock.leave();
 }
 
 void
 gui::dx::dx_smiltext_renderer::redraw(const lib::rect& dirty, common::gui_window *window) {
+	m_lock.enter();
 	// Get the top-level surface
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();
-	if(!v) return;
-	IDirectDrawSurface* dd_surf = get_dd_surface();
-	if ( ! dd_surf)
+//	if(!v) return;
+	IDirectDrawSurface* dd_surf = _dx_smiltext_get_dd_surface();
+	if ( ! (v && dd_surf)) {
+		m_lock.leave();
 		return;
+	}
 	lib::rect smiltext_rc = dirty;
 	lib::rect reg_rc = dirty;
 	
@@ -374,11 +424,12 @@ gui::dx::dx_smiltext_renderer::redraw(const lib::rect& dirty, common::gui_window
 	v->draw(dd_surf, smiltext_rc, reg_rc, true, tr);
 
 	if (m_erase_never) m_dest->keep_as_background();
+	m_lock.leave();
 }
 
 IDirectDrawSurface* 
-gui::dx::dx_smiltext_renderer::get_dd_surface() {
- 	if(!m_ddsurf) {
+gui::dx::dx_smiltext_renderer::_dx_smiltext_get_dd_surface() {
+	if(!m_ddsurf) {
 		dx_window *srcwin = static_cast<dx_window*>(m_dest->get_gui_window());
 		viewport *srcvp = srcwin->get_viewport();
 		m_ddsurf = srcvp->create_surface(m_size);
@@ -389,7 +440,8 @@ gui::dx::dx_smiltext_renderer::get_dd_surface() {
 			return NULL;
 		}
 		srcvp->clear_surface(m_ddsurf, RGB(255,255,255));
-	}
+	}		
 	return m_ddsurf;
 }
+#endif //WITH_SMIL30
 

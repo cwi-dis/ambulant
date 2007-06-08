@@ -81,17 +81,23 @@ class dx_smiltext_renderer :
 	void redraw(const lib::rect &dirty, common::gui_window *window);
 	void set_surface(common::surface *dest);
   private:
+	// functions required by inheritance
 	void smiltext_changed(bool);
-	bool dx_smiltext_fits(const smil2::smiltext_run run, const lib::rect r);
-	a_extent dx_smiltext_get_a_extent(const smil2::smiltext_run run, HDC hdc);
-	lib::rect dx_smiltext_compute(const smil2::smiltext_run run, const lib::rect r);
-	void dx_smiltext_render(const smil2::smiltext_run run, const lib::rect r);
-	void dx_smiltext_set_font(const smil2::smiltext_run run, HDC hdc);
-	IDirectDrawSurface* get_dd_surface();
+	// internal helper functions
+	bool _dx_smiltext_fits(const smil2::smiltext_run run, const lib::rect r);
+	a_extent _dx_smiltext_get_a_extent(const smil2::smiltext_run run, HDC hdc);
+	lib::rect _dx_smiltext_compute(const smil2::smiltext_run run, const lib::rect r);
+	void _dx_smiltext_render(const smil2::smiltext_run run, const lib::rect r, const lib::point p);
+	void _dx_smiltext_set_font(const smil2::smiltext_run run, HDC hdc);
+	void _dx_smiltext_shift(const lib::rect r, const lib::point p);
+	// DirectX interfacing
+	IDirectDrawSurface* _dx_smiltext_get_dd_surface();
+
+	// instance variables
 	net::datasource_factory *m_df;
 	smil2::smiltext_engine m_engine;
 	const smil2::smiltext_params& m_params;
-	bool m_render_offscreen; // True if m_params does not allows rendering in-place
+//XX bool m_render_offscreen; // True if m_params does not allows rendering in-place
 	lib::timer::time_type m_epoch;
 	critical_section m_lock;
 	int m_x;
@@ -101,9 +107,10 @@ class dx_smiltext_renderer :
 	// Windows GDI data
 	ambulant::lib::size m_size;
 	viewport* m_viewport;
-	HDC m_hdc_dummy;
-	IDirectDrawSurface* m_ddsurf_dummy;
+	HDC m_hdc;
 	IDirectDrawSurface* m_ddsurf;
+	HDC m_hdc_dummy;
+//	IDirectDrawSurface* m_ddsurf_dummy;
 };
 
 } // namespace dx
