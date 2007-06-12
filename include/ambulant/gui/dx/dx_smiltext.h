@@ -84,6 +84,7 @@ class dx_smiltext_renderer :
 	// functions required by inheritance
 	void smiltext_changed(bool);
 	// internal helper functions
+	void _dx_smiltext_changed();
 	bool _dx_smiltext_fits(const smil2::smiltext_run run, const lib::rect r);
 	a_extent _dx_smiltext_get_a_extent(const smil2::smiltext_run run, HDC hdc);
 	lib::rect _dx_smiltext_compute(const smil2::smiltext_run run, const lib::rect r);
@@ -91,8 +92,7 @@ class dx_smiltext_renderer :
 	void _dx_smiltext_set_font(const smil2::smiltext_run run, HDC hdc);
 	void _dx_smiltext_shift(const lib::rect r, const lib::point p);
 	// DirectX interfacing
-	IDirectDrawSurface* _dx_smiltext_get_dd_surface();
-
+	void _dx_smiltext_get_ddsurf(common::gui_window *window);
 	// instance variables
 	net::datasource_factory *m_df;
 	smil2::smiltext_engine m_engine;
@@ -109,8 +109,6 @@ class dx_smiltext_renderer :
 	viewport* m_viewport;
 	HDC m_hdc;
 	IDirectDrawSurface* m_ddsurf;
-	HDC m_hdc_dummy;
-//	IDirectDrawSurface* m_ddsurf_dummy;
 };
 
 } // namespace dx
