@@ -320,6 +320,18 @@ time_node::set_ffwd_mode(bool b)
 #endif
 }
 
+void
+time_node::sync_playable_clock()
+{
+	if (!is_playable()) return;
+	const lib::node *n = dom_node();
+	assert(n);
+	qtime_type timestamp(this, get_simple_time());
+	time_type ad_offset = timestamp.second - m_interval.begin;
+	// XXXJACK: does this work correctly for repeating nodes??
+	m_context->seek_playable(n, time_type_to_secs(ad_offset()));
+}
+
 // This function calculates the simple duration of this node.
 // See spec: "Defining the simple duration" 
 // The last calculated simple duration is stored in the variable m_last_cdur.

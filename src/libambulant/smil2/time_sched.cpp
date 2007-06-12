@@ -111,6 +111,8 @@ void scheduler::goto_next(time_node *tn) {
 		else activate_media_child(parent, child);
 		if(child == tnpath.back()) break;
 	}
+	/*AM_DBG*/ lib::logger::get_logger()->debug("goto_next: synchronize media to node clocks");
+	sync_playable_clocks(m_root, tn);
 	AM_DBG lib::logger::get_logger()->debug("goto_next: finished");
 }
 
@@ -277,6 +279,18 @@ void scheduler::set_ffwd_mode(time_node *tn, bool b) {
 	time_node::iterator end = tn->end();
 	for(it=tn->begin(); it!=end; it++) {
 		if((*it).first) (*it).second->set_ffwd_mode(b);
+	}
+}
+
+// Synchronise playable clocks to time_node clocks 
+void scheduler::sync_playable_clocks(time_node *tnroot, time_node *tntarget) {
+	// Note: this implementation is incorrect. We only skip the target but we should really do the clock update.
+	time_node::iterator it;
+	time_node::iterator end = tnroot->end();
+	for(it=tnroot->begin(); it!=end; it++) {
+		if ((*it).first 
+			&& (*it).second != tntarget
+			) (*it).second->sync_playable_clock();
 	}
 }
 

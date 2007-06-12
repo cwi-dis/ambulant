@@ -490,7 +490,7 @@ void
 gui::sdl::sdl_audio_renderer::stop()
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::stop(0x%x)",(void*)this);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("sdl_audio_renderer::stop(0x%x)",(void*)this);
 	if (m_is_playing) {
 		m_lock.leave();
 		unregister_renderer(this);
@@ -529,7 +529,8 @@ gui::sdl::sdl_audio_renderer::start(double where)
 	m_lock.enter();
     if (!m_node) abort();
 		
-	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer.start(0x%x)", (void *)this);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("sdl_audio_renderer.start(0x%x, %s, where=%f)", 
+		(void *)this, m_node->get_sig().c_str(), where);
 	if (m_audio_src) {
 	
 		if (m_audio_src->get_start_time() != m_audio_src->get_clip_begin())
@@ -556,7 +557,7 @@ gui::sdl::sdl_audio_renderer::start(double where)
 void
 gui::sdl::sdl_audio_renderer::seek(double where)
 {
-	lib::logger::get_logger()->trace("sdl_audio_renderer: seek(%f) not implemented", where);
+	/*AM_DBG*/ lib::logger::get_logger()->trace("sdl_audio_renderer: seek(0x%x, %f) not implemented", this, where);
 }
 
 common::duration 

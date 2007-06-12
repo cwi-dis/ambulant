@@ -642,14 +642,14 @@ net::url net::url::join_to_base(const net::url &base) const
 	if (m_absolute) return *this;
 	std::string basepath = base.get_path();
 	std::string newpath = get_path();
-	/*AM_DBG*/ lib::logger::get_logger()->debug("join_to_base: base='%s', new='%s'",basepath.c_str(), newpath.c_str());
+	AM_DBG lib::logger::get_logger()->debug("join_to_base: base='%s', new='%s'",basepath.c_str(), newpath.c_str());
 	if (newpath == "") {
 		// New path is, for instance, only #anchor.
 		newpath = basepath; 
 	} else if (newpath[0] != '/') {
 		// New_path is not absolute. Prepend base of basepath
 		basepath = lib::filesys::get_base(basepath);
-		/*AM_DBG*/ lib::logger::get_logger()->debug("join_to_base: get_base returned '%s'", basepath.c_str());
+		AM_DBG lib::logger::get_logger()->debug("join_to_base: get_base returned '%s'", basepath.c_str());
 		// Convert basepath from Windows to URL, if needed.
 		// XXXX Incomplete?
 //		if (base.m_absolute && basepath[0] != '/')

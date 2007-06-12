@@ -381,6 +381,9 @@ class time_node : public schedulable {
 	// fast forward mode
 	void set_ffwd_mode(bool b);
 	
+	// synchronise playable clock to time_node
+	void sync_playable_clock();
+	
 	////////////////////////
 	// Time calculations
 	

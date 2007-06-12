@@ -70,6 +70,7 @@ class scheduler {
 	void activate_excl_child(time_node *parent, time_node *child);
 	void activate_media_child(time_node *parent, time_node *child);
 	void set_ffwd_mode(time_node *tn, bool b);
+	void sync_playable_clocks(time_node *tnroot, time_node *tntarget);
 	
 	time_node *m_root;
 	lib::timer_control *m_timer;

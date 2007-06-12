@@ -290,8 +290,8 @@ void smil_player::start_playable(const lib::node *n, double t, const lib::transi
 // Request to seek the playable of the node.
 void smil_player::seek_playable(const lib::node *n, double t) {
 	AM_DBG lib::logger::get_logger()->debug("smil_player::seek_playable(0x%x, %f)", (void*)n, t);
-	common::playable *np = create_playable(n);
-	np->seek(t);
+	common::playable *np = get_playable(n);
+	if (np) np->seek(t);
 }
 
 // Request to start a transition of the playable of the node.
@@ -851,6 +851,8 @@ void smil_player::show_link(const lib::node *n, const net::url& href,
 
 bool smil_player::goto_node(const lib::node *target)
 {
+	/*AM_DBG*/ lib::logger::get_logger()->debug("goto_node(%s)", target->get_sig().c_str());
+
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(target->get_numid());
 	
 	if(it != m_dom2tn->end()) {
