@@ -545,13 +545,12 @@ AC_ARG_WITH(sdl,
      [  --with-sdl		Turn on/off SDL support],
      [if test "x$withval" = "xno"; then
 	test_sdl=false
-  else 
-     if sdl-config --libs > /dev/null 2>&1; then
+  fi])
+if test "x$test_sdl" = "xtrue"-a sdl-config --libs > /dev/null 2>&1; then
      test_sdl=true
      else
      test_sdl=false
-     fi
-  fi])
+fi
 AM_CONDITIONAL(WITH_SDL, test x$test_sdl = xtrue)
 AC_MSG_RESULT($test_sdl)
 
