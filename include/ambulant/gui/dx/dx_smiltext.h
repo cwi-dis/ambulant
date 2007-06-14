@@ -108,6 +108,7 @@ class dx_smiltext_renderer :
 	ambulant::lib::size m_size;
 	viewport* m_viewport;
 	HDC m_hdc;
+	HFONT m_font;
 	IDirectDrawSurface* m_ddsurf;
 };
 

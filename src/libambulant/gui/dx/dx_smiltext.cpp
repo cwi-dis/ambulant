@@ -309,6 +309,7 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_render(const smil2::smiltext_run str
 	if (FAILED(hr)) {
 		win_report_error("SetColorKey()", hr);
 	}
+	::DeleteObject(m_font);
 	// reset the background color
 	if( ! strun.m_bg_transparent) {
 		//XX KB I don't know whether it's a good idea to re-set bgcolor here
@@ -374,7 +375,7 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_set_font(const smil2::smiltext_run s
 			italic = true;
 			break;
 	}
-	HFONT font = ::CreateFont(
+	HFONT m_font = ::CreateFont(
 			-(int)strun.m_font_size,	// height of font
 			0,					// average character width
 			0,					// angle of escapement
@@ -389,8 +390,8 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_set_font(const smil2::smiltext_run s
 			DEFAULT_QUALITY,	// output quality
 			family,				// pitch and family
 			STR_TO_TSTR(fontname));	// typeface name
-	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_run_set_attr(0x%x): m_data=%s font=0x%x, m_font_size=%d,weight=0x%x,italic=%d,family=0x%x,strun.m_font_family=%s",this,strun.m_data.c_str(),font,strun.m_font_size,weight,italic,family,strun.m_font_family);
-	::SelectObject(hdc, font);
+	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_run_set_attr(0x%x): m_data=%s font=0x%x, m_font_size=%d,weight=0x%x,italic=%d,family=0x%x,strun.m_font_family=%s",this,strun.m_data.c_str(),m_font,strun.m_font_size,weight,italic,family,strun.m_font_family);
+	::SelectObject(hdc, m_font);
 }
 
 void
