@@ -104,11 +104,17 @@ gui::dx::dx_smiltext_renderer::set_surface(common::surface *dest) {
 gui::dx::dx_smiltext_renderer::~dx_smiltext_renderer() {
 	AM_DBG lib::logger::get_logger()->debug("~dx_smiltext_renderer(0x%x), m_ddsurf=0x%x, m_hdc=0x%x", this, m_ddsurf, m_hdc);
 	m_lock.enter();
-	if (m_hdc) {
- 		m_ddsurf->ReleaseDC(m_hdc);
-		m_hdc = NULL;
-	}
+
+	if (m_font)
+		::DeleteObject(m_font);
+	m_font = NULL;
+
 	if (m_ddsurf) {
+		if (m_hdc) {
+		 	if (m_ddsurf->ReleaseDC(m_hdc) == 0)
+				lib::logger::get_logger()->warn("~dx_smiltext_renderer(0x%x): ReleaseDC(m_hdc=0x%x) fails", this, m_hdc);		;
+			m_hdc = NULL;
+		}
 		m_ddsurf->Release();
 		m_ddsurf = NULL;
 	}
@@ -138,10 +144,6 @@ gui::dx::dx_smiltext_renderer::stop() {
 
 void
 gui::dx::dx_smiltext_renderer::smiltext_changed() {
-//	m_lock.enter();
-//	_dx_smiltext_get_ddsurf();
-//	if (m_ddsurf) _dx_smiltext_changed();
-//	m_lock.leave();
 	m_dest->need_redraw();
 }
 
@@ -175,6 +177,7 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_changed() {
 
 	if (logical_origin.x || logical_origin.y)
 		_dx_smiltext_shift( m_dest->get_rect(), logical_origin);
+
 	if (true) { //m_engine.is_changed()) {
 		// Always re-compute and re-render everything when new text is added.
 		// Thus, m_engine.newbegin() is NOT used
@@ -189,7 +192,8 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_changed() {
 			while (cur != m_engine.end()) {
 				// layout line-by-line
 				if (cur->m_command == smil2::stc_break 
-					|| ! _dx_smiltext_fits(*cur, m_dest->get_rect())) {
+					|| ! _dx_smiltext_fits(*cur, m_dest->get_rect())
+					) {
 					if (cur->m_command == smil2::stc_break)
 						cur++;
 					break;
@@ -208,8 +212,9 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_changed() {
 		}
 		m_engine.done();
 	}
-	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_renderer::_dx_smiltext_changed(0x%x): ReleaseDC(m_hdc=0x%x)", this, m_hdc);
-	m_ddsurf->ReleaseDC(m_hdc);
+	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_changed(0x%x): ReleaseDC(m_hdc=0x%x)", this, m_hdc);
+	if (m_ddsurf->ReleaseDC(m_hdc) == 0)
+		lib::logger::get_logger()->debug("_dx_smiltext_changed(): ReleaseDC() failed.");
 	m_hdc = NULL;
 }
 
@@ -225,6 +230,8 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_fits(const smil2::smiltext_run strun
 	if (m_x + (int) ax.get_width() > r.right())
 		rv = false;
 	m_x += ax.get_width();
+	::DeleteObject(m_font);
+	m_font = NULL;
 	return rv;
 }
 
@@ -310,6 +317,7 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_render(const smil2::smiltext_run str
 		win_report_error("SetColorKey()", hr);
 	}
 	::DeleteObject(m_font);
+	m_font = NULL;
 	// reset the background color
 	if( ! strun.m_bg_transparent) {
 		//XX KB I don't know whether it's a good idea to re-set bgcolor here
@@ -375,7 +383,7 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_set_font(const smil2::smiltext_run s
 			italic = true;
 			break;
 	}
-	HFONT m_font = ::CreateFont(
+	m_font = ::CreateFont(
 			-(int)strun.m_font_size,	// height of font
 			0,					// average character width
 			0,					// angle of escapement
@@ -449,7 +457,6 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_get_ddsurf(common::gui_window *windo
 		AM_DBG lib::logger::get_logger()->debug("dx_smiltext_get_ddsurf(0x%x) m_size=%d,%d m_ddsurf=0x%x", this, m_size.w,m_size.h,m_ddsurf);	
 		if ( ! m_ddsurf) {
 			lib::logger::get_logger()->fatal("DirectDrawSurface::create_surface failed()");
-//XX		free_text_data();
 			return;
 		}
 		srcvp->clear_surface(m_ddsurf, RGB(255,255,255));
