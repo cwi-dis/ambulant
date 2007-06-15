@@ -105,8 +105,8 @@ gui::dx::dx_smiltext_renderer::~dx_smiltext_renderer() {
 	AM_DBG lib::logger::get_logger()->debug("~dx_smiltext_renderer(0x%x), m_ddsurf=0x%x, m_hdc=0x%x", this, m_ddsurf, m_hdc);
 	m_lock.enter();
 
-	if (m_font)
-		::DeleteObject(m_font);
+	if (m_font && ! ::DeleteObject(m_font))
+		win_report_error("DeleteObject(m_font)", DDERR_GENERIC);
 	m_font = NULL;
 
 	if (m_ddsurf) {
@@ -150,9 +150,10 @@ gui::dx::dx_smiltext_renderer::smiltext_changed() {
 void
 gui::dx::dx_smiltext_renderer::_dx_smiltext_changed() {
 	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_renderer::_dx_smiltext_changed(0x%x)", this);
+	HRESULT hr;
 
 	if (m_hdc == NULL) {
-		HRESULT hr = m_ddsurf->GetDC(&m_hdc);
+		hr = m_ddsurf->GetDC(&m_hdc);
 		if (FAILED(hr)) {
 			win_report_error("DirectDrawSurface::GetDC()", hr);
 			return;
@@ -202,6 +203,7 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_changed() {
 			}
 			m_x = m_dest->get_rect().x; // was used by dx_smiltext_fits()
 			while (bol != cur) {
+//KB			lib::rect r =  m_dest->get_rect();
 				lib::rect r = _dx_smiltext_compute(*bol, m_dest->get_rect());
 				_dx_smiltext_render(*bol, r, logical_origin);
 				bol++;
@@ -213,8 +215,8 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_changed() {
 		m_engine.done();
 	}
 	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_changed(0x%x): ReleaseDC(m_hdc=0x%x)", this, m_hdc);
-	if (m_ddsurf->ReleaseDC(m_hdc) == 0)
-		lib::logger::get_logger()->debug("_dx_smiltext_changed(): ReleaseDC() failed.");
+	if (m_hdc && FAILED(hr = m_ddsurf->ReleaseDC(m_hdc)))
+		lib::logger::get_logger()->warn("%s failed.", "_dx_smiltext_changed(): ReleaseDC()");
 	m_hdc = NULL;
 }
 
@@ -230,7 +232,8 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_fits(const smil2::smiltext_run strun
 	if (m_x + (int) ax.get_width() > r.right())
 		rv = false;
 	m_x += ax.get_width();
-	::DeleteObject(m_font);
+	if (m_font && ! ::DeleteObject(m_font))
+		win_report_error("DeleteObject(m_font)", DDERR_GENERIC);
 	m_font = NULL;
 	return rv;
 }
@@ -316,7 +319,8 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_render(const smil2::smiltext_run str
 	if (FAILED(hr)) {
 		win_report_error("SetColorKey()", hr);
 	}
-	::DeleteObject(m_font);
+	if (m_font && ! ::DeleteObject(m_font))
+		win_report_error("DeleteObject(m_font)", DDERR_GENERIC);
 	m_font = NULL;
 	// reset the background color
 	if( ! strun.m_bg_transparent) {

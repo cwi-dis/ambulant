@@ -107,7 +107,8 @@ void gui::dx::image_renderer::open(net::datasource *src, viewport* v) {
 	// Decode the image
 	HDC hdc = ::GetDC(NULL);
 	img_decoder_class* decoder = create_img_decoder(&mf, hdc);
-	::DeleteDC(hdc);
+	if ( ! ::ReleaseDC(NULL, hdc))
+		lib::logger::get_logger()->warn("%s failed", "dx::image_renderer::open: ::ReleaseDC(NULL, hdc)");
 	if(!decoder) {
 		lib::logger::get_logger()->show("%s: Cannot create image decoder", m_url.get_url().c_str());
 		return;
