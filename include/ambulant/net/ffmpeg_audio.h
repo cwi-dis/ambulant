@@ -109,6 +109,7 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	bool end_of_file();
 	bool buffer_full();
 	void read_ahead(timestamp_t clip_begin);
+	void seek(timestamp_t time);
 
 	char* get_read_ptr();
 	int size() const;   
@@ -148,7 +149,8 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
     
 	void start(lib::event_processor *evp, lib::event *callback);  
 	void stop();  
-	void read_ahead(timestamp_t time) {};
+	void read_ahead(timestamp_t time);
+	void seek(timestamp_t time);
 
 	void readdone(int len);
 	void data_avail();

@@ -46,6 +46,7 @@ mypreferences::load_preferences()
 		[NSNumber numberWithBool: false], @"tabbed_links",
 		[NSNumber numberWithBool: false], @"fullScreen",
 		@"", @"plugin_dir",
+		[NSNumber numberWithBool: false], @"dynamic_content_control",
 		nil];
 	[prefs registerDefaults: defaultDefaults];
 	m_parser_id = [[prefs stringForKey: @"parser_id"] cString];
@@ -59,6 +60,7 @@ mypreferences::load_preferences()
 	m_prefer_ffmpeg = [prefs boolForKey: @"prefer_ffmpeg"];
 	m_strict_url_parsing = [prefs boolForKey: @"strict_url_parsing"];
 	m_tabbed_links = [prefs boolForKey: @"tabbed_links"];
+	m_dynamic_content_control = [prefs boolForKey: @"dynamic_content_control"];
 	save_preferences();
 	return true;
 }
@@ -79,6 +81,7 @@ mypreferences::save_preferences()
 	[prefs setBool: m_strict_url_parsing forKey: @"strict_url_parsing"];
 	[prefs setBool: m_tabbed_links forKey: @"tabbed_links"];
 	[prefs setBool: NO forKey: @"fullScreen"]; // Only allow setting this on the command line for now
+	[prefs setBool: m_dynamic_content_control forKey: @"dynamic_content_control"];
 	ambulant::net::url::set_strict_url_parsing(m_strict_url_parsing);
 	return true;
 }

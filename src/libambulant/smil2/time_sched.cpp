@@ -88,7 +88,15 @@ void scheduler::activate_node(time_node *tn) {
 	while(m_root->is_active() && !tn->is_active()) {
 		AM_DBG lib::logger::get_logger()->debug("scheduler:::activate_node:(%s) next=%d ", tn->get_sig().c_str(), next);
 		next = _exec(next);
-		if(next == infinity) break;
+		if(next == infinity && !tn->is_active()) {
+			// This is a problem: this node is apparently blocked waiting for something
+			// with an infinite duration. Try again (which won't help, except debugging).
+			AM_DBG lib::logger::get_logger()->debug("scheduler:::activate_node:(%s %s) waiting for ever, killing blockers", tn->get_sig().c_str(), tn->get_state()->name());
+			time_traits::qtime_type timestamp(m_root, m_timer->elapsed());
+			tn->kill_blockers(timestamp, m_root);
+//			next = _exec(next);
+//			break;
+		}
 	}
 	AM_DBG lib::logger::get_logger()->debug("scheduler::activate_node(%s): leave next=%d tn->is_active %d", tn->get_sig().c_str(), next, tn->is_active());
 }
@@ -104,25 +112,29 @@ void scheduler::goto_next(time_node *tn) {
 		time_node *parent = *it; cit = it;
 		time_node *child = *++cit;
 		assert(cit != tnpath.end());
-		AM_DBG lib::logger::get_logger()->debug("goto_next: parent=%s child=%s", parent->get_sig().c_str(), child->get_sig().c_str());
+		AM_DBG lib::logger::get_logger()->debug("goto_next: parent=%s child=%s, time=%d", parent->get_sig().c_str(), child->get_sig().c_str(), m_timer->elapsed());
 		if(parent->is_seq()) activate_seq_child(parent, child);
 		else if(parent->is_par()) activate_par_child(parent, child);
 		else if(parent->is_excl()) activate_excl_child(parent, child);
 		else activate_media_child(parent, child);
 		if(child == tnpath.back()) break;
 	}
-	/*AM_DBG*/ lib::logger::get_logger()->debug("goto_next: synchronize media to node clocks");
+	AM_DBG lib::logger::get_logger()->debug("goto_next: synchronize media to node clocks, time=%d", m_timer->elapsed());
 	sync_playable_clocks(m_root, tn);
-	AM_DBG lib::logger::get_logger()->debug("goto_next: finished");
+	AM_DBG lib::logger::get_logger()->debug("goto_next: finished, time=%d", m_timer->elapsed());
 }
 
 // Starts a hyperlink target that has played. 
 void scheduler::goto_previous(time_node *tn) {
 	// restart root
 	_reset_document();
+	m_horizon = 0;
+	m_timer->set_time(m_horizon);
 	m_root->start();
 	if(tn == m_root) return;
-	
+#if 1
+	goto_next(tn);
+#else
 	// get the path to the time node we want to activate
 	// the first in the list is the root and the last is the target
 	std::list<time_node*> tnpath;
@@ -137,6 +149,7 @@ void scheduler::goto_previous(time_node *tn) {
 		else activate_media_child(parent, child);
 		if(child == tnpath.back()) break;
 	}
+#endif
 }
 
 // Activate the desinated child starting from the current time
@@ -152,24 +165,24 @@ void scheduler::activate_seq_child(time_node *parent, time_node *child) {
 	}
 	beginit = it;
 	
-	for(it = beginit; it != children.end(); it++) {
-		if(*it != child) {
-			set_ffwd_mode(*it, true);
-			AM_DBG lib::logger::get_logger()->debug("activate_seq_child: ffwd earlier %s", (*it)->get_sig().c_str());
-		} else {
-			break;
+	for(it = beginit; (*it) != child; it++) {
+		assert(it != children.end());
+		AM_DBG lib::logger::get_logger()->debug("activate_seq_child: ffwd earlier %s", (*it)->get_sig().c_str());
+		set_ffwd_mode(*it, true);
+	}
+	for(it = beginit; (*it) != child; it++) {
+		assert(it != children.end());
+		AM_DBG lib::logger::get_logger()->debug("activate_seq_child: activate %s", (*it)->get_sig().c_str());
+		activate_node((*it));
+		if(!(*it)->is_active()) {
+			AM_DBG lib::logger::get_logger()->debug("activate_seq_child: failed to activate %s", (*it)->get_sig().c_str());
 		}
 	}
-	for(it = beginit; it != children.end(); it++) {
-		time_node *itt = *it;
-		AM_DBG lib::logger::get_logger()->debug("activate_seq_child: activate %s", (*it)->get_sig().c_str());
-		activate_node(itt);
-		// XXXJack: why is this not always true??? assert(itt->is_active());
-		if(itt == child) break;
-	}
-	for(it = beginit; it != children.end(); it++) {
-		if(*it != child) set_ffwd_mode(*it, false);
-		else break;
+	AM_DBG lib::logger::get_logger()->debug("activate_seq_child: activate wanted %s", child->get_sig().c_str());
+	activate_node(child);
+	for(it = beginit; (*it) != child; it++) {
+		assert(it != children.end());
+		set_ffwd_mode(*it, false);
 	}
 }
 

@@ -114,6 +114,7 @@ class rtsp_demux : public abstract_demux {
 	audio_format& get_audio_format() { return m_context->audio_fmt; };
 	video_format& get_video_format() { return m_context->video_fmt; };
 	void seek(timestamp_t time);
+	void read_ahead(timestamp_t time);
 	void set_position(timestamp_t time);
 	void cancel();
 	timestamp_t get_clip_end();

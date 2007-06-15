@@ -114,6 +114,7 @@ smil_layout_manager::get_document_layout(lib::document *doc)
 	AM_DBG lib::logger::get_logger()->debug("smil_layout_manager: examining <switch>");
 	if (layout_switch) {
 		layout_root = layout_switch->down();
+		if (layout_root == NULL) return NULL;
 		while (layout_root) {
 			AM_DBG lib::logger::get_logger()->debug("smil_layout_manager: examining node 0x%x", layout_root);
 			// Check that it is indeed a <layout> node
@@ -134,13 +135,12 @@ smil_layout_manager::get_document_layout(lib::document *doc)
 				AM_DBG lib::logger::get_logger()->debug("smil_layout_manager: returning node 0x%x", layout_root);
 				return layout_root;
 			}
-			AM_DBG lib::logger::get_logger()->debug("smil_layout_manager: skipping layout section due to test attributes");
+			AM_DBG lib::logger::get_logger()->trace("smil_layout_manager: skipping layout section due to test attributes");
 			delete tester;
 			layout_root = layout_root->next();
 		}
 	}
 	
-	lib::logger::get_logger()->warn(gettext("Problem with layout in SMIL document"));
 	return NULL;
 }
 

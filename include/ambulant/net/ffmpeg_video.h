@@ -106,6 +106,7 @@ class ffmpeg_video_decoder_datasource:
 	char* get_frame(timestamp_t now, timestamp_t *timestamp, int *size);
 	void frame_done(timestamp_t timestamp, bool keepdata);
 	void read_ahead(timestamp_t clip_begin);
+	void seek(timestamp_t time);
     void data_avail();
 	bool buffer_full();
   	timestamp_t get_clip_end() { return m_src->get_clip_end(); };

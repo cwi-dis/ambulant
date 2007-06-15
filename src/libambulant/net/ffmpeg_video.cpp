@@ -414,6 +414,17 @@ ffmpeg_video_decoder_datasource::read_ahead(timestamp_t clip_begin)
 	m_src->read_ahead(clip_begin);
 }
 
+void
+ffmpeg_video_decoder_datasource::seek(timestamp_t time)
+{
+	m_lock.enter();
+	while ( ! m_frames.empty() ) {
+		_pop_top_frame();
+	}
+	if (m_src) m_src->seek(time);
+	m_lock.leave();
+}
+
 void 
 ffmpeg_video_decoder_datasource::data_avail()
 {

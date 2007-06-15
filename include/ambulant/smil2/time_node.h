@@ -117,6 +117,7 @@ class time_node : public schedulable {
 	virtual void startup_children(qtime_type timestamp);
 	virtual void kill(qtime_type timestamp, time_node *oproot);	
 	virtual void kill_children(qtime_type timestamp, time_node *oproot);
+	virtual void kill_blockers(qtime_type timestamp, time_node *oproot);
 	
 	// Sync update 
 	virtual void sync_update(qtime_type timestamp);

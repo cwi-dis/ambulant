@@ -101,6 +101,12 @@ timegraph::build_time_tree(const lib::node *root) {
 		
 		// keep switch tree ref
 		if(tag == "switch") {
+			bool dynamic_cc = common::preferences::get_preferences()->m_dynamic_content_control;
+			static bool warned = false;
+			if (!warned && dynamic_cc) {
+				warned = true;
+				lib::logger::get_logger()->trace("WARNING: dynamic content control not implemented for switch");
+			}
 			if(start_element) {
 				switch_stack.push(n);
 				select_stack.push(select_switch_child(n));
@@ -130,7 +136,8 @@ timegraph::build_time_tree(const lib::node *root) {
 		}
 		// support inline tests
 		test_attrs ta(n);
-		if(!ta.selected()) {
+		bool dynamic_cc = common::preferences::get_preferences()->m_dynamic_content_control;
+		if(!dynamic_cc && !ta.selected()) {
 			// skip content
 			AM_DBG m_logger->debug("Filtering out node: %s[%s]", 
 				ta.get_tag().c_str(), ta.get_id().c_str());

@@ -851,7 +851,7 @@ void smil_player::show_link(const lib::node *n, const net::url& href,
 
 bool smil_player::goto_node(const lib::node *target)
 {
-	/*AM_DBG*/ lib::logger::get_logger()->debug("goto_node(%s)", target->get_sig().c_str());
+	AM_DBG lib::logger::get_logger()->debug("goto_node(%s)", target->get_sig().c_str());
 
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(target->get_numid());
 	

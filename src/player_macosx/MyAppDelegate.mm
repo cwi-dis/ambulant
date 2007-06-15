@@ -58,7 +58,11 @@ nslog_ostream::write(const char *cstr)
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	LogController *log = [LogController sharedLogController];
 	NSString *nsstr = [NSString stringWithCString: cstr];
+#if 0
 	if (log) [log insertText: nsstr];
+#else
+	if (log) [log performSelectorOnMainThread: @selector(insertText:) withObject: nsstr waitUntilDone: NO];
+#endif
 //	[nsstr release];
 	[pool release];
 	return 0;

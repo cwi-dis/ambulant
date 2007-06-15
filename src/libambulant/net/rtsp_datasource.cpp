@@ -336,12 +336,18 @@ ambulant::net::rtsp_demux::get_clip_end()
 }
 
 void
-ambulant::net::rtsp_demux::seek(timestamp_t time)
+ambulant::net::rtsp_demux::read_ahead(timestamp_t time)
 {	
 	m_critical_section.enter();
 	m_clip_begin = time;
 	m_clip_begin_set = false;
 	m_critical_section.leave();
+}
+
+void
+ambulant::net::rtsp_demux::seek(timestamp_t time)
+{	
+	set_position(time);
 }
 
 void

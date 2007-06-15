@@ -93,6 +93,9 @@ class AMBULANTAPI preferences {
 	
 	/// Do we allow selection/activation of anchors with tab/newline?
 	bool m_tabbed_links;
+	
+	/// Do we want to do dynamic content control (systemTests and customTests)?
+	bool m_dynamic_content_control;
 
 	/// Return the preferences singleton object.
 	static preferences* get_preferences();

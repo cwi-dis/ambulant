@@ -490,7 +490,7 @@ void
 gui::sdl::sdl_audio_renderer::stop()
 {
 	m_lock.enter();
-	/*AM_DBG*/ lib::logger::get_logger()->debug("sdl_audio_renderer::stop(0x%x)",(void*)this);
+	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::stop(0x%x)",(void*)this);
 	if (m_is_playing) {
 		m_lock.leave();
 		unregister_renderer(this);
@@ -529,13 +529,13 @@ gui::sdl::sdl_audio_renderer::start(double where)
 	m_lock.enter();
     if (!m_node) abort();
 		
-	/*AM_DBG*/ lib::logger::get_logger()->debug("sdl_audio_renderer.start(0x%x, %s, where=%f)", 
+	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer.start(0x%x, %s, where=%f)", 
 		(void *)this, m_node->get_sig().c_str(), where);
 	if (m_audio_src) {
 	
 		if (m_audio_src->get_start_time() != m_audio_src->get_clip_begin())
 			lib::logger::get_logger()->trace("sdl_audio_renderer: warning: datasource does not support clipBegin");
-			
+		if (where) m_audio_src->seek((net::timestamp_t)(where*1000000));
 		lib::event *e = new readdone_callback(this, &sdl_audio_renderer::data_avail);
 		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::start(): m_audio_src->start(0x%x, 0x%x) this = (x%x)m_audio_src=0x%x", (void*)m_event_processor, (void*)e, this, (void*)m_audio_src);
 		m_audio_src->start(m_event_processor, e);
@@ -557,7 +557,11 @@ gui::sdl::sdl_audio_renderer::start(double where)
 void
 gui::sdl::sdl_audio_renderer::seek(double where)
 {
-	/*AM_DBG*/ lib::logger::get_logger()->trace("sdl_audio_renderer: seek(0x%x, %f) not implemented", this, where);
+	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->trace("sdl_audio_renderer: seek(0x%x, %f)", this, where);
+	if (m_audio_src) m_audio_src->seek((net::timestamp_t)(where*1000000));
+	// XXXJACK: Should restart SDL
+	m_lock.leave();
 }
 
 common::duration 

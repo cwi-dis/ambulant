@@ -457,7 +457,9 @@ surface_impl::get_fit_rect_noalign(const lib::size& src_size, lib::rect* out_src
 lib::rect
 surface_impl::get_crop_rect(const lib::size& srcsize) const
 {
-	return m_info->get_crop_rect(srcsize);
+	if (m_info)
+		return m_info->get_crop_rect(srcsize);
+	return lib::rect(lib::point(0, 0), srcsize);
 }
 
 lib::rect 

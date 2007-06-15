@@ -1045,7 +1045,9 @@ void time_node::exec(qtime_type timestamp) {
 bool time_node::end_cond(qtime_type timestamp) {
 	assert(timestamp.first == sync_node());
 	assert(is_active());
+	// This expression will be true for containers that have and endsync and that endsync is true.
 	bool ec = end_sync_cond_applicable() && end_sync_cond();
+	// This expression will be true for nodes whose specified duration (dur or end) has passed. 
 	bool tc = !end_sync_cond_applicable() && timestamp.second >= get_interval_end();
 	
 	if(is_time_container() && (ec || tc)) {
@@ -1863,6 +1865,19 @@ void time_node::kill_children(qtime_type timestamp, time_node *oproot) {
 			(*it)->set_state(ts_postactive, qt, oproot);
 		else
 			(*it)->kill(qt, oproot);
+	}
+}
+
+void time_node::kill_blockers(qtime_type timestamp, time_node *oproot) {
+	AM_DBG m_logger->debug("kill_blockers(%s): %d in m_begin_list", get_sig().c_str(), m_begin_list.size());
+	rule_list::iterator it;
+	for (it=m_begin_list.begin(); it != m_begin_list.end(); it++) {
+		time_node *blocker = (*it)->get_syncbase();
+		AM_DBG m_logger->debug("kill_blockers(%s): depends on %s %s", 
+			get_sig().c_str(), blocker->get_sig().c_str(), blocker->get_state()->name());
+		if (blocker->is_alive()) {
+			blocker->set_state(ts_postactive, timestamp, blocker);
+		}
 	}
 }
 

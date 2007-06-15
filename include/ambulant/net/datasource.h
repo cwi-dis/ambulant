@@ -260,7 +260,11 @@ class audio_datasource_mixin {
 	/// Returns the native format of the audio data.
 	virtual audio_format& get_audio_format() = 0;
 	/// Tells the datasource to start reading data starting from time t.
-	virtual void read_ahead(timestamp_t time) = 0; 
+	/// Call only once, early in initialization.
+	virtual void read_ahead(timestamp_t time) = 0;
+	/// Tells the datasource to seek to a specific time. Not guaranteed
+	/// to work.
+	virtual void seek(timestamp_t time) = 0;
 	/// At what timestamp value should the audio playback stop?
 	virtual timestamp_t get_clip_end() = 0;
 	/// At what timestamp value should audio playback start?	
@@ -365,7 +369,9 @@ class video_datasource : virtual public lib::ref_counted_obj {
   	virtual void frame_done(timestamp_t timestamp, bool keepdata) = 0;
 	
 	/// Tells the datasource to start reading data starting from time t.
-	virtual void read_ahead(timestamp_t time) = 0; 
+	virtual void read_ahead(timestamp_t time) = 0;
+	/// Fast forward (or reverse) to a specific place in time.
+	virtual void seek(timestamp_t time) = 0;
 	/// At what timestamp value should the video playback stop?
 	virtual timestamp_t get_clip_end() = 0;
 	/// At what timestamp value should the audio playback start?
@@ -611,6 +617,11 @@ class abstract_demux : public lib::unix::thread, public lib::ref_counted_obj {
 	/// Seek to the given location, if possible. As timestamps are
 	/// provided to the sinks this call may be implemented as no-op.
 	virtual void seek(timestamp_t time) = 0;
+
+	/// Seek to the given location, if possible. Only allowed before the
+	/// stream has started. As timestamps are
+	/// provided to the sinks this call may be implemented as no-op.
+	virtual void read_ahead(timestamp_t time) = 0;
 
 	/// Return audio_format for stream audio_stream_nr()
 	virtual audio_format& get_audio_format() = 0;

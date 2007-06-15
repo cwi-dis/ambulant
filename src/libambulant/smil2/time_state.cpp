@@ -235,6 +235,13 @@ void active_state::enter(qtime_type timestamp) {
 				prev->remove(timestamp);
 		 }
 	}
+	// If we do dynamic processing of content control: see whether we
+	// need to skip this node.
+	const bool skip = common::preferences::get_preferences()->m_dynamic_content_control;
+	if (skip) {
+		m_self->set_state(ts_postactive, timestamp, m_self);
+		return;
+	}
 #ifdef WITH_SMIL30
 	// We have to implement expr testing somewhere, and this seems like
 	// a likely place. But note that I (Jack) picked this spoot without

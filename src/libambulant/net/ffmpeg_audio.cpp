@@ -503,7 +503,24 @@ ffmpeg_decoder_datasource::_clip_end() const
 void 
 ffmpeg_decoder_datasource::read_ahead(timestamp_t clip_begin)
 {
-		m_src->read_ahead(clip_begin);
+	m_lock.enter();
+	m_src->read_ahead(clip_begin);
+	m_lock.leave();
+} 
+
+void 
+ffmpeg_decoder_datasource::seek(timestamp_t time)
+{
+	m_lock.enter();
+	int nbytes = m_buffer.size();
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::seek(%d): flushing %d bytes\n", time, nbytes);
+	if (nbytes) {
+		(void)m_buffer.get_read_ptr();
+		m_buffer.readdone(nbytes);
+	}
+	m_src->seek(time);
+	m_elapsed = time;
+	m_lock.leave();
 } 
 
 bool 
@@ -889,6 +906,28 @@ ffmpeg_resample_datasource::_src_end_of_file() const
 	
 	return true;
 }
+
+void 
+ffmpeg_resample_datasource::read_ahead(timestamp_t clip_begin)
+{
+	m_lock.enter();
+	m_src->read_ahead(clip_begin);
+	m_lock.leave();
+} 
+
+void 
+ffmpeg_resample_datasource::seek(timestamp_t time)
+{
+	m_lock.enter();
+	int nbytes = m_buffer.size();
+	if (nbytes) {
+		(void)m_buffer.get_read_ptr();
+		m_buffer.readdone(nbytes);
+	}
+	m_src->seek(time);
+	m_lock.leave();
+} 
+
 
 bool 
 ffmpeg_resample_datasource::buffer_full()
