@@ -546,7 +546,7 @@ AC_ARG_WITH(sdl,
      [if test "x$withval" = "xno"; then
 	test_sdl=false
   fi])
-if test "x$test_sdl" = "xtrue"-a sdl-config --libs > /dev/null 2>&1; then
+if test "x$test_sdl" = "xtrue" && sdl-config --libs > /dev/null 2>&1; then
      test_sdl=true
      else
      test_sdl=false
