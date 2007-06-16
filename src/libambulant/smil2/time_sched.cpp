@@ -98,6 +98,9 @@ void scheduler::activate_node(time_node *tn) {
 //			break;
 		}
 	}
+	if (!m_root->is_active()) {
+		lib::logger::get_logger()->debug("activate_node(%s): Document stopped playing before node went active?", tn->get_sig().c_str());
+	}
 	AM_DBG lib::logger::get_logger()->debug("scheduler::activate_node(%s): leave next=%d tn->is_active %d", tn->get_sig().c_str(), next, tn->is_active());
 }
 
@@ -159,11 +162,17 @@ void scheduler::activate_seq_child(time_node *parent, time_node *child) {
 	parent->get_children(children);
 	std::list<time_node*>::iterator it, beginit;
 	
+	assert(parent->is_active());
+#if 0
+	assert(!child->is_active());
 	// locate first active
 	for(it = children.begin(); it != children.end() && !(*it)->is_active(); it++) {
 		AM_DBG lib::logger::get_logger()->debug("activate_seq_child: skip inactive %s", (*it)->get_sig().c_str());
 	}
 	beginit = it;
+#else
+	beginit = children.begin();
+#endif
 	
 	for(it = beginit; (*it) != child; it++) {
 		assert(it != children.end());
@@ -177,9 +186,11 @@ void scheduler::activate_seq_child(time_node *parent, time_node *child) {
 		if(!(*it)->is_active()) {
 			AM_DBG lib::logger::get_logger()->debug("activate_seq_child: failed to activate %s", (*it)->get_sig().c_str());
 		}
+		assert(parent->is_active());
 	}
 	AM_DBG lib::logger::get_logger()->debug("activate_seq_child: activate wanted %s", child->get_sig().c_str());
 	activate_node(child);
+	assert(parent->is_active());
 	for(it = beginit; (*it) != child; it++) {
 		assert(it != children.end());
 		set_ffwd_mode(*it, false);
@@ -189,17 +200,20 @@ void scheduler::activate_seq_child(time_node *parent, time_node *child) {
 // Activate the desinated child starting from the current time
 void scheduler::activate_par_child(time_node *parent, time_node *child) {
 	activate_node(child);
+	assert(parent->is_active());
 }
 
 // Activate the desinated child starting from the current time
 void scheduler::activate_excl_child(time_node *parent, time_node *child) {
 	if(child->is_active()) return;
 	child->start();
+	assert(parent->is_active());
 }
 
 // Activate the desinated child starting from the current time
 void scheduler::activate_media_child(time_node *parent, time_node *child) {
 	activate_node(child);
+	assert(parent->is_active());
 }
 
 // Restarts the node
