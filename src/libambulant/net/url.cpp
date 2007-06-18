@@ -404,7 +404,7 @@ void net::url::_checkurl() const
 #endif
 }
 net::url::url() 
-:	m_absolute(true),
+:	m_absolute(false),
 	m_port(0)
 {
 }

@@ -84,16 +84,21 @@ void scheduler::update_horizon(time_type t) {
 // Activates a node that has a valid scheduled 
 // interval after the current time. 
 void scheduler::activate_node(time_node *tn) {
+	int count = 0;
 	timer::time_type next = m_timer->elapsed();
 	while(m_root->is_active() && !tn->is_active()) {
-		AM_DBG lib::logger::get_logger()->debug("scheduler:::activate_node:(%s) next=%d ", tn->get_sig().c_str(), next);
+		/*AM_DBG*/ lib::logger::get_logger()->debug("scheduler:::activate_node:(%s) next=%d ", tn->get_sig().c_str(), next);
 		next = _exec(next);
 		if(next == infinity && !tn->is_active()) {
 			// This is a problem: this node is apparently blocked waiting for something
 			// with an infinite duration. Try again (which won't help, except debugging).
-			AM_DBG lib::logger::get_logger()->debug("scheduler:::activate_node:(%s %s) waiting for ever, killing blockers", tn->get_sig().c_str(), tn->get_state()->name());
+			/*AM_DBG*/ lib::logger::get_logger()->debug("scheduler:::activate_node:(%s %s) waiting for ever, killing blockers", tn->get_sig().c_str(), tn->get_state()->name());
 			time_traits::qtime_type timestamp(m_root, m_timer->elapsed());
 			tn->kill_blockers(timestamp, m_root);
+			if (++count > 10) {
+				/*AM_DBG*/ lib::logger::get_logger()->debug("scheduler:::activate_node: giving up");
+				break;
+			}
 //			next = _exec(next);
 //			break;
 		}
@@ -101,7 +106,7 @@ void scheduler::activate_node(time_node *tn) {
 	if (!m_root->is_active()) {
 		lib::logger::get_logger()->debug("activate_node(%s): Document stopped playing before node went active?", tn->get_sig().c_str());
 	}
-	AM_DBG lib::logger::get_logger()->debug("scheduler::activate_node(%s): leave next=%d tn->is_active %d", tn->get_sig().c_str(), next, tn->is_active());
+	/*AM_DBG*/ lib::logger::get_logger()->debug("scheduler::activate_node(%s): leave next=%d tn->is_active %d", tn->get_sig().c_str(), next, tn->is_active());
 }
 
 // Starts a hyperlink target that has not played yet. 
@@ -181,10 +186,10 @@ void scheduler::activate_seq_child(time_node *parent, time_node *child) {
 	}
 	for(it = beginit; (*it) != child; it++) {
 		assert(it != children.end());
-		AM_DBG lib::logger::get_logger()->debug("activate_seq_child: activate %s", (*it)->get_sig().c_str());
+		/*AM_DBG*/ lib::logger::get_logger()->debug("activate_seq_child: activate %s", (*it)->get_sig().c_str());
 		activate_node((*it));
 		if(!(*it)->is_active()) {
-			AM_DBG lib::logger::get_logger()->debug("activate_seq_child: failed to activate %s", (*it)->get_sig().c_str());
+			lib::logger::get_logger()->debug("activate_seq_child: failed to activate %s", (*it)->get_sig().c_str());
 		}
 		assert(parent->is_active());
 	}
