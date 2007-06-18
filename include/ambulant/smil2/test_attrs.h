@@ -58,11 +58,12 @@ class AMBULANTAPI test_attrs {
 	static bool load_test_attrs(const std::string& filename);
 	static void set_default_tests_attrs();
 	
+#if 0
 	static void read_custom_attributes(const lib::document *doc, 
 		std::map<std::string, custom_test>& custom_tests);
 	
 	static void read_custom_attributes(const lib::document *doc);
-	static void update_doc_custom_attributes(std::map<std::string, custom_test>& custom_tests);
+#endif
 
 	const std::string& get_tag() const { return m_tag;}
 	const std::string& get_id() const { return m_id;}
@@ -70,6 +71,14 @@ class AMBULANTAPI test_attrs {
 #ifdef WITH_SMIL30
 	static common::state_test_methods *get_state_test_methods();
 #endif // WITH_SMIL30
+
+	// API for embedders and extenders that want to fiddle with components and
+	// custom tests
+	static bool get_current_custom_test_value(std::string name);
+	static void set_current_custom_test_value(std::string name, bool value);
+	static bool get_current_system_component_value(std::string name);
+	static void set_current_system_component_value(std::string name, bool enabled);
+
   protected:
 	typedef std::string::size_type size_type;
 	static bool test_on_off_attr(const std::string& attr,const char *value);

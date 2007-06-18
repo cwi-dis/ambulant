@@ -76,6 +76,8 @@ bool test_attrs::selected() const {
 	
 	// systemLanguage
 	value = m_node->get_attribute("systemLanguage");
+	if (!value)
+		value = m_node->get_attribute("system-language");
 	if(value && !test_system_language(value))
 		return false;
 	
@@ -86,11 +88,15 @@ bool test_attrs::selected() const {
 	
 	// systemBitrate
 	value = m_node->get_attribute("systemBitrate");
+	if (!value)
+		value = m_node->get_attribute("system-bitrate");
 	if(value && !test_system_bitrate(value))
 		return false;
 	
 	// systemCaptions
 	value = m_node->get_attribute("systemCaptions");
+	if (!value)
+		value = m_node->get_attribute("system-captions");
 	if(value && !test_on_off_attr("systemCaptions", value))
 		return false;
 	
@@ -100,22 +106,28 @@ bool test_attrs::selected() const {
 		return false;
 		
 	// systemOperatingSystem 
-	value = m_node->get_attribute("systemOperatingSystem ");
-	if(value && !test_exact_str_attr("systemOperatingSystem ", value))
+	value = m_node->get_attribute("systemOperatingSystem");
+	if(value && !test_exact_str_attr("systemOperatingSystem", value))
 		return false;
 		
 	// systemOverdubOrSubtitle 
-	value = m_node->get_attribute("systemOverdubOrSubtitle ");
-	if(value && !test_exact_str_attr("systemOverdubOrSubtitle ", value))
+	value = m_node->get_attribute("systemOverdubOrSubtitle");
+	if (!value)
+		value = m_node->get_attribute("system-overdub-or-caption");
+	if(value && !test_exact_str_attr("systemOverdubOrSubtitle", value))
 		return false;
 	
 	// systemScreenDepth
 	value = m_node->get_attribute("systemScreenDepth");
+	if (!value)
+		value = m_node->get_attribute("system-screen_depth");
 	if(value && !test_system_screen_depth(value))
 		return false;
 	
 	// systemScreenSize
 	value = m_node->get_attribute("systemScreenSize");
+	if (!value)
+		value = m_node->get_attribute("system-screen-size");
 	if(value && !test_system_screen_size(value))
 		return false;
 	
@@ -131,6 +143,8 @@ bool test_attrs::selected() const {
 	
 	// systemRequired, rather different from the others
 	value = m_node->get_attribute("systemRequired");
+	if (!value)
+		value = m_node->get_attribute("system-required");
 	if(value && !test_system_required(value, m_node->get_context()))
 		return false;
 	
@@ -411,4 +425,52 @@ test_attrs::get_state_test_methods()
 	return singleton;
 }
 #endif // WITH_SMIL30
+
+// API for embedders and extenders that want to fiddle with components and
+// custom tests
+bool
+test_attrs::get_current_custom_test_value(std::string name)
+{
+	if (active_custom_tests_attrs_map.count(name))
+		return active_custom_tests_attrs_map[name];
+	return false;
+}
+
+void
+test_attrs::set_current_custom_test_value(std::string name, bool value)
+{
+	active_custom_tests_attrs_map[name] = value;
+}
+
+bool
+test_attrs::get_current_system_component_value(std::string name)
+{
+	return test_system_component(name.c_str());
+}
+
+void
+test_attrs::set_current_system_component_value(std::string name, bool enabled)
+{
+	if(active_tests_attrs_map.empty())
+		set_default_tests_attrs();
+	std::string s = get_test_attribute("systemComponent");
+	std::list<std::string> list;
+	std::list<std::string> newlist;
+	lib::split_trim_list(s, list, ' ');
+	std::list<std::string>::const_iterator it;
+	for(it = list.begin(); it!=list.end();it++) {
+		if((*it) != name)
+			newlist.push_back((*it));
+	}
+	if (enabled)
+		newlist.push_back(name);
+	std::string value;
+	for (it = newlist.begin(); it!= newlist.end(); it++) {
+		if (it != newlist.begin())
+			value += ' ';
+		value += *it;
+	}
+	
+	active_tests_attrs_map["systemComponent"] = value;
+}
 
