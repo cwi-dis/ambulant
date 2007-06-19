@@ -260,7 +260,7 @@ class time_node : public schedulable {
 	bool is_seq() const { return m_type == tc_seq;}
 	bool is_par() const { return m_type == tc_par;}
 	bool is_excl() const { return m_type == tc_excl;}
-#if 1
+#if 0
 	// Handling discrete media different than continuous media
 	// is a bad idea from a SMIL point of view (the tag name
 	// really is documentary only), and practically it
@@ -268,6 +268,7 @@ class time_node : public schedulable {
 	// pause after putting up a text node to allow the screen
 	// reader to do its thing.
 	// Code temporarily re-enabled because of bug #1553249.
+	// And now disabled again, hoping the new seek code will also fix this
 	bool is_discrete() const { return m_discrete;}
 #else
 	bool is_discrete() const { return false;}
