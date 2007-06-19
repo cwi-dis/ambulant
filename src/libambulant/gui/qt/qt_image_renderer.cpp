@@ -101,7 +101,12 @@ qt_image_renderer::redraw_body(const rect &dirty,
 	}
 
 	srcrect = rect(size(0,0));
+#ifdef	WITH_SMIL30
+	lib::rect croprect = m_dest->get_crop_rect(srcsize);
+	dstrect = m_dest->get_fit_rect(croprect, srcsize, &srcrect, m_alignment);
+#else //WITH_SMIL30
 	dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
+#endif//WITH_SMIL30
 	dstrect.translate(m_dest->get_global_topleft());
 	// O_ for original image coordinates
 	// S_ for source image coordinates
@@ -118,19 +123,21 @@ qt_image_renderer::redraw_body(const rect &dirty,
 		D_W = dstrect.width(),
 		D_H = dstrect.height();
 	AM_DBG lib::logger::get_logger()->debug("qt_image_renderer.redraw_body(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H);
+	/* scale image s.t. the viewbox specified fits in destination area:
+	 * zoom_X=(O_W/S_W), fit_X=(D_W/O_W); fact_W=zoom_X*fit_X  */
 	float	fact_W = (float)D_W/(float)S_W,
 		fact_H = (float)D_H/(float)S_H;
-	int	N_L = (int)(S_L*fact_W),
-		N_T = (int)(S_T*fact_H),
-		N_W = (int)(O_W*fact_W),
-		N_H = (int)(O_H*fact_H);
+	int	N_L = (int)roundf(S_L*fact_W),
+		N_T = (int)roundf(S_T*fact_H),
+		N_W = (int)roundf(O_W*fact_W),
+		N_H = (int)roundf(O_H*fact_H);
 	AM_DBG lib::logger::get_logger()->debug("qt_image_renderer.redraw_body(0x%x): orig=(%d, %d) scalex=%f, scaley=%f  intermediate (L=%d,T=%d,W=%d,H=%d)",(void *)this,O_W,O_H,fact_W,fact_H,N_L,N_T,N_W,N_H);
 #ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 	QImage scaledimage = m_image.smoothScale(N_W, N_H, QImage::ScaleFree);
 #else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
 	QImage scaledimage = m_image.smoothScale(N_W, N_H);
 #endif/*QT_NO_FILEDIALOG*/
-	paint.drawImage(D_L, D_T, scaledimage, N_L, N_T, D_W,D_H);
+	paint.drawImage(D_L, D_T, scaledimage, N_L, N_T, D_W, D_H);
 	paint.flush();
 	paint.end();
 	m_lock.leave();

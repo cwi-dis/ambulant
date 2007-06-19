@@ -146,22 +146,18 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d), original(%d,%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H,width,height);
 
 	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
-#ifdef	WITH_SMIL30
 	/* scale image s.t. the viewbox specified fits in destination area:
-	 * zoom_X=(width/S_W), fit_X=(D_W/width); scale_X=zoom_X*fit_X  */
-	double scale_X = (double)D_W/(double)S_W;
-	double scale_Y = (double)D_H/(double)S_H;
-	double off_X = S_L*scale_X;
-	double off_Y = S_T*scale_Y;
-	GdkPixbuf* new_image = gdk_pixbuf_copy(m_image);
-	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x):gdk_pixbuf_scale(dest=%d,%d,%d,%d offs=%lf,%lf scal=%lf, %lf)",(void *)this,0,0,D_W,D_H,-off_X,-off_Y,scale_X,scale_Y);
-	gdk_pixbuf_scale(m_image, new_image, 0, 0, D_W, D_H, -off_X, -off_Y, scale_X, scale_Y, GDK_INTERP_BILINEAR);
-	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x):gdk_draw_pixbuf(src=%d,%d dest=%d,%d,%d,%d)",(void *)this,0,0,D_L,D_T,D_W,D_H);
-	gdk_draw_pixbuf(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, new_image,0, 0, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);
-#else //WITH_SMIL30
-	GdkPixbuf* new_image = gdk_pixbuf_scale_simple(m_image, D_W, D_H, GDK_INTERP_BILINEAR);
-	gdk_draw_pixbuf(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, new_image, 0, 0, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);
-#endif//WITH_SMIL30
+	 * zoom_X=(O_W/S_W), fit_X=(D_W/O_W); fact_W=zoom_X*fit_X  */
+	float	fact_W = (float)D_W/(float)S_W,
+		fact_H = (float)D_H/(float)S_H;
+	// N_ for new (scaled) image coordinates
+	int	N_L = (int)roundf(S_L*fact_W),
+		N_T = (int)roundf(S_T*fact_H),
+		N_W = (int)roundf(width*fact_W),
+		N_H = (int)roundf(height*fact_H);
+	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): orig=(%d, %d) scalex=%f, scaley=%f  intermediate (L=%d,T=%d,W=%d,H=%d) dest=(%d,%d,%d,%d)",(void *)this,width,height,fact_W,fact_H,N_L,N_T,N_W,N_H,D_L,D_T,D_W,D_H);
+	GdkPixbuf* new_image = gdk_pixbuf_scale_simple(m_image, N_W, N_H, GDK_INTERP_BILINEAR);
+	gdk_draw_pixbuf(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, new_image, N_L, N_T, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);
 	g_object_unref(G_OBJECT (new_image));
 	g_object_unref(G_OBJECT (gc));
 	m_lock.leave();
