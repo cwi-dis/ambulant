@@ -124,16 +124,17 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 		m_lock.leave();
 		return;
 	}
-
 	srcrect = rect(size(0,0));
+
+#ifdef	WITH_SMIL30
+	lib::rect croprect = m_dest->get_crop_rect(srcsize);
+	dstrect = m_dest->get_fit_rect(croprect, srcsize, &srcrect, m_alignment);
+#else //WITH_SMIL30
 	dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
+#endif//WITH_SMIL30
 	dstrect.translate(m_dest->get_global_topleft());
-	// O_ for original image coordinates
 	// S_ for source image coordinates
-	// N_ for new (scaled) image coordinates
 	// D_ for destination coordinates
-	int	O_W = srcsize.w,
-		O_H = srcsize.h;
 	int	S_L = srcrect.left(), 
 		S_T = srcrect.top(),
 		S_W = srcrect.width(),
@@ -142,18 +143,25 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 		D_T = dstrect.top(),
 		D_W = dstrect.width(),
 		D_H = dstrect.height();
-	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H);
-	float	fact_W = (float)D_W/(float)S_W,
-		fact_H = (float)D_H/(float)S_H;
-	int	N_L = (int)(S_L*fact_W),
-		N_T = (int)(S_T*fact_H),
-		N_W = (int)(O_W*fact_W),
-		N_H = (int)(O_H*fact_H);
-	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): orig=(%d, %d) scalex=%f, scaley=%f  intermediate (L=%d,T=%d,W=%d,H=%d)",(void *)this,O_W,O_H,fact_W,fact_H,N_L,N_T,N_W,N_H);
-	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
+	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d), original(%d,%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H,width,height);
 
-	GdkPixbuf* new_image = gdk_pixbuf_scale_simple(m_image, D_W, D_H, GDK_INTERP_BILINEAR); 
+	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
+#ifdef	WITH_SMIL30
+	/* scale image s.t. the viewbox specified fits in destination area:
+	 * zoom_X=(width/S_W), fit_X=(D_W/width); scale_X=zoom_X*fit_X  */
+	double scale_X = (double)D_W/(double)S_W;
+	double scale_Y = (double)D_H/(double)S_H;
+	double off_X = S_L*scale_X;
+	double off_Y = S_T*scale_Y;
+	GdkPixbuf* new_image = gdk_pixbuf_copy(m_image);
+	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x):gdk_pixbuf_scale(dest=%d,%d,%d,%d offs=%lf,%lf scal=%lf, %lf)",(void *)this,0,0,D_W,D_H,-off_X,-off_Y,scale_X,scale_Y);
+	gdk_pixbuf_scale(m_image, new_image, 0, 0, D_W, D_H, -off_X, -off_Y, scale_X, scale_Y, GDK_INTERP_BILINEAR);
+	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x):gdk_draw_pixbuf(src=%d,%d dest=%d,%d,%d,%d)",(void *)this,0,0,D_L,D_T,D_W,D_H);
+	gdk_draw_pixbuf(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, new_image,0, 0, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);
+#else //WITH_SMIL30
+	GdkPixbuf* new_image = gdk_pixbuf_scale_simple(m_image, D_W, D_H, GDK_INTERP_BILINEAR);
 	gdk_draw_pixbuf(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, new_image, 0, 0, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);
+#endif//WITH_SMIL30
 	g_object_unref(G_OBJECT (new_image));
 	g_object_unref(G_OBJECT (gc));
 	m_lock.leave();
