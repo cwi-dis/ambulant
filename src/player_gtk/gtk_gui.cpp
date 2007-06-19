@@ -1117,7 +1117,10 @@ main (int argc, char*argv[]) {
 		exec_flag = true;
 	}	
 	g_timeout_add(100, (GSourceFunc) gtk_C_callback_timer, NULL);
-//KB	g_main_loop_run(mywidget->main_loop);
+//#define TEST_G_MAIN_CONTEXT_ITERATION
+#ifndef TEST_G_MAIN_CONTEXT_ITERATION
+	g_main_loop_run(mywidget->main_loop);
+#else //TEST_G_MAIN_CONTEXT_ITERATION
 	GMainContext* context = g_main_loop_get_context(mywidget->main_loop);
 	bool busy = true;
 
@@ -1131,6 +1134,7 @@ main (int argc, char*argv[]) {
 	   */
 		g_main_context_iteration(context, false);
 	}
+#endif//TEST_G_MAIN_CONTEXT_ITERATION
 	unix_prefs.save_preferences();
 	delete gtk_logger::get_gtk_logger();
 	mywidget->do_quit();
