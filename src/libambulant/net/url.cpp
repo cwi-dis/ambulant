@@ -693,8 +693,12 @@ net::url net::url::add_fragment(string fragment) const
 
 bool net::url::same_document(const net::url &base) const
 {
+	std::string host1 = m_host;
+	std::string host2 = base.m_host;
+	if (host1 == "localhost") host1 = "";
+	if (host2 == "localhost") host2 = "";
 	return (m_protocol == base.m_protocol &&
-		m_host == base.m_host &&
+		host1 == host2 &&
 		m_port == base.m_port &&
 		m_path == base.m_path &&
 		m_query == base.m_query);
