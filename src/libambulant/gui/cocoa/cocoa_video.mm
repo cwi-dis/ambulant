@@ -146,9 +146,9 @@ cocoa_video_renderer::cocoa_video_renderer(
 	}
 	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer: cocoa_video_renderer(0x%x), m_movie=0x%x", this, m_movie);
 	
+#if 0
 	Movie mov = [m_movie quickTimeMovie];
 	TimeValue movtime;
-#if 0
 	// Calling SetMovieTimeValue here can cause deadlocks, it seems, probably due to
 	// a misunderstanding of QT threading intricacies on my side. The workaround
 	// is that we call it later, just after we've started playback (in the redraw
@@ -224,6 +224,13 @@ cocoa_video_renderer::start(double where)
 		return;
 	}
 	m_lock.enter();
+	if (where) {
+		Movie mov = [m_movie quickTimeMovie];
+		TimeValue movtime;
+		TimeScale movscale = GetMovieTimeScale(mov);
+		movtime = (TimeValue)(where*(double)movscale);
+		SetMovieTimeValue(mov, movtime);
+	}
 	m_paused = false;
 	m_dest->show(this); // XXX Do we need this?
 	m_lock.leave();
@@ -287,7 +294,13 @@ void
 cocoa_video_renderer::seek(double where)
 {
 	m_lock.enter();
-	lib::logger::get_logger()->debug("cocoa_video_renderer::seek(%f): not implemented", where);
+	lib::logger::get_logger()->debug("cocoa_video_renderer::seek(%f)", where);
+	Movie mov = [m_movie quickTimeMovie];
+	TimeValue movtime;
+	TimeScale movscale = GetMovieTimeScale(mov);
+	movtime = (TimeValue)(where*(double)movscale);
+	SetMovieTimeValue(mov, movtime);
+
 	m_lock.leave();
 }
 
