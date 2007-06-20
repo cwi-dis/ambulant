@@ -143,7 +143,7 @@ class animation_destination : public region_info {
 	/// Get the background opacity of a region.
 	/// If fromdom is true get the original DOM value, otherwise get the current
 	/// value (as animated by previous set_ calls).
-	virtual double get_region_bgopacity(bool fromdom = false) const = 0;
+	virtual double get_region_opacity(const std::string& which, bool fromdom = false) const = 0;
 #endif
 	/// Set one of the six dimensions of a region to a new value.
 	/// The name which is the SMIL attribute name.
@@ -167,7 +167,7 @@ class animation_destination : public region_info {
 	virtual void set_region_viewbox(const region_dim_spec& rds) = 0;
 	
 	/// Set the region background opacity to a new value.
-	virtual void set_region_bgopacity(double level) = 0;
+	virtual void set_region_opacity(const std::string& which, double level) = 0;
 #endif
 };
 

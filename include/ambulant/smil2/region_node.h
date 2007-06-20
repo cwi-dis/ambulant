@@ -135,7 +135,7 @@ class region_node : public common::animation_destination {
 	common::sound_alignment get_region_soundalign(bool fromdom = false) const;
 #ifdef WITH_SMIL30
 	const common::region_dim_spec& get_region_viewbox(bool fromdom = false) const;
-	double get_region_bgopacity(bool fromdom = false) const;
+	double get_region_opacity(const std::string& which, bool fromdom = false) const;
 #endif
 	
 	void set_region_dim(const std::string& which, const common::region_dim& rd);
@@ -145,7 +145,7 @@ class region_node : public common::animation_destination {
 	void set_region_soundalign(common::sound_alignment sa);
 #ifdef WITH_SMIL30
 	void set_region_viewbox(const common::region_dim_spec& rds);
-	void set_region_bgopacity(double level);
+	void set_region_opacity(const std::string& which, double level);
 #endif // WITH_SMIL30
 	
 	// sets explicitly the dimensions of this region

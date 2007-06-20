@@ -86,7 +86,7 @@ class animate_node : public time_node {
 	static animate_node* new_soundalign_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
 #ifdef WITH_SMIL30
 	static animate_node* new_viewbox_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
-	static animate_node* new_bgopacity_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
+	static animate_node* new_opacity_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
 #endif // WITH_SMIL30
   protected:
 	// The set of animation related attributes of this node.

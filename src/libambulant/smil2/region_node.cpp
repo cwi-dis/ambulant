@@ -512,8 +512,10 @@ const common::region_dim_spec& region_node::get_region_viewbox(bool fromdom) con
 	return fromdom?m_viewbox:m_display_viewbox;
 }
 
-double region_node::get_region_bgopacity(bool fromdom) const {
-	return fromdom?m_bgopacity:m_display_bgopacity;
+double region_node::get_region_opacity(const std::string& which, bool fromdom) const {
+	if (which == "backgroundOpacity")
+		return fromdom?m_bgopacity:m_display_bgopacity;
+	assert(0);
 }
 #endif // WITH_SMIL30
 
@@ -559,9 +561,12 @@ void region_node::set_region_viewbox(const common::region_dim_spec& rds) {
 	m_display_viewbox = rds;
 }
 
-void region_node::set_region_bgopacity(double level) {
+void region_node::set_region_opacity(const std::string& which, double level) {
 	AM_DBG lib::logger::get_logger()->debug("region_node::set_region_bgopacity()");
-	m_display_bgopacity = level;
+	if (which == "backgroundOpacity")
+		m_display_bgopacity = level;
+	else
+		assert(0);
 }
 
 #endif // WITH_SMIL30
