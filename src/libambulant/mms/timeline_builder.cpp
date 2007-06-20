@@ -60,7 +60,7 @@ class mms_region_info : public common::region_info {
 	lib::rect get_rect() const { return m_bounds; }
 	common::fit_t get_fit() const { return common::fit_meet; }
 	lib::color_t get_bgcolor() const { return (lib::color_t)0; }
-	bool get_transparent() const { return true; }
+	double get_bgopacity() const { return 1.0; }
 	common::zindex_t get_zindex() const { return 0; }
 	double get_soundlevel() const { return 1.0; }
 	common::sound_alignment get_soundalign() const { return common::sa_both; }

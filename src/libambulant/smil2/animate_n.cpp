@@ -429,6 +429,7 @@ class underlying_to_zindex_animation : public underlying_to_animation<common::zi
 		regs.zi = zi; // override
 	}
 };
+
 ////////////////////////////////////
 // values_motion_animation
 //
@@ -627,6 +628,74 @@ class underlying_to_viewbox_animation : public underlying_to_animation<common::r
 		regs.viewbox = viewbox; // override
 	}
 };
+
+////////////////////////////////////
+
+template <class F>
+class bgopacity_animation : public linear_values_animation<F, double> {
+  public:
+	bgopacity_animation(time_node_context *ctx, const node *n, animate_attrs *aattrs)
+	:	linear_values_animation<F, double>(ctx, n, aattrs) {}
+	
+	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
+		regs.dv = dst->get_region_bgopacity(true);
+	}
+
+	bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const {
+		double dv = dst->get_region_bgopacity(false);
+		if(dv != regs.dv || IGNORE_ATTR_COMP) {
+			/*AM_DBG*/ {
+				lib::timer::time_type t = this->m_timer->elapsed();
+				lib::logger::get_logger()->debug("%s(%ld) -> %f", 
+					this->m_aattrs->get_target_attr().c_str(), t, regs.dv);
+			}				
+			dst->set_region_bgopacity(regs.dv);
+			return true;
+		}
+		return false;
+	}
+	
+	void apply_self_effect(animate_registers& regs) const {
+		if(!this->m_animate_f) return;
+		lib::timer::time_type t = this->m_timer->elapsed();
+		double dv = this->m_animate_f->at(t);
+		if(this->m_aattrs->is_additive())
+			regs.dv += dv; // add
+		else
+			regs.dv = dv; // override
+	}
+};
+
+class underlying_to_bgopacity_animation : public underlying_to_animation<double> {
+  public:
+	underlying_to_bgopacity_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
+	:	underlying_to_animation<double>(ctx, n, aattrs) {}
+	
+	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
+		regs.dv = dst->get_region_bgopacity(true);
+	}
+
+	bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const {
+		double dv = dst->get_region_bgopacity(false);
+		if(dv != regs.dv || IGNORE_ATTR_COMP) {
+			/*AM_DBG*/ {
+				lib::timer::time_type t = m_timer->elapsed();
+				lib::logger::get_logger()->debug("%s(%ld) -> %f", 
+					m_aattrs->get_target_attr().c_str(), t, regs.dv);
+			}				
+			dst->set_region_bgopacity(regs.dv);
+			return true;
+		}
+		return false;
+	}
+	
+	void apply_self_effect(animate_registers& regs) const {
+		if(!m_animate_f) return;
+		lib::timer::time_type t = m_timer->elapsed();
+		double dv = m_animate_f->at(t, regs.dv);
+		regs.dv = dv; // override
+	}
+};
 #endif // WITH_SMIL30
 
 ////////////////////////////////////
@@ -704,6 +773,19 @@ animate_node* animate_node::new_viewbox_animation(context_type *ctx, const node 
 	typedef linear_map_f<attr_t> F;
 	return new viewbox_animation<F>(ctx, n, aattrs);
 }
+
+// private static 
+animate_node* animate_node::new_bgopacity_animation(context_type *ctx, const node *n, animate_attrs *aattrs) {
+	typedef double attr_t;
+	if(aattrs->is_discrete()) {
+		typedef discrete_map_f<attr_t> F;
+		return new bgopacity_animation<F>(ctx, n, aattrs);
+	} else if(aattrs->get_animate_type() == "to") {
+		return new underlying_to_bgopacity_animation(ctx, n, aattrs);
+	}
+	typedef linear_map_f<attr_t> F;
+	return new bgopacity_animation<F>(ctx, n, aattrs);
+}
 #endif // WITH_SMIL30
 
 
@@ -729,6 +811,8 @@ animate_node* animate_node::new_instance(context_type *ctx, const node *n, const
 #ifdef WITH_SMIL30
 	} else if (aattrs->get_target_attr() == "viewBox") {
 		return new_viewbox_animation(ctx, n, aattrs);
+	} else if (aattrs->get_target_attr() == "backgroundOpacity") {
+		return new_bgopacity_animation(ctx, n, aattrs);
 #endif // WITH_SMIL30
 	}
 	

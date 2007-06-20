@@ -100,7 +100,7 @@ class region_node : public common::animation_destination {
 	std::string get_name() const;
 	common::fit_t get_fit() const { return m_fit; }
 	lib::color_t get_bgcolor() const;
-	bool get_transparent() const;
+	double get_bgopacity() const;
 	bool get_showbackground() const;
 	common::zindex_t get_zindex() const { return m_display_zindex; }
 	bool is_subregion() const { return m_is_subregion; }
@@ -115,7 +115,7 @@ class region_node : public common::animation_destination {
 	// And corresponding setting interface
 	void reset() {(void)fix_from_dom_node(); };
 	void set_fit(common::fit_t f) { m_fit = f; }
-	void set_bgcolor(lib::color_t c, bool transparent, bool inherit);
+	void set_bgcolor(lib::color_t c, double opacity, bool inherit);
 	void set_bgcolor(lib::color_t c) { set_bgcolor(c, false, false); };
 	void set_showbackground(bool showbackground) { m_showbackground = showbackground; }
 	void set_zindex(common::zindex_t z) { m_zindex = z; m_display_zindex = z; }
@@ -123,6 +123,7 @@ class region_node : public common::animation_destination {
 	void set_soundalign(common::sound_alignment sa) { m_soundalign = sa; m_display_soundalign = sa; }
 #ifdef WITH_SMIL30
 	void set_viewbox(const common::region_dim_spec& rds) { m_viewbox = rds; m_display_viewbox = rds; }
+	void set_bgopacity(double l) { m_bgopacity = l; m_display_bgopacity = l; }
 #endif // WITH_SMIL30
 	void set_as_subregion(bool b) { m_is_subregion = b; }
 	
@@ -134,6 +135,7 @@ class region_node : public common::animation_destination {
 	common::sound_alignment get_region_soundalign(bool fromdom = false) const;
 #ifdef WITH_SMIL30
 	const common::region_dim_spec& get_region_viewbox(bool fromdom = false) const;
+	double get_region_bgopacity(bool fromdom = false) const;
 #endif
 	
 	void set_region_dim(const std::string& which, const common::region_dim& rd);
@@ -143,6 +145,7 @@ class region_node : public common::animation_destination {
 	void set_region_soundalign(common::sound_alignment sa);
 #ifdef WITH_SMIL30
 	void set_region_viewbox(const common::region_dim_spec& rds);
+	void set_region_bgopacity(double level);
 #endif // WITH_SMIL30
 	
 	// sets explicitly the dimensions of this region
@@ -210,7 +213,7 @@ class region_node : public common::animation_destination {
 	const char *m_bgimage;
 	common::tiling m_tiling;
 	bool m_inherit_bgrepeat;
-	bool m_transparent;
+	double m_bgopacity;
 	bool m_showbackground;
 	bool m_inherit_bgcolor;
 	common::surface_template *m_surface_template;
@@ -225,6 +228,7 @@ class region_node : public common::animation_destination {
 	common::sound_alignment m_display_soundalign;
 #ifdef WITH_SMIL30
 	common::region_dim_spec m_display_viewbox;
+	double m_display_bgopacity;
 #endif // WITH_SMIL30
 	
 	// verifier

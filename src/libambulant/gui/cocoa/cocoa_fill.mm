@@ -114,19 +114,20 @@ cocoa_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wi
 	
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
-	AM_DBG lib::logger::get_logger()->debug("cocoa_bg_renderer::drawbackground: %d clearing to 0x%x", !m_src->get_transparent(), (long)m_src->get_bgcolor());
+	AM_DBG lib::logger::get_logger()->debug("cocoa_bg_renderer::drawbackground: clearing to 0x%x opacity %f", (long)m_src->get_bgcolor(), m_src->get_bgopacity());
 	rect dstrect_whole = r;
 	dstrect_whole.translate(m_dst->get_global_topleft());
 	NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
-	if (m_src && !m_src->get_transparent()) {
+	double opacity = m_src->get_bgopacity();
+	if (m_src && opacity > 0) {
 		// First find our whole area (which we have to clear to background color)
 		// XXXX Fill with background color
 		color_t bgcolor = m_src->get_bgcolor();
-		AM_DBG lib::logger::get_logger()->debug("cocoa_bg_renderer::drawbackground: clearing to 0x%x", (long)bgcolor);
+		/*AM_DBG*/ lib::logger::get_logger()->debug("cocoa_bg_renderer::drawbackground: clearing to 0x%x opacity %f", (long)bgcolor, opacity);
 		NSColor *cocoa_bgcolor = [NSColor colorWithCalibratedRed:redf(bgcolor)
 					green:greenf(bgcolor)
 					blue:bluef(bgcolor)
-					alpha:1.0];
+					alpha:opacity];
 		[cocoa_bgcolor set];
 		NSRectFill(cocoa_dstrect_whole);
 	}

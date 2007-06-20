@@ -70,8 +70,8 @@ class region_info {
 	/// Return the background color for the region.
 	virtual color_t get_bgcolor() const = 0;
 	
-	/// Return true if the region is transparent.
-	virtual bool get_transparent() const = 0;
+	/// Return the background opacity of the region.
+	virtual double get_bgopacity() const = 0;
 	
 	/// Return the zindex for the region.
 	virtual zindex_t get_zindex() const = 0;
@@ -139,6 +139,11 @@ class animation_destination : public region_info {
 	/// If fromdom is true get the original DOM value, otherwise get the current
 	/// value (as animated by previous set_ calls).
 	virtual const region_dim_spec& get_region_viewbox(bool fromdom = false) const = 0;
+
+	/// Get the background opacity of a region.
+	/// If fromdom is true get the original DOM value, otherwise get the current
+	/// value (as animated by previous set_ calls).
+	virtual double get_region_bgopacity(bool fromdom = false) const = 0;
 #endif
 	/// Set one of the six dimensions of a region to a new value.
 	/// The name which is the SMIL attribute name.
@@ -160,6 +165,9 @@ class animation_destination : public region_info {
 #ifdef WITH_SMIL30
 	/// Set the region image cropping parameters
 	virtual void set_region_viewbox(const region_dim_spec& rds) = 0;
+	
+	/// Set the region background opacity to a new value.
+	virtual void set_region_bgopacity(double level) = 0;
 #endif
 };
 

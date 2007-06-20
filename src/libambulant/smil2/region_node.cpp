@@ -46,6 +46,7 @@ static char *subregionattrs[] = {
 	"soundAlign",
 #ifdef WITH_SMIL30
 	"viewBox",
+	"backgroundOpacity",
 #endif
 	NULL
 };
@@ -103,7 +104,7 @@ region_node::region_node(const lib::node *n, dimension_inheritance di)
 	m_soundalign(common::sa_default),
 	m_bgimage(NULL),
 	m_tiling(common::tiling_default),
-	m_transparent(true),
+	m_bgopacity(1.0),
 	m_showbackground(true),
 	m_inherit_bgcolor(false),
 	m_surface_template(NULL),
@@ -170,10 +171,10 @@ region_node::fix_from_dom_node()
 		transparent = false;
 	}
 	AM_DBG lib::logger::get_logger()->debug("region_node::reset: Background color 0x%x %d %d", (int)bgcolor, (int)transparent, (int)inherit);
-	if (bgcolor != m_bgcolor || transparent != m_transparent || inherit != m_inherit_bgcolor) {
+	if (bgcolor != m_bgcolor || transparent != (m_bgopacity < 0.5) || inherit != m_inherit_bgcolor) {
 		changed = true;
 	}
-	set_bgcolor(bgcolor, transparent, inherit);
+	set_bgcolor(bgcolor, transparent?0.0:1.0, inherit);
 	
 	// showBackground
 	const char *sbg_attr = m_node->get_attribute("showBackground");
@@ -225,9 +226,6 @@ region_node::fix_from_dom_node()
 	set_zindex(z);
 
 	// soundLevel.
-	// XXXX Note that the implementation of z-index isn't 100% correct SMIL 2.0:
-	// we interpret missing z-index as zero, but the standard says "auto" which is
-	// slightly different.
 	const char *soundlevel_attr = m_node->get_attribute("soundLevel");
 	double sl = m_soundlevel;
 	char *lastp;
@@ -271,6 +269,19 @@ region_node::fix_from_dom_node()
 		changed = true;
 	}
 	set_viewbox(rds);
+	
+	// backgroundOpacity.
+	const char *bgopacity_attr = m_node->get_attribute("backgroundOpacity");
+	double bo = m_bgopacity;
+	if (bgopacity_attr) {
+		bo = strtod(bgopacity_attr, &lastp);
+		if (*lastp == '%') bo *= 0.01;
+	}
+	AM_DBG lib::logger::get_logger()->debug("region_node::reset: backgroundOpacity=%g", sl);
+	if (bo != m_bgopacity) {
+		changed = true;
+	}
+	set_bgopacity(bo);
 		
 #endif // WITH_SMIL30
 	// backgroundImage
@@ -356,10 +367,14 @@ region_node::get_bgcolor() const
 	//return m_bgcolor;
 }
 
-bool
-region_node::get_transparent() const
+double
+region_node::get_bgopacity() const
 {
-	return m_transparent;
+#ifdef WITH_SMIL30
+	return m_display_bgopacity;
+#else
+	return m_bgopacity;
+#endif
 }
 
 bool
@@ -422,9 +437,9 @@ region_node::get_bgimage() const
 }
 
 void
-region_node::set_bgcolor(lib::color_t c, bool transparent, bool inherit) { 
+region_node::set_bgcolor(lib::color_t c, double opacity, bool inherit) { 
 	m_display_bgcolor = m_bgcolor = c;
-	m_transparent = transparent;
+	m_bgopacity = opacity;
 	m_inherit_bgcolor = inherit;
 }
 
@@ -496,6 +511,10 @@ common::sound_alignment region_node::get_region_soundalign(bool fromdom) const {
 const common::region_dim_spec& region_node::get_region_viewbox(bool fromdom) const {
 	return fromdom?m_viewbox:m_display_viewbox;
 }
+
+double region_node::get_region_bgopacity(bool fromdom) const {
+	return fromdom?m_bgopacity:m_display_bgopacity;
+}
 #endif // WITH_SMIL30
 
 // Sets the display value of a region dimension
@@ -525,7 +544,7 @@ void region_node::set_region_zindex(common::zindex_t z) {
 
 // Sets the display value of the sound level
 void region_node::set_region_soundlevel(double level) {
-	AM_DBG lib::logger::get_logger()->debug("region_node::set_region_zindex()");
+	AM_DBG lib::logger::get_logger()->debug("region_node::set_region_soundlevel()");
 	m_display_soundlevel = level;
 }
 
@@ -539,4 +558,10 @@ void region_node::set_region_viewbox(const common::region_dim_spec& rds) {
 	AM_DBG lib::logger::get_logger()->debug("region_node::set_region_viewbox()");
 	m_display_viewbox = rds;
 }
+
+void region_node::set_region_bgopacity(double level) {
+	AM_DBG lib::logger::get_logger()->debug("region_node::set_region_bgopacity()");
+	m_display_bgopacity = level;
+}
+
 #endif // WITH_SMIL30
