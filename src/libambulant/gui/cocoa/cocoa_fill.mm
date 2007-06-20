@@ -129,7 +129,7 @@ cocoa_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wi
 					blue:bluef(bgcolor)
 					alpha:opacity];
 		[cocoa_bgcolor set];
-		NSRectFill(cocoa_dstrect_whole);
+		NSRectFillUsingOperation(cocoa_dstrect_whole, NSCompositeSourceAtop);
 	}
 	if (m_bgimage) {
 		AM_DBG lib::logger::get_logger()->debug("cocoa_background_renderer::redraw(): drawing image");

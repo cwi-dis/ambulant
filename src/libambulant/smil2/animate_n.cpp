@@ -638,18 +638,18 @@ class bgopacity_animation : public linear_values_animation<F, double> {
 	:	linear_values_animation<F, double>(ctx, n, aattrs) {}
 	
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
-		regs.dv = dst->get_region_bgopacity(true);
+		regs.dv = dst->get_region_bgopacity(true)*100;
 	}
 
 	bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const {
-		double dv = dst->get_region_bgopacity(false);
+		double dv = dst->get_region_bgopacity(false)*100;
 		if(dv != regs.dv || IGNORE_ATTR_COMP) {
 			/*AM_DBG*/ {
 				lib::timer::time_type t = this->m_timer->elapsed();
 				lib::logger::get_logger()->debug("%s(%ld) -> %f", 
 					this->m_aattrs->get_target_attr().c_str(), t, regs.dv);
 			}				
-			dst->set_region_bgopacity(regs.dv);
+			dst->set_region_bgopacity(regs.dv/100);
 			return true;
 		}
 		return false;
@@ -672,18 +672,18 @@ class underlying_to_bgopacity_animation : public underlying_to_animation<double>
 	:	underlying_to_animation<double>(ctx, n, aattrs) {}
 	
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
-		regs.dv = dst->get_region_bgopacity(true);
+		regs.dv = dst->get_region_bgopacity(true)*100;
 	}
 
 	bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const {
-		double dv = dst->get_region_bgopacity(false);
+		double dv = dst->get_region_bgopacity(false)*100;
 		if(dv != regs.dv || IGNORE_ATTR_COMP) {
 			/*AM_DBG*/ {
 				lib::timer::time_type t = m_timer->elapsed();
 				lib::logger::get_logger()->debug("%s(%ld) -> %f", 
 					m_aattrs->get_target_attr().c_str(), t, regs.dv);
 			}				
-			dst->set_region_bgopacity(regs.dv);
+			dst->set_region_bgopacity(regs.dv/100);
 			return true;
 		}
 		return false;
