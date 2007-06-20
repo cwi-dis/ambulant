@@ -111,7 +111,7 @@ smil_player::~smil_player() {
 	std::map<const lib::node*, common::playable *>::iterator it;
 	for(it = m_playables.begin();it!=m_playables.end();it++) {
 		int rem = (*it).second->release();
-		if (rem) m_logger->trace("smil_player::~smil_player: playable 0x%x still has refcount of %d", (*it).second, rem);
+		if (rem > 1) m_logger->trace("smil_player::~smil_player: playable 0x%x still has refcount of %d", (*it).second, rem);
 	}
 	
 	delete m_focussed_nodes;
@@ -296,19 +296,17 @@ void smil_player::seek_playable(const lib::node *n, double t) {
 
 // Request to start a transition of the playable of the node.
 void smil_player::start_transition(const lib::node *n, const lib::transition_info *trans, bool in) {
-	AM_DBG lib::logger::get_logger()->debug("smil_player::start_transition(0x%x, -x%x, in=%d)", (void*)n, trans, in);
+	AM_DBG lib::logger::get_logger()->debug("smil_player::start_transition(%s, -x%x, in=%d)", n->get_sig().c_str(), trans, in);
 	std::map<const lib::node*, common::playable *>::iterator it = 
 		m_playables.find(n);
 	common::playable *np = (it != m_playables.end())?(*it).second:0;
 	if(!np) {
-		const char *pid = n->get_attribute("id");
-		m_logger->debug("smil_player::start_transition: node %s has no playable", pid?pid:"no-id");
+		AM_DBG m_logger->debug("smil_player::start_transition: node %s has no playable", n->get_sig().c_str());
 		return;
 	}
 	common::renderer *rend = np->get_renderer();
 	if (!rend) {
-		const char *pid = n->get_attribute("id");
-		m_logger->trace("smil_player::start_transition: node %s has transition but is not visual", pid?pid:"no-id");
+		m_logger->trace("smil_player::start_transition: node %s has transition but is not visual", n->get_sig().c_str());
 	} else {
 		if (in) {
 			// XXX Jack thinks there's no reason for this...
@@ -322,13 +320,13 @@ void smil_player::start_transition(const lib::node *n, const lib::transition_inf
 
 // Request to stop the playable of the node.
 void smil_player::stop_playable(const lib::node *n) {
-	AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable(0x%x)", (void*)n);
+	AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable(%s)", n->get_sig().c_str());
 	if (n == m_focus) {
 		m_focus = NULL;
 		highlight(n, false);
 		node_focussed(NULL);
 	}
-AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable(0x%x)cs.enter", (void*)n);
+	AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable(0x%x)cs.enter", (void*)n);
 	m_playables_cs.enter();
 		
 	std::map<const lib::node*, common::playable *>::iterator it = 
@@ -345,19 +343,19 @@ AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable(0x%x)cs.ente
 	m_playables_cs.leave();
 	if (victim.first)
 		destroy_playable(victim.second, victim.first);
-AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable(0x%x)cs.leave", (void*)n);
+	AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable(0x%x)cs.leave", (void*)n);
 }
 
 // Request to pause the playable of the node.
 void smil_player::pause_playable(const lib::node *n, pause_display d) {
-	AM_DBG lib::logger::get_logger()->debug("smil_player::pause_playable(0x%x)", (void*)n);
+	AM_DBG lib::logger::get_logger()->debug("smil_player::pause_playable(%s)", n->get_sig().c_str());
 	common::playable *np = get_playable(n);
 	if(np) np->pause(d);
 }
 
 // Request to resume the playable of the node.
 void smil_player::resume_playable(const lib::node *n) {
-	AM_DBG lib::logger::get_logger()->debug("smil_player::resume_playable(0x%xf)", (void*)n);
+	AM_DBG lib::logger::get_logger()->debug("smil_player::resume_playable(%s)", n->get_sig().c_str());
 	common::playable *np = get_playable(n);
 	if(np) np->resume();
 }
@@ -795,7 +793,7 @@ void smil_player::destroy_playable(common::playable *np, const lib::node *n) {
 	}
 	np->stop();
 	int rem = np->release();
-	if (rem) m_logger->debug("smil_player::destroy_playable: playable 0x%x still has refcount of %d", np, rem);
+	if (rem > 1) m_logger->debug("smil_player::destroy_playable: playable 0x%x still has refcount of %d", np, rem);
 }
 
 void smil_player::show_link(const lib::node *n, const net::url& href, 
