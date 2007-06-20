@@ -78,7 +78,7 @@ void gui::dg::dg_bgrenderer::redraw(const lib::rect &dirty, common::gui_window *
 		lib::rect rc = dirty;
 		lib::point pt = m_dst->get_global_topleft();
 		rc.translate(pt);
-		if(v && m_src && !m_src->get_transparent()) {
+		if(v && m_src && m_src->get_bgopacity() > 0.5) {
 			AM_DBG lib::logger::get_logger()->debug("dx_bgrenderer::redraw: clear to color");
 			v->clear(rc, m_src->get_bgcolor());
 		}

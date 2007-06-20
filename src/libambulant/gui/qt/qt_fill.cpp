@@ -210,7 +210,7 @@ qt_background_renderer::redraw(const lib::rect &dirty,
 {	
 	const lib::rect &r = m_dst->get_rect();
 	AM_DBG lib::logger::get_logger()->debug("qt_background_renderer::redraw(0x%x)", (void *)this);
-	if (m_src && !m_src->get_transparent()) {
+	if (m_src && m_src->get_bgopacity() > 0.5) {
 	// First find our whole area to be cleared to background color
 		ambulant_qt_window* aqw = (ambulant_qt_window*) window;
 		QPainter paint;
