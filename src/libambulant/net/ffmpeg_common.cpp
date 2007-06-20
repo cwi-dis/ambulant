@@ -116,33 +116,11 @@ ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timesta
 	m_nstream(0),
 	m_clip_begin(clip_begin),
 	m_clip_end(clip_end),
-	m_clip_begin_set(false)
+	m_seektime(0),
+	m_seektime_set(false)
 {
-#if LIBAVFORMAT_BUILD > 4609
-	
 	assert(m_clip_begin >= 0);
-	if ( m_clip_begin > 0 
-#if 1
-	// Bug in ffmpeg 49.2.0: seeking in mov/mp4 files fails. Reported 5-Dec-05.
-	&& !strstr(con->iformat->name, "mp4")
-#endif
-		) {
-		assert (m_con);
-		assert (m_con->iformat);
-#if LIBAVFORMAT_BUILD > 4628
-		int seekresult = av_seek_frame(m_con, -1, m_clip_begin, 0);
-#else
-		int seekresult = av_seek_frame(m_con, -1, m_clip_begin);
-#endif
-		if (seekresult < 0) {
-			lib::logger::get_logger()->debug("ffmpeg_demux: av_seek_frame() returned %d", seekresult);
-//#if LIBAVFORMAT_BUILD > 4628
-//			// ffmpeg has discarded data if av_seek_frame() failed
-//			av_seek_frame(m_con, -1, 0, AVSEEK_FLAG_BYTE);
-//#endif
-		}
-	} 
-#endif
+	if ( m_clip_begin ) m_seektime_set = true;
 	
 	m_audio_fmt = audio_format("ffmpeg");
 	m_audio_fmt.bits = 16;
@@ -325,8 +303,9 @@ void
 ffmpeg_demux::read_ahead(timestamp_t time)
 {
 	m_lock.enter();
-	m_clip_begin = time;
-	m_clip_begin_set = false;
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::read_ahead(%d), m_clip_begin was %d", time, m_clip_begin);
+	m_clip_begin = time; // XXXX Or m_seek_time??
+	m_seektime_set = true;
 	m_lock.leave();
 }
 
@@ -334,22 +313,8 @@ void
 ffmpeg_demux::seek(timestamp_t time)
 {
 	m_lock.enter();
-	if (m_con) {
-#if LIBAVFORMAT_BUILD > 4628
-		// The name of the flag is misleading. It means: seek to a keyframe before the wanted
-		// timestamp (as opposed to after the wanted timestamp).
-		int seekresult = av_seek_frame(m_con, -1, time, AVSEEK_FLAG_BACKWARD);
-#else
-		int seekresult = av_seek_frame(m_con, -1, time);
-#endif
-		if (seekresult < 0) {
-			lib::logger::get_logger()->debug("ffmpeg_demux: av_seek_frame() returned %d", seekresult);
-//#if LIBAVFORMAT_BUILD > 4628
-//			// ffmpeg has discarded data if av_seek_frame() failed
-//			av_seek_frame(m_con, -1, 0, AVSEEK_FLAG_BYTE);
-//#endif
-		}
-	}
+	m_seektime = time;
+	m_seektime_set = true;
 	m_lock.leave();
 }
 
@@ -387,6 +352,22 @@ ffmpeg_demux::run()
 		pkt->pts = 0;
 		// Read a packet
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run:  started");
+		if (m_seektime_set) {
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %d", m_clip_begin+m_seektime);
+#if LIBAVFORMAT_BUILD > 4628
+			int seekresult = av_seek_frame(m_con, -1, m_clip_begin+m_seektime, AVSEEK_FLAG_BACKWARD);
+#else
+			int seekresult = av_seek_frame(m_con, -1, m_clip_begin+m_seektime);
+#endif
+			if (seekresult < 0) {
+				lib::logger::get_logger()->debug("ffmpeg_demux: av_seek_frame() returned %d", seekresult);
+//#if LIBAVFORMAT_BUILD > 4628
+//				// ffmpeg has discarded data if av_seek_frame() failed
+//				av_seek_frame(m_con, -1, 0, AVSEEK_FLAG_BYTE);
+//#endif
+			}
+			m_seektime_set = false;
+		}
 		m_lock.leave();
 #if LIBAVFORMAT_BUILD > 4609
 		int ret = av_read_frame(m_con, pkt);

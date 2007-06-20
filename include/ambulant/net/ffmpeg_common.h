@@ -112,7 +112,8 @@ class ffmpeg_demux : public abstract_demux {
 	lib::critical_section m_lock;
   	timestamp_t m_clip_begin;
   	timestamp_t m_clip_end;
-  	bool m_clip_begin_set;
+	timestamp_t m_seektime;
+	bool m_seektime_set;
 };
 
 }	// end namespace net

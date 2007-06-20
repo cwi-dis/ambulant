@@ -116,6 +116,7 @@ video_renderer::start (double where)
 		m_lock.leave();
 		return;
 	}
+	if (where) m_src->seek((net::timestamp_t)(where*1000000));
 	m_activated = true;
 
 #if 1
@@ -183,7 +184,15 @@ video_renderer::stop()
 void
 video_renderer::seek(double t)
 {
-	lib::logger::get_logger()->trace("video_renderer: seek(%f) not implemented", t);
+	AM_DBG lib::logger::get_logger()->trace("video_renderer: seek(%f) curtime=%f", t, (double)m_timer->elapsed()/1000.0);
+	long int t_ms = (long int)(t*1000.0);
+#if 0
+	// m_timer is already changed by the scheduler.
+	long int delta = t_ms - m_timer->elapsed();  // Positive delta: move forward in time
+	m_epoch -= delta;	// Which means the epoch moves back in time
+#endif
+	if (m_src) m_src->seek(t_ms);
+	if (m_audio_renderer) m_audio_renderer->seek(t);
 }
 
 common::duration 
@@ -209,7 +218,7 @@ video_renderer::now()
 	assert( m_timer );
 	// private method - no locking
 	double rv;
-	unsigned long elapsed;
+	long elapsed;
 
 	if (m_is_paused)
 		elapsed = m_paused_epoch;

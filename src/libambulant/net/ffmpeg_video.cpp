@@ -418,7 +418,9 @@ void
 ffmpeg_video_decoder_datasource::seek(timestamp_t time)
 {
 	m_lock.enter();
-	while ( ! m_frames.empty() ) {
+	// We leave one frame in the queue: there could be a callback outstanding which
+	// will otherwise run into problems in get_frame().
+	while ( m_frames.size() > 1) {
 		_pop_top_frame();
 	}
 	if (m_src) m_src->seek(time);
