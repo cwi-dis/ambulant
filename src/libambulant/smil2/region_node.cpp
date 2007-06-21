@@ -136,184 +136,205 @@ bool
 region_node::fix_from_dom_node()
 {
 	bool changed = false;
-	
-	// For every node in the layout section we fill in the dimensions
-	AM_DBG lib::logger::get_logger()->debug("region_node::reset: adjusting %s %s", m_node->get_local_name().c_str(), m_node->get_attribute("id"));
-	common::region_dim_spec rdspec;
-	rdspec.left = get_regiondim_attr(m_node, "left");
-	rdspec.width = get_regiondim_attr(m_node, "width");
-	rdspec.right = get_regiondim_attr(m_node, "right");
-	rdspec.top = get_regiondim_attr(m_node, "top");
-	rdspec.height = get_regiondim_attr(m_node, "height");
-	rdspec.bottom = get_regiondim_attr(m_node, "bottom");
-#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_OPERATORS_IN_NAMESPACE)
-	AM_DBG {
-		//lib::logger::ostream os = lib::logger::get_logger()->trace_stream();
-		// XXXX Why the &^%$#%& can't we use os << rdspec << lib::endl ??!??
-		//os << "region_node::reset: result=(" 
-		//	<< rdspec.left << ", " << rdspec.width << ", " << rdspec.right << ", "
-		//	<< rdspec.top << ", " << rdspec.height << ", " << rdspec.bottom << ")" << lib::endl;
-	}
-#endif
-	if (rdspec != m_rds) {
-		changed = true;
-		m_rds = rdspec;
-	}
-	m_display_rds = m_rds;
-	
-	// Next we set background color
-	const char *bgcolor_attr = m_node->get_attribute("backgroundColor");
-	if (bgcolor_attr == NULL) bgcolor_attr = m_node->get_attribute("background-color");
-	if (bgcolor_attr == NULL) bgcolor_attr = "transparent";
-	lib::color_t bgcolor = lib::to_color(0, 0, 0);
-	bool transparent = true, inherit = false;
-	if (strcmp(bgcolor_attr, "transparent") == 0) transparent = true;
-	else if (strcmp(bgcolor_attr, "inherit") == 0) inherit = true;
-	else if (!lib::is_color(bgcolor_attr)) {
-		lib::logger::get_logger()->trace("%s: Invalid color: %s", m_node->get_sig().c_str(), bgcolor_attr);
-		lib::logger::get_logger()->warn(gettext("Ignoring minor errors in document"));
-	} else {
-		bgcolor = lib::to_color(bgcolor_attr);
-		transparent = false;
-	}
-	AM_DBG lib::logger::get_logger()->debug("region_node::reset: Background color 0x%x %d %d", (int)bgcolor, (int)transparent, (int)inherit);
-	if (bgcolor != m_bgcolor || transparent != (m_bgopacity < 0.5) || inherit != m_inherit_bgcolor) {
-		changed = true;
-	}
-	set_bgcolor(bgcolor, transparent?0.0:1.0, inherit);
-	
-	// showBackground
-	const char *sbg_attr = m_node->get_attribute("showBackground");
-	bool sbg = true;
-	if (sbg_attr) {
-		if (strcmp(sbg_attr, "whenActive") == 0) sbg = false;
-		else if (strcmp(sbg_attr, "always") == 0) sbg = true;
-		else {
-			lib::logger::get_logger()->error("%s: Invalid showBackground value: %s", m_node->get_sig().c_str(), sbg_attr);
-			lib::logger::get_logger()->warn(gettext("Ignoring minor errors in document"));
-		}
-	}
-	if (sbg != m_showbackground) {
-		changed = true;
-	}
-	set_showbackground(sbg);
-	
-	// And fit
-	const char *fit_attr = m_node->get_attribute("fit");
-	common::fit_t fit = common::fit_default;
-	if (fit_attr) {
-		if (strcmp(fit_attr, "fill") == 0) fit = common::fit_fill;
-		else if (strcmp(fit_attr, "hidden") == 0) fit = common::fit_hidden;
-		else if (strcmp(fit_attr, "meet") == 0) fit = common::fit_meet;
-		else if (strcmp(fit_attr, "meetBest") == 0) fit = common::fit_meetbest;
-		else if (strcmp(fit_attr, "scroll") == 0) fit = common::fit_scroll;
-		else if (strcmp(fit_attr, "slice") == 0) fit = common::fit_slice;
-		else {
-			lib::logger::get_logger()->trace("%s: Invalid fit value: %s", m_node->get_sig().c_str(), fit_attr);
-			lib::logger::get_logger()->warn(gettext("Ignoring minor errors in document"));
-		}
-	}
-	if (fit != m_fit) {
-		changed = true;
-	}
-	set_fit(fit);
-	
-	// And z-index.
-	// XXXX Note that the implementation of z-index isn't 100% correct SMIL 2.0:
-	// we interpret missing z-index as zero, but the standard says "auto" which is
-	// slightly different.
-	const char *z_attr = m_node->get_attribute("z-index");
-	common::zindex_t z = 0;
-	if (z_attr) z = strtol(z_attr, NULL, 10);
-	AM_DBG lib::logger::get_logger()->debug("region_node::reset: z-index=%d", z);
-	if (z != m_zindex) {
-		changed = true;
-	}
-	set_zindex(z);
-
-	// soundLevel.
-	const char *soundlevel_attr = m_node->get_attribute("soundLevel");
-	double sl = m_soundlevel;
 	char *lastp;
-	if (soundlevel_attr) {
-		sl = strtod(soundlevel_attr, &lastp);
-		if (*lastp == '%') sl *= 0.01;
+	{
+		// For every node in the layout section we fill in the dimensions
+		AM_DBG lib::logger::get_logger()->debug("region_node::reset: adjusting %s %s", m_node->get_local_name().c_str(), m_node->get_attribute("id"));
+		common::region_dim_spec rdspec;
+		rdspec.left = get_regiondim_attr(m_node, "left");
+		rdspec.width = get_regiondim_attr(m_node, "width");
+		rdspec.right = get_regiondim_attr(m_node, "right");
+		rdspec.top = get_regiondim_attr(m_node, "top");
+		rdspec.height = get_regiondim_attr(m_node, "height");
+		rdspec.bottom = get_regiondim_attr(m_node, "bottom");
+#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_OPERATORS_IN_NAMESPACE)
+		AM_DBG {
+			//lib::logger::ostream os = lib::logger::get_logger()->trace_stream();
+			// XXXX Why the &^%$#%& can't we use os << rdspec << lib::endl ??!??
+			//os << "region_node::reset: result=(" 
+			//	<< rdspec.left << ", " << rdspec.width << ", " << rdspec.right << ", "
+			//	<< rdspec.top << ", " << rdspec.height << ", " << rdspec.bottom << ")" << lib::endl;
+		}
+#endif
+		if (rdspec != m_rds) {
+			changed = true;
+			m_rds = rdspec;
+		}
+		m_display_rds = m_rds;
 	}
-	AM_DBG lib::logger::get_logger()->debug("region_node::reset: soundLevel=%g", sl);
-	if (sl != m_soundlevel) {
-		changed = true;
-	}
-	set_soundlevel(sl);
 	
-	// soundAlign
-	const char *soundalign_attr = m_node->get_attribute("soundAlign");
-	common::sound_alignment sa = m_soundalign;
+	{
+		// Next we set background color
+		const char *bgcolor_attr = m_node->get_attribute("backgroundColor");
+		if (bgcolor_attr == NULL) bgcolor_attr = m_node->get_attribute("background-color");
+		if (bgcolor_attr == NULL) bgcolor_attr = "transparent";
+		lib::color_t bgcolor = lib::to_color(0, 0, 0);
+		bool transparent = true, inherit = false;
+		if (strcmp(bgcolor_attr, "transparent") == 0) transparent = true;
+		else if (strcmp(bgcolor_attr, "inherit") == 0) inherit = true;
+		else if (!lib::is_color(bgcolor_attr)) {
+			lib::logger::get_logger()->trace("%s: Invalid color: %s", m_node->get_sig().c_str(), bgcolor_attr);
+			lib::logger::get_logger()->warn(gettext("Ignoring minor errors in document"));
+		} else {
+			bgcolor = lib::to_color(bgcolor_attr);
+			transparent = false;
+		}
+		AM_DBG lib::logger::get_logger()->debug("region_node::reset: Background color 0x%x %d %d", (int)bgcolor, (int)transparent, (int)inherit);
+		if (bgcolor != m_bgcolor || transparent != (m_bgopacity < 0.5) || inherit != m_inherit_bgcolor) {
+			changed = true;
+		}
+		set_bgcolor(bgcolor, transparent?0.0:1.0, inherit);
+	}
+	{
+		// showBackground
+		const char *sbg_attr = m_node->get_attribute("showBackground");
+		bool sbg = true;
+		if (sbg_attr) {
+			if (strcmp(sbg_attr, "whenActive") == 0) sbg = false;
+			else if (strcmp(sbg_attr, "always") == 0) sbg = true;
+			else {
+				lib::logger::get_logger()->error("%s: Invalid showBackground value: %s", m_node->get_sig().c_str(), sbg_attr);
+				lib::logger::get_logger()->warn(gettext("Ignoring minor errors in document"));
+			}
+		}
+		if (sbg != m_showbackground) {
+			changed = true;
+		}
+		set_showbackground(sbg);
+	}
 	
-	if (soundalign_attr == NULL)
-		/*do nothing*/;
-	else if (strcmp(soundalign_attr, "both") == 0)
-		sa = common::sa_both;
-	else if (strcmp(soundalign_attr, "left") == 0)
-		sa = common::sa_left;
-	else if (strcmp(soundalign_attr, "right") == 0)
-		sa = common::sa_right;
-	else {
-		lib::logger::get_logger()->trace("%s: Invalid soundAlign value: %s", m_node->get_sig().c_str(), soundalign_attr);
-		lib::logger::get_logger()->warn(gettext("Ignoring minor errors in document"));
+	{
+		// And fit
+		const char *fit_attr = m_node->get_attribute("fit");
+		common::fit_t fit = common::fit_default;
+		if (fit_attr) {
+			if (strcmp(fit_attr, "fill") == 0) fit = common::fit_fill;
+			else if (strcmp(fit_attr, "hidden") == 0) fit = common::fit_hidden;
+			else if (strcmp(fit_attr, "meet") == 0) fit = common::fit_meet;
+			else if (strcmp(fit_attr, "meetBest") == 0) fit = common::fit_meetbest;
+			else if (strcmp(fit_attr, "scroll") == 0) fit = common::fit_scroll;
+			else if (strcmp(fit_attr, "slice") == 0) fit = common::fit_slice;
+			else {
+				lib::logger::get_logger()->trace("%s: Invalid fit value: %s", m_node->get_sig().c_str(), fit_attr);
+				lib::logger::get_logger()->warn(gettext("Ignoring minor errors in document"));
+			}
+		}
+		if (fit != m_fit) {
+			changed = true;
+		}
+		set_fit(fit);
 	}
-	AM_DBG lib::logger::get_logger()->debug("region_node::reset: soundAlign=%d", (int)sa);
-	if (sa != m_soundalign) {
-		changed = true;
+	
+	{
+		// And z-index.
+		// XXXX Note that the implementation of z-index isn't 100% correct SMIL 2.0:
+		// we interpret missing z-index as zero, but the standard says "auto" which is
+		// slightly different.
+		const char *z_attr = m_node->get_attribute("z-index");
+		common::zindex_t z = 0;
+		if (z_attr) z = strtol(z_attr, NULL, 10);
+		AM_DBG lib::logger::get_logger()->debug("region_node::reset: z-index=%d", z);
+		if (z != m_zindex) {
+			changed = true;
+		}
+		set_zindex(z);
 	}
-	set_soundalign(sa);
+
+	{
+		// soundLevel.
+		const char *soundlevel_attr = m_node->get_attribute("soundLevel");
+		double sl = m_soundlevel;
+		if (soundlevel_attr) {
+			sl = strtod(soundlevel_attr, &lastp);
+			if (*lastp == '%') sl *= 0.01;
+		}
+		AM_DBG lib::logger::get_logger()->debug("region_node::reset: soundLevel=%g", sl);
+		if (sl != m_soundlevel) {
+			changed = true;
+		}
+		set_soundlevel(sl);
+	}
+	
+	{
+		// soundAlign
+		const char *soundalign_attr = m_node->get_attribute("soundAlign");
+		common::sound_alignment sa = m_soundalign;
+		
+		if (soundalign_attr == NULL)
+			/*do nothing*/;
+		else if (strcmp(soundalign_attr, "both") == 0)
+			sa = common::sa_both;
+		else if (strcmp(soundalign_attr, "left") == 0)
+			sa = common::sa_left;
+		else if (strcmp(soundalign_attr, "right") == 0)
+			sa = common::sa_right;
+		else {
+			lib::logger::get_logger()->trace("%s: Invalid soundAlign value: %s", m_node->get_sig().c_str(), soundalign_attr);
+			lib::logger::get_logger()->warn(gettext("Ignoring minor errors in document"));
+		}
+		AM_DBG lib::logger::get_logger()->debug("region_node::reset: soundAlign=%d", (int)sa);
+		if (sa != m_soundalign) {
+			changed = true;
+		}
+		set_soundalign(sa);
+	}
 	
 #ifdef WITH_SMIL30
-	const char *viewbox_attr = m_node->get_attribute("viewBox");
-	common::region_dim_spec rds;
-	if (viewbox_attr) rds = common::region_dim_spec(viewbox_attr, "viewBoxRect");
-	if (rds != m_viewbox) {
-		changed = true;
+	{
+		// viewBox
+		const char *viewbox_attr = m_node->get_attribute("viewBox");
+		common::region_dim_spec rds;
+		if (viewbox_attr) rds = common::region_dim_spec(viewbox_attr, "viewBoxRect");
+		if (rds != m_viewbox) {
+			changed = true;
+		}
+		set_viewbox(rds);
 	}
-	set_viewbox(rds);
 	
-	// backgroundOpacity.
-	const char *bgopacity_attr = m_node->get_attribute("backgroundOpacity");
-	double bo = m_bgopacity;
-	if (bgopacity_attr) {
-		bo = strtod(bgopacity_attr, &lastp);
-		if (*lastp == '%') bo *= 0.01;
+	{
+		// backgroundOpacity.
+		const char *bgopacity_attr = m_node->get_attribute("backgroundOpacity");
+		double bo = m_bgopacity;
+		if (bgopacity_attr) {
+			bo = strtod(bgopacity_attr, &lastp);
+			if (*lastp == '%') bo *= 0.01;
+		}
+		AM_DBG lib::logger::get_logger()->debug("region_node::reset: backgroundOpacity=%g", bo);
+		if (bo != m_bgopacity) {
+			changed = true;
+		}
+		set_bgopacity(bo);
 	}
-	AM_DBG lib::logger::get_logger()->debug("region_node::reset: backgroundOpacity=%g", bo);
-	if (bo != m_bgopacity) {
-		changed = true;
+	
+	{
+		// mediaOpacity.
+		const char *mediaopacity_attr = m_node->get_attribute("mediaOpacity");
+		double fo = m_mediaopacity;
+		if (mediaopacity_attr) {
+			fo = strtod(mediaopacity_attr, &lastp);
+			if (*lastp == '%') fo *= 0.01;
+		}
+		AM_DBG lib::logger::get_logger()->debug("region_node::reset: mediaOpacity=%g", fo);
+		if (fo != m_mediaopacity) {
+			changed = true;
+		}
+		set_mediaopacity(fo);
 	}
-	set_bgopacity(bo);
-		
-	// mediaOpacity.
-	const char *mediaopacity_attr = m_node->get_attribute("mediaOpacity");
-	double fo = m_mediaopacity;
-	if (mediaopacity_attr) {
-		bo = strtod(mediaopacity_attr, &lastp);
-		if (*lastp == '%') bo *= 0.01;
+	
+	{
+		// mediaBackgroundOpacity.
+		const char *mediabgopacity_attr = m_node->get_attribute("mediaBackgroundOpacity");
+		double mbo = m_mediabgopacity;
+		if (mediabgopacity_attr) {
+			mbo = strtod(mediabgopacity_attr, &lastp);
+			if (*lastp == '%') mbo *= 0.01;
+		}
+		AM_DBG lib::logger::get_logger()->debug("region_node::reset: mediaBackgroundOpacity=%g", mbo);
+		if (mbo != m_mediabgopacity) {
+			changed = true;
+		}
+		set_mediabgopacity(mbo);
 	}
-	AM_DBG lib::logger::get_logger()->debug("region_node::reset: mediaOpacity=%g", fo);
-	if (fo != m_mediaopacity) {
-		changed = true;
-	}
-	set_mediaopacity(fo);
-		
-	// mediaBackgroundOpacity.
-	const char *mediabgopacity_attr = m_node->get_attribute("mediaBackgroundOpacity");
-	double mbo = m_mediabgopacity;
-	if (mediabgopacity_attr) {
-		mbo = strtod(mediabgopacity_attr, &lastp);
-		if (*lastp == '%') mbo *= 0.01;
-	}
-	AM_DBG lib::logger::get_logger()->debug("region_node::reset: mediaBackgroundOpacity=%g", mbo);
-	if (mbo != m_mediabgopacity) {
-		changed = true;
-	}
-	set_mediabgopacity(fo);
 		
 #endif // WITH_SMIL30
 	// backgroundImage
@@ -323,26 +344,28 @@ region_node::fix_from_dom_node()
 	m_bgimage = m_node->get_attribute("backgroundImage");
 	// Don't need to set changed
 	
-	// backgroundRepeat
-	const char *bgrepeat_attr = m_node->get_attribute("backgroundRepeat");
-	
-	if (bgrepeat_attr == NULL) {
-		m_tiling = common::tiling_default;
-	} else if (strcmp(bgrepeat_attr, "repeat") == 0) {
-		m_tiling = common::tiling_both;
-	} else if (strcmp(bgrepeat_attr, "repeatX") == 0) {
-		m_tiling = common::tiling_horizontal;
-	} else if (strcmp(bgrepeat_attr, "repeatY") == 0) {
-		m_tiling = common::tiling_vertical;
-	} else if (strcmp(bgrepeat_attr, "noRepeat") == 0) {
-		m_tiling = common::tiling_none;
-	} else if (strcmp(bgrepeat_attr, "inherit") == 0) {
-		m_tiling = common::tiling_inherit;
-	} else {
-		lib::logger::get_logger()->trace("%s: Invalid backgroundRepeat value: %s", m_node->get_sig().c_str(), bgrepeat_attr);
-		lib::logger::get_logger()->warn(gettext("Ignoring minor errors in document"));
+	{
+		// backgroundRepeat
+		const char *bgrepeat_attr = m_node->get_attribute("backgroundRepeat");
+		
+		if (bgrepeat_attr == NULL) {
+			m_tiling = common::tiling_default;
+		} else if (strcmp(bgrepeat_attr, "repeat") == 0) {
+			m_tiling = common::tiling_both;
+		} else if (strcmp(bgrepeat_attr, "repeatX") == 0) {
+			m_tiling = common::tiling_horizontal;
+		} else if (strcmp(bgrepeat_attr, "repeatY") == 0) {
+			m_tiling = common::tiling_vertical;
+		} else if (strcmp(bgrepeat_attr, "noRepeat") == 0) {
+			m_tiling = common::tiling_none;
+		} else if (strcmp(bgrepeat_attr, "inherit") == 0) {
+			m_tiling = common::tiling_inherit;
+		} else {
+			lib::logger::get_logger()->trace("%s: Invalid backgroundRepeat value: %s", m_node->get_sig().c_str(), bgrepeat_attr);
+			lib::logger::get_logger()->warn(gettext("Ignoring minor errors in document"));
+		}
+		// Don't need to set changed
 	}
-	// Don't need to set changed
 	
 	return changed;
 }
