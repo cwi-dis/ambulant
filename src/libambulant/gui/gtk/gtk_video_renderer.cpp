@@ -117,7 +117,7 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 		ambulant_gtk_window* agtkw = (ambulant_gtk_window*) w;
 
 		// background drawing
-		if (info && !info->get_transparent()) {
+		if (info && (info->get_bgopacity() > 0.5)) {
 		// First find our whole area (which we have to clear to 
 		// background color)
 			lib::rect dstrect_whole = r;
