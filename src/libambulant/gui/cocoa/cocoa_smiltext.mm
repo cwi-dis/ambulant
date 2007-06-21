@@ -168,18 +168,38 @@ cocoa_smiltext_renderer::smiltext_changed()
 				
 			if (!(*i).m_transparent) {
 				// Find color info
+#ifdef WITH_SMIL30
+				double alfa = 1.0;
+				const common::region_info *ri = m_dest->get_info();
+				if (ri) alfa = ri->get_mediaopacity();
+				NSColor *color = [NSColor colorWithCalibratedRed:redf((*i).m_color)
+						green:greenf((*i).m_color)
+						blue:bluef((*i).m_color)
+						alpha:alfa];
+#else
 				NSColor *color = [NSColor colorWithCalibratedRed:redf((*i).m_color)
 						green:greenf((*i).m_color)
 						blue:bluef((*i).m_color)
 						alpha:1.0];
+#endif
 				[attrs setValue:color forKey:NSForegroundColorAttributeName];
 			}
 			if (!(*i).m_bg_transparent) {
 				// Find color info
+#ifdef WITH_SMIL30
+				double alfa = 1.0;
+				const common::region_info *ri = m_dest->get_info();
+				if (ri) alfa = ri->get_mediabgopacity();
+				NSColor *color = [NSColor colorWithCalibratedRed:redf((*i).m_bg_color)
+						green:greenf((*i).m_bg_color)
+						blue:bluef((*i).m_bg_color)
+						alpha:alfa];
+#else
 				NSColor *color = [NSColor colorWithCalibratedRed:redf((*i).m_bg_color)
 						green:greenf((*i).m_bg_color)
 						blue:bluef((*i).m_bg_color)
 						alpha:1.0];
+#endif
 				[attrs setValue:color forKey:NSBackgroundColorAttributeName];
 			}
 			

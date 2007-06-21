@@ -153,7 +153,14 @@ cocoa_dsvideo_renderer::redraw(const rect &dirty, gui_window *window)
 		NSRect cocoa_srcrect = NSMakeRect(0, 0, srcrect.width(), srcrect.height()); // XXXX 0, 0 is wrong
 		NSRect cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
 		AM_DBG logger::get_logger()->debug("cocoa_dsvideo_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", cocoa_srcsize.width, cocoa_srcsize.height, NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect), NSMaxX(cocoa_dstrect), NSMaxY(cocoa_dstrect));
+#ifdef WITH_SMIL30
+		double alfa = 1.0;
+		const common::region_info *ri = m_dest->get_info();
+		if (ri) alfa = ri->get_mediaopacity();
+		[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceAtop fraction: alfa];
+#else
 		[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceAtop fraction: 1.0];
+#endif
 	} else {
 	}
 #if 0

@@ -24,6 +24,7 @@
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 #include "ambulant/gui/cocoa/cocoa_image.h"
 #include "ambulant/common/region_dim.h"
+#include "ambulant/common/region_info.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -129,7 +130,14 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	AM_DBG logger::get_logger()->debug("cocoa_image_renderer.redraw: draw image (%f, %f, %f %f) -> (%f, %f, %f, %f)",
 		NSMinX(cocoa_srcrect), NSMinY(cocoa_srcrect), NSMaxX(cocoa_srcrect), NSMaxY(cocoa_srcrect),
 		NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect), NSMaxX(cocoa_dstrect), NSMaxY(cocoa_dstrect));
+#ifdef WITH_SMIL30
+	double alfa = 1.0;
+	const common::region_info *ri = m_dest->get_info();
+	if (ri) alfa = ri->get_mediaopacity();
+	[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceOver fraction: alfa];
+#else
 	[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceOver fraction: 1.0];
+#endif
 	
 	m_lock.leave();
 }

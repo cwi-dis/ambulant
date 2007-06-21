@@ -54,7 +54,7 @@ class cocoa_text_renderer : public cocoa_renderer<renderer_playable_dsall> {
     NSTextStorage *m_text_storage;
 	NSLayoutManager *m_layout_manager;
 	NSTextContainer *m_text_container;
-	NSColor *m_text_color;
+	lib::color_t m_text_color;
 	NSFont *m_text_font;
 	critical_section m_lock;
 };

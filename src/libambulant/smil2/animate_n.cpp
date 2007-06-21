@@ -811,7 +811,7 @@ animate_node* animate_node::new_instance(context_type *ctx, const node *n, const
 #ifdef WITH_SMIL30
 	} else if (aattrs->get_target_attr() == "viewBox") {
 		return new_viewbox_animation(ctx, n, aattrs);
-	} else if (aattrs->get_target_attr() == "backgroundOpacity") {
+	} else if (aattrs->get_target_attr_type() == "opacity" ) {
 		return new_opacity_animation(ctx, n, aattrs);
 #endif // WITH_SMIL30
 	}

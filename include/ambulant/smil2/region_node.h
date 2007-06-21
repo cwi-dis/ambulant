@@ -110,6 +110,8 @@ class region_node : public common::animation_destination {
 	common::tiling get_tiling() const;
 #ifdef WITH_SMIL30
 	lib::rect get_crop_rect(const lib::size& srcsize) const;
+	double get_mediaopacity() const;
+	double get_mediabgopacity() const;
 #endif
 
 	// And corresponding setting interface
@@ -124,6 +126,8 @@ class region_node : public common::animation_destination {
 #ifdef WITH_SMIL30
 	void set_viewbox(const common::region_dim_spec& rds) { m_viewbox = rds; m_display_viewbox = rds; }
 	void set_bgopacity(double l) { m_bgopacity = l; m_display_bgopacity = l; }
+	void set_mediaopacity(double l) { m_mediaopacity = l; m_display_mediaopacity = l; }
+	void set_mediabgopacity(double l) { m_mediabgopacity = l; m_display_mediabgopacity = l; }
 #endif // WITH_SMIL30
 	void set_as_subregion(bool b) { m_is_subregion = b; }
 	
@@ -209,6 +213,8 @@ class region_node : public common::animation_destination {
 	common::sound_alignment m_soundalign;
 #ifdef WITH_SMIL30
 	common::region_dim_spec m_viewbox;
+	double m_mediaopacity;
+	double m_mediabgopacity;
 #endif // WITH_SMIL30
 	const char *m_bgimage;
 	common::tiling m_tiling;
@@ -229,6 +235,8 @@ class region_node : public common::animation_destination {
 #ifdef WITH_SMIL30
 	common::region_dim_spec m_display_viewbox;
 	double m_display_bgopacity;
+	double m_display_mediaopacity;
+	double m_display_mediabgopacity;
 #endif // WITH_SMIL30
 	
 	// verifier

@@ -47,6 +47,8 @@ static char *subregionattrs[] = {
 #ifdef WITH_SMIL30
 	"viewBox",
 	"backgroundOpacity",
+	"mediaOpacity",
+	"mediaBackgroundOpacity",
 #endif
 	NULL
 };
@@ -102,6 +104,10 @@ region_node::region_node(const lib::node *n, dimension_inheritance di)
 	m_bgcolor(lib::to_color(0,0,0)),
 	m_soundlevel(1.0),
 	m_soundalign(common::sa_default),
+#ifdef WITH_SMIL30
+	m_mediaopacity(1.0),
+	m_mediabgopacity(1.0),
+#endif
 	m_bgimage(NULL),
 	m_tiling(common::tiling_default),
 	m_bgopacity(1.0),
@@ -277,11 +283,37 @@ region_node::fix_from_dom_node()
 		bo = strtod(bgopacity_attr, &lastp);
 		if (*lastp == '%') bo *= 0.01;
 	}
-	AM_DBG lib::logger::get_logger()->debug("region_node::reset: backgroundOpacity=%g", sl);
+	AM_DBG lib::logger::get_logger()->debug("region_node::reset: backgroundOpacity=%g", bo);
 	if (bo != m_bgopacity) {
 		changed = true;
 	}
 	set_bgopacity(bo);
+		
+	// mediaOpacity.
+	const char *mediaopacity_attr = m_node->get_attribute("mediaOpacity");
+	double fo = m_mediaopacity;
+	if (mediaopacity_attr) {
+		bo = strtod(mediaopacity_attr, &lastp);
+		if (*lastp == '%') bo *= 0.01;
+	}
+	AM_DBG lib::logger::get_logger()->debug("region_node::reset: mediaOpacity=%g", fo);
+	if (fo != m_mediaopacity) {
+		changed = true;
+	}
+	set_mediaopacity(fo);
+		
+	// mediaBackgroundOpacity.
+	const char *mediabgopacity_attr = m_node->get_attribute("mediaBackgroundOpacity");
+	double mbo = m_mediabgopacity;
+	if (mediabgopacity_attr) {
+		mbo = strtod(mediabgopacity_attr, &lastp);
+		if (*lastp == '%') mbo *= 0.01;
+	}
+	AM_DBG lib::logger::get_logger()->debug("region_node::reset: mediaBackgroundOpacity=%g", mbo);
+	if (mbo != m_mediabgopacity) {
+		changed = true;
+	}
+	set_mediabgopacity(fo);
 		
 #endif // WITH_SMIL30
 	// backgroundImage
@@ -376,6 +408,20 @@ region_node::get_bgopacity() const
 	return m_bgopacity;
 #endif
 }
+
+#ifdef WITH_SMIL30
+double
+region_node::get_mediaopacity() const
+{
+	return m_display_mediaopacity;
+}
+
+double
+region_node::get_mediabgopacity() const
+{
+	return m_display_mediabgopacity;
+}
+#endif // WITH_SMIL30
 
 bool
 region_node::get_showbackground() const
@@ -515,6 +561,10 @@ const common::region_dim_spec& region_node::get_region_viewbox(bool fromdom) con
 double region_node::get_region_opacity(const std::string& which, bool fromdom) const {
 	if (which == "backgroundOpacity")
 		return fromdom?m_bgopacity:m_display_bgopacity;
+	if (which == "mediaOpacity")
+		return fromdom?m_mediaopacity:m_display_mediaopacity;
+	if (which == "mediaBackgroundOpacity")
+		return fromdom?m_mediabgopacity:m_display_mediabgopacity;
 	assert(0);
 }
 #endif // WITH_SMIL30
@@ -565,6 +615,10 @@ void region_node::set_region_opacity(const std::string& which, double level) {
 	AM_DBG lib::logger::get_logger()->debug("region_node::set_region_bgopacity()");
 	if (which == "backgroundOpacity")
 		m_display_bgopacity = level;
+	else if (which == "mediaOpacity")
+		m_display_mediaopacity = level;
+	else if (which == "mediaBackgroundOpacity")
+		m_display_mediabgopacity = level;
 	else
 		assert(0);
 }

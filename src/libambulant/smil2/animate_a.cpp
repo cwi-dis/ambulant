@@ -125,8 +125,8 @@ void animate_attrs::locate_target_attr() {
 #ifdef WITH_SMIL30
 	} else if (m_attrname == "viewBox") {
 		m_attrtype = "viewBox";
-	} else if (m_attrname == "backgroundOpacity") {
-		m_attrtype = "double";
+	} else if (m_attrname == "backgroundOpacity" || m_attrname == "mediaOpacity" || m_attrname == "mediaBackgroundOpacity") {
+		m_attrtype = "opacity";
 #endif // WITH_SMIL30
 	} else {
 		m_logger->trace("<%s id=\"%s\" attributeName=\"%s\">: attribute cannot be animated", 

@@ -48,7 +48,7 @@ cocoa_text_renderer::cocoa_text_renderer(
 		common::factories *factory)
 :	cocoa_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory),
 	m_text_storage(NULL),
-	m_text_color(NULL),
+	m_text_color(0),
 	m_text_font(NULL)
 {
 	// XXX These parameter names are tentative
@@ -59,7 +59,7 @@ cocoa_text_renderer::cocoa_text_renderer(
 //		const char *fontstyle = params->get_str("font-style");
 		float fontsize = 0.0;
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		text_color = params->get_color("color", text_color);
+		m_text_color = params->get_color("color", text_color);
 		fontsize = params->get_float("font-size", 0.0);
 		AM_DBG NSLog(@"params found, color=(%d, %d, %d), font-family=%s, font-size=%g", 
 			redc(text_color), greenc(text_color), bluec(text_color), fontname, fontsize);
@@ -76,10 +76,6 @@ cocoa_text_renderer::cocoa_text_renderer(
 		delete params;
 		[pool release];
 	}
-	m_text_color = [NSColor colorWithCalibratedRed:redf(text_color)
-					green:greenf(text_color)
-					blue:bluef(text_color)
-					alpha:1.0];
 }
 
 cocoa_text_renderer::~cocoa_text_renderer()
@@ -100,8 +96,24 @@ cocoa_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 	if (m_data && !m_text_storage) {
 		NSString *the_string = [NSString stringWithCString: (char *)m_data length: m_data_size];
 		m_text_storage = [[NSTextStorage alloc] initWithString:the_string];
-		if (m_text_color)
-			[m_text_storage setForegroundColor: m_text_color];
+		if (m_text_color) {
+#ifdef WITH_SMIL30
+			// XXXJACK will not work, too early for m_dest to be set
+			double alfa = 1.0;
+			const common::region_info *ri = m_dest->get_info();
+			if (ri) alfa = ri->get_mediaopacity();
+			NSColor *nscolor = [NSColor colorWithCalibratedRed:redf(m_text_color)
+					green:greenf(m_text_color)
+					blue:bluef(m_text_color)
+					alpha:alfa];
+#else
+			NSColor *nscolor = [NSColor colorWithCalibratedRed:redf(m_text_color)
+					green:greenf(m_text_color)
+					blue:bluef(m_text_color)
+					alpha:1.0];
+#endif
+			[m_text_storage setForegroundColor: nscolor];
+		}
 		if (m_text_font)
 			[m_text_storage setFont: m_text_font];
 		m_layout_manager = [[NSLayoutManager alloc] init];

@@ -70,6 +70,8 @@ class mms_region_info : public common::region_info {
 	bool is_subregion() const { return false; }
 #ifdef WITH_SMIL30
 	lib::rect get_crop_rect(const lib::size& srcsize) const { return lib::rect(lib::point(0,0), srcsize); }
+	double get_mediaopacity() const { return 1.0; }
+	double get_mediabgopacity() const { return 1.0; }
 #endif
   private:
 	std::string m_name;

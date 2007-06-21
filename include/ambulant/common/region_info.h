@@ -97,6 +97,12 @@ class region_info {
 #ifdef WITH_SMIL30
 	/// Return the image crop area
 	virtual rect get_crop_rect(const size& srcsize) const = 0;
+
+	/// Return the media opacity of the region.
+	virtual double get_mediaopacity() const = 0;
+
+	/// Return the media background opacity of the region.
+	virtual double get_mediabgopacity() const = 0;
 #endif
 };
 

@@ -90,12 +90,22 @@ cocoa_fill_renderer::redraw_body(const rect &dirty, gui_window *window)
 	}
 	color_t color = lib::to_color(color_attr);
 	AM_DBG lib::logger::get_logger()->debug("cocoa_fill_renderer.redraw: clearing to 0x%x", (long)color);
-	NSColor *cocoa_bgcolor = [NSColor colorWithCalibratedRed:redf(color)
-				green:greenf(color)
-				blue:bluef(color)
-				alpha:1.0];
-	[cocoa_bgcolor set];
-	NSRectFill(cocoa_dstrect_whole);
+#ifdef WITH_SMIL30
+	double alfa = 1.0;
+	const common::region_info *ri = m_dest->get_info();
+	if (ri) alfa = ri->get_mediaopacity();
+	NSColor *nscolor = [NSColor colorWithCalibratedRed:redf(color)
+			green:greenf(color)
+			blue:bluef(color)
+			alpha:alfa];
+#else
+	NSColor *nscolor = [NSColor colorWithCalibratedRed:redf(color)
+			green:greenf(color)
+			blue:bluef(color)
+			alpha:1.0];
+#endif
+	[nscolor set];
+	NSRectFillUsingOperation(cocoa_dstrect_whole, NSCompositeSourceAtop);
 	m_lock.leave();
 }
 
