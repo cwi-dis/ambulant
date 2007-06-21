@@ -151,6 +151,7 @@ void
 gui::dx::dx_smiltext_renderer::_dx_smiltext_changed() {
 	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_renderer::_dx_smiltext_changed(0x%x)", this);
 	HRESULT hr;
+	int nbr = 0; // number of breaks (newlines) before current line
 
 	if (m_hdc == NULL) {
 		hr = m_ddsurf->GetDC(&m_hdc);
@@ -179,41 +180,55 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_changed() {
 	if (logical_origin.x || logical_origin.y)
 		_dx_smiltext_shift( m_dest->get_rect(), logical_origin);
 
-	if (true) { //m_engine.is_changed()) {
-		// Always re-compute and re-render everything when new text is added.
-		// Thus, m_engine.newbegin() is NOT used
-		lib::xml_string data;
-		smil2::smiltext_runs::const_iterator cur = m_engine.begin();
-		m_x = m_dest->get_rect().x;
-		m_y = m_dest->get_rect().y;
+	// Always re-compute and re-render everything when new text is added.
+	// Therefore, m_engine.newbegin() is NOT used
+	lib::xml_string data;
+	smil2::smiltext_runs::const_iterator cur = m_engine.begin();
 
-		while (cur != m_engine.end()) {
-			smil2::smiltext_runs::const_iterator bol = cur; // begin of line pointer
-			AM_DBG lib::logger::get_logger()->debug("_dx_smiltext_changed(): command=%d data=%s",cur->m_command,cur->m_data.c_str()==NULL?"(null)":cur->m_data.c_str());
-			while (cur != m_engine.end()) {
-				// layout line-by-line
-				if (cur->m_command == smil2::stc_break 
-					|| ! _dx_smiltext_fits(*cur, m_dest->get_rect())
-					) {
-					if (cur->m_command == smil2::stc_break)
-						cur++;
-					break;
-				}
-				cur++;
-			}
-			m_x = m_dest->get_rect().x; // was used by dx_smiltext_fits()
-			while (bol != cur) {
-//KB			lib::rect r =  m_dest->get_rect();
-				lib::rect r = _dx_smiltext_compute(*bol, m_dest->get_rect());
-				_dx_smiltext_render(*bol, r, logical_origin);
-				bol++;
-			}
-			m_y = m_y + m_max_ascent + m_max_descent;
-			m_x = m_dest->get_rect().x;
-			m_max_ascent = m_max_descent = 0;
-		}
-		m_engine.done();
+	m_y = m_dest->get_rect().y;
+	m_max_ascent = m_max_descent = 0;
+	// count number of initial breaks before first line
+	while (cur->m_command == smil2::stc_break) {
+		nbr++;
+		cur++;
 	}
+	while (cur != m_engine.end()) {
+		// compute layout of next line
+		smil2::smiltext_runs::const_iterator bol = cur; // begin of line pointer
+		bool fits = false;
+		m_x = m_dest->get_rect().x;
+		if (nbr > 0 && (m_max_ascent != 0 || m_max_descent != 0)) {
+			// correct m_y for proper size of previous line
+			m_y += (m_max_ascent + m_max_descent);
+			nbr--;
+		}
+		m_max_ascent = m_max_descent = 0;
+		AM_DBG lib::logger::get_logger()->debug("_dx_smiltext_changed(): command=%d data=%s",cur->m_command,cur->m_data.c_str()==NULL?"(null)":cur->m_data.c_str());
+		while (cur != m_engine.end()) {
+			fits = _dx_smiltext_fits(*cur, m_dest->get_rect());
+			if ( ! fits || cur->m_command == smil2::stc_break)
+				break;
+			cur++;
+		}
+		m_x = m_dest->get_rect().x; // was used by dx_smiltext_fits()
+		// move down number of breaks times height of current line
+		m_y += (m_max_ascent + m_max_descent) * nbr;
+		// count number of breaks for next line
+		nbr = 0;
+		while (cur->m_command == smil2::stc_break) {
+			nbr++;
+			cur++;
+		}
+		if ( ! fits && nbr == 0)
+			nbr = 1;
+		while (bol != cur) {
+			lib::rect r = _dx_smiltext_compute(*bol, m_dest->get_rect());
+			_dx_smiltext_render(*bol, r, logical_origin);
+			bol++;
+		}
+	}
+	m_engine.done();
+	
 	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_changed(0x%x): ReleaseDC(m_hdc=0x%x)", this, m_hdc);
 	if (m_hdc && FAILED(hr = m_ddsurf->ReleaseDC(m_hdc)))
 		lib::logger::get_logger()->warn("%s failed.", "_dx_smiltext_changed(): ReleaseDC()");
