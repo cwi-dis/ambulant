@@ -85,7 +85,8 @@ cocoa_smiltext_renderer::cocoa_smiltext_renderer(
 	m_layout_manager(NULL),
 	m_text_container(NULL),
 	m_engine(smil2::smiltext_engine(node, evp, this, false)),
-	m_params(m_engine.get_params())
+	m_params(m_engine.get_params()),
+	m_any_semiopaque_bg(false)
 {
 	m_text_storage = [[NSTextStorage alloc] initWithString:@""];
 	m_render_offscreen = (m_params.m_mode != smil2::stm_replace && m_params.m_mode != smil2::stm_append) || !m_params.m_wrap;
@@ -190,6 +191,8 @@ cocoa_smiltext_renderer::smiltext_changed()
 				double alfa = 1.0;
 				const common::region_info *ri = m_dest->get_info();
 				if (ri) alfa = ri->get_mediabgopacity();
+				if (alfa != 1.0)
+					m_any_semiopaque_bg = true;
 				NSColor *color = [NSColor colorWithCalibratedRed:redf((*i).m_bg_color)
 						green:greenf((*i).m_bg_color)
 						blue:bluef((*i).m_bg_color)
@@ -320,7 +323,23 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 #endif
 #endif
 	if (glyph_range.location >= 0 && glyph_range.length > 0) {
-		[m_layout_manager drawBackgroundForGlyphRange: glyph_range atPoint: visible_origin];
+		if (m_any_semiopaque_bg) {
+			// Background opacity 1.0 is implemented correctly in NSLayoutManager, but intermediate
+			// values are a bit funny: they still override the underlying image (i.e. they don't
+			// use NSCompositeSourceOver or something similar. Therefore, if this is the case we
+			// draw the background color to a separate buffer and bitblit this onto the existing
+			// bits.
+			NSImage *tmpsrc = [view getTransitionTmpSurface];
+			[tmpsrc lockFocus];
+			[[NSColor colorWithDeviceWhite: 1.0 alpha: 0.0] set];
+			NSRectFill(cocoa_dstrect);
+			[m_layout_manager drawBackgroundForGlyphRange: glyph_range atPoint: visible_origin];
+			[tmpsrc unlockFocus];
+			[tmpsrc drawInRect: cocoa_dstrect fromRect: cocoa_dstrect operation: NSCompositeSourceOver fraction: 1.0];
+		} else {
+			// Otherwise we simply let NSLayoutManager do the work
+			[m_layout_manager drawBackgroundForGlyphRange: glyph_range atPoint: visible_origin];
+		}
 		[m_layout_manager drawGlyphsForGlyphRange: glyph_range atPoint: visible_origin];
 	}
 	layout_size = [m_text_container containerSize];

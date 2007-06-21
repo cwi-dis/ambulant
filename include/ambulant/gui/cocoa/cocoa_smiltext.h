@@ -68,6 +68,7 @@ class cocoa_smiltext_renderer :
 	const smil2::smiltext_params& m_params;
 	bool m_render_offscreen;			// True if m_params does not allows rendering in-place
 	lib::timer::time_type m_epoch;
+	bool m_any_semiopaque_bg;			// True if any backgroundOpacity != 1.0 is used
 	critical_section m_lock;
 };
 
