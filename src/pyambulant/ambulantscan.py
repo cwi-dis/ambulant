@@ -117,6 +117,8 @@ class MyScanner(CxxScanner):
             "none_background_renderer",
             "none_background_renderer_ptr",
             "tile_positions",    # We don't do lists, for now
+            "region_dim_spec",   # XXXX Not sure this is needed?
+            "const_region_dim_spec_ref",  # XXXX Not sure this is needed?
             "QWidget_ptr"
             
         ]

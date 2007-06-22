@@ -3882,6 +3882,8 @@ surface::surface(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "get_clipped_screen_rect")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: get_clipped_screen_rect");
 		if (!PyObject_HasAttrString(itself, "get_global_topleft")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: get_global_topleft");
 		if (!PyObject_HasAttrString(itself, "get_fit_rect")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: get_fit_rect");
+		if (!PyObject_HasAttrString(itself, "get_fit_rect")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: get_fit_rect");
+		if (!PyObject_HasAttrString(itself, "get_crop_rect")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: get_crop_rect");
 		if (!PyObject_HasAttrString(itself, "get_info")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: get_info");
 		if (!PyObject_HasAttrString(itself, "get_top_surface")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: get_top_surface");
 		if (!PyObject_HasAttrString(itself, "is_tiled")) PyErr_Warn(PyExc_Warning, "surface: missing attribute: is_tiled");
@@ -4121,6 +4123,62 @@ ambulant::lib::rect surface::get_fit_rect(const ambulant::lib::size& src_size, a
 	Py_XDECREF(py_rv);
 	Py_XDECREF(py_src_size);
 	Py_XDECREF(py_align);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::lib::rect surface::get_fit_rect(const ambulant::lib::rect& src_crop_rect, const ambulant::lib::size& src_size, ambulant::lib::rect* out_src_rect, const ambulant::common::alignment* align) const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::rect _rv;
+	PyObject *py_src_crop_rect = Py_BuildValue("O", ambulant_rect_New(src_crop_rect));
+	PyObject *py_src_size = Py_BuildValue("O", ambulant_size_New(src_size));
+	PyObject *py_align = Py_BuildValue("O&", alignmentObj_New, align);
+
+	PyObject *py_rv = PyObject_CallMethod(py_surface, "get_fit_rect", "(OOO)", py_src_crop_rect, py_src_size, py_align);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during surface::get_fit_rect() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&O&", ambulant_rect_Convert, &_rv, ambulant_rect_Convert, &out_src_rect))
+	{
+		PySys_WriteStderr("Python exception during surface::get_fit_rect() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_src_crop_rect);
+	Py_XDECREF(py_src_size);
+	Py_XDECREF(py_align);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::lib::rect surface::get_crop_rect(const ambulant::lib::size& src_size) const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::rect _rv;
+	PyObject *py_src_size = Py_BuildValue("O", ambulant_size_New(src_size));
+
+	PyObject *py_rv = PyObject_CallMethod(py_surface, "get_crop_rect", "(O)", py_src_size);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during surface::get_crop_rect() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", ambulant_rect_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during surface::get_crop_rect() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_src_size);
 
 	PyGILState_Release(_GILState);
 	return _rv;
@@ -5785,7 +5843,7 @@ region_info::region_info(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "get_rect")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_rect");
 		if (!PyObject_HasAttrString(itself, "get_fit")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_fit");
 		if (!PyObject_HasAttrString(itself, "get_bgcolor")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_bgcolor");
-		if (!PyObject_HasAttrString(itself, "get_transparent")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_transparent");
+		if (!PyObject_HasAttrString(itself, "get_bgopacity")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_bgopacity");
 		if (!PyObject_HasAttrString(itself, "get_zindex")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_zindex");
 		if (!PyObject_HasAttrString(itself, "get_showbackground")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_showbackground");
 		if (!PyObject_HasAttrString(itself, "is_subregion")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: is_subregion");
@@ -5793,6 +5851,7 @@ region_info::region_info(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "get_soundalign")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_soundalign");
 		if (!PyObject_HasAttrString(itself, "get_tiling")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_tiling");
 		if (!PyObject_HasAttrString(itself, "get_bgimage")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_bgimage");
+		if (!PyObject_HasAttrString(itself, "get_crop_rect")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_crop_rect");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -5908,21 +5967,21 @@ ambulant::lib::color_t region_info::get_bgcolor() const
 	return _rv;
 }
 
-bool region_info::get_transparent() const
+double region_info::get_bgopacity() const
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	bool _rv;
+	double _rv;
 
-	PyObject *py_rv = PyObject_CallMethod(py_region_info, "get_transparent", "()");
+	PyObject *py_rv = PyObject_CallMethod(py_region_info, "get_bgopacity", "()");
 	if (PyErr_Occurred())
 	{
-		PySys_WriteStderr("Python exception during region_info::get_transparent() callback:\n");
+		PySys_WriteStderr("Python exception during region_info::get_bgopacity() callback:\n");
 		PyErr_Print();
 	}
 
-	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	if (py_rv && !PyArg_Parse(py_rv, "d", &_rv))
 	{
-		PySys_WriteStderr("Python exception during region_info::get_transparent() return:\n");
+		PySys_WriteStderr("Python exception during region_info::get_bgopacity() return:\n");
 		PyErr_Print();
 	}
 
@@ -6100,6 +6159,32 @@ const char * region_info::get_bgimage() const
 	return _rv;
 }
 
+ambulant::lib::rect region_info::get_crop_rect(const ambulant::lib::size& srcsize) const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::rect _rv;
+	PyObject *py_srcsize = Py_BuildValue("O", ambulant_size_New(srcsize));
+
+	PyObject *py_rv = PyObject_CallMethod(py_region_info, "get_crop_rect", "(O)", py_srcsize);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during region_info::get_crop_rect() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", ambulant_rect_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during region_info::get_crop_rect() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_srcsize);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
 /* ------------------ Class animation_destination ------------------- */
 
 animation_destination::animation_destination(PyObject *itself)
@@ -6113,11 +6198,13 @@ animation_destination::animation_destination(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "get_region_zindex")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: get_region_zindex");
 		if (!PyObject_HasAttrString(itself, "get_region_soundlevel")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: get_region_soundlevel");
 		if (!PyObject_HasAttrString(itself, "get_region_soundalign")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: get_region_soundalign");
+		if (!PyObject_HasAttrString(itself, "get_region_bgopacity")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: get_region_bgopacity");
 		if (!PyObject_HasAttrString(itself, "set_region_dim")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: set_region_dim");
 		if (!PyObject_HasAttrString(itself, "set_region_color")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: set_region_color");
 		if (!PyObject_HasAttrString(itself, "set_region_zindex")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: set_region_zindex");
 		if (!PyObject_HasAttrString(itself, "set_region_soundlevel")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: set_region_soundlevel");
 		if (!PyObject_HasAttrString(itself, "set_region_soundalign")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: set_region_soundalign");
+		if (!PyObject_HasAttrString(itself, "set_region_bgopacity")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: set_region_bgopacity");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -6269,6 +6356,32 @@ ambulant::common::sound_alignment animation_destination::get_region_soundalign(b
 	return _rv;
 }
 
+double animation_destination::get_region_bgopacity(bool fromdom) const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	double _rv;
+	PyObject *py_fromdom = Py_BuildValue("O&", bool_New, fromdom);
+
+	PyObject *py_rv = PyObject_CallMethod(py_animation_destination, "get_region_bgopacity", "(O)", py_fromdom);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during animation_destination::get_region_bgopacity() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "d", &_rv))
+	{
+		PySys_WriteStderr("Python exception during animation_destination::get_region_bgopacity() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_fromdom);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
 void animation_destination::set_region_dim(const std::string& which, const ambulant::common::region_dim& rd)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -6359,6 +6472,24 @@ void animation_destination::set_region_soundalign(ambulant::common::sound_alignm
 
 	Py_XDECREF(py_rv);
 	Py_XDECREF(py_sa);
+
+	PyGILState_Release(_GILState);
+}
+
+void animation_destination::set_region_bgopacity(double level)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_level = Py_BuildValue("d", level);
+
+	PyObject *py_rv = PyObject_CallMethod(py_animation_destination, "set_region_bgopacity", "(O)", py_level);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during animation_destination::set_region_bgopacity() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_level);
 
 	PyGILState_Release(_GILState);
 }

@@ -668,6 +668,8 @@ public:
 	const ambulant::lib::rect& get_clipped_screen_rect() const;
 	const ambulant::lib::point& get_global_topleft() const;
 	ambulant::lib::rect get_fit_rect(const ambulant::lib::size& src_size, ambulant::lib::rect* out_src_rect, const ambulant::common::alignment* align) const;
+	ambulant::lib::rect get_fit_rect(const ambulant::lib::rect& src_crop_rect, const ambulant::lib::size& src_size, ambulant::lib::rect* out_src_rect, const ambulant::common::alignment* align) const;
+	ambulant::lib::rect get_crop_rect(const ambulant::lib::size& src_size) const;
 	const ambulant::common::region_info* get_info() const;
 	ambulant::common::surface* get_top_surface();
 	bool is_tiled() const;
@@ -964,7 +966,7 @@ public:
 	ambulant::lib::rect get_rect() const;
 	ambulant::common::fit_t get_fit() const;
 	ambulant::lib::color_t get_bgcolor() const;
-	bool get_transparent() const;
+	double get_bgopacity() const;
 	ambulant::common::zindex_t get_zindex() const;
 	bool get_showbackground() const;
 	bool is_subregion() const;
@@ -972,6 +974,7 @@ public:
 	ambulant::common::sound_alignment get_soundalign() const;
 	ambulant::common::tiling get_tiling() const;
 	const char * get_bgimage() const;
+	ambulant::lib::rect get_crop_rect(const ambulant::lib::size& srcsize) const;
   private:
 	PyObject *py_region_info;
 
@@ -997,16 +1000,17 @@ public:
 	ambulant::common::zindex_t get_region_zindex(bool fromdom) const;
 	double get_region_soundlevel(bool fromdom) const;
 	ambulant::common::sound_alignment get_region_soundalign(bool fromdom) const;
+	double get_region_bgopacity(bool fromdom) const;
 	void set_region_dim(const std::string& which, const ambulant::common::region_dim& rd);
 	void set_region_color(const std::string& which, ambulant::lib::color_t clr);
 	void set_region_zindex(ambulant::common::zindex_t z);
 	void set_region_soundlevel(double level);
 	void set_region_soundalign(ambulant::common::sound_alignment sa);
+	void set_region_bgopacity(double level);
 	std::string get_name() const { return region_info::get_name(); }
 	ambulant::lib::rect get_rect() const { return region_info::get_rect(); }
 	ambulant::common::fit_t get_fit() const { return region_info::get_fit(); }
 	ambulant::lib::color_t get_bgcolor() const { return region_info::get_bgcolor(); }
-	bool get_transparent() const { return region_info::get_transparent(); }
 	ambulant::common::zindex_t get_zindex() const { return region_info::get_zindex(); }
 	bool get_showbackground() const { return region_info::get_showbackground(); }
 	bool is_subregion() const { return region_info::is_subregion(); }
@@ -1014,6 +1018,10 @@ public:
 	ambulant::common::sound_alignment get_soundalign() const { return region_info::get_soundalign(); }
 	ambulant::common::tiling get_tiling() const { return region_info::get_tiling(); }
 	const char* get_bgimage() const { return region_info::get_bgimage(); }
+	double get_bgopacity() const { return region_info::get_bgopacity(); }
+	ambulant::lib::rect get_crop_rect(const ambulant::lib::size& srcsize) const { return region_info::get_crop_rect(srcsize); }
+	const ambulant::common::region_dim_spec& get_region_viewbox(bool fromdom) const { abort(); }
+	void set_region_viewbox(const ambulant::common::region_dim_spec& rds) { abort(); }
   private:
 	PyObject *py_animation_destination;
 
