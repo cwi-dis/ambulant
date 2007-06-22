@@ -29,6 +29,9 @@
 #ifdef	WITH_QT_HTML_WIDGET
 #include "ambulant/gui/qt/qt_html_renderer.h"
 #endif/*WITH_QT_HTML_WIDGET*/
+#ifdef  WITH_SMIL30
+#include "ambulant/gui/qt/qt_smiltext.h"
+#endif/*WITH_SMIL30*/
 #include "ambulant/gui/qt/qt_text_renderer.h"
 #include "ambulant/gui/qt/qt_video_renderer.h"
 #include "qcursor.h"
@@ -124,32 +127,40 @@ qt_renderer_factory::new_playable(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
-	lib::event_processor *const evp) {
+	lib::event_processor *const evp)
+{
 
 	lib::xml_string tag = node->get_qname().second;
 	common::playable* rv;
 	if (tag == "img") {
  		rv = new qt_image_renderer(context, cookie, node, evp, m_factory);
 		AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_image_renderer 0x%x", (void*) node, (void*) rv);
-        return rv;
-    }
+		return rv;
+	}
 	if (tag == "brush") {
  		rv = new qt_fill_renderer(context, cookie, node, evp, m_factory);
 		AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_fill_renderer 0x%x", (void*) node, (void*) rv);
-        return rv;
-    }
+		return rv;
+	}
+#ifdef WITH_SMIL30
+	if(tag == "smiltext") {
+		rv = new qt_smiltext_renderer(context, cookie, node, evp);//, m_factory);
+		AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_smiltext_renderer 0x%x", (void*) node, (void*) rv);
+		return rv;
+	}
+#endif/*WITH_SMIL30*/
 	if ( tag == "text") {
 #ifdef	WITH_QT_HTML_WIDGET
-        net::url url = net::url(node->get_url("src"));
-        if (url.guesstype() == "text/html") {
+	        net::url url = net::url(node->get_url("src"));
+		if (url.guesstype() == "text/html") {
 			rv = new qt_html_renderer(context, cookie, node, evp, m_factory);
 			AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_html_renderer 0x%x", (void*) node, (void*) rv);
-            return rv;
+			return rv;
 		}
 #endif /*WITH_QT_HTML_WIDGET*/
 		rv = new qt_text_renderer(context, cookie, node, evp, m_factory);
 		AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_text_renderer 0x%x", (void*) node, (void*) rv);
-        return rv;
+		return rv;
     }
     return NULL;
 }

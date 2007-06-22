@@ -5,8 +5,10 @@ library_include_HEADERS=		\
 	qt_fill.h			\
 	qt_html_renderer.h		\
 	qt_image_renderer.h		\
+	qt_smiltext.h			\
 	qt_text_renderer.h		\
-	qt_transition.h		\
+	qt_text_renderer.h		\
+	qt_transition.h			\
 	qt_video_renderer.h		\
-	qt_factory.h \
+	qt_factory.h			\
 	qt_factory_impl.h

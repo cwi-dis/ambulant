@@ -140,5 +140,6 @@ qt_image_renderer::redraw_body(const rect &dirty,
 	paint.drawImage(D_L, D_T, scaledimage, N_L, N_T, D_W, D_H);
 	paint.flush();
 	paint.end();
+
 	m_lock.leave();
 }
