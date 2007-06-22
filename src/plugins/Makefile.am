@@ -48,6 +48,17 @@ else
 dummy_state_plugin=
 endif
 
+# The libxml2 XPath SMIL 3.0 state plugin
+if WITH_SMIL30
+xpath_state_plugin = libamplugin_xpath_state.la
+xpath_state_includes = `xml2-config --cflags`
+libamplugin_xpath_state_la_SOURCES = xpath_stateplugin.cpp
+libamplugin_xpath_state_la_LDFLAGS = -module `xml2-config --libs`
+else
+xpath_state_plugin=
+xpath_state_includes=
+endif
+
 # The Python plugin
 if WITH_PYTHON_PLUGIN
 # XXX These should be elsewhere
@@ -78,8 +89,10 @@ pkglib_LTLIBRARIES = \
     $(arts_plugin) \
     $(xerces_plugin) \
     $(dummy_state_plugin) \
+    $(xpath_state_plugin) \
     $(python_plugin)
 
 INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include \
-	 $(arts_includes) $(xerces_includes) $(python_includes)
+	 $(arts_includes) $(xerces_includes) $(python_includes) \
+	 $(xpath_state_includes)
 
