@@ -238,7 +238,7 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_changed() {
 bool
 gui::dx::dx_smiltext_renderer::_dx_smiltext_fits(const smil2::smiltext_run strun, const lib::rect r) {
 	bool rv = true;
-	a_extent ax = _dx_smiltext_get_a_extent (strun, m_hdc);
+	text_metrics ax = _dx_smiltext_get_text_metrics (strun, m_hdc);
 
 	if (ax.get_ascent() > m_max_ascent)
 		m_max_ascent = ax.get_ascent();
@@ -255,41 +255,45 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_fits(const smil2::smiltext_run strun
 
 lib::rect
 gui::dx::dx_smiltext_renderer::_dx_smiltext_compute(const smil2::smiltext_run strun, const lib::rect r) {
-	lib::rect rv = lib::rect(lib::point(0,0),lib::size(100,100));
-	a_extent ax = _dx_smiltext_get_a_extent (strun, m_hdc);
+	lib::rect rv = r;
+//JNK lib::rect rv = lib::rect(lib::point(0,0),lib::size(100,100));
+	text_metrics tm = _dx_smiltext_get_text_metrics (strun, m_hdc);
 
 	rv.x = m_x;
-	m_x += ax.get_width();
-	rv.y = m_y + m_max_ascent - ax.get_ascent();
-	rv.w = ax.get_width();
-	rv.h = ax.get_ascent() + ax.get_descent();
+	rv.w = tm.get_width();
+	m_x  += rv.w;
+
+	rv.y = (m_y + m_max_ascent - tm.get_ascent());
+	rv.h = tm.get_line_spacing();
+
 	return rv;
 }
 
-gui::dx::a_extent
-gui::dx::dx_smiltext_renderer::_dx_smiltext_get_a_extent(const smil2::smiltext_run strun, HDC hdc) {
-	unsigned int ascent, descent, width;
+gui::dx::text_metrics
+gui::dx::dx_smiltext_renderer::_dx_smiltext_get_text_metrics(const smil2::smiltext_run strun, HDC hdc) {
+	unsigned int ascent = 0, descent = 0, height = 0, width = 0, line_spacing = 0;
 
-	if (strun.m_command != smil2::stc_data || hdc == NULL 
-		|| strun.m_data.length() == 0)
-		return a_extent(0,0,0);
+	if (strun.m_command == smil2::stc_data 	&& strun.m_data.length() != 0) {
 
-	_dx_smiltext_set_font (strun, hdc);
-	TEXTMETRIC tm;
-	BOOL res = ::GetTextMetrics(hdc, &tm);
-	if (res == 0)
-		win_report_last_error("GetTextMetric()");
-	ascent  = tm.tmAscent;
-	descent = tm.tmDescent;
+		_dx_smiltext_set_font (strun, hdc);
 
-	lib::textptr tp(strun.m_data.c_str(), strun.m_data.length());
-	SIZE SZ;
-	res = ::GetTextExtentPoint32(hdc, tp, (int)tp.length(), &SZ);
-	if (res == 0)
-		win_report_last_error("GetTextExtentPoint32()");
-	width  = SZ.cx;
+		TEXTMETRIC tm;
+		BOOL res = ::GetTextMetrics(hdc, &tm);
+		if (res == 0)
+			win_report_last_error("GetTextMetric()");
+		ascent  = tm.tmAscent;
+		descent = tm.tmDescent;	
+		height	= tm.tmHeight;
+		line_spacing = height+tm.tmInternalLeading+tm.tmExternalLeading;
 
-	return a_extent(ascent, descent, width);
+		lib::textptr tp(strun.m_data.c_str(), strun.m_data.length());
+		SIZE SZ;
+		res = ::GetTextExtentPoint32(hdc, tp, (int)tp.length(), &SZ);
+		if (res == 0)
+			win_report_last_error("GetTextExtentPoint32()");
+		width = SZ.cx;
+	}
+	return text_metrics(ascent, descent, height, width, line_spacing);
 }
 
 void

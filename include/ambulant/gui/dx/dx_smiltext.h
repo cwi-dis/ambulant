@@ -39,22 +39,29 @@ namespace gui {
 
 namespace dx {
 
-class a_extent {
+class text_metrics {
   public:
-	a_extent(unsigned int ascent, unsigned int descent, unsigned int width)
+	text_metrics(unsigned int ascent, unsigned int descent, unsigned int height, unsigned int width, unsigned int line_spacing)
 	  :	m_ascent(ascent), 
 		m_descent(descent), 
-		m_width(width) {}
-		~a_extent() {}
+	  	m_height(height),
+		m_width(width),
+		m_line_spacing(line_spacing) {}
 
-	unsigned int get_ascent() { return m_ascent; }
-	unsigned int get_descent() { return m_descent; };
-	unsigned int get_width() { return m_width; };
+	~text_metrics() {}
+
+	unsigned int get_ascent()	{ return m_ascent; }
+	unsigned int get_descent()	{ return m_descent; };
+	unsigned int get_height()	{ return m_height; };
+	unsigned int get_width()	{ return m_width; };
+	unsigned int get_line_spacing() { return m_line_spacing; };
 
   private:
 	unsigned int m_ascent;
 	unsigned int m_descent;
+	unsigned int m_height;	
 	unsigned int m_width;	
+	unsigned int m_line_spacing;	
 };
 
 class smiltext_renderer;
@@ -86,7 +93,7 @@ class dx_smiltext_renderer :
 	// internal helper functions
 	void _dx_smiltext_changed();
 	bool _dx_smiltext_fits(const smil2::smiltext_run run, const lib::rect r);
-	a_extent _dx_smiltext_get_a_extent(const smil2::smiltext_run run, HDC hdc);
+	text_metrics _dx_smiltext_get_text_metrics(const smil2::smiltext_run run, HDC hdc);
 	lib::rect _dx_smiltext_compute(const smil2::smiltext_run run, const lib::rect r);
 	void _dx_smiltext_render(const smil2::smiltext_run run, const lib::rect r, const lib::point p);
 	void _dx_smiltext_set_font(const smil2::smiltext_run run, HDC hdc);
