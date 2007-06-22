@@ -39,6 +39,15 @@ xerces_plugin=
 xerces_include=
 endif
 
+# The dummy SMIL 3.0 state plugin
+if WITH_SMIL30
+dummy_state_plugin = libamplugin_dummy_state.la
+libamplugin_dummy_state_la_SOURCES = dummy_stateplugin.cpp
+libamplugin_dummy_state_la_LDFLAGS = -module
+else
+dummy_state_plugin=
+endif
+
 # The Python plugin
 if WITH_PYTHON_PLUGIN
 # XXX These should be elsewhere
@@ -63,7 +72,13 @@ endif
 # Now tie it all together.
 # XXXX Need to set install directory
 
-pkglib_LTLIBRARIES = $(dummy_plugin) $(rot13_plugin) $(arts_plugin) $(xerces_plugin) $(python_plugin)
+pkglib_LTLIBRARIES = \
+    $(dummy_plugin) \
+    $(rot13_plugin) \
+    $(arts_plugin) \
+    $(xerces_plugin) \
+    $(dummy_state_plugin) \
+    $(python_plugin)
 
 INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include \
 	 $(arts_includes) $(xerces_includes) $(python_includes)
