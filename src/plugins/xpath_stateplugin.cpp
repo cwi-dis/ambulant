@@ -171,12 +171,12 @@ xpath_state_component::bool_expression(const char *expr)
 	lib::logger::get_logger()->trace("xpath_state_component::bool_expression(%s) -> false", expr);
 	if (m_state == NULL || m_context == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
-		return false;
+		return true;
 	}
 	xmlXPathObjectPtr result = xmlXPathEvalExpression(BAD_CAST expr, m_context);
 	if (result == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: cannot evaluate expr=\"%s\"", expr);
-		return false;
+		return true;
 	}
 	bool rv = (bool)xmlXPathCastToBoolean(result);
 	xmlXPathFreeObject(result);
@@ -192,6 +192,36 @@ xpath_state_component::set_value(const char *var, const char *expr)
 		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
 		return;
 	}
+	xmlXPathObjectPtr result = xmlXPathEvalExpression(BAD_CAST expr, m_context);
+	if (result == NULL) {
+		lib::logger::get_logger()->trace("xpath_state_component: setvalue: cannot evaluate expr=\"%s\"", expr);
+		return;
+	}
+	// XXXX Is it a good idea to cast to string? Or should we just keep the value as-is?
+	xmlChar *result_str = xmlXPathCastToString(result);
+	xmlXPathFreeObject(result);
+	// Now compute the node-set expression
+	result = xmlXPathEvalExpression(BAD_CAST var, m_context);
+	if (result == NULL) {
+		lib::logger::get_logger()->trace("xpath_state_component: setvalue: cannot evaluate var=\"%s\"", var);
+		return;
+	}
+	if (result->type != XPATH_NODESET) {
+		lib::logger::get_logger()->trace("xpath_state_component: setvalue: var=\"%s\" is not a node-set", var);
+		return;
+	}
+	xmlNodeSetPtr nodeset = result->nodesetval;
+	if (nodeset == NULL) {
+		lib::logger::get_logger()->trace("xpath_state_component: setvalue: var=\"%s\" does not refer to an existing item", var);
+		return;
+	}
+	if (nodeset->nodeNr != 1) {
+		lib::logger::get_logger()->trace("xpath_state_component: setvalue: var=\"%s\" refers to %d items", var, nodeset->nodeNr);
+		return;
+	}
+	xmlNodePtr nodeptr = *nodeset->nodeTab;
+	xmlNodeSetContent(nodeptr, result_str);
+	xmlFree(result_str);
 }
 
 void
@@ -207,12 +237,26 @@ xpath_state_component::send(const char *submission)
 std::string
 xpath_state_component::string_expression(const char *expr)
 {
-	lib::logger::get_logger()->trace("xpath_state_component::string_expression(%s) -> %s", expr, expr);
+	lib::logger::get_logger()->trace("xpath_state_component::string_expression(%s)", expr);
 	if (m_state == NULL || m_context == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
 		return "";
 	}
-	return std::string(expr);
+	xmlXPathObjectPtr result = xmlXPathEvalExpression(BAD_CAST expr, m_context);
+	if (result == NULL) {
+		lib::logger::get_logger()->trace("xpath_state_component: cannot evaluate \"{%s}\"", expr);
+		return "";
+	}
+	xmlChar *result_str = xmlXPathCastToString(result);
+	xmlXPathFreeObject(result);
+	if (result_str == NULL) {
+		lib::logger::get_logger()->trace("xpath_state_component: \"{%s}\" does not evaluate to a string", expr);
+		return "";
+	}
+	/*AM_DBG*/ lib::logger::get_logger()->debug("xpath_state_component::string_expression(%s) -> %s", expr, (int)result_str);
+	std::string rv((char *)result_str);
+	xmlFree(result_str);
+	return rv;
 }
 
 // -------------------
