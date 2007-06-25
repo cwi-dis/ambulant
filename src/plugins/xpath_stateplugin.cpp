@@ -32,7 +32,6 @@
 #define AM_DBG if(0)
 #endif
 using namespace ambulant;
-
 // -------------------
 class xpath_state_component : public common::script_component {
   public:
@@ -59,7 +58,33 @@ class xpath_state_component : public common::script_component {
   private:
   	xmlDocPtr m_state;
   	xmlXPathContextPtr m_context;
+	common::state_test_methods *m_state_test_methods;
 };
+
+// -------------------
+
+extern "C" {
+void
+smil_function_execute(xmlXPathParserContextPtr ctxt, int nargs)
+{
+	lib::logger::get_logger()->debug("smil_function_execute(0x%x, %d)", ctxt, nargs);
+	assert(ctxt);
+	xmlXPathContextPtr xmlcontext = ctxt->context;
+	assert(xmlcontext);
+	xpath_state_component *cmp = static_cast<xpath_state_component *>(xmlcontext->funcLookupData);
+	assert(cmp);
+	lib::logger::get_logger()->debug("xmlcontext=0x%x, component=0x%x", xmlcontext, cmp);
+}
+
+xmlXPathFunction
+smil_function_lookup(void *ctxt, const xmlChar *name, const xmlChar *nsuri)
+{
+	lib::logger::get_logger()->debug("smil_function_lookup(0x%x, %s, %s)", ctxt, name, nsuri);
+	xpath_state_component *cmp = static_cast<xpath_state_component *>(ctxt);
+	assert(cmp);
+	return smil_function_execute;
+}
+} // extern "C"
 
 // -------------------
 class xpath_state_component_factory : public common::script_component_factory {
@@ -72,9 +97,11 @@ class xpath_state_component_factory : public common::script_component_factory {
 // -------------------
 xpath_state_component::xpath_state_component()
 :	m_state(NULL),
-	m_context(NULL)
+	m_context(NULL),
+	m_state_test_methods(NULL)
 {
 }
+
 xpath_state_component::~xpath_state_component()
 {
 	if (m_state) {
@@ -91,6 +118,7 @@ void
 xpath_state_component::register_state_test_methods(common::state_test_methods *stm)
 {
 	lib::logger::get_logger()->trace("xpath_state_component::register_state_test_methods(0x%x)", stm);
+	m_state_test_methods = stm;
 }
 
 void
@@ -162,6 +190,8 @@ xpath_state_component::declare_state(const lib::node *state)
 	/*AM_DBG*/ xmlDocDump(stdout, m_state); // WARNING: will crash Ambulant afterwards!
 	m_context = xmlXPathNewContext(m_state);
 	m_context->node = xroot;
+	m_context->funcLookupFunc = smil_function_lookup;
+	m_context->funcLookupData = (void *)this;
 	assert(m_context);
 }
 
