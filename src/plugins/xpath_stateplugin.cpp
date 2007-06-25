@@ -24,6 +24,7 @@
 #include "ambulant/common/gui_player.h"
 #include "ambulant/common/scripting.h"
 #include <libxml/tree.h>
+#include <libxml/xpath.h>
 #include <stdio.h>
 
 //#define AM_DBG
@@ -57,6 +58,7 @@ class xpath_state_component : public common::script_component {
     std::string string_expression(const char *expr);
   private:
   	xmlDocPtr m_state;
+  	xmlXPathContextPtr m_context;
 };
 
 // -------------------
@@ -69,7 +71,8 @@ class xpath_state_component_factory : public common::script_component_factory {
 
 // -------------------
 xpath_state_component::xpath_state_component()
-:	m_state(NULL)
+:	m_state(NULL),
+	m_context(NULL)
 {
 }
 xpath_state_component::~xpath_state_component()
@@ -77,6 +80,10 @@ xpath_state_component::~xpath_state_component()
 	if (m_state) {
 		xmlFreeDoc(m_state);
 		m_state = NULL;
+	}
+	if (m_context) {
+		xmlXPathFreeContext(m_context);
+		m_context = NULL;
 	}
 }
 
@@ -90,22 +97,49 @@ void
 xpath_state_component::declare_state(const lib::node *state)
 {
 	lib::logger::get_logger()->trace("xpath_state_component::declare_state(%s)", state->get_sig().c_str());
-#if 0
+	if (m_context) {
+		xmlXPathFreeContext(m_context);
+		m_context = NULL;
+	}
 	if (m_state) {
 		xmlFreeDoc(m_state);
 	}
+	const lib::node *aroot = NULL;
+	if (state != NULL) {
+		// XXX Need to check for src= attribute for remote state
+		aroot = state->down();
+		while (aroot && aroot->is_data_node()) aroot = aroot->next();
+	}
+	if (aroot == NULL) {
+		lib::logger::get_logger()->trace("xpath_state_component: empty <state> not allowed");
+		return;
+	}
+	const lib::node *arootnext = aroot->next();
+	while (arootnext) {
+		if (!arootnext->is_data_node()) {
+			lib::logger::get_logger()->trace("xpath_state_component: <state> must have exactly one child");
+			return;
+		}
+		arootnext = arootnext->next();
+	}
 	m_state = xmlNewDoc(BAD_CAST "1.0");
 	assert(m_state);
-	xmlNodePtr xroot = xmlNewNode(NULL,BAD_CAST  "state");
-	assert(xroot);
-	xmlDocSetRootElement(m_state, xroot);
-
-	xmlNodePtr xparent = xroot;
+	xmlNodePtr xroot = NULL;
+	xmlNodePtr xparent = NULL;
 	lib::node::const_iterator anp;
-	for(anp=state->begin(); anp!=state->end(); anp++) {
+	for(anp=aroot->begin(); anp!=aroot->end(); anp++) {
 		/*AM_DBG*/ lib::logger::get_logger()->debug("declare_state: xparent=0x%x", xparent);
-		if ((*anp).second == state)
+		if ((*anp).second == aroot) {
+			// Root node
+			if ((*anp).first) {
+				assert(xroot == NULL);
+				xroot = xmlNewNode(NULL, BAD_CAST (*anp).second->get_local_name().c_str());
+				assert(xroot);
+				xmlDocSetRootElement(m_state, xroot);
+				xparent = xroot;
+			}
 			continue;
+		}
 		if ((*anp).first) {
 			const lib::node *an = (*anp).second;
 			xmlNodePtr xn;
@@ -116,8 +150,7 @@ xpath_state_component::declare_state(const lib::node *state)
 				assert(xn);
 				xn = xmlAddChild(xparent, xn);
 			} else {
-				xn = xmlNewChild(xparent, NULL, BAD_CAST an->get_local_name().c_str(), 
-					BAD_CAST an->get_data().c_str());
+				xn = xmlNewChild(xparent, NULL, BAD_CAST an->get_local_name().c_str(), NULL);
 				assert(xn);
 			}
 			xparent = xn;
@@ -126,33 +159,59 @@ xpath_state_component::declare_state(const lib::node *state)
 			xparent = xparent->parent;
 		}
 	}
-	AM_DBG xmlDocDump(stdout, m_state); // WARNING: will crash Ambulant afterwards!
-#endif
+	/*AM_DBG*/ xmlDocDump(stdout, m_state); // WARNING: will crash Ambulant afterwards!
+	m_context = xmlXPathNewContext(m_state);
+	m_context->node = xroot;
+	assert(m_context);
 }
 
 bool
 xpath_state_component::bool_expression(const char *expr)
 {
 	lib::logger::get_logger()->trace("xpath_state_component::bool_expression(%s) -> false", expr);
-	return false;
+	if (m_state == NULL || m_context == NULL) {
+		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
+		return false;
+	}
+	xmlXPathObjectPtr result = xmlXPathEvalExpression(BAD_CAST expr, m_context);
+	if (result == NULL) {
+		lib::logger::get_logger()->trace("xpath_state_component: cannot evaluate expr=\"%s\"", expr);
+		return false;
+	}
+	bool rv = (bool)xmlXPathCastToBoolean(result);
+	xmlXPathFreeObject(result);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("xpath_state_component::bool_expression(%s) -> %d", expr, (int)rv);
+	return rv;
 }
 
 void
 xpath_state_component::set_value(const char *var, const char *expr)
 {
 	lib::logger::get_logger()->trace("xpath_state_component::set_value(%s, %s)", var, expr);
+	if (m_state == NULL || m_context == NULL) {
+		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
+		return;
+	}
 }
 
 void
 xpath_state_component::send(const char *submission)
 {
 	lib::logger::get_logger()->trace("xpath_state_component::send(%s)", submission);
+	if (m_state == NULL || m_context == NULL) {
+		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
+		return;
+	}
 }
 
 std::string
 xpath_state_component::string_expression(const char *expr)
 {
 	lib::logger::get_logger()->trace("xpath_state_component::string_expression(%s) -> %s", expr, expr);
+	if (m_state == NULL || m_context == NULL) {
+		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
+		return "";
+	}
 	return std::string(expr);
 }
 
