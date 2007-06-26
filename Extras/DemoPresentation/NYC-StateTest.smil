@@ -17,8 +17,10 @@
     <transition id="slideover" type="slideWipe"/>
     <transition id="fade" type="fade"/>
     <transition id="push" type="pushWipe"/>
-    <state language="http://www.ambulantplayer.org/components/XPath1.0" xmlns="">
-     <where>0</where>
+    <state language="http://www.w3.org/TR/1999/REC-xpath-19991116">
+     <data xmlns="">
+      <where>0</where>
+     </data>
     </state>
   </head>
   <body>

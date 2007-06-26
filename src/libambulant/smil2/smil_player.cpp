@@ -161,8 +161,7 @@ void smil_player::create_state_engine() {
 	lib::node *state = head->get_first_child("state");
 	if (!state) return;
 	const char *language = state->get_attribute("language");
-	/* XXXX Could we pick up xmlns: declaration here? */
-	if (!language) language = "http://www.ambulantplayer.org/components/pyscript";
+	if (!language) language = "http://www.w3.org/TR/1999/REC-xpath-19991116";
 	common::script_component_factory *scf = m_factory->get_script_component_factory();
 	if (!scf) {
 		lib::logger::get_logger()->error(gettext("Document uses state, but no scripting support configured"));

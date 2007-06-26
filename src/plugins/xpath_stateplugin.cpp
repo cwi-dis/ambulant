@@ -25,6 +25,7 @@
 #include "ambulant/common/scripting.h"
 #include <libxml/tree.h>
 #include <libxml/xpath.h>
+#include <libxml/xpathInternals.h>
 #include <stdio.h>
 
 //#define AM_DBG
@@ -55,6 +56,9 @@ class xpath_state_component : public common::script_component {
     
     /// Calculate a string expression
     std::string string_expression(const char *expr);
+	
+	/// Get at the state_test_methods structure
+	common::state_test_methods *get_state_test_methods() const { return m_state_test_methods; }
   private:
   	xmlDocPtr m_state;
   	xmlXPathContextPtr m_context;
@@ -64,25 +68,127 @@ class xpath_state_component : public common::script_component {
 // -------------------
 
 extern "C" {
+// Helper function that enables libxml2 to call our state_test methods.
+// Picks up the requested function and arguments from the expression parser
+// contents, calls the function, stores the return value.
 void
 smil_function_execute(xmlXPathParserContextPtr ctxt, int nargs)
 {
-	lib::logger::get_logger()->debug("smil_function_execute(0x%x, %d)", ctxt, nargs);
+	AM_DBG lib::logger::get_logger()->debug("smil_function_execute(0x%x, %d)", ctxt, nargs);
 	assert(ctxt);
 	xmlXPathContextPtr xmlcontext = ctxt->context;
 	assert(xmlcontext);
 	xpath_state_component *cmp = static_cast<xpath_state_component *>(xmlcontext->funcLookupData);
 	assert(cmp);
-	lib::logger::get_logger()->debug("xmlcontext=0x%x, component=0x%x", xmlcontext, cmp);
+	AM_DBG lib::logger::get_logger()->debug("xmlcontext=0x%x, component=0x%x", xmlcontext, cmp);
+	common::state_test_methods *stm = cmp->get_state_test_methods();
+	assert(stm);
+	if (strcmp((char*)xmlcontext->function, "smil-audioDesc") == 0 ) {
+		bool rv = stm->smil_audio_desc();
+		valuePush(ctxt, xmlXPathNewBoolean(rv));
+	} else
+	if (strcmp((char*)xmlcontext->function, "smil-bitrate") == 0 ) {
+		int rv = stm->smil_bitrate();
+		valuePush(ctxt, xmlXPathNewFloat(rv));
+	} else
+	if (strcmp((char*)xmlcontext->function, "smil-captions") == 0 ) {
+		bool rv = stm->smil_captions();
+		valuePush(ctxt, xmlXPathNewBoolean(rv));
+	} else
+	if (strcmp((char*)xmlcontext->function, "smil-component") == 0 ) {
+		xmlChar *arg_str = xmlXPathPopString(ctxt);
+		if (arg_str == NULL) goto badarg;
+		std::string arg((char*)arg_str);
+		xmlFree(arg_str);
+		bool rv = stm->smil_component(arg);
+		valuePush(ctxt, xmlXPathNewBoolean(rv));
+	} else
+	if (strcmp((char*)xmlcontext->function, "smil-customTest") == 0 ) {
+		xmlChar *arg_str = xmlXPathPopString(ctxt);
+		if (arg_str == NULL) goto badarg;
+		std::string arg((char*)arg_str);
+		xmlFree(arg_str);
+		bool rv = stm->smil_custom_test(arg);
+		valuePush(ctxt, xmlXPathNewBoolean(rv));
+	} else
+	if (strcmp((char*)xmlcontext->function, "smil-cpu") == 0 ) {
+		std::string rv = stm->smil_cpu();
+		valuePush(ctxt, xmlXPathNewString(BAD_CAST rv.c_str()));
+	} else
+	if (strcmp((char*)xmlcontext->function, "smil-language") == 0 ) {
+		xmlChar *arg_str = xmlXPathPopString(ctxt);
+		if (arg_str == NULL) goto badarg;
+		std::string arg((char*)arg_str);
+		xmlFree(arg_str);
+		bool rv = stm->smil_language(arg);
+		valuePush(ctxt, xmlXPathNewBoolean(rv));
+	} else
+	if (strcmp((char*)xmlcontext->function, "smil-operatingSystem") == 0 ) {
+		std::string rv = stm->smil_operating_system();
+		valuePush(ctxt, xmlXPathNewString(BAD_CAST rv.c_str()));
+	} else
+	if (strcmp((char*)xmlcontext->function, "smil-overdubOrSubtitle") == 0 ) {
+		std::string rv = stm->smil_overdub_or_subtitle();
+		valuePush(ctxt, xmlXPathNewString(BAD_CAST rv.c_str()));
+	} else
+	if (strcmp((char*)xmlcontext->function, "smil-required") == 0 ) {
+		xmlChar *arg_str = xmlXPathPopString(ctxt);
+		if (arg_str == NULL) goto badarg;
+		std::string arg((char*)arg_str);
+		xmlFree(arg_str);
+		bool rv = stm->smil_required(arg);
+		valuePush(ctxt, xmlXPathNewBoolean(rv));
+	} else
+	if (strcmp((char*)xmlcontext->function, "smil-screenDepth") == 0 ) {
+		int rv = stm->smil_screen_depth();
+		valuePush(ctxt, xmlXPathNewFloat(rv));
+	} else
+	if (strcmp((char*)xmlcontext->function, "smil-screenHeight") == 0 ) {
+		int rv = stm->smil_screen_height();
+		valuePush(ctxt, xmlXPathNewFloat(rv));
+	} else
+	if (strcmp((char*)xmlcontext->function, "smil-screenWidth") == 0 ) {
+		int rv = stm->smil_screen_width();
+		valuePush(ctxt, xmlXPathNewFloat(rv));
+	} else {
+		assert(0);
+	}
+badarg:
+	lib::logger::get_logger()->trace("xpath_state_component: argument error for function %s()", xmlcontext->function);
 }
 
+static char *smil_function_names[] = {
+	"smil-audioDesc",
+	"smil-bitrate",
+	"smil-captions",
+	"smil-component",
+	"smil-customTest",
+	"smil-cpu",
+	"smil-language",
+	"smil-operatingSystem",
+	"smil-overdubOrSubtitle",
+	"smil-required",
+	"smil-screenDepth",
+	"smil-screenHeight",
+	"smil-screenWidth",
+	NULL
+};
+
+// smil_function_lookup - Return the xmlXpathFunction for a given function name.
+// Check that the function name is one of the supported functions, and, if it is,
+// return a reference to a smil_function_execute which does the actual work.
 xmlXPathFunction
 smil_function_lookup(void *ctxt, const xmlChar *name, const xmlChar *nsuri)
 {
-	lib::logger::get_logger()->debug("smil_function_lookup(0x%x, %s, %s)", ctxt, name, nsuri);
+	AM_DBG lib::logger::get_logger()->debug("smil_function_lookup(0x%x, %s, %s)", ctxt, name, nsuri);
 	xpath_state_component *cmp = static_cast<xpath_state_component *>(ctxt);
 	assert(cmp);
-	return smil_function_execute;
+	char **namep;
+	for(namep=smil_function_names; *namep; namep++) {
+		if(strcmp(*namep, (const char*)name) == 0)
+			return smil_function_execute;
+	}
+	return NULL;
 }
 } // extern "C"
 
@@ -125,6 +231,7 @@ void
 xpath_state_component::declare_state(const lib::node *state)
 {
 	lib::logger::get_logger()->trace("xpath_state_component::declare_state(%s)", state->get_sig().c_str());
+	// First we free any old document and state.
 	if (m_context) {
 		xmlXPathFreeContext(m_context);
 		m_context = NULL;
@@ -132,6 +239,7 @@ xpath_state_component::declare_state(const lib::node *state)
 	if (m_state) {
 		xmlFreeDoc(m_state);
 	}
+	// Now we need to get the Ambulant-style DOM node for our state document
 	const lib::node *aroot = NULL;
 	if (state != NULL) {
 		// XXX Need to check for src= attribute for remote state
@@ -150,13 +258,15 @@ xpath_state_component::declare_state(const lib::node *state)
 		}
 		arootnext = arootnext->next();
 	}
+	// Create the libxml-style document
 	m_state = xmlNewDoc(BAD_CAST "1.0");
 	assert(m_state);
 	xmlNodePtr xroot = NULL;
 	xmlNodePtr xparent = NULL;
+	// Iterate over the ambulant-style tree and create the libxml-style tree
 	lib::node::const_iterator anp;
 	for(anp=aroot->begin(); anp!=aroot->end(); anp++) {
-		/*AM_DBG*/ lib::logger::get_logger()->debug("declare_state: xparent=0x%x", xparent);
+		AM_DBG lib::logger::get_logger()->debug("declare_state: xparent=0x%x", xparent);
 		if ((*anp).second == aroot) {
 			// Root node
 			if ((*anp).first) {
@@ -171,7 +281,6 @@ xpath_state_component::declare_state(const lib::node *state)
 		if ((*anp).first) {
 			const lib::node *an = (*anp).second;
 			xmlNodePtr xn;
-			/*AM_DBG*/ lib::logger::get_logger()->debug("declare_state: examine %s", an->get_sig().c_str());
 			assert(xparent);
 			if (an->is_data_node()) {
 				xn = xmlNewText(BAD_CAST an->get_data().c_str());
@@ -183,11 +292,10 @@ xpath_state_component::declare_state(const lib::node *state)
 			}
 			xparent = xn;
 		} else {
-			/*AM_DBG*/ lib::logger::get_logger()->debug("declare_state: out of %s", (*anp).second->get_sig().c_str());
 			xparent = xparent->parent;
 		}
 	}
-	/*AM_DBG*/ xmlDocDump(stdout, m_state); // WARNING: will crash Ambulant afterwards!
+	// Finally we set up the XPath expression context
 	m_context = xmlXPathNewContext(m_state);
 	m_context->node = xroot;
 	m_context->funcLookupFunc = smil_function_lookup;
@@ -198,7 +306,7 @@ xpath_state_component::declare_state(const lib::node *state)
 bool
 xpath_state_component::bool_expression(const char *expr)
 {
-	lib::logger::get_logger()->trace("xpath_state_component::bool_expression(%s) -> false", expr);
+	lib::logger::get_logger()->trace("xpath_state_component::bool_expression(%s)", expr);
 	if (m_state == NULL || m_context == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
 		return true;
@@ -210,7 +318,7 @@ xpath_state_component::bool_expression(const char *expr)
 	}
 	bool rv = (bool)xmlXPathCastToBoolean(result);
 	xmlXPathFreeObject(result);
-	/*AM_DBG*/ lib::logger::get_logger()->debug("xpath_state_component::bool_expression(%s) -> %d", expr, (int)rv);
+	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::bool_expression(%s) -> %d", expr, (int)rv);
 	return rv;
 }
 
@@ -222,15 +330,15 @@ xpath_state_component::set_value(const char *var, const char *expr)
 		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
 		return;
 	}
+	// Evaluate the expression, get a string as result
 	xmlXPathObjectPtr result = xmlXPathEvalExpression(BAD_CAST expr, m_context);
 	if (result == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: setvalue: cannot evaluate expr=\"%s\"", expr);
 		return;
 	}
-	// XXXX Is it a good idea to cast to string? Or should we just keep the value as-is?
 	xmlChar *result_str = xmlXPathCastToString(result);
 	xmlXPathFreeObject(result);
-	// Now compute the node-set expression
+	// Now compute the node-set expression and check that it begets a single node
 	result = xmlXPathEvalExpression(BAD_CAST var, m_context);
 	if (result == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: setvalue: cannot evaluate var=\"%s\"", var);
@@ -249,6 +357,7 @@ xpath_state_component::set_value(const char *var, const char *expr)
 		lib::logger::get_logger()->trace("xpath_state_component: setvalue: var=\"%s\" refers to %d items", var, nodeset->nodeNr);
 		return;
 	}
+	// Finally set the value
 	xmlNodePtr nodeptr = *nodeset->nodeTab;
 	xmlNodeSetContent(nodeptr, result_str);
 	xmlFree(result_str);
@@ -262,6 +371,7 @@ xpath_state_component::send(const char *submission)
 		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
 		return;
 	}
+	lib::logger::get_logger()->trace("xpath_state_component: <send> not yet implemented");
 }
 
 std::string
@@ -283,7 +393,7 @@ xpath_state_component::string_expression(const char *expr)
 		lib::logger::get_logger()->trace("xpath_state_component: \"{%s}\" does not evaluate to a string", expr);
 		return "";
 	}
-	/*AM_DBG*/ lib::logger::get_logger()->debug("xpath_state_component::string_expression(%s) -> %s", expr, (int)result_str);
+	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::string_expression(%s) -> %s", expr, (int)result_str);
 	std::string rv((char *)result_str);
 	xmlFree(result_str);
 	return rv;
@@ -293,7 +403,7 @@ xpath_state_component::string_expression(const char *expr)
 common::script_component *
 xpath_state_component_factory::new_script_component(const char *uri)
 {
-	if (strcmp(uri, "http://www.ambulantplayer.org/components/XPath1.0") == 0) {
+	if (strcmp(uri, "http://www.w3.org/TR/1999/REC-xpath-19991116") == 0) {
 		lib::logger::get_logger()->trace("xpath_state_component_factory::new_script_component: returned script_component");
 		return new xpath_state_component();
 	}
@@ -325,7 +435,7 @@ void initialize(
     if ( !ambulant::check_version() )
         lib::logger::get_logger()->warn("xpath_state_plugin: built for different Ambulant version (%s)", AMBULANT_VERSION);
 	factory = bug_workaround(factory);
-    lib::logger::get_logger()->debug("xpath_state_plugin: loaded.");
+    AM_DBG lib::logger::get_logger()->debug("xpath_state_plugin: loaded.");
 	common::global_script_component_factory *scf = factory->get_script_component_factory();
     if (scf) {
     	xpath_state_component_factory *dscf = new xpath_state_component_factory();
