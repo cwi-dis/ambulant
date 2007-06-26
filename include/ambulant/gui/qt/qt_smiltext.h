@@ -41,36 +41,12 @@ namespace gui {
 
 namespace qt {
 
-class text_metrics {
-  public:
-	text_metrics(unsigned int ascent, unsigned int descent, unsigned int height, unsigned int width, unsigned int line_spacing)
-	  :	m_ascent(ascent), 
-		m_descent(descent), 
-	  	m_height(height),
-		m_width(width),
-		m_line_spacing(line_spacing) {}
-
-	~text_metrics() {}
-
-	unsigned int get_ascent()	{ return m_ascent; }
-	unsigned int get_descent()	{ return m_descent; };
-	unsigned int get_height()	{ return m_height; };
-	unsigned int get_width()	{ return m_width; };
-	unsigned int get_line_spacing() { return m_line_spacing; };
-
-  private:
-	unsigned int m_ascent;
-	unsigned int m_descent;
-	unsigned int m_height;	
-	unsigned int m_width;	
-	unsigned int m_line_spacing;	
-};
-
 class smiltext_renderer;
 
 class qt_smiltext_renderer : 
 		public qt_renderer<renderer_playable>,
-		public smil2::smiltext_notification
+		  public smil2::smiltext_notification,
+ 		public smil2::smiltext_layout_provider  
  {
   public:
 	qt_smiltext_renderer(
@@ -86,28 +62,21 @@ class qt_smiltext_renderer :
 	void smiltext_changed();
 	void user_event(const lib::point& pt, int what);
 	void redraw_body(const lib::rect &dirty, common::gui_window *window);
+
+	smil2::smiltext_metrics get_smiltext_metrics(const smil2::smiltext_run& str);
+	void render_smiltext(const smil2::smiltext_run& str, lib::rect r);
+
   private:
 	// functions required by inheritance
 	void smiltext_changed(bool);
 	// internal helper functions
-	void _qt_smiltext_changed(const lib::rect r);
-	bool _qt_smiltext_fits(const smil2::smiltext_run run, const lib::rect r);
-	text_metrics _qt_smiltext_get_text_metrics(const smil2::smiltext_run run);
-	lib::rect _qt_smiltext_compute(const smil2::smiltext_run run, const lib::rect r);
-	void _qt_smiltext_render(const smil2::smiltext_run run, const lib::rect r, const lib::point p);
 	void _qt_smiltext_set_font(const smil2::smiltext_run run);
-	void _qt_smiltext_shift(const lib::rect r, const lib::point p);
+//JUNK?	void _qt_smiltext_shift(const lib::rect r, const lib::point p);
 	// instance variables
 	net::datasource_factory *m_df;
-	smil2::smiltext_engine m_engine;
-	const smil2::smiltext_params& m_params;
+	smil2::smiltext_layout_engine m_layout_engine;
 //XX bool m_render_offscreen; // True if m_params does not allows rendering in-place
-	lib::timer::time_type m_epoch;
 	critical_section m_lock;
-	int m_x; // (L,T) of current word in <smiltext/> during computations
-	int m_y;
-	unsigned int m_max_ascent;
-	unsigned int m_max_descent;
 	// Qt related variables
 	ambulant_qt_window* m_window;
 	QFont m_font;

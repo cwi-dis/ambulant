@@ -120,7 +120,7 @@ smiltext_engine::_split_into_words(lib::xml_string data) {
 		if (first_blank > 0) {
 			smiltext_run run = m_run_stack.top();
 			run.m_command = stc_data;
-			run.m_data = data.substr(first_nonblank, first_blank-first_nonblank)+" ";
+			run.m_data = data.substr(first_nonblank, first_blank-first_nonblank);
 			AM_DBG lib::logger::get_logger()->debug("dx_smiltext_changed(): bg_col=0x%x, color=0x%x, data=%s", run.m_bg_color, run.m_color, run.m_data.c_str());
 			smiltext_runs::const_iterator where = m_runs.insert( m_runs.end(), run);
 			if (!m_newbegin_valid) {
@@ -392,6 +392,150 @@ smiltext_engine::_get_default_params(smiltext_params& params)
 	params.m_loop = false;
 	params.m_rate = 0;
 	params.m_wrap = true;
+}
+
+// smiltext_layout_engine
+smiltext_layout_engine::smiltext_layout_engine(const lib::node *n, lib::event_processor *ep, smiltext_layout_provider* provider, smiltext_notification* client)
+  :	m_engine(smiltext_engine(n, ep, client, true)),
+	m_event_processor(ep),
+	m_provider(provider),
+	m_params(m_engine.get_params()),
+	m_dest_rect()
+{
+}
+
+void
+smiltext_layout_engine::start(double t) {
+        m_epoch = m_event_processor->get_timer()->elapsed();
+	m_engine.start(t);
+}
+	
+void
+smiltext_layout_engine::seek(double t) {
+	m_engine.seek(t);
+}
+	
+void
+smiltext_layout_engine::stop() {
+	m_engine.stop();
+}
+	
+void
+smiltext_layout_engine::set_dest_rect( const lib::rect r) {
+	m_dest_rect = r;
+}
+
+void
+smiltext_layout_engine::redraw(const lib::rect r) {
+	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_renderer::_qt_smiltext_changed(0x%x) r=(L=%d,T=%d,W=%d,H=%d", this,r.left(),r.top(),r.width(),r.height());
+	int nbr = 0; // number of breaks (newlines) before current line
+
+	// Compute the shifted position of what we want to draw w.r.t. the visible origin
+	lib::point logical_origin(0, 0);
+	if (m_params.m_mode == smil2::stm_crawl) {
+		long int elapsed = m_event_processor->get_timer()->elapsed();
+		double now = elapsed - m_epoch;
+		logical_origin.x += (int) now * m_params.m_rate / 1000;
+		if (logical_origin.x < 0)
+			AM_DBG lib::logger::get_logger()->debug("qt_smiltext_renderer::_qt_smiltext_changed(0x%x): strange: logical_x=%d, m_epoch=%ld, elpased=%ld !", this, logical_origin.x, m_epoch, elapsed);
+	}
+	if (m_params.m_mode == smil2::stm_scroll) {
+		long int elapsed = m_event_processor->get_timer()->elapsed();
+		double now = elapsed - m_epoch;
+		logical_origin.y += (int) now * m_params.m_rate / 1000;
+	}
+	AM_DBG lib::logger::get_logger()->debug("_qt_smiltext_changed: logical_origin(%d,%d)", logical_origin.x, logical_origin.y);
+
+//	if (logical_origin.x || logical_origin.y)
+//		_qt_smiltext_shift( m_dest->get_rect(), logical_origin);
+
+	// Always re-compute and re-render everything when new text is added.
+	// E.g. word with bigger font may need adjustment of prior text 
+	// Therefore, m_engine.newbegin() is can NOT be used
+	smil2::smiltext_runs::const_iterator cur = m_engine.begin();
+	lib::rect ldr = m_dest_rect; // logical destination rectangle
+
+	AM_DBG lib::logger::get_logger()->debug("_qt_smiltext_changed(0x%x): ldr=(L=%d,T=%d,W=%d,H=%d", this,ldr.left(),ldr.top(),ldr.width(),ldr.height());
+
+	m_y = ldr.y;
+	m_max_ascent = m_max_descent = 0;
+	// count number of initial breaks before first line
+	while (cur->m_command == smil2::stc_break) {
+		nbr++;
+		cur++;
+	}
+	while (cur != m_engine.end()) {
+		// compute layout of next line
+		smil2::smiltext_runs::const_iterator bol = cur; // begin of line pointer
+		bool fits = false;
+		m_x = ldr.x;
+		if (nbr > 0 && (m_max_ascent != 0 || m_max_descent != 0)) {
+			// correct m_y for proper size of previous line
+			m_y += (m_max_ascent + m_max_descent);
+			nbr--;
+		}
+		m_max_ascent = m_max_descent = 0;
+		AM_DBG lib::logger::get_logger()->debug("_qt_smiltext_changed(): command=%d data=%s",cur->m_command,cur->m_data.c_str()==NULL?"(null)":cur->m_data.c_str());
+		while (cur != m_engine.end()) {
+			fits = smiltext_fits(*cur, m_dest_rect);
+			if ( ! fits || cur->m_command == smil2::stc_break)
+				break;
+			cur++;
+		}
+		m_x = ldr.x; // m_x was modified by qt_smiltext_fits()
+		// move down number of breaks times height of current line
+		m_y += (m_max_ascent + m_max_descent) * nbr;
+		// count number of breaks in front of next line
+		nbr = 0;
+		while (cur->m_command == smil2::stc_break) {
+			nbr++;
+			cur++;
+		}
+		if ( ! fits && nbr == 0)
+			nbr = 1;
+		while (bol != cur) {
+			// compute rectangle where to render this text
+			lib::rect cr = smiltext_compute(*bol, r);
+			cr.x -= logical_origin.x;
+			cr.y -= logical_origin.y;
+			m_provider->render_smiltext(*bol, cr);
+			bol++;
+		}
+	}
+	m_engine.done();
+}
+
+bool
+smiltext_layout_engine::smiltext_fits(const smil2::smiltext_run strun, const lib::rect r) {
+
+	smiltext_metrics stm =  m_provider->get_smiltext_metrics (strun);
+
+	if (stm.get_ascent() > m_max_ascent)
+		m_max_ascent = stm.get_ascent();
+	if (stm.get_descent() > m_max_descent)
+		m_max_descent = stm.get_descent();
+	m_x += stm.get_width();
+	int x = m_x;
+	m_x += stm.get_word_spacing();
+	if (x > r.right())
+		return false;
+	else 	return true;
+}
+
+lib::rect
+smiltext_layout_engine::smiltext_compute(const smil2::smiltext_run strun, const lib::rect r) {
+
+	lib::rect rv = r;
+	smiltext_metrics stm = m_provider->get_smiltext_metrics (strun);
+
+	rv.x += m_x;
+	rv.w = stm.get_width()+ stm.get_word_spacing();
+	m_x  += rv.w;
+
+	rv.y += (m_y + m_max_ascent - stm.get_ascent());
+	rv.h = stm.get_height();
+
+	return rv;
 }
 
 

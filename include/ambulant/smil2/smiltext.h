@@ -27,6 +27,7 @@
 #define AMBULANT_SMIL2_SMILTEXT_H
 
 #include "ambulant/config/config.h"
+#include "ambulant/lib/gtypes.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/colors.h"
 #include "ambulant/lib/event_processor.h"
@@ -201,6 +202,82 @@ class smiltext_engine {
 	double m_tree_time;					// smiltext time for m_tree_iterator
 	smiltext_params m_params;			// global parameters
 };
+
+/// Extra classes for smiltext layout
+
+/// Font information needed for smiltext layout
+class smiltext_metrics {
+  public:
+	smiltext_metrics(unsigned int ascent, unsigned int descent, unsigned int height,
+			 unsigned int width, unsigned int line_spacing, unsigned int word_spacing)
+	  :	m_ascent(ascent), 
+		m_descent(descent), 
+	  	m_height(height),
+		m_width(width),
+		m_line_spacing(line_spacing),
+		m_word_spacing(word_spacing) {}
+
+	~smiltext_metrics() {}
+
+	unsigned int get_ascent()	{ return m_ascent; }
+	unsigned int get_descent()	{ return m_descent; };
+	unsigned int get_height()	{ return m_height; };
+	unsigned int get_width()	{ return m_width; };
+	unsigned int get_line_spacing() { return m_line_spacing; };
+	unsigned int get_word_spacing() { return m_word_spacing; };
+
+  private:
+	unsigned int m_ascent;
+	unsigned int m_descent;
+	unsigned int m_height;	
+	unsigned int m_width;	
+	unsigned int m_line_spacing;	
+	unsigned int m_word_spacing;	
+};
+/// Interface to be inherited by a renderer that wants to use smiltext_layout_engine
+class smiltext_layout_provider {
+  public:
+	/// Return font information needed for for use smiltext_layout_engine
+	virtual smiltext_metrics get_smiltext_metrics(const smiltext_run& str) = 0;
+	/// Render the smiltext in the rectangle
+	virtual void render_smiltext(const smiltext_run& str, lib::rect r) = 0;
+};
+
+class smiltext_layout_engine {
+  public:
+	smiltext_layout_engine (const lib::node *n, lib::event_processor *ep, smiltext_layout_provider* provider, smiltext_notification* client);
+	/// Start the engine.
+	void start(double t);
+	
+	/// Seek the engine in time.
+	void seek(double t);
+	
+	/// Stop the engine.
+	void stop();
+	
+	/// Redraw a rectangle.on screen 
+	void redraw(const lib::rect r);
+
+	/// Set destination rectangle.on screen
+	void set_dest_rect(const lib::rect r);
+
+  private:
+	bool smiltext_fits(const smil2::smiltext_run run, const lib::rect r);
+	lib::rect smiltext_compute(const smil2::smiltext_run run, const lib::rect r);
+	void smiltext_render(const smil2::smiltext_run run, const lib::rect r, const lib::point p);
+
+	smiltext_engine m_engine;
+	lib::event_processor *m_event_processor;
+	lib::timer::time_type m_epoch;
+	smiltext_params m_params;			// global parameters
+	lib::rect m_dest_rect;
+	smiltext_layout_provider* m_provider;
+	int m_x; // (L,T) of current word in <smiltext/> during computations
+	int m_y;
+	unsigned int m_max_ascent;
+	unsigned int m_max_descent;
+};
+
 
 } // namespace smil2
  
