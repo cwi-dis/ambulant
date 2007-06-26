@@ -10526,6 +10526,32 @@ static PyObject *region_infoObj_get_crop_rect(region_infoObject *_self, PyObject
 	return _res;
 }
 
+static PyObject *region_infoObj_get_mediaopacity(region_infoObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	double _rv = _self->ob_itself->get_mediaopacity();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("d",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *region_infoObj_get_mediabgopacity(region_infoObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	double _rv = _self->ob_itself->get_mediabgopacity();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("d",
+	                     _rv);
+	return _res;
+}
+
 static PyMethodDef region_infoObj_methods[] = {
 	{"get_name", (PyCFunction)region_infoObj_get_name, 1,
 	 PyDoc_STR("() -> (std::string _rv)")},
@@ -10553,6 +10579,10 @@ static PyMethodDef region_infoObj_methods[] = {
 	 PyDoc_STR("() -> (const char * _rv)")},
 	{"get_crop_rect", (PyCFunction)region_infoObj_get_crop_rect, 1,
 	 PyDoc_STR("(ambulant::lib::size srcsize) -> (ambulant::lib::rect _rv)")},
+	{"get_mediaopacity", (PyCFunction)region_infoObj_get_mediaopacity, 1,
+	 PyDoc_STR("() -> (double _rv)")},
+	{"get_mediabgopacity", (PyCFunction)region_infoObj_get_mediabgopacity, 1,
+	 PyDoc_STR("() -> (double _rv)")},
 	{NULL, NULL, 0}
 };
 
@@ -10798,15 +10828,20 @@ static PyObject *animation_destinationObj_get_region_soundalign(animation_destin
 	return _res;
 }
 
-static PyObject *animation_destinationObj_get_region_bgopacity(animation_destinationObject *_self, PyObject *_args)
+static PyObject *animation_destinationObj_get_region_opacity(animation_destinationObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
+	std::string which;
 	bool fromdom;
-	if (!PyArg_ParseTuple(_args, "O&",
+	char *which_cstr="";
+	if (!PyArg_ParseTuple(_args, "sO&",
+	                      &which_cstr,
 	                      bool_Convert, &fromdom))
 		return NULL;
+	which = which_cstr;
 	PyThreadState *_save = PyEval_SaveThread();
-	double _rv = _self->ob_itself->get_region_bgopacity(fromdom);
+	double _rv = _self->ob_itself->get_region_opacity(which,
+	                                                  fromdom);
 	PyEval_RestoreThread(_save);
 	_res = Py_BuildValue("d",
 	                     _rv);
@@ -10898,15 +10933,20 @@ static PyObject *animation_destinationObj_set_region_soundalign(animation_destin
 	return _res;
 }
 
-static PyObject *animation_destinationObj_set_region_bgopacity(animation_destinationObject *_self, PyObject *_args)
+static PyObject *animation_destinationObj_set_region_opacity(animation_destinationObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
+	std::string which;
 	double level;
-	if (!PyArg_ParseTuple(_args, "d",
+	char *which_cstr="";
+	if (!PyArg_ParseTuple(_args, "sd",
+	                      &which_cstr,
 	                      &level))
 		return NULL;
+	which = which_cstr;
 	PyThreadState *_save = PyEval_SaveThread();
-	_self->ob_itself->set_region_bgopacity(level);
+	_self->ob_itself->set_region_opacity(which,
+	                                     level);
 	PyEval_RestoreThread(_save);
 	Py_INCREF(Py_None);
 	_res = Py_None;
@@ -10924,8 +10964,8 @@ static PyMethodDef animation_destinationObj_methods[] = {
 	 PyDoc_STR("(bool fromdom) -> (double _rv)")},
 	{"get_region_soundalign", (PyCFunction)animation_destinationObj_get_region_soundalign, 1,
 	 PyDoc_STR("(bool fromdom) -> (ambulant::common::sound_alignment _rv)")},
-	{"get_region_bgopacity", (PyCFunction)animation_destinationObj_get_region_bgopacity, 1,
-	 PyDoc_STR("(bool fromdom) -> (double _rv)")},
+	{"get_region_opacity", (PyCFunction)animation_destinationObj_get_region_opacity, 1,
+	 PyDoc_STR("(std::string which, bool fromdom) -> (double _rv)")},
 	{"set_region_dim", (PyCFunction)animation_destinationObj_set_region_dim, 1,
 	 PyDoc_STR("(std::string which, ambulant::common::region_dim rd) -> None")},
 	{"set_region_color", (PyCFunction)animation_destinationObj_set_region_color, 1,
@@ -10936,8 +10976,8 @@ static PyMethodDef animation_destinationObj_methods[] = {
 	 PyDoc_STR("(double level) -> None")},
 	{"set_region_soundalign", (PyCFunction)animation_destinationObj_set_region_soundalign, 1,
 	 PyDoc_STR("(ambulant::common::sound_alignment sa) -> None")},
-	{"set_region_bgopacity", (PyCFunction)animation_destinationObj_set_region_bgopacity, 1,
-	 PyDoc_STR("(double level) -> None")},
+	{"set_region_opacity", (PyCFunction)animation_destinationObj_set_region_opacity, 1,
+	 PyDoc_STR("(std::string which, double level) -> None")},
 	{NULL, NULL, 0}
 };
 

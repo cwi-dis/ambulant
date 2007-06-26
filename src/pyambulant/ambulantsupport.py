@@ -581,7 +581,9 @@ animation_destination_object.othermethods = [
     "ambulant::common::sound_alignment get_soundalign() const { return region_info::get_soundalign(); }",
     "ambulant::common::tiling get_tiling() const { return region_info::get_tiling(); }",
     "const char* get_bgimage() const { return region_info::get_bgimage(); }",
-    "double get_bgopacity() const { return region_info::get_bgopacity(); }", # XXXX
+    "double get_bgopacity() const { return region_info::get_bgopacity(); }",
+    "double get_mediaopacity() const { return region_info::get_mediaopacity(); }",
+    "double get_mediabgopacity() const { return region_info::get_mediabgopacity(); }",
     "ambulant::lib::rect get_crop_rect(const ambulant::lib::size& srcsize) const { return region_info::get_crop_rect(srcsize); }", # XXXX
     "const ambulant::common::region_dim_spec& get_region_viewbox(bool fromdom) const { abort(); }", # XXX
     "void set_region_viewbox(const ambulant::common::region_dim_spec& rds) { abort(); }",

@@ -5852,6 +5852,8 @@ region_info::region_info(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "get_tiling")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_tiling");
 		if (!PyObject_HasAttrString(itself, "get_bgimage")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_bgimage");
 		if (!PyObject_HasAttrString(itself, "get_crop_rect")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_crop_rect");
+		if (!PyObject_HasAttrString(itself, "get_mediaopacity")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_mediaopacity");
+		if (!PyObject_HasAttrString(itself, "get_mediabgopacity")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_mediabgopacity");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -6185,6 +6187,54 @@ ambulant::lib::rect region_info::get_crop_rect(const ambulant::lib::size& srcsiz
 	return _rv;
 }
 
+double region_info::get_mediaopacity() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	double _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_region_info, "get_mediaopacity", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during region_info::get_mediaopacity() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "d", &_rv))
+	{
+		PySys_WriteStderr("Python exception during region_info::get_mediaopacity() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+double region_info::get_mediabgopacity() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	double _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_region_info, "get_mediabgopacity", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during region_info::get_mediabgopacity() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "d", &_rv))
+	{
+		PySys_WriteStderr("Python exception during region_info::get_mediabgopacity() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
 /* ------------------ Class animation_destination ------------------- */
 
 animation_destination::animation_destination(PyObject *itself)
@@ -6198,13 +6248,13 @@ animation_destination::animation_destination(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "get_region_zindex")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: get_region_zindex");
 		if (!PyObject_HasAttrString(itself, "get_region_soundlevel")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: get_region_soundlevel");
 		if (!PyObject_HasAttrString(itself, "get_region_soundalign")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: get_region_soundalign");
-		if (!PyObject_HasAttrString(itself, "get_region_bgopacity")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: get_region_bgopacity");
+		if (!PyObject_HasAttrString(itself, "get_region_opacity")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: get_region_opacity");
 		if (!PyObject_HasAttrString(itself, "set_region_dim")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: set_region_dim");
 		if (!PyObject_HasAttrString(itself, "set_region_color")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: set_region_color");
 		if (!PyObject_HasAttrString(itself, "set_region_zindex")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: set_region_zindex");
 		if (!PyObject_HasAttrString(itself, "set_region_soundlevel")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: set_region_soundlevel");
 		if (!PyObject_HasAttrString(itself, "set_region_soundalign")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: set_region_soundalign");
-		if (!PyObject_HasAttrString(itself, "set_region_bgopacity")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: set_region_bgopacity");
+		if (!PyObject_HasAttrString(itself, "set_region_opacity")) PyErr_Warn(PyExc_Warning, "animation_destination: missing attribute: set_region_opacity");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -6356,26 +6406,28 @@ ambulant::common::sound_alignment animation_destination::get_region_soundalign(b
 	return _rv;
 }
 
-double animation_destination::get_region_bgopacity(bool fromdom) const
+double animation_destination::get_region_opacity(const std::string& which, bool fromdom) const
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
 	double _rv;
+	PyObject *py_which = Py_BuildValue("s", which.c_str());
 	PyObject *py_fromdom = Py_BuildValue("O&", bool_New, fromdom);
 
-	PyObject *py_rv = PyObject_CallMethod(py_animation_destination, "get_region_bgopacity", "(O)", py_fromdom);
+	PyObject *py_rv = PyObject_CallMethod(py_animation_destination, "get_region_opacity", "(OO)", py_which, py_fromdom);
 	if (PyErr_Occurred())
 	{
-		PySys_WriteStderr("Python exception during animation_destination::get_region_bgopacity() callback:\n");
+		PySys_WriteStderr("Python exception during animation_destination::get_region_opacity() callback:\n");
 		PyErr_Print();
 	}
 
 	if (py_rv && !PyArg_Parse(py_rv, "d", &_rv))
 	{
-		PySys_WriteStderr("Python exception during animation_destination::get_region_bgopacity() return:\n");
+		PySys_WriteStderr("Python exception during animation_destination::get_region_opacity() return:\n");
 		PyErr_Print();
 	}
 
 	Py_XDECREF(py_rv);
+	Py_XDECREF(py_which);
 	Py_XDECREF(py_fromdom);
 
 	PyGILState_Release(_GILState);
@@ -6476,19 +6528,21 @@ void animation_destination::set_region_soundalign(ambulant::common::sound_alignm
 	PyGILState_Release(_GILState);
 }
 
-void animation_destination::set_region_bgopacity(double level)
+void animation_destination::set_region_opacity(const std::string& which, double level)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_which = Py_BuildValue("s", which.c_str());
 	PyObject *py_level = Py_BuildValue("d", level);
 
-	PyObject *py_rv = PyObject_CallMethod(py_animation_destination, "set_region_bgopacity", "(O)", py_level);
+	PyObject *py_rv = PyObject_CallMethod(py_animation_destination, "set_region_opacity", "(OO)", py_which, py_level);
 	if (PyErr_Occurred())
 	{
-		PySys_WriteStderr("Python exception during animation_destination::set_region_bgopacity() callback:\n");
+		PySys_WriteStderr("Python exception during animation_destination::set_region_opacity() callback:\n");
 		PyErr_Print();
 	}
 
 	Py_XDECREF(py_rv);
+	Py_XDECREF(py_which);
 	Py_XDECREF(py_level);
 
 	PyGILState_Release(_GILState);

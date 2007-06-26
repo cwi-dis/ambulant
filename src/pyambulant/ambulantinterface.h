@@ -975,6 +975,8 @@ public:
 	ambulant::common::tiling get_tiling() const;
 	const char * get_bgimage() const;
 	ambulant::lib::rect get_crop_rect(const ambulant::lib::size& srcsize) const;
+	double get_mediaopacity() const;
+	double get_mediabgopacity() const;
   private:
 	PyObject *py_region_info;
 
@@ -1000,13 +1002,13 @@ public:
 	ambulant::common::zindex_t get_region_zindex(bool fromdom) const;
 	double get_region_soundlevel(bool fromdom) const;
 	ambulant::common::sound_alignment get_region_soundalign(bool fromdom) const;
-	double get_region_bgopacity(bool fromdom) const;
+	double get_region_opacity(const std::string& which, bool fromdom) const;
 	void set_region_dim(const std::string& which, const ambulant::common::region_dim& rd);
 	void set_region_color(const std::string& which, ambulant::lib::color_t clr);
 	void set_region_zindex(ambulant::common::zindex_t z);
 	void set_region_soundlevel(double level);
 	void set_region_soundalign(ambulant::common::sound_alignment sa);
-	void set_region_bgopacity(double level);
+	void set_region_opacity(const std::string& which, double level);
 	std::string get_name() const { return region_info::get_name(); }
 	ambulant::lib::rect get_rect() const { return region_info::get_rect(); }
 	ambulant::common::fit_t get_fit() const { return region_info::get_fit(); }
@@ -1019,6 +1021,8 @@ public:
 	ambulant::common::tiling get_tiling() const { return region_info::get_tiling(); }
 	const char* get_bgimage() const { return region_info::get_bgimage(); }
 	double get_bgopacity() const { return region_info::get_bgopacity(); }
+	double get_mediaopacity() const { return region_info::get_mediaopacity(); }
+	double get_mediabgopacity() const { return region_info::get_mediabgopacity(); }
 	ambulant::lib::rect get_crop_rect(const ambulant::lib::size& srcsize) const { return region_info::get_crop_rect(srcsize); }
 	const ambulant::common::region_dim_spec& get_region_viewbox(bool fromdom) const { abort(); }
 	void set_region_viewbox(const ambulant::common::region_dim_spec& rds) { abort(); }
