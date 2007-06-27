@@ -113,7 +113,7 @@ gui::qt::qt_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& s
 }
 
 void
-gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun, const lib::rect r) {
+gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun, const lib::rect& r) {
 	if (strun.m_command != smil2::stc_data)
 		return;
 	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_render(): command=%d data=%s color=0x%x",strun.m_command,strun.m_data.c_str()==NULL?"(null)":strun.m_data.c_str(),strun.m_color);
@@ -146,15 +146,8 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 	paint.end();
 }
 
-/* JUNK?
 void
-gui::qt::qt_smiltext_renderer::_qt_smiltext_shift(const lib::rect r, const lib::point p) {
-	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_shift(): r=(%d,%d,%d,%d) p=%d,%d,",r.left(),r.top(),r.right(),r.bottom(),p.x,p.y);
-}
-*/
-
-void
-gui::qt::qt_smiltext_renderer::_qt_smiltext_set_font(const smil2::smiltext_run strun) {
+gui::qt::qt_smiltext_renderer::_qt_smiltext_set_font(const smil2::smiltext_run& strun) {
 	const char *fontname = strun.m_font_family;
 	m_font = QFont(QApplication::font());
 	if (fontname) {
