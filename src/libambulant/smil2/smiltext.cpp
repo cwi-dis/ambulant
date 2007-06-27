@@ -406,7 +406,7 @@ smiltext_layout_engine::smiltext_layout_engine(const lib::node *n, lib::event_pr
 
 void
 smiltext_layout_engine::start(double t) {
-        m_epoch = m_event_processor->get_timer()->elapsed();
+    m_epoch = m_event_processor->get_timer()->elapsed();
 	m_engine.start(t);
 }
 	
@@ -421,12 +421,12 @@ smiltext_layout_engine::stop() {
 }
 	
 void
-smiltext_layout_engine::set_dest_rect( const lib::rect r) {
+smiltext_layout_engine::set_dest_rect( const lib::rect& r) {
 	m_dest_rect = r;
 }
 
 void
-smiltext_layout_engine::redraw(const lib::rect r) {
+smiltext_layout_engine::redraw(const lib::rect& r) {
 	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_renderer::_qt_smiltext_changed(0x%x) r=(L=%d,T=%d,W=%d,H=%d", this,r.left(),r.top(),r.width(),r.height());
 	int nbr = 0; // number of breaks (newlines) before current line
 
@@ -485,6 +485,8 @@ smiltext_layout_engine::redraw(const lib::rect r) {
 		m_x = ldr.x; // m_x was modified by qt_smiltext_fits()
 		// move down number of breaks times height of current line
 		m_y += (m_max_ascent + m_max_descent) * nbr;
+		if (m_y > m_dest_rect.bottom())
+			break;
 		// count number of breaks in front of next line
 		nbr = 0;
 		while (cur->m_command == smil2::stc_break) {
@@ -506,7 +508,7 @@ smiltext_layout_engine::redraw(const lib::rect r) {
 }
 
 bool
-smiltext_layout_engine::smiltext_fits(const smil2::smiltext_run strun, const lib::rect r) {
+smiltext_layout_engine::smiltext_fits(const smil2::smiltext_run strun, const lib::rect& r) {
 
 	smiltext_metrics stm =  m_provider->get_smiltext_metrics (strun);
 
@@ -523,7 +525,7 @@ smiltext_layout_engine::smiltext_fits(const smil2::smiltext_run strun, const lib
 }
 
 lib::rect
-smiltext_layout_engine::smiltext_compute(const smil2::smiltext_run strun, const lib::rect r) {
+smiltext_layout_engine::smiltext_compute(const smil2::smiltext_run strun, const lib::rect& r) {
 
 	lib::rect rv = r;
 	smiltext_metrics stm = m_provider->get_smiltext_metrics (strun);

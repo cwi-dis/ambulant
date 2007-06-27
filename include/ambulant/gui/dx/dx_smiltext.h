@@ -39,37 +39,13 @@ namespace gui {
 
 namespace dx {
 
-class text_metrics {
-  public:
-	text_metrics(unsigned int ascent, unsigned int descent, unsigned int height, unsigned int width, unsigned int line_spacing)
-	  :	m_ascent(ascent), 
-		m_descent(descent), 
-	  	m_height(height),
-		m_width(width),
-		m_line_spacing(line_spacing) {}
-
-	~text_metrics() {}
-
-	unsigned int get_ascent()	{ return m_ascent; }
-	unsigned int get_descent()	{ return m_descent; };
-	unsigned int get_height()	{ return m_height; };
-	unsigned int get_width()	{ return m_width; };
-	unsigned int get_line_spacing() { return m_line_spacing; };
-
-  private:
-	unsigned int m_ascent;
-	unsigned int m_descent;
-	unsigned int m_height;	
-	unsigned int m_width;	
-	unsigned int m_line_spacing;	
-};
-
 class smiltext_renderer;
 
 class dx_smiltext_renderer : 
 		public dx_renderer_playable,
-		public smil2::smiltext_notification
- {
+		public smil2::smiltext_notification,
+		public smil2::smiltext_layout_provider
+{
   public:
 	dx_smiltext_renderer(
 		common::playable_notification *context,
@@ -84,33 +60,22 @@ class dx_smiltext_renderer :
 	void seek(double t) {}
 	// Callback from the engine
 	void smiltext_changed();
+	// Callbacks from the smiltext layout engine
+	smil2::smiltext_metrics get_smiltext_metrics(const smil2::smiltext_run& run);
+	void render_smiltext(const smil2::smiltext_run& run, const lib::rect& r);
+	// Callbacks from event procesor
 	void user_event(const lib::point& pt, int what);
 	void redraw(const lib::rect &dirty, common::gui_window *window);
 	void set_surface(common::surface *dest);
   private:
-	// functions required by inheritance
-	void smiltext_changed(bool);
 	// internal helper functions
-	void _dx_smiltext_changed();
-	bool _dx_smiltext_fits(const smil2::smiltext_run run, const lib::rect r);
-	text_metrics _dx_smiltext_get_text_metrics(const smil2::smiltext_run run, HDC hdc);
-	lib::rect _dx_smiltext_compute(const smil2::smiltext_run run, const lib::rect r);
-	void _dx_smiltext_render(const smil2::smiltext_run run, const lib::rect r, const lib::point p);
 	void _dx_smiltext_set_font(const smil2::smiltext_run run, HDC hdc);
-	void _dx_smiltext_shift(const lib::rect r, const lib::point p);
 	// DirectX interfacing
 	void _dx_smiltext_get_ddsurf(common::gui_window *window);
 	// instance variables
 	net::datasource_factory *m_df;
-	smil2::smiltext_engine m_engine;
-	const smil2::smiltext_params& m_params;
-//XX bool m_render_offscreen; // True if m_params does not allows rendering in-place
-	lib::timer::time_type m_epoch;
+	smil2::smiltext_layout_engine m_layout_engine;
 	critical_section m_lock;
-	int m_x;
-	int m_y;
-	unsigned int m_max_ascent;
-	unsigned int m_max_descent;
 	// Windows GDI data
 	ambulant::lib::size m_size;
 	viewport* m_viewport;

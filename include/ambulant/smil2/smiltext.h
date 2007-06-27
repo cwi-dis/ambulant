@@ -240,7 +240,7 @@ class smiltext_layout_provider {
 	/// Return font information needed for for use smiltext_layout_engine
 	virtual smiltext_metrics get_smiltext_metrics(const smiltext_run& str) = 0;
 	/// Render the smiltext in the rectangle
-	virtual void render_smiltext(const smiltext_run& str, lib::rect r) = 0;
+	virtual void render_smiltext(const smiltext_run& str, const lib::rect& r) = 0;
 };
 
 class smiltext_layout_engine {
@@ -256,15 +256,15 @@ class smiltext_layout_engine {
 	void stop();
 	
 	/// Redraw a rectangle.on screen 
-	void redraw(const lib::rect r);
+	void redraw(const lib::rect& r);
 
 	/// Set destination rectangle.on screen
-	void set_dest_rect(const lib::rect r);
+	void set_dest_rect(const lib::rect& r);
 
   private:
-	bool smiltext_fits(const smil2::smiltext_run run, const lib::rect r);
-	lib::rect smiltext_compute(const smil2::smiltext_run run, const lib::rect r);
-	void smiltext_render(const smil2::smiltext_run run, const lib::rect r, const lib::point p);
+	bool smiltext_fits(const smil2::smiltext_run run, const lib::rect& r);
+	lib::rect smiltext_compute(const smil2::smiltext_run run, const lib::rect& r);
+	void smiltext_render(const smil2::smiltext_run run, const lib::rect& r, const lib::point& p);
 
 	smiltext_engine m_engine;
 	lib::event_processor *m_event_processor;
