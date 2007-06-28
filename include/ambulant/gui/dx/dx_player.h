@@ -79,6 +79,7 @@ class dx_player_callbacks : public html_browser_factory {
   public:
 	virtual HWND new_os_window() = 0;
 	virtual void destroy_os_window(HWND hwnd) = 0;
+	virtual SIZE get_default_size() = 0;
 };
 
 class dx_playable_factory : public common::playable_factory {
@@ -146,6 +147,8 @@ class AMBULANTAPI dx_player :
 	
 	void window_done(const std::string& name);
 	
+	lib::size get_default_size();
+
 	////////////////////
 	// common::embedder implementation
 	void show_file(const net::url& href);

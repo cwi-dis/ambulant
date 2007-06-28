@@ -372,6 +372,14 @@ gui::dx::dx_player::window_done(const std::string &name) {
 	AM_DBG m_logger->debug("windows: %d", m_windows.size());
 }
 
+lib::size
+gui::dx::dx_player::get_default_size() {
+	SIZE sz = m_hoster.get_default_size();
+	if (sz.cx != 0 && sz.cy != 0)
+		return lib::size(sz.cx, sz.cy);
+	return lib::size(common::default_layout_width, common::default_layout_height);
+}
+
 common::bgrenderer*
 gui::dx::dx_player::new_background_renderer(const common::region_info *src) {
 	return new dx_bgrenderer(src);

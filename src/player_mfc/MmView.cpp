@@ -108,6 +108,7 @@ class my_player_callbacks : public gui_callbacks {
 	HWND new_os_window();
 	void destroy_os_window(HWND hwnd);
 	html_browser *new_html_browser(int left, int top, int width, int height);
+	SIZE get_default_size();
 };
 
 my_player_callbacks s_player_callbacks;
@@ -118,6 +119,14 @@ my_player_callbacks::new_os_window() {
 	// This means paint bits of the new window
 	// to the single instance
 	return s_hwnd;
+}
+
+SIZE
+my_player_callbacks::get_default_size() {
+	SIZE size;
+	size.cx = 640;
+	size.cy = 480;
+	return size;
 }
 
 void
