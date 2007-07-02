@@ -211,7 +211,7 @@ gtk_renderer_factory::new_playable(
 		AM_DBG lib::logger::get_logger()->debug("gtk_renderer_factory: node 0x%x: returning gtk_fill_renderer 0x%x", 
 			(void*) node, (void*) rv);
 #ifdef WITH_SMIL30
-	} else if(tag == "smiltext") {
+	} else if(tag == "smilText") {
 	  rv = new gtk_smiltext_renderer(context, cookie, node, evp);//, m_factory);
 #endif/*WITH_SMIL30*/
 	} else if ( tag == "text") {

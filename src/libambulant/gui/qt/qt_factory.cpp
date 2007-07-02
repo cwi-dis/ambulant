@@ -143,7 +143,7 @@ qt_renderer_factory::new_playable(
 		return rv;
 	}
 #ifdef WITH_SMIL30
-	if(tag == "smiltext") {
+	if(tag == "smilText") {
 		rv = new qt_smiltext_renderer(context, cookie, node, evp);//, m_factory);
 		AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_smiltext_renderer 0x%x", (void*) node, (void*) rv);
 		return rv;

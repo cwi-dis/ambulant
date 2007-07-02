@@ -33,9 +33,9 @@
         <par id="ImageTextAudio-1">
           <img id="TitleB" region="Images" dur="5s" src="NYCdata/TitleB.gif" transIn="fade"/>
           <audio id="SIF-Intro" region="audio_1" src="NYCdata/SIF-Intro.mp3"/>
-          <smiltext id="CapF0" region="Captions" dur="5s" >
+          <smilText id="CapF0" region="Captions" dur="5s" >
             We start our tour with a ride on the famous Staten Island Ferry.
-          </smiltext>
+          </smilText>
         </par>
 <!--
         <par id="ImageTextAudio-1">
@@ -47,7 +47,7 @@
 -->
         <par id="ImageTextAudio-2">
           <img id="Ferry1" region="Images" dur="5s" src="NYCdata/Ferry1.gif" />
-          <smiltext id="CapF1" region="Captions" dur="5s"  textFontFamily="roman" >
+          <smilText id="CapF1" region="Captions" dur="5s"  textFontFamily="roman" >
             The 
             <tev next="0.25"/>
             <span textBackgroundColor="blue" textColor="white">
@@ -79,30 +79,30 @@
             the 
             <tev next="3.5"/>
             water.
-          </smiltext>
+          </smilText>
           <audio id="SIF" region="audio_1" src="NYCdata/SIF-1.mp3"/>
         </par>
 <!-- -->
         <par id="ImageTextAudio-3">
           <img id="Ferry2" region="Images" dur="5s" src="NYCdata/Ferry2.gif"/>
-          <smiltext id="CapF2" region="Captions" dur="5s" textMode="crawl" textRate="20">
+          <smilText id="CapF2" region="Captions" dur="5s" textMode="crawl" textRate="20">
             The <span textFontFamily="serif" textFontSize="xx-large" textColor="green">artwork </span> also flows <br/> <br/>along the passenger loading platforms.
-          </smiltext>
+          </smilText>
          <audio id="SIF-0" region="audio_1" src="NYCdata/SIF-2.mp3"/>
         </par>
         <par id="ImageTextAudio-4">
           <img id="Ferry3" region="Images" dur="5s" src="NYCdata/Ferry3.gif"/>
-          <smiltext id="CapF3" region="Captions" dur="5s" textMode="scroll" textRate="10">
+          <smilText id="CapF3" region="Captions" dur="5s" textMode="scroll" textRate="10">
             <span textColor="red"> <br/> The <span textFontSize="x-large">engines </span> start</span>
             and all of the lines seem to move in different directions.
-          </smiltext>
+          </smilText>
           <audio id="SIF-1" region="audio_1" src="NYCdata/SIF-3.mp3"/>
         </par>
         <par id="ImageTextAudio-5">
           <img id="Ferry4" region="Images" dur="5s" src="NYCdata/Ferry4.gif"/>
-          <smiltext id="CapF4" region="Captions" dur="5s">
+          <smilText id="CapF4" region="Captions" dur="5s">
             As the boat pulls out, the arms of the passenger terminal wave goodbye.
-          </smiltext>
+          </smilText>
           <audio id="SIF-2" region="audio_1" src="NYCdata/SIF-4.mp3"/>
         </par>
         <par id="ImageTextAudio-6">
@@ -111,18 +111,18 @@
         </par>
         <par id="ImageTextAudio-7">
           <img id="NY1" region="Images" dur="5s" src="NYCdata/NY1.gif"/>
-          <smiltext id="CapN1" region="Captions" dur="5s" textFontSize="x-large" textColor="#fffffe" textFontWeight="bold">
+          <smilText id="CapN1" region="Captions" dur="5s" textFontSize="x-large" textColor="#fffffe" textFontWeight="bold">
 <!--        <param name="fgcolor" value="#ff8000"/> -->
      
 	    In Memoriam: September 11, 2001.
           
-          </smiltext>
+          </smilText>
         </par>
         <par id="ImageTextAudio-8">
           <img id="NY2" region="Images" dur="5s" src="NYCdata/NY2.gif"/>
-          <smiltext id="CapN2" region="Captions" dur="5s">
+          <smilText id="CapN2" region="Captions" dur="5s">
             Lower Manhattan stands defiantly, daring everyone to enter the City.
-          </smiltext>
+          </smilText>
           <audio id="NY-0" region="audio_1" src="NYCdata/NY-2.mp3"/>
         </par>
         <par id="ImageTextAudio-9">
@@ -131,31 +131,31 @@
         </par>
         <par id="ImageTextAudio-10">
           <img id="Train1" region="Images" dur="5s" src="NYCdata/Train1.gif"/>
-          <smiltext id="CapT1" region="Captions" dur="5s">
+          <smilText id="CapT1" region="Captions" dur="5s">
             Travel by train in New York brings to mind the old saying: getting there is half the fun...
-          </smiltext>
+          </smilText>
           <audio id="Train-0" region="audio_1" src="NYCdata/Train-1.mp3"/>
         </par>
         <par id="ImageTextAudio-11">
           <img id="Train2" region="Images" dur="5s" src="NYCdata/Train2.gif"/>
-          <smiltext id="CapT2" region="Captions" dur="5s">
+          <smilText id="CapT2" region="Captions" dur="5s">
             This is not the roller coaster at Coney Island -- it is the Astoria curve on the Flushing line.
-          </smiltext>
+          </smilText>
           <audio id="Train-1" region="audio_1" src="NYCdata/Train-2.mp3"/>
         </par>
         <par id="ImageTextAudio-12">
           <img id="Train3" region="Images" dur="5s" src="NYCdata/Train3.gif"/>
-          <smiltext id="CapT3" region="Captions" dur="5s" >
+          <smilText id="CapT3" region="Captions" dur="5s" >
             The next minute, the train enters a giant steel maze -- and we're the rat.
-          </smiltext>
+          </smilText>
           <audio id="Train-2" region="audio_1" src="NYCdata/Train-3.mp3"/>
         </par>
         <par id="ImageTextAudio-13">
           <img id="Train4" region="Images" dur="5s" src="NYCdata/Train4.gif"/>
-          <smiltext id="CapT4" region="Captions" dur="5s" textColor="#ff8800">
+          <smilText id="CapT4" region="Captions" dur="5s" textColor="#ff8800">
 <!--        <param name="fgcolor" value="#ff8000"/> -->
             Before you know it, we pull into the elevated station. Now we are on our own in the new world.
-          </smiltext>
+          </smilText>
           <audio id="Train-3" region="audio_1" src="NYCdata/Train-4.mp3"/>
         </par>
         <par id="ImageTextAudio-14">
@@ -164,18 +164,18 @@
         </par>
         <par id="ImageTextAudio-15">
           <img id="JH1" region="Images" dur="5s" src="NYCdata/JH1.gif"/>
-          <smiltext id="CapJ1" region="Captions" dur="5s">
+          <smilText id="CapJ1" region="Captions" dur="5s">
             <param name="fgcolor" value="#ff8000"/>
             People don't live in 80-story high rises; they live in (very warm) four story walk-ups.
-          </smiltext>
+          </smilText>
           <audio id="JH-0" region="audio_1" src="NYCdata/JH-1.mp3"/>
         </par>
         <par id="ImageTextAudio-16">
           <img id="JH2" region="Images" dur="5s" src="NYCdata/JH2.gif"/>
-          <smiltext id="CapJ2" region="Captions" dur="5s" textColor="#ff8000">
+          <smilText id="CapJ2" region="Captions" dur="5s" textColor="#ff8000">
            <param name="fgcolor" value="#ff8000"/>
             Any yes, walking up means walking up.
-          </smiltext>
+          </smilText>
           <audio id="JH-1" region="audio_1" src="NYCdata/JH-2.mp3"/>
         </par>
         <par id="ImageTextAudio-17">

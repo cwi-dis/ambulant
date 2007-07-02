@@ -198,7 +198,7 @@ cocoa_renderer_factory::new_playable(
 			}
 		}
 #ifdef WITH_SMIL30
-	} else if ( tag == "smiltext") {
+	} else if ( tag == "smilText") {
 		rv = new cocoa_smiltext_renderer(context, cookie, node, evp);
 		AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_smiltext_renderer 0x%x", (void *)node, (void *)rv);
 #endif // WITH_SMIL30

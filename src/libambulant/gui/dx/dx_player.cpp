@@ -441,7 +441,7 @@ gui::dx::dx_playable_factory::new_playable(
 #endif/*WITH_HTML_WIDGET*/
 		p = new dx_text_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
 #ifdef WITH_SMIL30
-	} else if(tag == "smiltext") {
+	} else if(tag == "smilText") {
 		p = new dx_smiltext_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
 #endif/*WITH_SMIL30*/
 	} else if(tag == "img") {
