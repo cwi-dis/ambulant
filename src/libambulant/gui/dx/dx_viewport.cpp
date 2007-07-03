@@ -37,6 +37,7 @@
 #include <mmsystem.h>
 
 #include "ambulant/gui/dx/dx_viewport.h"
+#include "ambulant/gui/dx/dx_audio_player.h" // Only to define the TPB GUID
 
 
 #ifndef AMBULANT_PLATFORM_WIN32_WCE

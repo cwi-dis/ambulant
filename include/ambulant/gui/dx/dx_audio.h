@@ -73,6 +73,8 @@ class dx_audio_renderer : public common::renderer_playable {
 
 /// Change the overall soundlevel
 AMBULANTAPI double change_global_level(double factor);
+/// Change the overall playback speed
+AMBULANTAPI double change_global_rate(double factor);
 } // namespace dx
 
 } // namespace gui

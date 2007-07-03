@@ -241,3 +241,13 @@ gui::dx::change_global_level(double factor)
 	// XXXX Should also adapt currently existing volumes
 	return s_global_level;
 }
+
+double
+gui::dx::change_global_rate(double factor)
+{
+#ifdef WITH_TPB_AUDIO_SPEEDUP
+	return gui::dx::audio_player::change_global_rate(factor);
+#else
+	return 1.0;
+#endif
+}

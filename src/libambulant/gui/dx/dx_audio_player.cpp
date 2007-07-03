@@ -24,9 +24,15 @@
 #include "ambulant/gui/dx/dx_audio_player.h"
 
 #include "ambulant/lib/logger.h"
+#include "ambulant/lib/textptr.h"
 #include <math.h>
-
 #include <vfwmsgs.h>
+// CLSID_FilterGraph
+#include <uuids.h>
+
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
 
 using namespace ambulant;
 
@@ -34,6 +40,11 @@ using ambulant::lib::win32::win_report_error;
 using ambulant::lib::win32::win_trace_error;
 using ambulant::lib::logger;
 const ULONGLONG MILLIS_FACT = 10000;
+
+#ifdef WITH_TPB_AUDIO_SPEEDUP
+bool speedup_filter_available;
+bool speedup_filter_available_valid;
+#endif 
 
 gui::dx::audio_player::audio_player(const std::string& url)
 :	m_url(url),
@@ -174,6 +185,9 @@ bool gui::dx::audio_player::open(const std::string& url) {
 			logger::get_logger()->error("%s: DirectX error 0x%x", url.c_str(), hr);
 		return false;
 	}
+#ifdef WITH_TPB_AUDIO_SPEEDUP
+	initialize_speedup_filter();
+#endif
 		
 	hr = m_graph_builder->QueryInterface(IID_IMediaControl, (void **) &m_media_control);
 	if(FAILED(hr)) {
@@ -216,10 +230,228 @@ void gui::dx::audio_player::release_player() {
 			m_basic_audio->Release();
 			m_basic_audio = 0;
 		}
+#ifdef WITH_TPB_AUDIO_SPEEDUP
+		if(m_audio_speedup) {
+			m_audio_speedup->Release();
+			m_audio_speedup = 0;
+		}
+		unregister_player(this);
+#endif
 		m_graph_builder->Release();
 		m_graph_builder = 0;
 	}
 }
+
+#ifdef WITH_TPB_AUDIO_SPEEDUP
+void gui::dx::audio_player::initialize_speedup_filter() {
+	if (speedup_filter_available_valid && !speedup_filter_available) {
+		// We don't seem to have the filter. Too bad.
+		return;
+	}
+	// Either the filter exists or we haven't tried yet. Let's try to create
+	// it and remember whether it worked.
+	IBaseFilter *pNewFilter = NULL;
+	HRESULT res;
+	res = CoCreateInstance(CLSID_TPBVupp10, NULL, CLSCTX_INPROC_SERVER,
+		IID_IBaseFilter, (void**)&pNewFilter);
+
+	if (res != S_OK) {
+		lib::logger::get_logger()->trace("dx_audio_player: Speedup filter not available, error 0x%x", res);
+		speedup_filter_available = false;
+		speedup_filter_available_valid = true;
+		return;
+	}
+	res = m_graph_builder->AddFilter(pNewFilter, NULL);
+	if (res != S_OK) {
+		lib::logger::get_logger()->trace("dx_audio_player: AddFilter(Speedup filter): error 0x%x", res);
+		pNewFilter->Release();
+		return;
+	}
+	speedup_filter_available = true;
+	speedup_filter_available_valid = true;
+	/*AM_DBG*/ lib::logger::get_logger()->debug("dx_audio_player: added speedup filter to graph");
+
+	// Next step: find out where we want to add the filter to the graph.
+	// We iterate over the filter graph, then for each item in the graph
+	// we iterate over the connected output pins util we find one we like.
+	IPin *pOutputPin = NULL;
+	IPin *pInputPin = NULL;
+	IEnumFilters *pEnumFilters = NULL;
+	res = m_graph_builder->EnumFilters(&pEnumFilters);
+	if (res != S_OK) {
+		lib::logger::get_logger()->trace("dx_audio_filter: EnumFilters: error 0x%x", res);
+		return;
+	}
+
+	IBaseFilter *pCurFilter;
+	while (pOutputPin == NULL && (res=pEnumFilters->Next(1, &pCurFilter, NULL)) == S_OK) {
+		/*AM_DBG*/ {
+			FILTER_INFO info;
+			LPWSTR vendorInfo;
+			res = pCurFilter->QueryFilterInfo(&info);
+			if (res != S_OK) info.achName[0] = 0;
+			res = pCurFilter->QueryVendorInfo(&vendorInfo);
+			if (res != S_OK) vendorInfo = L"";
+			lib::textptr tInfo(info.achName);
+			lib::textptr tVendorInfo(vendorInfo);
+			lib::logger::get_logger()->debug("dx_audio_filter: filter found: '%s' vendor '%s'",
+				tInfo.c_str(), tVendorInfo.c_str());
+		}
+		IEnumPins *pEnumPins;
+		res = pCurFilter->EnumPins(&pEnumPins);
+		IPin *pCurPin;
+		while (pOutputPin == NULL && (res=pEnumPins->Next(1, &pCurPin, NULL)) == S_OK) {
+			AM_MEDIA_TYPE mediaType;
+			PIN_DIRECTION curPinDir;
+			res = pCurPin->QueryDirection(&curPinDir);
+			HRESULT res2 = pCurPin->ConnectionMediaType(&mediaType);
+			if (res == S_OK && 
+					res2 == S_OK && 
+					curPinDir == PINDIR_OUTPUT &&
+					mediaType.majortype == MEDIATYPE_Audio&& 
+					mediaType.subtype == MEDIASUBTYPE_PCM){
+				pOutputPin = pCurPin;
+				res = pOutputPin->ConnectedTo(&pInputPin);
+				if (res != S_OK) {
+					// This output pin was the correct type, but not connected.
+					// So it cannot be the one we're looking for.
+					pOutputPin = pInputPin = NULL;
+				} else {
+					// Found it!
+					pOutputPin->AddRef();
+					pInputPin->AddRef();
+				}
+			}
+			if (res2 == S_OK) {
+				if (mediaType.cbFormat != 0) {
+					CoTaskMemFree((PVOID)mediaType.pbFormat);
+				}
+			}
+			pCurPin->Release();
+		}
+		if (res != S_FALSE && res != S_OK) 
+			lib::logger::get_logger()->trace("dx_audio_filter: enumerating pins: error 0x%x", res);
+		pEnumPins->Release();
+		pCurFilter->Release();
+	}
+	if (res != S_FALSE && res != S_OK)
+		lib::logger::get_logger()->trace("dx_audio_filter: enumerating filters: error 0x%x", res);
+
+	pEnumFilters->Release();
+	// We have the correct pins now.
+	if (pOutputPin) {
+		lib::logger::get_logger()->trace("dx_audio_filter: found the right pins!");
+	} else {
+		lib::logger::get_logger()->trace("dx_audio_filter: could not find a good pin");
+		pOutputPin->Release();
+		pInputPin->Release();
+		return;
+	}
+	// Now we need to find the pins on our speedup filter.
+	IPin *pFilterInputPin = NULL;
+	IPin *pFilterOutputPin = NULL;
+	IEnumPins *pEnumPins;
+	res = pNewFilter->EnumPins(&pEnumPins);
+	IPin *pCurPin;
+	while (res=pEnumPins->Next(1, &pCurPin, NULL) == S_OK) {
+		PIN_DIRECTION pinDir;
+		res = pCurPin->QueryDirection(&pinDir);
+		assert(res == S_OK);
+		if (pinDir == PINDIR_INPUT) {
+			if (pFilterInputPin) {
+				lib::logger::get_logger()->trace("dx_audio_filter: multiple input pins on filter");
+				goto bad;
+			}
+			pFilterInputPin = pCurPin;
+			pFilterInputPin->AddRef();
+		} else {
+			if (pFilterOutputPin) {
+				lib::logger::get_logger()->trace("dx_audio_filter: multiple output pins on filter");
+				goto bad;
+			}
+			pFilterOutputPin = pCurPin;
+			pFilterOutputPin->AddRef();
+		}
+	}
+	if (!pFilterInputPin) {
+		lib::logger::get_logger()->trace("dx_audio_filter: no input pin on filter");
+		goto bad;
+	}
+	if (!pFilterOutputPin) {
+		lib::logger::get_logger()->trace("dx_audio_filter: no output pin on filter");
+		goto bad;
+	}
+	// We have everything. Sever the old connection and insert the filter.
+	res = m_graph_builder->Disconnect(pOutputPin);
+	if (res) {
+		lib::logger::get_logger()->trace("dx_audio_filter: Severing old connection: error 0x%x", res);
+		goto bad;
+	}
+	res = m_graph_builder->Disconnect(pInputPin);
+	if (res) {
+		lib::logger::get_logger()->trace("dx_audio_filter: Severing old connection: error 0x%x", res);
+		goto bad;
+	}
+	res = m_graph_builder->Connect(pOutputPin, pFilterInputPin);
+	if (res) {
+		lib::logger::get_logger()->trace("dx_audio_filter: Creating filter input connection: error 0x%x", res);
+		goto bad;
+	}
+	res = m_graph_builder->Connect(pFilterOutputPin, pInputPin);
+	if (res) {
+		lib::logger::get_logger()->trace("dx_audio_filter: Creating filter output connection: error 0x%x", res);
+		goto bad;
+	}
+	// Finally remember the interface to set speedup/slowdown, and register ourselves
+	// in the global pool (so Amis can change our speed).
+	res = pNewFilter->QueryInterface(IID_IVuppInterface, (void**) &m_audio_speedup);
+	if (res != S_OK) {
+		lib::logger::get_logger()->trace("dx_audio_filter: filter does not provide IVuppInterface");
+		goto bad;
+	}
+	set_rate(s_current_playback_rate);
+	register_player(this);
+bad:
+	if (pOutputPin) pOutputPin->Release();
+	if (pInputPin) pInputPin->Release();
+	if (pFilterOutputPin) pFilterOutputPin->Release();
+	if (pFilterInputPin) pFilterInputPin->Release();
+	return;
+
+}
+
+std::set<gui::dx::audio_player *> gui::dx::audio_player::s_active_players;
+double gui::dx::audio_player::s_current_playback_rate = 1.0;
+
+void gui::dx::audio_player::register_player(gui::dx::audio_player *cur) {
+	s_active_players.insert(cur);
+}
+
+void gui::dx::audio_player::unregister_player(audio_player *cur) {
+	s_active_players.erase(cur);
+}
+
+void gui::dx::audio_player::set_rate(double rate) {
+	if (m_audio_speedup) {
+		m_audio_speedup->setCycleSpeed((short)(rate*100));
+	}
+}
+
+void gui::dx::audio_player::set_global_rate(double rate) {
+	s_current_playback_rate = rate;
+	std::set<gui::dx::audio_player *>::iterator i;
+
+	for(i=s_active_players.begin(); i!=s_active_players.end(); i++)
+		(*i)->set_rate(rate);
+}
+
+double gui::dx::audio_player::change_global_rate(double adjustment) {
+	if (adjustment != 1.0)
+		set_global_rate(s_current_playback_rate*adjustment);
+	return s_current_playback_rate;
+}
+
+#endif
 
 #if 0
 int gui::dx::audio_player::get_progress() {
