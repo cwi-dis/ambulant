@@ -52,6 +52,9 @@ gui::dx::audio_player::audio_player(const std::string& url)
 	m_media_control(0),
 	m_media_position(0),
 	m_media_event(0),
+#ifdef WITH_TPB_AUDIO_SPEEDUP
+	m_audio_speedup(0),
+#endif
 	m_basic_audio(0) {
 	open(m_url);
 }

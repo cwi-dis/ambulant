@@ -118,7 +118,7 @@ gui::dx::text_renderer::open(net::datasource_factory *df) {
 		free_text_data();
 		return;
 	}
-	m_viewport->clear_surface(m_ddsurf, RGB(255,255,255));
+	m_viewport->clear_surface(m_ddsurf, RGB(255,255,255), 1.0);
 	if (!net::read_data_from_url(m_url, df, &m_text_data, &m_text_datalen)) {
 		// Error message has already been produced
 		m_text_data = NULL;
@@ -131,7 +131,7 @@ void
 gui::dx::text_renderer::render(LONG x, LONG y, HFONT hfont) {
 	if ( ! m_ddsurf) {
 		m_ddsurf = m_viewport->create_surface(m_size);
-		m_viewport->clear_surface(m_ddsurf, RGB(255,255,255));
+		m_viewport->clear_surface(m_ddsurf, RGB(255,255,255), 1.0);
 	}
 	if ( ! m_ddsurf) {
 		free_text_data();

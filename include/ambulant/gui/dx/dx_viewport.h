@@ -89,13 +89,13 @@ class viewport {
 
 	// Clears the specified back buffer rectangle using the provided color 
 	// and taking into account any transition
-	void clear(const lib::rect& rc, lib::color_t clr, dx_transition *tr = 0);
+	void clear(const lib::rect& rc, lib::color_t clr, double opacity, dx_transition *tr = 0);
 	
 	// Clears the specified buffer rectangle using the provided color 
-	void clear(const lib::rect& rc, lib::color_t clr, IDirectDrawSurface* dstview);
+	void clear(const lib::rect& rc, lib::color_t clr, double opacity, IDirectDrawSurface* dstview);
 	
 	// Clears a DD surface with the provided color.
-	void clear_surface(IDirectDrawSurface* p, lib::color_t clr);
+	void clear_surface(IDirectDrawSurface* p, lib::color_t clr, double opacity);
 
 	// Draw the whole DD surface to the back buffer and destination rectangle
 	void draw(IDirectDrawSurface* src, const lib::rect& dst_rc, bool keysrc = false);
@@ -126,6 +126,7 @@ class viewport {
 	void draw_to_bgd(IDirectDrawSurface* surf, const lib::rect& rc, HRGN hrgn);
 	
 	// Fading support
+	bool blt_blend (IDirectDrawSurface* to, IDirectDrawSurface* from, const lib::rect& rc, double progress);
 	HRESULT blt_blend32(const lib::rect& rc, double progress,
 		IDirectDrawSurface *surf1, IDirectDrawSurface *surf2);
 	HRESULT blt_blend24(const lib::rect& rc, double progress,

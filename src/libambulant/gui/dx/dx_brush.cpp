@@ -115,7 +115,7 @@ void gui::dx::dx_brush::redraw(const lib::rect &dirty, common::gui_window *windo
 		v->set_fullscreen_transition(tr);
 		tr = NULL;
 	}
-	v->clear(rc, m_color, tr);
+	v->clear(rc, m_color, 1.0, tr);
 }
  
 

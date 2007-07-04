@@ -220,7 +220,8 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 	if(tr && tr->is_outtrans()) {
 		// First draw the background color, if applicable
 		const common::region_info *ri = m_dest->get_info();
-		if(ri && ri->get_bgopacity() > 0.5) v->clear(img_reg_rc_dirty,ri->get_bgcolor());
+		if(ri)
+			v->clear(img_reg_rc_dirty,ri->get_bgcolor(), ri->get_bgopacity());
 		// Next, take a snapshot of the relevant pixels as they are now, before we draw the image
 		lib::size image_size = m_image->get_size();
 		IDirectDrawSurface *bgimage = v->create_surface(image_size);

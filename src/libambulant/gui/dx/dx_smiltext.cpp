@@ -368,7 +368,7 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_get_ddsurf(common::gui_window *windo
 			lib::logger::get_logger()->fatal("DirectDrawSurface::create_surface failed()");
 			return;
 		}
-		srcvp->clear_surface(m_ddsurf, RGB(255,255,255));
+		srcvp->clear_surface(m_ddsurf, RGB(255,255,255), 1.0);
 	}		
 }
 #endif //WITH_SMIL30

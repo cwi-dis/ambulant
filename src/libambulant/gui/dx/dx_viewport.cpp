@@ -498,7 +498,7 @@ void gui::dx::viewport::redraw() {
 		AM_DBG lib::logger::get_logger()->debug("viewport::redraw: Applying fullscreen transition");
 		// Create a temp surface, determine bg/fg surfaces and copy the background
 		IDirectDrawSurface *tmps = create_surface();
-		clear_surface(tmps, lib::color_t(0xff0000));
+		clear_surface(tmps, lib::color_t(0xff0000), 1.0);
 		IDirectDrawSurface *s1, *s2;
 		if (m_fstransition->is_outtrans()) {
 			s1 = m_surface;
@@ -517,13 +517,7 @@ void gui::dx::viewport::redraw() {
 			clipto_r1r2r3r4(m_fstransition, src_rc_v, dst_rc_v);
 			draw(s2, dst_rc_v, dst_rc_v, false, tmps);
 		} else if (bt == smil2::bt_fade) {
-			if (bits_size == 32)
-				blt_blend32(ourrect, m_fstransition->get_progress(), s2, tmps);
-			else if (bits_size == 24)
-				blt_blend24(ourrect, m_fstransition->get_progress(), s2, tmps);
-			else if (bits_size == 16)
-				blt_blend16(ourrect, m_fstransition->get_progress(), s2, tmps);
-			else
+			if ( ! blt_blend(tmps, s2, ourrect, m_fstransition->get_progress()))
 				draw(s2, ourrect, ourrect, false, tmps);
 		} else {
 			HRGN hrgn = NULL;
@@ -598,7 +592,7 @@ void gui::dx::viewport::redraw(const lib::rect& rc) {
 		AM_DBG lib::logger::get_logger()->debug("viewport::redraw: Applying fullscreen transition");
 		// Create a temp surface, determine bg/fg surfaces and copy the background
 		IDirectDrawSurface *tmps = create_surface();
-		clear_surface(tmps, lib::color_t(0x00ff00));
+		clear_surface(tmps, lib::color_t(0x00ff00), 1.0);
 		IDirectDrawSurface *s1, *s2;
 		if (m_fstransition->is_outtrans()) {
 			s1 = m_surface;
@@ -617,13 +611,7 @@ void gui::dx::viewport::redraw(const lib::rect& rc) {
 			clipto_r1r2r3r4(m_fstransition, src_rc_v, dst_rc_v);
 			draw(s2, dst_rc_v, dst_rc_v, false, tmps);
 		} else if (bt == smil2::bt_fade) {
-			if (bits_size == 32)
-				blt_blend32(ourrect, m_fstransition->get_progress(), s2, tmps);
-			else if (bits_size == 24)
-				blt_blend24(ourrect, m_fstransition->get_progress(), s2, tmps);
-			else if (bits_size == 16)
-				blt_blend16(ourrect, m_fstransition->get_progress(), s2, tmps);
-			else
+			if ( ! blt_blend(tmps, s2, ourrect, m_fstransition->get_progress()))
 				draw(s2, ourrect, ourrect, false, tmps);
 		} else {
 			HRGN hrgn = NULL;
@@ -704,12 +692,31 @@ void gui::dx::viewport::clear() {
 	}
 }
 
+bool gui::dx::viewport::blt_blend (IDirectDrawSurface* to, IDirectDrawSurface* from, const lib::rect& rc, double opacity) {
+	bool rv = true;
+	HRESULT hr = S_OK;
+	if (bits_size == 32) {
+		hr = blt_blend32(rc, opacity, from, to);
+	} else if( bits_size == 24) {
+		hr = blt_blend24(rc, opacity, from, to);
+	} else if (bits_size == 16) {
+		hr = blt_blend16(rc, opacity, from, to);
+	} else {
+		rv = false;
+	}
+	if (FAILED(hr)) {
+		seterror("blt_blend()", hr);
+		rv = false;
+	}
+	return rv;
+}
+
 // Clears the specified back buffer rectangle using the provided color and taking into account any transition
-void gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, dx_transition *tr) {
+void gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, double opacity, dx_transition *tr) {
 	if(!m_surface) return;
 	
 	if(!tr) {
-		clear(rc, clr, m_surface);
+		clear(rc, clr, opacity, m_surface);
 		return;
 	}
 	
@@ -718,7 +725,7 @@ void gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, dx_transiti
 	if(bt == smil2::bt_r1r2r3r4) {
 		lib::rect rc_v = rc;
 		clipto_r1r2r3r4(tr, rc_v, rc_v);
-		clear(rc_v, clr, m_surface);
+		clear(rc_v, clr, opacity, m_surface);
 		return;
 	} else if(bt == smil2::bt_fade) {
 		IDirectDrawSurface* s1 = create_surface();
@@ -726,27 +733,15 @@ void gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, dx_transiti
 		if(!s1 || !s2) {
 			RELEASE(s1);
 			RELEASE(s2);
-			clear(rc, clr, m_surface);
+			clear(rc, clr, opacity, m_surface);
 			return;
 		}
-		clear(rc, clr, s1);
+		clear(rc, clr, opacity, s1);
 		copy_bgd_to(s2, rc);
-		HRESULT hr = S_OK;
-		if(bits_size == 32) {
-			hr = blt_blend32(rc, tr->get_progress(), s1, s2);
+		if (blt_blend(s2, s1, rc, tr->get_progress()*opacity))
 			draw_to_bgd(s2, rc, 0);
-		} else if(bits_size == 24) {
-			hr = blt_blend24(rc, tr->get_progress(), s1, s2);
-			draw_to_bgd(s2, rc, 0);
-		} else if(bits_size == 16) {
-			hr = blt_blend16(rc, tr->get_progress(), s1, s2);
-			draw_to_bgd(s2, rc, 0);
-		} else {
+		else
 			draw_to_bgd(s1, rc, 0);
-		}
-		if (FAILED(hr)) {
-			seterror("blt_blendXX()", hr);
-		}
 		release_surface(s1);
 		release_surface(s2);
 		return;
@@ -769,14 +764,14 @@ void gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, dx_transiti
 	}
 		
 	if(!hrgn) {
-		clear(rc, clr, m_surface);
+		clear(rc, clr, opacity, m_surface);
 		return;
 	} else if(is_empty_region(hrgn)) {
 		// nothing to paint
 		return;
 	}
 	IDirectDrawSurface* s1 = create_surface();
-	clear(rc, clr, s1);
+	clear(rc, clr, opacity, s1);
 	OffsetRgn(hrgn, rc.left(), rc.top());
 	draw_to_bgd(s1, rc, hrgn);
 	release_surface(s1);
@@ -784,9 +779,11 @@ void gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, dx_transiti
 }
 
 // Clears the specified surface rectangle using the provided color
-void gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, IDirectDrawSurface* dstview) {
-	if(!dstview) return;
-	
+void gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, double opacity, IDirectDrawSurface* dstview) {
+	if(!dstview || opacity == 0.0)
+		return;
+	HRESULT hr = S_OK;
+	DWORD dwFlags = DDBLT_COLORFILL | AM_DDBLT_WAIT;
 	DDBLTFX bltfx;
 	memset(&bltfx, 0, sizeof(DDBLTFX));
 	bltfx.dwSize = sizeof(bltfx);
@@ -797,15 +794,30 @@ void gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, IDirectDraw
 	RECT vrc = {0, 0, m_width, m_height};
 	if(!IntersectRect(&dstRC, &dstRC, &vrc) || IsRectEmpty(&dstRC))
 		return;
-		
-	HRESULT hr = dstview->Blt(&dstRC, 0, 0, DDBLT_COLORFILL | AM_DDBLT_WAIT, &bltfx);
-	if (FAILED(hr)) {
+	if (opacity != 1.0) {
+#ifdef XXXX
+		// this code should just work, but since alpha blending is currently
+		// ignored by DirectX, we just do it pixel by pixel in blt_blend()
+ 		dwFlags |= DDBLT_ALPHASRCCONSTOVERRIDE;
+		bltfx.dwAlphaSrcConstBitDepth = 8;
+		bltfx.dwAlphaSrcConst = opacity*255.0;
+#endif//XXXX
+		IDirectDrawSurface* colorsurf = create_surface();
+		hr = colorsurf->Blt(&dstRC, 0, 0, dwFlags, &bltfx);
+		if ( ! FAILED(hr)) {
+			bltfx.dwFillColor = convert(0); // black
+			blt_blend(dstview, colorsurf, rc, opacity);
+			release_surface(colorsurf);
+		}
+	} else {
+		hr = dstview->Blt(&dstRC, 0, 0, dwFlags, &bltfx);
+	if (FAILED(hr))
 		seterror(":viewport::clear/DirectDrawSurface::Blt()", hr);
 	}
 }
 
 // Clears a DD surface with the provided color.
-void gui::dx::viewport::clear_surface(IDirectDrawSurface* p, lib::color_t clr) {
+void gui::dx::viewport::clear_surface(IDirectDrawSurface* p, lib::color_t clr, double opacity) {
 	DDSURFACEDESC sd;
 	memset(&sd, 0, sizeof(DDSURFACEDESC));
 	sd.dwSize = sizeof(DDSURFACEDESC);
@@ -898,22 +910,10 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& src_rc,
 		if(keysrc) copy_bgd_to(s1, dst_rc);
 		draw(src, src_rc, dst_rc, keysrc, s1);
 		copy_bgd_to(s2, dst_rc);
-		HRESULT hr = S_OK;
-		if(bits_size == 32) {
-			hr = blt_blend32(dst_rc, tr->get_progress(), s1, s2);
+		if (blt_blend(s2, s1, dst_rc, tr->get_progress()/*opacity*/))
 			draw_to_bgd(s2, dst_rc, 0);
-		} else if(bits_size == 24) {
-			hr = blt_blend24(dst_rc, tr->get_progress(), s1, s2);
-			draw_to_bgd(s2, dst_rc, 0);
-		} else if(bits_size == 16) {
-			hr = blt_blend16(dst_rc, tr->get_progress(), s1, s2);
-			draw_to_bgd(s2, dst_rc, 0);
-		} else {
+		else
 			draw_to_bgd(s1, dst_rc, 0);
-		}
-		if (FAILED(hr)) {
-			seterror("blt_blendXX()", hr);
-		}
 		release_surface(s1);
 		release_surface(s2);
 		return;
