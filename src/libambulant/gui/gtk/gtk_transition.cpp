@@ -100,6 +100,7 @@ gtk_transition_blitclass_fade::update()
 	gdk_pixbuf_composite(new_pixbuf, tmp_pixbuf,0,0,W,H,0,0,1,1,GDK_INTERP_BILINEAR, alpha);
 	GdkGC *gc = gdk_gc_new (opm);
 	gdk_draw_pixbuf(opm, gc, tmp_pixbuf, 0, 0, L, T, W, H, GDK_RGB_DITHER_NONE,0,0);	
+	g_object_unref (G_OBJECT (tmp_pixbuf));
 	g_object_unref (G_OBJECT (old_pixbuf));
 	g_object_unref (G_OBJECT (new_pixbuf));
 	g_object_unref (G_OBJECT (gc));
