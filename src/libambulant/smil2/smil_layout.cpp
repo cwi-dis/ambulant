@@ -247,7 +247,7 @@ smil_layout_manager::build_body_regions(lib::document *doc) {
 #ifdef OLD_SUBREGIONS		
 		if (!region_node::needs_region_node(n)) continue;
 #else
-		if(!test_attrs(n).selected()) continue;
+		if(!test_attrs(n).selected()) continue; // XXXJACK: does this depend on dynamic_cc? I think so...
 		if(!n->get_attribute("region") && !region_node::needs_region_node(n) &&
 			n->get_local_name() != "area") continue;
 #endif

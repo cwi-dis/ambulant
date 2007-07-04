@@ -24,6 +24,7 @@
 #include "ambulant/smil2/time_state.h"
 #include "ambulant/smil2/time_node.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/smil2/test_attrs.h"
 
 //#define AM_DBG if(1)
 
@@ -239,8 +240,11 @@ void active_state::enter(qtime_type timestamp) {
 	// need to skip this node.
 	const bool skip = common::preferences::get_preferences()->m_dynamic_content_control;
 	if (skip) {
-		m_self->set_state(ts_postactive, timestamp, m_self);
-		return;
+		test_attrs ta(m_self->dom_node());
+		if (!ta.selected()) {
+			m_self->set_state(ts_postactive, timestamp, m_self);
+			return;
+		}
 	}
 #ifdef WITH_SMIL30
 	// We have to implement expr testing somewhere, and this seems like
