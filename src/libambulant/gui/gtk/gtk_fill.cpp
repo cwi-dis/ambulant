@@ -211,9 +211,12 @@ void
 gtk_background_renderer::redraw(const lib::rect &dirty,
 			       common::gui_window *window)
 {
+	if ( !  (m_src && m_dst))
+		return; 
 	const lib::rect &r = m_dst->get_rect();
 	AM_DBG lib::logger::get_logger()->debug("gtk_background_renderer::redraw(0x%x)", (void *)this);
-	if (m_src && m_src->get_bgopacity() > 0.5) {
+	double opacity = m_src->get_bgopacity();
+	if (opacity > 0.0) {
 	// First find our whole area to be cleared to background color
 		ambulant_gtk_window* agtkw = (ambulant_gtk_window*) window;
 		lib::rect dstrect_whole = r;
@@ -229,10 +232,41 @@ gtk_background_renderer::redraw(const lib::rect &dirty,
 		bgc.red = redc(bgcolor)*0x101;
 		bgc.blue = bluec(bgcolor)*0x101;
 		bgc.green = greenc(bgcolor)*0x101;
-		GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
-		gdk_gc_set_rgb_fg_color (gc, &bgc);
-		gdk_draw_rectangle (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, TRUE, L, T, W, H);
-		g_object_unref (G_OBJECT (gc));
+#ifdef	WITH_SMIL30
+		if (opacity == 1.0) {
+#else //WITH_SMIL30
+		if (opacity >= 0.5) {
+#endif//WITH_SMIL30
+			GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
+			gdk_gc_set_rgb_fg_color (gc, &bgc);
+			gdk_draw_rectangle (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, TRUE, L, T, W, H);
+			g_object_unref (G_OBJECT (gc));
+#ifdef WITH_SMIL30
+		} else {  //XXXX adapted from gtk_transition. May be some code to be factored out
+			// Method:
+		  	// 1. Get the current on-screen image as a pixmap
+		  	// 2. Create a new pixmap and draw a coloured rectangle on it
+		  	// 3. Blend these 2 pixmaps together by getting their pixbufs
+		  	// 4. Draw the resulting pixbuf to become the new on-screen image  
+			GdkPixmap* opm = agtkw->get_ambulant_pixmap();
+			gint width; gint height;
+			gdk_drawable_get_size(GDK_DRAWABLE (opm), &width, &height);
+			GdkPixmap* npm = gdk_pixmap_new(opm, width, height, -1);
+			GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (opm));
+			GdkGC *ngc = gdk_gc_new (GDK_DRAWABLE (npm));
+			gdk_gc_set_rgb_fg_color (ngc, &bgc);
+			gdk_draw_rectangle (GDK_DRAWABLE (npm), ngc, TRUE, L, T, W, H);
+			GdkPixbuf* old_pixbuf = gdk_pixbuf_get_from_drawable(NULL, opm, NULL, L, T, 0, 0, W, H);
+			GdkPixbuf* new_pixbuf = gdk_pixbuf_get_from_drawable(NULL, npm, NULL, L, T, 0, 0, W, H);
+			int alpha = static_cast<int>(round(255*opacity));
+			gdk_pixbuf_composite(new_pixbuf, old_pixbuf,0,0,W,H,0,0,1,1,GDK_INTERP_BILINEAR, alpha);
+			gdk_draw_pixbuf(opm, gc, old_pixbuf, 0, 0, L, T, W, H, GDK_RGB_DITHER_NONE,0,0);				
+			g_object_unref (G_OBJECT (old_pixbuf));
+			g_object_unref (G_OBJECT (new_pixbuf));
+			g_object_unref (G_OBJECT (ngc));
+			g_object_unref (G_OBJECT (gc));
+#endif//WITH_SMIL30
+		}
 		//gtk_widget_modify_bg (GTK_WIDGET (agtkw->get_ambulant_widget()->get_gtk_widget()), GTK_STATE_NORMAL, &bgc );
 		if (m_background_pixmap) {
 			AM_DBG lib::logger::get_logger()->debug("gtk_background_renderer::redraw: drawing pixmap");
