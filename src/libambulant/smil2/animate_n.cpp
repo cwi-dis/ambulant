@@ -644,7 +644,7 @@ class opacity_animation : public linear_values_animation<F, double> {
 	bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const {
 		double dv = dst->get_region_opacity(this->m_aattrs->get_target_attr(), false)*100;
 		if(dv != regs.dv || IGNORE_ATTR_COMP) {
-			/*AM_DBG*/ {
+			AM_DBG {
 				lib::timer::time_type t = this->m_timer->elapsed();
 				lib::logger::get_logger()->debug("%s(%ld) -> %f", 
 					this->m_aattrs->get_target_attr().c_str(), t, regs.dv);
@@ -678,7 +678,7 @@ class underlying_to_opacity_animation : public underlying_to_animation<double> {
 	bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const {
 		double dv = dst->get_region_opacity(m_aattrs->get_target_attr(), false)*100;
 		if(dv != regs.dv || IGNORE_ATTR_COMP) {
-			/*AM_DBG*/ {
+			AM_DBG {
 				lib::timer::time_type t = m_timer->elapsed();
 				lib::logger::get_logger()->debug("%s(%ld) -> %f", 
 					m_aattrs->get_target_attr().c_str(), t, regs.dv);

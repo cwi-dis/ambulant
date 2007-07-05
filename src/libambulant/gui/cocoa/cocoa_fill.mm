@@ -133,7 +133,7 @@ cocoa_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wi
 		// First find our whole area (which we have to clear to background color)
 		// XXXX Fill with background color
 		color_t bgcolor = m_src->get_bgcolor();
-		/*AM_DBG*/ lib::logger::get_logger()->debug("cocoa_bg_renderer::drawbackground: clearing to 0x%x opacity %f", (long)bgcolor, opacity);
+		AM_DBG lib::logger::get_logger()->debug("cocoa_bg_renderer::drawbackground: clearing to 0x%x opacity %f", (long)bgcolor, opacity);
 		NSColor *cocoa_bgcolor = [NSColor colorWithCalibratedRed:redf(bgcolor)
 					green:greenf(bgcolor)
 					blue:bluef(bgcolor)

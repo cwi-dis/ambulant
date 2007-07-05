@@ -288,7 +288,7 @@ void gui::dx::audio_player::initialize_speedup_filter() {
 
 	IBaseFilter *pCurFilter;
 	while (pOutputPin == NULL && (res=pEnumFilters->Next(1, &pCurFilter, NULL)) == S_OK) {
-		/*AM_DBG*/ {
+		AM_DBG {
 			FILTER_INFO info;
 			LPWSTR vendorInfo;
 			res = pCurFilter->QueryFilterInfo(&info);
