@@ -712,7 +712,13 @@ void time_node::activate(qtime_type timestamp) {
 	if(!paused()) {
 		if(is_animation()) start_animation(sd_offset);
 #ifdef WITH_SMIL30
-		else if(is_statecommand()) start_statecommand(sd_offset);
+		else if(is_statecommand()) {
+			start_statecommand(sd_offset);
+			// State commands finish immediately, make it so.
+			assert(m_state->ident() == ts_active);
+			raise_update_event(timestamp);
+			sync_node()->raise_update_event(timestamp);
+		}
 #endif // WITH_SMIL30
 		else start_playable(sd_offset);
 		if(m_timer) m_timer->resume();
@@ -1064,6 +1070,9 @@ bool time_node::end_cond(qtime_type timestamp) {
 	// e) due to not controled delays the video is still playing
 	
 	bool specified_dur = m_attrs.specified_dur() || m_attrs.specified_rdur();
+#ifdef WITH_SMIL30
+	if (!specified_dur && is_statecommand()) tc = true;
+#endif
 	if(is_cmedia() && !is_animation() 
 #ifdef WITH_SMIL30
 			&& !is_statecommand()
