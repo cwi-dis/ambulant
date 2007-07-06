@@ -181,7 +181,7 @@ gui::dx::dx_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& r
 }
 
 void
-gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, const lib::rect& r) {
+gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, const lib::rect& r, unsigned int word_spacing) {
 	if (run.m_command != smil2::stc_data)
 		return;
 	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_render(): command=%d data=%s color=0x%x",run.m_command,run.m_data.c_str()==NULL?"(null)":run.m_data.c_str(),run.m_color);
@@ -207,9 +207,18 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 	dstRC.top    = r.top();
 	dstRC.right  = r.right();
 	dstRC.bottom = r.bottom();
-	UINT uFormat = DT_NOPREFIX | DT_WORDBREAK;
-	HRESULT res = ::DrawText(m_hdc, tp, (int)tp.length(), &dstRC, uFormat);
-	if(res == 0)
+	UINT uFormat = DT_NOPREFIX | DT_LEFT;
+	HRESULT hr = S_OK;
+	if (word_spacing > 0) {
+		lib::textptr bl(" ", 1);
+		dstRC.left -= word_spacing;
+		hr = ::DrawText(m_hdc, bl, (int)bl.length(), &dstRC, uFormat);
+		if(FAILED(hr))
+			win_report_last_error("DrawText()");
+		dstRC.left += word_spacing;
+	}
+	hr = ::DrawText(m_hdc, tp, (int)tp.length(), &dstRC, uFormat);
+	if(FAILED(hr))
 		win_report_last_error("DrawText()");
 
 	// Text is always transparent; set the color
@@ -218,7 +227,7 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 	DDCOLORKEY ck;
 	ck.dwColorSpaceLowValue = ddTranspColor;
 	ck.dwColorSpaceHighValue = ddTranspColor;
-	HRESULT hr = m_ddsurf->SetColorKey(dwFlags, &ck);
+	hr = m_ddsurf->SetColorKey(dwFlags, &ck);
 	if (FAILED(hr)) {
 		win_report_error("SetColorKey()", hr);
 	}

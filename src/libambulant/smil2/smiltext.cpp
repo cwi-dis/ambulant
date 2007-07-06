@@ -400,6 +400,7 @@ smiltext_layout_engine::smiltext_layout_engine(const lib::node *n, lib::event_pr
 	m_event_processor(ep),
 	m_provider(provider),
 	m_params(m_engine.get_params()),
+	m_word_spacing(0),
 	m_dest_rect()
 {
 }
@@ -495,12 +496,15 @@ smiltext_layout_engine::redraw(const lib::rect& r) {
 		}
 		if ( ! fits && nbr == 0)
 			nbr = 1;
+		bool initial = true;
 		while (bol != cur) {
 			// compute rectangle where to render this text
 			lib::rect cr = smiltext_compute(*bol, r);
 			cr.x -= logical_origin.x;
 			cr.y -= logical_origin.y;
-			m_provider->render_smiltext(*bol, cr);
+			m_provider->render_smiltext(*bol, cr, initial?0:m_word_spacing);
+			if (initial)
+				initial = false;
 			bol++;
 		}
 	}
@@ -529,9 +533,9 @@ smiltext_layout_engine::smiltext_compute(const smil2::smiltext_run strun, const 
 
 	lib::rect rv = r;
 	smiltext_metrics stm = m_provider->get_smiltext_metrics (strun);
-
+	m_word_spacing = stm.get_word_spacing();
 	rv.x += m_x;
-	rv.w = stm.get_width()+ stm.get_word_spacing();
+	rv.w = stm.get_width()+ m_word_spacing;
 	m_x  += rv.w;
 
 	rv.y += (m_y + m_max_ascent - stm.get_ascent());

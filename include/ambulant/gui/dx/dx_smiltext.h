@@ -62,7 +62,7 @@ class dx_smiltext_renderer :
 	void smiltext_changed();
 	// Callbacks from the smiltext layout engine
 	smil2::smiltext_metrics get_smiltext_metrics(const smil2::smiltext_run& run);
-	void render_smiltext(const smil2::smiltext_run& run, const lib::rect& r);
+	void render_smiltext(const smil2::smiltext_run& run, const lib::rect& r, unsigned int word_spacing);
 	// Callbacks from event procesor
 	void user_event(const lib::point& pt, int what);
 	void redraw(const lib::rect &dirty, common::gui_window *window);

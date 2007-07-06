@@ -239,8 +239,9 @@ class smiltext_layout_provider {
   public:
 	/// Return font information needed for for use smiltext_layout_engine
 	virtual smiltext_metrics get_smiltext_metrics(const smiltext_run& str) = 0;
-	/// Render the smiltext in the rectangle
-	virtual void render_smiltext(const smiltext_run& str, const lib::rect& r) = 0;
+	/// Render the smiltext_run in the rectangle specified.
+	/// 'word spacing' is the amount of whitespace pixels in front of the word. 
+	virtual void render_smiltext(const smiltext_run& str, const lib::rect& r, unsigned int word_spacing) = 0;
 };
 
 class smiltext_layout_engine {
@@ -276,6 +277,7 @@ class smiltext_layout_engine {
 	int m_y;
 	unsigned int m_max_ascent;
 	unsigned int m_max_descent;
+	unsigned int m_word_spacing;
 };
 
 

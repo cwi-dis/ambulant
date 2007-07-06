@@ -64,7 +64,7 @@ class qt_smiltext_renderer :
 	void redraw_body(const lib::rect &dirty, common::gui_window *window);
 
 	smil2::smiltext_metrics get_smiltext_metrics(const smil2::smiltext_run& str);
-	void render_smiltext(const smil2::smiltext_run& str, const lib::rect& r);
+	void render_smiltext(const smil2::smiltext_run& str, const lib::rect& r, bool initial);
 
   private:
 	// functions required by inheritance
