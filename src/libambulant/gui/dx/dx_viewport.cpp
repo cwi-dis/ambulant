@@ -517,7 +517,7 @@ void gui::dx::viewport::redraw() {
 			clipto_r1r2r3r4(m_fstransition, src_rc_v, dst_rc_v);
 			draw(s2, dst_rc_v, dst_rc_v, false, tmps);
 		} else if (bt == smil2::bt_fade) {
-			if ( ! blt_blend(tmps, s2, ourrect, m_fstransition->get_progress()))
+			if ( ! blt_blend(tmps, s2, ourrect, m_fstransition->get_progress(), 0, 0xFFFFFFFF))
 				draw(s2, ourrect, ourrect, false, tmps);
 		} else {
 			HRGN hrgn = NULL;
@@ -611,7 +611,7 @@ void gui::dx::viewport::redraw(const lib::rect& rc) {
 			clipto_r1r2r3r4(m_fstransition, src_rc_v, dst_rc_v);
 			draw(s2, dst_rc_v, dst_rc_v, false, tmps);
 		} else if (bt == smil2::bt_fade) {
-			if ( ! blt_blend(tmps, s2, ourrect, m_fstransition->get_progress()))
+			if ( ! blt_blend(tmps, s2, ourrect, m_fstransition->get_progress(), 0, 0xFFFFFFFF))
 				draw(s2, ourrect, ourrect, false, tmps);
 		} else {
 			HRGN hrgn = NULL;
@@ -692,15 +692,16 @@ void gui::dx::viewport::clear() {
 	}
 }
 
-bool gui::dx::viewport::blt_blend (IDirectDrawSurface* to, IDirectDrawSurface* from, const lib::rect& rc, double opacity) {
+bool gui::dx::viewport::blt_blend (IDirectDrawSurface* to, IDirectDrawSurface* from, const lib::rect& rc, double opacity, lib::color_t low_chroma, lib::color_t high_chroma) {
 	bool rv = true;
+	uint32 low_ddclr = low_chroma,  high_ddclr = high_chroma;
 	HRESULT hr = S_OK;
 	if (bits_size == 32) {
-		hr = blt_blend32(rc, opacity, from, to);
+		hr = blt_blend32(rc, opacity, from, to, low_ddclr, high_ddclr);
 	} else if( bits_size == 24) {
-		hr = blt_blend24(rc, opacity, from, to);
+		hr = blt_blend24(rc, opacity, from, to, low_ddclr, high_ddclr);
 	} else if (bits_size == 16) {
-		hr = blt_blend16(rc, opacity, from, to);
+		hr = blt_blend16(rc, opacity, from, to, low_ddclr, high_ddclr);
 	} else {
 		rv = false;
 	}
@@ -738,7 +739,7 @@ void gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, double opac
 		}
 		clear(rc, clr, opacity, s1);
 		copy_bgd_to(s2, rc);
-		if (blt_blend(s2, s1, rc, tr->get_progress()*opacity))
+		if (blt_blend(s2, s1, rc, tr->get_progress()*opacity, 0, 0xFFFFFFFF))
 			draw_to_bgd(s2, rc, 0);
 		else
 			draw_to_bgd(s1, rc, 0);
@@ -806,7 +807,7 @@ void gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, double opac
 		hr = colorsurf->Blt(&dstRC, 0, 0, dwFlags, &bltfx);
 		if ( ! FAILED(hr)) {
 			bltfx.dwFillColor = convert(0); // black
-			blt_blend(dstview, colorsurf, rc, opacity);
+			blt_blend(dstview, colorsurf, rc, opacity, 0, 0xFFFFFFFF);
 			release_surface(colorsurf);
 		}
 	} else {
@@ -910,7 +911,9 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& src_rc,
 		if(keysrc) copy_bgd_to(s1, dst_rc);
 		draw(src, src_rc, dst_rc, keysrc, s1);
 		copy_bgd_to(s2, dst_rc);
-		if (blt_blend(s2, s1, dst_rc, tr->get_progress()/*opacity*/))
+// in the next line,  0x88888888 can be used to test chromakeying
+//		if (blt_blend(s2, s1, dst_rc, tr->get_progress()/*opacity*/, 0x88888888, 0xFFFFFFFF))
+		if (blt_blend(s2, s1, dst_rc, tr->get_progress()/*opacity*/, 0x0, 0xFFFFFFFF))
 			draw_to_bgd(s2, dst_rc, 0);
 		else
 			draw_to_bgd(s1, dst_rc, 0);
@@ -1222,8 +1225,19 @@ RECT* gui::dx::viewport::to_screen_rc_ptr(RECT& r) {
 
 __forceinline int blend(int w, int c1, int c2) {return (c1==c2)?c1:(c1 + w*(c2-c1)/256); }
 
-HRESULT gui::dx::viewport::blt_blend32(const lib::rect& rc, double progress,
-	IDirectDrawSurface *surf1, IDirectDrawSurface *surf2) {
+void
+gui::dx::viewport::get_low_high_values(uint32 low_ddclr, uint32 high_ddclr, BYTE* r_l, BYTE* r_h, BYTE* g_l, BYTE* g_h, BYTE* b_l, BYTE* b_h) {
+	*r_h = (BYTE)((high_ddclr&0xFF0000) >> 16);
+	*r_l = (BYTE)((low_ddclr&0xFF0000) >> 16);
+	*g_h = (BYTE)((high_ddclr&0xFF00) >> 8);
+	*g_l = (BYTE)((low_ddclr&0xFF00) >> 8);
+	*b_h = (BYTE)(high_ddclr&0xFF);
+	*b_l = (BYTE)(low_ddclr&0xFF);
+}
+
+HRESULT
+gui::dx::viewport::blt_blend32(const lib::rect& rc, double progress,
+	IDirectDrawSurface *surf1, IDirectDrawSurface *surf2, uint32 low_ddclr, uint32 high_ddclr) {
 	
 	DDSURFACEDESC desc1, desc2;
 	ZeroMemory(&desc1, sizeof(desc1));
@@ -1247,7 +1261,9 @@ HRESULT gui::dx::viewport::blt_blend32(const lib::rect& rc, double progress,
 	int end_row = rcc.top();
 	int begin_col = rcc.left();
 	int end_col = rcc.right();
-	
+	BYTE r_l, r_h, g_l, g_h, b_l, b_h;
+	get_low_high_values(low_ddclr, high_ddclr, &r_l, &r_h, &g_l, &g_h, &b_l, &b_h);
+
 	int weight = int(progress*256);	
 	for(int row = begin_row-1;row>=end_row;row--) {
 		RGBQUAD* px1 = (RGBQUAD*)((BYTE*)desc1.lpSurface+row*desc1.lPitch);
@@ -1255,9 +1271,15 @@ HRESULT gui::dx::viewport::blt_blend32(const lib::rect& rc, double progress,
 		px1 +=  begin_col;
 		px2 +=  begin_col;
 		for(int col=begin_col;col<end_col;col++, px1++, px2++) {
-			px2->rgbRed = (BYTE)blend(weight, px2->rgbRed, px1->rgbRed);
-			px2->rgbGreen = (BYTE)blend(weight, px2->rgbGreen, px1->rgbGreen);
-			px2->rgbBlue = (BYTE)blend(weight, px2->rgbBlue, px1->rgbBlue);
+			if (px1->rgbRed >= r_l && px1->rgbRed <= r_h)
+				px2->rgbRed = (BYTE)blend(weight, px2->rgbRed, px1->rgbRed);
+			else px2->rgbRed = 0;
+			if (px1->rgbGreen >= g_l && px1->rgbGreen <= g_h)
+				px2->rgbGreen = (BYTE)blend(weight, px2->rgbGreen, px1->rgbGreen);
+			else px2->rgbGreen = 0;
+			if (px1->rgbBlue >= b_l && px1->rgbBlue <= b_h)
+				px2->rgbBlue = (BYTE)blend(weight, px2->rgbBlue, px1->rgbBlue);
+			else px2->rgbBlue = 0;
 		}
 	}
 	surf1->Unlock(0);
@@ -1267,7 +1289,7 @@ HRESULT gui::dx::viewport::blt_blend32(const lib::rect& rc, double progress,
 
 
 HRESULT gui::dx::viewport::blt_blend24(const lib::rect& rc, double progress,
-	IDirectDrawSurface *surf1, IDirectDrawSurface *surf2) {
+	IDirectDrawSurface *surf1, IDirectDrawSurface *surf2, uint32 low_ddclr, uint32 high_ddclr) {
 	
 	DDSURFACEDESC desc1, desc2;
 	ZeroMemory(&desc1, sizeof(desc1));
@@ -1291,6 +1313,9 @@ HRESULT gui::dx::viewport::blt_blend24(const lib::rect& rc, double progress,
 	int end_row = rcc.top();
 	int begin_col = rcc.left();
 	int end_col = rcc.right();
+
+	BYTE r_l, r_h, g_l, g_h, b_l, b_h;
+	get_low_high_values(low_ddclr, high_ddclr, &r_l, &r_h, &g_l, &g_h, &b_l, &b_h);
 	
 	int weight = int(progress*256);	
 	for(int row = begin_row-1;row>=end_row;row--) {
@@ -1299,9 +1324,15 @@ HRESULT gui::dx::viewport::blt_blend24(const lib::rect& rc, double progress,
 		px1 +=  begin_col;
 		px2 +=  begin_col;
 		for(int col=begin_col;col<end_col;col++, px1++, px2++) {
-			px2->rgbtRed = (BYTE)blend(weight, px2->rgbtRed, px1->rgbtRed);
-			px2->rgbtGreen = (BYTE)blend(weight, px2->rgbtGreen, px1->rgbtGreen);
-			px2->rgbtBlue = (BYTE)blend(weight, px2->rgbtBlue, px1->rgbtBlue);
+			if (px1->rgbtRed >= r_l && px1->rgbtRed <= r_h)
+				px2->rgbtRed = (BYTE)blend(weight, px2->rgbtRed, px1->rgbtRed);
+			else px2->rgbtRed = 0;
+			if (px1->rgbtGreen >= g_l && px1->rgbtGreen <= g_h)
+				px2->rgbtGreen = (BYTE)blend(weight, px2->rgbtGreen, px1->rgbtGreen);
+			else px2->rgbtGreen = 0;
+			if (px1->rgbtBlue >= b_l && px1->rgbtBlue <= b_h)
+				px2->rgbtBlue = (BYTE)blend(weight, px2->rgbtBlue, px1->rgbtBlue);
+			else px2->rgbtBlue = 0;
 		}
 	}
 	surf1->Unlock(0);
@@ -1310,34 +1341,35 @@ HRESULT gui::dx::viewport::blt_blend24(const lib::rect& rc, double progress,
 }
 
 struct trible565 {
+	// bit format 16 bit bgr: bbbbbggggggrrrrr
 	uint16 v;
 	trible565() : v(0) {}
 	trible565(int _r, int _g, int _b)  {
-		lib::color_t rgb = (_b << 16) | (_g << 8) | _r ;
-        v = (uint16)((rgb & 0xf80000)>> 8); 
-        v |= (uint16)(rgb & 0xfc00) >> 5; 
-        v |= (uint16)(rgb & 0xf8) >> 3;  
+		lib::color_t bgr = (_b << 16) | (_g << 8) | _r ;
+        v = (uint16)((bgr & 0xf80000)>> 8); 
+        v |= (uint16)(bgr & 0xfc00) >> 5; 
+        v |= (uint16)(bgr & 0xf8) >> 3;  
 	}
 	trible565(uchar _r, uchar _g, uchar _b) {
-		lib::color_t rgb = (_b << 16) | (_g << 8) | _r ;
-        v = (uint16)((rgb & 0xf80000)>> 8); // red
-        v |= (uint16)(rgb & 0xfc00) >> 5; // green
-        v |= (uint16)(rgb & 0xf8) >> 3; // blue 
+		lib::color_t bgr = (_b << 16) | (_g << 8) | _r ;
+        v = (uint16)((bgr & 0xf80000)>> 8); // blue  
+        v |= (uint16)(bgr & 0xfc00) >> 5; // green
+        v |= (uint16)(bgr & 0xf8) >> 3; // red
 	}
 	
-	trible565(lib::color_t rgb) {
-        v = (uint16)((rgb & 0xf80000) >> 8); 
-        v |= (uint16)(rgb & 0xfc00) >> 5; 
-        v |= (uint16)(rgb & 0xf8) >> 3;  
+	trible565(lib::color_t bgr) {
+        v = (uint16)((bgr & 0xf80000) >> 8); 
+        v |= (uint16)(bgr & 0xfc00) >> 5; 
+        v |= (uint16)(bgr & 0xf8) >> 3;  
 	}
-	
-	BYTE blue() { return (v & 0xf800) >> 8;}
-	BYTE green() { return (v & 0x7e0) >> 2;}
-	BYTE red() { return (v & 0x1f) << 3;}
+	// mult and div used to ensure image doesn't become slightly dark
+	BYTE blue() { return (((v & 0xf800) >> 11)*255)/31;}
+	BYTE green() { return (((v & 0x7e0) >> 5)*255)/63;}
+	BYTE red() { return ((v & 0x1f)*255)/31;}
 };
 
 HRESULT gui::dx::viewport::blt_blend16(const lib::rect& rc, double progress,
-	IDirectDrawSurface *surf1, IDirectDrawSurface *surf2) {
+	IDirectDrawSurface *surf1, IDirectDrawSurface *surf2, uint32 low_ddclr, uint32 high_ddclr) {
 	
 	DDSURFACEDESC desc1, desc2;
 	ZeroMemory(&desc1, sizeof(desc1));
@@ -1362,6 +1394,9 @@ HRESULT gui::dx::viewport::blt_blend16(const lib::rect& rc, double progress,
 	int begin_col = rcc.left();
 	int end_col = rcc.right();
 	
+	BYTE r_l, r_h, g_l, g_h, b_l, b_h;
+	get_low_high_values(low_ddclr, high_ddclr, &r_l, &r_h, &g_l, &g_h, &b_l, &b_h);
+
 	int weight = int(progress*256);	
 	for(int row = begin_row-1;row>=end_row;row--) {
 		trible565* px1 = (trible565*)((BYTE*)desc1.lpSurface+row*desc1.lPitch);
@@ -1369,9 +1404,16 @@ HRESULT gui::dx::viewport::blt_blend16(const lib::rect& rc, double progress,
 		px1 +=  begin_col;
 		px2 +=  begin_col;
 		for(int col=begin_col;col<end_col;col++, px1++, px2++) {
-			BYTE r  = (BYTE)blend(weight, px2->red(), px1->red());
-			BYTE g = (BYTE)blend(weight, px2->green(), px1->green());
-			BYTE b = (BYTE)blend(weight, px2->blue(), px1->blue());
+			BYTE r = px1->red(), g = px1->green(), b = px1->blue();
+			if (r >= r_l && r <= r_h)
+				r = (BYTE)blend(weight, px2->red(), r);
+			else r = 0;
+			if (g >= g_l && g <= g_h)
+				g = (BYTE)blend(weight, px2->green(), g);
+			else g = 0;
+			if (b >= b_l && b <= b_h)
+				b = (BYTE)blend(weight, px2->blue(), b);
+			else b = 0;
 			*px2 = trible565(r, g, b);
 		}
 	}

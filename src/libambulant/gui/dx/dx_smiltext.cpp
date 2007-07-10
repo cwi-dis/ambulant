@@ -190,6 +190,10 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 		COLORREF crTextColor = (run.m_color == CLR_INVALID)?::GetSysColor(COLOR_WINDOWTEXT):run.m_color;;
 		::SetTextColor(m_hdc, crTextColor);
 	}
+	double alfa = 1.0;
+	const common::region_info *ri = m_dest->get_info();
+	if (ri) alfa = ri->get_mediaopacity();
+
 	// set the background color
 	if( ! run.m_bg_transparent) {
 		COLORREF crBkColor = (run.m_bg_color == CLR_INVALID)?::GetSysColor(COLOR_WINDOW):run.m_bg_color;

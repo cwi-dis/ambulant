@@ -125,14 +125,10 @@ class viewport {
 	// Draw the copy using the clipping region
 	void draw_to_bgd(IDirectDrawSurface* surf, const lib::rect& rc, HRGN hrgn);
 	
-	// Fading support
-	bool blt_blend (IDirectDrawSurface* to, IDirectDrawSurface* from, const lib::rect& rc, double progress);
-	HRESULT blt_blend32(const lib::rect& rc, double progress,
-		IDirectDrawSurface *surf1, IDirectDrawSurface *surf2);
-	HRESULT blt_blend24(const lib::rect& rc, double progress,
-		IDirectDrawSurface *surf1, IDirectDrawSurface *surf2);
-	HRESULT blt_blend16(const lib::rect& rc, double progress,
-		IDirectDrawSurface *surf1, IDirectDrawSurface *surf2);
+	// Fading, opacity and chromakeying support
+	// blend each pixel in 'from' with the corresponding one in 'to' using 'opacity'
+	// when the color of the pixel in 'from' is in the range [low_value, high_value]
+	bool blt_blend (IDirectDrawSurface* to, IDirectDrawSurface* from, const lib::rect& rc, double opacity, lib::color_t low_chroma, lib::color_t high_chroma);
 	
 	// Paints the provided rect
 	void frame_rect(const lib::rect& rc, lib::color_t clr = 0xFF0000);
@@ -161,6 +157,14 @@ class viewport {
 	void get_pixel_format();
 	uint16 low_bit_pos(uint32 dword);
 	uint16 high_bit_pos(uint32 dword);
+
+	void get_low_high_values(uint32 low_ddclr, uint32 high_ddclr, BYTE* r_l, BYTE* r_h, BYTE* g_l, BYTE* g_h, BYTE* b_l, BYTE* b_h);
+	HRESULT blt_blend32(const lib::rect& rc, double progress,
+		IDirectDrawSurface *surf1, IDirectDrawSurface *surf2, uint32 low_ddclr, uint32 high_ddclr);
+	HRESULT blt_blend24(const lib::rect& rc, double progress,
+		IDirectDrawSurface *surf1, IDirectDrawSurface *surf2, uint32 low_ddclr, uint32 high_ddclr);
+	HRESULT blt_blend16(const lib::rect& rc, double progress,
+		IDirectDrawSurface *surf1, IDirectDrawSurface *surf2, uint32 low_ddclr, uint32 high_ddclr);
 
 	HWND m_hwnd;
 	IDirectDraw* m_direct_draw;
