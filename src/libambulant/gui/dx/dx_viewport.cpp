@@ -440,7 +440,8 @@ gui::dx::viewport::~viewport() {
 }
 
 // Sets the background color of this viewport
-void gui::dx::viewport::set_background(lib::color_t color) {
+void
+gui::dx::viewport::set_background(lib::color_t color) {
 	m_bgd = (color == CLR_INVALID)?CLR_DEFAULT:color;
 	m_ddbgd = convert(m_bgd);
 }
@@ -470,7 +471,8 @@ gui::dx::viewport::create_surface(DWORD w, DWORD h) {
 	return surface;
 }
 
-IDirectDrawSurface* gui::dx::viewport::create_surface() {
+IDirectDrawSurface*
+gui::dx::viewport::create_surface() {
 	IDirectDrawSurface* surf = 0;
 	if(m_surfaces.empty()) {
 		return create_surface(m_width, m_height);
@@ -481,12 +483,14 @@ IDirectDrawSurface* gui::dx::viewport::create_surface() {
 	return surf;
 }
 
-void gui::dx::viewport::release_surface(IDirectDrawSurface* surf) {
+void
+gui::dx::viewport::release_surface(IDirectDrawSurface* surf) {
 	m_surfaces.push_back(surf);
 }
 
 // Blt back buffer to primary surface
-void gui::dx::viewport::redraw() {
+void
+gui::dx::viewport::redraw() {
 	if(!m_primary_surface || !m_surface)
 		return;
 	RECT src_rc = {0, 0, m_width, m_height};
@@ -568,7 +572,8 @@ void gui::dx::viewport::redraw() {
 	}
 }
 
-void gui::dx::viewport::redraw(const lib::rect& rc) {
+void
+gui::dx::viewport::redraw(const lib::rect& rc) {
 	if(!m_primary_surface || !m_surface)
 		return;
 	RECT src_rc = {rc.left(), rc.top(), rc.right(), rc.bottom()};
@@ -662,14 +667,16 @@ void gui::dx::viewport::redraw(const lib::rect& rc) {
 	}
 }
 
-void gui::dx::viewport::schedule_redraw() {
+void
+gui::dx::viewport::schedule_redraw() {
 #ifdef DO_REDRAW_WITH_EVENTS
 	::InvalidateRect(m_hwnd, NULL, 0);
 #else
 	redraw();
 #endif // DO_REDRAW_WITHOUT_EVENTS
 }
-void gui::dx::viewport::schedule_redraw(const lib::rect& rc) {
+void
+gui::dx::viewport::schedule_redraw(const lib::rect& rc) {
 #ifdef DO_REDRAW_WITH_EVENTS
 	RECT src_rc = {rc.left(), rc.top(), rc.right(), rc.bottom()};
 	::InvalidateRect(m_hwnd, &src_rc, 0);
@@ -679,7 +686,8 @@ void gui::dx::viewport::schedule_redraw(const lib::rect& rc) {
 }
 
 // Clears the back buffer using this viewport bgd color
-void gui::dx::viewport::clear() {
+void
+gui::dx::viewport::clear() {
 	if(!m_surface) return;
 	DDBLTFX bltfx;
 	memset(&bltfx, 0, sizeof(DDBLTFX));
@@ -692,7 +700,8 @@ void gui::dx::viewport::clear() {
 	}
 }
 
-bool gui::dx::viewport::blt_blend (IDirectDrawSurface* to, IDirectDrawSurface* from, const lib::rect& rc, double opacity, lib::color_t low_chroma, lib::color_t high_chroma) {
+bool
+gui::dx::viewport::blt_blend (IDirectDrawSurface* to, IDirectDrawSurface* from, const lib::rect& rc, double opacity, lib::color_t low_chroma, lib::color_t high_chroma) {
 	bool rv = true;
 	uint32 low_ddclr = low_chroma,  high_ddclr = high_chroma;
 	HRESULT hr = S_OK;
@@ -713,7 +722,8 @@ bool gui::dx::viewport::blt_blend (IDirectDrawSurface* to, IDirectDrawSurface* f
 }
 
 // Clears the specified back buffer rectangle using the provided color and taking into account any transition
-void gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, double opacity, dx_transition *tr) {
+void
+gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, double opacity, dx_transition *tr) {
 	if(!m_surface) return;
 	
 	if(!tr) {
@@ -818,7 +828,8 @@ void gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, double opac
 }
 
 // Clears a DD surface with the provided color.
-void gui::dx::viewport::clear_surface(IDirectDrawSurface* p, lib::color_t clr, double opacity) {
+void
+gui::dx::viewport::clear_surface(IDirectDrawSurface* p, lib::color_t clr, double opacity) {
 	DDSURFACEDESC sd;
 	memset(&sd, 0, sizeof(DDSURFACEDESC));
 	sd.dwSize = sizeof(DDSURFACEDESC);
@@ -835,7 +846,8 @@ void gui::dx::viewport::clear_surface(IDirectDrawSurface* p, lib::color_t clr, d
 }
 
 // Draw the whole DD surface to the back buffer and destination rectangle
-void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& dst_rc, bool keysrc) {
+void
+gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& dst_rc, bool keysrc) {
 	if(!m_surface || !src) return;
 	DWORD flags = AM_DDBLT_WAIT;
 	if(keysrc) flags |= DDBLT_KEYSRC;
@@ -859,7 +871,8 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& dst_rc, b
 
 
 // Draw the src_rc of the DD surface to the back buffer and destination rectangle
-void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& src_rc,
+void
+gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& src_rc,
 	const lib::rect& dst_rc, bool keysrc, dx_transition *tr) {
 	if(!m_surface || !src) return;
 	
@@ -958,7 +971,8 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& src_rc,
 	DeleteObject((HGDIOBJ)hrgn);
 }
 
-void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& src_rc,
+void
+gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& src_rc,
 	const lib::rect& dst_rc, bool keysrc, IDirectDrawSurface* dstview) {
 	if(!dstview || !src) return;
 	
@@ -988,7 +1002,8 @@ void gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& src_rc,
 }
 
 // Paints the provided string
-void gui::dx::viewport::draw(const std::basic_string<text_char>& text, const lib::rect& rc, lib::color_t clr) {
+void
+gui::dx::viewport::draw(const std::basic_string<text_char>& text, const lib::rect& rc, lib::color_t clr) {
 	if(!m_surface || text.empty()) return;	
 	HDC hdc;
 	HRESULT hr = m_surface->GetDC(&hdc);
@@ -1008,7 +1023,8 @@ void gui::dx::viewport::draw(const std::basic_string<text_char>& text, const lib
 }
 
 // Frames the provided rect
-void gui::dx::viewport::frame_rect(const lib::rect& rc, lib::color_t clr) {
+void
+gui::dx::viewport::frame_rect(const lib::rect& rc, lib::color_t clr) {
 	if(!m_surface) return;	
 	HDC hdc;
 	HRESULT hr = m_surface->GetDC(&hdc);
@@ -1042,7 +1058,8 @@ lib::size gui::dx::viewport::get_size(IDirectDrawSurface* p) {
 }
 
 // Draw the src_rc of the DD surface to the back buffer and destination rectangle
-void gui::dx::viewport::blit(IDirectDrawSurface* src, const lib::rect& src_rc,
+void
+gui::dx::viewport::blit(IDirectDrawSurface* src, const lib::rect& src_rc,
 	IDirectDrawSurface* dst, const lib::rect& dst_rc) {
 	
 	RECT srcRC = {src_rc.left(), src_rc.top(), src_rc.right(), src_rc.bottom()};
@@ -1070,7 +1087,8 @@ void gui::dx::viewport::blit(IDirectDrawSurface* src, const lib::rect& src_rc,
 }
 
 // Copies to the DD surface the back buffer within the from rect
-void gui::dx::viewport::rdraw(IDirectDrawSurface* dst, const lib::rect& from_rc) {
+void
+gui::dx::viewport::rdraw(IDirectDrawSurface* dst, const lib::rect& from_rc) {
 	if(!m_surface || !dst) return;
 	DWORD flags = AM_DDBLT_WAIT;
 	
@@ -1092,7 +1110,8 @@ void gui::dx::viewport::rdraw(IDirectDrawSurface* dst, const lib::rect& from_rc)
 	}
 }
 
-void gui::dx::viewport::copy_bgd_to(IDirectDrawSurface* surf, const lib::rect& rc) { 
+void
+gui::dx::viewport::copy_bgd_to(IDirectDrawSurface* surf, const lib::rect& rc) { 
 	if(!m_surface || !surf) return;
 	DWORD flags = AM_DDBLT_WAIT;
 	RECT RC = {rc.left(), rc.top(), rc.right(), rc.bottom()};
@@ -1104,7 +1123,8 @@ void gui::dx::viewport::copy_bgd_to(IDirectDrawSurface* surf, const lib::rect& r
 	}
 }
 
-void gui::dx::viewport::draw_to_bgd(IDirectDrawSurface* surf, const lib::rect& rc, HRGN hrgn) {
+void
+gui::dx::viewport::draw_to_bgd(IDirectDrawSurface* surf, const lib::rect& rc, HRGN hrgn) {
 	if(!m_surface) return;
 	DWORD flags = AM_DDBLT_WAIT;
 	RECT RC = {rc.left(), rc.top(), rc.right(), rc.bottom()};
@@ -1140,7 +1160,8 @@ void gui::dx::viewport::draw_to_bgd(IDirectDrawSurface* surf, const lib::rect& r
 ////////////////////////
 // Internal pixel format related functions
 
-uint16 gui::dx::viewport::low_bit_pos(uint32 dword) {
+uint16
+gui::dx::viewport::low_bit_pos(uint32 dword) {
 	uint32 test = 1;
 	for(uint16 i=0;i<32;i++){
 		if(dword & test)
@@ -1150,7 +1171,8 @@ uint16 gui::dx::viewport::low_bit_pos(uint32 dword) {
 	return 0;
 }
 	
-uint16 gui::dx::viewport::high_bit_pos(uint32 dword) {
+uint16
+gui::dx::viewport::high_bit_pos(uint32 dword) {
 	uint32 test = 1;
 	test <<= 31;
 	for(uint16 i=0;i<32;i++){
@@ -1161,7 +1183,8 @@ uint16 gui::dx::viewport::high_bit_pos(uint32 dword) {
 	return 0;
 }
 	
-void gui::dx::viewport::get_pixel_format() {
+void
+gui::dx::viewport::get_pixel_format() {
 	if(!m_primary_surface) return;
 	
 	DDPIXELFORMAT format;
@@ -1188,12 +1211,14 @@ void gui::dx::viewport::get_pixel_format() {
 }
 
 // Converts a lib::color_t to a DD color
-uint32 gui::dx::viewport::convert(lib::color_t color) {
+uint32
+gui::dx::viewport::convert(lib::color_t color) {
 	return convert(lib::redc(color), lib::greenc(color), lib::bluec(color));
 }
 
 // Converts the RGB tuple to a DD color
-uint32 gui::dx::viewport::convert(BYTE r, BYTE g, BYTE b) {
+uint32
+gui::dx::viewport::convert(BYTE r, BYTE g, BYTE b) {
 	uint32 ddcolor = 0;
 	if(bits_size == 8){
 		// find from palette
@@ -1211,7 +1236,8 @@ uint32 gui::dx::viewport::convert(BYTE r, BYTE g, BYTE b) {
 
 // Internal function
 // Converts the provided rect to OS screen coordinates
-RECT* gui::dx::viewport::to_screen_rc_ptr(RECT& r) {
+RECT*
+gui::dx::viewport::to_screen_rc_ptr(RECT& r) {
 	POINT pt = {r.left, r.top};
 	int w = r.right - r.left;
 	int h = r.bottom - r.top;
@@ -1288,7 +1314,8 @@ gui::dx::viewport::blt_blend32(const lib::rect& rc, double progress,
 }
 
 
-HRESULT gui::dx::viewport::blt_blend24(const lib::rect& rc, double progress,
+HRESULT
+gui::dx::viewport::blt_blend24(const lib::rect& rc, double progress,
 	IDirectDrawSurface *surf1, IDirectDrawSurface *surf2, uint32 low_ddclr, uint32 high_ddclr) {
 	
 	DDSURFACEDESC desc1, desc2;
@@ -1368,7 +1395,8 @@ struct trible565 {
 	BYTE red() { return ((v & 0x1f)*255)/31;}
 };
 
-HRESULT gui::dx::viewport::blt_blend16(const lib::rect& rc, double progress,
+HRESULT
+gui::dx::viewport::blt_blend16(const lib::rect& rc, double progress,
 	IDirectDrawSurface *surf1, IDirectDrawSurface *surf2, uint32 low_ddclr, uint32 high_ddclr) {
 	
 	DDSURFACEDESC desc1, desc2;
