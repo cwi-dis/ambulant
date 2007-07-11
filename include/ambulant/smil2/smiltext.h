@@ -264,7 +264,7 @@ class smiltext_layout_engine {
 
   private:
 	bool smiltext_fits(const smil2::smiltext_run run, const lib::rect& r);
-	lib::rect smiltext_compute(const smil2::smiltext_run run, const lib::rect& r);
+	lib::rect smiltext_compute(const smil2::smiltext_run run, const lib::rect& r, unsigned int* word_spacing);
 	void smiltext_render(const smil2::smiltext_run run, const lib::rect& r, const lib::point& p);
 
 	smiltext_engine m_engine;
@@ -277,7 +277,6 @@ class smiltext_layout_engine {
 	int m_y;
 	unsigned int m_max_ascent;
 	unsigned int m_max_descent;
-	unsigned int m_word_spacing;
 };
 
 
