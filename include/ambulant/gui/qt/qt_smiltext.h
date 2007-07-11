@@ -64,14 +64,13 @@ class qt_smiltext_renderer :
 	void redraw_body(const lib::rect &dirty, common::gui_window *window);
 
 	smil2::smiltext_metrics get_smiltext_metrics(const smil2::smiltext_run& str);
-	void render_smiltext(const smil2::smiltext_run& str, const lib::rect& r, bool initial);
+	void render_smiltext(const smil2::smiltext_run& str, const lib::rect& r, unsigned int word_spacing);
 
   private:
 	// functions required by inheritance
 	void smiltext_changed(bool);
 	// internal helper functions
 	void _qt_smiltext_set_font(const smil2::smiltext_run& run);
-//JUNK?	void _qt_smiltext_shift(const lib::rect r, const lib::point p);
 	// instance variables
 	net::datasource_factory *m_df;
 	smil2::smiltext_layout_engine m_layout_engine;

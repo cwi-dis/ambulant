@@ -113,7 +113,7 @@ gui::qt::qt_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& s
 }
 
 void
-gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun, const lib::rect& r) {
+gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun, const lib::rect& r, unsigned int word_spacing) {
 	if (strun.m_command != smil2::stc_data)
 		return;
 	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_render(): command=%d data=%s color=0x%x",strun.m_command,strun.m_data.c_str()==NULL?"(null)":strun.m_data.c_str(),strun.m_color);
@@ -141,7 +141,7 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 		
 	paint.setFont(m_font);
 
-	paint.drawText(L,T,W,H,Qt::AlignLeft|Qt::AlignTop|Qt::WordBreak, strun.m_data);
+	paint.drawText(L,T,W,H,Qt::AlignLeft|Qt::AlignTop, strun.m_data);
 	paint.flush();
 	paint.end();
 }
