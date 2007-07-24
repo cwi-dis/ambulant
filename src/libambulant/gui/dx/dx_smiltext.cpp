@@ -144,10 +144,10 @@ gui::dx::dx_smiltext_renderer::smiltext_changed() {
 smil2::smiltext_metrics 
 gui::dx::dx_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& run) {
 	unsigned int ascent = 0, descent = 0, height = 0, width = 0, line_spacing = 0, word_spacing = 0;
-
+    HGDIOBJ old_obj = NULL;
 	if (run.m_command == smil2::stc_data && run.m_data.length() != 0) {
 
-		_dx_smiltext_set_font (run, m_hdc);
+		old_obj = _dx_smiltext_set_font (run, m_hdc);
 
 		TEXTMETRIC tm;
 		BOOL res = ::GetTextMetrics(m_hdc, &tm);
@@ -155,7 +155,7 @@ gui::dx::dx_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& r
 			win_report_last_error("GetTextMetric()");
 		ascent  = tm.tmAscent;
 		descent = tm.tmDescent;	
-		height	= tm.tmHeight;
+		height	= tm.tmHeight+tm.tmExternalLeading;
 		line_spacing = height+tm.tmInternalLeading+tm.tmExternalLeading;
 
 		lib::textptr tp(run.m_data.c_str(), run.m_data.length());
@@ -177,6 +177,7 @@ gui::dx::dx_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& r
 		::DeleteObject(m_font);
 		m_font = NULL;
 	}
+	::SelectObject(m_hdc, old_obj);
 	return smil2::smiltext_metrics(ascent, descent, height, width, line_spacing, word_spacing);
 }
 
@@ -199,9 +200,8 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 		COLORREF crBkColor = (run.m_bg_color == CLR_INVALID)?::GetSysColor(COLOR_WINDOW):run.m_bg_color;
 		::SetBkColor(m_hdc, crBkColor);
 	} // else SetBkMode(m_hdc, TRANSPARENT);
-
 	// set the font
-	_dx_smiltext_set_font(run, m_hdc);
+	HGDIOBJ old_obj = _dx_smiltext_set_font(run, m_hdc);
 
 	// draw the text
 	const char* text = run.m_data.c_str();
@@ -224,6 +224,30 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 	hr = ::DrawText(m_hdc, tp, (int)tp.length(), &dstRC, uFormat);
 	if(FAILED(hr))
 		win_report_last_error("DrawText()");
+	::SelectObject(m_hdc, old_obj); 
+
+//#define	DX_DRAW_BOX_AROUND_TEXT
+#ifdef	DX_DRAW_BOX_AROUND_TEXT
+/* For debugging purposes, following code draws a dotted red box around
+ * the drawing rectangle 'r' in which the text is drawn.
+ * Increasing 'widen' widens the the rectangle (pixels).
+ */
+	HPEN pen = NULL;
+	if (pen == NULL)
+		pen = CreatePen(PS_DOT, 1, RGB(255,0,0));
+	HGDIOBJ oldpen = ::SelectObject(m_hdc, pen);
+	unsigned int widen = 0;
+	if ( ! (
+		   ::MoveToEx(m_hdc, r.left()-widen, r.top()-widen, NULL)
+		&& ::LineTo(m_hdc,r.right()+widen,r.top()-widen)
+		&& ::LineTo(m_hdc,r.right()+widen,r.bottom()+widen)
+		&& ::LineTo(m_hdc,r.left()-widen,r.bottom()+widen)
+		&& ::LineTo(m_hdc,r.left()-widen,r.top()-widen)
+	))
+			win_report_last_error("LineTo()");
+	DeleteObject(pen);
+	::SelectObject(m_hdc, oldpen); 
+#endif//DX_DRAW_BOX_AROUND_TEXT
 
 	// Text is always transparent; set the color
 	DWORD ddTranspColor = m_viewport->convert(RGB(255,255,255));
@@ -246,14 +270,24 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 	} 
 }
 
-void
+HGDIOBJ
 gui::dx::dx_smiltext_renderer::_dx_smiltext_set_font(const smil2::smiltext_run run, HDC hdc) {
 	DWORD family = FF_DONTCARE | DEFAULT_PITCH;
 	const char *fontname = run.m_font_family;
+	int adjust_height = 0;
 	if (run.m_font_family) {
 		if (strcmp(run.m_font_family, "serif") == 0) {
 			family = FF_ROMAN | VARIABLE_PITCH;
 			fontname = NULL;
+			switch (run.m_font_size) {
+			/* KB Some font/size combinations look ugly without slight adjustment */
+			case 12:
+			case 16:
+				adjust_height = -1;
+				break;
+			default:
+				break;
+			}
 		} else if (strcmp(run.m_font_family, "sans-serif") == 0) {
 			family = FF_SWISS | VARIABLE_PITCH;
 			fontname = NULL;
@@ -294,7 +328,7 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_set_font(const smil2::smiltext_run r
 			break;
 	}
 	m_font = ::CreateFont(
-			-(int)run.m_font_size,	// height of font
+			-(int)run.m_font_size-adjust_height,	// height of font
 			0,					// average character width
 			0,					// angle of escapement
 			0,					// base-line orientation angle
@@ -309,7 +343,7 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_set_font(const smil2::smiltext_run r
 			family,				// pitch and family
 			STR_TO_TSTR(fontname));	// typeface name
 	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_run_set_attr(0x%x): m_data=%s font=0x%x, m_font_size=%d,weight=0x%x,italic=%d,family=0x%x,run.m_font_family=%s",this,run.m_data.c_str(),m_font,run.m_font_size,weight,italic,family,run.m_font_family);
-	::SelectObject(hdc, m_font);
+	return ::SelectObject(hdc, m_font);
 }
 
 void
