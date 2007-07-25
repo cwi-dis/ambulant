@@ -69,7 +69,7 @@ class dx_smiltext_renderer :
 	void set_surface(common::surface *dest);
   private:
 	// internal helper functions
-	void _dx_smiltext_set_font(const smil2::smiltext_run run, HDC hdc);
+	HGDIOBJ _dx_smiltext_set_font(const smil2::smiltext_run run, HDC hdc);
 	// DirectX interfacing
 	void _dx_smiltext_get_ddsurf(common::gui_window *window);
 	// instance variables
