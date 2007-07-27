@@ -515,7 +515,7 @@ lib::point_p::parse(const_iterator& it, const const_iterator& end) {
 	bool expectRP = (d == -1)?false:true;
 	
 	// x value
-	int_p ip;
+	number_p ip;
 	d = ip.parse(tit, end);
 	if(d == -1) return -1;
 	m_result.x = ip.m_result;
