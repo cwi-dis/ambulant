@@ -46,7 +46,9 @@
 #pragma comment (lib,"strmiids.lib")
 #pragma comment (lib,"uuid.lib")
 
+#ifndef AMBULANT_PLATFORM_WIN32_WCE
 #define WITH_TPB_AUDIO_SPEEDUP
+#endif
 
 #ifdef WITH_TPB_AUDIO_SPEEDUP
 // If this option is active during build (which is true when building
