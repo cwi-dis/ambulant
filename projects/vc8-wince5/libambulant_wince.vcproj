@@ -206,68 +206,34 @@
 					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_area.cpp"
 						>
-						<FileConfiguration
-							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_audio.cpp"
 						>
-						<FileConfiguration
-							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_audio_player.cpp"
 						>
-						<FileConfiguration
-							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\src\libambulant\gui\dx\dx_basicvideo.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\libambulant\gui\dx\dx_basicvideo_player.cpp"
+						>
 					</File>
 					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_bgrenderer.cpp"
 						>
-						<FileConfiguration
-							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_brush.cpp"
 						>
-						<FileConfiguration
-							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_html_renderer.cpp"
 						>
-						<FileConfiguration
-							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
 						<FileConfiguration
 							Name="DebugNoXercesNoHtml|Win32"
 							ExcludedFromBuild="true"
@@ -288,112 +254,42 @@
 					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_image_renderer.cpp"
 						>
-						<FileConfiguration
-							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_img.cpp"
 						>
-						<FileConfiguration
-							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_player.cpp"
 						>
-						<FileConfiguration
-							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_text.cpp"
 						>
-						<FileConfiguration
-							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_text_renderer.cpp"
 						>
-						<FileConfiguration
-							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_transition.cpp"
 						>
-						<FileConfiguration
-							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_video.cpp"
 						>
-						<FileConfiguration
-							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_video_player.cpp"
 						>
-						<FileConfiguration
-							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_viewport.cpp"
 						>
-						<FileConfiguration
-							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_window.cpp"
 						>
-						<FileConfiguration
-							Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
 					</File>
 				</Filter>
 				<Filter
@@ -1016,6 +912,14 @@
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_audio_player.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dx\dx_basicvideo.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dx\dx_basicvideo_player.h"
 							>
 						</File>
 						<File

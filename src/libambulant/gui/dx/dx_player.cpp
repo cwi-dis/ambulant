@@ -56,7 +56,14 @@
 #include "ambulant/gui/dx/dx_html_renderer.h"
 #include "ambulant/gui/dx/dx_img.h"
 #include "ambulant/gui/dx/dx_audio.h"
+#ifdef AMBULANT_PLATFORM_WIN32_WCE
+#define USE_BASIC_VIDEO
+#endif
+#ifdef USE_BASIC_VIDEO
+#include "ambulant/gui/dx/dx_basicvideo.h"
+#else
 #include "ambulant/gui/dx/dx_video.h"
+#endif
 #include "ambulant/gui/dx/dx_brush.h"
 
 // "Renderer" playables
@@ -449,7 +456,11 @@ gui::dx::dx_playable_factory::new_playable(
 	} else if(tag == "audio") {
 		p = new dx_audio_renderer(context, cookie, node, evp);
 	} else if(tag == "video") {
+#ifdef USE_BASIC_VIDEO
+		p = new dx_basicvideo_renderer(context, cookie, node, evp, m_dxplayer);
+#else
 		p = new dx_video_renderer(context, cookie, node, evp, m_dxplayer);
+#endif
 	} else if(tag == "area") {
 		p = new dx_area(context, cookie, node, evp);
 	} else if(tag == "brush") {

@@ -632,6 +632,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\libambulant\gui\dx\dx_basicvideo.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\libambulant\gui\dx\dx_basicvideo_player.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_bgrenderer.cpp"
 						>
 					</File>
@@ -1312,6 +1320,14 @@
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_audio_player.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dx\dx_basicvideo.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dx\dx_basicvideo_player.h"
 							>
 						</File>
 						<File
