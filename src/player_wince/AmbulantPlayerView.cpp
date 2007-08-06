@@ -49,6 +49,7 @@ class my_player_callbacks : public gui_callbacks {
 	void destroy_os_window(HWND hwnd);
 	HWND get_main_window();
 	html_browser *new_html_browser(int left, int top, int width, int height);
+	SIZE get_default_size();
 };
 
 my_player_callbacks s_player_callbacks;
@@ -72,6 +73,15 @@ html_browser *
 my_player_callbacks::new_html_browser(int left, int top, int width, int height)
 {
 	return NULL;
+}
+
+SIZE
+my_player_callbacks::get_default_size() {
+	SIZE size;
+	// XXXJACK these are stupid values. Need to get from environment.
+	size.cx = 640;
+	size.cy = 480;
+	return size;
 }
 
 static dg_or_dx_player* 
