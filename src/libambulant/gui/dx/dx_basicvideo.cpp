@@ -62,16 +62,17 @@ gui::dx::dx_basicvideo_renderer::~dx_basicvideo_renderer() {
 
 void gui::dx::dx_basicvideo_renderer::start(double t) {
 	AM_DBG lib::logger::get_logger()->debug("start: %s", m_node->get_path_display_desc().c_str()); 
-//	common::surface *surf = get_surface();
+	common::surface *surf = get_surface();
 	
-//	dx_window *dxwindow = static_cast<dx_window*>(surf->get_gui_window());
-//	viewport *v = dxwindow->get_viewport();	
+	dx_window *dxwindow = static_cast<dx_window*>(surf->get_gui_window());
+	viewport *v = dxwindow->get_viewport();
+	HWND parent = v->get_hwnd();
 	net::url url = m_node->get_url("src");
 	_init_clip_begin_end();
 	if(url.is_local_file() || lib::win32::file_exists(url.get_file())) {
-		m_player = new gui::dx::basicvideo_player(url.get_file() /*XXXJACK, v->get_direct_draw() */);
+		m_player = new gui::dx::basicvideo_player(url.get_file(), parent);
 	} else if(url.is_absolute()) {
-		m_player = new gui::dx::basicvideo_player(url.get_url() /*XXXJACK, v->get_direct_draw() */);
+		m_player = new gui::dx::basicvideo_player(url.get_url(), parent);
 	} else {
 		lib::logger::get_logger()->show("The location specified for the data source does not exist. [%s]",
 			url.get_url().c_str());
@@ -90,7 +91,9 @@ void gui::dx::dx_basicvideo_renderer::start(double t) {
 		m_context->stopped(m_cookie);
 		return;
 	}
-	
+	lib::rect r = surf->get_rect();
+	r.translate(surf->get_global_topleft());
+	m_player->setrect(r);
 	// Has this been activated
 	if(m_activated) {
 		// repeat

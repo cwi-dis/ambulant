@@ -42,14 +42,14 @@ using ambulant::lib::logger;
 const ULONGLONG MILLIS_FACT = 10000;
 
 
-gui::dx::basicvideo_player::basicvideo_player(const std::string& url)
+gui::dx::basicvideo_player::basicvideo_player(const std::string& url, HWND parent)
 :	m_url(url),
 	m_graph_builder(0),
 	m_media_control(0),
 	m_media_position(0),
 	m_media_event(0),
 	m_basic_audio(0) {
-	open(m_url);
+	open(m_url, parent);
 }
 	
 gui::dx::basicvideo_player::~basicvideo_player() {
@@ -160,7 +160,7 @@ double gui::dx::basicvideo_player::get_position() {
 
 //////////////////////////
 		
-bool gui::dx::basicvideo_player::open(const std::string& url) {
+bool gui::dx::basicvideo_player::open(const std::string& url, HWND parent) {
 	m_url = url;
 	HRESULT hr = CoCreateInstance(CLSID_FilterGraph,0,CLSCTX_INPROC_SERVER,
 			 IID_IGraphBuilder,(void**)&m_graph_builder);
@@ -187,22 +187,58 @@ bool gui::dx::basicvideo_player::open(const std::string& url) {
 		win_report_error("QueryInterface(IID_IMediaControl, ...)", hr);	
 		return false;
 	}
-	m_graph_builder->QueryInterface(IID_IMediaPosition, (void **) &m_media_position);
+	hr = m_graph_builder->QueryInterface(IID_IMediaPosition, (void **) &m_media_position);
 	if(FAILED(hr)) {
 		win_report_error("QueryInterface(IID_IMediaPosition, ...)", hr);	
 		return false;
 	}
-	m_graph_builder->QueryInterface(IID_IMediaEvent, (void **) &m_media_event);
+	hr = m_graph_builder->QueryInterface(IID_IMediaEvent, (void **) &m_media_event);
 	if(FAILED(hr)) {
 		win_report_error("QueryInterface(IID_IMediaEvent, ...)", hr);	
 		return false;
 	}
 			
-	m_graph_builder->QueryInterface(IID_IBasicAudio, (void **) &m_basic_audio);
+	hr = m_graph_builder->QueryInterface(IID_IBasicAudio, (void **) &m_basic_audio);
 	if(FAILED(hr)) {
 		win_report_error("QueryInterface(IID_IBasicAudio, ...)", hr);	
 	}
+	hr = m_graph_builder->QueryInterface(IID_IVideoWindow, (void **) &m_video_window);
+	if(FAILED(hr)) {
+		win_report_error("QueryInterface(IID_IVideoWindow, ...)", hr);	
+	}
+
+	// Reposition output window
+	if (m_video_window) {
+		hr = m_video_window->put_Owner((OAHWND)parent);
+		if (FAILED(hr)) {
+			win_report_error("put_Owner()", hr);
+		}
+		long style;
+		hr = m_video_window->get_WindowStyle(&style);
+		if (FAILED(hr)) {
+			win_report_error("get_WindowStyle()", hr);
+		}
+		lib::logger::get_logger()->debug("basicvideo_player: windowStyle was 0x%x", style);
+		style |= WS_CHILD|WS_CLIPCHILDREN|WS_CLIPSIBLINGS;
+		style &= ~(WS_CAPTION|WS_BORDER|WS_DLGFRAME|WS_SYSMENU|WS_SIZEBOX|WS_MINIMIZEBOX);
+		hr = m_video_window->put_WindowStyle(style);
+		if (FAILED(hr)) {
+			win_report_error("put_WindowStyle()", hr);
+		}
+		hr = m_video_window->put_MessageDrain((OAHWND)parent);
+		if (FAILED(hr)) {
+			win_report_error("put_MessageDrain()", hr);
+		}
+	}
 	return true;
+}
+
+void gui::dx::basicvideo_player::setrect(const lib::rect &r) {
+	if (!m_video_window) return;
+	HRESULT hr = m_video_window->SetWindowPosition(r.x, r.y, r.w, r.h);
+	if (FAILED(hr)) {
+		win_report_error("SetWindowPosition()", hr);
+	}
 }
 
 void gui::dx::basicvideo_player::release_player() {
@@ -222,6 +258,10 @@ void gui::dx::basicvideo_player::release_player() {
 		if(m_basic_audio) {
 			m_basic_audio->Release();
 			m_basic_audio = 0;
+		}
+		if (m_video_window) {
+			m_video_window->Release();
+			m_video_window = 0;
 		}
 		m_graph_builder->Release();
 		m_graph_builder = 0;

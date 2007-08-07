@@ -38,6 +38,7 @@
 #include "ambulant/common/playable.h"
 #include "ambulant/lib/win32/win32_error.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/lib/gtypes.h"
 
 #ifndef AMBULANT_PLATFORM_WIN32_WCE
 #pragma comment (lib,"winmm.lib")
@@ -58,7 +59,7 @@ using ambulant::lib::logger;
 
 class basicvideo_player : public common::playable {
   public:
-	basicvideo_player(const std::string& url);
+	basicvideo_player(const std::string& url, HWND parent);
 	~basicvideo_player();
 		
 	void start(double t);
@@ -71,6 +72,7 @@ class basicvideo_player : public common::playable {
 	void wantclicks(bool want) {}
 	void preroll(double when, double where, double how_much) {}
 	cookie_type get_cookie() const { return m_cookie;}
+	void setrect(const lib::rect& rect);
 
 	bool can_play();
 	bool is_playing();
@@ -91,7 +93,7 @@ class basicvideo_player : public common::playable {
 	void set_balance(long val);
 
   private:
-	bool open(const std::string& url);
+	bool open(const std::string& url, HWND parent);
 	void release_player();
 	
 	std::string m_url;
@@ -101,6 +103,7 @@ class basicvideo_player : public common::playable {
 	IMediaPosition *m_media_position;
 	IMediaEvent *m_media_event;
 	IBasicAudio *m_basic_audio;
+	IVideoWindow *m_video_window;
 };
 	
 } // namespace dx

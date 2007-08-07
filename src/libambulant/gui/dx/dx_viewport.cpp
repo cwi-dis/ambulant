@@ -267,6 +267,7 @@ primary_Blt(IDirectDrawSurface* primary_surface, LPRECT lpDestRect,
 	int retries = MAX_RETRIES;
 	while (retries--) {
 		hr = primary_surface->Blt(lpDestRect, lpDDSrcSurface, lpSrcRect, dwFlags, lpDDBltFX);
+		if (hr == DDERR_NOTFOUND) return; // XXXJACK
 		if (hr == DDERR_SURFACELOST && retries >= 0) {
 			viewport_logger->trace("primary_Blt recovering from DDERR_LOSTSURFACE retry=%d", MAX_RETRIES-retries); 
 			hr = primary_surface->Restore();
@@ -566,6 +567,7 @@ gui::dx::viewport::redraw() {
 		primary_Blt(m_primary_surface, to_screen_rc_ptr(dst_rc), m_surface, &src_rc, flags, NULL);
 		// Copy to backing store for posible fs transition later
 		HRESULT hr = m_fstr_surface->Blt(&src_rc, m_surface, &src_rc, flags, NULL);
+		if (hr == DDERR_NOTFOUND) return;
 		if (FAILED(hr)) {
 			seterror("viewport::redraw()/DirectDrawSurface::Blt() m_fstr_surface", hr);
 		}
@@ -661,6 +663,7 @@ gui::dx::viewport::redraw(const lib::rect& rc) {
 		// Copy to backing store, for later use with transition
 		// XXX Or should we copy the whole surface?
 		HRESULT hr = m_fstr_surface->Blt(&src_rc, m_surface, &src_rc, flags, NULL);
+		if (hr == DDERR_NOTFOUND) return; // XXXJACK
 		if (FAILED(hr)) {
 			seterror("viewport::redraw()/DirectDrawSurface::Blt()", hr);
 		}
@@ -695,6 +698,7 @@ gui::dx::viewport::clear() {
 	bltfx.dwFillColor = m_ddbgd; 
 	RECT dst_rc = {0, 0, m_width, m_height};
 	HRESULT hr = m_surface->Blt(&dst_rc, 0, 0, DDBLT_COLORFILL | AM_DDBLT_WAIT, &bltfx);
+	if (hr == DDERR_NOTFOUND) return; // XXXJACK
 	if (FAILED(hr)) {
 		seterror(":viewport::clear/DirectDrawSurface::Blt()", hr);
 	}
@@ -822,6 +826,7 @@ void gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, double opac
 		}
 	} else {
 		hr = dstview->Blt(&dstRC, 0, 0, dwFlags, &bltfx);
+	if (hr == DDERR_NOTFOUND) return; // XXXJACK
 	if (FAILED(hr))
 		seterror(":viewport::clear/DirectDrawSurface::Blt()", hr);
 	}
@@ -840,6 +845,7 @@ gui::dx::viewport::clear_surface(IDirectDrawSurface* p, lib::color_t clr, double
 	RECT dst_rc;
 	set_rect(p, &dst_rc);	
 	HRESULT hr = p->Blt(&dst_rc, 0, 0, DDBLT_COLORFILL | AM_DDBLT_WAIT, &bltfx);
+	if (hr == DDERR_NOTFOUND) return; // XXXJACK
 	if (FAILED(hr)) {
 		seterror("DirectDrawSurface::Blt()", hr);
 	}
@@ -864,6 +870,7 @@ gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& dst_rc, bool k
 		return;
 	
 	HRESULT hr = m_surface->Blt(&dstRC, src, &srcRC, flags, NULL);
+	if (hr == DDERR_NOTFOUND) return; // XXXJACK
 	if (FAILED(hr)) {
 		seterror(":viewport::clear/DirectDrawSurface::Blt()", hr);
 	}
@@ -995,6 +1002,7 @@ gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& src_rc,
 	if(keysrc) flags |= DDBLT_KEYSRC;
 	AM_DBG lib::logger::get_logger()->debug("dx_viewport::redraw(0x%x): src=0x%x, flags=0x%x, dstRC(%d,%d,%d,%d), srcRC(%d,%d,%d,%d)", dstview, src, flags, dstRC.top,dstRC.bottom,dstRC.left,dstRC.right,srcRC.top,srcRC.bottom,srcRC.left,srcRC.right);
 	HRESULT hr = dstview->Blt(&dstRC, src, &srcRC, flags, NULL);
+	if (hr == DDERR_NOTFOUND) return; // XXXJACK
 	if (FAILED(hr)) {
 		seterror(":viewport::clear/DirectDrawSurface::Blt()", hr);
 		viewport_logger->trace("Blt %s --> %s failed", repr(src_rc).c_str(), repr(dst_rc).c_str());
@@ -1080,6 +1088,7 @@ gui::dx::viewport::blit(IDirectDrawSurface* src, const lib::rect& src_rc,
 			
 	DWORD flags = AM_DDBLT_WAIT;
 	HRESULT hr = dst->Blt(&dstRC, src, &srcRC, flags, NULL);
+	if (hr == DDERR_NOTFOUND) return; // XXXJACK
 	if (FAILED(hr)) {
 		seterror("viewport::blit/DirectDrawSurface::Blt()", hr);
 		viewport_logger->trace("Blt %s --> %s failed", repr(src_rc).c_str(), repr(dst_rc).c_str());
@@ -1105,6 +1114,7 @@ gui::dx::viewport::rdraw(IDirectDrawSurface* dst, const lib::rect& from_rc) {
 		return;
 	
 	HRESULT hr = dst->Blt(&surfRC, m_surface, &fromRC, flags, NULL);
+	if (hr == DDERR_NOTFOUND) return; // XXXJACK
 	if (FAILED(hr)) {
 		seterror("viewport::rdraw/DirectDrawSurface::Blt()", hr);
 	}
@@ -1118,6 +1128,7 @@ gui::dx::viewport::copy_bgd_to(IDirectDrawSurface* surf, const lib::rect& rc) {
 	RECT vrc = {0, 0, m_width, m_height};
 	if(!IntersectRect(&RC, &RC, &vrc) || IsRectEmpty(&RC)) return;
 	HRESULT hr = surf->Blt(&RC, m_surface, &RC, flags, NULL);
+	if (hr == DDERR_NOTFOUND) return; // XXXJACK
 	if (FAILED(hr)) {
 		seterror("viewport::copy/DirectDrawSurface::Blt()", hr);
 	}
