@@ -59,7 +59,7 @@ void gui::dx::dx_bgrenderer::keep_as_background() {
 	set_rect(srcrect, &d_srcrect);
 
 	if (m_bg_image) m_bg_image->Release();
-	m_bg_image = v->create_surface(dstrect.width(), dstrect.height());
+	m_bg_image = v->create_surface();
 	
 #ifdef DDBLT_WAIT
 #define WAITFLAG DDBLT_WAIT
@@ -82,8 +82,8 @@ void gui::dx::dx_bgrenderer::redraw(const lib::rect &dirty, common::gui_window *
 		lib::rect rc = dirty;
 		lib::point pt = m_dst->get_global_topleft();
 		rc.translate(pt);
+		AM_DBG if (m_src && m_src->get_bgopacity() == 0.5) lib::logger::get_logger()->debug("dx_bgrenderer::redraw: clear to color=0x%x opacity=%lf v=0x%x m_src=0x%x surf=0x%x rc=%s", m_src->get_bgcolor(), m_src->get_bgopacity(),v,m_src,v?v->get_surface():0,repr(rc).c_str());
 		if(v && m_src) {
-			AM_DBG lib::logger::get_logger()->debug("dx_bgrenderer::redraw: clear to color");
 			v->clear(rc, m_src->get_bgcolor(), m_src->get_bgopacity());
 		}
 	}

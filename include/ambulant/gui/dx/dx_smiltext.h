@@ -45,6 +45,22 @@ class dx_smiltext_renderer :
 		public dx_renderer_playable,
 		public smil2::smiltext_notification,
 		public smil2::smiltext_layout_provider
+/*
+	Operation of dx_smiltext_renderer.
+	
+	First, called from redraw(), _dx_smiltext_get_ddsurf() copies the
+	background area in m_region_dds. Then redraw() calls m_layout_engine->redraw().
+	From this, for each string (word) in a smiltext_run, if textBackgroundColor/
+	mediaBackgroundOpacity is set, an aditional textbg_dds is created and filled
+	with textBackgroundColor. Similarly, if textColor/mediaOpacity is set, an
+	additional text_dds is created. Text is drawn in both text_dds/textbg dds.
+	Then first textbg_dds is blended with m_region_dds, next textbg_dds is blended
+	with m_region_dds, in both cases only using the text[background]Color with
+	the desired opacity for the blend, keeping the original pixels in m_region_dds
+	when not blending them.
+	Finally, after all smiltext_run items are processed in this way, redraw() blits
+	m_region_dds to the viewport area (screen).
+*/
 {
   public:
 	dx_smiltext_renderer(
@@ -69,7 +85,7 @@ class dx_smiltext_renderer :
 	void set_surface(common::surface *dest);
   private:
 	// internal helper functions
-	HGDIOBJ _dx_smiltext_set_font(const smil2::smiltext_run run, HDC hdc);
+	HGDIOBJ _dx_smiltext_set_font(const smil2::smiltext_run run, HDC hdc, HFONT* font);
 	// DirectX interfacing
 	void _dx_smiltext_get_ddsurf(common::gui_window *window);
 	// instance variables
@@ -79,9 +95,9 @@ class dx_smiltext_renderer :
 	// Windows GDI data
 	ambulant::lib::size m_size;
 	viewport* m_viewport;
+	double m_bgopacity;
 	HDC m_hdc;
-	HFONT m_font;
-	IDirectDrawSurface* m_ddsurf;
+	IDirectDrawSurface* m_region_dds;
 };
 
 } // namespace dx

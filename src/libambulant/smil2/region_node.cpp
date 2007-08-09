@@ -49,6 +49,11 @@ static char *subregionattrs[] = {
 	"backgroundOpacity",
 	"mediaOpacity",
 	"mediaBackgroundOpacity",
+#ifdef	WITH_CHROMAKEY
+	"chromaKeyOpacity",
+	"chromaKey",
+	"chromaKeyTolerance",
+#endif//WITH_CHROMAKEY
 #endif
 	NULL
 };
@@ -107,6 +112,11 @@ region_node::region_node(const lib::node *n, dimension_inheritance di)
 #ifdef WITH_SMIL30
 	m_mediaopacity(1.0),
 	m_mediabgopacity(1.0),
+#ifdef	WITH_CHROMAKEY
+	m_chromakeyopacity(0.0),
+	m_chromakey(lib::to_color(0,0,1)), //XXXX default chromakey should be ignored
+	m_chromakeytolerance(lib::to_color(0,0,1)),
+#endif//WITH_CHROMAKEY
 #endif
 	m_bgimage(NULL),
 	m_tiling(common::tiling_default),
@@ -336,6 +346,58 @@ region_node::fix_from_dom_node()
 		set_mediabgopacity(mbo);
 	}
 		
+#ifdef	WITH_CHROMAKEY
+	{
+		// chromaKeyOpacity.
+		const char *chromakeyopacity_attr = m_node->get_attribute("chromaKeyOpacity");
+		double fo = m_chromakeyopacity;
+		if (chromakeyopacity_attr) {
+			fo = strtod(chromakeyopacity_attr, &lastp);
+			if (*lastp == '%') fo *= 0.01;
+		}
+		AM_DBG lib::logger::get_logger()->debug("region_node::reset: chromaKeyOpacity=%g", fo);
+		if (fo != m_chromakeyopacity) {
+			changed = true;
+		}
+		set_chromakeyopacity(fo);
+	}
+	{
+		// chromaKey
+		const char *chromakey_attr = m_node->get_attribute("chromaKey");
+		lib::color_t chromakey = lib::to_color(0, 0, 1); //XXXX default chromakey
+		if (chromakey_attr) {
+			if (!lib::is_color(chromakey_attr)) {
+				lib::logger::get_logger()->trace("%s: Invalid chromaKey color: %s", m_node->get_sig().c_str(), chromakey_attr);
+				lib::logger::get_logger()->warn(gettext("Ignoring minor errors in document"));
+			} else {
+				chromakey = lib::to_color(chromakey_attr);
+			}
+			AM_DBG lib::logger::get_logger()->debug("region_node::reset: chromaKey color 0x%x", (int)chromakey);
+		}
+		if (chromakey != m_chromakey) {
+			changed = true;
+		}
+		set_chromakey(chromakey);
+	}	
+	{
+		// chromaKeyTolerance
+		const char *chromakeytolerance_attr = m_node->get_attribute("chromaKeyTolerance");
+		lib::color_t chromakeytolerance = lib::to_color(0, 0, 0);
+		if (chromakeytolerance_attr) {
+			if (!lib::is_color(chromakeytolerance_attr)) {
+				lib::logger::get_logger()->trace("%s: Invalid chromaKeyTolerance color: %s", m_node->get_sig().c_str(), chromakeytolerance_attr);
+				lib::logger::get_logger()->warn(gettext("Ignoring minor errors in document"));
+			} else {
+				chromakeytolerance = lib::to_color(chromakeytolerance_attr);
+			}
+			AM_DBG lib::logger::get_logger()->debug("region_node::reset: chromaKeyTolerance color 0x%x", (int)chromakeytolerance);
+		}
+		if (chromakeytolerance != m_chromakeytolerance) {
+			changed = true;
+		}
+		set_chromakeytolerance(chromakeytolerance);
+	}	
+#endif//WITH_CHROMAKEY
 #endif // WITH_SMIL30
 	// backgroundImage
 	
@@ -444,6 +506,26 @@ region_node::get_mediabgopacity() const
 {
 	return m_display_mediabgopacity;
 }
+
+#ifdef	WITH_CHROMAKEY
+double
+region_node::get_chromakeyopacity() const
+{
+	return m_display_chromakeyopacity;
+}
+
+lib::color_t
+region_node::get_chromakey() const
+{
+	return m_display_chromakey;
+}
+
+lib::color_t
+region_node::get_chromakeytolerance() const
+{
+	return m_display_chromakeytolerance;
+}
+#endif//WITH_CHROMAKEY
 #endif // WITH_SMIL30
 
 bool
@@ -561,6 +643,14 @@ lib::color_t region_node::get_region_color(const std::string& which, bool fromdo
 	if(which == "backgroundColor") {
 		return fromdom?m_bgcolor:m_display_bgcolor;
 	}
+#ifdef WITH_SMIL30
+#ifdef	WITH_CHROMAKEY
+	if (which == "chromaKey")
+		return fromdom?m_chromakey:m_display_chromakey;
+	if (which == "chromaKeyTolerance")
+		return fromdom?m_chromakeytolerance:m_display_chromakeytolerance;
+#endif//WITH_CHROMAKEY
+#endif // WITH_SMIL30
 	return 0;
 }
 
@@ -584,11 +674,16 @@ const common::region_dim_spec& region_node::get_region_viewbox(bool fromdom) con
 double region_node::get_region_opacity(const std::string& which, bool fromdom) const {
 	if (which == "backgroundOpacity")
 		return fromdom?m_bgopacity:m_display_bgopacity;
+#ifdef	WITH_CHROMAKEY
+	if (which == "chromakeyOpacity")
+		return fromdom?m_chromakeyopacity:m_display_chromakeyopacity;
+#endif//WITH_CHROMAKEY
 	if (which == "mediaOpacity")
 		return fromdom?m_mediaopacity:m_display_mediaopacity;
 	if (which == "mediaBackgroundOpacity")
 		return fromdom?m_mediabgopacity:m_display_mediabgopacity;
 	assert(0);
+	return 1.0;
 }
 #endif // WITH_SMIL30
 
@@ -608,6 +703,14 @@ void region_node::set_region_dim(const std::string& which, const common::region_
 void region_node::set_region_color(const std::string& which, lib::color_t clr) {
 	AM_DBG lib::logger::get_logger()->debug("region_node::set_region_color(\"%s\", \"%s\")", m_node->get_attribute("id"), which.c_str());
 	if(which == "backgroundColor") m_display_bgcolor = clr;
+#ifdef WITH_SMIL30
+#ifdef	WITH_CHROMAKEY
+	else if (which == "chromaKey")
+		m_display_chromakey = clr;
+	else if (which == "chromaKeyTolerance")
+		m_display_chromakeytolerance = clr;
+#endif//WITH_CHROMAKEY
+#endif // WITH_SMIL30
 	//else if(which == "color") set_fgcolor(clr);
 }
 
@@ -642,8 +745,11 @@ void region_node::set_region_opacity(const std::string& which, double level) {
 		m_display_mediaopacity = level;
 	else if (which == "mediaBackgroundOpacity")
 		m_display_mediabgopacity = level;
+#ifdef	WITH_CHROMAKEY
+	else if (which == "chromaKeyOpacity")
+		m_display_chromakeyopacity = level;
+#endif//WITH_CHROMAKEY
 	else
 		assert(0);
 }
-
 #endif // WITH_SMIL30

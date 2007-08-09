@@ -126,11 +126,27 @@ class viewport {
 	void draw_to_bgd(IDirectDrawSurface* surf, const lib::rect& rc, HRGN hrgn);
 	
 	// Fading, opacity and chromakeying support
+	//
 	// blend each pixel in 'from' with the corresponding one in 'to' using 'opacity'
-	// when the color of the pixel in 'from' is in the range [low_value, high_value]
-	bool blt_blend (IDirectDrawSurface* to, IDirectDrawSurface* from, const lib::rect& rc, double opacity, lib::color_t low_chroma, lib::color_t high_chroma);
-	
-	// Paints the provided rect
+	// when the color of the pixel in 'from' is in the range [chroma_low, chroma_high]
+	// otherwise the pixel is copied.
+	bool blt_blend (IDirectDrawSurface* to, IDirectDrawSurface* from,
+		const lib::rect& rc, double opacity,
+		lib::color_t chroma_low, lib::color_t chroma_high, bool copy);
+	// blend 'src' surface into m_surface using specified opacity within 
+	// [chroma_low, chroma_high]; colors outside this interval are copied/ignored.
+	void blend_surface(const lib::rect& dst_rc, IDirectDrawSurface* src,
+		const lib::rect& src_rc, bool keysrc, double opacity,
+		lib::color_t chroma_low, lib::color_t chroma_high, bool copy);
+	// blend 'src' surface into 'dst' surface using specified opacity within
+	// [chroma_low, chroma_high]; colors outside this interval are copied/ignored.
+	void blend_surface(IDirectDrawSurface* dst, const lib::rect& dst_rc, 
+		IDirectDrawSurface* src, const lib::rect& src_rc, bool keysrc, double opacity,
+		lib::color_t chroma_low, lib::color_t chroma_high, bool copy);
+	// copy 'src_rc' rectangle in 'src' surface into 'dst' surface' 'dst_rc' rectangle
+	void copy_surface(IDirectDrawSurface* dst, const lib::rect& dst_rc, IDirectDrawSurface* src, const lib::rect& src_rc);
+
+		// Paints the provided rect
 	void frame_rect(const lib::rect& rc, lib::color_t clr = 0xFF0000);
 	
 	// Helper, that returns the size of a DD surface 
@@ -160,11 +176,14 @@ class viewport {
 
 	void get_low_high_values(uint32 low_ddclr, uint32 high_ddclr, BYTE* r_l, BYTE* r_h, BYTE* g_l, BYTE* g_h, BYTE* b_l, BYTE* b_h);
 	HRESULT blt_blend32(const lib::rect& rc, double progress,
-		IDirectDrawSurface *surf1, IDirectDrawSurface *surf2, uint32 low_ddclr, uint32 high_ddclr);
+		IDirectDrawSurface *surf1, IDirectDrawSurface *surf2,
+		uint32 low_ddclr, uint32 high_ddclr, bool copy);
 	HRESULT blt_blend24(const lib::rect& rc, double progress,
-		IDirectDrawSurface *surf1, IDirectDrawSurface *surf2, uint32 low_ddclr, uint32 high_ddclr);
+		IDirectDrawSurface *surf1, IDirectDrawSurface *surf2,
+		uint32 low_ddclr, uint32 high_ddclr, bool copy);
 	HRESULT blt_blend16(const lib::rect& rc, double progress,
-		IDirectDrawSurface *surf1, IDirectDrawSurface *surf2, uint32 low_ddclr, uint32 high_ddclr);
+		IDirectDrawSurface *surf1, IDirectDrawSurface *surf2, uint32 low_ddclr,
+		uint32 high_ddclr, bool copy);
 
 	HWND m_hwnd;
 	IDirectDraw* m_direct_draw;
