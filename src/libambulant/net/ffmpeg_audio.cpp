@@ -372,6 +372,7 @@ ffmpeg_decoder_datasource::data_avail()
 			uint8_t *inbuf = (uint8_t*) audio_packet.data;
 			sz = audio_packet.size;
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail: %d bytes available", sz);
+
 			// Note: outsize is only written by avcodec_decode_audio, not read!
 			// You must always supply a buffer that is AVCODEC_MAX_AUDIO_FRAME_SIZE
 			// bytes big!
@@ -379,14 +380,41 @@ ffmpeg_decoder_datasource::data_avail()
 			uint8_t *outbuf = (uint8_t*) m_buffer.get_write_ptr(outsize);
 			if (outbuf) {
 				if(inbuf) {
-					// Don't feed to much data to the decoder, it doesn't like to do lists ;-)
+					// Don't feed too much data to the decoder, it doesn't like to do lists ;-)
 					int cursz = sz;
 					if (cursz > AVCODEC_MAX_AUDIO_FRAME_SIZE/2) cursz = AVCODEC_MAX_AUDIO_FRAME_SIZE/2;
-					
-					
+		
+///// Added by Bo Gao begin 2007-07-31			
+#if 1
+					///// Feeding the successive block of one rtsp mp3 packet to ffmpeg to decode, 
+					///// since ffmpeg can only decode the limited length of around 522(522 or 523 
+					///// in the case of using testOnDemandRTSPServer as the RTSP server) bytes data
+					///// at one time. This idea is borrowed from VLC, according to:
+					///// vlc-0.8.6c/module/codec/ffmpeg/audio.c:L253-L254.
+
+					AM_DBG lib::logger::get_logger()->debug("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, cursz);
+				
+					int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, cursz);
+
+					while (decoded > 0 && decoded < cursz) {
+					  inbuf += decoded;
+					  cursz -= decoded;
+					  m_buffer.pushdata(outsize);
+					  outsize = AVCODEC_MAX_AUDIO_FRAME_SIZE;
+					  outbuf = (uint8_t*) m_buffer.get_write_ptr(outsize);
+					  decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, cursz);
+					}
+
+					inbuf = (uint8_t*) audio_packet.data;
+					free(inbuf);
+
+#else  ///// the original version without modifyed.
 					AM_DBG lib::logger::get_logger()->debug("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, sz);
 					int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, cursz);
 					free(inbuf);
+#endif
+///// Added by Bo Gao end 2007-07-31
+					
 					_need_fmt_uptodate();
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bps, %d channels",m_fmt.samplerate, m_fmt.channels);
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bytes decoded  to %d bytes", decoded,outsize );
@@ -608,6 +636,7 @@ ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 	// private method - no need to lock
 	if (fmt.name == "ffmpeg") {
 		AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
+
 		if (enc == NULL) {
 				lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Parameters missing for %s(0x%x)", fmt.name.c_str(), fmt.parameters);
 				return false;
@@ -636,7 +665,7 @@ ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 		return true;
 	} else if (fmt.name == "live") {
 		const char* codec_name = (char*) fmt.parameters;
-	
+
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::selectdecoder(): audio codec : %s", codec_name);
 		ffmpeg_codec_id* codecid = ffmpeg_codec_id::instance();
 		AVCodec *codec = avcodec_find_decoder(codecid->get_codec_id(codec_name));
