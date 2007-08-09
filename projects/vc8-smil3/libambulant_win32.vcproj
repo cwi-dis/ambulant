@@ -680,11 +680,11 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\libambulant\gui\dx\dx_text.cpp"
+						RelativePath="..\..\src\libambulant\gui\dx\dx_smiltext.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\libambulant\gui\dx\dx_smiltext.cpp"
+						RelativePath="..\..\src\libambulant\gui\dx\dx_text.cpp"
 						>
 					</File>
 					<File
@@ -1166,6 +1166,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\libambulant\common\schema.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\libambulant\common\scripting.cpp"
 					>
 				</File>
 				<File
@@ -1829,6 +1833,10 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\common\schema.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\common\scripting.h"
 						>
 					</File>
 					<File

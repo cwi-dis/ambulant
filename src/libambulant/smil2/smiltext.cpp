@@ -487,7 +487,7 @@ smiltext_layout_engine::redraw(const lib::rect& r) {
 			break;
 		// count number of breaks in front of next line
 		nbr = 0;
-		while (cur->m_command == smil2::stc_break) {
+		while (cur != m_engine.end() && cur->m_command == smil2::stc_break) {
 			nbr++;
 			cur++;
 		}
@@ -495,6 +495,7 @@ smiltext_layout_engine::redraw(const lib::rect& r) {
 			nbr = 1;
 		bool initial = true;
 		while (bol != cur) {
+			assert(bol != m_engine.end());
 			// compute rectangle where to render this text
 			unsigned int word_spacing;
 			lib::rect cr = smiltext_compute(*bol, r, &word_spacing);
