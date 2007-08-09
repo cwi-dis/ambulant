@@ -427,7 +427,7 @@ smiltext_layout_engine::set_dest_rect( const lib::rect& r) {
 
 void
 smiltext_layout_engine::redraw(const lib::rect& r) {
-	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_renderer::_qt_smiltext_changed(0x%x) r=(L=%d,T=%d,W=%d,H=%d", this,r.left(),r.top(),r.width(),r.height());
+	AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw(0x%x) r=(L=%d,T=%d,W=%d,H=%d", this,r.left(),r.top(),r.width(),r.height());
 	int nbr = 0; // number of breaks (newlines) before current line
 
 	// Compute the shifted position of what we want to draw w.r.t. the visible origin
@@ -536,11 +536,22 @@ smiltext_layout_engine::smiltext_compute(const smil2::smiltext_run strun, const 
 	smiltext_metrics stm = m_provider->get_smiltext_metrics (strun);
 	*word_spacing = stm.get_word_spacing();
 	rv.x += m_x + *word_spacing;
-	rv.w = stm.get_width()+ *word_spacing;
-	m_x  += rv.w;
+//KB rv.w = stm.get_width()+ *word_spacing;
+	rv.w = stm.get_width();
+	m_x  += rv.w + *word_spacing;
 
 	rv.y += (m_y + m_max_ascent - stm.get_ascent());
 	rv.h = stm.get_height();
+	/* clip rectangle */
+	if (rv.x >= r.x + (int) r.w)
+		rv.w = 0;
+	else if (rv.x + (int) rv.w > r.x + (int) r.w)
+		rv.w = (unsigned int) (r.x + (int) r.w - rv.x);
+	if (rv.y >= r.y + (int)r.h)
+		rv.h = 0;
+	else if (rv.y + (int)rv.h > r.y + (int)r.h)
+		rv.h = (unsigned int) (r.y + (int)r.h - rv.y);
+
 	AM_DBG lib::logger::get_logger()->debug("smiltext_compute(): x=%d\ty=%d\tcommand=%d data=%s", rv.x, rv.y, strun.m_command, strun.m_data.c_str()==NULL?"(null)":strun.m_data.c_str());
 
 	return rv;

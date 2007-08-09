@@ -486,6 +486,7 @@ gui::dx::viewport::create_surface() {
 
 void
 gui::dx::viewport::release_surface(IDirectDrawSurface* surf) {
+	assert (surf != NULL);
 	m_surfaces.push_back(surf);
 }
 
@@ -522,7 +523,7 @@ gui::dx::viewport::redraw() {
 			clipto_r1r2r3r4(m_fstransition, src_rc_v, dst_rc_v);
 			draw(s2, dst_rc_v, dst_rc_v, false, tmps);
 		} else if (bt == smil2::bt_fade) {
-			if ( ! blt_blend(tmps, s2, ourrect, m_fstransition->get_progress(), 0, 0xFFFFFFFF))
+			if ( ! blt_blend(tmps, s2, ourrect, m_fstransition->get_progress(), 0, 0xFFFFFFFF, true))
 				draw(s2, ourrect, ourrect, false, tmps);
 		} else {
 			HRGN hrgn = NULL;
@@ -618,7 +619,7 @@ gui::dx::viewport::redraw(const lib::rect& rc) {
 			clipto_r1r2r3r4(m_fstransition, src_rc_v, dst_rc_v);
 			draw(s2, dst_rc_v, dst_rc_v, false, tmps);
 		} else if (bt == smil2::bt_fade) {
-			if ( ! blt_blend(tmps, s2, ourrect, m_fstransition->get_progress(), 0, 0xFFFFFFFF))
+			if ( ! blt_blend(tmps, s2, ourrect, m_fstransition->get_progress(), 0, 0xFFFFFFFF, true))
 				draw(s2, ourrect, ourrect, false, tmps);
 		} else {
 			HRGN hrgn = NULL;
@@ -705,16 +706,16 @@ gui::dx::viewport::clear() {
 }
 
 bool
-gui::dx::viewport::blt_blend (IDirectDrawSurface* to, IDirectDrawSurface* from, const lib::rect& rc, double opacity, lib::color_t low_chroma, lib::color_t high_chroma) {
+gui::dx::viewport::blt_blend (IDirectDrawSurface* to, IDirectDrawSurface* from, const lib::rect& rc, double opacity, lib::color_t low_chroma, lib::color_t high_chroma, bool copy) {
 	bool rv = true;
-	uint32 low_ddclr = low_chroma,  high_ddclr = high_chroma;
+	uint32 low_ddclr = convert(low_chroma),  high_ddclr = convert(high_chroma);
 	HRESULT hr = S_OK;
 	if (bits_size == 32) {
-		hr = blt_blend32(rc, opacity, from, to, low_ddclr, high_ddclr);
+		hr = blt_blend32(rc, opacity, from, to, low_ddclr, high_ddclr, copy);
 	} else if( bits_size == 24) {
-		hr = blt_blend24(rc, opacity, from, to, low_ddclr, high_ddclr);
+		hr = blt_blend24(rc, opacity, from, to, low_ddclr, high_ddclr, copy);
 	} else if (bits_size == 16) {
-		hr = blt_blend16(rc, opacity, from, to, low_ddclr, high_ddclr);
+		hr = blt_blend16(rc, opacity, from, to, low_ddclr, high_ddclr, copy);
 	} else {
 		rv = false;
 	}
@@ -753,7 +754,7 @@ gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, double opacity, 
 		}
 		clear(rc, clr, opacity, s1);
 		copy_bgd_to(s2, rc);
-		if (blt_blend(s2, s1, rc, tr->get_progress()*opacity, 0, 0xFFFFFFFF))
+		if (blt_blend(s2, s1, rc, tr->get_progress()*opacity, 0, 0xFFFFFFFF, true))
 			draw_to_bgd(s2, rc, 0);
 		else
 			draw_to_bgd(s1, rc, 0);
@@ -819,16 +820,22 @@ void gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, double opac
 #endif//XXXX
 		IDirectDrawSurface* colorsurf = create_surface();
 		hr = colorsurf->Blt(&dstRC, 0, 0, dwFlags, &bltfx);
-		if ( ! FAILED(hr)) {
-			bltfx.dwFillColor = convert(0); // black
-			blt_blend(dstview, colorsurf, rc, opacity, 0, 0xFFFFFFFF);
+		if (SUCCEEDED(hr)) {
+			blt_blend(dstview, colorsurf, rc, opacity, 0, 0xFFFFFFFF, true);
 			release_surface(colorsurf);
+		} else {
+			DDSURFACEDESC ddsd;
+			ddsd.dwSize = sizeof(ddsd);
+			ddsd.dwFlags = DDSD_HEIGHT | DDSD_WIDTH;
+			HRESULT h = colorsurf->GetSurfaceDesc(&ddsd);
+			seterror(":viewport::clear/DirectDrawSurface::Blt()", hr);
+			lib::logger::get_logger()->debug("h=%d,f=0x%x,w=%d,h=%d",h,ddsd.dwFlags,ddsd.dwWidth);
 		}
-	} else {
+		} else {
 		hr = dstview->Blt(&dstRC, 0, 0, dwFlags, &bltfx);
-	if (hr == DDERR_NOTFOUND) return; // XXXJACK
-	if (FAILED(hr))
-		seterror(":viewport::clear/DirectDrawSurface::Blt()", hr);
+		if (hr == DDERR_NOTFOUND) return; // XXXJACK
+		if (FAILED(hr))
+			seterror(":viewport::clear/DirectDrawSurface::Blt()", hr);
 	}
 }
 
@@ -876,6 +883,67 @@ gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& dst_rc, bool k
 	}
 }
 
+// blend 'src' surface into m_surface using specified opacity within 
+// [chroma_low, chroma_high]; colors outside this interval are copied.
+void
+gui::dx::viewport::blend_surface(const lib::rect& dst_rc, IDirectDrawSurface* src, const lib::rect& src_rc, bool keysrc, double opacity, lib::color_t chroma_low, lib::color_t chroma_high, bool copy) {
+	IDirectDrawSurface* s1 = create_surface();
+	IDirectDrawSurface* s2 = create_surface();
+	if(!s1 || !s2) {
+		RELEASE(s1);
+		RELEASE(s2);
+		draw(src, src_rc, dst_rc, keysrc, m_surface);
+		return;
+	}		
+	if(keysrc) copy_bgd_to(s1, dst_rc);
+	draw(src, src_rc, dst_rc, keysrc, s1);
+	copy_bgd_to(s2, dst_rc);
+// in the next line,  0x88888888 can be used to test chromakeying
+//	if (blt_blend(s2, s1, dst_rc, tr->get_progress()/*opacity*/, 0x88888888, 0xFFFFFFFF,copy))
+	if (blt_blend(s2, s1, dst_rc, opacity, chroma_low, chroma_high, copy))
+		draw_to_bgd(s2, dst_rc, 0);
+	else
+		draw_to_bgd(s1, dst_rc, 0);
+	release_surface(s1);
+	release_surface(s2);
+	return;
+}
+
+// blend 'src' surface into 'dst' surface using specified opacity
+// within [chroma_low, chroma_high]; colors outside this interval are copied.
+void
+gui::dx::viewport::blend_surface(IDirectDrawSurface* dst, const lib::rect& dst_rc, IDirectDrawSurface* src, const lib::rect& src_rc, bool keysrc, double opacity, lib::color_t chroma_low, lib::color_t chroma_high, bool copy) {
+	if (dst == NULL || src == NULL)
+		return;
+	HRESULT hr = S_OK;
+	int x_dst = dst_rc.left();
+	int y_dst = dst_rc.top();
+	int width = dst_rc.width();
+	int height = dst_rc.height();
+	int x_src = dst_rc.left();
+	int y_src = dst_rc.top();
+	DWORD raster_op = SRCCOPY;
+
+	IDirectDrawSurface* tmp = create_surface();
+	if( ! tmp) {
+		RELEASE(tmp);
+		draw (src, src_rc, dst_rc, keysrc, dst);
+		return;
+	}
+	// copy dst surface to tmp surface
+	draw (dst, dst_rc, dst_rc, keysrc, tmp);
+	// blend tmp surface with src surface
+	blt_blend(tmp, src, src_rc, opacity, chroma_low, chroma_high, copy);
+	// copy tmp surface to dst surface
+	draw (tmp, dst_rc, dst_rc, false, dst);
+	RELEASE(tmp);
+}
+
+// copy 'src_rc' rectangle in 'src' surface into 'dst' surface' 'dst_rc' rectangle
+void
+gui::dx::viewport::copy_surface(IDirectDrawSurface* dst, const lib::rect& dst_rc, IDirectDrawSurface* src, const lib::rect& src_rc) {
+	draw (src, src_rc, dst_rc, false, dst);
+}
 
 // Draw the src_rc of the DD surface to the back buffer and destination rectangle
 void
@@ -920,25 +988,7 @@ gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& src_rc,
 #endif/*XXXX*/
 		return;
 	} else if(bt == smil2::bt_fade) {
-		IDirectDrawSurface* s1 = create_surface();
-		IDirectDrawSurface* s2 = create_surface();
-		if(!s1 || !s2) {
-			RELEASE(s1);
-			RELEASE(s2);
-			draw(src, src_rc, dst_rc, keysrc, m_surface);
-			return;
-		}		
-		if(keysrc) copy_bgd_to(s1, dst_rc);
-		draw(src, src_rc, dst_rc, keysrc, s1);
-		copy_bgd_to(s2, dst_rc);
-// in the next line,  0x88888888 can be used to test chromakeying
-//		if (blt_blend(s2, s1, dst_rc, tr->get_progress()/*opacity*/, 0x88888888, 0xFFFFFFFF))
-		if (blt_blend(s2, s1, dst_rc, tr->get_progress()/*opacity*/, 0x0, 0xFFFFFFFF))
-			draw_to_bgd(s2, dst_rc, 0);
-		else
-			draw_to_bgd(s1, dst_rc, 0);
-		release_surface(s1);
-		release_surface(s2);
+		blend_surface(dst_rc, src, src_rc, keysrc, tr->get_progress(), lib::color_t(0x000000), lib::color_t(0xFFFFFF), true);
 		return;
 	}
 	
@@ -1004,7 +1054,7 @@ gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& src_rc,
 	HRESULT hr = dstview->Blt(&dstRC, src, &srcRC, flags, NULL);
 	if (hr == DDERR_NOTFOUND) return; // XXXJACK
 	if (FAILED(hr)) {
-		seterror(":viewport::clear/DirectDrawSurface::Blt()", hr);
+		seterror(":viewport::draw/DirectDrawSurface::Blt()", hr);
 		viewport_logger->trace("Blt %s --> %s failed", repr(src_rc).c_str(), repr(dst_rc).c_str());
 	}
 }
@@ -1274,7 +1324,8 @@ gui::dx::viewport::get_low_high_values(uint32 low_ddclr, uint32 high_ddclr, BYTE
 
 HRESULT
 gui::dx::viewport::blt_blend32(const lib::rect& rc, double progress,
-	IDirectDrawSurface *surf1, IDirectDrawSurface *surf2, uint32 low_ddclr, uint32 high_ddclr) {
+	IDirectDrawSurface *surf1, IDirectDrawSurface *surf2,
+	uint32 low_ddclr, uint32 high_ddclr, bool copy) {
 	
 	DDSURFACEDESC desc1, desc2;
 	ZeroMemory(&desc1, sizeof(desc1));
@@ -1307,16 +1358,20 @@ gui::dx::viewport::blt_blend32(const lib::rect& rc, double progress,
 		RGBQUAD* px2 = (RGBQUAD*)((BYTE*)desc2.lpSurface+row*desc2.lPitch);
 		px1 +=  begin_col;
 		px2 +=  begin_col;
+		AM_DBG if (row == end_row) lib::logger::get_logger()->debug("px1=0x%x px2=0x%x lox=0x%x high=0x%x",*px1,*px2, low_ddclr, high_ddclr);
 		for(int col=begin_col;col<end_col;col++, px1++, px2++) {
-			if (px1->rgbRed >= r_l && px1->rgbRed <= r_h)
-				px2->rgbRed = (BYTE)blend(weight, px2->rgbRed, px1->rgbRed);
-			else px2->rgbRed = 0;
-			if (px1->rgbGreen >= g_l && px1->rgbGreen <= g_h)
+			if (px1->rgbRed >= r_l && px1->rgbRed <= r_h
+			 && px1->rgbGreen >= g_l && px1->rgbGreen <= g_h
+			 && px1->rgbBlue >= b_l && px1->rgbBlue <= b_h) {
+                px2->rgbRed = (BYTE)blend(weight, px2->rgbRed, px1->rgbRed);
 				px2->rgbGreen = (BYTE)blend(weight, px2->rgbGreen, px1->rgbGreen);
-			else px2->rgbGreen = 0;
-			if (px1->rgbBlue >= b_l && px1->rgbBlue <= b_h)
 				px2->rgbBlue = (BYTE)blend(weight, px2->rgbBlue, px1->rgbBlue);
-			else px2->rgbBlue = 0;
+			} else if (copy) {
+				px2->rgbRed = px1->rgbRed;
+				px2->rgbBlue = px1->rgbBlue;	
+				px2->rgbGreen = px1->rgbGreen;
+			}
+			AM_DBG	if (row == end_row && col == begin_col) lib::logger::get_logger()->debug("px2=0x%x weight=%d",*px2, weight);
 		}
 	}
 	surf1->Unlock(0);
@@ -1324,10 +1379,10 @@ gui::dx::viewport::blt_blend32(const lib::rect& rc, double progress,
 	return hr;
 }
 
-
 HRESULT
 gui::dx::viewport::blt_blend24(const lib::rect& rc, double progress,
-	IDirectDrawSurface *surf1, IDirectDrawSurface *surf2, uint32 low_ddclr, uint32 high_ddclr) {
+	IDirectDrawSurface *surf1, IDirectDrawSurface *surf2,
+	uint32 low_ddclr, uint32 high_ddclr, bool copy) {
 	
 	DDSURFACEDESC desc1, desc2;
 	ZeroMemory(&desc1, sizeof(desc1));
@@ -1362,15 +1417,17 @@ gui::dx::viewport::blt_blend24(const lib::rect& rc, double progress,
 		px1 +=  begin_col;
 		px2 +=  begin_col;
 		for(int col=begin_col;col<end_col;col++, px1++, px2++) {
-			if (px1->rgbtRed >= r_l && px1->rgbtRed <= r_h)
+			if (px1->rgbtRed >= r_l && px1->rgbtRed <= r_h
+			 && px1->rgbtGreen >= g_l && px1->rgbtGreen <= g_h
+			 && px1->rgbtBlue >= b_l && px1->rgbtBlue <= b_h) {
 				px2->rgbtRed = (BYTE)blend(weight, px2->rgbtRed, px1->rgbtRed);
-			else px2->rgbtRed = 0;
-			if (px1->rgbtGreen >= g_l && px1->rgbtGreen <= g_h)
 				px2->rgbtGreen = (BYTE)blend(weight, px2->rgbtGreen, px1->rgbtGreen);
-			else px2->rgbtGreen = 0;
-			if (px1->rgbtBlue >= b_l && px1->rgbtBlue <= b_h)
 				px2->rgbtBlue = (BYTE)blend(weight, px2->rgbtBlue, px1->rgbtBlue);
-			else px2->rgbtBlue = 0;
+			} else if (copy) {
+				px2->rgbtRed = px1->rgbtRed;
+				px2->rgbtGreen = px1->rgbtGreen;
+				px2->rgbtBlue = px1->rgbtBlue;
+			}
 		}
 	}
 	surf1->Unlock(0);
@@ -1408,7 +1465,8 @@ struct trible565 {
 
 HRESULT
 gui::dx::viewport::blt_blend16(const lib::rect& rc, double progress,
-	IDirectDrawSurface *surf1, IDirectDrawSurface *surf2, uint32 low_ddclr, uint32 high_ddclr) {
+	IDirectDrawSurface *surf1, IDirectDrawSurface *surf2,
+	uint32 low_ddclr, uint32 high_ddclr, bool copy) {
 	
 	DDSURFACEDESC desc1, desc2;
 	ZeroMemory(&desc1, sizeof(desc1));
@@ -1444,15 +1502,15 @@ gui::dx::viewport::blt_blend16(const lib::rect& rc, double progress,
 		px2 +=  begin_col;
 		for(int col=begin_col;col<end_col;col++, px1++, px2++) {
 			BYTE r = px1->red(), g = px1->green(), b = px1->blue();
-			if (r >= r_l && r <= r_h)
-				r = (BYTE)blend(weight, px2->red(), r);
-			else r = 0;
-			if (g >= g_l && g <= g_h)
+			if (r >= r_l && r <= r_h && g >= g_l && g <= g_h && b >= b_l && b <= b_h) {
+                r = (BYTE)blend(weight, px2->red(), r);
 				g = (BYTE)blend(weight, px2->green(), g);
-			else g = 0;
-			if (b >= b_l && b <= b_h)
 				b = (BYTE)blend(weight, px2->blue(), b);
-			else b = 0;
+			} else {
+				r = copy ? px1->red() : px2->red();
+					g = copy ? px1->green() : px2->green();
+				b = copy ? px1->blue() : px2->blue();
+			}
 			*px2 = trible565(r, g, b);
 		}
 	}
@@ -1460,4 +1518,3 @@ gui::dx::viewport::blt_blend16(const lib::rect& rc, double progress,
 	surf2->Unlock(0);
 	return hr;
 }
-
