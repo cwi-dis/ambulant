@@ -99,6 +99,18 @@
         "CertificateHash" = "8:"
         "TimeStampServer" = "8:"
         }
+        "DebugShlib"
+        {
+        "DisplayName" = "8:DebugShlib"
+        "IsDebugOnly" = "11:FALSE"
+        "IsReleaseOnly" = "11:FALSE"
+        "OutputFilename" = "8:DebugShlib\\ambulant-wince5-installer.cab"
+        "PackageFileSize" = "3:-2147483648"
+        "CabType" = "3:1"
+        "SignOutput" = "11:FALSE"
+        "CertificateHash" = "8:"
+        "TimeStampServer" = "8:"
+        }
         "Release"
         {
         "DisplayName" = "8:Release"

@@ -108,6 +108,6 @@ class AMBULANTAPI test_attrs {
  
 } // namespace ambulant
 
-bool load_test_attrs(const char *filename);
+AMBULANTAPI bool load_test_attrs(const char *filename);
 
 #endif // AMBULANT_SMIL2_TEST_ATTRS_H

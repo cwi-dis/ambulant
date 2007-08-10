@@ -41,7 +41,7 @@ namespace ambulant {
 
 namespace lib {
 
-class istream {
+class AMBULANTAPI istream {
   public:
 	virtual ~istream() {}
 	virtual bool is_open() const = 0;
@@ -50,7 +50,7 @@ class istream {
 	virtual int read(unsigned char *buffer, int nbytes) = 0;
 };
 
-class ostream {
+class AMBULANTAPI ostream {
   public:
 	virtual ~ostream() {}
 	virtual bool is_open() const = 0;

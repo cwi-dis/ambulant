@@ -13,23 +13,31 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I) = Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		DebugShlib|Windows Mobile 5.0 Pocket PC SDK (ARMV4I) = DebugShlib|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 		Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I) = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B2643C6C-B5BE-40FB-B127-320E15D9D09E}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 		{B2643C6C-B5BE-40FB-B127-320E15D9D09E}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Build.0 = Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 		{B2643C6C-B5BE-40FB-B127-320E15D9D09E}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Deploy.0 = Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{B2643C6C-B5BE-40FB-B127-320E15D9D09E}.DebugShlib|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = DebugShlib|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{B2643C6C-B5BE-40FB-B127-320E15D9D09E}.DebugShlib|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Build.0 = DebugShlib|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{B2643C6C-B5BE-40FB-B127-320E15D9D09E}.DebugShlib|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Deploy.0 = DebugShlib|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 		{B2643C6C-B5BE-40FB-B127-320E15D9D09E}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 		{B2643C6C-B5BE-40FB-B127-320E15D9D09E}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Build.0 = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 		{B2643C6C-B5BE-40FB-B127-320E15D9D09E}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Deploy.0 = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 		{3E3BABBD-DCB0-4CD2-9DD3-26B96A7A856E}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 		{3E3BABBD-DCB0-4CD2-9DD3-26B96A7A856E}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Build.0 = Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 		{3E3BABBD-DCB0-4CD2-9DD3-26B96A7A856E}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Deploy.0 = Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{3E3BABBD-DCB0-4CD2-9DD3-26B96A7A856E}.DebugShlib|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = DebugShlib|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{3E3BABBD-DCB0-4CD2-9DD3-26B96A7A856E}.DebugShlib|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Build.0 = DebugShlib|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{3E3BABBD-DCB0-4CD2-9DD3-26B96A7A856E}.DebugShlib|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Deploy.0 = DebugShlib|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 		{3E3BABBD-DCB0-4CD2-9DD3-26B96A7A856E}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 		{3E3BABBD-DCB0-4CD2-9DD3-26B96A7A856E}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Build.0 = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 		{3E3BABBD-DCB0-4CD2-9DD3-26B96A7A856E}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Deploy.0 = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 		{2BA24983-F764-4257-935C-471EEDEBD494}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Debug
 		{2BA24983-F764-4257-935C-471EEDEBD494}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Build.0 = Debug
+		{2BA24983-F764-4257-935C-471EEDEBD494}.DebugShlib|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = DebugShlib
 		{2BA24983-F764-4257-935C-471EEDEBD494}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Release
 		{2BA24983-F764-4257-935C-471EEDEBD494}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Build.0 = Release
 	EndGlobalSection

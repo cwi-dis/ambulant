@@ -42,7 +42,7 @@ namespace lib {
 
 namespace win32 {
 
-class fstream : public lib::istream, public lib::ostream {
+class AMBULANTAPI fstream : public lib::istream, public lib::ostream {
   public:
 	fstream();
 	~fstream();
