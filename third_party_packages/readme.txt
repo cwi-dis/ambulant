@@ -25,6 +25,23 @@ xerces:
 	If you want to compile AmbulantPlayer without xerces support use the
 	NoXerces configurations in the Ambulant solution.
 	
+libxml2:
+    Only for SMIL 3 support. Download source from <http://www.xmlsoft.org>.
+    There are no releases, only hourly snapshots it seems. Copy
+    libxml2-2.6.69 into third_party_packages (if the name has changed you
+    may need to change some Ambulant projects to refer to the new name.
+    
+    You need to configure and build libxml2 manually (the solution tries to
+    do it but fails), in libxml2-2.6.69\win32. Readme.txt has the details,
+    but it boils down to doing the following from a Command Prompt window:
+    
+    - Set MSVC paths with ...\Microsoft Vistal Studio 7or8\VC\vcvarsall.bat
+    - cscript configure.js iconv=no
+    - nmake
+    
+    Do not install the libs and binaries.
+    
+    WM5 notes TBD.
 	
 others:
 	For this release we don't fully remember where we got the other
@@ -175,3 +192,9 @@ gettext:
 	Alternatively, configure Ambulant with --disable-nls to disable libintl
 	support (and, therefore, localization).
 	
+libxml2:
+    Only needed for SMIL3 support. Download from <http://www.xmlsoft.org>
+    and install normally. Make sure xml2-config is in your $PATH when building
+    Ambulant.
+    
+    
