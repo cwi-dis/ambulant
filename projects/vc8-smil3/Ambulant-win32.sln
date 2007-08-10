@@ -17,6 +17,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "plugin_python", "plugin_pyt
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785} = {DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "plugin_scripting", "plugin_scripting.vcproj", "{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785} = {DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -81,6 +86,22 @@ Global
 		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.ReleaseNoXercesNoHtml|Win32.ActiveCfg = Release|Win32
 		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.ReleaseShlib|Win32.ActiveCfg = Release|Win32
 		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.ReleaseShlib|Win32.Build.0 = Release|Win32
+		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.Debug|Win32.Build.0 = Debug|Win32
+		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.DebugNoXerces|Win32.ActiveCfg = Debug|Win32
+		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.DebugNoXerces|Win32.Build.0 = Debug|Win32
+		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.DebugNoXercesNoHtml|Win32.ActiveCfg = Debug|Win32
+		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.DebugNoXercesNoHtml|Win32.Build.0 = Debug|Win32
+		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.DebugShlib|Win32.ActiveCfg = Debug|Win32
+		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.DebugShlib|Win32.Build.0 = Debug|Win32
+		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.Release|Win32.ActiveCfg = Release|Win32
+		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.Release|Win32.Build.0 = Release|Win32
+		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.ReleaseNoXerces|Win32.ActiveCfg = Release|Win32
+		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.ReleaseNoXerces|Win32.Build.0 = Release|Win32
+		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.ReleaseNoXercesNoHtml|Win32.ActiveCfg = Release|Win32
+		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.ReleaseNoXercesNoHtml|Win32.Build.0 = Release|Win32
+		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.ReleaseShlib|Win32.ActiveCfg = Release|Win32
+		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.ReleaseShlib|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
