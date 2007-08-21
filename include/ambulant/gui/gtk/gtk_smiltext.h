@@ -70,10 +70,10 @@ class gtk_smiltext_renderer :
 	critical_section m_lock;
 
 // pango specific stuff
-	void _gtk_set_color_attr(lib::color_t smiltext_color,
+	void _gtk_set_color_attr(PangoAttrList* pal, lib::color_t smiltext_color,
 		PangoAttribute* (*pango_attr_color)(guint16 r,guint16 g,guint16 b),
 				 unsigned int start_index, unsigned int end_index);
-	void _gtk_set_font_attr(const char* smiltext_font_family,
+	void _gtk_set_font_attr(PangoAttrList* pal, const char* smiltext_font_family,
 		smil2::smiltext_font_style smiltext_font_style,
 		smil2::smiltext_font_weight smiltext_font_weight,
 		int smiltext_font_size,
@@ -82,6 +82,9 @@ class gtk_smiltext_renderer :
 	PangoAttrList* m_pango_attr_list;
 	PangoContext* m_context;
 	PangoLayout* m_layout;
+	PangoAttrList* m_bg_pango_attr_list;
+	PangoLayout* m_bg_layout;
+	const color_t m_transparent;
 };
 
 } // namespace gtk

@@ -7,5 +7,6 @@ library_include_HEADERS=		\
 	gtk_smiltext.h			\
 	gtk_text_renderer.h		\
 	gtk_transition.h		\
+	gtk_util.h			\
 	gtk_video_renderer.h		\
 	gtk_factory.h

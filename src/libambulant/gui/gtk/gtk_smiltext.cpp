@@ -25,6 +25,7 @@
 #include "ambulant/gui/gtk/gtk_factory.h"
 #include "ambulant/gui/gtk/gtk_renderer.h"
 #include "ambulant/gui/gtk/gtk_smiltext.h"
+#include "ambulant/gui/gtk/gtk_util.h"
 #include "ambulant/common/region_info.h"
 #include "ambulant/smil2/params.h"
 
@@ -32,9 +33,6 @@
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
-
-#ifdef	JUNK
-#endif//JUNK
 
 #ifdef WITH_SMIL30
 
@@ -55,7 +53,10 @@ gtk_smiltext_renderer::gtk_smiltext_renderer(
 //JUNK	m_gtk_window(NULL),
 	m_engine(smil2::smiltext_engine(node, evp, this, false)),
 	m_params(m_engine.get_params()),
-	 m_pango_attr_list(pango_attr_list_new())
+	m_pango_attr_list(pango_attr_list_new()),
+	m_bg_layout(NULL),
+	m_bg_pango_attr_list(),
+	m_transparent(to_color(0x0,0x1,0x0)) // almost black
 {
 #ifdef	TBD
 	m_render_offscreen = (m_params.m_mode != smil2::stm_replace && m_params.m_mode != smil2::stm_append) || !m_params.m_wrap;
@@ -65,7 +66,17 @@ gtk_smiltext_renderer::gtk_smiltext_renderer(
   	PangoLanguage* language = gtk_get_default_language();
 	pango_context_set_language (m_context, language);
 	pango_context_set_base_dir (m_context, PANGO_DIRECTION_LTR);
-	m_layout = pango_layout_new(m_context);
+	cairo_font_options_t* cairo_font_options = cairo_font_options_create();
+#ifndef	WITH_GTK_ANTI_ALIASING
+	/* anti-aliasing by pango/cairo is disabled because it sometimes
+	 * results in ugly glyphs when media[Bcakground]Opacity is used,
+	 * since this is implemented using blending.
+	 */
+	cairo_font_options_set_antialias (cairo_font_options, CAIRO_ANTIALIAS_NONE);
+	pango_cairo_context_set_font_options (m_context, cairo_font_options);
+#endif//WITH_GTK_ANTI_ALIASING
+	m_layout = pango_layout_new (m_context);
+	cairo_font_options_destroy (cairo_font_options);
   	pango_layout_set_alignment (m_layout, PANGO_ALIGN_LEFT);
 }
 
@@ -74,10 +85,16 @@ gtk_smiltext_renderer::~gtk_smiltext_renderer()
 	m_lock.enter();
 	if ( m_pango_attr_list != NULL) {
 		pango_attr_list_unref( m_pango_attr_list);
-		 m_pango_attr_list = NULL;
+		m_pango_attr_list = NULL;
 	}
 	g_object_unref (G_OBJECT (m_context));
 	g_object_unref(m_layout);
+	if ( m_bg_pango_attr_list != NULL) {
+		pango_attr_list_unref(m_bg_pango_attr_list);
+		m_bg_pango_attr_list = NULL;
+	}
+	if (m_bg_layout)
+	  g_object_unref(m_bg_layout);
 	m_lock.leave();
 }
 
@@ -108,6 +125,25 @@ gtk_smiltext_renderer::smiltext_changed()
 {
 	AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x)",this);
 	m_lock.enter();
+	double alpha_media = 1.0, alpha_media_bg = 1.0, alpha_chroma = 1.0;
+	lib::color_t chroma_low = lib::color_t(0x000000), chroma_high = lib::color_t(0xFFFFFF);
+	const common::region_info *ri = m_dest->get_info();
+	if (ri) {
+		alpha_media = ri->get_mediaopacity();
+		alpha_media_bg = ri->get_mediabgopacity();
+//JNK		m_bgopacity = ri->get_bgopacity();
+//TBD   alpha_chroma = ri->get_chromakeyopacity();
+//TBD	lib::color_t chromakey = ri->get_chromakey();
+//TBD	lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
+//TBD compute chroma_low, choma_high
+	}
+	if ( ! m_bg_layout 
+	     && (alpha_media != 1.0 || alpha_media_bg != 1.0 || alpha_chroma != 1.0)) {
+		// prepare for blending
+       		m_bg_layout = pango_layout_new(m_context);
+		pango_layout_set_alignment (m_bg_layout, PANGO_ALIGN_LEFT);
+		m_bg_pango_attr_list = pango_attr_list_new();
+	}
 	if (m_engine.is_changed()) {
 		lib::xml_string data;
 		smil2::smiltext_runs::const_iterator i;
@@ -127,27 +163,54 @@ gtk_smiltext_renderer::smiltext_changed()
 			else if (i->m_command == smil2::stc_data)
 				m_text_storage +=  i->m_data;
 			// Set font attributes
-			_gtk_set_font_attr(i->m_font_family,
+			_gtk_set_font_attr(m_pango_attr_list, 
+					   i->m_font_family,
 					   i->m_font_style, 
 					   i->m_font_weight,
 					   i->m_font_size,
 					   start_index, m_text_storage.size());
+			if (m_bg_pango_attr_list) 
+				_gtk_set_font_attr(m_bg_pango_attr_list, 
+						   i->m_font_family,
+						   i->m_font_style, 
+						   i->m_font_weight,
+						   i->m_font_size,
+						   start_index, m_text_storage.size());
 			if ( ! i->m_transparent) {
 				// Set foreground color attribute
-				 _gtk_set_color_attr(i->m_color,
-						     pango_attr_foreground_new,
-						     start_index, m_text_storage.size());
+				_gtk_set_color_attr(m_pango_attr_list,
+						    i->m_color,
+						    pango_attr_foreground_new,
+						    start_index, m_text_storage.size());
+				if (m_bg_layout) {
+					_gtk_set_color_attr(m_bg_pango_attr_list,
+							    m_transparent,
+							    pango_attr_foreground_new,
+							    start_index, m_text_storage.size());
+				}
 			}
 			if ( ! i->m_bg_transparent) {
 				// Set background color attribute
-				_gtk_set_color_attr(i->m_bg_color,
+				_gtk_set_color_attr(m_pango_attr_list, 
+						    m_bg_layout ? m_transparent : i->m_bg_color,
 						    pango_attr_background_new,
 						    start_index, m_text_storage.size());
+				if (m_bg_layout) {
+					_gtk_set_color_attr(m_bg_pango_attr_list, 
+							    i->m_bg_color,
+							    pango_attr_background_new,
+							    start_index, m_text_storage.size());
+				}
 			}
 			// Set the attributes and text
 			pango_layout_set_attributes(m_layout, m_pango_attr_list);
 			pango_layout_set_text(m_layout, m_text_storage.c_str(), -1);
 			pango_layout_context_changed(m_layout);
+			if (m_bg_layout) {
+				pango_layout_set_attributes(m_bg_layout, m_bg_pango_attr_list);
+				pango_layout_set_text(m_bg_layout, m_text_storage.c_str(), -1);
+				pango_layout_context_changed(m_bg_layout);
+			}
 			i++;
 		}
 		m_engine.done();
@@ -182,11 +245,11 @@ gtk_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 
 // private methods
 void
-gtk_smiltext_renderer::_gtk_set_font_attr(const char* smiltext_font_family,
+gtk_smiltext_renderer::_gtk_set_font_attr (PangoAttrList* pal,
+		const char* smiltext_font_family,
 		smil2::smiltext_font_style smiltext_font_style,
 		smil2::smiltext_font_weight smiltext_font_weight,
 		int smiltext_font_size,
-
 		unsigned int start_index, unsigned int end_index)
 
 {
@@ -230,13 +293,13 @@ gtk_smiltext_renderer::_gtk_set_font_attr(const char* smiltext_font_family,
 	// add the new PangoAttribute to the PangoAttrList for the range given
 	pango_attribute->start_index = start_index;
 	pango_attribute->end_index   = end_index;
-	pango_attr_list_insert(m_pango_attr_list, pango_attribute);
+	pango_attr_list_insert(pal, pango_attribute);
 }
 
 void
-gtk_smiltext_renderer::_gtk_set_color_attr(lib::color_t smiltext_color,
+gtk_smiltext_renderer::_gtk_set_color_attr(PangoAttrList* pal,
+		lib::color_t smiltext_color,
 		PangoAttribute* (*pango_attr_color_new)(guint16 r, guint16 g, guint16 b),
-
 		unsigned int start_index, unsigned int end_index)
 {
 	// smiltext color to pango color conversion
@@ -250,7 +313,7 @@ gtk_smiltext_renderer::_gtk_set_color_attr(lib::color_t smiltext_color,
 	// add the new PangoAttribute to the PangoAttrList for the range given
 	pango_attribute->start_index = start_index;
 	pango_attribute->end_index   = end_index;
-	pango_attr_list_insert(m_pango_attr_list, pango_attribute);
+	pango_attr_list_insert(pal, pango_attribute);
 }
 		   
 void
@@ -265,26 +328,108 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 		"ltrb=(%d,%d,%d,%d)\nm_text_storage = %s, p=(%d,%d):",
 		(void *)this, r.left(), r.top(), r.width(), r.height(),
 		data == NULL ? "(null)": data, p.x, p.y);
-	if (data && window) {
-		int L = r.left()+p.x, 
-		    T = r.top()+p.y,
-		    W = r.width(),
-		    H = r.height();
-		GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (window->get_ambulant_pixmap()));
-		if (offset.x || offset.y) {
-			GdkRectangle gdk_rectangle;(L, T, W, H);
-			gdk_rectangle.x = L;
-			gdk_rectangle.y = T;
-			gdk_rectangle.width = W;
-			gdk_rectangle.height = H;
-			gdk_gc_set_clip_rectangle(gc, &gdk_rectangle);
-		}
-		// include the text
-		pango_layout_set_width(m_layout, W*1000);
-  		gdk_draw_layout(GDK_DRAWABLE (window->get_ambulant_pixmap()),
-				gc , L-offset.x, T-offset.y, m_layout);
-		g_object_unref (G_OBJECT (gc));
+	if ( ! (m_layout && window))
+	  return; // nothing to do
+
+
+	int L = r.left()+p.x, 
+	    T = r.top()+p.y,
+	    W = r.width(),
+	    H = r.height();
+	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (window->get_ambulant_pixmap()));
+	GdkRectangle gdk_rectangle;
+	gdk_rectangle.x = L;
+	gdk_rectangle.y = T;
+	gdk_rectangle.width = W;
+	gdk_rectangle.height = H;
+
+	if (offset.x || offset.y) {
+		gdk_gc_set_clip_rectangle(gc, &gdk_rectangle);
 	}
+	// include the text
+	pango_layout_set_width(m_layout, W*1000);
+	if (m_bg_layout) {
+		// blending
+	  	pango_layout_set_width(m_bg_layout, W*1000);
+
+		double alpha_media = 1.0, alpha_media_bg = 1.0, alpha_chroma = 1.0;
+		const common::region_info *ri = m_dest->get_info();
+		if (ri) { // XXX TBD rememeber these values
+			alpha_media = ri->get_mediaopacity();
+			alpha_media_bg = ri->get_mediabgopacity();
+		}
+		GdkPixmap* text_pixmap
+		  = gdk_pixmap_new( (window->get_ambulant_pixmap()),
+				    W, H, -1);
+		GdkPixmap* bg_pixmap
+		  = gdk_pixmap_new((window->get_ambulant_pixmap()),
+				   W, H, -1);
+		GdkGC* text_gc = gdk_gc_new (GDK_DRAWABLE (text_pixmap));
+		GdkGC* bg_gc =  gdk_gc_new (GDK_DRAWABLE (bg_pixmap));
+		if (offset.x || offset.y) {
+			gdk_gc_set_clip_rectangle(text_gc, &gdk_rectangle);
+			gdk_gc_set_clip_rectangle(bg_gc, &gdk_rectangle);
+		}
+
+		GdkPixbuf* screen_pixbuf = gdk_pixbuf_get_from_drawable
+				(NULL, window->get_ambulant_pixmap(), NULL,
+				 L, T, 0, 0, W, H);
+		GdkColor gdk_transparent;
+		gdk_transparent.red = redc(m_transparent)*0x101;
+		gdk_transparent.blue = bluec(m_transparent)*0x101;
+		gdk_transparent.green = greenc(m_transparent)*0x101;
+
+		gdk_gc_set_rgb_bg_color (bg_gc, &gdk_transparent);
+		gdk_gc_set_rgb_fg_color (bg_gc, &gdk_transparent);
+		gdk_gc_set_rgb_bg_color (text_gc, &gdk_transparent);
+		gdk_gc_set_rgb_fg_color (text_gc, &gdk_transparent);
+
+		// clear text_pixmap and bg_pixmap to transparent color
+		gdk_draw_rectangle (bg_pixmap, bg_gc, TRUE, 0, 0, W, H);
+		gdk_draw_rectangle (text_pixmap, text_gc, TRUE, 0, 0, W, H);
+
+		// draw m_bg_layout containing smilText runs with text in
+		// m_transparent color and background in required color
+		gdk_draw_layout(GDK_DRAWABLE (bg_pixmap),
+				bg_gc , 0-offset.x, 0-offset.y, m_bg_layout);
+		g_object_unref (G_OBJECT (bg_gc));
+//		gdk_pixmap_dump(bg_pixmap, "bg");
+		GdkPixbuf* bg_pixbuf = gdk_pixbuf_get_from_drawable
+		  			       	(NULL, bg_pixmap, NULL,
+						 0,0,0,0,W,H);
+		lib::rect rc(lib::point(L,T),lib::size(W,H));
+		// blend the screen pixbuf with th background pixbuf
+		gdk_pixbuf_blend (screen_pixbuf, rc, bg_pixbuf, rc, 
+				  alpha_media_bg, BLEND_OUTSIDE,
+				  m_transparent, m_transparent);
+
+		// draw m_layout containing smilText runs with text in
+		// required colors and background in m_transparant color
+		gdk_draw_layout(GDK_DRAWABLE (text_pixmap),
+				text_gc , 0-offset.x, 0-offset.y, m_layout);
+		g_object_unref (G_OBJECT (text_gc));
+//		gdk_pixmap_dump(text_pixmap, "text");
+		GdkPixbuf* text_pixbuf = gdk_pixbuf_get_from_drawable
+		  			       	(NULL, text_pixmap, NULL,
+						0,0,0,0,W,H);
+		gdk_pixbuf_blend (screen_pixbuf, rc, text_pixbuf, rc, 
+				  alpha_media, BLEND_OUTSIDE,
+				  m_transparent, m_transparent);
+//		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen0");
+		// draw the blended pixbuf on the screen
+		gdk_draw_pixbuf(window->get_ambulant_pixmap(),
+				gc, screen_pixbuf, 0, 0, L, T, W, H, GDK_RGB_DITHER_NONE,0,0);
+//		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen1");
+		g_object_unref (G_OBJECT (text_pixbuf));
+		g_object_unref (G_OBJECT (bg_pixbuf));
+		g_object_unref (G_OBJECT (screen_pixbuf));
+		g_object_unref (G_OBJECT (bg_pixmap));
+		g_object_unref (G_OBJECT (text_pixmap));
+	} else {
+		gdk_draw_layout(GDK_DRAWABLE (window->get_ambulant_pixmap()),
+				gc , L-offset.x, T-offset.y, m_layout);
+	}
+	g_object_unref (G_OBJECT (gc));
 }
 
 } // namespace gtk

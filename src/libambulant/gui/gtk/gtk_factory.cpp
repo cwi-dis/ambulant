@@ -32,6 +32,10 @@
 #ifdef  WITH_SMIL30
 #include "ambulant/gui/gtk/gtk_smiltext.h"
 #endif/*WITH_SMIL30*/
+//#define DUMPPIXMAP
+#ifdef	DUMPPIXMAP
+#include "ambulant/gui/gtk/gtk_util.h"
+#endif/*DUMPPIXMAP*/
 #include "ambulant/gui/gtk/gtk_text_renderer.h"
 #include "ambulant/gui/gtk/gtk_video_renderer.h"
 
@@ -136,43 +140,8 @@ void gtk_C_callback_do_button_release_event(void *userdata, GdkEventButton *even
 			break; /* not found */
 	}
 }
-}
+}//extern "C"
 
-#ifdef	DUMPPIXMAP
-/* test if there is something new to see */
-static GdkPixmap* oldImageP;
-static bool
-isEqualToPrevious(GdkPixmap* gpmP) {
-	return false;
-	//QImage img = gpmP->convertToImage();
-	//if (oldImageP != NULL && img == *oldImageP) {
-	//	AM_DBG lib::logger::get_logger()->debug("isEqualToPrevious: new image not different from old one");
-	//	return true;
-	//} else {
-	//	if (oldImageP != NULL) delete oldImageP;
-	//	oldImageP = new QImage(img);
-	//	return false;
-	//}
-}
-
-/* gdk_pixmap_dump on file */
-void
-gui::gtk::gdk_pixmap_dump(GdkPixmap* gpm, std::string filename) {
-	if ( ! gpm) return;
-	GdkPixbuf* pixbuf = gdk_pixbuf_get_from_drawable(NULL, gpm, 0, 0, 0, 0, 0, -1, -1);
-//QImage img = gpm->convertToImage();
-	if (pixbuf && ! isEqualToPrevious(gpm)) {
-		char buf[5];
-		static int i;
-		sprintf(buf,"%04d",i++);
-		std::string newfile = buf + std::string(filename) +".png";
-		GError* error = NULL;
-		gdk_pixbuf_save(pixbuf, newfile.c_str(), "png", &error, NULL);
-		g_object_unref(G_OBJECT(pixbuf));
-		AM_DBG lib::logger::get_logger()->debug("gdk_pixmap_dump(%s)", newfile.c_str());
-	}
-}
-#endif/*DUMPPIXMAP*/
 void gui::gtk::gdk_pixmap_bitblt(GdkPixmap* dst, int dst_x, int dst_y, GdkPixmap* src, int src_x, int src_y, int width, int height) {
 	GdkGC *gc = gdk_gc_new (dst);
 	gdk_draw_pixmap(GDK_DRAWABLE(dst), gc, GDK_DRAWABLE(src), src_x, src_y,
@@ -487,10 +456,10 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 		g_error_free (error);
 	}
 	g_object_unref (G_OBJECT (pixbuf));
+#endif //WITH_SCREENSHOTS
 #ifdef	DUMPPIXMAP
 	gdk_pixmap_dump(m_pixmap, "top");
 #endif/*DUMPPIXMAP*/
-#endif //WITH_SCREENSHOTS
 }
 
 void

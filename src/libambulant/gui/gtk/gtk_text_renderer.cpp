@@ -107,8 +107,21 @@ gtk_text_renderer::redraw_body(const lib::rect &r,
  	 	language = gtk_get_default_language();
   		pango_context_set_language (context, language);
   		pango_context_set_base_dir (context, PANGO_DIRECTION_LTR);
-		// We initialize the font as Sans 12
+		// We initialize the font as Sans 10
 		font_desc = pango_font_description_from_string ("sans 10");
+		// in case we have some specific font style and type
+		if (m_text_font){
+			// TBD: smil font name/style to pango font name/style conversion 
+			pango_font_description_set_family(font_desc, m_text_font);
+		}
+
+		// in case we have some point size (taken from gtk_smiltext.cpp)
+		if (m_text_size) {
+			// smil font size to pango font size conversion
+			double pango_font_size = m_text_size*PANGO_SCALE;
+			pango_font_description_set_absolute_size(font_desc, pango_font_size);
+		}
+
   		pango_context_set_font_description (context, font_desc);
 		layout = pango_layout_new(context);
   		pango_layout_set_alignment (layout, PANGO_ALIGN_LEFT);
@@ -117,20 +130,6 @@ gtk_text_renderer::redraw_body(const lib::rect &r,
   		pango_layout_set_text (layout, m_text_storage, -1);
 		// according to the documentation, Pango sets the width in thousandths of a device unit (why? I don't know)
 		pango_layout_set_width(layout, W*1000);
-
-		// in case we have some specific font style and type
-		if (m_text_font){
-			printf("We are entering to some bad place\n");
-			PangoFontDescription* pfd = pango_font_description_new();
-			pango_font_description_set_family(pfd, m_text_font);
-			pango_layout_set_font_description(layout, pfd);
-			pango_font_description_free(pfd);
-		}
-
-		// in case we have some point size (it is not done yet for Gtk)
-/*		if (m_text_size)
-			gtk_font.setPointSizeFloat(m_text_size);
-*/
 		// Foreground Color of the text
 		GdkColor gtk_color;
 		gtk_color.red = redc(m_text_color)*0x101;
