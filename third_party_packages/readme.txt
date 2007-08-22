@@ -42,6 +42,14 @@ libxml2:
     Do not install the libs and binaries.
     
     WM5 notes TBD.
+
+ffmpeg:
+	Experminental, for when you want to use the ffmpeg renderers on Windows.
+	Needs to be built using MinGW,can then be linked into Visual Studio projects.
+	Follow the build instructions on 
+	<http://arrozcru.no-ip.org/ffmpeg_wiki/tiki-index.php>. There are other webpages
+	with instructions, but these are the only ones that worked for me.
+
 	
 others:
 	For this release we don't fully remember where we got the other
