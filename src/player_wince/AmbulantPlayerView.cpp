@@ -158,7 +158,7 @@ int CAmbulantPlayerView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	
 
 	lib::win32::fstream *fs = new lib::win32::fstream();
-	if(fs->open_for_writing(TEXT("\\Windows\\Ambulant\\amlog.txt")))
+	if(fs->open_for_writing(TEXT("\\Program Files\\AmbulantPlayer\\amlog.txt")))
 		lib::logger::get_logger()->set_ostream(fs);
 
 	return 0;

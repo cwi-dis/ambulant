@@ -16,8 +16,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
-			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
+			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)-$(PlatformName)"
+			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)-$(PlatformName)"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -100,8 +100,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)-$(PlatformName)"
+			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)-$(PlatformName)"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -145,11 +145,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				IgnoreImportLibrary="true"
 				AdditionalOptions=" /subsystem:windowsce,5.01"
-				OutputFile="$(OutDir)/plugin.dll"
+				OutputFile="..\..\bin\wince\libamplugin_plugin.dll"
 				LinkIncremental="1"
 				DelayLoadDLLs="$(NOINHERIT)"
-				GenerateDebugInformation="true"
+				GenerateDebugInformation="false"
 				ProgramDatabaseFile="$(OutDir)/plugin.pdb"
 				SubSystem="0"
 				StackReserveSize="65536"
@@ -175,7 +176,7 @@
 			/>
 			<DeploymentTool
 				ForceDirty="-1"
-				RemoteDirectory=""
+				RemoteDirectory="%CSIDL_PROGRAM_FILES%\AmbulantPlayer"
 				RegisterOutput="0"
 				AdditionalFiles=""
 			/>

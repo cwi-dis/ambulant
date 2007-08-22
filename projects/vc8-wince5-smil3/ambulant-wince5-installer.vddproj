@@ -14,6 +14,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_1243700B737C4CA1B90AE31E2F0607E4"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_2726893904F44EDE988654246871007B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -21,6 +27,12 @@
         "Entry"
         {
         "MsmKey" = "8:_42FA3A4191DE416D92DFEBC508EAD637"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_63FC2DA176C84361B19EC1B9E918B825"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -50,6 +62,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_8BFE4E6F34DA432E88B42E054476C702"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_8F1954EE4C6149D3B3033AE6A79AEE6D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -62,6 +80,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_B7DBD4126B6B417A8D1C5B17E1B211A7"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_CDD4BE10F7284676AF06819C4F5BB34E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -69,6 +93,12 @@
         "Entry"
         {
         "MsmKey" = "8:_D5BECFAAD11B4287AC4DEA8DB6630DE4"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_DE30EEECF26D4021A452E1E5183B20B2"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -87,36 +117,24 @@
     }
     "Configurations"
     {
-        "Debug"
-        {
-        "DisplayName" = "8:Debug"
-        "IsDebugOnly" = "11:TRUE"
-        "IsReleaseOnly" = "11:FALSE"
-        "OutputFilename" = "8:..\\..\\bin\\wince\\Ambulant-1.9-wince5-dbg.cab"
-        "PackageFileSize" = "3:-2147483648"
-        "CabType" = "3:1"
-        "SignOutput" = "11:FALSE"
-        "CertificateHash" = "8:"
-        "TimeStampServer" = "8:"
-        }
-        "DebugShlib"
-        {
-        "DisplayName" = "8:DebugShlib"
-        "IsDebugOnly" = "11:FALSE"
-        "IsReleaseOnly" = "11:FALSE"
-        "OutputFilename" = "8:DebugShlib\\ambulant-wince5-installer.cab"
-        "PackageFileSize" = "3:-2147483648"
-        "CabType" = "3:1"
-        "SignOutput" = "11:FALSE"
-        "CertificateHash" = "8:"
-        "TimeStampServer" = "8:"
-        }
         "Release"
         {
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
         "OutputFilename" = "8:..\\..\\bin\\wince\\Ambulant-1.9-wince5.cab"
+        "PackageFileSize" = "3:-2147483648"
+        "CabType" = "3:1"
+        "SignOutput" = "11:FALSE"
+        "CertificateHash" = "8:"
+        "TimeStampServer" = "8:"
+        }
+        "ReleaseShlib"
+        {
+        "DisplayName" = "8:ReleaseShlib"
+        "IsDebugOnly" = "11:FALSE"
+        "IsReleaseOnly" = "11:FALSE"
+        "OutputFilename" = "8:..\\..\\bin\\wince\\Ambulant-1.9-shwince5.cab"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
         "SignOutput" = "11:FALSE"
@@ -218,6 +236,24 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{BA458234-9B71-4F46-8107-E91156377184}:_8BFE4E6F34DA432E88B42E054476C702"
+            {
+            "SourcePath" = "8:C:\\Program Files\\Microsoft Visual Studio 8\\VC\\ce\\Dll\\armv4i\\MFC80U.DLL"
+            "TargetName" = "8:MFC80U.DLL"
+            "Tag" = "8:"
+            "Folder" = "8:_3D053FEEBDBB4CD1A338E27533F9E02B"
+            "Condition" = "8:"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "Register" = "3:0"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{BA458234-9B71-4F46-8107-E91156377184}:_8F1954EE4C6149D3B3033AE6A79AEE6D"
             {
             "SourcePath" = "8:..\\..\\Extras\\Welcome\\data\\visit.png"
@@ -254,6 +290,24 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{BA458234-9B71-4F46-8107-E91156377184}:_B7DBD4126B6B417A8D1C5B17E1B211A7"
+            {
+            "SourcePath" = "8:C:\\Program Files\\Microsoft Visual Studio 8\\VC\\ce\\Dll\\armv4i\\msvcr80.dll"
+            "TargetName" = "8:msvcr80.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_3D053FEEBDBB4CD1A338E27533F9E02B"
+            "Condition" = "8:"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "Register" = "3:0"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{BA458234-9B71-4F46-8107-E91156377184}:_CDD4BE10F7284676AF06819C4F5BB34E"
             {
             "SourcePath" = "8:..\\..\\Extras\\Welcome\\data\\fast.png"
@@ -278,6 +332,24 @@
             "TargetName" = "8:ambulant.png"
             "Tag" = "8:"
             "Folder" = "8:_4E9415CCD44C411F9B2F5E74663E7189"
+            "Condition" = "8:"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "Register" = "3:0"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{BA458234-9B71-4F46-8107-E91156377184}:_DE30EEECF26D4021A452E1E5183B20B2"
+            {
+            "SourcePath" = "8:C:\\Program Files\\Microsoft Visual Studio 8\\VC\\ce\\Dll\\armv4i\\atl80.dll"
+            "TargetName" = "8:atl80.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_3D053FEEBDBB4CD1A338E27533F9E02B"
             "Condition" = "8:"
             "Vital" = "11:TRUE"
             "ReadOnly" = "11:FALSE"
@@ -389,9 +461,35 @@
         }
         "ProjectOutput"
         {
+            "{605BE39E-5046-48BD-AEC0-63C3A46626D5}:_1243700B737C4CA1B90AE31E2F0607E4"
+            {
+            "SourcePath" = "8:..\\..\\bin\\wince\\libamplugin_plugin.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_3D053FEEBDBB4CD1A338E27533F9E02B"
+            "Condition" = "8:"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "Register" = "3:0"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:0"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{DD4DBAA0-62B0-44AA-A753-EFFE842809FB}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
             "{605BE39E-5046-48BD-AEC0-63C3A46626D5}:_2726893904F44EDE988654246871007B"
             {
-            "SourcePath" = "8:..\\..\\bin\\wince\\AmbulantPlayer.exe"
+            "SourcePath" = "8:..\\..\\bin\\wince\\AmbulantPlayer_shared.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_3D053FEEBDBB4CD1A338E27533F9E02B"
@@ -410,6 +508,32 @@
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{3E3BABBD-DCB0-4CD2-9DD3-26B96A7A856E}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{605BE39E-5046-48BD-AEC0-63C3A46626D5}:_63FC2DA176C84361B19EC1B9E918B825"
+            {
+            "SourcePath" = "8:..\\..\\bin\\wince\\libambulant_shwince.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_3D053FEEBDBB4CD1A338E27533F9E02B"
+            "Condition" = "8:"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "Register" = "3:0"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:0"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{B2643C6C-B5BE-40FB-B127-320E15D9D09E}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
