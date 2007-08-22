@@ -44,6 +44,12 @@
 
 #endif // WITH_LTDL_PLUGINS
 
+#ifdef WITH_WINDOWS_PLUGINS
+#ifndef _T
+#define _T(x) (x)
+#endif
+#endif // WITH_WINDOWS_PLUGINS
+
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -120,11 +126,12 @@ void
 plugin_engine::collect_plugin_directories()
 {
 #ifdef WITH_PLUGINS
+#ifdef AMBULANT_PLATFORM_UNIX
 	// First plugin dir is set through the environment
 	const char *env_plugins = getenv("AMBULANT_PLUGIN_DIR");
 	if (env_plugins)
 		m_plugindirs.push_back(env_plugins);
-		
+#endif
 	// Second dir to search is set per user preferences
 	std::string& plugin_dir = common::preferences::get_preferences()->m_plugin_dir;
 	if(plugin_dir != "")
@@ -298,14 +305,14 @@ void plugin_engine::load_plugin(const char *filename)
 	if (handle) {
 		AM_DBG lib::logger::get_logger()->debug("plugin_engine: reading plugin SUCCES [ %s ]",filename);
 		AM_DBG lib::logger::get_logger()->debug("Registering test plugin's factory");
-		initfuncptr init = (initfuncptr) GetProcAddress(handle, "initialize");
+		initfuncptr init = (initfuncptr) GetProcAddress(handle, _T("initialize"));
 		if (!init) {
 			lib::logger::get_logger()->trace("plugin_engine: %s: no initialize routine", filename);
 			lib::logger::get_logger()->warn(gettext("Plugin skipped due to errors: %s "), filename);
 		} else {
 			m_initfuncs.push_back(init);
 		}
-		plugin_extra_data *extra = (plugin_extra_data *)GetProcAddress(handle, "plugin_extra_data");
+		plugin_extra_data *extra = (plugin_extra_data *)GetProcAddress(handle, _T("plugin_extra_data"));
 		if (extra) {
 			std::string name = extra->m_plugin_name;
 			m_extra_data[name] = extra;
@@ -331,7 +338,7 @@ plugin_engine::load_plugins(std::string dirname)
 	HANDLE dirHandle = FindFirstFile(fp_conv, &dirData);
     if (dirHandle == INVALID_HANDLE_VALUE) {
 		DWORD err = GetLastError();
-		if (err != 2) // Don't report "No such file"
+		if (err != ERROR_FILE_NOT_FOUND && err != ERROR_NO_MORE_FILES) // Don't report "No such file"
 			lib::logger::get_logger()->error(gettext("Error reading plugin directory: %s: 0x%x"), dirname.c_str(), err);
         return;
     } else {
@@ -366,7 +373,7 @@ plugin_engine::load_plugins(std::string dirname)
 		HANDLE dirHandle = FindFirstFile(fp_conv, &dirData);
 		if (dirHandle == INVALID_HANDLE_VALUE) {
 			DWORD err = GetLastError();
-			if (err != 2) // Don't report "No such file"
+			if (err != ERROR_FILE_NOT_FOUND && err != ERROR_NO_MORE_FILES) // Don't report "No such file"
 				lib::logger::get_logger()->error(gettext("Error reading plugin directory: %s: 0x%x"), dirname.c_str(), err);
 			return;
 		} else {

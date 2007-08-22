@@ -286,7 +286,7 @@
 				AdditionalLibraryDirectories="..\..\lib\wince-arm"
 				IgnoreDefaultLibraryNames="oleaut32.lib"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(PlatformName)\$(ConfigurationName)/AmbulantPlayer.pdb"
+				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
 				StackReserveSize="65536"
 				StackCommitSize="4096"
 				EntryPointSymbol="WinMainCRTStartup"
