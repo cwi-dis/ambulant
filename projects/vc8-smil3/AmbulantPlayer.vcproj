@@ -161,7 +161,7 @@
 				OutputFile="../../bin/win32/AmbulantPlayer.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\lib\win32"
-				IgnoreDefaultLibraryNames="LIBCD.lib;LIBC.lib"
+				IgnoreDefaultLibraryNames="LIBCD.lib;LIBC.lib;msvcrt.lib"
 				GenerateDebugInformation="false"
 				SubSystem="2"
 				OptimizeReferences="2"
