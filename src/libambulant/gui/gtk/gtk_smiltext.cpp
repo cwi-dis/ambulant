@@ -55,29 +55,15 @@ gtk_smiltext_renderer::gtk_smiltext_renderer(
 	m_params(m_engine.get_params()),
 	m_pango_attr_list(pango_attr_list_new()),
 	m_bg_layout(NULL),
-	m_bg_pango_attr_list(),
-	m_transparent(to_color(0x0,0x1,0x0)) // almost black
+	m_bg_pango_attr_list(NULL),
+	m_layout(NULL),
+	m_context(NULL),
+	m_transparent(GTK_TRANSPARENT_COLOR),
+	m_alternative(GTK_ALTERNATIVE_COLOR)
 {
 #ifdef	TBD
 	m_render_offscreen = (m_params.m_mode != smil2::stm_replace && m_params.m_mode != smil2::stm_append) || !m_params.m_wrap;
 #endif//TBD
-	// initialize the pango context, layout...
-	m_context = gdk_pango_context_get();
-  	PangoLanguage* language = gtk_get_default_language();
-	pango_context_set_language (m_context, language);
-	pango_context_set_base_dir (m_context, PANGO_DIRECTION_LTR);
-	cairo_font_options_t* cairo_font_options = cairo_font_options_create();
-#ifndef	WITH_GTK_ANTI_ALIASING
-	/* anti-aliasing by pango/cairo is disabled because it sometimes
-	 * results in ugly glyphs when media[Bcakground]Opacity is used,
-	 * since this is implemented using blending.
-	 */
-	cairo_font_options_set_antialias (cairo_font_options, CAIRO_ANTIALIAS_NONE);
-	pango_cairo_context_set_font_options (m_context, cairo_font_options);
-#endif//WITH_GTK_ANTI_ALIASING
-	m_layout = pango_layout_new (m_context);
-	cairo_font_options_destroy (cairo_font_options);
-  	pango_layout_set_alignment (m_layout, PANGO_ALIGN_LEFT);
 }
 
 gtk_smiltext_renderer::~gtk_smiltext_renderer()
@@ -125,8 +111,11 @@ gtk_smiltext_renderer::smiltext_changed()
 {
 	AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x)",this);
 	m_lock.enter();
-	double alpha_media = 1.0, alpha_media_bg = 1.0, alpha_chroma = 1.0;
-	lib::color_t chroma_low = lib::color_t(0x000000), chroma_high = lib::color_t(0xFFFFFF);
+	double	alpha_media  = 1.0, alpha_media_bg = 1.0,
+		alpha_chroma = 1.0;
+	lib::color_t
+		chroma_low   = lib::color_t(0x000000), //black
+		chroma_high =  lib::color_t(0xFFFFFF); //white
 	const common::region_info *ri = m_dest->get_info();
 	if (ri) {
 		alpha_media = ri->get_mediaopacity();
@@ -137,9 +126,39 @@ gtk_smiltext_renderer::smiltext_changed()
 //TBD	lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
 //TBD compute chroma_low, choma_high
 	}
+	if ( ! m_context) {
+		// initialize the pango context, layout...
+		m_context = gdk_pango_context_get();
+		PangoLanguage* language = gtk_get_default_language();
+		pango_context_set_language (m_context, language);
+		pango_context_set_base_dir (m_context, PANGO_DIRECTION_LTR);
+#ifndef	WITH_GTK_ANTI_ALIASING
+		if (alpha_media != 1.0 || alpha_media_bg != 1.0
+		    || alpha_chroma != 1.0) {
+			cairo_font_options_t* 
+			  cairo_font_options = cairo_font_options_create();
+			/* anti-aliasing by pango/cairo is disabled
+			 * when blending is necessary, because this
+			 * sometimes results in ugly glyphs.
+			 */
+			cairo_font_options_set_antialias (cairo_font_options,
+							  CAIRO_ANTIALIAS_NONE);
+			pango_cairo_context_set_font_options (m_context,
+							      cairo_font_options);
+			cairo_font_options_destroy (cairo_font_options);
+		}
+#endif//WITH_GTK_ANTI_ALIASING
+	}
+	if ( ! m_layout) {
+		m_layout = pango_layout_new (m_context);
+		pango_layout_set_alignment (m_layout, PANGO_ALIGN_LEFT);
+	}
 	if ( ! m_bg_layout 
 	     && (alpha_media != 1.0 || alpha_media_bg != 1.0 || alpha_chroma != 1.0)) {
-		// prepare for blending
+		// prepare for blending: layout is setup twice:
+		// m_bg_layout has textColor as m_transparent
+		// m_layout has textBackGroundColor as m_transparent
+		// when blending, pixels in m_transparent are ignored
        		m_bg_layout = pango_layout_new(m_context);
 		pango_layout_set_alignment (m_bg_layout, PANGO_ALIGN_LEFT);
 		m_bg_pango_attr_list = pango_attr_list_new();
@@ -168,38 +187,49 @@ gtk_smiltext_renderer::smiltext_changed()
 					   i->m_font_style, 
 					   i->m_font_weight,
 					   i->m_font_size,
-					   start_index, m_text_storage.size());
+					   start_index,
+					   m_text_storage.size());
 			if (m_bg_pango_attr_list) 
 				_gtk_set_font_attr(m_bg_pango_attr_list, 
 						   i->m_font_family,
 						   i->m_font_style, 
 						   i->m_font_weight,
 						   i->m_font_size,
-						   start_index, m_text_storage.size());
+						   start_index,
+						   m_text_storage.size());
+			// text foreground/background color settings.
 			if ( ! i->m_transparent) {
 				// Set foreground color attribute
+				color_t fg_color = i->m_color == m_transparent ?
+					m_alternative : i->m_color;
 				_gtk_set_color_attr(m_pango_attr_list,
-						    i->m_color,
+						    fg_color,
 						    pango_attr_foreground_new,
 						    start_index, m_text_storage.size());
 				if (m_bg_layout) {
 					_gtk_set_color_attr(m_bg_pango_attr_list,
 							    m_transparent,
 							    pango_attr_foreground_new,
-							    start_index, m_text_storage.size());
+							    start_index,
+							    m_text_storage.size());
 				}
 			}
 			if ( ! i->m_bg_transparent) {
 				// Set background color attribute
+				// Select altenative color for m_transparent
+				color_t bg_color = i->m_bg_color == m_transparent ?
+					m_alternative : i->m_bg_color;
 				_gtk_set_color_attr(m_pango_attr_list, 
-						    m_bg_layout ? m_transparent : i->m_bg_color,
+						    m_bg_layout ?
+						    	m_transparent : bg_color,
 						    pango_attr_background_new,
 						    start_index, m_text_storage.size());
 				if (m_bg_layout) {
 					_gtk_set_color_attr(m_bg_pango_attr_list, 
-							    i->m_bg_color,
+							    bg_color,
 							    pango_attr_background_new,
-							    start_index, m_text_storage.size());
+							    start_index,
+							    m_text_storage.size());
 				}
 			}
 			// Set the attributes and text

@@ -41,6 +41,15 @@ using namespace common;
 namespace gui {
 
 namespace gtk {
+	// When blending is needed, one rarely used color is taken as
+	// transparent color for chromakeying. However should this
+	// color be needed anyway, an alternative undistinguishable
+	// color is taken to be drawn instead, to avoid the ugly bug
+	// of seeing absolutely nothing. This could happen e.g. during
+	// color animations resulting in occasional unreproduceable
+	// flicker.
+#define GTK_TRANSPARENT_COLOR to_color(0x0,0x1,0x0) // almost black
+#define GTK_ALTERNATIVE_COLOR to_color(0x0,0x0,0x1) // almost black too
 
 class gtk_transition_renderer : public ref_counted_obj {
   public:
