@@ -23,7 +23,7 @@ copy %TPP_HOME%\lpng128\projects\visualc71\Win32_LIB_ASM_Release\libpng.lib %AMB
 
 REM ZLib DLL
 REM skip: copy %TPP_HOME%\lpng128\projects\visualc71\XXXXXX\zlib\zlib.dll %AMB_HOME%\bin\win32\zlib.dll
-copy %TPP_HOME%\lpng128\projects\visualc71\Win32_LIB_ASM_Release\zlib\zlib.lib %AMB_HOME%\lib\win32\zlib.lib
+copy %TPP_HOME%\lpng128\projects\visualc71\Win32_LIB_Release\zlib\zlib.lib %AMB_HOME%\lib\win32\zlib.lib
 
 REM JPEG static library
 copy %TPP_HOME%\jpeg\win32\Release\libjpeg.lib %AMB_HOME%\lib\win32\libjpeg.lib
