@@ -147,7 +147,7 @@
 				AdditionalDependencies="libxml2_a.lib wsock32.lib"
 				OutputFile="../../bin/win32/libamplugin_state_xpath.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\third_party_packages\libxml2-2.6.29\win32\bin.msvc\"
+				AdditionalLibraryDirectories="..\..\lib\win32"
 				IgnoreDefaultLibraryNames="libcmt.lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
