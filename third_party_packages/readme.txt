@@ -26,22 +26,18 @@ xerces:
 	NoXerces configurations in the Ambulant solution.
 	
 libxml2:
-    Only for SMIL 3 support. Download source from <http://www.xmlsoft.org>.
-    There are no releases, only hourly snapshots it seems. Copy
-    libxml2-2.6.69 into third_party_packages (if the name has changed you
-    may need to change some Ambulant projects to refer to the new name.
+	Only for SMIL 3 support. Download source from <http://www.xmlsoft.org>.
+	There are no releases, only hourly snapshots it seems. Copy
+	libxml2-2.6.69 into third_party_packages (if the name has changed you
+	may need to change some Ambulant projects to refer to the new name.
     
-    You need to configure and build libxml2 manually (the solution tries to
-    do it but fails), in libxml2-2.6.69\win32. Readme.txt has the details,
-    but it boils down to doing the following from a Command Prompt window:
+	Building libxml2 should be handled by the projects/*/third_party_packages.sln.
+	In case it fails: read the instructions in libxml2-2.6.69/win32 and do it
+	yourself.
     
-    - Set MSVC paths with ...\Microsoft Vistal Studio 7or8\VC\vcvarsall.bat
-    - cscript configure.js iconv=no
-    - nmake
+	Do not install the libs and binaries.
     
-    Do not install the libs and binaries.
-    
-    WM5 notes TBD.
+	WM5 notes TBD.
 
 ffmpeg:
 	Experminental, for when you want to use the ffmpeg renderers on Windows.
@@ -61,10 +57,15 @@ others:
 	folders from "INTO_third_party_packages" into this directory. Then
 	goto either projects\vc7, projects\vc8 or projects\vc8-wince5, depending
 	on the platform you are interested in.
-	Ppen third_party_packages.sln and build "Release".
+	Open third_party_packages.sln and build "Release".
 	NOTE THAT LAST SENTENCE: you must
 	build the Release configuration, the default configuration opened is
 	not what you want (and we don't know how to fix this).
+
+	By now the various third_party_packages.sln should all have copied the
+	needed libraries into ambulant\lib\win32. Check this. If this has not happened
+	we forgot to modify the solution you used, use the script copy_tpp_win32.bat
+	to copy the libraries.
 	
 	If you really want to build from original distributions: don't do this.
 	If you still want it after this warning, and it turns out to be easy:

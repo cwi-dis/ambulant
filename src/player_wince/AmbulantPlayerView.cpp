@@ -242,6 +242,10 @@ void CAmbulantPlayerView::OnUpdatePause(CCmdUI* pCmdUI)
 
 void CAmbulantPlayerView::OnStop() 
 {
+#ifdef WITH_SMIL30
+	if (player)
+		player->stop();
+#else
 	if(player) {
 		net::url u = player->get_url();
 		dg_or_dx_player *dummy = player;
@@ -256,6 +260,7 @@ void CAmbulantPlayerView::OnStop()
 		InvalidateRect(NULL);
 		needs_done_redraw = false;
 	}
+#endif // WITH_SMIL30
 }
 
 void CAmbulantPlayerView::OnUpdateStop(CCmdUI* pCmdUI) 
