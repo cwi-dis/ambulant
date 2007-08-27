@@ -267,32 +267,55 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 			alpha_media = alpha_chroma = 1.0;
 	}
 	// set the foreground color
-	COLORREF old_textcolor = CLR_INVALID;
+	COLORREF old_color = CLR_INVALID;
 	COLORREF old_textbg_color = CLR_INVALID;
-	if( ! run.m_transparent) {
-		COLORREF crTextColor = (run.m_color == CLR_INVALID)?::GetSysColor(COLOR_WINDOWTEXT):run.m_color;;
-		old_textcolor = ::SetTextColor(hdc, crTextColor);
-		if (old_textcolor == CLR_INVALID)
-			win_report_last_error("::SetTextColor");
-	}
+	color_t fg_color_t = (run.m_color == CLR_INVALID)?
+						::GetSysColor(COLOR_WINDOWTEXT) : run.m_color;
+	if (run.m_transparent)
+		fg_color_t = CLR_DEFAULT;
+	else if (fg_color_t == CLR_DEFAULT)
+		fg_color_t = CLR_ALTERNATIVE;
+	COLORREF crTextColor = fg_color_t;
+
 	// set the background color
 	COLORREF old_bgcolor = CLR_INVALID;
 	COLORREF old_textbg_bgcolor = CLR_INVALID;
-	lib::color_t textbg_color(0); // black
-	COLORREF crBkColor = (run.m_bg_color == CLR_INVALID)?::GetSysColor(COLOR_WINDOW):run.m_bg_color;
-//KBXX	if (blending && (run.m_bg_transparent || textbg_dds))
-//KBXX		crBkColor = RGB(255,255,255);
-	if ( ! run.m_bg_transparent) {
+	color_t bg_color_t = (run.m_bg_color == CLR_INVALID)?
+								::GetSysColor(COLOR_WINDOW):
+					 	 (run.m_bg_color == CLR_DEFAULT)?
+								CLR_ALTERNATIVE : run.m_bg_color;
+	if (run.m_bg_transparent) 
+		bg_color_t = CLR_DEFAULT;
+	else if (fg_color_t == CLR_DEFAULT)
+		fg_color_t = CLR_ALTERNATIVE;
+	COLORREF crBkColor = bg_color_t;
+
+	if (blending) {
+		// on text surface, draw text in required color
+		// and background in transparent color        
+		old_color = ::SetTextColor(hdc, crTextColor);
+		if (old_color != CLR_INVALID) 
+			old_bgcolor = ::SetBkColor(hdc, CLR_DEFAULT);
+		// on background surface, draw text in transparent color
+		// and background in required color        
+		if (old_bgcolor != CLR_INVALID) 
+			old_textbg_color = ::SetTextColor(textbg_hdc, CLR_DEFAULT);
+		if (old_textbg_color != CLR_INVALID) 
+			old_textbg_bgcolor = ::SetBkColor(textbg_hdc, crBkColor);
+	} else {
+		old_color = ::SetTextColor(hdc, crTextColor);
+		if (old_color != CLR_INVALID) 
 		old_bgcolor = ::SetBkColor(hdc, crBkColor);
-		if (old_bgcolor == CLR_INVALID)
-			win_report_last_error("::SetBkColor");
 	}
-	if (textbg_hdc) {
-		if (textbg_color == crBkColor)
-			textbg_color = 1;
-		COLORREF textbg_crTextColor = textbg_color;
-		old_textbg_color = ::SetTextColor(textbg_hdc, textbg_crTextColor);
-		old_textbg_bgcolor = ::SetBkColor(textbg_hdc, crBkColor);
+	if (old_color == CLR_INVALID)
+		win_report_last_error("::SetTextColor");
+	else if (old_bgcolor == CLR_INVALID)
+		win_report_last_error("::SetBkColor");
+	else if (blending) {
+		if (old_textbg_color == CLR_INVALID)
+			win_report_last_error("::SetTextColor(background)");
+		else if (old_textbg_bgcolor == CLR_INVALID)
+			win_report_last_error("::SetBkColor(background)");
 	}
 	// set the font
 	HFONT font = NULL;
@@ -368,9 +391,9 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 			hr = textbg_dds->ReleaseDC(textbg_hdc);
 		if (SUCCEEDED(hr)) {
 			if ( ! run.m_bg_transparent) {
-				m_viewport->blend_surface(m_region_dds, rr, textbg_dds, rr, true, alpha_media_bg, run.m_bg_color, run.m_bg_color, false /*keep out of range pixels*/);
+				m_viewport->blend_surface(m_region_dds, rr, textbg_dds, rr, true, alpha_media_bg, bg_color_t, bg_color_t, false /*keep out of range pixels*/);
 			}
-			m_viewport->blend_surface(m_region_dds, rr, text_dds, rr, true /*color key from source*/, alpha_media, run.m_color, run.m_color, false /*keep out of range pixels*/);
+			m_viewport->blend_surface(m_region_dds, rr, text_dds, rr, true /*color key from source*/, alpha_media, fg_color_t, fg_color_t, false /*keep out of range pixels*/);
 		    hr = m_region_dds->GetDC(&m_hdc);
 			if (SUCCEEDED(hr))
 			    hr = text_dds->GetDC(&hdc);
@@ -380,8 +403,8 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 		}
 	}
 	// reset the text color
-	if( old_textcolor != CLR_INVALID) {
-		::SetTextColor(hdc, old_textcolor);
+	if( old_color != CLR_INVALID) {
+		::SetTextColor(hdc, old_color);
 	}
 	// reset the background color
 	if( old_bgcolor != CLR_INVALID) {

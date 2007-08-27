@@ -57,6 +57,11 @@ class dx_transition;
 
 // A viewport is a top-level DD surface.
 
+// white is used as transparent color
+const lib::color_t CLR_DEFAULT		= RGB(255, 255, 255);
+// almost white is used as alternative color for white
+const lib::color_t CLR_ALTERNATIVE	= RGB(255, 255, 254);
+
 class viewport {
   public:
 	viewport(int width = common::default_layout_width, 

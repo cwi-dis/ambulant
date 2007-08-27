@@ -281,8 +281,6 @@ primary_Blt(IDirectDrawSurface* primary_surface, LPRECT lpDestRect,
 		seterror("primary_Blt/DirectDrawSurface::Blt()", hr);
 }
 
-const lib::color_t CLR_DEFAULT = RGB(255, 255, 255);
-
 gui::dx::viewport::viewport(int width, int height, HWND hwnd) 
 :	m_width(width), m_height(height),
 	m_direct_draw(NULL),
