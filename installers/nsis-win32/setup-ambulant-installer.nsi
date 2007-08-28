@@ -15,7 +15,7 @@
 !define PRODUCT_NAME "Ambulant Player"
 !define PRODUCT_VERSION "1.9"
 !define DISTRIBUTE_DLL_BUILD
-!define DISTRIBUTE_PYTHON_PLUGIN
+; !define DISTRIBUTE_PYTHON_PLUGIN
 !define PRODUCT_PUBLISHER "Centrum voor Wiskunde en Informatica"
 !define PRODUCT_WEB_SITE "http://www.ambulantplayer.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AmbulantPlayer.exe"
@@ -24,8 +24,8 @@
 
 ; Where the system directory is on the machine where we are building the installer
 
-; !define BUILD_SYSDIR "C:\WINDOWS\system32"  ; Most machines
-!define BUILD_SYSDIR "E:\WINNT\system32"   ; Jack's CWI desktop machine
+!define BUILD_SYSDIR "C:\WINDOWS\system32"  ; Most machines
+;!define BUILD_SYSDIR "E:\WINNT\system32"   ; Jack's CWI desktop machine
 
 ; MUI 1.67 compatible ------
 !include "MUI.nsh"
@@ -76,6 +76,7 @@ Section "Core Components" CoreSection
 !ifdef DISTRIBUTE_DLL_BUILD
   File /ONAME=AmbulantPlayer.exe "..\..\bin\win32\AmbulantPlayer_shared.exe"
   File "..\..\bin\win32\libambulant_shwin32.dll"
+  File "..\..\bin\win32\libamplugin_state_xpath.dll"
 !else
   File "..\..\bin\win32\AmbulantPlayer.exe"
 !endif
