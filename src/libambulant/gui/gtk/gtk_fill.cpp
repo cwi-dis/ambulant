@@ -234,7 +234,7 @@ gtk_background_renderer::redraw(const lib::rect &dirty,
 		bgc.green = greenc(bgcolor)*0x101;
 #ifdef	WITH_SMIL30
 		if (opacity == 1.0) {
-#else //WITH_SMIL30
+#else // *not* WITH_SMIL30
 		if (opacity >= 0.5) {
 #endif//WITH_SMIL30
 			GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));

@@ -24,6 +24,7 @@
 #include "ambulant/gui/qt/qt_includes.h"
 #include "ambulant/gui/qt/qt_renderer.h"
 #include "ambulant/gui/qt/qt_transition.h"
+#include "ambulant/gui/qt/qt_util.h"
 #include "ambulant/lib/colors.h"
 #include "ambulant/lib/logger.h"
 
@@ -109,6 +110,7 @@ qt_transition_blitclass_fade::update()
 	QImage m_new_image;
 	m_old_image = qpm->convertToImage();
 	m_new_image = npm->convertToImage();
+#ifdef	JUNK
 	QImage res(m_old_image.size(),m_old_image.depth());
 	int i, j, iw = res.width(), ih = res.height();
 	AM_DBG logger::get_logger()->debug("qt_transition_blitclass_fade::update() qpm=0x%x, npm=0x%x.  res=0x%x, iw=%d, ih=%d", qpm, npm, &res, iw, ih);
@@ -146,7 +148,15 @@ qt_transition_blitclass_fade::update()
 //	    if (j&4 && !(j&3) && i&4 &&!(i&3)) AM_DBG logger::get_logger()->debug("qt_transition_blitclass_fade::update(): i=%3d, j=%3d, p1=0x%x, p2=0x%x, res=0x%x", i, j, p1, p2, res.pixel(i,j));
 	  }
 	}
-	const rect& newrect_whole =  m_dst->get_clipped_screen_rect();
+#else
+	const rect&  newrect_whole =  m_dst->get_clipped_screen_rect();
+       	qt_image_blend (m_old_image, newrect_whole,
+			m_new_image, newrect_whole,
+			m_progress, BLEND_INSIDE,
+			0x000000, 0xFFFFFF);
+	QImage res(m_old_image);
+#endif//JUNK
+//JNK	const rect& newrect_whole =  m_dst->get_clipped_screen_rect();
 	int L = newrect_whole.left(), T = newrect_whole.top(),
         	W = newrect_whole.width(), H = newrect_whole.height();
 	AM_DBG logger::get_logger()->debug(

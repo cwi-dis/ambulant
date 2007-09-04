@@ -24,6 +24,7 @@
 #include "ambulant/gui/qt/qt_transition.h"
 #include "ambulant/gui/qt/qt_image_renderer.h"
 #include "ambulant/gui/qt/qt_text_renderer.h"
+#include "ambulant/gui/qt/qt_util.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -196,7 +197,7 @@ qt_fill_renderer::redraw_body(const lib::rect &dirty,
 	AM_DBG lib::logger::get_logger()->debug
 		("qt_fill_renderer.redraw_body: clearing to 0x%x", 
 		 (long)color);
-	QColor bgc = QColor(lib::redc(color),lib::greenc(color),lib::bluec(color));
+	QColor bgc = color_t2QColor(color);
 	AM_DBG lib::logger::get_logger()->debug("qt_fill_renderer.redraw_body(0x%x, local_ltrb=(%d,%d,%d,%d)",(void *)this, L,T,W,H);
 	paint.setBrush(bgc);
 	paint.drawRect(L,T,W,H);
@@ -208,9 +209,12 @@ void
 qt_background_renderer::redraw(const lib::rect &dirty,
 			       common::gui_window *window)
 {	
+	if ( !  (m_src && m_dst))
+		return; 
 	const lib::rect &r = m_dst->get_rect();
 	AM_DBG lib::logger::get_logger()->debug("qt_background_renderer::redraw(0x%x)", (void *)this);
-	if (m_src && m_src->get_bgopacity() > 0.5) {
+	double opacity = m_src->get_bgopacity();
+	if (opacity > 0.0) {
 	// First find our whole area to be cleared to background color
 		ambulant_qt_window* aqw = (ambulant_qt_window*) window;
 		QPainter paint;
@@ -225,14 +229,48 @@ qt_background_renderer::redraw(const lib::rect &dirty,
 		lib::color_t bgcolor = m_src->get_bgcolor();
 		AM_DBG lib::logger::get_logger()->debug("qt_background_renderer::redraw: clearing to %x, local_ltwh(%d,%d,%d,%d)",(long)bgcolor,L,T,W,H);
 		QColor bgc = QColor(lib::redc(bgcolor),lib::greenc(bgcolor),lib::bluec(bgcolor));
-		paint.setBrush(bgc);
-		paint.drawRect(L,T,W,H);
-		if (m_background_pixmap) {
-			AM_DBG lib::logger::get_logger()->debug("qt_background_renderer::redraw: drawing pixmap");
-			paint.drawPixmap(L, T, *m_background_pixmap);
+#ifdef	WITH_SMIL30
+		if (opacity == 1.0) {
+#else // +not* WITH_SMIL30
+		if (opacity >= 0.5) {
+#endif//WITH_SMIL30
+			paint.setBrush(bgc);
+			paint.drawRect(L,T,W,H);
+			if (m_background_pixmap) {
+				AM_DBG lib::logger::get_logger()->debug("qt_background_renderer::redraw: drawing pixmap");
+				paint.drawPixmap(L, T, *m_background_pixmap);
+			}
+			paint.flush();
+			paint.end();
+		} else {  //XXXX adapted from gtk_fill. May be not optimal.
+			// Method:
+		  	// 1. Get the current on-screen image as a QImage
+		  	// 2. Create a new pixmap and draw a coloured rectangle on it
+		  	// 3. Blend these 2 pixmaps together by getting their QImages
+		  	// 4. Draw the resulting QImage on the screen
+			QImage screen_image = aqw->get_ambulant_pixmap()->convertToImage();
+			QPixmap bg_pixmap = QPixmap (W,H);
+			QPainter bg_painter;
+			bg_painter.begin(&bg_pixmap);
+			bg_painter.setBrush(bgc);
+			bg_painter.drawRect(0,0,W,H);
+			if (m_background_pixmap) {
+				AM_DBG lib::logger::get_logger()->debug("qt_background_renderer::redraw: drawing pixmap");
+				bg_painter.drawPixmap(0, 0, *m_background_pixmap);
+			}
+			bg_painter.end();
+			QImage bg_image = bg_pixmap.convertToImage();
+			lib::rect rr (lib::point(0, 0), lib::size(W, H));
+			qt_image_blend (screen_image, dstrect_whole,
+					bg_image, rr, 
+					opacity, BLEND_INSIDE,
+					bgcolor, bgcolor);
+			QPixmap new_pixmap(W,H);
+			new_pixmap.convertFromImage(screen_image);
+			bitBlt(aqw->get_ambulant_pixmap(), L, T,
+			       &new_pixmap, L, T, W, H);	
+
 		}
-		paint.flush();
-		paint.end();
 	}
 }
 

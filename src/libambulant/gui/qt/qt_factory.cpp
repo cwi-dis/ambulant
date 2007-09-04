@@ -33,6 +33,7 @@
 #include "ambulant/gui/qt/qt_smiltext.h"
 #endif/*WITH_SMIL30*/
 #include "ambulant/gui/qt/qt_text_renderer.h"
+#include "ambulant/gui/qt/qt_util.h"
 #include "ambulant/gui/qt/qt_video_renderer.h"
 #include "qcursor.h"
 
@@ -70,48 +71,6 @@ ambulant::gui::qt::create_qt_video_factory(common::factories *factory)
 {
     return new qt_video_factory(factory);
 }
-
-
-//---------------------------------------------------------------------------
-// Internal implementations
-//
-// Auxiliary/debug code to dump pixmaps at various stages of transitions and
-// such. Enable by defining WITH_DUMPPIXMAP
-//
-#ifndef WITH_DUMPPIXMAP
-#define DUMPPIXMAP(qpm, filename) /* nothing */
-#else
-#define DUMPPIXMAP(qpm, filename) dumpPixmap(qpm, filename)
-
-static QImage* oldImageP;
-static bool isEqualToPrevious(QPixmap* qpmP) {
-	return false;
-	QImage img = qpmP->convertToImage();
-	if (oldImageP != NULL && img == *oldImageP) {
-		AM_DBG lib::logger::get_logger()->debug("isEqualToPrevious: new image not different from old one");
-		return true;
-	} else {
-		if (oldImageP != NULL) delete oldImageP;
-		oldImageP = new QImage(img);
-		return false;
-	}
-}
-
-void gui::qt::dumpPixmap(QPixmap* qpm, std::string filename) {
-	if ( ! qpm) return;
-	QImage img = qpm->convertToImage();
-	if ( ! isEqualToPrevious(qpm)) {
-		static int i;
-		char buf[5];
-		sprintf(buf,"%04d",i++);
-		std::string newfile = buf + std::string(filename) +".png";
-		qpm->save(newfile, "PNG");
-		AM_DBG lib::logger::get_logger()->debug("dumpPixmap(%s)", newfile.c_str());
-	}
-}
-#endif /* WITH_DUMPPIXMAP */
-
-
 //
 // qt_renderer_factory
 //

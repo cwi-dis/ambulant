@@ -52,7 +52,6 @@ class gtk_transition_blitclass_fade : virtual public smil2::transition_blitclass
 	~gtk_transition_blitclass_fade();
 	void update();
   private:
-	GdkPixbuf* m_old_pixbuf;
 	GdkPixbuf* m_new_pixbuf;
 };
 

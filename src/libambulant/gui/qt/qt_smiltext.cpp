@@ -23,6 +23,7 @@
 #ifdef  WITH_SMIL30
 #include "ambulant/gui/qt/qt_includes.h"
 #include "ambulant/gui/qt/qt_smiltext.h"
+#include "ambulant/gui/qt/qt_util.h"
 
 #include "ambulant/common/region_info.h"
 
@@ -49,7 +50,10 @@ gui::qt::qt_smiltext_renderer::qt_smiltext_renderer(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp)
-  :     qt_renderer<renderer_playable>(context, cookie, node, evp),
+  :     m_qt_transparent(redc(QT_TRANSPARENT_COLOR),greenc(QT_TRANSPARENT_COLOR),bluec( QT_TRANSPARENT_COLOR)),
+        m_qt_alternative(redc(QT_ALTERNATIVE_COLOR),greenc(QT_ALTERNATIVE_COLOR),bluec( QT_ALTERNATIVE_COLOR)),
+	m_bgopacity(1.0),
+	qt_renderer<renderer_playable>(context, cookie, node, evp),
 	m_layout_engine(smil2::smiltext_layout_engine(node, evp, this, this))
 {
 	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_renderer(0x%x)", this);
@@ -117,33 +121,121 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 	if (strun.m_command != smil2::stc_data)
 		return;
 	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_render(): command=%d data=%s color=0x%x",strun.m_command,strun.m_data.c_str()==NULL?"(null)":strun.m_data.c_str(),strun.m_color);
-	int L = r.left(), 
+	double alpha_media = 1.0, alpha_media_bg = 1.0, alpha_chroma = 1.0;
+	lib::color_t chroma_low = lib::color_t(0x000000), chroma_high = lib::color_t(0xFFFFFF);
+	const common::region_info *ri = m_dest->get_info();
+	if (ri) {
+		alpha_media = ri->get_mediaopacity();
+		alpha_media_bg = ri->get_mediabgopacity();
+		m_bgopacity = ri->get_bgopacity();
+//TBD   alpha_chroma = ri->get_chromakeyopacity();
+//TBD	lib::color_t chromakey = ri->get_chromakey();
+//TBD	lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
+//TBD compute chroma_low, choma_high
+	}
+	int L = r.left(),
 	    T = r.top(),
 	    W = r.width(),
 	    H = r.height();
 	m_layout_engine.set_dest_rect(m_dest->get_rect());
+
+	// prepare for blending
+	QPixmap* bg_pixmap = NULL;
+	QPixmap* tx_pixmap = NULL;
+	bool	 blending  = false;
+
+	if ( ! (alpha_media == 1.0 && alpha_media_bg == 1.0 && alpha_chroma == 1.0) ) {
+		if ( ! strun.m_bg_transparent) {
+		        bg_pixmap = new QPixmap(W,H);
+			assert( bg_pixmap );
+			bg_pixmap->fill(strun.m_bg_color);
+		}
+		tx_pixmap = new QPixmap(W,H);
+		assert( tx_pixmap);
+//		tx_pixmap->fill(QT_TRANSPARENT_COLOR);
+		blending = true;
+		if ( ! blending)
+			alpha_media = alpha_chroma = 1.0;
+	}
 	_qt_smiltext_set_font(strun);
 
-	QPainter paint;
-	paint.begin(m_window->get_ambulant_pixmap());
-
-	if ( ! strun.m_bg_transparent) {
-		lib::color_t bg_color = strun.m_bg_color;
-		QColor qt_bg_color(redc(bg_color), greenc(bg_color), bluec(bg_color));
-		paint.setBackgroundMode(Qt::OpaqueMode);
-		paint.setBackgroundColor(qt_bg_color);
-	}
-	if ( ! strun.m_transparent) {
-		lib::color_t text_color = strun.m_color;
-		QColor qt_color(redc(text_color), greenc(text_color), bluec(text_color));
-		paint.setPen(qt_color);
-	}
+	QPainter tx_paint, bg_paint;
+	lib::color_t text_color = strun.m_color;
+	QColor qt_color(redc(text_color), greenc(text_color), bluec(text_color));
+	lib::color_t bg_color = strun.m_bg_color;
+	QColor qt_bg_color(redc(bg_color), greenc(bg_color), bluec(bg_color));
+	
+	if (blending) {
+		m_font.setStyleStrategy(QFont::NoAntialias);
+		tx_paint.begin( tx_pixmap );
+		if ( ! strun.m_bg_transparent) {
+			tx_paint.setBackgroundMode(Qt::OpaqueMode);
+			tx_paint.setBackgroundColor(m_qt_transparent);
+		}
+		if ( ! strun.m_transparent) {
+			tx_paint.setPen(qt_color);
+		}
 		
-	paint.setFont(m_font);
+		bg_paint.begin( bg_pixmap );
+		if ( ! strun.m_bg_transparent) {
+			bg_paint.setBackgroundMode(Qt::OpaqueMode);
+			bg_paint.setBackgroundColor(qt_bg_color);
+		}
+		if ( ! strun.m_transparent) {
+			bg_paint.setPen(m_qt_transparent);
+		}
+		bg_paint.setFont(m_font);
 
-	paint.drawText(L,T,W,H,Qt::AlignLeft|Qt::AlignTop, strun.m_data);
-	paint.flush();
-	paint.end();
+		bg_paint.drawText(0,0,W,H,Qt::AlignLeft|Qt::AlignTop, strun.m_data);
+		bg_paint.flush();
+		bg_paint.end();
+	} else {
+		// if possible, paint directly into the final destonation
+		tx_paint.begin( m_window->get_ambulant_pixmap() );
+		if ( ! strun.m_bg_transparent) {
+			tx_paint.setBackgroundMode(Qt::OpaqueMode);
+			tx_paint.setBackgroundColor(qt_bg_color);
+		}
+		if ( ! strun.m_transparent) {
+			tx_paint.setPen(qt_color);
+		}
+	}	
+	tx_paint.setFont(m_font);
+	if (blending)
+		tx_paint.drawText(0,0,W,H,Qt::AlignLeft|Qt::AlignTop, strun.m_data);
+	else
+		tx_paint.drawText(L,T,W,H,Qt::AlignLeft|Qt::AlignTop, strun.m_data);
+	tx_paint.flush();
+	tx_paint.end();
+	
+	if (blending) {
+		QImage bg_image = bg_pixmap->convertToImage();
+		QImage tx_image = tx_pixmap->convertToImage();
+		QImage screen_img = m_window->get_ambulant_pixmap()->convertToImage();
+		
+
+		AM_DBG DUMPPIXMAP(bg_pixmap, "bg");
+		AM_DBG DUMPPIXMAP(tx_pixmap, "tx");
+		AM_DBG DUMPPIXMAP(m_window->get_ambulant_pixmap(), "s1");
+
+		lib::rect rr (lib::point(0, 0), lib::size(W, H));
+		qt_image_blend (screen_img, r, bg_image, rr, 
+				alpha_media_bg, BLEND_INSIDE,
+				bg_color, bg_color);
+		qt_image_blend (screen_img, r, tx_image, rr, 
+				alpha_media, BLEND_INSIDE,
+				text_color, text_color);
+		QPixmap new_pixmap(W,H);
+		new_pixmap.convertFromImage(screen_img);
+		bitBlt(m_window->get_ambulant_pixmap(), L, T,
+		       &new_pixmap, L, T, W, H);	
+		AM_DBG DUMPPIXMAP(m_window->get_ambulant_pixmap(), "s2");
+		delete tx_pixmap;
+		if (bg_pixmap)
+			delete bg_pixmap;
+
+	}
+	
 }
 
 void

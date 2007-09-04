@@ -79,7 +79,10 @@ class qt_smiltext_renderer :
 	// Qt related variables
 	ambulant_qt_window* m_window;
 	QFont m_font;
- };
+	QColor m_qt_transparent;
+	QColor m_qt_alternative;
+	double m_bgopacity; 
+};
 
 } // namespace qt
 
