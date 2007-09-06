@@ -36,7 +36,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/textptr.h"
 
-//#define AM_DBG if(1)
+#define AM_DBG if(1)
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -53,6 +53,7 @@ gui::qt::qt_smiltext_renderer::qt_smiltext_renderer(
   :     m_qt_transparent(redc(QT_TRANSPARENT_COLOR),greenc(QT_TRANSPARENT_COLOR),bluec( QT_TRANSPARENT_COLOR)),
         m_qt_alternative(redc(QT_ALTERNATIVE_COLOR),greenc(QT_ALTERNATIVE_COLOR),bluec( QT_ALTERNATIVE_COLOR)),
 	m_bgopacity(1.0),
+	m_blending(false),
 	qt_renderer<renderer_playable>(context, cookie, node, evp),
 	m_layout_engine(smil2::smiltext_layout_engine(node, evp, this, this))
 {
@@ -75,7 +76,23 @@ gui::qt::qt_smiltext_renderer::start(double t) {
 //JUNK?	m_epoch = m_event_processor->get_timer()->elapsed();
 	m_layout_engine.start(t);
 	renderer_playable::start(t);
-	m_layout_engine.set_dest_rect(m_dest->get_rect());
+	m_layout_engine.set_dest_rect(m_rect = m_dest->get_rect());
+
+	double alpha_media = 1.0, alpha_media_bg = 1.0, alpha_chroma = 1.0;
+	const common::region_info *ri = m_dest->get_info();
+	if (ri) {
+		alpha_media = ri->get_mediaopacity();
+		alpha_media_bg = ri->get_mediabgopacity();
+		m_bgopacity = ri->get_bgopacity();
+//TBD   alpha_chroma = ri->get_chromakeyopacity();
+//TBD	lib::color_t chromakey = ri->get_chromakey();
+//TBD	lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
+//TBD compute chroma_low, choma_high
+	}
+
+	if ( ! (alpha_media == 1.0 && alpha_media_bg == 1.0 && alpha_chroma == 1.0) ) {
+		m_blending = true;
+	}
 	m_lock.leave();
 }
 
@@ -109,8 +126,11 @@ gui::qt::qt_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& s
 		height	= qfm.height();
 		line_spacing = qfm.lineSpacing();
 		word_spacing = qfm.width(' ');
-
-		QRect qr = qfm.boundingRect(strun.m_data);
+		// The simple qfm.boundingRect(QString) function sometimes
+		// returns wrong (too small) rectangle
+		QRect qr = qfm.boundingRect(m_rect.x, m_rect.y, m_rect.w,m_rect.h,
+					    Qt::AlignAuto,
+					    strun.m_data);
 		width	 = qr.width();
 	}
 	return smil2::smiltext_metrics(ascent, descent, height, width, line_spacing, word_spacing);
@@ -120,7 +140,7 @@ void
 gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun, const lib::rect& r, unsigned int word_spacing) {
 	if (strun.m_command != smil2::stc_data)
 		return;
-	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_render(): command=%d data=%s color=0x%x",strun.m_command,strun.m_data.c_str()==NULL?"(null)":strun.m_data.c_str(),strun.m_color);
+	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_render(): command=%d data=%s color=0x%x bg_color=0x%x",strun.m_command,strun.m_data.c_str()==NULL?"(null)":strun.m_data.c_str(),strun.m_color,strun.m_bg_color);
 	double alpha_media = 1.0, alpha_media_bg = 1.0, alpha_chroma = 1.0;
 	lib::color_t chroma_low = lib::color_t(0x000000), chroma_high = lib::color_t(0xFFFFFF);
 	const common::region_info *ri = m_dest->get_info();
@@ -133,28 +153,38 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 //TBD	lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
 //TBD compute chroma_low, choma_high
 	}
-	int L = r.left(),
-	    T = r.top(),
-	    W = r.width(),
-	    H = r.height();
-	m_layout_engine.set_dest_rect(m_dest->get_rect());
-
 	// prepare for blending
 	QPixmap* bg_pixmap = NULL;
 	QPixmap* tx_pixmap = NULL;
-	bool	 blending  = false;
+	lib::rect rct(r); // rct encloses leading blank and word
+	rct.x -= word_spacing;
+	rct.w += word_spacing;
+	int L = rct.left(),
+	    T = rct.top(),
+	    W = rct.width(),
+	    H = rct.height();
 
-	if ( ! (alpha_media == 1.0 && alpha_media_bg == 1.0 && alpha_chroma == 1.0) ) {
+	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_render(): r=L=%d,T=%d,W=%d,H=%d space=%d",r.x,r.y,r.w,r.h,word_spacing);
+	if (m_blending) {
+		// create pixmaps for blending
 		if ( ! strun.m_bg_transparent) {
+			/*** optimization suggestion:
+			     maybe it is possible for blending to render
+			     everything in one extra pixmap, then first
+			     blend with text background color, next blend
+			     with text color, without creating bg_ pixmap
+			     and new_pixmap (i.e. directly on the screen)
+			     This should result in far less round trips to
+			     the X-server.
+			***/
 		        bg_pixmap = new QPixmap(W,H);
 			assert( bg_pixmap );
 			bg_pixmap->fill(strun.m_bg_color);
 		}
 		tx_pixmap = new QPixmap(W,H);
 		assert( tx_pixmap);
-//		tx_pixmap->fill(QT_TRANSPARENT_COLOR);
-		blending = true;
-		if ( ! blending)
+		tx_pixmap->fill(m_qt_transparent);
+		if ( ! m_blending)
 			alpha_media = alpha_chroma = 1.0;
 	}
 	_qt_smiltext_set_font(strun);
@@ -165,8 +195,7 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 	lib::color_t bg_color = strun.m_bg_color;
 	QColor qt_bg_color(redc(bg_color), greenc(bg_color), bluec(bg_color));
 	
-	if (blending) {
-		m_font.setStyleStrategy(QFont::NoAntialias);
+	if (m_blending) {
 		tx_paint.begin( tx_pixmap );
 		if ( ! strun.m_bg_transparent) {
 			tx_paint.setBackgroundMode(Qt::OpaqueMode);
@@ -177,38 +206,40 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 		}
 		
 		bg_paint.begin( bg_pixmap );
-		if ( ! strun.m_bg_transparent) {
-			bg_paint.setBackgroundMode(Qt::OpaqueMode);
-			bg_paint.setBackgroundColor(qt_bg_color);
-		}
-		if ( ! strun.m_transparent) {
-			bg_paint.setPen(m_qt_transparent);
-		}
 		bg_paint.setFont(m_font);
-
-		bg_paint.drawText(0,0,W,H,Qt::AlignLeft|Qt::AlignTop, strun.m_data);
+		if ( ! strun.m_bg_transparent) {
+			bg_paint.setBrush(qt_bg_color);
+			bg_paint.setPen(Qt::NoPen);
+			bg_paint.drawRect(0,0,W,H);
+			bg_paint.setPen(qt_color);
+		}
+		// Qt::AlignLeft|Qt::AlignTop
+		// Qt::AlignAuto
+		bg_paint.drawText(word_spacing,0,W-word_spacing,H,
+				  Qt::AlignAuto, strun.m_data);
 		bg_paint.flush();
 		bg_paint.end();
 	} else {
-		// if possible, paint directly into the final destonation
+		// if possible, paint directly into the final destination
 		tx_paint.begin( m_window->get_ambulant_pixmap() );
-		if ( ! strun.m_bg_transparent) {
-			tx_paint.setBackgroundMode(Qt::OpaqueMode);
-			tx_paint.setBackgroundColor(qt_bg_color);
-		}
-		if ( ! strun.m_transparent) {
-			tx_paint.setPen(qt_color);
-		}
 	}	
 	tx_paint.setFont(m_font);
-	if (blending)
-		tx_paint.drawText(0,0,W,H,Qt::AlignLeft|Qt::AlignTop, strun.m_data);
+	if ( ! strun.m_bg_transparent) {
+		tx_paint.setBrush(qt_bg_color);
+		tx_paint.setPen(Qt::NoPen);
+		tx_paint.drawRect(L,T,W,H);
+		tx_paint.setPen(qt_color);
+	}
+	if (m_blending)
+		tx_paint.drawText(word_spacing,0,W-word_spacing,H,
+				  Qt::AlignAuto, strun.m_data);
 	else
-		tx_paint.drawText(L,T,W,H,Qt::AlignLeft|Qt::AlignTop, strun.m_data);
+		tx_paint.drawText(L+word_spacing,T,W-word_spacing,H,
+				  Qt::AlignAuto, strun.m_data);
 	tx_paint.flush();
 	tx_paint.end();
 	
-	if (blending) {
+	if (m_blending) {
 		QImage bg_image = bg_pixmap->convertToImage();
 		QImage tx_image = tx_pixmap->convertToImage();
 		QImage screen_img = m_window->get_ambulant_pixmap()->convertToImage();
@@ -216,20 +247,27 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 
 		AM_DBG DUMPPIXMAP(bg_pixmap, "bg");
 		AM_DBG DUMPPIXMAP(tx_pixmap, "tx");
-		AM_DBG DUMPPIXMAP(m_window->get_ambulant_pixmap(), "s1");
+		AM_DBG DUMPPIXMAP(m_window->get_ambulant_pixmap(), "sc");
 
-		lib::rect rr (lib::point(0, 0), lib::size(W, H));
-		qt_image_blend (screen_img, r, bg_image, rr, 
+		lib::rect rct0 (lib::point(0, 0), lib::size(W, H));
+		qt_image_blend (screen_img, rct, bg_image, rct0, 
 				alpha_media_bg, BLEND_INSIDE,
 				bg_color, bg_color);
-		qt_image_blend (screen_img, r, tx_image, rr, 
+		qt_image_blend (screen_img, rct, tx_image, rct0, 
 				alpha_media, BLEND_INSIDE,
 				text_color, text_color);
+		/*** see optimization suggestion above.
+		     also, it should not be necessary to copy
+		     the whole image, only the rect (L,T,W,H)
+		     is sufficient (copyBlt), blend it, then
+		     bitBlt() it back after blending.
+		***/
 		QPixmap new_pixmap(W,H);
 		new_pixmap.convertFromImage(screen_img);
+		AM_DBG DUMPPIXMAP(&new_pixmap, "nw");
 		bitBlt(m_window->get_ambulant_pixmap(), L, T,
 		       &new_pixmap, L, T, W, H);	
-		AM_DBG DUMPPIXMAP(m_window->get_ambulant_pixmap(), "s2");
+		AM_DBG DUMPPIXMAP(m_window->get_ambulant_pixmap(), "rs");
 		delete tx_pixmap;
 		if (bg_pixmap)
 			delete bg_pixmap;
@@ -272,6 +310,8 @@ gui::qt::qt_smiltext_renderer::_qt_smiltext_set_font(const smil2::smiltext_run& 
 	}
 	m_font.setWeight(weight);
 	m_font.setPixelSize(strun.m_font_size);
+	if (m_blending)
+		m_font.setStyleStrategy(QFont::NoAntialias);
 }
 
 void

@@ -232,7 +232,7 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 	bool blending = false;
 	lib::rect rr(r);
 	rr.x -= word_spacing;
-    rr.w += word_spacing;
+	rr.w += word_spacing;
 
 	if ( ! (alpha_media == 1.0 && alpha_media_bg == 1.0 && alpha_chroma == 1.0) ) {
 		// prepare for blending

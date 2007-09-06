@@ -78,7 +78,9 @@ class qt_smiltext_renderer :
 	critical_section m_lock;
 	// Qt related variables
 	ambulant_qt_window* m_window;
-	QFont m_font;
+	lib::rect m_rect;
+	QFont  m_font;
+	bool   m_blending;
 	QColor m_qt_transparent;
 	QColor m_qt_alternative;
 	double m_bgopacity; 

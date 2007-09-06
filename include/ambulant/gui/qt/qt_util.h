@@ -54,7 +54,7 @@ QColor color_t2QColor(lib::color_t c);
 // image debugging: dump pixmaps at various stages of drawing process.
 // useful e.g. for animations, transitions and such.
 // Enable qt_pixmap_dump by defining WITH_DUMPPIXMAP
-// #define	WITH_DUMPPIXMAP
+//#define	WITH_DUMPPIXMAP
 #ifdef	WITH_DUMPPIXMAP
 #define DUMPPIXMAP(pixmap, filename)  qt_pixmap_dump(pixmap, filename);
 #else
