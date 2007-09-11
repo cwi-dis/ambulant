@@ -646,7 +646,8 @@ AC_MSG_RESULT($test_gstreamer)
 #
 # Test for arts 
 #
-test_arts=false dnl set to false until fixed
+test_arts=false
+dnl set to false until fixed
 AC_MSG_CHECKING(for arts soundsystem)
 AC_ARG_WITH(arts,
      [  --with-arts		Turn on aRts (basic) support (currently broken) ],
@@ -659,7 +660,7 @@ AC_ARG_WITH(arts,
                 ;;
      esac],[
      	arts=false
-	test_arts=false
+		test_arts=false
      ])
 AM_CONDITIONAL(WITH_ARTS, test x$arts = xtrue)
 AC_MSG_RESULT($arts)
