@@ -62,7 +62,7 @@ _blend_pixel (int dr, int dg, int db, int da,
 void
 qt_image_blend (QImage dst, const lib::rect dst_rc, 
 		 QImage src, const lib::rect src_rc,
-		 double opacity, blend_flags flags,
+		 double opacity_in, double opacity_out,
 		 const lib::color_t chroma_low,
 		 const lib::color_t chroma_high)
 {
@@ -95,19 +95,21 @@ qt_image_blend (QImage dst, const lib::rect dst_rc,
 	  dst_B = max_B;
 
 
-	unsigned int weight = static_cast<unsigned int>(round(opacity*255.0));
-	unsigned int remain = 255 - weight; 
+	unsigned int weight_in = static_cast<unsigned int>(round(opacity_in*255.0));
+	unsigned int remain_in = 255 - weight_in; 
+	unsigned int weight_out = static_cast<unsigned int>(round(opacity_out*255.0));
+	unsigned int remain_out = 255 - weight_out; 
 
 	int r_l = redc(chroma_low), r_h = redc(chroma_high); 
 	int g_l = greenc(chroma_low), g_h = greenc(chroma_high); 
 	int b_l = bluec(chroma_low), b_h = bluec(chroma_high);
-	AM_DBG logger::get_logger()->debug("blend_qt_pixbuf:r_l=%3d,g_l=%3d,b_l=%3d,w=%d", r_l,g_l,b_l,weight);
+	AM_DBG logger::get_logger()->debug("blend_qt_pixbuf:r_l=%3d,g_l=%3d,b_l=%3d,w_in=%d,w_out=%d", r_l,g_l,b_l,weight_in, weight_out);
 	AM_DBG logger::get_logger()->debug("blend_qt_pixbuf:r_h=%3d,g_h=%3d,b_h=%3d", r_h,g_h,b_h);
-
+	/*
 	bool copy = flags&BLEND_COPY;
 	bool inside = ! (flags&BLEND_OUTSIDE);
 	bool outside = flags&BLEND_OUTSIDE;
-
+	*/
 	
 	AM_DBG logger::get_logger()->debug("blend_qt_pixbuf:dst_L=%3d,dst_R=%3d,max_R=%3d,src_L=%3d", dst_L, dst_R, max_R, src_L);
 	for (dst_col = dst_L, src_col = src_L;
@@ -133,50 +135,78 @@ qt_image_blend (QImage dst, const lib::rect dst_rc,
 			    &&  g_l <= sg && sg <= g_h
 			    &&  b_l <= sb && sb <= b_h
 				) {
-				if (inside) {
-					// blend the pixel from 'src' into 'dst'
+			        // blend the pixel from 'src' into 'dst'
 //logger::get_logger()->debug("dst[%d,%d]=0x%x%x%x, src[%d,%d]=0x%x%x%x, blend=0x%x", dst_col,dst_row,dr,dg,db,src_col,src_row,sr,sg,sb, _blend_pixel(dr,dg,db,da,sr,sg,sb,sa,src_has_alpha, weight, remain));
-					dst.setPixel(dst_col,dst_row,
-						     _blend_pixel(dr,dg,db,da,
-								  sr,sg,sb,sa,
-								  src_has_alpha,
-								  weight, remain)); 
-				} else if (copy) {
-					// copy the pixel from 'src' to 'dst'
-					if (src_has_alpha)
-				  		dst.setPixel(dst_col,dst_row,
-							     qRgba(sr,sg,sb,sa));
-					else
-				  		dst.setPixel(dst_col,dst_row,
-							     qRgb(sr,sg,sb));
-				}
+				dst.setPixel(dst_col,dst_row,
+					     _blend_pixel(dr,dg,db,da,
+							  sr,sg,sb,sa,
+							  src_has_alpha,
+							  weight_in, remain_in)); 
 			} else {
-				if (outside) {
-					// blend the pixel from 'src' into 'dst'
-					dst.setPixel(dst_col,dst_row,
-						     _blend_pixel(dr,dg,db,da,
-								  sr,sg,sb,sa,
-								  src_has_alpha,
-								  weight, remain)); 
-				} else if (copy) {
-					// copy the pixel from 'src' to 'dst'
-					if (src_has_alpha)
-				  		dst.setPixel(dst_col,dst_row,
-							     qRgba(sr,sg,sb,sa));
-					else
-				  		dst.setPixel(dst_col,dst_row,
-							     qRgb(sr,sg,sb));
-				}
+				// blend the pixel from 'src' into 'dst'
+				dst.setPixel(dst_col,dst_row,
+					     _blend_pixel(dr,dg,db,da,
+							  sr,sg,sb,sa,
+							  src_has_alpha,
+							  weight_out, remain_out)); 
 			}
 		}
 	}
 }
 
-color_t QColor2color_t(QColor c) {
+// compute chroma_low, chroma_high
+void 
+compute_chroma_range(lib::color_t chromakey,
+		     lib::color_t chromakeytolerance,
+		     lib::color_t* p_chroma_low,
+		     lib::color_t* p_chroma_high)
+{
+	lib::color_t chroma_low, chroma_high;
+	if ((int)chromakeytolerance == 0) {
+		chroma_low = chroma_high = chromakey;
+	} else {
+		uchar	rk = redc(chromakey),
+			gk = greenc(chromakey),
+			bk = bluec(chromakey);
+		uchar	rt = redc(chromakeytolerance),
+			gt = greenc(chromakeytolerance),
+			bt = bluec(chromakeytolerance);
+		uchar rl=0, rh=255, gl=0, gh=255, bl=0, bh=255;
+		if (rk - rt > 0)   rl = rk - rt; 
+		if (rk + rt < 255) rh = rk + rt; 
+		if (gk - gt > 0)   gl = gk - gt; 
+		if (gk + gt < 255) gh = gk + gt; 
+		if (bk - bt > 0)   bl = bk - bt; 
+		if (bk + bt < 255) bh = bk + bt; 
+		chroma_low  = to_color(rl, gl, bl);
+		chroma_high = to_color(rh, gh, bh);
+	}
+	if (p_chroma_low) *p_chroma_low = chroma_low;
+	if (p_chroma_high) *p_chroma_high = chroma_high;
+}
+
+// test if given color 'c' is between' c_low' and 'c_high'
+bool 
+color_t_in_range(lib::color_t c, lib::color_t c_low, lib::color_t c_high)
+{
+	uchar r_c = redc(c), r_l = redc(c_low), r_h = redc(c_high); 
+	uchar g_c = greenc(c), g_l = greenc(c_low), g_h = greenc(c_high); 
+	uchar b_c = bluec(c), b_l = bluec(c_low), b_h = bluec(c_high);
+	if ( // check all components in color range
+	        r_l <= r_c && r_c <= r_h
+	    &&  g_l <= g_c && g_c <= g_h
+	    &&  b_l <= b_c && b_c <= b_h)
+		return true;
+	else    return false;
+ }
+
+color_t
+QColor2color_t(QColor c) {
 	return to_color(c.red(), c.green(), c.blue()); 
 }
 
-QColor color_t2QColor(lib::color_t c) {
+QColor
+color_t2QColor(lib::color_t c) {
 	return QColor(redc(c), greenc(c), bluec(c)); 
 }
 

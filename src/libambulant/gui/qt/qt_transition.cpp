@@ -152,7 +152,7 @@ qt_transition_blitclass_fade::update()
 	const rect&  newrect_whole =  m_dst->get_clipped_screen_rect();
        	qt_image_blend (m_old_image, newrect_whole,
 			m_new_image, newrect_whole,
-			m_progress, BLEND_INSIDE,
+			m_progress, 0.0,
 			0x000000, 0xFFFFFF);
 	QImage res(m_old_image);
 #endif//JUNK

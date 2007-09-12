@@ -36,7 +36,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/textptr.h"
 
-#define AM_DBG if(1)
+// #define AM_DBG if(1)
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -84,10 +84,14 @@ gui::qt::qt_smiltext_renderer::start(double t) {
 		alpha_media = ri->get_mediaopacity();
 		alpha_media_bg = ri->get_mediabgopacity();
 		m_bgopacity = ri->get_bgopacity();
-//TBD   alpha_chroma = ri->get_chromakeyopacity();
-//TBD	lib::color_t chromakey = ri->get_chromakey();
-//TBD	lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
-//TBD compute chroma_low, choma_high
+		if (ri->is_chromakey_specified()) {
+			alpha_chroma = ri->get_chromakeyopacity();
+			lib::color_t chromakey = ri->get_chromakey();
+			lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
+			lib::color_t chroma_low, chroma_high;
+			compute_chroma_range(chromakey, chromakeytolerance,
+					     &chroma_low, &chroma_high);
+		}
 	}
 
 	if ( ! (alpha_media == 1.0 && alpha_media_bg == 1.0 && alpha_chroma == 1.0) ) {
@@ -148,10 +152,13 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 		alpha_media = ri->get_mediaopacity();
 		alpha_media_bg = ri->get_mediabgopacity();
 		m_bgopacity = ri->get_bgopacity();
-//TBD   alpha_chroma = ri->get_chromakeyopacity();
-//TBD	lib::color_t chromakey = ri->get_chromakey();
-//TBD	lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
-//TBD compute chroma_low, choma_high
+		if (ri->is_chromakey_specified()) {
+			alpha_chroma = ri->get_chromakeyopacity();
+			lib::color_t chromakey = ri->get_chromakey();
+			lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
+			compute_chroma_range(chromakey, chromakeytolerance,
+					     &chroma_low, &chroma_high);   
+		}
 	}
 	// prepare for blending
 	QPixmap* bg_pixmap = NULL;
@@ -164,6 +171,8 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 	    W = rct.width(),
 	    H = rct.height();
 
+	if (W == 0 || H == 0)
+		return; // cannot render anything
 	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_render(): r=L=%d,T=%d,W=%d,H=%d space=%d",r.x,r.y,r.w,r.h,word_spacing);
 	if (m_blending) {
 		// create pixmaps for blending
@@ -191,8 +200,14 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 
 	QPainter tx_paint, bg_paint;
 	lib::color_t text_color = strun.m_color;
-	QColor qt_color(redc(text_color), greenc(text_color), bluec(text_color));
 	lib::color_t bg_color = strun.m_bg_color;
+	if (ri->is_chromakey_specified()) {
+		if (color_t_in_range (text_color, chroma_low, chroma_high))
+			alpha_media = alpha_chroma;
+		if (color_t_in_range (bg_color, chroma_low, chroma_high))
+			alpha_media_bg = alpha_chroma;
+	}
+	QColor qt_color(redc(text_color), greenc(text_color), bluec(text_color));
 	QColor qt_bg_color(redc(bg_color), greenc(bg_color), bluec(bg_color));
 	
 	if (m_blending) {
@@ -243,7 +258,6 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 		QImage bg_image = bg_pixmap->convertToImage();
 		QImage tx_image = tx_pixmap->convertToImage();
 		QImage screen_img = m_window->get_ambulant_pixmap()->convertToImage();
-		
 
 		AM_DBG DUMPPIXMAP(bg_pixmap, "bg");
 		AM_DBG DUMPPIXMAP(tx_pixmap, "tx");
@@ -251,10 +265,12 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 
 		lib::rect rct0 (lib::point(0, 0), lib::size(W, H));
 		qt_image_blend (screen_img, rct, bg_image, rct0, 
-				alpha_media_bg, BLEND_INSIDE,
+				alpha_media_bg, 0.0,
+//XX				chroma_low, chroma_high);
 				bg_color, bg_color);
 		qt_image_blend (screen_img, rct, tx_image, rct0, 
-				alpha_media, BLEND_INSIDE,
+				alpha_media, 0.0,
+//XX				chroma_low, chroma_high);
 				text_color, text_color);
 		/*** see optimization suggestion above.
 		     also, it should not be necessary to copy

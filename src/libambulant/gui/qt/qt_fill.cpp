@@ -263,7 +263,7 @@ qt_background_renderer::redraw(const lib::rect &dirty,
 			lib::rect rr (lib::point(0, 0), lib::size(W, H));
 			qt_image_blend (screen_image, dstrect_whole,
 					bg_image, rr, 
-					opacity, BLEND_INSIDE,
+					opacity, 0.0,
 					bgcolor, bgcolor);
 			QPixmap new_pixmap(W,H);
 			new_pixmap.convertFromImage(screen_image);

@@ -103,6 +103,20 @@ class region_info {
 
 	/// Return the media background opacity of the region.
 	virtual double get_mediabgopacity() const = 0;
+#ifdef	WITH_CHROMAKEY
+
+	/// Return whether the region.has a valid chromakey
+	virtual bool is_chromakey_specified() const = 0;
+
+	/// Return the chromakey of the region.
+	virtual lib::color_t get_chromakey() const = 0;
+
+	/// Return the chromakey tolerance of the region.
+	virtual lib::color_t get_chromakeytolerance() const = 0;
+
+	/// Return the chromakey opacity of the region.
+	virtual double get_chromakeyopacity() const = 0;
+#endif//WITH_CHROMAKEY
 #endif
 };
 

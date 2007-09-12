@@ -24,10 +24,11 @@
 #include "ambulant/gui/qt/qt_includes.h"
 #include "ambulant/gui/qt/qt_image_renderer.h"
 #include "ambulant/gui/qt/qt_transition.h"
+#include "ambulant/gui/qt/qt_util.h"
 #include "ambulant/common/region_info.h"
 #include "ambulant/common/smil_alignment.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -104,6 +105,21 @@ qt_image_renderer::redraw_body(const rect &dirty,
 #ifdef	WITH_SMIL30
 	lib::rect croprect = m_dest->get_crop_rect(srcsize);
 	dstrect = m_dest->get_fit_rect(croprect, srcsize, &srcrect, m_alignment);
+	double alpha_media = 1.0, alpha_media_bg = 1.0, alpha_chroma = 1.0;
+	lib::color_t chroma_low = lib::color_t(0x000000), chroma_high = lib::color_t(0xFFFFFF);
+	const common::region_info *ri = m_dest->get_info();
+	if (ri) {
+		alpha_media = ri->get_mediaopacity();
+//???		alpha_media_bg = ri->get_mediabgopacity();
+//???		m_bgopacity = ri->get_bgopacity();
+		if (ri->is_chromakey_specified()) {
+			alpha_chroma = ri->get_chromakeyopacity();
+			lib::color_t chromakey = ri->get_chromakey();
+			lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
+			compute_chroma_range(chromakey, chromakeytolerance,
+					     &chroma_low, &chroma_high);
+		}
+	}
 #else //WITH_SMIL30
 	dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
 #endif//WITH_SMIL30
@@ -137,7 +153,20 @@ qt_image_renderer::redraw_body(const rect &dirty,
 #else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
 	QImage scaledimage = m_image.smoothScale(N_W, N_H);
 #endif/*QT_NO_FILEDIALOG*/
+#ifdef	WITH_SMIL30
+	if (alpha_chroma != 1.0) {
+		QImage screen_img = aqw->get_ambulant_pixmap()->convertToImage();
+		lib::rect rct0 (lib::point(0, 0), lib::size(N_W, N_H));
+		qt_image_blend (screen_img, dstrect, scaledimage, rct0, 
+				alpha_chroma, alpha_media,
+				chroma_low, chroma_high);
+		paint.drawImage(D_L, D_T, screen_img, D_L, D_T, D_W, D_H);
+	} else {
+		paint.drawImage(D_L, D_T, scaledimage, N_L, N_T, D_W, D_H);
+	}
+#else //WITH_SMIL30		
 	paint.drawImage(D_L, D_T, scaledimage, N_L, N_T, D_W, D_H);
+#endif//WITH_SMIL30
 	paint.flush();
 	paint.end();
 

@@ -35,18 +35,23 @@ namespace gui {
 
 namespace qt {
 
-// blending: used for opacity and fading
-enum blend_flag { BLEND_INSIDE = 0,	// blend pixels inside chromakey
-		   BLEND_OUTSIDE = 1,	// blend pixels outside chr.key
-		   BLEND_COPY = 2	// copy all pixels not blended
-};
-typedef unsigned int blend_flags;
-
+// blending: used for media opacity, chromakeying and fading
+ 
 void qt_image_blend (QImage dst, const lib::rect dst_rc, 
 		     QImage src, const lib::rect src_rc,
-		     double opacity,  blend_flags flags,
+		     double opacity_in, double opacity_out,
 		     const lib::color_t chroma_low, 
 		     const lib::color_t chroma_high);
+
+// compute chroma_low, chroma_high
+void compute_chroma_range(lib::color_t chroma_key,
+			  lib::color_t chroma_keytolerance,
+			  lib::color_t* p_chroma_low,
+			  lib::color_t* p_chroma_high);
+
+// test if given color 'c' is between' c_low' and 'c_high'
+bool color_t_in_range(lib::color_t c, lib::color_t c_low, lib::color_t c_high);
+
 // convert QColor <-> color_t
 color_t QColor2color_t(QColor c);
 QColor color_t2QColor(lib::color_t c);

@@ -112,11 +112,10 @@ class region_node : public common::animation_destination {
 	lib::rect get_crop_rect(const lib::size& srcsize) const;
 	double get_mediaopacity() const;
 	double get_mediabgopacity() const;
-#ifdef	WITH_CHROMAKEY
+	bool is_chromakey_specified() const;
 	double get_chromakeyopacity() const;
 	lib::color_t get_chromakey() const;
 	lib::color_t get_chromakeytolerance() const;
-#endif//WITH_CHROMAKEY
 #endif
 
 	// And corresponding setting interface
@@ -133,11 +132,9 @@ class region_node : public common::animation_destination {
 	void set_bgopacity(double l) { m_bgopacity = l; m_display_bgopacity = l; }
 	void set_mediaopacity(double l) { m_mediaopacity = l; m_display_mediaopacity = l; }
 	void set_mediabgopacity(double l) { m_mediabgopacity = l; m_display_mediabgopacity = l; }
-#ifdef	WITH_CHROMAKEY
 	void set_chromakeyopacity(double l) { m_chromakeyopacity = l; m_display_chromakeyopacity = l; }
-	void set_chromakey(lib::color_t c) { m_chromakey = c; m_display_chromakey = c;};
-	void set_chromakeytolerance(lib::color_t c) { m_chromakeytolerance = c; m_display_chromakeytolerance = c;};
-#endif//WITH_CHROMAKEY
+	void set_chromakey(lib::color_t c) { m_chromakey = c; m_display_chromakey = c; m_chromakey_specified=true;};
+	void set_chromakeytolerance(lib::color_t ct) { m_chromakeytolerance = ct; m_display_chromakeytolerance = ct;};
 #endif // WITH_SMIL30
 	void set_as_subregion(bool b) { m_is_subregion = b; }
 	
@@ -225,11 +222,10 @@ class region_node : public common::animation_destination {
 	common::region_dim_spec m_viewbox;
 	double m_mediaopacity;
 	double m_mediabgopacity;
-#ifdef	WITH_CHROMAKEY
+	bool m_chromakey_specified;
 	double m_chromakeyopacity;
 	lib::color_t m_chromakey;
 	lib::color_t m_chromakeytolerance;
-#endif//WITH_CHROMAKEY
 #endif // WITH_SMIL30
 	const char *m_bgimage;
 	common::tiling m_tiling;
@@ -252,11 +248,9 @@ class region_node : public common::animation_destination {
 	double m_display_bgopacity;
 	double m_display_mediaopacity;
 	double m_display_mediabgopacity;
-#ifdef	WITH_CHROMAKEY
 	double m_display_chromakeyopacity;
 	lib::color_t m_display_chromakey;
 	lib::color_t m_display_chromakeytolerance;
-#endif//WITH_CHROMAKEY
 #endif // WITH_SMIL30
 	
 	// verifier
