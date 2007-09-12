@@ -100,17 +100,11 @@ qt_image_blend (QImage dst, const lib::rect dst_rc,
 	unsigned int weight_out = static_cast<unsigned int>(round(opacity_out*255.0));
 	unsigned int remain_out = 255 - weight_out; 
 
-	int r_l = redc(chroma_low), r_h = redc(chroma_high); 
-	int g_l = greenc(chroma_low), g_h = greenc(chroma_high); 
-	int b_l = bluec(chroma_low), b_h = bluec(chroma_high);
+	uchar r_l = redc(chroma_low), r_h = redc(chroma_high); 
+	uchar g_l = greenc(chroma_low), g_h = greenc(chroma_high); 
+	uchar b_l = bluec(chroma_low), b_h = bluec(chroma_high);
 	AM_DBG logger::get_logger()->debug("blend_qt_pixbuf:r_l=%3d,g_l=%3d,b_l=%3d,w_in=%d,w_out=%d", r_l,g_l,b_l,weight_in, weight_out);
-	AM_DBG logger::get_logger()->debug("blend_qt_pixbuf:r_h=%3d,g_h=%3d,b_h=%3d", r_h,g_h,b_h);
-	/*
-	bool copy = flags&BLEND_COPY;
-	bool inside = ! (flags&BLEND_OUTSIDE);
-	bool outside = flags&BLEND_OUTSIDE;
-	*/
-	
+	AM_DBG logger::get_logger()->debug("blend_qt_pixbuf:r_h=%3d,g_h=%3d,b_h=%3d", r_h,g_h,b_h);	
 	AM_DBG logger::get_logger()->debug("blend_qt_pixbuf:dst_L=%3d,dst_R=%3d,max_R=%3d,src_L=%3d", dst_L, dst_R, max_R, src_L);
 	for (dst_col = dst_L, src_col = src_L;
 	     dst_col < dst_R;
