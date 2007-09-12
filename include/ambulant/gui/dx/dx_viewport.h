@@ -132,22 +132,24 @@ class viewport {
 	
 	// Fading, opacity and chromakeying support
 	//
-	// blend each pixel in 'from' with the corresponding one in 'to' using 'opacity'
-	// when the color of the pixel in 'from' is in the range [chroma_low, chroma_high]
-	// otherwise the pixel is copied.
+	// blend each pixel in 'from' with the corresponding one in 'to' using
+	// 'opacity_in'/'opacity_out' when the color of the pixel in 'from'
+	// is inside/outside the range [chroma_low, chroma_high]
 	bool blt_blend (IDirectDrawSurface* to, IDirectDrawSurface* from,
-		const lib::rect& rc, double opacity,
-		lib::color_t chroma_low, lib::color_t chroma_high, bool copy);
-	// blend 'src' surface into m_surface using specified opacity within 
-	// [chroma_low, chroma_high]; colors outside this interval are copied/ignored.
+		const lib::rect& rc, double opacity_in, double opacity_out,
+		lib::color_t chroma_low, lib::color_t chroma_high);
+	// blend 'src' surface into m_surface when pixel color value is within/outside
+	// [chroma_low, chroma_high] using opacity_in/double opacity_out, resp.
 	void blend_surface(const lib::rect& dst_rc, IDirectDrawSurface* src,
-		const lib::rect& src_rc, bool keysrc, double opacity,
-		lib::color_t chroma_low, lib::color_t chroma_high, bool copy);
-	// blend 'src' surface into 'dst' surface using specified opacity within
-	// [chroma_low, chroma_high]; colors outside this interval are copied/ignored.
+		const lib::rect& src_rc, bool keysrc, double opacity_in, double opacity_out,
+		lib::color_t chroma_low, lib::color_t chroma_high);
+	// blend 'src' surface into 'dst' surface using  using
+	// 'opacity_in'/'opacity_out' when the color of the pixel in 'from'
+	// is inside/outside the range [chroma_low, chroma_high]
 	void blend_surface(IDirectDrawSurface* dst, const lib::rect& dst_rc, 
-		IDirectDrawSurface* src, const lib::rect& src_rc, bool keysrc, double opacity,
-		lib::color_t chroma_low, lib::color_t chroma_high, bool copy);
+		IDirectDrawSurface* src, const lib::rect& src_rc, bool keysrc,
+		double opacity_in, double opacity_out,
+		lib::color_t chroma_low, lib::color_t chroma_high);
 	// copy 'src_rc' rectangle in 'src' surface into 'dst' surface' 'dst_rc' rectangle
 	void copy_surface(IDirectDrawSurface* dst, const lib::rect& dst_rc, IDirectDrawSurface* src, const lib::rect& src_rc);
 
@@ -180,15 +182,18 @@ class viewport {
 	uint16 high_bit_pos(uint32 dword);
 
 	void get_low_high_values(uint32 low_ddclr, uint32 high_ddclr, BYTE* r_l, BYTE* r_h, BYTE* g_l, BYTE* g_h, BYTE* b_l, BYTE* b_h);
-	HRESULT blt_blend32(const lib::rect& rc, double progress,
+	HRESULT blt_blend32(const lib::rect& rc, 
+		double opacity_in, double opacity_out,
 		IDirectDrawSurface *surf1, IDirectDrawSurface *surf2,
-		uint32 low_ddclr, uint32 high_ddclr, bool copy);
-	HRESULT blt_blend24(const lib::rect& rc, double progress,
+		uint32 low_ddclr, uint32 high_ddclr);
+	HRESULT blt_blend24(const lib::rect& rc,
+		double opacity_in, double opacity_out,
 		IDirectDrawSurface *surf1, IDirectDrawSurface *surf2,
-		uint32 low_ddclr, uint32 high_ddclr, bool copy);
-	HRESULT blt_blend16(const lib::rect& rc, double progress,
+		uint32 low_ddclr, uint32 high_ddclr);
+	HRESULT blt_blend16(const lib::rect& rc,
+		double opacity_in, double opacity_out,
 		IDirectDrawSurface *surf1, IDirectDrawSurface *surf2, uint32 low_ddclr,
-		uint32 high_ddclr, bool copy);
+		uint32 high_ddclr);
 
 	HWND m_hwnd;
 	IDirectDraw* m_direct_draw;

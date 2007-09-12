@@ -136,6 +136,15 @@ struct color_trible {
 	static int get_bits_size() { return 24;} 
 };
 
+// compute chroma_low, chroma_high
+void compute_chroma_range(lib::color_t chroma_key,
+			  lib::color_t chroma_keytolerance,
+			  lib::color_t* p_chroma_low,
+			  lib::color_t* p_chroma_high);
+
+// test if given color 'c' is between' c_low' and 'c_high'
+bool color_t_in_range(lib::color_t c, lib::color_t c_low, lib::color_t c_high);
+
 } // namespace lib
  
 } // namespace ambulant

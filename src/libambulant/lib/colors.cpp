@@ -83,6 +83,53 @@ struct colors_init {
 	}	
 } colors_init_inst;
 
+
+// compute chroma_low, chroma_high
+void 
+compute_chroma_range(lib::color_t chromakey,
+		     lib::color_t chromakeytolerance,
+		     lib::color_t* p_chroma_low,
+		     lib::color_t* p_chroma_high)
+{
+	lib::color_t chroma_low, chroma_high;
+	if ((int)chromakeytolerance == 0) {
+		chroma_low = chroma_high = chromakey;
+	} else {
+		uchar	rk = redc(chromakey),
+			gk = greenc(chromakey),
+			bk = bluec(chromakey);
+		uchar	rt = redc(chromakeytolerance),
+			gt = greenc(chromakeytolerance),
+			bt = bluec(chromakeytolerance);
+		uchar rl=0, rh=255, gl=0, gh=255, bl=0, bh=255;
+		if (rk - rt > 0)   rl = rk - rt; 
+		if (rk + rt < 255) rh = rk + rt; 
+		if (gk - gt > 0)   gl = gk - gt; 
+		if (gk + gt < 255) gh = gk + gt; 
+		if (bk - bt > 0)   bl = bk - bt; 
+		if (bk + bt < 255) bh = bk + bt; 
+		chroma_low  = to_color(rl, gl, bl);
+		chroma_high = to_color(rh, gh, bh);
+	}
+	if (p_chroma_low) *p_chroma_low = chroma_low;
+	if (p_chroma_high) *p_chroma_high = chroma_high;
+}
+
+// test if given color 'c' is between' c_low' and 'c_high'
+bool 
+color_t_in_range(lib::color_t c, lib::color_t c_low, lib::color_t c_high)
+{
+	uchar r_c = redc(c), r_l = redc(c_low), r_h = redc(c_high); 
+	uchar g_c = greenc(c), g_l = greenc(c_low), g_h = greenc(c_high); 
+	uchar b_c = bluec(c), b_l = bluec(c_low), b_h = bluec(c_high);
+	if ( // check all components in color range
+	        r_l <= r_c && r_c <= r_h
+	    &&  g_l <= g_c && g_c <= g_h
+	    &&  b_l <= b_c && b_c <= b_h)
+		return true;
+	else    return false;
+ }
+
 } // namespace lib
  
 } // namespace ambulant

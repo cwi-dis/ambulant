@@ -178,6 +178,21 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 #ifdef WITH_SMIL30
 	lib::rect croprect = m_dest->get_crop_rect(srcsize);
 	img_reg_rc = m_dest->get_fit_rect(croprect, srcsize, &img_rect1, m_alignment);
+	double alpha_media = 1.0, alpha_media_bg = 1.0, alpha_chroma = 1.0;
+	lib::color_t chroma_low = lib::color_t(0x000000), chroma_high = lib::color_t(0xFFFFFF);
+	const common::region_info *ri = m_dest->get_info();
+	if (ri) {
+		alpha_media = ri->get_mediaopacity();
+//???		alpha_media_bg = ri->get_mediabgopacity();
+//???		m_bgopacity = ri->get_bgopacity();
+		if (ri->is_chromakey_specified()) {
+			alpha_chroma = ri->get_chromakeyopacity();
+			lib::color_t chromakey = ri->get_chromakey();
+			lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
+			compute_chroma_range(chromakey, chromakeytolerance,
+							     &chroma_low, &chroma_high);
+		}
+	}
 #else
 	// Get fit rectangles
 	img_reg_rc = m_dest->get_fit_rect(srcsize, &img_rect1, m_alignment);
@@ -242,7 +257,27 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 		v->draw(bgimage, img_rect_dirty, img_reg_rc_dirty, false, tr);
 		bgimage->Release();
 	} else {
+#ifdef	WITH_SMIL30
+		if (alpha_chroma != 1.0) {
+			IDirectDrawSurface* screen_ddsurf = v->get_surface(); 
+			IDirectDrawSurface* image_ddsurf = m_image->get_ddsurf();
+			lib::rect rct0 (lib::point(0, 0), img_rect_dirty.size());
+			v->blend_surface(img_rect_dirty, image_ddsurf,
+							 rct0, m_image->is_transparent(), 
+							 alpha_chroma, alpha_media,
+							 chroma_low, chroma_high);
+
+//XX		lib::rect rct0 (lib::point(0, 0), lib::size(N_W, N_H));
+//XX		qt_image_blend (screen_img, dstrect, scaledimage, rct0, 
+//XX				alpha_chroma, alpha_media,
+//XX				chroma_low, chroma_high);
+//XX			paint.drawImage(D_L, D_T, screen_img, D_L, D_T, D_W, D_H);
+		} else {
+			v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), tr);
+		}
+#else //WITH_SMIL30		
 		v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), tr);
+#endif//WITH_SMIL30
 	}
 	if (m_erase_never) m_dest->keep_as_background();
 }

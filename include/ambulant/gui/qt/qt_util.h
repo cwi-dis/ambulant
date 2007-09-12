@@ -43,15 +43,6 @@ void qt_image_blend (QImage dst, const lib::rect dst_rc,
 		     const lib::color_t chroma_low, 
 		     const lib::color_t chroma_high);
 
-// compute chroma_low, chroma_high
-void compute_chroma_range(lib::color_t chroma_key,
-			  lib::color_t chroma_keytolerance,
-			  lib::color_t* p_chroma_low,
-			  lib::color_t* p_chroma_high);
-
-// test if given color 'c' is between' c_low' and 'c_high'
-bool color_t_in_range(lib::color_t c, lib::color_t c_low, lib::color_t c_high);
-
 // convert QColor <-> color_t
 color_t QColor2color_t(QColor c);
 QColor color_t2QColor(lib::color_t c);

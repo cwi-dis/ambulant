@@ -391,9 +391,9 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 			hr = textbg_dds->ReleaseDC(textbg_hdc);
 		if (SUCCEEDED(hr)) {
 			if ( ! run.m_bg_transparent) {
-				m_viewport->blend_surface(m_region_dds, rr, textbg_dds, rr, true, alpha_media_bg, bg_color_t, bg_color_t, false /*keep out of range pixels*/);
+				m_viewport->blend_surface(m_region_dds, rr, textbg_dds, rr,/*use color key from source*/true, alpha_media_bg, /*keep out of range pixels*/0, bg_color_t, bg_color_t);
 			}
-			m_viewport->blend_surface(m_region_dds, rr, text_dds, rr, true /*color key from source*/, alpha_media, fg_color_t, fg_color_t, false /*keep out of range pixels*/);
+			m_viewport->blend_surface(m_region_dds, rr, text_dds, rr,/*use color key from source*/true, alpha_media, /*keep out of range pixels*/0, fg_color_t, fg_color_t);
 		    hr = m_region_dds->GetDC(&m_hdc);
 			if (SUCCEEDED(hr))
 			    hr = text_dds->GetDC(&hdc);
