@@ -36,11 +36,20 @@ namespace gui {
 
 namespace gtk {
 
+// blending: used for media opacity, chromakeying and fading
+
+// blend every pixel within 'src_rc' of 'src' with the corresponding
+// one in 'dst_rc' of 'dst' using 'opacity_in'/'opacity_out'  if the
+// source pixel color is in/out the range [chroma_low,chroma_high], resp.
+// when 'mask_color' is not 0 (black), and the source pixel color equals
+// the 'mask_color', the source pixel is not blended.
+
 void gdk_pixbuf_blend (GdkPixbuf* dst, const lib::rect dst_rc, 
 		       GdkPixbuf* src, const lib::rect src_rc,
 		       double opacity_in, double opacity_out,
 		       const lib::color_t chroma_low, 
-		       const lib::color_t chroma_high);
+		       const lib::color_t chroma_high,
+		       const lib::color_t mask_color=0);
 
 void gdk_pixmap_dump(GdkPixmap* gpm, std::string filename);
 	

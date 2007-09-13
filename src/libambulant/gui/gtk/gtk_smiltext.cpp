@@ -50,7 +50,6 @@ gtk_smiltext_renderer::gtk_smiltext_renderer(
 		const lib::node *node,
 		event_processor *evp)
 :	gtk_renderer<renderer_playable>(context, cookie, node, evp),
-//JUNK	m_gtk_window(NULL),
 	m_engine(smil2::smiltext_engine(node, evp, this, false)),
 	m_params(m_engine.get_params()),
 	m_pango_attr_list(pango_attr_list_new()),
@@ -59,7 +58,12 @@ gtk_smiltext_renderer::gtk_smiltext_renderer(
 	m_layout(NULL),
 	m_context(NULL),
 	m_transparent(GTK_TRANSPARENT_COLOR),
-	m_alternative(GTK_ALTERNATIVE_COLOR)
+	m_alternative(GTK_ALTERNATIVE_COLOR),
+	m_alpha_media(1.0),
+	m_alpha_media_bg(1.0),
+	m_alpha_chroma(1.0),
+	m_chroma_low(0x000000), //black
+	m_chroma_high(0xFFFFFF) //white
 {
 #ifdef	TBD
 	m_render_offscreen = (m_params.m_mode != smil2::stm_replace && m_params.m_mode != smil2::stm_append) || !m_params.m_wrap;
@@ -111,30 +115,25 @@ gtk_smiltext_renderer::smiltext_changed()
 {
 	AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x)",this);
 	m_lock.enter();
-	double	alpha_media  = 1.0, alpha_media_bg = 1.0,
-		alpha_chroma = 1.0;
-	lib::color_t
-		chroma_low   = lib::color_t(0x000000), //black
-		chroma_high =  lib::color_t(0xFFFFFF); //white
-	const common::region_info *ri = m_dest->get_info();
-	if (ri) {
-		alpha_media = ri->get_mediaopacity();
-		alpha_media_bg = ri->get_mediabgopacity();
-//JNK		m_bgopacity = ri->get_bgopacity();
-//TBD   alpha_chroma = ri->get_chromakeyopacity();
-//TBD	lib::color_t chromakey = ri->get_chromakey();
-//TBD	lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
-//TBD compute chroma_low, choma_high
-	}
 	if ( ! m_context) {
 		// initialize the pango context, layout...
 		m_context = gdk_pango_context_get();
 		PangoLanguage* language = gtk_get_default_language();
 		pango_context_set_language (m_context, language);
 		pango_context_set_base_dir (m_context, PANGO_DIRECTION_LTR);
+		const common::region_info *ri = m_dest->get_info();
+		if (ri) {
+			m_alpha_media = ri->get_mediaopacity();
+			m_alpha_media_bg = ri->get_mediabgopacity();
+			m_alpha_chroma = ri->get_chromakeyopacity();
+			lib::color_t chromakey = ri->get_chromakey();
+			lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
+			compute_chroma_range(chromakey, chromakeytolerance,
+					     &m_chroma_low, &m_chroma_high);
+		}
 #ifndef	WITH_GTK_ANTI_ALIASING
-		if (alpha_media != 1.0 || alpha_media_bg != 1.0
-		    || alpha_chroma != 1.0) {
+		if (m_alpha_media != 1.0 || m_alpha_media_bg != 1.0
+		    || m_alpha_chroma != 1.0) {
 			cairo_font_options_t* 
 			  cairo_font_options = cairo_font_options_create();
 			/* anti-aliasing by pango/cairo is disabled
@@ -154,7 +153,9 @@ gtk_smiltext_renderer::smiltext_changed()
 		pango_layout_set_alignment (m_layout, PANGO_ALIGN_LEFT);
 	}
 	if ( ! m_bg_layout 
-	     && (alpha_media != 1.0 || alpha_media_bg != 1.0 || alpha_chroma != 1.0)) {
+	     && (m_alpha_media != 1.0 
+		 || m_alpha_media_bg != 1.0 
+		 || m_alpha_chroma != 1.0)) {
 		// prepare for blending: layout is setup twice:
 		// m_bg_layout has textColor as m_transparent
 		// m_layout has textBackGroundColor as m_transparent
@@ -382,12 +383,6 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 		// blending
 	  	pango_layout_set_width(m_bg_layout, W*1000);
 
-		double alpha_media = 1.0, alpha_media_bg = 1.0, alpha_chroma = 1.0;
-		const common::region_info *ri = m_dest->get_info();
-		if (ri) { // XXX TBD rememeber these values
-			alpha_media = ri->get_mediaopacity();
-			alpha_media_bg = ri->get_mediabgopacity();
-		}
 		GdkPixmap* text_pixmap
 		  = gdk_pixmap_new( (window->get_ambulant_pixmap()),
 				    W, H, -1);
@@ -430,8 +425,8 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 		lib::rect rc(lib::point(L,T),lib::size(W,H));
 		// blend the screen pixbuf with th background pixbuf
 		gdk_pixbuf_blend (screen_pixbuf, rc, bg_pixbuf, rc, 
-				  0, alpha_media_bg,
-				  m_transparent, m_transparent);
+				  m_alpha_chroma, m_alpha_media_bg,
+				  m_chroma_low, m_chroma_high, m_transparent);
 
 		// draw m_layout containing smilText runs with text in
 		// required colors and background in m_transparant color
@@ -443,8 +438,8 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 		  			       	(NULL, text_pixmap, NULL,
 						0,0,0,0,W,H);
 		gdk_pixbuf_blend (screen_pixbuf, rc, text_pixbuf, rc, 
-				  0, alpha_media,
-				  m_transparent, m_transparent);
+				  m_alpha_chroma, m_alpha_media,
+				  m_chroma_low, m_chroma_high, m_transparent);
 //		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen0");
 		// draw the blended pixbuf on the screen
 		gdk_draw_pixbuf(window->get_ambulant_pixmap(),

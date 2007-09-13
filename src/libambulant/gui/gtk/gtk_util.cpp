@@ -45,7 +45,8 @@ gdk_pixbuf_blend (GdkPixbuf* dst, const lib::rect dst_rc,
 		  GdkPixbuf* src, const lib::rect src_rc,
 		  double opacity_in, double opacity_out,
 		  const lib::color_t chroma_low,
-		  const lib::color_t chroma_high)
+		  const lib::color_t chroma_high,
+		  const lib::color_t mask_color)
 {
   //TBD: dst(L,T,W,H) != src(L,T,W,H), alpha channel in dst/src
 	assert(dst != NULL && src != NULL);
@@ -70,9 +71,9 @@ gdk_pixbuf_blend (GdkPixbuf* dst, const lib::rect dst_rc,
 	guint weight_in = static_cast<guint>(round(opacity_in*255.0));
 	guint weight_out = static_cast<guint>(round(opacity_out*255.0));
 
-	guchar r_l = redc(chroma_low), r_h = redc(chroma_high); 
-	guchar g_l = greenc(chroma_low), g_h = greenc(chroma_high); 
-	guchar b_l = bluec(chroma_low), b_h = bluec(chroma_high);
+	guchar r_l = redc(chroma_low), r_h = redc(chroma_high), r_m = redc(mask_color); 
+	guchar g_l = greenc(chroma_low), g_h = greenc(chroma_high), g_m = greenc(mask_color); 
+	guchar b_l = bluec(chroma_low), b_h = bluec(chroma_high), b_m = bluec(mask_color);
 	AM_DBG logger::get_logger()->debug("blend_gdk_pixbuf:r_l=%3d,g_l=%3d,b_l=%3d,w_in=%d,w_out=%d", r_l,g_l,b_l,weight_in, weight_out);
 AM_DBG logger::get_logger()->debug("blend_gdk_pixbuf:r_h=%3d,g_h=%3d,b_h=%3d", r_h,g_h,b_h);
 
@@ -86,27 +87,30 @@ AM_DBG logger::get_logger()->debug("blend_gdk_pixbuf:r_h=%3d,g_h=%3d,b_h=%3d", r
 			guchar r = src_col[0];
 			guchar g = src_col[1];
 			guchar b = src_col[2];
-			guchar a = n_channels_src == 4 ? src_row[3] : 0xff;
+			if ( ! (mask_color
+				&& r == r_m && g == g_m && b == b_m)) {
+				guchar a = n_channels_src == 4 ? src_row[3] : 0xff;
 //AM_DBG logger::get_logger()->debug("blend_gdk_pixbuf:rc=(%3d,%3d),dst=(%3d,%3d,%3d),src=(%3d,%3d,%3d)",row,col,dst_col[0],dst_col[1],dst_col[2],r,g,b);
 			// chromakeying
-			if ( // check all components in chromakey range
-			        r_l <= r && r <= r_h
-			    &&  g_l <= g && g <= g_h
-			    &&  b_l <= b && b <= b_h
+				if ( // check all components in chromakey range
+					r_l <= r && r <= r_h
+				    &&  g_l <= g && g <= g_h
+				    &&  b_l <= b && b <= b_h
 				) {
-				// blend the pixel from 'src' into 'dst'
-				dst_col[0] = _blend_pixel(dst_col[0], r, weight_in);
-				dst_col[1] = _blend_pixel(dst_col[1], g, weight_in);
-				dst_col[2] = _blend_pixel(dst_col[2], b, weight_in);
-				if (n_channels_dst == 4)
-					dst_col[3] = _blend_pixel(dst_col[3], a, weight_in);
-			} else {
-				// blend the pixel from 'src' into 'dst'
-				dst_col[0] = _blend_pixel(dst_col[0], r, weight_out);
-				dst_col[1] = _blend_pixel(dst_col[1], g, weight_out);
-				dst_col[2] = _blend_pixel(dst_col[2], b, weight_out);
-				if (n_channels_dst == 4)
-					dst_col[3] = _blend_pixel(dst_col[3], a, weight_out);
+					// blend the pixel from 'src' into 'dst'
+					dst_col[0] = _blend_pixel(dst_col[0], r, weight_in);
+					dst_col[1] = _blend_pixel(dst_col[1], g, weight_in);
+					dst_col[2] = _blend_pixel(dst_col[2], b, weight_in);
+					if (n_channels_dst == 4)
+						dst_col[3] = _blend_pixel(dst_col[3], a, weight_in);
+				} else {
+					// blend the pixel from 'src' into 'dst'
+					dst_col[0] = _blend_pixel(dst_col[0], r, weight_out);
+					dst_col[1] = _blend_pixel(dst_col[1], g, weight_out);
+					dst_col[2] = _blend_pixel(dst_col[2], b, weight_out);
+					if (n_channels_dst == 4)
+						dst_col[3] = _blend_pixel(dst_col[3], a, weight_out);
+				}
 			}
 			dst_col += n_channels_dst;
 			src_col += n_channels_src;
