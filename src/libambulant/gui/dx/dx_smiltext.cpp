@@ -210,10 +210,13 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 		alpha_media = ri->get_mediaopacity();
 		alpha_media_bg = ri->get_mediabgopacity();
 		m_bgopacity = ri->get_bgopacity();
-//TBD   alpha_chroma = ri->get_chromakeyopacity();
-//TBD	lib::color_t chromakey = ri->get_chromakey();
-//TBD	lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
-//TBD compute chroma_low, choma_high
+		if (ri->is_chromakey_specified()) {
+			alpha_chroma = ri->get_chromakeyopacity();
+			lib::color_t chromakey = ri->get_chromakey();
+			lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
+			compute_chroma_range(chromakey, chromakeytolerance,
+					     &chroma_low, &chroma_high);   
+		}
 	}
 	IDirectDrawSurface* text_dds = NULL;
 	IDirectDrawSurface* textbg_dds = NULL;
@@ -290,6 +293,12 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 		fg_color_t = CLR_ALTERNATIVE;
 	COLORREF crBkColor = bg_color_t;
 
+	if (ri->is_chromakey_specified()) {
+		if (color_t_in_range (fg_color_t, chroma_low, chroma_high))
+			alpha_media = alpha_chroma;
+		if (color_t_in_range (bg_color_t, chroma_low, chroma_high))
+			alpha_media_bg = alpha_chroma;
+	}
 	if (blending) {
 		// on text surface, draw text in required color
 		// and background in transparent color        
@@ -391,9 +400,13 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 			hr = textbg_dds->ReleaseDC(textbg_hdc);
 		if (SUCCEEDED(hr)) {
 			if ( ! run.m_bg_transparent) {
-				m_viewport->blend_surface(m_region_dds, rr, textbg_dds, rr,/*use color key from source*/true, alpha_media_bg, /*keep out of range pixels*/0, bg_color_t, bg_color_t);
+				m_viewport->blend_surface(m_region_dds, rr, textbg_dds, rr,
+					/*use color key from source*/true, alpha_media_bg, 
+					/*don't touch out of range pixels*/0, bg_color_t, bg_color_t);
 			}
-			m_viewport->blend_surface(m_region_dds, rr, text_dds, rr,/*use color key from source*/true, alpha_media, /*keep out of range pixels*/0, fg_color_t, fg_color_t);
+			m_viewport->blend_surface(m_region_dds, rr, text_dds, rr,
+				/*use color key from source*/true, alpha_media,
+				/*do't touch out of range pixels*/0, fg_color_t, fg_color_t);
 		    hr = m_region_dds->GetDC(&m_hdc);
 			if (SUCCEEDED(hr))
 			    hr = text_dds->GetDC(&hdc);
