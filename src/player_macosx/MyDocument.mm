@@ -351,6 +351,9 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 - (void)close
 {
 	[self stop: self];
+	if (saved_window) {
+		[self goWindowMode: self];
+	}
 	play_button = nil;
 	stop_button = nil;
 	pause_button = nil;
