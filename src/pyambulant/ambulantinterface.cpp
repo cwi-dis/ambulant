@@ -5854,6 +5854,10 @@ region_info::region_info(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "get_crop_rect")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_crop_rect");
 		if (!PyObject_HasAttrString(itself, "get_mediaopacity")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_mediaopacity");
 		if (!PyObject_HasAttrString(itself, "get_mediabgopacity")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_mediabgopacity");
+		if (!PyObject_HasAttrString(itself, "is_chromakey_specified")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: is_chromakey_specified");
+		if (!PyObject_HasAttrString(itself, "get_chromakey")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_chromakey");
+		if (!PyObject_HasAttrString(itself, "get_chromakeytolerance")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_chromakeytolerance");
+		if (!PyObject_HasAttrString(itself, "get_chromakeyopacity")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_chromakeyopacity");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -6226,6 +6230,102 @@ double region_info::get_mediabgopacity() const
 	if (py_rv && !PyArg_Parse(py_rv, "d", &_rv))
 	{
 		PySys_WriteStderr("Python exception during region_info::get_mediabgopacity() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+bool region_info::is_chromakey_specified() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	bool _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_region_info, "is_chromakey_specified", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during region_info::is_chromakey_specified() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during region_info::is_chromakey_specified() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::lib::color_t region_info::get_chromakey() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::color_t _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_region_info, "get_chromakey", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during region_info::get_chromakey() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "l", &_rv))
+	{
+		PySys_WriteStderr("Python exception during region_info::get_chromakey() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::lib::color_t region_info::get_chromakeytolerance() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::color_t _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_region_info, "get_chromakeytolerance", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during region_info::get_chromakeytolerance() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "l", &_rv))
+	{
+		PySys_WriteStderr("Python exception during region_info::get_chromakeytolerance() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+double region_info::get_chromakeyopacity() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	double _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_region_info, "get_chromakeyopacity", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during region_info::get_chromakeyopacity() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "d", &_rv))
+	{
+		PySys_WriteStderr("Python exception during region_info::get_chromakeyopacity() return:\n");
 		PyErr_Print();
 	}
 

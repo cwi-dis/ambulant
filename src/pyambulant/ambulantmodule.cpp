@@ -10552,6 +10552,58 @@ static PyObject *region_infoObj_get_mediabgopacity(region_infoObject *_self, PyO
 	return _res;
 }
 
+static PyObject *region_infoObj_is_chromakey_specified(region_infoObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->is_chromakey_specified();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
+static PyObject *region_infoObj_get_chromakey(region_infoObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::color_t _rv = _self->ob_itself->get_chromakey();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("l",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *region_infoObj_get_chromakeytolerance(region_infoObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::color_t _rv = _self->ob_itself->get_chromakeytolerance();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("l",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *region_infoObj_get_chromakeyopacity(region_infoObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	double _rv = _self->ob_itself->get_chromakeyopacity();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("d",
+	                     _rv);
+	return _res;
+}
+
 static PyMethodDef region_infoObj_methods[] = {
 	{"get_name", (PyCFunction)region_infoObj_get_name, 1,
 	 PyDoc_STR("() -> (std::string _rv)")},
@@ -10582,6 +10634,14 @@ static PyMethodDef region_infoObj_methods[] = {
 	{"get_mediaopacity", (PyCFunction)region_infoObj_get_mediaopacity, 1,
 	 PyDoc_STR("() -> (double _rv)")},
 	{"get_mediabgopacity", (PyCFunction)region_infoObj_get_mediabgopacity, 1,
+	 PyDoc_STR("() -> (double _rv)")},
+	{"is_chromakey_specified", (PyCFunction)region_infoObj_is_chromakey_specified, 1,
+	 PyDoc_STR("() -> (bool _rv)")},
+	{"get_chromakey", (PyCFunction)region_infoObj_get_chromakey, 1,
+	 PyDoc_STR("() -> (ambulant::lib::color_t _rv)")},
+	{"get_chromakeytolerance", (PyCFunction)region_infoObj_get_chromakeytolerance, 1,
+	 PyDoc_STR("() -> (ambulant::lib::color_t _rv)")},
+	{"get_chromakeyopacity", (PyCFunction)region_infoObj_get_chromakeyopacity, 1,
 	 PyDoc_STR("() -> (double _rv)")},
 	{NULL, NULL, 0}
 };

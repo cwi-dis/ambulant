@@ -587,6 +587,10 @@ animation_destination_object.othermethods = [
     "ambulant::lib::rect get_crop_rect(const ambulant::lib::size& srcsize) const { return region_info::get_crop_rect(srcsize); }", # XXXX
     "const ambulant::common::region_dim_spec& get_region_viewbox(bool fromdom) const { abort(); }", # XXX
     "void set_region_viewbox(const ambulant::common::region_dim_spec& rds) { abort(); }",
+	"bool is_chromakey_specified() const { return region_info::is_chromakey_specified(); }",
+	"ambulant::lib::color_t get_chromakey() const { return region_info::get_chromakey(); }",
+	"ambulant::lib::color_t get_chromakeytolerance() const { return region_info::get_chromakeytolerance(); }",
+	"double get_chromakeyopacity() const { return region_info::get_chromakeyopacity(); }",
 #    "ambulant::common::region_dim get_region_dim(const std::string&, bool = false) const { abort(); }",
 #    "void set_region_dim(const std::string&, const ambulant::common::region_dim&) { abort(); }",
 ]
