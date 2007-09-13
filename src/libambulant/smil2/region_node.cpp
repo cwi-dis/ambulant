@@ -367,6 +367,7 @@ region_node::fix_from_dom_node()
 				lib::logger::get_logger()->warn(gettext("Ignoring minor errors in document"));
 			} else {
 				chromakey = lib::to_color(chromakey_attr);
+				m_chromakey_specified=true;
 			}
 			AM_DBG lib::logger::get_logger()->debug("region_node::reset: chromaKey color 0x%x", (int)chromakey);
 		}

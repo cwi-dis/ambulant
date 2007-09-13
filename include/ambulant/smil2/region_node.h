@@ -133,7 +133,7 @@ class region_node : public common::animation_destination {
 	void set_mediaopacity(double l) { m_mediaopacity = l; m_display_mediaopacity = l; }
 	void set_mediabgopacity(double l) { m_mediabgopacity = l; m_display_mediabgopacity = l; }
 	void set_chromakeyopacity(double l) { m_chromakeyopacity = l; m_display_chromakeyopacity = l; }
-	void set_chromakey(lib::color_t c) { m_chromakey = c; m_display_chromakey = c; m_chromakey_specified=true;};
+	void set_chromakey(lib::color_t c) { m_chromakey = c; m_display_chromakey = c; };
 	void set_chromakeytolerance(lib::color_t ct) { m_chromakeytolerance = ct; m_display_chromakeytolerance = ct;};
 #endif // WITH_SMIL30
 	void set_as_subregion(bool b) { m_is_subregion = b; }

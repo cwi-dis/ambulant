@@ -36,15 +36,9 @@ namespace gui {
 
 namespace gtk {
 
-// blending
-enum blend_flags { BLEND_INSIDE = 0,	// blend pixels inside chromakey color range
-		   BLEND_OUTSIDE = 1,	// blend pixels outside chromakey color range
-		   BLEND_COPY = 2	// copy all pixels not blended
-};
-
 void gdk_pixbuf_blend (GdkPixbuf* dst, const lib::rect dst_rc, 
 		       GdkPixbuf* src, const lib::rect src_rc,
-		       double opacity,  blend_flags flags,
+		       double opacity_in, double opacity_out,
 		       const lib::color_t chroma_low, 
 		       const lib::color_t chroma_high);
 

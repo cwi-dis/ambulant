@@ -24,6 +24,7 @@
 #include "ambulant/gui/gtk/gtk_includes.h"
 #include "ambulant/gui/gtk/gtk_image_renderer.h"
 #include "ambulant/gui/gtk/gtk_transition.h"
+#include "ambulant/gui/gtk/gtk_util.h"
 #include "ambulant/common/region_info.h"
 #include "ambulant/common/smil_alignment.h"
 
@@ -129,6 +130,21 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 #ifdef	WITH_SMIL30
 	lib::rect croprect = m_dest->get_crop_rect(srcsize);
 	dstrect = m_dest->get_fit_rect(croprect, srcsize, &srcrect, m_alignment);
+	double alpha_media = 1.0, alpha_media_bg = 1.0, alpha_chroma = 1.0;
+	lib::color_t chroma_low = lib::color_t(0x000000), chroma_high = lib::color_t(0xFFFFFF);
+	const common::region_info *ri = m_dest->get_info();
+	if (ri) {
+		alpha_media = ri->get_mediaopacity();
+//???		alpha_media_bg = ri->get_mediabgopacity();
+//???		m_bgopacity = ri->get_bgopacity();
+		if (ri->is_chromakey_specified()) {
+			alpha_chroma = ri->get_chromakeyopacity();
+			lib::color_t chromakey = ri->get_chromakey();
+			lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
+			compute_chroma_range(chromakey, chromakeytolerance,
+					     &chroma_low, &chroma_high);
+		} else alpha_chroma = alpha_media;
+	}
 #else //WITH_SMIL30
 	dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
 #endif//WITH_SMIL30
@@ -156,9 +172,22 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 		N_W = (int)roundf(width*fact_W),
 		N_H = (int)roundf(height*fact_H);
 	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): orig=(%d, %d) scalex=%f, scaley=%f  intermediate (L=%d,T=%d,W=%d,H=%d) dest=(%d,%d,%d,%d)",(void *)this,width,height,fact_W,fact_H,N_L,N_T,N_W,N_H,D_L,D_T,D_W,D_H);
-	GdkPixbuf* new_image = gdk_pixbuf_scale_simple(m_image, N_W, N_H, GDK_INTERP_BILINEAR);
-	gdk_draw_pixbuf(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, new_image, N_L, N_T, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);
-	g_object_unref(G_OBJECT (new_image));
+	GdkPixbuf* new_image_pixbuf = gdk_pixbuf_scale_simple(m_image, N_W, N_H, GDK_INTERP_BILINEAR);
+#ifdef	WITH_SMIL30
+	if (alpha_chroma != 1.0) {
+		GdkPixbuf* screen_pixbuf = gdk_pixbuf_get_from_drawable (NULL, agtkw->get_ambulant_pixmap(), NULL, D_L, D_T, 0, 0, D_W, D_H);
+		lib::rect rect0(lib::point(0,0),lib::size(D_W,D_H));
+		gdk_pixbuf_blend (screen_pixbuf, rect0, new_image_pixbuf, rect0, 
+				  alpha_chroma, alpha_media,
+				  chroma_low, chroma_high);
+		gdk_draw_pixbuf(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, screen_pixbuf, N_L, N_T, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);
+	} else {
+		gdk_draw_pixbuf(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, new_image_pixbuf, 0, 0, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);
+	}
+#else //WITH_SMIL30
+	gdk_draw_pixbuf(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, new_image_pixbuf, N_L, N_T, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);
+#endif//WITH_SMIL30
+	g_object_unref(G_OBJECT (new_image_pixbuf));
 	g_object_unref(G_OBJECT (gc));
 	m_lock.leave();
 }

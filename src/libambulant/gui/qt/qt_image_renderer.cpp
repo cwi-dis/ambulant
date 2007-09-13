@@ -118,7 +118,7 @@ qt_image_renderer::redraw_body(const rect &dirty,
 			lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
 			compute_chroma_range(chromakey, chromakeytolerance,
 					     &chroma_low, &chroma_high);
-		}
+		} else alpha_chroma = alpha_media;
 	}
 #else //WITH_SMIL30
 	dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);

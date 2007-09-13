@@ -430,7 +430,7 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 		lib::rect rc(lib::point(L,T),lib::size(W,H));
 		// blend the screen pixbuf with th background pixbuf
 		gdk_pixbuf_blend (screen_pixbuf, rc, bg_pixbuf, rc, 
-				  alpha_media_bg, BLEND_OUTSIDE,
+				  0, alpha_media_bg,
 				  m_transparent, m_transparent);
 
 		// draw m_layout containing smilText runs with text in
@@ -443,7 +443,7 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 		  			       	(NULL, text_pixmap, NULL,
 						0,0,0,0,W,H);
 		gdk_pixbuf_blend (screen_pixbuf, rc, text_pixbuf, rc, 
-				  alpha_media, BLEND_OUTSIDE,
+				  0, alpha_media,
 				  m_transparent, m_transparent);
 //		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen0");
 		// draw the blended pixbuf on the screen
