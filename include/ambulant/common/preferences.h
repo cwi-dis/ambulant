@@ -97,6 +97,9 @@ class AMBULANTAPI preferences {
 	/// Do we want to do dynamic content control (systemTests and customTests)?
 	bool m_dynamic_content_control;
 
+	/// Was the player in fullscreen mode when the last document was closed?
+	bool m_fullscreen;
+	
 	/// Return the preferences singleton object.
 	static preferences* get_preferences();
 

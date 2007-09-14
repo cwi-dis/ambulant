@@ -161,8 +161,11 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	// Go fullscreen if either the -fullScreen argument was given on the command
 	// line or the user defaults were edited manually.
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+#if 0
+	// Happens elsewhere now
 	if ( [defaults boolForKey: @"fullScreen"] )
 		[self goFullScreen: self];
+#endif
 }
 
 - (void)askForURL: (id)sender
@@ -220,6 +223,9 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	bool use_mms = ([[url pathExtension] compare: @".mms"] == 0);
 	embedder = new document_embedder(self);
 	myMainloop = new mainloop([url UTF8String], view, use_mms, embedder);
+	ambulant::common::preferences *prefs = ambulant::common::preferences::get_preferences();
+	if (prefs->m_fullscreen)
+		[self goFullScreen: self];
 	[self play: self];
 }
 
@@ -352,7 +358,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 {
 	[self stop: self];
 	if (saved_window) {
-		[self goWindowMode: self];
+		[self _goWindowMode];
 	}
 	play_button = nil;
 	stop_button = nil;
@@ -459,6 +465,14 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 - (IBAction)goWindowMode:(id)sender
 {
+	ambulant::common::preferences *prefs = ambulant::common::preferences::get_preferences();
+	prefs->m_fullscreen = false;
+	prefs->save_preferences();
+	[self _goWindowMode];
+}
+
+- (void)_goWindowMode
+{
 	if (!saved_window) {
 		NSLog(@"goWindowMode: already in window mode");
 		return;
@@ -527,6 +541,9 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 - (IBAction)goFullScreen:(id)sender
 {
+	ambulant::common::preferences *prefs = ambulant::common::preferences::get_preferences();
+	prefs->m_fullscreen = true;
+	prefs->save_preferences();
 	if (saved_window) {
 		NSLog(@"goFullScreen: already in fullscreen mode");
 		return;

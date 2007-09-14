@@ -61,6 +61,7 @@ mypreferences::load_preferences()
 	m_strict_url_parsing = [prefs boolForKey: @"strict_url_parsing"];
 	m_tabbed_links = [prefs boolForKey: @"tabbed_links"];
 	m_dynamic_content_control = [prefs boolForKey: @"dynamic_content_control"];
+	m_fullscreen = [prefs boolForKey: @"fullScreen"];
 	save_preferences();
 	return true;
 }
@@ -80,7 +81,7 @@ mypreferences::save_preferences()
 	[prefs setBool: m_prefer_ffmpeg forKey: @"prefer_ffmpeg"];
 	[prefs setBool: m_strict_url_parsing forKey: @"strict_url_parsing"];
 	[prefs setBool: m_tabbed_links forKey: @"tabbed_links"];
-	[prefs setBool: NO forKey: @"fullScreen"]; // Only allow setting this on the command line for now
+	[prefs setBool: m_fullscreen forKey: @"fullScreen"];
 	[prefs setBool: m_dynamic_content_control forKey: @"dynamic_content_control"];
 	ambulant::net::url::set_strict_url_parsing(m_strict_url_parsing);
 	return true;

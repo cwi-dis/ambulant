@@ -93,6 +93,7 @@ class document_embedder : public ambulant::common::embedder {
 - (void)keyDown: (NSEvent *)ev;
 - (void) setStatusLine: (NSString *)message;
 - (IBAction)goWindowMode:(id)sender;
+- (void)_goWindowMode;
 - (IBAction)goFullScreen:(id)sender;
 - (IBAction)toggleFullScreen:(id)sender;
 #ifdef WITH_OVERLAY_WINDOW
