@@ -182,8 +182,11 @@ smiltext_engine::_update() {
 			if (tag == "tev" || tag == "clear") {
 				const char *time_str = item->get_attribute("next");
 				if (!time_str) {
-					lib::logger::get_logger()->trace("smiltext: tev without next attribute ignored");
-					continue;
+					time_str = item->get_attribute("begin");
+					if (!time_str) {
+						lib::logger::get_logger()->trace("smiltext: tev without begin or next attribute ignored");
+						continue;
+					}
 				}
 				double time = atof(time_str); // XXXJACK
 				if (time_str[0] == '+')
