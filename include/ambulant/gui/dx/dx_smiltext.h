@@ -90,6 +90,7 @@ class dx_smiltext_renderer :
 	void _dx_smiltext_get_ddsurf(common::gui_window *window);
 	// instance variables
 	net::datasource_factory *m_df;
+	common::playable_notification* m_context;
 	smil2::smiltext_layout_engine m_layout_engine;
 	critical_section m_lock;
 	// Windows GDI data

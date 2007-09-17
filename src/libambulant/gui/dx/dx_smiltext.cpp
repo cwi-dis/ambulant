@@ -72,6 +72,7 @@ gui::dx::dx_smiltext_renderer::dx_smiltext_renderer(
 	common::factories* factory,
 	dx_playables_context *dxplayer)
 :   dx_renderer_playable(context, cookie, node, evp, dxplayer),
+	m_context(context),
 	m_size(0,0),
 	m_hdc(NULL),
 	m_viewport(NULL),
@@ -590,7 +591,10 @@ gui::dx::dx_smiltext_renderer::redraw(const lib::rect& dirty, common::gui_window
 	m_viewport->draw(m_region_dds, smiltext_rc, reg_rc, true, tr);
 
 	if (m_erase_never) m_dest->keep_as_background();
+	bool finished = m_layout_engine.is_finished();
 	m_lock.leave();
+	if (finished)
+		m_context->stopped(m_cookie);
 }
 
 void
