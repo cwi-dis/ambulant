@@ -256,6 +256,9 @@ class smiltext_layout_engine {
 	/// Stop the engine.
 	void stop();
 	
+	/// Returns true if all text has been received.
+	bool is_finished() { return m_finished; }
+
 	/// Redraw a rectangle.on screen 
 	void redraw(const lib::rect& r);
 
@@ -268,6 +271,7 @@ class smiltext_layout_engine {
 	void smiltext_render(const smil2::smiltext_run run, const lib::rect& r, const lib::point& p);
 
 	smiltext_engine m_engine;
+	bool m_finished;
 	lib::event_processor *m_event_processor;
 	lib::timer::time_type m_epoch;
 	smiltext_params m_params;			// global parameters

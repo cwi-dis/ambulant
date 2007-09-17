@@ -80,8 +80,8 @@ class gtk_smiltext_renderer :
 		unsigned int start_index, unsigned int end_index);
 
 	PangoAttrList* m_pango_attr_list;
-	PangoContext* m_context;
-	PangoLayout* m_layout;
+	PangoContext* m_pango_context;
+	PangoLayout* m_pango_layout;
 	PangoAttrList* m_bg_pango_attr_list;
 	PangoLayout* m_bg_layout;
 	const color_t m_transparent; // needed for blending

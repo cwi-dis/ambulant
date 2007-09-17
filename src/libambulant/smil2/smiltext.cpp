@@ -180,16 +180,18 @@ smiltext_engine::_update() {
 			// Element. Check what it is.
 			lib::xml_string tag = item->get_local_name();
 			if (tag == "tev" || tag == "clear") {
-				const char *time_str = item->get_attribute("next");
+				bool relative_time = false;
+				const char *time_str = item->get_attribute("begin");
 				if (!time_str) {
-					time_str = item->get_attribute("begin");
+					time_str = item->get_attribute("next");
 					if (!time_str) {
 						lib::logger::get_logger()->trace("smiltext: tev without begin or next attribute ignored");
 						continue;
 					}
+					relative_time = true;
 				}
 				double time = atof(time_str); // XXXJACK
-				if (time_str[0] == '+')
+				if (relative_time)
 					m_tree_time = m_tree_time + time;
 				else
 					m_tree_time = time;
@@ -400,6 +402,7 @@ smiltext_engine::_get_default_params(smiltext_params& params)
 // smiltext_layout_engine
 smiltext_layout_engine::smiltext_layout_engine(const lib::node *n, lib::event_processor *ep, smiltext_layout_provider* provider, smiltext_notification* client)
   :	m_engine(smiltext_engine(n, ep, client, true)),
+	m_finished(false),
 	m_event_processor(ep),
 	m_provider(provider),
 	m_params(m_engine.get_params()),
@@ -512,6 +515,7 @@ smiltext_layout_engine::redraw(const lib::rect& r) {
 		}
 	}
 	m_engine.done();
+	m_finished = m_engine.is_finished();
 }
 
 bool

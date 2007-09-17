@@ -343,6 +343,7 @@ gui::qt::qt_smiltext_renderer::user_event(const lib::point& pt, int what) {
 
 void
 gui::qt::qt_smiltext_renderer::redraw_body(const lib::rect& dirty, common::gui_window *window) {
+	m_lock.enter();
 	m_window = (ambulant_qt_window*) window;
 
 	lib::rect r = dirty;
@@ -352,6 +353,11 @@ gui::qt::qt_smiltext_renderer::redraw_body(const lib::rect& dirty, common::gui_w
 	r.translate(pt);
 		
 	m_layout_engine.redraw(r);
+	bool finished = m_layout_engine.is_finished();
+	m_lock.leave();
+	if (finished)
+		m_context->stopped(m_cookie);
+
 }
 #endif //WITH_SMIL30
 
