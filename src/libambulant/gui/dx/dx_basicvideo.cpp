@@ -125,7 +125,7 @@ void gui::dx::dx_basicvideo_renderer::start(double t) {
 }
 
 void gui::dx::dx_basicvideo_renderer::seek(double t) {
-	if (m_player) m_player->seek(t);
+	if (m_player) m_player->seek(t + (m_clip_begin / 1000000.0));
 	// ?? if(!m_update_event) schedule_update();
 	// ?? m_dest->need_redraw();
 }

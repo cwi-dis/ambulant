@@ -144,7 +144,7 @@ cocoa_video_renderer::cocoa_video_renderer(
 		lib::logger::get_logger()->error(gettext("%s: cannot open movie"), [[nsurl absoluteString] cString]);
 		return;
 	}
-	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer: cocoa_video_renderer(0x%x), m_movie=0x%x", this, m_movie);
+	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer: cocoa_video_renderer(0x%x), m_movie=0x%x url=%s clipbegin=%d", this, m_movie, m_url.get_url().c_str(), m_clip_begin);
 	
 #if 0
 	Movie mov = [m_movie quickTimeMovie];
@@ -224,11 +224,11 @@ cocoa_video_renderer::start(double where)
 		return;
 	}
 	m_lock.enter();
-	if (where) {
+	if (where > 0) {
 		Movie mov = [m_movie quickTimeMovie];
 		TimeValue movtime;
 		TimeScale movscale = GetMovieTimeScale(mov);
-		movtime = (TimeValue)(where*(double)movscale);
+		movtime = (TimeValue)((where+m_clip_begin/1000000.0)*movscale);
 		SetMovieTimeValue(mov, movtime);
 	}
 	m_paused = false;
@@ -298,7 +298,7 @@ cocoa_video_renderer::seek(double where)
 	Movie mov = [m_movie quickTimeMovie];
 	TimeValue movtime;
 	TimeScale movscale = GetMovieTimeScale(mov);
-	movtime = (TimeValue)(where*(double)movscale);
+	movtime = (TimeValue)((where+m_clip_begin/1000000.0)*(double)movscale);
 	SetMovieTimeValue(mov, movtime);
 
 	m_lock.leave();
