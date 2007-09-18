@@ -158,10 +158,10 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		}
 	}
 	[self validateButtons: self];
+#if 0
 	// Go fullscreen if either the -fullScreen argument was given on the command
 	// line or the user defaults were edited manually.
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-#if 0
 	// Happens elsewhere now
 	if ( [defaults boolForKey: @"fullScreen"] )
 		[self goFullScreen: self];
@@ -223,10 +223,16 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	bool use_mms = ([[url pathExtension] compare: @".mms"] == 0);
 	embedder = new document_embedder(self);
 	myMainloop = new mainloop([url UTF8String], view, use_mms, embedder);
+	[self play: self];
+}
+
+- (void)showWindows
+{
+	[super showWindows];
 	ambulant::common::preferences *prefs = ambulant::common::preferences::get_preferences();
 	if (prefs->m_fullscreen)
 		[self goFullScreen: self];
-	[self play: self];
+
 }
 
 - (NSData *)dataRepresentationOfType:(NSString *)aType
@@ -553,7 +559,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	if (screen == NULL) screen = [NSScreen mainScreen]; 
     NSDictionary* screenInfo = [screen deviceDescription]; 
     NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
-	AM_DBG NSLog(@"goFullScreen: screenID = %@", screenID);
+	/*AM_DBG*/ NSLog(@"0x%x.goFullScreen: view=%@ window=%@ screenID = %@", (void*)self, view, [view window], screenID);
  
     // Capture the screen.
     CGDirectDisplayID displayID = (CGDirectDisplayID)[screenID longValue]; 

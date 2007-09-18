@@ -96,6 +96,7 @@ class document_embedder : public ambulant::common::embedder {
 - (void)_goWindowMode;
 - (IBAction)goFullScreen:(id)sender;
 - (IBAction)toggleFullScreen:(id)sender;
+- (void)showWindows;
 #ifdef WITH_OVERLAY_WINDOW
 - (BOOL)openAuxDocument: (NSURL *)auxUrl;
 - (void)closeAuxDocument;
