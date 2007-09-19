@@ -251,8 +251,8 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 		tx_paint.setBrush(qt_bg_color);
 		tx_paint.setPen(Qt::NoPen);
 		tx_paint.drawRect(L,T,W,H);
-		tx_paint.setPen(qt_color);
 	}
+	tx_paint.setPen(qt_color);
 	if (m_blending)
 		tx_paint.drawText(word_spacing,0,W-word_spacing,H,
 				  Qt::AlignAuto, strun.m_data);
