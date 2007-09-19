@@ -111,6 +111,14 @@ gtk_smiltext_renderer::stop()
 }
 
 void
+gtk_smiltext_renderer::marker_seen(const char *name)
+{
+	m_lock.enter();
+	m_context->marker_seen(m_cookie, name);
+	m_lock.leave();
+}
+
+void
 gtk_smiltext_renderer::smiltext_changed()
 {
 	AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x)",this);

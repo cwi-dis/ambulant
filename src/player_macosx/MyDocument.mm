@@ -559,7 +559,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	if (screen == NULL) screen = [NSScreen mainScreen]; 
     NSDictionary* screenInfo = [screen deviceDescription]; 
     NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
-	/*AM_DBG*/ NSLog(@"0x%x.goFullScreen: view=%@ window=%@ screenID = %@", (void*)self, view, [view window], screenID);
+	AM_DBG NSLog(@"0x%x.goFullScreen: view=%@ window=%@ screenID = %@", (void*)self, view, [view window], screenID);
  
     // Capture the screen.
     CGDirectDisplayID displayID = (CGDirectDisplayID)[screenID longValue]; 

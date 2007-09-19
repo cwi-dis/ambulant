@@ -137,6 +137,14 @@ gui::dx::dx_smiltext_renderer::stop() {
 }
 
 void
+gui::dx::dx_smiltext_renderer::marker_seen(const char *name)
+{
+	m_lock.enter();
+	m_context->marker_seen(m_cookie, name);
+	m_lock.leave();
+}
+
+void
 gui::dx::dx_smiltext_renderer::smiltext_changed() {
 	m_dest->need_redraw();
 }

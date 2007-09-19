@@ -59,6 +59,7 @@ class gtk_smiltext_renderer :
 	void stop();
 	// Callback from the engine
 	void smiltext_changed();
+	void marker_seen(const char *name);
   private:
 	void _gtk_smiltext_render(const lib::rect r, const lib::point offset, ambulant_gtk_window* window);
 //JUNK	ambulant_gtk_window* m_gtk_window;

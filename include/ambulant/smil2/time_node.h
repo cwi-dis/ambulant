@@ -153,6 +153,7 @@ class time_node : public schedulable {
 	virtual void raise_focusin_event(qtime_type timestamp);
 	virtual void raise_focusout_event(qtime_type timestamp);
 	virtual void raise_accesskey(std::pair<qtime_type, int> accesskey);
+	virtual void raise_marker_event(std::pair<qtime_type, std::string> args);
 #ifdef WITH_SMIL30
 	virtual void raise_state_change(std::pair<qtime_type, std::string> statearg);
 #endif

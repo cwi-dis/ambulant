@@ -58,8 +58,9 @@ class cocoa_smiltext_renderer :
 	void start(double t);
 	void seek(double t);
 	void stop();
-	// Callback from the engine
+	// Callbacks from the engine
 	void smiltext_changed();
+	void marker_seen(const char *name);
   private:
     NSTextStorage *m_text_storage;
 	NSLayoutManager *m_layout_manager;

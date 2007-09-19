@@ -113,6 +113,7 @@ class smil_player : public common::player, /* public common::player_feedback,*/ 
 	virtual void stalled(int n, double t);
 	virtual void unstalled(int n, double t);
 	virtual void transitioned(int n, double t);
+	virtual void marker_seen(cookie_type n, const char *name, double t);
 	
 	//////////////////////
 	// Time node context: Playable queries

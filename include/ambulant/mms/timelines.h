@@ -449,9 +449,10 @@ class active_timeline : public common::playable_notification, public lib::ref_co
 	void stopped(int n, double t);
 	void clicked(int n, double t);
 	void pointed(int n, double t) {}
-	virtual void stalled(int n, double t = 0) {}
-	virtual void unstalled(int n, double t = 0) {}
-	virtual void transitioned(int n, double t = 0) {}
+	void stalled(int n, double t = 0) {}
+	void unstalled(int n, double t = 0) {}
+	void transitioned(int n, double t = 0) {}
+	void marker_seen(cookie_type n, const char *name, double t = 0) {};
 	
   protected:
   	// These are protected because they are only meant for use

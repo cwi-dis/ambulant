@@ -1783,6 +1783,19 @@ void time_node::raise_accesskey(std::pair<qtime_type, int> accesskey) {
 	on_add_instance(timestamp, accesskey_event, timestamp.second, ch);
 }
 
+void time_node::raise_marker_event(std::pair<qtime_type, std::string> arg) {
+	qtime_type timestamp = arg.first;
+	std::string& name = arg.second;
+	timestamp.to_descendent(sync_node());
+	AM_DBG m_logger->debug("%s[%s].raise_marker_event(%s) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+		m_attrs.get_id().c_str(), 
+		name.c_str(),
+		timestamp.as_time_value_down_to(this),
+		timestamp.second(), 
+		timestamp.as_doc_time_value());
+	on_add_instance(timestamp, tn_marker_event, timestamp.second, name);
+}
+
 #ifdef WITH_SMIL30
 void time_node::raise_state_change(std::pair<qtime_type, std::string> statearg) {
 	qtime_type timestamp = statearg.first;

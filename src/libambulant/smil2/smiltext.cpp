@@ -202,6 +202,15 @@ smiltext_engine::_update() {
 					break;
 				}
 				// else this time has already passed and we continue the loop
+				//
+				// If the node has an ID we raise a marker event. In the SMIL code this
+				// is actually specified as a beginEvent but there's magic in the parsing
+				// of the begin attribute to translate this to a marker event on the smiltext
+				// node in case the beginEvent references a tev/clear.
+				const char *id = item->get_attribute("id");
+				if (id) {
+					m_client->marker_seen(id);
+				}
 				if (tag == "clear") {
 					m_runs.clear();
 					m_newbegin = m_runs.end();

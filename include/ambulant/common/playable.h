@@ -205,6 +205,9 @@ class playable_notification {
 
 	/// Playable corresponding to cookie n has finished a transition. 
 	virtual void transitioned(cookie_type n, double t = 0) = 0;
+
+	/// Playable corresponding to cookie n has seen a marker. 
+	virtual void marker_seen(cookie_type n, const char *name, double t = 0) = 0;
 };
 
 /// Factory for playable objects.

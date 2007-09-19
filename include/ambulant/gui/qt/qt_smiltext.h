@@ -60,6 +60,7 @@ class qt_smiltext_renderer :
 	void seek(double t) {}
 	// Callback from the engine
 	void smiltext_changed();
+	void marker_seen(const char *name);
 	void user_event(const lib::point& pt, int what);
 	void redraw_body(const lib::rect &dirty, common::gui_window *window);
 

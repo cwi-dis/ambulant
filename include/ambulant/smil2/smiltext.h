@@ -128,6 +128,9 @@ class smiltext_notification {
 	
 	/// Called whenever something has changed.
 	virtual void smiltext_changed() = 0;
+	
+	/// Called whenever a "marker" (tev/clear with id attribute) has been seen
+	virtual void marker_seen(const char *name) = 0;
 };
 
 /// Engine to process smiltext.
@@ -199,7 +202,7 @@ class smiltext_engine {
 	bool m_newbegin_valid;				// True if m_newbegin is valid.
 	lib::event *m_update_event;			// event_processor callback to _update
 	lib::timer::time_type m_epoch;		// event_processor time corresponding to smiltext time=0
-	double m_tree_time;					// smiltext time for m_tree_iterator
+	double m_tree_time;					// smiltext time for m_tree_iterator. XXXJACK: unused and unneeded?
 	smiltext_params m_params;			// global parameters
 };
 

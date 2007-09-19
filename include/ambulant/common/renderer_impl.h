@@ -213,15 +213,16 @@ class global_playable_factory_impl : public global_playable_factory {
 
 /// Convience class: a playable_notification that does nothing.
 class empty_playable_notification : public playable_notification {
-	public:
+  public:
 	// Playables nodifications 
-	  void started(cookie_type n, double t = 0)  {};
-	  void stopped(cookie_type n, double t = 0)  {};
-	  void stalled(cookie_type n, double t = 0)  {} ;
-	  void unstalled(cookie_type n, double t = 0) {};
-	  void clicked(cookie_type n, double t = 0)  {};
-	  void pointed(cookie_type n, double t = 0)  {}; // mouse over
-	  void transitioned(cookie_type n, double t = 0) {};
+	void started(cookie_type n, double t = 0)  {};
+	void stopped(cookie_type n, double t = 0)  {};
+	void stalled(cookie_type n, double t = 0)  {} ;
+	void unstalled(cookie_type n, double t = 0) {};
+	void clicked(cookie_type n, double t = 0)  {};
+	void pointed(cookie_type n, double t = 0)  {}; // mouse over
+	void transitioned(cookie_type n, double t = 0) {};
+	void marker_seen(cookie_type n, const char *name, double t = 0) {};
 };
 
 /// Convenience class for background renderers.

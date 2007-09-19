@@ -332,9 +332,38 @@ void timegraph::add_begin_sync_rules(time_node *tn) {
 	for(it = list.begin(); it!= list.end(); it++) {
 		const sync_value_struct& svs = *it;
 		if(svs.type == sv_event) {
-			time_node *base = svs.base.empty()?tn:get_node_with_id(svs.base, tn);
-			if(!base) continue;
 			sync_event event = sync_event_from_str(svs.event);
+			time_node *base = svs.base.empty()?tn:get_node_with_id(svs.base, tn);
+			if(!base) {
+#ifdef WITH_SMIL30
+				// Special case code for beginEvent on interior smiltext nodes:
+				// these are implemented as marker events (because interior smiltext
+				// nodes have no corresponding time_node).
+				if (event == tn_begin_event) {
+					// Get the node referenced by base
+					const lib::node *n = tn->dom_node();
+					assert(n);
+					const lib::node_context *ctx = n->get_context();
+					assert(ctx);
+					const lib::node *dom_base = ctx->get_node(svs.base);
+					// Find its smiltext ancestor
+					while (dom_base && dom_base->get_local_name() != "smilText")
+						dom_base = dom_base->up();
+					// Create the marker event
+					if (!dom_base) {
+						m_logger->trace("%s: not a time node, not a smiltext node", svs.base.c_str());
+						continue;
+					}
+					AM_DBG m_logger->debug("Add tn_marker_event rule, domnode=%s, id=%s", dom_base->get_sig().c_str(), svs.base.c_str());
+					assert(m_dom2tn);
+					base = (*m_dom2tn)[dom_base->get_numid()];
+					sync_rule *sr = new event_rule(base, tn_marker_event, svs.offset, svs.base);
+					tn->add_begin_rule(sr);
+					continue;
+				}
+#endif
+				continue;
+			}
 			if(event == tn_activate_event)
 				base->set_want_activate_event(true);
 			else if (event == tn_focusin_event)

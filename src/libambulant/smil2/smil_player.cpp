@@ -670,6 +670,23 @@ void smil_player::transitioned(int n, double t) {
 	}
 }
 
+// Playable notification for a transition stop event.
+void smil_player::marker_seen(int n, const char *name, double t) {
+	AM_DBG m_logger->debug("smil_player::marker_seen(%d, \"%s\", %f)", n, name, t);
+	typedef std::pair<q_smil_time, std::string> marker_seen_arg;
+	typedef lib::scalar_arg_callback_event<time_node, marker_seen_arg> marker_seen_event_cb;
+	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
+	if(it != m_dom2tn->end()) {
+		time_node::value_type root_time = m_root->get_simple_time();
+		m_scheduler->update_horizon(root_time);
+		q_smil_time timestamp(m_root, root_time);
+		marker_seen_arg arg(timestamp, name);
+		marker_seen_event_cb *cb = new marker_seen_event_cb((*it).second, 
+			&time_node::raise_marker_event, arg); // xyzzy
+		schedule_event(cb, 0, ep_high);
+	}
+}
+
 // Playable notification for a stall event.
 void smil_player::stalled(int n, double t) {
 	AM_DBG m_logger->debug("smil_player::stalled(%d, %f)", n, t);

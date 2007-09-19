@@ -611,6 +611,7 @@ class bgimage_loader : public lib::ref_counted_obj, public common::playable_noti
 	void clicked(cookie_type n, double t = 0) {};
 	void pointed(cookie_type n, double t = 0) {};
 	void transitioned(cookie_type n, double t = 0) {};
+	void marker_seen(cookie_type n, const char *name, double t = 0) {};
   private:
 	const lib::node *m_layout_root;
 	common::factories *m_factories;
