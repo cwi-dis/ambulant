@@ -1553,7 +1553,6 @@ void time_node::on_add_instance(qtime_type timestamp, smil2::sync_event ev,
 	}
 }
 
-#ifdef WITH_SMIL30
 // XXXJACK I *know* this can be done with templates, but how: this method is
 // 100% identical to the previous one.
 // Update dependents for an event instance
@@ -1626,7 +1625,6 @@ void time_node::on_add_instance(qtime_type timestamp, smil2::sync_event ev,
 		}
 	}
 }
-#endif // WITH_SMIL30
 
 ////////////////////
 // Raising events: 
