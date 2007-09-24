@@ -239,7 +239,7 @@ void active_state::enter(qtime_type timestamp) {
 	// If we do dynamic processing of content control: see whether we
 	// need to skip this node.
 	const bool skip = common::preferences::get_preferences()->m_dynamic_content_control;
-	if (skip) {
+	if (skip && !m_self->m_in_hyperjump_path) {
 		test_attrs ta(m_self->dom_node());
 		if (!ta.selected()) {
 			m_self->set_state(ts_postactive, timestamp, m_self);

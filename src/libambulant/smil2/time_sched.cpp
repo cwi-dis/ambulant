@@ -116,6 +116,8 @@ void scheduler::goto_next(time_node *tn) {
 	std::list<time_node*> tnpath;
 	tn->get_path(tnpath);
 	std::list<time_node*>::iterator it, cit;
+	for(it = tnpath.begin(); it != tnpath.end();it++)
+		(*it)->set_hyperjump_mode(true);
 	for(it = tnpath.begin(); it != tnpath.end();it++) {
 		time_node *parent = *it; cit = it;
 		time_node *child = *++cit;
@@ -127,6 +129,8 @@ void scheduler::goto_next(time_node *tn) {
 		else activate_media_child(parent, child);
 		if(child == tnpath.back()) break;
 	}
+	for(it = tnpath.begin(); it != tnpath.end();it++)
+		(*it)->set_hyperjump_mode(false);
 	AM_DBG lib::logger::get_logger()->debug("goto_next: synchronize media to node clocks, time=%d", m_timer->elapsed());
 	sync_playable_clocks(m_root, tn);
 	AM_DBG lib::logger::get_logger()->debug("goto_next: finished, time=%d", m_timer->elapsed());

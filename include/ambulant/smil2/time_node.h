@@ -383,6 +383,9 @@ class time_node : public schedulable {
 	
 	// fast forward mode
 	void set_ffwd_mode(bool b);
+
+	// Hyperjump-specific handling
+	void set_hyperjump_mode(bool b) { m_in_hyperjump_path = b; }
 	
 	// synchronise playable clock to time_node
 	void sync_playable_clock();
@@ -493,6 +496,9 @@ class time_node : public schedulable {
 	
 	// Fast forward mode flag
 	bool m_ffwd_mode;
+
+	// Flag that signals this node is part of the path to the node we're hyperjumping to.
+	bool m_in_hyperjump_path;
 	
 	// Sync update event
 	std::pair<bool, qtime_type> m_update_event;
