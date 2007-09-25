@@ -103,8 +103,9 @@ xerces_sax_parser::xerces_sax_parser(sax_content_handler*content_handler,
 
 xerces_sax_parser::~xerces_sax_parser() {
 	AM_DBG m_logger->debug("xerces_sax_parser::~xerces_sax_parser()");
-	XMLPlatformUtils::Terminate();
 	free (m_buf);
+	delete m_saxparser;
+	XMLPlatformUtils::Terminate();
 }
 
 bool
@@ -167,6 +168,7 @@ xerces_sax_parser::startElement(const XMLCh* const name,
 	to_qattrs(attrs, qattrs);
 	m_content_handler->start_element(qname, qattrs);
 	XMLString::release(&cname);
+	// XXXJACK release attrs?
 }
 
 void
