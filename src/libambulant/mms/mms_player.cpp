@@ -44,7 +44,7 @@ common::create_mms_player(lib::document *doc, common::factories* factory)
 mms_player::mms_player(lib::document *doc, common::factories* factory)
 :	m_doc(doc),
 	m_tree(doc->get_root()),
-	m_timer(new lib::timer_control_impl(lib::realtime_timer_factory(), 0.0)),
+	m_timer(new lib::timer_control_impl(lib::realtime_timer_factory(), 0.0, true, true)),
 	m_event_processor(lib::event_processor_factory(m_timer)),
 	m_factory(factory)
 {

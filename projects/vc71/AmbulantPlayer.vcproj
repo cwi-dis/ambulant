@@ -38,7 +38,7 @@
 				AdditionalDependencies="libjpeg.lib libexpat.lib libpng.lib zlib.lib xerces-c_2.lib"
 				OutputFile="../../bin/win32/$(ProjectName).exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\lib\win32"
+				AdditionalLibraryDirectories="..\..\lib\win32;C:\Program Files\Visual Leak Detector\lib"
 				IgnoreAllDefaultLibraries="FALSE"
 				IgnoreDefaultLibraryNames="LIBCD.lib;LIBC.lib;msvcrt.lib;libcmt.lib"
 				GenerateDebugInformation="TRUE"

@@ -75,7 +75,7 @@ int gui::dg::dg_gui_region::s_counter = 0;
 
 gui::dg::dg_player::dg_player(dg_player_callbacks &hoster, common::player_feedback *feedback, const net::url& u) 
 :	m_hoster(hoster),
-	m_timer(new timer_control_impl(realtime_timer_factory(), 1.0, false)),
+	m_timer(new timer_control_impl(realtime_timer_factory(), 1.0, false, true)),
 	m_worker_processor(0),
 	m_update_event(0),	
 	m_logger(lib::logger::get_logger())

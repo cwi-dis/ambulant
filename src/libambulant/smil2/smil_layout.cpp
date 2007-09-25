@@ -5,7 +5,6 @@
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation; either version 2.1 of the License, or
 // (at your option) any later version.
 //
 // Ambulant Player is distributed in the hope that it will be useful,
@@ -85,6 +84,7 @@ smil_layout_manager::~smil_layout_manager()
 		delete (*i);
 	// XXX Delete m_layout_tree tree
 	delete m_layout_tree;
+	delete m_surface_factory;
 }
 
 lib::node *
@@ -640,7 +640,7 @@ smil_layout_manager::load_bgimages(common::factories *factories)
 bgimage_loader::bgimage_loader(const lib::node *layout_root, common::factories *factories)
 :	m_layout_root(layout_root),
 	m_factories(factories),
-	m_timer(new lib::timer_control_impl(lib::realtime_timer_factory(), 1.0, false)),
+	m_timer(new lib::timer_control_impl(lib::realtime_timer_factory(), 1.0, false, true)),
 	m_event_processor(NULL)
 {
 	m_event_processor = event_processor_factory(m_timer);

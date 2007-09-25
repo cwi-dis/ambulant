@@ -141,7 +141,7 @@ class timer_control_impl : public timer_control, public timer_events {
 	/// Pass the parent timer, 
 	/// the relative speed and
 	/// initial run/pause status. 
-	timer_control_impl(timer *parent, double speed = 1.0, bool run = true);
+	timer_control_impl(timer *parent, double speed = 1.0, bool run = true, bool owned = false);
 	
 	~timer_control_impl();
 	
@@ -214,6 +214,7 @@ class timer_control_impl : public timer_control, public timer_events {
 	time_type apply_speed_manip(time_type dt) const;
 	
 	timer *m_parent;
+	bool m_parent_owned;
 	time_type m_parent_epoch;
 	time_type m_local_epoch;
 	double m_speed;

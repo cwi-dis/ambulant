@@ -267,6 +267,10 @@ global_playable_factory_impl::~global_playable_factory_impl()
 {
     // XXXX Should I delete the factories in m_factories? I think
     // so, but I'm not sure...
+    std::vector<playable_factory*>::iterator i;
+    for(i=m_factories.begin(); i != m_factories.end(); i++)
+		delete (*i);
+	m_factories.clear();
     delete m_default_factory;
 }
     

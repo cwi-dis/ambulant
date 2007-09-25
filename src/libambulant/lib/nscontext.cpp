@@ -167,6 +167,13 @@ nscontext::init_supported_namespaces() {
 }
 
 void
+nscontext::cleanup()
+{
+	delete s_supported_namespaces;
+	s_supported_namespaces = NULL;
+}
+
+void
 nscontext::add_supported_namespace(const char *uri) {
     xml_string ns(uri);
     s_supported_namespaces->insert(ns);

@@ -37,7 +37,9 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/transition_info.h"
 
-//#include "ambulant/common/plugin_engine.h"
+#include "vld.h" // Enable to use Visual Leak Detector... uhm... leak detection?
+
+#include "ambulant/common/plugin_engine.h"
 
 #include "ambulant/smil2/transition.h"
 
@@ -147,11 +149,25 @@ gui::dx::dx_player::~dx_player() {
 		delete pf;
 		stop();
 		delete m_player;
+		delete m_doc;
 	}
+	delete m_doc;
 	m_player = NULL;
 	assert(m_windows.empty());
 	if(dx_gui_region::s_counter != 0) 
 		m_logger->warn("Undeleted gui regions: %d", dx_gui_region::s_counter);
+}
+
+void
+gui::dx::dx_player::cleanup()
+{
+	lib::nscontext::cleanup();
+	common::global_playable_factory *pf = common::get_global_playable_factory();
+	delete pf;
+	common::plugin_engine *plf = common::plugin_engine::get_plugin_engine();
+	delete plf;
+	lib::global_parser_factory *prf = lib::global_parser_factory::get_parser_factory();
+	delete prf;
 }
 
 void

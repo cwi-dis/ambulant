@@ -67,7 +67,7 @@ smil_player::smil_player(lib::document *doc, common::factories *factory, common:
 	m_root(0),
 	m_dom2tn(0),
 	m_layout_manager(0),
-	m_timer(new timer_control_impl(realtime_timer_factory(), 1.0, false)),
+	m_timer(new timer_control_impl(realtime_timer_factory(), 1.0, false, true)),
 	m_event_processor(0),
 	m_scheduler(0),
 	m_state(common::ps_idle),

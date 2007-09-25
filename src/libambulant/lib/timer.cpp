@@ -40,8 +40,10 @@ using namespace ambulant;
 
 static long infinite = std::numeric_limits<long>::max();
 
-lib::timer_control_impl::timer_control_impl(lib::timer* parent, double speed /* = 1.0 */, bool run /* = true */)
+lib::timer_control_impl::timer_control_impl(lib::timer* parent, double speed /* = 1.0 */, 
+	bool run /* = true */, bool owned /* = false */)
 :   m_parent(parent),
+	m_parent_owned(owned),
 	m_parent_epoch(parent->elapsed()),
 	m_local_epoch(0),
 	m_speed(speed),
@@ -57,6 +59,7 @@ lib::timer_control_impl::~timer_control_impl()
 	// This class does not own event listeners.
 	// Therefore, deleting the container is enough
 	delete m_listeners;
+	if (m_parent_owned) delete m_parent; // Is this correct?
 	AM_DBG lib::logger::get_logger()->debug("~lib::timer_control_impl()");
 }
 

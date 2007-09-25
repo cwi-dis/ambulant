@@ -161,6 +161,7 @@ png_decoder<DataSource, ColorType>::decode() {
 	AM_DBG m_logger->debug("PNG: row_bytes = %d, channels=%d", row_bytes, channels);
 	if(channels	!= 3) {
 		m_logger->warn("PNG: Seen: %d channels. Supported: 3 channels", channels);
+		png_destroy_info_struct(png_ptr, &info_ptr);
 		png_destroy_read_struct(&png_ptr, NULL, NULL);
 		return 0; // failed
 	}
@@ -171,6 +172,8 @@ png_decoder<DataSource, ColorType>::decode() {
 	HBITMAP bmp = CreateDIBSection(NULL, pbmpi, DIB_RGB_COLORS, (void**)&pBits, NULL, 0);
 	if(bmp==NULL || pBits==NULL) {
 		m_logger->error("CreateDIBSection() failed");
+		png_destroy_info_struct(png_ptr, &info_ptr);
+		png_destroy_read_struct(&png_ptr, NULL, NULL);
 		return 0; // failed
 	}
 	surface<ColorType> *psurf = 
@@ -182,6 +185,7 @@ png_decoder<DataSource, ColorType>::decode() {
 	png_read_image(png_ptr, row_ptrs);	
 	png_read_end(png_ptr, NULL);
 	delete[] row_ptrs;
+	png_destroy_info_struct(png_ptr, &info_ptr);
     png_destroy_read_struct(&png_ptr, NULL, NULL);
 	
 	// reverse channels inline

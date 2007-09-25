@@ -71,6 +71,9 @@ class nscontext {
 	
 	/// Add all the standard supported namespaces
 	static void init_supported_namespaces();
+
+	/// Cleanup any data from init_supported_namespaces
+	static AMBULANTAPI void cleanup();
 	
 	/// Convenience function version of get_namespace_prefix method.
 	static const xml_string& 

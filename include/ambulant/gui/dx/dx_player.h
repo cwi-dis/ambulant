@@ -122,6 +122,9 @@ class AMBULANTAPI dx_player :
 	  dx_player(dx_player_callbacks &hoster, common::player_feedback *feedback, const net::url& u);
 	~dx_player();
 	
+	/// Call on application termination
+	static void cleanup();
+
 	////////////////////
 	// common::gui_player implementation
 	void init_playable_factory();

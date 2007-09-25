@@ -256,6 +256,7 @@ MmView::MmView()
 MmView::~MmView()
 {
 	topView = NULL;
+	gui::dx::dx_player::cleanup();
 }
 
 BOOL MmView::PreCreateWindow(CREATESTRUCT& cs)
