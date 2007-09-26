@@ -20,7 +20,11 @@
  */
 
 /* 
+<<<<<<< dx_viewport.h
  * @$Id$ 
+=======
+ * @$Id$ 
+>>>>>>> 1.38.2.1
  */
 
 #ifndef AMBULANT_GUI_DX_VIEWPORT_H
@@ -62,7 +66,7 @@ const lib::color_t CLR_DEFAULT		= RGB(255, 255, 255);
 // almost white is used as alternative color for white
 const lib::color_t CLR_ALTERNATIVE	= RGB(255, 255, 254);
 
-class viewport {
+class AMBULANTAPI viewport {
   public:
 	viewport(int width = common::default_layout_width, 
 		int height = common::default_layout_height, HWND hwnd = NULL);

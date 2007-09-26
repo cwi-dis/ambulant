@@ -156,7 +156,7 @@
 			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="2"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"

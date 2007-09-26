@@ -28,13 +28,22 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/lib/event_processor.h"
+#ifdef AMBULANT_PLATFORM_UNIX
 #include "ambulant/lib/unix/unix_thread.h"
+#define BASE_THREAD lib::unix::thread
+#endif
+#ifdef AMBULANT_PLATFORM_WIN32
+#include "ambulant/lib/win32/win32_thread.h"
+#define BASE_THREAD lib::win32::thread
+#endif
 #include "ambulant/net/databuffer.h"
 #include "ambulant/net/datasource.h"
 
+extern "C" {
 #include "avformat.h"
 #include "avio.h"
 #include "common.h"
+}
 
 // temporary debug messages
 #include <iostream>
@@ -47,7 +56,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <unistd.h>
+// XXXJACK#include <unistd.h>
 
 namespace ambulant
 {
@@ -73,7 +82,7 @@ class rawdatasink {
 	virtual void pushdata(int size) = 0;
 };
 	
-class ffmpeg_rawreader : public lib::unix::thread, public lib::ref_counted_obj {
+class ffmpeg_rawreader : public BASE_THREAD, public lib::ref_counted_obj {
   public:
 	ffmpeg_rawreader(URLContext *con);
 	~ffmpeg_rawreader();

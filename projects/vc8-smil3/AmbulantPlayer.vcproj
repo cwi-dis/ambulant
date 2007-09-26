@@ -200,7 +200,7 @@
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="2"
-			CharacterSet="2"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -941,7 +941,7 @@
 	<Globals>
 		<Global
 			Name="RESOURCE_FILE"
-			Value="AmbulantPlayer.rc"
+			Value="\ufs\jack\src\ambulant\src\player_mfc\AmbulantPlayer.rc"
 		/>
 	</Globals>
 </VisualStudioProject>

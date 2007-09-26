@@ -42,7 +42,7 @@
 				ExecutionBucket="7"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\expat\lib;..\..\third_party_packages\jpeg;..\..\third_party_packages\lpng128;..\..\third_party_packages\zlib;..\..\third_party_packages\mp3lib;&quot;..\..\third_party_packages\xerces-c-src_2_7_0\src\&quot;;&quot;..\..\..\xerces-c-src\src&quot;"
-				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;_LIB;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;_AMBULANT;WITH_EXPAT;XML_STATIC;WITH_SMIL30"
+				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;_LIB;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;_AMBULANT;WITH_EXPAT;XML_STATIC;WITH_SMIL30;WITH_SMALL_BUFFERS"
 				MinimalRebuild="true"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
@@ -117,7 +117,7 @@
 				ExecutionBucket="7"
 				Optimization="2"
 				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\xerces-c-src_2_7_0\src\&quot;;..\..\include;..\..\third_party_packages\expat\lib;..\..\third_party_packages\jpeg;..\..\third_party_packages\lpng128;..\..\third_party_packages\zlib;..\..\third_party_packages\mp3lib"
-				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;_LIB;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;_AMBULANT;WITH_EXPAT;XML_STATIC;WITH_SMIL30"
+				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;_LIB;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;_AMBULANT;WITH_EXPAT;XML_STATIC;WITH_SMIL30;WITH_SMALL_BUFFERS"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -192,7 +192,7 @@
 				ExecutionBucket="7"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\expat\lib;..\..\third_party_packages\jpeg;..\..\third_party_packages\lpng128;..\..\third_party_packages\zlib;..\..\third_party_packages\mp3lib;&quot;..\..\third_party_packages\xerces-c-src_2_7_0\src\&quot;;&quot;..\..\..\xerces-c-src\src&quot;"
-				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;_LIB;AMBULANT_BUILD_DLL;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;_AMBULANT;WITH_WINDOWS_PLUGINS;WITH_EXPAT;XML_STATIC;WITH_SMIL30"
+				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;_LIB;AMBULANT_BUILD_DLL;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;_AMBULANT;WITH_WINDOWS_PLUGINS;WITH_EXPAT;XML_STATIC;WITH_SMIL30;WITH_SMALL_BUFFERS"
 				MinimalRebuild="true"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
@@ -218,7 +218,7 @@
 				OutputFile="..\..\bin\wince\libambulant_shwince_D.dll"
 				AdditionalLibraryDirectories="..\..\lib\wince-arm"
 				GenerateDebugInformation="true"
-				ImportLibrary="..\..\lib\wince\libambulant_shwince_D.lib"
+				ImportLibrary="..\..\lib\wince-arm\libambulant_shwince_D.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -272,7 +272,7 @@
 				ExecutionBucket="7"
 				Optimization="3"
 				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\expat\lib;..\..\third_party_packages\jpeg;..\..\third_party_packages\lpng128;..\..\third_party_packages\zlib;..\..\third_party_packages\mp3lib;&quot;..\..\third_party_packages\xerces-c-src_2_7_0\src\&quot;;&quot;..\..\..\xerces-c-src\src&quot;"
-				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;_LIB;AMBULANT_BUILD_DLL;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;_AMBULANT;WITH_WINDOWS_PLUGINS;WITH_EXPAT;XML_STATIC;WITH_SMIL30"
+				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;_LIB;AMBULANT_BUILD_DLL;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;_AMBULANT;WITH_WINDOWS_PLUGINS;WITH_EXPAT;XML_STATIC;WITH_SMIL30;WITH_SMALL_BUFFERS"
 				MinimalRebuild="false"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -298,7 +298,7 @@
 				OutputFile="..\..\bin\wince\libambulant_shwince.dll"
 				AdditionalLibraryDirectories="..\..\lib\wince-arm"
 				GenerateDebugInformation="false"
-				ImportLibrary="..\..\lib\wince\libambulant_shwince.lib"
+				ImportLibrary="..\..\lib\wince-arm\libambulant_shwince.lib"
 				TargetMachine="0"
 			/>
 			<Tool

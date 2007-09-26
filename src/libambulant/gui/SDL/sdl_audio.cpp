@@ -17,14 +17,15 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
 
+#include "ambulant/config/config.h"
 #undef HAVE_ICONV
 #include "ambulant/gui/SDL/sdl_audio.h"
-#include "ambulant/net/posix_datasource.h"
+#include "ambulant/net/datasource.h"
+#include "ambulant/net/url.h"
 #include "ambulant/common/region_info.h"
 
 #include <stdlib.h>
@@ -235,9 +236,9 @@ gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
 	
 	m_audio_src = factory->get_datasource_factory()->new_audio_datasource(url, supported, m_clip_begin, m_clip_end);
 	if (!m_audio_src)
-		lib::logger::get_logger()->error(gettext("%s: cannot open audio file"), repr(url).c_str());
+		lib::logger::get_logger()->error(gettext("%s: cannot open audio file"), url.get_url().c_str());
 	else if (!supported.contains(m_audio_src->get_audio_format())) {
-		lib::logger::get_logger()->error(gettext("%s: audio format not supported"), repr(url).c_str());
+		lib::logger::get_logger()->error(gettext("%s: audio format not supported"), url.get_url().c_str());
 		m_audio_src->release();
 		m_audio_src = NULL;
 	}
@@ -266,7 +267,7 @@ gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
 		return;
 		
 	if (!m_audio_src)
-		lib::logger::get_logger()->error(gettext("%s: cannot open"), repr(url).c_str());
+		lib::logger::get_logger()->error(gettext("%s: cannot open"), url.get_url().c_str());
 	
 	// Ugly hack to get the resampler.
 	if (m_audio_src) {
@@ -365,11 +366,11 @@ gui::sdl::sdl_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
 				m_volcount = 0;
 			else if (leftlevel == rightlevel) {
 				m_volcount = 1;
-				m_volumes[0] = leftlevel;
+				m_volumes[0] = (float)leftlevel;
 			} else {
 				m_volcount = 2;
-				m_volumes[0] = leftlevel;
-				m_volumes[1] = rightlevel;
+				m_volumes[0] = (float)leftlevel;
+				m_volumes[1] = (float)rightlevel;
 			}
 		}
 	}

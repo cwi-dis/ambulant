@@ -22,6 +22,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "plugin_scripting", "plugin_
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785} = {DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "plugin_ffmpeg", "plugin_ffmpeg.vcproj", "{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785} = {DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -75,6 +80,7 @@ Global
 		{D2E0FB0F-6190-4A38-BAFF-3FC75104D568}.ReleaseNoXerces|Win32.ActiveCfg = Release|Win32
 		{D2E0FB0F-6190-4A38-BAFF-3FC75104D568}.ReleaseNoXercesNoHtml|Win32.ActiveCfg = Release|Win32
 		{D2E0FB0F-6190-4A38-BAFF-3FC75104D568}.ReleaseShlib|Win32.ActiveCfg = Release|Win32
+		{D2E0FB0F-6190-4A38-BAFF-3FC75104D568}.ReleaseShlib|Win32.Build.0 = Release|Win32
 		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.Debug|Win32.ActiveCfg = Debug|Win32
 		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.DebugNoXerces|Win32.ActiveCfg = Debug|Win32
 		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.DebugNoXercesNoHtml|Win32.ActiveCfg = Debug|Win32
@@ -84,6 +90,7 @@ Global
 		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.ReleaseNoXerces|Win32.ActiveCfg = Release|Win32
 		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.ReleaseNoXercesNoHtml|Win32.ActiveCfg = Release|Win32
 		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.ReleaseShlib|Win32.ActiveCfg = Release|Win32
+		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.ReleaseShlib|Win32.Build.0 = Release|Win32
 		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.Debug|Win32.ActiveCfg = Debug|Win32
 		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.Debug|Win32.Build.0 = Debug|Win32
 		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.DebugNoXerces|Win32.ActiveCfg = Debug|Win32
@@ -100,6 +107,17 @@ Global
 		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.ReleaseNoXercesNoHtml|Win32.Build.0 = Release|Win32
 		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.ReleaseShlib|Win32.ActiveCfg = Release|Win32
 		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.ReleaseShlib|Win32.Build.0 = Release|Win32
+		{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}.DebugNoXerces|Win32.ActiveCfg = Debug|Win32
+		{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}.DebugNoXercesNoHtml|Win32.ActiveCfg = Debug|Win32
+		{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}.DebugShlib|Win32.ActiveCfg = Debug|Win32
+		{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}.DebugShlib|Win32.Build.0 = Debug|Win32
+		{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}.Release|Win32.ActiveCfg = Release|Win32
+		{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}.Release|Win32.Build.0 = Release|Win32
+		{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}.ReleaseNoXerces|Win32.ActiveCfg = Release|Win32
+		{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}.ReleaseNoXercesNoHtml|Win32.ActiveCfg = Release|Win32
+		{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}.ReleaseShlib|Win32.ActiveCfg = Release|Win32
+		{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}.ReleaseShlib|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

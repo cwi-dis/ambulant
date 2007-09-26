@@ -252,7 +252,7 @@ void CAmbulantPlayerApp::OnFileOpenurl()
 
 void CAmbulantPlayerApp::OnPreferences()
 {
-	PreferencesDlg dlg;
+	PrefPropertySheet dlg;
 	if(dlg.DoModal() != IDOK) return;
 }
 

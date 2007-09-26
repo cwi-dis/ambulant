@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="E:\Python25\include;..\..\include;..\..\src\pyambulant"
+				AdditionalIncludeDirectories="C:\Python25\include;..\..\include;..\..\src\pyambulant"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGIN_PYTHON_EXPORTS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -35,7 +35,7 @@
 				IgnoreImportLibrary="TRUE"
 				OutputFile="../../bin/win32/libampluginD_python.dll"
 				LinkIncremental="0"
-				AdditionalLibraryDirectories="E:\Python25\libs"
+				AdditionalLibraryDirectories="C:\Python25\libs"
 				IgnoreDefaultLibraryNames="LIBC.lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/plugin_python.pdb"

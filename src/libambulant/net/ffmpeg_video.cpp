@@ -27,7 +27,9 @@
 #include "ambulant/net/ffmpeg_factory.h" 
 #include "ambulant/net/demux_datasource.h" 
 #include "ambulant/lib/logger.h"
+#include "ambulant/lib/asb.h"
 #include "ambulant/net/url.h"
+#define round(x) ((int)((x)+0.5))
 
 // WARNING: turning on AM_DBG globally for the ffmpeg code seems to trigger
 // a condition that makes the whole player hang or collapse. So you probably
@@ -43,7 +45,11 @@
 // On second thoughts this seems a bad idea, so setting MIN_VIDEO_FRAMES to zero.
 #define MIN_VIDEO_FRAMES 0
 // How many video frames we would like to buffer at most.
+#ifdef WITH_SMALL_BUFFERS
+#define MAX_VIDEO_FRAMES 30
+#else
 #define MAX_VIDEO_FRAMES 100
+#endif
 
 // This construction is needed to get the CVS version of ffmpeg to work:
 // AVStream.codec got changed from AVCodecContext to AVCodecContext*
@@ -255,7 +261,7 @@ ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp
 		if (callbackk) {
 			assert(evp);
 			if (timestamp < 0) timestamp = 0;
-			lib::timer::time_type timestamp_milli = timestamp/1000; // micro to milli
+			lib::timer::time_type timestamp_milli = (lib::timer::time_type)(timestamp/1000); // micro to milli
 			lib::timer::time_type now_milli = evp->get_timer()->elapsed();
 			lib::timer::time_type delta_milli = 0;
 			if (now_milli < timestamp_milli)
@@ -302,7 +308,7 @@ print_frames(sorted_frames frames) {
 	return;
 }
 
-ts_pointer_pair 
+void 
 ffmpeg_video_decoder_datasource::_pop_top_frame() {
 	// pop a frame, return the new top frame
 	// the old top frame is remembered in m_old_frame
@@ -317,12 +323,11 @@ ffmpeg_video_decoder_datasource::_pop_top_frame() {
 	
 	if (m_frames.empty()) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._pop_top_frame():no more frames left returning m_old_frame");
-		return m_old_frame;
+		return;
 	}
 
 	m_old_frame = m_frames.top();
 	m_frames.pop();
-	return m_frames.top();
 }
 
 void 
@@ -365,7 +370,8 @@ ffmpeg_video_decoder_datasource::height()
 	return m_fmt.height;
 }
 
-int ffmpeg_video_decoder_datasource::frameduration()
+timestamp_t
+ffmpeg_video_decoder_datasource::frameduration()
 {
 	if(m_fmt.frameduration <=0)
 		_need_fmt_uptodate();
@@ -498,7 +504,13 @@ ffmpeg_video_decoder_datasource::data_avail()
 					assert(m_size);
 					char *framedata = (char*) malloc(m_size);
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:framedata=0x%x", framedata);
-					assert(framedata != NULL);
+					if (framedata == NULL) {
+						lib::logger::get_logger()->debug("ffmpeg_video_decoder: malloc(%d) failed", m_size);
+						lib::logger::get_logger()->error("Out of memory playing video");
+						m_src->stop();
+						sz = 0;
+						goto out_of_memory;
+					}
 					dst_pic_fmt = PIX_FMT_RGBA32;
 					dummy2 = avpicture_fill(&picture, (uint8_t*) framedata, dst_pic_fmt, w, h);
 					// The format we have is already in frame. Convert.
@@ -564,6 +576,8 @@ ffmpeg_video_decoder_datasource::data_avail()
 					if (!drop_this_frame) {
 						std::pair<timestamp_t, char*> element(pts, framedata);
 						m_frames.push(element);
+					} else {
+						free(framedata);
 					}
 					m_elapsed = pts;
 				} else {
@@ -577,7 +591,8 @@ ffmpeg_video_decoder_datasource::data_avail()
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:done decoding (0x%x) ", m_con);
 		m_src->frame_done(0, false);
   	}
-	av_free(frame);
+	if (frame) av_free(frame);
+  out_of_memory:
 	// Now tell our client, if we have data available or are at end of file.
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): m_frames.size() returns %d, (eof=%d)", m_frames.size(), m_src->end_of_file());
 	if ( m_frames.size() > MIN_VIDEO_FRAMES || m_src->end_of_file()) {

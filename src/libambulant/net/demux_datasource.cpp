@@ -29,13 +29,21 @@
 #define MIN_EVENT_DELAY 1
 
 // How many video frames we would like to buffer at most
+#ifdef WITH_SMALL_BUFFERS
+#define MAX_VIDEO_FRAMES 15
+#else
 #define MAX_VIDEO_FRAMES 300
+#endif
 
 // How many audio packets we would like to buffer at most
 // This limit is indicative: if demux_audio_datasource::buffer_full()
 // returns true, you are advised not to throw in more data; but if
 // you nevertheless do, no data is lost and a DEBUG message is printed
+#ifdef WITH_SMALL_BUFFERS
+#define MAX_AUDIO_PACKETS 30
+#else
 #define MAX_AUDIO_PACKETS 300
+#endif
 
 // WARNING: turning on AM_DBG globally in this file seems to trigger
 // a condition that makes the whole player hang or collapse. So you probably
@@ -187,9 +195,9 @@ demux_audio_datasource::data_avail(timestamp_t pts, const uint8_t *inbuf, int sz
 	memcpy(data, inbuf, sz);
 	ts_packet_t tsp(pts,data,sz);
 	m_queue.push(tsp);
-	int new_queue_size = m_queue.size();
-	if (m_queue.size() > MAX_AUDIO_PACKETS) {
-		AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource.data_avail: m_queue.size()(=%d) exceeds desired maximum(=%d)", m_queue.size(), MAX_AUDIO_PACKETS);
+	size_t new_queue_size = m_queue.size();
+	if (new_queue_size > MAX_AUDIO_PACKETS) {
+		AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource.data_avail: m_queue.size()(=%d) exceeds desired maximum(=%d)", new_queue_size, MAX_AUDIO_PACKETS);
 	}
 	m_lock.leave();
 }
@@ -357,6 +365,7 @@ demux_video_datasource::stop()
 		}
 		m_frames.pop();
 	}
+	m_src_end_of_file = true;
 	m_lock.leave();
 	
 }	
@@ -597,7 +606,7 @@ int
 demux_video_datasource::size() const
 {
 	const_cast <demux_video_datasource*>(this)->m_lock.enter();
-	int rv = m_frames.size();
+	int rv = (int)m_frames.size();
 	const_cast <demux_video_datasource*>(this)->m_lock.leave();
 	return rv;
 }
@@ -631,10 +640,10 @@ demux_video_datasource::height()
 	return fmt.height;
 }
 
-int
+timestamp_t
 demux_video_datasource::frameduration()
 {//STUB CODE, not to be used currently
-	
+	assert(0);
 	return 0;
 }
 bool 

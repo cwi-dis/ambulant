@@ -20,6 +20,7 @@
  
 #include <math.h>
 #include <map>
+#define round(x) ((int)((x)+0.5))
 
 #include "ambulant/net/ffmpeg_common.h" 
 #include "ambulant/net/datasource.h"
@@ -169,6 +170,7 @@ ffmpeg_demux::get_clip_begin()
 AVFormatContext *
 ffmpeg_demux::supported(const net::url& url)
 {
+	/*XXXJACK*/int strsize = sizeof(ByteIOContext);
 	ffmpeg_init();
 	// Setup struct to allow ffmpeg to determine whether it supports this
 	AVInputFormat *fmt;
@@ -229,7 +231,9 @@ ffmpeg_demux::cancel()
 int 
 ffmpeg_demux::audio_stream_nr() 
 {
-	int stream_index;
+	// Failure of this assert may be an c-compiler alignment problem
+	assert(m_con->nb_streams >= 0 && m_con->nb_streams < MAX_STREAMS); 
+	unsigned int stream_index;
 	for (stream_index=0; stream_index < m_con->nb_streams; stream_index++) {
 		if (am_get_codec_var(m_con->streams[stream_index]->codec, codec_type) == CODEC_TYPE_AUDIO)
 			return stream_index;
@@ -241,7 +245,9 @@ ffmpeg_demux::audio_stream_nr()
 int 
 ffmpeg_demux::video_stream_nr() 
 {
-	int stream_index;
+	// Failure of this assert may be an c-compiler alignment problem
+	assert(m_con->nb_streams >= 0 && m_con->nb_streams < MAX_STREAMS); 
+	unsigned int stream_index;
 	for (stream_index=0; stream_index < m_con->nb_streams; stream_index++) {
 		if (am_get_codec_var(m_con->streams[stream_index]->codec, codec_type) == CODEC_TYPE_VIDEO) {
 			return stream_index;
@@ -375,20 +381,20 @@ ffmpeg_demux::run()
 		int ret = av_read_packet(m_con, pkt);
 #endif
 		m_lock.enter();
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: av_read_packet returned ret= %d, (%lld, 0x%x, %d)", ret, pkt->pts ,pkt->data, pkt->size);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: av_read_packet returned ret= %d, (%d, 0x%x, %d)", ret, (int)pkt->pts ,pkt->data, pkt->size);
 		if (ret < 0) break;
 		pkt_nr++;
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: av_read_packet number : %d",pkt_nr);
+		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_parser::run: av_read_packet number : %d",pkt_nr);
 		// Find out where to send it to
 		assert(pkt->stream_index >= 0 && pkt->stream_index < MAX_STREAMS);
 		demux_datasink *sink = m_sinks[pkt->stream_index];
 		if (sink == NULL) {
-			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: Drop data for stream %d (%lld, 0x%x, %d)", pkt->stream_index, pts, pkt->pts ,pkt->data, pkt->size);
+			/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_parser::run: Drop data for stream %d (%lld, 0x%x, %d)", pkt->stream_index, pts, pkt->pts ,pkt->data, pkt->size);
 		} else {
-			AM_DBG lib::logger::get_logger ()->debug ("ffmpeg_parser::run sending data to datasink (stream %d) (%lld, %lld, 0x%x, %d)", pts, pkt->stream_index, pkt->pts ,pkt->data, pkt->size);
+			/*AM_DBG*/ lib::logger::get_logger ()->debug ("ffmpeg_parser::run sending data to datasink (stream %d) (%lld, %lld, 0x%x, %d)", pkt->stream_index, pts, pkt->pts ,pkt->data, pkt->size);
 			// Wait until there is room in the buffer
 			while (sink && sink->buffer_full() && !exit_requested()) {
-				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", pkt->stream_index);
+				/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", pkt->stream_index);
 				m_lock.leave();
 				 // sleep 10 millisec, hardly noticeable
 #ifdef	AMBULANT_PLATFORM_WIN32

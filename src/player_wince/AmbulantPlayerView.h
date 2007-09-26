@@ -64,6 +64,10 @@ protected:
 	afx_msg void OnHelpWelcome();
 	afx_msg void OnFileSelect();
 	afx_msg void OnFileLoadSettings();
+	afx_msg void OnPreferences();
+	afx_msg void OnViewSource();
+	afx_msg void OnUpdateViewSource(CCmdUI* pCmdUI);
+	afx_msg void OnViewLog();
 	afx_msg LPARAM OnReplaceDoc(WPARAM wParam, LPARAM lParam);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()

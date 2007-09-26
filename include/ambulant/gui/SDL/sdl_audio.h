@@ -22,7 +22,15 @@
 #ifndef __SDL_AUDIO__
 #define __SDL_AUDIO__
 
+#ifdef AMBULANT_PLATFORM_WIN32
+// Try to hide duplicate definitions (sdl and ffmpeg) of standard
+// Unix typedefs on Windows
+#define int8_t _sdl_int8_t
+#endif
 #include <SDL.h>
+#ifdef AMBULANT_PLATFORM_WIN32
+#undef int8_t
+#endif
 #include <iostream>
 
 #include "ambulant/common/factory.h"

@@ -94,7 +94,7 @@ typedef std::pair<bool, double> duration;
 /// The playable interface specifies time as double.
 /// This may change in future versions of the interface.
 
-class playable : public lib::ref_counted_obj {
+class AMBULANTAPI playable : public lib::ref_counted_obj {
 
   public:
   

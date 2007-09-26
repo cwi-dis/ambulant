@@ -50,7 +50,7 @@ class global_playable_factory;
 /// acceptable behavior. For example, pausing an image does not do
 /// anything spectacular.
 /// Use this class as a baseclass for your renderer/playable.
-class playable_imp : public playable {
+class AMBULANTAPI playable_imp : public playable {
   public:
 	playable_imp(
 		playable_notification *context,
@@ -83,7 +83,7 @@ class playable_imp : public playable {
 /// are also renderers.
 /// In addition to the functionality provided by playable_imp this class
 /// also provides default implementations of the renderer interface.
-class renderer_playable : public playable_imp, public renderer {
+class AMBULANTAPI renderer_playable : public playable_imp, public renderer {
   public:
 	renderer_playable(
 		playable_notification *context,
@@ -118,7 +118,7 @@ class renderer_playable : public playable_imp, public renderer {
 /// attribute. On start() the datasource is started too. A subclass must
 /// define a readdone method which is called whenever data becomes available.
 /// User event handling is also taken care of.
-class renderer_playable_ds : public renderer_playable {
+class AMBULANTAPI renderer_playable_ds : public renderer_playable {
   public:
 	renderer_playable_ds(
 		playable_notification *context,
@@ -154,7 +154,7 @@ class renderer_playable_ds : public renderer_playable {
 /// has been received it schedules a redraw.
 ///
 /// Hence, when you subclass this class you only need to provide a redraw() method.
-class renderer_playable_dsall : public renderer_playable_ds {
+class AMBULANTAPI renderer_playable_dsall : public renderer_playable_ds {
   public:
 	renderer_playable_dsall(
 		playable_notification *context,

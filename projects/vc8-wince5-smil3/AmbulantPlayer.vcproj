@@ -104,6 +104,9 @@
 			/>
 			<Tool
 				Name="VCCodeSignTool"
+				AuthenticodeSignature="false"
+				Certificate="SHA-1 Hash=1049B790EDA3C369E9C206B44AF16B2657CC1555|1049B790EDA3C369E9C206B44AF16B2657CC1555"
+				ProvisionDevice="0"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -584,6 +587,14 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\src\player_wince\mypreferences.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\player_wince\PreferencesDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\player_wince\SelectDlg.cpp"
 				>
 				<FileConfiguration
@@ -683,7 +694,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\player_wince\mypreferences.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\player_wince\newres.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\player_wince\PreferencesDlg.h"
 				>
 			</File>
 			<File
@@ -744,6 +763,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\src\player_wince\res\AmbulantPlayerDoc.ico"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\player_wince\res\Cmdbar.bmp"
 				>
 			</File>
@@ -754,5 +777,9 @@
 		</File>
 	</Files>
 	<Globals>
+		<Global
+			Name="RESOURCE_FILE"
+			Value="\ufs\jack\src\ambulant\src\player_wince\AmbulantPlayer.rc"
+		/>
 	</Globals>
 </VisualStudioProject>

@@ -40,13 +40,39 @@ libxml2:
 	WM5 notes TBD.
 
 ffmpeg:
-	Experminental, for when you want to use the ffmpeg renderers on Windows.
+	Experimental, for when you want to use the ffmpeg renderers on Windows.
 	Needs to be built using MinGW,can then be linked into Visual Studio projects.
-	Follow the build instructions on 
+	
+	The easiest way to get this is to download the prebuilt version from
+	our sourceforge download page. Package "ffmpeg for Ambulant", release
+	"20070828-win32-prebuilt".
+
+	If you want to build from source, follow the build instructions on 
 	<http://arrozcru.no-ip.org/ffmpeg_wiki/tiki-index.php>. There are other webpages
 	with instructions, but these are the only ones that worked for me.
-
 	
+SDL:
+	Experimental, for when you want to use the SDL renderers on Windows. 
+	There are two options:
+	-Pre-built Development Libraries:
+		Download development libraries for win32(VC8) from <http://www.libsdl.org/download-1.2.php>, 
+		and then follow the instructions of section "Creating a Project with SDL" of VisualC.html 
+		in the root folder of unzipped sdl folder.
+	-Source Code:
+		Download the source code of SDL from <http://www.libsdl.org/download-1.2.php>, and then follow
+		the instructions of section "Building SDL" of VisualC.html in the root folder of unzipped sdl folder.
+
+Live555:
+	Experimental, for when you want to use the Live555 to provide rtsp support on Windows.
+	
+	Download source from <http://live555.com/liveMedia/public/>.
+	Copy the extracted folder "live" into third_party_packages (if the name has changed you
+	may need to change some Ambulant projects to refer to the new name). Check out the relevent 
+	solution and project files from the path of /ambulant/third_party_packages/live_VC8 at ambulant's 
+	CVS repository.
+    
+	Building Live555 should be handled by the /ambulant/third_party_packages/live_VC8/Live555.com.sln.
+		
 others:
 	For this release we don't fully remember where we got the other
 	libraries (jpeg, zlib, mp3lib, lpng128), so it is really in your

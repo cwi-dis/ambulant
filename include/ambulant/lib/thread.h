@@ -36,7 +36,7 @@ namespace lib {
 /// Part of this interface is implemented by a system-dependent
 /// implementation (the details of starting threads and such),
 /// part by the code implementing the thread functionality.
-class thread {
+class AMBULANTAPI thread {
   public: 
 	// use the virtual table to invoke the destructor 
 	virtual ~thread() {}

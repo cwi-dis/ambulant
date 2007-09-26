@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "AmbulantPlayer.h"
+#include "mypreferences.h"
 
 #include "MainFrm.h"
 
@@ -77,7 +78,8 @@ BOOL CAmbulantPlayerApp::InitInstance()
 	// You should modify this string to be something appropriate
 	// such as the name of your company or organization.
 	SetRegistryKey(_T("Ambulant"));
-
+//	LoadStdProfileSettings(4);
+	mypreferences::install_singleton();
 	// Register the application's document templates.  Document templates
 	//  serve as the connection between documents, frame windows and views.
 
@@ -93,6 +95,13 @@ BOOL CAmbulantPlayerApp::InitInstance()
 	// Parse command line for standard shell commands, DDE, file open
 	CCommandLineInfo cmdInfo;
 	ParseCommandLine(cmdInfo);
+#if 1
+	// This is a workaround for a bug in Windows Mobile MFC: it does not
+	// communicate the "open" command correctly if a file is passed on the
+	// command line. See <http://www.tech-archive.net/Archive/WindowsCE/microsoft.public.windowsce.embedded.vc/2006-10/msg00191.html>
+	if( !cmdInfo.m_strFileName.IsEmpty() )
+		cmdInfo.m_nShellCommand=CCommandLineInfo::FileOpen;
+#endif
 
 	// Dispatch commands specified on the command line
 	if (!ProcessShellCommand(cmdInfo))

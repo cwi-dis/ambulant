@@ -57,16 +57,28 @@
 #endif/*WITH_SMIL30*/
 #include "ambulant/gui/dx/dx_html_renderer.h"
 #include "ambulant/gui/dx/dx_img.h"
+#include "ambulant/gui/dx/dx_brush.h"
+
+// Select audio renderer to use
+#ifdef WITH_FFMPEG
+#include "ambulant/gui/SDL/sdl_audio.h"
+#else
 #include "ambulant/gui/dx/dx_audio.h"
-#ifdef AMBULANT_PLATFORM_WIN32_WCE
+#endif/*WITH_FFMPEG*/
+
+// Select video renderer to use
+#ifdef WITH_FFMPEG
+#define USE_DS_VIDEO
+#elif defined(AMBULANT_PLATFORM_WIN32_WCE)
 #define USE_BASIC_VIDEO
 #endif
-#ifdef USE_BASIC_VIDEO
+#ifdef USE_DS_VIDEO
+#include "ambulant/gui/dx/dx_dsvideo.h"
+#elif defined(USE_BASIC_VIDEO)
 #include "ambulant/gui/dx/dx_basicvideo.h"
 #else
 #include "ambulant/gui/dx/dx_video.h"
 #endif
-#include "ambulant/gui/dx/dx_brush.h"
 
 // "Renderer" playables
 #include "ambulant/gui/dx/dx_audio.h"
@@ -86,6 +98,10 @@
 // Datasources
 #include "ambulant/net/datasource.h"
 #include "ambulant/net/win32_datasource.h"
+#ifdef WITH_FFMPEG
+#include "ambulant/net/ffmpeg_factory.h"
+#include "ambulant/net/rtsp_factory.h"
+#endif
 //#define AM_DBG
 
 #ifndef AM_DBG
@@ -190,9 +206,25 @@ gui::dx::dx_player::init_datasource_factory()
 {
 	net::datasource_factory *df = new net::datasource_factory();
 	set_datasource_factory(df);
-	// Add the datasource factories. For now we only need a raw
-	// datasource factory.
+#ifdef WITH_LIVE	
+	AM_DBG m_logger->debug("dx_player: add live_audio_datasource_factory");
+	df->add_video_factory(net::create_live_video_datasource_factory());
+	df->add_audio_factory(net::create_live_audio_datasource_factory()); 
+#endif
+#ifdef WITH_FFMPEG
+    AM_DBG m_logger->debug("dx_player: add ffmpeg_audio_datasource_factory");
+	df->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
+    AM_DBG m_logger->debug("dx_player: add ffmpeg_audio_decoder_finder");
+	df->add_audio_decoder_finder(net::get_ffmpeg_audio_decoder_finder());
+    AM_DBG m_logger->debug("dx_player: add ffmpeg_audio_filter_finder");
+	df->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
+	AM_DBG m_logger->debug("dx_player: add ffmpeg_video_datasource_factory");
+	df->add_video_factory(net::get_ffmpeg_video_datasource_factory());
+    AM_DBG m_logger->debug("dx_player: add ffmpeg_raw_datasource_factory");
+	df->add_raw_factory(net::get_ffmpeg_raw_datasource_factory());
+#endif
 	df->add_raw_factory(net::get_win32_datasource_factory());
+
 }
 
 void
@@ -449,7 +481,9 @@ gui::dx::dx_playable_factory::new_playable(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
-	lib::event_processor *const evp) {
+	lib::event_processor *const evp)
+{
+	bool use_ffmpeg = common::preferences::get_preferences()->m_prefer_ffmpeg;
 	common::playable *p = 0;
 	lib::xml_string tag = node->get_qname().second;
 	AM_DBG m_logger->debug("dx_player::new_playable: %s", tag.c_str());
@@ -470,12 +504,27 @@ gui::dx::dx_playable_factory::new_playable(
 	} else if(tag == "img") {
 		p = new dx_img_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
 	} else if(tag == "audio") {
-		p = new dx_audio_renderer(context, cookie, node, evp);
-	} else if(tag == "video") {
-#ifdef USE_BASIC_VIDEO
-		p = new dx_basicvideo_renderer(context, cookie, node, evp, m_dxplayer);
+#ifdef WITH_FFMPEG
+		p = new gui::sdl::sdl_audio_renderer(context, cookie, node, evp, m_factory);
 #else
-		p = new dx_video_renderer(context, cookie, node, evp, m_dxplayer);
+		if (use_ffmpeg)
+			lib::logger::get_logger()->debug("dx_player: DirectShow audio renderer disabled by preference");
+		else
+			p = new dx_audio_renderer(context, cookie, node, evp);
+#endif/*WITH_FFMPEG*/
+	} else if(tag == "video") {
+#if defined(USE_DS_VIDEO)
+		p = new dx_dsvideo_renderer(context, cookie, node, evp, m_factory);
+#elif defined(USE_BASIC_VIDEO)
+		if (use_ffmpeg)
+			lib::logger::get_logger()->debug("dx_player: DirectShow video renderer disabled by preference");
+		else
+			p = new dx_basicvideo_renderer(context, cookie, node, evp, m_dxplayer);
+#else
+		if (use_ffmpeg)
+			lib::logger::get_logger()->debug("dx_player: DirectShow video renderer disabled by preference");
+		else
+			p = new dx_video_renderer(context, cookie, node, evp, m_dxplayer);
 #endif
 	} else if(tag == "area") {
 		p = new dx_area(context, cookie, node, evp);

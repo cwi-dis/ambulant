@@ -26,7 +26,8 @@
 using namespace ambulant;
 using namespace net;
 
-//#define AM_DBG
+//#define AM_DBG 
+// turn on the AM_DBG will hang on ambulant when use rtp over tcp
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -49,7 +50,11 @@ ambulant::net::rtsp_demux::rtsp_demux(rtsp_context_t* context, timestamp_t clip_
 {
 	m_context->audio_fmt.parameters = (void*) m_context->audio_codec_name;
 	m_context->video_fmt.parameters = (void*) m_context->video_codec_name;
+#if 0
 	m_context->vbuffer = (unsigned char*)malloc(20000);
+#else //xxxbo increase the vbuffer to 40000 for renderering mpg
+	m_context->vbuffer = (unsigned char*)malloc(40000);
+#endif
 	m_context->vbufferlen = 0;
 	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::rtsp_demux(0x%x)", (void*) this);
 	
@@ -302,7 +307,11 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 		int buf_size = increaseReceiveBufferTo(*context->env, rtp_sock_num, desired_buf_size);
 		(void)buf_size; // Forestall compiler warning
 #endif
+#ifndef WITH_TCP  //xxxBo setup RTP over udp
 		if(!context->rtsp_client->setupMediaSubsession(*subsession, false, false)) {
+#else //xxxBo setup RTP over tcp
+		if(!context->rtsp_client->setupMediaSubsession(*subsession, false, 1)) {
+#endif /*WITH_TCP*/
 			lib::logger::get_logger()->error("ambulant::net::rtsp_demux(net::url& url) failed to send setup command to subsesion");
 			//lib::logger::get_logger()->error("RTSP Connection Failed");
 			delete context;
@@ -532,7 +541,11 @@ after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval 
 	//If the frame is bigger than 20kb display the rest next time
 	//TODO display what I have currently as well : the impartial frame.
 	 if (rpts == context->last_pts) {
+#if 0
 		 if((sz + context->vbufferlen)>20000)
+#else //xxxbo increase the vbuffer to 40000 for renderering mpg
+		 if((sz + context->vbufferlen)>40000)
+#endif
 		 {
 			 lib::logger::get_logger()->trace("Frame too large to display");
 			 context->vbufferlen=0;
@@ -566,7 +579,9 @@ after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval 
 	}
 	context->video_packet  = NULL;
 
-	if (context->last_pts >= context->time_left) {
+	// xxxbo In the case that context->time_left is a negative from the beginning for some reason,
+	// Ambulant should render the video other than stop at the beginning.
+	if (context->time_left >= 0 && context->last_pts >= context->time_left) {
 		lib::logger::get_logger()->debug("after_reading_video: last_pts = %ld", context->last_pts);
 	 	context->eof = true;
 	}

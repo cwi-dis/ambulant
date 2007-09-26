@@ -53,7 +53,7 @@ namespace lib {
 
 namespace win32 {
 
-class thread : public ambulant::lib::thread {
+class AMBULANTAPI thread : public ambulant::lib::thread {
   public:
 	thread();
 

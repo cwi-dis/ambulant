@@ -82,10 +82,8 @@ class AMBULANTAPI preferences {
 	/// Where to find the plugins 
 	std::string m_plugin_dir;
 	
-#ifdef AMBULANT_PLATFORM_MACOS
-	/// Prefer ffmpeg video over quicktime video
+	/// Prefer ffmpeg/live555/sdl video/video over quicktime or directshow
 	bool m_prefer_ffmpeg;
-#endif
 
 	/// Do we do strict URL parsing (i.e. complain about illegal characters
 	/// in URLs)?

@@ -353,7 +353,7 @@ class transition_engine_fade : virtual public transition_blitclass_fade {
 	void compute();
 };
 
-class abstract_audio_transition_engine {
+class AMBULANTAPI abstract_audio_transition_engine {
   public:
 	virtual ~abstract_audio_transition_engine(){}
 	virtual void init(const lib::event_processor* evp, bool outtrans, const lib::transition_info* info) = 0;
@@ -361,7 +361,7 @@ class abstract_audio_transition_engine {
 	virtual const bool is_done(lib::transition_info::time_type now) = 0;
 };
 
-class audio_transition_engine :  virtual public abstract_audio_transition_engine {
+class AMBULANTAPI audio_transition_engine :  virtual public abstract_audio_transition_engine {
   public:
 	audio_transition_engine();
 	void init(const lib::event_processor* evp, bool outtrans, const lib::transition_info* info);

@@ -42,9 +42,11 @@
 //#include "ambulant/net/posix_datasource.h"
 #include "ambulant/net/datasource.h"
 
+extern "C" {
 #include "avcodec.h"
 #include "avformat.h"
 //#include "common.h"
+}
 
 // temporary debug messages
 //#include <iostream>

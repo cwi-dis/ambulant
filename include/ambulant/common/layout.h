@@ -110,7 +110,7 @@ enum user_event_type {
 /// It is used to commmunicate redraw requests and mouse clicks
 /// and such from the GUI window all the way down to
 /// the renderer.
-class gui_events  {
+class AMBULANTAPI gui_events  {
   public:
     virtual ~gui_events(){}
     
@@ -130,7 +130,7 @@ class gui_events  {
 /// Interface for playables that actually render something.
 /// Implemented by playable implementations that render to a region
 /// (as opposed to SMIL animation playables, etc).
-class renderer : public gui_events {
+class AMBULANTAPI renderer : public gui_events {
   public:
 	virtual ~renderer() {};
 	

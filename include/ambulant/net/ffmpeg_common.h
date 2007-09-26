@@ -37,12 +37,25 @@
 //#include "ambulant/lib/event_processor.h"
 //#include "ambulant/lib/mtsync.h"
 //#include "ambulant/lib/event_processor.h"
+#ifdef AMBULANT_PLATFORM_UNIX
 #include "ambulant/lib/unix/unix_thread.h"
+#endif
+#ifdef AMBULANT_PLATFORM_WIN32
+// This assumes that we are building on Windows with a dll-based ffmpeg
+// that has been built with mingw32. These defines are then needed to get
+// the right macros defined. See third_party_packages/readme.txt, section
+// ffmpeg for windows, for a reference to the webpage that is a source
+// for this.
+#define __STDC_CONSTANT_MACROS
+#define __STDC_LIMIT_MACROS
+#endif
 #include "ambulant/net/datasource.h"
 
+extern "C" {
 #include "avcodec.h"
 #include "avformat.h"
 //#include "common.h"
+}
 
 // temporary debug messages
 //#include <iostream>

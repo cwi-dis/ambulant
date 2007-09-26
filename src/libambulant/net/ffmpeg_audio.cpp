@@ -222,7 +222,7 @@ static const char *
 getext(const net::url &url)
 {
 	const char *curl = url.get_path().c_str();
-	const char *dotpos = rindex(curl, '.');
+	const char *dotpos = strrchr(curl, '.');
 	if (dotpos) return dotpos+1;
 	return NULL;
 }
@@ -386,27 +386,53 @@ ffmpeg_decoder_datasource::data_avail()
 		
 ///// Added by Bo Gao begin 2007-07-31			
 #if 1
+					///// Comment from Bo Gao
+					///// For mp3 with live, if m_con.sample_rate and m_con.channels == 0, 
+					///// m_con.sample_rate and m_con.channels can be assigned by ffmpeg after 
+					///// calling avcodec_decode_audio;
+					///// but for wav with live,  if m_con.sample_rate and m_con.channels == 0, 
+					///// after calling avcodec_decode_audio, 
+					///// ffmpeg cannot get the sample_rate and channels.
+					AM_DBG lib::logger::get_logger()->debug("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, cursz);
+					int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, cursz);
+
 					///// Feeding the successive block of one rtsp mp3 packet to ffmpeg to decode, 
 					///// since ffmpeg can only decode the limited length of around 522(522 or 523 
 					///// in the case of using testOnDemandRTSPServer as the RTSP server) bytes data
 					///// at one time. This idea is borrowed from VLC, according to:
 					///// vlc-0.8.6c/module/codec/ffmpeg/audio.c:L253-L254.
 
-					AM_DBG lib::logger::get_logger()->debug("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, cursz);
-				
-					int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, cursz);
-
 					while (decoded > 0 && decoded < cursz) {
-					  inbuf += decoded;
-					  cursz -= decoded;
-					  m_buffer.pushdata(outsize);
-					  outsize = AVCODEC_MAX_AUDIO_FRAME_SIZE;
-					  outbuf = (uint8_t*) m_buffer.get_write_ptr(outsize);
-					  decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, cursz);
+						inbuf += decoded;
+						cursz -= decoded;
+						m_buffer.pushdata(outsize);
+						outsize = AVCODEC_MAX_AUDIO_FRAME_SIZE;
+						outbuf = (uint8_t*) m_buffer.get_write_ptr(outsize);
+						decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, cursz);
 					}
+
+					// If this loop ends with decoded == 0 and cursz > 0, it means that not all bytes 
+					// have been fed to the decoder.
+					if (decoded == 0 && cursz > 0)
+						lib::logger::get_logger()->trace("ffmpeg_audio_decoder: last %d bytes of packet dropped");
 
 					inbuf = (uint8_t*) audio_packet.data;
 					free(inbuf);
+
+#ifdef WITH_RTSP_WAV
+					/////bo 12-09-2007 We need to swap the 16-bit audio samples
+					///// (just for wav stream from rtsp server) from big-endian
+					///// to little-endian order, before sending them to sdl:
+					///// This idea is borrowed from live_MinGW\liveMedia\AVIFileSink.cpp:L458-464
+					audio_format gb_fmt = m_src->get_audio_format();
+					if (gb_fmt.name == "live" && m_con->codec_id == CODEC_ID_PCM_S16LE) {
+						for (unsigned i = 0; i < cursz; i += 2) {
+							unsigned char tmp = outbuf[i];
+							outbuf[i] = outbuf[i+1];
+							outbuf[i+1] = tmp;
+						}
+					}
+#endif
 
 #else  ///// the original version without modifyed.
 					AM_DBG lib::logger::get_logger()->debug("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, sz);
@@ -437,7 +463,7 @@ ffmpeg_decoder_datasource::data_avail()
 						if (old_elapsed < m_src->get_clip_begin()) {
 							timestamp_t delta_t_unwanted = m_src->get_clip_begin() - old_elapsed;
 							assert(delta_t_unwanted > 0);
-							int bytes_unwanted = (delta_t_unwanted * ((m_fmt.samplerate* m_fmt.channels * m_fmt.bits)/(sizeof(uint8_t)*8)))/1000000;
+							int bytes_unwanted = (int)(delta_t_unwanted * ((m_fmt.samplerate* m_fmt.channels * m_fmt.bits)/(sizeof(uint8_t)*8))/1000000);
 							bytes_unwanted &= ~3;
 							AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource: clip_begin within buffer, dropping %lld us, %d bytes", delta_t_unwanted, bytes_unwanted);
 							(void)m_buffer.get_read_ptr();
@@ -580,7 +606,7 @@ ffmpeg_decoder_datasource::size() const
 		timestamp_t delta_t_unwanted = m_elapsed - clip_end;
 		assert(delta_t_unwanted >= 0);
 		// ((double) outsize)* sizeof(uint8_t)*8 / (m_fmt.samplerate* m_fmt.channels * m_fmt.bits);
-		int bytes_unwanted = (delta_t_unwanted * ((m_fmt.samplerate* m_fmt.channels * m_fmt.bits)/(sizeof(uint8_t)*8)))/1000000;
+		int bytes_unwanted = (int)((delta_t_unwanted * ((m_fmt.samplerate* m_fmt.channels * m_fmt.bits)/(sizeof(uint8_t)*8)))/1000000);
 		assert(bytes_unwanted >= 0);
 		rv -= bytes_unwanted;
 		rv &= ~3;
@@ -689,6 +715,9 @@ ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 		}
 		
 		m_con->codec_type = CODEC_TYPE_AUDIO;
+#ifdef WITH_RTSP_WAV
+		m_fmt = audio_format(44100, 2, 16);
+#endif
 		return true;
 	}
 	// Could add support here for raw mp3, etc.
@@ -709,10 +738,18 @@ void
 ffmpeg_decoder_datasource::_need_fmt_uptodate()
 {
 	// Private method - no locking
+#ifndef WITH_RTSP_WAV
 	if (m_fmt.samplerate == 0) {
+#else
+	if (m_con->sample_rate != 0) {
+#endif
 		m_fmt.samplerate = m_con->sample_rate;
 	}
+#ifndef WITH_RTSP_WAV
 	if (m_fmt.channels == 0) {	
+#else
+	if (m_con->channels != 0) {
+#endif
 		m_fmt.channels = m_con->channels;
 	}
 }
@@ -817,7 +854,8 @@ ffmpeg_resample_datasource::data_avail()
 		}
 		
 		timestamp_t tmp = (timestamp_t)((insamples+1) * m_out_fmt.samplerate * m_out_fmt.channels * sizeof(short) / m_in_fmt.samplerate);
-		timestamp_t outsz = tmp;
+		int outsz = (int)tmp;
+		assert(tmp == outsz);
 		
 
 		if (!cursize && !m_src->end_of_file()) {

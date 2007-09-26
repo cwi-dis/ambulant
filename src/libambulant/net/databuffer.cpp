@@ -40,10 +40,13 @@
 
 // data_buffer
 
-
-//#define DEFAULT_MAX_BUF_SIZE 4096
-long int ambulant::net::databuffer::s_default_max_size = 1000000;
-long int ambulant::net::databuffer::s_default_max_unused_size = 1000000;
+#ifdef WITH_SMALL_BUFFERS
+#define DEFAULT_MAX_BUF_SIZE 100000
+#else
+#define DEFAULT_MAX_BUF_SIZE 1000000
+#endif
+long int ambulant::net::databuffer::s_default_max_size = DEFAULT_MAX_BUF_SIZE;
+long int ambulant::net::databuffer::s_default_max_unused_size = DEFAULT_MAX_BUF_SIZE;
 
 using namespace ambulant;
 using namespace net;

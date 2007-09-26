@@ -79,6 +79,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	return 0;
 }
 
+
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
 	if( !CFrameWnd::PreCreateWindow(cs) )

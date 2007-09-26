@@ -7,6 +7,7 @@
 #include "AmbulantPlayerDoc.h"
 #include "AmbulantPlayerView.h"
 #include "SelectDlg.h"
+#include "PreferencesDlg.h"
 
 // DX player
 #include "ambulant/gui/dx/dx_player.h"
@@ -18,6 +19,7 @@
 #include "ambulant/lib/win32/win32_fstream.h"
 #include "ambulant/smil2/test_attrs.h"
 #include "ambulant/net/url.h"
+#include "ambulant/version.h"
 
 #ifdef _DEBUG
 #pragma comment (lib,"mp3lib_D.lib")
@@ -32,6 +34,21 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 using namespace ambulant;
+
+text_char *log_name = TEXT("\\Program Files\\Ambulant\\amlog.txt");
+#ifdef DEBUG
+class logger_trace : public ambulant::lib::ostream {
+	bool is_open() const {return true;}
+	void close() {}
+	int write(const unsigned char *buffer, int nbytes) {return write("ostream use of buffer, size not implemented for trace");}
+	int write(const char *cstr) {
+		ATLTRACE(atlTraceGeneral, 0, _T("%S"), cstr);
+		return 0;
+	}
+	void write(ambulant::lib::byte_buffer& bb) {write("ostream use of byte_buffer not implemented for trace");}
+	void flush() {}
+};
+#endif
 
 typedef gui::dx::dx_player dg_or_dx_player;
 typedef gui::dx::dx_player_callbacks gui_callbacks;
@@ -118,7 +135,11 @@ BEGIN_MESSAGE_MAP(CAmbulantPlayerView, CView)
 	ON_WM_TIMER()
 	ON_COMMAND(ID_HELP_WELCOME, OnHelpWelcome)
 	ON_COMMAND(ID_FILE_SELECT, OnFileSelect)
+	ON_COMMAND(ID_FILE_PREFERENCES, OnPreferences)
 	ON_COMMAND(ID_FILE_LOADSETTINGS, OnFileLoadSettings)
+	ON_COMMAND(ID_VIEW_SOURCE, OnViewSource)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_SOURCE, OnUpdateViewSource)
+	ON_COMMAND(ID_VIEW_LOG, OnViewLog)
 	ON_MESSAGE(WM_REPLACE_DOC, OnReplaceDoc)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
@@ -157,10 +178,32 @@ int CAmbulantPlayerView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	s_hwnd = GetSafeHwnd();
 	
 
+#ifdef DEBUG
+	// Log to the debugger output window in VS2005
+	lib::logger::get_logger()->set_ostream(new logger_trace());
+#else
+	// Log to a file
 	lib::win32::fstream *fs = new lib::win32::fstream();
-	if(fs->open_for_writing(TEXT("\\Program Files\\AmbulantPlayer\\amlog.txt")))
+	if(fs->open_for_writing(log_name))
 		lib::logger::get_logger()->set_ostream(fs);
-
+#endif
+	lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
+	lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for WindowsCE/MFC"), __DATE__);
+#if ENABLE_NLS
+	lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english)"));
+#endif
+#ifdef AMBULANT_USE_DLL
+	lib::logger::get_logger()->debug(gettext("Ambulant Player: using AmbulantPlayer in DLL"));
+#endif
+#ifdef AM_PLAYER_DG
+	lib::logger::get_logger()->debug("Ambulant Player: using DG Player");
+#else
+	lib::logger::get_logger()->debug("Ambulant Player: using DX Player");
+#endif
+#if 0
+	common::preferences *prefs = common::preferences::get_preferences();
+	prefs->m_prefer_ffmpeg = true;
+#endif
 	return 0;
 }
 
@@ -282,7 +325,6 @@ void CAmbulantPlayerView::OnDestroy()
 	CView::OnDestroy();
 	
 }
-
 void CAmbulantPlayerView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) 
 {
 	if(player) player->on_char(nChar);
@@ -362,4 +404,48 @@ LPARAM CAmbulantPlayerView::OnReplaceDoc(WPARAM wParam, LPARAM lParam) {
 	SetMMDocument(lib::textptr(purlstr->c_str()).c_wstr());
 	delete purlstr;
 	return 0;
+}
+
+void CAmbulantPlayerView::OnPreferences()
+{
+	PrefPropertySheet dlg;
+	if(dlg.DoModal() != IDOK) return;
+}
+
+void CAmbulantPlayerView::OnViewSource() {
+	USES_CONVERSION;
+	CString cmd = TEXT("-opendoc \"");
+	std::string ustr = T2CA(LPCTSTR(m_curDocFilename));
+	net::url u = net::url::from_url(ustr);
+	if (!u.is_local_file()) {
+		lib::logger::get_logger()->error("View Source: only for local files...");
+		return;
+	}
+	assert(u.is_local_file());
+	// XXXX Also check OnUpdateViewSource
+	cmd += u.get_file().c_str(); // XXXX Incorrect
+	cmd += "\"";
+	CreateProcess(_T("pword.exe"), cmd, NULL, NULL, false, 0, NULL, NULL, NULL, NULL);	
+}
+
+void CAmbulantPlayerView::OnUpdateViewSource(CCmdUI *pCmdUI) {
+	USES_CONVERSION;
+	bool b = player && !m_curDocFilename.IsEmpty() && net::url::from_url(T2CA(LPCTSTR(m_curDocFilename))).is_local_file();
+	pCmdUI->Enable(b?TRUE:FALSE);
+}
+
+void CAmbulantPlayerView::OnViewLog() {
+	// Logging to file: open the file in notepad.
+#if 0
+	TCHAR buf[_MAX_PATH];
+	GetModuleFileName(NULL, buf, _MAX_PATH);
+	TCHAR *p1 = text_strrchr(buf,TCHAR('\\'));
+	if(p1 != NULL) *p1= TCHAR('\0');
+	text_strcat(buf, TEXT("\\"));
+	text_strcat(buf, log_name);
+#endif
+	CString cmd = TEXT("-opendoc \"");
+	cmd += log_name;
+	cmd += "\"";
+	CreateProcess(_T("pword.exe"), cmd, NULL, NULL, false, 0, NULL, NULL, NULL, NULL);	
 }

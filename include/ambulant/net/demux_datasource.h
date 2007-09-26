@@ -149,7 +149,7 @@ class demux_video_datasource:
   	timestamp_t get_start_time() { return m_thread->get_start_time(); };
   	int width();
   	int height();
-	int frameduration();
+	timestamp_t frameduration();
   
     bool has_audio();
   	audio_datasource* get_audio_datasource();

@@ -42,9 +42,11 @@
 //#include "ambulant/net/posix_datasource.h"
 #include "ambulant/net/datasource.h"
 
+extern "C" {
 #include "avcodec.h"
 #include "avformat.h"
 //#include "common.h"
+}
 
 // temporary debug messages
 //#include <iostream>
@@ -96,7 +98,7 @@ class ffmpeg_video_decoder_datasource:
 	bool has_audio();
     int width();
   	int height();
-  int frameduration();
+	timestamp_t frameduration();
 	audio_datasource *get_audio_datasource();
 
     void start_frame(lib::event_processor *evp, lib::event *callback, timestamp_t timestamp);  
@@ -120,7 +122,7 @@ class ffmpeg_video_decoder_datasource:
 	bool _end_of_file();
   	bool _clip_end();
 	bool _buffer_full();
-	ts_pointer_pair _pop_top_frame();
+	void _pop_top_frame();
 	void _need_fmt_uptodate();
 	
 	video_datasource* m_src;
