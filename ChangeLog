@@ -1,3 +1,861 @@
+2007-09-26 21:24  jackjansen
+
+	* Merged exp-bo-ffmpeg-windows branch.	Result works on Windows
+	  with VS2003, will try other platforms too.
+
+2007-09-26 11:22  jackjansen
+
+	* Removed vld.h include.
+
+2007-09-25 14:58  jackjansen
+
+	* Fixed more leaks.
+
+2007-09-25 13:26  jackjansen
+
+	* Fixed a lot of leaks on Windows.
+
+2007-09-24 14:23  jackjansen
+
+	* Jumping into a node that has been disabled because of content
+	  control caused a crash. Added a workaround whereby we temporarily
+	  disable content control while jumping. The SMIL spec is not
+	  explicit about what should happen in this case (and this
+	  workaround matches what Daisy wants).
+
+2007-09-24 11:24  jackjansen
+
+	* on_add_instance() with string parameter is now also needed for
+	  non-SMIL3 builds.
+
+2007-09-19 17:16  keesblom
+
+	* Corrected smilText color setting of white text on black
+	  background (Dicks' SimpleTests-1.smil
+
+2007-09-19 16:50  jackjansen
+
+	* Implemented beginEvent timing referencing smilText interior
+	  nodes.  Since these nodes don't have a presence in the timegraph
+	  they are translated into
+	  smiltextnode.markerEvent(idofinteriornode).
+
+	  The added benefit is that general markerEvents are now also
+	  implemented (even though no renderers raise them yet).
+
+2007-09-18 16:46  jackjansen
+
+	* Opening the document in fullscreen was done too early, the window
+	  wasn't always open yet. Delay switching to fullscreen until the
+	  showWindows call happens.
+
+2007-09-18 14:26  jackjansen
+
+	* Various renderers ignored clipBegin in seek(). Fixed.  Tested
+	  only for cocoa, not for dx.
+
+2007-09-17 16:50  keesblom
+
+	* Repaired unregistered bug found by Dick that AmbulantPlayer hangs
+	  on a <smilText> without a dur attribute. (for Windows).
+
+2007-09-17 16:03  keesblom
+
+	* Repaired unregistered bug found by Dick that AmbulantPlayer hangs
+	  on a <smilText> without a dur attribute. (gtk/qt only, not
+	  Windows).
+
+2007-09-17 14:55  keesblom
+
+	* Added begin attribute for <tev>
+
+2007-09-14 12:53  jackjansen
+
+	* Fullscreen mode is now saved in the preferences. If the last
+	  document was in fullscreen mode when it was closed, opening a new
+	  document will make it appear in fullscreen mode too.
+
+2007-09-13 21:54  keesblom
+
+	* Added chromaKey for smilText on gtk. The function
+	  gdk_pixbuf_blend() got an extra parameter to specify mask_color
+	  for pixels not to be blended at all..
+
+2007-09-13 14:46  keesblom
+
+	* Added chromaKey for gtk_image_renderer.  Repaired a bug in
+	  region_node s.t. chromakey is ignored when not specified.
+
+2007-09-13 13:44  jackjansen
+
+	* When closing a document programmatically also close the
+	  fullscreen window, if it is open.
+
+2007-09-13 12:00  jackjansen
+
+	* Adapted for chroma key methods
+
+2007-09-13 11:45  keesblom
+
+	* Added chromaKey for Windows' smiltText
+
+2007-09-13 11:12  keesblom
+
+	* Chromakey for Windows img: region is now correct.
+
+2007-09-12 17:45  keesblom
+
+	* Initial attempt to provide chromakey for Windows img.cpp: region
+	  is wrong
+
+2007-09-12 17:20  keesblom
+
+	* Minor details(removed spurious #ifdef WITH_CHROMAKEY, AM_DBG, and
+	  dead code.
+
+2007-09-12 14:39  keesblom
+
+	* Added chromaKey for <img> and <smiltext> (qt only).
+
+2007-09-11 17:04  jackjansen
+
+	* Fixed very old bug in arts configure section (which was noticed
+	  when Layola configure Ambulant on a machine with arts)
+
+2007-09-06 10:53  keesblom
+
+	* Finalized [media][background]Opacity for qt. qt_smiltext.cpp also
+	  contains some comments how that code could be optimized using a
+	  different strategy, resulting in far less round trips to the
+	  X-server.
+
+2007-09-04 17:37  keesblom
+
+	* Added [media][Background]Opacity for qt.  Almost finished: white
+	  space and text extend still need to be fixed.
+
+2007-08-28 21:51  jackjansen
+
+	* - By default don't build Python plugin for release.  - Added
+	  xpath-state plugin to installer.
+
+2007-08-27 15:02  keesblom
+
+	* Changed color handling in smiltext such that the SMIL color name
+	  "white" results in visible text (when text background is not
+	  white) , and the same the other way around for the background
+	  color.  This solves an old unregistered bug in the Windows
+	  player.
+
+2007-08-24 14:41  jackjansen
+
+	* SMIL State works on Windows Mobile 5.
+
+2007-08-24 11:15  jackjansen
+
+	* - Fixed libxml2 project so it can actually build libxml2.  -
+	  Added a copy_tpp_win32.vcproj project so the third_party_packages
+	  solution can now copy the libraries to lib/win32.
+
+2007-08-23 17:51  keesblom
+
+	* Implmented 2 improvements: 1. Anti-aliasing is NOT turned off
+	  (CAIRO_ANTIALIAS_NONE) unless it is	 necessary because of
+	  blending (media[Background]Opacity) 2. When blending is needed,
+	  one rarely used color is taken as    transparent color for
+	  chromakeying. However should this color be used in a
+	  presentation anyway, the object will be drawn in an alternative
+	  undistinguishable color, to avoid the ugly bug of seeing
+	  absolutely nothing.	  This could happen e.g. during color
+	  animations possibly resulting in     occasional unreproduceable
+	  flicker..
+
+2007-08-23 14:07  jackjansen
+
+	* Solved another problem with multiple runtime libraries for
+	  Release build.
+
+2007-08-23 13:40  jackjansen
+
+	* Solved another problem with multiple runtime libraries for
+	  Release build.
+
+2007-08-23 10:26  bogao
+
+	* Tried to copy the wrong target for zlib. Fixed
+
+2007-08-22 17:40  bogao
+
+	* (comment by Jack) Solution tried to builld the wrong target for
+	  zlib. Fixed.
+
+2007-08-22 17:33  jackjansen
+
+	* Added a reference to the website explaining how to build ffmpeg
+	  for windows.
+
+2007-08-22 17:31  jackjansen
+
+	* Plugins on WM5 also work in release builds.  Started fiddling
+	  with the installer too, untested.
+
+2007-08-22 15:58  jackjansen
+
+	* Plugins work on Windows Mobile 5
+
+2007-08-22 13:48  jackjansen
+
+	* Shared library build starts to run (on emulator, debug build
+	  only).
+
+2007-08-21 14:46  keesblom
+
+	* Joined branch kees-chroma-250707 with trunl & fixed conflicts.
+
+2007-08-11 00:40  jackjansen
+
+	* Added shared-library targets for Windows Mobile. Compile and Link
+	  work fine, but it does not run yet, probably due to a missing DLL
+	  somewhere.
+
+2007-08-10 23:26  jackjansen
+
+	* Got rid of dg.
+
+2007-08-10 14:33  jackjansen
+
+	* SMIL state support also works under VS2005 (for desktop).
+
+2007-08-10 12:27  jackjansen
+
+	* Don't build plugins unless we're doing a shared build.
+
+2007-08-10 12:13  jackjansen
+
+	* Added notes for libxml2
+
+2007-08-09 17:08  jackjansen
+
+	* SMIL3 support starting to work on Windows Mobile: smiltext seems
+	  be be okay.
+
+2007-08-09 17:06  jackjansen
+
+	* SMILState with Xpath as the state language works on Windows
+	  Desktop, through libxml2.
+
+2007-08-09 15:55  keesblom
+
+	* Merge branch kees-chroma-25-07-07 with trunk Adding
+	  chromakey,-Opacity,-Tolerance (disabled) and
+	  media[Background]Opacity for dx_smiltext_renderer.  Also
+	  chromakey,-Opacity,-Tolerance (enabled) is now present in the
+	  low-level blt_blendXX() functions (dx_viewport)
+
+2007-08-09 15:22  jackjansen
+
+	* Getting started with SMIL3 support for Windows Mobile.
+
+2007-08-09 15:15  keesblom
+
+	* Merge branch kees-chroma-25-07-07 with trunk Adding
+	  chromakey,-Opacity,-Tolerance (disabled) and
+	  media[Background]Opacity for dx_smiltext_renderer.  Also
+	  chromakey,-Opacity,-Tolerance (enabled) is now present in the
+	  low-level blt_blendXX() functions (dx_viewport
+
+2007-08-09 14:18  jackjansen
+
+	* Got SMIL working under VS 2005, except for State.
+
+2007-08-09 13:34  jackjansen
+
+	* Getting started on VC8 SMIL3 support, by merging diffs between
+	  vc71 and vc71-smil3 into vc8 files.
+
+2007-08-09 13:07  bogao
+
+	* Feeding the successive block of one rtsp mp3 packet to ffmpeg to
+	  decode, since ffmpeg can only decode the limited length of around
+	  522(522 or 523 in the case of using testOnDemandRTSPServer as the
+	  RTSP server) bytes data at one time. This idea is borrowed from
+	  VLC, according to:
+	  vlc-0.8.6c/module/codec/ffmpeg/audio.c:L253-L254.
+
+2007-08-07 15:20  jackjansen
+
+	* Basicvideo playback works, up to a point. On the desktop it is
+	  decent, on Windows Mobile it's slow and it isn't resized
+	  correclt, but it plays.
+
+	  On Windows Mobile the original surfaces get lost once we start
+	  video, leading to DDERR_NOTFOUND errors that we now ignore, for
+	  the time being.
+
+2007-08-06 17:31  jackjansen
+
+	* Added dx_basicvideo renderer, which uses standard GraphBuilder
+	  interface to create a video renderer in stead of the more fancy
+	  MultiMediaStream.  This provides less functionality but hopefully
+	  it will work better on WinCE.
+
+	  Incomplete: the current code creates the video renderer in a new
+	  window.
+
+2007-08-06 11:59  jackjansen
+
+	* Added missing get_default_size() call.
+
+2007-08-06 11:57  jackjansen
+
+	* Don't try to include speedup filter on WinCE.
+
+2007-07-27 12:42  keesblom
+
+	* Allow negative numbers as coordinate values in animations. Fixes
+	  #1761839.
+
+2007-07-25 11:11  keesblom
+
+	* HACK. Some font/size combinations look ugly without slight
+	  adjustment.  Fixes #1731356
+
+2007-07-24 12:53  keesblom
+
+	* HACK. Some font/size combinations look ugly without slight
+	  adjustment.  Fixes #1731356
+
+2007-07-11 16:29  keesblom
+
+	* Adapted to recent change in smiltext_layout.
+
+2007-07-11 12:45  keesblom
+
+	* Various small smiltext_layout positioning bugs fixed: - when
+	  first word on the next line was in large font, previous line y
+	  position was	 incorrectly adjusted - word in large font would
+	  erase part of previous word  (on windows) - when scrolling long
+	  text, initial invisible lines did not show although the scroll
+	  sufficiently advanced
+
+2007-07-10 17:42  keesblom
+
+	* Implemented low-level facilities for opacity in color range to be
+	  used to implement opacity, mediaOpacity, chromaKey,
+	  chromaKeyTolerance and chromaKeyOpacity.  (this was done in
+	  previous version of htis file, this version has cosmetics only).
+
+2007-07-10 17:25  keesblom
+
+	* [no log message]
+
+2007-07-06 13:45  keesblom
+
+	* Adapted smiltext_layout_engine to work around a feature on
+	  Windows XP.  When drawing a text in a region with a background
+	  color, that color is applied to the text fields only, not the
+	  whole region.
+
+2007-07-05 16:48  keesblom
+
+	* Implemented background opacity for gtk
+
+2007-07-05 14:11  jackjansen
+
+	* State commands end immediately after starting, unless a duration
+	  is specified.
+
+2007-07-05 13:09  jackjansen
+
+	* Removed some debug output.
+
+2007-07-04 17:01  keesblom
+
+	* Fixed a leak in file code
+
+2007-07-04 16:49  keesblom
+
+	* Implemented SMIL3.0 background opacity for Windows XP.  Not using
+	  DirectX alpha blending facilities, since they do not work.
+	  Therefore I borrowed from the fade code and did  a little bit of
+	  cleanup there.  Hopefully I didn't break anything. The
+	  FancyPanZoom demo seems broken, but I think that has nothing to
+	  do with this code.
+
+	  Also fixed a bug in audio speedup
+
+2007-07-04 15:57  jackjansen
+
+	* Fixed some bugs in dynamic content control.
+
+2007-07-03 23:49  jackjansen
+
+	* pause() and resume() used m_playables without locking
+	  m_playables_cs.  Fixed.
+
+2007-07-03 16:39  jackjansen
+
+	* Merging exp-jack-audio-feedback branch: if ambulant is hosted in
+	  Amis, which provides a DirectShow plugin filter to do audio
+	  speedup with pitch preservation, this filter is inserted into
+	  audio rendering streams.  An API is  available to globally change
+	  playback speed.
+
+2007-07-02 16:18  keesblom
+
+	* Changed <smiltext> into <smilText> as in W3C docs
+
+2007-06-28 15:02  jackjansen
+
+	* Allow hosting applications to set the default size for the
+	  toplevel layout window.
+
+2007-06-27 17:10  keesblom
+
+	* Small changes to adapt to small changes in smiltext_layout_engine
+	  API
+
+2007-06-27 16:57  keesblom
+
+	* Adapted dx_smiltext to work with new smiltext_layout_engine.
+
+2007-06-26 17:36  jackjansen
+
+	* More tweaks to SMIL State.
+
+2007-06-26 17:34  jackjansen
+
+	* Regenerated.
+
+2007-06-26 17:01  keesblom
+
+	* Factored out common code for text layout (in case the platform
+	  doesn't provide a text layout manager). Adapted and tested qt,
+	  Windows still TBD.
+
+2007-06-25 17:42  jackjansen
+
+	* Getting started on function name lookup (for the smil-xxxx()
+	  functions).
+
+2007-06-25 16:59  jackjansen
+
+	* Setting variables and {string interpolation} also work.
+
+2007-06-25 15:56  jackjansen
+
+	* There was a bit of confusion about what exactly was the document
+	  (in xpath terms). Fixed.
+
+2007-06-22 16:52  keesblom
+
+	* Mostly cosmetic changes to adapt to improments in qt_smiltext,
+	  which was derived from dx_smiltext. Both smiltext renderers have
+	  the same structure and some common code, so it may be feasible to
+	  integrate them using more ingeneous class hierarchies. Also, both
+	  smiltext renderers are not engineered for efficiency: e.g.  on
+	  each redraw(), they re-compute the whole text layout
+	  word-by-word, even if no word was added and a valid pixbuf is
+	  still avaliable.
+
+2007-06-22 15:28  keesblom
+
+	* Implemented <smiltext/> in Qt3.3
+
+2007-06-22 14:29  jackjansen
+
+	* Getting started on the XPath state plugin based on libxml2.
+
+2007-06-22 13:12  jackjansen
+
+	* Added a dummy_state plugin that can serve as a base for creating
+	  new state language plugins.
+
+2007-06-22 12:05  jackjansen
+
+	* Fixed and regenerated for new SMIL3 features.
+
+2007-06-21 23:18  jackjansen
+
+	* Workaround for the problem with NSLayoutManager non-opaque
+	  background colors: if the current smiltext has any such
+	  backgrounds we don't render the background directly but in stead
+	  set it to a temporary bitmap (cleared to transparent) and bitblit
+	  this to the destination. As this is all a bit expensive we only
+	  do it when needed.
+
+2007-06-21 22:59  jackjansen
+
+	* MediaOpacity and mediaBackgroundOpacity work. Only problem is
+	  with smiltext mediaBackgroundOpacity: this cuts through the lower
+	  layers as well, not what we want.
+
+2007-06-21 15:41  keesblom
+
+	* Added forgotten stopgap get_bgopacity() > 0.5 replacing
+	  get_transparency()
+
+2007-06-21 14:34  keesblom
+
+	* Revised dx_smiltext <br/> handling to fix #1731350. Even multiple
+	  leading <br/>'s now work.
+
+2007-06-21 12:27  jackjansen
+
+	* Implemented mediaOpacity and mediaBackgroundOpacity. As usual
+	  they don't actually work yet.
+
+2007-06-20 23:30  jackjansen
+
+	* Changed various APIs to prepare for other opacities.
+
+2007-06-20 23:19  jackjansen
+
+	* Got backgroundOpacity to work (Mac only) including animation.
+
+2007-06-20 17:32  jackjansen
+
+	* Replacing one more get_transparency() with get_bgopacity().
+
+2007-06-20 17:25  jackjansen
+
+	* stopgaps for opacity/transparency changes.
+
+2007-06-20 17:20  jackjansen
+
+	* Implemented backgroundOpacity on the Mac. Everything works,
+	  including animation, except we don't actually see anything:-)
+
+2007-06-20 15:04  jackjansen
+
+	* Implemented seeking video for video_renderer-based renderers.
+
+2007-06-20 13:16  jackjansen
+
+	* Implemented seek (and begin offsets) for quicktime movies.
+
+2007-06-20 11:25  jackjansen
+
+	* The new seek code (when seeking forward) didn't skip seq children
+	  that had already played. Fixed.
+
+	  Fixed some debug output too.
+
+2007-06-19 16:29  keesblom
+
+	* Got rid of hang in trivial loop on quit in main() (gtk_gui.cpp)
+	  to fix #1739765
+
+2007-06-19 16:13  keesblom
+
+	* Implemented Pan/Zoom for qt.	Simplified pan/zoom for gtk, to
+	  match qt's implementation more closely.
+
+2007-06-19 15:25  jackjansen
+
+	* When comparing URLs, "" and "localhost" are identical.
+
+2007-06-19 14:47  jackjansen
+
+	* Re-enabled the handling of discrete media as continuous media.
+	  Need to re-check bug #1553249.
+
+2007-06-19 14:24  keesblom
+
+	* Implemented image Pan/Zoom in gtk
+
+2007-06-18 17:02  jackjansen
+
+	* - Implemented SMIL 1.0 names for content control attributes (this
+	  was	apparently overlooked until now) - Added hooks to allow
+	  embedders and plugins to test and change   systemComponent and
+	  customTest values.
+
+2007-06-18 15:38  jackjansen
+
+	* Various minor fixes for Amis.
+
+2007-06-16 21:46  jackjansen
+
+	* A few more tweaks to the fast-forward code, and lots of asserts.
+
+	  There is now one (known:-) construct that still gives trouble: a
+	  container with specified duration containing continuous media
+	  with unspecified duration.
+
+2007-06-15 17:26  jackjansen
+
+	* Merging exp-jack-seek-media branch: Main change is that
+	  fast-forwarding over continuous media without explicit durations
+	  now works (at least: it worked for one document:-).
+
+	  Also minor other changes (bugfixes) and a new preference to allow
+	  dynamic testing for system tests and custom tests.
+
+2007-06-15 15:19  keesblom
+
+	* Fixed SDL test (again).
+
+2007-06-15 13:51  keesblom
+
+	* [no log message]
+
+2007-06-14 17:18  keesblom
+
+	* ::DeleteObject(m_font) was also missing during
+	  _dx_smiltext_fits().	Solves #1735778.
+
+2007-06-14 13:34  keesblom
+
+	* Deleted HFONT data structure when not longer needed. Doesn't seem
+	  to help a lot. Maybe there's more stuff like that for ReleaseDC
+	  to work properly.
+
+2007-06-13 14:17  keesblom
+
+	* Solved SDL configuration problem #1734930
+
+2007-06-12 14:48  jackjansen
+
+	* Getting started with correct seeking of documents: after a
+	  hyperlink we now compute (for each node) the correct time, and
+	  seek the playables there.
+
+	  Does not actually work yet:-)
+
+2007-06-12 14:37  keesblom
+
+	* dx_smiltext cleanup. Everything is now done during redraw.
+
+2007-06-08 13:56  keesblom
+
+	* Added <smiltext textMode="crawl"/"scroll " > on WindowsXP>
+
+2007-06-07 16:37  jackjansen
+
+	* Welcome document has moved to new location on WM5.
+
+2007-06-07 16:25  jackjansen
+
+	* Create a CAB installer
+
+2007-06-07 14:53  jackjansen
+
+	* Transitions were deleted from a std::map while we were iterating
+	  over that map, and libc for wm5 (rightly) complained. Fixed by
+	  remembering the finished transitions and deleting them in a
+	  separate pass.
+
+2007-06-07 13:45  jackjansen
+
+	* WM5 fix broke things on the desktop. Fixed.
+
+2007-06-07 11:02  keesblom
+
+	* Unused variables cleanup
+
+2007-06-07 00:12  jackjansen
+
+	* Added CoInitializeEx call also on WM5. Need to check that this is
+	  okay on the desktop too.  And it still doesn't solve the audio
+	  problem:-(
+
+2007-06-06 23:53  jackjansen
+
+	* Windows Mobile player with DX gui (in stead of DG) showed its
+	  first images. No video or audio yet, though...
+
+2007-06-06 17:39  jackjansen
+
+	* Starting to port the DX code to Windows Mobile 5.
+
+2007-06-06 15:37  jackjansen
+
+	* Getting rid of old files.
+
+2007-06-06 15:36  keesblom
+
+	* Little bit of JUNK cleanup
+
+2007-06-06 15:31  jackjansen
+
+	* Things are starting to work, somewhat.
+
+2007-06-06 14:49  jackjansen
+
+	* - Fixed error message box - Fixed some more url handling
+
+2007-06-06 13:52  jackjansen
+
+	* Fixed menu.
+
+2007-06-06 13:37  jackjansen
+
+	* More bits and pieces to get wince port working again.
+
+2007-06-06 13:34  jackjansen
+
+	* More bits and pieces to get wince port working again.
+
+2007-06-06 11:54  keesblom
+
+	* Nokia 770/800 installer now shows icons, except in the
+	  FileManager.	Also, file type associations do not work (#1731924)
+
+2007-06-05 16:33  jackjansen
+
+	* Adapted to new API.
+
+2007-06-05 16:19  jackjansen
+
+	* (Finally) updated the DG gui to the new factory design.
+
+2007-06-05 14:04  jackjansen
+
+	* viewBox animation works on Windows too.
+
+2007-06-04 15:56  jackjansen
+
+	* Fixed an off-by-one error in animation computations: at t=max it
+	  would actually return the value for t=0 (because there was a <=
+	  where there should have been a <).
+
+2007-06-01 14:17  jackjansen
+
+	* Animation of viewBox starts to work.
+
+2007-06-01 13:42  jackjansen
+
+	* Oops, previous checkin threw away point animation code. Fixed.
+
+2007-06-01 13:15  jackjansen
+
+	* Getting started on animating viewBox.
+
+2007-05-31 15:54  keesblom
+
+	* Added #ifdef WITH_SCREENSHOTS in ambulant_gtk_window::redraw()
+	  because the call to gdk_pixbuf_get_from_drawable() involves
+	  communication with the X-server. This is the main cause for low
+	  redraw frequency on Nokia 770/800. For the same reason, disabled
+	  transIn in NYC-Smiltext.smil where the timed event is
+	  demonstrated.
+
+2007-05-31 14:50  keesblom
+
+	* Moving nokia770 to installers
+
+2007-05-31 14:43  keesblom
+
+	* Moving nokia770 to installers
+
+2007-05-26 00:44  jackjansen
+
+	* NSImage is far too smart for us pport SMIL standards people: all
+	  the sizes it returns are in device coordinates (i.e. image dpi is
+	  converted on load) and moreover it'll change them on the fly if
+	  it thinks it's for our good.	Worked around this so we can still
+	  use the pixel coordinates for cropping, by grabbing them before
+	  the image has been near the display.
+
+2007-05-25 13:54  jackjansen
+
+	* Moved viewBox support to machine-indendent code, and got it ready
+	  for animation (untested).
+
+2007-05-23 17:15  jackjansen
+
+	* viewBox works on windows.
+
+2007-05-23 17:13  jackjansen
+
+	* Removed debugging include.
+
+2007-05-23 16:30  jackjansen
+
+	* First stab at the MediaPanZoom module, with a number of caveats:
+	  - Works only on the Mac - Sometimes has redraw problems - No
+	  animation yet
+
+2007-05-23 16:25  keesblom
+
+	* Python installation improvements. Nokia770/800 has both python2.3
+	  (which ts needs) and python2.5 (which we need), but
+	  --with-python=python2.5 didn't always find the one we need
+
+2007-05-23 13:57  jackjansen
+
+	* Fixed a nasty bug that has been around for ages (but I could not
+	  find any bug report): renderer_playable_dsall-based renderers
+	  could try to render incomplete data, if a redraw came in before
+	  all data was read.
+
+	  This may have been the source of various random crashes, the type
+	  that goes away if you run ambulant again.
+
+2007-05-23 13:45  keesblom
+
+	* Used const_cast<char*> instead of strdup()
+
+2007-05-23 12:39  keesblom
+
+	* SmilState now works on Linux. Used locally installed python-2.5
+	  with LD_LIBRARY_PATH set properly.
+
+2007-05-22 14:35  keesblom
+
+	* Implemented crawl/scroll textModes for SMIL-3 in gtk
+
+2007-05-21 16:07  keesblom
+
+	* Changed Makefile.am to use ouput provided by pkg-config.  (Zaurus
+	  specific lines not touched, since the platform is dead.) Fixes
+	  #1722608
+
+2007-05-21 10:58  keesblom
+
+	* Adaped to latest changes at the maemo website s.t. I can build
+	  for N800 again.
+
+2007-05-17 23:54  jackjansen
+
+	* Copy Xerces debug library too, if it exists.
+
+2007-05-15 17:25  jackjansen
+
+	* Added layers for the Windows installer and uninstaller icons.
+
+2007-05-11 16:15  keesblom
+
+	* Added smiltext font support for gtk using pango layout.
+
+2007-05-10 17:34  keesblom
+
+	* gtk_smiltext starts to work:(bg_)color only, for now, using pango
+	  layout engine
+
+2007-05-10 17:32  keesblom
+
+	* gtk_smiltext starts to work:(bg_)color only, using pango layout
+	  engine
+
+2007-05-09 15:14  keesblom
+
+	* No additional mem.leaks in dx_smiltext. Lots of leaks from
+	  tree_builder, create_document, plugins, factories, logger, etc.
+	  Added  'const' to some internal interfaces.
+
+2007-05-08 17:47  keesblom
+
+	* Recoded dx_smiltext to get rid of dx_smiltest_run which was a coy
+	  of smiltext_run plus some extra fields. Instead, now the Direct X
+	  functions are called repeatedly,
+
+2007-05-08 11:43  jackjansen
+
+	* There were bogus dependencies between the projects, fixed.
+	  Nscontext.cpp was not in the project. Added.
+
 2007-05-01 16:37  jackjansen
 
 	* Added a set_prefix_mapping() method to node. Empty for node_impl
