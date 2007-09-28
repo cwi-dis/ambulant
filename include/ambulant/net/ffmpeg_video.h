@@ -127,6 +127,7 @@ class ffmpeg_video_decoder_datasource:
 	
 	video_datasource* m_src;
 	AVCodecContext *m_con;
+	boolean m_con_owned;	// True if we have to close/free m_con
 //	int m_stream_index;
   	video_format m_fmt;
 // 	bool m_src_end_of_file;

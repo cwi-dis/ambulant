@@ -166,6 +166,7 @@ ffmpeg_video_decoder_datasource::supported(const video_format& fmt)
 ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasource* src, video_format fmt)
 :	m_src(src),
 	m_con(NULL),
+	m_con_owned(false),
 	m_event_processor(NULL),
 	m_client_callback(NULL),
 	m_pts_last_frame(0),
@@ -205,11 +206,12 @@ ffmpeg_video_decoder_datasource::stop()
 	}
 	m_src = NULL;
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::stop(0x%x)", (void*)this);
-	if (m_con) {
+	if (m_con && m_con_owned) {
 		avcodec_close(m_con);
+		av_free(m_con); 
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::stop(): avcodec_close(m_con=0x%x) called", m_con);
-		m_con = NULL;
 	}
+	m_con = NULL;
 	if (m_client_callback) delete m_client_callback;
 	m_client_callback = NULL;
 	// And delete any frames left
@@ -740,6 +742,7 @@ ffmpeg_video_decoder_datasource::_select_decoder(const char* file_ext)
 			return false;
 	}
 	m_con = avcodec_alloc_context();
+	m_con_owned = true;
 	
 	if(avcodec_open(m_con,codec) < 0) {
 			lib::logger::get_logger()->trace("ffmpeg_video_decoder_datasource._select_decoder: Failed to open avcodec for \"%s\"", file_ext);
@@ -756,6 +759,7 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 	if (fmt.name == "ffmpeg") {
 		AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
 		m_con = enc;
+		m_con_owned = false;
 
 		if (enc == NULL) {
 				lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Parameters missing for %s(0x%x)", fmt.name.c_str(), fmt.parameters);

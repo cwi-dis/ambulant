@@ -116,8 +116,6 @@ demux_audio_datasource::stop()
 	}
 	m_thread = NULL;
 	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::stop: thread stopped");
-	//if (m_con) delete m_con;
-	//m_con = NULL; // owned by the thread
 	if (m_client_callback) delete m_client_callback;
 	m_client_callback = NULL;
 	m_lock.leave();
@@ -350,8 +348,6 @@ demux_video_datasource::stop()
 	}
 	m_thread = NULL;
 	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::stop: thread stopped");
-	//if (m_con) delete m_con;
-	//m_con = NULL; // owned by the thread
 	if (m_client_callback) delete m_client_callback;
 	m_client_callback = NULL;
 	if (m_old_frame.second.data) 

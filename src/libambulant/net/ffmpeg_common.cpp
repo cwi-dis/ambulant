@@ -347,7 +347,7 @@ ffmpeg_demux::run()
 #if LIBAVFORMAT_BUILD > 4628
 	int streamnr = video_stream_nr();
 #endif
-	timestamp_t pts;
+	timestamp_t pts = 0;
 	pkt_nr = 0;
 	assert(m_con);
 	
@@ -384,17 +384,17 @@ ffmpeg_demux::run()
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: av_read_packet returned ret= %d, (%d, 0x%x, %d)", ret, (int)pkt->pts ,pkt->data, pkt->size);
 		if (ret < 0) break;
 		pkt_nr++;
-		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_parser::run: av_read_packet number : %d",pkt_nr);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: av_read_packet number : %d",pkt_nr);
 		// Find out where to send it to
 		assert(pkt->stream_index >= 0 && pkt->stream_index < MAX_STREAMS);
 		demux_datasink *sink = m_sinks[pkt->stream_index];
 		if (sink == NULL) {
-			/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_parser::run: Drop data for stream %d (%lld, 0x%x, %d)", pkt->stream_index, pts, pkt->pts ,pkt->data, pkt->size);
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: Drop data for stream %d (%lld, 0x%x, %d)", pkt->stream_index, pts, pkt->pts ,pkt->data, pkt->size);
 		} else {
-			/*AM_DBG*/ lib::logger::get_logger ()->debug ("ffmpeg_parser::run sending data to datasink (stream %d) (%lld, %lld, 0x%x, %d)", pkt->stream_index, pts, pkt->pts ,pkt->data, pkt->size);
+			AM_DBG lib::logger::get_logger ()->debug ("ffmpeg_parser::run sending data to datasink (stream %d) (%lld, %lld, 0x%x, %d)", pkt->stream_index, pts, pkt->pts ,pkt->data, pkt->size);
 			// Wait until there is room in the buffer
 			while (sink && sink->buffer_full() && !exit_requested()) {
-				/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", pkt->stream_index);
+				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", pkt->stream_index);
 				m_lock.leave();
 				 // sleep 10 millisec, hardly noticeable
 #ifdef	AMBULANT_PLATFORM_WIN32
