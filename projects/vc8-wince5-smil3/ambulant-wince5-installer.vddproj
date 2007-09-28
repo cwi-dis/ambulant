@@ -14,13 +14,43 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_267C7FD7BF7D4F409900C024655B6680"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_2726893904F44EDE988654246871007B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
+        "MsmKey" = "8:_35DBB6D9265146BD8CC581C4A49873DE"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_41EDD1E29D3240FF9CE8B752FD23DBFF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_42FA3A4191DE416D92DFEBC508EAD637"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_485DB5109E574AB4AA96461B9CE31372"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5B0A5AD3A7CA4AC7B49CB171A056AF86"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -86,6 +116,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_DCAC730AEAE34A93BA2F050FD4F3293E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_DE30EEECF26D4021A452E1E5183B20B2"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -99,6 +135,12 @@
         "Entry"
         {
         "MsmKey" = "8:_EA2531CE783643DF8DD56EE66F7E04E5"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FA37C9E584C94824A7D25144F155FDE3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -134,10 +176,64 @@
     {
         "File"
         {
+            "{BA458234-9B71-4F46-8107-E91156377184}:_267C7FD7BF7D4F409900C024655B6680"
+            {
+            "SourcePath" = "8:..\\..\\bin\\wince\\SDL.dll"
+            "TargetName" = "8:SDL.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_3D053FEEBDBB4CD1A338E27533F9E02B"
+            "Condition" = "8:"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "Register" = "3:0"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{BA458234-9B71-4F46-8107-E91156377184}:_35DBB6D9265146BD8CC581C4A49873DE"
+            {
+            "SourcePath" = "8:..\\..\\bin\\wince\\avformat-51.dll"
+            "TargetName" = "8:avformat-51.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_3D053FEEBDBB4CD1A338E27533F9E02B"
+            "Condition" = "8:"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "Register" = "3:0"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{BA458234-9B71-4F46-8107-E91156377184}:_42FA3A4191DE416D92DFEBC508EAD637"
             {
             "SourcePath" = "8:..\\..\\README"
             "TargetName" = "8:README"
+            "Tag" = "8:"
+            "Folder" = "8:_3D053FEEBDBB4CD1A338E27533F9E02B"
+            "Condition" = "8:"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "Register" = "3:0"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{BA458234-9B71-4F46-8107-E91156377184}:_5B0A5AD3A7CA4AC7B49CB171A056AF86"
+            {
+            "SourcePath" = "8:..\\..\\bin\\wince\\avcodec-51.dll"
+            "TargetName" = "8:avcodec-51.dll"
             "Tag" = "8:"
             "Folder" = "8:_3D053FEEBDBB4CD1A338E27533F9E02B"
             "Condition" = "8:"
@@ -386,6 +482,24 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{BA458234-9B71-4F46-8107-E91156377184}:_FA37C9E584C94824A7D25144F155FDE3"
+            {
+            "SourcePath" = "8:..\\..\\bin\\wince\\avutil-49.dll"
+            "TargetName" = "8:avutil-49.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_3D053FEEBDBB4CD1A338E27533F9E02B"
+            "Condition" = "8:"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "Register" = "3:0"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
         }
         "Folder"
         {
@@ -470,6 +584,84 @@
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{3E3BABBD-DCB0-4CD2-9DD3-26B96A7A856E}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{605BE39E-5046-48BD-AEC0-63C3A46626D5}:_41EDD1E29D3240FF9CE8B752FD23DBFF"
+            {
+            "SourcePath" = "8:..\\..\\bin\\wince\\libamplugin_ffmpeg.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_3D053FEEBDBB4CD1A338E27533F9E02B"
+            "Condition" = "8:"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "Register" = "3:0"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:0"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{605BE39E-5046-48BD-AEC0-63C3A46626D5}:_485DB5109E574AB4AA96461B9CE31372"
+            {
+            "SourcePath" = "8:..\\..\\bin\\wince\\libambulant_shwince.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_3D053FEEBDBB4CD1A338E27533F9E02B"
+            "Condition" = "8:"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "Register" = "3:0"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:0"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{B2643C6C-B5BE-40FB-B127-320E15D9D09E}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{605BE39E-5046-48BD-AEC0-63C3A46626D5}:_DCAC730AEAE34A93BA2F050FD4F3293E"
+            {
+            "SourcePath" = "8:..\\..\\bin\\wince\\libamplugin_scripting.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_3D053FEEBDBB4CD1A338E27533F9E02B"
+            "Condition" = "8:"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "Register" = "3:0"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:0"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{9260094E-7838-4B48-87BE-CC9F95A6D469}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {

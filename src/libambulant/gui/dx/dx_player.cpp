@@ -37,7 +37,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/transition_info.h"
 
-#include "vld.h" // Enable to use Visual Leak Detector... uhm... leak detection?
+//#include "vld.h" // Enable to use Visual Leak Detector... uhm... leak detection?
 
 #include "ambulant/common/plugin_engine.h"
 

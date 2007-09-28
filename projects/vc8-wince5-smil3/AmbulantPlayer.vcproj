@@ -387,7 +387,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/ALIGN:4096 /subsystem:$(CESubsystem)  "
-				OutputFile="..\..\bin\wince\AmbulantPlayer_shared.exe"
+				OutputFile="..\..\bin\wince\AmbulantPlayer.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\lib\wince-arm"
