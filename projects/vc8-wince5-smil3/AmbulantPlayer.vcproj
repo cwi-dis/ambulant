@@ -359,7 +359,7 @@
 				ExecutionBucket="7"
 				Optimization="3"
 				AdditionalIncludeDirectories="..\..\include"
-				PreprocessorDefinitions="NDEBUG;ARM;_ARM_;UNDER_CE=$(CEVER);_WIN32_WCE=$(CEVER);$(CePlatform);UNICODE;WITH_SMIL30"
+				PreprocessorDefinitions="NDEBUG;ARM;_ARM_;UNDER_CE=$(CEVER);_WIN32_WCE=$(CEVER);$(CePlatform);UNICODE;WITH_SMIL30;WITH_WINDOWS_PLUGINS"
 				RuntimeLibrary="2"
 				BufferSecurityCheck="false"
 				UsePrecompiledHeader="2"
