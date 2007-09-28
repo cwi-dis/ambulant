@@ -30,6 +30,7 @@
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/memfile.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/lib/colors.h"
 
 #include "ambulant/common/region_info.h"
 
@@ -189,7 +190,7 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 			alpha_chroma = ri->get_chromakeyopacity();
 			lib::color_t chromakey = ri->get_chromakey();
 			lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
-			compute_chroma_range(chromakey, chromakeytolerance,
+			lib::compute_chroma_range(chromakey, chromakeytolerance,
 							     &chroma_low, &chroma_high);
 		}
 	}

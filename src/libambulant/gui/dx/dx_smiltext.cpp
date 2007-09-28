@@ -37,6 +37,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/win32/win32_error.h"
 #include "ambulant/lib/textptr.h"
+#include "ambulant/lib/colors.h"
 
 /* windows includes begin*/
 #ifdef AMBULANT_DDRAW_EX
@@ -223,7 +224,7 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 			alpha_chroma = ri->get_chromakeyopacity();
 			lib::color_t chromakey = ri->get_chromakey();
 			lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
-			compute_chroma_range(chromakey, chromakeytolerance,
+			lib::compute_chroma_range(chromakey, chromakeytolerance,
 					     &chroma_low, &chroma_high);   
 		}
 	}
@@ -281,7 +282,7 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 	// set the foreground color
 	COLORREF old_color = CLR_INVALID;
 	COLORREF old_textbg_color = CLR_INVALID;
-	color_t fg_color_t = (run.m_color == CLR_INVALID)?
+	lib::color_t fg_color_t = (run.m_color == CLR_INVALID)?
 						::GetSysColor(COLOR_WINDOWTEXT) : run.m_color;
 	if (run.m_transparent)
 		fg_color_t = CLR_DEFAULT;
@@ -292,7 +293,7 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 	// set the background color
 	COLORREF old_bgcolor = CLR_INVALID;
 	COLORREF old_textbg_bgcolor = CLR_INVALID;
-	color_t bg_color_t = (run.m_bg_color == CLR_INVALID)?
+	lib::color_t bg_color_t = (run.m_bg_color == CLR_INVALID)?
 								::GetSysColor(COLOR_WINDOW):
 					 	 (run.m_bg_color == CLR_DEFAULT)?
 								CLR_ALTERNATIVE : run.m_bg_color;
@@ -303,9 +304,9 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 	COLORREF crBkColor = bg_color_t;
 
 	if (ri->is_chromakey_specified()) {
-		if (color_t_in_range (fg_color_t, chroma_low, chroma_high))
+		if (lib::color_t_in_range (fg_color_t, chroma_low, chroma_high))
 			alpha_media = alpha_chroma;
-		if (color_t_in_range (bg_color_t, chroma_low, chroma_high))
+		if (lib::color_t_in_range (bg_color_t, chroma_low, chroma_high))
 			alpha_media_bg = alpha_chroma;
 	}
 	if (blending) {
