@@ -315,10 +315,12 @@ string2uri(const std::string str) {
 	return rv;
 }
 
-// static 
-//std::list< std::pair<std::string, net::url::HANDLER> > net::url::s_handlers;
-// workaround for g++ 2.95
-std::list< net::url_handler_pair* > s_handlers;
+struct url_handler_pair { 
+	const char *first; 
+	void (net::url::*second)(ambulant::lib::scanner& sc, const std::string& pat);
+};
+
+static std::list< url_handler_pair* > s_handlers;
 
 // static
 void net::url::init_statics() {
@@ -575,7 +577,7 @@ void net::url::set_from_scheme(lib::scanner& sc, const std::string& pat) {
 	m_path = sc.join(2);  // Skip scheme:
 	// Unsure: should we do #fragment processing for unknown URLs?
 	// initially I thought not, but the ambulantpdbt: scheme needs it...
-	int hpos = m_path.find('#');
+	size_t hpos = m_path.find('#');
 	if (hpos != std::string::npos) {
 		m_ref = m_path.substr(hpos+1);
 		m_path = m_path.substr(0, hpos);

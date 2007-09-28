@@ -245,16 +245,6 @@ class AMBULANTAPI url {
 	
 };
 
-// workaround for g++ 2.95
-struct url_handler_pair { 
-	const char *first; 
-	void (url::*second)(ambulant::lib::scanner& sc, const std::string& pat);
-};
-
-//typedef void (url::*HANDLER)(ambulant::lib::scanner& sc, const std::string& pat);
-static std::list<url_handler_pair*> s_handlers;
-	
-
 } // namespace net
  
 } // namespace ambulant
