@@ -12,7 +12,7 @@ Currently it is alsmost empty. Potential topics could be:
 Backups.
 ========
 
-User 'ambulant@bahco.sen.cwi.nl' creates a nightly mirror backup of the
+User ambulant on bahco.sen creates a nightly mirror backup of the
 entire Sourgeforge repository after updating and commiting ChangeLog.
 The scripts for these hidden action are in: /ufs/ambulant/scripts
 (update_changelog.sh and backup.sh) and are enabled to run at night
