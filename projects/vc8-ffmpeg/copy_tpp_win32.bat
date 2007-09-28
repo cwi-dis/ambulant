@@ -14,15 +14,12 @@ if not exist %AMB_HOME%\bin md %AMB_HOME%\bin
 if not exist %AMB_HOME%\bin\win32 md %AMB_HOME%\bin\win32
 
 REM Expat
-REM skip: copy %TPP_HOME%\expat\lib\Release\libexpat.dll %AMB_HOME%\bin\win32\libexpat.dll
 copy %TPP_HOME%\expat\lib\Release\libexpat.lib %AMB_HOME%\lib\win32\libexpat.lib
 
 REM PNG DLL
-REM skip: copy %TPP_HOME%\lpng128\projects\visualc71\XXXXXX\libpng.dll %AMB_HOME%\bin\win32\libpng.dll
 copy %TPP_HOME%\lpng128\projects\visualc71\Win32_LIB_ASM_Release\libpng.lib %AMB_HOME%\lib\win32\libpng.lib
 
 REM ZLib DLL
-REM skip: copy %TPP_HOME%\lpng128\projects\visualc71\XXXXXX\zlib\zlib.dll %AMB_HOME%\bin\win32\zlib.dll
 copy %TPP_HOME%\lpng128\projects\visualc71\Win32_LIB_Release\zlib\zlib.lib %AMB_HOME%\lib\win32\zlib.lib
 
 REM JPEG static library

@@ -37,7 +37,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/transition_info.h"
 
-//#include "vld.h" // Enable to use Visual Leak Detector... uhm... leak detection?
+#include "vld.h" // Enable to use Visual Leak Detector... uhm... leak detection?
 
 #include "ambulant/common/plugin_engine.h"
 
@@ -184,6 +184,10 @@ gui::dx::dx_player::cleanup()
 	delete plf;
 	lib::global_parser_factory *prf = lib::global_parser_factory::get_parser_factory();
 	delete prf;
+#ifdef WITH_SMIL30
+	common::global_script_component_factory *scf = common::get_global_script_component_factory();
+	delete scf;
+#endif
 }
 
 void
