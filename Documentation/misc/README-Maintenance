@@ -1,0 +1,24 @@
+Various project maintenance aspects.
+====================================
+
+This document serves to record various (sometimes hidden)
+internal project maintenance aspects.
+Currently it is alsmost empty. Potential topics could be:
+- user management (CWI, Sourceforge, Oratrix)
+- backups
+- bug management
+- regression testing
+
+Backups.
+========
+
+User 'ambulant@bahco.sen.cwi.nl' creates a nightly mirror backup of the
+entire Sourgeforge repository after updating and commiting ChangeLog.
+The scripts for these hidden action are in: /ufs/ambulant/scripts
+(update_changelog.sh and backup.sh) and are enabled to run at night
+by the command: crontab -e.
+
+For restore (which has never been done), refer to 
+http://sourceforge.net/docs/E04.
+
+
