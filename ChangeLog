@@ -1,3 +1,48 @@
+2007-09-29 00:26  jackjansen
+
+	* Tweaked a few settings.
+
+2007-09-28 17:14  jackjansen
+
+	* - ffmpeg is starting to play more than one frame on the emulator,
+	  but veeeeeeeery slow.  - installer for real device is starting to
+	  work.
+
+2007-09-28 15:14  jackjansen
+
+	* Details.
+
+2007-09-28 14:51  jackjansen
+
+	* boolean->bool.
+
+2007-09-28 14:19  jackjansen
+
+	* More leak cleanup
+
+2007-09-28 14:17  jackjansen
+
+	* AVCodecContext m_con could be freed twice. Fixed.
+
+2007-09-28 13:27  keesblom
+
+	* Security patch
+
+2007-09-28 13:03  keesblom
+
+	* Added a small document about project maintenance issues. It now
+	  only contains some basic information how we do backups. This is a
+	  hidden activity, which sometimes breaks and nobody knows how this
+	  is organized.
+
+2007-09-28 11:48  jackjansen
+
+	* Some namespace tags were needed.
+
+2007-09-28 11:47  jackjansen
+
+	* Fixed some dependencies
+
 2007-09-26 21:24  jackjansen
 
 	* Merged exp-bo-ffmpeg-windows branch.	Result works on Windows
