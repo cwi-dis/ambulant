@@ -833,6 +833,7 @@ public:
 	void clicked(ambulant::common::playable::cookie_type n, double t);
 	void pointed(ambulant::common::playable::cookie_type n, double t);
 	void transitioned(ambulant::common::playable::cookie_type n, double t);
+	void marker_seen(ambulant::common::playable::cookie_type n, const char* name, double t);
   private:
 	PyObject *py_playable_notification;
 
@@ -963,7 +964,7 @@ public:
 	virtual ~region_info();
 
 	std::string get_name() const;
-	ambulant::lib::rect get_rect() const;
+	ambulant::lib::rect get_rect(const ambulant::lib::rect * default_rect) const;
 	ambulant::common::fit_t get_fit() const;
 	ambulant::lib::color_t get_bgcolor() const;
 	double get_bgopacity() const;
@@ -1014,7 +1015,7 @@ public:
 	void set_region_soundalign(ambulant::common::sound_alignment sa);
 	void set_region_opacity(const std::string& which, double level);
 	std::string get_name() const { return region_info::get_name(); }
-	ambulant::lib::rect get_rect() const { return region_info::get_rect(); }
+	ambulant::lib::rect get_rect(const ambulant::lib::rect* dft=NULL) const { return region_info::get_rect(dft); }
 	ambulant::common::fit_t get_fit() const { return region_info::get_fit(); }
 	ambulant::lib::color_t get_bgcolor() const { return region_info::get_bgcolor(); }
 	ambulant::common::zindex_t get_zindex() const { return region_info::get_zindex(); }

@@ -5010,6 +5010,7 @@ playable_notification::playable_notification(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "clicked")) PyErr_Warn(PyExc_Warning, "playable_notification: missing attribute: clicked");
 		if (!PyObject_HasAttrString(itself, "pointed")) PyErr_Warn(PyExc_Warning, "playable_notification: missing attribute: pointed");
 		if (!PyObject_HasAttrString(itself, "transitioned")) PyErr_Warn(PyExc_Warning, "playable_notification: missing attribute: transitioned");
+		if (!PyObject_HasAttrString(itself, "marker_seen")) PyErr_Warn(PyExc_Warning, "playable_notification: missing attribute: marker_seen");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -5162,6 +5163,28 @@ void playable_notification::transitioned(ambulant::common::playable::cookie_type
 
 	Py_XDECREF(py_rv);
 	Py_XDECREF(py_n);
+	Py_XDECREF(py_t);
+
+	PyGILState_Release(_GILState);
+}
+
+void playable_notification::marker_seen(ambulant::common::playable::cookie_type n, const char* name, double t)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_n = Py_BuildValue("l", n);
+	PyObject *py_name = Py_BuildValue("s", name);
+	PyObject *py_t = Py_BuildValue("d", t);
+
+	PyObject *py_rv = PyObject_CallMethod(py_playable_notification, "marker_seen", "(OOO)", py_n, py_name, py_t);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable_notification::marker_seen() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_n);
+	Py_XDECREF(py_name);
 	Py_XDECREF(py_t);
 
 	PyGILState_Release(_GILState);
@@ -5901,12 +5924,13 @@ std::string region_info::get_name() const
 	return _rv;
 }
 
-ambulant::lib::rect region_info::get_rect() const
+ambulant::lib::rect region_info::get_rect(const ambulant::lib::rect * default_rect) const
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
 	ambulant::lib::rect _rv;
+	PyObject *py_default_rect = Py_BuildValue("O&", ambulant_rect_New, default_rect);
 
-	PyObject *py_rv = PyObject_CallMethod(py_region_info, "get_rect", "()");
+	PyObject *py_rv = PyObject_CallMethod(py_region_info, "get_rect", "(O)", py_default_rect);
 	if (PyErr_Occurred())
 	{
 		PySys_WriteStderr("Python exception during region_info::get_rect() callback:\n");
@@ -5920,6 +5944,7 @@ ambulant::lib::rect region_info::get_rect() const
 	}
 
 	Py_XDECREF(py_rv);
+	Py_XDECREF(py_default_rect);
 
 	PyGILState_Release(_GILState);
 	return _rv;

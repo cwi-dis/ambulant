@@ -109,6 +109,7 @@ q_attributes_list = OpaqueByRefType("ambulant::lib::q_attributes_list", "ambulan
 region_dim = OpaqueByRefType("ambulant::common::region_dim", "ambulant_region_dim")
 net_url = OpaqueByRefType("ambulant::net::url", "ambulant_url")
 rect = OpaqueByRefType("ambulant::lib::rect", "ambulant_rect")
+lib_rect_ptr = OpaqueByValueType("ambulant::lib::rect *", "ambulant_rect")
 point = OpaqueByRefType("ambulant::lib::point", "ambulant_point")
 const_lib_point_ref = OpaqueByRefType("const ambulant::lib::point&", "ambulant_point")
 const_lib_rect_ref = OpaqueByRefType("const ambulant::lib::rect&", "ambulant_rect")
@@ -571,7 +572,7 @@ surface_template_object.othermethods = [
 ]
 animation_destination_object.othermethods = [
     "std::string get_name() const { return region_info::get_name(); }",
-    "ambulant::lib::rect get_rect() const { return region_info::get_rect(); }",
+    "ambulant::lib::rect get_rect(const ambulant::lib::rect* dft=NULL) const { return region_info::get_rect(dft); }",
     "ambulant::common::fit_t get_fit() const { return region_info::get_fit(); }",
     "ambulant::lib::color_t get_bgcolor() const { return region_info::get_bgcolor(); }",
     "ambulant::common::zindex_t get_zindex() const { return region_info::get_zindex(); }",

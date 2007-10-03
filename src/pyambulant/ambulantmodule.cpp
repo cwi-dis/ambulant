@@ -9086,6 +9086,27 @@ static PyObject *playable_notificationObj_transitioned(playable_notificationObje
 	return _res;
 }
 
+static PyObject *playable_notificationObj_marker_seen(playable_notificationObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable::cookie_type n;
+	char* name;
+	double t;
+	if (!PyArg_ParseTuple(_args, "lsd",
+	                      &n,
+	                      &name,
+	                      &t))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->marker_seen(n,
+	                              name,
+	                              t);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyMethodDef playable_notificationObj_methods[] = {
 	{"started", (PyCFunction)playable_notificationObj_started, 1,
 	 PyDoc_STR("(ambulant::common::playable::cookie_type n, double t) -> None")},
@@ -9101,6 +9122,8 @@ static PyMethodDef playable_notificationObj_methods[] = {
 	 PyDoc_STR("(ambulant::common::playable::cookie_type n, double t) -> None")},
 	{"transitioned", (PyCFunction)playable_notificationObj_transitioned, 1,
 	 PyDoc_STR("(ambulant::common::playable::cookie_type n, double t) -> None")},
+	{"marker_seen", (PyCFunction)playable_notificationObj_marker_seen, 1,
+	 PyDoc_STR("(ambulant::common::playable::cookie_type n, char* name, double t) -> None")},
 	{NULL, NULL, 0}
 };
 
@@ -10371,10 +10394,12 @@ static PyObject *region_infoObj_get_name(region_infoObject *_self, PyObject *_ar
 static PyObject *region_infoObj_get_rect(region_infoObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
-	if (!PyArg_ParseTuple(_args, ""))
+	ambulant::lib::rect * default_rect;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      ambulant_rect_Convert, &default_rect))
 		return NULL;
 	PyThreadState *_save = PyEval_SaveThread();
-	ambulant::lib::rect _rv = _self->ob_itself->get_rect();
+	ambulant::lib::rect _rv = _self->ob_itself->get_rect(default_rect);
 	PyEval_RestoreThread(_save);
 	_res = Py_BuildValue("O",
 	                     ambulant_rect_New(_rv));
@@ -10608,7 +10633,7 @@ static PyMethodDef region_infoObj_methods[] = {
 	{"get_name", (PyCFunction)region_infoObj_get_name, 1,
 	 PyDoc_STR("() -> (std::string _rv)")},
 	{"get_rect", (PyCFunction)region_infoObj_get_rect, 1,
-	 PyDoc_STR("() -> (ambulant::lib::rect _rv)")},
+	 PyDoc_STR("(ambulant::lib::rect * default_rect) -> (ambulant::lib::rect _rv)")},
 	{"get_fit", (PyCFunction)region_infoObj_get_fit, 1,
 	 PyDoc_STR("() -> (ambulant::common::fit_t _rv)")},
 	{"get_bgcolor", (PyCFunction)region_infoObj_get_bgcolor, 1,
