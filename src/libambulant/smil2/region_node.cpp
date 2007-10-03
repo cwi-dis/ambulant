@@ -429,7 +429,7 @@ region_node::fix_from_dom_node()
 }
 
 lib::rect
-region_node::get_rect() const {
+region_node::get_rect(const lib::rect *default_rect) const {
 	const region_node *inherit_region = NULL;
 	const region_node *parent_node = up();
 	switch(m_dim_inherit) {
@@ -446,12 +446,20 @@ region_node::get_rect() const {
 		}
 		break;
 	  case di_none:
+	  case di_stored:
 		break;
 	}
 	lib::rect rc;
-	if(inherit_region == NULL) {
-		// XXX Incorrect: should be gotten from window factory
-		rc = lib::rect(lib::size(common::default_layout_width, common::default_layout_height)); 
+	if (m_dim_inherit == di_stored) {
+		rc = m_stored_dim_inherit;
+	} else if(inherit_region == NULL) {
+		if (default_rect) {
+			rc = *default_rect;
+			const_cast<region_node*>(this)->m_stored_dim_inherit = rc;
+			const_cast<region_node*>(this)->m_dim_inherit = di_stored;
+		} else {
+			rc = lib::rect(lib::size(common::default_layout_width, common::default_layout_height));
+		}
 	} else {
 		rc = inherit_region->get_rect();
 	}

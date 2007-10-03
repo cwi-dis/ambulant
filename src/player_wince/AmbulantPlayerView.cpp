@@ -33,6 +33,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+static SIZE usable_size_on_startup = { 640, 480 }; // Modified when window opens
+
 using namespace ambulant;
 
 text_char *log_name = TEXT("\\Program Files\\Ambulant\\amlog.txt");
@@ -91,11 +93,7 @@ my_player_callbacks::new_html_browser(int left, int top, int width, int height)
 
 SIZE
 my_player_callbacks::get_default_size() {
-	SIZE size;
-	// XXXJACK these are stupid values. Need to get from environment.
-	size.cx = 640;
-	size.cy = 480;
-	return size;
+	return usable_size_on_startup;
 }
 
 static dg_or_dx_player* 
@@ -200,6 +198,9 @@ int CAmbulantPlayerView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 #else
 	lib::logger::get_logger()->debug("Ambulant Player: using DX Player");
 #endif
+	lib::logger::get_logger()->debug("Ambulant Player: size is %dx%d", lpCreateStruct->cx, lpCreateStruct->cy);
+	usable_size_on_startup.cx = lpCreateStruct->cx;
+	usable_size_on_startup.cy = lpCreateStruct->cy;
 #if 0
 	common::preferences *prefs = common::preferences::get_preferences();
 	prefs->m_prefer_ffmpeg = true;

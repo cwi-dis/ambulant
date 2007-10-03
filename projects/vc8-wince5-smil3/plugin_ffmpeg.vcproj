@@ -184,7 +184,7 @@
 				ForceDirty="-1"
 				RemoteDirectory="%CSIDL_PROGRAM_FILES%\AmbulantPlayer"
 				RegisterOutput="0"
-				AdditionalFiles=""
+				AdditionalFiles="avcodec-51.dll|..\..\bin\wince\|%CSIDL_PROGRAM_FILES%\AmbulantPlayer|0;avformat-51.dll|..\..\bin\wince\|%CSIDL_PROGRAM_FILES%\AmbulantPlayer|0;avutil-49.dll|..\..\bin\wince\|%CSIDL_PROGRAM_FILES%\AmbulantPlayer|0;SDL.dll|..\..\bin\wince\|%CSIDL_PROGRAM_FILES%\AmbulantPlayer|0"
 			/>
 			<DebuggerTool
 			/>

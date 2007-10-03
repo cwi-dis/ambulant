@@ -148,7 +148,7 @@
 				OutputFile="../../bin/win32/libamplugin_ffmpeg.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\lib\win32"
-				IgnoreDefaultLibraryNames=""
+				IgnoreDefaultLibraryNames="libcmtd.lib;libcpmtd.lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"

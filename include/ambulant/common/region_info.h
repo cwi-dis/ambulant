@@ -62,7 +62,7 @@ class region_info {
 	virtual std::string get_name() const = 0;
 	
 	/// Return the rectangle of the region.
-	virtual rect get_rect() const = 0;
+	virtual rect get_rect(const lib::rect *default_rect = NULL) const = 0;
 	
 	/// Return the fit attribute for the region.
 	virtual fit_t get_fit() const = 0;

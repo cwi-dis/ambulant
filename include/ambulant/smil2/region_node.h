@@ -51,7 +51,7 @@ namespace ambulant {
 
 namespace smil2 {
 
-enum dimension_inheritance { di_none, di_parent, di_rootlayout };
+enum dimension_inheritance { di_none, di_parent, di_rootlayout, di_stored };
 
 class region_node : public common::animation_destination {
   public:
@@ -87,7 +87,7 @@ class region_node : public common::animation_destination {
 	// query for this region's rectangle
 	// the rectangle is evaluaded on the fly
 	// the evaluation takes into account relative coordinates
-	lib::rect get_rect() const;
+	lib::rect get_rect(const lib::rect *default_rect = NULL) const;
 	
 	// gets the underlying region_dim_spec for modification
 	common::region_dim_spec& rds() {return m_rds;}
@@ -213,6 +213,7 @@ class region_node : public common::animation_destination {
 	const lib::node *m_node;
 	common::region_dim_spec m_rds;
 	dimension_inheritance m_dim_inherit;
+	lib::rect m_stored_dim_inherit;
 	common::fit_t m_fit;
 	common::zindex_t m_zindex;
 	lib::color_t m_bgcolor;
