@@ -1,3 +1,23 @@
+2007-10-03 23:45  jackjansen
+
+	* Live compiles and builds for WM5, with some minor tweaks.
+
+2007-10-03 17:36  jackjansen
+
+	* Getting started with building live555 for windows mobile.
+	  Unfinished.
+
+2007-10-03 16:47  jackjansen
+
+	* Fixed Python interface wrt. new default size handling.
+
+2007-10-03 16:34  jackjansen
+
+	* Revamped handling of default windowsize (i.e. no toplevel size
+	  specified in SMIL document) so things also work on WM5.
+
+	  NOTE: needs work on other platforms too.
+
 2007-09-29 00:26  jackjansen
 
 	* Tweaked a few settings.
