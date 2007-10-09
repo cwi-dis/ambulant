@@ -53,7 +53,7 @@ struct animate_registers {
 	double dv;
 	common::sound_alignment sa;
 #ifdef WITH_SMIL30
-	common::region_dim_spec viewbox;
+	common::region_dim_spec panzoom;
 #endif
 };
 
@@ -85,7 +85,7 @@ class animate_node : public time_node {
 	// XXXX Need to add soundlevel animation (similar to zindex)
 	static animate_node* new_soundalign_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
 #ifdef WITH_SMIL30
-	static animate_node* new_viewbox_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
+	static animate_node* new_panzoom_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
 	static animate_node* new_opacity_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
 #endif // WITH_SMIL30
   protected:

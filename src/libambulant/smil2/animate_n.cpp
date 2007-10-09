@@ -566,22 +566,22 @@ soundalign_animation::apply_self_effect(animate_registers& regs) const
 ////////////////////////////////////
 // regdim_animation
 //
-// A viewbox_animation may be used for all viewBox animations except for "to" animations
+// A panzoom_animation may be used for all panZoom animations except for "to" animations
 // 
 template <class F>
-class viewbox_animation : public linear_values_animation<F, common::region_dim_spec> {
+class panzoom_animation : public linear_values_animation<F, common::region_dim_spec> {
   public:
-	  viewbox_animation(time_node_context *ctx, const node *n, animate_attrs *aattrs)
+	  panzoom_animation(time_node_context *ctx, const node *n, animate_attrs *aattrs)
 	:	linear_values_animation<F, common::region_dim_spec>(ctx, n, aattrs) {}
 	
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
-		regs.viewbox = dst->get_region_viewbox(true);
+		regs.panzoom = dst->get_region_panzoom(true);
 	}
 
 	bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const {
-		const common::region_dim_spec& rds = dst->get_region_viewbox(false);
-		if(rds != regs.viewbox || IGNORE_ATTR_COMP) {
-			dst->set_region_viewbox(regs.viewbox);
+		const common::region_dim_spec& rds = dst->get_region_panzoom(false);
+		if(rds != regs.panzoom || IGNORE_ATTR_COMP) {
+			dst->set_region_panzoom(regs.panzoom);
 			return true;
 		}
 		return false;
@@ -590,28 +590,28 @@ class viewbox_animation : public linear_values_animation<F, common::region_dim_s
 	void apply_self_effect(animate_registers& regs) const {
 		if(!this->m_animate_f) return;
 		lib::timer::time_type t = this->m_timer->elapsed();
-		common::region_dim_spec viewbox = this->m_animate_f->at(t);
+		common::region_dim_spec panzoom = this->m_animate_f->at(t);
 		if(this->m_aattrs->is_additive())
-			regs.viewbox += viewbox; // add
+			regs.panzoom += panzoom; // add
 			
 		else
-			regs.viewbox = viewbox; // override
+			regs.panzoom = panzoom; // override
 	}
 };
 
-class underlying_to_viewbox_animation : public underlying_to_animation<common::region_dim_spec> {
+class underlying_to_panzoom_animation : public underlying_to_animation<common::region_dim_spec> {
   public:
-	underlying_to_viewbox_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
+	underlying_to_panzoom_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
 	:	underlying_to_animation<common::region_dim_spec>(ctx, n, aattrs) {}
 	
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
-		regs.viewbox = dst->get_region_viewbox(true);
+		regs.panzoom = dst->get_region_panzoom(true);
 	}
 
 	bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const {
-		const common::region_dim_spec viewbox = dst->get_region_viewbox(false);
-		if(viewbox != regs.viewbox || IGNORE_ATTR_COMP) {
-			dst->set_region_viewbox(regs.viewbox);
+		const common::region_dim_spec panzoom = dst->get_region_panzoom(false);
+		if(panzoom != regs.panzoom || IGNORE_ATTR_COMP) {
+			dst->set_region_panzoom(regs.panzoom);
 			return true;
 		}
 		return false;
@@ -619,13 +619,13 @@ class underlying_to_viewbox_animation : public underlying_to_animation<common::r
 
 	void apply_self_effect(animate_registers& regs) const {
 		if(!m_animate_f) {
-			AM_DBG lib::logger::get_logger()->debug("viewbox_anim: m_animate_f==NULL");
+			AM_DBG lib::logger::get_logger()->debug("panzoom_anim: m_animate_f==NULL");
 			return;
 		}
 		lib::timer::time_type t = m_timer->elapsed();
-		common::region_dim_spec viewbox = m_animate_f->at(t, regs.viewbox);
-		AM_DBG lib::logger::get_logger()->debug("viewbox_anim: timer=0x%x t=%d", (void*)m_timer, t);
-		regs.viewbox = viewbox; // override
+		common::region_dim_spec panzoom = m_animate_f->at(t, regs.panzoom);
+		AM_DBG lib::logger::get_logger()->debug("panzoom_anim: timer=0x%x t=%d", (void*)m_timer, t);
+		regs.panzoom = panzoom; // override
 	}
 };
 
@@ -762,16 +762,16 @@ animate_node* animate_node::new_position_animation(context_type *ctx, const node
 
 #ifdef WITH_SMIL30
 // private static 
-animate_node* animate_node::new_viewbox_animation(context_type *ctx, const node *n, animate_attrs *aattrs) {
+animate_node* animate_node::new_panzoom_animation(context_type *ctx, const node *n, animate_attrs *aattrs) {
 	typedef common::region_dim_spec attr_t;
 	if(aattrs->is_discrete()) {
 		typedef discrete_map_f<attr_t> F;
-		return new viewbox_animation<F>(ctx, n, aattrs);
+		return new panzoom_animation<F>(ctx, n, aattrs);
 	} else if(aattrs->get_animate_type() == "to") {
-		return new underlying_to_viewbox_animation(ctx, n, aattrs);
+		return new underlying_to_panzoom_animation(ctx, n, aattrs);
 	}
 	typedef linear_map_f<attr_t> F;
-	return new viewbox_animation<F>(ctx, n, aattrs);
+	return new panzoom_animation<F>(ctx, n, aattrs);
 }
 
 // private static 
@@ -809,8 +809,8 @@ animate_node* animate_node::new_instance(context_type *ctx, const node *n, const
 	} else if(aattrs->get_target_attr() == "soundAlign") {
 		return new_soundalign_animation(ctx, n, aattrs);
 #ifdef WITH_SMIL30
-	} else if (aattrs->get_target_attr() == "viewBox") {
-		return new_viewbox_animation(ctx, n, aattrs);
+	} else if (aattrs->get_target_attr() == "panZoom") {
+		return new_panzoom_animation(ctx, n, aattrs);
 	} else if (aattrs->get_target_attr_type() == "opacity" ) {
 		return new_opacity_animation(ctx, n, aattrs);
 #endif // WITH_SMIL30

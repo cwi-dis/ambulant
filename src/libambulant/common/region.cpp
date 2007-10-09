@@ -583,7 +583,7 @@ surface_impl::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, c
 	int x_image_for_region_right = src_clip_rect.right();
 	int y_image_for_region_top = src_clip_rect.top();
 	int y_image_for_region_bottom = src_clip_rect.bottom();
-	// Now we need to clamp the image values: the viewBox coordinates could be outside the
+	// Now we need to clamp the image values: the panZoom coordinates could be outside the
 	// real image coordinate space.
 	if (x_image_for_region_left < 0) {
 		x_region_for_image_left = (int)((-x_image_for_region_left * scale_horizontal) + 0.5);

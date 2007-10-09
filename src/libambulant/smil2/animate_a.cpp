@@ -123,8 +123,8 @@ void animate_attrs::locate_target_attr() {
 	} else if (m_attrname == "soundAlign") {
 		m_attrtype = "soundAlign";
 #ifdef WITH_SMIL30
-	} else if (m_attrname == "viewBox") {
-		m_attrtype = "viewBox";
+	} else if (m_attrname == "panZoom") {
+		m_attrtype = "panZoom";
 	} else if (m_attrname == "backgroundOpacity" || m_attrname == "mediaOpacity" || m_attrname == "mediaBackgroundOpacity") {
 		m_attrtype = "opacity";
 #endif // WITH_SMIL30

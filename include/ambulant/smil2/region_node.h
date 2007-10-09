@@ -128,7 +128,7 @@ class region_node : public common::animation_destination {
 	void set_soundlevel(double l) { m_soundlevel = l; m_display_soundlevel = l; }
 	void set_soundalign(common::sound_alignment sa) { m_soundalign = sa; m_display_soundalign = sa; }
 #ifdef WITH_SMIL30
-	void set_viewbox(const common::region_dim_spec& rds) { m_viewbox = rds; m_display_viewbox = rds; }
+	void set_panzoom(const common::region_dim_spec& rds) { m_panzoom = rds; m_display_panzoom = rds; }
 	void set_bgopacity(double l) { m_bgopacity = l; m_display_bgopacity = l; }
 	void set_mediaopacity(double l) { m_mediaopacity = l; m_display_mediaopacity = l; }
 	void set_mediabgopacity(double l) { m_mediabgopacity = l; m_display_mediabgopacity = l; }
@@ -145,7 +145,7 @@ class region_node : public common::animation_destination {
 	double get_region_soundlevel(bool fromdom = false) const;
 	common::sound_alignment get_region_soundalign(bool fromdom = false) const;
 #ifdef WITH_SMIL30
-	const common::region_dim_spec& get_region_viewbox(bool fromdom = false) const;
+	const common::region_dim_spec& get_region_panzoom(bool fromdom = false) const;
 	double get_region_opacity(const std::string& which, bool fromdom = false) const;
 #endif
 	
@@ -155,7 +155,7 @@ class region_node : public common::animation_destination {
 	void set_region_soundlevel(double level);
 	void set_region_soundalign(common::sound_alignment sa);
 #ifdef WITH_SMIL30
-	void set_region_viewbox(const common::region_dim_spec& rds);
+	void set_region_panzoom(const common::region_dim_spec& rds);
 	void set_region_opacity(const std::string& which, double level);
 #endif // WITH_SMIL30
 	
@@ -220,7 +220,7 @@ class region_node : public common::animation_destination {
 	double m_soundlevel;
 	common::sound_alignment m_soundalign;
 #ifdef WITH_SMIL30
-	common::region_dim_spec m_viewbox;
+	common::region_dim_spec m_panzoom;
 	double m_mediaopacity;
 	double m_mediabgopacity;
 	bool m_chromakey_specified;
@@ -245,7 +245,7 @@ class region_node : public common::animation_destination {
 	double m_display_soundlevel;
 	common::sound_alignment m_display_soundalign;
 #ifdef WITH_SMIL30
-	common::region_dim_spec m_display_viewbox;
+	common::region_dim_spec m_display_panzoom;
 	double m_display_bgopacity;
 	double m_display_mediaopacity;
 	double m_display_mediabgopacity;

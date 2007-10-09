@@ -34,29 +34,29 @@
         <par expr="where &lt;= 1" testid="ImageTextAudio" dur="8s">
           <img id="TitleA" region="Images" dur="8s" fill="transition" src="NYCdata/TitleA.gif"/>
           <audio id="Welcome" region="audio_1" begin="0" src="NYCdata/Welcome.mp3"/>
-          <setvalue ref="where" value="2"/>
+          <setvalue ref="where" value="where+1"/>
         </par>
         <par expr="where &lt;= 2" id="ImageTextAudio-0" begin="0">
           <img id="TitleA1" region="Images" begin="0" dur="7s" src="NYCdata/TitleA1.gif" transIn="fade"/>
-          <setvalue ref="where" value="3"/>
+          <setvalue ref="where" value="where+1"/>
         </par>
         <par expr="where &lt;= 3" id="ImageTextAudio-1">
           <img id="TitleB" region="Images" dur="5s" src="NYCdata/TitleB.gif" transIn="fade"/>
           <audio id="SIF-Intro" region="audio_1" src="NYCdata/SIF-Intro.mp3"/>
           <text id="CapF0" region="Captions" dur="5s" src="NYCdata/CapF0.txt"/>
-          <setvalue ref="where" value="4"/>
+          <setvalue ref="where" value="where+1"/>
         </par>
         <par expr="where &lt;= 4" id="ImageTextAudio-2">
           <img id="Ferry1" region="Images" dur="5s" src="NYCdata/Ferry1.gif" transIn="fade"/>
           <text id="CapF1" region="Captions" dur="5s" src="NYCdata/CapF1.txt"/>
           <audio id="SIF" region="audio_1" src="NYCdata/SIF-1.mp3"/>
-          <setvalue ref="where" value="5"/>
+          <setvalue ref="where" value="where+1"/>
         </par>
         <par expr="where &lt;= 5" id="ImageTextAudio-3">
           <img id="Ferry2" region="Images" dur="5s" src="NYCdata/Ferry2.gif"/>
           <text id="CapF2" region="Captions" dur="5s" src="NYCdata/CapF2.txt"/>
           <audio id="SIF-0" region="audio_1" src="NYCdata/SIF-2.mp3"/>
-          <setvalue ref="where" value="6"/>
+          <setvalue ref="where" value="where+1"/>
         </par>
         <par expr="where &lt;= 6" id="ImageTextAudio-4">
           <img id="Ferry3" region="Images" dur="5s" src="NYCdata/Ferry3.gif"/>

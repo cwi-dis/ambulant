@@ -156,7 +156,7 @@ class animation_destination : public region_info {
 	/// Get the region image cropping parameters.
 	/// If fromdom is true get the original DOM value, otherwise get the current
 	/// value (as animated by previous set_ calls).
-	virtual const region_dim_spec& get_region_viewbox(bool fromdom = false) const = 0;
+	virtual const region_dim_spec& get_region_panzoom(bool fromdom = false) const = 0;
 
 	/// Get the background opacity of a region.
 	/// If fromdom is true get the original DOM value, otherwise get the current
@@ -182,7 +182,7 @@ class animation_destination : public region_info {
 	
 #ifdef WITH_SMIL30
 	/// Set the region image cropping parameters
-	virtual void set_region_viewbox(const region_dim_spec& rds) = 0;
+	virtual void set_region_panzoom(const region_dim_spec& rds) = 0;
 	
 	/// Set the region background opacity to a new value.
 	virtual void set_region_opacity(const std::string& which, double level) = 0;

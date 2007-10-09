@@ -45,7 +45,7 @@ static char *subregionattrs[] = {
 	"soundLevel",
 	"soundAlign",
 #ifdef WITH_SMIL30
-	"viewBox",
+	"panZoom",
 	"backgroundOpacity",
 	"mediaOpacity",
 	"mediaBackgroundOpacity",
@@ -288,14 +288,14 @@ region_node::fix_from_dom_node()
 	
 #ifdef WITH_SMIL30
 	{
-		// viewBox
-		const char *viewbox_attr = m_node->get_attribute("viewBox");
+		// panZoom
+		const char *panzoom_attr = m_node->get_attribute("panZoom");
 		common::region_dim_spec rds;
-		if (viewbox_attr) rds = common::region_dim_spec(viewbox_attr, "viewBoxRect");
-		if (rds != m_viewbox) {
+		if (panzoom_attr) rds = common::region_dim_spec(panzoom_attr, "panZoomRect");
+		if (rds != m_panzoom) {
 			changed = true;
 		}
-		set_viewbox(rds);
+		set_panzoom(rds);
 	}
 	
 	{
@@ -563,7 +563,7 @@ region_node::get_tiling() const
 lib::rect
 region_node::get_crop_rect(const lib::size& srcsize) const
 {
-	common::region_dim_spec rds(m_display_viewbox);
+	common::region_dim_spec rds(m_display_panzoom);
 	lib::rect croprect(lib::point(0,0), srcsize);
 	rds.convert(croprect);
 	if (rds.left.defined()) croprect.x = rds.left.get_as_int();
@@ -671,8 +671,8 @@ common::sound_alignment region_node::get_region_soundalign(bool fromdom) const {
 }
 
 #ifdef WITH_SMIL30
-const common::region_dim_spec& region_node::get_region_viewbox(bool fromdom) const {
-	return fromdom?m_viewbox:m_display_viewbox;
+const common::region_dim_spec& region_node::get_region_panzoom(bool fromdom) const {
+	return fromdom?m_panzoom:m_display_panzoom;
 }
 
 double region_node::get_region_opacity(const std::string& which, bool fromdom) const {
@@ -734,9 +734,9 @@ void region_node::set_region_soundalign(common::sound_alignment sa) {
 }
 
 #ifdef WITH_SMIL30
-void region_node::set_region_viewbox(const common::region_dim_spec& rds) {
-	AM_DBG lib::logger::get_logger()->debug("region_node::set_region_viewbox()");
-	m_display_viewbox = rds;
+void region_node::set_region_panzoom(const common::region_dim_spec& rds) {
+	AM_DBG lib::logger::get_logger()->debug("region_node::set_region_panzoom()");
+	m_display_panzoom = rds;
 }
 
 void region_node::set_region_opacity(const std::string& which, double level) {

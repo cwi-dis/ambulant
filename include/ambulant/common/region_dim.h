@@ -351,7 +351,7 @@ inline region_dim_spec::region_dim_spec(const std::string& coords, const char *s
 		width = region_dim(*it++) - left;
 		height = region_dim(*it++) - top;
 #ifdef WITH_SMIL30
-	} else if(((shape && strcmp(shape, "viewBoxRect")==0)) && list.size() == 4) {
+	} else if(((shape && strcmp(shape, "panZoomRect")==0)) && list.size() == 4) {
 		left = region_dim(*it++);
 		top = region_dim(*it++);
 		width = region_dim(*it++);
