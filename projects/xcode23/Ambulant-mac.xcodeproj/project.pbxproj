@@ -766,9 +766,9 @@
 		049656180BCAEA42002C00DF /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		049656AC0BCAEA7D002C00DF /* Ambulant-mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ambulant-mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		049656B10BCAEC13002C00DF /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
-		04E13B230BD786120074AF09 /* scripting.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = scripting.cpp; sourceTree = "<group>"; };
+		04E13B230BD786120074AF09 /* state.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = state.cpp; sourceTree = "<group>"; };
 		04E13B270BD786380074AF09 /* cocoa_smiltext.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = cocoa_smiltext.mm; sourceTree = "<group>"; };
-		04E13B2A0BD786560074AF09 /* scripting.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = scripting.h; sourceTree = "<group>"; };
+		04E13B2A0BD786560074AF09 /* state.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = state.h; sourceTree = "<group>"; };
 		04E13B2B0BD786680074AF09 /* cocoa_smiltext.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cocoa_smiltext.h; sourceTree = "<group>"; };
 		04E13B2D0BD7868C0074AF09 /* smiltext.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = smiltext.h; sourceTree = "<group>"; };
 		04E13B340BD786A40074AF09 /* smiltext.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = smiltext.cpp; sourceTree = "<group>"; };
@@ -897,7 +897,7 @@
 		049650C20BCAE333002C00DF /* common */ = {
 			isa = PBXGroup;
 			children = (
-				04E13B2A0BD786560074AF09 /* scripting.h */,
+				04E13B2A0BD786560074AF09 /* state.h */,
 				049650C40BCAE333002C00DF /* embedder.h */,
 				049650C50BCAE333002C00DF /* factory.h */,
 				049650C60BCAE333002C00DF /* gui_player.h */,
@@ -1366,7 +1366,7 @@
 		0496523D0BCAE3C5002C00DF /* common */ = {
 			isa = PBXGroup;
 			children = (
-				04E13B230BD786120074AF09 /* scripting.cpp */,
+				04E13B230BD786120074AF09 /* state.cpp */,
 				0496523E0BCAE3C5002C00DF /* factory.cpp */,
 				0496523F0BCAE3C5002C00DF /* gui_player.cpp */,
 				049652400BCAE3C5002C00DF /* plugin_engine.cpp */,

@@ -1,18 +1,18 @@
 import ambulant
 
-class MyScriptComponentFactory(ambulant.script_component_factory):
+class MyStateComponentFactory(ambulant.state_component_factory):
     def __init__(self):
         pass
         
-    def new_script_component(self, uri):
-        print 'new_script_component, uri=', uri
-        if uri == "http://www.ambulantplayer.org/components/pyscript":
-            return MyScriptComponent()
+    def new_state_component(self, uri):
+        print 'new_state_component, uri=', uri
+        if uri == "http://www.ambulantplayer.org/components/pystate":
+            return MyStateComponent()
         return None
         
-class MyScriptComponent(ambulant.script_component):
+class MyStateComponent(ambulant.state_component):
     def __init__(self):
-        print 'MyScriptComponent()'
+        print 'MyStateComponent()'
         self.globscope = {}
         self.scope = {}
         # What dowe want to export to scope???

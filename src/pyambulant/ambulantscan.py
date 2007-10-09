@@ -29,7 +29,7 @@ def main():
         AMBULANT+ "common/playable.h",
         AMBULANT+ "common/player.h",
         AMBULANT+ "common/region_info.h",
-        AMBULANT+ "common/scripting.h",
+        AMBULANT+ "common/state.h",
         AMBULANT+ "gui/none/none_gui.h",
         AMBULANT+ "gui/qt/qt_factory.h",
         AMBULANT+ "gui/SDL/sdl_factory.h",

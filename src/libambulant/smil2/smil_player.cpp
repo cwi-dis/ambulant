@@ -162,14 +162,14 @@ void smil_player::create_state_engine() {
 	if (!state) return;
 	const char *language = state->get_attribute("language");
 	if (!language) language = "http://www.w3.org/TR/1999/REC-xpath-19991116";
-	common::script_component_factory *scf = m_factory->get_script_component_factory();
+	common::state_component_factory *scf = m_factory->get_state_component_factory();
 	if (!scf) {
-		lib::logger::get_logger()->error(gettext("Document uses state, but no scripting support configured"));
+		lib::logger::get_logger()->error(gettext("Document uses state, but no state support configured"));
 		return;
 	}
-	m_state_engine = scf->new_script_component(language);
+	m_state_engine = scf->new_state_component(language);
 	if (!m_state_engine) {
-		lib::logger::get_logger()->error(gettext("No scripting support for language %s"), language);
+		lib::logger::get_logger()->error(gettext("No state support for language %s"), language);
 		return;
 	}
 	m_state_engine->declare_state(state);

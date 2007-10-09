@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="pyamplugin_scripting"
+	Name="pyamplugin_state"
 	ProjectGUID="{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}"
 	Keyword="MakeFileProj">
 	<Platforms>
@@ -17,14 +17,14 @@
 			ConfigurationType="0">
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="del ..\..\bin\win32\pyamplugin_scripting
-copy /y ..\..\src\plugins\pyamplugin_scripting ..\..\bin\win32\pyamplugin_scripting
+				BuildCommandLine="del ..\..\bin\win32\pyamplugin_state
+copy /y ..\..\src\plugins\pyamplugin_state ..\..\bin\win32\pyamplugin_state
 "
-				ReBuildCommandLine="del ..\..\bin\win32\pyamplugin_scripting
-copy /y ..\..\src\plugins\pyamplugin_scripting ..\..\bin\win32\pyamplugin_scripting
+				ReBuildCommandLine="del ..\..\bin\win32\pyamplugin_state
+copy /y ..\..\src\plugins\pyamplugin_state ..\..\bin\win32\pyamplugin_state
 "
-				CleanCommandLine="del ..\..\bin\win32\pyamplugin_scripting"
-				Output="pyamplugin_scripting"/>
+				CleanCommandLine="del ..\..\bin\win32\pyamplugin_state"
+				Output="pyamplugin_state"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
@@ -33,10 +33,10 @@ copy /y ..\..\src\plugins\pyamplugin_scripting ..\..\bin\win32\pyamplugin_script
 			ConfigurationType="0">
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="del ..\..\bin\win32\pyamplugin_scripting"
-				ReBuildCommandLine="del ..\..\bin\win32\pyamplugin_scripting"
-				CleanCommandLine="del ..\..\bin\win32\pyamplugin_scripting"
-				Output="pyamplugin_scripting"/>
+				BuildCommandLine="del ..\..\bin\win32\pyamplugin_state"
+				ReBuildCommandLine="del ..\..\bin\win32\pyamplugin_state"
+				CleanCommandLine="del ..\..\bin\win32\pyamplugin_state"
+				Output="pyamplugin_state"/>
 		</Configuration>
 	</Configurations>
 	<References>
@@ -47,10 +47,10 @@ copy /y ..\..\src\plugins\pyamplugin_scripting ..\..\bin\win32\pyamplugin_script
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath="..\..\src\plugins\pyamplugin_scripting\__init__.py">
+				RelativePath="..\..\src\plugins\pyamplugin_state\__init__.py">
 			</File>
 			<File
-				RelativePath="..\..\src\plugins\pyamplugin_scripting\scripting.py">
+				RelativePath="..\..\src\plugins\pyamplugin_state\state.py">
 			</File>
 		</Filter>
 		<Filter

@@ -823,7 +823,7 @@
 					RelativePath="..\..\src\libambulant\common\schema.cpp">
 				</File>
 				<File
-					RelativePath="..\..\src\libambulant\common\scripting.cpp">
+					RelativePath="..\..\src\libambulant\common\state.cpp">
 				</File>
 				<File
 					RelativePath="..\..\src\libambulant\common\smil_alignment.cpp">
@@ -1322,7 +1322,7 @@
 						RelativePath="..\..\include\ambulant\common\schema.h">
 					</File>
 					<File
-						RelativePath="..\..\include\ambulant\common\scripting.h">
+						RelativePath="..\..\include\ambulant\common\state.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\common\smil_alignment.h">

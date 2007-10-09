@@ -266,8 +266,8 @@
 		049656A80BCAEA7D002C00DF /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656180BCAEA42002C00DF /* libz.dylib */; };
 		049656B20BCAEC13002C00DF /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656B10BCAEC13002C00DF /* Carbon.framework */; };
 		049656B30BCAEC13002C00DF /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656B10BCAEC13002C00DF /* Carbon.framework */; };
-		04E13B240BD786120074AF09 /* scripting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B230BD786120074AF09 /* scripting.cpp */; };
-		04E13B250BD786120074AF09 /* scripting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B230BD786120074AF09 /* scripting.cpp */; };
+		04E13B240BD786120074AF09 /* state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B230BD786120074AF09 /* state.cpp */; };
+		04E13B250BD786120074AF09 /* state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B230BD786120074AF09 /* state.cpp */; };
 		04E13B280BD786380074AF09 /* cocoa_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B270BD786380074AF09 /* cocoa_smiltext.mm */; };
 		04E13B290BD786380074AF09 /* cocoa_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B270BD786380074AF09 /* cocoa_smiltext.mm */; };
 		04E13B350BD786A40074AF09 /* smiltext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B340BD786A40074AF09 /* smiltext.cpp */; };
@@ -317,7 +317,6 @@
 		049650C60BCAE333002C00DF /* gui_player.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = gui_player.h; sourceTree = "<group>"; };
 		049650C70BCAE333002C00DF /* layout.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = layout.h; sourceTree = "<group>"; };
 		049650C80BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		049650C90BCAE333002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		049650CA0BCAE333002C00DF /* playable.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = playable.h; sourceTree = "<group>"; };
 		049650CB0BCAE333002C00DF /* player.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = player.h; sourceTree = "<group>"; };
 		049650CC0BCAE333002C00DF /* plugin_engine.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = plugin_engine.h; sourceTree = "<group>"; };
@@ -334,7 +333,6 @@
 		049650D70BCAE333002C00DF /* video_renderer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = video_renderer.h; sourceTree = "<group>"; };
 		049650D90BCAE333002C00DF /* limits */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = limits; sourceTree = "<group>"; };
 		049650DA0BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		049650DB0BCAE333002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		049650DC0BCAE333002C00DF /* stl_config.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = stl_config.h; sourceTree = "<group>"; };
 		049650DF0BCAE333002C00DF /* borland.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = borland.h; sourceTree = "<group>"; };
 		049650E00BCAE333002C00DF /* comeau.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = comeau.h; sourceTree = "<group>"; };
@@ -346,7 +344,6 @@
 		049650E60BCAE333002C00DF /* intel.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = intel.h; sourceTree = "<group>"; };
 		049650E70BCAE333002C00DF /* kai.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = kai.h; sourceTree = "<group>"; };
 		049650E80BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		049650E90BCAE333002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		049650EA0BCAE333002C00DF /* metrowerks.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = metrowerks.h; sourceTree = "<group>"; };
 		049650EB0BCAE333002C00DF /* mpw.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = mpw.h; sourceTree = "<group>"; };
 		049650EC0BCAE333002C00DF /* sgi_mipspro.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = sgi_mipspro.h; sourceTree = "<group>"; };
@@ -356,7 +353,6 @@
 		049650F00BCAE333002C00DF /* config.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		049650F10BCAE333002C00DF /* gettext.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = gettext.h; sourceTree = "<group>"; };
 		049650F20BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		049650F30BCAE333002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		049650F50BCAE333002C00DF /* aix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = aix.h; sourceTree = "<group>"; };
 		049650F60BCAE333002C00DF /* amigaos.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = amigaos.h; sourceTree = "<group>"; };
 		049650F70BCAE333002C00DF /* beos.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = beos.h; sourceTree = "<group>"; };
@@ -367,7 +363,6 @@
 		049650FC0BCAE333002C00DF /* linux.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = linux.h; sourceTree = "<group>"; };
 		049650FD0BCAE333002C00DF /* macos.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = macos.h; sourceTree = "<group>"; };
 		049650FE0BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		049650FF0BCAE333002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		049651000BCAE333002C00DF /* solaris.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = solaris.h; sourceTree = "<group>"; };
 		049651010BCAE333002C00DF /* win32.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = win32.h; sourceTree = "<group>"; };
 		049651020BCAE333002C00DF /* posix_features.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = posix_features.h; sourceTree = "<group>"; };
@@ -378,7 +373,6 @@
 		049651080BCAE333002C00DF /* libcomo.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = libcomo.h; sourceTree = "<group>"; };
 		049651090BCAE333002C00DF /* libstdcpp3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = libstdcpp3.h; sourceTree = "<group>"; };
 		0496510A0BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		0496510B0BCAE333002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		0496510C0BCAE333002C00DF /* modena.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = modena.h; sourceTree = "<group>"; };
 		0496510D0BCAE333002C00DF /* msl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = msl.h; sourceTree = "<group>"; };
 		0496510E0BCAE333002C00DF /* roguewave.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = roguewave.h; sourceTree = "<group>"; };
@@ -391,7 +385,6 @@
 		049651180BCAE333002C00DF /* arts_audio.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = arts_audio.h; sourceTree = "<group>"; };
 		049651190BCAE333002C00DF /* arts_factory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = arts_factory.h; sourceTree = "<group>"; };
 		0496511A0BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		0496511B0BCAE333002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		0496511E0BCAE333002C00DF /* cocoa_audio.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cocoa_audio.h; sourceTree = "<group>"; };
 		0496511F0BCAE333002C00DF /* cocoa_dsvideo.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cocoa_dsvideo.h; sourceTree = "<group>"; };
 		049651200BCAE333002C00DF /* cocoa_fill.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cocoa_fill.h; sourceTree = "<group>"; };
@@ -404,7 +397,6 @@
 		049651270BCAE333002C00DF /* cocoa_transition.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cocoa_transition.h; sourceTree = "<group>"; };
 		049651280BCAE333002C00DF /* cocoa_video.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cocoa_video.h; sourceTree = "<group>"; };
 		049651290BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		0496512A0BCAE333002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		0496512C0BCAE333002C00DF /* bmp_decoder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = bmp_decoder.h; sourceTree = "<group>"; };
 		0496512D0BCAE333002C00DF /* dg_area.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dg_area.h; sourceTree = "<group>"; };
 		0496512E0BCAE333002C00DF /* dg_audio.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dg_audio.h; sourceTree = "<group>"; };
@@ -429,7 +421,6 @@
 		049651410BCAE333002C00DF /* img_decoder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = img_decoder.h; sourceTree = "<group>"; };
 		049651420BCAE333002C00DF /* jpg_decoder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jpg_decoder.h; sourceTree = "<group>"; };
 		049651430BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		049651440BCAE333002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		049651450BCAE333002C00DF /* png_decoder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = png_decoder.h; sourceTree = "<group>"; };
 		049651470BCAE333002C00DF /* bmp_decoder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = bmp_decoder.h; sourceTree = "<group>"; };
 		049651480BCAE333002C00DF /* dx_area.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dx_area.h; sourceTree = "<group>"; };
@@ -457,13 +448,11 @@
 		0496515E0BCAE333002C00DF /* img_decoder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = img_decoder.h; sourceTree = "<group>"; };
 		0496515F0BCAE333002C00DF /* jpg_decoder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jpg_decoder.h; sourceTree = "<group>"; };
 		049651600BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		049651610BCAE333002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		049651620BCAE333002C00DF /* png_decoder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = png_decoder.h; sourceTree = "<group>"; };
 		049651640BCAE333002C00DF /* gstreamer_audio_renderer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = gstreamer_audio_renderer.h; sourceTree = "<group>"; };
 		049651650BCAE333002C00DF /* gstreamer_player.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = gstreamer_player.h; sourceTree = "<group>"; };
 		049651660BCAE333002C00DF /* gstreamer_renderer_factory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = gstreamer_renderer_factory.h; sourceTree = "<group>"; };
 		049651670BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		049651680BCAE333002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		0496516A0BCAE333002C00DF /* gtk_factory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = gtk_factory.h; sourceTree = "<group>"; };
 		0496516B0BCAE333002C00DF /* gtk_fill.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = gtk_fill.h; sourceTree = "<group>"; };
 		0496516C0BCAE333002C00DF /* gtk_image_renderer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = gtk_image_renderer.h; sourceTree = "<group>"; };
@@ -473,19 +462,14 @@
 		049651700BCAE333002C00DF /* gtk_transition.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = gtk_transition.h; sourceTree = "<group>"; };
 		049651710BCAE333002C00DF /* gtk_video_renderer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = gtk_video_renderer.h; sourceTree = "<group>"; };
 		049651720BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		049651730BCAE333002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		049651740BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		049651750BCAE333002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		049651780BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		049651790BCAE333002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		0496517A0BCAE333002C00DF /* none_area.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = none_area.h; sourceTree = "<group>"; };
 		0496517B0BCAE333002C00DF /* none_factory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = none_factory.h; sourceTree = "<group>"; };
 		0496517C0BCAE333002C00DF /* none_gui.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = none_gui.h; sourceTree = "<group>"; };
 		0496517D0BCAE333002C00DF /* none_video_renderer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = none_video_renderer.h; sourceTree = "<group>"; };
 		0496517F0BCAE333002C00DF /* Makefile */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		049651800BCAE333002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		049651820BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		049651830BCAE333002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		049651840BCAE333002C00DF /* qt_factory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = qt_factory.h; sourceTree = "<group>"; };
 		049651850BCAE333002C00DF /* qt_factory_impl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = qt_factory_impl.h; sourceTree = "<group>"; };
 		049651860BCAE333002C00DF /* qt_fill.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = qt_fill.h; sourceTree = "<group>"; };
@@ -497,7 +481,6 @@
 		0496518C0BCAE333002C00DF /* qt_transition.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = qt_transition.h; sourceTree = "<group>"; };
 		0496518D0BCAE333002C00DF /* qt_video_renderer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = qt_video_renderer.h; sourceTree = "<group>"; };
 		0496518F0BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		049651900BCAE333002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		049651910BCAE333002C00DF /* sdl_audio.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = sdl_audio.h; sourceTree = "<group>"; };
 		049651920BCAE333002C00DF /* sdl_factory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = sdl_factory.h; sourceTree = "<group>"; };
 		049651930BCAE333002C00DF /* sdl_gui.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = sdl_gui.h; sourceTree = "<group>"; };
@@ -518,7 +501,6 @@
 		049651A40BCAE333002C00DF /* gtypes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = gtypes.h; sourceTree = "<group>"; };
 		049651A50BCAE333002C00DF /* logger.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = logger.h; sourceTree = "<group>"; };
 		049651A60BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		049651A70BCAE333002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		049651A80BCAE333002C00DF /* memfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = memfile.h; sourceTree = "<group>"; };
 		049651A90BCAE333002C00DF /* mtsync.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = mtsync.h; sourceTree = "<group>"; };
 		049651AA0BCAE333002C00DF /* nfa.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = nfa.h; sourceTree = "<group>"; };
@@ -541,13 +523,11 @@
 		049651BB0BCAE333002C00DF /* transition_info.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = transition_info.h; sourceTree = "<group>"; };
 		049651BC0BCAE333002C00DF /* tree_builder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = tree_builder.h; sourceTree = "<group>"; };
 		049651BF0BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		049651C00BCAE333002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		049651C10BCAE333002C00DF /* unix_event_processor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = unix_event_processor.h; sourceTree = "<group>"; };
 		049651C20BCAE333002C00DF /* unix_mtsync.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = unix_mtsync.h; sourceTree = "<group>"; };
 		049651C30BCAE333002C00DF /* unix_thread.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = unix_thread.h; sourceTree = "<group>"; };
 		049651C40BCAE333002C00DF /* unix_timer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = unix_timer.h; sourceTree = "<group>"; };
 		049651C60BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		049651C70BCAE333002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		049651C80BCAE333002C00DF /* win32_asb.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = win32_asb.h; sourceTree = "<group>"; };
 		049651C90BCAE333002C00DF /* win32_error.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = win32_error.h; sourceTree = "<group>"; };
 		049651CA0BCAE333002C00DF /* win32_event_processor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = win32_event_processor.h; sourceTree = "<group>"; };
@@ -557,9 +537,7 @@
 		049651CE0BCAE333002C00DF /* win32_timer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = win32_timer.h; sourceTree = "<group>"; };
 		049651CF0BCAE333002C00DF /* xerces_parser.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = xerces_parser.h; sourceTree = "<group>"; };
 		049651D00BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		049651D10BCAE333002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		049651D30BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		049651D40BCAE333002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		049651D50BCAE333002C00DF /* mms_player.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = mms_player.h; sourceTree = "<group>"; };
 		049651D60BCAE333002C00DF /* timeline_builder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = timeline_builder.h; sourceTree = "<group>"; };
 		049651D70BCAE333002C00DF /* timelines.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = timelines.h; sourceTree = "<group>"; };
@@ -573,7 +551,6 @@
 		049651E10BCAE333002C00DF /* ffmpeg_raw.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ffmpeg_raw.h; sourceTree = "<group>"; };
 		049651E20BCAE333002C00DF /* ffmpeg_video.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ffmpeg_video.h; sourceTree = "<group>"; };
 		049651E30BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		049651E40BCAE333002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		049651E50BCAE333002C00DF /* posix_datasource.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = posix_datasource.h; sourceTree = "<group>"; };
 		049651E60BCAE333002C00DF /* raw_video_datasource.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = raw_video_datasource.h; sourceTree = "<group>"; };
 		049651E70BCAE333002C00DF /* rtsp_datasource.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = rtsp_datasource.h; sourceTree = "<group>"; };
@@ -587,7 +564,6 @@
 		049651F00BCAE333002C00DF /* animate_f.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = animate_f.h; sourceTree = "<group>"; };
 		049651F10BCAE333002C00DF /* animate_n.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = animate_n.h; sourceTree = "<group>"; };
 		049651F20BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		049651F30BCAE333002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		049651F40BCAE333002C00DF /* params.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = params.h; sourceTree = "<group>"; };
 		049651F50BCAE333002C00DF /* region_node.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = region_node.h; sourceTree = "<group>"; };
 		049651F60BCAE333002C00DF /* smil_layout.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = smil_layout.h; sourceTree = "<group>"; };
@@ -715,7 +691,6 @@
 		049652C60BCAE3C5002C00DF /* win32_timer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = win32_timer.cpp; sourceTree = "<group>"; };
 		049652C70BCAE3C5002C00DF /* xerces_parser.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = xerces_parser.cpp; sourceTree = "<group>"; };
 		049652CA0BCAE3C5002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		049652CB0BCAE3C5002C00DF /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
 		049652CD0BCAE3C5002C00DF /* mms_player.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = mms_player.cpp; sourceTree = "<group>"; };
 		049652CE0BCAE3C5002C00DF /* timeline_builder.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = timeline_builder.cpp; sourceTree = "<group>"; };
 		049652CF0BCAE3C5002C00DF /* timelines.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = timelines.cpp; sourceTree = "<group>"; };
@@ -772,9 +747,9 @@
 		049656180BCAEA42002C00DF /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		049656AC0BCAEA7D002C00DF /* Ambulant-mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ambulant-mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		049656B10BCAEC13002C00DF /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
-		04E13B230BD786120074AF09 /* scripting.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = scripting.cpp; sourceTree = "<group>"; };
+		04E13B230BD786120074AF09 /* state.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = state.cpp; sourceTree = "<group>"; };
 		04E13B270BD786380074AF09 /* cocoa_smiltext.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = cocoa_smiltext.mm; sourceTree = "<group>"; };
-		04E13B2A0BD786560074AF09 /* scripting.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = scripting.h; sourceTree = "<group>"; };
+		04E13B2A0BD786560074AF09 /* state.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = state.h; sourceTree = "<group>"; };
 		04E13B2B0BD786680074AF09 /* cocoa_smiltext.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cocoa_smiltext.h; sourceTree = "<group>"; };
 		04E13B2D0BD7868C0074AF09 /* smiltext.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = smiltext.h; sourceTree = "<group>"; };
 		04E13B340BD786A40074AF09 /* smiltext.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = smiltext.cpp; sourceTree = "<group>"; };
@@ -873,7 +848,6 @@
 				049651140BCAE333002C00DF /* gui */,
 				049651940BCAE333002C00DF /* lib */,
 				049651D00BCAE333002C00DF /* Makefile.am */,
-				049651D10BCAE333002C00DF /* Makefile.in */,
 				049651D20BCAE333002C00DF /* mms */,
 				049651D80BCAE333002C00DF /* net */,
 				049651ED0BCAE333002C00DF /* smil2 */,
@@ -891,7 +865,6 @@
 				0496524E0BCAE3C5002C00DF /* gui */,
 				049652A80BCAE3C5002C00DF /* lib */,
 				049652CA0BCAE3C5002C00DF /* Makefile.am */,
-				049652CB0BCAE3C5002C00DF /* Makefile.in */,
 				049652CC0BCAE3C5002C00DF /* mms */,
 				049652D00BCAE3C5002C00DF /* net */,
 				049652DF0BCAE3C5002C00DF /* smil2 */,
@@ -903,13 +876,12 @@
 		049650C20BCAE333002C00DF /* common */ = {
 			isa = PBXGroup;
 			children = (
-				04E13B2A0BD786560074AF09 /* scripting.h */,
+				04E13B2A0BD786560074AF09 /* state.h */,
 				049650C40BCAE333002C00DF /* embedder.h */,
 				049650C50BCAE333002C00DF /* factory.h */,
 				049650C60BCAE333002C00DF /* gui_player.h */,
 				049650C70BCAE333002C00DF /* layout.h */,
 				049650C80BCAE333002C00DF /* Makefile.am */,
-				049650C90BCAE333002C00DF /* Makefile.in */,
 				049650CA0BCAE333002C00DF /* playable.h */,
 				049650CB0BCAE333002C00DF /* player.h */,
 				049650CC0BCAE333002C00DF /* plugin_engine.h */,
@@ -933,7 +905,6 @@
 			children = (
 				049650D90BCAE333002C00DF /* limits */,
 				049650DA0BCAE333002C00DF /* Makefile.am */,
-				049650DB0BCAE333002C00DF /* Makefile.in */,
 				049650DC0BCAE333002C00DF /* stl_config.h */,
 			);
 			path = compat;
@@ -946,7 +917,6 @@
 				049650F00BCAE333002C00DF /* config.h */,
 				049650F10BCAE333002C00DF /* gettext.h */,
 				049650F20BCAE333002C00DF /* Makefile.am */,
-				049650F30BCAE333002C00DF /* Makefile.in */,
 				049650F40BCAE333002C00DF /* platform */,
 				049651020BCAE333002C00DF /* posix_features.h */,
 				049651030BCAE333002C00DF /* select_compiler_config.h */,
@@ -972,7 +942,6 @@
 				049650E60BCAE333002C00DF /* intel.h */,
 				049650E70BCAE333002C00DF /* kai.h */,
 				049650E80BCAE333002C00DF /* Makefile.am */,
-				049650E90BCAE333002C00DF /* Makefile.in */,
 				049650EA0BCAE333002C00DF /* metrowerks.h */,
 				049650EB0BCAE333002C00DF /* mpw.h */,
 				049650EC0BCAE333002C00DF /* sgi_mipspro.h */,
@@ -996,7 +965,6 @@
 				049650FC0BCAE333002C00DF /* linux.h */,
 				049650FD0BCAE333002C00DF /* macos.h */,
 				049650FE0BCAE333002C00DF /* Makefile.am */,
-				049650FF0BCAE333002C00DF /* Makefile.in */,
 				049651000BCAE333002C00DF /* solaris.h */,
 				049651010BCAE333002C00DF /* win32.h */,
 			);
@@ -1010,7 +978,6 @@
 				049651080BCAE333002C00DF /* libcomo.h */,
 				049651090BCAE333002C00DF /* libstdcpp3.h */,
 				0496510A0BCAE333002C00DF /* Makefile.am */,
-				0496510B0BCAE333002C00DF /* Makefile.in */,
 				0496510C0BCAE333002C00DF /* modena.h */,
 				0496510D0BCAE333002C00DF /* msl.h */,
 				0496510E0BCAE333002C00DF /* roguewave.h */,
@@ -1031,7 +998,6 @@
 				049651630BCAE333002C00DF /* gstreamer */,
 				049651690BCAE333002C00DF /* gtk */,
 				049651740BCAE333002C00DF /* Makefile.am */,
-				049651750BCAE333002C00DF /* Makefile.in */,
 				049651760BCAE333002C00DF /* none */,
 				0496517E0BCAE333002C00DF /* qsound */,
 				049651810BCAE333002C00DF /* qt */,
@@ -1047,7 +1013,6 @@
 				049651180BCAE333002C00DF /* arts_audio.h */,
 				049651190BCAE333002C00DF /* arts_factory.h */,
 				0496511A0BCAE333002C00DF /* Makefile.am */,
-				0496511B0BCAE333002C00DF /* Makefile.in */,
 			);
 			path = arts;
 			sourceTree = "<group>";
@@ -1068,7 +1033,6 @@
 				049651270BCAE333002C00DF /* cocoa_transition.h */,
 				049651280BCAE333002C00DF /* cocoa_video.h */,
 				049651290BCAE333002C00DF /* Makefile.am */,
-				0496512A0BCAE333002C00DF /* Makefile.in */,
 			);
 			path = cocoa;
 			sourceTree = "<group>";
@@ -1100,7 +1064,6 @@
 				049651410BCAE333002C00DF /* img_decoder.h */,
 				049651420BCAE333002C00DF /* jpg_decoder.h */,
 				049651430BCAE333002C00DF /* Makefile.am */,
-				049651440BCAE333002C00DF /* Makefile.in */,
 				049651450BCAE333002C00DF /* png_decoder.h */,
 			);
 			path = dg;
@@ -1135,7 +1098,6 @@
 				0496515E0BCAE333002C00DF /* img_decoder.h */,
 				0496515F0BCAE333002C00DF /* jpg_decoder.h */,
 				049651600BCAE333002C00DF /* Makefile.am */,
-				049651610BCAE333002C00DF /* Makefile.in */,
 				049651620BCAE333002C00DF /* png_decoder.h */,
 			);
 			path = dx;
@@ -1148,7 +1110,6 @@
 				049651650BCAE333002C00DF /* gstreamer_player.h */,
 				049651660BCAE333002C00DF /* gstreamer_renderer_factory.h */,
 				049651670BCAE333002C00DF /* Makefile.am */,
-				049651680BCAE333002C00DF /* Makefile.in */,
 			);
 			path = gstreamer;
 			sourceTree = "<group>";
@@ -1165,7 +1126,6 @@
 				049651700BCAE333002C00DF /* gtk_transition.h */,
 				049651710BCAE333002C00DF /* gtk_video_renderer.h */,
 				049651720BCAE333002C00DF /* Makefile.am */,
-				049651730BCAE333002C00DF /* Makefile.in */,
 			);
 			path = gtk;
 			sourceTree = "<group>";
@@ -1174,7 +1134,6 @@
 			isa = PBXGroup;
 			children = (
 				049651780BCAE333002C00DF /* Makefile.am */,
-				049651790BCAE333002C00DF /* Makefile.in */,
 				0496517A0BCAE333002C00DF /* none_area.h */,
 				0496517B0BCAE333002C00DF /* none_factory.h */,
 				0496517C0BCAE333002C00DF /* none_gui.h */,
@@ -1187,7 +1146,6 @@
 			isa = PBXGroup;
 			children = (
 				0496517F0BCAE333002C00DF /* Makefile */,
-				049651800BCAE333002C00DF /* Makefile.in */,
 			);
 			path = qsound;
 			sourceTree = "<group>";
@@ -1196,7 +1154,6 @@
 			isa = PBXGroup;
 			children = (
 				049651820BCAE333002C00DF /* Makefile.am */,
-				049651830BCAE333002C00DF /* Makefile.in */,
 				049651840BCAE333002C00DF /* qt_factory.h */,
 				049651850BCAE333002C00DF /* qt_factory_impl.h */,
 				049651860BCAE333002C00DF /* qt_fill.h */,
@@ -1215,7 +1172,6 @@
 			isa = PBXGroup;
 			children = (
 				0496518F0BCAE333002C00DF /* Makefile.am */,
-				049651900BCAE333002C00DF /* Makefile.in */,
 				049651910BCAE333002C00DF /* sdl_audio.h */,
 				049651920BCAE333002C00DF /* sdl_factory.h */,
 				049651930BCAE333002C00DF /* sdl_gui.h */,
@@ -1243,7 +1199,6 @@
 				049651A40BCAE333002C00DF /* gtypes.h */,
 				049651A50BCAE333002C00DF /* logger.h */,
 				049651A60BCAE333002C00DF /* Makefile.am */,
-				049651A70BCAE333002C00DF /* Makefile.in */,
 				049651A80BCAE333002C00DF /* memfile.h */,
 				049651A90BCAE333002C00DF /* mtsync.h */,
 				049651AA0BCAE333002C00DF /* nfa.h */,
@@ -1276,7 +1231,6 @@
 			isa = PBXGroup;
 			children = (
 				049651BF0BCAE333002C00DF /* Makefile.am */,
-				049651C00BCAE333002C00DF /* Makefile.in */,
 				049651C10BCAE333002C00DF /* unix_event_processor.h */,
 				049651C20BCAE333002C00DF /* unix_mtsync.h */,
 				049651C30BCAE333002C00DF /* unix_thread.h */,
@@ -1289,7 +1243,6 @@
 			isa = PBXGroup;
 			children = (
 				049651C60BCAE333002C00DF /* Makefile.am */,
-				049651C70BCAE333002C00DF /* Makefile.in */,
 				049651C80BCAE333002C00DF /* win32_asb.h */,
 				049651C90BCAE333002C00DF /* win32_error.h */,
 				049651CA0BCAE333002C00DF /* win32_event_processor.h */,
@@ -1305,7 +1258,6 @@
 			isa = PBXGroup;
 			children = (
 				049651D30BCAE333002C00DF /* Makefile.am */,
-				049651D40BCAE333002C00DF /* Makefile.in */,
 				049651D50BCAE333002C00DF /* mms_player.h */,
 				049651D60BCAE333002C00DF /* timeline_builder.h */,
 				049651D70BCAE333002C00DF /* timelines.h */,
@@ -1326,7 +1278,6 @@
 				049651E10BCAE333002C00DF /* ffmpeg_raw.h */,
 				049651E20BCAE333002C00DF /* ffmpeg_video.h */,
 				049651E30BCAE333002C00DF /* Makefile.am */,
-				049651E40BCAE333002C00DF /* Makefile.in */,
 				049651E50BCAE333002C00DF /* posix_datasource.h */,
 				049651E60BCAE333002C00DF /* raw_video_datasource.h */,
 				049651E70BCAE333002C00DF /* rtsp_datasource.h */,
@@ -1348,7 +1299,6 @@
 				049651F00BCAE333002C00DF /* animate_f.h */,
 				049651F10BCAE333002C00DF /* animate_n.h */,
 				049651F20BCAE333002C00DF /* Makefile.am */,
-				049651F30BCAE333002C00DF /* Makefile.in */,
 				049651F40BCAE333002C00DF /* params.h */,
 				049651F50BCAE333002C00DF /* region_node.h */,
 				049651F60BCAE333002C00DF /* smil_layout.h */,
@@ -1372,7 +1322,7 @@
 		0496523D0BCAE3C5002C00DF /* common */ = {
 			isa = PBXGroup;
 			children = (
-				04E13B230BD786120074AF09 /* scripting.cpp */,
+				04E13B230BD786120074AF09 /* state.cpp */,
 				0496523E0BCAE3C5002C00DF /* factory.cpp */,
 				0496523F0BCAE3C5002C00DF /* gui_player.cpp */,
 				049652400BCAE3C5002C00DF /* plugin_engine.cpp */,
@@ -1986,7 +1936,7 @@
 				049656920BCAEA7D002C00DF /* trace_player.cpp in Sources */,
 				049656930BCAEA7D002C00DF /* transition.cpp in Sources */,
 				040EAA380BCE6CF600DEE37B /* nscontext.cpp in Sources */,
-				04E13B250BD786120074AF09 /* scripting.cpp in Sources */,
+				04E13B250BD786120074AF09 /* state.cpp in Sources */,
 				04E13B290BD786380074AF09 /* cocoa_smiltext.mm in Sources */,
 				04E13B360BD786A40074AF09 /* smiltext.cpp in Sources */,
 			);
@@ -2087,7 +2037,7 @@
 				049653930BCAE3C6002C00DF /* trace_player.cpp in Sources */,
 				049653940BCAE3C6002C00DF /* transition.cpp in Sources */,
 				040EAA370BCE6CF600DEE37B /* nscontext.cpp in Sources */,
-				04E13B240BD786120074AF09 /* scripting.cpp in Sources */,
+				04E13B240BD786120074AF09 /* state.cpp in Sources */,
 				04E13B280BD786380074AF09 /* cocoa_smiltext.mm in Sources */,
 				04E13B350BD786A40074AF09 /* smiltext.cpp in Sources */,
 			);

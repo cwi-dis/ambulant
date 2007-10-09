@@ -254,7 +254,7 @@ void active_state::enter(qtime_type timestamp) {
 	const node *n = m_self->dom_node();
 	const char *expr = n->get_attribute("expr");
 	if (expr) {
-		common::script_component *sc = n->get_context()->get_state();
+		common::state_component *sc = n->get_context()->get_state();
 		if (sc) {
 			if (!sc->bool_expression(expr)) {
 				/* expr is false: skip the node */
@@ -262,7 +262,7 @@ void active_state::enter(qtime_type timestamp) {
 				return;
 			}
 		} else {
-			lib::logger::get_logger()->trace("No script engine, ignoring expr on %s", n->get_sig().c_str());
+			lib::logger::get_logger()->trace("No state engine, ignoring expr on %s", n->get_sig().c_str());
 		}
 	}
 #endif // WITH_SMIL30

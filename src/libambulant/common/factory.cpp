@@ -31,7 +31,7 @@ factories::factories()
 	m_node_factory(NULL)
 #ifdef WITH_SMIL30
 	,
-	m_script_component_factory(NULL)
+	m_state_component_factory(NULL)
 #endif // WITH_SMIL30
 {
 }
@@ -43,7 +43,7 @@ factories::~factories()
 	delete m_datasource_factory;
 	// delete m_parser_factory; singleton
 	// delete m_node_factory; singleton
-	// delete m_script_component_factory; singleton
+	// delete m_state_component_factory; singleton
 }
 
 void
@@ -55,7 +55,7 @@ factories::init_factories()
 	init_parser_factory();
 	init_node_factory();
 #ifdef WITH_SMIL30
-	init_script_component_factory();
+	init_state_component_factory();
 #endif
 }
 
@@ -86,9 +86,9 @@ factories::init_node_factory()
 }
 #ifdef WITH_SMIL30
 void
-factories::init_script_component_factory()
+factories::init_state_component_factory()
 {
-	m_script_component_factory = get_global_script_component_factory();
+	m_state_component_factory = get_global_state_component_factory();
 }
 #endif // WITH_SMIL30
 

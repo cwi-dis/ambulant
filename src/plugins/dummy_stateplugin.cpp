@@ -22,7 +22,7 @@
 #include "ambulant/common/factory.h"
 #include "ambulant/common/plugin_engine.h"
 #include "ambulant/common/gui_player.h"
-#include "ambulant/common/scripting.h"
+#include "ambulant/common/state.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -31,7 +31,7 @@
 using namespace ambulant;
 
 // -------------------
-class dummy_state_component : public common::script_component {
+class dummy_state_component : public common::state_component {
   public:
     dummy_state_component() {};
 	virtual ~dummy_state_component() {};
@@ -56,11 +56,11 @@ class dummy_state_component : public common::script_component {
 };
 
 // -------------------
-class dummy_state_component_factory : public common::script_component_factory {
+class dummy_state_component_factory : public common::state_component_factory {
   public:
 	virtual ~dummy_state_component_factory() {};
  
- 	common::script_component *new_script_component(const char *uri);
+ 	common::state_component *new_state_component(const char *uri);
 };
 
 // -------------------
@@ -103,14 +103,14 @@ dummy_state_component::string_expression(const char *expr)
 }
 
 // -------------------
-common::script_component *
-dummy_state_component_factory::new_script_component(const char *uri)
+common::state_component *
+dummy_state_component_factory::new_state_component(const char *uri)
 {
 	if (strcmp(uri, "http://www.ambulantplayer.org/components/dummy_state") == 0) {
-		lib::logger::get_logger()->trace("dummy_state_component_factory::new_script_component: returned script_component");
+		lib::logger::get_logger()->trace("dummy_state_component_factory::new_state_component: returned state_component");
 		return new dummy_state_component();
 	}
-	lib::logger::get_logger()->trace("dummy_state_component_factory::new_script_component: no support for language %s", uri);
+	lib::logger::get_logger()->trace("dummy_state_component_factory::new_state_component: no support for language %s", uri);
 	return NULL;
 }
 
@@ -139,7 +139,7 @@ void initialize(
         lib::logger::get_logger()->warn("state_dummy_plugin: built for different Ambulant version (%s)", AMBULANT_VERSION);
 	factory = bug_workaround(factory);
     lib::logger::get_logger()->debug("state_dummy_plugin: loaded.");
-	common::global_script_component_factory *scf = factory->get_script_component_factory();
+	common::global_state_component_factory *scf = factory->get_state_component_factory();
     if (scf) {
     	dummy_state_component_factory *dscf = new dummy_state_component_factory();
 		scf->add_factory(dscf);

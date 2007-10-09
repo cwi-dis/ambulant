@@ -182,7 +182,7 @@ class smil_player : public common::player, /* public common::player_feedback,*/ 
 	
 #ifdef WITH_SMIL30
 	void create_state_engine();
-	common::script_component *m_state_engine;
+	common::state_component *m_state_engine;
 #endif // WITH_SMIL30
 
 	lib::document *m_doc;

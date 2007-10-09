@@ -60,7 +60,7 @@ namespace ambulant {
 
 #ifdef WITH_SMIL30
 namespace common {
-class script_component;
+class state_component;
 };
 #endif // WITH_SMIL30
 
@@ -312,7 +312,7 @@ class AMBULANTAPI node_context {
 	
 #ifdef WITH_SMIL30
 	/// Return the state engine.
-	virtual common::script_component *get_state() const = 0;
+	virtual common::state_component *get_state() const = 0;
 	
 	/// Apply XSLT Attribute Value Template
 	virtual lib::xml_string apply_avt(const lib::xml_string& name, const lib::xml_string& value) const = 0;

@@ -654,7 +654,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\libambulant\common\scripting.cpp"
+					RelativePath="..\..\src\libambulant\common\state.cpp"
 					>
 				</File>
 				<File
@@ -1221,7 +1221,7 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\include\ambulant\common\scripting.h"
+						RelativePath="..\..\include\ambulant\common\state.h"
 						>
 					</File>
 					<File

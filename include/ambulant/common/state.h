@@ -23,8 +23,8 @@
  * @$Id$ 
  */
 
-#ifndef AMBULANT_SMIL2_SCRIPTING_H
-#define AMBULANT_SMIL2_SCRIPTING_H
+#ifndef AMBULANT_SMIL2_STATE_H
+#define AMBULANT_SMIL2_STATE_H
 
 #ifndef WITH_SMIL30
 // We declare an empty class state_test_methods. This is because
@@ -35,13 +35,13 @@ namespace common {
 class state_test_methods {
 	int dummy;
 };
-class script_component {
+class state_component {
 	int dummy;
 };
-class script_component_factory {
+class state_component_factory {
 	int dummy;
 };
-class global_script_component_factory {
+class global_state_component_factory {
 	int dummy;
 };
 }
@@ -53,7 +53,7 @@ class global_script_component_factory {
 namespace ambulant {
 namespace common {
 
-/// API that allows scripting components to obtain systemTest and customTest
+/// API that allows state components to obtain systemTest and customTest
 /// values.
 class state_test_methods {
   public:
@@ -74,11 +74,11 @@ class state_test_methods {
 	virtual int smil_screen_width() const = 0;
 };
 
-/// API exported by scripting components, and used by Ambulant to implement
+/// API exported by state components, and used by Ambulant to implement
 /// SMIL state.
-class script_component {
+class state_component {
   public:
-	virtual ~script_component() {};
+	virtual ~state_component() {};
 	
 	/// Register the systemTest/customTest API
 	virtual void register_state_test_methods(state_test_methods *stm) = 0;
@@ -99,28 +99,28 @@ class script_component {
     virtual std::string string_expression(const char *expr) = 0;
 };
 
-class script_component_factory {
+class state_component_factory {
   public:
-	virtual ~script_component_factory() {};
-    /// Create a scripting component.
-    virtual script_component *new_script_component(const char *uri) = 0;
+	virtual ~state_component_factory() {};
+    /// Create a state component.
+    virtual state_component *new_state_component(const char *uri) = 0;
 	// XXXJACK if we're going to use systemRequired to test for a specific
 	// systemComponent we also need to be able to get the uri
 };
 
-class global_script_component_factory : public script_component_factory {
+class global_state_component_factory : public state_component_factory {
   public:
-	virtual ~global_script_component_factory() {};
-	virtual void add_factory(script_component_factory *sf) = 0;
+	virtual ~global_state_component_factory() {};
+	virtual void add_factory(state_component_factory *sf) = 0;
 	// XXXJACK if we're going to use systemRequired to test for a specific
 	// systemComponent we also need to be able to get the list of uri's
 };
 
-/// Factory function to get a singleton global_script_component_factory
-AMBULANTAPI global_script_component_factory *get_global_script_component_factory();
+/// Factory function to get a singleton global_state_component_factory
+AMBULANTAPI global_state_component_factory *get_global_state_component_factory();
 
 } // namespace common
  
 } // namespace ambulant
 #endif
-#endif // AMBULANT_SMIL2_SCRIPTING_H
+#endif // AMBULANT_SMIL2_STATE_H

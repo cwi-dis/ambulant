@@ -17,7 +17,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "plugin_python", "plugin_pyt
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785} = {DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "plugin_scripting", "plugin_scripting.vcproj", "{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "plugin_state", "plugin_state.vcproj", "{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}"
 	ProjectSection(ProjectDependencies) = postProject
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785} = {DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}
 	EndProjectSection

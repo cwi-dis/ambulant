@@ -30,7 +30,7 @@
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/node.h"
 #ifdef WITH_SMIL30
-#include "ambulant/common/scripting.h"
+#include "ambulant/common/state.h"
 #endif
 
 #include <string>

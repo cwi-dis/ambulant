@@ -643,7 +643,7 @@
             }
             "{605BE39E-5046-48BD-AEC0-63C3A46626D5}:_DCAC730AEAE34A93BA2F050FD4F3293E"
             {
-            "SourcePath" = "8:..\\..\\bin\\wince\\libamplugin_scripting.dll"
+            "SourcePath" = "8:..\\..\\bin\\wince\\libamplugin_state.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_3D053FEEBDBB4CD1A338E27533F9E02B"

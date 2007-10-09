@@ -24,11 +24,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pyambulant", "pyambulant.vc
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785} = {DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pyamplugin_scripting", "pyamplugin_scripting.vcproj", "{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pyamplugin_state", "pyamplugin_state.vcproj", "{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "plugin_state_xpath", "plugin_scripting.vcproj", "{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "plugin_state_xpath", "plugin_state.vcproj", "{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}"
 	ProjectSection(ProjectDependencies) = postProject
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785} = {DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}
 	EndProjectSection

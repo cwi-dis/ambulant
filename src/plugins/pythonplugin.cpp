@@ -41,7 +41,7 @@
 #include "ambulant/common/player.h"
 #include "ambulant/common/region_dim.h"
 #include "ambulant/common/region_info.h"
-#include "ambulant/common/scripting.h"
+#include "ambulant/common/state.h"
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/net/datasource.h"
 #include "ambulant/net/stdio_datasource.h"
@@ -59,7 +59,7 @@ void initambulant();
 #endif
 using namespace ambulant;
 
-#define AMPYTHON_MODULE_NAME "pyamplugin_scripting"
+#define AMPYTHON_MODULE_NAME "pyamplugin_state"
 #define AMPYTHON_METHOD_NAME "initialize"
 
 static ambulant::common::factories * 

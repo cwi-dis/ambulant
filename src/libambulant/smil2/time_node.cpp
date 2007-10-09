@@ -748,7 +748,7 @@ void time_node::start_statecommand(time_type offset) {
 	AM_DBG m_logger->debug("%s[%s].start_statecommand(%ld) DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), offset(), timestamp.as_doc_time_value());
 	/* XXXJACK Inline implementation should go somewhere else, at some point */
-	common::script_component *sc = m_node->get_context()->get_state();
+	common::state_component *sc = m_node->get_context()->get_state();
 	if (!sc) {
 		lib::logger::get_logger()->trace("%s: no state engine, ignoring", m_node->get_sig().c_str());
 		return;

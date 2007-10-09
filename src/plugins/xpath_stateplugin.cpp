@@ -22,7 +22,7 @@
 #include "ambulant/common/factory.h"
 #include "ambulant/common/plugin_engine.h"
 #include "ambulant/common/gui_player.h"
-#include "ambulant/common/scripting.h"
+#include "ambulant/common/state.h"
 #include <libxml/tree.h>
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
@@ -34,7 +34,7 @@
 #endif
 using namespace ambulant;
 // -------------------
-class xpath_state_component : public common::script_component {
+class xpath_state_component : public common::state_component {
   public:
     xpath_state_component();
 	virtual ~xpath_state_component();
@@ -193,11 +193,11 @@ smil_function_lookup(void *ctxt, const xmlChar *name, const xmlChar *nsuri)
 } // extern "C"
 
 // -------------------
-class xpath_state_component_factory : public common::script_component_factory {
+class xpath_state_component_factory : public common::state_component_factory {
   public:
 	virtual ~xpath_state_component_factory() {};
  
- 	common::script_component *new_script_component(const char *uri);
+ 	common::state_component *new_state_component(const char *uri);
 };
 
 // -------------------
@@ -400,14 +400,14 @@ xpath_state_component::string_expression(const char *expr)
 }
 
 // -------------------
-common::script_component *
-xpath_state_component_factory::new_script_component(const char *uri)
+common::state_component *
+xpath_state_component_factory::new_state_component(const char *uri)
 {
 	if (strcmp(uri, "http://www.w3.org/TR/1999/REC-xpath-19991116") == 0) {
-		lib::logger::get_logger()->trace("xpath_state_component_factory::new_script_component: returned script_component");
+		lib::logger::get_logger()->trace("xpath_state_component_factory::new_state_component: returned state_component");
 		return new xpath_state_component();
 	}
-	lib::logger::get_logger()->trace("xpath_state_component_factory::new_script_component: no support for language %s", uri);
+	lib::logger::get_logger()->trace("xpath_state_component_factory::new_state_component: no support for language %s", uri);
 	return NULL;
 }
 
@@ -436,7 +436,7 @@ void initialize(
         lib::logger::get_logger()->warn("xpath_state_plugin: built for different Ambulant version (%s)", AMBULANT_VERSION);
 	factory = bug_workaround(factory);
     AM_DBG lib::logger::get_logger()->debug("xpath_state_plugin: loaded.");
-	common::global_script_component_factory *scf = factory->get_script_component_factory();
+	common::global_state_component_factory *scf = factory->get_state_component_factory();
     if (scf) {
     	xpath_state_component_factory *dscf = new xpath_state_component_factory();
 		scf->add_factory(dscf);

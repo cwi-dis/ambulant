@@ -88,11 +88,11 @@ OBJECTS=[
 	("region_info", "ambulant::common::region_info", None),
 	("animation_destination", "ambulant::common::animation_destination", "region_info"),
 	
-	"common/scripting.h",
+	"common/state.h",
 	("state_test_methods", "ambulant::common::state_test_methods", None),
-	("script_component", "ambulant::common::script_component", None),
-	("script_component_factory", "ambulant::common::script_component_factory", None),
-	("global_script_component_factory", "ambulant::common::global_script_component_factory", "script_component_factory"),
+	("state_component", "ambulant::common::state_component", None),
+	("state_component_factory", "ambulant::common::state_component_factory", None),
+	("global_state_component_factory", "ambulant::common::global_state_component_factory", "state_component_factory"),
 	
 	
 	"gui/none/none_gui.h",

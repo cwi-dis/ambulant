@@ -124,10 +124,10 @@ class AMBULANTAPI document : public node_context {
 	void set_src_url(ambulant::net::url u) { m_src_url = u;}
 #ifdef WITH_SMIL30
 	/// Return the state engine.
-	common::script_component *get_state() const { return m_state;}
+	common::state_component *get_state() const { return m_state;}
 	
 	/// Set the state engine.
-	void set_state(common::script_component *state) { m_state = state; }	
+	void set_state(common::state_component *state) { m_state = state; }	
 
 	/// Apply XSLT Attribute Value Template
 	lib::xml_string apply_avt(const lib::xml_string& name, const lib::xml_string& value) const;
@@ -172,7 +172,7 @@ class AMBULANTAPI document : public node_context {
 	std::map<std::string, const node*> m_id2node;
 
 #ifdef WITH_SMIL30
-	common::script_component *m_state;
+	common::state_component *m_state;
 #endif // WITH_SMIL30
 };
 

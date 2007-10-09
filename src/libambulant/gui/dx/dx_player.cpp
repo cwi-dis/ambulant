@@ -185,7 +185,7 @@ gui::dx::dx_player::cleanup()
 	lib::global_parser_factory *prf = lib::global_parser_factory::get_parser_factory();
 	delete prf;
 #ifdef WITH_SMIL30
-	common::global_script_component_factory *scf = common::get_global_script_component_factory();
+	common::global_state_component_factory *scf = common::get_global_state_component_factory();
 	delete scf;
 #endif
 }

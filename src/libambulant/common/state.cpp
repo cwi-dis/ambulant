@@ -22,7 +22,7 @@
  */
 
 #include "ambulant/config/config.h"
-#include "ambulant/common/scripting.h"
+#include "ambulant/common/state.h"
 #ifdef WITH_SMIL30
 //#define AM_DBG
 #ifndef AM_DBG
@@ -35,42 +35,42 @@ using namespace lib;
 
 // Implementation of the factory
 
-class global_script_component_factory_impl : public global_script_component_factory {
+class global_state_component_factory_impl : public global_state_component_factory {
   public:
-	virtual ~global_script_component_factory_impl();
-	virtual void add_factory(script_component_factory *sf);
-    virtual script_component *new_script_component(const char *uri);
+	virtual ~global_state_component_factory_impl();
+	virtual void add_factory(state_component_factory *sf);
+    virtual state_component *new_state_component(const char *uri);
   private:
-	std::vector<script_component_factory *> m_factories;
+	std::vector<state_component_factory *> m_factories;
 };
 
-global_script_component_factory_impl::~global_script_component_factory_impl()
+global_state_component_factory_impl::~global_state_component_factory_impl()
 {
 }
 
 void
-global_script_component_factory_impl::add_factory(script_component_factory *sf)
+global_state_component_factory_impl::add_factory(state_component_factory *sf)
 {
 	m_factories.push_back(sf);
 }
 
-script_component *
-global_script_component_factory_impl::new_script_component(const char *uri)
+state_component *
+global_state_component_factory_impl::new_state_component(const char *uri)
 {
-	std::vector<script_component_factory *>::iterator i;
+	std::vector<state_component_factory *>::iterator i;
 	for (i=m_factories.begin(); i != m_factories.end(); i++) {
-		script_component *rv = (*i)->new_script_component(uri);
+		state_component *rv = (*i)->new_state_component(uri);
 		if (rv) return rv;
 	}
 	return NULL;
 }
 
-global_script_component_factory *
-common::get_global_script_component_factory()
+global_state_component_factory *
+common::get_global_state_component_factory()
 {
-	static global_script_component_factory *gscf;
+	static global_state_component_factory *gscf;
 	
-	if (gscf == NULL) gscf = new global_script_component_factory_impl();
+	if (gscf == NULL) gscf = new global_state_component_factory_impl();
 	return gscf;
 }
 #endif // WITH_SMIL30
