@@ -28,21 +28,6 @@
 		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXBuildStyle section */
-		014CEA420018CDE011CA2923 /* Debug */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-			};
-			name = Debug;
-		};
-		014CEA430018CDE011CA2923 /* Release */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-			};
-			name = Release;
-		};
-/* End PBXBuildStyle section */
-
 /* Begin PBXFileReference section */
 		045D0B210958C14700C194EE /* libambulant.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libambulant.a; path = ../libambulant/.libs/libambulant.a; sourceTree = SOURCE_ROOT; };
 		045D0B290958C23900C194EE /* libambulant_sdl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libambulant_sdl.a; path = ../libambulant/.libs/libambulant_sdl.a; sourceTree = SOURCE_ROOT; };
@@ -202,8 +187,6 @@
 			);
 			buildRules = (
 			);
-			buildSettings = {
-			};
 			dependencies = (
 			);
 			name = AmbulantWebKitPlugin;
@@ -218,12 +201,6 @@
 		089C1669FE841209C02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "AmbulantWebKitPlugin" */;
-			buildSettings = {
-			};
-			buildStyles = (
-				014CEA420018CDE011CA2923 /* Debug */,
-				014CEA430018CDE011CA2923 /* Release */,
-			);
 			hasScannedForEncodings = 1;
 			mainGroup = 089C166AFE841209C02AAC07 /* AmbulantWebKitPlugin */;
 			projectDirPath = "";

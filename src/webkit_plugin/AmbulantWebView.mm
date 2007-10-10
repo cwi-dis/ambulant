@@ -123,21 +123,21 @@ class my_cocoa_window_factory : public ambulant::gui::cocoa::cocoa_window_factor
 - (void)restartPlayer
 {
 	if (m_mainloop) {
-		m_mainloop->stop();
-		m_mainloop->play();
+		m_mainloop->restart();
+// XXXJACK		m_mainloop->play();
 	}
 }
 
 - (void)pausePlayer
 {
 	if (m_mainloop)
-		m_mainloop->set_speed(0);
+		m_mainloop->pause();
 }
 
 - (void)resumePlayer
 {
 	if (m_mainloop)
-		m_mainloop->set_speed(1);
+		m_mainloop->play();
 }
 
 
