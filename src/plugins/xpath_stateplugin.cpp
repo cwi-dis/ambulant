@@ -512,7 +512,6 @@ xpath_state_component::send(const lib::node *submission)
 	FILE *fp = fopen(dst_filename.c_str(), "w");
 	xmlDocDump(fp, m_state);
 	fclose(fp);
-	lib::logger::get_logger()->trace("xpath_state_component: <send> not yet implemented");
 }
 
 std::string
