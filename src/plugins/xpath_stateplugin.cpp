@@ -248,7 +248,27 @@ xpath_state_component::declare_state(const lib::node *state)
 	// Now we need to get the Ambulant-style DOM node for our state document
 	const lib::node *aroot = NULL;
 	if (state != NULL) {
-		// XXX Need to check for src= attribute for remote state
+		// Check for src= attribute for remote state
+		if (state->get_attribute("src")) {
+			net::url src_url = state->get_url("src");
+			if (!src_url.is_local_file()) {
+				lib::logger::get_logger()->trace("xpath_state_component: only file: scheme implemented for <state>");
+				return;
+			}
+			std::string src_filename = src_url.get_file();
+			m_state = xmlReadFile(src_filename.c_str(), NULL, 0);
+			if (m_state == NULL) {
+				lib::logger::get_logger()->trace("xpath_state_component: xmlReadFile(%s) failed", src_filename.c_str());
+				return;
+			}
+			// Finally we set up the XPath expression context
+			m_context = xmlXPathNewContext(m_state);
+			m_context->node = xmlDocGetRootElement(m_state);
+			m_context->funcLookupFunc = smil_function_lookup;
+			m_context->funcLookupData = (void *)this;
+			assert(m_context);
+			return;
+		}
 		aroot = state->down();
 		while (aroot && aroot->is_data_node()) aroot = aroot->next();
 	}
@@ -468,6 +488,20 @@ xpath_state_component::send(const lib::node *submission)
 		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
 		return;
 	}
+	assert(submission);
+	net::url dst_url = submission->get_url("action");
+	if (dst_url.is_empty_path()) {
+		lib::logger::get_logger()->trace("xpath_state_component: submission action attribute missing");
+		return;
+	}
+	if (!dst_url.is_local_file()) {
+		lib::logger::get_logger()->trace("xpath_state_component: only file: scheme implemented for <send>");
+		return;
+	}
+	std::string dst_filename = dst_url.get_file();
+	FILE *fp = fopen(dst_filename.c_str(), "w");
+	xmlDocDump(fp, m_state);
+	fclose(fp);
 	lib::logger::get_logger()->trace("xpath_state_component: <send> not yet implemented");
 }
 
