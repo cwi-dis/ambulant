@@ -1092,7 +1092,9 @@ public:
 	void declare_state(const ambulant::lib::node* state);
 	bool bool_expression(const char* expr);
 	void set_value(const char* var, const char* expr);
-	void send(const char* submission);
+	void new_value(const char* ref, const char* where, const char* name, const char* expr);
+	void del_value(const char* ref);
+	void send(const ambulant::lib::node* submission);
 	std::string string_expression(const char* expr);
   private:
 	PyObject *py_state_component;

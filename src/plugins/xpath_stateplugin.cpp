@@ -51,8 +51,14 @@ class xpath_state_component : public common::state_component {
     /// Set a state variable to an expression
     void set_value(const char *var, const char *expr);
     
+	/// Add a new variable to the state
+	void new_value(const char *ref, const char *where, const char *name, const char *expr);
+	
+	/// Delete a variable from the state
+	void del_value(const char *ref);
+	
     /// Submit the state
-    void send(const char *submission);
+    void send(const lib::node *submission);
     
     /// Calculate a string expression
     std::string string_expression(const char *expr);
@@ -364,9 +370,100 @@ xpath_state_component::set_value(const char *var, const char *expr)
 }
 
 void
-xpath_state_component::send(const char *submission)
+xpath_state_component::new_value(const char *ref, const char *where, const char *name, const char *expr)
 {
-	lib::logger::get_logger()->trace("xpath_state_component::send(%s)", submission);
+	lib::logger::get_logger()->trace("xpath_state_component::new_value(ref=%s, where=%s, name=%s, expr=%s)",
+		ref, where, name, expr);
+	if (m_state == NULL || m_context == NULL) {
+		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
+		return;
+	}
+	// Evaluate the expression, get a string as result
+	xmlXPathObjectPtr result = xmlXPathEvalExpression(BAD_CAST expr, m_context);
+	if (result == NULL) {
+		lib::logger::get_logger()->trace("xpath_state_component: newvalue: cannot evaluate expr=\"%s\"", expr);
+		return;
+	}
+	xmlChar *result_str = xmlXPathCastToString(result);
+	xmlXPathFreeObject(result);
+	// Now compute the node-set expression and check that it begets a single node
+	result = xmlXPathEvalExpression(BAD_CAST ref, m_context);
+	if (result == NULL) {
+		lib::logger::get_logger()->trace("xpath_state_component: newvalue: cannot evaluate ref=\"%s\"", ref);
+		return;
+	}
+	if (result->type != XPATH_NODESET) {
+		lib::logger::get_logger()->trace("xpath_state_component: newvalue: ref=\"%s\" is not a node-set", ref);
+		return;
+	}
+	xmlNodeSetPtr nodeset = result->nodesetval;
+	if (nodeset == NULL) {
+		lib::logger::get_logger()->trace("xpath_state_component: newvalue: ref=\"%s\" does not refer to an existing item", ref);
+		return;
+	}
+	if (nodeset->nodeNr != 1) {
+		lib::logger::get_logger()->trace("xpath_state_component: newvalue: ref=\"%s\" refers to %d items", ref, nodeset->nodeNr);
+		return;
+	}
+	xmlNodePtr refnodeptr = *nodeset->nodeTab;
+	// Create the new node
+	xmlNodePtr newnodeptr = xmlNewNode(NULL, BAD_CAST name);
+	assert(newnodeptr);
+	xmlNodeSetContent(newnodeptr, result_str);
+	xmlFree(result_str);
+
+	// Insert in the right place	
+	if (where && strcmp(where, "before") == 0) {
+		xmlAddPrevSibling(refnodeptr, newnodeptr);
+	} else
+	if (where && strcmp(where, "after") == 0) {
+		xmlAddNextSibling(refnodeptr, newnodeptr);
+	} else
+	if (where == NULL || strcmp(where, "child") == 0) {
+		xmlAddChild(refnodeptr, newnodeptr);
+	} else {
+		lib::logger::get_logger()->trace("xpath_state_component: newvalue: where=\"%s\": unknown location", where);
+		xmlFreeNode(newnodeptr);
+		return;
+	}
+}
+	
+void
+xpath_state_component::del_value(const char *ref)
+{
+	lib::logger::get_logger()->trace("xpath_state_component::del_value(%s)", ref);
+	if (m_state == NULL || m_context == NULL) {
+		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
+		return;
+	}
+	// Compute the node-set expression and check that it begets a single node
+	xmlXPathObjectPtr result = xmlXPathEvalExpression(BAD_CAST ref, m_context);
+	if (result == NULL) {
+		lib::logger::get_logger()->trace("xpath_state_component: delvalue: cannot evaluate ref=\"%s\"", ref);
+		return;
+	}
+	if (result->type != XPATH_NODESET) {
+		lib::logger::get_logger()->trace("xpath_state_component: delvalue: ref=\"%s\" is not a node-set", ref);
+		return;
+	}
+	xmlNodeSetPtr nodeset = result->nodesetval;
+	if (nodeset == NULL) {
+		lib::logger::get_logger()->trace("xpath_state_component: delvalue: ref=\"%s\" does not refer to an existing item", ref);
+		return;
+	}
+	if (nodeset->nodeNr != 1) {
+		lib::logger::get_logger()->trace("xpath_state_component: delvalue: ref=\"%s\" refers to %d items", ref, nodeset->nodeNr);
+		return;
+	}
+	xmlNodePtr refnodeptr = *nodeset->nodeTab;
+	xmlUnlinkNode(refnodeptr);
+	xmlFreeNode(refnodeptr);
+}
+	
+void
+xpath_state_component::send(const lib::node *submission)
+{
+	lib::logger::get_logger()->trace("xpath_state_component::send(%s)", submission->get_sig().c_str());
 	if (m_state == NULL || m_context == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
 		return;

@@ -11658,12 +11658,51 @@ static PyObject *state_componentObj_set_value(state_componentObject *_self, PyOb
 	return _res;
 }
 
+static PyObject *state_componentObj_new_value(state_componentObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char* ref;
+	char* where;
+	char* name;
+	char* expr;
+	if (!PyArg_ParseTuple(_args, "ssss",
+	                      &ref,
+	                      &where,
+	                      &name,
+	                      &expr))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->new_value(ref,
+	                            where,
+	                            name,
+	                            expr);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *state_componentObj_del_value(state_componentObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char* ref;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &ref))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->del_value(ref);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyObject *state_componentObj_send(state_componentObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
-	char* submission;
-	if (!PyArg_ParseTuple(_args, "s",
-	                      &submission))
+	ambulant::lib::node* submission;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      nodeObj_Convert, &submission))
 		return NULL;
 	PyThreadState *_save = PyEval_SaveThread();
 	_self->ob_itself->send(submission);
@@ -11697,8 +11736,12 @@ static PyMethodDef state_componentObj_methods[] = {
 	 PyDoc_STR("(char* expr) -> (bool _rv)")},
 	{"set_value", (PyCFunction)state_componentObj_set_value, 1,
 	 PyDoc_STR("(char* var, char* expr) -> None")},
+	{"new_value", (PyCFunction)state_componentObj_new_value, 1,
+	 PyDoc_STR("(char* ref, char* where, char* name, char* expr) -> None")},
+	{"del_value", (PyCFunction)state_componentObj_del_value, 1,
+	 PyDoc_STR("(char* ref) -> None")},
 	{"send", (PyCFunction)state_componentObj_send, 1,
-	 PyDoc_STR("(char* submission) -> None")},
+	 PyDoc_STR("(ambulant::lib::node* submission) -> None")},
 	{"string_expression", (PyCFunction)state_componentObj_string_expression, 1,
 	 PyDoc_STR("(char* expr) -> (std::string _rv)")},
 	{NULL, NULL, 0}

@@ -770,12 +770,46 @@ void time_node::start_statecommand(time_type offset) {
 		time_node *root = get_root();
 		assert(root);
 		root->raise_state_change(std::pair<qtime_type, std::string>(timestamp, ref));
+	} else if (tag == "newvalue") {
+		const char *ref = m_node->get_attribute("ref");
+		const char *where = m_node->get_attribute("where");
+		const char *name = m_node->get_attribute("name");
+		if (!name) {
+			lib::logger::get_logger()->trace("%s: missing required name attribute", m_node->get_sig().c_str());
+			return;
+		}
+		const char *value = m_node->get_attribute("value");
+		if (!value) {
+			lib::logger::get_logger()->trace("%s: missing required value attribute", m_node->get_sig().c_str());
+			return;
+		}
+		sc->new_value(ref, where, name, value);
+		// XXXJACK Raising the state_change_event here is also a bit of a hack
+		time_node *root = get_root();
+		assert(root);
+		root->raise_state_change(std::pair<qtime_type, std::string>(timestamp, name));
+	} else if (tag == "delvalue") {
+		const char *ref = m_node->get_attribute("ref");
+		if (!ref) {
+			lib::logger::get_logger()->trace("%s: missing required ref attribute", m_node->get_sig().c_str());
+			return;
+		}
+		sc->del_value(ref);
 	} else if (tag == "send") {
 		const char *submission = m_node->get_attribute("submission");
 		if (!submission) {
 			lib::logger::get_logger()->trace("%s: missing required submission attribute", m_node->get_sig().c_str());
 			return;
 		}
+		const lib::node_context *ctx = m_node->get_context();
+		assert(ctx);
+		const lib::node *subnode = ctx->get_node(submission);
+		if (!subnode || subnode->get_local_name() != "submission") {
+			lib::logger::get_logger()->trace("%s: submission attribute must be ID of a submission element",
+				m_node->get_sig().c_str());
+			return;
+		}
+		sc->send(subnode);
 	} else {
 		assert(0);
 	}

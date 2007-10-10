@@ -7047,6 +7047,8 @@ state_component::state_component(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "declare_state")) PyErr_Warn(PyExc_Warning, "state_component: missing attribute: declare_state");
 		if (!PyObject_HasAttrString(itself, "bool_expression")) PyErr_Warn(PyExc_Warning, "state_component: missing attribute: bool_expression");
 		if (!PyObject_HasAttrString(itself, "set_value")) PyErr_Warn(PyExc_Warning, "state_component: missing attribute: set_value");
+		if (!PyObject_HasAttrString(itself, "new_value")) PyErr_Warn(PyExc_Warning, "state_component: missing attribute: new_value");
+		if (!PyObject_HasAttrString(itself, "del_value")) PyErr_Warn(PyExc_Warning, "state_component: missing attribute: del_value");
 		if (!PyObject_HasAttrString(itself, "send")) PyErr_Warn(PyExc_Warning, "state_component: missing attribute: send");
 		if (!PyObject_HasAttrString(itself, "string_expression")) PyErr_Warn(PyExc_Warning, "state_component: missing attribute: string_expression");
 	}
@@ -7148,10 +7150,52 @@ void state_component::set_value(const char* var, const char* expr)
 	PyGILState_Release(_GILState);
 }
 
-void state_component::send(const char* submission)
+void state_component::new_value(const char* ref, const char* where, const char* name, const char* expr)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_submission = Py_BuildValue("s", submission);
+	PyObject *py_ref = Py_BuildValue("s", ref);
+	PyObject *py_where = Py_BuildValue("s", where);
+	PyObject *py_name = Py_BuildValue("s", name);
+	PyObject *py_expr = Py_BuildValue("s", expr);
+
+	PyObject *py_rv = PyObject_CallMethod(py_state_component, "new_value", "(OOOO)", py_ref, py_where, py_name, py_expr);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during state_component::new_value() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_ref);
+	Py_XDECREF(py_where);
+	Py_XDECREF(py_name);
+	Py_XDECREF(py_expr);
+
+	PyGILState_Release(_GILState);
+}
+
+void state_component::del_value(const char* ref)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_ref = Py_BuildValue("s", ref);
+
+	PyObject *py_rv = PyObject_CallMethod(py_state_component, "del_value", "(O)", py_ref);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during state_component::del_value() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_ref);
+
+	PyGILState_Release(_GILState);
+}
+
+void state_component::send(const ambulant::lib::node* submission)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_submission = Py_BuildValue("O&", nodeObj_New, submission);
 
 	PyObject *py_rv = PyObject_CallMethod(py_state_component, "send", "(O)", py_submission);
 	if (PyErr_Occurred())

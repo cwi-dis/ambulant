@@ -91,9 +91,15 @@ class state_component {
     
     /// Set a state variable to an expression
     virtual void set_value(const char *var, const char *expr) = 0;
+	
+	/// Add a new variable to the state
+	virtual void new_value(const char *ref, const char *where, const char *name, const char *expr) = 0;
+	
+	/// Delete a variable from the state
+	virtual void del_value(const char *ref) = 0;
     
     /// Submit the state
-    virtual void send(const char *submission) = 0;
+    virtual void send(const lib::node *submission) = 0;
     
     /// Calculate a string expression
     virtual std::string string_expression(const char *expr) = 0;

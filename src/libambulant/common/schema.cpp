@@ -53,7 +53,7 @@ static const char* layout_elements[] = {
 
 #ifdef WITH_SMIL30
 static const char* statecommand_elements[] = {
-	"setvalue", "send"
+	"setvalue", "newvalue", "delvalue", "send"
 };
 #endif // WITH_SMIL30
 // Create the smplest possible schema factory

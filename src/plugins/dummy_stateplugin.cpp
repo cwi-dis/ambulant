@@ -48,8 +48,14 @@ class dummy_state_component : public common::state_component {
     /// Set a state variable to an expression
     void set_value(const char *var, const char *expr);
     
+	/// Add a new variable to the state
+	void new_value(const char *ref, const char *where, const char *name, const char *expr);
+	
+	/// Delete a variable from the state
+	void del_value(const char *ref);
+
     /// Submit the state
-    void send(const char *submission);
+    void send(const lib::node *submission);
     
     /// Calculate a string expression
     std::string string_expression(const char *expr);
@@ -90,9 +96,22 @@ dummy_state_component::set_value(const char *var, const char *expr)
 }
 
 void
-dummy_state_component::send(const char *submission)
+dummy_state_component::new_value(const char *ref, const char *where, const char *name, const char *expr)
 {
-	lib::logger::get_logger()->trace("dummy_state_component::send(%s)", submission);
+	lib::logger::get_logger()->trace("dummy_state_component::new_value(ref=%s, where=%s, name=%s, expr=%s)",
+		ref, where, name, expr);
+}
+
+void
+dummy_state_component::del_value(const char *ref)
+{
+	lib::logger::get_logger()->trace("dummy_state_component::del_value(%s)", ref);
+}
+
+void
+dummy_state_component::send(const lib::node *submission)
+{
+	lib::logger::get_logger()->trace("dummy_state_component::send(%s)", submission->get_sig().c_str());
 }
 
 std::string

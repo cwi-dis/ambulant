@@ -27,7 +27,8 @@
 #include "ambulant/common/gui_player.h"
 
 #ifdef WITH_SMIL30
-#define AMBULANT_PLUGIN_API_VERSION 3
+// Version 3: SMIL 3.0 WD
+#define AMBULANT_PLUGIN_API_VERSION 4
 #else
 #define AMBULANT_PLUGIN_API_VERSION 2
 #endif
