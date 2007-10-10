@@ -489,6 +489,16 @@ xpath_state_component::send(const lib::node *submission)
 		return;
 	}
 	assert(submission);
+	const char *method = submission->get_attribute("method");
+	if (method && strcmp(method, "post") != 0) {
+		lib::logger::get_logger()->trace("xpath_state_component: only method=\"post\" implemented");
+		return;
+	}
+	const char *replace = submission->get_attribute("replace");
+	if (replace && strcmp(replace, "none") != 0) {
+		lib::logger::get_logger()->trace("xpath_state_component: only replace=\"none\" implemented");
+		return;
+	}
 	net::url dst_url = submission->get_url("action");
 	if (dst_url.is_empty_path()) {
 		lib::logger::get_logger()->trace("xpath_state_component: submission action attribute missing");
