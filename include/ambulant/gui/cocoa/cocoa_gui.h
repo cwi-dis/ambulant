@@ -160,6 +160,7 @@ AMBULANTAPI common::playable_factory *create_cocoa_renderer_factory(common::fact
 - (void)setAmbulantWindow: (ambulant::gui::cocoa::cocoa_window *)window;
 - (void)ambulantWindowClosed;
 - (bool)isAmbulantWindowInUse;
+- (bool)ignoreResize;
 - (BOOL)isFlipped;
 
 - (NSRect) NSRectForAmbulantRect: (const ambulant::lib::rect *)arect;

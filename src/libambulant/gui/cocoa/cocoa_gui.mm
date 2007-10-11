@@ -255,9 +255,9 @@ cocoa_window_factory::init_window_size(cocoa_window *window, const std::string &
 	NSPoint origin = NSMakePoint(0,0);
 	NSView *superview = [view superview];
 	int32_t     shieldLevel = CGShieldingWindowLevel();
-	if ([[view window] level] >= shieldLevel) {
-		// We don't muck around with fullscreen windows. What we should actually do is recenter
-		// the content, but that is for later.
+	if ([view ignoreResize] || [[view window] level] >= shieldLevel) {
+		// We don't muck around with fullscreen windows or windows in other apps (browsers, etc). 
+		// What we should actually do is recenter the content, but that is for later.
 	} else {
 		if (superview) {
 			NSRect rect = [superview convertRect: [view frame] toView: nil];
@@ -536,6 +536,11 @@ bad:
 - (bool)isAmbulantWindowInUse
 {
     return (ambulant_window != NULL);
+}
+
+- (bool)ignoreResize
+{
+	return false;
 }
 
 - (BOOL)isFlipped

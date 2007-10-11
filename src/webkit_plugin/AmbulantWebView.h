@@ -24,4 +24,5 @@ void set_statusline(void *view, const char *msg);
 - (void)restartPlayer;
 - (void)pausePlayer;
 - (void)resumePlayer;
+- (bool)ignoreResize;
 @end

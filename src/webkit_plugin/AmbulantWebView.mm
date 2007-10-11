@@ -142,5 +142,9 @@ class my_cocoa_window_factory : public ambulant::gui::cocoa::cocoa_window_factor
 		m_mainloop->play();
 }
 
+- (bool)ignoreResize
+{
+	return true;
+}
 
 @end
