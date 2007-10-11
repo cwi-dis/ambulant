@@ -24,29 +24,39 @@
 		0499E89C0959B25F00A7FDF8 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0499E89B0959B25F00A7FDF8 /* libavutil.a */; };
 		0499E89F0959B29100A7FDF8 /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0499E89E0959B29100A7FDF8 /* libSDL.a */; };
 		0499E8A50959B2E100A7FDF8 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0499E8A40959B2E100A7FDF8 /* libz.dylib */; };
+		04C26AE90CBE0E1400CB8EFE /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C26AE80CBE0E1400CB8EFE /* QTKit.framework */; };
+		04C26AEB0CBE0E2700CB8EFE /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C26AEA0CBE0E2700CB8EFE /* AudioUnit.framework */; };
+		04C26AED0CBE0E3700CB8EFE /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C26AEC0CBE0E3700CB8EFE /* Carbon.framework */; };
+		04C26AF00CBE0E5500CB8EFE /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C26AEF0CBE0E5500CB8EFE /* IOKit.framework */; };
+		04C26AF30CBE0E8700CB8EFE /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C26AF20CBE0E8700CB8EFE /* OpenGL.framework */; };
 		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		045D0B210958C14700C194EE /* libambulant.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libambulant.a; path = ../libambulant/.libs/libambulant.a; sourceTree = SOURCE_ROOT; };
-		045D0B290958C23900C194EE /* libambulant_sdl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libambulant_sdl.a; path = ../libambulant/.libs/libambulant_sdl.a; sourceTree = SOURCE_ROOT; };
-		045D0B2A0958C23900C194EE /* libambulant_live.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libambulant_live.a; path = ../libambulant/.libs/libambulant_live.a; sourceTree = SOURCE_ROOT; };
-		045D0B2B0958C23900C194EE /* libambulant_ffmpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libambulant_ffmpeg.a; path = ../libambulant/.libs/libambulant_ffmpeg.a; sourceTree = SOURCE_ROOT; };
-		045D0B2C0958C23900C194EE /* libambulant_cocoa.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libambulant_cocoa.a; path = ../libambulant/.libs/libambulant_cocoa.a; sourceTree = SOURCE_ROOT; };
+		045D0B210958C14700C194EE /* libambulant.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libambulant.a; path = src/libambulant/.libs/libambulant.a; sourceTree = PREBUILT_AMBULANT_ROOT; };
+		045D0B290958C23900C194EE /* libambulant_sdl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libambulant_sdl.a; path = src/libambulant/.libs/libambulant_sdl.a; sourceTree = PREBUILT_AMBULANT_ROOT; };
+		045D0B2A0958C23900C194EE /* libambulant_live.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libambulant_live.a; path = src/libambulant/.libs/libambulant_live.a; sourceTree = PREBUILT_AMBULANT_ROOT; };
+		045D0B2B0958C23900C194EE /* libambulant_ffmpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libambulant_ffmpeg.a; path = src/libambulant/.libs/libambulant_ffmpeg.a; sourceTree = PREBUILT_AMBULANT_ROOT; };
+		045D0B2C0958C23900C194EE /* libambulant_cocoa.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libambulant_cocoa.a; path = src/libambulant/.libs/libambulant_cocoa.a; sourceTree = PREBUILT_AMBULANT_ROOT; };
 		045D0B340958C26800C194EE /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		045D0B5B0958C36B00C194EE /* libintl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libintl.a; path = /usr/local/lib/libintl.a; sourceTree = "<absolute>"; };
 		045D0B7E0958C53F00C194EE /* mainloop.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mainloop.cpp; path = ../player_macosx/mainloop.cpp; sourceTree = SOURCE_ROOT; };
 		045D0B7F0958C53F00C194EE /* mainloop.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mainloop.h; path = ../player_macosx/mainloop.h; sourceTree = SOURCE_ROOT; };
-		045D0B920958C71E00C194EE /* libexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libexpat.a; path = "../../../../packages/expat-unix/lib/libexpat.a"; sourceTree = SOURCE_ROOT; };
+		045D0B920958C71E00C194EE /* libexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libexpat.a; path = "third_party_packages/expat-unix/lib/libexpat.a"; sourceTree = PREBUILT_AMBULANT_ROOT; };
 		049775AB0958AC7600A7690F /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = /System/Library/Frameworks/WebKit.framework; sourceTree = "<absolute>"; };
 		049775B70958ADC500A7690F /* AmbulantWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbulantWebView.h; sourceTree = "<group>"; };
 		049775B80958ADC500A7690F /* AmbulantWebView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AmbulantWebView.mm; sourceTree = "<group>"; };
-		0499E8960959B22200A7FDF8 /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = "../../../../packages/ffmpeg-cvs/libavcodec/libavcodec.a"; sourceTree = SOURCE_ROOT; };
-		0499E8980959B24100A7FDF8 /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = "../../../../packages/ffmpeg-cvs/libavformat/libavformat.a"; sourceTree = SOURCE_ROOT; };
-		0499E89B0959B25F00A7FDF8 /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavutil.a; path = "../../../../packages/ffmpeg-cvs/libavutil/libavutil.a"; sourceTree = SOURCE_ROOT; };
+		0499E8960959B22200A7FDF8 /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = "third_party_packages/ffmpeg-universal/libavcodec/libavcodec.a"; sourceTree = PREBUILT_AMBULANT_ROOT; };
+		0499E8980959B24100A7FDF8 /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = "third_party_packages/ffmpeg-universal/libavformat/libavformat.a"; sourceTree = PREBUILT_AMBULANT_ROOT; };
+		0499E89B0959B25F00A7FDF8 /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavutil.a; path = "third_party_packages/ffmpeg-universal/libavutil/libavutil.a"; sourceTree = PREBUILT_AMBULANT_ROOT; };
 		0499E89E0959B29100A7FDF8 /* libSDL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL.a; path = /usr/local/lib/libSDL.a; sourceTree = "<absolute>"; };
 		0499E8A40959B2E100A7FDF8 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
+		04C26AE80CBE0E1400CB8EFE /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
+		04C26AEA0CBE0E2700CB8EFE /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = /System/Library/Frameworks/AudioUnit.framework; sourceTree = "<absolute>"; };
+		04C26AEC0CBE0E3700CB8EFE /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		04C26AEF0CBE0E5500CB8EFE /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
+		04C26AF20CBE0E8700CB8EFE /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		32DBCF630370AF2F00C91783 /* AmbulantWebKitPlugin_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbulantWebKitPlugin_Prefix.pch; sourceTree = "<group>"; };
@@ -74,6 +84,11 @@
 				0499E89C0959B25F00A7FDF8 /* libavutil.a in Frameworks */,
 				0499E89F0959B29100A7FDF8 /* libSDL.a in Frameworks */,
 				0499E8A50959B2E100A7FDF8 /* libz.dylib in Frameworks */,
+				04C26AE90CBE0E1400CB8EFE /* QTKit.framework in Frameworks */,
+				04C26AEB0CBE0E2700CB8EFE /* AudioUnit.framework in Frameworks */,
+				04C26AED0CBE0E3700CB8EFE /* Carbon.framework in Frameworks */,
+				04C26AF00CBE0E5500CB8EFE /* IOKit.framework in Frameworks */,
+				04C26AF30CBE0E8700CB8EFE /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -143,6 +158,11 @@
 			isa = PBXGroup;
 			children = (
 				045D0B340958C26800C194EE /* QuickTime.framework */,
+				04C26AF20CBE0E8700CB8EFE /* OpenGL.framework */,
+				04C26AEF0CBE0E5500CB8EFE /* IOKit.framework */,
+				04C26AEC0CBE0E3700CB8EFE /* Carbon.framework */,
+				04C26AEA0CBE0E2700CB8EFE /* AudioUnit.framework */,
+				04C26AE80CBE0E1400CB8EFE /* QTKit.framework */,
 				049775AB0958AC7600A7690F /* WebKit.framework */,
 				1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */,
 			);
@@ -259,22 +279,23 @@
 				GCC_PREFIX_HEADER = AmbulantWebKitPlugin_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"AM_PREFER_FFMPEG=",
-					"USE_SMIL21=",
+					"WITH_EXTERNAL_DOM=1",
 					"WITH_SDL=",
 					"WITH_FFMPEG=",
 					"WITH_EXPAT=",
 					"WITH_FFMPEG_AVFORMAT=",
+					"WITH_SMIL30=1",
 				);
 				HEADER_SEARCH_PATHS = ../../include;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Internet Plug-Ins";
 				LIBRARY_SEARCH_PATHS = (
-					../libambulant/.libs,
+					"$(PREBUILT_AMBULANT_ROOT)/src/libambulant/.libs",
 					/usr/local/lib,
-					"../../third_party_packages/expat-unix/lib",
-					"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavcodec",
-					"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavformat",
-					"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavutil",
+					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/expat-unix/lib",
+					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/ffmpeg-universal/libavcodec",
+					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/ffmpeg-universal/libavformat",
+					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/ffmpeg-universal/libavutil",
 				);
 				PRODUCT_NAME = AmbulantWebKitPlugin;
 				WRAPPER_EXTENSION = plugin;
@@ -292,22 +313,23 @@
 				GCC_PREFIX_HEADER = AmbulantWebKitPlugin_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"AM_PREFER_FFMPEG=",
-					"USE_SMIL21=",
+					"WITH_EXTERNAL_DOM=1",
 					"WITH_SDL=",
 					"WITH_FFMPEG=",
 					"WITH_EXPAT=",
 					"WITH_FFMPEG_AVFORMAT=",
+					"WITH_SMIL30=1",
 				);
 				HEADER_SEARCH_PATHS = ../../include;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Internet Plug-Ins";
 				LIBRARY_SEARCH_PATHS = (
-					../libambulant/.libs,
+					"$(PREBUILT_AMBULANT_ROOT)/src/libambulant/.libs",
 					/usr/local/lib,
-					"../../third_party_packages/expat-unix/lib",
-					"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavcodec",
-					"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavformat",
-					"$(SRCROOT)/../../../../packages/ffmpeg-cvs/libavutil",
+					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/expat-unix/lib",
+					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/ffmpeg-universal/libavcodec",
+					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/ffmpeg-universal/libavformat",
+					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/ffmpeg-universal/libavutil",
 				);
 				PRODUCT_NAME = AmbulantWebKitPlugin;
 				WRAPPER_EXTENSION = plugin;

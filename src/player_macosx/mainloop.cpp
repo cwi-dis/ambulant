@@ -28,6 +28,7 @@
 #include "mainloop.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/timer.h"
+#include "ambulant/lib/node.h"
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 #ifdef WITH_SDL
 #include "ambulant/gui/SDL/sdl_factory.h"

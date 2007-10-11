@@ -24,6 +24,7 @@
 
 #include "ambulant/config/config.h"
 #include "ambulant/lib/mtsync.h"
+#include "ambulant/lib/node.h"
 #include "ambulant/common/factory.h"
 #include "ambulant/common/player.h"
 

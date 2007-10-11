@@ -10,6 +10,8 @@
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 #include "../player_macosx/mainloop.h"
 
+void set_statusline(void *view, const char *msg);
+
 @interface AmbulantWebView : AmbulantView {
 	NSDictionary *m_arguments;
 	mainloop *m_mainloop;

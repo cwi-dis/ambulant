@@ -9,6 +9,11 @@
 #import "AmbulantWebView.h"
 #import <WebKit/WebKit.h>
 
+void
+set_statusline(void *view, const char *msg)
+{
+}
+
 // Subclasses of various Ambulant classes
 
 class my_cocoa_window_factory : public ambulant::gui::cocoa::cocoa_window_factory
