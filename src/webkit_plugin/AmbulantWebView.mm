@@ -63,10 +63,7 @@ class my_cocoa_window_factory : public ambulant::gui::cocoa::cocoa_window_factor
             NSURL *baseUrl = [m_arguments objectForKey:WebPlugInBaseURLKey];
             NSURL *url = [NSURL URLWithString:urlString relativeToURL:baseUrl];
 			if (url) {
-				ambulant::gui::cocoa::cocoa_window_factory *myWindowFactory;
-				myWindowFactory = new my_cocoa_window_factory((void *)self);
-
-				m_mainloop = new mainloop([[url absoluteString] UTF8String], myWindowFactory, false, NULL /*embedder*/);			
+				m_mainloop = new mainloop([[url absoluteString] UTF8String], self, false, NULL /*embedder*/);			
 			}
 		}
     }

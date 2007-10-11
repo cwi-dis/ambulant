@@ -12,7 +12,6 @@
 		045D0B2D0958C23900C194EE /* libambulant_sdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B290958C23900C194EE /* libambulant_sdl.a */; };
 		045D0B2E0958C23900C194EE /* libambulant_live.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B2A0958C23900C194EE /* libambulant_live.a */; };
 		045D0B2F0958C23900C194EE /* libambulant_ffmpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B2B0958C23900C194EE /* libambulant_ffmpeg.a */; };
-		045D0B300958C23900C194EE /* libambulant_cocoa.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B2C0958C23900C194EE /* libambulant_cocoa.a */; };
 		045D0B350958C26800C194EE /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B340958C26800C194EE /* QuickTime.framework */; };
 		045D0B5C0958C36B00C194EE /* libintl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B5B0958C36B00C194EE /* libintl.a */; };
 		045D0B800958C53F00C194EE /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 045D0B7E0958C53F00C194EE /* mainloop.cpp */; };
@@ -29,6 +28,7 @@
 		04C26AED0CBE0E3700CB8EFE /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C26AEC0CBE0E3700CB8EFE /* Carbon.framework */; };
 		04C26AF00CBE0E5500CB8EFE /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C26AEF0CBE0E5500CB8EFE /* IOKit.framework */; };
 		04C26AF30CBE0E8700CB8EFE /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C26AF20CBE0E8700CB8EFE /* OpenGL.framework */; };
+		04C26EE00CBE290400CB8EFE /* libambulant_cocoa.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B2C0958C23900C194EE /* libambulant_cocoa.a */; };
 		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
@@ -75,7 +75,6 @@
 				045D0B2D0958C23900C194EE /* libambulant_sdl.a in Frameworks */,
 				045D0B2E0958C23900C194EE /* libambulant_live.a in Frameworks */,
 				045D0B2F0958C23900C194EE /* libambulant_ffmpeg.a in Frameworks */,
-				045D0B300958C23900C194EE /* libambulant_cocoa.a in Frameworks */,
 				045D0B350958C26800C194EE /* QuickTime.framework in Frameworks */,
 				045D0B5C0958C36B00C194EE /* libintl.a in Frameworks */,
 				045D0B930958C71E00C194EE /* libexpat.a in Frameworks */,
@@ -89,6 +88,7 @@
 				04C26AED0CBE0E3700CB8EFE /* Carbon.framework in Frameworks */,
 				04C26AF00CBE0E5500CB8EFE /* IOKit.framework in Frameworks */,
 				04C26AF30CBE0E8700CB8EFE /* OpenGL.framework in Frameworks */,
+				04C26EE00CBE290400CB8EFE /* libambulant_cocoa.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -204,6 +204,7 @@
 				8D5B49AF048680CD000E48DA /* Resources */,
 				8D5B49B1048680CD000E48DA /* Sources */,
 				8D5B49B3048680CD000E48DA /* Frameworks */,
+				04C26E450CBE22E300CB8EFE /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -242,6 +243,22 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		04C26E450CBE22E300CB8EFE /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# clean up any previous products/symbolic links in the Internet Plug-Ins folder\nif [ -a \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\" ]; then\n  rm -Rf \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\"\nfi\n\n# Depending on the build configuration, either copy or link to the most recent product\nif [ \"${CONFIGURATION}\" == \"Debug\" ]; then\n  # if we're debugging, add a symbolic link to the plug-in\n  ln -sf \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\" \\\n    \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\"\nelif [ \"${CONFIGURATION}\" == \"Release\" ]; then\n  # if we're compiling for release, just copy the plugin to the Internet Plug-ins folder\n  cp -Rfv \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\" \\\n    \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\"\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		8D5B49B1048680CD000E48DA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -269,7 +286,10 @@
 		1DEB913B08733D840010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = ppc;
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -278,12 +298,14 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AmbulantWebKitPlugin_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"AM_PREFER_FFMPEG=",
+					"AM_PREFER_FFMPEG=1",
+					"WITH_LTDL_PLUGINS=1",
 					"WITH_EXTERNAL_DOM=1",
-					"WITH_SDL=",
-					"WITH_FFMPEG=",
-					"WITH_EXPAT=",
-					"WITH_FFMPEG_AVFORMAT=",
+					"WITH_SDL=1",
+					"WITH_FFMPEG=1",
+					"WITH_EXPAT=1",
+					"WITH_OVERLAY_WINDOW=1",
+					"WITH_FFMPEG_AVFORMAT=1",
 					"WITH_SMIL30=1",
 				);
 				HEADER_SEARCH_PATHS = ../../include;
@@ -306,18 +328,23 @@
 		1DEB913C08733D840010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = ppc;
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AmbulantWebKitPlugin_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"AM_PREFER_FFMPEG=",
+					"AM_PREFER_FFMPEG=1",
+					"WITH_LTDL_PLUGINS=1",
 					"WITH_EXTERNAL_DOM=1",
-					"WITH_SDL=",
-					"WITH_FFMPEG=",
-					"WITH_EXPAT=",
-					"WITH_FFMPEG_AVFORMAT=",
+					"WITH_SDL=1",
+					"WITH_FFMPEG=1",
+					"WITH_EXPAT=1",
+					"WITH_OVERLAY_WINDOW=1",
+					"WITH_FFMPEG_AVFORMAT=1",
 					"WITH_SMIL30=1",
 				);
 				HEADER_SEARCH_PATHS = ../../include;
@@ -339,6 +366,10 @@
 		1DEB913F08733D840010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
@@ -349,6 +380,10 @@
 		1DEB914008733D840010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
