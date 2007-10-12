@@ -1,3 +1,18 @@
+2007-10-11 16:20  jackjansen
+
+	* Don't resize ambulant window if we've borrowed it from someone
+	  else (such as a web browser).
+
+2007-10-11 15:58  jackjansen
+
+	* - Added debugging support (through Safari) to webkit plugin -
+	  Fixed bug due to changed signature of mainloop(), which wasn't
+	  detected because of use of void pointers.
+
+2007-10-11 10:46  jackjansen
+
+	* Webkit plugin builds again.
+
 2007-10-11 00:54  jackjansen
 
 	* Getting started with reviving WebKit plugin.	It's a useful
