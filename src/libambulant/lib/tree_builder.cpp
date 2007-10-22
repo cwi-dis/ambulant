@@ -59,7 +59,7 @@ lib::tree_builder::tree_builder(node_factory *nf, node_context *context, const c
 	assert(m_node_factory == get_builtin_node_factory());
 #endif
 #ifdef WITH_SMIL30
-	m_buf = (char*) malloc(m_bufsize);
+	m_buf = (unsigned char*) malloc(m_bufsize);
 	assert(m_buf);
 #endif // WITH_SMIL30
 	reset();
@@ -252,12 +252,15 @@ lib::tree_builder::characters(const char *buf, size_t len) {
 		    && m_xml_space_stack.back().first == "preserve")
 			n = m_node_factory->new_data_node(buf, len, m_context);
 		else { // collapse whitespace
-			const char* s = buf;
-			char* d = m_buf;
+			const unsigned char* s = (const unsigned char*) buf;
+			unsigned char* d;
 			int si = 0, di = 0;
-			if (m_bufsize < (len+1)) 
+			if (m_bufsize < (len+1)) {
 				// ensure m_buf is big enough
-				m_buf = (char*) realloc (m_buf, m_bufsize = (len+1));
+				m_bufsize = len+1;
+				m_buf = (unsigned char*) realloc (m_buf, m_bufsize);
+			}
+			d = m_buf;
 			assert(m_buf);
 			while (si < len) {
 				// trim leading space
@@ -271,7 +274,7 @@ lib::tree_builder::characters(const char *buf, size_t len) {
 			}
 			di = d - m_buf;
 			if (di > 0)
-				n = m_node_factory->new_data_node(m_buf, di, m_context);
+			  n = m_node_factory->new_data_node((char*)m_buf, di, m_context);
 		}
 		if (n) m_current->append_child(n);
 #else

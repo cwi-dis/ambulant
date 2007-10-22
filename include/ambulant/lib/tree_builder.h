@@ -132,7 +132,7 @@ class tree_builder :
 #endif // WITH_EXTERNAL_DOM
 #ifdef WITH_SMIL30
 	std::vector<std::pair<std::string,node*> > m_xml_space_stack;
-	char* m_buf;
+	unsigned char* m_buf;
 	int m_bufsize;
 #endif // WITH_SMIL30
 };
