@@ -86,7 +86,7 @@ class const_tree_iterator  {
 	/// Returns the root of this iterator.
  	const Node *get_root() const { return m_root;}
 	
-	/// Returns true if the two iterators move in the same writing_mode.
+	/// Returns true if the two iterators move in the same direction
   	bool same_move(const const_tree_iterator& o) const 
   		{ return m_move == o.m_move;}
   	
@@ -112,7 +112,7 @@ class const_tree_iterator  {
 /// Traverses an XML tree.
 ///
 /// Root designates the container to be traversed and remains const.
-/// Each node is visited twice: once in the 'down' writing_mode and once in the 'up-next'.
+/// Each node is visited twice: once in the 'down' direction and once in the 'up-next'.
 ///
 /// the first element is: (true, root) 
 /// the last element is: (false, root) 
