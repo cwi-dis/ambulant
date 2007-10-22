@@ -49,17 +49,28 @@ lib::tree_builder::tree_builder(node_factory *nf, node_context *context, const c
 	m_well_formed(false),
 	m_node_factory(nf),
 	m_context(context),
+#ifdef WITH_SMIL30
+	m_bufsize(1024),
+#endif // WITH_SMIL30
 	m_filename(id)
 {
 	assert(m_node_factory);
 #ifndef WITH_EXTERNAL_DOM
 	assert(m_node_factory == get_builtin_node_factory());
 #endif
+#ifdef WITH_SMIL30
+	m_buf = (char*) malloc(m_bufsize);
+	assert(m_buf);
+#endif // WITH_SMIL30
 	reset();
 }
 
 lib::tree_builder::~tree_builder()
 {
+#ifdef WITH_SMIL30
+	if (m_buf != NULL)
+		free(m_buf);
+#endif // WITH_SMIL30
 	if(m_xmlparser != 0)
 		delete m_xmlparser;
 	if(m_root != 0)
@@ -150,6 +161,9 @@ lib::tree_builder::build_tree_from_str(const char *begin, const char *end) {
 
 void 
 lib::tree_builder::reset() {
+#ifdef WITH_SMIL30
+	m_xml_space_stack.clear();
+#endif // WITH_SMIL30
 	global_parser_factory* pf;
 	pf = lib::global_parser_factory::get_parser_factory();
 	if(m_xmlparser != 0) {
@@ -203,10 +217,25 @@ lib::tree_builder::start_element(const q_name_pair& qn, const q_attributes_list&
 		m_pending_namespaces.pop_back();
 	}
 #endif // WITH_EXTERNAL_DOM
+#ifdef WITH_SMIL30
+	for(q_attributes_list::const_iterator it = qattrs.begin(); 
+	    it != qattrs.end(); it++)
+		if((*it).first.second == "space") {
+			std::pair<std::string,node*> xml_space_value((*it).second,
+								     m_current);
+			m_xml_space_stack.push_back(xml_space_value);
+			break;
+		}
+#endif // WITH_SMIL30
 }
 
 void 
 lib::tree_builder::end_element(const q_name_pair& qn) {
+#ifdef WITH_SMIL30
+	if (m_xml_space_stack.size() > 0
+	    &&  m_xml_space_stack.back().second == m_current)
+		m_xml_space_stack.pop_back();
+#endif // WITH_SMIL30
 	if(m_current != 0)
 		m_current = m_current->up();
 	else
@@ -218,13 +247,40 @@ lib::tree_builder::characters(const char *buf, size_t len) {
 	if(m_current != 0) {
 #ifdef WITH_SMIL30
 		// The <smiltext> tag has embedded data and tags 
-		lib::node *p = m_node_factory->new_data_node(buf, len, m_context);
-		m_current->append_child(p);
+		lib::node* n = NULL;
+		if (m_xml_space_stack.size() > 0
+		    && m_xml_space_stack.back().first == "preserve")
+			n = m_node_factory->new_data_node(buf, len, m_context);
+		else { // collapse whitespace
+			const char* s = buf;
+			char* d = m_buf;
+			int si = 0, di = 0;
+			if (m_bufsize < (len+1)) 
+				// ensure m_buf is big enough
+				m_buf = (char*) realloc (m_buf, m_bufsize = (len+1));
+			assert(m_buf);
+			while (si < len) {
+				// trim leading space
+				while (*s && *s > 0 && isspace(*s) && si++ < len)
+					s++;
+				// copy non-space characters
+				while (*s &&  *s > 0 && ! isspace(*s) && si++ < len)
+					*d++ = *s++;
+				if (si < len)
+					*d++ = ' ';
+			}
+			di = d - m_buf;
+			if (di > 0)
+				n = m_node_factory->new_data_node(m_buf, di, m_context);
+		}
+		if (n) m_current->append_child(n);
 #else
 		m_current->append_data(buf, len);
 #endif // WITH_SMIL30
 	} else
 		m_well_formed = false;
+#ifdef WITH_SMIL30
+#endif // WITH_SMIL30
 }
 
 void 

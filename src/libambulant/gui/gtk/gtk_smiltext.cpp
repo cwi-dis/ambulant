@@ -62,8 +62,10 @@ gtk_smiltext_renderer::gtk_smiltext_renderer(
 	m_alpha_media(1.0),
 	m_alpha_media_bg(1.0),
 	m_alpha_chroma(1.0),
-	m_chroma_low(0x000000), //black
-	m_chroma_high(0xFFFFFF) //white
+	m_chroma_low(0x000000),		//black
+	m_chroma_high(0xFFFFFF),		//white
+	m_align(smil2::sta_left),
+	m_writing_mode(smil2::stw_lr_tb)// Left to Right, Top to Bottom
 {
 #ifdef	TBD
 	m_render_offscreen = (m_params.m_mode != smil2::stm_replace && m_params.m_mode != smil2::stm_append) || !m_params.m_wrap;
@@ -155,6 +157,25 @@ gtk_smiltext_renderer::smiltext_changed()
 			cairo_font_options_destroy (cairo_font_options);
 		}
 #endif//WITH_GTK_ANTI_ALIASING
+
+		m_writing_mode = m_engine.begin()->m_writing_mode;
+		switch (m_writing_mode) {
+		/* pango has extensive facilities for rendering
+		   mixed texts in any language; for now we only
+		   attempt to support the left-to_right and 
+		   right-to-left top-bottom modes only when 
+		   specified in a <smilText> or <region> element
+		*/
+		default:
+		case smil2::stw_lr_tb:
+			pango_context_set_base_dir (m_pango_context,
+						    PANGO_DIRECTION_LTR);
+			break;
+		case smil2::stw_rl_tb:
+			pango_context_set_base_dir (m_pango_context,
+						    PANGO_DIRECTION_RTL);
+			break;
+		}
 	}
 	if ( ! m_pango_layout) {
 		m_pango_layout = pango_layout_new (m_pango_context);
@@ -167,7 +188,7 @@ gtk_smiltext_renderer::smiltext_changed()
 		// prepare for blending: layout is setup twice:
 		// m_bg_layout has textColor as m_transparent
 		// m_pango_layout has textBackGroundColor as m_transparent
-		// when blending, pixels in m_transparent are ignored
+		// when blending, pixels in m_transparent color are ignored
        		m_bg_layout = pango_layout_new(m_pango_context);
 		pango_layout_set_alignment (m_bg_layout, PANGO_ALIGN_LEFT);
 		m_bg_pango_attr_list = pango_attr_list_new();
@@ -179,6 +200,34 @@ gtk_smiltext_renderer::smiltext_changed()
 			// Completely new text. Clear our copy and render everything.
 	        	m_text_storage = "";
 			i = m_engine.begin();
+			smil2::smiltext_align align = i->m_align;
+			if (align != m_align) {
+				switch (align) {
+				default:
+				case smil2::sta_left:
+					pango_layout_set_alignment
+					  (m_pango_layout, PANGO_ALIGN_LEFT);
+					if (m_bg_layout)
+						pango_layout_set_alignment
+						  (m_bg_layout, PANGO_ALIGN_LEFT);
+					break;
+				case smil2::sta_center:
+					pango_layout_set_alignment
+					  (m_pango_layout, PANGO_ALIGN_CENTER);
+					if (m_bg_layout)
+						pango_layout_set_alignment
+						  (m_bg_layout, PANGO_ALIGN_CENTER);
+					break;
+				case smil2::sta_right:
+					pango_layout_set_alignment
+					  (m_pango_layout, PANGO_ALIGN_RIGHT);
+					if (m_bg_layout)
+						pango_layout_set_alignment
+						  (m_bg_layout, PANGO_ALIGN_RIGHT);
+					break;
+				}
+				m_align = align;
+			}
 		} else {
 			// Only additions. Don't clear and only copy the new stuff.
 			i = m_engine.newbegin();
@@ -186,7 +235,8 @@ gtk_smiltext_renderer::smiltext_changed()
 		while (i != m_engine.end()) {
 			// Add the new characters
 			gint start_index = m_text_storage.size();
-			if (i->m_command == smil2::stc_break)
+			if (i->m_command == smil2::stc_break
+			    && m_params.m_mode != smil2::stm_crawl)
 				m_text_storage += "\n";
 			else if (i->m_command == smil2::stc_data)
 				m_text_storage +=  i->m_data;
@@ -378,16 +428,14 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 	    T = r.top()+p.y,
 	    W = r.width(),
 	    H = r.height();
-	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (window->get_ambulant_pixmap()));
 	GdkRectangle gdk_rectangle;
 	gdk_rectangle.x = L;
 	gdk_rectangle.y = T;
 	gdk_rectangle.width = W;
 	gdk_rectangle.height = H;
+	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (window->get_ambulant_pixmap()));
+	gdk_gc_set_clip_rectangle(gc, &gdk_rectangle);
 
-	if (offset.x || offset.y) {
-		gdk_gc_set_clip_rectangle(gc, &gdk_rectangle);
-	}
 	// include the text
 	pango_layout_set_width(m_pango_layout, W*1000);
 	if (m_bg_layout) {
@@ -402,10 +450,8 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 				   W, H, -1);
 		GdkGC* text_gc = gdk_gc_new (GDK_DRAWABLE (text_pixmap));
 		GdkGC* bg_gc =  gdk_gc_new (GDK_DRAWABLE (bg_pixmap));
-		if (offset.x || offset.y) {
-			gdk_gc_set_clip_rectangle(text_gc, &gdk_rectangle);
+		gdk_gc_set_clip_rectangle(text_gc, &gdk_rectangle);
 			gdk_gc_set_clip_rectangle(bg_gc, &gdk_rectangle);
-		}
 
 		GdkPixbuf* screen_pixbuf = gdk_pixbuf_get_from_drawable
 				(NULL, window->get_ambulant_pixmap(), NULL,
@@ -429,7 +475,7 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 		gdk_draw_layout(GDK_DRAWABLE (bg_pixmap),
 				bg_gc , 0-offset.x, 0-offset.y, m_bg_layout);
 		g_object_unref (G_OBJECT (bg_gc));
-//		gdk_pixmap_dump(bg_pixmap, "bg");
+//DBG		gdk_pixmap_dump(bg_pixmap, "bg");
 		GdkPixbuf* bg_pixbuf = gdk_pixbuf_get_from_drawable
 		  			       	(NULL, bg_pixmap, NULL,
 						 0,0,0,0,W,H);
@@ -444,18 +490,18 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 		gdk_draw_layout(GDK_DRAWABLE (text_pixmap),
 				text_gc , 0-offset.x, 0-offset.y, m_pango_layout);
 		g_object_unref (G_OBJECT (text_gc));
-//		gdk_pixmap_dump(text_pixmap, "text");
+//DBG		gdk_pixmap_dump(text_pixmap, "text");
 		GdkPixbuf* text_pixbuf = gdk_pixbuf_get_from_drawable
 		  			       	(NULL, text_pixmap, NULL,
 						0,0,0,0,W,H);
 		gdk_pixbuf_blend (screen_pixbuf, rc, text_pixbuf, rc, 
 				  m_alpha_chroma, m_alpha_media,
 				  m_chroma_low, m_chroma_high, m_transparent);
-//		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen0");
+//DBG		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen0");
 		// draw the blended pixbuf on the screen
 		gdk_draw_pixbuf(window->get_ambulant_pixmap(),
 				gc, screen_pixbuf, 0, 0, L, T, W, H, GDK_RGB_DITHER_NONE,0,0);
-//		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen1");
+//DBG		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen1");
 		g_object_unref (G_OBJECT (text_pixbuf));
 		g_object_unref (G_OBJECT (bg_pixbuf));
 		g_object_unref (G_OBJECT (screen_pixbuf));

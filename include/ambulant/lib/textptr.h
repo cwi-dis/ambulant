@@ -49,7 +49,7 @@ namespace ambulant {
 
 namespace lib {
 
-// This class is a two directions converter 
+// This class is a two writing_modes converter 
 // between UNICODE an MB strings.
 
 class textptr {

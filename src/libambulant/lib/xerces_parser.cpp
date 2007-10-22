@@ -181,6 +181,14 @@ xerces_sax_parser::endElement(const XMLCh* const name) {
 }
 
 void 
+xerces_sax_parser::characters(const XMLCh* const chars,
+			      const unsigned int length) {
+	char *c_chars = XMLString::transcode(chars);
+	m_content_handler->characters(c_chars, length); 
+	XMLString::release(&c_chars);
+}
+
+void 
 xerces_sax_parser::warning(const SAXParseException& exception) {
 	throw exception;
 }

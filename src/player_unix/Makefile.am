@@ -56,6 +56,14 @@ extra_arts_ldflags=
 extra_arts_DEFINES=
 endif
 
+if WITH_EXPAT
+extra_expat_DEFINES=-I$(EXPAT_PREFIX)/include -DWITH_EXPAT
+extra_expat_LDADD=-L$(EXPAT_PREFIX)/lib -lexpat
+else
+extra_expat_DEFINES=
+extra_expat_LDADD=
+endif
+
 if WITH_DIRAC
 dirac_libraries=`pkg-config --libs dirac`
 else
@@ -96,12 +104,12 @@ endif
 
 LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_qt.a	\
 	$(extra_arts_LDADD)					\
+	$(extra_expat_LDADD)					\
 	$(extra_sdl_LDADD)					\
 	$(extra_live_LDADD) 					\
 	$(extra_ffmpeg_LDADD)					\
 	$(extra_xerces_LDADD)					\
 	$(top_builddir)/src/libambulant/.libs/libambulant.a	\
-	$(EXPAT_PREFIX)/lib/libexpat.a				\
 	$(qt_libs)						\
 	$(LIBLTDL)  
 
@@ -123,6 +131,7 @@ AM_CPPFLAGS = \
 		-I$(top_srcdir)/include				\
 		-I$(top_builddir)/include/ambulant/gui/qt	\
 		-I$(top_srcdir)/include/ambulant/gui/qt		\
+	    $(EXPAT_INCLUDES) 	                                \
 	    $(XERCES_INCLUDES) 	                                \
 	    $(qt_includes) \
 	    $(liveincludes)

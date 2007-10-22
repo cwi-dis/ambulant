@@ -55,7 +55,7 @@ gui::qt::qt_smiltext_renderer::qt_smiltext_renderer(
 	m_bgopacity(1.0),
 	m_blending(false),
 	qt_renderer<renderer_playable>(context, cookie, node, evp),
-	m_layout_engine(smil2::smiltext_layout_engine(node, evp, this, this))
+	m_layout_engine(smil2::smiltext_layout_engine(node, evp, this, this, true))
 {
 	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_renderer(0x%x)", this);
 }
@@ -97,6 +97,7 @@ gui::qt::qt_smiltext_renderer::start(double t) {
 	if ( ! (alpha_media == 1.0 && alpha_media_bg == 1.0 && alpha_chroma == 1.0) ) {
 		m_blending = true;
 	}
+	m_context->started(m_cookie);
 	m_lock.leave();
 }
 
@@ -114,13 +115,14 @@ gui::qt::qt_smiltext_renderer::stop() {
 void
 gui::qt::qt_smiltext_renderer::marker_seen(const char *name)
 {
-	m_lock.enter();
+//KB	m_lock.enter();
 	m_context->marker_seen(m_cookie, name);
-	m_lock.leave();
+//KB	m_lock.leave();
 }
 
 void
 gui::qt::qt_smiltext_renderer::smiltext_changed() {
+	m_layout_engine.smiltext_changed();
 	m_dest->need_redraw();
 }
 
@@ -209,7 +211,7 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 	QPainter tx_paint, bg_paint;
 	lib::color_t text_color = strun.m_color;
 	lib::color_t bg_color = strun.m_bg_color;
-	if (ri->is_chromakey_specified()) {
+	if (ri && ri->is_chromakey_specified()) {
 		if (color_t_in_range (text_color, chroma_low, chroma_high))
 			alpha_media = alpha_chroma;
 		if (color_t_in_range (bg_color, chroma_low, chroma_high))
@@ -252,13 +254,14 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 		tx_paint.setPen(Qt::NoPen);
 		tx_paint.drawRect(L,T,W,H);
 	}
+	int flags = Qt::AlignAuto;
 	tx_paint.setPen(qt_color);
 	if (m_blending)
 		tx_paint.drawText(word_spacing,0,W-word_spacing,H,
-				  Qt::AlignAuto, strun.m_data);
+				  flags, strun.m_data);
 	else
 		tx_paint.drawText(L+word_spacing,T,W-word_spacing,H,
-				  Qt::AlignAuto, strun.m_data);
+				  flags, strun.m_data);
 	tx_paint.flush();
 	tx_paint.end();
 	
@@ -368,4 +371,3 @@ gui::qt::qt_smiltext_renderer::redraw_body(const lib::rect& dirty, common::gui_w
 
 }
 #endif //WITH_SMIL30
-

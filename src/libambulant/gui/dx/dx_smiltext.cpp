@@ -80,7 +80,7 @@ gui::dx::dx_smiltext_renderer::dx_smiltext_renderer(
 	m_bgopacity(1.0),
 	m_region_dds(NULL),
 	m_df(factory->get_datasource_factory()),
-	m_layout_engine(smil2::smiltext_layout_engine(node, evp, this, this))
+	m_layout_engine(smil2::smiltext_layout_engine(node, evp, this, this, true))
 {
 	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_renderer(0x%x)", this);
 }
@@ -147,6 +147,22 @@ gui::dx::dx_smiltext_renderer::marker_seen(const char *name)
 
 void
 gui::dx::dx_smiltext_renderer::smiltext_changed() {
+	bool got_hdc = false;
+	if (m_hdc == NULL) {
+		m_hdc = CreateCompatibleDC(m_hdc);
+		if (m_hdc == NULL) {
+			win_report_error("dx_smiltext_changed()::CreateCompatibleDC()", GetLastError());
+			return;
+		}
+		got_hdc = true;
+	}
+	m_layout_engine.smiltext_changed();
+	if (got_hdc) {
+		if ( ! DeleteDC(m_hdc)) {
+			lib::logger::get_logger()->warn("gui::dx::dx_smiltext_renderer::redraw(): DeleteDC failed");
+		}	
+		m_hdc = NULL;
+	}
 	m_dest->need_redraw();
 }
 

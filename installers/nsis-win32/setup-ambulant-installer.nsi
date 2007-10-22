@@ -14,7 +14,7 @@
 ;
 !define PRODUCT_NAME "Ambulant Player"
 !define PRODUCT_VERSION "1.9"
-!define DISTRIBUTE_DLL_BUILD
+; !define DISTRIBUTE_DLL_BUILD
 ; !define DISTRIBUTE_PYTHON_PLUGIN
 !define PRODUCT_PUBLISHER "Centrum voor Wiskunde en Informatica"
 !define PRODUCT_WEB_SITE "http://www.ambulantplayer.org"

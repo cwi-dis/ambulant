@@ -92,6 +92,8 @@ class gtk_smiltext_renderer :
 	double	m_alpha_chroma;
 	color_t m_chroma_low;
 	color_t m_chroma_high;
+	smil2::smiltext_align m_align;
+	smil2::smiltext_writing_mode m_writing_mode;
 };
 
 } // namespace gtk

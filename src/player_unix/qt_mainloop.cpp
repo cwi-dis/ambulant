@@ -177,9 +177,13 @@ qt_mainloop::init_datasource_factory()
 void
 qt_mainloop::init_parser_factory()
 {
-	set_parser_factory(lib::global_parser_factory::get_parser_factory());	
+	lib::global_parser_factory *pf = lib::global_parser_factory::get_parser_factory();
+	set_parser_factory(pf);
+#ifdef WITH_XERCES_BUILTIN
+	pf->add_factory(new lib::xerces_factory());
+	AM_DBG m_logger->debug("mainloop::mainloop: add xerces_factory");
+#endif
 }
-
 
 void
 qt_mainloop::show_file(const net::url &url)

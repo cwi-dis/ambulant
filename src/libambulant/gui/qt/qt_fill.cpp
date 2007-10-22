@@ -234,6 +234,7 @@ qt_background_renderer::redraw(const lib::rect &dirty,
 #else // +not* WITH_SMIL30
 		if (opacity >= 0.5) {
 #endif//WITH_SMIL30
+			paint.setPen(Qt::NoPen);
 			paint.setBrush(bgc);
 			paint.drawRect(L,T,W,H);
 			if (m_background_pixmap) {
@@ -242,7 +243,9 @@ qt_background_renderer::redraw(const lib::rect &dirty,
 			}
 			paint.flush();
 			paint.end();
-		} else {  //XXXX adapted from gtk_fill. May be not optimal.
+#ifdef	WITH_SMIL30
+		} else { // Blending
+			//XXXX adapted from gtk_fill. May be not optimal.
 			// Method:
 		  	// 1. Get the current on-screen image as a QImage
 		  	// 2. Create a new pixmap and draw a coloured rectangle on it
@@ -252,6 +255,7 @@ qt_background_renderer::redraw(const lib::rect &dirty,
 			QPixmap bg_pixmap = QPixmap (W,H);
 			QPainter bg_painter;
 			bg_painter.begin(&bg_pixmap);
+			bg_painter.setPen(Qt::NoPen);
 			bg_painter.setBrush(bgc);
 			bg_painter.drawRect(0,0,W,H);
 			if (m_background_pixmap) {
@@ -270,6 +274,7 @@ qt_background_renderer::redraw(const lib::rect &dirty,
 			bitBlt(aqw->get_ambulant_pixmap(), L, T,
 			       &new_pixmap, L, T, W, H);	
 
+#endif//WITH_SMIL30
 		}
 	}
 }

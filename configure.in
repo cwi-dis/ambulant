@@ -709,8 +709,11 @@ AC_ARG_WITH(ffmpeg,
 	[  --with-ffmpeg		Turn on/off ffmpeg audio decoders],
 	[if test "x$withval" = "xno"; then
 	  test_ffmpeg=false
-fi
-])
+	 else	if test "x$withval" != "xyes"; then
+		   test_ffmpeg=manual
+		fi
+	 fi
+	 ])
 
 dnl old tests which can hopefully be deemded redundant 
 dnl at some point

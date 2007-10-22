@@ -61,6 +61,15 @@ dirac_libraries=
 endif # WITH_DIRAC
 
 #------------------------------------------------------
+if WITH_EXPAT
+extra_expat_DEFINES=-I$(EXPAT_PREFIX)/include -DWITH_EXPAT
+extra_expat_LDADD=-L$(EXPAT_PREFIX)/lib -lexpat
+else
+extra_expat_DEFINES=
+extra_expat_LDADD=
+endif #  WITH_EXPAT_BUILTIN
+
+#------------------------------------------------------
 if WITH_FFMPEG
 extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a $(FFMPEG_LIBS)
 extra_ffmpeg_ldflags=$(dirac_libraries)
@@ -129,11 +138,11 @@ LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_gtk.a	\
 	$(extra_arts_LDADD) \
 	$(extra_gstreamer_LDADD) \
 	$(extra_sdl_LDADD) \
+	$(extra_expat_LDADD) \
 	$(extra_ffmpeg_LDADD) \
 	$(extra_xerces_LDADD) \
 	$(extra_live_LDADD)  \
 	$(top_builddir)/src/libambulant/.libs/libambulant.a	\
-	$(EXPAT_PREFIX)/lib/libexpat.a \
 	$(gtk_libs) \
 	$(LIBLTDL) \
 	$(extra_nokia770_LDADD)
@@ -160,6 +169,7 @@ AM_CPPFLAGS = \
 		-I$(top_srcdir)/include \
 		-I$(top_builddir)/include/ambulant/gui/gtk \
 		-I$(top_srcdir)/include/ambulant/gui/gtk \
+	    $(EXPAT_INCLUDES) \
 	    $(XERCES_INCLUDES) \
 	    $(gtk_includes) \
 	    $(liveincludes)
