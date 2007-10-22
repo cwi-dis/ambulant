@@ -155,6 +155,7 @@ nscontext::init_supported_namespaces() {
 		// Ambulant-specific features, for use with systemRequired
 #ifdef WITH_SMIL30
 		"http://www.ambulantplayer.org/Namespaces/SMIL30-WD-20061220",
+		"http://www.w3.org/ns/SMIL",
 #endif
 		// Ambulant-specific features, for use with systemComponent
 		NULL
