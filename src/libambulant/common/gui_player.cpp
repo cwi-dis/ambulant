@@ -258,6 +258,26 @@ gui_player::create_document(const net::url& url)
 		rv->set_src_url(m_url);
 		// Check that the <smil> tag does not use unsupported features
 		const lib::node *root = rv->get_root();
+#ifdef WITH_SMIL30
+		const char *version = root->get_attribute("version");
+		if (version && strcmp(version, "3.0") != 0) {
+			lib::logger::get_logger()->trace("%s: document is SMIL version \"%s\", not 3.0", m_url.get_url().c_str(), version);
+			lib::logger::get_logger()->warn(gettext("%s: document is SMIL version \"%s\", not 3.0, will attempt to continue anyway"),
+				m_url.get_url().c_str(), version);
+		}
+		const char *profile = root->get_attribute("baseProfile");
+		if (profile && 
+				strcmp(profile, "Language") != 0 &&
+				strcmp(profile, "Mobile") != 0 &&
+				strcmp(profile, "ExtendedMobile") != 0 &&
+				strcmp(profile, "Tiny") != 0
+				) {
+			lib::logger::get_logger()->trace("%s: document uses unknown SMIL profile \"%s\"", m_url.get_url().c_str(), profile);
+			lib::logger::get_logger()->warn(gettext("%s: document uses unknown SMIL profile \"%s\", will attempt to continue anyway"),
+				m_url.get_url().c_str(), profile);
+		}
+		
+#endif // WITH_SMIL30
 		smil2::test_attrs ta(root);
 		if (!ta.selected()) {
 			lib::logger::get_logger()->trace("%s: systemTest attributes on <smil> node not satisfied", m_url.get_url().c_str());

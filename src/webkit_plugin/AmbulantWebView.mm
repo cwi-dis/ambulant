@@ -33,6 +33,7 @@ class my_cocoa_window_factory : public ambulant::gui::cocoa::cocoa_window_factor
 + (NSView *)plugInViewWithArguments:(NSDictionary *)arguments
 {
     AmbulantWebView *view = [[[self alloc] init] autorelease];
+	NSLog(@"arguments: %@", arguments);
     [view setArguments:arguments];
     return view;
 }
