@@ -147,22 +147,17 @@ gui::dx::dx_smiltext_renderer::marker_seen(const char *name)
 
 void
 gui::dx::dx_smiltext_renderer::smiltext_changed() {
-	bool got_hdc = false;
+	assert(m_hdc == NULL);
+	m_hdc = CreateCompatibleDC(m_hdc);
 	if (m_hdc == NULL) {
-		m_hdc = CreateCompatibleDC(m_hdc);
-		if (m_hdc == NULL) {
-			win_report_error("dx_smiltext_changed()::CreateCompatibleDC()", GetLastError());
-			return;
-		}
-		got_hdc = true;
+		win_report_error("dx_smiltext_changed()::CreateCompatibleDC()", GetLastError());
+		return;
 	}
 	m_layout_engine.smiltext_changed();
-	if (got_hdc) {
-		if ( ! DeleteDC(m_hdc)) {
-			lib::logger::get_logger()->warn("gui::dx::dx_smiltext_renderer::redraw(): DeleteDC failed");
-		}	
-		m_hdc = NULL;
-	}
+	if ( ! DeleteDC(m_hdc)) {
+		lib::logger::get_logger()->warn("gui::dx::dx_smiltext_renderer::redraw(): DeleteDC failed");
+	}	
+	m_hdc = NULL;
 	m_dest->need_redraw();
 }
 
