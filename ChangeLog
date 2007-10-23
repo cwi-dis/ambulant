@@ -1,3 +1,20 @@
+2007-10-22 16:59  keesblom
+
+	* Fixed erroneous global substitute
+
+2007-10-22 16:35  keesblom
+
+	* Added the new xml namespace identifier for SMIL
+
+2007-10-22 13:32  keesblom
+
+	* fixed a bug in tree_builder (undefined pointer after realloc())
+
+2007-10-22 11:33  keesblom
+
+	* Merged branch kees-xmlspace-260907 with trunk (practically
+	  complete smilText)
+
 2007-10-11 16:20  jackjansen
 
 	* Don't resize ambulant window if we've borrowed it from someone
