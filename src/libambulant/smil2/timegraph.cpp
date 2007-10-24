@@ -306,11 +306,13 @@ void timegraph::add_begin_sync_rules(time_node *tn) {
 		} 
 	}
 	
+#ifndef WITH_SMIL30
 	if(parent->is_seq()) {
 		// For children of a sequence, the only legal value for 
 		// begin is a single non-negative offset value.
 		return;
 	}
+#endif // WITH_SMIL30
 	
 	// add any specified begin syncbase rules
 	for(it = list.begin(); it!= list.end(); it++) {
