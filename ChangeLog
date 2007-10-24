@@ -1,3 +1,12 @@
+2007-10-23 17:03  jackjansen
+
+	* Implemented Identity module support (version and baseProfile
+	  attributes).
+
+2007-10-23 10:38  keesblom
+
+	* Some code cleanup (de)allocating m_hdc
+
 2007-10-22 16:59  keesblom
 
 	* Fixed erroneous global substitute
