@@ -85,6 +85,8 @@ cocoa_smiltext_renderer::cocoa_smiltext_renderer(
 	m_layout_manager(NULL),
 	m_text_container(NULL),
 	m_engine(smil2::smiltext_engine(node, evp, this, false)),
+	m_needs_conditional_newline(false),
+	m_needs_conditional_space(false),
 	m_params(m_engine.get_params()),
 	m_any_semiopaque_bg(false)
 {
@@ -160,11 +162,45 @@ cocoa_smiltext_renderer::smiltext_changed()
 			// Add the new characters
 			newrange.location = [m_text_storage length];
 			newrange.length = 0;
-			NSString *newdata;
-			if ((*i).m_command == smil2::stc_break)
+			NSString *newdata = @"";
+			switch((*i).m_command) {
+			case smil2::stc_break:
 				newdata = @"\n";
-			else
+				m_needs_conditional_space = false;
+				m_needs_conditional_newline = false;
+				break;
+			case smil2::stc_condbreak:
+				if (m_needs_conditional_newline) {
+					newdata = @"\n\n";
+					m_needs_conditional_space = false;
+					m_needs_conditional_newline = false;
+				}
+				break;
+			case smil2::stc_condspace:
+				if (m_needs_conditional_space) {
+					newdata = @" ";
+					m_needs_conditional_newline = true;
+					m_needs_conditional_space = false;
+				}
+				break;
+			case smil2::stc_data:
+				char lastch = *((*i).m_data.rbegin());
+				if (lastch == '\r' || lastch == '\n' || lastch == '\f' || lastch == '\v') {
+					m_needs_conditional_newline = false;
+					m_needs_conditional_space = false;
+				} else
+				if (lastch == ' ' || lastch == '\t') {
+					m_needs_conditional_newline = true;
+					m_needs_conditional_space = false;
+				} else {
+					m_needs_conditional_newline = true;
+					m_needs_conditional_space = true;
+				}
 				newdata = [[NSString alloc] initWithCString:(*i).m_data.c_str()];
+				break;
+			default:
+				assert(0);
+			}
 			[m_text_storage replaceCharactersInRange:newrange withString:newdata];
 			
 			// Prepare for setting the attribute info

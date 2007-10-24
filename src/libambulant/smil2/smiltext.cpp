@@ -119,20 +119,12 @@ smiltext_engine::_split_into_lines(lib::xml_string data, size_t lf_pos, size_t l
 		smiltext_run run = m_run_stack.top();
 		run.m_command = stc_data;
 		run.m_data = data.substr(0, lf_pos);
-		smiltext_runs::const_iterator where = m_runs.insert( m_runs.end(), run);
-		if (!m_newbegin_valid) {
-			m_newbegin = where;
-			m_newbegin_valid = true;
-		}
+		_insert_run_at_end(run);
 	}
 	while (lf_pos++ < limit) {
 		smiltext_run run = m_run_stack.top();
 		run.m_command = stc_break;
-		smiltext_runs::const_iterator where = m_runs.insert( m_runs.end(), run);
-		if (!m_newbegin_valid) {
-			m_newbegin = where;
-			m_newbegin_valid = true;
-		}
+		_insert_run_at_end(run);
 		if (data[lf_pos] != '\n') {
 			break;  
 		}
@@ -169,11 +161,7 @@ smiltext_engine::_split_into_words(lib::xml_string data, smil2::smiltext_xml_spa
 			run.m_command = stc_data;
 			run.m_data = data.substr(first_char, first_trailing_space-first_char);
 			AM_DBG lib::logger::get_logger()->debug("dx_smiltext_changed(): bg_col=0x%x, color=0x%x, data=%s", run.m_bg_color, run.m_color, run.m_data.c_str());
-			smiltext_runs::const_iterator where = m_runs.insert( m_runs.end(), run);
-			if (!m_newbegin_valid) {
-				m_newbegin = where;
-				m_newbegin_valid = true;
-			}
+			_insert_run_at_end(run);
 			data = data.substr(first_trailing_space);
 		} else {
 			data = data.substr(data.length());
@@ -194,22 +182,15 @@ smiltext_engine::_update() {
 		if (!(*m_tree_iterator).first) {
 			// Pop the stack, if needed
 			const lib::xml_string &tag = item->get_local_name();
-			if (tag == "div" || tag == "p" || tag == "span") {
-				if (m_params.m_mode != stm_crawl 
-				    && (tag == "div" || tag == "p")) {
-					smiltext_run run = m_run_stack.top();
-					if (run.m_xml_space != stx_preserve) {
-						// insert implicit line break
-						run.m_data = "";
-						run.m_command = stc_break;
-						smiltext_runs::const_iterator where =
-							m_runs.insert(m_runs.end(), run);
-						if (!m_newbegin_valid) {
-							m_newbegin = where;
-							m_newbegin_valid = true;
-						}
-					}
-				}
+			if ( tag == "span") {
+				m_run_stack.pop();
+			} else if (tag == "div" || tag == "p") {
+				smiltext_run run = m_run_stack.top();
+				// insert conditional line break
+				run.m_data = "";
+				run.m_command = stc_condbreak;
+				_insert_run_at_end(run);
+
 				m_run_stack.pop();
 			}
 			continue;
@@ -224,8 +205,8 @@ smiltext_engine::_update() {
 				_split_into_words(data, run.m_xml_space);
 				continue;
 			}
-			// Trim all space characters. BUT if there is whitespace at the
-			// end leave one space there.
+#if 0 // XXXJACK
+			// Whitespace handling for the non
 			size_t first_nonblank = data.find_first_not_of(" \t\r\n\f\v");
 			size_t last_nonblank = data.find_last_not_of(" \t\r\n\f\v");
 			bool space_at_end = last_nonblank < data.size()-1;
@@ -237,11 +218,35 @@ smiltext_engine::_update() {
 				if (space_at_end) run.m_data += ' ';
 			} else run.m_data = data;
 			if (run.m_data != "") {
-				smiltext_runs::const_iterator where = 
-				  m_runs.insert(m_runs.end(), run);
-				if (!m_newbegin_valid) {
-					m_newbegin = where;
-					m_newbegin_valid = true;
+				_insert_run_at_end(run);
+			}
+#endif
+			if (run.m_xml_space == stx_preserve) {
+				run.m_command = stc_data;
+				run.m_data = data;
+				_insert_run_at_end(run);
+			} else {
+				size_t first_nonblank = data.find_first_not_of(" \t\r\n\f\v");
+				size_t last_nonblank = data.find_last_not_of(" \t\r\n\f\v");
+				size_t last_position = data.size();
+				if (first_nonblank != 0 && first_nonblank != std::string::npos) {
+					// String starts with whitespace. Add a conditional space.
+					run.m_command = stc_condspace;
+					run.m_data = "";
+					_insert_run_at_end(run);
+				}
+				// Strip the blanks from the string and add it to the output.
+				if (first_nonblank != std::string::npos && last_nonblank != std::string::npos)
+					data = data.substr(first_nonblank, last_nonblank-first_nonblank+1);
+				run.m_command = stc_data;
+				run.m_data = data;
+				_insert_run_at_end(run);
+				
+				if (last_nonblank != last_position-1) {
+					// String ends with whitespace. Add a conditional space.
+					run.m_command = stc_condspace;
+					run.m_data = "";
+					_insert_run_at_end(run);
 				}
 			}
 		} else {
@@ -261,52 +266,53 @@ smiltext_engine::_update() {
 				}
 				lib::timer::time_type ttime = m_epoch + round(time*1000);
 				lib::timer::time_type now = m_event_processor->get_timer()->elapsed();
-				// If this node is still in the future we continue processing, otherwise we
-				// stop here and schedule the next update.
+				// If this node is still in the future we stop here and schedule the next update
+				// Otherwise, we continue processing.
 				if (ttime > now) {
 					next_update_needed = ttime-now;
 					break;
 				}
 				m_tree_time = time;
-				//
-				// If the node has an ID we raise a marker event.
-				// In the SMIL code this is actually specified as a beginEvent
-				// but there's magic in the parsing of the begin attribute
-				// to translate this to a marker event on the smiltext node
-				// in case the beginEvent references a tev/clear.
-				const char *id = item->get_attribute("id");
-				if (id) {
-					m_client->marker_seen(id);
-				}
 				if (tag == "clear" || m_params.m_mode == stm_replace) {
 					m_runs.clear();
 					m_newbegin = m_runs.end();
 					m_newbegin_valid = false;
 				}
-			} else if (tag == "br" || tag == "span" || tag == "p" || tag == "div") {
-				if (tag != "br") {
+			} else if (tag == "br" ) {
+				if (m_params.m_mode != stm_crawl) {
+					// insert line break
 					smiltext_run run = m_run_stack.top();
-					_get_formatting(run, item);
-					m_run_stack.push(run);
+					run.m_data = "";
+					run.m_command = stc_break;
+					_insert_run_at_end(run);
 				}
-				if (m_params.m_mode != stm_crawl 
-					&& (tag == "br" 
-					    || tag == "div" || tag == "p")) {
+			} else if ( tag == "span" ) {
+				smiltext_run run = m_run_stack.top();
+				_get_formatting(run, item);
+				m_run_stack.push(run);
+			} else if ( tag == "p" || tag == "div") {
+				smiltext_run run = m_run_stack.top();
+				_get_formatting(run, item);
+				m_run_stack.push(run);
+				if (m_params.m_mode != stm_crawl ) {
+					// insert conditional line break
 					smiltext_run run = m_run_stack.top();
-					if (run.m_xml_space != stx_preserve) {
-						// insert line break
-						run.m_data = "";
-						run.m_command = stc_break;
-							smiltext_runs::const_iterator where =
-						m_runs.insert( m_runs.end(), run);
-						if (!m_newbegin_valid) {
-							m_newbegin = where;
-							m_newbegin_valid = true;
-						}
-					}
+					run.m_data = "";
+					run.m_command = stc_condbreak;
+					_insert_run_at_end(run);
 				}
 			} else {
-				lib::logger::get_logger()->trace("smiltext: unknown tag <%s>", tag.c_str());
+				lib::logger::get_logger()->trace("smilText: unknown tag <%s>", tag.c_str());
+			}
+			//
+			// Finally, if the node has an ID we raise a marker event.
+			// In the SMIL code this is actually specified as a beginEvent
+			// but there's magic in the parsing of the begin attribute
+			// to translate this to a marker event on the smiltext node
+			// in case the beginEvent references a tev/clear.
+			const char *id = item->get_attribute("id");
+			if (id) {
+				m_client->marker_seen(id);
 			}
 		}
 	}
