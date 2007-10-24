@@ -61,8 +61,10 @@ struct smiltext_params {
 	
 /// Layout commands that the engine can send to the renderer
 enum smiltext_command {
-	stc_data,
-	stc_break
+	stc_data,		// Render some character
+	stc_break,		// Unconditional line break
+	stc_condbreak,	// Conditional break, will collapse with adjacent condbreaks
+	stc_condspace	// Conditional space, will collapse with adjacent condspaces.
 };
 
 /// Values for the textAlign attribute of text spans
@@ -210,6 +212,15 @@ class smiltext_engine {
 	// of a stc_data command without any line-feed (newline) character
 	// but with the formatting and styling parameters
 	lib::xml_string _split_into_lines(lib::xml_string data, size_t lf_pos, size_t limit);
+	// Convenience method to ad a run to the end of the run list.
+	inline void _insert_run_at_end(const smiltext_run &run) {
+		smiltext_runs::const_iterator where =
+		m_runs.insert( m_runs.end(), run);
+		if (!m_newbegin_valid) {
+			m_newbegin = where;
+			m_newbegin_valid = true;
+		}
+	}
 
 	const bool m_word_mode;
 	const lib::node *m_node;			// The root of the smiltext nodes

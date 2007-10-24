@@ -66,6 +66,8 @@ class cocoa_smiltext_renderer :
 	NSLayoutManager *m_layout_manager;
 	NSTextContainer *m_text_container;
 	smil2::smiltext_engine m_engine;
+	bool m_needs_conditional_newline;
+	bool m_needs_conditional_space;
 	const smil2::smiltext_params& m_params;
 	bool m_render_offscreen;			// True if m_params does not allows rendering in-place
 	lib::timer::time_type m_epoch;
