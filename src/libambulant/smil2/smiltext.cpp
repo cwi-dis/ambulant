@@ -226,8 +226,8 @@ smiltext_engine::_update() {
 			}
 			// Trim all space characters. BUT if there is whitespace at the
 			// end leave one space there.
-			size_t first_nonblank = data.find_first_not_of(" \t\r\n");
-			size_t last_nonblank = data.find_last_not_of(" \t\r\n");
+			size_t first_nonblank = data.find_first_not_of(" \t\r\n\f\v");
+			size_t last_nonblank = data.find_last_not_of(" \t\r\n\f\v");
 			bool space_at_end = last_nonblank < data.size()-1;
 			if (run.m_xml_space != stx_preserve
 			    && first_nonblank != std::string::npos
@@ -252,18 +252,22 @@ smiltext_engine::_update() {
 				double time = 0;
 				if (time_str) {
 					time = atof(time_str); // XXXJACK
-					m_tree_time = time;
 				} else if (time_str = item->get_attribute("next")) {
 					time = atof(time_str);
-					m_tree_time = m_tree_time + time;
+					time = m_tree_time + time;
 				} else  {
 					lib::logger::get_logger()->trace("smiltext: tev without begin or next attribute ignored");
 					continue;
 				}
-				lib::timer::time_type ttime = 
-					m_epoch + round(m_tree_time*1000);
-				lib::timer::time_type  now =
-					m_event_processor->get_timer()->elapsed();
+				lib::timer::time_type ttime = m_epoch + round(time*1000);
+				lib::timer::time_type now = m_event_processor->get_timer()->elapsed();
+				// If this node is still in the future we continue processing, otherwise we
+				// stop here and schedule the next update.
+				if (ttime > now) {
+					next_update_needed = ttime-now;
+					break;
+				}
+				m_tree_time = time;
 				//
 				// If the node has an ID we raise a marker event.
 				// In the SMIL code this is actually specified as a beginEvent
@@ -279,12 +283,6 @@ smiltext_engine::_update() {
 					m_newbegin = m_runs.end();
 					m_newbegin_valid = false;
 				}
-				if (ttime > now) {
-					next_update_needed = ttime-now;
-					m_tree_iterator++;
-					break;
-				}
-				// else this time has already passed and we continue the loop
 			} else if (tag == "br" || tag == "span" || tag == "p" || tag == "div") {
 				if (tag != "br") {
 					smiltext_run run = m_run_stack.top();
