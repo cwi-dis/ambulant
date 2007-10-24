@@ -59,7 +59,7 @@ lib::tree_builder::tree_builder(node_factory *nf, node_context *context, const c
 	assert(m_node_factory == get_builtin_node_factory());
 #endif
 #ifdef WITH_SMIL30
-	m_buf = (unsigned char*) malloc(m_bufsize);
+	m_buf = (char*) malloc(m_bufsize);
 	assert(m_buf);
 #endif // WITH_SMIL30
 	reset();
@@ -218,22 +218,21 @@ lib::tree_builder::start_element(const q_name_pair& qn, const q_attributes_list&
 	}
 #endif // WITH_EXTERNAL_DOM
 #ifdef WITH_SMIL30
-	for(q_attributes_list::const_iterator it = qattrs.begin(); 
-	    it != qattrs.end(); it++)
+	q_attributes_list::const_iterator it;
+	for(it = qattrs.begin(); it != qattrs.end(); it++) {
 		if((*it).first.second == "space") {
-			std::pair<std::string,node*> xml_space_value((*it).second,
-								     m_current);
+			std::pair<std::string,node*> xml_space_value((*it).second, m_current);
 			m_xml_space_stack.push_back(xml_space_value);
 			break;
 		}
+	}
 #endif // WITH_SMIL30
 }
 
 void 
 lib::tree_builder::end_element(const q_name_pair& qn) {
 #ifdef WITH_SMIL30
-	if (m_xml_space_stack.size() > 0
-	    &&  m_xml_space_stack.back().second == m_current)
+	if (m_xml_space_stack.size() > 0 &&  m_xml_space_stack.back().second == m_current)
 		m_xml_space_stack.pop_back();
 #endif // WITH_SMIL30
 	if(m_current != 0)
@@ -252,13 +251,13 @@ lib::tree_builder::characters(const char *buf, size_t len) {
 		    && m_xml_space_stack.back().first == "preserve")
 			n = m_node_factory->new_data_node(buf, len, m_context);
 		else { // collapse whitespace
-			const unsigned char* s = (const unsigned char*) buf;
-			unsigned char* d;
+			const char* s = buf;
+			char* d;
 			int si = 0, di = 0;
 			if (m_bufsize < (len+1)) {
 				// ensure m_buf is big enough
 				m_bufsize = len+1;
-				m_buf = (unsigned char*) realloc (m_buf, m_bufsize);
+				m_buf = (char*) realloc (m_buf, m_bufsize);
 			}
 			d = m_buf;
 			assert(m_buf);

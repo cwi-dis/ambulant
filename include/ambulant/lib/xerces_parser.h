@@ -72,7 +72,7 @@ using namespace xercesc;
 
 class xerces_sax_parser : public HandlerBase, public xml_parser {
   public:
-	enum {NS_SEP = '|'};
+	enum {NS_SEP = ':'};
 
 	xerces_sax_parser(sax_content_handler*,sax_error_handler*);
 	virtual ~xerces_sax_parser();
