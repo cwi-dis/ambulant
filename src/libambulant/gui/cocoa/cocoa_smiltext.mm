@@ -192,7 +192,7 @@ cocoa_smiltext_renderer::smiltext_changed()
 				break;
 			case smil2::stc_condbreak:
 				if (m_needs_conditional_newline) {
-					newdata = @"\n\n";
+					newdata = @"\n";
 					m_needs_conditional_space = false;
 					m_needs_conditional_newline = false;
 				}

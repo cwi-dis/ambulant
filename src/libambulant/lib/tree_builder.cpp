@@ -253,7 +253,6 @@ lib::tree_builder::characters(const char *buf, size_t len) {
 		else { // collapse whitespace
 			const char* s = buf;
 			char* d;
-			int si = 0, di = 0;
 			if (m_bufsize < (len+1)) {
 				// ensure m_buf is big enough
 				m_bufsize = len+1;
@@ -261,19 +260,19 @@ lib::tree_builder::characters(const char *buf, size_t len) {
 			}
 			d = m_buf;
 			assert(m_buf);
-			while (si < len) {
-				// trim leading space
-				while (*s && *s > 0 && isspace(*s) && si++ < len)
-					s++;
-				// copy non-space characters
-				while (*s &&  *s > 0 && ! isspace(*s) && si++ < len)
-					*d++ = *s++;
-				if (si < len)
-					*d++ = ' ';
+			bool skipspace = false;
+			while (s < buf+len) {
+				if (isspace(*s)) {
+					if (!skipspace) *d++ = ' ';
+					skipspace = true;
+				} else {
+					*d++ = *s;
+					skipspace = false;
+				}
+				s++;
 			}
-			di = d - m_buf;
-			if (di > 0)
-			  n = m_node_factory->new_data_node((char*)m_buf, di, m_context);
+			if (d > m_buf)
+				n = m_node_factory->new_data_node(m_buf, d-m_buf, m_context);
 		}
 		if (n) m_current->append_child(n);
 #else
