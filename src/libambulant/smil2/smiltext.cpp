@@ -450,7 +450,7 @@ smiltext_engine::_get_formatting(smiltext_run& dst, const lib::node *src)
 void
 smiltext_engine::_get_default_formatting(smiltext_run& dst)
 {
-	dst.m_font_family = "monospace";
+	dst.m_font_family = "sansSerif";
 	dst.m_font_style = sts_normal;
 	dst.m_font_weight = stw_normal;
 	dst.m_font_size = 12;
