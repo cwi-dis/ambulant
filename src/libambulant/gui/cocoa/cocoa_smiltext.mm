@@ -88,10 +88,14 @@ cocoa_smiltext_renderer::cocoa_smiltext_renderer(
 	m_needs_conditional_newline(false),
 	m_needs_conditional_space(false),
 	m_params(m_engine.get_params()),
+	m_cur_paragraph_style(NULL),
+	m_cur_para_align(smil2::sta_start),
+	m_cur_para_writing_mode(smil2::stw_lr_tb),
+	m_cur_para_wrap(true),
 	m_any_semiopaque_bg(false)
 {
 	m_text_storage = [[NSTextStorage alloc] initWithString:@""];
-	m_render_offscreen = (m_params.m_mode != smil2::stm_replace && m_params.m_mode != smil2::stm_append) || !m_params.m_wrap;
+	m_render_offscreen = (m_params.m_mode != smil2::stm_replace && m_params.m_mode != smil2::stm_append);
 }
 
 cocoa_smiltext_renderer::~cocoa_smiltext_renderer()
@@ -225,7 +229,7 @@ cocoa_smiltext_renderer::smiltext_changed()
 				[attrs setValue:color forKey:NSForegroundColorAttributeName];
 			}
 			if (!(*i).m_bg_transparent) {
-				// Find color info
+				// Find background color info
 				double alfa = 1.0;
 				const common::region_info *ri = m_dest->get_info();
 				if (ri) alfa = ri->get_mediabgopacity();
@@ -237,7 +241,64 @@ cocoa_smiltext_renderer::smiltext_changed()
 						alpha:alfa];
 				[attrs setValue:color forKey:NSBackgroundColorAttributeName];
 			}
-			
+			// Finally do paragraph settings (which are cached)
+			if (m_cur_paragraph_style == NULL ||
+					m_cur_para_align != (*i).m_align ||
+					m_cur_para_writing_mode != (*i).m_writing_mode ||
+					m_cur_para_wrap != (*i).m_wrap) {
+				// Delete the old one, if needed
+				if (m_cur_paragraph_style)
+					[m_cur_paragraph_style release];
+				// Remember the values
+				m_cur_para_align = (*i).m_align;
+				m_cur_para_writing_mode = (*i).m_writing_mode;
+				m_cur_para_wrap = (*i).m_wrap;
+				// Allocate the new one
+				NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle alloc] init];
+				m_cur_paragraph_style = [ps retain];
+				// Set the paragraph writing direction
+				if (m_cur_para_writing_mode == smil2::stw_rl_tb) {
+					[ps setBaseWritingDirection: NSWritingDirectionRightToLeft];
+				} else {
+					// All other directions are treated as left-to-right
+					[ps setBaseWritingDirection: NSWritingDirectionLeftToRight];
+				}
+				// Set the paragraph text alignment
+				switch (m_cur_para_align) {
+				case smil2::sta_start:
+					if (m_cur_para_writing_mode == smil2::stw_rl_tb) {
+						[ps setAlignment: NSRightTextAlignment];
+					} else {
+						// All other directions are treated as left-to-right
+						[ps setAlignment: NSLeftTextAlignment];
+					}
+					break;
+				case smil2::sta_end:
+					if (m_cur_para_writing_mode == smil2::stw_rl_tb) {
+						[ps setAlignment: NSLeftTextAlignment];
+					} else {
+						// All other directions are treated as left-to-right
+						[ps setAlignment: NSRightTextAlignment];
+					}
+					break;
+				case smil2::sta_left:
+					[ps setAlignment: NSLeftTextAlignment];
+					break;
+				case smil2::sta_right:
+					[ps setAlignment: NSRightTextAlignment];
+					break;
+				case smil2::sta_center:
+					[ps setAlignment: NSCenterTextAlignment];
+					break;
+				}
+				// Set the paragraph wrap option
+				if (m_cur_para_wrap)
+					[ps setLineBreakMode: NSLineBreakByWordWrapping];
+				else
+					[ps setLineBreakMode: NSLineBreakByClipping];
+			}
+			[attrs setValue:m_cur_paragraph_style forKey:NSParagraphStyleAttributeName];
+
 			// Set the attributes
 			[m_text_storage setAttributes:attrs range:newrange];
 			
@@ -275,11 +336,14 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 #define INFINITE_HEIGHT 1000000
 	NSSize layout_size = visible_size;
 	switch(m_params.m_mode) {
+#if 0
+	// Handled through paragraph wrapping now
 	case smil2::stm_replace:
 	case smil2::stm_append:
 		if (!m_params.m_wrap)
 			layout_size.width = INFINITE_WIDTH;
 		break;
+#endif
 	case smil2::stm_scroll:
 	case smil2::stm_jump:
 		layout_size.height = INFINITE_HEIGHT;

@@ -69,6 +69,10 @@ class cocoa_smiltext_renderer :
 	bool m_needs_conditional_newline;
 	bool m_needs_conditional_space;
 	const smil2::smiltext_params& m_params;
+	NSParagraphStyle *m_cur_paragraph_style;
+	smil2::smiltext_align m_cur_para_align;
+	smil2::smiltext_writing_mode m_cur_para_writing_mode;
+	bool m_cur_para_wrap;
 	bool m_render_offscreen;			// True if m_params does not allows rendering in-place
 	lib::timer::time_type m_epoch;
 	bool m_any_semiopaque_bg;			// True if any backgroundOpacity != 1.0 is used

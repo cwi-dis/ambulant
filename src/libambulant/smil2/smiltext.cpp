@@ -412,13 +412,13 @@ smiltext_engine::_get_formatting(smiltext_run& dst, const lib::node *src)
 			lib::logger::get_logger()->trace("%s: textFontStyle=\"%s\": unknown style", src->get_sig().c_str(), font_style);
 		}
 	}
-	const char *text_place = src->get_attribute("textPlace");
-	if (text_place) {
-		if (strcmp(text_place, "fromTop") == 0) dst.m_text_place = stp_from_top;
-		else if (strcmp(text_place, "fromBottom") == 0) dst.m_text_place = stp_from_bottom;
-		else if (strcmp(text_place, "inherit") == 0) /* no-op */;
+	const char *wrap = src->get_attribute("textWrapOption");
+	if (wrap) {
+		if (strcmp(wrap, "wrap") == 0) dst.m_wrap = true;
+		else if (strcmp(wrap, "noWrap") == 0) dst.m_wrap = false;
+		else if (strcmp(wrap, "inherit") == 0) /* no-op */ ;
 		else {
-			lib::logger::get_logger()->trace("%s: textPlace=\"%s\": unknown textPlace", src->get_sig().c_str(), text_place);
+			lib::logger::get_logger()->trace("%s: textWrapOption=\"%s\": must be wrap or noWrap", src->get_sig().c_str(), wrap);
 		}
 	}
 	const char *writing_mode = src->get_attribute("textWritingMode");
@@ -492,13 +492,13 @@ smiltext_engine::_get_params(smiltext_params& params, const lib::node *src)
 		int rate_i = atoi(rate); // XXXX
 		params.m_rate = rate_i;
 	}
-	const char *wrap = src->get_attribute("textWrapOption");
-	if (wrap) {
-		if (strcmp(wrap, "wrap") == 0) params.m_wrap = true;
-		else if (strcmp(wrap, "noWrap") == 0) params.m_wrap = false;
-		else if (strcmp(wrap, "inherit") == 0) /* no-op */ ;
+	const char *text_place = src->get_attribute("textPlace");
+	if (text_place) {
+		if (strcmp(text_place, "fromTop") == 0) params.m_text_place = stp_from_top;
+		else if (strcmp(text_place, "fromBottom") == 0) params.m_text_place = stp_from_bottom;
+		else if (strcmp(text_place, "inherit") == 0) /* no-op */;
 		else {
-			lib::logger::get_logger()->trace("%s: textWrapOption=\"%s\": must be wrap or noWrap", src->get_sig().c_str(), wrap);
+			lib::logger::get_logger()->trace("%s: textPlace=\"%s\": unknown textPlace", src->get_sig().c_str(), text_place);
 		}
 	}
 }
@@ -510,7 +510,7 @@ smiltext_engine::_get_default_params(smiltext_params& params)
 	params.m_mode = stm_append;
 	params.m_loop = false;
 	params.m_rate = 0;
-	params.m_wrap = true;
+	params.m_text_place = stp_from_top;
 }
 
 // smiltext_layout_engine
@@ -623,7 +623,7 @@ smiltext_layout_engine::get_initial_values(
 	}
 	*y_start_p = rct.top();
 	/* implementation of textPlace attribute */
-	switch (stlw_p->m_run.m_text_place) {
+	switch (m_params.m_text_place) {
 	default:
 	case stp_from_top:
 		*y_dir_p = 1;
@@ -651,6 +651,7 @@ smiltext_layout_engine::redraw(const lib::rect& r) {
 			   &x_start, &y_start, &x_dir, &y_dir);
 	smil2::smiltext_align align = m_words.begin()->m_run.m_align;
 	smil2::smiltext_writing_mode writing_mode = m_words.begin()->m_run.m_writing_mode;
+	bool wrap_lines = m_words.begin()->m_run.m_wrap;
 	if (writing_mode == stw_rl_tb)
 	  switch (align) {
 	  case sta_start:
@@ -728,7 +729,7 @@ smiltext_layout_engine::redraw(const lib::rect& r) {
 			// on the next line in the rectangle either
 			if (linefeed_processing
 			    && ! first_word
-			    && m_params.m_wrap 
+			    && wrap_lines 
 			    &&  ! smiltext_fits(word->m_bounding_box,r)) {
 				if (word->m_leading_breaks == 0)
 					word->m_leading_breaks++;

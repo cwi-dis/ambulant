@@ -48,15 +48,21 @@ enum smiltext_mode {
 	stm_jump,		/// New text is timed, appended to end, scrolls up if needed
 };
 
+/// Values for the textPlace attribute of smilText elements
+enum smiltext_place {
+	stp_from_top,
+	stp_from_bottom
+};
+
 /// Global parameters of a smiltext node.
 /// These are the parameters for smiltext only, additionally the
 /// renderer is expected to take care of all the normal timing/region/etc
 /// attributes.
 struct smiltext_params {
-	smiltext_mode m_mode;	/// How the text is rendered
-	bool	m_loop;		/// Loop mode, valid for scroll/crawl
-	int		m_rate;		/// Rate, in pixels/second
-	bool	m_wrap;		/// Text should be line-wrapped
+	smiltext_mode	m_mode;		/// How the text is rendered
+	bool			m_loop;		/// Loop mode, valid for scroll/crawl
+	int				m_rate;		/// Rate, in pixels/second
+	smiltext_place	m_text_place; /// Where the text should start
 };
 	
 /// Layout commands that the engine can send to the renderer
@@ -90,12 +96,6 @@ enum smiltext_font_weight {
 	stw_bold
 };
 
-/// Values for the textPlace attribute of smilText elements
-enum smiltext_place {
-	stp_from_top,
-	stp_from_bottom
-};
-
 /// Values for the textWritingMode attribute of smilText elements
 enum smiltext_writing_mode {
 	stw_lr_tb,
@@ -127,10 +127,10 @@ class smiltext_run {
 	lib::color_t			m_color;
 	bool					m_bg_transparent;
 	lib::color_t			m_bg_color;
-	smiltext_align			m_align;
-	smiltext_place			m_text_place;
-	smiltext_writing_mode	m_writing_mode;
 	smiltext_xml_space		m_xml_space;
+	smiltext_align			m_align;
+	smiltext_writing_mode	m_writing_mode;
+	bool					m_wrap;		/// Text should be line-wrapped
 };
 
 /// A list of smiltext_run objects is what the renderer is
