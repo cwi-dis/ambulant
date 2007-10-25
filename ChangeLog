@@ -1,3 +1,35 @@
+2007-10-24 21:40  jackjansen
+
+	* Oops, forgot half the checkin for the space/newline fix.
+
+2007-10-24 16:50  jackjansen
+
+	* Revamped handling of spaces and pre/post newlines for p and div
+	  to be more similar to what html does, collapsing them when
+	  needed.
+
+	  Fully implemented for Mac, not for other platforms.
+
+2007-10-24 15:05  keesblom
+
+	* Made xml:space work with xerces parser Also changed some
+	  unsigined char* to char*
+
+2007-10-24 14:28  jackjansen
+
+	* Begin events coming from smilText interior nodes were only
+	  handled for begin attribute. Added handling for end attribute.
+
+2007-10-24 14:06  jackjansen
+
+	* Logic for tev/clear with next was broken, fixed.
+
+	  Fixes tests 8, 9, 10.
+
+2007-10-24 10:32  jackjansen
+
+	* Implemented relaxed begin conditions for seq children.
+
 2007-10-23 17:03  jackjansen
 
 	* Implemented Identity module support (version and baseProfile
