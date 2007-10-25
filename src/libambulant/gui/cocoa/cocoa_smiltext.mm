@@ -146,6 +146,8 @@ cocoa_smiltext_renderer::smiltext_changed()
 		[m_text_storage beginEditing];
 		if (m_engine.is_cleared()) {
 			// Completely new text. Clear our copy and render everything.
+			m_needs_conditional_space = false;
+			m_needs_conditional_newline = false;
 			NSRange all;
 			all.location = 0;
 			all.length = [m_text_storage length];
@@ -213,7 +215,6 @@ cocoa_smiltext_renderer::smiltext_changed()
 				
 			if (!(*i).m_transparent) {
 				// Find color info
-#ifdef WITH_SMIL30
 				double alfa = 1.0;
 				const common::region_info *ri = m_dest->get_info();
 				if (ri) alfa = ri->get_mediaopacity();
@@ -221,17 +222,10 @@ cocoa_smiltext_renderer::smiltext_changed()
 						green:greenf((*i).m_color)
 						blue:bluef((*i).m_color)
 						alpha:alfa];
-#else
-				NSColor *color = [NSColor colorWithCalibratedRed:redf((*i).m_color)
-						green:greenf((*i).m_color)
-						blue:bluef((*i).m_color)
-						alpha:1.0];
-#endif
 				[attrs setValue:color forKey:NSForegroundColorAttributeName];
 			}
 			if (!(*i).m_bg_transparent) {
 				// Find color info
-#ifdef WITH_SMIL30
 				double alfa = 1.0;
 				const common::region_info *ri = m_dest->get_info();
 				if (ri) alfa = ri->get_mediabgopacity();
@@ -241,12 +235,6 @@ cocoa_smiltext_renderer::smiltext_changed()
 						green:greenf((*i).m_bg_color)
 						blue:bluef((*i).m_bg_color)
 						alpha:alfa];
-#else
-				NSColor *color = [NSColor colorWithCalibratedRed:redf((*i).m_bg_color)
-						green:greenf((*i).m_bg_color)
-						blue:bluef((*i).m_bg_color)
-						alpha:1.0];
-#endif
 				[attrs setValue:color forKey:NSBackgroundColorAttributeName];
 			}
 			
