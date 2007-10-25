@@ -51,13 +51,13 @@ _select_font(const char *family, smil2::smiltext_font_style style, smil2::smilte
 	NSString *ffname = NULL;
 	
 	if (strcmp(family, "serif") == 0) {
-		ffname = @"Times";
+		ffname = [NSString stringWithCString: "Times"];
 	} else if (strcmp(family, "monospace") == 0) {
-		ffname = @"Monaco";
+		ffname = [NSString stringWithCString: "Monaco"];
 	} else if (strcmp(family, "sansSerif") == 0) {
-		ffname = @"Helvetica Neue";
+		ffname = [NSString stringWithCString: "Helvetica Neue"];
 	} else {
-		ffname = [NSString stringWithCString:family]; // XXXJACK leak
+		ffname = [NSString stringWithCString:family];
 	}
 	if (strcmp(family, "monospace") == 0) mask |= NSFixedPitchFontMask;
 	switch(style) {
@@ -79,11 +79,12 @@ _select_font(const char *family, smil2::smiltext_font_style style, smil2::smilte
 		break;
 	}
 	font = [fm fontWithFamily: ffname traits: mask weight: 5 size: size];
+//	[ffname release];
 	if (font) return font;
-	NSLog(@"Could not find exact font, trying without family");
+	lib::logger::get_logger()->trace("smilText: Could not find exact font for family %s, trying without", family);
 	font = [fm fontWithFamily: NULL traits: mask weight: 5 size: size];
 	if (font) return font;
-	NSLog(@"Could not find font without family either, converting userFont");
+	lib::logger::get_logger()->trace("smilText: Could not find font without family either, converting userFont");
 	font = [NSFont userFontOfSize: (float)size];		
 	font = [fm convertFont: font toHaveTrait: mask];
 	return font;
