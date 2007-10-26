@@ -22,6 +22,7 @@
  */
 
 #include "ambulant/smil2/smiltext.h"
+#include "ambulant/smil2/time_attrs.h"
 #include "ambulant/lib/callback.h"
 #include <math.h>
 #define round(x) ((int)((x)+0.5))
@@ -256,9 +257,37 @@ smiltext_engine::_update() {
 				const char *time_str = item->get_attribute("begin");
 				double time = 0;
 				if (time_str) {
-					time = atof(time_str); // XXXJACK
+					time_attr_parser tp(item, "begin", lib::logger::get_logger());
+					sync_value_struct svs;
+					svs.type = sv_indefinite;
+					svs.offset = 0;
+					svs.iparam = 0;
+					if (tp.parse_sync(time_str, svs)) {
+						/*AM_DBG*/ lib::logger::get_logger()->debug("smilText: %s: begin=\"%s\"", item->get_sig().c_str(), repr(svs).c_str());
+						if (svs.type == sv_offset) {
+							time = svs.offset / 1000.0;
+						} else if (svs.type == sv_event) {
+							lib::logger::get_logger()->trace("smilText: %s: events not yet implemented", item->get_sig().c_str());
+						} else {
+							lib::logger::get_logger()->trace("smilText: %s: begin=\"%s\" not allowed", item->get_sig().c_str(), repr(svs).c_str());
+							lib::logger::get_logger()->error(gettext("Error in smilText timing"));
+						}
+					}
 				} else if (time_str = item->get_attribute("next")) {
-					time = atof(time_str);
+					time_attr_parser tp(item, "next", lib::logger::get_logger());
+					sync_value_struct svs;
+					svs.type = sv_indefinite;
+					svs.offset = 0;
+					svs.iparam = 0;
+					if (tp.parse_sync(time_str, svs)) {
+						/*AM_DBG*/ lib::logger::get_logger()->debug("%s: next=\"%s\"", item->get_sig().c_str(), repr(svs).c_str());
+						if (svs.type == sv_offset) {
+							time = svs.offset / 1000.0;
+						} else {
+							lib::logger::get_logger()->trace("smilText: %s: next=\"%s\" not allowed", item->get_sig().c_str(), repr(svs).c_str());
+							lib::logger::get_logger()->error(gettext("Error in smilText timing"));
+						}
+					}
 					time = m_tree_time + time;
 				} else  {
 					lib::logger::get_logger()->trace("smiltext: tev without begin or next attribute ignored");
