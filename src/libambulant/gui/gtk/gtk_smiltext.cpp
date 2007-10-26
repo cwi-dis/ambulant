@@ -68,7 +68,7 @@ gtk_smiltext_renderer::gtk_smiltext_renderer(
 	m_writing_mode(smil2::stw_lr_tb)// Left to Right, Top to Bottom
 {
 #ifdef	TBD
-	m_render_offscreen = (m_params.m_mode != smil2::stm_replace && m_params.m_mode != smil2::stm_append) || !m_params.m_wrap;
+	m_render_offscreen = (m_params.m_mode != smil2::stm_replace && m_params.m_mode != smil2::stm_append);
 #endif//TBD
 }
 
@@ -235,10 +235,18 @@ gtk_smiltext_renderer::smiltext_changed()
 		while (i != m_engine.end()) {
 			// Add the new characters
 			gint start_index = m_text_storage.size();
-			if (i->m_command == smil2::stc_break
-			    && m_params.m_mode != smil2::stm_crawl)
-				m_text_storage += "\n";
-			else if (i->m_command == smil2::stc_data)
+			if (m_params.m_mode != smil2::stm_crawl) {
+				if (i->m_command == smil2::stc_break)
+					m_text_storage += "\n";
+				else {
+					int string_length = m_text_storage.length();
+					if (i->m_command == smil2::stc_condbreak
+					    && string_length == 0
+					    || m_text_storage[string_length-1] != '\n')
+					m_text_storage += "\n";
+				}
+			}				
+			if (i->m_command == smil2::stc_data)
 				m_text_storage +=  i->m_data;
 			// Set font attributes
 			_gtk_set_font_attr(m_pango_attr_list, 
@@ -291,11 +299,26 @@ gtk_smiltext_renderer::smiltext_changed()
 							    m_text_storage.size());
 				}
 			}
-			// Set the attributes and text
+			/**TBD cannot implement wrap, must know width.
+			 * everything to be done in redraw?
+		       
+			if (i->m_wrap )
+				pango_layout_set_width (m_pango_layout, width);
+			else	pango_layout_set_width (m_pango_layout, -1);
+			*TBD*/
+			// Set the background attributes and text
 			pango_layout_set_attributes(m_pango_layout, m_pango_attr_list);
 			pango_layout_set_text(m_pango_layout, m_text_storage.c_str(), -1);
 			pango_layout_context_changed(m_pango_layout);
 			if (m_bg_layout) {
+				/**TBD cannot implement wrap, must know width.
+				 * everything to be done in redraw?
+		       
+				 if (i->m_wrap )
+				 	pango_layout_set_width (m_bg_layout, width);
+				 else	pango_layout_set_width (m_bg_layout, -1);
+				 *TBD*/
+				// Set the background attributes and text
 				pango_layout_set_attributes(m_bg_layout, m_bg_pango_attr_list);
 				pango_layout_set_text(m_bg_layout, m_text_storage.c_str(), -1);
 				pango_layout_context_changed(m_bg_layout);

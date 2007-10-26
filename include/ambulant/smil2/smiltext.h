@@ -284,9 +284,10 @@ class smiltext_layout_provider {
 class smiltext_layout_word {
 
   public:
-	smiltext_layout_word(smiltext_run run, smiltext_metrics stm, int);
-	smiltext_run m_run;
-	int m_leading_breaks;
+  smiltext_layout_word(const smiltext_run* run_p, smiltext_metrics stm, int sp, int nl);
+	const smiltext_run* m_run_p;
+	int m_leading_spaces;
+	int m_leading_newlines;
 	smiltext_metrics m_metrics;
 	lib::rect m_bounding_box;
 };
@@ -316,10 +317,10 @@ class smiltext_layout_engine {
 	void smiltext_changed();
 
   private:
-	void get_initial_values(lib::rect rct, smiltext_layout_word* stlw_p, int* x_start_p, int* y_start_p, int* x_dir_p, int* y_dir_p);
-	bool smiltext_disjunct(const lib::rect& r1, const lib::rect& r2);
-	bool smiltext_fits(const lib::rect& r1, const lib::rect& r2);
-	void smiltext_render(const smil2::smiltext_run run, const lib::rect& r, const lib::point& p);
+	void _get_initial_values(lib::rect rct, smiltext_layout_word* stlw_p, int* x_start_p, int* y_start_p, int* x_dir_p, int* y_dir_p);
+	bool _smiltext_disjunct(const lib::rect& r1, const lib::rect& r2);
+	bool _smiltext_fits(const lib::rect& r1, const lib::rect& r2);
+//JNK	void _smiltext_render(const smil2::smiltext_run run, const lib::rect& r, const lib::point& p);
 
 	lib::critical_section m_lock;
 	smiltext_engine m_engine;
@@ -330,6 +331,8 @@ class smiltext_layout_engine {
 	smiltext_params m_params;	// global parameters
 	lib::rect m_dest_rect; // JNK
 	smiltext_layout_provider* m_provider;
+	bool m_needs_conditional_newline;
+	bool m_needs_conditional_space;
 
 	std::vector<smiltext_layout_word> m_words;
 };
