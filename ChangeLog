@@ -1,3 +1,29 @@
+2007-10-26 00:38  jackjansen
+
+	* xml:space processing only removed leading spaces, it didn't
+	  collapse other spaces. Fixed.
+
+	  It's still not identical to HTML but looks a lot better.
+
+2007-10-26 00:14  jackjansen
+
+	* Bug fixes and support for named fonts.
+
+2007-10-26 00:05  jackjansen
+
+	* - Default font set to sansSerif - Mac font handling fixed.
+
+2007-10-25 23:10  jackjansen
+
+	* - wrap moved to per-run data (was on per-smilText) - position
+	  moved to per-smilText (was on per-run) - Cocoa paragraph handling
+	  completely revamped, now supports alignment	and probably
+	  writing direction (but it refuses to render text the wrong way).
+
+2007-10-25 16:51  jackjansen
+
+	* Minor bugfix.
+
 2007-10-24 21:40  jackjansen
 
 	* Oops, forgot half the checkin for the space/newline fix.
