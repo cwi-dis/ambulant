@@ -271,6 +271,9 @@ lib::tree_builder::characters(const char *buf, size_t len) {
 				}
 				s++;
 			}
+			// Final tweak: if there's only whitespace between two tags we remove it
+			if (d == m_buf+1 && *m_buf == ' ')
+				d = m_buf;
 			if (d > m_buf)
 				n = m_node_factory->new_data_node(m_buf, d-m_buf, m_context);
 		}

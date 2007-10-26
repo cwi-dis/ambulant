@@ -186,7 +186,7 @@ cocoa_smiltext_renderer::smiltext_changed()
 			NSString *newdata = @"";
 			switch((*i).m_command) {
 			case smil2::stc_break:
-				newdata = @"\n";
+				newdata = @"\n\n";
 				m_needs_conditional_space = false;
 				m_needs_conditional_newline = false;
 				break;
