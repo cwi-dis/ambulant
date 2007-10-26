@@ -44,6 +44,247 @@ using namespace smil2;
 // force all compilers to create code for this.
 static smil_time<double> dummy;
 
+bool time_attr_parser::parse_sync(const std::string& s, sync_value_struct& svs) {
+	char ch = s[0];
+	if(isdigit(ch) || ch == '-' || ch == '+')
+		return parse_plain_offset(s, svs);
+	if(starts_with(s, "wallclock"))
+		return parse_wallclock(s, svs);
+	if(starts_with(s, "accesskey"))
+		return parse_accesskey(s, svs);
+#ifdef WITH_SMIL30
+	if(starts_with(s, "stateChange"))
+		return parse_statechange(s, svs);
+#endif // WITH_SMIL30
+	if(s == "indefinite") {
+		svs.type = sv_indefinite;
+		svs.offset = time_type::indefinite();
+		return true;
+	}
+	return parse_nmtoken_offset(s, svs);
+}
+
+bool time_attr_parser::parse_plain_offset(const std::string& s, sync_value_struct& svs) {
+	svs.type = sv_offset;
+	offset_value_p parser;
+	if(!parser.matches(s)) {
+		m_logger->trace("%s: %s: invalid offset [%s]", 
+			m_node->get_sig().c_str(), m_attrname, s.c_str());
+		m_logger->warn(gettext("Error in SMIL timing info in document"));
+		return false;	
+	}
+	svs.offset = parser.m_result;
+	AM_DBG m_logger->debug("%s: %s += [%s]", 
+		m_node->get_sig().c_str(), m_attrname, repr(svs).c_str());
+	return true;
+}
+
+bool time_attr_parser::parse_wallclock(const std::string& s, sync_value_struct& svs) {
+	svs.type = sv_wallclock;
+	m_logger->warn(gettext("Ignoring wallclock in document"));
+	return false;	
+}
+
+#ifdef WITH_SMIL30
+// statechange-value  ::= "stateChange(" ref ")"
+bool time_attr_parser::parse_statechange(const std::string& s, sync_value_struct& svs) {
+	// state-change-value
+	svs.type = sv_state_change;
+//	svs.base = nmtoken.substr(0, last_dot_ix);
+//	event = "statechange";
+	bool succeeded = false;
+	size_type open_par_ix = s.find('(');
+	size_type close_par_ix = s.find(')');
+	if(open_par_ix != std::string::npos && close_par_ix != std::string::npos) {
+		svs.sparam = trim(s.substr(open_par_ix+1, close_par_ix - open_par_ix - 1));
+		succeeded = true;
+	}
+	if(!succeeded) {
+		m_logger->trace("%s: %s: invalid stateChange [%s]", 
+			m_node->get_sig().c_str(), m_attrname, s.c_str());
+		m_logger->warn(gettext("Error in SMIL timing info in document"));
+		return false;
+	}	
+	AM_DBG m_logger->debug("%s: %s += [%s] (for state-variable %d)", 
+		m_node->get_sig().c_str(), m_attrname, repr(svs).c_str(), svs.sparam.c_str());
+	return true;
+}
+#endif // WITH_SMIL30
+
+// Accesskey-value  ::= "accesskey(" character ")" ( S? ("+"|"-") S? Clock-value )? 
+bool time_attr_parser::parse_accesskey(const std::string& s, sync_value_struct& svs) {
+	svs.type = sv_accesskey;
+	size_type open_par_ix = s.find('(');
+	if(open_par_ix == std::string::npos) {
+		m_logger->trace("%s: %s: Invalid accesskey spec [%s]", 
+			m_node->get_sig().c_str(), m_attrname, s.c_str());
+		m_logger->warn(gettext("Error in SMIL interaction info in document"));
+		return false;
+	}
+	svs.iparam = int(s[open_par_ix+1]);
+	
+	size_type close_par_ix = s.find(')', open_par_ix);
+	if(close_par_ix == std::string::npos) {
+		m_logger->trace("%s: %s: invalid accesskey spec [%s]", 
+			m_node->get_sig().c_str(), m_attrname, s.c_str());
+		m_logger->warn(gettext("Error in SMIL interaction info in document"));
+		return false;
+	}
+	std::string rest = trim(s.substr(close_par_ix+1));
+	if(rest.empty()) {
+		AM_DBG m_logger->debug("%s: %s: += [%s] (as int %d)", 
+			m_node->get_sig().c_str(), m_attrname, repr(svs).c_str(), svs.iparam);
+		return true;	
+	}
+	
+	offset_value_p parser;
+	if(!parser.matches(s)) {
+		m_logger->trace("%s: %s: invalid accesskey offset [%s]", 
+			m_node->get_sig().c_str(), m_attrname, s.c_str());
+		m_logger->warn(gettext("Error in SMIL interaction info in document"));
+		return false;	
+	}
+	svs.offset = parser.m_result;
+	AM_DBG m_logger->debug("%s: %s: += [%s] (as int %d)", 
+		m_node->get_sig().c_str(), m_attrname, repr(svs).c_str(), svs.iparam);
+	return true;
+}
+
+bool time_attr_parser::parse_nmtoken_offset(const std::string& s, sync_value_struct& svs) {
+	std::string::const_iterator b;
+	std::string::const_iterator e;
+	std::ptrdiff_t d;
+	
+	std::string s1 = s;
+	std::string offset_str;
+	size_type last_pm_ix = s.find_last_of("+-");
+	if(last_pm_ix != std::string::npos) {
+		// Parse offset, limit raw nmtoken
+		offset_str = s.substr(last_pm_ix);
+		offset_value_p parser;
+		if(parser.matches(offset_str)) {
+			svs.offset = parser.m_result;
+			s1 = trim(s.substr(0, last_pm_ix));
+		}
+	}
+	// s1 holds the nmtoken + optional event specifier
+	// extract nmtokek from s1
+	xml_nmtoken_p parser;
+	b = s1.begin(); e = s1.end();
+	d = parser.parse(b, e);
+	if(d == -1) {
+		m_logger->trace("%s: %s: invalid attr [%s]", 
+			m_node->get_sig().c_str(), m_attrname, s.c_str());
+		m_logger->warn(gettext("Error in SMIL timing info in document"));
+		return false;
+	}
+	std::string nmtoken = parser.m_result;
+
+#ifdef CHECK_EVENT_NAMES
+	// Careful re-reading of the SMIL standard by Sjoerd and Jack
+	// seems to indicate that the set of event names is open-ended.
+	// Therefore, don't check the names.
+
+	// the nmtoken suffix
+	static std::set<std::string> events;
+	if(events.empty()) {
+		events.insert("begin");
+		events.insert("end");
+		events.insert("beginEvent");
+		events.insert("endEvent");
+		events.insert("repeat");
+		events.insert("activateEvent");
+		events.insert("focusInEvent");
+		events.insert("focusOutEvent");
+		events.insert("inBoundsEvent");
+		events.insert("outOfBoundsEvent");
+		events.insert("click");
+		events.insert("marker");
+	}
+#endif // CHECK_EVENT_NAMES
+	
+	std::string event;
+	size_type last_dot_ix = nmtoken.find_last_of(".");
+	
+	if(last_dot_ix == std::string::npos) {
+		// an event-value with default eventbase-element
+		svs.type = sv_event;
+		svs.base  = ""; // default
+		event = nmtoken;	// check repeat(d+)?
+	} else if(ends_with(nmtoken, ".begin") || ends_with(nmtoken, ".end")) {
+		// syncbase-value
+		svs.type = sv_syncbase;
+		svs.base = nmtoken.substr(0, last_dot_ix);
+		event = nmtoken.substr(last_dot_ix+1);
+	} else if(ends_with(nmtoken, ".marker")) {
+		// media-marker-value
+		svs.type = sv_media_marker;
+		svs.base = nmtoken.substr(0, last_dot_ix);
+		event = "marker";
+		bool succeeded = false;
+		size_type open_par_ix = s1.find('(');
+		size_type close_par_ix = s1.find(')');
+		if(open_par_ix != std::string::npos && close_par_ix != std::string::npos) {
+			svs.sparam = trim(s1.substr(open_par_ix+1, close_par_ix - open_par_ix - 1));
+			succeeded = true;
+		}
+		if(!succeeded) {
+			m_logger->trace("%s: %s: invalid marker [%s]", 
+				m_node->get_sig().c_str(), m_attrname, s.c_str());
+			m_logger->warn(gettext("Error in SMIL timing info in document"));
+			return false;
+		}	
+	} else if(ends_with(nmtoken, ".repeat")) {
+		// repeat event-value
+		svs.type = sv_repeat;
+		svs.base = nmtoken.substr(0, last_dot_ix);
+		event = "repeat";
+		bool succeeded = false;
+		size_type open_par_ix = s1.find('(');
+		if(open_par_ix != std::string::npos) {
+			std::string sn = s1.substr(open_par_ix+1);
+			int_p iparser;
+			b = sn.begin(); e = sn.end();
+			if(iparser.parse(b, e) != -1) {
+				svs.iparam = iparser.m_result;
+				succeeded = true;
+			}
+		}
+		if(!succeeded) {
+			m_logger->trace("%s: %s: invalid repeat [%s]", 
+				m_node->get_sig().c_str(), m_attrname, s.c_str());
+			m_logger->warn(gettext("Error in SMIL timing info in document"));
+			return false;
+		}	
+	} else {
+		// event-value other than repeat
+		svs.type = sv_event;
+		svs.base = nmtoken.substr(0, last_dot_ix);
+		event = nmtoken.substr(last_dot_ix+1);
+	}
+
+#ifdef CHECK_EVENT_NAMES
+	if(events.find(event) == events.end()) {
+		m_logger->trace("%s[%s] invalid event [%s]", 
+			m_tag.c_str(), m_id.c_str(), s.c_str());
+		m_logger->warn(gettext("Error in SMIL timing info in document"));
+		return false;
+	} else {
+#else
+	{
+#endif // CHECK_EVENT_NAMES
+		svs.event = event;
+		AM_DBG m_logger->debug("%s: %s: += [%s]", 
+			m_node->get_sig().c_str(), m_attrname, repr(svs).c_str());
+	}
+	
+	// if base is not empty, locate node
+	// else base is the default
+	if(!svs.event.empty()) 
+		return true;
+	return false;
+}
+
 time_attrs::time_attrs(const node *n) 
 :	m_node(n), 
 	m_spflags(0) {
@@ -235,7 +476,7 @@ void time_attrs::parse_begin() {
 	std::string sbegin = trim(p);	
 	std::list<std::string> strlist;
 	split_trim_list(sbegin, strlist);
-	parse_sync_list(strlist, m_blist);
+	parse_sync_list(strlist, m_blist, "begin");
 }
 
 void time_attrs::parse_end() {
@@ -245,255 +486,20 @@ void time_attrs::parse_end() {
 	std::string send = trim(p);	
 	std::list<std::string> strlist;
 	split_trim_list(send, strlist);
-	parse_sync_list(strlist, m_elist);
+	parse_sync_list(strlist, m_elist, "end");
 }
 
 void time_attrs::parse_sync_list(
-	const std::list<std::string>& strlist, sync_list& svslist) {
+	const std::list<std::string>& strlist, sync_list& svslist, const char *aname) {
 	std::list<std::string>::const_iterator it;
 	for(it = strlist.begin(); it!=strlist.end();it++) {
-		char ch = (*it)[0];
 		sync_value_struct svs;
 		svs.offset = 0;
 		svs.iparam = -1;
-		if(isdigit(ch) || ch == '-' || ch == '+') {
-			parse_plain_offset(*it, svs, svslist);
-		} else if(starts_with((*it), "wallclock")) {
-			parse_wallclock(*it, svs, svslist);
-		} else if(starts_with((*it), "accesskey")) {
-			parse_accesskey(*it, svs, svslist);
-#ifdef WITH_SMIL30
-		} else if(starts_with((*it), "stateChange")) {
-			parse_statechange(*it, svs, svslist);
-#endif // WITH_SMIL30
-		} else if((*it) == "indefinite") {
-			svs.type = sv_indefinite;
-			svs.offset = time_type::indefinite();
+		time_attr_parser tp(m_node, aname, m_logger);
+		if (tp.parse_sync((*it), svs))
 			svslist.push_back(svs);
-		} else {
-			parse_nmtoken_offset(*it, svs, svslist);
-		}
 	}
-}
-
-void time_attrs::parse_plain_offset(const std::string& s, sync_value_struct& svs, sync_list& sl) {
-	svs.type = sv_offset;
-	offset_value_p parser;
-	if(!parser.matches(s)) {
-		m_logger->trace("<%s id=\"%s\">.%s invalid offset [%s]", 
-			m_tag.c_str(), m_id.c_str(), time_spec_id(sl), s.c_str());
-		m_logger->warn(gettext("Error in SMIL timing info in document"));
-		return;	
-	}
-	svs.offset = parser.m_result;
-	sl.push_back(svs);	
-	AM_DBG m_logger->debug("%s[%s].%s += [%s]", 
-		m_tag.c_str(), m_id.c_str(), time_spec_id(sl), repr(svs).c_str());
-}
-
-void time_attrs::parse_wallclock(const std::string& s, sync_value_struct& svs, sync_list& sl) {
-	svs.type = sv_wallclock;
-	m_logger->warn(gettext("Ignoring wallclock in document"));
-	//sl.push_back(svs);	
-}
-
-#ifdef WITH_SMIL30
-// statechange-value  ::= "stateChange(" ref ")"
-void time_attrs::parse_statechange(const std::string& s, sync_value_struct& svs, sync_list& sl) {
-	// state-change-value
-	svs.type = sv_state_change;
-//	svs.base = nmtoken.substr(0, last_dot_ix);
-//	event = "statechange";
-	bool succeeded = false;
-	size_type open_par_ix = s.find('(');
-	size_type close_par_ix = s.find(')');
-	if(open_par_ix != std::string::npos && close_par_ix != std::string::npos) {
-		svs.sparam = trim(s.substr(open_par_ix+1, close_par_ix - open_par_ix - 1));
-		succeeded = true;
-	}
-	if(!succeeded) {
-		m_logger->trace("%s[%s].%s invalid stateChange [%s]", 
-			m_tag.c_str(), m_id.c_str(), time_spec_id(sl), s.c_str());
-		m_logger->warn(gettext("Error in SMIL timing info in document"));
-		return;
-	}	
-	AM_DBG m_logger->debug("%s[%s].%s += [%s] (for state-variable %d)", 
-		m_tag.c_str(), m_id.c_str(), time_spec_id(sl), repr(svs).c_str(), svs.sparam.c_str());
-	sl.push_back(svs);
-}
-#endif // WITH_SMIL30
-
-// Accesskey-value  ::= "accesskey(" character ")" ( S? ("+"|"-") S? Clock-value )? 
-void time_attrs::parse_accesskey(const std::string& s, sync_value_struct& svs, sync_list& sl) {
-	svs.type = sv_accesskey;
-	size_type open_par_ix = s.find('(');
-	if(open_par_ix == std::string::npos) {
-		m_logger->trace("Invalid accesskey spec [%s] for <%s id=\"%s\">", 
-			s.c_str(), m_tag.c_str(), m_id.c_str());
-		m_logger->warn(gettext("Error in SMIL interaction info in document"));
-		return;
-	}
-	svs.iparam = int(s[open_par_ix+1]);
-	
-	size_type close_par_ix = s.find(')', open_par_ix);
-	if(close_par_ix == std::string::npos) {
-		m_logger->trace("%s[%s].%s invalid accesskey spec [%s]", 
-			m_tag.c_str(), m_id.c_str(), time_spec_id(sl), s.c_str());
-		m_logger->warn(gettext("Error in SMIL interaction info in document"));
-		return;
-	}
-	std::string rest = trim(s.substr(close_par_ix+1));
-	if(rest.empty()) {
-		sl.push_back(svs);
-		AM_DBG m_logger->debug("%s[%s].%s += [%s] (as int %d)", 
-			m_tag.c_str(), m_id.c_str(), time_spec_id(sl), repr(svs).c_str(), svs.iparam);
-		return;	
-	}
-	
-	offset_value_p parser;
-	if(!parser.matches(s)) {
-		m_logger->trace("%s[%s].%s invalid accesskey offset [%s]", 
-			m_tag.c_str(), m_id.c_str(), time_spec_id(sl), s.c_str());
-		m_logger->warn(gettext("Error in SMIL interaction info in document"));
-		return;	
-	}
-	svs.offset = parser.m_result;
-	sl.push_back(svs);	
-	AM_DBG m_logger->debug("%s[%s].%s += [%s] (as int %d)", 
-		m_tag.c_str(), m_id.c_str(), time_spec_id(sl), repr(svs).c_str(), svs.iparam);
-}
-
-void time_attrs::parse_nmtoken_offset(const std::string& s, sync_value_struct& svs, sync_list& sl) {
-	std::string::const_iterator b;
-	std::string::const_iterator e;
-	std::ptrdiff_t d;
-	
-	std::string s1 = s;
-	std::string offset_str;
-	size_type last_pm_ix = s.find_last_of("+-");
-	if(last_pm_ix != std::string::npos) {
-		// Parse offset, limit raw nmtoken
-		offset_str = s.substr(last_pm_ix);
-		offset_value_p parser;
-		if(parser.matches(offset_str)) {
-			svs.offset = parser.m_result;
-			s1 = trim(s.substr(0, last_pm_ix));
-		}
-	}
-	// s1 holds the nmtoken + optional event specifier
-	// extract nmtokek from s1
-	xml_nmtoken_p parser;
-	b = s1.begin(); e = s1.end();
-	d = parser.parse(b, e);
-	if(d == -1) {
-		m_logger->trace("%s[%s].%s invalid attr [%s]", 
-			m_tag.c_str(), m_id.c_str(), time_spec_id(sl), s.c_str());
-		m_logger->warn(gettext("Error in SMIL timing info in document"));
-		return;
-	}
-	std::string nmtoken = parser.m_result;
-
-#ifdef CHECK_EVENT_NAMES
-	// Careful re-reading of the SMIL standard by Sjoerd and Jack
-	// seems to indicate that the set of event names is open-ended.
-	// Therefore, don't check the names.
-
-	// the nmtoken suffix
-	static std::set<std::string> events;
-	if(events.empty()) {
-		events.insert("begin");
-		events.insert("end");
-		events.insert("beginEvent");
-		events.insert("endEvent");
-		events.insert("repeat");
-		events.insert("activateEvent");
-		events.insert("focusInEvent");
-		events.insert("focusOutEvent");
-		events.insert("inBoundsEvent");
-		events.insert("outOfBoundsEvent");
-		events.insert("click");
-		events.insert("marker");
-	}
-#endif // CHECK_EVENT_NAMES
-	
-	std::string event;
-	size_type last_dot_ix = nmtoken.find_last_of(".");
-	
-	if(last_dot_ix == std::string::npos) {
-		// an event-value with default eventbase-element
-		svs.type = sv_event;
-		svs.base  = ""; // default
-		event = nmtoken;	// check repeat(d+)?
-	} else if(ends_with(nmtoken, ".begin") || ends_with(nmtoken, ".end")) {
-		// syncbase-value
-		svs.type = sv_syncbase;
-		svs.base = nmtoken.substr(0, last_dot_ix);
-		event = nmtoken.substr(last_dot_ix+1);
-	} else if(ends_with(nmtoken, ".marker")) {
-		// media-marker-value
-		svs.type = sv_media_marker;
-		svs.base = nmtoken.substr(0, last_dot_ix);
-		event = "marker";
-		bool succeeded = false;
-		size_type open_par_ix = s1.find('(');
-		size_type close_par_ix = s1.find(')');
-		if(open_par_ix != std::string::npos && close_par_ix != std::string::npos) {
-			svs.sparam = trim(s1.substr(open_par_ix+1, close_par_ix - open_par_ix - 1));
-			succeeded = true;
-		}
-		if(!succeeded) {
-			m_logger->trace("%s[%s].%s invalid marker [%s]", 
-				m_tag.c_str(), m_id.c_str(), time_spec_id(sl), s.c_str());
-			m_logger->warn(gettext("Error in SMIL timing info in document"));
-			return;
-		}	
-	} else if(ends_with(nmtoken, ".repeat")) {
-		// repeat event-value
-		svs.type = sv_repeat;
-		svs.base = nmtoken.substr(0, last_dot_ix);
-		event = "repeat";
-		bool succeeded = false;
-		size_type open_par_ix = s1.find('(');
-		if(open_par_ix != std::string::npos) {
-			std::string sn = s1.substr(open_par_ix+1);
-			int_p iparser;
-			b = sn.begin(); e = sn.end();
-			if(iparser.parse(b, e) != -1) {
-				svs.iparam = iparser.m_result;
-				succeeded = true;
-			}
-		}
-		if(!succeeded) {
-			m_logger->trace("%s[%s].%s invalid repeat [%s]", 
-				m_tag.c_str(), m_id.c_str(), time_spec_id(sl), s.c_str());
-			m_logger->warn(gettext("Error in SMIL timing info in document"));
-			return;
-		}	
-	} else {
-		// event-value other than repeat
-		svs.type = sv_event;
-		svs.base = nmtoken.substr(0, last_dot_ix);
-		event = nmtoken.substr(last_dot_ix+1);
-	}
-
-#ifdef CHECK_EVENT_NAMES
-	if(events.find(event) == events.end()) {
-		m_logger->trace("%s[%s].%s invalid event [%s]", 
-			m_tag.c_str(), m_id.c_str(), time_spec_id(sl), s.c_str());
-		m_logger->warn(gettext("Error in SMIL timing info in document"));
-	} else {
-#else
-	{
-#endif // CHECK_EVENT_NAMES
-		svs.event = event;
-		AM_DBG m_logger->debug("%s[%s].%s += [%s]", 
-			m_tag.c_str(), m_id.c_str(), time_spec_id(sl), repr(svs).c_str());
-	}
-	
-	// if base is not empty, locate node
-	// else base is the default
-	if(!svs.event.empty()) 
-		sl.push_back(svs);	
 }
 
 // endsync ::= first | last | all | media | Id-value | smil1.0-Id-value

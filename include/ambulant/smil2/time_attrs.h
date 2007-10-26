@@ -91,6 +91,28 @@ std::string repr(actuate f);
 
 class lib::logger;
 
+class time_attr_parser : public time_traits {
+  public:
+	typedef std::string::size_type size_type;
+    time_attr_parser(const lib::node *n, const char *aname, lib::logger *l)
+	:	m_node(n),
+		m_attrname(aname),
+		m_logger(l)
+	{}
+	bool parse_sync(const std::string& s, sync_value_struct& svs);
+	bool parse_plain_offset(const std::string& s, sync_value_struct& svs);
+	bool parse_wallclock(const std::string& s, sync_value_struct& svs);
+	bool parse_accesskey(const std::string& s, sync_value_struct& svs);
+#ifdef WITH_SMIL30
+	bool parse_statechange(const std::string& s, sync_value_struct& svs);
+#endif
+	bool parse_nmtoken_offset(const std::string& s, sync_value_struct& svs);
+  private:
+	const lib::node *m_node;
+	const char *m_attrname;
+    lib::logger *m_logger;
+};
+
 class time_attrs : public time_traits {
   public:
 	time_attrs(const lib::node *n);
@@ -163,13 +185,6 @@ class time_attrs : public time_traits {
 	sync_list m_elist;
 	void parse_begin();
 	void parse_end();
-	void parse_plain_offset(const std::string& s, sync_value_struct& svs, sync_list& sl);
-	void parse_wallclock(const std::string& s, sync_value_struct& svs, sync_list& sl);
-	void parse_accesskey(const std::string& s, sync_value_struct& svs, sync_list& sl);
-#ifdef WITH_SMIL30
-	void parse_statechange(const std::string& s, sync_value_struct& svs, sync_list& sl);
-#endif
-	void parse_nmtoken_offset(const std::string& s, sync_value_struct& svs, sync_list& sl); 
 	const sync_list& get_begin_list() const { return m_blist;}
 	const sync_list& get_end_list() const { return m_elist;}
 	//
@@ -221,8 +236,7 @@ class time_attrs : public time_traits {
 	time_type get_trans_out_dur() const { return m_trans_out->m_dur;}
 	
   private:
-	void parse_sync_list(const std::list<std::string>& strlist, sync_list& svslist);
-
+	void parse_sync_list(const std::list<std::string>& strlist, sync_list& svslist, const char *aname);
 	// keep for now a ref / should be removed
 	const lib::node *m_node;
 	std::string m_id;
