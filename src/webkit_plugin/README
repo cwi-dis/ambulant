@@ -23,3 +23,8 @@ setting):
   add a single symlink in the source tree. This will be fixed in a later release.
   
 
+Debugging from XCode:
+If your login happens to be "jack" everything is setup for debugging. But
+otherwise you have to rename the jack.* files within the xcodeproject.
+Or follow the guidelines at <http://developer.apple.com/qa/qa2006/qa1500.html>
+and re-create that setup for yourself.

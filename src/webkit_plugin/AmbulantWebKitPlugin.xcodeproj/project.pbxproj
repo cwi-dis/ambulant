@@ -321,7 +321,7 @@
 				);
 				PRODUCT_NAME = AmbulantWebKitPlugin;
 				WRAPPER_EXTENSION = plugin;
-				ZERO_LINK = YES;
+				ZERO_LINK = NO;
 			};
 			name = Debug;
 		};
