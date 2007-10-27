@@ -1,3 +1,34 @@
+2007-10-26 22:48  jackjansen
+
+	* The debugging stuff for WebKit plugins seems to be tied to the
+	  user-settings files, not the project itself. Checked those in as
+	  well, and added a note on how it's done.
+
+2007-10-26 16:51  keesblom
+
+	* Adapted smiltext_layout_engine to reviesed space handling.  Added
+	  default wrap_mode = true; Still problems with space, but want to
+	  test Windows first
+
+2007-10-26 11:33  jackjansen
+
+	* Parse begin and next using the time_attr_parser. Implementation
+	  still TBD.
+
+2007-10-26 10:46  jackjansen
+
+	* Reorganized parser for begin/end attributes: factored out the
+	  code to parse a single item, so it can be reused for smilText
+	  tev.
+
+	  NOTE: this reorganisation could potentially break support for
+	  multiple begin/end conditions.
+
+2007-10-26 09:50  jackjansen
+
+	* Minor fix to xml:space handling: if there's only whitespace
+	  between tags remove it.
+
 2007-10-26 00:38  jackjansen
 
 	* xml:space processing only removed leading spaces, it didn't
