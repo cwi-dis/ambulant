@@ -51,6 +51,11 @@
 #include "ambulantmodule.h"
 extern "C" {
 void initambulant();
+int extra_data;
+struct ambulant::common::plugin_extra_data plugin_extra_data = {
+	"python_extra_data",
+	(void*)extra_data
+};
 };
 
 //#define AM_DBG
@@ -62,6 +67,8 @@ using namespace ambulant;
 #define AMPYTHON_MODULE_NAME "pyamplugin_state"
 #define AMPYTHON_METHOD_NAME "initialize"
 
+// Ambulant can put anything into this extra_data pointer, which will
+// be passed on to Python
 static ambulant::common::factories * 
 bug_workaround(ambulant::common::factories* factory)
 {
@@ -152,11 +159,21 @@ void initialize(
         AM_DBG lib::logger::get_logger()->debug("python_plugin: imported %s.", modname.c_str());
         
         // Step 6 - Call the initialization method
-        PyObject *rv = PyObject_CallMethod(mod, "initialize", "iO&O&", 
-            api_version,
-            factoriesObj_New, factory,
-            gui_playerObj_New, player
+        PyObject *rv;
+        if (plugin_extra_data.m_plugin_extra) {
+        	rv = PyObject_CallMethod(mod, "initialize", "iO&O&i", 
+                api_version,
+                factoriesObj_New, factory,
+                gui_playerObj_New, player,
+                (int)plugin_extra_data.m_plugin_extra
             );
+        } else {
+        	rv = PyObject_CallMethod(mod, "initialize", "iO&O&", 
+                api_version,
+                factoriesObj_New, factory,
+                gui_playerObj_New, player
+            );
+        }
         if (rv == NULL) {
             PyErr_Print();
             lib::logger::get_logger()->trace("python_plugin: calling of %s.%s failed.", modname.c_str(), "initialize");
