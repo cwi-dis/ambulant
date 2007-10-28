@@ -1,3 +1,8 @@
+2007-10-28 00:38  jackjansen
+
+	* Added support for using extra_data to communicate data from
+	  embedding program to Python code. Untested.
+
 2007-10-26 22:48  jackjansen
 
 	* The debugging stuff for WebKit plugins seems to be tied to the
