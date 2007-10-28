@@ -139,6 +139,8 @@ plugin_engine::collect_plugin_directories()
 
 #ifdef AMBULANT_PLATFORM_MACOS
 	// On MacOSX add the bundle's plugin dir
+	// XXXX If Ambulant is used within a plugin, this probably needs to change,
+	// maybe to something with CFBundleGetAllBundles?
 	CFBundleRef main_bundle = CFBundleGetMainBundle();
 	if (main_bundle) {
 		CFURLRef plugin_url = CFBundleCopyBuiltInPlugInsURL(main_bundle);
@@ -203,6 +205,7 @@ void plugin_engine::load_plugin(const char *filename)
 		}
 		plugin_extra_data *extra = (plugin_extra_data *)lt_dlsym(handle, "plugin_extra_data");
 		if (extra) {
+			/*AM_DBG*/ lib::logger::get_logger()->debug("plugin_engine: extra data \"%s\" is 0x%x", extra->m_plugin_name, extra->m_plugin_extra);
 			std::string name = extra->m_plugin_name;
 			m_extra_data[name] = extra;
 		}
