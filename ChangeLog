@@ -1,3 +1,12 @@
+2007-10-28 23:30  jackjansen
+
+	* Infrastructure is complete (but contains a number of serious
+	  hacks): the WebPluginContainer object from Safari (which has
+	  references to the HTML document and anything else we need) is
+	  successfully communicated to the Python code through Ambulant,
+	  and can be used from there (right now it shows a message in the
+	  status line).
+
 2007-10-28 00:38  jackjansen
 
 	* Added support for using extra_data to communicate data from
