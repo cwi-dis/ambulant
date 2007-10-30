@@ -121,6 +121,11 @@ gui::qt::qt_smiltext_renderer::marker_seen(const char *name)
 }
 
 void
+gui::qt::qt_smiltext_renderer::smiltext_stopped() {
+	m_context->stopped(m_cookie);
+}
+
+void
 gui::qt::qt_smiltext_renderer::smiltext_changed() {
 	m_layout_engine.smiltext_changed();
 	m_dest->need_redraw();

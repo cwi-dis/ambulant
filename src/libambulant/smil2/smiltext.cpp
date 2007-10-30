@@ -27,7 +27,7 @@
 #include <math.h>
 #define round(x) ((int)((x)+0.5))
 
-//#define AM_DBG if(1)
+#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -161,7 +161,7 @@ smiltext_engine::_split_into_words(lib::xml_string data, smil2::smiltext_xml_spa
 			smiltext_run run = m_run_stack.top();
 			run.m_command = stc_data;
 			run.m_data = data.substr(first_char, first_trailing_space-first_char);
-			AM_DBG lib::logger::get_logger()->debug("dx_smiltext_changed(): bg_col=0x%x, color=0x%x, data=%s", run.m_bg_color, run.m_color, run.m_data.c_str());
+			AM_DBG lib::logger::get_logger()->debug("smiltext_engine::_split_into_words(): bg_col=0x%x, color=0x%x, data=%s", run.m_bg_color, run.m_color, run.m_data.c_str());
 			_insert_run_at_end(run);
 			data = data.substr(first_trailing_space);
 		} else {
@@ -526,9 +526,21 @@ smiltext_engine::_get_params(smiltext_params& params, const lib::node *src)
 	if (text_place) {
 		if (strcmp(text_place, "fromTop") == 0) params.m_text_place = stp_from_top;
 		else if (strcmp(text_place, "fromBottom") == 0) params.m_text_place = stp_from_bottom;
+		else if (strcmp(text_place, "fromCenter") == 0) params.m_text_place = stp_from_center;
 		else if (strcmp(text_place, "inherit") == 0) /* no-op */;
 		else {
 			lib::logger::get_logger()->trace("%s: textPlace=\"%s\": unknown textPlace", src->get_sig().c_str(), text_place);
+		}
+	}
+	const char *text_conceal = src->get_attribute("textConceal");
+	if (text_conceal) {
+		if (strcmp(text_conceal, "none") == 0) params.m_text_conceal = stc_none;
+		else if (strcmp(text_conceal, "initial") == 0) params.m_text_conceal = stc_initial;
+		else if (strcmp(text_conceal, "final") == 0) params.m_text_conceal = stc_final;
+		else if (strcmp(text_conceal, "both") == 0) params.m_text_conceal = stc_both;
+		else if (strcmp(text_conceal, "inherit") == 0) /* no-op */;
+		else {
+			lib::logger::get_logger()->trace("%s: textConceal=\"%s\": unknown textConceal", src->get_sig().c_str(), text_conceal);
 		}
 	}
 }
@@ -541,6 +553,7 @@ smiltext_engine::_get_default_params(smiltext_params& params)
 	params.m_loop = false;
 	params.m_rate = 0;
 	params.m_text_place = stp_from_top;
+	params.m_text_conceal = stc_none;;
 }
 
 // smiltext_layout_engine
@@ -553,7 +566,10 @@ smiltext_layout_engine::smiltext_layout_engine(const lib::node *n, lib::event_pr
 	m_params(m_engine.get_params()),
 	m_dest_rect(),
 	m_needs_conditional_newline(false),
-	m_needs_conditional_space(false)
+	m_needs_conditional_space(false),
+	m_crawling(m_params.m_mode == smil2::stm_crawl),
+	m_scrolling(m_params.m_mode == smil2::stm_scroll),
+	m_shifted_origin(0,0)
 {
 }
 
@@ -562,6 +578,10 @@ smiltext_layout_engine::start(double t) {
 //	m_lock.enter();
 	m_epoch = m_event_processor->get_timer()->elapsed();
 	m_engine.start(t);
+	m_crawling = m_params.m_mode == smil2::stm_crawl;
+	m_scrolling = m_params.m_mode == smil2::stm_scroll;
+	m_shifted_origin = lib::point(0,0);
+	m_finished = false;
 //	m_lock.leave();
 }
 	
@@ -699,6 +719,10 @@ smiltext_layout_engine::_get_initial_values(
 		*y_dir_p = 1;
 		*y_start_p = rct.bottom() - stlw_p->m_bounding_box.h;
 		break;
+	case stp_from_center:
+		*y_dir_p = 1;
+		*y_start_p = (rct.bottom() - rct.top() - stlw_p->m_bounding_box.h) / 2;
+		break;
 	}
 }
 
@@ -728,13 +752,13 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw(0x%x) r=
 	  	break;
 	  }
 	// Compute the shifted position of what we want to draw w.r.t. the visible origin
-	lib::point shifted_origin(0, 0);
-	if (m_params.m_mode == smil2::stm_crawl) {
+	if (m_crawling) {
 		long int elapsed = m_event_processor->get_timer()->elapsed();
 		double now = elapsed - m_epoch;
-		shifted_origin.x += (int) now * m_params.m_rate / 1000 * x_dir;
-		if (shifted_origin.x < 0)
-AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw(0x%x): strange: shifted_x=%d, m_epoch=%ld, elpased=%ld !", this, shifted_origin.x, m_epoch, elapsed);
+		if ( ! m_finished)
+			m_shifted_origin.x = (int) now * m_params.m_rate / 1000 * x_dir;
+		if (m_shifted_origin.x < 0)
+AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw(0x%x): strange: shifted_x=%d, m_epoch=%ld, elpased=%ld !", this, m_shifted_origin.x, m_epoch, elapsed);
 		switch (align) {
 		default:
 		case sta_start:
@@ -743,10 +767,12 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw(0x%x): s
 		case sta_center:
 			x_start = r.left() + (r.right() - r.left()) 
 							/ 2;
+			/* KB no vertical centering ?
 			y_start = r.top() + (r.bottom() - r.top())
 							/ 2
 				- (m_words.begin()->m_bounding_box.height()) 
 						/ 2;
+			*/
 			break;
 		case sta_right:
 		case sta_end:
@@ -755,15 +781,26 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw(0x%x): s
 			else	x_start = r.right();
 			break;
 		}
+		if (m_params.m_text_conceal == smil2::stc_initial
+		    || m_params.m_text_conceal == smil2::stc_both) {
+			if (writing_mode == stw_rl_tb)
+				x_start = r.left();
+			else	x_start = r.right();
+		}
 	}
-	if (m_params.m_mode == smil2::stm_scroll) {
+	if (m_scrolling) {
+		if (m_params.m_text_conceal == smil2::stc_initial
+		    || m_params.m_text_conceal == smil2::stc_both) {
+			y_start = r.bottom();
+		}
 		long int elapsed = m_event_processor->get_timer()->elapsed();
 		double now = elapsed - m_epoch;
-		shifted_origin.y += (int) now * m_params.m_rate / 1000 * y_dir;
+		if ( ! m_finished)
+			m_shifted_origin.y = (int) now * m_params.m_rate / 1000 * y_dir;
 	}
-AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: shifted_origin(%d,%d)", shifted_origin.x, shifted_origin.y);
+AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shifted_origin(%d,%d)", m_shifted_origin.x, m_shifted_origin.y);
 
-	bool linefeed_processing = m_params.m_mode != stm_crawl;
+	bool linefeed_processing = ! m_crawling;
 
 	// textAlign, textWritingMode, textPlace, etc. is  implemented
 	// by giving x_start|y_start|x_dir|y_dir proper initial values
@@ -861,19 +898,20 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: shifted
 			y_start += (prev_max_ascent + prev_max_descent) *
 				bol->m_leading_newlines * y_dir;
 			if (m_params.m_mode == smil2::stm_jump
-			    && (y_start - shifted_origin.y
+			    && (y_start - m_shifted_origin.y
 				+ (int) max_ascent + (int) max_descent)
 			    				> r.bottom()) {
 				int rate = 1;
 				if (m_params.m_rate > 1)
 					rate = m_params.m_rate;
-				shifted_origin.y += rate *
+				m_shifted_origin.y += rate *
 						    (max_ascent + max_descent);
 			}
 		}
 		for (word = bol; word != eol; word++) {
 			// alignment correction
-			word->m_bounding_box.x += x_align;
+			if ( ! m_crawling)
+				word->m_bounding_box.x += x_align;
 			// baseline correction
 			word->m_bounding_box.y = 
 				y_start + max_ascent -
@@ -888,12 +926,24 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: shifted
 		if (word != m_words.begin()) {
 			word_spacing = word->m_metrics.get_word_spacing();
 		}
-		word->m_bounding_box -= shifted_origin;
+		word->m_bounding_box -= m_shifted_origin;
 		if (_smiltext_disjunct (word->m_bounding_box, r))
 			continue; // nothing to de displayed
 		m_provider->render_smiltext(*word->m_run_p,
 					    word->m_bounding_box,
 					    word_spacing);
+	}
+	if (m_crawling || m_scrolling
+	    && (m_params.m_text_conceal == smil2::stc_none
+		|| m_params.m_text_conceal == smil2::stc_initial)) {
+		// check if we need to stop crawling/scrolling
+		 std::vector<smiltext_layout_word>::iterator last_word = word - 1;
+		if ((last_word->m_bounding_box & r) == last_word->m_bounding_box) {
+			// bounding box of last word is now completely 
+			// inside the rectangle
+			m_finished = true;
+			m_provider->smiltext_stopped();
+		}
 	}
 	m_lock.leave();
 }

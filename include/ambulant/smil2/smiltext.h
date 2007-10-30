@@ -48,10 +48,19 @@ enum smiltext_mode {
 	stm_jump,		/// New text is timed, appended to end, scrolls up if needed
 };
 
+/// Initial and ending psition of content when crawling/scrolling
+enum smiltext_conceal {
+	stc_none,	// textAlign/textPlace/content determine initial/final
+	stc_initial,	// textAlign/textPlace ignored, rendering starts just outside
+	stc_final,	// at the end, text flows out of region
+	stc_both	// both initial and final effects are applied
+};
+
 /// Values for the textPlace attribute of smilText elements
 enum smiltext_place {
 	stp_from_top,
-	stp_from_bottom
+	stp_from_bottom,
+	stp_from_center
 };
 
 /// Global parameters of a smiltext node.
@@ -60,9 +69,10 @@ enum smiltext_place {
 /// attributes.
 struct smiltext_params {
 	smiltext_mode	m_mode;		/// How the text is rendered
-	bool			m_loop;		/// Loop mode, valid for scroll/crawl
-	int				m_rate;		/// Rate, in pixels/second
-	smiltext_place	m_text_place; /// Where the text should start
+	bool		m_loop;		/// Loop mode, valid for scroll/crawl
+	int		m_rate;		/// Rate, in pixels/second
+	smiltext_place	m_text_place;	/// Where the text should start
+	smiltext_conceal m_text_conceal; /// Initial/final effects for crawl/scroll
 };
 	
 /// Layout commands that the engine can send to the renderer
@@ -279,6 +289,7 @@ class smiltext_layout_provider {
 	/// Render the smiltext_run in the rectangle specified.
 	/// 'word spacing' is the amount of whitespace pixels in front of the word. 
 	virtual void render_smiltext(const smiltext_run& str, const lib::rect& r, unsigned int word_spacing) = 0;
+	virtual void smiltext_stopped() = 0;
 };
 
 class smiltext_layout_word {
@@ -333,6 +344,10 @@ class smiltext_layout_engine {
 	smiltext_layout_provider* m_provider;
 	bool m_needs_conditional_newline;
 	bool m_needs_conditional_space;
+	
+	bool m_crawling;
+	bool m_scrolling;
+	lib::point m_shifted_origin;
 
 	std::vector<smiltext_layout_word> m_words;
 };
