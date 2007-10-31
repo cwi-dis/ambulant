@@ -15,6 +15,7 @@ void set_statusline(void *view, const char *msg);
 @interface AmbulantWebView : AmbulantView {
 	NSDictionary *m_arguments;
 	mainloop *m_mainloop;
+	id container;
 }
 
 - (void)setArguments:(NSDictionary *)arguments;
@@ -25,4 +26,5 @@ void set_statusline(void *view, const char *msg);
 - (void)pausePlayer;
 - (void)resumePlayer;
 - (bool)ignoreResize;
+- (id)container;
 @end
