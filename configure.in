@@ -83,21 +83,33 @@ AC_MSG_CHECKING(for --with-universalsdk)
 AC_ARG_WITH(universalsdk,
     AC_HELP_STRING([--with-universalsdk], [Build MacOSX universal binary]),
 [
+    need_sysroot=no
     case $withval in
     yes)
         withval=/Developer/SDKs/MacOSX10.4u.sdk
+        case `uname -r` in
+        8*) 
+            need_sysroot=yes
+            ;;
+        esac
         ;;
     esac
     case $withval in
     no)
         with_universalsdk=false
+        need_sysroot=yes
         ;;
     *)
         with_universalsdk=true
-        CFLAGS="-arch ppc -arch i386 -isysroot ${withval} -I/usr/local/include ${CFLAGS}"
-        CXXFLAGS="-arch ppc -arch i386 -isysroot ${withval} -I/usr/local/include ${CXXFLAGS}"
-        OBJCFLAGS="-arch ppc -arch i386 -isysroot ${withval} -I/usr/local/include ${OBJCFLAGS}"
-        #LDFLAGS="-arch ppc -arch i386 -isysroot ${withval} -L/usr/local/lib ${LDFLAGS}"
+        if [ $need_sysroot = yes ]; then
+            sysroot="-isysroot ${withval}"
+        else
+            sysroot=""
+        fi
+        CFLAGS="-arch ppc -arch i386 ${sysroot} -I/usr/local/include ${CFLAGS}"
+        CXXFLAGS="-arch ppc -arch i386 ${sysroot} -I/usr/local/include ${CXXFLAGS}"
+        OBJCFLAGS="-arch ppc -arch i386 ${sysroot} -I/usr/local/include ${OBJCFLAGS}"
+        #LDFLAGS="-arch ppc -arch i386 ${sysroot} -L/usr/local/lib ${LDFLAGS}"
         ;;
     esac
 ],
