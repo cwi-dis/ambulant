@@ -1,3 +1,8 @@
+2007-10-30 17:48  keesblom
+
+	* Added textConceal with an implementation in
+	  smiltext_layout_engine for qt and Windows/XP
+
 2007-10-28 23:30  jackjansen
 
 	* Infrastructure is complete (but contains a number of serious
