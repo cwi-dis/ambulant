@@ -235,20 +235,20 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 			tx_paint.setPen(qt_color);
 		}
 		
-		bg_paint.begin( bg_pixmap );
-		bg_paint.setFont(m_font);
-		if ( ! strun.m_bg_transparent) {
+		if (bg_pixmap) {
+			bg_paint.begin( bg_pixmap );
+			bg_paint.setFont(m_font);
 			bg_paint.setBrush(qt_bg_color);
 			bg_paint.setPen(Qt::NoPen);
 			bg_paint.drawRect(0,0,W,H);
 			bg_paint.setPen(qt_color);
+			// Qt::AlignLeft|Qt::AlignTop
+			// Qt::AlignAuto
+			bg_paint.drawText(word_spacing,0,W-word_spacing,H,
+					  Qt::AlignAuto, strun.m_data);
+			bg_paint.flush();
+			bg_paint.end();
 		}
-		// Qt::AlignLeft|Qt::AlignTop
-		// Qt::AlignAuto
-		bg_paint.drawText(word_spacing,0,W-word_spacing,H,
-				  Qt::AlignAuto, strun.m_data);
-		bg_paint.flush();
-		bg_paint.end();
 	} else {
 		// if possible, paint directly into the final destination
 		tx_paint.begin( m_window->get_ambulant_pixmap() );
@@ -264,26 +264,31 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 	if (m_blending)
 		tx_paint.drawText(word_spacing,0,W-word_spacing,H,
 				  flags, strun.m_data);
-	else
+	else {
 		tx_paint.drawText(L+word_spacing,T,W-word_spacing,H,
 				  flags, strun.m_data);
+	}
 	tx_paint.flush();
 	tx_paint.end();
 	
 	if (m_blending) {
-		QImage bg_image = bg_pixmap->convertToImage();
 		QImage tx_image = tx_pixmap->convertToImage();
 		QImage screen_img = m_window->get_ambulant_pixmap()->convertToImage();
-
-		AM_DBG DUMPPIXMAP(bg_pixmap, "bg");
-		AM_DBG DUMPPIXMAP(tx_pixmap, "tx");
 		AM_DBG DUMPPIXMAP(m_window->get_ambulant_pixmap(), "sc");
 
+		AM_DBG DUMPPIXMAP(tx_pixmap, "tx");
+
 		lib::rect rct0 (lib::point(0, 0), lib::size(W, H));
-		qt_image_blend (screen_img, rct, bg_image, rct0, 
-				alpha_media_bg, 0.0,
-//XX				chroma_low, chroma_high);
-				bg_color, bg_color);
+
+		if (bg_pixmap) {
+			QImage bg_image = bg_pixmap->convertToImage();
+			AM_DBG DUMPPIXMAP(bg_pixmap, "bg");
+			qt_image_blend (screen_img, rct, bg_image, rct0, 
+					alpha_media_bg, 0.0,
+//XX					chroma_low, chroma_high);
+					bg_color, bg_color);
+			delete bg_pixmap;
+		}
 		qt_image_blend (screen_img, rct, tx_image, rct0, 
 				alpha_media, 0.0,
 //XX				chroma_low, chroma_high);
@@ -301,11 +306,7 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 		       &new_pixmap, L, T, W, H);	
 		AM_DBG DUMPPIXMAP(m_window->get_ambulant_pixmap(), "rs");
 		delete tx_pixmap;
-		if (bg_pixmap)
-			delete bg_pixmap;
-
 	}
-	
 }
 
 void

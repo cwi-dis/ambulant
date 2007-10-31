@@ -933,14 +933,14 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shift
 					    word->m_bounding_box,
 					    word_spacing);
 	}
-	if (m_crawling || m_scrolling
+	if ((m_crawling || m_scrolling)
 	    && (m_params.m_text_conceal == smil2::stc_none
 		|| m_params.m_text_conceal == smil2::stc_initial)) {
 		// check if we need to stop crawling/scrolling
 		 std::vector<smiltext_layout_word>::iterator last_word = word - 1;
 		if ((last_word->m_bounding_box & r) == last_word->m_bounding_box) {
 			// bounding box of last word is now completely 
-			// inside the rectangle
+			// inside the viewing rectangle
 			m_finished = true;
 			m_provider->smiltext_stopped();
 		}
