@@ -458,6 +458,10 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 		m_viewport->release_surface(textbg_dds);
 	}
 }
+void
+gui::dx::dx_smiltext_renderer::smiltext_stopped() {
+	m_context->stopped(m_cookie);
+}
 
 HGDIOBJ
 gui::dx::dx_smiltext_renderer::_dx_smiltext_set_font(const smil2::smiltext_run run, HDC hdc, HFONT* hfontp) {
