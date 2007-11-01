@@ -1770,6 +1770,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Ambulant-mac" */;
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -1780,6 +1781,7 @@
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* Ambulant-mac */;
 			projectDirPath = "";
+			projectRoot = "";
 			targets = (
 				8D1107260486CEB800E47090 /* Ambulant Player */,
 				0496562B0BCAEA7D002C00DF /* Ambulant Player (Intel) */,

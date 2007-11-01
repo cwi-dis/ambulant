@@ -4,6 +4,17 @@
 #
 # Modified by Jack to create 10.4 binary only (originally did 10.2 for ppc).
 
+#
+# If we use the 10.4u SDK on 10.5 we must say we're building for 10.4
+#
+MACOSX_DEPLOYMENT_TARGET=10.4
+export MACOSX_DEPLOYMENT_TARGET
+case `uname -r` in
+8*)	plat=darwin9 ;;
+9*) plat=darwin9 ;;
+*) echo Unknown MacOSX version. ; exit ;;
+esac
+
 # Number of CPUs (for make -j)
 NCPU=`sysctl -n hw.ncpu`
 NJOB=$NCPU
@@ -24,12 +35,12 @@ CFLAGS_PPC=""
 CPPFLAGS_PPC="-DMAC_OS_X_VERSION_MIN_REQUIRED=1040 \
 -nostdinc \
 -F/Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks \
--I/Developer/SDKs/MacOSX10.4u.sdk/usr/lib/gcc/powerpc-apple-darwin8/4.0.1/include \
+-I/Developer/SDKs/MacOSX10.4u.sdk/usr/lib/gcc/powerpc-apple-${plat}/4.0.1/include \
 -isystem /Developer/SDKs/MacOSX10.4u.sdk/usr/include"
 
 # PowerPC linker flags 
 LFLAGS_PPC="-arch ppc -mmacosx-version-min=10.4 \
--L/Developer/SDKs/MacOSX10.4u.sdk/usr/lib/gcc/powerpc-apple-darwin8/4.0.0 \
+-L/Developer/SDKs/MacOSX10.4u.sdk/usr/lib/gcc/powerpc-apple-${plat}/4.0.0 \
 -Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk"
 
 # Intel configure flags (10.4 runtime compatibility)
@@ -44,12 +55,12 @@ CFLAGS_X86="-mmacosx-version-min=10.4"
 CPPFLAGS_X86="-DMAC_OS_X_VERSION_MIN_REQUIRED=1040 \
 -nostdinc \
 -F/Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks \
--I/Developer/SDKs/MacOSX10.4u.sdk/usr/lib/gcc/i686-apple-darwin8/4.0.1/include \
+-I/Developer/SDKs/MacOSX10.4u.sdk/usr/lib/gcc/i686-apple-${plat}/4.0.1/include \
 -isystem /Developer/SDKs/MacOSX10.4u.sdk/usr/include"
 
 # Intel linker flags
 LFLAGS_X86="-arch i386 -mmacosx-version-min=10.4 \
--L/Developer/SDKs/MacOSX10.4u.sdk/usr/lib/gcc/i686-apple-darwin8/4.0.0 \
+-L/Developer/SDKs/MacOSX10.4u.sdk/usr/lib/gcc/i686-apple-${plat}/4.0.0 \
 -Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk"
 
 #

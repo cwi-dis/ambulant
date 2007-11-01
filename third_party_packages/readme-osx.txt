@@ -2,6 +2,10 @@ This file explains how to build the third party packages as Universal Binaries
 (which run on both powerpc and Intel) for MacOSX. It is an addition to the
 information contained in readme.txt (which you should also read).
 
+When building on 10.5, for the time being please make sure you have
+MACOSX_DEPLOYMENT_TARGET=10.4 in your environment, some things need
+to be fixed for native 10.5 development.
+
 expat:
     If you want to do a MacOSX universal build you need to build
     expat universally too, by making sure the following environment
@@ -42,7 +46,7 @@ sdl:
 live555.com:
 	If you want to create a MacOSX universal installer you need some patches
 	to live first. Extract live-osx-fatbuild-patches.tar into the live
-	source directory, do "./genMakefiles macosxfat" and make, and you're all set.
+	source directory, do "MACOSX_DEPLOYMENT_TARGET=10.4 ./genMakefiles macosxfat" and make, and you're all set.
 	
 gettext:
 	If you want to build a universal MacOSX installer, you need to run configure
