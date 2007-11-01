@@ -373,6 +373,7 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 			win_report_last_error("DrawText(blank)");
 	}
 	dstRC.left += word_spacing;
+
 	hr = ::DrawText(hdc, tp, (int)tp.length(), &dstRC, uFormat);
 	if (SUCCEEDED(hr) && textbg_hdc)
 		hr = ::DrawText(textbg_hdc, tp, (int)tp.length(), &dstRC, uFormat);
@@ -553,7 +554,7 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_set_font(const smil2::smiltext_run r
 			italic,				// italic attribute option
 			0,					// underline attribute option
 			0,					// strikeout attribute option
-			ANSI_CHARSET,		// character set identifier
+			DEFAULT_CHARSET,		// character set identifier
 			OUT_DEFAULT_PRECIS, // output precision
 			CLIP_DEFAULT_PRECIS, // clipping precision
 			DEFAULT_QUALITY,	// output quality

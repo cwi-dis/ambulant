@@ -5,6 +5,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libambulant_win32", "libamb
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AmbulantPlayer", "AmbulantPlayer.vcproj", "{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}"
 	ProjectSection(ProjectDependencies) = postProject
+		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67} = {F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785} = {DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}
 	EndProjectSection
 EndProject
@@ -43,6 +44,8 @@ Global
 		ReleaseNoXerces = ReleaseNoXerces
 		ReleaseNoXercesNoHtml = ReleaseNoXercesNoHtml
 		ReleaseShlib = ReleaseShlib
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Debug.ActiveCfg = Debug|Win32
@@ -86,7 +89,6 @@ Global
 		{D2E0FB0F-6190-4A38-BAFF-3FC75104D568}.ReleaseNoXerces.ActiveCfg = Release|Win32
 		{D2E0FB0F-6190-4A38-BAFF-3FC75104D568}.ReleaseNoXercesNoHtml.ActiveCfg = Release|Win32
 		{D2E0FB0F-6190-4A38-BAFF-3FC75104D568}.ReleaseShlib.ActiveCfg = Release|Win32
-		{D2E0FB0F-6190-4A38-BAFF-3FC75104D568}.ReleaseShlib.Build.0 = Release|Win32
 		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.Debug.ActiveCfg = Debug|Win32
 		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.DebugNoXerces.ActiveCfg = Debug|Win32
 		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.DebugNoXercesNoHtml.ActiveCfg = Debug|Win32
@@ -96,7 +98,6 @@ Global
 		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.ReleaseNoXerces.ActiveCfg = Release|Win32
 		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.ReleaseNoXercesNoHtml.ActiveCfg = Release|Win32
 		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.ReleaseShlib.ActiveCfg = Release|Win32
-		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.ReleaseShlib.Build.0 = Release|Win32
 		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.Debug.ActiveCfg = Debug|Win32
 		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.DebugNoXerces.ActiveCfg = Debug|Win32
 		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.DebugNoXercesNoHtml.ActiveCfg = Debug|Win32
@@ -106,7 +107,6 @@ Global
 		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.ReleaseNoXerces.ActiveCfg = Release|Win32
 		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.ReleaseNoXercesNoHtml.ActiveCfg = Release|Win32
 		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.ReleaseShlib.ActiveCfg = Release|Win32
-		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.ReleaseShlib.Build.0 = Release|Win32
 		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.Debug.ActiveCfg = Debug|Win32
 		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.DebugNoXerces.ActiveCfg = Debug|Win32
 		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.DebugNoXercesNoHtml.ActiveCfg = Debug|Win32
@@ -116,7 +116,6 @@ Global
 		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.ReleaseNoXerces.ActiveCfg = Release|Win32
 		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.ReleaseNoXercesNoHtml.ActiveCfg = Release|Win32
 		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.ReleaseShlib.ActiveCfg = Release|Win32
-		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.ReleaseShlib.Build.0 = Release|Win32
 		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.Debug.ActiveCfg = Debug|Win32
 		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.DebugNoXerces.ActiveCfg = Debug|Win32
 		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.DebugNoXercesNoHtml.ActiveCfg = Debug|Win32

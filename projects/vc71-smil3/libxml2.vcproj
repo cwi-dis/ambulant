@@ -17,8 +17,8 @@
 			ConfigurationType="0">
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="cd ..\..\third_party_packages\libxml2-2.6.29\win32 ; nmake /f Makefile.msvc"
-				ReBuildCommandLine="cd ..\..\third_party_packages\libxml2-2.6.29\win32 ; nmake /f Makefile.msvc rebuild"
+				BuildCommandLine="cd ..\..\third_party_packages\libxml2-2.6.29\win32 ; cscript configure.js iconv=no;nmake /f Makefile.msvc"
+				ReBuildCommandLine="cd ..\..\third_party_packages\libxml2-2.6.29\win32 ;cscript configure.js iconv=no; nmake /f Makefile.msvc rebuild"
 				CleanCommandLine="cd ..\..\third_party_packages\libxml2-2.6.29\win32 ; nmake /f Makefile.msvc clean"/>
 		</Configuration>
 		<Configuration
@@ -28,9 +28,14 @@
 			ConfigurationType="0">
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="cd ..\..\third_party_packages\libxml2-2.6.29\win32 ; nmake /f Makefile.msvc"
-				ReBuildCommandLine="cd ..\..\third_party_packages\libxml2-2.6.29\win32 ; nmake /f Makefile.msvc rebuild"
-				CleanCommandLine="cd ..\..\third_party_packages\libxml2-2.6.29\win32 ; nmake /f Makefile.msvc clean"/>
+				BuildCommandLine="cd ..\..\third_party_packages\libxml2-2.6.29\win32
+ cscript configure.js iconv=no
+nmake /f Makefile.msvc"
+				ReBuildCommandLine="cd ..\..\third_party_packages\libxml2-2.6.29\win32
+cscript configure.js iconv=no
+nmake /f Makefile.msvc rebuild"
+				CleanCommandLine="cd ..\..\third_party_packages\libxml2-2.6.29\win32 
+nmake /f Makefile.msvc clean"/>
 		</Configuration>
 	</Configurations>
 	<References>
