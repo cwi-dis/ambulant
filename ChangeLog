@@ -1,3 +1,19 @@
+2007-10-31 15:19  keesblom
+
+	* Implemented textConceal smilText attribute on Windows Xp
+
+2007-10-31 15:02  keesblom
+
+	* Fixed a couple of bugs in textConceal implementation
+
+2007-10-31 13:51  jackjansen
+
+	* Ambulant builds on Leopard, but so far only native (not fat).
+
+2007-10-31 10:58  keesblom
+
+	* Turned off smiltext debugging
+
 2007-10-30 17:48  keesblom
 
 	* Added textConceal with an implementation in
