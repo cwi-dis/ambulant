@@ -288,9 +288,11 @@ gtk_smiltext_renderer::smiltext_changed()
 				}
 				/* crawling: remove embedded newlines */
 				std::string newdata = i->m_data;
-				std::string::size_type nl = newdata.find("\n");
-				while (nl != std::string::npos)
+				std::string::size_type nl = 0;
+				while (nl != std::string::npos) {
+				  nl = newdata.find("\n", nl);
 					newdata[nl] = ' ';
+				}
 				m_text_storage += newdata;
 				break;
 			}				
