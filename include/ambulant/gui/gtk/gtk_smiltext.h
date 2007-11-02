@@ -94,6 +94,9 @@ class gtk_smiltext_renderer :
 	color_t m_chroma_high;
 	smil2::smiltext_align m_align;
 	smil2::smiltext_writing_mode m_writing_mode;
+	bool m_needs_conditional_space;
+	bool m_needs_conditional_newline;
+	bool m_wrap;
 };
 
 } // namespace gtk

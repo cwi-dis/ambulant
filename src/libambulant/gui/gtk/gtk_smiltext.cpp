@@ -65,7 +65,10 @@ gtk_smiltext_renderer::gtk_smiltext_renderer(
 	m_chroma_low(0x000000),		//black
 	m_chroma_high(0xFFFFFF),		//white
 	m_align(smil2::sta_left),
-	m_writing_mode(smil2::stw_lr_tb)// Left to Right, Top to Bottom
+	m_writing_mode(smil2::stw_lr_tb),// Left to Right, Top to Bottom
+	m_needs_conditional_space(false),
+	m_needs_conditional_newline(false),
+	m_wrap(true)
 {
 #ifdef	TBD
 	m_render_offscreen = (m_params.m_mode != smil2::stm_replace && m_params.m_mode != smil2::stm_append);
@@ -228,6 +231,10 @@ gtk_smiltext_renderer::smiltext_changed()
 				}
 				m_align = align;
 			}
+			m_needs_conditional_space = false;
+			m_needs_conditional_newline = false;
+			if ( ! i->m_wrap || m_params.m_mode == smil2::stm_crawl)
+				m_wrap = false;
 		} else {
 			// Only additions. Don't clear and only copy the new stuff.
 			i = m_engine.newbegin();
@@ -235,19 +242,58 @@ gtk_smiltext_renderer::smiltext_changed()
 		while (i != m_engine.end()) {
 			// Add the new characters
 			gint start_index = m_text_storage.size();
-			if (m_params.m_mode != smil2::stm_crawl) {
-				if (i->m_command == smil2::stc_break)
-					m_text_storage += "\n";
-				else {
-					int string_length = m_text_storage.length();
-					if (i->m_command == smil2::stc_condbreak
-					    && string_length == 0
-					    || m_text_storage[string_length-1] != '\n')
-					m_text_storage += "\n";
+			switch (i->m_command) {
+			default:
+				assert(0);
+				break;
+			case smil2::stc_break:
+				if (m_params.m_mode == smil2::stm_crawl)
+					m_text_storage += " ";
+				else	m_text_storage += "\n";
+				m_needs_conditional_space = false;
+				m_needs_conditional_newline = false;
+				break;
+			case smil2::stc_condbreak:
+				if (m_needs_conditional_newline) {
+					if (m_params.m_mode == smil2::stm_crawl)
+						m_text_storage += " ";
+					else	m_text_storage += "\n\n";
+					m_needs_conditional_space = false;
+					m_needs_conditional_newline = false;
 				}
+				break;
+			case smil2::stc_condspace:
+				if (m_needs_conditional_space) {
+					m_text_storage += " ";
+					m_needs_conditional_newline = true;
+					m_needs_conditional_space = false;
+				}
+				break;
+			case smil2::stc_data:
+				char lastch = *(i->m_data.rbegin());
+				if (lastch == '\r' || lastch == '\n' || lastch == '\f' || lastch == '\v') {
+					m_needs_conditional_newline = false;
+					m_needs_conditional_space = false;
+				} else
+				if (lastch == ' ' || lastch == '\t') {
+					m_needs_conditional_newline = true;
+					m_needs_conditional_space = false;
+				} else {
+					m_needs_conditional_newline = true;
+					m_needs_conditional_space = true;
+				}
+				if (m_params.m_mode != smil2::stm_crawl) {
+					m_text_storage +=  i->m_data;
+					break;
+				}
+				/* crawling: remove embedded newlines */
+				std::string newdata = i->m_data;
+				std::string::size_type nl = newdata.find("\n");
+				while (nl != std::string::npos)
+					newdata[nl] = ' ';
+				m_text_storage += newdata;
+				break;
 			}				
-			if (i->m_command == smil2::stc_data)
-				m_text_storage +=  i->m_data;
 			// Set font attributes
 			_gtk_set_font_attr(m_pango_attr_list, 
 					   i->m_font_family,
@@ -299,25 +345,11 @@ gtk_smiltext_renderer::smiltext_changed()
 							    m_text_storage.size());
 				}
 			}
-			/**TBD cannot implement wrap, must know width.
-			 * everything to be done in redraw?
-		       
-			if (i->m_wrap )
-				pango_layout_set_width (m_pango_layout, width);
-			else	pango_layout_set_width (m_pango_layout, -1);
-			*TBD*/
 			// Set the background attributes and text
 			pango_layout_set_attributes(m_pango_layout, m_pango_attr_list);
 			pango_layout_set_text(m_pango_layout, m_text_storage.c_str(), -1);
 			pango_layout_context_changed(m_pango_layout);
 			if (m_bg_layout) {
-				/**TBD cannot implement wrap, must know width.
-				 * everything to be done in redraw?
-		       
-				 if (i->m_wrap )
-				 	pango_layout_set_width (m_bg_layout, width);
-				 else	pango_layout_set_width (m_bg_layout, -1);
-				 *TBD*/
 				// Set the background attributes and text
 				pango_layout_set_attributes(m_bg_layout, m_bg_pango_attr_list);
 				pango_layout_set_text(m_bg_layout, m_text_storage.c_str(), -1);
@@ -460,10 +492,10 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 	gdk_gc_set_clip_rectangle(gc, &gdk_rectangle);
 
 	// include the text
-	pango_layout_set_width(m_pango_layout, W*1000);
+	pango_layout_set_width(m_pango_layout, m_wrap ? W*1000 : -1);
 	if (m_bg_layout) {
 		// blending
-	  	pango_layout_set_width(m_bg_layout, W*1000);
+	  	pango_layout_set_width(m_bg_layout, m_wrap ? W*1000 : -1);
 
 		GdkPixmap* text_pixmap
 		  = gdk_pixmap_new( (window->get_ambulant_pixmap()),
