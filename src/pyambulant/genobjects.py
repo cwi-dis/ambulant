@@ -119,6 +119,7 @@ OBJECTS=[
 	"net/posix_datasource.h",
 	
 	"gui/qt/qt_factory.h",
+#	"gui/gtk/gtk_factory.h",
 	"gui/SDL/sdl_factory.h",
 	"net/ffmpeg_factory.h",
 ]

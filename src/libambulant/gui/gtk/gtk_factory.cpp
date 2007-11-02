@@ -164,7 +164,7 @@ gtk_renderer_factory::new_playable(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
-	lib::event_processor *const evp) 
+	lib::event_processor * evp) 
 {
 
 	lib::xml_string tag = node->get_qname().second;

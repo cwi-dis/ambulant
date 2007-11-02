@@ -57,7 +57,7 @@ class gtk_renderer_factory : public common::playable_factory {
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
-		lib::event_processor *const evp);
+		lib::event_processor * evp);
 		
 	common::playable *new_aux_audio_playable(
 		common::playable_notification *context,
@@ -248,6 +248,9 @@ class gtk_ambulant_widget : public GtkWidget, public ambulant::common::gui_scree
 
 AMBULANTAPI common::playable_factory *create_gtk_renderer_factory(common::factories *factory);
 AMBULANTAPI common::window_factory *create_gtk_window_factory(gtk_ambulant_widget* gtk_widget, GMainLoop* loop, common::gui_player* gpl);
+// XXXX Needs to be implemented:
+// Create gtk_ambulant_widget inside gtk_parent_widget, call create_gtk_window_factory.
+AMBULANTAPI common::window_factory *create_gtk_window_factory_unsafe(void* gtk_parent_widget, void* g_main_loop, common::gui_player* gpl);
 AMBULANTAPI common::playable_factory *create_gtk_video_factory(common::factories *factory);
 
 } // namespace gtk

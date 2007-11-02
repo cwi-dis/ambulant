@@ -132,6 +132,11 @@ pycobject = OpaqueByValueType("void*", "cobject")
 renderer_private_data_ptr = Type("ambulant::common::renderer_private_data *", "l")
 renderer_private_id = Type("ambulant::common::renderer_private_id", "l")
 
+# Another hack: for some reason these show up in typetest while they are not used??
+ambulant_gtk_window_ptr=None
+gtk_renderer_factory_ptr=None
+gtk_video_factory_ptr=None
+
 # A helper object, used as baseclass for our Python objects to enable
 # bridging objects back-and-forth between Python and C++ while maintaining
 # object identity.

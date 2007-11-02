@@ -15846,6 +15846,69 @@ static PyObject *PyAm_create_qt_video_factory(PyObject *_self, PyObject *_args)
 }
 #endif
 
+#ifdef WITH_GTK
+
+static PyObject *PyAm_create_gtk_renderer_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable_factory* _rv;
+	ambulant::common::factories* factory;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      factoriesObj_Convert, &factory))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::gui::gtk::create_gtk_renderer_factory(factory);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     playable_factoryObj_New, _rv);
+	return _res;
+}
+#endif
+
+#ifdef WITH_GTK
+
+static PyObject *PyAm_create_gtk_window_factory_unsafe(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::window_factory* _rv;
+	void* gtk_parent_widget;
+	void* g_main_loop;
+	ambulant::common::gui_player* gpl;
+	if (!PyArg_ParseTuple(_args, "O&O&O&",
+	                      cobject_Convert, &gtk_parent_widget,
+	                      cobject_Convert, &g_main_loop,
+	                      gui_playerObj_Convert, &gpl))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::gui::gtk::create_gtk_window_factory_unsafe(gtk_parent_widget,
+	                                                           g_main_loop,
+	                                                           gpl);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     window_factoryObj_New, _rv);
+	return _res;
+}
+#endif
+
+#ifdef WITH_GTK
+
+static PyObject *PyAm_create_gtk_video_factory(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::playable_factory* _rv;
+	ambulant::common::factories* factory;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      factoriesObj_Convert, &factory))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::gui::gtk::create_gtk_video_factory(factory);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     playable_factoryObj_New, _rv);
+	return _res;
+}
+#endif
+
 #ifdef WITH_SDL
 
 static PyObject *PyAm_create_sdl_playable_factory(PyObject *_self, PyObject *_args)
@@ -16108,6 +16171,21 @@ static PyMethodDef PyAm_methods[] = {
 
 #ifdef WITH_QT
 	{"create_qt_video_factory", (PyCFunction)PyAm_create_qt_video_factory, 1,
+	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
+#endif
+
+#ifdef WITH_GTK
+	{"create_gtk_renderer_factory", (PyCFunction)PyAm_create_gtk_renderer_factory, 1,
+	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
+#endif
+
+#ifdef WITH_GTK
+	{"create_gtk_window_factory_unsafe", (PyCFunction)PyAm_create_gtk_window_factory_unsafe, 1,
+	 PyDoc_STR("(void* gtk_parent_widget, void* g_main_loop, ambulant::common::gui_player* gpl) -> (ambulant::common::window_factory* _rv)")},
+#endif
+
+#ifdef WITH_GTK
+	{"create_gtk_video_factory", (PyCFunction)PyAm_create_gtk_video_factory, 1,
 	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
 #endif
 

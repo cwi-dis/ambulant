@@ -32,6 +32,7 @@ def main():
         AMBULANT+ "common/state.h",
         AMBULANT+ "gui/none/none_gui.h",
         AMBULANT+ "gui/qt/qt_factory.h",
+        AMBULANT+ "gui/gtk/gtk_factory.h",
         AMBULANT+ "gui/SDL/sdl_factory.h",
         AMBULANT+ "net/datasource.h",
         AMBULANT+ "net/posix_datasource.h",
@@ -73,6 +74,8 @@ class MyScanner(CxxScanner):
             "event_processor_impl", # Constructor for unsupported type
             "load_test_attrs",
             "create_from_tree", # Ifdeffed out, for the time being
+            "gdk_pixmap_bitblt",
+            "create_gtk_window_factory",
            
         ]
 
@@ -119,7 +122,21 @@ class MyScanner(CxxScanner):
             "tile_positions",    # We don't do lists, for now
             "region_dim_spec",   # XXXX Not sure this is needed?
             "const_region_dim_spec_ref",  # XXXX Not sure this is needed?
-            "QWidget_ptr"
+            # Next couple are gtk. For now I've excluded them because they cause
+            # errors, but it could well be they are needed and need to be handled.
+            "QWidget_ptr",
+            "GdkPixmap_ptr",
+            "GtkWidget_ptr",
+            "gtk_ambulant_widget",
+            "gtk_ambulant_widget_ptr",
+            "gtk_window_factory",
+            "gtk_window_factory_ptr",
+            "ambulant_gtk_window",
+            "ambulant_gtk_window_ptr",
+            "gtk_renderer_factory",
+            "gtk_renderer_factory_ptr",
+            "gtk_video_factory",
+            "gtk_video_factory_ptr",
             
         ]
 
@@ -129,6 +146,12 @@ class MyScanner(CxxScanner):
                 'create_qt_window_factory_unsafe',
                 'create_qt_playable_factory',
                 'create_qt_video_factory',
+                ]
+            ),
+            ('#ifdef WITH_GTK', [
+                'create_gtk_window_factory_unsafe',
+                'create_gtk_renderer_factory',
+                'create_gtk_video_factory',
                 ]
             ),
             ('#ifdef WITH_SDL', [
@@ -235,6 +258,13 @@ class MyScanner(CxxScanner):
               ]
             ),
             ('create_qt_window_factory_unsafe',
+              [
+                ('void_ptr', '*', 'InMode'),
+              ], [
+                ('pycobject', '*', 'InMode'),
+              ]
+            ),
+            ('create_gtk_window_factory_unsafe',
               [
                 ('void_ptr', '*', 'InMode'),
               ], [

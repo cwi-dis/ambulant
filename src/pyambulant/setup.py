@@ -3,6 +3,7 @@ import sys
 import os
 
 # Set these variable identical to your configure options.
+WITH_GTK=False
 WITH_QT= not not os.getenv("QTDIR")
 if sys.platform == 'win32':
     WITH_FFMPEG=False
@@ -31,6 +32,9 @@ INCDIRS=['../../include']
 if WITH_QT:
     DEFS.append(('WITH_QT', '1'))
     LIBRARIES.append('ambulant_qt')
+if WITH_GTK:
+    DEFS.append(('WITH_GTK', '1'))
+    LIBRARIES.append('ambulant_gtk')
 if WITH_FFMPEG:
     DEFS.append(('WITH_FFMPEG', '1'))
     LIBRARIES.append('ambulant_ffmpeg')
