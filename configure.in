@@ -101,7 +101,7 @@ AC_ARG_WITH(universalsdk,
         ;;
     *)
         with_universalsdk=true
-        if [ $need_sysroot = yes ]; then
+        if test $need_sysroot = yes ; then
             sysroot="-isysroot ${withval}"
         else
             sysroot=""
