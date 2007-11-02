@@ -1,3 +1,12 @@
+2007-11-02 00:59  jackjansen
+
+	* Getting universal builds to work on 10.5.
+
+2007-11-01 17:07  keesblom
+
+	* Various fixes s.t. everything now works on WindowsXP with  state
+	  and Release-shlib build
+
 2007-10-31 15:19  keesblom
 
 	* Implemented textConceal smilText attribute on Windows Xp
