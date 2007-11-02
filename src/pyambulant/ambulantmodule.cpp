@@ -4,7 +4,6 @@
 #include "Python.h"
 
 
-
 #define WITH_EXTERNAL_DOM 1
 #include "ambulant/config/config.h"
 #include "ambulant/version.h"
@@ -33,6 +32,9 @@
 #include "ambulant/gui/qt/qt_factory.h"
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/net/ffmpeg_factory.h"
+#ifdef WITH_GTK
+#include "ambulant/gui/gtk/gtk_factory.h"
+#endif
 
 
 #include "ambulantinterface.h"

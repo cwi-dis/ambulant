@@ -39,6 +39,7 @@ class MyMainWidget(qt.QWidget):
             "Double-click a file to open it")
         if filename:
             filename = str(filename)
+            print "file = " + filename
             self.open_document(filename)
         
     def do_play(self):
@@ -78,7 +79,7 @@ class MyMainWidget(qt.QWidget):
             "Demo application embedding Ambulant Player in a Python program.")
         
     def do_welcome(self):
-        welcome = self.find_document("Extras/Welcome/Welxcome.smil")
+        welcome = self.find_document("Extras/Welcome/Welcome.smil")
         if welcome:
             self.open_document(welcome)
         else:
@@ -97,6 +98,7 @@ class MyMainWidget(qt.QWidget):
         
     def open_document(self, document):
         self.glue = ambulantglue.Glue(document, self)
+        self.do_play()
     
 def main():
     #

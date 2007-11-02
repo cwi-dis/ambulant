@@ -26,7 +26,10 @@ includestuff = """
 execfile("ambulantincludegen.py")
 
 includestuff = includestuff + """
-
+// Should have been included through genobj.py but that caused problems
+#ifdef WITH_GTK
+#include "ambulant/gui/gtk/gtk_factory.h"
+#endif
 #include "ambulantinterface.h"
 #include "ambulantutilities.h"
 #include "ambulantmodule.h"

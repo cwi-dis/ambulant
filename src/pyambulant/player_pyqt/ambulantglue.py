@@ -6,6 +6,8 @@ class jaja:
 class Glue(ambulant.gui_player, ambulant.factories):
 
     def __init__(self, filename, widget):
+	#import pdb
+	#pdb.set_trace()
         ambulant.gui_player.__init__(self)
         self.widget = widget
 
@@ -44,6 +46,7 @@ class Glue(ambulant.gui_player, ambulant.factories):
     def init_window_factory(self):
         qwa = self.qwidget_to_ambulant(self.widget)
         wf = ambulant.create_qt_window_factory_unsafe(qwa, 20, self)
+        #wf = ambulant.create_none_window_factory()
         self.set_window_factory(wf)
         
     def init_playable_factory(self):
