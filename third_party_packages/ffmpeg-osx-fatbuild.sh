@@ -1,5 +1,6 @@
 #!/bin/sh
 #
+CONFIGOPTS="--enable-libfaad --disable-mmx --disable-encoders --enable-gpl --disable-vhook"
 srcdir=$1
 case x$srcdir in
     x)
@@ -80,17 +81,24 @@ if $configure; then
     (
         cd build-i386
         $srcdir/configure \
-            --extra-cflags="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch i386" \
-            --extra-ldflags="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch i386" \
-            --cpu=i386
+            --extra-cflags="-arch i386" \
+            --extra-ldflags="-arch i386" \
+            --arch=i686 \
+            --cpu=i686 \
+            --enable-shared \
+            $CONFIGOPTS
     )
     echo $0: configure ppc
     (
         cd build-ppc
         $srcdir/configure \
-            --extra-cflags="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch ppc" \
-            --extra-ldflags="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch ppc" \
-            --cpu=powerpc --enable-shared
+            --extra-cflags="-arch ppc" \
+            --extra-ldflags="-arch ppc" \
+            --arch=powerpc \
+            --cpu=g4 \
+            --enable-altivec \
+            --enable-shared \
+            $CONFIGOPTS
     )
 else
     echo $0: skipping configure
