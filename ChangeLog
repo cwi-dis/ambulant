@@ -1,3 +1,31 @@
+2007-11-02 17:13  rlaiola
+
+	* Jack and Laiola got Gtk interface working a bit more. At least it
+	  builds:-)
+
+2007-11-02 16:15  jackjansen
+
+	* Getting started with exposing gtk-specific methods to Python.
+
+	  Unfinished and untested.
+
+2007-11-02 16:13  jackjansen
+
+	* Use "test" in stead of "[", which doesn't work everywhere.
+
+2007-11-02 14:38  jackjansen
+
+	* Also copy SDL and live555 libraries.
+
+2007-11-02 12:11  keesblom
+
+	* Fixed stupid bug in gtk code removing embedded newlines when
+	  crawling
+
+2007-11-02 11:52  keesblom
+
+	* Implemented "noWrap" for gtk. Works also for crawling text.
+
 2007-11-02 00:59  jackjansen
 
 	* Getting universal builds to work on 10.5.
