@@ -158,7 +158,7 @@ copy /y .\nsIAmbulantPlugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\nsI
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
-				RelativePath="..\..\srcirefox_plugin_win32\np_entry.cpp">
+				RelativePath="..\..\src\firefox_plugin_win32\np_entry.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
@@ -178,7 +178,7 @@ copy /y .\nsIAmbulantPlugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\nsI
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\srcirefox_plugin_win32\npn_gate.cpp">
+				RelativePath="..\..\src\firefox_plugin_win32\npn_gate.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
@@ -198,7 +198,7 @@ copy /y .\nsIAmbulantPlugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\nsI
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\srcirefox_plugin_win32\npp_gate.cpp">
+				RelativePath="..\..\src\firefox_plugin_win32\npp_gate.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
@@ -295,7 +295,7 @@ copy /y .\nsIAmbulantPlugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\nsI
 				RelativePath="plugin.h">
 			</File>
 			<File
-				RelativePath="..\..\srcirefox_plugin_win32\resource.h">
+				RelativePath="..\..\src\firefox_plugin_win32\resource.h">
 			</File>
 		</Filter>
 		<Filter
