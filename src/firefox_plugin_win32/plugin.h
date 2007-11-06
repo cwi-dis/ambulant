@@ -52,6 +52,7 @@ public:
 	ambulant_player_callbacks();
 	void set_os_window(HWND hwnd);
 	HWND new_os_window();
+	SIZE get_default_size();
 	void destroy_os_window(HWND);
 	html_browser *new_html_browser(int left, int top, int width, int height);
 	HWND m_hwnd;

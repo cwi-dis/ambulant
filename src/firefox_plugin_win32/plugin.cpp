@@ -178,6 +178,15 @@ ambulant_player_callbacks::new_os_window()
 	return m_hwnd;
 }
 
+SIZE
+ambulant_player_callbacks::get_default_size()
+{
+	SIZE size;
+	size.cx = ambulant::common::default_layout_width;
+	size.cy = ambulant::common::default_layout_height;
+	return size;
+}
+
 void
 ambulant_player_callbacks::destroy_os_window(HWND hwnd)
 {

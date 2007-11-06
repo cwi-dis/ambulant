@@ -22,7 +22,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\sdk\samples\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\plugin\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\nspr\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\java\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk&quot;;..\..\include"
-				PreprocessorDefinitions="_DEBUG;XP_WIN32;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_USRDLL;NPSIMPLE_EXPORTS"
+				PreprocessorDefinitions="_DEBUG;XP_WIN32;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_USRDLL;NPSIMPLE_EXPORTS;WITH_SMIL30"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
@@ -43,7 +43,7 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				IgnoreDefaultLibraryNames="libcmt.lib"
-				ModuleDefinitionFile=".\npscriptable.def"
+				ModuleDefinitionFile="..\..\src\firefox_plugin_win32\npscriptable.def"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/npscriptable.pdb"
 				ImportLibrary=".\Debug/npscriptable.lib"
@@ -58,7 +58,8 @@
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy /y .\Debug\npscriptable.dll  &quot;\Program Files\Mozilla Firefox\plugins\npambulant.dll&quot;
+				CommandLine="del  &quot;C:\Program Files\Mozilla Firefox\plugins\npambulant.dll&quot;
+fsutil hardlink create   &quot;C:\Program Files\Mozilla Firefox\plugins\npambulant.dll&quot; &quot;C:\Documents and Settings\kees\My Documents\My Work\ambulant\projects\vc71-smil3\Debug\npscriptable.dll&quot;
 copy /y .\nsIAmbulantPlugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\nsIAmbulantPlugin.xpt&quot;
 "/>
 			<Tool
@@ -218,10 +219,10 @@ copy /y .\nsIAmbulantPlugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\nsI
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="npscriptable.def">
+				RelativePath="..\..\src\firefox_plugin_win32\npscriptable.def">
 			</File>
 			<File
-				RelativePath="nsScriptablePeer.cpp">
+				RelativePath="..\..\src\firefox_plugin_win32\nsScriptablePeer.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
@@ -241,7 +242,7 @@ copy /y .\nsIAmbulantPlugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\nsI
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="plugin.cpp">
+				RelativePath="..\..\src\firefox_plugin_win32\plugin.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
@@ -265,7 +266,7 @@ copy /y .\nsIAmbulantPlugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\nsI
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl">
 			<File
-				RelativePath="nsIAmbulantPlugin.idl">
+				RelativePath="..\..\src\firefox_plugin_win32\nsIAmbulantPlugin.idl">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
@@ -289,10 +290,10 @@ copy /y .\nsIAmbulantPlugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\nsI
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="nsScriptablePeer.h">
+				RelativePath="..\..\src\firefox_plugin_win32\nsScriptablePeer.h">
 			</File>
 			<File
-				RelativePath="plugin.h">
+				RelativePath="..\..\src\firefox_plugin_win32\plugin.h">
 			</File>
 			<File
 				RelativePath="..\..\src\firefox_plugin_win32\resource.h">
@@ -302,7 +303,7 @@ copy /y .\nsIAmbulantPlugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\nsI
 			Name="Resource Files"
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
 			<File
-				RelativePath="npscriptable.rc">
+				RelativePath="..\..\src\firefox_plugin_win32\npscriptable.rc">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool

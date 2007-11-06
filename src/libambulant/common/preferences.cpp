@@ -46,6 +46,7 @@ preferences::preferences()
 	m_validation_schema_full_checking(false),
 	m_use_plugins(true),
 	m_plugin_dir(""),
+	m_prefer_ffmpeg(false),
 	m_dynamic_content_control(false)
 {
 	AM_DBG lib::logger::get_logger()->debug("preferences::preferences()");
