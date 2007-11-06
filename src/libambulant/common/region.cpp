@@ -48,10 +48,12 @@ smil_surface_factory::new_topsurface(
 	common::window_factory *wf)
 {
 	lib::size bounds(0,0);
+	rect default_rect = wf->get_default_size();
 	if (info) {
-		rect default_rect = wf->get_default_size();
 		rect rect = info->get_rect(&default_rect);
 		bounds = lib::size(rect.width(), rect.height());
+	} else {
+		bounds = lib::size(default_rect.width(), default_rect.height());
 	}
 	return new toplevel_surface_impl(info, bounds, bgrend, wf);
 }

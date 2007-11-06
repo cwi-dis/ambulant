@@ -44,6 +44,7 @@
 		043902D40BD7955000E13028 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 043902C80BD7955000E13028 /* data */; };
 		043903070BD7956400E13028 /* DTDCache in Resources */ = {isa = PBXBuildFile; fileRef = 043902D50BD7956400E13028 /* DTDCache */; };
 		043903080BD7956400E13028 /* DTDCache in Resources */ = {isa = PBXBuildFile; fileRef = 043902D50BD7956400E13028 /* DTDCache */; };
+		0480CD000CDD1D5C0025344B /* libfaad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0480CCFF0CDD1D5C0025344B /* libfaad.a */; };
 		049650620BCADE2B002C00DF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 049650610BCADE2B002C00DF /* main.m */; };
 		0496506D0BCADE62002C00DF /* LogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049650640BCADE62002C00DF /* LogController.mm */; };
 		0496506E0BCADE62002C00DF /* MyAmbulantView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049650660BCADE62002C00DF /* MyAmbulantView.mm */; };
@@ -297,6 +298,7 @@
 		0439023F0BD78B0500E13028 /* stop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stop.png; path = ../../src/player_macosx/stop.png; sourceTree = SOURCE_ROOT; };
 		043902C80BD7955000E13028 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = ../../Extras/Welcome/data; sourceTree = SOURCE_ROOT; };
 		043902D50BD7956400E13028 /* DTDCache */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DTDCache; path = ../../Extras/DTDCache; sourceTree = SOURCE_ROOT; };
+		0480CCFF0CDD1D5C0025344B /* libfaad.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfaad.a; path = /usr/local/lib/libfaad.a; sourceTree = "<absolute>"; };
 		049650600BCADE2B002C00DF /* Ambulant.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Ambulant.pch; path = ../../src/player_macosx/Ambulant.pch; sourceTree = SOURCE_ROOT; };
 		049650610BCADE2B002C00DF /* main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../../src/player_macosx/main.m; sourceTree = SOURCE_ROOT; };
 		049650630BCADE62002C00DF /* LogController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = LogController.h; path = ../../src/player_macosx/LogController.h; sourceTree = SOURCE_ROOT; };
@@ -814,6 +816,7 @@
 				049656230BCAEA43002C00DF /* libSDL.a in Frameworks */,
 				049656240BCAEA43002C00DF /* libz.dylib in Frameworks */,
 				049656B20BCAEC13002C00DF /* Carbon.framework in Frameworks */,
+				0480CD000CDD1D5C0025344B /* libfaad.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1602,6 +1605,7 @@
 				0496560D0BCAEA42002C00DF /* libavformat.a */,
 				0496560E0BCAEA42002C00DF /* libavcodec.a */,
 				0496560F0BCAEA42002C00DF /* libavutil.a */,
+				0480CCFF0CDD1D5C0025344B /* libfaad.a */,
 				049656100BCAEA42002C00DF /* libltdl.a */,
 				049656110BCAEA42002C00DF /* libexpat.a */,
 				049656120BCAEA42002C00DF /* libxerces-c.dylib */,
@@ -2325,7 +2329,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = "";
 			};
 			name = Debug;
 		};
