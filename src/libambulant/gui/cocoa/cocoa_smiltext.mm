@@ -340,6 +340,7 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	// Determine current position and size.
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
+	[view lockFocus]; // XXXJACK Attempt to workaround for problem in WebKitPlugin
 	rect dstrect = r;
 	dstrect.translate(m_dest->get_global_topleft());
 	NSRect cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
@@ -405,7 +406,7 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 		logical_origin.y += now * m_params.m_rate / 1000;
 		visible_origin.y -= now * m_params.m_rate / 1000;
 	}
-	AM_DBG logger::get_logger()->debug("cocoa_smiltext_renderer.redraw at Cocoa-point (%f, %f)", visible_origin.x, visible_origin.y);
+	/*AM_DBG*/ logger::get_logger()->debug("cocoa_smiltext_renderer.redraw at Cocoa-point (%f, %f)", visible_origin.x, visible_origin.y);
 	if (m_render_offscreen) {
 	}
 #if 0
@@ -456,6 +457,7 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	layout_size = [m_text_container containerSize];
 	if (m_render_offscreen) {
 	}
+	[view unlockFocus];
 	m_lock.leave();
 }
 
