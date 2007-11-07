@@ -1,3 +1,19 @@
+2007-11-06 15:37  keesblom
+
+	* Revived  Ambulant Firefox plugin on WindowsXP
+
+2007-11-06 06:45  jackjansen
+
+	* In the WebKit plugin, smilText was rendered in a very weird
+	  place.  Fixed this by adding a lockFocus, it seems our redraw was
+	  called without it?
+
+2007-11-06 05:44  jackjansen
+
+	* The new(ish) default windowsize code failed when no layout at all
+	  was given. Amis ran into this, because that's the case for Daisy
+	  books.  Fixed.
+
 2007-11-05 12:27  keesblom
 
 	* Repaired obvious typo in an attempt to revive the firefox plugin
