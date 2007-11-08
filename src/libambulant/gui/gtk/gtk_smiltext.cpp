@@ -71,7 +71,8 @@ gtk_smiltext_renderer::gtk_smiltext_renderer(
 	m_wrap(true)
 {
 #ifdef	TBD
-	m_render_offscreen = (m_params.m_mode != smil2::stm_replace && m_params.m_mode != smil2::stm_append);
+	m_render_offscreen = (m_params.m_mode != smil2::stm_replace
+			      && m_params.m_mode != smil2::stm_append);
 #endif//TBD
 }
 
@@ -89,7 +90,7 @@ gtk_smiltext_renderer::~gtk_smiltext_renderer()
 		m_bg_pango_attr_list = NULL;
 	}
 	if (m_bg_layout)
-	  g_object_unref(m_bg_layout);
+		g_object_unref(m_bg_layout);
 	m_lock.leave();
 }
 
@@ -126,7 +127,7 @@ gtk_smiltext_renderer::marker_seen(const char *name)
 void
 gtk_smiltext_renderer::smiltext_changed()
 {
-	AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x)",this);
+AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x)",this);
 	m_lock.enter();
 	if ( ! m_pango_context) {
 		// initialize the pango context, layout...
@@ -145,8 +146,7 @@ gtk_smiltext_renderer::smiltext_changed()
 					     &m_chroma_low, &m_chroma_high);
 		}
 #ifndef	WITH_GTK_ANTI_ALIASING
-		if (m_alpha_media != 1.0 || m_alpha_media_bg != 1.0
-		    || m_alpha_chroma != 1.0) {
+		if (m_alpha_media != 1.0 || m_alpha_media_bg != 1.0 || m_alpha_chroma != 1.0) {
 			cairo_font_options_t* 
 			  cairo_font_options = cairo_font_options_create();
 			/* anti-aliasing by pango/cairo is disabled
@@ -163,20 +163,12 @@ gtk_smiltext_renderer::smiltext_changed()
 
 		m_writing_mode = m_engine.begin()->m_writing_mode;
 		switch (m_writing_mode) {
-		/* pango has extensive facilities for rendering
-		   mixed texts in any language; for now we only
-		   attempt to support the left-to_right and 
-		   right-to-left top-bottom modes only when 
-		   specified in a <smilText> or <region> element
-		*/
 		default:
 		case smil2::stw_lr_tb:
-			pango_context_set_base_dir (m_pango_context,
-						    PANGO_DIRECTION_LTR);
+			pango_context_set_base_dir (m_pango_context, PANGO_DIRECTION_LTR);
 			break;
 		case smil2::stw_rl_tb:
-			pango_context_set_base_dir (m_pango_context,
-						    PANGO_DIRECTION_RTL);
+			pango_context_set_base_dir (m_pango_context, PANGO_DIRECTION_RTL);
 			break;
 		}
 	}
@@ -184,10 +176,8 @@ gtk_smiltext_renderer::smiltext_changed()
 		m_pango_layout = pango_layout_new (m_pango_context);
 		pango_layout_set_alignment (m_pango_layout, PANGO_ALIGN_LEFT);
 	}
-	if ( ! m_bg_layout 
-	     && (m_alpha_media != 1.0 
-		 || m_alpha_media_bg != 1.0 
-		 || m_alpha_chroma != 1.0)) {
+	if ( ! m_bg_layout  && (m_alpha_media != 1.0  || m_alpha_media_bg != 1.0 
+				|| m_alpha_chroma != 1.0)) {
 		// prepare for blending: layout is setup twice:
 		// m_bg_layout has textColor as m_transparent
 		// m_pango_layout has textBackGroundColor as m_transparent
@@ -208,25 +198,25 @@ gtk_smiltext_renderer::smiltext_changed()
 				switch (align) {
 				default:
 				case smil2::sta_left:
-					pango_layout_set_alignment
-					  (m_pango_layout, PANGO_ALIGN_LEFT);
+					pango_layout_set_alignment (m_pango_layout,
+								    PANGO_ALIGN_LEFT);
 					if (m_bg_layout)
-						pango_layout_set_alignment
-						  (m_bg_layout, PANGO_ALIGN_LEFT);
+						pango_layout_set_alignment (m_bg_layout,
+									    PANGO_ALIGN_LEFT);
 					break;
 				case smil2::sta_center:
-					pango_layout_set_alignment
-					  (m_pango_layout, PANGO_ALIGN_CENTER);
+					pango_layout_set_alignment (m_pango_layout,
+								    PANGO_ALIGN_CENTER);
 					if (m_bg_layout)
-						pango_layout_set_alignment
-						  (m_bg_layout, PANGO_ALIGN_CENTER);
+						pango_layout_set_alignment (m_bg_layout, 
+									    PANGO_ALIGN_CENTER);
 					break;
 				case smil2::sta_right:
-					pango_layout_set_alignment
-					  (m_pango_layout, PANGO_ALIGN_RIGHT);
+					pango_layout_set_alignment (m_pango_layout,
+								    PANGO_ALIGN_RIGHT);
 					if (m_bg_layout)
-						pango_layout_set_alignment
-						  (m_bg_layout, PANGO_ALIGN_RIGHT);
+						pango_layout_set_alignment (m_bg_layout,
+									    PANGO_ALIGN_RIGHT);
 					break;
 				}
 				m_align = align;
@@ -271,7 +261,8 @@ gtk_smiltext_renderer::smiltext_changed()
 				break;
 			case smil2::stc_data:
 				char lastch = *(i->m_data.rbegin());
-				if (lastch == '\r' || lastch == '\n' || lastch == '\f' || lastch == '\v') {
+				if (lastch == '\r' || lastch == '\n' || lastch == '\f'
+				    || lastch == '\v') {
 					m_needs_conditional_newline = false;
 					m_needs_conditional_space = false;
 				} else
@@ -363,7 +354,7 @@ gtk_smiltext_renderer::smiltext_changed()
 	}
 	bool finished = m_engine.is_finished();
 	m_lock.leave();
-	AM_DBG  lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x), m_text_storage=%s",this,m_text_storage.c_str());
+AM_DBG  lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x), m_text_storage=%s",this,m_text_storage.c_str());
 	m_dest->need_redraw();
 	if (finished)
 		m_context->stopped(m_cookie);
@@ -374,7 +365,7 @@ gtk_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 {
 	m_lock.enter();
 	const rect &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 
 	// Compute the shifted position of what we want to draw w.r.t. the visible origin
 	lib::point logical_origin(0, 0);
@@ -386,7 +377,7 @@ gtk_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
 		logical_origin.y += (int) now * m_params.m_rate / 1000;
 	}
-	AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw: logical_origin(%d,%d)", logical_origin.x, logical_origin.y);
+AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw: logical_origin(%d,%d)", logical_origin.x, logical_origin.y);
 
 	_gtk_smiltext_render(r, logical_origin,(ambulant_gtk_window*)window);
 	m_lock.leave();
@@ -466,20 +457,16 @@ gtk_smiltext_renderer::_gtk_set_color_attr(PangoAttrList* pal,
 }
 		   
 void
-gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point offset, ambulant_gtk_window* window )
+gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point offset,
+					    ambulant_gtk_window* window )
 {
 	// Determine current position and size.
 	const lib::point p = m_dest->get_global_topleft();
         const char* data = m_text_storage.c_str();
 
-	AM_DBG lib::logger::get_logger()->debug(
-		"gtk_smiltext_render(0x%x):"
-		"ltrb=(%d,%d,%d,%d)\nm_text_storage = %s, p=(%d,%d):",
-		(void *)this, r.left(), r.top(), r.width(), r.height(),
-		data == NULL ? "(null)": data, p.x, p.y);
+AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_render(0x%x): ltrb=(%d,%d,%d,%d)\nm_text_storage = %s, p=(%d,%d):",(void *)this,r.left(),r.top(),r.width(),r.height(),data==NULL?"(null)":data,p.x,p.y);
 	if ( ! (m_pango_layout && window))
 	  return; // nothing to do
-
 
 	int L = r.left()+p.x, 
 	    T = r.top()+p.y,
@@ -499,16 +486,13 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 		// blending
 	  	pango_layout_set_width(m_bg_layout, m_wrap ? W*1000 : -1);
 
-		GdkPixmap* text_pixmap
-		  = gdk_pixmap_new( (window->get_ambulant_pixmap()),
-				    W, H, -1);
-		GdkPixmap* bg_pixmap
-		  = gdk_pixmap_new((window->get_ambulant_pixmap()),
-				   W, H, -1);
+		GdkPixmap* text_pixmap = gdk_pixmap_new((window->get_ambulant_pixmap()),W,H,-1);
+		GdkPixmap* bg_pixmap = gdk_pixmap_new((window->get_ambulant_pixmap()),W,H,-1);
 		GdkGC* text_gc = gdk_gc_new (GDK_DRAWABLE (text_pixmap));
 		GdkGC* bg_gc =  gdk_gc_new (GDK_DRAWABLE (bg_pixmap));
+		gdk_rectangle.x = gdk_rectangle.y = 0;
 		gdk_gc_set_clip_rectangle(text_gc, &gdk_rectangle);
-			gdk_gc_set_clip_rectangle(bg_gc, &gdk_rectangle);
+		gdk_gc_set_clip_rectangle(bg_gc, &gdk_rectangle);
 
 		GdkPixbuf* screen_pixbuf = gdk_pixbuf_get_from_drawable
 				(NULL, window->get_ambulant_pixmap(), NULL,
@@ -532,7 +516,7 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 		gdk_draw_layout(GDK_DRAWABLE (bg_pixmap),
 				bg_gc , 0-offset.x, 0-offset.y, m_bg_layout);
 		g_object_unref (G_OBJECT (bg_gc));
-//DBG		gdk_pixmap_dump(bg_pixmap, "bg");
+//DBG*/		gdk_pixmap_dump(bg_pixmap, "bg");
 		GdkPixbuf* bg_pixbuf = gdk_pixbuf_get_from_drawable
 		  			       	(NULL, bg_pixmap, NULL,
 						 0,0,0,0,W,H);
@@ -547,18 +531,18 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 		gdk_draw_layout(GDK_DRAWABLE (text_pixmap),
 				text_gc , 0-offset.x, 0-offset.y, m_pango_layout);
 		g_object_unref (G_OBJECT (text_gc));
-//DBG		gdk_pixmap_dump(text_pixmap, "text");
+//DBG*/		gdk_pixmap_dump(text_pixmap, "text");
 		GdkPixbuf* text_pixbuf = gdk_pixbuf_get_from_drawable
 		  			       	(NULL, text_pixmap, NULL,
 						0,0,0,0,W,H);
 		gdk_pixbuf_blend (screen_pixbuf, rc, text_pixbuf, rc, 
 				  m_alpha_chroma, m_alpha_media,
 				  m_chroma_low, m_chroma_high, m_transparent);
-//DBG		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen0");
+//DBG*/		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen0");
 		// draw the blended pixbuf on the screen
 		gdk_draw_pixbuf(window->get_ambulant_pixmap(),
 				gc, screen_pixbuf, 0, 0, L, T, W, H, GDK_RGB_DITHER_NONE,0,0);
-//DBG		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen1");
+//DBG*/		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen1");
 		g_object_unref (G_OBJECT (text_pixbuf));
 		g_object_unref (G_OBJECT (bg_pixbuf));
 		g_object_unref (G_OBJECT (screen_pixbuf));

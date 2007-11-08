@@ -61,7 +61,8 @@ class gtk_smiltext_renderer :
 	void smiltext_changed();
 	void marker_seen(const char *name);
   private:
-	void _gtk_smiltext_render(const lib::rect r, const lib::point offset, ambulant_gtk_window* window);
+	void _gtk_smiltext_render(const lib::rect r, const lib::point offset,
+				  ambulant_gtk_window* window);
 //JUNK	ambulant_gtk_window* m_gtk_window;
 	std::string m_text_storage;
 	smil2::smiltext_engine m_engine;
