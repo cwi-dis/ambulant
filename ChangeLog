@@ -1,3 +1,11 @@
+2007-11-08 22:34  jackjansen
+
+	* m_in_hyperjump_path wasn't initialized. Fixed.
+
+2007-11-08 15:54  keesblom
+
+	* Made smilText w. Opacity and ChromaKey work again for gtk
+
 2007-11-06 15:37  keesblom
 
 	* Revived  Ambulant Firefox plugin on WindowsXP
