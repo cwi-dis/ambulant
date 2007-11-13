@@ -50,9 +50,30 @@ ambulant::gui::gtk::create_gtk_renderer_factory(common::factories *factory)
 }
 
 common::window_factory *
-ambulant::gui::gtk::create_gtk_window_factory(gtk_ambulant_widget* gtk_widget, GMainLoop* loop, common::gui_player* gpl)
+ambulant::gui::gtk::create_gtk_window_factory(gtk_ambulant_widget* gtk_widget, GMainLoop* loop, gui_player* gpl)
 {
     return new gtk_window_factory(gtk_widget, loop, gpl);
+}
+
+common::window_factory *
+ambulant::gui::gtk::create_gtk_window_factory_unsafe(void* gtk_parent_widget, void* g_main_loop, common::gui_player* gpl)
+{
+    GtkWidget *parent = reinterpret_cast<GtkWidget*>(gtk_parent_widget);
+    if (parent == NULL) {
+        lib::logger::get_logger()->fatal("create_gtk_window_factory: Cannot cast parent_widget to GtkWidget");
+        return NULL;
+    }
+    gtk_ambulant_widget *gtkw = new gtk_ambulant_widget(parent);
+    if (gtkw == NULL) {
+        lib::logger::get_logger()->fatal("create_gtk_window_factory: Cannot create gtk_ambulant_widget");
+        return NULL;
+    }
+    GMainLoop* l = reinterpret_cast<GMainLoop*>(g_main_loop);
+    if (l == NULL) {
+        lib::logger::get_logger()->fatal("create_gtk_window_factory: Not a GMainLoop!");
+        return NULL;
+    }
+    return new gtk_window_factory(gtkw, l, gpl);
 }
 
 common::playable_factory *
