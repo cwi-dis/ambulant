@@ -98,6 +98,11 @@ class gtk_smiltext_renderer :
 	bool m_needs_conditional_space;
 	bool m_needs_conditional_newline;
 	bool m_wrap;
+	bool m_was_changed;
+	bool m_motion_done;
+	lib::point m_start;
+	lib::point m_origin;
+	lib::rect  m_log_rect;
 };
 
 } // namespace gtk

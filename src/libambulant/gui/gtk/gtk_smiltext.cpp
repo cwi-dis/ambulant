@@ -52,6 +52,7 @@ gtk_smiltext_renderer::gtk_smiltext_renderer(
 :	gtk_renderer<renderer_playable>(context, cookie, node, evp),
 	m_engine(smil2::smiltext_engine(node, evp, this, false)),
 	m_params(m_engine.get_params()),
+	m_motion_done(false),
 	m_pango_attr_list(pango_attr_list_new()),
 	m_bg_layout(NULL),
 	m_bg_pango_attr_list(NULL),
@@ -63,12 +64,15 @@ gtk_smiltext_renderer::gtk_smiltext_renderer(
 	m_alpha_media_bg(1.0),
 	m_alpha_chroma(1.0),
 	m_chroma_low(0x000000),		//black
-	m_chroma_high(0xFFFFFF),		//white
+	m_chroma_high(0xFFFFFF),	//white
 	m_align(smil2::sta_left),
 	m_writing_mode(smil2::stw_lr_tb),// Left to Right, Top to Bottom
 	m_needs_conditional_space(false),
 	m_needs_conditional_newline(false),
-	m_wrap(true)
+	m_wrap(true),
+	m_was_changed(false),
+	m_start(lib::point(0,0)),
+	m_origin(lib::point(0,0))
 {
 #ifdef	TBD
 	m_render_offscreen = (m_params.m_mode != smil2::stm_replace
@@ -99,6 +103,7 @@ gtk_smiltext_renderer::start(double t)
 {
 	m_epoch = m_event_processor->get_timer()->elapsed();
 	m_engine.start(t);
+	m_motion_done = false;
 	renderer_playable::start(t);
 }
 
@@ -338,10 +343,11 @@ AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x)",this);
 							    m_text_storage.size());
 				}
 			}
-			// Set the background attributes and text
+			// Set the foreground attributes and text
 			pango_layout_set_attributes(m_pango_layout, m_pango_attr_list);
 			pango_layout_set_text(m_pango_layout, m_text_storage.c_str(), -1);
 			pango_layout_context_changed(m_pango_layout);
+			m_was_changed = true;
 			if (m_bg_layout) {
 				// Set the background attributes and text
 				pango_layout_set_attributes(m_bg_layout, m_bg_pango_attr_list);
@@ -363,23 +369,117 @@ AM_DBG  lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x), m_text_sto
 void
 gtk_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 {
+	PangoRectangle ink_rect;
+	PangoRectangle log_rect;
 	m_lock.enter();
 	const rect &r = m_dest->get_rect();
 AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
-
-	// Compute the shifted position of what we want to draw w.r.t. the visible origin
-	lib::point logical_origin(0, 0);
-	if (m_params.m_mode == smil2::stm_crawl) {
-		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
-		logical_origin.x += (int) now * m_params.m_rate / 1000;
+	if (m_was_changed) {
+		// get the extents of the lines
+		m_was_changed = false;
+	  	pango_layout_set_width(m_pango_layout, m_wrap ? r.w*PANGO_SCALE : -1);
+		if (m_bg_layout)
+	  		pango_layout_set_width(m_bg_layout, m_wrap ? r.w*PANGO_SCALE : -1);
+		// get extents of first line (contains space for all lines in layout)
+		PangoLayoutIter* iter_p = pango_layout_get_iter(m_pango_layout);
+		PangoLayoutLine* line_p = pango_layout_iter_get_line(iter_p);
+		pango_layout_iter_get_layout_extents (iter_p, &ink_rect, &log_rect);
+//AM_DBG		std::string line(m_text_storage, line_p->start_index, line_p->length);
+//AM_DBG logger::get_logger()->debug("pango line extents %s: x=%d y=%d width=%d height=%d",line.c_str(), log_rect.x, log_rect.y, log_rect.width, log_rect.height);
+		pango_layout_iter_free(iter_p);
+		m_log_rect.x = log_rect.x/PANGO_SCALE;
+		m_log_rect.y = log_rect.y/PANGO_SCALE;
+		m_log_rect.w = log_rect.width/PANGO_SCALE;
+		m_log_rect.h = log_rect.height/PANGO_SCALE;
 	}
-	if (m_params.m_mode == smil2::stm_scroll) {
-		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
-		logical_origin.y += (int) now * m_params.m_rate / 1000;
+// Compute the shifted position of what we want to draw w.r.t. the visible origin
+	switch (m_params.m_mode) {
+	default:
+	case smil2::stm_append:
+		switch (m_params.m_text_conceal) {
+		default:
+		case smil2::stc_none:
+			break;
+		case smil2::stc_initial:
+			break;
+		case smil2::stc_final:
+			break;
+		case smil2::stc_both:
+			break;
+		}
+		break;
+	case smil2::stm_crawl:
+		switch (m_params.m_text_conceal) {
+		default:
+		case smil2::stc_none:
+			m_motion_done = m_origin.x > (int)m_log_rect.width() - (int)r.width();
+			break;
+		case smil2::stc_initial:
+			m_start.x = -(int)r.width();
+			m_motion_done = m_origin.x > (int)m_log_rect.width() -(int) r.width();
+			break;
+		case smil2::stc_final:
+			break;
+		case smil2::stc_both:
+		  m_start.x = -(int)r.width();
+			break;
+		}
+		break;
+	case smil2::stm_jump:
+		switch (m_params.m_text_conceal) {
+		default:
+		case smil2::stc_none:
+			break;
+		case smil2::stc_initial:
+			break;
+		case smil2::stc_final:
+			break;
+		case smil2::stc_both:
+			break;
+		}
+		break;
+	case smil2::stm_scroll:
+		switch (m_params.m_text_conceal) {
+		default:
+		case smil2::stc_none:
+			if (m_origin.y > (int)m_log_rect.height()  - (int)r.height())
+				m_motion_done = true;
+			break;
+		case smil2::stc_initial:
+			m_start.y = -(int)r.height();
+			if (m_origin.y > (int)m_log_rect.height()  - (int)r.height())
+				m_motion_done = true;
+			break;
+		case smil2::stc_final:
+			break;
+		case smil2::stc_both:
+			m_start.y = -(int)r.height();
+			break;
+		}
+		break;
 	}
-AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw: logical_origin(%d,%d)", logical_origin.x, logical_origin.y);
+	if ( ! m_motion_done ) {
+		m_origin.x = m_start.x;
+		m_origin.y = m_start.y;
+		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
+		switch (m_params.m_mode) {
+		default: // no smilText motion, don't come here again
+			m_motion_done = true; 
+			break;
+		case smil2::stm_crawl:
+			m_origin.x += (int) now * m_params.m_rate / 1000;
+			break;
+		case smil2::stm_scroll:
+			m_origin.y += (int) now * m_params.m_rate / 1000;
+			break;
+		}
 
-	_gtk_smiltext_render(r, logical_origin,(ambulant_gtk_window*)window);
+	} else {
+        	m_context->stopped(m_cookie);
+	}
+	AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw: logical_origin(%d,%d) log_rect(%d,%d) r(%d,%d)", m_origin.x, m_origin.y, m_log_rect.w, m_log_rect.h, r.w, r.h);
+
+	_gtk_smiltext_render(r, m_origin,(ambulant_gtk_window*)window);
 	m_lock.leave();
 }
 
@@ -391,7 +491,6 @@ gtk_smiltext_renderer::_gtk_set_font_attr (PangoAttrList* pal,
 		smil2::smiltext_font_weight smiltext_font_weight,
 		int smiltext_font_size,
 		unsigned int start_index, unsigned int end_index)
-
 {
 	PangoFontDescription* pango_font_description = pango_font_description_new();
 
@@ -481,10 +580,10 @@ AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_render(0x%x): ltrb=(%d,%d,
 	gdk_gc_set_clip_rectangle(gc, &gdk_rectangle);
 
 	// include the text
-	pango_layout_set_width(m_pango_layout, m_wrap ? W*1000 : -1);
+	pango_layout_set_width(m_pango_layout, m_wrap ? W*PANGO_SCALE : -1);
 	if (m_bg_layout) {
 		// blending
-	  	pango_layout_set_width(m_bg_layout, m_wrap ? W*1000 : -1);
+	  	pango_layout_set_width(m_bg_layout, m_wrap ? W*PANGO_SCALE : -1);
 
 		GdkPixmap* text_pixmap = gdk_pixmap_new((window->get_ambulant_pixmap()),W,H,-1);
 		GdkPixmap* bg_pixmap = gdk_pixmap_new((window->get_ambulant_pixmap()),W,H,-1);

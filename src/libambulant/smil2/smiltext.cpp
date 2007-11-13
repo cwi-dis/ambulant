@@ -280,7 +280,7 @@ smiltext_engine::_update() {
 					svs.offset = 0;
 					svs.iparam = 0;
 					if (tp.parse_sync(time_str, svs)) {
-						/*AM_DBG*/ lib::logger::get_logger()->debug("%s: next=\"%s\"", item->get_sig().c_str(), repr(svs).c_str());
+						AM_DBG lib::logger::get_logger()->debug("%s: next=\"%s\"", item->get_sig().c_str(), repr(svs).c_str());
 						if (svs.type == sv_offset) {
 							time = svs.offset / 1000.0;
 						} else {
@@ -553,7 +553,7 @@ smiltext_engine::_get_default_params(smiltext_params& params)
 	params.m_loop = false;
 	params.m_rate = 0;
 	params.m_text_place = stp_from_top;
-	params.m_text_conceal = stc_none;;
+	params.m_text_conceal = stc_none;
 }
 
 // smiltext_layout_engine
