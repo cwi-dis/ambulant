@@ -255,6 +255,7 @@
 				8D5B49AF048680CD000E48DA /* Resources */,
 				8D5B49B1048680CD000E48DA /* Sources */,
 				8D5B49B3048680CD000E48DA /* Frameworks */,
+				04668F0C0CEBA48200B4BF97 /* ShellScript */,
 				04C26E450CBE22E300CB8EFE /* ShellScript */,
 				04C0A4A90CD2A26300CEDCA9 /* CopyFiles */,
 			);
@@ -310,6 +311,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "#!/bin/sh\namlibdir=../../build-smil30/src/libambulant/.libs\ncd $amlibdir\nrm -f libambulant.dylib\nln -s libambulant.0 libambulant.dylib\nrm -f libambulant_sdl.dylib\nln -s libambulant_sdl.0 libambulant_sdl.dylib\nrm -f libambulant_live.dylib\nln -s libambulant_live.0 libambulant_live.dylib\nrm -f libambulant_ffmpeg.dylib\nln -s libambulant_ffmpeg.0 libambulant_ffmpeg.dylib\n";
+		};
+		04668F0C0CEBA48200B4BF97 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "bindir=${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}/Contents/MacOS\nbinary=${bindir}/AmbulantWebKitPlugin\namlibdir=../../build-smil30/src/libambulant/.libs\ncp ${amlibdir}/libambulant.0 ${bindir}/libambulant.dylib\ninstall_name_tool -id @loader_path/libambulant.dylib ${bindir}/libambulant.dylib\ninstall_name_tool -change /usr/local/lib/libambulant.0 @loader_path/libambulant.dylib ${binary}\ncp ${amlibdir}/libambulant_ffmpeg.0 ${bindir}/libambulant_ffmpeg.dylib\ninstall_name_tool -id @loader_path/libambulant_ffmpeg.dylib ${bindir}/libambulant_ffmpeg.dylib\ninstall_name_tool -change /usr/local/lib/libambulant_ffmpeg.0 @loader_path/libambulant_ffmpeg.dylib ${binary}\ncp ${amlibdir}/libambulant_live.0 ${bindir}/libambulant_live.dylib\ninstall_name_tool -id @loader_path/libambulant_live.dylib ${bindir}/libambulant_live.dylib\ninstall_name_tool -change /usr/local/lib/libambulant_live.0 @loader_path/libambulant_live.dylib ${binary}\n";
 		};
 		04C26E450CBE22E300CB8EFE /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
