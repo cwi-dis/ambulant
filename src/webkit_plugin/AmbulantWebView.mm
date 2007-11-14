@@ -8,6 +8,9 @@
 
 #import "AmbulantWebView.h"
 #import <WebKit/WebKit.h>
+#include "ambulant/config/config.h"
+#include "ambulant/common/plugin_engine.h"
+#include "ambulant/common/preferences.h"
 
 void
 set_statusline(void *view, const char *msg)
@@ -57,8 +60,29 @@ class my_cocoa_window_factory : public ambulant::gui::cocoa::cocoa_window_factor
 
 - (void)webPlugInStart
 {
+#if 1
+	ambulant::common::preferences *prefs = ambulant::common::preferences::get_preferences();
+	prefs->m_prefer_ffmpeg = false;
+#endif
+	NSDictionary *webPluginAttributesObj = [m_arguments objectForKey:WebPlugInAttributesKey];
     if (!m_mainloop) {
-        NSDictionary *webPluginAttributesObj = [m_arguments objectForKey:WebPlugInAttributesKey];
+		container = [m_arguments objectForKey:WebPlugInContainerKey];
+		if (container) {
+			[container webPlugInContainerShowStatus: @"Ambulant Plugin: Loaded"];
+			ambulant::common::plugin_engine *pe = ambulant::common::plugin_engine::get_plugin_engine();
+			void *edptr = pe->get_extra_data("python_extra_data");
+			if (edptr) {
+				*(id*)edptr = container;
+			} else {
+				NSLog(@"AmbulantWebKitPlugin: Cannot find python_extra_data, cannot communicate webPlugInContainer");
+			}
+			edptr = pe->get_extra_data("webkit_extra_data");
+			if (edptr) {
+				*(id*)edptr = [container webFrame];
+			} else {
+				NSLog(@"AmbulantWebKitPlugin: Cannot find webkit_extra_data, cannot communicate WebFrame pointer");
+			}
+		}
         NSString *urlString = [webPluginAttributesObj objectForKey:@"src"];
         if (urlString != nil && [urlString length] != 0) {
             NSURL *baseUrl = [m_arguments objectForKey:WebPlugInBaseURLKey];
@@ -68,7 +92,9 @@ class my_cocoa_window_factory : public ambulant::gui::cocoa::cocoa_window_factor
 			}
 		}
     }
-	if (m_mainloop) {
+	NSString *autostartString = [webPluginAttributesObj objectForKey:@"autostart"];
+	BOOL autostart = autostartString == nil || [autostartString isEqualToString: @"true"];
+	if (m_mainloop && autostart) {
 		[self startPlayer];
 	}
 }
@@ -80,6 +106,7 @@ class my_cocoa_window_factory : public ambulant::gui::cocoa::cocoa_window_factor
 
 - (void)webPlugInDestroy
 {
+	container = nil;
 }
 
 - (void)webPlugInSetIsSelected:(BOOL)isSelected
@@ -148,4 +175,8 @@ class my_cocoa_window_factory : public ambulant::gui::cocoa::cocoa_window_factor
 	return true;
 }
 
+- (id)container
+{
+	return container;
+}
 @end

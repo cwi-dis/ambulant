@@ -59,6 +59,17 @@ xpath_state_plugin=
 xpath_state_includes=
 endif
 
+# The wekkit DOM implementation
+if WITH_WEBKIT_DOM
+wkdom_plugin = libamplugin_wkdom.la
+wkdom_includes = 
+libamplugin_wkdom_la_SOURCES = wkdomplugin.cpp wkdombridge.m
+libamplugin_wkdom_la_LDFLAGS = -module
+else
+wkdom_plugin=
+wkdom_includes=
+endif
+
 # The Python plugin
 if WITH_PYTHON_PLUGIN
 # XXX These should be elsewhere
@@ -90,6 +101,7 @@ pkglib_LTLIBRARIES = \
     $(xerces_plugin) \
     $(dummy_state_plugin) \
     $(xpath_state_plugin) \
+    $(wkdom_plugin) \
     $(python_plugin)
 
 INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include \

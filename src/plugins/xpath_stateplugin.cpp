@@ -342,9 +342,24 @@ xpath_state_component::bool_expression(const char *expr)
 		lib::logger::get_logger()->trace("xpath_state_component: cannot evaluate expr=\"%s\"", expr);
 		return true;
 	}
+	// If we now have a nodeset we try to cast to a string
+	if (result->type == XPATH_NODESET) {
+		result = xmlXPathConvertString(result);
+		if (result == NULL) {
+			lib::logger::get_logger()->trace("xpath_state_component: expr=\"%s\": cannot convert to string", expr);
+			return true;
+		}
+	}
+	if (result->type == XPATH_STRING) {
+		result = xmlXPathConvertNumber(result);
+		if (result == NULL) {
+			lib::logger::get_logger()->trace("xpath_state_component: expr=\"%s\": cannot convert to number", expr);
+			return true;
+		}
+	}
 	bool rv = (bool)xmlXPathCastToBoolean(result);
 	xmlXPathFreeObject(result);
-	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::bool_expression(%s) -> %d", expr, (int)rv);
+	lib::logger::get_logger()->debug("xpath_state_component::bool_expression(%s) -> %d", expr, (int)rv);
 	return rv;
 }
 
@@ -533,7 +548,7 @@ xpath_state_component::string_expression(const char *expr)
 		lib::logger::get_logger()->trace("xpath_state_component: \"{%s}\" does not evaluate to a string", expr);
 		return "";
 	}
-	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::string_expression(%s) -> %s", expr, (int)result_str);
+	lib::logger::get_logger()->debug("xpath_state_component::string_expression(%s) -> %s", expr, (int)result_str);
 	std::string rv((char *)result_str);
 	xmlFree(result_str);
 	return rv;

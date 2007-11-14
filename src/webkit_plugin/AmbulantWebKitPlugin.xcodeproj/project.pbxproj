@@ -7,15 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		040DE08F0CD533A300A68D91 /* libambulant_sdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B290958C23900C194EE /* libambulant_sdl.a */; };
 		042AF3D4095AFF780003E706 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D5B49B7048680CD000E48DA /* Info.plist */; };
-		045D0B220958C14700C194EE /* libambulant.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B210958C14700C194EE /* libambulant.a */; };
-		045D0B2D0958C23900C194EE /* libambulant_sdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B290958C23900C194EE /* libambulant_sdl.a */; };
-		045D0B2E0958C23900C194EE /* libambulant_live.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B2A0958C23900C194EE /* libambulant_live.a */; };
-		045D0B2F0958C23900C194EE /* libambulant_ffmpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B2B0958C23900C194EE /* libambulant_ffmpeg.a */; };
 		045D0B350958C26800C194EE /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B340958C26800C194EE /* QuickTime.framework */; };
 		045D0B5C0958C36B00C194EE /* libintl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B5B0958C36B00C194EE /* libintl.a */; };
 		045D0B800958C53F00C194EE /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 045D0B7E0958C53F00C194EE /* mainloop.cpp */; };
 		045D0B930958C71E00C194EE /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B920958C71E00C194EE /* libexpat.a */; };
+		048B3E720CEB32EF006102B3 /* libamplugin_wkdom.la in CopyFiles */ = {isa = PBXBuildFile; fileRef = 048B3E700CEB32EF006102B3 /* libamplugin_wkdom.la */; };
+		048B3E730CEB32EF006102B3 /* libamplugin_wkdom.0 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 048B3E710CEB32EF006102B3 /* libamplugin_wkdom.0 */; };
 		049775AC0958AC7600A7690F /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049775AB0958AC7600A7690F /* WebKit.framework */; };
 		049775B90958ADC500A7690F /* AmbulantWebView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049775B80958ADC500A7690F /* AmbulantWebView.mm */; };
 		0499E8970959B22200A7FDF8 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0499E8960959B22200A7FDF8 /* libavcodec.a */; };
@@ -23,15 +22,38 @@
 		0499E89C0959B25F00A7FDF8 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0499E89B0959B25F00A7FDF8 /* libavutil.a */; };
 		0499E89F0959B29100A7FDF8 /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0499E89E0959B29100A7FDF8 /* libSDL.a */; };
 		0499E8A50959B2E100A7FDF8 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0499E8A40959B2E100A7FDF8 /* libz.dylib */; };
+		04C0A45F0CD2942F00CEDCA9 /* libambulant_ffmpeg.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C0A45B0CD2942F00CEDCA9 /* libambulant_ffmpeg.dylib */; };
+		04C0A4600CD2942F00CEDCA9 /* libambulant_cocoa.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C0A45C0CD2942F00CEDCA9 /* libambulant_cocoa.dylib */; };
+		04C0A4610CD2942F00CEDCA9 /* libambulant.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C0A45D0CD2942F00CEDCA9 /* libambulant.dylib */; };
+		04C0A4620CD2942F00CEDCA9 /* libambulant_live.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C0A45E0CD2942F00CEDCA9 /* libambulant_live.dylib */; };
+		04C0A49C0CD2A19B00CEDCA9 /* pyamplugin_webkitscripting in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04C0A4990CD2A19B00CEDCA9 /* pyamplugin_webkitscripting */; };
+		04C0A4B30CD2A44A00CEDCA9 /* libamplugin_python.0 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04C0A4B20CD2A44A00CEDCA9 /* libamplugin_python.0 */; };
+		04C0A4BD0CD2A61700CEDCA9 /* libamplugin_python.la in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04C0A4BC0CD2A61700CEDCA9 /* libamplugin_python.la */; };
 		04C26AE90CBE0E1400CB8EFE /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C26AE80CBE0E1400CB8EFE /* QTKit.framework */; };
 		04C26AEB0CBE0E2700CB8EFE /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C26AEA0CBE0E2700CB8EFE /* AudioUnit.framework */; };
 		04C26AED0CBE0E3700CB8EFE /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C26AEC0CBE0E3700CB8EFE /* Carbon.framework */; };
 		04C26AF00CBE0E5500CB8EFE /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C26AEF0CBE0E5500CB8EFE /* IOKit.framework */; };
 		04C26AF30CBE0E8700CB8EFE /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C26AF20CBE0E8700CB8EFE /* OpenGL.framework */; };
-		04C26EE00CBE290400CB8EFE /* libambulant_cocoa.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B2C0958C23900C194EE /* libambulant_cocoa.a */; };
 		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		04C0A4A90CD2A26300CEDCA9 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				04C0A49C0CD2A19B00CEDCA9 /* pyamplugin_webkitscripting in CopyFiles */,
+				04C0A4B30CD2A44A00CEDCA9 /* libamplugin_python.0 in CopyFiles */,
+				04C0A4BD0CD2A61700CEDCA9 /* libamplugin_python.la in CopyFiles */,
+				048B3E730CEB32EF006102B3 /* libamplugin_wkdom.0 in CopyFiles */,
+				048B3E720CEB32EF006102B3 /* libamplugin_wkdom.la in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		045D0B210958C14700C194EE /* libambulant.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libambulant.a; path = src/libambulant/.libs/libambulant.a; sourceTree = PREBUILT_AMBULANT_ROOT; };
@@ -44,6 +66,8 @@
 		045D0B7E0958C53F00C194EE /* mainloop.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mainloop.cpp; path = ../player_macosx/mainloop.cpp; sourceTree = SOURCE_ROOT; };
 		045D0B7F0958C53F00C194EE /* mainloop.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mainloop.h; path = ../player_macosx/mainloop.h; sourceTree = SOURCE_ROOT; };
 		045D0B920958C71E00C194EE /* libexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libexpat.a; path = "third_party_packages/expat-unix/lib/libexpat.a"; sourceTree = PREBUILT_AMBULANT_ROOT; };
+		048B3E700CEB32EF006102B3 /* libamplugin_wkdom.la */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = libamplugin_wkdom.la; path = "../../build-smil30/src/plugins/.libs/libamplugin_wkdom.la"; sourceTree = SOURCE_ROOT; };
+		048B3E710CEB32EF006102B3 /* libamplugin_wkdom.0 */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.bundle"; name = libamplugin_wkdom.0; path = "../../build-smil30/src/plugins/.libs/libamplugin_wkdom.0"; sourceTree = SOURCE_ROOT; };
 		049775AB0958AC7600A7690F /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = /System/Library/Frameworks/WebKit.framework; sourceTree = "<absolute>"; };
 		049775B70958ADC500A7690F /* AmbulantWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbulantWebView.h; sourceTree = "<group>"; };
 		049775B80958ADC500A7690F /* AmbulantWebView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AmbulantWebView.mm; sourceTree = "<group>"; };
@@ -52,6 +76,14 @@
 		0499E89B0959B25F00A7FDF8 /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavutil.a; path = "third_party_packages/ffmpeg-universal/libavutil/libavutil.a"; sourceTree = PREBUILT_AMBULANT_ROOT; };
 		0499E89E0959B29100A7FDF8 /* libSDL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL.a; path = /usr/local/lib/libSDL.a; sourceTree = "<absolute>"; };
 		0499E8A40959B2E100A7FDF8 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
+		04C0A45B0CD2942F00CEDCA9 /* libambulant_ffmpeg.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libambulant_ffmpeg.dylib; path = "../../build-smil30/src/libambulant/.libs/libambulant_ffmpeg.dylib"; sourceTree = SOURCE_ROOT; };
+		04C0A45C0CD2942F00CEDCA9 /* libambulant_cocoa.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libambulant_cocoa.dylib; path = "../../build-smil30/src/libambulant/.libs/libambulant_cocoa.dylib"; sourceTree = SOURCE_ROOT; };
+		04C0A45D0CD2942F00CEDCA9 /* libambulant.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libambulant.dylib; path = "../../build-smil30/src/libambulant/.libs/libambulant.dylib"; sourceTree = SOURCE_ROOT; };
+		04C0A45E0CD2942F00CEDCA9 /* libambulant_live.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libambulant_live.dylib; path = "../../build-smil30/src/libambulant/.libs/libambulant_live.dylib"; sourceTree = SOURCE_ROOT; };
+		04C0A4670CD2948E00CEDCA9 /* libambulant_sdl.dylib */ = {isa = PBXFileReference; lastKnownFileType = file; name = libambulant_sdl.dylib; path = "../../build-smil30/src/libambulant/.libs/libambulant_sdl.dylib"; sourceTree = SOURCE_ROOT; };
+		04C0A4990CD2A19B00CEDCA9 /* pyamplugin_webkitscripting */ = {isa = PBXFileReference; lastKnownFileType = folder; name = pyamplugin_webkitscripting; path = PlugIns/pyamplugin_webkitscripting; sourceTree = "<group>"; };
+		04C0A4B20CD2A44A00CEDCA9 /* libamplugin_python.0 */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.bundle"; name = libamplugin_python.0; path = "../../build-smil30/src/plugins/.libs/libamplugin_python.0"; sourceTree = SOURCE_ROOT; };
+		04C0A4BC0CD2A61700CEDCA9 /* libamplugin_python.la */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = libamplugin_python.la; path = "../../build-smil30/src/plugins/libamplugin_python.la"; sourceTree = SOURCE_ROOT; };
 		04C26AE80CBE0E1400CB8EFE /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
 		04C26AEA0CBE0E2700CB8EFE /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = /System/Library/Frameworks/AudioUnit.framework; sourceTree = "<absolute>"; };
 		04C26AEC0CBE0E3700CB8EFE /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
@@ -71,10 +103,6 @@
 			files = (
 				8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */,
 				049775AC0958AC7600A7690F /* WebKit.framework in Frameworks */,
-				045D0B220958C14700C194EE /* libambulant.a in Frameworks */,
-				045D0B2D0958C23900C194EE /* libambulant_sdl.a in Frameworks */,
-				045D0B2E0958C23900C194EE /* libambulant_live.a in Frameworks */,
-				045D0B2F0958C23900C194EE /* libambulant_ffmpeg.a in Frameworks */,
 				045D0B350958C26800C194EE /* QuickTime.framework in Frameworks */,
 				045D0B5C0958C36B00C194EE /* libintl.a in Frameworks */,
 				045D0B930958C71E00C194EE /* libexpat.a in Frameworks */,
@@ -88,7 +116,11 @@
 				04C26AED0CBE0E3700CB8EFE /* Carbon.framework in Frameworks */,
 				04C26AF00CBE0E5500CB8EFE /* IOKit.framework in Frameworks */,
 				04C26AF30CBE0E8700CB8EFE /* OpenGL.framework in Frameworks */,
-				04C26EE00CBE290400CB8EFE /* libambulant_cocoa.a in Frameworks */,
+				04C0A45F0CD2942F00CEDCA9 /* libambulant_ffmpeg.dylib in Frameworks */,
+				04C0A4600CD2942F00CEDCA9 /* libambulant_cocoa.dylib in Frameworks */,
+				04C0A4610CD2942F00CEDCA9 /* libambulant.dylib in Frameworks */,
+				04C0A4620CD2942F00CEDCA9 /* libambulant_live.dylib in Frameworks */,
+				040DE08F0CD533A300A68D91 /* libambulant_sdl.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -99,12 +131,29 @@
 			isa = PBXGroup;
 			children = (
 				045D0B210958C14700C194EE /* libambulant.a */,
+				04C0A45D0CD2942F00CEDCA9 /* libambulant.dylib */,
 				045D0B290958C23900C194EE /* libambulant_sdl.a */,
+				04C0A4670CD2948E00CEDCA9 /* libambulant_sdl.dylib */,
 				045D0B2A0958C23900C194EE /* libambulant_live.a */,
+				04C0A45E0CD2942F00CEDCA9 /* libambulant_live.dylib */,
 				045D0B2B0958C23900C194EE /* libambulant_ffmpeg.a */,
+				04C0A45B0CD2942F00CEDCA9 /* libambulant_ffmpeg.dylib */,
 				045D0B2C0958C23900C194EE /* libambulant_cocoa.a */,
+				04C0A45C0CD2942F00CEDCA9 /* libambulant_cocoa.dylib */,
 			);
 			name = Ambulant;
+			sourceTree = "<group>";
+		};
+		04C0A4980CD2A17F00CEDCA9 /* PlugIns */ = {
+			isa = PBXGroup;
+			children = (
+				04C0A4990CD2A19B00CEDCA9 /* pyamplugin_webkitscripting */,
+				04C0A4B20CD2A44A00CEDCA9 /* libamplugin_python.0 */,
+				04C0A4BC0CD2A61700CEDCA9 /* libamplugin_python.la */,
+				048B3E710CEB32EF006102B3 /* libamplugin_wkdom.0 */,
+				048B3E700CEB32EF006102B3 /* libamplugin_wkdom.la */,
+			);
+			name = PlugIns;
 			sourceTree = "<group>";
 		};
 		089C166AFE841209C02AAC07 /* AmbulantWebKitPlugin */ = {
@@ -112,6 +161,7 @@
 			children = (
 				08FB77AFFE84173DC02AAC07 /* Classes */,
 				32C88E010371C26100C91783 /* Other Sources */,
+				04C0A4980CD2A17F00CEDCA9 /* PlugIns */,
 				089C167CFE841241C02AAC07 /* Resources */,
 				089C1671FE841209C02AAC07 /* Frameworks and Libraries */,
 				19C28FB8FE9D52D311CA2CBB /* Products */,
@@ -201,10 +251,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "AmbulantWebKitPlugin" */;
 			buildPhases = (
+				041DF9F00CD5E14700E30854 /* ShellScript */,
 				8D5B49AF048680CD000E48DA /* Resources */,
 				8D5B49B1048680CD000E48DA /* Sources */,
 				8D5B49B3048680CD000E48DA /* Frameworks */,
 				04C26E450CBE22E300CB8EFE /* ShellScript */,
+				04C0A4A90CD2A26300CEDCA9 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -222,9 +274,11 @@
 		089C1669FE841209C02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "AmbulantWebKitPlugin" */;
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 089C166AFE841209C02AAC07 /* AmbulantWebKitPlugin */;
 			projectDirPath = "";
+			projectRoot = "";
 			targets = (
 				8D5B49AC048680CD000E48DA /* AmbulantWebKitPlugin */,
 			);
@@ -244,6 +298,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		041DF9F00CD5E14700E30854 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\namlibdir=../../build-smil30/src/libambulant/.libs\ncd $amlibdir\nrm -f libambulant.dylib\nln -s libambulant.0 libambulant.dylib\nrm -f libambulant_sdl.dylib\nln -s libambulant_sdl.0 libambulant_sdl.dylib\nrm -f libambulant_live.dylib\nln -s libambulant_live.0 libambulant_live.dylib\nrm -f libambulant_ffmpeg.dylib\nln -s libambulant_ffmpeg.0 libambulant_ffmpeg.dylib\n";
+		};
 		04C26E450CBE22E300CB8EFE /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -255,7 +322,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# clean up any previous products/symbolic links in the Internet Plug-Ins folder\nif [ -a \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\" ]; then\n  rm -Rf \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\"\nfi\n\n# Depending on the build configuration, either copy or link to the most recent product\nif [ \"${CONFIGURATION}\" == \"Debug\" ]; then\n  # if we're debugging, add a symbolic link to the plug-in\n  ln -sf \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\" \\\n    \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\"\nelif [ \"${CONFIGURATION}\" == \"Release\" ]; then\n  # if we're compiling for release, just copy the plugin to the Internet Plug-ins folder\n  cp -Rfv \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\" \\\n    \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\"\nfi";
+			shellScript = "# clean up any previous products/symbolic links in the Internet Plug-Ins folder\nif [ -a \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\" ]; then\n  rm -Rf \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\"\nfi\n\n# Depending on the build configuration, either copy or link to the most recent product\nif [ \"${CONFIGURATION}\" == \"Debug\" ]; then\n  # if we're debugging, add a symbolic link to the plug-in\n  ln -sf \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\" \\\n    \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\"\nelif [ \"${CONFIGURATION}\" == \"Debug-i686\" ]; then\n  # if we're debugging, add a symbolic link to the plug-in\n  ln -sf \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\" \\\n    \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\"\nelif [ \"${CONFIGURATION}\" == \"Release\" ]; then\n  # if we're compiling for release, just copy the plugin to the Internet Plug-ins folder\n  cp -Rfv \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\" \\\n    \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -283,6 +350,56 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		040310390CD891E2007B3551 /* Debug-i686 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH)";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = "";
+			};
+			name = "Debug-i686";
+		};
+		0403103A0CD891E2007B3551 /* Debug-i686 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = i386;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = AmbulantWebKitPlugin_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"AM_PREFER_FFMPEG=1",
+					"WITH_LTDL_PLUGINS=1",
+					"WITH_EXTERNAL_DOM=1",
+					"WITH_SDL=1",
+					"WITH_FFMPEG=1",
+					"WITH_EXPAT=1",
+					"WITH_OVERLAY_WINDOW=1",
+					"WITH_FFMPEG_AVFORMAT=1",
+					"WITH_SMIL30=1",
+				);
+				HEADER_SEARCH_PATHS = ../../include;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Internet Plug-Ins";
+				LIBRARY_SEARCH_PATHS = (
+					"$(PREBUILT_AMBULANT_ROOT)/src/libambulant/.libs",
+					/usr/local/lib,
+					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/expat-unix/lib",
+					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/ffmpeg-universal/libavcodec",
+					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/ffmpeg-universal/libavformat",
+					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/ffmpeg-universal/libavutil",
+				);
+				PRODUCT_NAME = AmbulantWebKitPlugin;
+				WRAPPER_EXTENSION = plugin;
+				ZERO_LINK = NO;
+			};
+			name = "Debug-i686";
+		};
 		1DEB913B08733D840010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -367,13 +484,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					ppc,
 					i386,
+					ppc,
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = "";
 			};
 			name = Debug;
 		};
@@ -398,6 +515,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB913B08733D840010E9CD /* Debug */,
+				0403103A0CD891E2007B3551 /* Debug-i686 */,
 				1DEB913C08733D840010E9CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -407,6 +525,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB913F08733D840010E9CD /* Debug */,
+				040310390CD891E2007B3551 /* Debug-i686 */,
 				1DEB914008733D840010E9CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
