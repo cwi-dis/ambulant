@@ -141,9 +141,21 @@ plugin_engine::collect_plugin_directories()
 	// On MacOSX add the bundle's plugin dir
 	// XXXX If Ambulant is used within a plugin, this probably needs to change,
 	// maybe to something with CFBundleGetAllBundles?
-	CFBundleRef main_bundle = CFBundleGetMainBundle();
-	if (main_bundle) {
-		CFURLRef plugin_url = CFBundleCopyBuiltInPlugInsURL(main_bundle);
+	CFBundleRef bundle = CFBundleGetMainBundle();
+	if (bundle) {
+		CFURLRef plugin_url = CFBundleCopyBuiltInPlugInsURL(bundle);
+		char plugin_pathname[1024];
+		if (plugin_url &&
+				CFURLGetFileSystemRepresentation(plugin_url, true, (UInt8 *)plugin_pathname, sizeof(plugin_pathname))) {
+			m_plugindirs.push_back(plugin_pathname);
+		}
+		if (plugin_url) CFRelease(plugin_url);
+	}
+	// And if we are in a plugin we should get that bundle too. NOTE: the name used here
+	// must match the name in the plist file of the plugin.
+	bundle = CFBundleGetBundleWithIdentifier(CFSTR("org.ambulantplayer.ambulantplugin"));
+	if (bundle) {
+		CFURLRef plugin_url = CFBundleCopyBuiltInPlugInsURL(bundle);
 		char plugin_pathname[1024];
 		if (plugin_url &&
 				CFURLGetFileSystemRepresentation(plugin_url, true, (UInt8 *)plugin_pathname, sizeof(plugin_pathname))) {
