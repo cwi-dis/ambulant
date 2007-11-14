@@ -167,10 +167,10 @@ class node_dummy : public node_interface {
 	/// Note: attrs are as per expat parser
 	/// e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
 	void set_attributes(const char **attrs);
-	
-	/// Set the namespace for this node.
-	void set_namespace(const xml_string& ns);
-	
+		
+	/// Override prefix mapping for this node and descendents
+	virtual void set_prefix_mapping(const std::string& prefix, const std::string& uri) = 0;
+
 	/////////////////////
 	// data queries
 
@@ -189,6 +189,9 @@ class node_dummy : public node_interface {
 	/// Return the data for this node.
 	const xml_string& get_data() const;
 	
+	/// Return true if this is a pure data node (i.e. no tag/attrs)
+	virtual bool is_data_node() const = 0;
+
 	/// Return the trimmed data for this node.
 	xml_string get_trimmed_data() const;
 	
@@ -197,6 +200,9 @@ class node_dummy : public node_interface {
 	
 	/// Return the value for the given attribute.
 	const char *get_attribute(const std::string& name) const;
+	
+	/// Remove the first occurrence of the given attribute.
+	virtual void del_attribute(const char *name) = 0;
 	
 	/// Return the value for the given attribute, interpreted as a URL.
 	/// Relative URLs are resolved against the document base URL, if possible.

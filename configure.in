@@ -922,6 +922,21 @@ AC_SUBST(PYTHON_LIBS)
 AM_CONDITIONAL(WITH_PYTHON_PLUGIN, test x$with_python_plugin = xtrue)
 AC_MSG_RESULT($with_python_plugin)
 
+AC_MSG_CHECKING(for --with-webkit-dom)
+AC_ARG_WITH([webkit-dom],
+	[AC_HELP_STRING([--with-webkit-dom], [Enable the WebKit DOM plugin (default: disabled)])
+	],[
+	case "${withval}" in
+	yes)	with_webkit_dom=true
+			;;
+	no)		with-webkit_dom=false
+			;;
+	*)		AC_MSG_ERROR("--with-webkit-dom takes no argument")
+			;;
+	esac],[
+	with_webkit_dom=false])
+AM_CONDITIONAL(WITH_WEBKIT_DOM, test x$with_webkit_dom = xtrue)
+AC_MSG_RESULT($with_webkit_dom)
 #
 # Test for pthreads. Modifed from http://www.gnu.org/software/ac-archive/htmldoc/acx_pthread.html
 #
@@ -1148,6 +1163,7 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
 	Build with live555.com RTSP:	${test_live}
 	Build with Python support:      ${with_python}
 	Build with Python plugin:       ${with_python_plugin}
+	Build with WebKit DOM plugin:   ${with_webkit_dom}
 	Build MacOSX universal binary:  ${with_universalsdk}
      "
 
