@@ -1,3 +1,34 @@
+2007-11-15 00:01  jackjansen
+
+	* Copy the Ambulant shared libraries into the plugin bundle, and
+	  modify the main binary to refer to these copies with the
+	  @loader_path magic.
+
+	  These changes make the plugin completely self-contained, and no
+	  more environment variables are needed. Yeah!
+
+2007-11-14 22:34  jackjansen
+
+	* If we are running in a plugin, also add the plugin bundle's
+	  PlugIn directory to our plugin search list.
+
+2007-11-14 22:17  jackjansen
+
+	* Merging branch exp-jack-webkit-web20: - New webkit_plugin that
+	  communicates the webkit hook to Python plugins   and to the
+	  optional wkdom plugin.  - New wkdom plugin that replaces the
+	  default node implementation by   one based on the WebKit DOM, if
+	  we are running in a WebKit environment.  - New plugin
+	  pyamplugin_webkitscripting that implements SMIL State   in
+	  WebKit, allowing state to be shared between the SMIL document
+	  running in Ambulant and the FormFaces XForms implementation
+	  running in   the web page hosting Ambulant.
+
+2007-11-14 16:52  jackjansen
+
+	* Using WebKit DOM nodes in ambulant starts to work somewhat, but
+	  there are still problems. May be a threading issue.
+
 2007-11-13 15:51  rlaiola
 
 	* A few more steps towards a Python interface to gtk-ambulant
