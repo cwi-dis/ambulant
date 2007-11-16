@@ -3,7 +3,7 @@ import sys
 import os
 
 # Set these variable identical to your configure options.
-WITH_GTK=True
+WITH_GTK=False
 WITH_QT= not not os.getenv("QTDIR")
 if sys.platform == 'win32':
     WITH_FFMPEG=False

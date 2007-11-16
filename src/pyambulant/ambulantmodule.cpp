@@ -4,6 +4,7 @@
 #include "Python.h"
 
 
+
 #define WITH_EXTERNAL_DOM 1
 #include "ambulant/config/config.h"
 #include "ambulant/version.h"
@@ -32,11 +33,14 @@
 #include "ambulant/gui/qt/qt_factory.h"
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/net/ffmpeg_factory.h"
+
+// Should have been included through genobj.py but that caused problems
 #ifdef WITH_GTK
+#include <pygobject.h>           
+#include <pygtk.h>
+static PyTypeObject *PyGObject_Type=NULL;
 #include "ambulant/gui/gtk/gtk_factory.h"
 #endif
-
-
 #include "ambulantinterface.h"
 #include "ambulantutilities.h"
 #include "ambulantmodule.h"
@@ -15873,14 +15877,18 @@ static PyObject *PyAm_create_gtk_window_factory_unsafe(PyObject *_self, PyObject
 {
 	PyObject *_res = NULL;
 	ambulant::common::window_factory* _rv;
+	PyGObject* py_gtk_parent_widget;
+	PyGObject* py_g_main_loop;
 	void* gtk_parent_widget;
 	void* g_main_loop;
 	ambulant::common::gui_player* gpl;
-	if (!PyArg_ParseTuple(_args, "O&O&O&",
-	                      cobject_Convert, &gtk_parent_widget,
-	                      cobject_Convert, &g_main_loop,
+	if (!PyArg_ParseTuple(_args, "O!O!O&",
+	                      PyGObject_Type, &py_gtk_parent_widget,
+	                      PyGObject_Type, &py_g_main_loop,
 	                      gui_playerObj_Convert, &gpl))
 		return NULL;
+	gtk_parent_widget = (void*)GTK_WIDGET(py_gtk_parent_widget->obj);
+	g_main_loop = (void*)py_g_mainloop->obj;
 	PyThreadState *_save = PyEval_SaveThread();
 	_rv = ambulant::gui::gtk::create_gtk_window_factory_unsafe(gtk_parent_widget,
 	                                                           g_main_loop,
@@ -16292,6 +16300,16 @@ void initambulant(void)
 	if (PyAm_Error == NULL ||
 	    PyDict_SetItemString(d, "Error", PyAm_Error) != 0)
 		return;
+#ifdef WITH_GTK
+    init_pygobject();
+    init_pygtk();
+    module = PyImport_ImportModule("gobject");
+    if (module) {
+        PyGObject_Type =
+        (PyTypeObject*)PyObject_GetAttrString(module, "GObject");
+        Py_DECREF(module);
+    }
+#endif
 	pycppbridge_Type.ob_type = &PyType_Type;
 	if (PyType_Ready(&pycppbridge_Type) < 0) return;
 	Py_INCREF(&pycppbridge_Type);
