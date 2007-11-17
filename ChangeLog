@@ -1,3 +1,8 @@
+2007-11-16 14:05  jackjansen
+
+	* Quick hacks to try and get gtk bridging to work. Hand-edited the
+	  generated code, to be fixed once it actually works.
+
 2007-11-15 00:01  jackjansen
 
 	* Copy the Ambulant shared libraries into the plugin bundle, and
