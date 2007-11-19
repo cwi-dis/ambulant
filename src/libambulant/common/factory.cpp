@@ -40,7 +40,7 @@ factories::~factories()
 {
 	delete m_playable_factory;
 	// delete m_window_factory; Owned by parent
-	delete m_datasource_factory;
+	// delete m_datasource_factory; XXX Some are singletons!
 	// delete m_parser_factory; singleton
 	// delete m_node_factory; singleton
 	// delete m_state_component_factory; singleton
