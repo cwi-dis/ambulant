@@ -426,7 +426,7 @@ ambulant_gtk_window::get_gdk_cursor(GdkCursorType gdk_cursor_type)
 void
 ambulant_gtk_window::need_redraw(const lib::rect &r)
 {
-	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw(0x%x): ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.width(), r.height());
+	/*AM_DBG*/ lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw(0x%x): ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.width(), r.height());
 	if (m_ambulant_widget == NULL) {
 		lib::logger::get_logger()->error("ambulant_gtk_window::need_redraw(0x%x): m_ambulant_widget == NULL !!!", (void*) this);
 		return;
@@ -440,6 +440,7 @@ ambulant_gtk_window::need_redraw(const lib::rect &r)
 	if ( ! gtk_widget_translate_coordinates (this_widget, dirty->widget, r.left(), r.top(), &dirty->area.x, &dirty->area.y)) {
 		AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw(0x%x): gtk_widget_translate_coordinates failed.", (void *)this);
 	}
+	/*AM_DBG*/ lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw: parent ltrb=(%d,%d,%d,%d)", dirty->area.left(), dirty->area.top(), dirty->area.width(), dirty->area.height());
 //KB	g_timeout_add(0,(GSourceFunc) gtk_C_callback_helper_queue_draw_area, (void *)dirty);
 //KB	g_idle_add((GSourceFunc) gtk_C_callback_helper_queue_draw_area, (void *)dirty);
 	g_idle_add_full(G_PRIORITY_HIGH_IDLE, (GSourceFunc) gtk_C_callback_helper_queue_draw_area, (void *)dirty, NULL);
