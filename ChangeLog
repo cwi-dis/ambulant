@@ -1,3 +1,9 @@
+2007-11-19 17:04  jackjansen
+
+	* Disable deletion of datasource factories when deleting the global
+	  factory holder. This leaks, but unfortunagtely some datasource
+	  factories are singletons (and some are not).
+
 2007-11-16 14:05  jackjansen
 
 	* Quick hacks to try and get gtk bridging to work. Hand-edited the
