@@ -406,7 +406,7 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 		logical_origin.y += now * m_params.m_rate / 1000;
 		visible_origin.y -= now * m_params.m_rate / 1000;
 	}
-	/*AM_DBG*/ logger::get_logger()->debug("cocoa_smiltext_renderer.redraw at Cocoa-point (%f, %f)", visible_origin.x, visible_origin.y);
+	AM_DBG logger::get_logger()->debug("cocoa_smiltext_renderer.redraw at Cocoa-point (%f, %f)", visible_origin.x, visible_origin.y);
 	if (m_render_offscreen) {
 	}
 #if 0

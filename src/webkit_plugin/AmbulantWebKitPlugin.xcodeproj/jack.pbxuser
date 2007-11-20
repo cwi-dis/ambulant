@@ -13,18 +13,17 @@
 		);
 		breakpointStyle = 0;
 		continueAfterActions = 0;
-		countType = 0;
 		delayBeforeContinue = 0;
 		fileReference = 041D6A3C0CD932DD00AFC79A /* objc_util.m */;
 		functionName = "PyObjCErr_ToObjCWithGILState()";
 		hitCount = 0;
-		ignoreCount = 0;
 		lineNumber = 252;
 		modificationTime = 216767073.777902;
 		state = 0;
 	};
 	04239D220CD2895A00152474 /* Safari */ = {
 		isa = PBXExecutable;
+		activeArgIndex = 1;
 		activeArgIndices = (
 			NO,
 			YES,
@@ -34,7 +33,6 @@
 			../../../mmdocuments/NoBudgetStateDemo/index.html,
 		);
 		autoAttachOnCrash = 1;
-		breakpointsEnabled = 1;
 		configStateDict = {
 			"PBXLSLaunchAction-0" = {
 				PBXLSLaunchAction = 0;
@@ -121,94 +119,6 @@
 			sepNavVisRange = "{0, 1420}";
 		};
 	};
-	048B3E7F0CEB3328006102B3 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		comments = "error: redeclaration of 'void* edptr'";
-		fRef = 049775B80958ADC500A7690F /* AmbulantWebView.mm */;
-		rLen = 1;
-		rLoc = 78;
-		rType = 1;
-	};
-	048B3E800CEB3328006102B3 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 049775B80958ADC500A7690F /* AmbulantWebView.mm */;
-		name = "AmbulantWebView.mm: 79";
-		rLen = 0;
-		rLoc = 1993;
-		rType = 0;
-		vrLen = 630;
-		vrLoc = 1669;
-	};
-	048B3E930CEB33B2006102B3 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 049775B80958ADC500A7690F /* AmbulantWebView.mm */;
-		name = "AmbulantWebView.mm: 79";
-		rLen = 0;
-		rLoc = 1993;
-		rType = 0;
-		vrLen = 630;
-		vrLoc = 1669;
-	};
-	048B3E940CEB33B2006102B3 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 049775B80958ADC500A7690F /* AmbulantWebView.mm */;
-		name = "AmbulantWebView.mm: 79";
-		rLen = 0;
-		rLoc = 1993;
-		rType = 0;
-		vrLen = 630;
-		vrLoc = 1669;
-	};
-	048B3E980CEB3580006102B3 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 049775B80958ADC500A7690F /* AmbulantWebView.mm */;
-		name = "AmbulantWebView.mm: 79";
-		rLen = 0;
-		rLoc = 1993;
-		rType = 0;
-		vrLen = 630;
-		vrLoc = 1669;
-	};
-	048B3E990CEB3582006102B3 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 049775B80958ADC500A7690F /* AmbulantWebView.mm */;
-		name = "AmbulantWebView.mm: 79";
-		rLen = 0;
-		rLoc = 1993;
-		rType = 0;
-		vrLen = 630;
-		vrLoc = 1669;
-	};
-	048B3E9F0CEB360C006102B3 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 049775B80958ADC500A7690F /* AmbulantWebView.mm */;
-		name = "AmbulantWebView.mm: 79";
-		rLen = 0;
-		rLoc = 1993;
-		rType = 0;
-		vrLen = 630;
-		vrLoc = 1669;
-	};
-	048B3EA50CEB37CC006102B3 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 049775B80958ADC500A7690F /* AmbulantWebView.mm */;
-		name = "AmbulantWebView.mm: 79";
-		rLen = 0;
-		rLoc = 1993;
-		rType = 0;
-		vrLen = 630;
-		vrLoc = 1669;
-	};
-	048B3EA90CEB37CF006102B3 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 049775B80958ADC500A7690F /* AmbulantWebView.mm */;
-		name = "AmbulantWebView.mm: 79";
-		rLen = 0;
-		rLoc = 1993;
-		rType = 0;
-		vrLen = 630;
-		vrLoc = 1669;
-	};
 	049775B70958ADC500A7690F /* AmbulantWebView.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1096, 665}}";
@@ -237,8 +147,7 @@
 		indexTemplatePath = "";
 	};
 	089C1669FE841209C02AAC07 /* Project object */ = {
-		activeArchitecture = i386;
-		activeBuildConfigurationName = Debug;
+		activeBuildConfigurationName = Release;
 		activeExecutable = 04239D220CD2895A00152474 /* Safari */;
 		activeTarget = 8D5B49AC048680CD000E48DA /* AmbulantWebKitPlugin */;
 		addToTargets = (
@@ -376,19 +285,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 216769576;
-			PBXWorkspaceStateSaveDate = 216769576;
-		};
-		perUserProjectItems = {
-			048B3E7F0CEB3328006102B3 = 048B3E7F0CEB3328006102B3 /* PBXTextBookmark */;
-			048B3E800CEB3328006102B3 = 048B3E800CEB3328006102B3 /* PBXTextBookmark */;
-			048B3E930CEB33B2006102B3 = 048B3E930CEB33B2006102B3 /* PBXTextBookmark */;
-			048B3E940CEB33B2006102B3 = 048B3E940CEB33B2006102B3 /* PBXTextBookmark */;
-			048B3E980CEB3580006102B3 = 048B3E980CEB3580006102B3 /* PBXTextBookmark */;
-			048B3E990CEB3582006102B3 = 048B3E990CEB3582006102B3 /* PBXTextBookmark */;
-			048B3E9F0CEB360C006102B3 = 048B3E9F0CEB360C006102B3 /* PBXTextBookmark */;
-			048B3EA50CEB37CC006102B3 = 048B3EA50CEB37CC006102B3 /* PBXTextBookmark */;
-			048B3EA90CEB37CF006102B3 = 048B3EA90CEB37CF006102B3 /* PBXTextBookmark */;
+			PBXPerProjectTemplateStateSaveDate = 217255586;
+			PBXWorkspaceStateSaveDate = 217255586;
 		};
 		sourceControlManager = 04EC0D310CBD8D22009B6B85 /* Source Control */;
 		userBuildSettings = {

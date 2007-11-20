@@ -272,7 +272,7 @@ void gui::dx::audio_player::initialize_speedup_filter() {
 	}
 	speedup_filter_available = true;
 	speedup_filter_available_valid = true;
-	/*AM_DBG*/ lib::logger::get_logger()->debug("dx_audio_player: added speedup filter to graph");
+	AM_DBG lib::logger::get_logger()->debug("dx_audio_player: added speedup filter to graph");
 
 	// Next step: find out where we want to add the filter to the graph.
 	// We iterate over the filter graph, then for each item in the graph

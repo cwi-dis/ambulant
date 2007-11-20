@@ -356,7 +356,7 @@ void timegraph::add_begin_sync_rules(time_node *tn) {
 						m_logger->trace("%s: not a time node, not a smiltext node", svs.base.c_str());
 						continue;
 					}
-					/*AM_DBG*/ m_logger->debug("Add tn_marker_event rule, domnode=%s, id=%s", dom_base->get_sig().c_str(), svs.base.c_str());
+					AM_DBG m_logger->debug("Add tn_marker_event rule, domnode=%s, id=%s", dom_base->get_sig().c_str(), svs.base.c_str());
 					assert(m_dom2tn);
 					base = (*m_dom2tn)[dom_base->get_numid()];
 					sync_rule *sr = new event_rule(base, tn_marker_event, svs.offset, svs.base);
@@ -464,7 +464,7 @@ void timegraph::add_end_sync_rules(time_node *tn) {
 						m_logger->trace("%s: not a time node, not a smiltext node", svs.base.c_str());
 						continue;
 					}
-					/*AM_DBG*/ m_logger->debug("Add tn_marker_event rule, domnode=%s, id=%s", dom_base->get_sig().c_str(), svs.base.c_str());
+					AM_DBG m_logger->debug("Add tn_marker_event rule, domnode=%s, id=%s", dom_base->get_sig().c_str(), svs.base.c_str());
 					assert(m_dom2tn);
 					base = (*m_dom2tn)[dom_base->get_numid()];
 					sync_rule *sr = new event_rule(base, tn_marker_event, svs.offset, svs.base);

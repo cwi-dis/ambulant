@@ -263,7 +263,7 @@ smiltext_engine::_update() {
 					svs.offset = 0;
 					svs.iparam = 0;
 					if (tp.parse_sync(time_str, svs)) {
-						/*AM_DBG*/ lib::logger::get_logger()->debug("smilText: %s: begin=\"%s\"", item->get_sig().c_str(), repr(svs).c_str());
+						AM_DBG lib::logger::get_logger()->debug("smilText: %s: begin=\"%s\"", item->get_sig().c_str(), repr(svs).c_str());
 						if (svs.type == sv_offset) {
 							time = svs.offset / 1000.0;
 						} else if (svs.type == sv_event) {

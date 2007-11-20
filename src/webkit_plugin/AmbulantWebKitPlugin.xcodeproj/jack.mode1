@@ -220,6 +220,8 @@
 			<key>Layout</key>
 			<array>
 				<dict>
+					<key>BecomeActive</key>
+					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -265,23 +267,20 @@
 								<string>089C1671FE841209C02AAC07</string>
 								<string>045D0B570958C26F00C194EE</string>
 								<string>1C37FBAC04509CD000000102</string>
-								<string>048B3E820CEB334B006102B3</string>
-								<string>048B3E830CEB334B006102B3</string>
-								<string>089C167DFE841241C02AAC07</string>
-								<string>048B3E840CEB334B006102B3</string>
-								<string>04C0A4990CD2A19B00CEDCA9</string>
+								<string>041202D90CF310ED00F9415F</string>
 								<string>1C37FAAC04509CD000000102</string>
 								<string>1C37FABC05509CD000000102</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>8</integer>
-									<integer>0</integer>
+									<integer>52</integer>
+									<integer>45</integer>
+									<integer>44</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 839}, {244, 338}}</string>
+							<string>{{0, 597}, {244, 338}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -345,8 +344,6 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -383,9 +380,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>048B3E750CEB32F6006102B3</string>
+				<string>041202C10CF30EA400F9415F</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>048B3E760CEB32F6006102B3</string>
+				<string>041202C20CF30EA400F9415F</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -519,14 +516,8 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>048B3E8F0CEB337C006102B3</string>
-		<string>048B3E900CEB337C006102B3</string>
-		<string>04C0A4340CD28B2A00CEDCA9</string>
-		<string>048B3E8D0CEB337C006102B3</string>
 		<string>04EC0D360CBD8E2B009B6B85</string>
-		<string>1C0AD2B3069F1EA900FABCE6</string>
 		<string>/Users/jack/src/ambulant/src/webkit_plugin/AmbulantWebKitPlugin.xcodeproj</string>
-		<string>1CD10A99069EF8BA00B06720</string>
 	</array>
 	<key>WindowString</key>
 	<string>546 221 690 397 0 0 1440 878 </string>
@@ -550,7 +541,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>&lt;No Editor&gt;</string>
+								<string></string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -606,7 +597,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>04EC0D360CBD8E2B009B6B85</string>
-				<string>048B3E770CEB32F6006102B3</string>
+				<string>041202DA0CF310ED00F9415F</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

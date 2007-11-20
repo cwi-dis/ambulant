@@ -256,8 +256,8 @@
 				8D5B49B1048680CD000E48DA /* Sources */,
 				8D5B49B3048680CD000E48DA /* Frameworks */,
 				04668F0C0CEBA48200B4BF97 /* ShellScript */,
-				04C26E450CBE22E300CB8EFE /* ShellScript */,
 				04C0A4A90CD2A26300CEDCA9 /* CopyFiles */,
+				04C26E450CBE22E300CB8EFE /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -275,7 +275,6 @@
 		089C1669FE841209C02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "AmbulantWebKitPlugin" */;
-			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 089C166AFE841209C02AAC07 /* AmbulantWebKitPlugin */;
 			projectDirPath = "";

@@ -217,7 +217,7 @@ void plugin_engine::load_plugin(const char *filename)
 		}
 		plugin_extra_data *extra = (plugin_extra_data *)lt_dlsym(handle, "plugin_extra_data");
 		if (extra) {
-			/*AM_DBG*/ lib::logger::get_logger()->debug("plugin_engine: extra data \"%s\" is 0x%x", extra->m_plugin_name, extra->m_plugin_extra);
+			AM_DBG lib::logger::get_logger()->debug("plugin_engine: extra data \"%s\" is 0x%x", extra->m_plugin_name, extra->m_plugin_extra);
 			std::string name = extra->m_plugin_name;
 			m_extra_data[name] = extra;
 		}

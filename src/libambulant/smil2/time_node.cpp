@@ -1820,7 +1820,7 @@ void time_node::raise_marker_event(std::pair<qtime_type, std::string> arg) {
 	qtime_type timestamp = arg.first;
 	std::string& name = arg.second;
 	timestamp.to_descendent(sync_node());
-	/*AM_DBG*/ m_logger->debug("%s[%s].raise_marker_event(%s) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+	AM_DBG m_logger->debug("%s[%s].raise_marker_event(%s) ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), 
 		name.c_str(),
 		timestamp.as_time_value_down_to(this),
