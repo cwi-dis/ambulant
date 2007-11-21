@@ -1,3 +1,13 @@
+2007-11-20 14:47  jackjansen
+
+	* Added some debug output to try and find redraw problem in
+	  embedded gtk player.
+
+2007-11-20 14:36  jackjansen
+
+	* - Plugins were copied too late. Fixed.  - Removed various
+	  /*AM_DBG*/.
+
 2007-11-19 17:04  jackjansen
 
 	* Disable deletion of datasource factories when deleting the global
