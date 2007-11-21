@@ -23,6 +23,11 @@
 #include "ambulant/lib/logger.h"
 #include "GroupsockHelper.hh"
 
+///// Added by Bo Gao begin 2007-11-07
+AVCodecParserContext * h264parserctx;
+
+///// Added by Bo Gao end 2007-11-07
+
 using namespace ambulant;
 using namespace net;
 
@@ -212,6 +217,9 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 	context->vbuffer = NULL;
 	context->vbufferlen = 0;
 
+	context->gb_first_sync = 0;
+
+
 	memset(context->sinks, 0, sizeof context->sinks);
 	
 	// setup the basics.
@@ -375,6 +383,9 @@ ambulant::net::rtsp_demux::set_position(timestamp_t time)
 }
 
 
+static unsigned char* parseH264ConfigStr( char const* configStr,
+                                          unsigned int& configSize );
+
 unsigned long 
 ambulant::net::rtsp_demux::run() 
 {
@@ -422,9 +433,9 @@ ambulant::net::rtsp_demux::run()
 					        //which should be present in the 'config' MIME parameter which should be present hopefully in the SDP description
 						//this idea was copied from mplayer libmpdemux/demux_rtp.cpp
 						firstTime=1;		
-						//if(strcmp(gettext(m_context->video_codec_name), "MP4V-ES")==0)
+						if(strcmp(gettext(m_context->video_codec_name), "MP4V-ES")==0)
 						//Optional check(therefore removed), since it should not matter for other formats.
-						//{
+						{
 							AM_DBG lib::logger::get_logger()->debug("Came here good %s", m_context->video_codec_name);
 							unsigned configLen;
 		    				unsigned char* configData 
@@ -432,7 +443,21 @@ ambulant::net::rtsp_demux::run()
 							m_context->configData = configData;
 							m_context->configDataLen = configLen;
 							
-						//}
+						}
+
+						///// Added by Bo Gao begin 2007-10-29 
+#ifdef WITH_H264
+						if ( !strcmp( gettext(m_context->video_codec_name), "H264")){
+						    unsigned configLen;
+						    unsigned char* configData;
+						    
+						    configData = parseH264ConfigStr(subsession->fmtp_spropparametersets(), configLen);
+ 						    m_context->configData = configData;
+						    m_context->configDataLen = configLen;
+						    
+						}
+#endif
+							///// Added by Bo Gao end 2007-10-29
 
 					}		
 					m_context->video_packet = (unsigned char*) malloc(MAX_RTP_FRAME_SIZE);
@@ -533,8 +558,29 @@ after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval 
 		//memcpy(context->vbuffer, context->video_packet, sz);
 		//context->vbufferlen=sz;
 	}
-	timestamp_t rpts =  (pts.tv_sec - context->first_sync_time.tv_sec) * 1000000  +  (timestamp_t) (pts.tv_usec - context->first_sync_time.tv_usec);
-	AM_DBG lib::logger::get_logger()->debug("after_reading_video: called timestamp %lld, sec = %d, usec =  %d", rpts, pts.tv_sec, pts.tv_usec);
+
+		///// Added by Bo Gao begin 2007-11-19
+	//if (strcmp(context->video_codec_name, "H264") == 0){
+		MediaSubsession* subsession;
+		MediaSubsessionIterator iter(*context->media_session);
+		while ((subsession = iter.next()) != NULL) {
+			if (strcmp(subsession->mediumName(), "video") == 0) {
+				// Set the packet's presentation time stamp, depending on whether or
+				// not our RTP source's timestamps have been synchronized yet: 
+				// This idea is borrowed from mplayer at demux_rtp.cpp::after_reading
+				Boolean hasBeenSynchronized = subsession->rtpSource()->hasBeenSynchronizedUsingRTCP();
+				if (hasBeenSynchronized && context->gb_first_sync == 0) {
+					context->first_sync_time.tv_sec = pts.tv_sec;
+					context->first_sync_time.tv_usec = pts.tv_usec;
+					context->gb_first_sync = 1;
+				}
+			}
+		}
+	//}
+		///// Added by Bo Gao begin 2007-11-19
+
+	timestamp_t rpts =  (timestamp_t)(pts.tv_sec - context->first_sync_time.tv_sec) * 1000000LL  +  (timestamp_t) (pts.tv_usec - context->first_sync_time.tv_usec);
+	AM_DBG lib::logger::get_logger()->debug("after_reading_video: called timestamp 0x%08.8x%08.8x, sec = %d, usec =  %d", (long)(rpts>>32), (long)(rpts&0xffffffff), pts.tv_sec, pts.tv_usec);
 	
 	
 	//Frame alignment for Mpeg1 or 2 frames, Live doesn't do it.
@@ -550,12 +596,47 @@ after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval 
 			 lib::logger::get_logger()->trace("Frame too large to display");
 			 context->vbufferlen=0;
 		 }else{
-		 
-			memcpy((context->vbuffer + context->vbufferlen), context->video_packet, sz);
-			context->vbufferlen += sz;
+#ifdef WITH_H264
+			 if (strcmp(context->video_codec_name,"H264") == 0){
+				 unsigned char* newgbcontext = (unsigned char*)malloc((sz+4)*sizeof(unsigned char));
+				 if (newgbcontext == NULL) {
+					 lib::logger::get_logger()->debug("after_reading_video: malloc(%d) failed", sz+4);
+					 lib::logger::get_logger()->error("Out of memory after_reading_video");
+					 context->eof = true;
+				 }
+				 newgbcontext[0] = 0x00;
+				 newgbcontext[1] = 0x00;
+				 newgbcontext[2] = 0x00;
+				 newgbcontext[3] = 0x01;
+				 memcpy(&newgbcontext[4],context->video_packet, sz);
+				 sz += 4;
+				 //context->vbuffer = (unsigned char*)realloc(context->vbuffer, context->vbufferlen+sz);
+				 memcpy((context->vbuffer + context->vbufferlen), newgbcontext, sz);
+				 free(newgbcontext);
+
+			 }
+			 else
+#endif
+				 memcpy((context->vbuffer + context->vbufferlen), context->video_packet, sz);
+			 context->vbufferlen += sz;
 		 }
 	 }else{		 
 
+		/////bo: 
+#if 0
+		demux_datasink *sink = context->sinks[context->video_stream];
+		while (sink->buffer_full() ) {
+				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", context->video_stream);
+				 // sleep 10 millisec, hardly noticeable
+#ifdef	AMBULANT_PLATFORM_WIN32
+				ambulant::lib::sleep_msec(10); // XXXX should be woken by readdone()
+#else
+				usleep(10000);
+#endif//AMBULANT_PLATFORM_WIN32
+//				sleep(1);   // This is overdoing it
+				sink = context->sinks[context->video_stream];
+		}
+#endif
 
 		// Send the data to our sink, which is responsible for copying/saving it before returning.
 		if(context->sinks[context->video_stream]) {
@@ -565,6 +646,32 @@ after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval 
 		
 		context->last_pts=rpts;
 		//copy the first packet of the next frame
+
+		///// Added by Bo Gao begin 2007-11-01
+#ifdef WITH_H264	  
+		if (strcmp(context->video_codec_name,"H264") == 0){
+			// printf("the context->video_codec_name is %s\n", context->video_codec_name);
+			unsigned char* newgbcontext = (unsigned char*)malloc((sz+4)*sizeof(unsigned char));
+			if (newgbcontext == NULL) {
+				lib::logger::get_logger()->debug("after_reading_video: malloc(%d) failed", sz+4);
+				lib::logger::get_logger()->error("Out of memory after_reading_video");
+				context->eof = true;
+			}
+			newgbcontext[0] = 0x00;
+			newgbcontext[1] = 0x00;
+			newgbcontext[2] = 0x00;
+			newgbcontext[3] = 0x01;
+			memcpy(&newgbcontext[4],context->video_packet, sz);
+			context->video_packet = (unsigned char*)realloc(context->video_packet, sz+4);
+			memcpy(context->video_packet, newgbcontext, sz+4);
+			free(newgbcontext);
+
+			sz += 4;
+
+		}
+#endif
+	  ///// Added by Bo Gao end 2007-11-01
+
 		memcpy(context->vbuffer, context->video_packet, sz);
 		context->vbufferlen=sz;
 	} 
@@ -582,7 +689,7 @@ after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval 
 	// xxxbo In the case that context->time_left is a negative from the beginning for some reason,
 	// Ambulant should render the video other than stop at the beginning.
 	if (context->time_left >= 0 && context->last_pts >= context->time_left) {
-		lib::logger::get_logger()->debug("after_reading_video: last_pts = %ld", context->last_pts);
+		lib::logger::get_logger()->debug("after_reading_video: last_pts = %lld", context->last_pts);
 	 	context->eof = true;
 	}
 	context->blocking_flag = ~0;
@@ -598,3 +705,123 @@ on_source_close(void* data)
 		context->blocking_flag = ~0;
 	}
 }
+
+#ifdef WITH_H264
+///// Added by Bo Gao begin 2007-10-29 
+static int b64_decode( char *dest, char *src );
+
+static unsigned char* parseH264ConfigStr( char const* configStr,
+                                          unsigned int& configSize )
+{
+    char *dup, *psz;
+    int i, i_records = 1;
+
+    if( configSize )
+    configSize = 0;
+
+    if( configStr == NULL || *configStr == '\0' )
+        return NULL;
+
+    //printf("configStr is %s\n", configStr);
+#ifdef AMBULANT_PLATFORM_WIN32
+	psz = dup = (char *)StrDup(LPCTSTR (configStr));
+#else
+    psz = dup = strdup( configStr );
+#endif
+    //printf("dup oirginal is %s\n", dup);
+
+    /* Count the number of comma's */
+    for( psz = dup; *psz != '\0'; ++psz )
+    {
+        if( *psz == ',')
+        {
+            ++i_records;
+            *psz = '\0';
+        }
+    }
+
+    //printf("i_records is %d, and dup is %s\n", i_records, dup);
+    unsigned char *cfg = new unsigned char[5 * strlen(dup)];
+    psz = dup;
+    for( i = 0; i < i_records; i++ )
+    {
+        cfg[configSize++] = 0x00;
+        cfg[configSize++] = 0x00;
+        cfg[configSize++] = 0x00;
+        cfg[configSize++] = 0x01;
+
+	//printf("configSize is %d\n", configSize);
+        configSize += b64_decode( (char*)&cfg[configSize], psz );
+	//printf("configSize is %d\n", configSize);
+        psz += strlen(psz)+1;
+	//printf("cfg %d is %x\n",i,cfg);
+    }
+
+    if( dup ) free( dup );
+    // printf("cfg is %x\n",cfg);
+    return cfg;
+}
+
+
+/*char b64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";*/
+static int b64_decode( char *dest, char *src )
+{
+    const char *dest_start = dest;
+    int  i_level;
+    int  last = 0;
+    int  b64[256] = {
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,  /* 00-0F */
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,  /* 10-1F */
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,62,-1,-1,-1,63,  /* 20-2F */
+        52,53,54,55,56,57,58,59,60,61,-1,-1,-1,-1,-1,-1,  /* 30-3F */
+        -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,  /* 40-4F */
+        15,16,17,18,19,20,21,22,23,24,25,-1,-1,-1,-1,-1,  /* 50-5F */
+        -1,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,  /* 60-6F */
+        41,42,43,44,45,46,47,48,49,50,51,-1,-1,-1,-1,-1,  /* 70-7F */
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,  /* 80-8F */
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,  /* 90-9F */
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,  /* A0-AF */
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,  /* B0-BF */
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,  /* C0-CF */
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,  /* D0-DF */
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,  /* E0-EF */
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1   /* F0-FF */
+        };
+
+    for( i_level = 0; *src != '\0'; src++ )
+    {
+        int  c;
+
+        c = b64[(unsigned int)*src];
+        if( c == -1 )
+        {
+            continue;
+        }
+
+        switch( i_level )
+        {
+            case 0:
+                i_level++;
+                break;
+            case 1:
+                *dest++ = ( last << 2 ) | ( ( c >> 4)&0x03 );
+                i_level++;
+                break;
+            case 2:
+                *dest++ = ( ( last << 4 )&0xf0 ) | ( ( c >> 2 )&0x0f );
+                i_level++;
+                break;
+            case 3:
+                *dest++ = ( ( last &0x03 ) << 6 ) | c;
+                i_level = 0;
+        }
+        last = c;
+    }
+
+    *dest = '\0';
+
+    return dest - dest_start;
+}
+
+///// Added by Bo Gao end 2007-10-29
+#endif

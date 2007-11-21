@@ -55,6 +55,12 @@
 #endif
 #ifdef AMBULANT_PLATFORM_WIN32
 #include "ambulant/lib/win32/win32_thread.h"
+
+//xxxbo for using StrDup
+#include <windows.h>
+#include <shlwapi.h>
+#include <stdio.h>
+
 #define BASE_THREAD lib::win32::thread
 #endif
 #include "ambulant/net/databuffer.h"
@@ -104,6 +110,9 @@ struct rtsp_context_t {
 	video_format video_fmt;
 	demux_datasink *sinks[MAX_STREAMS];
 	int nsinks;
+
+//xxxbo for h264
+	int gb_first_sync;
 };
 	
 class rtsp_demux : public abstract_demux {
