@@ -1,3 +1,8 @@
+2007-11-21 12:30  bogao
+
+	* Begin to render mp4(h264) streamed from Feng media server. It
+	  works now but need refine.
+
 2007-11-20 14:47  jackjansen
 
 	* Added some debug output to try and find redraw problem in
