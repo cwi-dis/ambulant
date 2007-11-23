@@ -3,7 +3,7 @@ import sys
 import os
 
 # Set these variable identical to your configure options.
-WITH_GTK=False
+WITH_GTK=True
 WITH_QT= not not os.getenv("QTDIR")
 if sys.platform == 'win32':
     WITH_FFMPEG=False
@@ -40,6 +40,7 @@ if WITH_GTK:
     LIBRARIES.append('atk-1.0')
     LIBRARIES.append('gdk_pixbuf-2.0')
     LIBRARIES.append('pangocairo-1.0')
+    INCDIRS.append('/usr/include/pygtk-2.0')
     INCDIRS.append('/usr/include/gtk-2.0')
     INCDIRS.append('/usr/lib/gtk-2.0/include')
     INCDIRS.append('/usr/include/atk-1.0')
