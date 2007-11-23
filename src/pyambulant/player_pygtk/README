@@ -1,0 +1,28 @@
+This directory contains an example of embedding Ambulant in a Python application.
+It is a minimal re-implementation of "player_unix": a GTK-based Ambulant Player.
+It has been tested on Linux (and should work on MacOSX).
+
+You need the following prerequisites:
+- Python. Testing has been done with 2.5, 2.4 should work too, earlier probably not.
+  Obtain it via <http://www.python.org>
+- Gtk.
+- PyGtk.
+- A build of AmbulantPlayer that has support for Gtk and Python (see below).
+
+Next you need to build the prerequisites (and maybe install them too):
+- To be filled
+  
+  Testing Ambulant on Linux is easy: run player_unix/AmbulantPlayer_qt
+  Testing Ambulant on MacOSX is a bit more difficult because our Makefile for
+  the qt player does not create the .app bundle stuff MacOSX requires. The easiest
+  way to do a simple test is copy the Qt example hello.app somewhere, copy AmbulantPlayer_qt
+  to hello.app/Contents/MacOSX/hello and run the resulting hello.app.
+  
+  Testing the Ambulant Python interface is also fairly simple:
+  
+    python
+    >>> import ambulant
+    >>> print ambulant.get_version()
+    '1.7'
+    >>>
+    
