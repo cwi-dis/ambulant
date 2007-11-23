@@ -69,10 +69,6 @@ ambulant::gui::gtk::create_gtk_window_factory_unsafe(void* gtk_parent_widget, vo
         return NULL;
     }
     GMainLoop* l = reinterpret_cast<GMainLoop*>(g_main_loop);
-    if (l == NULL) {
-        lib::logger::get_logger()->fatal("create_gtk_window_factory: Not a GMainLoop!");
-        return NULL;
-    }
     return new gtk_window_factory(gtkw, l, gpl);
 }
 
