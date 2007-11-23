@@ -37,7 +37,7 @@
 // Should have been included through genobj.py but that caused problems
 #ifdef WITH_GTK
 #include <pygobject.h>           
-#include <pygtk.h>
+#include <pygtk/pygtk.h>
 static PyTypeObject *PyGObject_Type=NULL;
 #include "ambulant/gui/gtk/gtk_factory.h"
 #endif
@@ -15878,20 +15878,16 @@ static PyObject *PyAm_create_gtk_window_factory_unsafe(PyObject *_self, PyObject
 	PyObject *_res = NULL;
 	ambulant::common::window_factory* _rv;
 	PyGObject* py_gtk_parent_widget;
-	PyGObject* py_g_main_loop;
 	void* gtk_parent_widget;
-	void* g_main_loop;
 	ambulant::common::gui_player* gpl;
-	if (!PyArg_ParseTuple(_args, "O!O!O&",
+	if (!PyArg_ParseTuple(_args, "O!O&",
 	                      PyGObject_Type, &py_gtk_parent_widget,
-	                      PyGObject_Type, &py_g_main_loop,
 	                      gui_playerObj_Convert, &gpl))
 		return NULL;
 	gtk_parent_widget = (void*)GTK_WIDGET(py_gtk_parent_widget->obj);
-	g_main_loop = (void*)py_g_mainloop->obj;
 	PyThreadState *_save = PyEval_SaveThread();
 	_rv = ambulant::gui::gtk::create_gtk_window_factory_unsafe(gtk_parent_widget,
-	                                                           g_main_loop,
+	                                                           NULL,
 	                                                           gpl);
 	PyEval_RestoreThread(_save);
 	_res = Py_BuildValue("O&",
@@ -16191,7 +16187,7 @@ static PyMethodDef PyAm_methods[] = {
 
 #ifdef WITH_GTK
 	{"create_gtk_window_factory_unsafe", (PyCFunction)PyAm_create_gtk_window_factory_unsafe, 1,
-	 PyDoc_STR("(void* gtk_parent_widget, void* g_main_loop, ambulant::common::gui_player* gpl) -> (ambulant::common::window_factory* _rv)")},
+	 PyDoc_STR("(void* gtk_parent_widget, ambulant::common::gui_player* gpl) -> (ambulant::common::window_factory* _rv)")},
 #endif
 
 #ifdef WITH_GTK
@@ -16303,10 +16299,9 @@ void initambulant(void)
 #ifdef WITH_GTK
     init_pygobject();
     init_pygtk();
-    module = PyImport_ImportModule("gobject");
+    PyObject *module = PyImport_ImportModule("gobject");
     if (module) {
-        PyGObject_Type =
-        (PyTypeObject*)PyObject_GetAttrString(module, "GObject");
+        PyGObject_Type = (PyTypeObject*)PyObject_GetAttrString(module, "GObject");
         Py_DECREF(module);
     }
 #endif
