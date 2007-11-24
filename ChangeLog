@@ -1,3 +1,27 @@
+2007-11-23 16:29  rlaiola
+
+	* Some modifications to include GTK.
+
+2007-11-23 16:28  rlaiola
+
+	* We (Jack) figured out that the main loop is not more necessary in
+	  Ambulant Player implementation using GTK.
+
+2007-11-23 16:24  rlaiola
+
+	* We (Jack) figured out that the main loop is not necessary in our
+	  GTK implementation of Ambulant Player.
+
+2007-11-23 16:19  rlaiola
+
+	* Modification that enables the Ambulant Player to present video
+	  files (also containing audio).
+
+2007-11-23 16:14  rlaiola
+
+	* This is an example of a GTK application embedding Ambulant Player
+	  in a Python program.
+
 2007-11-21 12:30  bogao
 
 	* Begin to render mp4(h264) streamed from Feng media server. It
