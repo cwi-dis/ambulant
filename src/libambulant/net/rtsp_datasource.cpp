@@ -622,8 +622,10 @@ after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval 
 		 }
 	 }else{		 
 
-		/////bo: 
-#if 0
+		///// bo: sleep 10 msec when the databuffer of sink is full. Otherwise, on windows mobile, 
+		///// continuely feeding data to sink will make ambulant  freeze because
+		///// ffmpeg cannot consume the data in the sink fastly enough with its low power cpu and limited memory.
+#if 1
 		demux_datasink *sink = context->sinks[context->video_stream];
 		while (sink->buffer_full() ) {
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", context->video_stream);
@@ -633,7 +635,6 @@ after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval 
 #else
 				usleep(10000);
 #endif//AMBULANT_PLATFORM_WIN32
-//				sleep(1);   // This is overdoing it
 				sink = context->sinks[context->video_stream];
 		}
 #endif
