@@ -280,7 +280,7 @@
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 597}, {244, 338}}</string>
+							<string>{{0, 475}, {244, 338}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -380,9 +380,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>041202C10CF30EA400F9415F</string>
+				<string>046C547C0CEC77BF00283A06</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>041202C20CF30EA400F9415F</string>
+				<string>046C547D0CEC77BF00283A06</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -597,7 +597,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>04EC0D360CBD8E2B009B6B85</string>
-				<string>041202DA0CF310ED00F9415F</string>
+				<string>046C547E0CEC77BF00283A06</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

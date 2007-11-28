@@ -46,9 +46,11 @@ endif
 
 if WITH_EXPAT
 extra_expat_DEFINES=-I$(EXPAT_PREFIX)/include
-extra_expat_LDADD=$(EXPAT_PREFIX)/lib/libexpat.a
+extra_expat_ldflags=-L$(EXPAT_PREFIX)/lib -lexpat
+extra_expat_LDADD=
 else
 extra_expat_DEFINES=
+extra_expat_ldflags=
 extra_expat_LDADD=
 endif
 
@@ -202,7 +204,10 @@ LDADD = \
 	$(LIBICONV) \
     $(top_builddir)/src/libambulant/.libs/libambulant.a \
     -lstdc++
-AM_LDFLAGS=$(extra_sdl_ldflags) $(extra_ffmpeg_ldflags) \
+AM_LDFLAGS= \
+    $(extra_sdl_ldflags) \
+    $(extra_ffmpeg_ldflags) \
+    $(extra_expat_ldflags) \
     -framework Cocoa \
     -framework QTKit \
     -framework QuickTime \
