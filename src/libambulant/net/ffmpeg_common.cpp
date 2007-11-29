@@ -363,11 +363,12 @@ ffmpeg_demux::run()
 		// Read a packet
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run:  started");
 		if (m_seektime_set) {
-			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %d", m_clip_begin+m_seektime);
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %d+%d=%d", m_clip_begin, m_seektime, m_clip_begin+m_seektime);
+			timestamp_t seektime = av_rescale_q(m_clip_begin+m_seektime, AV_TIME_BASE_Q, m_con->streams[streamnr]->time_base);
 #if LIBAVFORMAT_BUILD > 4628
-			int seekresult = av_seek_frame(m_con, -1, m_clip_begin+m_seektime, AVSEEK_FLAG_BACKWARD);
+			int seekresult = av_seek_frame(m_con, -1, seektime, AVSEEK_FLAG_BACKWARD);
 #else
-			int seekresult = av_seek_frame(m_con, -1, m_clip_begin+m_seektime);
+			int seekresult = av_seek_frame(m_con, -1, seektime);
 #endif
 			if (seekresult < 0) {
 				lib::logger::get_logger()->debug("ffmpeg_demux: av_seek_frame() returned %d", seekresult);
