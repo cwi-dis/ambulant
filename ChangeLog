@@ -1,3 +1,15 @@
+2007-11-28 14:56  jackjansen
+
+	* Minor tweaks for building on 10.5
+
+2007-11-28 12:21  bogao
+
+	* In after_reading_video: Sleep 10 msec when the databuffer of sink
+	  is full. Otherwise, on windows mobile, continuely feeding data to
+	  sink will eat up all of memory of windows mobile and make
+	  ambulant freeze because ffmpeg cannot consume the data in the
+	  sink fastly enough with its low power cpu and limited memory.
+
 2007-11-23 16:29  rlaiola
 
 	* Some modifications to include GTK.
