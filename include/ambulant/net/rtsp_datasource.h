@@ -136,6 +136,9 @@ class rtsp_demux : public abstract_demux {
 	timestamp_t get_clip_end();
 	timestamp_t get_clip_begin();
 	timestamp_t get_start_time() { return m_clip_begin; };
+	// These next two should be protected, but I don't know how to make a static function a friend.
+	void after_reading_audio(unsigned sz, unsigned truncated, struct timeval pts, unsigned duration);
+	void after_reading_video(unsigned sz, unsigned truncated, struct timeval pts, unsigned duration);
   protected:
 	unsigned long run();
   private:	

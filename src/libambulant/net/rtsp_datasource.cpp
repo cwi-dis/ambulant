@@ -39,12 +39,32 @@ using namespace net;
 
 #define MIN_VIDEO_PACKET_SIZE 1024
 
-// Forward declarations
-static void after_reading_audio(void* data, unsigned sz, unsigned truncated, 
-	struct timeval pts, unsigned duration);
-static void  after_reading_video(void* data, unsigned sz, unsigned truncated, 
-	struct timeval pts, unsigned duration);
-static void on_source_close(void* data);
+// Helper routines: callback functions passed to live555 that will call back to our methods.
+static void 
+after_reading_audio_stub(void* data, unsigned sz, unsigned truncated, struct timeval pts, unsigned duration)
+{
+	rtsp_demux* demux = (rtsp_demux*) data;
+	assert(demux);
+	demux->after_reading_audio(sz, truncated, pts, duration);
+}
+
+static void 
+after_reading_video_stub(void* data, unsigned sz, unsigned truncated, struct timeval pts, unsigned duration)
+{
+	rtsp_demux* demux = (rtsp_demux*) data;
+	assert(demux);
+	demux->after_reading_video(sz, truncated, pts, duration);
+}
+
+static void 
+on_source_close(void* data) 
+{
+	rtsp_context_t* context = (rtsp_context_t*) data;
+	if (context) {
+		context->eof = true;
+		context->blocking_flag = ~0;
+	}
+}
 
 ambulant::net::rtsp_demux::rtsp_demux(rtsp_context_t* context, timestamp_t clip_begin, timestamp_t clip_end)
 :	m_context(context),
@@ -401,11 +421,13 @@ ambulant::net::rtsp_demux::run()
 		return 1;
 	}
 	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() starting the loop ");
+	m_critical_section.enter();
 	add_ref();
 	int firstTime=0;
 		
 	while(!m_context->eof && !exit_requested()) {
 		AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run: start another loop iteration");
+		m_context->blocking_flag = 0;
 #if 0 // XXXJack: suspect...
 		if (!m_clip_begin_set) {
 			set_position(m_clip_begin);
@@ -422,7 +444,9 @@ ambulant::net::rtsp_demux::run()
 					m_context->audio_packet = (unsigned char*) malloc(MAX_RTP_FRAME_SIZE);
 					AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() Calling getNextFrame for an audio frame");
 					m_context->need_audio = false;
-					subsession->readSource()->getNextFrame(m_context->audio_packet, MAX_RTP_FRAME_SIZE, after_reading_audio, m_context,  on_source_close ,m_context);
+					m_critical_section.leave();
+					subsession->readSource()->getNextFrame(m_context->audio_packet, MAX_RTP_FRAME_SIZE, after_reading_audio_stub, this,  on_source_close ,m_context);
+					m_critical_section.enter();
 				}
 			} else if (strcmp(subsession->mediumName(), "video") == 0) {
 				if (m_context->need_video) {
@@ -465,7 +489,9 @@ ambulant::net::rtsp_demux::run()
 					AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() Calling getNextFrame for an video frame");
 					m_context->need_video = false;
 					AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() video_packet 0x%x", m_context->video_packet);
-					subsession->readSource()->getNextFrame(m_context->video_packet, MAX_RTP_FRAME_SIZE, after_reading_video, m_context, on_source_close,m_context);
+					m_critical_section.leave();
+					subsession->readSource()->getNextFrame(m_context->video_packet, MAX_RTP_FRAME_SIZE, after_reading_video_stub, this, on_source_close, m_context);
+					m_critical_section.enter();
 					
 				}
 			} else {
@@ -475,11 +501,12 @@ ambulant::net::rtsp_demux::run()
 		
 		AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() blocking_flag: 0x%x, %d, need_audio %d", &m_context->blocking_flag, m_context->blocking_flag, m_context->need_audio);		
 		TaskScheduler& scheduler = m_context->env->taskScheduler();
+		m_critical_section.leave();
 #ifdef	DUMMYTASK
 		dummyTask (m_context->env);
 #endif/*DUMMYTASK*/
 		scheduler.doEventLoop(&m_context->blocking_flag);
-		m_context->blocking_flag = 0;
+		m_critical_section.enter();
 	}
 	for (int i=0; i<MAX_STREAMS; i++) {
 		demux_datasink *sink = m_context->sinks[i];
@@ -488,6 +515,7 @@ ambulant::net::rtsp_demux::run()
 	}
 	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run(0x%x): returning", (void*)this);
 	release();
+	m_critical_section.leave();
 	return 0;
 }
 
@@ -512,161 +540,158 @@ ambulant::net::rtsp_demux::cancel()
 	m_critical_section.leave();
 }
 
-static void 
-after_reading_audio(void* data, unsigned sz, unsigned truncated, struct timeval pts, unsigned duration)
+void 
+rtsp_demux::after_reading_audio(unsigned sz, unsigned truncated, struct timeval pts, unsigned duration)
 {
-
-	AM_DBG lib::logger::get_logger()->debug("after_reading_audio: called data = 0x%x, sz = %d, truncated = %d", data, sz, truncated);
-	rtsp_context_t* context = NULL;
-	if (data) {
-		context = (rtsp_context_t*) data;
-	} 
-	AM_DBG lib::logger::get_logger()->debug("after_reading_audio: audio data available (client data: 0x%x", data);
-	if (context) {
-		timestamp_t rpts = (pts.tv_sec* 1000000 )+  pts.tv_usec;
-		if(context->sinks[context->audio_stream]) {
-			AM_DBG lib::logger::get_logger()->debug("after_reading_audio: calling data_avail");
-			context->sinks[context->audio_stream]->data_avail(rpts, (uint8_t*) context->audio_packet, sz);
-			AM_DBG lib::logger::get_logger()->debug("after_reading_audio: calling data_avail done");
-		}
-		assert (context->audio_packet);
-		free(context->audio_packet);
-		context->audio_packet = NULL;
-		//XXX Do we need to free data here ?
+	m_critical_section.enter();
+	AM_DBG lib::logger::get_logger()->debug("after_reading_audio: called sz = %d, truncated = %d", sz, truncated);
+	assert(m_context);
+	assert(m_context->audio_packet);
+	assert(m_context->audio_stream >= 0);
+	timestamp_t rpts = (pts.tv_sec* 1000000 )+  pts.tv_usec;
+	if(m_context->sinks[m_context->audio_stream]) {
+		AM_DBG lib::logger::get_logger()->debug("after_reading_audio: calling data_avail");
+		m_context->sinks[m_context->audio_stream]->data_avail(rpts, (uint8_t*) m_context->audio_packet, sz);
+		AM_DBG lib::logger::get_logger()->debug("after_reading_audio: calling data_avail done");
 	}
-	context->blocking_flag = ~0;
-	context->need_audio = true;
+	assert (m_context->audio_packet);
+	free(m_context->audio_packet);
+	m_context->audio_packet = NULL;
+	//XXX Do we need to free data here ?
+	m_context->blocking_flag = ~0;
+	m_context->need_audio = true;
+	m_critical_section.leave();
 }	
 
-static void 
-after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval pts, unsigned duration)
+void 
+rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval pts, unsigned duration)
 {
-	AM_DBG lib::logger::get_logger()->debug("after_reading_video: called data = 0x%x, sz = %d, truncated = %d pts=(%d s, %d us), dur=%d", data, sz, truncated, pts.tv_sec, pts.tv_usec, duration);
-	rtsp_context_t* context = (rtsp_context_t*) data;
-	assert(context);
-	assert(context->video_packet);
+	m_critical_section.enter();
+	assert(m_context);
+	AM_DBG lib::logger::get_logger()->debug("after_reading_video: called sz = %d, truncated = %d pts=(%d s, %d us), dur=%d", sz, truncated, pts.tv_sec, pts.tv_usec, duration);
+	assert(m_context->video_packet);
+	assert(m_context->video_stream >= 0);
 	
 	// For the first packet, we remember the timestamp so we can convert Live's wallclock timestamps to
 	// our zero-based timestamps.
-	if (context->first_sync_time.tv_sec == 0 && context->first_sync_time.tv_usec == 0 ) {
-		context->first_sync_time.tv_sec = pts.tv_sec;
-		context->first_sync_time.tv_usec = pts.tv_usec;
-		context->last_pts=0;
-		if(context->configDataLen > 0)//Required by MP4V-ES. Only required for the first packet.
-			context->sinks[context->video_stream]->data_avail(0, (uint8_t*) context->configData , context->configDataLen);
+	if (m_context->first_sync_time.tv_sec == 0 && m_context->first_sync_time.tv_usec == 0 ) {
+		m_context->first_sync_time.tv_sec = pts.tv_sec;
+		m_context->first_sync_time.tv_usec = pts.tv_usec;
+		m_context->last_pts=0;
+		if(m_context->configDataLen > 0)//Required by MP4V-ES. Only required for the first packet.
+			m_context->sinks[m_context->video_stream]->data_avail(0, (uint8_t*) m_context->configData , m_context->configDataLen);
 		
-		//memcpy(context->vbuffer, context->video_packet, sz);
-		//context->vbufferlen=sz;
+		//memcpy(m_context->vbuffer, m_context->video_packet, sz);
+		//m_context->vbufferlen=sz;
 	}
 
 		///// Added by Bo Gao begin 2007-11-19
-	//if (strcmp(context->video_codec_name, "H264") == 0){
+	//if (strcmp(m_context->video_codec_name, "H264") == 0){
 		MediaSubsession* subsession;
-		MediaSubsessionIterator iter(*context->media_session);
+		MediaSubsessionIterator iter(*m_context->media_session);
 		while ((subsession = iter.next()) != NULL) {
 			if (strcmp(subsession->mediumName(), "video") == 0) {
 				// Set the packet's presentation time stamp, depending on whether or
 				// not our RTP source's timestamps have been synchronized yet: 
 				// This idea is borrowed from mplayer at demux_rtp.cpp::after_reading
 				Boolean hasBeenSynchronized = subsession->rtpSource()->hasBeenSynchronizedUsingRTCP();
-				if (hasBeenSynchronized && context->gb_first_sync == 0) {
-					context->first_sync_time.tv_sec = pts.tv_sec;
-					context->first_sync_time.tv_usec = pts.tv_usec;
-					context->gb_first_sync = 1;
+				if (hasBeenSynchronized && m_context->gb_first_sync == 0) {
+					/*AM_DBG*/ lib::logger::get_logger()->debug("after_reading_video: resync video, from %ds %dus to %ds %dus", m_context->first_sync_time.tv_sec, m_context->first_sync_time.tv_usec, pts.tv_sec, pts.tv_usec);
+					m_context->first_sync_time.tv_sec = pts.tv_sec;
+					m_context->first_sync_time.tv_usec = pts.tv_usec;
+					m_context->gb_first_sync = 1;
 				}
 			}
 		}
 	//}
 		///// Added by Bo Gao begin 2007-11-19
 
-	timestamp_t rpts =  (timestamp_t)(pts.tv_sec - context->first_sync_time.tv_sec) * 1000000LL  +  (timestamp_t) (pts.tv_usec - context->first_sync_time.tv_usec);
-	AM_DBG lib::logger::get_logger()->debug("after_reading_video: called timestamp 0x%08.8x%08.8x, sec = %d, usec =  %d", (long)(rpts>>32), (long)(rpts&0xffffffff), pts.tv_sec, pts.tv_usec);
+	timestamp_t rpts =  (timestamp_t)(pts.tv_sec - m_context->first_sync_time.tv_sec) * 1000000LL  +  (timestamp_t) (pts.tv_usec - m_context->first_sync_time.tv_usec);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("after_reading_video: called timestamp 0x%08.8x%08.8x, sec = %d, usec =  %d", (long)(rpts>>32), (long)(rpts&0xffffffff), pts.tv_sec, pts.tv_usec);
 	
 	
 	//Frame alignment for Mpeg1 or 2 frames, Live doesn't do it.
 	//If the frame is bigger than 20kb display the rest next time
 	//TODO display what I have currently as well : the impartial frame.
-	 if (rpts == context->last_pts) {
+	 if (rpts == m_context->last_pts) {
 #if 0
-		 if((sz + context->vbufferlen)>20000)
+		 if((sz + m_context->vbufferlen)>20000)
 #else //xxxbo increase the vbuffer to 40000 for renderering mpg
-		 if((sz + context->vbufferlen)>40000)
+		 if((sz + m_context->vbufferlen)>40000)
 #endif
 		 {
 			 lib::logger::get_logger()->trace("Frame too large to display");
-			 context->vbufferlen=0;
+			 m_context->vbufferlen=0;
 		 }else{
 #ifdef WITH_H264
-			 if (strcmp(context->video_codec_name,"H264") == 0){
+			 if (strcmp(m_context->video_codec_name,"H264") == 0){
 				 unsigned char* newgbcontext = (unsigned char*)malloc((sz+4)*sizeof(unsigned char));
 				 if (newgbcontext == NULL) {
 					 lib::logger::get_logger()->debug("after_reading_video: malloc(%d) failed", sz+4);
 					 lib::logger::get_logger()->error("Out of memory after_reading_video");
-					 context->eof = true;
+					 m_context->eof = true;
 				 }
 				 newgbcontext[0] = 0x00;
 				 newgbcontext[1] = 0x00;
 				 newgbcontext[2] = 0x00;
 				 newgbcontext[3] = 0x01;
-				 memcpy(&newgbcontext[4],context->video_packet, sz);
+				 memcpy(&newgbcontext[4],m_context->video_packet, sz);
 				 sz += 4;
-				 //context->vbuffer = (unsigned char*)realloc(context->vbuffer, context->vbufferlen+sz);
-				 memcpy((context->vbuffer + context->vbufferlen), newgbcontext, sz);
+				 //m_context->vbuffer = (unsigned char*)realloc(m_context->vbuffer, m_context->vbufferlen+sz);
+				 memcpy((m_context->vbuffer + m_context->vbufferlen), newgbcontext, sz);
 				 free(newgbcontext);
 
 			 }
 			 else
 #endif
-				 memcpy((context->vbuffer + context->vbufferlen), context->video_packet, sz);
-			 context->vbufferlen += sz;
+				 memcpy((m_context->vbuffer + m_context->vbufferlen), m_context->video_packet, sz);
+			 m_context->vbufferlen += sz;
 		 }
 	 }else{		 
 
-		///// bo: sleep 10 msec when the databuffer of sink is full. Otherwise, on windows mobile, 
-		///// continuely feeding data to sink will make ambulant  freeze because
-		///// ffmpeg cannot consume the data in the sink fastly enough with its low power cpu and limited memory.
-#if 1
-		demux_datasink *sink = context->sinks[context->video_stream];
-		if (sink != NULL){
-			while (sink && sink->buffer_full() /*&& !exit_requested()*/) {
-					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", context->video_stream);
-					 // sleep 10 millisec, hardly noticeable
-	#ifdef	AMBULANT_PLATFORM_WIN32
-					ambulant::lib::sleep_msec(10); // XXXX should be woken by readdone()
-	#else
-					usleep(10000);
-	#endif//AMBULANT_PLATFORM_WIN32
-					sink = context->sinks[context->video_stream];
-			}
+		demux_datasink *sink = m_context->sinks[m_context->video_stream];
+		// This is not good: because after_reading_video is not a member of rtsp_demux we cannot access exit_requested() to
+		// check whether we are terminating (see code in ffmpeg_demux for an example). In stead we have to rely on our
+		// sink being freed and zeroed.
+		while (sink && sink->buffer_full() && !exit_requested()) {
+				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", m_context->video_stream);
+				m_critical_section.leave();
+				 // sleep 10 millisec, hardly noticeable
+#ifdef	AMBULANT_PLATFORM_WIN32
+				ambulant::lib::sleep_msec(10); // XXXX should be woken by readdone()
+#else
+				usleep(10000);
+#endif //AMBULANT_PLATFORM_WIN32
+				m_critical_section.enter();
+				sink = m_context->sinks[m_context->video_stream];
 		}
-#endif
 
 		// Send the data to our sink, which is responsible for copying/saving it before returning.
-		if(context->sinks[context->video_stream]) {
-			AM_DBG lib::logger::get_logger()->debug("Video packet length %d", context->vbufferlen);
-			context->sinks[context->video_stream]->data_avail(context->last_pts, (uint8_t*) context->vbuffer , context->vbufferlen);
+		if(sink && !exit_requested()) {
+			AM_DBG lib::logger::get_logger()->debug("Video packet length %d", m_context->vbufferlen);
+			sink->data_avail(m_context->last_pts, (uint8_t*) m_context->vbuffer , m_context->vbufferlen);
 		}
 		
-		context->last_pts=rpts;
+		m_context->last_pts=rpts;
 		//copy the first packet of the next frame
 
 		///// Added by Bo Gao begin 2007-11-01
 #ifdef WITH_H264	  
-		if (strcmp(context->video_codec_name,"H264") == 0){
-			// printf("the context->video_codec_name is %s\n", context->video_codec_name);
+		if (strcmp(m_context->video_codec_name,"H264") == 0){
+			// printf("the m_context->video_codec_name is %s\n", m_context->video_codec_name);
 			unsigned char* newgbcontext = (unsigned char*)malloc((sz+4)*sizeof(unsigned char));
 			if (newgbcontext == NULL) {
 				lib::logger::get_logger()->debug("after_reading_video: malloc(%d) failed", sz+4);
 				lib::logger::get_logger()->error("Out of memory after_reading_video");
-				context->eof = true;
+				m_context->eof = true;
 			}
 			newgbcontext[0] = 0x00;
 			newgbcontext[1] = 0x00;
 			newgbcontext[2] = 0x00;
 			newgbcontext[3] = 0x01;
-			memcpy(&newgbcontext[4],context->video_packet, sz);
-			context->video_packet = (unsigned char*)realloc(context->video_packet, sz+4);
-			memcpy(context->video_packet, newgbcontext, sz+4);
+			memcpy(&newgbcontext[4],m_context->video_packet, sz);
+			m_context->video_packet = (unsigned char*)realloc(m_context->video_packet, sz+4);
+			memcpy(m_context->video_packet, newgbcontext, sz+4);
 			free(newgbcontext);
 
 			sz += 4;
@@ -675,38 +700,29 @@ after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval 
 #endif
 	  ///// Added by Bo Gao end 2007-11-01
 
-		memcpy(context->vbuffer, context->video_packet, sz);
-		context->vbufferlen=sz;
+		memcpy(m_context->vbuffer, m_context->video_packet, sz);
+		m_context->vbufferlen=sz;
 	} 
 	 
 
 		 // Tell the main demux loop that we're ready for another packet.
-	context->need_video = true;
-	free(context->video_packet);
-	if(context->configDataLen > 0){
-		free(context->configData);
-		context->configData = NULL;
+	m_context->need_video = true;
+	free(m_context->video_packet);
+	if(m_context->configDataLen > 0){
+		free(m_context->configData);
+		m_context->configData = NULL;
 	}
-	context->video_packet  = NULL;
+	m_context->video_packet  = NULL;
 
-	// xxxbo In the case that context->time_left is a negative from the beginning for some reason,
+	// xxxbo In the case that m_context->time_left is a negative from the beginning for some reason,
 	// Ambulant should render the video other than stop at the beginning.
-	if (context->time_left >= 0 && context->last_pts >= context->time_left) {
-		lib::logger::get_logger()->debug("after_reading_video: last_pts = %lld", context->last_pts);
-	 	context->eof = true;
+	if (m_context->time_left >= 0 && m_context->last_pts >= m_context->time_left) {
+		lib::logger::get_logger()->debug("after_reading_video: last_pts = %lld", m_context->last_pts);
+	 	m_context->eof = true;
 	}
-	context->blocking_flag = ~0;
+	m_context->blocking_flag = ~0;
 	//XXX Do we need to free data here ?
-}
-
-static void 
-on_source_close(void* data) 
-{
-	rtsp_context_t* context = (rtsp_context_t*) data;
-	if (context) {
-		context->eof = true;
-		context->blocking_flag = ~0;
-	}
+	m_critical_section.leave();
 }
 
 #ifdef WITH_H264
