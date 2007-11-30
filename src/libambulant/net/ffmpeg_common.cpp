@@ -364,7 +364,13 @@ ffmpeg_demux::run()
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run:  started");
 		if (m_seektime_set) {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %d+%d=%d", m_clip_begin, m_seektime, m_clip_begin+m_seektime);
-			timestamp_t seektime = av_rescale_q(m_clip_begin+m_seektime, AV_TIME_BASE_Q, m_con->streams[streamnr]->time_base);
+			timestamp_t seektime;
+			// If we have a video stream we should rescale our time offset to the timescale of the video stream.
+			// Theoretically we may have to do something similar for audio, but we seem to get away with not doing anything.
+			if (streamnr >= 0)
+				seektime = av_rescale_q(m_clip_begin+m_seektime, AV_TIME_BASE_Q, m_con->streams[streamnr]->time_base);
+			else
+				seektime = m_clip_begin+m_seektime;
 #if LIBAVFORMAT_BUILD > 4628
 			int seekresult = av_seek_frame(m_con, -1, seektime, AVSEEK_FLAG_BACKWARD);
 #else

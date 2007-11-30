@@ -3,7 +3,11 @@ import sys
 import os
 
 # Set these variable identical to your configure options.
-WITH_GTK=True
+if sys.platform == 'linux2':
+    # Not really the correct test, but okay for the time being
+    WITH_GTK=True
+else:
+    WITH_GTK=False
 WITH_QT= not not os.getenv("QTDIR")
 if sys.platform == 'win32':
     WITH_FFMPEG=False
