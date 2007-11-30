@@ -1,3 +1,12 @@
+2007-11-30 00:48  jackjansen
+
+	* Fixed clip-begin problems for ffmpeg-only (i.e. without live555):
+	  added a call to av_rescale_q() to convert our microsecond-based
+	  timing to the timescale the video uses. This makes you wonder how
+	  it ever worked...
+
+	  Still need to check whether live555 has a similar problem.
+
 2007-11-28 14:56  jackjansen
 
 	* Minor tweaks for building on 10.5
