@@ -627,15 +627,17 @@ after_reading_video(void* data, unsigned sz, unsigned truncated, struct timeval 
 		///// ffmpeg cannot consume the data in the sink fastly enough with its low power cpu and limited memory.
 #if 1
 		demux_datasink *sink = context->sinks[context->video_stream];
-		while (sink->buffer_full() ) {
-				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", context->video_stream);
-				 // sleep 10 millisec, hardly noticeable
-#ifdef	AMBULANT_PLATFORM_WIN32
-				ambulant::lib::sleep_msec(10); // XXXX should be woken by readdone()
-#else
-				usleep(10000);
-#endif//AMBULANT_PLATFORM_WIN32
-				sink = context->sinks[context->video_stream];
+		if (sink != NULL){
+			while (sink && sink->buffer_full() /*&& !exit_requested()*/) {
+					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", context->video_stream);
+					 // sleep 10 millisec, hardly noticeable
+	#ifdef	AMBULANT_PLATFORM_WIN32
+					ambulant::lib::sleep_msec(10); // XXXX should be woken by readdone()
+	#else
+					usleep(10000);
+	#endif//AMBULANT_PLATFORM_WIN32
+					sink = context->sinks[context->video_stream];
+			}
 		}
 #endif
 
