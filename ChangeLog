@@ -1,3 +1,22 @@
+2007-11-30 12:24  jackjansen
+
+	* Refactored: changed after_reading_{audio,video} into stubs that
+	  call out to methods in rtsp_demux. These methods can now do
+	  proper locking and have access to all instance variables.
+
+2007-11-30 10:44  jackjansen
+
+	* - rtsp crashed if you stopped playback before the stream was
+	  exhausted   (attempting to feed data to a deleted datasink).
+	  Fixed.  - ffmpeg timestamp scaling should only be done when there
+	  is a videostream.  - don't try to build gtk support for Python
+	  unless on Linux.
+
+2007-11-30 10:26  bogao
+
+	* fixed ambulant (on windows mobile 5 with ffmpeg and live555)
+	  crash when rendering mp4 over rtsp
+
 2007-11-30 00:48  jackjansen
 
 	* Fixed clip-begin problems for ffmpeg-only (i.e. without live555):
