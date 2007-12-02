@@ -30,6 +30,7 @@
 #include "ambulant/lib/asb.h"
 #include "ambulant/net/url.h"
 #define round(x) ((int)((x)+0.5))
+#define INT64_C(x) x##LL
 
 // WARNING: turning on AM_DBG globally for the ffmpeg code seems to trigger
 // a condition that makes the whole player hang or collapse. So you probably
@@ -472,8 +473,18 @@ ffmpeg_video_decoder_datasource::data_avail()
 		while (sz > 0) {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: decoding picture(s),  %d byteas of data ", sz);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: m_con: 0x%x, gotpic = %d, sz = %d ", m_con, got_pic, sz);
+#ifdef WITH_FFMPEG_HURRY_UP
+			// XXXJACK: setting hurry_up should make the decoder run faster in case we
+			// are not interested in the data (still seeking forward). Not enabled yet,
+			// will do so later (and then this comment should disappear).
+			if (ipts != 0 && ipts != AV_NOPTS_VALUE && ipts < m_src->get_clip_begin() - 60000)
+				m_con->hurry_up = 1;
+#endif
 			len = avcodec_decode_video(m_con, frame, &got_pic, ptr, sz);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: avcodec_decode_video: used %d of %d bytes, gotpic = %d, ipts = %lld", len, sz, got_pic, ipts);
+#ifdef WITH_FFMPEG_HURRY_UP
+			m_con->hurry_up = 0;
+#endif
 #if 0
             // XXX Dirac hack, to be removed.
             // Some codecs (notably Dirac) always gobble up all bytes,
@@ -487,8 +498,49 @@ ffmpeg_video_decoder_datasource::data_avail()
 				if (got_pic) {
 					AM_DBG lib::logger::get_logger()->debug("pts seems to be : %lld",ipts);
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: decoded picture, used %d bytes, %d left", len, sz);
-					// Setup the AVPicture for the format we want, plus the data pointer
+					// At this point we need m_fmt to be correct, we are going to use
+					// sizes, durations, etc.
 					_need_fmt_uptodate();
+					// Let's first compute the timestamp for this frame. If it is an old frame
+					// we can drop it straight away and don't have to go through the motion
+					// of doing image conversion.
+					timestamp_t pts = 0;
+					timestamp_t frame_delay = 0;
+				
+				    pts = ipts;
+					if (pts != 0) {
+						m_video_clock = pts;
+					} else {
+						pts = m_video_clock;
+					}
+					frame_delay = m_fmt.frameduration;
+					if (frame->repeat_pict)
+						frame_delay += (timestamp_t)(frame->repeat_pict*m_fmt.frameduration*0.5);
+					m_video_clock += frame_delay;
+					AM_DBG lib::logger::get_logger()->debug("videoclock: ipts=%lld pts=%lld video_clock=%lld, frame_delay=%lld", ipts, pts, m_video_clock, frame_delay);
+					AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: storing frame with pts = %lld",pts );
+					m_frame_count++;
+					bool drop_this_frame = false;
+#if 1
+					// XXXJACK No need to test for B frames and such, simply drop things with old ts
+					if (pts < m_src->get_clip_begin()-frame_delay) {
+#else
+					if (m_con->has_b_frames && frame->pict_type == FF_B_TYPE && pts < m_src->get_clip_begin()) {
+#endif
+						// A non-essential frame while skipping forward.
+						AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropping frame %d, ts=%lld", m_frame_count, pts);
+						drop_this_frame = true;
+					}
+					if (pts < m_old_frame.first) {
+						// A frame that came after this frame has already been consumed.
+						// We should drop this frame.
+						AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropping frame %d: too late, earlier frame already displayed", m_frame_count);
+						drop_this_frame = true;
+					}
+					m_elapsed = pts;
+					if (drop_this_frame) continue;
+					
+					// Next step: deocde the frame to the image format we want.
 					w = m_fmt.width;
 					h = m_fmt.height;
 					m_size = w * h * 4;
@@ -516,42 +568,9 @@ ffmpeg_video_decoder_datasource::data_avail()
 						p[2] = c;
 					}
 #endif
-					// Try and compute the timestamp and update the video clock.
-					timestamp_t pts = 0;
-					timestamp_t frame_delay = 0;
-				
-				    pts = ipts;
-					if (pts != 0) {
-						m_video_clock = pts;
-					} else {
-						pts = m_video_clock;
-					}
-						frame_delay = m_fmt.frameduration;
-						if (frame->repeat_pict)
-							frame_delay += (timestamp_t)(frame->repeat_pict*m_fmt.frameduration*0.5);
-						m_video_clock += frame_delay;
-					AM_DBG lib::logger::get_logger()->debug("videoclock: ipts=%lld pts=%lld video_clock=%lld, frame_delay=%lld", ipts, pts, m_video_clock, frame_delay);
-					AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: storing frame with pts = %lld",pts );
-					m_frame_count++;
-					bool drop_this_frame = false;
-					if (m_con->has_b_frames && frame->pict_type == FF_B_TYPE && pts < m_src->get_clip_begin()) {
-						// A non-essential frame while skipping forward.
-						AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: could drop B frame %d, ts=%lld", m_frame_count, pts);
-						drop_this_frame = true;
-					}
-					if (pts < m_old_frame.first) {
-						// A frame that came after this frame has already been consumed.
-						// We should drop this frame.
-						AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropping frame %d: too late", m_frame_count);
-						drop_this_frame = true;
-					}
-					if (!drop_this_frame) {
-						std::pair<timestamp_t, char*> element(pts, framedata);
-						m_frames.push(element);
-					} else {
-						free(framedata);
-					}
-					m_elapsed = pts;
+					// Finally send the frame upstream.
+					std::pair<timestamp_t, char*> element(pts, framedata);
+					m_frames.push(element);
 				} else {
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: incomplete picture, used %d bytes, %d left", len, sz);
 				}
