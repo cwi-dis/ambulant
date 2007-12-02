@@ -376,7 +376,7 @@ demux_video_datasource::read_ahead(timestamp_t time)
 	assert(!m_thread->is_running());
 	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::read_ahead: (this = 0x%x), clip_begin=%d", (void*) this, time);
 
-	m_thread->seek(time);
+	m_thread->read_ahead(time);
 	m_thread->start();
 	m_lock.leave();
 }

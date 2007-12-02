@@ -406,16 +406,15 @@ ffmpeg_demux::run()
 			}
 			if (sink && !exit_requested()) {
 				
-				pts = 0;
-				
-				if (streamnr > -1) {
-					// XXXJACK: use pts or dts here?
-					if (pkt->pts != AV_NOPTS_VALUE) {
-            			pts = (timestamp_t) round(( (double) m_con->streams[streamnr]->time_base.num* 1000000.0 /m_con->streams[streamnr]->time_base.den)*pkt->dts);
-						pts = av_rescale_q(pkt->pts, m_con->streams[streamnr]->time_base, AV_TIME_BASE_Q);					}
+				pts = pkt->pts;
+				if (pts == AV_NOPTS_VALUE) {
+					/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_parser::run: pts invalid using dts=%lld", pkt->dts);
+					pts = pkt->dts;
 				}
+				if (pts != AV_NOPTS_VALUE)
+					pts = av_rescale_q(pkt->pts, m_con->streams[pkt->stream_index]->time_base, AV_TIME_BASE_Q);
 				
-				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.data_avail(%lld, 0x%x, %d, %d) pts=%lld", pkt->stream_index, pkt->pts, pkt->data, pkt->size, pkt->duration, pts);
+				/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.data_avail(%lld, 0x%x, %d, %d) pts=%lld", pkt->stream_index, pkt->pts, pkt->data, pkt->size, pkt->duration, pts);
 				
 				sink->data_avail(pts, pkt->data, pkt->size);
 

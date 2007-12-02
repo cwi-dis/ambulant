@@ -274,7 +274,9 @@ class audio_datasource_mixin {
 	virtual timestamp_t get_clip_end() = 0;
 	/// At what timestamp value should audio playback start?	
 	virtual timestamp_t get_clip_begin() = 0;
-	/// returns m_clip_begin if the datasource took care of clip_begin otherwise it returns 0
+	/// returns m_clip_begin if the datasource took care of clip_begin otherwise it returns 0.
+	/// The datasource should take care that the first returned timestamp in this case corresponds
+	/// to clip_begin, not 0.
 	virtual timestamp_t get_start_time() = 0;
 	/// Return the duration of the audio data, if known.
 	virtual common::duration get_dur() = 0;

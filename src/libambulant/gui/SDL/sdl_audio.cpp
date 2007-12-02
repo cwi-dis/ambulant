@@ -534,7 +534,7 @@ gui::sdl::sdl_audio_renderer::start(double where)
 		(void *)this, m_node->get_sig().c_str(), where);
 	if (m_audio_src) {
 	
-		if (m_audio_src->get_start_time() != m_audio_src->get_clip_begin())
+		if (m_audio_src->get_start_time() == m_audio_src->get_clip_begin())
 			lib::logger::get_logger()->trace("sdl_audio_renderer: warning: datasource does not support clipBegin");
 		if (where) m_audio_src->seek((net::timestamp_t)(where*1000000));
 		lib::event *e = new readdone_callback(this, &sdl_audio_renderer::data_avail);
