@@ -435,6 +435,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 	int pic_fmt, dst_pic_fmt;
 	int w,h;
 	unsigned char* ptr;
+	bool did_generate_frame = false;
 	
 	timestamp_t ipts = 0;
 	uint8_t *inbuf;
@@ -491,97 +492,97 @@ ffmpeg_video_decoder_datasource::data_avail()
             // and only return len==sz if got_pic is true.
             len = sz;
 #endif
-			if (len >= 0) {
-				assert(len <= sz);
-				ptr +=len;	
-				sz  -= len;
-				if (got_pic) {
-					AM_DBG lib::logger::get_logger()->debug("pts seems to be : %lld",ipts);
-					AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: decoded picture, used %d bytes, %d left", len, sz);
-					// At this point we need m_fmt to be correct, we are going to use
-					// sizes, durations, etc.
-					_need_fmt_uptodate();
-					// Let's first compute the timestamp for this frame. If it is an old frame
-					// we can drop it straight away and don't have to go through the motion
-					// of doing image conversion.
-					timestamp_t pts = 0;
-					timestamp_t frame_delay = 0;
-				
-				    pts = ipts;
-					if (pts != 0) {
-						m_video_clock = pts;
-					} else {
-						pts = m_video_clock;
-					}
-					frame_delay = m_fmt.frameduration;
-					if (frame->repeat_pict)
-						frame_delay += (timestamp_t)(frame->repeat_pict*m_fmt.frameduration*0.5);
-					m_video_clock += frame_delay;
-					AM_DBG lib::logger::get_logger()->debug("videoclock: ipts=%lld pts=%lld video_clock=%lld, frame_delay=%lld", ipts, pts, m_video_clock, frame_delay);
-					AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: storing frame with pts = %lld",pts );
-					m_frame_count++;
-					bool drop_this_frame = false;
-#if 1
-					// XXXJACK No need to test for B frames and such, simply drop things with old ts
-					if (pts < m_src->get_clip_begin()-frame_delay) {
-#else
-					if (m_con->has_b_frames && frame->pict_type == FF_B_TYPE && pts < m_src->get_clip_begin()) {
-#endif
-						// A non-essential frame while skipping forward.
-						AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropping frame %d, ts=%lld", m_frame_count, pts);
-						drop_this_frame = true;
-					}
-					if (pts < m_old_frame.first) {
-						// A frame that came after this frame has already been consumed.
-						// We should drop this frame.
-						AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropping frame %d: too late, earlier frame already displayed", m_frame_count);
-						drop_this_frame = true;
-					}
-					m_elapsed = pts;
-					if (drop_this_frame) continue;
-					
-					// Next step: deocde the frame to the image format we want.
-					w = m_fmt.width;
-					h = m_fmt.height;
-					m_size = w * h * 4;
-					assert(m_size);
-					char *framedata = (char*) malloc(m_size);
-					AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:framedata=0x%x", framedata);
-					if (framedata == NULL) {
-						lib::logger::get_logger()->debug("ffmpeg_video_decoder: malloc(%d) failed", m_size);
-						lib::logger::get_logger()->error("Out of memory playing video");
-						m_src->stop();
-						sz = 0;
-						goto out_of_memory;
-					}
-					dst_pic_fmt = PIX_FMT_RGBA32;
-					dummy2 = avpicture_fill(&picture, (uint8_t*) framedata, dst_pic_fmt, w, h);
-					// The format we have is already in frame. Convert.
-					pic_fmt = m_con->pix_fmt;
-					img_convert(&picture, dst_pic_fmt, (AVPicture*) frame, pic_fmt, w, h);
-#if defined(AMBULANT_PLATFORM_MACOS) && defined(__LITTLE_ENDIAN__)
-					// The format is now RGBARGBA, but on the Intel mac we need BGRABGRA
-					char *p, c;
-					for (p=framedata; p<framedata+m_size; p+=4) {
-						c = p[0];
-						p[0] = p[2];
-						p[2] = c;
-					}
-#endif
-					// Finally send the frame upstream.
-					std::pair<timestamp_t, char*> element(pts, framedata);
-					m_frames.push(element);
-				} else {
-					AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: incomplete picture, used %d bytes, %d left", len, sz);
-				}
-			} else {
-				lib::logger::get_logger()->error(gettext("error decoding video frame"));
+			if (len < 0) {
+				lib::logger::get_logger()->trace(gettext("error decoding video frame"));
+				break;
 			}
-
+			assert(len <= sz);
+			ptr +=len;	
+			sz  -= len;
+			if (!got_pic) {
+				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: incomplete picture, used %d bytes, %d left", len, sz);
+				continue;
+			}
+			AM_DBG lib::logger::get_logger()->debug("pts seems to be : %lld",ipts);
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: decoded picture, used %d bytes, %d left", len, sz);
+			// At this point we need m_fmt to be correct, we are going to use
+			// sizes, durations, etc.
+			_need_fmt_uptodate();
+			// Let's first compute the timestamp for this frame. If it is an old frame
+			// we can drop it straight away and don't have to go through the motion
+			// of doing image conversion.
+			timestamp_t pts = 0;
+			timestamp_t frame_delay = 0;
+		
+			pts = ipts;
+			if (pts != 0) {
+				m_video_clock = pts;
+			} else {
+				pts = m_video_clock;
+			}
+			frame_delay = m_fmt.frameduration;
+			if (frame->repeat_pict)
+				frame_delay += (timestamp_t)(frame->repeat_pict*m_fmt.frameduration*0.5);
+			m_video_clock += frame_delay;
+			AM_DBG lib::logger::get_logger()->debug("videoclock: ipts=%lld pts=%lld video_clock=%lld, frame_delay=%lld", ipts, pts, m_video_clock, frame_delay);
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: storing frame with pts = %lld",pts );
+			m_frame_count++;
+			bool drop_this_frame = false;
+#if 1
+			// XXXJACK No need to test for B frames and such, simply drop things with old ts
+			if (pts < m_src->get_clip_begin()-frame_delay) {
+#else
+			if (m_con->has_b_frames && frame->pict_type == FF_B_TYPE && pts < m_src->get_clip_begin()) {
+#endif
+				// A non-essential frame while skipping forward.
+				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropping frame %d, ts=%lld", m_frame_count, pts);
+				drop_this_frame = true;
+			}
+			if (pts < m_old_frame.first) {
+				// A frame that came after this frame has already been consumed.
+				// We should drop this frame.
+				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropping frame %d: too late, earlier frame already displayed", m_frame_count);
+				drop_this_frame = true;
+			}
+			m_elapsed = pts;
+			if (drop_this_frame) continue;
+			
+			// Next step: deocde the frame to the image format we want.
+			w = m_fmt.width;
+			h = m_fmt.height;
+			m_size = w * h * 4;
+			assert(m_size);
+			char *framedata = (char*) malloc(m_size);
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:framedata=0x%x", framedata);
+			if (framedata == NULL) {
+				lib::logger::get_logger()->debug("ffmpeg_video_decoder: malloc(%d) failed", m_size);
+				lib::logger::get_logger()->error("Out of memory playing video");
+				m_src->stop();
+				sz = 0;
+				goto out_of_memory;
+			}
+			dst_pic_fmt = PIX_FMT_RGBA32;
+			dummy2 = avpicture_fill(&picture, (uint8_t*) framedata, dst_pic_fmt, w, h);
+			// The format we have is already in frame. Convert.
+			pic_fmt = m_con->pix_fmt;
+			img_convert(&picture, dst_pic_fmt, (AVPicture*) frame, pic_fmt, w, h);
+#if defined(AMBULANT_PLATFORM_MACOS) && defined(__LITTLE_ENDIAN__)
+			// The format is now RGBARGBA, but on the Intel mac we need BGRABGRA
+			char *p, c;
+			for (p=framedata; p<framedata+m_size; p+=4) {
+				c = p[0];
+				p[0] = p[2];
+				p[2] = c;
+			}
+#endif
+			// Finally send the frame upstream.
+			std::pair<timestamp_t, char*> element(pts, framedata);
+			m_frames.push(element);
+			did_generate_frame = true;
 		} // End of while loop
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:done decoding (0x%x) ", m_con);
-		m_src->frame_done(0, false);
   	}
+	m_src->frame_done(0, false);
 	if (frame) av_free(frame);
   out_of_memory:
 	// Now tell our client, if we have data available or are at end of file.
