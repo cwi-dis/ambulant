@@ -70,9 +70,13 @@ ambulant::net::rtsp_demux::rtsp_demux(rtsp_context_t* context, timestamp_t clip_
 :	m_context(context),
 	m_clip_begin(clip_begin),
 	m_clip_end(clip_end),
-	m_clip_begin_set(false)
+	m_seektime(0),
+	m_seektime_changed(false)
 //,	m_critical_section()
 {
+	assert(m_clip_begin >= 0);
+	if ( m_clip_begin ) m_seektime_changed = true;
+
 	m_context->audio_fmt.parameters = (void*) m_context->audio_codec_name;
 	m_context->video_fmt.parameters = (void*) m_context->video_codec_name;
 #if 0
@@ -82,9 +86,12 @@ ambulant::net::rtsp_demux::rtsp_demux(rtsp_context_t* context, timestamp_t clip_
 #endif
 	m_context->vbufferlen = 0;
 	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::rtsp_demux(0x%x)", (void*) this);
-	
+
+#if 0
+	// XXXJACK suspect: we shoulnd't mess with clip_end here...
 	if ( m_clip_end < 0 || m_clip_end > m_context->time_left) 
 		m_clip_end = m_context->time_left;	
+#endif
 }
 
 ambulant::net::rtsp_demux::~rtsp_demux() {
@@ -377,31 +384,18 @@ ambulant::net::rtsp_demux::read_ahead(timestamp_t time)
 {	
 	m_critical_section.enter();
 	m_clip_begin = time;
-	m_clip_begin_set = false;
+	m_seektime_changed = true;
 	m_critical_section.leave();
 }
 
 void
 ambulant::net::rtsp_demux::seek(timestamp_t time)
-{	
-	set_position(time);
-}
-
-void
-ambulant::net::rtsp_demux::set_position(timestamp_t time)
 {
-	float time_sec;
-	
 	m_critical_section.enter();
-	time_sec = time / 1000000.0;
-	MediaSubsession* subsession;
-	MediaSubsessionIterator iter(*m_context->media_session);
-	while (( subsession = iter.next() ) != NULL) {
-		m_context->rtsp_client->playMediaSubsession(*subsession, time_sec);
-	}
+	m_seektime = time;
+	m_seektime_changed = true;
 	m_critical_section.leave();
 }
-
 
 static unsigned char* parseH264ConfigStr( char const* configStr,
                                           unsigned int& configSize );
@@ -411,15 +405,15 @@ ambulant::net::rtsp_demux::run()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() called (%d)", m_context->need_audio);
 	m_context->blocking_flag = 0;
-	if (m_context->media_session) {
-		if(!m_context->rtsp_client->playMediaSession(*m_context->media_session)) {
-			lib::logger::get_logger()->error("playing RTSP connection failed");
-			return 1;
-		}
-	} else {
+	if (!m_context->media_session) {
 		lib::logger::get_logger()->error("playing RTSP connection failed");
 		return 1;
 	}
+	if(!m_context->rtsp_client->playMediaSession(*m_context->media_session, (m_clip_begin+m_seektime)/1000000.0, -1.0, 1.0)) {
+		lib::logger::get_logger()->error("playing RTSP connection failed");
+		return 1;
+	}
+	m_seektime_changed = false;
 	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() starting the loop ");
 	m_critical_section.enter();
 	add_ref();
@@ -428,12 +422,19 @@ ambulant::net::rtsp_demux::run()
 	while(!m_context->eof && !exit_requested()) {
 		AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run: start another loop iteration");
 		m_context->blocking_flag = 0;
-#if 0 // XXXJack: suspect...
-		if (!m_clip_begin_set) {
-			set_position(m_clip_begin);
-			m_clip_begin_set = true;
+		if (m_seektime_changed) {
+			// Note: we have not tested (yet) how seeking influences the timestamps returned by live555. Needs to be
+			// tested later.
+			float seektime_secs = (m_clip_begin+m_seektime)/1000000.0;
+			/*AM_DBG*/ lib::logger::get_logger()->debug("rtsp_demux::run: seeking to %f", seektime_secs);
+			if(!m_context->rtsp_client->pauseMediaSession(*m_context->media_session)) {
+				lib::logger::get_logger()->error("pausing RTSP media session failed");
+			}
+			if(!m_context->rtsp_client->playMediaSession(*m_context->media_session, seektime_secs, -1.0, 1.0)) {
+				lib::logger::get_logger()->error("resuming RTSP media session failed");
+			}
+			m_seektime_changed = false;
 		}
-#endif
 		MediaSubsession* subsession;
 		MediaSubsessionIterator iter(*m_context->media_session);
 		// Only audio/video session need to apply for a job !
@@ -607,6 +608,10 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
 		///// Added by Bo Gao begin 2007-11-19
 
 	timestamp_t rpts =  (timestamp_t)(pts.tv_sec - m_context->first_sync_time.tv_sec) * 1000000LL  +  (timestamp_t) (pts.tv_usec - m_context->first_sync_time.tv_usec);
+	// XXXJACK: Some code downstream expects timestamps to be file-based, i.e. when playing with clipBegin=10s it expects the first frame to have
+	// timestamp=10s. Not sure this is correct, but for now we fix up the timestamp. I'm also not sure how this interacts with seeking.
+	// Please remove this comment once it has been checked that the current behaviour is correct.
+	rpts += m_clip_begin;
 	/*AM_DBG*/ lib::logger::get_logger()->debug("after_reading_video: called timestamp 0x%08.8x%08.8x, sec = %d, usec =  %d", (long)(rpts>>32), (long)(rpts&0xffffffff), pts.tv_sec, pts.tv_usec);
 	
 	
@@ -669,6 +674,7 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
 		// Send the data to our sink, which is responsible for copying/saving it before returning.
 		if(sink && !exit_requested()) {
 			AM_DBG lib::logger::get_logger()->debug("Video packet length %d", m_context->vbufferlen);
+			assert(m_context->vbufferlen);
 			sink->data_avail(m_context->last_pts, (uint8_t*) m_context->vbuffer , m_context->vbufferlen);
 		}
 		

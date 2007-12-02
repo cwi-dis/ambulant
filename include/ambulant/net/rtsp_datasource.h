@@ -131,7 +131,6 @@ class rtsp_demux : public abstract_demux {
 	video_format& get_video_format() { return m_context->video_fmt; };
 	void seek(timestamp_t time);
 	void read_ahead(timestamp_t time);
-	void set_position(timestamp_t time);
 	void cancel();
 	timestamp_t get_clip_end();
 	timestamp_t get_clip_begin();
@@ -142,12 +141,14 @@ class rtsp_demux : public abstract_demux {
   protected:
 	unsigned long run();
   private:	
+	void _set_position(timestamp_t time);
 	void _cancel();
 	lib::critical_section m_critical_section;
 	rtsp_context_t* m_context;
   	timestamp_t m_clip_begin;
 	timestamp_t m_clip_end;
-  	bool m_clip_begin_set;
+	timestamp_t m_seektime;
+  	bool m_seektime_changed; // true if either m_clip_begin or m_seektime has changed
 };
 
 

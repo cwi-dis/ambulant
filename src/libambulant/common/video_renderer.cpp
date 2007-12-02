@@ -323,7 +323,7 @@ video_renderer::data_avail()
 			frame_ts_micros += frame_duration;						
 	} else if (frame_ts_micros <= now_micros - frame_duration) {
 		m_frame_late++;
-		AM_DBG lib::logger::get_logger()->debug("video_renderer: skip late frame, ts=%lld, now+dur=%lld", frame_ts_micros, now_micros+frame_duration);
+		/*AM_DBG*/ lib::logger::get_logger()->debug("video_renderer: skip late frame, ts=%lld, now+dur=%lld", frame_ts_micros, now_micros+frame_duration);
 	} else if (frame_ts_micros >= m_clip_begin-frame_duration) {
 		AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: frame early ! (timestamp = %lld, start_time = %lld, diff = %lld)",frame_ts_micros, m_clip_begin - frame_duration, frame_ts_micros - (now_micros + frame_duration));
 		m_frame_early++;

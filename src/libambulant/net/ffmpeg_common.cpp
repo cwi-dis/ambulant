@@ -122,10 +122,10 @@ ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timesta
 	m_clip_begin(clip_begin),
 	m_clip_end(clip_end),
 	m_seektime(0),
-	m_seektime_set(false)
+	m_seektime_changed(false)
 {
 	assert(m_clip_begin >= 0);
-	if ( m_clip_begin ) m_seektime_set = true;
+	if ( m_clip_begin ) m_seektime_changed = true;
 	
 	m_audio_fmt = audio_format("ffmpeg");
 	m_audio_fmt.bits = 16;
@@ -315,7 +315,7 @@ ffmpeg_demux::read_ahead(timestamp_t time)
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::read_ahead(%d), m_clip_begin was %d", time, m_clip_begin);
 	m_clip_begin = time; // XXXX Or m_seek_time??
-	m_seektime_set = true;
+	m_seektime_changed = true;
 	m_lock.leave();
 }
 
@@ -324,7 +324,7 @@ ffmpeg_demux::seek(timestamp_t time)
 {
 	m_lock.enter();
 	m_seektime = time;
-	m_seektime_set = true;
+	m_seektime_changed = true;
 	m_lock.leave();
 }
 
@@ -362,7 +362,7 @@ ffmpeg_demux::run()
 		pkt->pts = 0;
 		// Read a packet
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run:  started");
-		if (m_seektime_set) {
+		if (m_seektime_changed) {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %d+%d=%d", m_clip_begin, m_seektime, m_clip_begin+m_seektime);
 			timestamp_t seektime;
 			// If we have a video stream we should rescale our time offset to the timescale of the video stream.
@@ -383,7 +383,7 @@ ffmpeg_demux::run()
 //				av_seek_frame(m_con, -1, 0, AVSEEK_FLAG_BYTE);
 //#endif
 			}
-			m_seektime_set = false;
+			m_seektime_changed = false;
 		}
 		m_lock.leave();
 #if LIBAVFORMAT_BUILD > 4609

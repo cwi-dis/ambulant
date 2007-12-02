@@ -126,7 +126,7 @@ class ffmpeg_demux : public abstract_demux {
   	timestamp_t m_clip_begin;
   	timestamp_t m_clip_end;
 	timestamp_t m_seektime;
-	bool m_seektime_set;
+	bool m_seektime_changed;	// True if either m_seektime or m_clip_begin has changed.
 };
 
 }	// end namespace net
