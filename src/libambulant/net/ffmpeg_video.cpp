@@ -51,15 +51,8 @@
 #define MAX_VIDEO_FRAMES 100
 #endif
 
-// This construction is needed to get the CVS version of ffmpeg to work:
-// AVStream.codec got changed from AVCodecContext to AVCodecContext*
-#if LIBAVFORMAT_BUILD > 4628
-	#define am_get_codec_var(codec,var) codec->var
-	#define am_get_codec(codec) codec
-#else
-	#define am_get_codec_var(codec,var) codec.var
-	#define am_get_codec(codec) &codec
-#endif
+#define am_get_codec_var(codec,var) codec->var
+#define am_get_codec(codec) codec
 
 using namespace ambulant;
 using namespace net;
@@ -70,6 +63,8 @@ video_datasource_factory *
 ambulant::net::get_ffmpeg_video_datasource_factory()
 {
 #if 0
+	// It seems datasource factories are sometimes cleaned up, hence we cannot use
+	// a singleton. Need to fix/document at some point.
 	static video_datasource_factory *s_factory;
 	
 	if (!s_factory) s_factory = new ffmpeg_video_datasource_factory();
@@ -402,15 +397,9 @@ ffmpeg_video_decoder_datasource::_need_fmt_uptodate()
 
 	if (m_fmt.frameduration <= 0) {
 		// And convert the timestamp
-#if LIBAVFORMAT_BUILD <= 4623
-		timestamp_t framerate = m_con->frame_rate;
-		timestamp_t framebase = m_con->frame_rate_base;
-		timestamp_t frameduration = (framebase*1000000)/framerate;
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_need_fmt_uptodate(): frameduration = %lld", frameduration);
-#else
+		// XXXJACK: Bad code. Use av_rescale_q with correct timebases.
 		timestamp_t frameduration = (timestamp_t) round(m_con->time_base.num *1000000.0 / (double) m_con->time_base.den) ;
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_need_fmt_uptodate(): frameduration = %lld, %d %d", frameduration, m_con->time_base.num, m_con->time_base.den);
-#endif
 		m_fmt.frameduration = frameduration;
 	}
 }
@@ -485,7 +474,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: m_con: 0x%x, gotpic = %d, sz = %d ", m_con, got_pic, sz);
 			len = avcodec_decode_video(m_con, frame, &got_pic, ptr, sz);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: avcodec_decode_video: used %d of %d bytes, gotpic = %d, ipts = %lld", len, sz, got_pic, ipts);
-#if LIBAVFORMAT_BUILD > 4609
+#if 0
             // XXX Dirac hack, to be removed.
             // Some codecs (notably Dirac) always gobble up all bytes,
             // and only return len==sz if got_pic is true.
@@ -531,7 +520,6 @@ ffmpeg_video_decoder_datasource::data_avail()
 					timestamp_t pts = 0;
 					timestamp_t frame_delay = 0;
 				
-#if LIBAVFORMAT_BUILD > 4906
 				    pts = ipts;
 					if (pts != 0) {
 						m_video_clock = pts;
@@ -542,24 +530,6 @@ ffmpeg_video_decoder_datasource::data_avail()
 						if (frame->repeat_pict)
 							frame_delay += (timestamp_t)(frame->repeat_pict*m_fmt.frameduration*0.5);
 						m_video_clock += frame_delay;
-#else // ffmpeg 0.4.8 
-					if (ipts != AV_NOPTS_VALUE) pts = ipts;
-					if (m_con->has_b_frames && frame->pict_type != FF_B_TYPE) {
-						pts = m_last_p_pts;
-						m_last_p_pts = ipts;
-						AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:frame has B frames but this frame is no B frame  (this=0x%x) ", this);
-						AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:pts set to %f, remember %f", pts, m_last_p_pts);
-					}
-					if (pts != 0) {
-						m_video_clock = pts;
-					} else {
-						pts = m_video_clock;
-						frame_delay = m_fmt.frameduration;
-						if (frame->repeat_pict)
-							frame_delay += (timestamp_t)(frame->repeat_pict*m_fmt.frameduration*0.5);
-						m_video_clock += frame_delay;
-					}
-#endif				
 					AM_DBG lib::logger::get_logger()->debug("videoclock: ipts=%lld pts=%lld video_clock=%lld, frame_delay=%lld", ipts, pts, m_video_clock, frame_delay);
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: storing frame with pts = %lld",pts );
 					m_frame_count++;

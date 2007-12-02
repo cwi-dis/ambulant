@@ -38,6 +38,8 @@ raw_datasource_factory *
 ambulant::net::get_ffmpeg_raw_datasource_factory()
 {
 #if 0
+	// It seems datasource factories are sometimes cleaned up, hence we cannot use
+	// a singleton. Need to fix/document at some point.
 	static raw_datasource_factory *s_factory;
 	
 	if (!s_factory) s_factory = new ffmpeg_raw_datasource_factory();

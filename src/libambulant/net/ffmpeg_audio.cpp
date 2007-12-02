@@ -49,6 +49,8 @@ audio_datasource_factory *
 ambulant::net::get_ffmpeg_audio_datasource_factory()
 {
 #if 0
+	// It seems datasource factories are sometimes cleaned up, hence we cannot use
+	// a singleton. Need to fix/document at some point.
 	static audio_datasource_factory *s_factory;
 	
 	if (!s_factory) s_factory = new ffmpeg_audio_datasource_factory();
@@ -62,6 +64,8 @@ audio_decoder_finder *
 ambulant::net::get_ffmpeg_audio_decoder_finder()
 {
 #if 0
+	// It seems datasource factories are sometimes cleaned up, hence we cannot use
+	// a singleton. Need to fix/document at some point.
 	static audio_parser_finder *s_factory;
 	
 	if (!s_factory) s_factory = new ffmpeg_audio_decoder_finder();
@@ -75,6 +79,8 @@ audio_filter_finder *
 ambulant::net::get_ffmpeg_audio_filter_finder()
 {
 #if 0
+	// It seems datasource factories are sometimes cleaned up, hence we cannot use
+	// a singleton. Need to fix/document at some point.
 	static audio_filter_finder *s_factory;
 	
 	if (!s_factory) s_factory = new ffmpeg_audio_filter_finder();
@@ -773,9 +779,6 @@ ffmpeg_resample_datasource::ffmpeg_resample_datasource(audio_datasource *src, au
 {
 	ffmpeg_init();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::ffmpeg_resample_datasource()->0x%x m_buffer=0x%x", (void*)this, (void*)&m_buffer);
-#ifdef RESAMPLE_READ_ALL
-	m_buffer.set_max_size(0);
-#endif
 }
 
 ffmpeg_resample_datasource::~ffmpeg_resample_datasource() 
@@ -895,12 +898,6 @@ ffmpeg_resample_datasource::data_avail()
 			lib::event *e = new resample_callback(this, &ffmpeg_resample_datasource::data_avail);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail(): calling m_src->start(), refcount=%d", get_ref_count());
 			m_src->start(m_event_processor, e);
-#ifdef RESAMPLE_READ_ALL
-			// workaround for sdl bug: if RESAMPLE_READ_ALL is defined we continue
-			// reading until we have all data
-			m_lock.leave();
-			return;
-#endif /* RESAMPLE_READ_ALL */
 		} else {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail: not calling start: eof=%d m_ep=0x%x buffull=%d", 
 				(int)m_src->end_of_file(), (void*)m_event_processor, (int)m_buffer.buffer_full());

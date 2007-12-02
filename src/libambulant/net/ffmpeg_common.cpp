@@ -36,16 +36,16 @@
 #define AM_DBG if(0)
 #endif 
 
+// Update the minimal required MIN_AVFORMAT_BUILD whenever we use a newer libavformat.
+#define MIN_LIBAVFORMAT_BUILD ((51<<16)+(12<<8)+2)
+#if LIBAVFORMAT_BUILD < MIN_LIBAVFORMAT_BUILD
+#error Your ffmpeg is too old. Either download a newer one or remove this test in the sourcefile (at your own risk).
+#endif
 
 // This construction is needed to get the CVS version of ffmpeg to work:
 // AVStream.codec got changed from AVCodecContext to AVCodecContext*
-#if LIBAVFORMAT_BUILD > 4628
-	#define am_get_codec_var(codec,var) codec->var
-	#define am_get_codec(codec) codec
-#else
-	#define am_get_codec_var(codec,var) codec.var
-	#define am_get_codec(codec) &codec
-#endif
+#define am_get_codec_var(codec,var) codec->var
+#define am_get_codec(codec) codec
 
 using namespace ambulant;
 using namespace net;
@@ -184,7 +184,7 @@ ffmpeg_demux::supported(const net::url& url)
 	if (url.is_local_file())
 		ffmpeg_name = url.get_file();
 	
-#if 0
+#if 1
 	// There appears to be some support for RTSP in ffmpeg, but it doesn'
 	// seem to work yet. Disable it so we don't get confused by error messages.
 	if (url_str.substr(0, 5) == "rtsp:") return NULL;
@@ -348,9 +348,7 @@ ffmpeg_demux::run()
 {
 	m_lock.enter();
 	int pkt_nr;
-#if LIBAVFORMAT_BUILD > 4628
 	int streamnr = video_stream_nr();
-#endif
 	timestamp_t pts = 0;
 	pkt_nr = 0;
 	assert(m_con);
@@ -363,7 +361,7 @@ ffmpeg_demux::run()
 		// Read a packet
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run:  started");
 		if (m_seektime_changed) {
-			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %d+%d=%d", m_clip_begin, m_seektime, m_clip_begin+m_seektime);
+			/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %lld+%lld=%lld", m_clip_begin, m_seektime, m_clip_begin+m_seektime);
 			timestamp_t seektime;
 			// If we have a video stream we should rescale our time offset to the timescale of the video stream.
 			// Theoretically we may have to do something similar for audio, but we seem to get away with not doing anything.
@@ -371,26 +369,15 @@ ffmpeg_demux::run()
 				seektime = av_rescale_q(m_clip_begin+m_seektime, AV_TIME_BASE_Q, m_con->streams[streamnr]->time_base);
 			else
 				seektime = m_clip_begin+m_seektime;
-#if LIBAVFORMAT_BUILD > 4628
-			int seekresult = av_seek_frame(m_con, -1, seektime, AVSEEK_FLAG_BACKWARD);
-#else
-			int seekresult = av_seek_frame(m_con, -1, seektime);
-#endif
+			/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %lld scaled to mediatimebase", seektime);
+			int seekresult = av_seek_frame(m_con, streamnr, seektime, AVSEEK_FLAG_BACKWARD);
 			if (seekresult < 0) {
 				lib::logger::get_logger()->debug("ffmpeg_demux: av_seek_frame() returned %d", seekresult);
-//#if LIBAVFORMAT_BUILD > 4628
-//				// ffmpeg has discarded data if av_seek_frame() failed
-//				av_seek_frame(m_con, -1, 0, AVSEEK_FLAG_BYTE);
-//#endif
 			}
 			m_seektime_changed = false;
 		}
 		m_lock.leave();
-#if LIBAVFORMAT_BUILD > 4609
 		int ret = av_read_frame(m_con, pkt);
-#else
-		int ret = av_read_packet(m_con, pkt);
-#endif
 		m_lock.enter();
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: av_read_packet returned ret= %d, (%d, 0x%x, %d)", ret, (int)pkt->pts ,pkt->data, pkt->size);
 		if (ret < 0) break;
@@ -421,24 +408,12 @@ ffmpeg_demux::run()
 				
 				pts = 0;
 				
-#if LIBAVFORMAT_BUILD > 4628
 				if (streamnr > -1) {
-					if (pkt->dts != AV_NOPTS_VALUE) {
+					// XXXJACK: use pts or dts here?
+					if (pkt->pts != AV_NOPTS_VALUE) {
             			pts = (timestamp_t) round(( (double) m_con->streams[streamnr]->time_base.num* 1000000.0 /m_con->streams[streamnr]->time_base.den)*pkt->dts);
-					}
+						pts = av_rescale_q(pkt->pts, m_con->streams[streamnr]->time_base, AV_TIME_BASE_Q);					}
 				}
-#elif LIBAVFORMAT_BUILD > 4609
-				if (pkt->pts != (int64_t)AV_NOPTS_VALUE) {
-					pts = pkt->pts;							
-					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: ffmpeg 0.4.9 pts = %lld", pts);					
-				}
-#else
-				if (pkt->pts != (int64_t)AV_NOPTS_VALUE) {
-					int num = m_con->pts_num;
-					int den = m_con->pts_den;
-					pts = (timestamp_t) round(((double) pkt->pts * (((double) num)*1000000)/den));
-				}
-#endif
 				
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.data_avail(%lld, 0x%x, %d, %d) pts=%lld", pkt->stream_index, pkt->pts, pkt->data, pkt->size, pkt->duration, pts);
 				
