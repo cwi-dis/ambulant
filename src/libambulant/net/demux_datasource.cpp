@@ -493,7 +493,7 @@ demux_video_datasource::data_avail(timestamp_t pts, const uint8_t *inbuf, int sz
 	}
 
 	m_src_end_of_file = (sz == 0);
-	/*AM_DBG*/ lib::logger::get_logger()->debug("demux_video_datasource::data_avail(): receiving data sz=%d ,pts=%lld", sz, pts);
+	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::data_avail(): receiving data sz=%d ,pts=%lld", sz, pts);
 	if(sz > 0) {
 		//m_frame_nr++;
 		//write_data(m_frame_nr, (char*) inbuf, sz);

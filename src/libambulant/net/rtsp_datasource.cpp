@@ -79,12 +79,14 @@ ambulant::net::rtsp_demux::rtsp_demux(rtsp_context_t* context, timestamp_t clip_
 
 	m_context->audio_fmt.parameters = (void*) m_context->audio_codec_name;
 	m_context->video_fmt.parameters = (void*) m_context->video_codec_name;
+#ifdef WITH_VBUFFER
 #if 0
 	m_context->vbuffer = (unsigned char*)malloc(20000);
 #else //xxxbo increase the vbuffer to 40000 for renderering mpg
 	m_context->vbuffer = (unsigned char*)malloc(40000);
 #endif
 	m_context->vbufferlen = 0;
+#endif // WITH_VBUFFER
 	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::rtsp_demux(0x%x)", (void*) this);
 
 #if 0
@@ -193,8 +195,10 @@ rtsp_context_t::~rtsp_context_t()
 	//Have to tear down session here, so that the server is not left hanging till timeout.
 	rtsp_client->teardownMediaSession(*media_session);
 	//deleting stuff, in reverse order as created in rtsp_demux::supported()
+#ifdef WITH_VBUFFER
 	if (vbuffer)
 		free(vbuffer);
+#endif
 	for (int i=0; i < MAX_STREAMS; i++) {
 		if (sinks[i] != NULL)
 			delete sinks[i];
@@ -241,8 +245,10 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 	context->need_video = true;
 	context->need_audio = true;
 	context->nsinks = 0;
+#ifdef WITH_VBUFFER
 	context->vbuffer = NULL;
 	context->vbufferlen = 0;
+#endif
 
 	context->gb_first_sync = 0;
 
@@ -343,10 +349,11 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 		(void)buf_size; // Forestall compiler warning
 #endif
 #ifndef WITH_TCP  //xxxBo setup RTP over udp
-		if(!context->rtsp_client->setupMediaSubsession(*subsession, false, false)) {
+		if(!context->rtsp_client->setupMediaSubsession(*subsession, false, false))
 #else //xxxBo setup RTP over tcp
-		if(!context->rtsp_client->setupMediaSubsession(*subsession, false, 1)) {
+		if(!context->rtsp_client->setupMediaSubsession(*subsession, false, 1))
 #endif /*WITH_TCP*/
+		{
 			lib::logger::get_logger()->error("ambulant::net::rtsp_demux(net::url& url) failed to send setup command to subsesion");
 			//lib::logger::get_logger()->error("RTSP Connection Failed");
 			delete context;
@@ -426,7 +433,7 @@ ambulant::net::rtsp_demux::run()
 			// Note: we have not tested (yet) how seeking influences the timestamps returned by live555. Needs to be
 			// tested later.
 			float seektime_secs = (m_clip_begin+m_seektime)/1000000.0;
-			/*AM_DBG*/ lib::logger::get_logger()->debug("rtsp_demux::run: seeking to %f", seektime_secs);
+			AM_DBG lib::logger::get_logger()->debug("rtsp_demux::run: seeking to %f", seektime_secs);
 			if(!m_context->rtsp_client->pauseMediaSession(*m_context->media_session)) {
 				lib::logger::get_logger()->error("pausing RTSP media session failed");
 			}
@@ -453,15 +460,13 @@ ambulant::net::rtsp_demux::run()
 				if (m_context->need_video) {
 					assert(!m_context->video_packet);
 					m_context->configDataLen=0;//Required by after_reading_video
+					m_context->extraPacketHeaderSize = 0;
 					if(firstTime==0){
-						//For MP4V-ES video format we need to insert a header into the RTSP stream
-					        //which should be present in the 'config' MIME parameter which should be present hopefully in the SDP description
+						//For MP4V-ES and H264 video formats we need to insert a header into the RTSP stream
+						//which should be present in the 'config' MIME parameter which should be present hopefully in the SDP description
 						//this idea was copied from mplayer libmpdemux/demux_rtp.cpp
 						firstTime=1;		
-						if(strcmp(gettext(m_context->video_codec_name), "MP4V-ES")==0)
-						//Optional check(therefore removed), since it should not matter for other formats.
-						{
-							AM_DBG lib::logger::get_logger()->debug("Came here good %s", m_context->video_codec_name);
+						if(strcmp(gettext(m_context->video_codec_name), "MP4V-ES")==0) {
 							unsigned configLen;
 		    				unsigned char* configData 
        							= parseGeneralConfigStr(subsession->fmtp_config(), configLen);
@@ -469,10 +474,11 @@ ambulant::net::rtsp_demux::run()
 							m_context->configDataLen = configLen;
 							
 						}
-
-						///// Added by Bo Gao begin 2007-10-29 
-#ifdef WITH_H264
 						if ( !strcmp( gettext(m_context->video_codec_name), "H264")){
+							// H264 not only needs a magic first packet, but also three magic bytes at the
+							// start of each subsequent packet. 
+							m_context->extraPacketHeaderSize = 3;
+							
 						    unsigned configLen;
 						    unsigned char* configData;
 						    
@@ -481,9 +487,6 @@ ambulant::net::rtsp_demux::run()
 						    m_context->configDataLen = configLen;
 						    
 						}
-#endif
-							///// Added by Bo Gao end 2007-10-29
-
 					}		
 					m_context->video_packet = (unsigned char*) malloc(MAX_RTP_FRAME_SIZE);
 					//std::cout << " MAX_RTP_FRAME_SIZE = " << MAX_RTP_FRAME_SIZE;
@@ -491,7 +494,7 @@ ambulant::net::rtsp_demux::run()
 					m_context->need_video = false;
 					AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() video_packet 0x%x", m_context->video_packet);
 					m_critical_section.leave();
-					subsession->readSource()->getNextFrame(m_context->video_packet, MAX_RTP_FRAME_SIZE, after_reading_video_stub, this, on_source_close, m_context);
+					subsession->readSource()->getNextFrame(&m_context->video_packet[m_context->extraPacketHeaderSize], MAX_RTP_FRAME_SIZE-m_context->extraPacketHeaderSize, after_reading_video_stub, this, on_source_close, m_context);
 					m_critical_section.enter();
 					
 				}
@@ -564,6 +567,8 @@ rtsp_demux::after_reading_audio(unsigned sz, unsigned truncated, struct timeval 
 	m_critical_section.leave();
 }	
 
+#ifdef WITH_VBUFFER
+// Original code by Ishan and Bo. Jack's rewrite is below.
 void 
 rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval pts, unsigned duration)
 {
@@ -597,7 +602,7 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
 				// This idea is borrowed from mplayer at demux_rtp.cpp::after_reading
 				Boolean hasBeenSynchronized = subsession->rtpSource()->hasBeenSynchronizedUsingRTCP();
 				if (hasBeenSynchronized && m_context->gb_first_sync == 0) {
-					/*AM_DBG*/ lib::logger::get_logger()->debug("after_reading_video: resync video, from %ds %dus to %ds %dus", m_context->first_sync_time.tv_sec, m_context->first_sync_time.tv_usec, pts.tv_sec, pts.tv_usec);
+					AM_DBG lib::logger::get_logger()->debug("after_reading_video: resync video, from %ds %dus to %ds %dus", m_context->first_sync_time.tv_sec, m_context->first_sync_time.tv_usec, pts.tv_sec, pts.tv_usec);
 					m_context->first_sync_time.tv_sec = pts.tv_sec;
 					m_context->first_sync_time.tv_usec = pts.tv_usec;
 					m_context->gb_first_sync = 1;
@@ -611,8 +616,7 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
 	// XXXJACK: Some code downstream expects timestamps to be file-based, i.e. when playing with clipBegin=10s it expects the first frame to have
 	// timestamp=10s. Not sure this is correct, but for now we fix up the timestamp. I'm also not sure how this interacts with seeking.
 	// Please remove this comment once it has been checked that the current behaviour is correct.
-	rpts += m_clip_begin;
-	/*AM_DBG*/ lib::logger::get_logger()->debug("after_reading_video: called timestamp 0x%08.8x%08.8x, sec = %d, usec =  %d", (long)(rpts>>32), (long)(rpts&0xffffffff), pts.tv_sec, pts.tv_usec);
+	AM_DBG lib::logger::get_logger()->debug("after_reading_video: called timestamp 0x%08.8x%08.8x, sec = %d, usec =  %d", (long)(rpts>>32), (long)(rpts&0xffffffff), pts.tv_sec, pts.tv_usec);
 	
 	
 	//Frame alignment for Mpeg1 or 2 frames, Live doesn't do it.
@@ -627,8 +631,7 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
 		 {
 			 lib::logger::get_logger()->trace("Frame too large to display");
 			 m_context->vbufferlen=0;
-		 }else{
-#ifdef WITH_H264
+		 } else {
 			 if (strcmp(m_context->video_codec_name,"H264") == 0){
 				 unsigned char* newgbcontext = (unsigned char*)malloc((sz+4)*sizeof(unsigned char));
 				 if (newgbcontext == NULL) {
@@ -648,7 +651,6 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
 
 			 }
 			 else
-#endif
 				 memcpy((m_context->vbuffer + m_context->vbufferlen), m_context->video_packet, sz);
 			 m_context->vbufferlen += sz;
 		 }
@@ -675,14 +677,14 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
 		if(sink && !exit_requested()) {
 			AM_DBG lib::logger::get_logger()->debug("Video packet length %d", m_context->vbufferlen);
 			assert(m_context->vbufferlen);
-			sink->data_avail(m_context->last_pts, (uint8_t*) m_context->vbuffer , m_context->vbufferlen);
+			sink->data_avail(m_context->last_pts+m_clip_begin, (uint8_t*) m_context->vbuffer , m_context->vbufferlen);
 		}
 		
 		m_context->last_pts=rpts;
 		//copy the first packet of the next frame
 
 		///// Added by Bo Gao begin 2007-11-01
-#ifdef WITH_H264	  
+#ifdef WITH_H264
 		if (strcmp(m_context->video_codec_name,"H264") == 0){
 			// printf("the m_context->video_codec_name is %s\n", m_context->video_codec_name);
 			unsigned char* newgbcontext = (unsigned char*)malloc((sz+4)*sizeof(unsigned char));
@@ -730,9 +732,117 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
 	//XXX Do we need to free data here ?
 	m_critical_section.leave();
 }
+#else
+// Jack's remake.
+void 
+rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval pts, unsigned duration)
+{
+	m_critical_section.enter();
+	assert(m_context);
+	AM_DBG lib::logger::get_logger()->debug("after_reading_video: called sz = %d, truncated = %d pts=(%d s, %d us), dur=%d", sz, truncated, pts.tv_sec, pts.tv_usec, duration);
+	assert(m_context->video_packet);
+	assert(m_context->video_stream >= 0);
+	
+	// For the first packet, we remember the timestamp so we can convert Live's wallclock timestamps to
+	// our zero-based timestamps.
+	if (m_context->first_sync_time.tv_sec == 0 && m_context->first_sync_time.tv_usec == 0 ) {
+		m_context->first_sync_time.tv_sec = pts.tv_sec;
+		m_context->first_sync_time.tv_usec = pts.tv_usec;
+		m_context->last_pts=0;
+		// Some formats (notably mp4v and h264) get an initial synthesized packet of data. This is
+		// where we deliver that.
+		if(m_context->configDataLen > 0) {
+			m_context->sinks[m_context->video_stream]->data_avail(0, (uint8_t*) m_context->configData , m_context->configDataLen);
+		}
+#endif
+	}
 
-#ifdef WITH_H264
-///// Added by Bo Gao begin 2007-10-29 
+	if (m_context->gb_first_sync == 0) {
+		// We have not been synced yet. If the video stream has been synced for this packet
+		// we can set the epoch of the timing info. 
+		MediaSubsession* subsession;
+		MediaSubsessionIterator iter(*m_context->media_session);
+		while ((subsession = iter.next()) != NULL) {
+			if (strcmp(subsession->mediumName(), "video") == 0)
+				break;
+		}
+		if (subsession) {
+			// Set the packet's presentation time stamp, depending on whether or
+			// not our RTP source's timestamps have been synchronized yet: 
+			// This idea is borrowed from mplayer at demux_rtp.cpp::after_reading
+			Boolean hasBeenSynchronized = subsession->rtpSource()->hasBeenSynchronizedUsingRTCP();
+			if (hasBeenSynchronized) {
+				AM_DBG lib::logger::get_logger()->debug("after_reading_video: resync video, from %ds %dus to %ds %dus", m_context->first_sync_time.tv_sec, m_context->first_sync_time.tv_usec, pts.tv_sec, pts.tv_usec);
+				m_context->first_sync_time.tv_sec = pts.tv_sec;
+				m_context->first_sync_time.tv_usec = pts.tv_usec;
+				m_context->last_pts = 0;
+				m_context->gb_first_sync = 1;
+			}
+		}
+	}
+	timestamp_t rpts =  (timestamp_t)(pts.tv_sec - m_context->first_sync_time.tv_sec) * 1000000LL  +  (timestamp_t) (pts.tv_usec - m_context->first_sync_time.tv_usec);
+	// XXXJACK: Some code downstream expects timestamps to be file-based, i.e. when playing with clipBegin=10s it expects the first frame to have
+	// timestamp=10s. Not sure this is correct, but for now we fix up the timestamp. I'm also not sure how this interacts with seeking.
+	// Please remove this comment once it has been checked that the current behaviour is correct.
+	AM_DBG lib::logger::get_logger()->debug("after_reading_video: called timestamp 0x%08.8x%08.8x, sec = %d, usec =  %d", (long)(rpts>>32), (long)(rpts&0xffffffff), pts.tv_sec, pts.tv_usec);
+	
+	
+	if (m_context->extraPacketHeaderSize == 3) {
+		// This magic was gleamed from mplayer, file demux_rtp.cpp. It seems that be prepending these
+		// three bytes to each packet we can make H264 streaming work. Go figure...
+		m_context->video_packet[0] = 0x00;
+		m_context->video_packet[1] = 0x00;
+		m_context->video_packet[2] = 0x01;
+	}
+	demux_datasink *sink = m_context->sinks[m_context->video_stream];
+	
+	// Now we may have to wait until there is room in our output buffer.
+	while (sink && sink->buffer_full() && !exit_requested()) {
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", m_context->video_stream);
+			m_critical_section.leave();
+			 // sleep 10 millisec, hardly noticeable
+#ifdef	AMBULANT_PLATFORM_WIN32
+			ambulant::lib::sleep_msec(10); // XXXX should be woken by readdone()
+#else
+			usleep(10000);
+#endif //AMBULANT_PLATFORM_WIN32
+			m_critical_section.enter();
+			sink = m_context->sinks[m_context->video_stream];
+	}
+
+	// Send the data to our sink, which is responsible for copying/saving it before returning.
+	if(sink && !exit_requested()) {
+		/*AM_DBG*/ lib::logger::get_logger()->debug("Video packet length %d+%d=%d", sz, m_context->extraPacketHeaderSize, sz+m_context->extraPacketHeaderSize);
+		sink->data_avail(m_context->last_pts+m_clip_begin, (uint8_t*) m_context->video_packet, sz+m_context->extraPacketHeaderSize);
+	}
+	
+	m_context->last_pts=rpts;
+
+// Tell the main demux loop that we're ready for another packet.
+	m_context->need_video = true;
+	free(m_context->video_packet);
+	m_context->video_packet  = NULL;
+#if 1 // def JACK_IS_NOT_CONVINCED_YET
+	if(m_context->configDataLen > 0){
+		free(m_context->configData);
+		m_context->configData = NULL;
+	}
+#endif
+
+#ifdef JACK_IS_NOT_CONVINCED_YET
+	// xxxbo In the case that m_context->time_left is a negative from the beginning for some reason,
+	// Ambulant should render the video other than stop at the beginning.
+	if (m_context->time_left >= 0 && m_context->last_pts >= m_context->time_left) {
+		lib::logger::get_logger()->debug("after_reading_video: last_pts = %lld", m_context->last_pts);
+	 	m_context->eof = true;
+	}
+#endif
+	m_context->blocking_flag = ~0;
+	//XXX Do we need to free data here ?
+	m_critical_section.leave();
+}
+#endif // WITH_VBUFFER
+
 static int b64_decode( char *dest, char *src );
 
 static unsigned char* parseH264ConfigStr( char const* configStr,
@@ -847,6 +957,3 @@ static int b64_decode( char *dest, char *src )
 
     return dest - dest_start;
 }
-
-///// Added by Bo Gao end 2007-10-29
-#endif

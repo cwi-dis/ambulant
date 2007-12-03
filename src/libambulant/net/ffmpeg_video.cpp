@@ -493,7 +493,8 @@ ffmpeg_video_decoder_datasource::data_avail()
             len = sz;
 #endif
 			if (len < 0) {
-				lib::logger::get_logger()->trace(gettext("error decoding video frame"));
+				lib::logger::get_logger()->trace(gettext("error decoding video frame (timestamp=%lld)"), ipts);
+				sz = 0;
 				break;
 			}
 			assert(len <= sz);

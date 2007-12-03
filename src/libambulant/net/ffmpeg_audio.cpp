@@ -400,7 +400,7 @@ ffmpeg_decoder_datasource::data_avail()
 					///// after calling avcodec_decode_audio, 
 					///// ffmpeg cannot get the sample_rate and channels.
 					AM_DBG lib::logger::get_logger()->debug("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, cursz);
-					int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, cursz);
+					int decoded = avcodec_decode_audio2(m_con, (short*) outbuf, &outsize, inbuf, cursz);
 
 					///// Feeding the successive block of one rtsp mp3 packet to ffmpeg to decode, 
 					///// since ffmpeg can only decode the limited length of around 522(522 or 523 
@@ -414,7 +414,7 @@ ffmpeg_decoder_datasource::data_avail()
 						m_buffer.pushdata(outsize);
 						outsize = AVCODEC_MAX_AUDIO_FRAME_SIZE;
 						outbuf = (uint8_t*) m_buffer.get_write_ptr(outsize);
-						decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, cursz);
+						decoded = avcodec_decode_audio2(m_con, (short*) outbuf, &outsize, inbuf, cursz);
 					}
 
 					// If this loop ends with decoded == 0 and cursz > 0, it means that not all bytes 

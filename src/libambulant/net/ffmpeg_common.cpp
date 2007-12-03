@@ -361,7 +361,7 @@ ffmpeg_demux::run()
 		// Read a packet
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run:  started");
 		if (m_seektime_changed) {
-			/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %lld+%lld=%lld", m_clip_begin, m_seektime, m_clip_begin+m_seektime);
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %lld+%lld=%lld", m_clip_begin, m_seektime, m_clip_begin+m_seektime);
 			timestamp_t seektime;
 			// If we have a video stream we should rescale our time offset to the timescale of the video stream.
 			// Theoretically we may have to do something similar for audio, but we seem to get away with not doing anything.
@@ -369,7 +369,7 @@ ffmpeg_demux::run()
 				seektime = av_rescale_q(m_clip_begin+m_seektime, AV_TIME_BASE_Q, m_con->streams[streamnr]->time_base);
 			else
 				seektime = m_clip_begin+m_seektime;
-			/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %lld scaled to mediatimebase", seektime);
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %lld scaled to mediatimebase", seektime);
 			int seekresult = av_seek_frame(m_con, streamnr, seektime, AVSEEK_FLAG_BACKWARD);
 			if (seekresult < 0) {
 				lib::logger::get_logger()->debug("ffmpeg_demux: av_seek_frame() returned %d", seekresult);
@@ -408,13 +408,13 @@ ffmpeg_demux::run()
 				
 				pts = pkt->pts;
 				if (pts == AV_NOPTS_VALUE) {
-					/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_parser::run: pts invalid using dts=%lld", pkt->dts);
+					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: pts invalid using dts=%lld", pkt->dts);
 					pts = pkt->dts;
 				}
 				if (pts != AV_NOPTS_VALUE)
 					pts = av_rescale_q(pkt->pts, m_con->streams[pkt->stream_index]->time_base, AV_TIME_BASE_Q);
 				
-				/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.data_avail(%lld, 0x%x, %d, %d) pts=%lld", pkt->stream_index, pkt->pts, pkt->data, pkt->size, pkt->duration, pts);
+				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.data_avail(%lld, 0x%x, %d, %d) pts=%lld", pkt->stream_index, pkt->pts, pkt->data, pkt->size, pkt->duration, pts);
 				
 				sink->data_avail(pts, pkt->data, pkt->size);
 

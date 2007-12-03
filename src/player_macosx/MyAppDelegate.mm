@@ -128,7 +128,7 @@ initialize_logger()
 		setlocale(LC_MESSAGES, locale);
 		setenv("LANG", locale, 1);
 	} else if (strcmp(locale, unix_locale) != 0) {
-		ambulant::lib::logger::get_logger()->warn("MacOS System Preferences locale: \"%s\", Unix locale: LANG=\"%s\"", locale, unix_locale);
+		ambulant::lib::logger::get_logger()->trace("MacOS System Preferences locale: \"%s\", Unix locale: LANG=\"%s\"", locale, unix_locale);
 	}
 #if ENABLE_NLS
 	NSString *resourcePath = [thisBundle resourcePath];

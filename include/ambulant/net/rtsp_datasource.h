@@ -87,10 +87,11 @@ struct rtsp_context_t {
 	
 	unsigned char* configData; //required for MP4V-ES "VOL header"
 	int configDataLen;
-	
+#ifdef WITH_VBUFFER
 	unsigned char* vbuffer;
 	int vbufferlen;
-	
+#endif
+	int extraPacketHeaderSize;	// H264 (and some other formats) need a couple extra bytes at the beginning of each packet.
 	unsigned char* audio_packet;
 	unsigned char* video_packet;
 	timestamp_t last_pts;
