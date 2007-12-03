@@ -164,6 +164,10 @@ mainloop::init_parser_factory()
 
 mainloop::~mainloop()
 {
+	// We need to delete gui_player::m_player before deleting m_doc, because the
+	// timenode graph in the player has referrences to the node graph in m_doc.
+	delete m_player;
+	m_player = NULL;
 	delete m_doc;
 	m_doc = NULL;
 	delete m_gui_screen;
