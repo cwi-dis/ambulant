@@ -482,7 +482,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 				m_con->hurry_up = 1;
 #endif
 			len = avcodec_decode_video(m_con, frame, &got_pic, ptr, sz);
-			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: avcodec_decode_video: used %d of %d bytes, gotpic = %d, ipts = %lld", len, sz, got_pic, ipts);
+			/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: avcodec_decode_video: used %d of %d bytes, gotpic = %d, ipts = %lld", len, sz, got_pic, ipts);
 #ifdef WITH_FFMPEG_HURRY_UP
 			m_con->hurry_up = 0;
 #endif

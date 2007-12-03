@@ -303,7 +303,7 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 	AM_DBG lib::logger::get_logger()->debug("rtps_demux::supported: time_left = %ld", context->time_left);
 	// next set up the rtp subsessions.
 	
-	unsigned int desired_buf_size;
+	unsigned int desired_buf_size = 0;
 	MediaSubsession* subsession;
 	MediaSubsessionIterator iter(*context->media_session);
 	// Only audio/video session need to apply for a job !
@@ -324,9 +324,11 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 				context->audio_fmt.bits = 16;
 				//context->audio_fmt.samplerate = subsession->rtpSource()->timestampFrequency();
 				context->audio_fmt.samplerate = 0;
+			} else {
+				lib::logger::get_logger()->trace("rtsp_demux: %s: ignoring additional audio stream", ch_url);
 			}
 		} else if (strcmp(subsession->mediumName(), "video") == 0) {
-			desired_buf_size = 200000;
+			desired_buf_size = 2000000;
 			if (context->video_stream < 0) {
 				context->video_stream = context->nstream;
 				context->video_codec_name = subsession->codecName();
@@ -337,17 +339,19 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 				context->video_fmt.height = subsession->videoHeight();
 				lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), width: %d, height: %d, FPS: %f",context->video_fmt.width, context->video_fmt.height, 1000000.0/context->video_fmt.frameduration);
 
+			} else {
+				lib::logger::get_logger()->trace("rtsp_demux: %s: ignoring additional video stream", ch_url);
 			}
 		} else {
 			AM_DBG lib::logger::get_logger()->debug("rtsp_demux: ignoring \"%s\" subsession", subsession->mediumName());
 		}
 		context->nstream++;
 		
-#if 0 // XXXJack: Corresponding code in live playCommon.cpp is prety different...
-		int rtp_sock_num = subsession->rtpSource()->RTPgs()->socketNum();
-		int buf_size = increaseReceiveBufferTo(*context->env, rtp_sock_num, desired_buf_size);
-		(void)buf_size; // Forestall compiler warning
-#endif
+		// If this media type has a desired minimum buffer size communicate that to the RTSP layer.
+		if (desired_buf_size) {
+			int rtp_sock_num = subsession->rtpSource()->RTPgs()->socketNum();
+			increaseReceiveBufferTo(*context->env, rtp_sock_num, desired_buf_size);
+		}
 #ifndef WITH_TCP  //xxxBo setup RTP over udp
 		if(!context->rtsp_client->setupMediaSubsession(*subsession, false, false))
 #else //xxxBo setup RTP over tcp
@@ -429,6 +433,8 @@ ambulant::net::rtsp_demux::run()
 	while(!m_context->eof && !exit_requested()) {
 		AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run: start another loop iteration");
 		m_context->blocking_flag = 0;
+		
+		// First thing to do for each loop iteration: check whether we need to seek.
 		if (m_seektime_changed) {
 			// Note: we have not tested (yet) how seeking influences the timestamps returned by live555. Needs to be
 			// tested later.
@@ -442,9 +448,11 @@ ambulant::net::rtsp_demux::run()
 			}
 			m_seektime_changed = false;
 		}
+		
+		// Next, we loop over the subsessions, and check each one for data availability.
+		// We ignore all streams except audio or video streams.
 		MediaSubsession* subsession;
 		MediaSubsessionIterator iter(*m_context->media_session);
-		// Only audio/video session need to apply for a job !
 		while ((subsession = iter.next()) != NULL) {
 			if (strcmp(subsession->mediumName(), "audio") == 0) {
 				if(m_context->need_audio) {
@@ -460,8 +468,9 @@ ambulant::net::rtsp_demux::run()
 				if (m_context->need_video) {
 					assert(!m_context->video_packet);
 					m_context->configDataLen=0;//Required by after_reading_video
-					m_context->extraPacketHeaderSize = 0;
 					if(firstTime==0){
+						m_context->extraPacketHeaderSize = 0;
+						m_context->notPacketized = false;
 						//For MP4V-ES and H264 video formats we need to insert a header into the RTSP stream
 						//which should be present in the 'config' MIME parameter which should be present hopefully in the SDP description
 						//this idea was copied from mplayer libmpdemux/demux_rtp.cpp
@@ -478,6 +487,8 @@ ambulant::net::rtsp_demux::run()
 							// H264 not only needs a magic first packet, but also three magic bytes at the
 							// start of each subsequent packet. 
 							m_context->extraPacketHeaderSize = 3;
+							// Also, live555 doesn't deliver H264 streams with correct packetization (sigh)
+							m_context->notPacketized = true;
 							
 						    unsigned configLen;
 						    unsigned char* configData;
@@ -493,8 +504,13 @@ ambulant::net::rtsp_demux::run()
 					AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() Calling getNextFrame for an video frame");
 					m_context->need_video = false;
 					AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() video_packet 0x%x", m_context->video_packet);
+					int extraHeaderBytes = m_context->extraPacketHeaderSize;
+#if 1
+					// XXXJACK thinks this should only happen once for each packet, so we handle it in after_reading_video
+					if (m_context->notPacketized) extraHeaderBytes = 0;
+#endif
 					m_critical_section.leave();
-					subsession->readSource()->getNextFrame(&m_context->video_packet[m_context->extraPacketHeaderSize], MAX_RTP_FRAME_SIZE-m_context->extraPacketHeaderSize, after_reading_video_stub, this, on_source_close, m_context);
+					subsession->readSource()->getNextFrame(&m_context->video_packet[m_context->extraPacketHeaderSize], MAX_RTP_FRAME_SIZE-extraHeaderBytes, after_reading_video_stub, this, on_source_close, m_context);
 					m_critical_section.enter();
 					
 				}
@@ -752,9 +768,9 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
 		// Some formats (notably mp4v and h264) get an initial synthesized packet of data. This is
 		// where we deliver that.
 		if(m_context->configDataLen > 0) {
+			/*AM_DBG*/ lib::logger::get_logger()->debug("after_reading_video: inserting configData packet, size=%d", m_context->configDataLen);
 			m_context->sinks[m_context->video_stream]->data_avail(0, (uint8_t*) m_context->configData , m_context->configDataLen);
 		}
-#endif
 	}
 
 	if (m_context->gb_first_sync == 0) {
@@ -795,7 +811,30 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
 		m_context->video_packet[2] = 0x01;
 	}
 	demux_datasink *sink = m_context->sinks[m_context->video_stream];
-	
+again:
+	if (m_context->notPacketized) {
+		// We have to re-packetize ourselves. We do this by combining all data with the same timestamp.
+		if (rpts == 0 || rpts == m_context->last_pts) {
+			// Still the same packet. Combine the data and return.
+			if (m_context->vbuffer == NULL) {
+				m_context->vbuffer = (unsigned char *)malloc(3);
+				assert(m_context->vbuffer);
+				m_context->vbuffer[0] = 0x00;
+				m_context->vbuffer[1] = 0x00;
+				m_context->vbuffer[2] = 0x01;
+				m_context->vbufferlen = 3;
+			}
+			m_context->vbuffer = (unsigned char *)realloc(m_context->vbuffer, m_context->vbufferlen+sz);
+			if (m_context->vbuffer == NULL) {
+				lib::logger::get_logger()->trace("rtsp: out of memory rebuffering. Dropping packet.");
+				m_context->vbufferlen = 0;
+				goto done;
+			}
+			memcpy(m_context->vbuffer+m_context->vbufferlen, m_context->video_packet, sz);
+			m_context->vbufferlen += sz;
+			goto done;
+		}
+	}
 	// Now we may have to wait until there is room in our output buffer.
 	while (sink && sink->buffer_full() && !exit_requested()) {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", m_context->video_stream);
@@ -812,12 +851,22 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
 
 	// Send the data to our sink, which is responsible for copying/saving it before returning.
 	if(sink && !exit_requested()) {
-		/*AM_DBG*/ lib::logger::get_logger()->debug("Video packet length %d+%d=%d", sz, m_context->extraPacketHeaderSize, sz+m_context->extraPacketHeaderSize);
-		sink->data_avail(m_context->last_pts+m_clip_begin, (uint8_t*) m_context->video_packet, sz+m_context->extraPacketHeaderSize);
+		/*AM_DBG*/ lib::logger::get_logger()->debug("Video packet length %d+%d=%d, timestamp=%lld", sz, m_context->extraPacketHeaderSize, sz+m_context->extraPacketHeaderSize, rpts+m_clip_begin);
+		if (m_context->notPacketized) {
+			sink->data_avail(m_context->last_pts+m_clip_begin, (uint8_t*) m_context->vbuffer, m_context->vbufferlen);
+			free(m_context->vbuffer);
+			m_context->vbuffer = NULL;
+			m_context->vbufferlen = 0;
+			m_context->last_pts=rpts;
+			goto again;
+		} else {
+			sink->data_avail(rpts+m_clip_begin, (uint8_t*) m_context->video_packet, sz+m_context->extraPacketHeaderSize);
+		}
 	}
 	
 	m_context->last_pts=rpts;
-
+	
+done:
 // Tell the main demux loop that we're ready for another packet.
 	m_context->need_video = true;
 	free(m_context->video_packet);
