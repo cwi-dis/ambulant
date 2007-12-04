@@ -85,12 +85,13 @@ struct rtsp_context_t {
 	int audio_stream;
 	int video_stream;
 	
-	unsigned char* configData; //required for MP4V-ES "VOL header"
+	unsigned char* configData; // Synthetic "packet 0" required for MP4V-ES "VOL header" and some other formats
 	int configDataLen;
-	unsigned char* vbuffer;
-	int vbufferlen;
-	int extraPacketHeaderSize;	// H264 (and some other formats) need a couple extra bytes at the beginning of each packet.
 	bool notPacketized;	// H264 streams from live555 are not packetized, we need to do that ourselves.
+	unsigned char* vbuffer;	// Buffer for re-packetizing
+	int vbufferlen;
+	unsigned char *extraPacketHeaderData;	// H264 (and some other formats) need a couple extra bytes at the beginning of each packet.
+	int extraPacketHeaderSize;
 	unsigned char* audio_packet;
 	unsigned char* video_packet;
 	timestamp_t last_pts;
