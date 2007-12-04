@@ -1,3 +1,33 @@
+2007-12-03 17:37  jackjansen
+
+	* Re-eneabled the vbuffer stuff: it is indeed needed, because
+	  live555 support for H264 is minimal, it does not recombine
+	  packets into frames, we have to do that ourselves.
+
+	  Timing is now correct (also for clipBegin) but the data is still
+	  pretty messed up. Will play with thhe magic 3-byte fillers
+	  tomorrow.
+
+2007-12-03 15:50  jackjansen
+
+	* Reorganized a lot of the rtsp code. Tentatively got rid of the
+	  stuff I don't understand, and tried to rationalize the rest.
+
+	  mp4v plays (both with and with clipBegin), h264 not yet.
+
+2007-12-03 11:18  jackjansen
+
+	* Finally found the nasty bug that sometimes crashes the player on
+	  close: in the ~mainloop() destructor we first delete m_doc and
+	  later (through our base class destructor) gui_player. However,
+	  the latter does reset on the time_node graph, which has
+	  references to the node graph.  But that one got zapped when we
+	  deleted m_doc.
+
+	  Fixed by manually deleting gui_player::m_player before m_doc.
+
+	  Also need to check this for other platforms.
+
 2007-12-03 00:07  jackjansen
 
 	* Reorganized some code to get rid of lots of indenting.
