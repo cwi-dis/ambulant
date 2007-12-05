@@ -1,3 +1,14 @@
+2007-12-04 17:15  jackjansen
+
+	* More cleanup, and we're now following the lead of VLC more than
+	  that of Mplayer. VLC can actually play our H264 streams. We still
+	  can't, but getting closer.
+
+2007-12-04 17:14  jackjansen
+
+	* Change requested by Daniel Weck: let rate adjustment be additive,
+	  not multiplicative.
+
 2007-12-03 17:37  jackjansen
 
 	* Re-eneabled the vbuffer stuff: it is indeed needed, because
