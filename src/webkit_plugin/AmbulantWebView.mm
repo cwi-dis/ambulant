@@ -73,12 +73,14 @@ class my_cocoa_window_factory : public ambulant::gui::cocoa::cocoa_window_factor
 			void *edptr = pe->get_extra_data("python_extra_data");
 			if (edptr) {
 				*(id*)edptr = container;
+				NSLog(@"AmbulantWebKitPlugin: python_extra_data=0x%x, set to 0x%x", edptr, (void *)container);
 			} else {
 				NSLog(@"AmbulantWebKitPlugin: Cannot find python_extra_data, cannot communicate webPlugInContainer");
 			}
 			edptr = pe->get_extra_data("webkit_extra_data");
 			if (edptr) {
 				*(id*)edptr = [container webFrame];
+				NSLog(@"AmbulantWebKitPlugin: webkit_extra_data=0x%x, set to 0x%x", edptr, (void *)[container webFrame]);
 			} else {
 				NSLog(@"AmbulantWebKitPlugin: Cannot find webkit_extra_data, cannot communicate WebFrame pointer");
 			}

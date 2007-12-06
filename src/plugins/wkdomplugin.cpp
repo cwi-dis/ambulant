@@ -32,7 +32,7 @@
 #endif
 using namespace ambulant;
 
-void *extra_data;
+static void *extra_data;
 struct ambulant::common::plugin_extra_data plugin_extra_data = {
     "webkit_extra_data",
     &extra_data

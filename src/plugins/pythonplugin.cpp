@@ -87,7 +87,7 @@ struct pyobjc_api {
 	/* PyObjC_IdToPython */
 	PyObject* (*id_to_python)(void*);
 };
-int extra_data;
+static int extra_data;
 struct ambulant::common::plugin_extra_data plugin_extra_data = {
     "python_extra_data",
     (void*)&extra_data

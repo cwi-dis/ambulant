@@ -114,6 +114,13 @@
 		path = /Applications/Safari.app;
 		sourceTree = "<absolute>";
 	};
+	045D0B7E0958C53F00C194EE /* mainloop.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1076, 3332}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{65, 1740}";
+		};
+	};
 	045D0B7F0958C53F00C194EE /* mainloop.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {805, 784}}";
@@ -130,9 +137,9 @@
 	};
 	049775B80958ADC500A7690F /* AmbulantWebView.mm */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1096, 2562}}";
-			sepNavSelRange = "{2210, 0}";
-			sepNavVisRange = "{0, 948}";
+			sepNavIntBoundsRect = "{{0, 0}, {1076, 2240}}";
+			sepNavSelRange = "{1954, 0}";
+			sepNavVisRange = "{983, 1525}";
 			sepNavVisRect = "{{0, 801}, {1096, 665}}";
 		};
 	};
@@ -220,7 +227,7 @@
 				PBXFileTableDataSourceColumnWidthsKey = (
 					22,
 					300,
-					72.5835,
+					73,
 				);
 				PBXFileTableDataSourceColumnsKey = (
 					PBXExecutablesDataSource_ActiveFlagID,
@@ -288,8 +295,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 217869213;
-			PBXWorkspaceStateSaveDate = 217869213;
+			PBXPerProjectTemplateStateSaveDate = 218626102;
+			PBXWorkspaceStateSaveDate = 218626102;
 		};
 		sourceControlManager = 04EC0D310CBD8D22009B6B85 /* Source Control */;
 		userBuildSettings = {

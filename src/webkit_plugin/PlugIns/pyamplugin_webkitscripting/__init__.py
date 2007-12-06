@@ -7,6 +7,7 @@ import pyamplugin_webkitscripting.state
 embedder = None
 def set_extra_data(idd):
 	global embedder
+	print "STEP THREE - embedder is", idd
 	embedder = idd
 	
 keeper_hack = []
