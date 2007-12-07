@@ -1,3 +1,8 @@
+2007-12-06 11:38  jackjansen
+
+	* extra_data pointers from plugins should be static, otherwise all
+	  plugins share a single variable, not what we want:-)
+
 2007-12-04 17:15  jackjansen
 
 	* More cleanup, and we're now following the lead of VLC more than
