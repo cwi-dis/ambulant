@@ -434,3 +434,29 @@ ffmpeg_demux::run()
 	m_lock.leave();
 	return 0;
 }
+
+void
+ambulant::net::ffmpeg_live_h264_format(video_format& video_fmt, unsigned char *extradata, int extradata_size)
+{
+	ffmpeg_codec_id* codecid = ffmpeg_codec_id::instance();
+	
+	AVCodecContext *ffcontext = avcodec_alloc_context();		
+	ffcontext->codec_type = CODEC_TYPE_VIDEO;
+	ffcontext->codec_id = codecid->get_codec_id("H264");
+	ffcontext->extradata = extradata;
+	ffcontext->extradata_size = extradata_size;
+#if 0
+	// Garbage
+	ffcontext->width = 320;
+	ffcontext->height = 240;
+	ffcontext->bits_per_sample = 24;
+	ffcontext->time_base.num = 40;
+	ffcontext->time_base.den = 600;
+	ffcontext->bit_rate = 0;
+	ffcontext->codec_tag = 828601953;
+#endif
+	video_fmt = video_format("ffmpeg", ffcontext);
+	// _need_fmt_uptodate();
+}
+
+

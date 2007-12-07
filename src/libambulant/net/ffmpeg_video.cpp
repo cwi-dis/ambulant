@@ -774,7 +774,6 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 		
 		if(avcodec_open(m_con,codec) < 0) {
 				lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Failed to open avcodec for %s(0x%x)", fmt.name.c_str(), enc->codec_id);
-				lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
 				return false;
 		}
 		if (fmt.width == 0) fmt.width = m_con->width;
