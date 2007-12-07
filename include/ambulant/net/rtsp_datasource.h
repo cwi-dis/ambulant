@@ -75,45 +75,101 @@ namespace net
 {
 
 struct rtsp_context_t {
-	~rtsp_context_t();
+	rtsp_context_t()
+	:	scheduler(NULL),
+		env(NULL),
+		rtsp_client(NULL),
+		media_session(NULL),
+		sdp(NULL),
+		nstream(0),
+		audio_stream(-1),
+		video_stream(-1),
+		configData(NULL),
+		configDataLen(0),
+		initialPacketData(NULL),
+		initialPacketDataLen(0),
+		extraPacketHeaderData(NULL),
+		extraPacketHeaderSize(0),
+		notPacketized(false),
+		vbuffer(NULL),
+		vbufferlen(0),
+		last_pts(0),
+		need_audio(true),
+		need_video(true),
+		audio_packet(NULL),
+		video_packet(NULL),
+		blocking_flag(0),
+		eof(false),
+		clip_end(-1),
+		duration(-1),
+		time_left(-1),
+		audio_codec_name("none"),
+		video_codec_name("none"),
+		first_sync_time_set(false),
+		audio_fmt("none"),
+		video_fmt("none"),
+		nsinks(0)
+	{
+		first_sync_time.tv_sec = 0;
+		first_sync_time.tv_usec = 0;
+		memset(sinks, 0, sizeof sinks);
+	}
+	~rtsp_context_t() {
+		//Have to tear down session here, so that the server is not left hanging till timeout.
+		rtsp_client->teardownMediaSession(*media_session);
+		for (int i=0; i < MAX_STREAMS; i++) {
+			if (sinks[i] != NULL)
+				delete sinks[i];
+		}
+		if (configData) free(configData);
+		if (initialPacketData) free(initialPacketData);
+		if (extraPacketHeaderData) free(extraPacketHeaderData);
+		if (vbuffer) free(vbuffer);
+		if (audio_packet) free(audio_packet);
+		if (video_packet) free(video_packet);
+		if (media_session) Medium::close(media_session);
+		if (sdp) free(sdp);
+		if (rtsp_client) Medium::close(rtsp_client);
+		if (env) env->reclaim();
+		if (scheduler) delete scheduler; // XXXJACK no close method?
+	}
 	
 	TaskScheduler* scheduler;
 	UsageEnvironment* env;
 	RTSPClient* rtsp_client;
   	MediaSession* media_session;
 	char* sdp;
-	int audio_stream;
-	int video_stream;
+	int nstream;		// Total number of streams
+	int audio_stream;	// Index of the audio subsession
+	int video_stream;	// Index of the video subsession
 	
-	unsigned char* configData; // Synthetic "packet 0" required for MP4V-ES "VOL header" and some other formats
+	unsigned char* configData; // For H264 (and maybe other formats): Extra configuration data, to be passed to ffmpeg
 	int configDataLen;
-	bool notPacketized;	// H264 streams from live555 are not packetized, we need to do that ourselves.
-	unsigned char* vbuffer;	// Buffer for re-packetizing
-	int vbufferlen;
+	unsigned char *initialPacketData;	// For MP4V (and maybe other formats): a synthetic initial packet
+	int initialPacketDataLen;
 	unsigned char *extraPacketHeaderData;	// H264 (and some other formats) need a couple extra bytes at the beginning of each packet.
 	int extraPacketHeaderSize;
-	unsigned char* audio_packet;
-	unsigned char* video_packet;
-	timestamp_t last_pts;
-	bool need_audio;
-	bool need_video;
-	int nstream;
-	char blocking_flag;
-	bool eof;
-	timestamp_t clip_end;
-	bool is_clip_end;
-	float duration;
-	timestamp_t time_left;
+	bool notPacketized;			// H264 streams from live555 are not packetized, we need to do that ourselves.
+	unsigned char* vbuffer;		// Buffer for re-packetizing
+	int vbufferlen;
+	timestamp_t last_pts;		// Timestamp of packet data being accumulated in vbuffer
+	bool need_audio;			// True if we're interested in an audio packet
+	bool need_video;			// True if we're interested in a video packet
+	unsigned char* audio_packet;	// The current audio packet data (size is a parameter to after_reading_audio)
+	unsigned char* video_packet;	// The current video packet data (size is a parameter to after_reading_video)
+	char blocking_flag;		// Flag determining whether live555 should block in read
+	bool eof;				// True when we reach end-of-file on any stream (XXXJACK: correct behaviour?)
+	timestamp_t clip_end;	// Where we want to stop (microseconds)
+	float duration;			// How long the stream will take in total (XXXJACK: needed?)
+	timestamp_t time_left;	// The same, but different (XXXJACK: needed?)
 	const char* audio_codec_name;
 	const char* video_codec_name;
-	timeval first_sync_time;
-	audio_format audio_fmt;	
+	timeval first_sync_time;	// timestamp of first synchronized packet
+	bool first_sync_time_set;	// True when first_sync_time has been set
+	audio_format audio_fmt;
 	video_format video_fmt;
 	demux_datasink *sinks[MAX_STREAMS];
 	int nsinks;
-
-//xxxbo for h264
-	int gb_first_sync;
 };
 	
 class rtsp_demux : public abstract_demux {
@@ -141,7 +197,8 @@ class rtsp_demux : public abstract_demux {
 	void after_reading_video(unsigned sz, unsigned truncated, struct timeval pts, unsigned duration);
   protected:
 	unsigned long run();
-  private:	
+  private:
+	static rtsp_context_t *_init_subsessions(rtsp_context_t *context);
 	void _set_position(timestamp_t time);
 	void _cancel();
 	lib::critical_section m_critical_section;

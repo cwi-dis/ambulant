@@ -65,7 +65,7 @@ namespace net {
 struct audio_format {	
 	std::string mime_type; ///< Mimetype of the format, or "audio/unknown"
 	std::string name;	///< Name of the format, or empty for linear samples
-	void *parameters;	///< For a named format, pointer to parameters
+	const void *parameters;	///< For a named format, pointer to parameters
 	int samplerate;		///< For linear samples: the samplerate
 	int channels;		///< For linear samples: the number of channels
 	int bits;			///< For linear samples: the numer of bits per sample.
@@ -89,7 +89,7 @@ struct audio_format {
 		bits(b) {};
 	
 	/// Constructor for named audio_format, optionally pass extra format-dependent info.
-	audio_format(const std::string &n, void *p=(void *)0)
+	audio_format(const std::string &n, const void *p=0)
 	:   mime_type("audio/unknown"),
 		name(n),
 		parameters(p),
@@ -98,7 +98,7 @@ struct audio_format {
 		bits(0) {};
 		
 	/// Constructor for named audio_format, optionally pass extra format-dependent info.
-	audio_format(const char *n, void *p=(void *)0)
+	audio_format(const char *n, const void *p=0)
 	:   mime_type("audio/unknown"),
 		name(n),
 		parameters(p),
@@ -114,7 +114,7 @@ struct video_format {
 	
 	std::string mime_type;      ///< Mimetype of the format, or "video/unknown"
 	std::string name;			///< Name of the format
-	void *parameters;			///< For a named format, pointer to parameters
+	const void *parameters;		///< For a named format, pointer to parameters
 	timestamp_t frameduration;	///< For linear samples: the samplerate
 	int width;					/// The width of the video
 	int height;					///	The height of the video
@@ -129,7 +129,7 @@ struct video_format {
 		height(0) {};
 		
 	/// Constructor for named video_format.
-	video_format(std::string &n, void *p=(void *)0)
+	video_format(std::string &n, const void *p=0)
 	:   mime_type("video/unknown"),
 		name(n),
 		parameters(p),
@@ -138,7 +138,7 @@ struct video_format {
 		height(0) {};
 		
 	/// Constructor for named video_format.
-	video_format(const char *n, void *p=(void *)0)
+	video_format(const char *n, const void *p=0)
 	:   mime_type("video/unknown"),
 		name(n),
 		parameters(p),

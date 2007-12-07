@@ -35,7 +35,8 @@ using namespace net;
 #define AM_DBG if(0)
 #endif
 
-#define MIN_VIDEO_PACKET_SIZE 1024
+#define DESIRED_AUDIO_BUF_SIZE 100000
+#define DESIRED_VIDEO_BUF_SIZE 2000000
 
 // Helper routines: callback functions passed to live555 that will call back to our methods.
 static void 
@@ -179,67 +180,13 @@ ambulant::net::rtsp_demux::remove_datasink(int stream_index)
 	m_critical_section.leave();
 }
 
-rtsp_context_t::~rtsp_context_t()
-{
-	AM_DBG  lib::logger::get_logger()->debug("ambulant::net::rtsp_context_t::~rtsp_context_t()");
-	//Have to tear down session here, so that the server is not left hanging till timeout.
-	rtsp_client->teardownMediaSession(*media_session);
-	//deleting stuff, in reverse order as created in rtsp_demux::supported()
-	if (vbuffer)
-		free(vbuffer);
-	for (int i=0; i < MAX_STREAMS; i++) {
-		if (sinks[i] != NULL)
-			delete sinks[i];
-	}
-	if (media_session) {
-		Medium::close(media_session);
-	}
-	if (sdp)
-		free(sdp);
-	if (rtsp_client) {
-		Medium::close(rtsp_client);
-	}
-	if (env)
-		env->reclaim();
-	if (scheduler)
-		delete scheduler;
-}
-
 rtsp_context_t*
 ambulant::net::rtsp_demux::supported(const net::url& url) 
 {
 	if (url.get_protocol() != "rtsp") return NULL;
-	
-	rtsp_context_t* context = new rtsp_context_t;
-	context->first_sync_time.tv_sec = 0;
-	context->first_sync_time.tv_usec = 0;
-	context->scheduler = NULL;
-	context->env = NULL;
-	context->rtsp_client = NULL;
-	context->media_session = NULL;
-	context->sdp = NULL;
-	context->audio_stream = -1;
-	context->video_stream = -1;
+	rtsp_context_t *context = new rtsp_context_t();
 	context->nstream = 0;
-	context->blocking_flag = 0;
-	context->audio_packet = NULL;
-	context->video_packet = NULL;
-	context->last_pts = 0;
-	context->audio_codec_name = NULL;
-	context->video_codec_name = NULL;
-	context->audio_fmt = audio_format("live");
-	context->video_fmt = video_format("live");
-	context->eof = false;
-	context->need_video = true;
-	context->need_audio = true;
-	context->nsinks = 0;
-	context->vbuffer = NULL;
-	context->vbufferlen = 0;
 
-	context->gb_first_sync = 0;
-
-
-	memset(context->sinks, 0, sizeof context->sinks);
 	
 	// setup the basics.
 	context->scheduler = BasicTaskScheduler::createNew();
@@ -288,7 +235,9 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 //	context->time_left = (timestamp_t) (context->duration*1000000); // do not skip last frame
 	AM_DBG lib::logger::get_logger()->debug("rtps_demux::supported: time_left = %ld", context->time_left);
 	// next set up the rtp subsessions.
-	
+	context = _init_subsessions(context);
+	if (context == NULL) return NULL;
+#if 0
 	unsigned int desired_buf_size = 0;
 	MediaSubsession* subsession;
 	MediaSubsessionIterator iter(*context->media_session);
@@ -305,6 +254,7 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 			if (context->audio_stream < 0) {
 				context->audio_stream = context->nstream;
 				context->audio_codec_name = subsession->codecName();
+				context->audio_format = audio_format("live", context->audio_codec_name);
 				AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), audio codecname :%s ",context->audio_codec_name);
 				context->audio_fmt.channels = 0; //Let the decoder (ffmpeg) find out the channels subsession->numChannels() returns channels -1 ???
 				context->audio_fmt.bits = 16;
@@ -318,6 +268,7 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 			if (context->video_stream < 0) {
 				context->video_stream = context->nstream;
 				context->video_codec_name = subsession->codecName();
+				context->video_format = video_format("live", context->video_codec_name);
 				AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), video codecname :%s ",context->video_codec_name);
 				//KB getting video_fmt from RTSP doesn't work 
 				context->video_fmt.frameduration = (timestamp_t) (1000000.0/subsession->videoFPS());
@@ -350,6 +301,7 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 			return NULL;
 		}
 	}
+#endif
 	
 	lib::logger::get_logger()->debug("rtps_demux::supported(%s): duration=%ld", ch_url, context->time_left);
 	return context;
@@ -397,15 +349,117 @@ ambulant::net::rtsp_demux::seek(timestamp_t time)
 static unsigned char* parseH264ConfigStr( char const* configStr,
                                           unsigned int& configSize );
 
+rtsp_context_t *
+ambulant::net::rtsp_demux::_init_subsessions(rtsp_context_t *context)
+{
+	assert(context->extraPacketHeaderData == NULL);
+	assert(context->extraPacketHeaderSize == 0);
+	assert(context->configData == NULL);
+	assert(context->configDataLen == 0);
+	assert(context->initialPacketData == NULL);
+	assert(context->initialPacketDataLen == 0);
+	MediaSubsession* subsession;
+	MediaSubsessionIterator iter(*context->media_session);
+	int stream_index = 0;
+	for(stream_index=0, (subsession = iter.next()); subsession != NULL; stream_index++, (subsession = iter.next())) {
+		if (!subsession->initiate()) {
+			lib::logger::get_logger()->error("rtsp_demux: failed to initiate subsession for medium \"%s\"", subsession->mediumName());
+			//lib::logger::get_logger()->error("RTSP Connection Failed");
+			delete context;
+			return NULL;
+		}
+		const char *mediumName = subsession->mediumName();
+		if (strcmp(mediumName, "audio") == 0) {
+			if (context->audio_stream >= 0) {
+				lib::logger::get_logger()->trace("rtsp_demux: ignoring additional audio stream");
+				continue;
+			}
+			context->audio_stream = stream_index;
+			context->audio_codec_name = subsession->codecName();
+			context->audio_fmt = audio_format("live", context->audio_codec_name);
+			AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), audio codecname :%s ",context->audio_codec_name);
+#if 1 // XXXJACK is not sure...
+			context->audio_fmt.channels = 0; //Let the decoder (ffmpeg) find out the channels subsession->numChannels() returns channels -1 ???
+			context->audio_fmt.bits = 16;
+			//context->audio_fmt.samplerate = subsession->rtpSource()->timestampFrequency();
+			context->audio_fmt.samplerate = 0;
+#endif
+			int rtp_sock_num = subsession->rtpSource()->RTPgs()->socketNum();
+			increaseReceiveBufferTo(*context->env, rtp_sock_num, DESIRED_AUDIO_BUF_SIZE);
+		} else if (strcmp(mediumName, "video") == 0) {
+			if (context->video_stream >= 0) {
+				lib::logger::get_logger()->trace("rtsp_demux: ignoring additional video stream");
+				continue;
+			}
+			context->video_stream = stream_index;
+			context->video_codec_name = subsession->codecName();
+			context->video_fmt = video_format("live", context->video_codec_name);
+			AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), video codecname :%s ",context->video_codec_name);
+#if 1 // XXXJACK is not sure...
+			//KB getting video_fmt from RTSP doesn't work 
+			context->video_fmt.frameduration = (timestamp_t) (1000000.0/subsession->videoFPS());
+			context->video_fmt.width = subsession->videoWidth();
+			context->video_fmt.height = subsession->videoHeight();
+			lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), width: %d, height: %d, FPS: %f",context->video_fmt.width, context->video_fmt.height, 1000000.0/context->video_fmt.frameduration);
+#endif
+			int rtp_sock_num = subsession->rtpSource()->RTPgs()->socketNum();
+			increaseReceiveBufferTo(*context->env, rtp_sock_num, DESIRED_VIDEO_BUF_SIZE);
+
+			//For MP4V-ES video format we need to insert a packet into the RTSP stream
+			//which should be present in the 'config' MIME parameter which should be present hopefully in the SDP description
+			//this idea was copied from mplayer libmpdemux/demux_rtp.cpp
+			if(strcmp(gettext(context->video_codec_name), "MP4V-ES")==0) {
+				unsigned configLen;
+				unsigned char* configData 
+					= parseGeneralConfigStr(subsession->fmtp_config(), configLen);
+				context->initialPacketData = configData;
+				context->initialPacketDataLen = configLen;
+				
+			}
+			if ( !strcmp( gettext(context->video_codec_name), "H264")){
+				// H264 not only needs a magic first packet, but also four magic bytes at the
+				// start of each subsequent packet. 
+				context->extraPacketHeaderSize = 4;
+				context->extraPacketHeaderData = (unsigned char *)malloc(4);
+				assert(context->extraPacketHeaderData);
+				context->extraPacketHeaderData[0] = 0x00;
+				context->extraPacketHeaderData[1] = 0x00;
+				context->extraPacketHeaderData[2] = 0x00;
+				context->extraPacketHeaderData[3] = 0x01;
+				// Also, live555 doesn't deliver H264 streams with correct packetization (sigh)
+				context->notPacketized = true;
+				unsigned configLen;
+				unsigned char* configData;
+				
+				configData = parseH264ConfigStr(subsession->fmtp_spropparametersets(), configLen);
+				context->configData = configData;
+				context->configDataLen = configLen;
+				// XXXJACK need to call the ffmpeg open routine, set extra_data, create new video_format().
+			}
+		} else {
+			lib::logger::get_logger()->trace("rtsp_demux: ignoring subsession with unknown mediaName \"%s\"", mediumName);
+			continue;
+		}
+#ifndef WITH_TCP  //xxxBo setup RTP over udp
+		if(!context->rtsp_client->setupMediaSubsession(*subsession, false, false))
+#else //xxxBo setup RTP over tcp
+		if(!context->rtsp_client->setupMediaSubsession(*subsession, false, 1))
+#endif /*WITH_TCP*/
+		{
+			lib::logger::get_logger()->error("rtsp: failed to send setup command to subsession");
+			//lib::logger::get_logger()->error("RTSP Connection Failed");
+			delete context;
+			return NULL;
+		}
+	}
+	context->nstream = stream_index;
+	return context;
+}
+
 unsigned long 
 ambulant::net::rtsp_demux::run() 
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() called (%d)", m_context->need_audio);
-	m_context->blocking_flag = 0;
-	m_context->extraPacketHeaderSize = 0;
-	m_context->extraPacketHeaderData = NULL;
-	m_context->vbuffer = NULL;
-	m_context->vbufferlen = 0;
 	if (!m_context->media_session) {
 		lib::logger::get_logger()->error("playing RTSP connection failed");
 		return 1;
@@ -418,7 +472,6 @@ ambulant::net::rtsp_demux::run()
 	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() starting the loop ");
 	m_critical_section.enter();
 	add_ref();
-	int firstTime=0;
 		
 	while(!m_context->eof && !exit_requested()) {
 		AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run: start another loop iteration");
@@ -446,6 +499,7 @@ ambulant::net::rtsp_demux::run()
 		while ((subsession = iter.next()) != NULL) {
 			if (strcmp(subsession->mediumName(), "audio") == 0) {
 				if(m_context->need_audio) {
+					// XXXJACK We don't actually need to malloc every time, we could probably reuse the old one if it was copied.
 					assert(!m_context->audio_packet);
 					m_context->audio_packet = (unsigned char*) malloc(MAX_RTP_FRAME_SIZE);
 					AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() Calling getNextFrame for an audio frame");
@@ -456,51 +510,15 @@ ambulant::net::rtsp_demux::run()
 				}
 			} else if (strcmp(subsession->mediumName(), "video") == 0) {
 				if (m_context->need_video) {
+					// XXXJACK We don't actually need to malloc every time, we could probably reuse the old one if it was copied.
 					assert(!m_context->video_packet);
-					m_context->configDataLen=0;//Required by after_reading_video
-					if(firstTime==0){
-						m_context->notPacketized = false;
-						//For MP4V-ES and H264 video formats we need to insert a header into the RTSP stream
-						//which should be present in the 'config' MIME parameter which should be present hopefully in the SDP description
-						//this idea was copied from mplayer libmpdemux/demux_rtp.cpp
-						firstTime=1;		
-						if(strcmp(gettext(m_context->video_codec_name), "MP4V-ES")==0) {
-							unsigned configLen;
-		    				unsigned char* configData 
-       							= parseGeneralConfigStr(subsession->fmtp_config(), configLen);
-							m_context->configData = configData;
-							m_context->configDataLen = configLen;
-							
-						}
-						if ( !strcmp( gettext(m_context->video_codec_name), "H264")){
-							// H264 not only needs a magic first packet, but also three magic bytes at the
-							// start of each subsequent packet. 
-							m_context->extraPacketHeaderSize = 4;
-							m_context->extraPacketHeaderData = (unsigned char *)malloc(4);
-							assert(m_context->extraPacketHeaderData);
-							m_context->extraPacketHeaderData[0] = 0x00;
-							m_context->extraPacketHeaderData[1] = 0x00;
-							m_context->extraPacketHeaderData[2] = 0x00;
-							m_context->extraPacketHeaderData[3] = 0x01;
-							// Also, live555 doesn't deliver H264 streams with correct packetization (sigh)
-							m_context->notPacketized = true;
-						    unsigned configLen;
-						    unsigned char* configData;
-						    
-						    configData = parseH264ConfigStr(subsession->fmtp_spropparametersets(), configLen);
- 						    m_context->configData = configData;
-						    m_context->configDataLen = configLen;
-						    
-						}
-					}		
 					m_context->video_packet = (unsigned char*) malloc(MAX_RTP_FRAME_SIZE);
 					//std::cout << " MAX_RTP_FRAME_SIZE = " << MAX_RTP_FRAME_SIZE;
 					AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() Calling getNextFrame for an video frame");
 					m_context->need_video = false;
 					AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() video_packet 0x%x", m_context->video_packet);
-					int extraHeaderBytes = m_context->extraPacketHeaderSize;
 					m_critical_section.leave();
-					subsession->readSource()->getNextFrame(&m_context->video_packet[extraHeaderBytes], MAX_RTP_FRAME_SIZE-extraHeaderBytes, after_reading_video_stub, this, on_source_close, m_context);
+					subsession->readSource()->getNextFrame(&m_context->video_packet[m_context->extraPacketHeaderSize], MAX_RTP_FRAME_SIZE-m_context->extraPacketHeaderSize, after_reading_video_stub, this, on_source_close, m_context);
 					m_critical_section.enter();
 					
 				}
@@ -591,24 +609,22 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
 		m_context->last_pts=0;
 		// Some formats (notably mp4v and h264) get an initial synthesized packet of data. This is
 		// where we deliver that.
-		if(m_context->configDataLen > 0) {
-			/*AM_DBG*/ lib::logger::get_logger()->debug("after_reading_video: inserting configData packet, size=%d", m_context->configDataLen);
-			if (0 && m_context->notPacketized) {
+		if(m_context->initialPacketDataLen > 0) {
+			/*AM_DBG*/ lib::logger::get_logger()->debug("after_reading_video: inserting initialPacketData packet, size=%d", m_context->initialPacketDataLen);
+			if (m_context->notPacketized) {
 				assert(m_context->vbuffer == NULL);
 				assert(m_context->vbufferlen == 0);
-				m_context->vbuffer = m_context->configData;
-				m_context->vbufferlen = m_context->configDataLen;
-				m_context->configData = NULL;
-				m_context->configDataLen = 0;
+				m_context->vbuffer = m_context->initialPacketData;
+				m_context->vbufferlen = m_context->initialPacketDataLen;
+				m_context->initialPacketData = NULL;
+				m_context->initialPacketDataLen = 0;
 			} else {
-				m_context->configData = (unsigned char *)realloc(m_context->configData, m_context->configDataLen + FF_INPUT_BUFFER_PADDING_SIZE);
-				memset(m_context->configData+m_context->configDataLen, 0, FF_INPUT_BUFFER_PADDING_SIZE);
-				m_context->sinks[m_context->video_stream]->data_avail(0, (uint8_t*) m_context->configData , m_context->configDataLen);
+				m_context->sinks[m_context->video_stream]->data_avail(0, (uint8_t*) m_context->initialPacketData , m_context->initialPacketDataLen);
 			}
 		}
 	}
 
-	if (m_context->gb_first_sync == 0) {
+	if (!m_context->first_sync_time_set) {
 		// We have not been synced yet. If the video stream has been synced for this packet
 		// we can set the epoch of the timing info. 
 		MediaSubsession* subsession;
@@ -627,7 +643,7 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
 				m_context->first_sync_time.tv_sec = pts.tv_sec;
 				m_context->first_sync_time.tv_usec = pts.tv_usec;
 				m_context->last_pts = 0;
-				m_context->gb_first_sync = 1;
+				m_context->first_sync_time_set = true;
 			}
 		}
 	}
@@ -711,9 +727,10 @@ done:
 	m_context->need_video = true;
 	if (m_context->video_packet) free(m_context->video_packet);
 	m_context->video_packet  = NULL;
-	if(m_context->configDataLen > 0){
-		free(m_context->configData);
-		m_context->configData = NULL;
+	if(m_context->initialPacketDataLen > 0){
+		free(m_context->initialPacketData);
+		m_context->initialPacketData = NULL;
+		m_context->initialPacketDataLen = 0;
 	}
 
 #ifdef JACK_IS_NOT_CONVINCED_YET
