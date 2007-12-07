@@ -745,7 +745,8 @@ static unsigned char* parseH264ConfigStr( char const* configStr,
 
     //printf("configStr is %s\n", configStr);
 #ifdef AMBULANT_PLATFORM_WIN32
-	psz = dup = (char *)StrDup(LPCTSTR (configStr));
+	psz = dup = (char *)malloc(strlen(configStr)+1);
+	strcpy(dup, configStr);
 #else
     psz = dup = strdup( configStr );
 #endif

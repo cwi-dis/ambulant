@@ -36,6 +36,8 @@
 #define AM_DBG if(0)
 #endif 
 
+const AVRational AMBULANT_TIMEBASE = {1, 1000000};
+
 // Update the minimal required MIN_AVFORMAT_BUILD whenever we use a newer libavformat.
 #define MIN_LIBAVFORMAT_BUILD ((51<<16)+(12<<8)+2)
 #if LIBAVFORMAT_BUILD < MIN_LIBAVFORMAT_BUILD
@@ -365,9 +367,9 @@ ffmpeg_demux::run()
 			timestamp_t seektime;
 			// If we have a video stream we should rescale our time offset to the timescale of the video stream.
 			// Theoretically we may have to do something similar for audio, but we seem to get away with not doing anything.
-			if (streamnr >= 0)
-				seektime = av_rescale_q(m_clip_begin+m_seektime, AV_TIME_BASE_Q, m_con->streams[streamnr]->time_base);
-			else
+			if (streamnr >= 0) {
+				seektime = av_rescale_q(m_clip_begin+m_seektime, AMBULANT_TIMEBASE, m_con->streams[streamnr]->time_base);
+			} else
 				seektime = m_clip_begin+m_seektime;
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %lld scaled to mediatimebase", seektime);
 			int seekresult = av_seek_frame(m_con, streamnr, seektime, AVSEEK_FLAG_BACKWARD);
@@ -412,7 +414,7 @@ ffmpeg_demux::run()
 					pts = pkt->dts;
 				}
 				if (pts != AV_NOPTS_VALUE)
-					pts = av_rescale_q(pkt->pts, m_con->streams[pkt->stream_index]->time_base, AV_TIME_BASE_Q);
+					pts = av_rescale_q(pkt->pts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
 				
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.data_avail(%lld, 0x%x, %d, %d) pts=%lld", pkt->stream_index, pkt->pts, pkt->data, pkt->size, pkt->duration, pts);
 				
