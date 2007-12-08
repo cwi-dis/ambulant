@@ -1,3 +1,18 @@
+2007-12-07 17:49  jackjansen
+
+	* We now do (as far as I can see) exactly the same as VLC.  Except
+	  that our code doesn't work:-(
+
+2007-12-07 16:07  jackjansen
+
+	* More refactoring: moved all per-subsession initializations into
+	  one method, and call that from supported().  Also rationalized
+	  initialization/cleanup of context.
+
+2007-12-07 13:04  jackjansen
+
+	* Mods to make things work on windows again.
+
 2007-12-06 11:38  jackjansen
 
 	* extra_data pointers from plugins should be static, otherwise all
