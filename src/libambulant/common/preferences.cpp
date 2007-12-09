@@ -47,7 +47,9 @@ preferences::preferences()
 	m_use_plugins(true),
 	m_plugin_dir(""),
 	m_prefer_ffmpeg(false),
-	m_dynamic_content_control(false)
+	m_dynamic_content_control(false),
+	m_fullscreen(false),
+	m_prefer_rtsp_tcp(false)
 {
 	AM_DBG lib::logger::get_logger()->debug("preferences::preferences()");
 	load_preferences();

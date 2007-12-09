@@ -42,6 +42,7 @@ mypreferences::load_preferences()
 		[NSNumber numberWithInt: 2], @"log_level",
 		[NSNumber numberWithBool: true], @"use_plugins",
 		[NSNumber numberWithBool: false], @"prefer_ffmpeg",
+		[NSNumber numberWithBool: false], @"prefer_rtsp_tcp",
 		[NSNumber numberWithBool: false], @"strict_url_parsing",
 		[NSNumber numberWithBool: false], @"tabbed_links",
 		[NSNumber numberWithBool: false], @"fullScreen",
@@ -58,6 +59,7 @@ mypreferences::load_preferences()
 	m_use_plugins = [prefs boolForKey: @"use_plugins"];
 	m_plugin_dir = [[prefs stringForKey: @"plugin_dir"] cString];
 	m_prefer_ffmpeg = [prefs boolForKey: @"prefer_ffmpeg"];
+	m_prefer_rtsp_tcp = [prefs boolForKey: @"prefer_rtsp_tcp"];
 	m_strict_url_parsing = [prefs boolForKey: @"strict_url_parsing"];
 	m_tabbed_links = [prefs boolForKey: @"tabbed_links"];
 	m_dynamic_content_control = [prefs boolForKey: @"dynamic_content_control"];
@@ -79,6 +81,7 @@ mypreferences::save_preferences()
 	[prefs setBool: m_use_plugins forKey: @"use_plugins"];
 	[prefs setObject: [NSString stringWithCString: m_plugin_dir.c_str()] forKey: @"plugin_dir"];
 	[prefs setBool: m_prefer_ffmpeg forKey: @"prefer_ffmpeg"];
+	[prefs setBool: m_prefer_rtsp_tcp forKey: @"prefer_rtsp_tcp"];
 	[prefs setBool: m_strict_url_parsing forKey: @"strict_url_parsing"];
 	[prefs setBool: m_tabbed_links forKey: @"tabbed_links"];
 	[prefs setBool: m_fullscreen forKey: @"fullScreen"];

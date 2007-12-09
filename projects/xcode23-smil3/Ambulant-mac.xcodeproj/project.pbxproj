@@ -273,6 +273,7 @@
 		04E13B290BD786380074AF09 /* cocoa_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B270BD786380074AF09 /* cocoa_smiltext.mm */; };
 		04E13B350BD786A40074AF09 /* smiltext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B340BD786A40074AF09 /* smiltext.cpp */; };
 		04E13B360BD786A40074AF09 /* smiltext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B340BD786A40074AF09 /* smiltext.cpp */; };
+		04ECC1D60D0C960F00EEF8A7 /* libfaad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0480CCFF0CDD1D5C0025344B /* libfaad.a */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
@@ -788,6 +789,7 @@
 				049656A70BCAEA7D002C00DF /* libSDL.a in Frameworks */,
 				049656A80BCAEA7D002C00DF /* libz.dylib in Frameworks */,
 				049656B30BCAEC13002C00DF /* Carbon.framework in Frameworks */,
+				04ECC1D60D0C960F00EEF8A7 /* libfaad.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

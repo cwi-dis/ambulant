@@ -98,6 +98,9 @@ class AMBULANTAPI preferences {
 	/// Was the player in fullscreen mode when the last document was closed?
 	bool m_fullscreen;
 	
+	/// Should we use RTSP-over-TCP (in stead of RTSP-over-UDP)?
+	bool m_prefer_rtsp_tcp;
+	
 	/// Return the preferences singleton object.
 	static preferences* get_preferences();
 

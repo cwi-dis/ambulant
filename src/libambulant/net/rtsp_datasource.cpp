@@ -21,6 +21,7 @@
 #include "ambulant/net/rtsp_datasource.h"
 #include "ambulant/net/demux_datasource.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/common/preferences.h"
 #include "GroupsockHelper.hh"
 
 ///// Added by Bo Gao begin 2007-11-07
@@ -245,9 +246,16 @@ timestamp_t
 ambulant::net::rtsp_demux::get_clip_begin()
 {
 	timestamp_t rv;
+#if 0
+	// XXXJACK: this lock can cause a race: if demux_datasource calls us
+	// it's holding its lock, but if we are in after_reading_xxxx we are holding
+	// our lock and trying to obtain the demux_datasource lock.
 	m_critical_section.enter();
+#endif
 	rv = m_clip_begin;
+#if 0
 	m_critical_section.leave();
+#endif
 	return rv;
 }
 
@@ -380,14 +388,16 @@ ambulant::net::rtsp_demux::_init_subsessions(rtsp_context_t *context)
 			lib::logger::get_logger()->trace("rtsp_demux: ignoring subsession with unknown mediaName \"%s\"", mediumName);
 			continue;
 		}
-#ifndef WITH_TCP  //xxxBo setup RTP over udp
-		if(!context->rtsp_client->setupMediaSubsession(*subsession, false, false))
-#else //xxxBo setup RTP over tcp
-		if(!context->rtsp_client->setupMediaSubsession(*subsession, false, 1))
-#endif /*WITH_TCP*/
-		{
-			lib::logger::get_logger()->error("rtsp: failed to send setup command to subsession");
-			//lib::logger::get_logger()->error("RTSP Connection Failed");
+		bool prefer_tcp = common::preferences::get_preferences()->m_prefer_rtsp_tcp;
+		bool ok;
+		if (prefer_tcp) {
+			/*AM_DBG*/ lib::logger::get_logger()->debug("rtsp: using TCP as transport stream");
+			ok = context->rtsp_client->setupMediaSubsession(*subsession, false, true);
+		} else {
+			ok = context->rtsp_client->setupMediaSubsession(*subsession, false, false);
+		}
+		if (!ok) {
+			lib::logger::get_logger()->trace("rtsp: setup command to subsession failed");
 			delete context;
 			return NULL;
 		}
