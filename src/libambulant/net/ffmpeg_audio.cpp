@@ -667,33 +667,32 @@ ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 {
 	// private method - no need to lock
 	if (fmt.name == "ffmpeg") {
-		AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
+		m_con = (AVCodecContext *)fmt.parameters;
 
-		if (enc == NULL) {
+		if (m_con == NULL) {
 				lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Parameters missing for %s(0x%x)", fmt.name.c_str(), fmt.parameters);
 				return false;
 		}
-		if (enc->codec_type != CODEC_TYPE_AUDIO) {
-				lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Non-audio stream for %s(0x%x)", fmt.name.c_str(), enc->codec_type);
+		if (m_con->codec_type != CODEC_TYPE_AUDIO) {
+				lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Non-audio stream for %s(0x%x)", fmt.name.c_str(), m_con->codec_type);
 				return false;
 		}
-		AVCodec *codec = avcodec_find_decoder(enc->codec_id);
+
+		AVCodec *codec = avcodec_find_decoder(m_con->codec_id);
 		if (codec == NULL) {
-				lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Failed to find codec for %s(0x%x)", fmt.name.c_str(), enc->codec_id);
+				lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Failed to find codec for %s(0x%x)", fmt.name.c_str(), m_con->codec_id);
 				return false;
 		}
-		m_con = avcodec_alloc_context();
+//		m_con = avcodec_alloc_context();
 		
-		m_con->channels = 0;
 		if(avcodec_open(m_con,codec) < 0) {
-				lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Failed to open avcodec for %s(0x%x)", fmt.name.c_str(), enc->codec_id);
+				lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Failed to open avcodec for %s(0x%x)", fmt.name.c_str(), m_con->codec_id);
 				av_free(m_con);
 				m_con = NULL;
 				return false;
 		}
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::_select_decoder: codec_name=%s, codec_id=%d", m_con->codec_name, m_con->codec_id);
-
-		m_fmt = audio_format(enc->sample_rate, enc->channels, 16);
+		m_fmt = audio_format(m_con->sample_rate, m_con->channels, 16);
 		return true;
 	} else if (fmt.name == "live") {
 		const char* codec_name = (char*) fmt.parameters;
