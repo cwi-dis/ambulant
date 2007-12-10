@@ -71,8 +71,12 @@ class dx_audio_renderer : public common::renderer_playable {
  	lib::critical_section m_cs;
 };
 
+/// Set the overall soundlevel
+AMBULANTAPI void set_global_level(double level);
 /// Change the overall soundlevel
 AMBULANTAPI double change_global_level(double factor);
+/// Set the overall playback speed
+AMBULANTAPI void set_global_rate(double rate);
 /// Change the overall playback speed
 AMBULANTAPI double change_global_rate(double factor);
 } // namespace dx

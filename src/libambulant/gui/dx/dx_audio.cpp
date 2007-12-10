@@ -234,12 +234,27 @@ void gui::dx::dx_audio_renderer::schedule_update() {
 	m_event_processor->add_event(m_update_event, 100, lib::ep_high);
 }
 
+void
+gui::dx::set_global_level(double level)
+{
+	s_global_level = level;
+	// XXXX Should also adapt currently existing volumes
+}
+
 double
 gui::dx::change_global_level(double factor)
 {
 	s_global_level *= factor;
 	// XXXX Should also adapt currently existing volumes
 	return s_global_level;
+}
+
+void
+gui::dx::set_global_rate(double rate)
+{
+#ifdef WITH_TPB_AUDIO_SPEEDUP
+	gui::dx::audio_player::set_global_rate(rate);
+#endif
 }
 
 double
