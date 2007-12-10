@@ -1,3 +1,11 @@
+2007-12-09 23:25  jackjansen
+
+	* - added preference setting for RTSP-over-TCP (as opposed to
+	  default RTSP-over-UDP). Need to add UI for other platforms too.
+	  - worked around race condition between rtsp_demux and
+	  demux_datasource by removing one lock. Needs to be fixed at some
+	  point.
+
 2007-12-07 17:49  jackjansen
 
 	* We now do (as far as I can see) exactly the same as VLC.  Except
