@@ -47,6 +47,7 @@ mypreferences::load_preferences()
 	val = pApp->GetProfileString(_T("Settings"), _T("plugin_dir"),0);
 	m_plugin_dir = T2CA((LPCTSTR)val);
 	m_prefer_ffmpeg = (bool)pApp->GetProfileInt(_T("Settings"), _T("use_ffmpeg"), 0);
+	m_prefer_rtsp_tcp = (bool)pApp->GetProfileInt(_T("Settings"), _T("use_rtsp_tcp"), 0);
 
 	return true;
 }
@@ -66,6 +67,7 @@ mypreferences::save_preferences()
 	pApp->WriteProfileInt(_T("Settings"), _T("use_plugins"), m_use_plugins);
 	pApp->WriteProfileString(_T("Settings"), _T("plugin_dir"), A2CT(m_plugin_dir.c_str()));
 	pApp->WriteProfileInt(_T("Settings"), _T("use_ffmpeg"), m_prefer_ffmpeg);
+	pApp->WriteProfileInt(_T("Settings"), _T("use_rtsp_tcp"), m_prefer_rtsp_tcp);
 	
 	return true;
 }

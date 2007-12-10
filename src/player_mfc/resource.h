@@ -36,6 +36,8 @@
 #define IDC_EDIT1                       1017
 #define IDC_PLUGIN_DIR                  1017
 #define IDC_DO_FFMPEG                   1018
+#define IDC_DO_FFMPEG2                  1019
+#define IDC_DO_RTSP_TCP                 1019
 #define ID_FILE_PLAY                    32771
 #define ID_FILE_PAUSE                   32772
 #define ID_FILE_STOP                    32773

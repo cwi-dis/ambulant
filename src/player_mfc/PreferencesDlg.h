@@ -41,6 +41,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 private:
 	int m_do_ffmpeg;
+	int m_do_rtsp_tcp;
 public:
 	afx_msg void OnOK();
 };

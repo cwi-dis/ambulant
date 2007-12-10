@@ -60,6 +60,7 @@ PrefMediaPropertyPage::PrefMediaPropertyPage()
 {
 	ambulant::common::preferences *prefs = ambulant::common::preferences::get_preferences();
 	m_do_ffmpeg = prefs->m_prefer_ffmpeg;
+	m_do_rtsp_tcp = prefs->m_prefer_rtsp_tcp;
 }
 
 BOOL
@@ -77,6 +78,7 @@ void PrefMediaPropertyPage::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	DDX_Check(pDX, IDC_DO_FFMPEG, m_do_ffmpeg);
+	DDX_Check(pDX, IDC_DO_RTSP_TCP, m_do_rtsp_tcp);
 }
 
 // PreferencesDlg message handlers
@@ -86,6 +88,7 @@ void PrefMediaPropertyPage::OnOK()
 	USES_CONVERSION;
 	ambulant::common::preferences *prefs = ambulant::common::preferences::get_preferences();
 	prefs->m_prefer_ffmpeg = m_do_ffmpeg;
+	prefs->m_prefer_rtsp_tcp = m_do_rtsp_tcp;
 	prefs->save_preferences();
 	CPropertyPage::OnOK();
 }

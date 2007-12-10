@@ -250,11 +250,13 @@ STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Media"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    GROUPBOX        "Mimetype handling:",IDC_STATIC,12,45,161,39
-    CONTROL         "Honor server-supplied value",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,19,55,106,10
-    CONTROL         "Honor ""type"" attributes",IDC_CHECK2,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,19,70,91,10
-    GROUPBOX        "Audio/Video rendering:",IDC_STATIC,12,11,161,35
+    GROUPBOX        "Mimetype handling:",IDC_STATIC,12,67,161,39
+    CONTROL         "Honor server-supplied value",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,19,77,106,10
+    CONTROL         "Honor ""type"" attributes",IDC_CHECK2,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,19,92,91,10
+    GROUPBOX        "Audio/Video rendering:",IDC_STATIC,12,11,161,51
     CONTROL         "Use ffmpeg, not DirectShow",IDC_DO_FFMPEG,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,25,106,10
+    CONTROL         "Use TCP as RTSP transport, not UDP",IDC_DO_RTSP_TCP,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,40,133,10
 END
 
 IDD_PROPPAGE_PLUGINS DIALOGEX 0, 0, 195, 127
