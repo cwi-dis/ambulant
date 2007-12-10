@@ -130,6 +130,7 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	bool _end_of_file();
 	void _need_fmt_uptodate();
 	AVCodecContext *m_con;
+	bool m_con_owned;
 	audio_format m_fmt;
 	lib::event_processor *m_event_processor;
   	pkt_audio_datasource* m_src;

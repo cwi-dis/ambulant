@@ -243,6 +243,7 @@ ffmpeg_decoder_datasource::supported(const net::url& url)
 
 ffmpeg_decoder_datasource::ffmpeg_decoder_datasource(const net::url& url, pkt_audio_datasource *const src)
 :	m_con(NULL),
+	m_con_owned(false),
 	m_fmt(audio_format(0,0,0)),
 	m_event_processor(NULL),
 	m_src(src),
@@ -286,7 +287,7 @@ ffmpeg_decoder_datasource::stop()
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::stop(0x%x)", (void*)this);
-	if (m_con) {
+	if (m_con && m_con_owned) {
 		avcodec_close(m_con);
 		av_free(m_con);
 	}
@@ -653,6 +654,7 @@ ffmpeg_decoder_datasource::_select_decoder(const char* file_ext)
 			return false;
 	}
 	m_con = avcodec_alloc_context();
+	m_con_owned = true;
 	
 	if(avcodec_open(m_con,codec) < 0) {
 			lib::logger::get_logger()->trace("ffmpeg_decoder_datasource._select_decoder: Failed to open avcodec for \"%s\"", file_ext);
@@ -668,6 +670,7 @@ ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 	// private method - no need to lock
 	if (fmt.name == "ffmpeg") {
 		m_con = (AVCodecContext *)fmt.parameters;
+		m_con_owned = false;
 
 		if (m_con == NULL) {
 				lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Parameters missing for %s(0x%x)", fmt.name.c_str(), fmt.parameters);
