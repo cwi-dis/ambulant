@@ -381,7 +381,10 @@ ambulant::net::rtsp_demux::_init_subsessions(rtsp_context_t *context)
 				// Therefore, we change the video_format from {"live", "H264"} to
 				// {"ffmpeg", AVCodecContext}.
 				// If anything fails (it shouldn't) we just continue, we'll get the same error later.
-				ffmpeg_live_h264_format(context->video_fmt, context->configData, context->configDataLen);
+				AVCodecContext *ffcon = ffmpeg_alloc_partial_codec_context(true, "H264");
+				ffcon->extradata = context->configData;
+				ffcon->extradata_size = context->configDataLen;
+				context->video_fmt = video_format("ffmpeg", ffcon);
 #endif
 			}
 		} else {
@@ -546,7 +549,7 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
 {
 	m_critical_section.enter();
 	assert(m_context);
-	/*AM_DBG*/ lib::logger::get_logger()->debug("after_reading_video: called sz = %d, truncated = %d pts=(%d s, %d us), dur=%d", sz, truncated, pts.tv_sec, pts.tv_usec, duration);
+	AM_DBG lib::logger::get_logger()->debug("after_reading_video: called sz = %d, truncated = %d pts=(%d s, %d us), dur=%d", sz, truncated, pts.tv_sec, pts.tv_usec, duration);
 	assert(m_context->video_packet);
 	assert(m_context->video_stream >= 0);
 	
@@ -559,7 +562,7 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
 		// Some formats (notably mp4v and h264) get an initial synthesized packet of data. This is
 		// where we deliver that.
 		if(m_context->initialPacketDataLen > 0) {
-			/*AM_DBG*/ lib::logger::get_logger()->debug("after_reading_video: inserting initialPacketData packet, size=%d", m_context->initialPacketDataLen);
+			AM_DBG lib::logger::get_logger()->debug("after_reading_video: inserting initialPacketData packet, size=%d", m_context->initialPacketDataLen);
 			if (m_context->notPacketized) {
 				assert(m_context->vbuffer == NULL);
 				assert(m_context->vbufferlen == 0);
@@ -656,7 +659,7 @@ again:
 	// Send the data to our sink, which is responsible for copying/saving it before returning.
 	if(sink && !exit_requested()) {
 		if (m_context->notPacketized) {
-			/*AM_DBG*/ lib::logger::get_logger()->debug("Video packet length (buffered)=%d, timestamp=%lld", m_context->vbufferlen, m_context->last_pts+m_clip_begin);
+			AM_DBG lib::logger::get_logger()->debug("Video packet length (buffered)=%d, timestamp=%lld", m_context->vbufferlen, m_context->last_pts+m_clip_begin);
 			sink->data_avail(m_context->last_pts+m_clip_begin, (uint8_t*) m_context->vbuffer, m_context->vbufferlen);
 			free(m_context->vbuffer);
 			m_context->vbuffer = NULL;
@@ -664,7 +667,7 @@ again:
 			m_context->last_pts=rpts;
 			goto again;
 		} else {
-			/*AM_DBG*/ lib::logger::get_logger()->debug("Video packet length %d+%d=%d, timestamp=%lld", sz, m_context->extraPacketHeaderSize, sz+m_context->extraPacketHeaderSize, rpts+m_clip_begin);
+			AM_DBG lib::logger::get_logger()->debug("Video packet length %d+%d=%d, timestamp=%lld", sz, m_context->extraPacketHeaderSize, sz+m_context->extraPacketHeaderSize, rpts+m_clip_begin);
 			if (m_context->extraPacketHeaderSize) {
 				// This magic was gleamed from mplayer, file demux_rtp.cpp and vlc, file live555.cpp.
 				// The space in video_packet was already left free in run().

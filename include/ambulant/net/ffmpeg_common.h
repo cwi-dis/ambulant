@@ -129,8 +129,9 @@ class ffmpeg_demux : public abstract_demux {
 	bool m_seektime_changed;	// True if either m_seektime or m_clip_begin has changed.
 };
 
-/// Helper routine: construct video_format for H264 coming from live555 library.
-AMBULANTAPI void ffmpeg_live_h264_format(video_format& fmt, unsigned char *extradata, int extradata_size);
+// Helper routine: allocate a partially-initialised ffmpeg ACCodecContext.
+AVCodecContext *ffmpeg_alloc_partial_codec_context(bool video, const char *name);
+
 }	// end namespace net
 }	// end namespace ambulant
 
