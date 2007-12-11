@@ -445,7 +445,7 @@ ambulant::net::ffmpeg_live_h264_format(video_format& video_fmt, unsigned char *e
 	ffcontext->codec_id = codecid->get_codec_id("H264");
 	ffcontext->extradata = extradata;
 	ffcontext->extradata_size = extradata_size;
-#if 0
+#if 1
 	// Garbage
 	ffcontext->width = 320;
 	ffcontext->height = 240;

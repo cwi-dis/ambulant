@@ -350,11 +350,11 @@ ambulant::net::rtsp_demux::_init_subsessions(rtsp_context_t *context)
 			//which should be present in the 'config' MIME parameter which should be present hopefully in the SDP description
 			//this idea was copied from mplayer libmpdemux/demux_rtp.cpp
 			if(strcmp(context->video_codec_name, "MP4V-ES")==0) {
-				unsigned configLen;
-				unsigned char* configData 
-					= parseGeneralConfigStr(subsession->fmtp_config(), configLen);
-				context->initialPacketData = configData;
-				context->initialPacketDataLen = configLen;
+				unsigned initialPacketDataLen;
+				unsigned char* initialPacketData 
+					= parseGeneralConfigStr(subsession->fmtp_config(), initialPacketDataLen);
+				context->initialPacketData = initialPacketData;
+				context->initialPacketDataLen = initialPacketDataLen;
 				
 			}
 			if ( !strcmp( context->video_codec_name, "H264")){
@@ -492,7 +492,6 @@ ambulant::net::rtsp_demux::run()
 			sink->data_avail(0, 0, 0);
 	}
 	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run(0x%x): returning", (void*)this);
-	if (m_context->extraPacketHeaderData) free(m_context->extraPacketHeaderData);
 	release();
 	m_critical_section.leave();
 	return 0;
@@ -559,13 +558,6 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
 		m_context->last_pts=0;
 		// Some formats (notably mp4v and h264) get an initial synthesized packet of data. This is
 		// where we deliver that.
-#if 1 // XXXJACK
-		if (m_context->configData) {
-			m_context->vbuffer = m_context->configData;
-			m_context->vbufferlen = m_context->configDataLen;
-			m_context->configData = NULL;
-		}
-#endif
 		if(m_context->initialPacketDataLen > 0) {
 			/*AM_DBG*/ lib::logger::get_logger()->debug("after_reading_video: inserting initialPacketData packet, size=%d", m_context->initialPacketDataLen);
 			if (m_context->notPacketized) {
@@ -635,6 +627,11 @@ again:
 					lib::logger::get_logger()->trace("rtsp: out of memory rebuffering. Dropping packet.");
 					m_context->vbufferlen = 0;
 					goto done;
+				}
+				if (m_context->extraPacketHeaderSize) {
+					// This magic was gleamed from mplayer, file demux_rtp.cpp and vlc, file live555.cpp.
+					// The space in video_packet was already left free in run().
+					memcpy(m_context->video_packet, m_context->extraPacketHeaderData, m_context->extraPacketHeaderSize);
 				}
 				memcpy(m_context->vbuffer+m_context->vbufferlen, m_context->video_packet, sz+m_context->extraPacketHeaderSize);
 				m_context->vbufferlen += sz+m_context->extraPacketHeaderSize;
