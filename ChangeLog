@@ -1,3 +1,29 @@
+2007-12-10 16:42  jackjansen
+
+	* Added the other two methods that Daniel Weck requested.
+
+2007-12-10 16:41  jackjansen
+
+	* Now that we sometimes use a borrowed reference to the
+	  AVCondecContext we should record this fact, and not free it.
+
+2007-12-10 15:57  jackjansen
+
+	* When opening an audio stream we should not allocate a new
+	  AVCodecContext, but use the one provided to us. Some fields in
+	  there have alrady been initialised and they won't get
+	  re-initialised if we recreate the AVCodecContext anew.
+
+	  Note: should investigate whether this is also needed for video.
+
+2007-12-10 11:46  jackjansen
+
+	* Implemented rtsp-over-tcp preference for windows mobile.
+
+2007-12-10 10:33  jackjansen
+
+	* Implemented rtsp-over-tcp preference.
+
 2007-12-09 23:25  jackjansen
 
 	* - added preference setting for RTSP-over-TCP (as opposed to
