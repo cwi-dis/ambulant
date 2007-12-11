@@ -512,7 +512,7 @@ ffmpeg_decoder_datasource::data_avail()
 				m_event_processor->add_event(m_client_callback, 0, ambulant::lib::ep_med);
 				m_client_callback = NULL;
 			}
-			//m_event_processor = NULL;
+			m_event_processor = NULL;
 		} else {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail(): No client callback!");
 		}
@@ -911,7 +911,7 @@ ffmpeg_resample_datasource::data_avail()
 			lib::event *clientcallback = m_client_callback;
 			m_client_callback = NULL;
 			m_event_processor->add_event(clientcallback, 0, ambulant::lib::ep_med);
-			//m_event_processor = NULL;
+			m_event_processor = NULL;
 		} else {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail(): No client callback!");
 		}

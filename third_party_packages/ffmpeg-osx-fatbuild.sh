@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-CONFIGOPTS="--disable-mmx --disable-encoders --enable-gpl --disable-vhook"
+CONFIGOPTS="--disable-mmx --disable-encoders --enable-gpl --disable-vhook --disable-ffmpeg"
 srcdir=$1
 case x$srcdir in
     x)

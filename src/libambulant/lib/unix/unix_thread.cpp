@@ -22,6 +22,7 @@
  */
 
 #include "ambulant/lib/unix/unix_thread.h"
+#include "ambulant/lib/logger.h"
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -67,7 +68,13 @@ lib::unix::thread::stop()
     assert(!m_exit_done);
 	m_exit_requested = true;
 	/* TODO: wake thread up */
-	pthread_join(m_thread, NULL);
+	if (pthread_equal(m_thread, pthread_self())) {
+		lib::logger::get_logger()->debug("thread::stop(0x%x) called by self", m_thread);
+	} else {
+		if (pthread_join(m_thread, NULL) < 0) {
+			perror("pthread_join in unix::thread::stop()");
+		}
+	}
 	m_exit_done = true;
 }
 	

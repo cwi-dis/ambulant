@@ -512,7 +512,7 @@ demux_video_datasource::data_avail(timestamp_t pts, const uint8_t *inbuf, int sz
 			assert(m_event_processor);
 			m_event_processor->add_event(m_client_callback, MIN_EVENT_DELAY, ambulant::lib::ep_med);
 			m_client_callback = NULL;
-			//m_event_processor = NULL;
+			m_event_processor = NULL;
 		} else {
 			AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::data_avail(): No client callback");
 		}

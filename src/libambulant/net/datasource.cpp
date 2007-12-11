@@ -110,6 +110,7 @@ filter_datasource_impl::data_avail()
 	if (m_event_processor && m_callback && (m_databuf.buffer_not_empty() || !m_src->end_of_file())) {
 		m_event_processor->add_event(m_callback, 0, ambulant::lib::ep_med);
 		m_callback = NULL;
+		m_event_processor = NULL;
 	}
 	m_lock.leave();
 }

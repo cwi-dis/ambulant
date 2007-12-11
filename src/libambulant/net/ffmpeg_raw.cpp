@@ -268,9 +268,10 @@ ffmpeg_raw_datasource::pushdata(int sz)
 		m_src_end_of_file = true;
 	if ( m_client_callback && (m_buffer.buffer_not_empty() || m_src_end_of_file ) ) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource::pushdata(): calling client callback (%d, %d)", m_buffer.size(), m_src_end_of_file);
+		assert(m_event_processor);
 		m_event_processor->add_event(m_client_callback, 0, ambulant::lib::ep_med);
 		m_client_callback = NULL;
-		//m_event_processor = NULL;
+		m_event_processor = NULL;
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource::pushdata(): No client callback!");
 	}
