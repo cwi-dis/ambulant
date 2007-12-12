@@ -1,3 +1,16 @@
+2007-12-11 17:17  jackjansen
+
+	* Cleanup.
+
+2007-12-11 16:52  jackjansen
+
+	* H264 over rtsp from quicktime server works! But: there's still a
+	  lot of cleanup to be done, and special-case code to be removed.
+
+2007-12-11 15:38  jackjansen
+
+	* Added a bit of debug around thread cleanup.
+
 2007-12-10 16:42  jackjansen
 
 	* Added the other two methods that Daniel Weck requested.
