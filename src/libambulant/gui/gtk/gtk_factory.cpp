@@ -93,8 +93,11 @@ bool gtk_C_callback_helper_queue_draw_area(void *arg)
 	assert(arg);
 	dirty_area_widget *r = (dirty_area_widget *)arg;
 	assert(r != 0);
-//	ambulant::lib::logger::get_logger()->debug("gtk_C_callback_helper_queue_draw_area with left: %d, top: %d, width: %d, height: %d", r->area.left(), r->area.top(), r->area.width(), r->area.height());
-	gtk_widget_queue_draw_area(r->widget, r->area.left(), r->area.top(), r->area.width(), r->area.height());
+	/*AM_DBG*/ ambulant::lib::logger::get_logger()->debug("gtk_C_callback_helper_queue_draw_area with left: %d, top: %d, width: %d, height: %d s_widgets=%d", r->area.left(), r->area.top(), r->area.width(), r->area.height(),gtk_ambulant_widget::s_widgets);
+	gtk_ambulant_widget::s_lock.enter();
+	if (gtk_ambulant_widget::s_widgets > 0)
+		gtk_widget_queue_draw_area(r->widget, r->area.left(), r->area.top(), r->area.width(), r->area.height());
+	gtk_ambulant_widget::s_lock.leave();
 //	gtk_widget_queue_draw(r->widget);
 	delete r;
 	return false;
@@ -243,7 +246,7 @@ gtk_window_factory::gtk_window_factory( gtk_ambulant_widget* parent_widget, GMai
 	m_parent_widget(parent_widget)
 {
 	m_main_loop = loop;
-	AM_DBG lib::logger::get_logger()->debug("gtk_window_factory (0x%x)", (void*) this);
+	AM_DBG lib::logger::get_logger()->debug("gtk_window_factory (0x%x) loop=0x%x", (void*) this, loop);
 	m_arrow_cursor = gdk_cursor_new(GDK_ARROW);
 	m_hand1_cursor = gdk_cursor_new(GDK_HAND1);
 	m_hand2_cursor = gdk_cursor_new(GDK_HAND2);
@@ -432,13 +435,12 @@ ambulant_gtk_window::need_redraw(const lib::rect &r)
 	GtkWidget* this_widget = m_ambulant_widget->get_gtk_widget();
 	dirty_area_widget* dirty = new dirty_area_widget();
 	dirty->widget = gtk_widget_get_parent(this_widget);
+//KB	dirty->widget = this_widget;
 	dirty->area = r;
 	if ( ! gtk_widget_translate_coordinates (this_widget, dirty->widget, r.left(), r.top(), &dirty->area.x, &dirty->area.y)) {
 		AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw(0x%x): gtk_widget_translate_coordinates failed.", (void *)this);
 	}
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw: parent ltrb=(%d,%d,%d,%d)", dirty->area.left(), dirty->area.top(), dirty->area.width(), dirty->area.height());
-//KB	g_timeout_add(0,(GSourceFunc) gtk_C_callback_helper_queue_draw_area, (void *)dirty);
-//KB	g_idle_add((GSourceFunc) gtk_C_callback_helper_queue_draw_area, (void *)dirty);
 	g_idle_add_full(G_PRIORITY_HIGH_IDLE, (GSourceFunc) gtk_C_callback_helper_queue_draw_area, (void *)dirty, NULL);
 //	gtk_widget_queue_draw_area(m_ambulant_widget->get_gtk_widget(), r.left(), r.top(), r.width(), r.height());
 //	gdk_threads_leave ();
@@ -728,6 +730,16 @@ ambulant_gtk_window::_screenTransitionPostRedraw(const lib::rect &r)
 //
 // gtk_ambulant_widget
 //
+// gtk_ambulant_widget::s_widgets is a counter to check for the liveliness of gtk_widget during
+// execution of gtk*draw() functions by a callback function in the main thread
+// gtk_ambulant_widget::s_lock is for the protection of the counter
+// TBD: a better approach would be to have s static protected std::vector<dirty_widget> 
+// to be updated when callbacks are scheduled and executed
+// and use these entries to remove any scheduled callbacks with
+// gboolean g_idle_remove_by_data (gpointer data); when the gtk_widget is destroyed
+// then the ugly dependence on the parent widget couls also be removed
+int gtk_ambulant_widget::s_widgets = 0;
+lib::critical_section gtk_ambulant_widget::s_lock;
 
 gtk_ambulant_widget::gtk_ambulant_widget(GtkWidget* parent_widget)
 :	m_gtk_window(NULL),
@@ -737,18 +749,24 @@ gtk_ambulant_widget::gtk_ambulant_widget(GtkWidget* parent_widget)
 	m_widget = parent_widget;
 	GObject* toplevel_widget = G_OBJECT (GTK_WIDGET (gtk_widget_get_toplevel(m_widget)));
 
-	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::gtk_ambulant_widget(0x%x-0x%x)",
+	/*AM_DBG*/ lib::logger::get_logger()->debug("gtk_ambulant_widget::gtk_ambulant_widget(0x%x-0x%x) s_widgets=%d",
 		(void *)this,
-		(void*) parent_widget);	
+		(void*) parent_widget, gtk_ambulant_widget::s_widgets);	
 	m_expose_event_handler_id = g_signal_connect_swapped (G_OBJECT (m_widget), "expose_event", G_CALLBACK (gtk_C_callback_do_paint_event), (void*) this);
 	m_motion_notify_handler_id = g_signal_connect_swapped (toplevel_widget, "motion_notify_event", G_CALLBACK (gtk_C_callback_do_motion_notify_event), (void*) this);
 	m_button_release_handler_id = g_signal_connect_swapped (toplevel_widget, "button_release_event", G_CALLBACK (gtk_C_callback_do_button_release_event), (void*) this);
 	gtk_widget_add_events( (GTK_WIDGET (gtk_widget_get_toplevel(m_widget))), GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK);
+	gtk_ambulant_widget::s_lock.enter();
+	gtk_ambulant_widget::s_widgets++;
+	gtk_ambulant_widget::s_lock.leave();
 }
 
 gtk_ambulant_widget::~gtk_ambulant_widget()
 {
-	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::~gtk_ambulant_widget(0x%x): m_gtk_window=0x%x", (void*)this, m_gtk_window);
+	gtk_ambulant_widget::s_lock.enter();
+	gtk_ambulant_widget::s_widgets--;
+	gtk_ambulant_widget::s_lock.leave();
+	/*AM_DBG*/ lib::logger::get_logger()->debug("gtk_ambulant_widget::~gtk_ambulant_widget(0x%x): m_gtk_window=0x%x s_widgets=%d", (void*)this, m_gtk_window, gtk_ambulant_widget::s_widgets);
 	GObject* toplevel_widget = G_OBJECT (GTK_WIDGET (gtk_widget_get_toplevel(m_widget)));
 	if (g_signal_handler_is_connected (G_OBJECT (m_widget), m_expose_event_handler_id))
 		g_signal_handler_disconnect(G_OBJECT (m_widget), m_expose_event_handler_id);

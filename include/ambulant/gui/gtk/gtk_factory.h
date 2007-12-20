@@ -232,6 +232,11 @@ class gtk_ambulant_widget : public GtkWidget, public ambulant::common::gui_scree
 	gchar * m_screenshot_data;
 	gsize m_screenshot_size;
 
+	/* widget counter (with s_lock protection) is used to assuere that the GtkWidget
+	   in drawing callback functions are still valid pointers at the time the callback
+	   is executed by the main thread */
+	static lib::critical_section s_lock;
+	static int s_widgets;
   private:
 	ambulant_gtk_window* m_gtk_window;
 	GtkWidget *m_widget;

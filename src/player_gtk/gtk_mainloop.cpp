@@ -108,9 +108,8 @@ gtk_mainloop::gtk_mainloop(gtk_gui* gui)
 	init_factories();
 	init_plugins();
 	
-	
-	
-	const char *filename = m_gui->filename();
+	const char *filename = "";
+	if (m_gui) filename = m_gui->filename();
 	net::url url = net::url::from_filename(filename);
 	m_doc = create_document(url);
 	if (!m_doc) {

@@ -35,6 +35,7 @@ AM_GNU_GETTEXT([external])
 AC_CONFIG_FILES([Makefile po/Makefile.in
 	m4/Makefile
 	src/Makefile 
+	src/firefox_plugin_gtk/Makefile
 	src/libambulant/Makefile 
 	src/player_unix/Makefile
 	src/player_gtk/Makefile
@@ -272,7 +273,7 @@ AC_ARG_WITH(expat,
 dnl test for slurped version first
 dnl
 if test "x$test_expat" = "xtrue"; then
-	if test -f "$EXPAT_PREFIX";	
+	if test -d "$EXPAT_PREFIX";	
 	then
           :
 	else
@@ -922,6 +923,42 @@ AC_SUBST(PYTHON_LIBS)
 AM_CONDITIONAL(WITH_PYTHON_PLUGIN, test x$with_python_plugin = xtrue)
 AC_MSG_RESULT($with_python_plugin)
 
+# Do we want firefox plugin ?
+#
+
+AC_MSG_CHECKING(for --with-firefox-plugin)
+AC_ARG_WITH([firefox-plugin],
+    [AC_HELP_STRING([--with-firefox-plugin],[Enable the firefox plugin (default: disabled)])
+	],[
+	case "${withval}" in
+	yes)  	with_firefox_plugin=true
+			;;
+	no)		with_firefox_plugin=false
+			;;
+	*)		AC_MSG_ERROR("--with-firefox-plugin takes no argument")
+			;;
+	esac],[
+	with_firefox_plugin=false])
+	
+if test x$with_firefox_plugin = xtrue;
+then
+   if test -f `pwd`/third_party_packages/gecko-sdk/include/npapi.h; then
+		# Require a gecko-sdk installation in third_party_packages
+		# withvalabs=`pwd`/third_party_packages/gecko-sdk
+		# for the time being, we play with mozilla trunk
+		withvalabs=`pwd`/third_party_packages/mozilla/ff-opt-static/dist
+		GECKO_ROOT=${withvalabs}
+   else
+		AC_MSG_ERROR("--with-firefox-plugin requires Gecko-SDK installed in third_party_packages")
+		with_firefox_plugin=false
+   fi
+fi
+AC_SUBST(GECKO_ROOT)
+AC_SUBST(FIREFOX_INCLUDES)
+AC_SUBST(FIREFOX_LIBS)
+AM_CONDITIONAL(WITH_FIREFOX_PLUGIN, test x$with_firefox_plugin = xtrue)
+AC_MSG_RESULT($with_firefox_plugin)
+
 AC_MSG_CHECKING(for --with-webkit-dom)
 AC_ARG_WITH([webkit-dom],
 	[AC_HELP_STRING([--with-webkit-dom], [Enable the WebKit DOM plugin (default: disabled)])
@@ -1165,6 +1202,7 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
 	Build with Python plugin:       ${with_python_plugin}
 	Build with WebKit DOM plugin:   ${with_webkit_dom}
 	Build MacOSX universal binary:  ${with_universalsdk}
+	Build with Firefox plugin:      ${with_firefox_plugin}
      "
 
 if test "x$with_frontend" = "x$false"; then

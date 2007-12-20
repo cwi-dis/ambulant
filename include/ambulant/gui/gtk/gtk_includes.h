@@ -22,9 +22,6 @@
 /* Necessary GTK files for the renderers */
 #ifndef AMBULANT_GUI_GTK_GTK_INCLUDES_H
 #define AMBULANT_GUI_GTK_GTK_INCLUDES_H 
-//#include <kapp.h>
-#include <gtk/gtkimage.h>
-//#include <qpainter.h>
-#include <gtk/gtkwidget.h>
+// file has become empty->superfluous
 // #define AM_DBG
 #endif/*AMBULANT_GUI_GTK_GTK_INCLUDES_H */

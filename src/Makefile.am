@@ -16,6 +16,11 @@ build_player_macosx=player_macosx
 else
 build_player_macosx=
 endif
+if WITH_FIREFOX_PLUGIN
+build_firefox_plugin=firefox_plugin_gtk
+else 
+build_firefox_plugin=
+endif
 if WITH_PYTHON
 build_pyambulant=pyambulant
 else
@@ -26,8 +31,8 @@ endif
 # 2. python module (optional)
 # 3. plugins
 # 4. applications
-SUBDIRS = libambulant  $(build_pyambulant) plugins $(build_player_unix) $(build_player_gtk) $(build_player_macosx)
-DIST_SUBDIRS = libambulant plugins player_unix  player_gtk  player_macosx pyambulant
+SUBDIRS = libambulant  $(build_pyambulant) plugins $(build_player_unix) $(build_player_gtk) $(build_player_macosx) $(build_firefox_plugin)
+DIST_SUBDIRS = libambulant plugins player_unix  player_gtk  player_macosx pyambulant firefox_plugin_gtk
 EXTRA_DIST= \
 	Ambulant-win32.sln \
 	Ambulant-wince.vcw \

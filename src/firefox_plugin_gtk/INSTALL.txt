@@ -1,0 +1,35 @@
+This directory contains the Ambulant WebKit plugin for Firefox
+on Linux distr. Fedora Core 6/
+
+This plugin allows Firefox and other Mozilla-based browsers to play back
+SMIL content in a web page.
+
+
+********** KB TMP. instructions how to build and run (local on bahco.sen.cwi.nl):
+
+- build:
+/export/scratch1/Ambulant/mozilla/ff-opt-static/dist/bin/xpidl  -m header -w -v -I /export/scratch1/Ambulant/mozilla/xpcom/base nsIAmbulantPlugin.idl
+/export/scratch1/Ambulant/mozilla/ff-opt-static/dist/bin/xpidl  -m typelib -w -v -I /export/scratch1/Ambulant/mozilla/xpcom/base nsIAmbulantPlugin.idl
+(cd /export/scratch1/Ambulant/ambulant;make) && cp /export/scratch1/Ambulant/ambulant/src/firefox_plugin_gtk/.libs/libambulantplugin.so /ufs/kees/.mozilla/plugins/libAmbulantPlugin.so
+
+- Restart Firefox:
+ LD_LIBRARY_PATH=/export/scratch1/Ambulant/ambulant/third_party_packages/mozilla/ff-opt-static/dist/bin:/export/scratch1/Ambulant/ambulant/third_pf-opt-static/dist/bin:/export/scratch1/Ambulant/ambulant/src/libambulant/.libs/ ADDON_PATH=/export/scratch1/Ambulant/ambulant/third_party_packages/mozilla/ff-opt-static/disAmbulant/ambulant/src/libambulant/.libs/ MOZ_PLUGIN_PATH=`pwd`:/export/scratch1/Ambulant/ambulant/src/libambulant/.libs/  /export/scratch1/Ambulant/ambulant/third_party_pacatic/dist/bin/firefox-bin  /export/scratch1/Ambulant/ambulant/src/firefox_plugin_gtk/WelcomeButtons.html         
+
+- TBD:
+  ** std::vector<dirty_widget> in factory.cpp
+  ** crash when Welcome.smil cannot be found
+  ** remove other bugs, leaks, add missing features (interaction, ...)
+  ** more tests (video, full-screen trans.,  smiltext))
+  ** interface w. Gecko-SDK instead of complete mozilla source tree 
+  ** cleanup: hacks, leaks, Window-isms, superfluous stuff (if any).
+  ** configure/make/install
+  ** integrate w. Windows XP FF plugin (which doesn't work anymore)
+
+**************** KB TMP. 201207
+
+  
+There is one known issue with the plugin: relative pathnames in the
+<embed src="..."> tag do not work, please use absolute pathnames only.
+
+More information on the Ambulant Player and plugin can be found via
+<http://www.ambulantPlayer.org>
