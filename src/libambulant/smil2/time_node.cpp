@@ -1900,8 +1900,16 @@ void time_node::startup_children(qtime_type timestamp) {
 	get_children(children);
 	std::list<time_node*>::iterator it;
 	qtime_type qt = timestamp.as_qtime_down_to(this);
-	for(it = children.begin(); it != children.end(); it++)
+	for(it = children.begin(); it != children.end(); it++) {
 		(*it)->set_state(ts_proactive, qt, this);
+#ifdef WITH_SMIL30
+		// For SMIL 3.0 we only want to move the first child of the SEQ to proactive, the
+		// subsequent children will be done later.
+		// XXXJACK Need to verify that this doesn't wreak havoc with hyperjumping into the
+		// middle of a <seq>, that code is tricky....
+		if (is_seq()) break;
+#endif
+	}
 }
 
 void time_node::kill(qtime_type timestamp, time_node *oproot) {

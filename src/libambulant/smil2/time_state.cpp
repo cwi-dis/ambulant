@@ -354,6 +354,15 @@ void active_state::exit(qtime_type timestamp, time_node *oproot) {
 	m_active = false;
 	m_self->fill(timestamp); // pause or stop
 	m_self->kill_children(timestamp, oproot);
+#ifdef WITH_SMIL30xxxjackbad
+	if (m_self->up() && m_self->up()->is_seq()) {
+		// We need to move our next sibling to proactive state
+		time_node *next = m_self->next();
+		if (next) {
+			next->set_state(ts_proactive, timestamp, m_self->sync_node());
+		}
+	}
+#endif
 	m_self->raise_end_event(timestamp, oproot);
 	m_self->played_interval(timestamp);
 	
@@ -383,6 +392,12 @@ void postactive_state::enter(qtime_type timestamp) {
 	// m_needs_remove = SET true or false depending on the fill attribute;
 	
 	if(m_self->sync_node()->is_seq()) {
+#ifdef WITH_SMIL30
+		time_node *next = m_self->next();
+		if (next) {
+			next->set_state(ts_proactive, timestamp, m_self->sync_node());
+		}
+#endif
 		m_self->set_state(ts_dead, timestamp, m_self->sync_node());
 		return;
 	}
