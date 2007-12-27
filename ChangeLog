@@ -1,3 +1,20 @@
+2007-12-27 00:31  jackjansen
+
+	* Attempting to fix bug revealed by SMIL3 interop test
+	  timingandsync-test1.smil, so far without success.
+
+	  The problem is that a single event activated all children of the
+	  seq, because they were all in ts_proactive. Fixed that, by
+	  changing the activation code of a seq to only move the first
+	  child to proactive, and have each seq child move the next sibling
+	  to proactive.
+
+	  Unfortunately the children still all react to the single event.
+	  My guess is that when a child is moved to proactive (because its
+	  previous sibling ended) the next exec() somehow thinks the first
+	  interval is already elegible, but I still need to check (a)
+	  whether this is the case indeed, and (b) why.
+
 2007-12-20 16:46  keesblom
 
 	* Added firefox_plugin_gtk. See INSTALL.txt for current unfinished
