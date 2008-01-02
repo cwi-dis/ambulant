@@ -58,8 +58,8 @@ enum smiltext_conceal {
 
 /// Values for the textPlace attribute of smilText elements
 enum smiltext_place {
-	stp_from_top,
-	stp_from_bottom,
+	stp_from_start,
+	stp_from_end,
 	stp_from_center
 };
 

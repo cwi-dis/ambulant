@@ -524,9 +524,9 @@ smiltext_engine::_get_params(smiltext_params& params, const lib::node *src)
 	}
 	const char *text_place = src->get_attribute("textPlace");
 	if (text_place) {
-		if (strcmp(text_place, "fromTop") == 0) params.m_text_place = stp_from_top;
-		else if (strcmp(text_place, "fromBottom") == 0) params.m_text_place = stp_from_bottom;
-		else if (strcmp(text_place, "fromCenter") == 0) params.m_text_place = stp_from_center;
+		if (strcmp(text_place, "start") == 0) params.m_text_place = stp_from_start;
+		else if (strcmp(text_place, "end") == 0) params.m_text_place = stp_from_end;
+		else if (strcmp(text_place, "center") == 0) params.m_text_place = stp_from_center;
 		else if (strcmp(text_place, "inherit") == 0) /* no-op */;
 		else {
 			lib::logger::get_logger()->trace("%s: textPlace=\"%s\": unknown textPlace", src->get_sig().c_str(), text_place);
@@ -552,7 +552,7 @@ smiltext_engine::_get_default_params(smiltext_params& params)
 	params.m_mode = stm_append;
 	params.m_loop = false;
 	params.m_rate = 0;
-	params.m_text_place = stp_from_top;
+	params.m_text_place = stp_from_start;
 	params.m_text_conceal = stc_none;
 }
 
@@ -710,11 +710,13 @@ smiltext_layout_engine::_get_initial_values(
 	/* implementation of textPlace attribute */
 	switch (m_params.m_text_place) {
 	default:
-	case stp_from_top:
+	case stp_from_start:
+		// Note: this assumes secondary writing direction is top-to-bottom
 		*y_dir_p = 1;
 		*y_start_p = rct.top();
 		break;
-	case stp_from_bottom:
+	case stp_from_end:
+		// Note: this assumes secondary writing direction is top-to-bottom
 		//*y_dir_p = -1;
 		*y_dir_p = 1;
 		*y_start_p = rct.bottom() - stlw_p->m_bounding_box.h;
