@@ -174,6 +174,8 @@ class ambulant_gtk_window : public common::gui_window {
 	void _screenTransitionPostRedraw(const lib::rect &r);
 	
   private:
+	void clear();
+	lib::rect  m_bounds;
 	gtk_ambulant_widget* m_ambulant_widget;
 	GdkPixmap* m_pixmap;
 	GdkPixmap* m_oldpixmap;

@@ -351,6 +351,7 @@ ambulant_gtk_window::ambulant_gtk_window(const std::string &name,
 	   lib::rect* bounds,
 	   common::gui_events *region)
 :	common::gui_window(region),
+	m_bounds(*bounds),
 	m_ambulant_widget(NULL),
 	m_gui_player(NULL),
 	m_oldpixmap(NULL),
@@ -453,6 +454,7 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::redraw(0x%x): ltrb=(%d,%d,%d,%d)",(void *)this, r.left(), r.top(), r.width(), r.height());
 	_screenTransitionPreRedraw();
+	clear();
 	m_handler->redraw(r, this);
 //XXXX	if ( ! isEqualToPrevious(m_pixmap))
 	_screenTransitionPostRedraw(r);
@@ -726,6 +728,46 @@ ambulant_gtk_window::_screenTransitionPostRedraw(const lib::rect &r)
 		m_fullscreen_engine = NULL;
 	}
 }
+
+void 
+ambulant_gtk_window::clear()
+// private helper: clear the widget
+{
+/*
+vJUNK
+	QSize size =  m_ambulant_widget->frameSize();
+	if (m_pixmap == NULL)
+		m_pixmap = new QPixmap(size.width(), size.height());
+	assert(m_pixmap);
+	QPainter paint(m_pixmap);
+	QColor bgc = QColor(255,255,255); // white color
+	// in debugging mode, initialize with purple background
+	AM_DBG bgc = QColor(255,  0,255); // purple color
+	
+	paint.setBrush(bgc);
+	paint.drawRect(0,0,size.width(),size.height());
+	paint.flush();
+	paint.end();
+^JUNK
+*/
+	// Fill with <brush> color
+	if (m_pixmap == NULL) {
+		AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::clear(): m_pixmap == NULL!!");
+		return;
+	}
+	color_t color = lib::to_color(255, 255, 255);
+	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::clear(): clearing to 0x%x", (long)color);
+	GdkColor bgc;
+	bgc.red = redc(color)*0x101;
+	bgc.blue = bluec(color)*0x101;
+	bgc.green = greenc(color)*0x101;
+	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (m_pixmap));
+	gdk_gc_set_rgb_fg_color (gc, &bgc);
+	gdk_draw_rectangle (GDK_DRAWABLE (m_pixmap), gc, TRUE,
+			    m_bounds.x, m_bounds.y, m_bounds.w, m_bounds.h);
+	g_object_unref (G_OBJECT (gc));
+}
+
 
 //
 // gtk_ambulant_widget
