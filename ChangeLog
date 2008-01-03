@@ -1,3 +1,7 @@
+2008-01-02 14:32  jackjansen
+
+	* Upodated for new textPlace values (start/center/end).
+
 2007-12-27 00:31  jackjansen
 
 	* Attempting to fix bug revealed by SMIL3 interop test
