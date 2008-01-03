@@ -307,6 +307,7 @@ ambulant_qt_window::redraw(const lib::rect &r)
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::redraw(0x%x): ltrb=(%d,%d,%d,%d)",(void *)this, r.left(), r.top(), r.right(), r.bottom());
 	_screenTransitionPreRedraw();
+	clear(); // clears widget and pixmap
 	m_handler->redraw(r, this);
 	_screenTransitionPostRedraw(r);
 	bitBlt(m_ambulant_widget,r.left(),r.top(), m_pixmap,r.left(),r.top(), r.right(),r.bottom());
@@ -330,17 +331,7 @@ ambulant_qt_window::set_ambulant_widget(qt_ambulant_widget* qaw)
 	m_ambulant_widget = qaw;
 
 	if (qaw != NULL) {
-		QSize size = qaw->frameSize();
-		m_pixmap = new QPixmap(size.width(), size.height());
-		QPainter paint(m_pixmap);
-		QColor bgc = QColor(255,255,255); // white color
-		// in debugging mode, initialize with purple background
-		AM_DBG bgc = QColor(255,  0,255); // purple color
-		
-		paint.setBrush(bgc);
-		paint.drawRect(0,0,size.width(),size.height());
-		paint.flush();
-		paint.end();
+		//AAA		m_ambulant_widget->clear(&m_pixmap);
 	}
 }
 
@@ -496,6 +487,26 @@ ambulant_qt_window::_screenTransitionPostRedraw(const lib::rect &r)
 		m_fullscreen_old_pixmap = NULL;
 		m_fullscreen_engine = NULL;
 	}
+}
+
+
+void 
+ambulant_qt_window::clear()
+// private helper: clear the widget
+{
+	QSize size =  m_ambulant_widget->frameSize();
+	if (m_pixmap == NULL)
+		m_pixmap = new QPixmap(size.width(), size.height());
+	assert(m_pixmap);
+	QPainter paint(m_pixmap);
+	QColor bgc = QColor(255,255,255); // white color
+	// in debugging mode, initialize with purple background
+	AM_DBG bgc = QColor(255,  0,255); // purple color
+	
+	paint.setBrush(bgc);
+	paint.drawRect(0,0,size.width(),size.height());
+	paint.flush();
+	paint.end();
 }
 
 //

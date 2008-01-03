@@ -155,6 +155,8 @@ class ambulant_qt_window : public common::gui_window {
 	void _screenTransitionPostRedraw(const lib::rect &r);
 	
   private:
+	void clear();
+
 	qt_ambulant_widget* m_ambulant_widget;
 	
 	QPixmap* m_pixmap;
