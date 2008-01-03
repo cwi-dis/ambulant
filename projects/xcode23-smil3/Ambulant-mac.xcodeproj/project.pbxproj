@@ -273,6 +273,14 @@
 		04E13B290BD786380074AF09 /* cocoa_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B270BD786380074AF09 /* cocoa_smiltext.mm */; };
 		04E13B350BD786A40074AF09 /* smiltext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B340BD786A40074AF09 /* smiltext.cpp */; };
 		04E13B360BD786A40074AF09 /* smiltext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B340BD786A40074AF09 /* smiltext.cpp */; };
+		04F8848A0D2D04E10035EB76 /* dx_basicvideo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04F884860D2D04E10035EB76 /* dx_basicvideo.cpp */; };
+		04F8848B0D2D04E10035EB76 /* dx_basicvideo_player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04F884870D2D04E10035EB76 /* dx_basicvideo_player.cpp */; };
+		04F8848C0D2D04E10035EB76 /* dx_dsvideo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04F884880D2D04E10035EB76 /* dx_dsvideo.cpp */; };
+		04F8848D0D2D04E10035EB76 /* dx_smiltext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04F884890D2D04E10035EB76 /* dx_smiltext.cpp */; };
+		04F884940D2D04FD0035EB76 /* gtk_smiltext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04F884920D2D04FD0035EB76 /* gtk_smiltext.cpp */; };
+		04F884950D2D04FD0035EB76 /* gtk_util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04F884930D2D04FD0035EB76 /* gtk_util.cpp */; };
+		04F8849B0D2D05140035EB76 /* qt_smiltext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04F884990D2D05140035EB76 /* qt_smiltext.cpp */; };
+		04F8849C0D2D05140035EB76 /* qt_util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04F8849A0D2D05140035EB76 /* qt_util.cpp */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
@@ -755,6 +763,23 @@
 		04E13B2B0BD786680074AF09 /* cocoa_smiltext.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cocoa_smiltext.h; sourceTree = "<group>"; };
 		04E13B2D0BD7868C0074AF09 /* smiltext.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = smiltext.h; sourceTree = "<group>"; };
 		04E13B340BD786A40074AF09 /* smiltext.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = smiltext.cpp; sourceTree = "<group>"; };
+		04F884860D2D04E10035EB76 /* dx_basicvideo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dx_basicvideo.cpp; sourceTree = "<group>"; };
+		04F884870D2D04E10035EB76 /* dx_basicvideo_player.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dx_basicvideo_player.cpp; sourceTree = "<group>"; };
+		04F884880D2D04E10035EB76 /* dx_dsvideo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dx_dsvideo.cpp; sourceTree = "<group>"; };
+		04F884890D2D04E10035EB76 /* dx_smiltext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dx_smiltext.cpp; sourceTree = "<group>"; };
+		04F884920D2D04FD0035EB76 /* gtk_smiltext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gtk_smiltext.cpp; sourceTree = "<group>"; };
+		04F884930D2D04FD0035EB76 /* gtk_util.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gtk_util.cpp; sourceTree = "<group>"; };
+		04F884990D2D05140035EB76 /* qt_smiltext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = qt_smiltext.cpp; sourceTree = "<group>"; };
+		04F8849A0D2D05140035EB76 /* qt_util.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = qt_util.cpp; sourceTree = "<group>"; };
+		04F8849F0D2D05390035EB76 /* dx_basicvideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dx_basicvideo.h; sourceTree = "<group>"; };
+		04F884A00D2D05390035EB76 /* dx_basicvideo_player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dx_basicvideo_player.h; sourceTree = "<group>"; };
+		04F884A10D2D05390035EB76 /* dx_dsvideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dx_dsvideo.h; sourceTree = "<group>"; };
+		04F884A20D2D05390035EB76 /* dx_smiltext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dx_smiltext.h; sourceTree = "<group>"; };
+		04F884A30D2D056A0035EB76 /* gtk_factory_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gtk_factory_impl.h; sourceTree = "<group>"; };
+		04F884A40D2D056A0035EB76 /* gtk_smiltext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gtk_smiltext.h; sourceTree = "<group>"; };
+		04F884A50D2D056A0035EB76 /* gtk_util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gtk_util.h; sourceTree = "<group>"; };
+		04F884A60D2D057A0035EB76 /* qt_smiltext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = qt_smiltext.h; sourceTree = "<group>"; };
+		04F884A70D2D057A0035EB76 /* qt_util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = qt_util.h; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -1075,6 +1100,10 @@
 		049651460BCAE333002C00DF /* dx */ = {
 			isa = PBXGroup;
 			children = (
+				04F8849F0D2D05390035EB76 /* dx_basicvideo.h */,
+				04F884A00D2D05390035EB76 /* dx_basicvideo_player.h */,
+				04F884A10D2D05390035EB76 /* dx_dsvideo.h */,
+				04F884A20D2D05390035EB76 /* dx_smiltext.h */,
 				049651470BCAE333002C00DF /* bmp_decoder.h */,
 				049651480BCAE333002C00DF /* dx_area.h */,
 				049651490BCAE333002C00DF /* dx_audio.h */,
@@ -1120,6 +1149,9 @@
 		049651690BCAE333002C00DF /* gtk */ = {
 			isa = PBXGroup;
 			children = (
+				04F884A30D2D056A0035EB76 /* gtk_factory_impl.h */,
+				04F884A40D2D056A0035EB76 /* gtk_smiltext.h */,
+				04F884A50D2D056A0035EB76 /* gtk_util.h */,
 				0496516A0BCAE333002C00DF /* gtk_factory.h */,
 				0496516B0BCAE333002C00DF /* gtk_fill.h */,
 				0496516C0BCAE333002C00DF /* gtk_image_renderer.h */,
@@ -1156,6 +1188,8 @@
 		049651810BCAE333002C00DF /* qt */ = {
 			isa = PBXGroup;
 			children = (
+				04F884A60D2D057A0035EB76 /* qt_smiltext.h */,
+				04F884A70D2D057A0035EB76 /* qt_util.h */,
 				049651820BCAE333002C00DF /* Makefile.am */,
 				049651840BCAE333002C00DF /* qt_factory.h */,
 				049651850BCAE333002C00DF /* qt_factory_impl.h */,
@@ -1409,6 +1443,10 @@
 		049652790BCAE3C5002C00DF /* dx */ = {
 			isa = PBXGroup;
 			children = (
+				04F884860D2D04E10035EB76 /* dx_basicvideo.cpp */,
+				04F884870D2D04E10035EB76 /* dx_basicvideo_player.cpp */,
+				04F884880D2D04E10035EB76 /* dx_dsvideo.cpp */,
+				04F884890D2D04E10035EB76 /* dx_smiltext.cpp */,
 				0496527A0BCAE3C5002C00DF /* dx_area.cpp */,
 				0496527B0BCAE3C5002C00DF /* dx_audio.cpp */,
 				0496527C0BCAE3C5002C00DF /* dx_audio_player.cpp */,
@@ -1443,6 +1481,8 @@
 		0496528F0BCAE3C5002C00DF /* gtk */ = {
 			isa = PBXGroup;
 			children = (
+				04F884920D2D04FD0035EB76 /* gtk_smiltext.cpp */,
+				04F884930D2D04FD0035EB76 /* gtk_util.cpp */,
 				049652900BCAE3C5002C00DF /* gtk_factory.cpp */,
 				049652910BCAE3C5002C00DF /* gtk_fill.cpp */,
 				049652920BCAE3C5002C00DF /* gtk_image_renderer.cpp */,
@@ -1468,6 +1508,8 @@
 		0496529C0BCAE3C5002C00DF /* qt */ = {
 			isa = PBXGroup;
 			children = (
+				04F884990D2D05140035EB76 /* qt_smiltext.cpp */,
+				04F8849A0D2D05140035EB76 /* qt_util.cpp */,
 				0496529D0BCAE3C5002C00DF /* qt_factory.cpp */,
 				0496529E0BCAE3C5002C00DF /* qt_fill.cpp */,
 				0496529F0BCAE3C5002C00DF /* qt_html_renderer.cpp */,
@@ -2046,6 +2088,14 @@
 				04E13B240BD786120074AF09 /* state.cpp in Sources */,
 				04E13B280BD786380074AF09 /* cocoa_smiltext.mm in Sources */,
 				04E13B350BD786A40074AF09 /* smiltext.cpp in Sources */,
+				04F8848A0D2D04E10035EB76 /* dx_basicvideo.cpp in Sources */,
+				04F8848B0D2D04E10035EB76 /* dx_basicvideo_player.cpp in Sources */,
+				04F8848C0D2D04E10035EB76 /* dx_dsvideo.cpp in Sources */,
+				04F8848D0D2D04E10035EB76 /* dx_smiltext.cpp in Sources */,
+				04F884940D2D04FD0035EB76 /* gtk_smiltext.cpp in Sources */,
+				04F884950D2D04FD0035EB76 /* gtk_util.cpp in Sources */,
+				04F8849B0D2D05140035EB76 /* qt_smiltext.cpp in Sources */,
+				04F8849C0D2D05140035EB76 /* qt_util.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
