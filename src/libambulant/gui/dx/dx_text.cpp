@@ -78,7 +78,7 @@ void gui::dx::dx_text_renderer::set_surface(common::surface *dest) {
 	if (params) {
 		const char *fontname = params->get_str("font-family");
 //		const char *fontstyle = params->get_str("font-style");
-		lib::color_t text_color = params->get_color("color", 0);
+		lib::color_t text_color = params->get_color("color", GetSysColor(COLOR_WINDOWTEXT));
 		float fontsize = params->get_float("font-size", 0.0);
 		if (fontname) {
 			m_text->set_text_font(fontname);
@@ -86,9 +86,7 @@ void gui::dx::dx_text_renderer::set_surface(common::surface *dest) {
 		if (fontsize) {
 			m_text->set_text_size(fontsize);
 		}
-		if (text_color) {
-			m_text->set_text_color(text_color);
-		}
+		m_text->set_text_color(text_color);
 		delete params;
 	}
 

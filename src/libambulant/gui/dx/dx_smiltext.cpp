@@ -134,6 +134,7 @@ gui::dx::dx_smiltext_renderer::stop() {
 	m_dest->renderer_done(this);
 	m_activated = false;
 	m_dxplayer->stopped(this);
+	m_dest->need_redraw();
 	m_lock.leave();
 }
 

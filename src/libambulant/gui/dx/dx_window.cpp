@@ -58,6 +58,7 @@ void gui::dx::dx_window::need_redraw(const lib::rect &r) {
 	lib::rect rc = r;
 	rc &= m_viewrc;
 	m_viewport->set_fullscreen_transition(NULL);
+	m_viewport->clear(rc, GetSysColor(COLOR_WINDOW), 1.0);
 	m_rgn->redraw(rc, this);
 	if(!m_locked)
 		m_viewport->schedule_redraw(rc);

@@ -727,7 +727,7 @@ gui::dx::viewport::blt_blend (IDirectDrawSurface* to, IDirectDrawSurface* from, 
 // Clears the specified back buffer rectangle using the provided color and taking into account any transition
 void
 gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, double opacity, dx_transition *tr) {
-	if(!m_surface) return;
+	if(m_surface == NULL || opacity == 0) return;
 	
 	if(!tr) {
 		clear(rc, clr, opacity, m_surface);
