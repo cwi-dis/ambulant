@@ -123,18 +123,27 @@ dx_dsvideo_renderer::_copy_to_ddsurf()
 {
 	if (m_bitmap == NULL || m_ddsurf == NULL) return;
 	HRESULT hr;
-	HDC hdc = ::GetDC(NULL);
+	HDC hdc;
 	hr = m_ddsurf->GetDC(&hdc);
+	AM_DBG lib::logger::get_logger()->debug("dx_dsvideo_renderer::_copy_to_ddsurf(), Called GetDC");
 	if (FAILED(hr)) {
 		win_report_error("DirectDrawSurface::GetDC()", hr);
 		return;
 	}
+	
 	HDC bmp_hdc = CreateCompatibleDC(hdc);
+	assert(bmp_hdc);
 	HBITMAP hbmp_old = (HBITMAP) SelectObject(bmp_hdc, m_bitmap);
-	::BitBlt(hdc, 0, 0, m_size.w, m_size.h, bmp_hdc, 0, 0, SRCCOPY);
+	bool ok = ::BitBlt(hdc, 0, 0, m_size.w, m_size.h, bmp_hdc, 0, 0, SRCCOPY);
+	assert(ok);
 	SelectObject(bmp_hdc, hbmp_old);
-	DeleteDC(bmp_hdc);
-	m_ddsurf->ReleaseDC(hdc);
+	ok = DeleteDC(bmp_hdc);
+	assert(ok);
+	hr = m_ddsurf->ReleaseDC(hdc);
+	if (FAILED(hr)) {
+		win_report_error("DirectDrawSurface::ReleaseDC()", hr);
+	}
+	AM_DBG lib::logger::get_logger()->debug("dx_dsvideo_renderer::_copy_to_ddsurf(), Called ReleaseDC");
 }
 
 void
