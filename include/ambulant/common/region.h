@@ -97,7 +97,7 @@ class surface_impl : public surface_template, public surface, public gui_events 
   private:
 	void clear_cache();					// invalidate cached sizes (after animation)
 	void need_bounds();					// recompute cached sizes
-	rect get_fit_rect_noalign(const size& src_size, rect* out_src_rect) const;
+	rect get_fit_rect_noalign(const size& src_real_size, rect* out_src_rect) const;
 	void draw_background(const rect &r, gui_window *window);
 
   protected:

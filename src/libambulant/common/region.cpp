@@ -474,9 +474,13 @@ lib::rect
 surface_impl::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, const common::alignment *align) const
 {
 #endif // WITH_SMIL30
-	if (align == NULL)
-		return get_fit_rect_noalign(src_size, out_src_rect);
-		
+	if (align == NULL) {
+		// XXXJACK: is this correct? I'm not sure...
+		lib::rect rv = get_fit_rect_noalign(src_size, out_src_rect);
+		const lib::point topleft(src_clip_rect.left_top());
+		out_src_rect->translate(topleft);
+		return rv;
+	}
 	const_cast<surface_impl*>(this)->need_bounds();
 	const int image_width = src_size.w;
 	const int image_height = src_size.h;
