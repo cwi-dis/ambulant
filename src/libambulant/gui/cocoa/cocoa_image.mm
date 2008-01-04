@@ -110,7 +110,7 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	// Unfortunately (well, for us, in this case) Cocoa does some magic scaling on the image.
 	// I.e. [m_image size] can lie about the size. We have to adjust our coordinates too.
 	lib::rect croprect = m_dest->get_crop_rect(m_size);
-	AM_DBG logger::get_logger()->debug("cocoa_image::redraw, clip 0x%x (%d %d) -> (%d, %d, %d, %d)", m_dest, m_size.w, m_size.h, croprect.x, croprect.y, croprect.w, croprect.h);
+	/*AM_DBG*/ logger::get_logger()->debug("cocoa_image::redraw, clip 0x%x (%d %d) -> (%d, %d, %d, %d)", m_dest, m_size.w, m_size.h, croprect.x, croprect.y, croprect.w, croprect.h);
 	double x_factor = m_size.w == 0 ? 1 : (double)srcsize.w / (double)m_size.w;
 	double y_factor = m_size.h == 0 ? 1 : (double)srcsize.h / (double)m_size.h;
 	croprect.x = (int)(x_factor * croprect.x + 0.5);
@@ -120,7 +120,7 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	AM_DBG logger::get_logger()->debug("factors %f %f, croprect (%d, %d, %d, %d)", x_factor, y_factor, croprect.x, croprect.y, croprect.w, croprect.h);
 
 	dstrect = m_dest->get_fit_rect(croprect, srcsize, &srcrect, m_alignment);
-	cocoa_srcrect = NSMakeRect(srcrect.left(), srcsize.h-srcrect.bottom(), srcrect.width(), srcrect.height());
+	cocoa_srcrect = NSMakeRect(srcrect.left(), (int)srcsize.h-srcrect.bottom(), srcrect.width(), srcrect.height());
 #else
 	dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
 	cocoa_srcrect = NSMakeRect(0, 0, srcrect.width(), srcrect.height());
