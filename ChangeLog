@@ -1,3 +1,24 @@
+2008-01-03 16:35  keesblom
+
+	* Revised clearing to default background (white) first thing in
+	  redraw (ala qt).
+
+2008-01-03 15:40  keesblom
+
+	* Revised clearing to default background (white) first thing in
+	  redraw.
+
+2008-01-03 14:20  jackjansen
+
+	* - Always draw the background color before calling the toplevel
+	  redraw() method.  - Don't redraw in the background_renderer if
+	  the color is transparent.  - Use GetSysColor() to obtain default
+	  background and text color.
+
+2008-01-03 13:04  jackjansen
+
+	* Added missing files.
+
 2008-01-02 14:32  jackjansen
 
 	* Upodated for new textPlace values (start/center/end).
