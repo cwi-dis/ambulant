@@ -246,11 +246,14 @@ gui::dx::dx_player::init_parser_factory()
 void gui::dx::dx_player::play() {
 	if(m_player) {
 		common::gui_player::play();
+#if 0
+		// XXXJACK: I think this one isn't needed.
 		std::map<std::string, wininfo*>::iterator it;
 		for(it=m_windows.begin();it!=m_windows.end();it++) {
 			dx_window *dxwin = (dx_window *)(*it).second->w;
 			dxwin->need_redraw();
 		}
+#endif
 	}
 }
 
