@@ -1,3 +1,22 @@
+2008-01-04 17:37  jackjansen
+
+	* Selecting out of bounds pixels didn't work. It still doesn't:-)
+
+2008-01-04 17:04  bogao
+
+	* Corrected the DirectDrawSourface::GetDC() failed when playback a
+	  long video(at least four minutes).
+
+2008-01-04 16:23  jackjansen
+
+	* panZoom only worked correcrly if mediaAlign/regAlign/regPoint
+	  were specified. Made it work for at least some cases where these
+	  aren't specified, but I'm not convinced it is a full fix.
+
+2008-01-04 15:42  jackjansen
+
+	* Got rid of some unnecesary redraws.
+
 2008-01-03 16:35  keesblom
 
 	* Revised clearing to default background (white) first thing in
