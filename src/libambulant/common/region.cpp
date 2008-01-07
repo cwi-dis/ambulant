@@ -396,7 +396,7 @@ surface_impl::clear_cache()
 	// invalidate it on the next redraw.
 }
 
-
+#ifndef WITH_SMIL30
 lib::rect 
 surface_impl::get_fit_rect_noalign(const lib::size& src_size, lib::rect* out_src_rect) const
 {
@@ -448,6 +448,7 @@ surface_impl::get_fit_rect_noalign(const lib::size& src_size, lib::rect* out_src
 	*out_src_rect = lib::rect(lib::point(0, 0), lib::size((int)(proposed_width/scale), (int)(proposed_height/scale)));
 	return rect(lib::point(0, 0), lib::size(proposed_width, proposed_height));
 }
+#endif
 
 #ifdef WITH_SMIL30
 lib::rect
@@ -474,22 +475,18 @@ lib::rect
 surface_impl::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, const common::alignment *align) const
 {
 #endif // WITH_SMIL30
-	if (align == NULL) {
-		// XXXJACK: is this correct? I'm not sure...
-		lib::rect rv = get_fit_rect_noalign(src_size, out_src_rect);
-		const lib::point topleft(src_clip_rect.left_top());
-		out_src_rect->translate(topleft);
-		return rv;
-	}
 	const_cast<surface_impl*>(this)->need_bounds();
 	const int image_width = src_size.w;
 	const int image_height = src_size.h;
 	const int region_width = m_inner_bounds.width();
 	const int region_height = m_inner_bounds.height();
 	lib::size region_size = lib::size(region_width, region_height);
-	
-	lib::point xy_image = align->get_image_fixpoint(src_size);
-	lib::point xy_region = align->get_surface_fixpoint(region_size);
+	lib::point xy_image(0, 0);
+	lib::point xy_region(0, 0);
+	if (align) {
+		xy_image = align->get_image_fixpoint(src_size);
+		xy_region = align->get_surface_fixpoint(region_size);
+	}
 	
 	const int x_image_left = xy_image.x;
 	const int x_image_right = image_width - xy_image.x;
