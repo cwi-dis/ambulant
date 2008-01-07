@@ -77,6 +77,11 @@ Section "Core Components" CoreSection
   File /ONAME=AmbulantPlayer.exe "..\..\bin\win32\AmbulantPlayer.exe"
   File "..\..\bin\win32\libambulant_shwin32.dll"
   File "..\..\bin\win32\libamplugin_state_xpath.dll"
+  File "..\..\bin\win32\libamplugin_ffmpeg.dll"
+  File "..\..\bin\win32\avcodec-51.dll"
+  File "..\..\bin\win32\avformat-51.dll"
+  File "..\..\bin\win32\avutil-49.dll"
+  File "..\..\bin\win32\SDL.dll"
 !else
   File "..\..\bin\win32\AmbulantPlayer.exe"
 !endif
