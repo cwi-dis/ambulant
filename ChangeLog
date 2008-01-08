@@ -1,3 +1,12 @@
+2008-01-07 23:05  jackjansen
+
+	* I think panZoom now works for pixel values.
+
+2008-01-07 17:19  jackjansen
+
+	* Built the first installer that has both DirectShow and ffmpeg
+	  rendering.
+
 2008-01-04 17:37  jackjansen
 
 	* Selecting out of bounds pixels didn't work. It still doesn't:-)
