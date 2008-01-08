@@ -267,6 +267,10 @@ cocoa_window_factory::init_window_size(cocoa_window *window, const std::string &
 		AM_DBG NSLog(@"Size changed request: (%d, %d)", bounds.w, bounds.h);
 		NSSize cocoa_size = NSMakeSize(bounds.w + origin.x, bounds.h + origin.y);
 		[[view window] setContentSize: cocoa_size];
+		// Assert that we actually get the size we asked for. Bugs in the Interface Builder file
+		// could make this assert trigger.
+		assert([view bounds].size.height == bounds.h);
+		assert([view bounds].size.width == bounds.w);
 		AM_DBG NSLog(@"Size changed on %@ to (%f, %f)", [view window], cocoa_size.width, cocoa_size.height);
 	}
 	[[view window] makeKeyAndOrderFront: view];
