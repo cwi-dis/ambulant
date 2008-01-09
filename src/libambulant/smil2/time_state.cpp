@@ -395,6 +395,7 @@ void postactive_state::enter(qtime_type timestamp) {
 #ifdef WITH_SMIL30
 		time_node *next = m_self->next();
 		if (next) {
+			next->reset(timestamp, m_self->sync_node());
 			next->set_state(ts_proactive, timestamp, m_self->sync_node());
 		}
 #endif

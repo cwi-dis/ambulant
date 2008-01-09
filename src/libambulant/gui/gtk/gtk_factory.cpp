@@ -93,7 +93,7 @@ bool gtk_C_callback_helper_queue_draw_area(void *arg)
 	assert(arg);
 	dirty_area_widget *r = (dirty_area_widget *)arg;
 	assert(r != 0);
-	/*AM_DBG*/ ambulant::lib::logger::get_logger()->debug("gtk_C_callback_helper_queue_draw_area with left: %d, top: %d, width: %d, height: %d s_widgets=%d", r->area.left(), r->area.top(), r->area.width(), r->area.height(),gtk_ambulant_widget::s_widgets);
+	AM_DBG ambulant::lib::logger::get_logger()->debug("gtk_C_callback_helper_queue_draw_area with left: %d, top: %d, width: %d, height: %d s_widgets=%d", r->area.left(), r->area.top(), r->area.width(), r->area.height(),gtk_ambulant_widget::s_widgets);
 	gtk_ambulant_widget::s_lock.enter();
 	if (gtk_ambulant_widget::s_widgets > 0)
 		gtk_widget_queue_draw_area(r->widget, r->area.left(), r->area.top(), r->area.width(), r->area.height());
@@ -791,7 +791,7 @@ gtk_ambulant_widget::gtk_ambulant_widget(GtkWidget* parent_widget)
 	m_widget = parent_widget;
 	GObject* toplevel_widget = G_OBJECT (GTK_WIDGET (gtk_widget_get_toplevel(m_widget)));
 
-	/*AM_DBG*/ lib::logger::get_logger()->debug("gtk_ambulant_widget::gtk_ambulant_widget(0x%x-0x%x) s_widgets=%d",
+	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::gtk_ambulant_widget(0x%x-0x%x) s_widgets=%d",
 		(void *)this,
 		(void*) parent_widget, gtk_ambulant_widget::s_widgets);	
 	m_expose_event_handler_id = g_signal_connect_swapped (G_OBJECT (m_widget), "expose_event", G_CALLBACK (gtk_C_callback_do_paint_event), (void*) this);
@@ -808,7 +808,7 @@ gtk_ambulant_widget::~gtk_ambulant_widget()
 	gtk_ambulant_widget::s_lock.enter();
 	gtk_ambulant_widget::s_widgets--;
 	gtk_ambulant_widget::s_lock.leave();
-	/*AM_DBG*/ lib::logger::get_logger()->debug("gtk_ambulant_widget::~gtk_ambulant_widget(0x%x): m_gtk_window=0x%x s_widgets=%d", (void*)this, m_gtk_window, gtk_ambulant_widget::s_widgets);
+	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::~gtk_ambulant_widget(0x%x): m_gtk_window=0x%x s_widgets=%d", (void*)this, m_gtk_window, gtk_ambulant_widget::s_widgets);
 	GObject* toplevel_widget = G_OBJECT (GTK_WIDGET (gtk_widget_get_toplevel(m_widget)));
 	if (g_signal_handler_is_connected (G_OBJECT (m_widget), m_expose_event_handler_id))
 		g_signal_handler_disconnect(G_OBJECT (m_widget), m_expose_event_handler_id);

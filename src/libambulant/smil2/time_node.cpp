@@ -225,6 +225,7 @@ void time_node::set_transout_rule(sync_rule *sr) {
 
 // Adds a sync arc from this node to a target
 void time_node::add_dependent(sync_rule *sr, sync_event ev) {
+	AM_DBG m_logger->debug("%s.add_dependent(%s, %s)", get_sig().c_str(), sr->to_string().c_str(), sync_event_str(ev));
 	dependency_map::iterator it = m_dependents.find(ev);
 	rule_list *p = 0;
 	if(it == m_dependents.end() || (*it).second == 0) {

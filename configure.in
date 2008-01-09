@@ -94,11 +94,13 @@ AC_ARG_WITH(universalsdk,
             ;;
         esac
         ;;
+    *)	need_sysroot=yes
+    	;;
     esac
     case $withval in
     no)
         with_universalsdk=false
-        need_sysroot=yes
+        need_sysroot=no
         ;;
     *)
         with_universalsdk=true

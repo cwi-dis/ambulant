@@ -26,7 +26,7 @@
 #include "ambulant/smil2/time_node.h"
 #include <list>
 
-//#define AM_DBG if(1)
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
