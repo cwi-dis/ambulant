@@ -32,6 +32,10 @@
 #define AM_DBG if(0)
 #endif
 
+#ifdef WITH_SMIL30
+#undef WITH_SMIL30_RELAXED_SEQ
+#endif
+
 using namespace ambulant;
 using namespace smil2;
 
@@ -354,7 +358,8 @@ void active_state::exit(qtime_type timestamp, time_node *oproot) {
 	m_active = false;
 	m_self->fill(timestamp); // pause or stop
 	m_self->kill_children(timestamp, oproot);
-#ifdef WITH_SMIL30xxxjackbad
+	/*AM_DBG*/ lib::logger::get_logger()->debug("active_state::exit(%s)", m_self->get_sig().c_str());
+#ifdef WITH_SMIL30_RELAXED_SEQxxxjackbad
 	if (m_self->up() && m_self->up()->is_seq()) {
 		// We need to move our next sibling to proactive state
 		time_node *next = m_self->next();
@@ -391,11 +396,12 @@ void postactive_state::enter(qtime_type timestamp) {
 	// m_interval = unchanged (last played interval that is now in the past);
 	// m_needs_remove = SET true or false depending on the fill attribute;
 	
+	/*AM_DBG*/ lib::logger::get_logger()->debug("postactive_state::enter(%s)", m_self->get_sig().c_str());
 	if(m_self->sync_node()->is_seq()) {
-#ifdef WITH_SMIL30
+#ifdef WITH_SMIL30_RELAXED_SEQ
 		time_node *next = m_self->next();
 		if (next) {
-			next->reset(timestamp, m_self->sync_node());
+			//next->reset(timestamp, m_self->sync_node());
 			next->set_state(ts_proactive, timestamp, m_self->sync_node());
 		}
 #endif
