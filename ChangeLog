@@ -1,3 +1,25 @@
+2008-01-08 17:02  jackjansen
+
+	* Cocoa image coordinates are in DPI-based units, not pixels, by
+	  default.  It turned out there were bits of code that worked
+	  around this, but the workaround started failing for Julien's
+	  images, which had no DPI setting.
+
+	  We now always force modify the DPI setting to match the unit
+	  width/height match the pixel width/height, and work in pixels.
+
+	  May need to look at the CG image renderer too.
+
+2008-01-08 14:45  jackjansen
+
+	* Our drawing area missed two pixels at the top, and has probably
+	  missed these since day one, until Julien spotted it today
+	  (thanks!).
+
+	  Fixed, and added an assert to make sure this doesn't happen again
+	  in the future: the problem is an interdependency between the NIB
+	  and the code.
+
 2008-01-07 23:05  jackjansen
 
 	* I think panZoom now works for pixel values.
