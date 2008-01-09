@@ -111,7 +111,7 @@ region_node::region_node(const lib::node *n, dimension_inheritance di)
 	m_mediaopacity(1.0),
 	m_mediabgopacity(1.0),
 	m_chromakey_specified(false),
-	m_chromakeyopacity(1.0),
+	m_chromakeyopacity(0.0),
 	m_chromakey(lib::to_color(0,0,0)),
 	m_chromakeytolerance(lib::to_color(0,0,0)),
 #endif

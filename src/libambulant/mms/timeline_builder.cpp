@@ -73,7 +73,7 @@ class mms_region_info : public common::region_info {
 	double get_mediaopacity() const { return 1.0; }
 	double get_mediabgopacity() const { return 1.0; }
 	bool is_chromakey_specified() const { return false; }
-	double get_chromakeyopacity() const { return 1.0; }
+	double get_chromakeyopacity() const { return 0.0; }
 	lib::color_t get_chromakey() const { return (lib::color_t)0; }
 	lib::color_t get_chromakeytolerance() const { return (lib::color_t)0; }
 #endif
