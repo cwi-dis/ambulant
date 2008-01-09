@@ -2,6 +2,12 @@
 #
 CONFIGOPTS="--disable-mmx --disable-encoders --enable-gpl --disable-vhook --disable-ffmpeg"
 srcdir=$1
+# XXXX Enable these for doing 10.4-compatible distributions
+SYSROOT=" -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
+export MACOSX_DEPLOYMENT_TARGET=10.4
+# XXXX Enable these for native 10.5 distributions
+#SYSROOT=""
+#export MACOSX_DEPLOYMENT_TARGET=10.5
 case x$srcdir in
     x)
         echo Usage: $0 ffmpeg-src-dir '[all|mkdirs|mklinks|configure|clean|build|merge|install] ...'
@@ -81,8 +87,8 @@ if $configure; then
     (
         cd build-i386
         $srcdir/configure \
-            --extra-cflags="-arch i386" \
-            --extra-ldflags="-arch i386" \
+            --extra-cflags="-arch i386 $SYSROOT" \
+            --extra-ldflags="-arch i386 $SYSROOT" \
             --arch=i686 \
             --cpu=i686 \
             --enable-shared \
@@ -92,8 +98,8 @@ if $configure; then
     (
         cd build-ppc
         $srcdir/configure \
-            --extra-cflags="-arch ppc" \
-            --extra-ldflags="-arch ppc" \
+            --extra-cflags="-arch ppc $SYSROOT" \
+            --extra-ldflags="-arch ppc $SYSROOT" \
             --arch=powerpc \
             --cpu=g4 \
             --enable-altivec \
