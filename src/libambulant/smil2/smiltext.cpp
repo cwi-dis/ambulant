@@ -358,7 +358,7 @@ smiltext_engine::_update() {
 		// In principle we do a callback per pixel scrolled, but clamp at 25 per second.
 		unsigned int delay = m_auto_rate ? 40 : 1000 / m_params.m_rate;
 		if (delay < 40) delay = 40;
-		/**/AM_DBG lib::logger::get_logger()->debug("delay=%d: next_update_needed=%d", delay, next_update_needed);
+		AM_DBG lib::logger::get_logger()->debug("delay=%d: next_update_needed=%d", delay, next_update_needed);
 		if (next_update_needed > delay || next_update_needed == 0) {
 			next_update_needed = delay;
 		}
@@ -568,7 +568,9 @@ void
 smiltext_engine::set_rate(unsigned int new_rate)
 {
 	if (m_auto_rate && new_rate > 0) {
-		m_params.m_rate = new_rate;
+		smiltext_params params = get_params();
+		params.m_rate = new_rate;
+		m_params = params;
 		m_auto_rate = false;
 	}
 }
@@ -949,6 +951,7 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shift
 			lib::rect smiltext_rect = first_word->m_bounding_box | last_word->m_bounding_box;
 			unsigned int rate = _compute_rate(smiltext_rect.size(), r, dur);
 			m_engine.set_rate(rate);
+			m_params = m_engine.get_params();
 		}
 	}
 	// layout done, render the run
@@ -1059,7 +1062,7 @@ smiltext_layout_engine::_compute_rate(lib::size size, lib::rect r,  unsigned int
 			else	dst = 0;
 		}
 	}
-	return dst/dur;
+	return (dst+dur-1)/dur;
 }
 
 
