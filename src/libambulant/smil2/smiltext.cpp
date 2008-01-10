@@ -424,7 +424,19 @@ smiltext_engine::_get_formatting(smiltext_run& dst, const lib::node *src)
 		else if (strcmp(font_size, "larger") == 0) dst.m_font_size += 2;
 		else if (strcmp(font_size, "inherit") == 0) /* no-op */ ;
 		else {
-			lib::logger::get_logger()->trace("%s: textFontSize=\"%s\": unknown size", src->get_sig().c_str(), font_size);
+			// Check to see whether it is a numeric value ending in 'em', 'ex' or 'px'
+			char *lastp;
+			double num_size = strtod(font_size, &lastp);
+			if (num_size > 0) {
+				if (strcmp(lastp, "px") != 0 && *lastp != '\0') {
+					num_size = 0;
+				}
+			}
+			if (num_size) {
+				dst.m_font_size = num_size;
+			} else {
+				lib::logger::get_logger()->trace("%s: textFontSize=\"%s\": incorrect size", src->get_sig().c_str(), font_size);
+			}
 		}
 	}
 	const char *font_weight = src->get_attribute("textFontWeight");
