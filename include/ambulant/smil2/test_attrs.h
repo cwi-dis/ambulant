@@ -89,6 +89,10 @@ class AMBULANTAPI test_attrs {
 	static void add_language(std::string langname, float weight);
 #endif
 
+#ifdef WITH_SMIL30
+	static float get_system_language_weight(std::string lang);
+#endif
+
   protected:
 	typedef std::string::size_type size_type;
 	static bool test_on_off_attr(const std::string& attr,const char *value);
@@ -96,9 +100,6 @@ class AMBULANTAPI test_attrs {
 	static bool test_exact_str_list_attr(const std::string& attr,const char *value);
 	
 	static bool test_system_language(const char *lang);
-#ifdef WITH_SMIL30
-	static float get_system_language_weight(std::string lang);
-#endif
 	static bool test_system_component(const char *value);
 	static bool test_system_bitrate(const char *value);
 	static bool test_system_screen_depth(const char *value);

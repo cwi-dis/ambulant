@@ -569,11 +569,45 @@ timegraph::get_node_with_id(const std::string& ident, time_node *tn) const {
 	return 0;
 }
 
+#ifdef WITH_SMIL30
+static bool
+nodeLangSortPredicate(const node* lhs, const node* rhs)
+{
+	const char *lhsLang = lhs->get_attribute("systemLanguage");
+	if (lhsLang == NULL) lhsLang = lhs->get_attribute("system-language");
+	float lhsPrio = 0.0;
+	if (lhsLang) {
+		lhsPrio = test_attrs::get_system_language_weight(lhsLang);
+	}
+
+	const char *rhsLang = rhs->get_attribute("systemLanguage");
+	if (rhsLang == NULL) rhsLang = rhs->get_attribute("system-language");
+	float rhsPrio = 0.0;
+	if (rhsLang) {
+		rhsPrio = test_attrs::get_system_language_weight(rhsLang);
+	}
+	
+	return lhsPrio >= rhsPrio;
+}
+#endif
+
 const lib::node* 
 timegraph::select_switch_child(const node* sn) const {
+	// Note: this implementation reutnrs only a single switch child. if that child
+	// is not usable for some other reason than selected() (i.e. unknown URL) it
+	// will not fallback to the next node.
 	std::list<const node*> cl;
 	std::list<const node*>::const_iterator it;
 	sn->get_children(cl);
+#ifdef WITH_SMIL30
+	// If allowReorder is true we reorder the children based on language
+	// preference.
+	const char *reorder = sn->get_attribute("allowReorder");
+	if (reorder && strcmp(reorder, "yes") == 0) {
+		AM_DBG lib::logger::get_logger()->debug("select_switch_child(%s): reordering children", sn->get_sig().c_str());
+		cl.sort(nodeLangSortPredicate);
+	}
+#endif
 	for(it=cl.begin();it!=cl.end();it++) {
 		if ((*it)->is_data_node()) continue;
 		test_attrs ta(*it);

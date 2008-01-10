@@ -494,24 +494,24 @@ test_attrs::clear_languages()
 void
 test_attrs::add_language(std::string langname, float weight)
 {
-	/*AM_DBG*/ lib::logger::get_logger()->trace("add_language('%s', %f)", langname.c_str(), weight);
+	AM_DBG lib::logger::get_logger()->trace("add_language('%s', %f)", langname.c_str(), weight);
 	active_language_map[langname] = weight;
 }
 
 float
 test_attrs::get_system_language_weight(std::string lang)
 {
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_system_language_weight('%s')", lang.c_str());
+	AM_DBG lib::logger::get_logger()->trace("get_system_language_weight('%s')", lang.c_str());
 	while (active_language_map.count(lang) == 0) {
 		// See if we can split the language (nl-be -> nl, for example)
 		int dashPos = lang.rfind('-');
 		if (dashPos == std::string::npos) {
-			/*AM_DBG*/ lib::logger::get_logger()->trace("get_system_language_weight('%s') not found -> 0.0", lang.c_str());
+			AM_DBG lib::logger::get_logger()->trace("get_system_language_weight('%s') not found -> 0.0", lang.c_str());
 			return 0.0;
 		}
 		lang = lang.substr(0, dashPos-1);
 	}
-	/*AM_DBG*/ lib::logger::get_logger()->trace("get_system_language_weight('%s') -> %f", lang.c_str(), active_language_map[lang]);
+	AM_DBG lib::logger::get_logger()->trace("get_system_language_weight('%s') -> %f", lang.c_str(), active_language_map[lang]);
 	return active_language_map[lang];
 }
 #endif
