@@ -49,6 +49,11 @@ std::map<std::string, std::string> active_tests_attrs_map;
 static 
 std::map<std::string, bool> active_custom_tests_attrs_map;
 
+#ifdef WITH_SMIL30
+// The current set of numeric language preferences
+static
+std::map<std::string, float> active_language_map;
+#endif
 
 inline std::string get_test_attribute(const std::string& attr) {
 	std::map<std::string, std::string>::iterator it = active_tests_attrs_map.find(attr);
@@ -154,6 +159,9 @@ bool test_attrs::selected() const {
 // systemLanguage ::= (languageTag (S? ',' S? languageTag)*)?
 // return true when any in the list stars with the argument
 bool test_attrs::test_system_language(const char *value) {
+#ifdef WITH_SMIL30
+	return get_system_language_weight(value) > 0;
+#else
 	std::string langs = get_test_attribute("systemLanguage");
 	if(langs.empty()) return false;
 	std::list<std::string> list;
@@ -163,6 +171,7 @@ bool test_attrs::test_system_language(const char *value) {
 		if(lib::starts_with(*it, value)) return true;
 	}
 	return false;
+#endif
 }
 
 bool test_attrs::test_system_component(const char *value) {
@@ -381,8 +390,8 @@ class smil2::state_test_methods_impl : public common::state_test_methods {
 	std::string smil_cpu() const {
 		return get_test_attribute("systemCPU");
 	}
-	bool smil_language(std::string lang) const {
-		return test_attrs::test_system_language(lang.c_str());
+	float smil_language(std::string lang) const {
+		return test_attrs::get_system_language_weight(lang);
 	}
 	std::string smil_operating_system() const {
 		return get_test_attribute("systemOperatingSystem");
@@ -473,4 +482,37 @@ test_attrs::set_current_system_component_value(std::string name, bool enabled)
 	
 	active_tests_attrs_map["systemComponent"] = value;
 }
+
+#ifdef WITH_SMIL30
+void
+test_attrs::clear_languages()
+{
+	active_language_map.clear();
+	// XXXX Should we insert language from systemTests???
+}
+
+void
+test_attrs::add_language(std::string langname, float weight)
+{
+	/*AM_DBG*/ lib::logger::get_logger()->trace("add_language('%s', %f)", langname.c_str(), weight);
+	active_language_map[langname] = weight;
+}
+
+float
+test_attrs::get_system_language_weight(std::string lang)
+{
+	/*AM_DBG*/ lib::logger::get_logger()->trace("get_system_language_weight('%s')", lang.c_str());
+	while (active_language_map.count(lang) == 0) {
+		// See if we can split the language (nl-be -> nl, for example)
+		int dashPos = lang.rfind('-');
+		if (dashPos == std::string::npos) {
+			/*AM_DBG*/ lib::logger::get_logger()->trace("get_system_language_weight('%s') not found -> 0.0", lang.c_str());
+			return 0.0;
+		}
+		lang = lang.substr(0, dashPos-1);
+	}
+	/*AM_DBG*/ lib::logger::get_logger()->trace("get_system_language_weight('%s') -> %f", lang.c_str(), active_language_map[lang]);
+	return active_language_map[lang];
+}
+#endif
 

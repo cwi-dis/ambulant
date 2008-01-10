@@ -74,10 +74,20 @@ class AMBULANTAPI test_attrs {
 
 	// API for embedders and extenders that want to fiddle with components and
 	// custom tests
+	/// Get a (boolean-valued) custom test attribute value by name
 	static bool get_current_custom_test_value(std::string name);
+	/// Set the value for a custom test attribute by name
 	static void set_current_custom_test_value(std::string name, bool value);
+	/// Get a (boolean-valued) systemComponent value by name
 	static bool get_current_system_component_value(std::string name);
+	/// Set the value for a systemComponent by name
 	static void set_current_system_component_value(std::string name, bool enabled);
+#ifdef WITH_SMIL30
+	/// Clear the list of user-preferred languages
+	static void clear_languages();
+	/// Add a language, with weight, to the list of user-preferred languages
+	static void add_language(std::string langname, float weight);
+#endif
 
   protected:
 	typedef std::string::size_type size_type;
@@ -86,6 +96,9 @@ class AMBULANTAPI test_attrs {
 	static bool test_exact_str_list_attr(const std::string& attr,const char *value);
 	
 	static bool test_system_language(const char *lang);
+#ifdef WITH_SMIL30
+	static float get_system_language_weight(std::string lang);
+#endif
 	static bool test_system_component(const char *value);
 	static bool test_system_bitrate(const char *value);
 	static bool test_system_screen_depth(const char *value);

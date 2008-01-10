@@ -36,9 +36,6 @@
 
 // Should have been included through genobj.py but that caused problems
 #ifdef WITH_GTK
-#include <pygobject.h>           
-#include <pygtk/pygtk.h>
-static PyTypeObject *PyGObject_Type=NULL;
 #include "ambulant/gui/gtk/gtk_factory.h"
 #endif
 #include "ambulantinterface.h"
@@ -11325,10 +11322,10 @@ static PyObject *state_test_methodsObj_smil_language(state_test_methodsObject *_
 		return NULL;
 	lang = lang_cstr;
 	PyThreadState *_save = PyEval_SaveThread();
-	bool _rv = _self->ob_itself->smil_language(lang);
+	float _rv = _self->ob_itself->smil_language(lang);
 	PyEval_RestoreThread(_save);
-	_res = Py_BuildValue("O&",
-	                     bool_New, _rv);
+	_res = Py_BuildValue("f",
+	                     _rv);
 	return _res;
 }
 
@@ -11428,7 +11425,7 @@ static PyMethodDef state_test_methodsObj_methods[] = {
 	{"smil_cpu", (PyCFunction)state_test_methodsObj_smil_cpu, 1,
 	 PyDoc_STR("() -> (std::string _rv)")},
 	{"smil_language", (PyCFunction)state_test_methodsObj_smil_language, 1,
-	 PyDoc_STR("(std::string lang) -> (bool _rv)")},
+	 PyDoc_STR("(std::string lang) -> (float _rv)")},
 	{"smil_operating_system", (PyCFunction)state_test_methodsObj_smil_operating_system, 1,
 	 PyDoc_STR("() -> (std::string _rv)")},
 	{"smil_overdub_or_subtitle", (PyCFunction)state_test_methodsObj_smil_overdub_or_subtitle, 1,
@@ -15877,17 +15874,17 @@ static PyObject *PyAm_create_gtk_window_factory_unsafe(PyObject *_self, PyObject
 {
 	PyObject *_res = NULL;
 	ambulant::common::window_factory* _rv;
-	PyGObject* py_gtk_parent_widget;
 	void* gtk_parent_widget;
+	void* g_main_loop;
 	ambulant::common::gui_player* gpl;
-	if (!PyArg_ParseTuple(_args, "O!O&",
-	                      PyGObject_Type, &py_gtk_parent_widget,
+	if (!PyArg_ParseTuple(_args, "O&O&O&",
+	                      cobject_Convert, &gtk_parent_widget,
+	                      cobject_Convert, &g_main_loop,
 	                      gui_playerObj_Convert, &gpl))
 		return NULL;
-	gtk_parent_widget = (void*)GTK_WIDGET(py_gtk_parent_widget->obj);
 	PyThreadState *_save = PyEval_SaveThread();
 	_rv = ambulant::gui::gtk::create_gtk_window_factory_unsafe(gtk_parent_widget,
-	                                                           NULL,
+	                                                           g_main_loop,
 	                                                           gpl);
 	PyEval_RestoreThread(_save);
 	_res = Py_BuildValue("O&",
@@ -16187,7 +16184,7 @@ static PyMethodDef PyAm_methods[] = {
 
 #ifdef WITH_GTK
 	{"create_gtk_window_factory_unsafe", (PyCFunction)PyAm_create_gtk_window_factory_unsafe, 1,
-	 PyDoc_STR("(void* gtk_parent_widget, ambulant::common::gui_player* gpl) -> (ambulant::common::window_factory* _rv)")},
+	 PyDoc_STR("(void* gtk_parent_widget, void* g_main_loop, ambulant::common::gui_player* gpl) -> (ambulant::common::window_factory* _rv)")},
 #endif
 
 #ifdef WITH_GTK
@@ -16296,15 +16293,6 @@ void initambulant(void)
 	if (PyAm_Error == NULL ||
 	    PyDict_SetItemString(d, "Error", PyAm_Error) != 0)
 		return;
-#ifdef WITH_GTK
-    init_pygobject();
-    init_pygtk();
-    PyObject *module = PyImport_ImportModule("gobject");
-    if (module) {
-        PyGObject_Type = (PyTypeObject*)PyObject_GetAttrString(module, "GObject");
-        Py_DECREF(module);
-    }
-#endif
 	pycppbridge_Type.ob_type = &PyType_Type;
 	if (PyType_Ready(&pycppbridge_Type) < 0) return;
 	Py_INCREF(&pycppbridge_Type);

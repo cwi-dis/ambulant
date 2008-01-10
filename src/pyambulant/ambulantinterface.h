@@ -1061,7 +1061,7 @@ public:
 	bool smil_component(std::string uri) const;
 	bool smil_custom_test(std::string name) const;
 	std::string smil_cpu() const;
-	bool smil_language(std::string lang) const;
+	float smil_language(std::string lang) const;
 	std::string smil_operating_system() const;
 	std::string smil_overdub_or_subtitle() const;
 	bool smil_required(std::string uri) const;

@@ -6860,10 +6860,10 @@ std::string state_test_methods::smil_cpu() const
 	return _rv;
 }
 
-bool state_test_methods::smil_language(std::string lang) const
+float state_test_methods::smil_language(std::string lang) const
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	bool _rv;
+	float _rv;
 	PyObject *py_lang = Py_BuildValue("s", lang.c_str());
 
 	PyObject *py_rv = PyObject_CallMethod(py_state_test_methods, "smil_language", "(O)", py_lang);
@@ -6873,7 +6873,7 @@ bool state_test_methods::smil_language(std::string lang) const
 		PyErr_Print();
 	}
 
-	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	if (py_rv && !PyArg_Parse(py_rv, "f", &_rv))
 	{
 		PySys_WriteStderr("Python exception during state_test_methods::smil_language() return:\n");
 		PyErr_Print();

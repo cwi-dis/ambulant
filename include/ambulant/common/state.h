@@ -65,7 +65,7 @@ class state_test_methods {
 	virtual bool smil_component(std::string uri) const = 0;
 	virtual bool smil_custom_test(std::string name) const = 0;
 	virtual std::string smil_cpu() const = 0;
-	virtual bool smil_language(std::string lang) const = 0;
+	virtual float smil_language(std::string lang) const = 0;
 	virtual std::string smil_operating_system() const = 0;
 	virtual std::string smil_overdub_or_subtitle() const = 0;
 	virtual bool smil_required(std::string uri) const = 0;
