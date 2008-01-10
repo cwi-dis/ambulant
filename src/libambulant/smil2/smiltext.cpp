@@ -257,60 +257,61 @@ smiltext_engine::_update() {
 		} else {
 			// Element. Check what it is.
 			lib::xml_string tag = item->get_local_name();
-			if ((tag == "tev" || tag == "clear")
-			    && ! m_auto_rate) {
-				const char *time_str = item->get_attribute("begin");
-				double time = 0;
-				if (time_str) {
-					time_attr_parser tp(item, "begin", lib::logger::get_logger());
-					sync_value_struct svs;
-					svs.type = sv_indefinite;
-					svs.offset = 0;
-					svs.iparam = 0;
-					if (tp.parse_sync(time_str, svs)) {
-						AM_DBG lib::logger::get_logger()->debug("smilText: %s: begin=\"%s\"", item->get_sig().c_str(), repr(svs).c_str());
-						if (svs.type == sv_offset) {
-							time = svs.offset / 1000.0;
-						} else if (svs.type == sv_event) {
-							lib::logger::get_logger()->trace("smilText: %s: events not yet implemented", item->get_sig().c_str());
-						} else {
-							lib::logger::get_logger()->trace("smilText: %s: begin=\"%s\" not allowed", item->get_sig().c_str(), repr(svs).c_str());
-							lib::logger::get_logger()->error(gettext("Error in smilText timing"));
+			if (tag == "tev" || tag == "clear") {
+			    if (!m_auto_rate) { // Ignore tev and clear for autoscroll/autocrawl
+					const char *time_str = item->get_attribute("begin");
+					double time = 0;
+					if (time_str) {
+						time_attr_parser tp(item, "begin", lib::logger::get_logger());
+						sync_value_struct svs;
+						svs.type = sv_indefinite;
+						svs.offset = 0;
+						svs.iparam = 0;
+						if (tp.parse_sync(time_str, svs)) {
+							AM_DBG lib::logger::get_logger()->debug("smilText: %s: begin=\"%s\"", item->get_sig().c_str(), repr(svs).c_str());
+							if (svs.type == sv_offset) {
+								time = svs.offset / 1000.0;
+							} else if (svs.type == sv_event) {
+								lib::logger::get_logger()->trace("smilText: %s: events not yet implemented", item->get_sig().c_str());
+							} else {
+								lib::logger::get_logger()->trace("smilText: %s: begin=\"%s\" not allowed", item->get_sig().c_str(), repr(svs).c_str());
+								lib::logger::get_logger()->error(gettext("Error in smilText timing"));
+							}
 						}
-					}
-				} else if (time_str = item->get_attribute("next")) {
-					time_attr_parser tp(item, "next", lib::logger::get_logger());
-					sync_value_struct svs;
-					svs.type = sv_indefinite;
-					svs.offset = 0;
-					svs.iparam = 0;
-					if (tp.parse_sync(time_str, svs)) {
-						AM_DBG lib::logger::get_logger()->debug("%s: next=\"%s\"", item->get_sig().c_str(), repr(svs).c_str());
-						if (svs.type == sv_offset) {
-							time = svs.offset / 1000.0;
-						} else {
-							lib::logger::get_logger()->trace("smilText: %s: next=\"%s\" not allowed", item->get_sig().c_str(), repr(svs).c_str());
-							lib::logger::get_logger()->error(gettext("Error in smilText timing"));
+					} else if (time_str = item->get_attribute("next")) {
+						time_attr_parser tp(item, "next", lib::logger::get_logger());
+						sync_value_struct svs;
+						svs.type = sv_indefinite;
+						svs.offset = 0;
+						svs.iparam = 0;
+						if (tp.parse_sync(time_str, svs)) {
+							AM_DBG lib::logger::get_logger()->debug("%s: next=\"%s\"", item->get_sig().c_str(), repr(svs).c_str());
+							if (svs.type == sv_offset) {
+								time = svs.offset / 1000.0;
+							} else {
+								lib::logger::get_logger()->trace("smilText: %s: next=\"%s\" not allowed", item->get_sig().c_str(), repr(svs).c_str());
+								lib::logger::get_logger()->error(gettext("Error in smilText timing"));
+							}
 						}
+						time = m_tree_time + time;
+					} else  {
+						lib::logger::get_logger()->trace("smiltext: tev without begin or next attribute ignored");
+						continue;
 					}
-					time = m_tree_time + time;
-				} else  {
-					lib::logger::get_logger()->trace("smiltext: tev without begin or next attribute ignored");
-					continue;
-				}
-				lib::timer::time_type ttime = m_epoch + round(time*1000);
-				lib::timer::time_type now = m_event_processor->get_timer()->elapsed();
-				// If this node is still in the future we stop here and schedule the next update
-				// Otherwise, we continue processing.
-				if (ttime > now) {
-					next_update_needed = ttime-now;
-					break;
-				}
-				m_tree_time = time;
-				if (tag == "clear" || m_params.m_mode == stm_replace) {
-					m_runs.clear();
-					m_newbegin = m_runs.end();
-					m_newbegin_valid = false;
+					lib::timer::time_type ttime = m_epoch + round(time*1000);
+					lib::timer::time_type now = m_event_processor->get_timer()->elapsed();
+					// If this node is still in the future we stop here and schedule the next update
+					// Otherwise, we continue processing.
+					if (ttime > now) {
+						next_update_needed = ttime-now;
+						break;
+					}
+					m_tree_time = time;
+					if (tag == "clear" || m_params.m_mode == stm_replace) {
+						m_runs.clear();
+						m_newbegin = m_runs.end();
+						m_newbegin_valid = false;
+					}
 				}
 			} else if (tag == "br" ) {
 				if (m_params.m_mode != stm_crawl) {
@@ -526,6 +527,8 @@ smiltext_engine::_get_params(smiltext_params& params, const lib::node *src)
 			lib::logger::get_logger()->trace("%s: textMode=\"%s\": unknown mode", src->get_sig().c_str(), mode);
 		}
 	}
+#if 0
+	// textLoop was removed from the spec
 	const char *loop = src->get_attribute("textLoop");
 	if (loop) {
 		if (strcmp(loop, "true") == 0) params.m_loop = true;
@@ -535,6 +538,7 @@ smiltext_engine::_get_params(smiltext_params& params, const lib::node *src)
 			lib::logger::get_logger()->trace("%s: textLoop=\"%s\": must be true or false", src->get_sig().c_str(), loop);
 		}
 	}
+#endif
 	const char *rate = src->get_attribute("textRate");
 	if (rate) {
 		int rate_i = atoi(rate); // XXXX
@@ -568,7 +572,9 @@ void
 smiltext_engine::_get_default_params(smiltext_params& params)
 {
 	params.m_mode = stm_append;
+#if 0
 	params.m_loop = false;
+#endif
 	params.m_rate = 0;
 	params.m_text_place = stp_from_start;
 	params.m_text_conceal = stc_none;

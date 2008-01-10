@@ -393,7 +393,13 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	if (!NSEqualSizes(old_layout_size, layout_size)) {
 		[m_text_container setContainerSize: layout_size];
 	}
-
+	// Now determine text placement (visible_origin)
+	int firstlineheight = 14; // XXXJACK: should compute this...
+	if (m_params.m_text_place == smil2::stp_from_end) {
+		visible_origin.y += (visible_size.height - firstlineheight);
+	} else if (m_params.m_text_place == smil2::stp_from_center) {
+		visible_origin.y += (visible_size.height - firstlineheight) / 2;
+	}
 	// Next compute the layout position of what we want to draw at visible_origin
 	NSPoint logical_origin = NSMakePoint(0, 0);
 	if (m_params.m_mode == smil2::stm_crawl) {

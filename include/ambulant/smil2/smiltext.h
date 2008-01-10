@@ -69,7 +69,6 @@ enum smiltext_place {
 /// attributes.
 struct smiltext_params {
 	smiltext_mode	m_mode;		/// How the text is rendered
-	bool		m_loop;		/// Loop mode, valid for scroll/crawl
 	int		m_rate;		/// Rate, in pixels/second
 	smiltext_place	m_text_place;	/// Where the text should start
 	smiltext_conceal m_text_conceal; /// Initial/final effects for crawl/scroll
