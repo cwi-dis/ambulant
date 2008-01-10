@@ -29,7 +29,7 @@
 #include "ambulant/common/region_info.h"
 #include "ambulant/smil2/params.h"
 
-//#define AM_DBG if(1)
+#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -412,11 +412,11 @@ AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw(0x%x, local_ltr
 		switch (m_params.m_text_conceal) {
 		default:
 		case smil2::stc_none:
-			m_motion_done = m_origin.x > (int)m_log_rect.width() - (int)r.width();
+			m_motion_done = m_origin.x > (int)m_log_rect.width() + (int)r.width();
 			break;
 		case smil2::stc_initial:
 			m_start.x = -(int)r.width();
-			m_motion_done = m_origin.x > (int)m_log_rect.width() -(int) r.width();
+			m_motion_done = m_origin.x > (int)m_log_rect.width() + (int) r.width();
 			break;
 		case smil2::stc_final:
 			break;
@@ -442,12 +442,12 @@ AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw(0x%x, local_ltr
 		switch (m_params.m_text_conceal) {
 		default:
 		case smil2::stc_none:
-			if (m_origin.y > (int)m_log_rect.height()  - (int)r.height())
+			if (m_origin.y > (int)m_log_rect.height()  + (int)r.height())
 				m_motion_done = true;
 			break;
 		case smil2::stc_initial:
 			m_start.y = -(int)r.height();
-			if (m_origin.y > (int)m_log_rect.height()  - (int)r.height())
+			if (m_origin.y > (int)m_log_rect.height()  + (int)r.height())
 				m_motion_done = true;
 			break;
 		case smil2::stc_final:

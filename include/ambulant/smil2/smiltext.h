@@ -189,6 +189,9 @@ class smiltext_engine {
 	/// Returns true if the text has been cleared and should be re-rendered from scratch.
 	bool is_cleared() { return m_newbegin_valid && m_newbegin == m_runs.begin(); }
 	
+	/// Returns true while computing textRate="auto"
+	bool is_auto_rate() { return m_auto_rate; }
+
 	/// Returns an iterator pointing to the first smiltext_run.
 	smiltext_runs::const_iterator begin() { return m_runs.begin(); }
 	
@@ -200,7 +203,10 @@ class smiltext_engine {
 	
 	/// Called when the client has processed all runs.
 	void done() { m_newbegin = m_runs.end(); m_newbegin_valid = false; }
-	
+
+	/// Called as soon as the textRate is known. Turns off m_auto_rate.
+	void set_rate(unsigned int new_rate);
+
 	/// HACK! We simulate the ref_counted interface
 	void add_ref() {}
 	void release() {}
@@ -246,6 +252,7 @@ class smiltext_engine {
 	double m_tree_time;					// smiltext time for m_tree_iterator. XXXJACK: unused and unneeded?
 	smiltext_params m_params;			// global parameters
 	bool m_process_lf;			// turn all \n chars int <br/> commands
+	bool m_auto_rate;			// true while computing textRate="auto"
 };
 
 /// Extra classes for smiltext layout
@@ -332,6 +339,7 @@ class smiltext_layout_engine {
 	bool _smiltext_disjunct(const lib::rect& r1, const lib::rect& r2);
 	bool _smiltext_fits(const lib::rect& r1, const lib::rect& r2);
 //JNK	void _smiltext_render(const smil2::smiltext_run run, const lib::rect& r, const lib::point& p);
+	unsigned int _compute_rate(lib::size size, lib::rect r, unsigned int dur);
 
 	lib::critical_section m_lock;
 	smiltext_engine m_engine;
@@ -347,7 +355,8 @@ class smiltext_layout_engine {
 	
 	bool m_crawling;
 	bool m_scrolling;
-	lib::point m_shifted_origin;
+	lib::point m_shifted_origin; // moving origin for crawl/scroll
+	lib::size m_size; 	     // space needed (for textRate="auto"
 
 	std::vector<smiltext_layout_word> m_words;
 };

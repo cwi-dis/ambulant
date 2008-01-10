@@ -47,6 +47,7 @@ smiltext_engine::smiltext_engine(const lib::node *n, lib::event_processor *ep, s
 	m_word_mode(word_mode),
 	m_newbegin_valid(false),
 	m_process_lf(true),
+	m_auto_rate(false),
 	m_update_event(NULL)
 {
 	AM_DBG lib::logger::get_logger()->debug("smiltext_engine(0x%x).smiltext_engine(%s)", this, m_node->get_sig().c_str());
@@ -71,6 +72,9 @@ smiltext_engine::smiltext_engine(const lib::node *n, lib::event_processor *ep, s
 	}
 	_get_formatting(stdrun, n);
 	_get_params(m_params, n);
+	if ((m_params.m_mode == stm_crawl || m_params.m_mode == stm_scroll) && m_params.m_rate == 0)
+		// textRate="auto", must compute rate
+		m_auto_rate = true;
 	m_run_stack.push(stdrun);
 }
 
@@ -253,7 +257,8 @@ smiltext_engine::_update() {
 		} else {
 			// Element. Check what it is.
 			lib::xml_string tag = item->get_local_name();
-			if (tag == "tev" || tag == "clear") {
+			if ((tag == "tev" || tag == "clear")
+			    && ! m_auto_rate) {
 				const char *time_str = item->get_attribute("begin");
 				double time = 0;
 				if (time_str) {
@@ -347,12 +352,13 @@ smiltext_engine::_update() {
 	}
 	if (m_client)
 		m_client->smiltext_changed();
-	if (m_params.m_rate > 0
+	if ((m_params.m_rate > 0 || m_auto_rate)
 	    && (m_params.m_mode == stm_crawl || m_params.m_mode == stm_scroll)) {
 		// We need to schedule another update event to keep the scroll/crawl going.
 		// In principle we do a callback per pixel scrolled, but clamp at 25 per second.
-		unsigned int delay = 1000 / m_params.m_rate;
+		unsigned int delay = m_auto_rate ? 40 : 1000 / m_params.m_rate;
 		if (delay < 40) delay = 40;
+		/**/AM_DBG lib::logger::get_logger()->debug("delay=%d: next_update_needed=%d", delay, next_update_needed);
 		if (next_update_needed > delay || next_update_needed == 0) {
 			next_update_needed = delay;
 		}
@@ -556,6 +562,17 @@ smiltext_engine::_get_default_params(smiltext_params& params)
 	params.m_text_conceal = stc_none;
 }
 
+
+// Called as soon as textRate is known. Turns off m_auto_rate.
+void
+smiltext_engine::set_rate(unsigned int new_rate)
+{
+	if (m_auto_rate && new_rate > 0) {
+		m_params.m_rate = new_rate;
+		m_auto_rate = false;
+	}
+}
+
 // smiltext_layout_engine
 smiltext_layout_engine::smiltext_layout_engine(const lib::node *n, lib::event_processor *ep, smiltext_layout_provider* provider, smiltext_notification* client, bool process_lf)
   :	m_engine(smiltext_engine(n, ep, client, true)),
@@ -606,7 +623,7 @@ smiltext_layout_engine::set_dest_rect( const lib::rect& r) {
 	m_lock.leave();
 }
 
-  smiltext_layout_word::smiltext_layout_word(const smiltext_run* run_p, smiltext_metrics stm, int n_sp, int n_nl)
+smiltext_layout_word::smiltext_layout_word(const smiltext_run* run_p, smiltext_metrics stm, int n_sp, int n_nl)
   :	m_run_p(run_p),
 	m_leading_spaces(n_sp),
 	m_leading_newlines(n_nl),
@@ -809,7 +826,9 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shift
 	int prev_max_ascent = 0, prev_max_descent = 0; 
 	std::vector<smiltext_layout_word>::iterator bol,// begin of line
 						    eol,// end of line
+						    first_word,
 						    word;
+	first_word = m_words.begin();
 	for (bol = m_words.begin(); bol != m_words.end(); bol = eol) {
 		unsigned int max_ascent = 0, max_descent = 0;
 		int x = x_start;
@@ -922,6 +941,16 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shift
 		prev_max_ascent = max_ascent;
 		prev_max_descent = max_descent;
 	}
+	std::vector<smiltext_layout_word>::iterator last_word =  m_words.end() - 1;
+	if (m_crawling || m_scrolling) {
+		if (m_engine.is_auto_rate()) {
+		// now we gathered all information to compute the rate
+			int dur = 11;	// TBD find dur somewhere
+			lib::rect smiltext_rect = first_word->m_bounding_box | last_word->m_bounding_box;
+			unsigned int rate = _compute_rate(smiltext_rect.size(), r, dur);
+			m_engine.set_rate(rate);
+		}
+	}
 	// layout done, render the run
 	for (word = m_words.begin(); word != m_words.end(); word++) {
 		int word_spacing = 0;
@@ -935,16 +964,16 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shift
 					    word->m_bounding_box,
 					    word_spacing);
 	}
-	if ((m_crawling || m_scrolling)
-	    && (m_params.m_text_conceal == smil2::stc_none
-		|| m_params.m_text_conceal == smil2::stc_initial)) {
-		// check if we need to stop crawling/scrolling
-		 std::vector<smiltext_layout_word>::iterator last_word = word - 1;
-		if ((last_word->m_bounding_box & r) == last_word->m_bounding_box) {
-			// bounding box of last word is now completely 
-			// inside the viewing rectangle
-			m_finished = true;
-			m_provider->smiltext_stopped();
+	if (m_crawling || m_scrolling) {
+		if (m_params.m_text_conceal == stc_none
+		    || m_params.m_text_conceal == stc_initial) {
+			// check if we need to stop crawling/scrolling
+			if ((last_word->m_bounding_box & r) == last_word->m_bounding_box) {
+				// bounding box of last word is now completely 
+				// inside the viewing rectangle
+				m_finished = true;
+				m_provider->smiltext_stopped();
+			}
 		}
 	}
 	m_lock.leave();
@@ -960,6 +989,77 @@ smiltext_layout_engine::_smiltext_fits(const lib::rect& r1, const lib::rect& r2)
 bool
 smiltext_layout_engine::_smiltext_disjunct(const lib::rect& r1, const lib::rect& r2) {
 	return (r1 & r2) == lib::rect();
+}
+
+unsigned int
+smiltext_layout_engine::_compute_rate(lib::size size, lib::rect r,  unsigned int dur) {
+  /* First find the distance to travel during scroll for various values 
+   * for textConceal and textPlace (w=window height, t=text height)
+
+   textConceal |  none  | initial |  final  |  both |
+   --------------------------------------------------
+   textPlace   |        |         |         |       |
+   --------------------------------------------------
+     start     | t-w>0  |    w    |    w    |  w+t  |
+   --------------------------------------------------
+     center    |  w/2   |    w    | w/2+t   |  w+t  |
+   --------------------------------------------------
+     end       |t-w w-t |    w    |    w    |  w+bt  |
+   --------------------------------------------------
+  */
+  unsigned int dst = 0, win = 0, txt = 0;
+	bool add_flag = false;
+	bool bisect_flag = false;
+	bool substract_flag = false;
+
+	switch (m_params.m_mode){
+	case stm_crawl:
+		win = r.w;
+		txt = size.w;
+		break;
+	case stm_scroll:
+		win = r.h;
+		txt = size.h; 
+		break;
+	default:
+		break;
+	}
+	switch (m_params.m_text_conceal) {
+	default:
+	case stc_initial:
+		break;
+	case stc_final:
+	case stc_both:
+       		add_flag = true;
+	case stc_none:
+		substract_flag = true;
+		break;
+	}
+	switch (m_params.m_text_place) {
+	default:
+	case stp_from_start:
+	case stp_from_end:
+		break;
+	case stp_from_center:
+		bisect_flag = true;
+		substract_flag = false;
+		break;
+	}
+	if (bisect_flag)
+		dst = win/2;
+	else	dst = win;
+	if (add_flag)
+		dst += txt;
+	if (substract_flag) {
+		if(win > txt)
+			dst -= txt;
+		else {
+			if (m_params.m_text_place == stp_from_start)
+				dst = txt - win;
+			else	dst = 0;
+		}
+	}
+	return dst/dur;
 }
 
 
