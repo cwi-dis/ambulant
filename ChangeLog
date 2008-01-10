@@ -1,3 +1,32 @@
+2008-01-09 17:13  jackjansen
+
+	* Temporarily disabling relaxed seq begin conditions: things broke.
+
+2008-01-09 15:46  jackjansen
+
+	* chromaKeyOpacity had incorrrect default (100% in stead of 0%).
+	  Fixed.
+
+2008-01-09 14:10  jackjansen
+
+	* Fixed another bug in the relaxed seq begin condition code: if a
+	  seq child ends it must do a reset() on it's next sibling (before
+	  moving it to ts_proactive).
+
+	  I'm not 100% sure this is without bad side-effects, I've asked
+	  Sjoerd for comments.
+
+2008-01-09 14:09  jackjansen
+
+	* When building a 10.4 compatible player under 10.5 we must supply
+	  the MACOSX_DEPLOYMENT_TARGET environment variable.
+
+	  For now this must be enabled manually.
+
+2008-01-09 14:08  jackjansen
+
+	* This file doesn't belong under cvs, it's generated.
+
 2008-01-08 17:02  jackjansen
 
 	* Cocoa image coordinates are in DPI-based units, not pixels, by
