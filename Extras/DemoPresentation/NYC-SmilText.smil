@@ -49,35 +49,35 @@
           <img id="Ferry1" region="Images" dur="5s" src="NYCdata/Ferry1.gif" />
           <smilText id="CapF1" region="Captions" dur="5s"  textFontFamily="roman" >
             The 
-            <tev next="0.25"/>
+            <tev begin="0.25"/>
             <span textBackgroundColor="blue" textColor="white">
             lines 
             </span>
-            <tev next="0.75"/>
+            <tev begin="0.75"/>
             of 
-            <tev next="0.8"/>
+            <tev begin="0.8"/>
             the 
-            <tev next="1"/>
+            <tev begin="1"/>
             <span textColor="red">lower 
-            <tev next="1.25"/>
+            <tev begin="1.25"/>
             car 
-            <tev next="1.5"/>
+            <tev begin="1.5"/>
             deck </span> 
-            <tev next="1.75"/>
+            <tev begin="1.75"/>
             provide 
-            <tev next="2.20"/>
+            <tev begin="2.20"/>
             a 
-            <tev next="2.25"/>
+            <tev begin="2.25"/>
             <span textColor="brown" textFontSize="x-large" textFontStyle="italic" textFontFamily="serif"  textFontWeight="bold">
             honeycomb 
             </span>
-            <tev next="2.75"/>
+            <tev begin="2.75"/>
             pattern 
-            <tev next="3.15"/>
+            <tev begin="3.15"/>
             near 
-            <tev next="3.3"/>
+            <tev begin="3.3"/>
             the 
-            <tev next="3.5"/>
+            <tev begin="3.5"/>
             water.
           </smilText>
           <audio id="SIF" region="audio_1" src="NYCdata/SIF-1.mp3"/>
