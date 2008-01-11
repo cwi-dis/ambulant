@@ -77,19 +77,19 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 				lib::logger::get_logger()->trace("%s: only chromaKeyOpacity values 0.0 and 1.0 supported on MacOS", m_node->get_sig().c_str());
 			}
 			if (![bestrep respondsToSelector: @selector(CGImage)]) {
-				lib::logger::get_logger()->trace("%s: chromaKey only supported on 10.5, and not for this image", m_node->get_sig().c_str());
+				lib::logger::get_logger()->trace("%s: chromaKey only supported on 10.5, and/or not for this image type", m_node->get_sig().c_str());
 				opacity = 1.0;
 			}
 			if (opacity < 0.5) {
 				lib::color_t chromakey = ri->get_chromakey();
 				lib::color_t tolerance = ri->get_chromakeytolerance();
-				CGFloat components[8] = {
+				float components[8] = {
 					redc(chromakey)-redc(tolerance), redc(chromakey)+redc(tolerance),
 					greenc(chromakey)-greenc(tolerance), greenc(chromakey)+greenc(tolerance),
 					bluec(chromakey)-bluec(tolerance), bluec(chromakey)+bluec(tolerance),
 					0.0, 0.0
 				};
-				CGImageRef orig_cgi = [(NSBitmapImageRep *)bestrep CGImage]; // XXX 10.5 only!
+				CGImageRef orig_cgi = (CGImageRef)[(NSBitmapImageRep *)bestrep CGImage]; // XXX 10.5 only!
 				assert(orig_cgi);
 				CGImageRef new_cgi = CGImageCreateWithMaskingColors(orig_cgi, components);
 				NSImageRep *newrep = [[NSBitmapImageRep alloc] initWithCGImage: new_cgi];

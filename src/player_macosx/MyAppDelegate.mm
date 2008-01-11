@@ -151,7 +151,13 @@ initialize_logger()
 #ifdef WITH_SMIL30
 	// Initialize ordered list of language preferences
 	ambulant::smil2::test_attrs::clear_languages();
+#if 0
+	// 10.5 or later
 	const NSArray *langNames = (const NSArray *)CFLocaleCopyPreferredLanguages();
+#else
+	// Should also work in earlier systems
+	const NSArray *langNames = (const NSArray *)CFPreferencesCopyAppValue(CFSTR("AppleLanguages"), kCFPreferencesCurrentApplication);
+#endif
 	int nLangs = [langNames count];
 	float factor = 1.0 / nLangs;
 	int i;
