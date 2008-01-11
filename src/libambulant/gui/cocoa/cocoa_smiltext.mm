@@ -400,6 +400,16 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	} else if (m_params.m_text_place == smil2::stp_from_center) {
 		visible_origin.y += (visible_size.height - firstlineheight) / 2;
 	}
+	// If we do auto-scrolling we should now layout the text, so we can determine the rate
+	if (m_engine.is_auto_rate()) {
+		(void)[m_layout_manager glyphRangeForTextContainer: m_text_container];
+		NSSize nsfull_size = [m_layout_manager usedRectForTextContainer: m_text_container].size;
+		lib::size full_size((int)nsfull_size.width, (int)nsfull_size.height);
+		unsigned int dur = 11; // XXXX
+		unsigned int rate = _compute_rate(full_size, r, dur);
+		m_engine.set_rate(rate);
+		m_params = m_engine.get_params();
+	}
 	// Next compute the layout position of what we want to draw at visible_origin
 	NSPoint logical_origin = NSMakePoint(0, 0);
 	if (m_params.m_mode == smil2::stm_crawl) {
@@ -465,6 +475,77 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	}
 	[view unlockFocus];
 	m_lock.leave();
+}
+
+unsigned int
+cocoa_smiltext_renderer::_compute_rate(lib::size size, lib::rect r,  unsigned int dur) {
+  /* First find the distance to travel during scroll for various values 
+   * for textConceal and textPlace (w=window height, t=text height)
+
+   textConceal |  none  | initial |  final  |  both |
+   --------------------------------------------------
+   textPlace   |        |         |         |       |
+   --------------------------------------------------
+     start     | t-w>0  |    w    |    w    |  w+t  |
+   --------------------------------------------------
+     center    |  w/2   |    w    | w/2+t   |  w+t  |
+   --------------------------------------------------
+     end       |t-w w-t |    w    |    w    |  w+bt  |
+   --------------------------------------------------
+  */
+  unsigned int dst = 0, win = 0, txt = 0;
+	bool add_flag = false;
+	bool bisect_flag = false;
+	bool substract_flag = false;
+
+	switch (m_params.m_mode){
+	case smil2::stm_crawl:
+		win = r.w;
+		txt = size.w;
+		break;
+	case smil2::stm_scroll:
+		win = r.h;
+		txt = size.h; 
+		break;
+	default:
+		break;
+	}
+	switch (m_params.m_text_conceal) {
+	default:
+	case smil2::stc_initial:
+		break;
+	case smil2::stc_final:
+	case smil2::stc_both:
+       		add_flag = true;
+	case smil2::stc_none:
+		substract_flag = true;
+		break;
+	}
+	switch (m_params.m_text_place) {
+	default:
+	case smil2::stp_from_start:
+	case smil2::stp_from_end:
+		break;
+	case smil2::stp_from_center:
+		bisect_flag = true;
+		substract_flag = false;
+		break;
+	}
+	if (bisect_flag)
+		dst = win/2;
+	else	dst = win;
+	if (add_flag)
+		dst += txt;
+	if (substract_flag) {
+		if(win > txt)
+			dst -= txt;
+		else {
+			if (m_params.m_text_place == smil2::stp_from_start)
+				dst = txt - win;
+			else	dst = 0;
+		}
+	}
+	return (dst+dur-1)/dur;
 }
 
 } // namespace cocoa

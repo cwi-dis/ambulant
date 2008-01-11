@@ -62,13 +62,15 @@ class cocoa_smiltext_renderer :
 	void smiltext_changed();
 	void marker_seen(const char *name);
   private:
+	unsigned int _compute_rate(lib::size size, lib::rect r,  unsigned int dur); // Must go to engine
+  private:
     NSTextStorage *m_text_storage;
 	NSLayoutManager *m_layout_manager;
 	NSTextContainer *m_text_container;
 	smil2::smiltext_engine m_engine;
 	bool m_needs_conditional_newline;
 	bool m_needs_conditional_space;
-	const smil2::smiltext_params& m_params;
+	smil2::smiltext_params m_params;
 	NSParagraphStyle *m_cur_paragraph_style;
 	smil2::smiltext_align m_cur_para_align;
 	smil2::smiltext_writing_mode m_cur_para_writing_mode;
