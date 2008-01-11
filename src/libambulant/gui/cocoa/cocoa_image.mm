@@ -54,6 +54,7 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 {
 	m_lock.enter();
 	const rect &r = m_dest->get_rect();
+	const common::region_info *ri = m_dest->get_info();
 	AM_DBG logger::get_logger()->debug("cocoa_image_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	
 	if (m_data && !m_image) {
@@ -66,6 +67,38 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 		// XXXX Could free data and m_data again here...
 		// Now we need to remember the real image size, which will be trampled soon.
 		NSImageRep *bestrep = [m_image bestRepresentationForDevice: nil];
+		assert(bestrep);
+#ifdef WITH_SMIL30
+		// If we need to do chroma keying we do it now. We have to go via a CGImage to do it, though...
+		// XXX By doing it here and not later we disable animation on the chromakey attributes...
+		if (ri->is_chromakey_specified()) {
+			double opacity = ri->get_chromakeyopacity();
+			if (opacity != 0.0 && opacity != 1.0) {
+				lib::logger::get_logger()->trace("%s: only chromaKeyOpacity values 0.0 and 1.0 supported on MacOS", m_node->get_sig().c_str());
+			}
+			if (![bestrep respondsToSelector: @selector(CGImage)]) {
+				lib::logger::get_logger()->trace("%s: chromaKey only supported on 10.5, and not for this image", m_node->get_sig().c_str());
+				opacity = 1.0;
+			}
+			if (opacity < 0.5) {
+				lib::color_t chromakey = ri->get_chromakey();
+				lib::color_t tolerance = ri->get_chromakeytolerance();
+				CGFloat components[8] = {
+					redc(chromakey)-redc(tolerance), redc(chromakey)+redc(tolerance),
+					greenc(chromakey)-greenc(tolerance), greenc(chromakey)+greenc(tolerance),
+					bluec(chromakey)-bluec(tolerance), bluec(chromakey)+bluec(tolerance),
+					0.0, 0.0
+				};
+				CGImageRef orig_cgi = [(NSBitmapImageRep *)bestrep CGImage]; // XXX 10.5 only!
+				assert(orig_cgi);
+				CGImageRef new_cgi = CGImageCreateWithMaskingColors(orig_cgi, components);
+				NSImageRep *newrep = [[NSBitmapImageRep alloc] initWithCGImage: new_cgi];
+				[m_image removeRepresentation: bestrep];
+				bestrep = newrep;
+				[m_image addRepresentation: bestrep];
+			}
+		}
+#endif
 		m_size = lib::size([bestrep pixelsWide], [bestrep pixelsHigh]);
 		AM_DBG lib::logger::get_logger()->debug("cocoa_image_renderer: image size in pixels: %d x %d", m_size.w, m_size.h);
 		AM_DBG lib::logger::get_logger()->debug("cocoa_image_renderer: image size in units: %f x %f", [bestrep size].width, [bestrep size].height);
@@ -138,7 +171,6 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 		NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect), NSMaxX(cocoa_dstrect), NSMaxY(cocoa_dstrect));
 #ifdef WITH_SMIL30
 	double alfa = 1.0;
-	const common::region_info *ri = m_dest->get_info();
 	if (ri) alfa = ri->get_mediaopacity();
 	[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceOver fraction: alfa];
 #else

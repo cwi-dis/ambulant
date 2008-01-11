@@ -371,7 +371,7 @@ region_node::fix_from_dom_node()
 			}
 			AM_DBG lib::logger::get_logger()->debug("region_node::reset: chromaKey color 0x%x", (int)chromakey);
 		}
-		if (chromakey != m_chromakey) {
+		if (m_chromakey_specified && chromakey != m_chromakey) {
 			changed = true;
 		}
 		set_chromakey(chromakey);
