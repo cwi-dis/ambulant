@@ -964,8 +964,8 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shift
 	std::vector<smiltext_layout_word>::iterator last_word =  m_words.end() - 1;
 	if (m_crawling || m_scrolling) {
 		if (m_engine.is_auto_rate()) {
-		// now we gathered all information to compute the rate
-			int dur = 11;	// TBD find dur somewhere
+			// now we have all information to compute the rate
+			int dur = 11; // were is simple duration to be found ? m_engine->get_dur();
 			lib::rect smiltext_rect = first_word->m_bounding_box | last_word->m_bounding_box;
 			unsigned int rate = _compute_rate(smiltext_rect.size(), r, dur);
 			m_engine.set_rate(rate);
@@ -1017,73 +1017,73 @@ smiltext_layout_engine::_compute_rate(lib::size size, lib::rect r,  unsigned int
   /* First find the distance to travel during scroll for various values 
    * for textConceal and textPlace (w=window height, t=text height)
 
-   textConceal |  none  | initial |  final  |  both |
-   --------------------------------------------------
-   textPlace   |        |         |         |       |
-   --------------------------------------------------
-     start     | t-w>0  |    w    |    w    |  w+t  |
-   --------------------------------------------------
-     center    |  w/2   |    w    | w/2+t   |  w+t  |
-   --------------------------------------------------
-     end       |t-w w-t |    w    |    w    |  w+bt  |
-   --------------------------------------------------
+  + ---------------------------------------------------+
+  | textConceal |  none    | initial |  final  |  both |
+  |-------------|          |         |         |       |
+  | textPlace   |          |         |         |       |
+  |----------------------------------------------------|
+  |   start     | t>w?t-w:0|    w    |    t    |  w+t  |
+  | ---------------------------------------------------|
+  |   center   |t>w?t-w/2:w/2|  w    | w/2+t   |  w+t  |
+  | ---------------------------------------------------|
+  |   end       | t>w?t:w  |    w    |  w+t    |  w+t  |
+  + ---------------------------------------------------+
   */
   unsigned int dst = 0, win = 0, txt = 0;
-	bool add_flag = false;
-	bool bisect_flag = false;
-	bool substract_flag = false;
-
-	switch (m_params.m_mode){
+	switch (m_params.m_mode) {
 	case stm_crawl:
 		win = r.w;
 		txt = size.w;
+  //TBD crawl
 		break;
 	case stm_scroll:
 		win = r.h;
 		txt = size.h; 
-		break;
-	default:
-		break;
-	}
-	switch (m_params.m_text_conceal) {
-	default:
-	case stc_initial:
-		break;
-	case stc_final:
-	case stc_both:
-       		add_flag = true;
-	case stc_none:
-		substract_flag = true;
-		break;
-	}
-	switch (m_params.m_text_place) {
-	default:
-	case stp_from_start:
-	case stp_from_end:
-		break;
-	case stp_from_center:
-		bisect_flag = true;
-		substract_flag = false;
-		break;
-	}
-	if (bisect_flag)
-		dst = win/2;
-	else	dst = win;
-	if (add_flag)
-		dst += txt;
-	if (substract_flag) {
-		if(win > txt)
-			dst -= txt;
-		else {
-			if (m_params.m_text_place == stp_from_start)
-				dst = txt - win;
-			else	dst = 0;
+		switch (m_params.m_text_conceal) {
+		default:
+		case stc_none:
+			switch (m_params.m_text_place) {
+			default:
+			case stp_from_start:
+				dst = txt > win ? txt - win : 0;
+				break;
+			case stp_from_end:
+				dst = txt > win ? txt : win;
+				break;
+			case stp_from_center:
+				dst = txt > win ? txt - win/2
+						: win/2; 
+				break;
+			}
+			break;
+		case stc_initial: // ignore textPlace
+			dst = win;
+			break;
+		case stc_final:
+			switch (m_params.m_text_place) {
+			default:
+			case stp_from_start:
+				dst = txt;
+				break;
+			case stp_from_end:
+				dst = win+txt;
+				break;
+			case stp_from_center:
+				dst = win/2+txt;
+				break;
+			}
+		case stc_both: // ignore textPlace
+			dst = win+txt;
+			break;
 		}
+		break;
+	default:
+		break;
 	}
 	return (dst+dur-1)/dur;
 }
 
-
-}
-}
+} // namespace smil2
+} // namespace ambulant
 #endif // WITH_SMIL30
+
