@@ -1,3 +1,38 @@
+2008-01-10 17:22  jackjansen
+
+	* Fixed code that ignores tev/clear for autorate scrolling.  Did a
+	  half-assed implementation of textPlace for MacOSX.
+
+2008-01-10 16:38  jackjansen
+
+	* Implemented numeric values for textFontSize.
+
+2008-01-10 15:34  jackjansen
+
+	* Implemented allowReorder on switch.
+
+2008-01-10 15:04  keesblom
+
+	* Implemented default textRate. Still full of bugs, but the interop
+	  test works.
+
+2008-01-10 14:54  jackjansen
+
+	* Added support for multiple preferred languages, with preferences
+	  being a float in stead of a boolean.
+
+	  Implemented filling this table for MacOS.
+
+2008-01-10 13:40  keesblom
+
+	* Initial checkin of default rate for "crawl"/"scroll".  It doesn't
+	  work yet, but hopefully nothing is broken.
+
+2008-01-10 13:35  keesblom
+
+	* Changed "next" to "begin" in <tev/>'s to match the timing with
+	  the specs.
+
 2008-01-09 17:13  jackjansen
 
 	* Temporarily disabling relaxed seq begin conditions: things broke.
