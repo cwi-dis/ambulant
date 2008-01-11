@@ -206,6 +206,9 @@ class smiltext_engine {
 	/// Called as soon as the textRate is known. Turns off m_auto_rate.
 	void set_rate(unsigned int new_rate);
 
+	/// Return the simple duration of a <smilText/> element
+	int get_dur();
+
 	/// HACK! We simulate the ref_counted interface
 	void add_ref() {}
 	void release() {}
@@ -296,6 +299,7 @@ class smiltext_layout_provider {
 	/// 'word spacing' is the amount of whitespace pixels in front of the word. 
 	virtual void render_smiltext(const smiltext_run& str, const lib::rect& r, unsigned int word_spacing) = 0;
 	virtual void smiltext_stopped() = 0;
+	virtual const lib::rect& get_rect() = 0;
 };
 
 class smiltext_layout_word {

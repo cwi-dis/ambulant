@@ -592,8 +592,17 @@ smiltext_engine::set_rate(unsigned int new_rate)
 		m_auto_rate = false;
 	}
 }
+// Return the simple duration of a <smilText/> element
+int 
+smiltext_engine::get_dur() {
+	// were is simple duration to be found ?
+	int dur = atoi( m_node->get_attribute("dur"));
+ 	return dur; 
+}
 
-// smiltext_layout_engine
+////////////////////////////////////////////////////////////////////////
+//	smiltext_layout_engine					      //
+////////////////////////////////////////////////////////////////////////
 smiltext_layout_engine::smiltext_layout_engine(const lib::node *n, lib::event_processor *ep, smiltext_layout_provider* provider, smiltext_notification* client, bool process_lf)
   :	m_engine(smiltext_engine(n, ep, client, true)),
 	m_finished(false),
@@ -774,8 +783,9 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw(0x%x) r=
 		m_lock.leave();
 		return;
 	}
+	const lib::rect rect = m_provider->get_rect();
 	int x_start = 0, y_start = 0, x_dir = 1, y_dir = 1;
-	_get_initial_values(r, &*m_words.begin(),
+	_get_initial_values(rect, &*m_words.begin(),
 			    &x_start, &y_start, &x_dir, &y_dir);
 	smil2::smiltext_align align = m_words.begin()->m_run_p->m_align;
 	smil2::smiltext_writing_mode writing_mode = m_words.begin()->m_run_p->m_writing_mode;
@@ -872,7 +882,7 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shift
 			if (linefeed_processing
 			    && ! first_word
 			    && wrap_lines 
-			    &&  ! _smiltext_fits(word->m_bounding_box,r)) {
+			    &&  ! _smiltext_fits(word->m_bounding_box,rect)) {
 				if (word->m_leading_newlines == 0)
 					word->m_leading_newlines++;
 				break;
@@ -965,9 +975,9 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shift
 	if (m_crawling || m_scrolling) {
 		if (m_engine.is_auto_rate()) {
 			// now we have all information to compute the rate
-			int dur = 11; // were is simple duration to be found ? m_engine->get_dur();
+			int dur = m_engine.get_dur();
 			lib::rect smiltext_rect = first_word->m_bounding_box | last_word->m_bounding_box;
-			unsigned int rate = _compute_rate(smiltext_rect.size(), r, dur);
+			unsigned int rate = _compute_rate(smiltext_rect.size(), rect, dur);
 			m_engine.set_rate(rate);
 			m_params = m_engine.get_params();
 		}
@@ -979,7 +989,7 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shift
 			word_spacing = word->m_metrics.get_word_spacing();
 		}
 		word->m_bounding_box -= m_shifted_origin;
-		if (_smiltext_disjunct (word->m_bounding_box, r))
+		if (_smiltext_disjunct (word->m_bounding_box, rect))
 			continue; // nothing to de displayed
 		m_provider->render_smiltext(*word->m_run_p,
 					    word->m_bounding_box,
@@ -989,7 +999,7 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shift
 		if (m_params.m_text_conceal == stc_none
 		    || m_params.m_text_conceal == stc_initial) {
 			// check if we need to stop crawling/scrolling
-			if ((last_word->m_bounding_box & r) == last_word->m_bounding_box) {
+			if ((last_word->m_bounding_box & rect) == last_word->m_bounding_box) {
 				// bounding box of last word is now completely 
 				// inside the viewing rectangle
 				m_finished = true;
@@ -1026,7 +1036,7 @@ smiltext_layout_engine::_compute_rate(lib::size size, lib::rect r,  unsigned int
   | ---------------------------------------------------|
   |   center   |t>w?t-w/2:w/2|  w    | w/2+t   |  w+t  |
   | ---------------------------------------------------|
-  |   end       | t>w?t:w  |    w    |  w+t    |  w+t  |
+  |   end       |    t     |    w    |  w+t    |  w+t  |
   + ---------------------------------------------------+
   */
   unsigned int dst = 0, win = 0, txt = 0;
@@ -1048,11 +1058,10 @@ smiltext_layout_engine::_compute_rate(lib::size size, lib::rect r,  unsigned int
 				dst = txt > win ? txt - win : 0;
 				break;
 			case stp_from_end:
-				dst = txt > win ? txt : win;
+				dst = txt;
 				break;
 			case stp_from_center:
-				dst = txt > win ? txt - win/2
-						: win/2; 
+				dst = txt > win/2 ? txt - win/2 : 0; 
 				break;
 			}
 			break;

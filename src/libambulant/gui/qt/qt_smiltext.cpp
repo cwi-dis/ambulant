@@ -155,6 +155,11 @@ gui::qt::qt_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& s
 	return smil2::smiltext_metrics(ascent, descent, height, width, line_spacing, word_spacing);
 }
 
+const lib::rect&
+gui::qt::qt_smiltext_renderer::get_rect() {
+	return m_dest->get_rect();
+}
+
 void
 gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun, const lib::rect& r, unsigned int word_spacing) {
 	if (strun.m_command != smil2::stc_data)
