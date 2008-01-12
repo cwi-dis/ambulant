@@ -1,3 +1,31 @@
+2008-01-11 22:54  jackjansen
+
+	* Changes to make things compatible with 10.4 again.
+
+2008-01-11 17:54  keesblom
+
+	* Some refinements implemented
+
+2008-01-11 16:02  keesblom
+
+	* Revised textRate="auto" code for scroll: each single case is now
+	  treated explictily.  Still TBD: get simple duration, get proper
+	  rectangle, crawl, refactorizatin, tests.
+
+2008-01-11 13:21  jackjansen
+
+	* Implemented chromaKey.
+
+	  But: - Only on 10.5 - Only for bitmap images - Only opacity 0.0
+	  and 1.0.
+
+2008-01-11 11:37  jackjansen
+
+	* Implemented auto-rate for Mac.
+
+	  Code still needs to be refactored, but I'm waiting for Kees with
+	  that.
+
 2008-01-10 17:22  jackjansen
 
 	* Fixed code that ignores tev/clear for autorate scrolling.  Did a
