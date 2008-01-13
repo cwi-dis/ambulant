@@ -598,7 +598,7 @@ bool time_node::can_set_interval(qtime_type timestamp, const interval_type& i) {
 		 time_node *prev = previous();
 		 if(prev && prev->is_active()) {
 			// wait
-			AM_DBG m_logger->debug("%s[%s] attempt to set_current_interval() but prev active: %s (DT=%ld)", m_attrs.get_tag().c_str(), 
+			/*AM_DBG*/ m_logger->debug("%s[%s] attempt to set_current_interval() but prev active: %s (DT=%ld)", m_attrs.get_tag().c_str(), 
 				m_attrs.get_id().c_str(), ::repr(i).c_str(), timestamp.as_doc_time_value());
 			return false;
 		 }
@@ -1745,11 +1745,13 @@ void time_node::raise_end_event(qtime_type timestamp, time_node *oproot) {
 	time_node *p = up();
 	if(p && (p->is_par() || p->is_excl() || (p->is_seq() && !next()))) 
 		p->raise_update_event(timestamp);
-		
+#ifndef WITH_SMIL30_RELAXED_SEQ
+	// XXXJACK: is this code still needed with SMIL3 relaxed begin conditions?
 	if(p && p->is_seq()) {
 		 time_node *n = next();
 		 if(n) n->raise_update_event(timestamp);
 	}
+#endif
 		
 	if(is_root()) m_context->done_playback();
 	m_context->node_stopped(m_node);

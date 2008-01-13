@@ -268,12 +268,12 @@ time_calc::calc_first_interval(time_mset& begin_list, time_mset& end_list,
 	
 	// Check the begin instance list
 	if(begin_list.empty()) {
-		AM_DBG clogger->debug("%s[%s].calc_first_interval(): begin list is empty", 
+		/*AM_DBG*/ clogger->debug("%s[%s].calc_first_interval(): begin list is empty", 
 			m_attrs.get_tag().c_str(), 
-			m_attrs.get_id().c_str());	
+			m_attrs.get_id().c_str());
 		return failure;
 	} 
-	AM_DBG clogger->debug("%s[%s].calc_first_interval(): begin list(%s, ...)", 
+	/*AM_DBG*/ clogger->debug("%s[%s].calc_first_interval(): begin list(%s, ...)", 
 		m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), 
 		::repr(*begin_list.lower_bound(begin_after)).c_str());	
@@ -296,7 +296,7 @@ time_calc::calc_first_interval(time_mset& begin_list, time_mset& end_list,
 				if(m_attrs.end_has_event_conditions() || end_list.empty())
 					temp_end = time_type::unresolved;
 				else {
-					AM_DBG clogger->debug("%s[%s].calc_first_interval(): %s", 
+					/*AM_DBG*/ clogger->debug("%s[%s].calc_first_interval(): %s", 
 						m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), ::repr(failure).c_str());
 					return failure;
 				}
@@ -307,7 +307,7 @@ time_calc::calc_first_interval(time_mset& begin_list, time_mset& end_list,
 		// see: http://www.w3.org/2001/07/REC-SMIL20-20010731-errata
 		if(temp_end()>0 || (temp_begin()== 0 && temp_end()==0)) {
 			interval_type ret(temp_begin, temp_end);
-			AM_DBG clogger->debug("%s[%s].calc_first_interval(): %s", 
+			/*AM_DBG*/ clogger->debug("%s[%s].calc_first_interval(): %s", 
 				m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), ::repr(ret).c_str());
 			return ret;
 		} 

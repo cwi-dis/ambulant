@@ -26,7 +26,7 @@
 #include "ambulant/smil2/time_node.h"
 #include <list>
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -235,7 +235,7 @@ void transout_rule::new_instance(qtime_type timestamp, time_type instance) {
 	if(locked()) return;
 	lock();
 	if(m_trace)
-		AM_DBG logger::get_logger()->debug("model_rule::new_instance(%ld) (%s)", instance(), to_string().c_str());	
+		AM_DBG logger::get_logger()->debug("transout_rule::new_instance(%ld) (%s)", instance(), to_string().c_str());	
 	m_instances.push_back(to_ref(instance));
 	unlock();
 }

@@ -27,7 +27,7 @@
 #include "ambulant/smil2/test_attrs.h"
 
 //#define AM_DBG if(1)
-
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -313,7 +313,11 @@ void active_state::sync_update(qtime_type timestamp) {
 		m_self->update_interval_end(timestamp, end);
 	}
 	restart_behavior rb = m_attrs.get_restart();
-	if(rb == restart_always && !m_self->sync_node()->is_seq()) {
+	if(rb == restart_always
+#ifndef WITH_SMIL30_RELAXED_SEQ
+			&& !m_self->sync_node()->is_seq()
+#endif
+			) {
 		interval_type candidate(m_interval.begin, timestamp.second); 
 		interval_type i = m_self->calc_next_interval(candidate);
 		if(i.is_valid()) {
@@ -359,12 +363,17 @@ void active_state::exit(qtime_type timestamp, time_node *oproot) {
 	m_self->fill(timestamp); // pause or stop
 	m_self->kill_children(timestamp, oproot);
 	/*AM_DBG*/ lib::logger::get_logger()->debug("active_state::exit(%s)", m_self->get_sig().c_str());
-#ifdef WITH_SMIL30_RELAXED_SEQxxxjackbad
+#ifdef WITH_SMIL30_RELAXED_SEQ
 	if (m_self->up() && m_self->up()->is_seq()) {
-		// We need to move our next sibling to proactive state
+		// We need to reset our next sibling. Note that we must do that
+		// here, and not in postactive_enter, otherwise we will lose
+		// the end_event raised below.
 		time_node *next = m_self->next();
 		if (next) {
-			next->set_state(ts_proactive, timestamp, m_self->sync_node());
+			time_node *sn = m_self->sync_node();
+			qtime_type qt = timestamp.as_qtime_down_to(sn);
+			next->reset(qt, sn);
+			next->set_state(ts_proactive, qt, sn);
 		}
 	}
 #endif
@@ -397,12 +406,16 @@ void postactive_state::enter(qtime_type timestamp) {
 	// m_needs_remove = SET true or false depending on the fill attribute;
 	
 	/*AM_DBG*/ lib::logger::get_logger()->debug("postactive_state::enter(%s)", m_self->get_sig().c_str());
-	if(m_self->sync_node()->is_seq()) {
-#ifdef WITH_SMIL30_RELAXED_SEQ
+	if(m_self->up() && m_self->up()->is_seq()) {
+#ifdef WITH_SMIL30_RELAXED_SEQ_nono
+		// Now we can advance our next sibling to proactive (the
+		// accompanying reset happened in active_state::exit).
 		time_node *next = m_self->next();
 		if (next) {
-			//next->reset(timestamp, m_self->sync_node());
-			next->set_state(ts_proactive, timestamp, m_self->sync_node());
+			time_node *sn = m_self->sync_node();
+			qtime_type qt = timestamp.as_qtime_down_to(sn);
+			//next->reset(qt, sn);
+			next->set_state(ts_proactive, qt, sn);
 		}
 #endif
 		m_self->set_state(ts_dead, timestamp, m_self->sync_node());
