@@ -51,13 +51,13 @@ _select_font(const char *family, smil2::smiltext_font_style style, smil2::smilte
 	NSString *ffname = NULL;
 	
 	if (strcmp(family, "serif") == 0) {
-		ffname = [NSString stringWithCString: "Times"];
+		ffname = [NSString stringWithUTF8String: "Times"];
 	} else if (strcmp(family, "monospace") == 0) {
-		ffname = [NSString stringWithCString: "Monaco"];
+		ffname = [NSString stringWithUTF8String: "Monaco"];
 	} else if (strcmp(family, "sansSerif") == 0) {
-		ffname = [NSString stringWithCString: "Helvetica Neue"];
+		ffname = [NSString stringWithUTF8String: "Helvetica Neue"];
 	} else {
-		ffname = [NSString stringWithCString:family];
+		ffname = [NSString stringWithUTF8String:family];
 	}
 	if (strcmp(family, "monospace") == 0) mask |= NSFixedPitchFontMask;
 	switch(style) {
@@ -217,7 +217,7 @@ cocoa_smiltext_renderer::smiltext_changed()
 					m_needs_conditional_newline = true;
 					m_needs_conditional_space = true;
 				}
-				newdata = [[NSString alloc] initWithCString:(*i).m_data.c_str()];
+				newdata = [NSString stringWithUTF8String:(*i).m_data.c_str()];
 				break;
 			default:
 				assert(0);
@@ -226,7 +226,7 @@ cocoa_smiltext_renderer::smiltext_changed()
 			
 			// Prepare for setting the attribute info
 			NSMutableDictionary *attrs = [[NSMutableDictionary alloc] init];
-			newrange.length = (*i).m_data.length();
+			newrange.length = [newdata length];
 			// Find font info
 			NSFont *text_font = _select_font((*i).m_font_family, (*i).m_font_style, (*i).m_font_weight, (*i).m_font_size);
 			if (text_font)

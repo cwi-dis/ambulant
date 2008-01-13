@@ -64,7 +64,7 @@ cocoa_text_renderer::cocoa_text_renderer(
 		AM_DBG NSLog(@"params found, color=(%d, %d, %d), font-family=%s, font-size=%g", 
 			redc(text_color), greenc(text_color), bluec(text_color), fontname, fontsize);
 		if (fontname) {
-			NSString *nsfontname = [NSString stringWithCString: fontname];
+			NSString *nsfontname = [NSString stringWithUTF8String: fontname];
 			m_text_font = [NSFont fontWithName: nsfontname size: fontsize];
 			if (m_text_font == NULL)
 				lib::logger::get_logger()->trace("param: font-family \"%s\" unknown", fontname);
@@ -94,7 +94,18 @@ cocoa_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 	AM_DBG logger::get_logger()->debug("cocoa_text_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 
 	if (m_data && !m_text_storage) {
-		NSString *the_string = [NSString stringWithCString: (char *)m_data length: m_data_size];
+		unsigned char *ucp = (unsigned char *)m_data;
+		// Check for 16-bit unicode by BOM
+		NSString *the_string;
+		if (m_data_size >= 2 && 
+				((ucp[0] == 0xff && ucp[1] == 0xfe) ||
+				 (ucp[0] == 0xfe && ucp[1] == 0xff))) {
+			the_string = [NSString stringWithCharacters: (unichar*)m_data length: m_data_size/2];
+		} else {
+			// Assume it's a utf-8 file.
+			assert(((char*)m_data)[m_data_size] == '\0');
+			the_string = [NSString stringWithUTF8String: (char *)m_data];
+		}
 		m_text_storage = [[NSTextStorage alloc] initWithString:the_string];
 		if (m_text_color) {
 #ifdef WITH_SMIL30
