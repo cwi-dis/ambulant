@@ -26,14 +26,12 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/smil2/test_attrs.h"
 
-//#define AM_DBG if(1)
-#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
 
 #ifdef WITH_SMIL30
-#undef WITH_SMIL30_RELAXED_SEQ
+#define WITH_SMIL30_RELAXED_SEQ
 #endif
 
 using namespace ambulant;
@@ -362,21 +360,7 @@ void active_state::exit(qtime_type timestamp, time_node *oproot) {
 	m_active = false;
 	m_self->fill(timestamp); // pause or stop
 	m_self->kill_children(timestamp, oproot);
-	/*AM_DBG*/ lib::logger::get_logger()->debug("active_state::exit(%s)", m_self->get_sig().c_str());
-#ifdef WITH_SMIL30_RELAXED_SEQ
-	if (m_self->up() && m_self->up()->is_seq()) {
-		// We need to reset our next sibling. Note that we must do that
-		// here, and not in postactive_enter, otherwise we will lose
-		// the end_event raised below.
-		time_node *next = m_self->next();
-		if (next) {
-			time_node *sn = m_self->sync_node();
-			qtime_type qt = timestamp.as_qtime_down_to(sn);
-			next->reset(qt, sn);
-			next->set_state(ts_proactive, qt, sn);
-		}
-	}
-#endif
+	AM_DBG lib::logger::get_logger()->debug("active_state::exit(%s)", m_self->get_sig().c_str());
 	m_self->raise_end_event(timestamp, oproot);
 	m_self->played_interval(timestamp);
 	
@@ -405,16 +389,21 @@ void postactive_state::enter(qtime_type timestamp) {
 	// m_interval = unchanged (last played interval that is now in the past);
 	// m_needs_remove = SET true or false depending on the fill attribute;
 	
-	/*AM_DBG*/ lib::logger::get_logger()->debug("postactive_state::enter(%s)", m_self->get_sig().c_str());
-	if(m_self->up() && m_self->up()->is_seq()) {
-#ifdef WITH_SMIL30_RELAXED_SEQ_nono
-		// Now we can advance our next sibling to proactive (the
-		// accompanying reset happened in active_state::exit).
+	AM_DBG lib::logger::get_logger()->debug("postactive_state::enter(%s)", m_self->get_sig().c_str());
+	if(m_self->sync_node()->is_seq()) {
+#ifdef WITH_SMIL30_RELAXED_SEQ
+		// Now we can advance our next sibling to proactive.
+		// Note that we must also do a reset() on the next sibling
+		// (otherwise the same event can't be used to start multiple
+		// seq children), but that this reset() should *not* be
+		// seen as being sent from the parent (otherwise the
+		// normal seq begin condition of prev sibling.end is cleared
+		// also).
 		time_node *next = m_self->next();
 		if (next) {
 			time_node *sn = m_self->sync_node();
 			qtime_type qt = timestamp.as_qtime_down_to(sn);
-			//next->reset(qt, sn);
+			next->reset(qt, next);
 			next->set_state(ts_proactive, qt, sn);
 		}
 #endif

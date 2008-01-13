@@ -41,7 +41,7 @@
 #endif
 
 #ifdef WITH_SMIL30
-#undef WITH_SMIL30_RELAXED_SEQ
+#define WITH_SMIL30_RELAXED_SEQ
 #endif
 
 using namespace ambulant;
@@ -598,7 +598,7 @@ bool time_node::can_set_interval(qtime_type timestamp, const interval_type& i) {
 		 time_node *prev = previous();
 		 if(prev && prev->is_active()) {
 			// wait
-			/*AM_DBG*/ m_logger->debug("%s[%s] attempt to set_current_interval() but prev active: %s (DT=%ld)", m_attrs.get_tag().c_str(), 
+			AM_DBG m_logger->debug("%s[%s] attempt to set_current_interval() but prev active: %s (DT=%ld)", m_attrs.get_tag().c_str(), 
 				m_attrs.get_id().c_str(), ::repr(i).c_str(), timestamp.as_doc_time_value());
 			return false;
 		 }

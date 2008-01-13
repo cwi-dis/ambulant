@@ -41,7 +41,7 @@
 #endif
 
 #ifdef WITH_SMIL30
-#undef WITH_SMIL30_RELAXED_SEQ
+#define WITH_SMIL30_RELAXED_SEQ
 #endif
 
 using namespace ambulant;
