@@ -183,7 +183,7 @@ cocoa_smiltext_renderer::smiltext_changed()
 			// Add the new characters
 			newrange.location = [m_text_storage length];
 			newrange.length = 0;
-			NSString *newdata = @"";
+			NSMutableString *newdata = @"";
 			switch((*i).m_command) {
 			case smil2::stc_break:
 				newdata = @"\n\n";
@@ -217,10 +217,17 @@ cocoa_smiltext_renderer::smiltext_changed()
 					m_needs_conditional_newline = true;
 					m_needs_conditional_space = true;
 				}
-				newdata = [NSString stringWithUTF8String:(*i).m_data.c_str()];
+				newdata = [NSMutableString stringWithUTF8String:(*i).m_data.c_str()];
 				break;
 			default:
 				assert(0);
+			}
+			// Handle override textDirection here, by inserting the magic unicode
+			// commands
+			if ((*i).m_direction == smil2::stw_ltro) {
+				lib::logger::get_logger()->debug("cocoa_smiltext: should do ltro text");
+			} else if ((*i).m_direction == smil2::stw_rtlo) {
+				lib::logger::get_logger()->debug("cocoa_smiltext: should do rtlo text");
 			}
 			[m_text_storage replaceCharactersInRange:newrange withString:newdata];
 			

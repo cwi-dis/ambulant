@@ -471,7 +471,10 @@ smiltext_engine::_get_formatting(smiltext_run& dst, const lib::node *src)
 	}
 	const char *writing_mode = src->get_attribute("textWritingMode");
 	if (writing_mode) {
-		if (strcmp(writing_mode, "lr") == 0) dst.m_writing_mode = stw_lr_tb;
+		if (src->get_local_name() == "span") {
+			lib::logger::get_logger()->trace("%s: textWritingMode only allowed on smilText, div, p", src->get_sig().c_str());
+		}
+		else if (strcmp(writing_mode, "lr") == 0) dst.m_writing_mode = stw_lr_tb;
 		else if (strcmp(writing_mode, "lr-tb") == 0) dst.m_writing_mode = stw_lr_tb;
 		else if (strcmp(writing_mode, "rl") == 0) dst.m_writing_mode = stw_rl_tb;
 		else if (strcmp(writing_mode, "rl-tb") == 0) dst.m_writing_mode = stw_rl_tb;
@@ -479,7 +482,21 @@ smiltext_engine::_get_formatting(smiltext_run& dst, const lib::node *src)
 		else if (strcmp(writing_mode, "tb-rl") == 0) dst.m_writing_mode = stw_tb_rl;
 		else if (strcmp(writing_mode, "inherit") == 0) /* no-op */;
 		else {
-			lib::logger::get_logger()->trace("%s: textWritingMode=\"%s\": unknown writing_mode", src->get_sig().c_str(), writing_mode);
+			lib::logger::get_logger()->trace("%s: textWritingMode=\"%s\": unknown writing mode", src->get_sig().c_str(), writing_mode);
+		}
+	}
+	const char *direction = src->get_attribute("textDirection");
+	if (direction) {
+		if (src->get_local_name() != "span" && src->get_local_name() != "textStyle") {
+			lib::logger::get_logger()->trace("%s: textWritingMode only allowed on span or textStyle", src->get_sig().c_str());
+		}
+		else if (strcmp(direction, "ltr") == 0) dst.m_direction = stw_ltr;
+		else if (strcmp(direction, "rtl") == 0) dst.m_direction = stw_rtl;
+		else if (strcmp(direction, "ltro") == 0) dst.m_direction = stw_ltro;
+		else if (strcmp(direction, "rtlo") == 0) dst.m_direction = stw_rtlo;
+		else if (strcmp(direction, "inherit") == 0) /* no-op */;
+		else {
+			lib::logger::get_logger()->trace("%s: textDirection=\"%s\": unknown text direction", src->get_sig().c_str(), writing_mode);
 		}
 	}
 	// xml:space attribute

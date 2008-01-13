@@ -113,6 +113,14 @@ enum smiltext_writing_mode {
 	stw_tb_rl
 };
 
+/// Values for textDirection attribute of text spans
+enum smiltext_direction {
+	stw_ltr,
+	stw_rtl,
+	stw_ltro,
+	stw_rtlo
+};
+
 /// Values for the xml:space attribute of text spans
 enum smiltext_xml_space {
 	stx_default,
@@ -139,6 +147,7 @@ class smiltext_run {
 	smiltext_xml_space		m_xml_space;
 	smiltext_align			m_align;
 	smiltext_writing_mode	m_writing_mode;
+	smiltext_direction		m_direction;
 	bool					m_wrap;		/// Text should be line-wrapped
 };
 
