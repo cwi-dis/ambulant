@@ -205,6 +205,11 @@ gui::dx::dx_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& r
 		::SelectObject(m_hdc, old_obj);
 	return smil2::smiltext_metrics(ascent, descent, height, width, line_spacing, word_spacing);
 }
+
+const lib::rect&
+gui::dx::dx_smiltext_renderer::get_rect() {
+	return m_dest->get_rect();
+}
 /*
 	Operation: first, called from redraw(), _dx_smiltext_get_ddsurf() copies the
 	background area in m_region_dds. Then redraw() calls m_layout_engine->redraw().
