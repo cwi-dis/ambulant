@@ -1049,56 +1049,57 @@ smiltext_layout_engine::_compute_rate(lib::size size, lib::rect r,  unsigned int
   |-------------|          |         |         |       |
   | textPlace   |          |         |         |       |
   |----------------------------------------------------|
-  |   start     | t>w?t-w:0|    w    |    t    |  w+t  |
+  |   start     | t>w?t-w:0|    t    |    t    |  w+t  |
   | ---------------------------------------------------|
-  |   center   |t>w?t-w/2:w/2|  w    | w/2+t   |  w+t  |
+  |   center   |t>w?t-w/2:w/2|  t    | w/2+t   |  w+t  |
   | ---------------------------------------------------|
-  |   end       |    t     |    w    |  w+t    |  w+t  |
+  |   end       |    t     |    t    |  w+t    |  w+t  |
   + ---------------------------------------------------+
   */
   unsigned int dst = 0, win = 0, txt = 0;
 	switch (m_params.m_mode) {
-	case stm_crawl:
+	case smil2::stm_crawl:
 		win = r.w;
 		txt = size.w;
   //TBD crawl
 		break;
-	case stm_scroll:
+	case smil2::stm_scroll:
 		win = r.h;
 		txt = size.h; 
 		switch (m_params.m_text_conceal) {
 		default:
-		case stc_none:
+		case smil2::stc_none:
 			switch (m_params.m_text_place) {
 			default:
-			case stp_from_start:
+			case smil2::stp_from_start:
 				dst = txt > win ? txt - win : 0;
 				break;
-			case stp_from_end:
+			case smil2::stp_from_end:
 				dst = txt;
 				break;
-			case stp_from_center:
+			case smil2::stp_from_center:
 				dst = txt > win/2 ? txt - win/2 : 0; 
 				break;
 			}
 			break;
-		case stc_initial: // ignore textPlace
-			dst = win;
+		case smil2::stc_initial: // ignore textPlace
+			dst = txt;
 			break;
-		case stc_final:
+		case smil2::stc_final:
 			switch (m_params.m_text_place) {
 			default:
-			case stp_from_start:
+			case smil2::stp_from_start:
 				dst = txt;
 				break;
-			case stp_from_end:
+			case smil2::stp_from_end:
 				dst = win+txt;
 				break;
-			case stp_from_center:
+			case smil2::stp_from_center:
 				dst = win/2+txt;
 				break;
 			}
-		case stc_both: // ignore textPlace
+			break;
+		case smil2::stc_both: // ignore textPlace
 			dst = win+txt;
 			break;
 		}
