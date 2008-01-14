@@ -193,7 +193,7 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 			lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
 			lib::compute_chroma_range(chromakey, chromakeytolerance,
 							     &chroma_low, &chroma_high);
-		}
+		} else alpha_chroma = alpha_media;
 	}
 #else
 	// Get fit rectangles

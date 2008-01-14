@@ -302,7 +302,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\expat\lib;..\..\third_party_packages\jpeg;..\..\third_party_packages\lpng128;..\..\third_party_packages\zlib;..\..\third_party_packages\mp3lib;&quot;..\..\third_party_packages\xerces-c-src_2_7_0\src\&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_AMBULANT;WITH_EXPAT;XML_STATIC;WITH_WINDOWS_PLUGINS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_AMBULANT;WITH_EXPAT;XML_STATIC;WITH_WINDOWS_PLUGINS;WITH_SMIL30"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -826,13 +826,13 @@
 					RelativePath="..\..\src\libambulant\common\schema.cpp">
 				</File>
 				<File
-					RelativePath="..\..\src\libambulant\common\state.cpp">
-				</File>
-				<File
 					RelativePath="..\..\src\libambulant\common\smil_alignment.cpp">
 				</File>
 				<File
 					RelativePath="..\..\src\libambulant\common\smil_handler.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\libambulant\common\state.cpp">
 				</File>
 				<File
 					RelativePath="..\..\src\libambulant\common\video_renderer.cpp">
@@ -1331,13 +1331,13 @@
 						RelativePath="..\..\include\ambulant\common\schema.h">
 					</File>
 					<File
-						RelativePath="..\..\include\ambulant\common\state.h">
-					</File>
-					<File
 						RelativePath="..\..\include\ambulant\common\smil_alignment.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\common\smil_handler.h">
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\common\state.h">
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\common\trace_playable.h">

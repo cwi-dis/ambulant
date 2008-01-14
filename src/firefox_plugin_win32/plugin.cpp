@@ -42,7 +42,7 @@
 #include "nsIServiceManager.h"
 #include "nsISupportsUtils.h" // some usefule macros are defined here
 
-//#define AMBULANT_FIREFOX_PLUGIN
+#define AMBULANT_FIREFOX_PLUGIN
 #ifdef AMBULANT_FIREFOX_PLUGIN
 #endif // AMBULANT_FIREFOX_PLUGIN
 
