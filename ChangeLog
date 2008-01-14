@@ -1,3 +1,24 @@
+2008-01-14 00:06  jackjansen
+
+	* Getting started on implementing textDirection. Also make sure
+	  that textWritingMode is only supplied on a paragraph basis (and
+	  textDirection only on a span basis).
+
+2008-01-13 23:14  jackjansen
+
+	* Fixed utf8 support for smilText nodes.  Enabled both utf8 and
+	  utf16 for external text nodes.
+
+2008-01-13 22:29  jackjansen
+
+	* - Fixed problem with documents not playing a second time (the
+	  body	 node didn't reset).  - Removed debug.
+
+2008-01-13 21:39  jackjansen
+
+	* More changes to relaxed seq child begin conditions. Still does
+	  not work.
+
 2008-01-11 22:54  jackjansen
 
 	* Changes to make things compatible with 10.4 again.
