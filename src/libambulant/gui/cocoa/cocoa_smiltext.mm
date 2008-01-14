@@ -406,7 +406,10 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	}
 	// Now determine text placement (visible_origin)
 	int firstlineheight = 14; // XXXJACK: should compute this...
-	if (m_params.m_text_place == smil2::stp_from_end) {
+	if (m_params.m_text_conceal == smil2::stc_initial
+		    || m_params.m_text_conceal == smil2::stc_both) {
+		visible_origin.y += visible_size.height;
+	} else if (m_params.m_text_place == smil2::stp_from_end) {
 		visible_origin.y += (visible_size.height - firstlineheight);
 	} else if (m_params.m_text_place == smil2::stp_from_center) {
 		visible_origin.y += (visible_size.height - firstlineheight) / 2;
@@ -493,68 +496,67 @@ cocoa_smiltext_renderer::_compute_rate(lib::size size, lib::rect r,  unsigned in
   /* First find the distance to travel during scroll for various values 
    * for textConceal and textPlace (w=window height, t=text height)
 
-   textConceal |  none  | initial |  final  |  both |
-   --------------------------------------------------
-   textPlace   |        |         |         |       |
-   --------------------------------------------------
-     start     | t-w>0  |    w    |    w    |  w+t  |
-   --------------------------------------------------
-     center    |  w/2   |    w    | w/2+t   |  w+t  |
-   --------------------------------------------------
-     end       |t-w w-t |    w    |    w    |  w+bt  |
-   --------------------------------------------------
+  + ---------------------------------------------------+
+  | textConceal |  none    | initial |  final  |  both |
+  |-------------|          |         |         |       |
+  | textPlace   |          |         |         |       |
+  |----------------------------------------------------|
+  |   start     | t>w?t-w:0|    w    |    t    |  w+t  |
+  | ---------------------------------------------------|
+  |   center   |t>w?t-w/2:w/2|  w    | w/2+t   |  w+t  |
+  | ---------------------------------------------------|
+  |   end       |    t     |    w    |  w+t    |  w+t  |
+  + ---------------------------------------------------+
   */
   unsigned int dst = 0, win = 0, txt = 0;
-	bool add_flag = false;
-	bool bisect_flag = false;
-	bool substract_flag = false;
-
-	switch (m_params.m_mode){
+	switch (m_params.m_mode) {
 	case smil2::stm_crawl:
 		win = r.w;
 		txt = size.w;
+  //TBD crawl
 		break;
 	case smil2::stm_scroll:
 		win = r.h;
 		txt = size.h; 
-		break;
-	default:
-		break;
-	}
-	switch (m_params.m_text_conceal) {
-	default:
-	case smil2::stc_initial:
-		break;
-	case smil2::stc_final:
-	case smil2::stc_both:
-       		add_flag = true;
-	case smil2::stc_none:
-		substract_flag = true;
-		break;
-	}
-	switch (m_params.m_text_place) {
-	default:
-	case smil2::stp_from_start:
-	case smil2::stp_from_end:
-		break;
-	case smil2::stp_from_center:
-		bisect_flag = true;
-		substract_flag = false;
-		break;
-	}
-	if (bisect_flag)
-		dst = win/2;
-	else	dst = win;
-	if (add_flag)
-		dst += txt;
-	if (substract_flag) {
-		if(win > txt)
-			dst -= txt;
-		else {
-			if (m_params.m_text_place == smil2::stp_from_start)
-				dst = txt - win;
-			else	dst = 0;
+		switch (m_params.m_text_conceal) {
+		default:
+		case smil2::stc_none:
+			switch (m_params.m_text_place) {
+			default:
+			case smil2::stp_from_start:
+				dst = txt > win ? txt - win : 0;
+				break;
+			case smil2::stp_from_end:
+				dst = txt;
+				break;
+			case smil2::stp_from_center:
+				dst = txt > win/2 ? txt - win/2 : 0; 
+				break;
+			}
+			break;
+		case smil2::stc_initial: // ignore textPlace
+			dst = win;
+			break;
+		case smil2::stc_final:
+			switch (m_params.m_text_place) {
+			default:
+			case smil2::stp_from_start:
+				dst = txt;
+				break;
+			case smil2::stp_from_end:
+				dst = win+txt;
+				break;
+			case smil2::stp_from_center:
+				dst = win/2+txt;
+				break;
+			}
+		case smil2::stc_both: // ignore textPlace
+			dst = win+txt;
+			break;
 		}
+		break;
+	default:
+		break;
 	}
 	return (dst+dur-1)/dur;
 }
