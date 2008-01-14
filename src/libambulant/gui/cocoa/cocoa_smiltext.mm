@@ -226,8 +226,12 @@ cocoa_smiltext_renderer::smiltext_changed()
 			// commands
 			if ((*i).m_direction == smil2::stw_ltro) {
 				lib::logger::get_logger()->debug("cocoa_smiltext: should do ltro text");
+				[newdata insertString: @"\u202d" atIndex: 0]; // LEFT-TO-RIGHT OVERRIDE
+				[newdata appendString: @"\u202c"]; // POP DIRECTIONAL FORMATTING
 			} else if ((*i).m_direction == smil2::stw_rtlo) {
 				lib::logger::get_logger()->debug("cocoa_smiltext: should do rtlo text");
+				[newdata insertString: @"\u202e" atIndex: 0]; // RIGHT-TO-LEFT OVERRIDE
+				[newdata appendString: @"\u202c"]; // POP DIRECTIONAL FORMATTING
 			}
 			[m_text_storage replaceCharactersInRange:newrange withString:newdata];
 			
