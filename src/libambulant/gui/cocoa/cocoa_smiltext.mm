@@ -510,11 +510,11 @@ cocoa_smiltext_renderer::_compute_rate(lib::size size, lib::rect r,  unsigned in
   |-------------|          |         |         |       |
   | textPlace   |          |         |         |       |
   |----------------------------------------------------|
-  |   start     | t>w?t-w:0|    w    |    t    |  w+t  |
+  |   start     | t>w?t-w:0|    t    |    t    |  w+t  |
   | ---------------------------------------------------|
-  |   center   |t>w?t-w/2:w/2|  w    | w/2+t   |  w+t  |
+  |   center   |t>w?t-w/2:w/2|  t    | w/2+t   |  w+t  |
   | ---------------------------------------------------|
-  |   end       |    t     |    w    |  w+t    |  w+t  |
+  |   end       |    t     |    t    |  w+t    |  w+t  |
   + ---------------------------------------------------+
   */
   unsigned int dst = 0, win = 0, txt = 0;
@@ -544,7 +544,7 @@ cocoa_smiltext_renderer::_compute_rate(lib::size size, lib::rect r,  unsigned in
 			}
 			break;
 		case smil2::stc_initial: // ignore textPlace
-			dst = win;
+			dst = txt;
 			break;
 		case smil2::stc_final:
 			switch (m_params.m_text_place) {
