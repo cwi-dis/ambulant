@@ -314,9 +314,8 @@ class smiltext_layout_provider {
 class smiltext_layout_word {
 
   public:
-  smiltext_layout_word(const smiltext_run* run_p, smiltext_metrics stm, int sp, int nl);
-	const smiltext_run* m_run_p;
-	int m_leading_spaces;
+  smiltext_layout_word(smiltext_run run, smiltext_metrics stm, int nl);
+    smiltext_run m_run;
 	int m_leading_newlines;
 	smiltext_metrics m_metrics;
 	lib::rect m_bounding_box;
@@ -369,7 +368,7 @@ class smiltext_layout_engine {
 	bool m_scrolling;
 	lib::point m_shifted_origin; // moving origin for crawl/scroll
 	lib::size m_size; 	     // space needed (for textRate="auto"
-
+	smiltext_run m_blank;
 	std::vector<smiltext_layout_word> m_words;
 };
 
