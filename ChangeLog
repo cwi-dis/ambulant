@@ -1,3 +1,32 @@
+2008-01-14 16:36  jackjansen
+
+	* Applied scrolling fixes to machine-independet code too.  Removed
+	  debug.
+
+2008-01-14 16:33  jackjansen
+
+	* textConceal=initial mixed up region and text height. Fixed.
+
+2008-01-14 16:21  jackjansen
+
+	* Added missing break. This makes textConceal=final work.
+
+2008-01-14 14:28  jackjansen
+
+	* Fixed a problem with textConceal=initial
+
+2008-01-14 14:03  keesblom
+
+	* Repaired mediaOpacity bug on Windows
+
+2008-01-14 11:23  jackjansen
+
+	* Added get_rect() method.
+
+2008-01-14 10:32  jackjansen
+
+	* Implemented textDirection overrides for Mac.
+
 2008-01-14 00:06  jackjansen
 
 	* Getting started on implementing textDirection. Also make sure
