@@ -587,7 +587,7 @@ bad:
 }
 
 void animate_attrs::get_values(std::vector<common::region_dim_spec>& v) {
-#if 0 // Only "to" animation for now
+#if 0 // path animation for region_dim_spec not implemented
 	if(m_animtype == "path") {
 		const char *ppath = m_node->get_attribute("path");
 		lib::gpath_descr pd(ppath?ppath:"m 0 0");
@@ -595,33 +595,33 @@ void animate_attrs::get_values(std::vector<common::region_dim_spec>& v) {
 		lib::gpath *path = builder.build_path(&pd);
 		path->get_pivot_points(v);
 	} else 
+#endif
 	if(m_animtype == "values") {
 		const char *pvalues = m_node->get_attribute("values");
 		std::list<std::string> c;
 		if(pvalues) 
 			lib::split_trim_list(pvalues, c, ';');
 		for(std::list<std::string>::iterator it=c.begin();it!=c.end();it++)
-			v.push_back(to_point(*it));
+			v.push_back(to_rds(*it));
 	} else 
 	if(m_animtype == "from-to") {
 		const char *pfrom = m_node->get_attribute("from");
 		const char *pto = m_node->get_attribute("to");
-		v.push_back(to_point(pfrom));
-		v.push_back(to_point(pto));
-	} else 
+		v.push_back(to_rds(pfrom));
+		v.push_back(to_rds(pto));
+	} else
 	if(m_animtype == "from-by") {
 		const char *pfrom = m_node->get_attribute("from");
 		const char *pby = m_node->get_attribute("by");
-		lib::point v1 = to_point(pfrom);
-		lib::point dv = to_point(pby);
+		common::region_dim_spec v1 = to_rds(pfrom);
+		common::region_dim_spec dv = to_rds(pby);
 		v.push_back(v1);
 		v.push_back(v1+dv);
 	} else
-#endif // 0
 	if(m_animtype == "to") {
 		const char *pto = m_node->get_attribute("to");
 		v.push_back(to_rds(pto));
-#if 0
+#if 0 // by animation for region_dim_spec not implemented
 	} else
 	if(m_animtype == "by") {
 		const char *pby = m_node->get_attribute("by");
