@@ -720,13 +720,17 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::smiltext_change
 				break;
 			case smil2::stc_condspace:
 				if (m_needs_conditional_space) {
-					// create blank word
-				    m_blank = m_words.back().m_run;
-					//KBm_blank.m_command = stc_data;
-					m_blank.m_data = " ";
+					// conditional spaces are placed between words. 
+				  	// Later, they are either converted into data or ignored,
+					// the latter only when appearing immediately before a newline,
+				 	// or at the end of a run.
+					// create a space word, copying attributes from previous word
+				    m_space = m_words.back().m_run;
+					m_space.m_command = stc_condspace;
+					m_space.m_data = " ";
 					smiltext_metrics stm =
-						m_provider->get_smiltext_metrics (m_blank);
-					smiltext_layout_word word_info(m_blank, stm, n_nl);
+						m_provider->get_smiltext_metrics (m_space);
+					smiltext_layout_word word_info(m_space, stm, n_nl);
 					m_words.push_back(word_info);
 					m_needs_conditional_newline = true;
 					m_needs_conditional_space = false;
@@ -882,11 +886,15 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shift
 	// textAlign, textWritingMode, textPlace, etc. is  implemented
 	// by giving x_start|y_start|x_dir|y_dir proper initial values
 	int prev_max_ascent = 0, prev_max_descent = 0; 
-	std::vector<smiltext_layout_word>::iterator bol,// begin of line
+	std::vector<smiltext_layout_word>::iterator 
+						   	bol,// begin of line
 						    eol,// end of line
 						    first_word,
+							last_word_seen,
 						    word;
 	first_word = m_words.begin();
+	last_word_seen = first_word;
+
 	for (bol = m_words.begin(); bol != m_words.end(); bol = eol) {
 		unsigned int max_ascent = 0, max_descent = 0;
 		int x = x_start;
@@ -925,6 +933,7 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shift
 			if (word->m_metrics.get_descent() > max_descent)
 				max_descent = 
 					word->m_metrics.get_descent();
+			last_word_seen = word;
 		}
 		eol = word;
 		std::vector<smiltext_layout_word>::iterator lwl =
@@ -984,6 +993,9 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shift
 				m_shifted_origin.y += rate *
 						    (max_ascent + max_descent);
 			}
+			// ignore previous space after adding a newline
+			if (last_word_seen->m_run.m_command == stc_condspace)
+				last_word_seen->m_run.m_command = stc_ignore;
 		}
 		for (word = bol; word != eol; word++) {
 			// alignment correction
@@ -996,7 +1008,11 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shift
 		}
 		prev_max_ascent = max_ascent;
 		prev_max_descent = max_descent;
+		last_word_seen = word;
 	}
+	// ignore previous space at end of run
+	if (last_word_seen->m_run.m_command == stc_condspace)
+		last_word_seen->m_run.m_command = stc_ignore;
 	std::vector<smiltext_layout_word>::iterator last_word =  m_words.end() - 1;
 	if (m_crawling || m_scrolling) {
 		if (m_engine.is_auto_rate()) {
@@ -1015,7 +1031,10 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shift
 			word_spacing = word->m_metrics.get_word_spacing();
 		}
 		word->m_bounding_box -= m_shifted_origin;
-		if (_smiltext_disjunct (word->m_bounding_box, rect))
+		if (word->m_run.m_command == stc_condspace)
+			word->m_run.m_command = stc_data;
+		if (word->m_run.m_command != stc_data 
+			|| _smiltext_disjunct (word->m_bounding_box, rect))
 			continue; // nothing to de displayed
 		m_provider->render_smiltext(word->m_run, word->m_bounding_box,
 									word_spacing);

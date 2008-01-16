@@ -135,7 +135,7 @@ smil2::smiltext_metrics
 gui::qt::qt_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& strun) {
 	unsigned int ascent = 0, descent = 0, height = 0, width = 0, line_spacing = 0, word_spacing = 0;
 
-	if (strun.m_command == smil2::stc_data 	&& strun.m_data.length() != 0) {
+	if (strun.m_data.length() != 0) {
 
 		_qt_smiltext_set_font (strun);
 
@@ -162,8 +162,7 @@ gui::qt::qt_smiltext_renderer::get_rect() {
 
 void
 gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun, const lib::rect& r, unsigned int word_spacing) {
-	if (strun.m_command != smil2::stc_data)
-		return;
+
 	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_render(): command=%d data=%s color=0x%x bg_color=0x%x",strun.m_command,strun.m_data.c_str()==NULL?"(null)":strun.m_data.c_str(),strun.m_color,strun.m_bg_color);
 	double alpha_media = 1.0, alpha_media_bg = 1.0, alpha_chroma = 1.0;
 	lib::color_t chroma_low = lib::color_t(0x000000), chroma_high = lib::color_t(0xFFFFFF);

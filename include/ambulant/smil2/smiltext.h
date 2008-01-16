@@ -76,6 +76,7 @@ struct smiltext_params {
 	
 /// Layout commands that the engine can send to the renderer
 enum smiltext_command {
+	stc_ignore,		// ignore this command
 	stc_data,		// Render some character
 	stc_break,		// Unconditional line break
 	stc_condbreak,	// Conditional break, will collapse with adjacent condbreaks
@@ -368,7 +369,7 @@ class smiltext_layout_engine {
 	bool m_scrolling;
 	lib::point m_shifted_origin; // moving origin for crawl/scroll
 	lib::size m_size; 	     // space needed (for textRate="auto"
-	smiltext_run m_blank;
+	smiltext_run m_space;
 	std::vector<smiltext_layout_word> m_words;
 };
 
