@@ -144,7 +144,6 @@ gui::qt::qt_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& s
 		descent	= qfm.descent();
 		height	= qfm.height();
 		line_spacing = qfm.lineSpacing();
-		word_spacing = qfm.width(' ');
 		// The simple qfm.boundingRect(QString) function sometimes
 		// returns wrong (too small) rectangle
 		QRect qr = qfm.boundingRect(m_rect.x, m_rect.y, m_rect.w,m_rect.h,
@@ -152,7 +151,7 @@ gui::qt::qt_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& s
 					    strun.m_data);
 		width	 = qr.width();
 	}
-	return smil2::smiltext_metrics(ascent, descent, height, width, line_spacing, word_spacing);
+	return smil2::smiltext_metrics(ascent, descent, height, width, line_spacing);
 }
 
 const lib::rect&
@@ -161,7 +160,7 @@ gui::qt::qt_smiltext_renderer::get_rect() {
 }
 
 void
-gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun, const lib::rect& r, unsigned int word_spacing) {
+gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun, const lib::rect& r) {
 
 	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_render(): command=%d data=%s color=0x%x bg_color=0x%x",strun.m_command,strun.m_data.c_str()==NULL?"(null)":strun.m_data.c_str(),strun.m_color,strun.m_bg_color);
 	double alpha_media = 1.0, alpha_media_bg = 1.0, alpha_chroma = 1.0;
@@ -183,10 +182,7 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 	QPixmap* bg_pixmap = NULL;
 	QPixmap* tx_pixmap = NULL;
 	lib::rect rct(r); // rct encloses leading blank and word
-	/*AM_DBG*/ lib::logger::get_logger()->debug("qt_smiltext_render(): data=%s r=L=%d,T=%d,W=%d,H=%d space=%d", strun.m_data.c_str(),r.x,r.y,r.w,r.h,word_spacing);
-	word_spacing = 0; //KB
-	rct.x -= word_spacing;
-	rct.w += word_spacing;
+	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_render(): data=%s r=L=%d,T=%d,W=%d,H=%d", strun.m_data.c_str(),r.x,r.y,r.w,r.h);
 	int L = rct.left(),
 	    T = rct.top(),
 	    W = rct.width(),
@@ -194,7 +190,7 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 
 	if (W == 0 || H == 0)
 		return; // cannot render anything
-	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_render(): r=L=%d,T=%d,W=%d,H=%d space=%d",r.x,r.y,r.w,r.h,word_spacing);
+	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_render(): r=L=%d,T=%d,W=%d,H=%d",r.x,r.y,r.w,r.h);
 	if (m_blending) {
 		// create pixmaps for blending
 		if ( ! strun.m_bg_transparent) {
@@ -250,8 +246,7 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 			bg_paint.setPen(qt_color);
 			// Qt::AlignLeft|Qt::AlignTop
 			// Qt::AlignAuto
-			bg_paint.drawText(word_spacing,0,W-word_spacing,H,
-					  Qt::AlignAuto, strun.m_data);
+			bg_paint.drawText(0,0,W,H, Qt::AlignAuto, strun.m_data);
 			bg_paint.flush();
 			bg_paint.end();
 		}
@@ -268,11 +263,9 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 	int flags = Qt::AlignAuto;
 	tx_paint.setPen(qt_color);
 	if (m_blending)
-		tx_paint.drawText(word_spacing,0,W-word_spacing,H,
-				  flags, strun.m_data);
+	  tx_paint.drawText(0,0,W,H,flags, strun.m_data);
 	else {
-		tx_paint.drawText(L+word_spacing,T,W-word_spacing,H,
-				  flags, strun.m_data);
+		tx_paint.drawText(L,T,W,H, flags, strun.m_data);
 	}
 	tx_paint.flush();
 	tx_paint.end();

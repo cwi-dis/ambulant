@@ -754,7 +754,7 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::smiltext_change
 				smiltext_layout_word word_info(*i, stm, n_nl);
 				m_words.push_back(word_info);
 				n_nl = 0;	
-				/*AM_DBG*/ lib::logger::get_logger()->debug("smiltext_layout_engine::smiltext_changed(0x%x) data=%s, H=%d,W=%d", this, i->m_data.c_str(), stm.get_width(), stm.get_height());
+				AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::smiltext_changed(0x%x) data=%s, H=%d,W=%d", this, i->m_data.c_str(), stm.get_width(), stm.get_height());
 				break;
 			}			
 			i++;
