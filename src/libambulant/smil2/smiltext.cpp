@@ -1026,18 +1026,13 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shift
 	}
 	// layout done, render the run
 	for (word = m_words.begin(); word != m_words.end(); word++) {
-		int word_spacing = 0;
-		if (word != m_words.begin()) {
-			word_spacing = word->m_metrics.get_word_spacing();
-		}
 		word->m_bounding_box -= m_shifted_origin;
 		if (word->m_run.m_command == stc_condspace)
 			word->m_run.m_command = stc_data;
 		if (word->m_run.m_command != stc_data 
 			|| _smiltext_disjunct (word->m_bounding_box, rect))
 			continue; // nothing to de displayed
-		m_provider->render_smiltext(word->m_run, word->m_bounding_box,
-									word_spacing);
+		m_provider->render_smiltext(word->m_run, word->m_bounding_box);
 	}
 	if (m_crawling || m_scrolling) {
 		if (m_params.m_text_conceal == stc_none

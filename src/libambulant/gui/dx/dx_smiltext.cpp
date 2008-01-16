@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2008 Stichting CWI, 
+// Copyright (C) 2003-2007 Stichting CWI, 
 // Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -168,7 +168,7 @@ gui::dx::dx_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& r
 	SIZE SZ;
     HGDIOBJ old_obj = NULL;
 	HFONT font = NULL;
-	if (run.m_command == smil2::stc_data && run.m_data.length() != 0) {
+	if (run.m_data.length() != 0) {
 
 		old_obj = _dx_smiltext_set_font (run, m_hdc, &font);
 
@@ -186,24 +186,14 @@ gui::dx::dx_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& r
 			res = ::GetTextExtentPoint32(m_hdc, tp, (int)tp.length(), &SZ);
 			if (res == 0)
 				win_report_last_error("GetTextExtentPoint32()");
-		}
-		if (res) {
-			width = SZ.cx;
-			char blank[2];
-			blank[0] = ' ';
-			blank[1] = '\0';
-			lib::textptr tbp(blank, 1);
-			res = ::GetTextExtentPoint32(m_hdc, tbp, (int)tbp.length(), &SZ);
-			if (res == 0)
-				win_report_last_error("GetTextExtentPoint32()");
-			else word_spacing = SZ.cx;
+			else width = SZ.cx;
 		}
 	}
 	if (font)
 		::DeleteObject(font);
 	if (old_obj)
 		::SelectObject(m_hdc, old_obj);
-	return smil2::smiltext_metrics(ascent, descent, height, width, line_spacing, word_spacing);
+	return smil2::smiltext_metrics(ascent, descent, height, width, line_spacing);
 }
 
 const lib::rect&
@@ -225,7 +215,7 @@ gui::dx::dx_smiltext_renderer::get_rect() {
 	m_region_dds to the viewport area (screen).
 */
 void
-gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, const lib::rect& r, unsigned int word_spacing) {
+gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, const lib::rect& r) {
 	if (run.m_command != smil2::stc_data)
 		return;
 	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_render(): command=%d data=%s color=0x%x",run.m_command,run.m_data.c_str()==NULL?"(null)":run.m_data.c_str(),run.m_color);
@@ -261,9 +251,6 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 	ck.dwColorSpaceHighValue = ddTranspColorWhite;
 	bool blending = false;
 	lib::rect rr(r);
-	rr.x -= word_spacing;
-	rr.w += word_spacing;
-
 	if ( ! (alpha_media == 1.0 && alpha_media_bg == 1.0 && alpha_chroma == 1.0) ) {
 		// prepare for blending
 		if ( ! run.m_bg_transparent) {
@@ -369,17 +356,6 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 	dstRC.right  = rr.right();
 	dstRC.bottom = rr.bottom();
 	UINT uFormat = DT_NOPREFIX | DT_LEFT;
-
-	if (word_spacing > 0) {
-		lib::textptr bl(" ", 1);
-		hr = ::DrawText(hdc, bl, (int)bl.length(), &dstRC, uFormat);
-		if (SUCCEEDED(hr) && textbg_hdc)
-			hr = ::DrawText(textbg_hdc, bl, (int)bl.length(), &dstRC, uFormat);
-		if(FAILED(hr))
-			win_report_last_error("DrawText(blank)");
-	}
-	dstRC.left += word_spacing;
-
 	hr = ::DrawText(hdc, tp, (int)tp.length(), &dstRC, uFormat);
 	if (SUCCEEDED(hr) && textbg_hdc)
 		hr = ::DrawText(textbg_hdc, tp, (int)tp.length(), &dstRC, uFormat);

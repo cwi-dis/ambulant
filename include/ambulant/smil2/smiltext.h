@@ -273,13 +273,12 @@ class smiltext_engine {
 class smiltext_metrics {
   public:
 	smiltext_metrics(unsigned int ascent, unsigned int descent, unsigned int height,
-			 unsigned int width, unsigned int line_spacing, unsigned int word_spacing)
+			 unsigned int width, unsigned int line_spacing)
 	  :	m_ascent(ascent), 
 		m_descent(descent), 
 	  	m_height(height),
 		m_width(width),
-		m_line_spacing(line_spacing),
-		m_word_spacing(word_spacing) {}
+		m_line_spacing(line_spacing) {}
 
 	~smiltext_metrics() {}
 
@@ -288,7 +287,6 @@ class smiltext_metrics {
 	unsigned int get_height()	{ return m_height; };
 	unsigned int get_width()	{ return m_width; };
 	unsigned int get_line_spacing() { return m_line_spacing; };
-	unsigned int get_word_spacing() { return m_word_spacing; };
 
   private:
 	unsigned int m_ascent;
@@ -296,7 +294,6 @@ class smiltext_metrics {
 	unsigned int m_height;	
 	unsigned int m_width;	
 	unsigned int m_line_spacing;	
-	unsigned int m_word_spacing;	
 };
 /// Interface to be inherited by a renderer that wants to use smiltext_layout_engine
 class smiltext_layout_provider {
@@ -307,7 +304,7 @@ class smiltext_layout_provider {
 
 	/// Render the smiltext_run in the rectangle specified.
 	/// 'word spacing' is the amount of whitespace pixels in front of the word. 
-	virtual void render_smiltext(const smiltext_run& str, const lib::rect& r, unsigned int word_spacing) = 0;
+	virtual void render_smiltext(const smiltext_run& str, const lib::rect& r) = 0;
 	virtual void smiltext_stopped() = 0;
 	virtual const lib::rect& get_rect() = 0;
 };
@@ -350,7 +347,6 @@ class smiltext_layout_engine {
 	void _get_initial_values(lib::rect rct, smiltext_layout_word* stlw_p, int* x_start_p, int* y_start_p, int* x_dir_p, int* y_dir_p);
 	bool _smiltext_disjunct(const lib::rect& r1, const lib::rect& r2);
 	bool _smiltext_fits(const lib::rect& r1, const lib::rect& r2);
-//JNK	void _smiltext_render(const smil2::smiltext_run run, const lib::rect& r, const lib::point& p);
 	unsigned int _compute_rate(lib::size size, lib::rect r, unsigned int dur);
 
 	lib::critical_section m_lock;
