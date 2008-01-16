@@ -1,3 +1,26 @@
+2008-01-15 18:17  keesblom
+
+	* Tried in vain to fix the problem with black blanks just before a
+	  <span textBackgroundColor="black">, only partly succesful:
+	  Instead of a black space before the span, there is now one just
+	  after it.  Will finish later.
+
+2008-01-15 15:31  jackjansen
+
+	* data: url text is not nul-terminated. Copy it.
+
+2008-01-15 13:31  jackjansen
+
+	* Updated for SYMM group distribution.
+
+2008-01-15 11:55  jackjansen
+
+	* Added 2008 to the license text.
+
+2008-01-15 11:52  jackjansen
+
+	* Added 2008 to the license text.
+
 2008-01-14 16:36  jackjansen
 
 	* Applied scrolling fixes to machine-independet code too.  Removed
