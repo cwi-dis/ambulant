@@ -723,6 +723,11 @@ ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 		}
 		
 		m_con->codec_type = CODEC_TYPE_AUDIO;
+//Bo 2008-1-17 It seems that m_fmt should be assigned with m_con->sample_rate, m_con->channels, and 16
+#if 1
+		m_fmt = audio_format(m_con->sample_rate, m_con->channels, 16);
+#endif
+
 #ifdef WITH_RTSP_WAV
 		m_fmt = audio_format(44100, 2, 16);
 #endif
