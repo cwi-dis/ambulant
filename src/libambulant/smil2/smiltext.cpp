@@ -163,11 +163,16 @@ smiltext_engine::_split_into_words(lib::xml_string data, smil2::smiltext_xml_spa
 				continue;
 			}
 			smiltext_run run = m_run_stack.top();
-			smiltext_run pre_space = run, post_space = run;
-			pre_space.m_command = post_space.m_command = stc_condspace;
+			smiltext_run pre_space = m_run_stack.top();
+			smiltext_run post_space = m_run_stack.top();
+			pre_space.m_command = stc_condspace;
+			post_space.m_command = stc_condspace;
+			pre_space.m_data = " ";
+			post_space.m_data = " ";
 			run.m_command = stc_data;
 			run.m_data = data.substr(first_char, first_trailing_space-first_char);
 			AM_DBG lib::logger::get_logger()->debug("smiltext_engine::_split_into_words(): bg_col=0x%x, color=0x%x, data=%s", run.m_bg_color, run.m_color, run.m_data.c_str());
+			// add a conditional space before and after the word
 			_insert_run_at_end(pre_space);
 			_insert_run_at_end(run);
 			_insert_run_at_end(post_space);
@@ -190,9 +195,11 @@ smiltext_engine::_update() {
 
 		if (!(*m_tree_iterator).first) {
 			// Pop the stack, if needed
+			bool stack_popped = false;
 			const lib::xml_string &tag = item->get_local_name();
 			if ( tag == "span") {
 				m_run_stack.pop();
+				stack_popped = true;
 			} else if (tag == "div" || tag == "p") {
 				smiltext_run run = m_run_stack.top();
 				// insert conditional line break
@@ -201,6 +208,18 @@ smiltext_engine::_update() {
 				_insert_run_at_end(run);
 
 				m_run_stack.pop();
+				stack_popped = true;
+			}
+			if (stack_popped && m_word_mode) {
+				smil2::smiltext_runs::reverse_iterator rlast = m_runs.rbegin();
+				if ((*rlast).m_command == stc_condspace) {
+				  /* KB From: http://ubuntuforums.org/archive/index.php/t-330552.html
+					m_runs.erase(last.base*()); // dumps core
+				  */
+					smil2::smiltext_runs::iterator last = rlast.base();
+					last--;
+					m_runs.erase(last);
+				}
 			}
 			continue;
 		}
@@ -438,7 +457,7 @@ smiltext_engine::_get_formatting(smiltext_run& dst, const lib::node *src)
 				}
 			}
 			if (num_size) {
-				dst.m_font_size = num_size;
+			  dst.m_font_size = (int)num_size;
 			} else {
 				lib::logger::get_logger()->trace("%s: textFontSize=\"%s\": incorrect size", src->get_sig().c_str(), font_size);
 			}
@@ -725,11 +744,8 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::smiltext_change
 					// the latter only when appearing immediately before a newline,
 				 	// or at the end of a run.
 					// create a space word, copying attributes from previous word
-				    m_space = m_words.back().m_run;
-					m_space.m_command = stc_condspace;
-					m_space.m_data = " ";
-					smiltext_metrics stm =
-						m_provider->get_smiltext_metrics (m_space);
+					m_space = *i;
+					smiltext_metrics stm = m_provider->get_smiltext_metrics (m_space);
 					smiltext_layout_word word_info(m_space, stm, n_nl);
 					m_words.push_back(word_info);
 					m_needs_conditional_newline = true;
