@@ -1,3 +1,29 @@
+2008-01-16 22:16  jackjansen
+
+	* Julien discovered that "values" animation wasn't implemented for
+	  panZoom. Fixed.
+
+2008-01-16 17:45  keesblom
+
+	* Chnaged the smiltext_layout_providerr to the new space handling
+	  strategy involving explicit spaces as text data added by the
+	  smiltext_layout_engine
+
+2008-01-16 17:18  keesblom
+
+	* Chnaged the smiltext_layout_providerr to the new space handling
+	  strategy involving explicit spaces as text data added by the
+	  smiltext_layout_engine
+
+2008-01-16 14:25  keesblom
+
+	* Fixed the bug in <smiltext> where an additional black space was
+	  produced immediately after a <span textBackgroundColor="black">.
+	  Initially, now conditional spaces are placed between words.
+	  Later, they are either converted into data or ignored, the latter
+	  only when appearing immediately before a newline, or at the end
+	  of a run.
+
 2008-01-15 18:17  keesblom
 
 	* Tried in vain to fix the problem with black blanks just before a
