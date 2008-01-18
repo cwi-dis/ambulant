@@ -63,6 +63,29 @@ toolkit_cocoa_libraries =
 platlibs =
 endif
 
+if WITH_CG
+toolkit_cg_libraries = libambulant_cg.la
+# XXX Should LIBINTL depend on USE_NLS?
+platlibs = $(LIBINTL) -framework CoreGraphics -framework CoreFoundation
+libambulant_cg_la_SOURCES = \
+	gui/cg/atsui_text.m \
+	gui/cg/cg_fill.m \
+	gui/cg/cg_gui.m \
+	gui/cg/cg_image.m \
+	gui/cg/cg_renderer.m \
+	gui/cg/cg_text.m \
+	gui/cg/cg_dsvideo.m
+#	gui/cg/cg_html.m
+#	gui/cg/cg_ink.m
+#	gui/cg/cg_smiltext.m
+#	gui/cg/cg_transition.m
+#	gui/cg/cg_audio.m
+#	gui/cg/cg_video.m
+else
+toolkit_cg_libraries =
+platlibs =
+endif
+
 if WITH_GTK
 toolkit_gtk_libraries = libambulant_gtk.la
 gtkincludes =$(GTK_CFLAGS)
@@ -207,6 +230,7 @@ INCLUDES = \
 lib_LTLIBRARIES = \
 	libambulant.la \
 	$(toolkit_cocoa_libraries) \
+	$(toolkit_cg_libraries) \
 	$(toolkit_qt_libraries) \
 	$(toolkit_gstreamer_libraries) \
 	$(toolkit_gtk_libraries) \
@@ -311,6 +335,7 @@ EXTRA_DIST= \
 	gui/SDL \
 	gui/arts \
 	gui/cocoa \
+	gui/cg \
 	gui/dg \
 	gui/dx \
 	gui/qt \

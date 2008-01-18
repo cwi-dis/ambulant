@@ -61,6 +61,7 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	include/ambulant/gui/dx/Makefile
 	include/ambulant/gui/none/Makefile
 	include/ambulant/gui/cocoa/Makefile
+	include/ambulant/gui/cg/Makefile
 	include/ambulant/gui/qt/Makefile
 	include/ambulant/gui/gtk/Makefile
 	include/ambulant/gui/arts/Makefile
@@ -427,6 +428,44 @@ AC_ARG_WITH(cocoa,
      ])
 AM_CONDITIONAL(WITH_COCOA, test x$cocoa = xtrue)
 AC_MSG_RESULT($cocoa)
+
+#
+AC_MSG_CHECKING(for --with-cg)
+AC_ARG_WITH(cg,
+     [  --with-cg		Turn on CoreGraphics support],
+     [case "${withval}" in
+       yes) cg=true ;;
+       no)  cg=false ;;
+       *) AC_MSG_ERROR(bad value ${withval} for --with-cg) ;;
+     esac],[
+       cg=false
+     ])
+if test x$cg = xtrue; then
+    AC_DEFINE(WITH_CG, 1, [Define to enable CoreGraphics rendering])
+fi
+AM_CONDITIONAL(WITH_CG, test x$cg = xtrue)
+AC_MSG_RESULT($cg)
+
+AC_MSG_CHECKING(for --with-uikit)
+AC_ARG_WITH(uikit,
+     [  --with-uikit		Turn on UIKit support],
+     [case "${withval}" in
+       yes) uikit=true ;;
+       no)  uikit=false ;;
+       *) AC_MSG_ERROR(bad value ${withval} for --with-uikit) ;;
+     esac],[
+       uikit=false
+     ])
+if test x$uikit = xtrue; then
+    if test ! x$cg = xtrue; then
+        AC_MSG_ERROR(--with-uikit requires --with-cg)
+    fi
+    AC_DEFINE(WITH_UIKIT, 1, [Define to enable UIKit main program])
+    gui_toolkit_found=true
+fi
+AM_CONDITIONAL(WITH_UIKIT, test x$uikit = xtrue)
+AC_MSG_RESULT($uikit)
+
 
 # Calling _AM_DEPENDENCIES here is a workaround for a bug
 # in automake: ObjC support is incomplete. And manually
@@ -1194,6 +1233,7 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
 	Build Qtopia frontend:		${qtopia}
 	Build Qt frontend:              ${test_qt}
 	Build Cocoa frontend:		${cocoa}
+	Build UIKit frontend:       ${uikit}
 	Build with SDL:			${test_sdl}
 	Build with GTK:			${test_gtk}
 	Build with gstreamer:		${test_gstreamer}

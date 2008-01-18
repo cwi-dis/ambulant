@@ -29,7 +29,11 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/node.h"
+#ifdef WITH_CG
+#include "ambulant/gui/cg/cg_gui.h"
+#else
 #include "ambulant/gui/cocoa/cocoa_gui.h"
+#endif
 #ifdef WITH_SDL
 #include "ambulant/gui/SDL/sdl_factory.h"
 #endif
@@ -99,7 +103,11 @@ mainloop::init_playable_factory()
 	common::global_playable_factory *pf = common::get_global_playable_factory();
 	set_playable_factory(pf);
 #ifndef NONE_PLAYER
+#ifdef WITH_CG
+	pf->add_factory(gui::cg::create_cg_renderer_factory(this));
+#else
 	pf->add_factory(gui::cocoa::create_cocoa_renderer_factory(this));
+#endif
 #ifdef WITH_SDL
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add factory for SDL");
 	pf->add_factory(gui::sdl::create_sdl_playable_factory(this));      
@@ -114,7 +122,11 @@ mainloop::init_window_factory()
 	// Replace the real window factory with a none_window_factory instance.
 	set_window_factory(gui::none::create_none_window_factory());
 #else
+#ifdef WITH_CG
+	set_window_factory(gui::cg::create_cg_window_factory(m_view));
+#else
 	set_window_factory(gui::cocoa::create_cocoa_window_factory(m_view));
+#endif
 #endif // NONE_PLAYER
 }
 
@@ -204,7 +216,12 @@ mainloop::restart(bool reparse)
 common::gui_screen *
 mainloop::get_gui_screen()
 {
+
+#ifdef WITH_CG
+	if (!m_gui_screen) m_gui_screen = new gui::cg::cg_gui_screen(m_view);
+#else
 	if (!m_gui_screen) m_gui_screen = new gui::cocoa::cocoa_gui_screen(m_view);
+#endif
 	return m_gui_screen;
 }
 

@@ -144,7 +144,11 @@ initialize_logger()
     textdomain (PACKAGE);
 #endif
 	ambulant::lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
+#ifdef WITH_CG
+	ambulant::lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Macintosh/CoreGraphics"), __DATE__);
+#else
 	ambulant::lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Macintosh/Cocoa"), __DATE__);
+#endif
 #if ENABLE_NLS
 	ambulant::lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english; user requested %s)"), locale);
 #endif
