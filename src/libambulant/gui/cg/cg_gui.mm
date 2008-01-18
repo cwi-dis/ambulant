@@ -161,12 +161,12 @@ cg_renderer_factory::new_playable(
 		} else
 #endif
 		{
-#if 1 // def WITH_UIKIT
-			rv = new cg_text_renderer(context, cookie, node, evp, m_factory);
-			AM_DBG logger::get_logger()->debug("cg_renderer_factory: node 0x%x: returning cg_text_renderer 0x%x", (void *)node, (void *)rv);
-#else
+#ifdef WITH_ATSUI
 			rv = new atsui_text_renderer(context, cookie, node, evp, m_factory);
 			AM_DBG logger::get_logger()->debug("cg_renderer_factory: node 0x%x: returning atsui_text_renderer 0x%x", (void *)node, (void *)rv);
+#else
+			rv = new cg_text_renderer(context, cookie, node, evp, m_factory);
+			AM_DBG logger::get_logger()->debug("cg_renderer_factory: node 0x%x: returning cg_text_renderer 0x%x", (void *)node, (void *)rv);
 #endif
 
 		}
@@ -428,8 +428,8 @@ bad:
 
 - (void) asyncRedrawForAmbulantRect: (NSRectHolder *)arect
 {
-#if 1
-	// Something goes wrong with flipping coordinate systems. For now, redraw everything always.
+#ifdef WITH_UIKIT
+	// Something goes wrong with flipping coordinate systems on iPod. For now, redraw everything always.
 	CGRect my_rect = [self bounds];
 #else
 	CGRect my_rect = [arect rect];
@@ -615,13 +615,14 @@ bad:
 #endif
 }
 
+#ifdef WITH_UIKIT
 - (void)tappedWithPoint: (CGPoint) where
 {
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
 	if (ambulant_window) ambulant_window->user_event(amwhere);
 }
+#else
 
-#if NOT_YET_UIKIT
 - (void)mouseDown: (NSEvent *)theEvent
 {
 	NSPoint where = [theEvent locationInWindow];
@@ -630,6 +631,9 @@ bad:
 		AM_DBG NSLog(@"0x%x: mouseDown outside our frame", (void*)self);
 		return;
 	}
+#ifdef USE_COCOA_BOTLEFT
+	where.y = [self bounds].size.height - where.y;
+#endif
 	AM_DBG NSLog(@"0x%x: mouseDown at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
 	if (ambulant_window) ambulant_window->user_event(amwhere);
@@ -643,6 +647,9 @@ bad:
 		AM_DBG NSLog(@"mouseMoved outside our frame");
 		return;
 	}
+#ifdef USE_COCOA_BOTLEFT
+	where.y = [self bounds].size.height - where.y;
+#endif
 	AM_DBG NSLog(@"0x%x: mouseMoved at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
 	[[NSApplication sharedApplication] sendAction: SEL("resetMouse:") to: nil from: self];
@@ -660,6 +667,9 @@ bad:
 		AM_DBG NSLog(@"mouseMoved outside our frame");
 		return;
 	}
+#ifdef USE_COCOA_BOTLEFT
+	where.y = [self bounds].size.height - where.y;
+#endif
 	AM_DBG NSLog(@"0x%x: pseudoMouseMove at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
 	[[NSApplication sharedApplication] sendAction: SEL("resetMouse:") to: nil from: self];

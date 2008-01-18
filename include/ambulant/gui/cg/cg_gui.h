@@ -187,8 +187,9 @@ AMBULANTAPI common::playable_factory *create_cg_renderer_factory(common::factori
 - (void) asyncRedrawForAmbulantRect: (NSRectHolder *)arect;
 - (void) syncDisplayIfNeeded: (id) dummy;
 
+#ifdef WITH_UIKIT
 - (void) tappedWithPoint: (CGPoint)where;
-#if NOT_YET_UIKIT
+#else
 - (void)mouseDown: (NSEvent *)theEvent;
 - (void)mouseMoved: (NSEvent *)theEvent;
 - (void)pseudoMouseMove: (id)dummy;
