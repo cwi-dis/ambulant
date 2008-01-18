@@ -1,3 +1,13 @@
+2008-01-17 22:19  bogao
+
+	* Solved problem with rendering audio (aac) included in a video
+	  (h263) mp4 streamed by QuickTime Streaming Server.
+
+2008-01-17 16:24  keesblom
+
+	* Solved problem with extra black space after a <span
+	  textBackgroundColor="black:>
+
 2008-01-16 22:16  jackjansen
 
 	* Julien discovered that "values" animation wasn't implemented for
