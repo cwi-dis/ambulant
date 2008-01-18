@@ -1035,7 +1035,7 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shift
 			// now we have all information to compute the rate
 			int dur = m_engine.get_dur();
 			lib::rect smiltext_rect = first_word->m_bounding_box | last_word->m_bounding_box;
-			unsigned int rate = _compute_rate(smiltext_rect.size(), rect, dur);
+			unsigned int rate = _compute_rate(m_words.begin()->m_run, smiltext_rect.size(), rect, dur);
 			m_engine.set_rate(rate);
 			m_params = m_engine.get_params();
 		}
@@ -1078,7 +1078,7 @@ smiltext_layout_engine::_smiltext_disjunct(const lib::rect& r1, const lib::rect&
 }
 
 unsigned int
-smiltext_layout_engine::_compute_rate(lib::size size, lib::rect r,  unsigned int dur) {
+smiltext_layout_engine::_compute_rate(const smiltext_run& run, lib::size size, lib::rect r,  unsigned int dur) {
   /* First find the distance to travel during scroll for various values 
    * for textConceal and textPlace (w=window height, t=text height)
 
@@ -1094,13 +1094,69 @@ smiltext_layout_engine::_compute_rate(lib::size size, lib::rect r,  unsigned int
   |   end       |    t     |    t    |  w+t    |  w+t  |
   + ---------------------------------------------------+
   */
-  unsigned int dst = 0, win = 0, txt = 0;
+	unsigned int dst = 0, win = 0, txt = 0;
+	smil2::smiltext_align align = run.m_align;
 	switch (m_params.m_mode) {
+
 	case smil2::stm_crawl:
 		win = r.w;
 		txt = size.w;
   //TBD crawl
+		win = r.w;
+		txt = size.w; 
+		// Convert any sta_left/sta_right values into sta_start/sta_end
+		// as defined by textWritingMode
+		switch (run.m_align) {
+		default:
+			break;
+		case smil2::sta_left:
+			//TBD adapt for textWritingMode		  
+			align = smil2::sta_start;
+			break;
+		case smil2::sta_right:
+			//TBD adapt for textWritingMode		  
+			align = smil2::sta_end;
+			break;
+		}
+		switch (m_params.m_text_conceal) {
+		default:
+		case smil2::stc_none:
+			switch (align) {
+			default:
+			case smil2::sta_start:
+				dst = txt > win ? txt - win : 0;
+				break;
+			case smil2::sta_end:
+				dst = txt;
+				break;
+			case smil2::sta_center:
+				dst = txt > win/2 ? txt - win/2 : 0; 
+				break;
+			}
+			break;
+		case smil2::stc_initial: // ignore textAlign
+			dst = txt;
+			break;
+		case smil2::stc_final:
+			switch (align) {
+			default:
+			case smil2::sta_start:
+				dst = txt;
+				break;
+			case smil2::sta_end:
+				dst = win+txt;
+				break;
+			case smil2::sta_center:
+				dst = win/2+txt;
+				break;
+			}
+			break;
+		case smil2::stc_both: // ignore textAlign
+			dst = win+txt;
+			break;
+		}
 		break;
+
 	case smil2::stm_scroll:
 		win = r.h;
 		txt = size.h; 
@@ -1142,6 +1198,7 @@ smiltext_layout_engine::_compute_rate(lib::size size, lib::rect r,  unsigned int
 			break;
 		}
 		break;
+
 	default:
 		break;
 	}

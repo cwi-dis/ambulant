@@ -347,7 +347,7 @@ class smiltext_layout_engine {
 	void _get_initial_values(lib::rect rct, smiltext_layout_word* stlw_p, int* x_start_p, int* y_start_p, int* x_dir_p, int* y_dir_p);
 	bool _smiltext_disjunct(const lib::rect& r1, const lib::rect& r2);
 	bool _smiltext_fits(const lib::rect& r1, const lib::rect& r2);
-	unsigned int _compute_rate(lib::size size, lib::rect r, unsigned int dur);
+	unsigned int _compute_rate(const smiltext_run& run, lib::size size, lib::rect r, unsigned int dur);
 
 	lib::critical_section m_lock;
 	smiltext_engine m_engine;
