@@ -1,3 +1,16 @@
+2008-01-18 23:43  jackjansen
+
+	* Enabled mouse in desktop-CoreGraphics player, and rationalized
+	  some CoreGraphics/UIKit/Cocoa ifdefs.
+
+2008-01-18 16:42  keesblom
+
+	* Implemented textRate="auto" for textMode="crawl"
+
+2008-01-18 10:29  jackjansen
+
+	* Merging exp-jack-uikit branch.
+
 2008-01-17 22:19  bogao
 
 	* Solved problem with rendering audio (aac) included in a video
