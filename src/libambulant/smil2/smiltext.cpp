@@ -1021,10 +1021,10 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shift
 			word->m_bounding_box.y = 
 				y_start + max_ascent -
 				word->m_metrics.get_ascent();
+			last_word_seen = word;
 		}
 		prev_max_ascent = max_ascent;
 		prev_max_descent = max_descent;
-		last_word_seen = word;
 	}
 	// ignore previous space at end of run
 	if (last_word_seen->m_run.m_command == stc_condspace)
