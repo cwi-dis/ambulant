@@ -36,4 +36,5 @@ more-or-less worked for me:
    you are done. Otherwise you should manually inspect things like .rc files.
    Grep for "LGPL" or some such keyword.
    
+10. The file "COPYING" in the top directory may need to be edited manually.
 
