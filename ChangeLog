@@ -1,3 +1,15 @@
+2008-01-20 23:42  jackjansen
+
+	* The file COPYING is missed by the automatic license update
+	  procedure. Fixed, and noted this fact in the readme.
+
+2008-01-20 23:29  jackjansen
+
+	* smilText on Windows always crashed in a VC8 build. This seems to
+	  be due to VC8 crashing on the dereference of an iterator::end(),
+	  and through some roundabout way this happens with last_word_seen.
+	  Moved a bit of the logic around, and it seems to work.
+
 2008-01-18 23:43  jackjansen
 
 	* Enabled mouse in desktop-CoreGraphics player, and rationalized
