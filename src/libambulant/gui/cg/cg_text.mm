@@ -119,14 +119,15 @@ cg_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 	AM_DBG lib::logger::get_logger()->debug("cg_text: select font %s, size %f", m_font_name, m_font_size);
 	CGContextSelectFont(ctx, m_font_name, m_font_size, kCGEncodingMacRoman);
 	// Calculate sizes
+	float lineheight = m_font_size;
+	// XXXX These calculations assume COCOA_USE_BOTLEFT
 	float x = CGRectGetMinX(cg_dstrect);
-	float y = CGRectGetMaxY(cg_dstrect);
+	float y = CGRectGetMaxY(cg_dstrect) - lineheight;
 	float w = CGRectGetWidth(cg_dstrect); 
 	int lbegin, lend;
 	const char *cdata = (char *)m_data;
 	lbegin = 0;
 	lend = 0;
-	float lineheight = m_font_size;
 	while(_calc_fit(ctx, w, lbegin, lend) ) {
 		AM_DBG lib::logger::get_logger()->debug("cg_text: draw line at (%f, %f)", x, y);
 		CGContextSetTextPosition(ctx, x, y);
@@ -146,17 +147,17 @@ cg_text_renderer::_calc_fit(CGContextRef ctx, float width, int& lbegin, int& len
 	const char *cdata = (const char *)m_data;
 	// Find beginning point
 	if (lbegin > 0)
-		while (isspace(cdata[lbegin])) lbegin++;
-	if (cdata[lbegin] == '\0') return false;
+		while (lbegin < m_data_size && isspace(cdata[lbegin])) lbegin++;
+	if (cdata[lbegin] == '\0' || lbegin >= m_data_size) return false;
 	lend = lbegin+1;
 	int lendcand = lend;
 	do {
-		while (cdata[lendcand] != '\0' && !isspace(cdata[lendcand])) lendcand++;
+		while (cdata[lendcand] != '\0' && lendcand < m_data_size && !isspace(cdata[lendcand])) lendcand++;
 		if (!_fits(ctx, width, cdata+lbegin, lendcand-lbegin))
 			return true;
 		lend = lendcand;
-		while (isspace(cdata[lendcand])) lendcand++;
-	} while(cdata[lendcand] != '\0');
+		while (isspace(cdata[lendcand]) && lendcand < m_data_size) lendcand++;
+	} while(cdata[lendcand] != '\0' && lendcand < m_data_size);
 	return true;
 }
 
