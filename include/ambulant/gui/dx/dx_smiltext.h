@@ -83,7 +83,7 @@ class dx_smiltext_renderer :
 	void render_smiltext(const smil2::smiltext_run& run, const lib::rect& r);
 	void smiltext_stopped();
 	// Callbacks from event procesor
-	void user_event(const lib::point& pt, int what);
+	bool user_event(const lib::point& pt, int what);
 	void redraw(const lib::rect &dirty, common::gui_window *window);
 	void set_surface(common::surface *dest);
   private:

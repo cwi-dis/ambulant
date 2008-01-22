@@ -547,8 +547,9 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_set_font(const smil2::smiltext_run r
 	return ::SelectObject(hdc, *hfontp);
 }
 
-void
+bool
 gui::dx::dx_smiltext_renderer::user_event(const lib::point& pt, int what) {
+	if (!user_event_sensitive(pt)) return false;
 	m_lock.enter();
 	if(what == common::user_event_click)
 		m_context->clicked(m_cookie);

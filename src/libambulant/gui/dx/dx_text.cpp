@@ -138,7 +138,7 @@ void gui::dx::dx_text_renderer::stop() {
 }
 
 bool gui::dx::dx_text_renderer::user_event(const lib::point& pt, int what) {
-	if (!user_event_sensitive(where)) return false;
+	if (!user_event_sensitive(pt)) return false;
 	if(what == common::user_event_click)
 		m_context->clicked(m_cookie);
 	else if(what == common::user_event_mouse_over) {
