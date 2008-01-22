@@ -1,3 +1,18 @@
+2008-01-22 03:02  jackjansen
+
+	* Implemented z-ordering of clicks. Up to now clicks always fired
+	  on all nodes being displayed on top of each other.  Also
+	  partially implemented sensitivity attribute.
+
+2008-01-22 03:01  jackjansen
+
+	* Better reporting of statistics.
+
+2008-01-22 03:00  jackjansen
+
+	* Fixed error that text was shown above top-of-region.	Fixed error
+	  with too much bytes begin dislayed for data: urls.
+
 2008-01-20 23:42  jackjansen
 
 	* The file COPYING is missed by the automatic license update
