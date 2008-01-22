@@ -188,7 +188,7 @@ ffmpeg_video_decoder_datasource::~ffmpeg_video_decoder_datasource()
 {
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::~ffmpeg_video_decoder_datasource(0x%x)", (void*)this);
 	stop();
-	if (m_dropped_count) lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropped %d of %d frames", m_dropped_count, m_frame_count);
+	/*if (m_dropped_count)*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropped %d of %d frames", m_dropped_count, m_frame_count);
 }
 
 void
@@ -542,11 +542,14 @@ ffmpeg_video_decoder_datasource::data_avail()
 			if (pts < m_old_frame.first) {
 				// A frame that came after this frame has already been consumed.
 				// We should drop this frame.
-				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropping frame %d: too late, earlier frame already displayed", m_frame_count);
+				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropping frame %d (ts=%lld): too late, earlier frame (ts=%lld) already displayed", m_frame_count, pts, m_old_frame.first);
 				drop_this_frame = true;
 			}
 			m_elapsed = pts;
-			if (drop_this_frame) continue;
+			if (drop_this_frame) {
+				m_dropped_count++;
+				continue;
+			}
 			
 			// Next step: deocde the frame to the image format we want.
 			w = m_fmt.width;
@@ -682,13 +685,16 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 #if 1
 	// XXX Jack thinks it may be better not to do any framedropping here, and in stead do it only in the
 	// renderer (where we can gather statistics)
-	bool firstdrop = true;
+	int curdropcount = 0;
 	while ( m_frames.size() && m_old_frame.first < now - (2*frame_duration)) { //HACK:Due to jitter, the previous condition of dropping frames older than one frameduration was too strict!
 		//A better method to tolerate jitter required ??? This hack may still fail for high fps videos
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: discarding m_old_frame timestamp=%lld, now=%lld, data ptr = 0x%x", m_old_frame.first,now, m_old_frame.second);
 		_pop_top_frame();
-		if (!firstdrop) m_dropped_count++;
-		firstdrop = false;
+		curdropcount++;
+	}
+	if (curdropcount) {
+		m_dropped_count += curdropcount;
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: discarded %d old frames at %lld", curdropcount,  now);
 	}
 #endif
 
