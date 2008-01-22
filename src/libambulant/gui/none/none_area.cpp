@@ -80,16 +80,16 @@ none_area_renderer::stop() {
 	m_context->stopped(m_cookie);
 }
 
-void
+bool
 none_area_renderer::user_event(const lib::point& pt, int what) {
-	AM_DBG lib::logger::get_logger()->debug("none_area_renderer(0x%x)::user_event((%d,%d), %d)", (void*)this, pt.x, pt.y, what);
+	AM_DBG lib::logger::get_logger()->debug("%s: renderer_playable::user_event((%d,%d), %d) -> %d", m_node->get_sig().c_str(), pt.x, pt.y, what, m_cookie);
 	if(!m_rgn) {
 		AM_DBG lib::logger::get_logger()->debug("none_area_renderer: no region");
-		return;
+		return false;
 	}
 	if(!m_rgn->contains(pt)) {
 		AM_DBG lib::logger::get_logger()->debug("none_area_renderer: not in our region");
-		return;
+		return false;
 	}
 	if(what == common::user_event_click) {
 		AM_DBG lib::logger::get_logger()->debug("none_area_renderer(0x%x)::user_event((%d,%d), %d): clicked", (void*)this, pt.x, pt.y, what);
@@ -98,4 +98,5 @@ none_area_renderer::user_event(const lib::point& pt, int what) {
 		AM_DBG lib::logger::get_logger()->debug("none_area_renderer(0x%x)::user_event((%d,%d), %d): pointed", (void*)this, pt.x, pt.y, what);
 		m_context->pointed(m_cookie);
 	}
+	return false;
 }

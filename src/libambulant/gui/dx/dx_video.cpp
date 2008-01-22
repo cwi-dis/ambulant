@@ -168,12 +168,14 @@ void gui::dx::dx_video_renderer::resume() {
 	m_dest->need_redraw();
 }
 
-void gui::dx::dx_video_renderer::user_event(const lib::point& pt, int what) {
+bool gui::dx::dx_video_renderer::user_event(const lib::point& pt, int what) {
+	if (!user_event_sensitive(where)) return false;
 	if(what == common::user_event_click)
 		m_context->clicked(m_cookie);
 	else if(what == common::user_event_mouse_over) {
 		m_context->pointed(m_cookie);
 	}
+	return true;
 }
 
 void gui::dx::dx_video_renderer::redraw(const lib::rect &dirty, common::gui_window *window) {

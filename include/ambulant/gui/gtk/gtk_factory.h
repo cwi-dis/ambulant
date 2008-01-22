@@ -133,7 +133,7 @@ class ambulant_gtk_window : public common::gui_window {
 	
 	// gui_events API:
 	void mouse_region_changed();
-	void user_event(const lib::point &where, int what=0);
+	bool user_event(const lib::point &where, int what=0);
 	void need_events(bool want);
 
 	// semi-private helpers:

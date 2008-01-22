@@ -52,7 +52,7 @@ class dg_img_renderer : public dg_renderer_playable {
 	void start(double t);
 	void stop();
 	void seek(double t) {}
-	void user_event(const lib::point& pt, int what);
+	bool user_event(const lib::point& pt, int what);
 	void redraw(const lib::rect &dirty, common::gui_window *window);
  private:
 	image_renderer *m_image;

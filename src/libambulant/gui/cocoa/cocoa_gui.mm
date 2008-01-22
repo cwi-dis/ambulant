@@ -108,11 +108,11 @@ cocoa_window::redraw(const rect &r)
 	m_handler->redraw(r, this);
 }
 
-void
+bool
 cocoa_window::user_event(const point &where, int what)
 {
 	AM_DBG logger::get_logger()->debug("cocoa_window::user_event(0x%x, (%d, %d), %d)", (void *)this, where.x, where.y, what);
-	m_handler->user_event(where, what);
+	return m_handler->user_event(where, what);
 }
 
 void

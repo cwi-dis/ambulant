@@ -95,7 +95,8 @@ class AMBULANTAPI renderer_playable : public playable_imp, public renderer {
 	void set_surface(common::surface *dest) { m_dest = dest;}
 	void set_alignment(const common::alignment *align) { m_alignment = align; }
 	surface *get_surface() { return m_dest;}
-	virtual void user_event(const lib::point &where, int what = 0);	
+	virtual bool user_event(const lib::point &where, int what = 0);
+	virtual bool user_event_sensitive(const lib::point &where);
 	renderer *get_renderer() { return this; }
 	void transition_freeze_end(lib::rect r) { m_context->transitioned(m_cookie); }
 	virtual void start(double t);
@@ -237,7 +238,7 @@ class background_renderer : public bgrenderer {
 		m_dst(NULL) {}
 	virtual ~background_renderer() {}
 	void set_surface(surface *destination) { m_dst = destination; }
-	void user_event(const lib::point &where, int what = 0) {};
+	bool user_event(const lib::point &where, int what = 0) { return false;};
 	void transition_freeze_end(lib::rect area) {};
   protected:
 	const region_info *m_src;	///< Where we get our parameters (such as color) from.

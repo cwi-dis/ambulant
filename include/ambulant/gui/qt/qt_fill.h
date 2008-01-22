@@ -61,7 +61,7 @@ class qt_fill_renderer : public  renderer_playable {
 
 	void set_intransition(lib::transition_info *info) { m_intransition = info; }
 	void start_outtransition(lib::transition_info *info);
-	void user_event(const point &where, int what = 0);
+	bool user_event(const point &where, int what = 0);
 	void redraw(const rect &dirty, gui_window *window);
 	void redraw_body(const lib::rect &dirty, 
 			 common::gui_window *window);

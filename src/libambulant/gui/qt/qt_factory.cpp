@@ -314,11 +314,11 @@ ambulant_qt_window::redraw(const lib::rect &r)
 	DUMPPIXMAP(m_pixmap, "top");
 }
 
-void
+bool
 ambulant_qt_window::user_event(const lib::point &where, int what) 
 {
         AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::user_event(0x%x): point=(%d,%d)", this, where.x, where.y);
-	m_handler->user_event(where, what);
+	return m_handler->user_event(where, what);
 }
 
 void

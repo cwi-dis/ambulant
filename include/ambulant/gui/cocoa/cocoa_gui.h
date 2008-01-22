@@ -59,7 +59,7 @@ class cocoa_window : public common::gui_window {
 	void need_events(bool want);
 	
 	void redraw(const lib::rect &r);
-	void user_event(const lib::point &where, int what = 0);
+	bool user_event(const lib::point &where, int what = 0);
 
 	void *view() { return m_view; }
 	

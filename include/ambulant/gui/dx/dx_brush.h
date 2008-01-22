@@ -49,7 +49,7 @@ class dx_brush : public dx_renderer_playable {
 	void start(double t);
 	void stop();
 	void seek(double t) {}
-	void user_event(const lib::point& pt, int what);
+	bool user_event(const lib::point& pt, int what);
 	void redraw(const lib::rect &dirty, common::gui_window *window);
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};

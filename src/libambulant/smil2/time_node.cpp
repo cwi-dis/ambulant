@@ -161,13 +161,14 @@ void time_node::start() {
 		add_begin_rule(m_domcall_rule);
 	}
 	
-	qtime_type timestamp(this, 0);
+	qtime_type timestamp(sync_node(), 0);
 	
 	// Bring node to live
 	if(!is_alive())
 		set_state(ts_proactive, timestamp, this);
 	// Add event instance
 	m_domcall_rule->add_instance(timestamp, 0);
+	exec(timestamp); // XXXJACK experimental...
 }
 
 // DOM TimeElement::stopElement()

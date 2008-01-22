@@ -496,11 +496,11 @@ ambulant_gtk_window::mouse_region_changed()
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::mouse_region_changed needs to be implemented");
 }
 
-void
+bool
 ambulant_gtk_window::user_event(const lib::point &where, int what) 
 {
         AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::user_event(0x%x): point=(%d,%d)", this, where.x, where.y);
-	m_handler->user_event(where, what);
+	return m_handler->user_event(where, what);
 }
 
 void

@@ -285,35 +285,67 @@ surface_impl::draw_background(const lib::rect &r, gui_window *window)
 	m_bg_renderer->redraw(r, window);
 }
 
-void
+bool
 surface_impl::user_event(const lib::point &where, int what)
 {
-	AM_DBG lib::logger::get_logger()->debug("surface_impl.user_event(0x%x, (%d, %d))", (void *)this, where.x, where.y);
+	AM_DBG lib::logger::get_logger()->debug("surface_impl.user_event(0x%x '%s', (%d, %d))", (void *)this, m_name.c_str(), where.x, where.y);
 	// Test that it is in our area
 	if (!m_outer_bounds.contains(where)) {
-		AM_DBG lib::logger::get_logger()->debug("surface_impl.user_event: not in our bounds");
-		return;
+		/*AM_DBG*/  if (what==0) lib::logger::get_logger()->debug("surface_impl.user_event: not in our bounds");
+		return false;
 	}
 	// Convert to local coordinates
 	point our_point = where;
 	our_point -= m_outer_bounds.left_top();
 	
-	std::list<gui_events*>::reverse_iterator ari;
 	m_children_cs.enter();
-	for (ari=m_renderers.rbegin(); ari!=m_renderers.rend(); ari++) {
-		AM_DBG lib::logger::get_logger()->debug("surface_impl.user_event(0x%x) ->active 0x%x", (void *)this, (void *)(*ari));
-		(*ari)->user_event(our_point, what);
-	}
+	bool handled = false;
+#define NO_CLICK_THRU
+	// First check whether any of our subregions (which are on top of us) are interested.
 	children_map_t::reverse_iterator it1;
 	for(it1=m_active_children.rbegin();it1!=m_active_children.rend();it1++) {
+#ifdef NO_CLICK_THRU
+		if (handled && what == user_event_click) break;
+#endif
 		children_list_t& cl = (*it1).second;
-		children_list_t::iterator it2;
-		for(it2=cl.begin();it2!=cl.end();it2++) {
+		children_list_t::reverse_iterator it2;
+		for(it2=cl.rbegin();it2!=cl.rend();it2++) {
+#ifdef NO_CLICK_THRU
+			if (handled && what == user_event_click) break;
+#endif
 			AM_DBG lib::logger::get_logger()->debug("surface_impl.user_event(0x%x) -> child 0x%x,z=%d", (void *)this, (void *)(*it2), (*it1).first);
-			(*it2)->user_event(our_point, what);
+			const region_info *ri = (*it2)->get_info();
+			if(!ri || !ri->is_subregion()) {
+				handled = (*it2)->user_event(our_point, what);
+			}
 		}
 	}
+	// Next check whether any of our node-based subregions (which are on top of us) are interested.
+	for(it1=m_subregions.rbegin();it1!=m_subregions.rend();it1++) {
+#ifdef NO_CLICK_THRU
+		if (handled && what == user_event_click) break;
+#endif
+		children_list_t& cl = (*it1).second;
+		children_list_t::reverse_iterator it2;
+		for(it2=cl.rbegin();it2!=cl.rend();it2++) {
+#ifdef NO_CLICK_THRU
+			if (handled && what == user_event_click) break;
+#endif
+			AM_DBG lib::logger::get_logger()->debug("surface_impl.user_event(0x%x) -> node-child 0x%x,z=%d", (void *)this, (void *)(*it2), (*it1).first);
+			handled = (*it2)->user_event(our_point, what);
+		}
+	}
+	// Finally check our own renderers.
+	std::list<gui_events*>::reverse_iterator ari;
+	for (ari=m_renderers.rbegin(); ari!=m_renderers.rend(); ari++) {
+#ifdef NO_CLICK_THRU
+		if (handled && what == user_event_click) break;
+#endif
+		AM_DBG lib::logger::get_logger()->debug("surface_impl.user_event(0x%x) -> active renderer 0x%x", (void *)this, (void *)(*ari));
+		handled = (*ari)->user_event(our_point, what);
+	}
 	m_children_cs.leave();
+	return handled;
 }
 
 void

@@ -91,12 +91,13 @@ void gui::dg::dg_brush::stop() {
 	m_context->stopped(m_cookie);
 }
 
-void gui::dg::dg_brush::user_event(const lib::point& pt, int what) {
+bool gui::dg::dg_brush::user_event(const lib::point& pt, int what) {
 	if(what == common::user_event_click)
 		m_context->clicked(m_cookie);
 	else if(what == common::user_event_mouse_over) {
 		m_context->pointed(m_cookie);
 	}
+	return true;
 }
 
 void gui::dg::dg_brush::redraw(const lib::rect &dirty, common::gui_window *window) {

@@ -86,7 +86,7 @@ class surface_impl : public surface_template, public surface, public gui_events 
 	void highlight(bool on);
 	// The gui_events interface:
 	void redraw(const rect &dirty, gui_window *window);
-	void user_event(const point &where, int what = 0);
+	bool user_event(const point &where, int what = 0);
 		
 	// Win32 code needs this, but I don't like it:
 	const surface_impl *get_parent() const { return m_parent; }

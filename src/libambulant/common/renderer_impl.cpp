@@ -89,11 +89,27 @@ renderer_playable::stop()
 	m_activated = false;
 }
 
-void
+bool
 renderer_playable::user_event(const lib::point &where, int what) {
+	AM_DBG lib::logger::get_logger()->debug("%s: renderer_playable::user_event((%d,%d), %d) -> %d", m_node->get_sig().c_str(), where.x, where.y, what, m_cookie);
+	if (!user_event_sensitive(where)) return false;
 	if (what == user_event_click) m_context->clicked(m_cookie, 0);
 	else if (what == user_event_mouse_over) m_context->pointed(m_cookie, 0);
 	else assert(0);
+	return true;
+}
+
+bool
+renderer_playable::user_event_sensitive(const lib::point &where) {
+	const char *sensitive = m_node->get_attribute("sensitive");
+	if (sensitive == NULL || strcmp(sensitive, "opaque") == 0) return true;
+	if (strcmp(sensitive, "transparent") == 0) return false;
+	static bool warned = false;
+	if (!warned) {
+		warned = true;
+		lib::logger::get_logger()->trace("%s: only \"transparent\" and \"opaque\" implemented for sensitive attribute", m_node->get_sig().c_str());
+	}
+	return true;
 }
 
 void

@@ -53,7 +53,7 @@ class dx_text_renderer : public dx_renderer_playable {
 	void start(double t);
 	void stop();
 	void seek(double t) {}
-	void user_event(const lib::point& pt, int what);
+	bool user_event(const lib::point& pt, int what);
 	void redraw(const lib::rect &dirty, common::gui_window *window);
 	void set_surface(common::surface *dest);
   private:

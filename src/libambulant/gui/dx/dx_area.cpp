@@ -102,13 +102,14 @@ void gui::dx::dx_area::redraw(const lib::rect &dirty,
 	}
 }
 
-void gui::dx::dx_area::user_event(const lib::point& pt, int what) {
-	if(!m_rgn) return;
-	if(m_rgn->contains(pt)) {
+bool gui::dx::dx_area::user_event(const lib::point& pt, int what) {
+	if(m_rgn && m_rgn->contains(pt)) {
 		if(what == common::user_event_click)
 			m_context->clicked(m_cookie);
 		else if(what == common::user_event_mouse_over) {
 			m_context->pointed(m_cookie);
 		}
+		return false;  // Give our media parent a chabce too,
 	}
+	return false;
 }

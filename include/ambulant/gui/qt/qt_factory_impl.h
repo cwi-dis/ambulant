@@ -127,7 +127,7 @@ class ambulant_qt_window : public common::gui_window {
     // gui_events API:
     
 	void redraw(const lib::rect &r);
-	void user_event(const lib::point &where, int what=0);
+	bool user_event(const lib::point &where, int what=0);
 
     // semi-private helpers:
     

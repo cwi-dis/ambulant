@@ -117,8 +117,8 @@ class AMBULANTAPI gui_events  {
   	/// Request to redraw a certain area.
 	virtual void redraw(const lib::rect &dirty, gui_window *window) = 0;
 	
-	/// Signals a mouse click or mouse move.
-	virtual void user_event(const lib::point &where, int what = 0) = 0;
+	/// Signals a mouse click or mouse move. Returns true if handled.
+	virtual bool user_event(const lib::point &where, int what = 0) = 0;
 	
 	/// Signals that a transition in the given area has started.
 	/// This event goes through the gui_events interface because SMIL

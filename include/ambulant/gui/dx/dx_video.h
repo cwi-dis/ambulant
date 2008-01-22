@@ -54,7 +54,7 @@ class dx_video_renderer : public dx_renderer_playable {
 	void pause(common::pause_display d=common::display_show);
 	void seek(double t);
 	void resume();
-	void user_event(const lib::point& pt, int what);
+	bool user_event(const lib::point& pt, int what);
 	void redraw(const lib::rect &dirty, common::gui_window *window);
 	common::duration get_dur();
 	

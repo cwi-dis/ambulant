@@ -89,7 +89,7 @@ cg_dsvideo_renderer::show_frame(const char* frame, int size)
 		m_lock.leave();
 		return;
 	}
-	lib::logger::get_logger()->debug("cg_dsvideo_renderer::show_frame: created CGImage 0x%x", m_image);
+	AM_DBG lib::logger::get_logger()->debug("cg_dsvideo_renderer::show_frame: created CGImage 0x%x", m_image);
 #if UIKIT_NOT_YET
 	NSBitmapImageRep *bitmaprep = [[NSBitmapImageRep alloc]
 		initWithBitmapDataPlanes: NULL

@@ -161,12 +161,14 @@ gtk_fill_renderer::transition_step()
 	if (m_dest) m_dest->need_redraw();
 }
 
-void 
+bool 
 gtk_fill_renderer::user_event(const point &where, int what)
 {
+	if (!user_event_sensitive(where)) return false;
 	if (what == user_event_click) m_context->clicked(m_cookie, 0);
 	else if (what == user_event_mouse_over) m_context->pointed(m_cookie, 0);
 	else assert(0);
+	return true;
 }
 
 void

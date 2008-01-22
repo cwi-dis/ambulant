@@ -101,11 +101,11 @@ cg_window::redraw(const rect &r)
 	m_handler->redraw(r, this);
 }
 
-void
+bool
 cg_window::user_event(const point &where, int what)
 {
 	AM_DBG logger::get_logger()->debug("cg_window::user_event(0x%x, (%d, %d), %d)", (void *)this, where.x, where.y, what);
-	m_handler->user_event(where, what);
+	return m_handler->user_event(where, what);
 }
 
 void
@@ -619,6 +619,7 @@ bad:
 - (void)tappedWithPoint: (CGPoint) where
 {
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
+	/*AM_DBG*/ NSLog(@"0x%x: tappedWithPoint at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
 	if (ambulant_window) ambulant_window->user_event(amwhere);
 }
 #else
