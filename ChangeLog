@@ -1,3 +1,7 @@
+2008-01-22 19:55  jackjansen
+
+	* More bits and pieces for the changes wrt. event sensitivity.
+
 2008-01-22 03:02  jackjansen
 
 	* Implemented z-ordering of clicks. Up to now clicks always fired
