@@ -213,8 +213,10 @@ surface_impl::redraw(const lib::rect &r, gui_window *window)
 	AM_DBG lib::logger::get_logger()->debug("surface_impl.redraw(0x%x %s) returning: nothing to draw", (void *)this, m_name.c_str());
 		return;
 	}
+#if 0
 	// For now: if we are going to redraw anything we have to redraw everything (sigh).
 	our_rect = m_inner_bounds;
+#endif
 	
 	////////////////
 	// Draw the content of this
@@ -291,7 +293,7 @@ surface_impl::user_event(const lib::point &where, int what)
 	AM_DBG lib::logger::get_logger()->debug("surface_impl.user_event(0x%x '%s', (%d, %d))", (void *)this, m_name.c_str(), where.x, where.y);
 	// Test that it is in our area
 	if (!m_outer_bounds.contains(where)) {
-		/*AM_DBG*/  if (what==0) lib::logger::get_logger()->debug("surface_impl.user_event: not in our bounds");
+		AM_DBG  if (what==0) lib::logger::get_logger()->debug("surface_impl.user_event: not in our bounds");
 		return false;
 	}
 	// Convert to local coordinates
