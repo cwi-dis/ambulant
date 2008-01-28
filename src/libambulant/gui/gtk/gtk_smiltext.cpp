@@ -624,6 +624,7 @@ AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_render(0x%x): ltrb=(%d,%d,
 		gdk_pixbuf_blend (screen_pixbuf, rc, bg_pixbuf, rc, 
 				  m_alpha_chroma, m_alpha_media_bg,
 				  m_chroma_low, m_chroma_high, m_transparent);
+//DBG*/		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen0");
 
 		// draw m_pango_layout containing smilText runs with text in
 		// required colors and background in m_transparant color
@@ -637,7 +638,6 @@ AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_render(0x%x): ltrb=(%d,%d,
 		gdk_pixbuf_blend (screen_pixbuf, rc, text_pixbuf, rc, 
 				  m_alpha_chroma, m_alpha_media,
 				  m_chroma_low, m_chroma_high, m_transparent);
-//DBG*/		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen0");
 		// draw the blended pixbuf on the screen
 		gdk_draw_pixbuf(window->get_ambulant_pixmap(),
 				gc, screen_pixbuf, 0, 0, L, T, W, H, GDK_RGB_DITHER_NONE,0,0);

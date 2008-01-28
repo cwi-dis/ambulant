@@ -48,8 +48,8 @@ namespace gtk {
 	// of seeing absolutely nothing. This could happen e.g. during
 	// color animations resulting in occasional unreproduceable
 	// flicker.
-#define GTK_TRANSPARENT_COLOR to_color(0x0,0x0,0xfd) // almost blue
-#define GTK_ALTERNATIVE_COLOR to_color(0x0,0x0,0xfe) // almost blue too
+#define GTK_TRANSPARENT_COLOR to_color(0x0,0x0,0xff) // blue
+#define GTK_ALTERNATIVE_COLOR to_color(0x0,0x0,0xf7) // almost blue
 
 class gtk_transition_renderer : public ref_counted_obj {
   public:

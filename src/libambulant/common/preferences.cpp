@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2008 Stichting CWI, 
+// Copyright (C) 2003-2007 Stichting CWI, 
 // Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -44,12 +44,13 @@ preferences::preferences()
 	m_do_namespaces(false),
 	m_do_schema(false),
 	m_validation_schema_full_checking(false),
+#ifdef	WITH_PLUGINS
 	m_use_plugins(true),
+#else //WITH_PLUGINS
+	m_use_plugins(false),
+#endif//WITH_PLUGINS
 	m_plugin_dir(""),
-	m_prefer_ffmpeg(false),
-	m_dynamic_content_control(false),
-	m_fullscreen(false),
-	m_prefer_rtsp_tcp(false)
+	m_dynamic_content_control(false)
 {
 	AM_DBG lib::logger::get_logger()->debug("preferences::preferences()");
 	load_preferences();
