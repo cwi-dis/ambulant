@@ -80,8 +80,16 @@ cg_dsvideo_renderer::show_frame(const char* frame, int size)
 	CFRelease(cfdata);
 	CGColorSpaceRef genericColorSpace = CGColorSpaceCreateDeviceRGB();
 	assert(genericColorSpace);
-	CGBitmapInfo bitmapInfo = 0; // XXXJACK may need to cater for endianness
-	m_image = CGImageCreate( m_size.w, m_size.h, 8, 32, m_size.w*4, genericColorSpace, bitmapInfo, provider, NULL, true, kCGRenderingIntentDefault);
+	// There may be room for improvement here, but I cannot find it. Did some experiments (on 4-core Intel Mac Pro)
+	// with various values for kCGBitmapByteOrder32* and kCGImageAlpha*.
+	// The only things that seem to make a difference:
+	// - If the image does not have to be scaled then kCGBitmapByteOrder32Host|kCGImageAlphaNoneSkipFirst is a tiny bit faster. But
+	//   image draw times are dwarfed by background draw times (twice the image draw time!).
+	// - If the image does need scaling things slow down by a factor of 4.
+	//   0 seems to be as good a value for bitmapInfo as any other value.
+	// - If you also set shouldInterpolate=true you get an additional factor of 2 slowdown.
+	CGBitmapInfo bitmapInfo = 0; 
+	m_image = CGImageCreate( m_size.w, m_size.h, 8, 32, m_size.w*4, genericColorSpace, bitmapInfo, provider, NULL, false, kCGRenderingIntentDefault);
 	CGDataProviderRelease(provider);
 	CGColorSpaceRelease(genericColorSpace);
 	if (!m_image) {
@@ -90,38 +98,6 @@ cg_dsvideo_renderer::show_frame(const char* frame, int size)
 		return;
 	}
 	AM_DBG lib::logger::get_logger()->debug("cg_dsvideo_renderer::show_frame: created CGImage 0x%x", m_image);
-#if UIKIT_NOT_YET
-	NSBitmapImageRep *bitmaprep = [[NSBitmapImageRep alloc]
-		initWithBitmapDataPlanes: NULL
-		pixelsWide: m_size.w
-		pixelsHigh: m_size.h
-		bitsPerSample: 8
-		samplesPerPixel: 3
-		hasAlpha: NO
-		isPlanar: NO
-		colorSpaceName: NSDeviceRGBColorSpace
-#ifdef __BIG_ENDIAN__
-		bitmapFormat: NSAlphaFirstBitmapFormat
-#else
-		bitmapFormat: (NSBitmapFormat)0
-#endif
-		bytesPerRow: m_size.w * 4
-		bitsPerPixel: 32];
-	if (!bitmaprep) {
-		logger::get_logger()->trace("cg_dsvideo_renderer::show_frame: cannot allocate NSBitmapImageRep");
-		logger::get_logger()->error(gettext("Out of memory while showing video"));
-		m_lock.leave();
-		return;
-	}
-#if 1
-	memcpy([bitmaprep bitmapData], frame, size);
-#else
-	swab(frame, [bitmaprep bitmapData], size);
-#endif
-	[m_image addRepresentation: bitmaprep];
-	[m_image setFlipped: true];
-	[bitmaprep release];
-#endif
 	if (m_dest) m_dest->need_redraw();
 	m_lock.leave();
 }
@@ -162,7 +138,7 @@ cg_dsvideo_renderer::redraw(const rect &dirty, gui_window *window)
 		
 		CGRect cg_srcrect = CGRectMake(0, 0, srcrect.width(), srcrect.height()); // XXXX 0, 0 is wrong
 		CGRect cg_dstrect = [view CGRectForAmbulantRect: &dstrect];
-		AM_DBG logger::get_logger()->debug("cg_dsvideo_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", cg_srcsize.width, cg_srcsize.height, CGRectGetMinX(cg_dstrect), CGRectGetMinY(cg_dstrect), CGRectGetMaxX(cg_dstrect), CGRectGetMaxY(cg_dstrect));
+		/*AM_DBG*/ logger::get_logger()->debug("cg_dsvideo_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", cg_srcsize.width, cg_srcsize.height, CGRectGetMinX(cg_dstrect), CGRectGetMinY(cg_dstrect), CGRectGetMaxX(cg_dstrect), CGRectGetMaxY(cg_dstrect));
 		// XXX Crop the image, if needed.
 		CGImageRef cropped_image = m_image;
 		CGContextRef myContext = [view getCGContext];

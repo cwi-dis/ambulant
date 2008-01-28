@@ -435,7 +435,7 @@ bad:
 	CGRect my_rect = [arect rect];
 #endif
 	[arect release];
-    AM_DBG NSLog(@"AmbulantView.asyncRedrawForAmbulantRect: self=0x%x rect=(%f,%f,%f,%f)", self, CGRectGetMinX(my_rect), CGRectGetMinY(my_rect), CGRectGetMaxX(my_rect), CGRectGetMaxY(my_rect));
+    /*AM_DBG*/ NSLog(@"AmbulantView.asyncRedrawForAmbulantRect: self=0x%x rect=(%f,%f,%f,%f)", self, CGRectGetMinX(my_rect), CGRectGetMinY(my_rect), CGRectGetMaxX(my_rect), CGRectGetMaxY(my_rect));
 	[self setNeedsDisplayInRect: ViewRectFromCGRect(my_rect)];
 }
 
@@ -449,7 +449,7 @@ bad:
 
 - (void)drawRect:(CGRect)rect
 {
-    AM_DBG NSLog(@"AmbulantView.drawRect: self=0x%x rect=(%f,%f,%f,%f)", self, CGRectGetMinX(rect), CGRectGetMinY(rect), CGRectGetMaxX(rect), CGRectGetMaxY(rect));
+    /*AM_DBG*/ NSLog(@"AmbulantView.drawRect: self=0x%x rect=(%f,%f,%f,%f)", self, CGRectGetMinX(rect), CGRectGetMinY(rect), CGRectGetMaxX(rect), CGRectGetMaxY(rect));
 //    redraw_lock.enter();
 #ifdef WITH_QUICKTIME_OVERLAY
 	// If our main view has been reparented since the last redraw we need
@@ -619,7 +619,7 @@ bad:
 - (void)tappedWithPoint: (CGPoint) where
 {
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
-	/*AM_DBG*/ NSLog(@"0x%x: tappedWithPoint at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
+	AM_DBG NSLog(@"0x%x: tappedWithPoint at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
 	if (ambulant_window) ambulant_window->user_event(amwhere);
 }
 #else

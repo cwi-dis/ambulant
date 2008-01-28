@@ -80,7 +80,7 @@ cg_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 		return;
 	}
 	const rect &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->debug("cg_text_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	/*AM_DBG*/ logger::get_logger()->debug("cg_text_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 
 #if 0	
 	if (m_text_storage && !m_layout_manager) {
@@ -114,13 +114,9 @@ cg_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 	CGColorSpaceRef genericColorSpace = CGColorSpaceCreateDeviceRGB();
 	CGContextSetFillColorSpace(ctx, genericColorSpace); 
 	CGContextSetFillColor(ctx, components);
-//	CGContextSetStrokeColorSpace(ctx, genericColorSpace); 
-//	CGContextSetStrokeColor(ctx, components);
 	// Set the font
-	/*AM_DBG*/ lib::logger::get_logger()->debug("cg_text: select font %s, size %f", m_font_name, m_font_size);
+	AM_DBG lib::logger::get_logger()->debug("cg_text: select font %s, size %f", m_font_name, m_font_size);
 	CGContextSelectFont(ctx, m_font_name, m_font_size, kCGEncodingMacRoman);
-//	CGContextSetShouldAntialias(ctx, true);
-//	CGContextSetShouldSmoothFonts(ctx, true);
 	// Calculate sizes
 	float lineheight = m_font_size;
 	// XXXX These calculations assume COCOA_USE_BOTLEFT

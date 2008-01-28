@@ -122,7 +122,7 @@ void scheduler::goto_next(time_node *tn) {
 		time_node *parent = *it; cit = it;
 		time_node *child = *++cit;
 		assert(cit != tnpath.end());
-		/*AM_DBG*/ lib::logger::get_logger()->debug("goto_next: parent=%s child=%s, time=%d", parent->get_sig().c_str(), child->get_sig().c_str(), m_timer->elapsed());
+		AM_DBG lib::logger::get_logger()->debug("goto_next: parent=%s child=%s, time=%d", parent->get_sig().c_str(), child->get_sig().c_str(), m_timer->elapsed());
 		if(parent->is_seq()) activate_seq_child(parent, child);
 		else if(parent->is_par()) activate_par_child(parent, child);
 		else if(parent->is_excl()) activate_excl_child(parent, child);
