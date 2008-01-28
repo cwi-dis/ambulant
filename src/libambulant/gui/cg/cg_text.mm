@@ -156,6 +156,8 @@ cg_text_renderer::_calc_fit(CGContextRef ctx, float width, int& lbegin, int& len
 		if (!_fits(ctx, width, cdata+lbegin, lendcand-lbegin))
 			return true;
 		lend = lendcand;
+		if (cdata[lend] == '\r' || cdata[lend] == '\n')
+			return true;
 		while (isspace(cdata[lendcand]) && lendcand < m_data_size) lendcand++;
 	} while(cdata[lendcand] != '\0' && lendcand < m_data_size);
 	return true;
