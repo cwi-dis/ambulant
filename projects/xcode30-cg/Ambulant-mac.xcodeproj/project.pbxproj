@@ -30,7 +30,6 @@
 		040EAA8D0BCE7B0F00DEE37B /* AmbulantDocGrins.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA830BCE7B0F00DEE37B /* AmbulantDocGrins.icns */; };
 		040EAA8E0BCE7B0F00DEE37B /* AmbulantDocMms.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA840BCE7B0F00DEE37B /* AmbulantDocMms.icns */; };
 		040EAA8F0BCE7B0F00DEE37B /* AmbulantDocSmil.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA850BCE7B0F00DEE37B /* AmbulantDocSmil.icns */; };
-		0429B44B0D3D61C10062A13D /* libfaad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0480CCFF0CDD1D5C0025344B /* libfaad.a */; };
 		043782E80D1726E100BC01BD /* cg_fill.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043782E30D1726E100BC01BD /* cg_fill.mm */; };
 		043782E90D1726E100BC01BD /* cg_gui.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043782E40D1726E100BC01BD /* cg_gui.mm */; };
 		043782EA0D1726E100BC01BD /* cg_image.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043782E50D1726E100BC01BD /* cg_image.mm */; };
@@ -807,7 +806,6 @@
 				049656A70BCAEA7D002C00DF /* libSDL.a in Frameworks */,
 				049656A80BCAEA7D002C00DF /* libz.dylib in Frameworks */,
 				049656B30BCAEC13002C00DF /* Carbon.framework in Frameworks */,
-				0429B44B0D3D61C10062A13D /* libfaad.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

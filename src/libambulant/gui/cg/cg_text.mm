@@ -56,9 +56,11 @@ cg_text_renderer::cg_text_renderer(
 	if (params) {
 		m_font_name = params->get_str("font-family");
 		m_font_size = params->get_float("font-size", 14.0);
+		m_text_color = params->get_color("color", 0);
 	} else {
 		m_font_name = "Helvetica";
 		m_font_size = 14.0;
+		m_text_color = 0;
 	}
 }
 
@@ -112,12 +114,13 @@ cg_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 	CGColorSpaceRef genericColorSpace = CGColorSpaceCreateDeviceRGB();
 	CGContextSetFillColorSpace(ctx, genericColorSpace); 
 	CGContextSetFillColor(ctx, components);
-    CGContextSetStrokeColorSpace(ctx, genericColorSpace); 
-	CGContextSetStrokeColor(ctx, components);
-	CGColorSpaceRelease(genericColorSpace);
+//	CGContextSetStrokeColorSpace(ctx, genericColorSpace); 
+//	CGContextSetStrokeColor(ctx, components);
 	// Set the font
-	AM_DBG lib::logger::get_logger()->debug("cg_text: select font %s, size %f", m_font_name, m_font_size);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("cg_text: select font %s, size %f", m_font_name, m_font_size);
 	CGContextSelectFont(ctx, m_font_name, m_font_size, kCGEncodingMacRoman);
+//	CGContextSetShouldAntialias(ctx, true);
+//	CGContextSetShouldSmoothFonts(ctx, true);
 	// Calculate sizes
 	float lineheight = m_font_size;
 	// XXXX These calculations assume COCOA_USE_BOTLEFT
@@ -133,11 +136,12 @@ cg_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 		CGContextSetTextPosition(ctx, x, y);
 		AM_DBG{ CGAffineTransform mtx = CGContextGetTextMatrix(ctx); lib::logger::get_logger()->debug("cg_text: textmatrix: (%f, %f) (%f, %f) (%f, %f)", mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty); }
 		AM_DBG{ CGAffineTransform mtx = CGContextGetCTM(ctx); lib::logger::get_logger()->debug("cg_text: matrix: (%f, %f) (%f, %f) (%f, %f)", mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty); }
-		CGContextSetTextDrawingMode(ctx, kCGTextFillStroke);
+		CGContextSetTextDrawingMode(ctx, kCGTextFill);
 		CGContextShowText(ctx, cdata+lbegin, lend-lbegin);
 		lbegin = lend;
 		y -= lineheight;
 	}
+	CGColorSpaceRelease(genericColorSpace);
 	m_lock.leave();
 }
 
