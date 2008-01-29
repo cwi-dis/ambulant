@@ -1,3 +1,29 @@
+2008-01-28 17:22  jackjansen
+
+	* Mainly adding some comments on optimization findings.
+
+2008-01-28 16:21  keesblom
+
+	* Some changes for Nokia 800/810.  Changed GTK_TRANSPARENT_COLOR to
+	  "fix" #1879834. Nokia 800 has 16 bit color Changed pref. for "use
+	  plugins" depending whether plugin support is available
+
+2008-01-28 15:42  jackjansen
+
+	* Redraws always resulted in complete regions being redrawn,
+	  apparantly as a workaround for some problem years ago.
+
+	  Disabled this, so only the relevant area is redrawn. We should be
+	  on the lookout for any redraw problems this may result in.
+
+2008-01-28 11:38  jackjansen
+
+	* Fixed text color and look.
+
+2008-01-28 11:15  jackjansen
+
+	* Handle CR and LF, somewhat.
+
 2008-01-22 19:55  jackjansen
 
 	* More bits and pieces for the changes wrt. event sensitivity.
