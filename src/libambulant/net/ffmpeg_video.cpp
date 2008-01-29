@@ -215,6 +215,7 @@ ffmpeg_video_decoder_datasource::stop()
 		_pop_top_frame();
 	}
 	if (m_old_frame.second) {
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::stop(): free(0x%x)", m_old_frame.second);
 		free(m_old_frame.second);
 		m_old_frame.second = NULL;
 	}
@@ -313,6 +314,7 @@ ffmpeg_video_decoder_datasource::_pop_top_frame() {
 	// old data in m_old_frame is freed.
   
 	if (m_old_frame.second) {
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_pop_top_frame(): free(0x%x)", m_old_frame.second);
 		free (m_old_frame.second);
 		m_old_frame.second = NULL;
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._pop_top_frame(): free'n m_old_frame.second");
@@ -338,7 +340,7 @@ ffmpeg_video_decoder_datasource::frame_done(timestamp_t now, bool keepdata)
 	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.frame_done(%d)", (int)now);
 
-	while ( m_frames.size() && m_old_frame.first <= now) {
+	while ( m_frames.size() && m_old_frame.first < now) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::frame_done: discarding m_old_frame timestamp=%d, now=%d, data ptr = 0x%x",(int)m_old_frame.first,(int)now, m_old_frame.second);
 		_pop_top_frame();
 	}
