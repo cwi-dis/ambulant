@@ -53,6 +53,7 @@ class cg_dsvideo_renderer :
 
 	
     void show_frame(const char* frame, int size);
+	void stop_show_frame();
 	void redraw(const rect &dirty, gui_window *window);
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};

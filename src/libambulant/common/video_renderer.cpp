@@ -281,6 +281,10 @@ video_renderer::data_avail()
 	int size = 0;
 	net::timestamp_t now_micros = (net::timestamp_t)(now()*1000000);
 	net::timestamp_t frame_ts_micros;	// Timestamp of frame in "buf" (in microseconds)
+#if 0
+	// We really want to 
+	stop_show_frame();	// Tell renderer previous frame data may become invalid
+#endif
 	buf = m_src->get_frame(now_micros, &frame_ts_micros, &size);
 	net::timestamp_t frame_duration = m_src->frameduration(); // XXX For now: assume 30fps
 	
@@ -321,7 +325,7 @@ video_renderer::data_avail()
 		m_src->frame_done(frame_ts_micros, true);
 		// Now we need to decide when we want the next callback, by computing what the timestamp
 		// of the next frame is expected to be.
-		if(!(frame_ts_micros <  (now_micros - frame_duration)))//if the current frames time was older than one frameduration don't increment the time to callback
+		if(!(frame_ts_micros <  (now_micros - 2*frame_duration)))//if the current frames time was older than one frameduration don't increment the time to callback
 			frame_ts_micros += frame_duration;						
 	} else if (frame_ts_micros <= now_micros - frame_duration) {
 		m_frame_late++;

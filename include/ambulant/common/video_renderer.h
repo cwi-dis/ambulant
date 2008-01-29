@@ -70,8 +70,13 @@ class video_renderer : public common::renderer_playable {
 	/// Return true if video is playing.
   	bool is_playing() { return m_activated; };  
 	
-	/// Display video data.
+	/// Display video data. Frame parameter is guaranteed to remain valid until a
+	/// call to stop_show_frame()
 	virtual void show_frame(const char* frame, int size) {};
+	/// Stop displaying video data previously passed to show_frame. Called just
+	/// before frame parameter may be released.
+	virtual void stop_show_frame() {};
+	
     virtual void redraw(const lib::rect &dirty, common::gui_window *window);
 	
 	void start(double where);
