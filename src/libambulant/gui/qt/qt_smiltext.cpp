@@ -347,17 +347,6 @@ gui::qt::qt_smiltext_renderer::_qt_smiltext_set_font(const smil2::smiltext_run& 
 }
 
 void
-gui::qt::qt_smiltext_renderer::user_event(const lib::point& pt, int what) {
-	m_lock.enter();
-	if(what == common::user_event_click)
-		m_context->clicked(m_cookie);
-	else if(what == common::user_event_mouse_over) {
-		m_context->pointed(m_cookie);
-	}
-	m_lock.leave();
-}
-
-void
 gui::qt::qt_smiltext_renderer::redraw_body(const lib::rect& dirty, common::gui_window *window) {
 	m_lock.enter();
 	m_window = (ambulant_qt_window*) window;

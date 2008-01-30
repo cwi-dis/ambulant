@@ -61,7 +61,6 @@ class qt_smiltext_renderer :
 	// Callback from the engine
 	void smiltext_changed();
 	void marker_seen(const char *name);
-	void user_event(const lib::point& pt, int what);
 	void redraw_body(const lib::rect &dirty, common::gui_window *window);
 	// smiltext_layout_provider called from smiltext_layout_engine
 	smil2::smiltext_metrics get_smiltext_metrics(const smil2::smiltext_run& str);
