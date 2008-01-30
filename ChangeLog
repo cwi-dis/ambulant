@@ -1,3 +1,11 @@
+2008-01-29 14:04  jackjansen
+
+	* Tweaks to make video more palatable on the iPhone. Unfinished.
+
+2008-01-29 14:03  jackjansen
+
+	* Threw away one frame too many. Fixed.
+
 2008-01-28 17:22  jackjansen
 
 	* Mainly adding some comments on optimization findings.
