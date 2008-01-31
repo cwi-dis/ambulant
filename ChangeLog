@@ -1,3 +1,11 @@
+2008-01-30 14:54  keesblom
+
+	* Added some changes for Maemo 4(CHINOOK), OS2008 on N800 and N810
+
+2008-01-30 11:49  keesblom
+
+	* removed void qt_smiltext::user_event()
+
 2008-01-29 14:04  jackjansen
 
 	* Tweaks to make video more palatable on the iPhone. Unfinished.
