@@ -80,7 +80,7 @@ cg_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 		return;
 	}
 	const rect &r = m_dest->get_rect();
-	/*AM_DBG*/ logger::get_logger()->debug("cg_text_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG logger::get_logger()->debug("cg_text_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 
 #if 0	
 	if (m_text_storage && !m_layout_manager) {

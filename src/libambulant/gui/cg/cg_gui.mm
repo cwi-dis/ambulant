@@ -329,6 +329,7 @@ bad:
 
 #ifdef __OBJC__
 
+#ifndef WITH_UIKIT
 // Helper class: flipped view
 @interface MyFlippedView : VIEW_SUPERCLASS
 - (BOOL) isFlipped;
@@ -343,6 +344,7 @@ bad:
 #endif
 }
 @end
+#endif
 
 // Helper class: NSRect as an object
 @implementation NSRectHolder
@@ -428,14 +430,16 @@ bad:
 
 - (void) asyncRedrawForAmbulantRect: (NSRectHolder *)arect
 {
-#ifdef WITH_UIKIT
-	// Something goes wrong with flipping coordinate systems on iPod. For now, redraw everything always.
-	CGRect my_rect = [self bounds];
-#else
 	CGRect my_rect = [arect rect];
+#ifdef WITH_UIKIT
+	// There is something very funny going on. The coordinates passed in rect seem to be top-left based,
+	// but drawing should use bottom-left. Either I have done something really stupid or there is something
+	// I don't understand about the basics of UIKit.
+	// For now, we convert the y coordinate.
+	my_rect.origin.y = (CGRectGetMaxY([self bounds])-(my_rect.origin.y+my_rect.size.height));
 #endif
 	[arect release];
-    /*AM_DBG*/ NSLog(@"AmbulantView.asyncRedrawForAmbulantRect: self=0x%x rect=(%f,%f,%f,%f)", self, CGRectGetMinX(my_rect), CGRectGetMinY(my_rect), CGRectGetMaxX(my_rect), CGRectGetMaxY(my_rect));
+    AM_DBG NSLog(@"AmbulantView.asyncRedrawForAmbulantRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(my_rect), CGRectGetMinY(my_rect), CGRectGetMaxX(my_rect), CGRectGetMaxY(my_rect));
 	[self setNeedsDisplayInRect: ViewRectFromCGRect(my_rect)];
 }
 
@@ -449,7 +453,28 @@ bad:
 
 - (void)drawRect:(CGRect)rect
 {
-    /*AM_DBG*/ NSLog(@"AmbulantView.drawRect: self=0x%x rect=(%f,%f,%f,%f)", self, CGRectGetMinX(rect), CGRectGetMinY(rect), CGRectGetMaxX(rect), CGRectGetMaxY(rect));
+    AM_DBG NSLog(@"AmbulantView.drawRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(rect), CGRectGetMinY(rect), CGRectGetMaxX(rect), CGRectGetMaxY(rect));
+#ifdef WITH_UIKIT
+	// There is something very funny going on. The coordinates passed in rect seem to be top-left based,
+	// but drawing should use bottom-left. Either I have done something really stupid or there is something
+	// I don't understand about the basics of UIKit.
+	// For now, we convert the y coordinate.
+	rect.origin.y = (CGRectGetMaxY([self bounds])-(rect.origin.y+rect.size.height));
+#endif
+//#define CG_REDRAW_DEBUG
+#ifdef CG_REDRAW_DEBUG
+	{
+		float components[] = { 0, 1, 1, 1};
+		CGColorSpaceRef genericColorSpace = CGColorSpaceCreateDeviceRGB();
+		CGContextSetFillColorSpace([self getCGContext], genericColorSpace);
+		CGColorSpaceRelease(genericColorSpace);
+		CGContextSetFillColor([self getCGContext], components);
+		CGContextFillRect([self getCGContext], CGRectFromViewRect([self bounds]));
+		CGContextSynchronize([self getCGContext]);
+		CGContextFlush([self getCGContext]);
+		sleep(1);
+	}
+#endif
 //    redraw_lock.enter();
 #ifdef WITH_QUICKTIME_OVERLAY
 	// If our main view has been reparented since the last redraw we need
@@ -503,6 +528,7 @@ bad:
 		if (transition_count) rect = CGRectFromViewRect([self bounds]);
         ambulant::lib::rect arect = [self ambulantRectForCGRect: &rect];
 //		[self _screenTransitionPreRedraw];
+		AM_DBG NSLog(@"ambulantView: call redraw ambulant-ltrb=(%d, %d, %d, %d)", arect.left(), arect.top(), arect.right(), arect.bottom());
         ambulant_window->redraw(arect);
 //		[self _screenTransitionPostRedraw];
 #ifdef WITH_UIKIT
@@ -533,6 +559,18 @@ bad:
 	}
 #endif // WITH_QUICKTIME_OVERLAY
 
+#ifdef CG_REDRAW_DEBUG
+	{
+		float components[] = { 1, 1, 0, 0.2};
+		CGColorSpaceRef genericColorSpace = CGColorSpaceCreateDeviceRGB();
+		CGContextSetFillColorSpace([self getCGContext], genericColorSpace);
+		CGColorSpaceRelease(genericColorSpace);
+		CGContextSetFillColor([self getCGContext], components);
+		CGContextFillRect([self getCGContext], rect);
+//		CGContextSynchronize([self getCGContext]);
+//		CGContextFlush([self getCGContext]);
+	}
+#endif
 //	redraw_lock.leave();
 }
 
@@ -606,6 +644,7 @@ bad:
 #endif	
 }
 
+#ifndef WITH_UIKIT
 - (BOOL)isFlipped
 {
 #ifdef USE_COCOA_BOTLEFT
@@ -614,6 +653,7 @@ bad:
 	return true;
 #endif
 }
+#endif // WITH_UIKIT
 
 #ifdef WITH_UIKIT
 - (void)tappedWithPoint: (CGPoint) where

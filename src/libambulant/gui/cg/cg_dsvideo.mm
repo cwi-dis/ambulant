@@ -156,7 +156,7 @@ cg_dsvideo_renderer::redraw(const rect &dirty, gui_window *window)
 		
 		CGRect cg_srcrect = CGRectMake(0, 0, srcrect.width(), srcrect.height()); // XXXX 0, 0 is wrong
 		CGRect cg_dstrect = [view CGRectForAmbulantRect: &dstrect];
-		/*AM_DBG*/ logger::get_logger()->debug("cg_dsvideo_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", cg_srcsize.width, cg_srcsize.height, CGRectGetMinX(cg_dstrect), CGRectGetMinY(cg_dstrect), CGRectGetMaxX(cg_dstrect), CGRectGetMaxY(cg_dstrect));
+		AM_DBG logger::get_logger()->debug("cg_dsvideo_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", cg_srcsize.width, cg_srcsize.height, CGRectGetMinX(cg_dstrect), CGRectGetMinY(cg_dstrect), CGRectGetMaxX(cg_dstrect), CGRectGetMaxY(cg_dstrect));
 		// XXX Crop the image, if needed.
 		CGImageRef cropped_image = m_image;
 		CGContextRef myContext = [view getCGContext];

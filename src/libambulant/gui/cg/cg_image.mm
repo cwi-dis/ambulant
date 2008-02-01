@@ -141,7 +141,6 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 			dstrect = (*it).second;
 			cropped_image = _cropped_image(srcrect);
 			cg_dstrect = [view CGRectForAmbulantRect: &dstrect];
-//			AM_DBG logger::get_logger()->debug("cg_image_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", cg_srcsize.width, cg_srcsize.height, CGRectGetMinX(cg_dstrect), CGRectGetMinY(cg_dstrect), CGRectGetMaxX(cg_dstrect), CGRectGetMaxY(cg_dstrect));
 			// XXXX Need to do transform!
 			CGContextDrawImage (myContext, cg_dstrect, cropped_image);
 		}
@@ -169,31 +168,32 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 #endif
 	dstrect.translate(m_dest->get_global_topleft());
 	cg_dstrect = [view CGRectForAmbulantRect: &dstrect];
-#if UIKIT_NOT_YET
-	AM_DBG logger::get_logger()->debug("cg_image_renderer.redraw: draw image (%f, %f, %f %f) -> (%f, %f, %f, %f)",
-		NSMinX(cg_srcrect), NSMinY(cg_srcrect), NSMaxX(cg_srcrect), NSMaxY(cg_srcrect),
-		NSMinX(cg_dstrect), NSMinY(cg_dstrect), NSMaxX(cg_dstrect), NSMaxY(cg_dstrect));
-#endif
+	AM_DBG logger::get_logger()->debug("cg_image_renderer.redraw: draw image (ltrb) (%d, %d, %d, %d) -> (%f, %f, %f, %f)",
+		srcrect.left(), srcrect.top(), srcrect.right(), srcrect.bottom(),
+		CGRectGetMinX(cg_dstrect), CGRectGetMinY(cg_dstrect), CGRectGetMaxX(cg_dstrect), CGRectGetMaxY(cg_dstrect));
 	double alfa = 1.0;
 #ifdef WITH_SMIL30
 	if (ri) alfa = ri->get_mediaopacity();
 	// XXX Need to set alpha
 #endif
 	cropped_image = _cropped_image(srcrect);
+#ifndef WITH_UIKIT
 	bool flipped = [view isFlipped];
 	flipped = false; // XXXJACK
 	if (flipped) {
 		CGContextSaveGState(myContext);
-		float view_height = CGRectGetHeight(CGRectFromViewRect([view bounds]));
 		CGAffineTransform matrix = CGAffineTransformMake(1, 0, 0, -1, 0, cg_dstrect.origin.y);
 		cg_dstrect.origin.y = 0;
 		CGContextConcatCTM(myContext, matrix);
 	}
+#endif // WITH_UIKIT
 	CGContextDrawImage(myContext, cg_dstrect, cropped_image);
 	
+#ifndef WITH_UIKIT
 	if (flipped) {
 		CGContextRestoreGState(myContext);
 	}
+#endif // WITH_UIKIT
 	m_lock.leave();
 }
 

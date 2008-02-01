@@ -175,7 +175,9 @@ AMBULANTAPI common::playable_factory *create_cg_renderer_factory(common::factori
 - (void)ambulantWindowClosed;
 - (bool)isAmbulantWindowInUse;
 - (bool)ignoreResize;
+#ifndef WITH_UIKIT
 - (BOOL)isFlipped;
+#endif
 
 - (void)ambulantSetSize: (ambulant::lib::size) bounds;
 - (void)ambulantNeedEvents: (bool) want;

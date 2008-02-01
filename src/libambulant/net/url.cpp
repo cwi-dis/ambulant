@@ -727,6 +727,10 @@ net::url::guesstype() const
 	// Ambulant-only line drawing art
 	if (ext == ".ink" || ext == ".INK")
 		return "image/vnd.ambulant-ink";
+	if (ext == ".jpg" || ext == ".JPG")
+		return "image/jpeg";
+	if (ext == ".png" || ext == ".PNG")
+		return "image/png";
 	return "";
 }
 
