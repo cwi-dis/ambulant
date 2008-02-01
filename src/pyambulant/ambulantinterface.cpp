@@ -3621,9 +3621,10 @@ void gui_events::redraw(const ambulant::lib::rect& dirty, ambulant::common::gui_
 	PyGILState_Release(_GILState);
 }
 
-void gui_events::user_event(const ambulant::lib::point& where, int what)
+bool gui_events::user_event(const ambulant::lib::point& where, int what)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
+	bool _rv;
 	PyObject *py_where = Py_BuildValue("O", ambulant_point_New(where));
 	PyObject *py_what = Py_BuildValue("i", what);
 
@@ -3634,11 +3635,18 @@ void gui_events::user_event(const ambulant::lib::point& where, int what)
 		PyErr_Print();
 	}
 
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during gui_events::user_event() return:\n");
+		PyErr_Print();
+	}
+
 	Py_XDECREF(py_rv);
 	Py_XDECREF(py_where);
 	Py_XDECREF(py_what);
 
 	PyGILState_Release(_GILState);
+	return _rv;
 }
 
 void gui_events::transition_freeze_end(ambulant::lib::rect area)

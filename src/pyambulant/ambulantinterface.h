@@ -581,7 +581,7 @@ public:
 	virtual ~gui_events();
 
 	void redraw(const ambulant::lib::rect& dirty, ambulant::common::gui_window* window);
-	void user_event(const ambulant::lib::point& where, int what);
+	bool user_event(const ambulant::lib::point& where, int what);
 	void transition_freeze_end(ambulant::lib::rect area);
   private:
 	PyObject *py_gui_events;
@@ -609,7 +609,7 @@ public:
 	void start_outtransition(const ambulant::lib::transition_info* info);
 	ambulant::common::surface* get_surface();
 	void redraw(const ambulant::lib::rect&, ambulant::common::gui_window*) { abort(); }
-	void user_event(const ambulant::lib::point&, int) { abort(); }
+	bool user_event(const ambulant::lib::point&, int) { abort(); }
 	void transition_freeze_end(ambulant::lib::rect) { abort(); }
   private:
 	PyObject *py_renderer;
@@ -635,7 +635,7 @@ public:
 	void keep_as_background();
 	void highlight(ambulant::common::gui_window* window);
 	void redraw(const ambulant::lib::rect&, ambulant::common::gui_window*) { abort(); }
-	void user_event(const ambulant::lib::point&, int) { abort(); }
+	bool user_event(const ambulant::lib::point&, int) { abort(); }
 	void transition_freeze_end(ambulant::lib::rect) { abort(); }
   private:
 	PyObject *py_bgrenderer;

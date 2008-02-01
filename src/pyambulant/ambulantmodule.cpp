@@ -6626,11 +6626,11 @@ static PyObject *gui_eventsObj_user_event(gui_eventsObject *_self, PyObject *_ar
 	                      &what))
 		return NULL;
 	PyThreadState *_save = PyEval_SaveThread();
-	_self->ob_itself->user_event(where,
-	                             what);
+	bool _rv = _self->ob_itself->user_event(where,
+	                                        what);
 	PyEval_RestoreThread(_save);
-	Py_INCREF(Py_None);
-	_res = Py_None;
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
 	return _res;
 }
 
@@ -6653,7 +6653,7 @@ static PyMethodDef gui_eventsObj_methods[] = {
 	{"redraw", (PyCFunction)gui_eventsObj_redraw, 1,
 	 PyDoc_STR("(ambulant::lib::rect dirty, ambulant::common::gui_window* window) -> None")},
 	{"user_event", (PyCFunction)gui_eventsObj_user_event, 1,
-	 PyDoc_STR("(ambulant::lib::point where, int what) -> None")},
+	 PyDoc_STR("(ambulant::lib::point where, int what) -> (bool _rv)")},
 	{"transition_freeze_end", (PyCFunction)gui_eventsObj_transition_freeze_end, 1,
 	 PyDoc_STR("(ambulant::lib::rect area) -> None")},
 	{NULL, NULL, 0}

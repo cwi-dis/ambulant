@@ -564,12 +564,12 @@ embedder_object.othermethods = [
 
 renderer_object.othermethods = [
     "void redraw(const ambulant::lib::rect&, ambulant::common::gui_window*) { abort(); }", # XXX
-    "void user_event(const ambulant::lib::point&, int) { abort(); }", # XXXX
+    "bool user_event(const ambulant::lib::point&, int) { abort(); }", # XXXX
     "void transition_freeze_end(ambulant::lib::rect) { abort(); }", # XXX
 ]
 bgrenderer_object.othermethods = [
     "void redraw(const ambulant::lib::rect&, ambulant::common::gui_window*) { abort(); }", # XXX
-    "void user_event(const ambulant::lib::point&, int) { abort(); }", # XXXX
+    "bool user_event(const ambulant::lib::point&, int) { abort(); }", # XXXX
     "void transition_freeze_end(ambulant::lib::rect) { abort(); }", # XXX
 ]
 surface_object.othermethods = [
