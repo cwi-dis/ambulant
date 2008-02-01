@@ -340,7 +340,7 @@ ffmpeg_video_decoder_datasource::frame_done(timestamp_t now, bool keepdata)
 	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.frame_done(%d)", (int)now);
 
-	while ( m_frames.size() && m_old_frame.first < now) {
+	while ( m_frames.size() && m_old_frame.first <= now) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::frame_done: discarding m_old_frame timestamp=%d, now=%d, data ptr = 0x%x",(int)m_old_frame.first,(int)now, m_old_frame.second);
 		_pop_top_frame();
 	}
@@ -688,7 +688,7 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 	// XXX Jack thinks it may be better not to do any framedropping here, and in stead do it only in the
 	// renderer (where we can gather statistics)
 	int curdropcount = 0;
-	while ( m_frames.size() && m_old_frame.first < now - (2*frame_duration)) { //HACK:Due to jitter, the previous condition of dropping frames older than one frameduration was too strict!
+	while ( m_frames.size() > 1 && m_old_frame.first < now - (2*frame_duration)) { //HACK:Due to jitter, the previous condition of dropping frames older than one frameduration was too strict!
 		//A better method to tolerate jitter required ??? This hack may still fail for high fps videos
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: discarding m_old_frame timestamp=%lld, now=%lld, data ptr = 0x%x", m_old_frame.first,now, m_old_frame.second);
 		_pop_top_frame();
@@ -713,8 +713,9 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 		lib::logger::get_logger()->debug("go figure...");
 	}
 #endif
+#if 0
 	assert(m_frames.size() == 0 || m_frames.top().first >= now-(2*frame_duration));
-	
+#endif
 	 
 	if (timestamp_p) *timestamp_p = m_old_frame.first;
 	if (size_p) *size_p = m_size;

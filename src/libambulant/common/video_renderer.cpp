@@ -320,6 +320,7 @@ video_renderer::data_avail()
 			m_last_frame_timestamp = frame_ts_micros;
 			m_frame_displayed++;
 		} else {
+			AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: skip frame (timestamp = %lld)", frame_ts_micros);
 			m_frame_duplicate++;
 		}
 		m_src->frame_done(frame_ts_micros, true);

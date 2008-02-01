@@ -80,6 +80,7 @@ cocoa_fill_renderer::redraw_body(const rect &dirty, gui_window *window)
 	// First find our whole area (which we have to clear to background color)
 	rect dstrect_whole = r;
 	dstrect_whole.translate(m_dest->get_global_topleft());
+	AM_DBG logger::get_logger()->debug("cocoa_fill_renderer.redraw(0x%x, global_ltrb=(%d,%d,%d,%d)", (void *)this, dstrect_whole.left(), dstrect_whole.top(), dstrect_whole.right(), dstrect_whole.bottom());
 	NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
 	// Fill with  color
 	const char *color_attr = m_node->get_attribute("color");
