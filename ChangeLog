@@ -1,3 +1,18 @@
+2008-02-01 23:45  jackjansen
+
+	* Monday's video change (only drop frames beofre current timestamp,
+	  not upto and including) was a mistake. Reverted.
+
+2008-02-01 15:38  jackjansen
+
+	* Got partial redraws to work. But it is really a bit of a hack:
+	  apparently I have no idea when to use topleft and when to use
+	  botleft coordinates.	Still, the current code seems to work.
+
+2008-02-01 11:59  jackjansen
+
+	* Regenerated for change in signature of user_event().
+
 2008-01-30 14:54  keesblom
 
 	* Added some changes for Maemo 4(CHINOOK), OS2008 on N800 and N810
