@@ -927,6 +927,6 @@ bool gtk_ambulant_widget::clear_overlay(){
 }
 
 
-bool gtk_ambulant_widget::set_screenshot(gchar **screenshot_data, gsize *screenshot_size){
+bool gtk_ambulant_widget::set_screenshot(char **screenshot_data, size_t *screenshot_size){
 	return TRUE;
 }
