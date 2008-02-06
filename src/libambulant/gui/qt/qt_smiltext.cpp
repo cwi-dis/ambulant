@@ -183,8 +183,9 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 	QPixmap* tx_pixmap = NULL;
 	lib::rect rct(r); // rct encloses leading blank and word
 	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_render(): data=%s r=L=%d,T=%d,W=%d,H=%d", strun.m_data.c_str(),r.x,r.y,r.w,r.h);
-	int L = rct.left(),
-	    T = rct.top(),
+	const lib::point p = m_dest->get_global_topleft();
+	int L = rct.left()+p.x,
+	    T = rct.top()+p.y,
 	    W = rct.width(),
 	    H = rct.height();
 
