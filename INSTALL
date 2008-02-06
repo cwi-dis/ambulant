@@ -66,7 +66,8 @@ everything in third_party_packages should be ready in 32 bit mode,
 ffmpeg: ./configure --extra-cflags=-m32 --extra-ldflags=-m32 --cpu=i386 --cross-compile
 PKG_CONFIG_PATH=:/usr/lib/pkgconfig/ ./autogen.sh CFLAGS=-m32 CXXFLAGS=-m32 --host=i386
 
-ambulant in 64 bit mode now at least needs -nostartfiles in libtool.sh
+ambulant in 64 bit mode now at least needs -nostartfiles in libtool.sh manually added
+and ffmpeg: ./configure --extra-cflags-fPIC
 ===================================================================================
 
 Building for Mac OS X
