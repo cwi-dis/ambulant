@@ -10,7 +10,10 @@
 ;   a statically built Ambulant or a dll-based Ambulant (which allows for
 ;   plugins, etc).
 ; - DISTRIBUTE_PYTHON_PLUGIN: define this to include Python support (dll build only)
+; - DISTRIBUTE_VC7_RT: define this if you built with VS2003
 ; - BUILD_SYSDIR: This is where to pick up some standard DLLs that we distribute.
+; - DISTRIBUTE_VC8_RT: define this if you built with VS2005
+; - VC8_DISTDIR: where to pick up these files.
 ;
 !define PRODUCT_NAME "Ambulant Player"
 !define PRODUCT_VERSION "1.9"
@@ -24,8 +27,11 @@
 
 ; Where the system directory is on the machine where we are building the installer
 
-!define BUILD_SYSDIR "C:\WINDOWS\system32"  ; Most machines
-;!define BUILD_SYSDIR "E:\WINNT\system32"   ; Jack's CWI desktop machine
+; !define DISTRIBUTE_VC7_RT
+; !define BUILD_SYSDIR "C:\WINDOWS\system32"  ; Most machines
+
+!define DISTRIBUTE_VC8_RT
+!define VC8_DISTDIR "C:\Program Files\Microsoft Visual Studio 8\VC\redist\x86"
 
 ; MUI 1.67 compatible ------
 !include "MUI.nsh"
@@ -72,7 +78,7 @@ ShowUnInstDetails show
 Section "Core Components" CoreSection
 
   SetOutPath "$INSTDIR"
-  SetOverwrite ifnewer
+  SetOverwrite on
 !ifdef DISTRIBUTE_DLL_BUILD
   File /ONAME=AmbulantPlayer.exe "..\..\bin\win32\AmbulantPlayer.exe"
   File "..\..\bin\win32\libambulant_shwin32.dll"
@@ -110,6 +116,7 @@ Section "Core Components" CoreSection
   File "..\..\Extras\Welcome\data\*.png"
   File "..\..\Extras\Welcome\data\*.mp3"
 
+!ifdef DISTRIBUTE_VC7_RT
 ; *** The all critical MSVC7 Dependencies
 ; *** Ideally this list is complete?
 
@@ -120,6 +127,16 @@ Section "Core Components" CoreSection
   File "${BUILD_SYSDIR}\msvcrt.dll"
   File "${BUILD_SYSDIR}\mfc71u.dll"
   File "${BUILD_SYSDIR}\MFC71ENU.DLL"
+!endif
+!ifdef DISTRIBUTE_VC8_RT
+; *** MSVC8 runtime goes into the application directory
+  SetOutPath "$INSTDIR"
+  File "${VC8_DISTDIR}\Microsoft.VC80.CRT\msvcr80.dll"
+  File "${VC8_DISTDIR}\Microsoft.VC80.CRT\msvcp80.dll"
+  File "${VC8_DISTDIR}\Microsoft.VC80.CRT\Microsoft.VC80.CRT.manifest"
+  File "${VC8_DISTDIR}\Microsoft.VC80.MFC\mfc80u.dll"
+  File "${VC8_DISTDIR}\Microsoft.VC80.MFC\Microsoft.VC80.MFC.manifest"
+!endif
 SectionEnd
 
 Section "Demo Presentation" DemoSection

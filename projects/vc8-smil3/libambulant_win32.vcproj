@@ -1169,15 +1169,15 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\libambulant\common\state.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\libambulant\common\smil_alignment.cpp"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\libambulant\common\smil_handler.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\libambulant\common\state.cpp"
 					>
 				</File>
 				<File
@@ -1836,15 +1836,15 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\include\ambulant\common\state.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\include\ambulant\common\smil_alignment.h"
 						>
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\common\smil_handler.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\common\state.h"
 						>
 					</File>
 					<File
