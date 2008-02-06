@@ -548,7 +548,7 @@ xpath_state_component::string_expression(const char *expr)
 		lib::logger::get_logger()->trace("xpath_state_component: \"{%s}\" does not evaluate to a string", expr);
 		return "";
 	}
-	lib::logger::get_logger()->debug("xpath_state_component::string_expression(%s) -> %s", expr, (int)result_str);
+	lib::logger::get_logger()->debug("xpath_state_component::string_expression(%s) -> %s", expr, (void*)result_str);
 	std::string rv((char *)result_str);
 	xmlFree(result_str);
 	return rv;
