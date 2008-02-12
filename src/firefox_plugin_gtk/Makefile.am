@@ -5,7 +5,7 @@ FIREFOX_PLUGIN=libAmbulantPlugin.so
 
 ambulantlibdir=$(top_builddir)/src/libambulant/.libs
 
-ambulantlib_ldflags=-L$(ambulantlibdir) -lambulant
+ambulant_ldflags=-L$(ambulantlibdir) -lambulant
 
 EXTRA_DIST=plugin.h plugin.cpp \
     ambulantmodule.h ambulantmodule.cpp \
@@ -30,6 +30,15 @@ else
 extra_ffmpeg_ldflags=
 endif
 #------------------------------------------------------
+if WITH_LIVE
+livelibs = -L$(LIVE_ROOT)/liveMedia/ -lliveMedia \
+			  -L$(LIVE_ROOT)/BasicUsageEnvironment/ -lBasicUsageEnvironment  \
+			  -L$(LIVE_ROOT)/groupsock/ -lgroupsock  \
+			  -L$(LIVE_ROOT)/UsageEnvironment/ -lUsageEnvironment
+else
+livelibs =
+endif # WITH_LIVE
+#------------------------------------------------------
 if WITH_SDL
 sdl_config=`sdl-config --libs`
 extra_sdl_ldflags=-lambulant_sdl $(sdl_config)
@@ -43,9 +52,8 @@ else
 extra_xerces_ldflags=
 endif # WITH_XERCES_BUILTIN
 #------------------------------------------------------
-#KB hack, hack ...
+#KB hack
 extra_hack1_ldflags=../player_gtk/gtk_mainloop.o
-extra_hack2_ldflags=-lambulant_live -lambulant_gtk
 
 EXTRA_CFLAGS=$(extra_gtk_cflags)
 # KB temp MOZ_X11
@@ -87,24 +95,22 @@ FIREFOXENV=
 BUILDLIBDIR=
 lib_LTLIBRARIES = libambulantplugin.la
 libambulantplugin_la_SOURCES=np_entry.cpp npn_gate.cpp npp_gate.cpp npplat.h pluginbase.h plugin.cpp plugin.h nsScriptablePeer.cpp  nsScriptablePeer.h
-# npn_gate.cpp npp_gate.cpp nsScriptablePeer.cpp 
+
 libambulantplugin_la_LDFLAGS=	\
 	-shared $(LIBLTDL)	\
 	$(extra_hack1_ldflags)	\
-	-L$(ambulantlibdir) -lambulant  \
+	 -lambulant_gtk \
 	$(extra_gtk_ldflags)	\
 	$(extra_ffmpeg_ldflags)	\
 	$(extra_sdl_ldflags)	\
 	$(extra_xerces_ldflags)	\
-	$(extra_hack2_ldflags)	\
+	$(extra_live_ldflags)	\
+	$(ambulant_ldflags) \
 	-o $(FIREFOX_PLUGIN)
 
 	
 build-firefox-plugin: $(PLUGIN_FILES) $(srcdir)/plugin.h
-	( a=`cd $(ambulantlibdir); pwd` ; \
-	  cd $(srcdir) ; \
-	  AM_LDFLAGS="-L$$a -lambulant $(extra_gtk_ldflags) $(extra_ffmpeg_ldflags) $(extra_sdl_ldflags) -o libambulantplugin.so" \
-	)
+	AM_LDFLAGS="-o libambulantplugin.so"
 
 check-firefox-plugin:
 	( a=`cd $(ambulantlibdir); pwd` ; \

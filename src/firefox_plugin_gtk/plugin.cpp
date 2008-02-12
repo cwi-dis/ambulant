@@ -177,7 +177,9 @@ NPBool nsPluginInstance::init(NPWindow* aWindow)
     height = aWindow->height;
 #endif/*MOZ_X11*/
 #ifdef AMBULANT_FIREFOX_PLUGIN
-    GtkWidget* gtkwidget = GTK_WIDGET(gtk_plug_new((GdkNativeWindow)aWindow->window));
+    long long ll_winid = reinterpret_cast<long long>(aWindow->window);
+    int i_winid = static_cast<int>(ll_winid);
+    GtkWidget* gtkwidget = GTK_WIDGET(gtk_plug_new((GdkNativeWindow) i_winid));
 //  gtk_widget_set_parent(gtkwidget, gtk_plug_new((GdkNativeWindow)aWindow->window));
 //  gtk_window_set_resizable(gtkwidget, true); 	
   	gtk_widget_set_size_request(gtkwidget, width, height);

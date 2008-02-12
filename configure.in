@@ -71,6 +71,10 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	Documentation/Makefile
 	Extras/Makefile])
 	
+
+AC_CONFIG_COMMANDS([libtool_patch],[chmod 755
+patch_libtool.sh;./patch_libtool.sh])
+
 #
 # This variable records whether we have support for
 # any windowing system (so we can give a warning at
