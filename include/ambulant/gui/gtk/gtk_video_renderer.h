@@ -30,7 +30,6 @@
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/common/layout.h"
-#include "ambulant/net/raw_video_datasource.h"
 #include "ambulant/common/playable.h"
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
@@ -52,7 +51,8 @@ class gtk_video_renderer :  public gtk_renderer<common::video_renderer>  {
 				 common::factories *factory);
 	
 	~gtk_video_renderer();
-   	void show_frame(const char* frame, int size);
+	net::pixel_order pixel_layout();
+   	void push_frame(char* frame, int size);
 	void redraw_body(const lib::rect &r, common::gui_window* w);
 private:
  	std::queue< std::pair<int, char*> > m_frames;

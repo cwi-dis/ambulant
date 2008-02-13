@@ -143,6 +143,8 @@ xerces-unix:
 	the directory containing libxerces-c.so.
 	
 ffmpeg:
+    XXXX This section is heavily outdated.
+    
     The best option is to use the the fairly recent frozen cvs-ffmpeg
     that was created especially for Ambulant. You find this on the
     Ambulant SF download pages as ffmpeg-cvs-20051121.tgz. Unpack this

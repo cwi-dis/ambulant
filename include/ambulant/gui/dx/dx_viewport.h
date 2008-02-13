@@ -20,11 +20,7 @@
  */
 
 /* 
-<<<<<<< dx_viewport.h
  * @$Id$ 
-=======
- * @$Id$ 
->>>>>>> 1.38.2.1
  */
 
 #ifndef AMBULANT_GUI_DX_VIEWPORT_H
@@ -43,6 +39,7 @@
 #include "ambulant/lib/gtypes.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/common/preferences.h"
+#include "ambulant/net/datasource.h"
 
 struct IDirectDraw;
 struct IDirectDrawSurface;

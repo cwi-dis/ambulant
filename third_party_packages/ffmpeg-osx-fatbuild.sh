@@ -1,6 +1,7 @@
 #!/bin/sh
 #
-CONFIGOPTS="--disable-mmx --disable-encoders --enable-gpl --disable-vhook --disable-ffmpeg"
+#CONFIGOPTS="--enable-swscale --disable-mmx --disable-encoders --enable-gpl --disable-vhook --disable-ffmpeg"
+CONFIGOPTS="--disable-mmx --disable-encoders --enable-gpl --disable-vhook --disable-ffserver --disable-ffmpeg --enable-static --enable-shared"
 srcdir=$1
 # XXXX Enable these for doing 10.4-compatible distributions
 SYSROOT=" -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
@@ -69,6 +70,7 @@ if $mkdirs; then
     mkdir libavformat
     mkdir libavcodec
     mkdir libavutil
+    mkdir libswscale
 else
     echo $0: skipping mkdirs
 fi
@@ -78,6 +80,7 @@ if $mklinks; then
     ( cd libavformat ; ln -s $srcdir/libavformat/*.h .)
     ( cd libavcodec ; ln -s $srcdir/libavcodec/*.h .)
     ( cd libavutil ; ln -s $srcdir/libavutil/*.h .)
+    ( cd libswscale ; ln -s $srcdir/libswscale/*.h .)
 else
     echo $0: skipping mklinks
 fi
@@ -133,6 +136,7 @@ if $merge; then
     lipo -create -output libavformat/libavformat.a build-{i386,ppc}/libavformat/libavformat.a
     lipo -create -output libavcodec/libavcodec.a build-{i386,ppc}/libavcodec/libavcodec.a
     lipo -create -output libavutil/libavutil.a build-{i386,ppc}/libavutil/libavutil.a
+    lipo -create -output libswscale/libswscale.a build-{i386,ppc}/libswscale/libswscale.a
     # XXXX Should also do the dynamic libraries?
 else
     echo $0: skipping merge

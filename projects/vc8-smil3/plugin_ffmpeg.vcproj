@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="plugin_ffmpeg"
 	ProjectGUID="{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}"
 	Keyword="Win32Proj"
@@ -144,7 +144,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="SDL.lib avformat.lib avcodec.lib avutil.lib liveMedia.lib BasicUsageEnvironment.lib UsageEnvironment.lib groupsock.lib ws2_32.lib"
+				AdditionalDependencies="SDL.lib avformat.lib avcodec.lib avutil.lib liveMedia.lib BasicUsageEnvironment.lib UsageEnvironment.lib groupsock.lib ws2_32.lib ddraw.lib"
 				OutputFile="../../bin/win32/libamplugin_ffmpeg.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\lib\win32"
@@ -260,6 +260,74 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{DCA8885C-B58F-47bc-92C7-CB0BD3B0DB08}"
 			>
+			<Filter
+				Name="dsvideo"
+				>
+				<File
+					RelativePath="..\..\include\ambulant\gui\dx\dx_dsvideo.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\ambulant\common\video_renderer.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="ffmpeg"
+				>
+				<File
+					RelativePath="..\..\include\ambulant\net\demux_datasource.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\ambulant\net\ffmpeg_audio.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\ambulant\net\ffmpeg_common.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\ambulant\net\ffmpeg_factory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\ambulant\net\ffmpeg_raw.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\ambulant\net\ffmpeg_video.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="live555"
+				>
+				<File
+					RelativePath="..\..\include\ambulant\net\rtsp_datasource.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\ambulant\net\rtsp_factory.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="sdl"
+				>
+				<File
+					RelativePath="..\..\include\ambulant\gui\SDL\sdl_audio.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\ambulant\gui\SDL\sdl_factory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\ambulant\gui\SDL\sdl_gui.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

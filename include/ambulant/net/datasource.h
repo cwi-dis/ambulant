@@ -107,6 +107,17 @@ struct audio_format {
 		bits(0) {};
 };
 
+/// Pixel layout in memory.
+enum pixel_order {
+	pixel_unknown,	///< Compressed formats and such
+	pixel_rgba,		///< (msb)R G B A(lsb), in host order
+	pixel_argb,		///< (msb)A R G B(lsb), in host order
+	pixel_bgra,		///< (msb)B G R A(lsb), in host order
+	pixel_abgr,		///< (msb)A B G R(lsb), in host order
+	pixel_rgb,		///< R G B (in byte order).
+	pixel_bgr		///< B G R (in byte order).
+};
+
 /// This struct completely describes a video format.
 /// If name is "" the format is a sequence of uncompressed images.
 /// Parameters may be 0 if the values are not known.
@@ -116,8 +127,8 @@ struct video_format {
 	std::string name;			///< Name of the format
 	const void *parameters;		///< For a named format, pointer to parameters
 	timestamp_t frameduration;	///< For linear samples: the samplerate
-	int width;					/// The width of the video
-	int height;					///	The height of the video
+	int width;					///< The width of the video
+	int height;					///< The height of the video
 	
 	/// Default constructor: creates unknown video_format.
 	video_format()
@@ -337,6 +348,9 @@ class video_datasource : virtual public lib::ref_counted_obj {
   public:
   	virtual ~video_datasource() {};
 
+	/// Signals the type of pixels the receiver wants.
+	virtual void set_pixel_layout(pixel_order l) = 0;
+	
 	/// Return the duration of the video data, if known.
 	virtual common::duration get_dur() = 0;
 
@@ -360,8 +374,10 @@ class video_datasource : virtual public lib::ref_counted_obj {
   	
 	/// Return the current video frame.
 	/// Should only be called from the callback routine.
-	/// The timestamp of the frame and the size of the data are also returned.
-  	virtual char* get_frame(timestamp_t now, timestamp_t *timestamp, int *size) = 0; 
+	/// The timestamp of the frame and the size of the data returned.
+	/// When the receiver is done with this frame (and any preceding frames)
+	/// it should call frame_processed() or frame_processed_keepdata().
+  	virtual char * get_frame(timestamp_t now, timestamp_t *ts, int *size) = 0; 
 
 	/// Returns the width of the image returned by get_frame.
 	virtual int width() = 0;
@@ -370,10 +386,13 @@ class video_datasource : virtual public lib::ref_counted_obj {
 	virtual int height() = 0;
 	
 	virtual timestamp_t frameduration() = 0;
-	/// Called by the client to indicate all frames up to timestamp are consumed.
-	/// If keepdata is set the actual storage for a frame with an exact
-	/// timestamp match is not freed.
-  	virtual void frame_done(timestamp_t timestamp, bool keepdata) = 0;
+	
+	/// Called by the client to indicate all frames up to and including timestamp are consumed.
+  	virtual void frame_processed(timestamp_t timestamp) = 0;
+	
+	/// Called by the client to indicate it wants to take ownership of this buffer.
+	/// Must only be called with most recent results from get_frame().
+  	virtual void frame_processed_keepdata(timestamp_t timestamp, char *data) = 0;
 	
 	/// Tells the datasource to start reading data starting from time t.
 	virtual void read_ahead(timestamp_t time) = 0;

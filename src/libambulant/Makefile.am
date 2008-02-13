@@ -280,7 +280,6 @@ libambulant_la_SOURCES = \
 	\
 	net/posix_datasource.cpp \
 	net/stdio_datasource.cpp \
-	net/raw_video_datasource.cpp \
 	net/datasource.cpp \
 	net/databuffer.cpp \
 	net/url.cpp \

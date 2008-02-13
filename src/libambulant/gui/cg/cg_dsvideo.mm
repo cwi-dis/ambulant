@@ -31,6 +31,23 @@
 #define AM_DBG if(0)
 #endif
 
+// These two constants should match. Moreover, the optimal setting may depend on the
+// specific hardware.
+#if 1
+#define MY_PIXEL_LAYOUT net::pixel_argb
+#define MY_BITMAP_INFO (kCGImageAlphaNoneSkipFirst|kCGBitmapByteOrder32Host)
+#define MY_BPP 4
+#endif
+#if 0
+#define MY_PIXEL_LAYOUT net::pixel_rgba
+#define MY_BITMAP_INFO (kCGImageAlphaNoneSkipLast|kCGBitmapByteOrder32Host)
+#define MY_BPP 4
+#endif
+#if 0
+#define MY_PIXEL_LAYOUT net::pixel_bgr
+#define MY_BITMAP_INFO (kCGImageAlphaNone|kCGBitmapByteOrder32Host)
+#define MY_BPP 3
+#endif
 namespace ambulant {
 
 using namespace lib;
@@ -60,41 +77,32 @@ cg_dsvideo_renderer::~cg_dsvideo_renderer()
 	m_lock.leave();
 }
 
-void
-cg_dsvideo_renderer::stop_show_frame()
+net::pixel_order
+cg_dsvideo_renderer::pixel_layout()
 {
-	m_lock.enter();
-	if (m_image) {
-		AM_DBG lib::logger::get_logger()->trace("0x%x: stop_show_frame(0x%x)", this, m_image);
-		CGImageRelease(m_image);
-		m_image = NULL;
-	}
-	m_lock.leave();
+	return MY_PIXEL_LAYOUT;
+}
+
+static void
+my_free_frame(void *ptr, const void *ptr2, size_t size)
+{
+	free(ptr);
 }
 
 void
-cg_dsvideo_renderer::show_frame(const char* frame, int size)
+cg_dsvideo_renderer::push_frame(char* frame, int size)
 {
 	m_lock.enter();
 	if (m_image) {
 		CGImageRelease(m_image);
 		m_image = NULL;
 	}
-	AM_DBG lib::logger::get_logger()->debug("cg_dsvideo_renderer::show_frame: size=%d, w*h*3=%d", size, m_size.w * m_size.h * 4);
-	assert(size == (int)(m_size.w * m_size.h * 4));
-	// XXXX Who keeps reference to frame?
-	CGSize nssize = CGSizeMake(m_size.w, m_size.h);
-	m_image = NULL; // [[NSImage alloc] initWithSize: nssize];
-#if 1
-	CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, frame, size, NULL);
+	AM_DBG lib::logger::get_logger()->debug("cg_dsvideo_renderer::push_frame: size=%d, w*h*3=%d", size, m_size.w * m_size.h * 4);
+	assert(size == (int)(m_size.w * m_size.h * MY_BPP));
+	// Step 1 - setup a data provider that reads our in-core image data
+	CGDataProviderRef provider = CGDataProviderCreateWithData(frame, frame, size, my_free_frame);
 	assert(provider);
-#else
-	CFDataRef cfdata = CFDataCreate(NULL, (const UInt8 *)frame, size);
-	assert(cfdata);
-	CGDataProviderRef provider = CGDataProviderCreateWithCFData(cfdata);
-	assert(provider);
-	CFRelease(cfdata);
-#endif
+	// Step 2 - create a CGImage that uses that data provider to initialize itself
 	CGColorSpaceRef genericColorSpace = CGColorSpaceCreateDeviceRGB();
 	assert(genericColorSpace);
 	// There may be room for improvement here, but I cannot find it. Did some experiments (on 4-core Intel Mac Pro)
@@ -105,17 +113,17 @@ cg_dsvideo_renderer::show_frame(const char* frame, int size)
 	// - If the image does need scaling things slow down by a factor of 4.
 	//   0 seems to be as good a value for bitmapInfo as any other value.
 	// - If you also set shouldInterpolate=true you get an additional factor of 2 slowdown.
-	CGBitmapInfo bitmapInfo = 0; 
-	m_image = CGImageCreate( m_size.w, m_size.h, 8, 32, m_size.w*4, genericColorSpace, bitmapInfo, provider, NULL, false, kCGRenderingIntentDefault);
-	AM_DBG lib::logger::get_logger()->trace("0x%x: show_frame(0x%x, %d) -> 0x%x -> 0x%x", this, frame, size, provider, m_image);
+	CGBitmapInfo bitmapInfo = MY_BITMAP_INFO; 
+	m_image = CGImageCreate( m_size.w, m_size.h, 8, MY_BPP*8, m_size.w*MY_BPP, genericColorSpace, bitmapInfo, provider, NULL, false, kCGRenderingIntentDefault);
+	AM_DBG lib::logger::get_logger()->trace("0x%x: push_frame(0x%x, %d) -> 0x%x -> 0x%x", this, frame, size, provider, m_image);
 	CGDataProviderRelease(provider);
 	CGColorSpaceRelease(genericColorSpace);
 	if (!m_image) {
-		logger::get_logger()->trace("cg_dsvideo_renderer::show_frame: cannot create CGImage");
+		logger::get_logger()->trace("cg_dsvideo_renderer::push_frame: cannot create CGImage");
 		m_lock.leave();
 		return;
 	}
-	AM_DBG lib::logger::get_logger()->debug("cg_dsvideo_renderer::show_frame: created CGImage 0x%x", m_image);
+	AM_DBG lib::logger::get_logger()->debug("cg_dsvideo_renderer::push_frame: created CGImage 0x%x", m_image);
 //	if (m_dest) m_dest->need_redraw();
 	m_lock.leave();
 }

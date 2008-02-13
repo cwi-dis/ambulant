@@ -35,6 +35,12 @@ ffmpeg:
 	- Now pass this folder to the Ambulant configure, with 
 	  "--with-ffmpeg=third_party_packages/ffmpeg-universal".
 	
+	You may also need to apply a patch if you get "absolute addressing not allowed
+	in slidable image" errors: the MMX code in libswscale is always enabled even
+	though we've specified --without-mmx on the configure.
+	Edit liibswscale/rgb2rgb.c, look for #if defined(ARCH_X86) and
+	add !defined(__APPLE__).
+	
 sdl:
 	If you want to build a universal (ppc/intel) Ambulant binary you must
 	build SDL in a different way. The script sdl-osx-fatbuild.sh in this

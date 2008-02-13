@@ -38,6 +38,14 @@
 #include "ambulant/gui/dx/dx_transition.h"
 #include "ambulant/gui/dx/dx_surface.h"
 
+// Enabling this define will attempt to speed up video by stuffing the
+// pointer to "our" buffer with the video frame directly into the DD surface
+// and using that. This saves two memory copies (one memcpy from our
+// memory to an intermediate HBITMAP, then a BitBlt to the DD surface).
+#ifndef AMBULANT_PLATFORM_WIN32_WCE
+#define ENABLE_FAST_DDVIDEO
+#endif
+
 namespace ambulant {
 
 using namespace lib;
@@ -63,7 +71,8 @@ class dx_dsvideo_renderer :
 
 	
 //	void user_event(const point &where, int what = 0);
-    void show_frame(const char* frame, int size);
+	net::pixel_order pixel_layout();
+    void push_frame(char* frame, int size);
 	void redraw(const rect &dirty, gui_window *window);
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};
@@ -73,9 +82,14 @@ class dx_dsvideo_renderer :
     void _init_bitmap();
 	void _init_ddsurf(gui_window *window);
 	void _copy_to_ddsurf();
-	HBITMAP m_bitmap;			// Bitmap to hold the image
-	char *m_bitmap_dataptr;		// Pointer to actual data inside bitmap
+	char *m_frame;				// Current frame
+	int m_frame_size;			// Size of current frame
+	HBITMAP m_bitmap;			// Bitmap to hold the image (if needed)
+	char *m_bitmap_dataptr;		// Pointer to actual data inside bitmap (if needed)
 	IDirectDrawSurface *m_ddsurf;	// DD surface, for scaling and such
+#ifdef ENABLE_FAST_DDVIDEO
+	IDirectDrawSurface7 *m_ddsurf7;	// Same, for replacing the underlying storage
+#endif
 	critical_section m_lock;
 };
 

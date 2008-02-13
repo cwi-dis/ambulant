@@ -22,30 +22,16 @@
 #ifndef AMBULANT_NET_FFMPEG_VIDEO_H
 #define AMBULANT_NET_FFMPEG_VIDEO_H
 
-
-//#include <vector>
-//#include <queue>
-
-//#include <sys/types.h>
-//#include <sys/stat.h>
-//#include <fcntl.h>
-
-
 #include "ambulant/config/config.h"
-//#include "ambulant/lib/callback.h"
-//#include "ambulant/lib/refcount.h"
-//#include "ambulant/lib/event_processor.h"
-//#include "ambulant/lib/mtsync.h"
-//#include "ambulant/lib/event_processor.h"
-//#include "ambulant/lib/unix/unix_thread.h"
-//#include "ambulant/net/databuffer.h"
-//#include "ambulant/net/posix_datasource.h"
 #include "ambulant/net/datasource.h"
 
 extern "C" {
 #include "avcodec.h"
 #include "avformat.h"
-//#include "common.h"
+#ifdef WITH_FFMPEG_LIBSWSCALE
+#include "swscale.h"
+#endif
+
 }
 
 // temporary debug messages
@@ -106,7 +92,8 @@ class ffmpeg_video_decoder_datasource:
 
     bool end_of_file();
 	char* get_frame(timestamp_t now, timestamp_t *timestamp, int *size);
-	void frame_done(timestamp_t timestamp, bool keepdata);
+	void frame_processed_keepdata(timestamp_t timestamp, char *data);
+	void frame_processed(timestamp_t timestamp);
 	void read_ahead(timestamp_t clip_begin);
 	void seek(timestamp_t time);
     void data_avail();
@@ -114,6 +101,7 @@ class ffmpeg_video_decoder_datasource:
   	timestamp_t get_clip_end() { return m_src->get_clip_end(); };
   	timestamp_t get_clip_begin() { return m_src->get_clip_begin(); };
 	timestamp_t get_start_time() { return m_src->get_start_time(); };
+	void set_pixel_layout(pixel_order l) { m_pixel_layout = l; };
 	common::duration get_dur();
 	
   private:
@@ -127,25 +115,29 @@ class ffmpeg_video_decoder_datasource:
 	
 	video_datasource* m_src;
 	AVCodecContext *m_con;
+#ifdef WITH_FFMPEG_LIBSWSCALE
+	struct SwsContext *m_img_convert_ctx;
+#endif
+
 	bool m_con_owned;	// True if we have to close/free m_con
 //	int m_stream_index;
   	video_format m_fmt;
 // 	bool m_src_end_of_file;
  	lib::event_processor *m_event_processor;
 	sorted_frames  m_frames;
-	ts_pointer_pair m_old_frame;
 	int m_size;		// NOTE: this assumes all decoded frames are the same size!
 //	databuffer m_buffer;
 //	detail::ffmpeg_demux *m_thread;
 	lib::event *m_client_callback;  // This is our calllback to the client
   	timestamp_t m_pts_last_frame;
-  	timestamp_t m_last_p_pts;
+  	timestamp_t m_oldest_timestamp_wanted;
 	timestamp_t m_video_clock;
   	int m_frame_count;
 	int m_dropped_count;
     lib::critical_section m_lock;
 	timestamp_t m_elapsed;
 	bool m_start_input;		// True when m_src->start_frame() is needed
+	pixel_order m_pixel_layout;	// Per-pixel format receiver wants.
 	//FILE* m_file;
   	
 };

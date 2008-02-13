@@ -52,6 +52,11 @@
 #define MAX_VIDEO_FRAMES 100
 #endif
 
+#ifdef WITH_FFMPEG_LIBSWSCALE
+// How scaling of images is done. As we don't scale here we pick the cheapest (assuming 0 is indeed the cheapest)
+#define SWSCALE_FLAGS 0
+#endif
+
 #define am_get_codec_var(codec,var) codec->var
 #define am_get_codec(codec) codec
 
@@ -162,16 +167,20 @@ ffmpeg_video_decoder_datasource::supported(const video_format& fmt)
 ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasource* src, video_format fmt)
 :	m_src(src),
 	m_con(NULL),
+#ifdef WITH_FFMPEG_LIBSWSCALE
+	m_img_convert_ctx(NULL),
+#endif
 	m_con_owned(false),
 	m_event_processor(NULL),
 	m_client_callback(NULL),
 	m_pts_last_frame(0),
-	m_last_p_pts(0),
+	m_oldest_timestamp_wanted(0),
 	m_video_clock(0), // XXX Mod by Jack (unsure). Was: src->get_clip_begin()
 	m_frame_count(0),
 	m_dropped_count(0),
 	m_elapsed(0),
-	m_start_input(true)
+	m_start_input(true),
+	m_pixel_layout(pixel_unknown)
 {	
 	
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource() (this = 0x%x)", (void*)this);
@@ -181,7 +190,6 @@ ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasourc
 	if (!_select_decoder(fmt))
 		lib::logger::get_logger()->error(gettext("ffmpeg_video_decoder_datasource: could not select %s(0x%x) decoder"), fmt.name.c_str(), fmt.parameters);
 	m_fmt = fmt;
-	m_old_frame = ts_pointer_pair(0, NULL);
 }
 
 ffmpeg_video_decoder_datasource::~ffmpeg_video_decoder_datasource()
@@ -213,11 +221,6 @@ ffmpeg_video_decoder_datasource::stop()
 	// And delete any frames left
 	while ( ! m_frames.empty() ) {
 		_pop_top_frame();
-	}
-	if (m_old_frame.second) {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::stop(): free(0x%x)", m_old_frame.second);
-		free(m_old_frame.second);
-		m_old_frame.second = NULL;
 	}
 	m_lock.leave();
 }	
@@ -309,45 +312,45 @@ print_frames(sorted_frames frames) {
 
 void 
 ffmpeg_video_decoder_datasource::_pop_top_frame() {
-	// pop a frame, return the new top frame
-	// the old top frame is remembered in m_old_frame
-	// old data in m_old_frame is freed.
-  
-	if (m_old_frame.second) {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_pop_top_frame(): free(0x%x)", m_old_frame.second);
-		free (m_old_frame.second);
-		m_old_frame.second = NULL;
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._pop_top_frame(): free'n m_old_frame.second");
-
-	}
-	
 	if (m_frames.empty()) {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._pop_top_frame():no more frames left returning m_old_frame");
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._pop_top_frame(): no frames? (programmer error)");
 		return;
 	}
 
-	m_old_frame = m_frames.top();
+	char *data = m_frames.top().second;
+	assert(data);
+	if (data) free(data);
 	m_frames.pop();
 }
 
 void 
-ffmpeg_video_decoder_datasource::frame_done(timestamp_t now, bool keepdata)
+ffmpeg_video_decoder_datasource::frame_processed_keepdata(timestamp_t now, char *buf)
 {
 	m_lock.enter();
+	m_oldest_timestamp_wanted = now+1;
+	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_decoder_datasource::frame_processed_keepdata(%lld)", now);
+	assert(m_frames.size() > 0);
+	assert(m_frames.top().first == now);
+	assert(m_frames.top().second == buf);
+	m_frames.pop();
+	m_lock.leave();
+}
+
+void 
+ffmpeg_video_decoder_datasource::frame_processed(timestamp_t now)
+{
+	m_lock.enter();
+	m_oldest_timestamp_wanted = now+1;
 	if (m_frames.size() == 0) {
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::frame_processed: frame queue empty");
 		m_lock.leave();
 		return;
 	}
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.frame_done(%d)", (int)now);
-
-	while ( m_frames.size() && m_old_frame.first <= now) {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::frame_done: discarding m_old_frame timestamp=%d, now=%d, data ptr = 0x%x",(int)m_old_frame.first,(int)now, m_old_frame.second);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.frame_processed(%lld)", now);
+	
+	while ( m_frames.size() > 0 && m_frames.top().first <= now) {
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::frame_processed: discarding first frame timestamp=%d, now=%d, data ptr = 0x%x",(int)m_frames.top().first,(int)now, m_frames.top().second);
 		_pop_top_frame();
-	}
-	if (!keepdata) {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::frame_done(%d): free(0x%x)", (int)now, m_old_frame.second);
-		free(m_old_frame.second);
-		m_old_frame.second = NULL;
 	}
 	m_lock.leave();
 }
@@ -424,6 +427,7 @@ ffmpeg_video_decoder_datasource::seek(timestamp_t time)
 		_pop_top_frame();
 	}
 	if (m_src) m_src->seek(time);
+	m_oldest_timestamp_wanted = time;
 	m_lock.leave();
 }
 
@@ -433,7 +437,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 	m_lock.enter();
 	int got_pic;
 	AVPicture picture;
-	int len, dummy2;
+	int len;
 	int pic_fmt, dst_pic_fmt;
 	int w,h;
 	unsigned char* ptr;
@@ -464,43 +468,45 @@ ffmpeg_video_decoder_datasource::data_avail()
 	}
 	
 	// No easy error conditions, so let's allocate our frame.
-	AVFrame *frame = avcodec_alloc_frame();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail called (0x%x) ", (void*) this);
-	while(inbuf && sz && m_con) {	
+	if (inbuf && m_con) {	
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:start decoding (0x%x) ", m_con);
-		assert(&m_con != NULL);
-		assert(inbuf);
 		assert(sz < 1000000); // XXXX This is soft, and probably incorrect. Remove when it fails.
+		AVFrame *frame = avcodec_alloc_frame();
+		if (frame == NULL) {
+			lib::logger::get_logger()->debug("ffmpeg_video_decoder: avcodec_alloc_frame() failed");
+			lib::logger::get_logger()->error("Out of memory playing video");
+			m_src->stop();
+			goto out_of_memory;
+		}
 		ptr = inbuf;
 		
 		while (sz > 0) {
+			bool drop_this_frame = false;
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: decoding picture(s),  %d byteas of data ", sz);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: m_con: 0x%x, gotpic = %d, sz = %d ", m_con, got_pic, sz);
-#ifdef WITH_FFMPEG_HURRY_UP
-			// XXXJACK: setting hurry_up should make the decoder run faster in case we
-			// are not interested in the data (still seeking forward). Not enabled yet,
-			// will do so later (and then this comment should disappear).
-			if (ipts != 0 && ipts != AV_NOPTS_VALUE && ipts < m_src->get_clip_begin() - 60000)
-				m_con->hurry_up = 1;
-#endif
+			// We use skip_frame to make the decoder run faster in case we
+			// are not interested in the data (still seeking forward).
+			if (ipts != AV_NOPTS_VALUE && ipts < m_oldest_timestamp_wanted) {
+				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: setting hurry_up: ipts=%lld, m_oldest_timestamp_wanted=%lld",ipts, m_oldest_timestamp_wanted);
+				m_con->skip_frame = AVDISCARD_NONREF;
+				m_dropped_count++; // This is not necessarily correct
+			}
 			len = avcodec_decode_video(m_con, frame, &got_pic, ptr, sz);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: avcodec_decode_video: used %d of %d bytes, gotpic = %d, ipts = %lld", len, sz, got_pic, ipts);
-#ifdef WITH_FFMPEG_HURRY_UP
-			m_con->hurry_up = 0;
+#if 1
+			// It seems avcodec_decode_video sometimes returns 0 if skip_frame is used. Sigh.
+			if (len == 0 && !got_pic)
+				len = sz;
 #endif
-#if 0
-            // XXX Dirac hack, to be removed.
-            // Some codecs (notably Dirac) always gobble up all bytes,
-            // and only return len==sz if got_pic is true.
-            len = sz;
-#endif
+			m_con->skip_frame = AVDISCARD_DEFAULT;
 			if (len < 0) {
 				lib::logger::get_logger()->trace(gettext("error decoding video frame (timestamp=%lld)"), ipts);
-				sz = 0;
+				sz = 0; // Throw away the rest of the packet, there's little else we can do.
 				break;
 			}
 			assert(len <= sz);
-			ptr +=len;	
+			ptr += len;	
 			sz  -= len;
 			if (!got_pic) {
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: incomplete picture, used %d bytes, %d left", len, sz);
@@ -530,21 +536,15 @@ ffmpeg_video_decoder_datasource::data_avail()
 			AM_DBG lib::logger::get_logger()->debug("videoclock: ipts=%lld pts=%lld video_clock=%lld, frame_delay=%lld", ipts, pts, m_video_clock, frame_delay);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: storing frame with pts = %lld",pts );
 			m_frame_count++;
-			bool drop_this_frame = false;
-#if 1
-			// XXXJACK No need to test for B frames and such, simply drop things with old ts
-			if (pts < m_src->get_clip_begin()-frame_delay) {
-#else
-			if (m_con->has_b_frames && frame->pict_type == FF_B_TYPE && pts < m_src->get_clip_begin()) {
-#endif
+			if (pts < m_oldest_timestamp_wanted) {
 				// A non-essential frame while skipping forward.
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropping frame %d, ts=%lld", m_frame_count, pts);
 				drop_this_frame = true;
 			}
-			if (pts < m_old_frame.first) {
+			if (m_frames.size() > 0 && pts < m_frames.top().first) {
 				// A frame that came after this frame has already been consumed.
 				// We should drop this frame.
-				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropping frame %d (ts=%lld): too late, earlier frame (ts=%lld) already displayed", m_frame_count, pts, m_old_frame.first);
+				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropping frame %d (ts=%lld): too late, earlier frame (ts=%lld) already displayed", m_frame_count, pts, m_frames.top().first);
 				drop_this_frame = true;
 			}
 			m_elapsed = pts;
@@ -554,9 +554,58 @@ ffmpeg_video_decoder_datasource::data_avail()
 			}
 			
 			// Next step: deocde the frame to the image format we want.
+			int bpp = 0;
+#ifndef FFMPEG_SUPPORTS_ALPHA_LAST
+			bool must_swab_2341 = false;
+			bool must_swab_4321 = false;
+			bool must_swab_1432 = false;
+#endif
+			switch(m_pixel_layout) {
+			case pixel_rgba:
+#ifdef FFMPEG_SUPPORTS_ALPHA_LAST
+				dst_pic_fmt = PIX_FMT_RGB32_1;
+#else
+				dst_pic_fmt = PIX_FMT_RGB32;
+				must_swab_2341 = true; /* Have (msb)ARGB(lsb) want RGBA */
+#endif
+				bpp = 4;
+				break;
+			case pixel_bgra:
+#ifdef FFMPEG_SUPPORTS_ALPHA_LAST
+				dst_pic_fmt = PIX_FMT_BGR32_1;
+#else
+				dst_pic_fmt = PIX_FMT_RGB32;
+				must_swab_4321 = true; /* Have (msb)ARGB(lsb) want BGRA */
+#endif
+				bpp = 4;
+				break;
+			case pixel_argb:
+				dst_pic_fmt = PIX_FMT_RGB32;
+				bpp = 4;
+				break;
+			case pixel_abgr:
+#ifdef FFMPEG_SUPPORTS_ALPHA_LAST
+				dst_pic_fmt = PIX_FMT_BGR32;
+#else
+				dst_pic_fmt = PIX_FMT_RGB32;
+				must_swab_1432 = true; /* Have (msb)ARGB(lsb) want ABGR */
+#endif
+				bpp = 4;
+				break;
+			case pixel_rgb:
+				dst_pic_fmt = PIX_FMT_RGB24;
+				bpp = 3;
+				break;
+			case pixel_bgr:
+				dst_pic_fmt = PIX_FMT_BGR24;
+				bpp = 3;
+				break;
+			default:
+				assert(0);
+			}
 			w = m_fmt.width;
 			h = m_fmt.height;
-			m_size = w * h * 4;
+			m_size = w * h * bpp;
 			assert(m_size);
 			char *framedata = (char*) malloc(m_size);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:framedata=0x%x", framedata);
@@ -567,33 +616,71 @@ ffmpeg_video_decoder_datasource::data_avail()
 				sz = 0;
 				goto out_of_memory;
 			}
-			dst_pic_fmt = PIX_FMT_RGBA32;
-			dummy2 = avpicture_fill(&picture, (uint8_t*) framedata, dst_pic_fmt, w, h);
+			int datasize = avpicture_fill(&picture, (uint8_t*) framedata, dst_pic_fmt, w, h);
+			assert(datasize == m_size);
 			// The format we have is already in frame. Convert.
 			pic_fmt = m_con->pix_fmt;
+#ifdef WITH_FFMPEG_LIBSWSCALE
+			m_img_convert_ctx = sws_getCachedContext(m_img_convert_ctx,
+				w, h, pic_fmt,
+				w, h, dst_pic_fmt,
+				SWSCALE_FLAGS, NULL, NULL, NULL);
+			sws_scale(m_img_convert_ctx, frame->data, frame->linesize, 0, h, picture.data, picture.linesize);
+#else
 			img_convert(&picture, dst_pic_fmt, (AVPicture*) frame, pic_fmt, w, h);
-#if defined(AMBULANT_PLATFORM_MACOS) && defined(__LITTLE_ENDIAN__)
-			// The format is now RGBARGBA, but on the Intel mac we need BGRABGRA
-			char *p, c;
-			for (p=framedata; p<framedata+m_size; p+=4) {
-				c = p[0];
-				p[0] = p[2];
-				p[2] = c;
-			}
 #endif
+#ifndef FFMPEG_SUPPORTS_ALPHA_LAST
+			if (must_swab_2341) {
+				int lcount = w*h;
+				unsigned long *ptr = (unsigned long *)framedata;
+				while (lcount--) {
+					long oval = *ptr;
+					long nval =
+						((oval & 0xffffff) << 8) |
+						((oval >> 24) & 0xff);
+					*ptr++ = nval;
+				}
+			}
+			if (must_swab_4321) {
+				int lcount = w*h;
+				unsigned long *ptr = (unsigned long *)framedata;
+				while (lcount--) {
+					long oval = *ptr;
+					long nval =
+						(oval << 24) |
+						((oval & 0xff00) << 8) |
+						((oval >> 8) & 0xff00) |
+						((oval >> 24) & 0xff);
+					*ptr++ = nval;
+				}
+			}
+			if (must_swab_1432) {
+				int lcount = w*h;
+				unsigned long *ptr = (unsigned long *)framedata;
+				while (lcount--) {
+					long oval = *ptr;
+					long nval =
+						(oval & 0xff000000) |
+						((oval & 0xff) << 16) |
+						(oval & 0xff00) |
+						((oval >> 16) & 0xff);
+					*ptr++ = nval;
+				}
+			}
+#endif // FFMPEG_SUPPORTS_ALPHA_LAST
 			// Finally send the frame upstream.
 			std::pair<timestamp_t, char*> element(pts, framedata);
 			m_frames.push(element);
 			did_generate_frame = true;
 		} // End of while loop
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:done decoding (0x%x) ", m_con);
+		av_free(frame);
+		m_src->frame_processed(0); // XXXJACK: Should pass ipts, for sanity check
   	}
-	m_src->frame_done(0, false);
-	if (frame) av_free(frame);
   out_of_memory:
 	// Now tell our client, if we have data available or are at end of file.
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): m_frames.size() returns %d, (eof=%d)", m_frames.size(), m_src->end_of_file());
-	if ( m_frames.size() > MIN_VIDEO_FRAMES || m_src->end_of_file()) {
+	if (m_frames.size() > MIN_VIDEO_FRAMES || m_src->end_of_file()) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): there is some data for the renderer ! (eof=%d)", m_src->end_of_file());
 		if ( m_client_callback ) {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): calling client callback (eof=%d)", m_src->end_of_file());
@@ -679,18 +766,16 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 	
 	timestamp_t frame_duration = frameduration(); 
 	assert (frame_duration > 0);
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame:  timestamp=%lld, now=%lld, frameduration = %lld",m_old_frame.first,now, frame_duration);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame:  timestamp=%lld, now=%lld, frameduration = %lld",m_frames.top().first, now, frame_duration);
 
 
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame(now=%lld): %lld (m_old_frame.first) <  %lld (now - frame_duration)",  now, m_old_frame.first, now - frame_duration );
-
-#if 1
+#if 0
 	// XXX Jack thinks it may be better not to do any framedropping here, and in stead do it only in the
 	// renderer (where we can gather statistics)
 	int curdropcount = 0;
-	while ( m_frames.size() > 1 && m_old_frame.first < now - (2*frame_duration)) { //HACK:Due to jitter, the previous condition of dropping frames older than one frameduration was too strict!
+	while ( m_frames.size() > 1 && m_frames.top().first < now - (2*frame_duration)) { //HACK:Due to jitter, the previous condition of dropping frames older than one frameduration was too strict!
 		//A better method to tolerate jitter required ??? This hack may still fail for high fps videos
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: discarding m_old_frame timestamp=%lld, now=%lld, data ptr = 0x%x", m_old_frame.first,now, m_old_frame.second);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: discarding first frame timestamp=%lld, now=%lld, data ptr = 0x%x", m_frames.top().first,now, m_frames.top().second);
 		_pop_top_frame();
 		curdropcount++;
 	}
@@ -708,7 +793,6 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 	if (!(m_frames.size() == 0 || m_frames.top().first >= now-frame_duration)) {
 		lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: top frame before now!");
 		lib::logger::get_logger()->debug("now-frameduration = %lld-%lld = %lld", now, frame_duration, now-frame_duration);
-		lib::logger::get_logger()->debug("m_old_frame.first = %lld", m_old_frame.first);
 		lib::logger::get_logger()->debug("m_frames.top().first = %lld", m_frames.top().first);
 		lib::logger::get_logger()->debug("go figure...");
 	}
@@ -717,9 +801,12 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 	assert(m_frames.size() == 0 || m_frames.top().first >= now-(2*frame_duration));
 #endif
 	 
-	if (timestamp_p) *timestamp_p = m_old_frame.first;
+	if (timestamp_p) *timestamp_p = m_frames.top().first;
 	if (size_p) *size_p = m_size;
-	char *rv = m_old_frame.second;
+	char *rv = m_frames.top().second;
+	if (rv == NULL) {
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame(now=%lld): about to return NULL frame (ts=%lld), should not happen", now, *timestamp_p);
+	}
 	m_lock.leave();
 	return rv;
 }

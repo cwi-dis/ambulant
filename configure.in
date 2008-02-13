@@ -813,6 +813,14 @@ if test "x$test_ffmpeg" = "xmanual"; then
 			    FFMPEG_CFLAGS="${FFMPEG_CFLAGS} -I${withvalabs}/libavutil"
 			    FFMPEG_LIBS="${FFMPEG_LIBS} -L${withvalabs}/libavutil -lavutil"
 			fi
+			dnl
+			dnl Also check for swscale
+			dnl
+			if test -f ${withvalabs}/libswscale/libswscale.a; then
+			    FFMPEG_CFLAGS="-DWITH_FFMPEG_LIBSWSCALE ${FFMPEG_CFLAGS} -I${withvalabs}/libswscale"
+			    FFMPEG_LIBS="${FFMPEG_LIBS} -L${withvalabs}/libswscale -lswscale"
+			fi
+
 			test_ffmpeg=true
 			ffmpeg_path="$withvalabs"
 			inst_style="Ambulant included version"

@@ -30,7 +30,6 @@
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/common/layout.h"
-#include "ambulant/net/raw_video_datasource.h"
 #include "ambulant/common/playable.h"
 #include "ambulant/gui/qt/qt_includes.h"
 
@@ -52,7 +51,7 @@ namespace qt {
 				 common::factories *factory);
 	
 	~qt_video_renderer();
-	void show_frame(const char* frame, int size);
+	void push_frame(char* frame, int size);
 	void redraw_body(const lib::rect &r, common::gui_window* w);
  
  private:

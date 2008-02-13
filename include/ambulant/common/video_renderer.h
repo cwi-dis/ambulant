@@ -42,13 +42,13 @@ namespace common {
 /// Convenience class for video renderer_playables.
 /// If your video renderer displays frame-by-frame this is the
 /// baseclass to use. It handles reading the video file (through
-/// a video_datasource object), calls show_frame for every frame,
+/// a video_datasource object), calls push_frame for every frame,
 /// and splitting out the optional audio track and handing it to
 /// an audio playable. video_renderer will also control
 /// the audio playable, forwarding play/stop/pause calls that it
 /// receives to the audio_playable too.
 ///
-/// So, the only thing you need to provide are a show_frame
+/// So, the only thing you need to provide are a push_frame
 /// and a redraw function.
 class video_renderer : public common::renderer_playable {
   public:
@@ -61,6 +61,11 @@ class video_renderer : public common::renderer_playable {
 
   	virtual ~video_renderer();
 	
+	/// The pixel format this renderer wants. Override in subclass to fit
+	/// what the hardware wants (so we don't need to do an extra pass of
+	/// byte reordering).
+	virtual net::pixel_order pixel_layout() { return net::pixel_argb; }
+	
 	/// Return true if video is paused.
   	bool is_paused() { return m_is_paused; };
 	
@@ -70,12 +75,9 @@ class video_renderer : public common::renderer_playable {
 	/// Return true if video is playing.
   	bool is_playing() { return m_activated; };  
 	
-	/// Display video data. Frame parameter is guaranteed to remain valid until a
-	/// call to stop_show_frame()
-	virtual void show_frame(const char* frame, int size) {};
-	/// Stop displaying video data previously passed to show_frame. Called just
-	/// before frame parameter may be released.
-	virtual void stop_show_frame() {};
+	/// Display video data. Subclass providing this method is responsible for
+	/// eventually free()ing frame.
+	virtual void push_frame(char* frame, int size) = 0;
 	
     virtual void redraw(const lib::rect &dirty, common::gui_window *window);
 	

@@ -113,7 +113,6 @@
 		0496537A0BCAE3C6002C00DF /* ffmpeg_raw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652D60BCAE3C5002C00DF /* ffmpeg_raw.cpp */; };
 		0496537B0BCAE3C6002C00DF /* ffmpeg_video.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652D70BCAE3C5002C00DF /* ffmpeg_video.cpp */; };
 		0496537C0BCAE3C6002C00DF /* posix_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652D80BCAE3C5002C00DF /* posix_datasource.cpp */; };
-		0496537D0BCAE3C6002C00DF /* raw_video_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652D90BCAE3C5002C00DF /* raw_video_datasource.cpp */; };
 		0496537E0BCAE3C6002C00DF /* rtsp_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652DA0BCAE3C5002C00DF /* rtsp_datasource.cpp */; };
 		0496537F0BCAE3C6002C00DF /* rtsp_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652DB0BCAE3C5002C00DF /* rtsp_factory.cpp */; };
 		049653800BCAE3C6002C00DF /* stdio_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652DC0BCAE3C5002C00DF /* stdio_datasource.cpp */; };
@@ -222,7 +221,6 @@
 		0496567A0BCAEA7D002C00DF /* ffmpeg_raw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652D60BCAE3C5002C00DF /* ffmpeg_raw.cpp */; };
 		0496567B0BCAEA7D002C00DF /* ffmpeg_video.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652D70BCAE3C5002C00DF /* ffmpeg_video.cpp */; };
 		0496567C0BCAEA7D002C00DF /* posix_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652D80BCAE3C5002C00DF /* posix_datasource.cpp */; };
-		0496567D0BCAEA7D002C00DF /* raw_video_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652D90BCAE3C5002C00DF /* raw_video_datasource.cpp */; };
 		0496567E0BCAEA7D002C00DF /* rtsp_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652DA0BCAE3C5002C00DF /* rtsp_datasource.cpp */; };
 		0496567F0BCAEA7D002C00DF /* rtsp_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652DB0BCAE3C5002C00DF /* rtsp_factory.cpp */; };
 		049656800BCAEA7D002C00DF /* stdio_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652DC0BCAE3C5002C00DF /* stdio_datasource.cpp */; };
@@ -267,7 +265,6 @@
 		049656A80BCAEA7D002C00DF /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656180BCAEA42002C00DF /* libz.dylib */; };
 		049656B20BCAEC13002C00DF /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656B10BCAEC13002C00DF /* Carbon.framework */; };
 		049656B30BCAEC13002C00DF /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656B10BCAEC13002C00DF /* Carbon.framework */; };
-		04A1300F0D47C554006B8A4C /* libfaad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0480CCFF0CDD1D5C0025344B /* libfaad.a */; };
 		04E13B240BD786120074AF09 /* state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B230BD786120074AF09 /* state.cpp */; };
 		04E13B250BD786120074AF09 /* state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B230BD786120074AF09 /* state.cpp */; };
 		04E13B280BD786380074AF09 /* cocoa_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B270BD786380074AF09 /* cocoa_smiltext.mm */; };
@@ -563,7 +560,6 @@
 		049651E20BCAE333002C00DF /* ffmpeg_video.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ffmpeg_video.h; sourceTree = "<group>"; };
 		049651E30BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
 		049651E50BCAE333002C00DF /* posix_datasource.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = posix_datasource.h; sourceTree = "<group>"; };
-		049651E60BCAE333002C00DF /* raw_video_datasource.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = raw_video_datasource.h; sourceTree = "<group>"; };
 		049651E70BCAE333002C00DF /* rtsp_datasource.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = rtsp_datasource.h; sourceTree = "<group>"; };
 		049651E80BCAE333002C00DF /* rtsp_factory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = rtsp_factory.h; sourceTree = "<group>"; };
 		049651E90BCAE333002C00DF /* socket.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = socket.h; sourceTree = "<group>"; };
@@ -713,7 +709,6 @@
 		049652D60BCAE3C5002C00DF /* ffmpeg_raw.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ffmpeg_raw.cpp; sourceTree = "<group>"; };
 		049652D70BCAE3C5002C00DF /* ffmpeg_video.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ffmpeg_video.cpp; sourceTree = "<group>"; };
 		049652D80BCAE3C5002C00DF /* posix_datasource.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = posix_datasource.cpp; sourceTree = "<group>"; };
-		049652D90BCAE3C5002C00DF /* raw_video_datasource.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = raw_video_datasource.cpp; sourceTree = "<group>"; };
 		049652DA0BCAE3C5002C00DF /* rtsp_datasource.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = rtsp_datasource.cpp; sourceTree = "<group>"; };
 		049652DB0BCAE3C5002C00DF /* rtsp_factory.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = rtsp_factory.cpp; sourceTree = "<group>"; };
 		049652DC0BCAE3C5002C00DF /* stdio_datasource.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = stdio_datasource.cpp; sourceTree = "<group>"; };
@@ -814,7 +809,6 @@
 				049656A70BCAEA7D002C00DF /* libSDL.a in Frameworks */,
 				049656A80BCAEA7D002C00DF /* libz.dylib in Frameworks */,
 				049656B30BCAEC13002C00DF /* Carbon.framework in Frameworks */,
-				04A1300F0D47C554006B8A4C /* libfaad.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1318,7 +1312,6 @@
 				049651E20BCAE333002C00DF /* ffmpeg_video.h */,
 				049651E30BCAE333002C00DF /* Makefile.am */,
 				049651E50BCAE333002C00DF /* posix_datasource.h */,
-				049651E60BCAE333002C00DF /* raw_video_datasource.h */,
 				049651E70BCAE333002C00DF /* rtsp_datasource.h */,
 				049651E80BCAE333002C00DF /* rtsp_factory.h */,
 				049651E90BCAE333002C00DF /* socket.h */,
@@ -1607,7 +1600,6 @@
 				049652D60BCAE3C5002C00DF /* ffmpeg_raw.cpp */,
 				049652D70BCAE3C5002C00DF /* ffmpeg_video.cpp */,
 				049652D80BCAE3C5002C00DF /* posix_datasource.cpp */,
-				049652D90BCAE3C5002C00DF /* raw_video_datasource.cpp */,
 				049652DA0BCAE3C5002C00DF /* rtsp_datasource.cpp */,
 				049652DB0BCAE3C5002C00DF /* rtsp_factory.cpp */,
 				049652DC0BCAE3C5002C00DF /* stdio_datasource.cpp */,
@@ -1818,7 +1810,6 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Ambulant-mac" */;
-			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -1962,7 +1953,6 @@
 				0496567A0BCAEA7D002C00DF /* ffmpeg_raw.cpp in Sources */,
 				0496567B0BCAEA7D002C00DF /* ffmpeg_video.cpp in Sources */,
 				0496567C0BCAEA7D002C00DF /* posix_datasource.cpp in Sources */,
-				0496567D0BCAEA7D002C00DF /* raw_video_datasource.cpp in Sources */,
 				0496567E0BCAEA7D002C00DF /* rtsp_datasource.cpp in Sources */,
 				0496567F0BCAEA7D002C00DF /* rtsp_factory.cpp in Sources */,
 				049656800BCAEA7D002C00DF /* stdio_datasource.cpp in Sources */,
@@ -2063,7 +2053,6 @@
 				0496537A0BCAE3C6002C00DF /* ffmpeg_raw.cpp in Sources */,
 				0496537B0BCAE3C6002C00DF /* ffmpeg_video.cpp in Sources */,
 				0496537C0BCAE3C6002C00DF /* posix_datasource.cpp in Sources */,
-				0496537D0BCAE3C6002C00DF /* raw_video_datasource.cpp in Sources */,
 				0496537E0BCAE3C6002C00DF /* rtsp_datasource.cpp in Sources */,
 				0496537F0BCAE3C6002C00DF /* rtsp_factory.cpp in Sources */,
 				049653800BCAE3C6002C00DF /* stdio_datasource.cpp in Sources */,

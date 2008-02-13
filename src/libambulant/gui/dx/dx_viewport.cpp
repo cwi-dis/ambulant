@@ -35,6 +35,11 @@
 #include <uuids.h>
 #include <windows.h>
 #include <mmsystem.h>
+#ifdef AMBULANT_PLATFORM_WIN32_WCE
+#include <d3dmtypes.h>
+#else
+#include <d3d8types.h>
+#endif
 
 #include "ambulant/gui/dx/dx_viewport.h"
 #include "ambulant/gui/dx/dx_audio_player.h" // Only to define the TPB GUID
@@ -466,7 +471,7 @@ gui::dx::viewport::create_surface(DWORD w, DWORD h) {
 	if (FAILED(hr)){
 		seterror("DirectDraw::CreateSurface()", hr);
 		return 0;
-	}	
+	}
 	return surface;
 }
 

@@ -135,12 +135,14 @@ class demux_video_datasource:
   		int stream_index);
   
     ~demux_video_datasource();
+	void set_pixel_layout(pixel_order l) { assert(l == pixel_unknown); }
 	void read_ahead(timestamp_t clip_begin);
 	void seek(timestamp_t time);
     void start_frame(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk, timestamp_t timestamp);
     void stop();  
 	char* get_frame(timestamp_t now, timestamp_t *timestamp, int *sizep);
-    void frame_done(timestamp_t timestamp, bool keepdata);
+	void frame_processed_keepdata(timestamp_t timestamp, char *data);
+    void frame_processed(timestamp_t timestamp);
     void data_avail(timestamp_t pts, const uint8_t *data, int size);
     bool end_of_file();
 	bool buffer_full();

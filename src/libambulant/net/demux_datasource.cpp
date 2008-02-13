@@ -442,28 +442,37 @@ demux_video_datasource::start_frame(ambulant::lib::event_processor *evp,
 
 
 void 
-demux_video_datasource::frame_done(timestamp_t pts, bool keepdata)
+demux_video_datasource::frame_processed_keepdata(timestamp_t pts, char *data)
+{
+	m_lock.enter();
+	assert(pts == 0);
+	assert(m_frames.size() == 0);
+	ts_frame_pair& frontref = m_frames.front();
+	frontref.second.data = NULL;
+	m_lock.leave();
+}
+
+void 
+demux_video_datasource::frame_processed(timestamp_t pts)
 {
 	// Note: we ignore pts and always discard a single frame.
 	m_lock.enter();
 	assert(pts == 0);
 	assert(m_frames.size() > 0);
-	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource.frame_done(%d)", pts);
+	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource.frame_processed(%d)", pts);
 	ts_frame_pair element = m_frames.front();
 
 	if (m_old_frame.second.data) {
 		free(m_old_frame.second.data);
-		AM_DBG  lib::logger::get_logger()->debug("demux_video_datasource::frame_done: free(0x%x)", m_old_frame.second.data);
+		AM_DBG  lib::logger::get_logger()->debug("demux_video_datasource::frame_processed: free(0x%x)", m_old_frame.second.data);
 		m_old_frame.second.data = NULL;
 	}
-	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::frame_done(%d): removing frame with ts=%d", pts, element.first);
-	AM_DBG  lib::logger::get_logger()->debug("demux_video_datasource::frame_done: %lld 0x%x %d", element.first, element.second.data, element.second.size);
+	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::frame_processed(%d): removing frame with ts=%d", pts, element.first);
+	AM_DBG  lib::logger::get_logger()->debug("demux_video_datasource::frame_processed: %lld 0x%x %d", element.first, element.second.data, element.second.size);
 	m_old_frame = element;
 	m_frames.pop();
-	if (!keepdata) {
-		free(m_old_frame.second.data);
-		m_old_frame.second.data = NULL;
-	}
+	free(m_old_frame.second.data);
+	m_old_frame.second.data = NULL;
 	m_lock.leave();
 }
 

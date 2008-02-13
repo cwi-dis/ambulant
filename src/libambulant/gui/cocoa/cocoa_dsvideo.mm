@@ -31,6 +31,52 @@
 #define AM_DBG if(0)
 #endif
 
+#define ENABLE_COCOA_CGIMAGE
+// There are two ways to render images: through CGImage or directly manipulating the NSBitmapImageRep. The former should
+// be more efficient.
+#ifdef ENABLE_COCOA_CGIMAGE
+// These two constants should match. Moreover, the optimal setting may depend on the
+// specific hardware.
+#if 1
+#define MY_PIXEL_LAYOUT net::pixel_argb
+#define MY_BITMAP_INFO (kCGImageAlphaNoneSkipFirst|kCGBitmapByteOrder32Host)
+#define MY_BPP 4
+#endif
+#if 0
+#define MY_PIXEL_LAYOUT net::pixel_rgba
+#define MY_BITMAP_INFO (kCGImageAlphaNoneSkipLast|kCGBitmapByteOrder32Host)
+#define MY_BPP 4
+#endif
+#if 0
+#define MY_PIXEL_LAYOUT net::pixel_bgr
+#define MY_BITMAP_INFO (kCGImageAlphaNone|kCGBitmapByteOrder32Host)
+#define MY_BPP 3
+#endif
+#else // ENABLE_COCOA_CGIMAGE
+// These two constants should match. Moreover, the optimal setting may depend on the
+// specific hardware.
+#if 0
+#define MY_PIXEL_LAYOUT net::pixel_rgba
+#define MY_BITMAP_FORMAT 0 // NSAlphaFirstBitmapFormat
+#define MY_BPP 4
+#endif
+#if 0
+#define MY_PIXEL_LAYOUT net::pixel_argb
+#define MY_BITMAP_FORMAT 0 // NSAlphaFirstBitmapFormat
+#define MY_BPP 4
+#endif
+#if 0
+#define MY_PIXEL_LAYOUT net::pixel_bgr
+#define MY_BITMAP_FORMAT 0
+#define MY_BPP 3
+#endif
+#if 1
+#define MY_PIXEL_LAYOUT net::pixel_rgb
+#define MY_BITMAP_FORMAT 0
+#define MY_BPP 3
+#endif
+#endif
+
 namespace ambulant {
 
 using namespace lib;
@@ -60,26 +106,75 @@ cocoa_dsvideo_renderer::~cocoa_dsvideo_renderer()
 	m_image = NULL;
 	m_lock.leave();
 }
-	
+
+net::pixel_order
+cocoa_dsvideo_renderer::pixel_layout()
+{
+	return MY_PIXEL_LAYOUT;
+}
+
+static void
+my_free_frame(void *ptr, const void *ptr2, size_t size)
+{
+	free(ptr);
+}
+
 void
-cocoa_dsvideo_renderer::show_frame(const char* frame, int size)
+cocoa_dsvideo_renderer::push_frame(char* frame, int size)
 {
 	m_lock.enter();
 	if (m_image) {
 		[m_image release];
 		m_image = NULL;
 	}
-	AM_DBG lib::logger::get_logger()->debug("cocoa_dsvideo_renderer::show_frame: size=%d, w*h*3=%d", size, m_size.w * m_size.h * 4);
-	assert(size == (int)(m_size.w * m_size.h * 4));
+	AM_DBG lib::logger::get_logger()->debug("cocoa_dsvideo_renderer::push_frame: size=%d, w*h*3=%d", size, m_size.w * m_size.h * 4);
+	assert(size == (int)(m_size.w * m_size.h * MY_BPP));
 	// XXXX Who keeps reference to frame?
 	NSSize nssize = NSMakeSize(m_size.w, m_size.h);
 	m_image = [[NSImage alloc] initWithSize: nssize];
 	if (!m_image) {
-		logger::get_logger()->trace("cocoa_dsvideo_renderer::show_frame: cannot allocate NSImage");
+		logger::get_logger()->trace("cocoa_dsvideo_renderer::push_frame: cannot allocate NSImage");
 		logger::get_logger()->error(gettext("Out of memory while showing video"));
 		m_lock.leave();
 		return;
 	}
+#ifdef ENABLE_COCOA_CGIMAGE
+	// Step 1 - setup a data provider that reads our in-core image data
+	CGDataProviderRef provider = CGDataProviderCreateWithData(frame, frame, size, my_free_frame);
+	assert(provider);
+	// Step 2 - create a CGImage that uses that data provider to initialize itself
+	CGColorSpaceRef genericColorSpace = CGColorSpaceCreateDeviceRGB();
+	assert(genericColorSpace);
+	// There may be room for improvement here, but I cannot find it. Did some experiments (on 4-core Intel Mac Pro)
+	// with various values for kCGBitmapByteOrder32* and kCGImageAlpha*.
+	// The only things that seem to make a difference:
+	// - If the image does not have to be scaled then kCGBitmapByteOrder32Host|kCGImageAlphaNoneSkipFirst is a tiny bit faster. But
+	//   image draw times are dwarfed by background draw times (twice the image draw time!).
+	// - If the image does need scaling things slow down by a factor of 4.
+	//   0 seems to be as good a value for bitmapInfo as any other value.
+	// - If you also set shouldInterpolate=true you get an additional factor of 2 slowdown.
+	CGBitmapInfo bitmapInfo = MY_BITMAP_INFO; 
+	CGImage *cgi = CGImageCreate( m_size.w, m_size.h, 8, MY_BPP*8, m_size.w*MY_BPP, genericColorSpace, bitmapInfo, provider, NULL, false, kCGRenderingIntentDefault);
+	if (cgi == NULL) {
+		logger::get_logger()->trace("cocoa_dsvideo_renderer::push_frame: cannot allocate CGImage");
+		logger::get_logger()->error(gettext("Out of memory while showing video"));
+		m_lock.leave();
+		return;
+	}
+	AM_DBG lib::logger::get_logger()->trace("0x%x: push_frame(0x%x, %d) -> 0x%x -> 0x%x", this, frame, size, provider, m_image);
+	CGDataProviderRelease(provider);
+	CGColorSpaceRelease(genericColorSpace);
+	// Step 3 - Initialize an NSBitmapImageRep with this CGImage
+	NSBitmapImageRep *bitmaprep = [[NSBitmapImageRep alloc] initWithCGImage: cgi];
+	if (!bitmaprep) {
+		logger::get_logger()->trace("cocoa_dsvideo_renderer::push_frame: cannot allocate NSBitmapImageRep");
+		logger::get_logger()->error(gettext("Out of memory while showing video"));
+		m_lock.leave();
+		return;
+	}
+	CGImageRelease(cgi);
+	// Note that we do not free(frame), that happens when the provider calls my_free_frame.
+#else
 	NSBitmapImageRep *bitmaprep = [[NSBitmapImageRep alloc]
 		initWithBitmapDataPlanes: NULL
 		pixelsWide: m_size.w
@@ -89,23 +184,17 @@ cocoa_dsvideo_renderer::show_frame(const char* frame, int size)
 		hasAlpha: NO
 		isPlanar: NO
 		colorSpaceName: NSDeviceRGBColorSpace
-#ifdef __BIG_ENDIAN__
-		bitmapFormat: NSAlphaFirstBitmapFormat
-#else
-		bitmapFormat: (NSBitmapFormat)0
-#endif
-		bytesPerRow: m_size.w * 4
-		bitsPerPixel: 32];
+		bitmapFormat: MY_BITMAP_FORMAT
+		bytesPerRow: m_size.w * MY_BPP
+		bitsPerPixel: MY_BPP*8];
 	if (!bitmaprep) {
-		logger::get_logger()->trace("cocoa_dsvideo_renderer::show_frame: cannot allocate NSBitmapImageRep");
+		logger::get_logger()->trace("cocoa_dsvideo_renderer::push_frame: cannot allocate NSBitmapImageRep");
 		logger::get_logger()->error(gettext("Out of memory while showing video"));
 		m_lock.leave();
 		return;
 	}
-#if 1
 	memcpy([bitmaprep bitmapData], frame, size);
-#else
-	swab(frame, [bitmaprep bitmapData], size);
+	free(frame);
 #endif
 	[m_image addRepresentation: bitmaprep];
 	[m_image setFlipped: true];
