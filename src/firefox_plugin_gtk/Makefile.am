@@ -35,8 +35,10 @@ livelibs = -L$(LIVE_ROOT)/liveMedia/ -lliveMedia \
 			  -L$(LIVE_ROOT)/BasicUsageEnvironment/ -lBasicUsageEnvironment  \
 			  -L$(LIVE_ROOT)/groupsock/ -lgroupsock  \
 			  -L$(LIVE_ROOT)/UsageEnvironment/ -lUsageEnvironment
+extra_live_ldflags=
 else
 livelibs =
+extra_live_ldflags=
 endif # WITH_LIVE
 #------------------------------------------------------
 if WITH_SDL
