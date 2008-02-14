@@ -45,7 +45,6 @@
 
 // Players
 #include "ambulant/smil2/smil_player.h"
-#include "ambulant/mms/mms_player.h"
 #include "ambulant/smil2/test_attrs.h"
 
 // Renderer playables

@@ -38,10 +38,6 @@
 #include "ambulant/gui/dx/dx_player.h"
 #include "ambulant/gui/dx/dx_wmuser.h"
 
-// DG Player
-#include "ambulant/gui/dg/dg_player.h"
-#include "ambulant/gui/dg/dg_wmuser.h"
-
 #include "ambulant/common/preferences.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/textptr.h"
@@ -89,13 +85,8 @@ log_os(get_log_filename().c_str());
 using namespace ambulant;
 //#define AM_PLAYER_DG
 
-#ifdef AM_PLAYER_DG
-typedef gui::dg::dg_player dg_or_dx_player;
-typedef gui::dg::dg_player_callbacks gui_callbacks;
-#else 
 typedef gui::dx::dx_player dg_or_dx_player;
 typedef gui::dx::dx_player_callbacks gui_callbacks;
-#endif
 
 // The handle of the single window instance
 static HWND s_hwnd;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="AmbulantPlayer"
 	ProjectGUID="{3E3BABBD-DCB0-4CD2-9DD3-26B96A7A856E}"
 	Keyword="MFCProj"
@@ -314,6 +314,14 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\src\player_wince\mypreferences.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\player_wince\PreferencesDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\player_wince\SelectDlg.cpp"
 				>
 				<FileConfiguration
@@ -379,7 +387,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\player_wince\mypreferences.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\player_wince\newres.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\player_wince\PreferencesDlg.h"
 				>
 			</File>
 			<File

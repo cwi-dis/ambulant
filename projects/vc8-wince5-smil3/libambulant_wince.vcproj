@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="libambulant_wince"
 	ProjectGUID="{B2643C6C-B5BE-40FB-B127-320E15D9D09E}"
 	RootNamespace="libambulant_wince"
@@ -743,22 +743,6 @@
 				</File>
 				<File
 					RelativePath="..\..\src\libambulant\smil2\transition.cpp"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="mms"
-				>
-				<File
-					RelativePath="..\..\src\libambulant\mms\mms_player.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\libambulant\mms\timeline_builder.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\libambulant\mms\timelines.cpp"
 					>
 				</File>
 			</Filter>
@@ -1510,22 +1494,6 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\smil2\transition.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="mms"
-					>
-					<File
-						RelativePath="..\..\include\ambulant\mms\mms_player.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\mms\timeline_builder.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\include\ambulant\mms\timelines.h"
 						>
 					</File>
 				</Filter>

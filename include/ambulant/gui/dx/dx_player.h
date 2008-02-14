@@ -59,10 +59,6 @@ namespace lib {
 	class event;
 }
 
-namespace mms {
-	class mms_player;
-}
-
 namespace smil2 {
 	class smil_player;
 }
