@@ -103,13 +103,8 @@ qt_mainloop::qt_mainloop(qt_gui* gui, int mbheight)
 
 ambulant::common::player*
 qt_mainloop::create_player(const char* filename) {
-	bool is_mms = strcmp(".mms", filename+strlen(filename)-4) == 0;
 	ambulant::common::player* player;
-	if (is_mms) {
-		player = create_mms_player(m_doc, this);
-	} else {
-		player = create_smil2_player(m_doc, this, m_embedder);
-	}
+	player = create_smil2_player(m_doc, this, m_embedder);
 
 	player->initialize();
 
