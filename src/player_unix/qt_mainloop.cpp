@@ -17,9 +17,6 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#ifdef WITH_ARTS
-#include "ambulant/gui/arts/arts.h"
-#endif
 #ifdef WITH_SDL
 #include "ambulant/gui/SDL/sdl_factory.h"
 #endif
@@ -133,9 +130,6 @@ qt_mainloop::init_playable_factory()
     AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add factory for SDL");
 	pf->add_factory(gui::sdl::create_sdl_playable_factory(this));      
 #endif // WITH_SDL
-#ifdef WITH_ARTS
-	pf->add_factory(arts::create_arts_renderer_factory(this));
-#endif 
 }
 
 void

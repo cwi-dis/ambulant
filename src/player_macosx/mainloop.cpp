@@ -62,8 +62,7 @@
 
 using namespace ambulant;
 
-mainloop::mainloop(const char *urlstr, void *view,
-	bool use_mms, ambulant::common::embedder *app)
+mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *app)
 :   common::gui_player(),
 	m_view(view),
 	m_gui_screen(NULL)
@@ -80,10 +79,7 @@ mainloop::mainloop(const char *urlstr, void *view,
 		lib::logger::get_logger()->error(gettext("%s: Cannot build DOM tree"), urlstr);
 		return;
 	}
-	if (use_mms)
-		m_player = common::create_mms_player(m_doc, this);
-	else
-		m_player = common::create_smil2_player(m_doc, this, m_embedder);
+	m_player = common::create_smil2_player(m_doc, this, m_embedder);
 
 	m_player->set_feedback(this);
 	m_player->initialize();

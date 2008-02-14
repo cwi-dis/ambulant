@@ -43,17 +43,6 @@ extra_sdl_DEFINES=
 endif # WITH_SDL
 
 #------------------------------------------------------
-if WITH_ARTS
-extra_arts_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_arts.a
-extra_arts_ldflags=`artsc-config --libs`
-extra_arts_DEFINES=-DWITH_ARTS
-else
-extra_arts_LDADD=
-extra_arts_ldflags=
-extra_arts_DEFINES=
-endif # WITH_ARTS
-
-#------------------------------------------------------
 if WITH_DIRAC
 dirac_libraries=`pkg-config --libs dirac`
 else
@@ -135,7 +124,6 @@ AmbulantPlayer_gtk_SOURCES =					\
 	unix_preferences.h
 
 LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_gtk.a	\
-	$(extra_arts_LDADD) \
 	$(extra_gstreamer_LDADD) \
 	$(extra_sdl_LDADD) \
 	$(extra_expat_LDADD) \
@@ -147,7 +135,7 @@ LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_gtk.a	\
 	$(LIBLTDL) \
 	$(extra_nokia770_LDADD)
 
-AM_LDFLAGS=$(extra_arts_ldflags) \
+AM_LDFLAGS= \
 	   $(extra_gstreamer_ldflags) \
 	   $(extra_sdl_ldflags) \
 	   $(extra_ffmpeg_ldflags) \
@@ -158,7 +146,6 @@ AM_LDFLAGS=$(extra_arts_ldflags) \
 AM_CPPFLAGS = \
 		$(extra_gstreamer_CPPFLAGS) \
 		-DAMBULANT_DATADIR=\"$(pkgdatadir)\" \
-		$(extra_arts_DEFINES) \
 		$(extra_sdl_DEFINES) \
 		$(extra_ffmpeg_DEFINES) \
 		$(extra_nls_DEFINES) \

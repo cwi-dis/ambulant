@@ -311,7 +311,7 @@ qt_gui::slot_open() {
 	QString smilfilename =
 		QFileDialog::getOpenFileName(
 				 ".", // Initial dir
-				 gettext("SMIL files (*.smil *.smi);; All files (*.smil *.smi *.mms *.grins);; Any file (*)"), // file types
+				 gettext("SMIL files (*.smil *.smi);; All files (*.smil *.smi *.grins);; Any file (*)"), // file types
 				 this,
 				 gettext("open file dialog"),
 				 gettext("Double Click a file to open")

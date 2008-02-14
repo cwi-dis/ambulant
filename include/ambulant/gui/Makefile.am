@@ -1,1 +1,1 @@
-SUBDIRS= arts none cocoa qt gtk SDL dx dg gstreamer cg
+SUBDIRS= none cocoa qt gtk SDL dx gstreamer cg

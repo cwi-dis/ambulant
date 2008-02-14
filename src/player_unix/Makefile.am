@@ -46,16 +46,6 @@ extra_sdl_ldflags=
 extra_sdl_DEFINES=
 endif
 
-if WITH_ARTS
-extra_arts_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_arts.a
-extra_arts_ldflags=`artsc-config --libs`
-extra_arts_DEFINES=-DWITH_ARTS
-else
-extra_arts_LDADD=
-extra_arts_ldflags=
-extra_arts_DEFINES=
-endif
-
 if WITH_EXPAT
 extra_expat_DEFINES=-I$(EXPAT_PREFIX)/include -DWITH_EXPAT
 extra_expat_LDADD=-L$(EXPAT_PREFIX)/lib -lexpat
@@ -103,7 +93,6 @@ qt_libs=$(LIBQT_LIBS)
 endif
 
 LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_qt.a	\
-	$(extra_arts_LDADD)					\
 	$(extra_expat_LDADD)					\
 	$(extra_sdl_LDADD)					\
 	$(extra_live_LDADD) 					\
@@ -113,7 +102,7 @@ LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_qt.a	\
 	$(qt_libs)						\
 	$(LIBLTDL)  
 
-AM_LDFLAGS=$(extra_arts_ldflags)				\
+AM_LDFLAGS= \
 	   $(extra_sdl_ldflags)					\
 	   $(extra_ffmpeg_ldflags)				\
        	   $(livelibs)						\
@@ -121,7 +110,6 @@ AM_LDFLAGS=$(extra_arts_ldflags)				\
  
 AM_CPPFLAGS = \
 		-DAMBULANT_DATADIR=\"$(pkgdatadir)\"		\
-		$(extra_arts_DEFINES)				\
 		$(extra_sdl_DEFINES)				\
 		$(extra_ffmpeg_DEFINES)				\
 		$(extra_nls_DEFINES)				\

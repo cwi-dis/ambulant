@@ -616,7 +616,6 @@ gtk_gui::do_open(){
 	gtk_file_filter_set_name(filter_all, gettext("All files"));
 	gtk_file_filter_add_pattern(filter_all, "*.smil");
 	gtk_file_filter_add_pattern(filter_all, "*.smi");	
-	gtk_file_filter_add_pattern(filter_all, "*.mms");	
 	gtk_file_filter_add_pattern(filter_all, "*.grins");	
 	gtk_file_chooser_add_filter(m_file_chooser, filter_all);
 	GtkFileFilter *filter_any = gtk_file_filter_new();

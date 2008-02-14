@@ -331,7 +331,7 @@ class layout_manager {
 
 /// Factory function for a SMIL2 layout_manager.
 AMBULANTAPI layout_manager *create_smil2_layout_manager(common::factories *factory,lib::document *doc);
-//layout_manager *create_mms_layout_manager();
+
 /// Factory function for a surface_factory implementation.
 AMBULANTAPI surface_factory *create_smil_surface_factory();
 	

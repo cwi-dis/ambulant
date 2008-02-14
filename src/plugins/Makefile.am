@@ -1,4 +1,4 @@
-EXTRA_DIST=plugin.cpp artsplugin.cpp xercesplugin.cpp plugin.vcproj
+EXTRA_DIST=plugin.cpp xercesplugin.cpp plugin.vcproj
 # The default (no-op) plugin. only build when asked to buid
 
 if WITH_DUMMY_PLUGIN
@@ -12,18 +12,6 @@ libamplugin_rot13_la_LDFLAGS = -module
 else
 dummy_plugin=
 rot13_plugin =
-endif
-
-# The arts plugin
-if WITH_ARTS
-arts_plugin = libamplugin_arts.la
-arts_includes = `artsc-config --cflags`
-libamplugin_arts_la_LDFLAGS = -module `artsc-config --libs`
-libamplugin_arts_la_SOURCES = artsplugin.cpp
-else
-arts_plugin=
-arts_includes=
-
 endif
 
 # The XERCES plugin
@@ -97,7 +85,6 @@ endif
 pkglib_LTLIBRARIES = \
     $(dummy_plugin) \
     $(rot13_plugin) \
-    $(arts_plugin) \
     $(xerces_plugin) \
     $(dummy_state_plugin) \
     $(xpath_state_plugin) \
@@ -105,6 +92,6 @@ pkglib_LTLIBRARIES = \
     $(python_plugin)
 
 INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include \
-	 $(arts_includes) $(xerces_includes) $(python_includes) \
+	 $(xerces_includes) $(python_includes) \
 	 $(xpath_state_includes)
 

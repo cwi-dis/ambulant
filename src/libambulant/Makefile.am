@@ -135,19 +135,6 @@ libambulant_qt_la_SOURCES += 		\
 	gui/qt/qt_html_renderer.cpp
 endif
 
-if WITH_ARTS
-toolkit_arts_libraries = libambulant_arts.la
-
-libambulant_arts_la_LDFLAGS = `artsc-config --libs`
-artsincludes = `artsc-config --cflags`
-libambulant_arts_la_SOURCES =             \
-	gui/arts/arts.cpp \
-	gui/arts/arts_audio.cpp
-else
-artsincludes=
-toolkit_arts_libraries =
-endif
-
 if WITH_SDL
 toolkit_sdl_libraries = libambulant_sdl.la
 libambulant_sdl_la_LDFLAGS =  -static ` sdl-config --libs`
@@ -221,7 +208,6 @@ INCLUDES = \
 	$(gstreamer_includes) \
 	$(gtkincludes) \
 	$(nokia770_includes) \
-	$(artsincludes) \
 	$(sdlincludes) \
 	$(ffmpegincludes) \
 	$(live_includes) \
@@ -234,7 +220,6 @@ lib_LTLIBRARIES = \
 	$(toolkit_qt_libraries) \
 	$(toolkit_gstreamer_libraries) \
 	$(toolkit_gtk_libraries) \
-	$(toolkit_arts_libraries) \
 	$(toolkit_sdl_libraries) \
 	$(toolkit_nokia770_libraries) \
 	$(toolkit_ffmpeg_libraries) \
@@ -316,10 +301,6 @@ libambulant_la_SOURCES = \
 	smil2/trace_player.cpp \
 	smil2/transition.cpp \
 	\
-	mms/mms_player.cpp \
-	mms/timeline_builder.cpp \
-	mms/timelines.cpp \
-	\
 	gui/none/none_area.cpp \
 	gui/none/none_gui.cpp \
 	gui/none/none_video_renderer.cpp \
@@ -332,10 +313,8 @@ EXTRA_DIST= \
 	libambulant_win32.vcproj \
 	libambulant_wince.vcp \
 	gui/SDL \
-	gui/arts \
 	gui/cocoa \
 	gui/cg \
-	gui/dg \
 	gui/dx \
 	gui/qt \
 	gui/gstreamer \

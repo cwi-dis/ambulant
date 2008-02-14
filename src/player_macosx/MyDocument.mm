@@ -220,9 +220,8 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		url = escapedurl;
 	}
 #endif
-	bool use_mms = ([[url pathExtension] compare: @".mms"] == 0);
 	embedder = new document_embedder(self);
-	myMainloop = new mainloop([url UTF8String], view, use_mms, embedder);
+	myMainloop = new mainloop([url UTF8String], view, embedder);
 	[self play: self];
 }
 
@@ -705,7 +704,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 #endif
 	AM_DBG NSLog(@"openAuxDocument %@", auxUrl);
 	AM_DBG NSLog(@"Orig view 0x%x, auxView 0x%x", (void*)view, (void*)myAuxView);
-	myAuxMainloop = new mainloop([[auxUrl absoluteString] UTF8String], myAuxView, false, NULL);
+	myAuxMainloop = new mainloop([[auxUrl absoluteString] UTF8String], myAuxView, NULL);
 	myAuxMainloop->play();
 #ifndef WITH_OVERLAY_WINDOW_IN_VIEW
 	[myAuxWindow makeFirstResponder: myAuxView];

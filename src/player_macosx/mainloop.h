@@ -32,8 +32,7 @@ class mainloop :
 	public ambulant::common::player_feedback
 {
   public:
-	mainloop(const char *filename, void *view,
-		bool use_mms, ambulant::common::embedder *app);
+	mainloop(const char *filename, void *view, ambulant::common::embedder *app);
 	~mainloop();
 	
 	void restart(bool reparse=true);

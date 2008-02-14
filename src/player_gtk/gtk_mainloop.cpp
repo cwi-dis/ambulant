@@ -17,9 +17,6 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#ifdef WITH_ARTS
-#include "ambulant/gui/arts/arts.h"
-#endif
 #ifdef WITH_GSTREAMER
 #include "ambulant/gui/gstreamer/gstreamer_renderer_factory.h"
 #endif
@@ -156,10 +153,6 @@ gtk_mainloop::init_playable_factory()
 	pf->add_factory(gui::sdl::create_sdl_playable_factory(this));
 	AM_DBG logger::get_logger()->debug("add factory for SDL done");
 #endif
-
-#ifdef WITH_ARTS
-	pf->add_factory(gui::arts::create_arts_renderer_factory(this));
-#endif 
 	
 	pf->add_factory(create_gtk_renderer_factory(this));
 	pf->add_factory(create_gtk_video_factory(this));
@@ -219,13 +212,8 @@ gtk_mainloop::init_parser_factory()
 
 ambulant::common::player*
 gtk_mainloop::create_player(const char* filename) {
-	bool is_mms = strcmp(".mms", filename+strlen(filename)-4) == 0;
 	ambulant::common::player* player;
-	if (is_mms) {
-		assert(0); //		player = create_mms_player(m_doc, this);
-	} else {
-		player = create_smil2_player(m_doc, this, get_embedder());
-	}
+	player = create_smil2_player(m_doc, this, get_embedder());
 
 	player->initialize();
 

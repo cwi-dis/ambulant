@@ -53,18 +53,15 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	include/ambulant/lib/Makefile
 	include/ambulant/lib/unix/Makefile
 	include/ambulant/lib/win32/Makefile
-	include/ambulant/mms/Makefile
 	include/ambulant/smil2/Makefile
 	include/ambulant/net/Makefile
 	include/ambulant/gui/Makefile
-	include/ambulant/gui/dg/Makefile
 	include/ambulant/gui/dx/Makefile
 	include/ambulant/gui/none/Makefile
 	include/ambulant/gui/cocoa/Makefile
 	include/ambulant/gui/cg/Makefile
 	include/ambulant/gui/qt/Makefile
 	include/ambulant/gui/gtk/Makefile
-	include/ambulant/gui/arts/Makefile
 	include/ambulant/gui/SDL/Makefile
 	include/ambulant/gui/gstreamer/Makefile
 	third_party_packages/Makefile
@@ -702,27 +699,6 @@ AC_SUBST(GSTREAMER_PREFIX)
 AC_MSG_RESULT($test_gstreamer)
 
 #
-# Test for arts 
-#
-test_arts=false
-dnl set to false until fixed
-AC_MSG_CHECKING(for arts soundsystem)
-AC_ARG_WITH(arts,
-     [  --with-arts		Turn on aRts (basic) support (currently broken) ],
-     [case "${withval}" in
-       yes) arts=true
-                ;;
-       no)  arts=false
-                ;;
-       *)   AC_MSG_ERROR(--with-arts takes no argument - it uses artsc-config)
-                ;;
-     esac],[
-     	arts=false
-		test_arts=false
-     ])
-AM_CONDITIONAL(WITH_ARTS, test x$arts = xtrue)
-AC_MSG_RESULT($arts)
-#
 # Test for live555.com library
 #
 test_live=true
@@ -1250,7 +1226,6 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
 	Build with GTK:			${test_gtk}
 	Build with gstreamer:		${test_gstreamer}
 	Build with NOKIA770:		${test_nokia770}
-	Build with ARTS support:	${test_arts}
 	Build with live555.com RTSP:	${test_live}
 	Build with Python support:      ${with_python}
 	Build with Python plugin:       ${with_python_plugin}

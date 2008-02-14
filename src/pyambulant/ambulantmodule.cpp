@@ -15717,25 +15717,6 @@ static PyObject *PyAm_get_global_playable_factory(PyObject *_self, PyObject *_ar
 	return _res;
 }
 
-static PyObject *PyAm_create_mms_player(PyObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	ambulant::common::player* _rv;
-	ambulant::lib::document* doc;
-	ambulant::common::factories* factory;
-	if (!PyArg_ParseTuple(_args, "O&O&",
-	                      documentObj_Convert, &doc,
-	                      factoriesObj_Convert, &factory))
-		return NULL;
-	PyThreadState *_save = PyEval_SaveThread();
-	_rv = ambulant::common::create_mms_player(doc,
-	                                          factory);
-	PyEval_RestoreThread(_save);
-	_res = Py_BuildValue("O&",
-	                     playerObj_New, _rv);
-	return _res;
-}
-
 static PyObject *PyAm_create_smil2_player(PyObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -16153,8 +16134,6 @@ static PyMethodDef PyAm_methods[] = {
 	 PyDoc_STR("() -> (ambulant::common::surface_factory* _rv)")},
 	{"get_global_playable_factory", (PyCFunction)PyAm_get_global_playable_factory, 1,
 	 PyDoc_STR("() -> (ambulant::common::global_playable_factory* _rv)")},
-	{"create_mms_player", (PyCFunction)PyAm_create_mms_player, 1,
-	 PyDoc_STR("(ambulant::lib::document* doc, ambulant::common::factories* factory) -> (ambulant::common::player* _rv)")},
 	{"create_smil2_player", (PyCFunction)PyAm_create_smil2_player, 1,
 	 PyDoc_STR("(ambulant::lib::document* doc, ambulant::common::factories* factory, ambulant::common::embedder* sys) -> (ambulant::common::player* _rv)")},
 	{"get_global_state_component_factory", (PyCFunction)PyAm_get_global_state_component_factory, 1,
