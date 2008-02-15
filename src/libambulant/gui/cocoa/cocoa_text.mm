@@ -101,6 +101,7 @@ cocoa_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 				((ucp[0] == 0xff && ucp[1] == 0xfe) ||
 				 (ucp[0] == 0xfe && ucp[1] == 0xff))) {
 			the_string = [NSString stringWithCharacters: (unichar*)m_data length: m_data_size/2];
+			assert(the_string);
 		} else {
 			// Assume it's a utf-8 file.
 			char *cdata = (char*)m_data;
@@ -109,12 +110,15 @@ cocoa_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 				assert(cdata);
 				memcpy(cdata, m_data, m_data_size);
 				cdata[m_data_size] = '\0';
-				the_string = [NSString stringWithUTF8String: (char *)m_data];
+				the_string = [NSString stringWithUTF8String: cdata];
+				assert(the_string);
 				free(cdata);
 			} else {
 				the_string = [NSString stringWithUTF8String: (char *)m_data];
+				assert(the_string);
 			}
 		}
+		assert(the_string);
 		m_text_storage = [[NSTextStorage alloc] initWithString:the_string];
 		if (m_text_color) {
 #ifdef WITH_SMIL30
