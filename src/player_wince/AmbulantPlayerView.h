@@ -26,6 +26,13 @@ public:
 	UINT m_cursor_id;
 	bool m_autoplay;
 
+	// Calling Enable() on toolbar buttons will always cause a redraw,
+	// even if nothing changes. Therefore, we cache the previous state.
+	bool m_was_play_enabled;
+	bool m_was_pause_enabled;
+	bool m_was_pause_active;
+	bool m_was_stop_enabled;
+	bool m_was_viewsource_enabled;
 // Operations
 public:
 

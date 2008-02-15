@@ -112,7 +112,11 @@ class AMBULANTAPI dx_player :
 	public common::gui_player, 
 	public common::window_factory, 
 	public dx_playables_context,
-	public common::embedder {
+	public common::embedder
+#ifndef WITHOUT_DELAYED_REDRAW
+	, public lib::event_processor_observer
+#endif
+{
 	
   public:
 	  dx_player(dx_player_callbacks &hoster, common::player_feedback *feedback, const net::url& u);

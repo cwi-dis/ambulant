@@ -266,6 +266,8 @@ void CAmbulantPlayerView::OnPlay()
 void CAmbulantPlayerView::OnUpdatePlay(CCmdUI* pCmdUI) 
 {
 	bool enable = player && player->is_play_enabled();
+	if (enable == m_was_play_enabled) return;
+	m_was_play_enabled = enable;
 	pCmdUI->Enable(enable?TRUE:FALSE);
 	
 }
@@ -279,8 +281,12 @@ void CAmbulantPlayerView::OnPause()
 void CAmbulantPlayerView::OnUpdatePause(CCmdUI* pCmdUI) 
 {
 	bool enable = player && player->is_pause_enabled();
+	bool active = player && player->is_pause_active();
+	if (enable == m_was_pause_enabled && active == m_was_pause_active) return;
+	m_was_pause_enabled = enable;
+	m_was_pause_active = active;
 	pCmdUI->Enable(enable?TRUE:FALSE);
-	if(enable) pCmdUI->SetCheck(player->is_pause_active()?1:0);
+	if(enable) pCmdUI->SetCheck(active?TRUE:FALSE);
 	
 }
 
@@ -310,6 +316,8 @@ void CAmbulantPlayerView::OnStop()
 void CAmbulantPlayerView::OnUpdateStop(CCmdUI* pCmdUI) 
 {
 	bool enable = player && (player->is_stop_enabled());
+	if (enable == m_was_stop_enabled) return;
+	m_was_stop_enabled = enable;
 	pCmdUI->Enable(enable?TRUE:FALSE);
 	
 }
@@ -432,6 +440,8 @@ void CAmbulantPlayerView::OnViewSource() {
 void CAmbulantPlayerView::OnUpdateViewSource(CCmdUI *pCmdUI) {
 	USES_CONVERSION;
 	bool b = player && !m_curDocFilename.IsEmpty() && net::url::from_url(T2CA(LPCTSTR(m_curDocFilename))).is_local_file();
+	if (b == m_was_viewsource_enabled) return;
+	m_was_viewsource_enabled = b;
 	pCmdUI->Enable(b?TRUE:FALSE);
 }
 

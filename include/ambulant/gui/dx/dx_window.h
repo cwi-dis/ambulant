@@ -61,7 +61,7 @@ class dx_window : public common::gui_window {
 	void need_redraw(const lib::rect& r);
 	void redraw(const lib::rect& r);
 	void need_redraw();
-	void redraw_now() { /* Redraws are synchronous on Windows */ }
+	void redraw_now();
 	void need_events(bool onoff) { /* Always get them on windows */ }
 	const std::string& get_name() const { return m_name;}
 	region *get_region() { return m_rgn;}
@@ -70,6 +70,7 @@ class dx_window : public common::gui_window {
 	
 	viewport *get_viewport() { return m_viewport;}
   private:
+	void _need_redraw(const lib::rect& r);
 
 	// gui_window:
 	// passive_region *m_region;
@@ -80,9 +81,10 @@ class dx_window : public common::gui_window {
     viewport* m_viewport;
     
     // lock/unlock redraw
-	bool m_locked;
+	lib::critical_section m_redraw_rect_lock; 
+	int m_locked;
 	lib::rect m_redraw_rect;
-	bool m_isnew_redraw_rect;
+	bool m_redraw_rect_valid;
 };
 
 } // namespace dx

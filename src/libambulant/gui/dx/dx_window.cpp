@@ -43,7 +43,7 @@ gui::dx::dx_window::dx_window(const std::string& name,
 	m_name(name),
 	m_viewrc(lib::point(0, 0), lib::size(bounds.w, bounds.h)),
 	m_wf(wf),
-	m_viewport(v), m_locked(false), m_isnew_redraw_rect(true) {
+	m_viewport(v), m_locked(0), m_redraw_rect_valid(false) {
 	//AM_DBG lib::logger::get_logger()->trace_stream() 
 	//	<< "dx_window(" << name << ", " << bounds << ")" << lib::endl;
 }
@@ -54,33 +54,59 @@ gui::dx::dx_window::~dx_window() {
 }
   		
 void gui::dx::dx_window::need_redraw(const lib::rect &r) {
+	m_redraw_rect_lock.enter();
+	_need_redraw(r);
+	m_redraw_rect_lock.leave();
+}
+
+void gui::dx::dx_window::_need_redraw(const lib::rect &r) {
 	// clip rect to this window since the layout does not do this
 	lib::rect rc = r;
 	rc &= m_viewrc;
-	m_viewport->set_fullscreen_transition(NULL);
-	m_viewport->clear(rc, GetSysColor(COLOR_WINDOW), 1.0);
-	m_rgn->redraw(rc, this);
-	if(!m_locked)
+	if(!m_locked) {
+		/*AM_DBG*/ lib::logger::get_logger()->debug("dx_window::need_redraw(%d,%d,%d,%d): drawing", rc.left(), rc.top(), rc.width(), rc.height());
+		//assert(!m_redraw_rect_valid);
+		m_viewport->set_fullscreen_transition(NULL);
+		m_viewport->clear(rc, GetSysColor(COLOR_WINDOW), 1.0);
+		m_rgn->redraw(rc, this);
 		m_viewport->schedule_redraw(rc);
-	else {
-		if(m_isnew_redraw_rect) {
+	} else {
+		if(!m_redraw_rect_valid) {
 			m_redraw_rect = rc;
-			m_isnew_redraw_rect = false;
+			m_redraw_rect_valid = true;
 		} else m_redraw_rect |= rc;
 	}
 }
 
+void gui::dx::dx_window::redraw_now() {
+	m_redraw_rect_lock.enter();
+	int keep_lock = m_locked;
+	m_locked = 0;
+	m_redraw_rect_valid = false;
+	_need_redraw(m_viewrc);
+	m_redraw_rect_valid = false;
+	m_locked = keep_lock;
+	m_redraw_rect_lock.leave();
+}
+
 void gui::dx::dx_window::need_redraw() {
-	m_rgn->redraw(m_viewrc, this);
-	m_viewport->schedule_redraw();
+	need_redraw(m_viewrc);
 }
 
 void gui::dx::dx_window::lock_redraw() {
-	m_locked = true;
-	m_isnew_redraw_rect = true;
+	m_redraw_rect_lock.enter();
+	m_locked++;
+	m_redraw_rect_lock.leave();
 }
 
 void gui::dx::dx_window::unlock_redraw() {
-	m_locked = false;
-	m_viewport->schedule_redraw(m_redraw_rect);
+	m_redraw_rect_lock.enter();
+	assert(m_locked > 0);
+	m_locked--;
+	if (m_locked == 0 && m_redraw_rect_valid) {
+		lib::rect to_redraw = m_redraw_rect;
+		m_redraw_rect_valid = false;
+		_need_redraw(to_redraw);
+	}
+	m_redraw_rect_lock.leave();
 }
