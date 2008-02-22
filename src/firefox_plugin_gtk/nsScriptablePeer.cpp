@@ -47,14 +47,18 @@
 //
 #define DEBUG
 #include "nsScriptablePeer.h"
+#ifdef	MOZILLA_TRUNK
 #include "xpconnect/nsIXPConnect.h"
 #include "jscntxt.h"
 #include "jsobj.h"
+#endif//MOZILLA_TRUNK
 
 static NS_DEFINE_IID(kIScriptableIID, NS_IAMBULANTPLUGIN_IID);
 static NS_DEFINE_IID(kIClassInfoIID, NS_ICLASSINFO_IID);
 static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
+#ifdef	MOZILLA_TRUNK
 static NS_DEFINE_IID(kIXPConnectWrappedJSIID, NS_IXPCONNECTWRAPPEDJS_IID);
+#endif//MOZILLA_TRUNK
 
 nsScriptablePeer::nsScriptablePeer(nsPluginInstance* aPlugin)
 {
@@ -151,6 +155,59 @@ void nsScriptablePeer::SetInstance(nsPluginInstance* plugin)
 //
 // the following methods will be callable from JavaScript
 //
+
+NS_IMETHODIMP nsScriptablePeer::GetLocation(char** aloc)
+{
+#ifdef DEBUG
+    char *id = "nsScriptablePeer::Getlocation";
+    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"mPlugin",mPlugin);
+#endif
+#ifdef   AMBULANT_FIREFOX_PLUGIN
+  if (mPlugin)
+    mPlugin->getLocation();
+#endif // AMBULANT_FIREFOX_PLUGIN
+
+  return NS_OK;
+}
+NS_IMETHODIMP nsScriptablePeer::SetLocation(char const* aloc)
+{
+#ifdef DEBUG
+    char *id = "nsScriptablePeer::Setlocation";
+    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"mPlugin",mPlugin);
+#endif
+#ifdef   AMBULANT_FIREFOX_PLUGIN
+  if (mPlugin)
+    mPlugin->setLocation();
+#endif // AMBULANT_FIREFOX_PLUGIN
+
+  return NS_OK;
+}
+NS_IMETHODIMP nsScriptablePeer::GetProperty(char const* prop, char** val)
+{
+#ifdef DEBUG
+    char *id = "nsScriptablePeer::Getproperty";
+    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"mPlugin",mPlugin);
+#endif
+#ifdef   AMBULANT_FIREFOX_PLUGIN
+  if (mPlugin)
+    mPlugin->getProperty();
+#endif // AMBULANT_FIREFOX_PLUGIN
+
+  return NS_OK;
+}
+NS_IMETHODIMP nsScriptablePeer::SetProperty(char const* prop, char const* val)
+{
+#ifdef DEBUG
+    char *id = "nsScriptablePeer::Setproperty";
+    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"mPlugin",mPlugin);
+#endif
+#ifdef   AMBULANT_FIREFOX_PLUGIN
+  if (mPlugin)
+    mPlugin->setProperty();
+#endif // AMBULANT_FIREFOX_PLUGIN
+
+  return NS_OK;
+}
 
 NS_IMETHODIMP nsScriptablePeer::StartPlayer(void)
 {

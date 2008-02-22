@@ -61,7 +61,6 @@ EXTRA_CFLAGS=$(extra_gtk_cflags)
 AM_CXXFLAGS = -export-dynamic -DXP_UNIX -DMOZ_X11 -DAMBULANT_FIREFOX_PLUGIN
 #EXTRA_CXXFLAGS=-DXP_UNIX -DMOZ_X11
 #EXTRA_LDFLAGS=$(extra_gtk_ldflags)
-# KB mozilla trunk: java js nspr plugin xpcom
 INCLUDES = \
 	-I$(top_builddir)/include \
 	-I$(top_srcdir)/include \
@@ -69,11 +68,6 @@ INCLUDES = \
 	-I$(top_srcdir)/src/player_gtk \
 	$(gtkincludes) \
 	-I$(GECKO_ROOT)/include \
-	-I$(GECKO_ROOT)/include/java \
-	-I$(GECKO_ROOT)/include/js \
-	-I$(GECKO_ROOT)/include/nspr \
-	-I$(GECKO_ROOT)/include/plugin \
-	-I$(GECKO_ROOT)/include/xpcom \
 	$(INCLTDL)
 
 # These targets are magic for automake

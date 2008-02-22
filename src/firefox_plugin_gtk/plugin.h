@@ -87,6 +87,10 @@ public:
   void showVersion();
   void clear();
 #else //  AMBULANT_FIREFOX_PLUGIN
+  void getLocation();
+  void setLocation();
+  void getProperty();
+  void setProperty();
   void startPlayer();
   void stopPlayer();
   void restartPlayer();
@@ -96,6 +100,7 @@ public:
   nsScriptablePeer* getScriptablePeer();
 
 private:
+  NPWindow* mNPWindow;
   NPP mInstance;
   NPBool mInitialized;
   nsScriptablePeer * mScriptablePeer;

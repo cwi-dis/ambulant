@@ -42,6 +42,7 @@
 //
 extern "C" {
 #include "npplat.h"
+#include "npupp.h"
 
 extern NPNetscapeFuncs NPNFuncs;
 

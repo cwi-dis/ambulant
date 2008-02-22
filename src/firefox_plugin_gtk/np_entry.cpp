@@ -134,6 +134,11 @@ static NPError fillNetscapeFunctionTable(NPNetscapeFuncs* aNPNFuncs)
   NPNFuncs.invalidaterect   = aNPNFuncs->invalidaterect;
   NPNFuncs.invalidateregion = aNPNFuncs->invalidateregion;
   NPNFuncs.forceredraw      = aNPNFuncs->forceredraw;
+#ifdef  _NPUPP_H_
+  NPNFuncs.invoke           = aNPNFuncs->invoke;
+  NPNFuncs.getstringidentifier = aNPNFuncs->getstringidentifier;
+#endif//_NPUPP_H_
+
 
   return NPERR_NO_ERROR;
 }

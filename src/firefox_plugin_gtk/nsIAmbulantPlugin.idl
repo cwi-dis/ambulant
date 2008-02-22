@@ -22,9 +22,15 @@
 
 #include "nsISupports.idl"
 
-[scriptable, uuid(d2d536a0-b6fc-11d5-9d10-0060b0fbd8ac)]
+[scriptable, uuid(968eee2e-5d15-4e04-b182-67bebec8d38d)]
 interface nsIAmbulantPlugin : nsISupports {
-
+  /* from: Patric C. Beard, Bidirectional Plugin Scripting
+     http://www.mozilla.org/projects/plugins/bi-directional-plugin-scripting.html
+  */
+  attribute string location;
+  string getProperty(in string name);
+  void setProperty(in string name, in string value);
+  
   /**
    * The object to be wrapped and exposed to JavaScript.  It should
    * be an XPCOM object, and it can be the same object as the plugin.
@@ -48,3 +54,4 @@ interface nsIAmbulantPlugin : nsISupports {
   void pausePlayer();
 
 };
+

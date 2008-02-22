@@ -16,16 +16,26 @@
 #endif
 
 /* starting interface:    nsIAmbulantPlugin */
-#define NS_IAMBULANTPLUGIN_IID_STR "d2d536a0-b6fc-11d5-9d10-0060b0fbd8ac"
+#define NS_IAMBULANTPLUGIN_IID_STR "968eee2e-5d15-4e04-b182-67bebec8d38d"
 
 #define NS_IAMBULANTPLUGIN_IID \
-  {0xd2d536a0, 0xb6fc, 0x11d5, \
-    { 0x9d, 0x10, 0x00, 0x60, 0xb0, 0xfb, 0xd8, 0xac }}
+  {0x968eee2e, 0x5d15, 0x4e04, \
+    { 0xb1, 0x82, 0x67, 0xbe, 0xbe, 0xc8, 0xd3, 0x8d }}
 
 class NS_NO_VTABLE nsIAmbulantPlugin : public nsISupports {
  public: 
 
-  NS_DECLARE_STATIC_IID_ACCESSOR(NS_IAMBULANTPLUGIN_IID)
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IAMBULANTPLUGIN_IID)
+
+  /* attribute string location; */
+  NS_IMETHOD GetLocation(char * *aLocation) = 0;
+  NS_IMETHOD SetLocation(const char * aLocation) = 0;
+
+  /* string getProperty (in string name); */
+  NS_IMETHOD GetProperty(const char *name, char **_retval) = 0;
+
+  /* void setProperty (in string name, in string value); */
+  NS_IMETHOD SetProperty(const char *name, const char *value) = 0;
 
   /**
    * The object to be wrapped and exposed to JavaScript.  It should
@@ -55,10 +65,12 @@ class NS_NO_VTABLE nsIAmbulantPlugin : public nsISupports {
 
 };
 
-  NS_DEFINE_STATIC_IID_ACCESSOR(nsIAmbulantPlugin, NS_IAMBULANTPLUGIN_IID)
-
 /* Use this macro when declaring classes that implement this interface. */
 #define NS_DECL_NSIAMBULANTPLUGIN \
+  NS_IMETHOD GetLocation(char * *aLocation); \
+  NS_IMETHOD SetLocation(const char * aLocation); \
+  NS_IMETHOD GetProperty(const char *name, char **_retval); \
+  NS_IMETHOD SetProperty(const char *name, const char *value); \
   NS_IMETHOD StartPlayer(void); \
   NS_IMETHOD StopPlayer(void); \
   NS_IMETHOD RestartPlayer(void); \
@@ -67,6 +79,10 @@ class NS_NO_VTABLE nsIAmbulantPlugin : public nsISupports {
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object. */
 #define NS_FORWARD_NSIAMBULANTPLUGIN(_to) \
+  NS_IMETHOD GetLocation(char * *aLocation) { return _to GetLocation(aLocation); } \
+  NS_IMETHOD SetLocation(const char * aLocation) { return _to SetLocation(aLocation); } \
+  NS_IMETHOD GetProperty(const char *name, char **_retval) { return _to GetProperty(name, _retval); } \
+  NS_IMETHOD SetProperty(const char *name, const char *value) { return _to SetProperty(name, value); } \
   NS_IMETHOD StartPlayer(void) { return _to StartPlayer(); } \
   NS_IMETHOD StopPlayer(void) { return _to StopPlayer(); } \
   NS_IMETHOD RestartPlayer(void) { return _to RestartPlayer(); } \
@@ -75,6 +91,10 @@ class NS_NO_VTABLE nsIAmbulantPlugin : public nsISupports {
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
 #define NS_FORWARD_SAFE_NSIAMBULANTPLUGIN(_to) \
+  NS_IMETHOD GetLocation(char * *aLocation) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetLocation(aLocation); } \
+  NS_IMETHOD SetLocation(const char * aLocation) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetLocation(aLocation); } \
+  NS_IMETHOD GetProperty(const char *name, char **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetProperty(name, _retval); } \
+  NS_IMETHOD SetProperty(const char *name, const char *value) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetProperty(name, value); } \
   NS_IMETHOD StartPlayer(void) { return !_to ? NS_ERROR_NULL_POINTER : _to->StartPlayer(); } \
   NS_IMETHOD StopPlayer(void) { return !_to ? NS_ERROR_NULL_POINTER : _to->StopPlayer(); } \
   NS_IMETHOD RestartPlayer(void) { return !_to ? NS_ERROR_NULL_POINTER : _to->RestartPlayer(); } \
@@ -111,6 +131,28 @@ nsAmbulantPlugin::nsAmbulantPlugin()
 nsAmbulantPlugin::~nsAmbulantPlugin()
 {
   /* destructor code */
+}
+
+/* attribute string location; */
+NS_IMETHODIMP nsAmbulantPlugin::GetLocation(char * *aLocation)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsAmbulantPlugin::SetLocation(const char * aLocation)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* string getProperty (in string name); */
+NS_IMETHODIMP nsAmbulantPlugin::GetProperty(const char *name, char **_retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void setProperty (in string name, in string value); */
+NS_IMETHODIMP nsAmbulantPlugin::SetProperty(const char *name, const char *value)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 /* void startPlayer (); */

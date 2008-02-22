@@ -27,6 +27,10 @@ SMIL content in a web page.
 
 **************** KB TMP. 201207
 
+Sometimes it helps by setting
+MOZ_PLUGIN_PATH=<path-to-your-pugin-path>,
+e.g. ~/kees/.mozilla/plugins before starting firefox
+
   
 There is one known issue with the plugin: relative pathnames in the
 <embed src="..."> tag do not work, please use absolute pathnames only.
