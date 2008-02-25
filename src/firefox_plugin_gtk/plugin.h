@@ -87,7 +87,7 @@ public:
   void showVersion();
   void clear();
 #else //  AMBULANT_FIREFOX_PLUGIN
-  void getLocation();
+  char* getLocation();
   void setLocation();
   void getProperty();
   void setProperty();

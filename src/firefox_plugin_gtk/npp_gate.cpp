@@ -53,6 +53,15 @@ char * NPP_GetMIMEDescription(void)
   return mimetypes;
 }
 
+NPError NPP_Initialize(void)
+{
+  return NPERR_NO_ERROR;
+}
+
+void NPP_Shutdown(void)
+{
+}
+
 // here the plugin creates a plugin instance object which 
 // will be associated with this newly created NPP instance and 
 // will do all the neccessary job

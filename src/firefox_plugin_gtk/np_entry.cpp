@@ -1,4 +1,4 @@
-/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: NPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -37,316 +37,153 @@
 
 //////////////////////////////////////////////////////////////
 //
-// Main plugin entry point implementation -- exports from the 
-// plugin library
+// Main plugin entry point implementation
 //
-extern "C" {
-#include "npplat.h"
-#include "pluginbase.h"
+#include "npapi.h"
+#include "npupp.h"
+
+#ifndef HIBYTE
+#define HIBYTE(x) ((((uint32)(x)) & 0xff00) >> 8)
+#endif
 
 NPNetscapeFuncs NPNFuncs;
 
-NPError OSCALL NP_Shutdown()
-{
-  NS_PluginShutdown();
-  return NPERR_NO_ERROR;
-}
-
-static NPError fillPluginFunctionTable(NPPluginFuncs* aNPPFuncs)
-{
-  if(aNPPFuncs == NULL)
-    return NPERR_INVALID_FUNCTABLE_ERROR;
-
-  // Set up the plugin function table that Netscape will use to
-  // call us. Netscape needs to know about our version and size   
-  // and have a UniversalProcPointer for every function we implement.
-
-  aNPPFuncs->version       = (NP_VERSION_MAJOR << 8) | NP_VERSION_MINOR;
-#ifdef XP_MAC
-  aNPPFuncs->newp          = NewNPP_NewProc(Private_New);
-  aNPPFuncs->destroy       = NewNPP_DestroyProc(Private_Destroy);
-  aNPPFuncs->setwindow     = NewNPP_SetWindowProc(Private_SetWindow);
-  aNPPFuncs->newstream     = NewNPP_NewStreamProc(Private_NewStream);
-  aNPPFuncs->destroystream = NewNPP_DestroyStreamProc(Private_DestroyStream);
-  aNPPFuncs->asfile        = NewNPP_StreamAsFileProc(Private_StreamAsFile);
-  aNPPFuncs->writeready    = NewNPP_WriteReadyProc(Private_WriteReady);
-  aNPPFuncs->write         = NewNPP_WriteProc(Private_Write);
-  aNPPFuncs->print         = NewNPP_PrintProc(Private_Print);
-  aNPPFuncs->event         = NewNPP_HandleEventProc(Private_HandleEvent);	
-  aNPPFuncs->urlnotify     = NewNPP_URLNotifyProc(Private_URLNotify);			
-  aNPPFuncs->getvalue      = NewNPP_GetValueProc(Private_GetValue);
-  aNPPFuncs->setvalue      = NewNPP_SetValueProc(Private_SetValue);
-#else
-  aNPPFuncs->newp          = NPP_New;
-  aNPPFuncs->destroy       = NPP_Destroy;
-  aNPPFuncs->setwindow     = NPP_SetWindow;
-  aNPPFuncs->newstream     = NPP_NewStream;
-  aNPPFuncs->destroystream = NPP_DestroyStream;
-  aNPPFuncs->asfile        = NPP_StreamAsFile;
-  aNPPFuncs->writeready    = NPP_WriteReady;
-  aNPPFuncs->write         = NPP_Write;
-  aNPPFuncs->print         = NPP_Print;
-  aNPPFuncs->event         = NPP_HandleEvent;
-  aNPPFuncs->urlnotify     = NPP_URLNotify;
-  aNPPFuncs->getvalue      = NPP_GetValue;
-  aNPPFuncs->setvalue      = NPP_SetValue;
-#endif
-#ifdef OJI
-  aNPPFuncs->javaClass     = NULL;
-#endif
-
-  return NPERR_NO_ERROR;
-}
-
-static NPError fillNetscapeFunctionTable(NPNetscapeFuncs* aNPNFuncs)
-{
-  if(aNPNFuncs == NULL)
-    return NPERR_INVALID_FUNCTABLE_ERROR;
-
-  if(HIBYTE(aNPNFuncs->version) > NP_VERSION_MAJOR)
-    return NPERR_INCOMPATIBLE_VERSION_ERROR;
-
-  if(aNPNFuncs->size < sizeof(NPNetscapeFuncs))
-    return NPERR_INVALID_FUNCTABLE_ERROR;
-
-  NPNFuncs.size             = aNPNFuncs->size;
-  NPNFuncs.version          = aNPNFuncs->version;
-  NPNFuncs.geturlnotify     = aNPNFuncs->geturlnotify;
-  NPNFuncs.geturl           = aNPNFuncs->geturl;
-  NPNFuncs.posturlnotify    = aNPNFuncs->posturlnotify;
-  NPNFuncs.posturl          = aNPNFuncs->posturl;
-  NPNFuncs.requestread      = aNPNFuncs->requestread;
-  NPNFuncs.newstream        = aNPNFuncs->newstream;
-  NPNFuncs.write            = aNPNFuncs->write;
-  NPNFuncs.destroystream    = aNPNFuncs->destroystream;
-  NPNFuncs.status           = aNPNFuncs->status;
-  NPNFuncs.uagent           = aNPNFuncs->uagent;
-  NPNFuncs.memalloc         = aNPNFuncs->memalloc;
-  NPNFuncs.memfree          = aNPNFuncs->memfree;
-  NPNFuncs.memflush         = aNPNFuncs->memflush;
-  NPNFuncs.reloadplugins    = aNPNFuncs->reloadplugins;
-#ifdef OJI
-  NPNFuncs.getJavaEnv       = aNPNFuncs->getJavaEnv;
-  NPNFuncs.getJavaPeer      = aNPNFuncs->getJavaPeer;
-#endif
-  NPNFuncs.getvalue         = aNPNFuncs->getvalue;
-  NPNFuncs.setvalue         = aNPNFuncs->setvalue;
-  NPNFuncs.invalidaterect   = aNPNFuncs->invalidaterect;
-  NPNFuncs.invalidateregion = aNPNFuncs->invalidateregion;
-  NPNFuncs.forceredraw      = aNPNFuncs->forceredraw;
-#ifdef  _NPUPP_H_
-  NPNFuncs.invoke           = aNPNFuncs->invoke;
-  NPNFuncs.getstringidentifier = aNPNFuncs->getstringidentifier;
-#endif//_NPUPP_H_
-
-
-  return NPERR_NO_ERROR;
-}
-
-//
-// Some exports are different on different platforms
-//
-
-/**************************************************/
-/*                                                */
-/*                   Windows                      */
-/*                                                */
-/**************************************************/
 #ifdef XP_WIN
 
-NPError OSCALL NP_Initialize(NPNetscapeFuncs* aNPNFuncs)
+NPError OSCALL NP_GetEntryPoints(NPPluginFuncs* pFuncs)
 {
-  NPError rv = fillNetscapeFunctionTable(aNPNFuncs);
-  if(rv != NPERR_NO_ERROR)
-    return rv;
+  if(pFuncs == NULL)
+    return NPERR_INVALID_FUNCTABLE_ERROR;
 
-  return NS_PluginInitialize();
+  if(pFuncs->size < sizeof(NPPluginFuncs))
+    return NPERR_INVALID_FUNCTABLE_ERROR;
+
+  pFuncs->version       = (NP_VERSION_MAJOR << 8) | NP_VERSION_MINOR;
+  pFuncs->newp          = NPP_New;
+  pFuncs->destroy       = NPP_Destroy;
+  pFuncs->setwindow     = NPP_SetWindow;
+  pFuncs->newstream     = NPP_NewStream;
+  pFuncs->destroystream = NPP_DestroyStream;
+  pFuncs->asfile        = NPP_StreamAsFile;
+  pFuncs->writeready    = NPP_WriteReady;
+  pFuncs->write         = NPP_Write;
+  pFuncs->print         = NPP_Print;
+  pFuncs->event         = NPP_HandleEvent;
+  pFuncs->urlnotify     = NPP_URLNotify;
+  pFuncs->getvalue      = NPP_GetValue;
+  pFuncs->setvalue      = NPP_SetValue;
+  pFuncs->javaClass     = NULL;
+
+  return NPERR_NO_ERROR;
 }
 
-NPError OSCALL NP_GetEntryPoints(NPPluginFuncs* aNPPFuncs)
-{
-  return fillPluginFunctionTable(aNPPFuncs);
-}
+#endif /* XP_WIN */
 
-#endif //XP_WIN
+char *NPP_GetMIMEDescription();
 
-/**************************************************/
-/*                                                */
-/*                    Unix                        */
-/*                                                */
-/**************************************************/
-#ifdef XP_UNIX
-
-NPError NP_Initialize(NPNetscapeFuncs* aNPNFuncs, NPPluginFuncs* aNPPFuncs)
-{
-  NPError rv = fillNetscapeFunctionTable(aNPNFuncs);
-  if(rv != NPERR_NO_ERROR)
-    return rv;
-
-  rv = fillPluginFunctionTable(aNPPFuncs);
-  if(rv != NPERR_NO_ERROR)
-    return rv;
-/* from: http://developer.mozilla.org/en/docs/XEmbed_Extension_for_Mozilla_plugins */
-#ifdef JUNK
-    NPError err = NPERR_NO_ERROR;
-    PRBool supportsXEmbed = PR_FALSE;
-    NPNToolkitType toolkit = (NPNToolkitType) 0;
-    /*
-     * Make sure that the browser supports functionality we care
-     * about.
-     */
-                                                                                
-    err = CallNPN_GetValueProc(aNPNFuncs->getvalue, NULL,
-                               NPNVSupportsXEmbedBool,
-                               (void *)&supportsXEmbed);
-
-    if (err != NPERR_NO_ERROR || supportsXEmbed != PR_TRUE)
-        return NPERR_INCOMPATIBLE_VERSION_ERROR;
-
-    err = CallNPN_GetValueProc(aNPNFuncs->getvalue, NULL,
-                               NPNVToolkit,
-                               (void *)&toolkit);
-
-    if (err != NPERR_NO_ERROR || toolkit != NPNVGtk2)
-        return NPERR_INCOMPATIBLE_VERSION_ERROR;
-#endif//JUNK
-
-  return NS_PluginInitialize();
-}
-
-char * NP_GetMIMEDescription(void)
+char *
+NP_GetMIMEDescription()
 {
   return NPP_GetMIMEDescription();
 }
 
-NPError NP_GetValue(void *future, NPPVariable aVariable, void *aValue)
+NPError
+NP_GetValue(void* future, NPPVariable variable, void *value)
 {
-  return NS_PluginGetValue(aVariable, aValue);
+  return NPP_GetValue((NPP_t *)future, variable, value);
 }
 
-#endif //XP_UNIX
+NPError OSCALL
+NP_Initialize(NPNetscapeFuncs* pFuncs
+#ifdef XP_UNIX
+              , NPPluginFuncs* pluginFuncs
+#endif
+              )
+{
+  if(pFuncs == NULL)
+    return NPERR_INVALID_FUNCTABLE_ERROR;
 
-/**************************************************/
-/*                                                */
-/*                     Mac                        */
-/*                                                */
-/**************************************************/
-#ifdef XP_MAC
+  if(HIBYTE(pFuncs->version) > NP_VERSION_MAJOR)
+    return NPERR_INCOMPATIBLE_VERSION_ERROR;
 
-#if !TARGET_API_MAC_CARBON
-QDGlobals* gQDPtr; // Pointer to Netscape's QuickDraw globals
+  if(pFuncs->size < sizeof(NPNetscapeFuncs))
+    return NPERR_INVALID_FUNCTABLE_ERROR;
+
+  NPNFuncs.size                    = pFuncs->size;
+  NPNFuncs.version                 = pFuncs->version;
+  NPNFuncs.geturlnotify            = pFuncs->geturlnotify;
+  NPNFuncs.geturl                  = pFuncs->geturl;
+  NPNFuncs.posturlnotify           = pFuncs->posturlnotify;
+  NPNFuncs.posturl                 = pFuncs->posturl;
+  NPNFuncs.requestread             = pFuncs->requestread;
+  NPNFuncs.newstream               = pFuncs->newstream;
+  NPNFuncs.write                   = pFuncs->write;
+  NPNFuncs.destroystream           = pFuncs->destroystream;
+  NPNFuncs.status                  = pFuncs->status;
+  NPNFuncs.uagent                  = pFuncs->uagent;
+  NPNFuncs.memalloc                = pFuncs->memalloc;
+  NPNFuncs.memfree                 = pFuncs->memfree;
+  NPNFuncs.memflush                = pFuncs->memflush;
+  NPNFuncs.reloadplugins           = pFuncs->reloadplugins;
+  NPNFuncs.getJavaEnv              = pFuncs->getJavaEnv;
+  NPNFuncs.getJavaPeer             = pFuncs->getJavaPeer;
+  NPNFuncs.getvalue                = pFuncs->getvalue;
+  NPNFuncs.setvalue                = pFuncs->setvalue;
+  NPNFuncs.invalidaterect          = pFuncs->invalidaterect;
+  NPNFuncs.invalidateregion        = pFuncs->invalidateregion;
+  NPNFuncs.forceredraw             = pFuncs->forceredraw;
+  NPNFuncs.getstringidentifier     = pFuncs->getstringidentifier;
+  NPNFuncs.getstringidentifiers    = pFuncs->getstringidentifiers;
+  NPNFuncs.getintidentifier        = pFuncs->getintidentifier;
+  NPNFuncs.identifierisstring      = pFuncs->identifierisstring;
+  NPNFuncs.utf8fromidentifier      = pFuncs->utf8fromidentifier;
+  NPNFuncs.intfromidentifier       = pFuncs->intfromidentifier;
+  NPNFuncs.createobject            = pFuncs->createobject;
+  NPNFuncs.retainobject            = pFuncs->retainobject;
+  NPNFuncs.releaseobject           = pFuncs->releaseobject;
+  NPNFuncs.invoke                  = pFuncs->invoke;
+  NPNFuncs.invokeDefault           = pFuncs->invokeDefault;
+  NPNFuncs.evaluate                = pFuncs->evaluate;
+  NPNFuncs.getproperty             = pFuncs->getproperty;
+  NPNFuncs.setproperty             = pFuncs->setproperty;
+  NPNFuncs.removeproperty          = pFuncs->removeproperty;
+  NPNFuncs.hasproperty             = pFuncs->hasproperty;
+  NPNFuncs.hasmethod               = pFuncs->hasmethod;
+  NPNFuncs.releasevariantvalue     = pFuncs->releasevariantvalue;
+  NPNFuncs.setexception            = pFuncs->setexception;
+
+#ifdef XP_UNIX
+  /*
+   * Set up the plugin function table that Netscape will use to
+   * call us.  Netscape needs to know about our version and size
+   * and have a UniversalProcPointer for every function we
+   * implement.
+   */
+  pluginFuncs->version    = (NP_VERSION_MAJOR << 8) + NP_VERSION_MINOR;
+  pluginFuncs->size       = sizeof(NPPluginFuncs);
+  pluginFuncs->newp       = NewNPP_NewProc(NPP_New);
+  pluginFuncs->destroy    = NewNPP_DestroyProc(NPP_Destroy);
+  pluginFuncs->setwindow  = NewNPP_SetWindowProc(NPP_SetWindow);
+  pluginFuncs->newstream  = NewNPP_NewStreamProc(NPP_NewStream);
+  pluginFuncs->destroystream = NewNPP_DestroyStreamProc(NPP_DestroyStream);
+  pluginFuncs->asfile     = NewNPP_StreamAsFileProc(NPP_StreamAsFile);
+  pluginFuncs->writeready = NewNPP_WriteReadyProc(NPP_WriteReady);
+  pluginFuncs->write      = NewNPP_WriteProc(NPP_Write);
+  pluginFuncs->print      = NewNPP_PrintProc(NPP_Print);
+  pluginFuncs->urlnotify  = NewNPP_URLNotifyProc(NPP_URLNotify);
+  pluginFuncs->event      = NULL;
+  pluginFuncs->getvalue   = NewNPP_GetValueProc(NPP_GetValue);
+#ifdef OJI
+  pluginFuncs->javaClass  = NPP_GetJavaClass();
 #endif
 
-short gResFile; // Refnum of the plugin's resource file
-
-NPError Private_Initialize(void)
-{
-  NPError rv = NS_PluginInitialize();
-  return rv;
-}
-
-void Private_Shutdown(void)
-{
-  NS_PluginShutdown();
-  __destroy_global_chain();
-}
-
-void SetUpQD(void);
-
-void SetUpQD(void)
-{
-  ProcessSerialNumber PSN;
-  FSSpec              myFSSpec;
-  Str63               name;
-  ProcessInfoRec      infoRec;
-  OSErr               result = noErr;
-  CFragConnectionID   connID;
-  Str255              errName;
-
-  // Memorize the plugin¹s resource file refnum for later use.
-  gResFile = CurResFile();
-
-#if !TARGET_API_MAC_CARBON
-  // Ask the system if CFM is available.
-  long response;
-  OSErr err = Gestalt(gestaltCFMAttr, &response);
-  Boolean hasCFM = BitTst(&response, 31-gestaltCFMPresent);
-
-  if (hasCFM) {
-    // GetProcessInformation takes a process serial number and 
-    // will give us back the name and FSSpec of the application.
-    // See the Process Manager in IM.
-    infoRec.processInfoLength = sizeof(ProcessInfoRec);
-    infoRec.processName = name;
-    infoRec.processAppSpec = &myFSSpec;
-
-    PSN.highLongOfPSN = 0;
-    PSN.lowLongOfPSN = kCurrentProcess;
-
-    result = GetProcessInformation(&PSN, &infoRec);
-  }
-	else
-    // If no CFM installed, assume it must be a 68K app.
-    result = -1;		
-
-  if (result == noErr) {
-    // Now that we know the app name and FSSpec, we can call GetDiskFragment
-    // to get a connID to use in a subsequent call to FindSymbol (it will also
-    // return the address of ³main² in app, which we ignore).  If GetDiskFragment 
-    // returns an error, we assume the app must be 68K.
-    Ptr mainAddr; 	
-    result =  GetDiskFragment(infoRec.processAppSpec, 0L, 0L, infoRec.processName,
-                              kReferenceCFrag, &connID, (Ptr*)&mainAddr, errName);
-  }
-
-  if (result == noErr) {
-    // The app is a PPC code fragment, so call FindSymbol
-    // to get the exported ³qd² symbol so we can access its
-    // QuickDraw globals.
-    CFragSymbolClass symClass;
-    result = FindSymbol(connID, "\pqd", (Ptr*)&gQDPtr, &symClass);
-  }
-  else {
-    // The app is 68K, so use its A5 to compute the address
-    // of its QuickDraw globals.
-    gQDPtr = (QDGlobals*)(*((long*)SetCurrentA5()) - (sizeof(QDGlobals) - sizeof(GrafPtr)));
-  }
-#endif /* !TARGET_API_MAC_CARBON */
-}
-
-NPError main(NPNetscapeFuncs* nsTable, NPPluginFuncs* pluginFuncs, NPP_ShutdownUPP* unloadUpp);
-
-#if !TARGET_API_MAC_CARBON
-#pragma export on
-#if GENERATINGCFM
-RoutineDescriptor mainRD = BUILD_ROUTINE_DESCRIPTOR(uppNPP_MainEntryProcInfo, main);
+  NPP_Initialize();
 #endif
-#pragma export off
-#endif /* !TARGET_API_MAC_CARBON */
 
-
-NPError main(NPNetscapeFuncs* aNPNFuncs, NPPluginFuncs* aNPPFuncs, NPP_ShutdownUPP* aUnloadUpp)
-{
-  NPError rv = NPERR_NO_ERROR;
-
-  if (aUnloadUpp == NULL)
-    rv = NPERR_INVALID_FUNCTABLE_ERROR;
-
-  if (rv == NPERR_NO_ERROR)
-    rv = fillNetscapeFunctionTable(aNPNFuncs);
-
-  if (rv == NPERR_NO_ERROR) {
-    // defer static constructors until the global functions are initialized.
-    __InitCode__();
-    rv = fillPluginFunctionTable(aNPPFuncs);
-  }
-
-  *aUnloadUpp = NewNPP_ShutdownProc(Private_Shutdown);
-  SetUpQD();
-  rv = Private_Initialize();
-	
-  return rv;
+  return NPERR_NO_ERROR;
 }
-#endif //XP_MAC
-} /*extern "C" */
 
+NPError OSCALL NP_Shutdown()
+{
+  return NPERR_NO_ERROR;
+}

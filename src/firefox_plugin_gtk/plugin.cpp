@@ -183,26 +183,37 @@ NPBool nsPluginInstance::init(NPWindow* aWindow)
 //  gtk_window_set_resizable(gtkwidget, true); 	
   	gtk_widget_set_size_request(gtkwidget, width, height);
 //  	gtk_widget_set_uposition(gtkwidget, 240, 320);	
-    const char* filename = NULL;
+    const char* arg_str = NULL;
     if (mCreateData.argc > 1)
     for (int i =0; i < mCreateData.argc; i++) {
 // Uncomment next line to see the <EMBED/> attr values	
-            fprintf(stderr, "arg[%i]:%s=%s\n",i,mCreateData.argn[i],mCreateData.argv[i]);
+//          fprintf(stderr, "arg[%i]:%s=%s\n",i,mCreateData.argn[i],mCreateData.argv[i]);
             if (strcasecmp(mCreateData.argn[i],"data") == 0)
-                if (filename == NULL)
-                    filename = mCreateData.argv[i];
+                if (arg_str == NULL)
+                    arg_str = mCreateData.argv[i];
             if (strcasecmp(mCreateData.argn[i],"src") == 0)
-                if (filename == NULL)
-                    filename = mCreateData.argv[i];
+                if (arg_str == NULL)
+                    arg_str = mCreateData.argv[i];
     }
-    if (filename == NULL)
+    if (arg_str == NULL)
         return false;
-    getLocation();
-    net::url file_url = net::url::from_url(filename);
-    filename = strdup(file_url.get_file().c_str());
-    gtk_gui* m_gui = new gtk_gui((char*) gtkwidget, filename);
+    net::url file_url;
+    net::url arg_url = net::url::from_url (arg_str);
+    char* file_str = NULL;
+    char* loc_str  = getLocation();
+    if (loc_str != NULL) {
+        net::url loc_url = net::url::from_url (loc_str);
+        file_url = arg_url.join_to_base(loc_url);
+        file_str = strdup(file_url.get_file().c_str());
+    } else {
+        file_url = arg_url;
+    }
+    gtk_gui* m_gui = new gtk_gui((char*) gtkwidget,file_str);
     m_mainloop = new gtk_mainloop(m_gui);
-    free((void*)filename);
+    if (file_str) 
+        free((void*)file_str);
+    if (loc_str) 
+        free((void*)loc_str);
 	m_logger = lib::logger::get_logger();
     m_ambulant_player = m_mainloop->get_player();
     if (m_ambulant_player == NULL)
@@ -247,30 +258,34 @@ const char * nsPluginInstance::getVersion()
 	return ambulant::get_version();
 }
 
-// TBD
-void nsPluginInstance::getLocation()
+// TBD no need to have this in .idl!
+char* nsPluginInstance::getLocation()
 {
 #ifdef DEBUG
     char *id = "nsPluginInstance::getLocation";
     fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"calling NPN_Invoke",m_ambulant_player);
-    //XXXX exp
-    NPVariant alertMessage;
-    STRINGZ_TO_NPVARIANT( "dit werrukt", alertMessage);
-    NPVariant result;
-    char* function_name="alert";
-// 	NPN_Invoke(mInstance, (NPObject*) mNPWindow,function_name, &alertMessage, 1, &result);
-    extern NPNetscapeFuncs NPNFuncs;
-//  NPNFuncs.invoke(mInstance, (NPObject*) mNPWindow,function_name, &alertMessage, 1, &result);
-    NPVariant js_function;
-//  STRINGZ_TO_NPVARIANT( "GetLocation", js_function);        
-    STRINGZ_TO_NPVARIANT( "alert", js_function); 
-//  NPIdentifier npid = NPN_GetStringIdentifier("alert");      
-    NPIdentifier npid = NPNFuncs.getstringidentifier("alert");      
-    int rv = NPNFuncs.invoke(mInstance, (NPObject*) mNPWindow, npid, &alertMessage, 1, &result);
-    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"rv",rv);
-
-
 #endif//DEBUG
+    char *rv = NULL;
+    NPVariant result;
+    NPIdentifier npidJSfun = NPN_GetStringIdentifier("GetDocumentLocation");
+    bool ok = NPN_HasMethod(mInstance, (NPObject*) mNPWindow, npidJSfun);
+    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"ok",ok);
+    if ( ! ok) {
+        // TBD something clever when needed javascript function is missing ?
+        return rv;
+        ;
+    } else {
+        ok = NPN_Invoke(mInstance, (NPObject*) mNPWindow, npidJSfun, NULL, 0, &result);
+    }
+    if (NPVARIANT_IS_STRING(result)) {
+        NPString nps = NPVARIANT_TO_STRING(result);
+        size_t str_len = nps.utf8length;
+        rv = (char*) malloc(str_len+1);
+        strncpy(rv, nps.utf8characters, str_len);
+        rv[str_len] = '\0';
+    }
+    NPN_ReleaseVariantValue(&result);
+    return rv;
 }
 // TBD
 void nsPluginInstance::setLocation()
