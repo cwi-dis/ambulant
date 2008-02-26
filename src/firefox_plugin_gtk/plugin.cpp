@@ -128,6 +128,7 @@ nsPluginInstance::nsPluginInstance(NPP aInstance) : nsPluginInstanceBase(),
   mInitialized(FALSE),
 #ifdef AMBULANT_FIREFOX_PLUGIN
   m_ambulant_player(NULL),
+  m_mainloop(NULL),
   m_cursor_id(0),
 #endif // AMBULANT_FIREFOX_PLUGIN
 #ifdef  MOZ_X11
@@ -200,20 +201,23 @@ NPBool nsPluginInstance::init(NPWindow* aWindow)
     net::url file_url;
     net::url arg_url = net::url::from_url (arg_str);
     char* file_str = NULL;
-    char* loc_str  = getLocation();
-    if (loc_str != NULL) {
-        net::url loc_url = net::url::from_url (loc_str);
-        file_url = arg_url.join_to_base(loc_url);
-        file_str = strdup(file_url.get_file().c_str());
+    if (arg_url.is_absolute()) {
+        file_str = strdup(arg_url.get_file().c_str());
     } else {
-        file_url = arg_url;
+        char* loc_str  = getLocation();
+        if (loc_str != NULL) {
+            net::url loc_url = net::url::from_url (loc_str);
+            file_url = arg_url.join_to_base(loc_url);
+            free((void*)loc_str);
+        } else {
+            file_url = arg_url;
+        }
+        file_str = strdup(file_url.get_file().c_str());
     }
-    gtk_gui* m_gui = new gtk_gui((char*) gtkwidget,file_str);
+    gtk_gui* m_gui = new gtk_gui((char*) gtkwidget, file_str);
     m_mainloop = new gtk_mainloop(m_gui);
     if (file_str) 
         free((void*)file_str);
-    if (loc_str) 
-        free((void*)loc_str);
 	m_logger = lib::logger::get_logger();
     m_ambulant_player = m_mainloop->get_player();
     if (m_ambulant_player == NULL)
@@ -259,32 +263,49 @@ const char * nsPluginInstance::getVersion()
 }
 
 // TBD no need to have this in .idl!
+
+/// Get the location of the html document.
+/// If the html document contains a javascript function GetDocumentLocation(), 
+/// that one is used; otherwise dynamically a script is executed to retrieve
+/// the information.
+/// A third method could be to use NPN_GetProperty first to retrieve the "document"
+/// property from the "window" object, followed by the "location"  property from
+/// the "document" object.
 char* nsPluginInstance::getLocation()
 {
 #ifdef DEBUG
-    char *id = "nsPluginInstance::getLocation";
+    char *id = "ambulant::nsPluginInstance::getLocation";
     fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"calling NPN_Invoke",m_ambulant_player);
 #endif//DEBUG
     char *rv = NULL;
-    NPVariant result;
+    NPVariant npvarResult;
     NPIdentifier npidJSfun = NPN_GetStringIdentifier("GetDocumentLocation");
     bool ok = NPN_HasMethod(mInstance, (NPObject*) mNPWindow, npidJSfun);
     fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"ok",ok);
     if ( ! ok) {
-        // TBD something clever when needed javascript function is missing ?
-        return rv;
-        ;
+        // dynamically evaluate javascript code to get the desired information.
+        // by returning it first in a function, it is also returned by NPN_Evaluate.
+        // prependeding the empty string forces return type NPVariantType_String.
+        static const char js_script[] = "function GetDocumentLocation() { return ''+document.location; } GetDocumentLocation();";
+        NPString npstrJSscript;
+        npstrJSscript.utf8characters = js_script;
+        npstrJSscript.utf8length = sizeof(js_script) - 1;
+        ok = NPN_Evaluate(mInstance, (NPObject*) mNPWindow, &npstrJSscript, &npvarResult);
+        if ( ! ok) {
+            lib::logger::get_logger()->warn("%s: %s failed",id,"calling NPN_Invoke(\"eval\",(\"document.location\") failed.");
+            return rv;
+        }
     } else {
-        ok = NPN_Invoke(mInstance, (NPObject*) mNPWindow, npidJSfun, NULL, 0, &result);
+        ok = NPN_Invoke(mInstance, (NPObject*) mNPWindow, npidJSfun, NULL, 0, &npvarResult);
     }
-    if (NPVARIANT_IS_STRING(result)) {
-        NPString nps = NPVARIANT_TO_STRING(result);
+    if (ok && NPVARIANT_IS_STRING(npvarResult)) {
+        NPString nps = NPVARIANT_TO_STRING(npvarResult);
         size_t str_len = nps.utf8length;
         rv = (char*) malloc(str_len+1);
         strncpy(rv, nps.utf8characters, str_len);
         rv[str_len] = '\0';
     }
-    NPN_ReleaseVariantValue(&result);
+    NPN_ReleaseVariantValue(&npvarResult);
     return rv;
 }
 // TBD

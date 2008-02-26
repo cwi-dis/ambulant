@@ -20,49 +20,74 @@ Also, SMIL 2.1 interaction is supported.
 </p>
 
 </div>
-<h1 align="center">
 
-<embed align="middle" type="application/smil" 
- src="../../Extras/Welcome/Welcome.smil"
+<center>
+<!--
+ object attr: classid="clsid:68eee2e-5d15-4e04-b182-67bebec8d38d"
+ doesn't work in Firefox 2.0.0.12
+-->
+<object
+ id="Ambulant"
+ data="../../Extras/Welcome/Welcome.smil"
+ type="application/x-ambulant-smil"
  width="241" height="271">
+</object>
 
 <script>
-var embed = document.embeds[0];
+var ambulant = document.Ambulant;
+ambulant.location = document.location;
+
+function GetDocumentLocation()
+{
+// prepend empty string to force string type
+  return ""+document.location;
+}
+
+function GetProperty()
+{
+  return ambulant.getProperty();
+}
+
+function SetProperty(name, value)
+{
+  ambulant.setProperty();
+}
 
 function StartPlayer()
 {
-  embed.startPlayer();
+  ambulant.startPlayer();
 }
 
 function StopPlayer()
 {
-  embed.stopPlayer();
+  ambulant.stopPlayer();
 }
 
 function RestartPlayer()
 {
-  embed.restartPlayer();
+  ambulant.restartPlayer();
 }
 
 function ResumePlayer()
 {
-  embed.resumePlayer();
+  ambulant.resumePlayer();
 }
 
 function PausePlayer()
 {
-  embed.pausePlayer();
+  ambulant.pausePlayer();
 }
 </script>
-<form name="formname">
+
+<form name="formname" >
 <input type=button value="Start" onclick='StartPlayer()'>
 <input type=button value="Stop" onclick='StopPlayer()'>
 <input type=button value="Restart" onclick='RestartPlayer()'>
 <input type=button value="Resume" onclick='ResumePlayer()'>
 <input type=button value="Pause" onclick='PausePlayer()'>
 </form>
-</h1>
+</center>
 </body>
 
 </html>
-</body>
+
