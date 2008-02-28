@@ -218,6 +218,7 @@ public:
 	void serve_events();
 	ambulant::lib::timer* get_timer() const;
 	void stop_processor_thread();
+	void set_observer(ambulant::lib::event_processor_observer*) { abort(); }
   private:
 	PyObject *py_event_processor;
 

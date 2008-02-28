@@ -624,6 +624,9 @@ pkt_datasource_object.othermethods = [
     "char *get_read_ptr() { abort(); return NULL;}", # XXX
     "ambulant::net::ts_packet_t get_ts_packet_t() { abort(); }", # XXX
 ]
+event_processor_object.othermethods = [
+    "void set_observer(ambulant::lib::event_processor_observer*) { abort(); }"
+]
 
 print "=== Generating C++->Python callback interfaces (.h file) ==="
 

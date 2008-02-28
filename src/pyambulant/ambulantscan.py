@@ -137,6 +137,8 @@ class MyScanner(CxxScanner):
             "gtk_renderer_factory_ptr",
             "gtk_video_factory",
             "gtk_video_factory_ptr",
+            "event_processor_observer", # XXX Lazy right now, do later
+            "event_processor_observer_ptr",
             
         ]
 
