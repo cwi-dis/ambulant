@@ -70,7 +70,7 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	
 
 AC_CONFIG_COMMANDS([libtool_patch],[chmod 755
-patch_libtool.sh;./patch_libtool.sh])
+$srcdir/patch_libtool.sh;$srcdir/patch_libtool.sh])
 
 #
 # This variable records whether we have support for
@@ -973,12 +973,12 @@ if test x$with_firefox_plugin = xtrue;
 then
    if test -f `pwd`/third_party_packages/gecko-sdk/include/npapi.h; then
 		# Require a gecko-sdk installation in third_party_packages
-		# withvalabs=`pwd`/third_party_packages/gecko-sdk
+		withvalabs=`pwd`/third_party_packages/gecko-sdk
 		# for the time being, we play with mozilla trunk
-		withvalabs=`pwd`/third_party_packages/mozilla/ff-opt-static/dist
+		# withvalabs=`pwd`/third_party_packages/mozilla/ff-opt-static/dist
 		GECKO_ROOT=${withvalabs}
    else
-		AC_MSG_ERROR("--with-firefox-plugin requires Gecko-SDK installed in third_party_packages")
+		AC_MSG_ERROR("--with-firefox-plugin requires gecko-sdk installed in third_party_packages")
 		with_firefox_plugin=false
    fi
 fi
