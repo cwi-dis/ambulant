@@ -968,7 +968,9 @@ AC_ARG_WITH([firefox-plugin],
 			;;
 	esac],[
 	with_firefox_plugin=false])
-	
+
+# when playing with mozilla trunk, we use
+# GECKO_ROOT=`pwd`/third_party_packages/mozilla/ff-opt-static/dist
 if test x$with_firefox_plugin = xtrue;
 then
    if test -f `pwd`/third_party_packages/gecko-sdk/include/npapi.h; then
@@ -977,12 +979,16 @@ then
 		# for the time being, we play with mozilla trunk
 		# withvalabs=`pwd`/third_party_packages/mozilla/ff-opt-static/dist
 		GECKO_ROOT=${withvalabs}
+		XPIDL=${GECKO_ROOT}/bin/xpidl
    else
 		AC_MSG_ERROR("--with-firefox-plugin requires gecko-sdk installed in third_party_packages")
+		GECKO_ROOT=
+		XPIDL=
 		with_firefox_plugin=false
    fi
 fi
 AC_SUBST(GECKO_ROOT)
+AC_SUBST(XPIDL)
 AC_SUBST(FIREFOX_INCLUDES)
 AC_SUBST(FIREFOX_LIBS)
 AM_CONDITIONAL(WITH_FIREFOX_PLUGIN, test x$with_firefox_plugin = xtrue)

@@ -204,7 +204,7 @@ NPBool nsPluginInstance::init(NPWindow* aWindow)
     if (arg_url.is_absolute()) {
         file_str = strdup(arg_url.get_file().c_str());
     } else {
-        char* loc_str  = getLocation();
+        char* loc_str  = get_document_location();
         if (loc_str != NULL) {
             net::url loc_url = net::url::from_url (loc_str);
             file_url = arg_url.join_to_base(loc_url);
@@ -271,7 +271,7 @@ const char * nsPluginInstance::getVersion()
 /// A third method could be to use NPN_GetProperty first to retrieve the "document"
 /// property from the "window" object, followed by the "location"  property from
 /// the "document" object.
-char* nsPluginInstance::getLocation()
+char* nsPluginInstance::get_document_location()
 {
 #ifdef DEBUG
     char *id = "ambulant::nsPluginInstance::getLocation";
@@ -307,30 +307,6 @@ char* nsPluginInstance::getLocation()
     }
     NPN_ReleaseVariantValue(&npvarResult);
     return rv;
-}
-// TBD
-void nsPluginInstance::setLocation()
-{
-#ifdef DEBUG
-    char *id = "nsPluginInstance::setLocation";
-    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"m_ambulant_player",m_ambulant_player);
-#endif//DEBUG
-}
-// TBD
-void nsPluginInstance::getProperty()
-{
-#ifdef DEBUG
-    char *id = "nsPluginInstance::getProperty";
-    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"m_ambulant_player",m_ambulant_player);
-#endif//DEBUG
-}
-// TBD
-void nsPluginInstance::setProperty()
-{
-#ifdef DEBUG
-    char *id = "nsPluginInstance::setProperty";
-    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"m_ambulant_player",m_ambulant_player);
-#endif//DEBUG
 }
 
 // this will start AmbulantPLayer
@@ -567,30 +543,6 @@ nsPluginInstance::getNPP()
 /* glue code */
 NS_IMPL_ISUPPORTS1(nsPluginInstance, nsIAmbulantPlugin)
 
-NS_IMETHODIMP nsPluginInstance::GetLocation(char * *aLocation) { 
-#ifdef DEBUG
-    char *id = "nsPluginInstance::GetLocation";
-    fprintf(stderr, "%s(%x.\n",id,this);
-#endif//DEBUG
-getLocation(); return NS_OK; }
-    NS_IMETHODIMP nsPluginInstance::SetLocation(const char * aLocation) { 
-#ifdef DEBUG
-    char *id = "nsPluginInstance::SettLocation";
-    fprintf(stderr, "%s(%x.\n",id,this);
-#endif//DEBUG
-setLocation(); return NS_OK; }
-NS_IMETHODIMP nsPluginInstance::GetProperty(const char *name, char **_retval) { 
-#ifdef DEBUG
-    char *id = "nsPluginInstance::GetProperty";
-    fprintf(stderr, "%s(%x.\n",id,this);
-#endif//DEBUG
-getProperty(); return NS_OK; }
-NS_IMETHODIMP nsPluginInstance::SetProperty(const char *name, const char *value) { 
-#ifdef DEBUG
-    char *id = "nsPluginInstance::SetProperty";
-    fprintf(stderr, "%s(%x.\n",id,this);
-#endif//DEBUG
-setProperty(); return NS_OK; }
 NS_IMETHODIMP nsPluginInstance::StartPlayer() { 
 #ifdef DEBUG
     char *id = "nsPluginInstance::StartPlayer";
