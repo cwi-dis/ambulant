@@ -45,7 +45,7 @@
 // The native methods of this class are supposed to
 // be callable from JavaScript
 //
-#define DEBUG
+//#define DEBUG
 #include "nsScriptablePeer.h"
 #ifdef	MOZILLA_TRUNK
 #include "xpconnect/nsIXPConnect.h"
@@ -98,8 +98,10 @@ NS_IMETHODIMP_(nsrefcnt) nsScriptablePeer::Release()
 #endif
   --mRefCnt; 
   if (mRefCnt == 0) { 
-    delete this;
-    return 0; 
+#ifdef	AMBULANT_PLATFORM_WIN32
+      delete this;
+#endif//AMBULANT_PLATFORM_WIN32
+      return 0; 
   } 
   return mRefCnt; 
 } 

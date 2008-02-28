@@ -169,13 +169,13 @@ NPBool nsPluginInstance::init(NPWindow* aWindow)
     mNPWindow = aWindow;
     NPError nperr = NPN_GetValue(mInstance, NPNVWindowNPObject, &mNPWindow);
 #ifdef	XP_UNIX
-//#ifdef	MOZ_X11
+#ifdef	MOZ_X11
     this->window = (Window) aWindow->window;
     ws_info = (NPSetWindowCallbackStruct *)aWindow->ws_info;
     this->display = ws_info->display;
     width = aWindow->width;
     height = aWindow->height;
-//#endif/*MOZ_X11*/
+#endif/*MOZ_X11*/
 #ifdef AMBULANT_FIREFOX_PLUGIN
     long long ll_winid = reinterpret_cast<long long>(aWindow->window);
     int i_winid = static_cast<int>(ll_winid);
@@ -204,7 +204,7 @@ NPBool nsPluginInstance::init(NPWindow* aWindow)
     if (arg_url.is_absolute()) {
         file_str = strdup(arg_url.get_file().c_str());
     } else {
-        char* loc_str  = get_document_location();
+        char* loc_str = get_document_location();
         if (loc_str != NULL) {
             net::url loc_url = net::url::from_url (loc_str);
             file_url = arg_url.join_to_base(loc_url);
@@ -261,27 +261,28 @@ const char * nsPluginInstance::getVersion()
 #endif//DEBUG
 	return ambulant::get_version();
 }
-
-// TBD no need to have this in .idl!
-
 /// Get the location of the html document.
 /// If the html document contains a javascript function GetDocumentLocation(), 
 /// that one is used; otherwise dynamically a script is executed to retrieve
 /// the information.
-/// A third method could be to use NPN_GetProperty first to retrieve the "document"
-/// property from the "window" object, followed by the "location"  property from
-/// the "document" object.
+/// A third method could be to use NPN_GetProperty first to retrieve the 'document'
+/// property from the 'window' object. Next use NPN_GetProperty  on the 'location'
+/// property from the 'document' object. Finally, the string value could then be
+/// retrieved using NPN_Invoke on the 'property' object with the 'toString' function.
+/// The advantage of this approach would be that no javascript code is needed.
 char* nsPluginInstance::get_document_location()
 {
-#ifdef DEBUG
     char *id = "ambulant::nsPluginInstance::getLocation";
+#ifdef DEBUG
     fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"calling NPN_Invoke",m_ambulant_player);
 #endif//DEBUG
     char *rv = NULL;
     NPVariant npvarResult;
     NPIdentifier npidJSfun = NPN_GetStringIdentifier("GetDocumentLocation");
     bool ok = NPN_HasMethod(mInstance, (NPObject*) mNPWindow, npidJSfun);
+#ifdef DEBUG
     fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"ok",ok);
+#endif//DEBUG
     if ( ! ok) {
         // dynamically evaluate javascript code to get the desired information.
         // by returning it first in a function, it is also returned by NPN_Evaluate.

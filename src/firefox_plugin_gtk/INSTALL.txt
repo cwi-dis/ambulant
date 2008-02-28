@@ -1,35 +1,39 @@
 This directory contains the Ambulant WebKit plugin for Firefox
-on Linux distr. Fedora Core 6/
+on Linux distr. Fedora Core 8/ 64bit
 
 This plugin allows Firefox and other Mozilla-based browsers to play back
 SMIL content in a web page.
 
 
-********** KB TMP. instructions how to build and run (local on bahco.sen.cwi.nl):
+********** linux: KB TMP. instructions how to build and run (local on bahco.sen.cwi.nl):
 
 - build:
-/export/scratch1/Ambulant/mozilla/ff-opt-static/dist/bin/xpidl  -m header -w -v -I /export/scratch1/Ambulant/mozilla/xpcom/base nsIAmbulantPlugin.idl
-/export/scratch1/Ambulant/mozilla/ff-opt-static/dist/bin/xpidl  -m typelib -w -v -I /export/scratch1/Ambulant/mozilla/xpcom/base nsIAmbulantPlugin.idl
-(cd /export/scratch1/Ambulant/ambulant;make) && cp /export/scratch1/Ambulant/ambulant/src/firefox_plugin_gtk/.libs/libambulantplugin.so /ufs/kees/.mozilla/plugins/libAmbulantPlugin.so
+PKG_CONFIG_PATH=:/usr/lib64/pkgconfig/ ./autogen.sh --prefix=$HOME \
+--without-xerces --without-xerces-plugin --without-live \
+--with-firefox-plugin CFlAGS="-g -O0 -fPIC" CXXFLAGS="-g -O0 -fPIC";make
+
+- install:
+cd src/firefox_plugin_gtk;cp libAmbulantPlugin.xpt libAmbulantPlugin.so ~/.mozilla/plugins/
 
 - Restart Firefox:
- LD_LIBRARY_PATH=/export/scratch1/Ambulant/ambulant/third_party_packages/mozilla/ff-opt-static/dist/bin:/export/scratch1/Ambulant/ambulant/third_pf-opt-static/dist/bin:/export/scratch1/Ambulant/ambulant/src/libambulant/.libs/ ADDON_PATH=/export/scratch1/Ambulant/ambulant/third_party_packages/mozilla/ff-opt-static/disAmbulant/ambulant/src/libambulant/.libs/ MOZ_PLUGIN_PATH=`pwd`:/export/scratch1/Ambulant/ambulant/src/libambulant/.libs/  /export/scratch1/Ambulant/ambulant/third_party_pacatic/dist/bin/firefox-bin  /export/scratch1/Ambulant/ambulant/src/firefox_plugin_gtk/WelcomeButtons.html         
+export
+LD_LIBRARY_PATH=/export/scratch1/Ambulant/ambulant/third_party_packages/mozilla/ff-opt-static/dist/bin/
+MOZ_PLUGIN_PATH=~/.mozilla/plugins /usr/lib64/firefox-2.0.0.12/firefox-bin
 
 - TBD:
-  ** std::vector<dirty_widget> in factory.cpp
-  ** crash when Welcome.smil cannot be found
+  ** embedded player crashes firefox when Welcome.smil cannot be found
   ** remove other bugs, leaks, add missing features (interaction, ...)
   ** more tests (video, full-screen trans.,  smiltext))
-  ** interface w. Gecko-SDK instead of complete mozilla source tree 
   ** cleanup: hacks, leaks, Window-isms, superfluous stuff (if any).
   ** configure/make/install
   ** integrate w. Windows XP FF plugin (which doesn't work anymore)
+  ** investigate whether plugin can be build for N800 OS2008
 
-**************** KB TMP. 201207
+************ windows: KB TMP. 201207
 
 Sometimes it helps by setting
-MOZ_PLUGIN_PATH=<path-to-your-pugin-path>,
-e.g. ~/kees/.mozilla/plugins before starting firefox
+export MOZ_PLUGIN_PATH=<path-to-your-pugin-path>,
+e.g. ~/.mozilla/plugins before starting firefox
 
   
 There is one known issue with the plugin: relative pathnames in the

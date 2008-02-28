@@ -41,7 +41,7 @@
 #include "pluginbase.h"
 #include "nsScriptablePeer.h"
 #undef MOZ_X11
-#define DEBUG
+//#define DEBUG
 #ifdef	XP_UNIX
 #ifdef	MOZ_X11
 #include <X11/Xlib.h>
