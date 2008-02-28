@@ -123,9 +123,9 @@
 	};
 	045D0B7F0958C53F00C194EE /* mainloop.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {805, 784}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{0, 1420}";
+			sepNavIntBoundsRect = "{{0, 0}, {796, 784}}";
+			sepNavSelRange = "{1276, 78}";
+			sepNavVisRange = "{0, 1923}";
 		};
 	};
 	049775B70958ADC500A7690F /* AmbulantWebView.h */ = {
@@ -137,9 +137,9 @@
 	};
 	049775B80958ADC500A7690F /* AmbulantWebView.mm */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1386, 2310}}";
-			sepNavSelRange = "{3839, 0}";
-			sepNavVisRange = "{1880, 2007}";
+			sepNavIntBoundsRect = "{{0, 0}, {734, 2408}}";
+			sepNavSelRange = "{3565, 0}";
+			sepNavVisRange = "{3181, 647}";
 			sepNavVisRect = "{{0, 801}, {1096, 665}}";
 		};
 	};
@@ -295,8 +295,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 224083522;
-			PBXWorkspaceStateSaveDate = 224083522;
+			PBXPerProjectTemplateStateSaveDate = 225906130;
+			PBXWorkspaceStateSaveDate = 225906130;
 		};
 		sourceControlManager = 04EC0D310CBD8D22009B6B85 /* Source Control */;
 		userBuildSettings = {
