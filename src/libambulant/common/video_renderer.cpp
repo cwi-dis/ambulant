@@ -351,7 +351,12 @@ video_renderer::data_avail()
 #ifdef DROP_LATE_FRAMES
 		m_prev_frame_dropped = false;
 #endif
+		// Do the redraw, and do it now: we want video to go smoothly, not wait for
+		// random scheduler activity.
 		m_dest->need_redraw();
+		gui_window *w = m_dest->get_gui_window();
+		assert(w);
+		w->redraw_now();
 		m_last_frame_timestamp = frame_ts_micros;
 		m_frame_displayed++;
 		

@@ -111,7 +111,7 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				AdditionalIncludeDirectories="..\live\BasicUsageEnvironment\include;..\live\groupsock\include;..\live\liveMedia\include;..\live\UsageEnvironment\include"
-				PreprocessorDefinitions="NDEBUG;_LIB;ARM;_ARM_;ARMV4T;_WIN32_WCE=$(CEVER);$(CePlatform);UNDER_CE=$(CEVER);UNICODE"
+				PreprocessorDefinitions="NDEBUG;_LIB;ARM;_ARM_;ARMV4T;_WIN32_WCE=$(CEVER);$(CePlatform);UNDER_CE=$(CEVER);UNICODE;LOCALE_NOT_USED"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"

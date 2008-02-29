@@ -64,13 +64,14 @@ void gui::dx::dx_window::_need_redraw(const lib::rect &r) {
 	lib::rect rc = r;
 	rc &= m_viewrc;
 	if(!m_locked) {
-		/*AM_DBG*/ lib::logger::get_logger()->debug("dx_window::need_redraw(%d,%d,%d,%d): drawing", rc.left(), rc.top(), rc.width(), rc.height());
+		AM_DBG lib::logger::get_logger()->debug("dx_window::need_redraw(%d,%d,%d,%d): drawing", rc.left(), rc.top(), rc.width(), rc.height());
 		//assert(!m_redraw_rect_valid);
 		m_viewport->set_fullscreen_transition(NULL);
 		m_viewport->clear(rc, GetSysColor(COLOR_WINDOW), 1.0);
 		m_rgn->redraw(rc, this);
 		m_viewport->schedule_redraw(rc);
 	} else {
+		AM_DBG lib::logger::get_logger()->debug("dx_window::need_redraw(%d,%d,%d,%d): queueing", rc.left(), rc.top(), rc.width(), rc.height());
 		if(!m_redraw_rect_valid) {
 			m_redraw_rect = rc;
 			m_redraw_rect_valid = true;

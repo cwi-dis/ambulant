@@ -27,7 +27,7 @@ copy %LIVE%\BasicUsageEnvironment-Debug\BasicUsageEnvironmentD.lib ..\..\lib\win
 copy %LIVE%\UsageEnvironment-Debug\UsageEnvironmentD.lib ..\..\lib\wince-arm\UsageEnvironmentD.lib
 copy %LIVE%\groupsock-Debug\groupsockD.lib ..\..\lib\wince-arm\groupsockD.lib
 copy %LIVE%\liveMedia-Debug\liveMediaD.lib ..\..\lib\wince-arm\liveMediaD.lib
-rem XXX copy %LIVE%\BasicUsageEnvironment-Release\BasicUsageEnvironment.lib ..\..\lib\wince-arm\BasicUsageEnvironment.lib
-rem XXX copy %LIVE%\UsageEnvironment-Release\UsageEnvironment.lib ..\..\lib\wince-arm\UsageEnvironment.lib
-rem XXX copy %LIVE%\groupsock-Release\groupsock.lib ..\..\lib\wince-arm\groupsock.lib
-rem XXX copy %LIVE%\liveMedia-Release\liveMedia.lib ..\..\lib\wince-arm\liveMedia.lib
+copy %LIVE%\BasicUsageEnvironment-Release\BasicUsageEnvironment.lib ..\..\lib\wince-arm\BasicUsageEnvironment.lib
+copy %LIVE%\UsageEnvironment-Release\UsageEnvironment.lib ..\..\lib\wince-arm\UsageEnvironment.lib
+copy %LIVE%\groupsock-Release\groupsock.lib ..\..\lib\wince-arm\groupsock.lib
+copy %LIVE%\liveMedia-Release\liveMedia.lib ..\..\lib\wince-arm\liveMedia.lib
