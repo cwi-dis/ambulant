@@ -29,6 +29,7 @@ public:
 	//{{AFX_VIRTUAL(CAmbulantPlayerApp)
 	public:
 	virtual BOOL InitInstance();
+	virtual BOOL InitApplication();
 	//}}AFX_VIRTUAL
 
 // Implementation

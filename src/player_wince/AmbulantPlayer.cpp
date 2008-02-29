@@ -114,6 +114,59 @@ BOOL CAmbulantPlayerApp::InitInstance()
 	return TRUE;
 }
 
+static TCHAR executable[MAX_PATH];
+static HWND other_ambulant_window;
+static BOOL CALLBACK
+myFindWindowProc(HWND hwnd, LPARAM lParam)
+{
+	DWORD      dwProcessID; 
+	INT        iLen; 
+	TCHAR      szTempName[MAX_PATH]=TEXT("\0"); 
+
+	GetWindowThreadProcessId(hwnd,&dwProcessID); 
+	if (!dwProcessID) 
+		return TRUE; 
+
+	iLen=GetModuleFileName((HMODULE)dwProcessID,szTempName,MAX_PATH); 
+	if (!iLen) 
+		return TRUE; 
+
+	if (_tcsicmp(szTempName, executable) == 0) 
+	{    
+		other_ambulant_window = hwnd;
+		return FALSE;
+	} 
+
+	return TRUE; 
+
+}
+
+BOOL CAmbulantPlayerApp::InitApplication()
+{
+	// Step 1 - create a named mutex and attempt to lock it. If this wqorks then
+	// we're the first copy of Ambulant and we don't have to worry about enumerating the
+	// windows.
+	HANDLE hMutex;
+	hMutex = CreateMutex(NULL, FALSE, _T("Global\\AmbulantMutex"));
+	if (hMutex == NULL && GetLastError() == ERROR_ALREADY_EXISTS) {
+		// Another copy of Ambulant is already running. Try to locate it.
+		GetModuleFileName(NULL, executable, MAX_PATH);
+		EnumWindows(myFindWindowProc, NULL);
+		if (other_ambulant_window) {
+			// Found the window for the other instance of Ambulant. Send it
+			// a copy of our command line.
+			COPYDATASTRUCT cds;
+			cds.dwData = 0;
+			cds.cbData = (_tcslen(m_lpCmdLine)+1) * sizeof(TCHAR);
+			cds.lpData = m_lpCmdLine;
+			SendMessage(other_ambulant_window, WM_COPYDATA, NULL, (LPARAM)&cds);
+			// We're all done, and we don't want to start up. Tell our caller this.
+			return FALSE;
+		}
+		// XXX Funny: the mutex was held, but there is no window...
+	}
+	return TRUE;
+}
 
 /////////////////////////////////////////////////////////////////////////////
 // CAboutDlg dialog used for App About
