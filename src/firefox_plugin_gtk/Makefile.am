@@ -1,7 +1,8 @@
 #
 #
 FIREFOX=firefox
-FIREFOX_PLUGIN=libAmbulantPlugin.so
+FIREFOX_PLUGIN=libambulantplugin.0.0.0
+FIREFOX_INSTALLED_PLUGINS=~/.mozilla/plugins
 
 ambulantlibdir=$(top_builddir)/src/libambulant/.libs
 
@@ -89,7 +90,8 @@ FIREFOXENV=
 
 BUILDLIBDIR=
 lib_LTLIBRARIES = libambulantplugin.la
-libambulantplugin_la_SOURCES=np_entry.cpp npn_gate.cpp npp_gate.cpp npplat.h pluginbase.h plugin.cpp plugin.h nsScriptablePeer.cpp  nsScriptablePeer.h
+libambulantplugin_la_SOURCES=np_entry.cpp npn_gate.cpp npp_gate.cpp plugin.cpp nsScriptablePeer.cpp
+nodist_libambulantplugin_la_INCLUDES=nsIAmbulantPlugin.h
 
 libambulantplugin_la_LDFLAGS=	\
 	-shared $(LIBLTDL)	\
@@ -103,13 +105,15 @@ libambulantplugin_la_LDFLAGS=	\
 	$(ambulant_ldflags) \
 	-o $(FIREFOX_PLUGIN)
 
-	
+$(libambulantplugin_la_OBJECTS): nsIAmbulantPlugin.h	
 build-firefox-plugin: $(PLUGIN_FILES) plugin.h nsIAmbulantPlugin.h
 	AM_LDFLAGS="-o libambulantplugin.so"
 
-nsIAmbulantPlugin.h: nsIAmbulantPlugin.idl
-	$(XPIDL) -m header  -w -I$(GECKO_ROOT)/idl nsIAmbulantPlugin.idl
-	$(XPIDL) -m typelib -w -I$(GECKO_ROOT)/idl nsIAmbulantPlugin.idl
+nsIAmbulantPlugin.h: $(srcdir)/nsIAmbulantPlugin.idl
+	$(XPIDL) -m header  -w -I$(GECKO_ROOT)/idl $(srcdir)/nsIAmbulantPlugin.idl
+nsIAmbulantPlugin.xpt: $(srcdir)/nsIAmbulantPlugin.idl
+
+	$(XPIDL) -m typelib -w -I$(GECKO_ROOT)/idl $(srcdir)/nsIAmbulantPlugin.idl
 
 check-firefox-plugin:
 	( a=`cd $(ambulantlibdir); pwd` ; \
@@ -117,11 +121,14 @@ check-firefox-plugin:
 	  LD_LIBRARY_PATH=-L"$$a" $(FIREFOXENV) FIREFOXPATH=$(BUILDLIBDIR) $(DEBUGGER) $(FIREFOX) $(FIREFOXARGS) test/test_ambulantplugin.html ; \
 	)
 
-install-firefox-plugin:
-	cd $(srcdir) ; nsinstall  .libs/$(FIREFOX_PLUGIN) install_dir/$(FIREFOX_PLUGIN).so
+install-firefox-plugin: nsIAmbulantPlugin.xpt .libs/$(FIREFOX_PLUGIN)
+	$(INSTALL) -d $(FIREFOX_INSTALLED_PLUGINS)
+	$(INSTALL_PROGRAM) .libs/$(FIREFOX_PLUGIN) $(FIREFOX_INSTALLED_PLUGINS)/nsIAmbulantPlugin.so
+	$(INSTALL_DATA) nsIAmbulantPlugin.xpt $(FIREFOX_INSTALLED_PLUGINS)/nsIAmbulantPlugin.xpt
 	
 mostlyclean-am:
-	-cd $(srcdir) ; rm -fr .libs *o $(FIREFOX_PLUGIN) nsIAmbulantPlugin.h nsIAmbulantPlugin.xpt
+	rm -fr .libs *o $(FIREFOX_PLUGIN)
+	rm -fr nsIAmbulantPlugin.h nsIAmbulantPlugin.xpt
 
 # Debug target
 
