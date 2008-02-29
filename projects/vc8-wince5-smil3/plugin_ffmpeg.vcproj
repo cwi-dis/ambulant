@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="plugin_ffmpeg"
 	ProjectGUID="{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}"
 	Keyword="Win32Proj"
@@ -128,8 +128,8 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="2"
-				AdditionalIncludeDirectories="..\..\include;&quot;..\..\third_party_packages\ffmpeg-wm5\libavformat&quot;;&quot;..\..\third_party_packages\ffmpeg-wm5\libavcodec&quot;;&quot;..\..\third_party_packages\ffmpeg-wm5\libavutil&quot;;&quot;..\..\third_party_packages\ffmpeg-wm5-compat&quot;;&quot;..\..\third_party_packages\SDL-1.2.12\include&quot;"
-				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;WITH_SMIL30;WITH_SMALL_BUFFERS;WITH_FFMPEG;WITH_SDL;WITH_DSVIDEO"
+				AdditionalIncludeDirectories="..\..\include;&quot;..\..\third_party_packages\ffmpeg-wm5\libavformat&quot;;&quot;..\..\third_party_packages\ffmpeg-wm5\libavcodec&quot;;&quot;..\..\third_party_packages\ffmpeg-wm5\libavutil&quot;;&quot;..\..\third_party_packages\ffmpeg-wm5-compat&quot;;..\..\third_party_packages\live\UsageEnvironment\include;..\..\third_party_packages\live\liveMedia\include;..\..\third_party_packages\live\groupsock\include;..\..\third_party_packages\live\BasicUsageEnvironment\include;&quot;..\..\third_party_packages\SDL-1.2.12\include&quot;"
+				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;WITH_SMIL30;WITH_SMALL_BUFFERS;WITH_FFMPEG;WITH_SDL;WITH_DSVIDEO;WITH_LIVE"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -151,7 +151,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				AdditionalOptions=" /subsystem:windowsce,5.01"
-				AdditionalDependencies="avformat.lib avcodec.lib avutil.lib SDL.lib"
+				AdditionalDependencies="avformat.lib avcodec.lib avutil.lib SDL.lib liveMedia.lib groupsock.lib UsageEnvironment.lib BasicUsageEnvironment.lib ws2.lib"
 				OutputFile="..\..\bin\wince\libamplugin_ffmpeg.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\lib\wince-arm"
@@ -246,7 +246,6 @@
 					>
 					<FileConfiguration
 						Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-						ExcludedFromBuild="true"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -258,7 +257,6 @@
 					>
 					<FileConfiguration
 						Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-						ExcludedFromBuild="true"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
