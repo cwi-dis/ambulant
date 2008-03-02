@@ -38,6 +38,7 @@ namespace lib {
 #ifndef WITHOUT_DELAYED_REDRAW
 class event_processor_observer {
   public:
+  	virtual ~event_processor_observer() = 0;
 	virtual void lock_redraw() = 0;
 	virtual void unlock_redraw() = 0;
 };
