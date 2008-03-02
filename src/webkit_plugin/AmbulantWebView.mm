@@ -74,6 +74,7 @@ class my_cocoa_window_factory : public ambulant::gui::cocoa::cocoa_window_factor
 #if 1
 	ambulant::common::preferences *prefs = ambulant::common::preferences::get_preferences();
 	prefs->m_prefer_ffmpeg = false;
+	prefs->m_use_plugins = true;
 #endif
 	NSDictionary *webPluginAttributesObj = [m_arguments objectForKey:WebPlugInAttributesKey];
     if (!m_mainloop) {
