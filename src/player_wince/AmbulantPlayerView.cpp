@@ -35,6 +35,8 @@ static char THIS_FILE[] = __FILE__;
 
 static SIZE usable_size_on_startup = { 640, 480 }; // Modified when window opens
 
+CAmbulantPlayerView *mainAmbulantWindow;
+
 using namespace ambulant;
 
 text_char *log_name = TEXT("\\Program Files\\Ambulant\\amlog.txt");
@@ -151,6 +153,7 @@ CAmbulantPlayerView::CAmbulantPlayerView()
 	m_cursor_id = 0;
 	m_autoplay = true;
 	lib::logger::get_logger()->set_show_message(lib::win32::show_message);
+	mainAmbulantWindow = this;
 }
 
 CAmbulantPlayerView::~CAmbulantPlayerView()

@@ -85,6 +85,8 @@ inline CAmbulantPlayerDoc* CAmbulantPlayerView::GetDocument() const
    { return (CAmbulantPlayerDoc*)m_pDocument; }
 #endif
 
+extern CAmbulantPlayerView *mainAmbulantWindow;
+
 /////////////////////////////////////////////////////////////////////////////
 
 //{{AFX_INSERT_LOCATION}}

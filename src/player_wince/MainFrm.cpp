@@ -5,6 +5,8 @@
 #include "AmbulantPlayer.h"
 
 #include "MainFrm.h"
+#include "AmbulantPlayerDoc.h"
+#include "AmbulantPlayerView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -38,6 +40,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	//{{AFX_MSG_MAP(CMainFrame)
 	ON_WM_CREATE()
 	ON_WM_ACTIVATE()
+	ON_MESSAGE(WM_COPYDATA, OnCopyData)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -114,3 +117,15 @@ void CMainFrame::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 		PostMessage(WM_CLOSE);
 }
 #endif
+
+LRESULT CMainFrame::OnCopyData(WPARAM wParam, LPARAM lParam) 
+{ 
+   COPYDATASTRUCT *cds = (COPYDATASTRUCT *)lParam; 
+
+   // Send the command line to the main ambulant window.
+   if (mainAmbulantWindow) {
+	   mainAmbulantWindow->SetMMDocument((LPCTSTR)cds->lpData);
+   }
+
+   return 0; 
+} 

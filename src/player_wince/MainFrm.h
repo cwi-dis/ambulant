@@ -44,6 +44,7 @@ protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
 	//}}AFX_MSG
+	afx_msg LRESULT OnCopyData(WPARAM, LPARAM);
 	DECLARE_MESSAGE_MAP()
 };
 
