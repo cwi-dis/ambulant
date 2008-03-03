@@ -161,11 +161,13 @@ BOOL CAmbulantPlayerApp::InitApplication()
 		if (other_ambulant_window) {
 			// Found the window for the other instance of Ambulant. Send it
 			// a copy of our command line.
+			CCommandLineInfo cmdInfo;
+			ParseCommandLine(cmdInfo);
 			SetForegroundWindow(other_ambulant_window);
 			COPYDATASTRUCT cds;
 			cds.dwData = 0;
-			cds.cbData = (_tcslen(m_lpCmdLine)+1) * sizeof(TCHAR);
-			cds.lpData = m_lpCmdLine;
+			cds.cbData = (cmdInfo.m_strFileName.GetLength()+1) * sizeof(TCHAR);
+			cds.lpData = (PVOID)((LPCTSTR)cmdInfo.m_strFileName);
 			SendMessage(other_ambulant_window, WM_COPYDATA, (WPARAM)NULL, (LPARAM)&cds);
 			// We're all done, and we don't want to start up. Tell our caller this.
 			return FALSE;

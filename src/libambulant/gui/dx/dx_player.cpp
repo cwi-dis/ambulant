@@ -160,8 +160,11 @@ gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, common::player_feedba
 gui::dx::dx_player::~dx_player() {
 	if(m_player) stop();
 #ifndef WITHOUT_DELAYED_REDRAW
-	lib::event_processor *evp = m_player->get_evp();
-	if (evp) evp->set_observer(NULL);
+	lib::event_processor *evp;
+	if (m_player) {
+		evp = m_player->get_evp();
+		if (evp) evp->set_observer(NULL);
+	}
 #endif
 	delete m_player;
 	while(!m_frames.empty()) {
@@ -173,8 +176,10 @@ gui::dx::dx_player::~dx_player() {
 		delete pf;
 		stop();
 #ifndef WITHOUT_DELAYED_REDRAW
-		evp = m_player->get_evp();
-		if (evp) evp->set_observer(NULL);
+		if (m_player) {
+			evp = m_player->get_evp();
+			if (evp) evp->set_observer(NULL);
+		}
 #endif
 		delete m_player;
 		delete m_doc;
