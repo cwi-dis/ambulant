@@ -14,6 +14,14 @@ EXTRA_DIST=MyAmbulantView.mm MyDocument.mm LogController.mm mainloop.cpp MyAppDe
 	genappleindex.sh \
 	ui_icons.psd
 
+if WITH_CG
+extra_cg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_cg.a
+extra_cg_ldflags=
+else
+extra_cg_LDADD=
+extra_cg_ldflags=
+endif
+
 if WITH_SDL
 extra_sdl_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_sdl.a
 extra_sdl_DEFINES=-DWITH_SDL
@@ -199,6 +207,7 @@ endif
 	
 LDADD = \
 	$(top_builddir)/src/libambulant/.libs/libambulant_cocoa.a \
+	$(extra_cg_LDADD) \
 	$(extra_sdl_LDADD) \
 	$(extra_ffmpeg_LDADD) \
 	$(extra_expat_LDADD) \
@@ -208,6 +217,7 @@ LDADD = \
     $(top_builddir)/src/libambulant/.libs/libambulant.a \
     -lstdc++
 AM_LDFLAGS= \
+	$(extra_cg_ldflags) \
     $(extra_sdl_ldflags) \
     $(extra_ffmpeg_ldflags) \
     $(extra_expat_ldflags) \
