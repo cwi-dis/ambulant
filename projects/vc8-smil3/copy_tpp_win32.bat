@@ -36,8 +36,8 @@ if exist %XER_BUILD% copy %XERD_BUILD%\xerces-c_2_7D.dll %AMB_HOME%\bin\win32\xe
 REM ffmpeg
 copy %TPP_HOME%\ffmpeg\libavcodec\avcodec-51.dll %AMB_HOME%\bin\win32\avcodec-51.dll
 copy %TPP_HOME%\ffmpeg\libavcodec\avcodec-51.lib %AMB_HOME%\lib\win32\avcodec.lib
-copy %TPP_HOME%\ffmpeg\libavformat\avformat-51.dll %AMB_HOME%\bin\win32\avformat-51.dll
-copy %TPP_HOME%\ffmpeg\libavformat\avformat-51.lib %AMB_HOME%\lib\win32\avformat.lib
+copy %TPP_HOME%\ffmpeg\libavformat\avformat-52.dll %AMB_HOME%\bin\win32\avformat-52.dll
+copy %TPP_HOME%\ffmpeg\libavformat\avformat-52.lib %AMB_HOME%\lib\win32\avformat.lib
 copy %TPP_HOME%\ffmpeg\libavutil\avutil-49.dll %AMB_HOME%\bin\win32\avutil-49.dll
 copy %TPP_HOME%\ffmpeg\libavutil\avutil-49.lib %AMB_HOME%\lib\win32\avutil.lib
 
