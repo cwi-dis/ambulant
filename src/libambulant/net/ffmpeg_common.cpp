@@ -407,14 +407,27 @@ ffmpeg_demux::run()
 				sink = m_sinks[pkt->stream_index];
 			}
 			if (sink && !exit_requested()) {
-				
+				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: raw pts=%lld, dts=%lld", pkt->pts, pkt->dts);
+#if 0
+				// Gag me with a spoon... At some point (around begin 2008?) this code stopped working,
+				// and we actually have to do the reverse! In other words: it used to be that pts trumped
+				// dts on the packets ffmpeg returned, but recently it has become so that dts trumps
+				// pts??
+				// Maybe the explanation at <http://www.dranger.com/ffmpeg/tutorial05.html> is some help...
 				pts = pkt->pts;
 				if (pts == AV_NOPTS_VALUE) {
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: pts invalid using dts=%lld", pkt->dts);
 					pts = pkt->dts;
 				}
+#else
+				pts = pkt->dts;
+				if (pts == AV_NOPTS_VALUE) {
+					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: dts invalid using pts=%lld", pkt->dts);
+					pts = pkt->pts;
+				}
+#endif
 				if (pts != AV_NOPTS_VALUE)
-					pts = av_rescale_q(pkt->pts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
+					pts = av_rescale_q(pts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
 				
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.data_avail(%lld, 0x%x, %d, %d) pts=%lld", pkt->stream_index, pkt->pts, pkt->data, pkt->size, pkt->duration, pts);
 				

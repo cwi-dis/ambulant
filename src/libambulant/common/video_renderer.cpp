@@ -325,7 +325,7 @@ video_renderer::data_avail()
 #ifdef DROP_LATE_FRAMES
 	if (frame_ts_micros <= now_micros - frame_duration && !m_prev_frame_dropped) {
 		// Frame is too late. Skip forward to now. Schedule another callback asap.
-		/*AM_DBG*/ lib::logger::get_logger()->debug("video_renderer: skip late frame, ts=%lld, now-dur=%lld", frame_ts_micros, now_micros-frame_duration);
+		AM_DBG lib::logger::get_logger()->debug("video_renderer: skip late frame, ts=%lld, now-dur=%lld", frame_ts_micros, now_micros-frame_duration);
 		m_frame_late++;
 		frame_ts_micros = now_micros;
 		m_src->frame_processed(frame_ts_micros);
