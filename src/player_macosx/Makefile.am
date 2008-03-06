@@ -104,7 +104,6 @@ cocoambulant_bundle: cocoambulant_executable
 	$(INSTALL_DATA) $(srcdir)/Ambulant.icns $(BUILDAPPNAME).app/Contents/Resources
 	$(INSTALL_DATA) $(srcdir)/AmbulantDocDaisy.icns $(BUILDAPPNAME).app/Contents/Resources
 	$(INSTALL_DATA) $(srcdir)/AmbulantDocGrins.icns $(BUILDAPPNAME).app/Contents/Resources
-	$(INSTALL_DATA) $(srcdir)/AmbulantDocMms.icns $(BUILDAPPNAME).app/Contents/Resources
 	$(INSTALL_DATA) $(srcdir)/AmbulantDocSmil.icns $(BUILDAPPNAME).app/Contents/Resources
 	$(INSTALL_DATA) $(srcdir)/systemTestSettings.xml $(BUILDAPPNAME).app/Contents/Resources
 	$(INSTALL_DATA) $(srcdir)/play.png $(BUILDAPPNAME).app/Contents/Resources
