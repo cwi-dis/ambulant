@@ -75,12 +75,6 @@ public:
   // used by Mozilla to retrive the scriptable peer
   NPError	GetValue(NPPVariable variable, void *value);
 
-  // locals
-  void startPlayer();
-  void stopPlayer();
-  void restartPlayer();
-  void resumePlayer();
-  void pausePlayer();
   nsScriptablePeer* getScriptablePeer();
 
 private:
@@ -106,6 +100,9 @@ public:
 #endif
     ambulant::lib::logger* m_logger;
     ambulant::common::player* m_ambulant_player;
+#if 0
+// XXXJACK: I think (but am not sure) this is cruft leftover from the sample
+// code we started with. If things work this can be ripped out
 #ifdef	XP_WIN
   HWND m_hwnd;
 #endif // XP_WIN
@@ -115,5 +112,6 @@ public:
   NPP getNPP();
   const char* getValue(const char *name);
   const char * getVersion();
+#endif
 };
 #endif // __PLUGIN_H__

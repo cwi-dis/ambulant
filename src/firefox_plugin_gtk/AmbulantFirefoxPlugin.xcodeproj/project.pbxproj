@@ -95,6 +95,7 @@
 		04C26AEC0CBE0E3700CB8EFE /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		04C26AEF0CBE0E5500CB8EFE /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		04C26AF20CBE0E8700CB8EFE /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
+		04E5F2BB0D8186100002896E /* nsIAmbulantPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nsIAmbulantPlugin.h; sourceTree = "<group>"; };
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		32DBCF630370AF2F00C91783 /* AmbulantFirefoxPlugin_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbulantFirefoxPlugin_Prefix.pch; sourceTree = "<group>"; };
@@ -239,6 +240,7 @@
 				04797E910D7D5E6B00B4EE4C /* npp_gate.cpp */,
 				04797E920D7D5E6B00B4EE4C /* npplat.h */,
 				04797E930D7D5E6B00B4EE4C /* nsIAmbulantPlugin.idl */,
+				04E5F2BB0D8186100002896E /* nsIAmbulantPlugin.h */,
 				04797E940D7D5E6B00B4EE4C /* nsScriptablePeer.cpp */,
 				04797E950D7D5E6B00B4EE4C /* nsScriptablePeer.h */,
 				04797E960D7D5E6B00B4EE4C /* plugin.cpp */,

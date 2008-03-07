@@ -43,11 +43,24 @@
 #include "gtk_mainloop.h"
 #endif
 
+#define AM_DBG
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 using namespace ambulant;
 
-//#define AMBULANT_DATADIR "./share/ambulant"
 extern "C" {
+
+//////////////////////////////////////
+//
+// general identification of this plugin and what it does
+//
+
+#define PLUGIN_NAME "ambulant plugin"
+#define PLUGIN_DESCRIPTION "W3C Smil 3.0 multimedia player"
 char* mimetypes = "application/smil:.smi:W3C Smil 3.0 Playable Multimedia file;application/smil+xml:.smil:W3C Smil 3.0 Playable Multimedia file;application/x-ambulant-smil:.smil:W3C Smil 3.0 Ambulant Player compatible file;";
+
 //////////////////////////////////////
 //
 // general initialization and shutdown
@@ -61,17 +74,10 @@ void NS_PluginShutdown()
 {
 }
 
-#define PLUGIN_NAME "ambulant plugin"
-#define PLUGIN_DESCRIPTION "W3C Smil 3.0 multimedia player"
-
 NPError NS_PluginGetValue(NPPVariable aVariable, void *aValue)
 {
     NPError err = NPERR_NO_ERROR;
-#ifdef DEBUG
-    char *id = "NS_GetValue";
-    fprintf(stderr, "%s: %s=%d (0x%x).\n",id,"aVariable",aVariable,aVariable);
-#endif//DEBUG
-
+	AM_DBG fprintf(stderr, "NS_PluginGetValue(%d)\n", (int)aVariable);
     switch (aVariable) {
         case NPPVpluginNameString:
             *((char **)aValue) = PLUGIN_NAME;
@@ -95,28 +101,20 @@ NPError NS_PluginGetValue(NPPVariable aVariable, void *aValue)
 //
 nsPluginInstanceBase * NS_NewPluginInstance(nsPluginCreateData * aCreateDataStruct)
 {
-#ifdef DEBUG
-    char *id = "NS_NewPluginInstance";
-    fprintf(stderr, "%s: %s=0x%x.\n",id,"aCreateDataStruct",aCreateDataStruct);
-#endif//DEBUG
+  AM_DBG fprintf(stderr, "NS_NewPluginInstance(0x%x)\n", aCreateDataStruct);
   if(!aCreateDataStruct)
     return NULL;
 
   nsPluginInstance * plugin = new nsPluginInstance(aCreateDataStruct->instance);
   if (plugin)
 	 plugin->mCreateData = *aCreateDataStruct;
-#ifdef DEBUG
-    fprintf(stderr, "%s: created %s=0x%x.\n",id,"plugin",plugin);
-#endif//DEBUG
+  AM_DBG fprintf(stderr, "NS_NewPluginInstance: created %s=0x%x.\n",plugin);
   return plugin;
 }
 
 void NS_DestroyPluginInstance(nsPluginInstanceBase * aPlugin)
 {
-#ifdef DEBUG
-    char *id = "NS_DestroyPluginInstance";
-    fprintf(stderr, "%s: %s=0x%x.\n",id,"aPlugin",aPlugin);
-#endif//DEBUG
+  AM_DBG fprintf(stderr, "NS_DestroyPluginInstance(0x%x)\n", aPlugin);
   if(aPlugin)
     delete (nsPluginInstance *)aPlugin;
 }
@@ -126,22 +124,18 @@ void NS_DestroyPluginInstance(nsPluginInstanceBase * aPlugin)
 //
 // nsPluginInstance class implementation
 //
-nsPluginInstance::nsPluginInstance(NPP aInstance) : nsPluginInstanceBase(),
+nsPluginInstance::nsPluginInstance(NPP aInstance)
+: nsPluginInstanceBase(),
   mInstance(aInstance),
   mInitialized(FALSE),
   m_ambulant_player(NULL),
   m_mainloop(NULL),
-  m_cursor_id(0),
 #ifdef  MOZ_X11
   display(NULL),
 #endif//MOZ_X11
   mScriptablePeer(NULL)
 {
-    strcpy(mString,"Ambulant 1.9 Firefox plugin");
-#ifdef DEBUG
-    char *id = "nsPluginInstance::nsPluginInstance";
-    fprintf(stderr, "%s(%x): %s=%s.\n",id,this,"mString",mString);
-#endif//DEBUG
+	AM_DBG fprintf(stderr, "nsPluginInstance::nsPluginInstance(0x%x)\n", aInstance);
 }
 
 nsPluginInstance::~nsPluginInstance()
@@ -150,10 +144,7 @@ nsPluginInstance::~nsPluginInstance()
   // so releasing it here does not guarantee that it is over
   // we should take precaution in case it will be called later
   // and zero its mPlugin member
-#ifdef DEBUG
-    char *id = "nsPluginInstance::~nsPluginInstance";
-    fprintf(stderr, "%s(%x): %s=%0x%x.\n",id,this,"mScriptablePeer",mScriptablePeer);
-#endif//DEBUG
+	AM_DBG fprintf(stderr, "nsPluginInstance::~nsPluginInstance(0x%x)\n", (void*)this);
 	if (mScriptablePeer) {
 		mScriptablePeer->SetInstance(NULL);
 		NS_IF_RELEASE(mScriptablePeer);
@@ -162,10 +153,7 @@ nsPluginInstance::~nsPluginInstance()
 
 NPBool nsPluginInstance::init(NPWindow* aWindow)
 {
-#ifdef DEBUG
-    char *id = "nsPluginInstance::init";
-    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"aWindow",aWindow);
-#endif//DEBUG
+	AM_DBG fprintf(stderr, "nsPluginInstance::init(0x%x)\n", aWindow);
     mNPWindow = aWindow;
     NPError nperr = NPN_GetValue(mInstance, NPNVWindowNPObject, &mNPWindow);
 #ifdef	XP_UNIX
@@ -236,10 +224,7 @@ NPBool nsPluginInstance::init(NPWindow* aWindow)
 
 void nsPluginInstance::shut()
 {
-#ifdef DEBUG
-    char *id = "nsPluginInstance::shut";
-    fprintf(stderr, "%s(%x).\n",id,"this",this,"<empty>",0);
-#endif//DEBUG
+	AM_DBG fprintf(stderr, "nsPluginInstance::shut()\n");
     if (m_mainloop)
         delete m_mainloop;
     m_mainloop = NULL;
@@ -248,21 +233,9 @@ void nsPluginInstance::shut()
 
 NPBool nsPluginInstance::isInitialized()
 {
-#ifdef DEBUG
-    char *id = "nsPluginInstance::isInitialized";
-    fprintf(stderr, "%s(%x): %s=%d.\n",id,this,"mInitialized",mInitialized);
-#endif//DEBUG
   return mInitialized;
 }
 
-const char * nsPluginInstance::getVersion()
-{
-#ifdef DEBUG
-    char *id = " nsPluginInstance::getVersion";
-    fprintf(stderr, "%s(%x): %s=%d.\n",id,this,"ambulant::get_version",ambulant::get_version);
-#endif//DEBUG
-	return ambulant::get_version();
-}
 /// Get the location of the html document.
 /// If the html document contains a javascript function GetDocumentLocation(), 
 /// that one is used; otherwise dynamically a script is executed to retrieve
@@ -275,16 +248,12 @@ const char * nsPluginInstance::getVersion()
 char* nsPluginInstance::get_document_location()
 {
     char *id = "ambulant::nsPluginInstance::getLocation";
-#ifdef DEBUG
-    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"calling NPN_Invoke",m_ambulant_player);
-#endif//DEBUG
+	AM_DBG fprintf(stderr, "nsPluginInstance::get_document_location)\n");
     char *rv = NULL;
     NPVariant npvarResult;
     NPIdentifier npidJSfun = NPN_GetStringIdentifier("GetDocumentLocation");
     bool ok = NPN_HasMethod(mInstance, (NPObject*) mNPWindow, npidJSfun);
-#ifdef DEBUG
-    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"ok",ok);
-#endif//DEBUG
+    AM_DBG fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"ok",ok);
     if ( ! ok) {
         // dynamically evaluate javascript code to get the desired information.
         // by returning it first in a function, it is also returned by NPN_Evaluate.
@@ -312,67 +281,53 @@ char* nsPluginInstance::get_document_location()
     return rv;
 }
 
+/* glue code */
+NS_IMPL_ISUPPORTS1(nsPluginInstance, nsIAmbulantPlugin)
+
 // this will start AmbulantPLayer
-void nsPluginInstance::startPlayer()
+NS_IMETHODIMP nsPluginInstance::StartPlayer()
 {
-#ifdef DEBUG
-    char *id = "nsPluginInstance::startPlayer";
-    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"m_ambulant_player",m_ambulant_player);
-#endif//DEBUG
-	if (m_ambulant_player)
-		m_ambulant_player->start();
+	AM_DBG lib::logger::get_logger()->debug("nsPluginInstance::StartPlayer()\n");
+	if (m_ambulant_player == NULL) return NS_ERROR_NOT_AVAILABLE;
+	m_ambulant_player->start();
+	return NS_OK;
 }
 
 // this will stop AmbulantPLayer
-void nsPluginInstance::stopPlayer()
+NS_IMETHODIMP nsPluginInstance::StopPlayer()
 {
-#ifdef DEBUG
-    char *id = "nsPluginInstance::stopPlayer";
-    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"m_ambulant_player",m_ambulant_player);
-#endif//DEBUG
-	if (m_ambulant_player)
-		m_ambulant_player->stop();
+	AM_DBG lib::logger::get_logger()->debug("nsPluginInstance::StopPlayer()\n");
+	if (m_ambulant_player == NULL) return NS_ERROR_NOT_AVAILABLE;
+	m_ambulant_player->stop();
+	return NS_OK;
 }
 
 // this will restart AmbulantPLayer
-void nsPluginInstance::restartPlayer()
+NS_IMETHODIMP nsPluginInstance::RestartPlayer()
 {
-//  InvalidateRect(mhWnd, NULL, TRUE);
-//  UpdateWindow(mhWnd);
-#ifdef DEBUG
-    char *id = "nsPluginInstance::restartPlayer";
-    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"m_ambulant_player",m_ambulant_player);
-#endif//DEBUG
-	if (m_ambulant_player) {
-		m_ambulant_player->stop();
-		m_ambulant_player->start();
-	}
+	AM_DBG lib::logger::get_logger()->debug("nsPluginInstance::RestartPlayer()\n");
+	if (m_ambulant_player == NULL) return NS_ERROR_NOT_AVAILABLE;
+	m_ambulant_player->stop();
+	m_ambulant_player->start();
+	return NS_OK;
 }
 
 // this will resume AmbulantPLayer
-void nsPluginInstance::resumePlayer()
+NS_IMETHODIMP nsPluginInstance::ResumePlayer()
 {
-#ifdef DEBUG
-    char *id = "nsPluginInstance::resumePlayer";
-    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"m_ambulant_player",m_ambulant_player);
-#endif//DEBUG
-//  InvalidateRect(mhWnd, NULL, TRUE);
-//  UpdateWindow(mhWnd);
-	if (m_ambulant_player)
-        m_ambulant_player->resume();
+	AM_DBG lib::logger::get_logger()->debug("nsPluginInstance::ResumePlayer()\n");
+	if (m_ambulant_player == NULL) return NS_ERROR_NOT_AVAILABLE;
+	m_ambulant_player->resume();
+	return NS_OK;
 }
 
 // this will pause AmbulantPLayer
-void nsPluginInstance::pausePlayer()
+NS_IMETHODIMP nsPluginInstance::PausePlayer()
 {
-#ifdef DEBUG
-    char *id = "nsPluginInstance::pausePlayer";
-    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"m_ambulant_player",m_ambulant_player);
-#endif//DEBUG
-//  InvalidateRect(mhWnd, NULL, TRUE);
-//  UpdateWindow(mhWnd);
-	if (m_ambulant_player)
-		m_ambulant_player->pause();
+	AM_DBG lib::logger::get_logger()->debug("nsPluginInstance::PausePlayer()\n");
+	if (m_ambulant_player == NULL) return NS_ERROR_NOT_AVAILABLE;
+	m_ambulant_player->pause();
+	return NS_OK;
 }
 
 // ==============================
@@ -386,17 +341,15 @@ void nsPluginInstance::pausePlayer()
 // in the bin/components folder
 NPError	nsPluginInstance::GetValue(NPPVariable aVariable, void *aValue)
 {
-#ifdef DEBUG
-    char *id = "nsPluginInstance::GetValue";
-    fprintf(stderr, "%s(%x): %s=%d.\n",id,this,"aVariable",aVariable);
-#endif//DEBUG
+  AM_DBG fprintf(stderr, "nsPluginInstance::GetValue(%d)\n", (int)aVariable);
   NPError rv = NPERR_NO_ERROR;
 
 
   if (aVariable == NPPVpluginScriptableInstance
-#if 1
+#if 0
 		// Jack added this one: it's what Safari seems to use. No idea
 		// whether that's really correct, though...
+		// ... And it seems it isn't: Safari wants another type of object.
 		|| aVariable == NPPVpluginScriptableNPObject
 #endif
 		) {
@@ -434,10 +387,7 @@ NPError	nsPluginInstance::GetValue(NPPVariable aVariable, void *aValue)
 // this method will return the scriptable object (and create it if necessary)
 nsScriptablePeer* nsPluginInstance::getScriptablePeer()
 {
-#ifdef DEBUG
-    char *id = "nsPluginInstance::getScriptablePeer";
-    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"mScriptablePeer",mScriptablePeer);
-#endif//DEBUG
+  AM_DBG fprintf(stderr, "nsPluginInstance::getScriptablePeer()\n");
   if (!mScriptablePeer) {
     mScriptablePeer = new nsScriptablePeer(this);
     if(!mScriptablePeer)
@@ -451,13 +401,13 @@ nsScriptablePeer* nsPluginInstance::getScriptablePeer()
   return mScriptablePeer;
 }
 
+#if 0
+// XXXJACK: I think (but am not sure) this is cruft leftover from the sample
+// code we started with. If things work this can be ripped out
+
 #ifndef XP_UNIX
 static LRESULT CALLBACK PluginWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-#ifdef DEBUG
-    char *id = "PluginWinProc";
-    fprintf(stderr, "%s(static): %s=%d.\n",id,"<empty>",0);
-#endif//DEBUG
   switch (msg) {
     default:
       break;
@@ -470,10 +420,6 @@ static LRESULT CALLBACK PluginWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 const char* 
 nsPluginInstance::getValue(const char* name)
 {
-#ifdef DEBUG
-    char *id = "nsPluginInstance::getValue";
-    fprintf(stderr, "%s(%x): %s=%d.\n",id,this,"name",name);
-#endif//DEBUG
 	std::string wanted(name);
 	int i;
 	char** np = mCreateData.argn; 
@@ -492,40 +438,11 @@ nsPluginInstance::getNPP()
 	return mCreateData.instance;
 }
 
-/* glue code */
-NS_IMPL_ISUPPORTS1(nsPluginInstance, nsIAmbulantPlugin)
 
-NS_IMETHODIMP nsPluginInstance::StartPlayer() { 
-#ifdef DEBUG
-    char *id = "nsPluginInstance::StartPlayer";
-    fprintf(stderr, "%s(%x.\n",id,this);
-#endif//DEBUG
-startPlayer(); return NS_OK; }
-NS_IMETHODIMP nsPluginInstance::StopPlayer() {
-#ifdef DEBUG
-    char *id = "nsPluginInstance::StopPlayer";
-    fprintf(stderr, "%s(%x.\n",id,this);
-#endif//DEBUG
-stopPlayer(); return NS_OK; }
-NS_IMETHODIMP nsPluginInstance::RestartPlayer() {
-#ifdef DEBUG
-    char *id = "nsPluginInstance::RestartPlayer";
-    fprintf(stderr, "%s(%x.\n",id,this);
-#endif//DEBUG
-restartPlayer(); return NS_OK; }
-NS_IMETHODIMP nsPluginInstance::ResumePlayer() {
-#ifdef DEBUG
-    char *id = "nsPluginInstance::ResumePlayer";
-    fprintf(stderr, "%s(%x.\n",id,this);
-#endif//DEBUG
-resumePlayer(); return NS_OK; }
-NS_IMETHODIMP nsPluginInstance::PausePlayer() {
-#ifdef DEBUG
-    char *id = "nsPluginInstance::PausePlayer";
-    fprintf(stderr, "%s(%x.\n",id,this);
-#endif//DEBUG
-pausePlayer(); return NS_OK; }
-/* end glue */
+const char* ambulant::get_version() { return "0";}
+#endif
+
+
 
 #ifdef WITH_GTK
 // some fake gtk_gui functions needed by gtk_mainloop
@@ -542,10 +459,6 @@ gtk_gui::gtk_gui(const char* s, const char* s2) {
 	gtk_container_add(GTK_CONTAINER(m_toplevelcontainer), GTK_WIDGET (m_guicontainer));
 	gtk_box_pack_start (GTK_BOX(m_guicontainer), m_documentcontainer, TRUE, TRUE, 0);
 //XXXX not used:  m_guicontainer = menubar = NULL;
-#ifdef DEBUG
-    char *id = "gtk_gui::gtk_gui (FAKE)";
-    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"m_documentcontainer",m_documentcontainer);
-#endif//DEBUG
 //XXXX FIXME <EMBED src="xxx" ../> attr value is 2nd contructor arg.
     m_smilfilename = s2;
 	main_loop = g_main_loop_new(NULL, FALSE);
@@ -555,7 +468,3 @@ gtk_gui::~gtk_gui() {
     g_object_unref (G_OBJECT (main_loop));
 }
 #endif // WITH_GTK
-
-#if 0
-const char* ambulant::get_version() { return "0";}
-#endif

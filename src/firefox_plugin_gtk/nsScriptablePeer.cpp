@@ -45,60 +45,53 @@
 // The native methods of this class are supposed to
 // be callable from JavaScript
 //
-//#define DEBUG
 #include "nsScriptablePeer.h"
 #ifdef	MOZILLA_TRUNK
 #include "xpconnect/nsIXPConnect.h"
 #include "jscntxt.h"
 #include "jsobj.h"
-#endif//MOZILLA_TRUNK
+#endif //MOZILLA_TRUNK
+
+#define AM_DBG
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
 
 static NS_DEFINE_IID(kIScriptableIID, NS_IAMBULANTPLUGIN_IID);
 static NS_DEFINE_IID(kIClassInfoIID, NS_ICLASSINFO_IID);
 static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
 #ifdef	MOZILLA_TRUNK
 static NS_DEFINE_IID(kIXPConnectWrappedJSIID, NS_IXPCONNECTWRAPPEDJS_IID);
-#endif//MOZILLA_TRUNK
+#endif //MOZILLA_TRUNK
 
 nsScriptablePeer::nsScriptablePeer(nsPluginInstance* aPlugin)
 {
-#ifdef DEBUG
-    char *id = "nsScriptablePeer::nsScriptablePeer";
-    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"aPlugin",aPlugin);
-#endif
+  AM_DBG fprintf(stderr, "nsScriptablePeer::nsScriptablePeer(0x%x) creating 0x%x\n", (void*)aPlugin, (void*)this);
   mPlugin = aPlugin;
   mRefCnt = 0;
 }
 
 nsScriptablePeer::~nsScriptablePeer()
 {
-#ifdef DEBUG
-    char *id = "nsScriptablePeer:~:nsScriptablePeer";
-    fprintf(stderr, "%s(%x): %s=%d.\n",id,this,"<empty>",0);
-#endif
+  AM_DBG fprintf(stderr, "nsScriptablePeer::~nsScriptablePeer() for 0x%x\n", (void*)this);
 }
 
 // AddRef, Release and QueryInterface are common methods and must 
 // be implemented for any interface
 NS_IMETHODIMP_(nsrefcnt) nsScriptablePeer::AddRef() 
 { 
-#ifdef DEBUG
-    char *id = "nsScriptablePeer::AddRef";
-    fprintf(stderr, "%s(%x): %s=%d.\n",id,this,"mRefCnt",mRefCnt);
-#endif
+  AM_DBG fprintf(stderr, "nsScriptablePeer::AddRef() for 0x%x\n", (void*)this);
   ++mRefCnt; 
   return mRefCnt; 
 } 
 
 NS_IMETHODIMP_(nsrefcnt) nsScriptablePeer::Release() 
 { 
-#ifdef DEBUG
-    char *id = "nsScriptablePeer::Release";
-    fprintf(stderr, "%s(%x): %s=%d.\n",id,this,"mRefCnt",mRefCnt);
-#endif
+  AM_DBG fprintf(stderr, "nsScriptablePeer::Release() for 0x%x\n", (void*)this);
   --mRefCnt; 
   if (mRefCnt == 0) { 
 #ifdef	AMBULANT_PLATFORM_WIN32
+	  // XXXJACK: I do not trust this. delete this smells like a hack...
       delete this;
 #endif//AMBULANT_PLATFORM_WIN32
       return 0; 
@@ -110,47 +103,37 @@ NS_IMETHODIMP_(nsrefcnt) nsScriptablePeer::Release()
 // static casts are necessary to ensure that correct pointer is returned
 NS_IMETHODIMP nsScriptablePeer::QueryInterface(const nsIID& aIID, void** aInstancePtr) 
 { 
-#ifdef DEBUG
-    char *id = "nsScriptablePeer::QueryInterface";
-    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"aIID",aIID);
-#endif
+  AM_DBG fprintf(stderr, "nsScriptablePeer::QueryInterface()\n"); // Parameter too difficult for now
   if(!aInstancePtr) 
     return NS_ERROR_NULL_POINTER; 
 
   if(aIID.Equals(kIScriptableIID)) {
       *aInstancePtr = static_cast<nsIAmbulantPlugin*>(this);
     AddRef();
+	AM_DBG  fprintf(stderr, "nsScriptablePeer::QueryInterface: return kIScriptableIID 0x%x\n", *aInstancePtr);
     return NS_OK;
   }
 
   if(aIID.Equals(kIClassInfoIID)) {
     *aInstancePtr = static_cast<nsIClassInfo*>(this); 
     AddRef();
+	AM_DBG  fprintf(stderr, "nsScriptablePeer::QueryInterface: return kIClassInfoIID 0x%x\n", *aInstancePtr);
     return NS_OK;
   }
 
   if(aIID.Equals(kISupportsIID)) {
       *aInstancePtr = static_cast<nsIAmbulantPlugin*>(this); 
     AddRef();
+	AM_DBG  fprintf(stderr, "nsScriptablePeer::QueryInterface: return kISupportsIID 0x%x\n", *aInstancePtr);
     return NS_OK;
   }
-  /*
-   //XXXX mozilla trunk static_cast<nsIXPConnectWrappedJS*>
-  if(aIID.Equals(kIXPConnectWrappedJSIID)) {
-    *aInstancePtr = static_cast<nsIAmbulantPlugin*>(this);
-    AddRef();
-    return NS_OK;
-  }
-  */
+  AM_DBG fprintf(stderr, "nsScriptablePeer::QueryInterface: return NS_NOINTERFACE error\n");
   return NS_NOINTERFACE; 
 }
 
 void nsScriptablePeer::SetInstance(nsPluginInstance* plugin)
 {
-#ifdef DEBUG
-    char *id = "";
-    fprintf(stderr, "%s(%x): %s=%d.\n",id,this,"plugin",plugin);
-#endif
+  AM_DBG fprintf(stderr, "nsScriptablePeer::SetInstance(0x%x)\n", plugin);
   mPlugin = plugin;
 }
 
@@ -159,70 +142,40 @@ void nsScriptablePeer::SetInstance(nsPluginInstance* plugin)
 //
 NS_IMETHODIMP nsScriptablePeer::StartPlayer(void)
 {
-#ifdef DEBUG
-    char *id = "nsScriptablePeer::StartPlayer";
-    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"mPlugin",mPlugin);
-#endif
-#ifdef   AMBULANT_FIREFOX_PLUGIN
-  if (mPlugin)
-    mPlugin->startPlayer();
-#endif // AMBULANT_FIREFOX_PLUGIN
-
+  AM_DBG fprintf(stderr, "nsScriptablePeer::StartPlayer() called\n");
+  if (mPlugin == NULL) return NS_ERROR_NOT_INITIALIZED;
+  return mPlugin->StartPlayer();
   return NS_OK;
 }
 
 NS_IMETHODIMP nsScriptablePeer::StopPlayer()
 {
-#ifdef DEBUG
-    char *id = "nsScriptablePeer::StopPlayer";
-    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"mPlugin",mPlugin);
-#endif
-#ifdef   AMBULANT_FIREFOX_PLUGIN
-  if (mPlugin)
-    mPlugin->stopPlayer();
-#endif // AMBULANT_FIREFOX_PLUGIN
-
+  AM_DBG fprintf(stderr, "nsScriptablePeer::StopPlayer() called\n");
+  if (mPlugin == NULL) return NS_ERROR_NOT_INITIALIZED;
+  mPlugin->StopPlayer();
   return NS_OK;
 }
 
 NS_IMETHODIMP nsScriptablePeer::RestartPlayer()
 {
-#ifdef DEBUG
-    char *id = "nsScriptablePeer::RestartPlayer";
-    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"mPlugin",mPlugin);
-#endif
-#ifdef   AMBULANT_FIREFOX_PLUGIN
-  if (mPlugin)
-    mPlugin->restartPlayer();
-#endif // AMBULANT_FIREFOX_PLUGIN
-
+  AM_DBG fprintf(stderr, "nsScriptablePeer::RestartPlayer() called\n");
+  if (mPlugin == NULL) return NS_ERROR_NOT_INITIALIZED;
+  mPlugin->RestartPlayer();
   return NS_OK;
 }
 
 NS_IMETHODIMP nsScriptablePeer::ResumePlayer()
 {
-#ifdef DEBUG
-    char *id = " nsScriptablePeer::ResumePlayer";
-    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"mPlugin",mPlugin);
-#endif
-#ifdef   AMBULANT_FIREFOX_PLUGIN
-  if (mPlugin)
-    mPlugin->resumePlayer();
-#endif // AMBULANT_FIREFOX_PLUGIN
-
+  AM_DBG fprintf(stderr, "nsScriptablePeer::ResumePlayer() called\n");
+  if (mPlugin == NULL) return NS_ERROR_NOT_INITIALIZED;
+  mPlugin->ResumePlayer();
   return NS_OK;
 }
 
 NS_IMETHODIMP nsScriptablePeer::PausePlayer()
 {
-#ifdef DEBUG
-    char *id = "nsScriptablePeer::PausePlayer";
-    fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"mPlugin",mPlugin);
-#endif
-#ifdef   AMBULANT_FIREFOX_PLUGIN
-  if (mPlugin)
-    mPlugin->pausePlayer();
-#endif // AMBULANT_FIREFOX_PLUGIN
-
+  AM_DBG fprintf(stderr, "nsScriptablePeer::PausePlayer() called\n");
+  if (mPlugin == NULL) return NS_ERROR_NOT_INITIALIZED;
+  mPlugin->PausePlayer();
   return NS_OK;
 }
