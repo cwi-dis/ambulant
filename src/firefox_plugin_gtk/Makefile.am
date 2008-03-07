@@ -16,8 +16,8 @@ EXTRA_DIST=plugin.h plugin.cpp \
 #------------------------------------------------------
 if WITH_GTK
 gtkincludes=-I$(GTK_CFLAGS)
-extra_gtk_cflags=-DWITH_GTK -DAMBULANT_FIREFOX_PLUGIN
-extra_gtk_ldflags=$(GTK_LIBS)
+extra_gtk_cflags=-DWITH_GTK -DMOZ_X11
+extra_gtk_ldflags=../player_gtk/gtk_mainloop.o -lambulant_gtk $(GTK_LIBS)
 #-lambulant_gtk -lgtk -lpango
 else
 gtkincludes=
@@ -44,6 +44,13 @@ endif # WITH_LIVE
 if WITH_SDL
 sdl_config=`sdl-config --libs`
 extra_sdl_ldflags=-lambulant_sdl $(sdl_config)
+#extra_sdl_ldflags=-lambulant_sdl $(sdl_config) \
+#	-Wl,-framework,Carbon \
+#	-Wl,-framework,IOKit \
+#	-Wl,-framework,OpenGL \
+#	-Wl,-framework,AudioUnit \
+#	-Wl,-framework,AudioToolbox \
+#	-Wl,-framework,QuickTime
 else
 extra_sdl_ldflags=
 endif
@@ -57,10 +64,10 @@ endif # WITH_XERCES_BUILTIN
 #KB hack
 extra_hack1_ldflags=../player_gtk/gtk_mainloop.o
 
-EXTRA_CFLAGS=$(extra_gtk_cflags)
+#EXTRA_CFLAGS=$(extra_gtk_cflags)
 # KB temp MOZ_X11
-AM_CXXFLAGS = -export-dynamic -DXP_UNIX -DMOZ_X11 -DAMBULANT_FIREFOX_PLUGIN
-#EXTRA_CXXFLAGS=-DXP_UNIX -DMOZ_X11
+AM_CXXFLAGS=$(extra_gtk_cflags)
+#EXTRA_CXXFLAGS=$(extra_gtk_cflags)
 #EXTRA_LDFLAGS=$(extra_gtk_ldflags)
 INCLUDES = \
 	-I$(top_builddir)/include \
@@ -94,9 +101,8 @@ libambulantplugin_la_SOURCES=np_entry.cpp npn_gate.cpp npp_gate.cpp plugin.cpp n
 nodist_libambulantplugin_la_INCLUDES=nsIAmbulantPlugin.h
 
 libambulantplugin_la_LDFLAGS=	\
-	-shared $(LIBLTDL)	\
-	$(extra_hack1_ldflags)	\
-	 -lambulant_gtk \
+	-module \
+	$(LIBLTDL)	\
 	$(extra_gtk_ldflags)	\
 	$(extra_ffmpeg_ldflags)	\
 	$(extra_sdl_ldflags)	\

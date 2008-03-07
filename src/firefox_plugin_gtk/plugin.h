@@ -40,28 +40,21 @@
 
 #include "pluginbase.h"
 #include "nsScriptablePeer.h"
-#undef MOZ_X11
-//#define DEBUG
 #ifdef	XP_UNIX
 #ifdef	MOZ_X11
 #include <X11/Xlib.h>
 #include <X11/Intrinsic.h>
 #include <X11/cursorfont.h>
-#endif/*MOZ_X11*/
-#endif/*XP_UNIX*/
+#endif // MOZ_X11
+#endif // XP_UNIX
 
-//#define AMBULANT_FIREFOX_PLUGIN
-#ifdef   AMBULANT_FIREFOX_PLUGIN
-#include <ambulant/version.h>
-#include <ambulant/common/player.h>
-//#include <ambulant/gui/gtk/gtk_factory.h>
-//#include <ambulant/net/url.h>
-//#include "../src/player_gtk/gtk_mainloop.h"
-    // forward declarations of classes needed by the implementation
-class gtk_mainloop; // borrowd from player_gtk
-class ambulant::common::player;
-class ambulant::lib::logger;
-#endif // AMBULANT_FIREFOX_PLUGIN
+#include "ambulant/version.h"
+#include "ambulant/common/player.h"
+#include "ambulant/net/url.h"
+#include "ambulant/lib/logger.h"
+#ifdef WITH_GTK
+class gtk_mainloop;
+#endif
 
 class nsScriptablePeer;
 
@@ -83,16 +76,11 @@ public:
   NPError	GetValue(NPPVariable variable, void *value);
 
   // locals
-#ifndef   AMBULANT_FIREFOX_PLUGIN
-  void showVersion();
-  void clear();
-#else //  AMBULANT_FIREFOX_PLUGIN
   void startPlayer();
   void stopPlayer();
   void restartPlayer();
   void resumePlayer();
   void pausePlayer();
-#endif // AMBULANT_FIREFOX_PLUGIN
   nsScriptablePeer* getScriptablePeer();
 
 private:
@@ -105,27 +93,27 @@ private:
 
 public:
   char mString[128];
-#ifdef	XP_UNIX
+#ifdef	MOZ_X11
   Window window;
   Display* display;
   int width, height;
-#endif/*XP_UNIX*/
-#ifdef   AMBULANT_FIREFOX_PLUGIN
+#endif // MOZ_X11
     nsPluginCreateData mCreateData;
+#ifdef WITH_GTK
     gtk_mainloop* m_mainloop;
+#else
+	void *m_mainloop;
+#endif
     ambulant::lib::logger* m_logger;
     ambulant::common::player* m_ambulant_player;
-//KB ambulant::net::url m_url;
-//KB ambulant_player_callbacks m_player_callbacks;
 #ifdef	XP_WIN
   HWND m_hwnd;
-#endif/*XP_WIN*/
+#endif // XP_WIN
 
   int m_cursor_id;
 
   NPP getNPP();
   const char* getValue(const char *name);
   const char * getVersion();
-#endif // AMBULANT_FIREFOX_PLUGIN
 };
 #endif // __PLUGIN_H__

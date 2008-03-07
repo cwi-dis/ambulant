@@ -316,11 +316,13 @@ XXXX */
 
 bool NPN_HasProperty(NPP npp, NPObject* obj, NPIdentifier propertyName)
 {
+  if (NPNFuncs.hasproperty == NULL) return false;
   return NPNFuncs.hasproperty(npp, obj, propertyName);
 }
 
 bool NPN_HasMethod(NPP npp, NPObject* obj, NPIdentifier methodName)
 {
+  if (NPNFuncs.hasmethod == NULL) return false;
   return NPNFuncs.hasmethod(npp, obj, methodName);
 }
 

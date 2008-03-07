@@ -48,13 +48,19 @@
 
 NPNetscapeFuncs NPNFuncs;
 
-#ifdef XP_WIN
+extern "C" {
+NPError OSCALL NP_GetEntryPoints(NPPluginFuncs* pFuncs);
+}
 
 NPError OSCALL NP_GetEntryPoints(NPPluginFuncs* pFuncs)
 {
   if(pFuncs == NULL)
     return NPERR_INVALID_FUNCTABLE_ERROR;
-
+#ifdef XP_MACOSX
+  // Workaround for what I think is a bug in Safari: it sets size to 0
+  if (pFuncs->size == 0)
+	pFuncs->size = sizeof(NPPluginFuncs);
+#endif // XP_MACOSX
   if(pFuncs->size < sizeof(NPPluginFuncs))
     return NPERR_INVALID_FUNCTABLE_ERROR;
 
@@ -77,8 +83,6 @@ NPError OSCALL NP_GetEntryPoints(NPPluginFuncs* pFuncs)
   return NPERR_NO_ERROR;
 }
 
-#endif /* XP_WIN */
-
 char *NPP_GetMIMEDescription();
 
 char *
@@ -95,7 +99,7 @@ NP_GetValue(void* future, NPPVariable variable, void *value)
 
 NPError OSCALL
 NP_Initialize(NPNetscapeFuncs* pFuncs
-#ifdef XP_UNIX
+#if defined(XP_UNIX)
               , NPPluginFuncs* pluginFuncs
 #endif
               )
@@ -152,7 +156,11 @@ NP_Initialize(NPNetscapeFuncs* pFuncs
   NPNFuncs.releasevariantvalue     = pFuncs->releasevariantvalue;
   NPNFuncs.setexception            = pFuncs->setexception;
 
-#ifdef XP_UNIX
+#if defined(XP_UNIX) && !defined(XP_MACOSX)
+  /* Workaround by Jack: Safari on MacOSX calls NP_Initialize "the windows way",
+   * with one argument, and then calls NP_GetEntryPoints. I'm unsure what
+   * Firefox on Mac does.
+   */
   /*
    * Set up the plugin function table that Netscape will use to
    * call us.  Netscape needs to know about our version and size

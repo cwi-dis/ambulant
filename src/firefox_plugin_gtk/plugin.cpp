@@ -39,7 +39,12 @@
 #include "plugin.h"
 #include "nsIServiceManager.h"
 #include "nsISupportsUtils.h" // some usefule macros are defined here
+#ifdef WITH_GTK
 #include "gtk_mainloop.h"
+#endif
+
+using namespace ambulant;
+
 //#define AMBULANT_DATADIR "./share/ambulant"
 extern "C" {
 char* mimetypes = "application/smil:.smi:W3C Smil 3.0 Playable Multimedia file;application/smil+xml:.smil:W3C Smil 3.0 Playable Multimedia file;application/x-ambulant-smil:.smil:W3C Smil 3.0 Ambulant Player compatible file;";
@@ -78,7 +83,7 @@ NPError NS_PluginGetValue(NPPVariable aVariable, void *aValue)
             *((PRBool *)aValue) = PR_TRUE;
             break;
         default:
-            err = NPERR_GENERIC_ERROR;
+            err = NPERR_INVALID_PARAM;
     }
     return err;
 }
@@ -98,10 +103,8 @@ nsPluginInstanceBase * NS_NewPluginInstance(nsPluginCreateData * aCreateDataStru
     return NULL;
 
   nsPluginInstance * plugin = new nsPluginInstance(aCreateDataStruct->instance);
-#ifdef AMBULANT_FIREFOX_PLUGIN
   if (plugin)
 	 plugin->mCreateData = *aCreateDataStruct;
-#endif // AMBULANT_FIREFOX_PLUGIN
 #ifdef DEBUG
     fprintf(stderr, "%s: created %s=0x%x.\n",id,"plugin",plugin);
 #endif//DEBUG
@@ -126,11 +129,9 @@ void NS_DestroyPluginInstance(nsPluginInstanceBase * aPlugin)
 nsPluginInstance::nsPluginInstance(NPP aInstance) : nsPluginInstanceBase(),
   mInstance(aInstance),
   mInitialized(FALSE),
-#ifdef AMBULANT_FIREFOX_PLUGIN
   m_ambulant_player(NULL),
   m_mainloop(NULL),
   m_cursor_id(0),
-#endif // AMBULANT_FIREFOX_PLUGIN
 #ifdef  MOZ_X11
   display(NULL),
 #endif//MOZ_X11
@@ -163,7 +164,6 @@ NPBool nsPluginInstance::init(NPWindow* aWindow)
 {
 #ifdef DEBUG
     char *id = "nsPluginInstance::init";
-    NPSetWindowCallbackStruct *ws_info;
     fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"aWindow",aWindow);
 #endif//DEBUG
     mNPWindow = aWindow;
@@ -171,19 +171,21 @@ NPBool nsPluginInstance::init(NPWindow* aWindow)
 #ifdef	XP_UNIX
 #ifdef	MOZ_X11
     this->window = (Window) aWindow->window;
-    ws_info = (NPSetWindowCallbackStruct *)aWindow->ws_info;
+    NPSetWindowCallbackStruct *ws_info =
+    	(NPSetWindowCallbackStruct *)aWindow->ws_info;
     this->display = ws_info->display;
     width = aWindow->width;
     height = aWindow->height;
 #endif/*MOZ_X11*/
-#ifdef AMBULANT_FIREFOX_PLUGIN
     long long ll_winid = reinterpret_cast<long long>(aWindow->window);
     int i_winid = static_cast<int>(ll_winid);
+#ifdef WITH_GTK
     GtkWidget* gtkwidget = GTK_WIDGET(gtk_plug_new((GdkNativeWindow) i_winid));
 //  gtk_widget_set_parent(gtkwidget, gtk_plug_new((GdkNativeWindow)aWindow->window));
 //  gtk_window_set_resizable(gtkwidget, true); 	
   	gtk_widget_set_size_request(gtkwidget, width, height);
-//  	gtk_widget_set_uposition(gtkwidget, 240, 320);	
+//  	gtk_widget_set_uposition(gtkwidget, 240, 320);
+#endif // WITH_GTK
     const char* arg_str = NULL;
     if (mCreateData.argc > 1)
     for (int i =0; i < mCreateData.argc; i++) {
@@ -214,6 +216,7 @@ NPBool nsPluginInstance::init(NPWindow* aWindow)
         }
         file_str = strdup(file_url.get_file().c_str());
     }
+#ifdef WITH_GTK
     gtk_gui* m_gui = new gtk_gui((char*) gtkwidget, file_str);
     m_mainloop = new gtk_mainloop(m_gui);
     if (file_str) 
@@ -225,9 +228,10 @@ NPBool nsPluginInstance::init(NPWindow* aWindow)
     m_ambulant_player->start();
     gtk_widget_show_all (gtkwidget);
 	gtk_widget_realize(gtkwidget);
-#endif // AMBULANT_FIREFOX_PLUGIN
+#endif // WITH_GTK
 #endif/*XP_UNIX*/
-    return mInitialized = true;
+	mInitialized = true;
+    return true;
 }
 
 void nsPluginInstance::shut()
@@ -250,8 +254,6 @@ NPBool nsPluginInstance::isInitialized()
 #endif//DEBUG
   return mInitialized;
 }
-
-#ifdef AMBULANT_FIREFOX_PLUGIN
 
 const char * nsPluginInstance::getVersion()
 {
@@ -373,66 +375,6 @@ void nsPluginInstance::pausePlayer()
 		m_ambulant_player->pause();
 }
 
-#else // AMBULANT_FIREFOX_PLUGIN
-
-//XXXX
-// this will force to draw a version string in the plugin window
-void nsPluginInstance::showVersion()
-{
-#ifdef	XP_UNIX
-    GC gc;
-    unsigned int h,w;
-    int x,y,l;
-    const char *string;
-#endif/*XP_UNIX*/
-#ifdef DEBUG
-    char *id = "nsPluginInstance::showVersion";
-    fprintf(stderr, "%s(%x) %s=%s.\n",id,this,"mString",mString);
-#endif//DEBUG
-  const char *ua = NPN_UserAgent(mInstance);
-  strcpy(mString, ua);
-#ifdef	XP_UNIX
-  if (this->display == NULL) {
-#ifdef DEBUG
-            fprintf(stderr, "%s(%x) called with display=0x%x, window=0x%x.\n",id,this,this->display,this->window);
-#endif//DEBUG
-    	return;
-    }      
-    gc = XCreateGC(this->display, this->window, 0, NULL);
-
-    /* draw a rectangle */
-    h = this->height/2;
-    w = 3 * this->width/4;
-    x = 0; /* (this->width - w)/2;  center */
-    y = h/2;
-    XDrawRectangle(this->display, this->window, gc, x, y, w, h);
-
-    /* draw a string */
-    string = this->mString;
-    if (string && *string)
-    {
-        l = strlen(string);
-        x += this->width/10;
-        XDrawString(this->display, this->window, gc, x, this->height/2, string, l);
-    }
-    XFreeGC(this->display, gc);
-#endif/*XP_UNIX*/
-}
-
-// this will clean the plugin window
-void nsPluginInstance::clear()
-{
-#ifdef DEBUG
-    char *id = "nsPluginInstance::clear";
-    fprintf(stderr, "%s(%x): %s=%0x%x.\n",id,this,"<empty>",0);
-#endif//DEBUG
-  strcpy(mString, "");
-#ifdef	XP_UNIX
-
-#endif/*XP_UNIX*/
-}
-#endif // AMBULANT_FIREFOX_PLUGIN
-
 // ==============================
 // ! Scriptability related code !
 // ==============================
@@ -451,7 +393,13 @@ NPError	nsPluginInstance::GetValue(NPPVariable aVariable, void *aValue)
   NPError rv = NPERR_NO_ERROR;
 
 
-  if (aVariable == NPPVpluginScriptableInstance) {
+  if (aVariable == NPPVpluginScriptableInstance
+#if 1
+		// Jack added this one: it's what Safari seems to use. No idea
+		// whether that's really correct, though...
+		|| aVariable == NPPVpluginScriptableNPObject
+#endif
+		) {
     // addref happens in getter, so we don't addref here
     nsScriptablePeer * scriptablePeer = getScriptablePeer();
     if (scriptablePeer) {
@@ -472,7 +420,10 @@ NPError	nsPluginInstance::GetValue(NPPVariable aVariable, void *aValue)
   else if (aVariable ==  NPPVpluginNeedsXEmbed) {
 	    *(PRBool *) aValue = PR_TRUE;
 	    rv = NPERR_NO_ERROR;
-  } else  *(void**) aValue = NULL;
+  } else  {
+	*(void**) aValue = NULL;
+	rv = NPERR_INVALID_PARAM;
+  }
   return rv;
 }
 
@@ -500,7 +451,7 @@ nsScriptablePeer* nsPluginInstance::getScriptablePeer()
   return mScriptablePeer;
 }
 
-#ifndef AMBULANT_FIREFOX_PLUGIN
+#ifndef XP_UNIX
 static LRESULT CALLBACK PluginWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 #ifdef DEBUG
@@ -514,7 +465,7 @@ static LRESULT CALLBACK PluginWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 
   return NULL;
 }
-#else // AMBULANT_FIREFOX_PLUGIN
+#endif // XP_UNIX
 
 const char* 
 nsPluginInstance::getValue(const char* name)
@@ -576,6 +527,7 @@ NS_IMETHODIMP nsPluginInstance::PausePlayer() {
 pausePlayer(); return NS_OK; }
 /* end glue */
 
+#ifdef WITH_GTK
 // some fake gtk_gui functions needed by gtk_mainloop
 void gtk_gui::internal_message(int, char*) {}
 GtkWidget* gtk_gui::get_document_container() { return m_documentcontainer; }
@@ -598,10 +550,12 @@ gtk_gui::gtk_gui(const char* s, const char* s2) {
     m_smilfilename = s2;
 	main_loop = g_main_loop_new(NULL, FALSE);
 }
+
 gtk_gui::~gtk_gui() {
     g_object_unref (G_OBJECT (main_loop));
 }
+#endif // WITH_GTK
 
+#if 0
 const char* ambulant::get_version() { return "0";}
-
-#endif // AMBULANT_FIREFOX_PLUGIN
+#endif
