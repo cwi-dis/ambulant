@@ -10,7 +10,6 @@
 		040DE08F0CD533A300A68D91 /* libambulant_sdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B290958C23900C194EE /* libambulant_sdl.a */; };
 		042AF3D4095AFF780003E706 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D5B49B7048680CD000E48DA /* Info.plist */; };
 		045D0B350958C26800C194EE /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B340958C26800C194EE /* QuickTime.framework */; };
-		045D0B5C0958C36B00C194EE /* libintl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B5B0958C36B00C194EE /* libintl.a */; };
 		045D0B800958C53F00C194EE /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 045D0B7E0958C53F00C194EE /* mainloop.cpp */; };
 		045D0B930958C71E00C194EE /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B920958C71E00C194EE /* libexpat.a */; };
 		048B3E720CEB32EF006102B3 /* libamplugin_wkdom.la in CopyFiles */ = {isa = PBXBuildFile; fileRef = 048B3E700CEB32EF006102B3 /* libamplugin_wkdom.la */; };
@@ -104,7 +103,6 @@
 				8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */,
 				049775AC0958AC7600A7690F /* WebKit.framework in Frameworks */,
 				045D0B350958C26800C194EE /* QuickTime.framework in Frameworks */,
-				045D0B5C0958C36B00C194EE /* libintl.a in Frameworks */,
 				045D0B930958C71E00C194EE /* libexpat.a in Frameworks */,
 				0499E8970959B22200A7FDF8 /* libavcodec.a in Frameworks */,
 				0499E8990959B24100A7FDF8 /* libavformat.a in Frameworks */,
@@ -275,6 +273,7 @@
 		089C1669FE841209C02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "AmbulantWebKitPlugin" */;
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 089C166AFE841209C02AAC07 /* AmbulantWebKitPlugin */;
 			projectDirPath = "";
@@ -430,7 +429,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"AM_PREFER_FFMPEG=1",
 					"WITH_LTDL_PLUGINS=1",
-					"WITH_EXTERNAL_DOM=1",
 					"WITH_SDL=1",
 					"WITH_FFMPEG=1",
 					"WITH_EXPAT=1",

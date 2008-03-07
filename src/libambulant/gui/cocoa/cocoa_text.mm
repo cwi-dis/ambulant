@@ -49,6 +49,8 @@ cocoa_text_renderer::cocoa_text_renderer(
 :	cocoa_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory),
 	m_text_storage(NULL),
 	m_text_color(0),
+	m_font_name(NULL),
+	m_font_size(0),
 	m_text_font(NULL)
 {
 	// XXX These parameter names are tentative
@@ -60,19 +62,11 @@ cocoa_text_renderer::cocoa_text_renderer(
 		float fontsize = 0.0;
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		m_text_color = params->get_color("color", text_color);
-		fontsize = params->get_float("font-size", 0.0);
+		m_font_size = params->get_float("font-size", 0.0);
 		AM_DBG NSLog(@"params found, color=(%d, %d, %d), font-family=%s, font-size=%g", 
 			redc(text_color), greenc(text_color), bluec(text_color), fontname, fontsize);
-		if (fontname) {
-			NSString *nsfontname = [NSString stringWithUTF8String: fontname];
-			m_text_font = [NSFont fontWithName: nsfontname size: fontsize];
-			if (m_text_font == NULL)
-				lib::logger::get_logger()->trace("param: font-family \"%s\" unknown", fontname);
-		} else if (fontsize) {
-			m_text_font = [NSFont userFontOfSize: fontsize];
-			if (m_text_font == NULL)
-				lib::logger::get_logger()->trace("param: font-size \"%g\" unknown", fontsize);
-		}
+		if (fontname)
+			m_font_name = [NSString stringWithUTF8String: fontname];
 		delete params;
 		[pool release];
 	}
@@ -82,6 +76,8 @@ cocoa_text_renderer::~cocoa_text_renderer()
 {
 	m_lock.enter();
 	[m_text_storage release];
+	if (m_font_name) [m_font_name release];
+	// ??? if (m_text_font) [m_text_font release];
 	m_text_storage = NULL;
 	m_lock.leave();
 }
@@ -92,7 +88,19 @@ cocoa_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 	m_lock.enter();
 	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("cocoa_text_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
-
+	// Initialize font, if needed
+	if ( (m_font_name || m_font_size) && m_text_font == NULL) {
+		if (m_font_name) {
+			m_text_font = [NSFont fontWithName: m_font_name size: m_font_size];
+			if (m_text_font == NULL)
+				lib::logger::get_logger()->trace("param: font-family \"%s\" unknown", m_font_name);
+		} else  {
+			m_text_font = [NSFont userFontOfSize: m_font_size];
+			if (m_text_font == NULL)
+				lib::logger::get_logger()->trace("param: font-size \"%g\" unknown", m_font_size);
+		}
+	}
+	// Initialize text storage, if needed
 	if (m_data && !m_text_storage) {
 		unsigned char *ucp = (unsigned char *)m_data;
 		// Check for 16-bit unicode by BOM
