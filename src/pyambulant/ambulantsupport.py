@@ -229,9 +229,9 @@ class MyGlobalObjectDefinition(CxxMixin, PEP253Mixin, GlobalObjectDefinition):
 
     def outputHash(self):
         Output()
-        Output("static int %s_hash(%s *self)", self.prefix, self.objecttype)
+        Output("static long %s_hash(%s *self)", self.prefix, self.objecttype)
         OutLbrace()
-        Output("return (int)self->ob_itself;")
+        Output("return (long)self->ob_itself;")
         OutRbrace()
 
     def output_tp_newBody(self):

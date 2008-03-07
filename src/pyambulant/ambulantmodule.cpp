@@ -384,9 +384,9 @@ static int node_contextObj_compare(node_contextObject *self, node_contextObject 
 
 #define node_contextObj_repr NULL
 
-static int node_contextObj_hash(node_contextObject *self)
+static long node_contextObj_hash(node_contextObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int node_contextObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -1252,9 +1252,9 @@ static int nodeObj_compare(nodeObject *self, nodeObject *other)
 
 #define nodeObj_repr NULL
 
-static int nodeObj_hash(nodeObject *self)
+static long nodeObj_hash(nodeObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int nodeObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -1483,9 +1483,9 @@ static int node_factoryObj_compare(node_factoryObject *self, node_factoryObject 
 
 #define node_factoryObj_repr NULL
 
-static int node_factoryObj_hash(node_factoryObject *self)
+static long node_factoryObj_hash(node_factoryObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int node_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -1948,9 +1948,9 @@ static int documentObj_compare(documentObject *self, documentObject *other)
 
 #define documentObj_repr NULL
 
-static int documentObj_hash(documentObject *self)
+static long documentObj_hash(documentObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int documentObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -2124,9 +2124,9 @@ static int eventObj_compare(eventObject *self, eventObject *other)
 
 #define eventObj_repr NULL
 
-static int eventObj_hash(eventObject *self)
+static long eventObj_hash(eventObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int eventObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -2388,9 +2388,9 @@ static int event_processorObj_compare(event_processorObject *self, event_process
 
 #define event_processorObj_repr NULL
 
-static int event_processorObj_hash(event_processorObject *self)
+static long event_processorObj_hash(event_processorObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int event_processorObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -2564,9 +2564,9 @@ static int parser_factoryObj_compare(parser_factoryObject *self, parser_factoryO
 
 #define parser_factoryObj_repr NULL
 
-static int parser_factoryObj_hash(parser_factoryObject *self)
+static long parser_factoryObj_hash(parser_factoryObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int parser_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -2742,9 +2742,9 @@ static int global_parser_factoryObj_compare(global_parser_factoryObject *self, g
 
 #define global_parser_factoryObj_repr NULL
 
-static int global_parser_factoryObj_hash(global_parser_factoryObject *self)
+static long global_parser_factoryObj_hash(global_parser_factoryObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int global_parser_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -2926,9 +2926,9 @@ static int xml_parserObj_compare(xml_parserObject *self, xml_parserObject *other
 
 #define xml_parserObj_repr NULL
 
-static int xml_parserObj_hash(xml_parserObject *self)
+static long xml_parserObj_hash(xml_parserObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int xml_parserObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -3104,9 +3104,9 @@ static int system_embedderObj_compare(system_embedderObject *self, system_embedd
 
 #define system_embedderObj_repr NULL
 
-static int system_embedderObj_hash(system_embedderObject *self)
+static long system_embedderObj_hash(system_embedderObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int system_embedderObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -3280,9 +3280,9 @@ static int timer_eventsObj_compare(timer_eventsObject *self, timer_eventsObject 
 
 #define timer_eventsObj_repr NULL
 
-static int timer_eventsObj_hash(timer_eventsObject *self)
+static long timer_eventsObj_hash(timer_eventsObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int timer_eventsObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -3471,9 +3471,9 @@ static int timerObj_compare(timerObject *self, timerObject *other)
 
 #define timerObj_repr NULL
 
-static int timerObj_hash(timerObject *self)
+static long timerObj_hash(timerObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int timerObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -3805,9 +3805,9 @@ static int timer_controlObj_compare(timer_controlObject *self, timer_controlObje
 
 #define timer_controlObj_repr NULL
 
-static int timer_controlObj_hash(timer_controlObject *self)
+static long timer_controlObj_hash(timer_controlObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int timer_controlObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -4154,9 +4154,9 @@ static int timer_control_implObj_compare(timer_control_implObject *self, timer_c
 
 #define timer_control_implObj_repr NULL
 
-static int timer_control_implObj_hash(timer_control_implObject *self)
+static long timer_control_implObj_hash(timer_control_implObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int timer_control_implObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -4315,9 +4315,9 @@ static int transition_infoObj_compare(transition_infoObject *self, transition_in
 
 #define transition_infoObj_repr NULL
 
-static int transition_infoObj_hash(transition_infoObject *self)
+static long transition_infoObj_hash(transition_infoObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int transition_infoObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -4585,9 +4585,9 @@ static int embedderObj_compare(embedderObject *self, embedderObject *other)
 
 #define embedderObj_repr NULL
 
-static int embedderObj_hash(embedderObject *self)
+static long embedderObj_hash(embedderObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int embedderObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -5043,9 +5043,9 @@ static int factoriesObj_compare(factoriesObject *self, factoriesObject *other)
 
 #define factoriesObj_repr NULL
 
-static int factoriesObj_hash(factoriesObject *self)
+static long factoriesObj_hash(factoriesObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int factoriesObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -5254,9 +5254,9 @@ static int gui_screenObj_compare(gui_screenObject *self, gui_screenObject *other
 
 #define gui_screenObj_repr NULL
 
-static int gui_screenObj_hash(gui_screenObject *self)
+static long gui_screenObj_hash(gui_screenObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int gui_screenObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -5864,9 +5864,9 @@ static int gui_playerObj_compare(gui_playerObject *self, gui_playerObject *other
 
 #define gui_playerObj_repr NULL
 
-static int gui_playerObj_hash(gui_playerObject *self)
+static long gui_playerObj_hash(gui_playerObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int gui_playerObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -6067,9 +6067,9 @@ static int alignmentObj_compare(alignmentObject *self, alignmentObject *other)
 
 #define alignmentObj_repr NULL
 
-static int alignmentObj_hash(alignmentObject *self)
+static long alignmentObj_hash(alignmentObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int alignmentObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -6243,9 +6243,9 @@ static int animation_notificationObj_compare(animation_notificationObject *self,
 
 #define animation_notificationObj_repr NULL
 
-static int animation_notificationObj_hash(animation_notificationObject *self)
+static long animation_notificationObj_hash(animation_notificationObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int animation_notificationObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -6453,9 +6453,9 @@ static int gui_windowObj_compare(gui_windowObject *self, gui_windowObject *other
 
 #define gui_windowObj_repr NULL
 
-static int gui_windowObj_hash(gui_windowObject *self)
+static long gui_windowObj_hash(gui_windowObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int gui_windowObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -6671,9 +6671,9 @@ static int gui_eventsObj_compare(gui_eventsObject *self, gui_eventsObject *other
 
 #define gui_eventsObj_repr NULL
 
-static int gui_eventsObj_hash(gui_eventsObject *self)
+static long gui_eventsObj_hash(gui_eventsObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int gui_eventsObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -6915,9 +6915,9 @@ static int rendererObj_compare(rendererObject *self, rendererObject *other)
 
 #define rendererObj_repr NULL
 
-static int rendererObj_hash(rendererObject *self)
+static long rendererObj_hash(rendererObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int rendererObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -7125,9 +7125,9 @@ static int bgrendererObj_compare(bgrendererObject *self, bgrendererObject *other
 
 #define bgrendererObj_repr NULL
 
-static int bgrendererObj_hash(bgrendererObject *self)
+static long bgrendererObj_hash(bgrendererObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int bgrendererObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -7624,9 +7624,9 @@ static int surfaceObj_compare(surfaceObject *self, surfaceObject *other)
 
 #define surfaceObj_repr NULL
 
-static int surfaceObj_hash(surfaceObject *self)
+static long surfaceObj_hash(surfaceObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int surfaceObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -7861,9 +7861,9 @@ static int window_factoryObj_compare(window_factoryObject *self, window_factoryO
 
 #define window_factoryObj_repr NULL
 
-static int window_factoryObj_hash(window_factoryObject *self)
+static long window_factoryObj_hash(window_factoryObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int window_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -8078,9 +8078,9 @@ static int surface_templateObj_compare(surface_templateObject *self, surface_tem
 
 #define surface_templateObj_repr NULL
 
-static int surface_templateObj_hash(surface_templateObject *self)
+static long surface_templateObj_hash(surface_templateObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int surface_templateObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -8262,9 +8262,9 @@ static int surface_factoryObj_compare(surface_factoryObject *self, surface_facto
 
 #define surface_factoryObj_repr NULL
 
-static int surface_factoryObj_hash(surface_factoryObject *self)
+static long surface_factoryObj_hash(surface_factoryObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int surface_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -8491,9 +8491,9 @@ static int layout_managerObj_compare(layout_managerObject *self, layout_managerO
 
 #define layout_managerObj_repr NULL
 
-static int layout_managerObj_hash(layout_managerObject *self)
+static long layout_managerObj_hash(layout_managerObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int layout_managerObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -8818,9 +8818,9 @@ static int playableObj_compare(playableObject *self, playableObject *other)
 
 #define playableObj_repr NULL
 
-static int playableObj_hash(playableObject *self)
+static long playableObj_hash(playableObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int playableObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -9142,9 +9142,9 @@ static int playable_notificationObj_compare(playable_notificationObject *self, p
 
 #define playable_notificationObj_repr NULL
 
-static int playable_notificationObj_hash(playable_notificationObject *self)
+static long playable_notificationObj_hash(playable_notificationObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int playable_notificationObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -9358,9 +9358,9 @@ static int playable_factoryObj_compare(playable_factoryObject *self, playable_fa
 
 #define playable_factoryObj_repr NULL
 
-static int playable_factoryObj_hash(playable_factoryObject *self)
+static long playable_factoryObj_hash(playable_factoryObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int playable_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -9536,9 +9536,9 @@ static int global_playable_factoryObj_compare(global_playable_factoryObject *sel
 
 #define global_playable_factoryObj_repr NULL
 
-static int global_playable_factoryObj_hash(global_playable_factoryObject *self)
+static long global_playable_factoryObj_hash(global_playable_factoryObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int global_playable_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -9795,9 +9795,9 @@ static int player_feedbackObj_compare(player_feedbackObject *self, player_feedba
 
 #define player_feedbackObj_repr NULL
 
-static int player_feedbackObj_hash(player_feedbackObject *self)
+static long player_feedbackObj_hash(player_feedbackObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int player_feedbackObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -10236,9 +10236,9 @@ static int playerObj_compare(playerObject *self, playerObject *other)
 
 #define playerObj_repr NULL
 
-static int playerObj_hash(playerObject *self)
+static long playerObj_hash(playerObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int playerObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -10686,9 +10686,9 @@ static int region_infoObj_compare(region_infoObject *self, region_infoObject *ot
 
 #define region_infoObj_repr NULL
 
-static int region_infoObj_hash(region_infoObject *self)
+static long region_infoObj_hash(region_infoObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int region_infoObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -11081,9 +11081,9 @@ static int animation_destinationObj_compare(animation_destinationObject *self, a
 
 #define animation_destinationObj_repr NULL
 
-static int animation_destinationObj_hash(animation_destinationObject *self)
+static long animation_destinationObj_hash(animation_destinationObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int animation_destinationObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -11453,9 +11453,9 @@ static int state_test_methodsObj_compare(state_test_methodsObject *self, state_t
 
 #define state_test_methodsObj_repr NULL
 
-static int state_test_methodsObj_hash(state_test_methodsObject *self)
+static long state_test_methodsObj_hash(state_test_methodsObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int state_test_methodsObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -11762,9 +11762,9 @@ static int state_componentObj_compare(state_componentObject *self, state_compone
 
 #define state_componentObj_repr NULL
 
-static int state_componentObj_hash(state_componentObject *self)
+static long state_componentObj_hash(state_componentObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int state_componentObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -11940,9 +11940,9 @@ static int state_component_factoryObj_compare(state_component_factoryObject *sel
 
 #define state_component_factoryObj_repr NULL
 
-static int state_component_factoryObj_hash(state_component_factoryObject *self)
+static long state_component_factoryObj_hash(state_component_factoryObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int state_component_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -12118,9 +12118,9 @@ static int global_state_component_factoryObj_compare(global_state_component_fact
 
 #define global_state_component_factoryObj_repr NULL
 
-static int global_state_component_factoryObj_hash(global_state_component_factoryObject *self)
+static long global_state_component_factoryObj_hash(global_state_component_factoryObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int global_state_component_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -12328,9 +12328,9 @@ static int none_windowObj_compare(none_windowObject *self, none_windowObject *ot
 
 #define none_windowObj_repr NULL
 
-static int none_windowObj_hash(none_windowObject *self)
+static long none_windowObj_hash(none_windowObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int none_windowObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -12549,9 +12549,9 @@ static int none_window_factoryObj_compare(none_window_factoryObject *self, none_
 
 #define none_window_factoryObj_repr NULL
 
-static int none_window_factoryObj_hash(none_window_factoryObject *self)
+static long none_window_factoryObj_hash(none_window_factoryObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int none_window_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -12800,9 +12800,9 @@ static int datasourceObj_compare(datasourceObject *self, datasourceObject *other
 
 #define datasourceObj_repr NULL
 
-static int datasourceObj_hash(datasourceObject *self)
+static long datasourceObj_hash(datasourceObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int datasourceObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -13011,9 +13011,9 @@ static int pkt_datasourceObj_compare(pkt_datasourceObject *self, pkt_datasourceO
 
 #define pkt_datasourceObj_repr NULL
 
-static int pkt_datasourceObj_hash(pkt_datasourceObject *self)
+static long pkt_datasourceObj_hash(pkt_datasourceObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int pkt_datasourceObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -13172,9 +13172,9 @@ static int audio_datasourceObj_compare(audio_datasourceObject *self, audio_datas
 
 #define audio_datasourceObj_repr NULL
 
-static int audio_datasourceObj_hash(audio_datasourceObject *self)
+static long audio_datasourceObj_hash(audio_datasourceObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int audio_datasourceObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -13333,9 +13333,9 @@ static int pkt_audio_datasourceObj_compare(pkt_audio_datasourceObject *self, pkt
 
 #define pkt_audio_datasourceObj_repr NULL
 
-static int pkt_audio_datasourceObj_hash(pkt_audio_datasourceObject *self)
+static long pkt_audio_datasourceObj_hash(pkt_audio_datasourceObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int pkt_audio_datasourceObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -13494,9 +13494,9 @@ static int video_datasourceObj_compare(video_datasourceObject *self, video_datas
 
 #define video_datasourceObj_repr NULL
 
-static int video_datasourceObj_hash(video_datasourceObject *self)
+static long video_datasourceObj_hash(video_datasourceObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int video_datasourceObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -13846,9 +13846,9 @@ static int datasource_factoryObj_compare(datasource_factoryObject *self, datasou
 
 #define datasource_factoryObj_repr NULL
 
-static int datasource_factoryObj_hash(datasource_factoryObject *self)
+static long datasource_factoryObj_hash(datasource_factoryObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int datasource_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -14032,9 +14032,9 @@ static int raw_datasource_factoryObj_compare(raw_datasource_factoryObject *self,
 
 #define raw_datasource_factoryObj_repr NULL
 
-static int raw_datasource_factoryObj_hash(raw_datasource_factoryObject *self)
+static long raw_datasource_factoryObj_hash(raw_datasource_factoryObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int raw_datasource_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -14219,9 +14219,9 @@ static int audio_datasource_factoryObj_compare(audio_datasource_factoryObject *s
 
 #define audio_datasource_factoryObj_repr NULL
 
-static int audio_datasource_factoryObj_hash(audio_datasource_factoryObject *self)
+static long audio_datasource_factoryObj_hash(audio_datasource_factoryObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int audio_datasource_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -14406,9 +14406,9 @@ static int pkt_audio_datasource_factoryObj_compare(pkt_audio_datasource_factoryO
 
 #define pkt_audio_datasource_factoryObj_repr NULL
 
-static int pkt_audio_datasource_factoryObj_hash(pkt_audio_datasource_factoryObject *self)
+static long pkt_audio_datasource_factoryObj_hash(pkt_audio_datasource_factoryObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int pkt_audio_datasource_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -14590,9 +14590,9 @@ static int video_datasource_factoryObj_compare(video_datasource_factoryObject *s
 
 #define video_datasource_factoryObj_repr NULL
 
-static int video_datasource_factoryObj_hash(video_datasource_factoryObject *self)
+static long video_datasource_factoryObj_hash(video_datasource_factoryObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int video_datasource_factoryObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -14774,9 +14774,9 @@ static int audio_parser_finderObj_compare(audio_parser_finderObject *self, audio
 
 #define audio_parser_finderObj_repr NULL
 
-static int audio_parser_finderObj_hash(audio_parser_finderObject *self)
+static long audio_parser_finderObj_hash(audio_parser_finderObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int audio_parser_finderObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -14955,9 +14955,9 @@ static int audio_filter_finderObj_compare(audio_filter_finderObject *self, audio
 
 #define audio_filter_finderObj_repr NULL
 
-static int audio_filter_finderObj_hash(audio_filter_finderObject *self)
+static long audio_filter_finderObj_hash(audio_filter_finderObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int audio_filter_finderObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
@@ -15136,9 +15136,9 @@ static int audio_decoder_finderObj_compare(audio_decoder_finderObject *self, aud
 
 #define audio_decoder_finderObj_repr NULL
 
-static int audio_decoder_finderObj_hash(audio_decoder_finderObject *self)
+static long audio_decoder_finderObj_hash(audio_decoder_finderObject *self)
 {
-	return (int)self->ob_itself;
+	return (long)self->ob_itself;
 }
 static int audio_decoder_finderObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
