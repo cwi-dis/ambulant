@@ -1,3 +1,0 @@
-#!/bin/sh
-# postinst - actions to perform after installation
-rm -f /usr/share/ambulant/DemoPresentation/NYC-MMS.smil
