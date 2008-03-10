@@ -506,9 +506,14 @@ demux_video_datasource::data_avail(timestamp_t pts, const uint8_t *inbuf, int sz
 	if(sz > 0) {
 		//m_frame_nr++;
 		//write_data(m_frame_nr, (char*) inbuf, sz);
-		char* frame_data = (char*) malloc(sz+1);
+		// Of all obfuscated interfaces in ffmpeg this is probably the worst: all data passed to avcodec_decode_video
+		// (and possibly others) needs to be padded out with 8 (currently) zero bytes.
+		char* frame_data = (char*) malloc(sz+FF_INPUT_BUFFER_PADDING_SIZE);
 		assert(frame_data);
 		memcpy(frame_data, inbuf, sz);
+#if FF_INPUT_BUFFER_PADDING_SIZE
+		memset(frame_data+sz, 0, FF_INPUT_BUFFER_PADDING_SIZE);
+#endif
 		video_frame vframe;
 		vframe.data = frame_data;
 		vframe.size = sz;

@@ -10,8 +10,9 @@
 		040DE08F0CD533A300A68D91 /* libambulant_sdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B290958C23900C194EE /* libambulant_sdl.a */; };
 		042AF3D4095AFF780003E706 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D5B49B7048680CD000E48DA /* Info.plist */; };
 		045D0B350958C26800C194EE /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B340958C26800C194EE /* QuickTime.framework */; };
-		045D0B5C0958C36B00C194EE /* libintl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B5B0958C36B00C194EE /* libintl.a */; };
 		045D0B930958C71E00C194EE /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B920958C71E00C194EE /* libexpat.a */; };
+		0460218A0D819F3400FC29CA /* libintl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B5B0958C36B00C194EE /* libintl.a */; };
+		0460218D0D81A0BD00FC29CA /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0460218C0D81A0BD00FC29CA /* libiconv.dylib */; };
 		04797E9A0D7D5E6B00B4EE4C /* np_entry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04797E8F0D7D5E6B00B4EE4C /* np_entry.cpp */; };
 		04797E9B0D7D5E6B00B4EE4C /* npn_gate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04797E900D7D5E6B00B4EE4C /* npn_gate.cpp */; };
 		04797E9C0D7D5E6B00B4EE4C /* npp_gate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04797E910D7D5E6B00B4EE4C /* npp_gate.cpp */; };
@@ -63,6 +64,7 @@
 		045D0B7E0958C53F00C194EE /* mainloop.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mainloop.cpp; path = ../player_macosx/mainloop.cpp; sourceTree = SOURCE_ROOT; };
 		045D0B7F0958C53F00C194EE /* mainloop.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mainloop.h; path = ../player_macosx/mainloop.h; sourceTree = SOURCE_ROOT; };
 		045D0B920958C71E00C194EE /* libexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libexpat.a; path = "third_party_packages/expat-unix/lib/libexpat.a"; sourceTree = PREBUILT_AMBULANT_ROOT; };
+		0460218C0D81A0BD00FC29CA /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /usr/lib/libiconv.dylib; sourceTree = "<absolute>"; };
 		04797E8F0D7D5E6B00B4EE4C /* np_entry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = np_entry.cpp; sourceTree = "<group>"; };
 		04797E900D7D5E6B00B4EE4C /* npn_gate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = npn_gate.cpp; sourceTree = "<group>"; };
 		04797E910D7D5E6B00B4EE4C /* npp_gate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = npp_gate.cpp; sourceTree = "<group>"; };
@@ -111,7 +113,6 @@
 				8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */,
 				049775AC0958AC7600A7690F /* WebKit.framework in Frameworks */,
 				045D0B350958C26800C194EE /* QuickTime.framework in Frameworks */,
-				045D0B5C0958C36B00C194EE /* libintl.a in Frameworks */,
 				045D0B930958C71E00C194EE /* libexpat.a in Frameworks */,
 				0499E8970959B22200A7FDF8 /* libavcodec.a in Frameworks */,
 				0499E8990959B24100A7FDF8 /* libavformat.a in Frameworks */,
@@ -128,6 +129,8 @@
 				04C0A4610CD2942F00CEDCA9 /* libambulant.dylib in Frameworks */,
 				04C0A4620CD2942F00CEDCA9 /* libambulant_live.dylib in Frameworks */,
 				040DE08F0CD533A300A68D91 /* libambulant_sdl.a in Frameworks */,
+				0460218A0D819F3400FC29CA /* libintl.a in Frameworks */,
+				0460218D0D81A0BD00FC29CA /* libiconv.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -181,6 +184,7 @@
 			children = (
 				045D0B570958C26F00C194EE /* Ambulant */,
 				045D0B5B0958C36B00C194EE /* libintl.a */,
+				0460218C0D81A0BD00FC29CA /* libiconv.dylib */,
 				045D0B920958C71E00C194EE /* libexpat.a */,
 				0499E8960959B22200A7FDF8 /* libavcodec.a */,
 				0499E8980959B24100A7FDF8 /* libavformat.a */,
