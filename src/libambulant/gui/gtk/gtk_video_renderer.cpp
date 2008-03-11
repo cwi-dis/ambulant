@@ -179,6 +179,7 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 			GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
 			gdk_pixbuf_render_to_drawable(m_image, GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, 0, 0, L, T, W, H, GDK_RGB_DITHER_NONE, 0, 0);
 			g_object_unref (G_OBJECT (gc));			
+			g_object_unref (G_OBJECT (m_image));			
 		}
 	}
 	m_lock.leave();

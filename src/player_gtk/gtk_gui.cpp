@@ -941,6 +941,7 @@ gtk_gui::do_internal_message(gtk_message_event* e) {
 	}
 #endif/*LOCK_MESSAGE*/
 	free(msg);
+	delete e;
 }
 
 void

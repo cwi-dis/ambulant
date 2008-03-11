@@ -874,6 +874,7 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 		}
 		if (fmt.width == 0) fmt.width = m_con->width;
 		if (fmt.height == 0) fmt.width = m_con->height;
+		m_con_owned = true;
 		return true;
 	} else if (fmt.name == "live") {
 		const char* codec_name = (char*) fmt.parameters;
@@ -897,6 +898,7 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 		m_con->codec_type = CODEC_TYPE_VIDEO;
 		// We doe a fmt update here to sure that we have the correct values.
 		_need_fmt_uptodate();
+		m_con_owned = true;
 		return true;
 	}
 	// Could add support here for raw mp3, etc.
