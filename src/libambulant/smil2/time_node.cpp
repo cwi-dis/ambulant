@@ -773,10 +773,20 @@ void time_node::start_statecommand(time_type offset) {
 			return;
 		}
 		sc->set_value(ref, value);
+#if 0
 		// XXXJACK Raising the state_change_event here is also a bit of a hack
-		time_node *root = get_root();
+		time_node *tnroot = get_root();
+		assert(tnroot);
+		node *root = tnroot->dom_node();
 		assert(root);
-		root->raise_state_change(std::pair<qtime_type, std::string>(timestamp, ref));
+		node *head = root->get_first_child("head");
+		if (head) {
+			node *state = root->get_first_child("state");
+			if (state) {
+				state->raise_state_change(std::pair<qtime_type, std::string>(timestamp, ref));
+			}
+		}
+#endif
 	} else if (tag == "newvalue") {
 		const char *ref = m_node->get_attribute("ref");
 		const char *where = m_node->get_attribute("where");
@@ -791,10 +801,20 @@ void time_node::start_statecommand(time_type offset) {
 			return;
 		}
 		sc->new_value(ref, where, name, value);
+#if 0
 		// XXXJACK Raising the state_change_event here is also a bit of a hack
-		time_node *root = get_root();
+		time_node *tnroot = get_root();
+		assert(tnroot);
+		node *root = tnroot->dom_node();
 		assert(root);
-		root->raise_state_change(std::pair<qtime_type, std::string>(timestamp, name));
+		node *head = root->get_first_child("head");
+		if (head) {
+			node *state = root->get_first_child("state");
+			if (state) {
+				state->raise_state_change(std::pair<qtime_type, std::string>(timestamp, name));
+			}
+		}
+#endif
 	} else if (tag == "delvalue") {
 		const char *ref = m_node->get_attribute("ref");
 		if (!ref) {

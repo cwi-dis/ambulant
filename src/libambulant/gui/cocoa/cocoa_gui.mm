@@ -98,7 +98,7 @@ cocoa_window::redraw_now()
 {
 	AmbulantView *my_view = (AmbulantView *)m_view;
 	[my_view performSelectorOnMainThread: @selector(syncDisplayIfNeeded:) 
-		withObject: nil waitUntilDone: YES];
+		withObject: nil waitUntilDone: NO];
 }
 
 void

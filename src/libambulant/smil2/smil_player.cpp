@@ -146,6 +146,18 @@ void smil_player::build_timegraph() {
 		delete m_scheduler;
 	}
 	timegraph tg(this, m_doc, schema::get_instance());
+#ifdef WITH_SMIL30
+	// If there were any stateChange() events the timegraph builder has collected them.
+	// We pass them on to the state engine, so it can fire the required events.
+	if (m_state_engine) {
+		const std::set<std::string>& state_change_args = tg.get_state_change_args();
+		std::set<std::string>::const_iterator i;
+		for (i=state_change_args.begin(); i != state_change_args.end(); i++) {
+			/*AM_DBG*/ lib::logger::get_logger()->debug("registering interest in stateChange(%s) with state engine", (*i).c_str());
+			m_state_engine->want_state_change((*i).c_str(), this);
+		}
+	}
+#endif
 	m_root = tg.detach_root();
 	m_dom2tn = tg.detach_dom2tn();
 	m_scheduler = new scheduler(m_root, m_timer);
@@ -726,6 +738,22 @@ void smil_player::on_char(int ch) {
 	schedule_event(cb, 0, ep_high);
 	m_scheduler->exec();
 }
+
+#ifdef WITH_SMIL30
+// UI notification for a char event.
+void smil_player::on_state_change(const char *ref) {
+	typedef std::pair<q_smil_time, std::string> scarg;
+	typedef scalar_arg_callback_event<time_node, scarg> state_change_cb;
+	time_node::value_type root_time = m_root->get_simple_time();
+	m_scheduler->update_horizon(root_time);
+	q_smil_time timestamp(m_root, root_time);
+	AM_DBG m_logger->debug("smil_player::state_change('%s'): at %ld", ref, timestamp.second());
+	scarg ak(timestamp, ref);
+	state_change_cb *cb = new state_change_cb(m_root, &time_node::raise_state_change, ak);
+	schedule_event(cb, 0, ep_high);
+	m_scheduler->exec();
+}
+#endif // WITH_SMIL30
 
 void smil_player::on_focus_advance() {
 	AM_DBG m_logger->debug("smil_player::on_focus_advance");

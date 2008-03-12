@@ -28,6 +28,9 @@
 
 #include "ambulant/common/factory.h"
 #include "ambulant/config/config.h"
+#ifdef WITH_SMIL30
+#include "ambulant/common/state.h"
+#endif // WITH_SMIL30
 
 namespace ambulant {
 
@@ -87,7 +90,11 @@ class player_feedback {
 /// as storing the document and all factories, and which contains
 /// convenience methods to call most common player methods. But some
 /// methods, such as set_feedback(), are not available in gui_player.
-class player {
+class player
+#ifdef WITH_SMIL30
+	: public state_change_callback
+#endif // WITH_SMIL30
+{
   public:
 	virtual ~player() {};
 	
@@ -129,6 +136,11 @@ class player {
 
 	/// Call this when the user has pressed a key.
 	virtual void on_char(int ch) {}
+
+#ifdef WITH_SMIL30
+	/// Call this when a state variable has changed.
+	virtual void on_state_change(const char *ref) {}
+#endif
 	
 	/// Call this to advance the focus.
 	virtual void on_focus_advance() {}

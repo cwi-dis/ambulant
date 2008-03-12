@@ -105,7 +105,7 @@ bool time_attr_parser::parse_statechange(const std::string& s, sync_value_struct
 		m_logger->warn(gettext("Error in SMIL timing info in document"));
 		return false;
 	}	
-	AM_DBG m_logger->debug("%s: %s += [%s] (for state-variable %d)", 
+	/*AM_DBG*/ m_logger->debug("%s: %s += [%s] (for state-variable %d)", 
 		m_node->get_sig().c_str(), m_attrname, repr(svs).c_str(), svs.sparam.c_str());
 	return true;
 }

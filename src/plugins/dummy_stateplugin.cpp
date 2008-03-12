@@ -59,6 +59,10 @@ class dummy_state_component : public common::state_component {
     
     /// Calculate a string expression
     std::string string_expression(const char *expr);
+
+	/// Register the fact that we want stateChange callbacks for a given variable
+	void want_state_change(const char *ref, common::state_change_callback *cb);
+    
 };
 
 // -------------------
@@ -119,6 +123,12 @@ dummy_state_component::string_expression(const char *expr)
 {
 	lib::logger::get_logger()->trace("dummy_state_component::string_expression(%s) -> %s", expr, expr);
 	return std::string(expr);
+}
+
+void
+dummy_state_component::want_state_change(const char *ref, common::state_change_callback *cb)
+{
+	lib::logger::get_logger()->trace("dummy_state_component::want_state_change(%s)", ref);
 }
 
 // -------------------

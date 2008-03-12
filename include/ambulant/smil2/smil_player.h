@@ -100,6 +100,7 @@ class smil_player : public common::player, /* public common::player_feedback,*/ 
 	// raw notifications from the UI
 	
 	virtual void on_char(int ch);
+	virtual void on_state_change(const char *ref);
 	virtual void on_focus_advance();
 	virtual void on_focus_activate();
 	

@@ -65,10 +65,16 @@ class xpath_state_component : public common::state_component {
 	
 	/// Get at the state_test_methods structure
 	common::state_test_methods *get_state_test_methods() const { return m_state_test_methods; }
+	
+	/// Register interest in stateChange events
+	void want_state_change(const char *ref, common::state_change_callback *cb);
   private:
+  	void _check_state_change(xmlNodePtr *changed);
+  	
   	xmlDocPtr m_state;
   	xmlXPathContextPtr m_context;
 	common::state_test_methods *m_state_test_methods;
+	std::vector<std::pair<std::string, common::state_change_callback* > > m_state_change_callbacks;
 };
 
 // -------------------
@@ -402,6 +408,7 @@ xpath_state_component::set_value(const char *var, const char *expr)
 	xmlNodePtr nodeptr = *nodeset->nodeTab;
 	xmlNodeSetContent(nodeptr, result_str);
 	xmlFree(result_str);
+	_check_state_change(nodeptr);
 }
 
 void
@@ -461,6 +468,7 @@ xpath_state_component::new_value(const char *ref, const char *where, const char 
 		xmlFreeNode(newnodeptr);
 		return;
 	}
+	_check_state_change(newnodeptr); // XXX Or refnodeptr? both?
 }
 	
 void
@@ -552,6 +560,36 @@ xpath_state_component::string_expression(const char *expr)
 	std::string rv((char *)result_str);
 	xmlFree(result_str);
 	return rv;
+}
+
+void
+xpath_state_component::want_state_change(const char *ref, common::state_change_callback *cb)
+{
+	lib::logger::get_logger()->trace("xpath_state_component::want_state_change(%s)", ref);
+	std::pair<std::string, common::state_change_callback*> item(ref, cb);
+	m_state_change_callbacks.push_back(item);
+}
+
+void
+xpath_state_component::_check_state_change(xmlNodePtr *changed)
+{
+	xxx::iterator i;
+	for (i=m_state_change_callbacks.begin(); i != m_state_change_callbacks.end(); i++) {
+		std::string& ref = (*i).first;
+		xmlXPathObjectPtr result = xmlXPathEvalExpression(BAD_CAST ref, m_context);
+		if (result != NULL && result->type == XPATH_NODESET) {
+			xmlNodeSetPtr nodeset = result->nodesetval;
+			if (nodeset) {
+				int  j;
+				for (j=0; j<nodeset.nodeNr; j++) {
+					if (nodeset.nodeTab[j] == changed) {
+						/*AM_DBG*/ lib::logger::get_logger()->debug("check_state_change: should raise stateChange(%s)", ref.c_str());
+						break;
+					}
+				}
+			}
+		}
+	}
 }
 
 // -------------------

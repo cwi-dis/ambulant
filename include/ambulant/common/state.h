@@ -74,6 +74,17 @@ class state_test_methods {
 	virtual int smil_screen_width() const = 0;
 };
 
+/// API that allows callbacks on changes in state.
+/// Note: there is currently no refcounting on these, and they're passed to state_component's.
+/// The creator of state_component is required to make sure that objects of this type remain
+/// alive longer than the state_component instance that has a reference.
+class state_change_callback {
+  public:
+    virtual ~state_change_callback() {}
+	
+	virtual void on_state_change(const char *ref) = 0;
+};
+
 /// API exported by state components, and used by Ambulant to implement
 /// SMIL state.
 class state_component {
@@ -103,6 +114,9 @@ class state_component {
     
     /// Calculate a string expression
     virtual std::string string_expression(const char *expr) = 0;
+	
+	/// Register the fact that we want stateChange callbacks for a given variable
+	virtual void want_state_change(const char *ref, state_change_callback *cb) = 0;
 };
 
 class state_component_factory {
