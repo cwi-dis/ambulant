@@ -52,10 +52,6 @@ bool time_attr_parser::parse_sync(const std::string& s, sync_value_struct& svs) 
 		return parse_wallclock(s, svs);
 	if(starts_with(s, "accesskey"))
 		return parse_accesskey(s, svs);
-#ifdef WITH_SMIL30
-	if(starts_with(s, "stateChange"))
-		return parse_statechange(s, svs);
-#endif // WITH_SMIL30
 	if(s == "indefinite") {
 		svs.type = sv_indefinite;
 		svs.offset = time_type::indefinite();
@@ -105,7 +101,7 @@ bool time_attr_parser::parse_statechange(const std::string& s, sync_value_struct
 		m_logger->warn(gettext("Error in SMIL timing info in document"));
 		return false;
 	}	
-	/*AM_DBG*/ m_logger->debug("%s: %s += [%s] (for state-variable %d)", 
+	AM_DBG m_logger->debug("%s: %s += [%s] (for state-variable %d)", 
 		m_node->get_sig().c_str(), m_attrname, repr(svs).c_str(), svs.sparam.c_str());
 	return true;
 }
@@ -262,6 +258,10 @@ bool time_attr_parser::parse_nmtoken_offset(const std::string& s, sync_value_str
 		svs.base = nmtoken.substr(0, last_dot_ix);
 		event = nmtoken.substr(last_dot_ix+1);
 	}
+#ifdef WITH_SMIL30
+	if(starts_with(event, "stateChange"))
+		return parse_statechange(s, svs);
+#endif // WITH_SMIL30
 
 #ifdef CHECK_EVENT_NAMES
 	if(events.find(event) == events.end()) {

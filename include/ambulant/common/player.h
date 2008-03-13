@@ -30,6 +30,9 @@
 #include "ambulant/config/config.h"
 #ifdef WITH_SMIL30
 #include "ambulant/common/state.h"
+#else
+class state_change_callback {
+};
 #endif // WITH_SMIL30
 
 namespace ambulant {
@@ -90,10 +93,7 @@ class player_feedback {
 /// as storing the document and all factories, and which contains
 /// convenience methods to call most common player methods. But some
 /// methods, such as set_feedback(), are not available in gui_player.
-class player
-#ifdef WITH_SMIL30
-	: public state_change_callback
-#endif // WITH_SMIL30
+class player : public state_change_callback
 {
   public:
 	virtual ~player() {};

@@ -5486,6 +5486,7 @@ player::player(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "after_mousemove")) PyErr_Warn(PyExc_Warning, "player: missing attribute: after_mousemove");
 		if (!PyObject_HasAttrString(itself, "before_mousemove")) PyErr_Warn(PyExc_Warning, "player: missing attribute: before_mousemove");
 		if (!PyObject_HasAttrString(itself, "on_char")) PyErr_Warn(PyExc_Warning, "player: missing attribute: on_char");
+		if (!PyObject_HasAttrString(itself, "on_state_change")) PyErr_Warn(PyExc_Warning, "player: missing attribute: on_state_change");
 		if (!PyObject_HasAttrString(itself, "on_focus_advance")) PyErr_Warn(PyExc_Warning, "player: missing attribute: on_focus_advance");
 		if (!PyObject_HasAttrString(itself, "on_focus_activate")) PyErr_Warn(PyExc_Warning, "player: missing attribute: on_focus_activate");
 		if (!PyObject_HasAttrString(itself, "set_feedback")) PyErr_Warn(PyExc_Warning, "player: missing attribute: set_feedback");
@@ -5759,6 +5760,24 @@ void player::on_char(int ch)
 
 	Py_XDECREF(py_rv);
 	Py_XDECREF(py_ch);
+
+	PyGILState_Release(_GILState);
+}
+
+void player::on_state_change(const char* ref)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_ref = Py_BuildValue("s", ref);
+
+	PyObject *py_rv = PyObject_CallMethod(py_player, "on_state_change", "(O)", py_ref);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player::on_state_change() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_ref);
 
 	PyGILState_Release(_GILState);
 }
@@ -7044,6 +7063,49 @@ int state_test_methods::smil_screen_width() const
 	return _rv;
 }
 
+/* ------------------ Class state_change_callback ------------------- */
+
+state_change_callback::state_change_callback(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "on_state_change")) PyErr_Warn(PyExc_Warning, "state_change_callback: missing attribute: on_state_change");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_state_change_callback = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+state_change_callback::~state_change_callback()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_state_change_callback);
+	py_state_change_callback = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+void state_change_callback::on_state_change(const char* ref)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_ref = Py_BuildValue("s", ref);
+
+	PyObject *py_rv = PyObject_CallMethod(py_state_change_callback, "on_state_change", "(O)", py_ref);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during state_change_callback::on_state_change() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_ref);
+
+	PyGILState_Release(_GILState);
+}
+
 /* --------------------- Class state_component ---------------------- */
 
 state_component::state_component(PyObject *itself)
@@ -7059,6 +7121,7 @@ state_component::state_component(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "del_value")) PyErr_Warn(PyExc_Warning, "state_component: missing attribute: del_value");
 		if (!PyObject_HasAttrString(itself, "send")) PyErr_Warn(PyExc_Warning, "state_component: missing attribute: send");
 		if (!PyObject_HasAttrString(itself, "string_expression")) PyErr_Warn(PyExc_Warning, "state_component: missing attribute: string_expression");
+		if (!PyObject_HasAttrString(itself, "want_state_change")) PyErr_Warn(PyExc_Warning, "state_component: missing attribute: want_state_change");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -7244,6 +7307,26 @@ std::string state_component::string_expression(const char* expr)
 
 	PyGILState_Release(_GILState);
 	return _rv;
+}
+
+void state_component::want_state_change(const char* ref, ambulant::common::state_change_callback* cb)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_ref = Py_BuildValue("s", ref);
+	PyObject *py_cb = Py_BuildValue("O&", state_change_callbackObj_New, cb);
+
+	PyObject *py_rv = PyObject_CallMethod(py_state_component, "want_state_change", "(OO)", py_ref, py_cb);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during state_component::want_state_change() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_ref);
+	Py_XDECREF(py_cb);
+
+	PyGILState_Release(_GILState);
 }
 
 /* ----------------- Class state_component_factory ------------------ */

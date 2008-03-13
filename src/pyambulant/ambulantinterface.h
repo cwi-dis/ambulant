@@ -939,6 +939,7 @@ public:
 	int after_mousemove();
 	void before_mousemove(int cursor);
 	void on_char(int ch);
+	void on_state_change(const char* ref);
 	void on_focus_advance();
 	void on_focus_activate();
 	void set_feedback(ambulant::common::player_feedback* fb);
@@ -1084,6 +1085,27 @@ inline state_test_methods *Py_WrapAs_state_test_methods(PyObject *o)
 	return rv;
 }
 
+class state_change_callback : public cpppybridge, public ambulant::common::state_change_callback {
+public:
+	state_change_callback(PyObject *itself);
+	virtual ~state_change_callback();
+
+	void on_state_change(const char* ref);
+  private:
+	PyObject *py_state_change_callback;
+
+	friend PyObject *state_change_callbackObj_New(ambulant::common::state_change_callback *itself);
+};
+#define BGEN_BACK_SUPPORT_state_change_callback
+inline state_change_callback *Py_WrapAs_state_change_callback(PyObject *o)
+{
+	state_change_callback *rv = dynamic_cast<state_change_callback*>(pycppbridge_getwrapper(o));
+	if (rv) return rv;
+	rv = new state_change_callback(o);
+	pycppbridge_setwrapper(o, rv);
+	return rv;
+}
+
 class state_component : public cpppybridge, public ambulant::common::state_component {
 public:
 	state_component(PyObject *itself);
@@ -1097,6 +1119,7 @@ public:
 	void del_value(const char* ref);
 	void send(const ambulant::lib::node* submission);
 	std::string string_expression(const char* expr);
+	void want_state_change(const char* ref, ambulant::common::state_change_callback* cb);
   private:
 	PyObject *py_state_component;
 

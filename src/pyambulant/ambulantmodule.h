@@ -115,6 +115,9 @@ extern int animation_destinationObj_Convert(PyObject *v, ambulant::common::anima
 extern PyObject *state_test_methodsObj_New(ambulant::common::state_test_methods* itself);
 extern int state_test_methodsObj_Convert(PyObject *v, ambulant::common::state_test_methods* *p_itself);
 
+extern PyObject *state_change_callbackObj_New(ambulant::common::state_change_callback* itself);
+extern int state_change_callbackObj_Convert(PyObject *v, ambulant::common::state_change_callback* *p_itself);
+
 extern PyObject *state_componentObj_New(ambulant::common::state_component* itself);
 extern int state_componentObj_Convert(PyObject *v, ambulant::common::state_component* *p_itself);
 

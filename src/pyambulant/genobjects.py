@@ -90,6 +90,7 @@ OBJECTS=[
 	
 	"common/state.h",
 	("state_test_methods", "ambulant::common::state_test_methods", None),
+	("state_change_callback", "ambulant::common::state_change_callback", None),
 	("state_component", "ambulant::common::state_component", None),
 	("state_component_factory", "ambulant::common::state_component_factory", None),
 	("global_state_component_factory", "ambulant::common::global_state_component_factory", "state_component_factory"),

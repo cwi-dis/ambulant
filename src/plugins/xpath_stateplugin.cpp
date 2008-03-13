@@ -69,7 +69,7 @@ class xpath_state_component : public common::state_component {
 	/// Register interest in stateChange events
 	void want_state_change(const char *ref, common::state_change_callback *cb);
   private:
-  	void _check_state_change(xmlNodePtr *changed);
+  	void _check_state_change(xmlNodePtr changed);
   	
   	xmlDocPtr m_state;
   	xmlXPathContextPtr m_context;
@@ -571,19 +571,22 @@ xpath_state_component::want_state_change(const char *ref, common::state_change_c
 }
 
 void
-xpath_state_component::_check_state_change(xmlNodePtr *changed)
+xpath_state_component::_check_state_change(xmlNodePtr changed)
 {
-	xxx::iterator i;
+	std::vector<std::pair<std::string, common::state_change_callback* > >::iterator i;
 	for (i=m_state_change_callbacks.begin(); i != m_state_change_callbacks.end(); i++) {
 		std::string& ref = (*i).first;
-		xmlXPathObjectPtr result = xmlXPathEvalExpression(BAD_CAST ref, m_context);
+		xmlXPathObjectPtr result = xmlXPathEvalExpression(BAD_CAST ref.c_str(), m_context);
 		if (result != NULL && result->type == XPATH_NODESET) {
 			xmlNodeSetPtr nodeset = result->nodesetval;
 			if (nodeset) {
 				int  j;
-				for (j=0; j<nodeset.nodeNr; j++) {
-					if (nodeset.nodeTab[j] == changed) {
-						/*AM_DBG*/ lib::logger::get_logger()->debug("check_state_change: should raise stateChange(%s)", ref.c_str());
+				for (j=0; j<nodeset->nodeNr; j++) {
+					if (nodeset->nodeTab[j] == changed) {
+						AM_DBG lib::logger::get_logger()->debug("check_state_change: raising stateChange(%s)", ref.c_str());
+						common::state_change_callback *cb = (*i).second;
+						assert(cb);
+						cb->on_state_change(ref.c_str());
 						break;
 					}
 				}

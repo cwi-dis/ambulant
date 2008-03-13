@@ -10113,6 +10113,21 @@ static PyObject *playerObj_on_char(playerObject *_self, PyObject *_args)
 	return _res;
 }
 
+static PyObject *playerObj_on_state_change(playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char* ref;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &ref))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->on_state_change(ref);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyObject *playerObj_on_focus_advance(playerObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -10211,6 +10226,8 @@ static PyMethodDef playerObj_methods[] = {
 	 PyDoc_STR("(int cursor) -> None")},
 	{"on_char", (PyCFunction)playerObj_on_char, 1,
 	 PyDoc_STR("(int ch) -> None")},
+	{"on_state_change", (PyCFunction)playerObj_on_state_change, 1,
+	 PyDoc_STR("(char* ref) -> None")},
 	{"on_focus_advance", (PyCFunction)playerObj_on_focus_advance, 1,
 	 PyDoc_STR("() -> None")},
 	{"on_focus_activate", (PyCFunction)playerObj_on_focus_activate, 1,
@@ -11531,6 +11548,184 @@ PyTypeObject state_test_methods_Type = {
 /* --------------- End object type state_test_methods --------------- */
 
 
+/* --------------- Object type state_change_callback ---------------- */
+
+extern PyTypeObject state_change_callback_Type;
+
+inline bool state_change_callbackObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &state_change_callback_Type);
+}
+
+typedef struct state_change_callbackObject {
+	PyObject_HEAD
+	void *ob_dummy_wrapper; // Overlays bridge object storage
+	ambulant::common::state_change_callback* ob_itself;
+} state_change_callbackObject;
+
+PyObject *state_change_callbackObj_New(ambulant::common::state_change_callback* itself)
+{
+	state_change_callbackObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_state_change_callback
+	state_change_callback *encaps_itself = dynamic_cast<state_change_callback *>(itself);
+	if (encaps_itself && encaps_itself->py_state_change_callback)
+	{
+		Py_INCREF(encaps_itself->py_state_change_callback);
+		return encaps_itself->py_state_change_callback;
+	}
+#endif
+	it = PyObject_NEW(state_change_callbackObject, &state_change_callback_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_dummy_wrapper = NULL; // XXXX Should be done in base class
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int state_change_callbackObj_Convert(PyObject *v, ambulant::common::state_change_callback* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_state_change_callback
+	if (!state_change_callbackObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_state_change_callback(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!state_change_callbackObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "state_change_callback required");
+		return 0;
+	}
+	*p_itself = ((state_change_callbackObject *)v)->ob_itself;
+	return 1;
+}
+
+static void state_change_callbackObj_dealloc(state_change_callbackObject *self)
+{
+	pycppbridge_Type.tp_dealloc((PyObject *)self);
+}
+
+static PyObject *state_change_callbackObj_on_state_change(state_change_callbackObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char* ref;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &ref))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->on_state_change(ref);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef state_change_callbackObj_methods[] = {
+	{"on_state_change", (PyCFunction)state_change_callbackObj_on_state_change, 1,
+	 PyDoc_STR("(char* ref) -> None")},
+	{NULL, NULL, 0}
+};
+
+#define state_change_callbackObj_getsetlist NULL
+
+
+static int state_change_callbackObj_compare(state_change_callbackObject *self, state_change_callbackObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define state_change_callbackObj_repr NULL
+
+static long state_change_callbackObj_hash(state_change_callbackObject *self)
+{
+	return (long)self->ob_itself;
+}
+static int state_change_callbackObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::state_change_callback* itself;
+	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, state_change_callbackObj_Convert, &itself))
+	{
+		((state_change_callbackObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define state_change_callbackObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *state_change_callbackObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((state_change_callbackObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define state_change_callbackObj_tp_free PyObject_Del
+
+
+PyTypeObject state_change_callback_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.state_change_callback", /*tp_name*/
+	sizeof(state_change_callbackObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) state_change_callbackObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) state_change_callbackObj_compare, /*tp_compare*/
+	(reprfunc) state_change_callbackObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) state_change_callbackObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	state_change_callbackObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	state_change_callbackObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	state_change_callbackObj_tp_init, /* tp_init */
+	state_change_callbackObj_tp_alloc, /* tp_alloc */
+	state_change_callbackObj_tp_new, /* tp_new */
+	state_change_callbackObj_tp_free, /* tp_free */
+};
+
+/* ------------- End object type state_change_callback -------------- */
+
+
 /* ------------------ Object type state_component ------------------- */
 
 extern PyTypeObject state_component_Type;
@@ -11730,6 +11925,24 @@ static PyObject *state_componentObj_string_expression(state_componentObject *_se
 	return _res;
 }
 
+static PyObject *state_componentObj_want_state_change(state_componentObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char* ref;
+	ambulant::common::state_change_callback* cb;
+	if (!PyArg_ParseTuple(_args, "sO&",
+	                      &ref,
+	                      state_change_callbackObj_Convert, &cb))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->want_state_change(ref,
+	                                    cb);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyMethodDef state_componentObj_methods[] = {
 	{"register_state_test_methods", (PyCFunction)state_componentObj_register_state_test_methods, 1,
 	 PyDoc_STR("(ambulant::common::state_test_methods* stm) -> None")},
@@ -11747,6 +11960,8 @@ static PyMethodDef state_componentObj_methods[] = {
 	 PyDoc_STR("(ambulant::lib::node* submission) -> None")},
 	{"string_expression", (PyCFunction)state_componentObj_string_expression, 1,
 	 PyDoc_STR("(char* expr) -> (std::string _rv)")},
+	{"want_state_change", (PyCFunction)state_componentObj_want_state_change, 1,
+	 PyDoc_STR("(char* ref, ambulant::common::state_change_callback* cb) -> None")},
 	{NULL, NULL, 0}
 };
 
@@ -16471,6 +16686,11 @@ void initambulant(void)
 	if (PyType_Ready(&state_test_methods_Type) < 0) return;
 	Py_INCREF(&state_test_methods_Type);
 	PyModule_AddObject(m, "state_test_methods", (PyObject *)&state_test_methods_Type);
+	state_change_callback_Type.ob_type = &PyType_Type;
+	state_change_callback_Type.tp_base = &pycppbridge_Type;
+	if (PyType_Ready(&state_change_callback_Type) < 0) return;
+	Py_INCREF(&state_change_callback_Type);
+	PyModule_AddObject(m, "state_change_callback", (PyObject *)&state_change_callback_Type);
 	state_component_Type.ob_type = &PyType_Type;
 	state_component_Type.tp_base = &pycppbridge_Type;
 	if (PyType_Ready(&state_component_Type) < 0) return;

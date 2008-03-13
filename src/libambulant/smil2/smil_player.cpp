@@ -153,7 +153,7 @@ void smil_player::build_timegraph() {
 		const std::set<std::string>& state_change_args = tg.get_state_change_args();
 		std::set<std::string>::const_iterator i;
 		for (i=state_change_args.begin(); i != state_change_args.end(); i++) {
-			/*AM_DBG*/ lib::logger::get_logger()->debug("registering interest in stateChange(%s) with state engine", (*i).c_str());
+			AM_DBG lib::logger::get_logger()->debug("registering interest in stateChange(%s) with state engine", (*i).c_str());
 			m_state_engine->want_state_change((*i).c_str(), this);
 		}
 	}
