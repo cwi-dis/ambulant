@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		040DE08F0CD533A300A68D91 /* libambulant_sdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B290958C23900C194EE /* libambulant_sdl.a */; };
+		041CB2EE0D8A788100C6AA42 /* cg_mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 041CB2EC0D8A788100C6AA42 /* cg_mainloop.cpp */; };
 		042AF3D4095AFF780003E706 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D5B49B7048680CD000E48DA /* Info.plist */; };
 		045D0B350958C26800C194EE /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B340958C26800C194EE /* QuickTime.framework */; };
 		045D0B930958C71E00C194EE /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B920958C71E00C194EE /* libexpat.a */; };
@@ -53,6 +54,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		041CB2EC0D8A788100C6AA42 /* cg_mainloop.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cg_mainloop.cpp; sourceTree = "<group>"; };
+		041CB2ED0D8A788100C6AA42 /* cg_mainloop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cg_mainloop.h; sourceTree = "<group>"; };
 		041D49F40D7DAB09008874CD /* AmbulantFirefoxPlugin.r */ = {isa = PBXFileReference; explicitFileType = sourcecode.rez; fileEncoding = 4; path = AmbulantFirefoxPlugin.r; sourceTree = "<group>"; };
 		045D0B210958C14700C194EE /* libambulant.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libambulant.a; path = src/libambulant/.libs/libambulant.a; sourceTree = PREBUILT_AMBULANT_ROOT; };
 		045D0B290958C23900C194EE /* libambulant_sdl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libambulant_sdl.a; path = src/libambulant/.libs/libambulant_sdl.a; sourceTree = PREBUILT_AMBULANT_ROOT; };
@@ -239,6 +242,8 @@
 		32C88E010371C26100C91783 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				041CB2EC0D8A788100C6AA42 /* cg_mainloop.cpp */,
+				041CB2ED0D8A788100C6AA42 /* cg_mainloop.h */,
 				04797E8F0D7D5E6B00B4EE4C /* np_entry.cpp */,
 				04797E900D7D5E6B00B4EE4C /* npn_gate.cpp */,
 				04797E910D7D5E6B00B4EE4C /* npp_gate.cpp */,
@@ -396,6 +401,7 @@
 				04797E9C0D7D5E6B00B4EE4C /* npp_gate.cpp in Sources */,
 				04797E9E0D7D5E6B00B4EE4C /* nsScriptablePeer.cpp in Sources */,
 				04797E9F0D7D5E6B00B4EE4C /* plugin.cpp in Sources */,
+				041CB2EE0D8A788100C6AA42 /* cg_mainloop.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -442,7 +448,7 @@
 					"XP_MACOSX=1",
 					"AM_PREFER_FFMPEG=1",
 					"WITH_LTDL_PLUGINS=1",
-					"WITH_EXTERNAL_DOM=1",
+					"WITH_CG=1",
 					"WITH_SDL=1",
 					"WITH_FFMPEG=1",
 					"WITH_EXPAT=1",
@@ -488,7 +494,7 @@
 					"XP_MACOSX=1",
 					"AM_PREFER_FFMPEG=1",
 					"WITH_LTDL_PLUGINS=1",
-					"WITH_EXTERNAL_DOM=1",
+					"WITH_CG=1",
 					"WITH_SDL=1",
 					"WITH_FFMPEG=1",
 					"WITH_EXPAT=1",
@@ -531,7 +537,7 @@
 					"XP_MACOSX=1",
 					"AM_PREFER_FFMPEG=1",
 					"WITH_LTDL_PLUGINS=1",
-					"WITH_EXTERNAL_DOM=1",
+					"WITH_CG=1",
 					"WITH_SDL=1",
 					"WITH_FFMPEG=1",
 					"WITH_EXPAT=1",

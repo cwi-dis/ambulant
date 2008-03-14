@@ -42,6 +42,9 @@
 #ifdef WITH_GTK
 #include "gtk_mainloop.h"
 #endif
+#ifdef WITH_CG
+#include "cg_mainloop.h"
+#endif
 
 #define AM_DBG
 #ifndef AM_DBG
@@ -217,6 +220,15 @@ NPBool nsPluginInstance::init(NPWindow* aWindow)
     gtk_widget_show_all (gtkwidget);
 	gtk_widget_realize(gtkwidget);
 #endif // WITH_GTK
+#ifdef WITH_CG
+	void *view = NULL;
+	m_mainloop = new cg_mainloop(file_str, view, false, NULL);
+	m_logger = lib::logger::get_logger();
+    m_ambulant_player = m_mainloop->get_player();
+    if (m_ambulant_player == NULL)
+        return false;
+    m_ambulant_player->start();
+#endif // WITH_CG
 #endif/*XP_UNIX*/
 	mInitialized = true;
     return true;

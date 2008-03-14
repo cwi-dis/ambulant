@@ -55,6 +55,10 @@
 #ifdef WITH_GTK
 class gtk_mainloop;
 #endif
+#ifdef WITH_CG
+class cg_mainloop;
+#endif
+
 
 class nsScriptablePeer;
 
@@ -95,6 +99,8 @@ public:
     nsPluginCreateData mCreateData;
 #ifdef WITH_GTK
     gtk_mainloop* m_mainloop;
+#elif WITH_CG
+	cg_mainloop *m_mainloop;
 #else
 	void *m_mainloop;
 #endif
