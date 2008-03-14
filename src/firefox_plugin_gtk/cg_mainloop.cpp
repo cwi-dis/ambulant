@@ -20,7 +20,7 @@
 //#define WITH_FFMPEG_VIDEO
 // Define NONE_PLAYER to skip all cg support but use the dummy
 // none_window and none_playable in stead.
-#define NONE_PLAYER
+#undef NONE_PLAYER
 
 //#include "MyAmbulantView.h"
 #include <iostream>

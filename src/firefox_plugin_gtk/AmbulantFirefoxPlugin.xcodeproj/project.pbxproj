@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		040DE08F0CD533A300A68D91 /* libambulant_sdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B290958C23900C194EE /* libambulant_sdl.a */; };
 		041CB2EE0D8A788100C6AA42 /* cg_mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 041CB2EC0D8A788100C6AA42 /* cg_mainloop.cpp */; };
+		041CB31B0D8A7DED00C6AA42 /* libambulant_cg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041CB31A0D8A7DED00C6AA42 /* libambulant_cg.a */; };
+		041CB31D0D8A7E1D00C6AA42 /* libambulant.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B210958C14700C194EE /* libambulant.a */; };
 		042AF3D4095AFF780003E706 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D5B49B7048680CD000E48DA /* Info.plist */; };
 		045D0B350958C26800C194EE /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B340958C26800C194EE /* QuickTime.framework */; };
 		045D0B930958C71E00C194EE /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B920958C71E00C194EE /* libexpat.a */; };
@@ -28,8 +30,6 @@
 		0499E89F0959B29100A7FDF8 /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0499E89E0959B29100A7FDF8 /* libSDL.a */; };
 		0499E8A50959B2E100A7FDF8 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0499E8A40959B2E100A7FDF8 /* libz.dylib */; };
 		04C0A45F0CD2942F00CEDCA9 /* libambulant_ffmpeg.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C0A45B0CD2942F00CEDCA9 /* libambulant_ffmpeg.dylib */; };
-		04C0A4600CD2942F00CEDCA9 /* libambulant_cocoa.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C0A45C0CD2942F00CEDCA9 /* libambulant_cocoa.dylib */; };
-		04C0A4610CD2942F00CEDCA9 /* libambulant.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C0A45D0CD2942F00CEDCA9 /* libambulant.dylib */; };
 		04C0A4620CD2942F00CEDCA9 /* libambulant_live.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C0A45E0CD2942F00CEDCA9 /* libambulant_live.dylib */; };
 		04C26AE90CBE0E1400CB8EFE /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C26AE80CBE0E1400CB8EFE /* QTKit.framework */; };
 		04C26AEB0CBE0E2700CB8EFE /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C26AEA0CBE0E2700CB8EFE /* AudioUnit.framework */; };
@@ -56,6 +56,7 @@
 /* Begin PBXFileReference section */
 		041CB2EC0D8A788100C6AA42 /* cg_mainloop.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cg_mainloop.cpp; sourceTree = "<group>"; };
 		041CB2ED0D8A788100C6AA42 /* cg_mainloop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cg_mainloop.h; sourceTree = "<group>"; };
+		041CB31A0D8A7DED00C6AA42 /* libambulant_cg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libambulant_cg.a; path = "../../build-firefox/src/libambulant/.libs/libambulant_cg.a"; sourceTree = SOURCE_ROOT; };
 		041D49F40D7DAB09008874CD /* AmbulantFirefoxPlugin.r */ = {isa = PBXFileReference; explicitFileType = sourcecode.rez; fileEncoding = 4; path = AmbulantFirefoxPlugin.r; sourceTree = "<group>"; };
 		045D0B210958C14700C194EE /* libambulant.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libambulant.a; path = src/libambulant/.libs/libambulant.a; sourceTree = PREBUILT_AMBULANT_ROOT; };
 		045D0B290958C23900C194EE /* libambulant_sdl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libambulant_sdl.a; path = src/libambulant/.libs/libambulant_sdl.a; sourceTree = PREBUILT_AMBULANT_ROOT; };
@@ -79,22 +80,22 @@
 		04797E970D7D5E6B00B4EE4C /* plugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = plugin.h; sourceTree = "<group>"; };
 		04797E980D7D5E6B00B4EE4C /* pluginbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pluginbase.h; sourceTree = "<group>"; };
 		04797E990D7D5E6B00B4EE4C /* readme.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = readme.txt; sourceTree = "<group>"; };
-		048B3E700CEB32EF006102B3 /* libamplugin_wkdom.la */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = libamplugin_wkdom.la; path = "../../build-smil30/src/plugins/.libs/libamplugin_wkdom.la"; sourceTree = SOURCE_ROOT; };
-		048B3E710CEB32EF006102B3 /* libamplugin_wkdom.0 */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.bundle"; name = libamplugin_wkdom.0; path = "../../build-smil30/src/plugins/.libs/libamplugin_wkdom.0"; sourceTree = SOURCE_ROOT; };
+		048B3E700CEB32EF006102B3 /* libamplugin_wkdom.la */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = libamplugin_wkdom.la; path = "../../build-firefox/src/plugins/.libs/libamplugin_wkdom.la"; sourceTree = SOURCE_ROOT; };
+		048B3E710CEB32EF006102B3 /* libamplugin_wkdom.0 */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.bundle"; name = libamplugin_wkdom.0; path = "../../build-firefox/src/plugins/.libs/libamplugin_wkdom.0"; sourceTree = SOURCE_ROOT; };
 		049775AB0958AC7600A7690F /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = /System/Library/Frameworks/WebKit.framework; sourceTree = "<absolute>"; };
 		0499E8960959B22200A7FDF8 /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = "third_party_packages/ffmpeg-universal/libavcodec/libavcodec.a"; sourceTree = PREBUILT_AMBULANT_ROOT; };
 		0499E8980959B24100A7FDF8 /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = "third_party_packages/ffmpeg-universal/libavformat/libavformat.a"; sourceTree = PREBUILT_AMBULANT_ROOT; };
 		0499E89B0959B25F00A7FDF8 /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavutil.a; path = "third_party_packages/ffmpeg-universal/libavutil/libavutil.a"; sourceTree = PREBUILT_AMBULANT_ROOT; };
 		0499E89E0959B29100A7FDF8 /* libSDL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL.a; path = /usr/local/lib/libSDL.a; sourceTree = "<absolute>"; };
 		0499E8A40959B2E100A7FDF8 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
-		04C0A45B0CD2942F00CEDCA9 /* libambulant_ffmpeg.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libambulant_ffmpeg.dylib; path = "../../build-smil30/src/libambulant/.libs/libambulant_ffmpeg.dylib"; sourceTree = SOURCE_ROOT; };
-		04C0A45C0CD2942F00CEDCA9 /* libambulant_cocoa.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libambulant_cocoa.dylib; path = "../../build-smil30/src/libambulant/.libs/libambulant_cocoa.dylib"; sourceTree = SOURCE_ROOT; };
-		04C0A45D0CD2942F00CEDCA9 /* libambulant.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libambulant.dylib; path = "../../build-smil30/src/libambulant/.libs/libambulant.dylib"; sourceTree = SOURCE_ROOT; };
-		04C0A45E0CD2942F00CEDCA9 /* libambulant_live.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libambulant_live.dylib; path = "../../build-smil30/src/libambulant/.libs/libambulant_live.dylib"; sourceTree = SOURCE_ROOT; };
-		04C0A4670CD2948E00CEDCA9 /* libambulant_sdl.dylib */ = {isa = PBXFileReference; lastKnownFileType = file; name = libambulant_sdl.dylib; path = "../../build-smil30/src/libambulant/.libs/libambulant_sdl.dylib"; sourceTree = SOURCE_ROOT; };
+		04C0A45B0CD2942F00CEDCA9 /* libambulant_ffmpeg.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libambulant_ffmpeg.dylib; path = "../../build-firefox/src/libambulant/.libs/libambulant_ffmpeg.dylib"; sourceTree = SOURCE_ROOT; };
+		04C0A45C0CD2942F00CEDCA9 /* libambulant_cocoa.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libambulant_cocoa.dylib; path = "../../build-firefox/src/libambulant/.libs/libambulant_cocoa.dylib"; sourceTree = SOURCE_ROOT; };
+		04C0A45D0CD2942F00CEDCA9 /* libambulant.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libambulant.dylib; path = "../../build-firefox/src/libambulant/.libs/libambulant.dylib"; sourceTree = SOURCE_ROOT; };
+		04C0A45E0CD2942F00CEDCA9 /* libambulant_live.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libambulant_live.dylib; path = "../../build-firefox/src/libambulant/.libs/libambulant_live.dylib"; sourceTree = SOURCE_ROOT; };
+		04C0A4670CD2948E00CEDCA9 /* libambulant_sdl.dylib */ = {isa = PBXFileReference; lastKnownFileType = file; name = libambulant_sdl.dylib; path = "../../build-firefox/src/libambulant/.libs/libambulant_sdl.dylib"; sourceTree = SOURCE_ROOT; };
 		04C0A4990CD2A19B00CEDCA9 /* pyamplugin_webkitscripting */ = {isa = PBXFileReference; lastKnownFileType = folder; name = pyamplugin_webkitscripting; path = PlugIns/pyamplugin_webkitscripting; sourceTree = "<group>"; };
-		04C0A4B20CD2A44A00CEDCA9 /* libamplugin_python.0 */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.bundle"; name = libamplugin_python.0; path = "../../build-smil30/src/plugins/.libs/libamplugin_python.0"; sourceTree = SOURCE_ROOT; };
-		04C0A4BC0CD2A61700CEDCA9 /* libamplugin_python.la */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = libamplugin_python.la; path = "../../build-smil30/src/plugins/libamplugin_python.la"; sourceTree = SOURCE_ROOT; };
+		04C0A4B20CD2A44A00CEDCA9 /* libamplugin_python.0 */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.bundle"; name = libamplugin_python.0; path = "../../build-firefox/src/plugins/.libs/libamplugin_python.0"; sourceTree = SOURCE_ROOT; };
+		04C0A4BC0CD2A61700CEDCA9 /* libamplugin_python.la */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = libamplugin_python.la; path = "../../build-firefox/src/plugins/libamplugin_python.la"; sourceTree = SOURCE_ROOT; };
 		04C26AE80CBE0E1400CB8EFE /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
 		04C26AEA0CBE0E2700CB8EFE /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = /System/Library/Frameworks/AudioUnit.framework; sourceTree = "<absolute>"; };
 		04C26AEC0CBE0E3700CB8EFE /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
@@ -128,12 +129,12 @@
 				04C26AF00CBE0E5500CB8EFE /* IOKit.framework in Frameworks */,
 				04C26AF30CBE0E8700CB8EFE /* OpenGL.framework in Frameworks */,
 				04C0A45F0CD2942F00CEDCA9 /* libambulant_ffmpeg.dylib in Frameworks */,
-				04C0A4600CD2942F00CEDCA9 /* libambulant_cocoa.dylib in Frameworks */,
-				04C0A4610CD2942F00CEDCA9 /* libambulant.dylib in Frameworks */,
 				04C0A4620CD2942F00CEDCA9 /* libambulant_live.dylib in Frameworks */,
 				040DE08F0CD533A300A68D91 /* libambulant_sdl.a in Frameworks */,
 				0460218A0D819F3400FC29CA /* libintl.a in Frameworks */,
 				0460218D0D81A0BD00FC29CA /* libiconv.dylib in Frameworks */,
+				041CB31B0D8A7DED00C6AA42 /* libambulant_cg.a in Frameworks */,
+				041CB31D0D8A7E1D00C6AA42 /* libambulant.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -143,6 +144,7 @@
 		045D0B570958C26F00C194EE /* Ambulant */ = {
 			isa = PBXGroup;
 			children = (
+				041CB31A0D8A7DED00C6AA42 /* libambulant_cg.a */,
 				045D0B210958C14700C194EE /* libambulant.a */,
 				04C0A45D0CD2942F00CEDCA9 /* libambulant.dylib */,
 				045D0B290958C23900C194EE /* libambulant_sdl.a */,
@@ -448,6 +450,7 @@
 					"XP_MACOSX=1",
 					"AM_PREFER_FFMPEG=1",
 					"WITH_LTDL_PLUGINS=1",
+					"WITH_EXTERNAL_DOM=1",
 					"WITH_CG=1",
 					"WITH_SDL=1",
 					"WITH_FFMPEG=1",
@@ -463,13 +466,15 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Internet Plug-Ins";
 				LIBRARY_SEARCH_PATHS = (
-					"$(PREBUILT_AMBULANT_ROOT)/src/libambulant/.libs",
+					../../src/libambulant/.libs,
 					/usr/local/lib,
-					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/expat-unix/lib",
-					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/ffmpeg-universal/libavcodec",
-					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/ffmpeg-universal/libavformat",
-					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/ffmpeg-universal/libavutil",
+					"../../third_party_packages/expat-unix/lib",
+					"../../third_party_packages/ffmpeg-universal/libavcodec",
+					"../../third_party_packages/ffmpeg-universal/libavformat",
+					"../../third_party_packages/ffmpeg-universal/libavutil",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../build-firefox/src/libambulant/.libs\"";
 				PRODUCT_NAME = AmbulantFirefoxPlugin;
 				WRAPPER_EXTENSION = plugin;
 				ZERO_LINK = NO;
@@ -494,6 +499,7 @@
 					"XP_MACOSX=1",
 					"AM_PREFER_FFMPEG=1",
 					"WITH_LTDL_PLUGINS=1",
+					"WITH_EXTERNAL_DOM=1",
 					"WITH_CG=1",
 					"WITH_SDL=1",
 					"WITH_FFMPEG=1",
@@ -509,13 +515,15 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Internet Plug-Ins";
 				LIBRARY_SEARCH_PATHS = (
-					"$(PREBUILT_AMBULANT_ROOT)/src/libambulant/.libs",
+					../../src/libambulant/.libs,
 					/usr/local/lib,
-					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/expat-unix/lib",
-					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/ffmpeg-universal/libavcodec",
-					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/ffmpeg-universal/libavformat",
-					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/ffmpeg-universal/libavutil",
+					"../../third_party_packages/expat-unix/lib",
+					"../../third_party_packages/ffmpeg-universal/libavcodec",
+					"../../third_party_packages/ffmpeg-universal/libavformat",
+					"../../third_party_packages/ffmpeg-universal/libavutil",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../build-firefox/src/libambulant/.libs\"";
 				PRODUCT_NAME = AmbulantFirefoxPlugin;
 				WRAPPER_EXTENSION = plugin;
 				ZERO_LINK = NO;
@@ -537,6 +545,7 @@
 					"XP_MACOSX=1",
 					"AM_PREFER_FFMPEG=1",
 					"WITH_LTDL_PLUGINS=1",
+					"WITH_EXTERNAL_DOM=1",
 					"WITH_CG=1",
 					"WITH_SDL=1",
 					"WITH_FFMPEG=1",
@@ -552,13 +561,15 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Internet Plug-Ins";
 				LIBRARY_SEARCH_PATHS = (
-					"$(PREBUILT_AMBULANT_ROOT)/src/libambulant/.libs",
+					../../src/libambulant/.libs,
 					/usr/local/lib,
-					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/expat-unix/lib",
-					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/ffmpeg-universal/libavcodec",
-					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/ffmpeg-universal/libavformat",
-					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/ffmpeg-universal/libavutil",
+					"../../third_party_packages/expat-unix/lib",
+					"../../third_party_packages/ffmpeg-universal/libavcodec",
+					"../../third_party_packages/ffmpeg-universal/libavformat",
+					"../../third_party_packages/ffmpeg-universal/libavutil",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../build-firefox/src/libambulant/.libs\"";
 				PRODUCT_NAME = AmbulantFirefoxPlugin;
 				WRAPPER_EXTENSION = plugin;
 			};
