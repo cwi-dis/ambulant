@@ -762,6 +762,11 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame(now=%lld)\n", now);
 	// XXX now can be negative, due to time manipulation by the scheduler. assert(now >= 0);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame() %d frames available\n", m_frames.size());
+	//bo 18-03-2008, for some reasons, somtimes, m_frames.size() is 0;
+	if (m_frames.size() == 0) {
+		m_lock.leave();
+		return NULL;
+	}
 	assert(m_frames.size() > 0 || _end_of_file());
 	
 	timestamp_t frame_duration = frameduration(); 
