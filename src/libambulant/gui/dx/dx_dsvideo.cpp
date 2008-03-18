@@ -241,6 +241,11 @@ dx_dsvideo_renderer::redraw(const rect &dirty, gui_window *window)
 	if (!oldDataPointer) {
 		// Could not replace data pointer. Use bitblit to copy data.
 		if (m_bitmap == NULL) _init_bitmap();
+		//bo 17-03-2008, for some reasons, somtimes, m_frame == null;
+		if (m_frame == NULL){
+			m_lock.leave();
+			return;
+		}
 		memcpy(m_bitmap_dataptr, m_frame, m_frame_size);
 		_copy_to_ddsurf();
 	}
