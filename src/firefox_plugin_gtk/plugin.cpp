@@ -45,6 +45,8 @@
 #ifdef WITH_CG
 #include "cg_mainloop.h"
 #endif
+#include "ambulant/common/plugin_engine.h"
+#include "ambulant/common/preferences.h"
 
 #define AM_DBG
 #ifndef AM_DBG
@@ -159,6 +161,15 @@ NPBool nsPluginInstance::init(NPWindow* aWindow)
 	AM_DBG fprintf(stderr, "nsPluginInstance::init(0x%x)\n", aWindow);
     mNPWindow = aWindow;
     NPError nperr = NPN_GetValue(mInstance, NPNVWindowNPObject, &mNPWindow);
+    // Start by saving the NPWindow for any Ambulant plugins (such as SMIL State)
+	ambulant::common::plugin_engine *pe = ambulant::common::plugin_engine::get_plugin_engine();
+	void *edptr = pe->get_extra_data("npapi_extra_data");
+	if (edptr) {
+		*(NPWindow**)edptr = mNPWindow;
+		AM_DBG fprintf(stderr, "nsPluginInstance::init: setting npapi_extra_data(0x%x) to NPWindow 0x%x\n", edptr, mNPWindow);
+	} else {
+		AM_DBG fprintf(stderr, "AmbulantWebKitPlugin: Cannot find npapi_extra_data, cannot communicate NPWindow\n");
+	}
 #ifdef	XP_UNIX
 #ifdef	MOZ_X11
     this->window = (Window) aWindow->window;
