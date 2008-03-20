@@ -51,7 +51,7 @@ BEGIN
             VALUE "InternalName", "npscriptable"
             VALUE "LegalCopyright", "Copyright © 2005"
             VALUE "MIMEType", "application/smil|application/smil+xml"
-            VALUE "OriginalFilename", "npambulant.dll"
+            VALUE "OriginalFilename", "AmbulantFFplugin.dll"
             VALUE "ProductName", "AmbulantPlayer FirefoxPlugin"
             VALUE "ProductVersion", "1.6"
         END

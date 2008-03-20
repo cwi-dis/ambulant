@@ -284,14 +284,14 @@ NPError	nsPluginInstance::GetValue(NPPVariable aVariable, void *aValue)
 
   if (aVariable == NPPVpluginScriptableInstance) {
     // addref happens in getter, so we don't addref here
-    nsIAmbulantPlugin * scriptablePeer = getScriptablePeer();
+    AmbulantFFplugin * scriptablePeer = getScriptablePeer();
     if (scriptablePeer) {
       *(nsISupports **)aValue = scriptablePeer;
     } else
       rv = NPERR_OUT_OF_MEMORY_ERROR;
   }
   else if (aVariable == NPPVpluginScriptableIID) {
-    static nsIID scriptableIID = NS_IAMBULANTPLUGIN_IID;
+    static nsIID scriptableIID = AMBULANTFFPLUGIN_IID;
     nsIID* ptr = (nsIID *)NPN_MemAlloc(sizeof(nsIID));
     if (ptr) {
         *ptr = scriptableIID;

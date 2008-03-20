@@ -47,7 +47,7 @@
 //
 #include "plugin.h"
 
-static NS_DEFINE_IID(kIScriptableIID, NS_IAMBULANTPLUGIN_IID);
+static NS_DEFINE_IID(kIScriptableIID, AMBULANTFFPLUGIN_IID);
 static NS_DEFINE_IID(kIClassInfoIID, NS_ICLASSINFO_IID);
 static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
 
@@ -87,7 +87,7 @@ NS_IMETHODIMP nsScriptablePeer::QueryInterface(const nsIID& aIID, void** aInstan
     return NS_ERROR_NULL_POINTER; 
 
   if(aIID.Equals(kIScriptableIID)) {
-    *aInstancePtr = static_cast<nsIAmbulantPlugin*>(this); 
+    *aInstancePtr = static_cast<AmbulantFFplugin*>(this); 
     AddRef();
     return NS_OK;
   }
@@ -99,7 +99,7 @@ NS_IMETHODIMP nsScriptablePeer::QueryInterface(const nsIID& aIID, void** aInstan
   }
 
   if(aIID.Equals(kISupportsIID)) {
-    *aInstancePtr = static_cast<nsISupports*>(static_cast<nsIAmbulantPlugin*>(this)); 
+    *aInstancePtr = static_cast<nsISupports*>(static_cast<AmbulantFFplugin*>(this)); 
     AddRef();
     return NS_OK;
   }

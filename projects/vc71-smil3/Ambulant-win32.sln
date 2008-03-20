@@ -84,7 +84,6 @@ Global
 		{D2E0FB0F-6190-4A38-BAFF-3FC75104D568}.DebugNoXerces.ActiveCfg = Debug|Win32
 		{D2E0FB0F-6190-4A38-BAFF-3FC75104D568}.DebugNoXercesNoHtml.ActiveCfg = Debug|Win32
 		{D2E0FB0F-6190-4A38-BAFF-3FC75104D568}.DebugShlib.ActiveCfg = Debug|Win32
-		{D2E0FB0F-6190-4A38-BAFF-3FC75104D568}.DebugShlib.Build.0 = Debug|Win32
 		{D2E0FB0F-6190-4A38-BAFF-3FC75104D568}.Release.ActiveCfg = Release|Win32
 		{D2E0FB0F-6190-4A38-BAFF-3FC75104D568}.ReleaseNoXerces.ActiveCfg = Release|Win32
 		{D2E0FB0F-6190-4A38-BAFF-3FC75104D568}.ReleaseNoXercesNoHtml.ActiveCfg = Release|Win32
@@ -93,7 +92,6 @@ Global
 		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.DebugNoXerces.ActiveCfg = Debug|Win32
 		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.DebugNoXercesNoHtml.ActiveCfg = Debug|Win32
 		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.DebugShlib.ActiveCfg = Debug|Win32
-		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.DebugShlib.Build.0 = Debug|Win32
 		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.Release.ActiveCfg = Release|Win32
 		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.ReleaseNoXerces.ActiveCfg = Release|Win32
 		{46E474CB-34CB-4A95-83E9-240AC8038AE0}.ReleaseNoXercesNoHtml.ActiveCfg = Release|Win32
@@ -102,7 +100,6 @@ Global
 		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.DebugNoXerces.ActiveCfg = Debug|Win32
 		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.DebugNoXercesNoHtml.ActiveCfg = Debug|Win32
 		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.DebugShlib.ActiveCfg = Debug|Win32
-		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.DebugShlib.Build.0 = Debug|Win32
 		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.Release.ActiveCfg = Release|Win32
 		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.ReleaseNoXerces.ActiveCfg = Release|Win32
 		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.ReleaseNoXercesNoHtml.ActiveCfg = Release|Win32
@@ -111,7 +108,6 @@ Global
 		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.DebugNoXerces.ActiveCfg = Debug|Win32
 		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.DebugNoXercesNoHtml.ActiveCfg = Debug|Win32
 		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.DebugShlib.ActiveCfg = Debug|Win32
-		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.DebugShlib.Build.0 = Debug|Win32
 		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.Release.ActiveCfg = Release|Win32
 		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.ReleaseNoXerces.ActiveCfg = Release|Win32
 		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.ReleaseNoXercesNoHtml.ActiveCfg = Release|Win32

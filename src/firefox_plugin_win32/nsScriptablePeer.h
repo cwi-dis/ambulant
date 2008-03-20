@@ -45,7 +45,7 @@
 #ifndef __nsScriptablePeer_h__
 #define __nsScriptablePeer_h__
 
-#include "nsIAmbulantPlugin.h"
+#include "AmbulantFFplugin.h"
 #include "nsIClassInfo.h"
 
 class nsPluginInstance;
@@ -78,7 +78,7 @@ class nsClassInfoMixin : public nsIClassInfo
     {return NS_ERROR_NOT_IMPLEMENTED;}
 };
 
-class nsScriptablePeer : public nsIAmbulantPlugin,
+class nsScriptablePeer : public AmbulantFFplugin,
                          public nsClassInfoMixin
 {
 public:
@@ -96,7 +96,7 @@ protected:
 
 public:
   // native methods callable from JavaScript
-  NS_DECL_NSIAMBULANTPLUGIN
+  NS_DECL_AMBULANTFFPLUGIN
 
   void SetInstance(nsPluginInstance* plugin);
 
