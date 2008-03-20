@@ -127,7 +127,10 @@ NS_IMETHODIMP nsScriptablePeer::QueryInterface(const nsIID& aIID, void** aInstan
 	AM_DBG  fprintf(stderr, "nsScriptablePeer::QueryInterface: return kISupportsIID 0x%x\n", *aInstancePtr);
     return NS_OK;
   }
-  AM_DBG fprintf(stderr, "nsScriptablePeer::QueryInterface: return NS_NOINTERFACE error\n");
+  // Interfaces we've seen queries for:
+  // bed52030-bca6-11d2-ba79-00805f8a5dd7 (nsIXPConnectWrappedJS)
+  // 9cc0c2e0-f769-4f14-8cd6-2d2d40466f6c (nsIXPCScriptable)
+  AM_DBG fprintf(stderr, "nsScriptablePeer::QueryInterface: return NS_NOINTERFACE error for IID %s\n", aIID.ToString());
   return NS_NOINTERFACE; 
 }
 

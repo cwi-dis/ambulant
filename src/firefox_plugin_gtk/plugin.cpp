@@ -111,7 +111,7 @@ nsPluginInstanceBase * NS_NewPluginInstance(nsPluginCreateData * aCreateDataStru
   nsPluginInstance * plugin = new nsPluginInstance(aCreateDataStruct->instance);
   if (plugin)
 	 plugin->mCreateData = *aCreateDataStruct;
-  AM_DBG fprintf(stderr, "NS_NewPluginInstance: created %s=0x%x.\n",plugin);
+  AM_DBG fprintf(stderr, "NS_NewPluginInstance: created 0x%x.\n",plugin);
   return plugin;
 }
 
@@ -260,8 +260,35 @@ NPBool nsPluginInstance::isInitialized()
 char* nsPluginInstance::get_document_location()
 {
     char *id = "ambulant::nsPluginInstance::getLocation";
-	AM_DBG fprintf(stderr, "nsPluginInstance::get_document_location)\n");
+	AM_DBG fprintf(stderr, "nsPluginInstance::get_document_location()\n");
     char *rv = NULL;
+#if 0
+
+	NPVariant npvDocument;
+	bool ok = NPN_GetProperty(mInstance, (NPObject*)mNPWindow, NPN_GetStringIdentifier("document"), &npvDocument);
+	AM_DBG fprintf(stderr, "NPN_GetProperty(..., document, ...) -> %d, 0x%d\n", ok, npvDocument);
+	if (!ok) return NULL;
+	assert(NPVARIANT_IS_OBJECT(npvDocument));
+	NPObject *document = NPVARIANT_TO_OBJECT(npvDocument);
+	assert(document);
+	
+	NPVariant npvLocation;
+	ok = NPN_GetProperty(mInstance, document, NPN_GetStringIdentifier("location"), &npvLocation);
+	AM_DBG fprintf(stderr, "NPN_GetProperty(..., location, ...) -> %d, 0x%d\n", ok, npvLocation);
+	if (!ok) return NULL;
+	if (!NPVARIANT_IS_STRING(npvLocation)) {
+		AM_DBG fprintf(stderr, "get_document_location: document.location is not a string\n");
+		return NULL;
+	}
+
+	NPString location = NPVARIANT_TO_STRING(npvLocation);
+	rv = (char*) malloc(location.utf8length+1);
+	strncpy(rv, location.utf8characters, location.utf8length);
+	AM_DBG fprintf(stderr, "get_document_location: returning \"%s\"\n", rv);
+	
+    NPN_ReleaseVariantValue(&npvLocation);
+    NPN_ReleaseVariantValue(&npvDocument);
+#else
     NPVariant npvarResult;
     NPIdentifier npidJSfun = NPN_GetStringIdentifier("GetDocumentLocation");
     bool ok = NPN_HasMethod(mInstance, (NPObject*) mNPWindow, npidJSfun);
@@ -290,6 +317,7 @@ char* nsPluginInstance::get_document_location()
         rv[str_len] = '\0';
     }
     NPN_ReleaseVariantValue(&npvarResult);
+#endif // 1
     return rv;
 }
 
