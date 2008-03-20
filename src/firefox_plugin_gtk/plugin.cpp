@@ -249,21 +249,15 @@ NPBool nsPluginInstance::isInitialized()
 }
 
 /// Get the location of the html document.
-/// If the html document contains a javascript function GetDocumentLocation(), 
-/// that one is used; otherwise dynamically a script is executed to retrieve
-/// the information.
-/// A third method could be to use NPN_GetProperty first to retrieve the 'document'
-/// property from the 'window' object. Next use NPN_GetProperty  on the 'location'
-/// property from the 'document' object. Finally, the string value could then be
-/// retrieved using NPN_Invoke on the 'property' object with the 'toString' function.
-/// The advantage of this approach would be that no javascript code is needed.
+/// In javascript this is simply document.location.href. In C it's the
+/// same, but slightly more convoluted:-)
 char* nsPluginInstance::get_document_location()
 {
     char *id = "ambulant::nsPluginInstance::getLocation";
 	AM_DBG fprintf(stderr, "nsPluginInstance::get_document_location()\n");
     char *rv = NULL;
-#if 0
 
+	// Get document
 	NPVariant npvDocument;
 	bool ok = NPN_GetProperty(mInstance, (NPObject*)mNPWindow, NPN_GetStringIdentifier("document"), &npvDocument);
 	AM_DBG fprintf(stderr, "NPN_GetProperty(..., document, ...) -> %d, 0x%d\n", ok, npvDocument);
@@ -272,52 +266,36 @@ char* nsPluginInstance::get_document_location()
 	NPObject *document = NPVARIANT_TO_OBJECT(npvDocument);
 	assert(document);
 	
+	// Get document.location
 	NPVariant npvLocation;
 	ok = NPN_GetProperty(mInstance, document, NPN_GetStringIdentifier("location"), &npvLocation);
 	AM_DBG fprintf(stderr, "NPN_GetProperty(..., location, ...) -> %d, 0x%d\n", ok, npvLocation);
 	if (!ok) return NULL;
-	if (!NPVARIANT_IS_STRING(npvLocation)) {
-		AM_DBG fprintf(stderr, "get_document_location: document.location is not a string\n");
+	assert(NPVARIANT_IS_OBJECT(npvLocation));
+	NPObject *location = NPVARIANT_TO_OBJECT(npvLocation);
+	assert(location);
+	
+	// Get document.location.href
+	NPVariant npvHref;
+	ok = NPN_GetProperty(mInstance, location, NPN_GetStringIdentifier("href"), &npvHref);
+	AM_DBG fprintf(stderr, "NPN_GetProperty(..., href, ...) -> %d, 0x%d\n", ok, npvHref);
+	if (!ok) return NULL;
+	if (!NPVARIANT_IS_STRING(npvHref)) {
+		AM_DBG fprintf(stderr, "get_document_location: document.location.href is not a string\n");
 		return NULL;
 	}
 
-	NPString location = NPVARIANT_TO_STRING(npvLocation);
-	rv = (char*) malloc(location.utf8length+1);
-	strncpy(rv, location.utf8characters, location.utf8length);
+	// Turn it into a C string.
+	// XXXJACK: the memory for the string isn't released...
+	NPString href = NPVARIANT_TO_STRING(npvHref);
+	rv = (char*) malloc(href.utf8length+1);
+	strncpy(rv, href.utf8characters, href.utf8length);
+	rv[href.utf8length] = '\0';
 	AM_DBG fprintf(stderr, "get_document_location: returning \"%s\"\n", rv);
 	
     NPN_ReleaseVariantValue(&npvLocation);
     NPN_ReleaseVariantValue(&npvDocument);
-#else
-    NPVariant npvarResult;
-    NPIdentifier npidJSfun = NPN_GetStringIdentifier("GetDocumentLocation");
-    bool ok = NPN_HasMethod(mInstance, (NPObject*) mNPWindow, npidJSfun);
-    AM_DBG fprintf(stderr, "%s(%x): %s=0x%x.\n",id,this,"ok",ok);
-    if ( ! ok) {
-        // dynamically evaluate javascript code to get the desired information.
-        // by returning it first in a function, it is also returned by NPN_Evaluate.
-        // prependeding the empty string forces return type NPVariantType_String.
-        static const char js_script[] = "function GetDocumentLocation() { return ''+document.location; } GetDocumentLocation();";
-        NPString npstrJSscript;
-        npstrJSscript.utf8characters = js_script;
-        npstrJSscript.utf8length = sizeof(js_script) - 1;
-        ok = NPN_Evaluate(mInstance, (NPObject*) mNPWindow, &npstrJSscript, &npvarResult);
-        if ( ! ok) {
-            lib::logger::get_logger()->warn("%s: %s failed",id,"calling NPN_Invoke(\"eval\",(\"document.location\") failed.");
-            return rv;
-        }
-    } else {
-        ok = NPN_Invoke(mInstance, (NPObject*) mNPWindow, npidJSfun, NULL, 0, &npvarResult);
-    }
-    if (ok && NPVARIANT_IS_STRING(npvarResult)) {
-        NPString nps = NPVARIANT_TO_STRING(npvarResult);
-        size_t str_len = nps.utf8length;
-        rv = (char*) malloc(str_len+1);
-        strncpy(rv, nps.utf8characters, str_len);
-        rv[str_len] = '\0';
-    }
-    NPN_ReleaseVariantValue(&npvarResult);
-#endif // 1
+    NPN_ReleaseVariantValue(&npvHref);
     return rv;
 }
 
