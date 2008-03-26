@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="AmbulantFFplugin"
+	ProjectGUID="{4DCBBF00-3086-40AA-B1B7-4FD350835E95}"
 	RootNamespace="AmbulantFFplugin"
 	SccProjectName=""
 	SccLocalPath="">
@@ -18,7 +19,7 @@
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
+			CharacterSet="1">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
@@ -43,6 +44,7 @@
 				OutputFile="C:\Program Files\Mozilla Firefox\plugins\$(ProjectName).dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="..\..\lib\win32"
 				IgnoreDefaultLibraryNames="libcmt.lib"
 				ModuleDefinitionFile="..\..\src\firefox_plugin_win32\AmbulantFFplugin.def"
 				GenerateDebugInformation="TRUE"
@@ -271,8 +273,9 @@ copy /y .\AmbulantFFplugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\Ambu
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Running the XPIDL compiler and linker for $(InputName)"
-						CommandLine="..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpidl -m header -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
-..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpidl -m typelib -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
+						CommandLine="echo %cd%
+c:\moztools\bin\xpidl.exe -m header -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
+c:\moztools\bin\xpidl.exe -m typelib -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
 "
 						Outputs="AmbulantFFplugin.h;AmbulantFFplugin.xpt"/>
 				</FileConfiguration>
