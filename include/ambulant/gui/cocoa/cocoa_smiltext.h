@@ -62,7 +62,7 @@ class cocoa_smiltext_renderer :
 	void smiltext_changed();
 	void marker_seen(const char *name);
   private:
-	unsigned int _compute_rate(lib::size size, lib::rect r,  unsigned int dur); // Must go to engine
+	unsigned int _compute_rate(smil2::smiltext_align align, lib::size size, lib::rect r,  unsigned int dur); // Must go to engine
   private:
     NSTextStorage *m_text_storage;
 	NSLayoutManager *m_layout_manager;

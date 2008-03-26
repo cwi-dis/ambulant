@@ -332,6 +332,8 @@ cocoa_smiltext_renderer::smiltext_changed()
 		}
 		[m_text_storage endEditing];
 		m_engine.done();
+	} else {
+		AM_DBG lib::logger::get_logger()->debug("cocoa_smiltext::smiltext_changed: nothing changed");
 	}
 	bool finished = m_engine.is_finished();
 	[pool release];
@@ -362,6 +364,8 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 #define INFINITE_WIDTH 1000000
 #define INFINITE_HEIGHT 1000000
 	NSSize layout_size = visible_size;
+	bool has_hmovement = false;
+	bool has_vmovement = false;
 	switch(m_params.m_mode) {
 #if 0
 	// Handled through paragraph wrapping now
@@ -374,9 +378,11 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	case smil2::stm_scroll:
 	case smil2::stm_jump:
 		layout_size.height = INFINITE_HEIGHT;
+		has_vmovement = true;
 		break;
 	case smil2::stm_crawl:
 		layout_size.width = INFINITE_WIDTH;
+		has_hmovement = true;
 		break;
 	}
 
@@ -406,8 +412,12 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	}
 	// Now determine text placement (visible_origin)
 	int firstlineheight = 14; // XXXJACK: should compute this...
-	if (m_params.m_text_conceal == smil2::stc_initial
-		    || m_params.m_text_conceal == smil2::stc_both) {
+	if (has_hmovement &&
+			(m_params.m_text_conceal == smil2::stc_initial || m_params.m_text_conceal == smil2::stc_both)) {
+		visible_origin.x += visible_size.width;
+	}
+	if (has_vmovement &&
+			(m_params.m_text_conceal == smil2::stc_initial || m_params.m_text_conceal == smil2::stc_both)) {
 		visible_origin.y += visible_size.height;
 	} else if (m_params.m_text_place == smil2::stp_from_end) {
 		visible_origin.y += (visible_size.height - firstlineheight);
@@ -420,7 +430,8 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 		NSSize nsfull_size = [m_layout_manager usedRectForTextContainer: m_text_container].size;
 		lib::size full_size((int)nsfull_size.width, (int)nsfull_size.height);
 		unsigned int dur = 11; // XXXX
-		unsigned int rate = _compute_rate(full_size, r, dur);
+		smil2::smiltext_align align = smil2::sta_left; // XXX Incorrect: should get from NSWritingDirection of text.
+		unsigned int rate = _compute_rate(align, full_size, r, dur);
 		m_engine.set_rate(rate);
 		m_params = m_engine.get_params();
 	}
@@ -501,7 +512,7 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 }
 
 unsigned int
-cocoa_smiltext_renderer::_compute_rate(lib::size size, lib::rect r,  unsigned int dur) {
+cocoa_smiltext_renderer::_compute_rate(smil2::smiltext_align align, lib::size size, lib::rect r,  unsigned int dur) {
   /* First find the distance to travel during scroll for various values 
    * for textConceal and textPlace (w=window height, t=text height)
 
@@ -522,7 +533,57 @@ cocoa_smiltext_renderer::_compute_rate(lib::size size, lib::rect r,  unsigned in
 	case smil2::stm_crawl:
 		win = r.w;
 		txt = size.w;
-  //TBD crawl
+		// Convert any sta_left/sta_right values into sta_start/sta_end
+		// as defined by textWritingMode
+		switch (align) {
+		default:
+			break;
+		case smil2::sta_left:
+			//TBD adapt for textWritingMode		  
+			align = smil2::sta_start;
+			break;
+		case smil2::sta_right:
+			//TBD adapt for textWritingMode		  
+			align = smil2::sta_end;
+			break;
+		}
+		switch (m_params.m_text_conceal) {
+		default:
+		case smil2::stc_none:
+			switch (align) {
+			default:
+			case smil2::sta_start:
+				dst = txt > win ? txt - win : 0;
+				break;
+			case smil2::sta_end:
+				dst = txt;
+				break;
+			case smil2::sta_center:
+				dst = txt > win/2 ? txt - win/2 : 0; 
+				break;
+			}
+			break;
+		case smil2::stc_initial: // ignore textAlign
+			dst = txt;
+			break;
+		case smil2::stc_final:
+			switch (align) {
+			default:
+			case smil2::sta_start:
+				dst = txt;
+				break;
+			case smil2::sta_end:
+				dst = win+txt;
+				break;
+			case smil2::sta_center:
+				dst = win/2+txt;
+				break;
+			}
+			break;
+		case smil2::stc_both: // ignore textAlign
+			dst = win+txt;
+			break;
+		}
 		break;
 	case smil2::stm_scroll:
 		win = r.h;
