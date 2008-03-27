@@ -277,11 +277,25 @@ xpath_state_component::declare_state(const lib::node *state)
 		}
 		aroot = state->down();
 		while (aroot && aroot->is_data_node()) aroot = aroot->next();
+		if (aroot == NULL) {
+			// Second case: state element, but no content and no src URL.
+			// Create default document.
+			m_state = xmlReadDoc(BAD_CAST "<data/>\n", NULL, NULL, 0);
+			if (m_state == NULL) {
+				lib::logger::get_logger()->trace("xpath_state_component: xmlReadDoc(\"<data/>\") failed");
+				return;
+			}
+			// Finally we set up the XPath expression context
+			m_context = xmlXPathNewContext(m_state);
+			m_context->node = xmlDocGetRootElement(m_state);
+			m_context->funcLookupFunc = smil_function_lookup;
+			m_context->funcLookupData = (void *)this;
+			assert(m_context);
+			return;
+		}
+			
 	}
-	if (aroot == NULL) {
-		lib::logger::get_logger()->trace("xpath_state_component: empty <state> not allowed");
-		return;
-	}
+	assert(aroot);
 	const lib::node *arootnext = aroot->next();
 	while (arootnext) {
 		if (!arootnext->is_data_node()) {
@@ -428,7 +442,9 @@ xpath_state_component::new_value(const char *ref, const char *where, const char 
 	}
 	xmlChar *result_str = xmlXPathCastToString(result);
 	xmlXPathFreeObject(result);
-	// Now compute the node-set expression and check that it begets a single node
+	// Now compute the node-set expression and check that it begets a single node.
+	// A missing ref is the current node.
+	if (ref == NULL) ref = ".";
 	result = xmlXPathEvalExpression(BAD_CAST ref, m_context);
 	if (result == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: newvalue: cannot evaluate ref=\"%s\"", ref);
@@ -456,18 +472,32 @@ xpath_state_component::new_value(const char *ref, const char *where, const char 
 
 	// Insert in the right place	
 	if (where && strcmp(where, "before") == 0) {
-		xmlAddPrevSibling(refnodeptr, newnodeptr);
+		xmlNodePtr rv = xmlAddPrevSibling(refnodeptr, newnodeptr);
+		if (rv == NULL) {
+			lib::logger::get_logger()->trace("xpath_state_component: <newvalue ref=\"%s\" name=\"%s\">: xmlAddPrevSibling failed", ref, name);
+			return;
+		}
 	} else
 	if (where && strcmp(where, "after") == 0) {
-		xmlAddNextSibling(refnodeptr, newnodeptr);
+		xmlNodePtr rv = xmlAddNextSibling(refnodeptr, newnodeptr);
+		if (rv == NULL) {
+			lib::logger::get_logger()->trace("xpath_state_component: <newvalue ref=\"%s\" name=\"%s\">: xmlAddNextSibling failed", ref, name);
+			return;
+		}
 	} else
 	if (where == NULL || strcmp(where, "child") == 0) {
-		xmlAddChild(refnodeptr, newnodeptr);
+		xmlNodePtr rv = xmlAddChild(refnodeptr, newnodeptr);
+		if (rv == NULL) {
+			lib::logger::get_logger()->trace("xpath_state_component: <newvalue ref=\"%s\" name=\"%s\">: xmlAddChild failed", ref, name);
+			return;
+		}
 	} else {
 		lib::logger::get_logger()->trace("xpath_state_component: newvalue: where=\"%s\": unknown location", where);
 		xmlFreeNode(newnodeptr);
 		return;
 	}
+	// Re-set the context: it may have changed.
+	m_context->node = xmlDocGetRootElement(m_state);
 	_check_state_change(newnodeptr); // XXX Or refnodeptr? both?
 }
 	
@@ -501,6 +531,8 @@ xpath_state_component::del_value(const char *ref)
 	xmlNodePtr refnodeptr = *nodeset->nodeTab;
 	xmlUnlinkNode(refnodeptr);
 	xmlFreeNode(refnodeptr);
+	// Re-set the context: it may have changed.
+	m_context->node = xmlDocGetRootElement(m_state);
 }
 	
 void
@@ -513,8 +545,8 @@ xpath_state_component::send(const lib::node *submission)
 	}
 	assert(submission);
 	const char *method = submission->get_attribute("method");
-	if (method && strcmp(method, "post") != 0) {
-		lib::logger::get_logger()->trace("xpath_state_component: only method=\"post\" implemented");
+	if (method && strcmp(method, "put") != 0) {
+		lib::logger::get_logger()->trace("xpath_state_component: only method=\"put\" implemented");
 		return;
 	}
 	const char *replace = submission->get_attribute("replace");
