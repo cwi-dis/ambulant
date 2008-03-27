@@ -264,7 +264,9 @@ xpath_state_component::declare_state(const lib::node *state)
 			std::string src_filename = src_url.get_file();
 			m_state = xmlReadFile(src_filename.c_str(), NULL, 0);
 			if (m_state) {
-				// Finally we set up the XPath expression context
+				// Finally we set up the XPath expression context.
+				// NOTE: m_context->node has to be re-set before every evaluation,
+				// it seems. Found at <http://mail.gnome.org/archives/xml/2007-November/msg00013.html>.
 				m_context = xmlXPathNewContext(m_state);
 				m_context->node = xmlDocGetRootElement(m_state);
 				m_context->funcLookupFunc = smil_function_lookup;
@@ -358,6 +360,7 @@ xpath_state_component::bool_expression(const char *expr)
 		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
 		return true;
 	}
+	m_context->node = xmlDocGetRootElement(m_state);
 	xmlXPathObjectPtr result = xmlXPathEvalExpression(BAD_CAST expr, m_context);
 	if (result == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: cannot evaluate expr=\"%s\"", expr);
@@ -393,6 +396,7 @@ xpath_state_component::set_value(const char *var, const char *expr)
 		return;
 	}
 	// Evaluate the expression, get a string as result
+	m_context->node = xmlDocGetRootElement(m_state);
 	xmlXPathObjectPtr result = xmlXPathEvalExpression(BAD_CAST expr, m_context);
 	if (result == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: setvalue: cannot evaluate expr=\"%s\"", expr);
@@ -401,6 +405,7 @@ xpath_state_component::set_value(const char *var, const char *expr)
 	xmlChar *result_str = xmlXPathCastToString(result);
 	xmlXPathFreeObject(result);
 	// Now compute the node-set expression and check that it begets a single node
+	m_context->node = xmlDocGetRootElement(m_state);
 	result = xmlXPathEvalExpression(BAD_CAST var, m_context);
 	if (result == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: setvalue: cannot evaluate var=\"%s\"", var);
@@ -436,6 +441,7 @@ xpath_state_component::new_value(const char *ref, const char *where, const char 
 		return;
 	}
 	// Evaluate the expression, get a string as result
+	m_context->node = xmlDocGetRootElement(m_state);
 	xmlXPathObjectPtr result = xmlXPathEvalExpression(BAD_CAST expr, m_context);
 	if (result == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: newvalue: cannot evaluate expr=\"%s\"", expr);
@@ -446,6 +452,7 @@ xpath_state_component::new_value(const char *ref, const char *where, const char 
 	// Now compute the node-set expression and check that it begets a single node.
 	// A missing ref is the current node.
 	if (ref == NULL) ref = ".";
+	m_context->node = xmlDocGetRootElement(m_state);
 	result = xmlXPathEvalExpression(BAD_CAST ref, m_context);
 	if (result == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: newvalue: cannot evaluate ref=\"%s\"", ref);
@@ -498,7 +505,6 @@ xpath_state_component::new_value(const char *ref, const char *where, const char 
 		return;
 	}
 	// Re-set the context: it may have changed.
-	m_context->node = xmlDocGetRootElement(m_state);
 	_check_state_change(newnodeptr); // XXX Or refnodeptr? both?
 }
 	
@@ -511,6 +517,7 @@ xpath_state_component::del_value(const char *ref)
 		return;
 	}
 	// Compute the node-set expression and check that it begets a single node
+	m_context->node = xmlDocGetRootElement(m_state);
 	xmlXPathObjectPtr result = xmlXPathEvalExpression(BAD_CAST ref, m_context);
 	if (result == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: delvalue: cannot evaluate ref=\"%s\"", ref);
@@ -532,8 +539,6 @@ xpath_state_component::del_value(const char *ref)
 	xmlNodePtr refnodeptr = *nodeset->nodeTab;
 	xmlUnlinkNode(refnodeptr);
 	xmlFreeNode(refnodeptr);
-	// Re-set the context: it may have changed.
-	m_context->node = xmlDocGetRootElement(m_state);
 }
 	
 void
@@ -544,6 +549,7 @@ xpath_state_component::send(const lib::node *submission)
 		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
 		return;
 	}
+	m_context->node = xmlDocGetRootElement(m_state);
 	assert(submission);
 	const char *method = submission->get_attribute("method");
 	if (method && strcmp(method, "put") != 0) {
@@ -578,6 +584,7 @@ xpath_state_component::string_expression(const char *expr)
 		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
 		return "";
 	}
+	m_context->node = xmlDocGetRootElement(m_state);
 	xmlXPathObjectPtr result = xmlXPathEvalExpression(BAD_CAST expr, m_context);
 	if (result == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: cannot evaluate \"{%s}\"", expr);
@@ -609,9 +616,13 @@ xpath_state_component::_check_state_change(xmlNodePtr changed)
 	std::vector<std::pair<std::string, common::state_change_callback* > >::iterator i;
 	for (i=m_state_change_callbacks.begin(); i != m_state_change_callbacks.end(); i++) {
 		std::string& ref = (*i).first;
+		AM_DBG lib::logger::get_logger()->debug("check_state_change: check for \"%s\"", ref.c_str());
+		m_context->node = xmlDocGetRootElement(m_state);
 		xmlXPathObjectPtr result = xmlXPathEvalExpression(BAD_CAST ref.c_str(), m_context);
+		AM_DBG lib::logger::get_logger()->debug("... result=0x%x, type=%d", result, result?result->type:0);
 		if (result != NULL && result->type == XPATH_NODESET) {
 			xmlNodeSetPtr nodeset = result->nodesetval;
+			AM_DBG lib::logger::get_logger()->debug("... nodeset=0x%x count=%d", nodeset, nodeset?nodeset->nodeNr:0);
 			if (nodeset) {
 				int  j;
 				for (j=0; j<nodeset->nodeNr; j++) {
