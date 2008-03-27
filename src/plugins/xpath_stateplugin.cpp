@@ -263,17 +263,18 @@ xpath_state_component::declare_state(const lib::node *state)
 			}
 			std::string src_filename = src_url.get_file();
 			m_state = xmlReadFile(src_filename.c_str(), NULL, 0);
-			if (m_state == NULL) {
-				lib::logger::get_logger()->trace("xpath_state_component: xmlReadFile(%s) failed", src_filename.c_str());
+			if (m_state) {
+				// Finally we set up the XPath expression context
+				m_context = xmlXPathNewContext(m_state);
+				m_context->node = xmlDocGetRootElement(m_state);
+				m_context->funcLookupFunc = smil_function_lookup;
+				m_context->funcLookupData = (void *)this;
+				assert(m_context);
 				return;
 			}
-			// Finally we set up the XPath expression context
-			m_context = xmlXPathNewContext(m_state);
-			m_context->node = xmlDocGetRootElement(m_state);
-			m_context->funcLookupFunc = smil_function_lookup;
-			m_context->funcLookupData = (void *)this;
-			assert(m_context);
-			return;
+			// Otherwise we fall through and use the default (in-line) state.
+			lib::logger::get_logger()->trace("xpath_state_component: xmlReadFile(%s) failed", src_filename.c_str());
+
 		}
 		aroot = state->down();
 		while (aroot && aroot->is_data_node()) aroot = aroot->next();
