@@ -289,33 +289,35 @@ cocoa_smiltext_renderer::smiltext_changed()
 					// All other directions are treated as left-to-right
 					[ps setBaseWritingDirection: NSWritingDirectionLeftToRight];
 				}
-				// Set the paragraph text alignment
-				switch (m_cur_para_align) {
-				case smil2::sta_start:
-					if (m_cur_para_writing_mode == smil2::stw_rl_tb) {
-						[ps setAlignment: NSRightTextAlignment];
-					} else {
-						// All other directions are treated as left-to-right
+				if (m_params.m_mode != smil2::stm_crawl) {
+					// Set the paragraph text alignment, unless we have moving text
+					switch (m_cur_para_align) {
+					case smil2::sta_start:
+						if (m_cur_para_writing_mode == smil2::stw_rl_tb) {
+							[ps setAlignment: NSRightTextAlignment];
+						} else {
+							// All other directions are treated as left-to-right
+							[ps setAlignment: NSLeftTextAlignment];
+						}
+						break;
+					case smil2::sta_end:
+						if (m_cur_para_writing_mode == smil2::stw_rl_tb) {
+							[ps setAlignment: NSLeftTextAlignment];
+						} else {
+							// All other directions are treated as left-to-right
+							[ps setAlignment: NSRightTextAlignment];
+						}
+						break;
+					case smil2::sta_left:
 						[ps setAlignment: NSLeftTextAlignment];
-					}
-					break;
-				case smil2::sta_end:
-					if (m_cur_para_writing_mode == smil2::stw_rl_tb) {
-						[ps setAlignment: NSLeftTextAlignment];
-					} else {
-						// All other directions are treated as left-to-right
+						break;
+					case smil2::sta_right:
 						[ps setAlignment: NSRightTextAlignment];
+						break;
+					case smil2::sta_center:
+						[ps setAlignment: NSCenterTextAlignment];
+						break;
 					}
-					break;
-				case smil2::sta_left:
-					[ps setAlignment: NSLeftTextAlignment];
-					break;
-				case smil2::sta_right:
-					[ps setAlignment: NSRightTextAlignment];
-					break;
-				case smil2::sta_center:
-					[ps setAlignment: NSCenterTextAlignment];
-					break;
 				}
 				// Set the paragraph wrap option
 				if (m_cur_para_wrap)
@@ -412,17 +414,33 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	}
 	// Now determine text placement (visible_origin)
 	int firstlineheight = 14; // XXXJACK: should compute this...
-	if (has_hmovement &&
-			(m_params.m_text_conceal == smil2::stc_initial || m_params.m_text_conceal == smil2::stc_both)) {
-		visible_origin.x += visible_size.width;
-	}
-	if (has_vmovement &&
-			(m_params.m_text_conceal == smil2::stc_initial || m_params.m_text_conceal == smil2::stc_both)) {
-		visible_origin.y += visible_size.height;
-	} else if (m_params.m_text_place == smil2::stp_from_end) {
-		visible_origin.y += (visible_size.height - firstlineheight);
-	} else if (m_params.m_text_place == smil2::stp_from_center) {
-		visible_origin.y += (visible_size.height - firstlineheight) / 2;
+	if (has_hmovement) {
+		// For crawl, textConceal and textPlace determine horizontal position
+		if (m_params.m_text_conceal == smil2::stc_initial || m_params.m_text_conceal == smil2::stc_both) {
+			visible_origin.x += visible_size.width;
+		} else if (m_cur_para_align == smil2::sta_right || m_cur_para_align == smil2::sta_end) {
+			// XXX Incorrect: should look at writing direction...
+			visible_origin.x += visible_size.width;
+		} else if (m_cur_para_align == smil2::sta_center) {
+			visible_origin.x += visible_size.width / 2;
+		}
+	} else if (has_vmovement) {
+		// For scroll and jump, textConceal and textAlign determine vertical position
+		if (m_params.m_text_conceal == smil2::stc_initial || m_params.m_text_conceal == smil2::stc_both) {
+			visible_origin.y += visible_size.height;
+		} else if (m_params.m_text_place == smil2::stp_from_end) {
+			visible_origin.y += (visible_size.height - firstlineheight);
+		} else if (m_params.m_text_place == smil2::stp_from_center) {
+			visible_origin.y += (visible_size.height - firstlineheight) / 2;
+		}
+	} else {
+		// For stationary text, textPlace determines vertical position
+		if (m_params.m_text_place == smil2::stp_from_end) {
+			visible_origin.y += (visible_size.height - firstlineheight);
+		} else if (m_params.m_text_place == smil2::stp_from_center) {
+			visible_origin.y += (visible_size.height - firstlineheight) / 2;
+		}
+
 	}
 	// If we do auto-scrolling we should now layout the text, so we can determine the rate
 	if (m_engine.is_auto_rate()) {
@@ -430,7 +448,7 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 		NSSize nsfull_size = [m_layout_manager usedRectForTextContainer: m_text_container].size;
 		lib::size full_size((int)nsfull_size.width, (int)nsfull_size.height);
 		unsigned int dur = 11; // XXXX
-		smil2::smiltext_align align = smil2::sta_left; // XXX Incorrect: should get from NSWritingDirection of text.
+		smil2::smiltext_align align = m_cur_para_align;
 		unsigned int rate = _compute_rate(align, full_size, r, dur);
 		m_engine.set_rate(rate);
 		m_params = m_engine.get_params();
