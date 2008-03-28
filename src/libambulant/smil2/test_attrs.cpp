@@ -324,8 +324,10 @@ bool test_attrs::load_test_attrs(const std::string& filename) {
 			if(name && value) {
 				active_tests_attrs_map[name] = value;
 				AM_DBG lib::logger::get_logger()->debug("systemTest %s: %s", name, value);
-				if (std::string(name) == "systemLanguage")
+				if (std::string(name) == "systemLanguage") {
+					clear_languages();
 					add_language(value, 1.0);
+				}
 			}
 		} else if(tag == "customTest") {
 			const char *name = n->get_attribute("name");
