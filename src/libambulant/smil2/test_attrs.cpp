@@ -324,6 +324,8 @@ bool test_attrs::load_test_attrs(const std::string& filename) {
 			if(name && value) {
 				active_tests_attrs_map[name] = value;
 				AM_DBG lib::logger::get_logger()->debug("systemTest %s: %s", name, value);
+				if (std::string(name) == "systemLanguage")
+					add_language(value, 1.0);
 			}
 		} else if(tag == "customTest") {
 			const char *name = n->get_attribute("name");
@@ -352,6 +354,7 @@ void test_attrs::set_default_tests_attrs() {
 	active_tests_attrs_map["systemCaptions"] = "on";
 	active_tests_attrs_map["systemCPU"] = "unknown";
 	active_tests_attrs_map["systemLanguage"] = "en";
+	add_language("en",1.0);
 #if defined(AMBULANT_PLATFORM_MACOS)
 	active_tests_attrs_map["systemOperatingSystem"] = "macos";
 #elif defined(AMBULANT_PLATFORM_WIN32)
@@ -504,7 +507,7 @@ test_attrs::get_system_language_weight(std::string lang)
 	AM_DBG lib::logger::get_logger()->trace("get_system_language_weight('%s')", lang.c_str());
 	while (active_language_map.count(lang) == 0) {
 		// See if we can split the language (nl-be -> nl, for example)
-		int dashPos = lang.rfind('-');
+		size_t dashPos = lang.rfind('-');
 		if (dashPos == std::string::npos) {
 			AM_DBG lib::logger::get_logger()->trace("get_system_language_weight('%s') not found -> 0.0", lang.c_str());
 			return 0.0;
