@@ -101,6 +101,18 @@ qt_mainloop::qt_mainloop(qt_gui* gui, int mbheight)
 	m_player = create_player(filename);
 }
 
+qt_mainloop::~qt_mainloop() 
+{
+	if (m_player) {
+		delete m_player;
+		m_player = NULL;
+	}
+	if (m_doc) {
+		delete m_doc;
+		m_doc = NULL;
+	}
+}
+
 ambulant::common::player*
 qt_mainloop::create_player(const char* filename) {
 	ambulant::common::player* player;

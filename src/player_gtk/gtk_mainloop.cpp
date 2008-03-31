@@ -123,6 +123,10 @@ gtk_mainloop::~gtk_mainloop()
 		delete m_player;
 		m_player = NULL;
 	}
+	if (m_doc) {
+		delete m_doc;
+		m_doc = NULL;
+	}
 	delete m_gtk_widget;
 	//delete m_window_factory;
 }

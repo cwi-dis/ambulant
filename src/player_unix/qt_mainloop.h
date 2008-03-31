@@ -65,6 +65,7 @@ class qt_mainloop :
   //  static bool m_done;
   public:
     qt_mainloop(qt_gui* parent, int mbheight);
+	~qt_mainloop();
 	
 	void init_playable_factory();
 	void init_datasource_factory();
