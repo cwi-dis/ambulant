@@ -615,7 +615,7 @@ AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_render(0x%x): ltrb=(%d,%d,
 		gdk_draw_layout(GDK_DRAWABLE (bg_pixmap),
 				bg_gc , 0-offset.x, 0-offset.y, m_bg_layout);
 		g_object_unref (G_OBJECT (bg_gc));
-//DBG*/		gdk_pixmap_dump(bg_pixmap, "bg");
+/*DBG*/		gdk_pixmap_dump(bg_pixmap, "bg");
 		GdkPixbuf* bg_pixbuf = gdk_pixbuf_get_from_drawable
 		  			       	(NULL, bg_pixmap, NULL,
 						 0,0,0,0,W,H);
@@ -631,7 +631,7 @@ AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_render(0x%x): ltrb=(%d,%d,
 		gdk_draw_layout(GDK_DRAWABLE (text_pixmap),
 				text_gc , 0-offset.x, 0-offset.y, m_pango_layout);
 		g_object_unref (G_OBJECT (text_gc));
-//DBG*/		gdk_pixmap_dump(text_pixmap, "text");
+/*DBG*/		gdk_pixmap_dump(text_pixmap, "text");
 		GdkPixbuf* text_pixbuf = gdk_pixbuf_get_from_drawable
 		  			       	(NULL, text_pixmap, NULL,
 						0,0,0,0,W,H);
@@ -641,7 +641,7 @@ AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_render(0x%x): ltrb=(%d,%d,
 		// draw the blended pixbuf on the screen
 		gdk_draw_pixbuf(window->get_ambulant_pixmap(),
 				gc, screen_pixbuf, 0, 0, L, T, W, H, GDK_RGB_DITHER_NONE,0,0);
-//DBG*/		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen1");
+/*DBG*/		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen1");
 		g_object_unref (G_OBJECT (text_pixbuf));
 		g_object_unref (G_OBJECT (bg_pixbuf));
 		g_object_unref (G_OBJECT (screen_pixbuf));

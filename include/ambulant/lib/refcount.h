@@ -40,6 +40,8 @@
 #ifdef _MSC_VER
 #pragma warning(disable : 4251)
 #endif
+// reference couting should be atomic
+//#define USE_REF_COUNT_SEMAPHORE
 
 namespace ambulant {
 
@@ -72,18 +74,26 @@ class basic_atomic_count {
 	
 	/// Increment the counter.
 	long operator++() {
+#ifdef	USE_REF_COUNT_SEMAPHORE
 		m_cs.enter();
-		++m_value;
+		long rv = ++m_value;
 		m_cs.leave();
-		return m_value;
+		return rv;;
+#else //USE_REF_COUNT_SEMAPHORE
+		return ++m_value;
+#endif//USE_REF_COUNT_SEMAPHORE
 	}
 	
 	/// Decrement the counter.
 	long operator--() {
+#ifdef	USE_REF_COUNT_SEMAPHORE
 		m_cs.enter();
-		--m_value;
+		long rv = --m_value;
 		m_cs.leave();
-		return m_value;
+		return rv;
+#else //USE_REF_COUNT_SEMAPHORE
+		return --m_value;
+#endif//USE_REF_COUNT_SEMAPHORE
 	}
 	
 	/// Return the current value of the counter.
@@ -93,7 +103,9 @@ class basic_atomic_count {
 	basic_atomic_count(basic_atomic_count const &);
 	basic_atomic_count & operator=(basic_atomic_count const &);
 	long m_value;
+#ifdef	USE_REF_COUNT_SEMAPHORE
 	T m_cs;
+#endif//USE_REF_COUNT_SEMAPHORE
 };
 
 /// An atomic counter using the standard critical_section for locking.

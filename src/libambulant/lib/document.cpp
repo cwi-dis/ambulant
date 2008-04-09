@@ -136,6 +136,7 @@ lib::document::create_from_url(common::factories* factory, const net::url& u) {
 	if (!builder.assert_root_tag("smil")) {
 		delete d;
 		logger::get_logger()->error(gettext("%s: Not a SMIL document"), u.get_url().c_str());
+		logger::get_logger()->trace(gettext("expected: `%s', got: `%s'."), "smil", builder.get_tree()->get_local_name().c_str());
 		return NULL;
 	}
 	d->set_root(builder.detach());

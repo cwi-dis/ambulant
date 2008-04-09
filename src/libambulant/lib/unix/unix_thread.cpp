@@ -33,7 +33,6 @@ using namespace ambulant;
 
 lib::unix::thread::thread()
 :	m_exit_requested(false),
-    m_exit_done(false),
 	m_running(false),
 	m_started(false)
 {
@@ -41,19 +40,18 @@ lib::unix::thread::thread()
 
 lib::unix::thread::~thread()
 {
-	if (m_running || (m_started && !m_exit_done))
+	if (m_running)
 		stop();
 }
 
 bool 
 lib::unix::thread::start()
 {
-	if (m_started) return false;
+	if (m_started || m_exit_requested)
+		return false;
 	
-    assert(!m_running);
-    assert(!m_exit_requested);
-    assert(!m_exit_done);
-	m_started = true;
+	assert(!m_running);
+	m_running = m_started = true;
 	if (pthread_create(&m_thread, NULL, &thread::threadproc, this) < 0 ) {
 		perror("pthread_create");
 		abort();
@@ -65,7 +63,6 @@ lib::unix::thread::start()
 void
 lib::unix::thread::stop()
 {
-    assert(!m_exit_done);
 	m_exit_requested = true;
 	/* TODO: wake thread up */
 	if (pthread_equal(m_thread, pthread_self())) {
@@ -75,7 +72,6 @@ lib::unix::thread::stop()
 			perror("pthread_join in unix::thread::stop()");
 		}
 	}
-	m_exit_done = true;
 }
 	
 bool
@@ -109,9 +105,6 @@ lib::unix::thread::threadproc(void *pParam)
 {
 	thread* p = static_cast<thread*>(pParam);
 	assert(p->m_started);
-	assert(!p->m_running);
-	assert(!p->m_exit_done);
-	p->m_running = true;
 	if (!p->m_exit_requested) (void)p->run();
 	p->m_running = false;
 	pthread_exit(NULL);

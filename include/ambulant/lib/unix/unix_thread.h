@@ -57,10 +57,9 @@ class thread : public ambulant::lib::thread {
 	static void *threadproc(void *pParam);
 	
 	pthread_t m_thread;
-	bool m_exit_requested;
-	bool m_exit_done;
-	bool m_running;
-	bool m_started;
+	bool m_exit_requested; // true as soon as thread exit is imminent
+	bool m_running;	// true as soon as thread running is imminent
+	bool m_started; // true as soon as start() as been called
 };
 
 } // namespace unix
