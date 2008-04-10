@@ -67,6 +67,8 @@ enum sync_event {
 #ifdef WITH_SMIL30
 	// State change event
 	state_change_event,
+	// tev in smilText seen
+	tev_event,
 #endif
 	
 	// DOM calls

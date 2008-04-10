@@ -364,10 +364,7 @@ smiltext_engine::_update() {
 			}
 			//
 			// Finally, if the node has an ID we raise a marker event.
-			// In the SMIL code this is actually specified as a beginEvent
-			// but there's magic in the parsing of the begin attribute
-			// to translate this to a marker event on the smiltext node
-			// in case the beginEvent references a tev/clear.
+			// There's magic to make tevEvent and markerEvent be unified.
 			const char *id = item->get_attribute("id");
 			if (id) {
 				m_client->marker_seen(id);

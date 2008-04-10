@@ -319,6 +319,7 @@ ambulant::smil2::sync_event_from_str(const std::string& s) {
 		events[st("marker")] = tn_marker_event;
 #ifdef WITH_SMIL30
 		events[st("stateChange")] = state_change_event;
+		events[st("tevEvent")] = tev_event;
 #endif
 		events[st("accesskey")] = accesskey_event;
 	}
@@ -346,6 +347,7 @@ ambulant::smil2::sync_event_str(sync_event ev) {
 		case tn_marker_event: return "marker";
 #ifdef WITH_SMIL30
 		case state_change_event: return "stateChange";
+		case tev_event: return "tevEvent";
 #endif
 		case accesskey_event: return "accesskey";
 		case tn_dom_call: return "beginElement()";

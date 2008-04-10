@@ -273,6 +273,7 @@
 		089C1669FE841209C02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "AmbulantWebKitPlugin" */;
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 089C166AFE841209C02AAC07 /* AmbulantWebKitPlugin */;
 			projectDirPath = "";
@@ -426,6 +427,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AmbulantWebKitPlugin_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					"WITH_EXTERNAL_DOM=1",
 					"AM_PREFER_FFMPEG=1",
 					"WITH_LTDL_PLUGINS=1",
 					"WITH_SDL=1",

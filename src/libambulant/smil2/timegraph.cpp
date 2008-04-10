@@ -350,7 +350,7 @@ void timegraph::add_begin_sync_rules(time_node *tn) {
 				// Special case code for beginEvent on interior smiltext nodes:
 				// these are implemented as marker events (because interior smiltext
 				// nodes have no corresponding time_node).
-				if (event == tn_begin_event) {
+				if (event == tev_event) {
 					// Get the node referenced by base
 					const lib::node *n = tn->dom_node();
 					assert(n);
@@ -459,7 +459,7 @@ void timegraph::add_end_sync_rules(time_node *tn) {
 				// Special case code for beginEvent on interior smiltext nodes:
 				// these are implemented as marker events (because interior smiltext
 				// nodes have no corresponding time_node).
-				if (event == tn_begin_event) {
+				if (event == tev_event) {
 					// Get the node referenced by base
 					const lib::node *n = tn->dom_node();
 					assert(n);

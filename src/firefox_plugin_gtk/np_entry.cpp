@@ -42,6 +42,11 @@
 #include "npapi.h"
 #include "npupp.h"
 
+#define AM_DBG
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 #ifndef HIBYTE
 #define HIBYTE(x) ((((uint32)(x)) & 0xff00) >> 8)
 #endif
@@ -54,6 +59,7 @@ NPError OSCALL NP_GetEntryPoints(NPPluginFuncs* pFuncs);
 
 NPError OSCALL NP_GetEntryPoints(NPPluginFuncs* pFuncs)
 {
+  AM_DBG fprintf(stderr, "ambulant_plugin: NP_GetEntryPoints(0x%x) called", pFuncs);
   if(pFuncs == NULL)
     return NPERR_INVALID_FUNCTABLE_ERROR;
 #ifdef XP_MACOSX
@@ -104,6 +110,7 @@ NP_Initialize(NPNetscapeFuncs* pFuncs
 #endif
               )
 {
+  AM_DBG fprintf(stderr, "ambulant_plugin: NP_Initialize(0x%x) called", pFuncs);
   if(pFuncs == NULL)
     return NPERR_INVALID_FUNCTABLE_ERROR;
 
