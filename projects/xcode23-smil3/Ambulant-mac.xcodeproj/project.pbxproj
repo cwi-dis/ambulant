@@ -257,7 +257,6 @@
 		049656A80BCAEA7D002C00DF /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656180BCAEA42002C00DF /* libz.dylib */; };
 		049656B20BCAEC13002C00DF /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656B10BCAEC13002C00DF /* Carbon.framework */; };
 		049656B30BCAEC13002C00DF /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656B10BCAEC13002C00DF /* Carbon.framework */; };
-		049FD7630D8032FC004335ED /* libfaad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0480CCFF0CDD1D5C0025344B /* libfaad.a */; };
 		04E13B240BD786120074AF09 /* state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B230BD786120074AF09 /* state.cpp */; };
 		04E13B250BD786120074AF09 /* state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B230BD786120074AF09 /* state.cpp */; };
 		04E13B280BD786380074AF09 /* cocoa_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B270BD786380074AF09 /* cocoa_smiltext.mm */; };
@@ -746,7 +745,6 @@
 				049656A70BCAEA7D002C00DF /* libSDL.a in Frameworks */,
 				049656A80BCAEA7D002C00DF /* libz.dylib in Frameworks */,
 				049656B30BCAEC13002C00DF /* Carbon.framework in Frameworks */,
-				049FD7630D8032FC004335ED /* libfaad.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
