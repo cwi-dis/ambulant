@@ -1,17 +1,17 @@
 Microsoft Visual Studio Solution File, Format Version 8.00
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BasicUsageEnvironment", "BasicUsageEnvironment\BasicUsageEnvironment.vcproj", "{88B5AE0B-EA79-49B3-A0BF-0B0E2A4ED295}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BasicUsageEnvironment", "BasicUsageEnvironment.vcproj", "{88B5AE0B-EA79-49B3-A0BF-0B0E2A4ED295}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "groupsock", "groupsock\groupsock.vcproj", "{1C6B38DA-15AC-4567-973E-328BA8929EF6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "groupsock", "groupsock.vcproj", "{1C6B38DA-15AC-4567-973E-328BA8929EF6}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liveMedia", "liveMedia\liveMedia.vcproj", "{46E9776A-96F3-4CB7-8CE2-911B30275725}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liveMedia", "liveMedia.vcproj", "{46E9776A-96F3-4CB7-8CE2-911B30275725}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UsageEnvironment", "UsageEnvironment\UsageEnvironment.vcproj", "{D8AC6EF9-27B6-4AB9-BE18-69F613791390}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UsageEnvironment", "UsageEnvironment.vcproj", "{D8AC6EF9-27B6-4AB9-BE18-69F613791390}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
