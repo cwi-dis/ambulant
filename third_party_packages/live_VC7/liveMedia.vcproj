@@ -20,7 +20,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\live\BasicUsageEnvironment\include;..\live\groupsock\include;..\live\liveMedia\include;..\live\UsageEnvironment\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;LOCALE_NOT_USED"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="5"
@@ -60,7 +60,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;LOCALE_NOT_USED"
 				RuntimeLibrary="4"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -223,6 +223,9 @@
 			</File>
 			<File
 				RelativePath="..\live\liveMedia\JPEGVideoSource.cpp">
+			</File>
+			<File
+				RelativePath="..\live\liveMedia\Locale.cpp">
 			</File>
 			<File
 				RelativePath="..\live\liveMedia\Media.cpp">
@@ -445,6 +448,9 @@
 			</File>
 			<File
 				RelativePath="..\live\liveMedia\RTSPClient.cpp.save">
+			</File>
+			<File
+				RelativePath="..\live\liveMedia\RTSPCommon.cpp">
 			</File>
 			<File
 				RelativePath="..\live\liveMedia\RTSPServer.cpp">

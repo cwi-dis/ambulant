@@ -7,6 +7,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AmbulantPlayer", "AmbulantP
 	ProjectSection(ProjectDependencies) = postProject
 		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67} = {F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785} = {DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}
+		{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A} = {EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "plugin", "plugin.vcproj", "{D2E0FB0F-6190-4A38-BAFF-3FC75104D568}"
@@ -30,6 +31,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pyamplugin_state", "pyamplu
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "plugin_state_xpath", "plugin_state.vcproj", "{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785} = {DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "plugin_ffmpeg", "plugin_ffmpeg.vcproj", "{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785} = {DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}
 	EndProjectSection
@@ -113,6 +119,7 @@ Global
 		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.ReleaseNoXercesNoHtml.ActiveCfg = Release|Win32
 		{0B3487D4-66D2-447D-AC57-1DFE1E2D2510}.ReleaseShlib.ActiveCfg = Release|Win32
 		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.Debug.ActiveCfg = Debug|Win32
+		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.Debug.Build.0 = Debug|Win32
 		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.DebugNoXerces.ActiveCfg = Debug|Win32
 		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.DebugNoXercesNoHtml.ActiveCfg = Debug|Win32
 		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.DebugShlib.ActiveCfg = Debug|Win32
@@ -122,6 +129,17 @@ Global
 		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.ReleaseNoXercesNoHtml.ActiveCfg = Release|Win32
 		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.ReleaseShlib.ActiveCfg = Release|Win32
 		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}.ReleaseShlib.Build.0 = Release|Win32
+		{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}.Debug.ActiveCfg = Debug|Win32
+		{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}.Debug.Build.0 = Debug|Win32
+		{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}.DebugNoXerces.ActiveCfg = Debug|Win32
+		{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}.DebugNoXercesNoHtml.ActiveCfg = Debug|Win32
+		{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}.DebugShlib.ActiveCfg = Debug|Win32
+		{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}.DebugShlib.Build.0 = Debug|Win32
+		{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}.Release.ActiveCfg = Release|Win32
+		{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}.ReleaseNoXerces.ActiveCfg = Release|Win32
+		{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}.ReleaseNoXercesNoHtml.ActiveCfg = Release|Win32
+		{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}.ReleaseShlib.ActiveCfg = Release|Win32
+		{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}.ReleaseShlib.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
