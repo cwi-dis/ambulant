@@ -628,7 +628,7 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 		gdk_draw_layout(GDK_DRAWABLE (bg_pixmap),
 				bg_gc , 0-offset.x, 0-offset.y, m_bg_layout);
 		g_object_unref (G_OBJECT (bg_gc));
-//*DBG*/		gdk_pixmap_dump(bg_pixmap, "bg");
+//DBG		gdk_pixmap_dump(bg_pixmap, "bg");
 		GdkPixbuf* bg_pixbuf = gdk_pixbuf_get_from_drawable
 		  			       	(NULL, bg_pixmap, NULL,
 						 0,0,0,0,W,H);
@@ -637,14 +637,14 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 		gdk_pixbuf_blend (screen_pixbuf, rc, bg_pixbuf, rc, 
 				  m_alpha_chroma, m_alpha_media_bg,
 				  m_chroma_low, m_chroma_high, m_transparent);
-///DBG*/		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen0");
+//DBG		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen0");
 
 		// draw m_pango_layout containing smilText runs with text in
 		// required colors and background in m_transparant color
 		gdk_draw_layout(GDK_DRAWABLE (text_pixmap),
 				text_gc , 0-offset.x, 0-offset.y, m_pango_layout);
 		g_object_unref (G_OBJECT (text_gc));
-/*DBG*/		gdk_pixmap_dump(text_pixmap, "text");
+//DBG		gdk_pixmap_dump(text_pixmap, "text");
 		GdkPixbuf* text_pixbuf = gdk_pixbuf_get_from_drawable
 		  			       	(NULL, text_pixmap, NULL,
 						0,0,0,0,W,H);
@@ -654,7 +654,7 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 		// draw the blended pixbuf on the screen
 		gdk_draw_pixbuf(window->get_ambulant_pixmap(),
 				gc, screen_pixbuf, 0, 0, L, T, W, H, GDK_RGB_DITHER_NONE,0,0);
-//*DBG*/		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen1");
+//DBG		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen1");
 		g_object_unref (G_OBJECT (text_pixbuf));
 		g_object_unref (G_OBJECT (bg_pixbuf));
 		g_object_unref (G_OBJECT (screen_pixbuf));
