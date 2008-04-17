@@ -29,7 +29,7 @@
 #include "ambulant/common/region_info.h"
 #include "ambulant/smil2/params.h"
 
-#define AM_DBG if(1)
+//#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -70,7 +70,7 @@ gtk_smiltext_renderer::gtk_smiltext_renderer(
 	m_needs_conditional_space(false),
 	m_needs_conditional_newline(false),
 	m_wrap(true),
-	m_was_changed(false),
+	m_is_changed(false),
 	m_start(lib::point(0,0)),
 	m_origin(lib::point(0,0))
 {
@@ -105,6 +105,7 @@ gtk_smiltext_renderer::start(double t)
 	m_engine.start(t);
 	m_motion_done = false;
 	renderer_playable::start(t);
+	m_context->started(m_cookie);
 }
 
 void
@@ -119,6 +120,7 @@ gtk_smiltext_renderer::stop()
 {
 	m_engine.stop();
 	renderer_playable::stop();
+	m_context->stopped(m_cookie);
 }
 
 void
@@ -129,11 +131,22 @@ gtk_smiltext_renderer::marker_seen(const char *name)
 	m_lock.leave();
 }
 
+
 void
 gtk_smiltext_renderer::smiltext_changed()
 {
-AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x)",this);
 	m_lock.enter();
+	if (m_engine.is_changed()) {
+		m_is_changed = true;
+	}
+	m_lock.leave();
+	m_dest->need_redraw(); // cannot be called while locked
+}
+
+void
+gtk_smiltext_renderer::_gtk_smiltext_changed()
+{
+AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x)",this);
 	if ( ! m_pango_context) {
 		// initialize the pango context, layout...
 		m_pango_context = gdk_pango_context_get();
@@ -191,9 +204,10 @@ AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x)",this);
 		pango_layout_set_alignment (m_bg_layout, PANGO_ALIGN_LEFT);
 		m_bg_pango_attr_list = pango_attr_list_new();
 	}
-	if (m_engine.is_changed()) {
+	if (m_is_changed) {
 		lib::xml_string data;
 		smil2::smiltext_runs::const_iterator i;
+		m_is_changed = false;
 		if (m_engine.is_cleared()) {
 			// Completely new text. Clear our copy and render everything.
 	        	m_text_storage = "";
@@ -347,7 +361,6 @@ AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x)",this);
 			pango_layout_set_attributes(m_pango_layout, m_pango_attr_list);
 			pango_layout_set_text(m_pango_layout, m_text_storage.c_str(), -1);
 			pango_layout_context_changed(m_pango_layout);
-			m_was_changed = true;
 			if (m_bg_layout) {
 				// Set the background attributes and text
 				pango_layout_set_attributes(m_bg_layout, m_bg_pango_attr_list);
@@ -359,9 +372,7 @@ AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x)",this);
 		m_engine.done();
 	}
 	bool finished = m_engine.is_finished();
-	m_lock.leave();
 AM_DBG  lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x), m_text_storage=%s",this,m_text_storage.c_str());
-	m_dest->need_redraw();
 	if (finished)
 		m_context->stopped(m_cookie);
 }
@@ -374,9 +385,11 @@ gtk_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	m_lock.enter();
 	const rect &r = m_dest->get_rect();
 AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
-	if (m_was_changed) {
+	if (m_is_changed) {
+		// compute the changes
+		_gtk_smiltext_changed();
+		m_is_changed = false;
 		// get the extents of the lines
-		m_was_changed = false;
 	  	pango_layout_set_width(m_pango_layout, m_wrap ? r.w*PANGO_SCALE : -1);
 		if (m_bg_layout)
 	  		pango_layout_set_width(m_bg_layout, m_wrap ? r.w*PANGO_SCALE : -1);
@@ -563,7 +576,7 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 	const lib::point p = m_dest->get_global_topleft();
         const char* data = m_text_storage.c_str();
 
-AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_render(0x%x): ltrb=(%d,%d,%d,%d)\nm_text_storage = %s, p=(%d,%d):",(void *)this,r.left(),r.top(),r.width(),r.height(),data==NULL?"(null)":data,p.x,p.y);
+	AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_render(0x%x): ltrb=(%d,%d,%d,%d)\nm_text_storage = %s, p=(%d,%d):offsetp=(%d,%d):",(void *)this,r.left(),r.top(),r.width(),r.height(),data==NULL?"(null)":data,p.x,p.y,offset.x,offset.y);
 	if ( ! (m_pango_layout && window))
 	  return; // nothing to do
 
@@ -615,7 +628,7 @@ AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_render(0x%x): ltrb=(%d,%d,
 		gdk_draw_layout(GDK_DRAWABLE (bg_pixmap),
 				bg_gc , 0-offset.x, 0-offset.y, m_bg_layout);
 		g_object_unref (G_OBJECT (bg_gc));
-/*DBG*/		gdk_pixmap_dump(bg_pixmap, "bg");
+//*DBG*/		gdk_pixmap_dump(bg_pixmap, "bg");
 		GdkPixbuf* bg_pixbuf = gdk_pixbuf_get_from_drawable
 		  			       	(NULL, bg_pixmap, NULL,
 						 0,0,0,0,W,H);
@@ -624,7 +637,7 @@ AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_render(0x%x): ltrb=(%d,%d,
 		gdk_pixbuf_blend (screen_pixbuf, rc, bg_pixbuf, rc, 
 				  m_alpha_chroma, m_alpha_media_bg,
 				  m_chroma_low, m_chroma_high, m_transparent);
-//DBG*/		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen0");
+///DBG*/		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen0");
 
 		// draw m_pango_layout containing smilText runs with text in
 		// required colors and background in m_transparant color
@@ -641,7 +654,7 @@ AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_render(0x%x): ltrb=(%d,%d,
 		// draw the blended pixbuf on the screen
 		gdk_draw_pixbuf(window->get_ambulant_pixmap(),
 				gc, screen_pixbuf, 0, 0, L, T, W, H, GDK_RGB_DITHER_NONE,0,0);
-/*DBG*/		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen1");
+//*DBG*/		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen1");
 		g_object_unref (G_OBJECT (text_pixbuf));
 		g_object_unref (G_OBJECT (bg_pixbuf));
 		g_object_unref (G_OBJECT (screen_pixbuf));

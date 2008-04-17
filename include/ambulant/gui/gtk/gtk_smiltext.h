@@ -61,9 +61,9 @@ class gtk_smiltext_renderer :
 	void smiltext_changed();
 	void marker_seen(const char *name);
   private:
+	void _gtk_smiltext_changed();
 	void _gtk_smiltext_render(const lib::rect r, const lib::point offset,
 				  ambulant_gtk_window* window);
-//JUNK	ambulant_gtk_window* m_gtk_window;
 	std::string m_text_storage;
 	smil2::smiltext_engine m_engine;
 	const smil2::smiltext_params& m_params;
@@ -98,7 +98,7 @@ class gtk_smiltext_renderer :
 	bool m_needs_conditional_space;
 	bool m_needs_conditional_newline;
 	bool m_wrap;
-	bool m_was_changed;
+	bool m_is_changed;
 	bool m_motion_done;
 	lib::point m_start;
 	lib::point m_origin;
