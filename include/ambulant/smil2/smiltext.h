@@ -181,43 +181,62 @@ class smiltext_engine {
 	const smiltext_params& get_params() const { return m_params; }
 	
 	/// Start the engine.
+	/// May NOT be called while locked.
 	void start(double t);
 	
 	/// Seek the engine in time.
+	/// May NOT be called while locked.
 	void seek(double t);
 	
 	/// Stop the engine.
+	/// May NOT be called while locked.
 	void stop();
 	
 	/// Returns true if all text has been received.
-	bool is_finished() { return m_tree_iterator.is_end(); }
+	/// Must be called while locked.
+	bool is_finished();
 	
 	/// Returns true if the text has changed since the last done() call.
-	bool is_changed() { return m_newbegin_valid; }
+	/// Must be called while locked.
+	bool is_changed();
 	
 	/// Returns true if the text has been cleared and should be re-rendered from scratch.
-	bool is_cleared() { return m_newbegin_valid && m_newbegin == m_runs.begin(); }
+	/// Must be called while locked.
+	bool is_cleared();
 	
 	/// Returns true while computing textRate="auto"
 	bool is_auto_rate() { return m_auto_rate; }
 
 	/// Returns an iterator pointing to the first smiltext_run.
-	smiltext_runs::const_iterator begin() { return m_runs.begin(); }
+	/// Must be called while locked.
+	smiltext_runs::const_iterator begin();
 	
 	/// Returns an iterator pointing to the first unseen smiltext_run.
-	smiltext_runs::const_iterator newbegin() { return m_newbegin_valid ? m_newbegin : (smiltext_runs::const_iterator)m_runs.end(); }
+	/// Must be called while locked.
+	smiltext_runs::const_iterator newbegin();
 	
 	/// Returns an iterator pointing to the end of the smiltext_runs.
-	smiltext_runs::const_iterator end() { return m_runs.end(); }
+	/// Must be called while locked.
+	smiltext_runs::const_iterator end();
 	
 	/// Called when the client has processed all runs.
-	void done() { m_newbegin = m_runs.end(); m_newbegin_valid = false; }
+	/// Must be called while locked.
+	void done();
 
 	/// Called as soon as the textRate is known. Turns off m_auto_rate.
 	void set_rate(unsigned int new_rate);
 
 	/// Return the simple duration of a <smilText/> element
 	int get_dur();
+
+	/// Lock the smiiltext_engine before calling begin(), newbegin(),
+	/// end(), done(), is_finished(), is_changed() or  is_cleared()
+	void lock();
+
+	/// Unlock the smiiltext_engine before calling begin(), newbegin(),
+	/// end(), done(), is_finished(), is_changed() or  is_cleared()
+	void lock();
+	void unlock();
 
 	/// HACK! We simulate the ref_counted interface
 	void add_ref() {}
@@ -265,6 +284,8 @@ class smiltext_engine {
 	smiltext_params m_params;			// global parameters
 	bool m_process_lf;			// turn all \n chars int <br/> commands
 	bool m_auto_rate;			// true while computing textRate="auto"
+	lib::critical_section m_lock;		// for protection of  m_runs
+	bool m_is_locked;			// true while m_lock is entered
 };
 
 /// Extra classes for smiltext layout

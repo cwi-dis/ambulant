@@ -53,7 +53,7 @@ gtk_smiltext_renderer::gtk_smiltext_renderer(
 	m_engine(smil2::smiltext_engine(node, evp, this, false)),
 	m_params(m_engine.get_params()),
 	m_motion_done(false),
-	m_pango_attr_list(pango_attr_list_new()),
+	m_pango_attr_list(NULL),
 	m_bg_layout(NULL),
 	m_bg_pango_attr_list(NULL),
 	m_pango_layout(NULL),
@@ -82,7 +82,7 @@ gtk_smiltext_renderer::gtk_smiltext_renderer(
 
 gtk_smiltext_renderer::~gtk_smiltext_renderer()
 {
-	m_lock.enter();
+	m_engine.lock();
 	if ( m_pango_attr_list != NULL) {
 		pango_attr_list_unref( m_pango_attr_list);
 		m_pango_attr_list = NULL;
@@ -95,7 +95,7 @@ gtk_smiltext_renderer::~gtk_smiltext_renderer()
 	}
 	if (m_bg_layout)
 		g_object_unref(m_bg_layout);
-	m_lock.leave();
+	m_engine.unlock();
 }
 
 void
@@ -126,20 +126,18 @@ gtk_smiltext_renderer::stop()
 void
 gtk_smiltext_renderer::marker_seen(const char *name)
 {
-	m_lock.enter();
 	m_context->marker_seen(m_cookie, name);
-	m_lock.leave();
 }
 
 
 void
 gtk_smiltext_renderer::smiltext_changed()
 {
-	m_lock.enter();
+	m_engine.lock();
 	if (m_engine.is_changed()) {
 		m_is_changed = true;
 	}
-	m_lock.leave();
+	m_engine.unlock();
 	m_dest->need_redraw(); // cannot be called while locked
 }
 
@@ -178,7 +176,6 @@ AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x)",this);
 			cairo_font_options_destroy (cairo_font_options);
 		}
 #endif//WITH_GTK_ANTI_ALIASING
-
 		m_writing_mode = m_engine.begin()->m_writing_mode;
 		switch (m_writing_mode) {
 		default:
@@ -194,6 +191,8 @@ AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x)",this);
 		m_pango_layout = pango_layout_new (m_pango_context);
 		pango_layout_set_alignment (m_pango_layout, PANGO_ALIGN_LEFT);
 	}
+	if ( ! m_pango_attr_list)
+		m_pango_attr_list = pango_attr_list_new();
 	if ( ! m_bg_layout  && (m_alpha_media != 1.0  || m_alpha_media_bg != 1.0 
 				|| m_alpha_chroma != 1.0)) {
 		// prepare for blending: layout is setup twice:
@@ -382,7 +381,7 @@ gtk_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 {
 	PangoRectangle ink_rect;
 	PangoRectangle log_rect;
-	m_lock.enter();
+	m_engine.lock();
 	const rect &r = m_dest->get_rect();
 AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	if (m_is_changed) {
@@ -493,7 +492,7 @@ AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw(0x%x, local_ltr
 	AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw: logical_origin(%d,%d) log_rect(%d,%d) r(%d,%d)", m_origin.x, m_origin.y, m_log_rect.w, m_log_rect.h, r.w, r.h);
 
 	_gtk_smiltext_render(r, m_origin,(ambulant_gtk_window*)window);
-	m_lock.leave();
+	m_engine.unlock();
 }
 
 // private methods

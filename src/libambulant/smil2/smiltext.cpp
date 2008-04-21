@@ -48,7 +48,8 @@ smiltext_engine::smiltext_engine(const lib::node *n, lib::event_processor *ep, s
 	m_newbegin_valid(false),
 	m_process_lf(true),
 	m_auto_rate(false),
-	m_update_event(NULL)
+	m_update_event(NULL),
+	m_is_locked(false)
 {
 	AM_DBG lib::logger::get_logger()->debug("smiltext_engine(0x%x).smiltext_engine(%s)", this, m_node->get_sig().c_str());
 	// Initialize the iterators to the correct place
@@ -111,10 +112,12 @@ smiltext_engine::stop() {
 		m_event_processor->cancel_event(m_update_event, lib::ep_med);
 //	delete m_update_event;
 	m_update_event = NULL;
+	lock();
 	m_tree_iterator = m_node->end();
 	m_runs.clear();
 	m_newbegin = m_runs.end();
 	m_newbegin_valid = false;
+	unlock();
 	m_node = NULL;
 }
 
@@ -189,6 +192,7 @@ smiltext_engine::_update() {
 	lib::timer::time_type next_update_needed = 0;
 	AM_DBG lib::logger::get_logger()->debug("smiltext_engine::_update()");
 	m_update_event = NULL;
+	lock();
 	for( ; !m_tree_iterator.is_end(); m_tree_iterator++) {
 		assert(!m_run_stack.empty());
 		const lib::node *item = (*m_tree_iterator).second;
@@ -371,6 +375,7 @@ smiltext_engine::_update() {
 			}
 		}
 	}
+	unlock();
 	if (m_client)
 		m_client->smiltext_changed();
 	if ((m_params.m_rate > 0 || m_auto_rate)
@@ -617,7 +622,6 @@ smiltext_engine::_get_default_params(smiltext_params& params)
 	params.m_text_conceal = stc_none;
 }
 
-
 // Called as soon as textRate is known. Turns off m_auto_rate.
 void
 smiltext_engine::set_rate(unsigned int new_rate)
@@ -629,6 +633,7 @@ smiltext_engine::set_rate(unsigned int new_rate)
 		m_auto_rate = false;
 	}
 }
+
 // Return the simple duration of a <smilText/> element
 int 
 smiltext_engine::get_dur() {
@@ -637,6 +642,79 @@ smiltext_engine::get_dur() {
  	return dur; 
 }
 
+// get the lock for m_runs
+void
+smiltext_engine::lock() {
+	m_lock.enter();
+	assert ( ! m_is_locked);
+	m_is_locked = true;
+}
+
+// release the lock for m_runs
+void
+smiltext_engine::unlock() {
+	assert (m_is_locked);
+	m_is_locked = false;
+	m_lock.leave();
+}
+
+// Returns an iterator pointing to the first smiltext_run.
+// Must be called while locked.
+smiltext_runs::const_iterator
+smiltext_engine::begin() {
+	assert (m_is_locked);
+	return m_runs.begin();
+}
+	
+// Returns an iterator pointing to the first unseen smiltext_run.
+// Must be called while locked.
+smiltext_runs::const_iterator
+smiltext_engine::newbegin() {
+	assert (m_is_locked);
+	return m_newbegin_valid ? m_newbegin : (smiltext_runs::const_iterator)m_runs.end();
+}
+	
+// Returns an iterator pointing to the end of the smiltext_runs.
+// Must be called while locked.
+smiltext_runs::const_iterator
+smiltext_engine::end() {
+	assert (m_is_locked);
+	return m_runs.end();
+}
+	
+// Called when the client has processed all runs.
+// Must be called while locked.
+void
+smiltext_engine::done() {
+	assert (m_is_locked);
+	m_newbegin = m_runs.end();
+	m_newbegin_valid = false;
+}
+
+// Returns true if all text has been received.
+// Must be called while locked.
+bool
+smiltext_engine::is_finished() {
+	assert (m_is_locked);
+	return m_tree_iterator.is_end();
+}
+	
+// Returns true if the text has changed since the last done() call.
+// Must be called while locked.
+bool
+smiltext_engine::is_changed() {
+	assert (m_is_locked);
+	return m_newbegin_valid;
+}
+	
+// Returns true if the text has been cleared and should be re-rendered from scratch.
+// Must be called while locked.
+bool
+smiltext_engine::is_cleared() {
+	assert (m_is_locked);
+	return m_newbegin_valid && m_newbegin == m_runs.begin();
+}
+	
 ////////////////////////////////////////////////////////////////////////
 //	smiltext_layout_engine					      //
 ////////////////////////////////////////////////////////////////////////

@@ -69,7 +69,6 @@ class gtk_smiltext_renderer :
 	const smil2::smiltext_params& m_params;
 //TBD 	bool m_render_offscreen; // True if m_params does not allow rendering in-place
 	lib::timer::time_type m_epoch;
-	critical_section m_lock;
 
 // pango specific stuff
 	void _gtk_set_color_attr(PangoAttrList* pal, lib::color_t smiltext_color,
