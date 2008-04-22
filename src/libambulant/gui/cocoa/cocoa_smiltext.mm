@@ -159,6 +159,7 @@ cocoa_smiltext_renderer::smiltext_changed()
 	m_lock.enter();
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	assert(m_text_storage);
+    m_engine.lock();
 	if (m_engine.is_changed()) {
 		lib::xml_string data;
 		smil2::smiltext_runs::const_iterator i;
@@ -338,6 +339,7 @@ cocoa_smiltext_renderer::smiltext_changed()
 		AM_DBG lib::logger::get_logger()->debug("cocoa_smiltext::smiltext_changed: nothing changed");
 	}
 	bool finished = m_engine.is_finished();
+    m_engine.unlock();
 	[pool release];
 	m_lock.leave();
 	m_dest->need_redraw();
