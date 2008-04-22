@@ -262,7 +262,7 @@ lib::tree_builder::characters(const char *buf, size_t len) {
 			assert(m_buf);
 			bool skipspace = false;
 			while (s < buf+len) {
-				if (isspace(*s)) {
+				if (isascii(*s) && isspace(*s)) {
 					if (!skipspace) *d++ = ' ';
 					skipspace = true;
 				} else {
