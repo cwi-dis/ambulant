@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 #CONFIGOPTS="--enable-swscale --disable-mmx --disable-encoders --enable-gpl --disable-vhook --disable-ffmpeg"
-CONFIGOPTS="--disable-mmx --disable-encoders --enable-gpl --disable-vhook --disable-ffserver --disable-ffmpeg --enable-static --enable-shared"
+CONFIGOPTS="--disable-mmx --disable-encoders --enable-gpl --disable-vhook --disable-ffserver --disable-ffmpeg --enable-static --enable-shared --enable-libfaad --disable-libfaac --extra-cflags=-I/usr/local/include --disable-altivec"
 srcdir=$1
 # XXXX Enable these for doing 10.4-compatible distributions
 SYSROOT=" -isysroot /Developer/SDKs/MacOSX10.4u.sdk"

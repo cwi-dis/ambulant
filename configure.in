@@ -780,7 +780,7 @@ if test "x$test_ffmpeg" = "xmanual"; then
     fi
 	if test -f ${withval}/libavcodec/avcodec.h; 	then
 			withvalabs=`cd ${withval}; pwd`
-			FFMPEG_CFLAGS="-I${withvalabs}/libavcodec -I${withvalabs}/libavformat"
+			FFMPEG_CFLAGS="-I${withvalabs}/libavcodec -I${withvalabs}/libavformat -I${withvalabs}"
 			FFMPEG_LIBS="-L${withvalabs}/libavformat -lavformat -L${withvalabs}/libavcodec -lavcodec"
 			dnl
 			dnl See whether this ffmpeg version has libavutil
@@ -847,7 +847,7 @@ AC_MSG_CHECKING(for FAAD support)
 AC_ARG_WITH(faad,
     [  --with-faad		Turn on FAAD audio decoder if ffmpeg is enabled],
     [case "${withval}" in
-        yes) faad=true; withval="/usr/local/include" ;;
+        yes) faad=true; withval="/usr/local" ;;
         no) faad=false ;;
         *) if test "x$withval" = "x"; then faad=false; else faad=true; fi ;;
     esac], [
