@@ -235,7 +235,6 @@ class smiltext_engine {
 
 	/// Unlock the smiiltext_engine before calling begin(), newbegin(),
 	/// end(), done(), is_finished(), is_changed() or  is_cleared()
-	void lock();
 	void unlock();
 
 	/// HACK! We simulate the ref_counted interface

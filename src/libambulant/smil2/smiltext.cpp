@@ -748,23 +748,23 @@ smiltext_layout_engine::start(double t) {
 	
 void
 smiltext_layout_engine::seek(double t) {
-	m_lock.enter();
+//JNK	m_lock.enter();
 	m_engine.seek(t);
-	m_lock.leave();
+//JNK	m_lock.leave();
 }
 	
 void
 smiltext_layout_engine::stop() {
-	m_lock.enter();
+//JNK	m_lock.enter();
 	m_engine.stop();
-	m_lock.leave();
+//JNK	m_lock.leave();
 }
 	
 void
 smiltext_layout_engine::set_dest_rect( const lib::rect& r) {
-	m_lock.enter();
+//JNK	m_lock.enter();
 	m_dest_rect = r;
-	m_lock.leave();
+//JNK	m_lock.leave();
 }
 
 smiltext_layout_word::smiltext_layout_word(const smiltext_run run, smiltext_metrics stm, int n_nl)
@@ -779,7 +779,8 @@ smiltext_layout_word::smiltext_layout_word(const smiltext_run run, smiltext_metr
 
 void
 smiltext_layout_engine::smiltext_changed() {
-	m_lock.enter();
+//JNK	m_lock.enter();
+	m_engine.lock();
 AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::smiltext_changed(0x%x)", this);
 	if (m_engine.is_changed()) {
 		lib::xml_string data;
@@ -851,7 +852,8 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::smiltext_change
 			i++;
 		}
 	}
-	m_lock.leave();
+	m_engine.unlock();
+//JNK	m_lock.leave();
 }
 
 void
@@ -901,7 +903,8 @@ void
 smiltext_layout_engine::redraw(const lib::rect& r) {
 AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw(0x%x) r=(L=%d,T=%d,W=%d,H=%d", this,r.left(),r.top(),r.width(),r.height());
 	int nbr = 0; // number of breaks (newlines) before current line
-	m_lock.enter();
+//JNK	m_lock.enter();
+	m_engine.lock();
 	if (&*m_words.begin() == NULL) {
 		m_lock.leave();
 		return;
@@ -1137,7 +1140,8 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shift
 			}
 		}
 	}
-	m_lock.leave();
+	m_engine.unlock();
+//JNK	m_lock.leave();
 }
 
 // return true if r1 completely fits horizontally in r2
