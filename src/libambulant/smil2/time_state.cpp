@@ -30,10 +30,6 @@
 #define AM_DBG if(0)
 #endif
 
-#ifdef WITH_SMIL30
-#define WITH_SMIL30_RELAXED_SEQ
-#endif
-
 using namespace ambulant;
 using namespace smil2;
 

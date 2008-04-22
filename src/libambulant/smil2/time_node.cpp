@@ -40,10 +40,6 @@
 #include <iostream>
 #endif
 
-#ifdef WITH_SMIL30
-#define WITH_SMIL30_RELAXED_SEQ
-#endif
-
 using namespace ambulant;
 using namespace smil2;
 
@@ -1767,7 +1763,6 @@ void time_node::raise_end_event(qtime_type timestamp, time_node *oproot) {
 	if(p && (p->is_par() || p->is_excl() || (p->is_seq() && !next()))) 
 		p->raise_update_event(timestamp);
 #ifndef WITH_SMIL30_RELAXED_SEQ
-	// XXXJACK: is this code still needed with SMIL3 relaxed begin conditions?
 	if(p && p->is_seq()) {
 		 time_node *n = next();
 		 if(n) n->raise_update_event(timestamp);
@@ -1931,7 +1926,8 @@ void time_node::startup_children(qtime_type timestamp) {
 	for(it = children.begin(); it != children.end(); it++) {
 		(*it)->set_state(ts_proactive, qt, this);
 #ifdef WITH_SMIL30_RELAXED_SEQ
-		// For SMIL 3.0 we only want to move the first child of the SEQ to proactive, the
+		// For SMIL 3.0 relaxed seq begin conditions (which didn't make the spec)
+        // we only want to move the first child of the SEQ to proactive, the
 		// subsequent children will be done later.
 		// XXXJACK Need to verify that this doesn't wreak havoc with hyperjumping into the
 		// middle of a <seq>, that code is tricky....
