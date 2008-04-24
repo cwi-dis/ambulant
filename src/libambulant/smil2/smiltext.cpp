@@ -175,10 +175,13 @@ smiltext_engine::_split_into_words(lib::xml_string data, smil2::smiltext_xml_spa
 			run.m_command = stc_data;
 			run.m_data = data.substr(first_char, first_trailing_space-first_char);
 			AM_DBG lib::logger::get_logger()->debug("smiltext_engine::_split_into_words(): bg_col=0x%x, color=0x%x, data=%s", run.m_bg_color, run.m_color, run.m_data.c_str());
-			// add a conditional space before and after the word
-			_insert_run_at_end(pre_space);
+			// add a conditional space before and after the word,
+			// when it was there originally
+			if (first_char > 0)
+				_insert_run_at_end(pre_space);
 			_insert_run_at_end(run);
-			_insert_run_at_end(post_space);
+			if (first_trailing_space != data.length())
+				_insert_run_at_end(post_space);
 			data = data.substr(first_trailing_space);
 		} else {
 			data = data.substr(data.length());
@@ -548,6 +551,7 @@ smiltext_engine::_get_default_formatting(smiltext_run& dst)
 	dst.m_color = lib::color_t(0);
 	dst.m_bg_transparent = true;
 	dst.m_bg_color = lib::color_t(0);
+	dst.m_xml_space = stx_default;
 	dst.m_align = sta_start;
 	dst.m_writing_mode = stw_lr_tb;
 	dst.m_wrap = true;
