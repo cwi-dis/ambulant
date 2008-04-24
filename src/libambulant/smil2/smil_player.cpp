@@ -412,7 +412,10 @@ void smil_player::clicked(int n, double t) {
 		dom_event_cb *cb = new dom_event_cb((*it).second, 
 			&time_node::raise_activate_event, timestamp);
 		schedule_event(cb, 0, ep_high);
+//#define WITH_SCHEDULER_EXEC
+#ifdef  WITH_SCHEDULER_EXEC
 		m_scheduler->exec();
+#endif//WITH_SCHEDULER_EXEC
 	}
 }
 
@@ -736,7 +739,9 @@ void smil_player::on_char(int ch) {
 	accesskey ak(timestamp, ch);
 	accesskey_cb *cb = new accesskey_cb(m_root, &time_node::raise_accesskey, ak);
 	schedule_event(cb, 0, ep_high);
+#ifdef  WITH_SCHEDULER_EXEC
 	m_scheduler->exec();
+#endif//WITH_SCHEDULER_EXEC
 }
 
 #ifdef WITH_SMIL30
@@ -751,7 +756,9 @@ void smil_player::on_state_change(const char *ref) {
 	scarg ak(timestamp, ref);
 	state_change_cb *cb = new state_change_cb(m_root, &time_node::raise_state_change, ak);
 	schedule_event(cb, 0, ep_high);
+#ifdef  WITH_SCHEDULER_EXEC
 	m_scheduler->exec();
+#endif//WITH_SCHEDULER_EXEC
 }
 #endif // WITH_SMIL30
 

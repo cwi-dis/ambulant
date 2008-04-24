@@ -331,23 +331,6 @@
    obj:*
 }
 {
-   # lock order is OK, Helgrind limitation?
-   Ambulantlock-order-1
-   Helgrind:LockOrder
-   fun:pthread_mutex_lock
-   fun:_ZN8ambulant3lib4unix16critical_section5enterEv
-   fun:_ZN8ambulant3net22demux_audio_datasource11buffer_fullEv
-   obj:*
-}
-{
-   Ambulantlock-order-2
-   Helgrind:LockOrder
-   fun:pthread_mutex_lock
-   fun:_ZN8ambulant3lib4unix16critical_section5enterEv
-   fun:_ZN8ambulant3net22demux_audio_datasource10data_availExPKhi
-   obj:*
-}
-{
    # potential deadlock is OK, test for warning only.
    Ambulantlock-potential-deadlock-1
    Helgrind:Race
