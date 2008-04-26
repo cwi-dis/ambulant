@@ -325,8 +325,11 @@ bool test_attrs::load_test_attrs(const std::string& filename) {
 				active_tests_attrs_map[name] = value;
 				AM_DBG lib::logger::get_logger()->debug("systemTest %s: %s", name, value);
 				if (std::string(name) == "systemLanguage") {
+
+#ifdef WITH_SMIL30
 					clear_languages();
 					add_language(value, 1.0);
+#endif
 				}
 			}
 		} else if(tag == "customTest") {
@@ -356,7 +359,9 @@ void test_attrs::set_default_tests_attrs() {
 	active_tests_attrs_map["systemCaptions"] = "on";
 	active_tests_attrs_map["systemCPU"] = "unknown";
 	active_tests_attrs_map["systemLanguage"] = "en";
+#ifdef WITH_SMIL30
 	add_language("en",1.0);
+#endif
 #if defined(AMBULANT_PLATFORM_MACOS)
 	active_tests_attrs_map["systemOperatingSystem"] = "macos";
 #elif defined(AMBULANT_PLATFORM_WIN32)
