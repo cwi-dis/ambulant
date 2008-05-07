@@ -1,3 +1,449 @@
+2008-04-26 21:50  marisademeglio
+
+	* added #ifdef WITH_SMIL30 around calls to add_language and
+	  clear_langauges because it wouldn't compile with the vc8 project
+	  otherwise
+
+2008-04-26 21:47  marisademeglio
+
+	* added #ifdef WITH_SMIL30 around on_state_change(...) because it
+	  wouldn't compile with the vc8 project otherwise
+
+2008-04-24 16:15  keesblom
+
+	* Refined space handing for smiltext word mode (qt, windows), s.t.
+	  the erroneous space in smiltext-begin-sync.smil has now
+	  disappeared.
+
+2008-04-24 14:35  keesblom
+
+	* Attempt to fix #1948594 by removing calls to m_scheduler->exec()
+	  in clicked(), on_char() ans on_state_change().
+
+2008-04-22 15:54  jackjansen
+
+	* Disabled relaxed seq begin conditions, which didn't make it into
+	  SMIL 3.  There were also still some bugs in the implementation.
+
+2008-04-22 14:31  jackjansen
+
+	* Microsoft's isspace() doesn't like non-ascii characters.
+
+2008-04-22 14:12  jackjansen
+
+	* Adapted for changes in ffmpeg (sigh)
+
+2008-04-22 14:12  jackjansen
+
+	* Adapted for API change (locking smiltext engine).
+
+2008-04-22 12:26  keesblom
+
+	* Adapted smiltext_layout_engine to the new smiltext API (and
+	  qt_smiltext too), s.t. qt owrks (but sometimes X-errors, some
+	  cleanup may be needed).
+
+2008-04-21 17:17  keesblom
+
+	* *********** smiltext_engine API has been modified ***********
+
+	  Added locking in smiltext_engine. All renderers (mac, qt, windows
+	  etc.) need to be adapted: they now must call smiltext::lock()
+	  before calling any of the following smiltext_engine members:
+	  begin(), newbegin(), end(), done(),  is_finished(), is_changed()
+	  or  is_cleared() and they must call smiltext::unlock()
+	  appropriately. gtk seems to work.
+
+2008-04-17 17:45  keesblom
+
+	* Joined branch kees-bugfix-010408 on ambulant-dev machine with
+	  trunk
+
+2008-04-17 17:11  keesblom
+
+	* Turned off debug image dump
+
+2008-04-17 16:44  keesblom
+
+	* Moved all pango calls from player thread to main thread because
+	  pango is not thread-safe.
+
+2008-04-15 17:30  keesblom
+
+	* Some tweaks s.t. Configuration ReleasShlib also works w.
+	  plugin_ffmpeg in VC7.
+
+2008-04-15 16:18  keesblom
+
+	* Added plugin_ffmeg.vcproj for VC7.  Works, except h264.
+
+2008-04-15 13:47  jackjansen
+
+	* Revived building live with VC7.
+
+2008-04-14 17:02  jackjansen
+
+	* Negative begin times on smiltext elements works, at least on the
+	  mac.
+
+2008-04-10 07:49  jackjansen
+
+	* Use TevEvent as the event raised by <tev>, in stead of
+	  BeginEvent.
+
+2008-04-09 14:13  keesblom
+
+	* Merged branch 'kees-bugfix-010408'(during Venice meeting) with
+	  trunk
+
+2008-03-31 13:59  keesblom
+
+	* Added code to delete m_player and m_doc in the right order. Fixes
+	  #1843229.
+
+2008-03-28 12:52  keesblom
+
+	* Accidently set systemLanguage="fr" (testing only)
+
+2008-03-28 12:50  keesblom
+
+	* Changed "systemLanguage" settings s.t. resetting the language
+	  works by clearing the active language map.
+
+2008-03-28 11:59  keesblom
+
+	* Added code s.t. systemLanguage setting works (repaires Tests 8.8)
+
+2008-03-27 22:16  jackjansen
+
+	* Found the problem with stateChange events not always being
+	  raised: you can reuse xmlXPathContext objects (that's indeed what
+	  they're for) but you must reset the node every time, because some
+	  operations modify it.
+
+2008-03-27 17:26  jackjansen
+
+	* Defulating to inline state when accessing src url failed wasn't
+	  implemented. Fixed.
+
+2008-03-27 17:19  jackjansen
+
+	* - Handling of an empty <state> section wasn't implemented yet.  -
+	  Modifying the document could make the context node invalid, so
+	  re-initialize it after adding or deleting nodes.  - Code still
+	  thought it should handle "post" in stead of "put".
+
+2008-03-27 14:20  jackjansen
+
+	* textMode=crawl works for starting at center, right edge.
+
+2008-03-26 17:26  jackjansen
+
+	* Fixed some bugs with SMILText crawl support on the Mac.
+
+2008-03-26 12:29  keesblom
+
+	* update  AmbulantFFplugin for windows. DOES NOT WORK, crashes FF.
+	  Needs to be named: c:\program files\mozilla
+	  firefox\plugins\npambulant.dll
+
+2008-03-21 00:41  jackjansen
+
+	* Glue for communicating Firefox window to other Ambulant plugins.
+
+2008-03-20 23:37  jackjansen
+
+	* Get the HTML document location without using Javascript.  The
+	  final trick was that we want document.location.href.
+
+2008-03-20 17:04  jackjansen
+
+	* started on getting document.location directly. Doesn't work yet
+	  because it's an object, not a string. Temporarily disabled.
+
+2008-03-20 13:40  keesblom
+
+	* [no log message]
+
+2008-03-20 13:36  keesblom
+
+	* [no log message]
+
+2008-03-18 16:48  bogao
+
+	* Fixed a bug which caused Ambulant crash on windows mobile when
+	  rendering mp4 including aac audio. For some reasons, somtimes,
+	  m_frames.size is 0 in
+	  ffmpeg_video_decoder_datasource::get_frame(); we should not
+	  access m_frames any more when this is happening.
+
+2008-03-18 16:42  bogao
+
+	* Fixed a bug which caused Ambulant crash on windows mobile when
+	  rendering mp4 including aac audio. For some reasons, somtimes,
+	  m_frame in dx_dsvideo_renderer::redraw is NULL; we should not
+	  access m_frame any more when this is happening.
+
+2008-03-14 11:49  jackjansen
+
+	* Got stuck: CG drawing in NPAPI plugin is scheduled to be included
+	  shortly, but it isn't in the current Firefox yet. There is a
+	  workaround, but it is so ugly I'll try to postpone it.
+
+2008-03-14 10:27  jackjansen
+
+	* Getting started on firefox plugin using CG rendering. It plays
+	  audio, no idea how much further I'll get:-)
+
+2008-03-13 14:52  jackjansen
+
+	* stateChange() events work, with any XPath path expression as
+	  argument.
+
+2008-03-12 17:29  jackjansen
+
+	* Existing stateChange() event implementation was still a quick
+	  stopgap.  Started on implementing the real thing.
+
+2008-03-12 15:53  keesblom
+
+	* Got rid of 2 double free's
+
+2008-03-11 17:25  keesblom
+
+	* valgrind found leaks playing mpg-h264-file-noclip.smil, I fixed a
+	  few of them.	The biggest leak (in ffmpeg_video.cpp) is still
+	  there; so the fix there, while seeming necessary, is not enough;
+
+2008-03-11 17:08  keesblom
+
+	* Modifications of libtool as generated on 64 bit Fedora 8
+	  installation to handle 322 bit objects generate 32 bit libraries
+
+2008-03-10 16:06  jackjansen
+
+	* Suddenly remembered the ffmpeg requirement that every packet
+	  passed to avcodec_decode_video() needs
+	  FF_INPUT_BUFFER_PADDING_SIZE extra zero bytes at the end.
+
+	  It is hoped this will solve the occasional crashes and extraneous
+	  error messages during video decode.
+
+2008-03-07 16:40  jackjansen
+
+	* Python hashes are longs, not ints.
+
+2008-03-07 15:34  jackjansen
+
+	* Partial cleanup: got rid of one layer of indirection, normalized
+	  debug output to AM_DBG style.
+
+2008-03-07 14:09  jackjansen
+
+	* Merging exp-jack-firefox-plugin-mac.
+
+2008-03-07 11:19  jackjansen
+
+	* Select fonts only in the main thread, not in a secondary thread.
+	  Not sure whether this is the actual problem, but it does seem to
+	  solve the issue at hand (the annotator crashing with an overlay
+	  document).
+
+2008-03-06 23:39  jackjansen
+
+	* Updated for newer ffmpeg.
+
+2008-03-06 23:10  jackjansen
+
+	* The handling of pts/dts values in ffmpeg has changed (at least:
+	  otherwise I don't understand how our code ever worked). We now
+	  need to use dts as the timestamp of the frame, apparently
+	  avcodec_decode_video() does internal buffering.
+
+	  Fixes the shaky video problem.
+
+2008-03-06 14:53  jackjansen
+
+	* On 10.4 (and earlier) initWithCGImage: doesn't exist, so work
+	  around it using the old memcpy() code.
+
+2008-03-06 14:52  jackjansen
+
+	* MMS document icon no longer exists.
+
+2008-03-04 23:30  jackjansen
+
+	* Building the player failed if both --with-cocoa and --with-cg
+	  were specified to configure. Fixed, but I'm not sure the result
+	  is exactly what we want.
+
+2008-03-03 15:48  jackjansen
+
+	* Parse the command line arguments, so we get rid of double quotes
+	  (and possible other junk) before sedning the filename to the
+	  other Ambulant instance.
+
+2008-03-03 12:07  jackjansen
+
+	* On WM5, when starting a second copy of Ambulant communicate the
+	  file name opened to the first copy.  This follows an idea from
+	  <http://www.pocketpcdn.com/forum/viewtopic.php?t=4524>.
+
+2008-03-02 22:12  jackjansen
+
+	* Plugins weren't always loaded into the webkit plugin. Fixed.
+
+2008-03-02 22:09  jackjansen
+
+	* Squash a warning.
+
+2008-02-29 17:14  jackjansen
+
+	* Getting started on making a second copy of Ambulant communicate
+	  the filename passed to a previously running copy.
+
+	  Does not work yet.
+
+2008-02-29 14:54  jackjansen
+
+	* Builds and installs now also work for separate build/source
+	  trees.
+
+2008-02-29 12:34  jackjansen
+
+	* For video, after need_redraw() we call redraw_now(). We don't
+	  want to wait for the scheduler to become quiet when we're
+	  rendering video.
+
+2008-02-29 11:46  bogao
+
+	* Including head file path and lib path of live555 and turn on the
+	  WITH_LIVE
+
+2008-02-28 23:41  jackjansen
+
+	* Quick patches for new methods.
+
+2008-02-28 17:06  keesblom
+
+	* Some cleanup: changed (mime)type to x-ambulant-smil;disabled
+	  DEBUG
+
+2008-02-28 17:00  jackjansen
+
+	* Attempting to get the Webkit plugin working on another machine
+	  than Jack's laptop.
+
+2008-02-28 15:07  keesblom
+
+	* Automated generation of nsIAmbulantPlugin.[h|xpt] from .idl with
+	  xpidl.
+
+2008-02-28 12:46  jackjansen
+
+	* Two patches to make building firefox plugins work for me: -
+	  patch_libtool.sh is located in the $srcdir, not the current
+	  directory - get include files from gecko_sdk, not a full Mozilla
+	  source distribution
+
+2008-02-26 16:30  keesblom
+
+	* Improved firefox plugin. When the html page doesn't contain a
+	  javascript function "GetDocumentLocation(), some javascript code
+	  is dynamically evaluated to get the information.
+
+2008-02-25 17:29  keesblom
+
+	* Cleanup ff plugin: new npn_gate (from npruntime), Calls script
+	  functions as well. Started to join url with base, works, but not
+	  finished.
+
+2008-02-22 23:01  keesblom
+
+	* I just did it ! Calling javascript's alert() function from the
+	  firefox plugin ! The code itself is completely experimental (one
+	  bag of garbage) but it works, now only cleanup and expanding
+	  needed.
+
+2008-02-22 18:30  marisademeglio
+
+	* removed old references from the vc71 project
+
+2008-02-15 17:06  jackjansen
+
+	* Fixed a bug where we could inadvertantly still pass a
+	  non-terminated string to NSString sintrgWithUTF8String:.
+
+2008-02-15 11:15  jackjansen
+
+	* Merging windows redraw optimization branch: While the
+	  event_processor has events outstanding for "now" redraws are not
+	  done but in stead queued (and coalesced). At the end one redraw
+	  is done. This makes the player a lot snappier.
+
+2008-02-14 15:36  jackjansen
+
+	* Last reference to mms player (I hope) bites the dust.
+
+2008-02-14 15:05  jackjansen
+
+	* Getting rid of dead wood: - dg renderers - arts audio renderer -
+	  mms player
+
+2008-02-14 14:26  jackjansen
+
+	* Getting rid of dead wood: - dg renderers - arts audio renderer -
+	  mms player
+
+2008-02-13 16:33  keesblom
+
+	* Addendum to Jack's change. But plugin not tested w. live.
+
+2008-02-13 11:40  jackjansen
+
+	* Merging exp-jack-less-video-copying branch: - frame dropping only
+	  happens at beginning of the pipeline, once a	 frame has been
+	  decoded it will be displayed (possibly at the expense   of later
+	  frames). This gives better performance on handhelds, at the
+	  expense of lipsync (but that wasn't there anyway).  - copying
+	  frame data is minimized, when possible (i.e. not on	windows
+	  mobile, unfortunately).  - byte-swapping of videoframes is done
+	  in the datasource, renderers	 should now specify how they want
+	  their data.  All this has changed the API, I've tried to make
+	  sure that this will be flagged by the compiler.
+
+2008-02-13 11:31  jackjansen
+
+	* Quick patch to make autogen run again. Kees should look at this.
+
+2008-02-12 13:27  keesblom
+
+	* made the plugin work in 64bit mode. TBD: cleanup (a.o. ugly
+	  libtool patch), npapi compatability. Don't know if it still works
+	  in 32bit mode.
+
+2008-02-06 22:20  jackjansen
+
+	* Various issues that were uncovered at the Seattle F2F.
+
+2008-02-06 15:50  keesblom
+
+	* Added m_dest->get_global_topleft() to final destination of the
+	  simlText run.
+
+2008-02-06 11:42  keesblom
+
+	* Updated how to build ambulant on Fedora 8 in 64 bit mode
+
+2008-02-06 11:41  keesblom
+
+	* Changed a cast to (int) into (void*) in a debug() call to satisfy
+	  g++ on Fedora 8 in 64 bit mode
+
+2008-02-05 14:18  keesblom
+
+	* Found a way to configure for 32 bit mode on 64 bit Fedora 8.
+
 2008-02-01 23:45  jackjansen
 
 	* Monday's video change (only drop frames beofre current timestamp,
