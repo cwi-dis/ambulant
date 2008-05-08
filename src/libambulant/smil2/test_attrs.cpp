@@ -514,7 +514,7 @@ test_attrs::get_system_language_weight(std::string lang)
 	AM_DBG lib::logger::get_logger()->trace("get_system_language_weight('%s')", lang.c_str());
 	while (active_language_map.count(lang) == 0) {
 		// See if we can split the language (nl-be -> nl, for example)
-		size_t dashPos = lang.rfind('-');
+		std::string::size_type dashPos = lang.rfind('-');
 		if (dashPos == std::string::npos) {
 			AM_DBG lib::logger::get_logger()->trace("get_system_language_weight('%s') not found -> 0.0", lang.c_str());
 			return 0.0;
