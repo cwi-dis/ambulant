@@ -1,3 +1,7 @@
+2008-05-08 16:24  keesblom
+
+	* Changed size_t to std::string::size_type to match the book
+
 2008-04-26 21:50  marisademeglio
 
 	* added #ifdef WITH_SMIL30 around calls to add_language and
