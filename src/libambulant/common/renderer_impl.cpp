@@ -101,7 +101,7 @@ renderer_playable::user_event(const lib::point &where, int what) {
 
 bool
 renderer_playable::user_event_sensitive(const lib::point &where) {
-	const char *sensitive = m_node->get_attribute("sensitive");
+	const char *sensitive = m_node->get_attribute("sensitivity");
 	if (sensitive == NULL || strcmp(sensitive, "opaque") == 0) return true;
 	if (strcmp(sensitive, "transparent") == 0) return false;
 	static bool warned = false;
