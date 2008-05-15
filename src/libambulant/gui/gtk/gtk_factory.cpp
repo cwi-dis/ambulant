@@ -264,21 +264,21 @@ gtk_window_factory::new_window (const std::string &name,
 			       lib::size bounds,
 			       common::gui_events *region)
 {
-	lib::rect* r = new lib::rect(m_p, bounds);
+	lib::rect r (m_p, bounds);
 	AM_DBG lib::logger::get_logger()->debug("gtk_window_factory::new_window (0x%x): name=%s %d,%d,%d,%d",
-		(void*) this, name.c_str(), r->left(),r->top(),r->right(),r->bottom());
-	ambulant_gtk_window * agtkw = new ambulant_gtk_window(name, r, region);
+		(void*) this, name.c_str(), r.left(),r.top(),r.right(),r.bottom());
+	ambulant_gtk_window * agtkw = new ambulant_gtk_window(name, &r, region);
 	agtkw->m_main_loop = m_main_loop;
 
 
 	// We don't create this widget anymore MainLoop does it!!
-	gtk_widget_set_size_request(m_parent_widget->get_gtk_widget(), r->right(), r->bottom());
-	gtk_widget_set_size_request(gtk_widget_get_toplevel (m_parent_widget->get_gtk_widget()), r->right(), r->bottom()+ 25);
+	gtk_widget_set_size_request(m_parent_widget->get_gtk_widget(), r.right(), r.bottom());
+	gtk_widget_set_size_request(gtk_widget_get_toplevel (m_parent_widget->get_gtk_widget()), r.right(), r.bottom()+ 25);
 	gtk_widget_show(m_parent_widget->get_gtk_widget());
 //	gtk_ambulant_widget * gtkaw = new gtk_ambulant_widget(name, r, m_parent_widget);
 	
 	// Wrong!!! I need to add the GUI size
-//	gtk_widget_set_size_request(GTK_WIDGET (gtk_widget_get_toplevel (gtkaw->get_gtk_widget())), r->right(), r->bottom()+ 25);
+//	gtk_widget_set_size_request(GTK_WIDGET (gtk_widget_get_toplevel (gtkaw->get_gtk_widget())), r.right(), r.bottom()+ 25);
 //	agtkw->set_ambulant_widget(gtkaw);
 	agtkw->set_ambulant_widget(m_parent_widget);
 	m_parent_widget->set_gtk_window(agtkw);

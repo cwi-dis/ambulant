@@ -47,6 +47,11 @@ lib::unix::event_processor::event_processor(timer *t)
 lib::unix::event_processor::~event_processor()
 {
 	stop();
+	while (is_running()) {
+		// wait until the event processor thread is finished
+		// to prevent usage of the queues after they have been deleted
+	        wait_event();
+	}
 	AM_DBG lib::logger::get_logger()->debug("event_processor 0x%x deleted", (void *)this);
 }
 

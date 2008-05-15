@@ -152,11 +152,11 @@ qt_window_factory::new_window (const std::string &name,
     lib::size bounds,
     common::gui_events *region)
 {
-	lib::rect* r = new lib::rect(lib::point(0, m_top_offset), bounds);
-	AM_DBG lib::logger::get_logger()->debug("qt_window_factory::new_window (0x%x): name=%s %d,%d,%d,%d", (void*) this, name.c_str(), r->left(),r->top(),r->right(),r->bottom());
+	lib::rect r (lib::point(0, m_top_offset), bounds);
+	AM_DBG lib::logger::get_logger()->debug("qt_window_factory::new_window (0x%x): name=%s %d,%d,%d,%d", (void*) this, name.c_str(), r.left(),r.top(),r.right(),r.bottom());
 
- 	ambulant_qt_window * aqw = new ambulant_qt_window(name, r, region);
-	qt_ambulant_widget * qaw = new qt_ambulant_widget(name, r, m_parent_widget);
+ 	ambulant_qt_window * aqw = new ambulant_qt_window(name, &r, region);
+	qt_ambulant_widget * qaw = new qt_ambulant_widget(name, &r, m_parent_widget);
 
 #ifndef	QT_NO_FILEDIALOG     /* Assume plain Qt */
 	qaw->setBackgroundMode(Qt::NoBackground);
@@ -260,6 +260,18 @@ ambulant_qt_window::~ambulant_qt_window()
 			delete m_tmppixmap;
 			m_tmppixmap = NULL;
 		}
+	}
+	if ( m_fullscreen_prev_pixmap) {
+		delete  m_fullscreen_prev_pixmap;
+		m_fullscreen_prev_pixmap = NULL;
+	}
+	if ( m_fullscreen_prev_pixmap) {
+		delete  m_fullscreen_prev_pixmap;
+		m_fullscreen_prev_pixmap = NULL;
+	}
+	if ( m_surface) {
+		delete  m_surface;
+		m_surface = NULL;
 	}
 }
 	

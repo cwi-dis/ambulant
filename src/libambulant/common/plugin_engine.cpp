@@ -262,7 +262,8 @@ plugin_engine::load_plugins(std::string dirname)
                 } else
 				if (strncmp(PLUGIN_PREFIX, pluginname, sizeof(PLUGIN_PREFIX)-1) != 0) {
                     lib::logger::get_logger()->trace("plugin_engine: skipping %s", pluginname);
-                    continue;
+		    free(namelist[nr_of_files]);
+		    continue;
                 }
 				// Check whether this is the Python engine
                 if (strncmp(PYTHON_PLUGIN_ENGINE_PREFIX, pluginname, sizeof(PYTHON_PLUGIN_ENGINE_PREFIX)-1) == 0) {
@@ -271,6 +272,7 @@ plugin_engine::load_plugins(std::string dirname)
                     lib::logger::get_logger()->trace("plugin_engine: recording Python engine %s", pluginname);
 #else
                     lib::logger::get_logger()->trace("plugin_engine: skipping Python engine %s", pluginname);
+		    free(namelist[nr_of_files]);
                     continue;
 #endif // WITH_PYTHON_PLUGIN
                 }
@@ -289,12 +291,14 @@ plugin_engine::load_plugins(std::string dirname)
 				// If it is the Python engine we don't load it but remember it for later
 				if (is_python_engine) {
 					m_python_plugin_engine = filename;
+					free(namelist[nr_of_files]);
 					continue;
 				}
 				// And similar for a Python plugin
 				if (is_python_plugin) {
 					std::string filename_str = filename;
 					m_python_plugins.push_back(filename_str);
+					free(namelist[nr_of_files]);
 					continue;
 				}
 #endif // WITH_PYTHON_PLUGIN
