@@ -1,3 +1,14 @@
+2008-05-15 15:19  keesblom
+
+	* Used valgrind from svn with a working helgrind on gtk and qt.
+	  Welcome.smil was played to the end, theb File->Quit was pressed.
+	  When using valgrind
+	  --suppressions=./Documentation/misc/valgrind.supp ...  then I
+	  didn't see valgrind errors, for race conditions, memory access or
+	  leaks.  This implies, that the remaining problems (for
+	  Welcome.smil) are now documented by the valgrind suppressions
+	  file.
+
 2008-05-14 16:47  keesblom
 
 	* Fixed the bug in News demo s.t. click didn't work anymore
