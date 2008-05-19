@@ -27,22 +27,12 @@
 #define AMBULANT_LIB_TIMER_H
 
 #include "ambulant/config/config.h"
-
+#include "ambulant/lib/mtsync.h"
 #include <set>
 
 namespace ambulant {
 
 namespace lib {
-
-/// Notification interface for timer events such as speed change.
-class timer_events {
-  public:
-	virtual ~timer_events() {}
-	
-	/// Called when a timer has changed speed.
-	virtual void speed_changed() = 0;
-};
-
 
 /// Client interface to timer objects: allows you to get the
 /// current time and the rate at which time passes.
@@ -56,10 +46,10 @@ class timer {
 	virtual ~timer() {}
 		
 	/// Returns the time elapsed.
-	virtual time_type elapsed() const = 0;
+	virtual time_type elapsed() = 0;
 	
 	/// Gets the realtime speed of this timer as modulated by its parent.
-	virtual double get_realtime_speed() const = 0;
+	virtual double get_realtime_speed() = 0;
 };
 
 /// Controller interface to timer objects.
@@ -71,10 +61,10 @@ class timer_control : public timer {
 	
 	/// Returns the zero-based elapsed time.
 	/// Does not take periodicity into account.
-	virtual time_type elapsed() const = 0;
+	virtual time_type elapsed() = 0;
 
 	// Returns the zero-based time elapsed for the provided parent elapsed time.
-	virtual time_type elapsed(time_type pt) const = 0;
+	virtual time_type elapsed(time_type pt) = 0;
 	
 	/// Starts ticking at t (t>=0).
 	virtual void start(time_type t = 0) = 0;
@@ -104,38 +94,20 @@ class timer_control : public timer {
 	virtual void set_time(time_type t) = 0;
 	
 	// Returns the speed of this timer.
-	virtual double get_speed() const = 0;
+	virtual double get_speed() = 0;
 	
 	/// Returns true when this timer is running.
-	virtual bool running() const = 0;
+	virtual bool running() = 0;
 	
 	/// Returns the realtime speed of this timer 
 	/// as modulated by its parent.
-	virtual double get_realtime_speed() const = 0;
+	virtual double get_realtime_speed() = 0;
 
-// Some methods that aren't used, yet:
-//
-//	/// Return the current elapsed time. 
-//	/// If this is a periodic timer this returns the
-//	/// elapsed time within the current period.
-//	virtual time_type get_time() const = 0;
-//	
-//	/// Return the period number.
-//	/// If this is a non-periodic timer it returns 0.
-//	virtual time_type get_repeat() const = 0;
-//	
-//	/// Set timer to periodic mode, and period duration.
-//	virtual void set_period(time_type t) = 0;
-//	/// Add timer_events listener.
-//	virtual void add_listener(timer_events *listener) = 0;
-//	
-//	/// Remove timer_events listener.
-//	virtual void remove_listener(timer_events *listener) = 0;
 };
 
 
 /// An implementation of timer_control.
-class timer_control_impl : public timer_control, public timer_events {
+class timer_control_impl : public timer_control {
   public:	
 	/// Creates a timer.
 	/// Pass the parent timer, 
@@ -147,10 +119,10 @@ class timer_control_impl : public timer_control, public timer_events {
 	
 	/// Returns the zero-based elapsed time.
 	/// Does not take periodicity into account.
-	time_type elapsed() const;
+	time_type elapsed();
 	
 	// Returns the zero-based time elapsed for the provided parent elapsed time.
-	time_type elapsed(time_type pt) const;
+	time_type elapsed(time_type pet);
 		
 	/// Starts ticking at t (t>=0).
 	void start(time_type t = 0);
@@ -180,38 +152,23 @@ class timer_control_impl : public timer_control, public timer_events {
 	void set_time(time_type t);
 	
 	// Returns the speed of this timer.
-	double get_speed() const { return m_speed;}
+	double get_speed() { return m_speed;}
 	
 	/// Returns true when this timer is running.
-	bool running() const { return m_running;}
+	bool running() { return m_running;}
 	
 	/// Returns the realtime speed of this timer 
 	/// as modulated by its parent.
-	double get_realtime_speed() const;
-	
-	/// Receives timer_events notifications.
-	void speed_changed();
-	
-//	/// Return the current elapsed time. 
-//	/// If this is a periodic timer this returns the
-//	/// elapsed time within the current period.
-//	time_type get_time() const;
-//	
-//	/// Return the period number.
-//	/// If this is a non-periodic timer it returns 0.
-//	time_type get_repeat() const;
-//	
-//	/// Set timer to periodic mode, and period duration.
-//	void set_period(time_type t) { m_period = t;}
-//	
-//	/// Add timer_events listener.
-//	void add_listener(timer_events *listener);
-//	
-//	/// Remove timer_events listener.
-//	void remove_listener(timer_events *listener);
+	double get_realtime_speed();
 	
   private:
-	time_type apply_speed_manip(time_type dt) const;
+	void _start(time_type t = 0);
+	void _stop();
+	void _pause();
+	void _resume();
+	time_type _elapsed() const;
+	time_type _elapsed(time_type pt) const;
+	time_type _apply_speed_manip(time_type dt) const;
 	
 	timer *m_parent;
 	bool m_parent_owned;
@@ -219,10 +176,8 @@ class timer_control_impl : public timer_control, public timer_events {
 	time_type m_local_epoch;
 	double m_speed;
 	bool m_running;
-	long m_period;
-	
-	// Note: event listeners are not owned by this.
-	std::set<timer_events *> *m_listeners;
+
+	critical_section m_lock;
 };
 
 /// Factory function that returns a machine-dependent timer implementation.

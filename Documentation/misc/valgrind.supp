@@ -276,7 +276,42 @@
    Helgrind:Race
    fun:gdk_region_rectangle
 }
-
+{
+   Ambulant-glib-18
+   Helgrind:Race
+   obj:/usr/lib/libgtk-x11-2.0.so.0.1000.8
+   obj:/usr/lib/libgtk-x11-2.0.so.0.1000.8
+   obj:/usr/lib/libgtk-x11-2.0.so.0.1000.8
+   obj:/lib/libglib-2.0.so.0.1200.9
+   fun:g_main_context_dispatch
+   obj:/lib/libglib-2.0.so.0.1200.9
+   fun:g_main_loop_run
+   fun:main
+}
+{
+   Ambulant-glib-19
+   Helgrind:Race
+   fun:memset
+   fun:g_list_alloc
+   obj:*
+}
+{
+   Ambulant-glib-20
+   Helgrind:Race
+   obj:*
+   obj:*
+   fun:gtk_text_layout_validate
+   obj:*
+}
+{
+   Ambulant-glib-21
+   Helgrind:Race
+   obj:*
+   obj:*
+   obj:*
+   fun:gtk_text_layout_validate
+   obj:*
+}
 
 # SDL is OK
 {
@@ -370,17 +405,6 @@
    obj:*
 }
 {
-   # We don't lock the internal data in our timers. Maybe we should?
-   Ambulant-TBD-1
-   Helgrind:Race
-   fun:_ZN8ambulant3lib18timer_control_impl8set_timeEm
-   fun:_ZN8ambulant5smil29scheduler5startEPNS0_9time_nodeE
-   fun:_ZN8ambulant5smil211smil_player5startEv
-   fun:_ZN8ambulant6common10gui_player4playEv
-   fun:_ZN7gtk_gui7do_playEv
-   fun:main
-}
-{
    Ambulant-TBD-2
    Helgrind:Race
    fun:_ZN8ambulant5smil29time_node18raise_update_eventENS0_11q_smil_timeE
@@ -399,21 +423,9 @@
    obj:*
 }
 {
-   Ambulant-TBD-4
-   Helgrind:Race
-   fun:_ZN8ambulant3lib18timer_control_impl6resumeEv
-   obj:*
-}
-{
    Ambulant-TBD-5
    Helgrind:Race
    fun:_ZN8ambulant5smil29time_node19update_interval_endENS0_11q_smil_timeENS0_9smil_timeIlEE
-   obj:*
-}
-{
-   Ambulant-TBD-6
-   Helgrind:Race
-   fun:_ZN8ambulant3lib18timer_control_impl5pauseEv
    obj:*
 }
 {
@@ -529,16 +541,6 @@
    Helgrind:Race
    fun:_ZN8ambulant5smil211region_nodeD0Ev
    obj:*
-}
-{
-   Ambulant-TBD-26
-   Helgrind:Race
-   fun:_ZN8ambulant3lib18timer_control_impl8set_timeEm
-   fun:_ZN8ambulant5smil29scheduler5startEPNS0_9time_nodeE
-   fun:_ZN8ambulant5smil211smil_player5startEv
-   fun:_ZN8ambulant6common10gui_player4playEv
-   fun:_ZN6qt_gui9slot_playEv
-   fun:main
 }
 {
    Ambulant-TBD-27

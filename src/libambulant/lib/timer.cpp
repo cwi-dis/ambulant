@@ -47,9 +47,7 @@ lib::timer_control_impl::timer_control_impl(lib::timer* parent, double speed /* 
 	m_parent_epoch(parent->elapsed()),
 	m_local_epoch(0),
 	m_speed(speed),
-	m_running(run),
-	m_period(infinite),
-	m_listeners(0)
+	m_running(run)
 {	
 	AM_DBG lib::logger::get_logger()->debug("lib::timer_control_impl(0x%x), parent=0x%x", this, parent);
 }
@@ -58,131 +56,150 @@ lib::timer_control_impl::~timer_control_impl()
 {
 	// This class does not own event listeners.
 	// Therefore, deleting the container is enough
-	delete m_listeners;
 	if (m_parent_owned) delete m_parent; // Is this correct?
 	AM_DBG lib::logger::get_logger()->debug("~lib::timer_control_impl()");
 }
 
 lib::timer_control_impl::time_type
-lib::timer_control_impl::elapsed() const
+lib::timer_control_impl::elapsed()
 {
-	if(!m_running) return m_local_epoch;
-	return m_local_epoch + apply_speed_manip(m_parent->elapsed() - m_parent_epoch);
+	lib::timer_control_impl::time_type rv;
+	m_lock.enter();
+	rv = _elapsed();
+	m_lock.leave();
+	return rv;
 }
 
 lib::timer_control_impl::time_type
-lib::timer_control_impl::elapsed(time_type pe) const
+lib::timer_control_impl::_elapsed() const
 {
 	if(!m_running) return m_local_epoch;
-	return m_local_epoch + apply_speed_manip(pe - m_parent_epoch);
+	return m_local_epoch + _apply_speed_manip(m_parent->elapsed() - m_parent_epoch);
 }
 
-void lib::timer_control_impl::start(time_type t /* = 0 */) {
+lib::timer_control_impl::time_type
+lib::timer_control_impl::elapsed(time_type pet)
+{
+	lib::timer_control_impl::time_type rv;
+	m_lock.enter();
+	rv = _elapsed(pet);
+	m_lock.leave();
+	return rv;
+}
+
+lib::timer_control_impl::time_type
+lib::timer_control_impl::_elapsed(time_type pt) const
+{
+	if(!m_running) return m_local_epoch;
+	return m_local_epoch + _apply_speed_manip(pt - m_parent_epoch);
+}
+
+void
+lib::timer_control_impl::start(time_type t /* = 0 */) {
+	m_lock.enter();
+	_start(t);
+	m_lock.leave();
+}
+
+void
+lib::timer_control_impl::_start(time_type t) {
 	m_parent_epoch = m_parent->elapsed();
 	m_local_epoch = t;
 	m_running = true;
 }
 
-void lib::timer_control_impl::stop() {
+void
+lib::timer_control_impl::stop() {
+	m_lock.enter();
+	_stop();
+	m_lock.leave();
+}
+
+void
+lib::timer_control_impl::_stop() {
 	m_local_epoch = 0;
 	m_running = false;
 }
 	
-void lib::timer_control_impl::pause() {
+void
+lib::timer_control_impl::pause() {
+	m_lock.enter();
+	_pause();
+	m_lock.leave();
+}
+void 
+lib::timer_control_impl::_pause() {
 	if(m_running) {
-		m_local_epoch += apply_speed_manip(m_parent->elapsed() - m_parent_epoch);
+		m_local_epoch += _apply_speed_manip(m_parent->elapsed() - m_parent_epoch);
 		m_running = false;
 	}
 }
 	
-void lib::timer_control_impl::resume() {
+void
+lib::timer_control_impl::resume() {
+	m_lock.enter();
+	_resume();
+	m_lock.leave();
+}
+
+void
+lib::timer_control_impl::_resume() {
 	if(!m_running) {
 		m_parent_epoch = m_parent->elapsed();
 		m_running = true;
 	}
 }
 
-void lib::timer_control_impl::set_time(time_type t) {
+void
+lib::timer_control_impl::set_time(time_type t) {
 	
+	m_lock.enter();
 	if(!m_running) {
 		if (t < m_local_epoch) {
 			AM_DBG lib::logger::get_logger()->debug("timer: setting paused timer 0x%x from %d to %d", this, m_local_epoch, t);
 		}
 		m_local_epoch = t;
 	} else {
-		pause();
+		_pause();
 		// XXXJACK: Hard-setting a running clock is a bad idea: it makes things like animations and
 		// transitions "stutter". One possible solution would be to skew the clock if 
 		if (t < m_local_epoch) {
 			AM_DBG lib::logger::get_logger()->debug("timer: setting running timer 0x%x from %d to %d", this, m_local_epoch, t);
 		}
 		m_local_epoch = t;
-		resume();
+		_resume();
 	}
+	m_lock.leave();
 }	
 
-#if 0
-lib::timer_control_impl::time_type 
-lib::timer_control_impl::get_time() const {
-	return (m_period == infinite)?elapsed():(elapsed() % m_period);
-}
-
-lib::timer_control_impl::time_type 
-lib::timer_control_impl::get_repeat() const {
-	return (m_period == infinite)?0:(elapsed() / m_period);
-}
-#endif
-
-void lib::timer_control_impl::set_speed(double speed)
+void
+lib::timer_control_impl::set_speed(double speed)
 {
+	m_lock.enter();
 	if(!m_running) {
 		m_speed = speed;
 	} else {
-		pause();
+		_pause();
 		m_speed = speed;
-		resume();
+		_resume();
 	}
-	speed_changed();
+	m_lock.leave();
 }
 
 double
-lib::timer_control_impl::get_realtime_speed() const
+lib::timer_control_impl::get_realtime_speed()
 {
-	return m_speed * m_parent->get_realtime_speed();
+	double rv;
+	m_lock.enter();
+	rv = m_speed * m_parent->get_realtime_speed();
+	m_lock.leave();
+	return rv;
 }
 
 lib::timer_control_impl::time_type 
-lib::timer_control_impl::apply_speed_manip(lib::timer::time_type dt) const 
+lib::timer_control_impl::_apply_speed_manip(lib::timer::time_type dt) const 
 {
 	if(m_speed == 1.0) return dt;
 	else if(m_speed == 0.0) return 0;
 	return time_type(::floor(m_speed*dt + 0.5));
-}
-
-#if 0
-void 
-lib::timer_control_impl::add_listener(lib::timer_events *listener) 
-{
-	if(!m_listeners) m_listeners = new std::set<lib::timer_events*>();
-	typedef std::set<lib::timer_events*>::iterator iterator;
-	std::pair<iterator, bool> rv = m_listeners->insert(listener);
-	if(!rv.second)
-		lib::logger::get_logger()->debug("abstract_timer_client::add_listener: listener already added");
-}
-
-void 
-lib::timer_control_impl::remove_listener(lib::timer_events *listener)
-{
-	if(!m_listeners || !m_listeners->erase(listener))
-		lib::logger::get_logger()->debug("abstract_timer_client::remove_listener: listener not present");
-}
-#endif
-
-void
-lib::timer_control_impl::speed_changed()
-{
-	if(!m_listeners) return;
-	std::set<lib::timer_events*>::iterator it;
-	for(it = m_listeners->begin();it!=m_listeners->end();it++)
-		(*it)->speed_changed();
 }

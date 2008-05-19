@@ -41,9 +41,9 @@ class unix_timer : public ambulant::lib::timer  {
   public:
 	unix_timer() {};
 	
-	time_type elapsed() const;
+	time_type elapsed();
 	void set_speed(double speed);
-	double get_realtime_speed() const { return 1.0; }
+	double get_realtime_speed() { return 1.0; }
   private:
 	static time_type os_millitime();
 };
