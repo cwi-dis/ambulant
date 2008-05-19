@@ -336,8 +336,21 @@
    fun:_ZN8ambulant3lib4unix6thread10threadprocEPv
    obj:*
 }
+
+############ TBD uninvestigated ############
 {
-   # lock order is OK, Helgrind limitation?
+   # At least, the code warns you for this potential deadlock with the
+   # message "potential deadlock ahead". It would be better, though, if
+   # we forestall the deadlock:-)
+   Ambulantlock-potential-deadlock-1
+   Helgrind:Race
+   fun:_ZN8ambulant5smil29scheduler4lockEv
+   obj:*
+}
+{
+   # Problem, needs to be fixed. The call order between parent and
+   # child datasources can be two-way: parent to child for buffer_full()
+   # and child to parent for data_avail(). 
    Ambulantlock-order-1
    Helgrind:LockOrder
    fun:pthread_mutex_lock
@@ -346,6 +359,9 @@
    obj:*
 }
 {
+   # Problem, needs to be fixed. The call order between parent and
+   # child datasources can be two-way: parent to child for buffer_full()
+   # and child to parent for data_avail(). 
    Ambulantlock-order-2
    Helgrind:LockOrder
    fun:pthread_mutex_lock
@@ -354,14 +370,7 @@
    obj:*
 }
 {
-   Ambulantlock-potential-deadlock-1
-   Helgrind:Race
-   fun:_ZN8ambulant5smil29scheduler4lockEv
-   obj:*
-}
-
-############ TBD uninvestigated ############
-{
+   # We don't lock the internal data in our timers. Maybe we should?
    Ambulant-TBD-1
    Helgrind:Race
    fun:_ZN8ambulant3lib18timer_control_impl8set_timeEm
