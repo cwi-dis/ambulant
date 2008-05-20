@@ -60,14 +60,14 @@ class win32_timer : public ambulant::lib::timer  {
 	
 	// Returns time in msec since epoch.
 	// Takes into account speed with a 1% precision.	
-	time_type elapsed();
+	time_type elapsed() const;
 	
 	// Gets the speed of this timer
 	double get_speed() const { return 1.0;}
 	
 	// Gets the realtime speed of this 
 	// timer as modulated by its parent
-	double get_realtime_speed() { return 1.0;}
+	double get_realtime_speed() const { return 1.0;}
   private:		
 	ULONGLONG m_epoch;
 	

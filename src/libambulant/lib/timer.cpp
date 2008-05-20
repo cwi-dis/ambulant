@@ -61,12 +61,12 @@ lib::timer_control_impl::~timer_control_impl()
 }
 
 lib::timer_control_impl::time_type
-lib::timer_control_impl::elapsed()
+lib::timer_control_impl::elapsed() const
 {
 	lib::timer_control_impl::time_type rv;
-	m_lock.enter();
+	const_cast<lib::timer_control_impl*>(this)->m_lock.enter();
 	rv = _elapsed();
-	m_lock.leave();
+	const_cast<lib::timer_control_impl*>(this)->m_lock.leave();
 	return rv;
 }
 
@@ -78,12 +78,12 @@ lib::timer_control_impl::_elapsed() const
 }
 
 lib::timer_control_impl::time_type
-lib::timer_control_impl::elapsed(time_type pet)
+lib::timer_control_impl::elapsed(time_type pet) const
 {
 	lib::timer_control_impl::time_type rv;
-	m_lock.enter();
+	const_cast<lib::timer_control_impl*>(this)->m_lock.enter();
 	rv = _elapsed(pet);
-	m_lock.leave();
+	const_cast<lib::timer_control_impl*>(this)->m_lock.leave();
 	return rv;
 }
 
@@ -187,12 +187,12 @@ lib::timer_control_impl::set_speed(double speed)
 }
 
 double
-lib::timer_control_impl::get_realtime_speed()
+lib::timer_control_impl::get_realtime_speed() const
 {
 	double rv;
-	m_lock.enter();
+	const_cast<lib::timer_control_impl*>(this)->m_lock.enter();
 	rv = m_speed * m_parent->get_realtime_speed();
-	m_lock.leave();
+	const_cast<lib::timer_control_impl*>(this)->m_lock.leave();
 	return rv;
 }
 

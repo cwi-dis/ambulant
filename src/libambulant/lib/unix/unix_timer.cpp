@@ -28,7 +28,7 @@
 using namespace ambulant;
 
 lib::unix::unix_timer::time_type
-lib::unix::unix_timer::elapsed()
+lib::unix::unix_timer::elapsed() const
 {
 	return os_millitime();
 }

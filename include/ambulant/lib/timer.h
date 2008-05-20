@@ -46,10 +46,10 @@ class timer {
 	virtual ~timer() {}
 		
 	/// Returns the time elapsed.
-	virtual time_type elapsed() = 0;
+	virtual time_type elapsed() const = 0;
 	
 	/// Gets the realtime speed of this timer as modulated by its parent.
-	virtual double get_realtime_speed() = 0;
+	virtual double get_realtime_speed() const = 0;
 };
 
 /// Controller interface to timer objects.
@@ -61,10 +61,10 @@ class timer_control : public timer {
 	
 	/// Returns the zero-based elapsed time.
 	/// Does not take periodicity into account.
-	virtual time_type elapsed() = 0;
+	virtual time_type elapsed() const = 0;
 
 	// Returns the zero-based time elapsed for the provided parent elapsed time.
-	virtual time_type elapsed(time_type pt) = 0;
+	virtual time_type elapsed(time_type pt) const = 0;
 	
 	/// Starts ticking at t (t>=0).
 	virtual void start(time_type t = 0) = 0;
@@ -94,14 +94,14 @@ class timer_control : public timer {
 	virtual void set_time(time_type t) = 0;
 	
 	// Returns the speed of this timer.
-	virtual double get_speed() = 0;
+	virtual double get_speed() const = 0;
 	
 	/// Returns true when this timer is running.
-	virtual bool running() = 0;
+	virtual bool running() const = 0;
 	
 	/// Returns the realtime speed of this timer 
 	/// as modulated by its parent.
-	virtual double get_realtime_speed() = 0;
+	virtual double get_realtime_speed() const = 0;
 
 };
 
@@ -119,10 +119,10 @@ class timer_control_impl : public timer_control {
 	
 	/// Returns the zero-based elapsed time.
 	/// Does not take periodicity into account.
-	time_type elapsed();
+	time_type elapsed() const;
 	
 	// Returns the zero-based time elapsed for the provided parent elapsed time.
-	time_type elapsed(time_type pet);
+	time_type elapsed(time_type pet) const;
 		
 	/// Starts ticking at t (t>=0).
 	void start(time_type t = 0);
@@ -152,14 +152,14 @@ class timer_control_impl : public timer_control {
 	void set_time(time_type t);
 	
 	// Returns the speed of this timer.
-	double get_speed() { return m_speed;}
+	double get_speed() const { return m_speed;}
 	
 	/// Returns true when this timer is running.
-	bool running() { return m_running;}
+	bool running() const { return m_running;}
 	
 	/// Returns the realtime speed of this timer 
 	/// as modulated by its parent.
-	double get_realtime_speed();
+	double get_realtime_speed() const ;
 	
   private:
 	void _start(time_type t = 0);
