@@ -1,3 +1,10 @@
+2008-05-20 17:30  keesblom
+
+	* Reset 'const' keyword where it was deleted because of the usage
+	  of semaphores and added
+	  const_cast<lib::timer_control_impl*>(this)-> where the 'const'
+	  member function needs access to the semaphore
+
 2008-05-19 16:43  keesblom
 
 	* [no log message]
