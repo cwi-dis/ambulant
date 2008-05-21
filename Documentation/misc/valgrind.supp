@@ -330,6 +330,16 @@
 
 
 # Ambulant verified
+
+# virtual destructors must modify vtable, is OK.
+# See: Electronic Notes in Theoretical Computer Science
+# Volume 174, Issue 9, 22 June 2007, Pages 5-22
+{
+   Ambulant-virtual-destructor-1
+   Helgrind:Race
+   fun:_ZN8ambulant3lib4unix15event_processorD0Ev
+   obj:*
+}
 {
    # delete this is OK when ref_count == 0
    Ambulant-ref_counted_obj-1
@@ -516,12 +526,6 @@
    Ambulant-TBD-21
    Helgrind:Race
    fun:_ZN8ambulant5smil211smil_playerD0Ev
-   obj:*
-}
-{
-   Ambulant-TBD-23
-   Helgrind:Race
-   fun:_ZN8ambulant3lib4unix15event_processorD0Ev
    obj:*
 }
 {

@@ -78,7 +78,6 @@ smil_player::smil_player(lib::document *doc, common::factories *factory, common:
 	m_focussed_nodes(new std::set<int>()),
 	m_new_focussed_nodes(0)
 {
-	
 	m_logger = lib::logger::get_logger();
 	AM_DBG m_logger->debug("smil_player::smil_player(0x%x)", this);
 }
