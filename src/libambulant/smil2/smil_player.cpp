@@ -116,14 +116,14 @@ smil_player::~smil_player() {
 	
 	delete m_focussed_nodes;
 	delete m_new_focussed_nodes;
+	delete m_scheduler;
+	delete m_animation_engine;
 	delete m_event_processor;
 	delete m_timer;
-	delete m_dom2tn;
-	delete m_animation_engine;
-	delete m_root;
-	delete m_scheduler;
-//	delete m_doc;
 	delete m_layout_manager;
+	delete m_dom2tn;
+	delete m_root;
+//	delete m_doc;
 }
 
 void smil_player::build_layout() {
