@@ -519,12 +519,6 @@
    obj:*
 }
 {
-   Ambulant-TBD-22
-   Helgrind:Race
-   fun:_ZN8ambulant3lib18timer_control_impl4stopEv
-   obj:*
-}
-{
    Ambulant-TBD-23
    Helgrind:Race
    fun:_ZN8ambulant3lib4unix15event_processorD0Ev
