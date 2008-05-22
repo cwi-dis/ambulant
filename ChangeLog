@@ -1,3 +1,19 @@
+2008-05-21 14:30  keesblom
+
+	* Added a permanent helgrind suppression for virtual destructors
+	  (vtable).
+
+2008-05-21 11:50  keesblom
+
+	* last timer_control_impl problem solved in smilt_player.cpp r.
+	  1.115
+
+2008-05-21 11:26  jackjansen
+
+	* Changed cleanup order for smil_player items: event processor and
+	  timer should be deleted later. Hope this fixes helgrind
+	  complaint.
+
 2008-05-20 17:30  keesblom
 
 	* Reset 'const' keyword where it was deleted because of the usage
