@@ -173,15 +173,17 @@ class smil_player : public common::player, /* public common::player_feedback,*/ 
 	animation_engine* get_animation_engine() { return m_animation_engine;}
 	
  private:
-	common::playable *new_playable(const lib::node *n); 
-	void destroy_playable(common::playable *r, const lib::node *n); 
-	common::playable* get_playable(const lib::node *n) {
+	common::playable* _new_playable(const lib::node *n); 
+	void _destroy_playable(common::playable *r, const lib::node *n); 
+	common::playable* _get_playable(const lib::node *n) {
 		std::map<const lib::node*, common::playable *>::iterator it = 
 			m_playables.find(n);
 		return (it != m_playables.end())?(*it).second:0;
 	}
 	// timegraph sampling
 	void update();
+	void _update();
+	void _resume();
 	
 #ifdef WITH_SMIL30
 	void create_state_engine();
@@ -213,6 +215,7 @@ class smil_player : public common::player, /* public common::player_feedback,*/ 
 	const lib::node *m_focus;
 	std::set<int> *m_focussed_nodes;
 	std::set<int> *m_new_focussed_nodes;
+	lib::critical_section m_lock;
 };
 
 } // namespace smil2

@@ -49,11 +49,12 @@ lib::unix::thread::start()
 {
 	if (m_started || m_exit_requested)
 		return false;
-	
+	int err;
 	assert(!m_running);
 	m_running = m_started = true;
-	if (pthread_create(&m_thread, NULL, &thread::threadproc, this) < 0 ) {
-		perror("pthread_create");
+	if ((err = pthread_create(&m_thread, NULL, &thread::threadproc, this)) != 0 ) {
+		errno = err;
+		perror("pthread_create()");
 		abort();
 		//m_starting = false;
 	}
@@ -63,13 +64,15 @@ lib::unix::thread::start()
 void
 lib::unix::thread::stop()
 {
+	int err;
 	m_exit_requested = true;
 	/* TODO: wake thread up */
 	if (pthread_equal(m_thread, pthread_self())) {
 		lib::logger::get_logger()->debug("thread::stop(0x%x) called by self", m_thread);
 	} else {
-		if (pthread_join(m_thread, NULL) < 0) {
-			perror("pthread_join in unix::thread::stop()");
+		if ((err = pthread_join(m_thread, NULL)) != 0) {
+			errno = err;
+			perror("pthread_join() in unix::thread::stop()");
 		}
 	}
 }
@@ -107,6 +110,6 @@ lib::unix::thread::threadproc(void *pParam)
 	assert(p->m_started);
 	if (!p->m_exit_requested) (void)p->run();
 	p->m_running = false;
-	pthread_exit(NULL);
+	pthread_exit(NULL); // returns never 
 	return NULL;
 }

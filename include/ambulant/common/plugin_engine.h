@@ -31,9 +31,7 @@
 #else
 #define AMBULANT_PLUGIN_API_VERSION 2
 #endif
-#ifndef WITH_PYTHON_PLUGIN
-#define WITH_PYTHON_PLUGIN
-#endif
+
 namespace ambulant {
 
 namespace common {

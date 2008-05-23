@@ -511,12 +511,6 @@
    obj:*
 }
 {
-   Ambulant-TBD-19
-   Helgrind:Race
-   fun:_ZN8ambulant5smil211smil_player4stopEv
-   obj:*
-}
-{
    Ambulant-TBD-20
    Helgrind:Race
    fun:_ZN12gtk_mainloopD0Ev

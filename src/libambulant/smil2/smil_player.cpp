@@ -101,6 +101,7 @@ smil_player::initialize()
 smil_player::~smil_player() {
 	AM_DBG m_logger->debug("smil_player::~smil_player(0x%x)", this);
 	
+	m_lock.enter();
 	// sync destruction
 	m_timer->pause();
 	cancel_all_events();
@@ -123,6 +124,7 @@ smil_player::~smil_player() {
 	delete m_dom2tn;
 	delete m_root;
 //	delete m_doc;
+	m_lock.leave();
 }
 
 void smil_player::build_layout() {
@@ -195,63 +197,79 @@ void smil_player::schedule_event(lib::event *ev, lib::timer::time_type t, event_
 
 // Command to start playback
 void smil_player::start() {
+	m_lock.enter();
 	if(m_state == common::ps_pausing) {
-		resume();
+		_resume();
 	} else if(m_state == common::ps_idle || m_state == common::ps_done) {
 		if(!m_root) build_timegraph();
 		if(m_root) {
 			if (m_system) m_system->starting(this);
 			m_scheduler->start(m_root);
-			update();
+			_update();
 		}
 	}
+	m_lock.leave();
 }
 
 // Command to stop playback
 void smil_player::stop() {
-	if(m_state != common::ps_pausing && m_state != common::ps_playing)
-		return;
-	m_timer->pause();
-	cancel_all_events();		
-	m_scheduler->reset_document();
-	done_playback();
+	m_lock.enter();
+	if(m_state == common::ps_pausing || m_state == common::ps_playing) {
+		m_timer->pause();
+		cancel_all_events();		
+		m_scheduler->reset_document();
+		done_playback();
+	}
+	m_lock.leave();
 }
 
 // Command to pause playback
 void smil_player::pause() {
-	if(m_state != common::ps_playing)
-		return;	
-	m_state = common::ps_pausing;
-	m_timer->pause();
-	std::map<const lib::node*, common::playable *>::iterator it;
-	m_playables_cs.enter();
-	for(it = m_playables.begin();it!=m_playables.end();it++)
-		(*it).second->pause();
-	m_playables_cs.leave();
+	m_lock.enter();
+	if(m_state == common::ps_playing) {
+		m_state = common::ps_pausing;
+		m_timer->pause();
+		std::map<const lib::node*, common::playable *>::iterator it;
+		m_playables_cs.enter();
+		for(it = m_playables.begin();it!=m_playables.end();it++)
+			(*it).second->pause();
+		m_playables_cs.leave();
+	}
+	m_lock.leave();
 }
 
 // Command to resume playback
 void smil_player::resume() {
-	if(m_state != common::ps_pausing)
-		return;	
-	m_state = common::ps_playing;
-	std::map<const lib::node*, common::playable *>::iterator it;
-	m_playables_cs.enter();
-	for(it = m_playables.begin();it!=m_playables.end();it++)
-		(*it).second->resume();
-	m_playables_cs.leave();
-	m_timer->resume();
+	m_lock.enter();
+	_resume();
+	m_lock.leave();
+}
+// internal implementation resume playback
+void smil_player::_resume() {
+	if(m_state == common::ps_pausing) {
+		m_state = common::ps_playing;
+		std::map<const lib::node*, common::playable *>::iterator it;
+		m_playables_cs.enter();
+		for(it = m_playables.begin();it!=m_playables.end();it++)
+			(*it).second->resume();
+		m_playables_cs.leave();
+		m_timer->resume();
+	}
 }
 
 // Started callback from the scheduler
 void smil_player::started_playback() {
+	// no m_lock.enter();,called in locked state 
 	m_state = common::ps_playing;
+	// m_lock.leave();
 	document_started();
 }
 
 // Done callback from the scheduler
 void smil_player::done_playback() {
+	// no m_lock.enter();,called in locked state 
 	m_state = common::ps_done;
+	// m_lock.leave();
 	m_timer->pause();
 	document_stopped();
 	if(m_system) 
@@ -264,7 +282,7 @@ common::playable *smil_player::create_playable(const lib::node *n) {
 		m_playables.find(n);
 	common::playable *np = (it != m_playables.end())?(*it).second:0;
 	if(np == NULL) {
-		np = new_playable(n);
+		np = _new_playable(n);
 AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x)cs.enter", (void*)n);
 		m_playables_cs.enter();
 		m_playables[n] = np;
@@ -304,7 +322,7 @@ void smil_player::start_playable(const lib::node *n, double t, const lib::transi
 // Request to seek the playable of the node.
 void smil_player::seek_playable(const lib::node *n, double t) {
 	AM_DBG lib::logger::get_logger()->debug("smil_player::seek_playable(0x%x, %f)", (void*)n, t);
-	common::playable *np = get_playable(n);
+	common::playable *np = _get_playable(n);
 	if (np) np->seek(t);
 }
 
@@ -356,21 +374,21 @@ void smil_player::stop_playable(const lib::node *n) {
 	}
 	m_playables_cs.leave();
 	if (victim.first)
-		destroy_playable(victim.second, victim.first);
+		_destroy_playable(victim.second, victim.first);
 	AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable(0x%x)cs.leave", (void*)n);
 }
 
 // Request to pause the playable of the node.
 void smil_player::pause_playable(const lib::node *n, pause_display d) {
 	AM_DBG lib::logger::get_logger()->debug("smil_player::pause_playable(%s)", n->get_sig().c_str());
-	common::playable *np = get_playable(n);
+	common::playable *np = _get_playable(n);
 	if(np) np->pause(d);
 }
 
 // Request to resume the playable of the node.
 void smil_player::resume_playable(const lib::node *n) {
 	AM_DBG lib::logger::get_logger()->debug("smil_player::resume_playable(%s)", n->get_sig().c_str());
-	common::playable *np = get_playable(n);
+	common::playable *np = _get_playable(n);
 	if(np) np->resume();
 }
 
@@ -395,7 +413,7 @@ smil_player::get_dur(const lib::node *n) {
 
 // Notify the playable that it should update this on user events (click, point).
 void smil_player::wantclicks_playable(const lib::node *n, bool want) {
-	common::playable *np = get_playable(n);
+	common::playable *np = _get_playable(n);
 	if(np) np->wantclicks(want);
 }
 
@@ -810,13 +828,13 @@ void smil_player::on_focus_activate() {
 
 // Creates and returns a playable for the node.
 common::playable *
-smil_player::new_playable(const lib::node *n) {
+smil_player::_new_playable(const lib::node *n) {
 	int nid = n->get_numid();
 	std::string tag = n->get_local_name();
 	const char *pid = n->get_attribute("id");
 	
 	surface *surf = m_layout_manager->get_surface(n);
-	AM_DBG m_logger->debug("%s[%s].new_playable 0x%x cookie=%d  rect%s at %s", tag.c_str(), (pid?pid:"no-id"),
+	AM_DBG m_logger->debug("%s[%s]._new_playable 0x%x cookie=%d  rect%s at %s", tag.c_str(), (pid?pid:"no-id"),
 		(void*)n, nid,
 		::repr(surf->get_rect()).c_str(),
 		::repr(surf->get_global_topleft()).c_str());
@@ -827,28 +845,28 @@ smil_player::new_playable(const lib::node *n) {
 		common::renderer *rend = np->get_renderer();
 		
 		if (rend) {
-			AM_DBG m_logger->debug("smil_player::new_playable: surface  set,rend = 0x%x, np = 0x%x", (void*) rend, (void*) np);
+			AM_DBG m_logger->debug("smil_player::_new_playable: surface  set,rend = 0x%x, np = 0x%x", (void*) rend, (void*) np);
 			rend->set_surface(surf);
 			const alignment *align = m_layout_manager->get_alignment(n);
 			rend->set_alignment(align);
 		} else {
-			AM_DBG m_logger->debug("smil_player::new_playable: surface not set because rend == NULL");
+			AM_DBG m_logger->debug("smil_player::_new_playable: surface not set because rend == NULL");
 		}
 	}
 	return np;
 }
 
 // Destroys the playable of the node (checkpoint).
-void smil_player::destroy_playable(common::playable *np, const lib::node *n) {
+void smil_player::_destroy_playable(common::playable *np, const lib::node *n) {
 	AM_DBG {
 		std::string tag = n->get_local_name();
 		const char *pid = n->get_attribute("id");
 	
-		m_logger->debug("%s[%s].destroy_playable 0x%x", tag.c_str(), (pid?pid:"no-id"), np);
+		m_logger->debug("%s[%s]._destroy_playable 0x%x", tag.c_str(), (pid?pid:"no-id"), np);
 	}
 	np->stop();
 	int rem = np->release();
-	if (rem > 1) m_logger->debug("smil_player::destroy_playable: playable 0x%x still has refcount of %d", np, rem);
+	if (rem > 1) m_logger->debug("smil_player::_destroy_playable: playable 0x%x still has refcount of %d", np, rem);
 }
 
 void smil_player::show_link(const lib::node *n, const net::url& href, 
@@ -915,7 +933,7 @@ bool smil_player::goto_node(const lib::node *target)
 		}
 		m_scheduler->start((*it).second);
 		if (!already_running) {
-			update();
+			_update();
 		}
 		return true;
 	}
@@ -958,6 +976,12 @@ std::string smil_player::get_pointed_node_str() const {
 }
 
 void smil_player::update() {
+	m_lock.enter();
+	_update();
+	m_lock.leave();
+}
+
+void smil_player::_update() {
 	if(m_scheduler && m_root && m_root->is_active()) {
 		lib::timer::time_type dt = m_scheduler->exec();
 		if(m_root->is_active()) {
