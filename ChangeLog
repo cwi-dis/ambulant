@@ -1,3 +1,12 @@
+2008-05-23 16:04  keesblom
+
+	* Changed error handling of the pthread functions: they all return
+	  an errorcode > 0, while we tested like if (pthread_function() <
+	  0) handle_error().  Added locking in the smil_player
+	  (start(),stio(),pause(), resume() etc).  Made the inclusion on
+	  the python plugin not absolute, but depending on the configure
+	  setting.
+
 2008-05-21 14:30  keesblom
 
 	* Added a permanent helgrind suppression for virtual destructors
