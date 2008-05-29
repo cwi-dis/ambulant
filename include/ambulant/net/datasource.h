@@ -596,11 +596,9 @@ class demux_datasink {
     virtual ~demux_datasink(){}
     
 	/// Data push call: consume data with given size and timestamp. Must copy data
-	/// before returning.
-	virtual void data_avail(timestamp_t pts, const uint8_t *data, int size) = 0;
+	/// before returning. Returns false when data could not be delivered.
+	virtual bool packet_avail(timestamp_t pts, const uint8_t *data, int size) = 0;
 
-	/// Return true if no more data should be pushed right now.
-	virtual bool buffer_full() = 0;
 };
 
 /// Interface for objects that demultiplex audio/video streams.

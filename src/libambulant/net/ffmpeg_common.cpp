@@ -154,9 +154,11 @@ ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timesta
 
 ffmpeg_demux::~ffmpeg_demux()
 {
+	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::~ffmpeg_demux()");
 	if (m_con) av_close_input_file(m_con);
 	m_con = NULL;
+	m_lock.leave();
 }
 
 timestamp_t
@@ -333,15 +335,17 @@ ffmpeg_demux::seek(timestamp_t time)
 void
 ffmpeg_demux::remove_datasink(int stream_index)
 {
+	demux_datasink* ds;
 	m_lock.enter();
 	assert(stream_index >= 0 && stream_index < MAX_STREAMS);
 	assert(m_sinks[stream_index] != 0);
-	if (m_sinks[stream_index])
-		// signal EOF
-		m_sinks[stream_index]->data_avail(0, 0, 0);
+	ds = m_sinks[stream_index];
 	m_sinks[stream_index] = 0;
 	m_nstream--;
 	m_lock.leave();
+	if (ds)
+		// signal EOF
+		ds->packet_avail(0, 0, 0);
 	if (m_nstream <= 0) cancel();
 }
 
@@ -392,20 +396,6 @@ ffmpeg_demux::run()
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: Drop data for stream %d (%lld, 0x%x, %d)", pkt->stream_index, pts, pkt->pts ,pkt->data, pkt->size);
 		} else {
 			AM_DBG lib::logger::get_logger ()->debug ("ffmpeg_parser::run sending data to datasink (stream %d) (%lld, %lld, 0x%x, %d)", pkt->stream_index, pts, pkt->pts ,pkt->data, pkt->size);
-			// Wait until there is room in the buffer
-			while (sink && sink->buffer_full() && !exit_requested()) {
-				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", pkt->stream_index);
-				m_lock.leave();
-				 // sleep 10 millisec, hardly noticeable
-#ifdef	AMBULANT_PLATFORM_WIN32
-				ambulant::lib::sleep_msec(10); // XXXX should be woken by readdone()
-#else
-				usleep(10000);
-#endif//AMBULANT_PLATFORM_WIN32
-//				sleep(1);   // This is overdoing it
-				m_lock.enter();
-				sink = m_sinks[pkt->stream_index];
-			}
 			if (sink && !exit_requested()) {
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: raw pts=%lld, dts=%lld", pkt->pts, pkt->dts);
 #if 0
@@ -428,23 +418,38 @@ ffmpeg_demux::run()
 #endif
 				if (pts != AV_NOPTS_VALUE)
 					pts = av_rescale_q(pts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
+			}
+			bool accepted = false;
+			while ( ! accepted && sink && !exit_requested()) { 
+				sink = m_sinks[pkt->stream_index];
+				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.packet_avail(%lld, 0x%x, %d, %d) pts=%lld", pkt->stream_index, pkt->pts, pkt->data, pkt->size, pkt->duration, pts);
 				
-				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.data_avail(%lld, 0x%x, %d, %d) pts=%lld", pkt->stream_index, pkt->pts, pkt->data, pkt->size, pkt->duration, pts);
-				
-				sink->data_avail(pts, pkt->data, pkt->size);
-
+				m_lock.leave();
+				accepted = sink->packet_avail(pts, pkt->data, pkt->size);
+				if ( ! accepted) {
+					// wait until space available in sink
+					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", pkt->stream_index);
+				 	// sleep 10 millisec, hardly noticeable
+#ifdef	AMBULANT_PLATFORM_WIN32
+					ambulant::lib::sleep_msec(10); // XXXX should be woken by readdone()
+#else
+					usleep(10000);
+#endif//AMBULANT_PLATFORM_WIN32
+//					sleep(1);   // This is overdoing it
+				}
+				m_lock.enter();
 			}
 		}
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: freeing pkt (number %d)",pkt_nr);
 		av_free_packet(pkt);
 	}
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: final data_avail(0, 0)");
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: final packet_avail(0, 0)");
 	int i;
+	m_lock.leave();
 	for (i=0; i<MAX_STREAMS; i++)
 		if (m_sinks[i])
-			m_sinks[i]->data_avail(0, 0, 0);
+			m_sinks[i]->packet_avail(0, 0, 0);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: returning");
-	m_lock.leave();
 	return 0;
 }
 

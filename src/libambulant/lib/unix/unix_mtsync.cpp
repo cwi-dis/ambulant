@@ -40,6 +40,7 @@ lib::unix::critical_section::critical_section()
 lib::unix::critical_section::~critical_section()
 {
 	int err;
+
 	if ((err = pthread_mutex_destroy(&m_cs)) != 0) {
 		lib::logger::get_logger()->fatal("unix_critical_section: pthread_mutex_destroy failed: %s", strerror(err));
 	}
