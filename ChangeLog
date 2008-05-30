@@ -1,3 +1,7 @@
+2008-05-29 14:24  keesblom
+
+	* Merge brancn kees-datasource-260508 with trunk
+
 2008-05-23 16:04  keesblom
 
 	* Changed error handling of the pthread functions: they all return
