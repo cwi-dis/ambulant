@@ -443,48 +443,6 @@
    obj:*
 }
 {
-   Ambulant-TBD-5
-   Helgrind:Race
-   fun:_ZN8ambulant5smil29time_node19update_interval_endENS0_11q_smil_timeENS0_9smil_timeIlEE
-   obj:*
-}
-{
-   Ambulant-TBD-7
-   Helgrind:Race
-   fun:_ZN8ambulant5smil29time_node15played_intervalENS0_11q_smil_timeE
-   obj:*
-}
-{
-   Ambulant-TBD-8
-   Helgrind:Race
-   fun:_ZNK8ambulant5smil29smil_timeIlEneERKS2_
-   obj:*
-}
-{
-   Ambulant-TBD-9
-   Helgrind:Race
-   fun:_ZN8ambulant5smil29time_node8end_condENS0_11q_smil_timeE
-   obj:*
-}
-{
-   Ambulant-TBD-10
-   Helgrind:Race
-   fun:_ZN8ambulant5smil212active_state4exitENS0_11q_smil_timeEPNS0_9time_nodeE
-   obj:*
-}
-{
-   Ambulant-TBD-11
-   Helgrind:Race
-   fun:_ZN8ambulant5smil29time_node9set_stateENS0_15time_state_typeENS0_11q_smil_timeEPS1_
-   obj:*
-}
-{
-   Ambulant-TBD-12
-   Helgrind:Race
-   fun:_ZN8ambulant5smil29time_node*
-   obj:*
-}
-{
    Ambulant-TBD-13
    Helgrind:Race
    fun:_ZN8ambulant6common23renderer_playable_dsall8readdoneEv

@@ -172,7 +172,7 @@ ambulant::net::rtsp_demux::remove_datasink(int stream_index)
 	assert(m_context && m_context->sinks && m_context->sinks[stream_index] != 0);
 	if (m_context->sinks[stream_index])
 		// signal EOF
-		m_context->sinks[stream_index]->data_avail(0, 0, 0);
+		m_context->sinks[stream_index]->packet_avail(0, 0, 0);
 	m_context->sinks[stream_index] = 0;
 	m_context->nsinks--;
 	if (m_context->nsinks <= 0) _cancel();
@@ -492,7 +492,7 @@ ambulant::net::rtsp_demux::run()
 	for (int i=0; i<MAX_STREAMS; i++) {
 		demux_datasink *sink = m_context->sinks[i];
 		if (sink)
-			sink->data_avail(0, 0, 0);
+			sink->packet_avail(0, 0, 0);
 	}
 	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run(0x%x): returning", (void*)this);
 	release();
@@ -532,7 +532,7 @@ rtsp_demux::after_reading_audio(unsigned sz, unsigned truncated, struct timeval 
 	timestamp_t rpts = (pts.tv_sec* 1000000 )+  pts.tv_usec;
 	if(m_context->sinks[m_context->audio_stream]) {
 		AM_DBG lib::logger::get_logger()->debug("after_reading_audio: calling data_avail");
-		m_context->sinks[m_context->audio_stream]->data_avail(rpts, (uint8_t*) m_context->audio_packet, sz);
+		m_context->sinks[m_context->audio_stream]->packet_avail(rpts, (uint8_t*) m_context->audio_packet, sz);
 		AM_DBG lib::logger::get_logger()->debug("after_reading_audio: calling data_avail done");
 	}
 	assert (m_context->audio_packet);
@@ -571,7 +571,7 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
 				m_context->initialPacketData = NULL;
 				m_context->initialPacketDataLen = 0;
 			} else {
-				m_context->sinks[m_context->video_stream]->data_avail(0, (uint8_t*) m_context->initialPacketData , m_context->initialPacketDataLen);
+				m_context->sinks[m_context->video_stream]->packet_avail(0, (uint8_t*) m_context->initialPacketData , m_context->initialPacketDataLen);
 			}
 		}
 	}
@@ -608,6 +608,7 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
 	
 	demux_datasink *sink = m_context->sinks[m_context->video_stream];
 again:
+	bool accepted = false;
 	if (m_context->notPacketized) {
 		// We have to re-packetize ourselves. We do this by combining all data with the same timestamp.
 		if (rpts == 0 || rpts == m_context->last_pts) {
@@ -642,25 +643,11 @@ again:
 			goto done;
 		}
 	}
-	// Now we may have to wait until there is room in our output buffer.
-	while (sink && sink->buffer_full() && !exit_requested()) {
-			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", m_context->video_stream);
-			m_critical_section.leave();
-			 // sleep 10 millisec, hardly noticeable
-#ifdef	AMBULANT_PLATFORM_WIN32
-			ambulant::lib::sleep_msec(10); // XXXX should be woken by readdone()
-#else
-			usleep(10000);
-#endif //AMBULANT_PLATFORM_WIN32
-			m_critical_section.enter();
-			sink = m_context->sinks[m_context->video_stream];
-	}
-
 	// Send the data to our sink, which is responsible for copying/saving it before returning.
-	if(sink && !exit_requested()) {
+	while ( ! accepted && sink && !exit_requested()) {
 		if (m_context->notPacketized) {
 			AM_DBG lib::logger::get_logger()->debug("Video packet length (buffered)=%d, timestamp=%lld", m_context->vbufferlen, m_context->last_pts+m_clip_begin);
-			sink->data_avail(m_context->last_pts+m_clip_begin, (uint8_t*) m_context->vbuffer, m_context->vbufferlen);
+			sink->packet_avail(m_context->last_pts+m_clip_begin, (uint8_t*) m_context->vbuffer, m_context->vbufferlen);
 			free(m_context->vbuffer);
 			m_context->vbuffer = NULL;
 			m_context->vbufferlen = 0;
@@ -673,7 +660,20 @@ again:
 				// The space in video_packet was already left free in run().
 				memcpy(m_context->video_packet, m_context->extraPacketHeaderData, m_context->extraPacketHeaderSize);
 			}
-			sink->data_avail(rpts+m_clip_begin, (uint8_t*) m_context->video_packet, sz+m_context->extraPacketHeaderSize);
+			accepted = sink->packet_avail(rpts+m_clip_begin, (uint8_t*) m_context->video_packet, sz+m_context->extraPacketHeaderSize);
+		}
+	// Now we may have to wait until there is room in our output buffer.
+		if ( ! accepted && sink && !exit_requested()) {
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", m_context->video_stream);
+			m_critical_section.leave();
+			 // sleep 10 millisec, hardly noticeable
+#ifdef	AMBULANT_PLATFORM_WIN32
+			ambulant::lib::sleep_msec(10); // XXXX should be woken by readdone()
+#else
+			usleep(10000);
+#endif //AMBULANT_PLATFORM_WIN32
+			m_critical_section.enter();
+			sink = m_context->sinks[m_context->video_stream];
 		}
 	}
 	
