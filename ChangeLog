@@ -1,3 +1,11 @@
+2008-06-02 17:14  keesblom
+
+	* Addapted rtsp_datasource ro new API where data_avail(3 args) and
+	  buffer_full are replaced by bool packet_avail(3 args). Seems to
+	  work, but RTSP code needs more tests and fixes. Used local
+	  liveMediaServer for audio, since media.cwi.nl is broken w.r.t
+	  rtsp after severe crash.
+
 2008-05-29 14:24  keesblom
 
 	* Merge brancn kees-datasource-260508 with trunk
