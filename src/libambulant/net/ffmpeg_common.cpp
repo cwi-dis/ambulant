@@ -345,7 +345,7 @@ ffmpeg_demux::remove_datasink(int stream_index)
 	m_lock.leave();
 	if (ds)
 		// signal EOF
-		ds->packet_avail(0, 0, 0);
+		ds->push_data(0, 0, 0);
 	if (m_nstream <= 0) cancel();
 }
 
@@ -422,10 +422,10 @@ ffmpeg_demux::run()
 			bool accepted = false;
 			while ( ! accepted && sink && !exit_requested()) { 
 				sink = m_sinks[pkt->stream_index];
-				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.packet_avail(%lld, 0x%x, %d, %d) pts=%lld", pkt->stream_index, pkt->pts, pkt->data, pkt->size, pkt->duration, pts);
+				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.push_data(%lld, 0x%x, %d, %d) pts=%lld", pkt->stream_index, pkt->pts, pkt->data, pkt->size, pkt->duration, pts);
 				
 				m_lock.leave();
-				accepted = sink->packet_avail(pts, pkt->data, pkt->size);
+				accepted = sink->push_data(pts, pkt->data, pkt->size);
 				if ( ! accepted) {
 					// wait until space available in sink
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", pkt->stream_index);
@@ -443,12 +443,12 @@ ffmpeg_demux::run()
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: freeing pkt (number %d)",pkt_nr);
 		av_free_packet(pkt);
 	}
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: final packet_avail(0, 0)");
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: final push_data(0, 0)");
 	int i;
 	m_lock.leave();
 	for (i=0; i<MAX_STREAMS; i++)
 		if (m_sinks[i])
-			m_sinks[i]->packet_avail(0, 0, 0);
+			m_sinks[i]->push_data(0, 0, 0);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: returning");
 	return 0;
 }

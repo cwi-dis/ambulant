@@ -596,8 +596,8 @@ class demux_datasink {
     virtual ~demux_datasink(){}
     
 	/// Data push call: consume data with given size and timestamp. Must copy data
-	/// before returning. Returns false when data could not be delivered.
-	virtual bool packet_avail(timestamp_t pts, const uint8_t *data, int size) = 0;
+	/// before returning. Returns true if data was swallowed, else false.
+	virtual bool push_data(timestamp_t pts, const uint8_t *data, int size) = 0;
 
 };
 

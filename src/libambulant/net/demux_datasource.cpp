@@ -182,22 +182,24 @@ demux_audio_datasource::read_ahead(timestamp_t time)
 
 
 bool 
-demux_audio_datasource::packet_avail(timestamp_t pts, const uint8_t *inbuf, int sz)
+demux_audio_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, int sz)
 {
 	// XXX timestamp is ignored, for now
 	bool rv = true;
 	m_lock.enter();
 	m_src_end_of_file = (sz == 0);
-	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource.packet_avail: %d bytes available (ts = %lld)", sz, pts);
-	if (_buffer_full()) {
-		rv = false;
-	} else {
-		void* data = malloc(sz);
-		assert(data);
-		memcpy(data, inbuf, sz);
-		ts_packet_t tsp(pts,data,sz);
-		m_queue.push(tsp);
-	     }
+	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource.push_data: %d bytes available (ts = %lld)", sz, pts);
+	if ( ! m_src_end_of_file) {
+		if (_buffer_full()) {
+			rv = false;
+		} else {
+			void* data = malloc(sz);
+			assert(data);
+			memcpy(data, inbuf, sz);
+			ts_packet_t tsp(pts,data,sz);
+			m_queue.push(tsp);
+		}
+	}
 	m_lock.leave();
 	return rv;
 }
@@ -490,7 +492,7 @@ write_data(long long int frame_nr, char* data, int sz)
 
 
 bool 
-demux_video_datasource::packet_avail(timestamp_t pts, const uint8_t *inbuf, int sz)
+demux_video_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, int sz)
 {
 	m_lock.enter();
 
@@ -505,7 +507,7 @@ demux_video_datasource::packet_avail(timestamp_t pts, const uint8_t *inbuf, int 
 		return false;
 	}
 	m_src_end_of_file = (sz == 0);
-	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::packet_avail(): receiving data sz=%d ,pts=%lld", sz, pts);
+	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): receiving data sz=%d ,pts=%lld", sz, pts);
 	if(sz > 0) {
 		//m_frame_nr++;
 		//write_data(m_frame_nr, (char*) inbuf, sz);
@@ -521,17 +523,17 @@ demux_video_datasource::packet_avail(timestamp_t pts, const uint8_t *inbuf, int 
 		vframe.data = frame_data;
 		vframe.size = sz;
 		m_frames.push(ts_frame_pair(pts, vframe));
-		AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::packet_avail(): %lld 0x%x %d", pts, vframe.data, vframe.size);
+		AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): %lld 0x%x %d", pts, vframe.data, vframe.size);
 	}		
 	if ( m_frames.size() || _end_of_file()  ) {
 		if ( m_client_callback ) {
-			AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::packet_avail(): calling client callback (eof=%d)", m_src_end_of_file);
+			AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): calling client callback (eof=%d)", m_src_end_of_file);
 			assert(m_event_processor);
 			m_event_processor->add_event(m_client_callback, MIN_EVENT_DELAY, ambulant::lib::ep_med);
 			m_client_callback = NULL;
 			m_event_processor = NULL;
 		} else {
-			AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::packet_avail(): No client callback");
+			AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): No client callback");
 		}
 	}		
 	m_lock.leave();

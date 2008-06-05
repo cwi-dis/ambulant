@@ -198,6 +198,7 @@ class rtsp_demux : public abstract_demux {
   protected:
 	unsigned long run();
   private:
+	void _push_data_to_sink (int sink_index, timestamp_t pts, const uint8_t*inbuf, int sz);
 	static rtsp_context_t *_init_subsessions(rtsp_context_t *context);
 	void _set_position(timestamp_t time);
 	void _cancel();

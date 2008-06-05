@@ -93,7 +93,7 @@ class demux_audio_datasource:
 	void stop();  
 	void read_ahead(timestamp_t clip_begin);
   	void seek(timestamp_t time);
-	bool packet_avail(timestamp_t pts, const uint8_t *data, int size);
+	bool push_data(timestamp_t pts, const uint8_t *data, int size);
 	bool end_of_file();
   	timestamp_t get_clip_end();
 	timestamp_t get_clip_begin();
@@ -143,7 +143,7 @@ class demux_video_datasource:
 	char* get_frame(timestamp_t now, timestamp_t *timestamp, int *sizep);
 	void frame_processed_keepdata(timestamp_t timestamp, char *data);
 	void frame_processed(timestamp_t timestamp);
-	bool packet_avail(timestamp_t pts, const uint8_t *data, int size);
+	bool push_data(timestamp_t pts, const uint8_t *data, int size);
 	bool end_of_file();
   	timestamp_t get_clip_end();
 	timestamp_t get_clip_begin();
