@@ -1,3 +1,16 @@
+2008-06-05 15:34  keesblom
+
+	* Changed packet_avail into push_data. When called from
+	  rtsp_datasource.cpp, it is now always done w. wait and retry if
+	  the packet cannot be deliverd.  EOF calls always return true
+	  (data delivered). Only problem now is that mp3 over RTSP using
+	  liveMediaServer generates lots of "incorrect frame size" warnings
+	  on the console, but Bo's code handles this correctly and no data
+	  is lost. It is caused by liveMediaServer (differing from
+	  HelixServer) often generating packets wcontaining 2 or 3
+	  frames,while ffmpeg only wants one frame for each call to
+	  av_decode_audio2(...). Latest ffmeg was used from svn.
+
 2008-06-02 17:14  keesblom
 
 	* Addapted rtsp_datasource ro new API where data_avail(3 args) and
