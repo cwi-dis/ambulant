@@ -1,3 +1,9 @@
+2008-06-09 17:27  keesblom
+
+	* Temp. changes for ffmpeg to work wirh libfaad. configure script
+	  needs to be rewritten properly using pkg-config.  WelcomeRTSP now
+	  plays AmbulantTune.mp4 (aac over RTSP) frome media2.cwi.nl
+
 2008-06-05 15:34  keesblom
 
 	* Changed packet_avail into push_data. When called from
