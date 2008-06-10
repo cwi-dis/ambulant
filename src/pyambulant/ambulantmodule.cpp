@@ -3182,182 +3182,6 @@ PyTypeObject system_embedder_Type = {
 /* ---------------- End object type system_embedder ----------------- */
 
 
-/* -------------------- Object type timer_events -------------------- */
-
-extern PyTypeObject timer_events_Type;
-
-inline bool timer_eventsObj_Check(PyObject *x)
-{
-	return ((x)->ob_type == &timer_events_Type);
-}
-
-typedef struct timer_eventsObject {
-	PyObject_HEAD
-	void *ob_dummy_wrapper; // Overlays bridge object storage
-	ambulant::lib::timer_events* ob_itself;
-} timer_eventsObject;
-
-PyObject *timer_eventsObj_New(ambulant::lib::timer_events* itself)
-{
-	timer_eventsObject *it;
-	if (itself == NULL)
-	{
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
-#ifdef BGEN_BACK_SUPPORT_timer_events
-	timer_events *encaps_itself = dynamic_cast<timer_events *>(itself);
-	if (encaps_itself && encaps_itself->py_timer_events)
-	{
-		Py_INCREF(encaps_itself->py_timer_events);
-		return encaps_itself->py_timer_events;
-	}
-#endif
-	it = PyObject_NEW(timer_eventsObject, &timer_events_Type);
-	if (it == NULL) return NULL;
-	/* XXXX Should we tp_init or tp_new our basetype? */
-	it->ob_dummy_wrapper = NULL; // XXXX Should be done in base class
-	it->ob_itself = itself;
-	return (PyObject *)it;
-}
-
-int timer_eventsObj_Convert(PyObject *v, ambulant::lib::timer_events* *p_itself)
-{
-	if (v == Py_None)
-	{
-		*p_itself = NULL;
-		return 1;
-	}
-#ifdef BGEN_BACK_SUPPORT_timer_events
-	if (!timer_eventsObj_Check(v))
-	{
-		*p_itself = Py_WrapAs_timer_events(v);
-		if (*p_itself) return 1;
-	}
-#endif
-	if (!timer_eventsObj_Check(v))
-	{
-		PyErr_SetString(PyExc_TypeError, "timer_events required");
-		return 0;
-	}
-	*p_itself = ((timer_eventsObject *)v)->ob_itself;
-	return 1;
-}
-
-static void timer_eventsObj_dealloc(timer_eventsObject *self)
-{
-	pycppbridge_Type.tp_dealloc((PyObject *)self);
-}
-
-static PyObject *timer_eventsObj_speed_changed(timer_eventsObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	if (!PyArg_ParseTuple(_args, ""))
-		return NULL;
-	PyThreadState *_save = PyEval_SaveThread();
-	_self->ob_itself->speed_changed();
-	PyEval_RestoreThread(_save);
-	Py_INCREF(Py_None);
-	_res = Py_None;
-	return _res;
-}
-
-static PyMethodDef timer_eventsObj_methods[] = {
-	{"speed_changed", (PyCFunction)timer_eventsObj_speed_changed, 1,
-	 PyDoc_STR("() -> None")},
-	{NULL, NULL, 0}
-};
-
-#define timer_eventsObj_getsetlist NULL
-
-
-static int timer_eventsObj_compare(timer_eventsObject *self, timer_eventsObject *other)
-{
-	if ( self->ob_itself > other->ob_itself ) return 1;
-	if ( self->ob_itself < other->ob_itself ) return -1;
-	return 0;
-}
-
-#define timer_eventsObj_repr NULL
-
-static long timer_eventsObj_hash(timer_eventsObject *self)
-{
-	return (long)self->ob_itself;
-}
-static int timer_eventsObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
-{
-	ambulant::lib::timer_events* itself;
-	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
-
-	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, timer_eventsObj_Convert, &itself))
-	{
-		((timer_eventsObject *)_self)->ob_itself = itself;
-		return 0;
-	}
-	return -1;
-}
-
-#define timer_eventsObj_tp_alloc PyType_GenericAlloc
-
-static PyObject *timer_eventsObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
-{
-	PyObject *_self;
-
-	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
-	((timer_eventsObject *)_self)->ob_itself = NULL;
-	return _self;
-}
-
-#define timer_eventsObj_tp_free PyObject_Del
-
-
-PyTypeObject timer_events_Type = {
-	PyObject_HEAD_INIT(NULL)
-	0, /*ob_size*/
-	"ambulant.timer_events", /*tp_name*/
-	sizeof(timer_eventsObject), /*tp_basicsize*/
-	0, /*tp_itemsize*/
-	/* methods */
-	(destructor) timer_eventsObj_dealloc, /*tp_dealloc*/
-	0, /*tp_print*/
-	(getattrfunc)0, /*tp_getattr*/
-	(setattrfunc)0, /*tp_setattr*/
-	(cmpfunc) timer_eventsObj_compare, /*tp_compare*/
-	(reprfunc) timer_eventsObj_repr, /*tp_repr*/
-	(PyNumberMethods *)0, /* tp_as_number */
-	(PySequenceMethods *)0, /* tp_as_sequence */
-	(PyMappingMethods *)0, /* tp_as_mapping */
-	(hashfunc) timer_eventsObj_hash, /*tp_hash*/
-	0, /*tp_call*/
-	0, /*tp_str*/
-	PyObject_GenericGetAttr, /*tp_getattro*/
-	PyObject_GenericSetAttr, /*tp_setattro */
-	0, /*tp_as_buffer*/
-	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
-	0, /*tp_doc*/
-	0, /*tp_traverse*/
-	0, /*tp_clear*/
-	0, /*tp_richcompare*/
-	0, /*tp_weaklistoffset*/
-	0, /*tp_iter*/
-	0, /*tp_iternext*/
-	timer_eventsObj_methods, /* tp_methods */
-	0, /*tp_members*/
-	timer_eventsObj_getsetlist, /*tp_getset*/
-	0, /*tp_base*/
-	0, /*tp_dict*/
-	0, /*tp_descr_get*/
-	0, /*tp_descr_set*/
-	0, /*tp_dictoffset*/
-	timer_eventsObj_tp_init, /* tp_init */
-	timer_eventsObj_tp_alloc, /* tp_alloc */
-	timer_eventsObj_tp_new, /* tp_new */
-	timer_eventsObj_tp_free, /* tp_free */
-};
-
-/* ------------------ End object type timer_events ------------------ */
-
-
 /* ----------------------- Object type timer ------------------------ */
 
 extern PyTypeObject timer_Type;
@@ -3966,12 +3790,12 @@ static PyObject *timer_control_implObj_elapsed_1(timer_control_implObject *_self
 static PyObject *timer_control_implObj_elapsed_2(timer_control_implObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
-	ambulant::lib::timer::time_type pt;
+	ambulant::lib::timer::time_type pet;
 	if (!PyArg_ParseTuple(_args, "l",
-	                      &pt))
+	                      &pet))
 		return NULL;
 	PyThreadState *_save = PyEval_SaveThread();
-	ambulant::lib::timer::time_type _rv = _self->ob_itself->elapsed(pt);
+	ambulant::lib::timer::time_type _rv = _self->ob_itself->elapsed(pet);
 	PyEval_RestoreThread(_save);
 	_res = Py_BuildValue("l",
 	                     _rv);
@@ -4101,24 +3925,11 @@ static PyObject *timer_control_implObj_get_realtime_speed(timer_control_implObje
 	return _res;
 }
 
-static PyObject *timer_control_implObj_speed_changed(timer_control_implObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	if (!PyArg_ParseTuple(_args, ""))
-		return NULL;
-	PyThreadState *_save = PyEval_SaveThread();
-	_self->ob_itself->speed_changed();
-	PyEval_RestoreThread(_save);
-	Py_INCREF(Py_None);
-	_res = Py_None;
-	return _res;
-}
-
 static PyMethodDef timer_control_implObj_methods[] = {
 	{"elapsed_1", (PyCFunction)timer_control_implObj_elapsed_1, 1,
 	 PyDoc_STR("() -> (ambulant::lib::timer::time_type _rv)")},
 	{"elapsed_2", (PyCFunction)timer_control_implObj_elapsed_2, 1,
-	 PyDoc_STR("(ambulant::lib::timer::time_type pt) -> (ambulant::lib::timer::time_type _rv)")},
+	 PyDoc_STR("(ambulant::lib::timer::time_type pet) -> (ambulant::lib::timer::time_type _rv)")},
 	{"start", (PyCFunction)timer_control_implObj_start, 1,
 	 PyDoc_STR("(ambulant::lib::timer::time_type t) -> None")},
 	{"stop", (PyCFunction)timer_control_implObj_stop, 1,
@@ -4137,8 +3948,6 @@ static PyMethodDef timer_control_implObj_methods[] = {
 	 PyDoc_STR("() -> (bool _rv)")},
 	{"get_realtime_speed", (PyCFunction)timer_control_implObj_get_realtime_speed, 1,
 	 PyDoc_STR("() -> (double _rv)")},
-	{"speed_changed", (PyCFunction)timer_control_implObj_speed_changed, 1,
-	 PyDoc_STR("() -> None")},
 	{NULL, NULL, 0}
 };
 
@@ -16541,11 +16350,6 @@ void initambulant(void)
 	if (PyType_Ready(&system_embedder_Type) < 0) return;
 	Py_INCREF(&system_embedder_Type);
 	PyModule_AddObject(m, "system_embedder", (PyObject *)&system_embedder_Type);
-	timer_events_Type.ob_type = &PyType_Type;
-	timer_events_Type.tp_base = &pycppbridge_Type;
-	if (PyType_Ready(&timer_events_Type) < 0) return;
-	Py_INCREF(&timer_events_Type);
-	PyModule_AddObject(m, "timer_events", (PyObject *)&timer_events_Type);
 	timer_Type.ob_type = &PyType_Type;
 	timer_Type.tp_base = &pycppbridge_Type;
 	if (PyType_Ready(&timer_Type) < 0) return;

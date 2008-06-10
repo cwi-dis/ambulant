@@ -59,6 +59,11 @@ gettext:
 	as follows:
 	  CFLAGS="-arch ppc -arch i386 -isysroot /Developer/SDKs/MacOSX10.4u.sdk" \
 	     configure --disable-csharp
-	     
-	
+	 
+libxml2:
+    To build universally, configure with
+      MACOSX_DEPLOYMENT_TARGET=10.4 \
+      CFLAGS="-arch i386 -arch ppc -isysroot /Developer/SDKs/MacOSX10.4u.sdk" \
+      ./configure --disable-dependency-tracking
+
 

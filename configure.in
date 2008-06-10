@@ -950,6 +950,9 @@ fi
 AC_SUBST(PYTHON_INCLUDES)
 AC_SUBST(PYTHON_LIBS)
 AM_CONDITIONAL(WITH_PYTHON_PLUGIN, test x$with_python_plugin = xtrue)
+if test x$with_python_plugin = xtrue ; then
+    AC_DEFINE(WITH_PYTHON_PLUGIN, 1, [Define to enable support for plugins in Python])
+fi
 AC_MSG_RESULT($with_python_plugin)
 
 # Do we want firefox plugin ?

@@ -300,27 +300,6 @@ inline system_embedder *Py_WrapAs_system_embedder(PyObject *o)
 	return rv;
 }
 
-class timer_events : public cpppybridge, public ambulant::lib::timer_events {
-public:
-	timer_events(PyObject *itself);
-	virtual ~timer_events();
-
-	void speed_changed();
-  private:
-	PyObject *py_timer_events;
-
-	friend PyObject *timer_eventsObj_New(ambulant::lib::timer_events *itself);
-};
-#define BGEN_BACK_SUPPORT_timer_events
-inline timer_events *Py_WrapAs_timer_events(PyObject *o)
-{
-	timer_events *rv = dynamic_cast<timer_events*>(pycppbridge_getwrapper(o));
-	if (rv) return rv;
-	rv = new timer_events(o);
-	pycppbridge_setwrapper(o, rv);
-	return rv;
-}
-
 class timer : public cpppybridge, public ambulant::lib::timer {
 public:
 	timer(PyObject *itself);

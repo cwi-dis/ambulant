@@ -28,9 +28,6 @@ extern int xml_parserObj_Convert(PyObject *v, ambulant::lib::xml_parser* *p_itse
 extern PyObject *system_embedderObj_New(ambulant::lib::system_embedder* itself);
 extern int system_embedderObj_Convert(PyObject *v, ambulant::lib::system_embedder* *p_itself);
 
-extern PyObject *timer_eventsObj_New(ambulant::lib::timer_events* itself);
-extern int timer_eventsObj_Convert(PyObject *v, ambulant::lib::timer_events* *p_itself);
-
 extern PyObject *timerObj_New(ambulant::lib::timer* itself);
 extern int timerObj_Convert(PyObject *v, ambulant::lib::timer* *p_itself);
 

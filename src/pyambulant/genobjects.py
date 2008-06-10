@@ -41,7 +41,6 @@ OBJECTS=[
 	("system_embedder", "ambulant::lib::system_embedder", None),
 	
 	"lib/timer.h",
-	("timer_events", "ambulant::lib::timer_events", None),
 	("timer", "ambulant::lib::timer", None),
 	("timer_control", "ambulant::lib::timer_control", "timer"),
 	("timer_control_impl", "ambulant::lib::timer_control_impl", "timer_control"),

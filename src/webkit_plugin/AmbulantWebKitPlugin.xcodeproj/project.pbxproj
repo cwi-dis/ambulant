@@ -12,8 +12,6 @@
 		045D0B350958C26800C194EE /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B340958C26800C194EE /* QuickTime.framework */; };
 		045D0B800958C53F00C194EE /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 045D0B7E0958C53F00C194EE /* mainloop.cpp */; };
 		045D0B930958C71E00C194EE /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B920958C71E00C194EE /* libexpat.a */; };
-		048B3E720CEB32EF006102B3 /* libamplugin_wkdom.la in CopyFiles */ = {isa = PBXBuildFile; fileRef = 048B3E700CEB32EF006102B3 /* libamplugin_wkdom.la */; };
-		048B3E730CEB32EF006102B3 /* libamplugin_wkdom.0 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 048B3E710CEB32EF006102B3 /* libamplugin_wkdom.0 */; };
 		049775AC0958AC7600A7690F /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049775AB0958AC7600A7690F /* WebKit.framework */; };
 		049775B90958ADC500A7690F /* AmbulantWebView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049775B80958ADC500A7690F /* AmbulantWebView.mm */; };
 		0499E8970959B22200A7FDF8 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0499E8960959B22200A7FDF8 /* libavcodec.a */; };
@@ -47,8 +45,6 @@
 				04C0A49C0CD2A19B00CEDCA9 /* pyamplugin_webkitscripting in CopyFiles */,
 				04C0A4B30CD2A44A00CEDCA9 /* libamplugin_python.0 in CopyFiles */,
 				04C0A4BD0CD2A61700CEDCA9 /* libamplugin_python.la in CopyFiles */,
-				048B3E730CEB32EF006102B3 /* libamplugin_wkdom.0 in CopyFiles */,
-				048B3E720CEB32EF006102B3 /* libamplugin_wkdom.la in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

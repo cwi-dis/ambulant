@@ -1780,46 +1780,6 @@ void system_embedder::show_file(const ambulant::net::url& href)
 	PyGILState_Release(_GILState);
 }
 
-/* ----------------------- Class timer_events ----------------------- */
-
-timer_events::timer_events(PyObject *itself)
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	if (itself)
-	{
-		if (!PyObject_HasAttrString(itself, "speed_changed")) PyErr_Warn(PyExc_Warning, "timer_events: missing attribute: speed_changed");
-	}
-	if (itself == NULL) itself = Py_None;
-
-	py_timer_events = itself;
-	Py_XINCREF(itself);
-	PyGILState_Release(_GILState);
-}
-
-timer_events::~timer_events()
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	Py_XDECREF(py_timer_events);
-	py_timer_events = NULL;
-	PyGILState_Release(_GILState);
-}
-
-
-void timer_events::speed_changed()
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_rv = PyObject_CallMethod(py_timer_events, "speed_changed", "()");
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during timer_events::speed_changed() callback:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-
-	PyGILState_Release(_GILState);
-}
-
 /* -------------------------- Class timer --------------------------- */
 
 timer::timer(PyObject *itself)
