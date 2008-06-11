@@ -1,3 +1,14 @@
+2008-06-10 16:38  jackjansen
+
+	* Adapted for changes in timer code (timer_events no longer exists)
+	  and plugin code (WITH_PYTHON_PLUGIN now needs to be set by
+	  configure).
+
+2008-06-10 13:56  keesblom
+
+	* Revert to previous state, because the changes were not pkg-config
+	  based, and therefore not suitable for inclusion in the trunk
+
 2008-06-09 17:27  keesblom
 
 	* Temp. changes for ffmpeg to work wirh libfaad. configure script
