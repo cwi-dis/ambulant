@@ -263,9 +263,13 @@ class MyFormFacesStateComponent(MyStateComponent):
 
     def _recalculate(self, node):
         ##node.revalidate()
-        self.scriptengine.evaluateWebScript_("document.getElementById('jacksmodel').rebuild()")
-        self.scriptengine.evaluateWebScript_("document.getElementById('jacksmodel').recalculate()")
-        self.scriptengine.evaluateWebScript_("document.getElementById('jacksmodel').revalidate()")
-        self.scriptengine.evaluateWebScript_("document.getElementById('jacksmodel').refresh()")
+        ##self.scriptengine.evaluateWebScript_("document.getElementById('jacksmodel').rebuild()")
+        ##self.scriptengine.evaluateWebScript_("document.getElementById('jacksmodel').recalculate()")
+        ##self.scriptengine.evaluateWebScript_("document.getElementById('jacksmodel').revalidate()")
+        ##self.scriptengine.evaluateWebScript_("document.getElementById('jacksmodel').refresh()")
+        self.scriptengine.evaluateWebScript_("XmlEvent.dispatch(document.getElementById('jacksmodel'), 'xforms-rebuild')")
+        self.scriptengine.evaluateWebScript_("XmlEvent.dispatch(document.getElementById('jacksmodel'), 'xforms-recalculate')")
+        self.scriptengine.evaluateWebScript_("XmlEvent.dispatch(document.getElementById('jacksmodel'), 'xforms-revalidate')")
+        self.scriptengine.evaluateWebScript_("XmlEvent.dispatch(document.getElementById('jacksmodel'), 'xforms-refresh')")
         ##import pdb ; pdb.set_trace()
         
