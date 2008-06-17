@@ -1,3 +1,9 @@
+2008-06-16 11:30  jackjansen
+
+	* Don't call formfaces rebuild() and friends directly, but raise
+	  the xforms-rebuild event. This ensures auxiliary actions are also
+	  triggered.
+
 2008-06-10 16:38  jackjansen
 
 	* Adapted for changes in timer code (timer_events no longer exists)
