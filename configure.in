@@ -69,8 +69,7 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	Extras/Makefile])
 	
 
-AC_CONFIG_COMMANDS([libtool_patch],[chmod 755
-$srcdir/patch_libtool.sh;$srcdir/patch_libtool.sh])
+AC_CONFIG_COMMANDS([libtool_patch],[chmod 755 $srcdir/patch_libtool.sh;$srcdir/patch_libtool.sh])
 
 #
 # This variable records whether we have support for
@@ -394,7 +393,7 @@ then
 	# Disable builtin xerces support
 	AM_CONDITIONAL(WITH_XERCES, test false)
 else
-	if text x$xerces = xtrue;
+	if test x$xerces = xtrue;
 	then
 	    AC_DEFINE(WITH_XERCES_BUILTIN, 1, [Define to include xerces parser in core])
 	fi
@@ -764,7 +763,7 @@ fi
 if test "x$test_ffmpeg" = "xtrue"; then
         PKG_CHECK_MODULES(LIBAVUTIL,[libavutil >= 0.4.9], test_ffmpeg=true, test_ffmpeg=manual)
 	FFMPEG_CFLAGS="${LIBAVFORMAT_CFLAGS} ${LIBAVCODEC_CFLAGS} ${LIBAVUTIL_CFLAGS}"
-	FFMPEG_LIBS="${LIBAVFORMAT_LIBS} ${LIBAVCODEC_LIBS} ${LIBAVUTIL_LIBS}"
+	FFMPEG_LIBS="${LIBAVFORMAT_LIBS} ${LIBAVCODEC_LIBS} ${LIBAVUTIL_LIBS} -lz -lbz2 -lm"
         inst_style="found through pkgconfig"        
 fi
 

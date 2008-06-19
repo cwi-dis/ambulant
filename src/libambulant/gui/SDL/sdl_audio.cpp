@@ -105,7 +105,7 @@ gui::sdl::sdl_audio_renderer::init()
 	desired.userdata = NULL;
 	err = SDL_OpenAudio(&desired, &obtained);
 	if (err < 0) {
-		lib::logger::get_logger()->trace("sdl_renderer_playable_ds.init: SDL_OpenAudio failed: error %d", err);
+	  lib::logger::get_logger()->trace("sdl_renderer_playable_ds.init: SDL_OpenAudio failed: error %s", SDL_GetError());
 		lib::logger::get_logger()->error(gettext("Cannot open SDL audio output stream"));
 		s_static_lock.leave();
     	return err;
