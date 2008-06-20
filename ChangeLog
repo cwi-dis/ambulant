@@ -1,3 +1,11 @@
+2008-06-19 15:31  keesblom
+
+	* Revised 64 bit problems handling. You may need to compile
+	  third_party_packages with extra flags for the C compiler. For
+	  example, in ffmpeg-cvs: ./configure --extra-cflags=-fPIC.  Also,
+	  you may need to add (for the time being) LIBS=-lbz2 to your
+	  ./autogen.sh ...  line.
+
 2008-06-16 11:30  jackjansen
 
 	* Don't call formfaces rebuild() and friends directly, but raise
