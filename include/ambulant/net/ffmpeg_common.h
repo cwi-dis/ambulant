@@ -52,8 +52,8 @@
 #include "ambulant/net/datasource.h"
 
 extern "C" {
-#include "avcodec.h"
-#include "avformat.h"
+#include "libavcodec/avcodec.h"
+#include "libavformat/avformat.h"
 //#include "common.h"
 }
 

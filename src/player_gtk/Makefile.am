@@ -43,11 +43,6 @@ extra_sdl_DEFINES=
 endif # WITH_SDL
 
 #------------------------------------------------------
-if WITH_DIRAC
-dirac_libraries=`pkg-config --libs dirac`
-else
-dirac_libraries=
-endif # WITH_DIRAC
 
 #------------------------------------------------------
 if WITH_EXPAT
@@ -61,7 +56,7 @@ endif #  WITH_EXPAT_BUILTIN
 #------------------------------------------------------
 if WITH_FFMPEG
 extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a $(FFMPEG_LIBS)
-extra_ffmpeg_ldflags=$(dirac_libraries)
+extra_ffmpeg_ldflags=
 extra_ffmpeg_DEFINES=-DWITH_FFMPEG -DWITH_FFMPEG_AVFORMAT $(FFMPEG_CFLAGS)
 else
 extra_ffmpeg_LDADD=

@@ -39,9 +39,9 @@
 #include "liveMedia.hh"
 
 
-#include "avcodec.h"
-#include "avformat.h"
-#include "common.h"
+#include "libavcodec/avcodec.h"
+#include "libavformat/avformat.h"
+#include "libavutil/common.h"
 
 #include "ambulant/config/config.h"
 #include "ambulant/lib/callback.h"

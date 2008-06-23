@@ -40,9 +40,9 @@
 #include "ambulant/net/datasource.h"
 
 extern "C" {
-#include "avformat.h"
-#include "avio.h"
-#include "common.h"
+#include "libavformat/avformat.h"
+#include "libavformat/avio.h"
+#include "libavutil/common.h"
 }
 
 // temporary debug messages

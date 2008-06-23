@@ -4,11 +4,9 @@ AM_INIT_AUTOMAKE
 AMBULANT_VERSION=1.9
 
 dnl =================================================================
-FFMPEG_REQUIRED=0.4.8
 QT_REQUIRED=3.3.4
 GTK_REQUIRED=1.2.8
 
-AC_SUBST(FFMPEG_REQUIRED)
 AC_SUBST(QT_REQUIRED)
 
 dnl ================================================================
@@ -710,7 +708,7 @@ AC_ARG_WITH(live,
 	])
 if test "x$test_live" = "xtrue"; then
    if test -f `pwd`/third_party_packages/live/liveMedia/libliveMedia.a; then
-		# Prefer an live installation in third_party_packages
+		# Prefer a live installation in third_party_packages
 		withvalabs=`pwd`/third_party_packages/live
 		LIVE_ROOT=${withvalabs}
    else
@@ -727,156 +725,76 @@ AM_CONDITIONAL(WITH_LIVE, test x$test_live = xtrue)
 AC_SUBST(LIVE_ROOT)
 AC_MSG_RESULT(live555.com library found - $test_live)
 
+dnl Testing for ffmpeg
+dnl ======================================================================
+##
+# Find ffmpeg audio/video codec library
 #
-# Test for ffmpeg
-#
-# XXXX FFmpeg installation is quirky. We currently support the following,
-# in (somewhat) preferred order:
-# - a pkg-config enabled ffmpeg, with module name "ffmpeg"
-# - a pre-built ffmpeg from CVS in third_party_packages/ffmpeg-cvs
-# - a pre-built ffmpeg (any version) with the pathname passed to --with-ffmpeg
-# - a redhat/fedora installed one.
-
+AC_MSG_CHECKING(for ffmpeg audio/video codec library)
 test_ffmpeg=true
-AC_ARG_WITH(ffmpeg,
-	[  --with-ffmpeg		Turn on/off ffmpeg audio decoders],
-	[if test "x$withval" = "xno"; then
-	  test_ffmpeg=false
-	 else	if test "x$withval" != "xyes"; then
-		   test_ffmpeg=manual
-		fi
-	 fi
-	 ])
-
-dnl old tests which can hopefully be deemded redundant 
-dnl at some point
-dnl ====================================================
+FFMPEG_PREFIX=
+FFMPEG_INCLUDES=
 FFMPEG_CFLAGS=
 FFMPEG_LIBS=
 
+AC_ARG_WITH(ffmpeg,
+	[  --with-ffmpeg		Turn on/off use of Ffmpeg audio/video codec library],
+	[
+    case "${withval}" in    
+     yes) test_ffmpeg=true;;
+     no)  test_ffmpeg=false;;
+     *)   test_ffmpeg=true
+          FFMPEG_PREFIX=$withval
+          ;;
+    esac
+])
+dnl test for downloaded version
+dnl
+FFMPEG_DEFAULT_DIR=`pwd`/third_party_packages/ffmpeg
+m4_pattern_allow(PKG_CONFIG_PATH_ORIG)
+PKG_CONFIG_PATH_ORIG=$PKG_CONFIG_PATH
+ffmpeg_inst_style=
 if test "x$test_ffmpeg" = "xtrue"; then
-        PKG_CHECK_MODULES(LIBAVCODEC,[libavcodec >= 0.4.9], test_ffmpeg=true, test_ffmpeg=manual)
-fi
-if test "x$test_ffmpeg" = "xtrue"; then
-        PKG_CHECK_MODULES(LIBAVFORMAT,[libavformat >= 0.4.9], test_ffmpeg=true, test_ffmpeg=manual)
-fi
-if test "x$test_ffmpeg" = "xtrue"; then
-        PKG_CHECK_MODULES(LIBAVUTIL,[libavutil >= 0.4.9], test_ffmpeg=true, test_ffmpeg=manual)
+	if test "x$FFMPEG_PREFIX" = "x";	
+	then
+          FFMPEG_PREFIX=$FFMPEG_DEFAULT_DIR
+	fi
+	# Turn into absolute path
+	FFMPEG_PREFIX=`cd $FFMPEG_PREFIX ; pwd`
+	export PKG_CONFIG_PATH=$FFMPEG_PREFIX:$PKG_CONFIG_PATH
+	if ! test -e $FFMPEG_PREFIX/libavcodec-uninstalled.pc
+	then 
+  	    # currently (June 2008) ffmpeg people are shifting their pkg-config files back and forth
+
+	    PKG_CONFIG_PATH=$FFMPEG_PREFIX/libavcodec:$FFMPEG_PREFIX/libavformat:$FFMPEG_PREFIX/libavutil:$PKG_CONFIG_PATH
+	fi
+	# test_ffmpeg is currently true. Set to false if any required piece is missing.
+	PKG_CHECK_MODULES(LIBAVUTIL,[libavutil >= 49.7.0], , test_ffmpeg=false)
+	PKG_CHECK_MODULES(LIBAVCODEC,[libavcodec >= 51.57.2], , test_ffmpeg=false)
+	PKG_CHECK_MODULES(LIBAVFORMAT,[libavformat >= 52.14.0], , test_ffmpeg=false)
 	FFMPEG_CFLAGS="${LIBAVFORMAT_CFLAGS} ${LIBAVCODEC_CFLAGS} ${LIBAVUTIL_CFLAGS}"
-	FFMPEG_LIBS="${LIBAVFORMAT_LIBS} ${LIBAVCODEC_LIBS} ${LIBAVUTIL_LIBS} -lz -lbz2 -lm"
-        inst_style="found through pkgconfig"        
+	FFMPEG_LIBS="${LIBAVFORMAT_LIBS} ${LIBAVCODEC_LIBS} ${LIBAVUTIL_LIBS}"
+	if test "x$test_ffmpeg" = "xtrue"; then
+	   ffmpeg_inst_style="found through pkgconfig"
+	fi    
 fi
-
-
-dnl
-dnl Need to check for post 0.4.9 cvs-style pkg-config support here too
-dnl
-
-dnl test for slurped version (default cvs, otherwise use --with-ffmpeg argument)
-if test "x$test_ffmpeg" = "xmanual"; then
-    if test -f `pwd`/third_party_packages/ffmpeg-cvs/libavcodec/avcodec.h; then
-        withval=third_party_packages/ffmpeg-cvs
-    fi
-	if test -f ${withval}/libavcodec/avcodec.h; 	then
-			withvalabs=`cd ${withval}; pwd`
-			FFMPEG_CFLAGS="-I${withvalabs}/libavcodec -I${withvalabs}/libavformat -I${withvalabs}"
-			FFMPEG_LIBS="-L${withvalabs}/libavformat -lavformat -L${withvalabs}/libavcodec -lavcodec"
-			dnl
-			dnl See whether this ffmpeg version has libavutil
-			dnl
-			if test -f ${withvalabs}/libavutil/avutil.h; then
-			    FFMPEG_CFLAGS="${FFMPEG_CFLAGS} -I${withvalabs}/libavutil"
-			    FFMPEG_LIBS="${FFMPEG_LIBS} -L${withvalabs}/libavutil -lavutil"
-			fi
-			dnl
-			dnl Also check for swscale
-			dnl
-			if test -f ${withvalabs}/libswscale/libswscale.a; then
-			    FFMPEG_CFLAGS="-DWITH_FFMPEG_LIBSWSCALE ${FFMPEG_CFLAGS} -I${withvalabs}/libswscale"
-			    FFMPEG_LIBS="${FFMPEG_LIBS} -L${withvalabs}/libswscale -lswscale"
-			fi
-
-			test_ffmpeg=true
-			ffmpeg_path="$withvalabs"
-			inst_style="Ambulant included version"
-	 else
-		if test -f /usr/include/ffmpeg/avcodec.h; then
-		  	FFMPEG_CFLAGS=-I/usr/include/ffmpeg
-		  	FFMPEG_LIBS="-lavformat -lavcodec"
-			test_ffmpeg=true
-			inst_style="RedHat/Fedora type install"
-		else
-			test_ffmpeg=false
-			inst_style="not found"
-		fi
-	 fi
-fi	
- 
-if test "x$test_ffmpeg" = "xfalse"; then
-	AC_MSG_WARN([ffmpeg support not enabled])
-        ffmpeg_warning="
-ffmpeg not found or disabled. Building without ffmpeg (which means you limited media support)"
-
-fi
-AM_CONDITIONAL(WITH_FFMPEG, test "x$test_ffmpeg" = "xtrue")
+AC_SUBST(FFMPEG_PREFIX)
+AC_SUBST(FFMPEG_INCLUDES)
 AC_SUBST(FFMPEG_CFLAGS)
 AC_SUBST(FFMPEG_LIBS)
+AM_CONDITIONAL(WITH_FFMPEG, test x$test_ffmpeg = xtrue)
+AC_SUBST(WITH_FFMPEG)
+
+AC_MSG_RESULT($test_ffmpeg)
 AC_MSG_RESULT(Discovered FFMPEG version to use - $inst_style)
 
-dnl Testing for Dirac
-dnl ======================================================================
+PKG_CONFIG_PATH=$PKG_CONFIG_PATH_ORIG
 
-AC_MSG_CHECKING(for Dirac support)
-AC_ARG_WITH(dirac,
-    [  --with-dirac		Turn on Dirac video codec if ffmpeg is enabled],
-    [case "${withval}" in
-        yes) dirac=true ;;
-        no) dirac=false ;;
-        *) AC_MSG_ERROR(--with-dirac takes no argument - it uses pkg-config) ;;
-    esac], [
-        dirac=false
-    ])
-AM_CONDITIONAL(WITH_DIRAC, test x$dirac = xtrue)
-AC_MSG_RESULT($dirac)
-
-dnl Testing for FAAD
-dnl ======================================================================
-
-AC_MSG_CHECKING(for FAAD support)
-AC_ARG_WITH(faad,
-    [  --with-faad		Turn on FAAD audio decoder if ffmpeg is enabled],
-    [case "${withval}" in
-        yes) faad=true; withval="/usr/local" ;;
-        no) faad=false ;;
-        *) if test "x$withval" = "x"; then faad=false; else faad=true; fi ;;
-    esac], [
-        faad=false
-    ])
-if test "x$faad" = "xtrue"; then
-        withvalabs="?"
-	FAAD_PREFIX="?"
-	if test -f `pwd`/third_party_packages/faad/include/faad.h; then
-		# Prefer a faad installation in third_party_packages
-		withvalabs=`pwd`/third_party_packages/faad
-		FAAD_PREFIX=${withvalabs}
-	fi
-	if test x$FAAD_PREFIX = "x?"; then
-		if test -f ${withval}/include/faad.h; then
-			withvalabs=$withval
-			FAAD_PREFIX=${withvalabs}
-		fi
-	fi
-	if  test x$FAAD_PREFIX = "x?"; then
-		faad=false;
-	elif test "x$test_ffmpeg" = "xfalse"; then
-	        AC_MSG_ERROR("ffmpeg not found or disabled: FAAD support cannot be enabled")
-	else 
-		FFMPEG_CFLAGS="-I${FAAD_PREFIX}/include $FFMPEG_CFLAGS"
-		FFMPEG_LIBS="-I${FAAD_PREFIX}/lib -lfaad $FFMPEG_LIBS"
-	fi
+if test "x$test_ffmpeg" = "xfalse"; then
+    AC_MSG_WARN([ffmpeg support not enabled])
+    ffmpeg_warning="
+ffmpeg not found or disabled. Building without ffmpeg (which means limited media support)"
 fi
-AM_CONDITIONAL(WITH_FAAD, test x$faad = xtrue)
-AC_MSG_RESULT($faad)
 
 dnl Testing for Python
 dnl ======================================================================
@@ -1223,9 +1141,7 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
 	Use expat XML library:		${test_expat}	${expat_path}
 	Use xerces XML library:		${test_xerces}	${xerces_path}
 	Enable Xerces as plugin:	${xerces_plugin}
-	Build with ffmpeg:     		${test_ffmpeg}	${ffmpeg_path}
-	Turn on ffmpeg Dirac support:	${dirac}
-	Turn on ffmpeg FAAD support:	${faad}
+	Build with ffmpeg:     		${test_ffmpeg}	${ffmpeg_inst_style}
 	Build Qtopia frontend:		${qtopia}
 	Build Qt frontend:              ${test_qt}
 	Build Cocoa frontend:		${cocoa}

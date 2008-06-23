@@ -26,10 +26,10 @@
 #include "ambulant/net/datasource.h"
 
 extern "C" {
-#include "avcodec.h"
-#include "avformat.h"
+#include "libavcodec/avcodec.h"
+#include "libavformat/avformat.h"
 #ifdef WITH_FFMPEG_LIBSWSCALE
-#include "swscale.h"
+#include "libswscale/swscale.h"
 #endif
 
 }

@@ -139,49 +139,44 @@ xerces-unix:
 	--with-xerces option on the main ambulant configure: it will
 	normally only look in third_party_packages/xerces-unix.
 
-	To run Ambulantplayer make sure that you have set LD_LIBRARY_PATH to
+	To run AmbulantPlayer make sure that you have set LD_LIBRARY_PATH to
 	the directory containing libxerces-c.so.
 	
 ffmpeg:
-    XXXX This section is heavily outdated.
-    
-    The best option is to use the the fairly recent frozen cvs-ffmpeg
-    that was created especially for Ambulant. You find this on the
-    Ambulant SF download pages as ffmpeg-cvs-20051121.tgz. Unpack this
-    into this directory (third_party_packages) as ffmpeg-cvs, and configure
-    and build it. No need to install, if you have kept all pathnames as
-    stated here the Ambulant configure script will pick it up.
-    
-	Alternatively, use ffmpeg 0.4.8 or 0.4.9pre, but some functionality
-	will not work in this case. Download from
-	<http://ffmpeg.sourceforge.net/> and unpack into ffmpeg-0.4.8 in
-	this directory (.../ambulant/third_party_packages).
-
-	After downloading and unpacking, for MacOSX you must apply the patch
-	from ffmpeg (it should do no harm applying the patch for other Unix
-	systems bt I don't think it is needed). Then build ffmpeg (there is
-	no need to install):
-		$ cd ffmpeg-0.4.8
-		$ patch -p0 < ../ffmpeg-macosx-patch    # For Mac OS X only
-		$ ./configure       (*)
-		$ make
-		
-	(*) Use configure --disable-opts if you get a lot of linker errors
-
-	Note that there is no reason to install ffmpeg (and it may actually
-	fail to install cleanly on some systems): Ambulant Player links
-	against the static libraries in the build directory.
-
-	Also note that as of this writing you cannot use an ffmpeg
-	installation as comes pre-installed with some RedHat distributions:
-	not all libraries and include files seem to be installed.
-
 	In principle the ffmpeg package is optional, but failing to supply
-	it will result in an ambulant player that can play no audio (Mac OS
+	it will result in an AmbulantPlayer that can play no audio (Mac OS
 	X) or no audio and video (Linux).
-	
+
+	As ffmpeg does not provide versioned distributions, and on all Linux
+	distributions we have seen, system installed versions of ffmpeg have
+	too little functionality to be useable for AmbulantPlayer, we need to
+	extract it from	the developers source tree.
+
+	In addition, for AAC audio decoding, libfaad2 is needs to be installed.
+	See: http://www.audiocoding.com/faad2.html how to download and install.
+
+	Warning: while AmbulantPlayer by itself is licensed LGPL, by including
+	libfaad2 the licensing scheme falls back to GPL	(AAC decoding is currently
+	only needed by AmbulantPlayer for audio streaming via RTSP).
+
+	Download ffmpeg from source in the directory 
+	.../ambulant/third_party_packages/ffmpeg using svn:
+
+	$ cd .../ambulant/third_party_packages
+	$ svn checkout svn://svn.mplayerhq.hu/ffmpeg/trunk ffmpeg
+	$ cd ffmpeg
+	$ if [ `arch` = x86_64 ] then extracflags=--extra-cflags=-fPIC ; fi
+	$ ./configure --enable-libfaad --enable-gpl $extracflags
+	$ make
+
+	("--extra-cflags=-fPIC" is needed a.o. on Fedora-8 64 bit installations).
+	Note: currently (June 17, 2008) ffmpeg's lib*.pc files contain a bug,
+	work around: type in .../ambulant/third_party_packages/ffmpeg
+	(after the configure command):
+	$ mv lib*/lib*.pc .
+
 sdl:
-	Ambulant has been tested with sdl 1.2.5 thru 1.2.11. You find this at
+	Ambulant has been tested with sdl 1.2.5 thru 1.2.13. You find this at
 	<http://www.libsdl.org>. Build and install normally, and make sure
 	the sdl-config utility is on your $PATH when running the configure
 	for Ambulant.
