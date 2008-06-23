@@ -60,6 +60,7 @@ class MyStateComponent(ambulant.state_component):
         self.globscope = {}
         self.domdocument = domdocument
         if DEBUG: print 'DOMDocument is', self.domdocument
+        self.statecontainer_id = None
         self.statenode = None
         self.nsresolver = None
         # What do we want to export to scope???
@@ -91,7 +92,8 @@ class MyStateComponent(ambulant.state_component):
         if src[0] != "#":
             print "webkitpluginstate: only #id allowed for src attribute on state"
             return
-        statecontainer = self.get_state_container(src[1:])
+        self.statecontainer_id = src[1:]
+        statecontainer = self.get_state_container(self.statecontainer_id)
         ch = statecontainer.firstChild()
         while ch and ch.nodeType() != 1:
             if DEBUG: print 'webkitpluginstate: Skip', ch
@@ -251,25 +253,24 @@ class MyFormFacesStateComponent(MyStateComponent):
         self.scriptengine = scriptengine
         
     def get_state_container(self, node_id):
-        stateinstance = self.scriptengine.evaluateWebScript_("document.getElementById('jacksmodel').getInstanceDocument('jacksinstance')" )
+        # First: a sanity check that this is indeed FormFaces
+        xform = self.scriptengine.evaluateWebScript_("xform")
+        if xform == None:
+            print 'webkitplugin: no "xform" variable, is this really FormFaces?'
+            return
+
+        # Second: communicate state instance to javascript glue
+        tmp = self.scriptengine.evaluateWebScript_("smil_state_glue_initialize")
+        if tmp:
+            self.scriptengine.evaluateWebScript_("smil_state_glue_initialize('%s')" % node_id)
+            
+        stateinstance = self.scriptengine.evaluateWebScript_("xform.getObjectById('%s', XFormInstance).document" % node_id )
         print 'stateinstance=', stateinstance
         return stateinstance
-##        xform = self.scriptengine.evaluateWebScript_("xform")
-##        if xform == None:
-##            print 'webkitplugin: no "xform" variable, is this really FormFaces?'
-##            return
-##        print "xform=", xform
-##        print "dir(xform)=", dir(xform)
 
     def _recalculate(self, node):
-        ##node.revalidate()
-        ##self.scriptengine.evaluateWebScript_("document.getElementById('jacksmodel').rebuild()")
-        ##self.scriptengine.evaluateWebScript_("document.getElementById('jacksmodel').recalculate()")
-        ##self.scriptengine.evaluateWebScript_("document.getElementById('jacksmodel').revalidate()")
-        ##self.scriptengine.evaluateWebScript_("document.getElementById('jacksmodel').refresh()")
-        self.scriptengine.evaluateWebScript_("XmlEvent.dispatch(document.getElementById('jacksmodel'), 'xforms-rebuild')")
-        self.scriptengine.evaluateWebScript_("XmlEvent.dispatch(document.getElementById('jacksmodel'), 'xforms-recalculate')")
-        self.scriptengine.evaluateWebScript_("XmlEvent.dispatch(document.getElementById('jacksmodel'), 'xforms-revalidate')")
-        self.scriptengine.evaluateWebScript_("XmlEvent.dispatch(document.getElementById('jacksmodel'), 'xforms-refresh')")
-        ##import pdb ; pdb.set_trace()
+        self.scriptengine.evaluateWebScript_("XmlEvent.dispatch(xform.getObjectById('%s', XFormInstance).model.htmlNode, 'xforms-rebuild')" % self.statecontainer_id)
+        self.scriptengine.evaluateWebScript_("XmlEvent.dispatch(xform.getObjectById('%s', XFormInstance).model.htmlNode, 'xforms-recalculate')" % self.statecontainer_id)
+        self.scriptengine.evaluateWebScript_("XmlEvent.dispatch(xform.getObjectById('%s', XFormInstance).model.htmlNode, 'xforms-revalidate')" % self.statecontainer_id)
+        self.scriptengine.evaluateWebScript_("XmlEvent.dispatch(xform.getObjectById('%s', XFormInstance).model.htmlNode, 'xforms-refresh')" % self.statecontainer_id)
         
