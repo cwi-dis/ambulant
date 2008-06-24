@@ -1,3 +1,18 @@
+2008-06-23 15:48  jackjansen
+
+	* Got rid of hard-coded id for smil state in formfaces.
+
+2008-06-23 15:48  keesblom
+
+	* Merged branch keees-configure-100608 with trunk. ffmpeg is now
+	  ounf through pkg-config.  aVg
+	  include/ambulant/net/ffmpeg_common.h
+
+2008-06-23 11:01  keesblom
+
+	* Added a comment where the  -Xlinker -Bsymbolic added flag was
+	  found
+
 2008-06-19 15:31  keesblom
 
 	* Revised 64 bit problems handling. You may need to compile
