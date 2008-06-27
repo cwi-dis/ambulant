@@ -1,3 +1,13 @@
+2008-06-26 22:37  jackjansen
+
+	* Added note about ffmpeg pkgconfig problems on osx.
+
+2008-06-26 22:32  jackjansen
+
+	* Reverted ffmpeg library change: the problem is not with our
+	  Makefile but with the pkg-config files of ffmpeg. Need to fix
+	  these.
+
 2008-06-23 15:48  jackjansen
 
 	* Got rid of hard-coded id for smil state in formfaces.
