@@ -73,6 +73,9 @@ class region_info {
 	/// Return the background opacity of the region.
 	virtual double get_bgopacity() const = 0;
 	
+	/// Return true if the background is transparent for the region.
+	virtual bool get_transparent() const = 0;
+	
 	/// Return the zindex for the region.
 	virtual zindex_t get_zindex() const = 0;
 	

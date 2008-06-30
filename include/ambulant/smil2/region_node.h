@@ -102,6 +102,7 @@ class region_node : public common::animation_destination {
 	lib::color_t get_bgcolor() const;
 	double get_bgopacity() const;
 	bool get_showbackground() const;
+	bool get_transparent() const { return m_transparent; }
 	common::zindex_t get_zindex() const { return m_display_zindex; }
 	bool is_subregion() const { return m_is_subregion; }
 	double get_soundlevel() const { return m_display_soundlevel; }
@@ -121,7 +122,7 @@ class region_node : public common::animation_destination {
 	// And corresponding setting interface
 	void reset() {(void)fix_from_dom_node(); };
 	void set_fit(common::fit_t f) { m_fit = f; }
-	void set_bgcolor(lib::color_t c, double opacity, bool inherit);
+	void set_bgcolor(lib::color_t c, bool transparent, bool inherit);
 	void set_bgcolor(lib::color_t c) { set_bgcolor(c, false, false); };
 	void set_showbackground(bool showbackground) { m_showbackground = showbackground; }
 	void set_zindex(common::zindex_t z) { m_zindex = z; m_display_zindex = z; }
@@ -216,6 +217,7 @@ class region_node : public common::animation_destination {
 	lib::rect m_stored_dim_inherit;
 	common::fit_t m_fit;
 	common::zindex_t m_zindex;
+	bool m_transparent;
 	lib::color_t m_bgcolor;
 	double m_soundlevel;
 	common::sound_alignment m_soundalign;

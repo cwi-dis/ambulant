@@ -223,7 +223,8 @@ surface_impl::redraw(const lib::rect &r, gui_window *window)
 	AM_DBG lib::logger::get_logger()->debug("surface_impl.redraw(0x%x %s, our_ltrb=(%d, %d, %d, %d)) ->draw_background", (void *)this, m_name.c_str(), our_rect.left(), our_rect.top(), our_rect.right(), our_rect.bottom());
 	
 	// First the background
-	draw_background(our_rect, window);	
+	if ( ! get_info()->get_transparent())
+		draw_background(our_rect, window);	
 	
 	// Then the active renderers
 	// For the win32 arrangement we should have at most one active

@@ -265,6 +265,9 @@ gui_player::create_document(const net::url& url)
 			lib::logger::get_logger()->warn(gettext("%s: document is SMIL version \"%s\", not 3.0, will attempt to continue anyway"),
 				m_url.get_url().c_str(), version);
 		}
+#ifdef WITHOUT_EXTERNAL_DOM
+		// DBG root->dump(std::cout);
+#endif // WITHOUT_EXTERNAL_DOM
 		const char *profile = root->get_attribute("baseProfile");
 		if (profile && 
 				strcmp(profile, "Language") != 0 &&

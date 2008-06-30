@@ -209,6 +209,7 @@ then
     AC_DEFINE(WITH_EXTERNAL_DOM, 1, [Define to enable external DOM tree support])
    test_dom=true
 fi
+AM_CONDITIONAL(WITH_EXTERNAL_DOM, test x$with_dom = xyes)
 AC_MSG_RESULT($with_external_dom)
 
 #

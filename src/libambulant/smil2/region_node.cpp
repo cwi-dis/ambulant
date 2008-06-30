@@ -105,6 +105,7 @@ region_node::region_node(const lib::node *n, dimension_inheritance di)
 	m_fit(common::fit_default),
 	m_zindex(0),
 	m_bgcolor(lib::to_color(0,0,0)),
+	m_transparent(true),
 	m_soundlevel(1.0),
 	m_soundalign(common::sa_default),
 #ifdef WITH_SMIL30
@@ -186,11 +187,11 @@ region_node::fix_from_dom_node()
 			bgcolor = lib::to_color(bgcolor_attr);
 			transparent = false;
 		}
-		AM_DBG lib::logger::get_logger()->debug("region_node::reset: Background color 0x%x %d %d", (int)bgcolor, (int)transparent, (int)inherit);
-		if (bgcolor != m_bgcolor || transparent != (m_bgopacity < 0.5) || inherit != m_inherit_bgcolor) {
+		AM_DBG lib::logger::get_logger()->debug("region_node::reset: Background color 0x%x %d %d %d", (int)bgcolor, (int)transparent, (int)inherit);
+		if (bgcolor != m_bgcolor || transparent != m_transparent || inherit != m_inherit_bgcolor) {
 			changed = true;
 		}
-		set_bgcolor(bgcolor, transparent?0.0:1.0, inherit);
+		set_bgcolor(bgcolor, transparent, inherit);
 	}
 	{
 		// showBackground
@@ -596,9 +597,9 @@ region_node::get_bgimage() const
 }
 
 void
-region_node::set_bgcolor(lib::color_t c, double opacity, bool inherit) { 
+region_node::set_bgcolor(lib::color_t c, bool transparent, bool inherit) { 
 	m_display_bgcolor = m_bgcolor = c;
-	m_bgopacity = opacity;
+	m_transparent = transparent;
 	m_inherit_bgcolor = inherit;
 }
 
