@@ -1,3 +1,9 @@
+2008-06-30 16:41  keesblom
+
+	* Added DTD's for SMIL 3.0 written by Sjoerd Mullender.  Modified
+	  background transparency implementation, which proved not to have
+	  been implemented correctly when the new DTD's were used.
+
 2008-06-26 22:37  jackjansen
 
 	* Added note about ffmpeg pkgconfig problems on osx.
