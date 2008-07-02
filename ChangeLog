@@ -1,3 +1,8 @@
+2008-07-01 16:44  keesblom
+
+	* Apperently on some 64 bit systems (Suse) arch spits out X86_64
+	  i.o. x86_64.
+
 2008-06-30 16:41  keesblom
 
 	* Added DTD's for SMIL 3.0 written by Sjoerd Mullender.  Modified
