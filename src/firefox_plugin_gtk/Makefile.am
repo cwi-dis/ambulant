@@ -111,14 +111,14 @@ libambulantplugin_la_LDFLAGS=	\
 	$(ambulant_ldflags) \
 	-o $(FIREFOX_PLUGIN)
 
-$(libambulantplugin_la_OBJECTS): nsIAmbulantPlugin.h	
+$(libambulantplugin_la_OBJECTS): nsIAmbulantPlugin.h	nsIAmbulantPlugin.xpt
 build-firefox-plugin: $(PLUGIN_FILES) plugin.h nsIAmbulantPlugin.h
 	AM_LDFLAGS="-o libambulantplugin.so"
 
 nsIAmbulantPlugin.h: $(srcdir)/nsIAmbulantPlugin.idl
 	$(XPIDL) -m header  -w -I$(GECKO_ROOT)/idl $(srcdir)/nsIAmbulantPlugin.idl
-nsIAmbulantPlugin.xpt: $(srcdir)/nsIAmbulantPlugin.idl
 
+nsIAmbulantPlugin.xpt: $(srcdir)/nsIAmbulantPlugin.idl
 	$(XPIDL) -m typelib -w -I$(GECKO_ROOT)/idl $(srcdir)/nsIAmbulantPlugin.idl
 
 check-firefox-plugin:
