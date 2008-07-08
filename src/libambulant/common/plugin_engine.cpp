@@ -372,7 +372,7 @@ plugin_engine::load_plugins(std::string dirname)
 #ifdef WITH_PYTHON_PLUGIN
 				m_python_plugin_engine = pathname;
 #else
-				lib::logger::get_logger()->trace("plugin_engine: skipping Python engine %s", pluginname);
+				lib::logger::get_logger()->trace("plugin_engine: skipping Python engine %s", pathname);
 #endif // WITH_PYTHON_PLUGIN
 				continue;
 			}
