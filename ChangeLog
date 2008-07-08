@@ -1,3 +1,23 @@
+2008-07-08 04:11  marisademeglio
+
+	* fractional second addition was wrong for a timestamp of the form
+	  0:00:02.440. because the function fraction_to_ms expects an int,
+	  it must have assumed that the parameter is already in
+	  milliseconds.  therefore, no conversion is required (and, in my
+	  case, it gave a huge incorrect value).  this fixed a problem
+	  related to AMIS.
+
+2008-07-08 04:05  marisademeglio
+
+	* url characters do not get converted tolower if they are not ascii
+	  characters -- this is suspected to be causing trouble with
+	  non-western characters in folder names
+
+2008-07-07 13:33  keesblom
+
+	* Make sure that bith typelib and include file are generated from
+	  nsIAmbulantPlugin.idl
+
 2008-07-01 16:44  keesblom
 
 	* Apperently on some 64 bit systems (Suse) arch spits out X86_64
