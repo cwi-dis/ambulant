@@ -89,8 +89,10 @@ filepath2urlpath(const std::string& fparg, bool handle_frag=false)
 		char c = *i;
 		if (c == '\\') 
 			*i = '/';
+		else if (isascii(c))
+			*i = tolower(c); 
 		else
-			*i = tolower(c);
+			*i = c;
 	}
 #ifdef AMBULANT_PLATFORM_WIN32_WCE
 	// On WinCE InternetCanonicalizeUrl also turns backslash into %5c (sigh).
