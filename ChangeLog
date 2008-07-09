@@ -1,3 +1,8 @@
+2008-07-08 06:38  marisademeglio
+
+	* minor bugfix to logger message in plugin_engine; NULL check for
+	  get_info() in region.cpp -- it was making AMIS crash
+
 2008-07-08 04:11  marisademeglio
 
 	* fractional second addition was wrong for a timestamp of the form
