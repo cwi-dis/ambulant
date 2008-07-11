@@ -101,14 +101,14 @@ libambulantplugin_la_SOURCES=np_entry.cpp npn_gate.cpp npp_gate.cpp plugin.cpp n
 nodist_libambulantplugin_la_INCLUDES=nsIAmbulantPlugin.h
 
 libambulantplugin_la_LDFLAGS=	\
-	-module \
-	$(LIBLTDL)	\
+	-module -shared		\
+	$(LIBLTDL)		\
 	$(extra_gtk_ldflags)	\
 	$(extra_ffmpeg_ldflags)	\
 	$(extra_sdl_ldflags)	\
 	$(extra_xerces_ldflags)	\
 	$(extra_live_ldflags)	\
-	$(ambulant_ldflags) \
+	$(ambulant_ldflags)	\
 	-o $(FIREFOX_PLUGIN)
 
 $(libambulantplugin_la_OBJECTS): nsIAmbulantPlugin.h	nsIAmbulantPlugin.xpt
@@ -131,7 +131,16 @@ install-firefox-plugin: nsIAmbulantPlugin.xpt .libs/$(FIREFOX_PLUGIN)
 	$(INSTALL) -d $(FIREFOX_INSTALLED_PLUGINS)
 	$(INSTALL_PROGRAM) .libs/$(FIREFOX_PLUGIN) $(FIREFOX_INSTALLED_PLUGINS)/nsIAmbulantPlugin.so
 	$(INSTALL_DATA) nsIAmbulantPlugin.xpt $(FIREFOX_INSTALLED_PLUGINS)/nsIAmbulantPlugin.xpt
+# when selinux is enblaed, identify the installed shared library 
+	PATH=$PATH:/sbin:/usr/sbin ; \
+	which chcon selinuxenable 2>1 1>/dev/null && selinuxenable ; \
+	if [ $? == 0 ];then chcon -t texrel_shlib_t "$(DESTDIR)$(libdir)"/nsIAmbulantPlugin.so; fi
+
 	
+clean-firefox-plugin:
+	rm -fr $(FIREFOX_INSTALLED_PLUGINS)/nsIAmbulantPlugin.so
+	rm -fr $(FIREFOX_INSTALLED_PLUGINS)/nsIAmbulantPlugin.xpt
+
 mostlyclean-am:
 	rm -fr .libs *o $(FIREFOX_PLUGIN)
 	rm -fr nsIAmbulantPlugin.h nsIAmbulantPlugin.xpt
