@@ -1,3 +1,8 @@
+2008-07-11 17:01  keesblom
+
+	* Added some rules to Makefile.am to make the installed libraries
+	  work with firefox when selinux is enabled
+
 2008-07-08 06:38  marisademeglio
 
 	* minor bugfix to logger message in plugin_engine; NULL check for
