@@ -1,7 +1,7 @@
-#! /bin/bash
+#!/bin/bash
 # libtool patch currently needed on fedora 8 64 bit systems (Jun 19, 2008)
 # test if architecture is 64 bit and patch not yet applied
-set -x
+#DBG set -x
 if  which arch 2>&1 >> /dev/null  \
 	&& [ `arch` =  "x86_64" -o  `arch` =  "X86_64" ]\
 	&& grep -q "file_magic ELF" libtool

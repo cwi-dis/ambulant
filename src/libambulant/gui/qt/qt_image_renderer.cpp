@@ -147,7 +147,7 @@ qt_image_renderer::redraw_body(const rect &dirty,
 		N_T = (int)roundf(S_T*fact_H),
 		N_W = (int)roundf(O_W*fact_W),
 		N_H = (int)roundf(O_H*fact_H);
-	AM_DBG lib::logger::get_logger()->debug("qt_image_renderer.redraw_body(0x%x): orig=(%d, %d) scalex=%f, scaley=%f  intermediate (L=%d,T=%d,W=%d,H=%d)",(void *)this,O_W,O_H,fact_W,fact_H,N_L,N_T,N_W,N_H);
+	AM_DBG lib::logger::get_logger()->debug("qt_image_renderer.redraw_body(0x%x): orig=(%d, %d) scalex=%f, scaley=%f  intermediate (L=%d,T=%d,W=%d,H=%d) dest=(%d,%d,%d,%d)",(void *)this,O_W,O_H,fact_W,fact_H,N_L,N_T,N_W,N_H,D_L,D_T,D_W,D_H);
 #ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 	QImage scaledimage = m_image.smoothScale(N_W, N_H, QImage::ScaleFree);
 #else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */

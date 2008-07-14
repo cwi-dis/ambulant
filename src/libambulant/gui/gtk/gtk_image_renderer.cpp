@@ -182,7 +182,7 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 				  chroma_low, chroma_high);
 		gdk_draw_pixbuf(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, screen_pixbuf, N_L, N_T, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);
 	} else {
-		gdk_draw_pixbuf(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, new_image_pixbuf, 0, 0, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);
+		gdk_draw_pixbuf(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, new_image_pixbuf, N_L, N_T, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);
 	}
 #else //WITH_SMIL30
 	gdk_draw_pixbuf(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, new_image_pixbuf, N_L, N_T, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);
