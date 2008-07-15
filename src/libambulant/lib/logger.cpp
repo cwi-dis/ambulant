@@ -28,6 +28,7 @@
 #ifndef AMBULANT_NO_TIME_H
 #include <time.h>
 
+//#define WITH_MICROSECOND_LOGTIMES
 #ifdef  WITH_MICROSECOND_LOGTIMES
 #include <sys/time.h>
 static long unsigned int s_usec = 0;
@@ -272,14 +273,23 @@ void lib::logger::log_cstr(int level, const char *buf) {
 	m_cs.enter();
 	
 #ifndef AMBULANT_NO_TIME_H
-	char tbuf[16];
+	char tbuf[20];
 	if(logger::logdate) {
 		sprintf(tbuf, "%d/%02d/%02d ", (1900 + lt->tm_year), (1 + lt->tm_mon), lt->tm_mday);
 		os << tbuf;
 	}
 	if(logger::logtime) {
+#ifdef	WITH_MICROSECOND_LOGTIMES
+		if( ! logger::logdate) {
+			struct timeval tv;
+			gettimeofday(&tv, NULL);
+			sprintf(tbuf, "%02d:%02d:%02d:%03d:%03d ", lt->tm_hour, lt->tm_min, lt->tm_sec, tv.tv_usec/1000,  tv.tv_usec%1000);
+			os << tbuf;
+		}
+#else // WITH_MICROSECOND_LOGTIMES
 		sprintf(tbuf, "%02d:%02d:%02d ", lt->tm_hour, lt->tm_min, lt->tm_sec);
 		os << tbuf;
+#endif// WITH_MICROSECOND_LOGTIMES
 	}
 #endif // AMBULANT_NO_TIME_H
 

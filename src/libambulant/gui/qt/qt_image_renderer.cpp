@@ -142,17 +142,29 @@ qt_image_renderer::redraw_body(const rect &dirty,
 	/* scale image s.t. the viewbox specified fits in destination area:
 	 * zoom_X=(O_W/S_W), fit_X=(D_W/O_W); fact_W=zoom_X*fit_X  */
 	float	fact_W = (float)D_W/(float)S_W,
-		fact_H = (float)D_H/(float)S_H;
+	  fact_H = (float)D_H/(float)S_H;
 	int	N_L = (int)roundf(S_L*fact_W),
 		N_T = (int)roundf(S_T*fact_H),
 		N_W = (int)roundf(O_W*fact_W),
 		N_H = (int)roundf(O_H*fact_H);
-	AM_DBG lib::logger::get_logger()->debug("qt_image_renderer.redraw_body(0x%x): orig=(%d, %d) scalex=%f, scaley=%f  intermediate (L=%d,T=%d,W=%d,H=%d) dest=(%d,%d,%d,%d)",(void *)this,O_W,O_H,fact_W,fact_H,N_L,N_T,N_W,N_H,D_L,D_T,D_W,D_H);
+	AM_DBG lib::logger::get_logger()->debug("qt_image_renderer.redraw_body(0x%x): src=(%d,%d,%d,%d) scalex=%f, scaley=%f  intermediate (%d,%d,%d,%d) dst=(%d,%d,%d,%d)",(void *)this,S_L,S_T,S_W,S_H,fact_W,fact_H,N_L,N_T,N_W,N_H,D_L,D_T,D_W,D_H);
 #ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
-	QImage scaledimage = m_image.smoothScale(N_W, N_H, QImage::ScaleFree);
+	/* copy only the part that will be shown to the screen to be scaled */
+	QImage partialimage(S_W, S_H, m_image.depth());
+	partialimage.fill(0);
+	bitBlt (&partialimage, 0, 0, &m_image, S_L, S_T, S_W, S_H, 0 );
+	QImage scaledimage = partialimage.smoothScale(D_W, D_H, QImage::ScaleFree);
+	N_L = 0; N_T = 0;
+#ifdef DUMPPIXMAP
+	QPixmap ppm(partialimage);
+	DUMPPIXMAP(&ppm, "partialimage");
+	QPixmap spm(scaledimage);
+	DUMPPIXMAP(&spm, "scaledimage");
+#endif//DUMPPIXMAP
 #else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
-	QImage scaledimage = m_image.smoothScale(N_W, N_H);
-#endif/*QT_NO_FILEDIALOG*/
+	QImage scaledimage = partialimage.smoothScale(D_W, D_H);
+#endif/*QT_NO_FILEDIALO*/
+
 #ifdef	WITH_SMIL30
 	if (alpha_chroma != 1.0) {
 		QImage screen_img = aqw->get_ambulant_pixmap()->convertToImage();

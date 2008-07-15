@@ -171,7 +171,7 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 		N_T = (int)roundf(S_T*fact_H),
 		N_W = (int)roundf(width*fact_W),
 		N_H = (int)roundf(height*fact_H);
-	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): orig=(%d, %d) scalex=%f, scaley=%f  intermediate (L=%d,T=%d,W=%d,H=%d) dest=(%d,%d,%d,%d)",(void *)this,width,height,fact_W,fact_H,N_L,N_T,N_W,N_H,D_L,D_T,D_W,D_H);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): orig=(%d, %d) scalex=%f, scaley=%f  intermediate (L=%d,T=%d,W=%d,H=%d) dest=(%d,%d,%d,%d)",(void *)this,width,height,fact_W,fact_H,N_L,N_T,N_W,N_H,D_L,D_T,D_W,D_H);
 	GdkPixbuf* new_image_pixbuf = gdk_pixbuf_scale_simple(m_image, N_W, N_H, GDK_INTERP_BILINEAR);
 #ifdef	WITH_SMIL30
 	if (alpha_chroma != 1.0) {

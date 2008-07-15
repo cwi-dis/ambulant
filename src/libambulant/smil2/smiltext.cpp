@@ -93,7 +93,7 @@ smiltext_engine::~smiltext_engine()
 void
 smiltext_engine::start(double t) {
 	// XXX Need to allow for "t"
-	/*AM_DBG*/ lib::logger::get_logger()->debug("smiltext_engine(0x%x).start(%s, %f)", this, m_node->get_sig().c_str(), t);
+	AM_DBG lib::logger::get_logger()->debug("smiltext_engine(0x%x).start(%s, %f)", this, m_node->get_sig().c_str(), t);
 	m_epoch = m_event_processor->get_timer()->elapsed() - lib::timer::time_type(t*1000);
 	m_tree_time = 0;
 	_update();
