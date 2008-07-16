@@ -1,3 +1,14 @@
+2008-07-15 16:01  keesblom
+
+	* Implemented a faster pan/zoom method on qt, solving #2015890
+	  problem 1 for qt.  Instead of first zooming the whole picture and
+	  then copying only a very small part of a very big internal image
+	  to the screen, first a local (small) copy is made of the part of
+	  the image that will be ultimately shown on screen, and only that
+	  is entirely zoomed. This makes Fons' animations much faster.
+	  Also implemented some code for WITH_MICROSECOND_LOGTIMES (fine
+	  grain timing).
+
 2008-07-14 16:33  keesblom
 
 	* Fixed 2nd problem of #2015890: gtk now pans correctly. Dunno why
