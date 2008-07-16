@@ -171,10 +171,13 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 		N_T = (int)roundf(S_T*fact_H),
 		N_W = (int)roundf(width*fact_W),
 		N_H = (int)roundf(height*fact_H);
-	/*AM_DBG*/ lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): orig=(%d, %d) scalex=%f, scaley=%f  intermediate (L=%d,T=%d,W=%d,H=%d) dest=(%d,%d,%d,%d)",(void *)this,width,height,fact_W,fact_H,N_L,N_T,N_W,N_H,D_L,D_T,D_W,D_H);
-	GdkPixbuf* new_image_pixbuf = gdk_pixbuf_scale_simple(m_image, N_W, N_H, GDK_INTERP_BILINEAR);
+	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): orig=(%d, %d) scalex=%f, scaley=%f  intermediate (L=%d,T=%d,W=%d,H=%d) dest=(%d,%d,%d,%d)",(void *)this,width,height,fact_W,fact_H,N_L,N_T,N_W,N_H,D_L,D_T,D_W,D_H);
+	GdkPixbuf* partial_pixbuf = gdk_pixbuf_new_subpixbuf(m_image, S_L, S_T, S_W, S_H);
+	GdkPixbuf* new_image_pixbuf =  gdk_pixbuf_scale_simple(partial_pixbuf, D_W, D_H, GDK_INTERP_BILINEAR);
+	g_object_unref(G_OBJECT(partial_pixbuf));
+	N_L = N_T = 0;
 #ifdef	WITH_SMIL30
-	if (alpha_chroma != 1.0) {
+	if (alpha_chroma != 1) {
 		GdkPixbuf* screen_pixbuf = gdk_pixbuf_get_from_drawable (NULL, agtkw->get_ambulant_pixmap(), NULL, D_L, D_T, 0, 0, D_W, D_H);
 		lib::rect rect0(lib::point(0,0),lib::size(D_W,D_H));
 		gdk_pixbuf_blend (screen_pixbuf, rect0, new_image_pixbuf, rect0, 

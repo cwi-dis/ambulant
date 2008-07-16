@@ -573,7 +573,7 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 {
 	// Determine current position and size.
 	const lib::point p = m_dest->get_global_topleft();
-        const char* data = m_text_storage.c_str();
+	const char* data = m_text_storage.c_str();
 
 	AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_render(0x%x): ltrb=(%d,%d,%d,%d)\nm_text_storage = %s, p=(%d,%d):offsetp=(%d,%d):",(void *)this,r.left(),r.top(),r.width(),r.height(),data==NULL?"(null)":data,p.x,p.y,offset.x,offset.y);
 	if ( ! (m_pango_layout && window))
@@ -605,9 +605,16 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 		gdk_gc_set_clip_rectangle(text_gc, &gdk_rectangle);
 		gdk_gc_set_clip_rectangle(bg_gc, &gdk_rectangle);
 
-		GdkPixbuf* screen_pixbuf = gdk_pixbuf_get_from_drawable
-				(NULL, window->get_ambulant_pixmap(), NULL,
-				 L, T, 0, 0, W, H);
+		GdkPixmap* pixmap = window->get_ambulant_pixmap();
+		int PW = -1, PH = -1;
+		if (pixmap != NULL) 
+			gdk_drawable_get_size (pixmap, &PW, &PH);
+		if (pixmap == NULL || PW < L+W || PH  < T+H ) {
+			lib::logger::get_logger()->trace("smilText: gdk_pixbuf_get_from_drawable failed, pixmap.size()=(%d,%d), (L,T,W,H)=(%d,%d,%d,%d)", PW,PH,L,T,W,H);
+			lib::logger::get_logger()->error(gettext("Geometry error in smil document"));
+			return;
+		}
+		GdkPixbuf* screen_pixbuf = gdk_pixbuf_get_from_drawable	(NULL, pixmap, NULL, L, T, 0, 0, W, H);
 		GdkColor gdk_transparent;
 		gdk_transparent.red = redc(m_transparent)*0x101;
 		gdk_transparent.blue = bluec(m_transparent)*0x101;
