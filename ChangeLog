@@ -1,3 +1,16 @@
+2008-07-16 17:21  keesblom
+
+	* Implemented 1st problem of #2015890 for gtk.	by implementing a
+	  faster pan/zoom method.  Instead of first zooming the whole
+	  picture to become a very big internal image and subsequently
+	  copying only a very small part of it to the screen, first a small
+	  local copy is made of that part of the image which will be
+	  ultimately shown on screen, and only that is entirely zoomed.
+	  This makes Fons' animations much faster.
+
+	  In addition, added an error message in gtk_smiltext when an area
+	  is referred to (from a.smil file) extending screen limits.
+
 2008-07-15 16:01  keesblom
 
 	* Implemented a faster pan/zoom method on qt, solving #2015890
