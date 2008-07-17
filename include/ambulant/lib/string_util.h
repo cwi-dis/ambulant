@@ -36,6 +36,7 @@
 #include <cassert>
 #endif
 #include <stdio.h>
+#include <string.h>
 
 // Workaround for toolsets with missing stringstream functionality.
 //

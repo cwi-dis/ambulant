@@ -33,6 +33,7 @@
 #include <set>
 #include <map>
 #include <stack>
+#include <string.h>
 
 #ifndef AMBULANT_PLATFORM_WIN32_WCE_3
 #include <cassert>

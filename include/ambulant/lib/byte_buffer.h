@@ -34,6 +34,7 @@
 
 // assert
 #include <cassert>
+#include <string.h>
 
 namespace ambulant {
 

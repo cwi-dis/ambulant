@@ -24,6 +24,7 @@
 #define AMBULANT_GUI_QT_QT_INCLUDES_H 
 #include <qapplication.h>
 #include <qimage.h>
+#include <qpaintdevice.h>
 #include <qpainter.h>
 #include <qwidget.h>
 // #define AM_DBG
