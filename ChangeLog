@@ -1,3 +1,10 @@
+2008-07-17 18:54  keesblom
+
+	* Ambulant ported to Fedora 9.	gcc 4.3.0 reorganized some header
+	  files qt doesn't work, since fedora moved to Qt 4 (incompatible
+	  w. Qt 3) Will check tomorrow whether I've broken things on
+	  Windows or Fedora 8.
+
 2008-07-16 17:21  keesblom
 
 	* Implemented 1st problem of #2015890 for gtk.	by implementing a
