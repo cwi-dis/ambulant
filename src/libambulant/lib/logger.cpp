@@ -273,7 +273,7 @@ void lib::logger::log_cstr(int level, const char *buf) {
 	m_cs.enter();
 	
 #ifndef AMBULANT_NO_TIME_H
-	char tbuf[20];
+	char tbuf[32];
 	if(logger::logdate) {
 		sprintf(tbuf, "%d/%02d/%02d ", (1900 + lt->tm_year), (1 + lt->tm_mon), lt->tm_mday);
 		os << tbuf;
