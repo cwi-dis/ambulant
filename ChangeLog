@@ -1,3 +1,7 @@
+2008-07-18 15:51  keesblom
+
+	* Added/changed some AM_DBG lines for usec timing
+
 2008-07-17 18:54  keesblom
 
 	* Ambulant ported to Fedora 9.	gcc 4.3.0 reorganized some header
