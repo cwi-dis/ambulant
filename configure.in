@@ -775,6 +775,17 @@ if test "x$test_ffmpeg" = "xtrue"; then
 	PKG_CHECK_MODULES(LIBAVFORMAT,[libavformat >= 52.14.0], , test_ffmpeg=false)
 	FFMPEG_CFLAGS="${LIBAVFORMAT_CFLAGS} ${LIBAVCODEC_CFLAGS} ${LIBAVUTIL_CFLAGS}"
 	FFMPEG_LIBS="${LIBAVFORMAT_LIBS} ${LIBAVCODEC_LIBS} ${LIBAVUTIL_LIBS}"
+	#
+	# Sigh. Currently, the ffmpeg uninstalled.pc files contain pathnames, which are
+	# not acceptable to libtool. The following expression turns these into -L/-l combos.
+	# As ffmpeg is a moving target it is unclear how long this trick will work...
+	#
+	set -vx
+	if test x`uname` = xDarwin; then
+		FFMPEG_LIBS=`echo $FFMPEG_LIBS | sed -e "s@\($FFMPEG_PREFIX/[[a-z]]*\)/lib\([[a-z]]*\).a@-L\1 -l\2@g"`
+	set -
+	fi
+	
 	if test "x$test_ffmpeg" = "xtrue"; then
 	   ffmpeg_inst_style="found through pkgconfig"
 	fi    
