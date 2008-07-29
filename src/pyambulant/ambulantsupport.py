@@ -591,6 +591,7 @@ animation_destination_object.othermethods = [
     "ambulant::common::tiling get_tiling() const { return region_info::get_tiling(); }",
     "const char* get_bgimage() const { return region_info::get_bgimage(); }",
     "double get_bgopacity() const { return region_info::get_bgopacity(); }",
+    "bool get_transparent() const { return region_info::get_transparent(); }",
     "double get_mediaopacity() const { return region_info::get_mediaopacity(); }",
     "double get_mediabgopacity() const { return region_info::get_mediabgopacity(); }",
     "ambulant::lib::rect get_crop_rect(const ambulant::lib::size& srcsize) const { return region_info::get_crop_rect(srcsize); }", # XXXX

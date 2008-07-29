@@ -949,6 +949,7 @@ public:
 	ambulant::common::fit_t get_fit() const;
 	ambulant::lib::color_t get_bgcolor() const;
 	double get_bgopacity() const;
+	bool get_transparent() const;
 	ambulant::common::zindex_t get_zindex() const;
 	bool get_showbackground() const;
 	bool is_subregion() const;
@@ -1007,6 +1008,7 @@ public:
 	ambulant::common::tiling get_tiling() const { return region_info::get_tiling(); }
 	const char* get_bgimage() const { return region_info::get_bgimage(); }
 	double get_bgopacity() const { return region_info::get_bgopacity(); }
+	bool get_transparent() const { return region_info::get_transparent(); }
 	double get_mediaopacity() const { return region_info::get_mediaopacity(); }
 	double get_mediabgopacity() const { return region_info::get_mediabgopacity(); }
 	ambulant::lib::rect get_crop_rect(const ambulant::lib::size& srcsize) const { return region_info::get_crop_rect(srcsize); }

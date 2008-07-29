@@ -5854,6 +5854,7 @@ region_info::region_info(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "get_fit")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_fit");
 		if (!PyObject_HasAttrString(itself, "get_bgcolor")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_bgcolor");
 		if (!PyObject_HasAttrString(itself, "get_bgopacity")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_bgopacity");
+		if (!PyObject_HasAttrString(itself, "get_transparent")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_transparent");
 		if (!PyObject_HasAttrString(itself, "get_zindex")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_zindex");
 		if (!PyObject_HasAttrString(itself, "get_showbackground")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: get_showbackground");
 		if (!PyObject_HasAttrString(itself, "is_subregion")) PyErr_Warn(PyExc_Warning, "region_info: missing attribute: is_subregion");
@@ -6000,6 +6001,30 @@ double region_info::get_bgopacity() const
 	if (py_rv && !PyArg_Parse(py_rv, "d", &_rv))
 	{
 		PySys_WriteStderr("Python exception during region_info::get_bgopacity() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+bool region_info::get_transparent() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	bool _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_region_info, "get_transparent", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during region_info::get_transparent() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during region_info::get_transparent() return:\n");
 		PyErr_Print();
 	}
 

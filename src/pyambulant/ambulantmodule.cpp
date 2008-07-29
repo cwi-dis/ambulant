@@ -10274,6 +10274,19 @@ static PyObject *region_infoObj_get_bgopacity(region_infoObject *_self, PyObject
 	return _res;
 }
 
+static PyObject *region_infoObj_get_transparent(region_infoObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->get_transparent();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
 static PyObject *region_infoObj_get_zindex(region_infoObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -10469,6 +10482,8 @@ static PyMethodDef region_infoObj_methods[] = {
 	 PyDoc_STR("() -> (ambulant::lib::color_t _rv)")},
 	{"get_bgopacity", (PyCFunction)region_infoObj_get_bgopacity, 1,
 	 PyDoc_STR("() -> (double _rv)")},
+	{"get_transparent", (PyCFunction)region_infoObj_get_transparent, 1,
+	 PyDoc_STR("() -> (bool _rv)")},
 	{"get_zindex", (PyCFunction)region_infoObj_get_zindex, 1,
 	 PyDoc_STR("() -> (ambulant::common::zindex_t _rv)")},
 	{"get_showbackground", (PyCFunction)region_infoObj_get_showbackground, 1,
