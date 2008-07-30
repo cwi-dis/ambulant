@@ -44,6 +44,11 @@ preferences::preferences()
 	m_do_namespaces(false),
 	m_do_schema(false),
 	m_validation_schema_full_checking(false),
+#ifdef	WITH_FFMPEG
+	m_prefer_ffmpeg(true),
+#else //WITH_FFMPEG
+	m_prefer_ffmpeg(false),
+#endif//WITH_FFMPEG
 #ifdef	WITH_PLUGINS
 	m_use_plugins(true),
 #else //WITH_PLUGINS
