@@ -1,3 +1,9 @@
+2008-07-30 17:48  keesblom
+
+	* Added proper initialization for m_prefer_ffmpeg.This was causing
+	  Firefox pluginn to be silent, since it has no ffmpeg and no
+	  preferences implementation
+
 2008-07-29 17:26  jackjansen
 
 	* Added get_trransparent().
