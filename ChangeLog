@@ -1,3 +1,8 @@
+2008-08-03 23:33  jackjansen
+
+	* Getting started with some ideas on a media support database.	But
+	  I've already noticed these are wrong:-)
+
 2008-07-30 17:48  keesblom
 
 	* Added proper initialization for m_prefer_ffmpeg.This was causing
