@@ -15,6 +15,8 @@ class S(object):
         return self.str == other.str
     def __repr__(self):
         return `self.str`
+    def __str__(self):
+        return self.str
         
 # Wildcard and other unique objects
 class UniqueObject(RichObject):
@@ -22,6 +24,8 @@ class UniqueObject(RichObject):
         self.name = name
     def __repr__(self):
         return '%s(%s)' % (self.__class__.__name__, `self.name`)
+    def __str__(self):
+        return self.name
 
 class AnyObject(UniqueObject):
     def __init__(self):
@@ -30,6 +34,8 @@ class AnyObject(UniqueObject):
         return True
     def __repr__(self):
         return 'ANY'
+    def __str__(self):
+        return '*'
         
 ANY=AnyObject()
 
@@ -55,6 +61,9 @@ class OneOf(RichObject):
         
     def __repr__(self):
         return 'OneOf(%s)' % (', '.join(`i` for i in self.items))
+        
+    def __str__(self):
+        return ', '.join(str(i) for i in self.items)
          
 # Footnote object
 class FootNote:
@@ -122,9 +131,9 @@ CONTAINER_3GPP = ContainerFormat("3GPP Container", OneOf("audio/3gpp", "video/3g
 class MediaFormat(RichObject):
     entries = []
     
-    def __init__(self, tag, containerformat, video, audio, sample=None):
+    def __init__(self, tag, container, video, audio, sample=None):
         self.tag = tag
-        self.containerformat = containerformat
+        self.container = container
         self.video = video
         self.audio = audio
         self.sample = sample
@@ -133,20 +142,20 @@ class MediaFormat(RichObject):
         
     def match(self, other):
         return (isinstance(other, MediaFormat) and
-            self.containerformat.match(other.containerformat) and
+            self.container.match(other.container) and
             self.video and self.video.match(other.video) and
             sself.audio and elf.audio.match(other.audio)
             )
             
     def __repr__(self):
-        rv = 'MediaFormat(%s, %s, video=%s, audio=%s' % (`self.tag`, `self.containerformat`, `self.video`, `self.audio`)
+        rv = 'MediaFormat(%s, %s, video=%s, audio=%s' % (`self.tag`, `self.container`, `self.video`, `self.audio`)
         if self.sample:
             rv += ', %s' % `self.sample`
         rv += ')'
         return rv
         
-AUDIO_MP3 = MediaFormat("audio", CONTAINER_MP3, audio=ANY, video=None)
-VIDEO_3GPP = MediaFormat("video", CONTAINER_3GPP, audio=ANY, video="h264")
+AUDIO_MP3 = MediaFormat("audio", CONTAINER_MP3, audio="mp3", video=None)
+VIDEO_3GPP = MediaFormat("video", CONTAINER_3GPP, audio="amr", video="h264")
 VIDEO_ONLY_3GPP = MediaFormat("video", CONTAINER_3GPP, video="h264", audio=None)
 AUDIO_3GPP = MediaFormat("audio", CONTAINER_3GPP, video=None, audio="amr")
 QUICKTIME = MediaFormat("video", CONTAINER_QUICKTIME, video=ANY, audio=ANY)
@@ -243,7 +252,7 @@ E(os=MAC, renderer=QT, format=QUICKTIME, supported=YES)
 # Last entry: Anything else is unknown 
 E()
 
-if __name__ == '__main__':
+def gen_code():
     print
     print '# Operating Systems'
     for e in OS.entries:
@@ -264,4 +273,70 @@ if __name__ == '__main__':
     print '# The list of supported/unsupported formats'
     for e in E.entries:
         print e
-        
+
+def gen_html():
+    import markup
+    
+    page = markup.page()
+    page.init(title="Ambulant media support")
+    page.table(border=1)
+    # Table headers
+    page.tr()
+    page.th('OS', rowspan=2)
+    page.th('Version', rowspan=2)
+    page.th('Ambulant release', rowspan=2)
+    page.th('Renderer', rowspan=2)
+    page.th('Protocol', rowspan=2)
+    page.th('Media type', colspan=3)
+    page.th('Supported', rowspan=2)
+    page.tr.close()
+    page.tr()
+    page.th('Mimetype')
+    page.th('Audio')
+    page.th('Video')
+    page.tr.close()
+    
+    # Table entries
+    footnotes = []
+    def _genentry(text, note, colspan=None):
+        if not note:
+            page.td(str(text), colspan=colspan)
+        else:
+            page.td()
+            page.add(str(text))
+            page.sup(markup.oneliner.a('[%s]' % note.number, href='#footnote_%s' % note.number))
+            page.td.close()
+            if not note in footnotes:
+                footnotes.append(note)
+    for e in E.entries:
+        page.tr()
+        _genentry(e.os, e.os_notes)
+        _genentry(e.osversion, e.osversion_notes)
+        _genentry(e.release, e.release_notes)
+        _genentry(e.renderer, e.renderer_notes)
+        _genentry(e.proto, e.proto_notes)
+        if e.format is ANY:
+            _genentry(ANY, e.format_notes, colspan=3)
+        else:
+            _genentry(e.format.container.mimetype, e.format_notes)
+            _genentry(e.format.audio, e.format_notes)
+            _genentry(e.format.video, e.format_notes)
+        _genentry(e.supported, e.supported_notes)
+        page.tr.close()
+    page.table.close()
+    
+    # Footnotes
+    page.dl()
+    for e in FootNote.entries:
+        if e in footnotes:
+            page.dt()
+            page.a('[%s]' % e.number, name='footnote_%s' % e.number)
+            page.dt.close()
+            page.dd(e.text)
+    page.dl.close()
+    
+    print page
+    
+if __name__ == '__main__':
+    gen_html()
+    
