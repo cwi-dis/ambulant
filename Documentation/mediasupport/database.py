@@ -3,16 +3,16 @@ class RichObject(object):
     def match(self, other):
         return self is other
     def __eq__(self, other):
-        return self.match(other) or other.match(self)
+        return isinstance(other, RichObject) and (self.match(other) or other.match(self))
     def __ne__(self, other):
         return not (self == other)
 
 # String, with added match operator
-class S(object):
+class S(RichObject):
     def __init__(self, str):
         self.str = str
     def match(self, other):
-        return self.str == other.str
+        return isinstance(other, S) and self.str == other.str
     def __repr__(self):
         return `self.str`
     def __str__(self):
@@ -55,7 +55,8 @@ class OneOf(RichObject):
             
     def match(self, other):
         for item in self.items:
-            if item.match(other):
+            assert isinstance(item, RichObject)
+            if item == other:
                 return True
         return False
         
@@ -70,7 +71,7 @@ class FootNote:
     entries = []
     
     def __init__(self, text):
-        self.text = text
+        self.text = text.strip()
         self.number = len(FootNote.entries)+1
         FootNote.entries.append(self)
     
@@ -117,15 +118,18 @@ class ContainerFormat(RichObject):
         
     def match(self, other):
         return (isinstance(other, ContainerFormat) and
-            self.description and self.description.match(other.description) and
-            self.mimetype and self.mimetype.match(other.mimetype) and
-            self.extension and self.extension.match(other.mimetype)
+            self.description and self.description == other.description and
+            self.mimetype and self.mimetype == other.mimetype and
+            self.extension and self.extension == other.extension
             )
     def __repr__(self):
         return 'ContainerFormat(%s, %s, %s)' % (`self.description`, `self.mimetype`, `self.extension`)
         
 CONTAINER_QUICKTIME = ContainerFormat("Quicktime Movie", "video/quicktime", OneOf("mov", "qt"))
 CONTAINER_MP3 = ContainerFormat("MP3 Audio", "audio/mp3", "mp3")
+CONTAINER_MP4 = ContainerFormat("MPEG-4", OneOf("video/mp4", "audio/mp4"), "mp4")
+CONTAINER_MP4_AUDIO = ContainerFormat("MPEG-4 Audio", OneOf("audio/mp4", "audio/x-m4a", "audio/aac"), OneOf("mp4", "m4a", "aac", "adts"))
+CONTAINER_MP4_VIDEO = ContainerFormat("MPEG-4 Video", OneOf("video/mp4", "video/x-m4v"), OneOf("mp4", "m4v"))
 CONTAINER_3GPP = ContainerFormat("3GPP Container", OneOf("audio/3gpp", "video/3gpp"), extension="3gp")
 
 class MediaFormat(RichObject):
@@ -142,9 +146,9 @@ class MediaFormat(RichObject):
         
     def match(self, other):
         return (isinstance(other, MediaFormat) and
-            self.container.match(other.container) and
-            self.video and self.video.match(other.video) and
-            sself.audio and elf.audio.match(other.audio)
+            self.container == other.container and
+            self.video and self.video == other.video and
+            sself.audio and elf.audio == other.audio
             )
             
     def __repr__(self):
@@ -159,11 +163,10 @@ VIDEO_3GPP = MediaFormat("video", CONTAINER_3GPP, audio="amr", video="h264")
 VIDEO_ONLY_3GPP = MediaFormat("video", CONTAINER_3GPP, video="h264", audio=None)
 AUDIO_3GPP = MediaFormat("audio", CONTAINER_3GPP, video=None, audio="amr")
 QUICKTIME = MediaFormat("video", CONTAINER_QUICKTIME, video=ANY, audio=ANY)
+VIDEO_MP4_H264_AAC = MediaFormat("video", OneOf(CONTAINER_MP4, CONTAINER_MP4_VIDEO), video="h264", audio="aac")
 
 # Function to define a new entry.
-class E:
-    entries = []
-    
+class Q(RichObject):
     def __init__(self,
             os=ANY, os_notes=(), # Generic OS name.
             osversion=ANY, osversion_notes=(),  # OS version.
@@ -200,18 +203,15 @@ class E:
         if not isinstance(supported, RichObject): supported = S(supported)
         self.supported = supported
         self.supported_notes = supported_notes
-        
-        E.entries.append(self)
-        
-        
+                
     def match(self, other):
-        return (isinstance(other, E) and
+        return (isinstance(other, Q) and
             self.os and self.os.match(other.os) and
-            self.osversion and self.osversion.match(other.osversion) and
-            self.release and self.release.match(other.release) and
-            self.renderer and self.renderer.match(other.renderer) and
-            self.proto and self.proto.match(other.proto) and
-            senf.other and self.format.match(other.format)
+            self.osversion and self.osversion == other.osversion and
+            self.release and self.release == other.release and
+            self.renderer and self.renderer == other.renderer and
+            self.proto and self.proto == other.proto and
+            self.format and self.format == other.format
             )
     def __repr__(self):
         l = []
@@ -229,15 +229,30 @@ class E:
         if self.format_notes: l.append('format_notes=' + `self.format_notes`)
         if self.supported != UNKNOWN: l.append('supported=' + `self.supported`)
         if self.supported_notes: l.append('supported_notes=' + `self.supported_notes`)
-        return 'E(%s)' % ', '.join(l)
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(l))
+        
+class E(Q):
+    entries = []
+    
+    def __init__(self, *args, **kwargs):
+        Q.__init__(self, *args, **kwargs)
+        
+        E.entries.append(self)
 
 # Start with some things that don't work, period.
-NOTE_DX_RTSP=FootNote("We have never gotten DirectX RTSP support to work")
+NOTE_DX_RTSP=FootNote("""
+We have never managed DirectX RTSP support to work at all. We have tried
+various servers, including Microsoft Media server.
+""")
 E(os=WIN, renderer=DX, proto="rtsp", supported=NO, supported_notes=NOTE_DX_RTSP)
 
 # ffmpeg support is pretty much platform-independent, but start with some 
 # platform dependent things.
-NOTE_AMR = FootNote("AMR audio is only supported on Linux with a custom-built non-distributable ffmpeg")
+NOTE_AMR = FootNote("""
+AMR audio is only supported on Linux with a custom-built non-distributable ffmpeg.
+You must install libamr_wb and libamr_nb and build configure ffmpeg with
+(at least) --enable-nonfree --enable-libamr_wb --enable-libamr_nb.
+""")
 
 E(os=LINUX, renderer=FFMPEG, format=AUDIO_3GPP, supported=PARTIAL, supported_notes=NOTE_AMR)
 E(          renderer=FFMPEG, format=AUDIO_3GPP, supported=NO, supported_notes=NOTE_AMR)
@@ -248,6 +263,26 @@ E(renderer=FFMPEG, format=AUDIO_MP3, supported=YES)
 
 # Standard OS stuff that allways works
 E(os=WIN, renderer=DX, format=AUDIO_MP3, supported=YES)
+NOTE_QT_SERVER=FootNote("""
+Only streaming QuickTime or MP4 Quicktime Streaming Serer/Darwin Streaming Server is known to
+work when using the Ambulant Quicktime renderer.
+""")
+E(os=MAC, renderer=QT, proto="rtsp", format=QUICKTIME, supported=YES, supported_notes=NOTE_QT_SERVER)
+E(os=MAC, renderer=QT, proto="rtsp", supported=NO, supported_notes=NOTE_QT_SERVER)
+NOTE_FFMPEG_RTSP_MP3=FootNote("""
+Streaming MP3 to Ambulant with the ffmpeg renderer works, if the server is the Helix server.
+""")
+E(renderer=FFMPEG, proto="rtsp", format=AUDIO_MP3, supported=YES, supported_notes=NOTE_FFMPEG_RTSP_MP3)
+NOTE_FFMPEG_FAAD=FootNote("""
+You must configure ffmpeg with --enable-libfaad and --enable-gpl for AAC playback.
+""")
+NOTE_FFMPEG_RTSP_MP4=FootNote("""
+Only streaming QuickTime or MP4 Quicktime Streaming Serer/Darwin Streaming Server is known to
+work when using the Ambulant ffmpeg renderer
+""")
+E(renderer=FFMPEG, proto="rtsp", format=VIDEO_MP4_H264_AAC, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4))
+E(os=MAC, renderer=QT, proto="rtsp", format=VIDEO_MP4_H264_AAC, supported=YES)
+
 E(os=MAC, renderer=QT, format=QUICKTIME, supported=YES)
 # Last entry: Anything else is unknown 
 E()
@@ -274,7 +309,7 @@ def gen_code():
     for e in E.entries:
         print e
 
-def gen_html():
+def gen_html(entries):
     import markup
     
     page = markup.page()
@@ -287,28 +322,39 @@ def gen_html():
     page.th('Ambulant release', rowspan=2)
     page.th('Renderer', rowspan=2)
     page.th('Protocol', rowspan=2)
-    page.th('Media type', colspan=3)
+    page.th('Media type', colspan=4)
     page.th('Supported', rowspan=2)
     page.tr.close()
     page.tr()
     page.th('Mimetype')
+    page.th('Extensions')
     page.th('Audio')
     page.th('Video')
     page.tr.close()
     
     # Table entries
     footnotes = []
-    def _genentry(text, note, colspan=None):
-        if not note:
+    def _genentry(text, notes, colspan=None):
+        if not notes:
             page.td(str(text), colspan=colspan)
         else:
             page.td()
             page.add(str(text))
-            page.sup(markup.oneliner.a('[%s]' % note.number, href='#footnote_%s' % note.number))
+            if type(notes) != type(()):
+                notes = (notes,)
+            for note in notes:
+                page.sup(markup.oneliner.a('[%s]' % note.number, href='#footnote_%s' % note.number))
+                if not note in footnotes:
+                    footnotes.append(note)
             page.td.close()
-            if not note in footnotes:
-                footnotes.append(note)
-    for e in E.entries:
+    def getall(obj, attrname):
+        if isinstance(obj, OneOf):
+            rv =[]
+            for i in obj.items:
+                rv.append(getall(i, attrname))
+            return ', '.join(rv)
+        return str(getattr(obj, attrname))
+    for e in entries:
         page.tr()
         _genentry(e.os, e.os_notes)
         _genentry(e.osversion, e.osversion_notes)
@@ -316,11 +362,13 @@ def gen_html():
         _genentry(e.renderer, e.renderer_notes)
         _genentry(e.proto, e.proto_notes)
         if e.format is ANY:
-            _genentry(ANY, e.format_notes, colspan=3)
+            _genentry(ANY, e.format_notes, colspan=4)
         else:
-            _genentry(e.format.container.mimetype, e.format_notes)
-            _genentry(e.format.audio, e.format_notes)
-            _genentry(e.format.video, e.format_notes)
+            mimetypes = []
+            _genentry(getall(e.format.container, 'mimetype'), e.format_notes)
+            _genentry(getall(e.format.container, 'extension'), None)
+            _genentry(e.format.audio, None)
+            _genentry(e.format.video, None)
         _genentry(e.supported, e.supported_notes)
         page.tr.close()
     page.table.close()
@@ -336,7 +384,15 @@ def gen_html():
     page.dl.close()
     
     print page
+
+def filter(pattern):
+    rv = []
+    for e in E.entries:
+        if e == pattern:
+            rv.append(e)
+    return rv
     
 if __name__ == '__main__':
-    gen_html()
+    f = Q(release="1.8")
+    gen_html(filter(f))
     
