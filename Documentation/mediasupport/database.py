@@ -239,12 +239,31 @@ class E(Q):
         
         E.entries.append(self)
 
-# Start with some things that don't work, period.
+# Start with RTSP, the main trouble-maker.
 NOTE_DX_RTSP=FootNote("""
 We have never managed DirectX RTSP support to work at all. We have tried
-various servers, including Microsoft Media server.
+various servers, including Microsoft Media server. Use the fffmpeg renderer in stead.
 """)
-E(os=WIN, renderer=DX, proto="rtsp", supported=NO, supported_notes=NOTE_DX_RTSP)
+NOTE_FFMPEG_RTSP_MP3=FootNote("""
+Streaming MP3 to Ambulant with the ffmpeg renderer works, if the server is the Helix server.
+""")
+NOTE_FFMPEG_FAAD=FootNote("""
+You must configure ffmpeg with --enable-libfaad and --enable-gpl for AAC playback.
+""")
+NOTE_FFMPEG_RTSP_MP4=FootNote("""
+Only streaming QuickTime or MP4 Quicktime Streaming Serer/Darwin Streaming Server is known to
+work when using the Ambulant ffmpeg renderer
+""")
+NOTE_QT_SERVER=FootNote("""
+Only streaming QuickTime or MP4 Quicktime Streaming Serer/Darwin Streaming Server is known to
+work when using the Ambulant Quicktime renderer.
+""")
+E(os=OneOf(WIN, WINCE), renderer=DX, proto="rtsp", supported=NO, supported_notes=NOTE_DX_RTSP)
+E(os=MAC, renderer=QT, proto="rtsp", format=VIDEO_MP4_H264_AAC, supported=YES)
+E(os=MAC, renderer=QT, proto="rtsp", format=QUICKTIME, supported=YES, supported_notes=NOTE_QT_SERVER)
+E(os=MAC, renderer=QT, proto="rtsp", supported=NO, supported_notes=NOTE_QT_SERVER)
+E(renderer=FFMPEG, proto="rtsp", format=AUDIO_MP3, supported=YES, supported_notes=NOTE_FFMPEG_RTSP_MP3)
+E(renderer=FFMPEG, proto="rtsp", format=VIDEO_MP4_H264_AAC, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4))
 
 # ffmpeg support is pretty much platform-independent, but start with some 
 # platform dependent things.
@@ -263,25 +282,6 @@ E(renderer=FFMPEG, format=AUDIO_MP3, supported=YES)
 
 # Standard OS stuff that allways works
 E(os=WIN, renderer=DX, format=AUDIO_MP3, supported=YES)
-NOTE_QT_SERVER=FootNote("""
-Only streaming QuickTime or MP4 Quicktime Streaming Serer/Darwin Streaming Server is known to
-work when using the Ambulant Quicktime renderer.
-""")
-E(os=MAC, renderer=QT, proto="rtsp", format=QUICKTIME, supported=YES, supported_notes=NOTE_QT_SERVER)
-E(os=MAC, renderer=QT, proto="rtsp", supported=NO, supported_notes=NOTE_QT_SERVER)
-NOTE_FFMPEG_RTSP_MP3=FootNote("""
-Streaming MP3 to Ambulant with the ffmpeg renderer works, if the server is the Helix server.
-""")
-E(renderer=FFMPEG, proto="rtsp", format=AUDIO_MP3, supported=YES, supported_notes=NOTE_FFMPEG_RTSP_MP3)
-NOTE_FFMPEG_FAAD=FootNote("""
-You must configure ffmpeg with --enable-libfaad and --enable-gpl for AAC playback.
-""")
-NOTE_FFMPEG_RTSP_MP4=FootNote("""
-Only streaming QuickTime or MP4 Quicktime Streaming Serer/Darwin Streaming Server is known to
-work when using the Ambulant ffmpeg renderer
-""")
-E(renderer=FFMPEG, proto="rtsp", format=VIDEO_MP4_H264_AAC, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4))
-E(os=MAC, renderer=QT, proto="rtsp", format=VIDEO_MP4_H264_AAC, supported=YES)
 
 E(os=MAC, renderer=QT, format=QUICKTIME, supported=YES)
 # Last entry: Anything else is unknown 
@@ -393,6 +393,6 @@ def filter(pattern):
     return rv
     
 if __name__ == '__main__':
-    f = Q(release="1.8")
+    f = Q(proto="http")
     gen_html(filter(f))
     
