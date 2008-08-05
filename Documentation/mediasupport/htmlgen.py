@@ -1,7 +1,7 @@
 from dbsupport import ANY, OneOf, FootNote
+import markup
 
 def gen_html(entries):
-    import markup
     
     page = markup.page()
     page.init(title="Ambulant media support")
