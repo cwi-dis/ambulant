@@ -154,7 +154,7 @@ class MediaFormat(RichObject):
         return (isinstance(other, MediaFormat) and
             self.container == other.container and
             self.video and self.video == other.video and
-            sself.audio and elf.audio == other.audio
+            self.audio and self.audio == other.audio
             )
             
     def __repr__(self):
