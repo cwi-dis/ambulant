@@ -1,3 +1,17 @@
+2008-08-05 16:31  jackjansen
+
+	* - Extended database with formats for which we already have media
+	  samples,   and some important ones.  - After loading database
+	  test that we actuaqlly use everything we've defined.
+
+2008-08-05 15:35  jackjansen
+
+	* Added smilgen (preliminary) and detabbed markup.py.
+
+2008-08-05 15:01  jackjansen
+
+	* Split into modules.
+
 2008-08-04 17:10  jackjansen
 
 	* Details.
