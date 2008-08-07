@@ -26,7 +26,7 @@
 				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\sdk\samples\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\plugin\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\nspr\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\java\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk&quot;;..\..\include;&quot;..\..\projects\vc71-smil3&quot;"
 				PreprocessorDefinitions="_DEBUG;XP_WIN32;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_USRDLL;NPSIMPLE_EXPORTS;WITH_SMIL30"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="1"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Debug/AmbulantFFplugin.pch"
 				AssemblerListingLocation=".\Debug/"
@@ -40,15 +40,16 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\lib\win32\libambulant_win32_D.lib ..\..\lib\win32\libexpat.lib ..\..\lib\win32\libjpeg.lib ..\..\lib\win32\libpng.lib ..\..\lib\win32\zlib.lib ..\..\lib\win32\xerces-c_2.lib"
+				AdditionalDependencies="..\..\lib\win32\libambulant_shwin32_D.lib ..\..\lib\win32\libexpat.lib ..\..\lib\win32\libjpeg.lib ..\..\lib\win32\libpng.lib ..\..\lib\win32\zlib.lib ..\..\lib\win32\xerces-c_2.lib"
 				OutputFile="C:\Program Files\Mozilla Firefox\plugins\$(ProjectName).dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib\win32"
-				IgnoreDefaultLibraryNames="libcmt.lib"
+				IgnoreDefaultLibraryNames=""
 				ModuleDefinitionFile="..\..\src\firefox_plugin_win32\AmbulantFFplugin.def"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/AmbulantFFplugin.pdb"
+				MapExports="FALSE"
 				ImportLibrary=".\Debug/AmbulantFFplugin.lib"
 				TargetMachine="1"/>
 			<Tool
@@ -61,7 +62,8 @@
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy /y .\AmbulantFFplugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\AmbulantFFplugin.xpt&quot;
+				CommandLine="copy /y .\AmbulantFFplugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\npambulant.xpt&quot;
+copy /y .\AmbulantFFplugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\AmbulantFFplugin.xpt&quot;
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
@@ -94,7 +96,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\sdk\samples\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\plugin\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\nspr\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\java\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk&quot;;..\..\include"
+				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\sdk\samples\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\plugin\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\nspr\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\java\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk&quot;;..\..\include;&quot;..\..\projects\vc71-smil3&quot;"
 				PreprocessorDefinitions="NDEBUG;XP_WIN32;_DEBUG;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_USRDLL;NPSIMPLE_EXPORTS"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
@@ -111,12 +113,14 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\lib\win32\libambulant_win32.lib ..\..\lib\win32\libexpat.lib ..\..\lib\win32\libjpeg.lib ..\..\lib\win32\libpng.lib ..\..\lib\win32\zlib.lib ..\..\lib\win32\xerces-c_2.lib"
+				AdditionalDependencies="..\..\lib\win32\libambulant_shwin32.lib ..\..\lib\win32\libexpat.lib ..\..\lib\win32\libjpeg.lib ..\..\lib\win32\libpng.lib ..\..\lib\win32\zlib.lib ..\..\lib\win32\xerces-c_2.lib"
 				OutputFile=".\Release/AmbulantFFplugin.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				IgnoreDefaultLibraryNames="libcpmtd.lib"
-				ModuleDefinitionFile=".\AmbulantFFplugin.def"
+				AdditionalLibraryDirectories="..\..\lib\win32"
+				IgnoreAllDefaultLibraries="FALSE"
+				IgnoreDefaultLibraryNames="libcpmt.lib"
+				ModuleDefinitionFile="..\..\src\firefox_plugin_win32\AmbulantFFplugin.def"
 				ProgramDatabaseFile=".\Release/AmbulantFFplugin.pdb"
 				ImportLibrary=".\Release/AmbulantFFplugin.lib"
 				TargetMachine="1"/>
@@ -140,6 +144,79 @@ copy /y .\AmbulantFFplugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\Ambu
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="DebugNoShLibNoXerces|Win32"
+			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
+			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="1">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\sdk\samples\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\plugin\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\nspr\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\java\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk&quot;;..\..\include;&quot;..\..\projects\vc71-smil3&quot;"
+				PreprocessorDefinitions="_DEBUG;XP_WIN32;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_USRDLL;NPSIMPLE_EXPORTS;WITH_SMIL30;WITHOUT_XERCES"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\Debug/AmbulantFFplugin.pch"
+				AssemblerListingLocation=".\Debug/"
+				ObjectFile=".\Debug/"
+				ProgramDataBaseFileName=".\Debug/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/force"
+				AdditionalDependencies="..\..\lib\win32\libambulant_win32_D.lib libexpat.lib libjpeg.lib libpng.lib zlib.lib"
+				OutputFile="C:\Program Files\Mozilla Firefox\plugins\$(ProjectName).dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="..\..\lib\win32"
+				IgnoreDefaultLibraryNames="LIBCMTD.lib;libcpmtd.lib"
+				ModuleDefinitionFile="..\..\src\firefox_plugin_win32\AmbulantFFplugin.def"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=".\Debug/AmbulantFFplugin.pdb"
+				MapExports="FALSE"
+				ImportLibrary=".\Debug/AmbulantFFplugin.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\Debug/AmbulantFFplugin.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="copy /y .\AmbulantFFplugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\npambulant.xpt&quot;
+copy /y .\AmbulantFFplugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\AmbulantFFplugin.xpt&quot;
+"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
 				Culture="1033"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
@@ -284,11 +361,22 @@ c:\moztools\bin\xpidl.exe -m typelib -I..\..\third_party_packages\GeckoPluginSDK
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Running the XPIDL compiler and linker for $(InputName)"
-						CommandLine="..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpidl -m header -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
-..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpidl -m typelib -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
-..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\bin\xpt_link AmbulantFFplugin.xpt AmbulantFFplugin.xpt
+						CommandLine="echo %cd%
+c:\moztools\bin\xpidl.exe -m header -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
+c:\moztools\bin\xpidl.exe -m typelib -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
 "
-						Outputs="AmbulantFFplugin.h"/>
+						Outputs="AmbulantFFplugin.h;AmbulantFFplugin.xpt"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugNoShLibNoXerces|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Running the XPIDL compiler and linker for $(InputName)"
+						CommandLine="echo %cd%
+c:\moztools\bin\xpidl.exe -m header -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
+c:\moztools\bin\xpidl.exe -m typelib -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
+"
+						Outputs="AmbulantFFplugin.h;AmbulantFFplugin.xpt"/>
 				</FileConfiguration>
 			</File>
 			<File
