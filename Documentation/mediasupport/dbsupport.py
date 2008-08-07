@@ -15,6 +15,7 @@
 # - Footnote stores a numbered footnote
 # - OS stores an operating system name
 # - Renderer stores an Ambulant renderer name
+# - Protocol stores an access protocol name
 # - Container stores a media container format (quicktime, ogg, mpeg-4, etc)
 # - MediaFormat stores a media format: container plus audio codec plus video codec
 # - Q stores a database query: a tuple of (os, renderer, mediaformat, ...)
@@ -116,6 +117,14 @@ class Renderer(UniqueObject):
         
         Renderer.entries.append(self)
 
+# Protocols
+class Protocol(UniqueObject):
+    entries = []
+    def __init__(self, name):
+        UniqueObject.__init__(self, name)
+        
+        Protocol.entries.append(self)
+
 # Container format types
 class ContainerFormat(RichObject):
     entries = []
@@ -141,7 +150,8 @@ class ContainerFormat(RichObject):
 class MediaFormat(RichObject):
     entries = []
     
-    def __init__(self, tag, container, video, audio, sample=None):
+    def __init__(self, description, tag, container, video, audio, sample=None):
+        self.description = description
         self.tag = tag
         self.container = container
         self.video = video

@@ -1,10 +1,74 @@
-from dbsupport import ANY, OneOf, FootNote
+from dbsupport import ANY, OneOf, FootNote, OS, Renderer, Protocol
 import markup
 
+def gen_form(page):
+    page.form(action="http://example.com/form")
+    page.table(border=1)
+    page.tr()
+    page.th("Prune the table by making a selection", colspan=2)
+    page.tr.close()
+    
+    page.tr()
+    page.td("Operating system:")
+    page.td(align="right")
+    page.select(name="os", multiple=None)
+    for e in OS.entries:
+        page.option(e.name)
+    page.select.close()
+    page.td.close()
+    page.tr.close()
+    
+    page.tr()
+    page.td("Operating system version:")
+    page.td(align="right")
+    page.input(name="os_version")
+    page.td.close()
+    page.tr.close()
+    
+    page.tr()
+    page.td("Ambulant release:")
+    page.td(align="right")
+    page.input(name="release")
+    page.td.close()
+    page.tr.close()
+    
+    page.tr()
+    page.td("Ambulant renderer:")
+    page.td(align="right")
+    page.select(name="renderer", multiple=None)
+    for e in Renderer.entries:
+        page.option(e.name)
+    page.select.close()
+    page.td.close()
+    page.tr.close()
+    
+    page.tr()
+    page.td("Access protocol:")
+    page.td(align="right")
+    page.select(name="protocol", multiple=None)
+    for e in Protocol.entries:
+        page.option(e.name)
+    page.select.close()
+    page.td.close()
+    page.tr.close()
+
+    page.tr()
+    page.td(colspan=2, align="right")
+    page.button("Prune Table", type="submit")
+    page.td.close()
+    page.tr.close()
+    page.table.close()
+    page.form.close()
+    
 def gen_html(entries):
     
     page = markup.page()
     page.init(title="Ambulant media support")
+    gen_form(page)
+    gen_table(page, entries)
+    return page
+    
+def gen_table(page, entries):
     page.table(border=1)
     # Table headers
     page.tr()
@@ -73,8 +137,6 @@ def gen_html(entries):
             page.dt.close()
             page.dd(e.text)
     page.dl.close()
-    
-    print page
 
 def filter(entries, pattern):
     rv = []
@@ -85,6 +147,7 @@ def filter(entries, pattern):
     
 if __name__ == '__main__':
     import database
-    f = database.Q(proto="http")
-    gen_html(filter(database.E.entries, f))
+    page = gen_html(database.E.entries)
+    print page
+    
     
