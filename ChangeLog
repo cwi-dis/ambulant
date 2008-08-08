@@ -1,3 +1,28 @@
+2008-08-07 17:18  jackjansen
+
+	* - Removed 3gp a/v file: turned out to have aac audio in stead of
+	  amr-wb.  - Added ogg/vorbis/theora - Added video-only 3gpp -
+	  Added readme
+
+2008-08-07 16:48  keesblom
+
+	* Added a new configuration DebugNoShLibNoXerces with static
+	  linkage to make the Firefox plugin work agian.
+
+2008-08-07 16:28  jackjansen
+
+	* Created first two media samples.
+
+2008-08-07 14:13  jackjansen
+
+	* Revived the old Frere Jacques song, and added a video track.
+	  This will be used as the source material for the various audio
+	  and video files for testing media compatibility.
+
+2008-08-07 12:55  jackjansen
+
+	* Started on generating form.
+
 2008-08-05 16:31  jackjansen
 
 	* - Extended database with formats for which we already have media
