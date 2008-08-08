@@ -31,6 +31,8 @@ class element:
 
         if case == 'lower':
             self.tag = tag.lower( )
+        elif case == 'keep':
+            self.tag = tag
         else:
             self.tag = tag.upper( )
     
@@ -122,6 +124,7 @@ class page:
 
         case -- 'lower'         element names will be printed in lower case (default)
                 'upper'         they will be printed in upper case
+                'keep'          they will be printed as-is
 
         onetags --              list or tuple of valid elements with opening tags only
         twotags --              list or tuple of valid elements with both opening and closing tags

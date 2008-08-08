@@ -8,7 +8,6 @@ SMIL_ONETAGS=[
     'animateMotion',
     'customTest',
     'prefetch',
-    'topLayout',
     'area',
 ]
 
@@ -39,6 +38,7 @@ SMIL_TWOTAGS=[
     'switch',
     'text',
     'textstream',
+    'topLayout',
     'transition',
     'transitionFilter',
     'video',
@@ -46,7 +46,7 @@ SMIL_TWOTAGS=[
 
 def smil_document():
     # There's a problem here: the generator makes everything lower case. It shouldn't.
-    doc = markup.page(mode='xml', onetags=SMIL_ONETAGS, twotags=SMIL_TWOTAGS)
+    doc = markup.page(mode='xml', case='keep', onetags=SMIL_ONETAGS, twotags=SMIL_TWOTAGS)
     doc.init()
     return doc
     
@@ -56,14 +56,21 @@ def gen_smil(mediatype, basename, mediafilename):
     s.smil()
     s.head()
     s.layout()
+    s.topLayout(width="640", height="480")
+    s.topLayout.close()
     s.layout.close()
     s.head.close()
     
     s.body()
-    s.ref('', src=mediafilename, region="main")
+    if mediatype == 'video':
+        s.video('', src=mediafilename)
+    elif mediatype == 'audio':
+        s.audio('', src=mediafilename)
+    else:
+        raise RuntimeError('Unknown media type ' + mediatype)
     s.body.close()
     s.smil.close()
     return s
     
 if __name__ == '__main__':
-    print gen_smil('video', 'http://www.example.com/', 'example.mp4')
+    print gen_smil('video', '.', 'media/video-mp4-aac-h264-640x480.mp4')
