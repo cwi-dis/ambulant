@@ -22,7 +22,6 @@ RTSP=Protocol("rtsp")
         
 CONTAINER_MPEG = ContainerFormat("MPEG-1/2 Container", "video/mpeg", extension=OneOf("mpg", "mpeg", "mpv"))
 CONTAINER_MP3 = ContainerFormat("MP3 Audio", "audio/mp3", "mp3")
-CONTAINER_MP4 = ContainerFormat("MPEG-4", OneOf("video/mp4", "audio/mp4"), "mp4")
 CONTAINER_MP4_AUDIO = ContainerFormat("MPEG-4 Audio", OneOf("audio/mp4", "audio/x-m4a", "audio/aac"), OneOf("mp4", "m4a", "aac", "adts"))
 CONTAINER_MP4_VIDEO = ContainerFormat("MPEG-4 Video", OneOf("video/mp4", "video/x-m4v"), OneOf("mp4", "m4v"))
 CONTAINER_3GPP = ContainerFormat("3GPP Container", OneOf("audio/3gpp", "video/3gpp"), extension="3gp")
@@ -31,36 +30,39 @@ CONTAINER_QUICKTIME = ContainerFormat("Quicktime Movie", "video/quicktime", OneO
 CONTAINER_WAV = ContainerFormat("WAV Audio file", "audio/wav", extension="wav")
 CONTAINER_AVI = ContainerFormat("AVI Container", OneOf("video/avi", "video/x-msvideo", "video/msvideo"), extension="avi")
 CONTAINER_ASF = ContainerFormat("Windows Media", "video/x-ms-asf", extension=OneOf("asf", "wmv", "wma"))
+CONTAINER_REAL = ContainerFormat("RealMedia", OneOf("application/vnd.rn-realmedia", "video/vnd.rn-realvideo", "audio/vnd.rn-realaudio"), extension=OneOf("rm", "rv", "ra"))
 
 # Media formats for which we already have samples
 
-AUDIO_MP3 = MediaFormat("MP3 Audio", "audio", CONTAINER_MP3, audio="mp3", video=None)
-AUDIO_WAV = MediaFormat("WAV Audio", "audio", CONTAINER_WAV, audio="wav", video=None)
+AUDIO_MP3 = MediaFormat("MP3 Audio", "audio", CONTAINER_MP3, audio="mp3", video=None, sample="media/audio-mp3-mp3.mp3")
+AUDIO_AAC = MediaFormat("AAC Audio", "audio", CONTAINER_MP4_AUDIO, audio="aac", video=None, sample="media/audio-mp4-aac.m4a")
+AUDIO_WAV = MediaFormat("WAV Audio", "audio", CONTAINER_WAV, audio="wav", video=None, sample="media/audio-wav-pcm.wav")
 AUDIO_VORBIS = MediaFormat("Ogg/Vorbis Audio", "audio", CONTAINER_OGG, video=None, audio="vorbis")
-VIDEO_ONLY_THEORA = MediaFormat("Ogg/Theora video without audio", "video", CONTAINER_OGG, video="theora", audio=None)
-VIDEO_ONLY_MP4_H264 = MediaFormat("MPEG-4 H264 video without audio", "video", CONTAINER_MP4_VIDEO, video="h264", audio=None)
-VIDEO_ONLY_MP4_H263 = MediaFormat("MPEG-4 Baseline video without audio", "video", CONTAINER_MP4_VIDEO, video="h263", audio=None)
-VIDEO_ONLY_AVI_CINEPACK = MediaFormat("AVI Cinepak video without audio", "video", CONTAINER_AVI, video="cinepak", audio=None)
-QUICKTIME = MediaFormat("Quicktime video", "video", CONTAINER_QUICKTIME, video=ANY, audio=ANY)
-VIDEO_ONLY_MPEG1 = MediaFormat("MPEG-1 video without audio", "video", CONTAINER_MPEG, video="mpeg-1", audio=None)
 
 # Media formats which are important:
 
 # Current state-of-the-art format:
-VIDEO_MP4_H264_AAC = MediaFormat("MPEG-4 H264 video with AAC audio", "video", CONTAINER_MP4_VIDEO, video="h264", audio="aac", sample="media/video-mp4-aac-h264-640x480.mp4")
-# Previous state-of-the-art format:
-VIDEO_MP4_H263_AAC = MediaFormat("MPEG-4 H263 video with AAC audio", "video", CONTAINER_MP4_VIDEO, video="h263", audio="aac", sample="media/video-mp4-aac-h263-640x480.mp4")
+VIDEO_MPEG4_AVC = MediaFormat("MPEG-4 H264 video with AAC audio", "video", CONTAINER_MP4_VIDEO, video="h264", audio="aac", sample="media/video-mp4-aac-h264-640x480.mp4")
+# Older state-of-the-art formats:
+VIDEO_MPEG4 = MediaFormat("MPEG-4 H263 video with AAC audio", "video", CONTAINER_MP4_VIDEO, video="h263", audio="aac", sample="media/video-mp4-aac-h263-640x480.mp4")
+VIDEO_MPEG2 = MediaFormat("MPEG-2 video", "video", CONTAINER_MPEG, video="h262", audio="mp3")
+VIDEO_MPEG = MediaFormat("MPEG video", "video", CONTAINER_MPEG, video="mpeg", audio="mp3")
+
 # Upcoming open source state of the art format:
 VIDEO_THEORA = MediaFormat("Ogg/Theora video with Vorbis audio", "video", CONTAINER_OGG, video="theora", audio="vorbis", sample="media/video-ogg-vorbis-theora-640x480.mp4")
+
 # 3GPP is the standard a/v format produced by camera phones:
 VIDEO_3GPP = MediaFormat("3GPP H264 video with AMR audio", "video", CONTAINER_3GPP, audio="amr", video="h264", sample="media/video-3gp-amr-h263-176x144.3gp")
 VIDEO_ONLY_3GPP = MediaFormat("3GPP H264 video without audio", "video", CONTAINER_3GPP, video="h264", audio=None, sample="media/video-3gp-none-h263-176x144.3gp")
 AUDIO_3GPP = MediaFormat("3GPP AMR audio", "audio", CONTAINER_3GPP, video=None, audio="amr", sample="media/audio-3gp-amr.3gp")
-# MPEG-2 is getting less important, but still has some legacy use:
-VIDEO_MPEG2 = MediaFormat("MPEG-2 video with audio", "video", CONTAINER_MPEG, video="h262", audio="mp3")
-# XXXX We need to add the most important proprietary formats (current Windows Media, Real Networks):
+
+# The most important proprietary formats (current Windows Media, Real Networks):
 VIDEO_WM9 = MediaFormat("Windows Media 9 Video", "video", CONTAINER_ASF, video="wmv9", audio="wma9", sample="media/video-wmv-wma9-wmv9-640x480.wmv")
 VIDEO_REAL10 = MediaFormat("RealPlayer 10 Video", "video", CONTAINER_REAL, video="rv10", audio="ra10", sample="media/video-real-ra10-rv10-640x480.rv")
+
+# Legacy proprietary formats
+VIDEO_QUICKTIME = MediaFormat("QuickTime Video (cinepak, PCM)", "video", CONTAINER_QUICKTIME, video=ANY, audio=ANY)
+VIDEO_AVI = MediaFormat("Windows AVI Video (cinepak, PCM)", "video", CONTAINER_AVI, video=ANY, audio=ANY)
 
 #
 # The database itself. Note that the order is important: earlier entries have precedence over later ones.
@@ -86,11 +88,13 @@ Only streaming QuickTime or MP4 Quicktime Streaming Serer/Darwin Streaming Serve
 work when using the Ambulant Quicktime renderer.
 """)
 E(os=OneOf(WIN, WINCE), renderer=DX, proto=RTSP, supported=NO, supported_notes=NOTE_DX_RTSP)
-E(os=MAC, renderer=QT, proto=RTSP, format=VIDEO_MP4_H264_AAC, supported=YES)
-E(os=MAC, renderer=QT, proto=RTSP, format=QUICKTIME, supported=YES, supported_notes=NOTE_QT_SERVER)
+E(os=MAC, renderer=QT, proto=RTSP, format=VIDEO_MPEG4, supported=YES)
+E(os=MAC, renderer=QT, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES)
+E(os=MAC, renderer=QT, proto=RTSP, format=VIDEO_QUICKTIME, supported=YES, supported_notes=NOTE_QT_SERVER)
 E(os=MAC, renderer=QT, proto=RTSP, supported=NO, supported_notes=NOTE_QT_SERVER)
 E(renderer=FFMPEG, proto=RTSP, format=AUDIO_MP3, supported=YES, supported_notes=NOTE_FFMPEG_RTSP_MP3)
-E(renderer=FFMPEG, proto=RTSP, format=VIDEO_MP4_H264_AAC, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4))
+E(renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4))
+E(renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4))
 
 #
 # ffmpeg support is pretty much platform-independent, but start with some 
@@ -107,12 +111,24 @@ E(          renderer=FFMPEG, format=VIDEO_ONLY_3GPP, supported=YES)
 E(os=LINUX, renderer=FFMPEG, format=VIDEO_3GPP, supported=PARTIAL, supported_notes=NOTE_AMR)
 E(          renderer=FFMPEG, format=VIDEO_3GPP, supported=NO, supported_notes=NOTE_AMR)
 E(renderer=FFMPEG, format=AUDIO_MP3, supported=YES)
+E(renderer=FFMPEG, format=AUDIO_WAV, supported=YES)
 
 # Standard Windows DirectX stuff that allways works
 E(os=WIN, renderer=DX, format=AUDIO_MP3, supported=YES)
+E(os=WIN, renderer=DX, format=VIDEO_WM9, supported=YES)
+E(os=WIN, renderer=DX, format=AUDIO_WAV, supported=YES)
 
 # Standard Quicktime stuff that allways works
-E(os=MAC, renderer=QT, format=QUICKTIME, supported=YES)
+E(os=MAC, renderer=QT, format=VIDEO_QUICKTIME, supported=YES)
+
+# Stuff we still need to test
+E(format=AUDIO_AAC)
+E(format=AUDIO_VORBIS)
+E(format=VIDEO_MPEG2)
+E(format=VIDEO_MPEG)
+E(format=VIDEO_THEORA)
+E(format=VIDEO_REAL10)
+E(format=VIDEO_AVI)
 
 # Last entry: Anything else is unknown 
 E()
@@ -176,6 +192,6 @@ def gen_code():
 if __name__ == '__main__':
     gen_code()
 
-DEBUG=0
+DEBUG=1
 if DEBUG:
     test_database()
