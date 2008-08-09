@@ -1,3 +1,18 @@
+2008-08-08 16:56  jackjansen
+
+	* Tweaked markup to allow case-preserving tags.  Fixed smil
+	  generation.
+
+2008-08-08 16:39  jackjansen
+
+	* Added generic quicktime and avi.  Added a couple of audio
+	  formats.
+
+2008-08-08 15:39  jackjansen
+
+	* - Added 3gpp/amr.  - Added current (I think) RealVideo.  - Added
+	  current (I think) Windows Media Video.
+
 2008-08-07 17:18  jackjansen
 
 	* - Removed 3gp a/v file: turned out to have aac audio in stead of
