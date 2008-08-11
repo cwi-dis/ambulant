@@ -67,9 +67,23 @@ VIDEO_AVI = MediaFormat("Windows AVI Video (cinepak, PCM)", "video", CONTAINER_A
 # The database itself. Note that the order is important: earlier entries have precedence over later ones.
 #
 
-# First things first: what works in Ambulant 1.8?
+# First things first: what doesn't works in Ambulant 1.8?
 NOTE_18_RTSP=FootNote("""Ambulant 1.8 rtsp playback is broken, for all practical purposes.""")
+NOTE_18_AAC=FootNote("""Ambulant 1.8 has no support for AAC audio.""")
+NOTE_18_OGG=FootNote("""Ambulant 1.8 Ogg/Vorbis/Theora playback has bugs that may cause it to hang, or not play
+audio, or both.""")
+NOTE_18_FFMPEG_SYNC=FootNote("""Ambulant 1.8 ffmpeg playback has serious audio-video synchronisation problems
+with MPEG-1 and MPEG-2 media.
+""")
 E(release="1.8", proto=RTSP, supported=NO, supported_notes=NOTE_18_RTSP)
+E(release="1.8", renderer=FFMPEG, format=VIDEO_MPEG4_AVC, supported=PARTIAL, supported_notes=NOTE_18_AAC)
+E(release="1.8", renderer=FFMPEG, format=VIDEO_MPEG4, supported=PARTIAL, supported_notes=NOTE_18_AAC)
+E(release="1.8", renderer=FFMPEG, format=VIDEO_MPEG2, supported=YES, supported_notes=NOTE_18_FFMPEG_SYNC)
+E(release="1.8", renderer=FFMPEG, format=VIDEO_MPEG, supported=YES, supported_notes=NOTE_18_FFMPEG_SYNC)
+E(release="1.8", renderer=FFMPEG, format=VIDEO_THEORA, supported=PARTIAL, supported_notes=NOTE_18_OGG)
+E(release="1.8", renderer=FFMPEG, format=AUDIO_VORBIS, supported=PARTIAL, supported_notes=NOTE_18_OGG)
+E(release="1.8", renderer=FFMPEG, format=VIDEO_QUICKTIME, supported=NO)
+E(release="1.8", renderer=FFMPEG, format=VIDEO_WM9, supported=NO)
 
 # Start with RTSP, the main trouble-maker.
 NOTE_DX_RTSP=FootNote("""
@@ -105,6 +119,13 @@ E(renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_
 #
 # ffmpeg support is pretty much platform-independent, but start with some 
 # platform dependent things.
+BUG_FFMPEG_SYNC = FootNote("""Ambulant ffmpeg playback has serious audio-video synchronisation problems
+with some formats, such as MPEG-1, MPEG-2 and WM9.
+""", reporter="Jack", date="20080810", bug="2046564")
+E(renderer=FFMPEG, format=VIDEO_MPEG2, supported=YES, supported_notes=BUG_FFMPEG_SYNC)
+E(renderer=FFMPEG, format=VIDEO_MPEG, supported=YES, supported_notes=BUG_FFMPEG_SYNC)
+E(renderer=FFMPEG, format=VIDEO_WM9, supported=YES, supported_notes=BUG_FFMPEG_SYNC)
+
 NOTE_AMR = FootNote("""
 AMR audio is only supported on Linux with a custom-built non-distributable ffmpeg.
 You must install libamr_wb and libamr_nb and build configure ffmpeg with
@@ -126,6 +147,30 @@ E(os=WIN, renderer=DX, format=AUDIO_WAV, supported=YES)
 
 # Standard Quicktime stuff that allways works
 E(os=MAC, renderer=QT, format=VIDEO_QUICKTIME, supported=YES)
+E(os=MAC, renderer=QT, format=VIDEO_3GPP, supported=YES)
+E(os=MAC, renderer=QT, format=VIDEO_MPEG4_AVC, supported=YES)
+E(os=MAC, renderer=QT, format=VIDEO_MPEG4, supported=YES)
+E(os=MAC, renderer=QT, format=VIDEO_AVI, supported=YES)
+E(os=MAC, renderer=QT, format=VIDEO_MPEG, supported=YES)
+# Things that can be made to work with QuickTime
+NOTE_QT_THEORA = FootNote("""
+Installing the XiphQT component from xiph.org (open source) allows playback of Ogg/Vorbis/Theora through
+QuickTime.
+""")
+NOTE_QT_WM9 = FootNote("""
+Installing the Flip4Mac Windows Media component (free download) allows playback of WM9
+AVI files through QuickTime.
+""")
+NOTE_QT_MPEG2 = FootNote("""
+Installing the Apple MPEG-2 Playback Component from http://www.apple.com/quicktime/mpeg2/ (a $19.99
+commercial download) allows playback of some (not all!) MPEG-2 movies through QuickTime.
+""")
+E(os=MAC, renderer=QT, format=VIDEO_THEORA, supported=YES, supported_notes=NOTE_QT_THEORA)
+E(os=MAC, renderer=QT, format=VIDEO_WM9, supported=YES, supported_notes=NOTE_QT_WM9)
+E(os=MAC, renderer=QT, format=VIDEO_MPEG2, supported=PARTIAL, supported_notes=NOTE_QT_MPEG2)
+
+# Things that do not wiork with quicktime on the mac
+E(os=MAC, renderer=QT, format=VIDEO_REAL10, supported=NO)
 
 # Stuff we still need to test
 E(format=AUDIO_AAC)
