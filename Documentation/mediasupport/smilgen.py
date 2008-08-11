@@ -73,16 +73,17 @@ def gen_smil(mediatype, basename, mediafilename):
     s.smil.close()
     return s
     
-def gen_smilfiles(prefix, basename, entries):
-    for e in entries:
-        if e.sample and not e.smil:
-            smildata = gen_smil(e.tag, basename, e.sample)
-            mediafilename = e.sample.split('/')[-1]
-            smilfilename = prefix + mediafilename.split('.')[0] + '.smil'
-            fp = open(smilfilename, 'w')
-            fp.write(str(smildata))
-            fp.close()
-            e.smil = smilfilename
+def gen_smilfile(prefix, basename, e):
+    if not e.sample: return None
+    if not e.smil.get(prefix):
+        smildata = gen_smil(e.tag, basename, e.sample)
+        mediafilename = e.sample.split('/')[-1]
+        smilfilename = prefix + mediafilename.split('.')[0] + '.smil'
+        fp = open(smilfilename, 'w')
+        fp.write(str(smildata))
+        fp.close()
+        e.smil[prefix] = smilfilename
+    return e.smil[prefix]
     
 if __name__ == '__main__':
     print gen_smil('video', '.', 'media/video-mp4-aac-h264-640x480.mp4')

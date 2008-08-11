@@ -37,7 +37,7 @@ CONTAINER_REAL = ContainerFormat("RealMedia", OneOf("application/vnd.rn-realmedi
 AUDIO_MP3 = MediaFormat("MP3 Audio", "audio", CONTAINER_MP3, audio="mp3", video=None, sample="media/audio-mp3-mp3.mp3")
 AUDIO_AAC = MediaFormat("AAC Audio", "audio", CONTAINER_MP4_AUDIO, audio="aac", video=None, sample="media/audio-mp4-aac.m4a")
 AUDIO_WAV = MediaFormat("WAV Audio", "audio", CONTAINER_WAV, audio="wav", video=None, sample="media/audio-wav-pcm.wav")
-AUDIO_VORBIS = MediaFormat("Ogg/Vorbis Audio", "audio", CONTAINER_OGG, video=None, audio="vorbis")
+AUDIO_VORBIS = MediaFormat("Ogg/Vorbis Audio", "audio", CONTAINER_OGG, video=None, audio="vorbis", sample="media/audio-ogg-vorbis.ogg")
 
 # Media formats which are important:
 
@@ -45,11 +45,11 @@ AUDIO_VORBIS = MediaFormat("Ogg/Vorbis Audio", "audio", CONTAINER_OGG, video=Non
 VIDEO_MPEG4_AVC = MediaFormat("MPEG-4 H264 video with AAC audio", "video", CONTAINER_MP4_VIDEO, video="h264", audio="aac", sample="media/video-mp4-aac-h264-640x480.mp4")
 # Older state-of-the-art formats:
 VIDEO_MPEG4 = MediaFormat("MPEG-4 H263 video with AAC audio", "video", CONTAINER_MP4_VIDEO, video="h263", audio="aac", sample="media/video-mp4-aac-h263-640x480.mp4")
-VIDEO_MPEG2 = MediaFormat("MPEG-2 video", "video", CONTAINER_MPEG, video="h262", audio="mp3")
-VIDEO_MPEG = MediaFormat("MPEG video", "video", CONTAINER_MPEG, video="mpeg", audio="mp3")
+VIDEO_MPEG2 = MediaFormat("MPEG-2 video", "video", CONTAINER_MPEG, video="h262", audio="mp3", sample="media/video-mpeg-mp3-h262-640x480.mpg")
+VIDEO_MPEG = MediaFormat("MPEG video", "video", CONTAINER_MPEG, video="mpeg", audio="mp3", sample="media/video-mpeg-mp3-mpeg-640x480.mpg")
 
 # Upcoming open source state of the art format:
-VIDEO_THEORA = MediaFormat("Ogg/Theora video with Vorbis audio", "video", CONTAINER_OGG, video="theora", audio="vorbis", sample="media/video-ogg-vorbis-theora-640x480.mp4")
+VIDEO_THEORA = MediaFormat("Ogg/Theora video with Vorbis audio", "video", CONTAINER_OGG, video="theora", audio="vorbis", sample="media/video-ogg-vorbis-theora-640x480.ogg")
 
 # 3GPP is the standard a/v format produced by camera phones:
 VIDEO_3GPP = MediaFormat("3GPP H264 video with AMR audio", "video", CONTAINER_3GPP, audio="amr", video="h264", sample="media/video-3gp-amr-h263-176x144.3gp")
@@ -61,8 +61,8 @@ VIDEO_WM9 = MediaFormat("Windows Media 9 Video", "video", CONTAINER_ASF, video="
 VIDEO_REAL10 = MediaFormat("RealPlayer 10 Video", "video", CONTAINER_REAL, video="rv10", audio="ra10", sample="media/video-real-ra10-rv10-640x480.rv")
 
 # Legacy proprietary formats
-VIDEO_QUICKTIME = MediaFormat("QuickTime Video (cinepak, PCM)", "video", CONTAINER_QUICKTIME, video=ANY, audio=ANY)
-VIDEO_AVI = MediaFormat("Windows AVI Video (cinepak, PCM)", "video", CONTAINER_AVI, video=ANY, audio=ANY)
+VIDEO_QUICKTIME = MediaFormat("QuickTime Video (cinepak, PCM)", "video", CONTAINER_QUICKTIME, video=ANY, audio=ANY, sample="media/video-quicktime-pcm-animation-176x144.mov")
+VIDEO_AVI = MediaFormat("Windows AVI Video (cinepak, PCM)", "video", CONTAINER_AVI, video=ANY, audio=ANY, sample="media/video-avi-pcm-cinepak-640x480.avi")
 #
 # The database itself. Note that the order is important: earlier entries have precedence over later ones.
 #

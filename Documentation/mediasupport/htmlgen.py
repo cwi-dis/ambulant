@@ -126,7 +126,15 @@ def gen_table(page, entries):
             _genentry(getall(e.format.container, 'extension'), None)
             _genentry(e.format.audio, None)
             _genentry(e.format.video, None)
-            smil = e.format.smil
+            import smilgen
+            import database
+            if e.proto is database.RTSP:
+                prefix = 'smil-rtsp-'
+                basename = 'rtsp://media2.cwi.nl/xyzzy/'
+            else:
+                prefix = 'smil-rel-'
+                basename = ''
+            smil = smilgen.gen_smilfile(prefix, basename, e.format)
         _genentry(e.supported, e.supported_notes)
         if smil:
             page.td()
@@ -156,7 +164,7 @@ def filter(entries, pattern):
 if __name__ == '__main__':
     import database
     import smilgen
-    smilgen.gen_smilfiles('smil-', '', database.MediaFormat.entries)
+#    smilgen.gen_smilfiles('smil-', '', database.MediaFormat.entries)
     page = gen_html(database.E.entries)
     print page
     

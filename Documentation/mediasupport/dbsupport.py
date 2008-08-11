@@ -157,7 +157,7 @@ class MediaFormat(RichObject):
         self.video = video
         self.audio = audio
         self.sample = sample
-        self.smil = None
+        self.smil = {}
         
         MediaFormat.entries.append(self)
         
