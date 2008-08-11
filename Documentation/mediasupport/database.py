@@ -85,6 +85,20 @@ E(release="1.8", renderer=FFMPEG, format=AUDIO_VORBIS, supported=PARTIAL, suppor
 E(release="1.8", renderer=FFMPEG, format=VIDEO_QUICKTIME, supported=NO)
 E(release="1.8", renderer=FFMPEG, format=VIDEO_WM9, supported=NO)
 
+# Things that don't work on Windows with 1.8. To be merged with current release later.
+E(release="1.8", os=WIN, format=AUDIO_3GPP, supported=NO)
+E(release="1.8", os=WIN, format=AUDIO_AAC, supported=NO)
+E(release="1.8", os=WIN, format=AUDIO_VORBIS, supported=NO)
+E(release="1.8", os=WIN, format=VIDEO_3GPP, supported=NO)
+NOTE_18_DX = FootNote("""Ambulant 1.8 on Windows has trouble rendering video with
+correct timing, hence audio-video sync will get lost.""")
+E(release="1.8", os=WIN, format=VIDEO_AVI, supported=YES, supported_notes=NOTE_18_DX)
+E(release="1.8", os=WIN, format=VIDEO_MPEG4_AVC, supported=NO)
+E(release="1.8", os=WIN, format=VIDEO_MPEG4, supported=NO)
+E(release="1.8", os=WIN, format=VIDEO_MPEG2, supported=NO)
+E(release="1.8", os=WIN, format=VIDEO_MPEG, supported=YES, supported_notes=NOTE_18_DX)
+
+
 # Start with RTSP, the main trouble-maker.
 NOTE_DX_RTSP=FootNote("""
 We have never managed DirectX RTSP support to work at all. We have tried
