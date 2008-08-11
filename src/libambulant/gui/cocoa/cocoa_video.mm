@@ -28,7 +28,7 @@
 #include <Cocoa/Cocoa.h>
 #include <QuickTime/QuickTime.h>
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -64,7 +64,16 @@
 - (void)movieWithURL: (NSURL*)url
 {
 	movie = NULL;
+#if 0
 	movie = [[QTMovie movieWithURL:url error:nil] retain];
+#else
+    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+        (id)url, QTMovieURLAttribute,
+        [NSNumber numberWithBool:NO], QTMovieOpenAsyncOKAttribute,
+        nil];
+    movie = [[QTMovie movieWithAttributes:attrs error:nil] retain];
+
+#endif
 	Movie mov = [movie quickTimeMovie];
 	TimeValue movtime;
 	if (clip_begin) {
@@ -314,7 +323,7 @@ cocoa_video_renderer::_poll_playing()
 		return;
 	}
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	bool is_stopped = ([m_movie rate] == 0) && !m_paused;
+    bool is_stopped = IsMovieDone([m_movie quickTimeMovie]);
 	if (!is_stopped && m_clip_end > 0) {
 		Movie mov = [m_movie quickTimeMovie];
 		TimeValue movtime = GetMovieTime(mov, NULL);
@@ -348,7 +357,7 @@ cocoa_video_renderer::redraw(const rect &dirty, gui_window *window)
 		m_lock.leave();
 		return;
 	}
-	NSValue *value = [m_movie attributeForKey:QTMovieNaturalSizeAttribute];
+	NSValue *value = [m_movie attributeForKey:QTMovieCurrentSizeAttribute];
 	NSSize nssize = [value sizeValue];
 	size srcsize = size(int(nssize.width), int(nssize.height));
 	rect srcrect;
@@ -375,7 +384,10 @@ cocoa_video_renderer::redraw(const rect &dirty, gui_window *window)
 		ambulant::lib::event *e = new poll_callback(this, &cocoa_video_renderer::_poll_playing);
 		m_event_processor->add_event(e, POLL_INTERVAL, ambulant::lib::ep_low);
 	} else {
-		// XXXJACK Need to compare frameRect to current Qt rect and move if needed
+		//  Need to compare frameRect to current Qt rect and move if needed
+        if (!NSEqualRects(frameRect, [m_movie_view frame]) ) {
+            [m_movie_view setFrame: frameRect];
+        }
 	}
 	// Set things up so subsequent redraws go to the overlay window
 	[view useOverlayWindow];

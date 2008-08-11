@@ -67,6 +67,10 @@ VIDEO_AVI = MediaFormat("Windows AVI Video (cinepak, PCM)", "video", CONTAINER_A
 # The database itself. Note that the order is important: earlier entries have precedence over later ones.
 #
 
+# First things first: what works in Ambulant 1.8?
+NOTE_18_RTSP=FootNote("""Ambulant 1.8 rtsp playback is broken, for all practical purposes.""")
+E(release="1.8", proto=RTSP, supported=NO, supported_notes=NOTE_18_RTSP)
+
 # Start with RTSP, the main trouble-maker.
 NOTE_DX_RTSP=FootNote("""
 We have never managed DirectX RTSP support to work at all. We have tried
@@ -79,11 +83,11 @@ NOTE_FFMPEG_FAAD=FootNote("""
 You must configure ffmpeg with --enable-libfaad and --enable-gpl for AAC playback.
 """)
 NOTE_FFMPEG_RTSP_MP4=FootNote("""
-Only streaming QuickTime or MP4 Quicktime Streaming Serer/Darwin Streaming Server is known to
-work when using the Ambulant ffmpeg renderer
+Only streaming QuickTime or MP4 from the Quicktime Streaming Server/Darwin Streaming Server is known to
+work when using the Ambulant ffmpeg renderer.
 """)
 NOTE_QT_SERVER=FootNote("""
-Only streaming QuickTime or MP4 Quicktime Streaming Serer/Darwin Streaming Server is known to
+Only streaming QuickTime or MP4 from the Quicktime Streaming Server/Darwin Streaming Server is known to
 work when using the Ambulant Quicktime renderer.
 """)
 BUG_QT_RTSP_SIZE=FootNote("""
