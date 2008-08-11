@@ -51,7 +51,8 @@ def smil_document():
     return doc
     
 def gen_smil(mediatype, basename, mediafilename):
-    mediafilename = urllib.basejoin(basename, mediafilename)
+    if basename:
+        mediafilename = urllib.basejoin(basename, mediafilename)
     s = smil_document()
     s.smil()
     s.head()
@@ -71,6 +72,17 @@ def gen_smil(mediatype, basename, mediafilename):
     s.body.close()
     s.smil.close()
     return s
+    
+def gen_smilfiles(prefix, basename, entries):
+    for e in entries:
+        if e.sample and not e.smil:
+            smildata = gen_smil(e.tag, basename, e.sample)
+            mediafilename = e.sample.split('/')[-1]
+            smilfilename = prefix + mediafilename.split('.')[0] + '.smil'
+            fp = open(smilfilename, 'w')
+            fp.write(str(smildata))
+            fp.close()
+            e.smil = smilfilename
     
 if __name__ == '__main__':
     print gen_smil('video', '.', 'media/video-mp4-aac-h264-640x480.mp4')

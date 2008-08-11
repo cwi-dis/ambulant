@@ -79,6 +79,7 @@ def gen_table(page, entries):
     page.th('Protocol', rowspan=2)
     page.th('Media type', colspan=4)
     page.th('Supported', rowspan=2)
+    page.th('Sample', rowspan=2)
     page.tr.close()
     page.tr()
     page.th('Mimetype')
@@ -118,13 +119,20 @@ def gen_table(page, entries):
         _genentry(e.proto, e.proto_notes)
         if e.format is ANY:
             _genentry(ANY, e.format_notes, colspan=4)
+            smil = None
         else:
             mimetypes = []
             _genentry(getall(e.format.container, 'mimetype'), e.format_notes)
             _genentry(getall(e.format.container, 'extension'), None)
             _genentry(e.format.audio, None)
             _genentry(e.format.video, None)
+            smil = e.format.smil
         _genentry(e.supported, e.supported_notes)
+        if smil:
+            page.td()
+            base = smil.split('/')[-1]
+            page.a(base, href=smil)
+            page.td.close()
         page.tr.close()
     page.table.close()
     
@@ -147,6 +155,8 @@ def filter(entries, pattern):
     
 if __name__ == '__main__':
     import database
+    import smilgen
+    smilgen.gen_smilfiles('smil-', '', database.MediaFormat.entries)
     page = gen_html(database.E.entries)
     print page
     

@@ -63,7 +63,6 @@ VIDEO_REAL10 = MediaFormat("RealPlayer 10 Video", "video", CONTAINER_REAL, video
 # Legacy proprietary formats
 VIDEO_QUICKTIME = MediaFormat("QuickTime Video (cinepak, PCM)", "video", CONTAINER_QUICKTIME, video=ANY, audio=ANY)
 VIDEO_AVI = MediaFormat("Windows AVI Video (cinepak, PCM)", "video", CONTAINER_AVI, video=ANY, audio=ANY)
-
 #
 # The database itself. Note that the order is important: earlier entries have precedence over later ones.
 #

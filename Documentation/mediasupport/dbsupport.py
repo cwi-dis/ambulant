@@ -150,13 +150,14 @@ class ContainerFormat(RichObject):
 class MediaFormat(RichObject):
     entries = []
     
-    def __init__(self, description, tag, container, video, audio, sample=None):
+    def __init__(self, description, tag, container, video, audio, sample=None, smil=None):
         self.description = description
         self.tag = tag
         self.container = container
         self.video = video
         self.audio = audio
         self.sample = sample
+        self.smil = None
         
         MediaFormat.entries.append(self)
         
