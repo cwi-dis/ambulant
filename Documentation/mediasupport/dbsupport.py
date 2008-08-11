@@ -12,7 +12,8 @@
 #
 # Built on this, there are some application specific classes. These all have a class
 # attribute "entries" that stores all instances created, so they can be enumerated over.
-# - Footnote stores a numbered footnote
+# - Footnote stores a numbered footnote. It may also contain additional info
+#   such as bug number, etc.
 # - OS stores an operating system name
 # - Renderer stores an Ambulant renderer name
 # - Protocol stores an access protocol name
@@ -93,9 +94,12 @@ class OneOf(RichObject):
 class FootNote:
     entries = []
     
-    def __init__(self, text):
+    def __init__(self, text, reporter=None, date=None, bug=None):
         self.text = text.strip()
         self.number = len(FootNote.entries)+1
+        self.reporter = reporter
+        self.date = date
+        self.bug = bug
         FootNote.entries.append(self)
     
     def __repr__(self):

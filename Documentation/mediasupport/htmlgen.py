@@ -130,7 +130,7 @@ def gen_table(page, entries):
             import database
             if e.proto is database.RTSP:
                 prefix = 'smil-rtsp-'
-                basename = 'rtsp://media2.cwi.nl/xyzzy/'
+                basename = 'rtsp://media2.cwi.nl/mediasupport/'
             else:
                 prefix = 'smil-rel-'
                 basename = ''
@@ -151,7 +151,20 @@ def gen_table(page, entries):
             page.dt()
             page.a('[%s]' % e.number, name='footnote_%s' % e.number)
             page.dt.close()
-            page.dd(e.text)
+            page.dd()
+            page.add(e.text)
+            if e.reporter or e.date or e.bug:
+                page.i()
+                page.add('[Additional info: ')
+                if e.reporter: page.add('reported by %s; ' % e.reporter)
+                if e.date: page.add('reported on %s; ' % e.date)
+                if e.bug:
+                    page.add('bug report ')
+                    page.a(e.bug, href='https://sourceforge.net/tracker/index.php?func=detail&aid=%s&group_id=91457&atid=597222' % e.bug)
+                page.add(']')
+                page.i.close()
+                
+            page.dd.close()
     page.dl.close()
 
 def filter(entries, pattern):

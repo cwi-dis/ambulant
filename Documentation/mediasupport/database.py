@@ -86,10 +86,13 @@ NOTE_QT_SERVER=FootNote("""
 Only streaming QuickTime or MP4 Quicktime Streaming Serer/Darwin Streaming Server is known to
 work when using the Ambulant Quicktime renderer.
 """)
+BUG_QT_RTSP_SIZE=FootNote("""
+Quicktime RTSP video playback happens with size 160x120, for reasons unknown.
+""", reporter="Jack", date="20080811", bug="2046489")
 E(os=OneOf(WIN, WINCE), renderer=DX, proto=RTSP, supported=NO, supported_notes=NOTE_DX_RTSP)
-E(os=MAC, renderer=QT, proto=RTSP, format=VIDEO_MPEG4, supported=YES)
-E(os=MAC, renderer=QT, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES)
-E(os=MAC, renderer=QT, proto=RTSP, format=VIDEO_QUICKTIME, supported=YES, supported_notes=NOTE_QT_SERVER)
+E(os=MAC, renderer=QT, proto=RTSP, format=VIDEO_MPEG4, supported=YES, supported_notes=(NOTE_QT_SERVER, BUG_QT_RTSP_SIZE))
+E(os=MAC, renderer=QT, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_notes=(NOTE_QT_SERVER, BUG_QT_RTSP_SIZE))
+E(os=MAC, renderer=QT, proto=RTSP, format=VIDEO_QUICKTIME, supported=YES, supported_notes=(NOTE_QT_SERVER, BUG_QT_RTSP_SIZE))
 E(os=MAC, renderer=QT, proto=RTSP, supported=NO, supported_notes=NOTE_QT_SERVER)
 E(renderer=FFMPEG, proto=RTSP, format=AUDIO_MP3, supported=YES, supported_notes=NOTE_FFMPEG_RTSP_MP3)
 E(renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4))
