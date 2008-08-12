@@ -128,7 +128,7 @@ class attr_collector {
 };
 
 ///////////////////////////////////////////////
-// lib::node implementation
+/// lib::node implementation
 
 // static 
 int lib::node_impl::node_counter = 0;
@@ -782,3 +782,24 @@ lib::node_factory *lib::get_builtin_node_factory()
 	
 	return &nf;
 }
+
+extern "C" {
+	void
+	print_node(lib::node_interface* p)
+	{
+		const char* type = "", *required = "N8ambulant3lib9node_implE";
+		try {
+	  		type = typeid(*p).name();
+		} catch (std::bad_typeid) { 
+			std::cerr << "Unable to find typeid\n";
+			return;
+		}
+		if (strcmp (type, required) == 0) {
+  			lib::node_impl* node = dynamic_cast<lib::node_impl*>(p);
+			if (node) {
+				static lib::xml_string s = node->to_string();
+				std::cout << s.c_str();
+			}
+		}
+	}
+} // extern "C"
