@@ -1,3 +1,30 @@
+2008-08-12 00:07  jackjansen
+
+	* Entered values for 1.8 on Windows.
+
+2008-08-11 17:18  jackjansen
+
+	* Started taking inventory of things that don't work on 1.8
+
+2008-08-11 16:14  jackjansen
+
+	* Fixed some things to make quicktime rtsp playback work a bit
+	  better.
+
+2008-08-11 16:07  jackjansen
+
+	* - Added ability to referrence ambulane bug reports in footnotes.
+	  - Added such a bug report for quicktime rtsp playback.
+
+2008-08-11 14:27  jackjansen
+
+	* I think we finally have all important media types, but there may
+	  still be some problems with the way we create ogg/vorbis.
+
+2008-08-11 10:57  jackjansen
+
+	* Create smil for each media item.
+
 2008-08-08 16:56  jackjansen
 
 	* Tweaked markup to allow case-preserving tags.  Fixed smil
