@@ -158,6 +158,22 @@ E(renderer=FFMPEG, format=AUDIO_WAV, supported=YES)
 E(os=WIN, renderer=DX, format=AUDIO_MP3, supported=YES)
 E(os=WIN, renderer=DX, format=VIDEO_WM9, supported=YES)
 E(os=WIN, renderer=DX, format=AUDIO_WAV, supported=YES)
+# Things that don't work on Windows with 1.8. To be merged with current release later.
+E(os=WIN, renderer=DX, format=AUDIO_3GPP, supported=NO)
+E(os=WIN, renderer=DX, format=AUDIO_AAC, supported=NO)
+NOTE_JACK_VORBIS = FootNote("""Jack saw this work on one machine. Need to check that
+it isn't due to installing some plugin...""")
+E(os=WIN, renderer=DX, format=AUDIO_VORBIS, supported=YES, supported_note=NOTE_JACK_VORBIS)
+E(os=WIN, renderer=DX, format=VIDEO_3GPP, supported=NO)
+BUG_DX_SLOW_VIDEO = FootNote("""The video stream in some a/v files is played back at half
+speed. Playback is normal in Windows Media player. Need to investigate.""",
+reporter="Jack", date="20080814", bug="2050330")
+E(os=WIN, renderer=DX, format=VIDEO_AVI, supported=YES, supported_note=BUG_DX_SLOW_VIDEO)
+E(os=WIN, renderer=DX, format=VIDEO_MPEG4_AVC, supported=NO)
+E(os=WIN, renderer=DX, format=VIDEO_MPEG4, supported=NO)
+E(os=WIN, renderer=DX, format=VIDEO_MPEG2, supported=NO)
+E(os=WIN, renderer=DX, format=VIDEO_MPEG, supported=YES, supported_note=BUG_DX_SLOW_VIDEO)
+
 
 # Standard Quicktime stuff that allways works
 E(os=MAC, renderer=QT, format=VIDEO_QUICKTIME, supported=YES)
