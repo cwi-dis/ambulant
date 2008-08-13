@@ -182,3 +182,11 @@ NS_IMETHODIMP nsScriptablePeer::PausePlayer()
   mPlugin->PausePlayer();
   return NS_OK;
 }
+
+NS_IMETHODIMP nsScriptablePeer::IsDone(PRBool *isdone)
+{
+  AM_DBG fprintf(stderr, "nsScriptablePeer::Isdone() called\n");
+  if (mPlugin == NULL) return NS_ERROR_NOT_INITIALIZED;
+  mPlugin->IsDone(isdone);
+  return NS_OK;
+}

@@ -45,6 +45,7 @@ interface nsIAmbulantPlugin : nsISupports {
   void restartPlayer();
   void resumePlayer();
   void pausePlayer();
+  void isDone(out boolean doneflag);
 
 };
 

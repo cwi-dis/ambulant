@@ -313,7 +313,7 @@ char* nsPluginInstance::get_document_location()
 /* glue code */
 NS_IMPL_ISUPPORTS1(nsPluginInstance, nsIAmbulantPlugin)
 
-// this will start AmbulantPLayer
+// this will start AmbulantPlayer
 NS_IMETHODIMP nsPluginInstance::StartPlayer()
 {
 	AM_DBG lib::logger::get_logger()->debug("nsPluginInstance::StartPlayer()\n");
@@ -322,7 +322,7 @@ NS_IMETHODIMP nsPluginInstance::StartPlayer()
 	return NS_OK;
 }
 
-// this will stop AmbulantPLayer
+// this will stop AmbulantPlayer
 NS_IMETHODIMP nsPluginInstance::StopPlayer()
 {
 	AM_DBG lib::logger::get_logger()->debug("nsPluginInstance::StopPlayer()\n");
@@ -331,7 +331,7 @@ NS_IMETHODIMP nsPluginInstance::StopPlayer()
 	return NS_OK;
 }
 
-// this will restart AmbulantPLayer
+// this will restart AmbulantPlayer
 NS_IMETHODIMP nsPluginInstance::RestartPlayer()
 {
 	AM_DBG lib::logger::get_logger()->debug("nsPluginInstance::RestartPlayer()\n");
@@ -341,7 +341,7 @@ NS_IMETHODIMP nsPluginInstance::RestartPlayer()
 	return NS_OK;
 }
 
-// this will resume AmbulantPLayer
+// this will resume AmbulantPlayer
 NS_IMETHODIMP nsPluginInstance::ResumePlayer()
 {
 	AM_DBG lib::logger::get_logger()->debug("nsPluginInstance::ResumePlayer()\n");
@@ -350,12 +350,21 @@ NS_IMETHODIMP nsPluginInstance::ResumePlayer()
 	return NS_OK;
 }
 
-// this will pause AmbulantPLayer
+// this will pause AmbulantPlayer
 NS_IMETHODIMP nsPluginInstance::PausePlayer()
 {
 	AM_DBG lib::logger::get_logger()->debug("nsPluginInstance::PausePlayer()\n");
 	if (m_ambulant_player == NULL) return NS_ERROR_NOT_AVAILABLE;
 	m_ambulant_player->pause();
+	return NS_OK;
+}
+
+// this will query the 'done' flag of AmbulantPlayer
+NS_IMETHODIMP nsPluginInstance::IsDone(PRBool *isdone)
+{
+	AM_DBG lib::logger::get_logger()->debug("nsPluginInstance:IsDone()\n");
+	if (m_ambulant_player == NULL) return NS_ERROR_NOT_AVAILABLE;
+	*isdone = m_ambulant_player->is_done();
 	return NS_OK;
 }
 

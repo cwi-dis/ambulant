@@ -780,10 +780,8 @@ if test "x$test_ffmpeg" = "xtrue"; then
 	# not acceptable to libtool. The following expression turns these into -L/-l combos.
 	# As ffmpeg is a moving target it is unclear how long this trick will work...
 	#
-	set -vx
 	if test x`uname` = xDarwin; then
 		FFMPEG_LIBS=`echo $FFMPEG_LIBS | sed -e "s@\($FFMPEG_PREFIX/[[a-z]]*\)/lib\([[a-z]]*\).a@-L\1 -l\2@g"`
-	set -
 	fi
 	
 	if test "x$test_ffmpeg" = "xtrue"; then
