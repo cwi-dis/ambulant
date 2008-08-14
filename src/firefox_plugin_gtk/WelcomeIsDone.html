@@ -54,16 +54,11 @@ function PausePlayer()
   embed.pausePlayer();
 }
 
-function boolean(value)
-{
-  this.value = value
-}
 function IsDone()
 {
-  test=new boolean(false)
-  var done=embed.isDone(test);
-  if (test.value == true) {
-	alert("isDone() returns test.value="+test.value);
+  var done = embed.isDone();
+  if (done == true) {
+	alert("isDone() returns done="+done);
   } else {
 	StartTimer (this.timeout)
   }
