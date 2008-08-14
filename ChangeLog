@@ -1,3 +1,15 @@
+2008-08-14 00:14  jackjansen
+
+	* Added tests of current Ambulant with DX renderer, which uncovered
+	  more bugs.
+
+2008-08-13 17:34  keesblom
+
+	* Added ambulant_player's "is_done()" function to the JavaScript
+	  interface of the Firefox plugin, and an application
+	  "WelcomeIsDone.html", that uses a repeated timer to display an
+	  alert() as soon as ambulant_player->is_done() returns true,
+
 2008-08-12 15:54  keesblom
 
 	* Added a function print_node(node*) callable from gdb that spits
