@@ -121,6 +121,9 @@ work when using the Ambulant Quicktime renderer.
 BUG_QT_RTSP_SIZE=FootNote("""
 Quicktime RTSP video playback happens with size 160x120, for reasons unknown.
 """, reporter="Jack", date="20080811", bug="2046489")
+BUG_FFMPEG_RTSP_H264_REORDER=FootNote("""
+RTSP playback of H264 with ffmpeg and Live on Windows is bad: frames appear to be reordered.
+""", reporter="Jack", date="20080814")
 E(os=OneOf(WIN, WINCE), renderer=DX, proto=RTSP, supported=NO, supported_notes=NOTE_DX_RTSP)
 E(os=MAC, renderer=QT, proto=RTSP, format=VIDEO_MPEG4, supported=YES, supported_notes=(NOTE_QT_SERVER, BUG_QT_RTSP_SIZE))
 E(os=MAC, renderer=QT, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_notes=(NOTE_QT_SERVER, BUG_QT_RTSP_SIZE))
@@ -128,6 +131,8 @@ E(os=MAC, renderer=QT, proto=RTSP, format=VIDEO_QUICKTIME, supported=YES, suppor
 E(os=MAC, renderer=QT, proto=RTSP, supported=NO, supported_notes=NOTE_QT_SERVER)
 E(renderer=FFMPEG, proto=RTSP, format=AUDIO_MP3, supported=YES, supported_notes=NOTE_FFMPEG_RTSP_MP3)
 E(renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4))
+E(renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4))
+E(os=WIN, renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4, BUG_FFMPEG_RTSP_H264_REORDER))
 E(renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4))
 
 #
@@ -143,7 +148,8 @@ E(renderer=FFMPEG, format=VIDEO_WM9, supported=YES, supported_notes=BUG_FFMPEG_S
 NOTE_AMR = FootNote("""
 AMR audio is only supported on Linux with a custom-built non-distributable ffmpeg.
 You must install libamr_wb and libamr_nb and build configure ffmpeg with
-(at least) --enable-nonfree --enable-libamr_wb --enable-libamr_nb.
+(at least) --enable-nonfree --enable-libamr_wb --enable-libamr_nb. Support on
+Windows and MacOSX is impossible due to unavailability of those libraries.
 """)
 
 E(os=LINUX, renderer=FFMPEG, format=AUDIO_3GPP, supported=PARTIAL, supported_notes=NOTE_AMR)
@@ -153,6 +159,16 @@ E(os=LINUX, renderer=FFMPEG, format=VIDEO_3GPP, supported=PARTIAL, supported_not
 E(          renderer=FFMPEG, format=VIDEO_3GPP, supported=NO, supported_notes=NOTE_AMR)
 E(renderer=FFMPEG, format=AUDIO_MP3, supported=YES)
 E(renderer=FFMPEG, format=AUDIO_WAV, supported=YES)
+E(renderer=FFMPEG, format=AUDIO_AAC, supported=YES)
+BUG_WIN_VORBIS = FootNote("""On Windows, it seems the first second or so of Ogg/Vorbis files is
+skipped. Need to investigate.""",
+reporter="Jack", date="20080814", bug="2051134")
+E(renderer=FFMPEG, format=AUDIO_VORBIS, supported=YES, supported_notes=BUG_WIN_VORBIS)
+E(renderer=FFMPEG, format=AUDIO_VORBIS, supported=UNKNOWN)
+BUG_WIN_FFMPEG_AVI = FootNote("""On Windows, AVI playback with ffmpeg has audio breakups and video hangs.""",
+reporter="Jack", date="20080814")
+E(renderer=FFMPEG, format=VIDEO_AVI, supported=YES, supported_notes=BUG_WIN_FFMPEG_AVI)
+E(renderer=FFMPEG, format=VIDEO_AVI, supported=UNKNOWN)
 
 # Standard Windows DirectX stuff that allways works
 E(os=WIN, renderer=DX, format=AUDIO_MP3, supported=YES)
@@ -161,18 +177,16 @@ E(os=WIN, renderer=DX, format=AUDIO_WAV, supported=YES)
 # Things that don't work on Windows with 1.8. To be merged with current release later.
 E(os=WIN, renderer=DX, format=AUDIO_3GPP, supported=NO)
 E(os=WIN, renderer=DX, format=AUDIO_AAC, supported=NO)
-NOTE_JACK_VORBIS = FootNote("""Jack saw this work on one machine. Need to check that
-it isn't due to installing some plugin...""")
-E(os=WIN, renderer=DX, format=AUDIO_VORBIS, supported=YES, supported_note=NOTE_JACK_VORBIS)
+E(os=WIN, renderer=DX, format=AUDIO_VORBIS, supported=YES)
 E(os=WIN, renderer=DX, format=VIDEO_3GPP, supported=NO)
 BUG_DX_SLOW_VIDEO = FootNote("""The video stream in some a/v files is played back at half
 speed. Playback is normal in Windows Media player. Need to investigate.""",
 reporter="Jack", date="20080814", bug="2050330")
-E(os=WIN, renderer=DX, format=VIDEO_AVI, supported=YES, supported_note=BUG_DX_SLOW_VIDEO)
+E(os=WIN, renderer=DX, format=VIDEO_AVI, supported=YES, supported_notes=BUG_DX_SLOW_VIDEO)
 E(os=WIN, renderer=DX, format=VIDEO_MPEG4_AVC, supported=NO)
 E(os=WIN, renderer=DX, format=VIDEO_MPEG4, supported=NO)
 E(os=WIN, renderer=DX, format=VIDEO_MPEG2, supported=NO)
-E(os=WIN, renderer=DX, format=VIDEO_MPEG, supported=YES, supported_note=BUG_DX_SLOW_VIDEO)
+E(os=WIN, renderer=DX, format=VIDEO_MPEG, supported=YES, supported_notes=BUG_DX_SLOW_VIDEO)
 
 
 # Standard Quicktime stuff that allways works
@@ -203,7 +217,6 @@ E(os=MAC, renderer=QT, format=VIDEO_MPEG2, supported=PARTIAL, supported_notes=NO
 E(os=MAC, renderer=QT, format=VIDEO_REAL10, supported=NO)
 
 # Stuff we still need to test
-E(format=AUDIO_AAC)
 E(format=AUDIO_VORBIS)
 E(format=VIDEO_MPEG2)
 E(format=VIDEO_MPEG)
