@@ -1,3 +1,12 @@
+2008-08-14 12:27  jackjansen
+
+	* More bits of information.
+
+2008-08-14 11:51  keesblom
+
+	* Modified the IsDone() javascript interface function to return a
+	  boolean rather than using an object as a parameter.
+
 2008-08-14 00:14  jackjansen
 
 	* Added tests of current Ambulant with DX renderer, which uncovered
