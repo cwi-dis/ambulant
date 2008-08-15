@@ -436,6 +436,17 @@ time_node::calc_next_interval(interval_type prev) {
 // This is the state change hook for this node.
 void time_node::set_state(time_state_type state, qtime_type timestamp, time_node *oproot) {
 	if(m_state->ident() == state) return;
+#if 1
+	// Stopgap bug fix by Jack: while seeking to a destination node,
+	// that node itself may go from active to postactive to active again, without a
+	// reset in between. It may still be in fill mode, though, so we should do
+	// part of the reset work.
+	if (m_state->ident() == ts_postactive && state == ts_active) {
+		/*AM_DBG*/ m_logger->debug("set_state: %s: going from ts_postactive straight to ts_active",
+			m_node->get_sig().c_str());
+		remove(timestamp);
+	}
+#endif
 	m_state->exit(timestamp, oproot);
 	m_state = m_time_states[state];
 	m_state->enter(timestamp);
