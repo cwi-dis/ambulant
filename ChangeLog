@@ -1,3 +1,23 @@
+2008-08-15 17:53  jackjansen
+
+	* - Switched to new version of Xerces (2.8.0) - Switched to
+	  building without "treat wchar_t as builtin"
+
+	  These two make Amis integration work again.
+
+2008-08-15 13:23  jackjansen
+
+	* Workaround for yet another problem in hyperjumping: if you jump
+	  to a child of a <par>, what may happen is that that child goes
+	  from ts_active (got there while fastforwarding) to ts_postactive
+	  (fastforwarding complete) to ts_active (start playback). This may
+	  re-use the renderer, if the node had fill=freeze. Most renderers
+	  seem not to care, but the html renderer got very upset. Applied a
+	  workaround by detecting this transition sequence and calling
+	  remove() before going to ts_active again.
+
+	  Reported by Marisa.
+
 2008-08-14 12:27  jackjansen
 
 	* More bits of information.
