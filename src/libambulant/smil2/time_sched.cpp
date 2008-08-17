@@ -128,6 +128,12 @@ void scheduler::goto_next(time_node *tn) {
 		else if(parent->is_excl()) activate_excl_child(parent, child);
 		else activate_media_child(parent, child);
 		if(child == tnpath.back()) break;
+		if(!child->is_active()) {
+			// This can happen if the current child has dynamically evaluated
+			// test attributes that cause it to be skipped.
+			lib::logger::get_logger()->trace("goto_next: %s not active, starting after it",  child->get_sig().c_str());
+			break;
+		}
 	}
 	for(it = tnpath.begin(); it != tnpath.end();it++)
 		(*it)->set_hyperjump_mode(false);
