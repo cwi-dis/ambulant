@@ -1,3 +1,12 @@
+2008-08-18 00:12  jackjansen
+
+	* If you jump to a node that has an ancestor that is disabled due
+	  to a dynamic system test (or smil state test) this would result
+	  in an assertion failure. We now continue playback after that
+	  node, with a message in the log file.
+
+	  Fixes a problem Amis ran in to.
+
 2008-08-15 17:53  jackjansen
 
 	* - Switched to new version of Xerces (2.8.0) - Switched to
