@@ -115,8 +115,8 @@ Only streaming QuickTime or MP4 from the Quicktime Streaming Server/Darwin Strea
 work when using the Ambulant ffmpeg renderer.
 """)
 NOTE_QT_SERVER=FootNote("""
-Only streaming QuickTime or MP4 from the Quicktime Streaming Server/Darwin Streaming Server is known to
-work when using the Ambulant Quicktime renderer.
+Only streaming QuickTime or MP4 with H263/H264 video and AAC audio from the Quicktime Streaming 
+Server/Darwin Streaming Server is known to work when using the Ambulant Quicktime renderer.
 """)
 BUG_QT_RTSP_SIZE=FootNote("""
 Quicktime RTSP video playback happens with size 160x120, for reasons unknown.
@@ -124,13 +124,19 @@ Quicktime RTSP video playback happens with size 160x120, for reasons unknown.
 BUG_FFMPEG_RTSP_H264_REORDER=FootNote("""
 RTSP playback of H264 with ffmpeg and Live on Windows is bad: frames appear to be reordered.
 """, reporter="Jack", date="20080814")
+BUG_FFMPEG_RTSP_MP4_SLOW=FootNote("""
+RTSP playback of MPEG-4 with AAC audio with ffmpeg and Live on Mac plays back the audio an octave
+lower than wanted, and in mono.
+""", reporter="Jack", date="20080814")
 E(os=OneOf(WIN, WINCE), renderer=DX, proto=RTSP, supported=NO, supported_notes=NOTE_DX_RTSP)
 E(os=MAC, renderer=QT, proto=RTSP, format=VIDEO_MPEG4, supported=YES, supported_notes=(NOTE_QT_SERVER, BUG_QT_RTSP_SIZE))
 E(os=MAC, renderer=QT, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_notes=(NOTE_QT_SERVER, BUG_QT_RTSP_SIZE))
-E(os=MAC, renderer=QT, proto=RTSP, format=VIDEO_QUICKTIME, supported=YES, supported_notes=(NOTE_QT_SERVER, BUG_QT_RTSP_SIZE))
+E(os=MAC, renderer=QT, proto=RTSP, format=VIDEO_QUICKTIME, supported=PARTIAL, supported_notes=(NOTE_QT_SERVER, BUG_QT_RTSP_SIZE))
 E(os=MAC, renderer=QT, proto=RTSP, supported=NO, supported_notes=NOTE_QT_SERVER)
 E(renderer=FFMPEG, proto=RTSP, format=AUDIO_MP3, supported=YES, supported_notes=NOTE_FFMPEG_RTSP_MP3)
+E(os=MAC, renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4, BUG_FFMPEG_RTSP_MP4_SLOW))
 E(renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4))
+E(os=MAC, renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4, BUG_FFMPEG_RTSP_MP4_SLOW))
 E(renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4))
 E(os=WIN, renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4, BUG_FFMPEG_RTSP_H264_REORDER))
 E(renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4))
@@ -143,7 +149,7 @@ with some formats, such as MPEG-1, MPEG-2 and WM9.
 """, reporter="Jack", date="20080810", bug="2046564")
 E(renderer=FFMPEG, format=VIDEO_MPEG2, supported=YES, supported_notes=BUG_FFMPEG_SYNC)
 E(renderer=FFMPEG, format=VIDEO_MPEG, supported=YES, supported_notes=BUG_FFMPEG_SYNC)
-E(renderer=FFMPEG, format=VIDEO_WM9, supported=YES, supported_notes=BUG_FFMPEG_SYNC)
+E(renderer=FFMPEG, format=VIDEO_WM9, supported=NO)
 
 NOTE_AMR = FootNote("""
 AMR audio is only supported on Linux with a custom-built non-distributable ffmpeg.
