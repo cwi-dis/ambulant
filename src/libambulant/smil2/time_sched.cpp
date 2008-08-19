@@ -92,11 +92,11 @@ void scheduler::activate_node(time_node *tn) {
 		if(next == infinity && !tn->is_active()) {
 			// This is a problem: this node is apparently blocked waiting for something
 			// with an infinite duration. Try again (which won't help, except debugging).
-			/*AM_DBG*/ lib::logger::get_logger()->debug("scheduler:::activate_node:(%s %s) waiting for ever, killing blockers", tn->get_sig().c_str(), tn->get_state()->name());
+			AM_DBG lib::logger::get_logger()->debug("scheduler:::activate_node:(%s %s) waiting for ever, killing blockers", tn->get_sig().c_str(), tn->get_state()->name());
 			time_traits::qtime_type timestamp(m_root, m_timer->elapsed());
 			tn->kill_blockers(timestamp, m_root);
 			if (++count > 10) {
-				/*AM_DBG*/ lib::logger::get_logger()->debug("scheduler:::activate_node: giving up on %s", tn->get_sig().c_str());
+				AM_DBG lib::logger::get_logger()->debug("scheduler:::activate_node: giving up on %s", tn->get_sig().c_str());
 				break;
 			}
 //			next = _exec(next);
@@ -221,7 +221,7 @@ void scheduler::activate_seq_child(time_node *parent, time_node *child) {
 void scheduler::activate_par_child(time_node *parent, time_node *child) {
 	activate_node(child);
 	if (!parent->is_active()) {
-		/*AM_DBG*/ lib::logger::get_logger()->debug("activate_par_child: parent of %s no longer active?", child->get_sig().c_str());
+		AM_DBG lib::logger::get_logger()->debug("activate_par_child: parent of %s no longer active?", child->get_sig().c_str());
 	}
 }
 

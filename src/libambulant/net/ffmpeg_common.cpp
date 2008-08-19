@@ -356,6 +356,10 @@ ffmpeg_demux::run()
 	int pkt_nr;
 	int streamnr = video_stream_nr();
 	timestamp_t pts = 0;
+#if 1
+	timestamp_t initial_audio_pts = 0;
+	bool initial_audio_pts_set = false;
+#endif
 	pkt_nr = 0;
 	assert(m_con);
 	
@@ -423,7 +427,16 @@ ffmpeg_demux::run()
 			while ( ! accepted && sink && !exit_requested()) { 
 				sink = m_sinks[pkt->stream_index];
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.push_data(%lld, 0x%x, %d, %d) pts=%lld", pkt->stream_index, pkt->pts, pkt->data, pkt->size, pkt->duration, pts);
-				
+#if 1
+				// We seem to be getting values with a non-zero epoch sometimes (?)
+				// Remember initial audio pts, and resync everything to that.
+				// Fixes bug #2046564.
+				if (!initial_audio_pts_set && pkt->stream_index == audio_stream_nr()) {
+					initial_audio_pts = pts;
+					initial_audio_pts_set = true;
+				}
+				pts -= initial_audio_pts;
+#endif
 				m_lock.leave();
 				accepted = sink->push_data(pts, pkt->data, pkt->size);
 				if ( ! accepted) {

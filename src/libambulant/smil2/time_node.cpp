@@ -442,7 +442,7 @@ void time_node::set_state(time_state_type state, qtime_type timestamp, time_node
 	// reset in between. It may still be in fill mode, though, so we should do
 	// part of the reset work.
 	if (m_state->ident() == ts_postactive && state == ts_active) {
-		/*AM_DBG*/ m_logger->debug("set_state: %s: going from ts_postactive straight to ts_active",
+		AM_DBG m_logger->debug("set_state: %s: going from ts_postactive straight to ts_active",
 			m_node->get_sig().c_str());
 		remove(timestamp);
 	}

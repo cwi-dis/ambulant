@@ -394,7 +394,7 @@ ambulant::net::rtsp_demux::_init_subsessions(rtsp_context_t *context)
 		bool prefer_tcp = common::preferences::get_preferences()->m_prefer_rtsp_tcp;
 		bool ok;
 		if (prefer_tcp) {
-			/*AM_DBG*/ lib::logger::get_logger()->debug("rtsp: using TCP as transport stream");
+			AM_DBG lib::logger::get_logger()->debug("rtsp: using TCP as transport stream");
 			ok = context->rtsp_client->setupMediaSubsession(*subsession, false, true);
 		} else {
 			ok = context->rtsp_client->setupMediaSubsession(*subsession, false, false);

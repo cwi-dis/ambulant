@@ -343,6 +343,9 @@ gui::sdl::sdl_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
 		if (rv) assert(*ptr);
 		if (rv > bytes_wanted)
 			rv = bytes_wanted;
+		if (rv) {
+			AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::get_data: time=%d, returning %d bytes", m_event_processor->get_timer()->elapsed(), rv);
+		}
 		// Also set volume(s)
 		m_volcount = 0;
 		if (m_dest) {
