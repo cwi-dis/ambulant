@@ -408,7 +408,7 @@ ffmpeg_decoder_datasource::data_avail()
 					///// in the case of using testOnDemandRTSPServer as the RTSP server) bytes data
 					///// at one time. This idea is borrowed from VLC, according to:
 					///// vlc-0.8.6c/module/codec/ffmpeg/audio.c:L253-L254.
-
+					AM_DBG lib::logger::get_logger()->debug("avocodec_decode_audio: converted %d of %d bytes to %d", cursz, decoded, outsize);
 					while (decoded > 0 && decoded < cursz) {
 						inbuf += decoded;
 						cursz -= decoded;
@@ -416,6 +416,7 @@ ffmpeg_decoder_datasource::data_avail()
 						outsize = AVCODEC_MAX_AUDIO_FRAME_SIZE;
 						outbuf = (uint8_t*) m_buffer.get_write_ptr(outsize);
 						decoded = avcodec_decode_audio2(m_con, (short*) outbuf, &outsize, inbuf, cursz);
+						AM_DBG lib::logger::get_logger()->debug("avocodec_decode_audio: converted additional %d of %d bytes to %d", cursz, decoded, outsize);
 					}
 
 					// If this loop ends with decoded == 0 and cursz > 0, it means that not all bytes 

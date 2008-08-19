@@ -193,9 +193,12 @@ demux_audio_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, int sz)
 		if (_buffer_full()) {
 			rv = false;
 		} else {
-			void* data = malloc(sz);
+			char* data = (char*)malloc(sz+FF_INPUT_BUFFER_PADDING_SIZE);
 			assert(data);
 			memcpy(data, inbuf, sz);
+#if FF_INPUT_BUFFER_PADDING_SIZE
+			memset(data+sz, 0, FF_INPUT_BUFFER_PADDING_SIZE);
+#endif
 			ts_packet_t tsp(pts,data,sz);
 			m_queue.push(tsp);
 		}

@@ -144,12 +144,11 @@ E(renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_
 #
 # ffmpeg support is pretty much platform-independent, but start with some 
 # platform dependent things.
-BUG_FFMPEG_SYNC = FootNote("""Ambulant ffmpeg playback has serious audio-video synchronisation problems
-with some formats, such as MPEG-1, MPEG-2 and WM9.
-""", reporter="Jack", date="20080810", bug="2046564")
-E(renderer=FFMPEG, format=VIDEO_MPEG2, supported=YES, supported_notes=BUG_FFMPEG_SYNC)
-E(renderer=FFMPEG, format=VIDEO_MPEG, supported=YES, supported_notes=BUG_FFMPEG_SYNC)
-E(renderer=FFMPEG, format=VIDEO_WM9, supported=NO)
+E(renderer=FFMPEG, format=VIDEO_MPEG2, supported=YES)
+E(renderer=FFMPEG, format=VIDEO_MPEG, supported=YES)
+NOTE_FFMPEG_WM9 = FootNote("""Some WM9 videos play back somewhat, with some versions
+of ffmpeg. Need to investigate.""")
+E(renderer=FFMPEG, format=VIDEO_WM9, supported=UNKNOWN, supported_notes=NOTE_FFMPEG_WM9)
 
 NOTE_AMR = FootNote("""
 AMR audio is only supported on Linux with a custom-built non-distributable ffmpeg.

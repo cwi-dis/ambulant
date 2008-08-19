@@ -435,7 +435,7 @@ ffmpeg_demux::run()
 					initial_audio_pts = pts;
 					initial_audio_pts_set = true;
 				}
-				pts -= initial_audio_pts;
+				if (pts != AV_NOPTS_VALUE) pts -= initial_audio_pts;
 #endif
 				m_lock.leave();
 				accepted = sink->push_data(pts, pkt->data, pkt->size);
