@@ -1,3 +1,25 @@
+2008-08-20 00:11  jackjansen
+
+	* ffmpeg audio input buffers also need padding, added.
+
+	  Unfortunately this doesn't solve the ogg/vorbis playback problem
+	  yet.
+
+2008-08-19 23:14  jackjansen
+
+	* Fix (workaround?) for bug 2046564: ffmpeg a/v out of sync.
+
+	  It turns out ffmpeg can return timestamps that are not zero-based
+	  (I've seen 0.5 seconds). Audio timestamps used to be ignored, but
+	  now we use the very first audio timestamp seen to modify all
+	  subsequent audio and video timestamps.
+
+	  This seems to fix the issue.
+
+2008-08-19 22:40  jackjansen
+
+	* Some more details.
+
 2008-08-18 11:18  jackjansen
 
 	* Replaced an assert with a log print. This solves a problem with
