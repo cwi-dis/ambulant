@@ -318,8 +318,10 @@ ffmpeg_demux::read_ahead(timestamp_t time)
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::read_ahead(%d), m_clip_begin was %d", time, m_clip_begin);
-	m_clip_begin = time; // XXXX Or m_seek_time??
-	m_seektime_changed = true;
+    if (m_clip_begin != time) {
+        m_clip_begin = time; // XXXX Or m_seek_time??
+        m_seektime_changed = true;
+    }
 	m_lock.leave();
 }
 
@@ -327,8 +329,10 @@ void
 ffmpeg_demux::seek(timestamp_t time)
 {
 	m_lock.enter();
-	m_seektime = time;
-	m_seektime_changed = true;
+    if (m_seektime != time) {
+        m_seektime = time;
+        m_seektime_changed = true;
+    }
 	m_lock.leave();
 }
 
@@ -354,7 +358,8 @@ ffmpeg_demux::run()
 {
 	m_lock.enter();
 	int pkt_nr;
-	int streamnr = video_stream_nr();
+	int video_streamnr = video_stream_nr();
+    int audio_streamnr = audio_stream_nr();
 	timestamp_t pts = 0;
 #if 1
 	timestamp_t initial_audio_pts = 0;
@@ -372,15 +377,22 @@ ffmpeg_demux::run()
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run:  started");
 		if (m_seektime_changed) {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %lld+%lld=%lld", m_clip_begin, m_seektime, m_clip_begin+m_seektime);
-			timestamp_t seektime;
+			int64_t seektime = m_clip_begin+m_seektime;
+            if (m_con->start_time != AV_NOPTS_VALUE) {
+                seektime += m_con->start_time;
+                AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: add another %lld to seek", m_con->start_time);
+            }
 			// If we have a video stream we should rescale our time offset to the timescale of the video stream.
-			// Theoretically we may have to do something similar for audio, but we seem to get away with not doing anything.
-			if (streamnr >= 0) {
-				seektime = av_rescale_q(m_clip_begin+m_seektime, AMBULANT_TIMEBASE, m_con->streams[streamnr]->time_base);
-			} else
-				seektime = m_clip_begin+m_seektime;
-			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %lld scaled to mediatimebase", seektime);
-			int seekresult = av_seek_frame(m_con, streamnr, seektime, AVSEEK_FLAG_BACKWARD);
+			int seek_streamnr = -1;
+			if (video_streamnr >= 0) {
+				seektime = av_rescale_q(seektime, AMBULANT_TIMEBASE, m_con->streams[video_streamnr]->time_base);
+                seek_streamnr = video_streamnr;
+            } else if (audio_streamnr >= 0) {
+				seektime = av_rescale_q(seektime, AMBULANT_TIMEBASE, m_con->streams[audio_streamnr]->time_base);
+                seek_streamnr = audio_streamnr;
+			}
+            AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %lld scaled to mediatimebase", seektime);
+			int seekresult = av_seek_frame(m_con, seek_streamnr, seektime, AVSEEK_FLAG_BACKWARD);
 			if (seekresult < 0) {
 				lib::logger::get_logger()->debug("ffmpeg_demux: av_seek_frame() returned %d", seekresult);
 			}
@@ -431,7 +443,7 @@ ffmpeg_demux::run()
 				// We seem to be getting values with a non-zero epoch sometimes (?)
 				// Remember initial audio pts, and resync everything to that.
 				// Fixes bug #2046564.
-				if (!initial_audio_pts_set && pkt->stream_index == audio_stream_nr()) {
+				if (!initial_audio_pts_set && pkt->stream_index == audio_streamnr) {
 					initial_audio_pts = pts;
 					initial_audio_pts_set = true;
 				}

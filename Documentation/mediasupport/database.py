@@ -146,9 +146,10 @@ E(renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_
 # platform dependent things.
 E(renderer=FFMPEG, format=VIDEO_MPEG2, supported=YES)
 E(renderer=FFMPEG, format=VIDEO_MPEG, supported=YES)
-NOTE_FFMPEG_WM9 = FootNote("""Some WM9 videos play back somewhat, with some versions
-of ffmpeg. Need to investigate.""")
-E(renderer=FFMPEG, format=VIDEO_WM9, supported=UNKNOWN, supported_notes=NOTE_FFMPEG_WM9)
+BUG_FFMPEG_WM9 = FootNote("""FFmpeg playback of WM9 content has audio stutter and video frame
+misordering. Ffplay has no such problems.""",
+reporter="Jack", date="20080820")
+E(renderer=FFMPEG, format=VIDEO_WM9, supported=YES, supported_notes=NOTE_FFMPEG_WM9)
 
 NOTE_AMR = FootNote("""
 AMR audio is only supported on Linux with a custom-built non-distributable ffmpeg.
@@ -165,15 +166,10 @@ E(          renderer=FFMPEG, format=VIDEO_3GPP, supported=NO, supported_notes=NO
 E(renderer=FFMPEG, format=AUDIO_MP3, supported=YES)
 E(renderer=FFMPEG, format=AUDIO_WAV, supported=YES)
 E(renderer=FFMPEG, format=AUDIO_AAC, supported=YES)
-BUG_WIN_VORBIS = FootNote("""On Windows, it seems the first second or so of Ogg/Vorbis files is
-skipped. Need to investigate.""",
-reporter="Jack", date="20080814", bug="2051134")
-E(renderer=FFMPEG, format=AUDIO_VORBIS, supported=YES, supported_notes=BUG_WIN_VORBIS)
-E(renderer=FFMPEG, format=AUDIO_VORBIS, supported=UNKNOWN)
+E(renderer=FFMPEG, format=AUDIO_VORBIS, supported=YES)
 BUG_WIN_FFMPEG_AVI = FootNote("""On Windows, AVI playback with ffmpeg has audio breakups and video hangs.""",
 reporter="Jack", date="20080814")
 E(renderer=FFMPEG, format=VIDEO_AVI, supported=YES, supported_notes=BUG_WIN_FFMPEG_AVI)
-E(renderer=FFMPEG, format=VIDEO_AVI, supported=UNKNOWN)
 
 # Standard Windows DirectX stuff that allways works
 E(os=WIN, renderer=DX, format=AUDIO_MP3, supported=YES)
