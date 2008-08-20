@@ -48,7 +48,7 @@
 #include "ambulant/common/plugin_engine.h"
 #include "ambulant/common/preferences.h"
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif

@@ -132,10 +132,7 @@ install-firefox-plugin: nsIAmbulantPlugin.xpt .libs/$(FIREFOX_PLUGIN)
 	$(INSTALL_PROGRAM) .libs/$(FIREFOX_PLUGIN) $(FIREFOX_INSTALLED_PLUGINS)/nsIAmbulantPlugin.so
 	$(INSTALL_DATA) nsIAmbulantPlugin.xpt $(FIREFOX_INSTALLED_PLUGINS)/nsIAmbulantPlugin.xpt
 # when selinux is enabled, identify the installed shared library 
-	PATH=${PATH}:/sbin:/usr/sbin ; \
-	which chcon selinuxenable 2>1 1>/dev/null && selinuxenable ; \
-	if [ $? == 0 ];then chcon -t texrel_shlib_t "$(DESTDIR)$(libdir)"/nsIAmbulantPlugin.so; fi
-
+	./selinux_patch.sh $(FIREFOX_INSTALLED_PLUGINS)/nsIAmbulantPlugin.so
 	
 clean-firefox-plugin:
 	rm -fr $(FIREFOX_INSTALLED_PLUGINS)/nsIAmbulantPlugin.so
