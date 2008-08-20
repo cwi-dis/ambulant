@@ -216,6 +216,27 @@ class smil_player : public common::player, /* public common::player_feedback,*/ 
 	std::set<int> *m_focussed_nodes;
 	std::set<int> *m_new_focussed_nodes;
 	lib::critical_section m_lock;
+	/* Calling time_node members must be done while locking
+	 * the scheduler to avoid race conditions.
+	 * Therefore callbacks are needed to avoid deadlock. */
+	typedef std::pair<time_node*, q_smil_time> async_arg;
+	typedef lib::scalar_arg_callback_event<smil_player, async_arg> async_cb;
+	typedef std::pair<time_node*, std::pair<q_smil_time, int> > async_int_arg;
+	typedef lib::scalar_arg_callback_event<smil_player, async_int_arg> async_int_cb;
+	typedef std::pair<time_node*, std::pair<q_smil_time, std::string> > async_string_arg;
+	typedef lib::scalar_arg_callback_event<smil_player, async_string_arg> async_string_cb;
+	void clicked_async(async_arg);
+	void mouse_outofbounds_async(async_arg aa);
+	void focus_outofbounds_async(async_arg aa);
+	void mouse_inbounds_async(async_arg aa);
+	void focus_inbounds_async(async_arg aa);
+	void after_mousemove_async(async_arg);
+	void started_async(async_arg);
+	void stopped_async(async_arg);
+	void transitioned_async(async_arg);
+	void marker_seen_async(async_string_arg);
+	void on_char_async(async_int_arg);
+	void on_state_change_async(async_string_arg);
 };
 
 } // namespace smil2

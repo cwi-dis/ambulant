@@ -435,57 +435,57 @@
    fun:_ZN8ambulant5smil29time_node18raise_update_eventENS0_11q_smil_timeE
    obj:*
 }
-{
-   Ambulant-TBD-3
-   Helgrind:Race
-   fun:_ZN8ambulant5smil29time_node19update_interval_endENS0_11q_smil_timeENS0_9smil_timeIlEE
-   fun:_ZN8ambulant5smil212active_state11sync_updateENS0_11q_smil_timeE
-   fun:_ZN8ambulant5smil29time_node11sync_updateENS0_11q_smil_timeE
-   fun:_ZN8ambulant5smil29time_node4execENS0_11q_smil_timeE
-   fun:_ZN8ambulant5smil29scheduler5_execEm
-   fun:_ZN8ambulant5smil29scheduler5_execEv
-   fun:_ZN8ambulant5smil29scheduler4execEv
-   fun:_ZN8ambulant5smil211smil_player7_updateEv
-   fun:_ZN8ambulant5smil211smil_player5startEv
-   fun:_ZN8ambulant6common10gui_player4playEv
-   fun:_ZN7gtk_gui7do_playEv
-   fun:main
-}
-{
-   Ambulant-TBD-4
-   Helgrind:Race
-   fun:_ZN8ambulant5smil29time_node15played_intervalENS0_11q_smil_timeE
-   fun:_ZN8ambulant5smil212active_state4exitENS0_11q_smil_timeEPNS0_9time_nodeE
-   fun:_ZN8ambulant5smil29time_node9set_stateENS0_15time_state_typeENS0_11q_smil_timeEPS1_
-   fun:_ZN8ambulant5smil29time_node12set_state_exENS0_15time_state_typeENS0_11q_smil_timeE
-   fun:_ZN8ambulant5smil29time_node4execENS0_11q_smil_timeE
-   fun:_ZN8ambulant5smil29scheduler5_execEm
-   obj:*
-}
-{
-   Ambulant-TBD-5
-   Helgrind:Race
-   fun:_ZNK8ambulant5smil29smil_timeIlEneERKS2_
-   fun:_ZN8ambulant5smil29time_node16get_implicit_durEv
-   fun:_ZN8ambulant5smil29time_calc8calc_durEv
-   fun:_ZN8ambulant5smil29time_calc20calc_intermediate_adEv
-   fun:_ZN8ambulant5smil29time_calc19calc_preliminary_adENS0_9smil_timeIlEE
-   fun:_ZN8ambulant5smil29time_calc7calc_adENS0_9smil_timeIlEE
-   fun:_ZN8ambulant5smil29time_calc8calc_endENS0_9smil_timeIlEE
-   fun:_ZN8ambulant5smil29time_calc17calc_interval_endERNS0_13smil_intervalIlEERSt8multisetINS0_9smil_timeIlEESt4lessIS7_ESaIS7_EE
-   fun:_ZN8ambulant5smil29time_node25calc_current_interval_endEv
-   fun:_ZN8ambulant5smil212active_state11sync_updateENS0_11q_smil_timeE
-   fun:_ZN8ambulant5smil29time_node11sync_updateENS0_11q_smil_timeE
-   fun:_ZN8ambulant5smil29time_node4execENS0_11q_smil_timeE
-   fun:_ZN8ambulant5smil29scheduler5_execEm
-   fun:_ZN8ambulant5smil29scheduler5_execEv
-   fun:_ZN8ambulant5smil29scheduler4execEv
-   fun:_ZN8ambulant5smil211smil_player7_updateEv
-   fun:_ZN8ambulant5smil211smil_player5startEv
-   fun:_ZN8ambulant6common10gui_player4playEv
-   fun:_ZN7gtk_gui7do_playEv
-   fun:main
-}
+#{
+#   Ambulant-TBD-3
+#   Helgrind:Race
+#   fun:_ZN8ambulant5smil29time_node19update_interval_endENS0_11q_smil_timeENS0_9smil_timeIlEE
+#   fun:_ZN8ambulant5smil212active_state11sync_updateENS0_11q_smil_timeE
+#   fun:_ZN8ambulant5smil29time_node11sync_updateENS0_11q_smil_timeE
+#   fun:_ZN8ambulant5smil29time_node4execENS0_11q_smil_timeE
+#   fun:_ZN8ambulant5smil29scheduler5_execEm
+#   fun:_ZN8ambulant5smil29scheduler5_execEv
+#   fun:_ZN8ambulant5smil29scheduler4execEv
+#   fun:_ZN8ambulant5smil211smil_player7_updateEv
+#   fun:_ZN8ambulant5smil211smil_player5startEv
+#   fun:_ZN8ambulant6common10gui_player4playEv
+#   fun:_ZN7gtk_gui7do_playEv
+#   fun:main
+#}
+#{
+#   Ambulant-TBD-4
+#   Helgrind:Race
+#   fun:_ZN8ambulant5smil29time_node15played_intervalENS0_11q_smil_timeE
+#   fun:_ZN8ambulant5smil212active_state4exitENS0_11q_smil_timeEPNS0_9time_nodeE
+#   fun:_ZN8ambulant5smil29time_node9set_stateENS0_15time_state_typeENS0_11q_smil_timeEPS1_
+#   fun:_ZN8ambulant5smil29time_node12set_state_exENS0_15time_state_typeENS0_11q_smil_timeE
+#   fun:_ZN8ambulant5smil29time_node4execENS0_11q_smil_timeE
+#   fun:_ZN8ambulant5smil29scheduler5_execEm
+#   obj:*
+#}
+#{
+#   Ambulant-TBD-5
+#   Helgrind:Race
+#   fun:_ZNK8ambulant5smil29smil_timeIlEneERKS2_
+#   fun:_ZN8ambulant5smil29time_node16get_implicit_durEv
+#   fun:_ZN8ambulant5smil29time_calc8calc_durEv
+#   fun:_ZN8ambulant5smil29time_calc20calc_intermediate_adEv
+#   fun:_ZN8ambulant5smil29time_calc19calc_preliminary_adENS0_9smil_timeIlEE
+#   fun:_ZN8ambulant5smil29time_calc7calc_adENS0_9smil_timeIlEE
+#   fun:_ZN8ambulant5smil29time_calc8calc_endENS0_9smil_timeIlEE
+#   fun:_ZN8ambulant5smil29time_calc17calc_interval_endERNS0_13smil_intervalIlEERSt8multisetINS0_9smil_timeIlEESt4lessIS7_ESaIS7_EE
+#   fun:_ZN8ambulant5smil29time_node25calc_current_interval_endEv
+#   fun:_ZN8ambulant5smil212active_state11sync_updateENS0_11q_smil_timeE
+#   fun:_ZN8ambulant5smil29time_node11sync_updateENS0_11q_smil_timeE
+#   fun:_ZN8ambulant5smil29time_node4execENS0_11q_smil_timeE
+#   fun:_ZN8ambulant5smil29scheduler5_execEm
+#   fun:_ZN8ambulant5smil29scheduler5_execEv
+#   fun:_ZN8ambulant5smil29scheduler4execEv
+#   fun:_ZN8ambulant5smil211smil_player7_updateEv
+#   fun:_ZN8ambulant5smil211smil_player5startEv
+#   fun:_ZN8ambulant6common10gui_player4playEv
+#   fun:_ZN7gtk_gui7do_playEv
+#   fun:main
+#}
 {
    Ambulant-TBD-6
    Helgrind:Race
@@ -493,18 +493,18 @@
    fun:_ZN8ambulant5smil29scheduler15_reset_documentEv
    obj:*
 }
-{
-   Ambulant-TBD-7
-   Helgrind:Race
-   fun:_ZN8ambulant5smil29time_node15raise_end_eventENS0_11q_smil_timeEPS1_
-   fun:_ZN8ambulant5smil212active_state4exitENS0_11q_smil_timeEPNS0_9time_nodeE
-   fun:_ZN8ambulant5smil29time_node9set_stateENS0_15time_state_typeENS0_11q_smil_timeEPS1_
-   fun:_ZN8ambulant5smil29time_node12set_state_exENS0_15time_state_typeENS0_11q_smil_timeE
-   fun:_ZN8ambulant5smil29time_node4execENS0_11q_smil_timeE
-   fun:_ZN8ambulant5smil29scheduler5_execEm
-   obj:*
-}
- 
+#{
+#   Ambulant-TBD-7
+#   Helgrind:Race
+#   fun:_ZN8ambulant5smil29time_node15raise_end_eventENS0_11q_smil_timeEPS1_
+#   fun:_ZN8ambulant5smil212active_state4exitENS0_11q_smil_timeEPNS0_9time_nodeE
+#   fun:_ZN8ambulant5smil29time_node9set_stateENS0_15time_state_typeENS0_11q_smil_timeEPS1_
+#   fun:_ZN8ambulant5smil29time_node12set_state_exENS0_15time_state_typeENS0_11q_smil_timeE
+#   fun:_ZN8ambulant5smil29time_node4execENS0_11q_smil_timeE
+#   fun:_ZN8ambulant5smil29scheduler5_execEm
+#   obj:*
+#}
+# 
 {
    Ambulant-TBD-8
    Helgrind:Race
@@ -514,15 +514,15 @@
    fun:pango_log2vis_get_embedding_levels
    obj:*
 }
-{
-   Ambulant-TBD-9
-   Helgrind:Race
-   fun:_ZN8ambulant5smil29time_node8end_condENS0_11q_smil_timeE
-   fun:_ZN8ambulant5smil29time_node4execENS0_11q_smil_timeE
-   fun:_ZN8ambulant5smil29scheduler5_execEm
-   obj:*
-}
-
+#{
+#   Ambulant-TBD-9
+#   Helgrind:Race
+#   fun:_ZN8ambulant5smil29time_node8end_condENS0_11q_smil_timeE
+#   fun:_ZN8ambulant5smil29time_node4execENS0_11q_smil_timeE
+#   fun:_ZN8ambulant5smil29scheduler5_execEm
+#   obj:*
+#}
+#
 {
    Ambulant-TBD-12
    Helgrind:Race
