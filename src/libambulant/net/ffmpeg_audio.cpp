@@ -837,6 +837,14 @@ ffmpeg_resample_datasource::data_avail()
 		assert(m_out_fmt.bits == 16);
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource: initializing context: inrate, ch=%d, %d, outrate, ch=%d, %d", m_in_fmt.samplerate,  m_in_fmt.channels, m_out_fmt.samplerate,  m_out_fmt.channels);
 		m_resample_context = audio_resample_init(m_out_fmt.channels, m_in_fmt.channels, m_out_fmt.samplerate,m_in_fmt.samplerate);
+		if (!m_resample_context) {
+			lib::logger::get_logger()->error(gettext("Audio cannot be converted to 44Khz stereo"));
+			//m_src->stop();
+			///m_src->release();
+			//m_src = NULL;
+			//m_lock.leave();
+			//return;
+		}
 		m_context_set = true;
 	}
 	if(m_src) {
@@ -926,7 +934,7 @@ ffmpeg_resample_datasource::data_avail()
 		// on the floor.
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail(): No resample context, flushing data");
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail(): m_src->readdone(%d) called m_src=0x%x, this=0x%x", sz, (void*) m_src, (void*) this);
-		m_src->readdone(sz);
+		//m_src->readdone(sz);
 	}
 	m_lock.leave();
 }
@@ -936,6 +944,10 @@ void
 ffmpeg_resample_datasource::readdone(int len)
 {
 	m_lock.enter();
+	if (m_src == NULL) {
+		m_lock.leave();
+		return;
+	}
 	m_buffer.readdone(len);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::readdone: done with %d bytes", len);
 	if (!m_src->end_of_file() && m_event_processor && !m_buffer.buffer_full()) {
