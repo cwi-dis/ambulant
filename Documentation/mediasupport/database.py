@@ -146,10 +146,10 @@ E(renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_
 # platform dependent things.
 E(renderer=FFMPEG, format=VIDEO_MPEG2, supported=YES)
 E(renderer=FFMPEG, format=VIDEO_MPEG, supported=YES)
-BUG_FFMPEG_WM9 = FootNote("""FFmpeg playback of WM9 content has audio stutter and video frame
-misordering. Ffplay has no such problems.""",
+BUG_FFMPEG_WM9 = FootNote("""FFmpeg (rev 14863, 20080820) playback of WM9 content has audio stutter. Ffplay has the same
+problem, so the bug is probably in ffmpeg.""",
 reporter="Jack", date="20080820")
-E(renderer=FFMPEG, format=VIDEO_WM9, supported=YES, supported_notes=NOTE_FFMPEG_WM9)
+E(renderer=FFMPEG, format=VIDEO_WM9, supported=YES, supported_notes=BUG_FFMPEG_WM9)
 
 NOTE_AMR = FootNote("""
 AMR audio is only supported on Linux with a custom-built non-distributable ffmpeg.
