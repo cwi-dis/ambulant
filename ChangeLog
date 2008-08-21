@@ -1,3 +1,26 @@
+2008-08-20 16:35  keesblom
+
+	* Added 'selinux_patch.sh' set the appropriate linux security
+	  context for the shared library to be used by firefox. Turned off
+	  some debugging.
+
+2008-08-20 16:32  jackjansen
+
+	* Attempting to play back Ogg/Theora/Vorbis with 5.1 audio resulted
+	  in a crash. Fixed.
+
+2008-08-20 15:28  keesblom
+
+	* Got rid of race-conditions in scheduler. To circumvent deadlocks,
+	  some parts of smil_player memeber functions were moved into
+	  callbacks to be executed by the event processor.
+
+2008-08-20 14:22  jackjansen
+
+	* Fix for #2051134, ogg/vorbis skips audio at the beginning.  The
+	  real reason seems to be a bug in ffmpeg (reported there), we now
+	  work around it by not seeking unless we really have to.
+
 2008-08-20 00:11  jackjansen
 
 	* ffmpeg audio input buffers also need padding, added.
