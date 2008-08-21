@@ -483,7 +483,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 		
 		while (sz > 0) {
 			bool drop_this_frame = false;
-			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: decoding picture(s),  %d byteas of data ", sz);
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: decoding picture(s),  %d bytes of data ", sz);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: m_con: 0x%x, gotpic = %d, sz = %d ", m_con, got_pic, sz);
 			// We use skip_frame to make the decoder run faster in case we
 			// are not interested in the data (still seeking forward).

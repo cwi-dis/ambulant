@@ -434,11 +434,6 @@ ffmpeg_demux::run()
 #endif
 				if (pts != AV_NOPTS_VALUE)
 					pts = av_rescale_q(pts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
-			}
-			bool accepted = false;
-			while ( ! accepted && sink && !exit_requested()) { 
-				sink = m_sinks[pkt->stream_index];
-				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.push_data(%lld, 0x%x, %d, %d) pts=%lld", pkt->stream_index, pkt->pts, pkt->data, pkt->size, pkt->duration, pts);
 #if 1
 				// We seem to be getting values with a non-zero epoch sometimes (?)
 				// Remember initial audio pts, and resync everything to that.
@@ -449,6 +444,11 @@ ffmpeg_demux::run()
 				}
 				if (pts != AV_NOPTS_VALUE) pts -= initial_audio_pts;
 #endif
+			}
+			bool accepted = false;
+			while ( ! accepted && sink && !exit_requested()) { 
+				sink = m_sinks[pkt->stream_index];
+				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.push_data(%lld, 0x%x, %d, %d) pts=%lld", pkt->stream_index, pkt->pts, pkt->data, pkt->size, pkt->duration, pts);
 				m_lock.leave();
 				accepted = sink->push_data(pts, pkt->data, pkt->size);
 				if ( ! accepted) {

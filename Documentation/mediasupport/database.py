@@ -122,12 +122,12 @@ BUG_QT_RTSP_SIZE=FootNote("""
 Quicktime RTSP video playback happens with size 160x120, for reasons unknown.
 """, reporter="Jack", date="20080811", bug="2046489")
 BUG_FFMPEG_RTSP_H264_REORDER=FootNote("""
-RTSP playback of H264 with ffmpeg and Live on Windows is bad: frames appear to be reordered.
+RTSP playback of H264 with ffmpeg and Live is bad: frames appear to be reordered.
 """, reporter="Jack", date="20080814")
 BUG_FFMPEG_RTSP_MP4_SLOW=FootNote("""
 RTSP playback of MPEG-4 with AAC audio with ffmpeg and Live on Mac plays back the audio an octave
 lower than wanted, and in mono.
-""", reporter="Jack", date="20080814")
+""", reporter="Jack", date="20080814", bug="2065010")
 E(os=OneOf(WIN, WINCE), renderer=DX, proto=RTSP, supported=NO, supported_notes=NOTE_DX_RTSP)
 E(os=MAC, renderer=QT, proto=RTSP, format=VIDEO_MPEG4, supported=YES, supported_notes=(NOTE_QT_SERVER, BUG_QT_RTSP_SIZE))
 E(os=MAC, renderer=QT, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_notes=(NOTE_QT_SERVER, BUG_QT_RTSP_SIZE))
@@ -138,8 +138,7 @@ E(os=MAC, renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4, supported=YES, suppor
 E(renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4))
 E(os=MAC, renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4, BUG_FFMPEG_RTSP_MP4_SLOW))
 E(renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4))
-E(os=WIN, renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4, BUG_FFMPEG_RTSP_H264_REORDER))
-E(renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4))
+E(renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4, BUG_FFMPEG_RTSP_H264_REORDER))
 
 #
 # ffmpeg support is pretty much platform-independent, but start with some 
@@ -169,7 +168,10 @@ E(renderer=FFMPEG, format=AUDIO_AAC, supported=YES)
 E(renderer=FFMPEG, format=AUDIO_VORBIS, supported=YES)
 BUG_WIN_FFMPEG_AVI = FootNote("""On Windows, AVI playback with ffmpeg has audio breakups and video hangs.""",
 reporter="Jack", date="20080814")
-E(renderer=FFMPEG, format=VIDEO_AVI, supported=YES, supported_notes=BUG_WIN_FFMPEG_AVI)
+BUG_LINUX_FFMPEG_AVI = FootNote("""On Linux, AVI playback with ffmpeg has audio breakups, and video is not synched. 
+Seen only when running under Parallels.""",
+reporter="Jack", date="20080821")
+E(renderer=FFMPEG, format=VIDEO_AVI, supported=YES, supported_notes=(BUG_WIN_FFMPEG_AVI, BUG_LINUX_FFMPEG_AVI))
 
 # Standard Windows DirectX stuff that allways works
 E(os=WIN, renderer=DX, format=AUDIO_MP3, supported=YES)
