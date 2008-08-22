@@ -1,3 +1,12 @@
+2008-08-21 17:06  jackjansen
+
+	* If we don't have the audio format information available when it
+	  is needed, at least print something.
+
+2008-08-21 13:49  jackjansen
+
+	* More details.
+
 2008-08-20 16:35  keesblom
 
 	* Added 'selinux_patch.sh' set the appropriate linux security
