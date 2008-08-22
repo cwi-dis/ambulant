@@ -346,7 +346,7 @@ video_renderer::data_avail()
 	} else {
 		// Everything is fine. Display the frame.
 		AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: display frame (timestamp = %lld)",frame_ts_micros);
-		push_frame(buf, size);
+		_push_frame(buf, size);
 		m_src->frame_processed_keepdata(frame_ts_micros, buf);
 #ifdef DROP_LATE_FRAMES
 		m_prev_frame_dropped = false;

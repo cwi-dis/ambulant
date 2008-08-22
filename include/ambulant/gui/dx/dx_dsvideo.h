@@ -72,12 +72,13 @@ class dx_dsvideo_renderer :
 	
 //	void user_event(const point &where, int what = 0);
 	net::pixel_order pixel_layout();
-    void push_frame(char* frame, int size);
 	void redraw(const rect &dirty, gui_window *window);
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};
 	// XXXJACK: need to copy code from dx_renderer_playable
 	gui::dx::dx_transition *get_transition() { return NULL; }
+  protected:
+	void _push_frame(char* frame, int size);
   private:
     void _init_bitmap();
 	void _init_ddsurf(gui_window *window);
@@ -90,7 +91,6 @@ class dx_dsvideo_renderer :
 #ifdef ENABLE_FAST_DDVIDEO
 	IDirectDrawSurface7 *m_ddsurf7;	// Same, for replacing the underlying storage
 #endif
-	critical_section m_lock;
 };
 
 } // namespace cocoa

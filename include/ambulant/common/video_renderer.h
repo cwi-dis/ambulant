@@ -75,10 +75,6 @@ class video_renderer : public common::renderer_playable {
 	/// Return true if video is playing.
   	bool is_playing() { return m_activated; };  
 	
-	/// Display video data. Subclass providing this method is responsible for
-	/// eventually free()ing frame.
-	virtual void push_frame(char* frame, int size) = 0;
-	
     virtual void redraw(const lib::rect &dirty, common::gui_window *window);
 	
 	void start(double where);
@@ -90,7 +86,12 @@ class video_renderer : public common::renderer_playable {
 	duration get_dur();
 //	void playdone() {};
 	
-		
+  protected:		
+	/// Display video data. Subclass providing this method is responsible for
+	/// eventually free()ing frame. This method is protected because it shares
+    /// the m_lock mutex.
+	virtual void _push_frame(char* frame, int size) = 0;
+	
   protected:
 	lib::size m_size;		///< (width, height) of the video data.
   	net::video_datasource* m_src;	///< video datasource.
@@ -111,6 +112,7 @@ class video_renderer : public common::renderer_playable {
 	long int m_frame_early;
 	long int m_frame_late;
 	long int m_frame_missing;
+  protected:
 	lib::critical_section m_lock;
 };
 

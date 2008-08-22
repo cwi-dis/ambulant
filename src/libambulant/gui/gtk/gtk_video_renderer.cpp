@@ -89,12 +89,10 @@ gtk_video_renderer::pixel_layout()
 }
 
 void 
-gtk_video_renderer::push_frame(char* frame, int size)
+gtk_video_renderer::_push_frame(char* frame, int size)
 {
-
-	m_lock.enter();
 	
-	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.push_frame: frame=0x%x, size=%d, this=0x%x", (void*) frame, size, (void*) this);
+	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer::_push_frame: frame=0x%x, size=%d, this=0x%x", (void*) frame, size, (void*) this);
 	// XXXJACK: don't reallocate if the size is the same!
 	if (m_data)
 		free(m_data);	
@@ -114,7 +112,6 @@ gtk_video_renderer::push_frame(char* frame, int size)
 //	m_dest->need_redraw();	
 //	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.push_frame: need_redraw called");
 
-	m_lock.leave();
 }
 
 

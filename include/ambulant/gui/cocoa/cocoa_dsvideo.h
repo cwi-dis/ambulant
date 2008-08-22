@@ -51,13 +51,13 @@ class cocoa_dsvideo_renderer :
 	~cocoa_dsvideo_renderer();
 
 	net::pixel_order pixel_layout();
-    void push_frame(char* frame, int size);
-	void redraw(const rect &dirty, gui_window *window);
+ 	void redraw(const rect &dirty, gui_window *window);
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};
+  protected:
+	void _push_frame(char* frame, int size);
   private:
 	NSImage *m_image;
-	critical_section m_lock;
 };
 
 } // namespace cocoa

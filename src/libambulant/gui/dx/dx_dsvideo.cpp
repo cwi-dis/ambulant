@@ -130,15 +130,13 @@ dx_dsvideo_renderer::~dx_dsvideo_renderer()
 }
 	
 void
-dx_dsvideo_renderer::push_frame(char* frame, int size)
+dx_dsvideo_renderer::_push_frame(char* frame, int size)
 {
-	m_lock.enter();
 	if (m_frame) free(m_frame);
 	m_frame = frame;
 	m_frame_size = size;
-	AM_DBG lib::logger::get_logger()->debug("dx_dsvideo_renderer::push_frame(0x%x, %d)", frame, size);
+	AM_DBG lib::logger::get_logger()->debug("dx_dsvideo_renderer::_push_frame(0x%x, %d)", frame, size);
 	assert(size == (int)(m_size.w * m_size.h * 4));
-	m_lock.leave();
 }
 
 void

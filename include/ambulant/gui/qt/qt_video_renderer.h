@@ -51,14 +51,14 @@ namespace qt {
 				 common::factories *factory);
 	
 	~qt_video_renderer();
-	void push_frame(char* frame, int size);
 	void redraw_body(const lib::rect &r, common::gui_window* w);
+  protected:
+	void _push_frame(char* frame, int size);
  
  private:
 	QImage *m_image;
  	uchar* m_data;
 	int   m_datasize;
-	lib::critical_section m_lock;
 };
 
 

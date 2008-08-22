@@ -41,10 +41,7 @@ class none_video_renderer : public common::video_renderer {
 	{ }
 
   	~none_video_renderer() {};
-	
-
-	void push_frame(char* frame, int size);
-		
+			
     void redraw(const lib::rect &dirty, common::gui_window *window) {};
 	void wantclicks(bool want) {};
 	void set_intransition(const lib::transition_info *info) {};
@@ -52,6 +49,8 @@ class none_video_renderer : public common::video_renderer {
 
 //	void set_surface(common::surface *dest) {  };
 //	common::surface *get_surface() { return NULL; };
+  protected:
+	void _push_frame(char* frame, int size);
 };
 
 }

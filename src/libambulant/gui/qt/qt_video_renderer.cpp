@@ -65,9 +65,8 @@ qt_video_renderer::~qt_video_renderer()
 }
 
 void 
-qt_video_renderer::push_frame(char* frame, int size)
+qt_video_renderer::_push_frame(char* frame, int size)
 {
-	m_lock.enter();
 	assert(frame);
 	assert(size == (int)(m_size.w*m_size.h*4));
 
@@ -76,9 +75,8 @@ qt_video_renderer::push_frame(char* frame, int size)
 	m_data = (uchar*)frame;
 	m_image = new QImage(m_data,  m_size.w, m_size.h, 32, NULL, 0, QImage::IgnoreEndian);
 
-	AM_DBG lib::logger::get_logger()->debug("qt_video_renderer.push_frame(0x%x): frame=0x%x, size=%d, m_image=0x%x", (void*) this, (void*)frame, size, m_image);
+	AM_DBG lib::logger::get_logger()->debug("qt_video_renderer::_push_frame(0x%x): frame=0x%x, size=%d, m_image=0x%x", (void*) this, (void*)frame, size, m_image);
  
-	m_lock.leave();
 }
 
 
