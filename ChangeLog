@@ -1,3 +1,11 @@
+2008-08-22 10:42  jackjansen
+
+	* Video_renderer and its subclasses must share a lock, as they
+	  share datastructures. Removed the locks from the subclasses, and
+	  turned push_frame() into a protected method _push_frame().
+
+	  This fix may well cause deadlocks in the near future.
+
 2008-08-21 17:06  jackjansen
 
 	* If we don't have the audio format information available when it
