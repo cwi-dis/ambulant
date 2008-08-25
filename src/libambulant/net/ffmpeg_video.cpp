@@ -608,7 +608,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 			m_size = w * h * bpp;
 			assert(m_size);
 			char *framedata = (char*) malloc(m_size);
-			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:framedata=0x%x", framedata);
+ 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:framedata=0x%x", framedata);
 			if (framedata == NULL) {
 				lib::logger::get_logger()->debug("ffmpeg_video_decoder: malloc(%d) failed", m_size);
 				lib::logger::get_logger()->error("Out of memory playing video");

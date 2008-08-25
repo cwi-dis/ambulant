@@ -194,6 +194,7 @@ demux_audio_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, int sz)
 			rv = false;
 		} else {
 			char* data = (char*)malloc(sz+FF_INPUT_BUFFER_PADDING_SIZE);
+            //lib::logger::get_logger()->debug("push_data: allocated %d bytes", sz+FF_INPUT_BUFFER_PADDING_SIZE);
 			assert(data);
 			memcpy(data, inbuf, sz);
 #if FF_INPUT_BUFFER_PADDING_SIZE

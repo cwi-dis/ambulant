@@ -405,6 +405,10 @@ bad:
 	transition_tmpsurface = NULL;
 	if (overlay_window) [overlay_window release];
 	overlay_window = NULL;
+    if (fullscreen_previmage) [fullscreen_previmage release];
+    fullscreen_previmage = NULL;
+    if (fullscreen_oldimage) [fullscreen_oldimage release];
+    fullscreen_oldimage = NULL;
     [super dealloc];
 
 }- (NSRect) NSRectForAmbulantRect: (const ambulant::lib::rect *)arect

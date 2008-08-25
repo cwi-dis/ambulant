@@ -104,6 +104,7 @@ gui::sdl::sdl_audio_renderer::init()
 	desired.callback = sdl_C_callback;
 	desired.userdata = NULL;
 	err = SDL_OpenAudio(&desired, &obtained);
+    // XXXJACK: We never call SDL_CloseAudio, which leaks about 300K (on MacOSX).
 	if (err < 0) {
 	  lib::logger::get_logger()->trace("sdl_renderer_playable_ds.init: SDL_OpenAudio failed: error %s", SDL_GetError());
 		lib::logger::get_logger()->error(gettext("Cannot open SDL audio output stream"));

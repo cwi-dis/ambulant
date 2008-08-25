@@ -137,6 +137,7 @@ cocoa_dsvideo_renderer::_push_frame(char* frame, int size)
 	if (!m_image) {
 		logger::get_logger()->trace("cocoa_dsvideo_renderer::_push_frame: cannot allocate NSImage");
 		logger::get_logger()->error(gettext("Out of memory while showing video"));
+        free(frame);
 		return;
 	}
 	NSBitmapImageRep *bitmaprep;
@@ -158,22 +159,22 @@ cocoa_dsvideo_renderer::_push_frame(char* frame, int size)
 		// - If you also set shouldInterpolate=true you get an additional factor of 2 slowdown.
 		CGBitmapInfo bitmapInfo = MY_BITMAP_INFO; 
 		CGImage *cgi = CGImageCreate( m_size.w, m_size.h, 8, MY_BPP*8, m_size.w*MY_BPP, genericColorSpace, bitmapInfo, provider, NULL, false, kCGRenderingIntentDefault);
+		CGDataProviderRelease(provider);
+		CGColorSpaceRelease(genericColorSpace);
 		if (cgi == NULL) {
 			logger::get_logger()->trace("cocoa_dsvideo_renderer::push_frame: cannot allocate CGImage");
 			logger::get_logger()->error(gettext("Out of memory while showing video"));
 			return;
 		}
 		AM_DBG lib::logger::get_logger()->trace("0x%x: push_frame(0x%x, %d) -> 0x%x -> 0x%x", this, frame, size, provider, m_image);
-		CGDataProviderRelease(provider);
-		CGColorSpaceRelease(genericColorSpace);
 		// Step 3 - Initialize an NSBitmapImageRep with this CGImage
 		bitmaprep = [[NSBitmapImageRep alloc] initWithCGImage: cgi];
+		CGImageRelease(cgi);
 		if (!bitmaprep) {
 			logger::get_logger()->trace("cocoa_dsvideo_renderer::push_frame: cannot allocate NSBitmapImageRep");
 			logger::get_logger()->error(gettext("Out of memory while showing video"));
 			return;
 		}
-		CGImageRelease(cgi);
 		// Note that we do not free(frame), that happens when the provider calls my_free_frame.
 	} else
 #endif // ENABLE_COCOA_CGIMAGE
@@ -195,6 +196,7 @@ cocoa_dsvideo_renderer::_push_frame(char* frame, int size)
 		if (!bitmaprep) {
 			logger::get_logger()->trace("cocoa_dsvideo_renderer::_push_frame: cannot allocate NSBitmapImageRep");
 			logger::get_logger()->error(gettext("Out of memory while showing video"));
+            free(frame);
 			return;
 		}
 		memcpy([bitmaprep bitmapData], frame, size);
