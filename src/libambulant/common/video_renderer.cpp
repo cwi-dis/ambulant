@@ -339,7 +339,9 @@ video_renderer::data_avail()
 	} else
 	if (frame_ts_micros <= m_last_frame_timestamp) {
 		// This frame, or a later one, has been displayed already. Skip.
-		AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: skip frame (ts=%lld), aleready displayed earlier (ts=%lld)", frame_ts_micros, m_last_frame_timestamp);
+		// We always print this message, as it could potentially denote a bug in the decoder (which should
+		// have dropped frames that are earlier than a frame already displayed).
+		lib::logger::get_logger()->debug("video_renderer::data_avail: skip frame (ts=%lld), already displayed later frame (ts=%lld)", frame_ts_micros, m_last_frame_timestamp);
 		m_frame_duplicate++;
 		m_src->frame_processed(frame_ts_micros);
 		frame_ts_micros = m_last_frame_timestamp+frame_duration;

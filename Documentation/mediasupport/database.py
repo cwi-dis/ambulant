@@ -122,8 +122,8 @@ BUG_QT_RTSP_SIZE=FootNote("""
 Quicktime RTSP video playback happens with size 160x120, for reasons unknown.
 """, reporter="Jack", date="20080811", bug="2046489")
 BUG_FFMPEG_RTSP_H264_REORDER=FootNote("""
-RTSP playback of H264 with ffmpeg and Live is bad: frames appear to be reordered.
-""", reporter="Jack", date="20080814")
+RTSP playback of H264 with ffmpeg and Live is sometimes bad: frames appear to be reordered.
+""", reporter="Jack", date="20080814", bug="2074410")
 BUG_FFMPEG_RTSP_MP4_SLOW=FootNote("""
 RTSP playback of MPEG-4 with AAC audio with ffmpeg and Live on Mac plays back the audio an octave
 lower than wanted, and in mono.
