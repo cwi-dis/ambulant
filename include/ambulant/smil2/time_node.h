@@ -137,8 +137,8 @@ class time_node : public schedulable {
 	// Resume of media update
 	void on_rom(qtime_type timestamp);
 	
-	// End of simple duration update
-	void on_eosd(qtime_type timestamp);
+	// End of simple duration update. Returns true if anything happened (repeat).
+	bool on_eosd(qtime_type timestamp);
 	
 	// End of (visual) transition
 	void on_transitioned(qtime_type timestamp);

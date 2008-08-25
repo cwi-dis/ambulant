@@ -1052,7 +1052,6 @@ void time_node::get_pending_events(std::map<time_type, std::list<time_node*> >& 
 
 void time_node::exec(qtime_type timestamp) {
 	AM_DBG m_logger->debug("time_node::exec(%ld) for %s ffwd %d is_alive()=%d is_active()=%d", timestamp.second(), get_sig().c_str(), (int)m_ffwd_mode, is_alive(), is_active());
-	if (has_debug()) m_logger->debug("time_node::exec(%ld) for %s ffwd %d is_alive()=%d is_active()=%d", timestamp.second(), get_sig().c_str(), (int)m_ffwd_mode, is_alive(), is_active());
 	if(!is_alive()) {
 		// check for transOut
 		return;
@@ -1103,12 +1102,17 @@ void time_node::exec(qtime_type timestamp) {
 		if(m_interval.end.is_definite()) reftime = m_interval.end;
 		else reftime = timestamp.second;
 		qtime_type qt(sync_node(), reftime);
-		set_state_ex(ts_postactive, qt);
+        // Fix by Jack (who is, as usual, unsure whether it's actually correct:-):
+        // We can now set the last_cdur, and we may need to schedule a repeat. Otherwise
+        // we go to postactive.
+        m_last_cdur = timestamp.as_time_down_to(this);
+        if (!on_eosd(timestamp))
+            set_state_ex(ts_postactive, qt);
 		return;
 	}
 	
 	// Check for the EOSD event
-	AM_DBG m_logger->debug("%s[%s] checking for end-of-sd (cdur=%ld)", m_attrs.get_tag().c_str(), 
+	AM_DBG if (has_debug()) m_logger->debug("%s[%s] checking for end-of-sd (cdur=%ld)", m_attrs.get_tag().c_str(), 
 			m_attrs.get_id().c_str(), m_last_cdur());
 	if(m_last_cdur.is_definite() && m_last_cdur() != 0 && timestamp.as_time_value_down_to(this) >= m_last_cdur())
 		on_eosd(timestamp);
@@ -1177,7 +1181,7 @@ void time_node::sync_update(qtime_type timestamp) {
 }
 
 // Called on the end of simple duration event
-void time_node::on_eosd(qtime_type timestamp) {
+bool time_node::on_eosd(qtime_type timestamp) {
 	AM_DBG m_logger->debug("%s[%s].on_eosd() ST:%ld, PT:%ld, DT:%ld (sdur=%ld)", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), 
 		timestamp.as_time_value_down_to(this),
@@ -1195,7 +1199,7 @@ void time_node::on_eosd(qtime_type timestamp) {
 		time_type rdur = m_attrs.get_rdur();
 		if(rdur == time_type::indefinite || rdur > m_rad) {
 			repeat(timestamp);
-			return;
+			return true;
 		}
 	}
 	
@@ -1203,9 +1207,10 @@ void time_node::on_eosd(qtime_type timestamp) {
 		double rcount = m_attrs.get_rcount();
 		if(m_attrs.is_rcount_indefinite() || rcount > double(m_precounter)) {
 			repeat(timestamp);
-			return;
+			return true;
 		}
 	}
+    return false;
 }
 
 // Begin of media notification
