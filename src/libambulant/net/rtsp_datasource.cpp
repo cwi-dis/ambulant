@@ -495,8 +495,8 @@ ambulant::net::rtsp_demux::run()
 			_push_data_to_sink(i, 0, 0, 0);
 	}
 	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run(0x%x): returning", (void*)this);
-	release();
 	m_critical_section.leave();
+	release();
 	return 0;
 }
 

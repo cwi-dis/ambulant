@@ -28,13 +28,27 @@
 
 using namespace ambulant;
 #undef unix
+#define MUTEX_DEBUG
 
 lib::unix::critical_section::critical_section()
 {
 	int err;
-	if ((err = pthread_mutex_init(&m_cs, NULL)) != 0) {
+#ifndef MUTEX_DEBUG
+#define MUTEXATTRS NULL
+#else
+	pthread_mutexattr_t ma;
+#define MUTEXATTRS (&ma)
+	if ((err = pthread_mutexattr_init(&ma)) != 0)
+		lib::logger::get_logger()->fatal("unix_critical_section: pthread_mutexattr_init failed: %s", strerror(err));
+	if ((err = pthread_mutexattr_settype(&ma, PTHREAD_MUTEX_ERRORCHECK)) != 0)
+		lib::logger::get_logger()->fatal("unix_critical_section: pthread_mutexattr_settype failed: %s", strerror(err));
+#endif
+	if ((err = pthread_mutex_init(&m_cs, MUTEXATTRS)) != 0)
 		lib::logger::get_logger()->fatal("unix_critical_section: pthread_mutex_init failed: %s", strerror(err));
-	}
+#ifdef MUTEX_DEBUG
+	if ((err = pthread_mutexattr_destroy(&ma)) != 0)
+		lib::logger::get_logger()->fatal("unix_critical_section: pthread_mutexattr_destroy failed: %s", strerror(err));
+#endif
 }
 
 lib::unix::critical_section::~critical_section()
@@ -42,7 +56,11 @@ lib::unix::critical_section::~critical_section()
 	int err;
 
 	if ((err = pthread_mutex_destroy(&m_cs)) != 0) {
+#ifdef MUTEX_DEBUG
 		lib::logger::get_logger()->fatal("unix_critical_section: pthread_mutex_destroy failed: %s", strerror(err));
+#else
+		lib::logger::get_logger()->debug("unix_critical_section: pthread_mutex_destroy failed: %s", strerror(err));
+#endif
 	}
 }
 
@@ -74,6 +92,15 @@ lib::unix::condition::condition()
 
 lib::unix::condition::~condition()
 {
+	int err;
+	
+	if ((err = pthread_cond_destroy(&m_condition)) != 0) {
+#ifdef MUTEX_DEBUG
+		lib::logger::get_logger()->fatal("lib::unix::~condition(): pthread_cond_destroy failed: %s", strerror(err));
+#else
+		lib::logger::get_logger()->trace("lib::unix::~condition(): pthread_cond_destroy failed: %s", strerror(err));
+#endif
+	}
 }
 
 void
