@@ -513,6 +513,12 @@ std::string lib::node_impl::get_sig() const {
 		s += pid;
 		s += "\"";
 	}
+    const char *debug = get_attribute("_debug");
+    if (debug) {
+        s += " _debug=\"";
+        s += debug;
+        s += "\"";
+    }
 	s += ">";
 	return s;
 }

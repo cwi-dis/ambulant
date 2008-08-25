@@ -1150,6 +1150,21 @@ static PyObject *nodeObj_set_context(nodeObject *_self, PyObject *_args)
 	return _res;
 }
 
+static PyObject *nodeObj_has_debug(nodeObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char* attrvalue;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &attrvalue))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->has_debug(attrvalue);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
 static PyMethodDef nodeObj_methods[] = {
 	{"down_1", (PyCFunction)nodeObj_down_1, 1,
 	 PyDoc_STR("() -> (const ambulant::lib::node* _rv)")},
@@ -1237,6 +1252,8 @@ static PyMethodDef nodeObj_methods[] = {
 	 PyDoc_STR("() -> (const ambulant::lib::node_context* _rv)")},
 	{"set_context", (PyCFunction)nodeObj_set_context, 1,
 	 PyDoc_STR("(ambulant::lib::node_context* c) -> None")},
+	{"has_debug", (PyCFunction)nodeObj_has_debug, 1,
+	 PyDoc_STR("(char* attrvalue) -> (bool _rv)")},
 	{NULL, NULL, 0}
 };
 

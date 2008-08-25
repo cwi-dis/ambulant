@@ -301,6 +301,7 @@ node::node(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "xmlrepr")) PyErr_Warn(PyExc_Warning, "node: missing attribute: xmlrepr");
 		if (!PyObject_HasAttrString(itself, "get_context")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_context");
 		if (!PyObject_HasAttrString(itself, "set_context")) PyErr_Warn(PyExc_Warning, "node: missing attribute: set_context");
+		if (!PyObject_HasAttrString(itself, "has_debug")) PyErr_Warn(PyExc_Warning, "node: missing attribute: has_debug");
 	}
 	if (itself == NULL) itself = Py_None;
 

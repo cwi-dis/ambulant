@@ -415,6 +415,8 @@ class time_node : public schedulable {
 	void set_deferred_interval(qtime_type timestamp);
 	void set_begin_event_inst(time_type inst) {m_begin_event_inst = inst;}
 	
+    // Debug method
+    bool has_debug(const char *attrvalue=NULL) const { return m_node->has_debug(attrvalue); }
  protected:
 	context_type *m_context;
 	

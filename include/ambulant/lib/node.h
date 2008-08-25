@@ -265,6 +265,14 @@ class node_interface {
 	
 	/// Set the node_context for this node.
 	virtual void set_context(node_context *c) = 0;
+    
+    /// Debug method: return true if this node has the specified _debug attribute
+    bool has_debug(const char *attrvalue=NULL) const {
+        const char *debug = get_attribute("_debug");
+        if (debug == NULL) return false;
+        if (attrvalue == NULL) return true;
+        return strcmp(debug, attrvalue) == 0;
+    };
 };
 
 // Typedef trickery. Most of the code refers to "node", but this can be one of two things:

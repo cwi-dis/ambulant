@@ -1052,6 +1052,7 @@ void time_node::get_pending_events(std::map<time_type, std::list<time_node*> >& 
 
 void time_node::exec(qtime_type timestamp) {
 	AM_DBG m_logger->debug("time_node::exec(%ld) for %s ffwd %d is_alive()=%d is_active()=%d", timestamp.second(), get_sig().c_str(), (int)m_ffwd_mode, is_alive(), is_active());
+	if (has_debug()) m_logger->debug("time_node::exec(%ld) for %s ffwd %d is_alive()=%d is_active()=%d", timestamp.second(), get_sig().c_str(), (int)m_ffwd_mode, is_alive(), is_active());
 	if(!is_alive()) {
 		// check for transOut
 		return;
