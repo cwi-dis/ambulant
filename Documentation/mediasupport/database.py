@@ -124,19 +124,15 @@ Quicktime RTSP video playback happens with size 160x120, for reasons unknown.
 BUG_FFMPEG_RTSP_H264_REORDER=FootNote("""
 RTSP playback of H264 with ffmpeg and Live is sometimes bad: frames appear to be reordered.
 """, reporter="Jack", date="20080814", bug="2074410")
-BUG_FFMPEG_RTSP_MP4_SLOW=FootNote("""
-RTSP playback of MPEG-4 with AAC audio with ffmpeg and Live on Mac plays back the audio an octave
-lower than wanted, and in mono.
-""", reporter="Jack", date="20080814", bug="2065010")
 E(os=OneOf(WIN, WINCE), renderer=DX, proto=RTSP, supported=NO, supported_notes=NOTE_DX_RTSP)
 E(os=MAC, renderer=QT, proto=RTSP, format=VIDEO_MPEG4, supported=YES, supported_notes=(NOTE_QT_SERVER, BUG_QT_RTSP_SIZE))
 E(os=MAC, renderer=QT, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_notes=(NOTE_QT_SERVER, BUG_QT_RTSP_SIZE))
 E(os=MAC, renderer=QT, proto=RTSP, format=VIDEO_QUICKTIME, supported=PARTIAL, supported_notes=(NOTE_QT_SERVER, BUG_QT_RTSP_SIZE))
 E(os=MAC, renderer=QT, proto=RTSP, supported=NO, supported_notes=NOTE_QT_SERVER)
 E(renderer=FFMPEG, proto=RTSP, format=AUDIO_MP3, supported=YES, supported_notes=NOTE_FFMPEG_RTSP_MP3)
-E(os=MAC, renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4, BUG_FFMPEG_RTSP_MP4_SLOW))
+E(os=MAC, renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4))
 E(renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4))
-E(os=MAC, renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4, BUG_FFMPEG_RTSP_MP4_SLOW))
+E(os=MAC, renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4))
 E(renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4))
 E(renderer=FFMPEG, proto=RTSP, format=VIDEO_MPEG4_AVC, supported=YES, supported_notes=(NOTE_FFMPEG_FAAD, NOTE_FFMPEG_RTSP_MP4, BUG_FFMPEG_RTSP_H264_REORDER))
 

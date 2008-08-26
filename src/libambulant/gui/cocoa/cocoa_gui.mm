@@ -33,6 +33,7 @@
 #endif
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/common/preferences.h"
+#include "ambulant/smil2/test_attrs.h"
 
 #include <Cocoa/Cocoa.h>
 
@@ -59,6 +60,7 @@ namespace cocoa {
 common::window_factory *
 create_cocoa_window_factory(void *view)
 {
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
     return new cocoa_window_factory(view);
 }
 
