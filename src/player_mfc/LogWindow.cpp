@@ -10,6 +10,9 @@
 int
 logwindow_ostream::write(const char *cstr)
 {
+#ifdef _DEBUG
+	TRACE("%s", cstr);
+#endif
 	CLogWindow *lwin = CLogWindow::GetLogWindowSingleton();
 	lwin->AppendText(cstr);
 	return 1;

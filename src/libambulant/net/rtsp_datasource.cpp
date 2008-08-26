@@ -160,6 +160,7 @@ ambulant::net::rtsp_demux::add_datasink(demux_datasink *parent, int stream_index
 	assert(stream_index >= 0 && stream_index < MAX_STREAMS);
 	assert(m_context && m_context->sinks && m_context->sinks[stream_index] == 0);
 	m_context->sinks[stream_index] = parent;
+	parent->add_ref();
 	m_context->nsinks++;
 	m_critical_section.leave();
 }
@@ -170,9 +171,11 @@ ambulant::net::rtsp_demux::remove_datasink(int stream_index)
 	m_critical_section.enter();
 	assert(stream_index >= 0 && stream_index < MAX_STREAMS);
 	assert(m_context && m_context->sinks && m_context->sinks[stream_index] != 0);
-	if (m_context->sinks[stream_index])
+	if (m_context->sinks[stream_index]) {
 		// signal EOF
 		_push_data_to_sink (stream_index, 0, 0, 0);
+		m_context->sinks[stream_index]->release();
+	}
 	m_context->sinks[stream_index] = 0;
 	m_context->nsinks--;
 	if (m_context->nsinks <= 0) _cancel();
@@ -509,8 +512,11 @@ ambulant::net::rtsp_demux::run()
 	}
 	for (int i=0; i<MAX_STREAMS; i++) {
 		demux_datasink *sink = m_context->sinks[i];
-		if (sink)
+		if (sink) {
 			_push_data_to_sink(i, 0, 0, 0);
+			sink->release();
+			m_context->sinks[i] = NULL;
+		}
 	}
 	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run(0x%x): returning", (void*)this);
 	m_critical_section.leave();

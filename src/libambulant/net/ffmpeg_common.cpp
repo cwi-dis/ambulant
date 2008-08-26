@@ -309,6 +309,7 @@ ffmpeg_demux::add_datasink(demux_datasink *parent, int stream_index)
 	assert(stream_index >= 0 && stream_index < MAX_STREAMS);
 	assert(m_sinks[stream_index] == 0);
 	m_sinks[stream_index] = parent;
+	parent->add_ref();
 	m_nstream++;
 	m_lock.leave();
 }
@@ -347,9 +348,11 @@ ffmpeg_demux::remove_datasink(int stream_index)
 	m_sinks[stream_index] = 0;
 	m_nstream--;
 	m_lock.leave();
-	if (ds)
+	if (ds) {
 		// signal EOF
 		ds->push_data(0, 0, 0);
+		ds->release();
+	}
 	if (m_nstream <= 0) cancel();
 }
 
@@ -472,8 +475,11 @@ ffmpeg_demux::run()
 	int i;
 	m_lock.leave();
 	for (i=0; i<MAX_STREAMS; i++)
-		if (m_sinks[i])
+		if (m_sinks[i]) {
 			m_sinks[i]->push_data(0, 0, 0);
+			m_sinks[i]->release();
+			m_sinks[i] = NULL;
+		}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: returning");
 	return 0;
 }

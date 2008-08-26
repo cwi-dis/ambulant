@@ -391,15 +391,6 @@ ffmpeg_decoder_datasource::data_avail()
 					int cursz = sz;
 					if (cursz > AVCODEC_MAX_AUDIO_FRAME_SIZE/2) cursz = AVCODEC_MAX_AUDIO_FRAME_SIZE/2;
 		
-///// Added by Bo Gao begin 2007-07-31			
-#if 1
-					///// Comment from Bo Gao
-					///// For mp3 with live, if m_con.sample_rate and m_con.channels == 0, 
-					///// m_con.sample_rate and m_con.channels can be assigned by ffmpeg after 
-					///// calling avcodec_decode_audio;
-					///// but for wav with live,  if m_con.sample_rate and m_con.channels == 0, 
-					///// after calling avcodec_decode_audio, 
-					///// ffmpeg cannot get the sample_rate and channels.
 					AM_DBG lib::logger::get_logger()->debug("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, cursz);
                     int decoded = avcodec_decode_audio2(m_con, (short*) outbuf, &outsize, inbuf, cursz);
 
@@ -426,28 +417,6 @@ ffmpeg_decoder_datasource::data_avail()
 
 					inbuf = (uint8_t*) audio_packet.data;
 					free(inbuf);
-
-#ifdef WITH_RTSP_WAV
-					/////bo 12-09-2007 We need to swap the 16-bit audio samples
-					///// (just for wav stream from rtsp server) from big-endian
-					///// to little-endian order, before sending them to sdl:
-					///// This idea is borrowed from live_MinGW\liveMedia\AVIFileSink.cpp:L458-464
-					audio_format gb_fmt = m_src->get_audio_format();
-					if (gb_fmt.name == "live" && m_con->codec_id == CODEC_ID_PCM_S16LE) {
-						for (unsigned i = 0; i < cursz; i += 2) {
-							unsigned char tmp = outbuf[i];
-							outbuf[i] = outbuf[i+1];
-							outbuf[i+1] = tmp;
-						}
-					}
-#endif
-
-#else  ///// the original version without modifyed.
-					AM_DBG lib::logger::get_logger()->debug("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, sz);
-					int decoded = avcodec_decode_audio(m_con, (short*) outbuf, &outsize, inbuf, cursz);
-					free(inbuf);
-#endif
-///// Added by Bo Gao end 2007-07-31
 					
 					_need_fmt_uptodate();
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : %d bps, %d channels",m_fmt.samplerate, m_fmt.channels);
@@ -752,18 +721,10 @@ void
 ffmpeg_decoder_datasource::_need_fmt_uptodate()
 {
 	// Private method - no locking
-#ifndef WITH_RTSP_WAV
 	if (m_fmt.samplerate == 0) {
-#else
-	if (m_con->sample_rate != 0) {
-#endif
 		m_fmt.samplerate = m_con->sample_rate;
 	}
-#ifndef WITH_RTSP_WAV
 	if (m_fmt.channels == 0) {	
-#else
-	if (m_con->channels != 0) {
-#endif
 		m_fmt.channels = m_con->channels;
 	}
     if (m_fmt.channels == 0 || m_fmt.samplerate == 0) {

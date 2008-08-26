@@ -591,7 +591,7 @@ class AMBULANTAPI filter_datasource_impl :
 /// constituent substreams (usually one audio stream and one video stream). The
 /// data for these substreams is then sent to demux_datasink objects for further
 /// processing.
-class demux_datasink {
+class demux_datasink : virtual public lib::ref_counted_obj {
   public:
     virtual ~demux_datasink(){}
     
