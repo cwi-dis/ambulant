@@ -1,3 +1,42 @@
+2008-08-25 23:49  jackjansen
+
+	* Played around with some debug output for rtsp playback, but
+	  didn't find the bug yet.
+
+2008-08-25 22:26  jackjansen
+
+	* Added mutex debugging.  Fixed a minor bug that mutex debugging
+	  brought to light.
+
+2008-08-25 13:15  jackjansen
+
+	* Fix for bug reported to the mailing list, in thread
+	  <http://www.ambulantplayer.org/pipermail/ambulant-users/2008-August/000035.html>.
+
+	  Repeating a seq or par with indefinite duration didn't work. The
+	  code mixed up ending the simple duration with ending the active
+	  duration. Fixed by setting the last simple duration in this case,
+	  and checking whether we need to repeat.
+
+2008-08-25 11:18  jackjansen
+
+	* Did something I should have done a looooooooooong time ago: added
+	  two methods that make debugging scheduler problems a lot easier.
+
+	  node and time_node now both have a method has_debug(). This
+	  returns true if the given node has the attribute _debug="xxx"
+	  specified in the smil document.  The methods have an optional
+	  string parameter that allow you to check for thevalue of the
+	  attribute too.
+
+	  This 10-line modification allows us to selectively print debug
+	  output for specific nodes, set breakpoints, etc.
+
+2008-08-25 10:16  jackjansen
+
+	* Fixed a leak when stopping playback of video.  Fixed/documented
+	  some other minor leaks.
+
 2008-08-22 10:42  jackjansen
 
 	* Video_renderer and its subclasses must share a lock, as they
