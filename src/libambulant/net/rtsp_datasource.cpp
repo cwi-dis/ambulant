@@ -327,6 +327,22 @@ ambulant::net::rtsp_demux::_init_subsessions(rtsp_context_t *context)
 #endif
 			int rtp_sock_num = subsession->rtpSource()->RTPgs()->socketNum();
 			increaseReceiveBufferTo(*context->env, rtp_sock_num, DESIRED_AUDIO_BUF_SIZE);
+#ifdef WITH_FFMPEG
+            // As of August 2008, AAC audio also needs extra configuration data
+            // Unfortunately, this code does not work: the Darwin server does not
+            // provide this info the the sdl parameters. Maybe it is the first packet?
+            if (!strcmp(context->audio_codec_name, "MPEG4-GENERIC")) {
+				unsigned configLen;
+				unsigned char* configData;
+                configData = parseGeneralConfigStr(subsession->fmtp_config(), configLen);
+				AVCodecContext *ffcon = ffmpeg_alloc_partial_codec_context(false, "MPEG4-GENERIC");
+				ffcon->extradata = (uint8_t *)malloc(configLen + FF_INPUT_BUFFER_PADDING_SIZE);
+                assert(ffcon->extradata);
+                memcpy(ffcon->extradata, configData, configLen);
+				ffcon->extradata_size = configLen;
+				context->audio_fmt = audio_format("ffmpeg", ffcon);
+            }
+#endif // WITH_FFMPEG
 		} else if (strcmp(mediumName, "video") == 0) {
 			if (context->video_stream >= 0) {
 				lib::logger::get_logger()->trace("rtsp_demux: ignoring additional video stream");
@@ -373,7 +389,9 @@ ambulant::net::rtsp_demux::_init_subsessions(rtsp_context_t *context)
 				unsigned char* configData;
 				
 				configData = parseH264ConfigStr(subsession->fmtp_spropparametersets(), configLen);
-				context->configData = configData;
+				context->configData = (unsigned char *)malloc(configLen + FF_INPUT_BUFFER_PADDING_SIZE);
+                assert(context->configData);
+                memcpy(context->configData, configData, configLen);
 				context->configDataLen = configLen;
 #ifdef WITH_FFMPEG
 				// The configData contains stuff the H264 decoder needs to do its work. We need to

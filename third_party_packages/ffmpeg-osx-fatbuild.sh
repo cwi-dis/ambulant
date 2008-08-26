@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 #CONFIGOPTS="--enable-swscale --disable-mmx --disable-encoders --enable-gpl --disable-vhook --disable-ffmpeg"
+#CONFIGOPTS="--disable-optimizations --disable-stripping --disable-mmx --enable-gpl --disable-vhook --disable-ffserver --disable-ffmpeg --enable-static --enable-shared --enable-libfaad --disable-libfaac --extra-cflags=-I/usr/local/include --disable-altivec"
 CONFIGOPTS="--disable-mmx --disable-encoders --enable-gpl --disable-vhook --disable-ffserver --disable-ffmpeg --enable-static --enable-shared --enable-libfaad --disable-libfaac --extra-cflags=-I/usr/local/include --disable-altivec"
 srcdir=$1
 # XXXX Enable these for doing 10.4-compatible distributions
