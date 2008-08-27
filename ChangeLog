@@ -1,3 +1,20 @@
+2008-08-26 17:08  jackjansen
+
+	* Getting started on creating systemComponent names for various
+	  optional features of Ambulant.
+
+2008-08-26 16:17  jackjansen
+
+	* Datasinks need to be refcounted (bug encountered on Windows).
+	  Fixed, but must still check for leaks.
+
+2008-08-26 15:24  jackjansen
+
+	* Put the config data for AAC audio in extra_data, where ffmpeg
+	  will pick it up. This is needed since the new ffmpeg aac decoder.
+
+	  Fixes #2073761.
+
 2008-08-25 23:49  jackjansen
 
 	* Played around with some debug output for rtsp playback, but
