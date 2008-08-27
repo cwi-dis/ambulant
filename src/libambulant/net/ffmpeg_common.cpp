@@ -343,10 +343,9 @@ ffmpeg_demux::remove_datasink(int stream_index)
 	demux_datasink* ds;
 	m_lock.enter();
 	assert(stream_index >= 0 && stream_index < MAX_STREAMS);
-	assert(m_sinks[stream_index] != 0);
 	ds = m_sinks[stream_index];
 	m_sinks[stream_index] = 0;
-	m_nstream--;
+	if (ds) m_nstream--;
 	m_lock.leave();
 	if (ds) {
 		// signal EOF
