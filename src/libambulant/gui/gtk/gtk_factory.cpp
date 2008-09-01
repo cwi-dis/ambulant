@@ -50,13 +50,13 @@ ambulant::gui::gtk::create_gtk_renderer_factory(common::factories *factory)
 }
 
 common::window_factory *
-ambulant::gui::gtk::create_gtk_window_factory(gtk_ambulant_widget* gtk_widget, GMainLoop* loop, gui_player* gpl)
+ambulant::gui::gtk::create_gtk_window_factory(gtk_ambulant_widget* gtk_widget, gui_player* gpl)
 {
-    return new gtk_window_factory(gtk_widget, loop, gpl);
+    return new gtk_window_factory(gtk_widget, gpl);
 }
 
 common::window_factory *
-ambulant::gui::gtk::create_gtk_window_factory_unsafe(void* gtk_parent_widget, void* g_main_loop, common::gui_player* gpl)
+ambulant::gui::gtk::create_gtk_window_factory_unsafe(void* gtk_parent_widget, common::gui_player* gpl)
 {
     GtkWidget *parent = reinterpret_cast<GtkWidget*>(gtk_parent_widget);
     if (parent == NULL) {
@@ -68,8 +68,7 @@ ambulant::gui::gtk::create_gtk_window_factory_unsafe(void* gtk_parent_widget, vo
         lib::logger::get_logger()->fatal("create_gtk_window_factory: Cannot create gtk_ambulant_widget");
         return NULL;
     }
-    GMainLoop* l = reinterpret_cast<GMainLoop*>(g_main_loop);
-    return new gtk_window_factory(gtkw, l, gpl);
+    return new gtk_window_factory(gtkw, gpl);
 }
 
 common::playable_factory *
@@ -241,12 +240,11 @@ gtk_renderer_factory::new_aux_audio_playable(
 // gtk_window_factory
 //
 
-gtk_window_factory::gtk_window_factory( gtk_ambulant_widget* parent_widget, GMainLoop* loop, common::gui_player* gpl)
+gtk_window_factory::gtk_window_factory( gtk_ambulant_widget* parent_widget, common::gui_player* gpl)
 :	m_gui_player(gpl),
 	m_parent_widget(parent_widget)
 {
-	m_main_loop = loop;
-	AM_DBG lib::logger::get_logger()->debug("gtk_window_factory (0x%x) loop=0x%x", (void*) this, loop);
+	AM_DBG lib::logger::get_logger()->debug("gtk_window_factory (0x%x)", (void*) this);
 	m_arrow_cursor = gdk_cursor_new(GDK_ARROW);
 	m_hand1_cursor = gdk_cursor_new(GDK_HAND1);
 	m_hand2_cursor = gdk_cursor_new(GDK_HAND2);
@@ -268,7 +266,6 @@ gtk_window_factory::new_window (const std::string &name,
 	AM_DBG lib::logger::get_logger()->debug("gtk_window_factory::new_window (0x%x): name=%s %d,%d,%d,%d",
 		(void*) this, name.c_str(), r.left(),r.top(),r.right(),r.bottom());
 	ambulant_gtk_window * agtkw = new ambulant_gtk_window(name, &r, region);
-	agtkw->m_main_loop = m_main_loop;
 
 
 	// We don't create this widget anymore MainLoop does it!!
@@ -443,9 +440,6 @@ ambulant_gtk_window::need_redraw(const lib::rect &r)
 	}
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw: parent ltrb=(%d,%d,%d,%d)", dirty->area.left(), dirty->area.top(), dirty->area.width(), dirty->area.height());
 	g_idle_add_full(G_PRIORITY_HIGH_IDLE, (GSourceFunc) gtk_C_callback_helper_queue_draw_area, (void *)dirty, NULL);
-//	gtk_widget_queue_draw_area(m_ambulant_widget->get_gtk_widget(), r.left(), r.top(), r.width(), r.height());
-//	gdk_threads_leave ();
-//	g_main_context_dispatch(g_main_loop_get_context(m_main_loop)); 
 }
 
 void

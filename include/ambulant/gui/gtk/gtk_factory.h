@@ -73,7 +73,7 @@ class gtk_renderer_factory : public common::playable_factory {
 /// GTK implementation of window_factory
 class gtk_window_factory : public common::window_factory {
   public:
-	gtk_window_factory(gtk_ambulant_widget* gtk_widget, GMainLoop* loop, common::gui_player* gpl);
+	gtk_window_factory(gtk_ambulant_widget* gtk_widget, common::gui_player* gpl);
 	~gtk_window_factory();
 	common::gui_window* new_window(const std::string &name, lib::size bounds,
 				       common::gui_events *region);
@@ -84,7 +84,6 @@ class gtk_window_factory : public common::window_factory {
 //	GtkWidget* m_parent_widget;
 	gtk_ambulant_widget* m_parent_widget;
 	lib::point m_p;
-	GMainLoop* m_main_loop;
 	gui_player* m_gui_player;
 	GdkCursor* m_arrow_cursor;
 	GdkCursor* m_hand1_cursor;
@@ -193,7 +192,6 @@ class ambulant_gtk_window : public common::gui_window {
  public:
 	GdkPixmap* m_tmppixmap;
 	guint signal_redraw_id;
-	GMainLoop* m_main_loop;
 };  // class ambulant_gtk_window
 
 /// gtk_ambulant_widget is the GTK-counterpart of ambulant_gtk_window: it is the
@@ -254,10 +252,10 @@ class gtk_ambulant_widget : public GtkWidget, public ambulant::common::gui_scree
 };  // class gtk_ambulant_widget
 
 AMBULANTAPI common::playable_factory *create_gtk_renderer_factory(common::factories *factory);
-AMBULANTAPI common::window_factory *create_gtk_window_factory(gtk_ambulant_widget* gtk_widget, GMainLoop* loop, common::gui_player* gpl);
+AMBULANTAPI common::window_factory *create_gtk_window_factory(gtk_ambulant_widget* gtk_widget, common::gui_player* gpl);
 // XXXX Needs to be implemented:
 // Create gtk_ambulant_widget inside gtk_parent_widget, call create_gtk_window_factory.
-AMBULANTAPI common::window_factory *create_gtk_window_factory_unsafe(void* gtk_parent_widget, void* g_main_loop, common::gui_player* gpl);
+AMBULANTAPI common::window_factory *create_gtk_window_factory_unsafe(void* gtk_parent_widget, common::gui_player* gpl);
 AMBULANTAPI common::playable_factory *create_gtk_video_factory(common::factories *factory);
 
 } // namespace gtk
