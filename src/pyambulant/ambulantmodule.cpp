@@ -37,6 +37,8 @@
 // Should have been included through genobj.py but that caused problems
 #ifdef WITH_GTK
 #include "ambulant/gui/gtk/gtk_factory.h"
+#include <pygobject.h>
+#include <pygtk/pygtk.h>
 #endif
 #include "ambulantinterface.h"
 #include "ambulantutilities.h"
@@ -53,6 +55,22 @@ extern int cobject_Convert(PyObject *v, void **p_itself);
 # define Py_KEYWORDS_STRING_TYPE char
 #endif
 
+#ifdef WITH_GTK
+static PyTypeObject *PyGObject_Type = NULL;
+int
+PyGObjectAsVoidPtr_Convert(PyObject *v, void **p_itself)
+{
+    static bool pygtk_initialized = false;
+#if 0
+    if (v == NULL || v->ob_type != PyGObject_Type) {
+        PyErr_SetString(PyExc_TypeError, "PyGObject expected");
+        return 0;
+    }
+#endif
+    *p_itself = (void*)GTK_WIDGET(((PyGObject *)v)->obj);
+    return 1;
+}
+#endif
 
 static PyObject *PyAm_Error;
 
@@ -15911,17 +15929,14 @@ static PyObject *PyAm_create_gtk_window_factory_unsafe(PyObject *_self, PyObject
 {
 	PyObject *_res = NULL;
 	ambulant::common::window_factory* _rv;
-	void* gtk_parent_widget;
-	void* g_main_loop;
+	void * gtk_parent_widget;
 	ambulant::common::gui_player* gpl;
-	if (!PyArg_ParseTuple(_args, "O&O&O&",
-	                      cobject_Convert, &gtk_parent_widget,
-	                      cobject_Convert, &g_main_loop,
+	if (!PyArg_ParseTuple(_args, "O&O&",
+	                      PyGObjectAsVoidPtr_Convert, &gtk_parent_widget,
 	                      gui_playerObj_Convert, &gpl))
 		return NULL;
 	PyThreadState *_save = PyEval_SaveThread();
 	_rv = ambulant::gui::gtk::create_gtk_window_factory_unsafe(gtk_parent_widget,
-	                                                           g_main_loop,
 	                                                           gpl);
 	PyEval_RestoreThread(_save);
 	_res = Py_BuildValue("O&",
@@ -16219,7 +16234,7 @@ static PyMethodDef PyAm_methods[] = {
 
 #ifdef WITH_GTK
 	{"create_gtk_window_factory_unsafe", (PyCFunction)PyAm_create_gtk_window_factory_unsafe, 1,
-	 PyDoc_STR("(void* gtk_parent_widget, void* g_main_loop, ambulant::common::gui_player* gpl) -> (ambulant::common::window_factory* _rv)")},
+	 PyDoc_STR("(void * gtk_parent_widget, ambulant::common::gui_player* gpl) -> (ambulant::common::window_factory* _rv)")},
 #endif
 
 #ifdef WITH_GTK
@@ -16320,6 +16335,14 @@ void initambulant(void)
 
 
 	PyEval_InitThreads();
+#ifdef WITH_GTK
+	init_pygobject();
+	init_pygtk();
+	PyObject *module = PyImport_ImportModule("gobject");
+	if (module)
+	    PyGObject_Type = (PyTypeObject*)PyObject_GetAttrString(module, "GObject");
+	Py_XDECREF(module);
+#endif // WITH_GTK
 
 
 	m = Py_InitModule("ambulant", PyAm_methods);

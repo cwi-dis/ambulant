@@ -29,7 +29,6 @@ cobject_Convert(PyObject *v, void **p_itself)
     *p_itself = PyCObject_AsVoidPtr(v);
     return 1;
 }
-
 PyObject *
 ambulant_url_New(const ambulant::net::url& itself)
 {

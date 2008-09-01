@@ -270,7 +270,7 @@ class MyScanner(CxxScanner):
               [
                 ('void_ptr', '*', 'InMode'),
               ], [
-                ('pycobject', '*', 'InMode'),
+                ('pygobject', '*', 'InMode'),
               ]
             ),
 

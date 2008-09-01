@@ -29,6 +29,8 @@ includestuff = includestuff + """
 // Should have been included through genobj.py but that caused problems
 #ifdef WITH_GTK
 #include "ambulant/gui/gtk/gtk_factory.h"
+#include <pygobject.h>
+#include <pygtk/pygtk.h>
 #endif
 #include "ambulantinterface.h"
 #include "ambulantutilities.h"
@@ -45,6 +47,22 @@ extern int cobject_Convert(PyObject *v, void **p_itself);
 # define Py_KEYWORDS_STRING_TYPE char
 #endif
 
+#ifdef WITH_GTK
+static PyTypeObject *PyGObject_Type = NULL;
+int
+PyGObjectAsVoidPtr_Convert(PyObject *v, void **p_itself)
+{
+    static bool pygtk_initialized = false;
+#if 0
+    if (v == NULL || v->ob_type != PyGObject_Type) {
+        PyErr_SetString(PyExc_TypeError, "PyGObject expected");
+        return 0;
+    }
+#endif
+    *p_itself = (void*)GTK_WIDGET(((PyGObject *)v)->obj);
+    return 1;
+}
+#endif
 """
 
 finalstuff = """
@@ -82,6 +100,14 @@ extern "C" void initambulant();
 
 initstuff = """
 PyEval_InitThreads();
+#ifdef WITH_GTK
+init_pygobject();
+init_pygtk();
+PyObject *module = PyImport_ImportModule("gobject");
+if (module)
+    PyGObject_Type = (PyTypeObject*)PyObject_GetAttrString(module, "GObject");
+Py_XDECREF(module);
+#endif // WITH_GTK
 """
 
 variablestuff="""
@@ -130,6 +156,7 @@ sound_alignment = Type("ambulant::common::sound_alignment", "l")
 pause_display = Type("ambulant::common::pause_display", "l")
 
 pycobject = OpaqueByValueType("void*", "cobject")
+pygobject = OpaqueByValueType("void *", "PyGObjectAsVoidPtr")
 
 # This is a bit of a hack. These types are opaque, really.
 renderer_private_data_ptr = Type("ambulant::common::renderer_private_data *", "l")
