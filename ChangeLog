@@ -1,3 +1,14 @@
+2008-09-01 13:49  jackjansen
+
+	* Continued with work suspended last November: got Python interface
+	  to Ambulant/Gtk working again.
+
+2008-09-01 12:15  jackjansen
+
+	* Continuing with work Rodrigo and me started with in November 2007
+	  but for some reason stopped before we were done: getting rid of
+	  GMainLoop object in gtk widget (and constructors).
+
 2008-08-27 22:09  jackjansen
 
 	* Datasinks can now be cleaned up by demux thread, so removed an
