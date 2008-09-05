@@ -400,7 +400,7 @@ NPError	nsPluginInstance::GetValue(NPPVariable aVariable, void *aValue)
   }
   else if (aVariable == NPPVpluginScriptableIID
            || aVariable ==  NPPVpluginScriptableInstance) {
-    static nsIID scriptableIID = NS_IAMBULANTPLUGIN_IID;
+    static nsIID scriptableIID = AMBULANTFFPLUGIN_IID;
     nsIID* ptr = (nsIID *)NPN_MemAlloc(sizeof(nsIID));
     if (ptr) {
         *ptr = scriptableIID;
