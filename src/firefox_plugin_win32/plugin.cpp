@@ -35,10 +35,13 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+#include <cstddef> //XXXX Hack for ptrdiff_t  
 #include <windows.h>
 #include <windowsx.h>
-
+#define ptrdiff_t long int //XXXX Hack for ptrdiff_t in xulrunner-sdk (GeckoSDK 1.9 and Vc7)
 #include "plugin.h"
+//#undef ptrdiff_t
+#include "nsScriptablePeer.h"
 #include "nsIServiceManager.h"
 #include "nsISupportsUtils.h" // some usefule macros are defined here
 

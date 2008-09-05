@@ -40,6 +40,7 @@
 //
 // Implementation of plugin entry points (NPP_*)
 //
+#define ptrdiff_t long int // for ptrdiff_t in xulrunner-sdk (GeckoSDK 1.9 and Vc7)
 #include "pluginbase.h"
 
 // here the plugin creates a plugin instance object which 

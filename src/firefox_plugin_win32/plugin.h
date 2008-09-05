@@ -38,6 +38,8 @@
 #ifndef __PLUGIN_H__
 #define __PLUGIN_H__
 
+#include "npapi.h"
+#include "npupp.h"
 #include "pluginbase.h"
 #include "nsScriptablePeer.h"
 

@@ -23,7 +23,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\sdk\samples\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\plugin\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\nspr\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\java\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk&quot;;..\..\include;&quot;..\..\projects\vc71-smil3&quot;"
+				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\sdk\samples\include&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\plugin\include&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\nspr\include&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\java\include&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\xpcom\include&quot;;&quot;..\..\third_party_packages\xulrunner-sdk&quot;;..\..\include;&quot;..\..\projects\vc71-smil3&quot;"
 				PreprocessorDefinitions="_DEBUG;XP_WIN32;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_USRDLL;NPSIMPLE_EXPORTS;WITH_SMIL30"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -96,7 +96,7 @@ copy /y .\AmbulantFFplugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\Ambu
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\sdk\samples\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\plugin\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\nspr\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\java\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk&quot;;..\..\include;&quot;..\..\projects\vc71-smil3&quot;"
+				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\sdk\samples\include&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\plugin\include&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\nspr\include&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\java\include&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\xpcom\include&quot;;&quot;..\..\third_party_packages\xulrunner-sdk&quot;;..\..\include;&quot;..\..\projects\vc71-smil3&quot;"
 				PreprocessorDefinitions="NDEBUG;XP_WIN32;_DEBUG;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_USRDLL;NPSIMPLE_EXPORTS"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
@@ -167,11 +167,12 @@ copy /y .\AmbulantFFplugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\Ambu
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\sdk\samples\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\plugin\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\nspr\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\java\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\include&quot;;&quot;..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk&quot;;..\..\include;&quot;..\..\projects\vc71-smil3&quot;"
+				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\xulrunner-sdk&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\sdk\include&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\include\plugin&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\include\nspr&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\include\java&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\include\js&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\include\xpcom&quot;;..\..\include;&quot;..\..\projects\vc71-smil3&quot;"
 				PreprocessorDefinitions="_DEBUG;XP_WIN32;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_USRDLL;NPSIMPLE_EXPORTS;WITH_SMIL30;WITHOUT_XERCES"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				UsePrecompiledHeader="2"
+				TreatWChar_tAsBuiltInType="TRUE"
+				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\Debug/AmbulantFFplugin.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
@@ -189,12 +190,13 @@ copy /y .\AmbulantFFplugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\Ambu
 				OutputFile="C:\Program Files\Mozilla Firefox\plugins\$(ProjectName).dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\lib\win32"
+				AdditionalLibraryDirectories="&quot;..\..\\third_party_packages\xulrunner-sdk\sdk\lib&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\lib&quot;;..\..\lib\win32"
 				IgnoreDefaultLibraryNames="LIBCMTD.lib;libcpmtd.lib"
 				ModuleDefinitionFile="..\..\src\firefox_plugin_win32\AmbulantFFplugin.def"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/AmbulantFFplugin.pdb"
 				MapExports="FALSE"
+				SubSystem="0"
 				ImportLibrary=".\Debug/AmbulantFFplugin.lib"
 				TargetMachine="1"/>
 			<Tool
@@ -351,8 +353,8 @@ copy /y .\AmbulantFFplugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\Ambu
 						Name="VCCustomBuildTool"
 						Description="Running the XPIDL compiler and linker for $(InputName)"
 						CommandLine="echo %cd%
-c:\moztools\bin\xpidl.exe -m header -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
-c:\moztools\bin\xpidl.exe -m typelib -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
+c:\moztools\bin\xpidl.exe -m header -I..\..\third_party_packages\xulrunner-sdk\xpcom\idl &quot;$(InputPath)&quot;
+c:\moztools\bin\xpidl.exe -m typelib -I..\..\third_party_packages\xulrunner-sdk\xpcom\idl &quot;$(InputPath)&quot;
 "
 						Outputs="AmbulantFFplugin.h;AmbulantFFplugin.xpt"/>
 				</FileConfiguration>
@@ -362,8 +364,8 @@ c:\moztools\bin\xpidl.exe -m typelib -I..\..\third_party_packages\GeckoPluginSDK
 						Name="VCCustomBuildTool"
 						Description="Running the XPIDL compiler and linker for $(InputName)"
 						CommandLine="echo %cd%
-c:\moztools\bin\xpidl.exe -m header -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
-c:\moztools\bin\xpidl.exe -m typelib -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
+c:\moztools\bin\xpidl.exe -m header -I..\..\third_party_packages\xulrunner-sdk\xpcom\idl &quot;$(InputPath)&quot;
+c:\moztools\bin\xpidl.exe -m typelib -I..\..\third_party_packages\xulrunner-sdk\xpcom\idl &quot;$(InputPath)&quot;
 "
 						Outputs="AmbulantFFplugin.h;AmbulantFFplugin.xpt"/>
 				</FileConfiguration>
@@ -373,8 +375,8 @@ c:\moztools\bin\xpidl.exe -m typelib -I..\..\third_party_packages\GeckoPluginSDK
 						Name="VCCustomBuildTool"
 						Description="Running the XPIDL compiler and linker for $(InputName)"
 						CommandLine="echo %cd%
-c:\moztools\bin\xpidl.exe -m header -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
-c:\moztools\bin\xpidl.exe -m typelib -I..\..\third_party_packages\GeckoPluginSDK-samples\Win32SDK\gecko-sdk\xpcom\idl &quot;$(InputPath)&quot;
+..\..\third_party_packages\xulrunner-sdk\bin\xpidl.exe -m header -I..\..\third_party_packages\xulrunner-sdk\idl &quot;$(InputPath)&quot;
+..\..\third_party_packages\xulrunner-sdk\bin\xpidl.exe -m typelib -I..\..\third_party_packages\xulrunner-sdk\idl &quot;$(InputPath)&quot;
 "
 						Outputs="AmbulantFFplugin.h;AmbulantFFplugin.xpt"/>
 				</FileConfiguration>

@@ -45,6 +45,8 @@
 // The native methods of this class are supposed to
 // be callable from JavaScript
 //
+#include <cstddef> //XXXX Hack for ptrdiff_t  
+#define ptrdiff_t long int // for ptrdiff_t in xulrunner-sdk (GeckoSDK 1.9 and Vc7)
 #include "plugin.h"
 
 static NS_DEFINE_IID(kIScriptableIID, AMBULANTFFPLUGIN_IID);

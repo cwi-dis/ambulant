@@ -40,7 +40,9 @@
 // Main plugin entry point implementation -- exports from the 
 // plugin library
 //
-#include "npplat.h"
+#define ptrdiff_t long int // for ptrdiff_t in xulrunner-sdk (GeckoSDK 1.9 and Vc7)
+#include "npapi.h"
+#include "npupp.h"
 #include "pluginbase.h"
 
 NPNetscapeFuncs NPNFuncs;
