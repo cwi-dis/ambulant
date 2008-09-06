@@ -1,3 +1,20 @@
+2008-09-05 17:09  keesblom
+
+	* Added a few files needed  to compile firefox lugin fro windows
+	  (old version) with xulrunner-sdk.
+
+2008-09-05 17:03  keesblom
+
+	* Moved to branch "kees-ffpluginWin32" The old plugin (without
+	  IsDone) now works with lateste geck-sdk (xulrunner)). Some ugly
+	  hacks where needed because Vc7 is aging.
+
+2008-09-05 11:47  keesblom
+
+	* Made the old version (without IsDone)  compile, link and run
+	  again with WelcomeButtons.html.  Compiled using GeckSDKsamples
+	  with its moztools installed in C:\moztools .
+
 2008-09-01 13:49  jackjansen
 
 	* Continued with work suspended last November: got Python interface
