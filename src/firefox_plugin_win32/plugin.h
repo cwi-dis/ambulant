@@ -45,6 +45,7 @@
 
 #define AMBULANT_FIREFOX_PLUGIN
 #ifdef   AMBULANT_FIREFOX_PLUGIN
+
 #include <ambulant/version.h>
 #include <ambulant/gui/dx/dx_player.h>
 #include <ambulant/net/url.h>
@@ -61,8 +62,67 @@ public:
 };
 #endif // AMBULANT_FIREFOX_PLUGIN
 
-class nsPluginInstance : public nsPluginInstanceBase
+class nsPluginInstance : public nsPluginInstanceBase, public AmbulantFFplugin
 {
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_AMBULANTFFPLUGIN
+
+  nsPluginInstance(NPP aInstance);
+  ~nsPluginInstance();
+
+  NPBool init(NPWindow* aWindow);
+  void shut();
+  NPBool isInitialized();
+
+  // we need to provide implementation of this method as it will be
+  // used by Mozilla to retrive the scriptable peer
+  NPError	GetValue(NPPVariable variable, void *value);
+
+  nsScriptablePeer* getScriptablePeer();
+
+private:
+  static NPP s_lastInstance;
+  NPWindow* mNPWindow;
+  NPP mInstance;
+  NPBool mInitialized;
+  nsScriptablePeer * mScriptablePeer;
+
+  char* get_document_location();
+
+public:
+  char mString[128];
+#ifdef	MOZ_X11
+  Window window;
+  Display* display;
+  int width, height;
+#endif // MOZ_X11
+    nsPluginCreateData mCreateData;
+#ifdef WITH_GTK
+    gtk_mainloop* m_mainloop;
+#elif WITH_CG
+	cg_mainloop *m_mainloop;
+#else
+	void *m_mainloop;
+#endif
+    ambulant::lib::logger* m_logger;
+#ifdef	XP_WIN
+//XXXX  nsPluginCreateData mCreateData;
+  ambulant::gui::dx::dx_player* m_ambulant_player;
+  ambulant::net::url m_url;
+  ambulant_player_callbacks m_player_callbacks;
+  HWND m_hwnd;
+#else // XP_WIN
+    ambulant::common::player* m_ambulant_player;
+#endif// XP_WIN
+
+  int m_cursor_id;
+
+  NPP getNPP();
+  const char* getValue(const char *name);
+  const char * getVersion();
+  static void display_message(int level, const char *message);	
+  /* XXXXXX
 public:
   nsPluginInstance(NPP aInstance);
   ~nsPluginInstance();
@@ -109,6 +169,7 @@ public:
   const char* getValue(const char *name);
   const char * getVersion();
 #endif // AMBULANT_FIREFOX_PLUGIN
+  XXXX */
 };
 
 #endif // __PLUGIN_H__

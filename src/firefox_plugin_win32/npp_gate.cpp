@@ -40,43 +40,63 @@
 //
 // Implementation of plugin entry points (NPP_*)
 //
+//
 #define ptrdiff_t long int // for ptrdiff_t in xulrunner-sdk (GeckoSDK 1.9 and Vc7)
 #include "pluginbase.h"
+
+//#include "plugin.h"
+//#include "nsScriptablePeer.h"
+char * 
+NPP_GetMIMEDescription(void)
+{
+    extern char* mimetypes;
+	return mimetypes;
+}
+extern "C" {
 
 // here the plugin creates a plugin instance object which 
 // will be associated with this newly created NPP instance and 
 // will do all the neccessary job
 NPError NPP_New(NPMIMEType pluginType, NPP instance, uint16 mode, int16 argc, char* argn[], char* argv[], NPSavedData* saved)
 {   
-  if(instance == NULL)
-    return NPERR_INVALID_INSTANCE_ERROR;
+#ifdef DEBUG
+    char *id = "NPP_New";
+    fprintf(stderr, "%s: %s=0x%x.\n",id,"instance",instance);
+#endif
+	if(instance == NULL)
+		return NPERR_INVALID_INSTANCE_ERROR;
 
-  NPError rv = NPERR_NO_ERROR;
+	NPError rv = NPERR_NO_ERROR;
 
-  // create a new plugin instance object
-  // initialization will be done when the associated window is ready
-  nsPluginCreateData ds;
+	// create a new plugin instance object
+	// initialization will be done when the associated window is ready
+	nsPluginCreateData ds;
   
-  ds.instance = instance;
-  ds.type     = pluginType; 
-  ds.mode     = mode; 
-  ds.argc     = argc; 
-  ds.argn     = argn; 
-  ds.argv     = argv; 
-  ds.saved    = saved;
+	ds.instance = instance;
+	ds.type     = pluginType; 
+	ds.mode     = mode; 
+	ds.argc     = argc; 
+	ds.argn     = argn; 
+	ds.argv     = argv; 
+	ds.saved    = saved;
 
-  nsPluginInstanceBase * plugin = NS_NewPluginInstance(&ds);
-  if(plugin == NULL)
-    return NPERR_OUT_OF_MEMORY_ERROR;
+	nsPluginInstanceBase * plugin = NS_NewPluginInstance(&ds);
+	if(plugin == NULL)
+		return NPERR_OUT_OF_MEMORY_ERROR;
 
-  // associate the plugin instance object with NPP instance
-  instance->pdata = (void *)plugin;
-  return rv;
+	// associate the plugin instance object with NPP instance
+	instance->pdata = (void *)plugin;
+	return rv;
 }
 
 // here is the place to clean up and destroy the nsPluginInstance object
-NPError NPP_Destroy (NPP instance, NPSavedData** save)
+NPError
+NPP_Destroy (NPP instance, NPSavedData** save)
 {
+#ifdef DEBUG
+    char *id = "NPP_Destroy";
+    fprintf(stderr, "%s: %s=0x%x.\n",id,"instance",instance);
+#endif
   if(instance == NULL)
     return NPERR_INVALID_INSTANCE_ERROR;
 
@@ -95,6 +115,10 @@ NPError NPP_Destroy (NPP instance, NPSavedData** save)
 // initialization and shutdown
 NPError NPP_SetWindow (NPP instance, NPWindow* pNPWindow)
 {    
+#ifdef DEBUG
+    char *id = "NPP_SetWindow";
+    fprintf(stderr, "%s: %s=0x%x.\n",id,"instance",instance);
+#endif
   if(instance == NULL)
     return NPERR_INVALID_INSTANCE_ERROR;
 
@@ -110,6 +134,7 @@ NPError NPP_SetWindow (NPP instance, NPWindow* pNPWindow)
 
   // window just created
   if(!plugin->isInitialized() && (pNPWindow->window != NULL)) { 
+	plugin->SetWindow(pNPWindow);
     if(!plugin->init(pNPWindow)) {
       NS_DestroyPluginInstance(plugin);
       return NPERR_MODULE_LOAD_FAILED_ERROR;
@@ -131,8 +156,13 @@ NPError NPP_SetWindow (NPP instance, NPWindow* pNPWindow)
   return rv;
 }
 
-NPError NPP_NewStream(NPP instance, NPMIMEType type, NPStream* stream, NPBool seekable, uint16* stype)
+NPError
+NPP_NewStream(NPP instance, NPMIMEType type, NPStream* stream, NPBool seekable, uint16* stype)
 {
+#ifdef DEBUG
+    char *id = "NPP_NewStream";
+    fprintf(stderr, "%s: %s=0x%x.\n",id,"instance",instance);
+#endif
   if(instance == NULL)
     return NPERR_INVALID_INSTANCE_ERROR;
 
@@ -144,8 +174,13 @@ NPError NPP_NewStream(NPP instance, NPMIMEType type, NPStream* stream, NPBool se
   return rv;
 }
 
-int32 NPP_WriteReady (NPP instance, NPStream *stream)
+int32
+NPP_WriteReady (NPP instance, NPStream *stream)
 {
+#ifdef DEBUG
+    char *id = "NPP_WriteReady";
+    fprintf(stderr, "%s: %s=0x%x.\n",id,"instance",instance);
+#endif
   if(instance == NULL)
     return 0x0fffffff;
 
@@ -157,8 +192,13 @@ int32 NPP_WriteReady (NPP instance, NPStream *stream)
   return rv;
 }
 
-int32 NPP_Write (NPP instance, NPStream *stream, int32 offset, int32 len, void *buffer)
+int32
+NPP_Write (NPP instance, NPStream *stream, int32 offset, int32 len, void *buffer)
 {   
+#ifdef DEBUG
+    char *id = "NPP_Write";
+    fprintf(stderr, "%s: %s=0x%x.\n",id,"instance",instance);
+#endif
   if(instance == NULL)
     return len;
 
@@ -170,8 +210,13 @@ int32 NPP_Write (NPP instance, NPStream *stream, int32 offset, int32 len, void *
   return rv;
 }
 
-NPError NPP_DestroyStream (NPP instance, NPStream *stream, NPError reason)
+NPError
+NPP_DestroyStream (NPP instance, NPStream *stream, NPError reason)
 {
+#ifdef DEBUG
+    char *id = "NPP_DestroyStream";
+    fprintf(stderr, "%s: %s=0x%x.\n",id,"instance",instance);
+#endif
   if(instance == NULL)
     return NPERR_INVALID_INSTANCE_ERROR;
 
@@ -183,8 +228,13 @@ NPError NPP_DestroyStream (NPP instance, NPStream *stream, NPError reason)
   return rv;
 }
 
-void NPP_StreamAsFile (NPP instance, NPStream* stream, const char* fname)
+void
+NPP_StreamAsFile (NPP instance, NPStream* stream, const char* fname)
 {
+#ifdef DEBUG
+    char *id = "NPP_StreamAsFile";
+    fprintf(stderr, "%s: %s=0x%x.\n",id,"instance",instance);
+#endif
   if(instance == NULL)
     return;
 
@@ -195,8 +245,13 @@ void NPP_StreamAsFile (NPP instance, NPStream* stream, const char* fname)
   plugin->StreamAsFile(stream, fname);
 }
 
-void NPP_Print (NPP instance, NPPrint* printInfo)
+void
+NPP_Print (NPP instance, NPPrint* printInfo)
 {
+#ifdef DEBUG
+    char *id = "NPP_Print";
+    fprintf(stderr, "%s: %s=0x%x.\n",id,"instance",instance);
+#endif
   if(instance == NULL)
     return;
 
@@ -207,8 +262,13 @@ void NPP_Print (NPP instance, NPPrint* printInfo)
   plugin->Print(printInfo);
 }
 
-void NPP_URLNotify(NPP instance, const char* url, NPReason reason, void* notifyData)
+void
+NPP_URLNotify(NPP instance, const char* url, NPReason reason, void* notifyData)
 {
+#ifdef DEBUG
+    char *id = "NPP_URLNotify";
+    fprintf(stderr, "%s: %s=0x%x.\n",id,"instance",instance);
+#endif
   if(instance == NULL)
     return;
 
@@ -219,21 +279,53 @@ void NPP_URLNotify(NPP instance, const char* url, NPReason reason, void* notifyD
   plugin->URLNotify(url, reason, notifyData);
 }
 
-NPError	NPP_GetValue(NPP instance, NPPVariable variable, void *value)
+NPError
+NPP_GetValue(NPP instance, NPPVariable variable, void *value)
 {
+#ifdef DEBUG
+    char *id = "NPP_GetValue";
+    fprintf(stderr, "%s: %s=0x%x.\n",id,"instance",instance);
+#endif
+  NPError rv = NPERR_GENERIC_ERROR;
   if(instance == NULL)
     return NPERR_INVALID_INSTANCE_ERROR;
 
   nsPluginInstanceBase * plugin = (nsPluginInstanceBase *)instance->pdata;
   if(plugin == NULL) 
-    return NPERR_GENERIC_ERROR;
+      return rv;
 
-  NPError rv = plugin->GetValue(variable, value);
+  return plugin->GetValue(variable, value);
+/* TBD verhuis
+  if (variable == NPPVpluginScriptableInstance) {
+    // addref happens in getter, so we don't addref here
+    nsScriptablePeer * scriptablePeer = plugin->getScriptablePeer();
+    if (scriptablePeer) {
+        *(void**)value = (void*)scriptablePeer;
+    } else {
+      rv = NPERR_OUT_OF_MEMORY_ERROR;
+    }
+  }
+  else if (variable == NPPVpluginScriptableIID) {
+    static nsIID scriptableIID = AMBULANTFFPLUGIN_IID;
+    nsIID* ptr = (nsIID *)NPN_MemAlloc(sizeof(nsIID));
+    if (ptr) {
+        *ptr = scriptableIID;
+        *(nsIID **)value = ptr;
+    } else {
+      rv = NPERR_OUT_OF_MEMORY_ERROR;
+    }
+  } else rv = plugin->GetValue(variable, value);
   return rv;
+  TBD verhuis */
 }
 
-NPError NPP_SetValue(NPP instance, NPNVariable variable, void *value)
+NPError
+NPP_SetValue(NPP instance, NPNVariable variable, void *value)
 {
+#ifdef DEBUG
+    char *id = "NPP_SetValue";
+    fprintf(stderr, "%s: %s=0x%x.\n",id,"instance",instance);
+#endif
   if(instance == NULL)
     return NPERR_INVALID_INSTANCE_ERROR;
 
@@ -247,6 +339,10 @@ NPError NPP_SetValue(NPP instance, NPNVariable variable, void *value)
 
 int16	NPP_HandleEvent(NPP instance, void* event)
 {
+#ifdef DEBUG
+    char *id = "NPP_HandleEvent";
+    fprintf(stderr, "%s: %s=0x%x.\n",id,"instance",instance);
+#endif
   if(instance == NULL)
     return 0;
 
@@ -357,3 +453,4 @@ NPError Private_SetValue(NPP instance, NPNVariable variable, void *value)
 }
 
 #endif //XP_MAC
+} /*extern "C" */

@@ -117,28 +117,11 @@ void nsScriptablePeer::SetInstance(nsPluginInstance* plugin)
 //
 // the following methods will be callable from JavaScript
 //
-#ifdef JUNK
-NS_IMETHODIMP nsScriptablePeer::ShowVersion()
-{
-  if (mPlugin)
-    mPlugin->showVersion();
-
-  return NS_OK;
-}
-
-NS_IMETHODIMP nsScriptablePeer::Clear()
-{
-  if (mPlugin)
-    mPlugin->clear();
-
-  return NS_OK;
-}
-#endif // JUNK
 
 NS_IMETHODIMP nsScriptablePeer::StartPlayer()
 {
   if (mPlugin)
-    mPlugin->startPlayer();
+    mPlugin->StartPlayer();
 
   return NS_OK;
 }
@@ -146,7 +129,7 @@ NS_IMETHODIMP nsScriptablePeer::StartPlayer()
 NS_IMETHODIMP nsScriptablePeer::StopPlayer()
 {
   if (mPlugin)
-    mPlugin->stopPlayer();
+    mPlugin->StopPlayer();
 
   return NS_OK;
 }
@@ -154,7 +137,7 @@ NS_IMETHODIMP nsScriptablePeer::StopPlayer()
 NS_IMETHODIMP nsScriptablePeer::RestartPlayer()
 {
   if (mPlugin)
-    mPlugin->restartPlayer();
+    mPlugin->RestartPlayer();
 
   return NS_OK;
 }
@@ -162,7 +145,7 @@ NS_IMETHODIMP nsScriptablePeer::RestartPlayer()
 NS_IMETHODIMP nsScriptablePeer::ResumePlayer()
 {
   if (mPlugin)
-    mPlugin->resumePlayer();
+    mPlugin->ResumePlayer();
 
   return NS_OK;
 }
@@ -170,7 +153,15 @@ NS_IMETHODIMP nsScriptablePeer::ResumePlayer()
 NS_IMETHODIMP nsScriptablePeer::PausePlayer()
 {
   if (mPlugin)
-    mPlugin->pausePlayer();
+    mPlugin->PausePlayer();
 
+  return NS_OK;
+}
+
+
+NS_IMETHODIMP nsScriptablePeer::IsDone(PRBool *isdone)
+{
+  if (mPlugin == NULL) return NS_ERROR_NOT_INITIALIZED;
+  mPlugin->IsDone(isdone);
   return NS_OK;
 }

@@ -49,16 +49,37 @@
 #ifdef AMBULANT_FIREFOX_PLUGIN
 #endif // AMBULANT_FIREFOX_PLUGIN
 
+//#define AM_DBG
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
+using namespace ambulant;
+
+
+NPP nsPluginInstance::s_lastInstance = NULL;
+
+//////////////////////////////////////
+//
+// general identification of this plugin and what it does
+//
+
+#define PLUGIN_NAME "ambulant plugin"
+#define PLUGIN_DESCRIPTION "W3C Smil 3.0 multimedia player"
+char* mimetypes = "application/smil:.smi:W3C Smil 3.0 Playable Multimedia file;application/smil+xml:.smil:W3C Smil 3.0 Playable Multimedia file;application/x-ambulant-smil:.smil:W3C Smil 3.0 Ambulant Player compatible file;";
+extern "C" {
 //////////////////////////////////////
 //
 // general initialization and shutdown
 //
-NPError NS_PluginInitialize()
+NPError
+NS_PluginInitialize()
 {
   return NPERR_NO_ERROR;
 }
 
-void NS_PluginShutdown()
+void
+NS_PluginShutdown()
 {
 }
 
@@ -66,7 +87,8 @@ void NS_PluginShutdown()
 //
 // construction and destruction of our plugin instance object
 //
-nsPluginInstanceBase * NS_NewPluginInstance(nsPluginCreateData * aCreateDataStruct)
+nsPluginInstanceBase *
+NS_NewPluginInstance(nsPluginCreateData * aCreateDataStruct)
 {
   if(!aCreateDataStruct)
     return NULL;
@@ -77,12 +99,14 @@ nsPluginInstanceBase * NS_NewPluginInstance(nsPluginCreateData * aCreateDataStru
   return plugin;
 }
 
-void NS_DestroyPluginInstance(nsPluginInstanceBase * aPlugin)
+void
+NS_DestroyPluginInstance(nsPluginInstanceBase * aPlugin)
 {
   if(aPlugin)
     delete (nsPluginInstance *)aPlugin;
 }
 
+} // extern "C"
 ////////////////////////////////////////
 //
 // nsPluginInstance class implementation
@@ -96,7 +120,8 @@ nsPluginInstance::nsPluginInstance(NPP aInstance) : nsPluginInstanceBase(),
 #endif // AMBULANT_FIREFOX_PLUGIN
   mScriptablePeer(NULL)
 {
-  mhWnd = NULL;
+  s_lastInstance = mInstance;
+  m_hwnd = NULL;
   mString[0] = '\0';
 }
 
@@ -118,47 +143,168 @@ nsPluginInstance::~nsPluginInstance()
 	}
 #endif // AMBULANT_FIREFOX_PLUGIN
 }
+int
+strcasecmp(const char* s1, const char* s2) {
+	if (s1 == NULL && s2 == NULL)
+		return 0;
+	else if (s1 == NULL)
+		return -1;
+	else if (s2 == NULL)
+		return 1;
+
+	while (*s1 != 0 && *s2 != 0) {
+		if (toupper(*s1) != toupper(*s2))
+			return (toupper(*s1) < toupper(*s2)) ? -1 : 1;
+		s1++;
+		s2++;
+	}
+	if (*s1 == 0 && *s2 == 0)
+		return 0;
+	else if (*s1 == 0)
+		return -1;
+	else
+		return 1;
+}
 
 static LRESULT CALLBACK PluginWinProc(HWND, UINT, WPARAM, LPARAM);
 static WNDPROC lpOldProc = NULL;
 
-NPBool nsPluginInstance::init(NPWindow* aWindow)
+NPBool
+nsPluginInstance::init(NPWindow* aWindow)
 {
-  if(aWindow == NULL)
-    return FALSE;
+    if(aWindow == NULL)
+		return FALSE;
+	mNPWindow = aWindow;
+	m_hwnd = (HWND)aWindow->window;
+	if(m_hwnd == NULL)
+		return FALSE;
+    NPError nperr = NPN_GetValue(mInstance, NPNVWindowNPObject, &mNPWindow);
+	if (nperr != NPERR_NO_ERROR)
+		return FALSE;
+	// subclass window so we can intercept window messages and
+	// do our drawing to it
+	lpOldProc = SubclassWindow(m_hwnd, (WNDPROC)PluginWinProc);
 
-  mhWnd = (HWND)aWindow->window;
-  if(mhWnd == NULL)
-    return FALSE;
+	// associate window with our nsPluginInstance object so we can access 
+	// it in the window procedure
+	SetWindowLong(m_hwnd, GWL_USERDATA, (LONG)this);
 
-  // subclass window so we can intercept window messages and
-  // do our drawing to it
-  lpOldProc = SubclassWindow(mhWnd, (WNDPROC)PluginWinProc);
-
-  // associate window with our nsPluginInstance object so we can access 
-  // it in the window procedure
-  SetWindowLong(mhWnd, GWL_USERDATA, (LONG)this);
-
-  mInitialized = TRUE;
-  return TRUE;
+	assert ( ! m_ambulant_player);
+	ambulant::lib::logger::get_logger()->set_show_message(nsPluginInstance::display_message);
+	ambulant::lib::logger::get_logger()->show("Ambulant plugin loaded");
+	const char* arg_str = NULL;
+    if (mCreateData.argc > 1)
+		for (int i =0; i < mCreateData.argc; i++) {
+// Uncomment next line to see the <EMBED/> attr values	
+//          fprintf(stderr, "arg[%i]:%s=%s\n",i,mCreateData.argn[i],mCreateData.argv[i]);
+            if (strcasecmp(mCreateData.argn[i],"data") == 0)
+                if (arg_str == NULL)
+                    arg_str = mCreateData.argv[i];
+            if (strcasecmp(mCreateData.argn[i],"src") == 0)
+                if (arg_str == NULL)
+                    arg_str = mCreateData.argv[i];
+		}	
+	if (arg_str == NULL)
+        return false;
+    net::url file_url;
+    net::url arg_url = net::url::from_url (arg_str);
+    char* file_str = NULL;
+    if (arg_url.is_absolute()) {
+		file_url = arg_url;
+        file_str = strdup(file_url.get_file().c_str());
+    } else {
+        char* loc_str = get_document_location();
+        if (loc_str != NULL) {
+            net::url loc_url = net::url::from_url (loc_str);
+            file_url = arg_url.join_to_base(loc_url);
+            free((void*)loc_str);
+        } else {
+            file_url = arg_url;
+        }
+        file_str = strdup(file_url.get_file().c_str());
+    }
+	m_url = file_url;
+	m_player_callbacks.set_os_window(m_hwnd);
+	m_ambulant_player = new ambulant::gui::dx::dx_player(m_player_callbacks, NULL, m_url);
+	if (m_ambulant_player)
+		m_ambulant_player->play();
+//	plugin->m_ambulant_player->redraw(hWnd, hdc);
+	mInitialized = TRUE;
+	return TRUE;
 }
 
-void nsPluginInstance::shut()
+void
+nsPluginInstance::shut()
 {
   // subclass it back
-  SubclassWindow(mhWnd, lpOldProc);
-  mhWnd = NULL;
+  SubclassWindow(m_hwnd, lpOldProc);
+  m_hwnd = NULL;
   mInitialized = FALSE;
 }
 
-NPBool nsPluginInstance::isInitialized()
+NPBool
+nsPluginInstance::isInitialized()
 {
   return mInitialized;
 }
 
 #ifdef AMBULANT_FIREFOX_PLUGIN
 
-const char * nsPluginInstance::getVersion()
+/// Get the location of the html document.
+/// In javascript this is simply document.location.href. In C it's the
+/// same, but slightly more convoluted:-)
+char*
+nsPluginInstance::get_document_location()
+{
+    char *id = "ambulant::nsPluginInstance::getLocation";
+	AM_DBG fprintf(stderr, "nsPluginInstance::get_document_location()\n");
+    char *rv = NULL;
+
+	// Get document
+	NPIdentifier npidocument = NPN_GetStringIdentifier("document");
+	NPVariant npvDocument;
+	bool ok = NPN_GetProperty(mInstance, (NPObject*)mNPWindow, npidocument, &npvDocument);
+	AM_DBG fprintf(stderr, "NPN_GetProperty(..., document, ...) -> %d, 0x%d\n", ok, npvDocument);
+	if (!ok) return NULL;
+	assert(NPVARIANT_IS_OBJECT(npvDocument));
+	NPObject *document = NPVARIANT_TO_OBJECT(npvDocument);
+	assert(document);
+	
+	// Get document.location
+	NPVariant npvLocation;
+	ok = NPN_GetProperty(mInstance, document, NPN_GetStringIdentifier("location"), &npvLocation);
+	AM_DBG fprintf(stderr, "NPN_GetProperty(..., location, ...) -> %d, 0x%d\n", ok, npvLocation);
+	if (!ok) return NULL;
+	assert(NPVARIANT_IS_OBJECT(npvLocation));
+	NPObject *location = NPVARIANT_TO_OBJECT(npvLocation);
+	assert(location);
+	
+	// Get document.location.href
+	NPVariant npvHref;
+	ok = NPN_GetProperty(mInstance, location, NPN_GetStringIdentifier("href"), &npvHref);
+	AM_DBG fprintf(stderr, "NPN_GetProperty(..., href, ...) -> %d, 0x%d\n", ok, npvHref);
+	if (!ok) return NULL;
+	if (!NPVARIANT_IS_STRING(npvHref)) {
+		AM_DBG fprintf(stderr, "get_document_location: document.location.href is not a string\n");
+		return NULL;
+	}
+
+	// Turn it into a C string.
+	// XXXJACK: the memory for the string isn't released...
+	NPString href = NPVARIANT_TO_STRING(npvHref);
+	rv = (char*) malloc(href.utf8length+1);
+	strncpy(rv, href.utf8characters, href.utf8length);
+	rv[href.utf8length] = '\0';
+	AM_DBG fprintf(stderr, "get_document_location: returning \"%s\"\n", rv);
+	
+    NPN_ReleaseVariantValue(&npvLocation);
+    NPN_ReleaseVariantValue(&npvDocument);
+    NPN_ReleaseVariantValue(&npvHref);
+    return rv;
+}
+
+const char *
+nsPluginInstance::getVersion()
 {
 	return ambulant::get_version();
 }
@@ -202,73 +348,68 @@ ambulant_player_callbacks::new_html_browser(int left, int top, int width, int he
 	return NULL; // not implementrd, is it needed?
 }
 
-// this will start AmbulantPLayer
-void nsPluginInstance::startPlayer()
+/* glue code */
+NS_IMPL_ISUPPORTS1(nsPluginInstance, AmbulantFFplugin)
+
+// this will start AmbulantPlayer
+NS_IMETHODIMP
+nsPluginInstance::StartPlayer()
 {
-	if (m_ambulant_player)
-		m_ambulant_player->play();
-	InvalidateRect(mhWnd, NULL, TRUE);
-	UpdateWindow(mhWnd);
+	AM_DBG lib::logger::get_logger()->debug("nsPluginInstance::StartPlayer()\n");
+	if (m_ambulant_player == NULL) return NS_ERROR_NOT_AVAILABLE;
+	m_ambulant_player->get_player()->start();
+	return NS_OK;
 }
 
-// this will stop AmbulantPLayer
-void nsPluginInstance::stopPlayer()
+// this will stop AmbulantPlayer
+NS_IMETHODIMP
+nsPluginInstance::StopPlayer()
 {
-	if (m_ambulant_player)
-		m_ambulant_player->stop();
+	AM_DBG lib::logger::get_logger()->debug("nsPluginInstance::StopPlayer()\n");
+	if (m_ambulant_player == NULL) return NS_ERROR_NOT_AVAILABLE;
+	m_ambulant_player->get_player()->stop();
+	return NS_OK;
 }
 
-// this will restart AmbulantPLayer
-void nsPluginInstance::restartPlayer()
+// this will restart AmbulantPlayer
+NS_IMETHODIMP
+nsPluginInstance::RestartPlayer()
 {
-//  InvalidateRect(mhWnd, NULL, TRUE);
-//  UpdateWindow(mhWnd);
-	if (m_ambulant_player) {
-		m_ambulant_player->stop();
-		m_ambulant_player->play();
-	}
-	InvalidateRect(mhWnd, NULL, TRUE);
-	UpdateWindow(mhWnd);
+	AM_DBG lib::logger::get_logger()->debug("nsPluginInstance::RestartPlayer()\n");
+	if (m_ambulant_player == NULL) return NS_ERROR_NOT_AVAILABLE;
+	m_ambulant_player->get_player()->stop();
+	m_ambulant_player->get_player()->start();
+	return NS_OK;
 }
 
-// this will resume AmbulantPLayer
-void nsPluginInstance::resumePlayer()
+// this will resume AmbulantPlayer
+NS_IMETHODIMP
+nsPluginInstance::ResumePlayer()
 {
-//  InvalidateRect(mhWnd, NULL, TRUE);
-//  UpdateWindow(mhWnd);
-	if (m_ambulant_player)
-		m_ambulant_player->play();
-	InvalidateRect(mhWnd, NULL, TRUE);
-	UpdateWindow(mhWnd);
+	AM_DBG lib::logger::get_logger()->debug("nsPluginInstance::ResumePlayer()\n");
+	if (m_ambulant_player == NULL) return NS_ERROR_NOT_AVAILABLE;
+	m_ambulant_player->get_player()->resume();
+	return NS_OK;
 }
 
-// this will pause AmbulantPLayer
-void nsPluginInstance::pausePlayer()
+// this will pause AmbulantPlayer
+NS_IMETHODIMP
+nsPluginInstance::PausePlayer()
 {
-//  InvalidateRect(mhWnd, NULL, TRUE);
-//  UpdateWindow(mhWnd);
-	if (m_ambulant_player)
-		m_ambulant_player->pause();
+	AM_DBG lib::logger::get_logger()->debug("nsPluginInstance::PausePlayer()\n");
+	if (m_ambulant_player == NULL) return NS_ERROR_NOT_AVAILABLE;
+	m_ambulant_player->get_player()->pause();
+	return NS_OK;
 }
 
-#else // AMBULANT_FIREFOX_PLUGIN
-
-//XXXX
-// this will force to draw a version string in the plugin window
-void nsPluginInstance::showVersion()
+// this will query the 'done' flag of AmbulantPlayer
+NS_IMETHODIMP
+nsPluginInstance::IsDone(PRBool *isdone)
 {
-  const char *ua = NPN_UserAgent(mInstance);
-  strcpy(mString, ua);
-  InvalidateRect(mhWnd, NULL, TRUE);
-  UpdateWindow(mhWnd);
-}
-
-// this will clean the plugin window
-void nsPluginInstance::clear()
-{
-  strcpy(mString, "");
-  InvalidateRect(mhWnd, NULL, TRUE);
-  UpdateWindow(mhWnd);
+	AM_DBG lib::logger::get_logger()->debug("nsPluginInstance:IsDone()\n");
+	if (m_ambulant_player == NULL) return NS_ERROR_NOT_AVAILABLE;
+	*isdone = m_ambulant_player->get_player()->is_done();
+	return NS_OK;
 }
 #endif // AMBULANT_FIREFOX_PLUGIN
 
@@ -281,11 +422,13 @@ void nsPluginInstance::clear()
 // nsScriptablePeer interface which we should have implemented
 // and which should be defined in the corressponding *.xpt file
 // in the bin/components folder
-NPError	nsPluginInstance::GetValue(NPPVariable aVariable, void *aValue)
+NPError
+nsPluginInstance::GetValue(NPPVariable aVariable, void *aValue)
 {
   NPError rv = NPERR_NO_ERROR;
 
-  if (aVariable == NPPVpluginScriptableInstance) {
+  if (aVariable == NPPVpluginScriptableInstance
+	) {
     // addref happens in getter, so we don't addref here
     AmbulantFFplugin * scriptablePeer = getScriptablePeer();
     if (scriptablePeer) {
@@ -293,6 +436,11 @@ NPError	nsPluginInstance::GetValue(NPPVariable aVariable, void *aValue)
     } else
       rv = NPERR_OUT_OF_MEMORY_ERROR;
   }
+#ifdef  XP_WIN
+  else if (aVariable  == NPPVpluginScriptableNPObject) {
+	  *(void**)aValue = NULL;
+  }
+#endif//XP_WIN
   else if (aVariable == NPPVpluginScriptableIID) {
     static nsIID scriptableIID = AMBULANTFFPLUGIN_IID;
     nsIID* ptr = (nsIID *)NPN_MemAlloc(sizeof(nsIID));
@@ -306,12 +454,9 @@ NPError	nsPluginInstance::GetValue(NPPVariable aVariable, void *aValue)
   return rv;
 }
 
-// ==============================
-// ! Scriptability related code !
-// ==============================
-//
 // this method will return the scriptable object (and create it if necessary)
-nsScriptablePeer* nsPluginInstance::getScriptablePeer()
+nsScriptablePeer*
+nsPluginInstance::getScriptablePeer()
 {
   if (!mScriptablePeer) {
     mScriptablePeer = new nsScriptablePeer(this);
@@ -326,42 +471,10 @@ nsScriptablePeer* nsPluginInstance::getScriptablePeer()
   return mScriptablePeer;
 }
 
-#ifndef AMBULANT_FIREFOX_PLUGIN
-static LRESULT CALLBACK PluginWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-  switch (msg) {
-    case WM_PAINT:
-      {
-        // draw a frame and display the string
-        PAINTSTRUCT ps;
-        HDC hdc = BeginPaint(hWnd, &ps);
-        RECT rc;
-        GetClientRect(hWnd, &rc);
-        FrameRect(hdc, &rc, GetStockBrush(BLACK_BRUSH));
-
-        // get our plugin instance object and ask it for the version string
-        nsPluginInstance *plugin = (nsPluginInstance *)GetWindowLong(hWnd, GWL_USERDATA);
-        if (plugin)
-          DrawText(hdc, plugin->mString, strlen(plugin->mString), &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-        else {
-          char string[] = "Error occured";
-          DrawText(hdc, string, strlen(string), &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-        }
-
-        EndPaint(hWnd, &ps);
-      }
-      break;
-    default:
-      break;
-  }
-
-  return DefWindowProc(hWnd, msg, wParam, lParam);
-}
-#else // AMBULANT_FIREFOX_PLUGIN
-
 static ambulant_player_callbacks s_ambulant_player_callbacks;
 
-static LRESULT CALLBACK PluginWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+static LRESULT CALLBACK
+PluginWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	nsPluginInstance *plugin = (nsPluginInstance *)GetWindowLong(hWnd, GWL_USERDATA);
 	if (plugin)
@@ -374,24 +487,8 @@ static LRESULT CALLBACK PluginWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 				GetClientRect(hWnd, &rc);
 				FrameRect(hdc, &rc, GetStockBrush(BLACK_BRUSH));
 				EndPaint(hWnd, &ps);
-				if ( ! plugin->m_ambulant_player) {
-					// get our plugin instance object and ask it for the value of the "src" string
-					const char * s = plugin->getValue("src");
-					if (s == NULL)
-						break; //XXXX Error msg "no src attribute"
-					std::string str(s);
-					if (str.find("://") != std::string.npos)
-						plugin->m_url = ambulant::net::url::from_url(str);
-					else plugin->m_url = ambulant::net::url::from_filename(str);
-					plugin->m_hwnd = hWnd;
-					plugin->m_player_callbacks.set_os_window(hWnd);
-					plugin->m_ambulant_player = new ambulant::gui::dx::dx_player(plugin->m_player_callbacks, NULL, plugin->m_url);
-					if (plugin->m_ambulant_player)
-						plugin->m_ambulant_player->play();
-				} else {
-					if (plugin->m_ambulant_player)
-						plugin->m_ambulant_player->redraw(hWnd, hdc);
-				}
+				if (plugin->m_ambulant_player)
+					plugin->m_ambulant_player->redraw(hWnd, hdc);
 				NPRegion invalid_region = CreateRectRgn(rc.left,rc.top,rc.right,rc.bottom);
 				NPN_InvalidateRegion(plugin->getNPP(), invalid_region);
 				break;
@@ -457,4 +554,9 @@ nsPluginInstance::getNPP()
 }
 
 
-#endif // AMBULANT_FIREFOX_PLUGIN
+void
+nsPluginInstance::display_message(int level, const char *message) {
+	if (s_lastInstance)
+		NPN_Status(s_lastInstance, message);
+	// NPN_Status (mInstance, message);
+}

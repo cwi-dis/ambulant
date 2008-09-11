@@ -78,6 +78,7 @@ public:
   virtual NPError SetValue(NPNVariable variable, void *value)       { return NPERR_NO_ERROR; }
 };
 
+extern "C" {
 // functions that should be implemented for each specific plugin
 
 // creation and destruction of the object of the derived class
@@ -92,5 +93,6 @@ void NS_PluginShutdown();
 // global to get plugins name & description 
 NPError NS_PluginGetValue(NPPVariable aVariable, void *aValue);
 #endif
+} /* extern "C" */
 
 #endif // __PLUGININSTANCEBASE_H__
