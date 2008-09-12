@@ -1,3 +1,8 @@
+2008-09-11 14:38  keesblom
+
+	* Adapted to Gecko-SDK 1.9 (xulrunner-sdk). Version for BT. Last
+	  version before merge.
+
 2008-09-05 17:09  keesblom
 
 	* Added a few files needed  to compile firefox lugin fro windows
