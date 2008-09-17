@@ -121,8 +121,10 @@ NP_Initialize(NPNetscapeFuncs* pFuncs
   if(HIBYTE(pFuncs->version) > NP_VERSION_MAJOR)
     return NPERR_INCOMPATIBLE_VERSION_ERROR;
 
-  if(pFuncs->size < sizeof(NPNetscapeFuncs))
-    return NPERR_INVALID_FUNCTABLE_ERROR;
+// Next test commented out because we build for Firefox 3 but support Firefox 2,
+// and we don't use any of the new functions inf Firefox 3.
+//if(pFuncs->size < sizeof(NPNetscapeFuncs))
+//  return NPERR_INVALID_FUNCTABLE_ERROR;
 
   NPNFuncs.size                    = pFuncs->size;
   NPNFuncs.version                 = pFuncs->version;

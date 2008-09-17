@@ -43,17 +43,18 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", " "
+            VALUE "Comments", "Experimental version"
+            VALUE "CompanyName", "CWI, Amsterdam, The Netherlands"
             VALUE "FileDescription", "AmbulantPlayer plugin for Firefox"
-            VALUE "FileExtents", "smi,smil|smi,smil"
-            VALUE "FileOpenName", "SMIL presentation (*.smi,*.smil)|SMIL presentation (*.smi,*.smil)"
-            VALUE "FileVersion", "1.6"
+            VALUE "FileExtents", "smi,smil|smi,smil|smi,smil"
+            VALUE "FileOpenName", "SMIL presentation (*.smi,*.smil)|SMIL presentation (*.smi,*.smil)|SMIL presentation (*.smi,*.smil)"
+            VALUE "FileVersion", "1.9"
             VALUE "InternalName", "npscriptable"
-            VALUE "LegalCopyright", "Copyright © 2005"
-            VALUE "MIMEType", "application/smil|application/smil+xml"
-            VALUE "OriginalFilename", "AmbulantFFplugin.dll"
-            VALUE "ProductName", "AmbulantPlayer FirefoxPlugin"
-            VALUE "ProductVersion", "1.6"
+            VALUE "LegalCopyright", "8"
+            VALUE "MIMEType", "application/smil|application/smil+xml|application/x-ambulant-smil"
+            VALUE "OriginalFilename", "npAmbulantFirefoxPligin.dll"
+            VALUE "ProductName", "AmbulantPlayer FirefoxPlugin for W3C SMIL 3.0"
+            VALUE "ProductVersion", "1.9"
         END
     END
     BLOCK "VarFileInfo"
