@@ -210,8 +210,86 @@ copy /y .\AmbulantFFplugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\Ambu
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy /y .\AmbulantFFplugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\npambulant.xpt&quot;
-copy /y .\AmbulantFFplugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\AmbulantFFplugin.xpt&quot;
+				CommandLine="copy /y .\AmbulantFFplugin.dll &quot;\Program Files\Mozilla Firefox\plugins\npAmbulantFFplugin.dll&quot;
+copy /y .\AmbulantFFplugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\npAmbulantFFplugin.xpt&quot;
+"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="ReleaseNoShLibNoXerces|Win32"
+			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
+			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="1">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="0"
+				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\xulrunner-sdk&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\sdk\include&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\include\plugin&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\include\nspr&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\include\java&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\include\js&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\include\xpcom&quot;;..\..\include;&quot;..\..\projects\vc71-smil3&quot;"
+				PreprocessorDefinitions="NDEBUG;XP_WIN32;_DEBUG;MOZILLA_STRICT_API;XPCOM_GLUE;XP_WIN;_X86_;WIN32;_WINDOWS;_USRDLL;NPSIMPLE_EXPORTS;USE_SMIL30;WITH_SMIL30;WITHOUT_XERCES"
+				GeneratePreprocessedFile="0"
+				StringPooling="TRUE"
+				RuntimeLibrary="1"
+				EnableFunctionLevelLinking="TRUE"
+				TreatWChar_tAsBuiltInType="TRUE"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile=".\Release/AmbulantFFplugin.pch"
+				AssemblerListingLocation=".\Release/"
+				ObjectFile=".\Release/"
+				ProgramDataBaseFileName=".\Release/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/force"
+				AdditionalDependencies="..\..\lib\win32\libambulant_win32.lib ..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcom.lib ..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcomglue_s.lib ..\..\third_party_packages\xulrunner-sdk\sdk\lib\nspr4.lib libexpat.lib libjpeg.lib libpng.lib zlib.lib"
+				OutputFile="C:\Program Files\Mozilla Firefox\plugins\$(ProjectName).dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="&quot;..\..\\third_party_packages\xulrunner-sdk\sdk\lib&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\lib&quot;;..\..\lib\win32"
+				IgnoreAllDefaultLibraries="FALSE"
+				IgnoreDefaultLibraryNames="LIBCMT"
+				ModuleDefinitionFile="..\..\src\firefox_plugin_win32\AmbulantFFplugin.def"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=".\Release/AmbulantFFplugin.pdb"
+				SubSystem="0"
+				ImportLibrary=".\Release/AmbulantFFplugin.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\Release/AmbulantFFplugin.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="copy /y .\AmbulantFFplugin.dll &quot;\Program Files\Mozilla Firefox\plugins\npAmbulantFFplugin.dll&quot;
+copy /y .\AmbulantFFplugin.xpt &quot;\Program Files\Mozilla Firefox\plugins\npAmbulantFFplugin.xpt&quot;
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
@@ -372,6 +450,17 @@ c:\moztools\bin\xpidl.exe -m typelib -I..\..\third_party_packages\xulrunner-sdk\
 				</FileConfiguration>
 				<FileConfiguration
 					Name="DebugNoShLibNoXerces|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Running the XPIDL compiler and linker for $(InputName)"
+						CommandLine="echo %cd%
+..\..\third_party_packages\xulrunner-sdk\bin\xpidl.exe -m header -I..\..\third_party_packages\xulrunner-sdk\idl &quot;$(InputPath)&quot;
+..\..\third_party_packages\xulrunner-sdk\bin\xpidl.exe -m typelib -I..\..\third_party_packages\xulrunner-sdk\idl &quot;$(InputPath)&quot;
+"
+						Outputs="AmbulantFFplugin.h;AmbulantFFplugin.xpt"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ReleaseNoShLibNoXerces|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Running the XPIDL compiler and linker for $(InputName)"

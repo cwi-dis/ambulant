@@ -93,7 +93,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libjpeg.lib libexpat.lib libpng.lib zlib.lib xerces-c_2.lib"
+				AdditionalDependencies="libambulant_win32.lib libjpeg.lib libexpat.lib libpng.lib zlib.lib xerces-c_2.lib"
 				OutputFile="../../bin/win32/AmbulantPlayer.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\lib\win32"
