@@ -1980,7 +1980,12 @@ void time_node::kill_blockers(qtime_type timestamp, time_node *oproot) {
 		AM_DBG m_logger->debug("kill_blockers(%s): depends on %s %s", 
 			get_sig().c_str(), blocker->get_sig().c_str(), blocker->get_state()->name());
 		if (blocker->is_alive()) {
-			blocker->set_state(ts_postactive, timestamp, blocker);
+			if ((*it)->get_target_attr() == rt_begin) {
+					// Should we fire the event?
+			} else {
+				assert((*it)->get_target_attr() == rt_end);
+				blocker->set_state(ts_postactive, timestamp, blocker);
+			}
 		}
 	}
 }

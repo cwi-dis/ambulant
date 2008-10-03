@@ -187,8 +187,8 @@ void scheduler::activate_seq_child(time_node *parent, time_node *child) {
 	beginit = it;
 #else
 	// Skip all children that are active (or have been active)
-	for(it = children.begin(); it != children.end() && ((*it)->is_active() || (*it)->played()); it++) {
-		assert((*it) != child);
+	for(it = children.begin(); *it != child && ((*it)->is_active() || (*it)->played()); it++) {
+		assert(it != children.end());
 		AM_DBG lib::logger::get_logger()->debug("activate_seq_child: skip already active %s", (*it)->get_sig().c_str());
 	}
 	beginit = it;
