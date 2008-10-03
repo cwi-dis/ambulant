@@ -132,7 +132,7 @@ renderer_playable::_init_clip_begin_end()
 		if (d == -1) {
 			lib::logger::get_logger()->warn("Cannot parse clipBegin");
 		} else {
-			cb = parser.get_time() * 1000 ;	// get_time returns ms !
+			cb = (net::timestamp_t)parser.get_time() * 1000;
 			// lib::logger::get_logger()->warn("parsed clipBegin cb=%lld", cb);
 
 		}
@@ -153,7 +153,7 @@ renderer_playable::_init_clip_begin_end()
 		if (d == -1) {
 			lib::logger::get_logger()->warn("Cannot parse clipEnd");
 		} else {
-			ce = parser.get_time() *1000;	// get_time returns ms !
+			ce = (net::timestamp_t)parser.get_time() * 1000;
 		}	
 	}
 	AM_DBG lib::logger::get_logger()->debug("renderer_playable::init_clip_begin_end: cb=%lld, ce=%lld", cb,ce);
