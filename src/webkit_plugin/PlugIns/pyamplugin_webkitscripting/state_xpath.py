@@ -39,7 +39,32 @@ class MyFormFacesStateComponentFactory(ambulant.state_component_factory):
             return proxy_component
         return None
 
-class MyStateComponent(ambulant.state_component):
+class MyDomTreeModifier(object):
+    def ___init__(self, domdocument):
+        self.domdocument = domdocument
+        
+    def replaceTextChild(self, node, value):
+        valuenode = node.firstChild()
+        if valuenode:
+            valuenode.setNodeValue_(value)
+        else:
+            valuenode = self.domdocument.createTextNode_(value)
+            node.appendChild_(valuenode)
+            
+    def createTextChild(self, parentnode, where, name, value):
+        if where and where != 'child':
+            print 'XXX newvalue: only child supported'
+        newnode = self.domdocument.createElement_(name)
+        if value:
+            valuenode = self.domdocument.createTextNode_(value)
+            newnode.appendChild_(valuenode)
+        parentnode.appendChild_(newnode)
+        
+    def removeNode(self, node):
+        parent = node.parentElement()
+        parentElement.removeChild_(node)
+
+class MyStateComponent(ambulant.state_component, MyDomTreeModifier):
     def __init__(self, domdocument):
         if DEBUG: print 'MyStateComponent()'
         self.globscope = {}
@@ -133,6 +158,7 @@ class MyStateComponent(ambulant.state_component):
     def set_value(self, var, expr):
         pool = Foundation.NSAutoreleasePool.alloc().init()
         if DEBUG: print 'set_value', (var, expr)
+        # XXXX There is no reason value has to be string. Could be subtree, etc.
         value = self.string_expression(expr)
         node = self._find_node(var)
         if not node:
@@ -140,11 +166,7 @@ class MyStateComponent(ambulant.state_component):
         print 'setvalue: NODE', node
 ##        print 'DIR()', dir(node)
 ##        print 'DIR(document)', dir(self.domdocument)
-        valuenode = node.firstChild()
-        if not valuenode:
-            valuenode = self.domdocument.createTextNode_(value)
-            node.appendChild_(valuenode)
-        valuenode.setNodeValue_(value)
+        self.replaceTextChild(node, value)
         self._recalculate(node)
         print 'set_value: node is now', self.string_expression(var)
         
@@ -153,15 +175,11 @@ class MyStateComponent(ambulant.state_component):
         parentnode = self._find_node(ref)
         if not parentnode:
             return
-        if where and where != 'child':
-            print 'XXX newvalue: only child supported'
-        newnode = self.domdocument.createElement_(name)
         if expr:
             value = self.string_expression(expr)
-            if value:
-                valuenode = self.domdocument.createTextNode_(value)
-                newnode.appendChild_(valuenode)
-        parentnode.appendChild_(newnode)
+        else:
+            value = None
+        self.createTextChild(parentnode, where, name, value)
         self._recalculate(parentnode)
         print 'newvalue: all done'
         x = self.string_expression(ref+'/'+name)
@@ -170,8 +188,7 @@ class MyStateComponent(ambulant.state_component):
     def del_value(self, ref):
         node = self._find_node(ref)
         if not node: return
-        parent = node.parentElement()
-        parentElement.removeChild_(node)
+        self.removeNode(node)
         print 'XXX delete', node
         self._recalculate(parentElement)
         

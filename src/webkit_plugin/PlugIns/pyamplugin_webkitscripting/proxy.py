@@ -49,6 +49,9 @@ class MTProxyMethodWrapper(Foundation.NSObject):
         rvholder = []
         self.performSelectorOnMainThread_withObject_waitUntilDone_(
                 self.callinmainthread_, (args, kwds, rvholder), True)
+        if len(rvholder) != 1:
+            print 'MTProxyMethodWrapper.__call__: Call produced no return value: ', self.name, args, kwds
+            return
         return rvholder[0]
 
     def callinmainthread_( self, (args, kwds, rvholder) ):
