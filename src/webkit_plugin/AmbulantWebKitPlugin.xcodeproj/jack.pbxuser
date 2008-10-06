@@ -20,18 +20,20 @@
 		hitCount = 0;
 		ignoreCount = 0;
 		lineNumber = 252;
-		modificationTime = 235301287.734048;
+		modificationTime = 244990834.651493;
 		state = 0;
 	};
 	04239D220CD2895A00152474 /* Safari */ = {
 		isa = PBXExecutable;
 		activeArgIndices = (
 			NO,
+			NO,
 			YES,
 		);
 		argumentStrings = (
 			StateTestXHTML.html,
 			../../../mmdocuments/NoBudgetStateDemo/index.html,
+			"~/Sites/NoBudget/index.html",
 		);
 		autoAttachOnCrash = 1;
 		breakpointsEnabled = 1;
@@ -157,7 +159,7 @@
 	};
 	089C1669FE841209C02AAC07 /* Project object */ = {
 		activeArchitecture = i386;
-		activeBuildConfigurationName = Release;
+		activeBuildConfigurationName = Debug;
 		activeExecutable = 04239D220CD2895A00152474 /* Safari */;
 		activeTarget = 8D5B49AC048680CD000E48DA /* AmbulantWebKitPlugin */;
 		addToTargets = (
@@ -227,7 +229,7 @@
 				PBXFileTableDataSourceColumnWidthsKey = (
 					22,
 					300,
-					72.58349609375,
+					73,
 				);
 				PBXFileTableDataSourceColumnsKey = (
 					PBXExecutablesDataSource_ActiveFlagID,
@@ -295,8 +297,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 236640472;
-			PBXWorkspaceStateSaveDate = 236640472;
+			PBXPerProjectTemplateStateSaveDate = 244977642;
+			PBXWorkspaceStateSaveDate = 244977642;
 		};
 		sourceControlManager = 04EC0D310CBD8D22009B6B85 /* Source Control */;
 		userBuildSettings = {

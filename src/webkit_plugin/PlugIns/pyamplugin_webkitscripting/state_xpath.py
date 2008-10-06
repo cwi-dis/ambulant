@@ -1,6 +1,7 @@
 import ambulant
 import Foundation
 import traceback
+import proxy
 
 DEBUG=True
 
@@ -14,7 +15,12 @@ class MyStateComponentFactory(ambulant.state_component_factory):
     def new_state_component(self, uri):
         print 'new_state_component, uri=', uri
         if uri == NS_XPATH:
-            return MyStateComponent(self.domdocument)
+            real_component = MyStateComponent(self.domdocument)
+            class MTProxyStateComponent(proxy.MTHookProxy):
+                pass
+            proxy_component = MTProxyStateComponent('proxy_component', real_component)
+            # test: proxy_component = real_component
+            return proxy_component
         return None
         
 class MyFormFacesStateComponentFactory(ambulant.state_component_factory):
@@ -25,34 +31,13 @@ class MyFormFacesStateComponentFactory(ambulant.state_component_factory):
     def new_state_component(self, uri):
         print 'new_state_component, uri=', uri
         if uri == NS_XPATH:
-            return MyFormFacesStateComponent(self.domdocument, self.scriptobject)
+            real_component = MyFormFacesStateComponent(self.domdocument, self.scriptobject)
+            class MTProxyStateComponent(proxy.MTHookProxy):
+                pass
+            proxy_component = MTProxyStateComponent('proxy_component', real_component)
+            # test: proxy_component = real_component
+            return proxy_component
         return None
-
-class MainThreadCaller(Foundation.NSObject):
-    
-    def initWithArgs_(self, args):
-        self = self.init()
-        self.args = args
-        self.rv = None
-        return self
-
-    def callWait_(self, sender):
-        self.performSelectorOnMainThread_withObject_waitUntilDone_(
-            self.call_, self.args, True)
-        return self.rv
-    
-    def call_(self, (func, args, kwargs)):
-        try:
-            self.rv = func(*args, **kwargs)
-        except:
-            print 'webkitpluginstate: HELP! Exception!'
-            traceback.print_exc()
- 
-def callWait(func, *args, **kwargs):
-    """call a function on the main thread (sync)"""
-    pool = Foundation.NSAutoreleasePool.alloc().init()
-    obj = MainThreadCaller.alloc().initWithArgs_((func, args, kwargs))
-    return obj.callWait_(None)
 
 class MyStateComponent(ambulant.state_component):
     def __init__(self, domdocument):
@@ -147,12 +132,8 @@ class MyStateComponent(ambulant.state_component):
         
     def set_value(self, var, expr):
         pool = Foundation.NSAutoreleasePool.alloc().init()
-        return callWait(self._set_value, var, expr)
-    
-    def _set_value(self, var, expr):
-        pool = Foundation.NSAutoreleasePool.alloc().init()
         if DEBUG: print 'set_value', (var, expr)
-        value = self._string_expression(expr)
+        value = self.string_expression(expr)
         node = self._find_node(var)
         if not node:
             return
@@ -165,13 +146,9 @@ class MyStateComponent(ambulant.state_component):
             node.appendChild_(valuenode)
         valuenode.setNodeValue_(value)
         self._recalculate(node)
-        print '_set_value: node is now', self._string_expression(var)
+        print 'set_value: node is now', self.string_expression(var)
         
     def new_value(self, ref, where, name, expr):
-        pool = Foundation.NSAutoreleasePool.alloc().init()
-        return callWait(self._new_value, ref, where, name, expr)
-    
-    def _new_value(self, ref, where, name, expr):
         if DEBUG: print 'newvalue', (ref, where, name, expr)
         parentnode = self._find_node(ref)
         if not parentnode:
@@ -180,21 +157,17 @@ class MyStateComponent(ambulant.state_component):
             print 'XXX newvalue: only child supported'
         newnode = self.domdocument.createElement_(name)
         if expr:
-            value = self._string_expression(expr)
+            value = self.string_expression(expr)
             if value:
                 valuenode = self.domdocument.createTextNode_(value)
                 newnode.appendChild_(valuenode)
         parentnode.appendChild_(newnode)
         self._recalculate(parentnode)
         print 'newvalue: all done'
-        x = self._string_expression(ref+'/'+name)
+        x = self.string_expression(ref+'/'+name)
         print 'newvalue:', ref+'/'+name, 'is now', x
         
     def del_value(self, ref):
-        pool = Foundation.NSAutoreleasePool.alloc().init()
-        return callWait(self._del_value, ref)
-        
-    def _del_value(self, ref):
         node = self._find_node(ref)
         if not node: return
         parent = node.parentElement()
@@ -207,10 +180,6 @@ class MyStateComponent(ambulant.state_component):
         print 'NOT IMPLEMENTED: send, submission=', submission
         
     def string_expression(self, expr):
-        pool = Foundation.NSAutoreleasePool.alloc().init()
-        return callWait(self._string_expression, expr)
-
-    def _string_expression(self, expr):
         #pool = Foundation.NSAutoreleasePool.alloc().init()
         if DEBUG: print 'string_expression, expr=', expr
         if not self.nsresolver:
