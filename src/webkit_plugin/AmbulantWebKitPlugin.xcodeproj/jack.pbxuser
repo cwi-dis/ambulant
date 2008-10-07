@@ -20,8 +20,8 @@
 		hitCount = 0;
 		ignoreCount = 0;
 		lineNumber = 252;
-		modificationTime = 244997322.377652;
-		state = 0;
+		modificationTime = 245081458.115531;
+		state = 1;
 	};
 	04239D220CD2895A00152474 /* Safari */ = {
 		isa = PBXExecutable;
@@ -297,8 +297,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 244977642;
-			PBXWorkspaceStateSaveDate = 244977642;
+			PBXPerProjectTemplateStateSaveDate = 245077247;
+			PBXWorkspaceStateSaveDate = 245077247;
 		};
 		sourceControlManager = 04EC0D310CBD8D22009B6B85 /* Source Control */;
 		userBuildSettings = {

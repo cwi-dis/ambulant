@@ -8,6 +8,12 @@ DEBUG=True
 NS_XFORMS="http://www.w3.org/2002/xforms"
 NS_XPATH="http://www.w3.org/TR/1999/REC-xpath-19991116"
 
+REX_TEMPLATE="""
+<rex xmlns='http://www.w3.org/ns/rex#'>
+    <event target='%(target)s' name='%(event)s' %(attrs)s>%(elements)s</event>
+</rex>
+"""
+
 class MyStateComponentFactory(ambulant.state_component_factory):
     def __init__(self, domdocument):
         self.domdocument = domdocument
@@ -40,9 +46,9 @@ class MyFormFacesStateComponentFactory(ambulant.state_component_factory):
         return None
 
 class MyDomTreeModifier(object):
-    def ___init__(self, domdocument):
+    def __init__(self, domdocument):
         self.domdocument = domdocument
-        
+         
     def replaceTextChild(self, node, value):
         valuenode = node.firstChild()
         if valuenode:
@@ -63,12 +69,74 @@ class MyDomTreeModifier(object):
     def removeNode(self, node):
         parent = node.parentElement()
         parentElement.removeChild_(node)
-
-class MyStateComponent(ambulant.state_component, MyDomTreeModifier):
+        
+class MyDomTreeRexModifier(object):
+    def __init__(self, domdocument):
+        self.domdocument = domdocument
+                
+    def replaceTextChild(self, node, value):
+        valuenode = node.firstChild()
+        if valuenode:
+            valuenode.setNodeValue_(value)
+        else:
+            valuenode = self.domdocument.createTextNode_(value)
+            node.appendChild_(valuenode)
+        node_path = self.get_xpath(node)
+        self.gen_rex(node_path, 'DOMCharacterDataModified', {'newValue':value}, None)
+            
+    def createTextChild(self, parentnode, where, name, value):
+        if where and where != 'child':
+            print 'XXX newvalue: only child supported'
+        newnode = self.domdocument.createElement_(name)
+        if value:
+            valuenode = self.domdocument.createTextNode_(value)
+            newnode.appendChild_(valuenode)
+        parentnode.appendChild_(newnode)
+        node_path = self.get_xpath(parentnode)
+        # XXX Need to do escapes.
+        fragment = '<%s xmlns=''>%s</%s>' % (name, value, name)
+        self.gen_rex(node_path, 'DOMNodeInserted', {}, fragment)
+        
+    def removeNode(self, node):
+        parent = node.parentElement()
+        node_path = self.get_xpath(node)
+        parentElement.removeChild_(node)
+        self.gen_rex(node_path, 'DOMNodeRemoved', {}, None)
+        
+    def get_xpath(self, node):
+        rest = ''
+        while 1:
+            element = node.nodeName()
+            element_name = node.nodeName()
+            parent = node.parentNode()
+            if parent:
+                sibling = node.previousSibling()
+                count = 0
+                while sibling:
+                    if sibling.nodeName() == element_name:
+                        count += 1
+                    sibling = sibling.previousSibling()
+                if count:
+                    element_name += '[%d]' % count
+                # Hack: the topmost parent is the #document, and we don't want that one.
+                rest = '/' + element_name + rest
+            node = parent
+            if not node: break
+        return rest
+        
+    def gen_rex(self, target, event, attrdict, elements):
+        if not elements:
+            elements = ''
+        attrs = ' '.join(["%s='%s'" % (k, v) for k, v in attrdict.items()])
+        rv = REX_TEMPLATE % locals()
+        return rv
+        
+class MyStateComponent(ambulant.state_component, MyDomTreeRexModifier):
     def __init__(self, domdocument):
         if DEBUG: print 'MyStateComponent()'
         self.globscope = {}
         self.domdocument = domdocument
+        MyDomTreeRexModifier.__init__(self, domdocument)
         if DEBUG: print 'DOMDocument is', self.domdocument
         self.statecontainer_id = None
         self.statenode = None
@@ -86,7 +154,7 @@ class MyStateComponent(ambulant.state_component, MyDomTreeModifier):
         if DEBUG: print "state id is", src[1:]
         statecontainer = self.domdocument.getElementById_(src[1:])
         if DEBUG: print "state container node is", statecontainer
-        if DEBUG: self._dump(statecontainer)
+        if DEBUG: self.dump_dom_node(statecontainer)
         return statecontainer
         
     def _recalculate(self, node):
@@ -225,19 +293,19 @@ class MyStateComponent(ambulant.state_component, MyDomTreeModifier):
             return value
         print 'string_expression: XPath returned unknown type, resultType=', rv.resultType()
         
-    def _dump(self, domnode, indent=0):
+    def dump_dom_node(self, domnode, indent=0):
         if not domnode: return
         print ' '*indent, domnode
         ch = domnode.firstChild()
-        self._dump(ch, indent+2)
+        self.dump_dom_node(ch, indent+2)
         if indent > 0:
-            self._dump(domnode.nextSibling(), indent)
+            self.dump_dom_node(domnode.nextSibling(), indent)
         
 class MyFormFacesStateComponent(MyStateComponent):
     def __init__(self, domdocument, scriptengine):
-        MyStateComponent.__init__(self, domdocument)
         self.scriptengine = scriptengine
-        
+        MyStateComponent.__init__(self, domdocument)
+         
     def get_state_container(self, node_id):
         # First: a sanity check that this is indeed FormFaces
         xform = self.scriptengine.evaluateWebScript_("xform")
