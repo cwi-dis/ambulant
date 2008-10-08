@@ -2,6 +2,7 @@ import ambulant
 import Foundation
 import traceback
 import proxy
+import bjshare
 
 DEBUG=True
 
@@ -13,6 +14,8 @@ REX_TEMPLATE="""
     <event target='%(target)s' name='%(event)s' %(attrs)s>%(elements)s</event>
 </rex>
 """
+
+SHARE_URL="bjshare:///1234567890JACKTESTSHARE"
 
 class MyStateComponentFactory(ambulant.state_component_factory):
     def __init__(self, domdocument):
@@ -73,8 +76,10 @@ class MyDomTreeModifier(object):
 class MyDomTreeRexModifier(object):
     def __init__(self, domdocument):
         self.domdocument = domdocument
+        self.sync = bjshare.start_sync(SHARE_URL)
                 
     def replaceTextChild(self, node, value):
+        self.sync.transaction()
         valuenode = node.firstChild()
         if valuenode:
             valuenode.setNodeValue_(value)
@@ -82,9 +87,11 @@ class MyDomTreeRexModifier(object):
             valuenode = self.domdocument.createTextNode_(value)
             node.appendChild_(valuenode)
         node_path = self.get_xpath(node)
-        self.gen_rex(node_path, 'DOMCharacterDataModified', {'newValue':value}, None)
+        update = self.gen_rex(node_path, 'DOMCharacterDataModified', {'newValue':value}, None)
+        self.sync.commit(update)
             
     def createTextChild(self, parentnode, where, name, value):
+        self.sync.transaction()
         if where and where != 'child':
             print 'XXX newvalue: only child supported'
         newnode = self.domdocument.createElement_(name)
@@ -95,13 +102,16 @@ class MyDomTreeRexModifier(object):
         node_path = self.get_xpath(parentnode)
         # XXX Need to do escapes.
         fragment = '<%s xmlns=''>%s</%s>' % (name, value, name)
-        self.gen_rex(node_path, 'DOMNodeInserted', {}, fragment)
+        update = self.gen_rex(node_path, 'DOMNodeInserted', {}, fragment)
+        self.sync.commit(update)
         
     def removeNode(self, node):
+        self.sync.transaction()
         parent = node.parentElement()
         node_path = self.get_xpath(node)
         parentElement.removeChild_(node)
-        self.gen_rex(node_path, 'DOMNodeRemoved', {}, None)
+        update = self.gen_rex(node_path, 'DOMNodeRemoved', {}, None)
+        self.sync.commit(update)
         
     def get_xpath(self, node):
         rest = ''

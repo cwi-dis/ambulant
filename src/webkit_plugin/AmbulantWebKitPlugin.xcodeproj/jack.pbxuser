@@ -20,8 +20,8 @@
 		hitCount = 0;
 		ignoreCount = 0;
 		lineNumber = 252;
-		modificationTime = 245081458.115531;
-		state = 1;
+		modificationTime = 245195291.902367;
+		state = 0;
 	};
 	04239D220CD2895A00152474 /* Safari */ = {
 		isa = PBXExecutable;
@@ -33,10 +33,10 @@
 		argumentStrings = (
 			StateTestXHTML.html,
 			../../../mmdocuments/NoBudgetStateDemo/index.html,
-			"~/Sites/NoBudget/index.html",
+			/Users/jack/Sites/NoBudget/index.html,
 		);
 		autoAttachOnCrash = 1;
-		breakpointsEnabled = 1;
+		breakpointsEnabled = 0;
 		configStateDict = {
 			"PBXLSLaunchAction-0" = {
 				PBXLSLaunchAction = 0;
@@ -297,8 +297,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 245077247;
-			PBXWorkspaceStateSaveDate = 245077247;
+			PBXPerProjectTemplateStateSaveDate = 245191303;
+			PBXWorkspaceStateSaveDate = 245191303;
 		};
 		sourceControlManager = 04EC0D310CBD8D22009B6B85 /* Source Control */;
 		userBuildSettings = {
