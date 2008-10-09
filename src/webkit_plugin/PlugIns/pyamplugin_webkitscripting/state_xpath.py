@@ -3,8 +3,7 @@ import Foundation
 import traceback
 import proxy
 import bjshare
-
-DEBUG=True
+import os
 
 NS_XFORMS="http://www.w3.org/2002/xforms"
 NS_XPATH="http://www.w3.org/TR/1999/REC-xpath-19991116"
@@ -22,7 +21,7 @@ class MyStateComponentFactory(ambulant.state_component_factory):
         self.domdocument = domdocument
         
     def new_state_component(self, uri):
-        print 'new_state_component, uri=', uri
+        if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'new_state_component, uri=', uri
         if uri == NS_XPATH:
             real_component = MyStateComponent(self.domdocument)
             class MTProxyStateComponent(proxy.MTHookProxy):
@@ -38,7 +37,7 @@ class MyFormFacesStateComponentFactory(ambulant.state_component_factory):
         self.scriptobject = scriptobject
         
     def new_state_component(self, uri):
-        print 'new_state_component, uri=', uri
+        if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'new_state_component, uri=', uri
         if uri == NS_XPATH:
             real_component = MyFormFacesStateComponent(self.domdocument, self.scriptobject)
             class MTProxyStateComponent(proxy.MTHookProxy):
@@ -62,7 +61,7 @@ class MyDomTreeModifier(object):
             
     def createTextChild(self, parentnode, where, name, value):
         if where and where != 'child':
-            print 'XXX newvalue: only child supported'
+            print 'webkitplugin: newvalue: only child supported'
         newnode = self.domdocument.createElement_(name)
         if value:
             valuenode = self.domdocument.createTextNode_(value)
@@ -93,7 +92,7 @@ class MyDomTreeRexModifier(object):
     def createTextChild(self, parentnode, where, name, value):
         self.sync.transaction()
         if where and where != 'child':
-            print 'XXX newvalue: only child supported'
+            print 'webkitplugin: newvalue: only child supported'
         newnode = self.domdocument.createElement_(name)
         if value:
             valuenode = self.domdocument.createTextNode_(value)
@@ -143,28 +142,28 @@ class MyDomTreeRexModifier(object):
         
 class MyStateComponent(ambulant.state_component, MyDomTreeRexModifier):
     def __init__(self, domdocument):
-        if DEBUG: print 'MyStateComponent()'
+        if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'MyStateComponent()'
         self.globscope = {}
         self.domdocument = domdocument
         MyDomTreeRexModifier.__init__(self, domdocument)
-        if DEBUG: print 'DOMDocument is', self.domdocument
+        if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'DOMDocument is', self.domdocument
         self.statecontainer_id = None
         self.statenode = None
         self.nsresolver = None
         # What do we want to export to scope???
         
     def register_state_test_methods(self, stm):
-        if DEBUG: print 'register_state_test_methods, stm=', stm
+        if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'register_state_test_methods, stm=', stm
         # Export things to the scripts
         for name in dir(stm):
             if name[:5] == 'smil_':
                 self.globscope[name] = getattr(stm, name)
         
     def get_state_container(self, node_id):
-        if DEBUG: print "state id is", src[1:]
+        if os.getenv("AMBULANT_PLUGIN_DEBUG"): print "state id is", src[1:]
         statecontainer = self.domdocument.getElementById_(src[1:])
-        if DEBUG: print "state container node is", statecontainer
-        if DEBUG: self.dump_dom_node(statecontainer)
+        if os.getenv("AMBULANT_PLUGIN_DEBUG"): print "state container node is", statecontainer
+        if os.getenv("AMBULANT_PLUGIN_DEBUG"): self.dump_dom_node(statecontainer)
         return statecontainer
         
     def _recalculate(self, node):
@@ -172,49 +171,49 @@ class MyStateComponent(ambulant.state_component, MyDomTreeRexModifier):
         
     def declare_state(self, state):
         pool = Foundation.NSAutoreleasePool.alloc().init()
-        if DEBUG: print 'declare_state, node=', state
+        if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'declare_state, node=', state
         src = state.get_attribute_1("src")
         if not src:
-            print "webkitpluginstate: only state with src attribute allowed"
+            print "webkitplugin: only state with src attribute allowed"
             return
         if src[0] != "#":
-            print "webkitpluginstate: only #id allowed for src attribute on state"
+            print "webkitplugin: only #id allowed for src attribute on state"
             return
         self.statecontainer_id = src[1:]
         statecontainer = self.get_state_container(self.statecontainer_id)
         ch = statecontainer.firstChild()
         while ch and ch.nodeType() != 1:
-            if DEBUG: print 'webkitpluginstate: Skip', ch
+            if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'webkitpluginstate: Skip', ch
             ch = ch.nextSibling()
         if not ch:
-            print "webkitpluginstate: state container",src,"is empty"
+            print "webkitplugin: state container",src,"is empty"
             return
         self.statenode = ch
         ch = ch.nextSibling()
         while ch:
-            print 'webkitpluginstate: examine', ch
+            if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'webkitpluginstate: examine', ch
             if ch.nodeType() == 1:
-                print "webkitpluginstate: state container", src, "has more than one child"
+                print "webkitplugin: state container", src, "has more than one child"
                 self.statenode = None
                 return
             ch = ch.nextSibling()
-        if DEBUG: print "state node is", self.statenode
+        if os.getenv("AMBULANT_PLUGIN_DEBUG"): print "state node is", self.statenode
         
     def bool_expression(self, expr):
         pool = Foundation.NSAutoreleasePool.alloc().init()
-        if DEBUG: print 'bool_expression, expr=', expr
+        if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'bool_expression, expr=', expr
         strexpr = self.string_expression(expr)
         if not strexpr:
-            if DEBUG: print 'bool_expression: empty string -> False'
+            if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'bool_expression: empty string -> False'
             return False
         try:
             number = int(strexpr)
         except:
             pass
         else:
-            if DEBUG: print 'bool_expression: number ->', not not number
+            if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'bool_expression: number ->', not not number
             return not not number
-        if DEBUG: print 'bool_expression: nonempty string -> True'
+        if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'bool_expression: nonempty string -> True'
         return True
     
     def _find_node(self, ref):
@@ -222,34 +221,32 @@ class MyStateComponent(ambulant.state_component, MyDomTreeRexModifier):
             self.nsresolver = self.domdocument.createNSResolver_(self.statenode)
         rv = self.domdocument.evaluate_____(ref, self.statenode, self.nsresolver, 0, None)
         if rv == None or rv.resultType() != 4:
-            print 'webkitpluginstate: ref="%s": did not return a nodeset' % ref
+            print 'webkitplugin: ref="%s": did not return a nodeset' % ref
             return None
         node = rv.iterateNext()
         if not node:
-            print 'webkitpluginstate: ref="%s": empty nodeset' % ref
+            print 'webkitplugin: ref="%s": empty nodeset' % ref
             return None
         if rv.iterateNext():
-            print 'webkitpluginstate: ref="%s": more than one item in nodeset' % ref
-        print '_find_node("%s")->%s' % (ref, node)
+            print 'webkitplugin: ref="%s": more than one item in nodeset' % ref
+        if os.getenv("AMBULANT_PLUGIN_DEBUG"): print '_find_node("%s")->%s' % (ref, node)
         return node
         
     def set_value(self, var, expr):
         pool = Foundation.NSAutoreleasePool.alloc().init()
-        if DEBUG: print 'set_value', (var, expr)
+        if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'set_value', (var, expr)
         # XXXX There is no reason value has to be string. Could be subtree, etc.
         value = self.string_expression(expr)
         node = self._find_node(var)
         if not node:
             return
-        print 'setvalue: NODE', node
-##        print 'DIR()', dir(node)
-##        print 'DIR(document)', dir(self.domdocument)
+        if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'setvalue: NODE', node
         self.replaceTextChild(node, value)
         self._recalculate(node)
-        print 'set_value: node is now', self.string_expression(var)
+        if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'set_value: node is now', self.string_expression(var)
         
     def new_value(self, ref, where, name, expr):
-        if DEBUG: print 'newvalue', (ref, where, name, expr)
+        if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'newvalue', (ref, where, name, expr)
         parentnode = self._find_node(ref)
         if not parentnode:
             return
@@ -259,29 +256,29 @@ class MyStateComponent(ambulant.state_component, MyDomTreeRexModifier):
             value = None
         self.createTextChild(parentnode, where, name, value)
         self._recalculate(parentnode)
-        print 'newvalue: all done'
+        if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'newvalue: all done'
         x = self.string_expression(ref+'/'+name)
-        print 'newvalue:', ref+'/'+name, 'is now', x
+        if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'newvalue:', ref+'/'+name, 'is now', x
         
     def del_value(self, ref):
         node = self._find_node(ref)
         if not node: return
         self.removeNode(node)
-        print 'XXX delete', node
+        if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'XXX delete', node
         self._recalculate(parentElement)
         
     def send(self, submission):
         pool = Foundation.NSAutoreleasePool.alloc().init()
-        print 'NOT IMPLEMENTED: send, submission=', submission
+        print 'webkitplugin: send: not implemented. submission=', submission
         
     def string_expression(self, expr):
         #pool = Foundation.NSAutoreleasePool.alloc().init()
-        if DEBUG: print 'string_expression, expr=', expr
+        if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'string_expression, expr=', expr
         if not self.nsresolver:
             self.nsresolver = self.domdocument.createNSResolver_(self.statenode)
         rv = self.domdocument.evaluate_____(expr, self.statenode, self.nsresolver, 0, None)
-        if DEBUG: print 'string_expression returned', rv
-        if DEBUG: print 'string_expression resultType', rv.resultType()
+        if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'string_expression returned', rv
+        if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'string_expression resultType', rv.resultType()
 ##       import pdb ; pdb.set_trace()
         if rv.resultType() == 1:
             return str(rv.numberValue())
@@ -292,16 +289,16 @@ class MyStateComponent(ambulant.state_component, MyDomTreeRexModifier):
         if rv.resultType() == 4: # node iterators
             node = rv.iterateNext()
             if not node:
-                print 'string_expression: does not match a node:', expr
+                print 'webkitplugin: string_expression: does not match a node:', expr
                 return ''
             if rv.iterateNext():
-                print 'string_expression: matches multiple nodes:', expr
+                print 'webkitplugin: string_expression: matches multiple nodes:', expr
             valuenode = node.firstChild()
             if not valuenode:
                 return ''
             value = valuenode.nodeValue()
             return value
-        print 'string_expression: XPath returned unknown type, resultType=', rv.resultType()
+        print 'webkitplugin: string_expression: XPath returned unknown type, resultType=', rv.resultType()
         
     def dump_dom_node(self, domnode, indent=0):
         if not domnode: return
@@ -329,7 +326,7 @@ class MyFormFacesStateComponent(MyStateComponent):
             self.scriptengine.evaluateWebScript_("smil_state_glue_initialize('%s')" % node_id)
             
         stateinstance = self.scriptengine.evaluateWebScript_("xform.getObjectById('%s', XFormInstance).document" % node_id )
-        print 'stateinstance=', stateinstance
+        if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'stateinstance=', stateinstance
         return stateinstance
 
     def _recalculate(self, node):

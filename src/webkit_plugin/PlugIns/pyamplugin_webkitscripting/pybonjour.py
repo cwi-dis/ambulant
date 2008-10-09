@@ -51,8 +51,6 @@ application callbacks) are always unicode instances.
 
 __author__   = 'Christopher Stawarz <cstawarz@csail.mit.edu>'
 __version__  = '1.1.1'
-__revision__ = int('$Revision$'.split()[1])
-
 
 import ctypes
 import os

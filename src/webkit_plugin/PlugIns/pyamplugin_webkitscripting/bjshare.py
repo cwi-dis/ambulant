@@ -18,7 +18,7 @@ class Sync_API:
         print 'State not shared:', data
         
 class Sync_server(Sync_API):
-    def __init__(self, (sdRef, port)):
+    def __init__(self, (sdRef, fullname, port)):
         self.sdRef = sdRef
         self.port = port
     
@@ -56,36 +56,47 @@ def start_sync_client(domain, name):
     return None
     
 def start_sync_server(domain, name):
-    def register_callback(sdRef, flags, errorCode, name, regtype, domain):
+    resolve_info = [0, name, 0]
+    def register_callback(sdRef, flags, errorCode, realName, regtype, domain):
         if errorCode == pybonjour.kDNSServiceErr_NoError:
             print 'Registered service:'
-            print '  name    =', name
+            print '  name    =', realName
             print '  regtype =', regtype
             print '  domain  =', domain
             print '  port    =', port
+            if name != realName:
+                # If we got a different name someone else is already serving this.
+                # Abort, so we can go to client mode.
+                print '  ** Got different name than requested', name
+                resolve_info[2] = 0
         else:
             print 'DNSServiceRegister: error=', errorCode
+            resolve_info[2] = 0
     if not domain:
         domain = None
     port = random.randrange(10000, 20000)
+    resolve_info[2] = port
     sdRef = pybonjour.DNSServiceRegister(name = name,
                  regtype = BONJOUR_REGTYPE,
                  port = port,
                  domain = domain,
                  callBack = register_callback)
     pybonjour.DNSServiceProcessResult(sdRef)
-    return (sdRef, port)
+    if resolve_info[2]:
+        resolve_info[0] = sdRef
+        return tuple(resolve_info)
+    return None
     
 def start_sync(url):
     if url:
         scheme, netloc, path, query, fragment = urlparse.urlsplit(url)
         while path[0] == '/':
             path = path[1:]
-        conndata = start_sync_client(netloc, path)
-        if conndata:
-            return Sync_client(conndata)
         conndata = start_sync_server(netloc, path)
         if conndata:
             return Sync_server(conndata)
+        conndata = start_sync_client(netloc, path)
+        if conndata:
+            return Sync_client(conndata)
     print '** Neither Bonjour server nor client could be initialized. State not shared.'
     return Sync_API()
