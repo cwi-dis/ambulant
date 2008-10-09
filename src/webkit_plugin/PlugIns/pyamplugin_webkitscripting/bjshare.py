@@ -1,6 +1,8 @@
 import pybonjour
 import random
 import urlparse
+import thread
+import SocketServer
 
 BONJOUR_REGTYPE="_syncstate._tcp"
 
@@ -17,15 +19,34 @@ class Sync_API:
     def commit(self, data):
         print 'State not shared:', data
         
+class Sync_server_Handler(SocketServer.BaseRequestHandler):
+    def handle(self):
+        self.data = self.request.recv(1024).strip()
+        print 'Sync_server_Handler: got request', self.data
+
 class Sync_server(Sync_API):
     def __init__(self, (sdRef, fullname, port)):
         self.sdRef = sdRef
         self.port = port
+        thread.start_new_thread(self.run, ())
+        
+    def run(self):
+        print 'Sync_server: thread started'
+                
+        self.server = SocketServer.TCPServer(("localhost", self.port), Sync_server_Handler)
+        self.server.serve_forever()
     
 class Sync_client(Sync_API):
-    def __init__(self, (sdRef, fullname, port, txtRecord)):
+    def __init__(self, (sdRef, host, port, txtRecord)):
         self.sdRef = sdRef
         self.port = port
+        self.sock = socket.create_connection((host, port), 5)
+        
+    def transaction(self):
+        self.sock.write('<transaction>\r\n')
+        
+    def commit(self, data):
+        self.sock.write('<commit>\r\n')
     
 def start_sync_client(domain, name):
     resolve_info = [0, '', 0, '']
@@ -37,9 +58,9 @@ def start_sync_client(domain, name):
             print '  hosttarget  =', hosttarget
             print '  port        =', port
             print '  txtRecord   =', txtRecord
-            resolve_info[0] = fullname
-            resolve_info[1] = port
-            resolve_info[2] = txtRecord
+            resolve_info[1] = hosttarget
+            resolve_info[2] = port
+            resolve_info[3] = txtRecord
         else:
             print 'DNSServiceRegister: error=', errorCode
     if not domain:
