@@ -20,7 +20,7 @@
 		hitCount = 0;
 		ignoreCount = 0;
 		lineNumber = 252;
-		modificationTime = 245250132.812738;
+		modificationTime = 245278100.693098;
 		state = 0;
 	};
 	04239D220CD2895A00152474 /* Safari */ = {
@@ -115,6 +115,42 @@
 		name = Safari.app;
 		path = /Applications/Safari.app;
 		sourceTree = "<absolute>";
+	};
+	0432F2BA0E9EB0F40061322B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 0432F2BB0E9EB0F40061322B /* proxy.py */;
+		rLen = 20;
+		rLoc = 1780;
+		rType = 0;
+	};
+	0432F2BB0E9EB0F40061322B /* proxy.py */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = text.script.python;
+		name = proxy.py;
+		path = /Users/jack/src/ambulant/src/webkit_plugin/PlugIns/pyamplugin_webkitscripting/proxy.py;
+		sourceTree = "<absolute>";
+	};
+	0432F2BC0E9EB0F40061322B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 0432F2BD0E9EB0F40061322B /* proxy.py */;
+		name = "proxy.py: 53";
+		rLen = 0;
+		rLoc = 1860;
+		rType = 0;
+		vrLen = 1427;
+		vrLoc = 1062;
+	};
+	0432F2BD0E9EB0F40061322B /* proxy.py */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = text.script.python;
+		name = proxy.py;
+		path = /Users/jack/src/ambulant/src/webkit_plugin/PlugIns/pyamplugin_webkitscripting/proxy.py;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1030, 2618}}";
+			sepNavSelRange = "{1860, 0}";
+			sepNavVisRange = "{1062, 1427}";
+		};
 	};
 	045D0B7E0958C53F00C194EE /* mainloop.cpp */ = {
 		uiCtxt = {
@@ -297,8 +333,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 245235344;
-			PBXWorkspaceStateSaveDate = 245235344;
+			PBXPerProjectTemplateStateSaveDate = 245277782;
+			PBXWorkspaceStateSaveDate = 245277782;
+		};
+		perUserProjectItems = {
+			0432F2BA0E9EB0F40061322B /* PBXTextBookmark */ = 0432F2BA0E9EB0F40061322B /* PBXTextBookmark */;
+			0432F2BC0E9EB0F40061322B /* PBXTextBookmark */ = 0432F2BC0E9EB0F40061322B /* PBXTextBookmark */;
 		};
 		sourceControlManager = 04EC0D310CBD8D22009B6B85 /* Source Control */;
 		userBuildSettings = {

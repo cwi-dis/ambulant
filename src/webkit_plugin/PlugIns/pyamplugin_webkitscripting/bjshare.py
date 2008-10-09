@@ -3,6 +3,7 @@ import random
 import urlparse
 import thread
 import SocketServer
+import xml.dom.minidom
 
 BONJOUR_REGTYPE="_syncstate._tcp"
 
@@ -19,22 +20,80 @@ class Sync_API:
     def commit(self, data):
         print 'State not shared:', data
         
-class Sync_server_Handler(SocketServer.BaseRequestHandler):
+class Sync_server_Handler(SocketServer.StreamRequestHandler):
     def handle(self):
-        self.data = self.request.recv(1024).strip()
-        print 'Sync_server_Handler: got request', self.data
-
-class Sync_server(Sync_API):
+        self.server.client_register(self)
+        while True:
+            line = self.rfile.readline()
+            if not line:
+                break
+            line = line.strip()
+            self.handle_command(line)
+        self.server.client_unregister(self)
+            
+    def handle_command(self, line):
+        print 'Sync_server_handler: ', line
+        doc = xml.dom.minidom.parseString(line)
+        if doc.documentElement.nodeName == 'transaction':
+            self.server.client_transaction(self)
+            self.wfile.write('<locked/>\r\n')
+        elif doc.documentElement.nodeName == 'commit':
+            self.server.client_modify(self, doc)
+            self.server.client_commit(self) 
+        else:
+            print 'Sync_server_handler: unexpected command', doc.documentElement.nodeName, doc.toxml()
+        
+    def send_command(self, data):
+        self.wfile.write(data)
+        
+class Sync_server(Sync_API, SocketServer.ThreadingTCPServer):
     def __init__(self, (sdRef, fullname, port)):
+        self.clients = {}
+        self.locker = None
+        self.lock = thread.allocate_lock()
+        self.client_register(self)
         self.sdRef = sdRef
         self.port = port
-        thread.start_new_thread(self.run, ())
+        SocketServer.TCPServer.__init__(self, ("localhost", self.port), Sync_server_Handler)
+        thread.start_new_thread(self.serve_forever, ())
         
-    def run(self):
-        print 'Sync_server: thread started'
-                
-        self.server = SocketServer.TCPServer(("localhost", self.port), Sync_server_Handler)
-        self.server.serve_forever()
+    def client_register(self, client):
+        print 'Sync_server: new client', client
+        assert not id(client) in self.clients
+        self.clients[id(client)] = client
+        
+    def client_unregister(self, client):
+        print 'Sync_server: client gone', client
+        assert id(client) in self.clients
+        del self.clients[id(client)]
+        
+    def client_transaction(self, client):
+        print 'Sync_server: client_transaction', client
+        assert id(client) in self.clients
+        assert client != self.locker
+        self.lock.acquire()
+        assert not self.locker
+        self.locker = client
+        
+    def client_modify(self, client, doc):
+        assert self.locker == client
+        print 'Sync_server: client_modify', doc
+        
+    def client_commit(self, client):
+        assert self.lock.locked()
+        assert self.locker == client
+        self.locker = None
+        self.lock.release()
+        
+    def transaction(self):
+        self.client_transaction(self)
+        
+    def commit(self, data):
+        assert self.locker == self
+        for client in self.clients.values():
+            if client != self:
+                client.send_command(data)
+        self.client_commit(self)
     
 class Sync_client(Sync_API):
     def __init__(self, (sdRef, host, port, txtRecord)):
@@ -43,10 +102,10 @@ class Sync_client(Sync_API):
         self.sock = socket.create_connection((host, port), 5)
         
     def transaction(self):
-        self.sock.write('<transaction>\r\n')
+        self.sock.write('<transaction/>\r\n')
         
     def commit(self, data):
-        self.sock.write('<commit>\r\n')
+        self.sock.write('<commit/>\r\n')
     
 def start_sync_client(domain, name):
     resolve_info = [0, '', 0, '']

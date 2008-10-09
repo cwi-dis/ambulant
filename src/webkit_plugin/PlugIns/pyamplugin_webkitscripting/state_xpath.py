@@ -108,7 +108,7 @@ class MyDomTreeRexModifier(object):
         self.sync.transaction()
         parent = node.parentElement()
         node_path = self.get_xpath(node)
-        parentElement.removeChild_(node)
+        parent.removeChild_(node)
         update = self.gen_rex(node_path, 'DOMNodeRemoved', {}, None)
         self.sync.commit(update)
         

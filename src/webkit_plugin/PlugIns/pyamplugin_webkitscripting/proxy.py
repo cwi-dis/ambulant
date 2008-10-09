@@ -50,7 +50,7 @@ class MTProxyMethodWrapper(Foundation.NSObject):
         self.performSelectorOnMainThread_withObject_waitUntilDone_(
                 self.callinmainthread_, (args, kwds, rvholder), True)
         if len(rvholder) != 1:
-            print 'MTProxyMethodWrapper.__call__: Call produced no return value: ', self.name, args, kwds
+            print 'MTProxyMethodWrapper.__call__: Call produced no return value: ', self.name, args
             return
         return rvholder[0]
 
