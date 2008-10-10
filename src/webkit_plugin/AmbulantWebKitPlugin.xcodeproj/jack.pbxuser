@@ -1,28 +1,5 @@
 // !$*UTF8*$!
 {
-	041D6A3C0CD932DD00AFC79A /* objc_util.m */ = {
-		isa = PBXFileReference;
-		lastKnownFileType = sourcecode.c.objc;
-		name = objc_util.m;
-		path = /Users/jack/src/pyobjc/Modules/objc/objc_util.m;
-		sourceTree = "<absolute>";
-	};
-	041D6A3E0CD932DD00AFC79A /* objc_util.m:252 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		countType = 0;
-		delayBeforeContinue = 0;
-		fileReference = 041D6A3C0CD932DD00AFC79A /* objc_util.m */;
-		functionName = "PyObjCErr_ToObjCWithGILState()";
-		hitCount = 0;
-		ignoreCount = 0;
-		lineNumber = 252;
-		modificationTime = 245278100.693098;
-		state = 0;
-	};
 	04239D220CD2895A00152474 /* Safari */ = {
 		isa = PBXExecutable;
 		activeArgIndices = (
@@ -36,7 +13,7 @@
 			/Users/jack/Sites/NoBudget/index.html,
 		);
 		autoAttachOnCrash = 1;
-		breakpointsEnabled = 0;
+		breakpointsEnabled = 1;
 		configStateDict = {
 			"PBXLSLaunchAction-0" = {
 				PBXLSLaunchAction = 0;
@@ -116,42 +93,6 @@
 		path = /Applications/Safari.app;
 		sourceTree = "<absolute>";
 	};
-	0432F2BA0E9EB0F40061322B /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 0432F2BB0E9EB0F40061322B /* proxy.py */;
-		rLen = 20;
-		rLoc = 1780;
-		rType = 0;
-	};
-	0432F2BB0E9EB0F40061322B /* proxy.py */ = {
-		isa = PBXFileReference;
-		lastKnownFileType = text.script.python;
-		name = proxy.py;
-		path = /Users/jack/src/ambulant/src/webkit_plugin/PlugIns/pyamplugin_webkitscripting/proxy.py;
-		sourceTree = "<absolute>";
-	};
-	0432F2BC0E9EB0F40061322B /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 0432F2BD0E9EB0F40061322B /* proxy.py */;
-		name = "proxy.py: 53";
-		rLen = 0;
-		rLoc = 1860;
-		rType = 0;
-		vrLen = 1427;
-		vrLoc = 1062;
-	};
-	0432F2BD0E9EB0F40061322B /* proxy.py */ = {
-		isa = PBXFileReference;
-		lastKnownFileType = text.script.python;
-		name = proxy.py;
-		path = /Users/jack/src/ambulant/src/webkit_plugin/PlugIns/pyamplugin_webkitscripting/proxy.py;
-		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1030, 2618}}";
-			sepNavSelRange = "{1860, 0}";
-			sepNavVisRange = "{1062, 1427}";
-		};
-	};
 	045D0B7E0958C53F00C194EE /* mainloop.cpp */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1076, 3332}}";
@@ -165,6 +106,249 @@
 			sepNavSelRange = "{1276, 78}";
 			sepNavVisRange = "{0, 1923}";
 		};
+	};
+	0470F9AF0E9F9E8200AC7A51 /* libffi_support.m */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.objc;
+		name = libffi_support.m;
+		path = /Users/jack/src/pyobjc/Modules/objc/libffi_support.m;
+		sourceTree = "<absolute>";
+	};
+	0470F9B10E9F9E8200AC7A51 /* libffi_support.m:661 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = 0470F9AF0E9F9E8200AC7A51 /* libffi_support.m */;
+		functionName = "method_stub()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 661;
+		modificationTime = 245343725.968472;
+		state = 1;
+	};
+	0470F9B20E9F9E8A00AC7A51 /* libffi_support.m */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.objc;
+		name = libffi_support.m;
+		path = /Users/jack/src/pyobjc/Modules/objc/libffi_support.m;
+		sourceTree = "<group>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {812, 20286}}";
+			sepNavSelRange = "{16161, 0}";
+			sepNavVisRange = "{9874, 396}";
+		};
+	};
+	0470F9B40E9F9E8A00AC7A51 /* libffi_support.m:653 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = 0470F9B20E9F9E8A00AC7A51 /* libffi_support.m */;
+		functionName = "method_stub()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 653;
+		modificationTime = 245343725.968334;
+		state = 1;
+	};
+	0470F9B60E9F9EA000AC7A51 /* libffi_support.m:619 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = 0470F9B20E9F9E8A00AC7A51 /* libffi_support.m */;
+		functionName = "method_stub()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 619;
+		modificationTime = 245343725.968573;
+		state = 1;
+	};
+	0470F9B80E9F9EA900AC7A51 /* libffi_support.m:592 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = 0470F9B20E9F9E8A00AC7A51 /* libffi_support.m */;
+		functionName = "method_stub()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 592;
+		modificationTime = 245343725.968265;
+		state = 1;
+	};
+	0470F9BA0E9F9EAF00AC7A51 /* libffi_support.m:581 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = 0470F9B20E9F9E8A00AC7A51 /* libffi_support.m */;
+		functionName = "method_stub()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 581;
+		modificationTime = 245343725.968607;
+		state = 1;
+	};
+	0470F9BC0E9F9EB400AC7A51 /* libffi_support.m:559 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = 0470F9B20E9F9E8A00AC7A51 /* libffi_support.m */;
+		functionName = "method_stub()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 559;
+		modificationTime = 245343725.968403;
+		state = 1;
+	};
+	0470F9BE0E9F9EBD00AC7A51 /* libffi_support.m:528 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = 0470F9B20E9F9E8A00AC7A51 /* libffi_support.m */;
+		functionName = "method_stub()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 528;
+		modificationTime = 245343725.96854;
+		state = 1;
+	};
+	0470F9C00E9F9EC300AC7A51 /* libffi_support.m:520 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = 0470F9B20E9F9E8A00AC7A51 /* libffi_support.m */;
+		functionName = "method_stub()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 520;
+		modificationTime = 245343725.968299;
+		state = 1;
+	};
+	0470F9C20E9F9ECC00AC7A51 /* libffi_support.m:492 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = 0470F9B20E9F9E8A00AC7A51 /* libffi_support.m */;
+		functionName = "method_stub()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 492;
+		modificationTime = 245343725.968506;
+		state = 1;
+	};
+	0470F9C40E9F9ED000AC7A51 /* libffi_support.m:478 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = 0470F9B20E9F9E8A00AC7A51 /* libffi_support.m */;
+		functionName = "method_stub()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 478;
+		modificationTime = 245343725.968128;
+		state = 1;
+	};
+	0470F9C60E9F9ED300AC7A51 /* libffi_support.m:469 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = 0470F9B20E9F9E8A00AC7A51 /* libffi_support.m */;
+		functionName = "method_stub()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 469;
+		modificationTime = 245343725.96864;
+		state = 1;
+	};
+	0470F9C80E9F9ED600AC7A51 /* libffi_support.m:464 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = 0470F9B20E9F9E8A00AC7A51 /* libffi_support.m */;
+		functionName = "method_stub()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 464;
+		modificationTime = 245343725.968438;
+		state = 1;
+	};
+	0470F9CA0E9F9EE200AC7A51 /* libffi_support.m:424 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = 0470F9B20E9F9E8A00AC7A51 /* libffi_support.m */;
+		functionName = "method_stub()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 424;
+		modificationTime = 245343725.968369;
+		state = 1;
+	};
+	0470F9CC0E9F9EE400AC7A51 /* libffi_support.m:421 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = 0470F9B20E9F9E8A00AC7A51 /* libffi_support.m */;
+		functionName = "method_stub()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 421;
+		modificationTime = 245343725.968219;
+		state = 1;
 	};
 	049775B70958ADC500A7690F /* AmbulantWebView.h */ = {
 		uiCtxt = {
@@ -202,7 +386,20 @@
 			8D5B49AC048680CD000E48DA /* AmbulantWebKitPlugin */,
 		);
 		breakpoints = (
-			041D6A3E0CD932DD00AFC79A /* objc_util.m:252 */,
+			0470F9B10E9F9E8200AC7A51 /* libffi_support.m:661 */,
+			0470F9B40E9F9E8A00AC7A51 /* libffi_support.m:653 */,
+			0470F9B60E9F9EA000AC7A51 /* libffi_support.m:619 */,
+			0470F9B80E9F9EA900AC7A51 /* libffi_support.m:592 */,
+			0470F9BA0E9F9EAF00AC7A51 /* libffi_support.m:581 */,
+			0470F9BC0E9F9EB400AC7A51 /* libffi_support.m:559 */,
+			0470F9BE0E9F9EBD00AC7A51 /* libffi_support.m:528 */,
+			0470F9C00E9F9EC300AC7A51 /* libffi_support.m:520 */,
+			0470F9C20E9F9ECC00AC7A51 /* libffi_support.m:492 */,
+			0470F9C40E9F9ED000AC7A51 /* libffi_support.m:478 */,
+			0470F9C60E9F9ED300AC7A51 /* libffi_support.m:469 */,
+			0470F9C80E9F9ED600AC7A51 /* libffi_support.m:464 */,
+			0470F9CA0E9F9EE200AC7A51 /* libffi_support.m:424 */,
+			0470F9CC0E9F9EE400AC7A51 /* libffi_support.m:421 */,
 		);
 		codeSenseManager = 04EC0D320CBD8D22009B6B85 /* Code sense */;
 		executables = (
@@ -265,7 +462,7 @@
 				PBXFileTableDataSourceColumnWidthsKey = (
 					22,
 					300,
-					73,
+					72.58349609375,
 				);
 				PBXFileTableDataSourceColumnsKey = (
 					PBXExecutablesDataSource_ActiveFlagID,
@@ -333,12 +530,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 245277782;
-			PBXWorkspaceStateSaveDate = 245277782;
-		};
-		perUserProjectItems = {
-			0432F2BA0E9EB0F40061322B /* PBXTextBookmark */ = 0432F2BA0E9EB0F40061322B /* PBXTextBookmark */;
-			0432F2BC0E9EB0F40061322B /* PBXTextBookmark */ = 0432F2BC0E9EB0F40061322B /* PBXTextBookmark */;
+			PBXPerProjectTemplateStateSaveDate = 245320501;
+			PBXWorkspaceStateSaveDate = 245320501;
 		};
 		sourceControlManager = 04EC0D310CBD8D22009B6B85 /* Source Control */;
 		userBuildSettings = {

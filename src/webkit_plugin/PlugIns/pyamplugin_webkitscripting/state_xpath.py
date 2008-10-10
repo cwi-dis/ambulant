@@ -140,16 +140,19 @@ class MyDomTreeRexModifier(object):
         rv = REX_TEMPLATE % locals()
         return rv
         
-class MyStateComponent(ambulant.state_component, MyDomTreeRexModifier):
+ModifierClass=MyDomTreeModifier
+#ModifierClass=MyDomTreeRexModifier
+class MyStateComponent(ambulant.state_component, ModifierClass):
     def __init__(self, domdocument):
         if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'MyStateComponent()'
         self.globscope = {}
         self.domdocument = domdocument
-        MyDomTreeRexModifier.__init__(self, domdocument)
+        ModifierClass.__init__(self, domdocument)
         if os.getenv("AMBULANT_PLUGIN_DEBUG"): print 'DOMDocument is', self.domdocument
         self.statecontainer_id = None
         self.statenode = None
         self.nsresolver = None
+        self.state_changes_wanted = []
         # What do we want to export to scope???
         
     def register_state_test_methods(self, stm):
@@ -198,6 +201,53 @@ class MyStateComponent(ambulant.state_component, MyDomTreeRexModifier):
                 return
             ch = ch.nextSibling()
         if os.getenv("AMBULANT_PLUGIN_DEBUG"): print "state node is", self.statenode
+##        # First try: does not work.
+##        class MyDOMEventListener(Foundation.NSObject):
+##            def handleEvent(self, *args):
+##                print '**** handleEvent', args
+##                
+##        self.xxxmylistener = MyDOMEventListener.alloc().init()
+##        self.statenode.addEventListener_listener_useCapture_("_DOMSubtreeModified", self.xxxmylistener, False)
+        # Second try.
+        self._install_handlers()
+        
+    def want_state_change(self, ref, callback):
+        self.state_changes_wanted.append((ref, callback))
+        
+    def check_state_change(self):
+        for ref, callback in self.state_changes_wanted:
+            if self.scriptengine.evaluateWebScript_("xform.getObjectById('%s', XFormInstance).model.haveChanged('%s', 'text')" % (self.statecontainer_id, ref)):
+                print "check_state_change: ", ref
+            else:
+                print "check_state_change: no change for", ref
+
+    def _handle_rebuild(self, *args):
+        print "_handle_rebuild, args=", args
+        
+    def _handle_recalculate(self, *args):
+        print "_handle_recalculate, args=", args
+        
+    def _handle_revalidate(self, *args):
+        print "_handle_revalidate, args=", args
+        
+    def _handle_refresh(self, *args):
+        print "_handle_refresh, args=", args
+        
+    def _install_handlers(self):
+        class MyEventHandler(Foundation.NSObject):
+            def init(self, parent):
+                self.parent = parent
+                return self
+            def handleEvent_(self, *args):
+                print "handleEvent, args=", args
+                self.parent.check_state_change()
+        self._evhandler = MyEventHandler.alloc().init(self)
+        event_node = self.scriptengine.evaluateWebScript_("xform.getObjectById('%s', XFormInstance).model.htmlNode" % self.statecontainer_id)
+        #event_node.addEventListener_listener_useCapture_("xforms-rebuild", self._evhandler, False)
+        #event_node.addEventListener_listener_useCapture_("xforms-recalculate", self._evhandler, False)
+        event_node.addEventListener_listener_useCapture_("xforms-revalidate", self._evhandler, False)
+        #event_node.addEventListener_listener_useCapture_("xforms-refresh", self._evhandler, False)
+        
         
     def bool_expression(self, expr):
         pool = Foundation.NSAutoreleasePool.alloc().init()
@@ -330,8 +380,18 @@ class MyFormFacesStateComponent(MyStateComponent):
         return stateinstance
 
     def _recalculate(self, node):
+        #print "before rebuild"
+        #self.check_state_change()
         self.scriptengine.evaluateWebScript_("XmlEvent.dispatch(xform.getObjectById('%s', XFormInstance).model.htmlNode, 'xforms-rebuild')" % self.statecontainer_id)
+        #print "before recalc"
+        #self.check_state_change()
         self.scriptengine.evaluateWebScript_("XmlEvent.dispatch(xform.getObjectById('%s', XFormInstance).model.htmlNode, 'xforms-recalculate')" % self.statecontainer_id)
+        #print "before revalidate"
+        #self.check_state_change()
         self.scriptengine.evaluateWebScript_("XmlEvent.dispatch(xform.getObjectById('%s', XFormInstance).model.htmlNode, 'xforms-revalidate')" % self.statecontainer_id)
+        #print "before refresh"
+        #self.check_state_change()
         self.scriptengine.evaluateWebScript_("XmlEvent.dispatch(xform.getObjectById('%s', XFormInstance).model.htmlNode, 'xforms-refresh')" % self.statecontainer_id)
+        #print "after refresh"
+        #self.check_state_change()
         
