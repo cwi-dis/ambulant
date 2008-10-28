@@ -433,7 +433,7 @@ plugin_engine::add_plugins(common::factories* factory, common::gui_player *playe
 void *
 plugin_engine::get_extra_data(std::string name)
 {
-	if (m_extra_data.count(name) == 0)
+	if (m_extra_data.empty()|| m_extra_data.count(name) == 0)
 		return NULL;
 	return m_extra_data[name]->m_plugin_extra;
 }

@@ -115,7 +115,7 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
-				DebugInformationFormat="3"/>
+				DebugInformationFormat="2"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -124,9 +124,11 @@
 				OutputFile="..\..\bin\win32\libambulant_shwin32.dll"
 				AdditionalLibraryDirectories="..\..\lib\win32"
 				IgnoreDefaultLibraryNames="LIBC.lib;LIBCMT.lib"
+				GenerateDebugInformation="TRUE"
 				GenerateMapFile="TRUE"
 				MapFileName="libambulant_win32.map"
 				MapExports="TRUE"
+				MapLines="TRUE"
 				OptimizeReferences="1"
 				ImportLibrary="..\..\lib\win32\libambulant_shwin32.lib"/>
 			<Tool
@@ -168,7 +170,7 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
-				DebugInformationFormat="3"/>
+				DebugInformationFormat="4"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -179,7 +181,8 @@
 				IgnoreDefaultLibraryNames="LIBC.lib;LIBCMT.lib"
 				GenerateDebugInformation="TRUE"
 				OptimizeReferences="1"
-				ImportLibrary="..\..\lib\win32\libambulant_shwin32_D.lib"/>
+				ImportLibrary="..\..\lib\win32\libambulant_shwin32_D.lib"
+				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool

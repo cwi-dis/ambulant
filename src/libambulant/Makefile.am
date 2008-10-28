@@ -320,10 +320,10 @@ EXTRA_DIST= \
 
 CLEANFILES=demux_datasource.loT ffmpeg_common.loT sdl.loT
 
-if WITH_FIREFOX_PLUGIN
+if WITH_NPAMBULANT
 # when selinux is enblaed, identify the installed shared library
 install-exec-hook:
 	export PATH=$$PATH:/sbin:/usr/sbin ;  \
 	which chcon selinuxenabled  && selinuxenabled 2>1 1>/dev/null ; \
 	if [ $$? == 0 ] ; then chcon -t texrel_shlib_t "$(DESTDIR)$(libdir)"/* ; fi
-endif # WITH_FIREFOX_PLUGIN
+endif # WITH_NPAMBULANT

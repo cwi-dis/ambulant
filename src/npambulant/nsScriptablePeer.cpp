@@ -45,6 +45,12 @@
 // The native methods of this class are supposed to
 // be callable from JavaScript
 //
+#ifdef	XP_WIN32
+#undef _GLOBAL_USING
+#include <cstddef>		   // Needed for ptrdiff_t. Is used in GeckoSDK 1.9,
+#define ptrdiff_t long int // but not defined in Visual C++ 7.1.
+#endif//XP_WIN32
+
 #include "nsScriptablePeer.h"
 #ifdef	MOZILLA_TRUNK
 #include "xpconnect/nsIXPConnect.h"
@@ -57,7 +63,7 @@
 #define AM_DBG if(0)
 #endif
 
-static NS_DEFINE_IID(kIScriptableIID, NS_IAMBULANTPLUGIN_IID);
+static NS_DEFINE_IID(kIScriptableIID, NPAMBULANT_IID);
 static NS_DEFINE_IID(kIClassInfoIID, NS_ICLASSINFO_IID);
 static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
 #ifdef	MOZILLA_TRUNK
@@ -91,14 +97,14 @@ NS_IMETHODIMP_(nsrefcnt) nsScriptablePeer::Release()
   --mRefCnt; 
   if (mRefCnt == 0) { 
 #ifdef	AMBULANT_PLATFORM_WIN32
-	  // XXXJACK: I do not trust this. delete this smells like a hack...
+	  if (mPlugin)
+		  mPlugin->mScriptablePeer = NULL;
       delete this;
 #endif//AMBULANT_PLATFORM_WIN32
       return 0; 
   } 
   return mRefCnt; 
 } 
-
 // here nsScriptablePeer should return three interfaces it can be asked for by their iid's
 // static casts are necessary to ensure that correct pointer is returned
 NS_IMETHODIMP nsScriptablePeer::QueryInterface(const nsIID& aIID, void** aInstancePtr) 
@@ -108,7 +114,7 @@ NS_IMETHODIMP nsScriptablePeer::QueryInterface(const nsIID& aIID, void** aInstan
     return NS_ERROR_NULL_POINTER; 
 
   if(aIID.Equals(kIScriptableIID)) {
-      *aInstancePtr = static_cast<nsIAmbulantPlugin*>(this);
+      *aInstancePtr = static_cast<npambulant*>(this);
     AddRef();
 	AM_DBG  fprintf(stderr, "nsScriptablePeer::QueryInterface: return kIScriptableIID 0x%x\n", *aInstancePtr);
     return NS_OK;
@@ -122,7 +128,7 @@ NS_IMETHODIMP nsScriptablePeer::QueryInterface(const nsIID& aIID, void** aInstan
   }
 
   if(aIID.Equals(kISupportsIID)) {
-      *aInstancePtr = static_cast<nsIAmbulantPlugin*>(this); 
+      *aInstancePtr = static_cast<npambulant*>(this); 
     AddRef();
 	AM_DBG  fprintf(stderr, "nsScriptablePeer::QueryInterface: return kISupportsIID 0x%x\n", *aInstancePtr);
     return NS_OK;
@@ -130,7 +136,8 @@ NS_IMETHODIMP nsScriptablePeer::QueryInterface(const nsIID& aIID, void** aInstan
   // Interfaces we've seen queries for:
   // bed52030-bca6-11d2-ba79-00805f8a5dd7 (nsIXPConnectWrappedJS)
   // 9cc0c2e0-f769-4f14-8cd6-2d2d40466f6c (nsIXPCScriptable)
-  AM_DBG fprintf(stderr, "nsScriptablePeer::QueryInterface: return NS_NOINTERFACE error for IID %s\n", aIID.ToString());
+ // AM_DBG fprintf(stderr, "nsScriptablePeer::QueryInterface: return NS_NOINTERFACE error for IID %s\n", aIID.ToString());
+  AM_DBG fprintf(stderr, "nsScriptablePeer::QueryInterface: return NS_NOINTERFACE error for IID\n");
   return NS_NOINTERFACE; 
 }
 

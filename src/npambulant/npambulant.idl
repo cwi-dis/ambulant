@@ -23,7 +23,7 @@
 #include "nsISupports.idl"
 
 [scriptable, uuid(d2d536a0-b6fc-11d5-9d10-0060b0fbd8ac)]
-interface AmbulantFFplugin : nsISupports {
+interface npambulant : nsISupports {
   void startPlayer();
   void stopPlayer();
   void restartPlayer();

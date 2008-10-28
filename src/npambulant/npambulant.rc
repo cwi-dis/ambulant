@@ -45,15 +45,15 @@ BEGIN
         BEGIN
             VALUE "Comments", "Experimental version"
             VALUE "CompanyName", "CWI, Amsterdam, The Netherlands"
-            VALUE "FileDescription", "AmbulantPlayer plugin for Firefox"
+            VALUE "FileDescription", "AmbulantPlayer plugin for npapi compatible browsers (Firefox and friends)"
             VALUE "FileExtents", "smi,smil|smi,smil|smi,smil"
             VALUE "FileOpenName", "SMIL presentation (*.smi,*.smil)|SMIL presentation (*.smi,*.smil)|SMIL presentation (*.smi,*.smil)"
             VALUE "FileVersion", "1.9"
-            VALUE "InternalName", "npscriptable"
+            VALUE "InternalName", "npambulant"
             VALUE "LegalCopyright", "8"
             VALUE "MIMEType", "application/smil|application/smil+xml|application/x-ambulant-smil"
-            VALUE "OriginalFilename", "npAmbulantFirefoxPligin.dll"
-            VALUE "ProductName", "AmbulantPlayer FirefoxPlugin for W3C SMIL 3.0"
+            VALUE "OriginalFilename", "npambulant.dll"
+            VALUE "ProductName", "AmbulantPlayer npapi browser plugin for W3C SMIL 3.0"
             VALUE "ProductVersion", "1.9"
         END
     END

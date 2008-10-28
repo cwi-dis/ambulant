@@ -1,8 +1,8 @@
 #
 #
 FIREFOX=firefox
-FIREFOX_PLUGIN=libambulantplugin.0.0.0
-FIREFOX_INSTALLED_PLUGINS=~/.mozilla/plugins
+NPAMBULANT=libnpambulant.0.0.0
+MOZILLA_PLUGINS=~/.mozilla/plugins
 
 ambulantlibdir=$(top_builddir)/src/libambulant/.libs
 
@@ -80,13 +80,13 @@ INCLUDES = \
 
 # These targets are magic for automake
 
-all-am: build-firefox-plugin
+all-am: build-npambulant
 
-check-am: check-firefox-plugin
+check-am: check-npambulant
 
-install-exec-hook: install-firefox-plugin
+install-exec-hook: install-npambulant
 
-uninstall-local: clean-firefox-plugin
+uninstall-local: clean-npambulant
 
 # Set these variables to change the way the tests are run
 DEBUGGER=
@@ -96,11 +96,11 @@ FIREFOXARGS=
 FIREFOXENV=
 
 BUILDLIBDIR=
-lib_LTLIBRARIES = libambulantplugin.la
-libambulantplugin_la_SOURCES=np_entry.cpp npn_gate.cpp npp_gate.cpp plugin.cpp nsScriptablePeer.cpp
-nodist_libambulantplugin_la_INCLUDES=nsIAmbulantPlugin.h
+lib_LTLIBRARIES = libnpambulant.la
+libnpambulant_la_SOURCES=np_entry.cpp npn_gate.cpp npp_gate.cpp plugin.cpp nsScriptablePeer.cpp
+nodist_libnpambulant_la_INCLUDES=npambulant.h
 
-libambulantplugin_la_LDFLAGS=	\
+libnpambulant_la_LDFLAGS=	\
 	-module -shared		\
 	$(LIBLTDL)		\
 	$(extra_gtk_ldflags)	\
@@ -109,41 +109,41 @@ libambulantplugin_la_LDFLAGS=	\
 	$(extra_xerces_ldflags)	\
 	$(extra_live_ldflags)	\
 	$(ambulant_ldflags)	\
-	-o $(FIREFOX_PLUGIN)
+	-o $(NPAMBULANT)
 
-$(libambulantplugin_la_OBJECTS): nsIAmbulantPlugin.h	nsIAmbulantPlugin.xpt
-build-firefox-plugin: $(PLUGIN_FILES) plugin.h nsIAmbulantPlugin.h
-	AM_LDFLAGS="-o libambulantplugin.so"
+$(libnpambulant_la_OBJECTS): npambulant.h	npambulant.xpt
+build-npambulant: $(PLUGIN_FILES) plugin.h npambulant.h
+	AM_LDFLAGS="-o libnpambulant.so"
 
-nsIAmbulantPlugin.h: $(srcdir)/nsIAmbulantPlugin.idl
-	$(XPIDL) -m header  -w -I$(GECKO_ROOT)/idl $(srcdir)/nsIAmbulantPlugin.idl
+npambulant.h: $(srcdir)/npambulant.idl
+	$(XPIDL) -m header  -w -I$(GECKO_ROOT)/idl $(srcdir)/npambulant.idl
 
-nsIAmbulantPlugin.xpt: $(srcdir)/nsIAmbulantPlugin.idl
-	$(XPIDL) -m typelib -w -I$(GECKO_ROOT)/idl $(srcdir)/nsIAmbulantPlugin.idl
+npambulant.xpt: $(srcdir)/npambulant.idl
+	$(XPIDL) -m typelib -w -I$(GECKO_ROOT)/idl $(srcdir)/npambulant.idl
 
-check-firefox-plugin:
+check-npambulant:
 	( a=`cd $(ambulantlibdir); pwd` ; \
 	  cd $(srcdir) ; \
-	  LD_LIBRARY_PATH=-L"$$a" $(FIREFOXENV) FIREFOXPATH=$(BUILDLIBDIR) $(DEBUGGER) $(FIREFOX) $(FIREFOXARGS) test/test_ambulantplugin.html ; \
+	  LD_LIBRARY_PATH=-L"$$a" $(FIREFOXENV) FIREFOXPATH=$(BUILDLIBDIR) $(DEBUGGER) $(FIREFOX) $(FIREFOXARGS) test/test_npambulant.html ; \
 	)
 
-install-firefox-plugin: nsIAmbulantPlugin.xpt .libs/$(FIREFOX_PLUGIN)
-	$(INSTALL) -d $(FIREFOX_INSTALLED_PLUGINS)
-	$(INSTALL_PROGRAM) .libs/$(FIREFOX_PLUGIN) $(FIREFOX_INSTALLED_PLUGINS)/nsIAmbulantPlugin.so
-	$(INSTALL_DATA) nsIAmbulantPlugin.xpt $(FIREFOX_INSTALLED_PLUGINS)/nsIAmbulantPlugin.xpt
+install-npambulant: npambulant.xpt .libs/$(NPAMBULANT)
+	$(INSTALL) -d $(MOZILLA_PLUGINS)
+	$(INSTALL_PROGRAM) .libs/$(NPAMBULANT) $(MOZILLA_PLUGINS)/npambulant.so
+	$(INSTALL_DATA) npambulant.xpt $(MOZILLA_PLUGINS)/npambulant.xpt
 # when selinux is enabled, identify the installed shared library 
-	./selinux_patch.sh $(FIREFOX_INSTALLED_PLUGINS)/nsIAmbulantPlugin.so
+	./selinux_patch.sh $(MOZILLA_PLUGINS)/npambulant.so
 	
-clean-firefox-plugin:
-	rm -fr $(FIREFOX_INSTALLED_PLUGINS)/nsIAmbulantPlugin.so
-	rm -fr $(FIREFOX_INSTALLED_PLUGINS)/nsIAmbulantPlugin.xpt
+clean-npambulant:
+	rm -fr $(MOZILLA_PLUGINS)/npambulant.so
+	rm -fr $(MOZILLA_PLUGINS)/npambulant.xpt
 
 mostlyclean-am:
-	rm -fr .libs *o $(FIREFOX_PLUGIN)
-	rm -fr nsIAmbulantPlugin.h nsIAmbulantPlugin.xpt
+	rm -fr .libs *o $(NPAMBULANT)
+	rm -fr npambulant.h npambulant.xpt
 
 # Debug target
 
 testplay:
-	cd $(srcdir) ; $(FIREFOXENV) FIREFOXPATH=$(BUILDLIBDIR) $(DEBUGGER) $(FIREFOX) $(FIREFOXARGS) test/test_ambulantplugin.html
+	cd $(srcdir) ; $(FIREFOXENV) FIREFOXPATH=$(BUILDLIBDIR) $(DEBUGGER) $(FIREFOX) $(FIREFOXARGS) test/test_npambulant.html
 	

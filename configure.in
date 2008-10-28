@@ -33,7 +33,7 @@ AM_GNU_GETTEXT([external])
 AC_CONFIG_FILES([Makefile po/Makefile.in
 	m4/Makefile
 	src/Makefile 
-	src/firefox_plugin_gtk/Makefile
+	src/npambulant/Makefile
 	src/libambulant/Makefile 
 	src/player_unix/Makefile
 	src/player_gtk/Makefile
@@ -882,26 +882,26 @@ if test x$with_python_plugin = xtrue ; then
 fi
 AC_MSG_RESULT($with_python_plugin)
 
-# Do we want firefox plugin ?
+# Do we want the npambulant plugin ?
 #
 
-AC_MSG_CHECKING(for --with-firefox-plugin)
-AC_ARG_WITH([firefox-plugin],
-    [AC_HELP_STRING([--with-firefox-plugin],[Enable the firefox plugin (default: disabled)])
+AC_MSG_CHECKING(for --with-npambulant)
+AC_ARG_WITH([npambulant],
+    [AC_HELP_STRING([--with-npambulant],[Enable building the Ambulant plugin for npapi compatible browsers(default: disabled)])
 	],[
 	case "${withval}" in
-	yes)  	with_firefox_plugin=true
+	yes)  	with_npambulant=true
 			;;
-	no)		with_firefox_plugin=false
+	no)		with_npambulant=false
 			;;
-	*)		AC_MSG_ERROR("--with-firefox-plugin takes no argument")
+	*)		AC_MSG_ERROR("--with-npambulant takes no argument")
 			;;
 	esac],[
-	with_firefox_plugin=false])
+	with_npambulant=false])
 
 # when playing with mozilla trunk, we use
 # GECKO_ROOT=`pwd`/third_party_packages/mozilla/ff-opt-static/dist
-if test x$with_firefox_plugin = xtrue;
+if test x$with_npambulant = xtrue;
 then
    if test -f `pwd`/third_party_packages/gecko-sdk/include/npapi.h; then
 		# Require a gecko-sdk installation in third_party_packages
@@ -911,18 +911,18 @@ then
 		GECKO_ROOT=${withvalabs}
 		XPIDL=${GECKO_ROOT}/bin/xpidl
    else
-		AC_MSG_ERROR("--with-firefox-plugin requires gecko-sdk installed in third_party_packages")
+		AC_MSG_ERROR("--with-npambulant requires gecko-sdk installed in third_party_packages")
 		GECKO_ROOT=
 		XPIDL=
-		with_firefox_plugin=false
+		with_npambulant=false
    fi
 fi
 AC_SUBST(GECKO_ROOT)
 AC_SUBST(XPIDL)
 AC_SUBST(FIREFOX_INCLUDES)
 AC_SUBST(FIREFOX_LIBS)
-AM_CONDITIONAL(WITH_FIREFOX_PLUGIN, test x$with_firefox_plugin = xtrue)
-AC_MSG_RESULT($with_firefox_plugin)
+AM_CONDITIONAL(WITH_NPAMBULANT, test x$with_npambulant = xtrue)
+AC_MSG_RESULT($with_npambulant)
 
 AC_MSG_CHECKING(for --with-webkit-dom)
 AC_ARG_WITH([webkit-dom],
@@ -1165,7 +1165,7 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
 	Build with Python plugin:       ${with_python_plugin}
 	Build with WebKit DOM plugin:   ${with_webkit_dom}
 	Build MacOSX universal binary:  ${with_universalsdk}
-	Build with Firefox plugin:      ${with_firefox_plugin}
+	Build with Browser plugin:      ${with_npambulant}
      "
 
 if test "x$with_frontend" = "x$false"; then

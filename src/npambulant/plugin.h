@@ -38,15 +38,31 @@
 #ifndef __PLUGIN_H__
 #define __PLUGIN_H__
 
+// mozilla includes
+#ifdef	XP_WIN32
 #include "npapi.h"
 #include "npupp.h"
+#endif//XP_WIN32
 #include "pluginbase.h"
 #include "nsScriptablePeer.h"
 
-#define AMBULANT_FIREFOX_PLUGIN
-#ifdef   AMBULANT_FIREFOX_PLUGIN
+// ambulant player includes
+#include "ambulant/version.h"
+#include "ambulant/common/player.h"
+#include "ambulant/net/url.h"
+#include "ambulant/lib/logger.h"
 
-#include <ambulant/version.h>
+// graphic toolkit includes
+#ifdef	MOZ_X11
+#include <X11/Xlib.h>
+#include <X11/Intrinsic.h>
+#include <X11/cursorfont.h>
+#endif // MOZ_X11
+#ifdef	WITH_GTK
+class gtk_mainloop;
+#elif	WITH_CG
+class cg_mainloop;
+#elif	XP_WIN32
 #include <ambulant/gui/dx/dx_player.h>
 #include <ambulant/net/url.h>
 class ambulant_player_callbacks : public ambulant::gui::dx::dx_player_callbacks {
@@ -60,44 +76,58 @@ public:
 	html_browser *new_html_browser(int left, int top, int width, int height);
 	HWND m_hwnd;
 };
-#endif // AMBULANT_FIREFOX_PLUGIN
+#else
+#error None of WITH_GTK/WITH_CG/XP_WIN32 defined: no graphic toolkit available
+#endif//WITH_GTK/WITH_CG/XP_WIN32
 
-class nsPluginInstance : public nsPluginInstanceBase, public AmbulantFFplugin
+// class definition
+class nsScriptablePeer;
+
+class nsPluginInstance : public nsPluginInstanceBase, npambulant
 {
 public:
-  NS_DECL_ISUPPORTS
-  NS_DECL_AMBULANTFFPLUGIN
 
-  nsPluginInstance(NPP aInstance);
-  ~nsPluginInstance();
-
-  NPBool init(NPWindow* aWindow);
-  void shut();
-  NPBool isInitialized();
-
-  // we need to provide implementation of this method as it will be
-  // used by Mozilla to retrive the scriptable peer
-  NPError	GetValue(NPPVariable variable, void *value);
-
-  nsScriptablePeer* getScriptablePeer();
+    nsPluginCreateData mCreateData;
+protected:
 
 private:
-  static NPP s_lastInstance;
-  NPWindow* mNPWindow;
-  NPP mInstance;
-  NPBool mInitialized;
-  nsScriptablePeer * mScriptablePeer;
+    NS_DECL_ISUPPORTS
+    NS_DECL_NPAMBULANT
 
-  char* get_document_location();
+    nsPluginInstance(NPP aInstance);
+    ~nsPluginInstance();
 
-public:
-  char mString[128];
+    NPBool init(NPWindow* aWindow);
+    void shut();
+    NPBool isInitialized();
+    NPP getNPP();
+    const char* getValue(const char *name);
+    const char * getVersion();
+
+    // we need to provide implementation of this method as it will be
+    // used by Mozilla to retrieve the scriptable peer
+    NPError GetValue(NPPVariable variable, void *value);
+    nsScriptablePeer* getScriptablePeer();
+    char* get_document_location();
+
+    NPWindow* mNPWindow;
+    NPP mInstance;
+    NPBool mInitialized;
+    nsScriptablePeer * mScriptablePeer;
+    
+    char mString[128];
+    ambulant::lib::logger* m_logger;
+    ambulant::net::url m_url;
+    int m_cursor_id;
+
+    static NPP s_last_instance;
+    static void display_message(int level, const char *message);	
 #ifdef	MOZ_X11
-  Window window;
-  Display* display;
-  int width, height;
+    Window window;
+    Display* display;
+    int width, height;
 #endif // MOZ_X11
-    nsPluginCreateData mCreateData;
+
 #ifdef WITH_GTK
     gtk_mainloop* m_mainloop;
 #elif WITH_CG
@@ -105,71 +135,19 @@ public:
 #else
 	void *m_mainloop;
 #endif
-    ambulant::lib::logger* m_logger;
-#ifdef	XP_WIN
-//XXXX  nsPluginCreateData mCreateData;
-  ambulant::gui::dx::dx_player* m_ambulant_player;
-  ambulant::net::url m_url;
-  ambulant_player_callbacks m_player_callbacks;
-  HWND m_hwnd;
-#else // XP_WIN
+
+#ifdef	XP_WIN32
+    ambulant_player_callbacks m_player_callbacks;
+    HWND m_hwnd;
+    ambulant::gui::dx::dx_player* m_ambulant_player;
+    ambulant::common::player* get_player() {
+        return m_ambulant_player->get_player();
+    }
+#else //!XP_WIN32
     ambulant::common::player* m_ambulant_player;
-#endif// XP_WIN
-
-  int m_cursor_id;
-
-  NPP getNPP();
-  const char* getValue(const char *name);
-  const char * getVersion();
-  static void display_message(int level, const char *message);	
-  /* XXXXXX
-public:
-  nsPluginInstance(NPP aInstance);
-  ~nsPluginInstance();
-
-  NPBool init(NPWindow* aWindow);
-  void shut();
-  NPBool isInitialized();
-
-  // we need to provide implementation of this method as it will be
-  // used by Mozilla to retrive the scriptable peer
-  NPError	GetValue(NPPVariable variable, void *value);
-
-  // locals
-#ifndef   AMBULANT_FIREFOX_PLUGIN
-  void showVersion();
-  void clear();
-#else //  AMBULANT_FIREFOX_PLUGIN
-  void startPlayer();
-  void stopPlayer();
-  void restartPlayer();
-  void resumePlayer();
-  void pausePlayer();
-#endif // AMBULANT_FIREFOX_PLUGIN
-  nsScriptablePeer* getScriptablePeer();
-
-private:
-  NPP mInstance;
-  NPBool mInitialized;
-  HWND mhWnd;
-  nsScriptablePeer * mScriptablePeer;
-
-public:
-  char mString[128];
-#ifdef   AMBULANT_FIREFOX_PLUGIN
-  nsPluginCreateData mCreateData;
-  ambulant::gui::dx::dx_player* m_ambulant_player;
-  ambulant::net::url m_url;
-  ambulant_player_callbacks m_player_callbacks;
-  HWND m_hwnd;
-
-  int m_cursor_id;
-
-  NPP getNPP();
-  const char* getValue(const char *name);
-  const char * getVersion();
-#endif // AMBULANT_FIREFOX_PLUGIN
-  XXXX */
+    ambulant::common::player* get_player() {
+        return m_ambulant_player;
+    }
+#endif// XP_WIN32
 };
-
 #endif // __PLUGIN_H__

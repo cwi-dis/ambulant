@@ -177,7 +177,7 @@ renderer_playable_ds::renderer_playable_ds(
 
 renderer_playable_ds::~renderer_playable_ds()
 {
-	AM_DBG lib::logger::get_logger()->debug("~renderer_playable_ds(0x%x)", (void *)this);
+    AM_DBG lib::logger::get_logger()->debug("~renderer_playable_ds(0x%x)", (void *)this);
   	if (m_src) {
 		m_src->release();
 		m_src = NULL;
@@ -187,7 +187,7 @@ renderer_playable_ds::~renderer_playable_ds()
 void
 renderer_playable_ds::start(double t)
 {
-	AM_DBG lib::logger::get_logger()->debug("renderer_playable_ds.start(0x%x %s)", (void *)this, m_node->get_sig().c_str());
+    AM_DBG lib::logger::get_logger()->debug("renderer_playable_ds.start(0x%x %s)", (void *)this, m_node->get_sig().c_str());
 	if (m_activated) {
 		lib::logger::get_logger()->trace("renderer_playable_ds.start(0x%x): already started", (void*)this);
 		return;

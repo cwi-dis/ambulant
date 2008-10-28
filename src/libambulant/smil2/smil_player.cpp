@@ -602,7 +602,7 @@ smil_player::pointed(int n, double t) {
 // Playable notification for a start event.
 void
 smil_player::started(int n, double t) {
-	AM_DBG m_logger->debug("smil_player::started(%d, %f)", n, t);
+     AM_DBG m_logger->debug("smil_player::started(%d, %f)", n, t);
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end() && !(*it).second->is_discrete()) {
 		time_node::value_type root_time = m_root->get_simple_time();
@@ -624,7 +624,7 @@ smil_player::started_async(async_arg aa) {
 // Playable notification for a stop event.
 void
 smil_player::stopped(int n, double t) {
-	AM_DBG m_logger->debug("smil_player::stopped(%d, %f) roottime=%d", n, t, m_root->get_simple_time());
+    AM_DBG m_logger->debug("smil_player::stopped(%d, %f) roottime=%d", n, t, m_root->get_simple_time());
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end() && !(*it).second->is_discrete()) {
 		time_node::value_type root_time = m_root->get_simple_time();
@@ -707,7 +707,7 @@ void smil_player::unstalled(int n, double t) {
 // UI notification for a char event.
 void smil_player::on_char(int ch) {
 	// First check for an anchor node with accesskey attribute
- /*KB Test */ m_logger->debug("smil_player::on_char(): '%c' [%d]", char(ch), ch);
+	AM_DBG m_logger->debug("smil_player::on_char(): '%c' [%d]", char(ch), ch);
 	std::map<int, int>::iterator p = m_accesskey_map.find(ch);
 	if (p != m_accesskey_map.end()) {
 		// The character was registered, at some point in time.
@@ -737,7 +737,7 @@ void
 smil_player::on_char_async(async_int_arg aia) {
 	m_scheduler->lock();
 	int ch = aia.second.second;
- /*KB Test */ m_logger->debug("smil_player::on_char_async(): '%c' [%d]", char(ch), ch);
+	AM_DBG m_logger->debug("smil_player::on_char_async(): '%c' [%d]", char(ch), ch);
 	aia.first->raise_accesskey(aia.second);
 	m_scheduler->unlock();
 }

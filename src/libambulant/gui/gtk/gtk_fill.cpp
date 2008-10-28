@@ -48,7 +48,7 @@ void
 gtk_fill_renderer::start(double where)
 {
 	m_lock.enter();
-	AM_DBG logger::get_logger()->debug("gtk_fill_renderer.start(0x%x)", (void *)this);
+	/*KB AM_DBG*/ logger::get_logger()->debug("gtk_fill_renderer.start(0x%x)", (void *)this);
 	if (m_is_showing) {
 		logger::get_logger()->trace("gtk_fill_renderer.start(0x%x): already started", (void*)this);
 		m_lock.leave();
