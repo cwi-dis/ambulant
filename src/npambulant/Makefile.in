@@ -115,9 +115,6 @@ FFMPEG_CFLAGS = @FFMPEG_CFLAGS@
 FFMPEG_INCLUDES = @FFMPEG_INCLUDES@
 FFMPEG_LIBS = @FFMPEG_LIBS@
 FFMPEG_PREFIX = @FFMPEG_PREFIX@
-FIREFOX_INCLUDES = @FIREFOX_INCLUDES@
-FIREFOX_LIBS = @FIREFOX_LIBS@
-GECKO_ROOT = @GECKO_ROOT@
 GMSGFMT = @GMSGFMT@
 GREP = @GREP@
 GSTREAMER_CFLAGS = @GSTREAMER_CFLAGS@
@@ -164,6 +161,8 @@ MKDIR_P = @MKDIR_P@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
+NPAMBULANT_INCLUDES = @NPAMBULANT_INCLUDES@
+NPAMBULANT_LIBS = @NPAMBULANT_LIBS@
 OBJC = @OBJC@
 OBJCDEPMODE = @OBJCDEPMODE@
 OBJCFLAGS = @OBJCFLAGS@
@@ -201,6 +200,7 @@ XERCES_LIBS = @XERCES_LIBS@
 XERCES_PREFIX = @XERCES_PREFIX@
 XGETTEXT = @XGETTEXT@
 XPIDL = @XPIDL@
+XULRUNNER_ROOT = @XULRUNNER_ROOT@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -254,11 +254,10 @@ target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 
-#
-#
+#------------------------------------------------------
 FIREFOX = firefox
 NPAMBULANT = libnpambulant.0.0.0
-MOZILLA_PLUGINS = ~/.mozilla/plugins
+MOZILLA_PLUGINS = mozilla/plugins
 ambulantlibdir = $(top_builddir)/src/libambulant/.libs
 ambulant_ldflags = -L$(ambulantlibdir) -lambulant
 EXTRA_DIST = plugin.h plugin.cpp \
@@ -315,7 +314,11 @@ INCLUDES = \
 	-I$(top_srcdir)/include/ambulant/gui \
 	-I$(top_srcdir)/src/player_gtk \
 	$(gtkincludes) \
-	-I$(GECKO_ROOT)/include \
+	-I$(XULRUNNER_ROOT)/include/plugin \
+	-I$(XULRUNNER_ROOT)/include/system_wrappers \
+	-I$(XULRUNNER_ROOT)/include/nspr  \
+	-I$(XULRUNNER_ROOT)/include/java  \
+	-I$(XULRUNNER_ROOT)/include/xpcom \
 	$(INCLTDL)
 
 
@@ -638,10 +641,10 @@ build-npambulant: $(PLUGIN_FILES) plugin.h npambulant.h
 	AM_LDFLAGS="-o libnpambulant.so"
 
 npambulant.h: $(srcdir)/npambulant.idl
-	$(XPIDL) -m header  -w -I$(GECKO_ROOT)/idl $(srcdir)/npambulant.idl
+	$(XPIDL) -m header  -w -I$(XULRUNNER_ROOT)/idl $(srcdir)/npambulant.idl
 
 npambulant.xpt: $(srcdir)/npambulant.idl
-	$(XPIDL) -m typelib -w -I$(GECKO_ROOT)/idl $(srcdir)/npambulant.idl
+	$(XPIDL) -m typelib -w -I$(XULRUNNER_ROOT)/idl $(srcdir)/npambulant.idl
 
 check-npambulant:
 	( a=`cd $(ambulantlibdir); pwd` ; \
@@ -650,15 +653,17 @@ check-npambulant:
 	)
 
 install-npambulant: npambulant.xpt .libs/$(NPAMBULANT)
-	$(INSTALL) -d $(MOZILLA_PLUGINS)
-	$(INSTALL_PROGRAM) .libs/$(NPAMBULANT) $(MOZILLA_PLUGINS)/npambulant.so
-	$(INSTALL_DATA) npambulant.xpt $(MOZILLA_PLUGINS)/npambulant.xpt
-# when selinux is enabled, identify the installed shared library 
-	./selinux_patch.sh $(MOZILLA_PLUGINS)/npambulant.so
+	if [ `id -u` == "0" ]; then MOZILLA_PLUGINS=/usr/lib/$(MOZILLA_PLUGINS); else MOZILLA_PLUGINS=~/.$(MOZILLA_PLUGINS);fi; \
+	$(INSTALL) -d $(MOZILLA_PLUGINS);	\
+	$(INSTALL_PROGRAM) .libs/$(NPAMBULANT) $$MOZILLA_PLUGINS/npambulant.so;	\
+	$(INSTALL_DATA) npambulant.xpt $$MOZILLA_PLUGINS/npambulant.xpt;		\
+	./selinux_patch.sh $$MOZILLA_PLUGINS/npambulant.so
+# when selinux is enabled, identify the installed shared library
 
 clean-npambulant:
-	rm -fr $(MOZILLA_PLUGINS)/npambulant.so
-	rm -fr $(MOZILLA_PLUGINS)/npambulant.xpt
+	if [ `id -u` == "0" ]; then MOZILLA_PLUGINS=/usr/lib/$(MOZILLA_PLUGINS); else MOZILLA_PLUGINS=~/.$(MOZILLA_PLUGINS);fi; \
+	rm -fr $$MOZILLA_PLUGINS/npambulant.so; \
+	rm -fr $$MOZILLA_PLUGINS/npambulant.xpt
 
 mostlyclean-am:
 	rm -fr .libs *o $(NPAMBULANT)

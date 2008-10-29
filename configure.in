@@ -882,12 +882,12 @@ if test x$with_python_plugin = xtrue ; then
 fi
 AC_MSG_RESULT($with_python_plugin)
 
-# Do we want the npambulant plugin ?
+# Do we want the npambulant browser (firefox) plugin ?
 #
 
 AC_MSG_CHECKING(for --with-npambulant)
 AC_ARG_WITH([npambulant],
-    [AC_HELP_STRING([--with-npambulant],[Enable building the Ambulant plugin for npapi compatible browsers(default: disabled)])
+    [AC_HELP_STRING([--with-npambulant],[Enable building the Ambulant plugin for npapi compatible browsers, like firefox (default: disabled)])
 	],[
 	case "${withval}" in
 	yes)  	with_npambulant=true
@@ -899,28 +899,28 @@ AC_ARG_WITH([npambulant],
 	esac],[
 	with_npambulant=false])
 
-# when playing with mozilla trunk, we use
-# GECKO_ROOT=`pwd`/third_party_packages/mozilla/ff-opt-static/dist
+# when working with mozilla source trunk, uncomment next line
+# XULRUNNER_ROOT=`pwd`/third_party_packages/mozilla/ff-opt-static/dist
 if test x$with_npambulant = xtrue;
 then
-   if test -f `pwd`/third_party_packages/gecko-sdk/include/npapi.h; then
-		# Require a gecko-sdk installation in third_party_packages
-		withvalabs=`pwd`/third_party_packages/gecko-sdk
-		# for the time being, we play with mozilla trunk
+   if test -f `pwd`/third_party_packages/xulrunner-sdk/include/plugin/npapi.h; then
+		# Require a xulrunner-sdk installation in third_party_packages
+		withvalabs=`pwd`/third_party_packages/xulrunner-sdk
+		# for mozilla source trunk, uncomment next line
 		# withvalabs=`pwd`/third_party_packages/mozilla/ff-opt-static/dist
-		GECKO_ROOT=${withvalabs}
-		XPIDL=${GECKO_ROOT}/bin/xpidl
+		XULRUNNER_ROOT=${withvalabs}
+		XPIDL=${XULRUNNER_ROOT}/bin/xpidl
    else
-		AC_MSG_ERROR("--with-npambulant requires gecko-sdk installed in third_party_packages")
-		GECKO_ROOT=
+		AC_MSG_ERROR("--with-npambulant requires xulrunner-sdk installed in third_party_packages")
+		XULRUNNER_ROOT=
 		XPIDL=
 		with_npambulant=false
    fi
 fi
-AC_SUBST(GECKO_ROOT)
+AC_SUBST(XULRUNNER_ROOT)
 AC_SUBST(XPIDL)
-AC_SUBST(FIREFOX_INCLUDES)
-AC_SUBST(FIREFOX_LIBS)
+AC_SUBST(NPAMBULANT_INCLUDES)
+AC_SUBST(NPAMBULANT_LIBS)
 AM_CONDITIONAL(WITH_NPAMBULANT, test x$with_npambulant = xtrue)
 AC_MSG_RESULT($with_npambulant)
 
@@ -1165,7 +1165,7 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
 	Build with Python plugin:       ${with_python_plugin}
 	Build with WebKit DOM plugin:   ${with_webkit_dom}
 	Build MacOSX universal binary:  ${with_universalsdk}
-	Build with Browser plugin:      ${with_npambulant}
+	Build with npambulant plugin:	${with_npambulant}
      "
 
 if test "x$with_frontend" = "x$false"; then

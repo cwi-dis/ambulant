@@ -150,7 +150,8 @@ ffmpeg:
 	As ffmpeg does not provide versioned distributions, and on all Linux
 	distributions we have seen, system installed versions of ffmpeg have
 	too little functionality to be useable for AmbulantPlayer, we need to
-	extract it from	the developers source tree.
+	extract the June 15th, 2008 version from the developers source tree.
+	When configuring ffmpeg, do NOT use its '--enable-swscale' option.
 
 	In addition, for AAC audio decoding, libfaad2 is needs to be installed.
 	See: http://www.audiocoding.com/faad2.html how to download and install.
@@ -163,7 +164,7 @@ ffmpeg:
 	.../ambulant/third_party_packages/ffmpeg using svn:
 
 	$ cd .../ambulant/third_party_packages
-	$ svn checkout svn://svn.mplayerhq.hu/ffmpeg/trunk ffmpeg
+	$ svn checkout -r "{2008-06-15}" svn://svn.mplayerhq.hu/ffmpeg/trunk ffmpeg
 	$ cd ffmpeg
 	$ if [ `arch` = x86_64 ] then extracflags=--extra-cflags=-fPIC ; fi
 	$ ./configure --enable-libfaad --enable-gpl $extracflags

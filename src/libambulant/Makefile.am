@@ -7,12 +7,12 @@ toolkit_live_libraries = libambulant_live.la
 libambulant_live_la_SOURCES = 	\
 	net/rtsp_datasource.cpp \
 	net/rtsp_factory.cpp
-	
+
 live_includes = -I $(LIVE_ROOT)/BasicUsageEnvironment/include \
 		   -I$(LIVE_ROOT)/groupsock/include \
 		   -I$(LIVE_ROOT)/liveMedia/include \
 		   -I$(LIVE_ROOT)/UsageEnvironment/include
-	
+
 livelibs = -L$(LIVE_ROOT)/liveMedia/ -lliveMedia \
 		  -L$(LIVE_ROOT)/BasicUsageEnvironment/ -lBasicUsageEnvironment  \
 		  -L$(LIVE_ROOT)/groupsock/ -lgroupsock  \

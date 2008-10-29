@@ -1,8 +1,7 @@
-#
-#
+#------------------------------------------------------
 FIREFOX=firefox
 NPAMBULANT=libnpambulant.0.0.0
-MOZILLA_PLUGINS=~/.mozilla/plugins
+MOZILLA_PLUGINS=mozilla/plugins
 
 ambulantlibdir=$(top_builddir)/src/libambulant/.libs
 
@@ -11,7 +10,7 @@ ambulant_ldflags=-L$(ambulantlibdir) -lambulant
 EXTRA_DIST=plugin.h plugin.cpp \
     ambulantmodule.h ambulantmodule.cpp \
     ambulantinterface.h ambulantinterface.cpp
-    
+
 # Various flags for optional features
 #------------------------------------------------------
 if WITH_GTK
@@ -75,7 +74,11 @@ INCLUDES = \
 	-I$(top_srcdir)/include/ambulant/gui \
 	-I$(top_srcdir)/src/player_gtk \
 	$(gtkincludes) \
-	-I$(GECKO_ROOT)/include \
+	-I$(XULRUNNER_ROOT)/include/plugin \
+	-I$(XULRUNNER_ROOT)/include/system_wrappers \
+	-I$(XULRUNNER_ROOT)/include/nspr  \
+	-I$(XULRUNNER_ROOT)/include/java  \
+	-I$(XULRUNNER_ROOT)/include/xpcom \
 	$(INCLTDL)
 
 # These targets are magic for automake
@@ -116,10 +119,10 @@ build-npambulant: $(PLUGIN_FILES) plugin.h npambulant.h
 	AM_LDFLAGS="-o libnpambulant.so"
 
 npambulant.h: $(srcdir)/npambulant.idl
-	$(XPIDL) -m header  -w -I$(GECKO_ROOT)/idl $(srcdir)/npambulant.idl
+	$(XPIDL) -m header  -w -I$(XULRUNNER_ROOT)/idl $(srcdir)/npambulant.idl
 
 npambulant.xpt: $(srcdir)/npambulant.idl
-	$(XPIDL) -m typelib -w -I$(GECKO_ROOT)/idl $(srcdir)/npambulant.idl
+	$(XPIDL) -m typelib -w -I$(XULRUNNER_ROOT)/idl $(srcdir)/npambulant.idl
 
 check-npambulant:
 	( a=`cd $(ambulantlibdir); pwd` ; \
@@ -128,15 +131,18 @@ check-npambulant:
 	)
 
 install-npambulant: npambulant.xpt .libs/$(NPAMBULANT)
-	$(INSTALL) -d $(MOZILLA_PLUGINS)
-	$(INSTALL_PROGRAM) .libs/$(NPAMBULANT) $(MOZILLA_PLUGINS)/npambulant.so
-	$(INSTALL_DATA) npambulant.xpt $(MOZILLA_PLUGINS)/npambulant.xpt
-# when selinux is enabled, identify the installed shared library 
-	./selinux_patch.sh $(MOZILLA_PLUGINS)/npambulant.so
-	
+	if [ `id -u` == "0" ]; then MOZILLA_PLUGINS=/usr/lib/$(MOZILLA_PLUGINS); else MOZILLA_PLUGINS=~/.$(MOZILLA_PLUGINS);fi; \
+	$(INSTALL) -d $(MOZILLA_PLUGINS);	\
+	$(INSTALL_PROGRAM) .libs/$(NPAMBULANT) $$MOZILLA_PLUGINS/npambulant.so;	\
+	$(INSTALL_DATA) npambulant.xpt $$MOZILLA_PLUGINS/npambulant.xpt;		\
+	./selinux_patch.sh $$MOZILLA_PLUGINS/npambulant.so
+# when selinux is enabled, identify the installed shared library
+
+
 clean-npambulant:
-	rm -fr $(MOZILLA_PLUGINS)/npambulant.so
-	rm -fr $(MOZILLA_PLUGINS)/npambulant.xpt
+	if [ `id -u` == "0" ]; then MOZILLA_PLUGINS=/usr/lib/$(MOZILLA_PLUGINS); else MOZILLA_PLUGINS=~/.$(MOZILLA_PLUGINS);fi; \
+	rm -fr $$MOZILLA_PLUGINS/npambulant.so; \
+	rm -fr $$MOZILLA_PLUGINS/npambulant.xpt
 
 mostlyclean-am:
 	rm -fr .libs *o $(NPAMBULANT)
@@ -146,4 +152,3 @@ mostlyclean-am:
 
 testplay:
 	cd $(srcdir) ; $(FIREFOXENV) FIREFOXPATH=$(BUILDLIBDIR) $(DEBUGGER) $(FIREFOX) $(FIREFOXARGS) test/test_npambulant.html
-	
