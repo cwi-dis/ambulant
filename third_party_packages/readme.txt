@@ -171,17 +171,14 @@ ffmpeg:
 	$ make
 
 	("--extra-cflags=-fPIC" is needed a.o. on Fedora-8 64 bit installations).
-	
-	NOTE: currently (June 17, 2008) ffmpeg's lib*.pc files contain a bug,
-	work around: type in .../ambulant/third_party_packages/ffmpeg
-	(after the configure command):
-	$ mv lib*/lib*.pc .
-	
-	NOTE 2: on Mac OS X, the lib*-uninstalled.pc files have an additional problem
+
+	NOTE 1: on Mac OS X, the lib*-uninstalled.pc files have a problem
 	(as of June 17, 2008): they refer to the libraries by filename in stead of with
 	a -L/-l construct. You must change this manually: replace each 
 	"${libdir}/libavxxxx.a" with "-L${libdir} -lavxxxx", otherwise libtool will fail
 	later, while building the ambulant ffmpeg library.
+
+	NOTE 2: for Nokia770/800, see special instructions in .../installers/nokia770/README.
 
 sdl:
 	Ambulant has been tested with sdl 1.2.5 thru 1.2.13. You find this at
@@ -233,8 +230,8 @@ gettext:
 	support (and, therefore, localization).
 	
 libxml2:
-    Only needed for SMIL3 support. Download from <http://www.xmlsoft.org>
-    and install normally. Make sure xml2-config is in your $PATH when building
-    Ambulant.
+	Only needed for SMIL3 support. Download from <http://www.xmlsoft.org>
+	and install normally. Make sure xml2-config is in your $PATH when building
+	Ambulant.
     
     

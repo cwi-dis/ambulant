@@ -1,14 +1,38 @@
-This directory is intended to contain all stuff needed to produce
-an installer for the nokia770 (OS2006 Jun release)
+This file resides in <ambulant-topdir>/installers/nokia770
 
-On scratchbox, run: ./create_installer
-When it runs succesfullt, the script tells you where
-you'll find the package.
+This directory is intended to contain all stuff needed to produce
+an installer for the nokia 770/N800 (OS2008 'Chinook' release)
+
+On 'Chinook' scratchbox, download Ambulant source tree in <ambulant-topdir>.
+In <ambulant-topdir>/src/third_party_packages, download and install ffmpeg:
+
+svn checkout -r "{2008-06-15}" svn://svn.mplayerhq.hu/ffmpeg/trunk ffmpeg 
+./configure --cpu=arm1136jf-s --enable-cross-compile
+make
+
+At this moment, I'm unsure whether the value for --cpu=
+is really the right one, at least it now compiles and runs.
+
+In <ambulant-topdir>, configure and build AmbulantPlayer:
+./configure --prefix=/usr --with-qt=no --with-gtk --with-nokia770\
+	 --host=i386 --with-ffmpeg --build=arm --with-gsteamer
+make
+
+In <ambulant-topdir>/installers/nokia770, run: ./create_installer
+A debian package (.deb) will be made in <ambulant-topdir>/installers,
+which, when copied to a website, can be installed on a Nokia machine,
+where it thereafter can be found in 'Extras'.
 
 Currently, AmbulantPlayer works with the following limitations:
 - the GUI is not 'hildonized'
 - video is not working properly (far too slow or hangs)
 - rtsp is not implemented
+- No logging
+- No preferences
+- No xerces
+- Often crashes after playing 1 or 2 files
 
 Kees Blom, Feb. 5th, 2007
+Updates:   Nov. 3th, 2008
+
 
