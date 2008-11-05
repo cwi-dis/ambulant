@@ -102,7 +102,7 @@ class xerces_sax_parser : public HandlerBase, public xml_parser {
 
 	void fatalError(const SAXParseException& exception);
 	
-	void set_do_validating(bool b) { m_saxparser->setDoValidation(b);}
+	void set_do_validating(bool b) { m_saxparser->setValidationScheme(b?SAXParser::Val_Always:SAXParser::Val_Never);}
 	void set_do_schema(bool b) { m_saxparser->setDoSchema(b);}
 	
 	// -------------------------------------------------------------
