@@ -427,7 +427,7 @@ smiltext_engine::_get_formatting(smiltext_run& dst, const lib::node *src)
 		}
 	}
 	const char *bg_color = src->get_attribute("textBackgroundColor");
-	if (bg_color) {
+	if (bg_color && strcmp(bg_color,"transparent") != 0) {
 		dst.m_bg_transparent = false;
 		dst.m_bg_color = lib::to_color(bg_color);
 	}
@@ -850,7 +850,7 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::smiltext_change
 				smiltext_layout_word word_info(*i, stm, n_nl);
 				m_words.push_back(word_info);
 				n_nl = 0;	
-				AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::smiltext_changed(0x%x) data=%s, H=%d,W=%d", this, i->m_data.c_str(), stm.get_width(), stm.get_height());
+AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::smiltext_changed(0x%x) data=%s, H=%d,W=%d", this, i->m_data.c_str(), stm.get_width(), stm.get_height());
 				break;
 			}			
 			i++;
@@ -976,6 +976,8 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw(0x%x): s
 		double now = elapsed - m_epoch;
 		if ( ! m_finished)
 			m_shifted_origin.y = (int) now * m_params.m_rate / 1000 * y_dir;
+//*KB*/	lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_finished=%d m_rate=%d y_dir=%d now=%lf m_shifted_origin(%d,%d)", 
+//KB										 m_finished, m_params.m_rate, y_dir, now, m_shifted_origin.x, m_shifted_origin.y);
 	}
 AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shifted_origin(%d,%d)", m_shifted_origin.x, m_shifted_origin.y);
 
@@ -1120,6 +1122,7 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shift
 			unsigned int rate = _compute_rate(m_words.begin()->m_run, smiltext_rect.size(), rect, dur);
 			m_engine.set_rate(rate);
 			m_params = m_engine.get_params();
+//*KB*/	lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: dur=%d rate%d", dur, rate);
 		}
 	}
 	// layout done, render the run
@@ -1141,6 +1144,8 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shift
 				// inside the viewing rectangle
 				m_finished = true;
 				m_provider->smiltext_stopped();
+//*KB*/	lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: last_word->m_bounding_box=(%d,%d,%d,%d) rect=(%d,%d,%d,%d) m_finished %d", 
+//*KB*/ last_word->m_bounding_box.x,last_word->m_bounding_box.y,last_word->m_bounding_box.w,last_word->m_bounding_box.h,rect.x,rect.y,rect.w,rect.h,m_finished);
 			}
 		}
 	}

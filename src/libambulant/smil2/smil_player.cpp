@@ -602,7 +602,7 @@ smil_player::pointed(int n, double t) {
 // Playable notification for a start event.
 void
 smil_player::started(int n, double t) {
-     AM_DBG m_logger->debug("smil_player::started(%d, %f)", n, t);
+    //KB 11/04/2008 AM_DBG m_logger->debug("smil_player::started(%d, %f)", n, t);
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end() && !(*it).second->is_discrete()) {
 		time_node::value_type root_time = m_root->get_simple_time();
@@ -624,7 +624,7 @@ smil_player::started_async(async_arg aa) {
 // Playable notification for a stop event.
 void
 smil_player::stopped(int n, double t) {
-    AM_DBG m_logger->debug("smil_player::stopped(%d, %f) roottime=%d", n, t, m_root->get_simple_time());
+    //KB 11/04/2008 AM_DBG m_logger->debug("smil_player::stopped(%d, %f) roottime=%d", n, t, m_root->get_simple_time());
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 	if(it != m_dom2tn->end() && !(*it).second->is_discrete()) {
 		time_node::value_type root_time = m_root->get_simple_time();
