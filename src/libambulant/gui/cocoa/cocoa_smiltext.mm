@@ -125,9 +125,9 @@ void
 cocoa_smiltext_renderer::start(double t)
 {
 	m_epoch = m_event_processor->get_timer()->elapsed();
+	m_context->started(m_cookie);
 	m_engine.start(t);
 	renderer_playable::start(t);
-	m_context->started(m_cookie);
 }
 
 void
