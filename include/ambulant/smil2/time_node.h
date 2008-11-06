@@ -578,7 +578,10 @@ class time_node : public schedulable {
 	time_node *m_child;	
 	
 	// verifier
-	static int node_counter;	
+	static int node_counter;
+    
+    // Verify that renderers produce started() and stopped() callbacks in the right order.
+    bool m_saw_on_bom, m_saw_on_eom;
 };
 
 class time_container : public time_node {

@@ -893,6 +893,8 @@ void time_node::start_playable(time_type offset) {
 	AM_DBG m_logger->debug("%s[%s].start_playable(%ld) DT:%ld", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str(), offset(), timestamp.as_doc_time_value());
 	m_eom_flag = false;
+    m_saw_on_bom = false;
+    m_saw_on_eom = false;
 	common::playable *np = create_playable();
 	if(np) np->wantclicks(m_want_activate_events);
 	const lib::transition_info *trans_in = m_attrs.get_trans_in();
@@ -1218,6 +1220,11 @@ bool time_node::on_eosd(qtime_type timestamp) {
 // Could be used to define the slip sync offset.
 void time_node::on_bom(qtime_type timestamp) {
 	m_eom_flag = false;
+    if (m_saw_on_bom)
+        m_logger->debug("time_node::on_bom: renderer emitted second started() callback for %s", get_sig().c_str());
+    if (m_saw_on_eom)
+        m_logger->debug("time_node::on_bom: renderer emitted started() callback after stopped() callback for %s", get_sig().c_str());
+    m_saw_on_bom = true;
 	if(!is_discrete()) {
 		qtime_type pt = timestamp.as_qtime_down_to(sync_node());
 		qtime_type st = pt.as_qtime_down_to(this);
@@ -1248,6 +1255,9 @@ void time_node::on_eom(qtime_type timestamp) {
 	AM_DBG m_logger->debug("%s[%s].on_eom()", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str());
 	m_eom_flag = true;
+    if (m_saw_on_eom)
+        m_logger->debug("time_node::on_eom: renderer emitted second stopped() callback for %s", get_sig().c_str());
+    m_saw_on_eom = true;
 	if(is_playable() && !is_discrete()) {
 		if(m_impldur == time_type::unresolved) {
 			time_type pt = timestamp.as_node_time(sync_node());
