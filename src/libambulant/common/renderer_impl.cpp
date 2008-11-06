@@ -70,7 +70,6 @@ renderer_playable::start(double t)
 	m_activated = true;
 	if (!m_dest) {
 		lib::logger::get_logger()->trace("renderer_playable.start: no destination surface, skipping media item");
-		m_context->stopped(m_cookie, 0);
 		return;
 	}
 	m_dest->show(this);
@@ -195,10 +194,11 @@ renderer_playable_ds::start(double t)
 	renderer_playable::start(t);
 	if (m_src) {
 		lib::event *e = new readdone_callback(this, &renderer_playable_ds::readdone);
-		m_src->start(m_event_processor, e);
 		m_context->started(m_cookie, 0);
+		m_src->start(m_event_processor, e);
 	} else {
 		lib::logger::get_logger()->trace("renderer_playable_ds.start: no datasource, skipping media item");
+		m_context->started(m_cookie, 0);
 		m_context->stopped(m_cookie, 0);
 	}
 }
@@ -245,6 +245,9 @@ renderer_playable_dsall::readdone()
 		lib::logger::get_logger()->fatal("renderer_playable_dsall.readdone: cannot allocate %d bytes", cur_size);
 		// What else can we do...
 		m_context->stopped(m_cookie, 0);
+		m_src->readdone(cur_size);
+		m_src->stop();
+		return;
 	}
 	AM_DBG lib::logger::get_logger()->debug("renderer_playable_dsall.readdone(0x%x): calling m_src->get_read_ptr() m_src=0x%x", (void *)this,m_src);
 	char *cur_data = m_src->get_read_ptr();
