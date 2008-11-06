@@ -80,6 +80,10 @@ Before creating the distribution
 - make sure all /*AM_DBG*/ have been changed into AM_DBG
 - make sure all the correct renderers are configured (for example the
   quicktime video renderer on the mac)
+- If there is a new SMIL release, make sure that --with-smilXX is default on.
+  Also, make sure that textual references are correct (don't call it "SMIL 3.0 RC"
+  if it has gone to rec). Finally, make sure that the DTDs have the correct names
+  in Extras/DTDcache (again, no RC or WD for final recs).  
 - change the version number in:
   - configure.in
   - include/ambulant/version.h
