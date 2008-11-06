@@ -101,10 +101,7 @@ class xerces_sax_parser : public HandlerBase, public xml_parser {
 	void error(const SAXParseException& exception);
 
 	void fatalError(const SAXParseException& exception);
-	
-	void set_do_validating(bool b) { m_saxparser->setValidationScheme(b?SAXParser::Val_Always:SAXParser::Val_Never);}
-	void set_do_schema(bool b) { m_saxparser->setDoSchema(b);}
-	
+
 	// -------------------------------------------------------------
 	//  Handlers for the SAX EntityResolver interface
 	// -------------------------------------------------------------
