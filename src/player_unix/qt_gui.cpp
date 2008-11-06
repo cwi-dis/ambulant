@@ -30,6 +30,7 @@
 #include "qt_logger.h"
 #include "qt_renderer.h"
 #include <qthread.h>
+#include <X11/Xlib.h>
 
 #include "ambulant/config/config.h"
 #include "ambulant/lib/logger.h"
@@ -610,7 +611,20 @@ qt_gui::_update_menus()
 int
 main (int argc, char*argv[]) {
 
-//#undef	ENABLE_NLS
+	FILE* DBG = stdout;
+
+	AM_DBG fprintf(DBG, "argc=%d argv[0]=%s\n", argc, argv[0]);
+	AM_DBG for (int i=1;i<argc;i++) {
+		fprintf(DBG,"%s\n", argv[i]);
+	}
+	/* Initializing Xlib for threading early helps to get rid of assertions such as:
+	 * xcb_lock.c:77: _XGetXCBBuffer: Assertion `((int) ((xcb_req) - (dpy->request)) >= 0)' failed
+	 * ref: http://www.mail-archive.com/debian-bugs-dist@lists.debian.org/msg557273.html
+	 */
+	if (XInitThreads() == 0) {
+		fprintf(DBG, "XInitThreads() returned zero");
+	}
+ 	//#undef	ENABLE_NLS
 #ifdef	ENABLE_NLS
 	// Load localisation database
 	bool private_locale = false;
@@ -630,7 +644,6 @@ main (int argc, char*argv[]) {
 	// Load preferences, initialize app and logger
 	unix_preferences unix_prefs;
 	unix_prefs.load_preferences();
-	FILE* DBG = stdout;
 #ifdef	WITH_QT_HTML_WIDGET
 	KApplication myapp( argc, argv, "AmbulantPlayer" );
 #else /*WITH_QT_HTML_WIDGET*/
@@ -667,10 +680,6 @@ main (int argc, char*argv[]) {
 #if ENABLE_NLS
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english)"));
 #endif
-
-	AM_DBG fprintf(DBG, "argc=%d argv[0]=%s\n", argc, argv[0]);
-	AM_DBG for (int i=1;i<argc;i++){fprintf(DBG,"%s\n", argv[i]);
-	}
 
 	bool exec_flag = false;
 
