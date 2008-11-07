@@ -439,7 +439,7 @@ smiltext_engine::_get_formatting(smiltext_run& dst, const lib::node *src)
     dst.m_font_families.clear();
 	const char *font_family = src->get_attribute("textFontFamily");
 	if (font_family) {
-        char *endpos;
+        const char *endpos;
 		do {
             endpos = strchr(font_family, ',');
             size_t len = endpos? (endpos-font_family) : strlen(font_family);
