@@ -360,7 +360,11 @@ class animate_f {
 	typedef typename F::value_type value_type;
 	
 	animate_f(const F& f, time_type sd, time_type ad, bool cum = false)
-	:	m_f(f), m_sd(sd), m_ad(ad), m_cum(cum) {}
+	:	m_f(f), m_sd(sd), m_ad(ad), m_cum(cum) {
+        // XXXJACK Added this clamping of simple duration to active duration, but I'm not sure it's
+        // correct. Symptom was bug #1763572: stack overflow if sd is indefinite.
+        if (m_sd > m_ad) m_sd = m_ad;
+    }
 	
 	value_type at(time_type t) const {
 		if(t<m_ad) return m_cum?(m_f.at(m_sd)*(t/m_sd) + m_f.at(t%m_sd)):m_f.at(t%m_sd);
