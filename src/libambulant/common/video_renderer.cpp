@@ -284,10 +284,6 @@ video_renderer::data_avail()
 	int size = 0;
 	net::timestamp_t now_micros = (net::timestamp_t)(now()*1000000);
 	net::timestamp_t frame_ts_micros;	// Timestamp of frame in "buf" (in microseconds)
-#if 0
-	// We really want to 
-	stop_show_frame();	// Tell renderer previous frame data may become invalid
-#endif
 	buf = m_src->get_frame(now_micros, &frame_ts_micros, &size);
 	net::timestamp_t frame_duration = m_src->frameduration(); // XXX For now: assume 30fps
 	

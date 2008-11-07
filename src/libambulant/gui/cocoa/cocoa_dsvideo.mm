@@ -204,15 +204,6 @@ cocoa_dsvideo_renderer::_push_frame(char* frame, int size)
 	}
 	[m_image addRepresentation: bitmaprep];
 	[m_image setFlipped: true];
-#if 0
-	// XXXJACK debug video redraw
-	NSData *tiffrep = [m_image TIFFRepresentation];
-	static int seqnum = 1;
-	NSString *filename = [NSString stringWithFormat: @"/tmp/amvid/amvid%06.6d.tiff", seqnum++];
-	[tiffrep writeToFile: filename atomically: NO];
-	[tiffrep release];
-	[filename release];
-#endif
 	[bitmaprep release];
 }
 

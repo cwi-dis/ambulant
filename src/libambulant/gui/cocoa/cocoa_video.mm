@@ -64,16 +64,12 @@
 - (void)movieWithURL: (NSURL*)url
 {
 	movie = NULL;
-#if 0
-	movie = [[QTMovie movieWithURL:url error:nil] retain];
-#else
     NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
         (id)url, QTMovieURLAttribute,
         [NSNumber numberWithBool:NO], QTMovieOpenAsyncOKAttribute,
         nil];
     movie = [[QTMovie movieWithAttributes:attrs error:nil] retain];
 
-#endif
 	Movie mov = [movie quickTimeMovie];
 	TimeValue movtime;
 	if (clip_begin) {

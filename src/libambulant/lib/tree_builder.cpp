@@ -123,30 +123,6 @@ lib::tree_builder::build_tree_from_file(const char *filename) {
 #endif
 }
 
-#if 0
-bool 
-lib::tree_builder::build_tree_from_url(const net::url& u) {
-	if(!m_xmlparser) return false;
-	m_filename = u.get_url();
-#if defined(AMBULANT_PLATFORM_WIN32)
-	assert(0);
-	memfile mf(u, NULL);  // XXXX
-	if(!mf.read()) {
-		// mf.read has given error message
-		// lib::logger::get_logger()->show(gettext("Failed to read URL: %s"), u.get_url().c_str());
-		return false;
-	}
-	m_well_formed = m_xmlparser->parse((const char*)mf.data(), int(mf.size()), true);
-	if(!m_well_formed) {
-		lib::logger::get_logger()->show(gettext("Failed to parse document: %s"), u.get_url().c_str());	
-	}
-	return m_well_formed;
-#else
-	return false;
-#endif
-}
-#endif
-
 bool 
 lib::tree_builder::build_tree_from_str(const std::string& str) {
 	m_well_formed = m_xmlparser->parse(str.data(), int(str.length()), true);

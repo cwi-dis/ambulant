@@ -71,14 +71,6 @@ class AMBULANTAPI document : public node_context {
 	/// needs to call set_str_url() itself.
 	static document* create_from_string(common::factories* factory, const std::string& smil_src, const std::string& src_id);
 	
-#if 0
-	/// A document factory function.
-	/// Creates a document from a given DOM tree.
-	/// The tree is not freed when the document is, and the caller is
-	/// responsible for keeping it alive.
-	static document* create_from_tree(common::factories* factory, lib::node *root, const net::url& u);
-#endif
-
 	/// This class may be extented to more specific documents.
 	/// Therefore, use the virtual table to invoke the destructor.
 	virtual ~document();

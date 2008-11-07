@@ -573,18 +573,6 @@ smiltext_engine::_get_params(smiltext_params& params, const lib::node *src)
 			lib::logger::get_logger()->trace("%s: textMode=\"%s\": unknown mode", src->get_sig().c_str(), mode);
 		}
 	}
-#if 0
-	// textLoop was removed from the spec
-	const char *loop = src->get_attribute("textLoop");
-	if (loop) {
-		if (strcmp(loop, "true") == 0) params.m_loop = true;
-		else if (strcmp(loop, "false") == 0) params.m_loop = false;
-		else if (strcmp(loop, "inherit") == 0) /* no-op */ ;
-		else {
-			lib::logger::get_logger()->trace("%s: textLoop=\"%s\": must be true or false", src->get_sig().c_str(), loop);
-		}
-	}
-#endif
 	const char *rate = src->get_attribute("textRate");
 	if (rate) {
 		int rate_i = atoi(rate); // XXXX
@@ -618,9 +606,6 @@ void
 smiltext_engine::_get_default_params(smiltext_params& params)
 {
 	params.m_mode = stm_append;
-#if 0
-	params.m_loop = false;
-#endif
 	params.m_rate = 0;
 	params.m_text_place = stp_from_start;
 	params.m_text_conceal = stc_none;

@@ -313,14 +313,6 @@ time_node::set_ffwd_mode(bool b)
 		AM_DBG m_logger->debug("set_ffwd_mode: stop_playable(%s)", get_sig().c_str());
 		stop_playable();
 	}
-#if 0
-	std::list<time_node*> children;
-	get_children(children);
-	std::list<time_node*>::iterator it;
-	for(it = children.begin(); it != children.end(); it++) {
-		(*it)->set_ffwd_mode(b);
-	}
-#endif
 }
 
 void
@@ -780,20 +772,6 @@ void time_node::start_statecommand(time_type offset) {
 			return;
 		}
 		sc->set_value(ref, value);
-#if 0
-		// XXXJACK Raising the state_change_event here is also a bit of a hack
-		time_node *tnroot = get_root();
-		assert(tnroot);
-		node *root = tnroot->dom_node();
-		assert(root);
-		node *head = root->get_first_child("head");
-		if (head) {
-			node *state = root->get_first_child("state");
-			if (state) {
-				state->raise_state_change(std::pair<qtime_type, std::string>(timestamp, ref));
-			}
-		}
-#endif
 	} else if (tag == "newvalue") {
 		const char *ref = m_node->get_attribute("ref");
 		const char *where = m_node->get_attribute("where");
@@ -808,20 +786,6 @@ void time_node::start_statecommand(time_type offset) {
 			return;
 		}
 		sc->new_value(ref, where, name, value);
-#if 0
-		// XXXJACK Raising the state_change_event here is also a bit of a hack
-		time_node *tnroot = get_root();
-		assert(tnroot);
-		node *root = tnroot->dom_node();
-		assert(root);
-		node *head = root->get_first_child("head");
-		if (head) {
-			node *state = root->get_first_child("state");
-			if (state) {
-				state->raise_state_change(std::pair<qtime_type, std::string>(timestamp, name));
-			}
-		}
-#endif
 	} else if (tag == "delvalue") {
 		const char *ref = m_node->get_attribute("ref");
 		if (!ref) {
@@ -961,14 +925,6 @@ time_node::time_type time_node::get_playable_dur() {
 	common::duration dur_pair = m_context->get_dur(m_node);
 	if(dur_pair.first && dur_pair.second>0)
 		return secs_to_time_type(dur_pair.second)();
-#if 0
-	// Attempted fix by Jack: if we're fast-forwarding we return zero for
-	// things we can't figure out the duration for.
-	if (m_ffwd_mode) {
-		m_logger->trace("fast-forward: ignoring unknown duration for %s", get_sig().c_str());
-		return secs_to_time_type(0)();
-	}
-#endif
 	return time_type::unresolved;
 }
 

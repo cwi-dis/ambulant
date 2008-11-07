@@ -178,21 +178,12 @@ void scheduler::activate_seq_child(time_node *parent, time_node *child) {
 	std::list<time_node*>::iterator it, beginit;
 	
 	assert(parent->is_active());
-#if 0
-	assert(!child->is_active());
-	// locate first active
-	for(it = children.begin(); it != children.end() && !(*it)->is_active(); it++) {
-		AM_DBG lib::logger::get_logger()->debug("activate_seq_child: skip inactive %s", (*it)->get_sig().c_str());
-	}
-	beginit = it;
-#else
 	// Skip all children that are active (or have been active)
 	for(it = children.begin(); *it != child && ((*it)->is_active() || (*it)->played()); it++) {
 		assert(it != children.end());
 		AM_DBG lib::logger::get_logger()->debug("activate_seq_child: skip already active %s", (*it)->get_sig().c_str());
 	}
 	beginit = it;
-#endif
 	
 	for(it = beginit; (*it) != child; it++) {
 		assert(it != children.end());
@@ -266,14 +257,6 @@ scheduler::time_type scheduler::exec() {
 scheduler::time_type scheduler::_exec() {
 	time_type now = m_timer->elapsed();
 	time_type next = _exec(now);
-#if 0
-	// This line was taken out a long time ago (rev 1.10, dec 2004) because it seemed to be
-	// soaking up CPU cycles. I'm now putting it back in, tentatively, to see if that fixes
-	// the seek problems we have:
-	// - After a seek some documents will end immediately
-	// - Some documents cannot seek, if you try it they'll start at the beginning anyway.
-	while(next == now) next = _exec(now);
-#endif
 	time_type waitdur = next - now;
 	AM_DBG lib::logger::get_logger()->debug("scheduler::_exec() done, waitdur=%d, idle_resolution=%d", waitdur, idle_resolution);
 	if (waitdur < 0) waitdur = 0;

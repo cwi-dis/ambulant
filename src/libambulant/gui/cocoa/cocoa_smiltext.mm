@@ -371,14 +371,6 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	bool has_hmovement = false;
 	bool has_vmovement = false;
 	switch(m_params.m_mode) {
-#if 0
-	// Handled through paragraph wrapping now
-	case smil2::stm_replace:
-	case smil2::stm_append:
-		if (!m_params.m_wrap)
-			layout_size.width = INFINITE_WIDTH;
-		break;
-#endif
 	case smil2::stm_scroll:
 	case smil2::stm_jump:
 		layout_size.height = INFINITE_HEIGHT;
@@ -465,16 +457,11 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	}
 	if (m_params.m_mode == smil2::stm_scroll) {
 		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
-#if 0
-		logical_origin.y += now * m_params.m_rate / 1000;
-		visible_origin.y -= now * m_params.m_rate / 1000;
-#else
 		visible_origin.y -= now * m_params.m_rate / 1000;
 		if (visible_origin.y < 0) {
 			logical_origin.y -= visible_origin.y;
 			// visible_origin.y = 0;
 		}
-#endif
 	}
 	AM_DBG logger::get_logger()->debug("cocoa_smiltext_renderer.redraw at Cocoa-point (%f, %f) logical (%f, %f)", visible_origin.x, visible_origin.y, logical_origin.x, logical_origin.y);
 	if (m_render_offscreen) {

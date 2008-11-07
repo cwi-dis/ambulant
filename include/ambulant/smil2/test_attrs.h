@@ -61,13 +61,6 @@ class AMBULANTAPI test_attrs {
 	static bool load_test_attrs(const std::string& filename);
 	static void set_default_tests_attrs();
 	
-#if 0
-	static void read_custom_attributes(const lib::document *doc, 
-		std::map<std::string, custom_test>& custom_tests);
-	
-	static void read_custom_attributes(const lib::document *doc);
-#endif
-
 	const std::string& get_tag() const { return m_tag;}
 	const std::string& get_id() const { return m_id;}
 

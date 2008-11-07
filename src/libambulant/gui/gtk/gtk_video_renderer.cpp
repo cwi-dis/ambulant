@@ -60,14 +60,6 @@ gtk_video_renderer::gtk_video_renderer(
   	m_data(NULL),
 	m_img_displayed(0)
 {
-#if 0
-    //This is ridiculous! how could something be in m_frames?
-	while ( m_frames.size() > 0 ) {
-		std::pair<int, char*> element = m_frames.front();
-		//free(element.second);
-		m_frames.pop();
-	}
-#endif
    assert(m_frames.size() == 0);
 	
 }
