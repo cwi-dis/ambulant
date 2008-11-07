@@ -438,9 +438,9 @@ smil_player::clicked(int n, double t) {
 
 void
 smil_player::clicked_async(async_arg aa) {
-	m_scheduler->lock();
+//XXXJACK thinks this isn't needed	m_scheduler->lock();
 	aa.first->raise_activate_event(aa.second);
-	m_scheduler->unlock();
+//XXXJACK thinks this isn't needed	m_scheduler->unlock();
 }
 
 void
@@ -559,30 +559,30 @@ smil_player::after_mousemove()
 
 void
 smil_player::mouse_outofbounds_async(async_arg aa) {
-	m_scheduler->lock();
+//XXXJACK thinks this isn't needed	m_scheduler->lock();
 	aa.first->raise_outofbounds_event(aa.second);
-	m_scheduler->unlock();
+//XXXJACK thinks this isn't needed	m_scheduler->unlock();
 }
 
 void
 smil_player::focus_outofbounds_async(async_arg aa) {
-	m_scheduler->lock();
+//XXXJACK thinks this isn't needed	m_scheduler->lock();
 	aa.first->raise_focusout_event(aa.second);
-	m_scheduler->unlock();
+//XXXJACK thinks this isn't needed	m_scheduler->unlock();
 }
 
 void
 smil_player::mouse_inbounds_async(async_arg aa) {
-	m_scheduler->lock();
+//XXXJACK thinks this isn't needed	m_scheduler->lock();
 	aa.first->raise_inbounds_event(aa.second);
-	m_scheduler->unlock();
+//XXXJACK thinks this isn't needed	m_scheduler->unlock();
 }
 
 void
 smil_player::focus_inbounds_async(async_arg aa) {
-	m_scheduler->lock();
+//XXXJACK thinks this isn't needed	m_scheduler->lock();
 	aa.first->raise_focusin_event(aa.second);
-	m_scheduler->unlock();
+//XXXJACK thinks this isn't needed	m_scheduler->unlock();
 }
 
 // Playable notification for a point (mouse over) event.
@@ -689,9 +689,9 @@ smil_player::marker_seen(int n, const char *name, double t) {
 
 void
 smil_player::marker_seen_async(async_string_arg asa) {
-	m_scheduler->lock();
+//XXXJACK thinks this isn't needed	m_scheduler->lock();
 	asa.first->raise_marker_event(asa.second);
-	m_scheduler->unlock();
+//XXXJACK thinks this isn't needed	m_scheduler->unlock();
 }
 
 // Playable notification for a stall event.
@@ -735,11 +735,11 @@ void smil_player::on_char(int ch) {
 
 void
 smil_player::on_char_async(async_int_arg aia) {
-	m_scheduler->lock();
+//XXXJACK thinks this isn't needed	m_scheduler->lock();
 	int ch = aia.second.second;
 	AM_DBG m_logger->debug("smil_player::on_char_async(): '%c' [%d]", char(ch), ch);
 	aia.first->raise_accesskey(aia.second);
-	m_scheduler->unlock();
+//XXXJACK thinks this isn't needed	m_scheduler->unlock();
 }
 
 #ifdef WITH_SMIL30
@@ -759,9 +759,9 @@ void smil_player::on_state_change(const char *ref) {
 
 void
 smil_player::on_state_change_async(async_string_arg asa) {
-	m_scheduler->lock();
+//XXXJACK thinks this isn't needed	m_scheduler->lock();
 	asa.first->raise_state_change(asa.second);
-	m_scheduler->unlock();
+//XXXJACK thinks this isn't needed	m_scheduler->unlock();
 }
 #endif // WITH_SMIL30
 
