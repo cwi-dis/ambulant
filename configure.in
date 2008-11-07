@@ -179,17 +179,17 @@ AM_CONDITIONAL(WITH_DUMMY_PLUGIN, test x$with_dummy_plugin = xtrue)
 AC_MSG_RESULT($with_dummy_plugin)
 
 #
-# Do we want SMIL 3.0 WD support?
+# Do we want SMIL 3.0 support?
 #
-test_smil30=false
+test_smil30=true
 AC_MSG_CHECKING(for --with-smil30)
 AC_ARG_WITH([smil30],[
     AC_HELP_STRING([--with-smil30],
-                   [Enable SMIL 3.0 WD constructs])
+                   [Enable SMIL 3.0 constructs])
     ],[with_smil30=${withval}], [with_smil30=yes])
 if test "x$with_smil30" = xyes;
 then
-    AC_DEFINE(WITH_SMIL30, 1, [Define to enable SMIL 3.0 WD support])
+    AC_DEFINE(WITH_SMIL30, 1, [Define to enable SMIL 3.0 support])
    test_smil30=true
 fi
 AM_CONDITIONAL(WITH_SMIL30, test x$with_smil30 = xyes)
@@ -1151,31 +1151,35 @@ dnl ============================================================================
 echo "
 ambulant-$AMBULANT_VERSION will be built with following parameters:
 
-	targeted prefix:                ${prefix}
-	compiler:                       ${CC}
+    targeted prefix:                ${prefix}
+    compiler:                       ${CC}
 
-	Enable external DOM:		${test_dom}
-	Enable SMIL 3.0 WD:         ${test_smil30}
-	Enable overlay window:		${test_overlay}
-	Enable SMIL test layout:	${test_smil_test}
-	Use expat XML library:		${test_expat}	${expat_path}
-	Use xerces XML library:		${test_xerces}	${xerces_path}
-	Enable Xerces as plugin:	${xerces_plugin}
-	Build with ffmpeg:     		${test_ffmpeg}	${ffmpeg_inst_style}
-	Build Qtopia frontend:		${qtopia}
-	Build Qt frontend:              ${test_qt}
-	Build Cocoa frontend:		${cocoa}
-	Build UIKit frontend:       ${uikit}
-	Build with SDL:			${test_sdl}
-	Build with GTK:			${test_gtk}
-	Build with gstreamer:		${test_gstreamer}
-	Build with NOKIA770:		${test_nokia770}
-	Build with live555.com RTSP:	${test_live}
-	Build with Python support:      ${with_python}
-	Build with Python plugin:       ${with_python_plugin}
-	Build with WebKit DOM plugin:   ${with_webkit_dom}
-	Build MacOSX universal binary:  ${with_universalsdk}
-	Build with npambulant plugin:	${with_npambulant}
+    Enable external DOM:            ${test_dom}
+    Enable SMIL 3.0:                ${test_smil30}
+    Enable overlay window:          ${test_overlay}
+    Enable SMIL test layout:        ${test_smil_test}
+    Build with Python support:      ${with_python}
+    Build with Python plugin:       ${with_python_plugin}
+
+    Use expat XML library:          ${test_expat}  ${expat_path}
+    Use xerces XML library:         ${test_xerces}  ${xerces_path}
+    Enable Xerces as plugin:        ${xerces_plugin}
+    Build with ffmpeg:              ${test_ffmpeg}  ${ffmpeg_inst_style}
+    Build with SDL:                 ${test_sdl}
+    Build with live555.com RTSP:    ${test_live}
+    Build with gstreamer:           ${test_gstreamer}
+
+    Build Qtopia frontend:          ${qtopia}
+    Build Qt frontend:              ${test_qt}
+    Build with GTK:                 ${test_gtk}
+    Build with NOKIA770:            ${test_nokia770}
+
+    Build with WebKit DOM plugin:   ${with_webkit_dom}
+    Build Cocoa frontend:           ${cocoa}
+    Build UIKit frontend:           ${uikit}
+    Build MacOSX universal binary:  ${with_universalsdk}
+
+    Build with npambulant plugin:   ${with_npambulant}
      "
 
 if test "x$with_frontend" = "x$false"; then

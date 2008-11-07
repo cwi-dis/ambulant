@@ -436,10 +436,19 @@ smiltext_engine::_get_formatting(smiltext_run& dst, const lib::node *src)
 		dst.m_transparent = false;
 		dst.m_color = lib::to_color(color);
 	}
+    dst.m_font_families.clear();
 	const char *font_family = src->get_attribute("textFontFamily");
 	if (font_family) {
-		dst.m_font_family = font_family;
+        char *endpos;
+		do {
+            endpos = strchr(font_family, ',');
+            size_t len = endpos? (endpos-font_family) : strlen(font_family);
+            std::string family(font_family, len);
+            dst.m_font_families.push_back(family);
+            font_family = endpos + 1;
+        } while(endpos);
 	}
+    dst.m_font_families.push_back("sansSerif");
 	const char *font_size = src->get_attribute("textFontSize");
 	if (font_size) {
 		if (strcmp(font_size, "xx-small") == 0) dst.m_font_size = 8;
@@ -543,7 +552,7 @@ smiltext_engine::_get_formatting(smiltext_run& dst, const lib::node *src)
 void
 smiltext_engine::_get_default_formatting(smiltext_run& dst)
 {
-	dst.m_font_family = "sansSerif";
+//	dst.m_font_family = "sansSerif";
 	dst.m_font_style = sts_normal;
 	dst.m_font_weight = stw_normal;
 	dst.m_font_size = 12;
@@ -575,8 +584,12 @@ smiltext_engine::_get_params(smiltext_params& params, const lib::node *src)
 	}
 	const char *rate = src->get_attribute("textRate");
 	if (rate) {
-		int rate_i = atoi(rate); // XXXX
-		params.m_rate = rate_i;
+        if (strcmp(rate, "auto") == 0) {
+            params.m_rate = 0;
+        } else {
+            int rate_i = atoi(rate); // XXXX
+            params.m_rate = rate_i;
+        }
 	}
 	const char *text_place = src->get_attribute("textPlace");
 	if (text_place) {

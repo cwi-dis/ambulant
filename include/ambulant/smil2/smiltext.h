@@ -137,7 +137,7 @@ class smiltext_run {
 	smiltext_command m_command;
 	lib::xml_string m_data;
 	
-	const char *			m_font_family;
+	std::vector<std::string>			m_font_families;
 	smiltext_font_style		m_font_style;
 	smiltext_font_weight	m_font_weight;
 	int						m_font_size;

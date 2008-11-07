@@ -311,7 +311,7 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 
 void
 gui::qt::qt_smiltext_renderer::_qt_smiltext_set_font(const smil2::smiltext_run& strun) {
-	const char *fontname = strun.m_font_family;
+	const char *fontname = strun.m_font_families[0].c_str();
 	m_font = QFont(QApplication::font());
 	if (fontname) {
                 m_font.setFamily(fontname);

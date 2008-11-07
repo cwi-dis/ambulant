@@ -79,6 +79,7 @@ _select_font(const char *family, smil2::smiltext_font_style style, smil2::smilte
 		break;
 	}
 	font = [fm fontWithFamily: ffname traits: mask weight: 5 size: size];
+#if 0
 //	[ffname release];
 	if (font) return font;
 	lib::logger::get_logger()->trace("smilText: Could not find exact font for family %s, trying without", family);
@@ -87,6 +88,7 @@ _select_font(const char *family, smil2::smiltext_font_style style, smil2::smilte
 	lib::logger::get_logger()->trace("smilText: Could not find font without family either, converting userFont");
 	font = [NSFont userFontOfSize: (float)size];		
 	font = [fm convertFont: font toHaveTrait: mask];
+#endif
 	return font;
 }
 
@@ -143,6 +145,16 @@ cocoa_smiltext_renderer::stop()
 	m_engine.stop();
 	renderer_playable::stop();
 	m_context->stopped(m_cookie);
+}
+
+void
+cocoa_smiltext_renderer::pause(pause_display d)
+{
+}
+
+void
+cocoa_smiltext_renderer::resume()
+{
 }
 
 void
@@ -240,9 +252,18 @@ cocoa_smiltext_renderer::smiltext_changed()
 			NSMutableDictionary *attrs = [[NSMutableDictionary alloc] init];
 			newrange.length = [newdata length];
 			// Find font info
-			NSFont *text_font = _select_font((*i).m_font_family, (*i).m_font_style, (*i).m_font_weight, (*i).m_font_size);
-			if (text_font)
-				[attrs setValue:text_font forKey:NSFontAttributeName];
+            NSFont *text_font = NULL;
+            std::vector<std::string>::const_iterator fi;
+            for (fi=(*i).m_font_families.begin(); fi != (*i).m_font_families.end(); fi++) {
+                /*AM_DBG*/ lib::logger::get_logger()->debug("cocoa_smiltext: look for font '%s'", (*fi).c_str());
+                text_font = _select_font((*fi).c_str(), (*i).m_font_style, (*i).m_font_weight, (*i).m_font_size);
+                if (text_font) break;
+                /*AM_DBG*/ lib::logger::get_logger()->debug("cocoa_smiltext: not found, try next");
+            }
+			if (!text_font)
+                text_font = [NSFont userFontOfSize: (*i).m_font_size];
+                
+            [attrs setValue:text_font forKey:NSFontAttributeName];
 				
 			if (!(*i).m_transparent) {
 				// Find color info

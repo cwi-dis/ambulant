@@ -449,12 +449,12 @@ gui::dx::dx_smiltext_renderer::smiltext_stopped() {
 HGDIOBJ
 gui::dx::dx_smiltext_renderer::_dx_smiltext_set_font(const smil2::smiltext_run run, HDC hdc, HFONT* hfontp) {
 	DWORD family = FF_DONTCARE | DEFAULT_PITCH;
-	const char *fontname = run.m_font_family;
+	const char *fontname = run.m_font_families[0].c_str();
 	int adjust_height = 0;
 	if (hfontp == NULL)
 		return NULL;
-	if (run.m_font_family) {
-		if (strcmp(run.m_font_family, "serif") == 0) {
+	if (fontname) {
+		if (strcmp(fontname, "serif") == 0) {
 			family = FF_ROMAN | VARIABLE_PITCH;
 			fontname = NULL;
 			switch (run.m_font_size) {
@@ -466,16 +466,16 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_set_font(const smil2::smiltext_run r
 			default:
 				break;
 			}
-		} else if (strcmp(run.m_font_family, "sans-serif") == 0) {
+		} else if (strcmp(fontname, "sansSerif") == 0) {
 			family = FF_SWISS | VARIABLE_PITCH;
 			fontname = NULL;
-		} else if (strcmp(run.m_font_family, "monospace") == 0) {
+		} else if (strcmp(fontname, "monospace") == 0) {
 			family = FF_DONTCARE | FIXED_PITCH;
 			fontname = NULL;
-		} else if (strcmp(run.m_font_family, "cursive") == 0) {
+		} else if (strcmp(fontname, "cursive") == 0) {
 			family = FF_SCRIPT | VARIABLE_PITCH;
 			fontname = NULL;
-		} else if (strcmp(run.m_font_family, "fantasy") == 0) {
+		} else if (strcmp(fontname, "fantasy") == 0) {
 			family = FF_DECORATIVE | VARIABLE_PITCH;
 			fontname = NULL;
 		}
@@ -543,7 +543,7 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_set_font(const smil2::smiltext_run r
 			family,				// pitch and family
 			STR_TO_TSTR(fontname));	// typeface name
 #endif // AMBULANT_PLATFORM_WIN32_WCE
-	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_run_set_attr(0x%x): m_data=%s font=0x%x, m_font_size=%d,weight=0x%x,italic=%d,family=0x%x,run.m_font_family=%s",this,run.m_data.c_str(),*hfontp,run.m_font_size,weight,italic,family,run.m_font_family);
+	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_run_set_attr(0x%x): m_data=%s font=0x%x, m_font_size=%d,weight=0x%x,italic=%d,family=0x%x,run.m_font_families[...]=%s",this,run.m_data.c_str(),*hfontp,run.m_font_size,weight,italic,family,fontname);
 	return ::SelectObject(hdc, *hfontp);
 }
 

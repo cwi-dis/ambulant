@@ -307,7 +307,7 @@ AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x)",this);
 			}				
 			// Set font attributes
 			_gtk_set_font_attr(m_pango_attr_list, 
-					   i->m_font_family,
+					   i->m_font_families[0],
 					   i->m_font_style, 
 					   i->m_font_weight,
 					   i->m_font_size,
@@ -315,7 +315,7 @@ AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x)",this);
 					   m_text_storage.size());
 			if (m_bg_pango_attr_list) 
 				_gtk_set_font_attr(m_bg_pango_attr_list, 
-						   i->m_font_family,
+						   i->m_font_families[0],
 						   i->m_font_style, 
 						   i->m_font_weight,
 						   i->m_font_size,

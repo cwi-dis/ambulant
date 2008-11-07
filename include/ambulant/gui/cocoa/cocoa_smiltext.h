@@ -58,6 +58,8 @@ class cocoa_smiltext_renderer :
 	void start(double t);
 	void seek(double t);
 	void stop();
+    void pause(pause_display d=display_show);
+    void resume();
 	// Callbacks from the engine
 	void smiltext_changed();
 	void marker_seen(const char *name);
