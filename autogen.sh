@@ -296,7 +296,7 @@ for configure_in in $configure_files; do
 	fi
 
 	printbold "Running $AUTOMAKE..."
-	$AUTOMAKE --gnu --add-missing || exit 1
+	$AUTOMAKE --gnu --add-missing --force-missing || exit 1
 
 	printbold "Running $AUTOCONF..."
 	$AUTOCONF || exit 1
