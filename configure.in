@@ -829,6 +829,16 @@ AC_ARG_WITH(python,
     ])
 AM_CONDITIONAL(WITH_PYTHON, test x$with_python = xtrue)
 AC_SUBST(PYTHON)
+if test x$with_python = xtrue; then
+	pythonprefix=`$PYTHON -c 'import sys; print sys.prefix'`
+	if test ! -w $pythonprefix; then
+		AC_MSG_WARN([Python installation not writeable, install may fail])
+		python_warning="
+You appear to have no permission to write into your Python installation.
+This may mean 'make install' will fail, use 'make install -k' and manually
+install the ambulant python module."
+	fi
+fi
 AC_MSG_RESULT($with_python - $PYTHON)
 
 # Do we want python plugins ?
@@ -1175,3 +1185,4 @@ AC_MSG_RESULT([$qt_warning]);
 AC_MSG_RESULT([$ffmpeg_warning]);
 AC_MSG_RESULT([$live_warning]);
 AC_MSG_RESULT([$expat_warning]);
+AC_MSG_RESULT([$python_warning]);
