@@ -74,6 +74,7 @@ class video_player : public common::playable {
 	void wantclicks(bool want) { m_wantclicks = want;}
 	void preroll(double when, double where, double how_much) {}
 	cookie_type get_cookie() const { return m_cookie;}
+	int ms_per_frame();
 	
 	bool can_play();
 	bool is_playing();

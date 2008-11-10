@@ -51,7 +51,9 @@ gui::dx::dx_video_renderer::dx_video_renderer(
 	dx_playables_context *dxplayer)
 :   dx_renderer_playable(context, cookie, node, evp, dxplayer),
 	m_player(0), 
-	m_update_event(0) {
+	m_update_event(0),
+	m_frametime(50)
+{
 	AM_DBG lib::logger::get_logger()->debug("dx_video_renderer(0x%x)", this);
 }
 
@@ -109,6 +111,8 @@ void gui::dx::dx_video_renderer::start(double t) {
 		
 	// Start the underlying player
 	m_player->start(t + (m_clip_begin / 1000000.0));
+	m_frametime = m_player->ms_per_frame();
+	/*AM_DBG*/ lib::logger::get_logger()->debug("dx_video: %d ms/frame", m_frametime);
 	m_player->update();
 		
 	// Request a redraw
@@ -273,5 +277,5 @@ void gui::dx::dx_video_renderer::update_callback() {
 void gui::dx::dx_video_renderer::schedule_update() {
 	m_update_event = new lib::no_arg_callback<dx_video_renderer>(this, 
 		&dx_video_renderer::update_callback);
-	m_event_processor->add_event(m_update_event, 50, lib::ep_med);
+	m_event_processor->add_event(m_update_event, m_frametime, lib::ep_med);
 }

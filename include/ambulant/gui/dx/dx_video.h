@@ -63,6 +63,7 @@ class dx_video_renderer : public dx_renderer_playable {
 	void schedule_update();
  	video_player *m_player;
 	lib::event *m_update_event;
+	lib::event_processor::time_type m_frametime;
 	lib::critical_section m_cs;
 	
 	// for debugging

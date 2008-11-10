@@ -256,9 +256,30 @@ void gui::dx::video_player::release_player() {
 	}
 }
 
+int gui::dx::video_player::ms_per_frame() {
+	if (m_ddstream == NULL) return 50;
+	STREAM_TIME frametime = 0;
+	HRESULT hr = m_ddstream->GetTimePerFrame(&frametime);
+	if (hr != S_OK) return 50;
+	// lib::logger::get_logger()->debug("dx_video_player: %lld frame duration", frametime);
+	return (int)(frametime / 10000);
+}
+
 bool gui::dx::video_player::update() {
 	if(!m_mmstream || !m_ddsample) return false;
 	HRESULT hr = m_ddsample->Update(0, NULL, NULL, 0);
+#undef CATCH_UP
+#ifdef CATCH_UP
+	while (hr == S_OK) {
+		STREAM_TIME ts, te, tc;
+		hr = m_ddsample->GetSampleTimes(&ts, &te, &tc);
+		/*AM_DBG*/ lib::logger::get_logger()->debug("dx_video_player::update: ts=%lld, te=%lld, tc=%lld", ts, te, tc);
+		if (hr == S_OK ) {
+			if (tc >= te) break;
+			hr = m_ddsample->Update(0, NULL, NULL, 0);
+		}
+	}
+#endif
 	if(hr != S_OK) {
 		// OK, use the previous sample
 		//win_report_error("IDirectDrawStreamSample::Update()", hr);
