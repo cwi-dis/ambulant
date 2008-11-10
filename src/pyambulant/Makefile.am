@@ -53,7 +53,8 @@ check-am: check-pyambulant
 
 install-exec-hook: install-pyambulant
 
-uninstall-local: clean-pyambulant
+uninstall-local:
+	echo Cannot uninstall pyambulant module, please remove manually
 
 # This target re-creates the cpp files. Use only when you know what you
 # are doing.

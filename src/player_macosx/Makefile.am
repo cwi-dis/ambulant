@@ -185,9 +185,11 @@ endif
 	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/DTDCache
 	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/DTDCache/SMIL20
 	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/DTDCache/SMIL21
+	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/DTDCache/SMIL30
 	$(INSTALL_DATA) $(top_srcdir)/Extras/DTDCache/mapping.txt $(BUILDAPPNAME).app/Contents/Resources/DTDCache
 	$(INSTALL_DATA) $(top_srcdir)/Extras/DTDCache/SMIL20/*.* $(BUILDAPPNAME).app/Contents/Resources/DTDCache/SMIL20
 	$(INSTALL_DATA) $(top_srcdir)/Extras/DTDCache/SMIL21/*.* $(BUILDAPPNAME).app/Contents/Resources/DTDCache/SMIL21
+	$(INSTALL_DATA) $(top_srcdir)/Extras/DTDCache/SMIL30/*.* $(BUILDAPPNAME).app/Contents/Resources/DTDCache/SMIL30
 
 #	Install executable
 	$(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) cocoambulant_executable `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/Ambulant-mac
