@@ -26,6 +26,7 @@
 
 // find_if, etc
 #include <algorithm>
+#include <typeinfo>
 
 #if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
 // ostringstream
