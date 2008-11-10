@@ -73,6 +73,11 @@ Live555:
     
 	Building Live555 should be handled by the /ambulant/third_party_packages/live_VC8/Live555.com.sln.
 		
+xulrunner-sdk:
+	For building AmbulantPlayer as a plugin for Firefox Web browser, download:
+	http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.0.1/sdk/xulrunner-1.9.0.1.en-US.win32.sdk.zip 	
+    Install in /ambulant/third_party_packages
+
 others:
 	For this release we don't fully remember where we got the other
 	libraries (jpeg, zlib, mp3lib, lpng128), so it is really in your
@@ -234,4 +239,13 @@ libxml2:
 	and install normally. Make sure xml2-config is in your $PATH when building
 	Ambulant.
     
+xulrunner-sdk:
+	For building AmbulantPlayer as a plugin for Firefox Web browser, download:
+	http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.0.1/sdk/xulrunner-1.9.0.1.en-US.XXX.sdk.zip
+	
+	where XXX stands for the appropriate archtecture of the target machine.
+    Install in /ambulant/third_party_packages and configure ambulant
+    using --with -npambulant
+ 
+
     
