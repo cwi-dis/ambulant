@@ -75,7 +75,10 @@ class event_processor :
 	void wakeup(); 
 
 	HANDLE m_wait_event;
-	enum { RESOLUTION = 50};
+	// This number is the minimum waiting time for an event, if none
+	// are available. This tops (among other things) the update rate
+	// of Ambulant, also for videos, etc.
+	enum { RESOLUTION = 10};
 };
 
 

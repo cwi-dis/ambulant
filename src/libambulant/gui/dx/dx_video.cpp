@@ -277,5 +277,5 @@ void gui::dx::dx_video_renderer::update_callback() {
 void gui::dx::dx_video_renderer::schedule_update() {
 	m_update_event = new lib::no_arg_callback<dx_video_renderer>(this, 
 		&dx_video_renderer::update_callback);
-	m_event_processor->add_event(m_update_event, m_frametime, lib::ep_med);
+	m_event_processor->add_event(m_update_event, m_frametime/2, lib::ep_high);
 }

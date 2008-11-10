@@ -102,7 +102,7 @@ class video_player : public common::playable {
     IDirectDrawSurface* m_ddsurf;
     RECT m_rcsurf;
     bool m_wantclicks;
-	
+	bool m_update_busy;
 };
 	
 } // namespace dx

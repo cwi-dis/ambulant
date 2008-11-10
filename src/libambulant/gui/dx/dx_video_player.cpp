@@ -51,7 +51,9 @@ gui::dx::video_player::video_player(const std::string& url, IDirectDraw* ddraw)
 	m_ddstream(0),
 	m_ddsample(0),
 	m_ddsurf(0),
-	m_wantclicks(false) {
+	m_wantclicks(false),
+	m_update_busy(false)
+{
 	open(m_url, ddraw);
 }
 
@@ -267,23 +269,28 @@ int gui::dx::video_player::ms_per_frame() {
 
 bool gui::dx::video_player::update() {
 	if(!m_mmstream || !m_ddsample) return false;
-	HRESULT hr = m_ddsample->Update(0, NULL, NULL, 0);
-#undef CATCH_UP
-#ifdef CATCH_UP
-	while (hr == S_OK) {
-		STREAM_TIME ts, te, tc;
-		hr = m_ddsample->GetSampleTimes(&ts, &te, &tc);
-		/*AM_DBG*/ lib::logger::get_logger()->debug("dx_video_player::update: ts=%lld, te=%lld, tc=%lld", ts, te, tc);
-		if (hr == S_OK ) {
-			if (tc >= te) break;
-			hr = m_ddsample->Update(0, NULL, NULL, 0);
-		}
+	HRESULT hr = S_OK;
+	bool got_sample = false;
+#if 0
+	/*AM_DBG*/ static int count; lib::logger::get_logger()->debug("Update: %d", count++);
+	// First check what happened to the previous update (if any)
+	if (m_update_busy) {
+		hr = m_ddsample->CompletionStatus(COMPSTAT_NOUPDATEOK, 0);
+		if (hr != MS_S_PENDING) m_update_busy = false;
+		got_sample = (hr == S_OK);
 	}
+	// And schedule a new sample
+	if (!m_update_busy && hr != MS_S_ENDOFSTREAM) {
+		HRESULT hr = m_ddsample->Update(SSUPDATE_ASYNC, NULL, NULL, 0);
+		if (hr == MS_S_PENDING)
+			m_update_busy = true;
+		if (hr == S_OK)
+			got_sample = true;
+	}
+#else
+	hr = m_ddsample->Update(0, NULL, NULL, 0);
+	if (hr == S_OK)
+		got_sample = true;
 #endif
-	if(hr != S_OK) {
-		// OK, use the previous sample
-		//win_report_error("IDirectDrawStreamSample::Update()", hr);
-		return false;
-	}
-	return true;
+	return got_sample;
 }
