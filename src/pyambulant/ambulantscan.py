@@ -76,6 +76,10 @@ class MyScanner(CxxScanner):
             "create_from_tree", # Ifdeffed out, for the time being
             "gdk_pixmap_bitblt",
             "create_gtk_window_factory",
+            # For get_screenshot(), the Python->C++ bridge works, but not the
+            # reverse. This showed up on 64bit machines (some of the casts were
+            # wrong. Need to fix later.
+            "get_screenshot",  
            
         ]
 

@@ -2652,7 +2652,6 @@ gui_screen::gui_screen(PyObject *itself)
 	if (itself)
 	{
 		if (!PyObject_HasAttrString(itself, "get_size")) PyErr_Warn(PyExc_Warning, "gui_screen: missing attribute: get_size");
-		if (!PyObject_HasAttrString(itself, "get_screenshot")) PyErr_Warn(PyExc_Warning, "gui_screen: missing attribute: get_screenshot");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -2689,35 +2688,6 @@ void gui_screen::get_size(int* width, int* height)
 	Py_XDECREF(py_rv);
 
 	PyGILState_Release(_GILState);
-}
-
-bool gui_screen::get_screenshot(const char* type, char* *out_data__out__, size_t* out_data__len__)
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	bool _rv;
-	PyObject *py_type = Py_BuildValue("s", type);
-	PyObject *py_out_data = Py_BuildValue("z#", out_data__out__, (int)out_data__len__);
-
-	PyObject *py_rv = PyObject_CallMethod(py_gui_screen, "get_screenshot", "(OO)", py_type, py_out_data);
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during gui_screen::get_screenshot() callback:\n");
-		PyErr_Print();
-	}
-
-	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
-	{
-		PySys_WriteStderr("Python exception during gui_screen::get_screenshot() return:\n");
-		PyErr_Print();
-	}
-
-	out_data__out__ = NULL;
-	Py_XDECREF(py_rv);
-	Py_XDECREF(py_type);
-	Py_XDECREF(py_out_data);
-
-	PyGILState_Release(_GILState);
-	return _rv;
 }
 
 /* ------------------------ Class gui_player ------------------------ */

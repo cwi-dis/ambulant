@@ -424,7 +424,7 @@ public:
 	virtual ~gui_screen();
 
 	void get_size(int* width, int* height);
-	bool get_screenshot(const char* type, char* *out_data__out__, size_t* out_data__len__);
+	bool get_screenshot(const char*, char**, size_t*) { return false; }
   private:
 	PyObject *py_gui_screen;
 

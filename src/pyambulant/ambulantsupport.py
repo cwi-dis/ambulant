@@ -567,6 +567,10 @@ for name, object in locals().items():
             object.add(f)
 
 # Dummy versions of methods we cannot support:
+gui_screen_object.othermethods = [
+    "bool get_screenshot(const char*, char**, size_t*) { return false; }",
+]
+
 node_context_object.othermethods = [
     "const custom_test_map* get_custom_tests() const { return NULL; }",
 ]
