@@ -194,7 +194,9 @@ toolkit_nokia770_libraries=
 endif # WITH_NOKIA770
 
 
-INCLUDES = \
+AM_CPPFLAGS = \
+	-DAMBULANT_DATADIR=\"$(pkgdatadir)\" \
+	-DAMBULANT_PLUGINDIR=\"$(pkglibdir)\" \
 	-I$(top_builddir)/include \
 	-I$(top_srcdir)/include \
 	$(EXPAT_INCLUDES) \
@@ -219,11 +221,6 @@ lib_LTLIBRARIES = \
 	$(toolkit_nokia770_libraries) \
 	$(toolkit_ffmpeg_libraries) \
 	$(toolkit_live_libraries)
-
-# AM_CPPFLAGS=-rdynamic
-AM_CPPFLAGS = \
-		-DAMBULANT_DATADIR=\"$(pkgdatadir)\" \
-		-DAMBULANT_PLUGINDIR=\"$(pkglibdir)\"
 
 libambulant_la_LDFLAGS= \
 	-export-dynamic $(LIBLTDL) \

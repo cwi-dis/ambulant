@@ -68,7 +68,7 @@ extra_hack1_ldflags=../player_gtk/gtk_mainloop.o
 AM_CXXFLAGS=$(extra_gtk_cflags)
 #EXTRA_CXXFLAGS=$(extra_gtk_cflags)
 #EXTRA_LDFLAGS=$(extra_gtk_ldflags)
-INCLUDES = \
+AM_CPPFLAGS = \
 	-I$(top_builddir)/include \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/include/ambulant/gui \
@@ -144,7 +144,7 @@ clean-npambulant:
 	rm -fr $$MOZILLA_PLUGINS/npambulant.so; \
 	rm -fr $$MOZILLA_PLUGINS/npambulant.xpt
 
-mostlyclean-am:
+mostlyclean-local:
 	rm -fr .libs *o $(NPAMBULANT)
 	rm -fr npambulant.h npambulant.xpt
 

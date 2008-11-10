@@ -1,4 +1,4 @@
-AC_INIT(ambulant, 1.9)
+AC_INIT([ambulant],[1.9])
 AC_CONFIG_SRCDIR(src/libambulant/get_version.cpp)
 AM_INIT_AUTOMAKE
 AMBULANT_VERSION=1.9
@@ -14,8 +14,10 @@ dnl ================================================================
 AC_ISC_POSIX
 AC_PROG_CC
 AC_PROG_CPP
+AC_PROG_CXX
 AC_PROG_LN_S
-AC_STDC_HEADERS
+AC_PROG_MKDIR_P
+AC_HEADER_STDC
 LT_AC_PROG_SED
 am__api_version="1.9"
 #
@@ -81,7 +83,7 @@ with_frontend=false
 #
 AC_MSG_CHECKING(for --with-universalsdk)
 AC_ARG_WITH(universalsdk,
-    AC_HELP_STRING([--with-universalsdk], [Build MacOSX universal binary]),
+    AS_HELP_STRING([--with-universalsdk],[Build MacOSX universal binary]),
 [
     need_sysroot=no
     case $withval in
@@ -136,8 +138,7 @@ AC_CHECK_PROG(PKG_CONFIG,pkg-config,`which pkg-config`)
 #
 AC_MSG_CHECKING(for --with-ltdl-plugins)
 AC_ARG_WITH([ltdl-plugins],[
-    AC_HELP_STRING([--without-ltdl-plugins],
-                   [Disable plugin support (based on libltdl)])
+    AS_HELP_STRING([--without-ltdl-plugins],[Disable plugin support (based on libltdl)])
     ],[
     case "${withval}" in
     yes)    ;;
@@ -164,7 +165,7 @@ AC_MSG_RESULT($with_ltdl)
 
 AC_MSG_CHECKING(for --with-dummy-plugin)
 AC_ARG_WITH([dummy-plugin],
-    [AC_HELP_STRING([--with-dummy-plugin],[Enable the dummy plugin (default: disabled)])
+    [AS_HELP_STRING([--with-dummy-plugin],[Enable the dummy plugin (default: disabled)])
 	],[
 	case "${withval}" in
 	yes)  	with_dummy_plugin=true
@@ -184,8 +185,7 @@ AC_MSG_RESULT($with_dummy_plugin)
 test_smil30=true
 AC_MSG_CHECKING(for --with-smil30)
 AC_ARG_WITH([smil30],[
-    AC_HELP_STRING([--with-smil30],
-                   [Enable SMIL 3.0 constructs])
+    AS_HELP_STRING([--with-smil30],[Enable SMIL 3.0 constructs])
     ],[with_smil30=${withval}], [with_smil30=yes])
 if test "x$with_smil30" = xyes;
 then
@@ -201,8 +201,7 @@ AC_MSG_RESULT($with_smil30)
 test_dom=false
 AC_MSG_CHECKING(for --with-external-dom)
 AC_ARG_WITH([external-dom],[
-    AC_HELP_STRING([--without-external-dom],
-                   [Use the fast DOM tree implementation only])
+    AS_HELP_STRING([--without-external-dom],[Use the fast DOM tree implementation only])
     ],[with_external_dom=${withval}], [with_external_dom=yes])
 if test "x$with_external_dom" = xyes;
 then
@@ -218,8 +217,7 @@ AC_MSG_RESULT($with_external_dom)
 test_overlay=false
 AC_MSG_CHECKING(for --with-overlay-window)
 AC_ARG_WITH([overlay-window],[
-    AC_HELP_STRING([--with-overlay-window],
-                   [Enable a secondary document overlaying the main document])
+    AS_HELP_STRING([--with-overlay-window],[Enable a secondary document overlaying the main document])
     ],[with_overlay_window=${withval}], [with_overlay_window=yes])
 if test "x$with_overlay_window" = xyes;
 then
@@ -235,7 +233,7 @@ dnl
 test_smil_test=false
 AC_MSG_CHECKING(for --with-smil-test)
 AC_ARG_WITH([smil-test],
-    [AC_HELP_STRING([--with-smil-test],[Enable special default layout for SMIL interop test suites (default: disabled)])
+    [AS_HELP_STRING([--with-smil-test],[Enable special default layout for SMIL interop test suites (default: disabled)])
 	],[
 	case "${withval}" in
 	yes)		with_smil_test=true
@@ -279,18 +277,16 @@ if test "x$test_expat" = "xtrue"; then
 	then
           :
 	else
-	AC_TRY_COMPILE(
-	    [#include <expat.h>],[
+	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <expat.h>]], [[
 	    #if !(XML_MAJOR_VERSION > 1 || XML_MINOR_VERSION > 95 || XML_MICRO_VERSION >= 7)
 	    #error Need at least expat 1.95.7
-	    #endif],
-	    [test_expat=true
+	    #endif]])],[test_expat=true
 	    if test -f /usr/local/include/expat.h; then
 	        EXPAT_PREFIX=/usr/local
 	    else
 	        EXPAT_PREFIX=/usr
 	    fi
-	    ])
+	    ],[])
 	fi
 fi
 
@@ -374,8 +370,7 @@ AC_MSG_CHECKING(for --with-xerces-plugin)
 xerces_plugin=false
 
 AC_ARG_WITH([xerces-plugin],[
-	AC_HELP_STRING([--with-xerces-plugin],
-                   [Put the xerces parser in a plugin])
+	AS_HELP_STRING([--with-xerces-plugin],[Put the xerces parser in a plugin])
     ],[
     case "${withval}" in    
      yes) xerces_plugin=true;;
@@ -846,7 +841,7 @@ AC_MSG_RESULT($with_python - $PYTHON)
 
 AC_MSG_CHECKING(for --with-python-plugin)
 AC_ARG_WITH([python-plugin],
-    [AC_HELP_STRING([--with-python-plugin],[Enable the python plugin (default: disabled)])
+    [AS_HELP_STRING([--with-python-plugin],[Enable the python plugin (default: disabled)])
 	],[
 	case "${withval}" in
 	yes)  	with_python_plugin=true
@@ -897,7 +892,7 @@ AC_MSG_RESULT($with_python_plugin)
 
 AC_MSG_CHECKING(for --with-npambulant)
 AC_ARG_WITH([npambulant],
-    [AC_HELP_STRING([--with-npambulant],[Enable building the Ambulant plugin for npapi compatible browsers, like firefox (default: disabled)])
+    [AS_HELP_STRING([--with-npambulant],[Enable building the Ambulant plugin for npapi compatible browsers, like firefox (default: disabled)])
 	],[
 	case "${withval}" in
 	yes)  	with_npambulant=true
@@ -936,7 +931,7 @@ AC_MSG_RESULT($with_npambulant)
 
 AC_MSG_CHECKING(for --with-webkit-dom)
 AC_ARG_WITH([webkit-dom],
-	[AC_HELP_STRING([--with-webkit-dom], [Enable the WebKit DOM plugin (default: disabled)])
+	[AS_HELP_STRING([--with-webkit-dom],[Enable the WebKit DOM plugin (default: disabled)])
 	],[
 	case "${withval}" in
 	yes)	with_webkit_dom=true
@@ -954,8 +949,7 @@ AC_MSG_RESULT($with_webkit_dom)
 #
 AC_DEFUN([ACX_PTHREAD], [
 #AC_REQUIRE([AC_CANONICAL_HOST])
-AC_LANG_SAVE
-AC_LANG_C
+AC_LANG_PUSH([C])
 acx_pthread_ok=no
 
 # We used to check for pthread.h first, but this fails if pthread.h
@@ -1058,11 +1052,9 @@ for flag in $acx_pthread_flags; do
         # pthread_cleanup_push because it is one of the few pthread
         # functions on Solaris that doesn't have a non-functional libc stub.
         # We try pthread_create on general principles.
-        AC_TRY_LINK([#include <pthread.h>],
-                    [pthread_t th; pthread_join(th, 0);
+        AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <pthread.h>]], [[pthread_t th; pthread_join(th, 0);
                      pthread_attr_init(0); pthread_cleanup_push(0, 0);
-                     pthread_create(0,0,0,0); pthread_cleanup_pop(0); ],
-                    [acx_pthread_ok=yes])
+                     pthread_create(0,0,0,0); pthread_cleanup_pop(0); ]])],[acx_pthread_ok=yes],[])
 
         LIBS="$save_LIBS"
         CFLAGS="$save_CFLAGS"
@@ -1087,13 +1079,9 @@ if test "x$acx_pthread_ok" = xyes; then
         # Detect AIX lossage: threads are created detached by default
         # and the JOINABLE attribute has a nonstandard name (UNDETACHED).
         AC_MSG_CHECKING([for joinable pthread attribute])
-        AC_TRY_LINK([#include <pthread.h>],
-                    [int attr=PTHREAD_CREATE_JOINABLE;],
-                    ok=PTHREAD_CREATE_JOINABLE, ok=unknown)
+        AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <pthread.h>]], [[int attr=PTHREAD_CREATE_JOINABLE;]])],[ok=PTHREAD_CREATE_JOINABLE],[ok=unknown])
         if test x"$ok" = xunknown; then
-                AC_TRY_LINK([#include <pthread.h>],
-                            [int attr=PTHREAD_CREATE_UNDETACHED;],
-                            ok=PTHREAD_CREATE_UNDETACHED, ok=unknown)
+                AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <pthread.h>]], [[int attr=PTHREAD_CREATE_UNDETACHED;]])],[ok=PTHREAD_CREATE_UNDETACHED],[ok=unknown])
         fi
         if test x"$ok" != xPTHREAD_CREATE_JOINABLE; then
                 AC_DEFINE(PTHREAD_CREATE_JOINABLE, $ok,
@@ -1137,15 +1125,16 @@ else
         acx_pthread_ok=no
         $2
 fi
-AC_LANG_RESTORE
+AC_LANG_POP([])
 ])dnl ACX_PTHREAD
 
 ACX_PTHREAD
 CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
-AC_OUTPUT([
+AC_CONFIG_FILES([
 libambulant.pc
 ambulant.spec
 ])
+AC_OUTPUT
 
 dnl ============================================================================
 echo "

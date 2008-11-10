@@ -91,7 +91,7 @@ pkglib_LTLIBRARIES = \
     $(wkdom_plugin) \
     $(python_plugin)
 
-INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include \
+AM_CPPFLAGS = -I$(top_builddir)/include -I$(top_srcdir)/include \
 	 $(xerces_includes) $(python_includes) \
 	 $(xpath_state_includes)
 

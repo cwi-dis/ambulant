@@ -91,7 +91,7 @@ check-pyambulant:
 install-pyambulant:
 	cd $(srcdir) ; $(PYTHON) setup.py install
 	
-mostlyclean-am:
+mostlyclean-local:
 	-cd $(srcdir) ; $(PYTHON) setup.py clean
 	-rm -r $(srcdir)/build
 

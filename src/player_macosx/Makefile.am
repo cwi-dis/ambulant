@@ -219,7 +219,7 @@ AM_LDFLAGS= \
     -framework QuickTime \
     -framework WebKit
 
-INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include \
+AM_CPPFLAGS = -I$(top_builddir)/include -I$(top_srcdir)/include \
     $(extra_expat_DEFINES) \
     $(extra_xerces_DEFINES) \
 	$(extra_sdl_DEFINES) \
