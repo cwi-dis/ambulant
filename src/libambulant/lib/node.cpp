@@ -790,6 +790,9 @@ lib::node_factory *lib::get_builtin_node_factory()
 	return &nf;
 }
 
+//#define WITH_PRINT_NODE
+#ifdef	WITH_PRINT_NODE
+#include <typeinfo>
 extern "C" {
 	void
 	print_node(lib::node_interface* p)
@@ -810,3 +813,4 @@ extern "C" {
 		}
 	}
 } // extern "C"
+#endif//WITH_PRINT_NODE
