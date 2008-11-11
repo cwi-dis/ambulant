@@ -98,7 +98,7 @@ const char *ui_description =
 const char *about_text = 
 	"Ambulant SMIL 2.1 player.\n"
         "Version: %s\n"
-	"Copyright Stichting CWI, 2003-2007.\n\n"
+	"Copyright Stichting CWI, 2003-2008.\n\n"
 	"License: LGPL";
 
 
@@ -331,8 +331,10 @@ gtk_gui::gtk_gui(const char* title,
 	m_toplevelcontainer = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
 	gtk_window_set_title(m_toplevelcontainer, initfile);
 	gtk_window_set_resizable(m_toplevelcontainer, true); 	
-	gtk_widget_set_size_request(GTK_WIDGET (m_toplevelcontainer), 150, 150);
-	gtk_widget_set_uposition(GTK_WIDGET (m_toplevelcontainer), 240, 320);	
+//	gtk_widget_set_size_request(GTK_WIDGET (m_toplevelcontainer), 200, 150);
+//	gtk_widget_set_uposition(GTK_WIDGET (m_toplevelcontainer), 240, 320);	deprecated
+	gtk_window_set_position(GTK_WINDOW (m_toplevelcontainer), GTK_WIN_POS_MOUSE);
+
 	g_signal_connect_swapped (GTK_OBJECT (m_toplevelcontainer), "delete-event", G_CALLBACK (gtk_C_callback_quit), (void *) this);
 	// Callback for the resize events
 	g_signal_connect_swapped (GTK_OBJECT (m_toplevelcontainer), "expose-event", G_CALLBACK (gtk_C_callback_resize), (void *) this);

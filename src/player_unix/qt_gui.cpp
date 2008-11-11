@@ -658,7 +658,8 @@ main (int argc, char*argv[]) {
 	qt_gui* mywidget = new qt_gui(argv[0], argc > 1 ? argv[1] 
 				      : "AmbulantPlayer");
 #ifndef QT_NO_FILEDIALOG     /* Assume plain Qt */
-	mywidget->setGeometry(240, 320, 320, 240);
+//	mywidget->setGeometry(240, 320, 320, 240);
+	mywidget->setGeometry(240, 240, 180, 27);
 	QCursor qcursor(Qt::ArrowCursor);
 	mywidget->setCursor(qcursor);
 	myapp.setMainWidget(mywidget);
