@@ -326,8 +326,9 @@ xerces_sax_parser::resolveEntity(const XMLCh* const publicId , const XMLCh* cons
 	AM_DBG m_logger->debug("xerces_sax_parser::resolveEntity(%s,%s)",publicId_ts, systemId_ts);
 	const std::string dtd = find_cached_dtd(systemId_ts);
 	if (dtd != "") {
-		m_logger->trace("Not using cached DTD: %s", dtd.c_str());
 		XMLCh_local_id = XMLString::transcode(dtd.c_str());
+	} else {
+		m_logger->trace("Not using cached DTD: %s", systemId_ts );
 	}
 	if (XMLCh_local_id != NULL) {
 		m_logger->trace("Using cached DTD: %s", dtd.c_str());
