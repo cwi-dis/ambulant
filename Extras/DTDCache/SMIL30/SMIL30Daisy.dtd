@@ -1,30 +1,32 @@
 <!-- ...................................................................... -->
-<!-- SMIL 3.0 Daisy DTD  .................................................. -->
-<!-- file: SMIL30Daisy.dtd                                                  -->
-<!-- SMIL 3.0 Daisy DTD
+<!-- SMIL 3.0 DAISY DTD  .................................................. -->
+<!-- file: SMIL30Daisy.dtd
 
         This is SMIL 3.0.
 
-        Copyright: 1998-2007 W3C (MIT, ERCIM, Keio), All Rights
+        Copyright: 1998-2008 W3C (MIT, ERCIM, Keio), All Rights
         Reserved.  See http://www.w3.org/Consortium/Legal/.
 
         Editor for SMIL 3.0: Sjoerd Mullender, CWI
         $Revision$
         $Date$
 
- This is the driver file for the SMIL 3.0 Daisy Profile DTD.
+ This is the driver file for the SMIL 3.0 DAISY Profile DTD.
 
      This DTD module is identified by the PUBLIC and SYSTEM identifiers:
 
      PUBLIC "-//W3C//DTD SMIL 3.0 Daisy//EN"
-     SYSTEM "http://www.w3.org/2007/SMIL30/SMIL30Daisy.dtd"
+     SYSTEM "http://www.w3.org/2008/SMIL30/SMIL30Daisy.dtd"
 
 -->
 
+<!-- Define the prefix to be used (none) -->
 <!ENTITY % NS.prefixed "IGNORE" >
+
+<!-- Define the default for the baseProfile attribute -->
 <!ENTITY % SMIL.baseProfile.default "#FIXED 'Daisy'">
 
-<!-- define which modules to include -->
+<!-- Define which modules to include -->
 <!-- Structure -->
 <!ENTITY % SMIL.Structure.module                      "INCLUDE">
 <!ENTITY % SMIL.Identity.module                       "INCLUDE">
@@ -78,7 +80,6 @@
 <!ENTITY % SMIL.SubRegionLayout.module                "INCLUDE">
 <!-- smilText -->
 <!ENTITY % SMIL.BasicText.module                      "IGNORE">
-<!ENTITY % SMIL.TextExternal.module                   "IGNORE">
 <!ENTITY % SMIL.TextMotion.module                     "IGNORE">
 <!ENTITY % SMIL.TextStyling.module                    "IGNORE">
 <!-- Linking -->
@@ -105,7 +106,7 @@
 <!-- External Timing -->
 <!ENTITY % SMIL.Timesheet.module                      "IGNORE">
 
-<!-- define which variants to use -->
+<!-- Define which variants to use -->
 <!ENTITY % SMIL.animation-targetElement               "IGNORE">
 <!ENTITY % SMIL.animation-XLinkTarget                 "IGNORE">
 <!ENTITY % SMIL.transition-targetElement              "IGNORE">
@@ -131,18 +132,7 @@
             "smil-framework-1.mod" >
 %smil-framework.mod;]]>
 
-<!-- The SMIL 3.0 Language Profile includes the following sections:
-             D. The SMIL Content Control Module 
-             G. The SMIL Layout Module 
-             H. The SMIL Linking Module 
-             I. The SMIL Media Object Module 
-             J. The SMIL Metainformation Module 
-             K. The SMIL Structure Module 
-             L. The SMIL Timing and Synchronization Module 
-             M. Integrating SMIL Timing into other XML-Based Languages 
-             P. The SMIL Transition effects Module 
--->
-
+<!-- List module files to include -->
 <!ENTITY % SMIL.control-mod 
   PUBLIC "-//W3C//ELEMENTS SMIL 3.0 Content Control//EN" 
   "SMIL-control.mod">
@@ -168,6 +158,7 @@
   PUBLIC "-//W3C//ELEMENTS SMIL 3.0 Timing//EN" 
   "SMIL-timing.mod">
 
+<!-- Include module files -->
 %SMIL.struct-mod;
 %SMIL.control-mod;
 %SMIL.meta-mod;
@@ -177,4 +168,4 @@
 %SMIL.state-mod;
 %SMIL.timing-mod;
 
-<!-- end of SMIL30.dtd -->
+<!-- end of SMIL30Daisy.dtd -->

@@ -4,7 +4,7 @@
 
         This is SMIL 3.0.
 
-        Copyright: 1998-2007 W3C (MIT, ERCIM, Keio), All Rights
+        Copyright: 1998-2008 W3C (MIT, ERCIM, Keio), All Rights
         Reserved.  See http://www.w3.org/Consortium/Legal/.
 
         Editor for SMIL 3.0: Sjoerd Mullender, CWI
@@ -14,20 +14,20 @@
         This DTD module is identified by the PUBLIC and SYSTEM identifiers:
 
         PUBLIC "-//W3C//ELEMENTS SMIL 3.0 State//EN"
-        SYSTEM "http://www.w3.org/2007/SMIL30/SMIL-state.mod"
+        SYSTEM "http://www.w3.org/2008/SMIL30/SMIL-state.mod"
 
         =================================================================== -->
 
 <!-- ================== StateTest ========================================= -->
-<!ENTITY % SMIL.StateTest.module "INCLUDE">
+<!ENTITY % SMIL.StateTest.module "IGNORE">
 <![%SMIL.StateTest.module;[
-  <!-- only the expr attribute is defined in this module, for which
+  <!-- this module only defines the expr attribute, for which
        see smil-attribs-1.mod
   -->
 ]]>
 
 <!-- ================== UserState ========================================= -->
-<!ENTITY % SMIL.UserState.module "INCLUDE">
+<!ENTITY % SMIL.UserState.module "IGNORE">
 <![%SMIL.UserState.module;[
   <!-- can be overridden by the profile -->
   <!ENTITY % SMIL.language-attrib-default "#IMPLIED">
@@ -81,7 +81,7 @@
 ]]>
 
 <!-- ================== StateSubmission =================================== -->
-<!ENTITY % SMIL.StateSubmission.module "INCLUDE">
+<!ENTITY % SMIL.StateSubmission.module "IGNORE">
 <![%SMIL.StateSubmission.module;[
   <!ENTITY % SMIL.method-types "">
 
@@ -111,7 +111,9 @@
 ]]>
 
 <!-- ================== StateInterpolation ================================ -->
-<!ENTITY % SMIL.StateInterpolation.module "INCLUDE">
+<!ENTITY % SMIL.StateInterpolation.module "IGNORE">
 <![%SMIL.StateInterpolation.module;[
   <!-- no new elements or attributes -->
 ]]>
+
+<!-- end of SMIL-state.mod -->

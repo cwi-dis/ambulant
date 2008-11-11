@@ -4,23 +4,24 @@
 
      This is SMIL 3.0.
 
-        Copyright: 1998-2007 W3C (MIT, ERCIM, Keio), All Rights
+        Copyright: 1998-2008 W3C (MIT, ERCIM, Keio), All Rights
         Reserved.  See http://www.w3.org/Consortium/Legal/.
 
         Editor for SMIL 3.0: Sjoerd Mullender, CWI
-        Editor for previous versions of SMIL: Warner ten Kate, Jacco van Ossenbruggen, Aaron Cohen, Sjoerd Mullender
+        Editor for previous versions of SMIL: Warner ten Kate,
+        Jacco van Ossenbruggen, Aaron Cohen, Sjoerd Mullender.
         $Id$
         $Date$
 
      This DTD module is identified by the PUBLIC and SYSTEM identifiers:
 
      PUBLIC "-//W3C//ENTITIES SMIL 3.0 Document Model 1.0//EN"
-     SYSTEM "http://www.w3.org/2007/SMIL30/smil-profile-model-1.mod"
+     SYSTEM "http://www.w3.org/2008/SMIL30/smil-profile-model-1.mod"
 
      ====================================================================== -->
 
 <!--
-        This file defines the SMIL 3.0 Language Document Model.
+        This file defines the SMIL 3.0 Document Model.
         All attributes and content models are defined in the second
         half of this file.  We first start with some utility definitions.
         These are mainly used to simplify the use of Modules in the
@@ -30,12 +31,12 @@
 -->
 
 <!-- ================== Util: Body - Content Control ====================== -->
-<!ENTITY % SMIL.BasicContentControl.module "INCLUDE">
+<!ENTITY % SMIL.BasicContentControl.module "IGNORE">
 <![%SMIL.BasicContentControl.module;[
   <!ENTITY % SMIL.switch-control "| %SMIL.switch.qname;">
 ]]>
 <!ENTITY % SMIL.switch-control "">
-<!ENTITY % SMIL.PrefetchControl.module "INCLUDE">
+<!ENTITY % SMIL.PrefetchControl.module "IGNORE">
 <![%SMIL.PrefetchControl.module;[
   <!ENTITY % SMIL.prefetch-control "| %SMIL.prefetch.qname;">
 ]]>
@@ -48,22 +49,22 @@
 
 <!-- ================== Util: Head ======================================== -->
 <!ENTITY % SMIL.head-meta.content       "%SMIL.metadata.qname;">
-<!ENTITY % SMIL.TextStyling.module "INCLUDE">
+<!ENTITY % SMIL.TextStyling.module "IGNORE">
 <![%SMIL.TextStyling.module;[
   <!ENTITY % SMIL.head-textStyling.content ",((%SMIL.textStyling.qname;), %SMIL.meta.qname;*)?">
 ]]>
 <!ENTITY % SMIL.head-textStyling.content "">
-<!ENTITY % SMIL.StructureLayout.module "INCLUDE">
+<!ENTITY % SMIL.StructureLayout.module "IGNORE">
 <![%SMIL.StructureLayout.module;[
   <!ENTITY % SMIL.head-layout.content ",((%SMIL.layout.qname; %SMIL.switch-control;), %SMIL.meta.qname;*)?">
 ]]>
 <!ENTITY % SMIL.head-layout.content "">
-<!ENTITY % SMIL.CustomTestAttributes.module "INCLUDE">
+<!ENTITY % SMIL.CustomTestAttributes.module "IGNORE">
 <![%SMIL.CustomTestAttributes.module;[
   <!ENTITY % SMIL.head-control.content ",((%SMIL.customAttributes.qname;), %SMIL.meta.qname;*)?">
 ]]>
 <!ENTITY % SMIL.head-control.content "">
-<!ENTITY % SMIL.BasicTransitions.module "INCLUDE">
+<!ENTITY % SMIL.BasicTransitions.module "IGNORE">
 <![%SMIL.BasicTransitions.module;[
   <!ENTITY % SMIL.head-transition.content ",((%SMIL.transition.qname;+),%SMIL.meta.qname;*)?">
 ]]>
@@ -73,19 +74,19 @@
   <!ENTITY % SMIL.head-media.content      ",((%SMIL.paramGroup.qname;+), %SMIL.meta.qname;*)?">
 ]]>
 <!ENTITY % SMIL.head-media.content "">
-<!ENTITY % SMIL.UserState.module "INCLUDE">
+<!ENTITY % SMIL.UserState.module "IGNORE">
 <![%SMIL.UserState.module;[
   <!ENTITY % SMIL.head-state.content ",((%SMIL.state.qname;), %SMIL.meta.qname;*)?">
 ]]>
 <!ENTITY % SMIL.head-state.content "">
-<!ENTITY % SMIL.StateSubmission.module "INCLUDE">
+<!ENTITY % SMIL.StateSubmission.module "IGNORE">
 <![%SMIL.StateSubmission.module;[
   <!ENTITY % SMIL.head-submission.content ",((%SMIL.submission.qname;),%SMIL.meta.qname;*)*">
 ]]>
 <!ENTITY % SMIL.head-submission.content "">
 
 <!--=================== Util: Body - Animation ============================ -->
-<!ENTITY % SMIL.BasicAnimation.module "INCLUDE">
+<!ENTITY % SMIL.BasicAnimation.module "IGNORE">
 <![%SMIL.BasicAnimation.module;[
   <!ENTITY % SMIL.animation.elements "| %SMIL.animate.qname; 
                                       | %SMIL.set.qname; 
@@ -99,12 +100,12 @@
 
 <!--=================== Util: Body - Media ================================ -->
 
-<!ENTITY % SMIL.BasicText.module "INCLUDE">
+<!ENTITY % SMIL.BasicText.module "IGNORE">
 <![%SMIL.BasicText.module;[
   <!ENTITY % SMIL.BasicText.content "| %SMIL.smilText.qname;">
 ]]>
 <!ENTITY % SMIL.BasicText.content "">
-<!ENTITY % SMIL.BrushMedia.module "INCLUDE">
+<!ENTITY % SMIL.BrushMedia.module "IGNORE">
 <![%SMIL.BrushMedia.module;[
   <!ENTITY % SMIL.BrushMedia.content "| %SMIL.brush.qname;">
 ]]>
@@ -114,7 +115,7 @@
   <!ENTITY % SMIL.Timesheet.content "| %SMIL.item.qname;">
 ]]>
 <!ENTITY % SMIL.Timesheet.content "">
-<!ENTITY % SMIL.BasicMedia.module "INCLUDE">
+<!ENTITY % SMIL.BasicMedia.module "IGNORE">
 <![%SMIL.BasicMedia.module;[
   <!ENTITY % SMIL.media-object "| %SMIL.audio.qname; 
                                 | %SMIL.video.qname; 
@@ -141,7 +142,7 @@
   ]]>
 ]]>
 <!ENTITY % SMIL.send.element "">
-<!ENTITY % SMIL.UserState.module "INCLUDE">
+<!ENTITY % SMIL.UserState.module "IGNORE">
 <![%SMIL.UserState.module;[
   <!ENTITY % SMIL.state.elements "
     | %SMIL.newvalue.qname;
@@ -170,7 +171,7 @@
 <!ENTITY % SMIL.BasicTimeContainers.class "%SMIL.par.qname; 
                                          | %SMIL.seq.qname;">
 
-<!ENTITY % SMIL.BasicExclTimeContainers.module "INCLUDE">
+<!ENTITY % SMIL.BasicExclTimeContainers.module "IGNORE">
 <![%SMIL.BasicExclTimeContainers.module;[
   <!ENTITY % SMIL.ExclTimeContainers.class "|%SMIL.excl.qname;">
 ]]>
@@ -328,7 +329,7 @@
 
 <![%SMIL.BasicAnimation.module;[
   <!-- choose targetElement or XLink: -->
-  <!ENTITY % SMIL.animation-targetElement "INCLUDE">
+  <!ENTITY % SMIL.animation-targetElement "IGNORE">
   <!ENTITY % SMIL.animation-XLinkTarget   "IGNORE">
 
   <!ENTITY % SMIL.animate.content "(%SMIL.metadata.qname;)*">
@@ -387,7 +388,7 @@
 ]]>
 
 <!-- ================== Layout ============================================ -->
-<!ENTITY % SMIL.BasicLayout.module "INCLUDE">
+<!ENTITY % SMIL.BasicLayout.module "IGNORE">
 <![%SMIL.BasicLayout.module;[
   <!ENTITY % SMIL.BasicLayout-content "|%SMIL.region.qname;|%SMIL.root-layout.qname;">
 ]]>
@@ -510,6 +511,7 @@
         |%SMIL.span.qname;
         |%SMIL.p.qname;
         |%SMIL.div.qname;
+         %SMIL.param-control;
 )*">
 <!ENTITY % SMIL.smilText.attrib "
   %SMIL.skip-content.attrib;
@@ -683,7 +685,7 @@
 ">
 <!ENTITY % SMIL.par.content "(%SMIL.timecontainer.content;|%SMIL.metadata.qname;)*">
 <!ENTITY % SMIL.seq.content "(%SMIL.timecontainer.content;|%SMIL.metadata.qname;)*">
-<!ENTITY % SMIL.BasicPriorityClassContainers.module "INCLUDE">
+<!ENTITY % SMIL.BasicPriorityClassContainers.module "IGNORE">
 <![%SMIL.BasicPriorityClassContainers.module;[
   <!-- An excl element contains either only priorityClass children or
        no priorityClass children.  It is made more complex by the fact

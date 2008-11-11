@@ -4,23 +4,24 @@
 
         This is SMIL 3.0.
 
-        Copyright: 1998-2007 W3C (MIT, ERCIM, Keio), All Rights
+        Copyright: 1998-2008 W3C (MIT, ERCIM, Keio), All Rights
         Reserved.  See http://www.w3.org/Consortium/Legal/.
 
         Editor for SMIL 3.0: Sjoerd Mullender, CWI
-        Editor for previous versions of SMIL: Jacco van Ossenbruggen, Aaron Cohen, Sjoerd Mullender
+        Editor for previous versions of SMIL: Jacco van Ossenbruggen,
+        Aaron Cohen, Sjoerd Mullender.
         $Revision$
         $Date$
 
         This DTD module is identified by the PUBLIC and SYSTEM identifiers:
 
         PUBLIC "-//W3C//ELEMENTS SMIL 3.0 Layout//EN"
-        SYSTEM "http://www.w3.org/2007/SMIL30/SMIL-layout.mod"
+        SYSTEM "http://www.w3.org/2008/SMIL30/SMIL-layout.mod"
 
         =================================================================== -->
 
 <!-- ================== StructureLayout =================================== -->
-<!ENTITY % SMIL.StructureLayout.module "INCLUDE">
+<!ENTITY % SMIL.StructureLayout.module "IGNORE">
 <![%SMIL.StructureLayout.module;[
   <!-- ================== StructureLayout Profiling Entities ============== -->
   <!ENTITY % SMIL.layout.attrib       "">
@@ -97,13 +98,24 @@
 <!ENTITY % SMIL.AudioLayout.module "IGNORE">
 <![%SMIL.AudioLayout.module;[
   <!-- ================== AudioLayout Entities ============================ -->
-  <!ENTITY % SMIL.audio-attrs "
-        soundLevel                        CDATA    '100&#38;#37;'
+  <!ENTITY % SMIL.soundLevel.attrib "
+        soundLevel                        CDATA    '+0.0dB'
   ">
 
   <!-- ================ AudioLayout Elements ============================== -->
   <!-- ================ Add soundLevel to region element ================== -->
-  <!ATTLIST %SMIL.region.qname; %SMIL.audio-attrs;>
+  <!ATTLIST %SMIL.region.qname; %SMIL.soundLevel.attrib;>
+  <!-- ================ Add soundLevel to media elements ================== -->
+  <!ENTITY % SMIL.OverrideLayout.module "IGNORE">
+  <![%SMIL.OverrideLayout.module;[
+    <!ATTLIST %SMIL.ref.qname; %SMIL.soundLevel.attrib;>
+    <!ATTLIST %SMIL.animation.qname; %SMIL.soundLevel.attrib;>
+    <!ATTLIST %SMIL.audio.qname; %SMIL.soundLevel.attrib;>
+    <!ATTLIST %SMIL.img.qname; %SMIL.soundLevel.attrib;>
+    <!ATTLIST %SMIL.text.qname; %SMIL.soundLevel.attrib;>
+    <!ATTLIST %SMIL.textstream.qname; %SMIL.soundLevel.attrib;>
+    <!ATTLIST %SMIL.video.qname; %SMIL.soundLevel.attrib;>
+  ]]>
 ]]> <!-- end AudioLayout.module -->
 
 

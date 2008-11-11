@@ -4,22 +4,23 @@
 
       This is SMIL 3.0.
 
-        Copyright: 1998-2007 W3C (MIT, ERCIM, Keio), All Rights
+        Copyright: 1998-2008 W3C (MIT, ERCIM, Keio), All Rights
         Reserved.  See http://www.w3.org/Consortium/Legal/.
 
         Editor for SMIL 3.0: Sjoerd Mullender, CWI
-        Editor for previous versions of SMIL: Jacco van Ossenbruggen, Aaron Cohen, Sjoerd Mullender
+        Editor for previous versions of SMIL: Jacco van Ossenbruggen,
+        Aaron Cohen, Sjoerd Mullender.
         $Revision$
         $Date$
 
      This DTD module is identified by the PUBLIC and SYSTEM identifiers:
 
      PUBLIC "-//W3C//ELEMENTS SMIL 3.0 Content Control//EN"
-     SYSTEM "http://www.w3.org/2007/SMIL30/SMIL-control.mod"
+     SYSTEM "http://www.w3.org/2008/SMIL30/SMIL-control.mod"
 
      ====================================================================== -->
 
-<!ENTITY % SMIL.BasicContentControl.module "INCLUDE">
+<!ENTITY % SMIL.BasicContentControl.module "IGNORE">
 <![%SMIL.BasicContentControl.module;[
   <!ENTITY % SMIL.switch.attrib "">
   <!ENTITY % SMIL.switch.content "EMPTY">

@@ -4,18 +4,19 @@
 
      This is SMIL 3.0.
 
-        Copyright: 1998-2007 W3C (MIT, ERCIM, Keio), All Rights
+        Copyright: 1998-2008 W3C (MIT, ERCIM, Keio), All Rights
         Reserved.  See http://www.w3.org/Consortium/Legal/.
 
         Editor for SMIL 3.0: Sjoerd Mullender, CWI
-        Editor for previous versions of SMIL: Jacco van Ossenbruggen, Sjoerd Mullender.
+        Editor for previous versions of SMIL: Jacco van Ossenbruggen,
+        Sjoerd Mullender.
         $Revision$
         $Date$
 
      This DTD module is identified by the PUBLIC and SYSTEM identifiers:
 
      PUBLIC "-//W3C//ELEMENTS SMIL 3.0 Transition//EN"
-     SYSTEM "http://www.w3.org/2007/SMIL30/SMIL-transition.mod"
+     SYSTEM "http://www.w3.org/2008/SMIL30/SMIL-transition.mod"
 
      ====================================================================== -->
 
@@ -73,7 +74,7 @@
    %SMIL.transition-modifiers-attrs;
 ">
 
-<!ENTITY % SMIL.BasicTransitions.module "INCLUDE">
+<!ENTITY % SMIL.BasicTransitions.module "IGNORE">
 <![%SMIL.BasicTransitions.module;[
  <!ENTITY % SMIL.transition.attrib  "">
  <!ENTITY % SMIL.transition.content "EMPTY">
@@ -115,8 +116,9 @@
 
   <!-- Language Designer chooses to integrate targetElement or XLink
        attributes.  To integrate the targetElement attribute, define
-       the entity transition-targetElement as "INCLUDE"; to integrate
-       the XLink attributes, define transition-XLinkTarget as "INCLUDE".
+       the entity SMIL.transition-targetElement as "INCLUDE"; to
+       integrate the XLink attributes, define
+       SMIL.transition-XLinkTarget as "INCLUDE".
 
        If InlineTransitions are included, one or the other MUST be
        defined.  It is strongly recommended that only one of the two be
