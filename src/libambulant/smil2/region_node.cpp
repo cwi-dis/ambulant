@@ -254,7 +254,12 @@ region_node::fix_from_dom_node()
 		double sl = m_soundlevel;
 		if (soundlevel_attr) {
 			sl = strtod(soundlevel_attr, &lastp);
-			if (*lastp == '%') sl *= 0.01;
+			if (*lastp == '%')
+				sl *= 0.01;
+			else if (strcmp (lastp,"dB") == 0)
+				sl = pow(10, sl/20);
+  		else // default: percentage implied
+			sl *= 0.01;
 		}
 		AM_DBG lib::logger::get_logger()->debug("region_node::reset: soundLevel=%g", sl);
 		if (sl != m_soundlevel) {
