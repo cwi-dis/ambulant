@@ -299,8 +299,8 @@ AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x)",this);
 				std::string newdata = i->m_data;
 				std::string::size_type nl = 0;
 				while (nl != std::string::npos) {
-				  nl = newdata.find("\n", nl);
-					newdata[nl] = ' ';
+					nl = newdata.find("\n", nl);
+						newdata[nl] = ' ';
 				}
 				m_text_storage += newdata;
 				break;
