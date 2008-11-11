@@ -528,18 +528,22 @@ AC_ARG_WITH(qt,[  --with-qt		Enable/disable Qt frontend],
 	      test_qt=false
 	fi
      ])
+# qt4 is not supported yet
+test_qt4=false
+if test "x$test_qt" = "xtrue"; then
+	PKG_CHECK_MODULES(QT,[Qt >= 4.0.0], test_qt4=true, test_qt4=false)
+fi
 if test "x$test_qt" = "xtrue"; then
 	PKG_CHECK_MODULES(QT,[qt-mt >= 3.3.0], test_qt=true, test_qt=false)
 fi
-
 if test "x$test_qt" = "xtrue"; then
 	LIBQT_INCLUDES="$QT_CFLAGS -DHAVE_LIBQT=1"
 	LIBQT_LIBS="$QT_LIBS"
 	LIBQTPKG="libqt"
 	QT_PREFIX="`pkg-config --variable=exec_prefix qt-mt`"
-elif test "x$QTDIR" != "x"; then
-     AC_MSG_NOTICE([Old-style qt configuration, Qt directory in QTDIR environment variable])
-    test_qt=true
+elif test "x$QTDIR" != "x" -a "x$test_qt4" == "x"; then
+	AC_MSG_NOTICE([Old-style qt configuration, Qt directory in QTDIR environment variable])
+        test_qt=true
 	LIBQT_INCLUDES="$QT_CFLAGS -DHAVE_LIBQT=1"
 	LIBQT_LIBS="$QT_LIBS"
 	LIBQTPKG="libqt"
@@ -549,7 +553,10 @@ fi
 if test "x$test_qt" = "xtrue"; then
     with_frontend=true
 fi
-
+if test "x$test_qt4" = "xtrue"; then
+   test_qt=$test_qt" Qt4 found which is not yet supported"
+fi
+set +x
 AC_MSG_RESULT($test_qt)
 AM_CONDITIONAL(WITH_QT, test "x$test_qt" = "xtrue")
 AC_SUBST(LIBQTPKG)
@@ -1169,7 +1176,7 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     Build with gstreamer:           ${test_gstreamer}
 
     Build Qtopia frontend:          ${qtopia}
-    Build Qt frontend:              ${test_qt}
+    Build Qt3 frontend:             ${test_qt}
     Build with GTK:                 ${test_gtk}
     Build with NOKIA770:            ${test_nokia770}
 
