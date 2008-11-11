@@ -140,9 +140,11 @@ if $merge; then
     lipo -create -output libswscale/libswscale.a build-{i386,ppc}/libswscale/libswscale.a
     # XXXX Should also do the dynamic libraries?
     # Also need to copy .pc files. Do it here.
-    # NOTE: this is correct as of 22-Jun-08, expected to change soon (ffmpeg are
+    # NOTE: this is correct as of ffmpeg 15-jun-08, expected to change soon (ffmpeg are
     # moving their .pc files around).
-    cp build-i386/libav{format,util,codec}/*.pc .
+    cp build-i386/*.pc .    
+    # Here's the newer(?) version:
+    #cp build-i386/libav{format,util,codec}/*.pc .
 else
     echo $0: skipping merge
 fi

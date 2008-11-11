@@ -765,8 +765,10 @@ if test "x$test_ffmpeg" = "xtrue"; then
 	    PKG_CONFIG_PATH=$FFMPEG_PREFIX/libavcodec:$FFMPEG_PREFIX/libavformat:$FFMPEG_PREFIX/libavutil:$PKG_CONFIG_PATH
 	fi
 	# test_ffmpeg is currently true. Set to false if any required piece is missing.
+	test_ffmpeg_too_new=false
 	PKG_CHECK_MODULES(LIBAVUTIL,[libavutil >= 49.7.0], , test_ffmpeg=false)
 	PKG_CHECK_MODULES(LIBAVCODEC,[libavcodec >= 51.57.2], , test_ffmpeg=false)
+	PKG_CHECK_MODULES(LIBAVCODEC,[libavcodec >= 52.0.0], , test_ffmpeg_too_new=true)
 	PKG_CHECK_MODULES(LIBAVFORMAT,[libavformat >= 52.14.0], , test_ffmpeg=false)
 	FFMPEG_CFLAGS="${LIBAVFORMAT_CFLAGS} ${LIBAVCODEC_CFLAGS} ${LIBAVUTIL_CFLAGS}"
 	FFMPEG_LIBS="${LIBAVFORMAT_LIBS} ${LIBAVCODEC_LIBS} ${LIBAVUTIL_LIBS}"
@@ -778,7 +780,10 @@ if test "x$test_ffmpeg" = "xtrue"; then
 	if test x`uname` = xDarwin; then
 		FFMPEG_LIBS=`echo $FFMPEG_LIBS | sed -e "s@\($FFMPEG_PREFIX/[[a-z]]*\)/lib\([[a-z]]*\).a@-L\1 -l\2@g"`
 	fi
-	
+	if test "x$ffmpeg_too_new" = "xtrue"; then
+		test_ffmpeg=false
+		AC_MSG_WARN([ffmpeg libavcodec version must be older than 52.0.0 for Ambulant])
+	fi
 	if test "x$test_ffmpeg" = "xtrue"; then
 	   ffmpeg_inst_style="found through pkgconfig"
 	fi    
@@ -798,7 +803,12 @@ PKG_CONFIG_PATH=$PKG_CONFIG_PATH_ORIG
 if test "x$test_ffmpeg" = "xfalse"; then
     AC_MSG_WARN([ffmpeg support not enabled])
     ffmpeg_warning="
-ffmpeg not found or disabled. Building without ffmpeg (which means limited media support)"
+ffmpeg not found or disabled. Building without ffmpeg (which means limited media support)."
+	if test "x$ffmpeg_too_new" = "xtrue"; then
+		ffmpeg_warning=$ffmpeg_warning"
+		
+Ambulant cannot use libavcodec 52.0.0 or newer. See third_party_packages/readme.txt for details."
+	fi
 fi
 
 dnl Testing for Python
