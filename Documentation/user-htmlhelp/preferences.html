@@ -19,15 +19,33 @@ you can set various change the way Ambulant Player handles some functions:</p>
 In general <em>debug</em> is for developers only, <em>trace</em> is for people
 creating SMIL documents and the higher levels are for all users.
 
-<li> You can select the preferred XML parser to use. <em>Expat</em> is fast
+<li> You can select the preferred <em>XML parser</em> to use. <em>Expat</em> is fast
 and best for everyday use, but <em>Xerces</em> has the option to do some rigorous
 syntax checking on your document, which is good if you are creating SMIL documents.
 It gives you the option to check using either the <em>DTD</em> or the <em>Schema</em>
 for the SMIL language, the DTD is the preferred way. If you check using the schema
 you also have the option of doing some checking on the schema itself.
 
-<li> On some platforms, you can enable or disable loading of plugins, which
-enhance Ambulant Player with extra media types, etc.
+<li> <em>Strict URL parsing</em> complains about URLs containing formally illegal
+characters such as spaces (which should be percent-escaped) in your document.
+
+<li>On Mac and Windows, you can select the preferred way to <em>play back video</em> (and,
+on Windows, audio): using the platform-native DirectShow/QuickTime renderers, or the
+platform-independent open source ffmpeg and sdl renderers. Usually, the former is
+more efficient, but may not support all media types.
+
+<li>For playback of media over rtsp you can select which <em>transport protocol</em> to use.
+UDP is generally better, but may not be able to get through a firewall.
+
+<li><em>Link selection with TAB and LF</em> allows you to navigate with the keyboard,
+in addition to the mouse. TAB will advance the focus to the next active element
+on-screen, and newline will activate that element.
+
+<li><em>Enable plugins</em> determines whether Ambulant will use its plugin
+architecture. Disabling this may help in tracking down problems, but some standard
+functionality will also be disabled (xerces parser, SMIL 3.0 state support, ffmpeg
+rendering on Windows). For debugging purposes it is also possible to select a
+non-standard plugin directory.
 </ul>
 
 </body>
