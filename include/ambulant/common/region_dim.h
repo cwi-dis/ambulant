@@ -29,6 +29,7 @@
 
 #include "ambulant/config/config.h"
 #include "ambulant/lib/gtypes.h"
+#include "ambulant/lib/logger.h"
 
 // std::runtime_error
 #include <stdexcept>
@@ -205,8 +206,9 @@ class region_dim {
 	bool operator!= (const region_dim& other) const { return !(*this == other); }
 		
 	region_dim& operator+=(const region_dim& rhs) {
-		assert(m_type == rhs.m_type);
-		if(absolute())
+		if(m_type != rhs.m_type)
+            lib::logger::get_logger()->trace("region animation: cannot mix percentages and absolute values");
+		else if(absolute())
 			m_holder.int_val += rhs.get_as_int();
 		else if(relative())
  			m_holder.dbl_val += rhs.get_as_dbl();
@@ -214,8 +216,9 @@ class region_dim {
 	}
 	
 	region_dim& operator-=(const region_dim& rhs) {
-		assert(m_type == rhs.m_type);
-		if(absolute())
+		if(m_type != rhs.m_type)
+            lib::logger::get_logger()->trace("region animation: cannot mix percentages and absolute values");
+        else if(absolute())
 			m_holder.int_val -= rhs.get_as_int();
 		else if(relative())
  			m_holder.dbl_val -= rhs.get_as_dbl();
