@@ -6,5 +6,5 @@ install-data-local:
 	$(INSTALL_DATA) $(srcdir)/user/*.* $(DESTDIR)$(pkgdatadir)/AmbulantPlayerHelp
 
 uninstall-local:
-	rm -r $(DESTDIR)$(pkgdatadir)/AmbulantPlayerHelp
+	rm -rf $(DESTDIR)$(pkgdatadir)/AmbulantPlayerHelp
 	
