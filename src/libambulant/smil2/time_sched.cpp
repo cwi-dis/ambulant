@@ -95,6 +95,12 @@ void scheduler::activate_node(time_node *tn) {
 			AM_DBG lib::logger::get_logger()->debug("scheduler:::activate_node:(%s %s) waiting for ever, killing blockers", tn->get_sig().c_str(), tn->get_state()->name());
 			time_traits::qtime_type timestamp(m_root, m_timer->elapsed());
 			tn->kill_blockers(timestamp, m_root);
+            // Yet another bug fix/workaround, for #1640765: nodes with begin="indefinite" cannot be played, even with
+            // a hyperlink.
+            if (count == 8) {
+                AM_DBG lib::logger::get_logger()->debug("scheduler::activate_node: attempting DOM-like start");
+                tn->start();
+            }
 			if (++count > 10) {
 				AM_DBG lib::logger::get_logger()->debug("scheduler:::activate_node: giving up on %s", tn->get_sig().c_str());
 				break;

@@ -272,7 +272,7 @@ bool gui::dx::video_player::update() {
 	HRESULT hr = S_OK;
 	bool got_sample = false;
 #if 0
-	/*AM_DBG*/ static int count; lib::logger::get_logger()->debug("Update: %d", count++);
+	AM_DBG static int count; lib::logger::get_logger()->debug("Update: %d", count++);
 	// First check what happened to the previous update (if any)
 	if (m_update_busy) {
 		hr = m_ddsample->CompletionStatus(COMPSTAT_NOUPDATEOK, 0);

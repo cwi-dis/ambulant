@@ -112,7 +112,7 @@ void gui::dx::dx_video_renderer::start(double t) {
 	// Start the underlying player
 	m_player->start(t + (m_clip_begin / 1000000.0));
 	m_frametime = m_player->ms_per_frame();
-	/*AM_DBG*/ lib::logger::get_logger()->debug("dx_video: %d ms/frame", m_frametime);
+	AM_DBG lib::logger::get_logger()->debug("dx_video: %d ms/frame", m_frametime);
 	m_player->update();
 		
 	// Request a redraw

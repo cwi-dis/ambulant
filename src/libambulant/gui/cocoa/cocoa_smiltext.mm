@@ -255,10 +255,10 @@ cocoa_smiltext_renderer::smiltext_changed()
             NSFont *text_font = NULL;
             std::vector<std::string>::const_iterator fi;
             for (fi=(*i).m_font_families.begin(); fi != (*i).m_font_families.end(); fi++) {
-                /*AM_DBG*/ lib::logger::get_logger()->debug("cocoa_smiltext: look for font '%s'", (*fi).c_str());
+                AM_DBG lib::logger::get_logger()->debug("cocoa_smiltext: look for font '%s'", (*fi).c_str());
                 text_font = _select_font((*fi).c_str(), (*i).m_font_style, (*i).m_font_weight, (*i).m_font_size);
                 if (text_font) break;
-                /*AM_DBG*/ lib::logger::get_logger()->debug("cocoa_smiltext: not found, try next");
+                AM_DBG lib::logger::get_logger()->debug("cocoa_smiltext: not found, try next");
             }
 			if (!text_font)
                 text_font = [NSFont userFontOfSize: (*i).m_font_size];
