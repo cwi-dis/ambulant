@@ -1,34 +1,14 @@
 Ambulant Player README
 ======================
 
-This directory contains version 1.9 of the Ambulant Player,
-a playback engine for SMIL documents.
-
-This distribution contains what we believe is an almost feature-complete SMIL 3.0
-implementation. It is not intended for general distribution. Please let
-us know of any problems, omissions, etc.
-
-Known open issues with the 20080115 distribution:
-- Windows: there are some issues with textBackgroundColor
-- Windows: textAlign doesn't always work as expected
-
-Things that we will probably not fix at all (unless prompted):
-- Selecting multiple languages only works on the Mac, not Windows.
-- Support for right-to-left writing systems on Windows is spotty.
-- Mac: Unicode BIDI processing takes precedence over textWritingMode
-  and textDirection. Override textDirection is implemented, however.
-- Mac: Chroma Keying is only implemented on 10.5, and ChromaKeyOpacity is
-  ignored.
-
-The rest of this file is the "normal" readme, and probably not 100% correct.
-------------------------------
-
-The Ambulant homepage at <http://www.ambulantplayer.org> has more information.
+This directory contains version 2.0 of the Ambulant Player,
+a playback engine for SMIL 3.0 (or earlier) documents.
 
 Ambulant consists of a core library implementing the engine,
-a number of GUI-toolkit specific libraries implementing renderers,
+a number of GUI-toolkit specific libraries implementing renderers and
 a number of player applications. The core library is also available
-for embedding into C++ or Python programs.
+for embedding into C++ or Python programs. The player is also available
+as a plugin for Safari (Mac) or Firefox (Linux and Windows).
 
 Ambulant is distributed as either a source distribution or a
 binary installer for a specific platform. This README file
@@ -38,6 +18,8 @@ in this release.
 
 Ambulant is Open Source: the license is LGPL. See the file
 COPYING for details.
+
+The Ambulant homepage at <http://www.ambulantplayer.org> has more information.
 
 Feedback
 --------
@@ -64,42 +46,47 @@ Currently we have support for:
 - Windows
 - MacOSX
 - Linux
-- Nokia 770/800
+- Windows Mobile 5
+- Nokia 770/800 (limited)
 
 The specific platforms that have been used for testing are:
 - Windows: Windows 2000, Windows XP and Windows Vista on fairly recent Intel hardware
-- MacOSX: 10.4. 10.2 or earlier will not work.
-- Linux: Fedora Core on fairly recent Intel hardware
+- MacOSX: 10.5. 10.4 or 10.3 may work. 10.2 or earlier will not work.
+- Linux: Fedora Core and Ubuntu on fairly recent Intel hardware
 - Nokia 770/800: 2006/2007 edition OS
 
-Windows CE support is broken for this release, we will try to revive it
-soon. If you feel you could help with this please drop us a line.
-
-Linux for handhelds (Zaurus, Sharp SL-5600 PDA) is no longer supported,
+Linux for other handhelds (Zaurus, Sharp SL-5600 PDA) is no longer supported,
 mainly due to staffing constraints. If you are interested in helping out 
 to support this platform please contact us.
+
+We have preliminary code for the Apple iPhone and iPod Touch, but currently
+lack the time to pursue this platform. Again, contact us if you want to help.
 
 Supported media types
 ---------------------
 
-- Text is supported on all platforms.
+- Text and smilText supported on all platforms.
 - Images in PNG, JPEG and GIF formats are supported on all
   platforms. Other formats are supported on some platforms.
 - Audio:
-  - Windows supports audio through DirectX, so all DirectX-compatible
-    formats are supported. Installing DirectX plugins for new audio codecs
-    will work.
-  - Windows CE and Nokia 770 support only MP3, and cannot mix multiple audio
+  - Mac/Win/Linux/WinCE support audio through ffmpeg and SDL. This allows use
+    of all common audio formats (mp3, aac, ogg, wav, wma, etc). Access can
+    be from local file or over http or rtsp.
+  - Windows also supports audio through DirectX, which allows protected
+    WMA file playback and a few less common formats.
+  - Nokia 770 support only MP3, and cannot mix multiple audio
     streams in this release.
-  - MacOSX and Linux support audio through FFMPEG and SDL,
-    giving support for MP3 and many other formats, but not
-    all codecs may be supported on WMA or QuickTime files.
 - Video:
-  - Windows supports video through DirectX.
+  - Mac/Win/Linux/WinCE support video through ffmpeg. This allows use of all
+    common formats (mpeg-1/2/4, ogg, some quicktime and wm9).
+  - Windows also supports video through DirectX.
+  - MacOSX also supports video through QuickTime.
   - Windows CE does not support video in this release.
   - Nokia 770 video support is preliminary and possibly buggy.
-  - MacOSX supports video through QuickTime or FFMPEG.
-  - Linux supports video through FFMPEG. The number of codecs is limited.
+
+With audio and video there are some issues with specific combinations of
+containers, codecs, platforms and access protocols. See the website
+(or Documentation/mediasupport in a source distribution) for details.
 
 Networking support
 ------------------
@@ -107,32 +94,17 @@ Networking support
 This release has support for networked presentations. Streaming 
 media items can be retrieved via HTTP on most platforms,
 static media items and the SMIL file itself can be retrieved via HTTP.
-RTSP support is available on Linux and MacOSX, but it has not been tested
-very thoroughly, feedback is requested.
-RTSP is not supported natively on Windows, but installing a DirectX
-RTSP plugin should work.
+RTSP support is available, but there are issues with which server
+can actually serve which media types. This seems to be a marketing issue
+on the side of server manufacturers, and is outside our control.
 
-SMIL 2.1 support
-----------------
+SMIL support
+------------
 
-This release includes full support for SMIL 2.1.
-All new 2.1 features are implemented on all platforms, with two exceptions:
-- backgroundRepeat is not implemented in the Windows CE player
-- soundAlign is not implemented in the Windows CE player
+This release includes full support for SMIL 3.0 (along with 2.1 and 2.0).
+All new SMIL 3.0 features are implemented on all platforms.
 
-The Ambulant homepage, <http://www.ambulantplayer.org>, has more
-information on SMIL 2.1, test documents, etc.
-
-SMIL 2.0 support
-----------------
-
-This release supports full SMIL 2.0, with the following broad
-exceptions:
-- tag names must match media type, and no support for mimetypes.
-- No %-escapes in URLs, and limited support for data: URLs.
-- accessKey is not implemented.
-
-As SMIL 2.0 is a big language there are undoubtedly areas where
+As SMIL 3.0 is a big language there are undoubtedly areas where
 we have overseen something. Please let us know if you encounter
 problems.
 
@@ -159,7 +131,7 @@ source distribution).
 Examples
 --------
 
-Two example SMIL 2.0 documents are included, more are available
+Two example SMIL documents are included, more are available
 at <http://www.ambulantplayer.org>. In the binary distributions,
 examples are placed in the toplevel distribution directory; in
 source distributions, they are in the Extras directory.
@@ -183,8 +155,9 @@ C++ programmers should look at src/plugins/rot13plugin.cpp for an
 example plugin and at the various src/player_* directories for examples
 of embedding.
 
-Python programmers should look at src/pyambulant/player_pyqt for an
-embedding example.
+Python programmers should look at src/plugins/pyamplugin_state for an example
+of extending Ambulant in Python, and src/pyambulant/player_pygtk or player_pyqt
+for an embedding example.
 
 Known problems
 --------------
