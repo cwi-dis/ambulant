@@ -772,10 +772,10 @@ if test "x$test_ffmpeg" = "xtrue"; then
 	    PKG_CONFIG_PATH=$FFMPEG_PREFIX/libavcodec:$FFMPEG_PREFIX/libavformat:$FFMPEG_PREFIX/libavutil:$PKG_CONFIG_PATH
 	fi
 	# test_ffmpeg is currently true. Set to false if any required piece is missing.
-	test_ffmpeg_too_new=false
+	ffmpeg_too_new=false
 	PKG_CHECK_MODULES(LIBAVUTIL,[libavutil >= 49.7.0], , test_ffmpeg=false)
+	PKG_CHECK_MODULES(LIBAVCODEC,[libavcodec < 52.0.0], , ffmpeg_too_new=true)
 	PKG_CHECK_MODULES(LIBAVCODEC,[libavcodec >= 51.57.2], , test_ffmpeg=false)
-	PKG_CHECK_MODULES(LIBAVCODEC,[libavcodec >= 52.0.0], , test_ffmpeg_too_new=true)
 	PKG_CHECK_MODULES(LIBAVFORMAT,[libavformat >= 52.14.0], , test_ffmpeg=false)
 	FFMPEG_CFLAGS="${LIBAVFORMAT_CFLAGS} ${LIBAVCODEC_CFLAGS} ${LIBAVUTIL_CFLAGS}"
 	FFMPEG_LIBS="${LIBAVFORMAT_LIBS} ${LIBAVCODEC_LIBS} ${LIBAVUTIL_LIBS}"
