@@ -2,8 +2,9 @@ Building from source
 ====================
 
 This file contains instructions for building AmbulantPlayer from
-source, for all of Windows, Windows CE, Unix, Mac OS X and
-handheld Linux (Zaurus).
+source, for all of Windows, Windows CE, Unix and Mac OS X.
+Instructions for Nokia 770 and Zaurus are also included, but
+these platforms are no longer supported and may no longer work.
 
 This file is part of the Ambulant Player source distribution,
 which can be downloaded via <http://www.ambulantplayer.org>.
@@ -15,15 +16,18 @@ Obviously you will need a compiler/linker/development environment.
 For Windows you need one of:
 - Microsoft Visual Studio .NET version 7.1 or
 - Microsoft Visual Studio .NET 2005 + Service Pack 1.
-For Linux desktop you need GNU gcc, at least version 3.2 (XXX True?)
-For MacOSX you need the Apple Developer tools (gcc 3.3 or gcc 4-based).
-For Windows CE you need Microsoft Embedded Visual C++ version 3.0 (XXX not true).
+For Linux desktop you need GNU gcc, at least version 4.0
+For MacOSX you need the Apple Developer tools (gcc 4-based).
+For Windows CE you need Visual Studio .NET 2005 with the WinCE toolkit.
 For Nokia770 you need "maemo" development environment, see www.maemo.org.
 
 You also need to build and install several third party packages
 that Ambulant depends on. All these are supplied in the third_party_packages
 directory; see the readme file in that directory for detailed instructions 
 on the exact version numbers, download instructions, etc.
+
+PLEASE read these instructions for which third party packages you need,
+because there are various issues with version numbers, etc.
 
 These packages can be built from source, but because this may be
 difficult on some platforms (especially Windows and the PDA platforms)
@@ -52,11 +56,19 @@ By default the player will be built with only the expat XML parser.
 Specify --with-xerces if you want the Xerces validating XML parser too,
 and additionally --with-xerces-plugin if you want that built as a plugin.
 
+Configure will attempt to build for all supported GUI toolkits that
+it detects (Cocoa, Gtk and Qt, on unix-based platforms), there are configure
+options to disable or modify this.
+
 If you want support for accessing RTSP streaming servers you need to
 specify that by passing the --with-live option.
 
 If you want to build the Python API to Ambulant you need to add the
 --with-python option to configure.
+
+If you want to build the Firefox plugin (to run ambulant in a browser window)
+you need to add --with-npambulant. Works on X11-based unix systems, see below
+for building the Safari (WebKit) plugin.
 
 For more special case configure options consult "configure --help".
 
@@ -78,8 +90,9 @@ depends, see third_party_packages/readme.txt. Most configure options
 specified in the "Building for Linux" section are also relevant for
 Mac OS X.
 
-IMPORTANT: for Tiger (10.4), you currently need to do the following things:
-- Gcc4 is preferred, but gcc3 should work too.
+IMPORTANT: for Tiger (10.4), you currently need to do the following things, these
+have been fixed on Leopard (10.5).
+- Use gcc4, gcc3 support is no longer maintained.
 - libtool 1.5 (which ships with Tiger) is broken. For the time being,
   this can be fixed by editing the generated "libtool" script (after configure)
   and setting the line
@@ -109,13 +122,23 @@ install you can remove everything but the resultant application, including
 the ambulant and SDL installations in /usr/local, and the application
 is only a few megabytes.
 
+If you want to build the WebKit plugin, to run Ambulant inside the Safari browser,
+you should first build Ambulant as sketched here. Then you need to build
+src/webkit_plugin/AmbulantWebKitPlugin.xcodeproj (in XCode). This project expects
+that the main ambulant build has been done in a subdirectory "build-smil30", you
+may need to adapt some paths if you have built Ambulant right in the source
+directory.
+
 Building for Windows
 --------------------
 
 As of Ambulant 1.9 and later all projects are located in the "projects" folder
-at the toplevel folder. "vc71" are projects for Visual Studio .NET 2003, a.k.a.
-Visual C++ 7.1. "vc8" are projects for Visual Studio .NET 2005, of which you
-want at least Service Pack 1.
+at the toplevel folder. "vc71-smil3" are projects for Visual Studio .NET 2003, a.k.a.
+Visual C++ 7.1. "vc8-smil3" are projects for Visual Studio .NET 2005, of which you
+want at least Service Pack 1. The smil21 projects have not been maintained,
+use at your own risk. Use 2005 unless you have a very good reason to use 2003
+(one such reason could be that the Python plugin currently only works with VS2003
+and Python 2.5).
 
 Aside from Visual Studio you must probably also install (at least for VS 2005)
 the following two packages from Microsoft:
@@ -135,34 +158,32 @@ From the ambulant sourcefore download page, obtain
 third_party_packages_win_20051212.zip archive, it contains versions that
 are known to work on at least one machine. Download and unzip in a temporary
 location, then move the directories named above into third_party_packages
-in your ambulant distribution. Xerces is not included in this
+in your ambulant distribution. 
+
+Xerces, libxml2 and ffmpeg are not included in this
 third_party_packages_win_20051212.zip, see third_party_packages/readme.txt
 for installation instructions. 
 
 Next, build these by opening
-projects\XXXX\third_party_packages.sln in Visual Studio. XXXX will be either
-vc71 or vc8, depending on your version of Visual Studio.
+projects\vc8-smil3\third_party_packages.sln in Visual Studio (or vc71-smil3
+if you use Visual Studio 2003).
 Select the "Release" configuration,  and do Build->Build Solution.
-(Note that it was stated above that you need Visual Studio 7.1, trying to
-open the solution file in 7.0 or earlier will not work, unfortunately).
 
 When this succeeds double-click the batchfile
-projects\XXXX\copy_tpp_win32.bat, which copies the various
+projects\vc8-smil3\copy_tpp_win32.bat, which copies the various
 libraries (libexpat.lib, libjpeg.lib, libpng13.lib and zlib.lib) to
 lib\win32 in the toplevel Ambulant directory. The corresponding DLLs are
 copied to bin\win32 in the toplevel directory.
 
 After these steps you are ready to build AmbulantPlayer itself. Open
-projects\XXXX\Ambulant-win32.sln and select "Ambulant Player" as the default
+projects\vc8-smil3\Ambulant-win32.sln and select "Ambulant Player" as the default
 project (right-click on it for the context menu that allows you to do this).
-Select the build type, use "Release" in case of doubt.
+You MUST build the ReleaseShlib target for full functionality, if you build
+Release (the statically linked target) you will not have SMIL 3.0 State support
+and no ffmpeg renderers.
 
 The resulting application is deposited in bin\win32 in the toplevel
 directory.
-
-The solutions and projects also have experimental targets that build the
-Ambulant Player as a shared library (and, therefore with support for
-plugin modules, as on Unix/Mac) but this has not been tested very thoroughly yet.
 
 Building for Windows CE
 -----------------------
