@@ -1135,6 +1135,10 @@
 							>
 						</File>
 						<File
+							RelativePath="..\..\include\ambulant\gui\dx\dx_wmuser.h"
+							>
+						</File>
+						<File
 							RelativePath="..\..\include\ambulant\gui\dx\gif_decoder.h"
 							>
 						</File>
