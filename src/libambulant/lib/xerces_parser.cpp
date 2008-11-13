@@ -327,14 +327,14 @@ xerces_sax_parser::resolveEntity(const XMLCh* const publicId , const XMLCh* cons
 	const std::string dtd = find_cached_dtd(systemId_ts);
 	if (dtd != "") {
 		XMLCh_local_id = XMLString::transcode(dtd.c_str());
-	} else {
-		m_logger->trace("Not using cached DTD: %s", systemId_ts );
 	}
 	if (XMLCh_local_id != NULL) {
 		m_logger->trace("Using cached DTD: %s", dtd.c_str());
 		local_input_source = new LocalFileInputSource(XMLCh_local_id );
 		//delete XMLCh_local_id;
 		XMLString::release(&XMLCh_local_id);
+	} else {
+		m_logger->trace("No cached DTD found, accessing over the net: %s", systemId_ts );
 	}
 	XMLString::release(&publicId_ts);
 	XMLString::release(&systemId_ts);
