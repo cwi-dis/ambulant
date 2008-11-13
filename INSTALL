@@ -1,19 +1,232 @@
-Installation Instructions
-*************************
+Building from source
+====================
 
-Copyright (C) 1994, 1995, 1996, 1999, 2000, 2001, 2002, 2004, 2005,
-2006, 2007 Free Software Foundation, Inc.
+This file contains instructions for building AmbulantPlayer from
+source, for all of Windows, Windows CE, Unix, Mac OS X and
+handheld Linux (Zaurus).
 
-This file is free documentation; the Free Software Foundation gives
+This file is part of the Ambulant Player source distribution,
+which can be downloaded via <http://www.ambulantplayer.org>.
+
+Prerequisites
+-------------
+
+Obviously you will need a compiler/linker/development environment.
+For Windows you need one of:
+- Microsoft Visual Studio .NET version 7.1 or
+- Microsoft Visual Studio .NET 2005 + Service Pack 1.
+For Linux desktop you need GNU gcc, at least version 3.2 (XXX True?)
+For MacOSX you need the Apple Developer tools (gcc 3.3 or gcc 4-based).
+For Windows CE you need Microsoft Embedded Visual C++ version 3.0 (XXX not true).
+For Nokia770 you need "maemo" development environment, see www.maemo.org.
+
+You also need to build and install several third party packages
+that Ambulant depends on. All these are supplied in the third_party_packages
+directory; see the readme file in that directory for detailed instructions 
+on the exact version numbers, download instructions, etc.
+
+These packages can be built from source, but because this may be
+difficult on some platforms (especially Windows and the PDA platforms)
+we have created archives of pre-configured and pre-built
+third_party_packages for a few common platforms. See
+<http://www.ambulantplayer.org> or the sourceforge download area for
+details.
+
+Building for Linux
+------------------
+
+First make sure you install the third party packages on which Ambulant
+depends, see third_party_packages/readme.txt.
+
+Then the normal "configure"/"make"/"make install" combo can be used here
+in the toplevel directory to create the player, see further down
+in this document for details if you are not familiar with
+this scheme.
+
+The resulting binary is called AmbulantPlayer and usually deposited in
+/usr/local/bin (depending on any --prefix options to
+configure). Libraries and include files are also installed under
+/usr/local.
+
+By default the player will be built with only the expat XML parser.
+Specify --with-xerces if you want the Xerces validating XML parser too,
+and additionally --with-xerces-plugin if you want that built as a plugin.
+
+If you want support for accessing RTSP streaming servers you need to
+specify that by passing the --with-live option.
+
+If you want to build the Python API to Ambulant you need to add the
+--with-python option to configure.
+
+For more special case configure options consult "configure --help".
+
+===================================================================================
+TEMPORARY building on Fedora 8 in 32 bit mode on 64 bit host:
+everything in third_party_packages should be ready in 32 bit mode,
+ffmpeg: ./configure --extra-cflags=-m32 --extra-ldflags=-m32 --cpu=i386 --cross-compile
+PKG_CONFIG_PATH=:/usr/lib/pkgconfig/ ./autogen.sh CFLAGS=-m32 CXXFLAGS=-m32 --host=i386
+
+ambulant in 64 bit mode now at least needs -nostartfiles in libtool.sh manually added
+and ffmpeg: ./configure --extra-cflags-fPIC
+===================================================================================
+
+Building for Mac OS X
+---------------------
+
+First make sure you install the third party packages on which Ambulant
+depends, see third_party_packages/readme.txt. Most configure options
+specified in the "Building for Linux" section are also relevant for
+Mac OS X.
+
+IMPORTANT: for Tiger (10.4), you currently need to do the following things:
+- Gcc4 is preferred, but gcc3 should work too.
+- libtool 1.5 (which ships with Tiger) is broken. For the time being,
+  this can be fixed by editing the generated "libtool" script (after configure)
+  and setting the line
+    whole_archive_flag_spec=""
+  in stead of the original whole_archive_flag_spec definition.
+
+Then the normal "configure"/"make"/"sudo make install" combo can be used
+here in the toplevel directory to create the player, see further down
+in this document for details if you are not familiar with
+this scheme.
+
+"make install" installs the shared libraries and such into the path
+specified with the --prefix configure option, but the application,
+"Ambulant Player.app" is always installed into /Applications.
+
+If you want to install only the Ambulant Player.app application you
+should first run make in the toplevel build directory and then
+"sudo make install" in src/player_macosx. This will not install anything
+into /usr/local.
+
+An XCode project is also available, mainly for debugging purposes, but
+this needs some handcrafting to get it to work (it contains absolute
+pathnames to include directories to work around an XCode bug).
+
+You need about 600MB of free diskspace to do the build. After build and
+install you can remove everything but the resultant application, including
+the ambulant and SDL installations in /usr/local, and the application
+is only a few megabytes.
+
+Building for Windows
+--------------------
+
+As of Ambulant 1.9 and later all projects are located in the "projects" folder
+at the toplevel folder. "vc71" are projects for Visual Studio .NET 2003, a.k.a.
+Visual C++ 7.1. "vc8" are projects for Visual Studio .NET 2005, of which you
+want at least Service Pack 1.
+
+Aside from Visual Studio you must probably also install (at least for VS 2005)
+the following two packages from Microsoft:
+- Microsoft Plaftorm SDK for Windows Server 2003 R2
+- Microsoft DirectX SDK (August 2006), or newer.
+The include and lib files for these have to be added for searching. This is easiest
+done in VS through Tools->Options->Projects and Solutions->VC++ Directories.
+Then select "Include files" and add the include dirs, "Library files" and add the
+library dirs.
+
+Installing and building the third party packages on Windows is more of a
+pain than it is on unix. For this reason, read these instructions *very carefully*,
+please. We hope these instructions are complete, otherwise
+please report back.
+
+From the ambulant sourcefore download page, obtain
+third_party_packages_win_20051212.zip archive, it contains versions that
+are known to work on at least one machine. Download and unzip in a temporary
+location, then move the directories named above into third_party_packages
+in your ambulant distribution. Xerces is not included in this
+third_party_packages_win_20051212.zip, see third_party_packages/readme.txt
+for installation instructions. 
+
+Next, build these by opening
+projects\XXXX\third_party_packages.sln in Visual Studio. XXXX will be either
+vc71 or vc8, depending on your version of Visual Studio.
+Select the "Release" configuration,  and do Build->Build Solution.
+(Note that it was stated above that you need Visual Studio 7.1, trying to
+open the solution file in 7.0 or earlier will not work, unfortunately).
+
+When this succeeds double-click the batchfile
+projects\XXXX\copy_tpp_win32.bat, which copies the various
+libraries (libexpat.lib, libjpeg.lib, libpng13.lib and zlib.lib) to
+lib\win32 in the toplevel Ambulant directory. The corresponding DLLs are
+copied to bin\win32 in the toplevel directory.
+
+After these steps you are ready to build AmbulantPlayer itself. Open
+projects\XXXX\Ambulant-win32.sln and select "Ambulant Player" as the default
+project (right-click on it for the context menu that allows you to do this).
+Select the build type, use "Release" in case of doubt.
+
+The resulting application is deposited in bin\win32 in the toplevel
+directory.
+
+The solutions and projects also have experimental targets that build the
+Ambulant Player as a shared library (and, therefore with support for
+plugin modules, as on Unix/Mac) but this has not been tested very thoroughly yet.
+
+Building for Windows CE
+-----------------------
+
+XXXX THESE ARE OLD INSTRUCTIONS. TO BE UPDATED.
+
+Installing and building the third party packages for Windows CE is even more of a
+pain than it is for Windows desktop. For this reason, read these instructions
+*very carefully*, please. We hope these instructions are complete, otherwise
+please report back.
+
+The projects (and these instructions) have been tried only for Windows CE on various
+Compaq (or HP) iPaqs, the oldest one being a 3660. Of the various configurations
+in the project files, only the ones for this specific platform (ARM processor,
+non-debugging, PocketPC operating system) have been kept up-to-date.
+
+Install the following distributions into directories in third_party_packages:
+expat, jpeg, lpng128, mp3lib, zlibce. third_party_packages\readme.txt has the
+version info.
+As most of these need some fiddling (missing Visual Studio projects, that
+sort of things) you are best off downloading the
+third_party_packages-WIN.zip archive, it contains versions that
+are known to work on at least one machine. Download and unzip in a temporary
+location, then move the directories named above into third_party_packages
+in your ambulant distribution.
+
+Next, build these by opening
+third_party_packages\third_party_packages.vcw in Embedded Visual C++ 3.0,
+select the expat project as default project, 
+select the "ARM Release" configuration for the "PocketPC" platform and build.
+Repeat these steps for all projects in the workspace.
+
+When this succeeds double-click the batchfile
+third_party_packages\copy_tpp_wince.bat, which copies the various
+libraries (libexpat.lib, libjpeg.lib, libpng13.lib and zlib.lib) to
+lib\wince-arm in the toplevel Ambulant directory. 
+
+NOTE: if this step fails please inspect the script and do the
+needed copies by hand.
+
+After these steps you are ready to build AmbulantPlayer itself: open
+src\Ambulant-wince.vcw in Embedded Visual C++ 3.0, select the "ARM Release" 
+configuration for the "PocketPC" platform and build.
+
+The resulting application is deposited in bin\wince-arm in the toplevel
+directory.
+
+
+==========================================
+Generic installation instructions for Unix
+==========================================
+Copyright 1994, 1995, 1996, 1999, 2000, 2001 Free Software Foundation,
+Inc.
+
+   This file is free documentation; the Free Software Foundation gives
 unlimited permission to copy, distribute and modify it.
+
+Note that from this point on this file contains generic installation instructions
+for unix.
 
 Basic Installation
 ==================
 
-Briefly, the shell commands `./configure; make; make install' should
-configure, build, and install this package.  The following
-more-detailed instructions are generic; see the `README' file for
-instructions specific to this package.
+   These are generic installation instructions.
 
    The `configure' shell script attempts to guess correct values for
 various system-dependent variables used during compilation.  It uses
@@ -26,9 +239,9 @@ debugging `configure').
 
    It can also use an optional file (typically called `config.cache'
 and enabled with `--cache-file=config.cache' or simply `-C') that saves
-the results of its tests to speed up reconfiguring.  Caching is
+the results of its tests to speed up reconfiguring.  (Caching is
 disabled by default to prevent problems with accidental use of stale
-cache files.
+cache files.)
 
    If you need to do unusual things to compile the package, please try
 to figure out how `configure' could check whether to do them, and mail
@@ -38,17 +251,20 @@ some point `config.cache' contains results you don't want to keep, you
 may remove or edit it.
 
    The file `configure.ac' (or `configure.in') is used to create
-`configure' by a program called `autoconf'.  You need `configure.ac' if
-you want to change it or regenerate `configure' using a newer version
-of `autoconf'.
+`configure' by a program called `autoconf'.  You only need
+`configure.ac' if you want to change it or regenerate `configure' using
+a newer version of `autoconf'.
 
 The simplest way to compile this package is:
 
   1. `cd' to the directory containing the package's source code and type
-     `./configure' to configure the package for your system.
+     `./configure' to configure the package for your system.  If you're
+     using `csh' on an old version of System V, you might need to type
+     `sh ./configure' instead to prevent `csh' from trying to execute
+     `configure' itself.
 
-     Running `configure' might take a while.  While running, it prints
-     some messages telling which features it is checking for.
+     Running `configure' takes awhile.  While running, it prints some
+     messages telling which features it is checking for.
 
   2. Type `make' to compile the package.
 
@@ -67,55 +283,53 @@ The simplest way to compile this package is:
      all sorts of other programs in order to regenerate files that came
      with the distribution.
 
-  6. Often, you can also type `make uninstall' to remove the installed
-     files again.
-
 Compilers and Options
 =====================
 
-Some systems require unusual options for compilation or linking that the
-`configure' script does not know about.  Run `./configure --help' for
-details on some of the pertinent environment variables.
+   Some systems require unusual options for compilation or linking that
+the `configure' script does not know about.  Run `./configure --help'
+for details on some of the pertinent environment variables.
 
-   You can give `configure' initial values for configuration parameters
-by setting variables in the command line or in the environment.  Here
-is an example:
+   You can give `configure' initial values for variables by setting
+them in the environment.  You can do that on the command line like this:
 
-     ./configure CC=c99 CFLAGS=-g LIBS=-lposix
+     ./configure CC=c89 CFLAGS=-O2 LIBS=-lposix
 
    *Note Defining Variables::, for more details.
 
 Compiling For Multiple Architectures
 ====================================
 
-You can compile the package for more than one kind of computer at the
+   You can compile the package for more than one kind of computer at the
 same time, by placing the object files for each architecture in their
-own directory.  To do this, you can use GNU `make'.  `cd' to the
+own directory.  To do this, you must use a version of `make' that
+supports the `VPATH' variable, such as GNU `make'.  `cd' to the
 directory where you want the object files and executables to go and run
 the `configure' script.  `configure' automatically checks for the
 source code in the directory that `configure' is in and in `..'.
 
-   With a non-GNU `make', it is safer to compile the package for one
-architecture at a time in the source code directory.  After you have
-installed the package for one architecture, use `make distclean' before
-reconfiguring for another architecture.
+   If you have to use a `make' that does not support the `VPATH'
+variable, you have to compile the package for one architecture at a
+time in the source code directory.  After you have installed the
+package for one architecture, use `make distclean' before reconfiguring
+for another architecture.
 
 Installation Names
 ==================
 
-By default, `make install' installs the package's commands under
-`/usr/local/bin', include files under `/usr/local/include', etc.  You
-can specify an installation prefix other than `/usr/local' by giving
-`configure' the option `--prefix=PREFIX'.
+   By default, `make install' will install the package's files in
+`/usr/local/bin', `/usr/local/man', etc.  You can specify an
+installation prefix other than `/usr/local' by giving `configure' the
+option `--prefix=PATH'.
 
    You can specify separate installation prefixes for
 architecture-specific files and architecture-independent files.  If you
-pass the option `--exec-prefix=PREFIX' to `configure', the package uses
-PREFIX as the prefix for installing programs and libraries.
-Documentation and other data files still use the regular prefix.
+give `configure' the option `--exec-prefix=PATH', the package will use
+PATH as the prefix for installing programs and libraries.
+Documentation and other data files will still use the regular prefix.
 
    In addition, if you use an unusual directory layout you can give
-options like `--bindir=DIR' to specify different values for particular
+options like `--bindir=PATH' to specify different values for particular
 kinds of files.  Run `configure --help' for a list of the directories
 you can set and what kinds of files go in them.
 
@@ -126,7 +340,7 @@ option `--program-prefix=PREFIX' or `--program-suffix=SUFFIX'.
 Optional Features
 =================
 
-Some packages pay attention to `--enable-FEATURE' options to
+   Some packages pay attention to `--enable-FEATURE' options to
 `configure', where FEATURE indicates an optional part of the package.
 They may also pay attention to `--with-PACKAGE' options, where PACKAGE
 is something like `gnu-as' or `x' (for the X Window System).  The
@@ -141,11 +355,10 @@ you can use the `configure' options `--x-includes=DIR' and
 Specifying the System Type
 ==========================
 
-There may be some features `configure' cannot figure out automatically,
-but needs to determine by the type of machine the package will run on.
-Usually, assuming the package is built to be run on the _same_
-architectures, `configure' can figure that out, but if it prints a
-message saying it cannot guess the machine type, give it the
+   There may be some features `configure' cannot figure out
+automatically, but needs to determine by the type of host the package
+will run on.  Usually `configure' can figure that out, but if it prints
+a message saying it cannot guess the host type, give it the
 `--build=TYPE' option.  TYPE can either be a short name for the system
 type, such as `sun4', or a canonical name which has the form:
 
@@ -157,23 +370,27 @@ where SYSTEM can have one of these forms:
 
    See the file `config.sub' for the possible values of each field.  If
 `config.sub' isn't included in this package, then this package doesn't
-need to know the machine type.
+need to know the host type.
 
    If you are _building_ compiler tools for cross-compiling, you should
-use the option `--target=TYPE' to select the type of system they will
+use the `--target=TYPE' option to select the type of system they will
 produce code for.
 
    If you want to _use_ a cross compiler, that generates code for a
-platform different from the build platform, you should specify the
-"host" platform (i.e., that on which the generated programs will
-eventually be run) with `--host=TYPE'.
+platform different from the build platform, you should specify the host
+platform (i.e., that on which the generated programs will eventually be
+run) with `--host=TYPE'.  In this case, you should also specify the
+build platform with `--build=TYPE', because, in this case, it may not
+be possible to guess the build platform (it sometimes involves
+compiling and running simple test programs, and this can't be done if
+the compiler is a cross compiler).
 
 Sharing Defaults
 ================
 
-If you want to set default values for `configure' scripts to share, you
-can create a site shell script called `config.site' that gives default
-values for variables like `CC', `cache_file', and `prefix'.
+   If you want to set default values for `configure' scripts to share,
+you can create a site shell script called `config.site' that gives
+default values for variables like `CC', `cache_file', and `prefix'.
 `configure' looks for `PREFIX/share/config.site' if it exists, then
 `PREFIX/etc/config.site' if it exists.  Or, you can set the
 `CONFIG_SITE' environment variable to the location of the site script.
@@ -182,7 +399,7 @@ A warning: not all `configure' scripts look for a site script.
 Defining Variables
 ==================
 
-Variables not defined in a site shell script can be set in the
+   Variables not defined in a site shell script can be set in the
 environment passed to `configure'.  However, some packages may run
 configure again during the build, and the customized values of these
 variables may be lost.  In order to avoid this problem, you should set
@@ -190,18 +407,14 @@ them in the `configure' command line, using `VAR=value'.  For example:
 
      ./configure CC=/usr/local2/bin/gcc
 
-causes the specified `gcc' to be used as the C compiler (unless it is
+will cause the specified gcc to be used as the C compiler (unless it is
 overridden in the site shell script).
-
-Unfortunately, this technique does not work for `CONFIG_SHELL' due to
-an Autoconf bug.  Until the bug is fixed you can use this workaround:
-
-     CONFIG_SHELL=/bin/bash /bin/bash ./configure CONFIG_SHELL=/bin/bash
 
 `configure' Invocation
 ======================
 
-`configure' recognizes the following options to control how it operates.
+   `configure' recognizes the following options to control how it
+operates.
 
 `--help'
 `-h'
