@@ -34,7 +34,7 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-
+	LPARAM OnAddLoggerLine(WPARAM wp, LPARAM lp);
 	DECLARE_MESSAGE_MAP()
 public:
 	CRichEditCtrl m_richedit;

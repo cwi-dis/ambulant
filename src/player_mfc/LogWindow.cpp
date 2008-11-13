@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "AmbulantPlayer.h"
 #include "LogWindow.h"
+#include "ambulant/gui/dx/dx_wmuser.h"
 
 // logwindow_ostream implementation
 
@@ -54,6 +55,7 @@ BEGIN_MESSAGE_MAP(CLogWindow, CDialog)
 //	ON_BN_CLICKED(IDCANCEL, OnBnClickedCancel)
 //	ON_BN_CLICKED(IDOK, OnBnClickedOK)
 ON_EN_CHANGE(IDC_RICHEDIT21, OnEnChangeRichedit21)
+ON_MESSAGE(WM_LOG_LINE, OnAddLoggerLine)
 END_MESSAGE_MAP()
 
 
@@ -62,9 +64,19 @@ END_MESSAGE_MAP()
 void
 CLogWindow::AppendText(const char *data)
 {
+	char *myData = _strdup(data);
+	PostMessage(WM_LOG_LINE, 0, (LPARAM)myData);
+}
+
+LPARAM
+CLogWindow::OnAddLoggerLine(WPARAM wp, LPARAM lp)
+{
 	USES_CONVERSION;
+	char *myData = (char *)lp;
 	m_richedit.SetSel(-1, -1);
-	m_richedit.ReplaceSel(A2CT(data));
+	m_richedit.ReplaceSel(A2CT(myData));
+	free(myData);
+	return 0;
 }
 void CLogWindow::OnEnChangeRichedit21()
 {
