@@ -88,6 +88,11 @@ With audio and video there are some issues with specific combinations of
 containers, codecs, platforms and access protocols. See the website
 (or Documentation/mediasupport in a source distribution) for details.
 
+For video, the native renderers (QuickTime and DirectX) may give better
+performance, due to hardware acceleration and vendor-optimized code.
+However, there may be issues with SMIL features like transparency,
+overlay regions, fit behaviour, etc.
+
 Networking support
 ------------------
 
