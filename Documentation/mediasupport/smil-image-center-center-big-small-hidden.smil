@@ -1,0 +1,13 @@
+<?xml version='1.0' ?>
+<smil>
+<head>
+<layout>
+<topLayout width="200" height="200">
+  <region id="region"/>
+</topLayout>
+</layout>
+</head>
+<body>
+<img dur="10s" region="region" src="media/image-640x480.png" regAlign="center" regPoint="center" fit="hidden"></img>
+</body>
+</smil>
