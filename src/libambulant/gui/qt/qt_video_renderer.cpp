@@ -96,16 +96,37 @@ qt_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
     if ( m_image ) {
         lib::size srcsize = lib::size(m_size.w, m_size.h);
         lib::rect srcrect;
+#ifdef WITH_SMIL30
+		lib::rect croprect = m_dest->get_crop_rect(srcsize);
+		lib::rect dstrect = m_dest->get_fit_rect(croprect, srcsize, &srcrect, m_alignment);
+#else
         lib::rect dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
+#endif // WITH_SMIL30
         dstrect.translate(m_dest->get_global_topleft());
-        int L = dstrect.left(), 
-            T = dstrect.top(),
-            W = dstrect.width(),
-            H = dstrect.height();
-        AM_DBG lib::logger::get_logger()->debug(" qt_video_renderer.redraw(0x%x): drawImage 0x%x at (L=%d,T=%d,W=%d,H=%d)", (void *)this,m_image,L,T,W,H);
-        // XXX This is wrong: it does not take srcrect into account, and hence it
-        // does not scale the video.
-        paint.drawImage(L,T,*m_image,0,0,W,H);
+#if ONLY_FOR_QT4
+		QRect q_srcrect(srcrect.left(), srcrect.top(), srcrect.width(), srcrect.height());
+		QRect q_dstrect(dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
+		paint.drawImage(q_dstrect, *m_image, q_srcrect);
+#else
+		AM_DBG lib::logger::get_logger()->debug("qt_video: %d,%d,%d,%d to %d,%d,%d,%d",
+			srcrect.left(), srcrect.top(), srcrect.width(), srcrect.height(),
+			dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
+        if (srcrect.size() == dstrect.size()) {
+			paint.drawImage(dstrect.left(), dstrect.top(), *m_image,
+				srcrect.left(), srcrect.top(), srcrect.width(), srcrect.height());
+		} else {
+			lib::logger::get_logger()->debug("qt_video_renderer: correcting cutout");
+			// Grmpf. We have to scale or transform.
+			// First cut out the right portion of the source image
+			QImage cutout(srcrect.width(), srcrect.height(), m_image->depth());
+			cutout.fill(0);
+			bitBlt(&cutout, 0, 0, m_image, srcrect.left(), srcrect.top(), srcrect.width(), srcrect.height());
+			// Next, we scale it.
+			QImage scaled = cutout.smoothScale(dstrect.width(), dstrect.height(), QImage::ScaleFree);
+			// Finally we render it
+			paint.drawImage(dstrect.left(), dstrect.top(), scaled, 0, 0, dstrect.width(), dstrect.height());
+		}
+#endif
     } else {
         AM_DBG lib::logger::get_logger()->debug("qt_video_renderer.redraw(0x%x): no m_image", (void *) this);
     }
