@@ -297,7 +297,11 @@ void
 ambulant_qt_window::redraw_now()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::redraw_now()");
+#if 0
+	// Unfortunately this can cause a deadlock: somebody may be holding
+	// the lock.
 	m_ambulant_widget->repaint(false);
+#endif
 }
 
 void
