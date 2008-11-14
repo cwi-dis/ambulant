@@ -27,7 +27,7 @@
 #include <math.h>
 #define round(x) ((int)((x)+0.5))
 
-//#define AM_DBG if(1)
+#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -974,8 +974,8 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw(0x%x): s
 		double now = elapsed - m_epoch;
 		if ( ! m_finished)
 			m_shifted_origin.y = (int) now * m_params.m_rate / 1000 * y_dir;
-//*KB*/	lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_finished=%d m_rate=%d y_dir=%d now=%lf m_shifted_origin(%d,%d)", 
-//KB										 m_finished, m_params.m_rate, y_dir, now, m_shifted_origin.x, m_shifted_origin.y);
+AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_finished=%d m_rate=%d y_dir=%d now=%lf m_shifted_origin(%d,%d)", 
+									   m_finished, m_params.m_rate, y_dir, now, m_shifted_origin.x, m_shifted_origin.y);
 	}
 AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shifted_origin(%d,%d)", m_shifted_origin.x, m_shifted_origin.y);
 
@@ -1137,7 +1137,7 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shift
 		if (m_params.m_text_conceal == stc_none
 		    || m_params.m_text_conceal == stc_initial) {
 			// check if we need to stop crawling/scrolling
-			if ((last_word->m_bounding_box & rect) == last_word->m_bounding_box) {
+			if (m_engine.is_auto_rate() && (last_word->m_bounding_box & rect) == last_word->m_bounding_box) {
 				// bounding box of last word is now completely 
 				// inside the viewing rectangle
 				m_finished = true;
