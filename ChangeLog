@@ -1,3 +1,32 @@
+2008-11-14 23:12  jackjansen
+
+	* Added a note that QT/DX renderers don't adhere as close to the
+	  SMIL spec as ffmpeg.
+
+2008-11-14 16:25  keesblom
+
+	* Changed the check in layout manager when everyting is visible to
+	  be executed only when textRate != "auto". Fixes # 2229698.
+
+2008-11-14 15:48  keesblom
+
+	* Added another patch for libtool as generated on 64 bit fc8.  The
+	  '--export-dynamic' flag was not propagated by libtool from the
+	  spec.  in src/player_*/Makefile.am to the final link command.
+	  This caused dynamic linkage runtime failures.Fixes #2229555.
+
+2008-11-14 14:25  jackjansen
+
+	* Qt video was never scaled or pan/zoomed. Fixed, but need to
+	  confirm that the fix is complete.
+
+2008-11-14 13:34  jackjansen
+
+	* redraw_now() is unsafe for Qt: it can result in a deadlock on
+	  some Qt lock (or a region lock). Disabling, for now.
+
+	  May also fix #1963869.
+
 2008-11-14 11:16  jackjansen
 
 	* Fixed #1699636 (incorrect video alignment with
