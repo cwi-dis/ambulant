@@ -1996,7 +1996,7 @@
 					../../third_party_packages/live/BasicUsageEnvironment/include,
 					"../../third_party_packages/xerces-unix/include",
 				);
-				INFOPLIST_FILE = /Users/jack/src/ambulant/projects/xcode23/../../src/player_macosx/Info.plist;
+				INFOPLIST_FILE = "/Users/jack/src/ambulant/projects/xcode23-smil3/../../src/player_macosx/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2052,7 +2052,7 @@
 					../../third_party_packages/live/BasicUsageEnvironment/include,
 					"../../third_party_packages/xerces-unix/include",
 				);
-				INFOPLIST_FILE = /Users/jack/src/ambulant/projects/xcode23/../../src/player_macosx/Info.plist;
+				INFOPLIST_FILE = "/Users/jack/src/ambulant/projects/xcode23-smil3/../../src/player_macosx/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
