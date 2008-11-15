@@ -120,6 +120,7 @@ class ffmpeg_demux : public abstract_demux {
 	audio_format m_audio_fmt;
   	video_format m_video_fmt;
 	demux_datasink *m_sinks[MAX_STREAMS];
+	demux_datasink *m_current_sink;
 	AVFormatContext *m_con;
 	int m_nstream;
 	lib::critical_section m_lock;

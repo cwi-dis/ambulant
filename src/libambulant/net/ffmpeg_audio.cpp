@@ -311,13 +311,16 @@ ffmpeg_decoder_datasource::start(ambulant::lib::event_processor *evp, ambulant::
 	if (m_client_callback != NULL) {
 		delete m_client_callback;
 		m_client_callback = NULL;
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::start(): m_client_callback already set!");
+		lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::start(): m_client_callback already set, cleared.");
+	}
+	if (evp == NULL) {
+		lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::start(): event_processor is null, clearing callback.");
+		callbackk = NULL;
 	}
 	if (m_buffer.buffer_not_empty() || _end_of_file() ) {
 		// We have data (or EOF) available. Don't bother starting up our source again, in stead
 		// immedeately signal our client again
 		if (callbackk) {
-			assert(evp);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::start: trigger client callback");
 			evp->add_event(callbackk, 0, ambulant::lib::ep_med);
 		} else {
@@ -481,8 +484,8 @@ ffmpeg_decoder_datasource::data_avail()
 			if (m_elapsed >= m_src->get_clip_begin()) {
 				m_event_processor->add_event(m_client_callback, 0, ambulant::lib::ep_med);
 				m_client_callback = NULL;
+				m_event_processor = NULL;
 			}
-			m_event_processor = NULL;
 		} else {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail(): No client callback!");
 		}
