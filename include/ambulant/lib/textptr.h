@@ -98,7 +98,7 @@ class textptr {
 		if(m_pb != NULL) return m_pb;
 		if(m_pcw == NULL) return NULL;
 		if (m_length < 0) m_length = wcslen(m_pcw);
-		int n = (int)m_length + 1;
+		int n = m_length*2+1; // Two times wide string size should be enough for mb
 		m_pb = new char[n];
 #ifdef AMBULANT_PLATFORM_WIN32
 		WideCharToMultiByte(CP_ACP, 0, m_pcw, n, m_pb, n, NULL, NULL);
@@ -115,7 +115,10 @@ class textptr {
 
 	operator char_ptr() { return str();}
 	operator const_char_ptr() { return c_str();}
-
+#if 0
+    // length() is wrong: cannot tell, because wide and multibyte lengths are
+    // different.
+    // XXXJACK m_length can go altogether.
 	size_t length() {
 		if(m_length>=0) return m_length;
 		const_char_ptr pb = (m_pcb!=NULL)?m_pcb:m_pb;
@@ -126,6 +129,7 @@ class textptr {
 			return (m_length = wcslen(pw));
 		return (m_length = 0);
 	}
+#endif
 
   private:
 	const_char_ptr m_pcb;
