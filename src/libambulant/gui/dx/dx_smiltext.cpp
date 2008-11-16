@@ -46,6 +46,7 @@
 #include <ddraw.h>
 #endif
 #include <windows.h>
+#include <tchar.h>
 /* windows includes end*/
 
 #ifdef _UNICODE
@@ -183,7 +184,8 @@ gui::dx::dx_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& r
 			line_spacing = height+tm.tmInternalLeading+tm.tmExternalLeading;
 
 			lib::textptr tp(run.m_data.c_str(), run.m_data.length());
-			res = ::GetTextExtentPoint32(m_hdc, tp, (int)tp.length(), &SZ);
+			LPCTSTR ttp = tp;
+			res = ::GetTextExtentPoint32(m_hdc, ttp, _tcslen(ttp), &SZ);
 			if (res == 0)
 				win_report_last_error("GetTextExtentPoint32()");
 			else width = SZ.cx;
@@ -356,9 +358,11 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 	dstRC.right  = rr.right();
 	dstRC.bottom = rr.bottom();
 	UINT uFormat = DT_NOPREFIX | DT_LEFT;
-	hr = ::DrawText(hdc, tp, (int)tp.length(), &dstRC, uFormat);
+	LPCTSTR ttp = tp;
+	int ttplen = _tcslen(ttp);
+	hr = ::DrawText(hdc, ttp, ttplen, &dstRC, uFormat);
 	if (SUCCEEDED(hr) && textbg_hdc)
-		hr = ::DrawText(textbg_hdc, tp, (int)tp.length(), &dstRC, uFormat);
+		hr = ::DrawText(textbg_hdc, ttp, ttplen, &dstRC, uFormat);
 	if(FAILED(hr))
 		win_report_last_error("DrawText()");
 	::SelectObject(hdc, old_font); 

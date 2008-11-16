@@ -29,6 +29,7 @@
 #include <ddraw.h>
 #endif
 #include <windows.h>
+#include <tchar.h>
 
 #include "ambulant/gui/dx/dx_text_renderer.h"
 #include "ambulant/gui/dx/dx_viewport.h"
@@ -222,7 +223,8 @@ gui::dx::text_renderer::render(LONG x, LONG y, HFONT hfont) {
 	RECT dstRC = {x, y, m_size.w, m_size.h};
 	if (m_text_data) {
 		lib::textptr tp(m_text_data, m_text_datalen);
-		HRESULT res = ::DrawText(hdc, tp, (int)tp.length(), &dstRC, uFormat);
+		LPCTSTR ttp = tp;
+		HRESULT res = ::DrawText(hdc, ttp, _tcslen(ttp), &dstRC, uFormat);
 		if(res == 0)
 			win_report_last_error("DrawText()");
 		m_text_bgcolor = m_default_bgcolor;
