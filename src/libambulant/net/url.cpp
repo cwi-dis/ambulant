@@ -29,13 +29,13 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/string_util.h"
 #include "ambulant/lib/filesys.h"
-#include "ambulant/lib/textptr.h"
+#include "ambulant/lib/textptr.h"  
 
 #include <string>
 #if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
 #include <sstream>
 #endif
-
+	
 using namespace ambulant;
 
 bool ambulant::net::url::s_strict = false;
@@ -54,7 +54,7 @@ const std::string file_url_escape_frag = file_url_escape + "#";
 
 #include "ambulant/lib/win32/win32_error.h"
 #include <wininet.h>
-
+	
 static std::string
 filepath2urlpath(const std::string& fparg, bool handle_frag=false)
 {
@@ -62,6 +62,7 @@ filepath2urlpath(const std::string& fparg, bool handle_frag=false)
 	size_t urlbufsize = filepath.size()*3+7; // Worst case: all characters escaped
 	LPTSTR urlbuf = (LPTSTR)malloc(urlbufsize*sizeof(TCHAR));
 	DWORD urlbufsizearg = (DWORD)urlbufsize;
+	
 	assert(urlbuf);
 	urlbuf[0] = 0;
 	std::string fragment;
@@ -71,7 +72,7 @@ filepath2urlpath(const std::string& fparg, bool handle_frag=false)
 		size_t fragpos = filepath.find('#');
 		if (fragpos != std::string::npos) {
 			fragment = filepath.substr(fragpos);
-			filepath = filepath.substr(0, fragpos);
+			filepath = filepath.substr(0, fragpos);	
 		}
 	}
 	if (!InternetCanonicalizeUrl(lib::textptr(filepath.c_str()), urlbuf, &urlbufsizearg, 0)) {
@@ -79,14 +80,21 @@ filepath2urlpath(const std::string& fparg, bool handle_frag=false)
 		lib::win32::win_report_error(filepath.c_str(), dw);
 		urlbuf[0] = 0;
 	}
+	
 	std::string rv = lib::textptr(urlbuf);
+	
 	// Work around stupid bug in InternetCanonicalizeURL: it forgets a slash.
 	if (rv.substr(0, 7) == "file://" && rv[7] != '/')
 		rv = "file:///" + rv.substr(7);
+	
+	//need to use wstring here; otherwise the ascii filter below breaks
+	// XXXJACK not sure of this code. It roundtrips to wide chars (expensive)
+	// and also it uses isascii() on a wide char. Seems suspect...
+	std::wstring wrv = lib::textptr(rv.c_str());
 	// Now replace backslashes and turn everything into lower case
-	std::string::iterator i;
-	for(i=rv.begin(); i!=rv.end(); i++) {
-		char c = *i;
+	std::wstring::iterator i;
+	for(i=wrv.begin(); i!=wrv.end(); i++) {
+		wchar_t c = *i;
 		if (c == '\\') 
 			*i = '/';
 		else if (isascii(c))
@@ -94,6 +102,9 @@ filepath2urlpath(const std::string& fparg, bool handle_frag=false)
 		else
 			*i = c;
 	}
+	
+	rv = lib::textptr(wrv.c_str());  
+	
 #ifdef AMBULANT_PLATFORM_WIN32_WCE
 	// On WinCE InternetCanonicalizeUrl also turns backslash into %5c (sigh).
 	while(1) {
@@ -622,7 +633,8 @@ std::string net::url::get_url() const
 	std::string rv = repr(*this);
 	if (!m_absolute)
 		lib::logger::get_logger()->trace("url::get_url(): URL not absolute: \"%s\"", rv.c_str());
-	rv = string2uri(rv);
+	if (!this->is_local_file())
+		rv = string2uri(rv);
 	return rv;
 }
 
