@@ -1,3 +1,18 @@
+2008-11-16 00:21  jackjansen
+
+	* The ffmpeg demux thread releases the lock while calling
+	  data_avail() to forestall a deadlock, but therefore another
+	  thread could remove it's sink during that period, leading to a
+	  crash. This happened most often when stopping the player while
+	  audio was active. This scenario is very common in Amis, when the
+	  user navigates through the Daisy book.
+
+	  Fix ported over from amis-ambulant-30 branch, with modifications.
+
+2008-11-16 00:16  jackjansen
+
+	* Removed reference to deleted directory xcode23.
+
 2008-11-14 23:12  jackjansen
 
 	* Added a note that QT/DX renderers don't adhere as close to the
