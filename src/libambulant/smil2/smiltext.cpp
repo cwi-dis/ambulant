@@ -905,7 +905,6 @@ void
 smiltext_layout_engine::redraw(const lib::rect& r) {
 AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw(0x%x) r=(L=%d,T=%d,W=%d,H=%d", this,r.left(),r.top(),r.width(),r.height());
 	int nbr = 0; // number of breaks (newlines) before current line
-//JNK	m_lock.enter();
 	m_engine.lock();
 	if (&*m_words.begin() == NULL) {
 		m_lock.leave();
@@ -1148,7 +1147,6 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shift
 		}
 	}
 	m_engine.unlock();
-//JNK	m_lock.leave();
 }
 
 // return true if r1 completely fits horizontally in r2

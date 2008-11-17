@@ -309,7 +309,7 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 		fg_color_t = CLR_ALTERNATIVE;
 	COLORREF crBkColor = bg_color_t;
 
-	if (ri->is_chromakey_specified()) {
+	if (ri && ri->is_chromakey_specified()) {
 		if (lib::color_t_in_range (fg_color_t, chroma_low, chroma_high))
 			alpha_media = alpha_chroma;
 		if (lib::color_t_in_range (bg_color_t, chroma_low, chroma_high))

@@ -905,7 +905,6 @@ fi
 AC_MSG_RESULT($with_python_plugin)
 
 # Do we want the npambulant browser (firefox) plugin ?
-#
 
 AC_MSG_CHECKING(for --with-npambulant)
 AC_ARG_WITH([npambulant],

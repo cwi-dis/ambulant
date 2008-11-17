@@ -27,11 +27,11 @@
 
 ; Where the system directory is on the machine where we are building the installer
 
-; !define DISTRIBUTE_VC7_RT
-; !define BUILD_SYSDIR "C:\WINDOWS\system32"  ; Most machines
+!define DISTRIBUTE_VC7_RT
+!define BUILD_SYSDIR "C:\WINDOWS\system32"  ; Most machines
 
-!define DISTRIBUTE_VC8_RT
-!define VC8_DISTDIR "C:\Program Files\Microsoft Visual Studio 8\VC\redist\x86"
+; !define DISTRIBUTE_VC8_RT
+; !define VC8_DISTDIR "C:\Program Files\Microsoft Visual Studio 8\VC\redist\x86"
 
 ; MUI 1.67 compatible ------
 !include "MUI.nsh"
