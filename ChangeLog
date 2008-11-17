@@ -1,3 +1,34 @@
+2008-11-17 00:07  jackjansen
+
+	* The textptr fix was a bit too simple: length() is used after all.
+	  Because we cannot count on it being correct we've changed the
+	  places where it was used to use _tcslen() on the string returned.
+
+	  This might also fix the smilText rendering problem (keeping
+	  fingers crossed).
+
+2008-11-16 23:20  jackjansen
+
+	* Fixes for filename URLs on multibyte platforms: - multibyte
+	  characters are not representable officially in a URL:   %-escapes
+	  are Latin-1 only. We now use the workaround that browsers   also
+	  seem to use: if we create a file: url for a local filename we
+	  don't do %-esacpes at all.  - the \ escaping and lowercasing
+	  failed on Windows, because isascii()	 appears to be broken for
+	  multibyte. Fixed by roundtripping to wide (unicode).	  Marisa
+	  will investigate whether this is really needed, I'd like to
+	  get rid of the double conversion only to do escapes.
+
+2008-11-16 22:59  jackjansen
+
+	* Textptr incorrectly assumed that wide strtings and multibyte
+	  strings are the same size, whereas wide strings can be twice as
+	  wide.  Cater for this fact.
+
+	  This attempts to fix the same problem as fixed on branch
+	  amis-ambulant-30, but without a second call to
+	  WideCharToMultiByte.
+
 2008-11-16 00:21  jackjansen
 
 	* The ffmpeg demux thread releases the lock while calling
