@@ -1,7 +1,7 @@
-AC_INIT([ambulant],[1.9])
+AC_INIT([ambulant],[2.0])
 AC_CONFIG_SRCDIR(src/libambulant/get_version.cpp)
 AM_INIT_AUTOMAKE
-AMBULANT_VERSION=1.9
+AMBULANT_VERSION=2.0
 
 dnl =================================================================
 QT_REQUIRED=3.3.4

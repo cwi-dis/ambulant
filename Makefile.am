@@ -24,4 +24,4 @@ ACLOCAL_AMFLAGS = -I m4
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libambulant.pc
 
-EXTRA_DIST= ambulant.spec libambulant.pc
+EXTRA_DIST= ambulant.spec libambulant.pc projects

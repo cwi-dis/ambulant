@@ -85,25 +85,25 @@ Before creating the distribution
   if it has gone to rec). Finally, make sure that the DTDs have the correct names
   in Extras/DTDcache (again, no RC or WD for final recs).  
 - change the version number in:
-  - configure.in
+  - configure.in (2 places!)
   - include/ambulant/version.h
   - src/player_macosx/Info.plist
   - src/player_macosx/*.lproj/InfoPlist.strings
   - src/player_wince/AmbulantPlayer.rc
   - src/player_mfc/AmbulantPlayer.rc (Dialog IDD_ABOUTBOX)
-  - src/player_gtk/nokia770/AmbulantPlayer.desktop
   - src/player_gtk/AmbulantPlayer.desktop
-  - src/player_gtk/nokia770/AmbulantPlayer.desktop
-  - src/player_gtk/nokia770/debian/changelog
-  - src/player_gtk/nokia770/debian/create_installer
-  - src/player_gtk/nokia770/debian/files
-  - src/AmbulantWin32Installer/AmbulantWiseInstaller.wse
+  - installers/nokia770/AmbulantPlayer.desktop
+  - installers/nokia770/AmbulantPlayerCHINOOK.desktop
+  - installers/nokia770/debian/create_installer
+  - installers/nokia770/debian/files
+  - installers/nsis-win32/setup-ambulant-installer.nsi
+  - installers/wise-win32/AmbulantWiseInstaller.wse
   	- Product Details->Default Directory
   	- General Information->Installation Version
   	- Add/Remove Programs -> Software Version
   	- Shortcuts
   	- Build Settings -> Installation .exe name
-  - src/AmbulantWin32Installer/AmbulantWinCEWiseInstaller.wse
+  - installers/winse-wince/AmbulantWinCEWiseInstaller.wse
   	- Product Details->Default Directory
   	- Add/Remove Programs -> Software Version
   	- General Information->Installation Version
@@ -116,7 +116,9 @@ Before creating the distribution
   - third_party_packages/readme.txt
 - Update the icons in the following files:
   - src/player_mfc/res/AmbulantPlayer.ico
+  - src/player_mfc/res/AmbulantPlayerDoc.ico
   - src/player_wince/res/AmbulantPlayer.ico
+  - src/player_wince/res/AmbulantPlayerDoc.ico
   - src/player_macos/cocoambulant.icns
 - The sources in src/pyambulant need to be regenerated. Currently this can only
   be done with a Python from cvs, by running "make regenerate-pyambulant".
