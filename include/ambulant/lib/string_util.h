@@ -204,9 +204,9 @@ class basic_scanner {
 			tokval = tok = delims[ix];
 			pos++;
 		} else {
-			if(isdigit(src[pos]))
+			if(isascii(src[pos]) && isdigit(src[pos]))
 				scan_set_as(dec_digits, NUMBER);
-			else if(isspace(src[pos])) 
+			else if(isascii(src[pos]) && isspace(src[pos])) 
 				scan_set_as(space_chars, SPACE);
 			else {
 				std::string exdelims = delims + space_chars;

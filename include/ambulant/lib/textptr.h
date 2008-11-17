@@ -85,7 +85,7 @@ class textptr {
 		int n = (int)m_length + 1;
 		m_pw = new wchar_t[n];
 #ifdef AMBULANT_PLATFORM_WIN32
-		MultiByteToWideChar(CP_ACP, 0, m_pcb, n, m_pw, n);
+		MultiByteToWideChar(CP_UTF8, 0, m_pcb, -1, m_pw, n);
 #else
 		mbstowcs(m_pw, m_pcb, n);
 #endif
@@ -101,7 +101,7 @@ class textptr {
 		int n = m_length*2+1; // Two times wide string size should be enough for mb
 		m_pb = new char[n];
 #ifdef AMBULANT_PLATFORM_WIN32
-		WideCharToMultiByte(CP_ACP, 0, m_pcw, n, m_pb, n, NULL, NULL);
+		WideCharToMultiByte(CP_UTF8, 0, m_pcw, -1, m_pb, n, NULL, NULL);
 #else
 		wcstombs(m_pb, m_pcw, n);
 
