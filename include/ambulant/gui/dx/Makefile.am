@@ -4,8 +4,11 @@ library_include_HEADERS= \
 	dx_area.h \
 	dx_audio.h \
 	dx_audio_player.h \
+	dx_basicvideo_player.h \
+	dx_basicvideo.h \
 	dx_bgrenderer.h \
 	dx_brush.h \
+	dx_dsvideo.h \
 	dx_html_renderer.h \
 	dx_image_renderer.h \
 	dx_img.h \
@@ -13,6 +16,7 @@ library_include_HEADERS= \
 	dx_player.h \
 	dx_rgn.h \
 	dx_surface.h \
+	dx_smiltext.h \
 	dx_text.h \
 	dx_text_renderer.h \
 	dx_transition.h \

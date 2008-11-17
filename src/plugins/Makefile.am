@@ -1,4 +1,6 @@
-EXTRA_DIST=plugin.cpp xercesplugin.cpp
+EXTRA_DIST=plugin.cpp plugin_ffmpeg.cpp pyamplugin_state pythonplugin.cpp \
+    wkdombridge.h wkdombridge.m wkdombridge.mm wkdomplugin.cpp \
+    xercesplugin.cpp xpath_stateplugin.cpp
 # The default (no-op) plugin. only build when asked to buid
 
 if WITH_DUMMY_PLUGIN
