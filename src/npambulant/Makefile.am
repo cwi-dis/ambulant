@@ -7,10 +7,6 @@ ambulantlibdir=$(top_builddir)/src/libambulant/.libs
 
 ambulant_ldflags=-L$(ambulantlibdir) -lambulant
 
-EXTRA_DIST=plugin.h plugin.cpp \
-    ambulantmodule.h ambulantmodule.cpp \
-    ambulantinterface.h ambulantinterface.cpp
-
 # Various flags for optional features
 #------------------------------------------------------
 if WITH_GTK

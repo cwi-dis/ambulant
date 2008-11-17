@@ -1,4 +1,4 @@
-EXTRA_DIST=plugin.cpp xercesplugin.cpp plugin.vcproj
+EXTRA_DIST=plugin.cpp xercesplugin.cpp
 # The default (no-op) plugin. only build when asked to buid
 
 if WITH_DUMMY_PLUGIN

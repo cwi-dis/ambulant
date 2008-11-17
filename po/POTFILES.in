@@ -87,9 +87,6 @@ src/libambulant/lib/tree_builder.cpp
 # src/libambulant/lib/win32/win32_thread.cpp
 # src/libambulant/lib/win32/win32_timer.cpp
 src/libambulant/lib/xerces_parser.cpp
-# src/libambulant/mms/mms_player.cpp
-src/libambulant/mms/timeline_builder.cpp
-# src/libambulant/mms/timelines.cpp
 # src/libambulant/net/databuffer.cpp
 src/libambulant/net/datasource.cpp
 src/libambulant/net/demux_datasource.cpp

@@ -18,7 +18,8 @@ EXTRA_DIST=setup.py \
     ambulantscan.py ambulantsupport.py genobjects.py \
     ambulantutilities.h ambulantutilities.cpp \
     ambulantmodule.h ambulantmodule.cpp \
-    ambulantinterface.h ambulantinterface.cpp
+    ambulantinterface.h ambulantinterface.cpp \
+    player_pygtk player_pyqt
     
 # Various flags for optional features
 

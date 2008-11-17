@@ -34,7 +34,5 @@ endif
 SUBDIRS = libambulant  $(build_pyambulant) plugins $(build_player_unix) $(build_player_gtk) $(build_player_macosx) $(build_npambulant)
 DIST_SUBDIRS = libambulant plugins player_unix  player_gtk  player_macosx pyambulant npambulant
 EXTRA_DIST= \
-	Ambulant-win32.sln \
-	Ambulant-wince.vcw \
 	player_mfc \
 	player_wince

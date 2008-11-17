@@ -301,9 +301,6 @@ libambulant_la_SOURCES = \
 EXTRA_DIST= \
     lib/expat_parser.cpp \
     lib/xerces_parser.cpp \
-	libambulant_win32.dsp \
-	libambulant_win32.vcproj \
-	libambulant_wince.vcp \
 	gui/SDL \
 	gui/cocoa \
 	gui/cg \

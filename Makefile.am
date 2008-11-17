@@ -1,4 +1,5 @@
 SUBDIRS = m4 po libltdl src include third_party_packages Documentation Extras
+EXTRA_DIST = projects installers ambulant.spec libambulant.pc
 
 AM_CPPFLAGS=-rdynamic
 dist-hook:
@@ -23,5 +24,3 @@ ACLOCAL_AMFLAGS = -I m4
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libambulant.pc
-
-EXTRA_DIST= ambulant.spec libambulant.pc projects
