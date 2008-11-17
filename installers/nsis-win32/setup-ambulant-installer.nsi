@@ -16,7 +16,7 @@
 ; - VC8_DISTDIR: where to pick up these files.
 ;
 !define PRODUCT_NAME "Ambulant Player"
-!define PRODUCT_VERSION "1.9"
+!define PRODUCT_VERSION "2.0"
 !define DISTRIBUTE_DLL_BUILD
 ; !define DISTRIBUTE_PYTHON_PLUGIN
 !define PRODUCT_PUBLISHER "Centrum voor Wiskunde en Informatica"
@@ -109,6 +109,8 @@ Section "Core Components" CoreSection
   File "..\..\Extras\DTDCache\Smil20\*.*"
   SetOutPath "$INSTDIR\Extras\DTDCache\Smil21"
   File "..\..\Extras\DTDCache\Smil21\*.*"
+  SetOutPath "$INSTDIR\Extras\DTDCache\Smil30"
+  File "..\..\Extras\DTDCache\Smil30\*.*"
 
   SetOutPath "$INSTDIR\Extras\Welcome"
   File "..\..\Extras\Welcome\Welcome.smil"

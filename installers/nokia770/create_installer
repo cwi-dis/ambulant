@@ -6,7 +6,7 @@
 #
 # APPLICATION to be defined in lowercase letters only
 APPLICATION=ambulantplayer
-VERSION=1.9
+VERSION=2.0
 INSTALL_DIR=`pwd`
 AMBULANT_TOPDIR="$INSTALL_DIR/../.."
 SRC_DIR=$AMBULANT_TOPDIR/src/player_gtk
