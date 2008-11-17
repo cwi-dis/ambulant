@@ -114,6 +114,7 @@ html_browser_imp::html_browser_imp(int left, int top, int width, int height)
 	rect.right = left + width;
 	rect.bottom = top + height;
 	if ( ! m_browser) {
+		assert(topView);
 		HtmlView* browser = new HtmlView(rect, topView);
 //KB	HtmlView* browser = new HtmlView(rect, CWnd::GetForegroundWindow());
 		assert (browser != NULL);

@@ -52,8 +52,6 @@ copy %TPP_HOME%\live_VC8\BUILD\groupsock-Release\groupsock.lib %AMB_HOME%\lib\wi
 copy %TPP_HOME%\live_VC8\BUILD\liveMedia-Release\liveMedia.lib %AMB_HOME%\lib\win32\liveMedia.lib
 copy %TPP_HOME%\live_VC8\BUILD\UsageEnvironment-Release\UsageEnvironment.lib %AMB_HOME%\lib\win32\UsageEnvironment.lib
 
-REM copy %TPP_HOME%\live_VC8\BUILD\BasicUsageEnvironment-Debug\BasicUsageEnvironmentD.lib %AMB_HOME%\lib\win32\BasicUsageEnvironmentD.lib
-REM copy %TPP_HOME%\live_VC8\BUILD\groupsock-Debug\groupsockD.lib %AMB_HOME%\lib\win32\groupsockD.lib
-REM copy %TPP_HOME%\live_VC8\BUILD\liveMedia-Debug\liveMediaD.lib %AMB_HOME%\lib\win32\liveMediaD.lib
-REM copy %TPP_HOME%\live_VC8\BUILD\UsageEnvironment-Debug\UsageEnvironmentD.lib %AMB_HOME%\lib\win32\UsageEnvironmentD.lib
+REM libxml2
+copy %TPP_HOME%\libxml2-2.6.29\win32\bin.msvc\libxml2_a.lib %AMB_HOME%\lib\win32\libxml2_a.lib
 @echo on
