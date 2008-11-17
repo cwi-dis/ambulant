@@ -1,3 +1,4 @@
+src/libambulant/common/factory.cpp
 src/libambulant/common/gui_player.cpp
 src/libambulant/common/plugin_engine.cpp
 # src/libambulant/common/preferences.cpp
@@ -107,6 +108,7 @@ src/libambulant/smil2/animate_a.cpp
 # src/libambulant/smil2/animate_n.cpp
 # src/libambulant/smil2/params.cpp
 src/libambulant/smil2/region_node.cpp
+src/libambulant/smil2/smiltext.cpp
 src/libambulant/smil2/smil_layout.cpp
 src/libambulant/smil2/smil_player.cpp
 # src/libambulant/smil2/smil_time.cpp
