@@ -15,10 +15,10 @@ install-data-local:
 	$(INSTALL_DATA) $(srcdir)/DemoPresentation/*.{smil,txt,xml} $(DESTDIR)$(pkgdatadir)/DemoPresentation
 	$(INSTALL_DATA) $(srcdir)/DemoPresentation/NYCdata/*.* $(DESTDIR)$(pkgdatadir)/DemoPresentation/NYCdata
 if WITH_XERCES
-	$(INSTALL_DATA) $(srcdir)/DTDCache/mapping.txt $(DESTDIR)$(pkgdatadir)
-	$(INSTALL_DATA) $(srcdir)/DTDCache/SMIL20/*.* $(DESTDIR)$(pkgdatadir)/SMIL20
-	$(INSTALL_DATA) $(srcdir)/DTDCache/SMIL21/*.* $(DESTDIR)$(pkgdatadir)/SMIL21
-	$(INSTALL_DATA) $(srcdir)/DTDCache/SMIL30/*.* $(DESTDIR)$(pkgdatadir)/SMIL30
+	$(INSTALL_DATA) $(srcdir)/DTDCache/mapping.txt $(DESTDIR)$(pkgdatadir)/DTDCache
+	$(INSTALL_DATA) $(srcdir)/DTDCache/SMIL20/*.* $(DESTDIR)$(pkgdatadir)/DTDCache/SMIL20
+	$(INSTALL_DATA) $(srcdir)/DTDCache/SMIL21/*.* $(DESTDIR)$(pkgdatadir)/DTDCache/SMIL21
+	$(INSTALL_DATA) $(srcdir)/DTDCache/SMIL30/*.* $(DESTDIR)$(pkgdatadir)/DTDCache/SMIL30
 endif
 
 uninstall-local:
