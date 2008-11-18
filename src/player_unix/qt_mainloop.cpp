@@ -153,7 +153,6 @@ qt_mainloop::init_datasource_factory()
 #ifdef WITH_FFMPEG
     AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_video_datasource_factory");
 	df->add_video_factory(net::get_ffmpeg_video_datasource_factory());
-#endif // WITH_FFMPEG_VIDEO
     AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_audio_datasource_factory");
 	df->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
     AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_audio_decoder_finder");
@@ -162,6 +161,7 @@ qt_mainloop::init_datasource_factory()
 	df->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
     AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_raw_datasource_factory");
 	df->add_raw_factory(net::get_ffmpeg_raw_datasource_factory());
+#endif // WITH_FFMPEG
 #endif // NONE_PLAYER
 #ifdef WITH_STDIO_DATASOURCE
 	// This is for debugging only, really: the posix datasource

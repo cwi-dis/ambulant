@@ -137,7 +137,7 @@ AM_LDFLAGS= \
 	   $(extra_nokia770_ldflags) \
 	   -export-dynamic \
        $(livelibs)
- 
+
 AM_CPPFLAGS = \
 		$(extra_gstreamer_CPPFLAGS) \
 		-DAMBULANT_DATADIR=\"$(pkgdatadir)\" \
@@ -155,7 +155,7 @@ AM_CPPFLAGS = \
 	    $(XERCES_INCLUDES) \
 	    $(gtk_includes) \
 	    $(liveincludes)
-	  
+
 #------------------------------------------------------
 # More special case code for the Nokia 770: install the auxiliary files.
 if WITH_NOKIA770
