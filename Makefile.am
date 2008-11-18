@@ -1,5 +1,5 @@
 SUBDIRS = m4 po libltdl src include third_party_packages Documentation Extras
-EXTRA_DIST = projects installers ambulant.spec libambulant.pc
+EXTRA_DIST = projects installers ambulant.spec libambulant.pc patch_libtool.sh
 
 AM_CPPFLAGS=-rdynamic
 dist-hook:
@@ -18,7 +18,7 @@ macosbininstaller:
 	cp -R $(srcdir)/Extras/DemoPresentation dist/$(MACOS_INSTALLDIR)
 	rm -rf `find dist -name CVS`
 	hdiutil create -srcfolder dist/$(MACOS_INSTALLDIR) dist/$(MACOS_DMGNAME).dmg
-	
+
 
 ACLOCAL_AMFLAGS = -I m4
 
