@@ -1,3 +1,64 @@
+2008-11-17 17:13  jackjansen
+
+	* Build tpp was missing build of live555, copy of libxml2.
+
+2008-11-17 16:48  jackjansen
+
+	* ase error in directory names.
+
+2008-11-17 16:39  jackjansen
+
+	* Added some files that were missing from the source disrtribution.
+
+2008-11-17 16:31  keesblom
+
+	* Jack repaired DTD pathnames
+
+2008-11-17 16:02  jackjansen
+
+	* make install was messy. Cleaned up.
+
+2008-11-17 14:22  jackjansen
+
+	* For some reason Makefile.in is checked in. And it needed a small
+	  fix to forestall it trying to create the distidir twice.
+
+2008-11-17 14:09  jackjansen
+
+	* First set of changes to Makefile.am's and translation files to
+	  get "make dist" to work again.
+
+2008-11-17 14:07  jackjansen
+
+	* Removed outdated file.
+
+2008-11-17 13:53  bogao
+
+	* Jack and Bo got two things working: - Chinese text in smilText
+	  nodes (should be encoded UTF-8 in the document) - Chinese
+	  filenames
+
+2008-11-17 13:17  keesblom
+
+	* Removed generated files
+
+2008-11-17 13:15  keesblom
+
+	* Merged (again) branch kees-npambulant-merge with trunk.  On
+	  Windows, this branch was still active.
+
+2008-11-17 11:27  jackjansen
+
+	* Getting started on version numbers and such.
+
+2008-11-17 11:15  jackjansen
+
+	* Started on 2.0 version numbers Gettting rid of dead installers
+
+2008-11-17 10:54  jackjansen
+
+	* Adapted to new files.
+
 2008-11-17 00:07  jackjansen
 
 	* The textptr fix was a bit too simple: length() is used after all.
