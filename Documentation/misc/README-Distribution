@@ -84,7 +84,7 @@ Before creating the distribution
   Also, make sure that textual references are correct (don't call it "SMIL 3.0 RC"
   if it has gone to rec). Finally, make sure that the DTDs have the correct names
   in Extras/DTDcache (again, no RC or WD for final recs).  
-- change the version number in:
+- change the version number (and possibly year) in:
   - configure.in (2 places!)
   - include/ambulant/version.h
   - src/player_macosx/Info.plist
@@ -108,6 +108,8 @@ Before creating the distribution
   	- Add/Remove Programs -> Software Version
   	- General Information->Installation Version
   	- Build Settings -> Installation .exe name
+  - Documentation/user/developer.html (2 times)
+  - Documentation/user-htmlhelp/developer.html (2 times, regenerate winHelp)
 - check the following files for being up-to-date:
   - README
   - INSTALL
