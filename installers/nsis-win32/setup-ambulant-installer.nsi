@@ -27,11 +27,11 @@
 
 ; Where the system directory is on the machine where we are building the installer
 
-!define DISTRIBUTE_VC7_RT
-!define BUILD_SYSDIR "C:\WINDOWS\system32"  ; Most machines
+; !define DISTRIBUTE_VC7_RT
+; !define BUILD_SYSDIR "C:\WINDOWS\system32"  ; Most machines
 
-; !define DISTRIBUTE_VC8_RT
-; !define VC8_DISTDIR "C:\Program Files\Microsoft Visual Studio 8\VC\redist\x86"
+!define DISTRIBUTE_VC8_RT
+!define VC8_DISTDIR "C:\Program Files\Microsoft Visual Studio 8\VC\redist\x86"
 
 ; MUI 1.67 compatible ------
 !include "MUI.nsh"
@@ -95,7 +95,7 @@ Section "Core Components" CoreSection
   CreateDirectory "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION}"
   CreateShortCut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION}\Ambulant Player.lnk" "$INSTDIR\AmbulantPlayer.exe"
   CreateShortCut "$DESKTOP\Ambulant Player.lnk" "$INSTDIR\AmbulantPlayer.exe"
-  File "..\..\bin\win32\xerces-c_2_7.dll"
+  File "..\..\bin\win32\xerces-c_2_8.dll"
   File "..\..\bin\win32\settings.xml"
   File /ONAME=license.txt "..\..\COPYING"
   File /ONAME=Readme.txt "..\..\README"
@@ -113,7 +113,7 @@ Section "Core Components" CoreSection
   File "..\..\Extras\DTDCache\Smil30\*.*"
 
   SetOutPath "$INSTDIR\Extras\Welcome"
-  File "..\..\Extras\Welcome\Welcome.smil"
+  File "..\..\Extras\Welcome\*.smil"
   SetOutPath "$INSTDIR\Extras\Welcome\data"
   File "..\..\Extras\Welcome\data\*.png"
   File "..\..\Extras\Welcome\data\*.mp3"

@@ -40,7 +40,7 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\include;&quot;..\..\third_party_packages\ffmpeg-wm5\libavformat&quot;;&quot;..\..\third_party_packages\ffmpeg-wm5\libavcodec&quot;;&quot;..\..\third_party_packages\ffmpeg-wm5\libavutil&quot;;&quot;..\..\third_party_packages\ffmpeg-wm5-compat&quot;;&quot;..\..\third_party_packages\SDL-1.2.12\include&quot;;..\..\third_party_packages\live\groupsock\include;..\..\third_party_packages\live\BasicUsageEnvironment\include;..\..\third_party_packages\live\UsageEnvironment\include;..\..\third_party_packages\live\liveMedia\include"
+				AdditionalIncludeDirectories="..\..\include;&quot;..\..\third_party_packages\ffmpeg-wm5&quot;;&quot;..\..\third_party_packages\ffmpeg-wm5-compat&quot;;&quot;..\..\third_party_packages\SDL-1.2.12\include&quot;;..\..\third_party_packages\live\groupsock\include;..\..\third_party_packages\live\BasicUsageEnvironment\include;..\..\third_party_packages\live\UsageEnvironment\include;..\..\third_party_packages\live\liveMedia\include"
 				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;WITH_SMIL30;WITH_SMALL_BUFFERS;WITH_DSVIDEO;WITH_FFMPEG;WITH_SDL;WITH_LIVE"
 				MinimalRebuild="true"
 				RuntimeLibrary="1"
@@ -128,7 +128,7 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="2"
-				AdditionalIncludeDirectories="..\..\include;&quot;..\..\third_party_packages\ffmpeg-wm5\libavformat&quot;;&quot;..\..\third_party_packages\ffmpeg-wm5\libavcodec&quot;;&quot;..\..\third_party_packages\ffmpeg-wm5\libavutil&quot;;&quot;..\..\third_party_packages\ffmpeg-wm5-compat&quot;;..\..\third_party_packages\live\UsageEnvironment\include;..\..\third_party_packages\live\liveMedia\include;..\..\third_party_packages\live\groupsock\include;..\..\third_party_packages\live\BasicUsageEnvironment\include;&quot;..\..\third_party_packages\SDL-1.2.12\include&quot;"
+				AdditionalIncludeDirectories="..\..\include;&quot;..\..\third_party_packages\ffmpeg-wm5-compat&quot;;&quot;..\..\third_party_packages\ffmpeg-wm5&quot;;..\..\third_party_packages\live\UsageEnvironment\include;..\..\third_party_packages\live\liveMedia\include;..\..\third_party_packages\live\groupsock\include;..\..\third_party_packages\live\BasicUsageEnvironment\include;&quot;..\..\third_party_packages\SDL-1.2.12\include&quot;"
 				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;WITH_SMIL30;WITH_SMALL_BUFFERS;WITH_FFMPEG;WITH_SDL;WITH_DSVIDEO;WITH_LIVE"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
@@ -244,24 +244,10 @@
 				<File
 					RelativePath="..\..\src\libambulant\net\rtsp_datasource.cpp"
 					>
-					<FileConfiguration
-						Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\libambulant\net\rtsp_factory.cpp"
 					>
-					<FileConfiguration
-						Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
 				</File>
 			</Filter>
 			<Filter

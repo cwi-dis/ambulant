@@ -197,7 +197,7 @@
             "{BA458234-9B71-4F46-8107-E91156377184}:_35DBB6D9265146BD8CC581C4A49873DE"
             {
             "SourcePath" = "8:..\\..\\bin\\wince\\avformat-51.dll"
-            "TargetName" = "8:avformat-51.dll"
+            "TargetName" = "8:avformat-52.dll"
             "Tag" = "8:"
             "Folder" = "8:_3D053FEEBDBB4CD1A338E27533F9E02B"
             "Condition" = "8:"
