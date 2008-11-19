@@ -16,10 +16,10 @@ lib /machine:arm /out:..\..\lib\wince-arm\avutil.lib /def:%FFMPEG%\libavutil\avu
 rem
 rem Copy SDL library
 set SDL="..\..\third_party_packages\SDL-1.2.12-wm5\VisualCE\SDL\Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-rem XXX copy %SDL%\Release\SDL.lib ..\..\lib\wince-arm\SDL.lib
-rem XXX copy %SDL%\Release\SDL.dll ..\..\bin\wince\SDL.dll
-copy %SDL%\Debug\SDL.lib ..\..\lib\wince-arm\SDL.lib
-copy %SDL%\Debug\SDL.dll ..\..\bin\wince\SDL.dll
+copy %SDL%\Release\SDL.lib ..\..\lib\wince-arm\SDL.lib
+copy %SDL%\Release\SDL.dll ..\..\bin\wince\SDL.dll
+rem XXX copy %SDL%\Debug\SDL.lib ..\..\lib\wince-arm\SDL.lib
+rem XXX copy %SDL%\Debug\SDL.dll ..\..\bin\wince\SDL.dll
 rem
 rem Copy live555 libraries
 set LIVE="..\..\third_party_packages\live_VC8_wince\BUILD"

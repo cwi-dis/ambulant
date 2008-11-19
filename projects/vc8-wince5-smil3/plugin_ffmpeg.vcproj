@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="plugin_ffmpeg"
 	ProjectGUID="{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}"
 	Keyword="Win32Proj"
@@ -97,7 +97,7 @@
 				ForceDirty="-1"
 				RemoteDirectory="%CSIDL_PROGRAM_FILES%\AmbulantPlayer"
 				RegisterOutput="0"
-				AdditionalFiles="avcodec-51.dll|..\..\bin\wince|%CSIDL_PROGRAM_FILES%\AmbulantPlayer|0;avformat-51.dll|..\..\bin\wince|%CSIDL_PROGRAM_FILES%\AmbulantPlayer|0;avutil-49.dll|..\..\bin\wince|%CSIDL_PROGRAM_FILES%\AmbulantPlayer|0;SDL.dll|..\..\bin\wince|%CSIDL_PROGRAM_FILES%\AmbulantPlayer|0"
+				AdditionalFiles="avcodec-51.dll|..\..\bin\wince|%CSIDL_PROGRAM_FILES%\AmbulantPlayer|0;avformat-52.dll|..\..\bin\wince|%CSIDL_PROGRAM_FILES%\AmbulantPlayer|0;avutil-49.dll|..\..\bin\wince|%CSIDL_PROGRAM_FILES%\AmbulantPlayer|0;SDL.dll|..\..\bin\wince|%CSIDL_PROGRAM_FILES%\AmbulantPlayer|0"
 			/>
 			<DebuggerTool
 			/>

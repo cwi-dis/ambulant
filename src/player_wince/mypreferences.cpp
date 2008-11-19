@@ -43,10 +43,10 @@ mypreferences::load_preferences()
 	m_do_schema = (bool)pApp->GetProfileInt(_T("Settings"), _T("do_schema"), 0);
 	m_validation_schema_full_checking = (bool)pApp->GetProfileInt(_T("Settings"), _T("validation_schema_full_checking"), 0);
 	m_log_level = pApp->GetProfileInt(_T("Settings"), _T("log_level"), 0);
-	m_use_plugins = (bool)pApp->GetProfileInt(_T("Settings"), _T("use_plugins"), 0);
+	m_use_plugins = (bool)pApp->GetProfileInt(_T("Settings"), _T("use_plugins"), 1);
 	val = pApp->GetProfileString(_T("Settings"), _T("plugin_dir"),0);
 	m_plugin_dir = T2CA((LPCTSTR)val);
-	m_prefer_ffmpeg = (bool)pApp->GetProfileInt(_T("Settings"), _T("use_ffmpeg"), 0);
+	m_prefer_ffmpeg = (bool)pApp->GetProfileInt(_T("Settings"), _T("use_ffmpeg"), 1);
 	m_prefer_rtsp_tcp = (bool)pApp->GetProfileInt(_T("Settings"), _T("use_rtsp_tcp"), 0);
 
 	return true;
