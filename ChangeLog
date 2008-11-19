@@ -1,3 +1,35 @@
+2008-11-18 17:23  jackjansen
+
+	* Various wteaks to wm5 build process. Doesn't work yet.
+
+2008-11-18 17:02  jackjansen
+
+	* Integrate copying/converting of ffmpeg libs into tpp build.
+
+2008-11-18 16:40  jackjansen
+
+	* Updated year in help.
+
+2008-11-18 13:42  jackjansen
+
+	* Changed default defaults: enable plugins, enable ffmpeg, log
+	  level=show.
+
+2008-11-18 13:21  keesblom
+
+	* Changed s.t. compilation without ffmpeg works.
+
+2008-11-18 13:18  keesblom
+
+	* Added a file to be distributed for use on 64-bit Linux.
+
+2008-11-18 10:54  keesblom
+
+	* For some reason (autogen.sh?), our package specific instructions
+	  were replaced by a symbolic link to the generic instructions in
+	  the 'automake' package, which was then checked in. Restored our
+	  original package specific instructions.
+
 2008-11-17 17:13  jackjansen
 
 	* Build tpp was missing build of live555, copy of libxml2.
