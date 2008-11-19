@@ -257,7 +257,7 @@ region_node::fix_from_dom_node()
 			if (*lastp == '%')
 				sl *= 0.01;
 			else if (strcmp (lastp,"dB") == 0)
-				sl = pow(10, sl/20);
+				sl = pow(10.0, sl/20);
   		else // default: percentage implied
 			sl *= 0.01;
 		}
