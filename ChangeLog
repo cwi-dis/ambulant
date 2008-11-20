@@ -1,3 +1,12 @@
+2008-11-19 23:48  jackjansen
+
+	* Ambulant builds and installs on WinCE5.
+
+2008-11-19 11:11  keesblom
+
+	* Changed 'int' constant into 'double' when calling pow() to avoid
+	  duplicates in name resolution on Windows VC7.1
+
 2008-11-18 17:23  jackjansen
 
 	* Various wteaks to wm5 build process. Doesn't work yet.
