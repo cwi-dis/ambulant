@@ -48,7 +48,7 @@ ffmpeg:
 	"20070828-win32-prebuilt".
 
 	If you want to build from source, follow the build instructions on 
-	<http://arrozcru.no-ip.org/ffmpeg_wiki/tiki-index.php>. There are other webpages
+	<http://ffmpeg.arrozcru.org/wiki/index.php>. There are other webpages
 	with instructions, but these are the only ones that worked for me.
 	
 SDL:
@@ -171,7 +171,7 @@ ffmpeg:
 	$ cd .../ambulant/third_party_packages
 	$ svn checkout -r "{2008-06-15}" svn://svn.mplayerhq.hu/ffmpeg/trunk ffmpeg
 	$ cd ffmpeg
-	$ if [ `arch` = x86_64 ] then extracflags=--extra-cflags=-fPIC ; fi
+	$ if [ `arch` = x86_64 ] ; then extracflags=--extra-cflags=-fPIC ; fi
 	$ ./configure --enable-libfaad --enable-gpl $extracflags
 	$ make
 
