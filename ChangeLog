@@ -1,3 +1,12 @@
+2008-11-20 12:29  keesblom
+
+	* Updated the link for ffmpeg building instructions. The old link
+	  did not exist anymore, but the new one looks valid and complete.
+
+2008-11-20 12:07  keesblom
+
+	* Some refinements based on Ishan's comments.
+
 2008-11-19 23:48  jackjansen
 
 	* Ambulant builds and installs on WinCE5.
