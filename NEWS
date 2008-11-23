@@ -1,26 +1,28 @@
 What's new in Ambulant Player 2.0?
 ----------------------------------
+
 Highlights of changes between 1.8 and 2.0:
 
 - Full support for SMIL 3.0: inline text through smilText, variables and
   extended customization through SMIL State, pan and zoom to display partial
   images or video, transparency, many more.
-  
-- Windows CE support (specifically Windows Mobile 5) has been revived,
-  and is now complete.
-  
+
+- Windows CE support (specifically Windows Mobile 5) has been revived, and
+  is now complete.
+
 - Audio and video support have been enhanced. All platforms can now render
   through open source components (ffmpeg, sdl, live555), unifying available
   media types and access methods across platforms. All platforms support rtsp
   playback, http playback and all common media formats. Performance should
   also have increased significantly.
-  
-- Redraw has been optimized, especially on Windows. This should give much smoother
-  presentations.
-  
-- The Firefox plugin (allowing playback of SMIL within web pages) has been revived
-  and for the Mac a Safari plugin is also available. The Safari plugin can be
-  extended in Python, allowing rich interaction between SMIL and HTML.
-  
-- Support for extending Ambulant through Python, or embedding Ambulant rendering
-  in Python programs has been enhanced.
+
+- Redraw has been optimized, especially on Windows. This should give much
+  smoother presentations.
+
+- The Firefox plugin (allowing playback of SMIL within web pages) has been
+  revived and for the Mac a Safari plugin is also available. The Safari
+  plugin can be extended in Python, allowing rich interaction between SMIL
+  and HTML.
+
+- Support for extending Ambulant through Python, or embedding Ambulant
+  rendering in Python programs has been enhanced.
