@@ -100,6 +100,8 @@ Section "Core Components" CoreSection
   File /ONAME=license.txt "..\..\COPYING"
   File /ONAME=Readme.txt "..\..\README"
   CreateShortcut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION}\Read Me.lnk" "$INSTDIR\Readme.txt"
+  File /ONAME=News.txt "..\..\NEWS"
+  CreateShortcut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION}\What's new?.lnk" "$INSTDIR\News.txt"
   File "..\..\Documentation\user-htmlhelp\AmbulantPlayerHelp.chm"
   CreateShortcut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION}\Documentation.lnk" "$INSTDIR\AmbulantPlayerHelp.chm"
 ; XXX Copy pyamplugin_scripting
@@ -197,8 +199,46 @@ Function un.onInit
 FunctionEnd
 
 Section Uninstall
-; XXXJack need to check the filenames here too
+  Delete "$INSTDIR\AmbulantPlayer.exe"
+  Delete "$INSTDIR\libambulant_shwin32.dll"
+  Delete "$INSTDIR\libamplugin_state_xpath.dll"
+  Delete "$INSTDIR\libamplugin_ffmpeg.dll"
+  Delete "$INSTDIR\avcodec-51.dll"
+  Delete "$INSTDIR\avformat-52.dll"
+  Delete "$INSTDIR\avutil-49.dll"
+  Delete "$INSTDIR\SDL.dll"
+
+  RMDir /r "$INSTDIR\Extras"
+
+  Delete "$INSTDIR\xerces-c_2_8.dll"
+  Delete "$INSTDIR\settings.xml"
+  Delete "$INSTDIR\license.txt"
+  Delete "$INSTDIR\Readme.txt"
+  Delete "$INSTDIR\News.txt"
+  Delete "$INSTDIR\AmbulantPlayerHelp.chm"
+
+  Delete "$DESKTOP\Ambulant Player.lnk"
+
+  Delete "$INSTDIR\MSVCR71.dll"
+  Delete "$INSTDIR\MSVCP71.dll"
+  Delete "$INSTDIR\msvcrt.dll"
+  Delete "$INSTDIR\mfc71u.dll"
+  Delete "$INSTDIR\MFC71ENU.DLL"
+  Delete "$INSTDIR\msvcr80.dll"
+  Delete "$INSTDIR\msvcp80.dll"
+  Delete "$INSTDIR\Microsoft.VC80.CRT.manifest"
+  Delete "$INSTDIR\mfc80u.dll"
+  Delete "$INSTDIR\Microsoft.VC80.MFC.manifest"
+
+  Delete "$INSTDIR\libamplugin_python.dll"
+  Delete "$INSTDIR\ambulant.pyd"
+  RMDir  "$INSTDIR\pyamplugin_scripting"
+
+  Delete "$INSTDIR\${PRODUCT_NAME}.url"
+  RMDir /r "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION}"
   Delete "$INSTDIR\uninst.exe"
+  RMDir "$INSTDIR"
+  RMDir "$SMPROGRAMS\Ambulant"
  
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
