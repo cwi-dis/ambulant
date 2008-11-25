@@ -1,3 +1,8 @@
+2008-11-24 17:05  jackjansen
+
+	* - Added News to installer - Added uninstaller - Fixed build for
+	  libxml2 debug
+
 2008-11-23 17:50  jackjansen
 
 	* Reflowed to fit in 80 columns.
