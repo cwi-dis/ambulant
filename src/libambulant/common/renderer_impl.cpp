@@ -212,7 +212,7 @@ renderer_playable_ds::seek(double t)
 void
 renderer_playable_ds::stop()
 {
-	/*KB  AM_DBG */ lib::logger::get_logger()->debug("renderer_playable_ds.stop(0x%x %s)", (void *)this, m_node->get_sig().c_str());
+	AM_DBG lib::logger::get_logger()->debug("renderer_playable_ds.stop(0x%x %s)", (void *)this, m_node->get_sig().c_str());
 	renderer_playable::stop();
 	if (m_src) {
 		m_src->stop();

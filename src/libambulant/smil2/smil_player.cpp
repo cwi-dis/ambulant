@@ -974,6 +974,8 @@ void smil_player::_update() {
 			lib::event *update_event = new lib::no_arg_callback_event<smil_player>(this, 
 				&smil_player::update);
 			m_event_processor->add_event(update_event, dt, lib::ep_high);
-		}
+		} else {
+            m_scheduler->reset_document();
+        }
 	}
 }

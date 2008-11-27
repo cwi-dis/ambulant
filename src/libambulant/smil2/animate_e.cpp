@@ -32,8 +32,6 @@
 
 #include "ambulant/lib/logger.h"
 
-//#define AM_DBG if(1)
-
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -138,16 +136,21 @@ void animation_engine::update_attr(const std::string& attr, attribute_animators_
 }
 
 void animation_engine::update_callback() {
-	if(!m_update_event) return;
+	if(!m_update_event) {
+        lib::logger::get_logger()->debug("animation_engine: update_callback() called with m_update_event == NULL");
+        return;
+    }
 	if(has_animations()) {
 		update();
 		schedule_update();
 	} else {
+        /*AM_DBG*/ lib::logger::get_logger()->debug("animation_engine: stop scheduling update");
 		m_update_event = 0;
 	}
 }
 
 void animation_engine::schedule_update() {
+    /*AM_DBG*/ lib::logger::get_logger()->debug("animation_engine: schedule update");
 	m_update_event = new lib::no_arg_callback_event<animation_engine>(this, 
 		&animation_engine::update_callback);
 	m_event_processor->add_event(m_update_event, 50, lib::ep_med);
