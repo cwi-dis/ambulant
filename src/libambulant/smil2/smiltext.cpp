@@ -27,7 +27,6 @@
 #include <math.h>
 #define round(x) ((int)((x)+0.5))
 
-#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
