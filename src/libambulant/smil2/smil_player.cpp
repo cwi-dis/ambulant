@@ -218,6 +218,7 @@ void smil_player::stop() {
 		m_timer->pause();
 		cancel_all_events();		
 		m_scheduler->reset_document();
+        m_animation_engine->reset();
 		done_playback();
 	}
 	m_lock.leave();
@@ -976,6 +977,7 @@ void smil_player::_update() {
 			m_event_processor->add_event(update_event, dt, lib::ep_high);
 		} else {
             m_scheduler->reset_document();
+            m_animation_engine->reset();
         }
 	}
 }

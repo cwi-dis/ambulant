@@ -28,6 +28,7 @@
 
 #include "ambulant/config/config.h"
 #include "ambulant/lib/node.h"
+#include "ambulant/lib/mtsync.h"
 
 #include <string>
 #include <map>
@@ -57,6 +58,8 @@ class animation_engine {
 	 
 	void started(animate_node *anode);
 	void stopped(animate_node *anode);
+    
+    void reset();
 	
   private:
 	// Animators for a generalized attribute
@@ -71,20 +74,22 @@ class animation_engine {
 	
 	doc_animators_t m_animators;
 	
-	void update();
-	void update_node(const lib::node *target, node_animators_t& animators);
-	void update_attr(const std::string& attr, attribute_animators_t& animators, 
+	void _update();
+	void _update_node(const lib::node *target, node_animators_t& animators);
+	void _update_attr(const std::string& attr, attribute_animators_t& animators, 
 		common::animation_destination *dst);
+    void _stopped(animate_node *anode);
 	
 	lib::event_processor *m_event_processor;
 	smil_layout_manager *m_layout;
 	bool m_is_node_dirty;
 	
 	int m_counter;
-	bool has_animations() const { return m_counter>0;}
+	bool _has_animations() const { return m_counter>0;}
 	
 	void update_callback();
-	void schedule_update();	
+	void _schedule_update();	
+    lib::critical_section m_lock;
 	lib::event *m_update_event;
 };
 
