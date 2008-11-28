@@ -1,3 +1,24 @@
+2008-11-27 16:07  jackjansen
+
+	* Got rid of more debug output.
+
+2008-11-27 16:03  jackjansen
+
+	* If a document stopped becuase it reached its end the scheduler
+	  wasn't reset.  This caused trouble with, among other things,
+	  animations (bug #2338625).
+
+2008-11-27 15:04  jackjansen
+
+	* Removed reference to defunct pyamplugin_scripting.
+
+2008-11-27 14:31  jackjansen
+
+	* Fractional clipBegin/clipEnd values didn't work, the parsing was
+	  way off.  Fixed.
+
+	  Discovered through amis.
+
 2008-11-24 17:05  jackjansen
 
 	* - Added News to installer - Added uninstaller - Fixed build for
