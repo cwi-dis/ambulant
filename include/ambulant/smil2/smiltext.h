@@ -353,7 +353,9 @@ class smiltext_layout_engine {
 	void stop();
 	
 	/// Returns true if all text has been received.
-	bool is_finished() { return m_finished; }
+	/// NOTE: Unlike the smiltext_engine method of the same name
+	/// this one will acquire its own lock.
+	bool is_finished();
 
 	/// Redraw a rectangle.on screen 
 	void redraw(const lib::rect& r);
@@ -371,7 +373,6 @@ class smiltext_layout_engine {
 
 	lib::critical_section m_lock;
 	smiltext_engine m_engine;
-	bool m_finished;
 	bool m_process_lf;
 	lib::event_processor *m_event_processor;
 	lib::timer::time_type m_epoch;

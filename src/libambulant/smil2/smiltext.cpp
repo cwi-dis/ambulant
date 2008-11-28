@@ -721,7 +721,6 @@ smiltext_engine::is_cleared() {
 ////////////////////////////////////////////////////////////////////////
 smiltext_layout_engine::smiltext_layout_engine(const lib::node *n, lib::event_processor *ep, smiltext_layout_provider* provider, smiltext_notification* client, bool process_lf)
   :	m_engine(smiltext_engine(n, ep, client, true)),
-	m_finished(false),
 	m_process_lf(process_lf),
 	m_event_processor(ep),
 	m_provider(provider),
@@ -743,7 +742,6 @@ smiltext_layout_engine::start(double t) {
 	m_crawling = m_params.m_mode == smil2::stm_crawl;
 	m_scrolling = m_params.m_mode == smil2::stm_scroll;
 	m_shifted_origin = lib::point(0,0);
-	m_finished = false;
 //	m_lock.leave();
 }
 	
@@ -760,7 +758,16 @@ smiltext_layout_engine::stop() {
 	m_engine.stop();
 //JNK	m_lock.leave();
 }
-	
+
+bool
+smiltext_layout_engine::is_finished()
+{
+	m_engine.lock();
+	bool rv = m_engine.is_finished();
+	m_engine.unlock();
+	return rv;
+}
+
 void
 smiltext_layout_engine::set_dest_rect( const lib::rect& r) {
 //JNK	m_lock.enter();
@@ -930,8 +937,6 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw(0x%x) r=
 	if (m_crawling) {
 		long int elapsed = m_event_processor->get_timer()->elapsed();
 		double now = elapsed - m_epoch;
-		if ( ! m_finished)
-			m_shifted_origin.x = (int) now * m_params.m_rate / 1000 * x_dir;
 		if (m_shifted_origin.x < 0)
 AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw(0x%x): strange: shifted_x=%d, m_epoch=%ld, elpased=%ld !", this, m_shifted_origin.x, m_epoch, elapsed);
 		switch (align) {
@@ -970,12 +975,10 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw(0x%x): s
 		}
 		long int elapsed = m_event_processor->get_timer()->elapsed();
 		double now = elapsed - m_epoch;
-		if ( ! m_finished)
-			m_shifted_origin.y = (int) now * m_params.m_rate / 1000 * y_dir;
-AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_finished=%d m_rate=%d y_dir=%d now=%lf m_shifted_origin(%d,%d)", 
-									   m_finished, m_params.m_rate, y_dir, now, m_shifted_origin.x, m_shifted_origin.y);
+		AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_rate=%d y_dir=%d now=%lf m_shifted_origin(%d,%d)", 
+									   m_params.m_rate, y_dir, now, m_shifted_origin.x, m_shifted_origin.y);
 	}
-AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shifted_origin(%d,%d)", m_shifted_origin.x, m_shifted_origin.y);
+	AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shifted_origin(%d,%d)", m_shifted_origin.x, m_shifted_origin.y);
 
 	bool linefeed_processing = ! m_crawling;
 
@@ -1130,20 +1133,6 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: m_shift
 			|| _smiltext_disjunct (word->m_bounding_box, rect))
 			continue; // nothing to de displayed
 		m_provider->render_smiltext(word->m_run, word->m_bounding_box);
-	}
-	if (m_crawling || m_scrolling) {
-		if (m_params.m_text_conceal == stc_none
-		    || m_params.m_text_conceal == stc_initial) {
-			// check if we need to stop crawling/scrolling
-			if (m_engine.is_auto_rate() && (last_word->m_bounding_box & rect) == last_word->m_bounding_box) {
-				// bounding box of last word is now completely 
-				// inside the viewing rectangle
-				m_finished = true;
-				m_provider->smiltext_stopped();
-//*KB*/	lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: last_word->m_bounding_box=(%d,%d,%d,%d) rect=(%d,%d,%d,%d) m_finished %d", 
-//*KB*/ last_word->m_bounding_box.x,last_word->m_bounding_box.y,last_word->m_bounding_box.w,last_word->m_bounding_box.h,rect.x,rect.y,rect.w,rect.h,m_finished);
-			}
-		}
 	}
 	m_engine.unlock();
 }
