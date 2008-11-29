@@ -1,3 +1,25 @@
+2008-11-29 00:42  jackjansen
+
+	* smiltext_layout_engine tried to keep its own idea of when
+	  smilText had finished rendering, but this was only updated in
+	  case of auto-scrolling/crawling, so simple smiltext without
+	  explicit duration never finished. Fixed, by forwarding calls to
+	  is_finished() to the smiltext_engine.
+
+	  Also removed all references to m_finished: as the smiltext
+	  renderer will end when all data has been consumed there's no need
+	  to stop updating the rendering position as we'll be blown out of
+	  existence anyway.
+
+2008-11-28 10:27  jackjansen
+
+	* More animation fixes: - On reset() clear the callback event, so a
+	  next run will create a new one. This may lead to double events,
+	  but that shouldn't be too much of a problem.	- Protected the
+	  animation engine with locks.
+
+	  These should fix #2338625 and #1740405.
+
 2008-11-27 16:07  jackjansen
 
 	* Got rid of more debug output.
