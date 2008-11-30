@@ -845,17 +845,22 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::smiltext_change
 				}
 				break;
 			case smil2::stc_data:
-				char lastch = *((*i).m_data.rbegin());
-				if (lastch == '\r' || lastch == '\n' || lastch == '\f' || lastch == '\v') {
+				if ((*i).m_data.begin() == (*i).m_data.end()) {
 					m_needs_conditional_newline = false;
 					m_needs_conditional_space = false;
-				} else
-				if (lastch == ' ' || lastch == '\t') {
-					m_needs_conditional_newline = true;
-					m_needs_conditional_space = false;
 				} else {
-					m_needs_conditional_newline = true;
-					m_needs_conditional_space = true;
+					char lastch = *((*i).m_data.rbegin());
+					if (lastch == '\r' || lastch == '\n' || lastch == '\f' || lastch == '\v') {
+						m_needs_conditional_newline = false;
+						m_needs_conditional_space = false;
+					} else
+					if (lastch == ' ' || lastch == '\t') {
+						m_needs_conditional_newline = true;
+						m_needs_conditional_space = false;
+					} else {
+						m_needs_conditional_newline = true;
+						m_needs_conditional_space = true;
+					}
 				}
 				smiltext_metrics stm =
 					m_provider->get_smiltext_metrics (*i);
