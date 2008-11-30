@@ -925,8 +925,8 @@ smiltext_layout_engine::redraw(const lib::rect& r) {
 AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw(0x%x) r=(L=%d,T=%d,W=%d,H=%d", this,r.left(),r.top(),r.width(),r.height());
 	int nbr = 0; // number of breaks (newlines) before current line
 	m_engine.lock();
-	if (&*m_words.begin() == NULL) {
-		m_lock.leave();
+	if (m_words.empty()) {
+		m_engine.unlock();
 		return;
 	}
 	const lib::rect rect = m_provider->get_rect();
