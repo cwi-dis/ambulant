@@ -377,6 +377,14 @@ smiltext_engine::_update() {
 			}
 		}
 	}
+    // Insert empty data node at end, so a final clear will work
+    if (m_tree_iterator.is_end() && !m_newbegin_valid) {
+        smiltext_run run = m_run_stack.top();
+        run.m_command = stc_data;
+        run.m_data = "";
+        _insert_run_at_end(run);
+
+    }
 	unlock();
 	if (m_client)
 		m_client->smiltext_changed();
