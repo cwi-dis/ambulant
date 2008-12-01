@@ -1,3 +1,22 @@
+2008-11-30 22:59  jackjansen
+
+	* smilText on Windows (and probably gtk or qt too) was unhappy with
+	  empty runs.  Hence, an initial <tev begin="3s"/> would cause a
+	  crash. Fixed.
+
+2008-11-30 22:47  jackjansen
+
+	* <clear> at the end of a smilText now also works on windows.
+
+2008-11-30 22:24  jackjansen
+
+	* A final <clear> in a smilText was ignored if no data follows it.
+	  Fixed (worked-around) by adding an empty text if this case is
+	  detected.
+
+	  Discovered by Dick in the Fruits-4s.smil presentation. Fix
+	  currently only texted on the Mac.
+
 2008-11-29 00:42  jackjansen
 
 	* smiltext_layout_engine tried to keep its own idea of when
