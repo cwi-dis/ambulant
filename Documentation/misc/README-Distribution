@@ -14,9 +14,6 @@ Version numbers, release branches and tags
 ==========================================
 
 !!=============================================================================!!
-!! NOTE: RELEASE 1.8 IS NAMED: release-new-ambulant-18-branch                  !!
-!! Any derived tag from this release (merge,bugfix, etc.) has to be named      !!
-!! accordingly (release-new-ambulant-18-merge, release-new-ambulant-181, etc.).!!
 !!=============================================================================!!
 
 We use a strict numbering scheme for versions. Development versions have
@@ -68,7 +65,12 @@ show up to which point the branch has been merged: set your working
 copy to the branch, and "cvs tag -F release-ambulant-16-merge" to move
 the tag.
 
-A final note: releases 1.4.X and earlier have not followed these guidelines
+Two final notes: 
+- release 1.8 is named release-new-ambulant-18-branch
+Any derived tag from this release (merge,bugfix, etc.) has to be named
+accordingly (release-new-ambulant-18-merge, release-new-ambulant-181, etc.).
+
+- releases 1.4.X and earlier have not followed these guidelines
 exactly, the branch and tag names are slightly different (release-ambulant-14
 for the branch, release-ambulant-14-tag for the release tag) and the "-merge"
 tag was not used.
@@ -127,7 +129,10 @@ Before creating the distribution
 - Make sure Documentation/API/{refman,html} are empty: we don't want the
   full doxygen output in our source distribution
 - You must update NEWS, give a high-level overview of what has changed.
-- You must update Changelog. There is a tool cvs2cl that does this
+- You must update Changelog. Nowadays this happens automatically through a cron
+  job, but for historical reference here is the manual procedure, should
+  you ever need it:
+  There is a tool cvs2cl that does this
   more-or-less automatically, something like the following command line should
   do the trick:
   
@@ -185,7 +190,7 @@ Binary distribution contents
 
 All binary distribution should contain the following files:
 - README
-- the player binary, preferable staticly linked
+- the player binary
 - COPYING (The GNU License)
 - DemoPresentation from Extras
 
@@ -217,8 +222,6 @@ Creating the MacOSX installer
         --without-python --with-live \
         --with-xerces --with-xerces-plugin \
         --with-universalsdk --disable-dependency-tracking
-- The build will fail at the cocoambulant_executable link. See
-  src/player_macosx/README on how to proceed.
 - Install the player in src/player_macos.
 - Create a folder called something like "Ambulant Player 1.6", 
   and copy the items mentioned above into it.
@@ -232,23 +235,19 @@ Creating the Windows desktop installer
 Build the player. Make sure you are building a *Release* player,
 not a *Debug* player.
 
-Open src/AmbulantWin32Installer/AmbulantWiseInstaller.wse with Wise.
-Make sure the files mentioned above are included. If you need to add more
-files: Wise will use absolute paths by default (for the source files), you
-want to turn these into relative paths.
-
-The installer will be deposited in bin/win32. You need to change the filename
-to include the version number.
+Use the Nullsoft installer. The script is in installers/nsis-win32.
+There are some options at the top of the script, to determine whether
+you do a distribution of a static or dynamically linked player, which
+Visual Studio version you used and a few more options. Check and modify
+these manually before building the installer.
 
 Creating the Windows CE installer
 =================================
 
 Build the player. Make sure you are building a *Release* player,
 not a *Debug* player.
-
-Open src/AmbulantWin32Installer/AmbulantWinCEWiseInstaller.wse with Wise.
-The procedure is pretty similar as for the desktop windows player, the
-installer ends up in bin/wince.
+The Visual Studio solution contains a deployment project that builds
+the WM5 installer.
 
 Creating the Zaurus installer
 =============================
