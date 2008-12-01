@@ -1,8 +1,8 @@
 [Desktop Entry]
 Encoding=UTF-8
-Version=2.0
+Version=2.1
 Type=Application
-Name=AmbulantPlayer 2.0
+Name=AmbulantPlayer 2.1
 Exec=/usr/bin/AmbulantPlayer_gtk
 Icon=AmbulantPlayer
 X-Window-Icon=tn-bookmarks-link

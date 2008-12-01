@@ -27,7 +27,7 @@
 
 namespace ambulant {
 
-#define AMBULANT_VERSION "2.0"
+#define AMBULANT_VERSION "2.1"
 
 AMBULANTAPI const char *get_version(void);
 

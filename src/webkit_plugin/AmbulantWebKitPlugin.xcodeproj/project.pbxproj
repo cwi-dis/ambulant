@@ -23,9 +23,6 @@
 		04C0A4600CD2942F00CEDCA9 /* libambulant_cocoa.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C0A45C0CD2942F00CEDCA9 /* libambulant_cocoa.dylib */; };
 		04C0A4610CD2942F00CEDCA9 /* libambulant.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C0A45D0CD2942F00CEDCA9 /* libambulant.dylib */; };
 		04C0A4620CD2942F00CEDCA9 /* libambulant_live.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C0A45E0CD2942F00CEDCA9 /* libambulant_live.dylib */; };
-		04C0A49C0CD2A19B00CEDCA9 /* pyamplugin_webkitscripting in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04C0A4990CD2A19B00CEDCA9 /* pyamplugin_webkitscripting */; };
-		04C0A4B30CD2A44A00CEDCA9 /* libamplugin_python.0 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04C0A4B20CD2A44A00CEDCA9 /* libamplugin_python.0 */; };
-		04C0A4BD0CD2A61700CEDCA9 /* libamplugin_python.la in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04C0A4BC0CD2A61700CEDCA9 /* libamplugin_python.la */; };
 		04C26AE90CBE0E1400CB8EFE /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C26AE80CBE0E1400CB8EFE /* QTKit.framework */; };
 		04C26AEB0CBE0E2700CB8EFE /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C26AEA0CBE0E2700CB8EFE /* AudioUnit.framework */; };
 		04C26AED0CBE0E3700CB8EFE /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C26AEC0CBE0E3700CB8EFE /* Carbon.framework */; };
@@ -42,9 +39,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				04C0A49C0CD2A19B00CEDCA9 /* pyamplugin_webkitscripting in CopyFiles */,
-				04C0A4B30CD2A44A00CEDCA9 /* libamplugin_python.0 in CopyFiles */,
-				04C0A4BD0CD2A61700CEDCA9 /* libamplugin_python.la in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -330,7 +324,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# clean up any previous products/symbolic links in the Internet Plug-Ins folder\nif [ -a \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\" ]; then\n  rm -Rf \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\"\nfi\n\n# Depending on the build configuration, either copy or link to the most recent product\nif [ \"${CONFIGURATION}\" == \"Debug\" ]; then\n  # if we're debugging, add a symbolic link to the plug-in\n  ln -sf \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\" \\\n    \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\"\nelif [ \"${CONFIGURATION}\" == \"Debug-i686\" ]; then\n  # if we're debugging, add a symbolic link to the plug-in\n  ln -sf \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\" \\\n    \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\"\nelif [ \"${CONFIGURATION}\" == \"Release\" ]; then\n  # if we're compiling for release, just copy the plugin to the Internet Plug-ins folder\n  cp -Rfv \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\" \\\n    \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\"\nfi";
+			shellScript = "# clean up any previous products/symbolic links in the Internet Plug-Ins folder\nif [ -a \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\" ]; then\n  rm -Rf \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\"\nfi\n\n# Depending on the build configuration, either copy or link to the most recent product\nif [ \"${CONFIGURATION}\" == \"Debug\" ]; then\n  # if we're debugging, add a symbolic link to the plug-in\n  ln -sf \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\" \\\n    \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\"\nelif [ \"${CONFIGURATION}\" == \"Debug-i686\" ]; then\n  # if we're debugging, add a symbolic link to the plug-in\n  ln -sf \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\" \\\n    \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\"\nelif [ \"${CONFIGURATION}\" == \"Release\" -o \"${CONFIGURATION}\" == \"Release-NoPython\" ]; then\n  # if we're compiling for release, just copy the plugin to the Internet Plug-ins folder\n  cp -Rfv \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\" \\\n    \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -407,6 +401,58 @@
 				ZERO_LINK = NO;
 			};
 			name = "Debug-i686";
+		};
+		046E65B60EE4976800078DE3 /* Release-NoPython */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = "Release-NoPython";
+		};
+		046E65B70EE4976800078DE3 /* Release-NoPython */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = AmbulantWebKitPlugin_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"AM_PREFER_FFMPEG=1",
+					"WITH_LTDL_PLUGINS=1",
+					"WITH_EXTERNAL_DOM=1",
+					"WITH_SDL=1",
+					"WITH_FFMPEG=1",
+					"WITH_EXPAT=1",
+					"WITH_OVERLAY_WINDOW=1",
+					"WITH_FFMPEG_AVFORMAT=1",
+					"WITH_SMIL30=1",
+				);
+				HEADER_SEARCH_PATHS = ../../include;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Internet Plug-Ins";
+				LIBRARY_SEARCH_PATHS = (
+					"$(PREBUILT_AMBULANT_ROOT)/src/libambulant/.libs",
+					/usr/local/lib,
+					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/expat-unix/lib",
+					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/ffmpeg-universal/libavcodec",
+					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/ffmpeg-universal/libavformat",
+					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/ffmpeg-universal/libavutil",
+				);
+				PRODUCT_NAME = AmbulantWebKitPlugin;
+				WRAPPER_EXTENSION = plugin;
+			};
+			name = "Release-NoPython";
 		};
 		1DEB913B08733D840010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -525,9 +571,10 @@
 				1DEB913B08733D840010E9CD /* Debug */,
 				0403103A0CD891E2007B3551 /* Debug-i686 */,
 				1DEB913C08733D840010E9CD /* Release */,
+				046E65B70EE4976800078DE3 /* Release-NoPython */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = "Release-NoPython";
 		};
 		1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "AmbulantWebKitPlugin" */ = {
 			isa = XCConfigurationList;
@@ -535,9 +582,10 @@
 				1DEB913F08733D840010E9CD /* Debug */,
 				040310390CD891E2007B3551 /* Debug-i686 */,
 				1DEB914008733D840010E9CD /* Release */,
+				046E65B60EE4976800078DE3 /* Release-NoPython */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = "Release-NoPython";
 		};
 /* End XCConfigurationList section */
 	};
