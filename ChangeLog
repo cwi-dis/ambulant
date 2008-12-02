@@ -1,3 +1,26 @@
+2008-12-02 00:20  jackjansen
+
+	* Post-distribution updating of version numbers.
+
+2008-12-01 23:51  jackjansen
+
+	* iSome final mods for 2.0 distribution.
+
+2008-12-01 15:44  keesblom
+
+	* Repaired crawl/scroll for Qt/Windows XP
+
+2008-12-01 13:55  keesblom
+
+	* Re-enabled 1st section of the presentation, which was commented
+	  out for debugging purposes
+
+2008-12-01 11:09  jackjansen
+
+	* Turns out our icons were butt-ugly on Windows because Visual
+	  Studio doesn't support XP icons (full 32-bit images). I think I
+	  worked around the problem by using a third-party icon editor.
+
 2008-11-30 22:59  jackjansen
 
 	* smilText on Windows (and probably gtk or qt too) was unhappy with
