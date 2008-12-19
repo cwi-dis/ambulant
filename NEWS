@@ -1,3 +1,15 @@
+What's new in Ambulant Player 2.0.1?
+------------------------------------
+
+- RTSP video had frame reordering problems on some machines. Fixed.
+- Problems with initial/final text in smilText were fixed.
+- (Mac) RTSP support was disabled in 2.0. Fixed.
+- (Mac) There were problems with PowerPC support. Fixed.
+- (Mac) Video colors were incorrect on 10.4. Fixed.
+- (Mac) Fixed a bug with dirty pixels in transitions.
+- (Mac) Links to another SMIL file were fixed.
+- (Firefox plugin) Various crashes were fixed.
+
 What's new in Ambulant Player 2.0?
 ----------------------------------
 

@@ -166,7 +166,7 @@ NPP_SetWindow (NPP instance, NPWindow* pNPWindow)
       if(!plugin->isInitialized() && (pNPWindow->window != NULL)) { 
           plugin->SetWindow(pNPWindow);
           if(!plugin->init(pNPWindow)) {
-              NS_DestroyPluginInstance(plugin);
+//            NS_DestroyPluginInstance(plugin);
               return NPERR_MODULE_LOAD_FAILED_ERROR;
           }
       }

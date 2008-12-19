@@ -254,12 +254,7 @@ nsPluginInstance::init(NPWindow* aWindow)
 	// associate window with our nsPluginInstance object so we can access 
 	// it in the window procedure
 	SetWindowLong(m_hwnd, GWL_USERDATA, (LONG)this);
-
-	assert ( ! m_ambulant_player);
-	ambulant::lib::logger::get_logger()->set_show_message(nsPluginInstance::display_message);
-	ambulant::lib::logger::get_logger()->show("Ambulant plugin loaded");
 #endif//XP_WIN32
-
 	assert ( ! m_ambulant_player);
 	ambulant::lib::logger::get_logger()->set_show_message(nsPluginInstance::display_message);
 	ambulant::lib::logger::get_logger()->show("Ambulant plugin loaded");
@@ -321,8 +316,13 @@ nsPluginInstance::init(NPWindow* aWindow)
 	m_player_callbacks.set_os_window(m_hwnd);
 	m_ambulant_player = new ambulant::gui::dx::dx_player(m_player_callbacks, NULL, m_url);
 //X	m_ambulant_player->set_state_component_factory(NULL); // XXXJACK DEBUG!!!!
-	if (m_ambulant_player)
-		m_ambulant_player->play();
+	if (m_ambulant_player) {
+		if ( ! get_player()) {
+			delete m_ambulant_player;
+			m_ambulant_player = NULL;
+		} else 
+			m_ambulant_player->play();
+	}
 	mInitialized = TRUE;
     return TRUE;
 #else //XP_WIN32
@@ -615,14 +615,6 @@ PluginWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
             }
         }
     return DefWindowProc(hWnd, msg, wParam, lParam);
-}
-
-NPP nsPluginInstance::s_last_instance = NULL;
-
-void
-nsPluginInstance::display_message(int level, const char *message) {
-	if (s_last_instance)
-		NPN_Status(s_last_instance, message);
 }
 
 const char *

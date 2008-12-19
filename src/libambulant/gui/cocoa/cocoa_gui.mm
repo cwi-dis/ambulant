@@ -721,12 +721,19 @@ bad:
 	// Note: this method does not take overlaying things such as Quicktime
 	// movies into account.
 	NSSize size = NSMakeSize(NSWidth(bounds), NSHeight(bounds));
+    NSImage *flipped_rv = [[NSImage alloc] initWithSize: size];
 	NSImage *rv = [[NSImage alloc] initWithSize: size];
 	[self lockFocus];
 	NSBitmapImageRep *bits = [[NSBitmapImageRep alloc] initWithFocusedViewRect: bounds];
 	[self unlockFocus];
+	[flipped_rv addRepresentation: [bits autorelease]];
+    [flipped_rv setFlipped: YES];
+	[flipped_rv lockFocus];
+	bits = [[NSBitmapImageRep alloc] initWithFocusedViewRect: NSMakeRect(0, 0, NSWidth(bounds), NSHeight(bounds))];
+	[flipped_rv unlockFocus];
 	[rv addRepresentation: [bits autorelease]];
 	[rv setFlipped: YES];
+    [flipped_rv release];
 #ifdef DUMP_TRANSITION
 	[self dump: rv toImageID: "oldsrc"];
 #endif

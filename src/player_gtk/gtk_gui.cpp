@@ -53,7 +53,8 @@
 #define AMBULANT_DATADIR "/usr/share/ambulant"
 #endif/*AMBULANT_DATADIR*/
 #define UI_FILENAME AMBULANT_DATADIR "/ui_manager.xml"
-#include <hildon-widgets/hildon-program.h>
+//#include <hildon-widgets/hildon-program.h>  // CHINOOK
+#include <hildon/hildon-program.h> // DIABLO
 #include <glib-object.h>
 #else /*WITH_NOKIA770*/
 #define UI_FILENAME "ui_manager.xml"

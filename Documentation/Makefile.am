@@ -1,5 +1,6 @@
 EXTRA_DIST=README API Design man1 misc user user-htmlhelp
 man1_MANS=man1/ambulantplayer.1
+MKDIR_P=mkdir -p
 
 install-data-local:
 	$(MKDIR_P) $(DESTDIR)$(pkgdatadir)/AmbulantPlayerHelp
@@ -7,4 +8,3 @@ install-data-local:
 
 uninstall-local:
 	rm -rf $(DESTDIR)$(pkgdatadir)/AmbulantPlayerHelp
-	

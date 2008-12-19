@@ -149,6 +149,10 @@ std::string get_base(const std::string& s,
 	size_type i = s.find_last_of(sep);
 	if(i == std::string::npos)
 		return std::string();
+	if (i == 0) {
+		// Special case: only the initial separator. Return it too.
+		return s.substr(0, 1);
+	}
 	return s.substr(0, i);
 }
 

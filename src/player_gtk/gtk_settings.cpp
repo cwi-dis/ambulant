@@ -82,9 +82,13 @@ gtk_settings::gtk_settings() {
 	m_settings_fr = GTK_FRAME (gtk_frame_new(gettext("Preferences")));
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(m_dialog)->vbox), GTK_WIDGET (m_settings_fr));
 
+	// HBox to include: loglevel, XML parsers.plugins | Xerces Options
+	GtkHBox *m_settings_hb = GTK_HBOX (gtk_hbox_new(true, 10));
+	gtk_container_add(GTK_CONTAINER(m_settings_fr), GTK_WIDGET (m_settings_hb));
+
 	// VBox to include loglevel, XML parsers...
 	GtkVBox *m_settings_vb = GTK_VBOX (gtk_vbox_new(false, 10));
-	gtk_container_add(GTK_CONTAINER(m_settings_fr), GTK_WIDGET (m_settings_vb));
+	gtk_container_add(GTK_CONTAINER(m_settings_hb), GTK_WIDGET (m_settings_vb));
 
 	// This part takes care of the loglevel
 	m_loglevel_hb	= GTK_HBOX (gtk_hbox_new(false, 10));
@@ -124,10 +128,11 @@ gtk_settings::gtk_settings() {
 
 	// Xerces Options
 	m_xerces_fr = GTK_FRAME (gtk_frame_new(gettext("Xerces Options:")));
-	gtk_box_pack_start (GTK_BOX (m_settings_vb), GTK_WIDGET(m_xerces_fr), TRUE, TRUE, 10);
+//	gtk_box_pack_start (GTK_BOX (m_settings_vb), GTK_WIDGET(m_xerces_fr), TRUE, TRUE, 10);
 
 	// vbox for the Xerces Options: checkbox, radiobutton...
 	GtkVBox *m_xerces_vb = GTK_VBOX (gtk_vbox_new(false, 10));
+	gtk_container_add(GTK_CONTAINER(m_settings_hb), GTK_WIDGET (m_xerces_fr));
 	gtk_container_add(GTK_CONTAINER(m_xerces_fr), GTK_WIDGET (m_xerces_vb));
 
 	// Enable XML namespace checkbutton
@@ -171,7 +176,8 @@ gtk_settings::gtk_settings() {
 
 	// Plugin options frame	
 	m_plugins_fr = GTK_FRAME (gtk_frame_new(gettext("Plugin Options:")));
-	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(m_dialog)->vbox), GTK_WIDGET (m_plugins_fr));
+//	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(m_dialog)->vbox), GTK_WIDGET (m_plugins_fr));
+	gtk_container_add(GTK_CONTAINER(m_settings_vb), GTK_WIDGET (m_plugins_fr));
 
 	// the vbox needed for the items of this frame
 	GtkVBox *m_plugins_vb = GTK_VBOX (gtk_vbox_new(false, 10));

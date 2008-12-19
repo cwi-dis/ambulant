@@ -87,9 +87,10 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	NSString *str_url = [NSString stringWithCString: newdoc.get_url().c_str()];
 	NSURL *url = [NSURL URLWithString: str_url];
 	NSDocumentController *docController = [NSDocumentController sharedDocumentController];
-	NSDocument *doc = [docController openDocumentWithContentsOfURL:url display:YES];
+    NSError *error;
+	NSDocument *doc = [docController openDocumentWithContentsOfURL:url display:YES error:&error];
 	if (!doc) {
-		ambulant::lib::logger::get_logger()->error(gettext("Cannot open: %s"), newdoc.get_url().c_str());
+		ambulant::lib::logger::get_logger()->error(gettext("Cannot open: %s, error: %s"), newdoc.get_url().c_str(), [[error localizedDescription] cString]);
 	}
 	[pool release];
 	// [doc retain] ??
@@ -166,6 +167,11 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	if ( [defaults boolForKey: @"fullScreen"] )
 		[self goFullScreen: self];
 #endif
+}
+
+- (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
+{
+    return YES;
 }
 
 - (void)askForURL: (id)sender
@@ -730,4 +736,14 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 #endif	
 }
 #endif // WITH_OVERLAY_WINDOW
+@end
+
+@implementation NSDocumentController(MyDocumentControllerCategory)
+- (NSString *)typeForContentsOfURL:(NSURL *)inAbsoluteURL error:(NSError **)outError
+{
+    NSString *path = [inAbsoluteURL path];
+    NSString *extension = [path pathExtension];
+    NSString *rv = [self typeFromFileExtension: extension];
+    return rv;
+}
 @end

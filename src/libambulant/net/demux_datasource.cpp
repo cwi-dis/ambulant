@@ -133,7 +133,7 @@ demux_audio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib
 		m_client_callback = NULL;
 		AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::start(): m_client_callback already set!");
 	}
-	if (m_queue.size() > 0) {
+	if (m_queue.size() > 0 || _end_of_file()) {
 		// We have data (or EOF) available. Don't bother starting up our source again, in stead
 		// immedeately signal our client again
 		if (callbackk) {
@@ -204,6 +204,17 @@ demux_audio_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, int sz)
 			m_queue.push(tsp);
 		}
 	}
+	if ( m_queue.size() > 0 || _end_of_file()  ) {
+		if ( m_client_callback ) {
+			AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::push_data(): calling client callback (eof=%d)", m_src_end_of_file);
+			assert(m_event_processor);
+			m_event_processor->add_event(m_client_callback, MIN_EVENT_DELAY, ambulant::lib::ep_med);
+			m_client_callback = NULL;
+			m_event_processor = NULL;
+		} else {
+			AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::push_data(): No client callback");
+		}
+	}		
 	m_lock.leave();
 	return rv;
 }

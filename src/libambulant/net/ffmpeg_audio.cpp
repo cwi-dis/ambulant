@@ -333,6 +333,7 @@ ffmpeg_decoder_datasource::start(ambulant::lib::event_processor *evp, ambulant::
 		restart_input = true;
 		m_client_callback = callbackk;
 		m_event_processor = evp;
+        AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource: storing callback");
 	}
 	
 	// Also restart our source if we still have room and there is

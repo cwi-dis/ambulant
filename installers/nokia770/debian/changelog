@@ -1,5 +1,5 @@
-ambulantplayer-app (1.9) unstable; urgency=low
+ambulantplayer-app (2.0) unstable; urgency=low
 
-  * Initial Release for Nokia 770.Has gstreamer audio, no video/rtsp yet
+  * Experimental Release for Nokia 770/800. .Has no gstreamer audio, butt ffmpeg aydio/video and live rtsp
 
- -- Kees Blom <Kees.Blom@cwi.nl>  Wed, 6 Feb 2007 12:08:14 +0300
+ -- Kees Blom <Kees.Blom@cwi.nl>  Thu, 3 Dec 2008 12:08:14 +0300

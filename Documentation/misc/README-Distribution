@@ -94,6 +94,7 @@ Before creating the distribution
   - src/player_wince/AmbulantPlayer.rc
   - src/player_mfc/AmbulantPlayer.rc (Dialog IDD_ABOUTBOX)
   - src/player_gtk/AmbulantPlayer.desktop
+  - src/webkit_plugin/README
   - installers/nokia770/AmbulantPlayer.desktop
   - installers/nokia770/AmbulantPlayerCHINOOK.desktop
   - installers/nokia770/debian/create_installer
@@ -217,17 +218,46 @@ Creating the MacOSX installer
 - Build the whole source tree, don't forget options for
   enabling xerces, etc. You want to build with Xerces in a plugin,
   live support, no Python support, only fast internal DOM acces,
-  i.e. with
-    ../configure -C --with-ffmpeg --without-external-dom \
-        --without-python --with-live \
-        --with-xerces --with-xerces-plugin \
-        --with-universalsdk --disable-dependency-tracking
-- Install the player in src/player_macos.
-- Create a folder called something like "Ambulant Player 1.6", 
-  and copy the items mentioned above into it.
-- Use Applications->Utilities->Disk Utilities to create a .dmg
-  disk image from this folder (read only, compressed). Make sure the
-  version number is part of the disk image name.
+  10.4 support, etc.
+  Here's the current commands:
+
+  export SYSROOT=/Developer/SDKs/MacOSX10.4u.sdk
+  export MACOSX_DEPLOYMENT_TARGET=10.4
+  ../configure -C --with-ffmpeg=third_party_packages/ffmpeg-universal \
+	--with-smil30 --with-universalsdk=$SYSROOT --with-live555 \
+	-disable-dependency-tracking --with-libfaad \
+	--with-xerces --with-xerces-plugin \
+	--without-external-dom
+
+- Install the player, "sudo make install" in src/player_macos.
+  IMPORTANT: at the end of make install, a few calls to "testdependencies"
+  are made. These check that you don't link to non-standard libraries.
+  Make sure these calls produce no output.
+- To create the installer, run the script in installers/sh-macos.
+  Getting the background picture correct is a bit of a trick:
+  - After the disk is mounted, cd to it (terminal window)
+  - mv .folderbg/folderbg.png folderbg.png
+  - In the finder, set it as background picture
+  - mv folderbg.png .folderbg/folderbg.png
+  - align the icons, etc.
+  - cd $HOME
+  - unmount, and continue the script.
+  
+Creating the WebKit/Safari plugin
+=================================
+- Make sure the prerequisites are built, as above.
+- Build a slightly different configuration from above, with
+
+  export SYSROOT=/Developer/SDKs/MacOSX10.4u.sdk
+  export MACOSX_DEPLOYMENT_TARGET=10.4
+  ../configure -C --with-ffmpeg=third_party_packages/ffmpeg-universal \
+	--with-smil30 --with-universalsdk=$SYSROOT --with-live555 \
+	-disable-dependency-tracking --with-libfaad \
+	--with-xerces --with-xerces-plugin \
+	--with-python=/usr/bin/python  --with-python-plugin \
+	--with-webkit-dom --with-webkit-plugin
+	
+- Build the plugin, with <to be supplied>
   
 Creating the Windows desktop installer
 ======================================
@@ -251,6 +281,11 @@ the WM5 installer.
 
 Creating the Zaurus installer
 =============================
+
+To be supplied.
+
+Creating the Nokia 770 installer
+================================
 
 To be supplied.
 

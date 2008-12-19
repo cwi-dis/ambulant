@@ -70,6 +70,19 @@ extra_nls_DEFINES=-DLOCALEDIR=\"$(datadir)/locale\"
 #extra_nls_DEFINES=
 #endif
 
+if WITH_LIVE
+extra_live_DEFINES=-DWITH_LIVE
+extra_live_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_live.a
+extra_live_ldflags=-L$(LIVE_ROOT)/liveMedia/ -lliveMedia \
+			  -L$(LIVE_ROOT)/BasicUsageEnvironment/ -lBasicUsageEnvironment  \
+			  -L$(LIVE_ROOT)/groupsock/ -lgroupsock  \
+			  -L$(LIVE_ROOT)/UsageEnvironment/ -lUsageEnvironment
+else
+extra_live_DEFINES=
+extra_live_LDADD=
+extra_live_ldflags=
+endif
+
 # Sometimes we seem to have a .so suffix, sometimes not.
 #SO=.so
 SO=
@@ -199,6 +212,7 @@ LDADD = \
 	$(extra_ffmpeg_LDADD) \
 	$(extra_expat_LDADD) \
 	$(extra_xerces_LDADD) \
+	$(extra_live_LDADD) \
 	$(LIBINTL) \
 	$(LIBICONV) \
     $(top_builddir)/src/libambulant/.libs/libambulant.a \
@@ -208,6 +222,7 @@ AM_LDFLAGS= \
     $(extra_sdl_ldflags) \
     $(extra_ffmpeg_ldflags) \
     $(extra_expat_ldflags) \
+    $(extra_live_ldflags) \
     -framework Cocoa \
     -framework QTKit \
     -framework QuickTime \
@@ -218,7 +233,8 @@ AM_CPPFLAGS = -I$(top_builddir)/include -I$(top_srcdir)/include \
     $(extra_xerces_DEFINES) \
 	$(extra_sdl_DEFINES) \
 	$(extra_ffmpeg_DEFINES) \
-	$(extra_nls_DEFINES)
+	$(extra_nls_DEFINES) \
+	$(extra_live_DEFINES)
 
 dist-hook:
 	rm -rf `find $(distdir) -name CVS`

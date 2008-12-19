@@ -74,6 +74,7 @@ class document_embedder : public ambulant::common::embedder {
 	NSWindow *saved_window;
 	NSRect saved_view_rect;
 }
+- (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError;
 - (void)askForURL: (id)sender;
 - (IBAction)closeURLPanel:(id)sender;
 - (void)askForURLDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo;
@@ -101,5 +102,8 @@ class document_embedder : public ambulant::common::embedder {
 - (BOOL)openAuxDocument: (NSURL *)auxUrl;
 - (void)closeAuxDocument;
 #endif
+@end
 
+@interface NSDocumentController(MyDocumentControllerCategory)
+- (NSString *)typeForContentsOfURL:(NSURL *)inAbsoluteURL error:(NSError **)outError;
 @end

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AmbulantPlayer 1.1\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2008-11-17 10:57+0100\n"
+"POT-Creation-Date: 2008-12-17 11:57+0100\n"
 "PO-Revision-Date: 2004-09-12 15:09+0200\n"
 "Last-Translator: Jack Jansen <Jack.Jansen@cwi.nl>\n"
 "Language-Team: English <Jack.Jansen@cwi.nl>\n"
@@ -61,7 +61,7 @@ msgid "Error reading plugin directory: %s: 0x%x"
 msgstr ""
 
 #: src/libambulant/common/region.cpp:841 src/libambulant/common/region.cpp:852
-#: src/libambulant/lib/parselets.cpp:385
+#: src/libambulant/lib/parselets.cpp:381
 msgid "Programmer error encountered, will attempt to continue"
 msgstr ""
 
@@ -178,22 +178,22 @@ msgid "datasource_reader: out of memory"
 msgstr ""
 
 #: src/libambulant/net/demux_datasource.cpp:75
-#: src/libambulant/net/demux_datasource.cpp:306
+#: src/libambulant/net/demux_datasource.cpp:317
 #, c-format
 msgid "%s: no more audio streams"
 msgstr ""
 
 #: src/libambulant/net/demux_datasource.cpp:145
 #: src/libambulant/net/ffmpeg_audio.cpp:328
-#: src/libambulant/net/ffmpeg_audio.cpp:375
-#: src/libambulant/net/ffmpeg_audio.cpp:464
-#: src/libambulant/net/ffmpeg_audio.cpp:814
-#: src/libambulant/net/ffmpeg_audio.cpp:853
-#: src/libambulant/net/ffmpeg_audio.cpp:1041
+#: src/libambulant/net/ffmpeg_audio.cpp:376
+#: src/libambulant/net/ffmpeg_audio.cpp:465
+#: src/libambulant/net/ffmpeg_audio.cpp:815
+#: src/libambulant/net/ffmpeg_audio.cpp:854
+#: src/libambulant/net/ffmpeg_audio.cpp:1042
 msgid "Programmer error encountered during audio playback"
 msgstr ""
 
-#: src/libambulant/net/demux_datasource.cpp:436
+#: src/libambulant/net/demux_datasource.cpp:447
 #: src/libambulant/net/ffmpeg_video.cpp:280
 #: src/libambulant/net/ffmpeg_video.cpp:860
 #: src/libambulant/net/ffmpeg_video.cpp:865
@@ -201,7 +201,7 @@ msgstr ""
 msgid "Programmer error encountered during video playback"
 msgstr ""
 
-#: src/libambulant/net/demux_datasource.cpp:694
+#: src/libambulant/net/demux_datasource.cpp:705
 #, c-format
 msgid "%s: Ignoring audio, unsupported encoding"
 msgstr ""
@@ -227,13 +227,13 @@ msgstr ""
 msgid "ffmpeg_decoder_datasource: could not select %s(0x%x) decoder"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:626
-#: src/libambulant/net/ffmpeg_audio.cpp:634
+#: src/libambulant/net/ffmpeg_audio.cpp:627
+#: src/libambulant/net/ffmpeg_audio.cpp:635
 #, c-format
 msgid "No support for \"%s\" audio"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:801
+#: src/libambulant/net/ffmpeg_audio.cpp:802
 msgid "Audio cannot be converted to 44Khz stereo"
 msgstr ""
 
@@ -304,8 +304,8 @@ msgstr ""
 msgid "Ignoring minor errors in document"
 msgstr ""
 
-#: src/libambulant/smil2/smiltext.cpp:308
-#: src/libambulant/smil2/smiltext.cpp:323
+#: src/libambulant/smil2/smiltext.cpp:307
+#: src/libambulant/smil2/smiltext.cpp:322
 msgid "Error in smilText timing"
 msgstr ""
 
@@ -332,12 +332,12 @@ msgstr ""
 msgid "No state support for language %s"
 msgstr ""
 
-#: src/libambulant/smil2/smil_player.cpp:871
+#: src/libambulant/smil2/smil_player.cpp:872
 #, c-format
 msgid "Link destination not found: %s"
 msgstr ""
 
-#: src/libambulant/smil2/smil_player.cpp:877
+#: src/libambulant/smil2/smil_player.cpp:878
 #, c-format
 msgid "This implementation cannot open <%s> in new window"
 msgstr ""
@@ -390,203 +390,203 @@ msgstr ""
 msgid "Error in SMIL transition info in document"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:277
+#: src/player_gtk/gtk_gui.cpp:278
 msgid "_File"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:278
+#: src/player_gtk/gtk_gui.cpp:279
 msgid "_Open..."
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:279
+#: src/player_gtk/gtk_gui.cpp:280
 msgid "Open a document from local disk"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:280
+#: src/player_gtk/gtk_gui.cpp:281
 msgid "Open _URL..."
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:281
+#: src/player_gtk/gtk_gui.cpp:282
 msgid "Open a document from the network"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:282
+#: src/player_gtk/gtk_gui.cpp:283
 msgid "_Reload"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:283
+#: src/player_gtk/gtk_gui.cpp:284
 msgid "Reload current document"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:284
+#: src/player_gtk/gtk_gui.cpp:285
 msgid "_Preferences"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:285
+#: src/player_gtk/gtk_gui.cpp:286
 msgid "Change application preferences"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:286
+#: src/player_gtk/gtk_gui.cpp:287
 msgid "_Load Settings..."
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:287
+#: src/player_gtk/gtk_gui.cpp:288
 msgid "Open SMIL playback settings document"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:288
+#: src/player_gtk/gtk_gui.cpp:289
 msgid "_Quit"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:289
+#: src/player_gtk/gtk_gui.cpp:290
 msgid "Quit Ambulant Player"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:292 src/player_gtk/gtk_gui.cpp:293
+#: src/player_gtk/gtk_gui.cpp:293 src/player_gtk/gtk_gui.cpp:294
 msgid "Pla_y"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:294
+#: src/player_gtk/gtk_gui.cpp:295
 msgid "Start document playback"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:295
+#: src/player_gtk/gtk_gui.cpp:296
 msgid "_Pause"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:296
+#: src/player_gtk/gtk_gui.cpp:297
 msgid "Pause document playback"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:297
+#: src/player_gtk/gtk_gui.cpp:298
 msgid "_Stop"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:298
+#: src/player_gtk/gtk_gui.cpp:299
 msgid "Stop document playback"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:300
+#: src/player_gtk/gtk_gui.cpp:301
 msgid "_View"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:301
+#: src/player_gtk/gtk_gui.cpp:302
 msgid "_Full Screen"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:302
+#: src/player_gtk/gtk_gui.cpp:303
 msgid "Full Screen"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:303
+#: src/player_gtk/gtk_gui.cpp:304
 msgid "_Window"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:304
+#: src/player_gtk/gtk_gui.cpp:305
 msgid "Normal Screen"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:305
+#: src/player_gtk/gtk_gui.cpp:306
 msgid "_Log Window..."
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:306
+#: src/player_gtk/gtk_gui.cpp:307
 msgid "Show status output window"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:308
+#: src/player_gtk/gtk_gui.cpp:309
 msgid "_Help"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:309
+#: src/player_gtk/gtk_gui.cpp:310
 msgid "_About AmbulantPlayer"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:310
+#: src/player_gtk/gtk_gui.cpp:311
 msgid "Information about Ambulant"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:311
+#: src/player_gtk/gtk_gui.cpp:312
 msgid "AmbulantPlayer _Help..."
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:312
+#: src/player_gtk/gtk_gui.cpp:313
 msgid "Help in AmbulantPlayer Webpage"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:313
+#: src/player_gtk/gtk_gui.cpp:314
 msgid "AmbulantPlayer _Website..."
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:314
+#: src/player_gtk/gtk_gui.cpp:315
 msgid "Open the Ambulant Webpage"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:315
+#: src/player_gtk/gtk_gui.cpp:316
 msgid "_Play Welcome Document"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:316
+#: src/player_gtk/gtk_gui.cpp:317
 msgid "Plays a simple SMIL file"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:514 src/player_unix/qt_gui.cpp:224
+#: src/player_gtk/gtk_gui.cpp:515 src/player_unix/qt_gui.cpp:224
 msgid "About AmbulantPlayer"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:539 src/player_unix/qt_gui.cpp:244
+#: src/player_gtk/gtk_gui.cpp:540 src/player_unix/qt_gui.cpp:244
 msgid "Cannot find Welcome.smil document"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:557 src/player_unix/qt_gui.cpp:256
+#: src/player_gtk/gtk_gui.cpp:558 src/player_unix/qt_gui.cpp:256
 msgid "Cannot find Ambulant Player Help"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:576 src/player_unix/qt_gui.cpp:282
+#: src/player_gtk/gtk_gui.cpp:577 src/player_unix/qt_gui.cpp:282
 #, c-format
 msgid "%s: Cannot open file: %s"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:610
+#: src/player_gtk/gtk_gui.cpp:611
 msgid "Please, select a file"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:613
+#: src/player_gtk/gtk_gui.cpp:614
 msgid "SMIL files"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:618
+#: src/player_gtk/gtk_gui.cpp:619
 msgid "All files"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:624
+#: src/player_gtk/gtk_gui.cpp:625
 msgid "Any file"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:673
+#: src/player_gtk/gtk_gui.cpp:674
 msgid "Please, select a settings file"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:676
+#: src/player_gtk/gtk_gui.cpp:677
 msgid "XML files"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:712 src/player_unix/qt_gui.cpp:430
+#: src/player_gtk/gtk_gui.cpp:713 src/player_unix/qt_gui.cpp:430
 msgid "URL to open:"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:1083 src/player_unix/qt_gui.cpp:679
+#: src/player_gtk/gtk_gui.cpp:1084 src/player_unix/qt_gui.cpp:679
 #: src/player_macosx/MyAppDelegate.mm:141
 #, c-format
 msgid "Ambulant Player: compile time version %s, runtime version %s"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:1084
+#: src/player_gtk/gtk_gui.cpp:1085
 #, c-format
 msgid "Ambulant Player: built on %s for Unix/GTK"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:1086 src/player_unix/qt_gui.cpp:682
+#: src/player_gtk/gtk_gui.cpp:1087 src/player_unix/qt_gui.cpp:682
 msgid "Ambulant Player: localization enabled (english)"
 msgstr ""
 
@@ -616,47 +616,47 @@ msgstr ""
 msgid "Preferences"
 msgstr ""
 
-#: src/player_gtk/gtk_settings.cpp:93 src/player_unix/qt_settings.cpp:76
+#: src/player_gtk/gtk_settings.cpp:97 src/player_unix/qt_settings.cpp:76
 msgid "Log level:"
 msgstr ""
 
-#: src/player_gtk/gtk_settings.cpp:110 src/player_unix/qt_settings.cpp:86
+#: src/player_gtk/gtk_settings.cpp:114 src/player_unix/qt_settings.cpp:86
 msgid "XML parser:"
 msgstr ""
 
-#: src/player_gtk/gtk_settings.cpp:126
+#: src/player_gtk/gtk_settings.cpp:130
 msgid "Xerces Options:"
 msgstr ""
 
-#: src/player_gtk/gtk_settings.cpp:134 src/player_unix/qt_settings.cpp:97
+#: src/player_gtk/gtk_settings.cpp:139 src/player_unix/qt_settings.cpp:97
 msgid "Enable XML namespace support"
 msgstr ""
 
-#: src/player_gtk/gtk_settings.cpp:142
+#: src/player_gtk/gtk_settings.cpp:147
 msgid "Enable XML Validation:"
 msgstr ""
 
-#: src/player_gtk/gtk_settings.cpp:160 src/player_unix/qt_settings.cpp:112
+#: src/player_gtk/gtk_settings.cpp:165 src/player_unix/qt_settings.cpp:112
 msgid "Using Schema"
 msgstr ""
 
-#: src/player_gtk/gtk_settings.cpp:161 src/player_unix/qt_settings.cpp:115
+#: src/player_gtk/gtk_settings.cpp:166 src/player_unix/qt_settings.cpp:115
 msgid "Using DTD"
 msgstr ""
 
-#: src/player_gtk/gtk_settings.cpp:168 src/player_unix/qt_settings.cpp:120
+#: src/player_gtk/gtk_settings.cpp:173 src/player_unix/qt_settings.cpp:120
 msgid "Validation Schema full checking"
 msgstr ""
 
-#: src/player_gtk/gtk_settings.cpp:173
+#: src/player_gtk/gtk_settings.cpp:178
 msgid "Plugin Options:"
 msgstr ""
 
-#: src/player_gtk/gtk_settings.cpp:181 src/player_unix/qt_settings.cpp:127
+#: src/player_gtk/gtk_settings.cpp:187 src/player_unix/qt_settings.cpp:127
 msgid "Use plugins"
 msgstr ""
 
-#: src/player_gtk/gtk_settings.cpp:186
+#: src/player_gtk/gtk_settings.cpp:192
 msgid "Plugin Directory:"
 msgstr ""
 
@@ -835,10 +835,10 @@ msgstr ""
 msgid "Plugin directory:\n"
 msgstr ""
 
-#: src/libambulant/gui/cocoa/cocoa_dsvideo.mm:139
-#: src/libambulant/gui/cocoa/cocoa_dsvideo.mm:166
-#: src/libambulant/gui/cocoa/cocoa_dsvideo.mm:175
-#: src/libambulant/gui/cocoa/cocoa_dsvideo.mm:198
+#: src/libambulant/gui/cocoa/cocoa_dsvideo.mm:185
+#: src/libambulant/gui/cocoa/cocoa_dsvideo.mm:212
+#: src/libambulant/gui/cocoa/cocoa_dsvideo.mm:221
+#: src/libambulant/gui/cocoa/cocoa_dsvideo.mm:244
 msgid "Out of memory while showing video"
 msgstr ""
 
@@ -846,12 +846,12 @@ msgstr ""
 msgid "Unsupported: AmbulantPlayer cannot open second toplevel window yet"
 msgstr ""
 
-#: src/libambulant/gui/cocoa/cocoa_video.mm:138
+#: src/libambulant/gui/cocoa/cocoa_video.mm:137
 #, c-format
 msgid "%s: cannot convert to URL"
 msgstr ""
 
-#: src/libambulant/gui/cocoa/cocoa_video.mm:149
+#: src/libambulant/gui/cocoa/cocoa_video.mm:148
 #, c-format
 msgid "%s: cannot open movie"
 msgstr ""
@@ -884,7 +884,12 @@ msgstr ""
 msgid "Cannot open http://www.ambulantplayer.org"
 msgstr ""
 
-#: src/player_macosx/MyDocument.mm:60 src/player_macosx/MyDocument.mm:92
+#: src/player_macosx/MyDocument.mm:60
 #, c-format
 msgid "Cannot open: %s"
+msgstr ""
+
+#: src/player_macosx/MyDocument.mm:93
+#, c-format
+msgid "Cannot open: %s, error: %s"
 msgstr ""

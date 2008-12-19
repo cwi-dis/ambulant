@@ -1,4 +1,5 @@
 EXTRA_DIST=Welcome DemoPresentation DTDCache
+MKDIR_P=mkdir -p
 
 install-data-local:
 	$(MKDIR_P) $(DESTDIR)$(pkgdatadir)
@@ -27,4 +28,3 @@ uninstall-local:
 if WITH_XERCES
 	rm -fr $(DESTDIR)$(pkgdatadir)/DTDCache
 endif
-	
