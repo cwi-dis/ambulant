@@ -30,7 +30,8 @@
 #include "ambulant/lib/node.h"
 
 // Macro for creating an Ambulant systemComponent URI
-#define AM_SYSTEM_COMPONENT(s) "http://www.ambulantplayer.org/component/" s
+#define AM_SYSTEM_COMPONENT_PREFIX "http://www.ambulantplayer.org/component"
+#define AM_SYSTEM_COMPONENT(s) (AM_SYSTEM_COMPONENT_PREFIX "/" s)
 
 namespace ambulant {
 
