@@ -35,6 +35,14 @@
 #endif
 #include "ambulant/gui/none/none_factory.h"
 #include "ambulant/gui/gtk/gtk_factory.h"
+#include "ambulant/gui/gtk/gtk_fill.h"
+#ifdef	WITH_GTK_HTML_WIDGET
+#include "ambulant/gui/gtk/gtk_html_renderer.h"
+#endif
+#include "ambulant/gui/gtk/gtk_image_renderer.h"
+#include "ambulant/gui/gtk/gtk_smiltext.h"
+#include "ambulant/gui/gtk/gtk_text_renderer.h"
+#include "ambulant/gui/gtk/gtk_video_renderer.h"
 #include "ambulant/common/plugin_engine.h"
 #include "ambulant/lib/parser_factory.h"
 #ifdef WITH_XERCES_BUILTIN
@@ -102,6 +110,8 @@ gtk_mainloop::gtk_mainloop(gtk_gui* gui)
 	gui_player();
 	m_logger = lib::logger::get_logger();
 	set_embedder(this);
+    smil2::test_attrs::set_default_tests_attrs();
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("Standalone"), true);
 	init_factories();
 	init_plugins();
 	
@@ -146,24 +156,25 @@ gtk_mainloop::init_playable_factory()
 	common::global_playable_factory *pf = common::get_global_playable_factory();
 	set_playable_factory(pf);
 
+	AM_DBG m_logger->debug("gtk_mainloop: adding QGtk playable factories");		
+	pf->add_factory(create_gtk_fill_playable_factory(this, NULL));
+#ifdef	WITH_GTK_HTML_WIDGET
+	pf->add_factory(create_gtk_html_playable_factory(this, NULL));
+#endif
+	pf->add_factory(create_gtk_image_playable_factory(this, NULL));
+	pf->add_factory(create_gtk_smiltext_playable_factory(this, NULL));
+	pf->add_factory(create_gtk_text_playable_factory(this, NULL));
+	pf->add_factory(create_gtk_video_playable_factory(this, NULL));
+
+#ifdef WITH_SDL
+    AM_DBG lib::logger::get_logger()->debug("gtk_mainloop: add factory for SDL");
+	pf->add_factory(gui::sdl::create_sdl_playable_factory(this));      
+#endif // WITH_SDL
 #ifdef WITH_GSTREAMER
 	AM_DBG logger::get_logger()->debug("add factory for GStreamer");
 	pf->add_factory(gui::gstreamer::create_gstreamer_renderer_factory(this));
 	AM_DBG logger::get_logger()->debug("add factory for GStreamer done");
-#endif
-
-#ifdef WITH_SDL
-	AM_DBG logger::get_logger()->debug("add factory for SDL");
-	pf->add_factory(gui::sdl::create_sdl_playable_factory(this));
-	AM_DBG logger::get_logger()->debug("add factory for SDL done");
-#endif
-	
-	pf->add_factory(create_gtk_renderer_factory(this));
-	pf->add_factory(create_gtk_video_factory(this));
-	AM_DBG m_logger->debug("mainloop::mainloop: added gtk_video_factory");			
-	//pf->add_factory(create_none_video_factory(this));	
-	//AM_DBG m_logger->debug("mainloop::mainloop: added none_video_factory");
-	
+#endif	
 }
 
 void

@@ -42,8 +42,10 @@ class none_area_renderer : public common::renderer_playable {
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
-		lib::event_processor* evp) 
-	:   common::renderer_playable(context, cookie, node, evp),
+		lib::event_processor* evp,
+		common::factories *fp,
+		common::playable_factory_machdep *mdp) 
+	:   common::renderer_playable(context, cookie, node, evp, fp, mdp),
 		m_rgn(NULL) {}
 	~none_area_renderer();
 	void start(double t);

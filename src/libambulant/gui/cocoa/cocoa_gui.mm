@@ -33,6 +33,7 @@
 #endif
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/common/preferences.h"
+#include "ambulant/common/renderer_select.h"
 #include "ambulant/smil2/test_attrs.h"
 
 #include <Cocoa/Cocoa.h>
@@ -60,15 +61,17 @@ namespace cocoa {
 common::window_factory *
 create_cocoa_window_factory(void *view)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
+
     return new cocoa_window_factory(view);
 }
 
+#if 0
 common::playable_factory *
 create_cocoa_renderer_factory(common::factories *factory)
 {
     return new cocoa_renderer_factory(factory);
 }
+#endif
 
 cocoa_window::~cocoa_window()
 {
@@ -141,6 +144,23 @@ cocoa_window::need_events(bool want)
 	[pool release];
 }
 
+#if 0
+bool cocoa_renderer_factory::supports(const lib::xml_string& tag, const char* renderer_uri) const
+{
+	if (tag != "" &&
+        tag != "ref" &&
+		tag != "img" &&
+		tag != "text" &&
+		tag != "brush" &&
+		tag != "audio" &&
+		tag != "video" &&
+		tag != "smilText")
+			return false;
+	if (renderer_uri != NULL && strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererCocoa")) != 0)
+			return false;
+	return true;
+}
+
 playable *
 cocoa_renderer_factory::new_playable(
 	playable_notification *context,
@@ -149,59 +169,58 @@ cocoa_renderer_factory::new_playable(
 	event_processor *evp)
 {
 	playable *rv;
-	
 	xml_string tag = node->get_local_name();
 	if (tag == "img") {
 		net::url url = net::url(node->get_url("src"));
 		if (url.guesstype() == "image/vnd.ambulant-ink") {
-			rv = new cocoa_ink_renderer(context, cookie, node, evp, m_factory);
+			rv = new cocoa_ink_renderer(context, cookie, node, evp, m_factory, NULL);
 			AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_ink_renderer 0x%x", (void *)node, (void *)rv);
 		} else {
-			rv = new cocoa_image_renderer(context, cookie, node, evp, m_factory);
+			rv = new cocoa_image_renderer(context, cookie, node, evp, m_factory, NULL);
 			AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_image_renderer 0x%x", (void *)node, (void *)rv);
 		}
 	} else if ( tag == "text") {
 		net::url url = net::url(node->get_url("src"));
 		if (url.guesstype() == "text/html") {
-			rv = new cocoa_html_renderer(context, cookie, node, evp);
+			rv = new cocoa_html_renderer(context, cookie, node, evp, m_factory, NULL);
 			AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_html_renderer 0x%x", (void *)node, (void *)rv);
 		} else {
-			rv = new cocoa_text_renderer(context, cookie, node, evp, m_factory);
+			rv = new cocoa_text_renderer(context, cookie, node, evp, m_factory, NULL);
 			AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_text_renderer 0x%x", (void *)node, (void *)rv);
 		}
 	} else if ( tag == "brush") {
-		rv = new cocoa_fill_renderer(context, cookie, node, evp);
+		rv = new cocoa_fill_renderer(context, cookie, node, evp, m_factory, NULL);
 		AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_fill_renderer 0x%x", (void *)node, (void *)rv);
 #ifdef WITH_COCOA_AUDIO
 	} else if ( tag == "audio") {
-		rv = new cocoa_audio_playable(context, cookie, node, evp);
+		rv = new cocoa_audio_playable(context, cookie, node, evp, m_factory, NULL);
 		AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_audio_renderer 0x%x", (void *)node, (void *)rv);
 #endif
 	} else if ( tag == "video") {
 		if (common::preferences::get_preferences()->m_prefer_ffmpeg ) {
-			rv = new cocoa_dsvideo_renderer(context, cookie, node, evp, m_factory);
+			rv = new cocoa_dsvideo_renderer(context, cookie, node, evp, m_factory, NULL);
 			if (rv) {
 				logger::get_logger()->trace("video: using native Ambulant renderer");
 				AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_dsvideo_renderer 0x%x", (void *)node, (void *)rv);
 			} else {
-				rv = new cocoa_video_renderer(context, cookie, node, evp);
+				rv = new cocoa_video_renderer(context, cookie, node, evp, m_factory, NULL);
 				if (rv) logger::get_logger()->trace("video: using QuickTime renderer");
 				AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_video_renderer 0x%x", (void *)node, (void *)rv);
 			}
 		} else {
-			rv = new cocoa_video_renderer(context, cookie, node, evp);
+			rv = new cocoa_video_renderer(context, cookie, node, evp, m_factory, NULL);
 			if (rv) {
 				logger::get_logger()->trace("video: using QuickTime renderer");
 				AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_video_renderer 0x%x", (void *)node, (void *)rv);
 			} else {
-				rv = new cocoa_dsvideo_renderer(context, cookie, node, evp, m_factory);
+				rv = new cocoa_dsvideo_renderer(context, cookie, node, evp, m_factory, NULL);
 				if (rv) logger::get_logger()->trace("video: using ffmpeg renderer");
 				AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_dsvideo_renderer 0x%x", (void *)node, (void *)rv);
 			}
 		}
 #ifdef WITH_SMIL30
 	} else if ( tag == "smilText") {
-		rv = new cocoa_smiltext_renderer(context, cookie, node, evp);
+		rv = new cocoa_smiltext_renderer(context, cookie, node, evp, m_factory, NULL);
 		AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_smiltext_renderer 0x%x", (void *)node, (void *)rv);
 #endif // WITH_SMIL30
 	} else {
@@ -221,6 +240,7 @@ cocoa_renderer_factory::new_aux_audio_playable(
 {
 	return NULL;
 }
+#endif
 
 lib::size
 cocoa_window_factory::get_default_size()
@@ -397,6 +417,7 @@ bad:
 	overlay_window_needs_reparent = NO;
 	overlay_window_needs_flush = NO;
 	overlay_window_needs_clear = NO;
+    [self updateScreenSize];
 	return self;
 }
 
@@ -560,6 +581,21 @@ bad:
 #else
 	return true;
 #endif
+}
+
+- (void)updateScreenSize
+{
+    // XXX Should be called for NSApplicationDidChangeScreenParametersNotification as well
+    NSScreen *screen = [[self window] screen];
+    if (screen) {
+        NSRect rect = [screen frame];
+        ambulant::smil2::test_attrs::set_current_screen_size(int(NSHeight(rect)), int(NSWidth(rect)));
+    }
+}
+
+-(void)viewDidMoveToWindow
+{
+    [self updateScreenSize];
 }
 
 - (void)mouseDown: (NSEvent *)theEvent
@@ -920,6 +956,7 @@ bad:
 // both seem to work.
 - (void) viewDidMoveToSuperview
 {
+    [self updateScreenSize];
 #ifdef WITH_QUICKTIME_OVERLAY
 	if (overlay_window == nil) return;
 	AM_DBG NSLog(@"viewDidMoveToWindow");

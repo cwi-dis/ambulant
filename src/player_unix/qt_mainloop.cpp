@@ -33,6 +33,12 @@
 #include "ambulant/gui/none/none_factory.h"
 #include "ambulant/gui/qt/qt_includes.h"
 #include "ambulant/gui/qt/qt_factory.h"
+#include "ambulant/gui/qt/qt_fill.h"
+#include "ambulant/gui/qt/qt_html_renderer.h"
+#include "ambulant/gui/qt/qt_image_renderer.h"
+#include "ambulant/gui/qt/qt_smiltext.h"
+#include "ambulant/gui/qt/qt_text_renderer.h"
+#include "ambulant/gui/qt/qt_video_renderer.h"
 #include "ambulant/common/plugin_engine.h"
 #include "ambulant/lib/parser_factory.h"
 #ifdef WITH_XERCES_BUILTIN
@@ -86,6 +92,8 @@ qt_mainloop::qt_mainloop(qt_gui* gui, int mbheight)
 {
  	m_logger = lib::logger::get_logger();
  	set_embedder(this);
+    smil2::test_attrs::set_default_tests_attrs();
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("Standalone"), true);
 	common::window_factory *wf = create_qt_window_factory(m_gui, mbheight, this);
 	assert(wf);
  	set_window_factory(wf);
@@ -129,9 +137,15 @@ qt_mainloop::init_playable_factory()
 	common::global_playable_factory *pf = common::get_global_playable_factory();
 	set_playable_factory(pf);
 
-	pf->add_factory(create_qt_playable_factory(this));
-	AM_DBG m_logger->debug("qt_mainloop: adding qt_video_factory");		
- 	pf->add_factory(create_qt_video_factory(this));
+	AM_DBG m_logger->debug("qt_mainloop: adding Qt playable factories");		
+	pf->add_factory(create_qt_fill_playable_factory(this, NULL));
+#ifdef	WITH_QT_HTML_WIDGET
+	pf->add_factory(create_qt_html_playable_factory(this, NULL));
+#endif
+	pf->add_factory(create_qt_image_playable_factory(this, NULL));
+	pf->add_factory(create_qt_smiltext_playable_factory(this, NULL));
+	pf->add_factory(create_qt_text_playable_factory(this, NULL));
+	pf->add_factory(create_qt_video_playable_factory(this, NULL));
 
 #ifdef WITH_SDL
     AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add factory for SDL");

@@ -46,7 +46,9 @@ class cocoa_audio_playable :
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
-		lib::event_processor *evp);
+		lib::event_processor *evp,
+		common::factories *fp,
+		common::playable_factory_machdep *mdp);
 	~cocoa_audio_playable();
 
 	void start(double where);

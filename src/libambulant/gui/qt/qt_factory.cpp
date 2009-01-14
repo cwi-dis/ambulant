@@ -60,6 +60,7 @@ ambulant::gui::qt::create_qt_window_factory_unsafe(void *parent_widget, int top_
     return new qt_window_factory(qw, top_offset, gpl);
 }
 
+#if 0
 common::playable_factory *
 ambulant::gui::qt::create_qt_playable_factory(common::factories *factory)
 {
@@ -71,6 +72,7 @@ ambulant::gui::qt::create_qt_video_factory(common::factories *factory)
 {
     return new qt_video_factory(factory);
 }
+
 //
 // qt_renderer_factory
 //
@@ -92,18 +94,18 @@ qt_renderer_factory::new_playable(
 	lib::xml_string tag = node->get_qname().second;
 	common::playable* rv;
 	if (tag == "img") {
- 		rv = new qt_image_renderer(context, cookie, node, evp, m_factory);
+	  rv = new qt_image_renderer(context, cookie, node, evp, m_factory, NULL);
 		AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_image_renderer 0x%x", (void*) node, (void*) rv);
 		return rv;
 	}
 	if (tag == "brush") {
- 		rv = new qt_fill_renderer(context, cookie, node, evp, m_factory);
+	  rv = new qt_fill_renderer(context, cookie, node, evp, m_factory, NULL);
 		AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_fill_renderer 0x%x", (void*) node, (void*) rv);
 		return rv;
 	}
 #ifdef WITH_SMIL30
 	if(tag == "smilText") {
-		rv = new qt_smiltext_renderer(context, cookie, node, evp);//, m_factory);
+	  rv = new qt_smiltext_renderer(context, cookie, node, evp, m_factory, NULL);
 		AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_smiltext_renderer 0x%x", (void*) node, (void*) rv);
 		return rv;
 	}
@@ -112,12 +114,12 @@ qt_renderer_factory::new_playable(
 #ifdef	WITH_QT_HTML_WIDGET
 	        net::url url = net::url(node->get_url("src"));
 		if (url.guesstype() == "text/html") {
-			rv = new qt_html_renderer(context, cookie, node, evp, m_factory);
+		  rv = new qt_html_renderer(context, cookie, node, evp, m_factory, NULL);
 			AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_html_renderer 0x%x", (void*) node, (void*) rv);
 			return rv;
 		}
 #endif /*WITH_QT_HTML_WIDGET*/
-		rv = new qt_text_renderer(context, cookie, node, evp, m_factory);
+		rv = new qt_text_renderer(context, cookie, node, evp, m_factory, NULL);
 		AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_text_renderer 0x%x", (void*) node, (void*) rv);
 		return rv;
     }
@@ -134,6 +136,7 @@ qt_renderer_factory::new_aux_audio_playable(
 {
 	return NULL;
 }
+#endif
   
 //
 // qt_window_factory
@@ -191,6 +194,13 @@ qt_video_factory::~qt_video_factory()
 {
 }
 
+bool
+qt_video_factory::supports(common::renderer_select *rs)
+{
+  const xml_string& tag = rs->get_tag();
+  if (tag != "" && tag != "video" && tag != "ref") return false;
+}
+
 common::playable *
 qt_video_factory::new_playable(
 		common::playable_notification *context,
@@ -203,7 +213,7 @@ qt_video_factory::new_playable(
 	lib::xml_string tag = node->get_qname().second;
     AM_DBG lib::logger::get_logger()->debug("qt_video_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "video") {
-	  rv = new qt_video_renderer(context, cookie, node, evp, m_factory);
+	  rv = new qt_video_renderer(context, cookie, node, evp, m_factory, NULL);
 		AM_DBG lib::logger::get_logger()->debug("qt_video_factory: node 0x%x: returning qt_video_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("qt_video_factory: no renderer for tag \"%s\"", tag.c_str());

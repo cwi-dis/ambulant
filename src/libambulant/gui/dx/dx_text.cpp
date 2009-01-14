@@ -26,14 +26,13 @@
 #include "ambulant/gui/dx/dx_window.h"
 #include "ambulant/gui/dx/dx_text_renderer.h"
 #include "ambulant/gui/dx/dx_transition.h"
-
 #include "ambulant/common/region_info.h"
-
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/memfile.h"
 #include "ambulant/lib/string_util.h"
 #include "ambulant/smil2/params.h"
 #include "ambulant/common/factory.h"
+#include "ambulant/smil2/test_attrs.h"
 
 //#define AM_DBG
 
@@ -43,14 +42,33 @@
 
 using namespace ambulant;
 
+extern const char dx_text_playable_tag[] = "text";
+extern const char dx_text_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererDirectX");
+extern const char dx_text_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererDirectXText");
+extern const char dx_text_playable_renderer_uri3[] = AM_SYSTEM_COMPONENT("RendererText");
+
+common::playable_factory *
+gui::dx::create_dx_text_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
+{
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectX"), true);
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectXText"), true);
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererText"), true);
+	return new common::single_playable_factory<
+		gui::dx::dx_text_renderer, 
+        dx_text_playable_tag, 
+        dx_text_playable_renderer_uri, 
+        dx_text_playable_renderer_uri2, 
+        dx_text_playable_renderer_uri3 >(factory, mdp);
+}
+
 gui::dx::dx_text_renderer::dx_text_renderer(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
 	common::factories* factory,
-	dx_playables_context *dxplayer)
-:   dx_renderer_playable(context, cookie, node, evp, dxplayer),
+	common::playable_factory_machdep *dxplayer)
+:   dx_renderer_playable(context, cookie, node, evp, factory, dynamic_cast<dx_playables_context*>(dxplayer)),
 	m_text(0),
 	m_df(factory->get_datasource_factory())
 {

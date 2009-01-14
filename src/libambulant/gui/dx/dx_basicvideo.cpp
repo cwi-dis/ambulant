@@ -26,14 +26,13 @@
 #include "ambulant/gui/dx/dx_window.h"
 #include "ambulant/gui/dx/dx_basicvideo_player.h"
 #include "ambulant/gui/dx/dx_transition.h"
-
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/win32/win32_asb.h"
 #include "ambulant/lib/textptr.h"
-
 #include "ambulant/common/region_info.h"
+#include "ambulant/smil2/test_attrs.h"
 
 //#define AM_DBG if(1)
 
@@ -42,14 +41,29 @@
 #endif
 
 using namespace ambulant;
+extern const char dx_basicvideo_playable_tag[] = "video";
+extern const char dx_basicvideo_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererDirectXBasicVideo");
+
+common::playable_factory *
+gui::dx::create_dx_basicvideo_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
+{
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectXBasicVideo"), true);
+	return new common::single_playable_factory<
+		gui::dx::dx_basicvideo_renderer, 
+        dx_basicvideo_playable_tag, 
+        dx_basicvideo_playable_renderer_uri, 
+        dx_basicvideo_playable_renderer_uri, 
+        dx_basicvideo_playable_renderer_uri >(factory, mdp);
+}
 
 gui::dx::dx_basicvideo_renderer::dx_basicvideo_renderer(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
-	dx_playables_context *dxplayer)
-:   dx_renderer_playable(context, cookie, node, evp, dxplayer),
+	common::factories *fp,
+	common::playable_factory_machdep *dxplayer)
+:   dx_renderer_playable(context, cookie, node, evp, fp, dynamic_cast<dx_playables_context*>(dxplayer)),
 	m_player(0), 
 	m_update_event(0) {
 	AM_DBG lib::logger::get_logger()->debug("dx_basicvideo_renderer(0x%x)", this);

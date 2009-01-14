@@ -114,12 +114,16 @@ class OS(UniqueObject):
         OS.entries.append(self)
         
 # Renderers
-class Renderer(UniqueObject):
+class Renderer(RichObject):
     entries = []
-    def __init__(self, name):
-        UniqueObject.__init__(self, name)
-        
+    def __init__(self, name, renderer_uri):
+        self.name = name
+        self.renderer_uri = renderer_uri
         Renderer.entries.append(self)
+    def __repr__(self):
+        return '%s(%s, %s)' % (self.__class__.__name__, `self.name`, `self.renderer_uri`)
+    def __str__(self):
+        return self.name
 
 # Protocols
 class Protocol(UniqueObject):

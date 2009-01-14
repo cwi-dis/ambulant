@@ -38,7 +38,7 @@ namespace dx {
 
 class dx_transition;
 
-class AMBULANTAPI dx_playables_context {
+class AMBULANTAPI dx_playables_context : public common::playable_factory_machdep {
   public:
 	virtual void stopped(common::playable *p) = 0;
 	virtual void paused(common::playable *p) = 0;
@@ -55,9 +55,10 @@ class dx_renderer_playable : public common::renderer_playable {
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
-		lib::event_processor* evp, 
+		lib::event_processor* evp,
+		common::factories *fp,
 		dx_playables_context *dxplayer) 
-	:	common::renderer_playable(context, cookie, node, evp), 
+	:	common::renderer_playable(context, cookie, node, evp, fp, dxplayer), 
 		m_dxplayer(dxplayer), m_transitioning(false) {}
 	
 	void set_intransition(const lib::transition_info *info) {

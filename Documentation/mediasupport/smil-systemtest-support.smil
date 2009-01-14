@@ -1,0 +1,27 @@
+<smil>
+	<body>
+		<seq>			
+			<switch><smilText dur="1s" systemComponent="http://www.ambulantplayer.org/component/Ambulant">Ambulant available</smilText><smilText dur="1s">Ambulant not available</smilText></switch>
+			<switch><smilText dur="1s" systemComponent="http://www.ambulantplayer.org/component/RendererFill">RendererFill available</smilText><smilText dur="1s">RendererFill not available</smilText></switch>
+			<switch><smilText dur="1s" systemComponent="http://www.ambulantplayer.org/component/RendererText">RendererText available</smilText><smilText dur="1s">RendererText not available</smilText></switch>
+			<switch><smilText dur="1s" systemComponent="http://www.ambulantplayer.org/component/RendererImg">RendererImg available</smilText><smilText dur="1s">RendererImg not available</smilText></switch>
+			<switch><smilText dur="1s" systemComponent="http://www.ambulantplayer.org/component/RendererAudio">RendererAudio available</smilText><smilText dur="1s">RendererAudio not available</smilText></switch>
+			<switch><smilText dur="1s" systemComponent="http://www.ambulantplayer.org/component/RendererVideo">RendererVideo available</smilText><smilText dur="1s">RendererVideo not available</smilText></switch>
+			<switch><smilText dur="1s" systemComponent="http://www.ambulantplayer.org/component/RendererSmilText">RendererSmilText available</smilText><smilText dur="1s">RendererSmilText not available</smilText></switch>
+			<switch><smilText dur="1s" systemComponent="http://www.ambulantplayer.org/component/RendererCocoa">RendererCocoa available</smilText><smilText dur="1s">RendererCocoa not available</smilText></switch>
+			<switch><smilText dur="1s" systemComponent="http://www.ambulantplayer.org/component/RendererCocoaAudio">RendererCocoaAudio available</smilText><smilText dur="1s">RendererCocoaAudio not available</smilText></switch>
+			<switch><smilText dur="1s" systemComponent="http://www.ambulantplayer.org/component/RendererDirectX">RendererDirectX available</smilText><smilText dur="1s">RendererDirectX not available</smilText></switch>
+			<switch><smilText dur="1s" systemComponent="http://www.ambulantplayer.org/component/RendererHtml">RendererHtml available</smilText><smilText dur="1s">RendererHtml not available</smilText></switch>
+			<switch><smilText dur="1s" systemComponent="http://www.ambulantplayer.org/component/RendererInk">RendererInk available</smilText><smilText dur="1s">RendererInk not available</smilText></switch>
+			<switch><smilText dur="1s" systemComponent="http://www.ambulantplayer.org/component/RendererNone">RendererNone available</smilText><smilText dur="1s">RendererNone not available</smilText></switch>
+			<switch><smilText dur="1s" systemComponent="http://www.ambulantplayer.org/component/RendererOpen">RendererOpen available</smilText><smilText dur="1s">RendererOpen not available</smilText></switch>
+			<switch><smilText dur="1s" systemComponent="http://www.ambulantplayer.org/component/RendererQuickTime">RendererQuickTime available</smilText><smilText dur="1s">RendererQuickTime not available</smilText></switch>
+			<switch><smilText dur="1s" systemComponent="http://www.ambulantplayer.org/component/RendererSdl">RendererSdl available</smilText><smilText dur="1s">RendererSdl not available</smilText></switch>
+			<switch><smilText dur="1s" systemComponent="http://www.ambulantplayer.org/component/Standalone">Standalone available</smilText><smilText dur="1s">Standalone not available</smilText></switch>
+			<switch><smilText dur="1s" systemComponent="http://www.ambulantplayer.org/component/Version2.0">Version2.0 available</smilText><smilText dur="1s">Version2.0 not available</smilText></switch>
+			<switch><smilText dur="1s" systemComponent="http://www.ambulantplayer.org/component/Version2.0Exact">Version2.0Exact available</smilText><smilText dur="1s">Version2.0Exact not available</smilText></switch>
+			<switch><smilText dur="1s" systemComponent="http://www.ambulantplayer.org/component/Version2.1">Version2.1 available</smilText><smilText dur="1s">Version2.1 not available</smilText></switch>
+			<switch><smilText dur="1s" systemComponent="http://www.ambulantplayer.org/component/Version2.1Exact">Version2.1Exact available</smilText><smilText dur="1s">Version2.1Exact not available</smilText></switch>
+		</seq>
+	</body>
+</smil>

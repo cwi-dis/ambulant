@@ -27,6 +27,7 @@
 #include "ambulant/gui/gtk/gtk_util.h"
 #include "ambulant/common/region_info.h"
 #include "ambulant/common/smil_alignment.h"
+#include "ambulant/smil2/test_attrs.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -38,6 +39,22 @@ using namespace common;
 using namespace lib;
 using namespace gui::gtk;
 
+extern const char gtk_image_playable_tag[] = "img";
+extern const char gtk_image_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererGtk");
+extern const char gtk_image_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererImg");
+
+common::playable_factory *
+gui::gtk::create_gtk_image_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
+{
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererGtk"), true);
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererImg"), true);
+	return new common::single_playable_factory<
+        gtk_image_renderer, 
+        gtk_image_playable_tag, 
+        gtk_image_playable_renderer_uri,
+        gtk_image_playable_renderer_uri2,
+        gtk_image_playable_renderer_uri2>(factory, mdp);
+}
 
 gtk_image_renderer::~gtk_image_renderer() {
 	m_lock.enter();

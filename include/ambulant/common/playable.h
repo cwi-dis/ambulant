@@ -30,6 +30,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/refcount.h"
 #include "ambulant/lib/node.h"
+#include "ambulant/common/renderer_select.h"
 
 namespace ambulant {
 
@@ -45,6 +46,8 @@ class audio_datasource;
 namespace common {
 
 class renderer;
+class factories;
+class renderer_select;
 
 /// Display mode when the playable is paused.
 enum pause_display {
@@ -210,10 +213,19 @@ class playable_notification {
 	virtual void marker_seen(cookie_type n, const char *name, double t = 0) = 0;
 };
 
+/// Machine-dependent auxiliary object to be passed to renderer factories.
+class AMBULANTAPI playable_factory_machdep {
+  public:
+	virtual ~playable_factory_machdep() {}
+};
+
 /// Factory for playable objects.
 class playable_factory {
   public:
 	virtual ~playable_factory() {};
+	
+	/// Return true if this factory supports this node.
+	virtual bool supports(renderer_select *rs) = 0;
 	
 	/// Create a playable for a given node.
 	virtual playable *new_playable(
@@ -241,11 +253,60 @@ class global_playable_factory : public playable_factory {
     
 	/// Add a factory.
     virtual void add_factory(playable_factory *rf) = 0;
+    /// Signal preference for a certain category of renderers
+    virtual void preferred_renderer(const char* name) = 0;
 };
 
 /// Factory function to get a (singleton?) global_playable_factory object.
 AMBULANTAPI global_playable_factory *get_global_playable_factory();
 
+/// Template factory for one implementation class
+template<class PlayableClass, const char *Tag, const char *Renderer_uri, const char *Renderer_uri2, const char *Renderer_uri3>
+class single_playable_factory : public playable_factory {
+  public:
+	single_playable_factory(
+		common::factories *factory,
+		common::playable_factory_machdep *mdp)
+	:	m_factory(factory),
+		m_mdp(mdp)
+	{}
+	
+	bool supports(renderer_select *rs)
+	{
+		const lib::xml_string& tag = rs->get_tag();
+		if (tag != "" && tag != "ref" && tag != Tag) return false;
+		const char *renderer_uri = rs->get_renderer_uri();
+		if (renderer_uri != NULL && 
+            strcmp(renderer_uri, "") != 0 &&
+            strcmp(renderer_uri, Renderer_uri) != 0 &&
+            strcmp(renderer_uri, Renderer_uri2) != 0&&
+            strcmp(renderer_uri, Renderer_uri3) != 0) return false;
+		return true;
+	}
+		
+	playable *new_playable(
+		playable_notification *context,
+		playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *evp)
+	{
+		return new PlayableClass(context, cookie, node, evp, m_factory, m_mdp);
+	}
+	
+	playable *new_aux_audio_playable(
+		playable_notification *context,
+		playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *evp,
+		net::audio_datasource *src)
+	{
+		return NULL;
+	}
+	
+  private:
+	common::factories *m_factory;
+	common::playable_factory_machdep *m_mdp;
+};
 
 } // namespace common
  

@@ -39,8 +39,9 @@ video_renderer::video_renderer(
 	playable_notification::cookie_type cookie,
 	const lib::node * node,
 	lib::event_processor * evp,
-	common::factories *factory)
-:	renderer_playable (context, cookie, node, evp),
+	common::factories *factory,
+	common::playable_factory_machdep *mdp)
+:	renderer_playable (context, cookie, node, evp, factory, mdp),
 	m_src(NULL),
 	m_audio_ds(NULL),
 	m_audio_renderer(NULL),
@@ -316,7 +317,8 @@ video_renderer::data_avail()
 	} else
 	if (frame_ts_micros + frame_duration < m_clip_begin) {
 		// Frame from before begin-of-movie (funny comparison because of unsignedness). Skip silently, and schedule another callback asap.
-		m_src->frame_processed(frame_ts_micros);
+		AM_DBG lib::logger::get_logger()->debug("video_renderer: frame skipped, ts (%lld) < clip_begin(%lld)", frame_ts_micros, m_clip_begin);
+        m_src->frame_processed(frame_ts_micros);
 	} else
 #ifdef DROP_LATE_FRAMES
 	if (frame_ts_micros <= now_micros - frame_duration && !m_prev_frame_dropped) {

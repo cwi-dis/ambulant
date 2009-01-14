@@ -28,6 +28,7 @@
 #include "ambulant/gui/none/none_gui.h"
 #include "ambulant/net/datasource.h"
 #include "ambulant/lib/parselets.h"
+#include "ambulant/smil2/params.h"
 
 
 //#define AM_DBG
@@ -44,8 +45,10 @@ renderer_playable::renderer_playable(
 	playable_notification *context,
 	cookie_type cookie,
 	const lib::node *node,
-	lib::event_processor* evp) 
-:	playable_imp(context, cookie, node, evp),
+	lib::event_processor* evp,
+	common::factories *fp,
+	common::playable_factory_machdep *mdp) 
+:	playable_imp(context, cookie, node, evp, fp, mdp),
 	m_dest(0),
 	m_alignment(0),
 	m_activated(false),
@@ -165,8 +168,9 @@ renderer_playable_ds::renderer_playable_ds(
 	playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor *evp,
-	common::factories *factory)
-:	renderer_playable(context, cookie, node, evp),
+	common::factories *factory,
+	common::playable_factory_machdep *mdp)
+:	renderer_playable(context, cookie, node, evp, factory, mdp),
 	m_src(NULL)
 {
 	// XXXX m_src = passive_datasource(node->get_url("src"))->activate()
@@ -284,13 +288,17 @@ global_playable_factory_impl::global_playable_factory_impl()
 
 global_playable_factory_impl::~global_playable_factory_impl()
 {
-    // XXXX Should I delete the factories in m_factories? I think
-    // so, but I'm not sure...
-    std::vector<playable_factory*>::iterator i;
-    for(i=m_factories.begin(); i != m_factories.end(); i++)
-		delete (*i);
+	// Clear the renderer selection cache
+	std::map<int, renderer_select*>::iterator ri;
+	for (ri=m_renderer_select.begin(); ri!=m_renderer_select.end(); ri++)
+		delete (*ri).second;
+	m_renderer_select.clear();
+	// Clear the factories
+	delete m_default_factory;
+    std::list<playable_factory*>::iterator fi;
+    for(fi=m_factories.begin(); fi != m_factories.end(); fi++)
+		delete (*fi);
 	m_factories.clear();
-    delete m_default_factory;
 }
     
 void
@@ -298,7 +306,27 @@ global_playable_factory_impl::add_factory(playable_factory *rf)
 {
     m_factories.push_back(rf);
 }
-    
+
+void
+global_playable_factory_impl::preferred_renderer(const char* name)
+{
+    renderer_select rs(name);
+    std::list<playable_factory *>::iterator i;
+	std::list<playable_factory *> new_list;
+
+	for (i=m_factories.begin(); i!=m_factories.end(); i++) {
+		if ((*i)->supports(&rs)) {
+			/*AM_DBG*/ lib::logger::get_logger()->debug("preferred_renderer: moving 0x%x to front", *i);
+			new_list.push_back(*i);
+		}
+	}
+	for (i=m_factories.begin(); i!=m_factories.end(); i++) {
+		if (!(*i)->supports(&rs))
+			new_list.push_back(*i);
+	}
+	m_factories = new_list;
+}
+
 playable *
 global_playable_factory_impl::new_playable(
 	playable_notification *context,
@@ -306,14 +334,37 @@ global_playable_factory_impl::new_playable(
 	const lib::node *node,
 	lib::event_processor *evp)
 {
-    std::vector<playable_factory *>::iterator i;
-    playable *rv;
-    
-    for(i=m_factories.begin(); i != m_factories.end(); i++) {
-        rv = (*i)->new_playable(context, cookie, node, evp);
-        if (rv) return rv;
-    }
-    return m_default_factory->new_playable(context, cookie, node, evp);
+    std::list<playable_factory *>::iterator i;
+	
+	// First make sure we have the node in our renderer selection cache
+	int nid = node->get_numid();
+	if (m_renderer_select.count(nid) == 0) {
+		m_renderer_select[nid] = new renderer_select(node);
+	}
+	renderer_select *rs = m_renderer_select[nid];
+	
+	// If we don't have a renderer selected yet select one
+	playable *rv = NULL;
+    playable_factory *pf = rs->get_playable_factory();
+	if (pf == NULL) {
+		for(i=m_factories.begin(); i != m_factories.end(); i++) {
+			if ((*i)->supports(rs)) {
+				rv = (*i)->new_playable(context, cookie, node, evp);
+				if (rv) {
+					// This one works! Let's remember it for next time.
+					pf = (*i);
+					break;
+				}
+			}
+		}
+		if (rv == NULL) {
+			// We have no factories that can render this node...
+			rv = m_default_factory->new_playable(context, cookie, node, evp);
+			pf = m_default_factory;
+		}
+		rs->set_playable_factory(pf);
+	}
+	return rv;    
 }
 
 playable *
@@ -324,7 +375,7 @@ global_playable_factory_impl::new_aux_audio_playable(
 	lib::event_processor *evp,
 	net::audio_datasource *src)
 {
-    std::vector<playable_factory *>::iterator i;
+    std::list<playable_factory *>::iterator i;
     playable *rv;
     
     for(i=m_factories.begin(); i != m_factories.end(); i++) {
@@ -332,7 +383,7 @@ global_playable_factory_impl::new_aux_audio_playable(
         if (rv) return rv;
     }
 	
-    return m_default_factory->new_playable(context, cookie, node, evp);
+    return NULL;
 }
 
 global_playable_factory *

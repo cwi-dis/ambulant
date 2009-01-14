@@ -374,7 +374,7 @@ void smil_player::stop_playable(const lib::node *n) {
 		m_playables.erase(it);
 	}
 	m_playables_cs.leave();
-	if (victim.first)
+	if (victim.second)
 		_destroy_playable(victim.second, victim.first);
 	AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable(0x%x)cs.leave", (void*)n);
 }
@@ -845,6 +845,8 @@ smil_player::_new_playable(const lib::node *n) {
 
 // Destroys the playable of the node (checkpoint).
 void smil_player::_destroy_playable(common::playable *np, const lib::node *n) {
+	assert(np);
+	assert(n);
 	AM_DBG {
 		std::string tag = n->get_local_name();
 		const char *pid = n->get_attribute("id");

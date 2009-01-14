@@ -266,6 +266,7 @@ libambulant_la_SOURCES = \
 	common/preferences.cpp \
 	common/region.cpp \
 	common/renderer_impl.cpp \
+	common/renderer_select.cpp \
 	common/schema.cpp \
 	common/state.cpp \
 	common/smil_alignment.cpp \

@@ -905,6 +905,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\libambulant\common\renderer_select.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\libambulant\common\schema.cpp"
 					>
 				</File>
@@ -1132,10 +1136,6 @@
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_window.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\include\ambulant\gui\dx\dx_wmuser.h"
 							>
 						</File>
 						<File
@@ -1457,6 +1457,10 @@
 					</File>
 					<File
 						RelativePath="..\..\include\ambulant\common\renderer_impl.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\include\ambulant\common\renderer_select.h"
 						>
 					</File>
 					<File

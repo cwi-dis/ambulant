@@ -77,6 +77,9 @@ OBJECTS=[
 	("playable_factory", "ambulant::common::playable_factory", None),
 	("global_playable_factory", "ambulant::common::global_playable_factory", "playable_factory"),
 	
+	"common/renderer_select.h",
+	("renderer_select", "ambulant::common::renderer_select", None),
+	
 	"common/player.h",
 	("player_feedback", "ambulant::common::player_feedback", None),
 	("player", "ambulant::common::player", None),

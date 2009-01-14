@@ -50,6 +50,8 @@ using namespace net;
 
 namespace gtk {
 
+common::playable_factory *create_gtk_image_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+
 class gtk_image_renderer : public gtk_renderer<renderer_playable_dsall> {
 
   public:
@@ -58,8 +60,9 @@ class gtk_image_renderer : public gtk_renderer<renderer_playable_dsall> {
 		playable_notification::cookie_type cookie,
 		const node *node,
 		event_processor *const evp,
-		common::factories *factory)
-	:	gtk_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory),
+		common::factories *factory,
+		common::playable_factory_machdep *mdp)
+	  :	gtk_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory, mdp),
 	 	m_image(NULL),
 		m_image_loaded(false)
 	 	{};

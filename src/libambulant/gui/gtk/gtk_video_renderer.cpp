@@ -27,6 +27,7 @@
 #include "ambulant/common/factory.h"
 #include <stdlib.h>
 #include "ambulant/common/playable.h"
+#include "ambulant/smil2/test_attrs.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -47,15 +48,33 @@
 using namespace ambulant;
 using namespace gui::gtk;
 
+extern const char gtk_video_playable_tag[] = "video";
+extern const char gtk_video_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererGtk");
+extern const char gtk_video_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererVideo");
+extern const char gtk_video_playable_renderer_uri3[] = AM_SYSTEM_COMPONENT("RendererOpen");
 
+common::playable_factory *
+gui::gtk::create_gtk_video_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
+{
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererGtk"), true);
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererVideo"), true);
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererOpen"), true);
+	return new common::single_playable_factory<
+        gtk_video_renderer, 
+        gtk_video_playable_tag, 
+        gtk_video_playable_renderer_uri,
+        gtk_video_playable_renderer_uri2,
+        gtk_video_playable_renderer_uri3>(factory, mdp);
+}
 
 gtk_video_renderer::gtk_video_renderer(
-		common::playable_notification *context,
-		common::playable_notification::cookie_type cookie,
-		const lib::node *node,
-		lib::event_processor *const evp,
-    	common::factories *factory)
-:	gtk_renderer<common::video_renderer>(context, cookie, node, evp, factory),
+	common::playable_notification *context,
+	common::playable_notification::cookie_type cookie,
+	const lib::node *node,
+	lib::event_processor *const evp,
+	common::factories *factory,
+	common::playable_factory_machdep *mdp)
+:	gtk_renderer<common::video_renderer>(context, cookie, node, evp, factory, mdp),
  	m_image(NULL),
   	m_data(NULL),
 	m_img_displayed(0)

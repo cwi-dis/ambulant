@@ -38,17 +38,18 @@ namespace ambulant {
 namespace gui {
 
 namespace gtk {
-	
-	
+
+common::playable_factory *create_gtk_video_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 
 class gtk_video_renderer :  public gtk_renderer<common::video_renderer>  {
   public:
 	gtk_video_renderer(
-				 common::playable_notification *context,
-				 common::playable_notification::cookie_type cookie,
-				 const lib::node *node,
-				 lib::event_processor *const evp,
-				 common::factories *factory);
+		common::playable_notification *context,
+		common::playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *const evp,
+		common::factories *factory,
+		common::playable_factory_machdep *mdp);
 	
 	~gtk_video_renderer();
 	net::pixel_order pixel_layout();

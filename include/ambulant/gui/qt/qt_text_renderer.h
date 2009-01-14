@@ -46,13 +46,16 @@ namespace gui {
 
 namespace qt {
 
+common::playable_factory *create_qt_text_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+
 class qt_text_renderer : public qt_renderer<renderer_playable_dsall> {
   public:
 	qt_text_renderer(common::playable_notification *context,
 				common::playable_notification::cookie_type cookie,
 				const lib::node *node,
 				lib::event_processor *const evp,
-				common::factories *factory);
+				common::factories *factory,
+				common::playable_factory_machdep *mdp);
 	~qt_text_renderer();
 
  	void redraw_body(const lib::rect &r,

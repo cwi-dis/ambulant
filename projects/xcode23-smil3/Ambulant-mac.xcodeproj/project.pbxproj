@@ -44,6 +44,7 @@
 		043903080BD7956400E13028 /* DTDCache in Resources */ = {isa = PBXBuildFile; fileRef = 043902D50BD7956400E13028 /* DTDCache */; };
 		04430D390E506F6400029503 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04430D380E506F6400029503 /* libbz2.dylib */; };
 		04430D3A0E506F6400029503 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04430D380E506F6400029503 /* libbz2.dylib */; };
+		0479C4630E67453F00C90467 /* renderer_select.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0479C4620E67453F00C90467 /* renderer_select.cpp */; };
 		0480CD000CDD1D5C0025344B /* libfaad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0480CCFF0CDD1D5C0025344B /* libfaad.a */; };
 		049650620BCADE2B002C00DF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 049650610BCADE2B002C00DF /* main.m */; };
 		0496506D0BCADE62002C00DF /* LogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049650640BCADE62002C00DF /* LogController.mm */; };
@@ -297,6 +298,8 @@
 		043902C80BD7955000E13028 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = ../../Extras/Welcome/data; sourceTree = SOURCE_ROOT; };
 		043902D50BD7956400E13028 /* DTDCache */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DTDCache; path = ../../Extras/DTDCache; sourceTree = SOURCE_ROOT; };
 		04430D380E506F6400029503 /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = /usr/lib/libbz2.dylib; sourceTree = "<absolute>"; };
+		0479C4620E67453F00C90467 /* renderer_select.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderer_select.cpp; sourceTree = "<group>"; };
+		0479C4660E67456600C90467 /* renderer_select.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderer_select.h; sourceTree = "<group>"; };
 		0480CCFF0CDD1D5C0025344B /* libfaad.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfaad.a; path = /usr/local/lib/libfaad.a; sourceTree = "<absolute>"; };
 		049650600BCADE2B002C00DF /* Ambulant.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Ambulant.pch; path = ../../src/player_macosx/Ambulant.pch; sourceTree = SOURCE_ROOT; };
 		049650610BCADE2B002C00DF /* main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../../src/player_macosx/main.m; sourceTree = SOURCE_ROOT; };
@@ -836,6 +839,7 @@
 		049650C20BCAE333002C00DF /* common */ = {
 			isa = PBXGroup;
 			children = (
+				0479C4660E67456600C90467 /* renderer_select.h */,
 				04E13B2A0BD786560074AF09 /* state.h */,
 				049650C40BCAE333002C00DF /* embedder.h */,
 				049650C50BCAE333002C00DF /* factory.h */,
@@ -1225,6 +1229,7 @@
 		0496523D0BCAE3C5002C00DF /* common */ = {
 			isa = PBXGroup;
 			children = (
+				0479C4620E67453F00C90467 /* renderer_select.cpp */,
 				04E13B230BD786120074AF09 /* state.cpp */,
 				0496523E0BCAE3C5002C00DF /* factory.cpp */,
 				0496523F0BCAE3C5002C00DF /* gui_player.cpp */,
@@ -1801,6 +1806,7 @@
 				04E13B250BD786120074AF09 /* state.cpp in Sources */,
 				04E13B290BD786380074AF09 /* cocoa_smiltext.mm in Sources */,
 				04E13B360BD786A40074AF09 /* smiltext.cpp in Sources */,
+				0479C4630E67453F00C90467 /* renderer_select.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

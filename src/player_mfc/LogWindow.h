@@ -2,6 +2,7 @@
 #include "afxcmn.h"
 #include "ambulant/lib/amstream.h"
 
+#define THREAD_SAFE_LOG
 
 // Implementation of lib::ostream that sends output to the
 // log window.
@@ -29,6 +30,9 @@ public:
 	virtual ~CLogWindow();
 
 	void AppendText(const char *data);
+#ifdef THREAD_SAFE_LOG
+	LPARAM OnAmbulantMessage(WPARAM wParam, LPARAM lParam);
+#endif
 // Dialog Data
 	enum { IDD = IDD_LOG_WINDOW };
 

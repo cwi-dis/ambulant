@@ -66,7 +66,10 @@ class qt_window_factory : public common::window_factory {
 class qt_renderer_factory : public common::playable_factory {
   public:
 	qt_renderer_factory(common::factories *factory);
-	
+
+	bool supports(common::renderer_select *rs) {
+		return true;
+	}
 	common::playable *new_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
@@ -90,6 +93,8 @@ class qt_video_factory : public common::playable_factory {
   	qt_video_factory(common::factories *factory)
 	:   m_factory(factory) {}
 	~qt_video_factory();
+
+	bool supports(common::renderer_select *rs);
 
 	common::playable *new_playable(
 		common::playable_notification *context,

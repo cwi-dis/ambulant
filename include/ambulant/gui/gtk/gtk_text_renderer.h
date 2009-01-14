@@ -46,17 +46,20 @@ namespace gui {
 
 namespace gtk {
 
+common::playable_factory *create_gtk_text_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+
 class gtk_text_renderer : public gtk_renderer<renderer_playable_dsall> {
   public:
 	gtk_text_renderer(common::playable_notification *context,
-				common::playable_notification::cookie_type cookie,
-				const lib::node *node,
-				lib::event_processor *const evp,
-				common::factories *factory);
+		common::playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *const evp,
+		common::factories *factory,
+		common::playable_factory_machdep *mdp);
 	~gtk_text_renderer();
 
  	void redraw_body(const lib::rect &r,
-			 common::gui_window* w);
+		common::gui_window* w);
 
   private:
 	char* m_text_storage;

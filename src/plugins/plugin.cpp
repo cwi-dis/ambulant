@@ -23,6 +23,7 @@
 #include "ambulant/common/renderer_impl.h"
 #include "ambulant/common/plugin_engine.h"
 #include "ambulant/common/gui_player.h"
+#include "ambulant/smil2/test_attrs.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -33,10 +34,14 @@ using namespace ambulant;
 class basic_plugin_factory : public common::playable_factory {
   public:
 
-	basic_plugin_factory(common::factories* factory)
-	:   m_factory(factory) {}
+	basic_plugin_factory(common::factories* factory, common::playable_factory_machdep *mdp)
+	:   m_factory(factory),
+		m_mdp(mdp)
+	{}
 	~basic_plugin_factory() {};
 		
+	bool supports(common::renderer_select *rs);
+
 	common::playable *new_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
@@ -51,7 +56,7 @@ class basic_plugin_factory : public common::playable_factory {
 		net::audio_datasource *src) { return NULL; }
   private:
 	common::factories *m_factory;
-	
+	common::playable_factory_machdep *m_mdp;
 };
 
 class basic_plugin : public common::playable_imp 
@@ -62,7 +67,8 @@ class basic_plugin : public common::playable_imp
     common::playable_notification::cookie_type cookie,
     const lib::node *node,
     lib::event_processor *evp,
-	common::factories *factory);
+	common::factories *factory,
+	common::playable_factory_machdep *mdp);
 
   	~basic_plugin() {};
 	
@@ -75,6 +81,15 @@ class basic_plugin : public common::playable_imp
 };
 
 
+bool 
+basic_plugin_factory::supports(common::renderer_select *rs)
+{
+	const char *renderer_uri = rs->get_renderer_uri();
+	// Only use this plugin if explicitly requested. The tag does not matter.
+	if (renderer_uri != NULL && strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererDummyPlugin")) == 0)
+		return true;
+	return false;
+}
 
 common::playable* 
 basic_plugin_factory::new_playable(
@@ -88,7 +103,7 @@ basic_plugin_factory::new_playable(
 	lib::xml_string tag = node->get_qname().second;
     AM_DBG lib::logger::get_logger()->debug("basic_plugin_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "plugindatatype") /*or any other tag ofcourse */ {
-		rv = new basic_plugin(context, cookie, node, evp, m_factory);
+		rv = new basic_plugin(context, cookie, node, evp, m_factory, m_mdp);
 		//rv = NULL;
 		AM_DBG lib::logger::get_logger()->debug("basic_plugin_factory: node 0x%x: returning basic_plugin 0x%x", (void *)node, (void *)rv);
 	} else {
@@ -103,8 +118,9 @@ basic_plugin::basic_plugin(
     common::playable_notification::cookie_type cookie,
     const lib::node *node,
     lib::event_processor *evp,
-	common::factories* factory) 
-:	common::playable_imp(context, cookie, node, evp)
+	common::factories* factory,
+	common::playable_factory_machdep *mdp) 
+:	common::playable_imp(context, cookie, node, evp, factory, mdp)
 {
 
 }
@@ -163,7 +179,7 @@ void initialize(
     lib::logger::get_logger()->debug("basic_plugin: loaded.");
 	common::global_playable_factory *pf = factory->get_playable_factory();
     if (pf) {
-    	basic_plugin_factory *bpf = new basic_plugin_factory(factory);
+    	basic_plugin_factory *bpf = new basic_plugin_factory(factory, NULL);
 		pf->add_factory(bpf);
     	lib::logger::get_logger()->trace("basic_plugin: registered");
     }

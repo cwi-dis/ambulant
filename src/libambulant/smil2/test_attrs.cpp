@@ -28,6 +28,7 @@
 #include "ambulant/lib/tree_builder.h"
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/version.h"
 
 //#define AM_DBG
 
@@ -357,7 +358,18 @@ void test_attrs::set_default_tests_attrs() {
 	active_tests_attrs_map["systemAudioDesc"] = "on";
 	active_tests_attrs_map["systemBitrate"] = "56000";
 	active_tests_attrs_map["systemCaptions"] = "on";
+	active_tests_attrs_map["systemOverdubOrSubtitle"] = "overdub";
+#if defined(__i386__) || defined(_M_IX86)
+	active_tests_attrs_map["systemCPU"] = "x86";
+#elif defined(__x86_64__) || defined(_M_IA64)
+	active_tests_attrs_map["systemCPU"] = "x86_64";
+#elif defined(__POWERPC__)
+	active_tests_attrs_map["systemCPU"] = "ppc";
+#elif defined(__arm__) || defined(__ARM__)
+	active_tests_attrs_map["systemCPU"] = "arm";
+#else
 	active_tests_attrs_map["systemCPU"] = "unknown";
+#endif
 	active_tests_attrs_map["systemLanguage"] = "en";
 #ifdef WITH_SMIL30
 	add_language("en",1.0);
@@ -375,6 +387,10 @@ void test_attrs::set_default_tests_attrs() {
 #endif
 	active_tests_attrs_map["systemScreenSize"] = "1024X1280";
 	active_tests_attrs_map["systemScreenDepth"] = "32";
+    set_current_system_component_value(AM_SYSTEM_COMPONENT("Ambulant"), true);
+    set_current_system_component_value(AM_SYSTEM_COMPONENT("Version2.0"), true);
+    set_current_system_component_value(AM_SYSTEM_COMPONENT("Version" AMBULANT_VERSION), true);
+    set_current_system_component_value(AM_SYSTEM_COMPONENT("Version" AMBULANT_VERSION "Exact"), true);
 }
 
 #ifdef WITH_SMIL30
@@ -439,8 +455,11 @@ test_attrs::get_state_test_methods()
 {
 	static smil2::state_test_methods_impl *singleton;
 	
-	if (singleton == NULL)
+	if (singleton == NULL) {
+        if(active_tests_attrs_map.empty())
+            set_default_tests_attrs();
 		singleton = new smil2::state_test_methods_impl();
+    }
 	return singleton;
 }
 #endif // WITH_SMIL30
@@ -459,6 +478,7 @@ void
 test_attrs::set_current_custom_test_value(std::string name, bool value)
 {
 	active_custom_tests_attrs_map[name] = value;
+    // XXX should raise contentControlChange
 }
 
 bool
@@ -491,6 +511,20 @@ test_attrs::set_current_system_component_value(std::string name, bool enabled)
 	}
 	
 	active_tests_attrs_map["systemComponent"] = value;
+    // XXX should raise contentControlChange
+}
+
+void
+test_attrs::set_current_screen_size(int height, int width)
+{
+    char buf[32];
+#ifdef AMBULANT_PLATFORM_WIN32
+	sprintf_s(buf, sizeof buf, "%dx%d", height, width);
+#else
+	snprintf(buf, sizeof buf, "%dx%d", height, width);
+#endif
+    active_tests_attrs_map["systemScreenSize"] = std::string(buf);
+    // XXX should raise contentControlChange
 }
 
 #ifdef WITH_SMIL30
@@ -499,6 +533,7 @@ test_attrs::clear_languages()
 {
 	active_language_map.clear();
 	// XXXX Should we insert language from systemTests???
+    // XXX should raise contentControlChange
 }
 
 void
@@ -506,6 +541,7 @@ test_attrs::add_language(std::string langname, float weight)
 {
 	AM_DBG lib::logger::get_logger()->trace("add_language('%s', %f)", langname.c_str(), weight);
 	active_language_map[langname] = weight;
+    // XXX should raise contentControlChange
 }
 
 float

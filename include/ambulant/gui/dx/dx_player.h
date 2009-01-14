@@ -71,41 +71,12 @@ class viewport;
 class dx_window;
 class dx_transition;
 
+
 class dx_player_callbacks : public html_browser_factory {
   public:
 	virtual HWND new_os_window() = 0;
 	virtual void destroy_os_window(HWND hwnd) = 0;
 	virtual SIZE get_default_size() = 0;
-};
-
-class dx_playable_factory : public common::playable_factory {
-  public:
-	  dx_playable_factory(
-			common::factories *factory,
-			lib::logger *logger,
-			dx_playables_context *ctx)
-	:	m_factory(factory),
-		m_logger(logger),
-		m_dxplayer(ctx) {}
-	////////////////////
-	// common::playable_factory implementation
-	
-	common::playable *new_playable(
-		common::playable_notification *context,
-		common::playable_notification::cookie_type cookie,
-		const ambulant::lib::node *node,
-		lib::event_processor * evp);
-
-	common::playable *new_aux_audio_playable(
-		common::playable_notification *context,
-		common::playable_notification::cookie_type cookie,
-		const lib::node *node,
-		lib::event_processor *evp,
-		net::audio_datasource *src);
-  private:
-	common::factories *m_factory;
-	lib::logger *m_logger;
-	dx_playables_context *m_dxplayer;
 };
 
 class AMBULANTAPI dx_player : 

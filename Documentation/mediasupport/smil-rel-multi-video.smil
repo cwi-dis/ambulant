@@ -1,0 +1,61 @@
+<?xml version='1.0' ?>
+<smil>
+<head>
+<layout>
+  <topLayout width="640" height="580">
+    <region id="video" top="0" height="480"/>
+    <region id="caption" top="480" height="100"/>
+  </topLayout>
+</layout>
+</head>
+<body>
+ <seq>
+ <par>
+  <video region="video" src="media/video-quicktime-pcm-animation-176x144.mov" clipBegin="0s" clipEnd="4s">
+  </video>
+  <smilText region="caption" dur="1s" fill="freeze">
+    This is the default video renderer
+  </smilText>
+ </par>
+ <switch>
+ <par systemComponent="http://www.ambulantplayer.org/component/RendererQuickTime">
+  <video region="video" src="media/video-quicktime-pcm-animation-176x144.mov" clipBegin="4s" clipEnd="8s">
+   <param name="renderer" value="http://www.ambulantplayer.org/component/RendererQuickTime"/>
+  </video>
+  <smilText region="caption" dur="1s" fill="freeze">
+    This is the QuickTime video renderer
+  </smilText>
+ </par>
+ <smilText region="caption" dur="1s">
+   The QuickTime video renderer is not available
+ </smilText>
+ </switch>
+ <switch>
+ <par systemComponent="http://www.ambulantplayer.org/component/RendererDirectX">
+  <video region="video" src="media/video-quicktime-pcm-animation-176x144.mov" clipBegin="8s" clipEnd="12s">
+   <param name="renderer" value="http://www.ambulantplayer.org/component/RendererDirectX"/>
+  </video>
+  <smilText region="caption" dur="1s" fill="freeze">
+    This is the DirectX video renderer
+  </smilText>
+ </par>
+ <smilText region="caption" dur="1s">
+   The DirectX video renderer is not available
+ </smilText>
+ </switch>
+ <switch>
+ <par systemComponent="http://www.ambulantplayer.org/component/RendererOpen">
+  <video region="video" src="media/video-quicktime-pcm-animation-176x144.mov" clipBegin="12s" clipEnd="16s">
+   <param name="renderer" value="http://www.ambulantplayer.org/component/RendererOpen"/>
+  </video>
+  <smilText region="caption" dur="1s" fill="freeze">
+    This is the Open Source video renderer
+  </smilText>
+ </par>
+ <smilText region="caption" dur="1s">
+   The Open Source video renderer is not available
+ </smilText>
+ </switch>
+ </seq>
+</body>
+</smil>

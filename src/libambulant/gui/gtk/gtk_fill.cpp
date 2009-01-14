@@ -24,6 +24,7 @@
 #include "ambulant/gui/gtk/gtk_transition.h"
 #include "ambulant/gui/gtk/gtk_image_renderer.h"
 #include "ambulant/gui/gtk/gtk_text_renderer.h"
+#include "ambulant/smil2/test_attrs.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -32,6 +33,23 @@
 
 using namespace ambulant;
 using namespace gui::gtk;
+
+extern const char gtk_fill_playable_tag[] = "brush";
+extern const char gtk_fill_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererGtk");
+extern const char gtk_fill_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererFill");
+
+common::playable_factory *
+gui::gtk::create_gtk_fill_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
+{
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererGtk"), true);
+   smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererFill"), true);
+	return new common::single_playable_factory<
+        gtk_fill_renderer, 
+        gtk_fill_playable_tag, 
+        gtk_fill_playable_renderer_uri,
+        gtk_fill_playable_renderer_uri2,
+        gtk_fill_playable_renderer_uri2>(factory, mdp);
+}
 
 gtk_fill_renderer::~gtk_fill_renderer()
 {

@@ -46,8 +46,10 @@ class cocoa_fill_renderer : public cocoa_renderer<renderer_playable> {
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
-		event_processor *evp)
-	:	cocoa_renderer<renderer_playable>(context, cookie, node, evp) {};
+		event_processor *evp,
+		common::factories *fp,
+		common::playable_factory_machdep *mdp)
+	:	cocoa_renderer<renderer_playable>(context, cookie, node, evp, fp, mdp) {};
 	~cocoa_fill_renderer();
 
 //	void freeze() {}

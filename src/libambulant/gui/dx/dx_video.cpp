@@ -26,14 +26,13 @@
 #include "ambulant/gui/dx/dx_window.h"
 #include "ambulant/gui/dx/dx_video_player.h"
 #include "ambulant/gui/dx/dx_transition.h"
-
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/win32/win32_asb.h"
 #include "ambulant/lib/textptr.h"
-
 #include "ambulant/common/region_info.h"
+#include "ambulant/smil2/test_attrs.h"
 
 //#define AM_DBG if(1)
 
@@ -42,14 +41,33 @@
 #endif
 
 using namespace ambulant;
+extern const char dx_video_playable_tag[] = "video";
+extern const char dx_video_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererDirectX");
+extern const char dx_video_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererDirectXVideo");
+extern const char dx_video_playable_renderer_uri3[] = AM_SYSTEM_COMPONENT("RendererVideo");
+
+common::playable_factory *
+gui::dx::create_dx_video_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
+{
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectX"), true);
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectXVideo"), true);
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererVideo"), true);
+	return new common::single_playable_factory<
+		gui::dx::dx_video_renderer, 
+        dx_video_playable_tag, 
+        dx_video_playable_renderer_uri, 
+        dx_video_playable_renderer_uri2, 
+        dx_video_playable_renderer_uri3 >(factory, mdp);
+}
 
 gui::dx::dx_video_renderer::dx_video_renderer(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
-	dx_playables_context *dxplayer)
-:   dx_renderer_playable(context, cookie, node, evp, dxplayer),
+	common::factories *fp,
+	common::playable_factory_machdep *dxplayer)
+:   dx_renderer_playable(context, cookie, node, evp, fp, dynamic_cast<dx_playables_context*>(dxplayer)),
 	m_player(0), 
 	m_update_event(0),
 	m_frametime(50)

@@ -43,6 +43,8 @@ namespace qt {
 
 class smiltext_renderer;
 
+common::playable_factory *create_qt_smiltext_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+
 class qt_smiltext_renderer : 
 		public qt_renderer<renderer_playable>,
 		  public smil2::smiltext_notification,
@@ -53,7 +55,9 @@ class qt_smiltext_renderer :
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
-		lib::event_processor* evp);
+		lib::event_processor* evp,
+		common::factories *fp,
+		common::playable_factory_machdep *mdp);
 	~qt_smiltext_renderer();
 	void start(double t);
 	void stop();

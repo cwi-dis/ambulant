@@ -48,8 +48,10 @@ class cocoa_html_renderer : public common::renderer_playable {
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
-		event_processor *evp)
-	:	common::renderer_playable(context, cookie, node, evp),
+		event_processor *evp,
+		common::factories *fp,
+		common::playable_factory_machdep *mdp)
+	:	common::renderer_playable(context, cookie, node, evp, fp, mdp),
 		m_html_view(NULL) {};
 	~cocoa_html_renderer() {};
 

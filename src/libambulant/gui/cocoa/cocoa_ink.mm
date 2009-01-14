@@ -26,6 +26,8 @@
 #include "ambulant/common/region_info.h"
 #include "ambulant/smil2/params.h"
 #include "ambulant/lib/tree_builder.h"
+#include "ambulant/common/renderer_select.h"
+#include "ambulant/smil2/test_attrs.h"
 
 #include <Cocoa/Cocoa.h>
 
@@ -41,13 +43,32 @@ namespace gui {
 
 namespace cocoa {
 
+
+extern const char cocoa_ink_playable_tag[] = "img";
+extern const char cocoa_ink_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererInk");
+extern const char cocoa_ink_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererCocoa");
+
+common::playable_factory *
+create_cocoa_ink_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
+{
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererInk"), true);
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
+	return new common::single_playable_factory<
+        cocoa_ink_renderer, 
+        cocoa_ink_playable_tag, 
+        cocoa_ink_playable_renderer_uri,
+        cocoa_ink_playable_renderer_uri2,
+        cocoa_ink_playable_renderer_uri2>(factory, mdp);
+}
+
 cocoa_ink_renderer::cocoa_ink_renderer(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		event_processor *evp,
-		common::factories *factory)
-:	cocoa_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory),
+		common::factories *factory,
+		common::playable_factory_machdep *mdp)
+:	cocoa_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory, mdp),
 	m_tree(NULL),
 	m_path(NULL),
 	m_color(NULL),

@@ -25,7 +25,9 @@
 #include "ambulant/gui/cocoa/cocoa_html.h"
 //#include "ambulant/gui/cocoa/cocoa_transition.h"
 #include "ambulant/common/region_info.h"
+#include "ambulant/common/renderer_select.h"
 #include "ambulant/lib/callback.h"
+#include "ambulant/smil2/test_attrs.h"
 #include <WebKit/WebKit.h>
 
 #ifndef AM_DBG
@@ -98,7 +100,11 @@ class wvc_container : public lib::ref_counted_obj {
 	}
 	void hide_generation(int gen) {
 		if (m_generation == gen) {
+#if 0
 			[[m_wvc view] removeFromSuperviewWithoutNeedingDisplay];
+#else
+            [[m_wvc view] performSelectorOnMainThread: @selector(removeFromSuperviewWithoutNeedingDisplay) withObject: nil waitUntilDone: NO];
+#endif
 			m_generation++;
 			AM_DBG lib::logger::get_logger()->debug("wvc_container: %d: hiding HTML view", gen);
 		} else {
@@ -135,6 +141,23 @@ _get_html_view(common::surface *surf)
 	}
 	surf->set_renderer_private_data(my_renderer_id, (common::renderer_private_data *)wvc);
 	return wvc;
+}
+
+extern const char cocoa_html_playable_tag[] = "text";
+extern const char cocoa_html_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererCocoa");
+extern const char cocoa_html_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererHtml");
+
+common::playable_factory *
+create_cocoa_html_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
+{
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererHtml"), true);
+	return new common::single_playable_factory<
+        cocoa_html_renderer, 
+        cocoa_html_playable_tag, 
+        cocoa_html_playable_renderer_uri,
+        cocoa_html_playable_renderer_uri2,
+        cocoa_html_playable_renderer_uri2>(factory, mdp);
 }
 
 void

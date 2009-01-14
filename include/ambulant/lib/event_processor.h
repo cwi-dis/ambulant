@@ -36,7 +36,7 @@ namespace ambulant {
 namespace lib {
 
 #ifndef WITHOUT_DELAYED_REDRAW
-class event_processor_observer {
+class AMBULANTAPI event_processor_observer {
   public:
 	  virtual ~event_processor_observer() {};
 	virtual void lock_redraw() = 0;

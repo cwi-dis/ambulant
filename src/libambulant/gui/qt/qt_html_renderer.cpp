@@ -73,13 +73,31 @@ class gui::qt::browser_container : public ref_counted_obj {
     
 };
 
+extern const char qt_html_playable_tag[] = "text";
+extern const char qt_html_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererQt");
+extern const char qt_html_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererHtml");
+
+common::playable_factory *
+gui::qt::create_qt_html_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
+{
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererQt"), true);
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererHtml"), true);
+	return new common::single_playable_factory<
+        qt_html_renderer, 
+        qt_html_playable_tag, 
+        qt_html_playable_renderer_uri,
+        qt_html_playable_renderer_uri2,
+        qt_html_playable_renderer_uri2>(factory, mdp);
+}
+
 qt_html_renderer::qt_html_renderer(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *const evp,
-		common::factories *factory)
-:   renderer_playable(context, cookie, node, evp),
+		common::factories *factory,
+		common::playable_factory_machdep *mdp)
+:   renderer_playable(context, cookie, node, evp, factory, mdp),
     m_html_browser(NULL) 
 {
     

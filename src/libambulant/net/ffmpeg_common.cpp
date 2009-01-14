@@ -448,6 +448,10 @@ ffmpeg_demux::run()
 				// Fixes bug #2046564.
 				if (!initial_audio_pts_set && pkt->stream_index == audio_streamnr) {
 					initial_audio_pts = pts;
+#if 1
+                    // Bugfix to bugfix: need to take initial seek/clipbegin into account too
+                    initial_audio_pts -= (m_clip_begin + m_seektime);
+#endif
 					initial_audio_pts_set = true;
 				}
 				if (pts != AV_NOPTS_VALUE) pts -= initial_audio_pts;

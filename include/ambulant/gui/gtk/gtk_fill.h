@@ -39,6 +39,8 @@ namespace gui {
 
 namespace gtk {
 
+common::playable_factory *create_gtk_fill_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+
 class gtk_fill_renderer : public  renderer_playable {
   public:
 	gtk_fill_renderer(
@@ -46,8 +48,9 @@ class gtk_fill_renderer : public  renderer_playable {
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *const evp,
-		common::factories *factory)
- 	:	renderer_playable(context, cookie, node, evp),
+		common::factories *factory,
+		common::playable_factory_machdep *mdp)
+	  :	renderer_playable(context, cookie, node, evp, factory, mdp),
 	  	m_is_showing(false),
 		m_intransition(NULL),
 		m_outtransition(NULL),

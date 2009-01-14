@@ -47,7 +47,9 @@ class cocoa_video_renderer :
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
-		event_processor *evp);
+		event_processor *evp,
+		common::factories *fp,
+		common::playable_factory_machdep *mdp);
 	~cocoa_video_renderer();
 
 	void start(double where);

@@ -121,6 +121,13 @@ gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, common::player_feedba
 	init_factories();
 	init_plugins();
 
+	// Order the factories according to the preferences
+	common::preferences *prefs = common::preferences::get_preferences();
+	if (prefs->m_prefer_ffmpeg)
+		get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererOpen"));
+	else
+		get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererDirectX"));   
+
 	// Parse the provided URL. 
 	AM_DBG m_logger->debug("Parsing: %s", u.get_url().c_str());	
 	m_doc = create_document(u);
@@ -213,7 +220,18 @@ gui::dx::dx_player::init_playable_factory()
 	common::global_playable_factory *pf = common::get_global_playable_factory();
 	set_playable_factory(pf);
 	// Add the playable factory
-	pf->add_factory(new dx_playable_factory(this, m_logger, this));
+	pf->add_factory(create_dx_area_playable_factory(this, this));
+	pf->add_factory(create_dx_audio_playable_factory(this, this));
+#if 0
+	pf->add_factory(create_dx_basicvideo_playable_factory(this, this));
+#endif
+	pf->add_factory(create_dx_brush_playable_factory(this, this));
+	pf->add_factory(create_dx_html_playable_factory(this, this));
+	pf->add_factory(create_dx_image_playable_factory(this, this));
+	pf->add_factory(create_dx_smiltext_playable_factory(this, this));
+	pf->add_factory(create_dx_text_playable_factory(this, this));
+	pf->add_factory(create_dx_video_playable_factory(this, this));
+	
 }
 
 void
@@ -508,8 +526,28 @@ gui::dx::dx_player::get_main_window() {
 	return (*it).second->h;
 }
 
+#if 0
 ////////////////////
 // common::playable_factory implementation
+bool
+gui::dx::dx_playable_factory::supports(common::renderer_select *rs)
+{
+	const lib::xml_string& tag = rs->get_tag();
+	if (tag != "" &&
+        tag != "ref" &&
+		tag != "img" &&
+		tag != "text" &&
+		tag != "brush" &&
+		tag != "audio" &&
+		tag != "video" &&
+		tag != "smilText")
+			return false;
+	const char *renderer_uri = rs->get_renderer_uri();
+	if (renderer_uri != NULL && strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererDirectX")) != 0)
+			return false;
+	return true;
+}
+
 
 common::playable *
 gui::dx::dx_playable_factory::new_playable(
@@ -540,33 +578,33 @@ gui::dx::dx_playable_factory::new_playable(
 		p = new dx_img_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
 	} else if(tag == "audio") {
 #ifdef WITH_FFMPEG
-		p = new gui::sdl::sdl_audio_renderer(context, cookie, node, evp, m_factory);
+		p = new gui::sdl::sdl_audio_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
 #else
 		if (use_ffmpeg)
 			lib::logger::get_logger()->debug("dx_player: DirectShow audio renderer disabled by preference");
 		else
-			p = new dx_audio_renderer(context, cookie, node, evp);
+			p = new dx_audio_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
 #endif/*WITH_FFMPEG*/
 	} else if(tag == "video") {
 #if defined(USE_DS_VIDEO)
-		p = new dx_dsvideo_renderer(context, cookie, node, evp, m_factory);
+		p = new dx_dsvideo_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
 #elif defined(USE_BASIC_VIDEO)
 		if (use_ffmpeg)
 			lib::logger::get_logger()->debug("dx_player: DirectShow video renderer disabled by preference");
 		else
-			p = new dx_basicvideo_renderer(context, cookie, node, evp, m_dxplayer);
+			p = new dx_basicvideo_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
 #else
 		if (use_ffmpeg)
 			lib::logger::get_logger()->debug("dx_player: DirectShow video renderer disabled by preference");
 		else
-			p = new dx_video_renderer(context, cookie, node, evp, m_dxplayer);
+			p = new dx_video_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
 #endif
 	} else if(tag == "area") {
-		p = new dx_area(context, cookie, node, evp);
+		p = new dx_area(context, cookie, node, evp, m_factory, m_dxplayer);
 	} else if(tag == "brush") {
-		p = new dx_brush(context, cookie, node, evp, m_dxplayer);
+		p = new dx_brush(context, cookie, node, evp, m_factory, m_dxplayer);
 	} else {
-		p = new dx_area(context, cookie, node, evp);
+		p = new dx_area(context, cookie, node, evp, m_factory, m_dxplayer);
 	}
 	return p;
 }
@@ -581,6 +619,7 @@ gui::dx::dx_playable_factory::new_aux_audio_playable(
 {
 	return NULL;
 }
+#endif
 
 void gui::dx::dx_player::set_intransition(common::playable *p, const lib::transition_info *info) { 
 	AM_DBG lib::logger::get_logger()->debug("set_intransition : %s", repr(info->m_type).c_str());

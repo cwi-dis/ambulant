@@ -11,6 +11,7 @@ library_include_HEADERS= \
 	region_info.h \
 	region.h \
 	renderer_impl.h \
+	renderer_select.h \
 	schema.h \
 	state.h \
 	smil_alignment.h \

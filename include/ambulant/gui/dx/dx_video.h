@@ -40,6 +40,8 @@ namespace dx {
 
 class video_player;
 
+common::playable_factory *create_dx_video_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+
 class dx_video_renderer : public dx_renderer_playable {
   public:
 	dx_video_renderer(
@@ -47,7 +49,8 @@ class dx_video_renderer : public dx_renderer_playable {
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp,
-		dx_playables_context *dxplayer);
+		common::factories *fp,
+		common::playable_factory_machdep *dxplayer);
 	~dx_video_renderer();
 	void start(double t);
 	void stop();

@@ -216,8 +216,9 @@ gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor *evp,
-	common::factories *factory)
-:	common::renderer_playable(context, cookie, node, evp),
+	common::factories *factory,
+	common::playable_factory_machdep *mdp)
+:	common::renderer_playable(context, cookie, node, evp, factory, mdp),
 	m_audio_src(NULL),
 	m_is_playing(false),
 	m_is_paused(false),
@@ -251,9 +252,9 @@ gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
     common::playable_notification::cookie_type cookie,
     const lib::node *node,
     lib::event_processor *evp,
-	common::factories* factory,
+	common::factories *factory,
 	net::audio_datasource *ds)
-:	common::renderer_playable(context, cookie, node, evp),
+:	common::renderer_playable(context, cookie, node, evp, factory, NULL),
 	m_audio_src(ds),
 	m_is_playing(false),
 	m_is_paused(false),

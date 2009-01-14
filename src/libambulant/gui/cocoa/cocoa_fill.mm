@@ -25,6 +25,8 @@
 #include "ambulant/gui/cocoa/cocoa_fill.h"
 #include "ambulant/gui/cocoa/cocoa_transition.h"
 #include "ambulant/common/region_info.h"
+#include "ambulant/common/renderer_select.h"
+#include "ambulant/smil2/test_attrs.h"
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -37,6 +39,23 @@ using namespace lib;
 namespace gui {
 
 namespace cocoa {
+
+extern const char cocoa_fill_playable_tag[] = "brush";
+extern const char cocoa_fill_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererCocoa");
+extern const char cocoa_fill_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererFill");
+
+common::playable_factory *
+create_cocoa_fill_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
+{
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererFill"), true);
+	return new common::single_playable_factory<
+        cocoa_fill_renderer, 
+        cocoa_fill_playable_tag, 
+        cocoa_fill_playable_renderer_uri,
+        cocoa_fill_playable_renderer_uri2,
+        cocoa_fill_playable_renderer_uri2>(factory, mdp);
+}
 
 cocoa_fill_renderer::~cocoa_fill_renderer()
 {

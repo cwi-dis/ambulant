@@ -134,7 +134,13 @@ def gen_table(page, entries):
             else:
                 prefix = 'smil-rel-'
                 basename = ''
-            smil = smilgen.gen_smilfile(prefix, basename, e.format)
+            if e.renderer is ANY:
+                prefix += 'any-'
+                renderer_uri = None
+            else:
+                prefix += str(e.renderer) + '-'
+                renderer_uri = e.renderer.renderer_uri
+            smil = smilgen.gen_smilfile(prefix, basename, e.format, renderer_uri)
         _genentry(e.supported, e.supported_notes)
         if smil:
             page.td()

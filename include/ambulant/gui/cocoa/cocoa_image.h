@@ -47,8 +47,9 @@ class cocoa_image_renderer : public cocoa_renderer<renderer_playable_dsall> {
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		event_processor *evp,
-		common::factories *factory)
-	:	cocoa_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory),
+		common::factories *factory,
+		common::playable_factory_machdep *mdp)
+	:	cocoa_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory, mdp),
 		m_image(NULL),
 		m_nsdata(NULL) {};
 	~cocoa_image_renderer();

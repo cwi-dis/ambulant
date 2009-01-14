@@ -36,6 +36,7 @@
 #include "ambulant/common/factory.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/playable.h"
+#include "ambulant/common/renderer_select.h"
 
 namespace ambulant {
 
@@ -56,7 +57,9 @@ class AMBULANTAPI playable_imp : public playable {
 		playable_notification *context,
 		cookie_type cookie,
 		const lib::node *node,
-		lib::event_processor* evp) 
+		lib::event_processor* evp,
+		common::factories *fp,
+		common::playable_factory_machdep *mdp) 
 	:	m_context(context), 
 		m_cookie(cookie),
 		m_node(node),
@@ -89,7 +92,9 @@ class AMBULANTAPI renderer_playable : public playable_imp, public renderer {
 		playable_notification *context,
 		cookie_type cookie,
 		const lib::node *node,
-		lib::event_processor* evp);
+		lib::event_processor* evp,
+		common::factories *fp,
+		common::playable_factory_machdep *mdp);
 			
 	// common::renderer interface
 	void set_surface(common::surface *dest) { m_dest = dest;}
@@ -126,7 +131,8 @@ class AMBULANTAPI renderer_playable_ds : public renderer_playable {
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *evp,
-		common::factories* factory);
+		common::factories* factory,
+		common::playable_factory_machdep *mdp);
 		
 	virtual ~renderer_playable_ds();
 	
@@ -162,8 +168,9 @@ class AMBULANTAPI renderer_playable_dsall : public renderer_playable_ds {
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *evp,
-		common::factories *factory)
-	:	renderer_playable_ds(context, cookie, node, evp, factory),
+		common::factories *factory,
+		common::playable_factory_machdep *mdp)
+	:	renderer_playable_ds(context, cookie, node, evp, factory, mdp),
 		m_data(NULL),
 		m_data_size(0),
 		m_partial_data(NULL),
@@ -193,6 +200,15 @@ class global_playable_factory_impl : public global_playable_factory {
 	/// Add a factory.
     void add_factory(playable_factory *rf);
     
+    /// Signal preference for a certain renderer (or category of renderers)
+    void preferred_renderer(const char* name);
+    
+	/// The global factory supports everything (it says:-)
+	bool supports(renderer_select *rs)
+	{
+		return true;
+	}
+
 	/// Create a new playable.
     playable *new_playable(
 		playable_notification *context,
@@ -208,8 +224,9 @@ class global_playable_factory_impl : public global_playable_factory {
   		net::audio_datasource *src);
 
   private:
-    std::vector<playable_factory *> m_factories;
+    std::list<playable_factory *> m_factories;
     playable_factory *m_default_factory;
+	std::map<int, renderer_select*> m_renderer_select;
 };
 
 /// Convience class: a playable_notification that does nothing.

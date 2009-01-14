@@ -37,14 +37,17 @@ namespace gui {
 
 namespace dx {
 
+common::playable_factory *create_dx_brush_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+
 class dx_brush : public dx_renderer_playable {
   public:
 	dx_brush(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
-		lib::event_processor* evp, 
-		dx_playables_context *dxplayer);
+		lib::event_processor* evp,
+		common::factories *fp,
+		common::playable_factory_machdep *dxplayer);
 	~dx_brush();
 	void start(double t);
 	void stop();

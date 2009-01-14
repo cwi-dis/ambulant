@@ -26,6 +26,7 @@
 #include "ambulant/gui/dx/dx_window.h"
 #include "ambulant/gui/dx/dx_rgn.h"
 #include "ambulant/common/region_dim.h"
+#include "ambulant/smil2/test_attrs.h"
 
 //#define AM_DBG
 
@@ -35,12 +36,31 @@
 
 using namespace ambulant;
 
+extern const char dx_area_playable_tag[] = "area";
+extern const char dx_area_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererDirectX");
+extern const char dx_area_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererArea");
+
+common::playable_factory *
+gui::dx::create_dx_area_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
+{
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectX"), true);
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererArea"), true);
+	return new common::single_playable_factory<
+		gui::dx::dx_area, 
+        dx_area_playable_tag, 
+        dx_area_playable_renderer_uri, 
+        dx_area_playable_renderer_uri2, 
+        dx_area_playable_renderer_uri2 >(factory, mdp);
+}
+
 gui::dx::dx_area::dx_area(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
-	lib::event_processor* evp) 
-:	common::renderer_playable(context, cookie, node, evp), 
+	lib::event_processor* evp,
+	common::factories *fp,
+	common::playable_factory_machdep *dxplayer) 
+:	common::renderer_playable(context, cookie, node, evp, fp, dxplayer), 
 	m_rgn(0) {
 	AM_DBG lib::logger::get_logger()->debug("dx_area::ctr(0x%x)", this);
 }

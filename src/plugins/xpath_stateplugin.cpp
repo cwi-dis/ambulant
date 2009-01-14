@@ -123,7 +123,7 @@ smil_function_execute(xmlXPathParserContextPtr ctxt, int nargs)
 		bool rv = stm->smil_custom_test(arg);
 		valuePush(ctxt, xmlXPathNewBoolean(rv));
 	} else
-	if (strcmp((char*)xmlcontext->function, "smil-cpu") == 0 ) {
+	if (strcmp((char*)xmlcontext->function, "smil-CPU") == 0 ) {
 		std::string rv = stm->smil_cpu();
 		valuePush(ctxt, xmlXPathNewString(BAD_CAST rv.c_str()));
 	} else
@@ -165,6 +165,7 @@ smil_function_execute(xmlXPathParserContextPtr ctxt, int nargs)
 	} else {
 		assert(0);
 	}
+	return;
 badarg:
 	lib::logger::get_logger()->trace("xpath_state_component: argument error for function %s()", xmlcontext->function);
 }
@@ -175,7 +176,7 @@ static char *smil_function_names[] = {
 	"smil-captions",
 	"smil-component",
 	"smil-customTest",
-	"smil-cpu",
+	"smil-CPU",
 	"smil-language",
 	"smil-operatingSystem",
 	"smil-overdubOrSubtitle",

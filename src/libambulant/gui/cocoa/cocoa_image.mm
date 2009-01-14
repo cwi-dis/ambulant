@@ -18,13 +18,19 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 /* 
+<<<<<<< cocoa_image.mm
  * @$Id$ 
+=======
+ * @$Id$ 
+>>>>>>> 1.44.14.3
  */
 
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 #include "ambulant/gui/cocoa/cocoa_image.h"
 #include "ambulant/common/region_dim.h"
 #include "ambulant/common/region_info.h"
+#include "ambulant/common/renderer_select.h"
+#include "ambulant/smil2/test_attrs.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -38,6 +44,23 @@ using namespace lib;
 namespace gui {
 
 namespace cocoa {
+
+extern const char cocoa_image_playable_tag[] = "img";
+extern const char cocoa_image_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererCocoa");
+extern const char cocoa_image_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererImg");
+
+common::playable_factory *
+create_cocoa_image_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
+{
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererImg"), true);
+	return new common::single_playable_factory<
+        cocoa_image_renderer, 
+        cocoa_image_playable_tag, 
+        cocoa_image_playable_renderer_uri,
+        cocoa_image_playable_renderer_uri2,
+        cocoa_image_playable_renderer_uri2>(factory, mdp);
+}
 
 cocoa_image_renderer::~cocoa_image_renderer()
 {

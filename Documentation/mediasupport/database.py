@@ -9,9 +9,9 @@ LINUX=OS("Linux")
 
 # Renderer objects
 
-QT=Renderer("QuickTime")
-DX=Renderer("DirectX")
-FFMPEG=Renderer("ffmpeg")
+QT=Renderer("QuickTime", "http://www.ambulantplayer.org/component/RendererQuickTime")
+DX=Renderer("DirectX", "http://www.ambulantplayer.org/component/RendererDirectX")
+FFMPEG=Renderer("ffmpeg", "http://www.ambulantplayer.org/component/RendererOpen")
 
 # Protocol objects
 FILE=Protocol("file")
@@ -25,7 +25,7 @@ CONTAINER_MP3 = ContainerFormat("MP3 Audio", "audio/mp3", "mp3")
 CONTAINER_MP4_AUDIO = ContainerFormat("MPEG-4 Audio", OneOf("audio/mp4", "audio/x-m4a", "audio/aac"), OneOf("mp4", "m4a", "aac", "adts"))
 CONTAINER_MP4_VIDEO = ContainerFormat("MPEG-4 Video", OneOf("video/mp4", "video/x-m4v"), OneOf("mp4", "m4v"))
 CONTAINER_3GPP = ContainerFormat("3GPP Container", OneOf("audio/3gpp", "video/3gpp"), extension="3gp")
-CONTAINER_OGG = ContainerFormat("OGG Container", OneOf("application/ogg", "video/x-ogg", "audio/x-ogg"), extension=OneOf("ogg", "oga", "ogv"))
+CONTAINER_OGG = ContainerFormat("OGG Container", OneOf("application/ogg", "video/ogg", "audio/ogg", "video/x-ogg", "audio/x-ogg"), extension=OneOf("ogg", "oga", "ogv"))
 CONTAINER_QUICKTIME = ContainerFormat("Quicktime Movie", "video/quicktime", OneOf("mov", "qt"))
 CONTAINER_WAV = ContainerFormat("WAV Audio file", "audio/wav", extension="wav")
 CONTAINER_AVI = ContainerFormat("AVI Container", OneOf("video/avi", "video/x-msvideo", "video/msvideo"), extension="avi")

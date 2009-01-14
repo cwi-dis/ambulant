@@ -22,6 +22,7 @@
 #include "ambulant/common/gui_player.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/playable.h"
+#include "ambulant/common/renderer_select.h"
 #include "ambulant/common/player.h"
 #include "ambulant/common/region_dim.h"
 #include "ambulant/common/region_info.h"
@@ -9108,6 +9109,21 @@ static void playable_factoryObj_dealloc(playable_factoryObject *self)
 	pycppbridge_Type.tp_dealloc((PyObject *)self);
 }
 
+static PyObject *playable_factoryObj_supports(playable_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::common::renderer_select* rs;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      renderer_selectObj_Convert, &rs))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->supports(rs);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
 static PyObject *playable_factoryObj_new_playable(playable_factoryObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -9160,6 +9176,8 @@ static PyObject *playable_factoryObj_new_aux_audio_playable(playable_factoryObje
 }
 
 static PyMethodDef playable_factoryObj_methods[] = {
+	{"supports", (PyCFunction)playable_factoryObj_supports, 1,
+	 PyDoc_STR("(ambulant::common::renderer_select* rs) -> (bool _rv)")},
 	{"new_playable", (PyCFunction)playable_factoryObj_new_playable, 1,
 	 PyDoc_STR("(ambulant::common::playable_notification* context, ambulant::common::playable::cookie_type cookie, ambulant::lib::node* node, ambulant::lib::event_processor* evp) -> (ambulant::common::playable* _rv)")},
 	{"new_aux_audio_playable", (PyCFunction)playable_factoryObj_new_aux_audio_playable, 1,
@@ -9339,9 +9357,26 @@ static PyObject *global_playable_factoryObj_add_factory(global_playable_factoryO
 	return _res;
 }
 
+static PyObject *global_playable_factoryObj_preferred_renderer(global_playable_factoryObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char* name;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &name))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->preferred_renderer(name);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyMethodDef global_playable_factoryObj_methods[] = {
 	{"add_factory", (PyCFunction)global_playable_factoryObj_add_factory, 1,
 	 PyDoc_STR("(ambulant::common::playable_factory* rf) -> None")},
+	{"preferred_renderer", (PyCFunction)global_playable_factoryObj_preferred_renderer, 1,
+	 PyDoc_STR("(char* name) -> None")},
 	{NULL, NULL, 0}
 };
 
@@ -9433,6 +9468,167 @@ PyTypeObject global_playable_factory_Type = {
 };
 
 /* ------------ End object type global_playable_factory ------------- */
+
+
+/* ------------------ Object type renderer_select ------------------- */
+
+extern PyTypeObject renderer_select_Type;
+
+inline bool renderer_selectObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &renderer_select_Type);
+}
+
+typedef struct renderer_selectObject {
+	PyObject_HEAD
+	void *ob_dummy_wrapper; // Overlays bridge object storage
+	ambulant::common::renderer_select* ob_itself;
+} renderer_selectObject;
+
+PyObject *renderer_selectObj_New(ambulant::common::renderer_select* itself)
+{
+	renderer_selectObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_renderer_select
+	renderer_select *encaps_itself = dynamic_cast<renderer_select *>(itself);
+	if (encaps_itself && encaps_itself->py_renderer_select)
+	{
+		Py_INCREF(encaps_itself->py_renderer_select);
+		return encaps_itself->py_renderer_select;
+	}
+#endif
+	it = PyObject_NEW(renderer_selectObject, &renderer_select_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_dummy_wrapper = NULL; // XXXX Should be done in base class
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int renderer_selectObj_Convert(PyObject *v, ambulant::common::renderer_select* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_renderer_select
+	if (!renderer_selectObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_renderer_select(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!renderer_selectObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "renderer_select required");
+		return 0;
+	}
+	*p_itself = ((renderer_selectObject *)v)->ob_itself;
+	return 1;
+}
+
+static void renderer_selectObj_dealloc(renderer_selectObject *self)
+{
+	pycppbridge_Type.tp_dealloc((PyObject *)self);
+}
+
+static PyMethodDef renderer_selectObj_methods[] = {
+	{NULL, NULL, 0}
+};
+
+#define renderer_selectObj_getsetlist NULL
+
+
+static int renderer_selectObj_compare(renderer_selectObject *self, renderer_selectObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define renderer_selectObj_repr NULL
+
+static long renderer_selectObj_hash(renderer_selectObject *self)
+{
+	return (long)self->ob_itself;
+}
+static int renderer_selectObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::common::renderer_select* itself;
+	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, renderer_selectObj_Convert, &itself))
+	{
+		((renderer_selectObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define renderer_selectObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *renderer_selectObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((renderer_selectObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define renderer_selectObj_tp_free PyObject_Del
+
+
+PyTypeObject renderer_select_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.renderer_select", /*tp_name*/
+	sizeof(renderer_selectObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) renderer_selectObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) renderer_selectObj_compare, /*tp_compare*/
+	(reprfunc) renderer_selectObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) renderer_selectObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	renderer_selectObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	renderer_selectObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	renderer_selectObj_tp_init, /* tp_init */
+	renderer_selectObj_tp_alloc, /* tp_alloc */
+	renderer_selectObj_tp_new, /* tp_new */
+	renderer_selectObj_tp_free, /* tp_free */
+};
+
+/* ---------------- End object type renderer_select ----------------- */
 
 
 /* ------------------ Object type player_feedback ------------------- */
@@ -15843,63 +16039,6 @@ static PyObject *PyAm_create_qt_window_factory_unsafe(PyObject *_self, PyObject 
 }
 #endif
 
-#ifdef WITH_QT
-
-static PyObject *PyAm_create_qt_playable_factory(PyObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	ambulant::common::playable_factory* _rv;
-	ambulant::common::factories* factory;
-	if (!PyArg_ParseTuple(_args, "O&",
-	                      factoriesObj_Convert, &factory))
-		return NULL;
-	PyThreadState *_save = PyEval_SaveThread();
-	_rv = ambulant::gui::qt::create_qt_playable_factory(factory);
-	PyEval_RestoreThread(_save);
-	_res = Py_BuildValue("O&",
-	                     playable_factoryObj_New, _rv);
-	return _res;
-}
-#endif
-
-#ifdef WITH_QT
-
-static PyObject *PyAm_create_qt_video_factory(PyObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	ambulant::common::playable_factory* _rv;
-	ambulant::common::factories* factory;
-	if (!PyArg_ParseTuple(_args, "O&",
-	                      factoriesObj_Convert, &factory))
-		return NULL;
-	PyThreadState *_save = PyEval_SaveThread();
-	_rv = ambulant::gui::qt::create_qt_video_factory(factory);
-	PyEval_RestoreThread(_save);
-	_res = Py_BuildValue("O&",
-	                     playable_factoryObj_New, _rv);
-	return _res;
-}
-#endif
-
-#ifdef WITH_GTK
-
-static PyObject *PyAm_create_gtk_renderer_factory(PyObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	ambulant::common::playable_factory* _rv;
-	ambulant::common::factories* factory;
-	if (!PyArg_ParseTuple(_args, "O&",
-	                      factoriesObj_Convert, &factory))
-		return NULL;
-	PyThreadState *_save = PyEval_SaveThread();
-	_rv = ambulant::gui::gtk::create_gtk_renderer_factory(factory);
-	PyEval_RestoreThread(_save);
-	_res = Py_BuildValue("O&",
-	                     playable_factoryObj_New, _rv);
-	return _res;
-}
-#endif
-
 #ifdef WITH_GTK
 
 static PyObject *PyAm_create_gtk_window_factory_unsafe(PyObject *_self, PyObject *_args)
@@ -15918,25 +16057,6 @@ static PyObject *PyAm_create_gtk_window_factory_unsafe(PyObject *_self, PyObject
 	PyEval_RestoreThread(_save);
 	_res = Py_BuildValue("O&",
 	                     window_factoryObj_New, _rv);
-	return _res;
-}
-#endif
-
-#ifdef WITH_GTK
-
-static PyObject *PyAm_create_gtk_video_factory(PyObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	ambulant::common::playable_factory* _rv;
-	ambulant::common::factories* factory;
-	if (!PyArg_ParseTuple(_args, "O&",
-	                      factoriesObj_Convert, &factory))
-		return NULL;
-	PyThreadState *_save = PyEval_SaveThread();
-	_rv = ambulant::gui::gtk::create_gtk_video_factory(factory);
-	PyEval_RestoreThread(_save);
-	_res = Py_BuildValue("O&",
-	                     playable_factoryObj_New, _rv);
 	return _res;
 }
 #endif
@@ -16194,29 +16314,9 @@ static PyMethodDef PyAm_methods[] = {
 	 PyDoc_STR("(void* parent_widget, int top_offset, ambulant::common::gui_player* gpl) -> (ambulant::common::window_factory* _rv)")},
 #endif
 
-#ifdef WITH_QT
-	{"create_qt_playable_factory", (PyCFunction)PyAm_create_qt_playable_factory, 1,
-	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
-#endif
-
-#ifdef WITH_QT
-	{"create_qt_video_factory", (PyCFunction)PyAm_create_qt_video_factory, 1,
-	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
-#endif
-
-#ifdef WITH_GTK
-	{"create_gtk_renderer_factory", (PyCFunction)PyAm_create_gtk_renderer_factory, 1,
-	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
-#endif
-
 #ifdef WITH_GTK
 	{"create_gtk_window_factory_unsafe", (PyCFunction)PyAm_create_gtk_window_factory_unsafe, 1,
 	 PyDoc_STR("(void * gtk_parent_widget, ambulant::common::gui_player* gpl) -> (ambulant::common::window_factory* _rv)")},
-#endif
-
-#ifdef WITH_GTK
-	{"create_gtk_video_factory", (PyCFunction)PyAm_create_gtk_video_factory, 1,
-	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
 #endif
 
 #ifdef WITH_SDL
@@ -16497,6 +16597,11 @@ void initambulant(void)
 	if (PyType_Ready(&global_playable_factory_Type) < 0) return;
 	Py_INCREF(&global_playable_factory_Type);
 	PyModule_AddObject(m, "global_playable_factory", (PyObject *)&global_playable_factory_Type);
+	renderer_select_Type.ob_type = &PyType_Type;
+	renderer_select_Type.tp_base = &pycppbridge_Type;
+	if (PyType_Ready(&renderer_select_Type) < 0) return;
+	Py_INCREF(&renderer_select_Type);
+	PyModule_AddObject(m, "renderer_select", (PyObject *)&renderer_select_Type);
 	player_feedback_Type.ob_type = &PyType_Type;
 	player_feedback_Type.tp_base = &pycppbridge_Type;
 	if (PyType_Ready(&player_feedback_Type) < 0) return;

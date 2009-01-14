@@ -35,6 +35,7 @@
 #ifdef WITH_DSVIDEO
 #include "ambulant/gui/dx/dx_dsvideo.h"
 #endif
+#include "ambulant/smil2/test_attrs.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -50,6 +51,17 @@ class dsvideo_renderer_factory : public common::playable_factory {
 	:   m_factory(factory) {}
 	~dsvideo_renderer_factory() {}
 		
+	bool supports(common::renderer_select *rs)
+	{
+		const lib::xml_string& tag = rs->get_tag();
+		if (tag != "" && tag != "video") return false;
+		const char *renderer_uri = rs->get_renderer_uri();
+		if (renderer_uri != NULL && 
+			strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererOpen")) != 0)
+			return false;
+		return true;
+	}
+
 	common::playable *new_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
@@ -58,7 +70,7 @@ class dsvideo_renderer_factory : public common::playable_factory {
 	{
 		lib::xml_string tag = node->get_local_name();
 		if (tag == "video")
-			return new gui::dx::dx_dsvideo_renderer(context, cookie, node, evp, m_factory);
+			return new gui::dx::dx_dsvideo_renderer(context, cookie, node, evp, m_factory, NULL);
 		return NULL;
 	}
 		

@@ -34,6 +34,8 @@ class none_video_factory : public common::playable_factory {
 	:   m_factory(factory) {}
 	~none_video_factory();
 		
+	bool supports(common::renderer_select *);
+
 	common::playable *new_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,

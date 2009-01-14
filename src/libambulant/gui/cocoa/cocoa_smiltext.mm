@@ -25,7 +25,8 @@
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 #include "ambulant/common/region_info.h"
 #include "ambulant/smil2/params.h"
-
+#include "ambulant/common/renderer_select.h"
+#include "ambulant/smil2/test_attrs.h"
 #include <Cocoa/Cocoa.h>
 
 #ifndef AM_DBG
@@ -92,12 +93,31 @@ _select_font(const char *family, smil2::smiltext_font_style style, smil2::smilte
 	return font;
 }
 
+extern const char cocoa_smiltext_playable_tag[] = "smilText";
+extern const char cocoa_smiltext_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererCocoa");
+extern const char cocoa_smiltext_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererSmilText");
+
+common::playable_factory *
+create_cocoa_smiltext_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
+{
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererSmilText"), true);
+	return new common::single_playable_factory<
+        cocoa_smiltext_renderer, 
+        cocoa_smiltext_playable_tag, 
+        cocoa_smiltext_playable_renderer_uri,
+        cocoa_smiltext_playable_renderer_uri2,
+        cocoa_smiltext_playable_renderer_uri2>(factory, mdp);
+}
+
 cocoa_smiltext_renderer::cocoa_smiltext_renderer(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
-		event_processor *evp)
-:	cocoa_renderer<renderer_playable>(context, cookie, node, evp),
+		event_processor *evp,
+		common::factories *fp,
+		common::playable_factory_machdep *mdp)
+:	cocoa_renderer<renderer_playable>(context, cookie, node, evp, fp, mdp),
 	m_text_storage(NULL),
 	m_layout_manager(NULL),
 	m_text_container(NULL),

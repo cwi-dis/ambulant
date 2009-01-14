@@ -51,7 +51,9 @@ class cocoa_smiltext_renderer :
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
-		event_processor *evp);
+		event_processor *evp,
+		common::factories *fp,
+		common::playable_factory_machdep *mdp);
         ~cocoa_smiltext_renderer();
 	
     void redraw_body(const rect &dirty, gui_window *window);

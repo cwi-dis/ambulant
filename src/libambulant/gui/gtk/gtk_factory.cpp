@@ -43,11 +43,13 @@ using namespace ambulant;
 using namespace gui::gtk;
 using namespace net;
 
+#if 0
 common::playable_factory *
 ambulant::gui::gtk::create_gtk_renderer_factory(common::factories *factory)
 {
     return new gtk_renderer_factory(factory);
 }
+#endif
 
 common::window_factory *
 ambulant::gui::gtk::create_gtk_window_factory(gtk_ambulant_widget* gtk_widget, gui_player* gpl)
@@ -71,13 +73,13 @@ ambulant::gui::gtk::create_gtk_window_factory_unsafe(void* gtk_parent_widget, co
     return new gtk_window_factory(gtkw, gpl);
 }
 
+#if 0
 common::playable_factory *
 ambulant::gui::gtk::create_gtk_video_factory(common::factories *factory)
 {
     return new gtk_video_factory(factory);
 }
-
-// under construction
+#endif
 
 // structure to keep track of the dirty area
 struct dirty_area_widget {
@@ -167,6 +169,8 @@ void gui::gtk::gdk_pixmap_bitblt(GdkPixmap* dst, int dst_x, int dst_y, GdkPixmap
 			dst_x, dst_y, width, height);
 	g_object_unref (G_OBJECT (gc));
 };
+
+#if 0
 //
 // gtk_renderer_factory
 //
@@ -190,28 +194,28 @@ gtk_renderer_factory::new_playable(
 	common::playable* rv;
 	if (tag == "img") {
  		rv = new gtk_image_renderer(context, cookie, node,
-						  evp, m_factory);
+					    evp, m_factory, NULL);
 		AM_DBG lib::logger::get_logger()->debug("gtk_renderer_factory: node 0x%x: returning gtk_image_renderer 0x%x", 
 			(void*) node, (void*) rv);
 	} else if (tag == "brush") {
  		rv = new gtk_fill_renderer(context, cookie, node,
-					  evp, m_factory);
+					   evp, m_factory, NULL);
 		AM_DBG lib::logger::get_logger()->debug("gtk_renderer_factory: node 0x%x: returning gtk_fill_renderer 0x%x", 
 			(void*) node, (void*) rv);
 #ifdef WITH_SMIL30
 	} else if(tag == "smilText") {
-	  rv = new gtk_smiltext_renderer(context, cookie, node, evp);//, m_factory);
+	  rv = new gtk_smiltext_renderer(context, cookie, node, evp, m_factory, NULL);//, m_factory);
 #endif/*WITH_SMIL30*/
 	} else if ( tag == "text") {
 #ifdef	WITH_GTK_HTML_WIDGET
 		net::url url = net::url(node->get_url("src"));
 		if (url.guesstype() == "text/html") {
-			rv = new gtk_html_renderer(context, cookie, node, evp, m_factory);
+		  rv = new gtk_html_renderer(context, cookie, node, evp, m_factory, NULL);
 			AM_DBG lib::logger::get_logger()->debug("gtk_renderer_factory: node 0x%x: returning gtk_html_renderer 0x%x", (void*) node, (void*) rv);
 		} else {
 #endif   /*WITH_GTK_HTML_WIDGET*/
 		rv = new gtk_text_renderer(context, cookie, node,
-						 evp, m_factory);
+					   evp, m_factory, NULL);
 		AM_DBG lib::logger::get_logger()->debug("gtk_renderer_factory: node 0x%x: returning gtk_text_renderer 0x%x",
 			(void*) node, (void*) rv);
 
@@ -234,7 +238,7 @@ gtk_renderer_factory::new_aux_audio_playable(
 {
 	return NULL;
 }
-
+#endif
 
 //
 // gtk_window_factory
@@ -298,13 +302,21 @@ gtk_window_factory::new_background_renderer(const common::region_info
 	return new gtk_background_renderer(src);
 }
 
-
+#if 0
 //
 // gtk_video_factory
 //
 
 gtk_video_factory::~gtk_video_factory()
 {
+}
+
+
+bool
+gtk_video_factory::supports(common::renderer_select *rs)
+{
+  const xml_string& tag = rs->get_tag();
+  if (tag != "" && tag != "video" && tag != "ref") return false;
 }
 
 common::playable *
@@ -319,7 +331,7 @@ gtk_video_factory::new_playable(
 	lib::xml_string tag = node->get_qname().second;
     AM_DBG lib::logger::get_logger()->debug("gtk_video_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "video") {
-		rv = new gtk_video_renderer(context, cookie, node, evp, m_factory);
+	  rv = new gtk_video_renderer(context, cookie, node, evp, m_factory, NULL);
 		AM_DBG lib::logger::get_logger()->debug("gtk_video_factory: node 0x%x:  returning gtk_video_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("gtk_video_factory: no renderer for tag \"%s\"", tag.c_str());
@@ -338,6 +350,7 @@ gtk_video_factory::new_aux_audio_playable(
 {
 	return NULL;
 }
+#endif
 
 
 //

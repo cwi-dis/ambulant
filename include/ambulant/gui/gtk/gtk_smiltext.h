@@ -41,6 +41,8 @@ namespace gui {
 
 namespace gtk {
 
+common::playable_factory *create_gtk_smiltext_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+
 class gtk_smiltext_renderer : 
 	public gtk_renderer<renderer_playable>,
 	public smil2::smiltext_notification
@@ -50,11 +52,13 @@ class gtk_smiltext_renderer :
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
-		event_processor *evp);
-        ~gtk_smiltext_renderer();
+		event_processor *evp,
+		common::factories *fp,
+		common::playable_factory_machdep *mdp);
+	~gtk_smiltext_renderer();
 	
-    	void redraw_body(const rect &dirty, gui_window *window);
-    	void start(double t);
+	void redraw_body(const rect &dirty, gui_window *window);
+	void start(double t);
 	void seek(double t);
 	void stop();
 	// Callback from the engine
@@ -63,7 +67,7 @@ class gtk_smiltext_renderer :
   private:
 	void _gtk_smiltext_changed();
 	void _gtk_smiltext_render(const lib::rect r, const lib::point offset,
-				  ambulant_gtk_window* window);
+		ambulant_gtk_window* window);
 	std::string m_text_storage;
 	smil2::smiltext_engine m_engine;
 	const smil2::smiltext_params& m_params;

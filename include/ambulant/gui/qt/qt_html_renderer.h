@@ -59,6 +59,8 @@ namespace qt {
 
 class browser_container;
 
+common::playable_factory *create_qt_html_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+
 class qt_html_renderer : public renderer_playable {
   public:
 	qt_html_renderer(
@@ -66,7 +68,8 @@ class qt_html_renderer : public renderer_playable {
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp,
-		common::factories *factory);
+		common::factories *fp,
+		common::playable_factory_machdep *mdp);
 	~qt_html_renderer();
 	void start(double t);
 	void stop();

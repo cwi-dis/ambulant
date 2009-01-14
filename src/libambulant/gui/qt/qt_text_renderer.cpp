@@ -26,6 +26,7 @@
 #include "ambulant/gui/qt/qt_renderer.h"
 #include "ambulant/gui/qt/qt_text_renderer.h"
 #include "ambulant/smil2/params.h"
+#include "ambulant/smil2/test_attrs.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -35,13 +36,32 @@
 using namespace ambulant;
 using namespace gui::qt;
 
+extern const char qt_text_playable_tag[] = "text";
+extern const char qt_text_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererQt");
+extern const char qt_text_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererText");
+
+common::playable_factory *
+gui::qt::create_qt_text_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
+{
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("Rendererqt"), true);
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererText"), true);
+	return new common::single_playable_factory<
+        qt_text_renderer, 
+        qt_text_playable_tag, 
+        qt_text_playable_renderer_uri,
+        qt_text_playable_renderer_uri2,
+        qt_text_playable_renderer_uri2>(factory, mdp);
+}
+
+
 qt_text_renderer::qt_text_renderer(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
     	lib::event_processor *const evp,
-    	common::factories *factory)
-:	qt_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory),
+    	common::factories *factory,
+		common::playable_factory_machdep *mdp)
+:	qt_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory, mdp),
  	m_text_storage(NULL),
  	m_text_color(0),
  	m_text_font(NULL),

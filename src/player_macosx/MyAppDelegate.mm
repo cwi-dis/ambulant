@@ -235,6 +235,11 @@ initialize_logger()
 	}
 }
 
+- (void)applicationDidChangeScreenParameters:(NSNotification *)aNotification
+{
+    NSLog(@"applicationDidChangeScreenParameters");
+}
+
 - (void)handleGetURLEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent
 {
 	AM_DBG NSLog(@"GetURLEvent called\n");

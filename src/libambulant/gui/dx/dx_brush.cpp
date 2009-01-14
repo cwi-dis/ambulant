@@ -25,25 +25,41 @@
 #include "ambulant/gui/dx/dx_viewport.h"
 #include "ambulant/gui/dx/dx_window.h"
 #include "ambulant/gui/dx/dx_transition.h"
-
 #include "ambulant/common/region_info.h"
-
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/smil2/test_attrs.h"
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
 
 using namespace ambulant;
+extern const char dx_brush_playable_tag[] = "brush";
+extern const char dx_brush_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererDirectX");
+extern const char dx_brush_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererDirectXBrush");
+
+common::playable_factory *
+gui::dx::create_dx_brush_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
+{
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectX"), true);
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectXBrush"), true);
+	return new common::single_playable_factory<
+		gui::dx::dx_brush, 
+        dx_brush_playable_tag, 
+        dx_brush_playable_renderer_uri, 
+        dx_brush_playable_renderer_uri2, 
+        dx_brush_playable_renderer_uri2 >(factory, mdp);
+}
 
 gui::dx::dx_brush::dx_brush(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
-	dx_playables_context *dxplayer)
-:   dx_renderer_playable(context, cookie, node, evp, dxplayer),
+	common::factories *fp,
+	common::playable_factory_machdep *dxplayer)
+:   dx_renderer_playable(context, cookie, node, evp, fp, dynamic_cast<dx_playables_context*>(dxplayer)),
 	m_color(0) {
 	AM_DBG lib::logger::get_logger()->debug("dx_brush::dx_brush(0x%x)", this);
 }

@@ -69,9 +69,19 @@ mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *a
 {
 	set_embedder(app);
 	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop(0x%x): created", (void*)this);
-	init_factories();
+    // Set systemComponent values that are relevant
+    smil2::test_attrs::set_default_tests_attrs();
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("Standalone"), true);
+ 	init_factories();
 	
 	init_plugins();
+
+    // Order the factories according to the preferences
+    common::preferences *prefs = common::preferences::get_preferences();
+    if (prefs->m_prefer_ffmpeg)
+        get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererOpen"));
+    else
+        get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererQuickTime"))    ;   
 	
 	ambulant::net::url url = ambulant::net::url::from_url(urlstr);
 	m_doc = create_document(url);
@@ -102,7 +112,15 @@ mainloop::init_playable_factory()
 #ifdef WITH_CG
 	pf->add_factory(gui::cg::create_cg_renderer_factory(this));
 #else
-	pf->add_factory(gui::cocoa::create_cocoa_renderer_factory(this));
+	pf->add_factory(gui::cocoa::create_cocoa_audio_playable_factory(this, NULL));
+	pf->add_factory(gui::cocoa::create_cocoa_dsvideo_playable_factory(this, NULL));
+	pf->add_factory(gui::cocoa::create_cocoa_fill_playable_factory(this, NULL));
+	pf->add_factory(gui::cocoa::create_cocoa_html_playable_factory(this, NULL));
+	pf->add_factory(gui::cocoa::create_cocoa_image_playable_factory(this, NULL));
+	pf->add_factory(gui::cocoa::create_cocoa_ink_playable_factory(this, NULL));
+	pf->add_factory(gui::cocoa::create_cocoa_smiltext_playable_factory(this, NULL));
+	pf->add_factory(gui::cocoa::create_cocoa_text_playable_factory(this, NULL));
+	pf->add_factory(gui::cocoa::create_cocoa_video_playable_factory(this, NULL));
 #endif
 #ifdef WITH_SDL
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add factory for SDL");

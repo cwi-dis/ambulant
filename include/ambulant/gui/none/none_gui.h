@@ -70,7 +70,9 @@ class none_playable : public common::playable_imp {
 		common::playable_notification::cookie_type cookie,
 #endif
 		const lib::node *node,
-		lib::event_processor *evp);
+		lib::event_processor *evp,
+		common::factories *fp,
+		common::playable_factory_machdep *mdp);
 	
 	void start(double where);
 	void stop();
@@ -95,6 +97,11 @@ class none_playable_factory : public common::playable_factory {
   public:
   	none_playable_factory() {}
   	
+	bool supports(common::renderer_select *)
+	{
+		return true;
+	}
+	
 	common::playable *new_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,

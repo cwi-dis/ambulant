@@ -97,6 +97,9 @@ extern int playable_factoryObj_Convert(PyObject *v, ambulant::common::playable_f
 extern PyObject *global_playable_factoryObj_New(ambulant::common::global_playable_factory* itself);
 extern int global_playable_factoryObj_Convert(PyObject *v, ambulant::common::global_playable_factory* *p_itself);
 
+extern PyObject *renderer_selectObj_New(ambulant::common::renderer_select* itself);
+extern int renderer_selectObj_Convert(PyObject *v, ambulant::common::renderer_select* *p_itself);
+
 extern PyObject *player_feedbackObj_New(ambulant::common::player_feedback* itself);
 extern int player_feedbackObj_Convert(PyObject *v, ambulant::common::player_feedback* *p_itself);
 

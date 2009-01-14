@@ -32,7 +32,7 @@ const net::url&
 renderer_select::get_url()
 {
 	if (!m_url_valid) {
-		m_url = m_node->get_url("src");
+		if (m_node) m_url = m_node->get_url("src");
 		m_url_valid = true;
 	}
 	return m_url;
@@ -42,8 +42,10 @@ const std::string&
 renderer_select::get_mimetype()
 {
 	if (!m_mimetype_valid) {
-		const net::url& url = get_url();
-		m_mimetype = url.guesstype();
+        if (m_node) {
+            const net::url& url = get_url();
+            m_mimetype = url.guesstype();
+        }
 		m_mimetype_valid = true;
 	}
 	return m_mimetype;

@@ -48,8 +48,10 @@ gui::none::none_playable::none_playable(
 	common::playable_notification::cookie_type cookie,
 #endif
 	const lib::node *node,
-	lib::event_processor *evp)
-:	common::playable_imp(context, cookie, node, evp)
+	lib::event_processor *evp,
+	common::factories *fp,
+	common::playable_factory_machdep *mdp)
+:	common::playable_imp(context, cookie, node, evp, NULL, NULL)
 {
 	lib::xml_string tag = node->get_local_name();
 	std::string url = repr(node->get_url("src"));
@@ -96,8 +98,8 @@ gui::none::none_playable_factory::new_playable(
 {
 	lib::xml_string tag = node->get_local_name();
 	if(tag == "area" || tag == "a")
-		return new none_area_renderer(context, cookie, node, evp);
-	return new none_playable(context, cookie, node, evp);
+		return new none_area_renderer(context, cookie, node, evp, NULL, NULL);
+	return new none_playable(context, cookie, node, evp, NULL, NULL);
 }
 
 common::playable *

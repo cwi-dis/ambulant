@@ -30,8 +30,7 @@
 #include "ambulant/lib/node.h"
 
 // Macro for creating an Ambulant systemComponent URI
-#define AM_SYSTEM_COMPONENT_PREFIX "http://www.ambulantplayer.org/component"
-#define AM_SYSTEM_COMPONENT(s) (AM_SYSTEM_COMPONENT_PREFIX "/" s)
+#define AM_SYSTEM_COMPONENT(s) "http://www.ambulantplayer.org/component/" s
 
 namespace ambulant {
 
@@ -50,9 +49,18 @@ class AMBULANTAPI renderer_select {
 		m_renderer_uri(NULL),
 		m_pf(NULL)
 	{}
+    renderer_select(const char *uri)
+    :   m_node(NULL),
+        m_url_valid(false),
+        m_mimetype_valid(false),
+        m_mimetype(""),
+        m_renderer_uri_valid(true),
+        m_renderer_uri(uri),
+        m_pf(NULL)
+    {}
 	~renderer_select() {}
 	
-	const lib::xml_string& get_tag() const { return m_node->get_local_name(); }
+	const lib::xml_string& get_tag() const { static std::string empty(""); return m_node?m_node->get_local_name():empty; }
 	const net::url& get_url();
 	const std::string& get_mimetype();
 	const char* get_renderer_uri();

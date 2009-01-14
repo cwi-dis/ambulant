@@ -22,6 +22,8 @@
  */
 
 #include "ambulant/gui/cocoa/cocoa_audio.h"
+#include "ambulant/common/renderer_select.h"
+#include "ambulant/smil2/test_attrs.h"
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -36,12 +38,32 @@ namespace gui {
 
 namespace cocoa {
 
+
+extern const char cocoa_audio_playable_tag[] = "audio";
+extern const char cocoa_audio_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererCocoaAudio");
+extern const char cocoa_audio_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererAudio");
+
+common::playable_factory *
+create_cocoa_audio_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
+{
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoaAudio"), true);
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererAudio"), true);
+	return new common::single_playable_factory<
+        cocoa_audio_playable, 
+        cocoa_audio_playable_tag, 
+        cocoa_audio_playable_renderer_uri, 
+        cocoa_audio_playable_renderer_uri2, 
+        cocoa_audio_playable_renderer_uri2 >(factory, mdp);
+}
+
 cocoa_audio_playable::cocoa_audio_playable(
 	playable_notification *context,
 	playable_notification::cookie_type cookie,
 	const lib::node *node,
-	lib::event_processor *evp)
-:	playable_imp(context, cookie, node, evp),
+	lib::event_processor *evp,
+	common::factories *fp,
+	common::playable_factory_machdep *mdp)
+:	playable_imp(context, cookie, node, evp, fp, mdp),
 	m_url(node->get_url("src")),
 	m_sound(NULL)
 {

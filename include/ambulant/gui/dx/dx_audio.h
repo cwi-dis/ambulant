@@ -40,13 +40,17 @@ namespace dx {
 
 class audio_player;
 
+common::playable_factory *create_dx_audio_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+
 class dx_audio_renderer : public common::renderer_playable {
   public:
 	dx_audio_renderer(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
-		lib::event_processor* evp);
+		lib::event_processor* evp,
+		common::factories *fp,
+		common::playable_factory_machdep *dxplayer);
 	~dx_audio_renderer();
 	void start(double t);
 	void stop();

@@ -67,9 +67,9 @@ params::addparamnodes(const lib::node *pnode)
 			const char *cvalue = pnode->get_attribute("value");
 			
 			if (cname == NULL) {
-				lib::logger::get_logger()->trace("<param> missed \"name\" attribute");
+				lib::logger::get_logger()->trace("%s: missing \"name\" attribute", pnode->get_sig().c_str());
 			} else if (cvalue == NULL) {
-				lib::logger::get_logger()->trace("<param> missed \"value\" attribute");
+				lib::logger::get_logger()->trace("%s: missing \"value\" attribute", pnode->get_sig().c_str());
 			} else {
 				std::string name(cname);
 				m_params[name] = cvalue;
