@@ -1,3 +1,19 @@
+2009-01-14 23:29  jackjansen
+
+	* Merging exp-jack-unified-factories-2 branch.	Two big changes: 1.
+	  All renderer factories now have the same signature. Renderers
+	  also have an identifier, and can be selected with <param
+	  name="renderer">.  ffmpeg/native preference makes use of
+	  identifiers and moves a whole group of renderers forward in the
+	  priority list. There are hooks (not implemented yet) for
+	  selecting renderers by mimetype.
+
+	  2. systemComponent now actually allows you to test for things
+	  like available renderer, but also for whether we're running on
+	  the desktop or in the browser plugin. The mechanism is
+	  extensible, and things like the Annotator are expected to make
+	  use of it too, eventually.
+
 2009-01-07 14:17  jackjansen
 
 	* Cleaned up a few things.
