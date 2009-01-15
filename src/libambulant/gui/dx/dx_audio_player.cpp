@@ -449,7 +449,7 @@ void gui::dx::audio_player::set_global_rate(double rate) {
 }
 
 double gui::dx::audio_player::change_global_rate(double adjustment) {
-	if (adjustment != 1.0)
+	if (adjustment != 0.0)
 		set_global_rate(s_current_playback_rate+adjustment);
 	return s_current_playback_rate;
 }
