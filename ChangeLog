@@ -1,3 +1,10 @@
+2009-01-15 13:43  jackjansen
+
+	* Bug (and fix) spotted by Daniel Weck: change_global_rate()
+	  argument is an increment, not a factor.
+
+	  Ned to backport to release branch and amis branch.
+
 2009-01-14 23:29  jackjansen
 
 	* Merging exp-jack-unified-factories-2 branch.	Two big changes: 1.
