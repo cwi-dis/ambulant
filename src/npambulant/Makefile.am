@@ -27,7 +27,8 @@ extra_ffmpeg_ldflags=
 endif
 #------------------------------------------------------
 if WITH_LIVE
-extra_live_ldflags= -L$(LIVE_ROOT)/liveMedia/ -lliveMedia \
+extra_live_ldflags=$(top_builddir)/src/libambulant/.libs/libambulant_live.a \
+			  -L$(LIVE_ROOT)/liveMedia/ -lliveMedia \
 			  -L$(LIVE_ROOT)/BasicUsageEnvironment/ -lBasicUsageEnvironment  \
 			  -L$(LIVE_ROOT)/groupsock/ -lgroupsock  \
 			  -L$(LIVE_ROOT)/UsageEnvironment/ -lUsageEnvironment
