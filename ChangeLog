@@ -1,3 +1,8 @@
+2009-01-19 16:19  keesblom
+
+	* Adapted old plugin s.t. the does not crash Firefox anymore by
+	  symbol lookup errors due to recent factories reorgranization.
+
 2009-01-15 13:43  jackjansen
 
 	* Bug (and fix) spotted by Daniel Weck: change_global_rate()
