@@ -238,19 +238,21 @@ cocoa_smiltext_renderer::smiltext_changed()
 				}
 				break;
 			case smil2::stc_data:
-				char lastch = *((*i).m_data.rbegin());
-				if (lastch == '\r' || lastch == '\n' || lastch == '\f' || lastch == '\v') {
-					m_needs_conditional_newline = false;
-					m_needs_conditional_space = false;
-				} else
-				if (lastch == ' ' || lastch == '\t') {
-					m_needs_conditional_newline = true;
-					m_needs_conditional_space = false;
-				} else {
-					m_needs_conditional_newline = true;
-					m_needs_conditional_space = true;
-				}
-				newdata = [NSMutableString stringWithUTF8String:(*i).m_data.c_str()];
+                {
+                    char lastch = *((*i).m_data.rbegin());
+                    if (lastch == '\r' || lastch == '\n' || lastch == '\f' || lastch == '\v') {
+                        m_needs_conditional_newline = false;
+                        m_needs_conditional_space = false;
+                    } else
+                    if (lastch == ' ' || lastch == '\t') {
+                        m_needs_conditional_newline = true;
+                        m_needs_conditional_space = false;
+                    } else {
+                        m_needs_conditional_newline = true;
+                        m_needs_conditional_space = true;
+                    }
+                    newdata = [NSMutableString stringWithUTF8String:(*i).m_data.c_str()];
+                }
 				break;
 			default:
 				assert(0);

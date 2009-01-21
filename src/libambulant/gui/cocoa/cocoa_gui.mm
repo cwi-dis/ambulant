@@ -328,41 +328,43 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 	else if (strcmp(type, "png") == 0) filetype = NSPNGFileType;
 	else {
 		lib::logger::get_logger()->trace("get_screenshot: unknown filetype \"%s\"", type);
-		goto bad;
+		[pool release];
+        return false;
 	}
 	NSData *data;
 	AmbulantView *view = (AmbulantView *)m_view;
 	NSImage *image = [view _getOnScreenImage];
 	if (image == NULL) {
 		lib::logger::get_logger()->trace("get_screenshot: cannot get screen shot");
-		goto bad;
+		[pool release];
+        return false;
 	}
 	NSImageRep *rep = [image bestRepresentationForDevice: NULL];
 	if (rep == NULL) {
 		lib::logger::get_logger()->trace("get_screenshot: cannot get representation for screen shot");
 //		[image release];
-		goto bad;
+		[pool release];
+        return false;
 	}
 	data = [rep representationUsingType: filetype properties: NULL];
 //	[image release];
 	if (data == NULL) {
 		lib::logger::get_logger()->trace("get_screenshot: cannot convert screenshot to %s format", type);
-		goto bad;
+		[pool release];
+        return false;
 	}
 	*out_data = (char *)malloc([data length]);
 	if (*out_data == NULL) {
 		lib::logger::get_logger()->trace("get_screenshot: out of memory");
 //		[data release];
-		goto bad;
+		[pool release];
+        return false;
 	}
 	*out_size = [data length];
 	[data getBytes: *out_data];
 //	[data release];
 	[pool release];
 	return true;
-bad:
-	[pool release];
-	return false;
 }
 
 } // namespace cocoa
