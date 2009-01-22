@@ -1,3 +1,7 @@
+2009-01-21 11:31  jackjansen
+
+	* Adapted for XCode 3.1 and gcc 4.2.
+
 2009-01-19 16:19  keesblom
 
 	* Adapted old plugin s.t. the does not crash Firefox anymore by
