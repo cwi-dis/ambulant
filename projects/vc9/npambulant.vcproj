@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9,00"
 	Name="npambulant"
 	ProjectGUID="{4DCBBF00-3086-40AA-B1B7-4FD350835E95}"
 	RootNamespace="npambulant"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -91,6 +92,8 @@
 				ProgramDatabaseFile=".\Debug/npambulant.pdb"
 				MapExports="false"
 				OptimizeReferences="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Debug/npambulant.lib"
 				TargetMachine="1"
 			/>
@@ -113,11 +116,8 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy /y .\npambulant.xpt &quot;c:\Program Files\Mozilla Firefox\plugins\npambulant.xpt&quot; &#x0D;&#x0A;copy /y ..\..\bin\win32\libambulant_shwin32_D.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot; &#x0D;&#x0A;copy /y ..\..\bin\win32\libampluginD_state_xpath.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot; &#x0D;&#x0A;copy /y ..\..\bin\win32\libampluginD_ffmpeg.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot; &#x0D;&#x0A;copy /y ..\..\bin\win32\avcodec-51.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot; &#x0D;&#x0A;copy /y ..\..\bin\win32\avformat-52.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot; &#x0D;&#x0A;copy /y ..\..\bin\win32\avutil-49.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot; &#x0D;&#x0A;copy /y ..\..\bin\win32\SDL.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot; &#x0D;&#x0A;copy /y ..\..\bin\win32\xerces-c_2_8D.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot; &#x0D;&#x0A;"
+				CommandLine="copy /y .\npambulant.xpt &quot;c:\Program Files\Mozilla Firefox\plugins\npambulant.xpt&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libambulant_shwin32_D.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libampluginD_state_xpath.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libampluginD_ffmpeg.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avcodec-51.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avformat-52.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avutil-49.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\SDL.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\xerces-c_2_8D.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -190,6 +190,8 @@
 				IgnoreDefaultLibraryNames=""
 				ModuleDefinitionFile="..\..\src\npambulant\npambulant.def"
 				ProgramDatabaseFile=".\Release/npambulant.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Release/npambulant.lib"
 				TargetMachine="1"
 			/>
@@ -212,11 +214,8 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy /y .\npambulant.xpt &quot;c:\Program Files\Mozilla Firefox\plugins\npambulant.xpt&quot; &#x0D;&#x0A;copy /y ..\..\bin\win32\libambulant_shwin32.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot; &#x0D;&#x0A;copy /y ..\..\bin\win32\libamplugin_state_xpath.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot; &#x0D;&#x0A;copy /y ..\..\bin\win32\libamplugin_ffmpeg.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot; &#x0D;&#x0A;copy /y ..\..\bin\win32\avcodec-51.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot; &#x0D;&#x0A;copy /y ..\..\bin\win32\avformat-52.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot; &#x0D;&#x0A;copy /y ..\..\bin\win32\avutil-49.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot; &#x0D;&#x0A;copy /y ..\..\bin\win32\SDL.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot; &#x0D;&#x0A;copy /y ..\..\bin\win32\xerces-c_2_8.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot; &#x0D;&#x0A;"
+				CommandLine="copy /y .\npambulant.xpt &quot;c:\Program Files\Mozilla Firefox\plugins\npambulant.xpt&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libambulant_shwin32.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libamplugin_state_xpath.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libamplugin_ffmpeg.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avcodec-51.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avformat-52.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avutil-49.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\SDL.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\xerces-c_2_8.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>

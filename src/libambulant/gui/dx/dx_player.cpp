@@ -749,7 +749,7 @@ void gui::dx::dx_player::schedule_update() {
 	lib::event_processor *evp = m_player->get_evp();
 	m_update_event = new lib::no_arg_callback_event<dx_player>(this, 
 		&dx_player::update_callback);
-	evp->add_event(m_update_event, 50, ep_high);
+	evp->add_event(m_update_event, 50, lib::event_priority::ep_high);
 }
 
 ////////////////////////
@@ -798,7 +798,7 @@ void gui::dx::dx_player::show_file(const net::url& href) {
 #ifdef AMBULANT_PLATFORM_WIN32_WCE
 	m_logger->error("Not implemented: opening external file %s", href.get_url().c_str());
 #else
-	ShellExecute(GetDesktopWindow(), text_str("open"), textptr(href.get_url().c_str()), NULL, NULL, SW_SHOWNORMAL);
+	ShellExecute(GetDesktopWindow(), text_str("open"), lib::textptr(href.get_url().c_str()), NULL, NULL, SW_SHOWNORMAL);
 #endif
 	// Or for smil
 	//std::string this_exe = lib::win32::get_module_filename();

@@ -1,4 +1,7 @@
 BUILD
+Build
+Debug
+Release
 *.suo
 *.user
 *.log
