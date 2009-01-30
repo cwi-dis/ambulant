@@ -1648,6 +1648,65 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		04A2D6B20F2F19DA0027C378 /* Debug-llvm */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_VERSION = 4.2;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = NO;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"../../third_party_packages/ffmpeg-universal/libavformat",
+					"../../third_party_packages/ffmpeg-universal/libavcodec",
+					"../../third_party_packages/ffmpeg-universal/libavutil",
+					"../../third_party_packages/expat-unix/lib",
+					"../../third_party_packages/xerces-unix/lib",
+					../../third_party_packages/live/liveMedia,
+					../../third_party_packages/live/UsageEnvironment,
+					../../third_party_packages/live/BasicUsageEnvironment,
+					/usr/local/lib,
+					../../third_party_packages/live/groupsock,
+					"\"$(SRCROOT)/../../../../packages/xerces-c-src_2_7_0/lib\"",
+				);
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+				USER_HEADER_SEARCH_PATHS = "../../include ../../third_party_packages/ffmpeg-universal /usr/local/include/SDL ../../third_party_packages/expat-unix/lib ../../third_party_packages/xerces-unix/lib ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
+			};
+			name = "Debug-llvm";
+		};
+		04A2D6B30F2F19DA0027C378 /* Debug-llvm */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"WITH_EXTERNAL_DOM=1",
+					"WITH_LTDL_PLUGINS=1",
+					"AM_PREFER_FFMPEG=1",
+					"WITH_SDL=1",
+					"WITH_FFMPEG=1",
+					"WITH_EXPAT=1",
+					"WITH_FFMPEG_AVFORMAT=1",
+					"WITH_OVERLAY_WINDOW=1",
+					"WITH_SMIL30=1",
+				);
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = "Ambulant-mac";
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = YES;
+			};
+			name = "Debug-llvm";
+		};
 		C01FCF4B08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1705,9 +1764,23 @@
 				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_VERSION = 4.2;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_CHECK_SWITCH_STATEMENTS = NO;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
 				LIBRARY_SEARCH_PATHS = (
@@ -1769,6 +1842,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4B08A954540054247B /* Debug */,
+				04A2D6B30F2F19DA0027C378 /* Debug-llvm */,
 				C01FCF4C08A954540054247B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1778,6 +1852,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
+				04A2D6B20F2F19DA0027C378 /* Debug-llvm */,
 				C01FCF5008A954540054247B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;

@@ -28,11 +28,11 @@ xerces:
 libxml2:
 	Only for SMIL 3 support. Download source from <http://www.xmlsoft.org>.
 	There are no releases, only hourly snapshots it seems. Copy
-	libxml2-2.6.69 into third_party_packages (if the name has changed you
-	may need to change some Ambulant projects to refer to the new name.
+	libxml2-2.7.3 into third_party_packages (if the name has changed you
+	may need to change some Ambulant projects to refer to the new name.)
     
 	Building libxml2 should be handled by the projects/*/third_party_packages.sln.
-	In case it fails: read the instructions in libxml2-2.6.69/win32 and do it
+	In case it fails: read the instructions in libxml2-2.7.3/win32 and do it
 	yourself.
     
 	Do not install the libs and binaries.

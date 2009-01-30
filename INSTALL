@@ -115,7 +115,7 @@ Building for Windows
 As of Ambulant 1.9 and later all projects are located in the "projects" folder
 at the toplevel folder. "vc71" are projects for Visual Studio .NET 2003, a.k.a.
 Visual C++ 7.1. "vc8" are projects for Visual Studio .NET 2005, of which you
-want at least Service Pack 1.
+want at least Service Pack 1. "vc9" is for Visual Studio 2008, SP2.
 
 Aside from Visual Studio you must probably also install (at least for VS 2005)
 the following two packages from Microsoft:
@@ -141,21 +141,23 @@ for installation instructions.
 
 Next, build these by opening
 projects\XXXX\third_party_packages.sln in Visual Studio. XXXX will be either
-vc71 or vc8, depending on your version of Visual Studio.
+vc71, vc8 or vc9, depending on your version of Visual Studio.
 Select the "Release" configuration,  and do Build->Build Solution.
-(Note that it was stated above that you need Visual Studio 7.1, trying to
-open the solution file in 7.0 or earlier will not work, unfortunately).
 
-When this succeeds double-click the batchfile
+vc9: If you run into a problem with _vsnprintf being multiply defined:
+get a newer version of libxml2. 
+
+vc7: When this succeeds double-click the batchfile
 projects\XXXX\copy_tpp_win32.bat, which copies the various
 libraries (libexpat.lib, libjpeg.lib, libpng13.lib and zlib.lib) to
 lib\win32 in the toplevel Ambulant directory. The corresponding DLLs are
-copied to bin\win32 in the toplevel directory.
+copied to bin\win32 in the toplevel directory. Copying is done automatically
+for vc8/vc9.
 
 After these steps you are ready to build AmbulantPlayer itself. Open
 projects\XXXX\Ambulant-win32.sln and select "Ambulant Player" as the default
 project (right-click on it for the context menu that allows you to do this).
-Select the build type, use "Release" in case of doubt.
+Select the build type, use "ReleaseShlib" in case of doubt.
 
 The resulting application is deposited in bin\win32 in the toplevel
 directory.
