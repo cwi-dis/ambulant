@@ -1,3 +1,31 @@
+2009-01-30 17:16  jackjansen
+
+	* - Getting rid of some dead wood in the projects.  - Moving xerces
+	  to a plugin.
+
+2009-01-30 15:45  jackjansen
+
+	* Disabled Xerces for debug builds under VS2008. This works around
+	  the issue that there's something wrong with the Manifest in the
+	  Xerces debug dll that causes Ambulant to refuse to run. To be
+	  fixed later.
+
+2009-01-30 14:11  jackjansen
+
+	* Everything builds under visual studio 2008. It doesn't run yet.
+
+2009-01-30 13:54  jackjansen
+
+	* Visual Studio projects for live555.
+
+2009-01-30 12:06  jackjansen
+
+	* Started on vs2008 port.
+
+2009-01-30 09:56  jackjansen
+
+	* Copied vc8-smil3 projects. No changes for vc9 yet.
+
 2009-01-21 11:31  jackjansen
 
 	* Adapted for XCode 3.1 and gcc 4.2.
