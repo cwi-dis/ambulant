@@ -42,9 +42,11 @@ namespace lib {
 
 
 class byte_buffer {	
+
   public:
 	typedef unsigned char value_t;
-	
+#if 0
+// XXXJACK I think byte_buffer is no longer used.	
 	byte_buffer(int cap) 
 	:	position(0),
 		limit(cap),
@@ -98,6 +100,7 @@ class byte_buffer {
 	int limit;
 	const int capacity;
 	value_t *buf;
+#endif
 };
 
 

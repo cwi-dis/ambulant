@@ -57,7 +57,9 @@ class AMBULANTAPI ostream {
 	virtual void close() = 0;
 	virtual int write(const unsigned char *buffer, int nbytes) = 0;
 	virtual int write(const char *cstr) = 0;
+#if 0
 	virtual void write(byte_buffer& bb) = 0;
+#endif
 	virtual void flush() = 0;
 };
 
@@ -81,10 +83,12 @@ class std_ostream : public ostream {
 		m_os.write(cstr, len);
 		return len;
 	}
+#if 0
 	virtual void write(byte_buffer& bb) {
 		int nwritten = write(bb.data()+bb.get_position(), bb.remaining());
 		bb.set_position(bb.get_position()+nwritten);
 	}
+#endif
 	virtual void flush() {
 		m_os.flush();
 	}
