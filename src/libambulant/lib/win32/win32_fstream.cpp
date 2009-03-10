@@ -24,6 +24,7 @@
 #include "ambulant/lib/win32/win32_fstream.h"
 #include "ambulant/lib/textptr.h"
 
+#include <cassert>
 using namespace ambulant;
 
 lib::win32::fstream::fstream()
@@ -79,12 +80,6 @@ int lib::win32::fstream::read(unsigned char *buffer, int nbytes) {
 	return 0;
 }
 	
-void lib::win32::fstream::read(lib::byte_buffer& bb) {
-	if(m_hf == INVALID_HANDLE_VALUE) return;
-	int nread = read(bb.data()+bb.get_position(), bb.remaining());
-	bb.set_position(bb.get_position()+nread);
-}
-	
 int lib::win32::fstream::read() {
 	assert(m_hf != INVALID_HANDLE_VALUE);
 	unsigned char buffer[4];
@@ -121,10 +116,4 @@ bool lib::win32::fstream::seek(unsigned long pos) {
 int lib::win32::fstream::write(const char *cstr) {
 	assert(m_hf != INVALID_HANDLE_VALUE);
 	return write((const unsigned char *)cstr, (int)strlen(cstr));
-}
-	
-void lib::win32::fstream::write(byte_buffer& bb) {
-	assert(m_hf != INVALID_HANDLE_VALUE);
-	int nwritten = write(bb.data()+bb.get_position(), bb.remaining());
-	bb.set_position(bb.get_position()+nwritten);
 }

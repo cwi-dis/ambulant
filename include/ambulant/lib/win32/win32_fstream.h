@@ -34,7 +34,6 @@
 
 #include "ambulant/config/config.h"
 #include "ambulant/lib/amstream.h"
-#include "ambulant/lib/byte_buffer.h"
 
 namespace ambulant {
 
@@ -54,7 +53,6 @@ class AMBULANTAPI fstream : public lib::istream, public lib::ostream {
 	void close();
 		
 	int read(unsigned char *buffer, int nbytes);
-	void read(lib::byte_buffer& bb);	
 	int read();
 	
 	unsigned long gptr() const { return m_gptr;}
@@ -66,7 +64,6 @@ class AMBULANTAPI fstream : public lib::istream, public lib::ostream {
 	int write(const unsigned char *buffer, int nbytes);
 	
 	int write(const char *cstr);
-	void write(byte_buffer& bb);
 	
 	virtual void flush() {}
 	

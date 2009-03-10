@@ -27,6 +27,7 @@
 #include "ambulant/lib/logger.h"
 
 #include <cmath>
+#include <cassert>
 
 using namespace ambulant;
 

@@ -860,10 +860,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\include\ambulant\lib\byte_buffer.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\include\ambulant\lib\callback.h"
 						>
 					</File>

@@ -31,7 +31,6 @@
 #define AMBULANT_LIB_AMSTREAM_H
 
 #include "ambulant/config/config.h"
-#include "ambulant/lib/byte_buffer.h"
 
 #ifndef AMBULANT_NO_IOSTREAMS
 #include <iostream>
@@ -46,7 +45,6 @@ class AMBULANTAPI istream {
 	virtual ~istream() {}
 	virtual bool is_open() const = 0;
 	virtual void close() = 0;
-	virtual void read(byte_buffer& bb) = 0;
 	virtual int read(unsigned char *buffer, int nbytes) = 0;
 };
 
@@ -57,9 +55,6 @@ class AMBULANTAPI ostream {
 	virtual void close() = 0;
 	virtual int write(const unsigned char *buffer, int nbytes) = 0;
 	virtual int write(const char *cstr) = 0;
-#if 0
-	virtual void write(byte_buffer& bb) = 0;
-#endif
 	virtual void flush() = 0;
 };
 
@@ -83,12 +78,6 @@ class std_ostream : public ostream {
 		m_os.write(cstr, len);
 		return len;
 	}
-#if 0
-	virtual void write(byte_buffer& bb) {
-		int nwritten = write(bb.data()+bb.get_position(), bb.remaining());
-		bb.set_position(bb.get_position()+nwritten);
-	}
-#endif
 	virtual void flush() {
 		m_os.flush();
 	}
