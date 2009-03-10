@@ -32,7 +32,6 @@
 #include "ambulant/version.h"
 #include "ambulant/config/config.h"
 #include "ambulant/lib/amstream.h"
-#include "ambulant/lib/byte_buffer.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/common/preferences.h"
 #include "ambulant/common/plugin_engine.h"
@@ -50,7 +49,6 @@ class nslog_ostream : public ambulant::lib::ostream {
 	void close() {}
 	int write(const unsigned char *buffer, int nbytes) {NSLog(@"ostream use of buffer, size not implemented for Cocoa"); return 0;}
 	int write(const char *cstr);
-	void write(ambulant::lib::byte_buffer& bb) {NSLog(@"ostream use of byte_buffer not implemented for Cocoa");}
 	void flush() {}
 };
 

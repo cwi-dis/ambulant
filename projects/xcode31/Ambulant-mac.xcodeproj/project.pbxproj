@@ -325,7 +325,6 @@
 		049651970BCAE333002C00DF /* amstream.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = amstream.h; sourceTree = "<group>"; };
 		049651980BCAE333002C00DF /* asb.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = asb.h; sourceTree = "<group>"; };
 		049651990BCAE333002C00DF /* basic_types.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = basic_types.h; sourceTree = "<group>"; };
-		0496519A0BCAE333002C00DF /* byte_buffer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = byte_buffer.h; sourceTree = "<group>"; };
 		0496519B0BCAE333002C00DF /* callback.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = callback.h; sourceTree = "<group>"; };
 		0496519C0BCAE333002C00DF /* colors.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = colors.h; sourceTree = "<group>"; };
 		0496519D0BCAE333002C00DF /* delta_timer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = delta_timer.h; sourceTree = "<group>"; };
@@ -938,7 +937,6 @@
 				049651970BCAE333002C00DF /* amstream.h */,
 				049651980BCAE333002C00DF /* asb.h */,
 				049651990BCAE333002C00DF /* basic_types.h */,
-				0496519A0BCAE333002C00DF /* byte_buffer.h */,
 				0496519B0BCAE333002C00DF /* callback.h */,
 				0496519C0BCAE333002C00DF /* colors.h */,
 				0496519D0BCAE333002C00DF /* delta_timer.h */,
@@ -1656,9 +1654,10 @@
 				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_VERSION = 4.2;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = NO;
+				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
 				LIBRARY_SEARCH_PATHS = (
@@ -1764,13 +1763,13 @@
 				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = 4.2;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
-				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = YES;
+				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = NO;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
 				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
@@ -1813,6 +1812,7 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_VERSION = 4.2;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
 				LIBRARY_SEARCH_PATHS = (

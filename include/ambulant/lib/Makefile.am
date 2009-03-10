@@ -5,7 +5,6 @@ library_include_HEADERS= \
 	amstream.h \
 	asb.h \
 	basic_types.h \
-	byte_buffer.h \
 	callback.h \
 	colors.h \
 	delta_timer.h \

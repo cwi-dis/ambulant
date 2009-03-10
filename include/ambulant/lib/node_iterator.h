@@ -129,6 +129,7 @@ class tree_iterator : public const_tree_iterator<Node> {
 
 	tree_iterator() : const_tree_iterator<Node>(){}
 	tree_iterator(Node *p) : const_tree_iterator<Node>(p){}
+    virtual ~tree_iterator() {}
 
 	// pre-increment
 	tree_iterator& operator++() { if(this->m_cur)(this->*const_tree_iterator<Node>::m_move)(); return *this;}
