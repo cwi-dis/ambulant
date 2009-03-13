@@ -41,6 +41,12 @@ ffmpeg:
 	Edit liibswscale/rgb2rgb.c, look for #if defined(ARCH_X86) and
 	add !defined(__APPLE__).
 	
+	In addition, when building FAAD2, you need specify "--disable-dependency-tracking"
+	to configure to cancel the dependency tracking, for example:
+	$ cd faad2-2.7
+	$ ./configure --with-mp4v2 --disable-dependency-tracking
+
+	
 sdl:
 	If you want to build a universal (ppc/intel) Ambulant binary you must
 	build SDL in a different way. The script sdl-osx-fatbuild.sh in this
