@@ -58,7 +58,12 @@ sdl:
 live555.com:
 	If you want to create a MacOSX universal installer you need some patches
 	to live first. Extract live-osx-fatbuild-patches.tar into the live
-	source directory, do "MACOSX_DEPLOYMENT_TARGET=10.4 ./genMakefiles macosxfat" and make, and you're all set.
+	source directory, do "MACOSX_DEPLOYMENT_TARGET=10.4 ./genMakefiles macosxfat" and "MACOSX_DEPLOYMENT_TARGET=10.4 make", 
+	or 
+	$ export MACOSX_DEPLOYMENT_TARGET=10.4 
+	$./genMakefiles macosxfat 
+	$ make
+	and you're all set.
 	
 gettext:
 	If you want to build a universal MacOSX installer, you need to run configure
