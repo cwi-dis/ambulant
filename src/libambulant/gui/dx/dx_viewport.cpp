@@ -18,11 +18,7 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 /* 
-<<<<<<< dx_viewport.cpp
  * @$Id$ 
-=======
- * @$Id$ 
->>>>>>> 1.60.26.1
  */
 
 
@@ -42,12 +38,8 @@
 #ifdef AMBULANT_PLATFORM_WIN32_WCE
 #include <d3dmtypes.h>
 #else
-<<<<<<< dx_viewport.cpp
 // For older versions of DirectX, this could be d3d8types.h
 #include <d3d9types.h>
-=======
-#include <d3d9types.h>
->>>>>>> 1.60.26.1
 #endif
 
 #include "ambulant/gui/dx/dx_viewport.h"

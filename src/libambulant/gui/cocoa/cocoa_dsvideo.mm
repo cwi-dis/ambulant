@@ -18,11 +18,7 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 /* 
-<<<<<<< cocoa_dsvideo.mm
  * @$Id$ 
-=======
- * @$Id$ 
->>>>>>> 1.23.2.4
  */
 
 #include "ambulant/gui/cocoa/cocoa_gui.h"
