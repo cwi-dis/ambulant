@@ -107,8 +107,10 @@ gtk_smiltext_renderer::~gtk_smiltext_renderer()
 		pango_attr_list_unref( m_pango_attr_list);
 		m_pango_attr_list = NULL;
 	}
-	g_object_unref (G_OBJECT (m_pango_context));
-	g_object_unref(m_pango_layout);
+	if (m_pango_context != NULL)
+		g_object_unref (G_OBJECT (m_pango_context));
+	if (m_pango_layout != NULL)
+		g_object_unref(G_OBJECT (m_pango_layout));
 	if ( m_bg_pango_attr_list != NULL) {
 		pango_attr_list_unref(m_bg_pango_attr_list);
 		m_bg_pango_attr_list = NULL;

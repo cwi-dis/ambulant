@@ -913,9 +913,9 @@ AC_ARG_WITH([npambulant],
 	case "${withval}" in
 	yes)  	with_npambulant=true
 			;;
-	no)		with_npambulant=false
+	no)	with_npambulant=false
 			;;
-	*)		AC_MSG_ERROR("--with-npambulant takes no argument")
+	*)	AC_MSG_ERROR("--with-npambulant takes no argument")
 			;;
 	esac],[
 	with_npambulant=false])
@@ -931,11 +931,16 @@ then
 		# withvalabs=`pwd`/third_party_packages/mozilla/ff-opt-static/dist
 		XULRUNNER_ROOT=${withvalabs}
 		XPIDL=${XULRUNNER_ROOT}/bin/xpidl
-   else
-		AC_MSG_ERROR("--with-npambulant requires xulrunner-sdk installed in third_party_packages")
-		XULRUNNER_ROOT=
-		XPIDL=
-		with_npambulant=false
+   elif test x`xulrunner --gre-version` = x1.9.0.6
+   	then	# xulrunner is by default installed from fedora 10
+		withvalabs=/usr
+		XULRUNNER_ROOT=${withvalabs}
+	     	XPIDL=
+
+   else	AC_MSG_ERROR("--with-npambulant requires xulrunner-sdk installed in third_party_packages")
+	XULRUNNER_ROOT=
+	XPIDL=
+	with_npambulant=false
    fi
 fi
 AC_SUBST(XULRUNNER_ROOT)

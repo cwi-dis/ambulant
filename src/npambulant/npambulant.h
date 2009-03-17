@@ -1,4 +1,4 @@
-/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: NPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -35,16 +35,23 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#ifndef __PLUGIN_H__
-#define __PLUGIN_H__
+#ifndef __CPLUGIN_H__
+#define __CPLUGIN_H__
 
+#include "npapi.h"
+#include "npruntime.h"
+
+// ambulant player includes
+#include "ambulant/version.h"
+#include "ambulant/common/player.h"
+#include "ambulant/common/plugin_engine.h"
+#include "ambulant/net/url.h"
+#include "ambulant/lib/logger.h"
 // mozilla includes
 #ifdef	XP_WIN32
 #include "npapi.h"
 #include "npupp.h"
 #endif//XP_WIN32
-#include "pluginbase.h"
-#include "nsScriptablePeer.h"
 
 // ambulant player includes
 #include "ambulant/version.h"
@@ -65,6 +72,7 @@ class cg_mainloop;
 #elif	XP_WIN32
 #include <ambulant/gui/dx/dx_player.h>
 #include <ambulant/net/url.h>
+typedef ambulant::gui::dx::dx_player_callbacks gui_callbacks; //XX from MmView.cpp
 class ambulant_player_callbacks : public ambulant::gui::dx::dx_player_callbacks {
 
 public:
@@ -80,48 +88,70 @@ public:
 #error None of WITH_GTK/WITH_CG/XP_WIN32 defined: no graphic toolkit available
 #endif//WITH_GTK/WITH_CG/XP_WIN32
 
-// class definition
-class nsScriptablePeer;
+extern NPObject *
+AllocateScriptablePluginObject(NPP npp, NPClass *aClass); //KB
 
-class nsPluginInstance : public nsPluginInstanceBase, npambulant
+class npambulant
 {
-public:
-
-    nsPluginCreateData mCreateData;
-protected:
-
 private:
-    NS_DECL_ISUPPORTS
-    NS_DECL_NPAMBULANT
+  NPMIMEType m_mimetype;
+  NPP m_pNPInstance;
+  uint16 m_mode;
+  int m_argc;  
+  char** m_argn;
+  char** m_argv;
+  NPSavedData* m_data;
 
-    nsPluginInstance(NPP aInstance);
-    ~nsPluginInstance();
+#ifdef XP_WIN
+  HWND m_hWnd; 
+  WNDPROC m_lpOldProc;
+  LONG m_OldWindow;
+#endif
 
-    NPBool init(NPWindow* aWindow);
-    void shut();
-    NPBool isInitialized();
-    NPP getNPP();
-    const char* getValue(const char *name);
-    const char * getVersion();
+  NPWindow * m_Window;
+  
+  NPStream * m_pNPStream;
+  NPBool m_bInitialized;
 
-    // we need to provide implementation of this method as it will be
-    // used by Mozilla to retrieve the scriptable peer
-    NPError GetValue(NPPVariable variable, void *value);
-    nsScriptablePeer* getScriptablePeer();
-    char* get_document_location();
+  NPObject *m_pScriptableObject;
 
-    NPWindow* mNPWindow;
-    NPP mInstance;
-    NPBool mInitialized;
-    nsScriptablePeer * mScriptablePeer;
-    
-    char mString[128];
-    ambulant::lib::logger* m_logger;
-    ambulant::net::url m_url;
-    int m_cursor_id;
+public:
+  char m_String[128];
 
-    static NPP s_last_instance;
-    static void display_message(int level, const char *message);	
+public:
+  npambulant(NPMIMEType mimetype, NPP pNPInstance, uint16 mode,
+          int argc, char* argn[], char* argv[], NPSavedData* data);
+  ~npambulant();
+
+  NPBool init(NPWindow* pNPWindow);
+  void shut();
+  NPBool isInitialized();
+  NPP getNPP();
+  const char* getValue(const char *name);
+  
+  int16 handleEvent(void* event);
+
+  void showVersion();
+  void clear();
+  void getVersion(char* *aVersion);
+
+  void startPlayer();
+  void stopPlayer();
+  void restartPlayer();
+  void pausePlayer();
+  void resumePlayer();
+  bool isDone();
+
+  NPObject *GetScriptableObject();
+
+  /* for ambulant player */
+  ambulant::lib::logger* m_logger;
+  ambulant::net::url m_url;
+  int m_cursor_id;
+
+  static NPP s_last_instance;
+  bool init_ambulant(NPP npp, NPWindow* aWindow);
+  char* get_document_location();
 #ifdef	MOZ_X11
     Window window;
     Display* display;
@@ -137,6 +167,7 @@ private:
 #endif
 
 #ifdef	XP_WIN32
+#define strcasecmp(s1,s2) _stricmp(s1,s2)
     ambulant_player_callbacks m_player_callbacks;
     HWND m_hwnd;
     ambulant::gui::dx::dx_player* m_ambulant_player;
@@ -149,5 +180,10 @@ private:
         return m_ambulant_player;
     }
 #endif// XP_WIN32
+ };
+
+extern "C" {
+void npambulant_display_message(int level, const char *message);	
 };
-#endif // __PLUGIN_H__
+
+#endif // __CPLUGIN_H__

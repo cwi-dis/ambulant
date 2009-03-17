@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="plugin_ffmpeg"
 	ProjectGUID="{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}"
 	Keyword="Win32Proj"
@@ -39,8 +39,9 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/D &quot;_CRT_SECURE_NO_DEPRECATE&quot;&#x0D;&#x0A;/D &quot;_CRT_NONSTDC_NO_DEPRECATE&quot;"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\include;&quot;..\..\third_party_packages\SDL-1.2.12\include&quot;;..\..\third_party_packages\ffmpeg\libavformat;..\..\third_party_packages\ffmpeg\libavcodec;..\..\third_party_packages\ffmpeg;..\..\third_party_packages\ffmpeg\libavutil;&quot;..\..\third_party_packages\ffmpeg-windows-compat&quot;;..\..\third_party_packages\live\UsageEnvironment\include;..\..\third_party_packages\live\liveMedia\include;..\..\third_party_packages\live\groupsock\include;..\..\third_party_packages\live\BasicUsageEnvironment\include"
+				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\SDL\include;..\..\third_party_packages\ffmpeg\libavformat;..\..\third_party_packages\ffmpeg\libavcodec;..\..\third_party_packages\ffmpeg;..\..\third_party_packages\ffmpeg\libavutil;&quot;..\..\third_party_packages\ffmpeg-windows-compat&quot;;..\..\third_party_packages\live\UsageEnvironment\include;..\..\third_party_packages\live\liveMedia\include;..\..\third_party_packages\live\groupsock\include;..\..\third_party_packages\live\BasicUsageEnvironment\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;WITH_SMIL30;WITH_FFMPEG;WITH_LIVE;WITH_SDL;WITH_DSVIDEO"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"

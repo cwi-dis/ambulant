@@ -40,7 +40,6 @@
 // Implementation of Netscape entry points (NPN_*)
 //
 #ifdef	XP_WIN32
-#undef _GLOBAL_USING
 #include <cstddef>		   	 // Needed for ptrdiff_t. Is used in GeckoSDK 1.9,
 #define ptrdiff_t long int // but not defined in Visual C++ 7.1.
 #endif//XP_WIN32
@@ -306,7 +305,7 @@ bool NPN_RemoveProperty(NPP npp, NPObject* obj, NPIdentifier propertyName)
 {
   return NPNFuncs.removeproperty(npp, obj, propertyName);
 }
-/* XXXX
+
 bool NPN_Enumerate(NPP npp, NPObject *obj, NPIdentifier **identifier,
                    uint32_t *count)
 {
@@ -318,17 +317,14 @@ bool NPN_Construct(NPP npp, NPObject *obj, const NPVariant *args,
 {
   return NPNFuncs.construct(npp, obj, args, argCount, result);
 }
-XXXX */
 
 bool NPN_HasProperty(NPP npp, NPObject* obj, NPIdentifier propertyName)
 {
-  if (NPNFuncs.hasproperty == NULL) return false;
   return NPNFuncs.hasproperty(npp, obj, propertyName);
 }
 
 bool NPN_HasMethod(NPP npp, NPObject* obj, NPIdentifier methodName)
 {
-  if (NPNFuncs.hasmethod == NULL) return false;
   return NPNFuncs.hasmethod(npp, obj, methodName);
 }
 

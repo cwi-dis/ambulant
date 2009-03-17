@@ -84,7 +84,9 @@ ambulant::gui::gtk::create_gtk_video_factory(common::factories *factory)
 // structure to keep track of the dirty area
 struct dirty_area_widget {
 	lib::rect area;
-	GtkWidget* widget;	
+	GtkWidget* widget;
+	gtk_ambulant_widget* ambulant_widget;
+	guint tag;
 };
 
 // Callbacks used to keep synchronization of the different threads
@@ -98,6 +100,10 @@ bool gtk_C_callback_helper_queue_draw_area(void *arg)
 	gtk_ambulant_widget::s_lock.enter();
 	if (gtk_ambulant_widget::s_widgets > 0)
 		gtk_widget_queue_draw_area(r->widget, r->area.left(), r->area.top(), r->area.width(), r->area.height());
+	
+	AM_DBG ambulant::lib::logger::get_logger()->debug("gtk_C_callback_helper_queue_draw_area with left: %d, top: %d, width: %d, height: %d tag=%d", r->area.left(), r->area.top(), r->area.width(), r->area.height(),r->tag);
+
+	r->ambulant_widget->m_draw_area_tags.erase(r->tag);
 	gtk_ambulant_widget::s_lock.leave();
 //	gtk_widget_queue_draw(r->widget);
 	delete r;
@@ -445,14 +451,18 @@ ambulant_gtk_window::need_redraw(const lib::rect &r)
 	// the callback function is actually called (e.g. the user selects a different file)
 	GtkWidget* this_widget = m_ambulant_widget->get_gtk_widget();
 	dirty_area_widget* dirty = new dirty_area_widget();
-	dirty->widget = gtk_widget_get_parent(this_widget);
+	dirty->widget = (gtk_ambulant_widget*) gtk_widget_get_parent(this_widget);
 //KB	dirty->widget = this_widget;
 	dirty->area = r;
 	if ( ! gtk_widget_translate_coordinates (this_widget, dirty->widget, r.left(), r.top(), &dirty->area.x, &dirty->area.y)) {
 		AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw(0x%x): gtk_widget_translate_coordinates failed.", (void *)this);
 	}
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw: parent ltrb=(%d,%d,%d,%d)", dirty->area.left(), dirty->area.top(), dirty->area.width(), dirty->area.height());
-	g_idle_add_full(G_PRIORITY_HIGH_IDLE, (GSourceFunc) gtk_C_callback_helper_queue_draw_area, (void *)dirty, NULL);
+	guint draw_area_tag = g_idle_add_full(G_PRIORITY_HIGH_IDLE, (GSourceFunc) gtk_C_callback_helper_queue_draw_area, (void *)dirty, NULL);
+	dirty->tag = draw_area_tag;
+	dirty->ambulant_widget = m_ambulant_widget;
+	dirty->ambulant_widget->m_draw_area_tags.insert(draw_area_tag);
+	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw: parent ltrb=(%d,%d,%d,%d), tag=%d fun=0x%x", dirty->area.left(), dirty->area.top(), dirty->area.width(), dirty->area.height(), draw_area_tag, gtk_C_callback_helper_queue_draw_area);
 }
 
 void
@@ -815,6 +825,13 @@ gtk_ambulant_widget::~gtk_ambulant_widget()
 	gtk_ambulant_widget::s_lock.enter();
 	gtk_ambulant_widget::s_widgets--;
 	gtk_ambulant_widget::s_lock.leave();
+	if ( ! m_draw_area_tags.empty()) {
+		for (std::set<guint>::iterator it = m_draw_area_tags.begin(); it != m_draw_area_tags.end(); it++) {
+			AM_DBG ambulant::lib::logger::get_logger()->debug("gtk_ambulant_widget::~gtk_ambulant_widget removing tag %d", (*it));
+			g_source_remove((*it));
+
+		}
+	}
 	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::~gtk_ambulant_widget(0x%x): m_gtk_window=0x%x s_widgets=%d", (void*)this, m_gtk_window, gtk_ambulant_widget::s_widgets);
 	GObject* toplevel_widget = G_OBJECT (GTK_WIDGET (gtk_widget_get_toplevel(m_widget)));
 	if (g_signal_handler_is_connected (G_OBJECT (m_widget), m_expose_event_handler_id))

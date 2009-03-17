@@ -70,7 +70,7 @@
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy /y .\npambulant.xpt &quot;\Program Files\Mozilla Firefox\plugins\npambulant.xpt&quot;
+				CommandLine="
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
@@ -103,7 +103,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\xulrunner-sdk&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\sdk\include&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\include\plugin&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\include\nspr&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\include\java&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\include\js&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\include\xpcom&quot;;&quot;..\..\include&quot;;&quot;..\..\projects\vc71-smil3&quot;"
+				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\xulrunner-sdk&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\sdk\include&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\include\plugin&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\include\nspr&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\include\java&quot;;&quot;..\..\third_party_packages\xulrunner-sdk\include\js&quot;;..\..\include;&quot;..\..\projects\vc71-smil3&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_AMBULANT;XP_WIN32;AMBULANT_USE_DLL;WITH_EXPAT;WITH_XERCES;WITH_XERCES_BUILTIN;WITH_HTML_WIDGET;WITH_WINDOWS_PLUGINS;WITH_EXTERNAL_DOM;WITH_SMIL30;XPCOM_GLUE;MOZILLA_STRICT_API;_X86_;_WINDOWS;_USRDLL;NPSIMPLE_EXPORTS"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
@@ -121,7 +121,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\lib\win32\libambulant_shwin32.lib ..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcom.lib ..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcomglue_s.lib ..\..\third_party_packages\xulrunner-sdk\sdk\lib\nspr4.lib ..\..\lib\win32\libexpat.lib ..\..\lib\win32\libjpeg.lib ..\..\lib\win32\libpng.lib ..\..\lib\win32\zlib.lib ..\..\lib\win32\xerces-c_2.lib ..\..\lib\win32\xerces-depdom_2.lib"
+				AdditionalDependencies="..\..\lib\win32\libambulant_shwin32.lib ..\..\third_party_packages\xulrunner-sdk\sdk\lib\nspr4.lib ..\..\lib\win32\libexpat.lib ..\..\lib\win32\libjpeg.lib ..\..\lib\win32\libpng.lib ..\..\lib\win32\zlib.lib ..\..\lib\win32\xerces-c_2.lib ..\..\lib\win32\xerces-depdom_2.lib"
 				OutputFile="C:\Program Files\Mozilla Firefox\plugins\$(ProjectName).dll"
 				LinkIncremental="0"
 				SuppressStartupBanner="TRUE"
@@ -142,7 +142,7 @@
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy /y .\npambulant.xpt &quot;\Program Files\Mozilla Firefox\plugins\npambulant.xpt&quot;
+				CommandLine="
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
@@ -344,6 +344,9 @@ copy /y .\npambulant.xpt &quot;\Program Files\Mozilla Firefox\plugins\npambulant
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\src\npambulant\npambulant.cpp">
+			</File>
+			<File
 				RelativePath="..\..\src\npambulant\npambulant.def">
 			</File>
 			<File
@@ -385,102 +388,35 @@ copy /y .\npambulant.xpt &quot;\Program Files\Mozilla Firefox\plugins\npambulant
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\src\npambulant\nsScriptablePeer.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						BasicRuntimeChecks="3"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""/>
-				</FileConfiguration>
+				RelativePath="..\..\src\npambulant\ScriptablePluginObject.cpp">
 			</File>
 			<File
-				RelativePath="..\..\src\npambulant\plugin.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""/>
-				</FileConfiguration>
+				RelativePath="..\..\src\npambulant\ScriptablePluginObjectBase.cpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl">
 			<File
-				RelativePath="..\..\src\npambulant\npambulant.idl">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Running the XPIDL compiler and linker for $(InputName)"
-						CommandLine="echo %cd%
-..\..\third_party_packages\xulrunner-sdk\bin\xpidl.exe -m header -I..\..\third_party_packages\xulrunner-sdk\idl &quot;$(InputPath)&quot;
-..\..\third_party_packages\xulrunner-sdk\bin\xpidl.exe -m typelib -I..\..\third_party_packages\xulrunner-sdk\idl &quot;$(InputPath)&quot;
-"
-						Outputs="npambulant.h;npambulant.xpt"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Running the XPIDL compiler and linker for $(InputName)"
-						CommandLine="echo %cd%
-..\..\third_party_packages\xulrunner-sdk\bin\xpidl.exe -m header -I..\..\third_party_packages\xulrunner-sdk\idl &quot;$(InputPath)&quot;
-..\..\third_party_packages\xulrunner-sdk\bin\xpidl.exe -m typelib -I..\..\third_party_packages\xulrunner-sdk\idl &quot;$(InputPath)&quot;
-"
-						Outputs="npambulant.h;npambulant.xpt"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="DebugNoShLibNoXerces|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Running the XPIDL compiler and linker for $(InputName)"
-						CommandLine="echo %cd%
-..\..\third_party_packages\xulrunner-sdk\bin\xpidl.exe -m header -I..\..\third_party_packages\xulrunner-sdk\idl &quot;$(InputPath)&quot;
-..\..\third_party_packages\xulrunner-sdk\bin\xpidl.exe -m typelib -I..\..\third_party_packages\xulrunner-sdk\idl &quot;$(InputPath)&quot;
-"
-						Outputs="npambulant.h;npambulant.xpt"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="ReleaseNoShLibNoXerces|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Running the XPIDL compiler and linker for $(InputName)"
-						CommandLine="echo %cd%
-..\..\third_party_packages\xulrunner-sdk\bin\xpidl.exe -m header -I..\..\third_party_packages\xulrunner-sdk\idl &quot;$(InputPath)&quot;
-..\..\third_party_packages\xulrunner-sdk\bin\xpidl.exe -m typelib -I..\..\third_party_packages\xulrunner-sdk\idl &quot;$(InputPath)&quot;
-"
-						Outputs="npambulant.h;npambulant.xpt"/>
-				</FileConfiguration>
+				RelativePath="..\..\src\npambulant\ConstructablePluginObject.h">
 			</File>
 			<File
-				RelativePath="..\..\src\npambulant\nsScriptablePeer.h">
+				RelativePath="..\..\src\npambulant\npambulant.h">
 			</File>
 			<File
-				RelativePath="..\..\src\npambulant\plugin.h">
+				RelativePath="..\..\src\npambulant\npplat.h">
+			</File>
+			<File
+				RelativePath="..\..\src\npambulant\pluginbase.h">
 			</File>
 			<File
 				RelativePath="..\..\src\npambulant\resource.h">
+			</File>
+			<File
+				RelativePath="..\..\src\npambulant\ScriptablePluginObject.h">
+			</File>
+			<File
+				RelativePath="..\..\src\npambulant\ScriptablePluginObjectBase.h">
 			</File>
 		</Filter>
 		<Filter

@@ -40,8 +40,8 @@
 // Main plugin entry point implementation
 //
 #ifdef	XP_WIN32
-#include <cstddef>		   	 // Needed for ptrdiff_t. Is used in GeckoSDK 1.9,
 #define ptrdiff_t long int // but not defined in Visual C++ 7.1.
+#define _PTRDIFF_T_DEFINED
 #endif//XP_WIN32
 
 #include "npapi.h"

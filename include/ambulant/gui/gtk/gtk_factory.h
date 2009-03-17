@@ -191,6 +191,13 @@ class gtk_ambulant_widget : public GtkWidget, public ambulant::common::gui_scree
 	   is executed by the main thread */
 	static lib::critical_section s_lock;
 	static int s_widgets;
+	/* gtk_ambulant_widget::m_draw_area_tags contains the set of tags returned by 
+	   g_idle_queue_add() that are not yet processed. This set is maintained because 
+	   in the npambulant plugin, when the plugin is unloaded all unprocessed queue entries
+	   must be removed from the main event loop, otherwise the callback will be done on 
+	   removed code and the browser may crash.
+	*/
+	std::set<guint> m_draw_area_tags;
   private:
 	ambulant_gtk_window* m_gtk_window;
 	GtkWidget *m_widget;

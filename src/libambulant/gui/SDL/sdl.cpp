@@ -45,6 +45,7 @@ ambulant::gui::sdl::create_sdl_playable_factory(common::factories *factory)
 
 sdl_renderer_factory::~sdl_renderer_factory()
 {
+	sdl_audio_renderer::quit();
 }
 
 bool 

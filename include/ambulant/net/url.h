@@ -74,9 +74,6 @@ class AMBULANTAPI url {
     // The mime type
     string m_mime;
 
-	// Determines how strict we parse URLs
-	static bool s_strict;
-
   protected:
 	/// Create a URL from a given string.
 	url(const string& spec); 
@@ -197,9 +194,7 @@ class AMBULANTAPI url {
 	
 	/// Set a flag that determines whether we are strict about URL conformance
 	/// (illegal characters, etc) or not
-	static void set_strict_url_parsing(bool strict) {
-		s_strict = strict;
-	}
+	static void set_strict_url_parsing(bool strict);
 
 	static void init_statics();
 

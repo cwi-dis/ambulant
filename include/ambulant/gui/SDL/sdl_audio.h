@@ -99,6 +99,7 @@ class sdl_audio_renderer : public common::renderer_playable {
 	static void sdl_callback(Uint8 *stream, int len);
 	void set_intransition(const lib::transition_info* info);
 	void start_outtransition(const lib::transition_info* info);
+	static void quit();
   private:
    	void data_avail();
 	bool restart_audio_input();

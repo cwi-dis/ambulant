@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="plugin_state"
 	ProjectGUID="{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}"
 	Keyword="Win32Proj"
@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\libxml2-2.6.29\include"
+				AdditionalIncludeDirectories="..\..\include;&quot;..\..\third_party_packages\libxml2-2.7.3\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;WITH_SMIL30;LIBXML_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -66,7 +66,7 @@
 				AdditionalDependencies="libxml2_a.lib wsock32.lib"
 				OutputFile="../../bin/win32/libampluginD_state_xpath.dll"
 				LinkIncremental="0"
-				AdditionalLibraryDirectories="..\..\third_party_packages\libxml2-2.6.29\win32\bin.msvc\"
+				AdditionalLibraryDirectories="&quot;..\..\third_party_packages\libxml2-2.7.3\win32\bin.msvc\&quot;"
 				IgnoreDefaultLibraryNames="libcmtd.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/plugin.pdb"
