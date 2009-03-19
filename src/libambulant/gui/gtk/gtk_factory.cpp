@@ -458,10 +458,12 @@ ambulant_gtk_window::need_redraw(const lib::rect &r)
 		AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw(0x%x): gtk_widget_translate_coordinates failed.", (void *)this);
 	}
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw: parent ltrb=(%d,%d,%d,%d)", dirty->area.left(), dirty->area.top(), dirty->area.width(), dirty->area.height());
+	dirty->ambulant_widget = m_ambulant_widget;
+	gtk_ambulant_widget::s_lock.enter();
 	guint draw_area_tag = g_idle_add_full(G_PRIORITY_HIGH_IDLE, (GSourceFunc) gtk_C_callback_helper_queue_draw_area, (void *)dirty, NULL);
 	dirty->tag = draw_area_tag;
-	dirty->ambulant_widget = m_ambulant_widget;
 	dirty->ambulant_widget->m_draw_area_tags.insert(draw_area_tag);
+	gtk_ambulant_widget::s_lock.leave();
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw: parent ltrb=(%d,%d,%d,%d), tag=%d fun=0x%x", dirty->area.left(), dirty->area.top(), dirty->area.width(), dirty->area.height(), draw_area_tag, gtk_C_callback_helper_queue_draw_area);
 }
 
@@ -824,7 +826,6 @@ gtk_ambulant_widget::~gtk_ambulant_widget()
 {
 	gtk_ambulant_widget::s_lock.enter();
 	gtk_ambulant_widget::s_widgets--;
-	gtk_ambulant_widget::s_lock.leave();
 	if ( ! m_draw_area_tags.empty()) {
 		for (std::set<guint>::iterator it = m_draw_area_tags.begin(); it != m_draw_area_tags.end(); it++) {
 			AM_DBG ambulant::lib::logger::get_logger()->debug("gtk_ambulant_widget::~gtk_ambulant_widget removing tag %d", (*it));
@@ -832,6 +833,7 @@ gtk_ambulant_widget::~gtk_ambulant_widget()
 
 		}
 	}
+	gtk_ambulant_widget::s_lock.leave();
 	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::~gtk_ambulant_widget(0x%x): m_gtk_window=0x%x s_widgets=%d", (void*)this, m_gtk_window, gtk_ambulant_widget::s_widgets);
 	GObject* toplevel_widget = G_OBJECT (GTK_WIDGET (gtk_widget_get_toplevel(m_widget)));
 	if (g_signal_handler_is_connected (G_OBJECT (m_widget), m_expose_event_handler_id))
