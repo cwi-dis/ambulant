@@ -1,3 +1,38 @@
+2009-03-19 11:53  keesblom
+
+	* Linux merge of branch exp-kees-npruntime-plugin with trunk
+
+2009-03-17 15:43  keesblom
+
+	* Got rid of some leftover conflicts after merge with branch
+	  exp-kees-npruntime-plugin
+
+2009-03-17 15:30  keesblom
+
+	* Merged branch exp-kees-npruntime-plugin with trunk.
+
+2009-03-13 14:50  bogao
+
+	* clarifying the process of building MacOSX universal installer for
+	  live555
+
+2009-03-13 11:18  bogao
+
+	* appended some information for building faad2 for a MacOSX
+	  universal build
+
+2009-03-10 15:13  jackjansen
+
+	* More vestiges of byte_buffer.h removed.
+
+2009-03-10 14:38  jackjansen
+
+	* Completely getting rid of byte_buffer.
+
+2009-03-10 14:08  jackjansen
+
+	* It seems byte_buffer is not used. About to get rid of it.
+
 2009-01-30 17:16  jackjansen
 
 	* - Getting rid of some dead wood in the projects.  - Moving xerces
