@@ -1,9 +1,10 @@
-Installation Instructions
-*************************
+Installation Instructions for AmbulantPlayer
+********************************************
 
+=======
 This file contains instructions for building AmbulantPlayer from
 source, for all of Windows, Windows CE, Unix, Mac OS X and
-handheld Linux (Zaurus).
+handheld Linux (Nokia 770/800/810).
 
 This file is part of the Ambulant Player source distribution,
 which can be downloaded via <http://www.ambulantplayer.org>.
@@ -18,7 +19,8 @@ For Windows you need one of:
 For Linux desktop you need GNU gcc, at least version 3.2 (XXX True?)
 For MacOSX you need the Apple Developer tools (gcc 3.3 or gcc 4-based).
 For Windows CE you need Microsoft Embedded Visual C++ version 3.0 (XXX not true).
-For Nokia770 you need "maemo" development environment, see www.maemo.org.
+For Nokia770/800/810 you need "maemo" development environment, see www.maemo.org
+and more detailed build instructions in Documentation/misc/TIPS-NOKIA770.
 
 You also need to build and install several third party packages
 that Ambulant depends on. All these are supplied in the third_party_packages
@@ -211,11 +213,9 @@ configuration for the "PocketPC" platform and build.
 
 The resulting application is deposited in bin\wince-arm in the toplevel
 directory.
+Installation Instructions
+*************************
 
-
-==========================================
-Generic installation instructions for Unix
-==========================================
 Copyright (C) 1994, 1995, 1996, 1999, 2000, 2001, 2002, 2004, 2005,
 2006, 2007 Free Software Foundation, Inc.
 
