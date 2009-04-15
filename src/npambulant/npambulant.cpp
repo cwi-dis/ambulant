@@ -155,9 +155,9 @@ bool npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
         return false;
     net::url file_url;
     net::url arg_url = net::url::from_url (arg_str);
-    char* file_str = NULL;
+    char* url_str = NULL;
     if (arg_url.is_absolute()) {
-        file_str = strdup(arg_url.get_file().c_str());
+        url_str = strdup(arg_url.get_url().c_str());
     } else {
         char* loc_str = get_document_location();
         if (loc_str != NULL) {
@@ -167,14 +167,14 @@ bool npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
         } else {
             file_url = arg_url;
         }
-        file_str = strdup(file_url.get_url().c_str());
+        url_str = strdup(file_url.get_url().c_str());
     }
 	m_url = file_url;
 #ifdef WITH_GTK
-    gtk_gui* m_gui = new gtk_gui((char*) gtkwidget, file_str);
+    gtk_gui* m_gui = new gtk_gui((char*) gtkwidget, url_str);
     m_mainloop = new gtk_mainloop(m_gui);
-    if (file_str) 
-        free((void*)file_str);
+    if (url_str) 
+        free((void*)url_str);
 	m_logger = lib::logger::get_logger();
     m_ambulant_player = m_mainloop->get_player();
     if (m_ambulant_player == NULL)
@@ -185,7 +185,7 @@ bool npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 #endif // WITH_GTK
 #ifdef WITH_CG
 	void *view = NULL;
-	m_mainloop = new cg_mainloop(file_str, view, false, NULL);
+	m_mainloop = new cg_mainloop(url_str, view, false, NULL);
 	m_logger = lib::logger::get_logger();
     m_ambulant_player = m_mainloop->get_player();
     if (m_ambulant_player == NULL)
