@@ -1,3 +1,9 @@
+2009-04-15 11:00  keesblom
+
+	* Fixed some compile errors.  Added information about
+	  nspluginwrapper and 64 bit in README-linux.
+	  ----------------------------------------------------------------------
+
 2009-04-01 15:57  keesblom
 
 	* Restored INSTALL to original version, with some enhancements)
