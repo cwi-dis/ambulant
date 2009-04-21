@@ -185,6 +185,10 @@ ffmpeg:
 
 	NOTE 2: for Nokia770/800, see special instructions in .../installers/nokia770/README.
 
+    NOTE 3. for non-root installations (e.g. --prefix=$HOME) to find "libfaad",
+	add the following optoins to the ./configure line:
+	--extra-cflags=-I$HOME/include --extra-ldflags=-L$HOME/lib
+
 sdl:
 	Ambulant has been tested with sdl 1.2.5 thru 1.2.13. You find this at
 	<http://www.libsdl.org>. Build and install normally, and make sure

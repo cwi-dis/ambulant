@@ -46,7 +46,7 @@
 #define	WITH_QT_LOGGER
 
 const QString about_text1 = 
-	"Ambulant SMIL 2.1 player.\nVersion: ";
+	"Ambulant SMIL 3.0 player.\nVersion: ";
 const QString about_text2 = 
 	"\nCopyright Stichting CWI, 2003-2007.\n\n"
 	"License: LGPL";

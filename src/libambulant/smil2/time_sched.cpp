@@ -48,6 +48,10 @@ scheduler::scheduler(time_node *root, lib::timer_control *timer)
 scheduler::~scheduler() {
 	// m_root is a borrowed ref
 	// m_timer is a borrowed ref
+	if (m_locked) { // wait until released
+		lock();
+		unlock();
+	}
 }
 
 // Starts a hyperlink target node

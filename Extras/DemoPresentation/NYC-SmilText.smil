@@ -22,7 +22,7 @@
     <par xml:id="AdvancedPPCSlideshow">
       <audio xml:id="NYStateOfMind" region="audio_2" src="NYCdata/NYStateOfMind.mp3" systemComponent="multiChannelAudio"/>
       <seq xml:id="ImagesAndAudioSequence">
-<!--  -->
+<!-- -->
         <par xml:id="ImageTextAudio" dur="8s">
           <img xml:id="TitleA" region="Images" dur="8s" fill="transition" src="NYCdata/TitleA.gif"/>
           <audio xml:id="Welcome" region="audio_1" begin="0" src="NYCdata/Welcome.mp3"/>
@@ -45,6 +45,7 @@
 		src="data:,We start our tour with a ride on the famous Staten Island Ferry."/>
         </par>
 -->
+<!-- -->
         <par xml:id="ImageTextAudio-2">
           <img xml:id="Ferry1" region="Images" dur="5s" src="NYCdata/Ferry1.gif" />
           <smilText xml:id="CapF1" region="Captions" dur="5s"  textFontFamily="roman" >
@@ -82,6 +83,8 @@
           </smilText>
           <audio xml:id="SIF" region="audio_1" src="NYCdata/SIF-1.mp3"/>
         </par>
+<!--  -->
+
         <par xml:id="ImageTextAudio-3">
           <img xml:id="Ferry2" region="Images" dur="5s" src="NYCdata/Ferry2.gif"/>
           <smilText xml:id="CapF2" region="Captions" dur="5s" textMode="crawl" textRate="20">

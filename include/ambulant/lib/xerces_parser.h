@@ -30,6 +30,7 @@
 
 #include "ambulant/config/config.h"
 
+#include <string.h>
 
 #include "ambulant/common/preferences.h"
 

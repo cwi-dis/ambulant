@@ -58,9 +58,13 @@ trunk later (which would apply it twice) by doing
 
 After the release you need to merge the changes again, but only the ones
 you didn't merge previously. Set working copy to the trunk, and
-"cvs up -jrelease-ambulant-16-merge -jrelease-ambulant-16-branch". (NOTE:
-this has not been tested yet so please take care and modify this sentence if
-it turns out to be wrong:-). Finally we need to move the "-merge" tag to
+"cvs up -jrelease-ambulant-16-merge -jrelease-ambulant-16-branch".
+Now, check in, and record the fact that you've merged to the trunk up to this point:
+"cvs tag -F remease-ambulant-16-merge-trunk".
+
+Next, switch back to the release branch. It's best to update version numbers at
+this point (will forestall conflicts later, when merging to the trunk).
+Finally we need to move the "-merge" tag to
 show up to which point the branch has been merged: set your working
 copy to the branch, and "cvs tag -F release-ambulant-16-merge" to move
 the tag.
@@ -97,20 +101,11 @@ Before creating the distribution
   - src/webkit_plugin/README
   - installers/nokia770/AmbulantPlayer.desktop
   - installers/nokia770/AmbulantPlayerCHINOOK.desktop
-  - installers/nokia770/debian/create_installer
+  - installers/nokia770/changelog
+  - installers/nokia770/create_installer
   - installers/nokia770/debian/files
   - installers/nsis-win32/setup-ambulant-installer.nsi
-  - installers/wise-win32/AmbulantWiseInstaller.wse
-  	- Product Details->Default Directory
-  	- General Information->Installation Version
-  	- Add/Remove Programs -> Software Version
-  	- Shortcuts
-  	- Build Settings -> Installation .exe name
-  - installers/winse-wince/AmbulantWinCEWiseInstaller.wse
-  	- Product Details->Default Directory
-  	- Add/Remove Programs -> Software Version
-  	- General Information->Installation Version
-  	- Build Settings -> Installation .exe name
+  - projects/vc8-wince5-smil3/ambulant-wince5-installer.vddproj
   - Documentation/user/developer.html (2 times)
   - Documentation/user-htmlhelp/developer.html (2 times, regenerate winHelp)
 - check the following files for being up-to-date:
@@ -141,7 +136,7 @@ Before creating the distribution
   (the perl script is on http://www.red-bean.com/cvs2cl/cvs2cl.pl).
   
   Note that if we're preparing for a micro-release you should replace the '-b'
-  with -rrelease-ambulant-xxx and merge the output into ChangeLog.
+  with -rrelease-ambulant-xxx-branch and merge the output into ChangeLog.
 
 - Update the API documentation in Documentation/API by running doxygen
   Read and check the documentation for consistency, errors and missing items.
@@ -167,11 +162,10 @@ To create the linux source distribution
 - Make sure you configure with *all* options (--with-xerces --with-live)
   otherwise not all sources will be included
 - Use make distcheck
-- If make distcheck complains about not being able to find expat, 
-  you have to set the path to the expat library via the environment variable:
- 
-
+- If make distcheck complains about not being able to find expat (or other packages), 
+  you have to set the path to the expat library via the environment variable, e.g.:
 	DISTCHECK_CONFIGURE_FLAGS="--with-expat=`pwd`/third_party_packages/expat-unix --with-ffmpeg=`pwd`/third_party_packages/ffmpeg-0.4.8" make distcheck
+  (if this still fails, you may try ´sudo make distcheck´)
 - make dist
 - Check on a (preferably virgin) machine, again with all options enabled.
 - Check on a Windows machine too! We've had missing windows-only files before:-)
@@ -215,6 +209,7 @@ Creating the MacOSX installer
   third_party_packages/readme.txt has (terse) instructions on
   how to do this.
   SDL needs to be installed, the others are used in-place.
+- Create a directory to build in, for example "build-dist".
 - Build the whole source tree, don't forget options for
   enabling xerces, etc. You want to build with Xerces in a plugin,
   live support, no Python support, only fast internal DOM acces,
@@ -246,6 +241,8 @@ Creating the MacOSX installer
 Creating the WebKit/Safari plugin
 =================================
 - Make sure the prerequisites are built, as above.
+- Create the directory to build in. this must be called "build-webkitplugin",
+  if it's different you have to fix the xcode project, below.
 - Build a slightly different configuration from above, with
 
   export SYSROOT=/Developer/SDKs/MacOSX10.4u.sdk
@@ -257,7 +254,24 @@ Creating the WebKit/Safari plugin
 	--with-python=/usr/bin/python  --with-python-plugin \
 	--with-webkit-dom --with-webkit-plugin
 	
-- Build the plugin, with <to be supplied>
+- Build the libraries ("make" in the build directory), *BUT DON'T INSTALL*.
+  You may have to build pyamplugin separately, without the MACOSX_DEPLOYMENT_TARGET
+  variable set.
+- In XCode, open src/webkit_plugin/AmbulantWebKitPlugin.xcodeproj and build the
+  Release target.
+- You will find the plugin in "~/Library/Internet Plugins".
+- Put into a z
+
+Creating the Firefox plugin on Linux
+====================================
+
+- download xulrunner-sdk from mozilla.org into third-party-packages
+- as above, configure --with-npambulant [other options]; make;make install
+- TEMP FIX: cd src/npambulant;./link-patch;cp npambulant.so <install-dir, see below>
+- Pack the installed files npambulant.so and npambulant.xpt with
+  src/npambulant/README.linux into npambulant.zip
+  For root installs, files go into /usr/lib/mozilla/plugins, otherwise
+  into ~/.mozilla/plugins
   
 Creating the Windows desktop installer
 ======================================
@@ -346,6 +360,9 @@ bugfix release later (which will cost everyone another 2 days or so of work).
 - We can use vin.cst.cwi.nl to test it on newer distributions then our desktop.
   (at this moment fedora core 3)
 
+IMPORTANT: for each distribution, compare the size with the previous distribution
+for that platform. If the new one is any smaller, or much bigger, think why
+this could be the case. If you cannot think of a very good reason: investigate!
   
 Uploading the distributions
 ===========================

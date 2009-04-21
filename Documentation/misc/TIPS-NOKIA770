@@ -1,14 +1,19 @@
-Here are some pointers how to work with Nokia 770 (2006 Software Edition).
+Here are some pointers how to work with Nokia 800 (2008 Software Edition).
+
+Note. Nokia 770 is no longer supported after release-ambulant-18-branch,
+since it does not have libpango, needed for the smilText implementation in
+newer releases.
 
 1. For software development, you need a Linux box with root access, download
-   and install scratxhbox as described in: 
-   http://maemo.org/development/sdks/maemo-3-x--bora-.html
+   and install scratchbox found in:
+   http://maemo.org/development/sdks/maemo_4-1-2_diablo/
    Use the following installers scripts found there in this order:
    - Scratbox installer script
    - SDK installer script
 
    For the scratchbox to work, I had to boot FC5 kernel and as root:
    # echo 0 > /proc/sys/kernel/vdso
+   # echo 4096 > /proc/sys/vm/mmap_min_addr
 
 2. Other useful material is found in:
    http://maemo.org/development/documentation/tutorials/Maemo_tutorial_bora.html
@@ -16,18 +21,18 @@ Here are some pointers how to work with Nokia 770 (2006 Software Edition).
    http://maemo.org/development/documentation/how-tos/3-x/
 
 3. Creation of a web-installable debian package for the
-   Nokia 770/800 (OS2006/OS2007 Software Edition).
+   Nokia 800/810 (OS2008 Software Edition).
 
-   First, ffmpeg-cvs needs to be obtained from the www.AmbulantPlayer.org seperately 
-   and unpacked in 'third_party_packages'. In 'third_party_packages/ffmpeg-cvs', type:
+   First, ffmpeg needs to be obtained from the www.AmbulantPlayer.org seperately 
+   and unpacked in 'third_party_packages'. In 'third_party_packages/ffmpeg', type:
    ./configure  --cpu=arm;make
 
    Next, in toplevel ambulant directory type:
    ./autogen.sh --prefix=/usr --with-qt=no --with-gtk --with-nokia770 --host=i386 --with-gstreamer --build=arm
    make
-   Then in 'src/player_gtk/nokia770', type: ./create_installer
+   Then in 'installers/nokia770', type: ./create_installer
 
-   Finally, copy 'src/player_gtk/ambulantplayer-app_1.8_armel.deb' to a website
+   Finally, copy 'src/player_gtk/ambulantplayer-app_2.0_armel.deb' to a website
    and point the webbrowser on the Nikia770/800 to that website.
    It will hen install automatically.
 
@@ -79,3 +84,4 @@ Here are some pointers how to work with Nokia 770 (2006 Software Edition).
 Kees Blom May 17, 2006.
 	  Sept.8, 2006. (updated for 2006 Software Edition)
 	  Jan.18, 2007  (updated for ambulant-1.8 release)
+	  Apr. 1, 2009  (updated for ambulant-2.0.2 release)

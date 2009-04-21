@@ -553,9 +553,9 @@ fi
 if test "x$test_qt" = "xtrue"; then
     with_frontend=true
 fi
-if test "x$test_qt4" = "xtrue"; then
-   test_qt=$test_qt" Qt4 found which is not yet supported"
-fi
+#if test "x$test_qt4" = "xtrue"; then
+#   test_qt=$test_qt" Qt4 found which is not yet supported"
+#fi
 set +x
 AC_MSG_RESULT($test_qt)
 AM_CONDITIONAL(WITH_QT, test "x$test_qt" = "xtrue")

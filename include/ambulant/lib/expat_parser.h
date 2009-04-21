@@ -28,6 +28,7 @@
 
 #include "ambulant/config/config.h"
 
+#include <string.h>
 #include "ambulant/lib/sax_handler.h"
 #include "ambulant/lib/parser_factory.h"
 

@@ -8,7 +8,7 @@ libambulant_live_la_SOURCES = 	\
 	net/rtsp_datasource.cpp \
 	net/rtsp_factory.cpp
 
-live_includes = -I $(LIVE_ROOT)/BasicUsageEnvironment/include \
+live_includes = -I$(LIVE_ROOT)/BasicUsageEnvironment/include \
 		   -I$(LIVE_ROOT)/groupsock/include \
 		   -I$(LIVE_ROOT)/liveMedia/include \
 		   -I$(LIVE_ROOT)/UsageEnvironment/include

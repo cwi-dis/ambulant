@@ -182,6 +182,7 @@ renderer_playable_ds::~renderer_playable_ds()
 {
     AM_DBG lib::logger::get_logger()->debug("~renderer_playable_ds(0x%x)", (void *)this);
   	if (m_src) {
+        m_src->stop();
 		m_src->release();
 		m_src = NULL;
 	}

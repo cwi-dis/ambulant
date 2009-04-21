@@ -1,0 +1,13 @@
+<?xml version='1.0' ?>
+<smil>
+<head>
+<layout>
+<topLayout width="640" height="480">
+</topLayout>
+</layout>
+</head>
+<body>
+<video repeatCount="2" src="media/video-mp4-aac-h264-640x480.mp4">
+</video>
+</body>
+</smil>

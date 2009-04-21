@@ -253,6 +253,7 @@ gui::sdl::sdl_audio_renderer::sdl_audio_renderer(
 		lib::logger::get_logger()->error(gettext("%s: cannot open audio file"), url.get_url().c_str());
 	else if (!supported.contains(m_audio_src->get_audio_format())) {
 		lib::logger::get_logger()->error(gettext("%s: audio format not supported"), url.get_url().c_str());
+        m_audio_src->stop();
 		m_audio_src->release();
 		m_audio_src = NULL;
 	}
@@ -305,6 +306,7 @@ gui::sdl::sdl_audio_renderer::~sdl_audio_renderer()
 	}
 	
 	if (m_audio_src) {
+        m_audio_src->stop();
 		m_audio_src->release();
 		m_audio_src = NULL;
 	}

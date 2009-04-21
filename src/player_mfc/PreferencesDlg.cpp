@@ -46,6 +46,7 @@ void PrefLoggingPropertyPage::OnOK()
 	USES_CONVERSION;
 	ambulant::common::preferences *prefs = ambulant::common::preferences::get_preferences();
 	prefs->m_log_level = m_log_level;
+	prefs->save_preferences();
 	CPropertyPage::OnOK();
 }
 
@@ -142,6 +143,7 @@ void PrefParserPropertyPage::OnOK()
 	prefs->m_do_namespaces = (bool)m_do_namespaces;
 	prefs->m_do_schema = (bool)m_do_schema;
 	prefs->m_validation_schema_full_checking = (bool)m_validation_schema_full_checking;
+	prefs->save_preferences();
 	CPropertyPage::OnOK();
 }
 

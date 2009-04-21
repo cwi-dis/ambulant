@@ -110,15 +110,78 @@ NPError NPP_Destroy (NPP instance, NPSavedData** save)
 // initialization and shutdown
 NPError NPP_SetWindow (NPP instance, NPWindow* pNPWindow)
 {    
-  if(instance == NULL)
-    return NPERR_INVALID_INSTANCE_ERROR;
+#ifdef DEBUG
+	  char *id = "NPP_SetWindow";
+	  fprintf(stderr, "%s: %s=0x%x.\n",id,"instance",instance);
+#endif
+      if(instance == NULL)
+          return NPERR_INVALID_INSTANCE_ERROR;
 
-  NPError rv = NPERR_NO_ERROR;
+      NPError rv = NPERR_NO_ERROR;
 
-  if(pNPWindow == NULL)
-    return NPERR_GENERIC_ERROR;
+      if(pNPWindow == NULL)
+          return NPERR_GENERIC_ERROR;
+      
+      nsPluginInstanceBase * plugin = (nsPluginInstanceBase *)instance->pdata;
 
-  npambulant * pPlugin = (npambulant *)instance->pdata;
+      if(plugin == NULL) 
+          return NPERR_GENERIC_ERROR;
+
+      // window just created
+      if(!plugin->isInitialized() && (pNPWindow->window != NULL)) { 
+          plugin->SetWindow(pNPWindow);
+//        if(!plugin->init(pNPWindow)) {
+//            NS_DestroyPluginInstance(plugin);
+//            return NPERR_MODULE_LOAD_FAILED_ERROR;
+//         }
+      }
+      
+      // window goes away
+      if((pNPWindow->window == NULL) && plugin->isInitialized())
+          return plugin->SetWindow(pNPWindow);
+      
+      // window resized?
+      if(plugin->isInitialized() && (pNPWindow->window != NULL))
+          return plugin->SetWindow(pNPWindow);
+      
+      // this should not happen, nothing to do
+      if((pNPWindow->window == NULL) && !plugin->isInitialized())
+          return plugin->SetWindow(pNPWindow);
+      
+      return rv;
+}
+
+NPError
+NPP_NewStream(NPP instance, NPMIMEType type, NPStream* stream, NPBool seekable, uint16* stype)
+{
+#ifdef DEBUG
+	  char *id = "NPP_NewStream";
+	  fprintf(stderr, "%s: %s=0x%x.\n",id,"instance",instance);
+#endif
+      if(instance == NULL)
+          return NPERR_INVALID_INSTANCE_ERROR;
+      
+      nsPluginInstanceBase * plugin = (nsPluginInstanceBase *)instance->pdata;
+      if(plugin == NULL) 
+          return NPERR_GENERIC_ERROR;
+
+      NPError rv = plugin->NewStream(type, stream, seekable, stype);
+      return rv;
+}
+
+int32
+NPP_WriteReady (NPP instance, NPStream *stream)
+{
+#ifdef DEBUG
+	  char *id = "NPP_WriteReady";
+	  fprintf(stderr, "%s: %s=0x%x.\n",id,"instance",instance);
+#endif
+      if(instance == NULL)
+          return 0x0fffffff;
+      
+      nsPluginInstanceBase * plugin = (nsPluginInstanceBase *)instance->pdata;
+      if(plugin == NULL) 
+          return 0x0fffffff;
 
   if(pPlugin == NULL) 
     return NPERR_GENERIC_ERROR;

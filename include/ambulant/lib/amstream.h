@@ -30,6 +30,7 @@
 #ifndef AMBULANT_LIB_AMSTREAM_H
 #define AMBULANT_LIB_AMSTREAM_H
 
+#include <string.h> // needed for strlen()
 #include "ambulant/config/config.h"
 
 #ifndef AMBULANT_NO_IOSTREAMS

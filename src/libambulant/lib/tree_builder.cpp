@@ -118,6 +118,7 @@ lib::tree_builder::build_tree_from_file(const char *filename) {
 	}
 	bool rv = build_tree_from_str(data, data+datasize);
 	free(data);
+    ds->stop();
 	ds->release();
 	return rv;
 #endif

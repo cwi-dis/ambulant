@@ -58,8 +58,7 @@ class thread : public ambulant::lib::thread {
 	
 	pthread_t m_thread;
 	bool m_exit_requested; // true as soon as thread exit is imminent
-	bool m_running;	// true as soon as thread running is imminent
-	bool m_started; // true as soon as start() as been called
+	bool m_running;	// true as soon as thread running is imminent until join
 };
 
 } // namespace unix

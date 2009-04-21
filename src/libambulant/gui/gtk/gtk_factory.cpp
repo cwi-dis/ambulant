@@ -802,21 +802,21 @@ vJUNK
 int gtk_ambulant_widget::s_widgets = 0;
 lib::critical_section gtk_ambulant_widget::s_lock;
 
-gtk_ambulant_widget::gtk_ambulant_widget(GtkWidget* parent_widget)
+gtk_ambulant_widget::gtk_ambulant_widget(GtkWidget* widget)
 :	m_gtk_window(NULL),
 	m_screenshot_data(NULL),
 	m_screenshot_size(0)
 {
-	m_widget = parent_widget;
-	GObject* toplevel_widget = G_OBJECT (GTK_WIDGET (gtk_widget_get_toplevel(m_widget)));
+	m_widget = widget;
+	GObject* ancestor_widget = G_OBJECT (GTK_WIDGET (gtk_widget_get_ancestor(m_widget, GTK_TYPE_WIDGET)));
 
 	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::gtk_ambulant_widget(0x%x-0x%x) s_widgets=%d",
 		(void *)this,
-		(void*) parent_widget, gtk_ambulant_widget::s_widgets);	
+		(void*) widget, gtk_ambulant_widget::s_widgets);	
 	m_expose_event_handler_id = g_signal_connect_swapped (G_OBJECT (m_widget), "expose_event", G_CALLBACK (gtk_C_callback_do_paint_event), (void*) this);
-	m_motion_notify_handler_id = g_signal_connect_swapped (toplevel_widget, "motion_notify_event", G_CALLBACK (gtk_C_callback_do_motion_notify_event), (void*) this);
-	m_button_release_handler_id = g_signal_connect_swapped (toplevel_widget, "button_release_event", G_CALLBACK (gtk_C_callback_do_button_release_event), (void*) this);
-	gtk_widget_add_events( (GTK_WIDGET (gtk_widget_get_toplevel(m_widget))), GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK);
+	m_motion_notify_handler_id = g_signal_connect_swapped (ancestor_widget, "motion_notify_event", G_CALLBACK (gtk_C_callback_do_motion_notify_event), (void*) this);
+	m_button_release_handler_id = g_signal_connect_swapped (ancestor_widget, "button_release_event", G_CALLBACK (gtk_C_callback_do_button_release_event), (void*) this);
+	gtk_widget_add_events(GTK_WIDGET (ancestor_widget), GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK);
 	gtk_ambulant_widget::s_lock.enter();
 	gtk_ambulant_widget::s_widgets++;
 	gtk_ambulant_widget::s_lock.leave();
@@ -835,13 +835,13 @@ gtk_ambulant_widget::~gtk_ambulant_widget()
 	}
 	gtk_ambulant_widget::s_lock.leave();
 	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::~gtk_ambulant_widget(0x%x): m_gtk_window=0x%x s_widgets=%d", (void*)this, m_gtk_window, gtk_ambulant_widget::s_widgets);
-	GObject* toplevel_widget = G_OBJECT (GTK_WIDGET (gtk_widget_get_toplevel(m_widget)));
+	GObject* ancestor_widget = G_OBJECT (GTK_WIDGET (gtk_widget_get_ancestor(m_widget, GTK_TYPE_WIDGET)));
 	if (g_signal_handler_is_connected (G_OBJECT (m_widget), m_expose_event_handler_id))
 		g_signal_handler_disconnect(G_OBJECT (m_widget), m_expose_event_handler_id);
-	if (g_signal_handler_is_connected (toplevel_widget, m_motion_notify_handler_id))
-		g_signal_handler_disconnect(toplevel_widget, m_motion_notify_handler_id);
-	if (g_signal_handler_is_connected (toplevel_widget, m_button_release_handler_id))
-		g_signal_handler_disconnect(toplevel_widget, m_button_release_handler_id);
+	if (g_signal_handler_is_connected (ancestor_widget, m_motion_notify_handler_id))
+		g_signal_handler_disconnect(ancestor_widget, m_motion_notify_handler_id);
+	if (g_signal_handler_is_connected (ancestor_widget, m_button_release_handler_id))
+		g_signal_handler_disconnect(ancestor_widget, m_button_release_handler_id);
 	if (m_gtk_window) {
 		m_gtk_window->set_ambulant_widget(NULL);
 		m_gtk_window = NULL;

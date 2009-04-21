@@ -99,6 +99,7 @@ class wvc_container : public lib::ref_counted_obj {
 		return m_wvc;
 	}
 	void hide_generation(int gen) {
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		if (m_generation == gen) {
 #if 0
 			[[m_wvc view] removeFromSuperviewWithoutNeedingDisplay];
@@ -110,6 +111,7 @@ class wvc_container : public lib::ref_counted_obj {
 		} else {
 			AM_DBG lib::logger::get_logger()->debug("wvc_container: %d: not hiding HTML view", gen);
 		}
+		[pool release];
 	}
 	void hide(event_processor *evp) {
 		typedef lib::scalar_arg_callback_event<wvc_container, int> hide_cb;

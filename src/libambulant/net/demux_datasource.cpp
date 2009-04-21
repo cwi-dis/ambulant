@@ -706,6 +706,7 @@ demux_video_datasource::get_audio_datasource()
 			pkt_audio_datasource *tmp = m_audio_src;
 			m_audio_src = NULL;
 			m_lock.leave();
+            tmp->stop();
 			int rem = tmp->release();
 			assert(rem == 0);
 			return NULL;

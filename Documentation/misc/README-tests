@@ -1,0 +1,45 @@
+The following test sequences are mandatory before release, to check
+that at least everything we make public available works properly.
+
+A. Build Ambulant as if it would be a distributed version: enable as
+   much supported features as possible (--with-live, --with-xerces,
+   --with-plugins, --with-python, --with-xerces-plugin,
+   --with-python-plugin), etc., depending on platform.
+   Clear any preferences file in .ambulant  and start AmbulantPlayer.
+   You should see the initial Welcome demo.
+
+B. Make sure that the demo tests work (and player controls as well):
+   1. Welcome.smil
+   2. NYC-SMIL2.smil (use File->Load Settings... to select Single/Multi audio)
+   3. NYC-SmilText.smil (at least until "In Memoriam")
+
+   In addition, in ambulant-documents:
+   4. Flashlight-Desktop forward/backward navigation
+
+C. Make sure that the zipped versions of our public demos work properly,
+   these are available at http://ambulantplayer.org/Demos.shtml:
+   1. smilText
+   2. PanZoom
+   3. Videotest
+   4. Birthday
+   5. Euros
+   6. Flashlight (use forward/backward navigation)
+   7. News (test exclusives: lowest 3 pictures) 
+ 
+D. Make sure that the http versions of the tests at C. work properly.
+
+E. Make sure that the rtsp versions of the tests at C. work properly.
+
+F. Build and install Firefox plugin and verify that all tests at C.
+   for plugin work properly.
+
+The script Run-tests.sh excutes the sequences B-E automatically on
+Linux or Windows (Cygwin only).
+
+On Linux: (cd ../..;./configure --prefix=$HOME;make;make install)
+LD_LIBRARY_PATH=$HOME/lib ./Run-tests.sh
+
+On Windows, download Cygwin and the optional packages unzip (in Archive) and
+wget (in Web). Install AmbulantPlayer, then in Cygwin command window type:
+./Run-tests.sh
+

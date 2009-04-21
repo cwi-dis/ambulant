@@ -16,13 +16,14 @@
 ; - VC8_DISTDIR: where to pick up these files.
 ;
 !define PRODUCT_NAME "Ambulant Player"
-!define PRODUCT_VERSION "2.1"
+!define PRODUCT_VERSION "2.0.2"
+!define PRODUCT_VERSION_BASE "2.0"
 !define DISTRIBUTE_DLL_BUILD
 ; !define DISTRIBUTE_PYTHON_PLUGIN
 !define PRODUCT_PUBLISHER "Centrum voor Wiskunde en Informatica"
 !define PRODUCT_WEB_SITE "http://www.ambulantplayer.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AmbulantPlayer.exe"
-!define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME} ${PRODUCT_VERSION}"
+!define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME} ${PRODUCT_VERSION_BASE}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
 ; Where the system directory is on the machine where we are building the installer
@@ -70,7 +71,7 @@
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "Ambulant-${PRODUCT_VERSION}-win32.exe"
-InstallDir "$PROGRAMFILES\AmbulantPlayer-${PRODUCT_VERSION}"
+InstallDir "$PROGRAMFILES\AmbulantPlayer-${PRODUCT_VERSION_BASE}"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
@@ -92,18 +93,18 @@ Section "Core Components" CoreSection
   File "..\..\bin\win32\AmbulantPlayer.exe"
 !endif
   CreateDirectory "$SMPROGRAMS\Ambulant"
-  CreateDirectory "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION}"
-  CreateShortCut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION}\Ambulant Player.lnk" "$INSTDIR\AmbulantPlayer.exe"
+  CreateDirectory "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION_BASE}"
+  CreateShortCut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION_BASE}\Ambulant Player.lnk" "$INSTDIR\AmbulantPlayer.exe"
   CreateShortCut "$DESKTOP\Ambulant Player.lnk" "$INSTDIR\AmbulantPlayer.exe"
   File "..\..\bin\win32\xerces-c_2_8.dll"
   File "..\..\bin\win32\settings.xml"
   File /ONAME=license.txt "..\..\COPYING"
   File /ONAME=Readme.txt "..\..\README"
-  CreateShortcut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION}\Read Me.lnk" "$INSTDIR\Readme.txt"
+  CreateShortcut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION_BASE}\Read Me.lnk" "$INSTDIR\Readme.txt"
   File /ONAME=News.txt "..\..\NEWS"
-  CreateShortcut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION}\What's new?.lnk" "$INSTDIR\News.txt"
+  CreateShortcut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION_BASE}\What's new?.lnk" "$INSTDIR\News.txt"
   File "..\..\Documentation\user-htmlhelp\AmbulantPlayerHelp.chm"
-  CreateShortcut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION}\Documentation.lnk" "$INSTDIR\AmbulantPlayerHelp.chm"
+  CreateShortcut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION_BASE}\Documentation.lnk" "$INSTDIR\AmbulantPlayerHelp.chm"
 ; XXX Copy pyamplugin_scripting
   SetOutPath "$INSTDIR\Extras\DTDCache"
   File "..\..\Extras\DTDCache\mapping.txt"
@@ -152,7 +153,7 @@ Section "Demo Presentation" DemoSection
   File "..\..\Extras\DemoPresentation\NYCdata\*.gif"
   File "..\..\Extras\DemoPresentation\NYCdata\*.txt"
   File "..\..\Extras\DemoPresentation\NYCdata\*.mp3"
-  CreateShortcut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION}\Demo Presentation.lnk" "$INSTDIR\Extras\DemoPresentation\NYC-SMIL2.smil"
+  CreateShortcut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION_BASE}\Demo Presentation.lnk" "$INSTDIR\Extras\DemoPresentation\NYC-SMIL2.smil"
 SectionEnd
 
 !ifdef DISTRIBUTE_PYTHON_PLUGIN
@@ -170,8 +171,8 @@ SectionEnd
 Section -AdditionalIcons
   SetOutPath $INSTDIR
   WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
-  CreateShortCut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION}\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
-  CreateShortCut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION}\Uninstall.lnk" "$INSTDIR\uninst.exe"
+  CreateShortCut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION_BASE}\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
+  CreateShortCut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION_BASE}\Uninstall.lnk" "$INSTDIR\uninst.exe"
 ; XXXJACK: need help, readme, demo document
 SectionEnd
 
@@ -235,7 +236,7 @@ Section Uninstall
   RMDir  "$INSTDIR\pyamplugin_scripting"
 
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
-  RMDir /r "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION}"
+  RMDir /r "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION_BASE}"
   Delete "$INSTDIR\uninst.exe"
   RMDir "$INSTDIR"
   RMDir "$SMPROGRAMS\Ambulant"

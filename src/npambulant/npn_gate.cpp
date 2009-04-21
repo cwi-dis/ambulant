@@ -68,33 +68,33 @@ void NPN_Version(int* plugin_major, int* plugin_minor, int* netscape_major, int*
 NPError NPN_GetURLNotify(NPP instance, const char *url, const char *target, void* notifyData)
 {
 	int navMinorVers = NPNFuncs.version & 0xFF;
-  NPError rv = NPERR_NO_ERROR;
+	NPError rv = NPERR_NO_ERROR;
 
-  if( navMinorVers >= NPVERS_HAS_NOTIFICATION )
+	if( navMinorVers >= NPVERS_HAS_NOTIFICATION )
 		rv = NPNFuncs.geturlnotify(instance, url, target, notifyData);
 	else
 		rv = NPERR_INCOMPATIBLE_VERSION_ERROR;
 
-  return rv;
+	return rv;
 }
 
 NPError NPN_GetURL(NPP instance, const char *url, const char *target)
 {
-  NPError rv = NPNFuncs.geturl(instance, url, target);
-  return rv;
+	NPError rv = NPNFuncs.geturl(instance, url, target);
+	return rv;
 }
 
 NPError NPN_PostURLNotify(NPP instance, const char* url, const char* window, uint32 len, const char* buf, NPBool file, void* notifyData)
 {
 	int navMinorVers = NPNFuncs.version & 0xFF;
-  NPError rv = NPERR_NO_ERROR;
+	NPError rv = NPERR_NO_ERROR;
 
 	if( navMinorVers >= NPVERS_HAS_NOTIFICATION )
 		rv = NPNFuncs.posturlnotify(instance, url, window, len, buf, file, notifyData);
 	else
 		rv = NPERR_INCOMPATIBLE_VERSION_ERROR;
 
-  return rv;
+	return rv;
 }
 
 NPError NPN_PostURL(NPP instance, const char* url, const char* window, uint32 len, const char* buf, NPBool file)

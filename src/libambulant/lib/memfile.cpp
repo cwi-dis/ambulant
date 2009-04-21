@@ -29,7 +29,10 @@ using namespace lib;
 typedef unsigned char byte;
 
 memfile::~memfile() {
-	if (m_src) m_src->release();
+	if (m_src) {
+        m_src->stop();
+        m_src->release();
+    }
 	m_src = NULL;
 }
 
@@ -42,6 +45,7 @@ memfile::read() {
 		return false;
 	m_buffer.append((lib::byte*)data, datasize);
 	free(data);
+    m_src->stop();
 	m_src->release();
 	m_src = NULL;
 	return true;

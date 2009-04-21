@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AmbulantPlayer 1.1\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2008-12-17 11:57+0100\n"
+"POT-Creation-Date: 2009-04-14 17:22+0200\n"
 "PO-Revision-Date: 2004-09-12 15:09+0200\n"
 "Last-Translator: Jack Jansen <Jack.Jansen@cwi.nl>\n"
 "Language-Team: English <Jack.Jansen@cwi.nl>\n"
@@ -92,7 +92,7 @@ msgstr ""
 msgid "%s: audio format not supported"
 msgstr ""
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:272
+#: src/libambulant/gui/SDL/sdl_audio.cpp:273
 #, c-format
 msgid "%s: cannot open"
 msgstr ""
@@ -138,11 +138,11 @@ msgstr ""
 msgid "transition: illegal value for %s attribute (%s)"
 msgstr ""
 
-#: src/libambulant/lib/tree_builder.cpp:164
+#: src/libambulant/lib/tree_builder.cpp:165
 msgid "Could not create any XML parser (configuration error?)"
 msgstr ""
 
-#: src/libambulant/lib/tree_builder.cpp:286
+#: src/libambulant/lib/tree_builder.cpp:287
 #, c-format
 msgid "%s: Error parsing document"
 msgstr ""
@@ -157,23 +157,23 @@ msgstr ""
 msgid "%s: Cannot open, not supported by any datasource"
 msgstr ""
 
-#: src/libambulant/net/datasource.cpp:400
+#: src/libambulant/net/datasource.cpp:401
 #, c-format
 msgid "%s: Cannot open, no compatible parser"
 msgstr ""
 
-#: src/libambulant/net/datasource.cpp:419
-#: src/libambulant/net/datasource.cpp:444
+#: src/libambulant/net/datasource.cpp:421
+#: src/libambulant/net/datasource.cpp:446
 #, c-format
 msgid "%s: Cannot open, cannot find conversion filter"
 msgstr ""
 
-#: src/libambulant/net/datasource.cpp:459
+#: src/libambulant/net/datasource.cpp:461
 #, c-format
 msgid "%s: Cannot open, not supported by any video datasource"
 msgstr ""
 
-#: src/libambulant/net/datasource.cpp:540
+#: src/libambulant/net/datasource.cpp:543
 msgid "datasource_reader: out of memory"
 msgstr ""
 
@@ -184,12 +184,12 @@ msgid "%s: no more audio streams"
 msgstr ""
 
 #: src/libambulant/net/demux_datasource.cpp:145
-#: src/libambulant/net/ffmpeg_audio.cpp:328
-#: src/libambulant/net/ffmpeg_audio.cpp:376
-#: src/libambulant/net/ffmpeg_audio.cpp:465
-#: src/libambulant/net/ffmpeg_audio.cpp:815
-#: src/libambulant/net/ffmpeg_audio.cpp:854
-#: src/libambulant/net/ffmpeg_audio.cpp:1042
+#: src/libambulant/net/ffmpeg_audio.cpp:331
+#: src/libambulant/net/ffmpeg_audio.cpp:379
+#: src/libambulant/net/ffmpeg_audio.cpp:468
+#: src/libambulant/net/ffmpeg_audio.cpp:818
+#: src/libambulant/net/ffmpeg_audio.cpp:857
+#: src/libambulant/net/ffmpeg_audio.cpp:1045
 msgid "Programmer error encountered during audio playback"
 msgstr ""
 
@@ -206,34 +206,34 @@ msgstr ""
 msgid "%s: Ignoring audio, unsupported encoding"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:161
-#: src/libambulant/net/rtsp_factory.cpp:97
+#: src/libambulant/net/ffmpeg_audio.cpp:163
+#: src/libambulant/net/rtsp_factory.cpp:99
 #, c-format
 msgid "%s: unable to create audio resampler"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:189
+#: src/libambulant/net/ffmpeg_audio.cpp:192
 #, c-format
 msgid "No support for %d-bit audio, only 16"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:259
+#: src/libambulant/net/ffmpeg_audio.cpp:262
 #, c-format
 msgid "%s: audio decoder \"%s\" not supported"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:276
+#: src/libambulant/net/ffmpeg_audio.cpp:279
 #, c-format
 msgid "ffmpeg_decoder_datasource: could not select %s(0x%x) decoder"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:627
-#: src/libambulant/net/ffmpeg_audio.cpp:635
+#: src/libambulant/net/ffmpeg_audio.cpp:630
+#: src/libambulant/net/ffmpeg_audio.cpp:638
 #, c-format
 msgid "No support for \"%s\" audio"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:802
+#: src/libambulant/net/ffmpeg_audio.cpp:805
 msgid "Audio cannot be converted to 44Khz stereo"
 msgstr ""
 

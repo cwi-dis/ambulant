@@ -18,11 +18,7 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 /* 
-<<<<<<< dx_viewport.cpp
  * @$Id$ 
-=======
- * @$Id$ 
->>>>>>> 1.60.26.1
  */
 
 

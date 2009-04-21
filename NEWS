@@ -1,3 +1,14 @@
+What's new in Ambulant Player 2.0.2?
+------------------------------------
+
+- The FireFox plugin had random crashes on stop/unload. Fixed.
+- The Linux FireFox plugin was missing, Fixed.
+- FireFox plugin: there were problems with non-local presentations. Fixed.
+- Windows Desktop player had html renderer disabled. Fixed.
+- All: Repeat failed for continuous media. Fixed.
+- All: a random threading crash was fixed. 
+- All: seeking on video files with audio didn't always work. Fixed.
+
 What's new in Ambulant Player 2.0.1?
 ------------------------------------
 
@@ -38,3 +49,4 @@ Highlights of changes between 1.8 and 2.0:
 
 - Support for extending Ambulant through Python, or embedding Ambulant
   rendering in Python programs has been enhanced.
+

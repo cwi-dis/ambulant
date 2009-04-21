@@ -200,7 +200,7 @@ desktopdir = $(datadir)/applications/hildon
 desktop_DATA = AmbulantPlayer.desktop
 
 servicedir = $(datadir)/dbus-1/services
-service_DATA = com.nokia.ambulantplayer_app.service
+service_DATA = $(top_srcdir)/installers/nokia770/com.nokia.ambulantplayer_app.service
 
 
 # The backup/restore configuration

@@ -9,7 +9,7 @@ Package: ambulantplayer-app
 Architecture: any
 Pre-Depends: maemo-select-menu-location
 Depends: gstreamer0.10-gnomevfs
-Description: AmbulantPlayer is a SMIL 2.1 player for the  Nokia 770.
+Description: AmbulantPlayer is a SMIL 3.0 player for the  Nokia 800/810.
 XB-Maemo-Icon-26:
  iVBORw0KGgoAAAANSUhEUgAAABsAAAAbCAYAAACN1PRVAAAACXBIWXMAAAsTAAALEwEAmpwYAAAA
  BGdBTUEAANjr9RwUqgAAACBjSFJNAABtbQAAct0AAPYtAACGCwAAbeoAAOZDAAAxwAAAFzTSDHht
