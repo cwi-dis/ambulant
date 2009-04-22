@@ -6,6 +6,7 @@
 
 #include <windows.h>
 #include <windowsx.h>
+#include "ambulant\lib\textptr.h"
 #endif//XP_WIN32
 #include "ScriptablePluginObject.h"
 #include "npambulant.h"
@@ -47,6 +48,10 @@ NPIdentifier sAppendChild_id;
 NPIdentifier sPluginType_id;
 NPObject *sWindowObj;
 
+char* mimetypes =
+"application/smil:.smi:W3C Smil 3.0 Playable Multimedia file;\
+application/smil+xml:.smil:W3C Smil 3.0 Playable Multimedia file;\
+application/x-ambulant-smil:.smil:W3C Smil 3.0 Ambulant Player compatible file;";
 
 npambulant::npambulant(NPMIMEType mimetype, NPP pNPInstance, PRUint16 mode,
 				 int argc, char* argn[], char* argv[], NPSavedData* data) :
@@ -105,12 +110,27 @@ npambulant::~npambulant()
   s_npambulant_last_instance = NULL;
 }
 
-bool npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
+bool
+npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 {
 	AM_DBG fprintf(stderr, "npambulant::init(0x%x)\n", aWindow);
     if(aWindow == NULL)
 		return FALSE;
-   // Start by saving the NPWindow for any Ambulant plugins (such as SMIL State)
+	// prepare for dynamic linking ffmpeg
+#if 1
+    ambulant::common::preferences *prefs = ambulant::common::preferences::get_preferences();
+    prefs->m_prefer_ffmpeg = true;
+    prefs->m_use_plugins = false;
+#ifdef XP_WIN32
+    // for Windows, ffmpeg is only available as plugin
+    prefs->m_use_plugins = true;
+    prefs->m_plugin_dir = lib::win32::get_module_dir()+"\plugins\\";
+    ambulant::lib::textptr pn_conv(prefs->m_plugin_dir.c_str());
+    SetDllDirectory (pn_conv);
+//#elseif TBD
+#endif         XP_WIN3
+#endif
+	// save the NPWindow for any Ambulant plugins (such as SMIL State)
 	ambulant::common::plugin_engine *pe = ambulant::common::plugin_engine::get_plugin_engine();
 	void *edptr = pe->get_extra_data("npapi_extra_data");
 	if (edptr) {
@@ -262,7 +282,8 @@ char* npambulant::get_document_location()
     return rv;
 }
 
-NPBool npambulant::init(NPWindow* pNPWindow)
+NPBool
+npambulant::init(NPWindow* pNPWindow)
 {
 	if(pNPWindow == NULL)
 		return FALSE;
@@ -285,7 +306,8 @@ NPBool npambulant::init(NPWindow* pNPWindow)
 	return init_ambulant(m_pNPInstance, m_Window);
 }
 
-void npambulant::shut()
+void
+npambulant::shut()
 {
 #ifdef XP_WIN
 	if (m_hWnd) {
@@ -317,20 +339,24 @@ void npambulant::shut()
 	m_bInitialized = FALSE;
 }
 
-NPBool npambulant::isInitialized()
+NPBool
+npambulant::isInitialized()
 {
   return m_bInitialized;
 }
 
-NPP npambulant::getNPP() {
+NPP
+npambulant::getNPP() {
   return m_pNPInstance;
 }
 
-const char* npambulant::getValue(const char *name) {
+const char*
+npambulant::getValue(const char *name) {
   return NULL; //TBD
 }
 
-int16 npambulant::handleEvent(void* event)
+int16
+npambulant::handleEvent(void* event)
 {
 #ifdef XP_MAC
   NPEvent* ev = (NPEvent*)event;
@@ -346,21 +372,26 @@ int16 npambulant::handleEvent(void* event)
 }
 
 // this will start AmbulantPlayer
-void npambulant::startPlayer()
+void
+npambulant::startPlayer()
 {
 	AM_DBG lib::logger::get_logger()->debug("npambulant::startPlayer()\n");
 	if (m_ambulant_player != NULL)
 	  get_player()->start();
 }
+
 // this will stop AmbulantPlayer
-void npambulant::stopPlayer()
+void
+npambulant::stopPlayer()
 {
 	AM_DBG lib::logger::get_logger()->debug("npambulant::stopPlayer()\n");
 	if (m_ambulant_player != NULL)
 	  get_player()->stop();
 }
+
 // this will restart AmbulantPlayer
-void npambulant::restartPlayer()
+void
+npambulant::restartPlayer()
 {
 	AM_DBG lib::logger::get_logger()->debug("npambulant::restartPlayer()\n");
 	if (m_ambulant_player != NULL) {
@@ -368,22 +399,28 @@ void npambulant::restartPlayer()
 	  get_player()->start();
 	}
 }
+
 // this will pause AmbulantPlayer
-void npambulant::pausePlayer()
+void
+npambulant::pausePlayer()
 {
 	AM_DBG lib::logger::get_logger()->debug("npambulant::pausePlayer()\n");
 	if (m_ambulant_player != NULL)
 	  get_player()->pause();
 }
+
 // this will resume AmbulantPlayer
-void npambulant::resumePlayer()
+void
+npambulant::resumePlayer()
 {
 	AM_DBG lib::logger::get_logger()->debug("npambulant::resumePlayer()\n");
 	if (m_ambulant_player != NULL)
 	  get_player()->resume();
 }
+
 // this will restart AmbulantPlayer
-bool npambulant::isDone()
+bool
+npambulant::isDone()
 {
 	AM_DBG lib::logger::get_logger()->debug("npambulant::isDone()\n");
 	if (m_ambulant_player != NULL) {
@@ -393,7 +430,8 @@ bool npambulant::isDone()
 }
 
 // this will force to draw a version string in the plugin window
-void npambulant::showVersion()
+void
+npambulant::showVersion()
 {
   const char *ua = NPN_UserAgent(m_pNPInstance);
   strcpy(m_String, ua);
@@ -419,7 +457,8 @@ void npambulant::showVersion()
 }
 
 // this will clean the plugin window
-void npambulant::clear()
+void
+npambulant::clear()
 {
   strcpy(m_String, "");
 
@@ -429,7 +468,8 @@ void npambulant::clear()
 #endif
 }
 
-void npambulant::getVersion(char* *aVersion)
+void
+npambulant::getVersion(char* *aVersion)
 {
   const char *ua = NPN_UserAgent(m_pNPInstance);
   char*& version = *aVersion;

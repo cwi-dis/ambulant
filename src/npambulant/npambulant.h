@@ -126,6 +126,12 @@ public:
   NPBool init(NPWindow* pNPWindow);
   void shut();
   NPBool isInitialized();
+  // next functions are overridden to start the plugin late
+  // this solves problems with concurrent plugins like greasemonkey
+  // a more elegant approach could be to do all initialization in the plugin's
+  // init() function and to start the player when WriteReady() is called.
+  NPError SetWindow(NPWindow* pNPWindow);
+  NPError NewStream(NPMIMEType type, NPStream* stream, NPBool seekable, uint16* stype);
   NPP getNPP();
   const char* getValue(const char *name);
   
