@@ -285,4 +285,3 @@ void set_url_from_spec(ambulant::net::url& u, const char *spec);
 
 
 #endif // AMBULANT_NET_URL_H
->>>>>>> 1.46.28.1
