@@ -101,6 +101,7 @@ class surface_impl : public surface_template, public surface, public gui_events 
 	rect get_fit_rect_noalign(const size& src_real_size, rect* out_src_rect) const;
 #endif
 	void draw_background(const rect &r, gui_window *window);
+    bool _is_active();                  // Return true if region is active
 
   protected:
 	virtual void transition_done(lib::rect area);

@@ -220,10 +220,23 @@ surface_impl::redraw(const lib::rect &r, gui_window *window)
 	
 	// First the background
 	//marisa added null check july 7 2008
-	if (get_info() != NULL)
-	{
-		if ( ! get_info()->get_transparent())
-			draw_background(our_rect, window);	
+    const region_info *info = get_info();
+	if (info != NULL) {
+        // We show the background if it isn't transparent. And then, only if showBackground==always, or
+        // if there are active children.
+        // Note: not 100% sure this is correct: should we also draw the background if there are
+        // subregions with active children?
+        bool showbg = !info->get_transparent();
+        if (showbg) {
+            if (!info->get_showbackground()) {
+                if (!_is_active()) {
+                    showbg = false;
+                }
+            }
+        }
+		if (showbg) {
+			draw_background(our_rect, window);
+        }
 	}
 	// Then the active renderers
 	// For the win32 arrangement we should have at most one active
@@ -285,6 +298,19 @@ surface_impl::draw_background(const lib::rect &r, gui_window *window)
 	}
 	AM_DBG lib::logger::get_logger()->debug("draw_background(0x%x %s): drawing background", (void*)this, m_name.c_str());
 	m_bg_renderer->redraw(r, window);
+}
+
+bool
+surface_impl::_is_active()
+{
+    if (m_renderers.begin() != m_renderers.end()) return true;
+	for(children_map_t::iterator it1=m_active_children.begin();it1!=m_active_children.end();it1++) {
+		children_list_t& cl = (*it1).second;
+		for(children_list_t::iterator it2=cl.begin();it2!=cl.end();it2++) {
+            if ((*it2)->_is_active()) return true;
+        }
+    }
+    return false;
 }
 
 bool
