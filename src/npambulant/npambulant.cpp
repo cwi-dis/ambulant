@@ -11,6 +11,9 @@
 #include "ScriptablePluginObject.h"
 #include "npambulant.h"
 
+//#ifdef	WITH_HTML_WIDGET
+#include "ambulant/gui/dx/html_bridge.h"
+//#endif
 /* ambulant player includes */
 
 #ifdef	XP_WIN32

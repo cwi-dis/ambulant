@@ -143,7 +143,9 @@ gui::dx::dx_html_renderer::start(double t) {
 		html_browser_factory *brf = m_dxplayer->get_html_browser_factory();
 		html_browser *br = brf->new_html_browser(rc.left(), rc.top(), rc.width(), rc.height());
 		if (!br) {
-			lib::logger::get_logger()->fatal("html_renderer: HtmlWidget not configured in main program");
+			lib::logger::get_logger()->error("html_renderer: HtmlWidget not configured in main program");
+			m_context->stopped(m_cookie);
+			return;
 		}
 		m_html_browser = new browser_container(br);
 		m_dest->set_renderer_private_data(my_renderer_id, static_cast<common::renderer_private_data*>(m_html_browser));
@@ -182,12 +184,11 @@ void
 gui::dx::dx_html_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->debug("dx_html_renderer::stop(0x%x)", this);
 	// m_html_browser->hide();
-	assert(m_html_browser);
-
 	m_dest->renderer_done(this);
 	m_activated = false;
 	m_dxplayer->stopped(this);
-	m_html_browser->hide(m_event_processor);
+	if (m_html_browser)
+		m_html_browser->hide(m_event_processor);
 	m_context->stopped(m_cookie);
 }
 

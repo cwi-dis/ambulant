@@ -226,7 +226,9 @@ gui::dx::dx_player::init_playable_factory()
 	pf->add_factory(create_dx_basicvideo_playable_factory(this, this));
 #endif
 	pf->add_factory(create_dx_brush_playable_factory(this, this));
+#ifdef WITH_HTML_WIDGET
 	pf->add_factory(create_dx_html_playable_factory(this, this));
+#endif
 	pf->add_factory(create_dx_image_playable_factory(this, this));
 	pf->add_factory(create_dx_smiltext_playable_factory(this, this));
 	pf->add_factory(create_dx_text_playable_factory(this, this));
@@ -566,7 +568,7 @@ gui::dx::dx_playable_factory::new_playable(
 		std::string mimetype = url.guesstype();
 		if (mimetype == "text/html" || mimetype == "application/xml") {
 			p = new dx_html_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
-			AM_DBG lib::logger::get_logger()->debug("dx_player: node 0x%x: returning dx_html_renderer 0x%x", (void*) node, (void*) p);
+			AM_DBG lib::logger::get_logger()->debug("dx_player: node 0x%x: returning dx_ html_renderer 0x%x", (void*) node, (void*) p);
 		} else 
 #endif/*WITH_HTML_WIDGET*/
 		p = new dx_text_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
