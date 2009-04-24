@@ -826,7 +826,9 @@ smil_player::_new_playable(const lib::node *n) {
 		::repr(surf->get_rect()).c_str(),
 		::repr(surf->get_global_topleft()).c_str());
 	common::playable_factory *pf = m_factory->get_playable_factory();
+    assert(pf);
 	common::playable *np = pf->new_playable(this, nid, n, m_event_processor);
+    assert(np);
 	// And connect it to the rendering surface
 	if (np) {
 		common::renderer *rend = np->get_renderer();
