@@ -1,3 +1,36 @@
+2009-04-24 16:12  keesblom
+
+	* More work on the npruntime plugin: libambulant and npambulant
+	  need to be build without WITH_HTML_WIDGET Made libambulant work
+	  without that option set Turned of deprecated printf warnings
+
+2009-04-24 13:17  jackjansen
+
+	* Fix for #2778676: document cannot be played twice.
+
+	  Problem was that if we found a cached playable factory for a node
+	  we forgot to actually call it:-)
+
+2009-04-23 17:02  jackjansen
+
+	* Fix for #2779548: showBackground=whenActive does not work.
+
+	  Backport candidate.
+
+2009-04-23 15:24  jackjansen
+
+	* Removed merge turd.
+
+2009-04-22 17:43  keesblom
+
+	* Made the Debug version of npruntime version of the plugin work
+	  again after being wrecked due to the merge of 2.0.2 branch and
+	  trunk
+
+2009-04-21 14:19  keesblom
+
+	* Mass merge changes from release 2.0.2 into trunk.
+
 2009-04-15 11:00  keesblom
 
 	* Fixed some compile errors.  Added information about
