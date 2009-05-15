@@ -25,9 +25,9 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="call &quot;$(VCInstallDir)vcvarsall.bat&quot;&#x0D;&#x0A;cd ..\..\third_party_packages\libxml2-2.7.3\win32&#x0D;&#x0A;cscript configure.js iconv=no&#x0D;&#x0A;nmake /f Makefile.msvc"
-				ReBuildCommandLine="call &quot;$(VCInstallDir)vcvarsall.bat&quot;&#x0D;&#x0A;cd ..\..\third_party_packages\libxml2-2.7.3\win32&#x0D;&#x0A;cscript configure.js iconv=no&#x0D;&#x0A;nmake /f Makefile.msvc rebuild"
-				CleanCommandLine="call &quot;$(VCInstallDir)vcvarsall.bat&quot;&#x0D;&#x0A;cd ..\..\third_party_packages\libxml2-2.7.3\win32&#x0D;&#x0A;cscript configure.js iconv=no&#x0D;&#x0A;nmake /f Makefile.msvc clean"
+				BuildCommandLine="echo on&#x0D;&#x0A;call &quot;$(VCInstallDir)vcvarsall.bat&quot;&#x0D;&#x0A;echo on&#x0D;&#x0A;cd ..\..\third_party_packages\libxml2-2.7.3\win32&#x0D;&#x0A;cscript configure.js iconv=no&#x0D;&#x0A;nmake /f Makefile.msvc"
+				ReBuildCommandLine="echo on&#x0D;&#x0A;call &quot;$(VCInstallDir)vcvarsall.bat&quot;&#x0D;&#x0A;echo on&#x0D;&#x0A;cd ..\..\third_party_packages\libxml2-2.7.3\win32&#x0D;&#x0A;cscript configure.js iconv=no&#x0D;&#x0A;nmake /f Makefile.msvc rebuild"
+				CleanCommandLine="echo on&#x0D;&#x0A;call &quot;$(VCInstallDir)vcvarsall.bat&quot;&#x0D;&#x0A;echo on&#x0D;&#x0A;cd ..\..\third_party_packages\libxml2-2.7.3\win32&#x0D;&#x0A;cscript configure.js iconv=no&#x0D;&#x0A;nmake /f Makefile.msvc clean"
 				Output=""
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
@@ -46,9 +46,9 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="call &quot;$(VCInstallDir)vcvarsall.bat&quot;&#x0D;&#x0A;cd ..\..\third_party_packages\libxml2-2.7.3\win32&#x0D;&#x0A;cscript configure.js iconv=no&#x0D;&#x0A;nmake /f Makefile.msvc"
-				ReBuildCommandLine="call &quot;$(VCInstallDir)vcvarsall.bat&quot;&#x0D;&#x0A;cd ..\..\third_party_packages\libxml2-2.7.3\win32&#x0D;&#x0A;cscript configure.js iconv=no&#x0D;&#x0A;nmake /f Makefile.msvc rebuild"
-				CleanCommandLine="call &quot;$(VCInstallDir)vcvarsall.bat&quot;&#x0D;&#x0A;cd ..\..\third_party_packages\libxml2-2.7.3\win32&#x0D;&#x0A;nmake /f Makefile.msvc clean"
+				BuildCommandLine="echo on&#x0D;&#x0A;call &quot;$(VCInstallDir)vcvarsall.bat&quot;&#x0D;&#x0A;echo on&#x0D;&#x0A;cd ..\..\third_party_packages\libxml2-2.7.3\win32&#x0D;&#x0A;cscript configure.js iconv=no&#x0D;&#x0A;nmake /f Makefile.msvc"
+				ReBuildCommandLine="echo on&#x0D;&#x0A;call &quot;$(VCInstallDir)vcvarsall.bat&quot;&#x0D;&#x0A;echo on&#x0D;&#x0A;cd ..\..\third_party_packages\libxml2-2.7.3\win32&#x0D;&#x0A;cscript configure.js iconv=no&#x0D;&#x0A;nmake /f Makefile.msvc rebuild"
+				CleanCommandLine="echo on&#x0D;&#x0A;call &quot;$(VCInstallDir)vcvarsall.bat&quot;&#x0D;&#x0A;echo on&#x0D;&#x0A;cd ..\..\third_party_packages\libxml2-2.7.3\win32&#x0D;&#x0A;nmake /f Makefile.msvc clean"
 				Output=""
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
