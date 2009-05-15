@@ -5,6 +5,7 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AmbulantPlayer", "AmbulantPlayer.vcproj", "{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67} = {F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}
+		{51CEFA69-BAB3-421F-9A79-17FBB4E73F21} = {51CEFA69-BAB3-421F-9A79-17FBB4E73F21}
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785} = {DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}
 		{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A} = {EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}
 	EndProjectSection
@@ -37,6 +38,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "npambulant", "npambulant.vc
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "plugin_xerces", "plugin_xerces.vcproj", "{51CEFA69-BAB3-421F-9A79-17FBB4E73F21}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785} = {DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
