@@ -1,3 +1,12 @@
+2009-05-15 15:09  jackjansen
+
+	* Added a couple of "echo on" statements during the build, to debug
+	  what goes wrong on Tims machine.
+
+2009-05-15 14:03  jackjansen
+
+	* Fixed issues with building Xerces plugin under VS 2008.
+
 2009-05-12 12:41  keesblom
 
 	* Removed some junk files
