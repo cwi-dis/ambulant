@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="plugin_ffmpeg"
 	ProjectGUID="{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}"
 	Keyword="Win32Proj"
@@ -149,7 +149,7 @@
 				AdditionalDependencies="SDL.lib avformat.lib avcodec.lib avutil.lib liveMedia.lib BasicUsageEnvironment.lib UsageEnvironment.lib groupsock.lib ws2_32.lib ddraw.lib"
 				OutputFile="../../bin/win32/libamplugin_ffmpeg.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\lib\win32"
+				AdditionalLibraryDirectories="..\..\lib\win32;&quot;$(DXSDK_DIR)\lib\x86&quot;"
 				IgnoreDefaultLibraryNames="libcmtd.lib;libcpmtd.lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
