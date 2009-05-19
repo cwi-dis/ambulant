@@ -1,3 +1,7 @@
+2009-05-18 12:52  stevents
+
+	* Fix Win32 build: pick up DXSDK via %DXSDK_DIR% env variable.
+
 2009-05-15 15:09  jackjansen
 
 	* Added a couple of "echo on" statements during the build, to debug
