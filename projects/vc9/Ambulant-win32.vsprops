@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<VisualStudioPropertySheet 
+	ProjectType="Visual C++" 
+	Version="8.00" 
+	Name="Ambulant third party pathnames">
+<UserMacro Name="expat_dir" Value="..\..\third_party_packages\expat" PerformEnvironmentSet="true"/>
+<UserMacro Name="jpeg_dir" Value="..\..\third_party_packages\jpeg" PerformEnvironmentSet="true"/>
+<UserMacro Name="lpng_dir" Value="..\..\third_party_packages\lpng128" PerformEnvironmentSet="true"/>
+<UserMacro Name="zlib_dir" Value="..\..\third_party_packages\zlib" PerformEnvironmentSet="true"/>
+<UserMacro Name="xerces_dir" Value="..\..\third_party_packages\xerces-c-src_2_8_0" PerformEnvironmentSet="true"/>
+<UserMacro Name="libxml2_dir" Value="..\..\third_party_packages\libxml2-2.7.3" PerformEnvironmentSet="true"/>
+<UserMacro Name="sdl_dir" Value="..\..\third_party_packages\SDL-1.2.12" PerformEnvironmentSet="true"/>
+<UserMacro Name="ffmpeg_dir" Value="..\..\third_party_packages\ffmpeg" PerformEnvironmentSet="true"/>
+<UserMacro Name="live555_dir" Value="..\..\third_party_packages\live" PerformEnvironmentSet="true"/>
+<UserMacro Name="xulrunner_dir" Value="..\..\third_party_packages\xulrunner-sdk" PerformEnvironmentSet="true"/>
+<UserMacro Name="python_dir" Value="C:\Python2.5" PerformEnvironmentSet="true"/>
+</VisualStudioPropertySheet>

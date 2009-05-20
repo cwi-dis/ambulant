@@ -21,6 +21,7 @@
 			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			ConfigurationType="2"
+			InheritedPropertySheets=".\Ambulant-win32.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -41,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="C:\Python25\include;..\..\include;..\..\src\pyambulant"
+				AdditionalIncludeDirectories="&quot;$(python_dir)\include&quot;;..\..\include;..\..\src\pyambulant"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGIN_PYTHON_EXPORTS;WITH_SMIL30"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -65,7 +66,7 @@
 				Name="VCLinkerTool"
 				OutputFile="../../bin/win32/libampluginD_python.dll"
 				LinkIncremental="0"
-				AdditionalLibraryDirectories="C:\Python25\libs"
+				AdditionalLibraryDirectories="$(python_dir)\libs"
 				IgnoreDefaultLibraryNames="LIBC.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/plugin_python.pdb"
@@ -103,6 +104,7 @@
 			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			ConfigurationType="2"
+			InheritedPropertySheets=".\Ambulant-win32.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -123,7 +125,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="C:\Python25\include;..\..\include;..\..\src\pyambulant"
+				AdditionalIncludeDirectories="&quot;$(python_dir)\include&quot;;..\..\include;..\..\src\pyambulant"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_PYTHON_EXPORTS;WITH_SMIL30"
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="false"
@@ -145,7 +147,7 @@
 				Name="VCLinkerTool"
 				OutputFile="../../bin/win32/libamplugin_python.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="C:\Python25\libs"
+				AdditionalLibraryDirectories="$(python_dir)\libs"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"

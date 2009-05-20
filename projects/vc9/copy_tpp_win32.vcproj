@@ -4,6 +4,7 @@
 	Version="9,00"
 	Name="copy_tpp_win32"
 	ProjectGUID="{48DB09AD-9285-49EA-8000-C5254871F91C}"
+	RootNamespace="copy_tpp_win32"
 	Keyword="MakeFileProj"
 	TargetFrameworkVersion="131072"
 	>
@@ -20,6 +21,7 @@
 			OutputDirectory="$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="0"
+			InheritedPropertySheets=".\Ambulant-win32.vsprops"
 			>
 			<Tool
 				Name="VCNMakeTool"
@@ -40,6 +42,7 @@
 			OutputDirectory="$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="0"
+			InheritedPropertySheets=".\Ambulant-win32.vsprops"
 			>
 			<Tool
 				Name="VCNMakeTool"
@@ -59,5 +62,19 @@
 	<References>
 	</References>
 	<Files>
+		<File
+			RelativePath=".\copy_tpp_win32.bat"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+			</FileConfiguration>
+		</File>
 	</Files>
+	<Globals>
+	</Globals>
 </VisualStudioProject>
