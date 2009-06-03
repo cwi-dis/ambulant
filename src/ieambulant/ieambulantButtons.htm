@@ -1,0 +1,85 @@
+<!-- Example HTML doc using Ambulant browser plugin for all browsers -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML id="ieambulant_html"  xmlns="http://www.w3.org/1999/xhtml">
+<HEAD id="ieambulant_head">
+<TITLE id="ieambulant_title">ATL 3.0 test page for object ieambulant</TITLE>
+<script LANGUAGE="JavaScript" type="text/javascript">
+// some functions for Ambulant web browser plugins (IE/Firefox/Safari/Opera)
+var browser=navigator.appName;
+var isIE = false;
+
+function detectBrowser()
+{
+	if (browser == "Microsoft Internet Explorer")
+		isIE = true;
+}
+
+function NotifyActiveX(e)
+{
+	if ( e.readyState != 4 ) return; // "4" implies "completed"
+	// setting the "caption" field triggers a WM_PAINT event for ieambulant plugin
+	window.setInterval("if(document.getElementById(\"ieambulant\").caption!=document.getElementById(\"ieambulant\").playerState){document.getElementById(\"ieambulant\").caption=document.getElementById(\"ieambulant\").playerState;}",500);
+}
+
+function StartPlayer()
+{
+	if (isIE)
+		document.getElementById("ieambulant").playerState="playing";
+	else	document.embeds[0].startPlayer();
+
+}
+
+function StopPlayer()
+{
+	if (isIE)
+		document.getElementById("ieambulant").playerState="stopped";
+	else	document.embeds[0].stopPlayer();
+}
+
+function RestartPlayer()
+{
+	if (isIE)
+		document.getElementById("ieambulant").playerState="restarting";
+	else	document.embeds[0].restartPlayer();
+}
+
+function ResumePlayer()
+{
+	if (isIE)
+		document.getElementById("ieambulant").playerState="playing";
+	else	document.embeds[0].resumePlayer();
+}
+
+function PausePlayer()
+{
+	if (isIE)
+		document.getElementById("ieambulant").playerState="pausing";
+	else	document.embeds[0].pausePlayer();
+
+}
+</script>
+</HEAD>
+
+<BODY id="ieambulant_body" onload="detectBrowser()">
+<OBJECT ID="ieambulant" CLASSID="CLSID:B8748B60-E34D-42AA-9309-8012CA4964AC"
+		onReadyStateChange="NotifyActiveX(this)"
+    		width="240"
+		height="270">
+    <PARAM name="src"   value="../../Extras/DemoPresentation/NYC-SmilText.smil" />
+    <PARAM name="type" 	value="application/x-ambulant-smil"/> 
+    <PARAM name="playerState" value="restarting"  />
+    <EMBED	ID="ieambulant_embed"
+		type="application/x-ambulant-smil"
+    		width="240"
+		height="270"
+		src="../../Extras/DemoPresentation/NYC-SmilText.smil" />
+</OBJECT>
+<form name="formname">
+<input type=button value="Start"	onclick='StartPlayer()'>
+<input type=button value="Stop"	onclick='StopPlayer()'>
+<input type=button value="Restart"	onclick='RestartPlayer()'>
+<input type=button value="Resume"	onclick='ResumePlayer()'>
+<input type=button value="Pause"	onclick='PausePlayer()'>
+</form>
+</BODY>
+</HTML>

@@ -1,0 +1,34 @@
+HKCR
+{
+	AmbulantActiveX.ieambulant.1 = s 'ieambulant Class'
+	{
+		CLSID = s '{B8748B60-E34D-42AA-9309-8012CA4964AC}'
+	}
+	AmbulantActiveX.ieambulant = s 'ieambulant Class'
+	{
+		CLSID = s '{B8748B60-E34D-42AA-9309-8012CA4964AC}'
+		CurVer = s 'AmbulantActiveX.ieambulant.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {B8748B60-E34D-42AA-9309-8012CA4964AC} = s 'ieambulant Class'
+		{
+			ProgID = s 'AmbulantActiveX.ieambulant.1'
+			VersionIndependentProgID = s 'AmbulantActiveX.ieambulant'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			ForceRemove 'Control'
+			ForceRemove 'Insertable'
+			ForceRemove 'ToolboxBitmap32' = s '%MODULE%, 101'
+			'MiscStatus' = s '0'
+			{
+			    '1' = s '139665'
+			}
+			'TypeLib' = s '{2D4182DE-1306-48B2-AC4C-3AE7B55CE777}'
+			'Version' = s '1.0'
+		}
+	}
+}

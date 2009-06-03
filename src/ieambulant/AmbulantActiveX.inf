@@ -1,0 +1,19 @@
+; Sample INF file for AmbulantACTIVEX.DLL
+[version] 
+; version signature (same for both NT and Win95) do not remove
+signature="$CHICAGO$"
+AdvancedINF=2.0  
+
+[Add.Code]
+AmbulantActiveX.dll=AmbulantActiveX.dll
+AmbulantActiveX.inf=AmbulantActiveX.inf
+
+[AmbulantActiveX.dll]
+file-win32-x86=thiscab
+clsid={5074BDD6-21EA-43E6-BFCD-36FA5B8CFFF9} 
+FileVersion=1,0,0,1 
+RegisterServer=yes
+
+[AmbulantActiveX.inf]
+file=thiscab
+; end of INF file
