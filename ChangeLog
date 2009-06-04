@@ -1,3 +1,11 @@
+2009-06-03 18:10  keesblom
+
+	* 1st version of Ambulant as an Internet Explorer plugin.
+	  ieambulantButtons.htm has working buttons both with
+	  Explorer/Firefox, Safari/Opera untested but should work.
+	  ieambulant2.htm attempts to start 2 simultaneous instances, but
+	  does not work.
+
 2009-05-20 14:03  jackjansen
 
 	* Getting started on putting all pathnames for third party packages
