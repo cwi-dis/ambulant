@@ -1,11 +1,8 @@
 // ieambulant.h : Declaration of the Cieambulant
-
 #ifndef __ieambulant_H_
 #define __ieambulant_H_
-
 #include "resource.h"       // main symbols
 #include <atlctl.h>
-
 // ambulant player includes
 #include "ambulant/version.h"
 #include "ambulant/common/player.h"

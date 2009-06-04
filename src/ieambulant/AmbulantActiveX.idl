@@ -1,14 +1,10 @@
 // AmbulantActiveX.idl : IDL source for AmbulantActiveX.dll
 //
-
 // This file will be processed by the MIDL tool to
 // produce the type library (AmbulantActiveX.tlb) and marshalling code.
-
 import "oaidl.idl";
 import "ocidl.idl";
 #include "olectl.h"
-	
-
 	[
 		object,
 		uuid(D4C1BB81-B8D5-4E4F-B5E7-566D39442EA8),
@@ -43,7 +39,6 @@ import "ocidl.idl";
 		[propget, id(3), helpstring("property playerState")] HRESULT playerState([out, retval] BSTR *pVal);
 		[propput, id(3), helpstring("property playerState")] HRESULT playerState([in] BSTR newVal);
 	};
-
 [
 	uuid(2D4182DE-1306-48B2-AC4C-3AE7B55CE777),
 	version(1.0),

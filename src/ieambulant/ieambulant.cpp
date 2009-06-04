@@ -1,5 +1,4 @@
 // ieambulant.cpp : Implementation of Cieambulant
-
 #include "stdafx.h"
 #include "comutil.h"
 #include "AmbulantActiveX.h"
@@ -15,9 +14,9 @@ LPSTR
 ConvertBSTRToLPSTR (BSTR bstrIn)
 {
   	LPSTR pszOut = NULL;
-   
-   	if (bstrIn != NULL)
-   	{
+
+	if (bstrIn != NULL)
+  	{
    		int nInputStrLen = SysStringLen (bstrIn);
    		// Double NULL Termination
    		int nOutputStrLen = WideCharToMultiByte(CP_ACP, 0, bstrIn, nInputStrLen, NULL, 0, 0, 0) + 2;	
@@ -38,19 +37,23 @@ Cieambulant::get_document_url()
 	HRESULT hr = E_FAIL;
 	if ( ! m_site)
 		return hr;
+
 	IServiceProvider* pISP = NULL;
 	hr = m_site->QueryInterface(IID_IServiceProvider, (void **)&pISP);
 	if ( ! SUCCEEDED(hr))
 		return hr;
+
 	IWebBrowser2* pIWebBrowser2 = NULL;
 	hr = pISP->QueryService(IID_IWebBrowserApp, IID_IWebBrowser2,
 					   (void **)&pIWebBrowser2);
 	if ( ! SUCCEEDED(hr))
 		return hr;
+
 	BSTR BSTR_base_url;
 	hr = pIWebBrowser2->get_LocationURL(&BSTR_base_url);
 	if ( ! SUCCEEDED(hr))
 		return hr;
+
 	LPSTR LPSTR_url = ConvertBSTRToLPSTR (BSTR_base_url);
 	SysFreeString(BSTR_base_url);
 	BSTR_base_url = NULL;
@@ -63,12 +66,14 @@ Cieambulant::get_document_url()
 	hr = pIWebBrowser2->get_Document(&dispatch);
 	if ( ! SUCCEEDED(hr) || dispatch == NULL)
 		return hr;
+
 	IHTMLDocument3* document3;
 	hr = dispatch->QueryInterface(IID_IHTMLDocument3,
 		                          (void **)&document3);
 	dispatch->Release();
 	if ( ! SUCCEEDED(hr) || document3 == NULL)
 		return hr;
+
 	BSTR BSTR_object = SysAllocString(L"object");
 	IHTMLElementCollection* pelColl;
 	hr = document3->getElementsByTagName(BSTR_object, &pelColl);
@@ -76,6 +81,7 @@ Cieambulant::get_document_url()
 	SysFreeString(BSTR_object);
 	if ( ! SUCCEEDED(hr))
 		return hr;
+
 	VARIANT itemIndex;
 	itemIndex.vt = VT_I4;
 	itemIndex.lVal = 0;
@@ -84,17 +90,21 @@ Cieambulant::get_document_url()
 	pelColl->Release();
 	if ( ! SUCCEEDED(hr))
 		return hr;
+
 	IHTMLElement* pHTMLElement;
 	hr = pElemDisp->QueryInterface(IID_IHTMLElement, (void**) &pHTMLElement);
 	pElemDisp->Release();
+
 	if ( ! SUCCEEDED(hr))
 		return hr;
+
 	BSTR BSTR_src = SysAllocString(L"src");
 	VARIANT var;
 	hr = pHTMLElement->getAttribute(BSTR_src, 0, &var);
 	pHTMLElement->Release();
 	if ( ! SUCCEEDED(hr))
 		return hr;
+
 	if (var.vt != VT_NULL) {
 		LPSTR_url = ConvertBSTRToLPSTR (_bstr_t(var));	
 		std::string std_string_url (LPSTR_url);
@@ -102,6 +112,7 @@ Cieambulant::get_document_url()
 		delete [] LPSTR_url;
 	}
 }
+
 /* MSG spy
 static HHOOK s_hook;
 LRESULT  CALLBACK
@@ -123,6 +134,7 @@ Cieambulant::SetClientSite(LPOLECLIENTSITE pSite)
     HRESULT hr = CComControlBase::IOleObject_SetClientSite(pSite);
 	if (hr != S_OK)
 		return hr;
+
 	m_site = pSite;
 //    if(pSite && !m_pFont)
 //		hr = GetAmbientFontDisp(&m_pFont);
@@ -133,7 +145,6 @@ Cieambulant::SetClientSite(LPOLECLIENTSITE pSite)
 	static std::ofstream log_os("C:\\Documents and Settings\\kees.AMBULANT-DEV\\My Documents\\Ambulant\\ambulant\\src\\ieambulant\\amlog.txt");
 	ambulant::lib::logger::get_logger()->set_std_ostream(log_os);
 //	s_hook = SetWindowsHookEx(WH_GETMESSAGE, GetMsgProc, NULL, GetCurrentThreadId());
-	
 	return hr;
 }
 
@@ -142,7 +153,6 @@ DrawString( HDC hdc, RECT* rc, BSTR caption )
 	{
 		USES_CONVERSION;		
 		TCHAR* pCaption = OLE2T(caption);
-
 		DrawText( hdc,
 				 pCaption,
 				 lstrlen( pCaption ),
@@ -156,6 +166,7 @@ Cieambulant::OnDraw(ATL_DRAWINFO& di)
 {
 	return S_OK;
 }
+
 HRESULT
 Cieambulant::updatePlayerState()
 {
@@ -170,7 +181,7 @@ Cieambulant::updatePlayerState()
             m_url = m_url.join_to_base(m_base_url);
     }
 	if (m_hwnd == NULL) {
-		m_hwnd = ::GetWindow(this->m_hWnd, GW_HWNDFIRST);
+		m_hwnd = this->m_hWnd; //::GetWindow(this->m_hWnd, GW_HWNDFIRST);
 		m_player_callbacks.set_os_window(m_hwnd);
 	}
 	if (m_ambulant_player == NULL) {
@@ -203,8 +214,8 @@ Cieambulant::updatePlayerState()
 	}
 	return S_OK;
 }
-// some platform/toolkit specific hacks and functions
 
+// some platform/toolkit specific hacks and functions
 static ambulant_player_callbacks s_ambulant_player_callbacks;
 
 LRESULT CALLBACK
@@ -236,7 +247,6 @@ Cieambulant::PluginWinProc(UINT msg, WPARAM wParam, LPARAM lParam, BOOL& bHandle
 				POINT point;
 				point.x=GET_X_LPARAM(lParam);
 				point.y=GET_Y_LPARAM(lParam);
-
 				if (m_ambulant_player) {
 					if (msg == WM_MOUSEMOVE) {
 						// code copied from MmView.cpp
@@ -279,7 +289,6 @@ ambulant_player_callbacks::set_os_window(HWND hwnd)
 {
 	m_hwnd = hwnd;
 }
-
 
 HWND 
 ambulant_player_callbacks::new_os_window()
@@ -364,3 +373,4 @@ Cieambulant::put_playerState(BSTR newVal)
     m_bstrPlayerState.Attach(SysAllocString(newVal));
 	return S_OK;
 }
+

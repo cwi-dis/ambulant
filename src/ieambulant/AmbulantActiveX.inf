@@ -17,3 +17,4 @@ RegisterServer=yes
 [AmbulantActiveX.inf]
 file=thiscab
 ; end of INF file
+
