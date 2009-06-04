@@ -196,8 +196,12 @@ Cieambulant::updatePlayerState()
 		}
 	}
 	if (m_ambulant_player != NULL) {
-		if (m_bstrPlayerState == "playing"
-			&& ! m_ambulant_player->get_player()->is_playing())
+		if (m_bstrPlayerState == "resuming"
+			&& m_ambulant_player->get_player()->is_pausing())
+			m_ambulant_player->play();
+		else if (m_bstrPlayerState == "playing"
+			&& ! m_ambulant_player->get_player()->is_playing()
+			&& ! m_ambulant_player->get_player()->is_pausing())
 			m_ambulant_player->play();
 		else if (m_bstrPlayerState == "pausing"
 			&& ! m_ambulant_player->get_player()->is_pausing())

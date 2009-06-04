@@ -7,7 +7,7 @@ import "ocidl.idl";
 #include "olectl.h"
 	[
 		object,
-		uuid(D4C1BB81-B8D5-4E4F-B5E7-566D39442EA8),
+		uuid(EC21585F-0FA8-43ce-948D-5E6A480C3F0D),
 		dual,
 		helpstring("Iieambulant Interface"),
 		pointer_default(unique)
@@ -40,7 +40,7 @@ import "ocidl.idl";
 		[propput, id(3), helpstring("property playerState")] HRESULT playerState([in] BSTR newVal);
 	};
 [
-	uuid(2D4182DE-1306-48B2-AC4C-3AE7B55CE777),
+	uuid(58F78FB2-BBCE-4f01-BD56-171513A0EE8C),
 	version(1.0),
 	helpstring("AmbulantActiveX 1.0 Type Library")
 ]
@@ -50,7 +50,7 @@ library AmbulantACTIVEXLib
 	importlib("stdole2.tlb");
 
 	[
-		uuid(6107738B-9219-4E71-85E5-43D2D877EF09),
+		uuid(3060094F-51E1-42bf-AA99-97BB641329E8),
 		helpstring("_IieambulantEvents Interface")
 	]
 	dispinterface _IieambulantEvents
@@ -60,7 +60,7 @@ library AmbulantACTIVEXLib
 	};
 
 	[
-		uuid(B8748B60-E34D-42AA-9309-8012CA4964AC),
+		uuid(886B87C0-930C-414c-BD35-B67BCC92FBEC),
 		helpstring("ieambulant Class")
 	]
 	coclass ieambulant

@@ -2,16 +2,16 @@ HKCR
 {
 	AmbulantActiveX.ieambulant.1 = s 'ieambulant Class'
 	{
-		CLSID = s '{B8748B60-E34D-42AA-9309-8012CA4964AC}'
+		CLSID = s '{886B87C0-930C-414c-BD35-B67BCC92FBEC}'
 	}
 	AmbulantActiveX.ieambulant = s 'ieambulant Class'
 	{
-		CLSID = s '{B8748B60-E34D-42AA-9309-8012CA4964AC}'
+		CLSID = s '{886B87C0-930C-414c-BD35-B67BCC92FBEC}'
 		CurVer = s 'AmbulantActiveX.ieambulant.1'
 	}
 	NoRemove CLSID
 	{
-		ForceRemove {B8748B60-E34D-42AA-9309-8012CA4964AC} = s 'ieambulant Class'
+		ForceRemove {886B87C0-930C-414c-BD35-B67BCC92FBEC} = s 'ieambulant Class'
 		{
 			ProgID = s 'AmbulantActiveX.ieambulant.1'
 			VersionIndependentProgID = s 'AmbulantActiveX.ieambulant'
@@ -27,7 +27,7 @@ HKCR
 			{
 			    '1' = s '139665'
 			}
-			'TypeLib' = s '{2D4182DE-1306-48B2-AC4C-3AE7B55CE777}'
+			'TypeLib' = s '{58F78FB2-BBCE-4f01-BD56-171513A0EE8C}'
 			'Version' = s '1.0'
 		}
 	}
