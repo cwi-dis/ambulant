@@ -142,8 +142,8 @@ Cieambulant::SetClientSite(LPOLECLIENTSITE pSite)
     GetAmbientForeColor(m_clrForeColor);
 	//XXX std::ostream sos = new std::ostream(std::cout);
 	//XXX ambulant::lib::logger::get_logger()->set_std_ostream(sos);
-	static std::ofstream log_os("C:\\Documents and Settings\\kees.AMBULANT-DEV\\My Documents\\Ambulant\\ambulant\\src\\ieambulant\\amlog.txt");
-	ambulant::lib::logger::get_logger()->set_std_ostream(log_os);
+//	static std::ofstream log_os("C:\\Documents and Settings\\kees.AMBULANT-DEV\\My Documents\\Ambulant\\ambulant\\src\\ieambulant\\amlog.txt");
+//	ambulant::lib::logger::get_logger()->set_std_ostream(log_os);
 //	s_hook = SetWindowsHookEx(WH_GETMESSAGE, GetMsgProc, NULL, GetCurrentThreadId());
 	return hr;
 }
@@ -167,8 +167,10 @@ Cieambulant::OnDraw(ATL_DRAWINFO& di)
 	return S_OK;
 }
 
+HWND s_hwnd = NULL;
+
 HRESULT
-Cieambulant::updatePlayerState()
+Cieambulant::updatePlayer()
 {
 	// added for ambulant
 	// here the <url> is obtained from the <PARAM name="src" value="<url>"/> element
@@ -183,6 +185,7 @@ Cieambulant::updatePlayerState()
 	if (m_hwnd == NULL) {
 		m_hwnd = this->m_hWnd; //::GetWindow(this->m_hWnd, GW_HWNDFIRST);
 		m_player_callbacks.set_os_window(m_hwnd);
+		s_hwnd = m_hwnd;
 	}
 	if (m_ambulant_player == NULL) {
 		m_player_callbacks.set_os_window(m_hwnd);
@@ -192,29 +195,12 @@ Cieambulant::updatePlayerState()
 			if ( ! get_player()) {
 				delete m_ambulant_player;
 				m_ambulant_player = NULL;
-			} 
-		}
-	}
-	if (m_ambulant_player != NULL) {
-		if (m_bstrPlayerState == "resuming"
-			&& m_ambulant_player->get_player()->is_pausing())
-			m_ambulant_player->play();
-		else if (m_bstrPlayerState == "playing"
-			&& ! m_ambulant_player->get_player()->is_playing()
-			&& ! m_ambulant_player->get_player()->is_pausing())
-			m_ambulant_player->play();
-		else if (m_bstrPlayerState == "pausing"
-			&& ! m_ambulant_player->get_player()->is_pausing())
-			m_ambulant_player->pause();
-		else if (m_bstrPlayerState == "stopped"
-			&& (m_ambulant_player->get_player()->is_playing()
-				|| m_ambulant_player->get_player()->is_pausing()))
-			m_ambulant_player->stop();
-		else if (m_bstrPlayerState == "restarting") {
-			m_ambulant_player->stop();
-			m_ambulant_player->play();
-			m_bstrPlayerState = "playing";
-		}
+			} else {
+				ambulant::lib::logger::get_logger()->set_show_message(ieambulant_display_message);
+				ambulant::lib::logger::get_logger()->show("ieambulant plugin loaded");
+				m_ambulant_player ->play();
+			}
+		} 
 	}
 	return S_OK;
 }
@@ -226,7 +212,7 @@ LRESULT CALLBACK
 Cieambulant::PluginWinProc(UINT msg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
 	typedef HRGN NPRegion;
-	if (updatePlayerState() != S_OK)
+	if (updatePlayer() != S_OK)
 		return S_FALSE;
 
 	switch (msg) {
@@ -234,14 +220,16 @@ Cieambulant::PluginWinProc(UINT msg, WPARAM wParam, LPARAM lParam, BOOL& bHandle
 			{
 				PAINTSTRUCT ps;
 				HDC hdc = BeginPaint(&ps);
-				RECT rc;
-				GetClientRect(&rc);
-				FrameRect(hdc, &rc, GetStockBrush(BLACK_BRUSH));
-				EndPaint(&ps);
+//				RECT rc;
+//				GetClientRect(&rc);
+//				FrameRect(hdc, &rc, GetStockBrush(BLACK_BRUSH));
 				if (m_hwnd && m_ambulant_player) {
+					HDC hdc = ::GetDC(m_hwnd);
 					m_ambulant_player->redraw(m_hwnd, hdc);
 					::ShowWindow(m_hwnd, SW_SHOW);
+					::ReleaseDC(m_hwnd, hdc);
 				}
+				EndPaint(&ps);
 				break;
 			}
 			break;
@@ -359,22 +347,180 @@ Cieambulant::put_src(BSTR newVal)
 	return S_OK;
 }
 
-STDMETHODIMP
-Cieambulant::get_playerState(BSTR *pVal)
+// StatusBarMessage() - Writes to status bar using sprintf syntax.
+//
+// Author: Keith Rule -- keithr@europa.com
+//
+// Copyright (c) 1995-1996, Keith Rule
+// May be freely used provided this comment
+// is included with the source and all derived
+// versions of this source.
+//KB modifications by Kees Blom, Jun 5, 2009 for Ambulant
+
+#define _AFXDLL			//KB
+#undef _WINDOWS_		//KB
+#include < afxwin.h >	//KB
+#include < afxext.h >	//KB
+#include < stdarg.h >	//KB
+void StatusBarMessage(const char* fmt, ...)
 {
-	if (!pVal)
+	if (AfxGetApp() != NULL && AfxGetApp()->m_pMainWnd != NULL) {
+		char buffer[256];
+		CStatusBar* pStatus = (CStatusBar*)
+			AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
+		va_list argptr;
+		va_start(argptr, fmt);
+		vsprintf(buffer, fmt, argptr);
+		va_end(argptr);
+		if (pStatus != NULL) {
+			CString s(buffer);			//KB
+			LPCTSTR lps = (LPCTSTR) s;	//KB
+			pStatus->SetPaneText(0, lps);//KB
+//KB		pStatus->SetPaneText(0, buffer);
+			pStatus->UpdateWindow();
+		}
+	}
+}
+
+const char* s_last_log_message = NULL;
+
+const char*
+get_last_log_message()
+{
+	return s_last_log_message;
+}
+
+HWND GetStatusBar(HWND main_hwnd) {
+
+	if ( ! main_hwnd)
+		return NULL;
+
+	TCHAR szClassName[MAX_PATH];
+    HWND hWndStatusBar = NULL;
+
+    // looking for a TabWindowClass window in IE7
+    // the last one should be parent for statusbar
+    HWND hTabWnd = GetWindow(main_hwnd, GW_CHILD);
+    if(hTabWnd)
     {
-        return E_INVALIDARG;
+        while(hTabWnd)
+        {
+            memset(szClassName,0,MAX_PATH);
+            GetClassName(hTabWnd, szClassName, MAX_PATH);
+            if(_tcscmp(szClassName, _T("TabWindowClass")) == 0)
+                main_hwnd = hTabWnd;
+
+            hTabWnd = GetWindow(hTabWnd, GW_HWNDNEXT);
+        }
     }
-    *pVal = m_bstrPlayerState.Copy();
-	return S_OK;
+
+    HWND hWnd = GetWindow(main_hwnd, GW_CHILD);
+    if(hWnd)
+    {
+        while(hWnd)
+        {
+            memset(szClassName,0,MAX_PATH);
+            GetClassName(hWnd, szClassName, MAX_PATH);
+            if(_tcscmp(szClassName,_T("msctls_statusbar32")) == 0)
+            {
+                if(hWnd)
+                    hWndStatusBar = hWnd;
+                break;
+            }
+
+            hWnd = GetWindow(hWnd, GW_HWNDNEXT);
+        }
+    }
+	return hWndStatusBar;
+/*
+    if(hWndStatusBar)
+    {
+        g_pWndProcStatus = (WNDPROC)SetWindowLong(hWndStatusBar, 
+            GWL_WNDPROC, (LPARAM)(WNDPROC)NewStatusProc);
+    ...
+*/
+}
+/*
+void
+ieambulant_display_message(int level, const char* message) {
+//	printf(message);
+//	StatusBarMessage(message);
+	s_last_log_message = message;
+}
+*/
+
+void
+ieambulant_display_message(int level, const char* message) {
+	HWND top = ::GetTopWindow(s_hwnd);
+	if (top == NULL)
+		return;
+	HWND statusBar = GetStatusBar(top);
+	if (statusBar) {
+		PAINTSTRUCT ps;
+		HDC hdc = ::GetDC(statusBar);
+		RECT rc;
+		GetClientRect(statusBar, &rc);
+		_bstr_t bstrt(message);
+		DrawString (hdc, &rc,  bstrt);
+//		FrameRect(hdc, &rc, GetStockBrush(BLACK_BRUSH));
+		::ShowWindow(statusBar, SW_SHOW);
+		::ReleaseDC(statusBar, hdc);
+	}
 }
 
 STDMETHODIMP
-Cieambulant::put_playerState(BSTR newVal)
-{
-    m_bstrPlayerState.Empty();
-    m_bstrPlayerState.Attach(SysAllocString(newVal));
-	return S_OK;
+Cieambulant::startPlayer( void) {
+	if (m_ambulant_player != NULL) {
+		m_ambulant_player->play();
+		return S_OK;
+	} else
+		return E_FAIL;
 }
 
+STDMETHODIMP
+Cieambulant::stopPlayer( void) {
+	if (m_ambulant_player != NULL) {
+		m_ambulant_player->stop();
+		return S_OK;
+	} else
+		return E_FAIL;
+}
+
+STDMETHODIMP
+Cieambulant::restartPlayer( void) {
+	if (m_ambulant_player != NULL) {
+		m_ambulant_player->stop();
+		m_ambulant_player->play();
+		return S_OK;
+	} else
+		return E_FAIL;
+}
+
+STDMETHODIMP
+Cieambulant::pausePlayer( void) {
+	if (m_ambulant_player != NULL) {
+		m_ambulant_player->pause();
+		return S_OK;
+	} else
+		return E_FAIL;
+}
+
+STDMETHODIMP
+Cieambulant::isDone( BOOL* pVal) {
+	if (m_ambulant_player != NULL) {
+		*pVal = m_ambulant_player->get_player()->is_done();
+		return S_OK;
+	} else {
+		return E_FAIL;
+	}
+}
+
+STDMETHODIMP
+Cieambulant::resumePlayer( void) {
+	if (m_ambulant_player != NULL) {
+		if (m_ambulant_player->get_player()->is_pausing())
+			m_ambulant_player->play();
+		return S_OK;
+	} else
+		return E_FAIL;
+}

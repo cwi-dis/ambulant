@@ -36,8 +36,12 @@ import "ocidl.idl";
 		[propput, id(1), helpstring("property mime type")] HRESULT mimeType([in] BSTR newVal);
 		[propget, id(2), helpstring("property src")] HRESULT src([out, retval] BSTR* pVal);
 		[propput, id(2), helpstring("property src")] HRESULT src([in] BSTR newVal);
-		[propget, id(3), helpstring("property playerState")] HRESULT playerState([out, retval] BSTR *pVal);
-		[propput, id(3), helpstring("property playerState")] HRESULT playerState([in] BSTR newVal);
+		HRESULT startPlayer();
+		HRESULT stopPlayer();
+		HRESULT restartPlayer();
+		HRESULT resumePlayer();
+		HRESULT pausePlayer();
+		HRESULT isDone([out, retval] BOOL* pVal);
 	};
 [
 	uuid(58F78FB2-BBCE-4f01-BD56-171513A0EE8C),

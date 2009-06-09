@@ -5,54 +5,69 @@
 <TITLE id="ieambulant_title">ATL 3.0 test page for object ieambulant</TITLE>
 <script LANGUAGE="JavaScript" type="text/javascript">
 // some functions for Ambulant web browser plugins (IE/Firefox/Safari/Opera)
-var browser=navigator.appName;
-var isIE = false;
+var browser = navigator.appName;
+var ambulantPlayer = null;
+var isWatching = false;
 function detectBrowser()
 {
-	if (browser == "Microsoft Internet Explorer")
-		isIE = true;
+ 	alert (navigator.appName);
+	if (browser == "Microsoft Internet Explorer") {
+		ambulantPlayer = document.getElementById("ieambulant");
+	} else
+	    ambulantPlayer = document.embeds[0];
+	alert (navigator.appName);
 }
 function StartPlayer()
 {
-	if (isIE) {
-		document.getElementById("ieambulant").playerState="playing";
-		document.getElementById("ieambulant").caption="playing";
-	} else document.embeds[0].startPlayer();
+    ambulantPlayer.startPlayer();
 }
 function StopPlayer()
 {
-	if (isIE) {
-		document.getElementById("ieambulant").playerState="stopped";
-		document.getElementById("ieambulant").caption="stopped";
-	} else document.embeds[0].stopPlayer();
+    ambulantPlayer.stopPlayer();
 }
 function RestartPlayer()
 {
-	if (isIE) {
-		document.getElementById("ieambulant").playerState="restarting";
-		document.getElementById("ieambulant").caption="restarting";
-	} else document.embeds[0].restartPlayer();
+    ambulantPlayer.restartPlayer();
 }
 function ResumePlayer()
 {
-	if (isIE) {
-		document.getElementById("ieambulant").playerState="resuming";
-		document.getElementById("ieambulant").caption="resuming";
-	} else document.embeds[0].resumePlayer();
+    ambulantPlayer.resumePlayer();
 }
 function PausePlayer()
 {
-	if (isIE) {
-		document.getElementById("ieambulant").playerState="pausing";
-		document.getElementById("ieambulant").caption="pausing";
-	} else document.embeds[0].pausePlayer();
+    ambulantPlayer.pausePlayer();
+}
+
+function IsDone()
+{
+    var done = this.ambulantPlayer.isDone();
+    if (done == true) {
+	    alert("isDone() returns done="+done);
+        window.status = "Not watching done.";
+    } else {
+	    StartTimer (this.timeout)
+    }
+}
+
+function StartTimer(timeout)
+{
+    if (timeout > 0) {
+        this.timeout = timeout;
+        this.timer   = setTimeout('IsDone()', timeout);
+        window.status = "Watching done...";
+        isWatching = true;
+    } else {
+        clearTimeout(this.timer);
+        window.status = "Not watching done.";
+        isWatching = false;
+    }
 }
 </script>
 </HEAD>
 <BODY id="ieambulant_body" onload="detectBrowser()">
 <OBJECT     ID="ieambulant"
             CLASSID="CLSID:886B87C0-930C-414c-BD35-B67BCC92FBEC"
-    		width="240"
+      		width="240"
 		    height="270">
     <PARAM  name="src"         value="../../Extras/DemoPresentation/NYC-SmilText.smil" />
     <PARAM  name="type" 	   value="application/x-ambulant-smil"/> 
@@ -69,16 +84,7 @@ function PausePlayer()
 <input type=button value="Restart"	onclick='RestartPlayer()'>
 <input type=button value="Resume"	onclick='ResumePlayer()'>
 <input type=button value="Pause"	onclick='PausePlayer()'>
+<input type=button value="WatchDone" onclick='if (isWatching) StartTimer(0); else StartTimer(500)'>
 </form>
 </BODY>
 </HTML>
-<!--
-
-function NotifyActiveX(e)
-{
-	if ( e.readyState != 4 ) return; // "4" implies "completed"
-	// setting the "caption" field triggers a WM_PAINT event for ieambulant plugin
-	window.setInterval("if(document.getElementById(\"ieambulant\").caption!=document.getElementById(\"ieambulant\").playerState){document.getElementById(\"ieambulant\").caption=document.getElementById(\"ieambulant\").playerState;}",500);
-}
-		    onReadyStateChange="NotifyActiveX(this)"
--->

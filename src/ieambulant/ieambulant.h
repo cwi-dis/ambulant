@@ -83,12 +83,12 @@ public:
 		}
 		*/
 		m_bstrCaption = "playing";
-		m_bstrPlayerState = m_bstrCaption;
 		//m_url = ambulant::net::url::from_filename("file://C:\\Documents and Settings\\kees.AMBULANT-DEV\\My Documents\\Ambulant\\ambulant\\Extras\\Welcome\\Welcome.smil");
 	}
 	~Cieambulant() {
 		if (m_ambulant_player) {
 			m_ambulant_player->stop();
+			ambulant::gui::dx::dx_player::cleanup();
 			delete m_ambulant_player;
 			m_ambulant_player = NULL;
 		}
@@ -133,7 +133,6 @@ BEGIN_PROP_MAP(Cieambulant)
     // AmbulantPlayer plugin control properties
     PROP_ENTRY("type", 1, CLSID_NULL)
     PROP_ENTRY("src", 2, CLSID_NULL)
-    PROP_ENTRY("playerState", 3, CLSID_NULL)
  	// Example entries
 	// PROP_ENTRY("Property Description", dispid, clsid)
 	// PROP_PAGE(CLSID_StockColorPage)
@@ -222,12 +221,10 @@ public:
 	OLE_COLOR m_clrForeColor;
 
 // added for Ambulant player
+	HRESULT updatePlayer();
 public:
 	CComBSTR m_bstrType;
 	CComBSTR m_bstrSrc;
-
-	CComBSTR m_bstrPlayerState;
-	HRESULT updatePlayerState();
 
 	ambulant_player_callbacks m_player_callbacks;
 	LPOLECLIENTSITE m_site;
@@ -242,7 +239,7 @@ public:
 	int m_cursor_id;
     ambulant::common::player* get_player() {
         return m_ambulant_player->get_player();
-    }
+}
 /*
 from http://www.ozhiker.com/electronics/vcpp/ActiveXControl.htm
 To make ATL think your CWnd derived class is a CWindow derived class, add the following method:
@@ -259,9 +256,17 @@ public:
 	STDMETHOD(put_src)(/*[in]*/ BSTR newVal);
 	STDMETHOD(get_mimeType)(/*[out, retval]*/ BSTR *pVal);
 	STDMETHOD(put_mimeType)(/*[in]*/ BSTR newVal);
-	STDMETHOD(get_playerState)(/*[out, retval]*/ BSTR *pVal);
-	STDMETHOD(put_playerState)(/*[in]*/ BSTR newVal);
+	STDMETHOD(startPlayer)(void);
+	STDMETHOD(stopPlayer)(void);
+	STDMETHOD(restartPlayer)(void);
+	STDMETHOD(pausePlayer)(void);
+	STDMETHOD(resumePlayer)(void);
+	STDMETHOD(isDone)(/*[out, retval]*/ BOOL *pVal);
+};
 
+extern "C" {
+void ieambulant_display_message(int level, const char *message);	
+const char* get_last_log_message();
 };
 
 #endif //__ieambulant_H_

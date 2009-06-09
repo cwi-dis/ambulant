@@ -6,6 +6,7 @@
 //      run nmake -f AmbulantActiveXps.mk in the project directory.
 
 #include "stdafx.h"
+#include "vld.h"
 #include "resource.h"
 #include <initguid.h>
 #include "AmbulantActiveX.h"
@@ -68,5 +69,3 @@ STDAPI DllUnregisterServer(void)
 {
     return _Module.UnregisterServer(TRUE);
 }
-
-
