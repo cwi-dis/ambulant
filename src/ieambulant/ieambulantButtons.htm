@@ -10,12 +10,10 @@ var ambulantPlayer = null;
 var isWatching = false;
 function detectBrowser()
 {
- 	alert (navigator.appName);
 	if (browser == "Microsoft Internet Explorer") {
 		ambulantPlayer = document.getElementById("ieambulant");
-	} else
+	} else // Netscape (== Firefox, Safari), Opera
 	    ambulantPlayer = document.embeds[0];
-	alert (navigator.appName);
 }
 function StartPlayer()
 {

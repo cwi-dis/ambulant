@@ -88,9 +88,9 @@ public:
 	~Cieambulant() {
 		if (m_ambulant_player) {
 			m_ambulant_player->stop();
-			ambulant::gui::dx::dx_player::cleanup();
 			delete m_ambulant_player;
 			m_ambulant_player = NULL;
+//causes crash	ambulant::gui::dx::dx_player::cleanup();
 		}
 	}
 DECLARE_REGISTRY_RESOURCEID(IDR_ieambulant)
