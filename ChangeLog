@@ -1,3 +1,10 @@
+2009-06-09 15:17  keesblom
+
+	* Watch done added to ie plugin. STStill crashes on exit.
+	  Committed on the Free edition of March Hare Software CVSNT
+	  Server.  Upgrade to CVS Suite for more features and support:
+	  http://march-hare.com/cvsnt/
+
 2009-06-04 16:39  keesblom
 
 	* changed GUID's to new ones instead those borrowd by some example
