@@ -31,6 +31,8 @@ ConvertBSTRToLPSTR (BSTR bstrIn)
 	return pszOut;
 }
 
+
+
 HRESULT
 Cieambulant::get_document_url() 
 {
@@ -127,6 +129,7 @@ GetMsgProc(int   nCode,WPARAM   wparam,LPARAM   lparam)
     return   CallNextHookEx(s_hook,nCode,wparam,lparam);   
 }
 */
+LPOLECLIENTSITE s_site;
 
 STDMETHODIMP 
 Cieambulant::SetClientSite(LPOLECLIENTSITE pSite)
@@ -134,8 +137,10 @@ Cieambulant::SetClientSite(LPOLECLIENTSITE pSite)
     HRESULT hr = CComControlBase::IOleObject_SetClientSite(pSite);
 	if (hr != S_OK)
 		return hr;
-
-	m_site = pSite;
+	if (s_site == NULL) {
+		m_site = pSite;
+		s_site = pSite;
+	}
 //    if(pSite && !m_pFont)
 //		hr = GetAmbientFontDisp(&m_pFont);
     GetAmbientBackColor(m_clrBackColor);
@@ -347,110 +352,15 @@ Cieambulant::put_src(BSTR newVal)
 	return S_OK;
 }
 
-// StatusBarMessage() - Writes to status bar using sprintf syntax.
-//
-// Author: Keith Rule -- keithr@europa.com
-//
-// Copyright (c) 1995-1996, Keith Rule
-// May be freely used provided this comment
-// is included with the source and all derived
-// versions of this source.
-//KB modifications by Kees Blom, Jun 5, 2009 for Ambulant
-
-#define _AFXDLL			//KB
-#undef _WINDOWS_		//KB
-#include < afxwin.h >	//KB
-#include < afxext.h >	//KB
-#include < stdarg.h >	//KB
-void StatusBarMessage(const char* fmt, ...)
-{
-	if (AfxGetApp() != NULL && AfxGetApp()->m_pMainWnd != NULL) {
-		char buffer[256];
-		CStatusBar* pStatus = (CStatusBar*)
-			AfxGetApp()->m_pMainWnd->GetDescendantWindow(AFX_IDW_STATUS_BAR);
-		va_list argptr;
-		va_start(argptr, fmt);
-		vsprintf(buffer, fmt, argptr);
-		va_end(argptr);
-		if (pStatus != NULL) {
-			CString s(buffer);			//KB
-			LPCTSTR lps = (LPCTSTR) s;	//KB
-			pStatus->SetPaneText(0, lps);//KB
-//KB		pStatus->SetPaneText(0, buffer);
-			pStatus->UpdateWindow();
-		}
-	}
-}
-
-const char* s_last_log_message = NULL;
-
-const char*
-get_last_log_message()
-{
-	return s_last_log_message;
-}
-
-HWND GetStatusBar(HWND main_hwnd) {
-
-	if ( ! main_hwnd)
-		return NULL;
-
-	TCHAR szClassName[MAX_PATH];
-    HWND hWndStatusBar = NULL;
-
-    // looking for a TabWindowClass window in IE7
-    // the last one should be parent for statusbar
-    HWND hTabWnd = GetWindow(main_hwnd, GW_CHILD);
-    if(hTabWnd)
-    {
-        while(hTabWnd)
-        {
-            memset(szClassName,0,MAX_PATH);
-            GetClassName(hTabWnd, szClassName, MAX_PATH);
-            if(_tcscmp(szClassName, _T("TabWindowClass")) == 0)
-                main_hwnd = hTabWnd;
-
-            hTabWnd = GetWindow(hTabWnd, GW_HWNDNEXT);
-        }
-    }
-
-    HWND hWnd = GetWindow(main_hwnd, GW_CHILD);
-    if(hWnd)
-    {
-        while(hWnd)
-        {
-            memset(szClassName,0,MAX_PATH);
-            GetClassName(hWnd, szClassName, MAX_PATH);
-            if(_tcscmp(szClassName,_T("msctls_statusbar32")) == 0)
-            {
-                if(hWnd)
-                    hWndStatusBar = hWnd;
-                break;
-            }
-
-            hWnd = GetWindow(hWnd, GW_HWNDNEXT);
-        }
-    }
-	return hWndStatusBar;
-/*
-    if(hWndStatusBar)
-    {
-        g_pWndProcStatus = (WNDPROC)SetWindowLong(hWndStatusBar, 
-            GWL_WNDPROC, (LPARAM)(WNDPROC)NewStatusProc);
-    ...
-*/
-}
-/*
-void
-ieambulant_display_message(int level, const char* message) {
-//	printf(message);
-//	StatusBarMessage(message);
-	s_last_log_message = message;
-}
-*/
+// following 3 lines for CString (conversion char* to BSTR)
+#define _AFXDLL
+#undef _WINDOWS_
+#include <afxwin.h>
 
 void
 ieambulant_display_message(int level, const char* message) {
+	USES_CONVERSION;
+/*JNK: code does not work
 	HWND top = ::GetTopWindow(s_hwnd);
 	if (top == NULL)
 		return;
@@ -466,6 +376,43 @@ ieambulant_display_message(int level, const char* message) {
 		::ShowWindow(statusBar, SW_SHOW);
 		::ReleaseDC(statusBar, hdc);
 	}
+*/
+	HRESULT hr = E_FAIL;
+	if ( ! s_site)
+		return;
+
+	IServiceProvider* pISP = NULL;
+	hr = s_site->QueryInterface(IID_IServiceProvider, (void **)&pISP);
+	if ( ! SUCCEEDED(hr))
+		return;
+	// get IWebBrowser2
+	IWebBrowser2* pIWebBrowser2 = NULL;
+	hr = pISP->QueryService(IID_IWebBrowserApp, IID_IWebBrowser2, (void **)&pIWebBrowser2);
+	pISP->Release();
+	if ( ! SUCCEEDED(hr) || pIWebBrowser2 == NULL)
+		return;
+	IDispatch *pIDispatchDocument = NULL;
+	hr = pIWebBrowser2->get_Document(&pIDispatchDocument);
+	pIWebBrowser2->Release();
+	if ( ! SUCCEEDED(hr) || pIDispatchDocument == NULL)
+		return;
+	// get IHTMLDocument2
+	IHTMLDocument2* pIHTMLDocument2 = NULL;
+	hr = pIDispatchDocument->QueryInterface(IID_IHTMLDocument2, (void **)&pIHTMLDocument2);
+	pIDispatchDocument->Release();
+	if ( ! SUCCEEDED(hr) || pIHTMLDocument2 == NULL)
+		return;
+	// get IHTMLWindow2
+	IHTMLWindow2* pIHTMLWindow2 = NULL;
+	hr = pIHTMLDocument2->get_parentWindow(&pIHTMLWindow2);
+	pIHTMLDocument2->Release();
+	if ( ! SUCCEEDED(hr) || pIHTMLWindow2 == NULL)
+		return;
+	CString Cstr_message(message);
+	BSTR BSTR_message = SysAllocString(Cstr_message);
+	pIHTMLWindow2->put_status(BSTR_message);
+	SysFreeString(BSTR_message);
+	pIHTMLWindow2->Release();
 }
 
 STDMETHODIMP

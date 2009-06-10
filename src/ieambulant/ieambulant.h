@@ -67,21 +67,11 @@ public:
 	{
 		m_OldWindow = NULL;
 		m_hwnd = NULL;
+		m_site = NULL;
 		m_lpOldProc = NULL;
 		m_logger = NULL;
 		m_ambulant_player = NULL;
 		m_bWindowOnly = TRUE;
-/* JNK
-		m_bstrCaption = "OK";
-		CComPtr<IOleClientSite>  pIOleClientSite;
-		CComPtr<IOleInPlaceSite> pIOleInPlaceSite;
-		HRESULT hRes = GetClientSite(&pIOleClientSite);
-		if (pIOleClientSite) {
-			if(SUCCEEDED(pIOleClientSite->QueryInterface(IID_IOleInPlaceSite, (void **)&pIOleInPlaceSite)) && pIOleInPlaceSite) {
-				pIOleInPlaceSite->GetWindow(&m_hwnd);       
-			}
-		}
-		*/
 		m_bstrCaption = "playing";
 		//m_url = ambulant::net::url::from_filename("file://C:\\Documents and Settings\\kees.AMBULANT-DEV\\My Documents\\Ambulant\\ambulant\\Extras\\Welcome\\Welcome.smil");
 	}
