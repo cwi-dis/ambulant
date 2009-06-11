@@ -1,3 +1,17 @@
+2009-06-10 17:23  keesblom
+
+	* writing error message to the status bar now works, but reload is
+	  broken Committed on the Free edition of March Hare Software CVSNT
+	  Server.  Upgrade to CVS Suite for more features and support:
+	  http://march-hare.com/cvsnt/
+
+2009-06-10 14:05  keesblom
+
+	* ieplugin doesn't crash anymore, but now has a little more leaks.
+	  Committed on the Free edition of March Hare Software CVSNT
+	  Server.  Upgrade to CVS Suite for more features and support:
+	  http://march-hare.com/cvsnt/
+
 2009-06-09 15:17  keesblom
 
 	* Watch done added to ie plugin. STStill crashes on exit.
