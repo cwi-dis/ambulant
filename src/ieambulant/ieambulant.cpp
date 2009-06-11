@@ -130,6 +130,7 @@ GetMsgProc(int   nCode,WPARAM   wparam,LPARAM   lparam)
 }
 */
 LPOLECLIENTSITE s_site;
+int s_ref_count;
 
 STDMETHODIMP 
 Cieambulant::SetClientSite(LPOLECLIENTSITE pSite)
@@ -137,10 +138,19 @@ Cieambulant::SetClientSite(LPOLECLIENTSITE pSite)
     HRESULT hr = CComControlBase::IOleObject_SetClientSite(pSite);
 	if (hr != S_OK)
 		return hr;
-	if (s_site == NULL) {
-		m_site = pSite;
-		s_site = pSite;
+	if (pSite) {
+		s_ref_count++;
+		if (s_ref_count == 1)
+			s_site = pSite;
+	} else {
+		if (s_ref_count > 0)
+			s_ref_count--;
+		if (s_ref_count == 0) {
+			// clear all statics
+			s_site = NULL;
+		}
 	}
+	m_site = pSite;
 //    if(pSite && !m_pFont)
 //		hr = GetAmbientFontDisp(&m_pFont);
     GetAmbientBackColor(m_clrBackColor);

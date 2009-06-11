@@ -42,7 +42,9 @@ BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID /*lpReserved*/)
 
 STDAPI DllCanUnloadNow(void)
 {
-    return (_Module.GetLockCount()==0) ? S_OK : S_FALSE;
+	BOOL rv = (_Module.GetLockCount()==0) ? S_OK : S_FALSE;
+
+    return rv;
 }
 
 /////////////////////////////////////////////////////////////////////////////

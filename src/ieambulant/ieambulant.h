@@ -257,6 +257,8 @@ public:
 extern "C" {
 void ieambulant_display_message(int level, const char *message);	
 const char* get_last_log_message();
+extern LPOLECLIENTSITE s_site;
+extern int s_ref_count;
 };
 
 #endif //__ieambulant_H_
