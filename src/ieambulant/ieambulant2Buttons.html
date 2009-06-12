@@ -1,0 +1,127 @@
+<!-- Example HTML doc using Ambulant browser plugin for all browsers -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML id="ieambulant_html"  xmlns="http://www.w3.org/1999/xhtml">
+<HEAD id="ieambulant_head">
+<TITLE id="ieambulant_title">ATL 3.0 test page for object ieambulant</TITLE> <script LANGUAGE="JavaScript" type="text/javascript">
+// some functions for Ambulant web browser plugins (IE/Firefox/Safari/Opera)
+var browser = navigator.appName;
+var ambulantPlayer = null;
+var isWatching = false;
+
+function detectBrowser()
+{
+	if (browser == "Microsoft Internet Explorer") {
+		ambulantPlayer = document.getElementById("ieambulant_object1");
+	} else // Netscape (== Firefox, Safari), Opera
+	    ambulantPlayer = document.embeds[0];
+}
+
+function StartPlayer()
+{
+    ambulantPlayer.startPlayer();
+} function StopPlayer()
+{
+    ambulantPlayer.stopPlayer();
+}
+
+function RestartPlayer()
+{
+    ambulantPlayer.restartPlayer();
+}
+
+function ResumePlayer()
+{
+    ambulantPlayer.resumePlayer();
+}
+
+function PausePlayer()
+{
+    ambulantPlayer.pausePlayer();
+}
+
+function IsDone()
+{
+    var done = this.ambulantPlayer.isDone();
+    if (done == true) {
+	    alert("isDone() returns done="+done);
+        window.status = "Not watching done.";
+    } else {
+	    StartTimer (this.timeout)
+    }
+}
+
+function StartTimer(timeout)
+{
+    if (timeout > 0) {
+        this.timeout = timeout;
+        this.timer   = setTimeout('IsDone()', timeout);
+        window.status = "Watching done...";
+        isWatching = true;
+    } else {
+        clearTimeout(this.timer);
+        window.status = "Not watching done.";
+        isWatching = false;
+    }
+}
+</script>
+</HEAD>
+
+<BODY id="ieambulant_body" onload="detectBrowser()">
+<table align="left" cellspacing="0" cellpadding="0" border="0px" width="520px">
+<tbody>
+<tr>
+<td width="240" height="300" valign="top"> 
+<OBJECT     ID="ieambulant_object1"
+            CLASSID="CLSID:886B87C0-930C-414c-BD35-B67BCC92FBEC"
+      	    width="240"
+		    height="270">
+    <PARAM  name="src"         value="../../Extras/Welcome/Welcome.smil" />
+    <PARAM  name="type" 	   value="application/x-ambulant-smil"/> 
+    <PARAM  name="playerState" value="restarting"  />
+    <EMBED	ID="ieambulant_embed"
+    		type="application/x-ambulant-smil"
+    		width="240"
+	    	height="270"
+		    src="../../Extras/Welcome/Welcome.smil" />
+</OBJECT>
+<form name="formname">
+<input type=button value="Start"	onclick='StartPlayer()'>
+<input type=button value="Stop" 	onclick='StopPlayer()'>
+<input type=button value="Restart"	onclick='RestartPlayer()'>
+<input type=button value="Resume"	onclick='ResumePlayer()'>
+<input type=button value="Pause"	onclick='PausePlayer()'>
+<input type=button value="WatchDone" onclick='if (isWatching) StartTimer(0); else StartTimer(500)'>
+</form>
+<!-- -->
+</td> 
+<td width="40" height="300" valign="top"></td>   
+<td width="240" height="300" valign="top"> 
+<OBJECT     ID="ieambulant_object2"
+            CLASSID="CLSID:886B87C0-930C-414c-BD35-B67BCC92FBEC"
+      	    width="240"
+		    height="270">
+    <PARAM  name="src"         value="../../Extras/DemoPresentation/NYC-SmilText.smil" />
+    <PARAM  name="type" 	   value="application/x-ambulant-smil"/> 
+    <PARAM  name="playerState" value="restarting"  />
+    <EMBED	ID="ieambulant_embed2"
+    		type="application/x-ambulant-smil"
+ 		left="300"
+   		width="240"
+	    	height="270"
+		src="../../Extras/DemoPresentation/NYC-SmilText.smil" />
+</OBJECT>
+<form name="formname2" left="300" width="240">
+<input type=button value="Start"	onclick='StartPlayer()'>
+<input type=button value="Stop" 	onclick='StopPlayer()'>
+<input type=button value="Restart"	onclick='RestartPlayer()'>
+<br>
+<input type=button value="Resume"	onclick='ResumePlayer()'>
+<input type=button value="Pause"	onclick='PausePlayer()'>
+<input type=button value="WatchDone" onclick='if (isWatching) StartTimer(0); else StartTimer(500)'>
+</form>
+<!-- -->
+</td>
+</tbody>
+</table>
+</BODY>
+</HTML>

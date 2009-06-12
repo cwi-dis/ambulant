@@ -62,6 +62,16 @@ Cieambulant::get_document_url()
 	std::string std_string_base_url (LPSTR_url);
 	m_base_url = ambulant::net::url::from_url(std_string_base_url);
 	delete [] LPSTR_url;
+	BSTR BSTR_url = NULL;
+	hr = get_src(&BSTR_url);
+	if ( ! SUCCEEDED(hr))
+		return hr;
+	LPSTR_url = ConvertBSTRToLPSTR (BSTR_url);
+	std::string std_string_url (LPSTR_url);
+	delete [] LPSTR_url;
+	m_url = ambulant::net::url::from_url(std_string_url);
+	return S_OK;
+/*
 	IDispatch *dispatch = NULL;
 	LPPROPERTYBAG pPropBag = (IPropertyBag*) malloc (sizeof IPropertyBag);
 	hr = this->IPersistPropertyBag_Load(pPropBag, NULL, NULL);
@@ -113,8 +123,8 @@ Cieambulant::get_document_url()
 		m_url = ambulant::net::url::from_url(std_string_url);
 		delete [] LPSTR_url;
 	}
+*/
 }
-
 /* MSG spy
 static HHOOK s_hook;
 LRESULT  CALLBACK
