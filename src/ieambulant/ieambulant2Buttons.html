@@ -12,33 +12,22 @@ function detectBrowser()
 {
 	if (browser == "Microsoft Internet Explorer") {
 		ambulantPlayer = document.getElementById("ieambulant_object1");
-	} else // Netscape (== Firefox, Safari), Opera
+		ambulantPlayer2 = document.getElementById("ieambulant_object2");
+	} else {// Netscape (== Firefox, Safari), Opera
 	    ambulantPlayer = document.embeds[0];
+	    ambulantPlayer = document.embeds[1];
+	}
 }
-
-function StartPlayer()
+function ambulantObject(idd)
 {
-    ambulantPlayer.startPlayer();
-} function StopPlayer()
-{
-    ambulantPlayer.stopPlayer();
+    var obj_element = document.getElementById(idd);
+	if (browser == "Microsoft Internet Explorer") {
+        return obj_element;
+    }
+    var embed_element = obj_element.getElementsByTagName("embed")[0];
+    return embed_element;
 }
-
-function RestartPlayer()
-{
-    ambulantPlayer.restartPlayer();
-}
-
-function ResumePlayer()
-{
-    ambulantPlayer.resumePlayer();
-}
-
-function PausePlayer()
-{
-    ambulantPlayer.pausePlayer();
-}
-
+      
 function IsDone()
 {
     var done = this.ambulantPlayer.isDone();
@@ -71,32 +60,32 @@ function StartTimer(timeout)
 <tbody>
 <tr>
 <td width="240" height="300" valign="top"> 
-<OBJECT     ID="ieambulant_object1"
+<OBJECT     ID="ambulant_object1"
             CLASSID="CLSID:886B87C0-930C-414c-BD35-B67BCC92FBEC"
       	    width="240"
 		    height="270">
     <PARAM  name="src"         value="../../Extras/Welcome/Welcome.smil" />
     <PARAM  name="type" 	   value="application/x-ambulant-smil"/> 
     <PARAM  name="playerState" value="restarting"  />
-    <EMBED	ID="ieambulant_embed"
+    <EMBED	ID="ieambulant_embed1"
     		type="application/x-ambulant-smil"
     		width="240"
 	    	height="270"
 		    src="../../Extras/Welcome/Welcome.smil" />
 </OBJECT>
 <form name="formname">
-<input type=button value="Start"	onclick='StartPlayer()'>
-<input type=button value="Stop" 	onclick='StopPlayer()'>
-<input type=button value="Restart"	onclick='RestartPlayer()'>
-<input type=button value="Resume"	onclick='ResumePlayer()'>
-<input type=button value="Pause"	onclick='PausePlayer()'>
+<input type=button value="Start"	onclick='ambulantObject("ambulant_object1").startPlayer()'>
+<input type=button value="Stop" 	onclick='ambulantObject("ambulant_object1").stopPlayer()'>
+<input type=button value="Restart"	onclick='ambulantObject("ambulant_object1").restartPlayer()'>
+<input type=button value="Resume"	onclick='ambulantObject("ambulant_object1").resumePlayer()'>
+<input type=button value="Pause"	onclick='ambulantObject("ambulant_object1").pausePlayer()'>
 <input type=button value="WatchDone" onclick='if (isWatching) StartTimer(0); else StartTimer(500)'>
 </form>
 <!-- -->
 </td> 
 <td width="40" height="300" valign="top"></td>   
 <td width="240" height="300" valign="top"> 
-<OBJECT     ID="ieambulant_object2"
+<OBJECT     ID="ambulant_object2"
             CLASSID="CLSID:886B87C0-930C-414c-BD35-B67BCC92FBEC"
       	    width="240"
 		    height="270">
@@ -111,12 +100,12 @@ function StartTimer(timeout)
 		src="../../Extras/DemoPresentation/NYC-SmilText.smil" />
 </OBJECT>
 <form name="formname2" left="300" width="240">
-<input type=button value="Start"	onclick='StartPlayer()'>
-<input type=button value="Stop" 	onclick='StopPlayer()'>
-<input type=button value="Restart"	onclick='RestartPlayer()'>
+<input type=button value="Start"	onclick='ambulantObject("ambulant_object2").startPlayer()'>
+<input type=button value="Stop" 	onclick='ambulantObject("ambulant_object2").stopPlayer()'>
+<input type=button value="Restart"	onclick='ambulantObject("ambulant_object2").restartPlayer()'>
 <br>
-<input type=button value="Resume"	onclick='ResumePlayer()'>
-<input type=button value="Pause"	onclick='PausePlayer()'>
+<input type=button value="Resume"	onclick='ambulantObject("ambulant_object2").resumePlayer()'>
+<input type=button value="Pause"	onclick='ambulantObject("ambulant_object2").pausePlayer()'>
 <input type=button value="WatchDone" onclick='if (isWatching) StartTimer(0); else StartTimer(500)'>
 </form>
 <!-- -->
