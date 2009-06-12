@@ -63,7 +63,8 @@ public:
 	
 
 	Cieambulant() :
-		m_ctlStatic(_T("Static"), this, 1)
+		m_ctlStatic(_T("Static"), this, 1),
+		m_autostart(true)
 	{
 		m_OldWindow = NULL;
 		m_hwnd = NULL;
@@ -123,6 +124,7 @@ BEGIN_PROP_MAP(Cieambulant)
     // AmbulantPlayer plugin control properties
     PROP_ENTRY("type", 1, CLSID_NULL)
     PROP_ENTRY("src", 2, CLSID_NULL)
+    PROP_ENTRY("autostart", 3, CLSID_NULL)
  	// Example entries
 	// PROP_ENTRY("Property Description", dispid, clsid)
 	// PROP_PAGE(CLSID_StockColorPage)
@@ -215,6 +217,7 @@ public:
 public:
 	CComBSTR m_bstrType;
 	CComBSTR m_bstrSrc;
+	CComBSTR m_bstrAutostart;
 
 	ambulant_player_callbacks m_player_callbacks;
 	LPOLECLIENTSITE m_site;
@@ -226,6 +229,7 @@ public:
 	ambulant::lib::logger* m_logger;
 	ambulant::net::url m_url;
 	ambulant::net::url m_base_url;
+	bool m_autostart;
 	int m_cursor_id;
     ambulant::common::player* get_player() {
         return m_ambulant_player->get_player();
@@ -242,6 +246,8 @@ static LPCTSTR GetWndClassName()
 //XX IPersistPropertyBag override
 //XX	STDMETHOD(Load)(LPPROPERTYBAG pPropBag, LPERRORLOG pErrorLog);
 public:
+	STDMETHOD(get_autostart)(/*[out, retval]*/ BSTR *pVal);
+	STDMETHOD(put_autostart)(/*[in]*/ BSTR newVal);
 	STDMETHOD(get_src)(/*[out, retval]*/ BSTR *pVal);
 	STDMETHOD(put_src)(/*[in]*/ BSTR newVal);
 	STDMETHOD(get_mimeType)(/*[out, retval]*/ BSTR *pVal);

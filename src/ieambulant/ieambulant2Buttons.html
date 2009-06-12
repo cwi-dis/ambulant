@@ -21,10 +21,15 @@ function IsDone(idd)
 {
     var done = this.ambulantObject(idd).isDone();
     if (done == true) {
-	    alert("isDone("+idd+") returns done="+done);
-        window.status = "Not watching done. id="+idd;
-        if (idd == "ambulant_object1") isWatching1 = false;
-        if (idd == "ambulant_object2") isWatching2 = false;        
+	    window.status = idd+" done.";
+        if (idd == "ambulant_object1") {
+            this.isWatching1 = false; 
+            this.ambulantObject("ambulant_object2").restartPlayer();
+        }
+        if (idd == "ambulant_object2") {
+            this.isWatching2 = false; 
+            this.ambulantObject("ambulant_object1").restartPlayer();
+        }
     } else {
 	    StartTimer (this.timeout,idd)
     }
@@ -59,7 +64,7 @@ function StartTimer(timeout,idd)
 		    height="270">
     <PARAM  name="src"         value="../../Extras/Welcome/Welcome.smil" />
     <PARAM  name="type" 	   value="application/x-ambulant-smil"/> 
-    <PARAM  name="playerState" value="restarting"  />
+    <PARAM  name="autostart"   value="true"  />
     <EMBED	ID="ieambulant_embed1"
     		type="application/x-ambulant-smil"
     		width="240"
@@ -85,7 +90,7 @@ function StartTimer(timeout,idd)
 		    height="270">
     <PARAM  name="src"         value="../../Extras/DemoPresentation/NYC-SmilText.smil" />
     <PARAM  name="type" 	   value="application/x-ambulant-smil"/> 
-    <PARAM  name="playerState" value="restarting"  />
+    <PARAM  name="autostart"   value="false"  />
     <EMBED	ID="ieambulant_embed2"
     		type="application/x-ambulant-smil"
      		left="300"

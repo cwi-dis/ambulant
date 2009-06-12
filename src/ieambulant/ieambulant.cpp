@@ -55,13 +55,13 @@ Cieambulant::get_document_url()
 	hr = pIWebBrowser2->get_LocationURL(&BSTR_base_url);
 	if ( ! SUCCEEDED(hr))
 		return hr;
-
 	LPSTR LPSTR_url = ConvertBSTRToLPSTR (BSTR_base_url);
 	SysFreeString(BSTR_base_url);
 	BSTR_base_url = NULL;
 	std::string std_string_base_url (LPSTR_url);
-	m_base_url = ambulant::net::url::from_url(std_string_base_url);
 	delete [] LPSTR_url;
+	m_base_url = ambulant::net::url::from_url(std_string_base_url);
+
 	BSTR BSTR_url = NULL;
 	hr = get_src(&BSTR_url);
 	if ( ! SUCCEEDED(hr))
@@ -70,60 +70,21 @@ Cieambulant::get_document_url()
 	std::string std_string_url (LPSTR_url);
 	delete [] LPSTR_url;
 	m_url = ambulant::net::url::from_url(std_string_url);
+
+	BSTR BSTR_autostart = NULL;
+	hr = get_autostart(&BSTR_autostart);
+	if ( ! SUCCEEDED(hr) || BSTR_autostart == NULL)
+		return hr;
+	LPSTR LPSTR_autostart = ConvertBSTRToLPSTR (BSTR_autostart);
+	std::string std_string_autostart (LPSTR_autostart);
+	delete [] LPSTR_autostart;
+
+	if (std_string_autostart == "false"
+		|| std_string_autostart == "false")
+		m_autostart = false;
+
 	return S_OK;
-/*
-	IDispatch *dispatch = NULL;
-	LPPROPERTYBAG pPropBag = (IPropertyBag*) malloc (sizeof IPropertyBag);
-	hr = this->IPersistPropertyBag_Load(pPropBag, NULL, NULL);
-	hr = pIWebBrowser2->get_Document(&dispatch);
-	if ( ! SUCCEEDED(hr) || dispatch == NULL)
-		return hr;
 
-	IHTMLDocument3* document3;
-	hr = dispatch->QueryInterface(IID_IHTMLDocument3,
-		                          (void **)&document3);
-	dispatch->Release();
-	if ( ! SUCCEEDED(hr) || document3 == NULL)
-		return hr;
-
-	BSTR BSTR_object = SysAllocString(L"object");
-	IHTMLElementCollection* pelColl;
-	hr = document3->getElementsByTagName(BSTR_object, &pelColl);
-	document3->Release();
-	SysFreeString(BSTR_object);
-	if ( ! SUCCEEDED(hr))
-		return hr;
-
-	VARIANT itemIndex;
-	itemIndex.vt = VT_I4;
-	itemIndex.lVal = 0;
-	IDispatch *pElemDisp;
-	hr = pelColl->item(itemIndex, itemIndex, &pElemDisp);
-	pelColl->Release();
-	if ( ! SUCCEEDED(hr))
-		return hr;
-
-	IHTMLElement* pHTMLElement;
-	hr = pElemDisp->QueryInterface(IID_IHTMLElement, (void**) &pHTMLElement);
-	pElemDisp->Release();
-
-	if ( ! SUCCEEDED(hr))
-		return hr;
-
-	BSTR BSTR_src = SysAllocString(L"src");
-	VARIANT var;
-	hr = pHTMLElement->getAttribute(BSTR_src, 0, &var);
-	pHTMLElement->Release();
-	if ( ! SUCCEEDED(hr))
-		return hr;
-
-	if (var.vt != VT_NULL) {
-		LPSTR_url = ConvertBSTRToLPSTR (_bstr_t(var));	
-		std::string std_string_url (LPSTR_url);
-		m_url = ambulant::net::url::from_url(std_string_url);
-		delete [] LPSTR_url;
-	}
-*/
 }
 /* MSG spy
 static HHOOK s_hook;
@@ -223,7 +184,8 @@ Cieambulant::updatePlayer()
 			} else {
 				ambulant::lib::logger::get_logger()->set_show_message(ieambulant_display_message);
 				ambulant::lib::logger::get_logger()->show("ieambulant plugin loaded");
-				m_ambulant_player ->play();
+				if (m_autostart)
+					m_ambulant_player ->play();
 			}
 		} 
 	}
@@ -372,6 +334,25 @@ Cieambulant::put_src(BSTR newVal)
 	return S_OK;
 }
 
+STDMETHODIMP
+Cieambulant::put_autostart(BSTR newVal)
+{
+    m_bstrAutostart.Empty();
+    m_bstrAutostart.Attach(SysAllocString(newVal));
+	return S_OK;
+}
+
+STDMETHODIMP
+Cieambulant::get_autostart(BSTR *pVal)
+{
+	if (!pVal)
+    {
+        return E_INVALIDARG;
+    }
+    *pVal = m_bstrAutostart.Copy();
+	return S_OK;
+}
+
 // following 3 lines for CString (conversion char* to BSTR)
 #define _AFXDLL
 #undef _WINDOWS_
@@ -380,23 +361,7 @@ Cieambulant::put_src(BSTR newVal)
 void
 ieambulant_display_message(int level, const char* message) {
 	USES_CONVERSION;
-/*JNK: code does not work
-	HWND top = ::GetTopWindow(s_hwnd);
-	if (top == NULL)
-		return;
-	HWND statusBar = GetStatusBar(top);
-	if (statusBar) {
-		PAINTSTRUCT ps;
-		HDC hdc = ::GetDC(statusBar);
-		RECT rc;
-		GetClientRect(statusBar, &rc);
-		_bstr_t bstrt(message);
-		DrawString (hdc, &rc,  bstrt);
-//		FrameRect(hdc, &rc, GetStockBrush(BLACK_BRUSH));
-		::ShowWindow(statusBar, SW_SHOW);
-		::ReleaseDC(statusBar, hdc);
-	}
-*/
+
 	HRESULT hr = E_FAIL;
 	if ( ! s_site)
 		return;

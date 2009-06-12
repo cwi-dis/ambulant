@@ -36,6 +36,8 @@ import "ocidl.idl";
 		[propput, id(1), helpstring("property mime type")] HRESULT mimeType([in] BSTR newVal);
 		[propget, id(2), helpstring("property src")] HRESULT src([out, retval] BSTR* pVal);
 		[propput, id(2), helpstring("property src")] HRESULT src([in] BSTR newVal);
+		[propget, id(3), helpstring("property autostart")] HRESULT autostart([out, retval] BSTR* pVal);
+		[propput, id(3), helpstring("property autostart")] HRESULT autostart([in] BSTR newVal);
 		HRESULT startPlayer();
 		HRESULT stopPlayer();
 		HRESULT restartPlayer();
