@@ -6,7 +6,8 @@
 // some functions for Ambulant web browser plugins (IE/Firefox/Safari/Opera)
 var browser = navigator.appName;
 var ambulantPlayer = null;
-var isWatching = false;
+var isWatching1 = false;
+var isWatching2 = false;
 
 function detectBrowser()
 {
@@ -28,28 +29,32 @@ function ambulantObject(idd)
     return embed_element;
 }
       
-function IsDone()
+function IsDone(idd)
 {
-    var done = this.ambulantPlayer.isDone();
+    var done = this.ambulantObject(idd).isDone();
     if (done == true) {
-	    alert("isDone() returns done="+done);
-        window.status = "Not watching done.";
+	    alert("isDone("+idd+") returns done="+done);
+        window.status = "Not watching done. id="+idd;
+        if (idd == "ambulant_object1") isWatching1 = false;
+        if (idd == "ambulant_object2") isWatching2 = false;        
     } else {
-	    StartTimer (this.timeout)
+	    StartTimer (this.timeout,idd)
     }
 }
 
-function StartTimer(timeout)
+function StartTimer(timeout,idd)
 {
     if (timeout > 0) {
         this.timeout = timeout;
-        this.timer   = setTimeout('IsDone()', timeout);
-        window.status = "Watching done...";
-        isWatching = true;
+        this.timer   = setTimeout('IsDone("'+idd+'")', timeout);
+        window.status = "Watching done...id="+idd;
+        if (idd == "ambulant_object1") isWatching1 = true;
+        if (idd == "ambulant_object2") isWatching2 = true;
     } else {
         clearTimeout(this.timer);
-        window.status = "Not watching done.";
-        isWatching = false;
+        window.status = "Not watching done. id="+idd;
+        if (idd == "ambulant_object1") isWatching1 = false;
+        if (idd == "ambulant_object2") isWatching2 = false;
     }
 }
 </script>
@@ -79,7 +84,7 @@ function StartTimer(timeout)
 <input type=button value="Restart"	onclick='ambulantObject("ambulant_object1").restartPlayer()'>
 <input type=button value="Resume"	onclick='ambulantObject("ambulant_object1").resumePlayer()'>
 <input type=button value="Pause"	onclick='ambulantObject("ambulant_object1").pausePlayer()'>
-<input type=button value="WatchDone" onclick='if (isWatching) StartTimer(0); else StartTimer(500)'>
+<input type=button value="WatchDone" onclick='if (isWatching1) StartTimer(0,"ambulant_object1"); else StartTimer(500,"ambulant_object1")'>
 </form>
 <!-- -->
 </td> 
@@ -106,7 +111,7 @@ function StartTimer(timeout)
 <br>
 <input type=button value="Resume"	onclick='ambulantObject("ambulant_object2").resumePlayer()'>
 <input type=button value="Pause"	onclick='ambulantObject("ambulant_object2").pausePlayer()'>
-<input type=button value="WatchDone" onclick='if (isWatching) StartTimer(0); else StartTimer(500)'>
+<input type=button value="WatchDone" onclick='if (isWatching2) StartTimer(0,"ambulant_object2"); else StartTimer(500,"ambulant_object2")'>
 </form>
 <!-- -->
 </td>
