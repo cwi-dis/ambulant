@@ -4,25 +4,13 @@
 <HEAD id="ieambulant_head">
 <TITLE id="ieambulant_title">ATL 3.0 test page for object ieambulant</TITLE> <script LANGUAGE="JavaScript" type="text/javascript">
 // some functions for Ambulant web browser plugins (IE/Firefox/Safari/Opera)
-var browser = navigator.appName;
-var ambulantPlayer = null;
 var isWatching1 = false;
 var isWatching2 = false;
 
-function detectBrowser()
-{
-	if (browser == "Microsoft Internet Explorer") {
-		ambulantPlayer = document.getElementById("ieambulant_object1");
-		ambulantPlayer2 = document.getElementById("ieambulant_object2");
-	} else {// Netscape (== Firefox, Safari), Opera
-	    ambulantPlayer = document.embeds[0];
-	    ambulantPlayer = document.embeds[1];
-	}
-}
 function ambulantObject(idd)
 {
     var obj_element = document.getElementById(idd);
-	if (browser == "Microsoft Internet Explorer") {
+	if (navigator.appName == "Microsoft Internet Explorer") {
         return obj_element;
     }
     var embed_element = obj_element.getElementsByTagName("embed")[0];
@@ -60,11 +48,11 @@ function StartTimer(timeout,idd)
 </script>
 </HEAD>
 
-<BODY id="ieambulant_body" onload="detectBrowser()">
+<BODY id="ieambulant_body">
 <table align="left" cellspacing="0" cellpadding="0" border="0px" width="520px">
 <tbody>
 <tr>
-<td width="240" height="300" valign="top"> 
+<td width="240" height="300" valign="top" align="center"> 
 <OBJECT     ID="ambulant_object1"
             CLASSID="CLSID:886B87C0-930C-414c-BD35-B67BCC92FBEC"
       	    width="240"
@@ -82,6 +70,7 @@ function StartTimer(timeout,idd)
 <input type=button value="Start"	onclick='ambulantObject("ambulant_object1").startPlayer()'>
 <input type=button value="Stop" 	onclick='ambulantObject("ambulant_object1").stopPlayer()'>
 <input type=button value="Restart"	onclick='ambulantObject("ambulant_object1").restartPlayer()'>
+<br>
 <input type=button value="Resume"	onclick='ambulantObject("ambulant_object1").resumePlayer()'>
 <input type=button value="Pause"	onclick='ambulantObject("ambulant_object1").pausePlayer()'>
 <input type=button value="WatchDone" onclick='if (isWatching1) StartTimer(0,"ambulant_object1"); else StartTimer(500,"ambulant_object1")'>
@@ -89,7 +78,7 @@ function StartTimer(timeout,idd)
 <!-- -->
 </td> 
 <td width="40" height="300" valign="top"></td>   
-<td width="240" height="300" valign="top"> 
+<td width="240" height="300" valign="top" align="center"> 
 <OBJECT     ID="ambulant_object2"
             CLASSID="CLSID:886B87C0-930C-414c-BD35-B67BCC92FBEC"
       	    width="240"
@@ -99,10 +88,10 @@ function StartTimer(timeout,idd)
     <PARAM  name="playerState" value="restarting"  />
     <EMBED	ID="ieambulant_embed2"
     		type="application/x-ambulant-smil"
- 		left="300"
-   		width="240"
+     		left="300"
+   	    	width="240"
 	    	height="270"
-		src="../../Extras/DemoPresentation/NYC-SmilText.smil" />
+	        src="../../Extras/DemoPresentation/NYC-SmilText.smil" />
 </OBJECT>
 <form name="formname2" left="300" width="240">
 <input type=button value="Start"	onclick='ambulantObject("ambulant_object2").startPlayer()'>
