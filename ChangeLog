@@ -1,3 +1,11 @@
+2009-06-11 14:19  keesblom
+
+	* Works on reload and multiple tabs.  Added ref_counter for static
+	  cleanup.  libambulant still needs works on static cleanup.
+	  Committed on the Free edition of March Hare Software CVSNT
+	  Server.  Upgrade to CVS Suite for more features and support:
+	  http://march-hare.com/cvsnt/
+
 2009-06-10 17:23  keesblom
 
 	* writing error message to the status bar now works, but reload is
