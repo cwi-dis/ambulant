@@ -1,3 +1,39 @@
+2009-06-12 17:44  keesblom
+
+	* Added  <parama name="autostart"  value="true"/> and a test
+	  application: when "watchdone" is enabled for a player, the other
+	  player starts when the first is done.  Committed on the Free
+	  edition of March Hare Software CVSNT Server.	Upgrade to CVS
+	  Suite for more features and support: http://march-hare.com/cvsnt/
+
+2009-06-12 16:53  keesblom
+
+	* Little bit of cleanup Committed on the Free edition of March Hare
+	  Software CVSNT Server.  Upgrade to CVS Suite for more features
+	  and support: http://march-hare.com/cvsnt/
+
+2009-06-12 16:37  keesblom
+
+	* WatchDone now works properly w. 2 players on 1 page. Ugly
+	  javascript code, alas! Committed on the Free edition of March
+	  Hare Software CVSNT Server.  Upgrade to CVS Suite for more
+	  features and support: http://march-hare.com/cvsnt/
+
+2009-06-12 15:36  keesblom
+
+	* buttins (except WatchDone) now also work correctly Committed on
+	  the Free edition of March Hare Software CVSNT Server.  Upgrade to
+	  CVS Suite for more features and support:
+	  http://march-hare.com/cvsnt/
+
+2009-06-12 15:03  keesblom
+
+	* ieambulant now works with 2 independent players on 1 page, as in
+	  iemabulant2Buttons.htm. Control buttons do not work yet as
+	  desired.  Committed on the Free edition of March Hare Software
+	  CVSNT Server.  Upgrade to CVS Suite for more features and
+	  support: http://march-hare.com/cvsnt/
+
 2009-06-11 14:19  keesblom
 
 	* Works on reload and multiple tabs.  Added ref_counter for static
