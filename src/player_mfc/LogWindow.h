@@ -42,4 +42,5 @@ protected:
 public:
 	CRichEditCtrl m_richedit;
 	afx_msg void OnEnChangeRichedit21();
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };

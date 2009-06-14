@@ -56,6 +56,7 @@ BEGIN_MESSAGE_MAP(CLogWindow, CDialog)
 //	ON_BN_CLICKED(IDOK, OnBnClickedOK)
 ON_EN_CHANGE(IDC_RICHEDIT21, OnEnChangeRichedit21)
 ON_MESSAGE(WM_LOG_LINE, OnAddLoggerLine)
+ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -86,4 +87,17 @@ void CLogWindow::OnEnChangeRichedit21()
 	// with the ENM_CHANGE flag ORed into the mask.
 
 	// TODO:  Add your control notification handler code here
+}
+
+void CLogWindow::OnSize(UINT nType, int cx, int cy)
+{
+	CDialog::OnSize(nType, cx, cy);
+
+	// Move the RichEdit control size to fit the window resized.
+	CRect rect;
+	GetClientRect(&rect);
+	if(IsWindow(m_richedit.GetSafeHwnd())){
+		m_richedit.MoveWindow(rect);
+	}
+
 }
