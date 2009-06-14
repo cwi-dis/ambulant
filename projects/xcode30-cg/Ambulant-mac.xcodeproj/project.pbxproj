@@ -316,7 +316,7 @@
 		0496506C0BCADE62002C00DF /* mypreferences.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = mypreferences.mm; path = ../../src/player_macosx/mypreferences.mm; sourceTree = SOURCE_ROOT; };
 		049650720BCADE83002C00DF /* mainloop.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mainloop.cpp; path = ../../src/player_macosx/mainloop.cpp; sourceTree = SOURCE_ROOT; };
 		049650730BCADE83002C00DF /* mainloop.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mainloop.h; path = ../../src/player_macosx/mainloop.h; sourceTree = SOURCE_ROOT; };
-		049650760BCAE0AE002C00DF /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; name = Info.plist; path = ../../src/player_macosx/Info.plist; sourceTree = SOURCE_ROOT; };
+		049650760BCAE0AE002C00DF /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../../src/player_macosx/Info.plist; sourceTree = SOURCE_ROOT; };
 		049650C40BCAE333002C00DF /* embedder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = embedder.h; sourceTree = "<group>"; };
 		049650C50BCAE333002C00DF /* factory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = factory.h; sourceTree = "<group>"; };
 		049650C60BCAE333002C00DF /* gui_player.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = gui_player.h; sourceTree = "<group>"; };
@@ -463,7 +463,6 @@
 		049651970BCAE333002C00DF /* amstream.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = amstream.h; sourceTree = "<group>"; };
 		049651980BCAE333002C00DF /* asb.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = asb.h; sourceTree = "<group>"; };
 		049651990BCAE333002C00DF /* basic_types.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = basic_types.h; sourceTree = "<group>"; };
-		0496519A0BCAE333002C00DF /* byte_buffer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = byte_buffer.h; sourceTree = "<group>"; };
 		0496519B0BCAE333002C00DF /* callback.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = callback.h; sourceTree = "<group>"; };
 		0496519C0BCAE333002C00DF /* colors.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = colors.h; sourceTree = "<group>"; };
 		0496519D0BCAE333002C00DF /* delta_timer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = delta_timer.h; sourceTree = "<group>"; };
@@ -1113,7 +1112,6 @@
 				049651970BCAE333002C00DF /* amstream.h */,
 				049651980BCAE333002C00DF /* asb.h */,
 				049651990BCAE333002C00DF /* basic_types.h */,
-				0496519A0BCAE333002C00DF /* byte_buffer.h */,
 				0496519B0BCAE333002C00DF /* callback.h */,
 				0496519C0BCAE333002C00DF /* colors.h */,
 				0496519D0BCAE333002C00DF /* delta_timer.h */,
@@ -1987,16 +1985,14 @@
 					../../include,
 					"../../third_party_packages/expat-unix/include",
 					/usr/local/include/SDL,
-					"../../third_party_packages/ffmpeg-universal/libavcodec",
-					"../../third_party_packages/ffmpeg-universal/libavutil",
-					"../../third_party_packages/ffmpeg-universal/libavformat",
+					"../../third_party_packages/ffmpeg-universal/",
 					../../third_party_packages/live/liveMedia/include,
 					../../third_party_packages/live/UsageEnvironment/include,
 					../../third_party_packages/live/groupsock/include,
 					../../third_party_packages/live/BasicUsageEnvironment/include,
 					"../../third_party_packages/xerces-unix/include",
 				);
-				INFOPLIST_FILE = /Users/jack/src/ambulant/projects/xcode23/../../src/player_macosx/Info.plist;
+				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2042,16 +2038,14 @@
 					../../include,
 					"../../third_party_packages/expat-unix/include",
 					/usr/local/include/SDL,
-					"../../third_party_packages/ffmpeg-universal/libavcodec",
-					"../../third_party_packages/ffmpeg-universal/libavutil",
-					"../../third_party_packages/ffmpeg-universal/libavformat",
+					"../../third_party_packages/ffmpeg-universal/",
 					../../third_party_packages/live/liveMedia/include,
 					../../third_party_packages/live/UsageEnvironment/include,
 					../../third_party_packages/live/groupsock/include,
 					../../third_party_packages/live/BasicUsageEnvironment/include,
 					"../../third_party_packages/xerces-unix/include",
 				);
-				INFOPLIST_FILE = /Users/jack/src/ambulant/projects/xcode23/../../src/player_macosx/Info.plist;
+				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2100,9 +2094,7 @@
 					../../include,
 					"../../third_party_packages/expat-unix/include",
 					/usr/local/include/SDL,
-					"../../third_party_packages/ffmpeg-universal/libavcodec",
-					"../../third_party_packages/ffmpeg-universal/libavutil",
-					"../../third_party_packages/ffmpeg-universal/libavformat",
+					"../../third_party_packages/ffmpeg-universal/",
 					../../third_party_packages/live/liveMedia/include,
 					../../third_party_packages/live/UsageEnvironment/include,
 					../../third_party_packages/live/groupsock/include,
@@ -2157,9 +2149,7 @@
 					../../include,
 					"../../third_party_packages/expat-unix/include",
 					/usr/local/include/SDL,
-					"../../third_party_packages/ffmpeg-universal/libavcodec",
-					"../../third_party_packages/ffmpeg-universal/libavutil",
-					"../../third_party_packages/ffmpeg-universal/libavformat",
+					"../../third_party_packages/ffmpeg-universal/",
 					../../third_party_packages/live/liveMedia/include,
 					../../third_party_packages/live/UsageEnvironment/include,
 					../../third_party_packages/live/groupsock/include,
@@ -2190,20 +2180,22 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = "";
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 			};
 			name = Debug;
 		};
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 			};
 			name = Release;
 		};

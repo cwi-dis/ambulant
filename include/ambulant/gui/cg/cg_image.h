@@ -47,8 +47,9 @@ class cg_image_renderer : public cg_renderer<renderer_playable_dsall> {
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		event_processor *evp,
-		common::factories *factory)
-	:	cg_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory),
+		common::factories *factory,
+		common::playable_factory_machdep *mdp)
+	:	cg_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory, mdp),
 		m_nsdata(NULL),
 		m_image(NULL),
 		m_image_cropped(NULL) {};

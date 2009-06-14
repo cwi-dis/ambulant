@@ -51,7 +51,8 @@ class cg_text_renderer : public cg_renderer<renderer_playable_dsall> {
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		event_processor *evp,
-		common::factories *factory);
+		common::factories *factory,
+		common::playable_factory_machdep *mdp);
         ~cg_text_renderer();
 	
     void redraw_body(const rect &dirty, gui_window *window);

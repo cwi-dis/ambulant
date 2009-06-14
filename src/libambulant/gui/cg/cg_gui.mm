@@ -55,12 +55,6 @@ create_cg_window_factory(void *view)
     return new cg_window_factory(view);
 }
 
-common::playable_factory *
-create_cg_renderer_factory(common::factories *factory)
-{
-    return new cg_renderer_factory(factory);
-}
-
 cg_window::~cg_window()
 {
 	if (m_view) {
@@ -128,101 +122,6 @@ cg_window::set_size(lib::size bounds)
 
 	AmbulantView *view = (AmbulantView *)m_view;
 	[view ambulantSetSize: bounds];
-}
-
-common::playable *
-cg_renderer_factory::new_playable(
-	common::playable_notification *context,
-	common::playable_notification::cookie_type cookie,
-	const lib::node *node,
-	event_processor *evp)
-{
-	common::playable *rv = NULL;
-	
-	xml_string tag = node->get_local_name();
-	if (tag == "img") {
-#if NOT_YET_UIKIT
-		net::url url = net::url(node->get_url("src"));
-		if (url.guesstype() == "image/vnd.ambulant-ink") {
-			rv = new cg_ink_renderer(context, cookie, node, evp, m_factory);
-			AM_DBG logger::get_logger()->debug("cg_renderer_factory: node 0x%x: returning cg_ink_renderer 0x%x", (void *)node, (void *)rv);
-		} else
-#endif
-		{
-			rv = new cg_image_renderer(context, cookie, node, evp, m_factory);
-			AM_DBG logger::get_logger()->debug("cg_renderer_factory: node 0x%x: returning cg_image_renderer 0x%x", (void *)node, (void *)rv);
-		}
-	} else if ( tag == "text") {
-#if NOT_YET_UIKIT
-		net::url url = net::url(node->get_url("src"));
-		if (url.guesstype() == "text/html") {
-			rv = new cg_html_renderer(context, cookie, node, evp);
-			AM_DBG logger::get_logger()->debug("cg_renderer_factory: node 0x%x: returning cg_html_renderer 0x%x", (void *)node, (void *)rv);
-		} else
-#endif
-		{
-#ifdef WITH_ATSUI
-			rv = new atsui_text_renderer(context, cookie, node, evp, m_factory);
-			AM_DBG logger::get_logger()->debug("cg_renderer_factory: node 0x%x: returning atsui_text_renderer 0x%x", (void *)node, (void *)rv);
-#else
-			rv = new cg_text_renderer(context, cookie, node, evp, m_factory);
-			AM_DBG logger::get_logger()->debug("cg_renderer_factory: node 0x%x: returning cg_text_renderer 0x%x", (void *)node, (void *)rv);
-#endif
-
-		}
-	} else if ( tag == "brush") {
-		rv = new cg_fill_renderer(context, cookie, node, evp);
-		AM_DBG logger::get_logger()->debug("cg_renderer_factory: node 0x%x: returning cg_fill_renderer 0x%x", (void *)node, (void *)rv);
-	} else if ( tag == "video") {
-		if (1 /*common::preferences::get_preferences()->m_prefer_ffmpeg */) {
-			rv = new cg_dsvideo_renderer(context, cookie, node, evp, m_factory);
-			if (rv) {
-				logger::get_logger()->trace("video: using native Ambulant renderer");
-				AM_DBG logger::get_logger()->debug("cg_renderer_factory: node 0x%x: returning cg_dsvideo_renderer 0x%x", (void *)node, (void *)rv);
-			} else {
-#if NOT_YET_UIKIT
-				rv = new cg_video_renderer(context, cookie, node, evp);
-				if (rv) logger::get_logger()->trace("video: using QuickTime renderer");
-				AM_DBG logger::get_logger()->debug("cg_renderer_factory: node 0x%x: returning cg_video_renderer 0x%x", (void *)node, (void *)rv);
-#endif
-			}
-		} else {
-#if NOT_YET_UIKIT
-			rv = new cg_video_renderer(context, cookie, node, evp);
-			if (rv) {
-				logger::get_logger()->trace("video: using QuickTime renderer");
-				AM_DBG logger::get_logger()->debug("cg_renderer_factory: node 0x%x: returning cg_video_renderer 0x%x", (void *)node, (void *)rv);
-			} else {
-				rv = new cg_dsvideo_renderer(context, cookie, node, evp, m_factory);
-				if (rv) logger::get_logger()->trace("video: using ffmpeg renderer");
-				AM_DBG logger::get_logger()->debug("cg_renderer_factory: node 0x%x: returning cg_dsvideo_renderer 0x%x", (void *)node, (void *)rv);
-			}
-#endif
-		}
-	}
-#ifdef WITH_SMIL30
-	else if ( tag == "smilText") {
-#if NOT_YET_UIKIT
-		rv = new cg_smiltext_renderer(context, cookie, node, evp);
-		AM_DBG logger::get_logger()->debug("cg_renderer_factory: node 0x%x: returning cg_smiltext_renderer 0x%x", (void *)node, (void *)rv);
-#endif
-#endif // WITH_SMIL30
-	} else {
-		// logger::get_logger()->error(gettext("cg_renderer_factory: no CoreGraphics renderer for tag \"%s\""), tag.c_str());
-		return NULL;
-	}
-	return rv;
-}
-
-common::playable *
-cg_renderer_factory::new_aux_audio_playable(
-		common::playable_notification *context,
-		common::playable_notification::cookie_type cookie,
-		const lib::node *node,
-		lib::event_processor *evp,
-		net::audio_datasource *src)
-{
-	return NULL;
 }
 
 lib::size

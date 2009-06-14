@@ -25,6 +25,7 @@
 #include "ambulant/gui/cg/cg_fill.h"
 //#include "ambulant/gui/cg/cg_transition.h"
 #include "ambulant/common/region_info.h"
+#include "ambulant/smil2/test_attrs.h"
 //#include <CoreGraphics/CoreGraphics.h>
 
 #ifndef AM_DBG
@@ -38,6 +39,23 @@ using namespace lib;
 namespace gui {
 
 namespace cg {
+
+extern const char cg_fill_playable_tag[] = "brush";
+extern const char cg_fill_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererCoreGraphics");
+extern const char cg_fill_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererFill");
+
+common::playable_factory *
+create_cg_fill_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
+{
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCoreGraphics"), true);
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererFill"), true);
+	return new common::single_playable_factory<
+        cg_fill_renderer, 
+        cg_fill_playable_tag, 
+        cg_fill_playable_renderer_uri,
+        cg_fill_playable_renderer_uri2,
+        cg_fill_playable_renderer_uri2>(factory, mdp);
+}
 
 cg_fill_renderer::~cg_fill_renderer()
 {

@@ -96,27 +96,6 @@ class cg_window_factory : public common::window_factory {
     void *m_defaultwindow_view;
 };
 
-class cg_renderer_factory : public common::playable_factory {
-  public:
-  	cg_renderer_factory(common::factories *factory)
-	:   m_factory(factory) {}
-  	
-	common::playable *new_playable(
-		common::playable_notification *context,
-		common::playable_notification::cookie_type cookie,
-		const lib::node *node,
-		lib::event_processor *evp);
-		
-	common::playable *new_aux_audio_playable(
-		common::playable_notification *context,
-		common::playable_notification::cookie_type cookie,
-		const lib::node *node,
-		lib::event_processor *evp,
-		net::audio_datasource *src);
-  private:
-    common::factories *m_factory;
-};
-
 class cg_gui_screen : public common::gui_screen {
   public:
 	cg_gui_screen(void *view)
@@ -129,7 +108,14 @@ class cg_gui_screen : public common::gui_screen {
 };
 
 AMBULANTAPI common::window_factory *create_cg_window_factory(void *view);
-AMBULANTAPI common::playable_factory *create_cg_renderer_factory(common::factories *factory);
+common::playable_factory *create_cg_dsvideo_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+common::playable_factory *create_cg_fill_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+//common::playable_factory *create_cg_html_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+common::playable_factory *create_cg_image_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+//common::playable_factory *create_cg_ink_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+//common::playable_factory *create_cg_smiltext_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+common::playable_factory *create_cg_text_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+//common::playable_factory *create_cg_video_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 
 } // namespace cg
 

@@ -46,8 +46,9 @@ atsui_text_renderer::atsui_text_renderer(
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		event_processor *evp,
-		common::factories *factory)
-:	cg_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory),
+		common::factories *factory,
+		common::playable_factory_machdep *mdp)
+:	cg_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory, mdp),
 	m_text_storage(NULL),
 	m_style(NULL),
 	m_layout_manager(NULL)

@@ -46,8 +46,10 @@ class cg_fill_renderer : public cg_renderer<renderer_playable> {
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
-		event_processor *evp)
-	:	cg_renderer<renderer_playable>(context, cookie, node, evp) {};
+		event_processor *evp,
+		common::factories *fp,
+		common::playable_factory_machdep *mdp)
+	:	cg_renderer<renderer_playable>(context, cookie, node, evp, fp, mdp) {};
 	~cg_fill_renderer();
 
 //	void freeze() {}

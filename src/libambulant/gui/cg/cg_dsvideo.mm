@@ -25,6 +25,7 @@
 #include "ambulant/gui/cg/cg_dsvideo.h"
 #include "ambulant/common/region_info.h"
 #include "ambulant/common/smil_alignment.h"
+#include "ambulant/smil2/test_attrs.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -56,13 +57,32 @@ namespace gui {
 
 namespace cg {
 
+extern const char cg_dsvideo_playable_tag[] = "video";
+extern const char cg_dsvideo_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererOpen");
+extern const char cg_dsvideo_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererCoreGraphics");
+// XXXJACK missing RendererVideo...
+common::playable_factory *
+create_cg_dsvideo_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
+{
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererOpen"), true);
+   smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererVideo"), true);
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCoreGraphics"), true);
+	return new common::single_playable_factory<
+        cg_dsvideo_renderer, 
+        cg_dsvideo_playable_tag, 
+        cg_dsvideo_playable_renderer_uri,
+        cg_dsvideo_playable_renderer_uri2,
+        cg_dsvideo_playable_renderer_uri2>(factory, mdp);
+}
+
 cg_dsvideo_renderer::cg_dsvideo_renderer(
 	playable_notification *context,
 	playable_notification::cookie_type cookie,
 	const lib::node *node,
 	event_processor *evp,
-	common::factories *factory)
-:	common::video_renderer(context, cookie, node, evp, factory),
+	common::factories *factory,
+    common::playable_factory_machdep *mdp)
+:	common::video_renderer(context, cookie, node, evp, factory, mdp),
 	m_image(NULL)
 {
 	AM_DBG lib::logger::get_logger()->debug("cg_dsvideo_renderer(): 0x%x created", (void*)this);

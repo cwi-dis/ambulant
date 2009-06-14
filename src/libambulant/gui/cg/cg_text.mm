@@ -25,6 +25,7 @@
 #include "ambulant/gui/cg/cg_gui.h"
 #include "ambulant/common/region_info.h"
 #include "ambulant/smil2/params.h"
+#include "ambulant/smil2/test_attrs.h"
 
 //#include <CoreGraphics/CoreGraphics.h>
 
@@ -41,13 +42,32 @@ namespace gui {
 
 namespace cg {
 
+extern const char cg_text_playable_tag[] = "text";
+extern const char cg_text_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererCoreGraphics");
+extern const char cg_text_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererText");
+
+common::playable_factory *
+create_cg_text_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
+{
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCoreGraphics"), true);
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererText"), true);
+	return new common::single_playable_factory<
+        cg_text_renderer, 
+        cg_text_playable_tag, 
+        cg_text_playable_renderer_uri,
+        cg_text_playable_renderer_uri2,
+        cg_text_playable_renderer_uri2>(factory, mdp);
+}
+
+
 cg_text_renderer::cg_text_renderer(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		event_processor *evp,
-		common::factories *factory)
-:	cg_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory),
+		common::factories *factory,
+		common::playable_factory_machdep *mdp)
+:	cg_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory, mdp),
 	m_font_name(NULL),
 	m_font_size(0.0)
 {

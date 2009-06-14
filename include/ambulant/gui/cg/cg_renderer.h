@@ -78,15 +78,9 @@ class cg_renderer : public RP_Base {
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		event_processor *evp,
-		common::factories *factory)
-	:	RP_Base(context, cookie, node, evp, factory)
-		{};
-	cg_renderer(
-		playable_notification *context,
-		playable_notification::cookie_type cookie,
-		const lib::node *node,
-		event_processor *evp)
-	:	RP_Base(context, cookie, node, evp)
+		common::factories *factory,
+		common::playable_factory_machdep *mdp)
+	:	RP_Base(context, cookie, node, evp, factory, mdp)
 		{};
 	~cg_renderer() {
 	}

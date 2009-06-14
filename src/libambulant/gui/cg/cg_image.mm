@@ -25,6 +25,7 @@
 #include "ambulant/gui/cg/cg_image.h"
 #include "ambulant/common/region_dim.h"
 #include "ambulant/common/region_info.h"
+#include "ambulant/smil2/test_attrs.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -38,6 +39,23 @@ using namespace lib;
 namespace gui {
 
 namespace cg {
+
+extern const char cg_image_playable_tag[] = "img";
+extern const char cg_image_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererCoreGraphics");
+extern const char cg_image_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererImg");
+
+common::playable_factory *
+create_cg_image_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
+{
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCoreGraphics"), true);
+    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererImg"), true);
+	return new common::single_playable_factory<
+        cg_image_renderer, 
+        cg_image_playable_tag, 
+        cg_image_playable_renderer_uri,
+        cg_image_playable_renderer_uri2,
+        cg_image_playable_renderer_uri2>(factory, mdp);
+}
 
 cg_image_renderer::~cg_image_renderer()
 {
