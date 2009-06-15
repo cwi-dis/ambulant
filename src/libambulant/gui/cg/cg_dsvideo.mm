@@ -110,7 +110,7 @@ my_free_frame(void *ptr, const void *ptr2, size_t size)
 }
 
 void
-cg_dsvideo_renderer::push_frame(char* frame, int size)
+cg_dsvideo_renderer::_push_frame(char* frame, int size)
 {
 	m_lock.enter();
 	if (m_image) {

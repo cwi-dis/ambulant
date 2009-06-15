@@ -110,7 +110,14 @@ mainloop::init_playable_factory()
 	set_playable_factory(pf);
 #ifndef NONE_PLAYER
 #ifdef WITH_CG
-	pf->add_factory(gui::cg::create_cg_renderer_factory(this));
+	pf->add_factory(gui::cg::create_cg_dsvideo_playable_factory(this, NULL));
+	pf->add_factory(gui::cg::create_cg_fill_playable_factory(this, NULL));
+//	pf->add_factory(gui::cg::create_cg_html_playable_factory(this, NULL));
+	pf->add_factory(gui::cg::create_cg_image_playable_factory(this, NULL));
+//	pf->add_factory(gui::cg::create_cg_ink_playable_factory(this, NULL));
+//	pf->add_factory(gui::cg::create_cg_smiltext_playable_factory(this, NULL));
+	pf->add_factory(gui::cg::create_cg_text_playable_factory(this, NULL));
+//	pf->add_factory(gui::cg::create_cg_video_playable_factory(this, NULL));
 #else
 	pf->add_factory(gui::cocoa::create_cocoa_audio_playable_factory(this, NULL));
 	pf->add_factory(gui::cocoa::create_cocoa_dsvideo_playable_factory(this, NULL));

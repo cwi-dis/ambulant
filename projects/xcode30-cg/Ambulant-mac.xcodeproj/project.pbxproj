@@ -3,16 +3,10 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 45;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		040EAA200BCE6BFB00DEE37B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA140BCE6BFB00DEE37B /* Credits.rtf */; };
-		040EAA220BCE6BFB00DEE37B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA180BCE6BFB00DEE37B /* InfoPlist.strings */; };
-		040EAA230BCE6BFB00DEE37B /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA1A0BCE6BFB00DEE37B /* MyDocument.nib */; };
-		040EAA240BCE6BFB00DEE37B /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA1C0BCE6BFB00DEE37B /* MainMenu.nib */; };
-		040EAA250BCE6BFB00DEE37B /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA1E0BCE6BFB00DEE37B /* Log.nib */; };
-		040EAA370BCE6CF600DEE37B /* nscontext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 040EAA360BCE6CF600DEE37B /* nscontext.cpp */; };
 		040EAA380BCE6CF600DEE37B /* nscontext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 040EAA360BCE6CF600DEE37B /* nscontext.cpp */; };
 		040EAA410BCE6DC800DEE37B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA140BCE6BFB00DEE37B /* Credits.rtf */; };
 		040EAA420BCE6DC800DEE37B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA180BCE6BFB00DEE37B /* InfoPlist.strings */; };
@@ -20,146 +14,22 @@
 		040EAA440BCE6DC800DEE37B /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA1C0BCE6BFB00DEE37B /* MainMenu.nib */; };
 		040EAA450BCE6DC800DEE37B /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA1E0BCE6BFB00DEE37B /* Log.nib */; };
 		040EAA460BCE6DC800DEE37B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 049650760BCAE0AE002C00DF /* Info.plist */; };
-		040EAA860BCE7B0F00DEE37B /* Ambulant.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA810BCE7B0F00DEE37B /* Ambulant.icns */; };
-		040EAA870BCE7B0F00DEE37B /* AmbulantDocDaisy.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA820BCE7B0F00DEE37B /* AmbulantDocDaisy.icns */; };
-		040EAA880BCE7B0F00DEE37B /* AmbulantDocGrins.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA830BCE7B0F00DEE37B /* AmbulantDocGrins.icns */; };
-		040EAA8A0BCE7B0F00DEE37B /* AmbulantDocSmil.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA850BCE7B0F00DEE37B /* AmbulantDocSmil.icns */; };
 		040EAA8B0BCE7B0F00DEE37B /* Ambulant.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA810BCE7B0F00DEE37B /* Ambulant.icns */; };
 		040EAA8C0BCE7B0F00DEE37B /* AmbulantDocDaisy.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA820BCE7B0F00DEE37B /* AmbulantDocDaisy.icns */; };
 		040EAA8D0BCE7B0F00DEE37B /* AmbulantDocGrins.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA830BCE7B0F00DEE37B /* AmbulantDocGrins.icns */; };
 		040EAA8F0BCE7B0F00DEE37B /* AmbulantDocSmil.icns in Resources */ = {isa = PBXBuildFile; fileRef = 040EAA850BCE7B0F00DEE37B /* AmbulantDocSmil.icns */; };
-		043782E80D1726E100BC01BD /* cg_fill.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043782E30D1726E100BC01BD /* cg_fill.mm */; };
-		043782E90D1726E100BC01BD /* cg_gui.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043782E40D1726E100BC01BD /* cg_gui.mm */; };
-		043782EA0D1726E100BC01BD /* cg_image.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043782E50D1726E100BC01BD /* cg_image.mm */; };
-		043782EB0D1726E100BC01BD /* cg_renderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043782E60D1726E100BC01BD /* cg_renderer.mm */; };
-		043782EC0D1726E100BC01BD /* cg_text.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043782E70D1726E100BC01BD /* cg_text.mm */; };
 		043782ED0D1726E100BC01BD /* cg_fill.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043782E30D1726E100BC01BD /* cg_fill.mm */; };
 		043782EE0D1726E100BC01BD /* cg_gui.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043782E40D1726E100BC01BD /* cg_gui.mm */; };
 		043782EF0D1726E100BC01BD /* cg_image.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043782E50D1726E100BC01BD /* cg_image.mm */; };
 		043782F00D1726E100BC01BD /* cg_renderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043782E60D1726E100BC01BD /* cg_renderer.mm */; };
 		043782F10D1726E100BC01BD /* cg_text.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043782E70D1726E100BC01BD /* cg_text.mm */; };
-		043782F90D17271600BC01BD /* Makefile.am in Resources */ = {isa = PBXBuildFile; fileRef = 043782F80D17271600BC01BD /* Makefile.am */; };
-		043902490BD78B0500E13028 /* Welcome.smil in Resources */ = {isa = PBXBuildFile; fileRef = 0439020C0BD78B0500E13028 /* Welcome.smil */; };
-		043902760BD78B0500E13028 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 0439023C0BD78B0500E13028 /* pause.png */; };
-		043902770BD78B0500E13028 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 0439023D0BD78B0500E13028 /* play.png */; };
-		043902780BD78B0500E13028 /* playactive.png in Resources */ = {isa = PBXBuildFile; fileRef = 0439023E0BD78B0500E13028 /* playactive.png */; };
-		043902790BD78B0500E13028 /* stop.png in Resources */ = {isa = PBXBuildFile; fileRef = 0439023F0BD78B0500E13028 /* stop.png */; };
 		043902830BD78B0500E13028 /* Welcome.smil in Resources */ = {isa = PBXBuildFile; fileRef = 0439020C0BD78B0500E13028 /* Welcome.smil */; };
 		043902B00BD78B0500E13028 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 0439023C0BD78B0500E13028 /* pause.png */; };
 		043902B10BD78B0500E13028 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 0439023D0BD78B0500E13028 /* play.png */; };
 		043902B20BD78B0500E13028 /* playactive.png in Resources */ = {isa = PBXBuildFile; fileRef = 0439023E0BD78B0500E13028 /* playactive.png */; };
 		043902B30BD78B0500E13028 /* stop.png in Resources */ = {isa = PBXBuildFile; fileRef = 0439023F0BD78B0500E13028 /* stop.png */; };
-		043902D30BD7955000E13028 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 043902C80BD7955000E13028 /* data */; };
 		043902D40BD7955000E13028 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 043902C80BD7955000E13028 /* data */; };
-		043903070BD7956400E13028 /* DTDCache in Resources */ = {isa = PBXBuildFile; fileRef = 043902D50BD7956400E13028 /* DTDCache */; };
 		043903080BD7956400E13028 /* DTDCache in Resources */ = {isa = PBXBuildFile; fileRef = 043902D50BD7956400E13028 /* DTDCache */; };
-		0480CD000CDD1D5C0025344B /* libfaad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0480CCFF0CDD1D5C0025344B /* libfaad.a */; };
-		049650620BCADE2B002C00DF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 049650610BCADE2B002C00DF /* main.m */; };
-		0496506D0BCADE62002C00DF /* LogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049650640BCADE62002C00DF /* LogController.mm */; };
-		0496506E0BCADE62002C00DF /* MyAmbulantView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049650660BCADE62002C00DF /* MyAmbulantView.mm */; };
-		0496506F0BCADE62002C00DF /* MyAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049650680BCADE62002C00DF /* MyAppDelegate.mm */; };
-		049650700BCADE62002C00DF /* MyDocument.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0496506A0BCADE62002C00DF /* MyDocument.mm */; };
-		049650710BCADE62002C00DF /* mypreferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0496506C0BCADE62002C00DF /* mypreferences.mm */; };
-		049650740BCADE83002C00DF /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049650720BCADE83002C00DF /* mainloop.cpp */; };
-		049650770BCAE0AE002C00DF /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 049650760BCAE0AE002C00DF /* Info.plist */; };
-		049652F20BCAE3C5002C00DF /* factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0496523E0BCAE3C5002C00DF /* factory.cpp */; };
-		049652F30BCAE3C5002C00DF /* gui_player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0496523F0BCAE3C5002C00DF /* gui_player.cpp */; };
-		049652F40BCAE3C5002C00DF /* plugin_engine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652400BCAE3C5002C00DF /* plugin_engine.cpp */; };
-		049652F50BCAE3C5002C00DF /* preferences.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652410BCAE3C5002C00DF /* preferences.cpp */; };
-		049652F60BCAE3C5002C00DF /* region.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652420BCAE3C5002C00DF /* region.cpp */; };
-		049652F70BCAE3C5002C00DF /* renderer_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652430BCAE3C5002C00DF /* renderer_impl.cpp */; };
-		049652F80BCAE3C5002C00DF /* schema.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652440BCAE3C5002C00DF /* schema.cpp */; };
-		049652F90BCAE3C5002C00DF /* smil_alignment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652450BCAE3C5002C00DF /* smil_alignment.cpp */; };
-		049652FA0BCAE3C5002C00DF /* smil_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652460BCAE3C5002C00DF /* smil_handler.cpp */; };
-		049652FB0BCAE3C5002C00DF /* video_renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652470BCAE3C5002C00DF /* video_renderer.cpp */; };
-		049653000BCAE3C5002C00DF /* get_version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0496524D0BCAE3C5002C00DF /* get_version.cpp */; };
-		049653050BCAE3C5002C00DF /* cocoa_audio.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652550BCAE3C5002C00DF /* cocoa_audio.mm */; };
-		049653070BCAE3C5002C00DF /* cocoa_dsvideo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652570BCAE3C5002C00DF /* cocoa_dsvideo.mm */; };
-		049653090BCAE3C5002C00DF /* cocoa_fill.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652590BCAE3C5002C00DF /* cocoa_fill.mm */; };
-		0496530B0BCAE3C5002C00DF /* cocoa_gui.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0496525B0BCAE3C5002C00DF /* cocoa_gui.mm */; };
-		0496530D0BCAE3C5002C00DF /* cocoa_html.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0496525D0BCAE3C5002C00DF /* cocoa_html.mm */; };
-		0496530F0BCAE3C5002C00DF /* cocoa_image.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0496525F0BCAE3C5002C00DF /* cocoa_image.mm */; };
-		049653110BCAE3C5002C00DF /* cocoa_ink.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652610BCAE3C5002C00DF /* cocoa_ink.mm */; };
-		049653130BCAE3C5002C00DF /* cocoa_renderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652630BCAE3C5002C00DF /* cocoa_renderer.mm */; };
-		049653150BCAE3C5002C00DF /* cocoa_text.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652650BCAE3C5002C00DF /* cocoa_text.mm */; };
-		049653170BCAE3C5002C00DF /* cocoa_transition.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652670BCAE3C5002C00DF /* cocoa_transition.mm */; };
-		049653190BCAE3C5002C00DF /* cocoa_video.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652690BCAE3C5002C00DF /* cocoa_video.mm */; };
-		049653430BCAE3C5002C00DF /* none_area.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652980BCAE3C5002C00DF /* none_area.cpp */; };
-		049653440BCAE3C5002C00DF /* none_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652990BCAE3C5002C00DF /* none_factory.cpp */; };
-		049653450BCAE3C5002C00DF /* none_gui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0496529A0BCAE3C5002C00DF /* none_gui.cpp */; };
-		049653460BCAE3C5002C00DF /* none_video_renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0496529B0BCAE3C5002C00DF /* none_video_renderer.cpp */; };
-		0496534F0BCAE3C5002C00DF /* sdl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652A60BCAE3C5002C00DF /* sdl.cpp */; };
-		049653500BCAE3C5002C00DF /* sdl_audio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652A70BCAE3C5002C00DF /* sdl_audio.cpp */; };
-		049653510BCAE3C5002C00DF /* colors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652A90BCAE3C5002C00DF /* colors.cpp */; };
-		049653520BCAE3C5002C00DF /* delta_timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652AA0BCAE3C5002C00DF /* delta_timer.cpp */; };
-		049653530BCAE3C5002C00DF /* document.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652AB0BCAE3C5002C00DF /* document.cpp */; };
-		049653540BCAE3C5002C00DF /* event_processor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652AC0BCAE3C5002C00DF /* event_processor.cpp */; };
-		049653550BCAE3C5002C00DF /* expat_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652AD0BCAE3C5002C00DF /* expat_parser.cpp */; };
-		049653560BCAE3C5002C00DF /* gpaths.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652AE0BCAE3C5002C00DF /* gpaths.cpp */; };
-		049653570BCAE3C5002C00DF /* logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652AF0BCAE3C5002C00DF /* logger.cpp */; };
-		049653580BCAE3C5002C00DF /* memfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652B00BCAE3C5002C00DF /* memfile.cpp */; };
-		049653590BCAE3C5002C00DF /* nfa.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652B10BCAE3C5002C00DF /* nfa.cpp */; };
-		0496535A0BCAE3C5002C00DF /* node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652B20BCAE3C5002C00DF /* node.cpp */; };
-		0496535C0BCAE3C5002C00DF /* parselets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652B40BCAE3C5002C00DF /* parselets.cpp */; };
-		0496535D0BCAE3C5002C00DF /* parser_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652B50BCAE3C5002C00DF /* parser_factory.cpp */; };
-		0496535E0BCAE3C5002C00DF /* string_util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652B60BCAE3C5002C00DF /* string_util.cpp */; };
-		0496535F0BCAE3C5002C00DF /* timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652B70BCAE3C5002C00DF /* timer.cpp */; };
-		049653600BCAE3C5002C00DF /* transition_info.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652B80BCAE3C5002C00DF /* transition_info.cpp */; };
-		049653610BCAE3C5002C00DF /* tree_builder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652B90BCAE3C5002C00DF /* tree_builder.cpp */; };
-		049653620BCAE3C5002C00DF /* unix_event_processor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652BB0BCAE3C5002C00DF /* unix_event_processor.cpp */; };
-		049653630BCAE3C6002C00DF /* unix_mtsync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652BC0BCAE3C5002C00DF /* unix_mtsync.cpp */; };
-		049653640BCAE3C6002C00DF /* unix_thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652BD0BCAE3C5002C00DF /* unix_thread.cpp */; };
-		049653650BCAE3C6002C00DF /* unix_timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652BE0BCAE3C5002C00DF /* unix_timer.cpp */; };
-		0496536D0BCAE3C6002C00DF /* xerces_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652C70BCAE3C5002C00DF /* xerces_parser.cpp */; };
-		049653750BCAE3C6002C00DF /* databuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652D10BCAE3C5002C00DF /* databuffer.cpp */; };
-		049653760BCAE3C6002C00DF /* datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652D20BCAE3C5002C00DF /* datasource.cpp */; };
-		049653770BCAE3C6002C00DF /* demux_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652D30BCAE3C5002C00DF /* demux_datasource.cpp */; };
-		049653780BCAE3C6002C00DF /* ffmpeg_audio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652D40BCAE3C5002C00DF /* ffmpeg_audio.cpp */; };
-		049653790BCAE3C6002C00DF /* ffmpeg_common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652D50BCAE3C5002C00DF /* ffmpeg_common.cpp */; };
-		0496537A0BCAE3C6002C00DF /* ffmpeg_raw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652D60BCAE3C5002C00DF /* ffmpeg_raw.cpp */; };
-		0496537B0BCAE3C6002C00DF /* ffmpeg_video.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652D70BCAE3C5002C00DF /* ffmpeg_video.cpp */; };
-		0496537C0BCAE3C6002C00DF /* posix_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652D80BCAE3C5002C00DF /* posix_datasource.cpp */; };
-		0496537E0BCAE3C6002C00DF /* rtsp_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652DA0BCAE3C5002C00DF /* rtsp_datasource.cpp */; };
-		0496537F0BCAE3C6002C00DF /* rtsp_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652DB0BCAE3C5002C00DF /* rtsp_factory.cpp */; };
-		049653800BCAE3C6002C00DF /* stdio_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652DC0BCAE3C5002C00DF /* stdio_datasource.cpp */; };
-		049653810BCAE3C6002C00DF /* url.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652DD0BCAE3C5002C00DF /* url.cpp */; };
-		049653830BCAE3C6002C00DF /* animate_a.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652E00BCAE3C5002C00DF /* animate_a.cpp */; };
-		049653840BCAE3C6002C00DF /* animate_e.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652E10BCAE3C5002C00DF /* animate_e.cpp */; };
-		049653850BCAE3C6002C00DF /* animate_n.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652E20BCAE3C5002C00DF /* animate_n.cpp */; };
-		049653860BCAE3C6002C00DF /* params.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652E30BCAE3C5002C00DF /* params.cpp */; };
-		049653870BCAE3C6002C00DF /* region_node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652E40BCAE3C5002C00DF /* region_node.cpp */; };
-		049653880BCAE3C6002C00DF /* smil_layout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652E50BCAE3C5002C00DF /* smil_layout.cpp */; };
-		049653890BCAE3C6002C00DF /* smil_player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652E60BCAE3C5002C00DF /* smil_player.cpp */; };
-		0496538A0BCAE3C6002C00DF /* smil_time.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652E70BCAE3C5002C00DF /* smil_time.cpp */; };
-		0496538B0BCAE3C6002C00DF /* sync_rule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652E80BCAE3C5002C00DF /* sync_rule.cpp */; };
-		0496538C0BCAE3C6002C00DF /* test_attrs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652E90BCAE3C5002C00DF /* test_attrs.cpp */; };
-		0496538D0BCAE3C6002C00DF /* time_attrs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652EA0BCAE3C5002C00DF /* time_attrs.cpp */; };
-		0496538E0BCAE3C6002C00DF /* time_calc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652EB0BCAE3C5002C00DF /* time_calc.cpp */; };
-		0496538F0BCAE3C6002C00DF /* time_node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652EC0BCAE3C5002C00DF /* time_node.cpp */; };
-		049653900BCAE3C6002C00DF /* time_sched.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652ED0BCAE3C5002C00DF /* time_sched.cpp */; };
-		049653910BCAE3C6002C00DF /* time_state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652EE0BCAE3C5002C00DF /* time_state.cpp */; };
-		049653920BCAE3C6002C00DF /* timegraph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652EF0BCAE3C5002C00DF /* timegraph.cpp */; };
-		049653930BCAE3C6002C00DF /* trace_player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652F00BCAE3C5002C00DF /* trace_player.cpp */; };
-		049653940BCAE3C6002C00DF /* transition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652F10BCAE3C5002C00DF /* transition.cpp */; };
-		049656050BCAE9E0002C00DF /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049655FE0BCAE9E0002C00DF /* QTKit.framework */; };
-		049656060BCAE9E0002C00DF /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049655FF0BCAE9E0002C00DF /* AudioUnit.framework */; };
-		049656070BCAE9E0002C00DF /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656000BCAE9E0002C00DF /* WebKit.framework */; };
-		049656080BCAE9E0002C00DF /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656010BCAE9E0002C00DF /* ApplicationServices.framework */; };
-		049656090BCAE9E0002C00DF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656020BCAE9E0002C00DF /* OpenGL.framework */; };
-		0496560A0BCAE9E0002C00DF /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656030BCAE9E0002C00DF /* QuickTime.framework */; };
-		0496560B0BCAE9E0002C00DF /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656040BCAE9E0002C00DF /* IOKit.framework */; };
-		049656190BCAEA42002C00DF /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0496560D0BCAEA42002C00DF /* libavformat.a */; };
-		0496561A0BCAEA42002C00DF /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0496560E0BCAEA42002C00DF /* libavcodec.a */; };
-		0496561B0BCAEA42002C00DF /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0496560F0BCAEA42002C00DF /* libavutil.a */; };
-		0496561C0BCAEA42002C00DF /* libltdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656100BCAEA42002C00DF /* libltdl.a */; };
-		0496561D0BCAEA42002C00DF /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656110BCAEA42002C00DF /* libexpat.a */; };
-		0496561E0BCAEA42002C00DF /* libxerces-c.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656120BCAEA42002C00DF /* libxerces-c.dylib */; };
-		0496561F0BCAEA43002C00DF /* libliveMedia.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656130BCAEA42002C00DF /* libliveMedia.a */; };
-		049656200BCAEA43002C00DF /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656140BCAEA42002C00DF /* libUsageEnvironment.a */; };
-		049656210BCAEA43002C00DF /* libBasicUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656150BCAEA42002C00DF /* libBasicUsageEnvironment.a */; };
-		049656220BCAEA43002C00DF /* libgroupsock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656160BCAEA42002C00DF /* libgroupsock.a */; };
-		049656230BCAEA43002C00DF /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656170BCAEA42002C00DF /* libSDL.a */; };
-		049656240BCAEA43002C00DF /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656180BCAEA42002C00DF /* libz.dylib */; };
 		0496563A0BCAEA7D002C00DF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 049650610BCADE2B002C00DF /* main.m */; };
 		0496563B0BCAEA7D002C00DF /* LogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049650640BCADE62002C00DF /* LogController.mm */; };
 		0496563C0BCAEA7D002C00DF /* MyAmbulantView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049650660BCADE62002C00DF /* MyAmbulantView.mm */; };
@@ -248,25 +118,20 @@
 		0496569F0BCAEA7D002C00DF /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0496560F0BCAEA42002C00DF /* libavutil.a */; };
 		049656A00BCAEA7D002C00DF /* libltdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656100BCAEA42002C00DF /* libltdl.a */; };
 		049656A10BCAEA7D002C00DF /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656110BCAEA42002C00DF /* libexpat.a */; };
-		049656A20BCAEA7D002C00DF /* libxerces-c.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656120BCAEA42002C00DF /* libxerces-c.dylib */; };
 		049656A30BCAEA7D002C00DF /* libliveMedia.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656130BCAEA42002C00DF /* libliveMedia.a */; };
 		049656A40BCAEA7D002C00DF /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656140BCAEA42002C00DF /* libUsageEnvironment.a */; };
 		049656A50BCAEA7D002C00DF /* libBasicUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656150BCAEA42002C00DF /* libBasicUsageEnvironment.a */; };
 		049656A60BCAEA7D002C00DF /* libgroupsock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656160BCAEA42002C00DF /* libgroupsock.a */; };
 		049656A70BCAEA7D002C00DF /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656170BCAEA42002C00DF /* libSDL.a */; };
 		049656A80BCAEA7D002C00DF /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656180BCAEA42002C00DF /* libz.dylib */; };
-		049656B20BCAEC13002C00DF /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656B10BCAEC13002C00DF /* Carbon.framework */; };
 		049656B30BCAEC13002C00DF /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656B10BCAEC13002C00DF /* Carbon.framework */; };
+		049AFF220FE6909A006ED9B1 /* libfaad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0480CCFF0CDD1D5C0025344B /* libfaad.a */; };
+		049BFDFD0FE66BE6002CBE14 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 049BFDFC0FE66BE6002CBE14 /* libbz2.dylib */; };
+		049BFE1E0FE67825002CBE14 /* renderer_select.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049BFE1D0FE67825002CBE14 /* renderer_select.cpp */; };
 		04CD945C0D1C10EF00ADB6D0 /* cg_dsvideo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04CD945B0D1C10EF00ADB6D0 /* cg_dsvideo.mm */; };
-		04CD945D0D1C10EF00ADB6D0 /* cg_dsvideo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04CD945B0D1C10EF00ADB6D0 /* cg_dsvideo.mm */; };
 		04D8D1AD0D192DD5008403BE /* atsui_text.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D8D1AC0D192DD5008403BE /* atsui_text.mm */; };
-		04D8D1AE0D192DD5008403BE /* atsui_text.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D8D1AC0D192DD5008403BE /* atsui_text.mm */; };
-		04E13B240BD786120074AF09 /* state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B230BD786120074AF09 /* state.cpp */; };
 		04E13B250BD786120074AF09 /* state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B230BD786120074AF09 /* state.cpp */; };
-		04E13B280BD786380074AF09 /* cocoa_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B270BD786380074AF09 /* cocoa_smiltext.mm */; };
-		04E13B350BD786A40074AF09 /* smiltext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B340BD786A40074AF09 /* smiltext.cpp */; };
 		04E13B360BD786A40074AF09 /* smiltext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B340BD786A40074AF09 /* smiltext.cpp */; };
-		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -694,6 +559,9 @@
 		049656180BCAEA42002C00DF /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		049656AC0BCAEA7D002C00DF /* Ambulant-mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ambulant-mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		049656B10BCAEC13002C00DF /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		049BFDFC0FE66BE6002CBE14 /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = /usr/lib/libbz2.dylib; sourceTree = "<absolute>"; };
+		049BFE1C0FE67811002CBE14 /* renderer_select.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderer_select.h; sourceTree = "<group>"; };
+		049BFE1D0FE67825002CBE14 /* renderer_select.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderer_select.cpp; sourceTree = "<group>"; };
 		04CD945A0D1C10DB00ADB6D0 /* cg_dsvideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cg_dsvideo.h; path = cg/cg_dsvideo.h; sourceTree = "<group>"; };
 		04CD945B0D1C10EF00ADB6D0 /* cg_dsvideo.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = cg_dsvideo.mm; path = cg/cg_dsvideo.mm; sourceTree = "<group>"; };
 		04D8D1AC0D192DD5008403BE /* atsui_text.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = atsui_text.mm; path = cg/atsui_text.mm; sourceTree = "<group>"; };
@@ -708,7 +576,6 @@
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		8D1107320486CEB800E47090 /* Ambulant-mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ambulant-mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -729,7 +596,6 @@
 				0496569F0BCAEA7D002C00DF /* libavutil.a in Frameworks */,
 				049656A00BCAEA7D002C00DF /* libltdl.a in Frameworks */,
 				049656A10BCAEA7D002C00DF /* libexpat.a in Frameworks */,
-				049656A20BCAEA7D002C00DF /* libxerces-c.dylib in Frameworks */,
 				049656A30BCAEA7D002C00DF /* libliveMedia.a in Frameworks */,
 				049656A40BCAEA7D002C00DF /* libUsageEnvironment.a in Frameworks */,
 				049656A50BCAEA7D002C00DF /* libBasicUsageEnvironment.a in Frameworks */,
@@ -737,35 +603,8 @@
 				049656A70BCAEA7D002C00DF /* libSDL.a in Frameworks */,
 				049656A80BCAEA7D002C00DF /* libz.dylib in Frameworks */,
 				049656B30BCAEC13002C00DF /* Carbon.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		8D11072E0486CEB800E47090 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
-				049656050BCAE9E0002C00DF /* QTKit.framework in Frameworks */,
-				049656060BCAE9E0002C00DF /* AudioUnit.framework in Frameworks */,
-				049656070BCAE9E0002C00DF /* WebKit.framework in Frameworks */,
-				049656080BCAE9E0002C00DF /* ApplicationServices.framework in Frameworks */,
-				049656090BCAE9E0002C00DF /* OpenGL.framework in Frameworks */,
-				0496560A0BCAE9E0002C00DF /* QuickTime.framework in Frameworks */,
-				0496560B0BCAE9E0002C00DF /* IOKit.framework in Frameworks */,
-				049656190BCAEA42002C00DF /* libavformat.a in Frameworks */,
-				0496561A0BCAEA42002C00DF /* libavcodec.a in Frameworks */,
-				0496561B0BCAEA42002C00DF /* libavutil.a in Frameworks */,
-				0496561C0BCAEA42002C00DF /* libltdl.a in Frameworks */,
-				0496561D0BCAEA42002C00DF /* libexpat.a in Frameworks */,
-				0496561E0BCAEA42002C00DF /* libxerces-c.dylib in Frameworks */,
-				0496561F0BCAEA43002C00DF /* libliveMedia.a in Frameworks */,
-				049656200BCAEA43002C00DF /* libUsageEnvironment.a in Frameworks */,
-				049656210BCAEA43002C00DF /* libBasicUsageEnvironment.a in Frameworks */,
-				049656220BCAEA43002C00DF /* libgroupsock.a in Frameworks */,
-				049656230BCAEA43002C00DF /* libSDL.a in Frameworks */,
-				049656240BCAEA43002C00DF /* libz.dylib in Frameworks */,
-				049656B20BCAEC13002C00DF /* Carbon.framework in Frameworks */,
-				0480CD000CDD1D5C0025344B /* libfaad.a in Frameworks */,
+				049BFDFD0FE66BE6002CBE14 /* libbz2.dylib in Frameworks */,
+				049AFF220FE6909A006ED9B1 /* libfaad.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -870,6 +709,7 @@
 				049650D00BCAE333002C00DF /* region_eval.h */,
 				049650D10BCAE333002C00DF /* region_info.h */,
 				049650D20BCAE333002C00DF /* renderer_impl.h */,
+				049BFE1C0FE67811002CBE14 /* renderer_select.h */,
 				049650D30BCAE333002C00DF /* schema.h */,
 				049650D40BCAE333002C00DF /* smil_alignment.h */,
 				049650D50BCAE333002C00DF /* smil_handler.h */,
@@ -1242,6 +1082,7 @@
 				049652410BCAE3C5002C00DF /* preferences.cpp */,
 				049652420BCAE3C5002C00DF /* region.cpp */,
 				049652430BCAE3C5002C00DF /* renderer_impl.cpp */,
+				049BFE1D0FE67825002CBE14 /* renderer_select.cpp */,
 				049652440BCAE3C5002C00DF /* schema.cpp */,
 				049652450BCAE3C5002C00DF /* smil_alignment.cpp */,
 				049652460BCAE3C5002C00DF /* smil_handler.cpp */,
@@ -1480,6 +1321,7 @@
 				049656150BCAEA42002C00DF /* libBasicUsageEnvironment.a */,
 				049656160BCAEA42002C00DF /* libgroupsock.a */,
 				049656170BCAEA42002C00DF /* libSDL.a */,
+				049BFDFC0FE66BE6002CBE14 /* libbz2.dylib */,
 				049656180BCAEA42002C00DF /* libz.dylib */,
 			);
 			name = third_party_libraries;
@@ -1531,7 +1373,6 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8D1107320486CEB800E47090 /* Ambulant-mac.app */,
 				049656AC0BCAEA7D002C00DF /* Ambulant-mac.app */,
 			);
 			name = Products;
@@ -1615,31 +1456,13 @@
 			productReference = 049656AC0BCAEA7D002C00DF /* Ambulant-mac.app */;
 			productType = "com.apple.product-type.application";
 		};
-		8D1107260486CEB800E47090 /* Ambulant Player */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Ambulant Player" */;
-			buildPhases = (
-				8D1107290486CEB800E47090 /* Resources */,
-				8D11072C0486CEB800E47090 /* Sources */,
-				8D11072E0486CEB800E47090 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "Ambulant Player";
-			productInstallPath = "$(HOME)/Applications";
-			productName = "Ambulant-mac";
-			productReference = 8D1107320486CEB800E47090 /* Ambulant-mac.app */;
-			productType = "com.apple.product-type.application";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Ambulant-mac" */;
-			compatibilityVersion = "Xcode 2.4";
+			compatibilityVersion = "Xcode 3.1";
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -1652,7 +1475,6 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8D1107260486CEB800E47090 /* Ambulant Player */,
 				0496562B0BCAEA7D002C00DF /* Ambulant Player (Intel) */,
 			);
 		};
@@ -1680,31 +1502,6 @@
 				043902B30BD78B0500E13028 /* stop.png in Resources */,
 				043902D40BD7955000E13028 /* data in Resources */,
 				043903080BD7956400E13028 /* DTDCache in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		8D1107290486CEB800E47090 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				049650770BCAE0AE002C00DF /* Info.plist in Resources */,
-				040EAA200BCE6BFB00DEE37B /* Credits.rtf in Resources */,
-				040EAA220BCE6BFB00DEE37B /* InfoPlist.strings in Resources */,
-				040EAA230BCE6BFB00DEE37B /* MyDocument.nib in Resources */,
-				040EAA240BCE6BFB00DEE37B /* MainMenu.nib in Resources */,
-				040EAA250BCE6BFB00DEE37B /* Log.nib in Resources */,
-				040EAA860BCE7B0F00DEE37B /* Ambulant.icns in Resources */,
-				040EAA870BCE7B0F00DEE37B /* AmbulantDocDaisy.icns in Resources */,
-				040EAA880BCE7B0F00DEE37B /* AmbulantDocGrins.icns in Resources */,
-				040EAA8A0BCE7B0F00DEE37B /* AmbulantDocSmil.icns in Resources */,
-				043902490BD78B0500E13028 /* Welcome.smil in Resources */,
-				043902760BD78B0500E13028 /* pause.png in Resources */,
-				043902770BD78B0500E13028 /* play.png in Resources */,
-				043902780BD78B0500E13028 /* playactive.png in Resources */,
-				043902790BD78B0500E13028 /* stop.png in Resources */,
-				043902D30BD7955000E13028 /* data in Resources */,
-				043903070BD7956400E13028 /* DTDCache in Resources */,
-				043782F90D17271600BC01BD /* Makefile.am in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1800,110 +1597,7 @@
 				043782F10D1726E100BC01BD /* cg_text.mm in Sources */,
 				04D8D1AD0D192DD5008403BE /* atsui_text.mm in Sources */,
 				04CD945C0D1C10EF00ADB6D0 /* cg_dsvideo.mm in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		8D11072C0486CEB800E47090 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				049650620BCADE2B002C00DF /* main.m in Sources */,
-				0496506D0BCADE62002C00DF /* LogController.mm in Sources */,
-				0496506E0BCADE62002C00DF /* MyAmbulantView.mm in Sources */,
-				0496506F0BCADE62002C00DF /* MyAppDelegate.mm in Sources */,
-				049650700BCADE62002C00DF /* MyDocument.mm in Sources */,
-				049650710BCADE62002C00DF /* mypreferences.mm in Sources */,
-				049650740BCADE83002C00DF /* mainloop.cpp in Sources */,
-				049652F20BCAE3C5002C00DF /* factory.cpp in Sources */,
-				049652F30BCAE3C5002C00DF /* gui_player.cpp in Sources */,
-				049652F40BCAE3C5002C00DF /* plugin_engine.cpp in Sources */,
-				049652F50BCAE3C5002C00DF /* preferences.cpp in Sources */,
-				049652F60BCAE3C5002C00DF /* region.cpp in Sources */,
-				049652F70BCAE3C5002C00DF /* renderer_impl.cpp in Sources */,
-				049652F80BCAE3C5002C00DF /* schema.cpp in Sources */,
-				049652F90BCAE3C5002C00DF /* smil_alignment.cpp in Sources */,
-				049652FA0BCAE3C5002C00DF /* smil_handler.cpp in Sources */,
-				049652FB0BCAE3C5002C00DF /* video_renderer.cpp in Sources */,
-				049653000BCAE3C5002C00DF /* get_version.cpp in Sources */,
-				049653050BCAE3C5002C00DF /* cocoa_audio.mm in Sources */,
-				049653070BCAE3C5002C00DF /* cocoa_dsvideo.mm in Sources */,
-				049653090BCAE3C5002C00DF /* cocoa_fill.mm in Sources */,
-				0496530B0BCAE3C5002C00DF /* cocoa_gui.mm in Sources */,
-				0496530D0BCAE3C5002C00DF /* cocoa_html.mm in Sources */,
-				0496530F0BCAE3C5002C00DF /* cocoa_image.mm in Sources */,
-				049653110BCAE3C5002C00DF /* cocoa_ink.mm in Sources */,
-				049653130BCAE3C5002C00DF /* cocoa_renderer.mm in Sources */,
-				049653150BCAE3C5002C00DF /* cocoa_text.mm in Sources */,
-				049653170BCAE3C5002C00DF /* cocoa_transition.mm in Sources */,
-				049653190BCAE3C5002C00DF /* cocoa_video.mm in Sources */,
-				049653430BCAE3C5002C00DF /* none_area.cpp in Sources */,
-				049653440BCAE3C5002C00DF /* none_factory.cpp in Sources */,
-				049653450BCAE3C5002C00DF /* none_gui.cpp in Sources */,
-				049653460BCAE3C5002C00DF /* none_video_renderer.cpp in Sources */,
-				0496534F0BCAE3C5002C00DF /* sdl.cpp in Sources */,
-				049653500BCAE3C5002C00DF /* sdl_audio.cpp in Sources */,
-				049653510BCAE3C5002C00DF /* colors.cpp in Sources */,
-				049653520BCAE3C5002C00DF /* delta_timer.cpp in Sources */,
-				049653530BCAE3C5002C00DF /* document.cpp in Sources */,
-				049653540BCAE3C5002C00DF /* event_processor.cpp in Sources */,
-				049653550BCAE3C5002C00DF /* expat_parser.cpp in Sources */,
-				049653560BCAE3C5002C00DF /* gpaths.cpp in Sources */,
-				049653570BCAE3C5002C00DF /* logger.cpp in Sources */,
-				049653580BCAE3C5002C00DF /* memfile.cpp in Sources */,
-				049653590BCAE3C5002C00DF /* nfa.cpp in Sources */,
-				0496535A0BCAE3C5002C00DF /* node.cpp in Sources */,
-				0496535C0BCAE3C5002C00DF /* parselets.cpp in Sources */,
-				0496535D0BCAE3C5002C00DF /* parser_factory.cpp in Sources */,
-				0496535E0BCAE3C5002C00DF /* string_util.cpp in Sources */,
-				0496535F0BCAE3C5002C00DF /* timer.cpp in Sources */,
-				049653600BCAE3C5002C00DF /* transition_info.cpp in Sources */,
-				049653610BCAE3C5002C00DF /* tree_builder.cpp in Sources */,
-				049653620BCAE3C5002C00DF /* unix_event_processor.cpp in Sources */,
-				049653630BCAE3C6002C00DF /* unix_mtsync.cpp in Sources */,
-				049653640BCAE3C6002C00DF /* unix_thread.cpp in Sources */,
-				049653650BCAE3C6002C00DF /* unix_timer.cpp in Sources */,
-				0496536D0BCAE3C6002C00DF /* xerces_parser.cpp in Sources */,
-				049653750BCAE3C6002C00DF /* databuffer.cpp in Sources */,
-				049653760BCAE3C6002C00DF /* datasource.cpp in Sources */,
-				049653770BCAE3C6002C00DF /* demux_datasource.cpp in Sources */,
-				049653780BCAE3C6002C00DF /* ffmpeg_audio.cpp in Sources */,
-				049653790BCAE3C6002C00DF /* ffmpeg_common.cpp in Sources */,
-				0496537A0BCAE3C6002C00DF /* ffmpeg_raw.cpp in Sources */,
-				0496537B0BCAE3C6002C00DF /* ffmpeg_video.cpp in Sources */,
-				0496537C0BCAE3C6002C00DF /* posix_datasource.cpp in Sources */,
-				0496537E0BCAE3C6002C00DF /* rtsp_datasource.cpp in Sources */,
-				0496537F0BCAE3C6002C00DF /* rtsp_factory.cpp in Sources */,
-				049653800BCAE3C6002C00DF /* stdio_datasource.cpp in Sources */,
-				049653810BCAE3C6002C00DF /* url.cpp in Sources */,
-				049653830BCAE3C6002C00DF /* animate_a.cpp in Sources */,
-				049653840BCAE3C6002C00DF /* animate_e.cpp in Sources */,
-				049653850BCAE3C6002C00DF /* animate_n.cpp in Sources */,
-				049653860BCAE3C6002C00DF /* params.cpp in Sources */,
-				049653870BCAE3C6002C00DF /* region_node.cpp in Sources */,
-				049653880BCAE3C6002C00DF /* smil_layout.cpp in Sources */,
-				049653890BCAE3C6002C00DF /* smil_player.cpp in Sources */,
-				0496538A0BCAE3C6002C00DF /* smil_time.cpp in Sources */,
-				0496538B0BCAE3C6002C00DF /* sync_rule.cpp in Sources */,
-				0496538C0BCAE3C6002C00DF /* test_attrs.cpp in Sources */,
-				0496538D0BCAE3C6002C00DF /* time_attrs.cpp in Sources */,
-				0496538E0BCAE3C6002C00DF /* time_calc.cpp in Sources */,
-				0496538F0BCAE3C6002C00DF /* time_node.cpp in Sources */,
-				049653900BCAE3C6002C00DF /* time_sched.cpp in Sources */,
-				049653910BCAE3C6002C00DF /* time_state.cpp in Sources */,
-				049653920BCAE3C6002C00DF /* timegraph.cpp in Sources */,
-				049653930BCAE3C6002C00DF /* trace_player.cpp in Sources */,
-				049653940BCAE3C6002C00DF /* transition.cpp in Sources */,
-				040EAA370BCE6CF600DEE37B /* nscontext.cpp in Sources */,
-				04E13B240BD786120074AF09 /* state.cpp in Sources */,
-				04E13B280BD786380074AF09 /* cocoa_smiltext.mm in Sources */,
-				04E13B350BD786A40074AF09 /* smiltext.cpp in Sources */,
-				043782E80D1726E100BC01BD /* cg_fill.mm in Sources */,
-				043782E90D1726E100BC01BD /* cg_gui.mm in Sources */,
-				043782EA0D1726E100BC01BD /* cg_image.mm in Sources */,
-				043782EB0D1726E100BC01BD /* cg_renderer.mm in Sources */,
-				043782EC0D1726E100BC01BD /* cg_text.mm in Sources */,
-				04D8D1AE0D192DD5008403BE /* atsui_text.mm in Sources */,
-				04CD945D0D1C10EF00ADB6D0 /* cg_dsvideo.mm in Sources */,
+				049BFE1E0FE67825002CBE14 /* renderer_select.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1959,19 +1653,11 @@
 		049656AA0BCAEA7D002C00DF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"WITH_CG=1",
-					"WITH_LIVE=1",
-					"WITH_SMIL30=1",
 					"WITH_EXTERNAL_DOM=1",
 					"WITH_LTDL_PLUGINS=1",
 					"AM_PREFER_FFMPEG=1",
@@ -1980,35 +1666,12 @@
 					"WITH_EXPAT=1",
 					"WITH_FFMPEG_AVFORMAT=1",
 					"WITH_OVERLAY_WINDOW=1",
+					"WITH_SMIL30=1",
+					"WITH_CG=1",
+					"WITH_LIVE=1",
 				);
-				HEADER_SEARCH_PATHS = (
-					../../include,
-					"../../third_party_packages/expat-unix/include",
-					/usr/local/include/SDL,
-					"../../third_party_packages/ffmpeg-universal/",
-					../../third_party_packages/live/liveMedia/include,
-					../../third_party_packages/live/UsageEnvironment/include,
-					../../third_party_packages/live/groupsock/include,
-					../../third_party_packages/live/BasicUsageEnvironment/include,
-					"../../third_party_packages/xerces-unix/include",
-				);
-				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"../../third_party_packages/ffmpeg-universal/libavformat",
-					"../../third_party_packages/ffmpeg-universal/libavcodec",
-					"../../third_party_packages/ffmpeg-universal/libavutil",
-					"../../third_party_packages/expat-unix/lib",
-					"../../third_party_packages/xerces-unix/lib",
-					../../third_party_packages/live/liveMedia,
-					../../third_party_packages/live/UsageEnvironment,
-					../../third_party_packages/live/BasicUsageEnvironment,
-					/usr/local/lib,
-					../../third_party_packages/live/groupsock,
-				);
 				PRODUCT_NAME = "Ambulant-mac";
-				USER_HEADER_SEARCH_PATHS = "../../third_party_packages/expat-unix/lib ../../third_party_packages/ffmpeg-universal/libavformat ../../third_party_packages/ffmpeg-universal/libavutil ../../third_party_packages/ffmpeg-universal/libavcodec ../../third_party_packages/xerces-unix/lib ../../third_party_packages/live/liveMedia ./../third_party_packages/live/BasicUsageEnvironment ./../third_party_packages/live/groupsock ./../third_party_packages/live/UsageEnvironment";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -2017,12 +1680,9 @@
 		049656AB0BCAEA7D002C00DF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"WITH_CG=1",
 					"WITH_EXTERNAL_DOM=1",
 					"WITH_LTDL_PLUGINS=1",
 					"AM_PREFER_FFMPEG=1",
@@ -2031,148 +1691,13 @@
 					"WITH_EXPAT=1",
 					"WITH_FFMPEG_AVFORMAT=1",
 					"WITH_OVERLAY_WINDOW=1",
+					"WITH_SMIL30=1",
+					"WITH_CG=1",
 					"WITH_LIVE=1",
-					"WITH_SMIL30=1",
 				);
-				HEADER_SEARCH_PATHS = (
-					../../include,
-					"../../third_party_packages/expat-unix/include",
-					/usr/local/include/SDL,
-					"../../third_party_packages/ffmpeg-universal/",
-					../../third_party_packages/live/liveMedia/include,
-					../../third_party_packages/live/UsageEnvironment/include,
-					../../third_party_packages/live/groupsock/include,
-					../../third_party_packages/live/BasicUsageEnvironment/include,
-					"../../third_party_packages/xerces-unix/include",
-				);
-				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"../../third_party_packages/ffmpeg-universal/libavformat",
-					"../../third_party_packages/ffmpeg-universal/libavcodec",
-					"../../third_party_packages/ffmpeg-universal/libavutil",
-					"../../third_party_packages/expat-unix/lib",
-					"../../third_party_packages/xerces-unix/lib",
-					../../third_party_packages/live/liveMedia,
-					../../third_party_packages/live/UsageEnvironment,
-					../../third_party_packages/live/BasicUsageEnvironment,
-					/usr/local/lib,
-					../../third_party_packages/live/groupsock,
-				);
 				PRODUCT_NAME = "Ambulant-mac";
-				USER_HEADER_SEARCH_PATHS = "../../third_party_packages/expat-unix/lib ../../third_party_packages/ffmpeg-universal/libavformat ../../third_party_packages/ffmpeg-universal/libavutil ../../third_party_packages/ffmpeg-universal/libavcodec ../../third_party_packages/xerces-unix/lib ../../third_party_packages/live/liveMedia ./../third_party_packages/live/BasicUsageEnvironment ./../third_party_packages/live/groupsock ./../third_party_packages/live/UsageEnvironment";
-				WRAPPER_EXTENSION = app;
-			};
-			name = Release;
-		};
-		C01FCF4B08A954540054247B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"WITH_CG=1",
-					"WITH_EXTERNAL_DOM=1",
-					"WITH_LTDL_PLUGINS=1",
-					"AM_PREFER_FFMPEG=1",
-					"WITH_SDL=1",
-					"WITH_FFMPEG=1",
-					"WITH_EXPAT=1",
-					"WITH_FFMPEG_AVFORMAT=1",
-					"WITH_OVERLAY_WINDOW=1",
-					"WITH_SMIL30=1",
-				);
-				HEADER_SEARCH_PATHS = (
-					../../include,
-					"../../third_party_packages/expat-unix/include",
-					/usr/local/include/SDL,
-					"../../third_party_packages/ffmpeg-universal/",
-					../../third_party_packages/live/liveMedia/include,
-					../../third_party_packages/live/UsageEnvironment/include,
-					../../third_party_packages/live/groupsock/include,
-					../../third_party_packages/live/BasicUsageEnvironment/include,
-					"../../third_party_packages/xerces-unix/include",
-				);
-				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
-				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"../../third_party_packages/ffmpeg-universal/libavformat",
-					"../../third_party_packages/ffmpeg-universal/libavcodec",
-					"../../third_party_packages/ffmpeg-universal/libavutil",
-					"../../third_party_packages/expat-unix/lib",
-					"../../third_party_packages/xerces-unix/lib",
-					../../third_party_packages/live/liveMedia,
-					../../third_party_packages/live/UsageEnvironment,
-					../../third_party_packages/live/BasicUsageEnvironment,
-					/usr/local/lib,
-					../../third_party_packages/live/groupsock,
-				);
-				PRODUCT_NAME = "Ambulant-mac";
-				USER_HEADER_SEARCH_PATHS = "../../third_party_packages/expat-unix/lib ../../third_party_packages/ffmpeg-universal/libavformat ../../third_party_packages/ffmpeg-universal/libavutil ../../third_party_packages/ffmpeg-universal/libavcodec ../../third_party_packages/xerces-unix/lib ../../third_party_packages/live/liveMedia ./../third_party_packages/live/BasicUsageEnvironment ./../third_party_packages/live/groupsock ./../third_party_packages/live/UsageEnvironment";
-				WRAPPER_EXTENSION = app;
-				ZERO_LINK = YES;
-			};
-			name = Debug;
-		};
-		C01FCF4C08A954540054247B /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"WITH_CG=1",
-					"WITH_EXTERNAL_DOM=1",
-					"WITH_LTDL_PLUGINS=1",
-					"AM_PREFER_FFMPEG=1",
-					"WITH_SDL=1",
-					"WITH_FFMPEG=1",
-					"WITH_EXPAT=1",
-					"WITH_FFMPEG_AVFORMAT=1",
-					"WITH_OVERLAY_WINDOW=1",
-					"WITH_SMIL30=1",
-				);
-				HEADER_SEARCH_PATHS = (
-					../../include,
-					"../../third_party_packages/expat-unix/include",
-					/usr/local/include/SDL,
-					"../../third_party_packages/ffmpeg-universal/",
-					../../third_party_packages/live/liveMedia/include,
-					../../third_party_packages/live/UsageEnvironment/include,
-					../../third_party_packages/live/groupsock/include,
-					../../third_party_packages/live/BasicUsageEnvironment/include,
-					"../../third_party_packages/xerces-unix/include",
-				);
-				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
-				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"../../third_party_packages/ffmpeg-universal/libavformat",
-					"../../third_party_packages/ffmpeg-universal/libavcodec",
-					"../../third_party_packages/ffmpeg-universal/libavutil",
-					"../../third_party_packages/expat-unix/lib",
-					"../../third_party_packages/xerces-unix/lib",
-					../../third_party_packages/live/liveMedia,
-					../../third_party_packages/live/UsageEnvironment,
-					../../third_party_packages/live/BasicUsageEnvironment,
-					/usr/local/lib,
-					../../third_party_packages/live/groupsock,
-				);
-				PRODUCT_NAME = "Ambulant-mac";
-				USER_HEADER_SEARCH_PATHS = "../../third_party_packages/expat-unix/lib ../../third_party_packages/ffmpeg-universal/libavformat ../../third_party_packages/ffmpeg-universal/libavutil ../../third_party_packages/ffmpeg-universal/libavcodec ../../third_party_packages/xerces-unix/lib ../../third_party_packages/live/liveMedia ./../third_party_packages/live/BasicUsageEnvironment ./../third_party_packages/live/groupsock ./../third_party_packages/live/UsageEnvironment";
+				WITH_EXTERNAL_DOM = "1 WITH_LTDL_PLUGINS=1 AM_PREFER_FFMPEG=1 WITH_SDL=1 WITH_FFMPEG=1 WITH_EXPAT=1 WITH_FFMPEG_AVFORMAT=1 WITH_OVERLAY_WINDOW=1 WITH_SMIL30=1 WITH_CG=1 WITH_LIVE=1";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -2180,22 +1705,54 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				GCC_VERSION = "";
+				GCC_VERSION = 4.2;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"../../third_party_packages/ffmpeg-universal/libavformat",
+					"../../third_party_packages/ffmpeg-universal/libavcodec",
+					"../../third_party_packages/ffmpeg-universal/libavutil",
+					"../../third_party_packages/expat-unix/lib",
+					"../../third_party_packages/xerces-unix/lib",
+					../../third_party_packages/live/liveMedia,
+					../../third_party_packages/live/UsageEnvironment,
+					../../third_party_packages/live/BasicUsageEnvironment,
+					/usr/local/lib,
+					../../third_party_packages/live/groupsock,
+					"\"$(SRCROOT)/../../../../packages/xerces-c-src_2_7_0/lib\"",
+				);
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				SDKROOT = macosx10.5;
+				USER_HEADER_SEARCH_PATHS = "../../include ../../third_party_packages/ffmpeg-universal /usr/local/include/SDL ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
 			};
 			name = Debug;
 		};
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				GCC_VERSION = "";
+				GCC_VERSION = 4.2;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"../../third_party_packages/ffmpeg-universal/libavformat",
+					"../../third_party_packages/ffmpeg-universal/libavcodec",
+					"../../third_party_packages/ffmpeg-universal/libavutil",
+					"../../third_party_packages/expat-unix/lib",
+					"../../third_party_packages/xerces-unix/lib",
+					../../third_party_packages/live/liveMedia,
+					../../third_party_packages/live/UsageEnvironment,
+					../../third_party_packages/live/BasicUsageEnvironment,
+					/usr/local/lib,
+					../../third_party_packages/live/groupsock,
+					"\"$(SRCROOT)/../../../../packages/xerces-c-src_2_7_0/lib\"",
+				);
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				SDKROOT = macosx10.5;
+				USER_HEADER_SEARCH_PATHS = "../../include ../../third_party_packages/ffmpeg-universal /usr/local/include/SDL ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
 			};
 			name = Release;
 		};
@@ -2207,15 +1764,6 @@
 			buildConfigurations = (
 				049656AA0BCAEA7D002C00DF /* Debug */,
 				049656AB0BCAEA7D002C00DF /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Ambulant Player" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C01FCF4B08A954540054247B /* Debug */,
-				C01FCF4C08A954540054247B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
