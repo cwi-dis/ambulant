@@ -1,3 +1,15 @@
+2009-06-15 00:04  jackjansen
+
+	* Getting started on reviving the CoreGraphics build, and porting
+	  the CG renderers to the new API.  Unfinished.
+
+2009-06-14 23:20  jackjansen
+
+	* Fixed bug #2805248: Log window cannot be resized.
+
+	  Fix graciously donated by Cocia Lin, with an added resource mod
+	  by Jack.
+
 2009-06-12 17:44  keesblom
 
 	* Added  <parama name="autostart"  value="true"/> and a test
