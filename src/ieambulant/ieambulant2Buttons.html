@@ -24,11 +24,13 @@ function IsDone(idd)
 	    window.status = idd+" done.";
         if (idd == "ambulant_object1") {
             this.isWatching1 = false; 
-            this.ambulantObject("ambulant_object2").restartPlayer();
+            this.ambulantObject("ambulant_object1").stopPlayer();
+            this.ambulantObject("ambulant_object2").startPlayer();
         }
         if (idd == "ambulant_object2") {
             this.isWatching2 = false; 
-            this.ambulantObject("ambulant_object1").restartPlayer();
+            this.ambulantObject("ambulant_object2").stopPlayer();
+            this.ambulantObject("ambulant_object1").startPlayer();
         }
     } else {
 	    StartTimer (this.timeout,idd)

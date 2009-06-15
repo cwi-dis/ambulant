@@ -9,28 +9,34 @@
 /////////////////////////////////////////////////////////////////////////////
 // Cieambulant
 
-// convert BSTR to LPSTR, allocates new char[] 
-LPSTR
-ConvertBSTRToLPSTR (BSTR bstrIn)
+// convert BSTR to std::string 
+std::string
+BSTR_to_std_string (BSTR bstrIn)
 {
-  	LPSTR pszOut = NULL;
+	if (bstrIn == NULL)
+		return "";
 
-	if (bstrIn != NULL)
-  	{
-   		int nInputStrLen = SysStringLen (bstrIn);
-   		// Double NULL Termination
-   		int nOutputStrLen = WideCharToMultiByte(CP_ACP, 0, bstrIn, nInputStrLen, NULL, 0, 0, 0) + 2;	
+	int nInputStrLen = SysStringLen (bstrIn);
+	// Double NULL Termination
+	int nOutputStrLen = WideCharToMultiByte(CP_ACP, 0, bstrIn, nInputStrLen, NULL, 0, 0, 0) + 2;	
    
-   		pszOut = new char [nOutputStrLen];
-   		if (pszOut)
-   		{
-   		    memset (pszOut, 0x00, sizeof (char)*nOutputStrLen);
- 			WideCharToMultiByte (CP_ACP, 0, bstrIn, nInputStrLen, pszOut, nOutputStrLen, 0, 0);
-   		}
-   	}
-	return pszOut;
+	LPSTR lpstr = new char [nOutputStrLen];
+	if (lpstr) {
+	    memset (lpstr, 0x00, sizeof (char)*nOutputStrLen);
+		WideCharToMultiByte (CP_ACP, 0, bstrIn, nInputStrLen, lpstr, nOutputStrLen, 0, 0);
+	}
+	std::string result(lpstr);
+	delete [] lpstr;
+	return result;
 }
 
+//  convert CComBSTR to std::string
+std::string
+CComBSTR_to_std_string (CComBSTR BSTR_value) 
+{
+	std::string result = BSTR_to_std_string((BSTR)BSTR_value);
+	return result;
+}
 
 
 HRESULT
@@ -55,32 +61,14 @@ Cieambulant::get_document_url()
 	hr = pIWebBrowser2->get_LocationURL(&BSTR_base_url);
 	if ( ! SUCCEEDED(hr))
 		return hr;
-	LPSTR LPSTR_url = ConvertBSTRToLPSTR (BSTR_base_url);
+	std::string std_string_base_url = CComBSTR_to_std_string (BSTR_base_url);
 	SysFreeString(BSTR_base_url);
-	BSTR_base_url = NULL;
-	std::string std_string_base_url (LPSTR_url);
-	delete [] LPSTR_url;
 	m_base_url = ambulant::net::url::from_url(std_string_base_url);
+	m_url = ambulant::net::url::from_url(BSTR_to_std_string(m_bstrSrc));
 
-	BSTR BSTR_url = NULL;
-	hr = get_src(&BSTR_url);
-	if ( ! SUCCEEDED(hr))
-		return hr;
-	LPSTR_url = ConvertBSTRToLPSTR (BSTR_url);
-	std::string std_string_url (LPSTR_url);
-	delete [] LPSTR_url;
-	m_url = ambulant::net::url::from_url(std_string_url);
-
-	BSTR BSTR_autostart = NULL;
-	hr = get_autostart(&BSTR_autostart);
-	if ( ! SUCCEEDED(hr) || BSTR_autostart == NULL)
-		return hr;
-	LPSTR LPSTR_autostart = ConvertBSTRToLPSTR (BSTR_autostart);
-	std::string std_string_autostart (LPSTR_autostart);
-	delete [] LPSTR_autostart;
-
+	std::string std_string_autostart = CComBSTR_to_std_string(m_bstrAutostart);
 	if (std_string_autostart == "false"
-		|| std_string_autostart == "false")
+		|| std_string_autostart == "FALSE")
 		m_autostart = false;
 
 	return S_OK;
