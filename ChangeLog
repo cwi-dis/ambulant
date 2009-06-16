@@ -1,3 +1,14 @@
+2009-06-15 16:25  jackjansen
+
+	* CoreGraphics renderers (and accompanying XCode project) seem to
+	  work again. Only very little testing done, though.
+
+2009-06-15 13:03  keesblom
+
+	* Little bit of cleanup, factoring out Committed on the Free
+	  edition of March Hare Software CVSNT Server.	Upgrade to CVS
+	  Suite for more features and support: http://march-hare.com/cvsnt/
+
 2009-06-15 00:04  jackjansen
 
 	* Getting started on reviving the CoreGraphics build, and porting
