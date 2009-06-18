@@ -117,17 +117,10 @@ END_COM_MAP()
 BEGIN_PROP_MAP(Cieambulant)
 	PROP_DATA_ENTRY("_cx", m_sizeExtent.cx, VT_UI4)
 	PROP_DATA_ENTRY("_cy", m_sizeExtent.cy, VT_UI4)
-	PROP_ENTRY("BackColor", DISPID_BACKCOLOR, CLSID_StockColorPage)
-	PROP_ENTRY("Caption", DISPID_CAPTION, CLSID_NULL)
-	PROP_ENTRY("Font", DISPID_FONT, CLSID_StockFontPage)
-	PROP_ENTRY("ForeColor", DISPID_FORECOLOR, CLSID_StockColorPage)
     // AmbulantPlayer plugin control properties
     PROP_ENTRY("type", 1, CLSID_NULL)
     PROP_ENTRY("src", 2, CLSID_NULL)
     PROP_ENTRY("autostart", 3, CLSID_NULL)
- 	// Example entries
-	// PROP_ENTRY("Property Description", dispid, clsid)
-	// PROP_PAGE(CLSID_StockColorPage)
 END_PROP_MAP()
 
 BEGIN_CONNECTION_POINT_MAP(Cieambulant)

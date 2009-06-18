@@ -6,13 +6,73 @@ AdvancedINF=2.0
 
 [Add.Code]
 AmbulantActiveX.dll=AmbulantActiveX.dll
+libambulant_shwin32.dll=libambulant_shwin32.dll
+libamplugin_ffmpeg.dll=libamplugin_ffmpeg.dll
+libamplugin_plugin.dll=libamplugin_plugin.dll
+libamplugin_state_xpath.dll=libamplugin_state_xpath.dll
+avcodec-51.dll=avcodec-51.dll
+avformat-52.dll=avformat-52.dll
+avutil-49.dll=avutil-49.dll
+SDL.dll=SDL.dll
+xerces-c_2_8.dll=xerces-c_2_8.dll
 AmbulantActiveX.inf=AmbulantActiveX.inf
 
 [AmbulantActiveX.dll]
 file-win32-x86=thiscab
-clsid={5074BDD6-21EA-43E6-BFCD-36FA5B8CFFF9} 
+clsid={886B87C0-930C-414c-BD35-B67BCC92FBEC} 
 FileVersion=1,0,0,1 
 RegisterServer=yes
+
+; ambulant libarary
+[libambulant_shwin32.dll]
+file-win32-x86=thiscab
+FileVersion=1,0,0,1
+RegisterServer=no
+
+[libamplugin_ffmpeg.dll]
+file-win32-x86=thiscab
+FileVersion=1,0,0,1
+RegisterServer=no
+
+[libamplugin_plugin.dll]
+file-win32-x86=thiscab
+FileVersion=1,0,0,1
+RegisterServer=no
+
+[libamplugin_state_xpath.dll]
+file-win32-x86=thiscab
+FileVersion=1,0,0,1
+RegisterServer=no
+
+; third-party-packages
+; ffmpeg audio, video
+[avcodec-51.dll]
+file-win32-x86=thiscab
+FileVersion=1,0,0,1
+RegisterServer=no
+
+[avformat-52.dll]
+file-win32-x86=thiscab
+FileVersion=1,0,0,1
+RegisterServer=no
+
+[avutil-49.dll]
+file-win32-x86=thiscab
+FileVersion=1,0,0,1
+RegisterServer=no
+
+
+: sound
+[SDL.dll]
+file-win32-x86=thiscab
+FileVersion=1,0,0,1
+RegisterServer=no
+
+; xerces validating XML parser
+[xerces-c_2_8.dll]
+file-win32-x86=thiscab
+FileVersion=1,0,0,1
+RegisterServer=no
 
 [AmbulantActiveX.inf]
 file=thiscab

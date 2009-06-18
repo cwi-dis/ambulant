@@ -42,6 +42,10 @@ CComBSTR_to_std_string (CComBSTR BSTR_value)
 HRESULT
 Cieambulant::get_document_url() 
 {
+	// here the <url> is obtained from the <PARAM name="src" value="<url>"/> element
+	// and joined with  the base url.
+	// also the the value of <PARAM name="autostart" value="<true|false>"/> is retrieved.
+
 	HRESULT hr = E_FAIL;
 	if ( ! m_site)
 		return hr;
@@ -64,7 +68,7 @@ Cieambulant::get_document_url()
 	std::string std_string_base_url = CComBSTR_to_std_string (BSTR_base_url);
 	SysFreeString(BSTR_base_url);
 	m_base_url = ambulant::net::url::from_url(std_string_base_url);
-	m_url = ambulant::net::url::from_url(BSTR_to_std_string(m_bstrSrc));
+	m_url = ambulant::net::url::from_url(CComBSTR_to_std_string(m_bstrSrc));
 
 	std::string std_string_autostart = CComBSTR_to_std_string(m_bstrAutostart);
 	if (std_string_autostart == "false"
@@ -147,8 +151,6 @@ HRESULT
 Cieambulant::updatePlayer()
 {
 	// added for ambulant
-	// here the <url> is obtained from the <PARAM name="src" value="<url>"/> element
-	// and joined with  the base url (see get_document_location())
 	if (m_url.get_url() == "")
 		get_document_url();
 	if ( ! m_url.is_absolute()) {
@@ -382,7 +384,7 @@ ieambulant_display_message(int level, const char* message) {
 	if ( ! SUCCEEDED(hr) || pIHTMLWindow2 == NULL)
 		return;
 	CString Cstr_message(message);
-	BSTR BSTR_message = SysAllocString(Cstr_message);
+	BSTR BSTR_message = Cstr_message.AllocSysString();
 	pIHTMLWindow2->put_status(BSTR_message);
 	SysFreeString(BSTR_message);
 	pIHTMLWindow2->Release();

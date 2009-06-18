@@ -72,7 +72,7 @@ function StartTimer(timeout,idd)
     		type="application/x-ambulant-smil"
     		width="240"
 	    	height="270"
-		    src="../../Extras/Welcome/Welcome.smil" />
+		src="http://ambulantplayer.org/Demos/Welcome/Welcome.smil" />
 </OBJECT>
 <form name="formname">
 <input type=button value="Start"	onclick='ambulantObject("ambulant_object1").startPlayer()'>
@@ -90,17 +90,17 @@ function StartTimer(timeout,idd)
 <OBJECT     ID="ambulant_object2"
             CLASSID="CLSID:886B87C0-930C-414c-BD35-B67BCC92FBEC"
             codebase="http://www.cwi.nl/~kees/ambulant/ieambulant.cab" 
-      	    width="240"
-		    height="270">
-    <PARAM  name="src"         value="http://ambulantplayer.org/Demos/DemoPresentation/NYC-SmilText.smil" />
-    <PARAM  name="type" 	 value="application/x-ambulant-smil"/> 
+      	width="240"
+		height="270">
+    <PARAM  name="src"         value="http://ambulantplayer.org/Demos/smilText/NYC-sT.smil" />
+    <PARAM  name="type" 	  value="application/x-ambulant-smil"/> 
     <PARAM  name="autostart"   value="false"  />
     <EMBED	ID="ieambulant_embed2"
     		type="application/x-ambulant-smil"
      		left="300"
    	    	width="240"
 	    	height="270"
-	        src="../../Extras/DemoPresentation/NYC-SmilText.smil" />
+	      src="http://ambulantplayer.org/Demos/smilText/NYC-sT.smil" />
 </OBJECT>
 <form name="formname2" left="300" width="240">
 <input type=button value="Start"	onclick='ambulantObject("ambulant_object2").startPlayer()'>
