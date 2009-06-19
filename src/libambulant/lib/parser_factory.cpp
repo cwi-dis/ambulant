@@ -78,6 +78,8 @@ global_parser_factory::~global_parser_factory()
 		delete (*i);
 	m_factories.clear();
     delete m_default_factory;
+	if (s_singleton == this)
+		s_singleton = NULL;
 	m_default_factory = NULL;
 }
     

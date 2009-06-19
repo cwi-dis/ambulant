@@ -357,20 +357,27 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 		return;
 	}
 	get_pixel_format();
-	
+#define WITH_DDCLIPPER
+#ifdef	WITH_DDCLIPPER
 	// Clip output to the provided window
 	if(m_hwnd) {
 		IDirectDrawClipper *clipper = NULL; 
 		hr = m_direct_draw->CreateClipper(0, &clipper, NULL);
 		if (FAILED(hr))
 			seterror("DirectDraw::CreateClipper()", hr);
-		clipper->SetHWnd(0, m_hwnd);
-		hr = m_primary_surface->SetClipper(clipper);
+		hr = clipper->SetHWnd(0, m_hwnd);
 		if (FAILED(hr))
-			seterror("DirectDrawSurface::SetClipper()", hr);
+			seterror("DirectDrawSurface::SetHWnd()", hr);
+		else {
+			hr = m_primary_surface->SetClipper(clipper);
+			if (FAILED(hr))
+				seterror("DirectDrawSurface::SetClipper()", hr);
+		}
 		clipper->Release();
 	}
-	
+#endif//WITH_DDCLIPPER
+
+
 	// create drawing surface
 	memset(&sd, 0, sizeof(DDSURFACEDESC));
 	sd.dwSize = sizeof(DDSURFACEDESC);
@@ -675,6 +682,7 @@ gui::dx::viewport::redraw(const lib::rect& rc) {
 	}
 }
 
+//#define DO_REDRAW_WITH_EVENTS
 void
 gui::dx::viewport::schedule_redraw() {
 #ifdef DO_REDRAW_WITH_EVENTS

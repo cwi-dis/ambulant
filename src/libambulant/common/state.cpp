@@ -46,6 +46,7 @@ class global_state_component_factory_impl : public global_state_component_factor
 
 global_state_component_factory_impl::~global_state_component_factory_impl()
 {
+	s_gscf = NULL;
 }
 
 void
@@ -68,9 +69,8 @@ global_state_component_factory_impl::new_state_component(const char *uri)
 global_state_component_factory *
 common::get_global_state_component_factory()
 {
-	static global_state_component_factory *gscf;
 	
-	if (gscf == NULL) gscf = new global_state_component_factory_impl();
-	return gscf;
+	if (s_gscf == NULL) s_gscf = new global_state_component_factory_impl();
+	return s_gscf;
 }
 #endif // WITH_SMIL30

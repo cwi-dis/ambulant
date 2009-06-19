@@ -58,7 +58,9 @@ extern "C" {
 class AMBULANTAPI plugin_engine {
   public:
 
-  	/// Return the singleton plugin_engine object.
+	~plugin_engine();
+
+	/// Return the singleton plugin_engine object.
     static plugin_engine *get_plugin_engine();
     
     /// Add plugins to the given global factories.

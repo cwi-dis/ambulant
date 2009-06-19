@@ -81,7 +81,7 @@ public:
 			m_ambulant_player->stop();
 			delete m_ambulant_player;
 			m_ambulant_player = NULL;
-//causes crash	ambulant::gui::dx::dx_player::cleanup();
+			ambulant::gui::dx::dx_player::cleanup();//causes crash
 		}
 	}
 DECLARE_REGISTRY_RESOURCEID(IDR_ieambulant)
