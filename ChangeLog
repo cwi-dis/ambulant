@@ -1,3 +1,11 @@
+2009-06-18 16:13  keesblom
+
+	* 1. Some cleanup.  2. Created a .cab (cabinet) file and put this
+	  on the web 3. Created a webpage to show this cabinet at work.
+	  Needs code signing or IE security turned off.  Committed on the
+	  Free edition of March Hare Software CVSNT Server.  Upgrade to CVS
+	  Suite for more features and support: http://march-hare.com/cvsnt/
+
 2009-06-15 16:25  jackjansen
 
 	* CoreGraphics renderers (and accompanying XCode project) seem to
