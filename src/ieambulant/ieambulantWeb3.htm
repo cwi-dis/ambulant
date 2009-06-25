@@ -1,0 +1,153 @@
+<!-- Example HTML doc using Ambulant browser plugin for all browsers -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML id="ieambulant_html"  xmlns="http://www.w3.org/1999/xhtml">
+<HEAD id="ieambulant_head">
+<TITLE id="ieambulant_title">ATL 3.0 test page for object ieambulant</TITLE> <script LANGUAGE="JavaScript" type="text/javascript">
+// some functions for Ambulant web browser plugins (IE/Firefox/Safari/Opera)
+var isWatching1 = false;
+var isWatching2 = false;
+var isWatching3 = false;
+
+function ambulantObject(idd)
+{
+    var obj_element = document.getElementById(idd);
+	if (navigator.appName == "Microsoft Internet Explorer") {
+        return obj_element;
+    }
+    var embed_element = obj_element.getElementsByTagName("embed")[0];
+    return embed_element;
+}
+      
+function IsDone(idd)
+{
+    var done = this.ambulantObject(idd).isDone();
+    if (done == true) {
+	    window.status = idd+" done.";
+        if (idd == "ambulant_object1") {
+            this.isWatching1 = false; 
+            this.ambulantObject("ambulant_object1").stopPlayer();
+            this.ambulantObject("ambulant_object2").startPlayer();
+        }
+        else if (idd == "ambulant_object2") {
+            this.isWatching2 = false; 
+            this.ambulantObject("ambulant_object2").stopPlayer();
+            this.ambulantObject("ambulant_object3").startPlayer();
+        }
+        else if (idd == "ambulant_object3") {
+            this.isWatching3 = false; 
+            this.ambulantObject("ambulant_object3").stopPlayer();
+            this.ambulantObject("ambulant_object1").startPlayer();
+        }
+    } else {
+	    StartTimer (this.timeout,idd)
+    }
+}
+
+function StartTimer(timeout,idd)
+{
+    if (timeout > 0) {
+        this.timeout = timeout;
+        this.timer   = setTimeout('IsDone("'+idd+'")', timeout);
+        window.status = "Watching done...id="+idd;
+        if (idd == "ambulant_object1") isWatching1 = true;
+        if (idd == "ambulant_object2") isWatching2 = true;
+    } else {
+        clearTimeout(this.timer);
+        window.status = "Not watching done. id="+idd;
+        if (idd == "ambulant_object1") isWatching1 = false;
+        if (idd == "ambulant_object2") isWatching2 = false;
+    }
+}
+</script>
+</HEAD>
+
+<BODY id="ieambulant_body">
+<table align="left" cellspacing="0" cellpadding="0" border="0px" width="520px">
+<tbody>
+<tr>
+<td width="240" height="300" valign="top" align="center"> 
+<OBJECT     ID="ambulant_object1"
+            CLASSID="CLSID:886B87C0-930C-414c-BD35-B67BCC92FBEC"
+            codebase="http://www.cwi.nl/~kees/ambulant/ieambulant2.cab" 
+      	    width="240"
+		    height="270">
+    <PARAM  name="src"         value="http://ambulantplayer.org/Demos/Welcome/Welcome-smiltext.smil" />
+    <PARAM  name="type" 	   value="application/x-ambulant-smil"/> 
+    <PARAM  name="autostart"   value="true"  />
+    <EMBED	ID="ieambulant_embed1"
+    		type="application/x-ambulant-smil"
+    		width="240"
+	    	height="270"
+		src="http://ambulantplayer.org/Demos/Welcome/Welcome-smiltext.smil" />
+</OBJECT>
+<form name="formname">
+<input type=button value="Start"	onclick='ambulantObject("ambulant_object1").startPlayer()'>
+<input type=button value="Stop" 	onclick='ambulantObject("ambulant_object1").stopPlayer()'>
+<input type=button value="Restart"	onclick='ambulantObject("ambulant_object1").restartPlayer()'>
+<br>
+<input type=button value="Resume"	onclick='ambulantObject("ambulant_object1").resumePlayer()'>
+<input type=button value="Pause"	onclick='ambulantObject("ambulant_object1").pausePlayer()'>
+<input type=button value="NextWhenDone" onclick='if (isWatching1) StartTimer(0,"ambulant_object1"); else StartTimer(500,"ambulant_object1")'>
+</form>
+<!-- -->
+</td> 
+<td width="40" height="300" valign="top"></td>   
+<td width="240" height="300" valign="top" align="center"> 
+<OBJECT     ID="ambulant_object2"
+            CLASSID="CLSID:886B87C0-930C-414c-BD35-B67BCC92FBEC"
+            codebase="http://www.cwi.nl/~kees/ambulant/ieambulant2.cab" 
+      	width="240"
+		height="270">
+    <PARAM  name="src"         value="http://ambulantplayer.org/Demos/smilText/NYC-sT.smil" />
+    <PARAM  name="type" 	  value="application/x-ambulant-smil"/> 
+    <PARAM  name="autostart"   value="false"  />
+    <EMBED	ID="ieambulant_embed2"
+    		type="application/x-ambulant-smil"
+     		left="300"
+   	    	width="240"
+	    	height="270"
+	      src="http://ambulantplayer.org/Demos/smilText/NYC-sT.smil" />
+</OBJECT>
+<form name="formname2" left="300" width="240">
+<input type=button value="Start"	onclick='ambulantObject("ambulant_object2").startPlayer()'>
+<input type=button value="Stop" 	onclick='ambulantObject("ambulant_object2").stopPlayer()'>
+<input type=button value="Restart"	onclick='ambulantObject("ambulant_object2").restartPlayer()'>
+<br>
+<input type=button value="Resume"	onclick='ambulantObject("ambulant_object2").resumePlayer()'>
+<input type=button value="Pause"	onclick='ambulantObject("ambulant_object2").pausePlayer()'>
+<input type=button value="NextWhenDone" onclick='if (isWatching2) StartTimer(0,"ambulant_object2"); else StartTimer(500,"ambulant_object2")'>
+</form>
+<!-- -->
+</td>
+<td width="300" height="40" valign="top"></td>   
+<td width="240" height="300" valign="top" align="center"> 
+<OBJECT     ID="ambulant_object3"
+            CLASSID="CLSID:886B87C0-930C-414c-BD35-B67BCC92FBEC"
+            codebase="http://www.cwi.nl/~kees/ambulant/ieambulant2.cab" 
+      	width="240"
+		height="270">
+    <PARAM  name="src"         value="http://ambulantplayer.org/Demos/Birthday/HappyBirthday.smil" />
+    <PARAM  name="type" 	  value="application/x-ambulant-smil"/> 
+    <PARAM  name="autostart"   value="false"  />
+    <EMBED	ID="ieambulant_embed3"
+    		type="application/x-ambulant-smil"
+     		left="300"
+   	    	width="240"
+	    	height="270"
+	      src="http://ambulantplayer.org/Demos/Birthday/HappyBirthday.smil" />
+</OBJECT>
+<form name="formname2" left="300" width="240">
+<input type=button value="Start"	onclick='ambulantObject("ambulant_object3").startPlayer()'>
+<input type=button value="Stop" 	onclick='ambulantObject("ambulant_object3").stopPlayer()'>
+<input type=button value="Restart"	onclick='ambulantObject("ambulant_object3").restartPlayer()'>
+<br>
+<input type=button value="Resume"	onclick='ambulantObject("ambulant_object3").resumePlayer()'>
+<input type=button value="Pause"	onclick='ambulantObject("ambulant_object3").pausePlayer()'>
+<input type=button value="NextWhenDone" onclick='if (isWatching3) StartTimer(0,"ambulant_object3"); else StartTimer(500,"ambulant_object3")'>
+</form>
+<!-- -->
+</td>
+</tbody>
+</table>
+</BODY>
+</HTML>
