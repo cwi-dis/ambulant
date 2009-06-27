@@ -1,3 +1,19 @@
+2009-06-25 14:49  keesblom
+
+	* Added 2 more html files with 2 and 3 independent players
+
+2009-06-23 15:42  keesblom
+
+	* Fixed wrong "src" value for embed tag
+
+2009-06-19 14:24  keesblom
+
+	* Modified code s.t. module that need singletons will reset these
+	  to NULL on cleanup. This is necessary for browser plugins.
+	  Committed on the Free edition of March Hare Software CVSNT
+	  Server.  Upgrade to CVS Suite for more features and support:
+	  http://march-hare.com/cvsnt/
+
 2009-06-18 16:13  keesblom
 
 	* 1. Some cleanup.  2. Created a .cab (cabinet) file and put this
