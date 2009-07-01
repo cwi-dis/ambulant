@@ -1,11 +1,14 @@
 Installation instructions for installing the AmbulantPlayer Firefox plugin
-version 2.0.2 (xpcom version, works only with Firefox) on Linux (32/64 bit):
-Move or copy the following files from this .zip file to:
+version 2.1 (xulrunner version, with Firefox and other compliant browsers)
+on Linux (32/64 bit):
+
+Remove all file installed for previous versions (if any).
+
+Move or copy the following file from this .zip file to:
 $HOME/.mozilla/plugins
 (or as root for system-wide installation to: /usr/lib/mozilla/plugins)
 
 npambulant.so
-npambulant.xpt
 
 Restart Firefox.
 
@@ -14,15 +17,19 @@ For uninstall, remove above files.
 Notes:
 1. This is an experimental version. Sometimes when npambulant is loaded,
    Firefox may hang or crash.
+
 2. The current version of npambulant is incompatible with nspluginwrapper.
    For root installations, you can disable nspluginwrapper by adding
    ":npambulant*" to the variable IGNORE_WRAP in "/etc/sysconfig/nspluginwrapper"
-3. For a 64-bit version, copy npambulant.so-64 in place of npambulant.so in one of the
-   directories mentioned above.
+3. For a 64-bit version, copy npambulant.so-64 in place of npambulant.so 
+   in one of the directories mentioned above.
+
 4. This version was build with the following options:
    for ambulant:
-   ./configure --prefix=$HOME CFLAGS=-fPIC CXXFLAGS=-fPIC --with-live --without-python --without-xerces --without-plugins --without-qt --with-npambulant LDFLAGS=-L$HOME/lib EXTRA_LIBS=-lfaad
+   ./configure --prefix=$HOME CFLAGS=-fPIC CXXFLAGS=-fPIC --with-live --without-python --without-xerces --without-plugins --without-qt --with-npambulant LDFLAGS=-L$HOME/lib EXTRA_LIBS=-lfaad 
    for ffmpeg:
-   ./configure --enable-libfaad --enable-pthreads --enable-gpl --enable-x11grab --disable-swscale --enable-shared --extra-cflags=-fPIC -O0 -I/ufs/kees/include --extra-ldflags=-L/ufs/kees/lib --prefix=/ufs/kees --disable-mmx 
+   ./configure --enable-libfaad --enable-pthreads --enable-gpl --enable-x11grab --disable-swscale --disable-shared --extra-cflags=-fPIC -O0 -I/ufs/kees/include --extra-ldflags=-L/ufs/kees/lib --prefix=/ufs/kees --disable-mmx 
    (fPIC and --disable-mmx only for 64 bit)
-   In addition, the 64-bit link was done by link-patch.
+   In addition, final link was done with .../src/npambulant/linkit, and some
+   manual labor as described in comments in that script.
+
