@@ -45,6 +45,7 @@
 //#define ptrdiff_t long int // but not defined in Visual C++ 7.1.
 #endif//XP_WIN32
 
+#include "npapi.h"
 #include "npambulant.h"
 
 char*
