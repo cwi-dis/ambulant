@@ -1,3 +1,17 @@
+2009-07-01 15:27  keesblom
+
+	* Updated README-linux for the xulrunner version.
+
+2009-07-01 15:15  keesblom
+
+	* Finally made it: npambulant.so linked as a dynamic library that
+	  contains everything it needs. Had to construct a hand-coded link
+	  line and some manual tweaks, documented as comment in "linkit"
+
+2009-07-01 10:40  jackjansen
+
+	* Oldish mods that were still sitting on my disk.
+
 2009-06-25 14:49  keesblom
 
 	* Added 2 more html files with 2 and 3 independent players
