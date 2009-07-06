@@ -1,5 +1,8 @@
 # this line was used to create an alnost self-contained plugin
 # prior, following hand-made changes were done:
+# configured ambulant:
+#./configure --enable-maintainer-mode --enable-compile-warnings --prefix=$HOME CXXFLAGS=-fPIC -I$HOME/include -I$HOME/Work/Ambulant/ambulant/third_party_packages/xulrunner-sdk/include/plugin/ -O0  -g LDFLAGS=-L$HOME/lib -L$HOME/Work/Ambulant/ambulant/third_party_packages/xulrunner-sdk/lib/ CFLAGS=-I$HOME/include -I$HOME/Work/Ambulant/ambulant/third_party_packages/xulrunner-sdk/include/plugin/ -O0 -g CPPFLAGS=-I$HOME/include --without-xerces --without-xerces-plugin --with-npambulant --without-plugins --enable-static --disable-dynamic
+# make;make install
 # all third-party libraries installed in $HOME/lib, and the .so versions removed
 # AmbulantPlayer_gtk was build, and installed in $HOME
 # .so version were romoved and symbolic links wre made in $HOME/lib:
