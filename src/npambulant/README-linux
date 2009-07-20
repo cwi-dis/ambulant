@@ -32,4 +32,3 @@ Notes:
    (fPIC and --disable-mmx only for 64 bit)
    In addition, final link was done with .../src/npambulant/linkit, and some
    manual labor as described in comments in that script.
-
