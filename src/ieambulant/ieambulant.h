@@ -131,7 +131,10 @@ BEGIN_MSG_MAP(Cieambulant)
 	MESSAGE_HANDLER(WM_CREATE, OnCreate)
 	MESSAGE_HANDLER(WM_SETFOCUS, OnSetFocus)
 	MESSAGE_HANDLER(WM_PAINT, PluginWinProc)
-	CHAIN_MSG_MAP(CComControl<Cieambulant>)
+	MESSAGE_HANDLER(WM_MOUSEMOVE, PluginWinProc)
+//	MESSAGE_HANDLER(WM_MOUSEWHEEL, Plugin)
+	MESSAGE_HANDLER(WM_LBUTTONDOWN, PluginWinProc)
+CHAIN_MSG_MAP(CComControl<Cieambulant>)
 ALT_MSG_MAP(1)
 	// Replace this with message map entries for superclassed Static
 END_MSG_MAP()
@@ -251,6 +254,12 @@ public:
 	STDMETHOD(pausePlayer)(void);
 	STDMETHOD(resumePlayer)(void);
 	STDMETHOD(isDone)(/*[out, retval]*/ BOOL *pVal);
+public:
+	LRESULT OnMouseMove(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+public:
+//	LRESULT Plugin(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+public:
+	LRESULT OnLButtonDown(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 };
 
 extern "C" {

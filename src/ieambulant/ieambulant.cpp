@@ -159,7 +159,7 @@ Cieambulant::updatePlayer()
             m_url = m_url.join_to_base(m_base_url);
     }
 	if (m_hwnd == NULL) {
-		m_hwnd = this->m_hWnd; //::GetWindow(this->m_hWnd, GW_HWNDFIRST);
+		m_hwnd = this->m_hWnd;//::GetWindow(this->m_hWnd, GW_HWNDFIRST);
 		m_player_callbacks.set_os_window(m_hwnd);
 		s_hwnd = m_hwnd;
 	}
@@ -191,6 +191,11 @@ Cieambulant::PluginWinProc(UINT msg, WPARAM wParam, LPARAM lParam, BOOL& bHandle
 	typedef HRGN NPRegion;
 	if (updatePlayer() != S_OK)
 		return S_FALSE;
+	static FILE* logfile = NULL;
+	if (logfile == NULL) {
+		logfile = fopen("C:\\logfile.txt", "w");
+	}
+	fprintf(logfile,"msg=%d\n",msg);
 
 	switch (msg) {
 		case WM_PAINT:
@@ -446,3 +451,20 @@ Cieambulant::resumePlayer( void) {
 	} else
 		return E_FAIL;
 }
+
+LRESULT Cieambulant::OnMouseMove(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+{
+	return PluginWinProc(uMsg, wParam, lParam, bHandled);
+}
+
+LRESULT Cieambulant::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+{
+	return PluginWinProc(uMsg, wParam, lParam, bHandled);
+}
+
+//LRESULT Cieambulant::Plugin(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+//{
+//	// TODO: Add your message handler code here and/or call default
+//
+//	return 0;
+//}
