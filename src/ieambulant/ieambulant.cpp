@@ -5,6 +5,10 @@
 #include "ieambulant.h"
 #include <fstream>
 #include <string>
+//#define AM_DBG
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
 
 /////////////////////////////////////////////////////////////////////////////
 // Cieambulant
@@ -164,6 +168,25 @@ Cieambulant::updatePlayer()
 		s_hwnd = m_hwnd;
 	}
 	if (m_ambulant_player == NULL) {
+		// prepare for dynamic linking ffmpeg
+#if 1
+		ambulant::common::preferences *prefs = ambulant::common::preferences::get_preferences();
+		prefs->m_prefer_ffmpeg = true;
+		prefs->m_use_plugins = false;
+		// for Windows, ffmpeg is only available as plugin
+		prefs->m_use_plugins = true;
+		prefs->m_plugin_dir = ambulant::lib::win32::get_module_dir();//+"\plugins\\";
+#endif
+		// save the HWND for any Ambulant plugins (such as SMIL State)
+		ambulant::common::plugin_engine *pe = ambulant::common::plugin_engine::get_plugin_engine();
+		void *edptr = pe->get_extra_data("npapi_extra_data");
+		if (edptr) {
+			*(HWND*)edptr = m_hWnd;;
+			AM_DBG fprintf(stderr, "ieambulant::updatePlayer(): setting npapi_extra_data(0x%x) to HWND 0x%x\n", edptr, m_hWnd);
+		} else {
+			AM_DBG fprintf(stderr, "ieambulant::updatePlayer(): Cannot find npapi_extra_data, cannot communicate HWND\n");
+		}
+
 		m_player_callbacks.set_os_window(m_hwnd);
 		m_ambulant_player = new ambulant::gui::dx::dx_player(m_player_callbacks, NULL, m_url);
 //X		m_ambulant_player->set_state_component_factory(NULL); // XXXJACK DEBUG!!!!
