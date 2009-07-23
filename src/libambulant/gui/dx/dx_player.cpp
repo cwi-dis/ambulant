@@ -303,7 +303,9 @@ void gui::dx::dx_player::stop() {
 
 void gui::dx::dx_player::pause() {
 	if(m_player) {
+		lock_redraw();
 		common::gui_player::pause();
+		unlock_redraw();
 	}
 }
 
