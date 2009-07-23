@@ -258,7 +258,7 @@ Cieambulant::PluginWinProc(UINT msg, WPARAM wParam, LPARAM lParam, BOOL& bHandle
 							} else {
 								new_cursor = LoadCursor(hIns, IDC_HAND); 
 							}
-//XX						SetClassLongPtr(GCLP_HCURSOR, HandleToLong(new_cursor));
+							SetClassLongPtr(m_hwnd, GCLP_HCURSOR, HandleToLong(new_cursor));
 							m_cursor_id = new_cursor_id;
 						}
 					} else {
