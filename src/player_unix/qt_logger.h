@@ -38,7 +38,6 @@
 #include "ambulant/version.h"
 #include "ambulant/config/config.h"
 #include "ambulant/lib/amstream.h"
-#include "ambulant/lib/byte_buffer.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/common/preferences.h"
 

@@ -38,7 +38,6 @@
 #include "ambulant/version.h"
 #include "ambulant/config/config.h"
 #include "ambulant/lib/amstream.h"
-#include "ambulant/lib/byte_buffer.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/common/preferences.h"
 
@@ -79,7 +78,6 @@ class gtk_logger_ostream : public ambulant::lib::ostream {
 	int  write(const unsigned char *buffer, int nbytes);
 	int  write(const char *cstr);
 	int  write(std::string s);
-	void write(ambulant::lib::byte_buffer& bb);
 	void flush();
   private:
 	GString *m_string;

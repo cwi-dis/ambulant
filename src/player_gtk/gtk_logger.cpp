@@ -60,13 +60,6 @@ gtk_logger_ostream::write(std::string s)
 }
 
 void
-gtk_logger_ostream::write(lib::byte_buffer& bb)
-{
-	std::string id("gtk_logger_ostream::write(lib::byte_buffer& bb)");
-	write(id+" not implemented for GTK");
-}
-
-void
 gtk_logger_ostream::close() {
 	std::string id("gtk_logger_ostream::close()");
 }

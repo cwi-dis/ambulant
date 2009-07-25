@@ -61,13 +61,6 @@ qt_logger_ostream::write(std::string s)
 }
 
 void
-qt_logger_ostream::write(lib::byte_buffer& bb)
-{
-	std::string id("qt_logger_ostream::write(lib::byte_buffer& bb)");
-	write(id+" not implemented for Qt");
-}
-
-void
 qt_logger_ostream::close() {
 	std::string id("qt_logger_ostream::close()");
 }
