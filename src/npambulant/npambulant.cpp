@@ -57,79 +57,91 @@ application/smil+xml:.smil:W3C Smil 3.0 Playable Multimedia file;\
 application/x-ambulant-smil:.smil:W3C Smil 3.0 Ambulant Player compatible file;";
 
 npambulant::npambulant(NPMIMEType mimetype, NPP pNPInstance, PRUint16 mode,
-				 int argc, char* argn[], char* argv[], NPSavedData* data) :
-  m_mimetype(mimetype),
-  m_pNPInstance(pNPInstance ),
-  m_mode(mode),
-  m_argc(argc),  
-  m_argn(argn),
-  m_argv(argv),
-  m_data(data),
-  m_pNPStream(NULL),
-  m_bInitialized(FALSE),
-  m_pScriptableObject(NULL),
-  m_ambulant_player(NULL)
+		       int argc, char* argn[], char* argv[], NPSavedData* data) :
+	m_mimetype(mimetype),
+	m_pNPInstance(pNPInstance ),
+	m_mode(mode),
+	m_argc(argc),  
+	m_argn(argn),
+	m_argv(argv),
+	m_data(data),
+	m_pNPStream(NULL),
+	m_bInitialized(FALSE),
+	m_pScriptableObject(NULL),
+	m_ambulant_player(NULL)
 {
 #ifdef XP_WIN
-  m_hWnd = NULL;
-  m_lpOldProc = NULL;
-  m_OldWindow = NULL;
+	m_hWnd = NULL;
+	m_lpOldProc = NULL;
+	m_OldWindow = NULL;
 #endif
 
-  NPN_GetValue(m_pNPInstance, NPNVWindowNPObject, &sWindowObj);
+	NPN_GetValue(m_pNPInstance, NPNVWindowNPObject, &sWindowObj);
 
-  sStartPlayer_id = NPN_GetStringIdentifier("startPlayer");
-  sStopPlayer_id = NPN_GetStringIdentifier("stopPlayer");
-  sRestartPlayer_id = NPN_GetStringIdentifier("restartPlayer");
-  sPausePlayer_id = NPN_GetStringIdentifier("pausePlayer");
-  sResumePlayer_id = NPN_GetStringIdentifier("resumePlayer");
-  sIsDone_id = NPN_GetStringIdentifier("isDone");
+	sStartPlayer_id = NPN_GetStringIdentifier("startPlayer");
+	sStopPlayer_id = NPN_GetStringIdentifier("stopPlayer");
+	sRestartPlayer_id = NPN_GetStringIdentifier("restartPlayer");
+	sPausePlayer_id = NPN_GetStringIdentifier("pausePlayer");
+	sResumePlayer_id = NPN_GetStringIdentifier("resumePlayer");
+	sIsDone_id = NPN_GetStringIdentifier("isDone");
 
-  sDocument_id = NPN_GetStringIdentifier("document");
-  sBody_id = NPN_GetStringIdentifier("body");
-  sCreateElement_id = NPN_GetStringIdentifier("createElement");
-  sCreateTextNode_id = NPN_GetStringIdentifier("createTextNode");
-  sAppendChild_id = NPN_GetStringIdentifier("appendChild");
-  sPluginType_id = NPN_GetStringIdentifier("PluginType");
+	sDocument_id = NPN_GetStringIdentifier("document");
+	sBody_id = NPN_GetStringIdentifier("body");
+	sCreateElement_id = NPN_GetStringIdentifier("createElement");
+	sCreateTextNode_id = NPN_GetStringIdentifier("createTextNode");
+	sAppendChild_id = NPN_GetStringIdentifier("appendChild");
+	sPluginType_id = NPN_GetStringIdentifier("PluginType");
 
-  DECLARE_NPOBJECT_CLASS_WITH_BASE(ScriptablePluginObject,
-								   AllocateScriptablePluginObject);//KB
+	DECLARE_NPOBJECT_CLASS_WITH_BASE(ScriptablePluginObject, AllocateScriptablePluginObject);//KB
 
-  const char *ua = NPN_UserAgent(m_pNPInstance);
-  strcpy(m_String, ua);
-  extern NPP s_npambulant_last_instance;
-  s_npambulant_last_instance = pNPInstance;
+	const char *ua = NPN_UserAgent(m_pNPInstance);
+	strcpy(m_String, ua);
+	extern NPP s_npambulant_last_instance;
+	/* copy argument names and values, as some browers (Chrome) re-use their space */
+	m_argn = (char**) malloc (sizeof(char*)*argc);
+	m_argv = (char**) malloc (sizeof(char*)*argc);
+	for (int i=0; i<m_argc; i++) {
+		m_argn[i] = strdup(argn[i]);
+		m_argv[i] = strdup(argv[i]);
+	}
+	s_npambulant_last_instance = pNPInstance;
 }
 
 npambulant::~npambulant()
 {
-  if (sWindowObj)
-    NPN_ReleaseObject(sWindowObj);
-  if (m_pScriptableObject)
-    NPN_ReleaseObject(m_pScriptableObject);
+	if (sWindowObj)
+		NPN_ReleaseObject(sWindowObj);
+	if (m_pScriptableObject)
+		NPN_ReleaseObject(m_pScriptableObject);
 
-  sWindowObj = 0;
-  extern NPP s_npambulant_last_instance;
-  s_npambulant_last_instance = NULL;
+	sWindowObj = 0;
+	extern NPP s_npambulant_last_instance;
+	s_npambulant_last_instance = NULL;
+	for (int i=0; i<m_argc; i++) {
+		free(m_argn[i]);
+		free(m_argv[i]);
+	}
+	free(m_argn);
+	free(m_argv);
 }
 
 bool
 npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 {
 	AM_DBG fprintf(stderr, "npambulant::init(0x%x)\n", aWindow);
-    if(aWindow == NULL)
+	if(aWindow == NULL)
 		return FALSE;
 	// prepare for dynamic linking ffmpeg
 #if 1
-    ambulant::common::preferences *prefs = ambulant::common::preferences::get_preferences();
-    prefs->m_prefer_ffmpeg = true;
-    prefs->m_use_plugins = false;
+	ambulant::common::preferences *prefs = ambulant::common::preferences::get_preferences();
+	prefs->m_prefer_ffmpeg = true;
+	prefs->m_use_plugins = false;
 #ifdef XP_WIN32
-    // for Windows, ffmpeg is only available as plugin
-    prefs->m_use_plugins = true;
-    prefs->m_plugin_dir = lib::win32::get_module_dir()+"\plugins\\";
-    ambulant::lib::textptr pn_conv(prefs->m_plugin_dir.c_str());
-    SetDllDirectory (pn_conv);
+	// for Windows, ffmpeg is only available as plugin
+	prefs->m_use_plugins = true;
+	prefs->m_plugin_dir = lib::win32::get_module_dir()+"\plugins\\";
+	ambulant::lib::textptr pn_conv(prefs->m_plugin_dir.c_str());
+	SetDllDirectory (pn_conv);
 //#elseif TBD
 #endif         XP_WIN3
 #endif
@@ -141,15 +153,14 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 		AM_DBG fprintf(stderr, "npambulant::init: setting npapi_extra_data(0x%x) to NPWindow 0x%x\n", edptr, aWindow);
 	} else {
 		AM_DBG fprintf(stderr, "AmbulantWebKitPlugin: Cannot find npapi_extra_data, cannot communicate NPWindow\n");
-	}
+    }
 #ifdef	MOZ_X11
-    NPSetWindowCallbackStruct *ws_info =
-    	(NPSetWindowCallbackStruct *)aWindow->ws_info;
+	NPSetWindowCallbackStruct *ws_info = (NPSetWindowCallbackStruct *)aWindow->ws_info;
 #endif/*MOZ_X11*/
-    long long ll_winid = reinterpret_cast<long long>(aWindow->window);
-    int i_winid = static_cast<int>(ll_winid);
+	long long ll_winid = reinterpret_cast<long long>(aWindow->window);
+	int i_winid = static_cast<int>(ll_winid);
 #ifdef WITH_GTK
-    GtkWidget* gtkwidget = GTK_WIDGET(gtk_plug_new((GdkNativeWindow) i_winid));
+	GtkWidget* gtkwidget = GTK_WIDGET(gtk_plug_new((GdkNativeWindow) i_winid));
 #endif // WITH_GTK
 #ifdef	XP_WIN32
 	m_hwnd = (HWND)aWindow->window;
@@ -160,60 +171,60 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 	ambulant::lib::logger::get_logger()->set_show_message(npambulant_display_message);
 	ambulant::lib::logger::get_logger()->show("Ambulant plugin loaded");
 
-    const char* arg_str = NULL;
-    if (m_argc > 1)
-    for (int i =0; i < m_argc; i++) {
-//		Uncomment next line to see the <EMBED/> attr values	
-//  	fprintf(stderr, "arg[%i]:%s=%s\n",i,m_argn[i],m_argv[i]);
-		const char* name = m_argn[i];
-		const char* value = m_argv[i];
-        if (strcasecmp(name, "data") == 0)
-            if (arg_str == NULL)
-                arg_str = value;
-            if (strcasecmp(name,"src") == 0)
-                if (arg_str == NULL)
-                    arg_str = value;
-    }
-    if (arg_str == NULL)
-        return false;
-    net::url file_url;
-    net::url arg_url = net::url::from_url (arg_str);
-    char* url_str = NULL;
-    if (arg_url.is_absolute()) {
-        url_str = strdup(arg_url.get_url().c_str());
-    } else {
-        char* loc_str = get_document_location();
-        if (loc_str != NULL) {
-            net::url loc_url = net::url::from_url (loc_str);
-            file_url = arg_url.join_to_base(loc_url);
-            free((void*)loc_str);
-        } else {
-            file_url = arg_url;
-        }
-        url_str = strdup(file_url.get_url().c_str());
-    }
+	const char* arg_str = NULL;
+	if (m_argc > 1)
+		for (int i =0; i < m_argc; i++) {
+			// Uncomment next line to see the <EMBED/> attr values	
+			// fprintf(stderr, "arg[%i]:%s=%s\n",i,m_argn[i],m_argv[i]);
+			const char* name = m_argn[i];
+			const char* value = m_argv[i];
+			if (strcasecmp(name, "data") == 0)
+				if (arg_str == NULL)
+					arg_str = value;
+			if (strcasecmp(name,"src") == 0)
+		                if (arg_str == NULL)
+					arg_str = value;
+		}
+	if (arg_str == NULL)
+        	return false;
+    	net::url file_url;
+	net::url arg_url = net::url::from_url (arg_str);
+	char* url_str = NULL;
+	if (arg_url.is_absolute()) {
+        	url_str = strdup(arg_url.get_url().c_str());
+	} else {
+        	char* loc_str = get_document_location();
+	        if (loc_str != NULL) {
+		  net::url loc_url = net::url::from_url (loc_str);
+		  file_url = arg_url.join_to_base(loc_url);
+		  free((void*)loc_str);
+		} else {
+			file_url = arg_url;
+		}
+		url_str = strdup(file_url.get_url().c_str());
+	}
 	m_url = file_url;
 #ifdef WITH_GTK
-    gtk_gui* m_gui = new gtk_gui((char*) gtkwidget, url_str);
-    m_mainloop = new gtk_mainloop(m_gui);
-    if (url_str) 
-        free((void*)url_str);
+	gtk_gui* m_gui = new gtk_gui((char*) gtkwidget, url_str);
+	m_mainloop = new gtk_mainloop(m_gui);
+	if (url_str) 
+	        free((void*)url_str);
 	m_logger = lib::logger::get_logger();
-    m_ambulant_player = m_mainloop->get_player();
-    if (m_ambulant_player == NULL)
-        return false;
-    m_ambulant_player->start();
-    gtk_widget_show_all (gtkwidget);
+	m_ambulant_player = m_mainloop->get_player();
+	if (m_ambulant_player == NULL)
+	        return false;
+	m_ambulant_player->start();
+	gtk_widget_show_all (gtkwidget);
 	gtk_widget_realize(gtkwidget);
 #endif // WITH_GTK
 #ifdef WITH_CG
 	void *view = NULL;
 	m_mainloop = new cg_mainloop(url_str, view, false, NULL);
 	m_logger = lib::logger::get_logger();
-    m_ambulant_player = m_mainloop->get_player();
-    if (m_ambulant_player == NULL)
-        return false;
-    m_ambulant_player->start();
+	m_ambulant_player = m_mainloop->get_player();
+	if (m_ambulant_player == NULL)
+	        return false;
+	m_ambulant_player->start();
 #endif // WITH_CG
 #ifdef	XP_WIN32
 	m_player_callbacks.set_os_window(m_hwnd);
@@ -227,10 +238,10 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 			m_ambulant_player->play();
 	}
 	m_bInitialized = TRUE;
-    return TRUE;
+	return TRUE;
 #else // ! XP_WIN32
 	m_bInitialized = true;
-    return true;
+	return true;
 #endif// ! XP_WIN32
 }
 
@@ -241,7 +252,7 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 char* npambulant::get_document_location()
 {
 	AM_DBG fprintf(stderr, "npambulant::get_document_location()\n");
-    char *rv = NULL;
+	char *rv = NULL;
 
 	// Get document
 	NPVariant npvDocument;
@@ -279,10 +290,10 @@ char* npambulant::get_document_location()
 	rv[href.utf8length] = '\0';
 	AM_DBG fprintf(stderr, "get_document_location: returning \"%s\"\n", rv);
 	
-    NPN_ReleaseVariantValue(&npvLocation);
-    NPN_ReleaseVariantValue(&npvDocument);
-    NPN_ReleaseVariantValue(&npvHref);
-    return rv;
+	NPN_ReleaseVariantValue(&npvLocation);
+	NPN_ReleaseVariantValue(&npvDocument);
+	NPN_ReleaseVariantValue(&npvHref);
+	return rv;
 }
 
 NPBool
@@ -345,33 +356,33 @@ npambulant::shut()
 NPBool
 npambulant::isInitialized()
 {
-  return m_bInitialized;
+	return m_bInitialized;
 }
 
 NPP
 npambulant::getNPP() {
-  return m_pNPInstance;
+	return m_pNPInstance;
 }
 
 const char*
 npambulant::getValue(const char *name) {
-  return NULL; //TBD
+	return NULL; //TBD
 }
 
 int16
 npambulant::handleEvent(void* event)
 {
 #ifdef XP_MAC
-  NPEvent* ev = (NPEvent*)event;
-  if (m_Window) {
-    Rect box = { m_Window->y, m_Window->x,
-                 m_Window->y + m_Window->height, m_Window->x + m_Window->width };
-    if (ev->what == updateEvt) {
-      ::TETextBox(m_String, strlen(m_String), &box, teJustCenter);
-    }
-  }
+	NPEvent* ev = (NPEvent*)event;
+	if (m_Window) {
+		Rect box = { m_Window->y, m_Window->x,
+			     m_Window->y + m_Window->height, m_Window->x + m_Window->width };
+		if (ev->what == updateEvt) {
+			::TETextBox(m_String, strlen(m_String), &box, teJustCenter);
+		}
+	}
 #endif
-  return 0;
+	return 0;
 }
 
 // this will start AmbulantPlayer
@@ -380,7 +391,7 @@ npambulant::startPlayer()
 {
 	AM_DBG lib::logger::get_logger()->debug("npambulant::startPlayer()\n");
 	if (m_ambulant_player != NULL)
-	  get_player()->start();
+		get_player()->start();
 }
 
 // this will stop AmbulantPlayer
@@ -389,7 +400,7 @@ npambulant::stopPlayer()
 {
 	AM_DBG lib::logger::get_logger()->debug("npambulant::stopPlayer()\n");
 	if (m_ambulant_player != NULL)
-	  get_player()->stop();
+		get_player()->stop();
 }
 
 // this will restart AmbulantPlayer
@@ -398,8 +409,8 @@ npambulant::restartPlayer()
 {
 	AM_DBG lib::logger::get_logger()->debug("npambulant::restartPlayer()\n");
 	if (m_ambulant_player != NULL) {
-	  get_player()->stop();
-	  get_player()->start();
+		get_player()->stop();
+		get_player()->start();
 	}
 }
 
@@ -409,7 +420,7 @@ npambulant::pausePlayer()
 {
 	AM_DBG lib::logger::get_logger()->debug("npambulant::pausePlayer()\n");
 	if (m_ambulant_player != NULL)
-	  get_player()->pause();
+		get_player()->pause();
 }
 
 // this will resume AmbulantPlayer
@@ -418,7 +429,7 @@ npambulant::resumePlayer()
 {
 	AM_DBG lib::logger::get_logger()->debug("npambulant::resumePlayer()\n");
 	if (m_ambulant_player != NULL)
-	  get_player()->resume();
+		get_player()->resume();
 }
 
 // this will restart AmbulantPlayer
@@ -427,7 +438,7 @@ npambulant::isDone()
 {
 	AM_DBG lib::logger::get_logger()->debug("npambulant::isDone()\n");
 	if (m_ambulant_player != NULL) {
-	  return get_player()->is_done();
+		return get_player()->is_done();
 	}
 	return false;
 }
@@ -436,82 +447,80 @@ npambulant::isDone()
 void
 npambulant::showVersion()
 {
-  const char *ua = NPN_UserAgent(m_pNPInstance);
-  strcpy(m_String, ua);
+	const char *ua = NPN_UserAgent(m_pNPInstance);
+	strcpy(m_String, ua);
 
 #ifdef XP_WIN
-  InvalidateRect(m_hWnd, NULL, TRUE);
-  UpdateWindow(m_hWnd);
+	InvalidateRect(m_hWnd, NULL, TRUE);
+	UpdateWindow(m_hWnd);
 #endif
 
-  if (m_Window) {
-    NPRect r =
+	if (m_Window) {
+		NPRect r =
 #ifdef JNK
-      {
-        (uint16)m_Window->y, (uint16)m_Window->x,
-        (uint16)(m_Window->y + m_Window->height),
-        (uint16)(m_Window->x + m_Window->width)
-      };
+			{
+				(uint16)m_Window->y, (uint16)m_Window->x,
+				(uint16)(m_Window->y + m_Window->height),
+				(uint16)(m_Window->x + m_Window->width)
+			};
 #else //JNK
-	{ 0,0,200,200 };
+			{ 0,0,200,200 };
 #endif//JNK
-    NPN_InvalidateRect(m_pNPInstance, &r);
-  }
+			NPN_InvalidateRect(m_pNPInstance, &r);
+	}
 }
 
 // this will clean the plugin window
 void
 npambulant::clear()
 {
-  strcpy(m_String, "");
+	strcpy(m_String, "");
 
 #ifdef XP_WIN
-  InvalidateRect(m_hWnd, NULL, TRUE);
-  UpdateWindow(m_hWnd);
+	InvalidateRect(m_hWnd, NULL, TRUE);
+	UpdateWindow(m_hWnd);
 #endif
 }
 
 void
 npambulant::getVersion(char* *aVersion)
 {
-  const char *ua = NPN_UserAgent(m_pNPInstance);
-  char*& version = *aVersion;
-  version = (char*)NPN_MemAlloc(1 + strlen(ua));
-  if (version)
-    strcpy(version, ua);
+	const char *ua = NPN_UserAgent(m_pNPInstance);
+	char*& version = *aVersion;
+	version = (char*)NPN_MemAlloc(1 + strlen(ua));
+	if (version)
+		strcpy(version, ua);
 }
 
 NPObject *
 npambulant::GetScriptableObject()
 {
+	DECLARE_NPOBJECT_CLASS_WITH_BASE(ScriptablePluginObject,
+					 AllocateScriptablePluginObject);//KB
+	if (!m_pScriptableObject) {
+		m_pScriptableObject =
+			NPN_CreateObject(m_pNPInstance,
+					 GET_NPOBJECT_CLASS(ScriptablePluginObject));
+	}
 
+	if (m_pScriptableObject) {
+		NPN_RetainObject(m_pScriptableObject);
+	}
 
-DECLARE_NPOBJECT_CLASS_WITH_BASE(ScriptablePluginObject,
-                                 AllocateScriptablePluginObject);//KB
-  if (!m_pScriptableObject) {
-    m_pScriptableObject =
-      NPN_CreateObject(m_pNPInstance,
-                       GET_NPOBJECT_CLASS(ScriptablePluginObject));
-  }
-
-  if (m_pScriptableObject) {
-    NPN_RetainObject(m_pScriptableObject);
-  }
-
-  return m_pScriptableObject;
+	return m_pScriptableObject;
 }
 
 /* status line */	
 #ifndef WIN32
 extern "C" {
 #endif//WIN32
-  NPP s_npambulant_last_instance = NULL;
+NPP s_npambulant_last_instance = NULL;
   
-  void
-  npambulant_display_message(int level, const char *message) {
+void
+npambulant_display_message(int level, const char *message) {
 	if (s_npambulant_last_instance)
-	  NPN_Status(s_npambulant_last_instance, message);
-  }
+		NPN_Status(s_npambulant_last_instance, message);
+}
 #ifndef WIN32
 } // extern "C"
 #endif//WIN32
@@ -554,8 +563,8 @@ PluginWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 					if (msg == WM_MOUSEMOVE) {
 						// code copied from MmView.cpp
 						int new_cursor_id = plugin->m_ambulant_player->get_cursor(point.x, point.y, hWnd);
-//XX					if (new_cursor_id>0) EnableToolTips(TRUE);
-//XX					else CancelToolTips();
+//XX						if (new_cursor_id>0) EnableToolTips(TRUE);
+//XX						else CancelToolTips();
 						if(new_cursor_id != plugin->m_cursor_id) {
 							HINSTANCE hIns = 0;
 							HCURSOR new_cursor = 0;
@@ -569,15 +578,14 @@ PluginWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 						}
 					} else {
 						plugin->m_ambulant_player->on_click(point.x, point.y, hWnd);
-                    }
-                }
-                break;
-                
-            default:
-                break;
-            }
-        }
-    return DefWindowProc(hWnd, msg, wParam, lParam);
+					}
+				}
+				break;
+			}
+		default:
+			break;
+		}
+	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
 ambulant_player_callbacks::ambulant_player_callbacks()
@@ -627,21 +635,21 @@ void gtk_gui::internal_message(int, char*) {}
 GtkWidget* gtk_gui::get_document_container() { return m_documentcontainer; }
 //XXXX FIXME fake gtk_gui constructor 1st arg is used as GtkWindow, 2nd arg as smilfile
 gtk_gui::gtk_gui(const char* s, const char* s2) {
-    memset (this, 0, sizeof(gtk_gui));
-    m_toplevelcontainer = (GtkWindow*) s;
-    m_documentcontainer = gtk_drawing_area_new();
-    gtk_widget_hide(m_documentcontainer);
+	memset (this, 0, sizeof(gtk_gui));
+	m_toplevelcontainer = (GtkWindow*) s;
+	m_documentcontainer = gtk_drawing_area_new();
+	gtk_widget_hide(m_documentcontainer);
 //XXXX FIXME vbox only needed to give	m_documentcontainer a parent widget at *draw() callback time
-    m_guicontainer = gtk_vbox_new(FALSE, 0);
-    gtk_container_add(GTK_CONTAINER(m_toplevelcontainer), GTK_WIDGET (m_guicontainer));
-    gtk_box_pack_start (GTK_BOX(m_guicontainer), m_documentcontainer, TRUE, TRUE, 0);
+	m_guicontainer = gtk_vbox_new(FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(m_toplevelcontainer), GTK_WIDGET (m_guicontainer));
+	gtk_box_pack_start (GTK_BOX(m_guicontainer), m_documentcontainer, TRUE, TRUE, 0);
 //XXXX not used:  m_guicontainer = menubar = NULL;
 //XXXX FIXME <EMBED src="xxx" ../> attr value is 2nd contructor arg.
-    m_smilfilename = s2;
-    main_loop = g_main_loop_new(NULL, FALSE);
+	m_smilfilename = s2;
+	main_loop = g_main_loop_new(NULL, FALSE);
 }
 
 gtk_gui::~gtk_gui() {
-    g_object_unref (G_OBJECT (main_loop));
+	g_object_unref (G_OBJECT (main_loop));
 }
 #endif // WITH_GTK
