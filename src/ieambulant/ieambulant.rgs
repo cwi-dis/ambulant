@@ -2,16 +2,16 @@ HKCR
 {
 	AmbulantActiveX.ieambulant.1 = s 'ieambulant Class'
 	{
-		CLSID = s '{886B87C0-930C-414c-BD35-B67BCC92FBEC}'
+		CLSID = s '{014B38CC-E346-4813-AB87-026677D4C75D}'
 	}
 	AmbulantActiveX.ieambulant = s 'ieambulant Class'
 	{
-		CLSID = s '{886B87C0-930C-414c-BD35-B67BCC92FBEC}'
+		CLSID = s '{014B38CC-E346-4813-AB87-026677D4C75D}'
 		CurVer = s 'AmbulantActiveX.ieambulant.1'
 	}
 	NoRemove CLSID
 	{
-		ForceRemove {886B87C0-930C-414c-BD35-B67BCC92FBEC} = s 'ieambulant Class'
+		ForceRemove {014B38CC-E346-4813-AB87-026677D4C75D} = s 'ieambulant Class'
 		{
 			ProgID = s 'AmbulantActiveX.ieambulant.1'
 			VersionIndependentProgID = s 'AmbulantActiveX.ieambulant'

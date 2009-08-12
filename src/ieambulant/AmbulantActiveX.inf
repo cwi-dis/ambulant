@@ -5,7 +5,7 @@ signature="$CHICAGO$"
 AdvancedINF=2.0  
 
 [Add.Code]
-AmbulantActiveX.ocx=AmbulantActiveX.ocx
+AmbulantActiveX.dll=AmbulantActiveX.dll
 libambulant_shwin32.dll=libambulant_shwin32.dll
 libamplugin_ffmpeg.dll=libamplugin_ffmpeg.dll
 libamplugin_plugin.dll=libamplugin_plugin.dll
@@ -15,20 +15,50 @@ avformat-52.dll=avformat-52.dll
 avutil-49.dll=avutil-49.dll
 SDL.dll=SDL.dll
 xerces-c_2_8.dll=xerces-c_2_8.dll
-msvcm80.dll=msvcm80.dll
+Microsoft.VC80.MFC.manifest=Microsoft.VC80.MFC.manifest
+Microsoft.VC80.CRT.manifest=Microsoft.VC80.CRT.manifest
+; msvcm80.dll=msvcm80.dll
 msvcp80.dll=msvcp80.dll 
 msvcr80.dll=msvcr80.dll
-Microsoft.VC80.CRT.manifest=Microsoft.VC80.CRT.manifest
 mfc80.dll=mfc80.dll
-mfc80u.dll=mfcm80u.dll
-mfcm80.dll=mfcm80.dll
-mfc8m0u.dll=mfcm80u.dll
-Microsoft.VC80.MFC.manifest=Microsoft.VC80.MFC.manifest
+; mfc80u.dll=mfcm80u.dll
+; mfcm80.dll=mfcm80.dll
+; mfc8m0u.dll=mfcm80u.dll
 AmbulantActiveX.inf=AmbulantActiveX.inf
 
-[AmbulantActiveX.ocx]
+; Microsoft.VC80.MFC.manifest and
+; Microsoft.VC80.CRT.manifest before all
+
+[Microsoft.VC80.MFC.manifest]
 file-win32-x86=thiscab
-clsid={886B87C0-930C-414c-BD35-B67BCC92FBEC} 
+
+[Microsoft.VC80.CRT.manifest]
+file-win32-x86=thiscab
+
+[mfc80.dll]
+file-win32-x86=thiscab
+
+; [mfc80u.dll]
+; file-win32-x86=thiscab
+
+; [mfcm80.dll]
+; file-win32-x86=thiscab
+
+; [mfcm80u.dll]
+; file-win32-x86=thiscab
+
+[msvcr80.dll]
+file-win32-x86=thiscab
+
+; [msvcm80.dll]
+; file-win32-x86=thiscab
+
+[msvcp80.dll]
+file-win32-x86=thiscab
+
+[AmbulantActiveX.dll]
+file-win32-x86=thiscab
+clsid={014B38CC-E346-4813-AB87-026677D4C75D} 
 FileVersion=1,0,0,1 
 RegisterServer=yes
 
@@ -70,7 +100,7 @@ file-win32-x86=thiscab
 FileVersion=1,0,0,1
 RegisterServer=no
 
-: sound
+; sound
 [SDL.dll]
 file-win32-x86=thiscab
 FileVersion=1,0,0,1
@@ -81,34 +111,6 @@ RegisterServer=no
 file-win32-x86=thiscab
 FileVersion=1,0,0,1
 RegisterServer=no
-
-[Microsoft.VC80.CRT.manifest]
-file-win32-x86=thiscab
-
-[msvcm80.dll]
-file-win32-x86=thiscab
-
-[msvcp80.dll]
-file-win32-x86=thiscab
-
-[msvcr80.dll]
-file-win32-x86=thiscab
-
-; Microsoft.VC80.MFC.manifest
-[mfc80.dll]
-file-win32-x86=thiscab
-
-[mfc80u.dll]
-file-win32-x86=thiscab
-
-[mfcm80.dll]
-file-win32-x86=thiscab
-
-[mfcm80u.dll]
-file-win32-x86=thiscab
-
-[Microsoft.VC80.MFC.manifest]
-file-win32-x86=thiscab
 
 [AmbulantActiveX.inf]
 file=thiscab

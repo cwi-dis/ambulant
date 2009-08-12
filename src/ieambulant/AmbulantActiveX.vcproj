@@ -375,6 +375,10 @@
 				RelativePath=".\ieambulant.rgs"
 				>
 			</File>
+			<File
+				RelativePath=".\scriptab.bmp"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\AmbulantActiveX.inf"
