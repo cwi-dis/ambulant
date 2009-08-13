@@ -1,3 +1,11 @@
+2009-08-12 17:35  keesblom
+
+	* This version produces a .cab file that works in Virgin WinXP, but
+	  crashes on Vista, maybe the added redistributable files are
+	  invalid there., need VC90 versions ? Committed on the Free
+	  edition of March Hare Software CVSNT Server.	Upgrade to CVS
+	  Suite for more features and support: http://march-hare.com/cvsnt/
+
 2009-08-06 12:26  keesblom
 
 	*
