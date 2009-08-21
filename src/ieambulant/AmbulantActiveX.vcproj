@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="AmbulantActiveX"
 	ProjectGUID="{CA6DD7C2-8A6D-4D13-91E8-D60289AAED9E}"
 	RootNamespace="AmbulantActiveX"
 	Keyword="AtlProj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -88,6 +89,8 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/AmbulantActiveX.pdb"
 				SubSystem="0"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Debug/AmbulantActiveX.lib"
 				TargetMachine="1"
 			/>
@@ -110,9 +113,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -191,6 +191,8 @@
 				ModuleDefinitionFile=".\AmbulantActiveX.def"
 				ProgramDatabaseFile=".\Release\AmbulantActiveX.pdb"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\Release\AmbulantActiveX.lib"
 				TargetMachine="1"
 			/>
@@ -213,9 +215,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -382,6 +381,10 @@
 		</Filter>
 		<File
 			RelativePath=".\AmbulantActiveX.inf"
+			>
+		</File>
+		<File
+			RelativePath=".\READE_ME.txt"
 			>
 		</File>
 	</Files>

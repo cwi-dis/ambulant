@@ -1,0 +1,27 @@
+How to build IE ambulant plugin.
+================================
+
+Prerequisites.
+--------------
+1. Visual Studio 2005
+2. Visual Studio 2008
+3. Windows SDK 2008 (.Net3.5)
+
+4. Ambulant source + third party packages
+
+Building.
+---------
+1. Using Visual Studio 2008, build third party packages
+2. Using Visual Studio 2008, build Ambulant Player (ReleaseShlib)
+3. Using Visual Studio 2008, build AmbulantActiveX (Release)
+3a. get your (valid) certicate.pfx in ...\ambulant\src\ieambulant
+3b. in command explorer, chdir to: ...\ambulant\src\ieambulant\Release
+3c. type: ..\makeCabinet.cmd
+3d. copy resulting .\ieambulant.cab to a web-accesible location.
+3e. ensure/modify .html Webpages to refer in the CODEBASE attributes of 
+    their  <OBJECT ...> tag to the location as in step 3d, and that
+    the CLASSID attibute of that <OBJECT ...> tag matches the CLSID
+    entry in the file ieambuland.rgs
+	An example of a test webpage is ..\ieamabulantWeb.htm
+	
+Kees Blom, Aug.20, 2009.

@@ -61,18 +61,13 @@ function StartTimer(timeout,idd)
 <tr>
 <td width="240" height="300" valign="top" align="center"> 
 <OBJECT     ID="ambulant_object1"
-            CLASSID="CLSID:886B87C0-930C-414c-BD35-B67BCC92FBEC"
-            codebase="http://www.cwi.nl/~kees/ambulant/ieambulant.cab" 
+            CLASSID="CLSID:014B38CC-E346-4813-AB87-026677D4C75D"
+            codebase="http://www.cwi.nl/~kees/ambulant/ieambulant2.cab" 
       	    width="240"
 		    height="270">
     <PARAM  name="src"         value="http://ambulantplayer.org/Demos/Welcome/Welcome-smiltext.smil" />
     <PARAM  name="type" 	   value="application/x-ambulant-smil"/> 
     <PARAM  name="autostart"   value="true"  />
-    <EMBED	ID="ieambulant_embed1"
-    		type="application/x-ambulant-smil"
-    		width="240"
-	    	height="270"
-		src="http://ambulantplayer.org/Demos/Welcome/Welcome-smiltext.smil" />
 </OBJECT>
 <form name="formname">
 <input type=button value="Start"	onclick='ambulantObject("ambulant_object1").startPlayer()'>
@@ -85,34 +80,6 @@ function StartTimer(timeout,idd)
 </form>
 <!-- -->
 </td> 
-<td width="40" height="300" valign="top"></td>   
-<td width="240" height="300" valign="top" align="center"> 
-<OBJECT     ID="ambulant_object2"
-            CLASSID="CLSID:886B87C0-930C-414c-BD35-B67BCC92FBEC"
-            codebase="http://www.cwi.nl/~kees/ambulant/ieambulant.cab" 
-      	width="240"
-		height="270">
-    <PARAM  name="src"         value="http://ambulantplayer.org/Demos/smilText/NYC-sT.smil" />
-    <PARAM  name="type" 	  value="application/x-ambulant-smil"/> 
-    <PARAM  name="autostart"   value="false"  />
-    <EMBED	ID="ieambulant_embed2"
-    		type="application/x-ambulant-smil"
-     		left="300"
-   	    	width="240"
-	    	height="270"
-	      src="http://ambulantplayer.org/Demos/smilText/NYC-sT.smil" />
-</OBJECT>
-<form name="formname2" left="300" width="240">
-<input type=button value="Start"	onclick='ambulantObject("ambulant_object2").startPlayer()'>
-<input type=button value="Stop" 	onclick='ambulantObject("ambulant_object2").stopPlayer()'>
-<input type=button value="Restart"	onclick='ambulantObject("ambulant_object2").restartPlayer()'>
-<br>
-<input type=button value="Resume"	onclick='ambulantObject("ambulant_object2").resumePlayer()'>
-<input type=button value="Pause"	onclick='ambulantObject("ambulant_object2").pausePlayer()'>
-<input type=button value="WatchDone" onclick='if (isWatching2) StartTimer(0,"ambulant_object2"); else StartTimer(500,"ambulant_object2")'>
-</form>
-<!-- -->
-</td>
 </tbody>
 </table>
 </BODY>

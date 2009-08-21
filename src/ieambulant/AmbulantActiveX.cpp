@@ -6,7 +6,8 @@
 //      run nmake -f AmbulantActiveXps.mk in the project directory.
 
 #include "stdafx.h"
-#include "vld.h"
+// uncomment next line for Visual Leak Detector
+//#include "vld.h"
 #include "resource.h"
 #include <initguid.h>
 #include "AmbulantActiveX.h"

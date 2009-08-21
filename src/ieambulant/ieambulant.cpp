@@ -214,11 +214,11 @@ Cieambulant::PluginWinProc(UINT msg, WPARAM wParam, LPARAM lParam, BOOL& bHandle
 	typedef HRGN NPRegion;
 	if (updatePlayer() != S_OK)
 		return S_FALSE;
-	static FILE* logfile = NULL;
-	if (logfile == NULL) {
-		logfile = fopen("C:\\logfile.txt", "w");
-	}
-	fprintf(logfile,"msg=%d\n",msg);
+//	static FILE* logfile = NULL;
+//	if (logfile == NULL) {
+//		logfile = fopen("C:\\logfile.txt", "w");
+//	}
+//	fprintf(logfile,"msg=%d\n",msg);
 
 	switch (msg) {
 		case WM_PAINT:
