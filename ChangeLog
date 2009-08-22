@@ -1,3 +1,13 @@
+2009-08-21 17:31  keesblom
+
+	* Final commit, at least for now of ieambulant. Status: - ie
+	  crashes on my development machine, and on Jacks'.  - plugin runs
+	  on my (empty) Vista machine, but not on Pablo's, - plugin does
+	  not run on my (empty) CP machine See comment in nakeCabinet.cmd
+	  how to create a signed Cabinet file.	Committed on the Free
+	  edition of March Hare Software CVSNT Server.	Upgrade to CVS
+	  Suite for more features and support: http://march-hare.com/cvsnt/
+
 2009-08-12 17:35  keesblom
 
 	* This version produces a .cab file that works in Virgin WinXP, but
