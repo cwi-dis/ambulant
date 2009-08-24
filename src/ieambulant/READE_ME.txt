@@ -6,8 +6,9 @@ Prerequisites.
 1. Visual Studio 2005
 2. Visual Studio 2008
 3. Windows SDK 2008 (.Net3.5)
+4. get "cabarc" utility from http://support.microsoft.com/kb/310618
 
-4. Ambulant source + third party packages
+5. Ambulant source + third party packages
 
 Building.
 ---------

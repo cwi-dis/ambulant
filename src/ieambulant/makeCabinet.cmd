@@ -1,8 +1,7 @@
-:: This script needs both Visual Studio 2005 and Visual Studio 2009 installed.
-:: To create and codesign ieambulant.cab, first build Ambulant-win32.sln,
-:: then ieambulant.
-:: Using CommandPrompt, CD to "Release" directory, and run this script:
-:: ..\makeCabinet.cmd
+:: This script needs Visual STudio 2009 installed.
+:: To create and codesign ieambulant.cab, first build Ambulant-win32.sln
+:: then ieambulant. CD to "Release" directory, and run this script:
+:: ../makeCabinet.cmd
 ::
 :: This script works with a test code signing certificate.
 :: This will only work in Internet Explorer when the server were you host
@@ -16,10 +15,6 @@
 @echo "copying all files for the cab into this directory"
 ::
 :: redistributable C-runtime 
-@copy "C:\Program Files\Microsoft Visual Studio 8\VC\redist\x86\Microsoft.VC80.CRT\Microsoft.VC80.CRT.manifest" Microsoft.VC80.CRT.manifest
-@copy "C:\Program Files\Microsoft Visual Studio 8\VC\redist\x86\Microsoft.VC80.CRT\msvcr80.dll" msvcr80.dll 
-@copy "C:\Program Files\Microsoft Visual Studio 8\VC\redist\x86\Microsoft.VC80.CRT\msvcp80.dll" msvcp80.dll
-@copy "C:\Program Files\Microsoft Visual Studio 8\VC\redist\x86\Microsoft.VC80.CRT\msvcm80.dll" msvcm80.dll
 @copy "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest" Microsoft.VC90.CRT.manifest
 @copy "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\msvcr90.dll" msvcr90.dll 
 @copy "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\msvcp90.dll" msvcp90.dll
@@ -44,7 +39,7 @@
 @copy ..\..\..\bin\win32\xerces-c_2_8.dll xerces-c_2_8.dll
 @copy ..\AmbulantActiveX.inf AmbulantActiveX.inf
 :: Create a new cabinet (.cab) archive
-"C:\Program Files\Microsoft Visual Studio 8\Common7\Tools\Bin\CabArc.Exe" -s 6144 n ieambulant.cab Microsoft.VC90.MFC.manifest Microsoft.VC90.CRT.manifest  Microsoft.VC80.CRT.manifest mfc90.dll mfc90u.dll mfcm90.dll mfcm90u.dll msvcr90.dll msvcp90.dll msvcm90.dll msvcr80.dll msvcp80.dll msvcm80.dll AmbulantActiveX.dll libambulant_shwin32.dll libamplugin_ffmpeg.dll libamplugin_plugin.dll libamplugin_state_xpath.dll avcodec-51.dll avformat-52.dll avutil-49.dll SDL.dll xerces-c_2_8.dll AmbulantActiveX.inf
+"C:\Program Files\Cabarc\CabArc.Exe" -s 6144 n ieambulant.cab Microsoft.VC90.MFC.manifest Microsoft.VC90.CRT.manifest  mfc90.dll mfc90u.dll mfcm90.dll mfcm90u.dll msvcr90.dll msvcp90.dll msvcm90.dll AmbulantActiveX.dll libambulant_shwin32.dll libamplugin_ffmpeg.dll libamplugin_plugin.dll libamplugin_state_xpath.dll avcodec-51.dll avformat-52.dll avutil-49.dll SDL.dll xerces-c_2_8.dll AmbulantActiveX.inf
 :: Code sign it with code signing certificate (.pfx = Personal Information Exchange) 
 "C:\Program Files\Microsoft SDKs\Windows\v6.1\Bin\signtool" sign /f ..\certificate.pfx /p ambulant /v ieambulant.cab
 :: timestamp the signature
@@ -56,4 +51,4 @@
 @echo SignTool Error: File not valid: ieambulant.cab
 @echo ------------------------------------------------------------------------------
 @echo "erasing files copied"
-@erase Microsoft.VC90.MFC.manifest Microsoft.VC90.CRT.manifest Microsoft.VC80.CRT.manifest mfc90.dll mfc90u.dll mfcm90.dll mfcm90u.dll msvcr90.dll msvcp90.dll msvcm90.dll msvcr80.dll msvcp80.dll msvcm80.dll libambulant_shwin32.dll libamplugin_ffmpeg.dll libamplugin_plugin.dll libamplugin_state_xpath.dll avcodec-51.dll avformat-52.dll avutil-49.dll SDL.dll xerces-c_2_8.dll AmbulantActiveX.inf
+@erase Microsoft.VC90.MFC.manifest Microsoft.VC90.CRT.manifest mfc90.dll mfc90u.dll mfcm90.dll mfcm90u.dll msvcr90.dll msvcp90.dll msvcm90.dll libambulant_shwin32.dll libamplugin_ffmpeg.dll libamplugin_plugin.dll libamplugin_state_xpath.dll avcodec-51.dll avformat-52.dll avutil-49.dll SDL.dll xerces-c_2_8.dll AmbulantActiveX.inf

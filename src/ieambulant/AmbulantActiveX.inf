@@ -17,7 +17,6 @@ SDL.dll=SDL.dll
 xerces-c_2_8.dll=xerces-c_2_8.dll
 Microsoft.VC90.MFC.manifest=Microsoft.VC90.MFC.manifest
 Microsoft.VC90.CRT.manifest=Microsoft.VC90.CRT.manifest
-Microsoft.VC80.CRT.manifest=Microsoft.VC80.CRT.manifest
 msvcm90.dll=msvcm90.dll
 msvcp90.dll=msvcp90.dll 
 msvcr90.dll=msvcr90.dll
@@ -25,9 +24,6 @@ mfc90.dll=mfc90.dll
 mfc90u.dll=mfcm90u.dll
 mfcm90.dll=mfcm90.dll
 mfcm90u.dll=mfcm90u.dll
-msvcm80.dll=msvcm80.dll
-msvcp80.dll=msvcp80.dll 
-msvcr80.dll=msvcr80.dll
 AmbulantActiveX.inf=AmbulantActiveX.inf
 
 ; Microsoft.VC90.MFC.manifest and
@@ -37,9 +33,6 @@ AmbulantActiveX.inf=AmbulantActiveX.inf
 file-win32-x86=thiscab
 
 [Microsoft.VC90.CRT.manifest]
-file-win32-x86=thiscab
-
-[Microsoft.VC80.CRT.manifest]
 file-win32-x86=thiscab
 
 [mfc90.dll]
@@ -61,15 +54,6 @@ file-win32-x86=thiscab
 file-win32-x86=thiscab
 
 [msvcm90.dll]
-file-win32-x86=thiscab
-
-[msvcr80.dll]
-file-win32-x86=thiscab
-
-[msvcp80.dll]
-file-win32-x86=thiscab
-
-[msvcm80.dll]
 file-win32-x86=thiscab
 
 [AmbulantActiveX.dll]
