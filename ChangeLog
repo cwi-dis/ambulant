@@ -1,3 +1,10 @@
+2009-08-24 17:33  keesblom
+
+	* Removed all Visual Studio 2005 and aal refrences to it. Stil
+	  doesn't work on empty XP.  Committed on the Free edition of March
+	  Hare Software CVSNT Server.  Upgrade to CVS Suite for more
+	  features and support: http://march-hare.com/cvsnt/
+
 2009-08-21 17:31  keesblom
 
 	* Final commit, at least for now of ieambulant. Status: - ie
