@@ -77,7 +77,6 @@ class qt_logger_ostream : public ambulant::lib::ostream {
 	int  write(const unsigned char *buffer, int nbytes);
 	int  write(const char *cstr);
 	int  write(std::string s);
-	void write(ambulant::lib::byte_buffer& bb);
 	void flush();
   private:
 	QString m_qstring;
