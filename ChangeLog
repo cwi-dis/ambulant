@@ -1,3 +1,7 @@
+2009-08-25 23:12  jackjansen
+
+	* byte_buffer is gone.
+
 2009-08-24 17:33  keesblom
 
 	* Removed all Visual Studio 2005 and aal refrences to it. Stil
