@@ -156,21 +156,13 @@ video_renderer::init_with_node(const lib::node *n)
 void
 video_renderer::start (double where)
 {
+    preroll(0, 0, 0);
 	m_lock.enter();
 	AM_DBG { 
         std::string tag = m_node->get_local_name();
         assert(tag != "prefetch");
     }
 	
-	if (m_activated) {
-		lib::logger::get_logger()->trace("video_renderer.start(0x%x): already started", (void*)this);
-		m_post_stop_called = false;
-		m_lock.leave();
-        // XXXJACK: stopgap for continuous renderering: call show().
-        // Interaction renderer/surface needs rethinking.
-        if (m_dest) m_dest->show(this);
-		return;
-	}
 	if (!m_src) {
 		lib::logger::get_logger()->trace("video_renderer.start: no datasource, skipping media item");
 		m_context->stopped(m_cookie, 0);
@@ -185,20 +177,8 @@ video_renderer::start (double where)
 	}
 	// Tell the datasource how we like our pixels.
 	m_src->set_pixel_layout(pixel_layout());
-	m_activated = true;
 
-#if 1
 	m_timer = m_event_processor->get_timer();
-#else
-	// XXX Note: comment below is possibly incorrect, but at  the very least the
-	// code does not work, because video_datasource::start_frame() assumes a shared clock.
-	//
-	// This is a workaround for a bug: the "normal" timer
-	// can be set back in time sometimes, and the video renderer
-	// does not like that. For now use a private timer, will
-	// have to be fixed eventually.
-	m_timer = lib::realtime_timer_factory();
-#endif
 
 	// Now we need to define where we start playback. This depends on m_clip_begin (microseconds)
 	// and where (seconds). We use these to set m_epoch (milliseconds) to the time (m_timer-based)
@@ -208,9 +188,17 @@ video_renderer::start (double where)
 	m_epoch = m_timer->elapsed() - (long)(m_clip_begin/1000) - (int)(where*1000);
 	m_is_paused = false;
 
-	lib::event * e = new dataavail_callback (this, &video_renderer::data_avail);
-	AM_DBG lib::logger::get_logger ()->debug ("video_renderer::start(%f) this = 0x%x, cookie=%d, dest=0x%x, timer=0x%x, epoch=%d", where, (void *) this, (int)m_cookie, (void*)m_dest, m_timer, m_epoch);
-	m_src->start_frame (m_event_processor, e, 0);
+	if (m_activated) {
+        // Renderer was already playing, possibly due to fill=continue or a late callback
+		lib::logger::get_logger()->trace("video_renderer.start(0x%x): already started", (void*)this);
+		m_post_stop_called = false;
+    } else {
+        lib::event * e = new dataavail_callback (this, &video_renderer::data_avail);
+        AM_DBG lib::logger::get_logger ()->debug ("video_renderer::start(%f) this = 0x%x, cookie=%d, dest=0x%x, timer=0x%x, epoch=%d", where, (void *) this, (int)m_cookie, (void*)m_dest, m_timer, m_epoch);
+        m_src->start_frame (m_event_processor, e, 0);
+        m_activated = true;
+        m_post_stop_called = false;
+    }
 	if (m_audio_renderer) 
 		m_audio_renderer->start(where);
 
@@ -275,7 +263,7 @@ bool
 video_renderer::stop()
 { 
 	m_lock.enter();
-	/*AM_DBG*/ lib::logger::get_logger()->debug("video_renderer::stop() this=0x%x, dest=0x%x", (void *) this, (void*)m_dest);
+	AM_DBG lib::logger::get_logger()->debug("video_renderer::stop() this=0x%x, dest=0x%x", (void *) this, (void*)m_dest);
 
 	if (m_audio_renderer) {
 		m_audio_renderer->stop();
@@ -290,13 +278,15 @@ void
 video_renderer::post_stop()
 {
 	m_lock.enter();
-	m_post_stop_called = true;
-	if (m_dest) m_dest->renderer_done(this);
-    m_dest = NULL;
-	if (m_audio_renderer)
-		m_audio_renderer->post_stop();
-	lib::logger::get_logger()->debug("video_renderer: displayed %d frames; skipped %d dups, %d late, %d early, %d NULL",
-									 m_frame_displayed, m_frame_duplicate, m_frame_late, m_frame_early, m_frame_missing);
+    if (!m_post_stop_called) {
+        m_post_stop_called = true;
+        if (m_dest) m_dest->renderer_done(this);
+        m_dest = NULL;
+        if (m_audio_renderer)
+            m_audio_renderer->post_stop();
+        lib::logger::get_logger()->debug("video_renderer: displayed %d frames; skipped %d dups, %d late, %d early, %d NULL",
+                                         m_frame_displayed, m_frame_duplicate, m_frame_late, m_frame_early, m_frame_missing);
+    }
 	m_lock.leave();	
 }
 
@@ -433,9 +423,10 @@ video_renderer::data_avail()
 		m_lock.leave();
         // If we have an audio renderer we should let it do the stopped() callback.
 		if (m_audio_renderer == NULL) m_context->stopped(m_cookie, 0);
-		//stop(); // XXX Attempt by Jack. I think this is really a bug in the scheduler, so it may need to go some time.
+#if 0
 		lib::logger::get_logger()->debug("video_renderer: displayed %d frames; skipped %d dups, %d late, %d early, %d NULL",
 			m_frame_displayed, m_frame_duplicate, m_frame_late, m_frame_early, m_frame_missing);
+#endif
 		return;
 	}
 #else
@@ -450,14 +441,16 @@ video_renderer::data_avail()
         
         // Remember how far we officially got (discounting any fill=continue behaviour)
         m_previous_clip_position = m_clip_end;
-        
+#if 0
         lib::logger::get_logger()->debug("video_renderer: displayed %d frames; skipped %d dups, %d late, %d early, %d NULL",
                                          m_frame_displayed, m_frame_duplicate, m_frame_late, m_frame_early, m_frame_missing);
-        
+#endif
         // If we are past real end-of-file we always stop playback.
         // If we are past clip_end we continue playback if we're playing a fill=ambulant:continue node.
         // XXXJACK: this may lead to multiple stopped() callbacks (above). Need to fix.
+        // XXXJACK: but: clearing m_activated (below) may fix that.
         if (m_src->end_of_file() || !is_fill_continue_node()) {
+            m_activated = false;
             m_lock.leave();
             return;
         }

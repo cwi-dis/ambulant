@@ -27,7 +27,11 @@
 
 #ifdef WITH_SMIL30
 // Version 3: SMIL 3.0 WD
+#if defined(WITH_CLOCK_SYNC) && defined(WITH_SEAMLESS_PLAYBACK)
+#define AMBULANT_PLUGIN_API_VERSION 6
+#else
 #define AMBULANT_PLUGIN_API_VERSION 5
+#endif
 #else
 #define AMBULANT_PLUGIN_API_VERSION 2
 #endif

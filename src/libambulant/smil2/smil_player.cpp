@@ -484,7 +484,7 @@ void smil_player::stop_playable(const lib::node *n) {
         victim.second->post_stop();
     }
     if (can_cache) {
-        /*AM_DBG*/ lib::logger::get_logger()->debug("smil_player::stop_playable: cache %s renderer", victim.first->get_sig().c_str());
+        AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable: cache %s renderer", victim.first->get_sig().c_str());
         m_playables_cs.enter();
         m_playables_url_based[(victim.first->get_url("src")).get_url()] = victim.second;
         m_playables_cs.leave();
@@ -496,10 +496,10 @@ void smil_player::stop_playable(const lib::node *n) {
             typedef std::pair<const lib::node*, common::playable*> gb_victim_arg;
             lib::event *destroy_event = new lib::scalar_arg_callback_event<smil_player, gb_victim_arg>(this, &smil_player::_destroy_playable_in_cache, victim);
             //xxxbo: the unit of add_event is milisecond. This point is proved at 09-06-2009
-            /*AM_DBG*/ lib::logger::get_logger()->debug("smil_player::stop_playable: schedule destructor in 20ms for %s", victim.first->get_sig().c_str());
+            AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable: schedule destructor in 20ms for %s", victim.first->get_sig().c_str());
             m_event_processor->add_event(destroy_event, 20, lib::ep_high);
         } else {
-            /*AM_DBG*/ lib::logger::get_logger()->debug("smil_player::stop_playable: cache %s renderer without destructor callback", victim.first->get_sig().c_str());
+            AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable: cache %s renderer without destructor callback", victim.first->get_sig().c_str());
         }
         return;
     }
@@ -1003,19 +1003,19 @@ void smil_player::_destroy_playable_in_cache(std::pair<const lib::node*, common:
 	m_playables_url_based.find(url);
 	if (it_url_based != m_playables_url_based.end()) {
         if ((*it_url_based).second != victim.second) {
-            /*AM_DBG*/ lib::logger::get_logger()->debug("smil_player::_destroy_playable_in_cache: cache has different playable for %s, assuming %s is reused", url.c_str(), victim.first->get_sig().c_str());
+            AM_DBG lib::logger::get_logger()->debug("smil_player::_destroy_playable_in_cache: cache has different playable for %s, assuming %s is reused", url.c_str(), victim.first->get_sig().c_str());
             return;
         }
 		m_playables_cs.enter();
 		m_playables_url_based.erase(it_url_based);
 		m_playables_cs.leave();
-		/*AM_DBG*/ lib::logger::get_logger()->debug("smil_player::_destroy_playable_in_cache: stop the playable in the cache for %s", victim.first->get_sig().c_str());
+		AM_DBG lib::logger::get_logger()->debug("smil_player::_destroy_playable_in_cache: stop the playable in the cache for %s", victim.first->get_sig().c_str());
 		victim.second->post_stop();
         int rem = victim.second->release();
 		if (rem > 0) m_logger->debug("smil_player::_destroy_playable_in_cache: playable 0x%x still has refcount of %d", victim.second, rem);
 	} else {
         // Note that this is not an error, on the contrary: it could be that the playable has been reused.
-        /*AM_DBG*/ m_logger->debug("smil_player::_destroy_playable_in_cache: playable for %s no longer in cache", url.c_str());
+        AM_DBG m_logger->debug("smil_player::_destroy_playable_in_cache: playable for %s no longer in cache", url.c_str());
     }
 }
 #endif
