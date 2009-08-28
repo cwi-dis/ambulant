@@ -57,6 +57,11 @@ renderer_playable::renderer_playable(
 	m_clip_end(-1)
 
 {
+}
+
+void
+renderer_playable::init_with_node(const lib::node *n)
+{
 	const char *erase = m_node->get_attribute("erase");
 	if (erase && strcmp(erase, "never") == 0)
 		m_erase_never = true;
@@ -78,7 +83,7 @@ renderer_playable::start(double t)
 	m_dest->show(this);
 }
 
-void
+bool
 renderer_playable::stop()
 {
 	AM_DBG lib::logger::get_logger()->debug("renderer_playable.stop(0x%x)", (void *)this);
@@ -89,6 +94,7 @@ renderer_playable::stop()
 			m_dest->renderer_done(this);
 	}
 	m_activated = false;
+	return true;
 }
 
 bool
@@ -214,7 +220,7 @@ renderer_playable_ds::seek(double t)
 	lib::logger::get_logger()->trace("renderer_playable_ds: seek(%f) not implemented", t);
 }
 
-void
+bool
 renderer_playable_ds::stop()
 {
 	AM_DBG lib::logger::get_logger()->debug("renderer_playable_ds.stop(0x%x %s)", (void *)this, m_node->get_sig().c_str());
@@ -226,6 +232,7 @@ renderer_playable_ds::stop()
 	m_src = NULL;
 	if (m_context)
 		m_context->stopped(m_cookie, 0);
+	return true;
 }
 
 renderer_playable_dsall::~renderer_playable_dsall()

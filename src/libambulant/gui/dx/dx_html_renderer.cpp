@@ -180,24 +180,7 @@ gui::dx::dx_html_renderer::get_dur()
 	return common::duration(true, 0);
 }
 
-#if 0
-void
-gui::dx::dx_html_renderer::stop() {
-	AM_DBG lib::logger::get_logger()->debug("dx_html_renderer::stop(0x%x)", this);
-	// m_html_browser->hide();
-<<<<<<< dx_html_renderer.cpp
-	m_dest->renderer_done(this);
-=======
-	assert(m_html_browser);
 
-	if (m_dest) m_dest->renderer_done(this);
-	m_dest = NULL;
-	m_activated = false;
-	m_dxplayer->stopped(this);
-	m_html_browser->hide(m_event_processor);
-	m_context->stopped(m_cookie);
-}
-#endif
 bool
 gui::dx::dx_html_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->debug("dx_html_renderer::stop(0x%x)", this);
@@ -206,7 +189,6 @@ gui::dx::dx_html_renderer::stop() {
 
 	if (m_dest) m_dest->renderer_done(this);
 	m_dest = NULL;
->>>>>>> 1.24.4.2
 	m_activated = false;
 	m_dxplayer->stopped(this);
 	if (m_html_browser)
