@@ -236,14 +236,14 @@ xpath_state_component::~xpath_state_component()
 void
 xpath_state_component::register_state_test_methods(common::state_test_methods *stm)
 {
-	lib::logger::get_logger()->trace("xpath_state_component::register_state_test_methods(0x%x)", stm);
+	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::register_state_test_methods(0x%x)", stm);
 	m_state_test_methods = stm;
 }
 
 void
 xpath_state_component::declare_state(const lib::node *state)
 {
-	lib::logger::get_logger()->trace("xpath_state_component::declare_state(%s)", state->get_sig().c_str());
+	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::declare_state(%s)", state->get_sig().c_str());
 	// First we free any old document and state.
 	if (m_context) {
 		xmlXPathFreeContext(m_context);
@@ -356,7 +356,7 @@ xpath_state_component::declare_state(const lib::node *state)
 bool
 xpath_state_component::bool_expression(const char *expr)
 {
-	lib::logger::get_logger()->trace("xpath_state_component::bool_expression(%s)", expr);
+	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::bool_expression(%s)", expr);
 	if (m_state == NULL || m_context == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
 		return true;
@@ -384,14 +384,14 @@ xpath_state_component::bool_expression(const char *expr)
 	}
 	bool rv = (bool)xmlXPathCastToBoolean(result);
 	xmlXPathFreeObject(result);
-	lib::logger::get_logger()->debug("xpath_state_component::bool_expression(%s) -> %d", expr, (int)rv);
+	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::bool_expression(%s) -> %d", expr, (int)rv);
 	return rv;
 }
 
 void
 xpath_state_component::set_value(const char *var, const char *expr)
 {
-	lib::logger::get_logger()->trace("xpath_state_component::set_value(%s, %s)", var, expr);
+	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::set_value(%s, %s)", var, expr);
 	if (m_state == NULL || m_context == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
 		return;
@@ -435,7 +435,7 @@ xpath_state_component::set_value(const char *var, const char *expr)
 void
 xpath_state_component::new_value(const char *ref, const char *where, const char *name, const char *expr)
 {
-	lib::logger::get_logger()->trace("xpath_state_component::new_value(ref=%s, where=%s, name=%s, expr=%s)",
+	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::new_value(ref=%s, where=%s, name=%s, expr=%s)",
 		ref, where, name, expr);
 	if (m_state == NULL || m_context == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
@@ -512,7 +512,7 @@ xpath_state_component::new_value(const char *ref, const char *where, const char 
 void
 xpath_state_component::del_value(const char *ref)
 {
-	lib::logger::get_logger()->trace("xpath_state_component::del_value(%s)", ref);
+	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::del_value(%s)", ref);
 	if (m_state == NULL || m_context == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
 		return;
@@ -545,7 +545,7 @@ xpath_state_component::del_value(const char *ref)
 void
 xpath_state_component::send(const lib::node *submission)
 {
-	lib::logger::get_logger()->trace("xpath_state_component::send(%s)", submission->get_sig().c_str());
+	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::send(%s)", submission->get_sig().c_str());
 	if (m_state == NULL || m_context == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
 		return;
@@ -580,7 +580,7 @@ xpath_state_component::send(const lib::node *submission)
 std::string
 xpath_state_component::string_expression(const char *expr)
 {
-	lib::logger::get_logger()->trace("xpath_state_component::string_expression(%s)", expr);
+	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::string_expression(%s)", expr);
 	if (m_state == NULL || m_context == NULL) {
 		lib::logger::get_logger()->trace("xpath_state_component: state not initialized");
 		return "";
@@ -597,7 +597,7 @@ xpath_state_component::string_expression(const char *expr)
 		lib::logger::get_logger()->trace("xpath_state_component: \"{%s}\" does not evaluate to a string", expr);
 		return "";
 	}
-	lib::logger::get_logger()->debug("xpath_state_component::string_expression(%s) -> %s", expr, (void*)result_str);
+	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::string_expression(%s) -> %s", expr, (void*)result_str);
 	std::string rv((char *)result_str);
 	xmlFree(result_str);
 	return rv;
@@ -606,7 +606,7 @@ xpath_state_component::string_expression(const char *expr)
 void
 xpath_state_component::want_state_change(const char *ref, common::state_change_callback *cb)
 {
-	lib::logger::get_logger()->trace("xpath_state_component::want_state_change(%s)", ref);
+	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::want_state_change(%s)", ref);
 	std::pair<std::string, common::state_change_callback*> item(ref, cb);
 	m_state_change_callbacks.push_back(item);
 }
@@ -645,7 +645,7 @@ common::state_component *
 xpath_state_component_factory::new_state_component(const char *uri)
 {
 	if (strcmp(uri, "http://www.w3.org/TR/1999/REC-xpath-19991116") == 0) {
-		lib::logger::get_logger()->trace("xpath_state_component_factory::new_state_component: returned state_component");
+		AM_DBG lib::logger::get_logger()->debug("xpath_state_component_factory::new_state_component: returned state_component");
 		return new xpath_state_component();
 	}
 	lib::logger::get_logger()->trace("xpath_state_component_factory::new_state_component: no support for language %s", uri);

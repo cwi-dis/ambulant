@@ -84,8 +84,8 @@ extra_live_ldflags=
 endif
 
 # Sometimes we seem to have a .so suffix, sometimes not.
-#SO=.so
-SO=
+SO=.so
+#SO=
 # Building a MacOSX .app bundle is a bit tricky.
 noinst_PROGRAMS = cocoambulant_executable
 cocoambulant_executable_SOURCES= \
@@ -133,8 +133,8 @@ if WITH_XERCES_PLUGIN
 	mkdir -p $(BUILDAPPNAME).app/Contents/Frameworks
 	cp $(top_builddir)/third_party_packages/xerces-unix/lib/libxerces-c.27.dylib $(BUILDAPPNAME).app/Contents/Frameworks
 	install_name_tool -change `otool -D $(top_builddir)/third_party_packages/xerces-unix/lib/libxerces-c.27.dylib | tail -n 1` \
-		@executable_path/../Frameworks/libxerces-c.27.dylib $(BUILDAPPNAME).app/Contents/PlugIns/libamplugin_xerces$(SO)
-	install_name_tool -id @executable_path/../Frameworks/libxerces-c.27.dylib $(BUILDAPPNAME).app/Contents/Frameworks/libxerces-c.27.dylib
+		@loader_path/../Frameworks/libxerces-c.27.dylib $(BUILDAPPNAME).app/Contents/PlugIns/libamplugin_xerces$(SO)
+	install_name_tool -id @loader_path/../Frameworks/libxerces-c.27.dylib $(BUILDAPPNAME).app/Contents/Frameworks/libxerces-c.27.dylib
 endif
 
 #	Install gettext localizations

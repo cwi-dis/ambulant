@@ -62,7 +62,7 @@ finalize_transition_bitblit(bool outtrans, common::surface *dst)
 		[[view getTransitionNewSource] drawInRect: cocoa_dstrect_whole 
 			fromRect: cocoa_dstrect_whole
 			operation: NSCompositeSourceOver
-			fraction: 1.0];
+			fraction: 1.0f];
 	}
 }
 
@@ -79,7 +79,7 @@ cocoa_transition_blitclass_fade::update()
 	[newsrc drawInRect: cocoa_dstrect_whole 
 		fromRect: cocoa_dstrect_whole
 		operation: NSCompositeSourceOver
-		fraction: m_progress];
+		fraction: (float)m_progress];
 	finalize_transition_bitblit(m_outtrans, m_dst);
 }
 
@@ -98,7 +98,7 @@ cocoa_transition_blitclass_rect::update()
 	[newsrc drawInRect: cocoa_newrect_whole 
 		fromRect: cocoa_newrect_whole
 		operation: NSCompositeSourceOver
-		fraction: 1.0];
+		fraction: 1.0f];
 	finalize_transition_bitblit(m_outtrans, m_dst);
 }
 
@@ -131,22 +131,22 @@ cocoa_transition_blitclass_r1r2r3r4::update()
 		[newsrc drawInRect: cocoa_olddstrect_whole 
 			fromRect: cocoa_oldsrcrect_whole
 			operation: NSCompositeCopy
-			fraction: 1.0];
+			fraction: 1.0f];
 
 		[oldsrc drawInRect: cocoa_newdstrect_whole 
 			fromRect: cocoa_newsrcrect_whole
 			operation: NSCompositeSourceOver
-			fraction: 1.0];
+			fraction: 1.0f];
 	} else {
 		[oldsrc drawInRect: cocoa_olddstrect_whole 
 			fromRect: cocoa_oldsrcrect_whole
 			operation: NSCompositeCopy
-			fraction: 1.0];
+			fraction: 1.0f];
 
 		[newsrc drawInRect: cocoa_newdstrect_whole 
 			fromRect: cocoa_newsrcrect_whole
 			operation: NSCompositeSourceOver
-			fraction: 1.0];
+			fraction: 1.0f];
 	}
 }
 
@@ -167,7 +167,7 @@ cocoa_transition_blitclass_rectlist::update()
 		[newsrc drawInRect: cocoa_newrect_whole 
 			fromRect: cocoa_newrect_whole
 			operation: NSCompositeSourceOver
-			fraction: 1.0];
+			fraction: 1.0f];
 	}
 	finalize_transition_bitblit(m_outtrans, m_dst);
 }
@@ -206,18 +206,18 @@ composite_path(AmbulantView *view, lib::rect dstrect_whole, NSBezierPath *path, 
 	// First, we fill the temporary bitmap with transparent white
 	float oldalpha, newalpha;
 	if (outtrans) {
-		oldalpha = 1.0;
-		newalpha = 0.0;
+		oldalpha = 1.0F;
+		newalpha = 0.0F;
 	} else {
-		oldalpha = 0.0;
-		newalpha = 1.0;
+		oldalpha = 0.0F;
+		newalpha = 1.0F;
 	}
 	[tmpsrc lockFocus];
-	[[NSColor colorWithDeviceWhite: 1.0 alpha: oldalpha] set];
+	[[NSColor colorWithDeviceWhite: 1.0f alpha: (float)oldalpha] set];
 	NSRectFill(cocoa_dstrect_whole);
 
 	// Now we fill draw the path on the temp bitmap, with opaque white
-	[[NSColor colorWithDeviceWhite: 1.0 alpha: newalpha] set];
+	[[NSColor colorWithDeviceWhite: 1.0f alpha: (float)newalpha] set];
 	[path fill];
 
 	// Next we composit the source image onto the temp bitmap, but only where
@@ -225,7 +225,7 @@ composite_path(AmbulantView *view, lib::rect dstrect_whole, NSBezierPath *path, 
 	[newsrc drawInRect: cocoa_dstrect_whole 
 		fromRect: cocoa_dstrect_whole
 		operation: NSCompositeSourceIn
-		fraction: 1.0];
+		fraction: 1.0f];
 
 	// Finally we put the opaque bits of the temp image onto the destination
 	// image
@@ -233,7 +233,7 @@ composite_path(AmbulantView *view, lib::rect dstrect_whole, NSBezierPath *path, 
 	[tmpsrc drawInRect: cocoa_dstrect_whole 
 		fromRect: cocoa_dstrect_whole
 		operation: NSCompositeSourceOver
-		fraction: 1.0];
+		fraction: 1.0f];
 }
 
 void

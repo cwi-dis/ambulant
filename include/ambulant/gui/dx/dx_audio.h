@@ -53,7 +53,8 @@ class dx_audio_renderer : public common::renderer_playable {
 		common::playable_factory_machdep *dxplayer);
 	~dx_audio_renderer();
 	void start(double t);
-	void stop();
+	//void stop();
+	bool stop();
 	void seek(double t);
 	void pause(common::pause_display d=common::display_show);
 	void resume();

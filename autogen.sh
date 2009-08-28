@@ -6,11 +6,11 @@ PKG_NAME="ambulant"
 srcdir=${srcdir:-.}
 
 # default version requirements ...
-REQUIRED_AUTOCONF_VERSION=${REQUIRED_AUTOCONF_VERSION:-2.59}
-REQUIRED_AUTOMAKE_VERSION=${REQUIRED_AUTOMAKE_VERSION:-1.5}
-REQUIRED_LIBTOOL_VERSION=${REQUIRED_LIBTOOL_VERSION:-1.4.3}
-REQUIRED_PKG_CONFIG_VERSION=${REQUIRED_PKG_CONFIG_VERSION:-0.14.0}
-REQUIRED_GETTEXT_VERSION=${REQUIRED_GETTEXT_VERSION:-0.10.40}
+REQUIRED_AUTOCONF_VERSION=${REQUIRED_AUTOCONF_VERSION:-2.61}
+REQUIRED_AUTOMAKE_VERSION=${REQUIRED_AUTOMAKE_VERSION:-1.10}
+REQUIRED_LIBTOOL_VERSION=${REQUIRED_LIBTOOL_VERSION:-2.2.6}
+REQUIRED_PKG_CONFIG_VERSION=${REQUIRED_PKG_CONFIG_VERSION:-0.21}
+REQUIRED_GETTEXT_VERSION=${REQUIRED_GETTEXT_VERSION:-0.16.1}
 
 # a list of required m4 macros.  Package can set an initial value
 REQUIRED_M4MACROS=${REQUIRED_M4MACROS:-}
@@ -123,7 +123,7 @@ check_m4macros() {
 
     # construct list of macro directories
     macrodirs="`$ACLOCAL --print-ac-dir`"
-    macrodirs="$macrodirs m4"    # We keep our macros in the m4 subdir
+    macrodirs="$macrodirs m4 libltdl/m4"    # We keep our macros in the m4 subdir
     set - $ACLOCAL_FLAGS
     while [ $# -gt 0 ]; do
 	if [ "$1" = "-I" ]; then
@@ -270,7 +270,7 @@ for configure_in in $configure_files; do
     else
 	printbold "Processing $configure_in"
 
-	aclocalinclude="-I m4 $ACLOCAL_FLAGS"
+	aclocalinclude="-I m4 -I libltdl/m4 $ACLOCAL_FLAGS"
 	printbold "Running $ACLOCAL..."
 	$ACLOCAL $aclocalinclude || exit 1
 
@@ -296,7 +296,7 @@ for configure_in in $configure_files; do
 	fi
 
 	printbold "Running $AUTOMAKE..."
-	$AUTOMAKE --gnu --add-missing --force-missing || exit 1
+	$AUTOMAKE --gnu --add-missing  || exit 1
 
 	printbold "Running $AUTOCONF..."
 	$AUTOCONF || exit 1

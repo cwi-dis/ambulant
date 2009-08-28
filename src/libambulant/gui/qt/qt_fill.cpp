@@ -104,7 +104,7 @@ qt_fill_renderer::start_outtransition(lib::transition_info *info)
 	m_lock.leave();
 }
 
-void
+bool
 qt_fill_renderer::stop()
 {
 	m_lock.enter();
@@ -114,10 +114,12 @@ qt_fill_renderer::stop()
 	} else {
 		m_is_showing = false;
 		if (m_dest) m_dest->renderer_done(this);
+		m_dest = NULL;
 	}
 	assert(m_context);
 	m_context->stopped(m_cookie);
 	m_lock.leave();
+	return true;
 }
 
 void

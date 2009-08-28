@@ -75,7 +75,8 @@ class none_playable : public common::playable_imp {
 		common::playable_factory_machdep *mdp);
 	
 	void start(double where);
-	void stop();
+//	void stop();
+	bool stop();
 	void seek(double where) {}
 };
 

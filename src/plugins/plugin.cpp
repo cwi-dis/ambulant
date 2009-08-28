@@ -75,7 +75,8 @@ class basic_plugin : public common::playable_imp
     void data_avail();
 	void start(double where);
 	void seek(double where) {};
-    void stop();
+    //void stop();
+	bool stop();
     void pause();
     void resume();
 };
@@ -137,9 +138,10 @@ basic_plugin::start(double t)
 }
 
 
-void 
+bool 
 basic_plugin::stop()
 {
+	return true;
 }
 
 void 

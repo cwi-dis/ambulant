@@ -79,10 +79,10 @@ cocoa_text_renderer::cocoa_text_renderer(
 	if (params) {
 		const char *fontname = params->get_str("font-family");
 //		const char *fontstyle = params->get_str("font-style");
-		float fontsize = 0.0;
+		float fontsize = 0.0F;
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		m_text_color = params->get_color("color", text_color);
-		m_font_size = params->get_float("font-size", 0.0);
+		m_font_size = (float)params->get_float("font-size", 0.0F);
 		AM_DBG NSLog(@"params found, color=(%d, %d, %d), font-family=%s, font-size=%g", 
 			redc(text_color), greenc(text_color), bluec(text_color), fontname, fontsize);
 		if (fontname)
@@ -157,7 +157,7 @@ cocoa_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 			NSColor *nscolor = [NSColor colorWithCalibratedRed:redf(m_text_color)
 					green:greenf(m_text_color)
 					blue:bluef(m_text_color)
-					alpha:alfa];
+					alpha:(float)alfa];
 #else
 			NSColor *nscolor = [NSColor colorWithCalibratedRed:redf(m_text_color)
 					green:greenf(m_text_color)

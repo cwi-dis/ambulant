@@ -245,8 +245,8 @@ lib::document::apply_avt(const xml_string& name, const xml_string& value) const
 	xml_string rv = "";
 	xml_string rest = value;
 	while (rest != "") {
-		int openpos = rest.find('{');
-		int closepos = rest.find('}');
+		xml_string::size_type openpos = rest.find('{');
+		xml_string::size_type closepos = rest.find('}');
 		if (openpos == std::string::npos && closepos == std::string::npos) {
 			rv += rest;
 			rest = "";

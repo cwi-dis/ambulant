@@ -490,7 +490,7 @@ decode_regpoint(common::regpoint_spec &pt, const char *name)
 
 // Helper function: get region_dim value from an attribute
 static common::region_dim
-get_regiondim_attr(const lib::node *rn, char *attrname)
+get_regiondim_attr(const lib::node *rn, const char *attrname)
 {
 	const char *attrvalue = rn->get_attribute(attrname);
 	common::region_dim rd;

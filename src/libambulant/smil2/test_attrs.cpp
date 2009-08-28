@@ -329,7 +329,7 @@ bool test_attrs::load_test_attrs(const std::string& filename) {
 
 #ifdef WITH_SMIL30
 					clear_languages();
-					add_language(value, 1.0);
+					add_language(value, 1.0f);
 #endif
 				}
 			}
@@ -372,7 +372,7 @@ void test_attrs::set_default_tests_attrs() {
 #endif
 	active_tests_attrs_map["systemLanguage"] = "en";
 #ifdef WITH_SMIL30
-	add_language("en",1.0);
+	add_language("en",1.0f);
 #endif
 #if defined(AMBULANT_PLATFORM_MACOS)
 	active_tests_attrs_map["systemOperatingSystem"] = "macos";
@@ -391,6 +391,9 @@ void test_attrs::set_default_tests_attrs() {
     set_current_system_component_value(AM_SYSTEM_COMPONENT("Version2.0"), true);
     set_current_system_component_value(AM_SYSTEM_COMPONENT("Version" AMBULANT_VERSION), true);
     set_current_system_component_value(AM_SYSTEM_COMPONENT("Version" AMBULANT_VERSION "Exact"), true);
+#ifdef WITH_SEAMLESS_PLAYBACK
+    set_current_system_component_value(AM_SYSTEM_COMPONENT("SeamlessPlayback"), true);
+#endif
 }
 
 #ifdef WITH_SMIL30
@@ -553,7 +556,7 @@ test_attrs::get_system_language_weight(std::string lang)
 		std::string::size_type dashPos = lang.rfind('-');
 		if (dashPos == std::string::npos) {
 			AM_DBG lib::logger::get_logger()->trace("get_system_language_weight('%s') not found -> 0.0", lang.c_str());
-			return 0.0;
+			return 0.0f;
 		}
 		lang = lang.substr(0, dashPos-1);
 	}

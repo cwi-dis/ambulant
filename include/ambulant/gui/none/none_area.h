@@ -49,7 +49,8 @@ class none_area_renderer : public common::renderer_playable {
 		m_rgn(NULL) {}
 	~none_area_renderer();
 	void start(double t);
-	void stop();
+//	void stop();
+	bool stop();
 	void seek(double t) {}
 	bool user_event(const lib::point& pt, int what);
 	void redraw(const lib::rect &dirty, common::gui_window *window) {}

@@ -161,6 +161,7 @@ std::pair<bool, double> gui::dx::dx_video_renderer::get_dur() {
 	return std::pair<bool, double>(false, 0.0);
 }
 
+#if 0
 void gui::dx::dx_video_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->debug("stop: %s", m_node->get_path_display_desc().c_str()); 
 	if(!m_player) return;
@@ -171,10 +172,29 @@ void gui::dx::dx_video_renderer::stop() {
 	p->stop();
 	delete p;
 	m_cs.leave();
-	m_dest->renderer_done(this);
+	if (m_dest) m_dest->renderer_done(this);
+	m_dest = NULL;
 	m_activated = false;
 	m_dxplayer->stopped(this);
 	m_context->stopped(m_cookie);
+}
+#endif
+bool gui::dx::dx_video_renderer::stop() {
+	AM_DBG lib::logger::get_logger()->debug("stop: %s", m_node->get_path_display_desc().c_str()); 
+	if(!m_player) return true;
+	m_cs.enter();
+	m_update_event = 0;
+	video_player *p = m_player;
+	m_player = 0;
+	p->stop();
+	delete p;
+	m_cs.leave();
+	if (m_dest) m_dest->renderer_done(this);
+	m_dest = NULL;
+	m_activated = false;
+	m_dxplayer->stopped(this);
+	m_context->stopped(m_cookie);
+	return false;
 }
 
 void gui::dx::dx_video_renderer::pause(common::pause_display d) {

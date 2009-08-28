@@ -107,6 +107,9 @@ class ffmpeg_demux : public abstract_demux {
   	double duration();
   	int nstreams();
     void seek(timestamp_t time);
+#ifdef WITH_SEAMLESS_PLAYBACK
+    void set_clip_end(timestamp_t clip_end);
+#endif
     void read_ahead(timestamp_t time);
     audio_format& get_audio_format();
   	video_format& get_video_format();
@@ -126,8 +129,7 @@ class ffmpeg_demux : public abstract_demux {
 	lib::critical_section m_lock;
   	timestamp_t m_clip_begin;
   	timestamp_t m_clip_end;
-	timestamp_t m_seektime;
-	bool m_seektime_changed;	// True if either m_seektime or m_clip_begin has changed.
+	bool m_clip_begin_changed;	// True if m_clip_begin has changed.
 };
 
 // Helper routine: allocate a partially-initialised ffmpeg ACCodecContext.

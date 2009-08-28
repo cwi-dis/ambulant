@@ -52,7 +52,8 @@ class cocoa_audio_playable :
 	~cocoa_audio_playable();
 
 	void start(double where);
-	void stop();
+//	void stop();
+	bool stop();
 	void seek(double where);
 	void pause(pause_display d=display_show);
 	void resume();

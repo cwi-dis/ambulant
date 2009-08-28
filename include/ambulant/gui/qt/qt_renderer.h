@@ -119,9 +119,9 @@ class qt_renderer : public RP_Base {
 		RP_Base::start(where);
 	}
 	
- 	virtual void stop() {
+ 	virtual bool stop() {
 		stop_transition();
-		RP_Base::stop();
+		return RP_Base::stop();
 	}
 
 	void redraw(const rect &dirty, gui_window *window) {

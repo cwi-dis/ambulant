@@ -70,14 +70,6 @@ depends, see third_party_packages/readme.txt. Most configure options
 specified in the "Building for Linux" section are also relevant for
 Mac OS X.
 
-IMPORTANT: for Tiger (10.4), you currently need to do the following things:
-- Gcc4 is preferred, but gcc3 should work too.
-- libtool 1.5 (which ships with Tiger) is broken. For the time being,
-  this can be fixed by editing the generated "libtool" script (after configure)
-  and setting the line
-    whole_archive_flag_spec=""
-  in stead of the original whole_archive_flag_spec definition.
-
 Then the normal "configure"/"make"/"sudo make install" combo can be used
 here in the toplevel directory to create the player, see further down
 in this document for details if you are not familiar with

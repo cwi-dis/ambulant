@@ -50,14 +50,14 @@ mypreferences::load_preferences()
 		[NSNumber numberWithBool: false], @"dynamic_content_control",
 		nil];
 	[prefs registerDefaults: defaultDefaults];
-	m_parser_id = [[prefs stringForKey: @"parser_id"] cString];
-	m_validation_scheme = [[prefs stringForKey: @"validation_scheme"] cString];
+	m_parser_id = [[prefs stringForKey: @"parser_id"] UTF8String];
+	m_validation_scheme = [[prefs stringForKey: @"validation_scheme"] UTF8String];
 	m_do_namespaces = [prefs boolForKey: @"do_namespaces"];
 	m_do_schema = [prefs boolForKey: @"do_schema"];
 	m_validation_schema_full_checking = [prefs boolForKey: @"validation_schema_full_checking"];
 	m_log_level = [prefs integerForKey: @"log_level"];
 	m_use_plugins = [prefs boolForKey: @"use_plugins"];
-	m_plugin_dir = [[prefs stringForKey: @"plugin_dir"] cString];
+	m_plugin_dir = [[prefs stringForKey: @"plugin_dir"] UTF8String];
 	m_prefer_ffmpeg = [prefs boolForKey: @"prefer_ffmpeg"];
 	m_prefer_rtsp_tcp = [prefs boolForKey: @"prefer_rtsp_tcp"];
 	m_strict_url_parsing = [prefs boolForKey: @"strict_url_parsing"];

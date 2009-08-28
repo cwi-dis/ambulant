@@ -1,0 +1,62 @@
+Results of runnign the tests. Last update, 26-Jun-09, Jack.
+Items with [!] in margin are not what is expected, and need attention.
+
+problems with all (not always repeated again below):
+[!]	Playing video-only along with karaoke does not sync the karaoke to the video. (Jack, 25-Jun-09)
+
+sptest-00:
+	25-Jun-09, Jack: Works.
+
+sptest-01
+	audio: Works with minimal (0.2s?) audio pause (Jack, 25-Jun-09)
+	video: Same, but does not stop at the end (Jack, 26-Jun-09)
+	av: Works with minimal (0.2s?) audio pause (Jack, 26-Jun-09)
+	
+sptest-02
+	audio: Audio pauses 0.25s (Jack, 25-Jun-09)
+	video: Video pauses without display for about 0.7s, sync is pretty bad (Jack, 26-Jun-09)
+	av: Audio pauses 0.25s, video pauses (without display) for about 0.7s (Jack, 26-Jun-09)
+	audio-modified: Same as audio, plays alternatives as it should (Jack, 25-Jun-09)
+	
+sptest-03
+	audio: Works (Jack, 26-Jun-09)
+	video: Works (Jack, 26-Jun-09)
+	av:  Works (Jack, 26-Jun-09)
+	
+sptest-04
+	video: Works (Jack, 26-Jun-09)
+	av: Works (Jack, 26-Jun-09)
+	
+sptest-05
+	audio: Works (Jack, 25-Jun-09)
+[!]	video: Video does not repeat but pauses (Jack, 10-Aug-09)
+[!]	av: Video does not repeat but pauses (Jack, 10-Aug-09)
+
+sptest-06
+	audio: Works (Jack, 25-Jun-09)
+	video: Sync progressively worsens (Jack, 25-Jun-09)
+	av: Works (Jack, 25-Jun-09)
+
+sptest-07
+	audio: Is not better that sptest-02 (Jack, 25-Jun-09)
+[!]	video: Not better than sptest-02 (Jack, 10-Aug-09)
+[!]	av: Not better than sptest-02 (Jack, 10-Aug-09)
+[!]	audio-modified: Same, also has ffmpeg error messages in output (Jack, 10-Aug-09)
+	
+sptest-08:
+	audio: Not better than sptest-02 (Jack, 10-Aug-09)
+	video: Not better than sptest-02 (Jack, 10-Aug-09)
+	av: Not better than sptest-02 (Jack, 10-Aug-09)
+	
+sptest-09:
+	audio: Not better than sptest-02 (Jack, 10-Aug-09)
+	video: Not better than sptest-02 (Jack, 10-Aug-09)
+	av: Not better than sptest-02 (Jack, 10-Aug-09)
+	
+sptest-10:
+	video: Works (Jack, 25-Jun-09)
+	av: Works (Jack, 25-Jun-09)
+	
+sptest-11:
+	video: Works (Jack, 25-Jun-09)
+	av: Works, with minimal (expected) audio hiss (Jack, 25-Jun-09)

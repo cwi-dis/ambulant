@@ -137,12 +137,13 @@ gtk_smiltext_renderer::seek(double t)
 	//renderer_playable::seek(t);
 }
 
-void
+bool
 gtk_smiltext_renderer::stop()
 {
 	m_engine.stop();
 	renderer_playable::stop();
 	m_context->stopped(m_cookie);
+	return true;
 }
 
 void

@@ -81,14 +81,13 @@ class win32_datasource : virtual public datasource, virtual public lib::ref_coun
 	void stop();
 	void readdone(int len);
     bool end_of_file();
-	
-		
 	char* get_read_ptr();
 	int size() const;
-
-  
 	void read(char *data, int size);
-  	
+  #ifdef WITH_SEAMLESS_PLAYBACK
+  	void start_prefetch(ambulant::lib::event_processor *evp){};
+#endif
+
   protected: 
     bool _end_of_file();
     virtual void _read_file() = 0; // Defined in the concrete subclasses

@@ -37,7 +37,7 @@ using namespace smil2;
 // Attribute names that cause needs_region_node() to return true
 // for a given body node
 // XXXX Not checked with SMIL2 standard yet!
-static char *subregionattrs[] = {
+static const char *subregionattrs[] = {
 	"left", "width", "right", "top", "height", "bottom",
 	"backgroundColor", "background-color",
 	"transparent",
@@ -59,7 +59,7 @@ static char *subregionattrs[] = {
 
 // Helper function: get region_dim value from an attribute
 static common::region_dim
-get_regiondim_attr(const lib::node *rn, char *attrname)
+get_regiondim_attr(const lib::node *rn, const char *attrname)
 {
 	const char *attrvalue = rn->get_attribute(attrname);
 	common::region_dim rd;
@@ -87,7 +87,7 @@ get_regiondim_attr(const lib::node *rn, char *attrname)
 
 bool 
 region_node::needs_region_node(const lib::node *n) {
-	char **attrnamep = subregionattrs;
+	const char **attrnamep = subregionattrs;
 	while (*attrnamep) {
 		if (n->get_attribute(*attrnamep))
 			return true;
@@ -296,12 +296,12 @@ region_node::fix_from_dom_node()
 	{
 		// panZoom
 		const char *panzoom_attr = m_node->get_attribute("panZoom");
-		common::region_dim_spec rds;
-		if (panzoom_attr) rds = common::region_dim_spec(panzoom_attr, "panZoomRect");
-		if (rds != m_panzoom) {
+		common::region_dim_spec rds_;
+		if (panzoom_attr) rds_ = common::region_dim_spec(panzoom_attr, "panZoomRect");
+		if (rds_ != m_panzoom) {
 			changed = true;
 		}
-		set_panzoom(rds);
+		set_panzoom(rds_);
 	}
 	
 	{
@@ -569,13 +569,13 @@ region_node::get_tiling() const
 lib::rect
 region_node::get_crop_rect(const lib::size& srcsize) const
 {
-	common::region_dim_spec rds(m_display_panzoom);
+	common::region_dim_spec rdspec(m_display_panzoom);
 	lib::rect croprect(lib::point(0,0), srcsize);
-	rds.convert(croprect);
-	if (rds.left.defined()) croprect.x = rds.left.get_as_int();
-	if (rds.top.defined()) croprect.y = rds.top.get_as_int();
-	if (rds.width.defined()) croprect.w = rds.width.get_as_int();
-	if (rds.height.defined()) croprect.h = rds.height.get_as_int();
+	rdspec.convert(croprect);
+	if (rdspec.left.defined()) croprect.x = rdspec.left.get_as_int();
+	if (rdspec.top.defined()) croprect.y = rdspec.top.get_as_int();
+	if (rdspec.width.defined()) croprect.w = rdspec.width.get_as_int();
+	if (rdspec.height.defined()) croprect.h = rdspec.height.get_as_int();
 	return croprect;
 }
 #endif // WITH_SMIL30
@@ -740,9 +740,9 @@ void region_node::set_region_soundalign(common::sound_alignment sa) {
 }
 
 #ifdef WITH_SMIL30
-void region_node::set_region_panzoom(const common::region_dim_spec& rds) {
+void region_node::set_region_panzoom(const common::region_dim_spec& rds_) {
 	AM_DBG lib::logger::get_logger()->debug("region_node::set_region_panzoom()");
-	m_display_panzoom = rds;
+	m_display_panzoom = rds_;
 }
 
 void region_node::set_region_opacity(const std::string& which, double level) {

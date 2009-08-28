@@ -26,6 +26,8 @@
 
 #define MAX_RTP_FRAME_SIZE 50000
 
+//#define CLIP_BEGIN_CHANGED 1 //xxxbo: a switch for m_clip_begin_changed and m_seektime_changed;
+
 // Somehow, the time stamps produced by live555 are incorrect.
 // Enable the next define to try and re-create correct
 // timestamps.
@@ -209,6 +211,9 @@ class rtsp_demux : public abstract_demux {
 	audio_format& get_audio_format() { return m_context->audio_fmt; };
 	video_format& get_video_format() { return m_context->video_fmt; };
 	void seek(timestamp_t time);
+#ifdef WITH_SEAMLESS_PLAYBACK
+	void set_clip_end(timestamp_t clip_end);
+#endif
 	void read_ahead(timestamp_t time);
 	void cancel();
 	timestamp_t get_clip_end();
@@ -229,7 +234,12 @@ class rtsp_demux : public abstract_demux {
   	timestamp_t m_clip_begin;
 	timestamp_t m_clip_end;
 	timestamp_t m_seektime;
+#ifndef CLIP_BEGIN_CHANGED
   	bool m_seektime_changed; // true if either m_clip_begin or m_seektime has changed
+#else
+	bool m_clip_begin_changed;	// True if m_clip_begin has changed.
+#endif
+
 };
 
 

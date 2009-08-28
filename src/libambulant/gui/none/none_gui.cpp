@@ -65,10 +65,18 @@ gui::none::none_playable::start(double where)
 	m_context->stopped(m_cookie, 0);
 }
 
+#if 0
 void
 gui::none::none_playable::stop()
 {
 	lib::logger::get_logger()->trace("none_playable.stop(0x%x)", (void *)this);
+}
+#endif
+bool
+gui::none::none_playable::stop()
+{
+	lib::logger::get_logger()->trace("none_playable.stop(0x%x)", (void *)this);
+	return true; //xxxbo Note, "true" means this playable cannot be reused.
 }
 
 void

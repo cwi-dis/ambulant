@@ -138,6 +138,8 @@ cocoa_smiltext_renderer::cocoa_smiltext_renderer(
 cocoa_smiltext_renderer::~cocoa_smiltext_renderer()
 {
 	m_lock.enter();
+    if (m_dest)	m_dest->renderer_done(this);
+    m_dest = NULL;
 	[m_text_storage release];
 	m_text_storage = NULL;
 	m_lock.leave();
@@ -155,18 +157,19 @@ cocoa_smiltext_renderer::start(double t)
 void
 cocoa_smiltext_renderer::seek(double t)
 {
+    assert( t >= 0);
 	m_engine.seek(t);
 	//renderer_playable::seek(t);
 }
 
-void
+bool
 cocoa_smiltext_renderer::stop()
 {
 	m_engine.stop();
 	renderer_playable::stop();
 	m_context->stopped(m_cookie);
+	return true; //xxxbo notes, true means this renderer cannot be reused.
 }
-
 void
 cocoa_smiltext_renderer::pause(pause_display d)
 {
@@ -295,7 +298,7 @@ cocoa_smiltext_renderer::smiltext_changed()
 				NSColor *color = [NSColor colorWithCalibratedRed:redf((*i).m_color)
 						green:greenf((*i).m_color)
 						blue:bluef((*i).m_color)
-						alpha:alfa];
+						alpha:(float)alfa];
 				[attrs setValue:color forKey:NSForegroundColorAttributeName];
 			}
 			if (!(*i).m_bg_transparent) {
@@ -308,7 +311,7 @@ cocoa_smiltext_renderer::smiltext_changed()
 				NSColor *color = [NSColor colorWithCalibratedRed:redf((*i).m_bg_color)
 						green:greenf((*i).m_bg_color)
 						blue:bluef((*i).m_bg_color)
-						alpha:alfa];
+						alpha:(float)alfa];
 				[attrs setValue:color forKey:NSBackgroundColorAttributeName];
 			}
 			// Finally do paragraph settings (which are cached)
@@ -423,6 +426,10 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 		layout_size.width = INFINITE_WIDTH;
 		has_hmovement = true;
 		break;
+    case smil2::stm_replace:
+    case smil2::stm_append:
+        // Normal cases
+        break;
 	}
 
 	NSSize old_layout_size;
@@ -494,13 +501,13 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	NSPoint logical_origin = NSMakePoint(0, 0);
 	if (m_params.m_mode == smil2::stm_crawl) {
 		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
-		logical_origin.x += now * m_params.m_rate / 1000;
-		visible_origin.x -= now * m_params.m_rate / 1000;
+		logical_origin.x += float(now * m_params.m_rate / 1000);
+		visible_origin.x -= float(now * m_params.m_rate / 1000);
 		// XXX see below
 	}
 	if (m_params.m_mode == smil2::stm_scroll) {
 		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
-		visible_origin.y -= now * m_params.m_rate / 1000;
+		visible_origin.y -= float(now * m_params.m_rate / 1000);
 		if (visible_origin.y < 0) {
 			logical_origin.y -= visible_origin.y;
 			// visible_origin.y = 0;
@@ -543,11 +550,11 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 			// bits.
 			NSImage *tmpsrc = [view getTransitionTmpSurface];
 			[tmpsrc lockFocus];
-			[[NSColor colorWithDeviceWhite: 1.0 alpha: 0.0] set];
+			[[NSColor colorWithDeviceWhite: 1.0f alpha: 0.0f] set];
 			NSRectFill(cocoa_dstrect);
 			[m_layout_manager drawBackgroundForGlyphRange: glyph_range atPoint: visible_origin];
 			[tmpsrc unlockFocus];
-			[tmpsrc drawInRect: cocoa_dstrect fromRect: cocoa_dstrect operation: NSCompositeSourceOver fraction: 1.0];
+			[tmpsrc drawInRect: cocoa_dstrect fromRect: cocoa_dstrect operation: NSCompositeSourceOver fraction: 1.0f];
 		} else {
 			// Otherwise we simply let NSLayoutManager do the work
 			[m_layout_manager drawBackgroundForGlyphRange: glyph_range atPoint: visible_origin];

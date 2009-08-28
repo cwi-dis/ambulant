@@ -137,7 +137,7 @@ if $merge; then
     lipo -create -output libavformat/libavformat.a build-{i386,ppc}/libavformat/libavformat.a
     lipo -create -output libavcodec/libavcodec.a build-{i386,ppc}/libavcodec/libavcodec.a
     lipo -create -output libavutil/libavutil.a build-{i386,ppc}/libavutil/libavutil.a
-    lipo -create -output libswscale/libswscale.a build-{i386,ppc}/libswscale/libswscale.a
+    #lipo -create -output libswscale/libswscale.a build-{i386,ppc}/libswscale/libswscale.a
     # XXXX Should also do the dynamic libraries?
     # Also need to copy .pc files. Do it here.
     # NOTE: this is correct as of ffmpeg 15-jun-08, expected to change soon (ffmpeg are

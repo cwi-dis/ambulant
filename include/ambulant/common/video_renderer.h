@@ -79,7 +79,11 @@ class video_renderer : public common::renderer_playable {
     virtual void redraw(const lib::rect &dirty, common::gui_window *window);
 	
 	void start(double where);
-    void stop();
+    //void stop();
+	bool stop();
+	void post_stop();
+	void preroll(double when, double where, double how_much);
+	void init_with_node(const lib::node *n);
 	void seek(double where);
     void pause(pause_display d=display_show);
     void resume();
@@ -104,7 +108,8 @@ class video_renderer : public common::renderer_playable {
 	double now();
 	lib::timer *m_timer;
 	long int m_epoch;
-	bool m_activated;
+	bool m_activated;			// True if a datasource callback is outstanding
+	bool m_post_stop_called;	// True if we are expecting only one more callback
 	bool m_is_paused;
 	long int m_paused_epoch;
 	net::timestamp_t m_last_frame_timestamp;
@@ -113,6 +118,9 @@ class video_renderer : public common::renderer_playable {
 	long int m_frame_early;
 	long int m_frame_late;
 	long int m_frame_missing;
+#ifdef WITH_SEAMLESS_PLAYBACK
+	net::timestamp_t m_previous_clip_position;      
+#endif
   protected:
 	lib::critical_section m_lock;
 };

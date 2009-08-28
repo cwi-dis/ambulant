@@ -318,6 +318,7 @@ class smiltext_metrics {
 /// Interface to be inherited by a renderer that wants to use smiltext_layout_engine
 class smiltext_layout_provider {
   public:
+    virtual ~smiltext_layout_provider() {}
 
 	/// Return font information needed for for use smiltext_layout_engine
 	virtual smiltext_metrics get_smiltext_metrics(const smiltext_run& str) = 0;

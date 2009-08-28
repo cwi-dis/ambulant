@@ -4,7 +4,6 @@
 	Version="9,00"
 	Name="plugin_xerces"
 	ProjectGUID="{51CEFA69-BAB3-421F-9A79-17FBB4E73F21}"
-	RootNamespace="plugin_xerces"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -144,6 +143,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				IgnoreImportLibrary="true"
 				AdditionalDependencies="..\..\lib\win32\xerces-c_2.lib"
 				OutputFile="../../bin/win32/libamplugin_xerces.dll"
 				LinkIncremental="1"

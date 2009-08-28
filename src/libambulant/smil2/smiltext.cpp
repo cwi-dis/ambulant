@@ -307,7 +307,7 @@ smiltext_engine::_update() {
 								lib::logger::get_logger()->error(gettext("Error in smilText timing"));
 							}
 						}
-					} else if (time_str = item->get_attribute("next")) {
+					} else if ((time_str = item->get_attribute("next"))) {
 						time_attr_parser tp(item, "next", lib::logger::get_logger());
 						sync_value_struct svs;
 						svs.type = sv_indefinite;
@@ -360,10 +360,10 @@ smiltext_engine::_update() {
 				m_run_stack.push(run);
 				if (m_params.m_mode != stm_crawl ) {
 					// insert conditional line break
-					smiltext_run run = m_run_stack.top();
-					run.m_data = "";
-					run.m_command = stc_condbreak;
-					_insert_run_at_end(run);
+					smiltext_run r = m_run_stack.top();
+					r.m_data = "";
+					r.m_command = stc_condbreak;
+					_insert_run_at_end(r);
 				}
 			} else {
 				lib::logger::get_logger()->trace("smilText: unknown tag <%s>", tag.c_str());
@@ -923,7 +923,6 @@ smiltext_layout_engine::_get_initial_values(
 void
 smiltext_layout_engine::redraw(const lib::rect& r) {
 AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw(0x%x) r=(L=%d,T=%d,W=%d,H=%d", this,r.left(),r.top(),r.width(),r.height());
-	int nbr = 0; // number of breaks (newlines) before current line
 	m_engine.lock();
 	if (m_words.empty()) {
 		m_engine.unlock();
@@ -1014,7 +1013,7 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw(0x%x): s
 		unsigned int max_ascent = 0, max_descent = 0;
 		int x = x_start;
 		int y = y_start;
-		bool first_word = true;
+		bool is_first_word = true;
 		align = bol->m_run.m_align;
 		// find end of line
 		for (word = bol; word != m_words.end(); word++) {
@@ -1031,14 +1030,14 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw(0x%x): s
 			// if it doesn't fit on this line it won't fit
 			// on the next line in the rectangle either
 			if (linefeed_processing
-			    && ! first_word
+			    && ! is_first_word
 			    && wrap_lines 
 			    &&  ! _smiltext_fits(word->m_bounding_box,rect)) {
 				if (word->m_leading_newlines == 0)
 					word->m_leading_newlines++;
 				break;
 			}
-			first_word = false;
+			is_first_word = false;
 			// compute x-position of next word
 			x += word->m_metrics.get_width()* x_dir;
 			// find max. height (ascent+descent) of all words

@@ -1,5 +1,7 @@
 AC_INIT([ambulant],[2.1])
 AC_CONFIG_SRCDIR(src/libambulant/get_version.cpp)
+AC_CONFIG_AUX_DIR([libltdl/config])
+AC_CONFIG_MACRO_DIR([libltdl/m4])
 AM_INIT_AUTOMAKE
 AMBULANT_VERSION=2.1
 
@@ -18,18 +20,19 @@ AC_PROG_CXX
 AC_PROG_LN_S
 AC_PROG_MKDIR_P
 AC_HEADER_STDC
+AC_PROG_LIBTOOL
 LT_AC_PROG_SED
 am__api_version="1.9"
 #
 # Allow either included or standard ltdl
 #
-AC_WITH_LTDL
-AC_LIBLTDL_CONVENIENCE
-AC_LIBTOOL_DLOPEN
-AC_LIB_LTDL
-AC_PROG_LIBTOOL
-AC_SUBST(INCLTDL)
-AC_SUBST(LIBLTDL)
+LT_CONFIG_LTDL_DIR([libltdl])
+LT_INIT(dlopen)
+LTDL_INIT(convenience)
+# ??? AC_LIBTOOL_DLOPEN
+# ??? AC_LIB_LTDL
+# ??? AC_SUBST(INCLTDL)
+# ??? AC_SUBST(LIBLTDL)
 
 AM_GNU_GETTEXT([external])
 AC_CONFIG_FILES([Makefile po/Makefile.in
@@ -194,6 +197,32 @@ then
 fi
 AM_CONDITIONAL(WITH_SMIL30, test x$with_smil30 = xyes)
 AC_MSG_RESULT($with_smil30)
+
+#
+# Do we want seamless playback support?
+#
+AC_MSG_CHECKING(for --with-seamless-playback)
+AC_ARG_WITH([seamless-playback],[
+    AS_HELP_STRING([--with-seamless-playback],[Enable seamless audio/video playback])
+    ],[with_seamless=${withval}], [with_seamless=yes])
+if test "x$with_seamless" = xyes;
+then
+    AC_DEFINE(WITH_SEAMLESS_PLAYBACK, 1, [Define to enable seamless playback support])
+fi
+AC_MSG_RESULT($with_seamless)
+
+#
+# Do we want clock resynchronisation?
+#
+AC_MSG_CHECKING(for --with-clock-sync)
+AC_ARG_WITH([clock-sync],[
+    AS_HELP_STRING([--with-clock-sync],[Resynchronise presentation clock to audio clock])
+    ],[with_clock_sync=${withval}], [with_clock_sync=yes])
+if test "x$with_clock_sync" = xyes;
+then
+    AC_DEFINE(WITH_CLOCK_SYNC, 1, [Define to enable resyncing presentation clock to audio clock])
+fi
+AC_MSG_RESULT($with_clock_sync)
 
 #
 # Do we want external DOM tree support?
@@ -1167,6 +1196,8 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     Enable external DOM:            ${test_dom}
     Enable SMIL 3.0:                ${test_smil30}
     Enable overlay window:          ${test_overlay}
+    Build with seamless playback:   ${with_seamless}
+    Build with audio clock sync:    ${with_clock_sync}
     Enable SMIL test layout:        ${test_smil_test}
     Build with Python support:      ${with_python}
     Build with Python plugin:       ${with_python_plugin}
@@ -1200,3 +1231,7 @@ AC_MSG_RESULT([$ffmpeg_warning]);
 AC_MSG_RESULT([$live_warning]);
 AC_MSG_RESULT([$expat_warning]);
 AC_MSG_RESULT([$python_warning]);
+
+echo "Attempting to fix libtool, assuming 2.2.6"
+sh $srcdir/fixlibtool226.sh
+

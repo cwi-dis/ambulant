@@ -91,7 +91,7 @@ bool trace_player::is_done() {
 	return !m_root->is_active();
 }
 
-void trace_player::start_playable(const node *n, double t) {
+void trace_player::start_playable(const node *n, double t, const lib::transition_info *trans) {
 	playable *p = get_playable(n);
 	std::map<const node*, playable *>::iterator it = 
 		m_playables.find(n);

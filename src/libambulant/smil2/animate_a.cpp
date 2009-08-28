@@ -100,7 +100,7 @@ void animate_attrs::locate_target_attr() {
 		return;
 	}
 	m_attrname = p;
-	static char *reg_dim_names[] = {"left", "top", "width", "height", "right", "bottom"};
+	static const char *reg_dim_names[] = {"left", "top", "width", "height", "right", "bottom"};
 	static int n = sizeof(reg_dim_names)/sizeof(const char *);
 	for(int i=0;i<n;i++) {
 		if(m_attrname == reg_dim_names[i]) {

@@ -138,6 +138,7 @@ namespace cocoa {
 extern const char cocoa_dsvideo_playable_tag[] = "video";
 extern const char cocoa_dsvideo_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererOpen");
 extern const char cocoa_dsvideo_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererCocoa");
+extern const char cocoa_dsvideo_playable_renderer_uri3[] = AM_SYSTEM_COMPONENT("RendererVideo");
 // XXXJACK missing RendererVideo...
 common::playable_factory *
 create_cocoa_dsvideo_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
@@ -150,7 +151,7 @@ create_cocoa_dsvideo_playable_factory(common::factories *factory, common::playab
         cocoa_dsvideo_playable_tag, 
         cocoa_dsvideo_playable_renderer_uri,
         cocoa_dsvideo_playable_renderer_uri2,
-        cocoa_dsvideo_playable_renderer_uri2>(factory, mdp);
+        cocoa_dsvideo_playable_renderer_uri3>(factory, mdp);
 }
 
 
@@ -279,6 +280,7 @@ void
 cocoa_dsvideo_renderer::redraw(const rect &dirty, gui_window *window)
 {
 	m_lock.enter();
+    assert(m_dest);
 	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("cocoa_dsvideo_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	
@@ -325,7 +327,7 @@ cocoa_dsvideo_renderer::redraw(const rect &dirty, gui_window *window)
 		double alfa = 1.0;
 		const common::region_info *ri = m_dest->get_info();
 		if (ri) alfa = ri->get_mediaopacity();
-		[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceAtop fraction: alfa];
+		[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceAtop fraction: (float)alfa];
 #else
 		[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceAtop fraction: 1.0];
 #endif

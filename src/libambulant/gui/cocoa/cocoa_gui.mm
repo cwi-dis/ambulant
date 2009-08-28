@@ -196,7 +196,11 @@ cocoa_renderer_factory::new_playable(
 		rv = new cocoa_audio_playable(context, cookie, node, evp, m_factory, NULL);
 		AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_audio_renderer 0x%x", (void *)node, (void *)rv);
 #endif
+#ifndef WITH_SEAMLESS_PLAYBACK
 	} else if ( tag == "video") {
+#else
+	} else if ( tag == "video" || tag == "prefetch") {	
+#endif
 		if (common::preferences::get_preferences()->m_prefer_ffmpeg ) {
 			rv = new cocoa_dsvideo_renderer(context, cookie, node, evp, m_factory, NULL);
 			if (rv) {
@@ -729,7 +733,7 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 		[tmp_window setBackgroundColor:[NSColor clearColor]];
 		[tmp_window setLevel:[overlay_window level]];
 		[tmp_window setHasShadow:NO];
-		[tmp_window setAlphaValue:0.0];
+		[tmp_window setAlphaValue:(float)0.0];
 		src_view = [[NSView alloc] initWithFrame:[self bounds]];
 		[tmp_window setContentView:src_view];
 		[tmp_window orderFront:self];
@@ -867,7 +871,7 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 		[[self getTransitionOldSource] drawInRect: bounds
 			fromRect: bounds
 			operation: NSCompositeCopy
-			fraction: 1.0];
+			fraction: 1.0f];
 		fullscreen_engine->step(fullscreen_now);
 	} else {
 		AM_DBG NSLog(@"_screenTransitionPostRedraw: no screen transition engine");
@@ -876,7 +880,7 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 		[[self getTransitionNewSource] drawInRect: bounds
 			fromRect: bounds
 			operation: NSCompositeCopy
-			fraction: 1.0];
+			fraction: 1.0f];
 	}
 
 	if (fullscreen_count == 0) {

@@ -1,0 +1,23 @@
+<smil version="3.0">
+<head>
+<layout>
+<root-layout width="670" height="370" backgroundColor="black"/>
+<region xml:id="left" left="10" top="10" width="320" height="240" backgroundColor="gray"/>
+<region xml:id="right" left="340" top="10" width="320" height="240" backgroundColor="gray"/>
+<region xml:id="bottom" left="10" width="650" top="260" height="100" backgroundColor="white"/>
+</layout>
+<state src="mediafiles.xml"/>
+</head>
+<body>
+<par>
+<smilText region="bottom">
+In the visual regions, you should see nothing.
+<br/>
+On the speakers, you should hear the audio in canon.
+<clear begin="16s"/>
+</smilText>
+<audio id="media-01" src="{audio1}" region="left"/>
+<audio begin="4s" id="media-02" src="{audio1}" region="right"/>
+</par>
+</body>
+</smil>

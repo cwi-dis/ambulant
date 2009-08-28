@@ -37,7 +37,7 @@
 #include "ambulant/smil2/smil_layout.h"
 #include "ambulant/smil2/time_sched.h"
 #include "ambulant/smil2/animate_e.h"
-
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -110,9 +110,21 @@ smil_player::~smil_player() {
 	m_scheduler->reset_document();
 	std::map<const lib::node*, common::playable *>::iterator it;
 	for(it = m_playables.begin();it!=m_playables.end();it++) {
+        (*it).second->post_stop();
 		int rem = (*it).second->release();
-		if (rem > 1) m_logger->trace("smil_player::~smil_player: playable 0x%x still has refcount of %d", (*it).second, rem);
+		if (rem > 0) m_logger->trace("smil_player::~smil_player: playable 0x%x still has refcount of %d", (*it).second, rem);
 	}
+	
+#ifdef WITH_SEAMLESS_PLAYBACK
+	// clean up the playable cache as well
+	std::map<const std::string, common::playable *>::iterator it_url_based; 
+	for(it_url_based = m_playables_url_based.begin();it_url_based!=m_playables_url_based.end();it_url_based++) {
+        (*it_url_based).second->post_stop();
+		int rem = (*it_url_based).second->release();
+		if (rem > 0) m_logger->trace("smil_player::~smil_player: url_based_playable 0x%x still has refcount of %d", (*it_url_based).second, rem);
+	}
+#endif
+	
 	
 	delete m_focussed_nodes;
 	delete m_new_focussed_nodes;
@@ -213,6 +225,10 @@ void smil_player::start() {
 
 // Command to stop playback
 void smil_player::stop() {
+    AM_DBG lib::logger::get_logger()->debug("smil_player::stop()");
+#ifdef WITH_SEAMLESS_PLAYBACK
+	assert(m_playables_url_based.empty());
+#endif
 	m_lock.enter();
 	if(m_state == common::ps_pausing || m_state == common::ps_playing) {
 		m_timer->pause();
@@ -236,6 +252,7 @@ void smil_player::pause() {
 			(*it).second->pause();
 		m_playables_cs.leave();
 	}
+
 	m_lock.leave();
 }
 
@@ -250,6 +267,7 @@ void smil_player::_resume() {
 	if(m_state == common::ps_pausing) {
 		m_state = common::ps_playing;
 		std::map<const lib::node*, common::playable *>::iterator it;
+
 		m_playables_cs.enter();
 		for(it = m_playables.begin();it!=m_playables.end();it++)
 			(*it).second->resume();
@@ -279,17 +297,73 @@ void smil_player::done_playback() {
 
 // Request to create a playable for the node.
 common::playable *smil_player::create_playable(const lib::node *n) {
+    assert(n);
+#ifndef WITH_SEAMLESS_PLAYBACK
 	std::map<const lib::node*, common::playable *>::iterator it = 
 		m_playables.find(n);
 	common::playable *np = (it != m_playables.end())?(*it).second:0;
 	if(np == NULL) {
 		np = _new_playable(n);
-AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x)cs.enter", (void*)n);
+        AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x)cs.enter", (void*)n);
 		m_playables_cs.enter();
 		m_playables[n] = np;
 		m_playables_cs.leave();
-AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x)cs.leave", (void*)n);
+        AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x)cs.leave", (void*)n);
 	}
+#else
+	common::playable *np = NULL;
+	if (n->get_attribute("src")) {
+		// It may be in the URL-based playable cache. Let us look.
+		std::map<const std::string, common::playable *>::iterator it_url_based = 
+				m_playables_url_based.find(n->get_url("src").get_url());
+		if (it_url_based != m_playables_url_based.end()) {
+			np = (*it_url_based).second;
+			m_playables_cs.enter();
+			m_playables_url_based.erase(it_url_based);
+			// In case of prefetch, there are more than one playables( for example, one for audio, 
+			// the second one for prefetch) stored in the map, so this assert is not true any more.
+			//assert(m_playables_url_based.empty());
+			m_playables_cs.leave();
+			// xxxx copy code from _new_playable to call set_surface()
+
+			assert(np);
+			surface *surf = m_layout_manager->get_surface(n);
+			assert(surf);	// XXXJACK: at least, I think it cannot be NULL....
+			common::renderer *rend = np->get_renderer();
+//			assert(rend);	// Assert can fail if the playable failed to create fully (incorrect url, for example)
+			// XXXJACK: Dirty hack, for now: we don't want prefetch to render to a surface so we zap it. Need to fix.
+			if (n->get_local_name() == "prefetch") surf = NULL;
+			AM_DBG lib::logger::get_logger()->debug("%s: cached playable 0x%x, renderer 0x%x, surface 0x%x", n->get_sig().c_str(), np, rend, surf);
+			if (rend && surf) {
+				rend->set_surface(surf);
+			}
+
+		} else {
+            AM_DBG lib::logger::get_logger()->debug("%s: no cached playable", n->get_sig().c_str());
+        }
+	}
+	if( np == NULL ) { 
+		np = _new_playable(n);
+		AM_DBG lib::logger::get_logger()->debug("smil_plager::create_playable(0x%x) _new_playable 0x%x", (void*)n, (void*)np);
+		AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x)cs.enter", (void*)n);
+		m_playables_cs.enter();
+		m_playables[n] = np;
+		m_playables_cs.leave();
+		AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x)cs.leave", (void*)n);		
+	} else {
+		AM_DBG lib::logger::get_logger()->debug("smil_plager::create_playable(0x%x), prior playable is found 0x%x", (void*)n, (void*)np);
+		AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x)cs.enter", (void*)n);
+		m_playables_cs.enter();
+		m_playables[n] = np;
+		m_playables_cs.leave();
+ 
+		AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x)cs.leave", (void*)n);	
+	}
+    if (np) {
+        // Update the context info of np, for example, clipbegin, clipend, and cookie according to the node
+		np->init_with_node(n);
+    }
+#endif
 	
 	// We also need to remember any accesskey attribute (as opposed to accesskey
 	// value for a timing attribute) because these are global.
@@ -356,12 +430,11 @@ void smil_player::stop_playable(const lib::node *n) {
 	AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable(%s)", n->get_sig().c_str());
 	if (n == m_focus) {
 		m_focus = NULL;
-		highlight(n, false);
+		highlight(n, false); 
 		node_focussed(NULL);
 	}
 	AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable(0x%x)cs.enter", (void*)n);
 	m_playables_cs.enter();
-		
 	std::map<const lib::node*, common::playable *>::iterator it = 
 		m_playables.find(n);
 	std::pair<const lib::node*, common::playable*> victim(NULL,NULL);
@@ -374,15 +447,71 @@ void smil_player::stop_playable(const lib::node *n) {
 		m_playables.erase(it);
 	}
 	m_playables_cs.leave();
-	if (victim.second)
-		_destroy_playable(victim.second, victim.first);
-	AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable(0x%x)cs.leave", (void*)n);
+    assert(victim.second); // Jack thinks we should always have a playable when we get here. Remove assert if untrue:-)
+	if (victim.second == NULL) return;
+    
+#ifdef WITH_SEAMLESS_PLAYBACK
+    // There are now three possibilities:
+    // 1. Destroy. Not cachable, or no URL.
+    // 2. Store in cache, don't stop playback (cachable, fill=continue)
+    // 3. Store in cache, but stop playback (cachable, no fill=continue)
+    bool can_cache = true;
+    bool must_post_stop;
+
+    must_post_stop = !victim.second->stop();
+    if (n->get_attribute("src") == NULL) {
+        can_cache = false;
+    } else {
+        // See if there is one in the cache already
+        std::map<const std::string, common::playable *>::iterator it_url_based = 
+                m_playables_url_based.find((victim.first->get_url("src")).get_url());
+        common::playable *np = (it_url_based != m_playables_url_based.end())?(*it_url_based).second:0;
+        if( np != NULL ) {
+            lib::logger::get_logger()->debug("smil_player::stop_playable: destroying, cache entry occupied for %s", victim.first->get_url("src").get_url().c_str());
+            can_cache = false;
+        }
+    }
+    if (can_cache && must_post_stop) {
+        // If we are playing a fill=ambulant:continue node we want to continue playback for a while,
+        // so we don't call post_stop. The scheduler will arrange for it being called in a short while, unless
+        // this renderer is reused in the mean time.
+        const char * fb = n->get_attribute("fill");
+        if (fb != NULL && strcmp(fb, "ambulant:continue") == 0) {
+            must_post_stop = false;
+        }
+    }
+    if (must_post_stop) {
+        victim.second->post_stop();
+    }
+    if (can_cache) {
+        /*AM_DBG*/ lib::logger::get_logger()->debug("smil_player::stop_playable: cache %s renderer", victim.first->get_sig().c_str());
+        m_playables_cs.enter();
+        m_playables_url_based[(victim.first->get_url("src")).get_url()] = victim.second;
+        m_playables_cs.leave();
+        //xxxbo: if this playable is created for prefetch, we don't destroy it.
+        //xxxbo: we use node id as the index to find the corresponding time_node in time graph for each node in dom tree.
+        std::map<int, time_node*>::iterator it2 = m_dom2tn->find(victim.first->get_numid());
+        if(it2 != m_dom2tn->end() && !(*it2).second->is_prefetch())  {
+            // Add a event to destroy this playable on next 20000 microseconds, however, Jack thinks there is another option...
+            typedef std::pair<const lib::node*, common::playable*> gb_victim_arg;
+            lib::event *destroy_event = new lib::scalar_arg_callback_event<smil_player, gb_victim_arg>(this, &smil_player::_destroy_playable_in_cache, victim);
+            //xxxbo: the unit of add_event is milisecond. This point is proved at 09-06-2009
+            /*AM_DBG*/ lib::logger::get_logger()->debug("smil_player::stop_playable: schedule destructor in 20ms for %s", victim.first->get_sig().c_str());
+            m_event_processor->add_event(destroy_event, 20, lib::ep_high);
+        } else {
+            /*AM_DBG*/ lib::logger::get_logger()->debug("smil_player::stop_playable: cache %s renderer without destructor callback", victim.first->get_sig().c_str());
+        }
+        return;
+    }
+    // Otherwise we destroy the whole renderer.
+#endif
+    _destroy_playable(victim.second, victim.first);
 }
 
 // Request to pause the playable of the node.
 void smil_player::pause_playable(const lib::node *n, pause_display d) {
-	AM_DBG lib::logger::get_logger()->debug("smil_player::pause_playable(%s)", n->get_sig().c_str());
 	common::playable *np = _get_playable(n);
+	AM_DBG lib::logger::get_logger()->debug("smil_player::pause_playable(0x%x) for %s", np, n->get_sig().c_str());
 	if(np) np->pause(d);
 }
 
@@ -772,6 +901,7 @@ void smil_player::on_focus_advance() {
 	m_playables_cs.enter();
 	std::map<const lib::node*, common::playable *>::iterator it = 
 		m_playables.begin();
+
 	// First find the current focus
 	if (m_focus != NULL) {
 		while (it != m_playables.end() && (*it).first != m_focus) it++;
@@ -816,6 +946,7 @@ void smil_player::on_focus_activate() {
 // Creates and returns a playable for the node.
 common::playable *
 smil_player::_new_playable(const lib::node *n) {
+    assert(n);
 	int nid = n->get_numid();
 	std::string tag = n->get_local_name();
 	const char *pid = n->get_attribute("id");
@@ -841,7 +972,9 @@ smil_player::_new_playable(const lib::node *n) {
 		} else {
 			AM_DBG m_logger->debug("smil_player::_new_playable: surface not set because rend == NULL");
 		}
-	}
+	} else {
+        lib::logger::get_logger()->trace("%s: could not create playable", n->get_sig().c_str());
+    }
 	return np;
 }
 
@@ -855,10 +988,37 @@ void smil_player::_destroy_playable(common::playable *np, const lib::node *n) {
 	
 		m_logger->debug("%s[%s]._destroy_playable 0x%x", tag.c_str(), (pid?pid:"no-id"), np);
 	}
-	np->stop();
 	int rem = np->release();
-	if (rem > 1) m_logger->debug("smil_player::_destroy_playable: playable 0x%x still has refcount of %d", np, rem);
+	if (rem > 0) m_logger->debug("smil_player::_destroy_playable: playable 0x%x still has refcount of %d", np, rem);
 }
+
+#ifdef WITH_SEAMLESS_PLAYBACK
+void smil_player::_destroy_playable_in_cache(std::pair<const lib::node*, common::playable*> victim) {
+
+	assert(victim.first);
+	assert(victim.second);
+
+    std::string url = victim.first->get_url("src").get_url();
+	std::map<const std::string, common::playable *>::iterator it_url_based = 
+	m_playables_url_based.find(url);
+	if (it_url_based != m_playables_url_based.end()) {
+        if ((*it_url_based).second != victim.second) {
+            /*AM_DBG*/ lib::logger::get_logger()->debug("smil_player::_destroy_playable_in_cache: cache has different playable for %s, assuming %s is reused", url.c_str(), victim.first->get_sig().c_str());
+            return;
+        }
+		m_playables_cs.enter();
+		m_playables_url_based.erase(it_url_based);
+		m_playables_cs.leave();
+		/*AM_DBG*/ lib::logger::get_logger()->debug("smil_player::_destroy_playable_in_cache: stop the playable in the cache for %s", victim.first->get_sig().c_str());
+		victim.second->post_stop();
+        int rem = victim.second->release();
+		if (rem > 0) m_logger->debug("smil_player::_destroy_playable_in_cache: playable 0x%x still has refcount of %d", victim.second, rem);
+	} else {
+        // Note that this is not an error, on the contrary: it could be that the playable has been reused.
+        /*AM_DBG*/ m_logger->debug("smil_player::_destroy_playable_in_cache: playable for %s no longer in cache", url.c_str());
+    }
+}
+#endif
 
 void smil_player::show_link(const lib::node *n, const net::url& href, 
 	src_playstate srcstate, dst_playstate dststate, const char *target)

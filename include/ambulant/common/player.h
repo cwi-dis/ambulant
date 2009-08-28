@@ -156,7 +156,7 @@ class player : public state_change_callback
 	virtual bool goto_node(const lib::node *n) { return false; }
 	
 	/// Highlight a specific node, if visible, and return true if it happened.
-	virtual bool highlight(const lib::node *n) { return false; }
+	virtual bool highlight(const lib::node *n, bool on=true) { return false; }
 //	void set_speed(double speed);
 //	double get_speed() const;
 };

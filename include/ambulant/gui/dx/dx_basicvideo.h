@@ -53,7 +53,8 @@ class dx_basicvideo_renderer : public dx_renderer_playable {
 		common::playable_factory_machdep *dxplayer);
 	~dx_basicvideo_renderer();
 	void start(double t);
-	void stop();
+	//void stop();
+	bool stop();
 	void pause(common::pause_display d=common::display_show);
 	void seek(double t);
 	void resume();

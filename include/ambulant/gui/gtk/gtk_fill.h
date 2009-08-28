@@ -60,7 +60,7 @@ class gtk_fill_renderer : public  renderer_playable {
 
  //	void freeze() {}
 	void start(double where);
-	void stop();
+	bool stop();
 	void seek(double t) {}
 
 	void set_intransition(lib::transition_info *info) { m_intransition = info; }

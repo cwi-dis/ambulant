@@ -308,6 +308,9 @@ public:
 
 	ambulant::lib::timer::time_type elapsed() const;
 	double get_realtime_speed() const;
+	ambulant::lib::timer::signed_time_type set_drift(ambulant::lib::timer::signed_time_type drift);
+	ambulant::lib::timer::signed_time_type get_drift() const;
+	void skew(ambulant::lib::timer::signed_time_type skew);
   private:
 	PyObject *py_timer;
 
@@ -339,6 +342,9 @@ public:
 	double get_speed() const;
 	bool running() const;
 	double get_realtime_speed() const;
+	ambulant::lib::timer::signed_time_type set_drift(ambulant::lib::timer::signed_time_type drift);
+	ambulant::lib::timer::signed_time_type get_drift() const;
+	void skew(ambulant::lib::timer::signed_time_type skew);
   private:
 	PyObject *py_timer_control;
 
@@ -777,8 +783,10 @@ public:
 	playable(PyObject *itself);
 	virtual ~playable();
 
+	void init_with_node(const ambulant::lib::node* n);
 	void start(double t);
-	void stop();
+	bool stop();
+	void post_stop();
 	void pause(ambulant::common::pause_display d);
 	void resume();
 	void seek(double t);
@@ -927,7 +935,7 @@ public:
 	void on_focus_activate();
 	void set_feedback(ambulant::common::player_feedback* fb);
 	bool goto_node(const ambulant::lib::node* n);
-	bool highlight(const ambulant::lib::node* n);
+	bool highlight(const ambulant::lib::node* n, bool on);
   private:
 	PyObject *py_player;
 
@@ -1169,6 +1177,7 @@ public:
 	virtual ~datasource();
 
 	void start(ambulant::lib::event_processor* evp, ambulant::lib::event* callback);
+	void start_prefetch(ambulant::lib::event_processor* evp);
 	void stop();
 	bool end_of_file();
 	int size() const;

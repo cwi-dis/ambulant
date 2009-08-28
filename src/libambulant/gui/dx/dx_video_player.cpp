@@ -68,6 +68,7 @@ void gui::dx::video_player::start(double t) {
 	resume();
 }
 
+#if 0
 void gui::dx::video_player::stop() {
 	if(!m_mmstream) return;
 	HRESULT hr = m_mmstream->SetState(STREAMSTATE_STOP);
@@ -75,6 +76,16 @@ void gui::dx::video_player::stop() {
 		win_report_error("IMultiMediaStream::SetState()", hr);	
 	}
 	release_player();
+}
+#endif
+bool gui::dx::video_player::stop() {
+	if(!m_mmstream) return true;
+	HRESULT hr = m_mmstream->SetState(STREAMSTATE_STOP);
+	if(FAILED(hr)) {
+		win_report_error("IMultiMediaStream::SetState()", hr);	
+	}
+	release_player();
+	return false;
 }
 
 void gui::dx::video_player::pause(common::pause_display d) {

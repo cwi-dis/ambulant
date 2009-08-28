@@ -1,0 +1,25 @@
+<smil version="3.0">
+<head>
+<layout>
+<root-layout width="670" height="370" backgroundColor="black"/>
+<region xml:id="left" left="10" top="10" width="320" height="240" backgroundColor="gray"/>
+<region xml:id="right" left="340" top="10" width="320" height="240" backgroundColor="gray"/>
+<region xml:id="bottom" left="10" width="650" top="260" height="100" backgroundColor="white"/>
+</layout>
+<state src="mediafiles.xml"/>
+</head>
+<body>
+<par>
+<smilText region="bottom">
+In the left region, you should see the animated score of Vader Jacob.
+<br/>
+In the right region, you should see the same, 4 seconds delayed.
+<br/>
+On the speakers, you should hear the audio in canon.
+<clear begin="16s"/>
+</smilText>
+<video id="media-01" src="{av1}" region="left"/>
+<video begin="4s" id="media-02" src="{av1}" region="right"/>
+</par>
+</body>
+</smil>

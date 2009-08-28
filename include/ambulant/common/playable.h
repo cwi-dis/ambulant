@@ -113,6 +113,11 @@ class AMBULANTAPI playable : public lib::ref_counted_obj {
 	
 	virtual ~playable() {}
 	
+	/// Update the context info.
+	/// According to the node to which this playable is associated, 
+	/// update the clipbegin and clipend info.
+	virtual void init_with_node(const lib::node *n) = 0;
+	
 	/// Start playback.
 	/// Starts playing at media time t independent 
 	/// of the previous state (not playing, playing, paused). 
@@ -123,8 +128,11 @@ class AMBULANTAPI playable : public lib::ref_counted_obj {
 	/// Resets playable to its initial state.
 	/// The playable may be invoked again later
 	/// and therefore may keep its data cashed.
-	virtual void stop() = 0;
+	//virtual void stop() = 0;
+	virtual bool stop() = 0;
 	
+	/// Playback stops. May only be called if stop() returned true.
+	virtual void post_stop() = 0;
 	/// Pauses playback, keeping the last frame. 
 	/// On media end the playable should be in a state 
 	/// as if pause and then seek to end has been called.
@@ -147,7 +155,7 @@ class AMBULANTAPI playable : public lib::ref_counted_obj {
 	/// when: the estimated time when this playable start() will be called
 	/// where: where playing will start in media time
 	/// how_much: the duration of the media that will be played
-	virtual void preroll(double when, double where, double how_much) = 0;
+	virtual void preroll(double when = 0, double where = 0, double how_much = 0) = 0;
 	
 	/// Get duration of media item.
 	/// Returns a pair of values:
@@ -274,7 +282,11 @@ class single_playable_factory : public playable_factory {
 	bool supports(renderer_select *rs)
 	{
 		const lib::xml_string& tag = rs->get_tag();
+#ifndef WITH_SEAMLESS_PLAYBACK
 		if (tag != "" && tag != "ref" && tag != Tag) return false;
+#else
+		if (tag != "" && tag != "ref" && tag != Tag && tag != "prefetch") return false;
+#endif
 		const char *renderer_uri = rs->get_renderer_uri();
 		if (renderer_uri != NULL && 
             strcmp(renderer_uri, "") != 0 &&

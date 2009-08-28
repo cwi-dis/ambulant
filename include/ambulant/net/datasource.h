@@ -229,6 +229,9 @@ class AMBULANTAPI datasource : virtual public ambulant::lib::ref_counted {
 	/// When the data is available (or end of file reached) exactly one
 	/// callback is scheduled through the event_processor.
 	virtual void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback) = 0;
+#ifdef WITH_SEAMLESS_PLAYBACK
+	virtual void start_prefetch(ambulant::lib::event_processor *evp) = 0;
+#endif
 	
 	/// Called by the client to indicate it wants no more data.
 	virtual void stop() = 0;
@@ -281,6 +284,11 @@ class audio_datasource_mixin {
 	/// Tells the datasource to seek to a specific time. Not guaranteed
 	/// to work.
 	virtual void seek(timestamp_t time) = 0;
+
+#ifdef WITH_SEAMLESS_PLAYBACK
+    /// Set end-of-clip (which works like end of file), or -1 for real end of file.
+	virtual void set_clip_end(timestamp_t clip_end) = 0;	
+#endif
 	/// At what timestamp value should the audio playback stop?
 	virtual timestamp_t get_clip_end() = 0;
 	/// At what timestamp value should audio playback start?	
@@ -291,6 +299,9 @@ class audio_datasource_mixin {
 	virtual timestamp_t get_start_time() = 0;
 	/// Return the duration of the audio data, if known.
 	virtual common::duration get_dur() = 0;
+#ifdef WITH_SEAMLESS_PLAYBACK
+	virtual timestamp_t get_elapsed() { assert(0); return 0;};
+#endif
 };
 
 class audio_datasource : public datasource, public audio_datasource_mixin {
@@ -320,6 +331,10 @@ class raw_audio_datasource:
 	void stop() { m_src->stop(); };  
 	void read_ahead(timestamp_t time){};
   	void seek(timestamp_t time){};
+#ifdef WITH_SEAMLESS_PLAYBACK
+	void set_clip_end(timestamp_t clip_end){};
+	void start_prefetch(lib::event_processor *evp) {};
+#endif
     void readdone(int len) { m_src->readdone(len); };
     bool end_of_file() { return m_src->end_of_file(); };
 	bool buffer_full() { return false; };
@@ -396,8 +411,15 @@ class video_datasource : virtual public lib::ref_counted_obj {
 	
 	/// Tells the datasource to start reading data starting from time t.
 	virtual void read_ahead(timestamp_t time) = 0;
+
 	/// Fast forward (or reverse) to a specific place in time.
 	virtual void seek(timestamp_t time) = 0;
+    
+#ifdef WITH_SEAMLESS_PLAYBACK
+    /// Set end-of-clip (which works like end of file), or -1 for real end of file.
+	virtual void set_clip_end(timestamp_t clip_end) = 0;
+	virtual void start_prefetch(lib::event_processor *evp) = 0;
+#endif
 	/// At what timestamp value should the video playback stop?
 	virtual timestamp_t get_clip_end() = 0;
 	/// At what timestamp value should the audio playback start?
@@ -641,6 +663,11 @@ class abstract_demux : public BASE_THREAD, public lib::ref_counted_obj {
 	/// Seek to the given location, if possible. As timestamps are
 	/// provided to the sinks this call may be implemented as no-op.
 	virtual void seek(timestamp_t time) = 0;
+
+#ifdef WITH_SEAMLESS_PLAYBACK
+    /// Set end-of-clip (which works like end of file), or -1 for real end of file.
+	virtual void set_clip_end(timestamp_t clip_end) = 0;	
+#endif
 
 	/// Seek to the given location, if possible. Only allowed before the
 	/// stream has started. As timestamps are

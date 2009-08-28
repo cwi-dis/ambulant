@@ -117,7 +117,7 @@ initialize_logger()
 	// standard system location.
 	CFLocaleRef userLocaleRef = CFLocaleCopyCurrent();
 	NSString *userLocaleName = (NSString *)CFLocaleGetIdentifier(userLocaleRef);
-	const char *locale = [userLocaleName cString];
+	const char *locale = [userLocaleName UTF8String];
 	const char *unix_locale = getenv("LANG");
 	if (unix_locale == NULL || *unix_locale == '\0') {
 		setlocale(LC_MESSAGES, locale);
@@ -128,7 +128,7 @@ initialize_logger()
 #if ENABLE_NLS
 	NSString *resourcePath = [thisBundle resourcePath];
 	char bundleLocaleDir[1024];
-	snprintf(bundleLocaleDir, sizeof(bundleLocaleDir), "%s/locale", [resourcePath cString]);
+	snprintf(bundleLocaleDir, sizeof(bundleLocaleDir), "%s/locale", [resourcePath UTF8String]);
 	if (access(bundleLocaleDir, 0) >= 0) {
 		bindtextdomain (PACKAGE, bundleLocaleDir);
 	} else {
@@ -156,13 +156,13 @@ initialize_logger()
 	const NSArray *langNames = (const NSArray *)CFPreferencesCopyAppValue(CFSTR("AppleLanguages"), kCFPreferencesCurrentApplication);
 #endif
 	int nLangs = [langNames count];
-	float factor = 1.0 / nLangs;
-	int i;
+	double factor = 1.0 / nLangs;
+	unsigned int i;
 	for (i=0; i < [langNames count]; i++) {
 		NSString *langName = [langNames objectAtIndex: i];
 		NSLog(@"Language %d: %@", i, langName);
 		std::string cLang([langName UTF8String]);
-		ambulant::smil2::test_attrs::add_language(cLang, 1.0-(factor*i));
+		ambulant::smil2::test_attrs::add_language(cLang, float(1.0-(factor*i)));
 	}
 	[langNames release];
 #endif // WITH_SMIL30
@@ -183,11 +183,11 @@ initialize_logger()
 	// Initialize the default system test settings
 	NSString *systemTestSettingsPath = [thisBundle pathForResource:@"systemTestSettings" ofType:@"xml"];
 	if (systemTestSettingsPath) {
-		std::string path([systemTestSettingsPath cString]);
+		std::string path([systemTestSettingsPath UTF8String]);
 		mainloop::load_test_attrs(path);
 		// And initialize the location where we find other datafiles (bit of a hack)
 		NSString *nsresourcedir = [systemTestSettingsPath stringByDeletingLastPathComponent];
-		std::string resourcedir([nsresourcedir cString]);
+		std::string resourcedir([nsresourcedir UTF8String]);
 		ambulant::net::url::set_datafile_directory(resourcedir);
 	}
 #if 0
@@ -262,7 +262,7 @@ initialize_logger()
 	int result = [panel runModalForDirectory: nil file: nil types: nil];
 	if (result != NSOKButton) return;
 	NSString *filename = [[panel filenames] objectAtIndex: 0];
-	std::string path([filename cString]);
+	std::string path([filename UTF8String]);
 	mainloop::load_test_attrs(path);
 }
 

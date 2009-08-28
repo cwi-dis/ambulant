@@ -31,7 +31,7 @@
 #endif
 
 #if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
-#include <strstream>
+#include <sstream>
 #endif
 
 using namespace ambulant;

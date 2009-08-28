@@ -121,15 +121,17 @@ gui::qt::qt_smiltext_renderer::start(double t) {
 //JNK	m_lock.leave();
 }
 
-void 
+bool 
 gui::qt::qt_smiltext_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_renderer::stop(0x%x)", this);
 //JNK	m_lock.enter();
-	m_dest->renderer_done(this);
+	if (m_dest) m_dest->renderer_done(this);
+	m_dest = NULL;
 	m_activated = false;
 	assert(m_context);
 	m_context->stopped(m_cookie);
 //JNK	m_lock.leave();
+	return true;
 }
 
 void

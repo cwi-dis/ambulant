@@ -62,13 +62,7 @@ class ffmpeg_video_datasource_factory : public video_datasource_factory {
 
 typedef std::pair<timestamp_t, char*> ts_pointer_pair;
 
-class sorted_frame_compare {
- public:
-	bool operator () (const ts_pointer_pair left, const ts_pointer_pair right) {
-    		return left.first > right.first;
-  	}
-};
-typedef std::priority_queue<ts_pointer_pair, std::vector<ts_pointer_pair>, sorted_frame_compare > sorted_frames;
+typedef std::queue<ts_pointer_pair> sorted_frames;
 
 class ffmpeg_video_decoder_datasource:
 	virtual public video_datasource,
@@ -96,6 +90,10 @@ class ffmpeg_video_decoder_datasource:
 	void frame_processed(timestamp_t timestamp);
 	void read_ahead(timestamp_t clip_begin);
 	void seek(timestamp_t time);
+#ifdef WITH_SEAMLESS_PLAYBACK
+	void set_clip_end(timestamp_t clip_end);
+	void start_prefetch(lib::event_processor *evp);  
+#endif
     void data_avail();
 	bool buffer_full();
   	timestamp_t get_clip_end() { return m_src->get_clip_end(); };

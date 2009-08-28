@@ -139,6 +139,25 @@ event_processor_impl::serve_events()
 		// it must be a low priority event
 		(void) serve_event(m_low_delta_timer, &m_low_q);
 	}
+#ifdef WITH_CLOCK_SYNC
+    timer::signed_time_type drift = m_timer->get_drift();
+    if (drift > 0) {
+        // If the clock is behind, we set it forward. But we don't advance it past the
+        // next event that is due to be scheduled.
+        // If the clock is too fast we simply set it back.
+        timer::signed_time_type next_event_time = std::min(
+            m_low_delta_timer.next_event_time(),
+            std::min(
+                m_med_delta_timer.next_event_time(),
+                m_high_delta_timer.next_event_time()));
+        if (drift >= next_event_time)
+            drift = next_event_time-1;
+    }
+    AM_DBG if (drift) lib::logger::get_logger()->debug("event_processor: adjust clock %d ms (positive is forward)", drift);
+    m_timer->skew(drift);
+#endif
+        
+            
 #ifndef WITHOUT_DELAYED_REDRAW
 	if (m_observer) m_observer->unlock_redraw();
 #endif

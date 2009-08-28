@@ -1,0 +1,36 @@
+<smil version="3.0">
+<head>
+<layout>
+<root-layout width="670" height="370" backgroundColor="black"/>
+<region xml:id="left" left="10" top="10" width="320" height="240" backgroundColor="gray"/>
+<region xml:id="right" left="340" top="10" width="320" height="240" backgroundColor="gray"/>
+<region xml:id="bottom" left="10" width="650" top="260" height="100" backgroundColor="white"/>
+</layout>
+<state src="mediafiles.xml"/>
+</head>
+<body>
+<par>
+<smilText region="bottom">
+This presentation consists of 4 4-second parts. Odd and even media come from different files
+and are played in different regions.
+<br/>
+On the speakers you hear the audio.
+<clear begin="16s"/>
+</smilText>
+<seq>
+<par id="par-01">
+<video id="media-01" src="{av1}" region="left" clipEnd="4s"/>
+</par>
+<par id="par-02">
+<video id="media-02" src="{av2}" region="right" clipBegin="4s" clipEnd="8s"/>
+</par>
+<par id="par-03">
+<video id="media-03" src="{av1}" region="left" clipBegin="8s" clipEnd="12s"/>
+</par>
+<par id="par-04">
+<video id="media-04" src="{av2}" region="right" clipBegin="12s"/>
+</par>
+</seq>
+</par>
+</body>
+</smil>

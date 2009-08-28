@@ -72,6 +72,15 @@ class AMBULANTAPI playable_imp : public playable {
 //	void seek(double where) {}
 	void wantclicks(bool want) { m_wantclicks = want;}
 	void preroll(double when, double where, double how_much) {}
+	void post_stop() {};
+	void init_with_node(const lib::node *n) {};
+#ifdef WITH_SEAMLESS_PLAYBACK
+    /// Return true if we are rendering for a node with fill="ambulant:continue"
+    bool is_fill_continue_node() const {
+        const char * fb = m_node->get_attribute("fill");
+        return fb != NULL && strcmp(fb, "ambulant:continue") == 0;
+    }
+#endif
 	duration get_dur() { return duration(true, 0);}
 	cookie_type get_cookie() const { return m_cookie;}
   protected:
@@ -97,7 +106,7 @@ class AMBULANTAPI renderer_playable : public playable_imp, public renderer {
 		common::playable_factory_machdep *mdp);
 			
 	// common::renderer interface
-	void set_surface(common::surface *dest) { m_dest = dest;}
+	void set_surface(common::surface *dest);
 	void set_alignment(const common::alignment *align) { m_alignment = align; }
 	surface *get_surface() { return m_dest;}
 	virtual bool user_event(const lib::point &where, int what = 0);
@@ -105,7 +114,8 @@ class AMBULANTAPI renderer_playable : public playable_imp, public renderer {
 	renderer *get_renderer() { return this; }
 	void transition_freeze_end(lib::rect r) { m_context->transitioned(m_cookie); }
 	virtual void start(double t);
-	virtual void stop();
+	virtual bool stop();
+	virtual void init_with_node(const lib::node *n);
   protected:
 	virtual void _init_clip_begin_end();	///< Fill m_clip_begin and m_clip_end
 	surface *m_dest;		///< The surface we should render to.
@@ -139,7 +149,8 @@ class AMBULANTAPI renderer_playable_ds : public renderer_playable {
 	virtual void start(double where);
 	virtual void seek(double t);
 //	virtual void freeze() {}
-	virtual void stop();
+//	virtual void stop();
+	virtual bool stop();
 //	virtual void pause() {}
 //	virtual void resume() {}
 //	virtual void wantclicks(bool want);

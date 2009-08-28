@@ -72,7 +72,7 @@ class qt_html_renderer : public renderer_playable {
 		common::playable_factory_machdep *mdp);
 	~qt_html_renderer();
 	void start(double t);
-	void stop();
+	bool stop();
 	void seek(double t) {}
 //	bool user_event(const lib::point& pt, int what);
 	void redraw(const lib::rect &dirty, common::gui_window *window) {}

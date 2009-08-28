@@ -163,9 +163,17 @@ class my_player_feedback : public common::player_feedback {
 
 my_player_feedback s_player_feedback;
 
+#ifdef WITH_CREATE_PLAYER_HOOK
+void create_player_hook(void *player);
+#endif
+
 static dg_or_dx_player* 
 create_player_instance(const net::url& u, common::player_feedback *feedback) {
-	return new dg_or_dx_player(s_player_callbacks, feedback, u);
+	dg_or_dx_player *rv = new dg_or_dx_player(s_player_callbacks, feedback, u);
+#ifdef WITH_CREATE_PLAYER_HOOK
+	create_player_hook((void*)rv);
+#endif
+	return rv;
 }
 
 static dg_or_dx_player *player = 0;

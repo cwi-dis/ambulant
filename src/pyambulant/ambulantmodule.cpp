@@ -3311,11 +3311,60 @@ static PyObject *timerObj_get_realtime_speed(timerObject *_self, PyObject *_args
 	return _res;
 }
 
+static PyObject *timerObj_set_drift(timerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::timer::signed_time_type drift;
+	if (!PyArg_ParseTuple(_args, "l",
+	                      &drift))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::timer::signed_time_type _rv = _self->ob_itself->set_drift(drift);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("l",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *timerObj_get_drift(timerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::timer::signed_time_type _rv = _self->ob_itself->get_drift();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("l",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *timerObj_skew(timerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::timer::signed_time_type skew;
+	if (!PyArg_ParseTuple(_args, "l",
+	                      &skew))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->skew(skew);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyMethodDef timerObj_methods[] = {
 	{"elapsed", (PyCFunction)timerObj_elapsed, 1,
 	 PyDoc_STR("() -> (ambulant::lib::timer::time_type _rv)")},
 	{"get_realtime_speed", (PyCFunction)timerObj_get_realtime_speed, 1,
 	 PyDoc_STR("() -> (double _rv)")},
+	{"set_drift", (PyCFunction)timerObj_set_drift, 1,
+	 PyDoc_STR("(ambulant::lib::timer::signed_time_type drift) -> (ambulant::lib::timer::signed_time_type _rv)")},
+	{"get_drift", (PyCFunction)timerObj_get_drift, 1,
+	 PyDoc_STR("() -> (ambulant::lib::timer::signed_time_type _rv)")},
+	{"skew", (PyCFunction)timerObj_skew, 1,
+	 PyDoc_STR("(ambulant::lib::timer::signed_time_type skew) -> None")},
 	{NULL, NULL, 0}
 };
 
@@ -3627,6 +3676,49 @@ static PyObject *timer_controlObj_get_realtime_speed(timer_controlObject *_self,
 	return _res;
 }
 
+static PyObject *timer_controlObj_set_drift(timer_controlObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::timer::signed_time_type drift;
+	if (!PyArg_ParseTuple(_args, "l",
+	                      &drift))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::timer::signed_time_type _rv = _self->ob_itself->set_drift(drift);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("l",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *timer_controlObj_get_drift(timer_controlObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::timer::signed_time_type _rv = _self->ob_itself->get_drift();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("l",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *timer_controlObj_skew(timer_controlObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::timer::signed_time_type skew;
+	if (!PyArg_ParseTuple(_args, "l",
+	                      &skew))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->skew(skew);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyMethodDef timer_controlObj_methods[] = {
 	{"elapsed_1", (PyCFunction)timer_controlObj_elapsed_1, 1,
 	 PyDoc_STR("() -> (ambulant::lib::timer::time_type _rv)")},
@@ -3650,6 +3742,12 @@ static PyMethodDef timer_controlObj_methods[] = {
 	 PyDoc_STR("() -> (bool _rv)")},
 	{"get_realtime_speed", (PyCFunction)timer_controlObj_get_realtime_speed, 1,
 	 PyDoc_STR("() -> (double _rv)")},
+	{"set_drift", (PyCFunction)timer_controlObj_set_drift, 1,
+	 PyDoc_STR("(ambulant::lib::timer::signed_time_type drift) -> (ambulant::lib::timer::signed_time_type _rv)")},
+	{"get_drift", (PyCFunction)timer_controlObj_get_drift, 1,
+	 PyDoc_STR("() -> (ambulant::lib::timer::signed_time_type _rv)")},
+	{"skew", (PyCFunction)timer_controlObj_skew, 1,
+	 PyDoc_STR("(ambulant::lib::timer::signed_time_type skew) -> None")},
 	{NULL, NULL, 0}
 };
 
@@ -3961,6 +4059,49 @@ static PyObject *timer_control_implObj_get_realtime_speed(timer_control_implObje
 	return _res;
 }
 
+static PyObject *timer_control_implObj_set_drift(timer_control_implObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::timer::signed_time_type drift;
+	if (!PyArg_ParseTuple(_args, "l",
+	                      &drift))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::timer::signed_time_type _rv = _self->ob_itself->set_drift(drift);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("l",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *timer_control_implObj_get_drift(timer_control_implObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::timer::signed_time_type _rv = _self->ob_itself->get_drift();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("l",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *timer_control_implObj_skew(timer_control_implObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::timer::signed_time_type skew_;
+	if (!PyArg_ParseTuple(_args, "l",
+	                      &skew_))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->skew(skew_);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyMethodDef timer_control_implObj_methods[] = {
 	{"elapsed_1", (PyCFunction)timer_control_implObj_elapsed_1, 1,
 	 PyDoc_STR("() -> (ambulant::lib::timer::time_type _rv)")},
@@ -3984,6 +4125,12 @@ static PyMethodDef timer_control_implObj_methods[] = {
 	 PyDoc_STR("() -> (bool _rv)")},
 	{"get_realtime_speed", (PyCFunction)timer_control_implObj_get_realtime_speed, 1,
 	 PyDoc_STR("() -> (double _rv)")},
+	{"set_drift", (PyCFunction)timer_control_implObj_set_drift, 1,
+	 PyDoc_STR("(ambulant::lib::timer::signed_time_type drift) -> (ambulant::lib::timer::signed_time_type _rv)")},
+	{"get_drift", (PyCFunction)timer_control_implObj_get_drift, 1,
+	 PyDoc_STR("() -> (ambulant::lib::timer::signed_time_type _rv)")},
+	{"skew", (PyCFunction)timer_control_implObj_skew, 1,
+	 PyDoc_STR("(ambulant::lib::timer::signed_time_type skew_) -> None")},
 	{NULL, NULL, 0}
 };
 
@@ -8458,6 +8605,21 @@ static void playableObj_dealloc(playableObject *self)
 	pycppbridge_Type.tp_dealloc((PyObject *)self);
 }
 
+static PyObject *playableObj_init_with_node(playableObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::node* n;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      nodeObj_Convert, &n))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->init_with_node(n);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyObject *playableObj_start(playableObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -8479,7 +8641,20 @@ static PyObject *playableObj_stop(playableObject *_self, PyObject *_args)
 	if (!PyArg_ParseTuple(_args, ""))
 		return NULL;
 	PyThreadState *_save = PyEval_SaveThread();
-	_self->ob_itself->stop();
+	bool _rv = _self->ob_itself->stop();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
+static PyObject *playableObj_post_stop(playableObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->post_stop();
 	PyEval_RestoreThread(_save);
 	Py_INCREF(Py_None);
 	_res = Py_None;
@@ -8605,9 +8780,13 @@ static PyObject *playableObj_get_renderer(playableObject *_self, PyObject *_args
 }
 
 static PyMethodDef playableObj_methods[] = {
+	{"init_with_node", (PyCFunction)playableObj_init_with_node, 1,
+	 PyDoc_STR("(ambulant::lib::node* n) -> None")},
 	{"start", (PyCFunction)playableObj_start, 1,
 	 PyDoc_STR("(double t) -> None")},
 	{"stop", (PyCFunction)playableObj_stop, 1,
+	 PyDoc_STR("() -> (bool _rv)")},
+	{"post_stop", (PyCFunction)playableObj_post_stop, 1,
 	 PyDoc_STR("() -> None")},
 	{"pause", (PyCFunction)playableObj_pause, 1,
 	 PyDoc_STR("(ambulant::common::pause_display d) -> None")},
@@ -10205,11 +10384,14 @@ static PyObject *playerObj_highlight(playerObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
 	ambulant::lib::node* n;
-	if (!PyArg_ParseTuple(_args, "O&",
-	                      nodeObj_Convert, &n))
+	bool on;
+	if (!PyArg_ParseTuple(_args, "O&O&",
+	                      nodeObj_Convert, &n,
+	                      bool_Convert, &on))
 		return NULL;
 	PyThreadState *_save = PyEval_SaveThread();
-	bool _rv = _self->ob_itself->highlight(n);
+	bool _rv = _self->ob_itself->highlight(n,
+	                                       on);
 	PyEval_RestoreThread(_save);
 	_res = Py_BuildValue("O&",
 	                     bool_New, _rv);
@@ -10254,7 +10436,7 @@ static PyMethodDef playerObj_methods[] = {
 	{"goto_node", (PyCFunction)playerObj_goto_node, 1,
 	 PyDoc_STR("(ambulant::lib::node* n) -> (bool _rv)")},
 	{"highlight", (PyCFunction)playerObj_highlight, 1,
-	 PyDoc_STR("(ambulant::lib::node* n) -> (bool _rv)")},
+	 PyDoc_STR("(ambulant::lib::node* n, bool on) -> (bool _rv)")},
 	{NULL, NULL, 0}
 };
 
@@ -12967,6 +13149,21 @@ static PyObject *datasourceObj_start(datasourceObject *_self, PyObject *_args)
 	return _res;
 }
 
+static PyObject *datasourceObj_start_prefetch(datasourceObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::event_processor* evp;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      event_processorObj_Convert, &evp))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->start_prefetch(evp);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyObject *datasourceObj_stop(datasourceObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -13024,6 +13221,8 @@ static PyObject *datasourceObj_readdone(datasourceObject *_self, PyObject *_args
 static PyMethodDef datasourceObj_methods[] = {
 	{"start", (PyCFunction)datasourceObj_start, 1,
 	 PyDoc_STR("(ambulant::lib::event_processor* evp, ambulant::lib::event* callback) -> None")},
+	{"start_prefetch", (PyCFunction)datasourceObj_start_prefetch, 1,
+	 PyDoc_STR("(ambulant::lib::event_processor* evp) -> None")},
 	{"stop", (PyCFunction)datasourceObj_stop, 1,
 	 PyDoc_STR("() -> None")},
 	{"end_of_file", (PyCFunction)datasourceObj_end_of_file, 1,

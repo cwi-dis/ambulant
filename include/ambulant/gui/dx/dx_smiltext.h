@@ -74,7 +74,8 @@ class dx_smiltext_renderer :
 		common::playable_factory_machdep *dxplayer);
 	~dx_smiltext_renderer();
 	void start(double t);
-	void stop();
+	//void stop();
+	bool stop();
 	void seek(double t) {}
 	// Callback from the engine
 	void smiltext_changed();

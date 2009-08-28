@@ -59,7 +59,8 @@ class cocoa_smiltext_renderer :
     void redraw_body(const rect &dirty, gui_window *window);
 	void start(double t);
 	void seek(double t);
-	void stop();
+//	void stop();
+	bool stop();
     void pause(pause_display d=display_show);
     void resume();
 	// Callbacks from the engine

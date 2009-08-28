@@ -201,6 +201,10 @@ class time_node : public schedulable {
 	// State commands (setvalue, send) are special internal playables
 	void start_statecommand(time_type offset);
 #endif // WITH_SMIL30
+#ifdef WITH_SEAMLESS_PLAYBACK
+	// Prefetch is special internal playables
+	void start_prefetch(time_type offset = 0);
+#endif // WITH_SEAMLESS_PLAYBACK
 	
 	// Std xml tree navigation interface
 	const time_node *down() const { return m_child;}
@@ -283,6 +287,7 @@ class time_node : public schedulable {
 #ifdef WITH_SMIL30
 	bool is_statecommand() const;
 #endif
+	bool is_prefetch() const;
 	bool is_playable() const;
 
 	const time_attrs* get_time_attrs() const { return &m_attrs;}

@@ -427,6 +427,7 @@ time_node::calc_next_interval(interval_type prev) {
 // timestamp: "scheduled now" in parent simple time
 // This is the state change hook for this node.
 void time_node::set_state(time_state_type state, qtime_type timestamp, time_node *oproot) {
+    AM_DBG if (has_debug()) m_logger->debug("set_state(%s) %s -> %s", get_sig().c_str(), time_state_str(m_state->ident()), time_state_str(state));
 	if(m_state->ident() == state) return;
 #if 1
 	// Stopgap bug fix by Jack: while seeking to a destination node,
@@ -726,6 +727,15 @@ void time_node::activate(qtime_type timestamp) {
 			sync_node()->raise_update_event(timestamp);
 		}
 #endif // WITH_SMIL30
+#ifdef WITH_SEAMLESS_PLAYBACK
+		//xxxbo: the entrence point for prefetch
+		else if (is_prefetch()) {
+			start_prefetch(sd_offset);
+			assert(m_state->ident() == ts_active);
+			raise_update_event(timestamp);
+			sync_node()->raise_update_event(timestamp);
+        }
+#endif
 		else start_playable(sd_offset);
 		if(m_timer) m_timer->resume();
 	}
@@ -814,10 +824,29 @@ void time_node::start_statecommand(time_type offset) {
 }
 #endif // WITH_SMIL30
 
+#ifdef WITH_SEAMLESS_PLAYBACK
+void time_node::start_prefetch(time_type offset) {
+	if(m_ffwd_mode) {
+		AM_DBG m_logger->debug("start_prefetch(%ld): ffwd skip %s", offset(), get_sig().c_str());
+		return;
+	}
+	qtime_type timestamp(this, offset);
+	AM_DBG m_logger->debug("%s[%s].start_prefetch(%ld) DT:%ld", m_attrs.get_tag().c_str(), 
+						   m_attrs.get_id().c_str(), offset(), timestamp.as_doc_time_value());
+	common::playable *np = create_playable();
+	if(np) {
+		// XXXJACK: I think offset isn't the right parameter here. The intention of the
+		// preroll() first argument is that it indicates when the result of prefetching
+		// is going to be needed.
+		np->preroll(time_type_to_secs(offset()));
+    }
+}
+#endif //WITH_SEAMLESS_PLAYBACK
+
 // Returns true when this node is associated with a playable
 bool time_node::is_playable() const {
 #ifdef WITH_SMIL30
-	return !is_time_container() && !is_animation() && !is_statecommand();
+	return !is_time_container() && !is_animation() && !is_statecommand() && !is_prefetch();
 #else
 	return !is_time_container() && !is_animation();
 #endif
@@ -842,6 +871,19 @@ bool time_node::is_statecommand() const {
 	return sch->is_statecommand(qn);
 }
 #endif // WITH_SMIL30
+
+// Returns true when this node is a prefetch 
+bool time_node::is_prefetch() const {
+#ifdef WITH_SEAMLESS_PLAYBACK
+	const common::schema *sch = common::schema::get_instance();
+	AM_DBG lib::logger::get_logger()->debug("is_prefetch: 0x%x %s\n", m_node, m_node->get_sig().c_str());
+	const lib::xml_string& qn = m_node->get_local_name();
+	AM_DBG lib::logger::get_logger()->debug("is_prefetch: 0x%x %s ok\n", m_node, m_node->get_sig().c_str());
+	return sch->is_prefetch(qn);
+#else
+	return false;
+#endif // WITH_SEAMLESS_PLAYBACK
+}
 //////////////////////////
 // Playables shell
 
@@ -898,7 +940,7 @@ void time_node::resume_playable() {
 }
 
 void time_node::stop_playable() {
-	if(!is_playable()) return;
+	if(!is_playable() && !is_prefetch()) return;
 	if(!m_needs_remove) return;
 	m_eom_flag = true;
 	AM_DBG m_logger->debug("%s[%s].stop()", m_attrs.get_tag().c_str(), 
@@ -915,7 +957,7 @@ void time_node::repeat_playable() {
 }
 
 common::playable *time_node::create_playable() {
-	assert(is_playable());
+	assert(is_playable()||is_prefetch());
 	if(m_ffwd_mode) return 0;
 	AM_DBG m_logger->debug("%s[%s].create()", m_attrs.get_tag().c_str(), 
 		m_attrs.get_id().c_str());
@@ -1117,11 +1159,12 @@ bool time_node::end_cond(qtime_type timestamp) {
 	
 	bool specified_dur = m_attrs.specified_dur() || m_attrs.specified_rdur();
 #ifdef WITH_SMIL30
-	if (!specified_dur && is_statecommand()) tc = true;
+	if (!specified_dur && (is_statecommand() || is_prefetch())) tc = true;
 #endif
 	if(is_cmedia() && !is_animation() 
 #ifdef WITH_SMIL30
 			&& !is_statecommand()
+			&& !is_prefetch()
 #endif
 			&& tc && !specified_dur && m_time_calc->uses_dur()) {
 		if(m_context->wait_for_eom() && !m_eom_flag) {
@@ -1219,7 +1262,7 @@ void time_node::on_rom(qtime_type timestamp) {
 	if(m_timer) m_timer->resume();
 }
 
-// End of nedia notification
+// End of media notification
 // This notification is taken into account when this node is still active
 // and the implicit duration is involved in timing calculations.
 void time_node::on_eom(qtime_type timestamp) {
@@ -1229,7 +1272,7 @@ void time_node::on_eom(qtime_type timestamp) {
     if (m_saw_on_eom)
         m_logger->debug("time_node::on_eom: renderer emitted second stopped() callback for %s", get_sig().c_str());
     m_saw_on_eom = true;
-	if(is_playable() && !is_discrete()) {
+	if(is_playable() && !is_discrete()) {	
 		if(m_impldur == time_type::unresolved) {
 			time_type pt = timestamp.as_node_time(sync_node());
 			m_impldur = pt - m_interval.begin();
@@ -1459,7 +1502,24 @@ void time_node::fill(qtime_type timestamp) {
 			for(it = cl.begin(); it != cl.end(); it++)
 				(*it)->fill(qt);
 		} 
+#ifndef WITH_SEAMLESS_PLAYBACK
 		if(is_playable()) pause_playable();
+#else
+		if (fb != fill_continue && is_playable()) pause_playable();
+		else {
+			//xxxbo: Instead of pausing the playable, we should continue it for some short period of time.
+			//       Here, I just print some message and actual action needed to be inserted later after I 
+			//		 figure out how to do it.			
+			if (m_node->get_attribute("src")) {
+				m_logger->debug("%s[%s].continue() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), 
+								m_attrs.get_id().c_str(),  
+								timestamp.as_time_value_down_to(this), timestamp.second(), 
+								timestamp.as_doc_time_value());
+				//xxxbo: It seems that resume_playble doesn't make any difference
+				//if(is_playable()) resume_playable();
+			}
+		}
+#endif
 		if(m_timer) {
 			m_timer->pause();
 			m_timer->set_time(m_interval.end());
@@ -1492,10 +1552,9 @@ void time_node::remove(qtime_type timestamp) {
 			(*it)->remove(qt);
 	} 
 	if(is_animation()) stop_animation();
-#ifdef WITH_SMIL30
-	/* else nothing to do for statecommands */
-#endif
+	else if (is_prefetch()) stop_playable();
 	else if(is_playable()) stop_playable();
+	/* else nothing to do for statecommands */
 	if(m_timer) m_timer->stop();
 	m_needs_remove = false;
 }

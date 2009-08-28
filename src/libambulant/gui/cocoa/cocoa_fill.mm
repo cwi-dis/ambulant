@@ -117,12 +117,12 @@ cocoa_fill_renderer::redraw_body(const rect &dirty, gui_window *window)
 	NSColor *nscolor = [NSColor colorWithCalibratedRed:redf(color)
 			green:greenf(color)
 			blue:bluef(color)
-			alpha:alfa];
+			alpha:(float)alfa];
 #else
 	NSColor *nscolor = [NSColor colorWithCalibratedRed:redf(color)
 			green:greenf(color)
 			blue:bluef(color)
-			alpha:1.0];
+			alpha:(float)1.0];
 #endif
 	[nscolor set];
 	NSRectFillUsingOperation(cocoa_dstrect_whole, NSCompositeSourceAtop);
@@ -157,7 +157,7 @@ cocoa_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wi
 		NSColor *cocoa_bgcolor = [NSColor colorWithCalibratedRed:redf(bgcolor)
 					green:greenf(bgcolor)
 					blue:bluef(bgcolor)
-					alpha:opacity];
+					alpha:(float)opacity];
 		[cocoa_bgcolor set];
 		NSRectFillUsingOperation(cocoa_dstrect_whole, NSCompositeSourceAtop);
 	}
@@ -166,7 +166,7 @@ cocoa_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wi
 		NSSize srcsize = [m_bgimage size];
 		NSRect srcrect = NSMakeRect(0, 0, srcsize.width, srcsize.height);
 		[m_bgimage drawInRect: cocoa_dstrect_whole fromRect: srcrect
-			operation: NSCompositeSourceAtop fraction: 1.0];
+			operation: NSCompositeSourceAtop fraction: (float)1.0];
 	}
 }
 
@@ -186,7 +186,7 @@ cocoa_background_renderer::highlight(common::gui_window *window)
 	NSColor *cocoa_bgcolor = [NSColor colorWithCalibratedRed:redf(hicolor)
 				green:greenf(hicolor)
 				blue:bluef(hicolor)
-				alpha:1.0];
+				alpha:(float)1.0];
 	[cocoa_bgcolor set];
 	NSFrameRect(cocoa_dstrect_whole);
 }

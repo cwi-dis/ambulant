@@ -96,14 +96,28 @@ void gui::dx::dx_area::start(double t) {
 	// XXXJACK: m_context->stopped(m_cookie);
 }
 
+#if 0
 void gui::dx::dx_area::stop() {
-	m_dest->renderer_done(this);
+	if (m_dest) m_dest->renderer_done(this);
+	m_dest = NULL;
 	m_activated = false;
 	if(m_rgn) {
 		delete m_rgn;
 		m_rgn = 0;
 	}
 	m_context->stopped(m_cookie);
+}
+#endif
+bool gui::dx::dx_area::stop() {
+	if (m_dest) m_dest->renderer_done(this);
+	m_dest = NULL;
+	m_activated = false;
+	if(m_rgn) {
+		delete m_rgn;
+		m_rgn = 0;
+	}
+	m_context->stopped(m_cookie);
+	return true;
 }
 
 void gui::dx::dx_area::redraw(const lib::rect &dirty, 

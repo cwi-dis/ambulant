@@ -130,7 +130,7 @@ posix_datasource::filesize()
 {
 	// private method - no need to lock
  	using namespace std;
-	int dummy;
+	off_t dummy;
 	if (m_stream >= 0) {
 		// Seek to the end of the file, and get the filesize
 		m_filesize=lseek(m_stream, 0, SEEK_END); 		

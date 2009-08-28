@@ -120,7 +120,10 @@ class audio_player : public common::playable {
 	~audio_player();
 		
 	void start(double t);
-	void stop();
+//	void stop();
+	bool stop();
+	void post_stop() {}
+	void init_with_node(const lib::node *n) {}
 	void pause(common::pause_display d=common::display_show);
 	void resume();
 	void seek(double t);

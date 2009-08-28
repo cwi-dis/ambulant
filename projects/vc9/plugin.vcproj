@@ -142,6 +142,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				IgnoreImportLibrary="true"
 				OutputFile="../../bin/win32/libamplugin_plugin.dll"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"

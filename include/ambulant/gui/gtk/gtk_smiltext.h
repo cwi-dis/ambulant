@@ -60,7 +60,7 @@ class gtk_smiltext_renderer :
 	void redraw_body(const rect &dirty, gui_window *window);
 	void start(double t);
 	void seek(double t);
-	void stop();
+	bool stop();
 	// Callback from the engine
 	void smiltext_changed();
 	void marker_seen(const char *name);

@@ -56,7 +56,8 @@ class cocoa_html_renderer : public common::renderer_playable {
 	~cocoa_html_renderer() {};
 
 	void start(double where);
-	void stop();
+//	void stop();
+	bool stop();
 
 	void seek(double t) {}
 	void redraw(const lib::rect &dirty, common::gui_window *window) {}

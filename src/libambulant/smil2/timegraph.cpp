@@ -583,14 +583,14 @@ nodeLangSortPredicate(const node* lhs, const node* rhs)
 {
 	const char *lhsLang = lhs->get_attribute("systemLanguage");
 	if (lhsLang == NULL) lhsLang = lhs->get_attribute("system-language");
-	float lhsPrio = 0.0;
+	float lhsPrio = 0.0f;
 	if (lhsLang) {
 		lhsPrio = test_attrs::get_system_language_weight(lhsLang);
 	}
 
 	const char *rhsLang = rhs->get_attribute("systemLanguage");
 	if (rhsLang == NULL) rhsLang = rhs->get_attribute("system-language");
-	float rhsPrio = 0.0;
+	float rhsPrio = 0.0f;
 	if (rhsLang) {
 		rhsPrio = test_attrs::get_system_language_weight(rhsLang);
 	}

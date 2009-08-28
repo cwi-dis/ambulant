@@ -139,6 +139,7 @@ void gui::dx::dx_basicvideo_renderer::start(double t) {
 }
 
 void gui::dx::dx_basicvideo_renderer::seek(double t) {
+    assert( t >= 0);
 	if (m_player) m_player->seek(t + (m_clip_begin / 1000000.0));
 	// ?? if(!m_update_event) schedule_update();
 	// ?? m_dest->need_redraw();
@@ -156,6 +157,7 @@ std::pair<bool, double> gui::dx::dx_basicvideo_renderer::get_dur() {
 	return std::pair<bool, double>(false, 0.0);
 }
 
+#if 0
 void gui::dx::dx_basicvideo_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->debug("stop: %s", m_node->get_path_display_desc().c_str()); 
 	if(!m_player) return;
@@ -166,10 +168,29 @@ void gui::dx::dx_basicvideo_renderer::stop() {
 	p->stop();
 	delete p;
 	m_cs.leave();
-	m_dest->renderer_done(this);
+	if (m_dest) m_dest->renderer_done(this);
+	m_dest = NULL;
 	m_activated = false;
 	m_dxplayer->stopped(this);
 	m_context->stopped(m_cookie);
+}
+#endif
+bool gui::dx::dx_basicvideo_renderer::stop() {
+	AM_DBG lib::logger::get_logger()->debug("stop: %s", m_node->get_path_display_desc().c_str()); 
+	if(!m_player) return true;
+	m_cs.enter();
+	m_update_event = 0;
+	basicvideo_player *p = m_player;
+	m_player = 0;
+	p->stop();
+	delete p;
+	m_cs.leave();
+	if (m_dest) m_dest->renderer_done(this);
+	m_dest = NULL;
+	m_activated = false;
+	m_dxplayer->stopped(this);
+	m_context->stopped(m_cookie);
+	return false;
 }
 
 void gui::dx::dx_basicvideo_renderer::pause(common::pause_display d) {

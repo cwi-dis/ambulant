@@ -129,7 +129,7 @@ class region_node : public common::animation_destination {
 	void set_soundlevel(double l) { m_soundlevel = l; m_display_soundlevel = l; }
 	void set_soundalign(common::sound_alignment sa) { m_soundalign = sa; m_display_soundalign = sa; }
 #ifdef WITH_SMIL30
-	void set_panzoom(const common::region_dim_spec& rds) { m_panzoom = rds; m_display_panzoom = rds; }
+	void set_panzoom(const common::region_dim_spec& rds_) { m_panzoom = rds_; m_display_panzoom = rds_; }
 	void set_bgopacity(double l) { m_bgopacity = l; m_display_bgopacity = l; }
 	void set_mediaopacity(double l) { m_mediaopacity = l; m_display_mediaopacity = l; }
 	void set_mediabgopacity(double l) { m_mediabgopacity = l; m_display_mediabgopacity = l; }

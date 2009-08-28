@@ -48,6 +48,10 @@ lib::timer_control_impl::timer_control_impl(lib::timer* parent, double speed /* 
 	m_local_epoch(0),
 	m_speed(speed),
 	m_running(run)
+#ifdef WITH_CLOCK_SYNC
+    ,
+    m_drift(0)
+#endif
 {	
 	AM_DBG lib::logger::get_logger()->debug("lib::timer_control_impl(0x%x), parent=0x%x", this, parent);
 }

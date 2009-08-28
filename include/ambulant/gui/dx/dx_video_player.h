@@ -66,12 +66,16 @@ class video_player : public common::playable {
 	~video_player();
 	
 	void start(double t);
-	void stop();
+//	void stop();
+	bool stop();
+	void post_stop() {}
+	void init_with_node(const lib::node *n) {}
 	void pause(common::pause_display d=common::display_show);
 	void resume();
 	void seek(double t);
 	common::duration get_dur();
 	void wantclicks(bool want) { m_wantclicks = want;}
+
 	void preroll(double when, double where, double how_much) {}
 	cookie_type get_cookie() const { return m_cookie;}
 	int ms_per_frame();

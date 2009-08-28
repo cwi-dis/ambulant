@@ -39,13 +39,12 @@ memfile::~memfile() {
 bool
 memfile::read() {
 	if (!m_src) return false;
-	char *data;
+	char *data_;
 	size_t datasize;
-	if (!net::read_data_from_datasource(m_src, &data, &datasize))
+	if (!net::read_data_from_datasource(m_src, &data_, &datasize))
 		return false;
-	m_buffer.append((lib::byte*)data, datasize);
-	free(data);
-    m_src->stop();
+	m_buffer.append((lib::byte*)data_, datasize);
+	free(data_);
 	m_src->release();
 	m_src = NULL;
 	return true;

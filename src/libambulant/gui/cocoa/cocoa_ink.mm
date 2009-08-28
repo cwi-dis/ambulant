@@ -78,7 +78,7 @@ cocoa_ink_renderer::cocoa_ink_renderer(
 	color_t color = lib::to_color(0, 0, 0);
 	if (params) {
 		color = params->get_color("color", color);
-		float fontsize = params->get_float("font-size", 1.0); // XXXJACK Abuse fontsize, for now.
+		float fontsize = (float)params->get_float("font-size", 1.0F); // XXXJACK Abuse fontsize, for now.
 		if (fontsize) {
 			m_linewidth = fontsize;
 		}
@@ -87,7 +87,7 @@ cocoa_ink_renderer::cocoa_ink_renderer(
 	m_color = [NSColor colorWithCalibratedRed:redf(color)
 					green:greenf(color)
 					blue:bluef(color)
-					alpha:1.0];
+					alpha:1.0f];
 }
 
 cocoa_ink_renderer::~cocoa_ink_renderer()
@@ -153,7 +153,7 @@ cocoa_ink_renderer::redraw_body(const rect &dirty, gui_window *window)
 				double x = strtod(x_str, NULL);
 				double y = strtod(y_str, NULL);
 				AM_DBG lib::logger::get_logger()->debug("cocoa_ink_renderer:     point (%f,%f)", x, y);
-				NSPoint pt = NSMakePoint(x, y);
+				NSPoint pt = NSMakePoint((float)x, (float)y);
 				if (start_new_trace) {
 					[m_path moveToPoint: pt];
 					start_new_trace = false;

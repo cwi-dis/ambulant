@@ -1790,6 +1790,9 @@ timer::timer(PyObject *itself)
 	{
 		if (!PyObject_HasAttrString(itself, "elapsed")) PyErr_Warn(PyExc_Warning, "timer: missing attribute: elapsed");
 		if (!PyObject_HasAttrString(itself, "get_realtime_speed")) PyErr_Warn(PyExc_Warning, "timer: missing attribute: get_realtime_speed");
+		if (!PyObject_HasAttrString(itself, "set_drift")) PyErr_Warn(PyExc_Warning, "timer: missing attribute: set_drift");
+		if (!PyObject_HasAttrString(itself, "get_drift")) PyErr_Warn(PyExc_Warning, "timer: missing attribute: get_drift");
+		if (!PyObject_HasAttrString(itself, "skew")) PyErr_Warn(PyExc_Warning, "timer: missing attribute: skew");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -1855,6 +1858,74 @@ double timer::get_realtime_speed() const
 	return _rv;
 }
 
+ambulant::lib::timer::signed_time_type timer::set_drift(ambulant::lib::timer::signed_time_type drift)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::timer::signed_time_type _rv;
+	PyObject *py_drift = Py_BuildValue("l", drift);
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer, "set_drift", "(O)", py_drift);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer::set_drift() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "l", &_rv))
+	{
+		PySys_WriteStderr("Python exception during timer::set_drift() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_drift);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::lib::timer::signed_time_type timer::get_drift() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::timer::signed_time_type _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer, "get_drift", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer::get_drift() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "l", &_rv))
+	{
+		PySys_WriteStderr("Python exception during timer::get_drift() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+void timer::skew(ambulant::lib::timer::signed_time_type skew)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_skew = Py_BuildValue("l", skew);
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer, "skew", "(O)", py_skew);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer::skew() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_skew);
+
+	PyGILState_Release(_GILState);
+}
+
 /* ---------------------- Class timer_control ----------------------- */
 
 timer_control::timer_control(PyObject *itself)
@@ -1874,6 +1945,9 @@ timer_control::timer_control(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "get_speed")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: get_speed");
 		if (!PyObject_HasAttrString(itself, "running")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: running");
 		if (!PyObject_HasAttrString(itself, "get_realtime_speed")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: get_realtime_speed");
+		if (!PyObject_HasAttrString(itself, "set_drift")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: set_drift");
+		if (!PyObject_HasAttrString(itself, "get_drift")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: get_drift");
+		if (!PyObject_HasAttrString(itself, "skew")) PyErr_Warn(PyExc_Warning, "timer_control: missing attribute: skew");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -2110,6 +2184,74 @@ double timer_control::get_realtime_speed() const
 
 	PyGILState_Release(_GILState);
 	return _rv;
+}
+
+ambulant::lib::timer::signed_time_type timer_control::set_drift(ambulant::lib::timer::signed_time_type drift)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::timer::signed_time_type _rv;
+	PyObject *py_drift = Py_BuildValue("l", drift);
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer_control, "set_drift", "(O)", py_drift);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_control::set_drift() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "l", &_rv))
+	{
+		PySys_WriteStderr("Python exception during timer_control::set_drift() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_drift);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+ambulant::lib::timer::signed_time_type timer_control::get_drift() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::lib::timer::signed_time_type _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer_control, "get_drift", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_control::get_drift() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "l", &_rv))
+	{
+		PySys_WriteStderr("Python exception during timer_control::get_drift() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+void timer_control::skew(ambulant::lib::timer::signed_time_type skew)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_skew = Py_BuildValue("l", skew);
+
+	PyObject *py_rv = PyObject_CallMethod(py_timer_control, "skew", "(O)", py_skew);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during timer_control::skew() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_skew);
+
+	PyGILState_Release(_GILState);
 }
 
 /* ------------------------- Class embedder ------------------------- */
@@ -4709,8 +4851,10 @@ playable::playable(PyObject *itself)
 	PyGILState_STATE _GILState = PyGILState_Ensure();
 	if (itself)
 	{
+		if (!PyObject_HasAttrString(itself, "init_with_node")) PyErr_Warn(PyExc_Warning, "playable: missing attribute: init_with_node");
 		if (!PyObject_HasAttrString(itself, "start")) PyErr_Warn(PyExc_Warning, "playable: missing attribute: start");
 		if (!PyObject_HasAttrString(itself, "stop")) PyErr_Warn(PyExc_Warning, "playable: missing attribute: stop");
+		if (!PyObject_HasAttrString(itself, "post_stop")) PyErr_Warn(PyExc_Warning, "playable: missing attribute: post_stop");
 		if (!PyObject_HasAttrString(itself, "pause")) PyErr_Warn(PyExc_Warning, "playable: missing attribute: pause");
 		if (!PyObject_HasAttrString(itself, "resume")) PyErr_Warn(PyExc_Warning, "playable: missing attribute: resume");
 		if (!PyObject_HasAttrString(itself, "seek")) PyErr_Warn(PyExc_Warning, "playable: missing attribute: seek");
@@ -4736,6 +4880,24 @@ playable::~playable()
 }
 
 
+void playable::init_with_node(const ambulant::lib::node* n)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_n = Py_BuildValue("O&", nodeObj_New, n);
+
+	PyObject *py_rv = PyObject_CallMethod(py_playable, "init_with_node", "(O)", py_n);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable::init_with_node() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_n);
+
+	PyGILState_Release(_GILState);
+}
+
 void playable::start(double t)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -4754,13 +4916,37 @@ void playable::start(double t)
 	PyGILState_Release(_GILState);
 }
 
-void playable::stop()
+bool playable::stop()
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
+	bool _rv;
+
 	PyObject *py_rv = PyObject_CallMethod(py_playable, "stop", "()");
 	if (PyErr_Occurred())
 	{
 		PySys_WriteStderr("Python exception during playable::stop() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during playable::stop() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+void playable::post_stop()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_playable, "post_stop", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable::post_stop() callback:\n");
 		PyErr_Print();
 	}
 
@@ -5833,13 +6019,14 @@ bool player::goto_node(const ambulant::lib::node* n)
 	return _rv;
 }
 
-bool player::highlight(const ambulant::lib::node* n)
+bool player::highlight(const ambulant::lib::node* n, bool on)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
 	bool _rv;
 	PyObject *py_n = Py_BuildValue("O&", nodeObj_New, n);
+	PyObject *py_on = Py_BuildValue("O&", bool_New, on);
 
-	PyObject *py_rv = PyObject_CallMethod(py_player, "highlight", "(O)", py_n);
+	PyObject *py_rv = PyObject_CallMethod(py_player, "highlight", "(OO)", py_n, py_on);
 	if (PyErr_Occurred())
 	{
 		PySys_WriteStderr("Python exception during player::highlight() callback:\n");
@@ -5854,6 +6041,7 @@ bool player::highlight(const ambulant::lib::node* n)
 
 	Py_XDECREF(py_rv);
 	Py_XDECREF(py_n);
+	Py_XDECREF(py_on);
 
 	PyGILState_Release(_GILState);
 	return _rv;
@@ -7434,6 +7622,7 @@ datasource::datasource(PyObject *itself)
 	if (itself)
 	{
 		if (!PyObject_HasAttrString(itself, "start")) PyErr_Warn(PyExc_Warning, "datasource: missing attribute: start");
+		if (!PyObject_HasAttrString(itself, "start_prefetch")) PyErr_Warn(PyExc_Warning, "datasource: missing attribute: start_prefetch");
 		if (!PyObject_HasAttrString(itself, "stop")) PyErr_Warn(PyExc_Warning, "datasource: missing attribute: stop");
 		if (!PyObject_HasAttrString(itself, "end_of_file")) PyErr_Warn(PyExc_Warning, "datasource: missing attribute: end_of_file");
 		if (!PyObject_HasAttrString(itself, "size")) PyErr_Warn(PyExc_Warning, "datasource: missing attribute: size");
@@ -7471,6 +7660,24 @@ void datasource::start(ambulant::lib::event_processor* evp, ambulant::lib::event
 	Py_XDECREF(py_rv);
 	Py_XDECREF(py_evp);
 	Py_XDECREF(py_callback);
+
+	PyGILState_Release(_GILState);
+}
+
+void datasource::start_prefetch(ambulant::lib::event_processor* evp)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_evp = Py_BuildValue("O&", event_processorObj_New, evp);
+
+	PyObject *py_rv = PyObject_CallMethod(py_datasource, "start_prefetch", "(O)", py_evp);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during datasource::start_prefetch() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_evp);
 
 	PyGILState_Release(_GILState);
 }

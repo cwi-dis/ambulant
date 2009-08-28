@@ -90,7 +90,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
     NSError *error;
 	NSDocument *doc = [docController openDocumentWithContentsOfURL:url display:YES error:&error];
 	if (!doc) {
-		ambulant::lib::logger::get_logger()->error(gettext("Cannot open: %s, error: %s"), newdoc.get_url().c_str(), [[error localizedDescription] cString]);
+		ambulant::lib::logger::get_logger()->error(gettext("Cannot open: %s, error: %s"), newdoc.get_url().c_str(), [[error localizedDescription] UTF8String]);
 	}
 	[pool release];
 	// [doc retain] ??

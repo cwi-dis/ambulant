@@ -150,6 +150,7 @@ color_t = Type("ambulant::lib::color_t", "l") # XXXX Split into RGB
 event_priority = Type("ambulant::lib::event_priority", "l")
 timestamp_t = Type("ambulant::net::timestamp_t", "L")
 time_type = Type("ambulant::lib::timer::time_type", "l")
+signed_time_type = Type("ambulant::lib::timer::signed_time_type", "l")
 tiling = Type("ambulant::common::tiling", "l")
 fit_t = Type("ambulant::common::fit_t", "l")
 sound_alignment = Type("ambulant::common::sound_alignment", "l")

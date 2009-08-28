@@ -293,6 +293,7 @@ databuffer::readdone(int sz)
 	if (!m_writing && (m_used == 0 || (m_max_unused_size > 0 && m_rear > m_max_unused_size))) {
 		 AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::readdone(%d) resizing buffer (cur. size = %d)", (void*)this, sz, m_size);
 		 if (m_used) memcpy(m_buffer, m_buffer+m_rear, m_used);
+
 		 m_buffer = (char *)realloc(m_buffer, m_used);
 		 m_size = m_used;
 		 m_rear = 0;

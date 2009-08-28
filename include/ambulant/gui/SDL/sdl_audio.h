@@ -84,7 +84,11 @@ class sdl_audio_renderer : public common::renderer_playable {
 	
 	common::duration get_dur();
 	void start(double where);
-	void stop();
+//	void stop();
+	bool stop();
+	void post_stop();
+	void init_with_node(const lib::node *n);
+	void preroll(double when, double where, double how_much);
 	void seek(double t);
 	void pause(common::pause_display d=common::display_show);
 	void resume();
@@ -108,7 +112,8 @@ class sdl_audio_renderer : public common::renderer_playable {
 	net::audio_datasource *m_audio_src;
 	lib::critical_section m_lock;
 	
-	bool m_is_playing;
+	bool m_is_playing;  // Invariant: m_is_playing === register_renderer() has been called.
+	bool m_is_reading;	// Invariant: m_is_reading === m_audio_src->start() has been called.
 	bool m_is_paused;
   	bool m_read_ptr_called;
 	bool m_audio_started;
@@ -117,6 +122,10 @@ class sdl_audio_renderer : public common::renderer_playable {
 	const lib::transition_info* m_intransition;
 	const lib::transition_info* m_outtransition;
 	smil2::audio_transition_engine* m_transition_engine;
+    net::timestamp_t m_previous_clip_position;
+#ifdef WITH_CLOCK_SYNC
+    lib::timer::time_type m_audio_clock;
+#endif
 	// class methods and attributes:
 	static int init();
  	static void register_renderer(sdl_audio_renderer *rnd);

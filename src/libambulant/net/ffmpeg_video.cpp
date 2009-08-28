@@ -30,7 +30,9 @@
 #include "ambulant/lib/asb.h"
 #include "ambulant/net/url.h"
 #define round(x) ((int)((x)+0.5))
+#ifndef INT64_C
 #define INT64_C(x) x##LL
+#endif
 
 // WARNING: turning on AM_DBG globally for the ffmpeg code seems to trigger
 // a condition that makes the whole player hang or collapse. So you probably
@@ -250,13 +252,18 @@ ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp
 	ambulant::lib::event *callbackk, timestamp_t timestamp)
 {
 	m_lock.enter();
+#ifdef WITH_SEAMLESS_PLAYBACK
+//	m_start_input = true;
+#endif
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_frame: (this = 0x%x)", (void*) this);
 
 	if (m_client_callback != NULL) {
 		delete m_client_callback;
 		m_client_callback = NULL;
-		lib::logger::get_logger()->error("ffmpeg_video_decoder_datasource::start(): m_client_callback already set!");
+		lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_frame(): m_client_callback already set!");
 	}
+
+#ifndef WITH_SEAMLESS_PLAYBACK
 	if (m_frames.size() > 0 /* XXXX Check timestamp! */ || _end_of_file() ) {
 		// We have data (or EOF) available. Don't bother starting up our source again, in stead
 		// immedeately signal our client again
@@ -268,7 +275,7 @@ ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp
 			lib::timer::time_type delta_milli = 0;
 			if (now_milli < timestamp_milli)
 				delta_milli = timestamp_milli - now_milli;
-			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start: trigger client callback timestamp_milli=%d delta_milli=%d, now_milli=%d", (int)timestamp_milli, (int)delta_milli, (int)now_milli);
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_frame: 0x%x: trigger client callback timestamp_milli=%d delta_milli=%d, now_milli=%d, %d frames in buffer", this, (int)timestamp_milli, (int)delta_milli, (int)now_milli, m_frames.size());
 			// Sanity check: we don't want this to be more than a second into the future
 			if (delta_milli > 1000) {
 				lib::logger::get_logger()->trace("ffmpeg_video: frame is %f seconds in the future", delta_milli / 1000.0);
@@ -285,8 +292,43 @@ ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp
 		m_client_callback = callbackk;
 		m_event_processor = evp;
 	}
+	
+#else
+	if (m_frames.size() > 0 || _end_of_file() ) {
+		// We have data (or EOF) available. Don't bother starting up our source again, in stead
+		// immedeately signal our client again
+		if (callbackk) {
+			assert(evp);
+			if (timestamp < 0) timestamp = 0;
+			lib::timer::time_type timestamp_milli = (lib::timer::time_type)(timestamp/1000); // micro to milli
+			lib::timer::time_type now_milli = evp->get_timer()->elapsed();
+			lib::timer::time_type delta_milli = 0;
+			if (now_milli < timestamp_milli)
+				delta_milli = timestamp_milli - now_milli;
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_frame: 0x%x: trigger client callback timestamp_milli=%d delta_milli=%d, now_milli=%d, %d frames in buffer", this, (int)timestamp_milli, (int)delta_milli, (int)now_milli, m_frames.size());
+			// Sanity check: we don't want this to be more than a second into the future
+			if (delta_milli > 1000) {
+				lib::logger::get_logger()->trace("ffmpeg_video: frame is %f seconds in the future", delta_milli / 1000.0);
+				lib::logger::get_logger()->debug("ffmpeg_video: elapsed()=%dms, timestamp=%dms", now_milli, timestamp_milli);
+			}
+			evp->add_event(callbackk, delta_milli+1, ambulant::lib::ep_high);
+		} else {
+			lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource::start(): no client callback!");
+			lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
+		}
+	} else	{
+		// We have no data available. Start our source, and in our data available callback we
+		// will signal the client.
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video: 0x%x: start_frame: record callback for later", this);
+		m_client_callback = callbackk;
+		m_event_processor = evp;
+	}
+	
+#endif
 	// Don't restart our source if we are at end of file.
+#ifndef WITH_SEAMLESS_PLAYBACK
 	if ( _end_of_file() ) m_start_input = false;
+#endif
 	
 	if (m_start_input) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_frame() Calling m_src->start_frame(..)");
@@ -298,11 +340,36 @@ ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp
 	m_lock.leave();
 }
 
+#ifdef WITH_SEAMLESS_PLAYBACK
+void 
+ffmpeg_video_decoder_datasource::start_prefetch(ambulant::lib::event_processor *evp)
+{
+	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_prefetch: (this = 0x%x)", (void*) this);
+	
+    m_event_processor = evp;
+    
+	// Don't restart our source if we are at end of file.
+#ifndef WITH_SEAMLESS_PLAYBACK
+	if ( _end_of_file() ) m_start_input = false;
+#endif
+	
+	if (m_start_input) {
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_frame() Calling m_src->start_frame(..)");
+		lib::event *e = new framedone_callback(this, &ffmpeg_video_decoder_datasource::data_avail);
+		assert(m_src);
+		m_src->start_frame(evp, e, 0);
+		m_start_input = false;
+	}
+	m_lock.leave();
+}
+#endif
+
 void
 print_frames(sorted_frames frames) {
   	sorted_frames f(frames);
 	while (f.size()) {
-		ts_pointer_pair e = f.top();
+		ts_pointer_pair e = f.front();
 		printf("e.first=%d ", (int) e.first);
 		f.pop();
 	}
@@ -317,7 +384,7 @@ ffmpeg_video_decoder_datasource::_pop_top_frame() {
 		return;
 	}
 
-	char *data = m_frames.top().second;
+	char *data = m_frames.front().second;
 	assert(data);
 	if (data) free(data);
 	m_frames.pop();
@@ -330,8 +397,8 @@ ffmpeg_video_decoder_datasource::frame_processed_keepdata(timestamp_t now, char 
 	m_oldest_timestamp_wanted = now+1;
 	AM_DBG lib::logger::get_logger()->trace("ffmpeg_video_decoder_datasource::frame_processed_keepdata(%lld)", now);
 	assert(m_frames.size() > 0);
-	assert(m_frames.top().first == now);
-	assert(m_frames.top().second == buf);
+	assert(m_frames.front().first == now);
+	assert(m_frames.front().second == buf);
 	m_frames.pop();
 	m_lock.leave();
 }
@@ -348,8 +415,8 @@ ffmpeg_video_decoder_datasource::frame_processed(timestamp_t now)
 	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.frame_processed(%lld)", now);
 	
-	while ( m_frames.size() > 0 && m_frames.top().first <= now) {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::frame_processed: discarding first frame timestamp=%d, now=%d, data ptr = 0x%x",(int)m_frames.top().first,(int)now, m_frames.top().second);
+	while ( m_frames.size() > 0 && m_frames.front().first <= now) {
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::frame_processed: discarding first frame timestamp=%d, now=%d, data ptr = 0x%x",(int)m_frames.front().first,(int)now, m_frames.front().second);
 		_pop_top_frame();
 	}
 	m_lock.leave();
@@ -404,9 +471,9 @@ ffmpeg_video_decoder_datasource::_need_fmt_uptodate()
 	if (m_fmt.frameduration <= 0) {
 		// And convert the timestamp
 		// XXXJACK: Bad code. Use av_rescale_q with correct timebases.
-		timestamp_t frameduration = (timestamp_t) round(m_con->time_base.num *1000000.0 / (double) m_con->time_base.den) ;
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_need_fmt_uptodate(): frameduration = %lld, %d %d", frameduration, m_con->time_base.num, m_con->time_base.den);
-		m_fmt.frameduration = frameduration;
+		timestamp_t framedur = (timestamp_t) round(m_con->time_base.num *1000000.0 / (double) m_con->time_base.den) ;
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_need_fmt_uptodate(): frameduration = %lld, %d %d", framedur, m_con->time_base.num, m_con->time_base.den);
+		m_fmt.frameduration = framedur;
 	}
 }
 
@@ -415,21 +482,57 @@ ffmpeg_video_decoder_datasource::read_ahead(timestamp_t clip_begin)
 {
 	assert(m_src);
 	m_src->read_ahead(clip_begin);
+    m_oldest_timestamp_wanted = clip_begin;
 }
 
 void
 ffmpeg_video_decoder_datasource::seek(timestamp_t time)
 {
 	m_lock.enter();
+    assert( time >= 0);
 	// We leave one frame in the queue: there could be a callback outstanding which
 	// will otherwise run into problems in get_frame().
-	while ( m_frames.size() > 1) {
-		_pop_top_frame();
+
+	m_oldest_timestamp_wanted = time;
+
+    if (m_frames.size() > 0) {
+        // There are frames in the buffer. If we have to seek back we discard all of them.
+        // If we have to seek ahead we try skipping.
+        int nframes_dropped = 0;
+        
+        if (m_frames.front().first > time + 30000 /* 30ms is a guess for frame duration */) {
+            while ( m_frames.size() > 0) {
+                _pop_top_frame();
+                nframes_dropped++;
+            }	
+        } else {
+            while (m_frames.size() > 0 && m_frames.front().first < time) {
+                _pop_top_frame();
+                nframes_dropped++;
+            }
+            if (m_frames.size() > 0) {
+                // We started with a frame before "time" and now we are after "time".
+                // Therefore, we have implemented the complete seek.
+                m_lock.leave();
+                return;
+            }
+        }
+        AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource: flush cache (%d frames) due to seek", nframes_dropped);
 	}
 	if (m_src) m_src->seek(time);
-	m_oldest_timestamp_wanted = time;
 	m_lock.leave();
 }
+
+#ifdef WITH_SEAMLESS_PLAYBACK
+void
+ffmpeg_video_decoder_datasource::set_clip_end(timestamp_t clip_end)
+{
+	m_lock.enter();
+	if (m_src) m_src->set_clip_end(clip_end);
+	m_lock.leave();
+}
+
+#endif
 
 void 
 ffmpeg_video_decoder_datasource::data_avail()
@@ -543,10 +646,10 @@ ffmpeg_video_decoder_datasource::data_avail()
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropping frame %d, ts=%lld < oldest-wanted=%lld", m_frame_count, pts, m_oldest_timestamp_wanted);
 				drop_this_frame = true;
 			}
-			if (m_frames.size() > 0 && pts < m_frames.top().first) {
+			if (m_frames.size() > 0 && pts < m_frames.front().first) {
 				// A frame that came after this frame has already been consumed.
 				// We should drop this frame.
-				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropping frame %d (ts=%lld): too late, later frame (ts=%lld) already displayed", m_frame_count, pts, m_frames.top().first);
+				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropping frame %d (ts=%lld): too late, later frame (ts=%lld) already displayed", m_frame_count, pts, m_frames.front().first);
 				drop_this_frame = true;
 			}
 			m_elapsed = pts;
@@ -634,39 +737,39 @@ ffmpeg_video_decoder_datasource::data_avail()
 #ifndef FFMPEG_SUPPORTS_ALPHA_LAST
 			if (must_swab_2341) {
 				int lcount = w*h;
-				unsigned long *ptr = (unsigned long *)framedata;
+				unsigned long *lptr = (unsigned long *)framedata;
 				while (lcount--) {
-					long oval = *ptr;
+					long oval = *lptr;
 					long nval =
 						((oval & 0xffffff) << 8) |
 						((oval >> 24) & 0xff);
-					*ptr++ = nval;
+					*lptr++ = nval;
 				}
 			}
 			if (must_swab_4321) {
 				int lcount = w*h;
-				unsigned long *ptr = (unsigned long *)framedata;
+				unsigned long *lptr = (unsigned long *)framedata;
 				while (lcount--) {
-					long oval = *ptr;
+					long oval = *lptr;
 					long nval =
 						(oval << 24) |
 						((oval & 0xff00) << 8) |
 						((oval >> 8) & 0xff00) |
 						((oval >> 24) & 0xff);
-					*ptr++ = nval;
+					*lptr++ = nval;
 				}
 			}
 			if (must_swab_1432) {
 				int lcount = w*h;
-				unsigned long *ptr = (unsigned long *)framedata;
+				unsigned long *lptr = (unsigned long *)framedata;
 				while (lcount--) {
-					long oval = *ptr;
+					long oval = *lptr;
 					long nval =
 						(oval & 0xff000000) |
 						((oval & 0xff) << 16) |
 						(oval & 0xff00) |
 						((oval >> 16) & 0xff);
-					*ptr++ = nval;
+					*lptr++ = nval;
 				}
 			}
 #endif // FFMPEG_SUPPORTS_ALPHA_LAST
@@ -773,7 +876,7 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 	
 	timestamp_t frame_duration = frameduration(); 
 	assert (frame_duration > 0);
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame:  timestamp=%lld, now=%lld, frameduration = %lld",m_frames.top().first, now, frame_duration);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame:  timestamp=%lld, now=%lld, frameduration = %lld",m_frames.front().first, now, frame_duration);
 
 
 #if 0
@@ -792,7 +895,7 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 	}
 #endif
 
-	AM_DBG if (m_frames.size()) lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: next timestamp=%lld, now=%lld", m_frames.top().first, now);
+	AM_DBG if (m_frames.size()) lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: next timestamp=%lld, now=%lld", m_frames.front().first, now);
 	// The next assert assures that we have indeed removed all old frames (and, therefore, either there
 	// are no frames left, or the first frame has a time that is in the future). It also assures that
 	// the frames in m_frames are indeed in the right order.
@@ -808,9 +911,9 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 	assert(m_frames.size() == 0 || m_frames.top().first >= now-(2*frame_duration));
 #endif
 	 
-	if (timestamp_p) *timestamp_p = m_frames.top().first;
+	if (timestamp_p) *timestamp_p = m_frames.front().first;
 	if (size_p) *size_p = m_size;
-	char *rv = m_frames.top().second;
+	char *rv = m_frames.front().second;
 	if (rv == NULL) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame(now=%lld): about to return NULL frame (ts=%lld), should not happen", now, *timestamp_p);
 	}

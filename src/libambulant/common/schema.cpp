@@ -56,6 +56,13 @@ static const char* statecommand_elements[] = {
 	"setvalue", "newvalue", "delvalue", "send"
 };
 #endif // WITH_SMIL30
+
+#ifdef WITH_SEAMLESS_PLAYBACK
+static const char* prefetch_elements[] = {
+	"prefetch"
+};
+#endif WITH_SEAMLESS_PLAYBACK
+
 // Create the smplest possible schema factory
 // Its sole purpose is to create privately the schema singleton.
 namespace ambulant {
@@ -109,6 +116,15 @@ schema::schema() {
 		m_statecommands.insert(statecommand_elements[i]);
 	}
 #endif // WITH_SMIL30
+	
+#ifdef WITH_SEAMLESS_PLAYBACK
+	n = sizeof(prefetch_elements)/sizeof(const char *);
+	for(i =0;i<n;i++) {
+		m_time_elements.insert(prefetch_elements[i]);
+		m_prefetch.insert(prefetch_elements[i]);
+	}
+	
+#endif // WITH_SEAMLESS_PLAYBACK
 		
 	n = sizeof(layout_elements)/sizeof(const char *);
 	for(i=0; i<n; i++) {
@@ -143,6 +159,12 @@ bool schema::is_statecommand(const lib::xml_string& tag) const {
 	return m_statecommands.find(tag) != m_statecommands.end();
 }
 #endif // WITH_SMIL30
+
+#ifdef WITH_SEAMLESS_PLAYBACK
+bool schema::is_prefetch(const lib::xml_string& tag) const {
+	return m_prefetch.find(tag) != m_prefetch.end();
+}
+#endif //WITH_SEAMLESS_PLAYBACK
 
 const char* 
 ambulant::common::time_container_type_as_str(time_container_type t) {

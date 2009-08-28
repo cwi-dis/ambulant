@@ -106,7 +106,7 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 					redc(chromakey)-redc(tolerance), redc(chromakey)+redc(tolerance),
 					greenc(chromakey)-greenc(tolerance), greenc(chromakey)+greenc(tolerance),
 					bluec(chromakey)-bluec(tolerance), bluec(chromakey)+bluec(tolerance),
-					0.0, 0.0
+					0.0F, 0.0F
 				};
 				CGImageRef orig_cgi = (CGImageRef)[(NSBitmapImageRep *)bestrep CGImage]; // XXX 10.5 only!
 				assert(orig_cgi);
@@ -155,7 +155,7 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 			cocoa_srcrect = NSMakeRect(srcrect.left(), srcrect.top(), srcrect.width(), srcrect.height());
 			cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
 			AM_DBG logger::get_logger()->debug("cocoa_image_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", cocoa_srcsize.width, cocoa_srcsize.height, NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect), NSMaxX(cocoa_dstrect), NSMaxY(cocoa_dstrect));
-			[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceOver fraction: 1.0];
+			[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceOver fraction: 1.0f];
 		}
 		m_lock.leave();
 		return;
@@ -178,9 +178,9 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 #ifdef WITH_SMIL30
 	double alfa = 1.0;
 	if (ri) alfa = ri->get_mediaopacity();
-	[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceOver fraction: alfa];
+	[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceOver fraction: (float)alfa];
 #else
-	[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceOver fraction: 1.0];
+	[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceOver fraction: 1.0f];
 #endif
 	
 	m_lock.leave();

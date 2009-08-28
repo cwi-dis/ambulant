@@ -1715,6 +1715,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					"WITH_LIVE=1",
 					"WITH_EXTERNAL_DOM=1",
 					"WITH_LTDL_PLUGINS=1",
 					"AM_PREFER_FFMPEG=1",
@@ -1724,6 +1725,8 @@
 					"WITH_FFMPEG_AVFORMAT=1",
 					"WITH_OVERLAY_WINDOW=1",
 					"WITH_SMIL30=1",
+					"WITH_SEAMLESS_PLAYBACK=1",
+					"WITH_CLOCK_SYNC=1",
 				);
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = "Ambulant-mac";
@@ -1748,6 +1751,8 @@
 					"WITH_FFMPEG_AVFORMAT=1",
 					"WITH_OVERLAY_WINDOW=1",
 					"WITH_SMIL30=1",
+					"WITH_SEAMLESS_PLAYBACK=1",
+					"WITH_CLOCK_SYNC=1",
 				);
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = "Ambulant-mac";
@@ -1763,6 +1768,8 @@
 				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "";
 				GCC_VERSION = 4.2;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
@@ -1796,6 +1803,7 @@
 					../../third_party_packages/live/groupsock,
 					"\"$(SRCROOT)/../../../../packages/xerces-c-src_2_7_0/lib\"",
 				);
+				OTHER_CFLAGS = "";
 				PREBINDING = NO;
 				SDKROOT = macosx10.5;
 				USER_HEADER_SEARCH_PATHS = "../../include ../../third_party_packages/ffmpeg-universal /usr/local/include/SDL ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";

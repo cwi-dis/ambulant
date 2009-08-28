@@ -137,14 +137,28 @@ void gui::dx::dx_img_renderer::start(double t) {
 	m_context->stopped(m_cookie);
 }
 
+#if 0
 void gui::dx::dx_img_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::stop(0x%x)", this);
 	delete m_image;
 	m_image = 0;
-	m_dest->renderer_done(this);
+	if (m_dest) m_dest->renderer_done(this);
+	m_dest = NULL;
 	m_activated = false;
 	m_dxplayer->stopped(this);
 //	m_dest->need_redraw();
+}
+#endif
+bool gui::dx::dx_img_renderer::stop() {
+	AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::stop(0x%x)", this);
+	delete m_image;
+	m_image = 0;
+	if (m_dest) m_dest->renderer_done(this);
+	m_dest = NULL;
+	m_activated = false;
+	m_dxplayer->stopped(this);
+//	m_dest->need_redraw();
+	return true;
 }
 
 bool gui::dx::dx_img_renderer::user_event(const lib::point& pt, int what) {

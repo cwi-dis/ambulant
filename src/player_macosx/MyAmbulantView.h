@@ -35,3 +35,4 @@ void set_statusline(void *view, const char *msg);
 - (void) setStatusLine: (NSString *)message;
 @end
 #endif
+
