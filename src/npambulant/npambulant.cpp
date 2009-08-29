@@ -68,6 +68,7 @@ npambulant::npambulant(NPMIMEType mimetype, NPP pNPInstance, PRUint16 mode,
 	m_pNPStream(NULL),
 	m_bInitialized(FALSE),
 	m_pScriptableObject(NULL),
+	m_autostart(true),
 	m_ambulant_player(NULL)
 {
 #ifdef XP_WIN
@@ -109,6 +110,7 @@ npambulant::npambulant(NPMIMEType mimetype, NPP pNPInstance, PRUint16 mode,
 
 npambulant::~npambulant()
 {
+	stopPlayer();
 	if (sWindowObj)
 		NPN_ReleaseObject(sWindowObj);
 	if (m_pScriptableObject)
@@ -182,12 +184,15 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 				if (arg_str == NULL)
 					arg_str = value;
 			if (strcasecmp(name,"src") == 0)
-		                if (arg_str == NULL)
+                if (arg_str == NULL)
 					arg_str = value;
+			if (strcasecmp(name,"autostart") == 0)
+		    	if (strcasecmp(value , "false") == 0)
+					m_autostart = false;
 		}
 	if (arg_str == NULL)
         	return false;
-    	net::url file_url;
+    net::url file_url;
 	net::url arg_url = net::url::from_url (arg_str);
 	char* url_str = NULL;
 	if (arg_url.is_absolute()) {
@@ -213,7 +218,8 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 	m_ambulant_player = m_mainloop->get_player();
 	if (m_ambulant_player == NULL)
 	        return false;
-	m_ambulant_player->start();
+	if (m_autostart)
+	  m_ambulant_player->start();
 	gtk_widget_show_all (gtkwidget);
 	gtk_widget_realize(gtkwidget);
 #endif // WITH_GTK
@@ -224,7 +230,8 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 	m_ambulant_player = m_mainloop->get_player();
 	if (m_ambulant_player == NULL)
 	        return false;
-	m_ambulant_player->start();
+	if (m_autostart)
+	  m_ambulant_player->start();
 #endif // WITH_CG
 #ifdef	XP_WIN32
 	m_player_callbacks.set_os_window(m_hwnd);
@@ -234,7 +241,7 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 		if ( ! get_player()) {
 			delete m_ambulant_player;
 			m_ambulant_player = NULL;
-		} else 
+		} else if (m_autostart)
 			m_ambulant_player->play();
 	}
 	m_bInitialized = TRUE;

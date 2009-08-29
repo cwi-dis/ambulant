@@ -101,6 +101,7 @@ private:
   char** m_argn;
   char** m_argv;
   NPSavedData* m_data;
+  bool m_autostart;
 
 #ifdef XP_WIN
   HWND m_hWnd; 
