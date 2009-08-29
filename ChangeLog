@@ -1,3 +1,29 @@
+2009-08-28 14:09  jackjansen
+
+	* Got running under vc9.
+
+2009-08-28 12:21  jackjansen
+
+	* - Fix to restart video datasource only when needed was
+	  incomplete,	causing some videos to freeze. Fixed.  - Got rid of
+	  some debug output.
+
+2009-08-28 11:22  jackjansen
+
+	* Merging branch exp-jack-keep-renderers. Main features:
+
+	  WITH_CLOCK_SYNC enables continuous media renderers with an
+	  autonomous clock to re-synchronise the scheduler playback clock.
+	  This leads to improved timing.
+
+	  WITH_SEAMLESS_PLAYBACK leads to improved performance of
+	  back-to-back playback of the same media item, by not destroying a
+	  renderer immedeately on stop(), but in stead caching it for a
+	  short while ad reviving it if it happens to be reused.
+	  Additionally, media elements can specify fill="ambulant:continue"
+	  to enable the renderer to continue playback during this caching
+	  period. Finally, a limited form of <prefetch> is supported.
+
 2009-08-25 23:12  jackjansen
 
 	* byte_buffer is gone.
