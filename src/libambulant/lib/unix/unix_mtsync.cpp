@@ -133,7 +133,7 @@ lib::unix::condition::wait(int microseconds, critical_section &cs)
 		dummy = gettimeofday(&tv,NULL);
 		ts.tv_sec = tv.tv_sec;
 		ts.tv_nsec = (tv.tv_usec + microseconds)* 1000;
-		if (ts.tv_nsec > 1000000000) {
+		if (ts.tv_nsec >= 1000000000) {
 			ts.tv_sec += 1;
 			ts.tv_nsec -= 1000000000;
 		}

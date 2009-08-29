@@ -59,7 +59,7 @@ lib::unix::event_processor::run()
 	AM_DBG lib::logger::get_logger()->debug("event_processor 0x%x started", (void *)this);
 	// XXXX Note: the use of the mutex means that only one thread is actively
 	// serving events. This needs to be rectified at some point: only the
-	// queue manipulations should be locked with the mutex.
+	// queue manipulations and wait_event() should be locked with the mutex.
 	if ((err = pthread_mutex_lock(&m_queue_mutex)) != 0 ) {
 		lib::logger::get_logger()->fatal("unix_event_processor.run: pthread_mutex_lock failed: %s", strerror(err));
 	}
@@ -87,11 +87,11 @@ lib::unix::event_processor::wait_event()
 	dummy = gettimeofday(&tv,NULL);
 	ts.tv_sec = tv.tv_sec;
 	ts.tv_nsec = (tv.tv_usec + 10000)* 1000;
-	if (ts.tv_nsec > 1000000000) {
+	if (ts.tv_nsec >= 1000000000) {
 		ts.tv_sec += 1;
 		ts.tv_nsec -= 1000000000;
 	}
-	
+	// Note: m_queue_mutex must be locked at this call
 	err = pthread_cond_timedwait(&m_queue_condition, &m_queue_mutex, &ts);
 	if ( err != 0 && err != ETIMEDOUT) {
 		lib::logger::get_logger()->fatal("unix_event_processor.wait_event: pthread_cond_wait failed: %s", strerror(err));
