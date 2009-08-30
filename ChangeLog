@@ -1,3 +1,13 @@
+2009-08-30 01:44  keesblom
+
+	* Added autostart attribute to embed tag, as in ieambulant
+
+2009-08-29 22:45  keesblom
+
+	* Corrected the test that the nanosecond part of struct timespec is
+	  always less than 1 sec. This could result in EINVALID and a fatal
+	  error.  May fix #2799980 and #2799980
+
 2009-08-28 14:09  jackjansen
 
 	* Got running under vc9.
