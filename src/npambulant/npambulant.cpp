@@ -163,6 +163,11 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 	int i_winid = static_cast<int>(ll_winid);
 #ifdef WITH_GTK
 	GtkWidget* gtkwidget = GTK_WIDGET(gtk_plug_new((GdkNativeWindow) i_winid));
+	if (gtkwidget->window == NULL) {
+		// a.o. google-chrome
+		ambulant::lib::logger::get_logger()->error( "ambulant not yet supported as plugin for this browser");
+		return FALSE;
+	}
 #endif // WITH_GTK
 #ifdef	XP_WIN32
 	m_hwnd = (HWND)aWindow->window;

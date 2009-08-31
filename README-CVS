@@ -15,7 +15,9 @@ follow later.
 	% cd /usr/local/bin
 	% ln -s glibtoolize libtoolize
 
-3. Run autoconf, aclocal, automake and configure::
+3. Run autoconf, aclocal, automake and configure:
+   (FC10: download libtool-2.2.6 downloaded from 
+   ./configure --enable-ltdl-install ; make; sudo make install )
 
     % ./autogen.sh
    
