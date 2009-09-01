@@ -98,10 +98,11 @@ NPError NPP_Destroy (NPP instance, NPSavedData** save)
   NPError rv = NPERR_NO_ERROR;
 
   npambulant * pPlugin = (npambulant *)instance->pdata;
-  if(pPlugin != NULL && s_npambulant != NULL) {
-    pPlugin->shut();
+  if(pPlugin != NULL) {
+  pPlugin->shut();
     delete pPlugin;
-    s_npambulant = NULL;
+    if (s_npambulant == pPlugin)
+      s_npambulant = NULL;
   }
   return rv;
 }

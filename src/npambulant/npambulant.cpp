@@ -49,7 +49,6 @@ NPIdentifier sCreateElement_id;
 NPIdentifier sCreateTextNode_id;
 NPIdentifier sAppendChild_id;
 NPIdentifier sPluginType_id;
-NPObject *sWindowObj;
 
 char* mimetypes =
 "application/smil:.smi:W3C Smil 3.0 Playable Multimedia file;\
@@ -77,7 +76,7 @@ npambulant::npambulant(NPMIMEType mimetype, NPP pNPInstance, PRUint16 mode,
 	m_OldWindow = NULL;
 #endif
 
-	NPN_GetValue(m_pNPInstance, NPNVWindowNPObject, &sWindowObj);
+	NPN_GetValue(m_pNPInstance, NPNVWindowNPObject, &m_window_obj);
 
 	sStartPlayer_id = NPN_GetStringIdentifier("startPlayer");
 	sStopPlayer_id = NPN_GetStringIdentifier("stopPlayer");
@@ -110,15 +109,11 @@ npambulant::npambulant(NPMIMEType mimetype, NPP pNPInstance, PRUint16 mode,
 
 npambulant::~npambulant()
 {
-	stopPlayer();
-	if (sWindowObj)
-		NPN_ReleaseObject(sWindowObj);
+	if (m_window_obj)
+		NPN_ReleaseObject(m_window_obj);
 	if (m_pScriptableObject)
 		NPN_ReleaseObject(m_pScriptableObject);
-
-	sWindowObj = 0;
-	extern NPP s_npambulant_last_instance;
-	s_npambulant_last_instance = NULL;
+	m_window_obj = 0;
 	for (int i=0; i<m_argc; i++) {
 		free(m_argn[i]);
 		free(m_argv[i]);
@@ -268,7 +263,7 @@ char* npambulant::get_document_location()
 
 	// Get document
 	NPVariant npvDocument;
-	bool ok = NPN_GetProperty( m_pNPInstance, sWindowObj, NPN_GetStringIdentifier("document"), &npvDocument);
+	bool ok = NPN_GetProperty( m_pNPInstance, m_window_obj, NPN_GetStringIdentifier("document"), &npvDocument);
 	AM_DBG fprintf(stderr, "NPN_GetProperty(..., document, ...) -> %d, 0x%d\n", ok, npvDocument);
 	if (!ok) return NULL;
 	assert(NPVARIANT_IS_OBJECT(npvDocument));
@@ -355,9 +350,12 @@ npambulant::shut()
 	  	delete m_ambulant_player;
 	}
 #else
-		m_ambulant_player->stop();
-		while ( ! m_ambulant_player->is_done())
-		  sleep(10000);
+		if (m_ambulant_player->is_playing()
+		    || m_ambulant_player->is_pausing() ) {
+			m_ambulant_player->stop();
+			while ( ! m_ambulant_player->is_done())
+		  		sleep(3);
+		}
 		delete m_mainloop;
 	}
 #endif

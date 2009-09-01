@@ -102,6 +102,7 @@ private:
   char** m_argv;
   NPSavedData* m_data;
   bool m_autostart;
+  NPObject* m_window_obj;
 
 #ifdef XP_WIN
   HWND m_hWnd; 
