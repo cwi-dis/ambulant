@@ -382,6 +382,10 @@ common::playable *smil_player::create_playable(const lib::node *n) {
 void smil_player::start_playable(const lib::node *n, double t, const lib::transition_info *trans) {
 	AM_DBG lib::logger::get_logger()->debug("smil_player::start_playable(0x%x, %f)", (void*)n, t);
 	common::playable *np = create_playable(n);
+    if (np == NULL) {
+        stopped(n->get_numid(), t);
+        return;
+    }
 	if (trans) {
 		common::renderer *rend = np->get_renderer();
 		if (!rend) {

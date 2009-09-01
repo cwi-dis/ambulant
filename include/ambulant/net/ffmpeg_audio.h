@@ -163,7 +163,8 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
 	void seek(timestamp_t time);
 #ifdef WITH_SEAMLESS_PLAYBACK
 	void set_clip_end(timestamp_t clip_end);	
-	void start_prefetch(lib::event_processor *evp);  
+	void start_prefetch(lib::event_processor *evp);
+    timestamp_t get_elapsed();
 #endif
 	void readdone(int len);
 	void data_avail();

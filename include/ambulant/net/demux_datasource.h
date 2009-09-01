@@ -94,7 +94,8 @@ class demux_audio_datasource:
 	void read_ahead(timestamp_t clip_begin);
   	void seek(timestamp_t time);
 #ifdef WITH_SEAMLESS_PLAYBACK
-  	void set_clip_end(timestamp_t clip_end);	
+  	void set_clip_end(timestamp_t clip_end);
+    timestamp_t get_elapsed() { assert(0); /* XXXJACK Should be based on pts in head of queue */ return 0; }
 #endif
 	bool push_data(timestamp_t pts, const uint8_t *data, int size);
 	bool end_of_file();

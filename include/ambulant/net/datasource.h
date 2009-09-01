@@ -300,7 +300,7 @@ class audio_datasource_mixin {
 	/// Return the duration of the audio data, if known.
 	virtual common::duration get_dur() = 0;
 #ifdef WITH_SEAMLESS_PLAYBACK
-	virtual timestamp_t get_elapsed() { assert(0); return 0;};
+	virtual timestamp_t get_elapsed() = 0;
 #endif
 };
 
@@ -334,6 +334,7 @@ class raw_audio_datasource:
 #ifdef WITH_SEAMLESS_PLAYBACK
 	void set_clip_end(timestamp_t clip_end){};
 	void start_prefetch(lib::event_processor *evp) {};
+    timestamp_t get_elapsed() { assert(0); /* XXXJACK: Could base on cumulative byte count read */ return 0; }
 #endif
     void readdone(int len) { m_src->readdone(len); };
     bool end_of_file() { return m_src->end_of_file(); };
