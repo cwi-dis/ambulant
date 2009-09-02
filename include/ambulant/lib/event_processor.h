@@ -88,10 +88,7 @@ class event_processor {
 
 
 #include <queue>
-
-#ifndef AMBULANT_PLATFORM_WIN32_WCE_3
 #include <cassert>
-#endif
 
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/delta_timer.h"

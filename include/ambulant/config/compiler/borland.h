@@ -15,12 +15,7 @@
 
 // Version 5.0 and below:
 #   if __BORLANDC__ <= 0x0550
-// Borland C++Builder 4 and 5:
-#     define AMBULANT_NO_MEMBER_TEMPLATE_FRIENDS
-#     if __BORLANDC__ == 0x0550
-// Borland C++Builder 5, command-line compiler 5.5:
-#       define AMBULANT_NO_OPERATORS_IN_NAMESPACE
-#     endif
+#error Compiler too old for Ambulant
 #   endif
 
 // Version 5.51 and below:

@@ -30,9 +30,7 @@
 #define AM_DBG if(0)
 #endif
 
-#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
 #include <sstream>
-#endif
 
 using namespace ambulant;
 using namespace smil2;
@@ -91,7 +89,6 @@ sync_rule_impl::from_ref(time_type instance) const {
 }
 
 std::string sync_rule_impl::to_string() {
-#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
 	std::ostringstream os;
 	os << m_target->to_string() << "."  << rule_type_str(m_target_attr);
 	os << "=";
@@ -104,8 +101,6 @@ std::string sync_rule_impl::to_string() {
 	else
 		os << m_syncbase->to_string() << "." << sync_event_str(m_syncbase_event) << "+offset";
 	return os.str();
-#endif 
-	return "sync_rule";
 }
 
 //////////////////////////////////

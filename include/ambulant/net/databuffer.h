@@ -24,21 +24,10 @@
 #ifndef AMBULANT_NET_DATABUFFER_H
 #define AMBULANT_NET_DATABUFFER_H
 #include "ambulant/config/config.h"
-
 #include "ambulant/lib/mtsync.h"
 
-//////////////////////////////////////
-#ifndef AMBULANT_NO_IOSTREAMS_HEADERS
-
 #include <iostream>
-#ifndef AMBULANT_NO_OSTREAM
 #include <ostream>
-#else /*AMBULANT_NO_OSTREAM*/
-#include <ostream.h>
-#endif/*AMBULANT_NO_OSTREAM*/
-
-#endif // AMBULANT_NO_IOSTREAMS_HEADERS
-//////////////////////////////////////
 
 namespace ambulant {
 
@@ -60,11 +49,8 @@ class AMBULANTAPI databuffer
 	~databuffer();
 
 	
-#ifndef AMBULANT_NO_IOSTREAMS_HEADERS
 	// show information about the buffer, if verbose is true the buffer contents are dumped to cout.
 	void dump(std::ostream& os, bool verbose) const;		
-#endif // AMBULANT_NO_IOSTREAMS_HEADERS
-	
 
 	/// Returns the number of bytes in the buffer.
 	/// Cannot be called between get_read_ptr/readdone.
@@ -126,12 +112,10 @@ class AMBULANTAPI databuffer
 	static long int s_default_max_unused_size;
 };
 
-#ifndef AMBULANT_NO_IOSTREAMS_HEADERS
 inline std::ostream& operator<<(std::ostream& os, const databuffer& n) {
 		os << "databuffer(" << (void *)&n << ", used=" << n.size() << ")";
 		return os;
 	}
-#endif // AMBULANT_NO_IOSTREAMS_HEADERS
 	
 } // end namespace net
 

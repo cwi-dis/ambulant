@@ -87,10 +87,8 @@ struct color_trible {
 	
 	color_trible(uchar _r, uchar _g, uchar _b) : b(_b), g(_g), r(_r) {}
 	
-#ifndef AMBULANT_NO_MEMBER_TEMPLATES	
 	template <class T>
 	color_trible(T _r, T _g, T _b) : b(uchar(_b)), g(uchar(_g)), r(uchar(_r)) {}
-#endif
 	
 	color_trible(color_t rgb) : b(bluec(rgb)), g(greenc(rgb)), r(redc(rgb)) {}
 	
@@ -100,7 +98,6 @@ struct color_trible {
 	uchar green() const { return g;}
 	uchar red() const { return r;}
 
-#ifndef AMBULANT_NO_MEMBER_TEMPLATES	
 	template <class T>
 	void blue(T _b) { b = uchar(_b);}
 	
@@ -109,7 +106,6 @@ struct color_trible {
 	
 	template <class T>
 	void red(T _r) { r = uchar(_r);}
-#endif
 	
 	color_trible& operator=(color_t c) {
 		 b = bluec(c);
@@ -149,17 +145,11 @@ bool color_t_in_range(lib::color_t c, lib::color_t c_low, lib::color_t c_high);
  
 } // namespace ambulant
 
-#ifndef AMBULANT_NO_IOSTREAMS
 
-#ifndef AMBULANT_NO_OSTREAM
 #include <ostream>
-#else /*AMBULANT_NO_OSTREAM*/
-#include <ostream.h>
-#endif/*AMBULANT_NO_OSTREAM*/
 
 inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::color_trible& t) { 
 	return os << '(' << int(t.r) << ", " << int(t.g) << ", " << int(t.b)  << ')';
 }
-#endif
 
 #endif // AMBULANT_LIB_COLORS_H

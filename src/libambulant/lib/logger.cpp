@@ -130,11 +130,7 @@ lib::logger* lib::logger::get_logger(const char *name, int pos) {
 
 lib::logger::logger(const std::string& name) 
 :	m_name(name),
-#ifndef AMBULANT_NO_IOSTREAMS
 	m_pos(new std_ostream(std::cout)),
-#else // AMBULANT_NO_IOSTREAMS
-	m_pos(0),
-#endif
 	m_show_message(0),
 	m_level(logger::default_level) {
 }
@@ -143,12 +139,10 @@ lib::logger::~logger() {
 	delete m_pos;
 }
 
-#ifndef AMBULANT_NO_IOSTREAMS
 void lib::logger::set_std_ostream(std::ostream& os) {
 	if(m_pos) delete m_pos; 
 	m_pos = new std_ostream(os);
 }
-#endif // AMBULANT_NO_IOSTREAMS
 
 void lib::logger::set_show_message(show_message_type handler) {
 	m_show_message = handler;
@@ -202,10 +196,7 @@ void lib::logger::fatal(const char *format, ...) {
 	va_start(args, format);
 	log_va_list(LEVEL_FATAL, format, args);
 	va_end(args);
-#ifndef AMBULANT_NO_ABORT
 	abort();
-#endif
-
 }
 
 void lib::logger::show(const char *format, ...) {
@@ -226,9 +217,7 @@ void lib::logger::assert_expr(bool expr, const char *format, ...) {
 	vsprintf(buf + strlen(buf), format, args);
 	get_logger()->log_cstr(LEVEL_FATAL, buf);
 	va_end(args);
-#ifndef AMBULANT_NO_ABORT
 	abort();
-#endif
 }
 
 void lib::logger::log_va_list(int level, const char *format, va_list args) {

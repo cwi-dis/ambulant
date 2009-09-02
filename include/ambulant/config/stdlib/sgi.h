@@ -41,7 +41,7 @@
    // than by running the configure script).
    // Also, the unofficial GNU C++ 2.96 included in RedHat 7.1 doesn't
    // have <sstream>.
-#  define AMBULANT_NO_STRINGSTREAM
+#error Compiler too old for Ambulant
 #endif
 
 //

@@ -14,12 +14,7 @@
 //  HP aCC C++ compiler setup:
 
 #if (__HP_aCC <= 33100)
-#    define AMBULANT_NO_INTEGRAL_INT64_T
-#    define AMBULANT_NO_OPERATORS_IN_NAMESPACE
-#  if !defined(_NAMESPACE_STD)
-#     define AMBULANT_NO_STD_LOCALE
-#     define AMBULANT_NO_STRINGSTREAM
-#  endif
+#error Compiler too old for Ambulant
 #endif
 
 #if (__HP_aCC <= 33300)

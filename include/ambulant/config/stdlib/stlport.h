@@ -40,7 +40,7 @@
 // No new style iostreams on GCC without STLport's iostreams enabled:
 //
 #if (defined(__GNUC__) && (__GNUC__ < 3)) && !(defined(__SGI_STL_OWN_IOSTREAMS) || defined(_STLP_OWN_IOSTREAMS))
-#  define AMBULANT_NO_STRINGSTREAM
+#error Compiler too old for Ambulant
 #endif
 
 //
@@ -48,7 +48,7 @@
 //
 #if defined(__STL_NO_IOSTREAMS) || defined(__STL_NO_NEW_IOSTREAMS) || defined(_STLP_NO_IOSTREAMS) || defined(_STLP_NO_NEW_IOSTREAMS)
 #  define AMBULANT_NO_STD_LOCALE
-#  define AMBULANT_NO_STRINGSTREAM
+#error Compiler too old for Ambulant
 #endif
 
 //

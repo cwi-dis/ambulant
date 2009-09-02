@@ -33,9 +33,7 @@
 #include "ambulant/config/config.h"
 #include <string.h>
 
-#ifndef AMBULANT_NO_IOSTREAMS
 #include <iostream>
-#endif
 
 namespace ambulant {
 
@@ -63,7 +61,6 @@ inline ostream& operator<<(ostream& os, const std::string& s) {
 os.write(reinterpret_cast<const unsigned char*>(s.c_str()), (int)s.length()); return os;}
 inline ostream& operator<<(ostream& os, const char *cstr) { os.write(cstr); return os;}
 
-#ifndef AMBULANT_NO_IOSTREAMS
 class std_ostream : public ostream {
 public:
 std::ostream& m_os;
@@ -83,8 +80,6 @@ virtual int write(const char *cstr) {
 		m_os.flush();
 	}
 };
-#endif
-
 
 } // namespace lib
  

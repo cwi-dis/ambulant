@@ -47,14 +47,8 @@
 // return map of id -> nodes
 #include <map>
 
-#ifndef AMBULANT_NO_IOSTREAMS
 // operator<<
-#ifndef AMBULANT_NO_OSTREAM
 #include <ostream>
-#else /*AMBULANT_NO_OSTREAM*/
-#include <ostream.h>
-#endif/*AMBULANT_NO_OSTREAM*/
-#endif
 
 namespace ambulant {
 
@@ -357,9 +351,7 @@ AMBULANTAPI node_factory *get_builtin_node_factory();
  
 } // namespace ambulant
 
-#ifndef AMBULANT_NO_IOSTREAMS
 // global operator<< for node objects
 std::ostream& operator<<(std::ostream& os, const ambulant::lib::node& n);
-#endif
 
 #endif // AMBULANT_LIB_TREE_NODE_H

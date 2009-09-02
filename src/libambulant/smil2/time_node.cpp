@@ -36,9 +36,7 @@
 #define AM_DBG if(0)
 #endif
 
-#ifndef AMBULANT_NO_IOSTREAMS
 #include <iostream>
-#endif
 
 using namespace ambulant;
 using namespace smil2;

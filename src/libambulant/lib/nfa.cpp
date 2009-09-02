@@ -370,7 +370,7 @@ bool lib::nfa_matcher::match(const std::string& str) {
 	if(!stack.empty()) nfa_expr::closure(nodes, stack);
 	assert(stack.empty());
 	
-#if !defined(AMBULANT_NO_IOSTREAMS) && NFA_VERBOSE
+#if NFA_VERBOSE
 	// Report expected start symbols
 	std::cout << "seen:none expecting:" << nodes << std::endl;
 #endif
@@ -395,21 +395,21 @@ bool lib::nfa_matcher::match(const std::string& str) {
 		if(!nodes.empty()) 
 			set_match_end(int(i)+1);
 		
-#if !defined(AMBULANT_NO_IOSTREAMS) && NFA_VERBOSE
+#if NFA_VERBOSE
 		// Report seen and expected symbols
 		std::cout << "seen:" << str.substr(0, i+1) << " expecting:" << nodes << std::endl;
 #endif
 
 		if(nodes.empty()) {
 			// Missmatch; report offending position end break out
-#if !defined(AMBULANT_NO_IOSTREAMS) && NFA_VERBOSE
+#if NFA_VERBOSE
 			std::cout << "F>> " << str.substr(0, i) << '^' << str[i] << '^' << std::endl;
 #endif
 			break;
 		}
 	}
 	
-#if !defined(AMBULANT_NO_IOSTREAMS) && NFA_VERBOSE
+#if NFA_VERBOSE
 	// Report groups seen
 	dump_groups(std::cout);
 #endif
@@ -425,7 +425,6 @@ void lib::nfa_matcher::get_groups(int anchor, std::set<int>& groups) {
 	}
 }
 
-#ifndef AMBULANT_NO_IOSTREAMS
 void lib::nfa_matcher::dump_groups(std::ostream& os) {
 	for(int i=0;i<max_group;i++) {
 		if(seen_group(i)) {
@@ -433,11 +432,9 @@ void lib::nfa_matcher::dump_groups(std::ostream& os) {
 		}
 	}
 }
-#endif
 
 ///////////////////////
 
-#ifndef AMBULANT_NO_IOSTREAMS
 std::ostream& operator<<(std::ostream& os, const std::set<lib::nfa_node*>& nodes) {
 //	int count = 0;
 	std::set<char> next_chars;
@@ -456,5 +453,4 @@ std::ostream& operator<<(std::ostream& os, const std::set<lib::nfa_node*>& nodes
 	while((accept_counter--)>0) os << '$';
 	return os;
 }
-#endif
 

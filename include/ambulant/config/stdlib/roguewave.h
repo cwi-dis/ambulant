@@ -75,10 +75,7 @@
 // new-style iostreams, and no conformant std::allocator:
 //
 #if (AMBULANT_RWSTD_VER < 0x020000)
-#  define AMBULANT_NO_AUTO_PTR
-#  define AMBULANT_NO_STRINGSTREAM
-#  define AMBULANT_NO_STD_ALLOCATOR
-#  define AMBULANT_NO_STD_LOCALE
+#error Compiler too old for Ambulant
 #endif
 
 //

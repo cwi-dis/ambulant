@@ -24,21 +24,8 @@
 
 #include "ambulant/config/config.h"
 
-////////////////////////
-#ifndef AMBULANT_NO_IOSTREAMS_HEADERS
-
-#ifndef AMBULANT_NO_IOSTREAMS
 #include <iostream>
-#	ifndef AMBULANT_NO_STRINGSTREAM
-#	include <sstream>
-#	endif
-#else
-#include <ostream.h>
-#endif
-
-#endif // AMBULANT_NO_IOSTREAMS_HEADERS
-////////////////////////
-
+#include <sstream>
 #include <string>
 #include <string.h>
 #include <stdarg.h>
@@ -174,10 +161,9 @@ class AMBULANTAPI logger {
 	void set_level(int level); 
 
 // exclude the following stuff when no streams
-#ifndef AMBULANT_NO_IOSTREAMS
 	/// Send log output to a std::stream.
 	void set_std_ostream(std::ostream& os); 
-#endif
+
 	/// Set the alert message handler.
 	void set_show_message(show_message_type handler);
 	

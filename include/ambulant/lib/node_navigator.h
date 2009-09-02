@@ -32,11 +32,7 @@
 // return list of nodes
 #include <list>
 #include <algorithm>
-
-#ifndef AMBULANT_PLATFORM_WIN32_WCE_3
-// assert
 #include <cassert>
-#endif
 
 namespace ambulant {
 

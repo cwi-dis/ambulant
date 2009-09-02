@@ -34,19 +34,6 @@ extern "C" {
 
 }
 
-// temporary debug messages
-//#include <iostream>
-//#ifndef AMBULANT_NO_OSTREAM
-//#include <ostream>
-//#else /*AMBULANT_NO_OSTREAM */
-//#include <ostream.h>
-//#endif /*AMBULANT_NO_OSTREAM */
-//#include <cstring>
-//#include <sys/types.h>
-//#include <sys/stat.h>
-//#include <fcntl.h>
-//#include <unistd.h>
-//#include <map>
 
 namespace ambulant
 {

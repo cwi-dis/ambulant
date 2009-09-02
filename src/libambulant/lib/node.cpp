@@ -24,27 +24,14 @@
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/node_impl.h"
 
-// find_if, etc
 #include <algorithm>
 #include <typeinfo>
-
-#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
-// ostringstream
 #include <sstream>
-#endif
-
-// assert
 #include <cassert>
 
-// trim strings
 #include "ambulant/lib/string_util.h"
-
-// tree helper iterators and visitors
 #include "ambulant/lib/node_navigator.h" 
-
-// node context
 #include "ambulant/lib/document.h" 
-
 #include "ambulant/lib/logger.h" 
 
 #include <stdio.h> 
@@ -61,7 +48,6 @@ using namespace ambulant;
 // private output_visitor
 // Writes a tree to an ostream.
 
-#ifndef AMBULANT_NO_IOSTREAMS
 template <class Node>
 class output_visitor {
 	std::ostream& os;
@@ -80,13 +66,10 @@ class output_visitor {
 	const output_visitor& operator=(const output_visitor& o);
 };
 
-#endif
-
 ////////////////////////
 // private trimmed_output_visitor
 // Writes a tree to an ostream without white space.
 
-#ifndef AMBULANT_NO_IOSTREAMS
 template <class Node>
 class trimmed_output_visitor {
 	std::ostream& os;
@@ -101,7 +84,6 @@ class trimmed_output_visitor {
 	void write_end_tag_with_children(const Node*& pe);
 	const trimmed_output_visitor& operator=(const trimmed_output_visitor& o);	
 };
-#endif
 
 
 ////////////////////////
@@ -526,7 +508,6 @@ lib::node_impl::size() const {
 	return count;
 }
 
-#ifndef AMBULANT_NO_IOSTREAMS
 lib::xml_string 
 lib::node_impl::to_string() const {
 	std::ostringstream os;
@@ -536,9 +517,7 @@ lib::node_impl::to_string() const {
 	for(it = begin(); it != e; it++) visitor(*it);
 	return os.str();
 }
-#endif
-	
-#ifndef AMBULANT_NO_IOSTREAMS
+
 lib::xml_string 
 lib::node_impl::to_trimmed_string() const {
 	std::ostringstream os;
@@ -548,8 +527,6 @@ lib::node_impl::to_trimmed_string() const {
 	for(it = begin(); it != e; it++) visitor(*it);
 	return os.str();
 }
-#endif
-
 
 void lib::node_impl::create_idmap(std::map<std::string, node_impl*>& m) const {
 	attr_collector<node_impl> visitor(m);
@@ -558,14 +535,12 @@ void lib::node_impl::create_idmap(std::map<std::string, node_impl*>& m) const {
 	for(it = begin(); it != e; it++) visitor(*it);
 }
 
-#ifndef AMBULANT_NO_IOSTREAMS
 void lib::node_impl::dump(std::ostream& os) const {
 	output_visitor<ambulant::lib::node_impl> visitor(os);
 	const_iterator it;
 	const_iterator e = end();
 	for(it = begin(); it != e; it++) visitor(*it);
 }
-#endif
 
 void
 lib::node_impl::down(lib::node_interface *n)
@@ -608,7 +583,6 @@ lib::node_impl::append_child(lib::node_interface* child)
 #endif
 }
 
-#ifndef AMBULANT_NO_IOSTREAMS
 std::ostream& operator<<(std::ostream& os, const ambulant::lib::node_impl& n) {
 	os << "node(" << (void *)&n << ", \"" << n.get_qname() << "\"";
 	std::string url = repr(n.get_url("src"));
@@ -617,7 +591,6 @@ std::ostream& operator<<(std::ostream& os, const ambulant::lib::node_impl& n) {
 	os << ")";
 	return os;
 }
-#endif
 
 //////////////////////////////////////////////
 //////////////////////////////////////////////
@@ -626,7 +599,6 @@ std::ostream& operator<<(std::ostream& os, const ambulant::lib::node_impl& n) {
 ////////////////////////
 // output_visitor
 
-#ifndef AMBULANT_NO_IOSTREAMS
 template<class Node>
 void output_visitor<Node>::operator()(std::pair<bool, const Node*> x) {
 	const Node*& pe = x.second;
@@ -670,13 +642,11 @@ void output_visitor<Node>::write_end_tag_with_children(const Node*& pe) {
 	writesp = writesp.substr(0,writesp.length()-ns);
 	os << writesp << "</" + pe->get_local_name() << ">" << std::endl;
 }
-#endif // AMBULANT_NO_IOSTREAMS
 
 
 ////////////////////////
 // trimmed_output_visitor
 
-#ifndef AMBULANT_NO_IOSTREAMS
 template <class Node>
 void trimmed_output_visitor<Node>::operator()(std::pair<bool, const Node*> x) {
 	const Node*& pe = x.second;
@@ -715,7 +685,6 @@ template <class Node>
 void trimmed_output_visitor<Node>::write_end_tag_with_children(const Node*& pe) {
 	os << "</" + pe->get_local_name() << ">";
 }
-#endif // AMBULANT_NO_IOSTREAMS
 
 class builtin_node_factory : public lib::node_factory {
   public:

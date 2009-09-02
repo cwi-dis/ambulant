@@ -22,45 +22,15 @@
 #ifndef AMBULANT_NET_FFMPEG_AUDIO_H
 #define AMBULANT_NET_FFMPEG_AUDIO_H
 
-
-//#include <vector>
-//#include <queue>
-
-//#include <sys/types.h>
-//#include <sys/stat.h>
-//#include <fcntl.h>
-
-
 #include "ambulant/config/config.h"
-//#include "ambulant/lib/callback.h"
-//#include "ambulant/lib/refcount.h"
-//#include "ambulant/lib/event_processor.h"
-//#include "ambulant/lib/mtsync.h"
-//#include "ambulant/lib/event_processor.h"
-//#include "ambulant/lib/unix/unix_thread.h"
 #include "ambulant/net/databuffer.h"
-//#include "ambulant/net/posix_datasource.h"
 #include "ambulant/net/datasource.h"
 
 extern "C" {
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"
-//#include "common.h"
 }
 
-// temporary debug messages
-//#include <iostream>
-//#ifndef AMBULANT_NO_OSTREAM
-//#include <ostream>
-//#else /*AMBULANT_NO_OSTREAM */
-//#include <ostream.h>
-//#endif /*AMBULANT_NO_OSTREAM */
-//#include <cstring>
-//#include <sys/types.h>
-//#include <sys/stat.h>
-//#include <fcntl.h>
-//#include <unistd.h>
-//#include <map>
 
 #ifdef AMBULANT_PLATFORM_MACOS
 	#define AM_MAC_CONST const

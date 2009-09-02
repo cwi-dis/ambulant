@@ -58,12 +58,8 @@ lib::expat_parser::expat_parser(lib::sax_content_handler *content_handler,
 	m_expatParser = XML_ParserCreateNS(0, char(NS_SEP));
 #endif
 
-#ifndef AMBULANT_PLATFORM_WIN32_WCE_3	
 	if(m_expatParser == 0) 
 		throw std::runtime_error("XML_ParserCreateNS() failed");
-#else
-	assert(m_expatParser != 0);
-#endif 
 	XML_SetUserData(m_expatParser, this);
 	XML_SetElementHandler(m_expatParser, expat_parser::start_element, expat_parser::end_element);
 	XML_SetCharacterDataHandler(m_expatParser, expat_parser::characters);
@@ -91,11 +87,7 @@ bool lib::expat_parser::parse(const char *buf, size_t len, bool final) {
 		if(m_error_handler != 0)
 			m_error_handler->error(e);
 		else
-#ifndef AMBULANT_PLATFORM_WIN32_WCE_3
 			throw e;
-#else 
-			assert(false);
-#endif
 		return false;
 	}
 	if(m_parsing && final) {

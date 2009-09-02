@@ -159,22 +159,14 @@ class region_dim {
 	/// Get value as absolute integer (or abort).
 	int get_as_int() const { 
 		if(absolute()) return m_holder.int_val; 
-#ifndef AMBULANT_PLATFORM_WIN32_WCE_3
 		throw std::runtime_error("Illegal call. Region dim is not absolute");
-#else
-		abort();
-#endif
 		return 0;
 	}
 	
 	/// Get value as relative double (or abort).
 	double get_as_dbl() const { 
 		if(relative()) return m_holder.dbl_val;
-#ifndef AMBULANT_PLATFORM_WIN32_WCE_3
 		throw std::runtime_error("Illegal call. Region dim is not relative");
-#else
-		abort();
-#endif
 		return 0;
 	}
 	
@@ -187,12 +179,7 @@ class region_dim {
 			case rdt_relative: return int(floor(ref*get_as_dbl() + 0.5));
 			case rdt_auto: break;
 		}
-#ifndef AMBULANT_PLATFORM_WIN32_WCE_3
 		throw std::runtime_error("Illegal call. Region dim is undefined");
-#else
-		abort();
-		return 0;
-#endif
 	}
 	
 	/// Return true if two region_dim objects are identical.
@@ -434,19 +421,9 @@ inline std::string repr(const ambulant::common::region_dim& rd) {
 }
 
 ///////////////////////////////
-#ifndef AMBULANT_NO_IOSTREAMS_HEADERS
-
 // std::ostream for debug output
-#ifndef AMBULANT_NO_OSTREAM
 #include <ostream>
-#else /*AMBULANT_NO_OSTREAM*/
-#include <ostream.h>
-#endif/*AMBULANT_NO_OSTREAM*/
 
-#endif // AMBULANT_NO_IOSTREAMS_HEADERS
-///////////////////////////////
-
-#ifndef AMBULANT_NO_OSTREAM
 
 // debug region_dim print out
 inline std::ostream& operator<<(std::ostream& os, const ambulant::common::region_dim& rd) { 
@@ -463,7 +440,5 @@ inline std::ostream& operator<<(std::ostream& os, const ambulant::common::region
 	os << ", " << rds.top  << ", " << rds.height << ", "  << rds.bottom;
 	return os << ')';
 }
-
-#endif
 
 #endif // AMBULANT_COMMON_REGION_DIM_H

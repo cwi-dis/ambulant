@@ -434,14 +434,9 @@ inline std::string repr(const ambulant::lib::rect& r) {return "";}
 #endif
 
 
-#ifndef AMBULANT_NO_IOSTREAMS
 
 // gtypes output operators
-#ifndef AMBULANT_NO_OSTREAM
 #include <ostream>
-#else /*AMBULANT_NO_OSTREAM*/
-#include <ostream.h>
-#endif/*AMBULANT_NO_OSTREAM*/
 
 template<class T>
 inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::basic_point<T>& p) { 
@@ -458,6 +453,5 @@ inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::basic_rec
 	return os << '(' << r.x << ", " << r.y << ", " << r.w << ", " << r.h << ')';
 }
 
-#endif // AMBULANT_NO_IOSTREAMS
 
 #endif // AMBULANT_LIB_GTYPES_H

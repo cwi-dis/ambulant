@@ -32,9 +32,7 @@
 #include "ambulant/lib/textptr.h"  
 
 #include <string>
-#if !defined(AMBULANT_NO_IOSTREAMS) && !defined(AMBULANT_NO_STRINGSTREAM)
 #include <sstream>
-#endif
 	
 using namespace ambulant;
 

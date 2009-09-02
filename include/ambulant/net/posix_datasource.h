@@ -35,14 +35,7 @@
 
 // temporary debug messages
 #include <iostream>
-#ifndef AMBULANT_NO_OSTREAM
 #include <ostream>
-#else /*AMBULANT_NO_OSTREAM*/
-#include <ostream.h>
-#endif/*AMBULANT_NO_OSTREAM*/
-//#include <stdio.h>
-//#include <stdlib.h>
-//#include <iomanip>
 #include <cstring>
 #include <sys/types.h>
 #include <sys/stat.h>

@@ -34,10 +34,7 @@
 #include <map>
 #include <stack>
 #include <string.h>
-
-#ifndef AMBULANT_PLATFORM_WIN32_WCE_3
 #include <cassert>
-#endif
 
 namespace ambulant {
 
@@ -393,9 +390,7 @@ class nfa_matcher {
 	
 	bool matches() const { return m_matches; }
 	
-#ifndef AMBULANT_NO_IOSTREAMS
 	void dump_groups(std::ostream& os);
-#endif
 
   private:
 	// NFA search algorithm helpers
@@ -415,16 +410,11 @@ class nfa_matcher {
  
 } // namespace ambulant
 
-#ifndef AMBULANT_NO_IOSTREAMS
-#ifndef AMBULANT_NO_OSTREAM
 #include <ostream>
-#else /*AMBULANT_NO_OSTREAM*/
-#include <ostream.h>
-#endif/*AMBULANT_NO_OSTREAM*/
+
 inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::nfa_node& n) {
 	return os << n.get_edge_repr();
 }
 std::ostream& operator<<(std::ostream& os, const std::set<ambulant::lib::nfa_node*>& nodes);
-#endif
 
 #endif // AMBULANT_LIB_NFA_H

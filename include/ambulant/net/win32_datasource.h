@@ -36,27 +36,11 @@
 
 
 //////////////////////////////////////
-#ifndef AMBULANT_NO_IOSTREAMS_HEADERS
-
 // temporary debug messages
 #include <iostream>
-#ifndef AMBULANT_NO_OSTREAM
 #include <ostream>
-#else /*AMBULANT_NO_OSTREAM*/
-#include <ostream.h>
-#endif/*AMBULANT_NO_OSTREAM*/
-
-#endif // AMBULANT_NO_IOSTREAMS_HEADERS
-//////////////////////////////////////
-
 #include <stdio.h>
-//#include <stdlib.h>
-//#include <iomanip>
 #include <cstring>
-//#include <sys/types.h>
-//#include <sys/stat.h>
-//#include <fcntl.h>
-
 
 namespace ambulant {
 

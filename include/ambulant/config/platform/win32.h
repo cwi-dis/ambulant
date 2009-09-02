@@ -54,55 +54,14 @@
 #define AMBULANT_PLATFORM_WIN32_WCE
 
 #if _WIN32_WCE < 5
-#define AMBULANT_PLATFORM_WIN32_WCE_3
-
-// The following symbol has been used with a different 
-// meaning by other platforms
-#define AMBULANT_NO_IOSTREAMS
-#define AMBULANT_NO_OSTREAM
-#define AMBULANT_NO_STRINGSTREAM
-// Define the following symbol as a replacement for AMBULANT_NO_IOSTREAMS
-// When the following symbol is defined
-// no headers related to streams should be included.
-// Not only the std ones but also ostream.h, istream.h etc
-#define AMBULANT_NO_IOSTREAMS_HEADERS
-
-// implied: #define AMBULANT_NO_STRINGSTREAM
-#define AMBULANT_NO_ABORT
-
-
-#ifdef AMBULANT_PLATFORM_WIN32_WCE_3
-
-// signed/unsigned mismatch
-#pragma warning( disable : 4018)
-
-#include <wce_defs.h>
-typedef unsigned short wchar_t;
-namespace std {
-  using ::ptrdiff_t;
-}
-
-#include <string>
-inline bool operator != (const std::string& s, const char *p) {
-	return !(s == p);
-}
-
-// Actually compiler property
-#define AMBULANT_NO_MEMBER_TEMPLATES
-#define AMBULANT_NO_TIME_H
-
-#elif defined(AMBULANT_PLATFORM_WIN32_WCE_4)
-
-#define abort()
-
+#error Only WindowsCE 5 and later supported.
 #endif
 
-#else
 // Windows Mobile 5
 #define AMBULANT_PLATFORM_WIN32_WCE_5
 #define AMBULANT_NO_TIME_H
 #define abort() exit(1)
-#endif // _win32_WCE < 5
+
 #endif // defined(_WIN32_WCE)
 // END WIN32 WINCE SECTION
 

@@ -31,9 +31,7 @@
 #include "ambulant/net/win32_datasource.h"
 #endif
 
-#ifndef AMBULANT_NO_IOSTREAMS
 #include <fstream>
-#endif
 
 //#define AM_DBG
 #ifndef AM_DBG

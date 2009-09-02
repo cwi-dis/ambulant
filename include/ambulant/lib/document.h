@@ -173,7 +173,7 @@ class AMBULANTAPI document : public node_context {
 } // namespace ambulant
 
 // XXX Not sure about next #if. The construct doesn't work for emVC3 and gcc2.95.
-#if !defined(AMBULANT_PLATFORM_WIN32_WCE) && !defined(AMBULANT_NO_OSTREAM)
+#if !defined(AMBULANT_PLATFORM_WIN32_WCE)
 inline std::string repr(const ambulant::lib::custom_test& t) {
 	std::string s;
 	return s << '(' << t.idd << ", state:" << t.state << ", override:" << t.override << ", \'" << t.title << "\')";

@@ -23,20 +23,7 @@
 #define AMBULANT_NET_FFMPEG_COMMON_H
 
 
-//#include <vector>
-//#include <queue>
-
-//#include <sys/types.h>
-//#include <sys/stat.h>
-//#include <fcntl.h>
-
-
 #include "ambulant/config/config.h"
-//#include "ambulant/lib/callback.h"
-//#include "ambulant/lib/refcount.h"
-//#include "ambulant/lib/event_processor.h"
-//#include "ambulant/lib/mtsync.h"
-//#include "ambulant/lib/event_processor.h"
 #ifdef AMBULANT_PLATFORM_UNIX
 #include "ambulant/lib/unix/unix_thread.h"
 #endif
@@ -54,22 +41,7 @@
 extern "C" {
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"
-//#include "common.h"
 }
-
-// temporary debug messages
-//#include <iostream>
-#ifndef AMBULANT_NO_OSTREAM
-//#include <ostream>
-#else /*AMBULANT_NO_OSTREAM */
-//#include <ostream.h>
-#endif /*AMBULANT_NO_OSTREAM */
-//#include <cstring>
-//#include <sys/types.h>
-//#include <sys/stat.h>
-//#include <fcntl.h>
-//#include <unistd.h>
-//#include <map>
 
 namespace ambulant
 {

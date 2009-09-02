@@ -32,10 +32,7 @@
 #include <cmath>
 #include <map>
 #include <vector>
-
-#ifndef AMBULANT_PLATFORM_WIN32_WCE_3
 #include <cassert>
-#endif
 
 #ifdef max
 #undef max

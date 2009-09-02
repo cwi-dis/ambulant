@@ -32,9 +32,7 @@
 #include <vector>
 #include <list>
 #include <ctype.h>
-#ifndef AMBULANT_PLATFORM_WIN32_WCE_3
 #include <cassert>
-#endif
 #include <stdio.h>
 #include <string.h>
 
