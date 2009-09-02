@@ -36,6 +36,7 @@
 
 #define POLL_INTERVAL 20  /* milliseconds */
 
+#ifndef __LP64__
 // Helper class to create QTMovie in main thread
 @interface MovieCreator : NSObject
 {
@@ -507,3 +508,5 @@ cocoa_video_renderer::_fix_clock_drift()
 } // namespace gui
 
 } //namespace ambulant
+
+#endif // __LP64__

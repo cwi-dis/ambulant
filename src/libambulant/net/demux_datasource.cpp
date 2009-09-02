@@ -553,22 +553,6 @@ demux_video_datasource::frame_processed(timestamp_t pts)
 	m_lock.leave();
 }
 
-#if 0
-void
-write_data(long long int frame_nr, char* data, int sz)
-{
-	char filename[50];
-	sprintf(filename,"%3.8lld.frm",frame_nr);
-	AM_DBG lib::logger::get_logger()->debug("write_data: filename : %s", filename);
-	FILE* out = fopen(filename,"w+");
-	if (out) {
-		fwrite(data,sz,1,out);
-		fclose(out);
-	}
-}
-#endif
-
-
 bool 
 demux_video_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, int sz)
 {
@@ -588,7 +572,6 @@ demux_video_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, int sz)
 	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): receiving data sz=%d ,pts=%lld", sz, pts);
 	if(sz > 0) {
 		//m_frame_nr++;
-		//write_data(m_frame_nr, (char*) inbuf, sz);
 		// Of all obfuscated interfaces in ffmpeg this is probably the worst: all data passed to avcodec_decode_video
 		// (and possibly others) needs to be padded out with 8 (currently) zero bytes.
 		char* frame_data = (char*) malloc(sz+FF_INPUT_BUFFER_PADDING_SIZE);

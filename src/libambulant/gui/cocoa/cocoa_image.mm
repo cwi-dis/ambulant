@@ -102,7 +102,7 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 			if (opacity < 0.5) {
 				lib::color_t chromakey = ri->get_chromakey();
 				lib::color_t tolerance = ri->get_chromakeytolerance();
-				float components[8] = {
+				CGFloat components[8] = {
 					redc(chromakey)-redc(tolerance), redc(chromakey)+redc(tolerance),
 					greenc(chromakey)-greenc(tolerance), greenc(chromakey)+greenc(tolerance),
 					bluec(chromakey)-bluec(tolerance), bluec(chromakey)+bluec(tolerance),

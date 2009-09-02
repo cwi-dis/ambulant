@@ -95,12 +95,6 @@ class cocoa_renderer : public RP_Base {
 		RP_Base::start(where);
 	}
 
-#if 0
- 	virtual void stop() {
-		stop_transition();
-		RP_Base::stop();
-	}
-#endif
  	virtual bool stop() {
 		stop_transition();
 		return RP_Base::stop();

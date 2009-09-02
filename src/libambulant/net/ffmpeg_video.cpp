@@ -899,17 +899,6 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 	// The next assert assures that we have indeed removed all old frames (and, therefore, either there
 	// are no frames left, or the first frame has a time that is in the future). It also assures that
 	// the frames in m_frames are indeed in the right order.
-#if 0
-	if (!(m_frames.size() == 0 || m_frames.top().first >= now-frame_duration)) {
-		lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: top frame before now!");
-		lib::logger::get_logger()->debug("now-frameduration = %lld-%lld = %lld", now, frame_duration, now-frame_duration);
-		lib::logger::get_logger()->debug("m_frames.top().first = %lld", m_frames.top().first);
-		lib::logger::get_logger()->debug("go figure...");
-	}
-#endif
-#if 0
-	assert(m_frames.size() == 0 || m_frames.top().first >= now-(2*frame_duration));
-#endif
 	 
 	if (timestamp_p) *timestamp_p = m_frames.front().first;
 	if (size_p) *size_p = m_size;

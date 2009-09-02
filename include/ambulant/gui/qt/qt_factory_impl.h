@@ -127,7 +127,6 @@ class ambulant_qt_window : public common::gui_window {
 	void need_redraw(const lib::rect &r);
 	void redraw_now();
 	void need_events(bool want);
-//	void mouse_region_changed();
 
     // gui_events API:
     

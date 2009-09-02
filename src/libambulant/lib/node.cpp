@@ -290,14 +290,6 @@ lib::node_impl::locate_node(const char *path) {
 	return n;
 }
 
-#if 0
-void lib::node_impl::find_nodes_with_name(const xml_string& name, std::list<node*>& lst) {
-	iterator last = end(); // call once
-	for(iterator it = begin(); it != last; it++)
-		if((*it).first && (*it).second->get_local_name() == name) lst.push_back((*it).second);
-}
-#endif
-
 lib::node_impl* 
 lib::node_impl::get_root() { 
 	return node_navigator<node_impl>::get_root(this); 

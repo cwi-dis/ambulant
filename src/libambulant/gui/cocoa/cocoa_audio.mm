@@ -143,24 +143,6 @@ cocoa_audio_playable::seek(double where)
 	AM_DBG lib::logger::get_logger()->debug("cocoa_audio_playable.seek(0x%x, %f): ignored", (void*)this, where);
 }
 
-#if 0
-void
-cocoa_audio_playable::stop()
-{
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("cocoa_audio_playable.stop(0x%x)", (void *)this);
-	if (m_sound) {
-		if (![m_sound stop])
-			lib::logger::get_logger()->error(gettext("%s: Cannot stop audio playback"), m_url.get_url().c_str());
-		[m_sound release];
-		m_sound = NULL;
-		m_context->stopped(m_cookie, 0);
-	}
-	m_lock.leave();
-	[pool release];
-}
-#endif
 bool
 cocoa_audio_playable::stop()
 {

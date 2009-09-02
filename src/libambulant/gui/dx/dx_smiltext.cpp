@@ -149,18 +149,6 @@ gui::dx::dx_smiltext_renderer::start(double t) {
 	m_lock.leave();
 }
 
-#if 0
-void 
-gui::dx::dx_smiltext_renderer::stop() {
-	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_renderer::stop(0x%x)", this);
-	m_lock.enter();
-	if (m_dest) m_dest->renderer_done(this);
-	m_dest = NULL;
-	m_activated = false;
-	m_dxplayer->stopped(this);
-	m_lock.leave();
-}
-#endif
 bool 
 gui::dx::dx_smiltext_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_renderer::stop(0x%x)", this);
@@ -403,30 +391,6 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 	if (font && ! ::DeleteObject(font))
 		win_report_error("DeleteObject(font)", DDERR_GENERIC);
 
-//#define	DX_DRAW_BOX_AROUND_TEXT
-#ifdef	DX_DRAW_BOX_AROUND_TEXT
-/* For debugging purposes, following code draws a dotted red box around
- * the drawing rectangle 'r' in which the text is drawn.
- * Increasing 'widen' widens the the rectangle (pixels).
- */
-	HPEN pen = NULL;
-	if (pen == NULL)
-		pen = CreatePen(PS_DOT, 1, RGB(0,255,0));
-	HGDIOBJ oldpen = ::SelectObject(hdc, pen);
-	unsigned int widen = 0;
-	dstRC.left -= word_spacing;
-	if ( ! (
-		   ::MoveToEx(hdc, r.left()-widen, r.top()-widen, NULL)
-		&& ::LineTo(hdc,r.right()+widen,r.top()-widen)
-		&& ::LineTo(hdc,r.right()+widen,r.bottom()+widen)
-		&& ::LineTo(hdc,r.left()-widen,r.bottom()+widen)
-		&& ::LineTo(hdc,r.left()-widen,r.top()-widen)
-		&& ::LineTo(hdc,r.right()+widen,r.bottom()+widen)
-	))
-			win_report_last_error("LineTo()");
-	DeleteObject(pen);
-	::SelectObject(hdc, oldpen); 
-#endif//DX_DRAW_BOX_AROUND_TEXT
 
 	if (text_dds)
 		hr = text_dds->SetColorKey(dwFlags, &ck);

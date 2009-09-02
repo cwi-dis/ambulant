@@ -148,12 +148,11 @@ initialize_logger()
 #ifdef WITH_SMIL30
 	// Initialize ordered list of language preferences
 	ambulant::smil2::test_attrs::clear_languages();
-#if 0
-	// 10.5 or later
-	const NSArray *langNames = (const NSArray *)CFLocaleCopyPreferredLanguages();
-#else
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
 	// Should also work in earlier systems
 	const NSArray *langNames = (const NSArray *)CFPreferencesCopyAppValue(CFSTR("AppleLanguages"), kCFPreferencesCurrentApplication);
+#else
+	const NSArray *langNames = (const NSArray *)CFLocaleCopyPreferredLanguages();
 #endif
 	int nLangs = [langNames count];
 	double factor = 1.0 / nLangs;
@@ -167,7 +166,6 @@ initialize_logger()
 	[langNames release];
 #endif // WITH_SMIL30
 
-#if 1
 	// Initialize the plugins, so we can parser the system test settings file
 	{
 		ambulant::common::factories fact;
@@ -178,7 +176,6 @@ initialize_logger()
 		ambulant::common::plugin_engine *pe = ambulant::common::plugin_engine::get_plugin_engine();
 		pe->add_plugins(&fact, NULL);
 	}
-#endif
 
 	// Initialize the default system test settings
 	NSString *systemTestSettingsPath = [thisBundle pathForResource:@"systemTestSettings" ofType:@"xml"];
@@ -190,18 +187,6 @@ initialize_logger()
 		std::string resourcedir([nsresourcedir UTF8String]);
 		ambulant::net::url::set_datafile_directory(resourcedir);
 	}
-#if 0
-	// Ask for notification when preferences change.
-	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-	[nc addObserver:self
-		selector:@selector(preferencesChanged:)
-		name:NSUserDefaultsDidChangeNotification
-		object:nil];
-	// And these don't work either:-(
-	[defaults addObserver:self forKeyPath:@"observingKeyPath" options:NSKeyValueObservingOptionNew context:nil];
-	[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.log_level" options:NSKeyValueObservingOptionNew context:nil];
-	[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"log_level" options:NSKeyValueObservingOptionNew context:nil];
-#endif
 	// Install our "open URL" handler.
 	NSAppleEventManager *appleEventManager = [NSAppleEventManager sharedAppleEventManager];
 	// There seem to be two similar events gurl/gurl (official one) and GURL/GURL (used by "open" command line tool).

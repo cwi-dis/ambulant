@@ -85,7 +85,6 @@ class ambulant_gtk_window : public common::gui_window {
 	void redraw_now();
 	
 	// gui_events API:
-	void mouse_region_changed();
 	bool user_event(const lib::point &where, int what=0);
 	void need_events(bool want);
 

@@ -608,7 +608,6 @@ class AMBULANTAPI filter_datasource_impl :
 	lib::critical_section m_lock;
 };
 
-#if 1 // XXXJACK was: ifdef AMBULANT_PLATFORM_UNIX
 /// Interface for clients of abstract_demux.
 /// Abstract_demux implementations will read a stream and split it into its
 /// constituent substreams (usually one audio stream and one video stream). The
@@ -690,7 +689,6 @@ class abstract_demux : public BASE_THREAD, public lib::ref_counted_obj {
 	/// Returns the timestamp at which the data starts streaming (m_clip_begin or 0).
 	virtual timestamp_t get_start_time() = 0;
 };
-#endif // AMBULANT_PLATFORM_UNIX
 
 
 /// Convenience function: read a whole document through any raw datasource.

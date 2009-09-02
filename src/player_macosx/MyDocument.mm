@@ -159,14 +159,6 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		}
 	}
 	[self validateButtons: self];
-#if 0
-	// Go fullscreen if either the -fullScreen argument was given on the command
-	// line or the user defaults were edited manually.
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	// Happens elsewhere now
-	if ( [defaults boolForKey: @"fullScreen"] )
-		[self goFullScreen: self];
-#endif
 }
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
@@ -217,15 +209,6 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	} else {
 		url = [[self fileURL] absoluteString];
 	}
-#if 0
-	// XXX This is incorrect
-	if ( [[self fileURL] isFileURL] && ![[self fileURL] fragment]) {
-		NSString *escapedurl = (NSString *)CFURLCreateStringByAddingPercentEscapes(NULL,
-			(CFStringRef)url, NULL, NULL, kCFStringEncodingUTF8);
-		//[url release];
-		url = escapedurl;
-	}
-#endif
 	embedder = new document_embedder(self);
 	myMainloop = new mainloop([url UTF8String], view, embedder);
 	[self play: self];
@@ -576,13 +559,11 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 	// Create the full-screen window.
 	NSRect winRect = [screen frame];
-#if 1
 	// The (x, y) coordinates are nonzero for a non-primary screen, it appears that
 	// the rect is for the virtual combination of all screens, with (0, 0) rooted
 	// at the origin of the main screen.
 	winRect.origin.x = 0;
 	winRect.origin.y = 0;
-#endif
 	NSWindow *mScreenWindow;
 	mScreenWindow = [[FullScreenWindow alloc] initWithContentRect:winRect
 			styleMask:NSBorderlessWindowMask 

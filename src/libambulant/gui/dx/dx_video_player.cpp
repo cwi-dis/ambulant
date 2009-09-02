@@ -33,10 +33,6 @@
 
 #include <vfwmsgs.h>
 
-// Define this to ignore duration==0 and just continue playing in that case
-// This works around a bug in the Dirac DirectX interface that it always
-// returns 0 for the movie duration.
-#define IGNORE_ZERO_DURATION
 using namespace ambulant;
 
 using ambulant::lib::win32::win_report_error;
@@ -68,16 +64,6 @@ void gui::dx::video_player::start(double t) {
 	resume();
 }
 
-#if 0
-void gui::dx::video_player::stop() {
-	if(!m_mmstream) return;
-	HRESULT hr = m_mmstream->SetState(STREAMSTATE_STOP);
-	if(FAILED(hr)) {
-		win_report_error("IMultiMediaStream::SetState()", hr);	
-	}
-	release_player();
-}
-#endif
 bool gui::dx::video_player::stop() {
 	if(!m_mmstream) return true;
 	HRESULT hr = m_mmstream->SetState(STREAMSTATE_STOP);
@@ -149,10 +135,6 @@ bool gui::dx::video_player::is_playing() {
 	}
 	
 	if (hr == S_FALSE) return true;
-#ifdef IGNORE_ZERO_DURATION
-	// XXX Dirac workaround:
-	if (stdur == 0) return true;
-#endif
 	STREAM_TIME st;
 	hr = m_mmstream->GetTime(&st);
 	if(FAILED(hr)) {

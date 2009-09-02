@@ -97,16 +97,7 @@ void gui::dx::dx_brush::start(double t) {
 	m_context->stopped(m_cookie);
 }
 
-#if 0
-void gui::dx::dx_brush::stop() {
-	AM_DBG lib::logger::get_logger()->debug("dx_brush::stop(0x%x)", this);
-	if (m_dest) m_dest->renderer_done(this);
-	m_dest = NULL;
-	m_activated = false;
-	m_dxplayer->stopped(this);
-	m_context->stopped(m_cookie);
-}
-#endif
+
 bool gui::dx::dx_brush::stop() {
 	AM_DBG lib::logger::get_logger()->debug("dx_brush::stop(0x%x)", this);
 	if (m_dest) m_dest->renderer_done(this);

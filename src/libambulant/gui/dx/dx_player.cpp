@@ -530,101 +530,6 @@ gui::dx::dx_player::get_main_window() {
 	return (*it).second->h;
 }
 
-#if 0
-////////////////////
-// common::playable_factory implementation
-bool
-gui::dx::dx_playable_factory::supports(common::renderer_select *rs)
-{
-	const lib::xml_string& tag = rs->get_tag();
-	if (tag != "" &&
-        tag != "ref" &&
-		tag != "img" &&
-		tag != "text" &&
-		tag != "brush" &&
-		tag != "audio" &&
-		tag != "video" &&
-		tag != "smilText")
-			return false;
-	const char *renderer_uri = rs->get_renderer_uri();
-	if (renderer_uri != NULL && strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererDirectX")) != 0)
-			return false;
-	return true;
-}
-
-
-common::playable *
-gui::dx::dx_playable_factory::new_playable(
-	common::playable_notification *context,
-	common::playable_notification::cookie_type cookie,
-	const lib::node *node,
-	lib::event_processor *const evp)
-{
-	bool use_ffmpeg = common::preferences::get_preferences()->m_prefer_ffmpeg;
-	common::playable *p = 0;
-	lib::xml_string tag = node->get_qname().second;
-	AM_DBG m_logger->debug("dx_player::new_playable: %s", tag.c_str());
-	if(tag == "text") {
-#ifdef	WITH_HTML_WIDGET
-		net::url url = net::url(node->get_url("src"));
-		std::string mimetype = url.guesstype();
-		if (mimetype == "text/html" || mimetype == "application/xml") {
-			p = new dx_html_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
-			AM_DBG lib::logger::get_logger()->debug("dx_player: node 0x%x: returning dx_ html_renderer 0x%x", (void*) node, (void*) p);
-		} else 
-#endif/*WITH_HTML_WIDGET*/
-		p = new dx_text_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
-#ifdef WITH_SMIL30
-	} else if(tag == "smilText") {
-		p = new dx_smiltext_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
-#endif/*WITH_SMIL30*/
-	} else if(tag == "img") {
-		p = new dx_img_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
-	} else if(tag == "audio") {
-#ifdef WITH_FFMPEG
-		p = new gui::sdl::sdl_audio_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
-#else
-		if (use_ffmpeg)
-			lib::logger::get_logger()->debug("dx_player: DirectShow audio renderer disabled by preference");
-		else
-			p = new dx_audio_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
-#endif/*WITH_FFMPEG*/
-	} else if(tag == "video") {
-#if defined(USE_DS_VIDEO)
-		p = new dx_dsvideo_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
-#elif defined(USE_BASIC_VIDEO)
-		if (use_ffmpeg)
-			lib::logger::get_logger()->debug("dx_player: DirectShow video renderer disabled by preference");
-		else
-			p = new dx_basicvideo_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
-#else
-		if (use_ffmpeg)
-			lib::logger::get_logger()->debug("dx_player: DirectShow video renderer disabled by preference");
-		else
-			p = new dx_video_renderer(context, cookie, node, evp, m_factory, m_dxplayer);
-#endif
-	} else if(tag == "area") {
-		p = new dx_area(context, cookie, node, evp, m_factory, m_dxplayer);
-	} else if(tag == "brush") {
-		p = new dx_brush(context, cookie, node, evp, m_factory, m_dxplayer);
-	} else {
-		p = new dx_area(context, cookie, node, evp, m_factory, m_dxplayer);
-	}
-	return p;
-}
-
-common::playable *
-gui::dx::dx_playable_factory::new_aux_audio_playable(
-		common::playable_notification *context,
-		common::playable_notification::cookie_type cookie,
-		const lib::node *node,
-		lib::event_processor *evp,
-		net::audio_datasource *src)
-{
-	return NULL;
-}
-#endif
-
 void gui::dx::dx_player::set_intransition(common::playable *p, const lib::transition_info *info) { 
 	AM_DBG lib::logger::get_logger()->debug("set_intransition : %s", repr(info->m_type).c_str());
 	dx_transition *tr = set_transition(p, info, false);
@@ -778,25 +683,6 @@ get_top_layout_name(smil2::smil_layout_manager *layout, const lib::node* n) {
 	const common::region_info *ri = r->get_info();
 	return ri?ri->get_name().c_str():0;
 }
-
-#if 0
-common::gui_window *
-gui::dx::dx_player::get_window(const lib::node* n) {
-	typedef common::surface_template region;
-	smil2::smil_layout_manager *layout = m_player->get_layout();
-	const char *tlname = get_top_layout_name(layout, n);
-	if(tlname) {
-		std::map<std::string, wininfo*>::iterator it;
-		it = m_windows.find(tlname);
-		if(it != m_windows.end())
-			return (*it).second->w;
-	}
-	std::map<std::string, wininfo*>::iterator it = m_windows.begin();
-	assert(it != m_windows.end());
-	wininfo* winfo = (*it).second;
-	return winfo->w;
-}
-#endif
 
 void gui::dx::dx_player::show_file(const net::url& href) {
 #ifdef AMBULANT_PLATFORM_WIN32_WCE

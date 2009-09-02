@@ -60,83 +60,6 @@ ambulant::gui::qt::create_qt_window_factory_unsafe(void *parent_widget, int top_
     return new qt_window_factory(qw, top_offset, gpl);
 }
 
-#if 0
-common::playable_factory *
-ambulant::gui::qt::create_qt_playable_factory(common::factories *factory)
-{
-    return new qt_renderer_factory(factory);
-}
-
-common::playable_factory *
-ambulant::gui::qt::create_qt_video_factory(common::factories *factory)
-{
-    return new qt_video_factory(factory);
-}
-
-//
-// qt_renderer_factory
-//
-
-qt_renderer_factory::qt_renderer_factory(common::factories *factory)
-:	m_factory(factory)
-{
-	AM_DBG lib::logger::get_logger()->debug("qt_renderer factory (0x%x)", (void*) this);
-}
-
-common::playable *
-qt_renderer_factory::new_playable(
-	common::playable_notification *context,
-	common::playable_notification::cookie_type cookie,
-	const lib::node *node,
-	lib::event_processor *const evp)
-{
-
-	lib::xml_string tag = node->get_qname().second;
-	common::playable* rv;
-	if (tag == "img") {
-	  rv = new qt_image_renderer(context, cookie, node, evp, m_factory, NULL);
-		AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_image_renderer 0x%x", (void*) node, (void*) rv);
-		return rv;
-	}
-	if (tag == "brush") {
-	  rv = new qt_fill_renderer(context, cookie, node, evp, m_factory, NULL);
-		AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_fill_renderer 0x%x", (void*) node, (void*) rv);
-		return rv;
-	}
-#ifdef WITH_SMIL30
-	if(tag == "smilText") {
-	  rv = new qt_smiltext_renderer(context, cookie, node, evp, m_factory, NULL);
-		AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_smiltext_renderer 0x%x", (void*) node, (void*) rv);
-		return rv;
-	}
-#endif/*WITH_SMIL30*/
-	if ( tag == "text") {
-#ifdef	WITH_QT_HTML_WIDGET
-	        net::url url = net::url(node->get_url("src"));
-		if (url.guesstype() == "text/html") {
-		  rv = new qt_html_renderer(context, cookie, node, evp, m_factory, NULL);
-			AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_html_renderer 0x%x", (void*) node, (void*) rv);
-			return rv;
-		}
-#endif /*WITH_QT_HTML_WIDGET*/
-		rv = new qt_text_renderer(context, cookie, node, evp, m_factory, NULL);
-		AM_DBG lib::logger::get_logger()->debug("qt_renderer_factory: node 0x%x: returning qt_text_renderer 0x%x", (void*) node, (void*) rv);
-		return rv;
-    }
-    return NULL;
-}
-
-common::playable *
-qt_renderer_factory::new_aux_audio_playable(
-    common::playable_notification *context,
-    common::playable_notification::cookie_type cookie,
-    const lib::node *node,
-    lib::event_processor *evp,
-    net::audio_datasource *src)
-{
-	return NULL;
-}
-#endif
   
 //
 // qt_window_factory
@@ -319,14 +242,6 @@ ambulant_qt_window::need_events(bool want)
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::need_events(0x%x): want=%d", this, want);
 }
-
-#if 0
-void
-ambulant_qt_window::mouse_region_changed()
-{
-	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::mouse_region_changed needs to be implemented");
-}
-#endif
 
 void
 ambulant_qt_window::redraw(const lib::rect &r)

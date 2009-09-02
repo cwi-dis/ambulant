@@ -161,7 +161,6 @@ class AMBULANTAPI dx_player :
 	
   private:
 	dx_transition *set_transition(common::playable *p, const lib::transition_info *info, bool is_outtransition);
-//	common::gui_window* get_window(const lib::node* n);
 	common::gui_window* get_window(HWND hwnd);
 	HWND get_main_window();
 	void lock_redraw();

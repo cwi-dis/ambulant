@@ -62,16 +62,6 @@ void gui::dx::basicvideo_player::start(double t) {
 	resume();
 }
 
-#if 0
-void gui::dx::basicvideo_player::stop() {
-	if(m_media_control == 0) return;
-	HRESULT hr = m_media_control->Stop();
-	if(FAILED(hr)) {
-		win_report_error("IMediaControl::stop()", hr);	
-	}
-	release_player();
-}
-#endif
 bool gui::dx::basicvideo_player::stop() {
 	if(m_media_control == 0) return true;
 	HRESULT hr = m_media_control->Stop();

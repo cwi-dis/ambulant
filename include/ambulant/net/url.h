@@ -245,7 +245,6 @@ class AMBULANTAPI url {
 } // namespace ambulant
 
 
-#if 1||!defined(AMBULANT_PLATFORM_WIN32_WCE)
 inline std::string repr(const ambulant::net::url& u) {
 	std::string os;
 	if (u.is_absolute()) {
@@ -268,20 +267,5 @@ inline std::string repr(const ambulant::net::url& u) {
 		os << "?" << u.get_query();
 	return os;
 }
-#else 
-inline std::string repr(const ambulant::net::url& u) {
-	std::string os;
-	if (u.is_absolute())
-		os += u.get_protocol() + "://" + u.get_host() + u.get_path();
-	else
-		os += u.get_path();
-	return os;
-}
-
-void set_url_from_spec(ambulant::net::url& u, const char *spec);
-
-
-#endif
-
 
 #endif // AMBULANT_NET_URL_H

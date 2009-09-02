@@ -112,7 +112,7 @@ static void
 init_pixel_info() {
     if (pixel_info_initialized) return;
     pixel_info_initialized = true;
-#ifdef ENABLE_COCOA_CGENGINE
+#ifdef ENABLE_COCOA_CGIMAGE
     if ([NSBitmapImageRep instancesRespondToSelector: @selector(initWithCGImage:)]) {
         // Only supported on 10.5, so fallback for 10.4
         pixel_info_order = ambulant::net::pixel_argb;

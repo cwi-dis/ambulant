@@ -69,18 +69,6 @@ none_area_renderer::start(double starttime) {
 	m_context->stopped(m_cookie);
 }
 
-#if 0
-void
-none_area_renderer::stop() {
-	AM_DBG lib::logger::get_logger()->debug("none_area_renderer(0x%x)::stop()", (void*)this);
-	renderer_playable::stop();
-	if(m_rgn) {
-		delete m_rgn;
-		m_rgn = 0;
-	}
-	m_context->stopped(m_cookie);
-}
-#endif
 bool
 none_area_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->debug("none_area_renderer(0x%x)::stop()", (void*)this);

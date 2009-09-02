@@ -99,26 +99,12 @@ video_renderer::video_renderer(
 video_renderer::~video_renderer() {
 	AM_DBG lib::logger::get_logger()->debug("~video_renderer(0x%x)", (void*)this);
 	m_lock.enter();
-#if 0
-    // XXXJACK: need to check that the stop calls aren't needed...
-	if (m_audio_renderer){
-        m_audio_renderer->stop();
-        m_audio_renderer->release();
-        m_audio_renderer = NULL;
-    }
-	if (m_src) {
-        m_src->stop();
-        m_src->release();
-        m_src = NULL;
-    }
-#else
     if (m_dest) m_dest->renderer_done(this);
     m_dest = NULL;
 	if (m_audio_renderer) m_audio_renderer->release();
     m_audio_renderer = NULL;
 	if (m_src) m_src->release();
 	m_src = NULL;
-#endif
 	m_lock.leave();
 }
 
@@ -423,10 +409,6 @@ video_renderer::data_avail()
 		m_lock.leave();
         // If we have an audio renderer we should let it do the stopped() callback.
 		if (m_audio_renderer == NULL) m_context->stopped(m_cookie, 0);
-#if 0
-		lib::logger::get_logger()->debug("video_renderer: displayed %d frames; skipped %d dups, %d late, %d early, %d NULL",
-			m_frame_displayed, m_frame_duplicate, m_frame_late, m_frame_early, m_frame_missing);
-#endif
 		return;
 	}
 #else
@@ -441,10 +423,6 @@ video_renderer::data_avail()
         
         // Remember how far we officially got (discounting any fill=continue behaviour)
         m_previous_clip_position = m_clip_end;
-#if 0
-        lib::logger::get_logger()->debug("video_renderer: displayed %d frames; skipped %d dups, %d late, %d early, %d NULL",
-                                         m_frame_displayed, m_frame_duplicate, m_frame_late, m_frame_early, m_frame_missing);
-#endif
         // If we are past real end-of-file we always stop playback.
         // If we are past clip_end we continue playback if we're playing a fill=ambulant:continue node.
         // XXXJACK: this may lead to multiple stopped() callbacks (above). Need to fix.

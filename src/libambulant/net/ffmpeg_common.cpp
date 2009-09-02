@@ -192,6 +192,7 @@ ffmpeg_demux::supported(const net::url& url)
 #if 1
 	// There appears to be some support for RTSP in ffmpeg, but it doesn'
 	// seem to work yet. Disable it so we don't get confused by error messages.
+    // XXXJACK need to test this with future ffmpeg versions.
 	if (url_str.substr(0, 5) == "rtsp:") return NULL;
 #endif
 	probe_data.filename = ffmpeg_name.c_str();
@@ -403,16 +404,7 @@ ffmpeg_demux::run()
 #endif
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %lld", m_clip_begin );
 			int64_t seektime = m_clip_begin;
-#if 0
-            // XXXJACK (29-Jun-09) I think I'm seeing funny artifacts because of this code (playing sptest-02 and sptest-07
-            // of the seamless plaback tests). Trying to disable it.
-            // The code here was introduced in r1.60 to fix bug #2051134, ogg/vorbis skips audio at the beginning.
-            // Need to regress that one.
-            if (m_con->start_time != AV_NOPTS_VALUE) {
-                seektime += m_con->start_time;
-                AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: add another %lld to seek for ffmpeg start_time", m_con->start_time);
-            }
-#endif
+
 			// If we have a video stream we should rescale our time offset to the timescale of the video stream.
 			int seek_streamnr = -1;
 			if (video_streamnr >= 0) {
@@ -497,10 +489,8 @@ ffmpeg_demux::run()
                     // Fixes bug #2046564.
                     if (!initial_audio_pts_set && pkt->stream_index == audio_streamnr) {
                         initial_audio_pts = pts;
-#if 1
                         // Bugfix to bugfix: need to take initial seek/clipbegin into account too
                         initial_audio_pts -= m_clip_begin;
-#endif
                         initial_audio_pts_set = true;
                     }
                     pts -= initial_audio_pts;

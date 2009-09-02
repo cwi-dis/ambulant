@@ -101,11 +101,7 @@ class wvc_container : public lib::ref_counted_obj {
 	void hide_generation(int gen) {
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		if (m_generation == gen) {
-#if 0
-			[[m_wvc view] removeFromSuperviewWithoutNeedingDisplay];
-#else
             [[m_wvc view] performSelectorOnMainThread: @selector(removeFromSuperviewWithoutNeedingDisplay) withObject: nil waitUntilDone: NO];
-#endif
 			m_generation++;
 			AM_DBG lib::logger::get_logger()->debug("wvc_container: %d: hiding HTML view", gen);
 		} else {
@@ -202,26 +198,6 @@ cocoa_html_renderer::start(double where) {
 	[pool release];
 }
 
-#if 0
-void
-cocoa_html_renderer::stop() {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	m_lock.enter();
-	if (m_html_view) {
-		AM_DBG lib::logger::get_logger()->debug("cocoa_html_renderer: stop display");
-		// Unhook the view from the view hierarchy.
-		m_html_view->hide(m_event_processor);
-		m_html_view = NULL;
-//		lib::logger::get_logger()->debug("cocoa_html_renderer: %f%% done", [view estimatedProgress]);
-//		if ([[view mainFrame] dataSource] == nil) lib::logger::get_logger()->debug("cocoa_html_renderer: not complete yet!");
-//		// [view removeFromSuperviewWithoutNeedingDisplay]; 
-	}
-	renderer_playable::stop();
-	m_context->stopped(m_cookie);
-	m_lock.leave();
-	[pool release];
-}
-#endif
 bool
 cocoa_html_renderer::stop() {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];

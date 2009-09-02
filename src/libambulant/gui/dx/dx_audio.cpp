@@ -209,19 +209,6 @@ std::pair<bool, double> gui::dx::dx_audio_renderer::get_dur() {
 	return std::pair<bool, double>(false, 0.0);
 }
 
-#if 0
-void gui::dx::dx_audio_renderer::stop() {
-	AM_DBG lib::logger::get_logger()->debug("dx_audio_renderer.stop(0x%x)", this);
-	if(!m_player) return;
-	audio_player *p = m_player;
-	m_player = 0;
-	m_update_event = 0;
-	p->stop();
-	delete p;
-	m_activated = false;
-	m_context->stopped(m_cookie);
-}
-#endif
 bool gui::dx::dx_audio_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->debug("dx_audio_renderer.stop(0x%x)", this);
 	if(!m_player) return true;

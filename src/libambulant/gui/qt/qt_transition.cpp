@@ -110,53 +110,12 @@ qt_transition_blitclass_fade::update()
 	QImage m_new_image;
 	m_old_image = qpm->convertToImage();
 	m_new_image = npm->convertToImage();
-#ifdef	JUNK
-	QImage res(m_old_image.size(),m_old_image.depth());
-	int i, j, iw = res.width(), ih = res.height();
-	AM_DBG logger::get_logger()->debug("qt_transition_blitclass_fade::update() qpm=0x%x, npm=0x%x.  res=0x%x, iw=%d, ih=%d", qpm, npm, &res, iw, ih);
-	// Following code From: Qt-interest Archive, July 2002
-	// blending of qpixmaps, Sebastian Loebbert 
-#define	OPTIM
-#ifndef	OPTIM
-	double fac1 = 1.0 - m_progress;
-	double fac2 = 1.0 - fac1;
-#else /*OPTIM*/
-	unsigned int mul1 = 255 - (unsigned int) (m_progress * 255);
-	unsigned int mul2 = 255 - mul1;
-#endif/*OPTIM*/
-	for(int i = 0;i < iw;i++){
-		for(int j = 0; j < ih;j++){
-	    		QRgb p1 = m_old_image.pixel(i,j);
-	    		QRgb p2 = m_new_image.pixel(i,j);
-	    		res.setPixel(i,j,
-#ifndef	OPTIM
-				     qRgb ( (int)( qRed(p1)*fac1 + 
-						   qRed(p2)*fac2  ),
-					    (int)( qGreen(p1)*fac1 + 
-						   qGreen(p2)*fac2  ),
-					    (int)( qBlue(p1)*fac1 + 
-						   qBlue(p2)*fac2  ) )
-#else /*OPTIM*/
-				     qRgb ( ( qRed(p1)*mul1 + 
-					      qRed(p2)*mul2  ) >> 8,
-					    ( qGreen(p1)*mul1 +
-					      qGreen(p2)*mul2  ) >> 8,
-					    ( qBlue(p1)*mul1 +
-					      qBlue(p2)*mul2  ) >> 8 )
-#endif/*OPTIM*/
-			 );
-//	    if (j&4 && !(j&3) && i&4 &&!(i&3)) AM_DBG logger::get_logger()->debug("qt_transition_blitclass_fade::update(): i=%3d, j=%3d, p1=0x%x, p2=0x%x, res=0x%x", i, j, p1, p2, res.pixel(i,j));
-	  }
-	}
-#else
 	const rect&  newrect_whole =  m_dst->get_clipped_screen_rect();
        	qt_image_blend (m_old_image, newrect_whole,
 			m_new_image, newrect_whole,
 			m_progress, 0.0,
 			0x000000, 0xFFFFFF);
 	QImage res(m_old_image);
-#endif//JUNK
-//JNK	const rect& newrect_whole =  m_dst->get_clipped_screen_rect();
 	int L = newrect_whole.left(), T = newrect_whole.top(),
         	W = newrect_whole.width(), H = newrect_whole.height();
 	AM_DBG logger::get_logger()->debug(

@@ -65,14 +65,6 @@ create_cocoa_window_factory(void *view)
     return new cocoa_window_factory(view);
 }
 
-#if 0
-common::playable_factory *
-create_cocoa_renderer_factory(common::factories *factory)
-{
-    return new cocoa_renderer_factory(factory);
-}
-#endif
-
 cocoa_window::~cocoa_window()
 {
 	if (m_view) {
@@ -143,108 +135,6 @@ cocoa_window::need_events(bool want)
 	
 	[pool release];
 }
-
-#if 0
-bool cocoa_renderer_factory::supports(const lib::xml_string& tag, const char* renderer_uri) const
-{
-	if (tag != "" &&
-        tag != "ref" &&
-		tag != "img" &&
-		tag != "text" &&
-		tag != "brush" &&
-		tag != "audio" &&
-		tag != "video" &&
-		tag != "smilText")
-			return false;
-	if (renderer_uri != NULL && strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererCocoa")) != 0)
-			return false;
-	return true;
-}
-
-playable *
-cocoa_renderer_factory::new_playable(
-	playable_notification *context,
-	playable_notification::cookie_type cookie,
-	const lib::node *node,
-	event_processor *evp)
-{
-	playable *rv;
-	xml_string tag = node->get_local_name();
-	if (tag == "img") {
-		net::url url = net::url(node->get_url("src"));
-		if (url.guesstype() == "image/vnd.ambulant-ink") {
-			rv = new cocoa_ink_renderer(context, cookie, node, evp, m_factory, NULL);
-			AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_ink_renderer 0x%x", (void *)node, (void *)rv);
-		} else {
-			rv = new cocoa_image_renderer(context, cookie, node, evp, m_factory, NULL);
-			AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_image_renderer 0x%x", (void *)node, (void *)rv);
-		}
-	} else if ( tag == "text") {
-		net::url url = net::url(node->get_url("src"));
-		if (url.guesstype() == "text/html") {
-			rv = new cocoa_html_renderer(context, cookie, node, evp, m_factory, NULL);
-			AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_html_renderer 0x%x", (void *)node, (void *)rv);
-		} else {
-			rv = new cocoa_text_renderer(context, cookie, node, evp, m_factory, NULL);
-			AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_text_renderer 0x%x", (void *)node, (void *)rv);
-		}
-	} else if ( tag == "brush") {
-		rv = new cocoa_fill_renderer(context, cookie, node, evp, m_factory, NULL);
-		AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_fill_renderer 0x%x", (void *)node, (void *)rv);
-#ifdef WITH_COCOA_AUDIO
-	} else if ( tag == "audio") {
-		rv = new cocoa_audio_playable(context, cookie, node, evp, m_factory, NULL);
-		AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_audio_renderer 0x%x", (void *)node, (void *)rv);
-#endif
-#ifndef WITH_SEAMLESS_PLAYBACK
-	} else if ( tag == "video") {
-#else
-	} else if ( tag == "video" || tag == "prefetch") {	
-#endif
-		if (common::preferences::get_preferences()->m_prefer_ffmpeg ) {
-			rv = new cocoa_dsvideo_renderer(context, cookie, node, evp, m_factory, NULL);
-			if (rv) {
-				logger::get_logger()->trace("video: using native Ambulant renderer");
-				AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_dsvideo_renderer 0x%x", (void *)node, (void *)rv);
-			} else {
-				rv = new cocoa_video_renderer(context, cookie, node, evp, m_factory, NULL);
-				if (rv) logger::get_logger()->trace("video: using QuickTime renderer");
-				AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_video_renderer 0x%x", (void *)node, (void *)rv);
-			}
-		} else {
-			rv = new cocoa_video_renderer(context, cookie, node, evp, m_factory, NULL);
-			if (rv) {
-				logger::get_logger()->trace("video: using QuickTime renderer");
-				AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_video_renderer 0x%x", (void *)node, (void *)rv);
-			} else {
-				rv = new cocoa_dsvideo_renderer(context, cookie, node, evp, m_factory, NULL);
-				if (rv) logger::get_logger()->trace("video: using ffmpeg renderer");
-				AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_dsvideo_renderer 0x%x", (void *)node, (void *)rv);
-			}
-		}
-#ifdef WITH_SMIL30
-	} else if ( tag == "smilText") {
-		rv = new cocoa_smiltext_renderer(context, cookie, node, evp, m_factory, NULL);
-		AM_DBG logger::get_logger()->debug("cocoa_renderer_factory: node 0x%x: returning cocoa_smiltext_renderer 0x%x", (void *)node, (void *)rv);
-#endif // WITH_SMIL30
-	} else {
-		// logger::get_logger()->error(gettext("cocoa_renderer_factory: no Cocoa renderer for tag \"%s\""), tag.c_str());
-		return NULL;
-	}
-	return rv;
-}
-
-playable *
-cocoa_renderer_factory::new_aux_audio_playable(
-		playable_notification *context,
-		playable_notification::cookie_type cookie,
-		const lib::node *node,
-		lib::event_processor *evp,
-		net::audio_datasource *src)
-{
-	return NULL;
-}
-#endif
 
 lib::size
 cocoa_window_factory::get_default_size()
@@ -442,27 +332,15 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 
 }- (NSRect) NSRectForAmbulantRect: (const ambulant::lib::rect *)arect
 {
-#ifdef USE_COCOA_BOTLEFT
-	float bot_delta = NSMaxY([self bounds]) - arect->bottom();
-	return NSMakeRect(arect->left(), bot_delta, arect->width(), arect->height());
-#else
 	return NSMakeRect(arect->left(), arect->top(), arect->width(), arect->height());
-#endif
 }
 
 - (ambulant::lib::rect) ambulantRectForNSRect: (const NSRect *)nsrect
 {
-#ifdef USE_COCOA_BOTLEFT
-	float top_delta = NSMaxY([self bounds]) - NSMaxY(*nsrect);
-	ambulant::lib::rect arect = ambulant::lib::rect(
-                ambulant::lib::point(int(NSMinX(*nsrect)), int(top_delta)),
-				ambulant::lib::size(int(NSWidth(*nsrect)), int(NSHeight(*nsrect))));
-#else
 	ambulant::lib::rect arect = ambulant::lib::rect(
                 ambulant::lib::point(int(NSMinX(*nsrect)), int(NSMinY(*nsrect))),
 				ambulant::lib::size(int(NSWidth(*nsrect)), int(NSHeight(*nsrect))));
 	 
-#endif
 	return arect;
 }
 
@@ -582,11 +460,7 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 
 - (BOOL)isFlipped
 {
-#ifdef USE_COCOA_BOTLEFT
-	return false;
-#else
 	return true;
-#endif
 }
 
 - (void)updateScreenSize
