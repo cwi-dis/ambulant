@@ -308,9 +308,7 @@ void active_state::sync_update(qtime_type timestamp) {
 	}
 	restart_behavior rb = m_attrs.get_restart();
 	if(rb == restart_always
-#ifndef WITH_SMIL30_RELAXED_SEQ
 			&& !m_self->sync_node()->is_seq()
-#endif
 			) {
 		interval_type candidate(m_interval.begin, timestamp.second); 
 		interval_type i = m_self->calc_next_interval(candidate);
@@ -387,22 +385,6 @@ void postactive_state::enter(qtime_type timestamp) {
 	
 	AM_DBG lib::logger::get_logger()->debug("postactive_state::enter(%s)", m_self->get_sig().c_str());
 	if(m_self->sync_node()->is_seq()) {
-#ifdef WITH_SMIL30_RELAXED_SEQ
-		// Now we can advance our next sibling to proactive.
-		// Note that we must also do a reset() on the next sibling
-		// (otherwise the same event can't be used to start multiple
-		// seq children), but that this reset() should *not* be
-		// seen as being sent from the parent (otherwise the
-		// normal seq begin condition of prev sibling.end is cleared
-		// also).
-		time_node *next = m_self->next();
-		if (next) {
-			time_node *sn = m_self->sync_node();
-			qtime_type qt = timestamp.as_qtime_down_to(sn);
-			next->reset(qt, next);
-			next->set_state(ts_proactive, qt, sn);
-		}
-#endif
 		m_self->set_state(ts_dead, timestamp, m_self->sync_node());
 		return;
 	}

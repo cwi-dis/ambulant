@@ -299,25 +299,19 @@ void timegraph::add_begin_sync_rules(time_node *tn) {
 	for(it = list.begin(); it!= list.end(); it++) {
 		const sync_value_struct& svs = *it;
 		if((svs.type == sv_offset || svs.type == sv_indefinite)  
-#ifndef WITH_SMIL30_RELAXED_SEQ
 				&& (!parent->is_seq() || (parent->is_seq() && svs.offset>=0))
-#endif
 				) {
 			sync_rule *sr = create_impl_syncbase_rule(tn, svs.offset);
 			tn->add_begin_rule(sr);
-#ifndef WITH_SMIL30_RELAXED_SEQ
 			if(parent->is_seq()) break;
-#endif
 		} 
 	}
 	
-#ifndef WITH_SMIL30_RELAXED_SEQ
 	if(parent->is_seq()) {
 		// For children of a sequence, the only legal value for 
 		// begin is a single non-negative offset value.
 		return;
 	}
-#endif // WITH_SMIL30
 	
 	// add any specified begin syncbase rules
 	for(it = list.begin(); it!= list.end(); it++) {

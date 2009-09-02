@@ -35,7 +35,6 @@
 namespace ambulant {
 
 using namespace lib;
-//JNK using namespace net;
 using namespace common;
 
 namespace gui {

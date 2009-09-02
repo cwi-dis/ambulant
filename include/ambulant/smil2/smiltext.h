@@ -362,7 +362,7 @@ class smiltext_layout_engine {
 	void redraw(const lib::rect& r);
 
 	/// Set destination rectangle.on screen
-	void set_dest_rect(const lib::rect& r);
+	void set_dest_rect(const lib::rect& r); // XXXJACK: is this needed?
 
 	void smiltext_changed();
 
@@ -378,7 +378,6 @@ class smiltext_layout_engine {
 	lib::event_processor *m_event_processor;
 	lib::timer::time_type m_epoch;
 	smiltext_params m_params;	// global parameters
-	lib::rect m_dest_rect; // JNK
 	smiltext_layout_provider* m_provider;
 	bool m_needs_conditional_newline;
 	bool m_needs_conditional_space;

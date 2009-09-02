@@ -614,23 +614,6 @@ void
 ambulant_gtk_window::clear()
 // private helper: clear the widget
 {
-/*
-vJUNK
-	QSize size =  m_ambulant_widget->frameSize();
-	if (m_pixmap == NULL)
-		m_pixmap = new QPixmap(size.width(), size.height());
-	assert(m_pixmap);
-	QPainter paint(m_pixmap);
-	QColor bgc = QColor(255,255,255); // white color
-	// in debugging mode, initialize with purple background
-	AM_DBG bgc = QColor(255,  0,255); // purple color
-	
-	paint.setBrush(bgc);
-	paint.drawRect(0,0,size.width(),size.height());
-	paint.flush();
-	paint.end();
-^JUNK
-*/
 	// Fill with <brush> color
 	if (m_pixmap == NULL) {
 		AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::clear(): m_pixmap == NULL!!");

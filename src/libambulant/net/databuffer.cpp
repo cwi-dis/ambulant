@@ -34,9 +34,6 @@
 #define AM_DBG if(0)
 #endif
 
-// Define this to put random garbage into newly allocated buffer space
-// and into buffer space that has been freed.
-#undef RANDOM_BYTES
 // ***********************************  C++  CODE  ***********************************
 
 // data_buffer
@@ -204,10 +201,6 @@ databuffer::_grow(int sz)
 	if (!m_buffer) {
 		lib::logger::get_logger()->fatal("databuffer::get_write_ptr(size=%d): out of memory", m_size+sz);
 	}
-#ifdef RANDOM_BYTES
-	unsigned int i;
-	for(i=m_size; i<m_size+sz; i++) m_buffer[i] = (char) rand();
-#endif
 }
 
 void databuffer::pushdata(int sz)
@@ -270,10 +263,6 @@ databuffer::readdone(int sz)
 	m_reading = false;
 	AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::readdone(%d)", (void*)this, sz);
 	assert((size_t)sz <= m_used);
-#ifdef RANDOM_BYTES
-	unsigned int i;
-	for(i=m_rear; i<m_rear+sz; i++) m_buffer[i] = (char) rand();
-#endif
 	m_rear += sz;
 	assert( m_size >= m_rear);
 	m_used = m_size - m_rear;

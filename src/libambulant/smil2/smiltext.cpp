@@ -733,7 +733,6 @@ smiltext_layout_engine::smiltext_layout_engine(const lib::node *n, lib::event_pr
 	m_event_processor(ep),
 	m_provider(provider),
 	m_params(m_engine.get_params()),
-	m_dest_rect(),
 	m_needs_conditional_newline(false),
 	m_needs_conditional_space(false),
 	m_crawling(m_params.m_mode == smil2::stm_crawl),
@@ -778,9 +777,6 @@ smiltext_layout_engine::is_finished()
 
 void
 smiltext_layout_engine::set_dest_rect( const lib::rect& r) {
-//JNK	m_lock.enter();
-	m_dest_rect = r;
-//JNK	m_lock.leave();
 }
 
 smiltext_layout_word::smiltext_layout_word(const smiltext_run run, smiltext_metrics stm, int n_nl)

@@ -1819,12 +1819,10 @@ void time_node::raise_end_event(qtime_type timestamp, time_node *oproot) {
 	time_node *p = up();
 	if(p && (p->is_par() || p->is_excl() || (p->is_seq() && !next()))) 
 		p->raise_update_event(timestamp);
-#ifndef WITH_SMIL30_RELAXED_SEQ
 	if(p && p->is_seq()) {
 		 time_node *n = next();
 		 if(n) n->raise_update_event(timestamp);
 	}
-#endif
 		
 	if(is_root()) m_context->done_playback();
 	m_context->node_stopped(m_node);
@@ -1982,14 +1980,6 @@ void time_node::startup_children(qtime_type timestamp) {
 	qtime_type qt = timestamp.as_qtime_down_to(this);
 	for(it = children.begin(); it != children.end(); it++) {
 		(*it)->set_state(ts_proactive, qt, this);
-#ifdef WITH_SMIL30_RELAXED_SEQ
-		// For SMIL 3.0 relaxed seq begin conditions (which didn't make the spec)
-        // we only want to move the first child of the SEQ to proactive, the
-		// subsequent children will be done later.
-		// XXXJACK Need to verify that this doesn't wreak havoc with hyperjumping into the
-		// middle of a <seq>, that code is tricky....
-		if (is_seq()) break;
-#endif
 	}
 }
 

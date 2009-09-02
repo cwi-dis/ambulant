@@ -245,13 +245,9 @@ smil_layout_manager::build_body_regions(lib::document *doc) {
 		if (!pair.first) continue;
 		const lib::node *n = pair.second;
 		if (n->is_data_node()) continue;
-#ifdef OLD_SUBREGIONS		
-		if (!region_node::needs_region_node(n)) continue;
-#else
 		if(!test_attrs(n).selected()) continue; // XXXJACK: does this depend on dynamic_cc? I think so...
 		if(!n->get_attribute("region") && !region_node::needs_region_node(n) &&
 			n->get_local_name() != "area") continue;
-#endif
 		AM_DBG lib::logger::get_logger()->debug("smil_layout_manager::build_body_regions: region for 0x%x %s", (void*)n, n->get_local_name().c_str());
 		region_node *rn = new region_node(n, di_parent);
 		region_node *parent = get_region_node_for(n, false);
