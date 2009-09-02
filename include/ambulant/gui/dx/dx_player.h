@@ -83,10 +83,8 @@ class AMBULANTAPI dx_player :
 	public common::gui_player, 
 	public common::window_factory, 
 	public dx_playables_context,
-	public common::embedder
-#ifndef WITHOUT_DELAYED_REDRAW
-	, public lib::event_processor_observer
-#endif
+	public common::embedder,
+	public lib::event_processor_observer
 {
 	
   public:

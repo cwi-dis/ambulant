@@ -29,21 +29,13 @@
 #define MIN_EVENT_DELAY 1
 
 // How many video frames we would like to buffer at most
-#ifdef WITH_SMALL_BUFFERS
-#define MAX_VIDEO_FRAMES 15
-#else
 #define MAX_VIDEO_FRAMES 300
-#endif
 
 // How many audio packets we would like to buffer at most
 // This limit is indicative: if demux_audio_datasource::buffer_full()
 // returns true, you are advised not to throw in more data; but if
 // you nevertheless do, no data is lost and a DEBUG message is printed
-#ifdef WITH_SMALL_BUFFERS
-#define MAX_AUDIO_PACKETS 30
-#else
 #define MAX_AUDIO_PACKETS 300
-#endif
 
 // WARNING: turning on AM_DBG globally in this file seems to trigger
 // a condition that makes the whole player hang or collapse. So you probably

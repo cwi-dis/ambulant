@@ -48,11 +48,7 @@
 // On second thoughts this seems a bad idea, so setting MIN_VIDEO_FRAMES to zero.
 #define MIN_VIDEO_FRAMES 0
 // How many video frames we would like to buffer at most.
-#ifdef WITH_SMALL_BUFFERS
-#define MAX_VIDEO_FRAMES 30
-#else
 #define MAX_VIDEO_FRAMES 100
-#endif
 
 #ifdef WITH_FFMPEG_LIBSWSCALE
 // How scaling of images is done. As we don't scale here we pick the cheapest (assuming 0 is indeed the cheapest)
@@ -661,6 +657,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 			// Next step: deocde the frame to the image format we want.
 			int bpp = 0;
 #ifndef FFMPEG_SUPPORTS_ALPHA_LAST
+            // XXXJACK: Need to test with next ffmpeg release whether this has become true.
 			bool must_swab_2341 = false;
 			bool must_swab_4321 = false;
 			bool must_swab_1432 = false;

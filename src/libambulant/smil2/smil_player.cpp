@@ -563,10 +563,6 @@ smil_player::clicked(int n, double t) {
 		async_arg aa((*it).second, timestamp);
 		async_cb *cb = new async_cb(this, &smil_player::clicked_async, aa);
 		schedule_event(cb, 0, ep_high);
-//#define WITH_SCHEDULER_EXEC
-#ifdef  WITH_SCHEDULER_EXEC
-		m_scheduler->exec();
-#endif//WITH_SCHEDULER_EXEC
 	}
 }
 
@@ -862,9 +858,6 @@ void smil_player::on_char(int ch) {
 	async_int_arg aia(m_root, std::make_pair(timestamp, ch));
 	async_int_cb *cb = new async_int_cb(this, &smil_player::on_char_async, aia);
 	schedule_event(cb, 0, ep_high);
-#ifdef  WITH_SCHEDULER_EXEC
-	m_scheduler->exec();
-#endif//WITH_SCHEDULER_EXEC
 }
 
 void
@@ -886,9 +879,6 @@ void smil_player::on_state_change(const char *ref) {
 	async_string_arg asa(m_root, std::make_pair(timestamp, ref));
 	async_string_cb *cb = new async_string_cb(this, &smil_player::marker_seen_async, asa);
 	schedule_event(cb, 0, ep_high);
-#ifdef  WITH_SCHEDULER_EXEC
-	m_scheduler->exec();
-#endif//WITH_SCHEDULER_EXEC
 }
 
 void

@@ -36,21 +36,17 @@ using namespace ambulant;
 using namespace lib;
 
 event_processor_impl::event_processor_impl(timer *t) 
-	:	m_timer(t),
-		m_high_delta_timer(t), 
-		m_med_delta_timer(t), 
-		m_low_delta_timer(t)
-#ifndef WITHOUT_DELAYED_REDRAW
-	, m_observer(NULL)
-#endif
-
-		{ assert(t != 0);
-//KB	printf("0x%x: event_processor_impl::constructor\n", this);
- }
+:	m_timer(t),
+    m_high_delta_timer(t), 
+    m_med_delta_timer(t), 
+    m_low_delta_timer(t),
+    m_observer(NULL)
+{
+    assert(t != 0);
+}
 
 event_processor_impl::~event_processor_impl() {
-		// the timer is not owned by this
-//KB	printf("0x%x: event_processor_impl::destructor\n", this);
+	// the timer is not owned by this
  	cancel_all_events();
 }
 
@@ -114,10 +110,7 @@ event_processor_impl::serve_events()
 // serve all events in the high-med-low prioritity run queues
 // in the right order, after checking with their delta timers
 {
-#ifndef WITHOUT_DELAYED_REDRAW
 	if (m_observer) m_observer->lock_redraw();
-#endif
-//KB	printf("0x%x: event_processor_impl::serve_events\n", this);
 	// check all delta_timer queues, in the right order
 	while (events_available(m_high_delta_timer, &m_high_q)
 		|| events_available(m_med_delta_timer, &m_med_q)
@@ -158,9 +151,7 @@ event_processor_impl::serve_events()
 #endif
         
             
-#ifndef WITHOUT_DELAYED_REDRAW
 	if (m_observer) m_observer->unlock_redraw();
-#endif
 }
 
 bool

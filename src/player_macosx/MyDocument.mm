@@ -360,12 +360,10 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 #ifdef WITH_OVERLAY_WINDOW
 	delete myAuxMainloop;
 	myAuxMainloop = NULL;
-#ifndef WITH_OVERLAY_WINDOW_IN_VIEW
 	if (myAuxWindow) {
 		[myAuxWindow release];
 		myAuxWindow = NULL;
 	}
-#endif
 #endif
 	delete myMainloop;
 	myMainloop = NULL;
@@ -500,7 +498,6 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	[winController setWindow:saved_window];
 
 #ifdef WITH_OVERLAY_WINDOW
-#ifndef WITH_OVERLAY_WINDOW_IN_VIEW
 	// If we have overlay documents in a separate window reparent that
 	// window to the fullscreen one
 	if (myAuxWindow) {
@@ -514,18 +511,15 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		// XXXJACK SIZE
 	}
 #endif
-#endif
 	// Get rid of the fullscreen window
 	[mScreenWindow close];
 	[saved_window makeKeyAndOrderFront:self];
 #ifdef WITH_OVERLAY_WINDOW
-#ifndef WITH_OVERLAY_WINDOW_IN_VIEW
 	// If we have overlay documents in a separate window reparent that
 	// window to the fullscreen one
 	if (myAuxWindow) {
 		[myAuxWindow makeKeyAndOrderFront: self];
 	}
-#endif
 #endif
 	
 	// And clear saved_window, which signals we're in normal mode again.
@@ -610,7 +604,6 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	[mScreenWindow setLevel:shieldLevel];
 
 #ifdef WITH_OVERLAY_WINDOW
-#ifndef WITH_OVERLAY_WINDOW_IN_VIEW
 	// If we have overlay documents in a separate window reparent that
 	// window to the fullscreen one
 	if (myAuxWindow) {
@@ -623,18 +616,15 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		// XXXJACK SIZE
 	}
 #endif
-#endif
 
 	// Show the window.
 	[mScreenWindow makeKeyAndOrderFront:self];
 #ifdef WITH_OVERLAY_WINDOW
-#ifndef WITH_OVERLAY_WINDOW_IN_VIEW
 	// If we have overlay documents in a separate window reparent that
 	// window to the fullscreen one
 	if (myAuxWindow) {
 		[myAuxWindow makeKeyAndOrderFront: self];
 	}
-#endif
 #endif
 }
 
@@ -657,10 +647,6 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		myAuxView = NULL;
 	}
 	myAuxView = [[MyAmbulantView alloc] initWithFrame: [view bounds]];
-#ifdef WITH_OVERLAY_WINDOW_IN_VIEW
-	[view addSubview: myAuxView];
-	[[view window] makeFirstResponder: myAuxView];
-#else
 	if (myAuxWindow == NULL) {
 		// Determine where on the screen the overlay window should be
 		NSPoint baseOrigin = NSMakePoint([view frame].origin.x, [view frame].origin.y);
@@ -688,14 +674,11 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	// Connect the aux window to the main window and put it up front
 	[[view window] addChildWindow: myAuxWindow ordered: NSWindowAbove];
 //	[myAuxWindow makeKeyAndOrderFront: self];
-#endif
 	AM_DBG NSLog(@"openAuxDocument %@", auxUrl);
 	AM_DBG NSLog(@"Orig view 0x%x, auxView 0x%x", (void*)view, (void*)myAuxView);
 	myAuxMainloop = new mainloop([[auxUrl absoluteString] UTF8String], myAuxView, NULL);
 	myAuxMainloop->play();
-#ifndef WITH_OVERLAY_WINDOW_IN_VIEW
 	[myAuxWindow makeFirstResponder: myAuxView];
-#endif
 	return true;
 }
 
@@ -709,12 +692,10 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		myAuxView = NULL;
 		[[view window] makeFirstResponder: view];
 	}
-#ifndef WITH_OVERLAY_WINDOW_IN_VIEW
 	if (myAuxWindow) {
 		[myAuxWindow release];
 		myAuxWindow = NULL;
 	}
-#endif	
 }
 #endif // WITH_OVERLAY_WINDOW
 

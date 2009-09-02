@@ -87,11 +87,6 @@ ambulant::net::rtsp_demux::rtsp_demux(rtsp_context_t* context, timestamp_t clip_
 
 	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::rtsp_demux(0x%x)", (void*) this);
 
-#ifdef JACK_IS_NOT_CONVINCED_YET
-	// XXXJACK suspect: we shoulnd't mess with clip_end here...
-	if ( m_clip_end < 0 || m_clip_end > m_context->last_expected_pts) 
-		m_clip_end = m_context->last_expected_pts;	
-#endif
 }
 
 ambulant::net::rtsp_demux::~rtsp_demux() {
@@ -314,12 +309,6 @@ ambulant::net::rtsp_demux::_init_subsessions(rtsp_context_t *context)
 			context->audio_codec_name = subsession->codecName();
 			context->audio_fmt = audio_format("live", context->audio_codec_name);
 			AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), audio codecname :%s ",context->audio_codec_name);
-#ifdef JACK_IS_NOT_CONVINCED_YET
-			context->audio_fmt.channels = 0; //Let the decoder (ffmpeg) find out the channels subsession->numChannels() returns channels -1 ???
-			context->audio_fmt.bits = 16;
-			//context->audio_fmt.samplerate = subsession->rtpSource()->timestampFrequency();
-			context->audio_fmt.samplerate = 0;
-#endif
 			int rtp_sock_num = subsession->rtpSource()->RTPgs()->socketNum();
 			increaseReceiveBufferTo(*context->env, rtp_sock_num, DESIRED_AUDIO_BUF_SIZE);
 #ifdef WITH_FFMPEG
@@ -348,13 +337,6 @@ ambulant::net::rtsp_demux::_init_subsessions(rtsp_context_t *context)
 			context->video_codec_name = subsession->codecName();
 			context->video_fmt = video_format("live", context->video_codec_name);
 			AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), video codecname :%s ",context->video_codec_name);
-#ifdef JACK_IS_NOT_CONVINCED_YET
-			//KB getting video_fmt from RTSP doesn't work 
-			context->video_fmt.frameduration = (timestamp_t) (1000000.0/subsession->videoFPS());
-			context->video_fmt.width = subsession->videoWidth();
-			context->video_fmt.height = subsession->videoHeight();
-			lib::logger::get_logger()->debug("ambulant::net::rtsp_demux(net::url& url), width: %d, height: %d, FPS: %f",context->video_fmt.width, context->video_fmt.height, 1000000.0/context->video_fmt.frameduration);
-#endif
 			int rtp_sock_num = subsession->rtpSource()->RTPgs()->socketNum();
 			increaseReceiveBufferTo(*context->env, rtp_sock_num, DESIRED_VIDEO_BUF_SIZE);
             // Try by Jack: disable waiting for packets, hope this fixes reorder problem.

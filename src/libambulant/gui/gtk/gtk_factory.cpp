@@ -320,7 +320,6 @@ ambulant_gtk_window::need_redraw(const lib::rect &r)
 	GtkWidget* this_widget = m_ambulant_widget->get_gtk_widget();
 	dirty_area_widget* dirty = new dirty_area_widget();
 	dirty->widget = (gtk_ambulant_widget*) gtk_widget_get_parent(this_widget);
-//KB	dirty->widget = this_widget;
 	dirty->area = r;
 	if ( ! gtk_widget_translate_coordinates (this_widget, dirty->widget, r.left(), r.top(), &dirty->area.x, &dirty->area.y)) {
 		AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::need_redraw(0x%x): gtk_widget_translate_coordinates failed.", (void *)this);

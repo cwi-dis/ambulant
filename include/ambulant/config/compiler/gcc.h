@@ -15,6 +15,7 @@
 
 #   if __GNUC__ < 4
 #error Only GCC 4 and greater supported.
+#endif
 
 //
 // Threading support: Turn this on unconditionally here (except for

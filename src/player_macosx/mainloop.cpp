@@ -17,7 +17,6 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#define WITH_FFMPEG_VIDEO
 // Define NONE_PLAYER to skip all cocoa support but use the dummy
 // none_window and none_playable in stead.
 //#define NONE_PLAYER
@@ -163,10 +162,8 @@ mainloop::init_datasource_factory()
 	df->add_audio_factory(net::create_live_audio_datasource_factory()); 
 #endif
 #ifdef WITH_FFMPEG
-#ifdef WITH_FFMPEG_VIDEO
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_video_datasource_factory");
 	df->add_video_factory(net::get_ffmpeg_video_datasource_factory());
-#endif // WITH_FFMPEG_VIDEO
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
 	df->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_decoder_finder");

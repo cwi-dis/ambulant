@@ -50,11 +50,7 @@ namespace ambulant {
 namespace net {
 
 	
-#ifdef AMBULANT_HAS_LONG_LONG
   	typedef long long int timestamp_t; ///< Time value in microseconds.
-#else
-	typedef INT64 timestamp_t; ///< Time value in microseconds.
-#endif
 	
 /// This struct completely describes an audio format.
 /// If name is "" the format is linear samples encoded
