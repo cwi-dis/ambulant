@@ -1,3 +1,15 @@
+2009-09-01 17:45  keesblom
+
+	* Changed plugin destruction code s.t. npambulant does not crash os
+	  hangs anymore when the user selects the Back button when multiple
+	  npambulant players are active (but one hasn´t played yet, so its
+	  state is idle).
+
+2009-09-01 13:40  jackjansen
+
+	* Added get_elapsed() to the various audio_datasource
+	  implementations that were missing it.
+
 2009-08-31 16:35  keesblom
 
 	* Adapted to new autogen.sh
