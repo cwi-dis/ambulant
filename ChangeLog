@@ -1,3 +1,36 @@
+2009-09-02 17:17  jackjansen
+
+	* Next step in the great cleanup: getting rid of defines that have
+	  been on (or off) for years, and serve no documentation purpose
+	  either.
+
+	  There go AMBULANT_HAS_LONG_LONG, WITHOUT_DELAYED_REDRAW,
+	  WITH_SMALL_BUFFERS, JACK_IS_NOT_CONVINCED_YET,
+	  WITH_SCHEDULER_EXEC, WITH_OVERLAY_WINDOW_IN_VIEW,
+	  WITH_FFMPEG_VIDEO .
+
+2009-09-02 15:34  jackjansen
+
+	* Great cleanup: getting rid of old compilers (gcc < 4.0) and
+	  platforms (WinCE < 5.0).
+
+	  This get rid of the following ifdefs:
+	  AMBULANT_PLATFORM_WIN32_WCE_3, AMBULANT_NO_IOSTREAMS,
+	  AMBULANT_NO_OSTREAM, AMBULANT_NO_STRINGSTREAM,
+	  AMBULANT_NO_IOSTREAMS_HEADERS, AMBULANT_NO_ABORT,
+	  AMBULANT_NO_OPERATORS_IN_NAMESPACE, AMBULANT_NO_MEMBER_TEMPLATES.
+
+2009-09-02 14:56  jackjansen
+
+	* Great cleanup: getting rid of more JNK, RANDOM_BYTES,
+	  OLD_SUBREGIONS and WITH_SMIL30_RELAXED_SEQ.
+
+2009-09-02 14:42  jackjansen
+
+	* Great cleanup, step 1 - Getting rid of #if 0/#if 1 and ifdefs
+	  triggering on JUNK, JNK, IGNORE_ZERO_DURATION,
+	  DX_DRAW_BOX_AROUND_TEXT, USE_COCOA_BOTLEFT, NO_CLICK_THRU
+
 2009-09-01 17:45  keesblom
 
 	* Changed plugin destruction code s.t. npambulant does not crash os
