@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="plugin_state"
 	ProjectGUID="{9260094E-7838-4B48-87BE-CC9F95A6D469}"
 	Keyword="Win32Proj"
@@ -127,7 +127,7 @@
 				ExecutionBucket="7"
 				Optimization="2"
 				AdditionalIncludeDirectories="..\..\third_party_packages\libxml2-2.6.29\include;..\..\include"
-				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;_WINDOWS;_USRDLL;PLUGIN_STATE_EXPORTS;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;WITH_SMIL30"
+				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;_WINDOWS;_USRDLL;PLUGIN_STATE_EXPORTS;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;WITH_SMIL30;WITH_SEAMLESS_PLAYBACK;WITH_CLOCK_SYNC"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
