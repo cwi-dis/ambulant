@@ -743,27 +743,21 @@ smiltext_layout_engine::smiltext_layout_engine(const lib::node *n, lib::event_pr
 
 void
 smiltext_layout_engine::start(double t) {
-//	m_lock.enter();
 	m_epoch = m_event_processor->get_timer()->elapsed();
 	m_engine.start(t);
 	m_crawling = m_params.m_mode == smil2::stm_crawl;
 	m_scrolling = m_params.m_mode == smil2::stm_scroll;
 	m_shifted_origin = lib::point(0,0);
-//	m_lock.leave();
 }
 	
 void
 smiltext_layout_engine::seek(double t) {
-//JNK	m_lock.enter();
 	m_engine.seek(t);
-//JNK	m_lock.leave();
 }
 	
 void
 smiltext_layout_engine::stop() {
-//JNK	m_lock.enter();
 	m_engine.stop();
-//JNK	m_lock.leave();
 }
 
 bool
@@ -777,7 +771,9 @@ smiltext_layout_engine::is_finished()
 
 void
 smiltext_layout_engine::set_dest_rect( const lib::rect& r) {
+	m_dest_rect = r;
 }
+
 
 smiltext_layout_word::smiltext_layout_word(const smiltext_run run, smiltext_metrics stm, int n_nl)
   :	m_run(run),
@@ -791,7 +787,6 @@ smiltext_layout_word::smiltext_layout_word(const smiltext_run run, smiltext_metr
 
 void
 smiltext_layout_engine::smiltext_changed() {
-//JNK	m_lock.enter();
 	m_engine.lock();
 AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::smiltext_changed(0x%x)", this);
 	if (m_engine.is_changed()) {
@@ -870,7 +865,6 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::smiltext_change
 		}
 	}
 	m_engine.unlock();
-//JNK	m_lock.leave();
 }
 
 void

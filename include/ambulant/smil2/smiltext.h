@@ -229,12 +229,13 @@ class smiltext_engine {
 	/// Return the simple duration of a <smilText/> element
 	int get_dur();
 
-	/// Lock the smiiltext_engine before calling begin(), newbegin(),
+	/// Lock the smiltext_engine before calling begin(), newbegin(),
 	/// end(), done(), is_finished(), is_changed() or  is_cleared()
 	void lock();
 
-	/// Unlock the smiiltext_engine before calling begin(), newbegin(),
-	/// end(), done(), is_finished(), is_changed() or  is_cleared()
+	/// Unlock the smiltext_engine after calling begin(), newbegin(),
+	/// end(), done(), is_finished(), is_changed() or  is_cleared(),
+	/// when appropriate
 	void unlock();
 
 	/// HACK! We simulate the ref_counted interface
@@ -362,8 +363,7 @@ class smiltext_layout_engine {
 	void redraw(const lib::rect& r);
 
 	/// Set destination rectangle.on screen
-	void set_dest_rect(const lib::rect& r); // XXXJACK: is this needed?
-
+	void set_dest_rect(const lib::rect& r);
 	void smiltext_changed();
 
   private:
@@ -378,6 +378,7 @@ class smiltext_layout_engine {
 	lib::event_processor *m_event_processor;
 	lib::timer::time_type m_epoch;
 	smiltext_params m_params;	// global parameters
+	lib::rect m_dest_rect;
 	smiltext_layout_provider* m_provider;
 	bool m_needs_conditional_newline;
 	bool m_needs_conditional_space;
