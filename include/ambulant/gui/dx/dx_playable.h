@@ -49,7 +49,7 @@ class AMBULANTAPI dx_playables_context : public common::playable_factory_machdep
 	virtual html_browser_factory *get_html_browser_factory() { return NULL; }
 };
 
-class dx_renderer_playable : public common::renderer_playable {
+class AMBULANTAPI dx_renderer_playable : public common::renderer_playable {
   public:
 	dx_renderer_playable(
 		common::playable_notification *context,

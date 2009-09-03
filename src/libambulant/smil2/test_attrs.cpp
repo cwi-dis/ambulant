@@ -21,6 +21,7 @@
  * @$Id$ 
  */
 
+#include "ambulant/config/config.h"
 #include "ambulant/smil2/test_attrs.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/parselets.h"
@@ -521,7 +522,9 @@ void
 test_attrs::set_current_screen_size(int height, int width)
 {
     char buf[32];
-#ifdef AMBULANT_PLATFORM_WIN32
+#if defined(AMBULANT_PLATFORM_WIN32_WCE)
+	sprintf(buf, "%dx%d", height, width);
+#elif defined(AMBULANT_PLATFORM_WIN32)
 	sprintf_s(buf, sizeof buf, "%dx%d", height, width);
 #else
 	snprintf(buf, sizeof buf, "%dx%d", height, width);

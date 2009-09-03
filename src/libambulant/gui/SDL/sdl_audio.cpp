@@ -423,7 +423,9 @@ gui::sdl::sdl_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
 		if (rv) assert(*ptr);
 		if (rv > bytes_wanted)
 			rv = bytes_wanted;
+#ifdef WITH_CLOCK_SYNC
 		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::get_data: audio-clock=%d, wanted %d bytes, returning %d bytes", m_audio_clock, bytes_wanted, rv);
+#endif
 		// Also set volume(s)
 		m_volcount = 0;
 		if (m_dest) {
@@ -593,8 +595,10 @@ gui::sdl::sdl_audio_renderer::init_with_node(const lib::node *n)
 	renderer_playable::init_with_node(n);
 	
 	if (m_audio_src) {
+#ifdef WITH_CLOCK_SYNC
 		m_audio_clock = 0;
-		
+#endif
+
         if (m_clip_begin != m_previous_clip_position) {
             AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::init_with_node seek from %lld to %lld for %s", m_previous_clip_position, m_clip_begin, n->get_sig().c_str());
 			m_lock.leave();

@@ -49,7 +49,6 @@ class logger_trace : public ambulant::lib::ostream {
 		ATLTRACE(atlTraceGeneral, 0, _T("%S"), cstr);
 		return 0;
 	}
-	void write(ambulant::lib::byte_buffer& bb) {write("ostream use of byte_buffer not implemented for trace");}
 	void flush() {}
 };
 #endif

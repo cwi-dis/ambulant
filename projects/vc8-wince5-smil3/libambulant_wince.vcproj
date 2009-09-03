@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="libambulant_wince"
 	ProjectGUID="{B2643C6C-B5BE-40FB-B127-320E15D9D09E}"
 	RootNamespace="libambulant_wince"
@@ -45,6 +45,7 @@
 				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;_LIB;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;_AMBULANT;WITH_EXPAT;XML_STATIC;WITH_SMIL30;WITH_SMALL_BUFFERS"
 				MinimalRebuild="true"
 				RuntimeLibrary="1"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -119,6 +120,7 @@
 				AdditionalIncludeDirectories="&quot;..\..\third_party_packages\xerces-c-src_2_7_0\src\&quot;;..\..\include;..\..\third_party_packages\expat\lib;..\..\third_party_packages\jpeg;..\..\third_party_packages\lpng128;..\..\third_party_packages\zlib;..\..\third_party_packages\mp3lib"
 				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;_LIB;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;_AMBULANT;WITH_EXPAT;XML_STATIC;WITH_SMIL30;WITH_SMALL_BUFFERS"
 				RuntimeLibrary="0"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -195,6 +197,7 @@
 				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;_LIB;AMBULANT_BUILD_DLL;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;_AMBULANT;WITH_WINDOWS_PLUGINS;WITH_EXPAT;XML_STATIC;WITH_SMIL30;WITH_SMALL_BUFFERS"
 				MinimalRebuild="true"
 				RuntimeLibrary="3"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -275,6 +278,7 @@
 				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;_LIB;AMBULANT_BUILD_DLL;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;_AMBULANT;WITH_WINDOWS_PLUGINS;WITH_EXPAT;XML_STATIC;WITH_SMIL30;WITH_SMALL_BUFFERS"
 				MinimalRebuild="false"
 				RuntimeLibrary="2"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -647,6 +651,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\libambulant\common\renderer_impl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\libambulant\common\renderer_select.cpp"
 					>
 				</File>
 				<File

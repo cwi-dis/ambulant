@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="plugin_ffmpeg"
 	ProjectGUID="{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}"
 	Keyword="Win32Proj"
@@ -44,6 +44,7 @@
 				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;WITH_SMIL30;WITH_SMALL_BUFFERS;WITH_DSVIDEO;WITH_FFMPEG;WITH_SDL;WITH_LIVE"
 				MinimalRebuild="true"
 				RuntimeLibrary="1"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -131,6 +132,7 @@
 				AdditionalIncludeDirectories="..\..\include;&quot;..\..\third_party_packages\ffmpeg-wm5-compat&quot;;&quot;..\..\third_party_packages\ffmpeg-wm5&quot;;..\..\third_party_packages\live\UsageEnvironment\include;..\..\third_party_packages\live\liveMedia\include;..\..\third_party_packages\live\groupsock\include;..\..\third_party_packages\live\BasicUsageEnvironment\include;&quot;..\..\third_party_packages\SDL-1.2.12\include&quot;"
 				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;WITH_SMIL30;WITH_SMALL_BUFFERS;WITH_FFMPEG;WITH_SDL;WITH_DSVIDEO;WITH_LIVE"
 				RuntimeLibrary="0"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -184,7 +186,7 @@
 				ForceDirty="-1"
 				RemoteDirectory="%CSIDL_PROGRAM_FILES%\AmbulantPlayer"
 				RegisterOutput="0"
-				AdditionalFiles="avcodec-51.dll|..\..\bin\wince\|%CSIDL_PROGRAM_FILES%\AmbulantPlayer|0;avformat-51.dll|..\..\bin\wince\|%CSIDL_PROGRAM_FILES%\AmbulantPlayer|0;avutil-49.dll|..\..\bin\wince\|%CSIDL_PROGRAM_FILES%\AmbulantPlayer|0;SDL.dll|..\..\bin\wince\|%CSIDL_PROGRAM_FILES%\AmbulantPlayer|0"
+				AdditionalFiles="avcodec-51.dll|..\..\bin\wince\|%CSIDL_PROGRAM_FILES%\AmbulantPlayer|0;avformat-52.dll|..\..\bin\wince\|%CSIDL_PROGRAM_FILES%\AmbulantPlayer|0;avutil-49.dll|..\..\bin\wince\|%CSIDL_PROGRAM_FILES%\AmbulantPlayer|0;SDL.dll|..\..\bin\wince\|%CSIDL_PROGRAM_FILES%\AmbulantPlayer|0"
 			/>
 			<DebuggerTool
 			/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="plugin"
 	ProjectGUID="{DD4DBAA0-62B0-44AA-A753-EFFE842809FB}"
 	Keyword="Win32Proj"
@@ -44,6 +44,7 @@
 				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;WITH_SMIL30"
 				MinimalRebuild="true"
 				RuntimeLibrary="1"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -127,6 +128,7 @@
 				AdditionalIncludeDirectories="..\..\include"
 				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;WITH_SMIL30"
 				RuntimeLibrary="0"
+				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
