@@ -1,3 +1,16 @@
+2009-09-03 21:33  jackjansen
+
+	* Runs on WM5. Well... Crawls, really:-)
+
+2009-09-03 15:23  keesblom
+
+	* Removed //JNK lines for abandonned lock/unlock lines Re-enabled
+	  m_dest_rect, used by qt and dx renderers
+
+2009-09-03 13:38  jackjansen
+
+	* WinCE builds again.
+
 2009-09-02 17:17  jackjansen
 
 	* Next step in the great cleanup: getting rid of defines that have
