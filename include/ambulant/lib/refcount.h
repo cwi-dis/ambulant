@@ -96,7 +96,16 @@ class basic_atomic_count {
 	}
 	
 	/// Return the current value of the counter.
-	operator long() const {return m_value;}
+	operator long() const {
+#ifdef	USE_REF_COUNT_SEMAPHORE
+		const_cast<basic_atomic_count*>(this)->m_cs.enter();
+		const long rv = m_value;
+		const_cast<basic_atomic_count*>(this)->m_cs.leave();
+		return rv;
+#else //USE_REF_COUNT_SEMAPHORE
+		return m_value;
+#endif//USE_REF_COUNT_SEMAPHORE
+	}
 	
   private:
 	basic_atomic_count(basic_atomic_count const &);
