@@ -194,13 +194,28 @@ class timer_control_impl : public timer_control {
     /// Signals that some realtime renderer has detected a clock drift.
     /// Positive values means the clock has to speed up, negative numbers that the clock has to slow down.
     /// Returns true if the clock has recorded the fact, fase if the renderer itself has to adjust.
-    signed_time_type set_drift(signed_time_type drift) { m_drift = drift; return 0; };
+    signed_time_type set_drift(signed_time_type drift) { 
+	m_lock.enter();
+	m_drift = drift;
+	m_lock.leave();
+	return 0;
+    };
     
     /// Returns the currently recorded drift.
-    signed_time_type get_drift() const { return m_drift; };
+    signed_time_type get_drift() const { 
+	const_cast<timer_control_impl*>(this)->m_lock.enter();
+	signed_time_type rv = m_drift;
+	const_cast<timer_control_impl*>(this)->m_lock.leave();
+	return rv;
+    };
     
     /// Skew the clock.
-    void skew(signed_time_type skew_) {m_local_epoch += skew_; m_drift -= skew_; };
+    void skew(signed_time_type skew_) {
+	m_lock.enter();
+	m_local_epoch += skew_;
+	m_drift -= skew_;
+	m_lock.leave();
+    };
 #endif
 	
   private:

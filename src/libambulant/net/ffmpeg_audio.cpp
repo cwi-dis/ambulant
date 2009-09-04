@@ -395,6 +395,7 @@ ffmpeg_decoder_datasource::data_avail()
 	int sz;
 	if (m_con) {
 		if (m_src == NULL) {
+			m_lock.leave();
 			lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail(): No datasource !");
 			lib::logger::get_logger()->warn(gettext("Programmer error encountered during audio playback"));
 			return;
@@ -691,8 +692,11 @@ ffmpeg_decoder_datasource::get_clip_begin()
 timestamp_t
 ffmpeg_decoder_datasource::get_elapsed()
 {
+    m_lock.enter();
     timestamp_t buffer_duration = 1000000LL * (m_buffer.size() * 8) / (m_fmt.samplerate* m_fmt.channels * m_fmt.bits);
-    return m_elapsed - buffer_duration;
+    timestamp_t  elapsed =  m_elapsed - buffer_duration;
+    m_lock.leave();
+    return elapsed;
 }
 #endif
 
