@@ -83,13 +83,17 @@ gui::qt::qt_smiltext_renderer::qt_smiltext_renderer(
 
 gui::qt::qt_smiltext_renderer::~qt_smiltext_renderer() {
 	AM_DBG lib::logger::get_logger()->debug("~qt_smiltext_renderer(0x%x)", this);
+	m_lock.enter();
 
+	m_lock.leave();
 }
 
 void
 gui::qt::qt_smiltext_renderer::start(double t) {
 	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_renderer::start(0x%x)", this);
 		
+	m_lock.enter();
+//JNK?	m_epoch = m_event_processor->get_timer()->elapsed();
 	m_layout_engine.start(t);
 	renderer_playable::start(t);
 	m_layout_engine.set_dest_rect(m_rect = m_dest->get_rect());
@@ -114,23 +118,28 @@ gui::qt::qt_smiltext_renderer::start(double t) {
 		m_blending = true;
 	}
 	m_context->started(m_cookie);
+	m_lock.leave();
 }
 
 bool 
 gui::qt::qt_smiltext_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_renderer::stop(0x%x)", this);
+	m_lock.enter();
 	if (m_dest) m_dest->renderer_done(this);
 	m_dest = NULL;
 	m_activated = false;
 	assert(m_context);
 	m_context->stopped(m_cookie);
+	m_lock.leave();
 	return true;
 }
 
 void
 gui::qt::qt_smiltext_renderer::marker_seen(const char *name)
 {
+	m_lock.enter();
 	m_context->marker_seen(m_cookie, name);
+	m_lock.leave();
 }
 
 void
@@ -362,6 +371,7 @@ gui::qt::qt_smiltext_renderer::_qt_smiltext_set_font(const smil2::smiltext_run& 
 
 void
 gui::qt::qt_smiltext_renderer::redraw_body(const lib::rect& dirty, common::gui_window *window) {
+	m_lock.enter();
 	m_window = (ambulant_qt_window*) window;
 
 	lib::rect r = dirty;
@@ -372,6 +382,7 @@ gui::qt::qt_smiltext_renderer::redraw_body(const lib::rect& dirty, common::gui_w
 		
 	m_layout_engine.redraw(r);
 	bool finished = m_layout_engine.is_finished();
+	m_lock.leave();
 	if (finished)
 		m_context->stopped(m_cookie);
 
