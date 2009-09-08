@@ -58,15 +58,9 @@ class event_processor {
 	/// Cancel a previously scheduled event.
 	virtual bool cancel_event(event *pe, event_priority priority = ep_low) = 0;
 	
-	// Fires waiting events.
-	virtual void serve_events() = 0;
-
 	// Get the underlying timer.
 	virtual timer *get_timer() const = 0;
 	
-	// Stop this event processor (stops the underlying thread).
-	virtual void stop_processor_thread() = 0;
-
 	// Set the observer.
 	virtual void set_observer(event_processor_observer *obs) = 0;
 };
@@ -89,6 +83,14 @@ class event_processor {
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/delta_timer.h"
 #include "ambulant/lib/mtsync.h"
+#ifdef AMBULANT_PLATFORM_UNIX
+#include "ambulant/lib/unix/unix_thread.h"
+#define BASE_THREAD lib::unix::thread
+#endif
+#ifdef AMBULANT_PLATFORM_WIN32
+#include "ambulant/lib/win32/win32_thread.h"
+#define BASE_THREAD lib::win32::thread
+#endif
 
 namespace ambulant {
 
@@ -99,40 +101,40 @@ namespace lib {
 /// There is a machine-dependent companion class that glues
 /// this together with a (machine-dependent) thread to get the
 /// complete behaviour.
-class event_processor_impl : public event_processor {
+class event_processor_impl : public event_processor, public BASE_THREAD {
   public:
  	event_processor_impl(timer *t);	
 	~event_processor_impl();	
-	timer *get_timer() const;
 	
+    timer *get_timer() const;
+	unsigned long run();
+    
 	void add_event(event *pe, time_type t, event_priority priority);
 	bool cancel_event(event *pe, event_priority priority = ep_low);
 	void cancel_all_events();
-	void serve_events();
-	void stop_processor_thread() {};
 	void set_observer(event_processor_observer *obs) {m_observer = obs; };
 #ifndef NDEBUG
 	void dump();
 #endif
   protected:
-	// called by add_event
-	// wakes up thread executing serve_events
-	virtual void wakeup() = 0;
-	
-	// wait until some thread calls wakeup
-	virtual void wait_event() = 0;
-
+    // Called by platform-specific subclasses.
+    // Should hold m_lock when calling.
+	void _serve_events();
+    
 	// the timer for this processor
 	timer *m_timer;
 	event_processor_observer *m_observer;
+
+	// protects whole data structure
+	critical_section_cv m_lock;  
  private:
 	// check, if needed, with a delta_timer to fill its run queue
 	// return true if the run queue contains any events
-	bool events_available(delta_timer& dt, std::queue<event*> *qp);
+	bool _events_available(delta_timer& dt, std::queue<event*> *qp);
 
 	// serve a single event from a delta_timer run queue
 	// return true if an event was served
-	bool serve_event(delta_timer& dt, std::queue<event*> *qp);
+	bool _serve_event(delta_timer& dt, std::queue<event*> *qp);
 	
 	// high priority delta timer and its event queue
 	delta_timer m_high_delta_timer;
@@ -146,8 +148,6 @@ class event_processor_impl : public event_processor {
 	delta_timer m_low_delta_timer;
 	std::queue<event*> m_low_q;
 	
-	// protects delta timer lists
-	critical_section m_delta_timer_cs;  
 };
 
 /// Machine-dependent factory function

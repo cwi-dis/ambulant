@@ -47,34 +47,19 @@ class critical_section : public ambulant::lib::base_critical_section {
 	void enter();
 	void leave();
 
-  private:
+  protected:
 	pthread_mutex_t m_cs;
 };
 
-class condition : public ambulant::lib::base_condition {
+class critical_section_cv : public critical_section, public ambulant::lib::base_critical_section_cv {
   public:
-	condition();
-	~condition();
+	critical_section_cv();
+	~critical_section_cv();
 	
 	void signal();
-	void signal_all();
-	bool wait(int microseconds, critical_section &cs);
+	bool wait(int microseconds = -1);
   private:
 	pthread_cond_t m_condition;
-};
-
-class counting_semaphore {
-  public:
-	counting_semaphore();
-	~counting_semaphore();
-	
-	void down();
-	void up();
-	int count();
-  private:
-    critical_section m_lock;
-    critical_section m_wait;
-    int m_count;
 };
 
 } // namespace unix

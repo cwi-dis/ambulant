@@ -1495,9 +1495,7 @@ event_processor::event_processor(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "add_event")) PyErr_Warn(PyExc_Warning, "event_processor: missing attribute: add_event");
 		if (!PyObject_HasAttrString(itself, "cancel_all_events")) PyErr_Warn(PyExc_Warning, "event_processor: missing attribute: cancel_all_events");
 		if (!PyObject_HasAttrString(itself, "cancel_event")) PyErr_Warn(PyExc_Warning, "event_processor: missing attribute: cancel_event");
-		if (!PyObject_HasAttrString(itself, "serve_events")) PyErr_Warn(PyExc_Warning, "event_processor: missing attribute: serve_events");
 		if (!PyObject_HasAttrString(itself, "get_timer")) PyErr_Warn(PyExc_Warning, "event_processor: missing attribute: get_timer");
-		if (!PyObject_HasAttrString(itself, "stop_processor_thread")) PyErr_Warn(PyExc_Warning, "event_processor: missing attribute: stop_processor_thread");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -1580,21 +1578,6 @@ bool event_processor::cancel_event(ambulant::lib::event* pe, ambulant::lib::even
 	return _rv;
 }
 
-void event_processor::serve_events()
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_rv = PyObject_CallMethod(py_event_processor, "serve_events", "()");
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during event_processor::serve_events() callback:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-
-	PyGILState_Release(_GILState);
-}
-
 ambulant::lib::timer* event_processor::get_timer() const
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
@@ -1617,21 +1600,6 @@ ambulant::lib::timer* event_processor::get_timer() const
 
 	PyGILState_Release(_GILState);
 	return _rv;
-}
-
-void event_processor::stop_processor_thread()
-{
-	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_rv = PyObject_CallMethod(py_event_processor, "stop_processor_thread", "()");
-	if (PyErr_Occurred())
-	{
-		PySys_WriteStderr("Python exception during event_processor::stop_processor_thread() callback:\n");
-		PyErr_Print();
-	}
-
-	Py_XDECREF(py_rv);
-
-	PyGILState_Release(_GILState);
 }
 
 /* ---------------------- Class parser_factory ---------------------- */

@@ -513,14 +513,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\libambulant\lib\win32\win32_event_processor.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\libambulant\lib\win32\win32_factory.cpp"
-						>
-					</File>
-					<File
 						RelativePath="..\..\src\libambulant\lib\win32\win32_fstream.cpp"
 						>
 					</File>
@@ -989,10 +981,6 @@
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\lib\win32\win32_error.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\include\ambulant\lib\win32\win32_event_processor.h"
 							>
 						</File>
 						<File

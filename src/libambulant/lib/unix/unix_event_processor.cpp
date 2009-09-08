@@ -20,7 +20,7 @@
 /* 
  * @$Id$ 
  */
-
+#if 0
 #include "ambulant/lib/unix/unix_event_processor.h"
 
 #ifndef AM_DBG
@@ -32,79 +32,46 @@ using namespace ambulant;
 lib::unix::event_processor::event_processor(timer *t) 
 :   event_processor_impl(t)
 {
-	int err;
-  	pthread_mutex_init(&m_queue_mutex, NULL);
-	pthread_cond_init(&m_queue_condition, NULL);
 	AM_DBG lib::logger::get_logger()->debug("event_processor 0x%x created", (void *)this);
-	if ((err = pthread_mutex_init(&m_queue_mutex, NULL)) != 0) {
-		lib::logger::get_logger()->fatal("unix_event_processor: pthread_mutex_init failed: %s", strerror(err));
-	}
-	if ((err = pthread_cond_init(&m_queue_condition, NULL)) != 0) {
-		lib::logger::get_logger()->fatal("unix_event_processor: pthread_cond_init failed: %s", strerror(err));
-	}
+    m_lock.enter();
 	start();
+    m_lock.leave();
 }
 
 lib::unix::event_processor::~event_processor()
 {
 	stop();
+    m_lock.enter();
 	assert( ! is_running());
 	AM_DBG lib::logger::get_logger()->debug("event_processor 0x%x deleted", (void *)this);
+    m_lock.leave();
 }
 
 unsigned long
 lib::unix::event_processor::run()
 {
-	int err;
 	AM_DBG lib::logger::get_logger()->debug("event_processor 0x%x started", (void *)this);
-	// XXXX Note: the use of the mutex means that only one thread is actively
-	// serving events. This needs to be rectified at some point: only the
-	// queue manipulations and wait_event() should be locked with the mutex.
-	if ((err = pthread_mutex_lock(&m_queue_mutex)) != 0 ) {
-		lib::logger::get_logger()->fatal("unix_event_processor.run: pthread_mutex_lock failed: %s", strerror(err));
-	}
+	m_lock.enter();
 	while(!exit_requested()) {	
-		serve_events();		
-		wait_event();
+		_serve_events();		
+		_wait_event();
 	}
-	if ((err = pthread_mutex_unlock(&m_queue_mutex)) !=  0 ) {
-		lib::logger::get_logger()->fatal("unix_event_processor.run: pthread_mutex_unlock failed: %s", strerror(err));
-	}
+    m_lock.leave();
 	AM_DBG lib::logger::get_logger()->debug("event_processor 0x%x stopped", (void *)this);
 	return 0;
 }
 
-void
-lib::unix::event_processor::wait_event()
+bool
+lib::unix::event_processor::_wait_event()
 {
-	int err;
-	struct timespec ts;
-	struct timeval tv;
-	int dummy;
-		
-	
-	// we want to wait for 10ms
-	dummy = gettimeofday(&tv,NULL);
-	ts.tv_sec = tv.tv_sec;
-	ts.tv_nsec = (tv.tv_usec + 10000)* 1000;
-	if (ts.tv_nsec >= 1000000000) {
-		ts.tv_sec += 1;
-		ts.tv_nsec -= 1000000000;
-	}
-	// Note: m_queue_mutex must be locked at this call
-	err = pthread_cond_timedwait(&m_queue_condition, &m_queue_mutex, &ts);
-	if ( err != 0 && err != ETIMEDOUT) {
-		lib::logger::get_logger()->fatal("unix_event_processor.wait_event: pthread_cond_wait failed: %s", strerror(err));
-	}
+	// Note: m_lock must be locked at this call
+    return m_lock.wait(10000);
 }
 
 void
-lib::unix::event_processor::wakeup()
+lib::unix::event_processor::_wakeup()
 {
-	int err;
-	if ((err = pthread_cond_signal(&m_queue_condition)) != 0) {
-		lib::logger::get_logger()->fatal("unix_event_processor.wakeup: pthread_cond_signal failed: %s", strerror(err));
-	}
+    m_lock.signal();
 }
 
 lib::event_processor *
@@ -112,3 +79,4 @@ lib::event_processor_factory(timer *t)
 {
 	return new unix::event_processor(t);
 }
+#endif

@@ -40,7 +40,7 @@
 #pragma warning(disable : 4251)
 #endif
 // reference couting should be atomic
-//#define USE_REF_COUNT_SEMAPHORE
+#define USE_REF_COUNT_SEMAPHORE
 
 namespace ambulant {
 

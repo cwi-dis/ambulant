@@ -56,14 +56,14 @@ namespace lib {
 
 class AMBULANTAPI critical_section : public win32::critical_section {
 };
-class AMBULANTAPI condition : public win32::condition {
+class AMBULANTAPI critical_section_cv : public win32::critical_section_cv {
 };
 
 #else
 
 class AMBULANTAPI critical_section : public unix::critical_section {
 };
-class AMBULANTAPI condition : public unix::condition {
+class AMBULANTAPI critical_section_cv : public unix::critical_section_cv {
 };
 
 #endif

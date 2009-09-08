@@ -619,8 +619,7 @@ class bgimage_loader : public lib::ref_counted_obj, public common::playable_noti
 	std::vector<common::playable*> m_old_playables;
 	std::set<common::gui_window*> m_gui_windows;
 
-	lib::critical_section m_lock;
-	lib::condition m_condition;
+	lib::critical_section_cv m_lock;
 };
 
 void
@@ -741,8 +740,7 @@ bgimage_loader::run(smil_layout_manager *layout_mgr)
 	if (m_playables.size()) {
 		// All the renderers are started. Wait for everything to finish.
 		AM_DBG lib::logger::get_logger()->debug("bgimage_loader::run: waiting for %d renderers", m_playables.size());
-		m_lock.leave();
-		m_condition.wait(-1, m_lock);
+		m_lock.wait();
 	}
 	m_lock.leave();
 }
@@ -758,7 +756,7 @@ bgimage_loader::stopped(cookie_type n, double t)
 		m_playables.erase(n);
 		if (m_playables.size() == 0)	{
 			AM_DBG lib::logger::get_logger()->debug("bgimage_loader::stopped: signalling condition");
-			m_condition.signal();
+			m_lock.signal();
 		} else {
 			AM_DBG lib::logger::get_logger()->debug("bgimage_loader::stopped: %d more renderers", m_playables.size());
 		}

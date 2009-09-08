@@ -216,9 +216,7 @@ public:
 	void add_event(ambulant::lib::event* pe, ambulant::lib::timer::time_type t, ambulant::lib::event_priority priority);
 	void cancel_all_events();
 	bool cancel_event(ambulant::lib::event* pe, ambulant::lib::event_priority priority);
-	void serve_events();
 	ambulant::lib::timer* get_timer() const;
-	void stop_processor_thread();
 	void set_observer(ambulant::lib::event_processor_observer*) { abort(); }
   private:
 	PyObject *py_event_processor;

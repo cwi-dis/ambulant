@@ -2357,19 +2357,6 @@ static PyObject *event_processorObj_cancel_event(event_processorObject *_self, P
 	return _res;
 }
 
-static PyObject *event_processorObj_serve_events(event_processorObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	if (!PyArg_ParseTuple(_args, ""))
-		return NULL;
-	PyThreadState *_save = PyEval_SaveThread();
-	_self->ob_itself->serve_events();
-	PyEval_RestoreThread(_save);
-	Py_INCREF(Py_None);
-	_res = Py_None;
-	return _res;
-}
-
 static PyObject *event_processorObj_get_timer(event_processorObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -2383,19 +2370,6 @@ static PyObject *event_processorObj_get_timer(event_processorObject *_self, PyOb
 	return _res;
 }
 
-static PyObject *event_processorObj_stop_processor_thread(event_processorObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	if (!PyArg_ParseTuple(_args, ""))
-		return NULL;
-	PyThreadState *_save = PyEval_SaveThread();
-	_self->ob_itself->stop_processor_thread();
-	PyEval_RestoreThread(_save);
-	Py_INCREF(Py_None);
-	_res = Py_None;
-	return _res;
-}
-
 static PyMethodDef event_processorObj_methods[] = {
 	{"add_event", (PyCFunction)event_processorObj_add_event, 1,
 	 PyDoc_STR("(ambulant::lib::event* pe, ambulant::lib::timer::time_type t, ambulant::lib::event_priority priority) -> None")},
@@ -2403,12 +2377,8 @@ static PyMethodDef event_processorObj_methods[] = {
 	 PyDoc_STR("() -> None")},
 	{"cancel_event", (PyCFunction)event_processorObj_cancel_event, 1,
 	 PyDoc_STR("(ambulant::lib::event* pe, ambulant::lib::event_priority priority) -> (bool _rv)")},
-	{"serve_events", (PyCFunction)event_processorObj_serve_events, 1,
-	 PyDoc_STR("() -> None")},
 	{"get_timer", (PyCFunction)event_processorObj_get_timer, 1,
 	 PyDoc_STR("() -> (ambulant::lib::timer* _rv)")},
-	{"stop_processor_thread", (PyCFunction)event_processorObj_stop_processor_thread, 1,
-	 PyDoc_STR("() -> None")},
 	{NULL, NULL, 0}
 };
 
