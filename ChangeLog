@@ -1,3 +1,8 @@
+2009-09-07 14:14  keesblom
+
+	* Re-added locks in qt_smiltext.cpp. Should fix #2849057, at least
+	  for now.
+
 2009-09-04 16:41  keesblom
 
 	* Fixed a few locking issues reported by valgrind.
