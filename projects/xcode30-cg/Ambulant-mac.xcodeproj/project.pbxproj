@@ -70,7 +70,6 @@
 		0496566A0BCAEA7D002C00DF /* timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652B70BCAE3C5002C00DF /* timer.cpp */; };
 		0496566B0BCAEA7D002C00DF /* transition_info.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652B80BCAE3C5002C00DF /* transition_info.cpp */; };
 		0496566C0BCAEA7D002C00DF /* tree_builder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652B90BCAE3C5002C00DF /* tree_builder.cpp */; };
-		0496566D0BCAEA7D002C00DF /* unix_event_processor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652BB0BCAE3C5002C00DF /* unix_event_processor.cpp */; };
 		0496566E0BCAEA7D002C00DF /* unix_mtsync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652BC0BCAE3C5002C00DF /* unix_mtsync.cpp */; };
 		0496566F0BCAEA7D002C00DF /* unix_thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652BD0BCAE3C5002C00DF /* unix_thread.cpp */; };
 		049656700BCAEA7D002C00DF /* unix_timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652BE0BCAE3C5002C00DF /* unix_timer.cpp */; };
@@ -362,14 +361,12 @@
 		049651BB0BCAE333002C00DF /* transition_info.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = transition_info.h; sourceTree = "<group>"; };
 		049651BC0BCAE333002C00DF /* tree_builder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = tree_builder.h; sourceTree = "<group>"; };
 		049651BF0BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		049651C10BCAE333002C00DF /* unix_event_processor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = unix_event_processor.h; sourceTree = "<group>"; };
 		049651C20BCAE333002C00DF /* unix_mtsync.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = unix_mtsync.h; sourceTree = "<group>"; };
 		049651C30BCAE333002C00DF /* unix_thread.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = unix_thread.h; sourceTree = "<group>"; };
 		049651C40BCAE333002C00DF /* unix_timer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = unix_timer.h; sourceTree = "<group>"; };
 		049651C60BCAE333002C00DF /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
 		049651C80BCAE333002C00DF /* win32_asb.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = win32_asb.h; sourceTree = "<group>"; };
 		049651C90BCAE333002C00DF /* win32_error.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = win32_error.h; sourceTree = "<group>"; };
-		049651CA0BCAE333002C00DF /* win32_event_processor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = win32_event_processor.h; sourceTree = "<group>"; };
 		049651CB0BCAE333002C00DF /* win32_fstream.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = win32_fstream.h; sourceTree = "<group>"; };
 		049651CC0BCAE333002C00DF /* win32_mtsync.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = win32_mtsync.h; sourceTree = "<group>"; };
 		049651CD0BCAE333002C00DF /* win32_thread.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = win32_thread.h; sourceTree = "<group>"; };
@@ -494,14 +491,11 @@
 		049652B70BCAE3C5002C00DF /* timer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = timer.cpp; sourceTree = "<group>"; };
 		049652B80BCAE3C5002C00DF /* transition_info.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = transition_info.cpp; sourceTree = "<group>"; };
 		049652B90BCAE3C5002C00DF /* tree_builder.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = tree_builder.cpp; sourceTree = "<group>"; };
-		049652BB0BCAE3C5002C00DF /* unix_event_processor.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = unix_event_processor.cpp; sourceTree = "<group>"; };
 		049652BC0BCAE3C5002C00DF /* unix_mtsync.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = unix_mtsync.cpp; sourceTree = "<group>"; };
 		049652BD0BCAE3C5002C00DF /* unix_thread.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = unix_thread.cpp; sourceTree = "<group>"; };
 		049652BE0BCAE3C5002C00DF /* unix_timer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = unix_timer.cpp; sourceTree = "<group>"; };
 		049652C00BCAE3C5002C00DF /* win32_asb.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = win32_asb.cpp; sourceTree = "<group>"; };
 		049652C10BCAE3C5002C00DF /* win32_error.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = win32_error.cpp; sourceTree = "<group>"; };
-		049652C20BCAE3C5002C00DF /* win32_event_processor.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = win32_event_processor.cpp; sourceTree = "<group>"; };
-		049652C30BCAE3C5002C00DF /* win32_factory.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = win32_factory.cpp; sourceTree = "<group>"; };
 		049652C40BCAE3C5002C00DF /* win32_fstream.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = win32_fstream.cpp; sourceTree = "<group>"; };
 		049652C50BCAE3C5002C00DF /* win32_thread.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = win32_thread.cpp; sourceTree = "<group>"; };
 		049652C60BCAE3C5002C00DF /* win32_timer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = win32_timer.cpp; sourceTree = "<group>"; };
@@ -996,7 +990,6 @@
 			isa = PBXGroup;
 			children = (
 				049651BF0BCAE333002C00DF /* Makefile.am */,
-				049651C10BCAE333002C00DF /* unix_event_processor.h */,
 				049651C20BCAE333002C00DF /* unix_mtsync.h */,
 				049651C30BCAE333002C00DF /* unix_thread.h */,
 				049651C40BCAE333002C00DF /* unix_timer.h */,
@@ -1010,7 +1003,6 @@
 				049651C60BCAE333002C00DF /* Makefile.am */,
 				049651C80BCAE333002C00DF /* win32_asb.h */,
 				049651C90BCAE333002C00DF /* win32_error.h */,
-				049651CA0BCAE333002C00DF /* win32_event_processor.h */,
 				049651CB0BCAE333002C00DF /* win32_fstream.h */,
 				049651CC0BCAE333002C00DF /* win32_mtsync.h */,
 				049651CD0BCAE333002C00DF /* win32_thread.h */,
@@ -1238,7 +1230,6 @@
 		049652BA0BCAE3C5002C00DF /* unix */ = {
 			isa = PBXGroup;
 			children = (
-				049652BB0BCAE3C5002C00DF /* unix_event_processor.cpp */,
 				049652BC0BCAE3C5002C00DF /* unix_mtsync.cpp */,
 				049652BD0BCAE3C5002C00DF /* unix_thread.cpp */,
 				049652BE0BCAE3C5002C00DF /* unix_timer.cpp */,
@@ -1251,8 +1242,6 @@
 			children = (
 				049652C00BCAE3C5002C00DF /* win32_asb.cpp */,
 				049652C10BCAE3C5002C00DF /* win32_error.cpp */,
-				049652C20BCAE3C5002C00DF /* win32_event_processor.cpp */,
-				049652C30BCAE3C5002C00DF /* win32_factory.cpp */,
 				049652C40BCAE3C5002C00DF /* win32_fstream.cpp */,
 				049652C50BCAE3C5002C00DF /* win32_thread.cpp */,
 				049652C60BCAE3C5002C00DF /* win32_timer.cpp */,
@@ -1552,7 +1541,6 @@
 				0496566A0BCAEA7D002C00DF /* timer.cpp in Sources */,
 				0496566B0BCAEA7D002C00DF /* transition_info.cpp in Sources */,
 				0496566C0BCAEA7D002C00DF /* tree_builder.cpp in Sources */,
-				0496566D0BCAEA7D002C00DF /* unix_event_processor.cpp in Sources */,
 				0496566E0BCAEA7D002C00DF /* unix_mtsync.cpp in Sources */,
 				0496566F0BCAEA7D002C00DF /* unix_thread.cpp in Sources */,
 				049656700BCAEA7D002C00DF /* unix_timer.cpp in Sources */,
@@ -1664,10 +1652,11 @@
 					"WITH_SDL=1",
 					"WITH_FFMPEG=1",
 					"WITH_EXPAT=1",
-					"WITH_FFMPEG_AVFORMAT=1",
 					"WITH_OVERLAY_WINDOW=1",
 					"WITH_SMIL30=1",
 					"WITH_CG=1",
+					"WITH_CLOCK_SYNC=1",
+					"WITH_SEAMLESS_PLAYBACK=1",
 					"WITH_LIVE=1",
 				);
 				INSTALL_PATH = "$(HOME)/Applications";
@@ -1689,10 +1678,11 @@
 					"WITH_SDL=1",
 					"WITH_FFMPEG=1",
 					"WITH_EXPAT=1",
-					"WITH_FFMPEG_AVFORMAT=1",
 					"WITH_OVERLAY_WINDOW=1",
 					"WITH_SMIL30=1",
 					"WITH_CG=1",
+					"WITH_CLOCK_SYNC=1",
+					"WITH_SEAMLESS_PLAYBACK=1",
 					"WITH_LIVE=1",
 				);
 				INSTALL_PATH = "$(HOME)/Applications";

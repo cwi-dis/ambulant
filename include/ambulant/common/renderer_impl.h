@@ -104,7 +104,8 @@ class AMBULANTAPI renderer_playable : public playable_imp, public renderer {
 		lib::event_processor* evp,
 		common::factories *fp,
 		common::playable_factory_machdep *mdp);
-			
+    virtual ~renderer_playable();
+    
 	// common::renderer interface
 	void set_surface(common::surface *dest) { m_dest = dest; };
 	void set_alignment(const common::alignment *align) { m_alignment = align; }

@@ -250,7 +250,6 @@ libambulant_la_SOURCES = \
 	lib/tree_builder.cpp \
 	\
 	lib/parser_factory.cpp \
-	lib/unix/unix_event_processor.cpp \
 	lib/unix/unix_mtsync.cpp \
 	lib/unix/unix_thread.cpp \
 	lib/unix/unix_timer.cpp \

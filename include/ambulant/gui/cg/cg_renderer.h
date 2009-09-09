@@ -82,20 +82,7 @@ class cg_renderer : public RP_Base {
 		common::playable_factory_machdep *mdp)
 	:	RP_Base(context, cookie, node, evp, factory, mdp)
 		{};
-	~cg_renderer() {
-	}
-
-	void set_surface(common::surface *dest) {
-		RP_Base::set_surface(dest);
-	}
-
-	virtual void start(double where) {
-		RP_Base::start(where);
-	}
-	
- 	virtual void stop() {
-		RP_Base::stop();
-	}
+	virtual ~cg_renderer() {}
 	
     void redraw(const rect &dirty, gui_window *window) {
 		redraw_body(dirty, window);

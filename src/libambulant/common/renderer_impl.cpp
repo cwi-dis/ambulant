@@ -59,6 +59,12 @@ renderer_playable::renderer_playable(
 {
 }
 
+renderer_playable::~renderer_playable()
+{
+    if (m_dest) m_dest->renderer_done(this);
+    m_dest = NULL;
+}
+
 void
 renderer_playable::init_with_node(const lib::node *n)
 {
@@ -92,6 +98,7 @@ renderer_playable::stop()
 	} else {
 		if (m_dest)
 			m_dest->renderer_done(this);
+        m_dest = NULL;
 	}
 	m_activated = false;
 	return true;
