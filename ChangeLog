@@ -1,3 +1,16 @@
+2009-09-08 23:10  jackjansen
+
+	* Fixed to work under vs2005.
+
+2009-09-08 22:14  jackjansen
+
+	* Merging branch exp-jack-fix-race-conditions: - lib::condition is
+	  gone. Replaced by critical_section_cv, which is   a subclass of
+	  critical_section with added condition variable   and accompanying
+	  wait() and signal() methods.	- event_processor_impl is now a
+	  fully machine-independent   implementation, replacing the
+	  mac/win32 implementations.
+
 2009-09-07 14:14  keesblom
 
 	* Re-added locks in qt_smiltext.cpp. Should fix #2849057, at least
