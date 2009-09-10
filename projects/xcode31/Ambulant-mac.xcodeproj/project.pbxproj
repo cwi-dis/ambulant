@@ -79,7 +79,6 @@
 		0496535F0BCAE3C5002C00DF /* timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652B70BCAE3C5002C00DF /* timer.cpp */; };
 		049653600BCAE3C5002C00DF /* transition_info.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652B80BCAE3C5002C00DF /* transition_info.cpp */; };
 		049653610BCAE3C5002C00DF /* tree_builder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652B90BCAE3C5002C00DF /* tree_builder.cpp */; };
-		049653620BCAE3C5002C00DF /* unix_event_processor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652BB0BCAE3C5002C00DF /* unix_event_processor.cpp */; };
 		049653630BCAE3C6002C00DF /* unix_mtsync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652BC0BCAE3C5002C00DF /* unix_mtsync.cpp */; };
 		049653640BCAE3C6002C00DF /* unix_thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652BD0BCAE3C5002C00DF /* unix_thread.cpp */; };
 		049653650BCAE3C6002C00DF /* unix_timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652BE0BCAE3C5002C00DF /* unix_timer.cpp */; };
@@ -1554,7 +1553,6 @@
 				0496535F0BCAE3C5002C00DF /* timer.cpp in Sources */,
 				049653600BCAE3C5002C00DF /* transition_info.cpp in Sources */,
 				049653610BCAE3C5002C00DF /* tree_builder.cpp in Sources */,
-				049653620BCAE3C5002C00DF /* unix_event_processor.cpp in Sources */,
 				049653630BCAE3C6002C00DF /* unix_mtsync.cpp in Sources */,
 				049653640BCAE3C6002C00DF /* unix_thread.cpp in Sources */,
 				049653650BCAE3C6002C00DF /* unix_timer.cpp in Sources */,
