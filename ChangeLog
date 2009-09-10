@@ -1,3 +1,10 @@
+2009-09-09 23:05  jackjansen
+
+	* - renderer_playable now cleans up m_dest, if needed - cg_renderer
+	  overrides fewer methods from RP_Base - unix_event_processor is
+	  gone - Mac CG player uses WITH_CLOCK_SYNC,
+	  WITH_SEAMLESS_PLAYBACK.
+
 2009-09-08 23:10  jackjansen
 
 	* Fixed to work under vs2005.
