@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -27,6 +27,13 @@
 		04430D390E506F6400029503 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04430D380E506F6400029503 /* libbz2.dylib */; };
 		047954AC0F272CA300103C57 /* renderer_select.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0479C4620E67453F00C90467 /* renderer_select.cpp */; };
 		0480CD000CDD1D5C0025344B /* libfaad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0480CCFF0CDD1D5C0025344B /* libfaad.a */; };
+		04834E49105A4B2400B7188B /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04834E48105A4B2400B7188B /* CoreAudio.framework */; };
+		04834E5B105A4C0C00B7188B /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04834E5A105A4C0C00B7188B /* libavcodec.a */; };
+		04834E5D105A4C2800B7188B /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04834E5C105A4C2800B7188B /* libavformat.a */; };
+		04834E5F105A4C3400B7188B /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04834E5E105A4C3400B7188B /* libavutil.a */; };
+		04834E61105A4C4000B7188B /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04834E60105A4C4000B7188B /* libswscale.a */; };
+		04834E88105A4D6E00B7188B /* ForceFeedback.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04834E87105A4D6E00B7188B /* ForceFeedback.framework */; };
+		04834EA9105A5A0800B7188B /* libltdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04834EA8105A5A0800B7188B /* libltdl.a */; };
 		049650620BCADE2B002C00DF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 049650610BCADE2B002C00DF /* main.m */; };
 		0496506D0BCADE62002C00DF /* LogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049650640BCADE62002C00DF /* LogController.mm */; };
 		0496506E0BCADE62002C00DF /* MyAmbulantView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049650660BCADE62002C00DF /* MyAmbulantView.mm */; };
@@ -118,12 +125,7 @@
 		049656070BCAE9E0002C00DF /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656000BCAE9E0002C00DF /* WebKit.framework */; };
 		049656080BCAE9E0002C00DF /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656010BCAE9E0002C00DF /* ApplicationServices.framework */; };
 		049656090BCAE9E0002C00DF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656020BCAE9E0002C00DF /* OpenGL.framework */; };
-		0496560A0BCAE9E0002C00DF /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656030BCAE9E0002C00DF /* QuickTime.framework */; };
 		0496560B0BCAE9E0002C00DF /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656040BCAE9E0002C00DF /* IOKit.framework */; };
-		049656190BCAEA42002C00DF /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0496560D0BCAEA42002C00DF /* libavformat.a */; };
-		0496561A0BCAEA42002C00DF /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0496560E0BCAEA42002C00DF /* libavcodec.a */; };
-		0496561B0BCAEA42002C00DF /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0496560F0BCAEA42002C00DF /* libavutil.a */; };
-		0496561C0BCAEA42002C00DF /* libltdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656100BCAEA42002C00DF /* libltdl.a */; };
 		0496561D0BCAEA42002C00DF /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656110BCAEA42002C00DF /* libexpat.a */; };
 		0496561F0BCAEA43002C00DF /* libliveMedia.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656130BCAEA42002C00DF /* libliveMedia.a */; };
 		049656200BCAEA43002C00DF /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656140BCAEA42002C00DF /* libUsageEnvironment.a */; };
@@ -163,6 +165,13 @@
 		0479C4620E67453F00C90467 /* renderer_select.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderer_select.cpp; sourceTree = "<group>"; };
 		0479C4660E67456600C90467 /* renderer_select.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderer_select.h; sourceTree = "<group>"; };
 		0480CCFF0CDD1D5C0025344B /* libfaad.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfaad.a; path = /usr/local/lib/libfaad.a; sourceTree = "<absolute>"; };
+		04834E48105A4B2400B7188B /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = /System/Library/Frameworks/CoreAudio.framework; sourceTree = "<absolute>"; };
+		04834E5A105A4C0C00B7188B /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = "../../../../packages/ffmpeg-0.5/libavcodec/libavcodec.a"; sourceTree = SOURCE_ROOT; };
+		04834E5C105A4C2800B7188B /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = "../../../../packages/ffmpeg-0.5/libavformat/libavformat.a"; sourceTree = SOURCE_ROOT; };
+		04834E5E105A4C3400B7188B /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavutil.a; path = "../../../../packages/ffmpeg-0.5/libavutil/libavutil.a"; sourceTree = SOURCE_ROOT; };
+		04834E60105A4C4000B7188B /* libswscale.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswscale.a; path = "../../../../packages/ffmpeg-0.5/libswscale/libswscale.a"; sourceTree = SOURCE_ROOT; };
+		04834E87105A4D6E00B7188B /* ForceFeedback.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ForceFeedback.framework; path = /System/Library/Frameworks/ForceFeedback.framework; sourceTree = "<absolute>"; };
+		04834EA8105A5A0800B7188B /* libltdl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libltdl.a; path = /usr/lib/libltdl.a; sourceTree = "<absolute>"; };
 		049650600BCADE2B002C00DF /* Ambulant.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Ambulant.pch; path = ../../src/player_macosx/Ambulant.pch; sourceTree = SOURCE_ROOT; };
 		049650610BCADE2B002C00DF /* main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../../src/player_macosx/main.m; sourceTree = SOURCE_ROOT; };
 		049650630BCADE62002C00DF /* LogController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = LogController.h; path = ../../src/player_macosx/LogController.h; sourceTree = SOURCE_ROOT; };
@@ -539,12 +548,7 @@
 		049656000BCAE9E0002C00DF /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = /System/Library/Frameworks/WebKit.framework; sourceTree = "<absolute>"; };
 		049656010BCAE9E0002C00DF /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
 		049656020BCAE9E0002C00DF /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
-		049656030BCAE9E0002C00DF /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		049656040BCAE9E0002C00DF /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
-		0496560D0BCAEA42002C00DF /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = "../../../../packages/ffmpeg-universal/libavformat/libavformat.a"; sourceTree = SOURCE_ROOT; };
-		0496560E0BCAEA42002C00DF /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = "../../../../packages/ffmpeg-universal/libavcodec/libavcodec.a"; sourceTree = SOURCE_ROOT; };
-		0496560F0BCAEA42002C00DF /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavutil.a; path = "../../../../packages/ffmpeg-universal/libavutil/libavutil.a"; sourceTree = SOURCE_ROOT; };
-		049656100BCAEA42002C00DF /* libltdl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libltdl.a; path = /usr/lib/libltdl.a; sourceTree = "<absolute>"; };
 		049656110BCAEA42002C00DF /* libexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libexpat.a; path = "../../third_party_packages/expat-unix/lib/libexpat.a"; sourceTree = SOURCE_ROOT; };
 		049656130BCAEA42002C00DF /* libliveMedia.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libliveMedia.a; path = ../../third_party_packages/live/liveMedia/libliveMedia.a; sourceTree = SOURCE_ROOT; };
 		049656140BCAEA42002C00DF /* libUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libUsageEnvironment.a; path = ../../third_party_packages/live/UsageEnvironment/libUsageEnvironment.a; sourceTree = SOURCE_ROOT; };
@@ -594,12 +598,7 @@
 				049656070BCAE9E0002C00DF /* WebKit.framework in Frameworks */,
 				049656080BCAE9E0002C00DF /* ApplicationServices.framework in Frameworks */,
 				049656090BCAE9E0002C00DF /* OpenGL.framework in Frameworks */,
-				0496560A0BCAE9E0002C00DF /* QuickTime.framework in Frameworks */,
 				0496560B0BCAE9E0002C00DF /* IOKit.framework in Frameworks */,
-				049656190BCAEA42002C00DF /* libavformat.a in Frameworks */,
-				0496561A0BCAEA42002C00DF /* libavcodec.a in Frameworks */,
-				0496561B0BCAEA42002C00DF /* libavutil.a in Frameworks */,
-				0496561C0BCAEA42002C00DF /* libltdl.a in Frameworks */,
 				0496561D0BCAEA42002C00DF /* libexpat.a in Frameworks */,
 				0496561F0BCAEA43002C00DF /* libliveMedia.a in Frameworks */,
 				049656200BCAEA43002C00DF /* libUsageEnvironment.a in Frameworks */,
@@ -610,6 +609,13 @@
 				049656B20BCAEC13002C00DF /* Carbon.framework in Frameworks */,
 				0480CD000CDD1D5C0025344B /* libfaad.a in Frameworks */,
 				04430D390E506F6400029503 /* libbz2.dylib in Frameworks */,
+				04834E49105A4B2400B7188B /* CoreAudio.framework in Frameworks */,
+				04834E5B105A4C0C00B7188B /* libavcodec.a in Frameworks */,
+				04834E5D105A4C2800B7188B /* libavformat.a in Frameworks */,
+				04834E5F105A4C3400B7188B /* libavutil.a in Frameworks */,
+				04834E61105A4C4000B7188B /* libswscale.a in Frameworks */,
+				04834E88105A4D6E00B7188B /* ForceFeedback.framework in Frameworks */,
+				04834EA9105A5A0800B7188B /* libltdl.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1300,11 +1306,11 @@
 		0496560C0BCAEA32002C00DF /* third_party_libraries */ = {
 			isa = PBXGroup;
 			children = (
-				0496560D0BCAEA42002C00DF /* libavformat.a */,
-				0496560E0BCAEA42002C00DF /* libavcodec.a */,
-				0496560F0BCAEA42002C00DF /* libavutil.a */,
 				0480CCFF0CDD1D5C0025344B /* libfaad.a */,
-				049656100BCAEA42002C00DF /* libltdl.a */,
+				04834E5A105A4C0C00B7188B /* libavcodec.a */,
+				04834E5C105A4C2800B7188B /* libavformat.a */,
+				04834E5E105A4C3400B7188B /* libavutil.a */,
+				04834E60105A4C4000B7188B /* libswscale.a */,
 				049656110BCAEA42002C00DF /* libexpat.a */,
 				049656130BCAEA42002C00DF /* libliveMedia.a */,
 				049656140BCAEA42002C00DF /* libUsageEnvironment.a */,
@@ -1337,15 +1343,17 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				04834EA8105A5A0800B7188B /* libltdl.a */,
 				049656B10BCAEC13002C00DF /* Carbon.framework */,
 				049655FE0BCAE9E0002C00DF /* QTKit.framework */,
 				049655FF0BCAE9E0002C00DF /* AudioUnit.framework */,
 				049656000BCAE9E0002C00DF /* WebKit.framework */,
 				049656010BCAE9E0002C00DF /* ApplicationServices.framework */,
 				049656020BCAE9E0002C00DF /* OpenGL.framework */,
-				049656030BCAE9E0002C00DF /* QuickTime.framework */,
 				049656040BCAE9E0002C00DF /* IOKit.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
+				04834E48105A4B2400B7188B /* CoreAudio.framework */,
+				04834E87105A4D6E00B7188B /* ForceFeedback.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -1452,7 +1460,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Ambulant-mac" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -1644,6 +1652,93 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		04834E3A105A3D7500B7188B /* Debug-64 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "";
+				GCC_VERSION = 4.2;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"../../../../packages/ffmpeg-0.5/libavformat",
+					"../../../../packages/ffmpeg-0.5/libavcodec",
+					"../../../../packages/ffmpeg-0.5/libavutil",
+					"../../third_party_packages/expat-unix/lib",
+					"../../third_party_packages/xerces-unix/lib",
+					../../third_party_packages/live/liveMedia,
+					../../third_party_packages/live/UsageEnvironment,
+					../../third_party_packages/live/BasicUsageEnvironment,
+					/usr/local/lib,
+					../../third_party_packages/live/groupsock,
+					"\"$(SRCROOT)/../../../../packages/xerces-c-src_2_7_0/lib\"",
+				);
+				OTHER_CFLAGS = "";
+				PREBINDING = NO;
+				USER_HEADER_SEARCH_PATHS = "../../include ../../third_party_packages/ffmpeg-universal /usr/local/include/SDL ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
+			};
+			name = "Debug-64";
+		};
+		04834E3B105A3D7500B7188B /* Debug-64 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"WITH_LIVE=1",
+					"WITH_EXTERNAL_DOM=1",
+					"WITH_LTDL_PLUGINS=1",
+					"AM_PREFER_FFMPEG=1",
+					"WITH_SDL=1",
+					"WITH_FFMPEG_LIBSWSCALE=1",
+					"WITH_FFMPEG=1",
+					"WITH_EXPAT=1",
+					"WITH_FFMPEG_AVFORMAT=1",
+					"WITH_OVERLAY_WINDOW=1",
+					"WITH_SMIL30=1",
+					"WITH_SEAMLESS_PLAYBACK=1",
+					"WITH_CLOCK_SYNC=1",
+				);
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libavcodec\"",
+					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libavformat\"",
+					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libavutil\"",
+					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libswscale\"",
+				);
+				PRODUCT_NAME = "Ambulant-mac";
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = YES;
+			};
+			name = "Debug-64";
+		};
 		04A2D6B20F2F19DA0027C378 /* Debug-llvm */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1673,7 +1768,6 @@
 					"\"$(SRCROOT)/../../../../packages/xerces-c-src_2_7_0/lib\"",
 				);
 				PREBINDING = NO;
-				SDKROOT = macosx10.5;
 				USER_HEADER_SEARCH_PATHS = "../../include ../../third_party_packages/ffmpeg-universal /usr/local/include/SDL ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
 			};
 			name = "Debug-llvm";
@@ -1698,6 +1792,13 @@
 					"WITH_SMIL30=1",
 				);
 				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libavcodec\"",
+					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libavformat\"",
+					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libavutil\"",
+					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libswscale\"",
+				);
 				PRODUCT_NAME = "Ambulant-mac";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -1727,6 +1828,13 @@
 					"WITH_CLOCK_SYNC=1",
 				);
 				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libavcodec\"",
+					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libavformat\"",
+					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libavutil\"",
+					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libswscale\"",
+				);
 				PRODUCT_NAME = "Ambulant-mac";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -1753,6 +1861,13 @@
 					"WITH_CLOCK_SYNC=1",
 				);
 				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libavcodec\"",
+					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libavformat\"",
+					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libavutil\"",
+					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libswscale\"",
+				);
 				PRODUCT_NAME = "Ambulant-mac";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1803,7 +1918,6 @@
 				);
 				OTHER_CFLAGS = "";
 				PREBINDING = NO;
-				SDKROOT = macosx10.5;
 				USER_HEADER_SEARCH_PATHS = "../../include ../../third_party_packages/ffmpeg-universal /usr/local/include/SDL ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
 			};
 			name = Debug;
@@ -1836,7 +1950,6 @@
 					"\"$(SRCROOT)/../../../../packages/xerces-c-src_2_7_0/lib\"",
 				);
 				PREBINDING = NO;
-				SDKROOT = macosx10.5;
 				USER_HEADER_SEARCH_PATHS = "../../include ../../third_party_packages/ffmpeg-universal /usr/local/include/SDL ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
 			};
 			name = Release;
@@ -1848,6 +1961,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4B08A954540054247B /* Debug */,
+				04834E3B105A3D7500B7188B /* Debug-64 */,
 				04A2D6B30F2F19DA0027C378 /* Debug-llvm */,
 				C01FCF4C08A954540054247B /* Release */,
 			);
@@ -1858,6 +1972,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
+				04834E3A105A3D7500B7188B /* Debug-64 */,
 				04A2D6B20F2F19DA0027C378 /* Debug-llvm */,
 				C01FCF5008A954540054247B /* Release */,
 			);

@@ -126,7 +126,9 @@ mainloop::init_playable_factory()
 	pf->add_factory(gui::cocoa::create_cocoa_ink_playable_factory(this, NULL));
 	pf->add_factory(gui::cocoa::create_cocoa_smiltext_playable_factory(this, NULL));
 	pf->add_factory(gui::cocoa::create_cocoa_text_playable_factory(this, NULL));
+#ifndef __LP64__
 	pf->add_factory(gui::cocoa::create_cocoa_video_playable_factory(this, NULL));
+#endif
 #endif
 #ifdef WITH_SDL
     AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add factory for SDL");
