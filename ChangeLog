@@ -1,3 +1,7 @@
+2009-09-10 12:57  jackjansen
+
+	* Got rid of unix_event_processor.
+
 2009-09-09 23:05  jackjansen
 
 	* - renderer_playable now cleans up m_dest, if needed - cg_renderer
