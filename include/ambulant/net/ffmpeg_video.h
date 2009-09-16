@@ -28,6 +28,12 @@
 extern "C" {
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"
+
+// See if we must use swscale, or can use the older method
+#if LIBAVCODEC_VERSION_INT >= ((52<<16)+(0<<8)+0)
+#define WITH_FFMPEG_LIBSWSCALE
+#endif
+
 #ifdef WITH_FFMPEG_LIBSWSCALE
 #include "libswscale/swscale.h"
 #endif

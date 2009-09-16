@@ -110,7 +110,11 @@ ffmpeg_codec_id::ffmpeg_codec_id()
 	add_codec("MPV", CODEC_ID_MPEG2VIDEO);
 	add_codec("L16", CODEC_ID_PCM_S16LE);
 	add_codec("MP4V-ES", CODEC_ID_MPEG4);
+#ifdef CODEC_ID_MPEG4AAC
 	add_codec("MPEG4-GENERIC", CODEC_ID_MPEG4AAC);
+#else
+	add_codec("MPEG4-GENERIC", CODEC_ID_AAC);
+#endif
 	add_codec("X-QT", CODEC_ID_MP3); //XXXX
 	
 	//xxxbo added h264 map between live and ffmpeg

@@ -1688,7 +1688,7 @@
 				);
 				OTHER_CFLAGS = "";
 				PREBINDING = NO;
-				USER_HEADER_SEARCH_PATHS = "../../include ../../third_party_packages/ffmpeg-universal /usr/local/include/SDL ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
+				USER_HEADER_SEARCH_PATHS = "../../include ../../../../packages/ffmpeg-0.5 /usr/local/include/SDL ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
 			};
 			name = "Debug-64";
 		};
@@ -1745,9 +1745,9 @@
 				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"../../third_party_packages/ffmpeg-universal/libavformat",
-					"../../third_party_packages/ffmpeg-universal/libavcodec",
-					"../../third_party_packages/ffmpeg-universal/libavutil",
+					"../../../../packages/ffmpeg-0.5/libavformat",
+					"../../../../packages/ffmpeg-0.5/libavcodec",
+					"../../../../packages/ffmpeg-0.5/libavutil",
 					"../../third_party_packages/expat-unix/lib",
 					"../../third_party_packages/xerces-unix/lib",
 					../../third_party_packages/live/liveMedia,
@@ -1758,7 +1758,7 @@
 					"\"$(SRCROOT)/../../../../packages/xerces-c-src_2_7_0/lib\"",
 				);
 				PREBINDING = NO;
-				USER_HEADER_SEARCH_PATHS = "../../include ../../third_party_packages/ffmpeg-universal /usr/local/include/SDL ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
+				USER_HEADER_SEARCH_PATHS = "../../include ../../../../packages/ffmpeg-0.5 /usr/local/include/SDL ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
 			};
 			name = "Debug-llvm";
 		};
@@ -1909,9 +1909,9 @@
 				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"../../third_party_packages/ffmpeg-universal/libavformat",
-					"../../third_party_packages/ffmpeg-universal/libavcodec",
-					"../../third_party_packages/ffmpeg-universal/libavutil",
+					"../../../../packages/ffmpeg-0.5/libavformat",
+					"../../../../packages/ffmpeg-0.5/libavcodec",
+					"../../../../packages/ffmpeg-0.5/libavutil",
 					"../../third_party_packages/expat-unix/lib",
 					"../../third_party_packages/xerces-unix/lib",
 					../../third_party_packages/live/liveMedia,
@@ -1922,7 +1922,7 @@
 					"\"$(SRCROOT)/../../../../packages/xerces-c-src_2_7_0/lib\"",
 				);
 				PREBINDING = NO;
-				USER_HEADER_SEARCH_PATHS = "../../include ../../third_party_packages/ffmpeg-universal /usr/local/include/SDL ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
+				USER_HEADER_SEARCH_PATHS = "../../include ../../../../packages/ffmpeg-0.5 /usr/local/include/SDL ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
 			};
 			name = Release;
 		};

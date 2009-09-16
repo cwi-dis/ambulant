@@ -537,7 +537,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 	int got_pic;
 	AVPicture picture;
 	int len;
-	int pic_fmt, dst_pic_fmt;
+	PixelFormat pic_fmt, dst_pic_fmt;
 	int w,h;
 	unsigned char* ptr;
 	bool did_generate_frame = false;
