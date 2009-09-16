@@ -252,7 +252,6 @@ ambulant_qt_window::redraw(const lib::rect &r)
 	m_handler->redraw(r, this);
 	_screenTransitionPostRedraw(r);
 	bitBlt(m_ambulant_widget,r.left(),r.top(), m_pixmap,r.left(),r.top(), r.right(),r.bottom());
-	DUMPPIXMAP(m_pixmap, "top");
 }
 
 bool
@@ -397,7 +396,6 @@ ambulant_qt_window::_screenTransitionPostRedraw(const lib::rect &r)
 		AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::_screenTransitionPostRedraw: screen snapshot");
 		if (m_fullscreen_prev_pixmap) delete m_fullscreen_prev_pixmap;
 		m_fullscreen_prev_pixmap = get_pixmap_from_screen(r); // XXX wrong
-        DUMPPIXMAP(m_fullscreen_prev_pixmap, "snap");
 		return;
 	}
 	if (m_fullscreen_old_pixmap == NULL) {
@@ -415,10 +413,7 @@ ambulant_qt_window::_screenTransitionPostRedraw(const lib::rect &r)
 		if ( ! new_src) new_src = new_ambulant_surface();
 		bitBlt(m_surface, 0, 0, m_pixmap);
 		bitBlt(m_pixmap, 0, 0, m_fullscreen_old_pixmap);
-        DUMPPIXMAP(new_src, "fnew");
-        DUMPPIXMAP(m_pixmap, "fold");
 		m_fullscreen_engine->step(m_fullscreen_now);
-        DUMPPIXMAP(m_pixmap, "fres");
 	}
 
 	if (m_fullscreen_count == 0) {

@@ -47,15 +47,6 @@ void qt_image_blend (QImage dst, const lib::rect dst_rc,
 color_t QColor2color_t(QColor c);
 QColor color_t2QColor(lib::color_t c);
 
-// image debugging: dump pixmaps at various stages of drawing process.
-// useful e.g. for animations, transitions and such.
-// Enable qt_pixmap_dump by defining WITH_DUMPPIXMAP
-// #define	WITH_DUMPPIXMAP
-#ifdef	WITH_DUMPPIXMAP
-#define DUMPPIXMAP(pixmap, filename)  qt_pixmap_dump(pixmap, filename);
-#else
-#define DUMPPIXMAP(pixmap, filename)
-#endif//WITH_DUMPPIXMAP
 
 void qt_pixmap_dump(QPixmap* gpm, std::string filename);
 	

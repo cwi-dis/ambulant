@@ -32,10 +32,6 @@
 #ifdef  WITH_SMIL30
 #include "ambulant/gui/gtk/gtk_smiltext.h"
 #endif/*WITH_SMIL30*/
-//#define DUMPPIXMAP
-#ifdef	DUMPPIXMAP
-#include "ambulant/gui/gtk/gtk_util.h"
-#endif/*DUMPPIXMAP*/
 #include "ambulant/gui/gtk/gtk_text_renderer.h"
 #include "ambulant/gui/gtk/gtk_video_renderer.h"
 
@@ -365,9 +361,6 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 	}
 	g_object_unref (G_OBJECT (pixbuf));
 #endif //WITH_SCREENSHOTS
-#ifdef	DUMPPIXMAP
-	gdk_pixmap_dump(m_pixmap, "top");
-#endif/*DUMPPIXMAP*/
 }
 
 void
@@ -570,9 +563,6 @@ ambulant_gtk_window::_screenTransitionPostRedraw(const lib::rect &r)
 		AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::_screenTransitionPostRedraw: screen snapshot");
 		if (m_fullscreen_prev_pixmap) g_object_unref(G_OBJECT(m_fullscreen_prev_pixmap));
 		m_fullscreen_prev_pixmap = get_pixmap_from_screen(r); // XXX wrong
-#ifdef	DUMPPIXMAP
-		gdk_pixmap_dump(m_fullscreen_prev_pixmap, "snap");
-#endif/*DUMPPIXMAP*/
 		return;
 	}
 	if (m_fullscreen_old_pixmap == NULL) {
@@ -590,14 +580,7 @@ ambulant_gtk_window::_screenTransitionPostRedraw(const lib::rect &r)
 		if ( ! new_src) new_src = new_ambulant_surface();
 		gdk_pixmap_bitblt(m_surface, 0, 0, m_pixmap, r.left(), r.top(), r.width(), r.height());
 		gdk_pixmap_bitblt(m_pixmap, 0, 0, m_fullscreen_old_pixmap, r.left(), r.top(), r.width(), r.height());
-#ifdef	DUMPPIXMAP
-		gdk_pixmap_dump(new_src, "fnew");
-		gdk_pixmap_dump(m_pixmap, "fold");
-#endif/*DUMPPIXMAP*/
 		m_fullscreen_engine->step(m_fullscreen_now);
-#ifdef	DUMPPIXMAP
-		gdk_pixmap_dump(m_pixmap, "fres");
-#endif/*DUMPPIXMAP*/
 	}
 
 	if (m_fullscreen_count == 0) {

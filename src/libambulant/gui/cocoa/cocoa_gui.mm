@@ -38,10 +38,6 @@
 
 #include <Cocoa/Cocoa.h>
 
-// Defines for image dump debugging
-#define DUMP_IMAGES_FORMAT @"/tmp/amdump/ambulant_dump_%03d_%s.tiff"
-//#define DUMP_REDRAW
-//#define DUMP_TRANSITION
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -407,10 +403,6 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 		[self _screenTransitionPreRedraw];
         ambulant_window->redraw(arect);
 		[self _screenTransitionPostRedraw];
-#ifdef DUMP_REDRAW
-		// Debug code: dump the contents of the view into an image
-		[self dumpToImageID: "redraw"];
-#endif
 		[self _releaseTransitionSurface];
     }
 #ifdef WITH_QUICKTIME_OVERLAY
@@ -524,30 +516,9 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 	[[NSApplication sharedApplication] sendAction: SEL("fixMouse:") to: nil from: self];
 }
 
-- (void) dumpToImageID: (char *)ident
-{
-	[self lockFocus];
-	NSBitmapImageRep *image = [[NSBitmapImageRep alloc] initWithFocusedViewRect: [self bounds]];
-	[self unlockFocus];
-	[self dump: image toImageID: ident];
-}
-
-- (void) dump: (id)image toImageID: (char *)ident
-{
-	static int seqnum = 0;
-	NSString *filename = [NSString stringWithFormat: DUMP_IMAGES_FORMAT, seqnum++, ident];
-	NSData *tiffrep = [image TIFFRepresentation];
-	[tiffrep writeToFile: filename atomically: NO];
-	AM_DBG NSLog(@"dump:toImageFile: created %@", filename);
-}
-
 - (BOOL)wantsDefaultClipping
 {
-#ifdef DUMP_REDRAW
-	return NO;
-#else
 	return (transition_count == 0);
-#endif
 }
 
 - (void) incrementTransitionCount
@@ -625,9 +596,6 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 	}
 	[rv addRepresentation: [bits autorelease]];
 	[rv setFlipped: YES];
-#ifdef DUMP_TRANSITION
-	[self dump: rv toImageID: "oldsrc"];
-#endif
 	rv = [rv autorelease];
 	return rv;
 }
@@ -650,9 +618,6 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 	[rv addRepresentation: [bits autorelease]];
 	[rv setFlipped: YES];
     [flipped_rv release];
-#ifdef DUMP_TRANSITION
-	[self dump: rv toImageID: "oldsrc"];
-#endif
 	rv = [rv autorelease];
 	return rv;
 }
@@ -674,9 +639,6 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 	NSBitmapImageRep *bits = [[NSBitmapImageRep alloc] initWithFocusedViewRect: [self bounds]];
 	[transition_surface unlockFocus];
 	[rv addRepresentation: [bits autorelease]];
-#ifdef DUMP_TRANSITION
-	[self dump: rv toImageID: "newsrc"];
-#endif
 	rv = [rv autorelease];
 	return rv;
 }
@@ -723,7 +685,6 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 		// Take a snapshot of the screen and return.
 		if (fullscreen_previmage) [fullscreen_previmage release];
 		fullscreen_previmage = [[self getOnScreenImageForRect: [self bounds]] retain];
-		/*DBG	[self dump: fullscreen_previmage toImageID: "fsprev"]; */
 		return;
 	}
 	if (fullscreen_oldimage == NULL) {
@@ -738,8 +699,6 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 	// if no engine available.
 	AM_DBG NSLog(@"_screenTransitionPostRedraw: bitblit");
 	[[self getTransitionSurface] unlockFocus];
-//	/*DBG*/	[self dump: [self getTransitionOldSource] toImageID: "fsold"];
-//	/*DBG*/	[self dump: [self getTransitionNewSource] toImageID: "fsnew"];
 	NSRect bounds = [self bounds];
 	if (fullscreen_engine) {
 		[[self getTransitionOldSource] drawInRect: bounds

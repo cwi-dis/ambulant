@@ -38,11 +38,7 @@
 #include "ambulant/lib/colors.h"
 
 /* windows includes begin*/
-#ifdef AMBULANT_DDRAW_EX
-#include <ddrawex.h>
-#else
 #include <ddraw.h>
-#endif
 #include <windows.h>
 #include <tchar.h>
 /* windows includes end*/

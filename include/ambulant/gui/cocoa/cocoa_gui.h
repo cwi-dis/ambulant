@@ -163,8 +163,6 @@ common::playable_factory *create_cocoa_video_playable_factory(common::factories 
 - (void)mouseMoved: (NSEvent *)theEvent;
 - (void)pseudoMouseMove: (id)dummy;
 
-- (void)dumpToImageID: (char *)ident;
-- (void)dump: (id)image toImageID: (char *)ident;
 - (BOOL)wantsDefaultClipping;
 
 - (void) incrementTransitionCount;

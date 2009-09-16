@@ -28,11 +28,7 @@
 
 #include "ambulant/config/config.h"
 #include <objbase.h>
-#ifdef AMBULANT_DDRAW_EX
-#include <ddrawex.h>
-#else
 #include <ddraw.h>
-#endif
 #include "ambulant/common/video_renderer.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/gui/dx/dx_transition.h"

@@ -21,24 +21,13 @@
 // turn off the warnings for virtuals 
 #pragma warning( disable: 4250) // xxx : inherits yyy::function via dominance
 
-#if _MSC_VER <= 1200  // 1200 == VC++ 6.0
+#if _MSC_VER <= 1310  // 1200 == VC++ 7.1 (Visual Studio 2003)
 #error Compiler too old for Ambulant
 #endif
 
-#if (_MSC_VER <= 1300)  // 1300 == VC++ 7.0
-#error Compiler too old for Ambulant
-#endif
-
-#if _MSC_VER < 1310 // 1310 == VC++ 7.1
-#  define AMBULANT_NO_SWPRINTF
-#  define AMBULANT_DDRAW_EX
-#endif
-
-#if _MSC_VER > 1310
 // XXXJACK: Unsure for VC8. Will add definitions as we find things.
 // These unsafe warnings are very obnoxious:
 #define _CRT_SECURE_NO_WARNINGS
-#endif
 
 #ifndef _NATIVE_WCHAR_T_DEFINED
 #  define AMBULANT_NO_INTRINSIC_WCHAR_T
@@ -63,9 +52,7 @@
 #  define AMBULANT_DISABLE_WIN32
 #endif
 
-# if _MSC_VER == 1310
-#   define AMBULANT_COMPILER_VERSION 7.1
-# elif _MSC_VER == 1400
+# if _MSC_VER == 1400
 #   define AMBULANT_COMPILER_VERSION 8.0
 # elif _MSC_VER == 1500
 #   define AMBULANT_COMPILER_VERSION 9.0

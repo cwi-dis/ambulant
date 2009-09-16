@@ -27,11 +27,7 @@
 #define INITGUID
 #endif
 #include <objbase.h>
-#ifdef AMBULANT_DDRAW_EX
-#include <ddrawex.h>
-#else
 #include <ddraw.h>
-#endif
 #include <uuids.h>
 #include <windows.h>
 #include <mmsystem.h>
