@@ -1,3 +1,16 @@
+2009-09-16 17:28  jackjansen
+
+	* More bits and pieces for ffmpeg-0.5.	Should still work with
+	  older ffmpeg versions.
+
+2009-09-16 17:13  jackjansen
+
+	* More cleanup: getting rid of lots of debug stuff.
+
+2009-09-16 17:11  jackjansen
+
+	* More changes for new ffmpeg.
+
 2009-09-11 13:49  jackjansen
 
 	* Getting started with 64bit ambulant on Mac.
