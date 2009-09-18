@@ -1,6 +1,6 @@
 #------------------------------------------------------
 FIREFOX=firefox
-NPAMBULANT=libnpambulant.0.0.0
+NPAMBULANT=libnpambulant.so.0.0.0
 MOZILLA_PLUGINS=mozilla/plugins
 
 ambulantlibdir=$(top_builddir)/src/libambulant/.libs

@@ -7,7 +7,6 @@ library_include_HEADERS=		\
 	qt_image_renderer.h		\
 	qt_smiltext.h			\
 	qt_text_renderer.h		\
-	qt_text_renderer.h		\
 	qt_transition.h			\
 	qt_util.h			\
 	qt_video_renderer.h		\
