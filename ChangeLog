@@ -1,3 +1,11 @@
+2009-09-18 16:48  keesblom
+
+	* Adapt npambulant/Makefile.am to libtool 2.2.6 (I think this
+	  required the change) Removed a duplicate entry from
+	  include/ambulant/gui/qt/Makefile.am Don't know why libltdl was
+	  checked in, perhaps because I locally installed libtool 2.2.6,
+	  otherwise I cannot wotk anymore on Fedora 10.
+
 2009-09-16 17:28  jackjansen
 
 	* More bits and pieces for ffmpeg-0.5.	Should still work with
