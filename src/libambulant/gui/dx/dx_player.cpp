@@ -68,14 +68,21 @@
 // Select video renderer to use
 #ifdef WITH_FFMPEG
 #define USE_DS_VIDEO
-#elif defined(AMBULANT_PLATFORM_WIN32_WCE)
-#define USE_BASIC_VIDEO
 #endif
+#if defined(AMBULANT_PLATFORM_WIN32_WCE)
+#define USE_BASIC_VIDEO
+#else
+#define USE_DX_VIDEO
+#define USE_BASIC_VIDEO // XXXJACK ta2 testing
+#endif
+
 #ifdef USE_DS_VIDEO
 #include "ambulant/gui/dx/dx_dsvideo.h"
-#elif defined(USE_BASIC_VIDEO)
+#endif
+#if defined(USE_BASIC_VIDEO)
 #include "ambulant/gui/dx/dx_basicvideo.h"
-#else
+#endif
+#ifdef USE_DX_VIDEO
 #include "ambulant/gui/dx/dx_video.h"
 #endif
 
@@ -223,9 +230,10 @@ gui::dx::dx_player::init_playable_factory()
 	pf->add_factory(create_dx_image_playable_factory(this, this));
 	pf->add_factory(create_dx_smiltext_playable_factory(this, this));
 	pf->add_factory(create_dx_text_playable_factory(this, this));
-#ifdef AMBULANT_PLATFORM_WIN32_WCE
+#ifdef USE_BASIC_VIDEO
 	pf->add_factory(create_dx_basicvideo_playable_factory(this, this));
-#else
+#endif
+#ifdef USE_DS_VIDEO
 	pf->add_factory(create_dx_video_playable_factory(this, this));
 #endif	
 }
