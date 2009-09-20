@@ -600,7 +600,7 @@ gui::sdl::sdl_audio_renderer::init_with_node(const lib::node *n)
 #endif
 
         if (m_clip_begin != m_previous_clip_position) {
-            /*AM_DBG*/ lib::logger::get_logger()->debug("sdl_audio_renderer::init_with_node seek from %lld to %lld for %s", m_previous_clip_position, m_clip_begin, n->get_sig().c_str());
+            AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::init_with_node seek from %lld to %lld for %s", m_previous_clip_position, m_clip_begin, n->get_sig().c_str());
 			m_lock.leave();
             seek(m_clip_begin/1000);
 			m_lock.enter();
@@ -678,7 +678,7 @@ gui::sdl::sdl_audio_renderer::start(double where)
 #endif
     if (!m_node) abort();
 		
-	/*AM_DBG*/ lib::logger::get_logger()->debug("sdl_audio_renderer.start(0x%x, %s, where=%f)", 
+	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer.start(0x%x, %s, where=%f)", 
 		(void *)this, m_node->get_sig().c_str(), where);
 	if (m_audio_src) {
 	
@@ -718,7 +718,7 @@ gui::sdl::sdl_audio_renderer::preroll(double when, double where, double how_much
 	
     if (!m_node) abort();
 	
-	/*AM_DBG*/ lib::logger::get_logger()->debug("sdl_audio_renderer::preroll(0x%x, %s, where=%f)", 
+	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::preroll(0x%x, %s, where=%f)", 
 											(void *)this, m_node->get_sig().c_str(), where);
 	if (m_audio_src) {		
 		if (m_audio_src->get_start_time() != m_audio_src->get_clip_begin())
