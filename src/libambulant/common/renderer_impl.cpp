@@ -68,6 +68,9 @@ renderer_playable::~renderer_playable()
 void
 renderer_playable::init_with_node(const lib::node *n)
 {
+    m_node = n;
+    m_cookie = m_node->get_numid();
+    _init_clip_begin_end();
 	const char *erase = m_node->get_attribute("erase");
 	if (erase && strcmp(erase, "never") == 0)
 		m_erase_never = true;
