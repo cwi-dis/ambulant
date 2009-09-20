@@ -1,3 +1,8 @@
+2009-09-20 00:04  jackjansen
+
+	* For the time being, enable the DirectX simple video on the
+	  desktop as well (for Ta2 testing).
+
 2009-09-18 16:48  keesblom
 
 	* Adapt npambulant/Makefile.am to libtool 2.2.6 (I think this
