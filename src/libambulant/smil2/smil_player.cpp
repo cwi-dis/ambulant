@@ -112,7 +112,7 @@ smil_player::~smil_player() {
 	for(it = m_playables.begin();it!=m_playables.end();it++) {
         (*it).second->post_stop();
 		int rem = (*it).second->release();
-		if (rem > 0) m_logger->trace("smil_player::~smil_player: playable 0x%x still has refcount of %d", (*it).second, rem);
+		if (rem > 0) m_logger->trace("smil_player::~smil_player: playable %s still has refcount of %d", (*it).second->get_sig().c_str(), rem);
 	}
 	
 #ifdef WITH_SEAMLESS_PLAYBACK
@@ -121,7 +121,7 @@ smil_player::~smil_player() {
 	for(it_url_based = m_playables_url_based.begin();it_url_based!=m_playables_url_based.end();it_url_based++) {
         (*it_url_based).second->post_stop();
 		int rem = (*it_url_based).second->release();
-		if (rem > 0) m_logger->trace("smil_player::~smil_player: url_based_playable 0x%x still has refcount of %d", (*it_url_based).second, rem);
+		if (rem > 0) m_logger->trace("smil_player::~smil_player: url_based_playable %s still has refcount of %d", (*it_url_based).second->get_sig().c_str(), rem);
 	}
 #endif
 	
@@ -227,7 +227,13 @@ void smil_player::start() {
 void smil_player::stop() {
     AM_DBG lib::logger::get_logger()->debug("smil_player::stop()");
 #ifdef WITH_SEAMLESS_PLAYBACK
-	assert(m_playables_url_based.empty());
+    if (!m_playables_url_based.empty()) {
+        std::map<const std::string, common::playable *>::iterator it_url_based; 
+        for(it_url_based = m_playables_url_based.begin();it_url_based!=m_playables_url_based.end();it_url_based++) {
+            lib::logger::get_logger()->trace("stop: playable still in url-based cache: %s", (*it_url_based).second->get_sig().c_str());
+        }
+        assert(m_playables_url_based.empty()); // Will fail.
+    }
 #endif
 	m_lock.enter();
 	if(m_state == common::ps_pausing || m_state == common::ps_playing) {

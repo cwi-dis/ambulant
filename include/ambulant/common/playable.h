@@ -176,6 +176,9 @@ class AMBULANTAPI playable : public lib::ref_counted_obj {
 	
 	/// Return the renderer interface of this playable, or NULL.
 	virtual renderer *get_renderer() { return (renderer *)NULL; }
+    
+    /// Return a readable string describing this object
+    virtual std::string get_sig() const { return std::string(typeid(this).name()) + "(...)"; } 
 };
 
 
