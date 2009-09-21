@@ -26,6 +26,7 @@
 #ifndef AMBULANT_COMMON_PLAYABLE_H
 #define AMBULANT_COMMON_PLAYABLE_H
 
+#include <typeinfo>
 #include <utility>
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/refcount.h"
