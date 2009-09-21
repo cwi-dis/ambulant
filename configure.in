@@ -798,7 +798,7 @@ if test "x$test_ffmpeg" = "xtrue"; then
 	then 
   	    # currently (June 2008) ffmpeg people are shifting their pkg-config files back and forth
 
-	    PKG_CONFIG_PATH=$FFMPEG_PREFIX/libavcodec:$FFMPEG_PREFIX/libavformat:$FFMPEG_PREFIX/libavutil:$PKG_CONFIG_PATH
+	    PKG_CONFIG_PATH=$FFMPEG_PREFIX/libavcodec:$FFMPEG_PREFIX/libavformat:$FFMPEG_PREFIX/libavutil:$FFMPEG_PREFIX/libswscale:$PKG_CONFIG_PATH
 	fi
 	# test_ffmpeg is currently true. Set to false if any required piece is missing.
 	ffmpeg_too_new=false
@@ -806,8 +806,16 @@ if test "x$test_ffmpeg" = "xtrue"; then
 #	PKG_CHECK_MODULES(LIBAVCODEC,[libavcodec < 52.0.0], , ffmpeg_too_new=true)
 	PKG_CHECK_MODULES(LIBAVCODEC,[libavcodec >= 51.57.2], , test_ffmpeg=false)
 	PKG_CHECK_MODULES(LIBAVFORMAT,[libavformat >= 52.14.0], , test_ffmpeg=false)
-	FFMPEG_CFLAGS="${LIBAVFORMAT_CFLAGS} ${LIBAVCODEC_CFLAGS} ${LIBAVUTIL_CFLAGS}"
-	FFMPEG_LIBS="${LIBAVFORMAT_LIBS} ${LIBAVCODEC_LIBS} ${LIBAVUTIL_LIBS}"
+	PKG_CHECK_EXISTS([libswscale >= 0.7.1], [
+		PKG_CHECK_MODULES(LIBSWSCALE, [libswscale >= 0.7.1], test_ffmpeg_swscale=true, test_ffmpeg_swscale=false)
+		] , [
+		LIBSWSCALE_CFLAGS=
+		LIBSWSCALE_LIBS=
+		test_ffmpeg_swscale=false
+		])
+		
+	FFMPEG_CFLAGS="${LIBAVFORMAT_CFLAGS} ${LIBAVCODEC_CFLAGS} ${LIBAVUTIL_CFLAGS} ${LIBSWSCALE_CFLAGS}"
+	FFMPEG_LIBS="${LIBAVFORMAT_LIBS} ${LIBAVCODEC_LIBS} ${LIBAVUTIL_LIBS} ${LIBSWSCALE_LIBS}"
 	#
 	# Sigh. Currently, the ffmpeg uninstalled.pc files contain pathnames, which are
 	# not acceptable to libtool. The following expression turns these into -L/-l combos.
@@ -829,8 +837,8 @@ AC_SUBST(FFMPEG_INCLUDES)
 AC_SUBST(FFMPEG_CFLAGS)
 AC_SUBST(FFMPEG_LIBS)
 AM_CONDITIONAL(WITH_FFMPEG, test x$test_ffmpeg = xtrue)
+AM_CONDITIONAL(WITH_FFMPEG_SWSCALE, test x$test_ffmpeg_swscale = xtrue)
 AC_SUBST(WITH_FFMPEG)
-
 AC_MSG_RESULT($test_ffmpeg)
 AC_MSG_RESULT(Discovered FFMPEG version to use - $inst_style)
 
@@ -1187,6 +1195,10 @@ ambulant.spec
 AC_OUTPUT
 
 dnl ============================================================================
+
+echo "Attempting to fix libtool, assuming 2.2.6"
+sh $srcdir/fixlibtool226.sh
+
 echo "
 ambulant-$AMBULANT_VERSION will be built with following parameters:
 
@@ -1223,7 +1235,7 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     Build with npambulant plugin:   ${with_npambulant}
      "
 
-if test "x$with_frontend" = "x$false"; then
+if test "x$with_frontend" = "xfalse"; then
     AC_MSG_WARN([No GUI support, so no player will be built])
 fi
 AC_MSG_RESULT([$qt_warning]);
@@ -1232,6 +1244,7 @@ AC_MSG_RESULT([$live_warning]);
 AC_MSG_RESULT([$expat_warning]);
 AC_MSG_RESULT([$python_warning]);
 
-echo "Attempting to fix libtool, assuming 2.2.6"
-sh $srcdir/fixlibtool226.sh
+if test "x$test_ffmpeg_swscale" = "xtrue"; then
+	AC_MSG_WARN([Built with ffmpeg libswscale, therefore under GPL license])
+fi
 

@@ -225,8 +225,8 @@ AM_LDFLAGS= \
     $(extra_live_ldflags) \
     -framework Cocoa \
     -framework QTKit \
-    -framework QuickTime \
     -framework WebKit
+# XXXJACK for 32-bit, add     -framework QuickTime 
 
 AM_CPPFLAGS = -I$(top_builddir)/include -I$(top_srcdir)/include \
     $(extra_expat_DEFINES) \

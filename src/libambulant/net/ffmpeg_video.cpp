@@ -51,8 +51,9 @@
 #define MAX_VIDEO_FRAMES 100
 
 #ifdef WITH_FFMPEG_LIBSWSCALE
-// How scaling of images is done. As we don't scale here we pick the cheapest (assuming 0 is indeed the cheapest)
-#define SWSCALE_FLAGS 0
+// How scaling of images is done.
+// XXXJACK picked this scalerr because of "FAST" in the name. So there may be a better choice...
+#define SWSCALE_FLAGS SWS_FAST_BILINEAR
 #endif
 
 #define am_get_codec_var(codec,var) codec->var
@@ -727,6 +728,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 				w, h, pic_fmt,
 				w, h, dst_pic_fmt,
 				SWSCALE_FLAGS, NULL, NULL, NULL);
+            assert(m_img_convert_ctx);
 			sws_scale(m_img_convert_ctx, frame->data, frame->linesize, 0, h, picture.data, picture.linesize);
 #else
 			img_convert(&picture, dst_pic_fmt, (AVPicture*) frame, pic_fmt, w, h);
