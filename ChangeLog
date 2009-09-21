@@ -1,3 +1,21 @@
+2009-09-20 23:53  jackjansen
+
+	* Removed debug.
+
+2009-09-20 23:52  jackjansen
+
+	* Some essential code was lost from
+	  renderer_impl::init_with_node(), node re-use could never have
+	  worked (after merging back to the trunk).
+
+	  How did I miss this??!?
+
+2009-09-20 23:30  jackjansen
+
+	* Added a get_sig() method to all renderers, which gives a
+	  (somewhat) user-readable string describing the object.  TODO:
+	  should do something similar for datasources, surfaces, etc.
+
 2009-09-20 00:04  jackjansen
 
 	* For the time being, enable the DirectX simple video on the
