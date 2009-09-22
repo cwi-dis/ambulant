@@ -334,7 +334,7 @@ global_playable_factory_impl::preferred_renderer(const char* name)
 
 	for (i=m_factories.begin(); i!=m_factories.end(); i++) {
 		if ((*i)->supports(&rs)) {
-			/*AM_DBG*/ lib::logger::get_logger()->debug("preferred_renderer: moving 0x%x to front", *i);
+			AM_DBG lib::logger::get_logger()->debug("preferred_renderer: moving 0x%x to front", *i);
 			new_list.push_back(*i);
 		}
 	}

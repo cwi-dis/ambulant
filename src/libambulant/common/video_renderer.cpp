@@ -380,7 +380,7 @@ video_renderer::data_avail()
 	net::timestamp_t now_micros = (net::timestamp_t)(now()*1000000);
 	net::timestamp_t frame_ts_micros;	// Timestamp of frame in "buf" (in microseconds)
 	buf = m_src->get_frame(now_micros, &frame_ts_micros, &size);
-    AM_DBG lib::logger::get_logger()->debug("data_avail(%s): %lld", m_node->get_sig().c_str(), frame_ts_micros);
+    AM_DBG lib::logger::get_logger()->debug("data_avail(%s): %lld, %d bytes", m_node->get_sig().c_str(), frame_ts_micros, size);
 
 	if (buf == NULL) {
 		// This can only happen immedeately after a seek, or if we have read past end-of-file.

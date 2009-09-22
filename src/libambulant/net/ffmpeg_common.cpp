@@ -435,7 +435,7 @@ ffmpeg_demux::run()
 		if (ret < 0) {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: wait some time before continuing the while loop");
 			if (!eof_sent_to_clients) {
-				
+				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: sending eof to clients");
 				for (int i=0; i<MAX_STREAMS; i++) {
 					if (m_sinks[i]) {
 						m_sinks[i]->push_data(0, 0, 0);
@@ -506,6 +506,9 @@ ffmpeg_demux::run()
 #endif // RESYNC_TO_INITIAL_AUDIO_PTS
                 }
 			}
+            // We are now going to push data to one of our clients. This means that we should re-send an EOF at the end, even if
+            // we have already sent one earlier.
+            eof_sent_to_clients = false;
 			bool accepted = false;
 			while ( ! accepted && sink && !exit_requested()) { 
 				m_current_sink = sink;

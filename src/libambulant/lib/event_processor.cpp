@@ -18,7 +18,11 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 /* 
+<<<<<<< event_processor.cpp
  * @$Id$ 
+=======
+ * @$Id$ 
+>>>>>>> 1.15
  */
 
 #include "ambulant/lib/delta_timer.h"
@@ -165,6 +169,7 @@ event_processor_impl::_serve_events()
 	while (_events_available(m_high_delta_timer, &m_high_q)
 		|| _events_available(m_med_delta_timer, &m_med_q)
 		|| _events_available(m_low_delta_timer, &m_low_q)) {
+        AM_DBG lib::logger::get_logger()->debug("_serve_events: %d hi, %d med, %d lo", m_high_q.size(), m_med_q.size(), m_low_q.size());
 		// There was at least one event
 		// First try to serve the high priority event
 		if (_serve_event(m_high_delta_timer, &m_high_q)) {
