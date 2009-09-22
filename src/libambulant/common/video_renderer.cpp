@@ -18,11 +18,7 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 /* 
-<<<<<<< video_renderer.cpp
  * @$Id$ 
-=======
- * @$Id$ 
->>>>>>> 1.42.4.55
  */
 
 #include "ambulant/lib/logger.h"

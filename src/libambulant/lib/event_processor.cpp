@@ -18,11 +18,7 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 /* 
-<<<<<<< event_processor.cpp
  * @$Id$ 
-=======
- * @$Id$ 
->>>>>>> 1.15
  */
 
 #include "ambulant/lib/delta_timer.h"
