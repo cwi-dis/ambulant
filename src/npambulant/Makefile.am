@@ -1,7 +1,13 @@
 #------------------------------------------------------
 FIREFOX=firefox
+if WITH_CG
+NPAMBULANT=libnpambulant.so
+NPAMBULANT_PLUGIN=npambulant.plugin
+MOZILLA_PLUGINS="/Library/Internet Plug-Ins"
+else
 NPAMBULANT=libnpambulant.so.0.0.0
 MOZILLA_PLUGINS=mozilla/plugins
+endif
 
 ambulantlibdir=$(top_builddir)/src/libambulant/.libs
 
@@ -125,17 +131,38 @@ check-npambulant:
 	  LD_LIBRARY_PATH=-L"$$a" $(FIREFOXENV) FIREFOXPATH=$(BUILDLIBDIR) $(DEBUGGER) $(FIREFOX) $(FIREFOXARGS) test/test_npambulant.html ; \
 	)
 
+if WITH_CG
+$(NPAMBULANT_PLUGIN): .libs/$(NPAMBULANT) $(srcdir)/Info.plist
+	-rm -fr $(NPAMBULANT_PLUGIN)
+	mkdir $(NPAMBULANT_PLUGIN)
+	mkdir $(NPAMBULANT_PLUGIN)/Contents
+	cp $(srcdir)/Info.plist $(NPAMBULANT_PLUGIN)/Contents
+	mkdir $(NPAMBULANT_PLUGIN)/Contents/MacOS
+	cp .libs/$(NPAMBULANT) $(NPAMBULANT_PLUGIN)/Contents/MacOS/$(NPAMBULANT)
+	
+install-npambulant: $(NPAMBULANT_PLUGIN)
+	-rm -fr $(MOZILLA_PLUGINS)/$(NPAMBULANT_PLUGIN)
+	cp -R $(NPAMBULANT_PLUGIN) $(MOZILLA_PLUGINS)/$(NPAMBULANT_PLUGIN)
+	
+else
+
 install-npambulant:  .libs/$(NPAMBULANT)
 	if [ `id -u` == "0" ]; then MOZILLA_PLUGINS=/usr/lib/$(MOZILLA_PLUGINS); else MOZILLA_PLUGINS=~/.$(MOZILLA_PLUGINS);fi; \
 	$(INSTALL) -d $(MOZILLA_PLUGINS);	\
 	$(INSTALL_PROGRAM) .libs/$(NPAMBULANT) $$MOZILLA_PLUGINS/npambulant.so;	\
 	./selinux_patch.sh $$MOZILLA_PLUGINS/npambulant.so
 # when selinux is enabled, identify the installed shared library
+endif
 
-
+if WITH_CG
+clean-npambulant:
+	-rm -rf $(NPAMBULANT_PLUGIN)
+	-rm -rf $(MOZILLA_PLUGINS)/$(NPAMBULANT_PLUGIN)
+else
 clean-npambulant:
 	if [ `id -u` == "0" ]; then MOZILLA_PLUGINS=/usr/lib/$(MOZILLA_PLUGINS); else MOZILLA_PLUGINS=~/.$(MOZILLA_PLUGINS);fi; \
 	rm -fr $$MOZILLA_PLUGINS/npambulant.so;
+endif
 
 mostlyclean-local:
 	rm -fr .libs *o $(NPAMBULANT)

@@ -5,9 +5,9 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>${EXECUTABLE_NAME}</string>
-	<key>CFBundleName</key>
-	<string>${PRODUCT_NAME}</string>
+	<string>libnpambulant.so</string>
+	<key>WebPluginName</key>
+	<string>AmbulantFirefoxPlugin.plugin</string>
 	<key>CFBundleIconFile</key>
 	<string></string>
 	<key>CFBundleIdentifier</key>
@@ -57,7 +57,5 @@
 			<string>SMIL Presentation</string>
 		</dict>
 	</dict>
-	<key>WebPluginName</key>
-	<string>AmbulantFirefoxPlugin.plugin</string>
 </dict>
 </plist>

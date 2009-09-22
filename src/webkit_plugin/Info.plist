@@ -46,6 +46,16 @@
 			<key>WebPluginTypeDescription</key>
 			<string>SMIL Presentation</string>
 		</dict>
+		<key>application/x-ambulant-smil</key>
+		<dict>
+			<key>WebPluginExtensions</key>
+			<array>
+				<string>smi</string>
+				<string>smil</string>
+			</array>
+			<key>WebPluginTypeDescription</key>
+			<string>SMIL Presentation</string>
+		</dict>
 	</dict>
 	<key>WebPluginName</key>
 	<string>Ambulant SMIL Plug-In</string>
