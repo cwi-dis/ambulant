@@ -13,11 +13,13 @@ ambulant_ldflags=\
 	$(ambulantlibdir)/libambulant_ffmpeg.a \
 	$(ambulantlibdir)/libambulant_sdl.a \
 	-L$(EXPAT_PREFIX)/lib -lexpat 
+cgdefines=-DXP_MACOSX
 else
 NPAMBULANT=libnpambulant.so.0.0.0
 MOZILLA_PLUGINS=mozilla/plugins
 ambulant_ldflags=-L$(ambulantlibdir) -lambulant
 mainloop=
+cgdefines=
 endif
 
 
@@ -37,12 +39,14 @@ extra_gtk_ldflags=
 endif
 #------------------------------------------------------
 if WITH_FFMPEG
+extra_ffmpeg_cflags=-DWITH_FFMPEG
 if WITH_CG
 extra_ffmpeg_ldflags=$(FFMPEG_LIBS)
 else
 extra_ffmpeg_ldflags=-lambulant_ffmpeg $(FFMPEG_LIBS)
 endif
 else
+extra_ffmpeg_cflags=
 extra_ffmpeg_ldflags=
 endif
 #------------------------------------------------------
@@ -58,6 +62,7 @@ extra_live_ldflags=
 endif # WITH_LIVE
 #------------------------------------------------------
 if WITH_SDL
+extra_sdl_cflags="-DWITH_SDL `sdl_config --cflags`"
 sdl_config=`sdl-config --libs`
 if WITH_CG
 extra_sdl_ldflags=$(sdl_config)
@@ -72,6 +77,7 @@ endif
 #	-Wl,-framework,AudioToolbox \
 #	-Wl,-framework,QuickTime
 else
+extra_sdl_cflags=
 extra_sdl_ldflags=
 endif
 #------------------------------------------------------
@@ -90,6 +96,9 @@ AM_CXXFLAGS=$(extra_gtk_cflags)
 #EXTRA_CXXFLAGS=$(extra_gtk_cflags)
 #EXTRA_LDFLAGS=$(extra_gtk_ldflags)
 AM_CPPFLAGS = \
+	$(cgdefines) \
+	$(extra_ffmpeg_cflags) \
+	$(extra_sdl_cflags) \
 	-I$(top_builddir)/include \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/include/ambulant/gui \
