@@ -24,7 +24,8 @@ Notes:
 3. For a 64-bit version, copy npambulant.so-64 in place of npambulant.so 
    in one of the directories mentioned above.
 
-4. A complete version of npambulant (without using shared libraries) was build as follows.
+4. A self-contained version of npambulant (without using shared libraries)
+   was build as follows.
 
    # faad2:
    ./configure --prefix=$HOME --without-bmp --disable-shared CFLAGS=-fPIC
