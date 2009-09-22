@@ -32,7 +32,7 @@ Notes:
    make;make install
 
    # ffmpeg:
-   ./configure --enable-libfaad --enable-pthreads --enable-gpl --enable-x11grab --disable-swscale --disable-shared --extra-cflags=-fPIC\ -O0\ -I/ufs/kees/include --extra-ldflags=-L/ufs/kees/lib --prefix=/ufs/kees --disable-mmx
+   ./configure --enable-libfaad --enable-pthreads --enable-gpl --enable-x11grab --disable-swscale --disable-shared --extra-cflags=-fPIC\ -O0\ -I$HOME/include --extra-ldflags=-L$HOME/lib --prefix=$HOME --disable-mmx
    # (fPIC and --disable-mmx only for 64 bit)
    make;make install
 
