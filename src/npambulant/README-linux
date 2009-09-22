@@ -24,11 +24,27 @@ Notes:
 3. For a 64-bit version, copy npambulant.so-64 in place of npambulant.so 
    in one of the directories mentioned above.
 
-4. This version was build with the following options:
-   for ambulant:
-   ./configure --prefix=$HOME CFLAGS=-fPIC CXXFLAGS=-fPIC --with-live --without-python --without-xerces --without-plugins --without-qt --with-npambulant LDFLAGS=-L$HOME/lib EXTRA_LIBS=-lfaad 
-   for ffmpeg:
-   ./configure --enable-libfaad --enable-pthreads --enable-gpl --enable-x11grab --disable-swscale --disable-shared --extra-cflags=-fPIC -O0 -I/ufs/kees/include --extra-ldflags=-L/ufs/kees/lib --prefix=/ufs/kees --disable-mmx 
-   (fPIC and --disable-mmx only for 64 bit)
-   In addition, final link was done with .../src/npambulant/linkit, and some
-   manual labor as described in comments in that script.
+4. A complete version of npambulant (without using shared libraries) was build as follows.
+
+   # faad2:
+   ./configure --prefix=$HOME --without-bmp --disable-shared CFLAGS=-fPIC
+   make;make install
+
+   # ffmpeg:
+   ./configure --enable-libfaad --enable-pthreads --enable-gpl --enable-x11grab --disable-swscale --disable-shared --extra-cflags=-fPIC\ -O0\ -I/ufs/kees/include --extra-ldflags=-L/ufs/kees/lib --prefix=/ufs/kees --disable-mmx
+   # (fPIC and --disable-mmx only for 64 bit)
+   make;make install
+
+   ambulant:
+   # first configure, build and local install WITHOUT plugin and shared objects (libraries)
+   ./configure --without-npambulant --disable-shared --prefix=$HOME CFLAGS=-fPIC CXXFLAGS=-fPIC --with-live --without-python --without-xerces --without-plugins --without-qt LDFLAGS=-L$HOME/lib EXTRA_LIBS=-lfaad 
+   make;make install
+   PATH=$HOME/bin:$PATH
+   LD_LIBRARY_PATH=$HOME/lib:$LD_LIBRARY_PATH
+   # next configure WITH plugin and shared libraries (plugin itself is a shared object)
+   ./configure --with-npambulant --enable-shared --prefix=$HOME CFLAGS=-fPIC CXXFLAGS=-fPIC --with-live --without-python --without-xerces --without-plugins --without-qt LDFLAGS=-L$HOME/lib EXTRA_LIBS=-lfaad 
+   # now ONLY build and (local) install npambulant
+   (cd src/npambulant;make;make install)
+   # This will install npambulant.so in $HOME/.mozilla/plugins, in a form distributable to
+   # any machine of the same architecture
+   
