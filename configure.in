@@ -441,10 +441,10 @@ AC_ARG_WITH(cocoa,
        no)  cocoa=false ;;
        *) AC_MSG_ERROR(bad value ${withval} for --with-cocoa) ;;
      esac
-     gui_toolkit_found=true],[
+     with_frontend=true],[
      if test -d /System/Library/Frameworks/AppKit.framework; then
        cocoa=true
-       gui_toolkit_found=true
+       with_frontend=true
      else
        cocoa=false
      fi
@@ -484,7 +484,7 @@ if test x$uikit = xtrue; then
         AC_MSG_ERROR(--with-uikit requires --with-cg)
     fi
     AC_DEFINE(WITH_UIKIT, 1, [Define to enable UIKit main program])
-    gui_toolkit_found=true
+    with_frontend=true
 fi
 AM_CONDITIONAL(WITH_UIKIT, test x$uikit = xtrue)
 AC_MSG_RESULT($uikit)
@@ -654,6 +654,8 @@ if test "x$test_gtk" = "xtrue"; then
 	GTK_PREFIX="`pkg-config --variable=exec_prefix gtk+-2.0 glib-2.0 gthread-2.0`"
 	if test $test_gtk = false; then
 	   AC_MSG_WARN([Gtk+-2.0 or gthread-2.0 not found, or too old])
+	else
+		with_frontend=true
 	fi
 fi
 
