@@ -1,17 +1,27 @@
 #------------------------------------------------------
 FIREFOX=firefox
+ambulantlibdir=$(top_builddir)/src/libambulant/.libs
+
 if WITH_CG
 NPAMBULANT=libnpambulant.so
 NPAMBULANT_PLUGIN=npambulant.plugin
 MOZILLA_PLUGINS="/Library/Internet Plug-Ins"
+mainloop=cg_mainloop.cpp
+ambulant_ldflags=\
+	$(ambulantlibdir)/libambulant.a \
+	$(ambulantlibdir)/libambulant_cg.a \
+	$(ambulantlibdir)/libambulant_ffmpeg.a \
+	$(ambulantlibdir)/libambulant_sdl.a \
+	-L$(EXPAT_PREFIX)/lib -lexpat 
 else
 NPAMBULANT=libnpambulant.so.0.0.0
 MOZILLA_PLUGINS=mozilla/plugins
+ambulant_ldflags=-L$(ambulantlibdir) -lambulant
+mainloop=
 endif
 
-ambulantlibdir=$(top_builddir)/src/libambulant/.libs
 
-ambulant_ldflags=-L$(ambulantlibdir) -lambulant
+
 
 # Various flags for optional features
 #------------------------------------------------------
@@ -27,7 +37,11 @@ extra_gtk_ldflags=
 endif
 #------------------------------------------------------
 if WITH_FFMPEG
+if WITH_CG
+extra_ffmpeg_ldflags=$(FFMPEG_LIBS)
+else
 extra_ffmpeg_ldflags=-lambulant_ffmpeg $(FFMPEG_LIBS)
+endif
 else
 extra_ffmpeg_ldflags=
 endif
@@ -45,7 +59,11 @@ endif # WITH_LIVE
 #------------------------------------------------------
 if WITH_SDL
 sdl_config=`sdl-config --libs`
+if WITH_CG
+extra_sdl_ldflags=$(sdl_config)
+else
 extra_sdl_ldflags=-lambulant_sdl $(sdl_config)
+endif
 #extra_sdl_ldflags=-lambulant_sdl $(sdl_config) \
 #	-Wl,-framework,Carbon \
 #	-Wl,-framework,IOKit \
@@ -108,7 +126,15 @@ FIREFOXENV=
 
 BUILDLIBDIR=
 lib_LTLIBRARIES = libnpambulant.la
-libnpambulant_la_SOURCES=np_entry.cpp npn_gate.cpp npp_gate.cpp ScriptablePluginObjectBase.cpp ScriptablePluginObject.cpp npambulant.cpp
+libnpambulant_la_SOURCES=\
+	np_entry.cpp \
+	npn_gate.cpp \
+	npp_gate.cpp \
+	ScriptablePluginObjectBase.cpp \
+	ScriptablePluginObject.cpp \
+	npambulant.cpp \
+	$(mainloop)
+	
 nodist_libnpambulant_la_INCLUDES=npambulant.h
 
 libnpambulant_la_LDFLAGS=	\
@@ -134,12 +160,30 @@ check-npambulant:
 if WITH_CG
 $(NPAMBULANT_PLUGIN): .libs/$(NPAMBULANT) $(srcdir)/Info.plist
 	-rm -fr $(NPAMBULANT_PLUGIN)
+
+#	Install boilerplate, Info.plist, etc.
 	mkdir $(NPAMBULANT_PLUGIN)
 	mkdir $(NPAMBULANT_PLUGIN)/Contents
 	cp $(srcdir)/Info.plist $(NPAMBULANT_PLUGIN)/Contents
+	
+#	Install npambulant plugin binary
 	mkdir $(NPAMBULANT_PLUGIN)/Contents/MacOS
 	cp .libs/$(NPAMBULANT) $(NPAMBULANT_PLUGIN)/Contents/MacOS/$(NPAMBULANT)
 	
+#	Install ambulant core libraries
+
+#	Install plugins for ambulant engine
+	mkdir $(NPAMBULANT_PLUGIN)/Contents/PlugIns
+	pkglibdir=`pwd`/$(NPAMBULANT_PLUGIN)/Contents/PlugIns; \
+	cd ../plugins; \
+	$(MAKE) $(AM_MAKEFLAGS) pkglibdir=$$pkglibdir install 
+
+#	Install gettext localizations
+	localedir=`pwd`/$(BUILDAPPNAME).app/Contents/Resources/locale; \
+	cd ../../po ; \
+	$(MAKE) $(AM_MAKEFLAGS) localedir=$$localedir install
+    
+
 install-npambulant: $(NPAMBULANT_PLUGIN)
 	-rm -fr $(MOZILLA_PLUGINS)/$(NPAMBULANT_PLUGIN)
 	cp -R $(NPAMBULANT_PLUGIN) $(MOZILLA_PLUGINS)/$(NPAMBULANT_PLUGIN)
