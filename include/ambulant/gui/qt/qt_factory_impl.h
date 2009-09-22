@@ -33,7 +33,6 @@ namespace gui {
 
 namespace qt {
 
-#undef WITH_DUMPPIXMAP
 #ifdef WITH_DUMPPIXMAP
 /// Debug function that dumps a pixmap to a file. An incrementing
 /// count is appended to the filenname, and an extension added.

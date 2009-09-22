@@ -296,11 +296,15 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 	if (m_blending) {
 		QImage tx_image = tx_pixmap->convertToImage();
 		QImage screen_img = m_window->get_ambulant_pixmap()->convertToImage();
+		AM_DBG DUMPIMAGE(&screen_img, "sc");
+
+		AM_DBG DUMPIMAGE(&tx_image, "tx");
 
 		lib::rect rct0 (lib::point(0, 0), lib::size(W, H));
 
 		if (bg_pixmap) {
 			QImage bg_image = bg_pixmap->convertToImage();
+			AM_DBG DUMPIMAGE(&bg_image, "bg");
 			qt_image_blend (screen_img, rct, bg_image, rct0, 
 					alpha_media_bg, 0.0,
 //XX					chroma_low, chroma_high);
@@ -319,8 +323,10 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 		***/
 		QPixmap new_pixmap(W,H);
 		new_pixmap.convertFromImage(screen_img);
+		AM_DBG DUMPPIXMAP(&new_pixmap, "nw");
 		bitBlt(m_window->get_ambulant_pixmap(), L, T,
 		       &new_pixmap, L, T, W, H);	
+		AM_DBG DUMPPIXMAP(m_window->get_ambulant_pixmap(), "rs");
 		delete tx_pixmap;
 	}
 }

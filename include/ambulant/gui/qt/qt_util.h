@@ -37,7 +37,8 @@ namespace qt {
 
 // blending: used for media opacity, chromakeying and fading
  
-void qt_image_blend (QImage dst, const lib::rect dst_rc, 
+void 
+qt_image_blend (QImage dst, const lib::rect dst_rc, 
 		     QImage src, const lib::rect src_rc,
 		     double opacity_in, double opacity_out,
 		     const lib::color_t chroma_low, 
@@ -47,9 +48,23 @@ void qt_image_blend (QImage dst, const lib::rect dst_rc,
 color_t QColor2color_t(QColor c);
 QColor color_t2QColor(lib::color_t c);
 
+// image debugging: dump images/pixmaps at various stages of drawing process.
+// needed for development and maintenace of image drawing, e.g. in the context
+// of animations, transitions and such.
+// Enable by adding -DWITH_DUMPIMAGES to CXXFLAGS on the ./configure line
+// #define	WITH_DUMPIMAGES
+#ifdef	WITH_DUMPIMAGES
+#define DUMPIMAGE(qimage, id)  qt_image_dump(qimage, id)
+void
+qt_image_dump(QImage* qimage, std::string id);
+#define DUMPPIXMAP(qpixmap, id)  qt_pixmap_dump(qpixmap, id)
+void
+qt_pixmap_dump(QPixmap* qpixmap, std::string id);
+#else
+#define DUMPIMAGE(qimage, id)
+#define DUMPPIXMAP(qpixmap, id)
+#endif//WITH_DUMPIMAGES
 
-void qt_pixmap_dump(QPixmap* gpm, std::string filename);
-	
 } // namespace qt
 
 } // namespace gui

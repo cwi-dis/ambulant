@@ -51,7 +51,19 @@ void gdk_pixbuf_blend (GdkPixbuf* dst, const lib::rect dst_rc,
 		       const lib::color_t chroma_high,
 		       const lib::color_t mask_color=0);
 
-void gdk_pixmap_dump(GdkPixmap* gpm, std::string filename);
+// image debugging: dump images/pixmaps at various stages of drawing process.
+// needed for development and maintenace of image drawing, e.g. in the context
+// of animations, transitions and such.
+// Enable by adding -DWITH_DUMPIMAGES to CXXFLAGS on the ./configure line
+// #define	WITH_DUMPIMAGES
+#ifdef	WITH_DUMPIMAGES
+#define DUMPPIXMAP(gdkpixmap, id)  gdk_pixmap_dump(gdkpixmap, id)
+void
+gdk_pixmap_dump(GdkPixmap* gpm, std::string id);
+#else
+#define DUMPPIXMAP(gdkpixmap, id)
+#endif//WITH_DUMPIMAGES
+
 	
 } // namespace gtk
 

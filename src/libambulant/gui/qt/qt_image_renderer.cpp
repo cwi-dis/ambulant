@@ -173,6 +173,8 @@ qt_image_renderer::redraw_body(const rect &dirty,
 	bitBlt (&partialimage, 0, 0, &m_image, S_L, S_T, S_W, S_H, 0 );
 	QImage scaledimage = partialimage.smoothScale(D_W, D_H, QImage::ScaleFree);
 	N_L = 0; N_T = 0;
+	DUMPIMAGE(&partialimage, "partialimage");
+	DUMPIMAGE(&scaledimage, "scaledimage");
 #else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
 	QImage scaledimage = partialimage.smoothScale(D_W, D_H);
 #endif/*QT_NO_FILEDIALO*/

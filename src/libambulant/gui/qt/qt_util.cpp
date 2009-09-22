@@ -158,36 +158,40 @@ color_t2QColor(lib::color_t c) {
 	return QColor(redc(c), greenc(c), bluec(c)); 
 }
 
-#ifdef	WITH_DUMPPIXMAP
+#ifdef	WITH_DUMPIMAGES
 static QImage* oldImageP;
 static bool 
-isEqualToPrevious(QPixmap* qpmP) {
-	return false;
-	QImage img = qpmP->convertToImage();
-	if (oldImageP != NULL && img == *oldImageP) {
+isEqualToPrevious(QImage* img) {
+	if (oldImageP != NULL && *img == *oldImageP) {
 		AM_DBG lib::logger::get_logger()->debug("isEqualToPrevious: new image not different from old one");
 		return true;
 	} else {
 		if (oldImageP != NULL) delete oldImageP;
-		oldImageP = new QImage(img);
+		oldImageP = new QImage(*img);
 		return false;
 	}
 }
 
 void
-qt_pixmap_dump(QPixmap* qpm, std::string filename) {
-	if ( ! qpm) return;
-	QImage img = qpm->convertToImage();
-	if ( ! isEqualToPrevious(qpm)) {
+qt_image_dump(QImage* img, std::string id) {
+	if ( ! img) return;
+	if ( ! isEqualToPrevious(img)) {
 		static int i;
 		char buf[5];
 		sprintf(buf,"%04d",i++);
-		std::string newfile = buf + std::string(filename) +".png";
-		qpm->save(newfile, "PNG");
-		AM_DBG lib::logger::get_logger()->debug("dumpPixmap(%s)", newfile.c_str());
+		std::string newfile = buf + std::string(id) +".png";
+		img->save(newfile, "PNG");
+		AM_DBG lib::logger::get_logger()->debug("qt_image_dump(%s)", newfile.c_str());
 	}
 }
-#endif /* WITH_DUMPPIXMAP */
+
+void
+qt_pixmap_dump(QPixmap* qpm, std::string id) {
+	if ( ! qpm) return;
+ 	QImage img = qpm->convertToImage();
+	qt_image_dump(&img, id);
+}
+#endif /* WITH_DUMPIMAGE */
 
 } // namespace qt
 

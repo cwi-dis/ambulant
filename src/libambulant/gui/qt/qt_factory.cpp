@@ -257,7 +257,7 @@ ambulant_qt_window::redraw(const lib::rect &r)
 bool
 ambulant_qt_window::user_event(const lib::point &where, int what) 
 {
-        AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::user_event(0x%x): point=(%d,%d)", this, where.x, where.y);
+    AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::user_event(0x%x): point=(%d,%d)", this, where.x, where.y);
 	return m_handler->user_event(where, what);
 }
 
@@ -269,10 +269,6 @@ ambulant_qt_window::set_ambulant_widget(qt_ambulant_widget* qaw)
 	//if (m_ambulant_widget != NULL)
 	//	delete m_ambulant_widget;
 	m_ambulant_widget = qaw;
-
-	if (qaw != NULL) {
-		//AAA		m_ambulant_widget->clear(&m_pixmap);
-	}
 }
 
 qt_ambulant_widget*

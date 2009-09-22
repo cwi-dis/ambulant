@@ -37,7 +37,6 @@ namespace ambulant {
 namespace gui {
 
 namespace gtk {
-
 	void gdk_pixmap_bitblt(GdkPixmap* dst, int dst_x, int dst_y, GdkPixmap* src, int src_x, int src_y, int width, int height);
 
 class gtk_ambulant_widget;
