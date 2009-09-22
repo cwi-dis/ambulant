@@ -109,6 +109,7 @@ smil_player::~smil_player() {
 	cancel_all_events();		
 	m_scheduler->reset_document();
 	std::map<const lib::node*, common::playable *>::iterator it;
+    m_playables_cs.enter();
 	for(it = m_playables.begin();it!=m_playables.end();it++) {
         (*it).second->post_stop();
 		int rem = (*it).second->release();
@@ -124,7 +125,7 @@ smil_player::~smil_player() {
 		if (rem > 0) m_logger->trace("smil_player::~smil_player: url_based_playable %s still has refcount of %d", (*it_url_based).second->get_sig().c_str(), rem);
 	}
 #endif
-	
+	m_playables_cs.leave();
 	
 	delete m_focussed_nodes;
 	delete m_new_focussed_nodes;
@@ -999,14 +1000,14 @@ void smil_player::_destroy_playable_in_cache(std::pair<const lib::node*, common:
 	assert(victim.second);
 
     std::string url = victim.first->get_url("src").get_url();
-	std::map<const std::string, common::playable *>::iterator it_url_based = 
-	m_playables_url_based.find(url);
+    m_playables_cs.enter();
+	std::map<const std::string, common::playable *>::iterator it_url_based = m_playables_url_based.find(url);
 	if (it_url_based != m_playables_url_based.end()) {
         if ((*it_url_based).second != victim.second) {
             AM_DBG lib::logger::get_logger()->debug("smil_player::_destroy_playable_in_cache: cache has different playable for %s, assuming %s is reused", url.c_str(), victim.first->get_sig().c_str());
+            m_playables_cs.leave();
             return;
         }
-		m_playables_cs.enter();
 		m_playables_url_based.erase(it_url_based);
 		m_playables_cs.leave();
 		AM_DBG lib::logger::get_logger()->debug("smil_player::_destroy_playable_in_cache: stop the playable in the cache for %s", victim.first->get_sig().c_str());
@@ -1014,6 +1015,7 @@ void smil_player::_destroy_playable_in_cache(std::pair<const lib::node*, common:
         int rem = victim.second->release();
 		if (rem > 0) m_logger->debug("smil_player::_destroy_playable_in_cache: playable 0x%x still has refcount of %d", victim.second, rem);
 	} else {
+        m_playables_cs.leave();
         // Note that this is not an error, on the contrary: it could be that the playable has been reused.
         AM_DBG m_logger->debug("smil_player::_destroy_playable_in_cache: playable for %s no longer in cache", url.c_str());
     }
