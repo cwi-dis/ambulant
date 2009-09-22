@@ -1,3 +1,11 @@
+2009-09-21 17:45  keesblom
+
+	* Made libambulant compile again after introduction of get_sig()
+
+2009-09-21 17:07  jackjansen
+
+	* More bits and pieces for (a) 64-bit Mac buid and (b) ffmpeg 0.5.
+
 2009-09-20 23:53  jackjansen
 
 	* Removed debug.
