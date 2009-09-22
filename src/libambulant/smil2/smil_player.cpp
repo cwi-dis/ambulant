@@ -228,13 +228,19 @@ void smil_player::start() {
 void smil_player::stop() {
     AM_DBG lib::logger::get_logger()->debug("smil_player::stop()");
 #ifdef WITH_SEAMLESS_PLAYBACK
+   m_playables_cs.enter();
     if (!m_playables_url_based.empty()) {
         std::map<const std::string, common::playable *>::iterator it_url_based; 
         for(it_url_based = m_playables_url_based.begin();it_url_based!=m_playables_url_based.end();it_url_based++) {
             lib::logger::get_logger()->trace("stop: playable still in url-based cache: %s", (*it_url_based).second->get_sig().c_str());
+            (*it_url_based).second->post_stop();
+            int rem = (*it_url_based).second->release();
+            m_playables_url_based.erase(it_url_based);
         }
-        assert(m_playables_url_based.empty()); // Will fail.
     }
+    assert(m_playables_url_based.empty());
+   m_playables_cs.leave();
+
 #endif
 	m_lock.enter();
 	if(m_state == common::ps_pausing || m_state == common::ps_playing) {
