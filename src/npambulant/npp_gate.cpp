@@ -81,6 +81,24 @@ NPError NPP_New(NPMIMEType pluginType,
     return NPERR_INVALID_INSTANCE_ERROR;
 
   NPError rv = NPERR_NO_ERROR;
+#ifdef WITH_CG
+	// We need to request CoreGraphics support in stead of QuickDraw support.
+	NPBool supportsCG = false;
+	rv = NPN_GetValue(instance, NPNVsupportsCoreGraphicsBool, &supportsCG);
+	if (rv) {
+		/*AM_DBG*/ fprintf(stderr, "GetValue(NPNVsupportsCoreGraphicsBool) returned %d\n", rv);
+		return rv;
+	}
+	if (!supportsCG) {
+		/*AM_DBG*/ fprintf(stderr, "Browser does not support NPNVsupportsCoreGraphicsBool\n");
+		return NPERR_INCOMPATIBLE_VERSION_ERROR;
+	}
+	rv = NPN_SetValue(instance, NPPVpluginDrawingModel, (void*)NPDrawingModelCoreGraphics);
+	if (rv) {
+		/*AM_DBG*/ fprintf(stderr, "SetValue(NPDrawingModelCoreGraphics) returned %d\n", rv);
+		return NPERR_INCOMPATIBLE_VERSION_ERROR;
+	}
+#endif
   npambulant * pPlugin = new npambulant(pluginType,instance,mode,argc,argn,argv,saved);
   if(pPlugin == NULL)
     return NPERR_OUT_OF_MEMORY_ERROR;

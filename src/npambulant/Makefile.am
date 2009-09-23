@@ -62,7 +62,7 @@ extra_live_ldflags=
 endif # WITH_LIVE
 #------------------------------------------------------
 if WITH_SDL
-extra_sdl_cflags="-DWITH_SDL `sdl_config --cflags`"
+extra_sdl_cflags="-DWITH_SDL `sdl-config --cflags`"
 sdl_config=`sdl-config --libs`
 if WITH_CG
 extra_sdl_ldflags=$(sdl_config)

@@ -34,6 +34,8 @@ static LRESULT CALLBACK PluginWinProc(HWND, UINT, WPARAM, LPARAM);
 #define AM_DBG if(0)
 #endif
 
+#include <ApplicationServices/ApplicationServices.h> // XXXJACK TEMP DEBUG
+
 using namespace ambulant;
 
 NPIdentifier sStartPlayer_id;
@@ -224,7 +226,13 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 	gtk_widget_realize(gtkwidget);
 #endif // WITH_GTK
 #ifdef WITH_CG
-	void *view = NULL;
+	NP_CGContext *cg_context = (NP_CGContext *)aWindow->window;
+	/*AM_DBG*/ fprintf(stderr, "npambulant::init_ambulant: context=0x%x, window=0x%x\n", cg_context->context, cg_context->window);
+	/*AM_DBG*/ {
+		CGRect rect = CGContextGetClipBoundingBox(cg_context->context);
+		fprintf(stderr, "npambulant::init_ambulant: bounding box (%f, %f, %f, %f)\n", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+	}
+	void *view = NULL; // XXXJACK
 	m_mainloop = new cg_mainloop(url_str, view, false, NULL);
 	m_logger = lib::logger::get_logger();
 	m_ambulant_player = m_mainloop->get_player();
@@ -428,7 +436,7 @@ npambulant::restartPlayer()
 void
 npambulant::pausePlayer()
 {
-	AM_DBG lib::logger::get_logger()->debug("npambulant::pausePlayer()\n");
+	/*AM_DBG*/ lib::logger::get_logger()->debug("npambulant::pausePlayer()\n");
 	if (m_ambulant_player != NULL)
 		get_player()->pause();
 }
