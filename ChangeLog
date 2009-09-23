@@ -1,3 +1,63 @@
+2009-09-23 01:04  jackjansen
+
+	* Mac firefox plugin starts to work. Plays audio, but no visuals
+	  yet.
+
+2009-09-23 00:48  jackjansen
+
+	* Getting a bit further with building npambulant for Mac.  It now
+	  crashes in NPInitialize.
+
+2009-09-22 23:37  jackjansen
+
+	* Getting started again on building npambulant for mac.  Currently
+	  it loads, and crashes firefox:-)
+
+2009-09-22 22:01  jackjansen
+
+	* Fixed erronuous warning about missing front end.
+
+2009-09-22 17:51  keesblom
+
+	* rewrote image debugging code not to use #ifdef
+
+2009-09-22 17:16  keesblom
+
+	* Changed explicit reference to personal home directory into $HOME
+
+2009-09-22 17:03  jackjansen
+
+	* Updated test results.
+
+2009-09-22 16:23  jackjansen
+
+	* Added autorelease pool to cocoa_dsvideo to forestall wasting
+	  memory.
+
+2009-09-22 16:16  keesblom
+
+	* Small edits,
+
+2009-09-22 16:14  keesblom
+
+	* Updated README-linux howto contruct a self-contained plugin
+
+2009-09-22 16:14  jackjansen
+
+	* Getting rid of "cvs merge" turds.
+
+2009-09-22 16:03  jackjansen
+
+	* If the ffmpeg demux thread communicated end-of-file to the demux
+	  datasource while the demux datasource buffer was full the
+	  end-of-file condition would be lost.
+
+	  Fixed.
+
+2009-09-22 15:57  jackjansen
+
+	* Locking of m_playables_cs was incorrect. Fixed.
+
 2009-09-21 17:45  keesblom
 
 	* Made libambulant compile again after introduction of get_sig()
