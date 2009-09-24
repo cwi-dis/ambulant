@@ -44,8 +44,7 @@
 #define ptrdiff_t long int // but not defined in Visual C++ 7.1.
 #endif//XP_WIN32
 
-#include "npapi.h"
-#include "npupp.h"
+#include "npambulant.h"
 
 #ifndef HIBYTE
 #define HIBYTE(x) ((((uint32)(x)) & 0xff00) >> 8)
@@ -123,10 +122,10 @@ NPError NPN_NewStream(NPP instance, NPMIMEType type, const char* target, NPStrea
   return rv;
 }
 
-int32 NPN_Write(NPP instance, NPStream *stream, int32 len, void *buffer)
+int32_t NPN_Write(NPP instance, NPStream *stream, int32_t len, void *buffer)
 {
 	int navMinorVersion = NPNFuncs.version & 0xFF;
-  int32 rv = 0;
+  int32_t rv = 0;
 
   if( navMinorVersion >= NPVERS_HAS_STREAMOUTPUT )
 		rv = NPNFuncs.write(instance, stream, len, buffer);

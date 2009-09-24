@@ -86,7 +86,7 @@ ScriptablePluginObject::Invoke(NPIdentifier name, const NPVariant *args,
                                uint32_t argCount, NPVariant *result)
 {
   if ( ! mNpp)
-	return PR_FALSE; 
+	return FALSE; 
   if (name == sStartPlayer_id) {
 	printf ("startPlayer called !\n");
 	((npambulant*)mNpp->pdata)->startPlayer();
@@ -106,8 +106,8 @@ ScriptablePluginObject::Invoke(NPIdentifier name, const NPVariant *args,
 	printf ("isDone called !\n");
 	bool rv = ((npambulant*)mNpp->pdata)->isDone();
 	BOOLEAN_TO_NPVARIANT(rv, *result);
-  } else return PR_FALSE;
-  return PR_TRUE;
+  } else return FALSE;
+  return TRUE;
 }
 
 bool
@@ -118,5 +118,5 @@ ScriptablePluginObject::InvokeDefault(const NPVariant *args, uint32_t argCount,
 
   STRINGZ_TO_NPVARIANT(strdup("default method return val"), *result);
 
-  return PR_TRUE;
+  return TRUE;
 }

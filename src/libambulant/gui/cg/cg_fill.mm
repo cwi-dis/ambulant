@@ -114,7 +114,7 @@ cg_fill_renderer::redraw_body(const rect &dirty, gui_window *window)
 	const common::region_info *ri = m_dest->get_info();
 	if (ri) alfa = ri->get_mediaopacity();
 #endif
-	float components[] = {redf(color), greenf(color), bluef(color), alfa};
+	CGFloat components[] = {redf(color), greenf(color), bluef(color), alfa};
 //	CGColorRef cgcolor = CGColorCreate(CGColorSpaceCreateDeviceRGB(), components);
 			
 //	PLOVER [nscolor set];
@@ -157,7 +157,7 @@ cg_background_renderer::redraw(const lib::rect &dirty, common::gui_window *windo
 		// XXXX Fill with background color
 		color_t bgcolor = m_src->get_bgcolor();
 		AM_DBG lib::logger::get_logger()->debug("cg_bg_renderer::drawbackground: clearing to 0x%x opacity %f", (long)bgcolor, opacity);
-		float components[] = {redf(bgcolor), greenf(bgcolor), bluef(bgcolor), opacity};
+		CGFloat components[] = {redf(bgcolor), greenf(bgcolor), bluef(bgcolor), opacity};
 //		CGColorRef cgcolor = CGColorCreate(CGColorSpaceCreateDeviceRGB(), components);
 //		PLOVER [cg_bgcolor set];
 //		PLOVER CGRectFillUsingOperation(cg_dstrect_whole, NSCompositeSourceAtop);
@@ -191,7 +191,7 @@ cg_background_renderer::highlight(common::gui_window *window)
 	CGRect cg_dstrect_whole = [view CGRectForAmbulantRect: &dstrect_whole];
 	color_t hicolor = 0x0000ff;
 	AM_DBG lib::logger::get_logger()->debug("cg_bg_renderer::highlight: framing with color 0x%x", (long)hicolor);
-	float components[] = {redf(hicolor), greenf(hicolor), bluef(hicolor), 1.0};
+	CGFloat components[] = {redf(hicolor), greenf(hicolor), bluef(hicolor), 1.0};
 //	CGColorRef cgcolor = CGColorCreate(CGColorSpaceCreateDeviceRGB(), components);
 //	PLOVER [cgcolor set];
 //	PLOVER NSFrameRect(cg_dstrect_whole);

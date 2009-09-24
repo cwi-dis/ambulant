@@ -44,8 +44,7 @@
 #define _PTRDIFF_T_DEFINED
 #endif//XP_WIN32
 
-#include "npapi.h"
-#include "npupp.h"
+#include "npambulant.h"
 #include <string.h>
 #define AM_DBG
 #ifndef AM_DBG

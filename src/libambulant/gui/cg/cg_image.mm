@@ -124,7 +124,7 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 		if (opacity < 0.5) {
 			lib::color_t chromakey = ri->get_chromakey();
 			lib::color_t tolerance = ri->get_chromakeytolerance();
-			float components[8] = {
+			CGFloat components[8] = {
 				redf(chromakey)-redf(tolerance), redf(chromakey)+redf(tolerance),
 				greenf(chromakey)-greenf(tolerance), greenf(chromakey)+greenf(tolerance),
 				bluef(chromakey)-bluef(tolerance), bluef(chromakey)+bluef(tolerance),

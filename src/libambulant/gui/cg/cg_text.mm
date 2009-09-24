@@ -130,7 +130,7 @@ cg_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 	const common::region_info *ri = m_dest->get_info();
 	if (ri) alfa = ri->get_mediaopacity();
 #endif
-	float components[] = {redf(m_text_color), greenf(m_text_color), bluef(m_text_color), alfa};
+	CGFloat components[] = {redf(m_text_color), greenf(m_text_color), bluef(m_text_color), alfa};
 	CGColorSpaceRef genericColorSpace = CGColorSpaceCreateDeviceRGB();
 	CGContextSetFillColorSpace(ctx, genericColorSpace); 
 	CGContextSetFillColor(ctx, components);

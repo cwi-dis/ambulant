@@ -45,7 +45,6 @@
 //#define ptrdiff_t long int // but not defined in Visual C++ 7.1.
 #endif//XP_WIN32
 
-#include "npapi.h"
 #include "npambulant.h"
 
 char*
@@ -198,7 +197,7 @@ NPError	NPP_GetValue(NPP instance, NPPVariable variable, void *value)
     *(NPObject **)value = plugin->GetScriptableObject();
     break;
   case NPPVpluginNeedsXEmbed:
-    *(PRBool *) value = PR_TRUE;
+    *(NPBool *) value = TRUE;
     break;        
   default:
 //    rv = NPERR_GENERIC_ERROR;

@@ -40,6 +40,23 @@
 
 #include "npapi.h"
 #include "npruntime.h"
+#include "prtypes.h"
+
+//
+// Some header files and typedefs have changed between Firefox 3.0 and 3.5.
+// The code currently uses the old names, and typedefs them to the new ones
+// if required.
+//
+#if (NP_VERSION_MAJOR >= 0) && (NP_VERSION_MINOR >= 22)
+#include "npfunctions.h"
+typedef int32_t int32;
+typedef int16_t int16;
+typedef void JRIEnv;
+typedef void *jref;
+#else
+#include "npupp.h"
+#endif // (NP_VERSION_MAJOR >= 0) && (NP_VERSION_MINOR >= 22)
+
 
 // ambulant player includes
 #include "ambulant/version.h"
