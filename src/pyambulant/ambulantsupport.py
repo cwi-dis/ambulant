@@ -580,11 +580,11 @@ node_object.othermethods = [
     "void set_attributes(const char **attrs) { abort(); }", # XXX for now
 ]
 node_factory_object.othermethods = [
-	"ambulant::lib::node *new_node(const char *local_name, const char **attrs = 0, const ambulant::lib::node_context *ctx = 0) { abort(); };",
-	"ambulant::lib::node *new_node(const ambulant::lib::xml_string& local_name, const char **attrs = 0, const ambulant::lib::node_context *ctx = 0) { abort(); };",
+	"ambulant::lib::node *new_node(const char *local_name, const char **attrs = 0, const ambulant::lib::node_context *ctx = 0) { abort(); return NULL; };",
+	"ambulant::lib::node *new_node(const ambulant::lib::xml_string& local_name, const char **attrs = 0, const ambulant::lib::node_context *ctx = 0) { abort(); return NULL; };",
 ]
 parser_factory_object.othermethods = [
-    "ambulant::lib::xml_parser* new_parser(ambulant::lib::sax_content_handler*, ambulant::lib::sax_error_handler*) { abort(); }", # XXX for now
+    "ambulant::lib::xml_parser* new_parser(ambulant::lib::sax_content_handler*, ambulant::lib::sax_error_handler*) { abort(); return NULL; }", # XXX for now
 ]
 xml_parser_object.othermethods = [
     "void set_content_handler(ambulant::lib::sax_content_handler*) { abort(); }", #XXXX
@@ -596,12 +596,12 @@ embedder_object.othermethods = [
 
 renderer_object.othermethods = [
     "void redraw(const ambulant::lib::rect&, ambulant::common::gui_window*) { abort(); }", # XXX
-    "bool user_event(const ambulant::lib::point&, int) { abort(); }", # XXXX
+    "bool user_event(const ambulant::lib::point&, int) { abort(); return false; }", # XXXX
     "void transition_freeze_end(ambulant::lib::rect) { abort(); }", # XXX
 ]
 bgrenderer_object.othermethods = [
     "void redraw(const ambulant::lib::rect&, ambulant::common::gui_window*) { abort(); }", # XXX
-    "bool user_event(const ambulant::lib::point&, int) { abort(); }", # XXXX
+    "bool user_event(const ambulant::lib::point&, int) { abort(); return false; }", # XXXX
     "void transition_freeze_end(ambulant::lib::rect) { abort(); }", # XXX
 ]
 surface_object.othermethods = [
@@ -627,7 +627,7 @@ animation_destination_object.othermethods = [
     "double get_mediaopacity() const { return region_info::get_mediaopacity(); }",
     "double get_mediabgopacity() const { return region_info::get_mediabgopacity(); }",
     "ambulant::lib::rect get_crop_rect(const ambulant::lib::size& srcsize) const { return region_info::get_crop_rect(srcsize); }", # XXXX
-    "const ambulant::common::region_dim_spec& get_region_panzoom(bool fromdom) const { abort(); }", # XXX
+    "const ambulant::common::region_dim_spec& get_region_panzoom(bool fromdom) const { abort(); static region_dim_spec dummy; return dummy; }", # XXX
     "void set_region_panzoom(const ambulant::common::region_dim_spec& rds) { abort(); }",
 	"bool is_chromakey_specified() const { return region_info::is_chromakey_specified(); }",
 	"ambulant::lib::color_t get_chromakey() const { return region_info::get_chromakey(); }",
@@ -637,25 +637,25 @@ animation_destination_object.othermethods = [
 #    "void set_region_dim(const std::string&, const ambulant::common::region_dim&) { abort(); }",
 ]
 global_playable_factory_object.othermethods = [
-    "bool supports(ambulant::common::renderer_select*) { abort(); }",
-    "ambulant::common::playable* new_playable(ambulant::common::playable_notification*, int, const ambulant::lib::node*, ambulant::lib::event_processor*) { abort(); }", # XXX
-    "ambulant::common::playable* new_aux_audio_playable(ambulant::common::playable_notification *context, int, const ambulant::lib::node *node, ambulant::lib::event_processor *evp, ambulant::net::audio_datasource *src) { abort(); }", # XXX
+    "bool supports(ambulant::common::renderer_select*) { abort(); return false; }",
+    "ambulant::common::playable* new_playable(ambulant::common::playable_notification*, int, const ambulant::lib::node*, ambulant::lib::event_processor*) { abort(); return NULL; }", # XXX
+    "ambulant::common::playable* new_aux_audio_playable(ambulant::common::playable_notification *context, int, const ambulant::lib::node *node, ambulant::lib::event_processor *evp, ambulant::net::audio_datasource *src) { abort(); return NULL; }", # XXX
 ]
 
 global_state_component_factory_object.othermethods = [
-    "ambulant::common::state_component* new_state_component(const char*) { abort(); }", # XXX
+    "ambulant::common::state_component* new_state_component(const char*) { abort(); return NULL; }", # XXX
 ]
 datasource_object.othermethods = [
     "long add_ref() { return 1; }",
     "long release() { return 1;}",
     "long get_ref_count() const { return 1; }",
-    "char *get_read_ptr() { abort(); return NULL;}", # XXX
+    "char *get_read_ptr() { abort(); return NULL; }", # XXX
 ]
 pkt_datasource_object.othermethods = [
     "long add_ref() { return 1; }",
     "long release() { return 1;}",
     "long get_ref_count() const { return 1; }",
-    "char *get_read_ptr() { abort(); return NULL;}", # XXX
+    "char *get_read_ptr() { abort(); return NULL; }", # XXX
     "ambulant::net::ts_packet_t get_ts_packet_t() { abort(); }", # XXX
 ]
 event_processor_object.othermethods = [
