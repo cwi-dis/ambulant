@@ -656,7 +656,7 @@ pkt_datasource_object.othermethods = [
     "long release() { return 1;}",
     "long get_ref_count() const { return 1; }",
     "char *get_read_ptr() { abort(); return NULL; }", # XXX
-    "ambulant::net::ts_packet_t get_ts_packet_t() { abort(); }", # XXX
+    "ambulant::net::ts_packet_t get_ts_packet_t() { abort(); return ambulant::net::ts_packet_t(0, NULL, 0); }", # XXX
 ]
 event_processor_object.othermethods = [
     "void set_observer(ambulant::lib::event_processor_observer*) { abort(); }"

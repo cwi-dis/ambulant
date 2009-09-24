@@ -1212,7 +1212,7 @@ public:
 	long release() { return 1;}
 	long get_ref_count() const { return 1; }
 	char *get_read_ptr() { abort(); return NULL; }
-	ambulant::net::ts_packet_t get_ts_packet_t() { abort(); }
+	ambulant::net::ts_packet_t get_ts_packet_t() { abort(); return ambulant::net::ts_packet_t(0, NULL, 0); }
   private:
 	PyObject *py_pkt_datasource;
 
