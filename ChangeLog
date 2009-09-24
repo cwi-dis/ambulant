@@ -1,3 +1,7 @@
+2009-09-23 23:45  jackjansen
+
+	* We now seem to get the correct CoreGraphics context.
+
 2009-09-23 01:04  jackjansen
 
 	* Mac firefox plugin starts to work. Plays audio, but no visuals
