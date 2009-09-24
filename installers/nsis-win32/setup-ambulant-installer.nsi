@@ -14,12 +14,14 @@
 ; - BUILD_SYSDIR: This is where to pick up some standard DLLs that we distribute.
 ; - DISTRIBUTE_VC8_RT: define this if you built with VS2005
 ; - VC8_DISTDIR: where to pick up these files.
+; - DISTRIBUTE_VC9_RT: define this if you built with VS2008
+; - VC9_DISTDIR: where to pick up these files.
 ;
 !define PRODUCT_NAME "Ambulant Player"
-!define PRODUCT_VERSION "2.0.2"
-!define PRODUCT_VERSION_BASE "2.0"
+!define PRODUCT_VERSION "2.1.20090924"
+!define PRODUCT_VERSION_BASE "2.1"
 !define DISTRIBUTE_DLL_BUILD
-; !define DISTRIBUTE_PYTHON_PLUGIN
+!define DISTRIBUTE_PYTHON_PLUGIN
 !define PRODUCT_PUBLISHER "Centrum voor Wiskunde en Informatica"
 !define PRODUCT_WEB_SITE "http://www.ambulantplayer.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AmbulantPlayer.exe"
@@ -31,8 +33,11 @@
 ; !define DISTRIBUTE_VC7_RT
 ; !define BUILD_SYSDIR "C:\WINDOWS\system32"  ; Most machines
 
-!define DISTRIBUTE_VC8_RT
-!define VC8_DISTDIR "C:\Program Files\Microsoft Visual Studio 8\VC\redist\x86"
+; !define DISTRIBUTE_VC8_RT
+; !define VC8_DISTDIR "C:\Program Files\Microsoft Visual Studio 8\VC\redist\x86"
+
+!define DISTRIBUTE_VC9_RT
+!define VC9_DISTDIR "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86"
 
 ; MUI 1.67 compatible ------
 !include "MUI.nsh"
@@ -142,6 +147,15 @@ Section "Core Components" CoreSection
   File "${VC8_DISTDIR}\Microsoft.VC80.MFC\mfc80u.dll"
   File "${VC8_DISTDIR}\Microsoft.VC80.MFC\Microsoft.VC80.MFC.manifest"
 !endif
+!ifdef DISTRIBUTE_VC9_RT
+; *** MSVC9 runtime goes into the application directory
+  SetOutPath "$INSTDIR"
+  File "${VC9_DISTDIR}\Microsoft.VC90.CRT\msvcr90.dll"
+  File "${VC9_DISTDIR}\Microsoft.VC90.CRT\msvcp90.dll"
+  File "${VC9_DISTDIR}\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest"
+  File "${VC9_DISTDIR}\Microsoft.VC90.MFC\mfc90u.dll"
+  File "${VC9_DISTDIR}\Microsoft.VC90.MFC\Microsoft.VC90.MFC.manifest"
+!endif
 SectionEnd
 
 Section "Demo Presentation" DemoSection
@@ -161,10 +175,10 @@ Section "Python Plugin" PythonSection
   SetOutPath "$INSTDIR"
   File "..\..\bin\win32\libamplugin_python.dll"
   File "..\..\bin\win32\ambulant.pyd"
-  SetOutPath "$INSTDIR\pyamplugin_scripting"
-  File "..\..\bin\win32\pyamplugin_scripting\*.py"
-  File "..\..\bin\win32\pyamplugin_scripting\*.pyc"
-  File /nonfatal "..\..\bin\win32\pyamplugin_scripting\*.pyo"
+;  SetOutPath "$INSTDIR\pyamplugin_scripting"
+;  File "..\..\bin\win32\pyamplugin_scripting\*.py"
+;  File "..\..\bin\win32\pyamplugin_scripting\*.pyc"
+;  File /nonfatal "..\..\bin\win32\pyamplugin_scripting\*.pyo"
 SectionEnd
 !endif
 
