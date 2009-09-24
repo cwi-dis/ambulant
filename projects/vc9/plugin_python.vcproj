@@ -43,7 +43,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(python_dir)\include&quot;;..\..\include;..\..\src\pyambulant"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGIN_PYTHON_EXPORTS;WITH_SMIL30;WITH_SEAMLESS_PLAYBACK;WITH_CLOCK_SYNC"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGIN_PYTHON_EXPORTS;WITH_PYTHON_PLUGIN;WITH_SMIL30;WITH_SEAMLESS_PLAYBACK;WITH_CLOCK_SYNC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -126,7 +126,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="&quot;$(python_dir)\include&quot;;..\..\include;..\..\src\pyambulant"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_PYTHON_EXPORTS;WITH_SMIL30;WITH_SEAMLESS_PLAYBACK;WITH_CLOCK_SYNC"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_PYTHON_EXPORTS;WITH_SMIL30;WITH_SEAMLESS_PLAYBACK;WITH_CLOCK_SYNC;WITH_PYTHON_PLUGIN"
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="false"
 				UsePrecompiledHeader="0"

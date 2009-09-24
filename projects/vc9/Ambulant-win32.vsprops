@@ -13,5 +13,5 @@
 <UserMacro Name="ffmpeg_dir" Value="..\..\third_party_packages\ffmpeg" PerformEnvironmentSet="true"/>
 <UserMacro Name="live555_dir" Value="..\..\third_party_packages\live" PerformEnvironmentSet="true"/>
 <UserMacro Name="xulrunner_dir" Value="..\..\third_party_packages\xulrunner-sdk" PerformEnvironmentSet="true"/>
-<UserMacro Name="python_dir" Value="C:\Python2.5" PerformEnvironmentSet="true"/>
+<UserMacro Name="python_dir" Value="C:\Python26" PerformEnvironmentSet="true"/>
 </VisualStudioPropertySheet>
