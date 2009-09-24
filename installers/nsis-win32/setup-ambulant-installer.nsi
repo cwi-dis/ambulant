@@ -1,8 +1,6 @@
 ;
 ; Ambulant Player NSIS installer script.
 ; (see http://nsis.sourceforge.net for details on NSIS).
-;
-; Created by Jack Jansen, May 2007.
 ; 
 ; These defines influence the rest of the installer.
 ; Two may need explanation:
@@ -16,9 +14,11 @@
 ; - VC8_DISTDIR: where to pick up these files.
 ; - DISTRIBUTE_VC9_RT: define this if you built with VS2008
 ; - VC9_DISTDIR: where to pick up these files.
+; - DOWNLOAD_VC9_RT: define this to download VS2008 C++ runtime from Microsoft.
+; - DOWNLOAD_VC9_RT_URL: where to get it from.
 ;
 !define PRODUCT_NAME "Ambulant Player"
-!define PRODUCT_VERSION "2.1.20090924"
+!define PRODUCT_VERSION "2.1.20090925"
 !define PRODUCT_VERSION_BASE "2.1"
 !define DISTRIBUTE_DLL_BUILD
 !define DISTRIBUTE_PYTHON_PLUGIN
@@ -36,8 +36,11 @@
 ; !define DISTRIBUTE_VC8_RT
 ; !define VC8_DISTDIR "C:\Program Files\Microsoft Visual Studio 8\VC\redist\x86"
 
-!define DISTRIBUTE_VC9_RT
-!define VC9_DISTDIR "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86"
+; !define DISTRIBUTE_VC9_RT
+; !define VC9_DISTDIR "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86"
+
+!define DOWNLOAD_VC9_RT
+!define DOWNLOAD_VC9_RT_URL "http://download.microsoft.com/download/d/d/9/dd9a82d0-52ef-40db-8dab-795376989c03/vcredist_x86.exe"
 
 ; MUI 1.67 compatible ------
 !include "MUI.nsh"
@@ -125,6 +128,9 @@ Section "Core Components" CoreSection
   SetOutPath "$INSTDIR\Extras\Welcome\data"
   File "..\..\Extras\Welcome\data\*.png"
   File "..\..\Extras\Welcome\data\*.mp3"
+SectionEnd
+
+Section "VC90 Runtime" RuntimeSection
 
 !ifdef DISTRIBUTE_VC7_RT
 ; *** The all critical MSVC7 Dependencies
@@ -151,10 +157,34 @@ Section "Core Components" CoreSection
 ; *** MSVC9 runtime goes into the application directory
   SetOutPath "$INSTDIR"
   File "${VC9_DISTDIR}\Microsoft.VC90.CRT\msvcr90.dll"
+  File "${VC9_DISTDIR}\Microsoft.VC90.CRT\msvcm90.dll"
   File "${VC9_DISTDIR}\Microsoft.VC90.CRT\msvcp90.dll"
   File "${VC9_DISTDIR}\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest"
   File "${VC9_DISTDIR}\Microsoft.VC90.MFC\mfc90u.dll"
   File "${VC9_DISTDIR}\Microsoft.VC90.MFC\Microsoft.VC90.MFC.manifest"
+!endif
+!ifdef DOWNLOAD_VC9_RT
+;
+; Download from Microsoft. Code (and idea) from <http://wiki.spench.net/wiki/NISRP_Installer_Script>
+;
+!define DOWNLOAD_LOCATION	"$INSTDIR\Downloaded"
+!define RUNTIME_FILE		"${DOWNLOAD_LOCATION}\vcredist_x86_2008_sp1.exe"
+	AddSize 4119
+	# Download is placed in installation directory
+	SetOutPath ${DOWNLOAD_LOCATION}
+	NSISdl::download "http://download.microsoft.com/download/d/d/9/dd9a82d0-52ef-40db-8dab-795376989c03/vcredist_x86.exe" "${RUNTIME_FILE}"
+	Pop $R0 ;Get the return value
+	StrCmp $R0 "success" install
+	MessageBox MB_YESNO|MB_ICONEXCLAMATION "Download failed: Ambulant may not run until this component is correctly installed.$\n$\nDo you wish to continue?" IDYES true IDNO false
+	true:
+		Goto finish
+	false:
+		Abort "Download failed: $R0"
+install:
+	# FIXME: Silent install?
+	ExecWait "${RUNTIME_FILE}"
+finish:
+
 !endif
 SectionEnd
 
@@ -175,10 +205,10 @@ Section "Python Plugin" PythonSection
   SetOutPath "$INSTDIR"
   File "..\..\bin\win32\libamplugin_python.dll"
   File "..\..\bin\win32\ambulant.pyd"
-;  SetOutPath "$INSTDIR\pyamplugin_scripting"
-;  File "..\..\bin\win32\pyamplugin_scripting\*.py"
-;  File "..\..\bin\win32\pyamplugin_scripting\*.pyc"
-;  File /nonfatal "..\..\bin\win32\pyamplugin_scripting\*.pyo"
+  SetOutPath "$INSTDIR\pyamplugin_state"
+  File "..\..\bin\win32\pyamplugin_state\*.py"
+  File "..\..\bin\win32\pyamplugin_state\*.pyc"
+  File /nonfatal "..\..\bin\win32\pyamplugin_state\*.pyo"
 SectionEnd
 !endif
 
@@ -247,7 +277,7 @@ Section Uninstall
 
   Delete "$INSTDIR\libamplugin_python.dll"
   Delete "$INSTDIR\ambulant.pyd"
-  RMDir  "$INSTDIR\pyamplugin_scripting"
+  RMDir  "$INSTDIR\pyamplugin_state"
 
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
   RMDir /r "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION_BASE}"
@@ -265,6 +295,7 @@ SectionEnd
 ; page.
 
 LangString DESC_CoreSection ${LANG_ENGLISH} "The player, help files, readme and other required components."
+LangString DESC_RuntimeSection ${LANG_ENGLISH} "The Microsoft VC++ 9.0 Runtime support required by Ambulant."
 LangString DESC_DemoSection ${LANG_ENGLISH} "A simple slideshow example document."
 !ifdef DISTRIBUTE_PYTHON_PLUGIN
 LangString DESC_PythonSection ${LANG_ENGLISH} "Enable Ambulant extensions in Python, SMIL Python scripting and embedding Ambulant in Python."
@@ -273,6 +304,7 @@ LangString DESC_PythonSection ${LANG_ENGLISH} "Enable Ambulant extensions in Pyt
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
  !insertmacro MUI_DESCRIPTION_TEXT ${CoreSection} $(DESC_CoreSection)
  !insertmacro MUI_DESCRIPTION_TEXT ${DemoSection} $(DESC_DemoSection)
+ !insertmacro MUI_DESCRIPTION_TEXT ${RuntimeSection} $(DESC_RuntimeSection)
  !ifdef DISTRIBUTE_PYTHON_PLUGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${PythonSection} $(DESC_PythonSection)
  !endif
