@@ -4831,6 +4831,7 @@ playable::playable(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "get_dur")) PyErr_Warn(PyExc_Warning, "playable: missing attribute: get_dur");
 		if (!PyObject_HasAttrString(itself, "get_cookie")) PyErr_Warn(PyExc_Warning, "playable: missing attribute: get_cookie");
 		if (!PyObject_HasAttrString(itself, "get_renderer")) PyErr_Warn(PyExc_Warning, "playable: missing attribute: get_renderer");
+		if (!PyObject_HasAttrString(itself, "get_sig")) PyErr_Warn(PyExc_Warning, "playable: missing attribute: get_sig");
 	}
 	if (itself == NULL) itself = Py_None;
 
@@ -5083,6 +5084,32 @@ ambulant::common::renderer* playable::get_renderer()
 		PyErr_Print();
 	}
 
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+std::string playable::get_sig() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	std::string _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_playable, "get_sig", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during playable::get_sig() callback:\n");
+		PyErr_Print();
+	}
+
+	char *_rv_cstr="";
+	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv_cstr))
+	{
+		PySys_WriteStderr("Python exception during playable::get_sig() return:\n");
+		PyErr_Print();
+	}
+
+	_rv = _rv_cstr;
 	Py_XDECREF(py_rv);
 
 	PyGILState_Release(_GILState);

@@ -627,7 +627,7 @@ animation_destination_object.othermethods = [
     "double get_mediaopacity() const { return region_info::get_mediaopacity(); }",
     "double get_mediabgopacity() const { return region_info::get_mediabgopacity(); }",
     "ambulant::lib::rect get_crop_rect(const ambulant::lib::size& srcsize) const { return region_info::get_crop_rect(srcsize); }", # XXXX
-    "const ambulant::common::region_dim_spec& get_region_panzoom(bool fromdom) const { abort(); static region_dim_spec dummy; return dummy; }", # XXX
+    "const ambulant::common::region_dim_spec& get_region_panzoom(bool fromdom) const { abort(); static ambulant::common::region_dim_spec dummy; return dummy; }", # XXX
     "void set_region_panzoom(const ambulant::common::region_dim_spec& rds) { abort(); }",
 	"bool is_chromakey_specified() const { return region_info::is_chromakey_specified(); }",
 	"ambulant::lib::color_t get_chromakey() const { return region_info::get_chromakey(); }",

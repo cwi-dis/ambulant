@@ -8749,6 +8749,19 @@ static PyObject *playableObj_get_renderer(playableObject *_self, PyObject *_args
 	return _res;
 }
 
+static PyObject *playableObj_get_sig(playableObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	std::string _rv = _self->ob_itself->get_sig();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("s",
+	                     _rv.c_str());
+	return _res;
+}
+
 static PyMethodDef playableObj_methods[] = {
 	{"init_with_node", (PyCFunction)playableObj_init_with_node, 1,
 	 PyDoc_STR("(ambulant::lib::node* n) -> None")},
@@ -8774,6 +8787,8 @@ static PyMethodDef playableObj_methods[] = {
 	 PyDoc_STR("() -> (ambulant::common::playable::cookie_type _rv)")},
 	{"get_renderer", (PyCFunction)playableObj_get_renderer, 1,
 	 PyDoc_STR("() -> (ambulant::common::renderer* _rv)")},
+	{"get_sig", (PyCFunction)playableObj_get_sig, 1,
+	 PyDoc_STR("() -> (std::string _rv)")},
 	{NULL, NULL, 0}
 };
 
