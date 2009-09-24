@@ -17,7 +17,6 @@ else:
     WITH_SDL=True
 
 DEFS =  [
-    ('WITH_EXTERNAL_DOM', '1'),
     ('WITH_SMIL30', '1'),
     ('WITH_PYTHON_PLUGIN', '1'),
     ('WITH_CLOCK_SYNC', '1'),
@@ -26,6 +25,9 @@ DEFS =  [
 if sys.platform != 'win32':
     DEFS.append(('ENABLE_NLS', '1'))
     
+# XXXJACK: Not sure whether we need external DOM support on Windows.
+DEFS.append(('WITH_EXTERNAL_DOM', '1'))
+
 EXTRA_LINK_ARGS=[]
 ldflags=os.getenv("LDFLAGS")
 if ldflags:

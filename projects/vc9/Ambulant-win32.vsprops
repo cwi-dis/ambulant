@@ -3,6 +3,7 @@
 	ProjectType="Visual C++" 
 	Version="8.00" 
 	Name="Ambulant third party pathnames">
+<UserMacro Name="global_ambulant_defines" Value="WITH_HTML_WIDGET;WITH_PYTHON_PLUGIN;WITH_SMIL30;WITH_SEAMLESS_PLAYBACK;WITH_CLOCK_SYNC;WITH_EXTERNAL_DOM" PerformEnvironmentSet="false"/>
 <UserMacro Name="expat_dir" Value="..\..\third_party_packages\expat" PerformEnvironmentSet="true"/>
 <UserMacro Name="jpeg_dir" Value="..\..\third_party_packages\jpeg" PerformEnvironmentSet="true"/>
 <UserMacro Name="lpng_dir" Value="..\..\third_party_packages\lpng128" PerformEnvironmentSet="true"/>
