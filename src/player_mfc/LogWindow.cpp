@@ -55,7 +55,7 @@ BEGIN_MESSAGE_MAP(CLogWindow, CDialog)
 //	ON_BN_CLICKED(IDCANCEL, OnBnClickedCancel)
 //	ON_BN_CLICKED(IDOK, OnBnClickedOK)
 ON_EN_CHANGE(IDC_RICHEDIT21, OnEnChangeRichedit21)
-ON_MESSAGE(WM_LOG_LINE, OnAddLoggerLine)
+ON_MESSAGE(WM_AMBULANT_MESSAGE, OnAddLoggerLine)
 ON_WM_SIZE()
 END_MESSAGE_MAP()
 
@@ -66,7 +66,7 @@ void
 CLogWindow::AppendText(const char *data)
 {
 	char *myData = _strdup(data);
-	PostMessage(WM_LOG_LINE, 0, (LPARAM)myData);
+	PostMessage(WM_AMBULANT_MESSAGE, 0, (LPARAM)myData);
 }
 
 LPARAM
