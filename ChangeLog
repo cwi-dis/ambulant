@@ -1,3 +1,48 @@
+2009-09-24 23:30  jackjansen
+
+	* Fgot to add project file to CVS.
+
+2009-09-24 16:47  jackjansen
+
+	* Python plugin builds and loads again.
+
+2009-09-24 16:24  jackjansen
+
+	* - Moved global cpp defines (basically any define that changes the
+	  API) to a vsprops variable $(global_ambulant_defines), which is
+	  used by all projects under Ambulant-win32.sln. No more editing 14
+	  property sheets to enable a single define!
+
+	  - Got a bit further with python-plugin, but still doesn't link.
+
+2009-09-24 15:36  jackjansen
+
+	* One more method that needs a return value.
+
+2009-09-24 15:32  jackjansen
+
+	* Regenrated (and added missing namespace)
+
+2009-09-24 15:29  jackjansen
+
+	* VC9 is more picky about return values, fix the dummy placeholder
+	  methods to return something.
+
+2009-09-24 14:51  jackjansen
+
+	* Getting started on reviving Python plugins (using Python 2.6 and
+	  vc9).
+
+2009-09-24 14:19  jackjansen
+
+	* - Catered for WM_AMBULANT_MESSAGE rename - Don't modify std::map
+	  in a for loop iterating over it (use a while).
+
+2009-09-24 13:42  jackjansen
+
+	* - Adapted npambulant code to work with newer Firefox 3.5 API as
+	  well.  - Adapted CoreGraphics code to work on 64 bits mac.
+
 2009-09-23 23:45  jackjansen
 
 	* We now seem to get the correct CoreGraphics context.
