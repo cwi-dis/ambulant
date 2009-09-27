@@ -98,7 +98,7 @@ class textptr {
 		if(m_pb != NULL) return m_pb;
 		if(m_pcw == NULL) return NULL;
 		if (m_length < 0) m_length = wcslen(m_pcw);
-		int n = m_length*2+1; // Two times wide string size should be enough for mb
+		ptrdiff_t n = m_length*2+1; // Two times wide string size should be enough for mb
 		m_pb = new char[n];
 #ifdef AMBULANT_PLATFORM_WIN32
 		WideCharToMultiByte(CP_UTF8, 0, m_pcw, -1, m_pb, n, NULL, NULL);

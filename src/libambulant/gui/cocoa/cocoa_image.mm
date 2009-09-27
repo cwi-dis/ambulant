@@ -118,7 +118,7 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 			}
 		}
 #endif
-		m_size = lib::size([bestrep pixelsWide], [bestrep pixelsHigh]);
+		m_size = lib::size((int)[bestrep pixelsWide], (int)[bestrep pixelsHigh]);
 		AM_DBG lib::logger::get_logger()->debug("cocoa_image_renderer: image size in pixels: %d x %d", m_size.w, m_size.h);
 		AM_DBG lib::logger::get_logger()->debug("cocoa_image_renderer: image size in units: %f x %f", [bestrep size].width, [bestrep size].height);
 		[bestrep setSize:NSMakeSize(m_size.w, m_size.h)];

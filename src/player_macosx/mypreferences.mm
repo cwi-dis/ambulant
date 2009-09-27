@@ -55,7 +55,7 @@ mypreferences::load_preferences()
 	m_do_namespaces = [prefs boolForKey: @"do_namespaces"];
 	m_do_schema = [prefs boolForKey: @"do_schema"];
 	m_validation_schema_full_checking = [prefs boolForKey: @"validation_schema_full_checking"];
-	m_log_level = [prefs integerForKey: @"log_level"];
+	m_log_level = (int)[prefs integerForKey: @"log_level"];
 	m_use_plugins = [prefs boolForKey: @"use_plugins"];
 	m_plugin_dir = [[prefs stringForKey: @"plugin_dir"] UTF8String];
 	m_prefer_ffmpeg = [prefs boolForKey: @"prefer_ffmpeg"];
@@ -72,14 +72,14 @@ bool
 mypreferences::save_preferences()
 {
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-	[prefs setObject: [NSString stringWithCString: m_parser_id.c_str()] forKey: @"parser_id"];
-	[prefs setObject: [NSString stringWithCString: m_validation_scheme.c_str()] forKey: @"validation_scheme"];
+	[prefs setObject: [NSString stringWithUTF8String: m_parser_id.c_str()] forKey: @"parser_id"];
+	[prefs setObject: [NSString stringWithUTF8String: m_validation_scheme.c_str()] forKey: @"validation_scheme"];
 	[prefs setBool: m_do_namespaces forKey: @"do_namespaces"];
 	[prefs setBool: m_do_schema forKey: @"do_schema"];
 	[prefs setBool: m_validation_schema_full_checking forKey: @"validation_schema_full_checking"];
 	[prefs setInteger: m_log_level forKey: @"log_level"];
 	[prefs setBool: m_use_plugins forKey: @"use_plugins"];
-	[prefs setObject: [NSString stringWithCString: m_plugin_dir.c_str()] forKey: @"plugin_dir"];
+	[prefs setObject: [NSString stringWithUTF8String: m_plugin_dir.c_str()] forKey: @"plugin_dir"];
 	[prefs setBool: m_prefer_ffmpeg forKey: @"prefer_ffmpeg"];
 	[prefs setBool: m_prefer_rtsp_tcp forKey: @"prefer_rtsp_tcp"];
 	[prefs setBool: m_strict_url_parsing forKey: @"strict_url_parsing"];

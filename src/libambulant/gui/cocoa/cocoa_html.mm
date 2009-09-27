@@ -187,7 +187,7 @@ cocoa_html_renderer::start(double where) {
 			// Setup an URL loader and tell the frame about it
 			WebFrame *frame = [view mainFrame];
 			assert(frame);
-			NSString *cstr = [NSString stringWithCString: url.get_url().c_str()];
+			NSString *cstr = [NSString stringWithUTF8String: url.get_url().c_str()];
 			NSURL *curl = [NSURL URLWithString: cstr];
 			[wvc performSelectorOnMainThread: @selector(load:) withObject: curl waitUntilDone: NO];
 		}

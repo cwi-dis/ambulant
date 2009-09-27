@@ -495,7 +495,7 @@ get_regiondim_attr(const lib::node *rn, const char *attrname)
 	} else {
 		int ivalue;
 		char *endptr;
-		ivalue = strtol(attrvalue, &endptr, 10);
+		ivalue = (int)strtol(attrvalue, &endptr, 10);
 		if (*endptr == '\0' || strcmp(endptr, "px") == 0) {
 			rd = ivalue;
 		} else if (*endptr == '%') {

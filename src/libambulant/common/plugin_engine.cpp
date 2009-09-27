@@ -193,7 +193,7 @@ plugin_engine::collect_plugin_directories()
 
 static int filter(MAYBE_CONST struct dirent* filen)
 {
-	int len;
+	size_t len;
 	len = strlen(filen->d_name);
 	if (strncmp(filen->d_name+(len-3),".la",3) == 0 ||
 			strncmp(filen->d_name, PYTHON_PLUGIN_PREFIX, sizeof(PYTHON_PLUGIN_PREFIX)-1) == 0) {

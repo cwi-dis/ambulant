@@ -57,7 +57,7 @@ nslog_ostream::write(const char *cstr)
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	LogController *log = [LogController sharedLogController];
-	NSString *nsstr = [NSString stringWithCString: cstr];
+	NSString *nsstr = [NSString stringWithUTF8String: cstr];
 	if (log) [log performSelectorOnMainThread: @selector(insertText:) withObject: nsstr waitUntilDone: NO];
 	[pool release];
 	return 0;
@@ -67,7 +67,7 @@ void
 show_message(int level, const char *format)
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	NSString *message = [[NSString stringWithCString: format] retain];
+	NSString *message = [[NSString stringWithUTF8String: format] retain];
 	MyAppDelegate *delegate = [[NSApplication sharedApplication] delegate];
 	[delegate performSelectorOnMainThread: @selector(showMessage:) 
 		withObject: message waitUntilDone: NO];
@@ -154,7 +154,7 @@ initialize_logger()
 #else
 	const NSArray *langNames = (const NSArray *)CFLocaleCopyPreferredLanguages();
 #endif
-	int nLangs = [langNames count];
+	NSUInteger nLangs = [langNames count];
 	double factor = 1.0 / nLangs;
 	unsigned int i;
 	for (i=0; i < [langNames count]; i++) {
@@ -244,7 +244,7 @@ initialize_logger()
 - (IBAction)loadFilter:(id)sender
 {
 	NSOpenPanel *panel = [NSOpenPanel openPanel];
-	int result = [panel runModalForDirectory: nil file: nil types: nil];
+	NSInteger result = [panel runModalForDirectory: nil file: nil types: nil];
 	if (result != NSOKButton) return;
 	NSString *filename = [[panel filenames] objectAtIndex: 0];
 	std::string path([filename UTF8String]);

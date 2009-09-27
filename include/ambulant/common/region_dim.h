@@ -100,7 +100,7 @@ class region_dim {
 		m_holder.dbl_val = 0;
 		if(s.empty()) return;	
 		char *endptr;
-		int ivalue = strtol(s.c_str(), &endptr, 10);
+		int ivalue = (int)strtol(s.c_str(), &endptr, 10);
 		if(*endptr == '\0' || strcmp(endptr, "px") == 0) {
 			m_holder.int_val = ivalue;
 			m_type = rdt_absolute;

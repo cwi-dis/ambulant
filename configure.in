@@ -86,7 +86,7 @@ with_frontend=false
 #
 AC_MSG_CHECKING(for --with-universalsdk)
 AC_ARG_WITH(universalsdk,
-    AS_HELP_STRING([--with-universalsdk],[Build MacOSX universal binary]),
+    AS_HELP_STRING([--with-universalsdk],[Build MacOSX 10.4 universal (ppc/intel) binary]),
 [
     need_sysroot=no
     case $withval in
@@ -123,7 +123,41 @@ AC_ARG_WITH(universalsdk,
 [
     with_universalsdk=false
 ])
-AC_MSG_RESULT($with_universalsdk)
+#
+# Do we want MacOSX fat (32/64 bit) binary support?
+#
+AC_MSG_CHECKING(for --with-macfat)
+AC_ARG_WITH(macfat,
+    AS_HELP_STRING([--with-macfat],[Build MacOSX 10.6 universal (32/64 bit intel) binary]),
+[
+	if $with_universalsdk; then
+		AC_MSG_WARN([--with-universalsdk and --with-macfat are mutually exclusive])
+	fi
+	case `uname -r` in
+	10*)
+		;;
+	*)
+		AC_MSG_WARN([--with-macfat only supported on MacOSX 10.6])
+		;;
+	esac
+    case $withval in
+    no)
+        with_macfat=false
+        ;;
+    *)
+        with_macfat=true
+        CFLAGS="-arch x86_64 -arch i386 ${sysroot} ${CFLAGS}"
+        CXXFLAGS="-arch x86_64 -arch i386 ${sysroot} ${CXXFLAGS}"
+        OBJCFLAGS="-arch x86_64 -arch i386 ${sysroot} ${OBJCFLAGS}"
+        #LDFLAGS="-arch x86_64 -arch i386 ${sysroot} ${LDFLAGS}"
+        ;;
+    esac
+],
+[
+    with_macfat=false
+])
+
+AC_MSG_RESULT($with_macfat)
 
 #
 #
@@ -1232,7 +1266,8 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     Build with WebKit DOM plugin:   ${with_webkit_dom}
     Build Cocoa frontend:           ${cocoa}
     Build UIKit frontend:           ${uikit}
-    Build MacOSX universal binary:  ${with_universalsdk}
+    Build OSX 10.4 universal:       ${with_universalsdk}
+    Build OSX 10.6 universal:       ${with_macfat}
 
     Build with npambulant plugin:   ${with_npambulant}
      "

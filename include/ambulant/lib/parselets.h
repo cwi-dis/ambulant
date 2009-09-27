@@ -160,9 +160,9 @@ class int_p : public parselet {
 class fraction_p : public int_p {
   public:
 	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end) {
-        int d = int_p::parse(it, end);
+        std::ptrdiff_t d = int_p::parse(it, end);
         if (d < 0) return d;
-        int digits = d;
+        ptrdiff_t digits = d;
         while (digits < 3) {
             digits++;
             m_result *= 10;

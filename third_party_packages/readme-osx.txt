@@ -33,7 +33,9 @@ xerces-c 3.0:
 	Configure with
 	    ./configure \
 	        --disable-dependency-tracking \
+	        --prefix=$HOME/xerces-3-installed \
 	        CFLAGS="-arch i386 -arch x86_64" CXXFLAGS="-arch i386 -arch x86_64"
+	Then, when building ambulant, configure with --with-xerces=$HOME/xerces-3-installed
 
 ffmpeg 0.5:
 	If you want to do a MacOSX universal build of Ambulant you also need
@@ -76,7 +78,9 @@ sdl 1.3:
     Use this for building 32/64 bit on MacOSX 10.6. As of this writing (September 2009)
     this is still in beta, but seems to be good enough for Ambulant.
     Configure with
-        ./configure --disable-shared --disable-haptic CFLAGS="-arch i386 -arch x86_64"
+        ./configure \
+            CFLAGS="-arch i386 -arch x86_64 -framework ForceFeedback" \
+            LDFLAGS="-framework ForceFeedback"
         
 live555.com:
 	If you want to create a MacOSX universal installer you need some patches

@@ -84,7 +84,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		[m_mydocument performSelectorOnMainThread: @selector(close:) withObject: nil waitUntilDone: NO];
 	}
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	NSString *str_url = [NSString stringWithCString: newdoc.get_url().c_str()];
+	NSString *str_url = [NSString stringWithUTF8String: newdoc.get_url().c_str()];
 	NSURL *url = [NSURL URLWithString: str_url];
 	NSDocumentController *docController = [NSDocumentController sharedDocumentController];
     NSError *error;
@@ -107,7 +107,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		[m_mydocument closeAuxDocument];
 		return true;
 	}
-	NSString *str_url = [NSString stringWithCString: auxdoc.get_url().c_str()];
+	NSString *str_url = [NSString stringWithUTF8String: auxdoc.get_url().c_str()];
 	NSURL *url = [NSURL URLWithString: str_url];
 	AM_DBG NSLog(@"aux_open: open %@", url);
 	BOOL rv = [m_mydocument openAuxDocument: url];
@@ -582,8 +582,8 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	saved_view_rect = [contentview frame];
 	[fsmainview addSubview: contentview];
 	NSRect contentRect = [contentview frame];
-	float xExtra = NSWidth(winRect) - NSWidth(contentRect);
-	float yExtra = NSHeight(winRect) - NSHeight(contentRect);
+	CGFloat xExtra = NSWidth(winRect) - NSWidth(contentRect);
+	CGFloat yExtra = NSHeight(winRect) - NSHeight(contentRect);
 	NSPoint frameOrigin = NSMakePoint(xExtra/2, yExtra/2);
 	[contentview setFrameOrigin: frameOrigin];
 	
