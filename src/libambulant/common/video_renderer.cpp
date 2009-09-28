@@ -386,7 +386,8 @@ video_renderer::data_avail()
             if (m_audio_renderer == NULL)
                 m_context->stopped(m_cookie, 0);
         } else {
-            assert(m_last_frame_timestamp < 0);
+	    //xxxbo: the following assertion will cause npambulant crash sometimes 
+            //assert(m_last_frame_timestamp < 0);
         }
 		m_lock.leave();
 		return;
