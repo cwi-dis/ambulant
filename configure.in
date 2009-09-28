@@ -74,6 +74,19 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 
 AC_CONFIG_COMMANDS([libtool_patch],[chmod 755 $srcdir/patch_libtool.sh;$srcdir/patch_libtool.sh])
 
+# Variables needed.
+export PATH=`pwd`/third_party_packages/installed/bin:$PATH
+export PKG_CONFIG_PATH=`pwd`/third_party_packages/installed/lib/pkgconfig:$PKG_CONFIG_PATH
+
+#
+# Do we have pkg-config?
+#
+#AC_MSG_CHECKING(for pkg-config)
+#PKG_CHECK_MODULES(pkg-config,[pkg-config >= 0.18], pkg_config=true, pkg_config=false)
+#AM_CONDITIONAL(WITH_PKG_CONFIG, test $pkg_config = true)
+#AC_MSG_RESULT($pkg_config)
+AC_CHECK_PROG(PKG_CONFIG,pkg-config,`which pkg-config`)
+
 #
 # This variable records whether we have support for
 # any windowing system (so we can give a warning at
@@ -158,16 +171,6 @@ AC_ARG_WITH(macfat,
 ])
 
 AC_MSG_RESULT($with_macfat)
-
-#
-#
-# Do we have pkg-config?
-#
-#AC_MSG_CHECKING(for pkg-config)
-#PKG_CHECK_MODULES(pkg-config,[pkg-config >= 0.18], pkg_config=true, pkg_config=false)
-#AM_CONDITIONAL(WITH_PKG_CONFIG, test $pkg_config = true)
-#AC_MSG_RESULT($pkg_config)
-AC_CHECK_PROG(PKG_CONFIG,pkg-config,`which pkg-config`)
 
 #
 #
@@ -316,70 +319,49 @@ AM_CONDITIONAL(WITH_SMIL_TEST, test x$with_smil_test = xtrue)
 AC_MSG_RESULT($with_smil_test)
 
 dnl
-dnl Check for external/internal copy of expat
+dnl Check for expat
 dnl
-test_expat=true
+test_expat=false
+expat_pkgconfig=false
 AC_MSG_CHECKING(for expat XML handling library)
-EXPAT_PREFIX=third_party_packages/expat-unix
 AC_ARG_WITH(expat,
 	[  --with-expat		Turn on/off use of expat XML library],
 	[
 	   case "${withval}" in
-	   yes) EXPAT_PREFIX=third_party_packages/expat-unix ;;
-	   no) EXPAT_PREFIX=""
-	       test_expat=false
-	       ;;
-	   *)  EXPAT_PREFIX=${withval} ;;
-	   esac
-], [EXPAT_PREFIX=third_party_packages/expat-unix])
-
-dnl test for slurped version first
-dnl
-if test "x$test_expat" = "xtrue"; then
-	if test -d "$EXPAT_PREFIX";	
-	then
-          :
-	else
-	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <expat.h>]], [[
-	    #if !(XML_MAJOR_VERSION > 1 || XML_MINOR_VERSION > 95 || XML_MICRO_VERSION >= 7)
-	    #error Need at least expat 1.95.7
-	    #endif]])],[test_expat=true
-	    if test -f /usr/local/include/expat.h; then
-	        EXPAT_PREFIX=/usr/local
-	    else
-	        EXPAT_PREFIX=/usr
-	    fi
-	    ],[])
-	fi
-fi
-
-if test "x$test_expat" = "xtrue"; then
-	if test  -f $EXPAT_PREFIX/include/expat.h; then
-		EXPAT_PREFIX=`cd $EXPAT_PREFIX; pwd`
+	   yes)
+	   	test_expat=true
+	   	expat_pkgconfig=true
+	   	;;
+	   no)
+	  	;;
+	   *)
+	   	EXPAT_PREFIX=`cd ${withval} ; pwd`
 		EXPAT_LIBS="-L$EXPAT_PREFIX/lib -lexpat"
-		EXPAT_INCLUDES="-I$EXPAT_PREFIX/include"
-		AC_DEFINE(WITH_EXPAT, 1, [Define to enable expat XML parser])
-		expat_path="$EXPAT_PREFIX"
+		EXPAT_CFLAGS="-I$EXPAT_PREFIX/include"
+		test_expat=true
+	   	;;
+	   esac
+], [expat_pkgconfig=true])
+
+if $expat_pkgconfig; then
+	PKG_CHECK_MODULES(EXPAT, [expat >= 2.0.0] , test_expat=true, test_expat=false)
+	if $test_expat; then
+		:
+	else
+		expat_warning="Expat not found through pkg-config. Check third_party_packages/readme.txt for instructions."
 	fi
 fi
-
-if test "x$test_expat" = "xfalse"; then
-	AC_MSG_WARN([No expat found)])
-        expat_warning="
-Unable to find a version of expat to use. You either need to have expat installed at in /usr or /usr/local or installed in third_party_packages/expat-unix inside the ambulant source structure. If you are using another XML parser, like Xerces with Ambulant you can ignore this message."
-unset EXPAT_PREFIX
+if $test_expat; then
+	AC_DEFINE(WITH_EXPAT, 1, [Define to enable expat XML parser])
 fi
-
-AC_SUBST(EXPAT_PREFIX)
 AC_SUBST(EXPAT_LIBS)
-AC_SUBST(EXPAT_INCLUDES)
+AC_SUBST(EXPAT_CFLAGS)
 AM_CONDITIONAL(WITH_EXPAT, test x$test_expat = xtrue)
 AC_MSG_RESULT($test_expat)
 
 #
 # Find xerces XML handling library
 #
-test_xerces=false
 AC_MSG_CHECKING(for xerces XML handling library)
 
 AC_ARG_WITH(xerces,
@@ -388,39 +370,18 @@ AC_ARG_WITH(xerces,
     case "${withval}" in    
      yes) test_xerces=true;;
      no)  test_xerces=false;;
-     *)   test_xerces=true
-          XERCES_PREFIX=$withval
+     *)   AC_MSG_ERROR("No value allowed for --with-xerces")
           ;;
     esac
-])
-dnl test for slurped version first
-dnl
-if test "x$test_xerces" = "xtrue"; then
-	if test "x$XERCES_PREFIX" = "x";	
-	then
-          XERCES_PREFIX=third_party_packages/xerces-unix
-	fi
-fi	
-if test "x$test_xerces" = "xtrue";
-then if test -f $XERCES_PREFIX/include/xercesc/parsers/SAXParser.hpp;
-    then
-        XERCES_PREFIX=`cd $XERCES_PREFIX; pwd`
-	    XERCES_LIBS="-L$XERCES_PREFIX/lib -lxerces-c"
-	    XERCES_INCLUDES="-I$XERCES_PREFIX/include"
-	    AC_DEFINE(WITH_XERCES, 1, [Define to enable xerces XML parser])
-    else 
-        AC_MSG_ERROR([xerces not found in $XERCES_PREFIX])
-        test_xerces=false
-        unset XERCES_PREFIX
-        unset XERCES_LIBS
-        unset XERCES_INCLUDES
-     fi
-else
-    unset XERCES_PREFIX
-    unset XERCES_LIBS
-    unset XERCES_INCLUDES
+], [test_xerces=true])
+
+if $test_xerces; then
+	PKG_CHECK_MODULES(XERCES, xerces-c >= 3.0.0, test_xerces=true, test_xerces=false)
 fi
-AC_SUBST(XERCES_PREFIX)
+if $test_xerces; then
+	AC_DEFINE(WITH_XERCES, 1, [Define to enable xerces XML parser])
+fi
+
 AC_SUBST(XERCES_LIBS)
 AC_SUBST(XERCES_INCLUDES)
 AM_CONDITIONAL(WITH_XERCES, test x$test_xerces = xtrue)
@@ -463,7 +424,8 @@ AC_MSG_RESULT($xerces_plugin)
 # Test that we have at least one XML parser available
 #
 if test "x$test_expat" = "xfalse" -a "x$test_xerces" = "xfalse"; then
-	AC_MSG_ERROR([No XML parser configured - Use at least one of --with-expat or --with-xerces])
+	AC_MSG_WARN([No XML parser configured - Use at least one of --with-expat or --with-xerces])
+	xml_parser_warning="No XML parser configured - Use at least one of --with-expat or --with-xerces"
 fi
 
 #
@@ -536,49 +498,6 @@ AC_SUBST(OBJCFLAGS)
 
 OBJC=$CC
 AC_SUBST(OBJC)
-
-# Qtopia is checked before Qt, because on an embedded system Qt configures
-# different: QT_THREAD_SUPPORT is off
-AC_MSG_CHECKING(for --with-qtopia (cross compilation for Sharp SL-5600 Zaurus))
-QTOPIA_PREFIX=
-AC_ARG_WITH(qtopia,
-     [  --with-qtopia		Enable/disable Qtopia support (cross compilation for Sharp SL-5600 Zaurus)],
-     [case "${withval}" in
-       yes) qtopia=true
-		QTDIR=/opt/Qtopia/sharp
-       		QTOPIA_PREFIX=$QTDIR
-       		;;
-       no)  qtopia=false
-       		;;
-       *) 	qtopia=true
-       		QTOPIA_PREFIX=${withval}
-       		;;
-     esac],[
-     case x$QTOPIA in
-     x)	qtopia=false
-     	;;
-     *) qtopia=true
-     	QTOPIA_PREFIX=$QTOPIA
-     	;;
-     esac])
-AM_CONDITIONAL(WITH_QTOPIA, test x$qtopia = xtrue)
-if test x$qtopia = xtrue -a x$QTOPIA_PREFIX = x; then
-	AC_MSG_ERROR(--with-qtopia without valid QTOPIA_PREFIX directory)
-fi
-if test x$qtopia = xtrue; then
-  with_frontend=true
-  QT_PREFIX=$QTOPIA_PREFIX
-  CXXFLAGS="-fno-rtti -pipe -DQT_QWS_EBX -DQT_QWS_CUSTOM -DQWS $CXXFLAGS" 
-  # flags added for ffmpeg_datasource.cpp
-  CXXFLAGS="-D_ISOC99_SOURCE=1 -D_BSD_SOURCE=1 $CXXFLAGS" 
-  AC_MSG_NOTICE(
-[For Sharp SL-5600: qtopia-free-1.5.0 is required (/opt/Qtopia)
-arm-linux-g++ cross compiler (2.95) must have been installed (/opt/Embedex/tools/bin)
-PATH should be prepended: export PATH=/opt/Qtopia/sharp/bin:/opt/Embedix/tools/bin:\$PATH
-expat must have been cross-compiled and installed in third_party_packages/expat-unix
-configure with: ./configure --build=`config.guess` --host=arm-linux])
-fi
-AC_MSG_RESULT($qtopia)
 
 dnl Testing for Qt
 dnl ====================================================================
@@ -685,7 +604,6 @@ AC_ARG_WITH(gtk,
      ])
 if test "x$test_gtk" = "xtrue"; then
 	PKG_CHECK_MODULES(GTK,[gtk+-2.0 >= 2.6.0 gthread-2.0 >= 2.2], test_gtk=true, test_gtk=false)
-	GTK_PREFIX="`pkg-config --variable=exec_prefix gtk+-2.0 glib-2.0 gthread-2.0`"
 	if test $test_gtk = false; then
 	   AC_MSG_WARN([Gtk+-2.0 or gthread-2.0 not found, or too old])
 	else
@@ -696,7 +614,6 @@ fi
 AM_CONDITIONAL(WITH_GTK, test x$test_gtk = xtrue)
 AC_SUBST(GTK_LIBS)
 AC_SUBST(GTK_CFLAGS)
-AC_SUBST(GTK_PREFIX)
 AC_MSG_RESULT($test_gtk)
 
 dnl Testing for NOKIA770
@@ -712,7 +629,6 @@ AC_ARG_WITH(nokia770,
      ])
 if test "x$test_nokia770" = "xtrue"; then
 dnl	PKG_CHECK_MODULES(GTK,[gtk+-2.0 >= 2.6.0], test_nokia770=true, test_nokia770=false)
-dnl	GTK_PREFIX="`pkg-config --variable=exec_prefix gtk+-2.0`"
 	if test "x$test_gtk" = "xfalse"; then
 	   AC_MSG_ERROR(--with-nokia770 requires --with-gtk);
 	fi
@@ -733,7 +649,6 @@ dnl	GTK_PREFIX="`pkg-config --variable=exec_prefix gtk+-2.0`"
 AM_CONDITIONAL(WITH_NOKIA770, test x$test_nokia770 = xtrue)
 AC_SUBST(GTK_LIBS)
 AC_SUBST(GTK_CFLAGS)
-AC_SUBST(GTK_PREFIX)
 AC_MSG_RESULT($test_nokia770)
 
 
@@ -760,38 +675,51 @@ dnl	PKG_CHECK_MODULES(GTK,[gtk+-2.0 >= 2.6.0], test_gstreamer=true, test_gstream
  fi
 
 AM_CONDITIONAL(WITH_GSTREAMER, test x$test_gstreamer = xtrue)
-AC_SUBST(GSTREAMER_PREFIX)
 AC_MSG_RESULT($test_gstreamer)
 
 #
 # Test for live555.com library
 #
-test_live=true
+test_live=false
+live_root=
 AC_MSG_CHECKING(for live555.com RTSP support)
 AC_ARG_WITH(live,
 	[  --with-live		Turn on live555.com rtsp support],
-	[if test "x$withval" = "xno"; then
-		test_live=false
-	 fi
+	[
+		case "${withval}" in
+		yes)
+			# Assume it is in third_party_packages/live
+			live_root=`pwd`/third_party_packages/live
+			test_live=true
+			;;
+		no)
+			test_live=false
+			;;
+		*)
+			test_live=true
+			live_root=${witharg}
+			;;
+		esac
+	],[
+		if test -f `pwd`/third_party_packages/live/liveMedia/libliveMedia.a; then
+			live_root=`pwd`/third_party_packages/live
+			test_live=true
+		fi
 	])
-if test "x$test_live" = "xtrue"; then
-   if test -f `pwd`/third_party_packages/live/liveMedia/libliveMedia.a; then
-		# Prefer a live installation in third_party_packages
-		withvalabs=`pwd`/third_party_packages/live
-		LIVE_ROOT=${withvalabs}
-   else
-	test_live=false
-   fi
-fi
-if test "x$test_live" = "xfalse"; then
-	AC_MSG_WARN([live555.com RTSP support not enabled)])
-        live_warning="
-live555.com not found. You have to place a copy of live555.com libraries within the third_party_packages directory in your ambulant source tree to enable RTSP with it"
+if $test_live; then
+	if test -f $live_root/liveMedia/libliveMedia.a; then
+		LIVE_CFLAGS="-I$live_root/liveMedia -I$live_root/groupsock -I$live_root/BasicUsageEnvironment -I$live_root/UsageEnvironment"
+		LIVE_LIBS="-L$live_root/liveMedia -lliveMedia -L$live_root/groupsock -lgroupsock -L$live_root/BasicUsageEnvironment -lBasicUsageEnvironment -L$live_root/UsageEnvironment -lUsageEnvironment"
+	else
+		AC_MSG_ERROR([Live555 not found in $live_root])
+		test_live=false
+	fi
 fi
 
 AM_CONDITIONAL(WITH_LIVE, test x$test_live = xtrue)
-AC_SUBST(LIVE_ROOT)
-AC_MSG_RESULT(live555.com library found - $test_live)
+AC_SUBST(LIVE_CFLAGS)
+AC_SUBST(LIVE_LIBS)
+AC_MSG_RESULT($test_live)
 
 dnl Testing for ffmpeg
 dnl ======================================================================
@@ -799,47 +727,25 @@ dnl ======================================================================
 # Find ffmpeg audio/video codec library
 #
 AC_MSG_CHECKING(for ffmpeg audio/video codec library)
-test_ffmpeg=true
-FFMPEG_PREFIX=
-FFMPEG_INCLUDES=
-FFMPEG_CFLAGS=
-FFMPEG_LIBS=
-
+test_ffmpeg=false
 AC_ARG_WITH(ffmpeg,
 	[  --with-ffmpeg		Turn on/off use of Ffmpeg audio/video codec library],
 	[
     case "${withval}" in    
-     yes) test_ffmpeg=true;;
-     no)  test_ffmpeg=false;;
-     *)   test_ffmpeg=true
-          FFMPEG_PREFIX=$withval
-          ;;
+     yes)
+     	test_ffmpeg=true
+     	;;
+     no)
+     	test_ffmpeg=false
+     	;;
+     *)
+     	AC_MSG_ERROR("Cannot supply value to --with-ffmpeg")
+     	;;
     esac
-])
-dnl test for downloaded version
-dnl
-FFMPEG_DEFAULT_DIR=`pwd`/third_party_packages/ffmpeg
-m4_pattern_allow(PKG_CONFIG_PATH_ORIG)
-PKG_CONFIG_PATH_ORIG=$PKG_CONFIG_PATH
-ffmpeg_inst_style=
-if test "x$test_ffmpeg" = "xtrue"; then
-	if test "x$FFMPEG_PREFIX" = "x";	
-	then
-          FFMPEG_PREFIX=$FFMPEG_DEFAULT_DIR
-	fi
-	# Turn into absolute path
-	FFMPEG_PREFIX=`cd $FFMPEG_PREFIX ; pwd`
-	export PKG_CONFIG_PATH=$FFMPEG_PREFIX:$PKG_CONFIG_PATH
-	if ! test -e $FFMPEG_PREFIX/libavcodec-uninstalled.pc
-	then 
-  	    # currently (June 2008) ffmpeg people are shifting their pkg-config files back and forth
+], [test_ffmpeg=true])
 
-	    PKG_CONFIG_PATH=$FFMPEG_PREFIX/libavcodec:$FFMPEG_PREFIX/libavformat:$FFMPEG_PREFIX/libavutil:$FFMPEG_PREFIX/libswscale:$PKG_CONFIG_PATH
-	fi
-	# test_ffmpeg is currently true. Set to false if any required piece is missing.
-	ffmpeg_too_new=false
+if $test_ffmpeg; then
 	PKG_CHECK_MODULES(LIBAVUTIL,[libavutil >= 49.7.0], , test_ffmpeg=false)
-#	PKG_CHECK_MODULES(LIBAVCODEC,[libavcodec < 52.0.0], , ffmpeg_too_new=true)
 	PKG_CHECK_MODULES(LIBAVCODEC,[libavcodec >= 51.57.2], , test_ffmpeg=false)
 	PKG_CHECK_MODULES(LIBAVFORMAT,[libavformat >= 52.14.0], , test_ffmpeg=false)
 	PKG_CHECK_EXISTS([libswscale >= 0.7.1], [
@@ -852,44 +758,14 @@ if test "x$test_ffmpeg" = "xtrue"; then
 		
 	FFMPEG_CFLAGS="${LIBAVFORMAT_CFLAGS} ${LIBAVCODEC_CFLAGS} ${LIBAVUTIL_CFLAGS} ${LIBSWSCALE_CFLAGS}"
 	FFMPEG_LIBS="${LIBAVFORMAT_LIBS} ${LIBAVCODEC_LIBS} ${LIBAVUTIL_LIBS} ${LIBSWSCALE_LIBS}"
-	#
-	# Sigh. Currently, the ffmpeg uninstalled.pc files contain pathnames, which are
-	# not acceptable to libtool. The following expression turns these into -L/-l combos.
-	# As ffmpeg is a moving target it is unclear how long this trick will work...
-	#
-	if test x`uname` = xDarwin; then
-		FFMPEG_LIBS=`echo $FFMPEG_LIBS | sed -e "s@\($FFMPEG_PREFIX/[[a-z]]*\)/lib\([[a-z]]*\).a@-L\1 -l\2@g"`
-	fi
-	if test "x$ffmpeg_too_new" = "xtrue"; then
-		test_ffmpeg=false
-		AC_MSG_WARN([ffmpeg libavcodec version must be older than 52.0.0 for Ambulant])
-	fi
-	if test "x$test_ffmpeg" = "xtrue"; then
-	   ffmpeg_inst_style="found through pkgconfig"
-	fi    
 fi
-AC_SUBST(FFMPEG_PREFIX)
-AC_SUBST(FFMPEG_INCLUDES)
 AC_SUBST(FFMPEG_CFLAGS)
 AC_SUBST(FFMPEG_LIBS)
 AM_CONDITIONAL(WITH_FFMPEG, test x$test_ffmpeg = xtrue)
 AM_CONDITIONAL(WITH_FFMPEG_SWSCALE, test x$test_ffmpeg_swscale = xtrue)
 AC_SUBST(WITH_FFMPEG)
 AC_MSG_RESULT($test_ffmpeg)
-AC_MSG_RESULT(Discovered FFMPEG version to use - $inst_style)
 
-PKG_CONFIG_PATH=$PKG_CONFIG_PATH_ORIG
-
-if test "x$test_ffmpeg" = "xfalse"; then
-    AC_MSG_WARN([ffmpeg support not enabled])
-    ffmpeg_warning="
-ffmpeg not found or disabled. Building without ffmpeg (which means limited media support)."
-	if test "x$ffmpeg_too_new" = "xtrue"; then
-		ffmpeg_warning=$ffmpeg_warning"
-		
-Ambulant cannot use libavcodec 52.0.0 or newer. See third_party_packages/readme.txt for details."
-	fi
-fi
 
 dnl Testing for Python
 dnl ======================================================================
@@ -1250,15 +1126,14 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     Build with Python support:      ${with_python}
     Build with Python plugin:       ${with_python_plugin}
 
-    Use expat XML library:          ${test_expat}  ${expat_path}
-    Use xerces XML library:         ${test_xerces}  ${xerces_path}
+    Use expat XML library:          ${test_expat}
+    Use xerces XML library:         ${test_xerces}
     Enable Xerces as plugin:        ${xerces_plugin}
-    Build with ffmpeg:              ${test_ffmpeg}  ${ffmpeg_inst_style}
+    Build with ffmpeg:              ${test_ffmpeg}
     Build with SDL:                 ${test_sdl}
     Build with live555.com RTSP:    ${test_live}
     Build with gstreamer:           ${test_gstreamer}
 
-    Build Qtopia frontend:          ${qtopia}
     Build Qt3 frontend:             ${test_qt}
     Build with GTK:                 ${test_gtk}
     Build with NOKIA770:            ${test_nokia770}
@@ -1280,7 +1155,7 @@ AC_MSG_RESULT([$ffmpeg_warning]);
 AC_MSG_RESULT([$live_warning]);
 AC_MSG_RESULT([$expat_warning]);
 AC_MSG_RESULT([$python_warning]);
-
+AC_MSG_RESULT([$xml_parser_warning]);
 if test "x$test_ffmpeg_swscale" = "xtrue"; then
 	AC_MSG_WARN([Built with ffmpeg libswscale, therefore under GPL license])
 fi

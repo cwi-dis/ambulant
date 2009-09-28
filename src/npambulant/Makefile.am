@@ -12,7 +12,7 @@ ambulant_ldflags=\
 	$(ambulantlibdir)/libambulant_cg.a \
 	$(ambulantlibdir)/libambulant_ffmpeg.a \
 	$(ambulantlibdir)/libambulant_sdl.a \
-	-L$(EXPAT_PREFIX)/lib -lexpat 
+	$(EXPAT_LIBS) 
 cgdefines=-DXP_MACOSX
 else
 NPAMBULANT=libnpambulant.so.0.0.0
@@ -82,7 +82,7 @@ extra_sdl_ldflags=
 endif
 #------------------------------------------------------
 if WITH_XERCES_BUILTIN
-extra_xerces_ldflags=-L$(XERCES_PREFIX)/lib -lxerces-c
+extra_xerces_ldflags=-L$(XERCES_LIBS)
 else
 extra_xerces_ldflags=
 endif # WITH_XERCES_BUILTIN

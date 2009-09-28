@@ -1,84 +1,60 @@
-#------------------------------------------------------
-if WITH_LIVE
-extra_live_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_live.a
-liveincludes = -I$(LIVE_ROOT)/BasicUsageEnvironment/include \
-			   -I$(LIVE_ROOT)/groupsock/include \
-			   -I$(LIVE_ROOT)/liveMedia/include \
-			   -I$(LIVE_ROOT)/UsageEnvironment/include
-
-livelibs = -L$(LIVE_ROOT)/liveMedia/ -lliveMedia \
-			  -L$(LIVE_ROOT)/BasicUsageEnvironment/ -lBasicUsageEnvironment  \
-			  -L$(LIVE_ROOT)/groupsock/ -lgroupsock  \
-			  -L$(LIVE_ROOT)/UsageEnvironment/ -lUsageEnvironment
-extra_live_DEFINES=-DWITH_LIVE
-else
-extra_live_DEFINES=
-extra_live_LDADD =
-liveincludes =
-livelibs =
-endif # WITH_LIVE
-
-#------------------------------------------------------
-if WITH_GSTREAMER
-extra_gstreamer_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_gstreamer.a
-extra_gstreamer_CPPFLAGS=-DWITH_GSTREAMER	\
-		-I/usr/include/gstreamer-0.10 \
-		-I/usr/include/glib-2.0	\
-		-I/usr/lib/glib-2.0/include \
-		-I/usr/include/libxml2
-
-extra_gstreamer_ldflags=`pkg-config --libs gstreamer-0.10`
-else
-extra_gstreamer_ldflags=
-extra_gstreamer_CFLAGS=
-endif # WITH_GSTREAMER
-#------------------------------------------------------
-if WITH_SDL
-extra_sdl_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_sdl.a
-extra_sdl_DEFINES=-DWITH_SDL
-extra_sdl_ldflags= `sdl-config --libs`
-else
-extra_sdl_ldflags=
-extra_sdl_DEFINES=
-endif # WITH_SDL
-
-#------------------------------------------------------
-
-#------------------------------------------------------
+#
+# Conditionals for various third party libraries
+#
 if WITH_EXPAT
-extra_expat_DEFINES=-I$(EXPAT_PREFIX)/include -DWITH_EXPAT
-extra_expat_LDADD=-L$(EXPAT_PREFIX)/lib -lexpat
+extra_expat_DEFINES=$(EXPAT_CFLAGS) -DWITH_EXPAT
+extra_expat_LDADD=$(EXPAT_LIBS)
 else
 extra_expat_DEFINES=
 extra_expat_LDADD=
-endif #  WITH_EXPAT_BUILTIN
+endif
 
-#------------------------------------------------------
 if WITH_FFMPEG
-extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a $(FFMPEG_LIBS)
-extra_ffmpeg_ldflags=
-extra_ffmpeg_DEFINES=-DWITH_FFMPEG -DWITH_FFMPEG_AVFORMAT $(FFMPEG_CFLAGS)
+extra_ffmpeg_DEFINES=-DWITH_FFMPEG $(FFMPEG_CFLAGS)
+extra_ffmpeg_LDADD=$(FFMPEG_LIBS)
 else
-extra_ffmpeg_LDADD=
-extra_ffmpeg_ldflags=
 extra_ffmpeg_DEFINES=
-endif # WITH_FFMPEG
+extra_ffmpeg_LDADD=
+endif
 
-#------------------------------------------------------
+if WITH_GSTREAMER
+extra_gstreamer_LDADD=$(GSTREAMER_LIBS)
+extra_gstreamer_DEFINES=-DWITH_GSTREAMER $(GSTREAMER_CFLAGS)
+else
+extra_gstreamer_LDADD=
+extra_gstreamer_DEFINES=
+endif
+
+if WITH_LIVE
+extra_live_LDADD=$(LIVE_LIBS)
+extra_live_DEFINES=$(LIVE_CFLAGS) -DWITH_LIVE
+else
+extra_live_DEFINES=
+extra_live_LDADD =
+endif
+
+if WITH_SDL
+extra_sdl_DEFINES=$(SDL_CFLAGS) -DWITH_SDL
+extra_sdl_LDADD=$(SDL_LIBS)
+else
+extra_sdl_DEFINES=
+extra_sdl_LDADD=
+endif
+
 if WITH_XERCES_BUILTIN
-extra_xerces_DEFINES=-I$(XERCES_PREFIX)/include -DWITH_XERCES_BUILTIN
-extra_xerces_LDADD=-L$(XERCES_PREFIX)/lib -lxerces-c
+extra_xerces_DEFINES=$(XERCES_CFLAGS) -DWITH_XERCES_BUILTIN
+extra_xerces_LDADD=$(XERCES_LIBS)
 else
 extra_xerces_DEFINES=
 extra_xerces_LDADD=
-endif # WITH_XERCES_BUILTIN
+endif
 
-#------------------------------------------------------
-##if USE_NLS
-extra_nls_DEFINES=-DLOCALEDIR=\"$(datadir)/locale\"
-##else
-##extra_nls_DEFINES=
-##endif # USE_NLS
+#if USE_NLS
+extra_nls_DEFINES=-DLOCALEDIR= \"$(datadir)/locale \"
+#else
+#extra_nls_DEFINES=
+#endif
+
 
 #------------------------------------------------------
 if WITH_GTK
@@ -106,56 +82,49 @@ endif # WITH_NOKIA770
 #------------------------------------------------------
 
 bin_PROGRAMS = AmbulantPlayer_gtk
-AmbulantPlayer_gtk_SOURCES =					\
-	gtk_gui.cpp						\
-	gtk_gui.h 						\
-	gtk_logger.cpp						\
-	gtk_logger.h						\
-	gtk_mainloop.cpp 					\
-	gtk_mainloop.h						\
-	gtk_settings.cpp 					\
-	gtk_settings.h 						\
-	unix_preferences.cpp					\
+AmbulantPlayer_gtk_SOURCES = \
+	gtk_gui.cpp \
+	gtk_gui.h \
+	gtk_logger.cpp \
+	gtk_logger.h \
+	gtk_mainloop.cpp \
+	gtk_mainloop.h \
+	gtk_settings.cpp \
+	gtk_settings.h \
+	unix_preferences.cpp \
 	unix_preferences.h
 
-LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_gtk.a	\
-	$(extra_gstreamer_LDADD) \
-	$(extra_sdl_LDADD) \
+LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_gtk.a \
 	$(extra_expat_LDADD) \
 	$(extra_ffmpeg_LDADD) \
+	$(extra_gstreamer_LDADD) \
+	$(extra_live_LDADD) \
+	$(extra_sdl_LDADD) \
 	$(extra_xerces_LDADD) \
-	$(extra_live_LDADD)  \
-	$(top_builddir)/src/libambulant/.libs/libambulant.a	\
+	$(top_builddir)/src/libambulant/.libs/libambulant.a \
 	$(gtk_libs) \
 	$(LIBLTDL) \
 	$(extra_nokia770_LDADD)
 
 AM_LDFLAGS= \
-	   $(extra_gstreamer_ldflags) \
-	   $(extra_sdl_ldflags) \
-	   $(extra_ffmpeg_ldflags) \
-	   $(extra_nokia770_ldflags) \
-	   -export-dynamic \
-       $(livelibs)
+	   -export-dynamic
 
 AM_CPPFLAGS = \
 		$(extra_gstreamer_CPPFLAGS) \
-		-DAMBULANT_DATADIR=\"$(pkgdatadir)\" \
-		$(extra_sdl_DEFINES) \
+		-DAMBULANT_DATADIR= \"$(pkgdatadir) \" \
+		$(extra_expat_DEFINES) \
 		$(extra_ffmpeg_DEFINES) \
-		$(extra_nls_DEFINES) \
-		$(extra_xerces_DEFINES) \
+		$(extra_gstreamer_DEFINES) \
 		$(extra_live_DEFINES) \
+		$(extra_nls_DEFINES) \
+		$(extra_sdl_DEFINES) \
+		$(extra_xerces_DEFINES) \
 		$(extra_nokia770_DEFINES) \
 		-I$(top_builddir)/include \
 		-I$(top_srcdir)/include \
 		-I$(top_builddir)/include/ambulant/gui/gtk \
-		-I$(top_srcdir)/include/ambulant/gui/gtk \
-	    $(EXPAT_INCLUDES) \
-	    $(XERCES_INCLUDES) \
-	    $(gtk_includes) \
-	    $(liveincludes)
-
+		-I$(top_srcdir)/include/ambulant/gui/gtk
+		
 #------------------------------------------------------
 # More special case code for the Nokia 770: install the auxiliary files.
 if WITH_NOKIA770

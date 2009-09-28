@@ -16,49 +16,45 @@ EXTRA_DIST=MyAmbulantView.mm MyDocument.mm LogController.mm mainloop.cpp MyAppDe
 
 if WITH_CG
 extra_cg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_cg.a
-extra_cg_ldflags=
 else
 extra_cg_LDADD=
-extra_cg_ldflags=
-endif
-
-if WITH_SDL
-extra_sdl_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_sdl.a
-extra_sdl_DEFINES=-DWITH_SDL
-extra_sdl_ldflags=-static `sdl-config --libs` \
-	-framework Carbon \
-	-framework IOKit \
-	-framework OpenGL \
-	-framework AudioUnit \
-	-framework AudioToolbox
-else
-extra_sdl_ldflags=
-extra_sdl_DEFINES=
-endif
-
-if WITH_FFMPEG
-extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a
-extra_ffmpeg_ldflags=$(FFMPEG_LIBS) -lz
-extra_ffmpeg_DEFINES=-DWITH_FFMPEG -DWITH_FFMPEG_AVFORMAT $(FFMPEG_CFLAGS)
-else
-extra_ffmpeg_LDADD=
-extra_ffmpeg_ldflags=
-extra_ffmpeg_DEFINES=
 endif
 
 if WITH_EXPAT
-extra_expat_DEFINES=-I$(EXPAT_PREFIX)/include
-extra_expat_ldflags=-L$(EXPAT_PREFIX)/lib -lexpat
-extra_expat_LDADD=
+extra_expat_DEFINES=$(EXPAT_CFLAGS) -DWITH_EXPAT
+extra_expat_LDADD=$(EXPAT_LIBS)
 else
 extra_expat_DEFINES=
-extra_expat_ldflags=
 extra_expat_LDADD=
 endif
 
+if WITH_FFMPEG
+extra_ffmpeg_DEFINES=-DWITH_FFMPEG $(FFMPEG_CFLAGS)
+extra_ffmpeg_LDADD=$(FFMPEG_LIBS)
+else
+extra_ffmpeg_DEFINES=
+extra_ffmpeg_LDADD=
+endif
+
+if WITH_LIVE
+extra_live_LDADD=$(LIVE_LIBS)
+extra_live_DEFINES=$(LIVE_CFLAGS) -DWITH_LIVE
+else
+extra_live_DEFINES=
+extra_live_LDADD =
+endif
+
+if WITH_SDL
+extra_sdl_DEFINES=$(SDL_CFLAGS) -DWITH_SDL
+extra_sdl_LDADD=$(SDL_LIBS)
+else
+extra_sdl_DEFINES=
+extra_sdl_LDADD=
+endif
+
 if WITH_XERCES_BUILTIN
-extra_xerces_DEFINES=-I$(XERCES_PREFIX)/include
-extra_xerces_LDADD=-L$(XERCES_PREFIX)/lib -lxerces-c
+extra_xerces_DEFINES=$(XERCES_CFLAGS) -DWITH_XERCES_BUILTIN
+extra_xerces_LDADD=$(XERCES_LIBS)
 else
 extra_xerces_DEFINES=
 extra_xerces_LDADD=
@@ -69,19 +65,6 @@ extra_nls_DEFINES=-DLOCALEDIR=\"$(datadir)/locale\"
 #else
 #extra_nls_DEFINES=
 #endif
-
-if WITH_LIVE
-extra_live_DEFINES=-DWITH_LIVE
-extra_live_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_live.a
-extra_live_ldflags=-L$(LIVE_ROOT)/liveMedia/ -lliveMedia \
-			  -L$(LIVE_ROOT)/BasicUsageEnvironment/ -lBasicUsageEnvironment  \
-			  -L$(LIVE_ROOT)/groupsock/ -lgroupsock  \
-			  -L$(LIVE_ROOT)/UsageEnvironment/ -lUsageEnvironment
-else
-extra_live_DEFINES=
-extra_live_LDADD=
-extra_live_ldflags=
-endif
 
 # Sometimes we seem to have a .so suffix, sometimes not.
 SO=.so
@@ -208,33 +191,29 @@ endif
 LDADD = \
 	$(top_builddir)/src/libambulant/.libs/libambulant_cocoa.a \
 	$(extra_cg_LDADD) \
-	$(extra_sdl_LDADD) \
-	$(extra_ffmpeg_LDADD) \
 	$(extra_expat_LDADD) \
-	$(extra_xerces_LDADD) \
+	$(extra_ffmpeg_LDADD) \
 	$(extra_live_LDADD) \
+	$(extra_sdl_LDADD) \
+	$(extra_xerces_LDADD) \
 	$(LIBINTL) \
 	$(LIBICONV) \
     $(top_builddir)/src/libambulant/.libs/libambulant.a \
     -lstdc++
 AM_LDFLAGS= \
-	$(extra_cg_ldflags) \
-    $(extra_sdl_ldflags) \
-    $(extra_ffmpeg_ldflags) \
-    $(extra_expat_ldflags) \
-    $(extra_live_ldflags) \
     -framework Cocoa \
     -framework QTKit \
     -framework WebKit
 # XXXJACK for 32-bit, add     -framework QuickTime 
 
-AM_CPPFLAGS = -I$(top_builddir)/include -I$(top_srcdir)/include \
+AM_CPPFLAGS = \
+    -I$(top_builddir)/include -I$(top_srcdir)/include \
     $(extra_expat_DEFINES) \
-    $(extra_xerces_DEFINES) \
-	$(extra_sdl_DEFINES) \
 	$(extra_ffmpeg_DEFINES) \
 	$(extra_nls_DEFINES) \
-	$(extra_live_DEFINES)
+	$(extra_live_DEFINES) \
+	$(extra_sdl_DEFINES) \
+    $(extra_xerces_DEFINES)
 
 dist-hook:
 	rm -rf `find $(distdir) -name CVS`

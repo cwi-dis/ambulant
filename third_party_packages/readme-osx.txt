@@ -9,6 +9,10 @@ MACOSX_DEPLOYMENT_TARGET=10.4 in your environment, some things need
 to be fixed for native 10.5 development.
 
 expat:
+    Make sure you have expat 2.0.1, and that you have applied the patch
+    to enable pkgconfig support (from ambulant/third_party_packages/expat.patch).
+    After this, you must also run "autoconf".
+    
     If you want to do a Intel/PPC universal build you need to build
     expat universally too, by making sure the following environment
     variable is set when running configure:
@@ -37,6 +41,20 @@ xerces-c 3.0:
 	        CFLAGS="-arch i386 -arch x86_64" CXXFLAGS="-arch i386 -arch x86_64"
 	Then, when building ambulant, configure with --with-xerces=$HOME/xerces-3-installed
 
+libfaad:
+    (Only if you build ffmpeg with libfaad support)
+    For ppc/build with
+    
+        ./configure \
+            CFLAGS="-arch i386 -arch ppc -isysroot /Developer/SDKs/MacOSX10.4u.sdk" \
+            --disable-dependency-tracking
+	
+	For 32/64-bit intel, build with
+        ./configure CFLAGS="-arch i386 -arch x86_64" --disable-dependency-tracking
+
+    For both, you may need to edit the Makefile (if you get "Missing Separator") and
+    replace some spaces with tabs.
+    
 ffmpeg 0.5:
 	If you want to do a MacOSX universal build of Ambulant you also need
 	to build ffmpeg universally. This is a bit tricky, but there's a script
@@ -52,20 +70,6 @@ ffmpeg 0.5:
 	- Now pass this folder to the Ambulant configure, with 
 	  "--with-ffmpeg=third_party_packages/ffmpeg-universal".
 	
-libfaad:
-    (Only if you build ffmpeg with libfaad support)
-    For ppc/build with
-    
-        ./configure \
-            CFLAGS="-arch i386 -arch ppc -isysroot /Developer/SDKs/MacOSX10.4u.sdk" \
-            --disable-dependency-tracking
-	
-	For 32/64-bit intel, build with
-        ./configure CFLAGS="-arch i386 -arch x86_64" --disable-dependency-tracking
-
-    For both, you may need to edit the Makefile (if you get "Missing Separator") and
-    replace some spaces with tabs.
-    
 sdl 1.2.X:
 	If you want to build a universal (ppc/intel) Ambulant binary you must
 	build SDL in a different way. The script sdl-osx-fatbuild.sh in this

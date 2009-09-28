@@ -4,19 +4,21 @@
 
 if WITH_LIVE 
 toolkit_live_libraries = libambulant_live.la
-libambulant_live_la_SOURCES = 	\
+libambulant_live_la_SOURCES = \
 	net/rtsp_datasource.cpp \
 	net/rtsp_factory.cpp
 
-live_includes = -I$(LIVE_ROOT)/BasicUsageEnvironment/include \
-		   -I$(LIVE_ROOT)/groupsock/include \
-		   -I$(LIVE_ROOT)/liveMedia/include \
-		   -I$(LIVE_ROOT)/UsageEnvironment/include
+live_includes = \
+    -I$(LIVE_ROOT)/BasicUsageEnvironment/include \
+    -I$(LIVE_ROOT)/groupsock/include \
+    -I$(LIVE_ROOT)/liveMedia/include \
+    -I$(LIVE_ROOT)/UsageEnvironment/include
 
-livelibs = -L$(LIVE_ROOT)/liveMedia/ -lliveMedia \
-		  -L$(LIVE_ROOT)/BasicUsageEnvironment/ -lBasicUsageEnvironment  \
-		  -L$(LIVE_ROOT)/groupsock/ -lgroupsock  \
-		  -L$(LIVE_ROOT)/UsageEnvironment/ -lUsageEnvironment
+livelibs = \
+    -L$(LIVE_ROOT)/liveMedia/ -lliveMedia \
+    -L$(LIVE_ROOT)/BasicUsageEnvironment/ -lBasicUsageEnvironment \
+    -L$(LIVE_ROOT)/groupsock/ -lgroupsock \
+    -L$(LIVE_ROOT)/UsageEnvironment/ -lUsageEnvironment
 else
 live_includes =
 livelibs =
@@ -90,15 +92,15 @@ if WITH_GTK
 toolkit_gtk_libraries = libambulant_gtk.la
 gtkincludes =$(GTK_CFLAGS)
 
-libambulant_gtk_la_SOURCES = 		\
-	gui/gtk/gtk_renderer.cpp	\
-	gui/gtk/gtk_fill.cpp		\
-	gui/gtk/gtk_image_renderer.cpp	\
-	gui/gtk/gtk_smiltext.cpp 	\
-	gui/gtk/gtk_text_renderer.cpp 	\
-	gui/gtk/gtk_transition.cpp 	\
-	gui/gtk/gtk_util.cpp	 	\
-	gui/gtk/gtk_video_renderer.cpp	\
+libambulant_gtk_la_SOURCES = \
+	gui/gtk/gtk_renderer.cpp \
+	gui/gtk/gtk_fill.cpp \
+	gui/gtk/gtk_image_renderer.cpp \
+	gui/gtk/gtk_smiltext.cpp \
+	gui/gtk/gtk_text_renderer.cpp \
+	gui/gtk/gtk_transition.cpp \
+	gui/gtk/gtk_util.cpp \
+	gui/gtk/gtk_video_renderer.cpp \
 	gui/gtk/gtk_factory.cpp
 
 else
@@ -113,15 +115,15 @@ if WITH_QT
 toolkit_qt_libraries = libambulant_qt.la
 qtincludes = $(LIBQT_INCLUDES)
 
-libambulant_qt_la_SOURCES = 		\
-	gui/qt/qt_renderer.cpp		\
-	gui/qt/qt_fill.cpp		\
-	gui/qt/qt_image_renderer.cpp	\
-	gui/qt/qt_smiltext.cpp	 	\
-	gui/qt/qt_text_renderer.cpp 	\
-	gui/qt/qt_transition.cpp 	\
-	gui/qt/qt_util.cpp	\
-	gui/qt/qt_video_renderer.cpp	\
+libambulant_qt_la_SOURCES = \
+	gui/qt/qt_renderer.cpp \
+	gui/qt/qt_fill.cpp \
+	gui/qt/qt_image_renderer.cpp \
+	gui/qt/qt_smiltext.cpp \
+	gui/qt/qt_text_renderer.cpp \
+	gui/qt/qt_transition.cpp \
+	gui/qt/qt_util.cpp \
+	gui/qt/qt_video_renderer.cpp \
 	gui/qt/qt_factory.cpp
 
 else
@@ -131,17 +133,17 @@ libambulant_qt_la_SOURCES =
 endif
 
 if WITH_QT_HTML_WIDGET
-libambulant_qt_la_SOURCES += 		\
+libambulant_qt_la_SOURCES += \
 	gui/qt/qt_html_renderer.cpp
 endif
 
 if WITH_SDL
 toolkit_sdl_libraries = libambulant_sdl.la
-libambulant_sdl_la_LDFLAGS =  -static ` sdl-config --libs`
-sdlincludes = `sdl-config --cflags`
-libambulant_sdl_la_SOURCES =             \
-        gui/SDL/sdl.cpp \
-        gui/SDL/sdl_audio.cpp
+libambulant_sdl_la_LDFLAGS =  $(SDL_LIBS)
+sdlincludes = -DWITH_SDL $(SDL_CFLAGS)
+libambulant_sdl_la_SOURCES = \
+    gui/SDL/sdl.cpp \
+    gui/SDL/sdl_audio.cpp
 else
 sdlincludes=
 toolkit_sdl_libraries =
@@ -154,12 +156,12 @@ libambulant_ffmpeg_la_LDFLAGS = $(FFMPEG_LIBS)
 
 ffmpegincludes = -DWITH_FFMPEG -DWITH_FFMPEG_AVFORMAT $(FFMPEG_CFLAGS)
 
-libambulant_ffmpeg_la_SOURCES = 	\
-		net/ffmpeg_common.cpp \
-		net/ffmpeg_audio.cpp \
-		net/ffmpeg_video.cpp \
-		net/ffmpeg_raw.cpp	\
-		net/demux_datasource.cpp
+libambulant_ffmpeg_la_SOURCES = \
+    net/ffmpeg_common.cpp \
+    net/ffmpeg_audio.cpp \
+    net/ffmpeg_video.cpp \
+    net/ffmpeg_raw.cpp \
+    net/demux_datasource.cpp
 else
 ffmpegincludes=
 toolkit_ffmpeg_libraries=
@@ -169,17 +171,18 @@ if WITH_GSTREAMER
 toolkit_gstreamer_libraries = libambulant_gstreamer.la
 
 libambulant_gstreamer_la_LDFLAGS = -lgstreamer-0.10
-gstreamer_includes = -DWITH_GSTREAMER \
-		-I/usr/include/gstreamer-0.10 \
-		-I/usr/include/glib-2.0	\
-		-I/usr/lib/glib-2.0/include \
-		-I/usr/include/libxml2 \
-		 $(GSTREAMER_CFLAGS)
+gstreamer_includes = \
+    -DWITH_GSTREAMER \
+    -I/usr/include/gstreamer-0.10 \
+    -I/usr/include/glib-2.0 \
+    -I/usr/lib/glib-2.0/include \
+    -I/usr/include/libxml2 \
+    $(GSTREAMER_CFLAGS)
 
-libambulant_gstreamer_la_SOURCES = 	\
-	        gui/gstreamer/gstreamer_audio_renderer.cpp	\
-	        gui/gstreamer/gstreamer_renderer_factory.cpp	\
-	        gui/gstreamer/gstreamer_player.cpp
+libambulant_gstreamer_la_SOURCES = \
+    gui/gstreamer/gstreamer_audio_renderer.cpp \
+    gui/gstreamer/gstreamer_renderer_factory.cpp \
+    gui/gstreamer/gstreamer_player.cpp
 else
 gstreamer_includes=
 toolkit_gstreamer_libraries=
@@ -230,10 +233,10 @@ libambulant_la_LDFLAGS= \
 
 libambulant_la_SOURCES = \
 	get_version.cpp \
-	\
+ \
 	$(expat_parser_source) \
 	$(xerces_parser_source) \
-	\
+ \
 	lib/colors.cpp \
 	lib/delta_timer.cpp \
 	lib/document.cpp \
@@ -248,18 +251,18 @@ libambulant_la_SOURCES = \
 	lib/timer.cpp \
 	lib/transition_info.cpp \
 	lib/tree_builder.cpp \
-	\
+ \
 	lib/parser_factory.cpp \
 	lib/unix/unix_mtsync.cpp \
 	lib/unix/unix_thread.cpp \
 	lib/unix/unix_timer.cpp \
-	\
+ \
 	net/posix_datasource.cpp \
 	net/stdio_datasource.cpp \
 	net/datasource.cpp \
 	net/databuffer.cpp \
 	net/url.cpp \
-	\
+ \
 	common/factory.cpp \
 	common/gui_player.cpp \
 	common/preferences.cpp \
@@ -272,7 +275,7 @@ libambulant_la_SOURCES = \
 	common/smil_handler.cpp \
 	common/plugin_engine.cpp \
 	common/video_renderer.cpp \
-	\
+ \
 	smil2/animate_a.cpp \
 	smil2/animate_e.cpp \
 	smil2/animate_n.cpp \
@@ -292,7 +295,7 @@ libambulant_la_SOURCES = \
 	smil2/timegraph.cpp \
 	smil2/trace_player.cpp \
 	smil2/transition.cpp \
-	\
+ \
 	gui/none/none_area.cpp \
 	gui/none/none_gui.cpp \
 	gui/none/none_video_renderer.cpp \
@@ -317,7 +320,7 @@ CLEANFILES=demux_datasource.loT ffmpeg_common.loT sdl.loT
 if WITH_NPAMBULANT
 # when selinux is enblaed, identify the installed shared library
 install-exec-hook:
-	export PATH=$$PATH:/sbin:/usr/sbin ;  \
+	export PATH=$$PATH:/sbin:/usr/sbin ; \
 	which chcon selinuxenabled  && selinuxenabled 2>1 1>/dev/null ; \
 	if [ $$? == 0 ] ; then chcon -t texrel_shlib_t "$(DESTDIR)$(libdir)"/* ; fi
 else

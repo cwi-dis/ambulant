@@ -10,9 +10,14 @@
 #
 
 #
+# Where do you want to install?
+# Leave empty for no installation
+#
+PREFIX="--prefix=`cd ../installed ; pwd`"
+#
 # Set this to the global options you want to configure ffmpeg with.
 #
-CONFIGOPTS="--disable-encoders --enable-swscale --enable-gpl --disable-vhook --disable-ffserver --disable-ffmpeg --disable-ffplay --enable-static --enable-shared --enable-libfaad --disable-libfaac --extra-cflags=-I/usr/local/include"
+CONFIGOPTS="$PREFIX --disable-encoders --enable-swscale --enable-gpl --disable-vhook --disable-ffserver --disable-ffmpeg --disable-ffplay --enable-static --enable-shared --enable-libfaad --disable-libfaac --extra-cflags=-I/usr/local/include"
 #
 # If you want to build for a different MacOSX version than the current one
 # define SYSROOT and MACOSX_DEPLOYMENT_TARGET
@@ -38,7 +43,6 @@ PPC_CONFIGOPTS="--arch=powerpc --cpu=g4 --enable-altivec --enable-shared"
 I386_CONFIGOPTS="--arch=i686 --cpu=i686 --enable-shared --cc=gcc-4.0"
 PPC64_CONFIGOPTS="--enable-cross-compile --arch=ppc64 --cpu=g4 --enable-altivec --enable-shared"
 X86_64_CONFIGOPTS="--arch=x86_64 --enable-shared"
-
 #
 # Should be boilerplate from here on
 #
@@ -106,6 +110,7 @@ if $mkdirs; then
     mkdir libavformat
     mkdir libavcodec
     mkdir libavutil
+    mkdir libavdevice
     mkdir libswscale
 else
     echo $0: skipping mkdirs
@@ -116,6 +121,7 @@ if $mklinks; then
     ( cd libavformat ; ln -s $srcdir/libavformat/*.h .)
     ( cd libavcodec ; ln -s $srcdir/libavcodec/*.h .)
     ( cd libavutil ; ln -s $srcdir/libavutil/*.h .)
+    ( cd libadevice ; ln -s $srcdir/libavdevice/*.h .)
     ( cd libswscale ; ln -s $srcdir/libswscale/*.h .)
 else
     echo $0: skipping mklinks
@@ -230,10 +236,18 @@ fi
 
 if $merge; then
     echo $0: merge
-    lipo -create -output libavformat/libavformat.a build-*/libavformat/libavformat.a
-    lipo -create -output libavcodec/libavcodec.a build-*/libavcodec/libavcodec.a
-    lipo -create -output libavutil/libavutil.a build-*/libavutil/libavutil.a
-    lipo -create -output libswscale/libswscale.a build-*/libswscale/libswscale.a
+    for i in \
+        libavformat/libavformat.a \
+        libavformat/libavformat.dylib \
+        libavcodec/libavcodec.a \
+        libavcodec/libavcodec.dylib \
+        libavutil/libavutil.a \
+        libavutil/libavutil.dylib \
+        libswscale/libswscale.a \
+        libswscale/libswscale.dylib
+    do
+        lipo -create -output $i build-*/$i
+    done
     for i in avformat avutil avcodec swscale; do
     	cp build-$ANY_RANDOM_ARCH/lib$i/*.pc lib$i/
     done
@@ -243,8 +257,8 @@ fi
 
 if $install; then
     echo $0: install
-    echo Sorry, cannot do yet.
-    exit 1
+    (cd build-$ANY_RANDOM_ARCH ; make -n install) | sed -e 's/^.*$/(&)/' > install.sh
+    sh install.sh
 else
     echo $0: skipping install
 fi
