@@ -159,12 +159,14 @@ png_decoder<DataSource, ColorType>::decode() {
     png_uint_32 channels = png_get_channels(png_ptr, info_ptr);
     assert(row_bytes == width * channels);
 	AM_DBG m_logger->debug("PNG: row_bytes = %d, channels=%d", row_bytes, channels);
-	if(channels	!= 3) {
-		m_logger->warn("PNG: Seen: %d channels. Supported: 3 channels", channels);
+	if(channels	!= 3 && channels != 4) {
+		m_logger->warn("PNG: Seen: %d channels. Supported: 3/4 channels", channels);
 		png_destroy_info_struct(png_ptr, &info_ptr);
 		png_destroy_read_struct(&png_ptr, NULL, NULL);
 		return 0; // failed
-	}
+	} else if (channels == 4)
+		// ignore alpha channel
+		png_set_strip_alpha (png_ptr);
 	
 	// create a bmp surface
 	ColorType *pBits = NULL;
