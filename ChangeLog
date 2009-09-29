@@ -1,3 +1,35 @@
+2009-09-28 17:44  jackjansen
+
+	* Getting started on rationalizing the way we use the third party
+	  packages.
+
+2009-09-28 14:21  keesblom
+
+	* Ignore, for now, alpha channel in png images by stripping the
+	  alpha channel information.  Committed on the Free edition of
+	  March Hare Software CVSNT Server.  Upgrade to CVS Suite for more
+	  features and support: http://march-hare.com/cvsnt/
+
+2009-09-28 13:14  bogao
+
+	* Removed an assertion which caused npambulant crashing sometimes
+
+2009-09-28 00:05  jackjansen
+
+	* More bits and pieces for universal 32/64 bit builds.
+
+2009-09-27 23:29  jackjansen
+
+	* All third party packages can now be built on MacOSX 10.6 for
+	  universal 32 and 64 bit binaries (Intel only).
+
+2009-09-26 00:47  jackjansen
+
+	* Got the script to work with ffmpeg 0.5.
+
+	  Also added code to build for any selection of the 4 architectures
+	  (ppc, i386, ppc64, x86_64) but this is currently untested.
+
 2009-09-24 23:30  jackjansen
 
 	* Fgot to add project file to CVS.
