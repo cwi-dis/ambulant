@@ -39,10 +39,6 @@
 //
 // Main plugin entry point implementation
 //
-#ifdef	XP_WIN32
-#define ptrdiff_t long int // but not defined in Visual C++ 7.1.
-#define _PTRDIFF_T_DEFINED
-#endif//XP_WIN32
 
 #include "npambulant.h"
 #include <string.h>

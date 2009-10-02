@@ -34,7 +34,7 @@ static LRESULT CALLBACK PluginWinProc(HWND, UINT, WPARAM, LPARAM);
 #define AM_DBG if(0)
 #endif
 
-#include <ApplicationServices/ApplicationServices.h> // XXXJACK TEMP DEBUG
+//#include <ApplicationServices/ApplicationServices.h> // XXXJACK TEMP DEBUG
 
 using namespace ambulant;
 
@@ -138,7 +138,7 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 #ifdef XP_WIN32
 	// for Windows, ffmpeg is only available as plugin
 	prefs->m_use_plugins = true;
-	prefs->m_plugin_dir = lib::win32::get_module_dir()+"\plugins\\";
+	prefs->m_plugin_dir = lib::win32::get_module_dir()+"\\plugins\\";
 	ambulant::lib::textptr pn_conv(prefs->m_plugin_dir.c_str());
 	SetDllDirectory (pn_conv);
 //#elseif TBD
@@ -199,6 +199,7 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 	char* url_str = NULL;
 	if (arg_url.is_absolute()) {
         	url_str = strdup(arg_url.get_url().c_str());
+			file_url = arg_url;
 	} else {
         	char* loc_str = get_document_location();
 	        if (loc_str != NULL) {
