@@ -1,3 +1,12 @@
+2009-10-02 16:58  keesblom
+
+	* Fixed a bug s.t. combined object/embed tag html tags (like
+	  ieambulantWeb3.html) can be played with both Internet Explorer
+	  and Firefox/Safari/Opera/Google Chrome Removed some weird stuff
+	  that was added for Visyal Studio 7.1 Committed on the Free
+	  edition of March Hare Software CVSNT Server.	Upgrade to CVS
+	  Suite for more features and support: http://march-hare.com/cvsnt/
+
 2009-09-28 17:44  jackjansen
 
 	* Getting started on rationalizing the way we use the third party
