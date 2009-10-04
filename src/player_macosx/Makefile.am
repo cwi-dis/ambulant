@@ -89,7 +89,7 @@ cocoambulant_executable_SOURCES= \
 	MyAppDelegate.m 
 	
 APPNAME="Ambulant Player"
-BUILDAPPNAME = "AmbulantPlayer"
+BUILDAPPNAME=AmbulantPlayer
 
 # Script to test dependencies
 TESTDEP=$(srcdir)/testdependencies
@@ -116,9 +116,6 @@ $(BUILDAPPNAME).app: cocoambulant_executable
 	cd ../plugins; \
 	$(MAKE) $(AM_MAKEFLAGS) pkglibdir=$$pkglibdir install 
 	
-#	Internalize any non-system shared libraries we use
-	$(PYTHON) $(srcdir)/internalize_dylibs.py -v $(BUILDAPPNAME).app
-
 #	Install gettext localizations
 	localedir=`pwd`/$(BUILDAPPNAME).app/Contents/Resources/locale; \
 	cd ../../po ; \
@@ -182,11 +179,14 @@ $(BUILDAPPNAME).app: cocoambulant_executable
 	$(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) cocoambulant_executable `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/Ambulant-mac
 	strip -x `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/Ambulant-mac
 	
+#	Internalize any non-system shared libraries we use
+	$(PYTHON) $(srcdir)/internalize_dylibs.py -v $(BUILDAPPNAME).app
+
 #	Test for problematic dependencies
-	$(PYTHON) $(srcdir)/internalize_dylibs.py -c $(BUILDAPPNAME).app
 	$(TESTDEP) `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/Ambulant-mac
 	$(TESTDEP) `pwd`/$(BUILDAPPNAME).app/Contents/PlugIns/*
 	$(TESTDEP) `pwd`/$(BUILDAPPNAME).app/Contents/Frameworks/*
+	$(PYTHON) $(srcdir)/internalize_dylibs.py -c $(BUILDAPPNAME).app
 	
 LDADD = \
 	$(top_builddir)/src/libambulant/.libs/libambulant_cocoa.a \

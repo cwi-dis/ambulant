@@ -137,6 +137,8 @@ class Internalizer:
 			print 'modify_lib_reference', dst, lib, libid
 		if not self.norun:
 			subprocess.check_call(['install_name_tool', '-change', lib, libid, dst])
+		if not self.verbose and self.norun:
+			print 'Warning: %s has reference to %s' % (dst, lib)
 		self.work_done = True
 			
 	def must_copy(self, lib):

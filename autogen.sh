@@ -16,6 +16,8 @@ REQUIRED_GETTEXT_VERSION=${REQUIRED_GETTEXT_VERSION:-0.16.1}
 REQUIRED_M4MACROS=${REQUIRED_M4MACROS:-}
 FORBIDDEN_M4MACROS=${FORBIDDEN_M4MACROS:-}
 
+ACLOCAL_FLAGS="-I /usr/local/share/aclocal"
+
 
 # some terminal codes ...
 boldface="`tput bold 2>/dev/null`"
@@ -123,7 +125,7 @@ check_m4macros() {
 
     # construct list of macro directories
     macrodirs="`$ACLOCAL --print-ac-dir`"
-    macrodirs="$macrodirs m4 libltdl/m4"    # We keep our macros in the m4 subdir
+    macrodirs="$macrodirs"
     set - $ACLOCAL_FLAGS
     while [ $# -gt 0 ]; do
 	if [ "$1" = "-I" ]; then
