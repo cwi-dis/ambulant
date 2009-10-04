@@ -65,7 +65,8 @@ global_parser_factory::global_parser_factory()
 #elif WITH_XERCES_BUILTIN
 	m_default_factory = new lib::xerces_factory();
 #else
-#error No default XML parser specified
+#warning No default XML parser specified
+    lib::logger::get_logger()->fatal(gettext("No XML parser configured"));
 #endif
 }
 

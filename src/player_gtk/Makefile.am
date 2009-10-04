@@ -11,7 +11,7 @@ endif
 
 if WITH_FFMPEG
 extra_ffmpeg_DEFINES=-DWITH_FFMPEG $(FFMPEG_CFLAGS)
-extra_ffmpeg_LDADD=$(FFMPEG_LIBS)
+extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a $(FFMPEG_LIBS)
 else
 extra_ffmpeg_DEFINES=
 extra_ffmpeg_LDADD=
@@ -26,7 +26,7 @@ extra_gstreamer_DEFINES=
 endif
 
 if WITH_LIVE
-extra_live_LDADD=$(LIVE_LIBS)
+extra_live_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_live.a $(LIVE_LIBS)
 extra_live_DEFINES=$(LIVE_CFLAGS) -DWITH_LIVE
 else
 extra_live_DEFINES=
@@ -35,7 +35,7 @@ endif
 
 if WITH_SDL
 extra_sdl_DEFINES=$(SDL_CFLAGS) -DWITH_SDL
-extra_sdl_LDADD=$(SDL_LIBS)
+extra_sdl_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_sdl.a $(SDL_LIBS)
 else
 extra_sdl_DEFINES=
 extra_sdl_LDADD=
@@ -48,9 +48,8 @@ else
 extra_xerces_DEFINES=
 extra_xerces_LDADD=
 endif
-
 #if USE_NLS
-extra_nls_DEFINES=-DLOCALEDIR= \"$(datadir)/locale \"
+extra_nls_DEFINES=-DLOCALEDIR=\"$(datadir)/locale\"
 #else
 #extra_nls_DEFINES=
 #endif
@@ -111,7 +110,7 @@ AM_LDFLAGS= \
 
 AM_CPPFLAGS = \
 		$(extra_gstreamer_CPPFLAGS) \
-		-DAMBULANT_DATADIR= \"$(pkgdatadir) \" \
+		-DAMBULANT_DATADIR=\"$(pkgdatadir)\" \
 		$(extra_expat_DEFINES) \
 		$(extra_ffmpeg_DEFINES) \
 		$(extra_gstreamer_DEFINES) \
@@ -120,6 +119,7 @@ AM_CPPFLAGS = \
 		$(extra_sdl_DEFINES) \
 		$(extra_xerces_DEFINES) \
 		$(extra_nokia770_DEFINES) \
+		$(gtk_includes) \
 		-I$(top_builddir)/include \
 		-I$(top_srcdir)/include \
 		-I$(top_builddir)/include/ambulant/gui/gtk \

@@ -191,7 +191,9 @@ want_intltool=false
 want_pkg_config=false
 want_gtk_doc=false
 
-configure_files="`find $srcdir -name configure.in -print -or -name configure.in -print`"
+#configure_files="`find $srcdir -name configure.in -print -or -name configure.in -print`"
+configure_files=configure.in
+
 for configure_in in $configure_files; do
     if grep "^A[CM]_PROG_LIBTOOL" $configure_in >/dev/null; then
 	want_libtool=true
@@ -254,12 +256,12 @@ if [ "$DIE" -eq 1 ]; then
   exit 1
 fi
 
-if test -z "$*"; then
-  printerr "**Warning**: I am going to run \`configure' with no arguments."
-  printerr "If you wish to pass any to it, please specify them on the"
-  printerr \`$0\'" command line."
-  printerr
-fi
+##if test -z "$*"; then
+##  printerr "**Warning**: I am going to run \`configure' with no arguments."
+##  printerr "If you wish to pass any to it, please specify them on the"
+##  printerr \`$0\'" command line."
+##  printerr
+##fi
 
 topdir=`pwd`
 for configure_in in $configure_files; do 
@@ -270,7 +272,7 @@ for configure_in in $configure_files; do
     else
 	printbold "Processing $configure_in"
 
-	aclocalinclude="-I m4 -I libltdl/m4 $ACLOCAL_FLAGS"
+	aclocalinclude="$ACLOCAL_FLAGS"
 	printbold "Running $ACLOCAL..."
 	$ACLOCAL $aclocalinclude || exit 1
 
@@ -295,6 +297,11 @@ for configure_in in $configure_files; do
 	    $AUTOHEADER || exit 1
 	fi
 
+	# Fix for an error I don't understand, based on info from
+	# <http://ramblingfoo.blogspot.com/2007/07/required-file-configrpath-not-found.html>
+	
+	touch libltdl/config/config.rpath
+	
 	printbold "Running $AUTOMAKE..."
 	$AUTOMAKE --gnu --add-missing  || exit 1
 
@@ -306,6 +313,8 @@ for configure_in in $configure_files; do
 done
 
 conf_flags="--enable-maintainer-mode --enable-compile-warnings"
+
+NOCONFIGURE=true
 
 if test x$NOCONFIGURE = x; then
     printbold Running $srcdir/configure $conf_flags "$@" ...

@@ -28,6 +28,10 @@
 #include "ambulant/common/renderer_select.h"
 #include "ambulant/smil2/test_attrs.h"
 
+#ifndef CGFLOAT_DEFINED
+typedef float CGFloat;
+#endif
+
 //#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)

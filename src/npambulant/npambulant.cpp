@@ -34,8 +34,6 @@ static LRESULT CALLBACK PluginWinProc(HWND, UINT, WPARAM, LPARAM);
 #define AM_DBG if(0)
 #endif
 
-//#include <ApplicationServices/ApplicationServices.h> // XXXJACK TEMP DEBUG
-
 using namespace ambulant;
 
 NPIdentifier sStartPlayer_id;

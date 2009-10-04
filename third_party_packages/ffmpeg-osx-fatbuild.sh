@@ -22,15 +22,15 @@ CONFIGOPTS="$PREFIX --disable-encoders --enable-swscale --enable-gpl --disable-v
 # If you want to build for a different MacOSX version than the current one
 # define SYSROOT and MACOSX_DEPLOYMENT_TARGET
 #
-#SYSROOT=" -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
-#export MACOSX_DEPLOYMENT_TARGET=10.4
+SYSROOT=" -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
+export MACOSX_DEPLOYMENT_TARGET=10.4
 #
 # Set variables here to true to include the ABI
 #
-PPC=false
+PPC=true
 I386=true
 PPC64=false
-X86_64=true
+X86_64=false
 #
 # Set this variable to any of the architectures you are build
 # (used to pick up .pc files)

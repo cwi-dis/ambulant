@@ -7,22 +7,12 @@ toolkit_live_libraries = libambulant_live.la
 libambulant_live_la_SOURCES = \
 	net/rtsp_datasource.cpp \
 	net/rtsp_factory.cpp
-
-live_includes = \
-    -I$(LIVE_ROOT)/BasicUsageEnvironment/include \
-    -I$(LIVE_ROOT)/groupsock/include \
-    -I$(LIVE_ROOT)/liveMedia/include \
-    -I$(LIVE_ROOT)/UsageEnvironment/include
-
-livelibs = \
-    -L$(LIVE_ROOT)/liveMedia/ -lliveMedia \
-    -L$(LIVE_ROOT)/BasicUsageEnvironment/ -lBasicUsageEnvironment \
-    -L$(LIVE_ROOT)/groupsock/ -lgroupsock \
-    -L$(LIVE_ROOT)/UsageEnvironment/ -lUsageEnvironment
+live_includes = $(LIVE_CFLAGS)
+livelibs = $(LIVE_LIBS)
 else
+toolkit_live_libraries =
 live_includes =
 livelibs =
-toolkit_live_libraries =
 endif
 
 
@@ -113,7 +103,7 @@ endif
 
 if WITH_QT
 toolkit_qt_libraries = libambulant_qt.la
-qtincludes = $(LIBQT_INCLUDES)
+qtincludes = $(QT_CFLAGS)
 
 libambulant_qt_la_SOURCES = \
 	gui/qt/qt_renderer.cpp \

@@ -44,6 +44,11 @@
 #endif
 #include <stdarg.h>
 
+#ifndef NSINTEGER_DEFINED
+typedef int NSInteger;
+typedef unsigned int NSUInteger;
+#endif
+
 class nslog_ostream : public ambulant::lib::ostream {
 	bool is_open() const {return true;}
 	void close() {}
@@ -137,11 +142,26 @@ initialize_logger()
     textdomain (PACKAGE);
 #endif
 	ambulant::lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
+	ambulant::lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Macintosh/%s/%s"), __DATE__,
 #ifdef WITH_CG
-	ambulant::lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Macintosh/CoreGraphics"), __DATE__);
+        "CoreGraphics",
 #else
-	ambulant::lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Macintosh/Cocoa"), __DATE__);
+        "Cocoa",
 #endif
+#ifdef __ppc64__
+        "ppc64"
+#elif defined(__ppc__)
+        "ppc"
+#elif defined(__x86_64__)
+        "x86_64"
+#elif defined(__i386__)
+        "i386"
+#elif defined(__armv6__)
+        "armv6"
+#else
+        "unknown-architecture"
+#endif
+    );
 #if ENABLE_NLS
 	ambulant::lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english; user requested %s)"), locale);
 #endif

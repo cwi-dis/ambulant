@@ -64,6 +64,7 @@ For more special case configure options consult "configure --help".
 
 Building for Mac OS X
 ---------------------
+For universal build, make sure you read this whole section.
 
 First make sure you install the third party packages on which Ambulant
 depends, see third_party_packages/readme.txt. Most configure options
@@ -92,6 +93,26 @@ You need about 600MB of free diskspace to do the build. After build and
 install you can remove everything but the resultant application, including
 the ambulant and SDL installations in /usr/local, and the application
 is only a few megabytes.
+
+For MacOSX 10.4 or 10.5, you can build a Universal Binary that will run on
+both PowerPC and Intel macintoshes. To do this, in addition to the steps above,
+you will need to do the following:
+- Carefully read third_party_packages/readme-osx.txt, and make sure you
+  build all needed 3rd party libraries with the 10.4 SDK and ppc/intel support.
+- Run ambulant configure with (at least) the options 
+
+	./configure \
+		--with-universalsdk=/Developer/SDKs/MacOSX10.4u.sdk \
+		--disable-dependency-tracking
+		
+For MacOSX 10.6, you can build a Universal Binary that will run both in 32 bit and
+64 bit mode. To do this, in addition to the steps above, you will need to do
+the following:
+- Carefully read third_party_packages/readme-osx.txt, and make sure you
+  build all needed 3rd party libraries with the 32/64 bit support.
+- Run ambulant configure with (at least) the options 
+
+	./configure --with-macfat --disable-dependency-tracking
 
 Building for Windows
 --------------------

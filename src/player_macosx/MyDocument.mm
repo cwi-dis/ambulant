@@ -29,6 +29,10 @@
 #import "MyAmbulantView.h"
 #import "ambulant/common/preferences.h"
 
+#ifndef CGFLOAT_DEFINED
+typedef float CGFloat;
+#endif
+
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif

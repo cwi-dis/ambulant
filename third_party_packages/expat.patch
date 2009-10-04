@@ -1,0 +1,90 @@
+diff -ruN expat-2.0.1/Makefile.in expat-2.0.1-new/Makefile.in
+--- expat-2.0.1/Makefile.in	2007-05-09 20:38:50.000000000 +0200
++++ expat-2.0.1-new/Makefile.in	2009-10-01 15:09:48.000000000 +0200
+@@ -31,6 +31,7 @@
+ libdir = @libdir@
+ includedir = @includedir@
+ man1dir = @mandir@/man1
++pkgconfigdir = $(libdir)/pkgconfig
+ 
+ top_builddir = .
+ 
+@@ -48,9 +49,9 @@
+ 
+ default:  buildlib xmlwf/xmlwf
+ 
+-buildlib: $(LIBRARY)
++buildlib: $(LIBRARY) expat.pc
+ 
+-all: $(LIBRARY) xmlwf/xmlwf examples/elements examples/outline
++all: $(LIBRARY) expat.pc xmlwf/xmlwf examples/elements examples/outline
+ 
+ clean:
+ 	cd lib && rm -f $(LIBRARY) *.o *.lo && rm -rf .libs _libs
+@@ -65,7 +66,7 @@
+ 
+ distclean: clean
+ 	rm -f expat_config.h config.status config.log config.cache libtool
+-	rm -f Makefile
++	rm -f Makefile expat.pc
+ 
+ extraclean: distclean
+ 	rm -f expat_config.h.in configure
+@@ -80,10 +81,11 @@
+ 	$(LIBTOOL) --mode=install $(INSTALL_PROGRAM) xmlwf/xmlwf $(DESTDIR)$(bindir)/xmlwf
+ 	$(INSTALL_DATA) $(MANFILE) $(DESTDIR)$(man1dir)
+ 
+-installlib: $(LIBRARY) $(APIHEADER)
+-	$(mkinstalldirs) $(DESTDIR)$(libdir) $(DESTDIR)$(includedir)
++installlib: $(LIBRARY) $(APIHEADER) expat.pc
++	$(mkinstalldirs) $(DESTDIR)$(libdir) $(DESTDIR)$(includedir) $(DESTDIR)/$(pkgconfigdir)
+ 	$(LIBTOOL) --mode=install $(INSTALL) $(LIBRARY) $(DESTDIR)$(libdir)/$(LIBRARY)
+ 	for FN in $(APIHEADER) ; do $(INSTALL_DATA) $$FN $(DESTDIR)$(includedir) ; done
++	$(INSTALL_DATA) expat.pc $(DESTDIR)$(pkgconfigdir)/expat.pc
+ 
+ uninstall: uninstalllib
+ 	$(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(bindir)/xmlwf
+@@ -93,6 +95,7 @@
+ 	$(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(libdir)/$(LIBRARY)
+ 	rm -f $(DESTDIR)$(includedir)/expat.h
+ 	rm -f $(DESTDIR)$(includedir)/expat_external.h
++	rm -f $(DESTDIR)$(pkgconfigdir)/expat.pc
+ 
+ # for VPATH builds (invoked by configure)
+ mkdir-init:
+@@ -125,6 +128,9 @@
+ $(LIBRARY): $(LIB_OBJS)
+ 	$(LINK_LIB) $(LIB_OBJS)
+ 
++expat.pc: $(top_builddir)/config.status
++	cd $(top_builddir) && $(SHELL) ./config.status $@
++
+ lib/xmlparse.lo: lib/xmlparse.c lib/expat.h lib/xmlrole.h lib/xmltok.h \
+ 	$(top_builddir)/expat_config.h lib/expat_external.h lib/internal.h
+ 
+diff -ruN expat-2.0.1/configure.in expat-2.0.1-new/configure.in
+--- expat-2.0.1/configure.in	2007-05-09 15:26:48.000000000 +0200
++++ expat-2.0.1-new/configure.in	2009-10-01 15:07:11.000000000 +0200
+@@ -144,7 +144,7 @@
+ AC_DEFINE([XML_CONTEXT_BYTES], 1024,
+           [Define to specify how much context to retain around the current parse point.])
+ 
+-AC_CONFIG_FILES(Makefile)
++AC_CONFIG_FILES([Makefile expat.pc])
+ AC_OUTPUT
+ 
+ abs_srcdir="`cd $srcdir && pwd`"
+diff -ruN expat-2.0.1/expat.pc.in expat-2.0.1-new/expat.pc.in
+--- expat-2.0.1/expat.pc.in	1970-01-01 01:00:00.000000000 +0100
++++ expat-2.0.1-new/expat.pc.in	2009-10-01 15:06:22.000000000 +0200
+@@ -0,0 +1,10 @@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
++
++Name: expat
++Version: @PACKAGE_VERSION@
++Description: expat XML parser
++Libs: -L${libdir} -lexpat
++Cflags: -I${includedir}

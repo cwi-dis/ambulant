@@ -19,7 +19,7 @@ endif
 # The XERCES plugin
 if WITH_XERCES_PLUGIN
 xerces_plugin = libamplugin_xerces.la
-xerces_includes = $(XERCES_INCLUDES)
+xerces_includes = $(XERCES_CFLAGS)
 libamplugin_xerces_la_LDFLAGS = -module $(XERCES_LIBS)
 libamplugin_xerces_la_SOURCES = xercesplugin.cpp \
 		$(top_builddir)/src/libambulant/lib/xerces_parser.cpp
