@@ -68,7 +68,7 @@
 				OutputFile="../../bin/win32/libampluginD_state_xpath.dll"
 				LinkIncremental="0"
 				AdditionalLibraryDirectories="..\..\lib\win32"
-				IgnoreDefaultLibraryNames="libcmtd.lib"
+				IgnoreDefaultLibraryNames="libcmt.lib;libcpmt.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/plugin.pdb"
 				GenerateMapFile="true"

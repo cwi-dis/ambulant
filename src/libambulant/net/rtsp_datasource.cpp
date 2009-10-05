@@ -39,6 +39,9 @@ using namespace net;
 #define DESIRED_AUDIO_BUF_SIZE 100000
 #define DESIRED_VIDEO_BUF_SIZE 2000000
 
+// VC9 doesn't seem to define this, how about other compilers?
+inline long long abs(long long i) { return i < 0 ? -i : i; }
+
 // Helper routines: callback functions passed to live555 that will call back to our methods.
 static void 
 after_reading_audio_stub(void* data, unsigned sz, unsigned truncated, struct timeval pts, unsigned duration)

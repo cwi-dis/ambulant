@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(xerces_dir)\src&quot;;..\..\include"
-				PreprocessorDefinitions="$(global_ambulant_defines);WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS"
+				PreprocessorDefinitions="$(global_ambulant_defines);WIN32;_DEBUG;_WINDOWS;_USRDLL;WITH_XERCES;PLUGIN_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -124,7 +124,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="&quot;$(xerces_dir)\src&quot;;..\..\include"
-				PreprocessorDefinitions="$(global_ambulant_defines);WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS"
+				PreprocessorDefinitions="$(global_ambulant_defines);WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;WITH_XERCES"
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="false"
 				UsePrecompiledHeader="0"

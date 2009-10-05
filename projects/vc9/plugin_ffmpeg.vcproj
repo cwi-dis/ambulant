@@ -4,6 +4,7 @@
 	Version="9,00"
 	Name="plugin_ffmpeg"
 	ProjectGUID="{EED7FDFC-068B-4035-BF6C-855E9CCC9A3A}"
+	RootNamespace="plugin_ffmpeg"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -64,11 +65,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="SDL.lib avformat.lib avcodec.lib avutil.lib liveMedia.lib BasicUsageEnvironment.lib UsageEnvironment.lib groupsock.lib ws2_32.lib"
+				AdditionalDependencies="SDL.lib avformat.lib avcodec.lib swscale.lib avutil.lib liveMedia.lib BasicUsageEnvironment.lib UsageEnvironment.lib groupsock.lib ws2_32.lib"
 				OutputFile="../../bin/win32/libampluginD_ffmpeg.dll"
 				LinkIncremental="0"
 				AdditionalLibraryDirectories="..\..\lib\win32;&quot;$(DXSDK_DIR)\lib\x86&quot;"
-				IgnoreDefaultLibraryNames="LIBC.lib"
+				IgnoreDefaultLibraryNames="LIBC.lib;libcmt.lib;libcpmt.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/plugin.pdb"
 				GenerateMapFile="true"
@@ -146,7 +147,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="SDL.lib avformat.lib avcodec.lib avutil.lib liveMedia.lib BasicUsageEnvironment.lib UsageEnvironment.lib groupsock.lib ws2_32.lib"
+				AdditionalDependencies="SDL.lib avformat.lib avcodec.lib swscale.lib avutil.lib liveMedia.lib BasicUsageEnvironment.lib UsageEnvironment.lib groupsock.lib ws2_32.lib"
 				OutputFile="../../bin/win32/libamplugin_ffmpeg.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\lib\win32;&quot;$(DXSDK_DIR)\lib\x86&quot;"

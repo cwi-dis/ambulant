@@ -27,19 +27,21 @@ copy %jpeg_dir%\win32\Release\libjpeg.lib %AMB_HOME%\lib\win32\libjpeg.lib
 
 REM Xerces lib, if it exists.
 set XER_BUILD=%xerces_dir%\Build\Win32\VC8\Release
+set XERD_BUILD=%xerces_dir%\Build\Win32\VC8\Debug
 if exist %XER_BUILD% copy %XER_BUILD%\xerces-c_2.lib %AMB_HOME%\lib\win32\xerces-c_2.lib
 if exist %XER_BUILD% copy %XER_BUILD%\xerces-c_2_8.dll %AMB_HOME%\bin\win32\xerces-c_2_8.dll
-if exist %XER_BUILD% copy %XERD_BUILD%\xerces-c_2D.lib %AMB_HOME%\lib\win32\xerces-c_2D.lib
-if exist %XER_BUILD% copy %XERD_BUILD%\xerces-c_2_8D.dll %AMB_HOME%\bin\win32\xerces-c_2_8D.dll
+if exist %XERD_BUILD% copy %XERD_BUILD%\xerces-c_2D.lib %AMB_HOME%\lib\win32\xerces-c_2D.lib
+if exist %XERD_BUILD% copy %XERD_BUILD%\xerces-c_2_8D.dll %AMB_HOME%\bin\win32\xerces-c_2_8D.dll
 
 REM ffmpeg
-copy %ffmpeg_dir%\libavcodec\avcodec-51.dll %AMB_HOME%\bin\win32\avcodec-51.dll
-copy %ffmpeg_dir%\libavcodec\avcodec-51.lib %AMB_HOME%\lib\win32\avcodec.lib
+copy %ffmpeg_dir%\libavcodec\avcodec-52.dll %AMB_HOME%\bin\win32\avcodec-52.dll
+copy %ffmpeg_dir%\libavcodec\avcodec.lib %AMB_HOME%\lib\win32\avcodec.lib
 copy %ffmpeg_dir%\libavformat\avformat-52.dll %AMB_HOME%\bin\win32\avformat-52.dll
-copy %ffmpeg_dir%\libavformat\avformat-52.lib %AMB_HOME%\lib\win32\avformat.lib
-copy %ffmpeg_dir%\libavutil\avutil-49.dll %AMB_HOME%\bin\win32\avutil-49.dll
-copy %ffmpeg_dir%\libavutil\avutil-49.lib %AMB_HOME%\lib\win32\avutil.lib
-
+copy %ffmpeg_dir%\libavformat\avformat.lib %AMB_HOME%\lib\win32\avformat.lib
+copy %ffmpeg_dir%\libavutil\avutil-50.dll %AMB_HOME%\bin\win32\avutil-50.dll
+copy %ffmpeg_dir%\libavutil\avutil.lib %AMB_HOME%\lib\win32\avutil.lib
+copy %ffmpeg_dir%\libswscale\swscale-0.dll %AMB_HOME%\bin\win32\swscale-0.dll
+copy %ffmpeg_dir%\libswscale\swscale.lib %AMB_HOME%\lib\win32\swscale.lib
 REM sdl
 copy %sdl_dir%\lib\SDL.dll %AMB_HOME%\bin\win32\SDL.dll
 copy %sdl_dir%\lib\SDL.lib %AMB_HOME%\lib\win32\SDL.lib
