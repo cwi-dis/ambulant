@@ -1,3 +1,24 @@
+2009-10-05 00:01  jackjansen
+
+	* Various tweaks to exp-jack-easy-configure merge.
+
+2009-10-04 23:15  jackjansen
+
+	* Merging branch exp-jack-easy-configure: rationalize the
+	  configuration process.
+
+	  - m4 and libltdl are gone from the repository, to be re-created
+	  by autogen.sh - configure.in and Makefiles now use uniform naming
+	  convention XXX_LIBS	and XXX_CFLAGS for all packages.  - all
+	  third party packages (except live) are expected to be found
+	  through   pkg_config.  -
+	  third_party_packages/installed/{bin,lib/pkgconfig} are added to
+	  the	respective paths in configure.	- there's a script
+	  third_party_packages/build-third-packages.py which   downloads
+	  and builds all needed packages. All packages are built   for both
+	  dynamic and static use.  - Mac player build now includes phase
+	  where non-Apple dylibs are   copied into the bundle.
+
 2009-10-02 16:58  keesblom
 
 	* Fixed a bug s.t. combined object/embed tag html tags (like
