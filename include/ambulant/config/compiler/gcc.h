@@ -47,8 +47,8 @@
 #  error "Compiler not configured - please reconfigure"
 #endif
 //
-// Jack checked 4.0 with boost configure and it seems fine:
-#if (__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 3))
+// Jack checked 4.4 with boost configure and it seems fine:
+#if (__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 4))
 #  if defined(AMBULANT_ASSERT_CONFIG)
 #     error "Unknown compiler version - please run the configure tests and report the results"
 #  else

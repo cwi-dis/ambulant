@@ -61,7 +61,7 @@ extra_xerces_LDADD=
 endif
 
 #if USE_NLS
-extra_nls_DEFINES=-DLOCALEDIR= \"$(datadir)/locale \"
+extra_nls_DEFINES=-DLOCALEDIR=\"$(datadir)/locale\"
 #else
 #extra_nls_DEFINES=
 #endif

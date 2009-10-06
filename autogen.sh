@@ -16,7 +16,9 @@ REQUIRED_GETTEXT_VERSION=${REQUIRED_GETTEXT_VERSION:-0.16.1}
 REQUIRED_M4MACROS=${REQUIRED_M4MACROS:-}
 FORBIDDEN_M4MACROS=${FORBIDDEN_M4MACROS:-}
 
-ACLOCAL_FLAGS="-I /usr/local/share/aclocal"
+if test -d /usr/local/share/aclocal; then
+    ACLOCAL_FLAGS="-I /usr/local/share/aclocal $ACLOCAL_FLAG"
+fi
 
 
 # some terminal codes ...
