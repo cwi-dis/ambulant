@@ -1,3 +1,12 @@
+2009-10-06 22:16  jackjansen
+
+	* Fixes for building with gcc 4.4 on FC11.
+
+2009-10-06 00:17  jackjansen
+
+	* Building third party packages with VC9 was in a very sorry state.
+	  Partially fixed.
+
 2009-10-05 00:01  jackjansen
 
 	* Various tweaks to exp-jack-easy-configure merge.
