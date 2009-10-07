@@ -36,6 +36,7 @@
 #include <stdint.h>
 
 #ifdef AMBULANT_PLATFORM_UNIX
+#include <stdint.h>
 #include "ambulant/lib/unix/unix_thread.h"
 #define BASE_THREAD lib::unix::thread
 #endif
