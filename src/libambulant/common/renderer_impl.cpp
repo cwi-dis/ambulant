@@ -57,6 +57,7 @@ renderer_playable::renderer_playable(
 	m_clip_end(-1)
 
 {
+    AM_DBG lib::logger::get_logger()->debug("renderer_playable(%s, cookie=%d)", node->get_sig().c_str(), (int)cookie);
 }
 
 renderer_playable::~renderer_playable()

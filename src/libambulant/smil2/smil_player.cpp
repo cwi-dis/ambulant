@@ -567,14 +567,26 @@ void
 smil_player::clicked(int n, double t) {
 	AM_DBG m_logger->debug("smil_player::clicked(%d, %f)", n, t);
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
-	if(it != m_dom2tn->end() && (*it).second->wants_activate_event()) {
+    if (it == m_dom2tn->end()) return;
+    time_node *tn = (*it).second;
+    if(tn->wants_activate_event()) {
 		time_node::value_type root_time = m_root->get_simple_time();
 		m_scheduler->update_horizon(root_time);
 		q_smil_time timestamp(m_root, root_time);
-		async_arg aa((*it).second, timestamp);
+		async_arg aa(tn, timestamp);
 		async_cb *cb = new async_cb(this, &smil_player::clicked_async, aa);
 		schedule_event(cb, 0, ep_high);
 	}
+    // If there was an <a> around the node, this will be represented in the time tree as
+    // the last child of this node. We pass the event along, if needed.
+    tn = tn->last_child();
+    if (tn == NULL || !tn->is_a()) return;
+    time_node::value_type root_time = m_root->get_simple_time();
+    m_scheduler->update_horizon(root_time);
+    q_smil_time timestamp(m_root, root_time);
+    async_arg aa(tn, timestamp);
+    async_cb *cb = new async_cb(this, &smil_player::clicked_async, aa);
+    schedule_event(cb, 0, ep_high);
 }
 
 void
