@@ -106,8 +106,24 @@ version_check() {
 # test if filename.m4 exists relative to command's search path
 # if so, adds filename.m4 to the list of required macros
 require_m4macro() {
-    M4FILE=`which $1 | sed -e "s@bin/$1@share/aclocal/$2@"`
-    [ -e $M4FILE ]  || exit 1
+	set -x
+	M4DIR=`which $1 | sed -e "s@bin/$1@share/aclocal@"`
+    M4FILE="$M4FILE/$2"
+    [ -e $M4FILE ]  || (printerr "***Error***:  $M4FILE not found"; exit 1)
+	
+	NEW_ACLOCAL_FLAG="-I$M4DIR"
+	# look if $NEW_ACLOCAL_FLAG is already present
+	aclocal_flag_found=false
+	for aclocal_flag in $ACLOCAL_FLAGS; do
+		if [ $aclocal_flag = $NEW_ACLOCAL_FLAG ]; then
+			aclocal_flag_found=true
+			break
+		fi
+	done
+	if $aclocal_flag_found; then :
+	else ACLOCAL_FLAGS="$ACLOCAL_FLAGS $NEW_ACLOCAL_FLAG"
+	fi 
+	set +x
     case "$REQUIRED_M4MACROS" in
 	$2\ * | *\ $2\ * | *\ $2) ;;
 	*) REQUIRED_M4MACROS="$REQUIRED_M4MACROS $2" ;;
@@ -241,19 +257,20 @@ ACLOCAL=`echo $AUTOMAKE | sed s/automake/aclocal/`
 if $want_libtool; then
     version_check libtool LIBTOOLIZE 'libtoolize glibtoolize' $REQUIRED_LIBTOOL_VERSION \
         "http://ftp.gnu.org/pub/gnu/libtool/libtool-$REQUIRED_LIBTOOL_VERSION.tar.gz" || DIE=1
-    require_m4macro libtool libtool.m4
+    require_m4macro $LIBTOOLIZE libtool.m4
+	require_m4macro $LIBTOOLIZE ltdl.m4
 fi
 
 if $want_gettext; then
     version_check gettext GETTEXTIZE gettextize $REQUIRED_GETTEXT_VERSION \
         "http://ftp.gnu.org/pub/gnu/gettext/gettext-$REQUIRED_GETTEXT_VERSION.tar.gz" || DIE=1
-    require_m4macro gettextize gettext.m4
+    require_m4macro $GETTEXTIZE gettext.m4
 fi
 
 if $want_pkg_config; then
     version_check pkg-config PKG_CONFIG pkg-config $REQUIRED_PKG_CONFIG_VERSION \
         "'http://www.freedesktop.org/software/pkgconfig/releases/pkgconfig-$REQUIRED_PKG_CONFIG_VERSION.tar.gz" || DIE=1
-    require_m4macro pkg-config pkg.m4
+    require_m4macro $PKG_CONFIG pkg.m4
 fi
 
 
