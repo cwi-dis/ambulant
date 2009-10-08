@@ -44,6 +44,10 @@ typedef lib::no_arg_callback<ffmpeg_resample_datasource> resample_callback;
 
 #define INBUF_SIZE 4096
 
+//
+// Alignment of output buffer for ffmpeg_decode_audio2(). See the comment in avcodec.h
+#define FFMPEG_OUTPUT_ALIGNMENT 16
+
 // Factory functions
 audio_datasource_factory *
 ambulant::net::get_ffmpeg_audio_datasource_factory()
@@ -413,16 +417,20 @@ ffmpeg_decoder_datasource::data_avail()
 			// You must always supply a buffer that is AVCODEC_MAX_AUDIO_FRAME_SIZE
 			// bytes big!
 			int outsize = AVCODEC_MAX_AUDIO_FRAME_SIZE;
-			uint8_t *outbuf = (uint8_t*) m_buffer.get_write_ptr(outsize);
+			uint8_t *outbuf = (uint8_t*) m_buffer.get_write_ptr(outsize+FFMPEG_OUTPUT_ALIGNMENT-1);
 			if (outbuf) {
 				if(inbuf) {
 					// Don't feed too much data to the decoder, it doesn't like to do lists ;-)
 					int cursz = sz;
 					if (cursz > AVCODEC_MAX_AUDIO_FRAME_SIZE/2) cursz = AVCODEC_MAX_AUDIO_FRAME_SIZE/2;
-		
-					AM_DBG lib::logger::get_logger()->debug("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, cursz);
-                    int decoded = avcodec_decode_audio2(m_con, (short*) outbuf, &outsize, inbuf, cursz);
-
+					// avcodec_decode_audio2 may require the output buffer to be aligned on a 16-byte boundary.
+					// So we request 15 bytes more, pass an aligned pointer, and copy down if needed.
+					short *ffmpeg_outbuf = (short *)(((size_t)outbuf+FFMPEG_OUTPUT_ALIGNMENT-1) & ~(FFMPEG_OUTPUT_ALIGNMENT-1));
+					/*AM_DBG*/ lib::logger::get_logger()->debug("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, cursz);
+                    int decoded = avcodec_decode_audio2(m_con, ffmpeg_outbuf, &outsize, inbuf, cursz);
+#if FFMPEG_OUTPUT_ALIGNMENT-1
+					if ((uint8_t *)ffmpeg_outbuf != outbuf) memcpy(outbuf, ffmpeg_outbuf, outsize);
+#endif
 					///// Feeding the successive block of one rtsp mp3 packet to ffmpeg to decode, 
 					///// since ffmpeg can only decode the limited length of around 522(522 or 523 
 					///// in the case of using testOnDemandRTSPServer as the RTSP server) bytes data
