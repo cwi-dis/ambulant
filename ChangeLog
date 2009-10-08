@@ -1,3 +1,7 @@
+2009-10-07 15:50  keesblom
+
+	* Added fix provided for Fedora 12 in #2860949
+
 2009-10-06 22:16  jackjansen
 
 	* Fixes for building with gcc 4.4 on FC11.
