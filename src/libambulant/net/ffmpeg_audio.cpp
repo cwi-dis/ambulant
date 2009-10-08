@@ -426,7 +426,7 @@ ffmpeg_decoder_datasource::data_avail()
 					// avcodec_decode_audio2 may require the output buffer to be aligned on a 16-byte boundary.
 					// So we request 15 bytes more, pass an aligned pointer, and copy down if needed.
 					short *ffmpeg_outbuf = (short *)(((size_t)outbuf+FFMPEG_OUTPUT_ALIGNMENT-1) & ~(FFMPEG_OUTPUT_ALIGNMENT-1));
-					/*AM_DBG*/ lib::logger::get_logger()->debug("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, cursz);
+					AM_DBG lib::logger::get_logger()->debug("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, cursz);
                     int decoded = avcodec_decode_audio2(m_con, ffmpeg_outbuf, &outsize, inbuf, cursz);
 #if FFMPEG_OUTPUT_ALIGNMENT-1
 					if ((uint8_t *)ffmpeg_outbuf != outbuf) memcpy(outbuf, ffmpeg_outbuf, outsize);
