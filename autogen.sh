@@ -106,7 +106,7 @@ version_check() {
 # test if filename.m4 exists relative to command's search path
 # if so, adds filename.m4 to the list of required macros
 require_m4macro() {
-    M4FILE=`which $1 | sed -e "s@bin/gettextize@share/aclocal/$2@"`
+    M4FILE=`which $1 | sed -e "s@bin/$1@share/aclocal/$2@"`
     [ -e $M4FILE ]  || exit 1
     case "$REQUIRED_M4MACROS" in
 	$2\ * | *\ $2\ * | *\ $2) ;;
