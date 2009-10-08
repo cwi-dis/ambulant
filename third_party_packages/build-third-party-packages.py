@@ -103,7 +103,18 @@ def appendPath(varname, value):
 		oldlist.append(value)
 	os.putenv(varname, ':'.join(oldlist))
 	
-AMBULANT_DIR="%s/src/ambulant" % os.getenv("HOME")
+#AMBULANT_DIR="%s/src/ambulant" % os.getenv("HOME")
+# Locate ambulant base directory
+dir=os.getcwd()
+while dir != '/':
+	dir = os.path.dirname(dir)
+	if os.path.exists(os.path.join(dir, 'configure.in')):
+		break
+if dir == '/':
+	print 'ERROR: cannot find Ambulant toplevel directory'
+	sys.exit(1)
+print '+ Ambulant toplevel directory:', dir
+AMBULANT_DIR=dir
 COMMON_INSTALLDIR=os.path.join(os.getcwd(), "installed")
 
 MAC104_COMMON_CFLAGS="-arch i386 -arch ppc"
