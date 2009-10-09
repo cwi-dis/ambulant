@@ -646,9 +646,13 @@ smiltext_engine::set_rate(unsigned int new_rate)
 // Return the simple duration of a <smilText/> element
 int 
 smiltext_engine::get_dur() {
-	// were is simple duration to be found ?
-	int dur = atoi( m_node->get_attribute("dur"));
- 	return dur; 
+	// XXXJACK: this is incorrect: dur is not an integer, it is a time (could be float, could
+	// be timecode, whatever).
+	// Also, we should really get this from time_node or time_attrs.
+	const char *durs = m_node->get_attribute("dur");
+	if (durs == NULL) return 0;
+	int dur = atoi(durs);
+	return dur < 0 ? 0 : dur; 
 }
 
 // get the lock for m_runs
@@ -1122,10 +1126,12 @@ AM_DBG lib::logger::get_logger()->debug("smiltext_layout_engine::redraw(0x%x): s
 		if (m_engine.is_auto_rate()) {
 			// now we have all information to compute the rate
 			int dur = m_engine.get_dur();
-			lib::rect smiltext_rect = first_word->m_bounding_box | last_word->m_bounding_box;
-			unsigned int rate = _compute_rate(m_words.begin()->m_run, smiltext_rect.size(), rect, dur);
-			m_engine.set_rate(rate);
-			m_params = m_engine.get_params();
+			if (dur) {
+				lib::rect smiltext_rect = first_word->m_bounding_box | last_word->m_bounding_box;
+				unsigned int rate = _compute_rate(m_words.begin()->m_run, smiltext_rect.size(), rect, dur);
+				m_engine.set_rate(rate);
+				m_params = m_engine.get_params();
+			}
 //*KB*/	lib::logger::get_logger()->debug("smiltext_layout_engine::redraw: dur=%d rate%d", dur, rate);
 		}
 	}
@@ -1156,21 +1162,23 @@ smiltext_layout_engine::_smiltext_disjunct(const lib::rect& r1, const lib::rect&
 
 unsigned int
 smiltext_layout_engine::_compute_rate(const smiltext_run& run, lib::size size, lib::rect r,  unsigned int dur) {
-  /* First find the distance to travel during scroll for various values 
-   * for textConceal and textPlace (w=window height, t=text height)
+	/* First find the distance to travel during scroll for various values 
+	* for textConceal and textPlace (w=window height, t=text height)
 
-  + ---------------------------------------------------+
-  | textConceal |  none    | initial |  final  |  both |
-  |-------------|          |         |         |       |
-  | textPlace   |          |         |         |       |
-  |----------------------------------------------------|
-  |   start     | t>w?t-w:0|    t    |    t    |  w+t  |
-  | ---------------------------------------------------|
-  |   center   |t>w?t-w/2:w/2|  t    | w/2+t   |  w+t  |
-  | ---------------------------------------------------|
-  |   end       |    t     |    t    |  w+t    |  w+t  |
-  + ---------------------------------------------------+
-  */
+	+ ---------------------------------------------------+
+	| textConceal |  none    | initial |  final  |  both |
+	|-------------|          |         |         |       |
+	| textPlace   |          |         |         |       |
+	|----------------------------------------------------|
+	|   start     | t>w?t-w:0|    t    |    t    |  w+t  |
+	| ---------------------------------------------------|
+	|   center   |t>w?t-w/2:w/2|  t    | w/2+t   |  w+t  |
+	| ---------------------------------------------------|
+	|   end       |    t     |    t    |  w+t    |  w+t  |
+	+ ---------------------------------------------------+
+	*/
+	if (dur == 0) return 0;
+
 	unsigned int dst = 0, win = 0, txt = 0;
 	smil2::smiltext_align align = run.m_align;
 	switch (m_params.m_mode) {
