@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="Debug"
-			IntermediateDirectory="Debug"
+			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
+			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			ConfigurationType="0"
 			>
 			<Tool
@@ -38,8 +38,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="Release"
-			IntermediateDirectory="Release"
+			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
+			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			ConfigurationType="0"
 			InheritedPropertySheets=".\Ambulant-win32.vsprops"
 			>
@@ -69,98 +69,50 @@
 			<File
 				RelativePath="..\..\src\pyambulant\ambulantinterface.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\pyambulant\ambulantinterface.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\pyambulant\ambulantmodule.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\pyambulant\ambulantmodule.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\pyambulant\ambulantscan.py"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\pyambulant\ambulantsupport.py"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\pyambulant\ambulantutilities.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\pyambulant\ambulantutilities.h"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\pyambulant\bgenBackSupport.py"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\pyambulant\bgenCxxSupport.py"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\pyambulant\genobjects.py"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\pyambulant\setup.py"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
