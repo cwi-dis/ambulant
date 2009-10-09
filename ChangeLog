@@ -1,3 +1,45 @@
+2009-10-08 22:53  jackjansen
+
+	* <a> anchors didn't work (and probably haven't worked since we
+	  implemented event sensitivity) because they are "obscured" by the
+	  media item they incorporate.
+
+	  In smil_player::clicked(), test for an <a> parent and forward it
+	  the event, if needed.
+
+	  Fixes #2873157.
+
+2009-10-08 17:30  keesblom
+
+	* Added code to extend ACLOCAL_FLAGS, when needed, so that the
+	  script works with libtool-2.2.6 installed in a non-standard
+	  place.
+
+2009-10-08 16:31  keesblom
+
+	* Fixed bug in modified function require_m4macro
+
+2009-10-08 16:22  jackjansen
+
+	* Builds again with ffmpeg 0.5.
+
+2009-10-08 15:55  keesblom
+
+	* Turned off redundant AM_DBG
+
+2009-10-08 14:18  jackjansen
+
+	* avcodec_decode_audio2() output buffer must be 16-byte aligned.
+
+2009-10-08 14:09  keesblom
+
+	* Added a test in require_m4macro to see if a needed file.m4 exists
+	  in a path relative to the corresponding command
+
+2009-10-08 12:25  keesblom
+
+	* Dynmically find AMBULANT_DIR
+
 2009-10-07 15:50  keesblom
 
 	* Added fix provided for Fedora 12 in #2860949
