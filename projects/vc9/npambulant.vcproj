@@ -83,7 +83,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcom.lib ..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcomglue_s.lib ..\..\third_party_packages\xulrunner-sdk\sdk\lib\nspr4.lib ..\..\lib\win32\libexpat.lib ..\..\lib\win32\libjpeg.lib ..\..\lib\win32\libpng.lib ..\..\lib\win32\zlib.lib ..\..\lib\win32\xerces-c_2.lib"
-				OutputFile="C:\Program Files\Mozilla Firefox\plugins\$(ProjectName).dll"
+				OutputFile="C:\Program Files\Mozilla Firefox\plugins\$(ProjectName)_D.dll"
 				LinkIncremental="0"
 				SuppressStartupBanner="false"
 				AdditionalLibraryDirectories="..\..\lib\win32"
@@ -118,7 +118,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy /y .\npambulant.xpt &quot;c:\Program Files\Mozilla Firefox\plugins\npambulant.xpt&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libambulant_shwin32_D.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libampluginD_state_xpath.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libampluginD_ffmpeg.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avcodec-51.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avformat-52.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avutil-49.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\SDL.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\xerces-c_2_8D.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;"
+				CommandLine="copy /y ..\..\bin\win32\libambulant_shwin32_D.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libampluginD_state_xpath.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libampluginD_ffmpeg.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avcodec-52.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avformat-52.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avutil-50.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\swscale-0.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\SDL.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\xerces-c_2_8D.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -217,7 +217,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy /y .\npambulant.xpt &quot;c:\Program Files\Mozilla Firefox\plugins\npambulant.xpt&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libambulant_shwin32.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libamplugin_state_xpath.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libamplugin_ffmpeg.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avcodec-51.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avformat-52.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avutil-49.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\SDL.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\xerces-c_2_8.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;"
+				CommandLine="copy /y ..\..\bin\win32\libambulant_shwin32.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libamplugin_state_xpath.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libamplugin_ffmpeg.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avcodec-52.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avformat-52.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avutil-50.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\swscale-0.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\SDL.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\xerces-c_2_8.dll &quot;c:\Program Files\Mozilla Firefox\plugins\&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -251,6 +251,10 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\npambulant\npambulant.cpp"
+				>
 			</File>
 			<File
 				RelativePath="..\..\src\npambulant\npambulant.def"
@@ -305,52 +309,12 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\src\npambulant\nsScriptablePeer.cpp"
+				RelativePath="..\..\src\npambulant\ScriptablePluginObject.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\src\npambulant\plugin.cpp"
+				RelativePath="..\..\src\npambulant\ScriptablePluginObjectBase.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-					/>
-				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
@@ -358,39 +322,31 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
-				RelativePath="..\..\src\npambulant\npambulant.idl"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Running the XPIDL compiler and linker for $(InputName)"
-						CommandLine="..\..\third_party_packages\xulrunner-sdk\bin\xpidl.exe -m header -I..\..\third_party_packages\xulrunner-sdk\idl &quot;$(InputPath)&quot;&#x0D;&#x0A;..\..\third_party_packages\xulrunner-sdk\bin\xpidl.exe -m typelib -I..\..\third_party_packages\xulrunner-sdk\idl &quot;$(InputPath)&quot;&#x0D;&#x0A;"
-						Outputs="npambulant.h;npambulant.xpt"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Running the XPIDL compiler and linker for $(InputName)"
-						CommandLine="..\..\third_party_packages\xulrunner-sdk\bin\xpidl.exe -m header -I..\..\third_party_packages\xulrunner-sdk\idl &quot;$(InputPath)&quot;&#x0D;&#x0A;"
-						Outputs="npambulant.h;npambulant.xpt"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\npambulant\nsScriptablePeer.h"
+				RelativePath="..\..\src\npambulant\cg_mainloop.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\npambulant\plugin.h"
+				RelativePath="..\..\src\npambulant\ConstructablePluginObject.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\npambulant\npambulant.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\npambulant\npplat.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\npambulant\pluginbase.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\npambulant\resource.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\npambulant\ScriptablePluginObject.h"
 				>
 			</File>
 		</Filter>
