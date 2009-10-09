@@ -47,6 +47,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pyambulant", "pyambulant.vc
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785} = {DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AmbulantActiveX", "ieambulant.vcproj", "{CA6DD7C2-8A6D-4D13-91E8-D60289AAED9E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785} = {DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -151,6 +156,18 @@ Global
 		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.ReleaseShlib|Win32.Build.0 = Release|Win32
 		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.ReleaseStatic|Win32.ActiveCfg = Release|Win32
 		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.ReleaseStatic|Win32.Build.0 = Release|Win32
+		{CA6DD7C2-8A6D-4D13-91E8-D60289AAED9E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CA6DD7C2-8A6D-4D13-91E8-D60289AAED9E}.Debug|Win32.Build.0 = Debug|Win32
+		{CA6DD7C2-8A6D-4D13-91E8-D60289AAED9E}.DebugShlib|Win32.ActiveCfg = Debug|Win32
+		{CA6DD7C2-8A6D-4D13-91E8-D60289AAED9E}.DebugShlib|Win32.Build.0 = Debug|Win32
+		{CA6DD7C2-8A6D-4D13-91E8-D60289AAED9E}.DebugStatic|Win32.ActiveCfg = Debug|Win32
+		{CA6DD7C2-8A6D-4D13-91E8-D60289AAED9E}.DebugStatic|Win32.Build.0 = Debug|Win32
+		{CA6DD7C2-8A6D-4D13-91E8-D60289AAED9E}.Release|Win32.ActiveCfg = Release|Win32
+		{CA6DD7C2-8A6D-4D13-91E8-D60289AAED9E}.Release|Win32.Build.0 = Release|Win32
+		{CA6DD7C2-8A6D-4D13-91E8-D60289AAED9E}.ReleaseShlib|Win32.ActiveCfg = Release|Win32
+		{CA6DD7C2-8A6D-4D13-91E8-D60289AAED9E}.ReleaseShlib|Win32.Build.0 = Release|Win32
+		{CA6DD7C2-8A6D-4D13-91E8-D60289AAED9E}.ReleaseStatic|Win32.ActiveCfg = Release|Win32
+		{CA6DD7C2-8A6D-4D13-91E8-D60289AAED9E}.ReleaseStatic|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
