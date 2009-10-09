@@ -149,7 +149,10 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
+				TypeLibraryName="$(IntDir)\$(ProjectName).tlb"
 				OutputDirectory="$(IntDir)"
+				HeaderFileName="$(IntDir)\$(InputName)_h.h"
+				DLLDataFileName="$(IntDir)\dlldata.c"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
@@ -264,9 +267,9 @@
 					<Tool
 						Name="VCMIDLTool"
 						GenerateStublessProxies="true"
-						TypeLibraryName="$(IntDir)\AmbulantActiveX.tlb"
-						HeaderFileName="$(IntDir)\AmbulantActiveX.h"
-						InterfaceIdentifierFileName="$(IntDir)\AmbulantActiveX_i.c"
+						TypeLibraryName="AmbulantActiveX.tlb"
+						HeaderFileName="AmbulantActiveX.h"
+						InterfaceIdentifierFileName="AmbulantActiveX_i.c"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -275,9 +278,10 @@
 					<Tool
 						Name="VCMIDLTool"
 						GenerateStublessProxies="true"
-						TypeLibraryName="$(IntDir)\AmbulantActiveX.tlb"
-						HeaderFileName="$(IntDir)\AmbulantActiveX.h"
-						InterfaceIdentifierFileName="$(IntDir)\AmbulantActiveX_i.c"
+						TypeLibraryName="AmbulantActiveX.tlb"
+						HeaderFileName="AmbulantActiveX.h"
+						DLLDataFileName=""
+						InterfaceIdentifierFileName="AmbulantActiveX_i.c"
 					/>
 				</FileConfiguration>
 			</File>
