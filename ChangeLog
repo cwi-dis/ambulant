@@ -1,3 +1,27 @@
+2009-10-10 01:10  jackjansen
+
+	* Fixed nasty bug in project: the MIDL output files were deposited
+	  in the wrong place.
+
+2009-10-09 17:06  jackjansen
+
+	* Tweaked various projects. This makes release build of ieambulant
+	  work, and reduces clutter in projects/vc9 directory.
+
+2009-10-09 16:53  jackjansen
+
+	* Getting ieambulant to build from within the normal solution.
+	  Works for debug, not yet for release.
+
+2009-10-09 10:57  jackjansen
+
+	* Got npambulant to build  and run in vc9.
+
+2009-10-09 10:15  jackjansen
+
+	* Fix for #2869232: smilText node with textMode=crawl and no
+	  dureation causes crash.
+
 2009-10-08 22:53  jackjansen
 
 	* <a> anchors didn't work (and probably haven't worked since we
