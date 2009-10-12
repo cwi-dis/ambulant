@@ -3,16 +3,57 @@
 	ProjectType="Visual C++" 
 	Version="8.00" 
 	Name="Ambulant third party pathnames">
+<!--
+	Set global_ambulant_defines to the build-time options that influence all
+	products (shared lib, plugins, browser plugins, etc) built.
+	Picked up by many projects inside Ambulant_win32.sln.
+-->
 <UserMacro Name="global_ambulant_defines" Value="WITH_HTML_WIDGET;WITH_PYTHON_PLUGIN;WITH_SMIL30;WITH_SEAMLESS_PLAYBACK;WITH_CLOCK_SYNC;WITH_EXTERNAL_DOM" PerformEnvironmentSet="false"/>
+
+<!--
+	Set the following variables to the locations where you downloaded the various
+	third party libraries. Building Ambulant without these will be disappointing.
+	Picked up by third_party_packages.sln as well as Ambulant_win32.sln.
+-->
 <UserMacro Name="expat_dir" Value="..\..\third_party_packages\expat" PerformEnvironmentSet="true"/>
 <UserMacro Name="jpeg_dir" Value="..\..\third_party_packages\jpeg" PerformEnvironmentSet="true"/>
 <UserMacro Name="lpng_dir" Value="..\..\third_party_packages\lpng128" PerformEnvironmentSet="true"/>
 <UserMacro Name="zlib_dir" Value="..\..\third_party_packages\zlib" PerformEnvironmentSet="true"/>
-<UserMacro Name="xerces_dir" Value="..\..\third_party_packages\xerces-c-src_2_8_0" PerformEnvironmentSet="true"/>
+<!--
+	libxml2 third party library, needed for building plugin_state.
+	You can disable this in the solution, but you will miss SMIL 3.0 State.
+	Picked up by third_party_packages.sln as well as Ambulant_win32.sln.
+-->
 <UserMacro Name="libxml2_dir" Value="..\..\third_party_packages\libxml2-2.7.5" PerformEnvironmentSet="true"/>
+<!--
+	Third party libraries used by plugin_ffmpeg.
+	If you disable this in the solution you will have only DirectShow
+	rendering of audio and video (no mp4, no rtsp, etc).
+	Picked up by third_party_packages.sln as well as Ambulant_win32.sln.
+-->
 <UserMacro Name="sdl_dir" Value="..\..\third_party_packages\SDL-1.2.12" PerformEnvironmentSet="true"/>
 <UserMacro Name="ffmpeg_dir" Value="..\..\third_party_packages\ffmpeg-r20138-win32" PerformEnvironmentSet="true"/>
 <UserMacro Name="live555_dir" Value="..\..\third_party_packages\live" PerformEnvironmentSet="true"/>
+<!--
+	Third party library for plugin_xerces. You can disable this, but
+	Ambulant can no longer do XML validation.
+	Picked up by third_party_packages.sln as well as Ambulant_win32.sln.
+-->
+
+<UserMacro Name="xerces_dir" Value="..\..\third_party_packages\xerces-c-src_2_8_0" PerformEnvironmentSet="true"/>
+<!--
+	The next three are only needed if you want to build the firefox plugin.
+	If you don't have these: disable npambulant and npambulant-installer.
+	Actually, the zip executable is only needed for building the installer.
+-->
 <UserMacro Name="xulrunner_dir" Value="..\..\third_party_packages\xulrunner-sdk" PerformEnvironmentSet="true"/>
+<UserMacro Name="firefox_plugin_dir" Value="C:\Program Files\Mozilla Firefox\plugins\" PerformEnvironmentSet="true"/>
+<UserMacro Name="zip_executable" Value="E:\ufs\jack\bin\zip.exe" PerformEnvironmentSet="true"/>
+<!--
+	The next one is only needed if you want to build pyambulant (the glue
+	that allows you to use ambulant from within Python) or plugin_python
+	(which additionally allows you to write Ambulant plugins in Python).
+	If you don't want these: disable them in Ambulant-win32.sln
+-->
 <UserMacro Name="python_dir" Value="C:\Python26" PerformEnvironmentSet="true"/>
 </VisualStudioPropertySheet>
