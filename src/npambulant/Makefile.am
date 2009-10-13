@@ -7,17 +7,14 @@ NPAMBULANT=libnpambulant.so
 NPAMBULANT_PLUGIN=npambulant.plugin
 MOZILLA_PLUGINS="/Library/Internet Plug-Ins"
 mainloop=cg_mainloop.cpp
-ambulant_ldflags=\
+ambulant_LDADD=\
 	$(ambulantlibdir)/libambulant.a \
-	$(ambulantlibdir)/libambulant_cg.a \
-	$(ambulantlibdir)/libambulant_ffmpeg.a \
-	$(ambulantlibdir)/libambulant_sdl.a \
 	$(EXPAT_LIBS) 
 cgdefines=-DXP_MACOSX
 else
 NPAMBULANT=libnpambulant.so.0.0.0
 MOZILLA_PLUGINS=mozilla/plugins
-ambulant_ldflags=-L$(ambulantlibdir) -lambulant
+ambulant_LDADD=-L$(ambulantlibdir) -lambulant
 mainloop=
 cgdefines=
 endif
@@ -28,93 +25,77 @@ endif
 # Various flags for optional features
 #------------------------------------------------------
 if WITH_GTK
-gtkincludes=-I$(GTK_CFLAGS)
-extra_gtk_cflags=-DWITH_GTK -DMOZ_X11
-extra_gtk_ldflags=../player_gtk/gtk_mainloop.o -lambulant_gtk $(GTK_LIBS)
-#-lambulant_gtk -lgtk -lpango
+extra_gtk_DEFINES=-DWITH_GTK -DMOZ_X11 $(GTK_CFLAGS)
+extra_gtk_LDADD=../player_gtk/gtk_mainloop.o -lambulant_gtk $(GTK_LIBS)
 else
-gtkincludes=
-extra_gtk_cflags=
-extra_gtk_ldflags=
+extra_gtk_DEFINES=
+extra_gtk_LDADD=
 endif
 #------------------------------------------------------
 if WITH_FFMPEG
-extra_ffmpeg_cflags=-DWITH_FFMPEG
+extra_ffmpeg_DEFINES=-DWITH_FFMPEG $(FFMPEG_CFLAGS)
 if WITH_CG
-extra_ffmpeg_ldflags=$(FFMPEG_LIBS)
+extra_ffmpeg_LDADD=-lambulant_ffmpeg $(FFMPEG_LIBS)
 else
-extra_ffmpeg_ldflags=-lambulant_ffmpeg $(FFMPEG_LIBS)
+extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a $(FFMPEG_LIBS)
 endif
 else
-extra_ffmpeg_cflags=
-extra_ffmpeg_ldflags=
+extra_ffmpeg_DEFINES=
+extra_ffmpeg_LDADD=
 endif
 #------------------------------------------------------
 if WITH_LIVE
-extra_live_ldflags=$(top_builddir)/src/libambulant/.libs/libambulant_live.a
-			  -L$(LIVE_ROOT)/liveMedia/ -lliveMedia \
-			  -L$(LIVE_ROOT)/BasicUsageEnvironment/ -lBasicUsageEnvironment  \
-			  -L$(LIVE_ROOT)/groupsock/ -lgroupsock  \
-			  -L$(LIVE_ROOT)/UsageEnvironment/ -lUsageEnvironment
+extra_live_DEFINES=$(LIVE_CFLAGS) -DWITH_LIVE
+extra_live_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_live.a $(LIVE_LIBS)
 else
-livelibs =
-extra_live_ldflags=
-endif # WITH_LIVE
+extra_live_DEFINES=
+extra_live_LDADD =
+endif
 #------------------------------------------------------
 if WITH_SDL
-extra_sdl_cflags="-DWITH_SDL `sdl-config --cflags`"
-sdl_config=`sdl-config --libs`
-if WITH_CG
-extra_sdl_ldflags=$(sdl_config)
+extra_sdl_DEFINES=$(SDL_CFLAGS) -DWITH_SDL
+extra_sdl_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_sdl.a $(SDL_LIBS)
 else
-extra_sdl_ldflags=-lambulant_sdl $(sdl_config)
-endif
-#extra_sdl_ldflags=-lambulant_sdl $(sdl_config) \
-#	-Wl,-framework,Carbon \
-#	-Wl,-framework,IOKit \
-#	-Wl,-framework,OpenGL \
-#	-Wl,-framework,AudioUnit \
-#	-Wl,-framework,AudioToolbox \
-#	-Wl,-framework,QuickTime
-else
-extra_sdl_cflags=
-extra_sdl_ldflags=
+extra_sdl_DEFINES=
+extra_sdl_LDADD=
 endif
 #------------------------------------------------------
 if WITH_XERCES_BUILTIN
-extra_xerces_ldflags=-L$(XERCES_LIBS)
+extra_xerces_DEFINES=$(XERCES_CFLAGS) -DWITH_XERCES_BUILTIN
+extra_xerces_LDADD=$(XERCES_LIBS)
 else
-extra_xerces_ldflags=
-endif # WITH_XERCES_BUILTIN
+extra_xerces_DEFINES=
+extra_xerces_LDADD=
+endif
 #------------------------------------------------------
-#KB hack
-extra_hack1_ldflags=../player_gtk/gtk_mainloop.o
 
-#EXTRA_CFLAGS=$(extra_gtk_cflags)
 # KB temp MOZ_X11
-AM_CXXFLAGS=$(extra_gtk_cflags)
-#EXTRA_CXXFLAGS=$(extra_gtk_cflags)
-#EXTRA_LDFLAGS=$(extra_gtk_ldflags)
+# XXXJACK AM_CXXFLAGS=$(extra_gtk_cflags)
 AM_CPPFLAGS = \
 	$(cgdefines) \
-	$(extra_ffmpeg_cflags) \
-	$(extra_sdl_cflags) \
+	$(extra_gtk_DEFINES)	\
+	$(extra_ffmpeg_DEFINES)	\
+	$(extra_sdl_DEFINES)	\
+	$(extra_xerces_DEFINES)	\
+	$(extra_live_DEFINES)	\
 	-I$(top_builddir)/include \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/include/ambulant/gui \
 	-I$(top_srcdir)/src/player_gtk \
-	$(gtkincludes) \
-	-I$(XULRUNNER_ROOT)/include/xulrunner-sdk-1.9/plugin \
-	-I$(XULRUNNER_ROOT)/include/xulrunner-sdk-1.9/system_wrappers \
-	-I$(XULRUNNER_ROOT)/include/nspr4 \
-	-I$(XULRUNNER_ROOT)/include/xulrunner-sdk-1.9/java  \
-	-I$(XULRUNNER_ROOT)/include/xulrunner-sdk-1.9/xpcom \
-	-I$(XULRUNNER_ROOT)/include/plugin \
-	-I$(XULRUNNER_ROOT)/include/system_wrappers \
-	-I$(XULRUNNER_ROOT)/include/nspr  \
-	-I$(XULRUNNER_ROOT)/include/java  \
-	-I$(XULRUNNER_ROOT)/include/xpcom \
+	-I$(XULRUNNER_ROOT)/sdk/include \
 	$(INCLTDL)
+
+# XXXJACK removed:
+##	-I$(XULRUNNER_ROOT)/include/xulrunner-sdk-1.9/plugin \
+##	-I$(XULRUNNER_ROOT)/include/xulrunner-sdk-1.9/system_wrappers \
+##	-I$(XULRUNNER_ROOT)/include/nspr4 \
+##	-I$(XULRUNNER_ROOT)/include/xulrunner-sdk-1.9/java  \
+##	-I$(XULRUNNER_ROOT)/include/xulrunner-sdk-1.9/xpcom \
+##	-I$(XULRUNNER_ROOT)/include/plugin \
+##	-I$(XULRUNNER_ROOT)/include/system_wrappers \
+##	-I$(XULRUNNER_ROOT)/include/nspr  \
+##	-I$(XULRUNNER_ROOT)/include/java  \
+##	-I$(XULRUNNER_ROOT)/include/xpcom \
 
 # These targets are magic for automake
 
@@ -149,12 +130,12 @@ nodist_libnpambulant_la_INCLUDES=npambulant.h
 libnpambulant_la_LDFLAGS=	\
 	-module -shared		\
 	$(LIBLTDL)		\
-	$(extra_gtk_ldflags)	\
-	$(extra_ffmpeg_ldflags)	\
-	$(extra_sdl_ldflags)	\
-	$(extra_xerces_ldflags)	\
-	$(extra_live_ldflags)	\
-	$(ambulant_ldflags)	\
+	$(extra_gtk_LDADD)	\
+	$(extra_ffmpeg_LDADD)	\
+	$(extra_sdl_LDADD)	\
+	$(extra_xerces_LDADD)	\
+	$(extra_live_LDADD)	\
+	$(ambulant_LDADD)	\
 	-o $(NPAMBULANT)
 
 build-npambulant: $(PLUGIN_FILES)
