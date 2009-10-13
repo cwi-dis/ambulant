@@ -1,3 +1,10 @@
+2009-10-12 23:55  jackjansen
+
+	* - Documented the variables in the vsprops file, and added two for
+	  Firefox installers.  - Added a project npambulant-installer
+	  that creates the XPI file that   should install the plugin
+	  (untested).
+
 2009-10-10 01:10  jackjansen
 
 	* Fixed nasty bug in project: the MIDL output files were deposited
