@@ -221,17 +221,18 @@ npambulant_plugin_dir: .libs/$(NPAMBULANT)
 #	Create directory structure
 	-rm -r npambulant_plugin_dir
 	mkdir npambulant_plugin_dir
-	mkdir npambulant_plugin_dir/npambulant
-	mkdir npambulant_plugin_dir/npambulant/plugins
+	mkdir npambulant_plugin_dir/plugins
+	mkdir npambulant_plugin_dir/plugins/npambulant
+	mkdir npambulant_plugin_dir/plugins/npambulant/plugins
 #	Copy browser plugin
-	cp .libs/$(NPAMBULANT) npambulant_plugin_dir/npambulant.so
+	cp .libs/$(NPAMBULANT) npambulant_plugin_dir/plugins/npambulant.so
 #	Install plugins for ambulant engine
-		pkglibdir=`pwd`/npambulant_plugin_dir/npambulant/plugins; \
+		pkglibdir=`pwd`/npambulant_plugin_dir/plugins/npambulant/plugins; \
 		cd ../plugins; \
 	$(MAKE) $(AM_MAKEFLAGS) pkglibdir=$$pkglibdir install
 #	Hack the plugins
-	-rm npambulant_plugin_dir/npambulant/plugins/*.a
-	for i in npambulant_plugin_dir/npambulant/plugins/*.so; do \
+	-rm npambulant_plugin_dir/plugins/npambulant/plugins/*.a
+	for i in npambulant_plugin_dir/plugins/npambulant/plugins/*.so; do \
 		rm $$i ; \
 		rm $$i.0 ; \
 		mv $$i.0.0.0 $$i.0; \
@@ -239,9 +240,9 @@ npambulant_plugin_dir: .libs/$(NPAMBULANT)
 #	Copy in shared libraries and fix rpath
 	LD_LIBRARY_PATH=$(top_builddir)/src/libambulant/.libs \
 		$(PYTHON) $(srcdir)/internalize_shlibs.py \
-		npambulant_plugin_dir
+		npambulant_plugin_dir/plugins
 #	Check that internalization worked
-	$(PYTHON) $(srcdir)/internalize_shlibs.py -c npambulant_plugin_dir
+	$(PYTHON) $(srcdir)/internalize_shlibs.py -c npambulant_plugin_dir/plugins
 #	Copy manifest file (only used for xpt distributions)
 	cp $(srcdir)/install-linux.rdf npambulant_plugin_dir/install.rdf
 
@@ -252,8 +253,9 @@ install-npambulant:  npambulant_plugin_dir
 			MOZILLA_PLUGINS=~/.$(MOZILLA_PLUGINS);\
 		fi; \
 		$(INSTALL) -d $(MOZILLA_PLUGINS);	\
-		$(INSTALL_PROGRAM) npambulant_plugin_dir/npambulant.so $$MOZILLA_PLUGINS/npambulant.so;	\
-		$(INSTALL) npambulant_plugin_dir/npambulant $$MOZILLA_PLUGINS/npambulant
+		$(INSTALL_PROGRAM) npambulant_plugin_dir/plugins/npambulant.so $$MOZILLA_PLUGINS/npambulant.so;	\
+		(cd  npambulant_plugin_dir/plugins ; tar cf - npambulant  ) | \
+			(cd $$MOZILLA_PLUGINS/plugins ; tar xf -)
 #	We may need the following too:
 #		$(srcdir)/selinux_patch.sh $$MOZILLA_PLUGINS/npambulant.so
 # when selinux is enabled, identify the installed shared library
@@ -265,6 +267,7 @@ endif
 installer: $(INSTALLER_ARCHIVE)
 
 $(INSTALLER_ARCHIVE): npambulant_plugin_dir
+	-rm $(INSTALLER_ARCHIVE)
 	cd npambulant_plugin_dir; \
 		zip -r ../$(INSTALLER_ARCHIVE) *
 #------------------------------------------------------
