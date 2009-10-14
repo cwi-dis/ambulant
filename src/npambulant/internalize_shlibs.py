@@ -41,7 +41,7 @@ LINUX_BUNDLE_DIRS = (
 	'.',
 	None,
 	None,
-	DEFAULT_RPATH
+	DEFAULT_RPATH + ['$ORIGIN', '${ORIGIN}']
 )
 
 # XXX Needs work for iPhone (because of different relative paths)
@@ -69,6 +69,11 @@ class Internalizer:
 		self.norun = False
 		self.verbose = False
 		self.work_done = False
+		
+		self.rpath = DEFAULT_RPATH[:]
+		env_rpath = os.getenv('LD_LIBRARY_PATH')
+		if env_rpath:
+			self.rpath += env_rpath.split(':')
 		
 	def add_standard(self):
 		for dirpath, dirnames, filenames in os.walk(self.run_dir):
@@ -102,7 +107,6 @@ class Internalizer:
 				return
 			self.used[dstname] = True
 		else:
-			self.modify_rpath(src)
 			dstname = None
 		self.todo[src] = dstname
 		
@@ -119,24 +123,24 @@ class Internalizer:
 		libraries, rpath = self.get_libs_rpath(src)
 		must_change = []
 		for lib in libraries:
-			lib = self.find_library(lib, rpath, origin)
-			if not lib:
+			libpath = self.find_library(lib, rpath, origin)
+			if not libpath:
 				print '** Warning: cannot find', lib, 'referenced in', src
-			elif self.must_copy(lib):
-				self.add(lib, copy=True)
+			elif self.must_copy(libpath):
+				self.add(libpath, copy=True)
 				must_change.append(lib)
 		if dst:
 			self.copy(src, dst)
-			self.modify_rpath(dst)
 			self.set_name(dst)
 			src = os.path.join(self.destination_dir, dst)
+		self.modify_rpath(src)
 		for lib in must_change:
 			self.modify_reference(src, lib)
 		
 	def copy(self, src, dst):
 		if '.framework/' in src:
 			print '** Warning: About to copy from framework:', src
-		dstfilename = os.path.join(self.framework_dir, dst)
+		dstfilename = os.path.join(self.destination_dir, dst)
 		if self.verbose:
 			print 'copy', src, dstfilename
 		if not self.norun:
@@ -149,7 +153,24 @@ class Internalizer:
 	def find_library(self, lib, rpath, origin):
 		if os.path.isabs(lib):
 			return lib
-		searchdirs = rpath.split(':') + DEFAULT_RPATH
+		#
+		# The following is not 100% correct. We add every path found to our
+		# global rpath, but it should really be added only to the rpath for
+		# submodules loaded by this module.
+		#
+		if rpath:
+			self.rpath += rpath.split(':')
+		searchdirs = self.rpath
+		for d in searchdirs:
+			if not d: continue
+			if d == '$ORIGIN' or d == '${ORIGIN}':
+				if os.path.exists(os.path.join(origin, lib)):
+					return os.path.join('$ORIGIN', lib)
+				continue
+			trylib = os.path.join(d, lib)
+			if os.path.exists(trylib):
+				return trylib
+		return None
 		
 	def get_libs_rpath(self, src):
 		if 0:
@@ -169,14 +190,11 @@ class Internalizer:
 			rpath = None
 			for line in proc.stdout.readlines():
 				line = line.strip()
-				print '- line', line
 				matches = NEEDED_MATCHER.match(line)
 				if matches:
-					print '-- matches needed', matches.group(1)
 					rv.append(matches.group(1))
 				matches = RPATH_MATCHER.match(line)
 				if matches:
-					print '-- matches rpath', matches.group(1)
 					if rpath:
 						print '* Warning: Multiple RPATH directives in', src
 					rpath = matches.group(1)
@@ -185,7 +203,7 @@ class Internalizer:
 		
 	def set_name(self, dst):
 		if 0:
-			dstfilename = os.path.join(self.framework_dir, dst)
+			dstfilename = os.path.join(self.destination_dir, dst)
 			dstfileid = os.path.join("@loader_path/../Frameworks/", os.path.basename(dst))
 			if self.verbose:
 				print 'setname', dstfilename, dstfileid
@@ -206,7 +224,19 @@ class Internalizer:
 			self.work_done = True
 			
 	def modify_rpath(self, lib):
-		print '** Must modify rpath on', lib
+		if self.verbose:
+			print "chrpath -r '$ORIGIN'", lib
+		if not self.norun:
+			try:
+				proc = subprocess.Popen(['chrpath', '-r', '$ORIGIN', lib])
+			except OSError, arg:
+				print '%s: Cannot execute "chrpath", did you install it?' % sys.argv[0]
+				print '%s: (install through yum/apt/... or google for "chrpath")' % sys.argv[0]
+				sys.exit(1)
+			sts = proc.wait()
+			if sts:
+				print 'Warning: chrpath exit status', sts, 'for', lib
+			
 			
 	def must_copy(self, lib):
 		for prefix in self.safe_prefixes:
