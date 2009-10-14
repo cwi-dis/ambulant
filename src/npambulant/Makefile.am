@@ -1,5 +1,6 @@
 #------------------------------------------------------
 FIREFOX=firefox
+INSTALLER_ARCHIVE=npambulant-$(VERSION)-linux.xpi
 ambulantlibdir=$(top_builddir)/src/libambulant/.libs
 
 if WITH_CG
@@ -21,8 +22,10 @@ endif
 
 
 
+#
+# Various compile/link flags for optional features
+#
 
-# Various flags for optional features
 #------------------------------------------------------
 if WITH_GTK
 extra_gtk_DEFINES=-DWITH_GTK -DMOZ_X11 $(GTK_CFLAGS)
@@ -68,9 +71,9 @@ extra_xerces_DEFINES=
 extra_xerces_LDADD=
 endif
 #------------------------------------------------------
-
-# KB temp MOZ_X11
-# XXXJACK AM_CXXFLAGS=$(extra_gtk_cflags)
+#
+# Bringing all the optional flags together
+#
 AM_CPPFLAGS = \
 	$(cgdefines) \
 	$(extra_gtk_DEFINES)	\
@@ -85,36 +88,6 @@ AM_CPPFLAGS = \
 	-I$(XULRUNNER_ROOT)/sdk/include \
 	$(INCLTDL)
 
-# XXXJACK removed:
-##	-I$(XULRUNNER_ROOT)/include/xulrunner-sdk-1.9/plugin \
-##	-I$(XULRUNNER_ROOT)/include/xulrunner-sdk-1.9/system_wrappers \
-##	-I$(XULRUNNER_ROOT)/include/nspr4 \
-##	-I$(XULRUNNER_ROOT)/include/xulrunner-sdk-1.9/java  \
-##	-I$(XULRUNNER_ROOT)/include/xulrunner-sdk-1.9/xpcom \
-##	-I$(XULRUNNER_ROOT)/include/plugin \
-##	-I$(XULRUNNER_ROOT)/include/system_wrappers \
-##	-I$(XULRUNNER_ROOT)/include/nspr  \
-##	-I$(XULRUNNER_ROOT)/include/java  \
-##	-I$(XULRUNNER_ROOT)/include/xpcom \
-
-# These targets are magic for automake
-
-all-am: build-npambulant
-
-check-am: check-npambulant
-
-install-exec-hook: install-npambulant
-
-uninstall-local: clean-npambulant
-
-# Set these variables to change the way the tests are run
-DEBUGGER=
-#DEBUGGER=gdb --args
-FIREFOXARGS=
-#FIREFOXARGS=-i
-FIREFOXENV=
-
-BUILDLIBDIR=
 lib_LTLIBRARIES = libnpambulant.la
 libnpambulant_la_SOURCES=\
 	np_entry.cpp \
@@ -138,15 +111,64 @@ libnpambulant_la_LDFLAGS=	\
 	$(ambulant_LDADD)	\
 	-o $(NPAMBULANT)
 
-build-npambulant: $(PLUGIN_FILES)
-	AM_LDFLAGS="-o libnpambulant.so"
+#------------------------------------------------------
+#
+# These targets are magic for automake
+#
+all-am: build-npambulant
 
+check-am: check-npambulant
+
+install-exec-hook: install-npambulant
+
+if WITH_CG
+mostlyclean-local:
+	rm -fr .libs *o $(NPAMBULANT) $(NPAMBULANT_PLUGIN)
+
+uninstall-local:
+	-rm -rf $(MOZILLA_PLUGINS)/$(NPAMBULANT_PLUGIN)
+else
+mostlyclean-local:
+	rm -fr .libs *o $(NPAMBULANT) npambulant_plugin_dir
+
+uninstall-local:
+	if [ `id -u` == "0" ]; then MOZILLA_PLUGINS=/usr/lib/$(MOZILLA_PLUGINS); else MOZILLA_PLUGINS=~/.$(MOZILLA_PLUGINS);fi; \
+	rm -fr $$MOZILLA_PLUGINS/npambulant.so $$MOZILLA_PLUGINS/npambulant;
+endif
+
+#
+# To build the shared library we want we should build the libtool library.
+# You know this, and I know this, but "make" doesn't, so we tell it here:
+#
+.libs/$(NPAMBULANT): $(lib_LTLIBRARIES)
+
+#------------------------------------------------------
+#
+# Test, check and debug section.
+# Variables determining how things are run
+#
+
+DEBUGGER=
+#DEBUGGER=gdb --args
+FIREFOXARGS=
+#FIREFOXARGS=-i
+FIREFOXENV=
+
+BUILDLIBDIR=
 check-npambulant:
 	( a=`cd $(ambulantlibdir); pwd` ; \
 	  cd $(srcdir) ; \
 	  LD_LIBRARY_PATH=-L"$$a" $(FIREFOXENV) FIREFOXPATH=$(BUILDLIBDIR) $(DEBUGGER) $(FIREFOX) $(FIREFOXARGS) test/test_npambulant.html ; \
 	)
 
+testplay:
+	cd $(srcdir) ; $(FIREFOXENV) FIREFOXPATH=$(BUILDLIBDIR) $(DEBUGGER) $(FIREFOX) $(FIREFOXARGS) test/test_npambulant.html
+
+#------------------------------------------------------
+#
+# Create the structure that will eventually end up in the Firefox
+# plugins directory.
+#
 if WITH_CG
 $(NPAMBULANT_PLUGIN): .libs/$(NPAMBULANT) $(srcdir)/Info.plist
 	-rm -fr $(NPAMBULANT_PLUGIN)
@@ -177,31 +199,73 @@ $(NPAMBULANT_PLUGIN): .libs/$(NPAMBULANT) $(srcdir)/Info.plist
 install-npambulant: $(NPAMBULANT_PLUGIN)
 	-rm -fr $(MOZILLA_PLUGINS)/$(NPAMBULANT_PLUGIN)
 	cp -R $(NPAMBULANT_PLUGIN) $(MOZILLA_PLUGINS)/$(NPAMBULANT_PLUGIN)
+	mkdir $(NPAMBULANT_PLUGIN)/Contents/MacOS
+	cp .libs/$(NPAMBULANT) $(NPAMBULANT_PLUGIN)/Contents/MacOS/$(NPAMBULANT)
+	
+#	Install ambulant core libraries
+
+#	Install plugins for ambulant engine
+	mkdir $(NPAMBULANT_PLUGIN)/Contents/PlugIns
+	pkglibdir=`pwd`/$(NPAMBULANT_PLUGIN)/Contents/PlugIns; \
+	cd ../plugins; \
+	$(MAKE) $(AM_MAKEFLAGS) pkglibdir=$$pkglibdir install 
+
+#	Install gettext localizations
+	localedir=`pwd`/$(BUILDAPPNAME).app/Contents/Resources/locale; \
+	cd ../../po ; \
+	$(MAKE) $(AM_MAKEFLAGS) localedir=$$localedir install
 	
 else
 
-install-npambulant:  .libs/$(NPAMBULANT)
-	if [ `id -u` == "0" ]; then MOZILLA_PLUGINS=/usr/lib/$(MOZILLA_PLUGINS); else MOZILLA_PLUGINS=~/.$(MOZILLA_PLUGINS);fi; \
-	$(INSTALL) -d $(MOZILLA_PLUGINS);	\
-	$(INSTALL_PROGRAM) .libs/$(NPAMBULANT) $$MOZILLA_PLUGINS/npambulant.so;	\
-	./selinux_patch.sh $$MOZILLA_PLUGINS/npambulant.so
+npambulant_plugin_dir: .libs/$(NPAMBULANT)
+#	Create directory structure
+	-rm -r npambulant_plugin_dir
+	mkdir npambulant_plugin_dir
+	mkdir npambulant_plugin_dir/npambulant
+	mkdir npambulant_plugin_dir/npambulant/plugins
+#	Copy browser plugin
+	cp .libs/$(NPAMBULANT) npambulant_plugin_dir/npambulant.so
+#	Install plugins for ambulant engine
+		pkglibdir=`pwd`/npambulant_plugin_dir/npambulant/plugins; \
+		cd ../plugins; \
+	$(MAKE) $(AM_MAKEFLAGS) pkglibdir=$$pkglibdir install
+#	Hack the plugins
+	-rm npambulant_plugin_dir/npambulant/plugins/*.a
+	for i in npambulant_plugin_dir/npambulant/plugins/*.so; do \
+		rm $$i ; \
+		rm $$i.0 ; \
+		mv $$i.0.0.0 $$i.0; \
+	done
+#	Copy in shared libraries and fix rpath
+	LD_LIBRARY_PATH=$(top_builddir)/src/libambulant/.libs \
+		$(PYTHON) $(srcdir)/internalize_shlibs.py \
+		npambulant_plugin_dir
+#	Check that internalization worked
+	$(PYTHON) $(srcdir)/internalize_shlibs.py -c npambulant_plugin_dir
+#	Copy manifest file (only used for xpt distributions)
+	cp $(srcdir)/install-linux.rdf npambulant_plugin_dir/install.rdf
+
+install-npambulant:  npambulant_plugin_dir
+	if [ `id -u` == "0" ]; then \
+			MOZILLA_PLUGINS=/usr/lib/$(MOZILLA_PLUGINS); \
+		else \
+			MOZILLA_PLUGINS=~/.$(MOZILLA_PLUGINS);\
+		fi; \
+		$(INSTALL) -d $(MOZILLA_PLUGINS);	\
+		$(INSTALL_PROGRAM) npambulant_plugin_dir/npambulant.so $$MOZILLA_PLUGINS/npambulant.so;	\
+		$(INSTALL) npambulant_plugin_dir/npambulant $$MOZILLA_PLUGINS/npambulant
+#	We may need the following too:
+#		$(srcdir)/selinux_patch.sh $$MOZILLA_PLUGINS/npambulant.so
 # when selinux is enabled, identify the installed shared library
 endif
+#------------------------------------------------------
+#
+# Build the .xpi file which can be fed to Firefox to install the plugin
+#
+installer: $(INSTALLER_ARCHIVE)
 
-if WITH_CG
-clean-npambulant:
-	-rm -rf $(NPAMBULANT_PLUGIN)
-	-rm -rf $(MOZILLA_PLUGINS)/$(NPAMBULANT_PLUGIN)
-else
-clean-npambulant:
-	if [ `id -u` == "0" ]; then MOZILLA_PLUGINS=/usr/lib/$(MOZILLA_PLUGINS); else MOZILLA_PLUGINS=~/.$(MOZILLA_PLUGINS);fi; \
-	rm -fr $$MOZILLA_PLUGINS/npambulant.so;
-endif
+$(INSTALLER_ARCHIVE): npambulant_plugin_dir
+	cd npambulant_plugin_dir; \
+		zip -r ../$(INSTALLER_ARCHIVE) *
+#------------------------------------------------------
 
-mostlyclean-local:
-	rm -fr .libs *o $(NPAMBULANT)
-
-# Debug target
-
-testplay:
-	cd $(srcdir) ; $(FIREFOXENV) FIREFOXPATH=$(BUILDLIBDIR) $(DEBUGGER) $(FIREFOX) $(FIREFOXARGS) test/test_npambulant.html

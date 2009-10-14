@@ -3,6 +3,9 @@
 # shared libraries. Copy all of these to the directory,
 # and modify the rpath headers.
 #
+# Note: currently specifically geared towards packaging
+# the Ambulant firefox plugin.
+#
 import sys
 import os
 import shutil
@@ -39,8 +42,8 @@ DEFAULT_RPATH=[
 
 LINUX_BUNDLE_DIRS = (
 	'.',
-	None,
-	None,
+	'npambulant',
+	'npambulant/plugins',
 	DEFAULT_RPATH + ['$ORIGIN', '${ORIGIN}']
 )
 
@@ -119,7 +122,7 @@ class Internalizer:
 		
 	def process(self, src, dst):
 		if self.verbose: print '* process', src, dst
-		origin = os.path.basename(src)
+		origin = os.path.dirname(src)
 		libraries, rpath = self.get_libs_rpath(src)
 		must_change = []
 		for lib in libraries:
@@ -163,8 +166,12 @@ class Internalizer:
 		searchdirs = self.rpath
 		for d in searchdirs:
 			if not d: continue
-			if d == '$ORIGIN' or d == '${ORIGIN}':
-				if os.path.exists(os.path.join(origin, lib)):
+			if d.startswith('$ORIGIN') or d.startswith('${ORIGIN}'):
+				if d.startswith('$ORIGIN'):
+					real_d = origin + d[7:]
+				elif d.startswith('${ORIGIN}'):
+					real_d = orgin + d[9:]
+				if os.path.exists(os.path.join(real_d, lib)):
 					return os.path.join('$ORIGIN', lib)
 				continue
 			trylib = os.path.join(d, lib)
@@ -224,11 +231,16 @@ class Internalizer:
 			self.work_done = True
 			
 	def modify_rpath(self, lib):
+		origin = '$ORIGIN'
+		libdir = os.path.dirname(lib)
+		relpath = os.path.relpath(self.destination_dir, libdir)
+		if relpath and relpath != '.':
+			origin = os.path.join(origin, relpath)
 		if self.verbose:
-			print "chrpath -r '$ORIGIN'", lib
+			print "chrpath -r '%s' %s", (origin, lib)
 		if not self.norun:
 			try:
-				proc = subprocess.Popen(['chrpath', '-r', '$ORIGIN', lib])
+				proc = subprocess.Popen(['chrpath', '-r', origin, lib])
 			except OSError, arg:
 				print '%s: Cannot execute "chrpath", did you install it?' % sys.argv[0]
 				print '%s: (install through yum/apt/... or google for "chrpath")' % sys.argv[0]
@@ -236,6 +248,7 @@ class Internalizer:
 			sts = proc.wait()
 			if sts:
 				print 'Warning: chrpath exit status', sts, 'for', lib
+		# self.work_done = True
 			
 			
 	def must_copy(self, lib):
