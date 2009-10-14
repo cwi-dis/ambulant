@@ -1,3 +1,21 @@
+2009-10-14 00:09  jackjansen
+
+	* Unfinished script to copy shared libraries to plugin dir.
+
+2009-10-13 23:10  jackjansen
+
+	* Now conforms to the new way configure works.
+
+2009-10-13 13:36  jackjansen
+
+	* Firefox plugin installer for Windows works! Two things neeed
+	  fixing: - uuid in install.rdf needs to refer to Firefox - zipfile
+	  cannot have another level of folders, need to have content at
+	  toplevel.
+
+	  install.rdf still needs some work: uninstall doesn't actually
+	  remove things, and icon, etc need work.
+
 2009-10-12 23:55  jackjansen
 
 	* - Documented the variables in the vsprops file, and added two for
