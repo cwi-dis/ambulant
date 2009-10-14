@@ -106,24 +106,26 @@ version_check() {
 # test if filename.m4 exists relative to command's search path
 # if so, adds filename.m4 to the list of required macros
 require_m4macro() {
-	set -x
-	M4DIR=`which $1 | sed -e "s@bin/$1@share/aclocal@"`
-    M4FILE="$M4FILE/$2"
-    [ -e $M4FILE ]  || (printerr "***Error***:  $M4FILE not found"; exit 1)
-	
-	NEW_ACLOCAL_FLAG="-I$M4DIR"
-	# look if $NEW_ACLOCAL_FLAG is already present
-	aclocal_flag_found=false
-	for aclocal_flag in $ACLOCAL_FLAGS; do
-		if [ $aclocal_flag = $NEW_ACLOCAL_FLAG ]; then
-			aclocal_flag_found=true
-			break
-		fi
-	done
-	if $aclocal_flag_found; then :
-	else ACLOCAL_FLAGS="$ACLOCAL_FLAGS $NEW_ACLOCAL_FLAG"
-	fi 
-	set +x
+#   set -x
+    M4DIR=`which $1 | sed -e "s@bin/$1@share/aclocal@"`
+    M4FILE="$M4DIR/$2"
+    if [ ! -e $M4FILE ]  
+	then printerr "***Error***:  $M4FILE not found"
+	exit 1
+    fi
+    NEW_ACLOCAL_FLAG="-I$M4DIR"
+    # look if $NEW_ACLOCAL_FLAG is already present
+    aclocal_flag_found=false
+    for aclocal_flag in $ACLOCAL_FLAGS; do
+	if [ $aclocal_flag = $NEW_ACLOCAL_FLAG ]; then
+		aclocal_flag_found=true
+		break
+	fi
+    done
+    if $aclocal_flag_found; then :
+    else ACLOCAL_FLAGS="$ACLOCAL_FLAGS $NEW_ACLOCAL_FLAG"
+    fi 
+ #  set +x
     case "$REQUIRED_M4MACROS" in
 	$2\ * | *\ $2\ * | *\ $2) ;;
 	*) REQUIRED_M4MACROS="$REQUIRED_M4MACROS $2" ;;

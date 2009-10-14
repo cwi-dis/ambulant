@@ -15,13 +15,11 @@ cgdefines=-DXP_MACOSX
 else
 NPAMBULANT=libnpambulant.so.0.0.0
 MOZILLA_PLUGINS=mozilla/plugins
-ambulant_LDADD=-L$(ambulantlibdir) -lambulant
+ambulant_LDADD=$(ambulantlibdir)/libambulant.a
 mainloop=
 cgdefines=
 endif
-
-
-
+PYTHON=python
 #
 # Various compile/link flags for optional features
 #
@@ -97,7 +95,7 @@ libnpambulant_la_SOURCES=\
 	ScriptablePluginObject.cpp \
 	npambulant.cpp \
 	$(mainloop)
-	
+
 nodist_libnpambulant_la_INCLUDES=npambulant.h
 
 libnpambulant_la_LDFLAGS=	\
@@ -170,6 +168,7 @@ testplay:
 # plugins directory.
 #
 if WITH_CG
+build-npambulant: $(NPAMBULANT_PLUGIN)
 $(NPAMBULANT_PLUGIN): .libs/$(NPAMBULANT) $(srcdir)/Info.plist
 	-rm -fr $(NPAMBULANT_PLUGIN)
 
@@ -177,11 +176,11 @@ $(NPAMBULANT_PLUGIN): .libs/$(NPAMBULANT) $(srcdir)/Info.plist
 	mkdir $(NPAMBULANT_PLUGIN)
 	mkdir $(NPAMBULANT_PLUGIN)/Contents
 	cp $(srcdir)/Info.plist $(NPAMBULANT_PLUGIN)/Contents
-	
+
 #	Install npambulant plugin binary
 	mkdir $(NPAMBULANT_PLUGIN)/Contents/MacOS
 	cp .libs/$(NPAMBULANT) $(NPAMBULANT_PLUGIN)/Contents/MacOS/$(NPAMBULANT)
-	
+
 #	Install ambulant core libraries
 
 #	Install plugins for ambulant engine
@@ -194,14 +193,13 @@ $(NPAMBULANT_PLUGIN): .libs/$(NPAMBULANT) $(srcdir)/Info.plist
 	localedir=`pwd`/$(BUILDAPPNAME).app/Contents/Resources/locale; \
 	cd ../../po ; \
 	$(MAKE) $(AM_MAKEFLAGS) localedir=$$localedir install
-    
 
 install-npambulant: $(NPAMBULANT_PLUGIN)
 	-rm -fr $(MOZILLA_PLUGINS)/$(NPAMBULANT_PLUGIN)
 	cp -R $(NPAMBULANT_PLUGIN) $(MOZILLA_PLUGINS)/$(NPAMBULANT_PLUGIN)
 	mkdir $(NPAMBULANT_PLUGIN)/Contents/MacOS
 	cp .libs/$(NPAMBULANT) $(NPAMBULANT_PLUGIN)/Contents/MacOS/$(NPAMBULANT)
-	
+
 #	Install ambulant core libraries
 
 #	Install plugins for ambulant engine
@@ -214,9 +212,9 @@ install-npambulant: $(NPAMBULANT_PLUGIN)
 	localedir=`pwd`/$(BUILDAPPNAME).app/Contents/Resources/locale; \
 	cd ../../po ; \
 	$(MAKE) $(AM_MAKEFLAGS) localedir=$$localedir install
-	
-else
 
+else
+build-npambulant: npambulant_plugin_dir
 npambulant_plugin_dir: .libs/$(NPAMBULANT)
 #	Create directory structure
 	-rm -r npambulant_plugin_dir
@@ -255,7 +253,7 @@ install-npambulant:  npambulant_plugin_dir
 		$(INSTALL) -d $(MOZILLA_PLUGINS);	\
 		$(INSTALL_PROGRAM) npambulant_plugin_dir/plugins/npambulant.so $$MOZILLA_PLUGINS/npambulant.so;	\
 		(cd  npambulant_plugin_dir/plugins ; tar cf - npambulant  ) | \
-			(cd $$MOZILLA_PLUGINS/plugins ; tar xf -)
+			(cd $$MOZILLA_PLUGINS ; tar xf -)
 #	We may need the following too:
 #		$(srcdir)/selinux_patch.sh $$MOZILLA_PLUGINS/npambulant.so
 # when selinux is enabled, identify the installed shared library

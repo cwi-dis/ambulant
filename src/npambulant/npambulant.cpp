@@ -1,5 +1,5 @@
 #ifdef	XP_WIN32
-#include <cstddef>		   	 // Needed for ptrdiff_t. Is used in GeckoSDK 1.9,
+#include <cstddef>	 // Needed for ptrdiff_t. Is used in GeckoSDK 1.9,
 #ifdef _DEBUG
 #define ptrdiff_t long int // but not defined in Visual C++ 7.1.
 #endif//_DEBUG
@@ -18,7 +18,10 @@
 
 #ifdef	XP_WIN32
 static LRESULT CALLBACK PluginWinProc(HWND, UINT, WPARAM, LPARAM);
-#endif//XP_WIN32
+#else//!XP_WIN32: Linux, Mac
+#include <dlfcn.h>  // for dladdr()
+#include <libgen.h> // for dirname()
+#endif//XP_WIN32: Linux, Mac
 
 #ifdef WITH_GTK
 #include "gtk_mainloop.h"
@@ -50,7 +53,7 @@ NPIdentifier sCreateTextNode_id;
 NPIdentifier sAppendChild_id;
 NPIdentifier sPluginType_id;
 
-char* mimetypes =
+const char* mimetypes =
 "application/smil:.smi:W3C Smil 3.0 Playable Multimedia file;\
 application/smil+xml:.smil:W3C Smil 3.0 Playable Multimedia file;\
 application/x-ambulant-smil:.smil:W3C Smil 3.0 Ambulant Player compatible file;";
@@ -125,33 +128,43 @@ npambulant::~npambulant()
 bool
 npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 {
-	AM_DBG fprintf(stderr, "npambulant::init(0x%x)\n", aWindow);
+        const char* version = ambulant::get_version();
+AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, version);
 	if(aWindow == NULL)
 		return FALSE;
 	// prepare for dynamic linking ffmpeg
-#if 1
 	ambulant::common::preferences *prefs = ambulant::common::preferences::get_preferences();
 	prefs->m_prefer_ffmpeg = true;
-	prefs->m_use_plugins = false;
+	prefs->m_use_plugins = true;
 #ifdef XP_WIN32
 	// for Windows, ffmpeg is only available as plugin
-	prefs->m_use_plugins = true;
 	prefs->m_plugin_dir = lib::win32::get_module_dir()+"\\plugins\\";
 	ambulant::lib::textptr pn_conv(prefs->m_plugin_dir.c_str());
 	SetDllDirectory (pn_conv);
-//#elseif TBD
-#endif         XP_WIN3
-#endif
+#else //!XP_WIN3: Linux, Mac
+	Dl_info p;
+	if (dladdr("main", &p) < 0) {
+	    AM_DBG fprintf(stderr, "npambulant::init_ambulant:  dladdr(\"main\) failed, cannot use ambulant plugins\n");
+	    prefs->m_use_plugins = false;
+	} else {
+	    char* path = strdup(p.dli_fname); // full path of this firefox plugin 
+	    char* ffplugindir = dirname(path);
+	    char* amplugin_path = (char*) malloc(strlen(ffplugindir)+9); // ambulant plugins
+	    sprintf(amplugin_path, "%s/npambulant/plugins", ffplugindir);
+	    prefs->m_plugin_dir = amplugin_path;
+	    free (path);
+	}    
+#endif//!XP_WIN3: Linux, Mac
 	// save the NPWindow for any Ambulant plugins (such as SMIL State)
 	ambulant::common::plugin_engine *pe = ambulant::common::plugin_engine::get_plugin_engine();
 	void *edptr = pe->get_extra_data("npapi_extra_data");
 	if (edptr) {
 		*(NPWindow**)edptr = aWindow;
-		AM_DBG fprintf(stderr, "npambulant::init: setting npapi_extra_data(0x%x) to NPWindow 0x%x\n", edptr, aWindow);
+		AM_DBG fprintf(stderr, "npambulant::init_ambulant: setting npapi_extra_data(0x%x) to NPWindow 0x%x\n", edptr, aWindow);
 	} else {
-		AM_DBG fprintf(stderr, "AmbulantWebKitPlugin: Cannot find npapi_extra_data, cannot communicate NPWindow\n");
+		AM_DBG fprintf(stderr, "npambulant::init_ambulant: Cannot find npapi_extra_data, cannot communicate NPWindow\n");
     }
-#ifdef	MOZ_X11
+#ifdef MOZ_X11
 	NPSetWindowCallbackStruct *ws_info = (NPSetWindowCallbackStruct *)aWindow->ws_info;
 #endif/*MOZ_X11*/
 	long long ll_winid = reinterpret_cast<long long>(aWindow->window);
