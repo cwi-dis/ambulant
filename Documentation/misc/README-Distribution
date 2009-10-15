@@ -99,19 +99,15 @@ Before creating the distribution
   - src/player_mfc/AmbulantPlayer.rc (Dialog IDD_ABOUTBOX)
   - src/player_gtk/AmbulantPlayer.desktop
   - src/webkit_plugin/README
-  - installers/nokia770/AmbulantPlayer.desktop
-  - installers/nokia770/AmbulantPlayerCHINOOK.desktop
-  - installers/nokia770/changelog
-  - installers/nokia770/create_installer
-  - installers/nokia770/debian/files
+  - src/npambulant/install.rdf
   - installers/nsis-win32/setup-ambulant-installer.nsi
   - projects/vc8-wince5-smil3/ambulant-wince5-installer.vddproj
+  - projects/vc9/npambulant-installer.vcproj
   - Documentation/user/developer.html (2 times)
   - Documentation/user-htmlhelp/developer.html (2 times, regenerate winHelp)
 - check the following files for being up-to-date:
   - README
   - INSTALL
-  - Documentation/misc/TIPS-NOKIA770
   - Documentation/misc/README-Distribution (this file)
   - third_party_packages/readme.txt
 - Update the icons in the following files:
@@ -119,7 +115,7 @@ Before creating the distribution
   - src/player_mfc/res/AmbulantPlayerDoc.ico
   - src/player_wince/res/AmbulantPlayer.ico
   - src/player_wince/res/AmbulantPlayerDoc.ico
-  - src/player_macos/cocoambulant.icns
+  - src/player_macos/Ambulant*.icns
 - The sources in src/pyambulant need to be regenerated. Currently this can only
   be done with a Python from cvs, by running "make regenerate-pyambulant".
 - Make sure Documentation/API/{refman,html} are empty: we don't want the
@@ -162,7 +158,7 @@ To create the linux source distribution
 - Make sure you configure with *all* options (--with-xerces --with-live)
   otherwise not all sources will be included
 - Use make distcheck
-- If make distcheck complains about not being able to find expat (or other packages), 
+- XXXWRONG If make distcheck complains about not being able to find expat (or other packages), 
   you have to set the path to the expat library via the environment variable, e.g.:
 	DISTCHECK_CONFIGURE_FLAGS="--with-expat=`pwd`/third_party_packages/expat-unix --with-ffmpeg=`pwd`/third_party_packages/ffmpeg-0.4.8" make distcheck
   (if this still fails, you may try ´sudo make distcheck´)
@@ -196,11 +192,6 @@ Windows desktop also needs:
 Windows CE needs:
 - Welcome from Extras
 
-Zaurus needs:
-- Welcome from Extras
-- README-ZAURUS from Documentation/misc
-- Documentation/user
-
 Creating the MacOSX installer
 =============================
 
@@ -208,12 +199,13 @@ Creating the MacOSX installer
   binaries: ffmpeg, live, sdl, expat, xerces.
   third_party_packages/readme.txt has (terse) instructions on
   how to do this.
-  SDL needs to be installed, the others are used in-place.
 - Create a directory to build in, for example "build-dist".
 - Build the whole source tree, don't forget options for
   enabling xerces, etc. You want to build with Xerces in a plugin,
   live support, no Python support, only fast internal DOM acces,
   10.4 support, etc.
+  
+  XXXWRONG
   Here's the current commands:
 
   export SYSROOT=/Developer/SDKs/MacOSX10.4u.sdk
@@ -240,6 +232,8 @@ Creating the MacOSX installer
   
 Creating the WebKit/Safari plugin
 =================================
+
+  XXXWRONG
 - Make sure the prerequisites are built, as above.
 - Create the directory to build in. this must be called "build-webkitplugin",
   if it's different you have to fix the xcode project, below.
@@ -262,9 +256,16 @@ Creating the WebKit/Safari plugin
 - You will find the plugin in "~/Library/Internet Plugins".
 - Put into a z
 
+Creating the Linux installer
+============================
+
+For this release we will probably not do Linux binary installers,
+but as we have done one before we should write down the procedure here.
+
 Creating the Firefox plugin on Linux
 ====================================
 
+  XXXWRONG
 - download xulrunner-sdk from mozilla.org into third-party-packages
 - as above, configure --with-npambulant [other options]; make;make install
 - TEMP FIX: cd src/npambulant;./link-patch;cp npambulant.so <install-dir, see below>
@@ -273,11 +274,15 @@ Creating the Firefox plugin on Linux
   For root installs, files go into /usr/lib/mozilla/plugins, otherwise
   into ~/.mozilla/plugins
   
-Creating the Windows desktop installer
-======================================
+Creating the Windows desktop/FF/IE installers
+=============================================
 
-Build the player. Make sure you are building a *Release* player,
-not a *Debug* player.
+Build the player. Make sure you are building a *ReleaseShlib* player,
+not a *Debug* or *Release* player.
+If you have downloaded all the required packages, and you are using Visual
+Studio 2008 then building Ambulant-win32.sln will not only build the desktop
+player but also the Firefox plugin, the Firefox plugin installer and the
+IE plugin.
 
 Use the Nullsoft installer. The script is in installers/nsis-win32.
 There are some options at the top of the script, to determine whether
@@ -292,22 +297,6 @@ Build the player. Make sure you are building a *Release* player,
 not a *Debug* player.
 The Visual Studio solution contains a deployment project that builds
 the WM5 installer.
-
-Creating the Zaurus installer
-=============================
-
-To be supplied.
-
-Creating the Nokia 770 installer
-================================
-
-To be supplied.
-
-Creating the Linux installer
-============================
-
-For this release we will probably not do Linux binary installers,
-but as we have done one before we should write down the procedure here.
 
 
 Testing the distributions

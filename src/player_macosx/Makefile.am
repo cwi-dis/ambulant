@@ -5,7 +5,6 @@ EXTRA_DIST=MyAmbulantView.mm MyDocument.mm LogController.mm mainloop.cpp MyAppDe
 	English.lproj Dutch.lproj \
 	Info.plist version.plist \
 	fullcocoambulant.xcodeproj \
-	cocoambulant.icns \
 	Ambulant.icns \
 	AmbulantDocSmil.icns \
 	AmbulantDocGrins.icns \

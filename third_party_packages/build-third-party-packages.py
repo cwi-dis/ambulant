@@ -117,8 +117,8 @@ print '+ Ambulant toplevel directory:', dir
 AMBULANT_DIR=dir
 COMMON_INSTALLDIR=os.path.join(os.getcwd(), "installed")
 
-MAC104_COMMON_CFLAGS="-arch i386 -arch ppc"
-MAC104_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'	" % (COMMON_INSTALLDIR, MAC104_COMMON_CFLAGS)
+MAC104_COMMON_CFLAGS="-arch i386 -arch ppc -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
+MAC104_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s' CC=gcc-4.0 CXX=g++-4.0	" % (COMMON_INSTALLDIR, MAC104_COMMON_CFLAGS)
 
 MAC106_COMMON_CFLAGS="-arch i386 -arch x86_64"
 MAC106_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'	" % (COMMON_INSTALLDIR, MAC106_COMMON_CFLAGS)
@@ -224,7 +224,7 @@ third_party_packages={
 			checkcmd="pkg-config --atleast-version=3.0.0 xerces-c",
 			buildcmd=
 				"cd xerces-c-3.0.1 && "
-				"%s CXXFLAGS='%s' --disable-dependency-tracking && "
+				"%s CXXFLAGS='%s' --disable-dependency-tracking --without-curl && "
 				"make $(MAKEFLAGS) && "
 				"make install" % (MAC104_COMMON_CONFIGURE, MAC104_COMMON_CFLAGS)
 			),
@@ -246,13 +246,29 @@ third_party_packages={
 				"%s/third_party_packages/ffmpeg-osx-fatbuild.sh %s/ffmpeg-0.5 all" % 
 					(AMBULANT_DIR, os.getcwd())
 			),
+##		TPP("SDL",
+##			url="http://www.libsdl.org/release/SDL-1.2.13.tar.gz",
+##			checkcmd="sdl-config",
+##			buildcmd=
+##				"cd SDL-1.2.13 && "
+##				"./configure --prefix='%s' "
+##					"--disable-dependency-tracking "
+##					"--disable-video-x11 "
+##					"CC=gcc-4.0 CXX=g++-4.0 "
+##					"CFLAGS='%s' "
+##					"LDFLAGS='%s' &&"
+##				"make $(MAKEFLAGS) && "
+##				"make install" % (COMMON_INSTALLDIR, MAC104_COMMON_CFLAGS, MAC104_COMMON_CFLAGS)
+##			),
 		TPP("SDL",
 			url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
 			checkcmd="pkg-config --atleast-version=1.3.0 sdl",
 			buildcmd=
 				"cd SDL-1.3.0-* && "
 				"./configure --prefix='%s' "
-					"CFLAGS='%s -framework ForceFeedback' "
+					"--disable-dependency-tracking "
+					"CC=gcc-4.0 CXX=g++-4.0 "
+					"CFLAGS='%s' "
 					"LDFLAGS='%s -framework ForceFeedback' &&"
 				"make $(MAKEFLAGS) && "
 				"make install" % (COMMON_INSTALLDIR, MAC104_COMMON_CFLAGS, MAC104_COMMON_CFLAGS)

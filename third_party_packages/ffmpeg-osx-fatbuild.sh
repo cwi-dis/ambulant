@@ -17,13 +17,14 @@ PREFIX="--prefix=`cd ../installed ; pwd`"
 #
 # Set this to the global options you want to configure ffmpeg with.
 #
-CONFIGOPTS="$PREFIX --disable-encoders --enable-swscale --enable-gpl --disable-vhook --disable-ffserver --disable-ffmpeg --disable-ffplay --enable-static --enable-shared --enable-libfaad --disable-libfaac --extra-cflags=-I/usr/local/include"
+CONFIGOPTS="$PREFIX --disable-encoders --enable-swscale --enable-gpl --disable-vhook --disable-ffserver --disable-ffmpeg --disable-ffplay --enable-static --enable-shared --enable-libfaad --disable-libfaac"
 #
 # If you want to build for a different MacOSX version than the current one
 # define SYSROOT and MACOSX_DEPLOYMENT_TARGET
 #
 SYSROOT=" -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
 export MACOSX_DEPLOYMENT_TARGET=10.4
+CONFIGOPTS="--cc=gcc-4.0  --extra-cflags=-I`cd ../installed/include; pwd` --extra-ldflags=-L`cd ../installed/lib; pwd` "$CONFIGOPTS
 #
 # Set variables here to true to include the ABI
 #
@@ -121,7 +122,7 @@ if $mklinks; then
     ( cd libavformat ; ln -s $srcdir/libavformat/*.h .)
     ( cd libavcodec ; ln -s $srcdir/libavcodec/*.h .)
     ( cd libavutil ; ln -s $srcdir/libavutil/*.h .)
-    ( cd libadevice ; ln -s $srcdir/libavdevice/*.h .)
+    ( cd libavdevice ; ln -s $srcdir/libavdevice/*.h .)
     ( cd libswscale ; ln -s $srcdir/libswscale/*.h .)
 else
     echo $0: skipping mklinks
