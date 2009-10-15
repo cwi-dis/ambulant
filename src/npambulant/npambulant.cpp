@@ -144,7 +144,7 @@ AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, ver
 #else //!XP_WIN3: Linux, Mac
 	Dl_info p;
 	if (dladdr("main", &p) < 0) {
-	    AM_DBG fprintf(stderr, "npambulant::init_ambulant:  dladdr(\"main\) failed, cannot use ambulant plugins\n");
+	    fprintf(stderr, "npambulant::init_ambulant:  dladdr(\"main\") failed, cannot use ambulant plugins\n");
 	    prefs->m_use_plugins = false;
 	} else {
 	    char* path = strdup(p.dli_fname); // full path of this firefox plugin 
