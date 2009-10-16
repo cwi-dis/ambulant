@@ -494,6 +494,20 @@ AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw(0x%x, local_ltr
 		break;
 	}
 	if ( ! m_motion_done ) {
+		if (m_params.m_rate == 0 && m_engine.is_auto_rate()) {
+			// all information to compute the rate is now available
+			unsigned int dur = m_engine.get_dur();
+			if (dur) {
+				smil2::smiltext_runs::const_iterator first = m_engine.begin();
+				smil2::smiltext_runs::const_iterator last =  m_engine.end();
+				last--;
+				lib::size size(400,400); //XXX TBD: find correct spatial paramterers
+				lib::rect rect(lib::point(0,0),lib::size(100,100));
+				unsigned int rate = smil2::smiltext_layout_engine::compute_rate(m_params, (*first).m_align, size, rect, 
+												m_engine.get_dur());
+				m_engine.set_rate(rate);
+			}
+		}
 		m_origin.x = m_start.x;
 		m_origin.y = m_start.y;
 		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
