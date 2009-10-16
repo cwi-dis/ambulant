@@ -154,6 +154,8 @@ AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, ver
 	    prefs->m_plugin_dir = amplugin_path;
 	    free (path);
 	}    
+	prefs->m_use_plugins = false; //XXX turned off, will crash firefox when used
+
 #endif//!XP_WIN3: Linux, Mac
 	// save the NPWindow for any Ambulant plugins (such as SMIL State)
 	ambulant::common::plugin_engine *pe = ambulant::common::plugin_engine::get_plugin_engine();

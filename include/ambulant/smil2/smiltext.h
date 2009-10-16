@@ -344,7 +344,7 @@ class smiltext_layout_word {
 /// A helper class to be used by a renderer which can't do text layout
 class smiltext_layout_engine {
   public:
-  smiltext_layout_engine (const lib::node *n, lib::event_processor *ep, smiltext_layout_provider* provider, smiltext_notification* client, bool process_lf);
+	smiltext_layout_engine (const lib::node *n, lib::event_processor *ep, smiltext_layout_provider* provider, smiltext_notification* client, bool process_lf);
 	/// Start the engine.
 	void start(double t);
 	
@@ -370,7 +370,6 @@ class smiltext_layout_engine {
 	void _get_initial_values(lib::rect rct, smiltext_layout_word* stlw_p, int* x_start_p, int* y_start_p, int* x_dir_p, int* y_dir_p);
 	bool _smiltext_disjunct(const lib::rect& r1, const lib::rect& r2);
 	bool _smiltext_fits(const lib::rect& r1, const lib::rect& r2);
-	unsigned int _compute_rate(const smiltext_run& run, lib::size size, lib::rect r, unsigned int dur);
 
 	lib::critical_section m_lock;
 	smiltext_engine m_engine;
@@ -389,6 +388,9 @@ class smiltext_layout_engine {
 	lib::size m_size; 	     // space needed (for textRate="auto"
 	smiltext_run m_space;
 	std::vector<smiltext_layout_word> m_words;
+  public:
+	static unsigned int compute_rate(const smiltext_params params, const smiltext_align align, const lib::size size, const lib::rect r, const unsigned int dur);
+
 };
 
 
