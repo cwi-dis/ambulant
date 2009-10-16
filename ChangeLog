@@ -1,3 +1,16 @@
+2009-10-16 00:29  jackjansen
+
+	* Fixed typo, and always print error messsage if we can't find our
+	  dir.
+
+2009-10-15 17:08  jackjansen
+
+	* Tweaks.
+
+2009-10-15 16:59  jackjansen
+
+	* Modified location of installer.rdf source.
+
 2009-10-14 17:19  keesblom
 
 	* Many hacks to get ambulant plugins working from npambulant. Does
