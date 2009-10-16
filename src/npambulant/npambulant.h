@@ -53,6 +53,7 @@ typedef int32_t int32;
 typedef int16_t int16;
 typedef void JRIEnv;
 typedef void *jref;
+#define NewNPP_NewProc(x) (x)
 #else
 #include "npupp.h"
 #endif // (NP_VERSION_MAJOR >= 0) && (NP_VERSION_MINOR >= 22)

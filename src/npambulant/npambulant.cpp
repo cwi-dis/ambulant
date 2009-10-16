@@ -58,6 +58,19 @@ const char* mimetypes =
 application/smil+xml:.smil:W3C Smil 3.0 Playable Multimedia file;\
 application/x-ambulant-smil:.smil:W3C Smil 3.0 Ambulant Player compatible file;";
 
+class stderr_ostream : public ambulant::lib::ostream {
+	bool is_open() const {return true;}
+	void close() {}
+	int write(const unsigned char *buffer, int nbytes) {}
+	int write(const char *cstr);
+	void flush() {}
+};
+
+int stderr_ostream::write(const char *cstr)
+{
+	fprintf(stderr, "%s", cstr);
+}
+
 npambulant::npambulant(NPMIMEType mimetype, NPP pNPInstance, PRUint16 mode,
 		       int argc, char* argn[], char* argv[], NPSavedData* data) :
 	m_mimetype(mimetype),
@@ -130,6 +143,11 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 {
         const char* version = ambulant::get_version();
 AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, version);
+	if (getenv("AMBULANT_DEBUG") != 0) {
+		ambulant::lib::logger::get_logger()->set_ostream(new stderr_ostream);
+		ambulant::lib::logger::get_logger()->set_level(ambulant::lib::logger::LEVEL_DEBUG);
+		ambulant::lib::logger::get_logger()->debug("npambulant: DEBUG enabled. Ambulant version: %s\n", version);
+	}
 	if(aWindow == NULL)
 		return FALSE;
 	// prepare for dynamic linking ffmpeg
@@ -166,9 +184,6 @@ AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, ver
 	} else {
 		AM_DBG fprintf(stderr, "npambulant::init_ambulant: Cannot find npapi_extra_data, cannot communicate NPWindow\n");
     }
-#ifdef MOZ_X11
-	NPSetWindowCallbackStruct *ws_info = (NPSetWindowCallbackStruct *)aWindow->ws_info;
-#endif/*MOZ_X11*/
 	long long ll_winid = reinterpret_cast<long long>(aWindow->window);
 	int i_winid = static_cast<int>(ll_winid);
 #ifdef WITH_GTK

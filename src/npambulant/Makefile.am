@@ -1,21 +1,34 @@
 #------------------------------------------------------
+ambulantlibdir=$(top_builddir)/src/libambulant/.libs
+#
+# Define to use static ambulant libraries
+#
+##libambulant_core=$(ambulantlibdir)/libambulant.a
+##libambulant_ffmpeg=$(ambulantlibdir)/libambulant_ffmpeg.a
+##libambulant_live=$(ambulantlibdir)/libambulant_live.a
+##libambulant_sdl=$(ambulantlibdir)/libambulant_sdl.a
+#
+# Or these, to use dynamic libraries
+#
+libambulant_core=-L$(ambulantlibdir) -lambulant
+libambulant_ffmpeg=-L$(ambulantlibdir) -lambulant_ffmpeg
+libambulant_live=-L$(ambulantlibdir) -lambulant_live
+libambulant_sdl=-L$(ambulantlibdir) -lambulant_sdl
+
 FIREFOX=firefox
 INSTALLER_ARCHIVE=npambulant-$(VERSION)-linux.xpi
-ambulantlibdir=$(top_builddir)/src/libambulant/.libs
 
 if WITH_CG
 NPAMBULANT=libnpambulant.so
 NPAMBULANT_PLUGIN=npambulant.plugin
 MOZILLA_PLUGINS="/Library/Internet Plug-Ins"
 mainloop=cg_mainloop.cpp
-ambulant_LDADD=\
-	$(ambulantlibdir)/libambulant.a \
-	$(EXPAT_LIBS) 
+ambulant_LDADD=$(libambulant_core) $(EXPAT_LIBS) 
 cgdefines=-DXP_MACOSX
 else
 NPAMBULANT=libnpambulant.so.0.0.0
 MOZILLA_PLUGINS=mozilla/plugins
-ambulant_LDADD=$(ambulantlibdir)/libambulant.a
+ambulant_LDADD=$(libambulant_core)
 mainloop=
 cgdefines=
 endif
@@ -38,7 +51,7 @@ extra_ffmpeg_DEFINES=-DWITH_FFMPEG $(FFMPEG_CFLAGS)
 if WITH_CG
 extra_ffmpeg_LDADD=-lambulant_ffmpeg $(FFMPEG_LIBS)
 else
-extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a $(FFMPEG_LIBS)
+extra_ffmpeg_LDADD=$(libambulant_ffmpeg) $(FFMPEG_LIBS)
 endif
 else
 extra_ffmpeg_DEFINES=
@@ -47,7 +60,7 @@ endif
 #------------------------------------------------------
 if WITH_LIVE
 extra_live_DEFINES=$(LIVE_CFLAGS) -DWITH_LIVE
-extra_live_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_live.a $(LIVE_LIBS)
+extra_live_LDADD=$(libambulant_live) $(LIVE_LIBS)
 else
 extra_live_DEFINES=
 extra_live_LDADD =
@@ -55,7 +68,7 @@ endif
 #------------------------------------------------------
 if WITH_SDL
 extra_sdl_DEFINES=$(SDL_CFLAGS) -DWITH_SDL
-extra_sdl_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_sdl.a $(SDL_LIBS)
+extra_sdl_LDADD=$(libambulant_sdl) $(SDL_LIBS)
 else
 extra_sdl_DEFINES=
 extra_sdl_LDADD=
@@ -99,7 +112,7 @@ libnpambulant_la_SOURCES=\
 nodist_libnpambulant_la_INCLUDES=npambulant.h
 
 libnpambulant_la_LDFLAGS=	\
-	-module -shared		\
+	-module -shared	-export-dynamic	\
 	$(LIBLTDL)		\
 	$(extra_gtk_LDADD)	\
 	$(extra_ffmpeg_LDADD)	\
