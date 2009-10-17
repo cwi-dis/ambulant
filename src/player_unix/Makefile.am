@@ -1,3 +1,19 @@
+ambulantlibdir=$(top_builddir)/src/libambulant/.libs
+if WITH_AMBULANT_SHARED_LIB
+# If we link with shared libs: use these. Needed for plugin support.
+libambulant_core=-L$(ambulantlibdir) -lambulant
+libambulant_ffmpeg=-L$(ambulantlibdir) -lambulant_ffmpeg
+libambulant_live=-L$(ambulantlibdir) -lambulant_live
+libambulant_sdl=-L$(ambulantlibdir) -lambulant_sdl
+libambulant_qt=-L$(ambulantlibdir) -lambulant_qt
+else
+# Otherwise we link the ambulant libraries statically.
+libambulant_core=$(ambulantlibdir)/libambulant.a
+libambulant_ffmpeg=$(ambulantlibdir)/libambulant_ffmpeg.a
+libambulant_live=$(ambulantlibdir)/libambulant_live.a
+libambulant_sdl=$(ambulantlibdir)/libambulant_sdl.a
+libambulant_qt=$(ambulantlibdir)/libambulant_qt.a
+endif
 qt_gui-moc.cpp: qt_gui.h qt_gui.cpp
 	$(QT_PREFIX)/bin/moc -o $@ $<
 
@@ -30,7 +46,7 @@ endif
 
 if WITH_FFMPEG
 extra_ffmpeg_DEFINES=-DWITH_FFMPEG $(FFMPEG_CFLAGS)
-extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a $(FFMPEG_LIBS)
+extra_ffmpeg_LDADD=$(libambulant_ffmpeg) $(FFMPEG_LIBS)
 else
 extra_ffmpeg_DEFINES=
 extra_ffmpeg_LDADD=
@@ -38,7 +54,7 @@ endif
 
 if WITH_LIVE
 extra_live_DEFINES=$(LIVE_CFLAGS) -DWITH_LIVE
-extra_live_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_live.a $(LIVE_LIBS)
+extra_live_LDADD=$(libambulant_live) $(LIVE_LIBS)
 else
 extra_live_DEFINES=
 extra_live_LDADD =
@@ -46,7 +62,7 @@ endif
 
 if WITH_SDL
 extra_sdl_DEFINES=$(SDL_CFLAGS) -DWITH_SDL
-extra_sdl_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_sdl.a $(SDL_LIBS)
+extra_sdl_LDADD=$(libambulant_sdl) $(SDL_LIBS)
 else
 extra_sdl_DEFINES=
 extra_sdl_LDADD=
@@ -67,13 +83,13 @@ extra_nls_DEFINES=-DLOCALEDIR=\"$(datadir)/locale\"
 #endif
 
 LDADD = \
-	$(top_builddir)/src/libambulant/.libs/libambulant_qt.a \
+	$(libambulant_qt) \
 	$(extra_expat_LDADD) \
 	$(extra_ffmpeg_LDADD) \
 	$(extra_live_LDADD) \
 	$(extra_sdl_LDADD) \
 	$(extra_xerces_LDADD) \
-	$(top_builddir)/src/libambulant/.libs/libambulant.a \
+	$(libambulant_core) \
 	$(QT_LIBS) \
 	$(LIBLTDL)  
 

@@ -947,6 +947,20 @@ AC_SUBST(NPAMBULANT_LIBS)
 AM_CONDITIONAL(WITH_NPAMBULANT, test x$with_npambulant = xtrue)
 AC_MSG_RESULT($with_npambulant)
 
+#
+# If we use both npambulant and plugins, we link the plugins against the
+# core shared library. Otherwise there is no need to do this.
+#
+AC_MSG_CHECKING([whether we should link against core ambulant shared lib (alternative is static)])
+with_ambulant_shared_lib=false
+if $with_npambulant; then
+	if $with_ltdl; then
+		with_ambulant_shared_lib=true
+	fi
+fi
+AM_CONDITIONAL(WITH_AMBULANT_SHARED_LIB, $with_ambulant_shared_lib)
+AC_MSG_RESULT($with_ambulant_shared_lib)
+
 AC_MSG_CHECKING(for --with-webkit-dom)
 AC_ARG_WITH([webkit-dom],
 	AS_HELP_STRING([--with-webkit-dom],[Enable the WebKit DOM plugin (default: disabled)]),
@@ -1196,6 +1210,7 @@ ambulant-$AMBULANT_VERSION will be built with following parameters:
     Build OSX 10.6 universal:       ${with_macfat}
 
     Build with npambulant plugin:   ${with_npambulant}
+    Use shared libs internally:     ${with_ambulant_shared_lib}
      "
 
 if test "x$with_frontend" = "xfalse"; then

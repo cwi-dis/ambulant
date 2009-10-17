@@ -1,5 +1,27 @@
-# See which toolkit-dependent libraries we want to make
+ambulantlibdir=./.libs
+if WITH_AMBULANT_SHARED_LIB
+#
+# If we link with shared libs: use these. Needed for plugin support.
+#
+libambulant_core=-lambulant
+libambulant_ffmpeg=-lambulant_ffmpeg
+libambulant_live=-lambulant_live
+libambulant_sdl=-lambulant_sdl
+libambulant_gtk=-lambulant_gtk
+else
+#
+# Otherwise we link the ambulant libraries statically, and we
+# do not include these here (the final executable will
+# link with them).
+#
+libambulant_core=
+libambulant_ffmpeg=
+libambulant_live=
+libambulant_sdl=
+libambulant_gtk=
+endif
 
+# See which toolkit-dependent libraries we want to make
 
 
 if WITH_LIVE 
@@ -8,29 +30,29 @@ libambulant_live_la_SOURCES = \
 	net/rtsp_datasource.cpp \
 	net/rtsp_factory.cpp
 live_includes = $(LIVE_CFLAGS)
-livelibs = $(LIVE_LIBS)
+libambulant_live_la_LDFLAGS=$(LIVE_LIBS) $(libambulant_ffmpeg) $(libambulant_core) 
 else
 toolkit_live_libraries =
 live_includes =
-livelibs =
 endif
-
 
 
 if WITH_EXPAT
 expat_parser_source = lib/expat_parser.cpp
-expatlibs = $(EXPAT_LIBS)
+expat_core_libs = $(EXPAT_LIBS)
 else
 expat_parser_source = 
-expatlibs =
+expat_core_libs =
 endif
 
 if WITH_XERCES_BUILTIN
 xerces_parser_source = lib/xerces_parser.cpp
 xerces_includes = $(XERCES_INCLUDES)
+xerces_core_libs = $(XERCES_LIBS)
 else
 xerces_parser_source = 
 xerces_includes =
+xerces_core_libs = 
 endif
 
 if WITH_COCOA
@@ -66,13 +88,7 @@ libambulant_cg_la_SOURCES = \
 	gui/cg/cg_renderer.m \
 	gui/cg/cg_text.m \
 	gui/cg/cg_dsvideo.m
-#	gui/cg/cg_html.m
-#	gui/cg/cg_ink.m
-#	gui/cg/cg_smiltext.m
-#	gui/cg/cg_transition.m
-#	gui/cg/cg_audio.m
-#	gui/cg/cg_video.m
-#	gui/cg/atsui_text.m # No longer works (if it ever did...)
+libambulant_cg_la_LDFLAGS=$(libambulant_core)
 else
 toolkit_cg_libraries =
 platlibs =
@@ -92,6 +108,7 @@ libambulant_gtk_la_SOURCES = \
 	gui/gtk/gtk_util.cpp \
 	gui/gtk/gtk_video_renderer.cpp \
 	gui/gtk/gtk_factory.cpp
+libambulant_gtk_la_LDFLAGS=$(libambulant_live) $(libambulant_ffmpeg) $(libambulant_core) $(GTK_LIBS)
 
 else
 gtkincludes=
@@ -115,6 +132,7 @@ libambulant_qt_la_SOURCES = \
 	gui/qt/qt_util.cpp \
 	gui/qt/qt_video_renderer.cpp \
 	gui/qt/qt_factory.cpp
+libambulant_qt_la_LDFLAGS=$(libambulant_live) $(libambulant_ffmpeg) $(libambulant_core) $(QT_LIBS)
 
 else
 qtincludes=
@@ -129,7 +147,7 @@ endif
 
 if WITH_SDL
 toolkit_sdl_libraries = libambulant_sdl.la
-libambulant_sdl_la_LDFLAGS =  $(SDL_LIBS)
+libambulant_sdl_la_LDFLAGS =  $(SDL_LIBS) $(libambulant_core)
 sdlincludes = -DWITH_SDL $(SDL_CFLAGS)
 libambulant_sdl_la_SOURCES = \
     gui/SDL/sdl.cpp \
@@ -142,7 +160,7 @@ endif
 if WITH_FFMPEG
 toolkit_ffmpeg_libraries = libambulant_ffmpeg.la
 
-libambulant_ffmpeg_la_LDFLAGS = $(FFMPEG_LIBS)
+libambulant_ffmpeg_la_LDFLAGS = $(FFMPEG_LIBS) $(libambulant_core)
 
 ffmpegincludes = -DWITH_FFMPEG -DWITH_FFMPEG_AVFORMAT $(FFMPEG_CFLAGS)
 
@@ -160,7 +178,7 @@ endif
 if WITH_GSTREAMER
 toolkit_gstreamer_libraries = libambulant_gstreamer.la
 
-libambulant_gstreamer_la_LDFLAGS = -lgstreamer-0.10
+libambulant_gstreamer_la_LDFLAGS = -lgstreamer-0.10 $(libambulant_core)
 gstreamer_includes = \
     -DWITH_GSTREAMER \
     -I/usr/include/gstreamer-0.10 \
@@ -217,8 +235,8 @@ lib_LTLIBRARIES = \
 
 libambulant_la_LDFLAGS= \
 	-export-dynamic $(LIBLTDL) \
-	$(expatlibs) \
-	$(livelibs) \
+	$(expat_core_libs) \
+	$(xerces_core_libs) \
 	$(platlibs)
 
 libambulant_la_SOURCES = \

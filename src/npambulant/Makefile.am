@@ -1,19 +1,19 @@
 #------------------------------------------------------
 ambulantlibdir=$(top_builddir)/src/libambulant/.libs
-#
-# Define to use static ambulant libraries
-#
-##libambulant_core=$(ambulantlibdir)/libambulant.a
-##libambulant_ffmpeg=$(ambulantlibdir)/libambulant_ffmpeg.a
-##libambulant_live=$(ambulantlibdir)/libambulant_live.a
-##libambulant_sdl=$(ambulantlibdir)/libambulant_sdl.a
-#
-# Or these, to use dynamic libraries
-#
+
+if WITH_AMBULANT_SHARED_LIB
+# If we link with shared libs: use these. Needed for plugin support.
 libambulant_core=-L$(ambulantlibdir) -lambulant
 libambulant_ffmpeg=-L$(ambulantlibdir) -lambulant_ffmpeg
 libambulant_live=-L$(ambulantlibdir) -lambulant_live
 libambulant_sdl=-L$(ambulantlibdir) -lambulant_sdl
+else
+# Otherwise we link the ambulant libraries statically.
+libambulant_core=$(ambulantlibdir)/libambulant.a
+libambulant_ffmpeg=$(ambulantlibdir)/libambulant_ffmpeg.a
+libambulant_live=$(ambulantlibdir)/libambulant_live.a
+libambulant_sdl=$(ambulantlibdir)/libambulant_sdl.a
+endif
 
 FIREFOX=firefox
 INSTALLER_ARCHIVE=npambulant-$(VERSION)-linux.xpi
@@ -240,14 +240,15 @@ npambulant_plugin_dir: .libs/$(NPAMBULANT)
 #	Install plugins for ambulant engine
 		pkglibdir=`pwd`/npambulant_plugin_dir/plugins/npambulant/plugins; \
 		cd ../plugins; \
-	$(MAKE) $(AM_MAKEFLAGS) pkglibdir=$$pkglibdir install
+		cp .libs/*.{so.0,la} $$pkglibdir
+##	$(MAKE) $(AM_MAKEFLAGS) pkglibdir=$$pkglibdir install
 #	Hack the plugins
-	-rm npambulant_plugin_dir/plugins/npambulant/plugins/*.a
-	for i in npambulant_plugin_dir/plugins/npambulant/plugins/*.so; do \
-		rm $$i ; \
-		rm $$i.0 ; \
-		mv $$i.0.0.0 $$i.0; \
-	done
+##	-rm npambulant_plugin_dir/plugins/npambulant/plugins/*.a
+##	for i in npambulant_plugin_dir/plugins/npambulant/plugins/*.so; do \
+##		rm $$i ; \
+##		rm $$i.0 ; \
+##		mv $$i.0.0.0 $$i.0; \
+##	done
 #	Copy in shared libraries and fix rpath
 	LD_LIBRARY_PATH=$(top_builddir)/src/libambulant/.libs \
 		$(PYTHON) $(srcdir)/internalize_shlibs.py \

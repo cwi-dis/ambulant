@@ -1,6 +1,24 @@
 #
 # Conditionals for various third party libraries
 #
+
+ambulantlibdir=$(top_builddir)/src/libambulant/.libs
+if WITH_AMBULANT_SHARED_LIB
+# If we link with shared libs: use these. Needed for plugin support.
+libambulant_core=-L$(ambulantlibdir) -lambulant
+libambulant_ffmpeg=-L$(ambulantlibdir) -lambulant_ffmpeg
+libambulant_live=-L$(ambulantlibdir) -lambulant_live
+libambulant_sdl=-L$(ambulantlibdir) -lambulant_sdl
+libambulant_gtk=-L$(ambulantlibdir) -lambulant_gtk
+else
+# Otherwise we link the ambulant libraries statically.
+libambulant_core=$(ambulantlibdir)/libambulant.a
+libambulant_ffmpeg=$(ambulantlibdir)/libambulant_ffmpeg.a
+libambulant_live=$(ambulantlibdir)/libambulant_live.a
+libambulant_sdl=$(ambulantlibdir)/libambulant_sdl.a
+libambulant_gtk=$(ambulantlibdir)/libambulant_gtk.a
+endif
+
 if WITH_EXPAT
 extra_expat_DEFINES=$(EXPAT_CFLAGS) -DWITH_EXPAT
 extra_expat_LDADD=$(EXPAT_LIBS)
@@ -11,7 +29,7 @@ endif
 
 if WITH_FFMPEG
 extra_ffmpeg_DEFINES=-DWITH_FFMPEG $(FFMPEG_CFLAGS)
-extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a $(FFMPEG_LIBS)
+extra_ffmpeg_LDADD=$(libambulant_ffmpeg) $(FFMPEG_LIBS)
 else
 extra_ffmpeg_DEFINES=
 extra_ffmpeg_LDADD=
@@ -26,7 +44,7 @@ extra_gstreamer_DEFINES=
 endif
 
 if WITH_LIVE
-extra_live_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_live.a $(LIVE_LIBS)
+extra_live_LDADD=$(libambulant_live) $(LIVE_LIBS)
 extra_live_DEFINES=$(LIVE_CFLAGS) -DWITH_LIVE
 else
 extra_live_DEFINES=
@@ -35,7 +53,7 @@ endif
 
 if WITH_SDL
 extra_sdl_DEFINES=$(SDL_CFLAGS) -DWITH_SDL
-extra_sdl_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_sdl.a $(SDL_LIBS)
+extra_sdl_LDADD=$(libambulant_sdl) $(SDL_LIBS)
 else
 extra_sdl_DEFINES=
 extra_sdl_LDADD=
@@ -93,14 +111,14 @@ AmbulantPlayer_gtk_SOURCES = \
 	unix_preferences.cpp \
 	unix_preferences.h
 
-LDADD = $(top_builddir)/src/libambulant/.libs/libambulant_gtk.a \
+LDADD = $(libambulant_gtk) \
 	$(extra_expat_LDADD) \
 	$(extra_ffmpeg_LDADD) \
 	$(extra_gstreamer_LDADD) \
 	$(extra_live_LDADD) \
 	$(extra_sdl_LDADD) \
 	$(extra_xerces_LDADD) \
-	$(top_builddir)/src/libambulant/.libs/libambulant.a \
+	$(libambulant_core) \
 	$(gtk_libs) \
 	$(LIBLTDL) \
 	$(extra_nokia770_LDADD)

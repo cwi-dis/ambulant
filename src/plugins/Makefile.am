@@ -1,12 +1,29 @@
 EXTRA_DIST=plugin.cpp plugin_ffmpeg.cpp pyamplugin_state pythonplugin.cpp \
     wkdombridge.h wkdombridge.m wkdombridge.mm wkdomplugin.cpp \
     xercesplugin.cpp xpath_stateplugin.cpp
+    
+ambulantlibdir=$(top_builddir)/src/libambulant/.libs
+if WITH_AMBULANT_SHARED_LIB
+# If we link with shared libs: use these. Needed for plugin support.
+libambulant_core=-L$(ambulantlibdir) -lambulant
+libambulant_ffmpeg=-L$(ambulantlibdir) -lambulant_ffmpeg
+libambulant_live=-L$(ambulantlibdir) -lambulant_live
+libambulant_sdl=-L$(ambulantlibdir) -lambulant_sdl
+else
+# Otherwise we link the ambulant libraries statically.
+libambulant_core=$(ambulantlibdir)/libambulant.a
+libambulant_ffmpeg=$(ambulantlibdir)/libambulant_ffmpeg.a
+libambulant_live=$(ambulantlibdir)/libambulant_live.a
+libambulant_sdl=$(ambulantlibdir)/libambulant_sdl.a
+endif
+
 # The default (no-op) plugin. only build when asked to buid
 
 if WITH_DUMMY_PLUGIN
 dummy_plugin = libamplugin_dummy.la
 libamplugin_dummy_la_SOURCES = plugin.cpp
 libamplugin_dummy_la_LDFLAGS = -module
+libamplugin_dummy_la_LIBADD = $(libambulant_core)
 
 rot13_plugin = libamplugin_rot13.la
 libamplugin_rot13_la_SOURCES = rot13plugin.cpp
@@ -21,6 +38,7 @@ if WITH_XERCES_PLUGIN
 xerces_plugin = libamplugin_xerces.la
 xerces_includes = $(XERCES_CFLAGS)
 libamplugin_xerces_la_LDFLAGS = -module $(XERCES_LIBS)
+libamplugin_xerces_la_LIBADD = $(libambulant_core)
 libamplugin_xerces_la_SOURCES = xercesplugin.cpp \
 		$(top_builddir)/src/libambulant/lib/xerces_parser.cpp
 
@@ -34,6 +52,7 @@ if WITH_SMIL30
 dummy_state_plugin = libamplugin_dummy_state.la
 libamplugin_dummy_state_la_SOURCES = dummy_stateplugin.cpp
 libamplugin_dummy_state_la_LDFLAGS = -module
+libamplugin_dummy_state_la_LIBADD = $(libambulant_core)
 else
 dummy_state_plugin=
 endif
@@ -44,6 +63,7 @@ xpath_state_plugin = libamplugin_xpath_state.la
 xpath_state_includes = `xml2-config --cflags`
 libamplugin_xpath_state_la_SOURCES = xpath_stateplugin.cpp
 libamplugin_xpath_state_la_LDFLAGS = -module `xml2-config --libs`
+libamplugin_xpath_state_la_LIBADD = $(libambulant_core)
 else
 xpath_state_plugin=
 xpath_state_includes=
@@ -55,6 +75,7 @@ wkdom_plugin = libamplugin_wkdom.la
 wkdom_includes = 
 libamplugin_wkdom_la_SOURCES = wkdomplugin.cpp wkdombridge.m
 libamplugin_wkdom_la_LDFLAGS = -module
+libamplugin_wkdom_la_LIBADD = $(libambulant_core)
 else
 wkdom_plugin=
 wkdom_includes=
@@ -74,6 +95,7 @@ pymodule_libs = \
 python_plugin = libamplugin_python.la
 python_includes = $(PYTHON_INCLUDES) $(pymodule_includes)
 libamplugin_python_la_LDFLAGS = -module $(PYTHON_LIBS) $(pymodule_libs)
+libamplugin_python_la_LIBADD = $(libambulant_core)
 libamplugin_python_la_SOURCES = pythonplugin.cpp
 
 else
