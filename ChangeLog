@@ -1,3 +1,23 @@
+2009-10-17 00:56  jackjansen
+
+	* - If AMBULANT_DEBUG is defined when running the npambulant plugin
+	  it   will set ambulant log level to debug and show log output on
+	  stderr.  - xulrunner-api 1.9.1 now links, but I'm not sure
+	  whether it works.  - experimenting with an idea to get
+	  plugins-in-plugins working on Linux,	 but not complete yet.
+
+2009-10-16 16:14  keesblom
+
+	* Partial implementation of rate="auto" for gtk_smiltext to fix
+	  #2777292.
+
+2009-10-16 14:13  keesblom
+
+	* 1. Turend off use_lugins in npambulant because firefox crashes on
+	  loading them.  2. Factored out compute_rate() in
+	  smiltext_layout_engine for use in renderers that    need it, but
+	  do not need smiltext_layout_engine (cocoa, gtk).
+
 2009-10-16 00:29  jackjansen
 
 	* Fixed typo, and always print error messsage if we can't find our
