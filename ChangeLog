@@ -1,3 +1,14 @@
+2009-10-17 13:15  jackjansen
+
+	* Internal library use is now strictly static or shared. Static
+	  means plugins link against nothing, all main code (desktop apps,
+	  npambulant) link against static libs. Shared means everything
+	  links against shared libs, and the shared libs link against each
+	  other (as needed).
+
+	  Shared is used if both plugins and npambulant are enabled, static
+	  otherwise.
+
 2009-10-17 00:56  jackjansen
 
 	* - If AMBULANT_DEBUG is defined when running the npambulant plugin
