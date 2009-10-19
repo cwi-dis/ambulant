@@ -498,12 +498,8 @@ AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw(0x%x, local_ltr
 			// all information to compute the rate is now available
 			unsigned int dur = m_engine.get_dur();
 			if (dur) {
-				smil2::smiltext_runs::const_iterator first = m_engine.begin();
-				smil2::smiltext_runs::const_iterator last =  m_engine.end();
-				last--;
 				lib::size size(m_log_rect.w, m_log_rect.h);
-				unsigned int rate = smil2::smiltext_layout_engine::compute_rate(m_params, (*first).m_align, size, r, 
-												m_engine.get_dur());
+				unsigned int rate = smil2::smiltext_layout_engine::compute_rate(m_params, m_align, size, r, m_engine.get_dur());
 				m_engine.set_rate(rate);
 			}
 		}
