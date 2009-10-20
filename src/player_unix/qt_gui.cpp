@@ -63,9 +63,6 @@ const char *welcome_locations[] = {
 #else
 	"/usr/local/share/ambulant/Welcome/Welcome.smil",
 #endif
-#ifdef	QT_NO_FILEDIALOG	/* Assume embedded Qt */
-	"/home/zaurus/Documents/Ambulant/Extras/Welcome/Welcome.smil",
-#endif/*QT_NO_FILEDIALOG*/
 	NULL
 };
 
@@ -99,13 +96,7 @@ qt_gui::qt_gui(const char* title,
 #else /*WITH_QT_HTML_WIDGET*/
 	QWidget(),  
 #endif/*WITH_QT_HTML_WIDGET*/
-#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 	m_cursor_shape(Qt::ArrowCursor),
-#else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
-	//m_cursor_shape(arrowCursor);
-	m_fileselector(NULL),
-	m_settings_selector(NULL),
-#endif/*QT_NO_FILEDIALOG*/
 	m_mainloop(NULL),
 #ifdef	TRY_LOCKING
 	m_gui_thread(0),
@@ -121,11 +112,6 @@ qt_gui::qt_gui(const char* title,
 #endif/*TRY_LOCKING*/
 	if (initfile != NULL && initfile != "")
 		m_smilfilename = QString(initfile);
-#ifdef  QT_NO_FILEDIALOG
-	else
-		m_smilfilename = QString(
-			"/home/zaurus/Documents/example.smil");
-#endif/*QT_NO_FILEDIALOG*/
 	setCaption(initfile);
 
 	/* Menu bar */
@@ -140,11 +126,6 @@ qt_gui::qt_gui(const char* title,
 		int url_id = m_filemenu->insertItem(gettext("Open &URL..."), this, SLOT(slot_open_url()));
 		m_filemenu->setAccel(CTRL+Key_L, url_id);
 		m_reload_id = m_filemenu->insertItem(gettext("&Reload..."), this, SLOT(slot_reload()));
-#ifdef QT_NO_FILEDIALOG	/* Assume embedded Qt */
-		// Disable unavailable menu entries
-		m_filemenu->setItemEnabled(open_id, true);
-		m_filemenu->setItemEnabled(url_id, false);
-#endif/*QT_NO_FILEDIALOG*/
 		m_filemenu->insertSeparator();
 		
 		m_filemenu->insertItem(gettext("&Preferences..."), this, SLOT(slot_settings_select()));
@@ -191,11 +172,7 @@ qt_gui::qt_gui(const char* title,
 		m_helpmenu->insertItem(gettext("&Play Welcome Document"), this, SLOT(slot_welcome()));
 		m_menubar->insertItem(gettext("&Help"), m_helpmenu);
 		m_menubar->setGeometry(0,0,320,20);
-#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 		m_menubar_height = 27;
-#else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
-		m_menubar_height = 20;
-#endif/*QT_NO_FILEDIALOG*/
 	}
 	QObject::connect(this, SIGNAL(signal_player_done()),
 			    this, SLOT(slot_player_done()));
@@ -206,10 +183,6 @@ qt_gui::~qt_gui() {
 #define DELETE(X) if (X) { delete X; X = NULL; }
 	AM_DBG printf("%s0x%X\n", "qt_gui::~qt_gui(), m_mainloop=",m_mainloop);
 	setCaption(QString::null);
-#ifdef  QT_NO_FILEDIALOG	/* Assume embedded Qt */
-	DELETE(m_fileselector)
-	DELETE(m_settings_selector)
-#endif/*QT_NO_FILEDIALOG*/
 	DELETE(m_mainloop) 
 	DELETE(m_filemenu)
 	DELETE(m_helpmenu)
@@ -260,14 +233,12 @@ qt_gui::slot_help() {
 void
 qt_gui::slot_logger_window() {
 	AM_DBG printf("slot_logger_window()\n");
-#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 	QTextEdit* logger_window =
 		qt_logger::get_qt_logger()->get_logger_window();
 	if (logger_window->isHidden())
 		logger_window->show();
 	else
 		logger_window->hide();
-#endif/*QT_NO_FILEDIALOG*/
 }
 
 bool 
@@ -308,7 +279,6 @@ qt_gui::openSMILfile(QString smilfilename, int mode) {
 
 void 
 qt_gui::slot_open() {
-#ifndef QT_NO_FILEDIALOG
 	QString smilfilename =
 		QFileDialog::getOpenFileName(
 				 ".", // Initial dir
@@ -319,74 +289,34 @@ qt_gui::slot_open() {
 				 );
 	if (openSMILfile(smilfilename, IO_ReadOnly))
 		slot_play();
-#else	/*QT_NO_FILEDIALOG*/	
-	if (m_fileselector == NULL) {
-		QString mimeTypes("application/smil;");
-		m_fileselector = new FileSelector(mimeTypes, NULL,
-						  "slot_open", false);
-		m_fileselector->resize(240, 280);
-	} else {
-		m_fileselector->reread();
-	}
-	QObject::connect(m_fileselector, SIGNAL(fileSelected(const DocLnk&)),
-			 this, SLOT(slot_file_selected(const DocLnk&)));
-	QObject::connect(m_fileselector, SIGNAL(closeMe()), 
-			 this, SLOT(slot_close_fileselector()));
-	m_fileselector->show();
-#endif	/*QT_NO_FILEDIALOG*/
 }
 
 
 void
 qt_gui::setDocument(const QString& smilfilename) {
-#ifdef	QT_NO_FILEDIALOG	/* Assume embedded Qt */
-	if (openSMILfile(smilfilename, IO_ReadOnly))
-		slot_play();
-#endif/*QT_NO_FILEDIALOG*/
 }
 
 void
 qt_gui::slot_file_selected(const DocLnk& selected_file) {
-#ifdef	QT_NO_FILEDIALOG	/* Assume embedded Qt */
-	QString* smilfilepointer = new QString(selected_file.file());
-	QString smilfilename = *smilfilepointer;
-	delete smilfilepointer;
-	m_fileselector->hide();
-	if (openSMILfile(smilfilename, IO_ReadOnly))
-		slot_play();
-#endif/*QT_NO_FILEDIALOG*/
 }
 
 void
 qt_gui::slot_close_fileselector()
 {
-#ifdef	QT_NO_FILEDIALOG	/* Assume embedded Qt */
-	m_fileselector->hide();
-#endif/*QT_NO_FILEDIALOG*/
 }
 
 void
 qt_gui::slot_settings_selected(const DocLnk& selected_file) {
-#ifdef	QT_NO_FILEDIALOG	/* Assume embedded Qt */
-	QString settings_filename(selected_file.file());
-	smil2::test_attrs::load_test_attrs(settings_filename.ascii());
-	if (openSMILfile(m_smilfilename, IO_ReadOnly))
-		slot_play();
-#endif/*QT_NO_FILEDIALOG*/
 }
 void
 qt_gui::slot_close_settings_selector()
 {
-#ifdef	QT_NO_FILEDIALOG	/* Assume embedded Qt */
-	m_settings_selector->hide();
-#endif/*QT_NO_FILEDIALOG*/
 }
 
 void 
 qt_gui::slot_load_settings() {
 	if (m_mainloop && m_mainloop->is_open())
 	   slot_stop();
-#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 	QString settings_filename =
 		QFileDialog::getOpenFileName(
 				 ".", // Initial dir
@@ -400,29 +330,10 @@ qt_gui::slot_load_settings() {
 		if (openSMILfile(m_smilfilename, IO_ReadOnly))
 			slot_play();
 	}
-#else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
-	/* TBD embedded Qt settings file dialog XXXX */
-	printf("1.m_settings_selector =0x%x\n",m_settings_selector );
-	if (m_settings_selector == NULL) {
-		QString mimeTypes("text/xml;");
-		m_settings_selector = new FileSelector(mimeTypes, NULL,
-						       "slot_open", false);
-		printf("2.m_settings_selector =0x%x\n",m_settings_selector );
-		m_settings_selector->resize(240, 280);
-	} else {
-		m_settings_selector->reread();
-	}
-	QObject::connect(m_settings_selector, SIGNAL(fileSelected(const DocLnk&)),
-			 this, SLOT(slot_settings_selected(const DocLnk&)));
-	QObject::connect(m_settings_selector, SIGNAL(closeMe()), 
-			 this, SLOT(slot_close_settings_selector()));
-	m_settings_selector->show();
-#endif/*QT_NO_FILEDIALOG*/
 }
 
 void 
 qt_gui::slot_open_url() {
-#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
   	bool ok;
 	QString smilfilename =
 		QInputDialog::getText(
@@ -437,10 +348,6 @@ qt_gui::slot_open_url() {
 	    && openSMILfile(smilfilename, IO_ReadOnly)) {
 		slot_play();
 	}
-#else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
-	QMessageBox::information (this, m_programfilename,
-		gettext("Open URL not implemented for Embedded Qt"));
-#endif/*QT_NO_FILEDIALOG*/
 }
 
 void 
@@ -549,11 +456,7 @@ qt_gui::customEvent(QCustomEvent* e) {
 		}
 		break;
 	case qt_logger::CUSTOM_LOGMESSAGE:
-#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 		qt_logger::get_qt_logger()->get_logger_window()->append(msg);
-#else /*QT_NO_FILEDIALOG*/
-/* No logger window on an embedded system, logging there on file */
-#endif/*QT_NO_FILEDIALOG*/
 		break;
 	case ambulant::lib::logger::LEVEL_FATAL:
 		QMessageBox::critical(NULL, "AmbulantPlayer", msg);
@@ -647,28 +550,17 @@ main (int argc, char*argv[]) {
 #ifdef	WITH_QT_HTML_WIDGET
 	KApplication myapp( argc, argv, "AmbulantPlayer" );
 #else /*WITH_QT_HTML_WIDGET*/
-#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 	QApplication myapp(argc, argv);
-#else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
-	QPEApplication myapp(argc, argv);
-#endif/*QT_NO_FILEDIALOG*/
 #endif/*WITH_QT_HTML_WIDGET*/
 
 	/* Setup widget */
 	qt_gui* mywidget = new qt_gui(argv[0], argc > 1 ? argv[1] 
 				      : "AmbulantPlayer");
-#ifndef QT_NO_FILEDIALOG     /* Assume plain Qt */
 //	mywidget->setGeometry(240, 320, 320, 240);
 	mywidget->setGeometry(240, 240, 180, 27);
 	QCursor qcursor(Qt::ArrowCursor);
 	mywidget->setCursor(qcursor);
 	myapp.setMainWidget(mywidget);
-#else /*QT_NO_FILEDIALOG*/   /* Assume embedded Qt */
-	if (argc > 1 && strcmp(argv[1], "-qcop") != 0)
-	  myapp.showMainWidget(mywidget);
-	else
-	  myapp.showMainDocumentWidget(mywidget);
-#endif/*QT_NO_FILEDIALOG*/
 	mywidget->show();
 /*TMP initialize logger after gui*/	
 	// take log level from preferences

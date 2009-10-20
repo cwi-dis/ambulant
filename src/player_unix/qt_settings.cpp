@@ -90,7 +90,6 @@ qt_settings::settings_select() {
 	m_parser_co->setCurrentItem(id_nr);
 	
 	
-#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 	m_xerces_vg	= new QVGroupBox(gettext("Xerces options:"),
 					 m_settings_vg);
 	
@@ -121,7 +120,6 @@ qt_settings::settings_select() {
 			      m_validation_vb);
 	bool full_chk = m_preferences->m_validation_schema_full_checking;
 	m_full_check_cb->setChecked(full_chk);
-#endif/*QT_NO_FILEDIALOG*/
 
 	m_plugin_vg = new QVGroupBox(gettext("Plugin options:"), m_settings_vg);
 	m_use_plugin_cb = new QCheckBox(gettext("Use plugins"),m_plugin_vg);

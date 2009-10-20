@@ -77,9 +77,7 @@ qt_logger* qt_logger::s_qt_logger = 0;
 
 qt_logger::qt_logger() 
   : 	m_log_FILE(NULL),
-#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 	m_logger_window( NULL),
-#endif/*QT_NO_FILEDIALOG*/
 	m_gui(NULL) 
 {
 	common::preferences* prefs = 
@@ -96,30 +94,24 @@ qt_logger::qt_logger()
 		} else setbuf(m_log_FILE, NULL); // no buffering
 	}
 	// Connect logger to our message displayer and output processor
-#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 	logger->set_show_message(show_message);
-#endif/*QT_NO_FILEDIALOG*/
 
 	// Tell the logger about the output level preference
 	int level = prefs->m_log_level;
 	logger->set_level(level);
 	logger->set_ostream(new qt_logger_ostream);
-#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 	m_logger_window = new QTextEdit();
 	m_logger_window->setReadOnly(true);
 	m_logger_window->setCaption("Ambulant-Logger");
 	m_logger_window->setTextFormat(Qt::PlainText);
 	m_logger_window->setGeometry(50, 50, 560, 240);
-#endif/*QT_NO_FILEDIALOG*/
 }
 
 qt_logger::~qt_logger() {
 	if(m_log_FILE) fclose (m_log_FILE);
 	m_log_FILE = NULL;
-#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 	if(m_logger_window) delete m_logger_window;
 	m_logger_window = NULL;
-#endif/*QT_NO_FILEDIALOG*/
 }
 
 qt_logger*
@@ -152,13 +144,11 @@ qt_logger::show_message(int level, const char *msg) {
 	s_qt_logger->m_gui->internal_message(level, msg);
 }
 
-#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 QTextEdit*
 qt_logger::get_logger_window()
 {
 	return m_logger_window;
 }
-#endif/*QT_NO_FILEDIALOG*/
 
 qt_message_event::qt_message_event(int level, const char *message)
   : _message(strdup(message)),

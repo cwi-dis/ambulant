@@ -849,7 +849,6 @@ gtk_gui::do_resize(GdkEventConfigure *event) {
 }
 
 
-#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 void
 gtk_gui::unsetCursor() { //XXXX Hack
 //	AM_DBG printf("%s-%s\n", m_programfilename, ":unsetCursor");
@@ -871,7 +870,6 @@ gtk_gui::unsetCursor() { //XXXX Hack
 #endif**//*QCURSOR_ON_ZAURUS*/
 //	m_mainloop->set_cursor(0);
 }
-#endif/*QT_NO_FILEDIALOG*/
 
 void
 gtk_gui::do_internal_message(gtk_message_event* e) {

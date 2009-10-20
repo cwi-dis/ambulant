@@ -29,11 +29,7 @@
 
 #include <stdarg.h>
 #include <string.h>
-#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 #include <qtextedit.h>
-#else /*QT_NO_FILEDIALOG*/
-/* No logger window on an embedded system, logging there on "stdout" */
-#endif/*QT_NO_FILEDIALOG*/
 
 #include "ambulant/version.h"
 #include "ambulant/config/config.h"
@@ -52,9 +48,7 @@ class qt_logger {
 	};
 	static qt_logger* get_qt_logger();
 	static void show_message(int level, const char *message);
-#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 	QTextEdit* get_logger_window();
-#endif/*QT_NO_FILEDIALOG*/
 	static void set_qt_logger_gui(qt_gui*);
 	void log(QString logstring);
 	~qt_logger();
@@ -62,9 +56,7 @@ class qt_logger {
 	qt_logger();
   private:
 	static qt_logger* s_qt_logger;  // singleton
-#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 	QTextEdit* m_logger_window;
-#endif/*QT_NO_FILEDIALOG*/
 	qt_gui* m_gui;
 	FILE* m_log_FILE;
 };

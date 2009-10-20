@@ -84,15 +84,10 @@ qt_window_factory::new_window (const std::string &name,
  	ambulant_qt_window * aqw = new ambulant_qt_window(name, &r, region);
 	qt_ambulant_widget * qaw = new qt_ambulant_widget(name, &r, m_parent_widget);
 
-#ifndef	QT_NO_FILEDIALOG     /* Assume plain Qt */
 	qaw->setBackgroundMode(Qt::NoBackground);
 	assert(qApp);
 	assert(qApp->mainWidget());
 	qApp->mainWidget()->resize(bounds.w, bounds.h+m_top_offset);
-#else	/*QT_NO_FILEDIALOG*/  /* Assume embedded Qt */
-	qaw->setBackgroundMode(QWidget::NoBackground);
-	/* No resize implemented for embedded Qt */
-#endif	/*QT_NO_FILEDIALOG*/
 
 	aqw->set_ambulant_widget(qaw);
 	qaw->set_qt_window(aqw);
@@ -216,14 +211,8 @@ ambulant_qt_window::need_redraw(const lib::rect &r)
 		lib::logger::get_logger()->error("ambulant_qt_window::need_redraw(0x%x): m_ambulant_widget == NULL !!!", (void*) this);
 		return;
 	}
-#ifdef	QT_NO_FILEDIALOG	/* Assume embedded Qt */
-	m_ambulant_widget->repaint(r.left(), r.top(), r.width(), r.height(), false);
-	qApp->wakeUpGuiThread();
-//	qApp->processEvents();
-#else	/*QT_NO_FILEDIALOG*/	/* Assume plain Qt */
 	m_ambulant_widget->update(r.left(), r.top(), r.width(), r.height());
 	qApp->wakeUpGuiThread();
-#endif	/*QT_NO_FILEDIALOG*/
 }
 
 void
@@ -460,9 +449,7 @@ qt_ambulant_widget::qt_ambulant_widget(const std::string &name,
 		bounds->right(),
 		bounds->bottom());
 	setGeometry(bounds->left(), bounds->top(), bounds->right(), bounds->bottom());
-#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 	setMouseTracking(true); // enable mouseMoveEvent() to be called
-#endif/*QT_NO_FILEDIALOG*/
 }
 
 qt_ambulant_widget::~qt_ambulant_widget()
@@ -515,7 +502,6 @@ qt_ambulant_widget::mouseReleaseEvent(QMouseEvent* e) {
 	m_qt_window->user_event(amwhere);
 }
 
-#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 void 
 qt_ambulant_widget::mouseMoveEvent(QMouseEvent* e) {
 	AM_DBG lib::logger::get_logger()->debug("qt_ambulant_widget::mouseMoveEvent:(%d,%d)\n", e->x(),e->y());
@@ -545,7 +531,6 @@ qt_ambulant_widget::mouseMoveEvent(QMouseEvent* e) {
 #endif
    
 }
-#endif/*QT_NO_FILEDIALOG*/
 
 void 
 qt_ambulant_widget::set_qt_window( ambulant_qt_window* aqw)

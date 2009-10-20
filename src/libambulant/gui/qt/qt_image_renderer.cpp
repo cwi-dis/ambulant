@@ -166,7 +166,6 @@ qt_image_renderer::redraw_body(const rect &dirty,
 		N_W = (int)roundf(O_W*fact_W),
 		N_H = (int)roundf(O_H*fact_H);
 	AM_DBG lib::logger::get_logger()->debug("qt_image_renderer.redraw_body(0x%x): src=(%d,%d,%d,%d) scalex=%f, scaley=%f  intermediate (%d,%d,%d,%d) dst=(%d,%d,%d,%d)",(void *)this,S_L,S_T,S_W,S_H,fact_W,fact_H,N_L,N_T,N_W,N_H,D_L,D_T,D_W,D_H);
-#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 	/* copy only the part that will be shown to the screen to be scaled */
 	QImage partialimage(S_W, S_H, m_image.depth());
 	partialimage.fill(0);
@@ -175,9 +174,6 @@ qt_image_renderer::redraw_body(const rect &dirty,
 	N_L = 0; N_T = 0;
 	DUMPIMAGE(&partialimage, "partialimage");
 	DUMPIMAGE(&scaledimage, "scaledimage");
-#else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
-	QImage scaledimage = partialimage.smoothScale(D_W, D_H);
-#endif/*QT_NO_FILEDIALO*/
 
 #ifdef	WITH_SMIL30
 	if (alpha_chroma != 1.0) {

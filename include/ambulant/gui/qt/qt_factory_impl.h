@@ -201,9 +201,7 @@ class qt_ambulant_widget : public QWidget {
 	// QWidget API:
 	void paintEvent(QPaintEvent* e);
 	void mouseReleaseEvent(QMouseEvent* e);
-#ifndef QT_NO_FILEDIALOG
 	void mouseMoveEvent(QMouseEvent* e);
-#endif // QT_NO_FILEDIALOG
 
   private:
 	ambulant_qt_window* m_qt_window;

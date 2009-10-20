@@ -29,13 +29,7 @@
 #include "unix_preferences.h"
 
 #include <qfeatures.h>
-#ifndef QT_NO_FILEDIALOG	 /* Assume plain Qt */
 # include <qapplication.h>
-#else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
-#include <qpe/qpeapplication.h>
-#include <qpe/applnk.h>
-#include <fileselector.h>
-#endif/*QT_NO_FILEDIALOG*/
 #include <qcursor.h>
 #include <qdial.h>
 #include <qevent.h>
@@ -122,14 +116,7 @@ class qt_mainloop;
 	pthread_mutex_t   m_lock_message;
 	pthread_t m_gui_thread;
 #endif/*TRY_LOCKING*/
-#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 	Qt::CursorShape m_cursor_shape;
-#else /*QT_NO_FILEDIALOG*/	/* Assume embedded Qt */
-	bool         m_pointinghand_cursor; //XXXX
-	FileSelector*m_fileselector;
-	FileSelector*m_settings_selector;
-	const DocLnk m_selectedDocLnk;
-#endif/*QT_NO_FILEDIALOG*/
 	void	     fileError(QString smilfilename);
 
   public slots:
@@ -138,9 +125,7 @@ class qt_mainloop;
      as empty functions for normal Qt because Qt's moc doesn't recogzize
      #ifdef and #define
   */
-#ifndef QT_NO_FILEDIALOG	/* Assume plain Qt */
 #define DocLnk void*
-#endif/*QT_NO_FILEDIALOG*/
 	void slot_file_selected(const DocLnk&);
 	void slot_close_fileselector();
 	void slot_settings_selected(const DocLnk&);
