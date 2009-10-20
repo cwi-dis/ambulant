@@ -37,6 +37,7 @@ DEFAULT_RPATH=[
 	'/lib',
 	'/lib64',
 	'/usr/lib',
+	'/usr/lib64',
 	'/usr/lib/lib64'
 ]
 

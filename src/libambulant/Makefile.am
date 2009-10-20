@@ -3,11 +3,12 @@ if WITH_AMBULANT_SHARED_LIB
 #
 # If we link with shared libs: use these. Needed for plugin support.
 #
-libambulant_core=-lambulant
-libambulant_ffmpeg=-lambulant_ffmpeg
-libambulant_live=-lambulant_live
-libambulant_sdl=-lambulant_sdl
-libambulant_gtk=-lambulant_gtk
+libambulant_core=-L$(ambulantlibdir) -lambulant
+libambulant_ffmpeg=-L$(ambulantlibdir) -lambulant_ffmpeg
+libambulant_live=-L$(ambulantlibdir) -lambulant_live
+libambulant_sdl=-L$(ambulantlibdir) -lambulant_sdl
+libambulant_gtk=-L$(ambulantlibdir) -lambulant_gtk
+libambulant_qt=-L$(ambulantlibdir) -lambulant_qt
 else
 #
 # Otherwise we link the ambulant libraries statically, and we
@@ -19,6 +20,7 @@ libambulant_ffmpeg=
 libambulant_live=
 libambulant_sdl=
 libambulant_gtk=
+libambulant_qt=
 endif
 
 # See which toolkit-dependent libraries we want to make
@@ -223,15 +225,15 @@ AM_CPPFLAGS = \
 
 lib_LTLIBRARIES = \
 	libambulant.la \
+	$(toolkit_gstreamer_libraries) \
+	$(toolkit_sdl_libraries) \
+	$(toolkit_ffmpeg_libraries) \
+	$(toolkit_live_libraries) \
 	$(toolkit_cocoa_libraries) \
 	$(toolkit_cg_libraries) \
 	$(toolkit_qt_libraries) \
-	$(toolkit_gstreamer_libraries) \
 	$(toolkit_gtk_libraries) \
-	$(toolkit_sdl_libraries) \
-	$(toolkit_nokia770_libraries) \
-	$(toolkit_ffmpeg_libraries) \
-	$(toolkit_live_libraries)
+	$(toolkit_nokia770_libraries)
 
 libambulant_la_LDFLAGS= \
 	-export-dynamic $(LIBLTDL) \
