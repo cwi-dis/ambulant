@@ -21,6 +21,9 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/common/preferences.h"
 
+#if defined(WITH_LTDL_PLUGINS) || defined(WITH_WINDOWS_PLUGINS)
+#define WITH_PLUGINS 1
+#endif
 
 //#define AM_DBG
 #ifndef AM_DBG
