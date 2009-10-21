@@ -1031,7 +1031,21 @@ main (int argc, char*argv[]) {
 
 //	g_thread_init(NULL);
 //	gdk_threads_init ();
-	
+
+/* from http://www.gtk.org/tutorial1.2/gtk_tut-2.html
+   arguments parsed and removed by gtk_init(&argc,&argv):
+    * --gtk-module
+    * --g-fatal-warnings
+    * --gtk-debug
+    * --gtk-no-debug
+    * --gdk-debug
+    * --gdk-no-debug
+    * --display
+    * --sync
+    * --no-xshm
+    * --name
+    * --class
+    */
 	gtk_init(&argc,&argv);
 
 //#undef	ENABLE_NLS
