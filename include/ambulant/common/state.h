@@ -136,7 +136,6 @@ class global_state_component_factory : public state_component_factory {
 	// systemComponent we also need to be able to get the list of uri's
 };
 
-static global_state_component_factory *s_gscf;
 /// Factory function to get a singleton global_state_component_factory
 AMBULANTAPI global_state_component_factory *get_global_state_component_factory();
 

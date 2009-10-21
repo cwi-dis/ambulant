@@ -44,6 +44,8 @@ class global_state_component_factory_impl : public global_state_component_factor
 	std::vector<state_component_factory *> m_factories;
 };
 
+static global_state_component_factory *s_gscf;
+
 global_state_component_factory_impl::~global_state_component_factory_impl()
 {
 	s_gscf = NULL;
