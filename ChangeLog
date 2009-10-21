@@ -1,3 +1,19 @@
+2009-10-20 16:31  keesblom
+
+	* Made "Use plugins" default, when they are selected at compile
+	  time.
+
+2009-10-20 15:30  keesblom
+
+	* For all files, executed 'unifdef -UQT_NO_FILEDIALOG <file>. Fixed
+	  #2868773
+
+2009-10-20 14:57  keesblom
+
+	* Added library search path s.t. make make works again on FC9
+	  x86_64 Needed to remove libSDL from TPP and add -fPIC flag
+	  everywhere.  internalize_shlibs.py did not work, no idea why not.
+
 2009-10-19 17:00  keesblom
 
 	* Little bit of cleanup
@@ -1949,9 +1965,8 @@
 
 2008-07-30 17:48  keesblom
 
-	* Added proper initialization for m_prefer_ffmpeg.This was causing
-	  Firefox pluginn to be silent, since it has no ffmpeg and no
-	  preferences implementation
+	* Made "Use plugins" default, when they are selected at compile
+	  time. Fixes #2873711.
 
 2008-07-29 17:26  jackjansen
 
