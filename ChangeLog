@@ -1,3 +1,16 @@
+2009-10-21 14:11  keesblom
+
+	* Added in-code comment which arguments are parsed by the toolkit.
+	  Applies to: #2880765.
+
+2009-10-21 12:08  keesblom
+
+	* initialization m_volcount added
+
+2009-10-21 11:14  keesblom
+
+	* Moved static factory* from state.h to state.cpp. Fixes #2846127
+
 2009-10-20 16:31  keesblom
 
 	* Made "Use plugins" default, when they are selected at compile
