@@ -29,7 +29,7 @@
 #include "ambulant/common/playable.h"
 #include "ambulant/smil2/test_attrs.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -179,15 +179,39 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 			lib::rect srcrect = lib::rect(lib::size(0,0));
 			lib::rect dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
 			dstrect.translate(m_dest->get_global_topleft());
-			int L = dstrect.left(), 
-		    	T = dstrect.top(),
-		    	W = dstrect.width(),
-		    	H = dstrect.height();
-			AM_DBG lib::logger::get_logger()->debug(" gtk_video_renderer.redraw(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d)", (void *)this,L,T,W,H);
+			// S_ for source image coordinates
+			// D_ for destination coordinates
+			int	S_L = srcrect.left(), 
+				S_T = srcrect.top(),
+				S_W = srcrect.width(),
+				S_H = srcrect.height();
+			int	D_L = dstrect.left(), 
+				D_T = dstrect.top(),
+				D_W = dstrect.width(),
+				D_H = dstrect.height();
+			AM_DBG lib::logger::get_logger()->debug("gtk_videorenderer.redraw_body(0x%x): gtk_draw_pixbuf at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d), original(%d,%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H,width,height);
+			/* scale image s.t. the viewbox specified fits in destination area:
+			 * zoom_X=(O_W/S_W), fit_X=(D_W/O_W); fact_W=zoom_X*fit_X  */
+			float	fact_W = (float)D_W/(float)S_W,
+				fact_H = (float)D_H/(float)S_H;
+			// N_ for new (scaled) image coordinates
+			int	N_L = (int)roundf(S_L*fact_W),
+				N_T = (int)roundf(S_T*fact_H),
+				N_W = (int)roundf(width*fact_W),
+				N_H = (int)roundf(height*fact_H);
+			AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw_body(0x%x): orig=(%d, %d) scalex=%f, scaley=%f  intermediate (L=%d,T=%d,W=%d,H=%d) dest=(%d,%d,%d,%d)",(void *)this,width,height,fact_W,fact_H,N_L,N_T,N_W,N_H,D_L,D_T,D_W,D_H);
+			
+			GdkPixbuf* scaled_image_pixbuf = NULL;
+			if (S_W != D_W || S_H != D_H) {
+				scaled_image_pixbuf = gdk_pixbuf_scale_simple(m_image, D_W, D_H, GDK_INTERP_BILINEAR);
+				g_object_unref (m_image);
+			} else // no need for scaling 
+				scaled_image_pixbuf = m_image;
 			GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
-			gdk_pixbuf_render_to_drawable(m_image, GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, 0, 0, L, T, W, H, GDK_RGB_DITHER_NONE, 0, 0);
+//			gdk_pixbuf_render_to_drawable(m_image, GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, 0, 0, L, T, W, H, GDK_RGB_DITHER_NONE, 0, 0);
+			gdk_draw_pixbuf(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, scaled_image_pixbuf, N_L, N_T, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);
 			g_object_unref (G_OBJECT (gc));			
-			g_object_unref (G_OBJECT (m_image));
+			g_object_unref (G_OBJECT (scaled_image_pixbuf));
 			m_image = NULL;
 		}
 	}
