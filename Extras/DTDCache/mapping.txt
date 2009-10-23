@@ -22,8 +22,11 @@ DTDCache/SMIL21/SMIL21ExtendedMobile.dtd
 http://www.w3.org/2005/SMIL21/SMIL21ExtendedMobile.dtd
 DTDCache/SMIL21/SMIL21ExtendedMobile.dtd
 http://www.w3.org/ns/SMIL
-DTDCache/SMIL30/SMIL30Language.dtd
+#
+# SMIL 3.0:
+#
 http://www.w3.org/2007/07/SMIL30
 DTDCache/SMIL30/SMIL30Language.dtd
-http://www.w3.org/2007/07/SMIL30
+http://www.w3.org/2007/07/SMIL30/SMIL30.dtd
 DTDCache/SMIL30/SMIL30Language.dtd
+

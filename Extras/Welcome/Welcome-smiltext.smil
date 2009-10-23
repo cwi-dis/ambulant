@@ -19,17 +19,17 @@
     </layout>
   </head>
   <body>
-    <par id="play_content" dur="16s">
-      <img id="play_background" src="data/background.png" region="background"/>
-      <audio id="play_tune" src="data/AmbulantTune.mp3" dur="7.9" region="audio"/>
-      <par id="play_animation">
-      	<img id="play_ambulant" src="data/ambulant.png" begin="0s" region="title"/>
-     	<smilText id="play_extensible" begin="2s" region="subtitle" textColor="#cc3300" textFontFamily="Helvetica,sansSerif" textFontSize="16">Extensible</smilText>
-      	<smilText id="play_fast" begin="2.5s" region="line1" textColor="red" textFontFamily="Arial Narrow,sansSerif" textFontStyle="italic" textFontSize="28">Fast</smilText>
-      	<smilText id="play_portable" begin="3s" region="line2" textColor="#0f9505" textFontFamily="Brush Script MT,cursive,serif" textFontStyle="italic" textFontSize="26">Portable</smilText>
-      	<smilText id="play_opensource" begin="3.5s" region="line3" textColor="#0602a0" textFontFamily="vt100,monospace" textFontSize="20">Open Source</smilText>
-      	<a id="play_anchor" href="http://www.ambulantplayer.org" show="new" external="true">
-      	  <smilText id="play_link_text" begin="4s" region="info" textFontFamily="Helvetica,sansSerif" textFontSize="16" textMode="crawl" dur="8s" textRate="auto" fill="freeze">
+    <par xml:id="play_content" dur="16s">
+      <img xml:id="play_background" src="data/background.png" region="background"/>
+      <audio xml:id="play_tune" src="data/AmbulantTune.mp3" dur="7.9" region="audio"/>
+      <par xml:id="play_animation">
+      	<img xml:id="play_ambulant" src="data/ambulant.png" begin="0s" region="title"/>
+     	<smilText xml:id="play_extensible" begin="2s" region="subtitle" textColor="#cc3300" textFontFamily="Helvetica,sansSerif" textFontSize="16">Extensible</smilText>
+      	<smilText xml:id="play_fast" begin="2.5s" region="line1" textColor="red" textFontFamily="Arial Narrow,sansSerif" textFontStyle="italic" textFontSize="28">Fast</smilText>
+      	<smilText xml:id="play_portable" begin="3s" region="line2" textColor="#0f9505" textFontFamily="Brush Script MT,cursive,serif" textFontStyle="italic" textFontSize="26">Portable</smilText>
+      	<smilText xml:id="play_opensource" begin="3.5s" region="line3" textColor="#0602a0" textFontFamily="vt100,monospace" textFontSize="20">Open Source</smilText>
+      	<a xml:id="play_anchor" href="http://www.ambulantplayer.org" show="new" external="true">
+      	  <smilText xml:id="play_link_text" begin="4s" region="info" textFontFamily="Helvetica,sansSerif" textFontSize="16" textMode="crawl" dur="8s" textRate="auto" fill="freeze">
       	  Want to know more? Visit <span textColor="#f80c06" textFontWeight="bold">www.ambulantplayer.org</span>.
       	  </smilText>
       	</a>
