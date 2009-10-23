@@ -1,3 +1,11 @@
+2009-10-22 16:54  keesblom
+
+	* Implemented gtk video scaling. Fixes #2777319.
+
+2009-10-22 16:50  keesblom
+
+	* Initialized m_eom_flag after valgrind complaining
+
 2009-10-21 14:11  keesblom
 
 	* Added in-code comment which arguments are parsed by the toolkit.
