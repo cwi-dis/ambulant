@@ -234,6 +234,7 @@ class Internalizer:
 	def modify_rpath(self, lib):
 		origin = '$ORIGIN'
 		libdir = os.path.dirname(lib)
+
 		relpath = os.path.relpath(self.destination_dir, libdir)
 		if relpath and relpath != '.':
 			origin = os.path.join(origin, relpath)
