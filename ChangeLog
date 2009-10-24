@@ -1,3 +1,20 @@
+2009-10-23 14:12  keesblom
+
+	* Fixed DTD mapping, s.t. xerces now uses the cached DTD files.
+	  Fixes #2798091.
+
+2009-10-23 13:42  keesblom
+
+	* Changed some "id" tags ibto "xmil:id", otherwise xerces detects
+	  errors
+
+2009-10-23 12:01  keesblom
+
+	* Turned off some debugging, that caused AmbulantPlayer_gtk to
+	  crash, randonly.  Cause not traceable using gdb, valgrind,
+	  GTK_DEBUG, GDK_DEBUG. Often in a stack trace some pango related
+	  functions in a smil application only using video.
+
 2009-10-22 16:54  keesblom
 
 	* Implemented gtk video scaling. Fixes #2777319.
