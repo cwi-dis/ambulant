@@ -21,8 +21,33 @@ EXTRA_DIST=MyAmbulantView.mm MyDocument.mm LogController.mm mainloop.cpp MyAppDe
 
 PYTHON=python
 
+ambulantlibdir=$(top_builddir)/src/libambulant/.libs
+if WITH_AMBULANT_SHARED_LIB
+#
+# If we link with shared libs: use these. Needed for plugin support.
+#
+libambulant_core=-L$(ambulantlibdir) -lambulant
+libambulant_ffmpeg=-L$(ambulantlibdir) -lambulant_ffmpeg
+libambulant_live=-L$(ambulantlibdir) -lambulant_live
+libambulant_sdl=-L$(ambulantlibdir) -lambulant_sdl
+libambulant_cocoa=-L$(ambulantlibdir) -lambulant_cocoa
+libambulant_cg=-L$(ambulantlibdir) -lambulant_cg
+else
+#
+# Otherwise we link the ambulant libraries statically, and we
+# do not include these here (the final executable will
+# link with them).
+#
+libambulant_core=$(ambulantlibdir)/libambulant.a
+libambulant_ffmpeg=$(ambulantlibdir)/libambulant_ffmpeg.a
+libambulant_live=$(ambulantlibdir)/libambulant_live.a
+libambulant_sdl=$(ambulantlibdir)/libambulant_sdl.a
+libambulant_cocoa=$(ambulantlibdir)/libambulant_cocoa.a
+libambulant_cg=$(ambulantlibdir)/libambulant_cg.a
+endif
+
 if WITH_CG
-extra_cg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_cg.a
+extra_cg_LDADD=$(libambulant_cg)
 else
 extra_cg_LDADD=
 endif
@@ -37,14 +62,14 @@ endif
 
 if WITH_FFMPEG
 extra_ffmpeg_DEFINES=-DWITH_FFMPEG $(FFMPEG_CFLAGS)
-extra_ffmpeg_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_ffmpeg.a $(FFMPEG_LIBS)
+extra_ffmpeg_LDADD=$(libambulant_ffmpeg) $(FFMPEG_LIBS)
 else
 extra_ffmpeg_DEFINES=
 extra_ffmpeg_LDADD=
 endif
 
 if WITH_LIVE
-extra_live_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_live.a $(LIVE_LIBS)
+extra_live_LDADD=$(libambulant_live) $(LIVE_LIBS)
 extra_live_DEFINES=$(LIVE_CFLAGS) -DWITH_LIVE
 else
 extra_live_DEFINES=
@@ -53,7 +78,7 @@ endif
 
 if WITH_SDL
 extra_sdl_DEFINES=$(SDL_CFLAGS) -DWITH_SDL
-extra_sdl_LDADD=$(top_builddir)/src/libambulant/.libs/libambulant_sdl.a $(SDL_LIBS)
+extra_sdl_LDADD=$(libambulant_sdl) $(SDL_LIBS)
 else
 extra_sdl_DEFINES=
 extra_sdl_LDADD=
@@ -113,7 +138,10 @@ $(BUILDAPPNAME).app: cocoambulant_executable
 #	if test -d ../plugins/.libs; then cp -R ../plugins/.libs $(BUILDAPPNAME).app/Contents/PlugIns; fi
 	pkglibdir=`pwd`/$(BUILDAPPNAME).app/Contents/PlugIns; \
 	cd ../plugins; \
-	$(MAKE) $(AM_MAKEFLAGS) pkglibdir=$$pkglibdir install 
+	$(MAKE) $(AM_MAKEFLAGS) pkglibdir=$$pkglibdir install
+#	Remove plugin cruft
+	find $(BUILDAPPNAME).app/Contents/PlugIns -type l -exec rm '{}' ';'
+	-rm $(BUILDAPPNAME).app/Contents/PlugIns/*.a
 	
 #	Install gettext localizations
 	localedir=`pwd`/$(BUILDAPPNAME).app/Contents/Resources/locale; \
@@ -175,11 +203,11 @@ $(BUILDAPPNAME).app: cocoambulant_executable
 	$(INSTALL_DATA) $(top_srcdir)/Extras/DTDCache/SMIL30/*.* $(BUILDAPPNAME).app/Contents/Resources/DTDCache/SMIL30
 
 #	Install executable
-	$(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) cocoambulant_executable `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/Ambulant-mac
+	$(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) .libs/cocoambulant_executable `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/Ambulant-mac
 	strip -x `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/Ambulant-mac
 	
 #	Internalize any non-system shared libraries we use
-	$(PYTHON) $(srcdir)/internalize_dylibs.py -v $(BUILDAPPNAME).app
+	$(PYTHON) $(srcdir)/internalize_dylibs.py -v -s $(prefix)/lib:$(ambulantlibdir) $(BUILDAPPNAME).app
 
 #	Test for problematic dependencies
 	$(TESTDEP) `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/Ambulant-mac
@@ -188,7 +216,7 @@ $(BUILDAPPNAME).app: cocoambulant_executable
 	$(PYTHON) $(srcdir)/internalize_dylibs.py -c $(BUILDAPPNAME).app
 	
 LDADD = \
-	$(top_builddir)/src/libambulant/.libs/libambulant_cocoa.a \
+	$(libambulant_cocoa) \
 	$(extra_cg_LDADD) \
 	$(extra_expat_LDADD) \
 	$(extra_ffmpeg_LDADD) \
@@ -198,7 +226,7 @@ LDADD = \
 	$(LIBINTL) \
 	$(LIBICONV) \
 	$(LIBLTDL) \
-	$(top_builddir)/src/libambulant/.libs/libambulant.a \
+	$(libambulant_core) \
 	-lstdc++
 AM_LDFLAGS= \
 	-framework Cocoa \

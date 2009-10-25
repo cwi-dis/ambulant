@@ -953,6 +953,11 @@ AC_MSG_RESULT($with_npambulant)
 #
 AC_MSG_CHECKING([whether we should link against core ambulant shared lib (alternative is static)])
 with_ambulant_shared_lib=false
+case $host_os in
+darwin*)
+	with_ambulant_shared_lib=true;;
+esac
+
 if $with_npambulant; then
 	if $with_ltdl; then
 		with_ambulant_shared_lib=true

@@ -7,6 +7,7 @@ import os
 import shutil
 import subprocess
 import re
+import getopt
 
 OTOOL_MATCHER=re.compile(r'(.*) \(compatibility version .*, current version .*\)')
 
@@ -43,6 +44,13 @@ class Internalizer:
 		self.verbose = False
 		self.work_done = False
 		
+		self.instlibdir = None
+		self.staginglibdir = None
+		
+	def set_staging_libdir(self, instlibdir, staginglibdir):
+		self.instlibdir = instlibdir
+		self.staginglibdir = staginglibdir
+		
 	def add_standard(self):
 		for dirpath, dirnames, filenames in os.walk(self.run_dir):
 			for name in filenames:
@@ -58,10 +66,15 @@ class Internalizer:
 				self.add(name)
 
 	def add(self, src, copy=False):
+		if self.instlibdir and os.path.commonprefix([src, self.instlibdir]) == self.instlibdir:
+			src = self.staginglibdir + src[len(self.instlibdir):]
 		while os.path.islink(src):
 			src = os.path.realpath(src)
 		if src in self.todo or src in self.done:
 			return
+		if not os.path.exists(src):
+			print '** file does not exist:', src
+			self.work_done = True
 		if not self.is_loadable(src):
 			return
 		if self.verbose: print '* add', src
@@ -165,24 +178,32 @@ def main():
 	norun = False
 	verbose = False
 	check = False
-	if len(sys.argv) > 2:
-		if sys.argv[1] == '-v':	
-			verbose = True
-			del sys.argv[1]
-		if sys.argv[1] == '-n':
-			norun = True
-			del sys.argv[1]
-		if sys.argv[1] == '-c':
-			check = True
-			del sys.argv[1]
-	if len(sys.argv) != 2:
-		print 'Usage: %s [-vnc] bundlepath '% sys.argv[0]
+	instlibdir = None
+	reallibdir = None
+	try:
+		opts, args = getopt.getopt(sys.argv[1:], 'vncs:')
+		for o, v in opts:
+			if o == '-v':	
+				verbose = True
+			if o == '-n':
+				norun = True
+			if o == '-c':
+				check = True
+			if o == '-s':
+				if not ':' in v:
+					raise getopt.error
+				instlibdir, reallibdir = v.split(':')
+		if len(args) != 1:
+			raise getopt.error
+	except getopt.error:
+		print 'Usage: %s [-vnc] [-s instlibdir:reallibdir] bundlepath '% sys.argv[0]
 		print 'Recursively slurp dylibs used in a bundle.'
 		print '-n\tNo-run, only print actions, do not do the work'
 		print '-v\tVerbose, print actions as well as doing them'
 		print '-c\tCheck, do nothing, print nothing, return nonzero exit status if there was work'
+		print '-s\tSet library directory substitution (for uninstalled libraries)'
 		sys.exit(1)
-	internalizer = Internalizer(os.path.realpath(sys.argv[1]), MACOSX_BUNDLE_DIRS)
+	internalizer = Internalizer(os.path.realpath(args[0]), MACOSX_BUNDLE_DIRS)
 	if norun:
 		internalizer.norun = True
 		internalizer.verbose = True
@@ -190,7 +211,8 @@ def main():
 		internalizer.verbose = True
 	elif check:
 		internalizer.norun = True
-		
+	if instlibdir:
+		internalizer.set_staging_libdir(instlibdir, reallibdir)
 	internalizer.add_standard()
 	internalizer.run()
 	
