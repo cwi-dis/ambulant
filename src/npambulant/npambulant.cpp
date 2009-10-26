@@ -61,7 +61,7 @@ application/x-ambulant-smil:.smil:W3C Smil 3.0 Ambulant Player compatible file;"
 class stderr_ostream : public ambulant::lib::ostream {
 	bool is_open() const {return true;}
 	void close() {}
-	int write(const unsigned char *buffer, int nbytes) {}
+	int write(const unsigned char *buffer, int nbytes) { return 0;}
 	int write(const char *cstr);
 	void flush() {}
 };
@@ -69,6 +69,7 @@ class stderr_ostream : public ambulant::lib::ostream {
 int stderr_ostream::write(const char *cstr)
 {
 	fprintf(stderr, "%s", cstr);
+	return strlen(cstr);
 }
 
 npambulant::npambulant(NPMIMEType mimetype, NPP pNPInstance, PRUint16 mode,
