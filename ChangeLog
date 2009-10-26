@@ -1,3 +1,10 @@
+2009-10-25 23:26  jackjansen
+
+	* Mac desktop application now also built with full shared libs.
+	  This needed work in internalize_dylibs too, as the libraries
+	  aren't installed yet and need to be picked up from the staging
+	  area.
+
 2009-10-23 14:12  keesblom
 
 	* Fixed DTD mapping, s.t. xerces now uses the cached DTD files.
