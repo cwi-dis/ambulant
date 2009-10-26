@@ -88,7 +88,7 @@ gui::sdl::sdl_audio_renderer::init()
 	// Step one - initialize the SDL library
 	err = SDL_Init(SDL_INIT_AUDIO| SDL_INIT_NOPARACHUTE);
 	if (err < 0) {
-		lib::logger::get_logger()->trace("sdl_audio_renderer.init: SDL_Init failed: error %d", err);
+	  lib::logger::get_logger()->trace("sdl_audio_renderer.init: SDL_Init failed: error  %s", SDL_GetError());
 		lib::logger::get_logger()->error(gettext("Cannot initialize SDL audio library"));
 		s_static_lock.leave();
 		return err;
