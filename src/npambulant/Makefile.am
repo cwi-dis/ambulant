@@ -250,7 +250,7 @@ npambulant_plugin_dir: .libs/$(NPAMBULANT)
 ##		mv $$i.0.0.0 $$i.0; \
 ##	done
 #	Copy in shared libraries and fix rpath
-	LD_LIBRARY_PATH=$(top_builddir)/src/libambulant/.libs \
+	LD_LIBRARY_PATH=$(top_builddir)/src/libambulant/.libs:$(top_builddir)/third_party_packages/installed/lib \
 		$(PYTHON) $(srcdir)/internalize_shlibs.py \
 		npambulant_plugin_dir/plugins
 #	Check that internalization worked

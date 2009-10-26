@@ -38,7 +38,6 @@ DEFAULT_RPATH=[
 	'/lib64',
 	'/usr/lib',
 	'/usr/lib64',
-	'/usr/lib/lib64'
 ]
 
 LINUX_BUNDLE_DIRS = (
@@ -74,10 +73,11 @@ class Internalizer:
 		self.verbose = False
 		self.work_done = False
 		
-		self.rpath = DEFAULT_RPATH[:]
+		self.rpath = []
 		env_rpath = os.getenv('LD_LIBRARY_PATH')
 		if env_rpath:
 			self.rpath += env_rpath.split(':')
+		self.rpath += DEFAULT_RPATH
 		
 	def add_standard(self):
 		for dirpath, dirnames, filenames in os.walk(self.run_dir):
