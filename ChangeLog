@@ -1,3 +1,17 @@
+2009-10-26 21:32  keesblom
+
+	* Added more detail in the logger error message in case SDL cannot
+	  initialize.
+
+2009-10-26 13:21  jackjansen
+
+	* Tweak for vc9.
+
+2009-10-26 13:20  keesblom
+
+	* Changed LD_LIBRARY_PATH s.t. our TPP libraries are preferred to
+	  any otherwise installed versions
+
 2009-10-25 23:26  jackjansen
 
 	* Mac desktop application now also built with full shared libs.
