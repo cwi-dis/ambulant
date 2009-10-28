@@ -43,8 +43,9 @@ gstreamer_audio_renderer::gstreamer_audio_renderer
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor *evp,
-	common::factories *factory)
-:	common::renderer_playable(context, cookie, node, evp),
+	common::factories *factory,
+	common::playable_factory_machdep *mdp)
+:	common::renderer_playable(context, cookie, node, evp, factory, mdp),
 	m_player(NULL),
 	m_is_playing(false),
 	m_is_paused(false),
@@ -65,7 +66,7 @@ gstreamer_audio_renderer::gstreamer_audio_renderer
 	lib::event_processor *evp,
 	common::factories* factory,
 	net::audio_datasource *ds)
-:	common::renderer_playable(context, cookie, node, evp),
+:	common::renderer_playable(context, cookie, node, evp, factory, NULL),
 	m_player(NULL),
 	m_is_playing(false),
 	m_is_paused(false),
@@ -80,7 +81,7 @@ gstreamer_audio_renderer::gstreamer_audio_renderer
 gstreamer_audio_renderer::~gstreamer_audio_renderer()
 {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("gstreamer_audio_renderer::~gstreamer_audio_renderer(0x%x) m_url=%s",  this, m_url.get_url().c_str());		
+	AM_DBG lib::logger::get_logger()->debug("gstreamer_audio_renderer::~gstreamer_audio_renderer(0x%x) m_url=%s",  this, m_url.get_url().c_str());
 	if (m_transition_engine) {
 		delete m_transition_engine;
 		m_transition_engine = NULL;
@@ -133,7 +134,8 @@ gstreamer_audio_renderer::is_supported(const lib::node *node)
 	if (mimetype == "audio/mpeg") // .mp3
 		return true;
 #else //WITH_NOKIA770
-	if (mimetype == "audio/wav") // .wav
+	if (mimetype == "audio/mpeg" // .mp3
+	 || mimetype == "audio/wav") // .wav
 		return true;
 #endif//WITH_NOKIA770
 	return false;
@@ -169,12 +171,13 @@ gstreamer_audio_renderer::is_playing()
 	return rv;
 }
 
-void
+bool
 gstreamer_audio_renderer::stop()
 {
 	m_lock.enter();
-	_stop();
+	bool rv = _stop();
 	m_lock.leave();
+	return rv;
 }
 
 void
@@ -186,7 +189,7 @@ gstreamer_audio_renderer::stopped()
 }
 
 void
-gstreamer_audio_renderer::pause()
+gstreamer_audio_renderer::pause(common::pause_display d)
 {
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_audio_renderer.pause(0x%x)", (void *)this);
 	m_lock.enter();
@@ -258,7 +261,7 @@ gstreamer_audio_renderer::_start(double where)
 	m_context->started(m_cookie, 0);
 }
 
-void
+bool
 gstreamer_audio_renderer::_stop()
 {
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_audio_renderer::stop(0x%x)",(void*)this);
@@ -267,6 +270,7 @@ gstreamer_audio_renderer::_stop()
 		m_player = NULL;
 	}
 	_stopped();
+	return false;
 }
 
 void

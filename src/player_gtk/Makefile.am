@@ -9,6 +9,7 @@ libambulant_core=-L$(ambulantlibdir) -lambulant
 libambulant_ffmpeg=-L$(ambulantlibdir) -lambulant_ffmpeg
 libambulant_live=-L$(ambulantlibdir) -lambulant_live
 libambulant_sdl=-L$(ambulantlibdir) -lambulant_sdl
+libambulant_gstreamer=-L$(ambulantlibdir) -lambulant_gstreamer
 libambulant_gtk=-L$(ambulantlibdir) -lambulant_gtk
 else
 # Otherwise we link the ambulant libraries statically.
@@ -16,6 +17,7 @@ libambulant_core=$(ambulantlibdir)/libambulant.a
 libambulant_ffmpeg=$(ambulantlibdir)/libambulant_ffmpeg.a
 libambulant_live=$(ambulantlibdir)/libambulant_live.a
 libambulant_sdl=$(ambulantlibdir)/libambulant_sdl.a
+libambulant_gstreamer=$(ambulantlibdir)/libambulant_gstreamer.a
 libambulant_gtk=$(ambulantlibdir)/libambulant_gtk.a
 endif
 
@@ -36,7 +38,7 @@ extra_ffmpeg_LDADD=
 endif
 
 if WITH_GSTREAMER
-extra_gstreamer_LDADD=$(GSTREAMER_LIBS)
+extra_gstreamer_LDADD=$(libambulant_gstreamer) $(GSTREAMER_LIBS)
 extra_gstreamer_DEFINES=-DWITH_GSTREAMER $(GSTREAMER_CFLAGS)
 else
 extra_gstreamer_LDADD=
@@ -142,7 +144,7 @@ AM_CPPFLAGS = \
 		-I$(top_srcdir)/include \
 		-I$(top_builddir)/include/ambulant/gui/gtk \
 		-I$(top_srcdir)/include/ambulant/gui/gtk
-		
+
 #------------------------------------------------------
 # More special case code for the Nokia 770: install the auxiliary files.
 if WITH_NOKIA770

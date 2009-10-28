@@ -7,6 +7,7 @@ libambulant_core=-L$(ambulantlibdir) -lambulant
 libambulant_ffmpeg=-L$(ambulantlibdir) -lambulant_ffmpeg
 libambulant_live=-L$(ambulantlibdir) -lambulant_live
 libambulant_sdl=-L$(ambulantlibdir) -lambulant_sdl
+libambulant_gstreamer=-L$(ambulantlibdir) -lambulant_gstreamer
 libambulant_gtk=-L$(ambulantlibdir) -lambulant_gtk
 libambulant_qt=-L$(ambulantlibdir) -lambulant_qt
 else
@@ -19,6 +20,7 @@ libambulant_core=
 libambulant_ffmpeg=
 libambulant_live=
 libambulant_sdl=
+libambulant_gstreamer=
 libambulant_gtk=
 libambulant_qt=
 endif

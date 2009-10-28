@@ -55,7 +55,8 @@ class gstreamer_audio_renderer : public common::renderer_playable {
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor *evp,
-	common::factories *factory);
+	common::factories *factory,
+	common::playable_factory_machdep *mdp);
 
 	gstreamer_audio_renderer(
 	common::playable_notification *context,
@@ -75,10 +76,13 @@ class gstreamer_audio_renderer : public common::renderer_playable {
 	
 	common::duration get_dur();
 	void start(double where);
-	void stop();
+	bool stop();
+//	void post_stop();
+//	void init_with_node(const lib::node *n);
+//	void preroll(double when, double where, double how_much);
 	void stopped();
 	void seek(double t);
-	void pause();
+	void pause(common::pause_display d=common::display_show);
 	void resume();
 //	void freeze() {};
 //	void speed_changed() {};
@@ -94,7 +98,7 @@ class gstreamer_audio_renderer : public common::renderer_playable {
 
   private:
 	void _start(double where);
-	void _stop();
+	bool _stop();
 	void _stopped();
 	void _seek(double t);
 	void _pause();
