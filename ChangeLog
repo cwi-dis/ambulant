@@ -1,3 +1,7 @@
+2009-10-28 11:17  keesblom
+
+	* Make gstreamer for .wav, .mp3 work again. Fixes #2886364.
+
 2009-10-27 17:05  jackjansen
 
 	* These files are long dead.
