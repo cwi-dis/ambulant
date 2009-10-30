@@ -1,6 +1,9 @@
 The following test sequences are mandatory before release, to check
 that at least everything we make public available works properly.
 
+Supported platforms for Ambulant player/plugin+installer:
+MacOS, WindowsCE (no plugin), WindowsXP(+ieambulant), Linux32, Linux64.
+
 A. Build Ambulant as if it would be a distributed version: enable as
    much supported features as possible (--with-live, --with-xerces,
    --with-plugins, --with-python, --with-xerces-plugin,
