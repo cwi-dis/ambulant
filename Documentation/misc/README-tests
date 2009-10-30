@@ -1,15 +1,89 @@
 The following test sequences are mandatory before release, to check
 that at least everything we make public available works properly.
 
-Supported platforms for Ambulant player/plugin+installer:
-MacOS, WindowsCE (no plugin), WindowsXP(+ieambulant), Linux32, Linux64.
+The term "platform" can be ambiguous in the case of ambulant, because
+some installers are intended to run on rather diferent platforms, and
+we want to test on the most common of those platforms.
 
-A. Build Ambulant as if it would be a distributed version: enable as
-   much supported features as possible (--with-live, --with-xerces,
+Here is a suggested breakdown for where each installer is expected to
+be used. The installer should be run on that platform, and the tests
+described below should be executed. At least test sets B, D and E should
+be run for all platforms.
+
+1. Windows desktop installer.
+	1.1. Install and test on virgin Windows XP
+	1.2. Install and test on virgin Windows Vista
+	1.3. Install and test on virgin Windows 7
+	
+	Make sure that (on at least one platform) all tests pass with ffmpeg/sdl renderers.
+	Not all tests will pass with DirectX, but the Welcome and Demo documents should run.
+
+2. MacOSX 10.4 desktop installer.
+	2.1. Install and test on PPC mac running 10.4
+	2.2. Install and test on Intel mac running 10.5
+	
+	Time permitting, try the other two combinations as well.
+	
+	Make sure that all tests pass with ffmpeg/sdl renderers as well as quicktime
+	renderers.
+	
+3. MacOSX 10.6 desktop installer.
+	3.1. Install on Intel mac running 10.6 (in default 64-bit mode)
+	3.2. Set player to 32-bit mode, test again.
+	
+	For 32-bit mode, test quicktime renderer.
+	
+4. Windows Mobile 5 installer.
+	4.1. Install and test on at least one WM5 device.
+	
+5. Source distribution.
+	5.1. Build on most recent 32-bit Fedora Core distribution and test.
+	5.2. Build on most recent 32-bit Ubuntu distribution and test.
+	5.3. Build on at least one recent 64-bit Linux distribution and test.
+	5.4. Build on at least one recent Windows machine with Visual Studio 2008. Do minimal testing.
+	5.5. Build on at least one recent Mac (10.6). Do minimal testing.
+	
+6. Windows Firefox plugin.
+	6.1. Install and test on virgin Windows XP
+	6.2. Install and test on virgin Windows Vista
+	6.3. Install and test on virgin Windows 7
+	6.4. Install and test one at least one Windows machine that has Visual Studio installed.
+	
+7. Linux Firefox plugin (32-bit).
+	7.1. Install and test in most recent FC distribution (with included Firefox).
+	7.2. Install and test in most recent Ubuntu distribution (with included Firefox).
+	
+8. Linux Firefox plugin (64-bit)
+	8.1. Install and test in at least one recent Linux 64-bit distribution.
+	
+9. MacOSX 10.4 Safari plugin.
+	9.1. Install and test on PPC mac running 10.4
+	9.2. Install and test on Intel mac running 10.5
+
+10. MacOSX 10.6 Safari plugin.
+	10.1. Install and test on Intel mac running 10.6 with Safari in 64-bit mode.
+	10.2. Test again, now with Safari in 32-bit mode.
+	
+11. Windows IE plugin.
+	11.1. Install and test on virgin Windows XP
+	11.2. Install and test on virgin Windows Vista
+	11.3. Install and test on virgin Windows 7
+	
+	If possible, test on at least one machine with IE7.
+	
+
+A.	(only for source distribution) build default: run the
+	build-third-party-packages.py script and "configure", "make".
+	This is the build that should be tested with the rest of the tests.
+	(Rationale: non-guru Linux users should have a reasonable chance of
+	building a working Ambulant).
+	
+	Next, build with as many options as possible (--with-live, --with-xerces,
    --with-plugins, --with-python, --with-xerces-plugin,
    --with-python-plugin), etc., depending on platform.
    Clear any preferences file in .ambulant  and start AmbulantPlayer.
    You should see the initial Welcome demo.
+   (Rationale: everything should at least be built once).
 
 B. Make sure that the demo tests work (and player controls as well):
    1. Welcome.smil
@@ -19,7 +93,7 @@ B. Make sure that the demo tests work (and player controls as well):
    In addition, in ambulant-documents:
    4. Flashlight-Desktop forward/backward navigation
 
-C. Make sure that the zipped versions of our public demos work properly,
+C. Make sure that the zipped (or plugin) versions of our public demos work properly,
    these are available at http://ambulantplayer.org/Demos.shtml:
    1. smilText
    2. PanZoom
