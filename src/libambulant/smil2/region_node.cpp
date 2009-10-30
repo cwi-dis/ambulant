@@ -136,8 +136,16 @@ region_node::~region_node()
 void
 region_node::fix_from_region_node(const region_node *parent)
 {
+//XXX Wrong ! This will not work for animation.
 	set_soundlevel(parent->get_soundlevel());
 	set_soundalign(parent->get_soundalign());
+#ifdef WITH_SMIL30
+	set_mediaopacity(parent->get_mediaopacity());
+	set_mediabgopacity(parent->get_mediabgopacity());
+	set_chromakey(parent->get_chromakey());
+	set_chromakeyopacity(parent->get_chromakeyopacity());
+	set_chromakeytolerance(parent->get_chromakeytolerance());
+#endif//WITH_SMIL30
 }
 
 bool
