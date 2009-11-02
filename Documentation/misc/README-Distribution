@@ -194,30 +194,55 @@ Windows desktop also needs:
 Windows CE needs:
 - Welcome from Extras
 
-Creating the MacOSX installer
-=============================
+Creating the MacOSX 10.6 installer
+==================================
 
-- First build all the needed third party packages as universal
-  binaries: ffmpeg, live, sdl, expat, xerces.
-  third_party_packages/readme.txt has (terse) instructions on
-  how to do this.
-- Create a directory to build in, for example "build-dist".
-- Build the whole source tree, don't forget options for
-  enabling xerces, etc. You want to build with Xerces in a plugin,
-  live support, no Python support, only fast internal DOM acces,
-  10.4 support, etc.
+- Create a directory to build in, for example "build-dist-106".
+- Create a third_party_packages in there.
+- In third_party_packages, build the required third party packages, with
+
+    python ../../third_party_packages/build-third-party-packages.py mac10.6
+    
+- Configure (in build-dist-106) with
+
+    ../configure --with-macfat --with-xerces-plugin --disable-dependency-tracking
   
-  XXXWRONG
-  Here's the current commands:
+- make
+- Install the player, "sudo make install" in src/player_macos.
+  IMPORTANT: at the end of make install, a few calls to "testdependencies"
+  are made. These check that you don't link to non-standard libraries.
+  Make sure these calls produce no output.
+- To create the installer, run the script in installers/sh-macos.
+  Getting the background picture correct is a bit of a trick:
+  - After the disk is mounted, cd to it (terminal window)
+  - mv .folderbg/folderbg.png folderbg.png
+  - In the finder, set it as background picture
+  - mv folderbg.png .folderbg/folderbg.png
+  - align the icons, etc.
+  - cd $HOME
+  - unmount, and continue the script.
+  
+Creating the MacOSX 10.4 installer
+==================================
 
-  export SYSROOT=/Developer/SDKs/MacOSX10.4u.sdk
-  export MACOSX_DEPLOYMENT_TARGET=10.4
-  ../configure -C --with-ffmpeg=third_party_packages/ffmpeg-universal \
-	--with-smil30 --with-universalsdk=$SYSROOT --with-live555 \
-	-disable-dependency-tracking --with-libfaad \
-	--with-xerces --with-xerces-plugin \
-	--without-external-dom
+These instructions assume you are building on an Intel 10.5 mac.
 
+- Create a directory to build in, for example "build-dist-104".
+- Create a third_party_packages in there.
+- In third_party_packages, build the required third party packages, with
+
+    export MACOSX_DEPLOYMENT_TARGET=10.4
+    python ../../third_party_packages/build-third-party-packages.py mac10.4
+    
+- Configure (in build-dist-106) with
+
+    export MACOSX_DEPLOYMENT_TARGET=10.4
+    ../configure --with-macfat --with-xerces-plugin --disable-dependency-tracking
+  
+- make:
+    export MACOSX_DEPLOYMENT_TARGET=10.4
+    make
+    
 - Install the player, "sudo make install" in src/player_macos.
   IMPORTANT: at the end of make install, a few calls to "testdependencies"
   are made. These check that you don't link to non-standard libraries.
