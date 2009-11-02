@@ -6,15 +6,9 @@ ambulantlibdir=$(top_builddir)/src/libambulant/.libs
 if WITH_AMBULANT_SHARED_LIB
 # If we link with shared libs: use these. Needed for plugin support.
 libambulant_core=-L$(ambulantlibdir) -lambulant
-libambulant_ffmpeg=-L$(ambulantlibdir) -lambulant_ffmpeg
-libambulant_live=-L$(ambulantlibdir) -lambulant_live
-libambulant_sdl=-L$(ambulantlibdir) -lambulant_sdl
 else
 # Otherwise we link the ambulant libraries statically.
-libambulant_core=$(ambulantlibdir)/libambulant.a
-libambulant_ffmpeg=$(ambulantlibdir)/libambulant_ffmpeg.a
-libambulant_live=$(ambulantlibdir)/libambulant_live.a
-libambulant_sdl=$(ambulantlibdir)/libambulant_sdl.a
+libambulant_core=
 endif
 
 # The default (no-op) plugin. only build when asked to buid
