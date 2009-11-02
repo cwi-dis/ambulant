@@ -118,7 +118,9 @@ BUILDAPPNAME=AmbulantPlayer
 # Script to test dependencies
 TESTDEP=$(srcdir)/testdependencies
 
-cocoambulant_bundle: $(BUILDAPPNAME).app
+# The target all-am is magic for automake
+
+all-am: $(BUILDAPPNAME).app
 $(BUILDAPPNAME).app: cocoambulant_executable
 	mkdir -p $(BUILDAPPNAME).app/Contents/MacOS
 	mkdir -p $(BUILDAPPNAME).app/Contents/Resources
@@ -246,7 +248,7 @@ AM_CPPFLAGS = \
 dist-hook:
 	rm -rf `find $(distdir) -name CVS`
 	
-install-exec-hook: cocoambulant_bundle
+install-exec-hook: $(BUILDAPPNAME).app
 	rm -rf $(DESTDIR)/Applications/$(APPNAME).app
 	cp -R $(BUILDAPPNAME).app $(DESTDIR)/Applications/$(APPNAME).app
 

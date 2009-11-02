@@ -35,6 +35,7 @@ libambulant_live_la_SOURCES = \
 	net/rtsp_factory.cpp
 live_includes = $(LIVE_CFLAGS)
 libambulant_live_la_LDFLAGS=$(LIVE_LIBS) $(libambulant_ffmpeg) $(libambulant_core) 
+libambulant_live_la_DEPENDENCIES=libambulant_ffmpeg.la libambulant.la
 else
 toolkit_live_libraries =
 live_includes =
@@ -76,6 +77,7 @@ libambulant_cocoa_la_SOURCES = \
 	gui/cocoa/cocoa_audio.m \
 	gui/cocoa/cocoa_video.m \
 	gui/cocoa/cocoa_dsvideo.m
+libambulant_cocoa_la_DEPENDENCIES=libambulant.la
 else
 toolkit_cocoa_libraries =
 platlibs =
@@ -93,6 +95,7 @@ libambulant_cg_la_SOURCES = \
 	gui/cg/cg_text.m \
 	gui/cg/cg_dsvideo.m
 libambulant_cg_la_LDFLAGS=$(libambulant_core)
+libambulant_cg_la_DEPENDENCIES=libambulant.la
 else
 toolkit_cg_libraries =
 platlibs =
@@ -113,7 +116,7 @@ libambulant_gtk_la_SOURCES = \
 	gui/gtk/gtk_video_renderer.cpp \
 	gui/gtk/gtk_factory.cpp
 libambulant_gtk_la_LDFLAGS=$(libambulant_live) $(libambulant_ffmpeg) $(libambulant_core) $(GTK_LIBS)
-
+libambulant_gtk_la_DEPENDENCIES=libambulant_live.la libambulant_ffmpeg.la libambulant.la
 else
 gtkincludes=
 toolkit_gtk_libraries =
@@ -137,7 +140,7 @@ libambulant_qt_la_SOURCES = \
 	gui/qt/qt_video_renderer.cpp \
 	gui/qt/qt_factory.cpp
 libambulant_qt_la_LDFLAGS=$(libambulant_live) $(libambulant_ffmpeg) $(libambulant_core) $(QT_LIBS)
-
+libambulant_qt_la_DEPENDENCIES=libambulant_live.la libambulant_ffmpeg.la libambulant.la
 else
 qtincludes=
 toolkit_qt_libraries =
@@ -152,6 +155,7 @@ endif
 if WITH_SDL
 toolkit_sdl_libraries = libambulant_sdl.la
 libambulant_sdl_la_LDFLAGS =  $(SDL_LIBS) $(libambulant_core)
+libambulant_sdl_la_DEPENDENCIES=libambulant.la
 sdlincludes = -DWITH_SDL $(SDL_CFLAGS)
 libambulant_sdl_la_SOURCES = \
     gui/SDL/sdl.cpp \
@@ -165,6 +169,7 @@ if WITH_FFMPEG
 toolkit_ffmpeg_libraries = libambulant_ffmpeg.la
 
 libambulant_ffmpeg_la_LDFLAGS = $(FFMPEG_LIBS) $(libambulant_core)
+libambulant_ffmpeg_la_DEPENDENCIES=libambulant.la
 
 ffmpegincludes = -DWITH_FFMPEG -DWITH_FFMPEG_AVFORMAT $(FFMPEG_CFLAGS)
 
@@ -183,6 +188,7 @@ if WITH_GSTREAMER
 toolkit_gstreamer_libraries = libambulant_gstreamer.la
 
 libambulant_gstreamer_la_LDFLAGS = -lgstreamer-0.10 $(libambulant_core)
+libambulant_gstreamer_la_DEPENDENCIES=libambulant.la
 gstreamer_includes = \
     -DWITH_GSTREAMER \
     -I/usr/include/gstreamer-0.10 \
