@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 45;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -72,7 +72,7 @@
 		04C0A45C0CD2942F00CEDCA9 /* libambulant_cocoa.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libambulant_cocoa.dylib; path = "../../build-webkitplugin/src/libambulant/.libs/libambulant_cocoa.dylib"; sourceTree = SOURCE_ROOT; };
 		04C0A45D0CD2942F00CEDCA9 /* libambulant.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libambulant.dylib; path = "../../build-webkitplugin/src/libambulant/.libs/libambulant.dylib"; sourceTree = SOURCE_ROOT; };
 		04C0A45E0CD2942F00CEDCA9 /* libambulant_live.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libambulant_live.dylib; path = "../../build-webkitplugin/src/libambulant/.libs/libambulant_live.dylib"; sourceTree = SOURCE_ROOT; };
-		04C0A4670CD2948E00CEDCA9 /* libambulant_sdl.dylib */ = {isa = PBXFileReference; lastKnownFileType = file; name = libambulant_sdl.dylib; path = "../../build-webkitplugin/src/libambulant/.libs/libambulant_sdl.dylib"; sourceTree = SOURCE_ROOT; };
+		04C0A4670CD2948E00CEDCA9 /* libambulant_sdl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libambulant_sdl.dylib; path = "../../build-webkitplugin/src/libambulant/.libs/libambulant_sdl.dylib"; sourceTree = SOURCE_ROOT; };
 		04C0A4990CD2A19B00CEDCA9 /* pyamplugin_webkitscripting */ = {isa = PBXFileReference; lastKnownFileType = folder; name = pyamplugin_webkitscripting; path = PlugIns/pyamplugin_webkitscripting; sourceTree = "<group>"; };
 		04C0A4B20CD2A44A00CEDCA9 /* libamplugin_python.0 */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.bundle"; name = libamplugin_python.0; path = "../../build-webkitplugin/src/plugins/.libs/libamplugin_python.0"; sourceTree = SOURCE_ROOT; };
 		04C0A4BC0CD2A61700CEDCA9 /* libamplugin_python.la */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = libamplugin_python.la; path = "../../build-webkitplugin/src/plugins/libamplugin_python.la"; sourceTree = SOURCE_ROOT; };
@@ -85,7 +85,7 @@
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		32DBCF630370AF2F00C91783 /* AmbulantWebKitPlugin_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbulantWebKitPlugin_Prefix.pch; sourceTree = "<group>"; };
 		8D5B49B6048680CD000E48DA /* AmbulantWebKitPlugin.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AmbulantWebKitPlugin.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
-		8D5B49B7048680CD000E48DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Info.plist; sourceTree = "<group>"; };
+		8D5B49B7048680CD000E48DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -269,7 +269,7 @@
 		089C1669FE841209C02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "AmbulantWebKitPlugin" */;
-			compatibilityVersion = "Xcode 2.4";
+			compatibilityVersion = "Xcode 3.1";
 			hasScannedForEncodings = 1;
 			mainGroup = 089C166AFE841209C02AAC07 /* AmbulantWebKitPlugin */;
 			projectDirPath = "";
@@ -358,57 +358,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		040310390CD891E2007B3551 /* Debug-i686 */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH)";
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
-				SDKROOT = "";
-			};
-			name = "Debug-i686";
-		};
-		0403103A0CD891E2007B3551 /* Debug-i686 */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = i386;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = AmbulantWebKitPlugin_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"AM_PREFER_FFMPEG=1",
-					"WITH_LTDL_PLUGINS=1",
-					"WITH_EXTERNAL_DOM=1",
-					"WITH_SDL=1",
-					"WITH_FFMPEG=1",
-					"WITH_EXPAT=1",
-					"WITH_OVERLAY_WINDOW=1",
-					"WITH_FFMPEG_AVFORMAT=1",
-					"WITH_SMIL30=1",
-				);
-				HEADER_SEARCH_PATHS = ../../include;
-				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = "$(HOME)/Library/Internet Plug-Ins";
-				LIBRARY_SEARCH_PATHS = (
-					"$(PREBUILT_AMBULANT_ROOT)/src/libambulant/.libs",
-					/usr/local/lib,
-					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/expat-unix/lib",
-					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/ffmpeg-universal/libavcodec",
-					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/ffmpeg-universal/libavformat",
-					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/ffmpeg-universal/libavutil",
-				);
-				PRODUCT_NAME = AmbulantWebKitPlugin;
-				WRAPPER_EXTENSION = plugin;
-				ZERO_LINK = NO;
-			};
-			name = "Debug-i686";
-		};
-		046E65B60EE4976800078DE3 /* Release-NoPython */ = {
+		046E65B60EE4976800078DE3 /* Release-10.4 */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
@@ -418,11 +368,11 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = macosx10.4;
 			};
-			name = "Release-NoPython";
+			name = "Release-10.4";
 		};
-		046E65B70EE4976800078DE3 /* Release-NoPython */ = {
+		046E65B70EE4976800078DE3 /* Release-10.4 */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
@@ -458,26 +408,29 @@
 				PRODUCT_NAME = AmbulantWebKitPlugin;
 				WRAPPER_EXTENSION = plugin;
 			};
-			name = "Release-NoPython";
+			name = "Release-10.4";
 		};
-		1DEB913B08733D840010E9CD /* Debug */ = {
+		04E8E3DA109F3A6A00B7C8C9 /* Release-10.6 */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = "";
+			};
+			name = "Release-10.6";
+		};
+		04E8E3DB109F3A6A00B7C8C9 /* Release-10.6 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AmbulantWebKitPlugin_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"WITH_EXTERNAL_DOM=1",
 					"AM_PREFER_FFMPEG=1",
 					"WITH_LTDL_PLUGINS=1",
+					"WITH_EXTERNAL_DOM=1",
 					"WITH_SDL=1",
 					"WITH_FFMPEG=1",
 					"WITH_EXPAT=1",
@@ -498,11 +451,10 @@
 				);
 				PRODUCT_NAME = AmbulantWebKitPlugin;
 				WRAPPER_EXTENSION = plugin;
-				ZERO_LINK = NO;
 			};
-			name = Debug;
+			name = "Release-10.6";
 		};
-		1DEB913C08733D840010E9CD /* Release */ = {
+		1DEB913C08733D840010E9CD /* Release-10.4-Python */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
@@ -538,23 +490,9 @@
 				PRODUCT_NAME = AmbulantWebKitPlugin;
 				WRAPPER_EXTENSION = plugin;
 			};
-			name = Release;
+			name = "Release-10.4-Python";
 		};
-		1DEB913F08733D840010E9CD /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = (
-					i386,
-					ppc,
-				);
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
-				SDKROOT = "";
-			};
-			name = Debug;
-		};
-		1DEB914008733D840010E9CD /* Release */ = {
+		1DEB914008733D840010E9CD /* Release-10.4-Python */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
@@ -564,9 +502,9 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = macosx10.4;
 			};
-			name = Release;
+			name = "Release-10.4-Python";
 		};
 /* End XCBuildConfiguration section */
 
@@ -574,24 +512,22 @@
 		1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "AmbulantWebKitPlugin" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1DEB913B08733D840010E9CD /* Debug */,
-				0403103A0CD891E2007B3551 /* Debug-i686 */,
-				1DEB913C08733D840010E9CD /* Release */,
-				046E65B70EE4976800078DE3 /* Release-NoPython */,
+				1DEB913C08733D840010E9CD /* Release-10.4-Python */,
+				046E65B70EE4976800078DE3 /* Release-10.4 */,
+				04E8E3DB109F3A6A00B7C8C9 /* Release-10.6 */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Release-NoPython";
+			defaultConfigurationName = "Release-10.6";
 		};
 		1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "AmbulantWebKitPlugin" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1DEB913F08733D840010E9CD /* Debug */,
-				040310390CD891E2007B3551 /* Debug-i686 */,
-				1DEB914008733D840010E9CD /* Release */,
-				046E65B60EE4976800078DE3 /* Release-NoPython */,
+				1DEB914008733D840010E9CD /* Release-10.4-Python */,
+				046E65B60EE4976800078DE3 /* Release-10.4 */,
+				04E8E3DA109F3A6A00B7C8C9 /* Release-10.6 */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Release-NoPython";
+			defaultConfigurationName = "Release-10.6";
 		};
 /* End XCConfigurationList section */
 	};
