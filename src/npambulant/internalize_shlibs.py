@@ -270,22 +270,30 @@ def main():
 	norun = False
 	verbose = False
 	check = False
-	if len(sys.argv) > 2:
-		if sys.argv[1] == '-v':	
-			verbose = True
-			del sys.argv[1]
-		if sys.argv[1] == '-n':
-			norun = True
-			del sys.argv[1]
-		if sys.argv[1] == '-c':
-			check = True
-			del sys.argv[1]
-	if len(sys.argv) != 2:
-		print 'Usage: %s [-vnc] bundlepath '% sys.argv[0]
-		print 'Recursively slurp shared libraries used in a directory.'
+	instlibdir = None
+	reallibdir = None
+	try:
+		opts, args = getopt.getopt(sys.argv[1:], 'vncs:')
+		for o, v in opts:
+			if o == '-v':	
+				verbose = True
+			if o == '-n':
+				norun = True
+			if o == '-c':
+				check = True
+			if o == '-s':
+				if not ':' in v:
+					raise getopt.error
+				instlibdir, reallibdir = v.split(':')
+		if len(args) != 1:
+			raise getopt.error
+	except getopt.error:
+		print 'Usage: %s [-vnc] [-s instlibdir:reallibdir] bundlepath '% sys.argv[0]
+		print 'Recursively slurp dylibs used in a bundle.'
 		print '-n\tNo-run, only print actions, do not do the work'
 		print '-v\tVerbose, print actions as well as doing them'
 		print '-c\tCheck, do nothing, print nothing, return nonzero exit status if there was work'
+		print '-s\tSet library directory substitution (for uninstalled libraries)'
 		sys.exit(1)
 	internalizer = Internalizer(os.path.realpath(sys.argv[1]), LINUX_BUNDLE_DIRS)
 	if norun:
