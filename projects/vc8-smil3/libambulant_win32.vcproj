@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="libambulant_win32"
 	ProjectGUID="{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}"
 	RootNamespace="libambulant_win32"
 	Keyword="Win32Proj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -203,6 +204,8 @@
 				AdditionalLibraryDirectories="..\..\lib\win32"
 				IgnoreDefaultLibraryNames="LIBC.lib;LIBCMT.lib"
 				OptimizeReferences="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="..\..\lib\win32\libambulant_shwin32.lib"
 			/>
 			<Tool
@@ -222,9 +225,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -258,7 +258,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\expat\lib;..\..\third_party_packages\jpeg;..\..\third_party_packages\lpng128;..\..\third_party_packages\zlib;&quot;..\..\third_party_packages\xerces-c-src_2_8_0\src\&quot;;..\..\third_party_packages\mp3lib;&quot;..\..\third_party_packages\vld-10&quot;"
+				AdditionalIncludeDirectories="..\..\include;..\..\third_party_packages\expat\lib;..\..\third_party_packages\jpeg;..\..\third_party_packages\lpng128;..\..\third_party_packages\zlib;&quot;..\..\third_party_packages\xerces-c-src_2_8_0\src\&quot;;..\..\third_party_packages\mp3lib;&quot;..\..\third_party_packages\vld-10&quot;;..\..\third_party_packages\SDL\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_AMBULANT;XML_STATIC;AMBULANT_BUILD_DLL;WITH_EXPAT;WITH_XERCES;WITH_XERCES_BUILTIN;WITH_HTML_WIDGET;WITH_WINDOWS_PLUGINS;WITH_SMIL30;WITH_SEAMLESS_PLAYBACK;WITH_CLOCK_SYNC"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="true"
@@ -285,6 +285,8 @@
 				IgnoreDefaultLibraryNames="LIBC.lib;LIBCMT.lib"
 				GenerateDebugInformation="true"
 				OptimizeReferences="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="..\..\lib\win32\libambulant_shwin32_D.lib"
 			/>
 			<Tool
@@ -304,9 +306,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
