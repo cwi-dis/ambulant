@@ -45,7 +45,7 @@ ffmpeg:
 	
 	The easiest way to get this is to download the prebuilt version from
 	our sourceforge download page. Package "ffmpeg for Ambulant", release
-	"20070828-win32-prebuilt".
+	"20091008-win32-prebuilt"
 
 	If you want to build from source, follow the build instructions on 
 	<http://ffmpeg.arrozcru.org/wiki/index.php>. There are other webpages
