@@ -222,8 +222,24 @@ Creating the MacOSX 10.6 installer
   - cd $HOME
   - unmount, and continue the script.
   
+Creating the WebKit/Safari 10.6 plugin
+======================================
+
+- Make sure the prerequisites are built, as above.
+- Make sure the 10.6 desktop build has been done.
+- Make a link to the desktop build directory:
+
+    rm -f build-webkitplugin
+    ln -s build-dist-106 build-webkitplugin
+- Open src/webkitplugin/AmbulantWebKitPlugin.xcodeproj
+- Build target "Release-10.6".
+- You will find the plugin in "~/Library/Internet Plugins".
+- Put into a zipfile Ambulant-1.0-webkit-mac.zip (replacing
+  1.0 with current version number, of course)
+
 Creating the MacOSX 10.4 installer
 ==================================
+XXXUNTESTED
 
 These instructions assume you are building on an Intel 10.5 mac.
 
@@ -257,31 +273,21 @@ These instructions assume you are building on an Intel 10.5 mac.
   - cd $HOME
   - unmount, and continue the script.
   
-Creating the WebKit/Safari plugin
-=================================
+Creating the WebKit/Safari 10.4 plugin
+======================================
+XXXUNTESTED
 
-  XXXWRONG
 - Make sure the prerequisites are built, as above.
-- Create the directory to build in. this must be called "build-webkitplugin",
-  if it's different you have to fix the xcode project, below.
-- Build a slightly different configuration from above, with
+- Make sure the 10.4 desktop build has been done.
+- Make a link to the desktop build directory:
 
-  export SYSROOT=/Developer/SDKs/MacOSX10.4u.sdk
-  export MACOSX_DEPLOYMENT_TARGET=10.4
-  ../configure -C --with-ffmpeg=third_party_packages/ffmpeg-universal \
-	--with-smil30 --with-universalsdk=$SYSROOT --with-live555 \
-	-disable-dependency-tracking --with-libfaad \
-	--with-xerces --with-xerces-plugin \
-	--with-python=/usr/bin/python  --with-python-plugin \
-	--with-webkit-dom --with-webkit-plugin
-	
-- Build the libraries ("make" in the build directory), *BUT DON'T INSTALL*.
-  You may have to build pyamplugin separately, without the MACOSX_DEPLOYMENT_TARGET
-  variable set.
-- In XCode, open src/webkit_plugin/AmbulantWebKitPlugin.xcodeproj and build the
-  Release target.
+    rm -f build-webkitplugin
+    ln -s build-dist-104 build-webkitplugin
+- Open src/webkitplugin/AmbulantWebKitPlugin.xcodeproj
+- Build target "Release-10.4".
 - You will find the plugin in "~/Library/Internet Plugins".
-- Put into a z
+- Put into a zipfile Ambulant-1.0-webkit-mac104.zip (replacing
+  1.0 with current version number, of course)
 
 Creating the Linux installer
 ============================
@@ -291,8 +297,8 @@ but as we have done one before we should write down the procedure here.
 
 Creating the Firefox plugin on Linux
 ====================================
+XXXWRONG
 
-  XXXWRONG
 - download xulrunner-sdk from mozilla.org into third-party-packages
 - as above, configure --with-npambulant [other options]; make;make install
 - TEMP FIX: cd src/npambulant;./link-patch;cp npambulant.so <install-dir, see below>
@@ -303,6 +309,7 @@ Creating the Firefox plugin on Linux
   
 Creating the Windows desktop/FF/IE installers
 =============================================
+XXXUNTESTED
 
 Build the player. Make sure you are building a *ReleaseShlib* player,
 not a *Debug* or *Release* player.
@@ -319,6 +326,7 @@ these manually before building the installer.
 
 Creating the Windows CE installer
 =================================
+XXXUNTESTED
 
 Build the player. Make sure you are building a *Release* player,
 not a *Debug* player.
@@ -335,26 +343,21 @@ precise. If you save yourself a few minute of effort by not testing
 something or not reporting a problem this may well result in an extra
 bugfix release later (which will cost everyone another 2 days or so of work).
 
+Also read README-tests, which has more information on the minimal testing to
+be done.
+
 - IMPORTANT: while we are testing distributions we want to make absolutely
   sure that any bugs are either (a) fixed or (b) acknowledged as known bugs.
   Therefore, if you find a bug that you think may be critical you *must*
   submit a bug report with high priority and assign to the release czar
   (probably Jack).
 
-- The Mac player must definitely be tested on a virgin machine,
-  to ensure there are no dependencies on dynamic libraries in /usr/local
-  or something like that.
-  
-- The Mac player must also be tested on older MacOS releases (at least the
-  oldest supported), and either be made to run or the minimum required
-  OS version adapted.
-  
 - On all platforms, test either on a virgin machine or at least
   clear out preferences before testing (unix: $HOME/.ambulant;
   mac: ~/Library/Preferences/org.ambulantplayer.ambulantplayer.plist;
   windows: HKEY_CURRENT_USER\Software\Ambulant\AmbulantPlayer in the registry).
   
-- On windows, test on at least Win98, Win2K and WinXP.
+- On windows, test on at least WinXP, Vista, Windows7.
   
 - Make sure Welcome plays at first run. Check that the preferences have
   sensible defaults (log level: trace, parser: expat, log window: closed).
@@ -373,12 +376,12 @@ bugfix release later (which will cost everyone another 2 days or so of work).
 - On each platform, check that the version numbers are correct in things
   like the about dialog, Get Info (Properties) in the Finder (Explorer), etc.
 
-- We can use vin.cst.cwi.nl to test it on newer distributions then our desktop.
-  (at this moment fedora core 3)
-
 IMPORTANT: for each distribution, compare the size with the previous distribution
 for that platform. If the new one is any smaller, or much bigger, think why
 this could be the case. If you cannot think of a very good reason: investigate!
+
+IMPORTANT: for the final go/nogo, make sure to run the tests from README-tests
+with the final candidate installer.
   
 Uploading the distributions
 ===========================
