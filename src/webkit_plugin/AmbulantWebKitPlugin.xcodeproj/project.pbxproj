@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		040DE08F0CD533A300A68D91 /* libambulant_sdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B290958C23900C194EE /* libambulant_sdl.a */; };
 		042AF3D4095AFF780003E706 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D5B49B7048680CD000E48DA /* Info.plist */; };
-		045D0B350958C26800C194EE /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B340958C26800C194EE /* QuickTime.framework */; };
+		045D0B350958C26800C194EE /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B340958C26800C194EE /* QuickTime.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		045D0B800958C53F00C194EE /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 045D0B7E0958C53F00C194EE /* mainloop.cpp */; };
 		045D0B930958C71E00C194EE /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B920958C71E00C194EE /* libexpat.a */; };
 		0471CC4C0EF5B60C00DBDE51 /* libintl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B5B0958C36B00C194EE /* libintl.a */; };
@@ -377,8 +377,9 @@
 					"WITH_FFMPEG=1",
 					"WITH_EXPAT=1",
 					"WITH_OVERLAY_WINDOW=1",
-					"WITH_FFMPEG_AVFORMAT=1",
 					"WITH_SMIL30=1",
+					"WITH_CLOCK_SYNC=1",
+					"WITH_SEAMLESS_PLAYBACK=1",
 				);
 				HEADER_SEARCH_PATHS = ../../include;
 				INFOPLIST_FILE = Info.plist;
@@ -392,10 +393,62 @@
 			};
 			name = "Release-10.4";
 		};
+		049CF7FE10A03E2800E6593B /* Debug-10.6 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					x86_64,
+					i386,
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = "";
+			};
+			name = "Debug-10.6";
+		};
+		049CF7FF10A03E2800E6593B /* Debug-10.6 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					x86_64,
+					i386,
+				);
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = AmbulantWebKitPlugin_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"AM_PREFER_FFMPEG=1",
+					"WITH_LTDL_PLUGINS=1",
+					"WITH_EXTERNAL_DOM=1",
+					"WITH_SDL=1",
+					"WITH_FFMPEG=1",
+					"WITH_EXPAT=1",
+					"WITH_OVERLAY_WINDOW=1",
+					"WITH_SMIL30=1",
+					"WITH_CLOCK_SYNC=1",
+					"WITH_SEAMLESS_PLAYBACK=1",
+				);
+				HEADER_SEARCH_PATHS = ../../include;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Internet Plug-Ins";
+				LIBRARY_SEARCH_PATHS = (
+					"$(PREBUILT_AMBULANT_ROOT)/src/libambulant/.libs",
+					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/installed/lib",
+				);
+				PRODUCT_NAME = AmbulantWebKitPlugin;
+				WRAPPER_EXTENSION = plugin;
+			};
+			name = "Debug-10.6";
+		};
 		04E8E3DA109F3A6A00B7C8C9 /* Release-10.6 */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = (
+					x86_64,
+					i386,
+				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
@@ -406,10 +459,6 @@
 		04E8E3DB109F3A6A00B7C8C9 /* Release-10.6 */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					x86_64,
-					i386,
-				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AmbulantWebKitPlugin_Prefix.pch;
@@ -421,8 +470,9 @@
 					"WITH_FFMPEG=1",
 					"WITH_EXPAT=1",
 					"WITH_OVERLAY_WINDOW=1",
-					"WITH_FFMPEG_AVFORMAT=1",
 					"WITH_SMIL30=1",
+					"WITH_CLOCK_SYNC=1",
+					"WITH_SEAMLESS_PLAYBACK=1",
 				);
 				HEADER_SEARCH_PATHS = ../../include;
 				INFOPLIST_FILE = Info.plist;
@@ -493,6 +543,7 @@
 				1DEB913C08733D840010E9CD /* Release-10.4-Python */,
 				046E65B70EE4976800078DE3 /* Release-10.4 */,
 				04E8E3DB109F3A6A00B7C8C9 /* Release-10.6 */,
+				049CF7FF10A03E2800E6593B /* Debug-10.6 */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = "Release-10.6";
@@ -503,6 +554,7 @@
 				1DEB914008733D840010E9CD /* Release-10.4-Python */,
 				046E65B60EE4976800078DE3 /* Release-10.4 */,
 				04E8E3DA109F3A6A00B7C8C9 /* Release-10.6 */,
+				049CF7FE10A03E2800E6593B /* Debug-10.6 */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = "Release-10.6";

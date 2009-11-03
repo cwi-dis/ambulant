@@ -77,9 +77,8 @@ mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *a
 
     // Order the factories according to the preferences
     common::preferences *prefs = common::preferences::get_preferences();
-    if (prefs->m_prefer_ffmpeg)
-        get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererOpen"));
-    else
+    get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererOpen"));
+    if (!prefs->m_prefer_ffmpeg)
         get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererQuickTime"))    ;   
 	
 	ambulant::net::url url = ambulant::net::url::from_url(urlstr);
