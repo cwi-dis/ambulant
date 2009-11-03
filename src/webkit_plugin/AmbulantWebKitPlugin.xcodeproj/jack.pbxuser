@@ -16,7 +16,7 @@
 			"http://ambulantplayer.org/Demos.shtml",
 		);
 		autoAttachOnCrash = 1;
-		breakpointsEnabled = 0;
+		breakpointsEnabled = 1;
 		configStateDict = {
 			"PBXLSLaunchAction-0" = {
 				PBXLSLaunchAction = 0;
@@ -35,9 +35,6 @@
 			};
 		};
 		customDataFormattersEnabled = 1;
-		dataTipCustomDataFormattersEnabled = 1;
-		dataTipShowTypeColumn = 1;
-		dataTipSortType = 0;
 		debuggerPlugin = GDBDebugging;
 		disassemblyDisplayState = 0;
 		dylibVariantSuffix = "";
@@ -56,7 +53,6 @@
 		name = Safari;
 		savedGlobals = {
 		};
-		showTypeColumn = 0;
 		sourceDirectories = (
 		);
 		startupPath = "<<ProjectDirectory>>";
@@ -84,9 +80,8 @@
 		ignoreCount = 0;
 		lineNumber = 105;
 		location = AmbulantWebKitPlugin;
-		modificationTime = 278944038.805064;
-		originalNumberOfMultipleMatches = 1;
-		state = 1;
+		modificationTime = 278952847.629885;
+		state = 0;
 	};
 	049CF82810A0431C00E6593B /* sdl.cpp:53 */ = {
 		isa = PBXFileBreakpoint;
@@ -101,9 +96,8 @@
 		hitCount = 0;
 		ignoreCount = 0;
 		lineNumber = 53;
-		modificationTime = 278944038.803625;
-		originalNumberOfMultipleMatches = 1;
-		state = 1;
+		modificationTime = 278952847.648635;
+		state = 0;
 	};
 	049CF82910A0431C00E6593B /* sdl.cpp */ = {
 		isa = PBXFileReference;
@@ -111,11 +105,6 @@
 		name = sdl.cpp;
 		path = /Users/jack/src/ambulant/src/libambulant/gui/SDL/sdl.cpp;
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1020, 1740}}";
-			sepNavSelRange = "{1796, 0}";
-			sepNavVisRange = "{1444, 793}";
-		};
 	};
 	049CF82B10A0432200E6593B /* sdl.cpp:75 */ = {
 		isa = PBXFileBreakpoint;
@@ -130,9 +119,8 @@
 		hitCount = 0;
 		ignoreCount = 0;
 		lineNumber = 75;
-		modificationTime = 278944038.806456;
-		originalNumberOfMultipleMatches = 1;
-		state = 1;
+		modificationTime = 278952847.694603;
+		state = 0;
 	};
 	049CF84610A0576C00E6593B /* sdl.cpp:46 */ = {
 		isa = PBXFileBreakpoint;
@@ -147,9 +135,8 @@
 		hitCount = 0;
 		ignoreCount = 0;
 		lineNumber = 46;
-		modificationTime = 278944038.805757;
-		originalNumberOfMultipleMatches = 1;
-		state = 1;
+		modificationTime = 278952847.740777;
+		state = 0;
 	};
 	049CF84A10A057BA00E6593B /* renderer_impl.cpp:326 */ = {
 		isa = PBXFileBreakpoint;
@@ -165,8 +152,7 @@
 		ignoreCount = 0;
 		lineNumber = 326;
 		location = libambulant.0.dylib;
-		modificationTime = 278943994.198915;
-		originalNumberOfMultipleMatches = 1;
+		modificationTime = 278952846.698317;
 		state = 2;
 	};
 	049CF84B10A057BA00E6593B /* renderer_impl.cpp */ = {
@@ -175,11 +161,6 @@
 		name = renderer_impl.cpp;
 		path = /Users/jack/src/ambulant/src/libambulant/common/renderer_impl.cpp;
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1125, 6150}}";
-			sepNavSelRange = "{10306, 0}";
-			sepNavVisRange = "{9842, 493}";
-		};
 	};
 	049CF84D10A057C500E6593B /* renderer_impl.cpp:331 */ = {
 		isa = PBXFileBreakpoint;
@@ -194,9 +175,8 @@
 		hitCount = 0;
 		ignoreCount = 0;
 		lineNumber = 331;
-		modificationTime = 278944038.804329;
-		originalNumberOfMultipleMatches = 1;
-		state = 1;
+		modificationTime = 278952847.760244;
+		state = 0;
 	};
 	049CF84F10A057CB00E6593B /* renderer_impl.cpp:350 */ = {
 		isa = PBXFileBreakpoint;
@@ -211,9 +191,8 @@
 		hitCount = 0;
 		ignoreCount = 0;
 		lineNumber = 350;
-		modificationTime = 278944038.802518;
-		originalNumberOfMultipleMatches = 1;
-		state = 1;
+		modificationTime = 278952847.843005;
+		state = 0;
 	};
 	04E8E403109F3BE300B7C8C9 /* Source Control */ = {
 		isa = PBXSourceControlManager;
@@ -231,7 +210,7 @@
 	};
 	089C1669FE841209C02AAC07 /* Project object */ = {
 		activeArchitecturePreference = x86_64;
-		activeBuildConfigurationName = "Release-10.6";
+		activeBuildConfigurationName = "Release-10.4";
 		activeExecutable = 049CF80410A03FD400E6593B /* Safari */;
 		activeTarget = 8D5B49AC048680CD000E48DA /* AmbulantWebKitPlugin */;
 		breakpoints = (
@@ -278,7 +257,7 @@
 				PBXFileTableDataSourceColumnWidthsKey = (
 					22,
 					300,
-					229,
+					73,
 				);
 				PBXFileTableDataSourceColumnsKey = (
 					PBXExecutablesDataSource_ActiveFlagID,
@@ -291,7 +270,7 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					315,
+					185,
 					20,
 					48,
 					43,
@@ -329,7 +308,7 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					301,
+					145,
 					60,
 					20,
 					48,
@@ -346,8 +325,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 278934337;
-			PBXWorkspaceStateSaveDate = 278934337;
+			PBXPerProjectTemplateStateSaveDate = 278950306;
+			PBXWorkspaceStateSaveDate = 278950306;
 		};
 		sourceControlManager = 04E8E403109F3BE300B7C8C9 /* Source Control */;
 		userBuildSettings = {
