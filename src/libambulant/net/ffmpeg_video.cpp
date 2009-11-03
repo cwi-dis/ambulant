@@ -50,11 +50,9 @@
 // How many video frames we would like to buffer at most.
 #define MAX_VIDEO_FRAMES 100
 
-#ifdef WITH_FFMPEG_LIBSWSCALE
 // How scaling of images is done.
 // XXXJACK picked this scalerr because of "FAST" in the name. So there may be a better choice...
 #define SWSCALE_FLAGS SWS_FAST_BILINEAR
-#endif
 
 #define am_get_codec_var(codec,var) codec->var
 #define am_get_codec(codec) codec
@@ -166,9 +164,7 @@ ffmpeg_video_decoder_datasource::supported(const video_format& fmt)
 ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasource* src, video_format fmt)
 :	m_src(src),
 	m_con(NULL),
-#ifdef WITH_FFMPEG_LIBSWSCALE
 	m_img_convert_ctx(NULL),
-#endif
 	m_con_owned(false),
 	m_event_processor(NULL),
 	m_client_callback(NULL),
@@ -723,16 +719,12 @@ ffmpeg_video_decoder_datasource::data_avail()
 			assert(datasize == m_size);
 			// The format we have is already in frame. Convert.
 			pic_fmt = m_con->pix_fmt;
-#ifdef WITH_FFMPEG_LIBSWSCALE
-			m_img_convert_ctx = sws_getCachedContext(m_img_convert_ctx,
-				w, h, pic_fmt,
-				w, h, dst_pic_fmt,
-				SWSCALE_FLAGS, NULL, NULL, NULL);
-            assert(m_img_convert_ctx);
+			m_img_convert_ctx = (struct SwsContext *) sws_getCachedContext(m_img_convert_ctx,
+										       w, h, pic_fmt,
+										       w, h, dst_pic_fmt,
+										       SWSCALE_FLAGS, NULL, NULL, NULL);
+			assert(m_img_convert_ctx);
 			sws_scale(m_img_convert_ctx, frame->data, frame->linesize, 0, h, picture.data, picture.linesize);
-#else
-			img_convert(&picture, dst_pic_fmt, (AVPicture*) frame, pic_fmt, w, h);
-#endif
 #ifndef FFMPEG_SUPPORTS_ALPHA_LAST
 			if (must_swab_2341) {
 				int lcount = w*h;

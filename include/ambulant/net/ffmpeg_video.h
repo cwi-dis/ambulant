@@ -30,12 +30,24 @@ extern "C" {
 #include "libavformat/avformat.h"
 
 // See if we must use swscale, or can use the older method
-#if LIBAVCODEC_VERSION_INT >= ((52<<16)+(0<<8)+0)
-#define WITH_FFMPEG_LIBSWSCALE
+#if LIBAVCODEC_VERSION_INT < ((52<<16)+(0<<8)+0)
+#error Cannot use ffmpeg older than release 0.5
 #endif
 
 #ifdef WITH_FFMPEG_LIBSWSCALE
 #include "libswscale/swscale.h"
+#else
+#define SWS_FAST_BILINEAR     1
+//struct SwsContext *sws_getCachedContext(struct SwsContext *context,
+//                                      int srcW, int srcH, enum PixelFormat srcFormat,
+//                                      int dstW, int dstH, enum PixelFormat dstFormat, int flags,
+//                                      SwsFilter *srcFilter, SwsFilter *dstFilter, double *param);
+void *sws_getCachedContext(void*,int, int, int, int, int, int, int, void*, void*, double*);
+//int sws_scale(struct SwsContext *context, uint8_t* srcSlice[], int srcStride[], int srcSliceY,
+//              int srcSliceH, uint8_t* dst[], int dstStride[]);
+int sws_scale(void*, uint8_t* srcSlice[], int srcStride[], int srcSliceY,
+              int srcSliceH, uint8_t* dst[], int dstStride[]);
+//met de hand
 #endif
 
 }
@@ -106,9 +118,7 @@ class ffmpeg_video_decoder_datasource:
 	
 	video_datasource* m_src;
 	AVCodecContext *m_con;
-#ifdef WITH_FFMPEG_LIBSWSCALE
 	struct SwsContext *m_img_convert_ctx;
-#endif
 
 	bool m_con_owned;	// True if we have to close/free m_con
 //	int m_stream_index;
