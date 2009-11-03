@@ -1,3 +1,35 @@
+2009-11-02 17:36  jackjansen
+
+	* Updated instructions for 10.4 and 10.6 installers.  Got started
+	  on WebKit plugin.
+
+2009-11-02 17:18  jackjansen
+
+	* Starting to revive the WebKit plugin.
+
+2009-11-02 16:44  jackjansen
+
+	* Dependencies between ambulant shared libs should now be correct.
+	  MacOSX bundle is now creating during build (used to be during
+	  install).
+
+2009-11-02 15:32  keesblom
+
+	*
+	  Fix for a cryptic bug occurring on exiting AmbulantPlayer: ***
+	  glibc detected *** /home/kees/bin/AmbulantPlayer_qt: double free
+	  or corruption (!prev): 0x083942e0 *** ======= Backtrace:
+	  ========= /lib/libc.so.6[0x5c32a1]
+	  /usr/lib/libstdc++.so.6(_ZdlPv+0x21)[0xc8d681]
+	  /usr/lib/libstdc++.so.6(_ZNSs4_Rep10_M_destroyERKSaIcE+0x1d)[0xc6aa9d]
+	  /usr/lib/libstdc++.so.6(_ZNSsD1Ev+0x4c)[0xc6c4fc]
+	  /lib/libc.so.6(exit+0xdf)[0x581e0f]
+	  /lib/libc.so.6(__libc_start_main+0xee)[0x569a6e]
+
+	  Cause appeared to be that AmbulantPlayer was statically linked,
+	  whereas the plugins were linked with dynamically with
+	  libambulant.
+
 2009-10-30 23:22  jackjansen
 
 	* Enumerated the platforms on which we should test.
