@@ -462,7 +462,9 @@ void smil_player::stop_playable(const lib::node *n) {
 		m_playables.erase(it);
 	}
 	m_playables_cs.leave();
-    assert(victim.second); // Jack thinks we should always have a playable when we get here. Remove assert if untrue:-)
+// Kees found that AmbulantPlayer_gtk NYC-StateTest.smil always asserts here
+//      assert(victim.second); // Jack thinks we should always have a playable when we get here. Remove assert if untrue:-)
+
 	if (victim.second == NULL) return;
     
 #ifdef WITH_SEAMLESS_PLAYBACK
