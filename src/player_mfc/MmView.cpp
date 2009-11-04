@@ -314,14 +314,19 @@ int MmView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// Set static handle
 	s_hwnd = GetSafeHwnd();
 	ModifyStyle(0, WS_CLIPCHILDREN); // reduce flicker
+#ifdef WITH_SPLASH_SCREEN
+	LocateWelcomeDoc(TEXT(WITH_SPLASH_SCREEN));
+#else
 	if(LocateWelcomeDoc(TEXT("..\\..\\Extras\\Welcome\\Welcome.smil")) ||
 		LocateWelcomeDoc(TEXT("Extras\\Welcome\\Welcome.smil")) ||
 		LocateWelcomeDoc(TEXT("Welcome.smil"))){;}
-	
+#endif
 
 	PostMessage(WM_SET_CLIENT_RECT, 
 		common::default_layout_width, ambulant::common::default_layout_height);
-
+#ifdef WITH_SPLASH_SCREEN
+	PostMessage(WM_COMMAND, ID_HELP_WELCOME);
+#else
 	CWinApp* pApp = AfxGetApp();
 	CString val = pApp->GetProfileString(_T("Settings"), _T("Welcome"));
 	if(val.IsEmpty()) {
@@ -330,7 +335,7 @@ int MmView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		if(!m_welcomeDocFilename.IsEmpty())
 			PostMessage(WM_COMMAND, ID_HELP_WELCOME);
 	}
-
+#endif
 	return 0;
 }
 
