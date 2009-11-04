@@ -279,7 +279,7 @@ third_party_packages={
 			buildcmd=
 				"cd live && "
 				"tar xf %s/third_party_packages/live-osx-fatbuild-patches.tar && "
-				"./genMakefiles macosx3264 && "
+				"./genMakefiles macosxfat && "
 				"make $(MAKEFLAGS) " % AMBULANT_DIR
 			),
 		TPP("gettext",
