@@ -11,6 +11,7 @@ import os
 import shutil
 import subprocess
 import re
+import getopt
 
 # RE that matches dylib references in MacOSX otool output:
 OTOOL_MATCHER=re.compile(r'(.*) \(compatibility version .*, current version .*\)')
