@@ -917,6 +917,7 @@ public:
 	virtual ~player();
 
 	void initialize();
+	void terminate();
 	ambulant::lib::timer* get_timer();
 	ambulant::lib::event_processor* get_evp();
 	void start();

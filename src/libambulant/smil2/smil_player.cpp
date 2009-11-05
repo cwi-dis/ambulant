@@ -98,16 +98,31 @@ smil_player::initialize()
 	m_layout_manager->load_bgimages(m_factory);
 }
 
+void
+smil_player::terminate()
+{
+    m_lock.enter();
+    m_doc = NULL;
+	m_timer->pause();
+	cancel_all_events();
+	cancel_all_events();		
+	m_scheduler->reset_document();
+	delete m_event_processor;
+    m_event_processor = NULL;
+	delete m_timer;
+    m_timer = NULL;
+    m_lock.leave();
+}
+
 smil_player::~smil_player() {
 	m_lock.enter();
 	AM_DBG m_logger->debug("smil_player::~smil_player(0x%x)", this);
     
-	// sync destruction
-	m_timer->pause();
-	cancel_all_events();
-	m_timer->pause();
-	cancel_all_events();		
-	m_scheduler->reset_document();
+    // Make sure terminate was called first
+    assert(m_doc == NULL);
+    assert(m_timer == NULL);
+    assert(m_event_processor == NULL);
+
 	std::map<const lib::node*, common::playable *>::iterator it;
     m_playables_cs.enter();
 	for(it = m_playables.begin();it!=m_playables.end();it++) {
@@ -131,8 +146,6 @@ smil_player::~smil_player() {
 	delete m_new_focussed_nodes;
 	delete m_scheduler;
 	delete m_animation_engine;
-	delete m_event_processor;
-	delete m_timer;
 	delete m_layout_manager;
 	delete m_dom2tn;
 	delete m_root;
@@ -511,7 +524,7 @@ void smil_player::stop_playable(const lib::node *n) {
         if(it2 != m_dom2tn->end() && !(*it2).second->is_prefetch())  {
             // Add a event to destroy this playable on next 20000 microseconds, however, Jack thinks there is another option...
             typedef std::pair<const lib::node*, common::playable*> gb_victim_arg;
-            lib::event *destroy_event = new lib::scalar_arg_callback<smil_player, gb_victim_arg>(this, &smil_player::_destroy_playable_in_cache, victim);
+            lib::event *destroy_event = new lib::scalar_arg_callback<smil_player, gb_victim_arg>(this, &smil_player::destroy_playable_in_cache, victim);
             //xxxbo: the unit of add_event is milisecond. This point is proved at 09-06-2009
             AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable: schedule destructor in 20ms for %s", victim.first->get_sig().c_str());
             m_event_processor->add_event(destroy_event, 20, lib::ep_high);
@@ -1012,8 +1025,13 @@ void smil_player::_destroy_playable(common::playable *np, const lib::node *n) {
 }
 
 #ifdef WITH_SEAMLESS_PLAYBACK
-void smil_player::_destroy_playable_in_cache(std::pair<const lib::node*, common::playable*> victim) {
-
+void smil_player::destroy_playable_in_cache(std::pair<const lib::node*, common::playable*> victim) {
+    m_lock.enter();
+    // If we are already terminating do nothing: the document may be gone
+    if (m_doc == NULL) {
+        m_lock.leave();
+        return;
+    }
 	assert(victim.first);
 	assert(victim.second);
 
@@ -1022,21 +1040,23 @@ void smil_player::_destroy_playable_in_cache(std::pair<const lib::node*, common:
 	std::map<const std::string, common::playable *>::iterator it_url_based = m_playables_url_based.find(url);
 	if (it_url_based != m_playables_url_based.end()) {
         if ((*it_url_based).second != victim.second) {
-            AM_DBG lib::logger::get_logger()->debug("smil_player::_destroy_playable_in_cache: cache has different playable for %s, assuming %s is reused", url.c_str(), victim.first->get_sig().c_str());
+            AM_DBG lib::logger::get_logger()->debug("smil_player::destroy_playable_in_cache: cache has different playable for %s, assuming %s is reused", url.c_str(), victim.first->get_sig().c_str());
             m_playables_cs.leave();
+            m_lock.leave();
             return;
         }
 		m_playables_url_based.erase(it_url_based);
 		m_playables_cs.leave();
-		AM_DBG lib::logger::get_logger()->debug("smil_player::_destroy_playable_in_cache: stop the playable in the cache for %s", victim.first->get_sig().c_str());
+		AM_DBG lib::logger::get_logger()->debug("smil_player::destroy_playable_in_cache: stop the playable in the cache for %s", victim.first->get_sig().c_str());
 		victim.second->post_stop();
         int rem = victim.second->release();
-		if (rem > 0) m_logger->debug("smil_player::_destroy_playable_in_cache: playable 0x%x still has refcount of %d", victim.second, rem);
+		if (rem > 0) m_logger->debug("smil_player::destroy_playable_in_cache: playable 0x%x still has refcount of %d", victim.second, rem);
 	} else {
         m_playables_cs.leave();
         // Note that this is not an error, on the contrary: it could be that the playable has been reused.
-        AM_DBG m_logger->debug("smil_player::_destroy_playable_in_cache: playable for %s no longer in cache", url.c_str());
+        AM_DBG m_logger->debug("smil_player::destroy_playable_in_cache: playable for %s no longer in cache", url.c_str());
     }
+    m_lock.leave();
 }
 #endif
 

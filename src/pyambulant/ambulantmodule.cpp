@@ -10134,6 +10134,19 @@ static PyObject *playerObj_initialize(playerObject *_self, PyObject *_args)
 	return _res;
 }
 
+static PyObject *playerObj_terminate(playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->terminate();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyObject *playerObj_get_timer(playerObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -10385,6 +10398,8 @@ static PyObject *playerObj_highlight(playerObject *_self, PyObject *_args)
 
 static PyMethodDef playerObj_methods[] = {
 	{"initialize", (PyCFunction)playerObj_initialize, 1,
+	 PyDoc_STR("() -> None")},
+	{"terminate", (PyCFunction)playerObj_terminate, 1,
 	 PyDoc_STR("() -> None")},
 	{"get_timer", (PyCFunction)playerObj_get_timer, 1,
 	 PyDoc_STR("() -> (ambulant::lib::timer* _rv)")},

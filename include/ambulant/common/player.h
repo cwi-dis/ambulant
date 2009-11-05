@@ -101,6 +101,10 @@ class player : public state_change_callback, virtual public lib::ref_counted
 	
 	/// Do any initializations necessary.
 	virtual void initialize() = 0;
+    
+    /// Call this early during termination, before things like the
+    /// lib::document and DOM tree become invalid.
+    virtual void terminate() = 0;
 
 	/// Return the timer this player uses.
 	virtual lib::timer* get_timer() = 0;

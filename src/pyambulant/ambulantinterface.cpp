@@ -5632,6 +5632,7 @@ player::player(PyObject *itself)
 	if (itself)
 	{
 		if (!PyObject_HasAttrString(itself, "initialize")) PyErr_Warn(PyExc_Warning, "player: missing attribute: initialize");
+		if (!PyObject_HasAttrString(itself, "terminate")) PyErr_Warn(PyExc_Warning, "player: missing attribute: terminate");
 		if (!PyObject_HasAttrString(itself, "get_timer")) PyErr_Warn(PyExc_Warning, "player: missing attribute: get_timer");
 		if (!PyObject_HasAttrString(itself, "get_evp")) PyErr_Warn(PyExc_Warning, "player: missing attribute: get_evp");
 		if (!PyObject_HasAttrString(itself, "start")) PyErr_Warn(PyExc_Warning, "player: missing attribute: start");
@@ -5674,6 +5675,21 @@ void player::initialize()
 	if (PyErr_Occurred())
 	{
 		PySys_WriteStderr("Python exception during player::initialize() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+void player::terminate()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_player, "terminate", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player::terminate() callback:\n");
 		PyErr_Print();
 	}
 

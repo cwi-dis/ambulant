@@ -127,7 +127,8 @@ class event_processor_impl : public event_processor, public BASE_THREAD {
 
 	// protects whole data structure
 	critical_section_cv m_lock;  
- private:
+
+  private:
 	// check, if needed, with a delta_timer to fill its run queue
 	// return true if the run queue contains any events
 	bool _events_available(delta_timer& dt, std::queue<event*> *qp);

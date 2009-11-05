@@ -72,6 +72,7 @@ class smil_player :
 	
 	smil_player(lib::document *doc, common::factories *factory, common::embedder *sys = 0);
 	void initialize();
+    void terminate();
 	~smil_player();
 		
 	///////////////////
@@ -183,7 +184,7 @@ class smil_player :
 	common::playable* _new_playable(const lib::node *n); 
 	void _destroy_playable(common::playable *r, const lib::node *n); 
 #ifdef WITH_SEAMLESS_PLAYBACK
-	void _destroy_playable_in_cache(std::pair<const lib::node*, common::playable*> victim);
+	void destroy_playable_in_cache(std::pair<const lib::node*, common::playable*> victim);
 #endif
 	common::playable* _get_playable(const lib::node *n) {
 		std::map<const lib::node*, common::playable *>::iterator it = 
