@@ -662,6 +662,13 @@ event_processor_object.othermethods = [
     "void set_observer(ambulant::lib::event_processor_observer*) { abort(); }"
 ]
 
+player_object.othermethods = [
+    "long add_ref() { return 1; }",
+    "long release() { return 1;}",
+    "long get_ref_count() const { return 1; }",
+    "char *get_read_ptr() { abort(); return NULL; }", # XXX
+]
+
 print "=== Generating C++->Python callback interfaces (.h file) ==="
 
 # Generate the interface

@@ -60,7 +60,13 @@ class smil_layout_manager;
 class animation_engine;
 class scheduler;
 
-class smil_player : public common::player, /* public common::player_feedback,*/ public time_node_context, public common::playable_notification {
+class smil_player :
+    public common::player, 
+    /* public common::player_feedback,*/
+    public time_node_context,
+    public common::playable_notification,
+    virtual public lib::ref_counted_obj
+{
   public:
 	typedef time_traits::value_type time_value_type;
 	
@@ -230,11 +236,11 @@ class smil_player : public common::player, /* public common::player_feedback,*/ 
 	 * the scheduler to avoid race conditions.
 	 * Therefore callbacks are needed to avoid deadlock. */
 	typedef std::pair<time_node*, q_smil_time> async_arg;
-	typedef lib::scalar_arg_callback_event<smil_player, async_arg> async_cb;
+	typedef lib::scalar_arg_callback<smil_player, async_arg> async_cb;
 	typedef std::pair<time_node*, std::pair<q_smil_time, int> > async_int_arg;
-	typedef lib::scalar_arg_callback_event<smil_player, async_int_arg> async_int_cb;
+	typedef lib::scalar_arg_callback<smil_player, async_int_arg> async_int_cb;
 	typedef std::pair<time_node*, std::pair<q_smil_time, std::string> > async_string_arg;
-	typedef lib::scalar_arg_callback_event<smil_player, async_string_arg> async_string_cb;
+	typedef lib::scalar_arg_callback<smil_player, async_string_arg> async_string_cb;
 	void clicked_async(async_arg);
 	void mouse_outofbounds_async(async_arg aa);
 	void focus_outofbounds_async(async_arg aa);

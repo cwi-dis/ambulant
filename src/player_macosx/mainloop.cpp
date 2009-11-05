@@ -197,7 +197,7 @@ mainloop::~mainloop()
 {
 	// We need to delete gui_player::m_player before deleting m_doc, because the
 	// timenode graph in the player has referrences to the node graph in m_doc.
-	delete m_player;
+	m_player->release();
 	m_player = NULL;
 	delete m_doc;
 	m_doc = NULL;
@@ -212,8 +212,8 @@ mainloop::restart(bool reparse)
 	bool pausing = is_pause_active();
 	stop();
 	
-	delete m_player;
-	m_player = 0;
+	m_player->release();
+	m_player = NULL;
 	if (reparse) {
 		m_doc = create_document(m_url);
 		if(!m_doc) {

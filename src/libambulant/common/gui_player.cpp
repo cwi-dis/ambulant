@@ -38,7 +38,7 @@ gui_player::load_test_attrs(std::string& filename)
 gui_player::~gui_player()
 {
 	m_lock.enter();
-	if (m_player) delete m_player;
+	if (m_player) m_player->release();
 	m_player = NULL;
 	m_lock.leave();
 }
@@ -119,8 +119,8 @@ gui_player::restart(bool reparse)
 	bool pausing = is_pause_active();
 	stop();
 	
-       	delete m_player;
-	m_player = 0;
+    m_player->release();
+	m_player = NULL;
 	if (reparse) {
 		m_doc = create_document(m_url);
 		if(!m_doc) {

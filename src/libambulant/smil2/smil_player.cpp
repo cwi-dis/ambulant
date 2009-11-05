@@ -99,9 +99,9 @@ smil_player::initialize()
 }
 
 smil_player::~smil_player() {
-	AM_DBG m_logger->debug("smil_player::~smil_player(0x%x)", this);
-	
 	m_lock.enter();
+	AM_DBG m_logger->debug("smil_player::~smil_player(0x%x)", this);
+    
 	// sync destruction
 	m_timer->pause();
 	cancel_all_events();
@@ -511,7 +511,7 @@ void smil_player::stop_playable(const lib::node *n) {
         if(it2 != m_dom2tn->end() && !(*it2).second->is_prefetch())  {
             // Add a event to destroy this playable on next 20000 microseconds, however, Jack thinks there is another option...
             typedef std::pair<const lib::node*, common::playable*> gb_victim_arg;
-            lib::event *destroy_event = new lib::scalar_arg_callback_event<smil_player, gb_victim_arg>(this, &smil_player::_destroy_playable_in_cache, victim);
+            lib::event *destroy_event = new lib::scalar_arg_callback<smil_player, gb_victim_arg>(this, &smil_player::_destroy_playable_in_cache, victim);
             //xxxbo: the unit of add_event is milisecond. This point is proved at 09-06-2009
             AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable: schedule destructor in 20ms for %s", victim.first->get_sig().c_str());
             m_event_processor->add_event(destroy_event, 20, lib::ep_high);
@@ -1156,7 +1156,7 @@ void smil_player::_update() {
 	if(m_scheduler && m_root && m_root->is_active()) {
 		lib::timer::time_type dt = m_scheduler->exec();
 		if(m_root->is_active()) {
-			lib::event *update_event = new lib::no_arg_callback_event<smil_player>(this, 
+			lib::event *update_event = new lib::no_arg_callback<smil_player>(this, 
 				&smil_player::update);
 			m_event_processor->add_event(update_event, dt, lib::ep_high);
 		} else {

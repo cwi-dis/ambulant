@@ -28,6 +28,7 @@
 
 #include "ambulant/common/factory.h"
 #include "ambulant/config/config.h"
+#include "ambulant/lib/refcount.h"
 #ifdef WITH_SMIL30
 #include "ambulant/common/state.h"
 #else
@@ -93,7 +94,7 @@ class player_feedback {
 /// as storing the document and all factories, and which contains
 /// convenience methods to call most common player methods. But some
 /// methods, such as set_feedback(), are not available in gui_player.
-class player : public state_change_callback
+class player : public state_change_callback, virtual public lib::ref_counted
 {
   public:
 	virtual ~player() {};

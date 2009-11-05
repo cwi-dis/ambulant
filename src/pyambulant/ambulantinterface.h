@@ -935,6 +935,10 @@ public:
 	void set_feedback(ambulant::common::player_feedback* fb);
 	bool goto_node(const ambulant::lib::node* n);
 	bool highlight(const ambulant::lib::node* n, bool on);
+	long add_ref() { return 1; }
+	long release() { return 1;}
+	long get_ref_count() const { return 1; }
+	char *get_read_ptr() { abort(); return NULL; }
   private:
 	PyObject *py_player;
 

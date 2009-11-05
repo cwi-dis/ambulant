@@ -136,6 +136,10 @@ class AMBULANTAPI ref_counted_obj : virtual public ref_counted {
 	ref_counted_obj()
 	:	m_refcount(1) {}
 	
+    virtual ~ref_counted_obj() {
+        assert(m_refcount == 0);
+    }
+    
 	long add_ref() {return ++m_refcount;}
 
 	long release() {
