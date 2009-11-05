@@ -132,8 +132,12 @@ class Internalizer:
 		if env_rpath:
 			self.rpath += env_rpath.split(':')
 		self.rpath += DEFAULT_RPATH
+		#KB print "self.rpath:"
+		#KB print self.rpath
 		
 	def add_standard(self):
+		#KB print "self.run_dir="+self.run_dir
+
 		for dirpath, dirnames, filenames in os.walk(self.run_dir):
 			for name in filenames:
 				name = os.path.join(dirpath, name)
@@ -246,6 +250,7 @@ class Internalizer:
 					rv.append(matches.group(1))
 			return rv, None
 		else:
+			#KB print "Executing: objdump -p %s" % src
 			proc = subprocess.Popen(['objdump', '-p', src],
 				stdout = subprocess.PIPE)
 			rv = []
@@ -289,9 +294,9 @@ class Internalizer:
 		origin = '$ORIGIN'
 		libdir = os.path.dirname(lib)
 
-		#print "self.destination_dir="+self.destination_dir+"\n\tlibdir="+libdir
+		#KB print "self.destination_dir="+self.destination_dir+"\n\tlibdir="+libdir
 		relpath = os.path.relpath(self.destination_dir, libdir)
-		#print "\trelpath="+relpath
+		#KB print "\trelpath="+relpath
 		if relpath and relpath != '.':
 			origin = os.path.join(origin, relpath)
 		if self.verbose:
@@ -342,7 +347,7 @@ def main():
 					raise getopt.error
 				instlibdir, reallibdir = v.split(':')
 		if len(args) != 1:
-			raise getopt.error
+			raise getopt.error("Must specify bundlepath only.")
 	except getopt.error:
 		print 'Usage: %s [-vnc] [-s instlibdir:reallibdir] bundlepath '% sys.argv[0]
 		print 'Recursively slurp dylibs used in a bundle.'
@@ -351,7 +356,7 @@ def main():
 		print '-c\tCheck, do nothing, print nothing, return nonzero exit status if there was work'
 		print '-s\tSet library directory substitution (for uninstalled libraries)'
 		sys.exit(1)
-	internalizer = Internalizer(os.path.realpath(sys.argv[1]), LINUX_BUNDLE_DIRS)
+	internalizer = Internalizer(os.path.realpath(args[0]), LINUX_BUNDLE_DIRS)
 	if norun:
 		internalizer.norun = True
 		internalizer.verbose = True

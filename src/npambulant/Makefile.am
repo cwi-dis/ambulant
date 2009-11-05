@@ -256,8 +256,12 @@ npambulant_plugin_dir: .libs/$(NPAMBULANT)
 #	Check that internalization worked
 	$(PYTHON) $(srcdir)/internalize_shlibs.py -c npambulant_plugin_dir/plugins
 #	Copy manifest file (only used for xpt distributions)
-	cp $(srcdir)/install-linux.rdf npambulant_plugin_dir/install.rdf
-
+	@case `arch` in		    \
+		x86_64|X86_64)      \
+		 	cp $(srcdir)/install-linux64.rdf npambulant_plugin_dir/install.rdf ;; \
+		i386|i686)			\
+			cp $(srcdir)/install-linux.rdf npambulant_plugin_dir/install.rdf ;;	\
+	esac
 install-npambulant:  npambulant_plugin_dir
 	if [ `id -u` == "0" ]; then \
 			MOZILLA_PLUGINS=/usr/lib/$(MOZILLA_PLUGINS); \
