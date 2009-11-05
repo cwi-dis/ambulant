@@ -47,6 +47,59 @@ LINUX_BUNDLE_DIRS = (
 	'npambulant/plugins',
 	DEFAULT_RPATH + ['$ORIGIN', '${ORIGIN}']
 )
+# This script needs relpath, only available from version >= 2.6
+# quick fix from:http://bitbucket.org/benoitc/couchdbkit/issue/15/python-25-compatibility
+# and: http://code.activestate.com/recipes/302594/
+if not hasattr(os.path, "relpath"):
+    def relpath(target, base=os.curdir):
+        """
+	Return a relative path to the target from either the current dir or an optional base dir.
+	Base can be a directory specified either as absolute or relative to current dir.
+	"""
+
+	if not os.path.exists(target):
+            raise OSError, 'Target does not exist: '+target
+
+	if not os.path.isdir(base):
+            raise OSError, 'Base is not a directory or does not exist: '+base
+
+	abs_base = os.path.abspath(base)
+	abs_target = os.path.abspath(target)
+	if abs_base == abs_target:
+	    return "."
+	base_list = abs_base.split(os.sep)
+	target_list = abs_target.split(os.sep)
+
+        # On the windows platform the target may be on a completely different drive from the base.
+	if os.name in ['nt','dos','os2'] and base_list[0] <> target_list[0]:
+            raise OSError, 'Target is on a different drive to base. Target: '+target_list[0].upper()+', base: '+base_list[0].upper()
+
+	# Starting from the filepath root, work out how much of the filepath is
+	# shared by base and target.
+	for i in range(min(len(base_list), len(target_list))):
+            if base_list[i] <> target_list[i]: break
+	    else:
+                # If we broke out of the loop, i is pointing to the first differing path elements.
+                # If we didn't break out of the loop, i is pointing to identical path elements.
+                # Increment i so that in all cases it points to the first differing path elements.
+                i+=1
+
+	rel_list = [os.pardir] * (len(base_list)-i) + target_list[i:]
+	return os.path.join(*rel_list)
+#   def relpath(longPath, basePath=os.curdir):
+#	norm_basePath = os.path.normpath(basePath)
+#   	norm_longPath = os.path.normpath(longPath)
+#       if not norm_longPath.startswith(norm_basePath):
+#           raise RuntimeError("Unexpected arguments: norm_longpath="+norm_longPath+" norm_basePath="+norm_basePath)
+#       if norm_longPath == norm_basePath:
+#           return "."
+#       i = len(norm_basePath)
+#       if not norm_basePath.endswith(os.path.sep):
+#           i += len(os.path.sep)
+#       return norm_longPath[i:]
+
+    os.path.relpath = relpath
+
 
 # XXX Needs work for iPhone (because of different relative paths)
 
@@ -236,7 +289,9 @@ class Internalizer:
 		origin = '$ORIGIN'
 		libdir = os.path.dirname(lib)
 
+		#print "self.destination_dir="+self.destination_dir+"\n\tlibdir="+libdir
 		relpath = os.path.relpath(self.destination_dir, libdir)
+		#print "\trelpath="+relpath
 		if relpath and relpath != '.':
 			origin = os.path.join(origin, relpath)
 		if self.verbose:
