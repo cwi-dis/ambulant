@@ -1,7 +1,7 @@
 Ambulant Player README
 ======================
 
-This directory contains version 2.0.2 of the Ambulant Player,
+This directory contains version 2.1 of the Ambulant Player,
 a playback engine for SMIL 3.0 (or earlier) documents.
 
 Ambulant consists of a core library implementing the engine,
@@ -44,23 +44,21 @@ Supported platforms
 
 Currently we have support for:
 - Windows
-- MacOSX
+- MacOSX 10.6
+- MacOSX 10.4/10.5 (Intel or PowerPC)
 - Linux
 - Windows Mobile 5
-- Nokia 770/800 (limited)
 
 The specific platforms that have been used for testing are:
-- Windows: Windows 2000, Windows XP and Windows Vista on fairly recent Intel hardware
-- MacOSX: 10.5. 10.4 or 10.3 may work. 10.2 or earlier will not work.
-- Linux: Fedora Core and Ubuntu on fairly recent Intel hardware
-- Nokia 770/800: 2006/2007 edition OS
-
-Linux for other handhelds (Zaurus, Sharp SL-5600 PDA) is no longer supported,
-mainly due to staffing constraints. If you are interested in helping out 
-to support this platform please contact us.
+- Windows: Windows XP, Windows Vista and Windows 7 on fairly recent Intel hardware
+- MacOSX 10.6: Intel
+- MacOSX 10.4/10.5: Intel Mac 10.5, PowerPC Mac 10.4.
+- Linux: Fedora Core 9-11, Ubuntu 9 on fairly recent Intel hardware
 
 We have preliminary code for the Apple iPhone and iPod Touch, but currently
 lack the time to pursue this platform. Again, contact us if you want to help.
+
+We also have old code for Nokia Maemo, but we need developers here too.
 
 Supported media types
 ---------------------
@@ -69,20 +67,16 @@ Supported media types
 - Images in PNG, JPEG and GIF formats are supported on all
   platforms. Other formats are supported on some platforms.
 - Audio:
-  - Mac/Win/Linux/WinCE support audio through ffmpeg and SDL. This allows use
+  - All platforms support audio through ffmpeg and SDL. This allows use
     of all common audio formats (mp3, aac, ogg, wav, wma, etc). Access can
     be from local file or over http or rtsp.
   - Windows also supports audio through DirectX, which allows protected
     WMA file playback and a few less common formats.
-  - Nokia 770 support only MP3, and cannot mix multiple audio
-    streams in this release.
 - Video:
-  - Mac/Win/Linux/WinCE support video through ffmpeg. This allows use of all
+  - All platforms support video through ffmpeg. This allows use of all
     common formats (mpeg-1/2/4, ogg, some quicktime and wm9).
   - Windows also supports video through DirectX.
   - MacOSX also supports video through QuickTime.
-  - Windows CE does not support video in this release.
-  - Nokia 770 video support is preliminary and possibly buggy.
 
 With audio and video there are some issues with specific combinations of
 containers, codecs, platforms and access protocols. See the website
@@ -97,7 +91,7 @@ Networking support
 ------------------
 
 This release has support for networked presentations. Streaming 
-media items can be retrieved via HTTP on most platforms,
+media items can be retrieved via HTTP on all platforms,
 static media items and the SMIL file itself can be retrieved via HTTP.
 RTSP support is available, but there are issues with which server
 can actually serve which media types. This seems to be a marketing issue

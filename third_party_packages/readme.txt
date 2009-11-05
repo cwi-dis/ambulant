@@ -1,7 +1,15 @@
+-------------------------------------------------------------------------------
+The information in this file is probably outdated. As of Ambulant 2.2
+you should read the toplevel INSTALL file, which will give you a much easier
+recipe for building the 3rd party packages, using the
+"build-third-party-packages.py" script. Only consult this file if you really
+need to build manually, or if somehow the automatic procedure does not work.
+-------------------------------------------------------------------------------
+
 This directory contains third-party packages used to build Ambulant.
 Note that for Windows and Windows CE we make available a zipfile with
 all required packages, patched and ready to build, see the toplevel
-README file (section "building for Windows") for details.
+INSTALL file (section "building for Windows") for details.
 
 Here is a list of the packages, where they come from, plus the versions:
 

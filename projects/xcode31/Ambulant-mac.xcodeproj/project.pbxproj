@@ -132,6 +132,7 @@
 		049656230BCAEA43002C00DF /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656170BCAEA42002C00DF /* libSDL.a */; };
 		049656240BCAEA43002C00DF /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656180BCAEA42002C00DF /* libz.dylib */; };
 		049656B20BCAEC13002C00DF /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656B10BCAEC13002C00DF /* Carbon.framework */; };
+		04BE045010A37BC0004FE5B0 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04BE044F10A37BC0004FE5B0 /* libswscale.a */; };
 		04E13B240BD786120074AF09 /* state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B230BD786120074AF09 /* state.cpp */; };
 		04E13B280BD786380074AF09 /* cocoa_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B270BD786380074AF09 /* cocoa_smiltext.mm */; };
 		04E13B350BD786A40074AF09 /* smiltext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B340BD786A40074AF09 /* smiltext.cpp */; };
@@ -541,9 +542,9 @@
 		049656020BCAE9E0002C00DF /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		049656030BCAE9E0002C00DF /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		049656040BCAE9E0002C00DF /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
-		0496560D0BCAEA42002C00DF /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = "../../../../packages/ffmpeg-universal/libavformat/libavformat.a"; sourceTree = SOURCE_ROOT; };
-		0496560E0BCAEA42002C00DF /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = "../../../../packages/ffmpeg-universal/libavcodec/libavcodec.a"; sourceTree = SOURCE_ROOT; };
-		0496560F0BCAEA42002C00DF /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavutil.a; path = "../../../../packages/ffmpeg-universal/libavutil/libavutil.a"; sourceTree = SOURCE_ROOT; };
+		0496560D0BCAEA42002C00DF /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = "../../build-dist/third_party_packages/installed/lib/libavformat.a"; sourceTree = SOURCE_ROOT; };
+		0496560E0BCAEA42002C00DF /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = "../../build-dist/third_party_packages/installed/lib/libavcodec.a"; sourceTree = SOURCE_ROOT; };
+		0496560F0BCAEA42002C00DF /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavutil.a; path = "../../build-dist/third_party_packages/installed/lib/libavutil.a"; sourceTree = SOURCE_ROOT; };
 		049656100BCAEA42002C00DF /* libltdl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libltdl.a; path = /usr/lib/libltdl.a; sourceTree = "<absolute>"; };
 		049656110BCAEA42002C00DF /* libexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libexpat.a; path = "../../third_party_packages/expat-unix/lib/libexpat.a"; sourceTree = SOURCE_ROOT; };
 		049656130BCAEA42002C00DF /* libliveMedia.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libliveMedia.a; path = ../../third_party_packages/live/liveMedia/libliveMedia.a; sourceTree = SOURCE_ROOT; };
@@ -553,6 +554,7 @@
 		049656170BCAEA42002C00DF /* libSDL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL.a; path = /usr/local/lib/libSDL.a; sourceTree = "<absolute>"; };
 		049656180BCAEA42002C00DF /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		049656B10BCAEC13002C00DF /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		04BE044F10A37BC0004FE5B0 /* libswscale.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswscale.a; path = "../../build-dist/third_party_packages/installed/lib/libswscale.a"; sourceTree = SOURCE_ROOT; };
 		04E13B230BD786120074AF09 /* state.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = state.cpp; sourceTree = "<group>"; };
 		04E13B270BD786380074AF09 /* cocoa_smiltext.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = cocoa_smiltext.mm; sourceTree = "<group>"; };
 		04E13B2A0BD786560074AF09 /* state.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = state.h; sourceTree = "<group>"; };
@@ -610,6 +612,7 @@
 				049656B20BCAEC13002C00DF /* Carbon.framework in Frameworks */,
 				0480CD000CDD1D5C0025344B /* libfaad.a in Frameworks */,
 				04430D390E506F6400029503 /* libbz2.dylib in Frameworks */,
+				04BE045010A37BC0004FE5B0 /* libswscale.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1303,6 +1306,7 @@
 				0496560D0BCAEA42002C00DF /* libavformat.a */,
 				0496560E0BCAEA42002C00DF /* libavcodec.a */,
 				0496560F0BCAEA42002C00DF /* libavutil.a */,
+				04BE044F10A37BC0004FE5B0 /* libswscale.a */,
 				0480CCFF0CDD1D5C0025344B /* libfaad.a */,
 				049656100BCAEA42002C00DF /* libltdl.a */,
 				049656110BCAEA42002C00DF /* libexpat.a */,
@@ -1644,6 +1648,88 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		0421943D10A3767200C23970 /* Debug (ppc) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = ppc;
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "";
+				GCC_VERSION = 4.0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"../../third_party_packages/expat-unix/lib",
+					"../../third_party_packages/xerces-unix/lib",
+					../../third_party_packages/live/liveMedia,
+					../../third_party_packages/live/UsageEnvironment,
+					../../third_party_packages/live/BasicUsageEnvironment,
+					/usr/local/lib,
+					"../../build-dist/third_party_packages/installed/lib",
+					../../third_party_packages/live/groupsock,
+					"\"$(SRCROOT)/../../../../packages/xerces-c-src_2_7_0/lib\"",
+				);
+				OTHER_CFLAGS = "";
+				PREBINDING = NO;
+				SDKROOT = macosx10.4;
+				USER_HEADER_SEARCH_PATHS = "../../include /usr/local/include/SDL ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include ../../build-dist/third_party_packages/installed/include";
+			};
+			name = "Debug (ppc)";
+		};
+		0421943E10A3767200C23970 /* Debug (ppc) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"WITH_LIVE=1",
+					"WITH_EXTERNAL_DOM=1",
+					"WITH_LTDL_PLUGINS=1",
+					"AM_PREFER_FFMPEG=1",
+					"WITH_SDL=1",
+					"WITH_FFMPEG=1",
+					"WITH_EXPAT=1",
+					"WITH_FFMPEG_AVFORMAT=1",
+					"WITH_OVERLAY_WINDOW=1",
+					"WITH_SMIL30=1",
+					"WITH_SEAMLESS_PLAYBACK=1",
+					"WITH_CLOCK_SYNC=1",
+				);
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../build-dist/third_party_packages/installed/lib\"",
+				);
+				PRODUCT_NAME = "Ambulant-mac";
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = YES;
+			};
+			name = "Debug (ppc)";
+		};
 		04A2D6B20F2F19DA0027C378 /* Debug-llvm */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1660,9 +1746,6 @@
 				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"../../third_party_packages/ffmpeg-universal/libavformat",
-					"../../third_party_packages/ffmpeg-universal/libavcodec",
-					"../../third_party_packages/ffmpeg-universal/libavutil",
 					"../../third_party_packages/expat-unix/lib",
 					"../../third_party_packages/xerces-unix/lib",
 					../../third_party_packages/live/liveMedia,
@@ -1674,7 +1757,7 @@
 				);
 				PREBINDING = NO;
 				SDKROOT = macosx10.5;
-				USER_HEADER_SEARCH_PATHS = "../../include ../../third_party_packages/ffmpeg-universal /usr/local/include/SDL ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
+				USER_HEADER_SEARCH_PATHS = "../../include /usr/local/include/SDL ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
 			};
 			name = "Debug-llvm";
 		};
@@ -1698,6 +1781,10 @@
 					"WITH_SMIL30=1",
 				);
 				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../build-dist/third_party_packages/installed/lib\"",
+				);
 				PRODUCT_NAME = "Ambulant-mac";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -1727,6 +1814,10 @@
 					"WITH_CLOCK_SYNC=1",
 				);
 				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../build-dist/third_party_packages/installed/lib\"",
+				);
 				PRODUCT_NAME = "Ambulant-mac";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -1753,6 +1844,10 @@
 					"WITH_CLOCK_SYNC=1",
 				);
 				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../build-dist/third_party_packages/installed/lib\"",
+				);
 				PRODUCT_NAME = "Ambulant-mac";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1761,6 +1856,7 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH)";
 				GCC_AUTO_VECTORIZATION = YES;
 				GCC_ENABLE_SSE3_EXTENSIONS = YES;
 				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
@@ -1789,9 +1885,6 @@
 				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"../../third_party_packages/ffmpeg-universal/libavformat",
-					"../../third_party_packages/ffmpeg-universal/libavcodec",
-					"../../third_party_packages/ffmpeg-universal/libavutil",
 					"../../third_party_packages/expat-unix/lib",
 					"../../third_party_packages/xerces-unix/lib",
 					../../third_party_packages/live/liveMedia,
@@ -1799,12 +1892,13 @@
 					../../third_party_packages/live/BasicUsageEnvironment,
 					/usr/local/lib,
 					../../third_party_packages/live/groupsock,
+					"../../build-dist/installed/lib",
 					"\"$(SRCROOT)/../../../../packages/xerces-c-src_2_7_0/lib\"",
 				);
 				OTHER_CFLAGS = "";
 				PREBINDING = NO;
-				SDKROOT = macosx10.5;
-				USER_HEADER_SEARCH_PATHS = "../../include ../../third_party_packages/ffmpeg-universal /usr/local/include/SDL ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
+				SDKROOT = "";
+				USER_HEADER_SEARCH_PATHS = "../../include /usr/local/include/SDL ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include ../../build-dist/third_party_packages/installed/include";
 			};
 			name = Debug;
 		};
@@ -1823,9 +1917,6 @@
 				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"../../third_party_packages/ffmpeg-universal/libavformat",
-					"../../third_party_packages/ffmpeg-universal/libavcodec",
-					"../../third_party_packages/ffmpeg-universal/libavutil",
 					"../../third_party_packages/expat-unix/lib",
 					"../../third_party_packages/xerces-unix/lib",
 					../../third_party_packages/live/liveMedia,
@@ -1837,7 +1928,7 @@
 				);
 				PREBINDING = NO;
 				SDKROOT = macosx10.5;
-				USER_HEADER_SEARCH_PATHS = "../../include ../../third_party_packages/ffmpeg-universal /usr/local/include/SDL ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
+				USER_HEADER_SEARCH_PATHS = "../../include /usr/local/include/SDL ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
 			};
 			name = Release;
 		};
@@ -1848,6 +1939,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4B08A954540054247B /* Debug */,
+				0421943E10A3767200C23970 /* Debug (ppc) */,
 				04A2D6B30F2F19DA0027C378 /* Debug-llvm */,
 				C01FCF4C08A954540054247B /* Release */,
 			);
@@ -1858,6 +1950,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
+				0421943D10A3767200C23970 /* Debug (ppc) */,
 				04A2D6B20F2F19DA0027C378 /* Debug-llvm */,
 				C01FCF5008A954540054247B /* Release */,
 			);

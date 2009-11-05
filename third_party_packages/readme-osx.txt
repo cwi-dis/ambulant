@@ -1,3 +1,11 @@
+-------------------------------------------------------------------------------
+The information in this file is probably outdated. As of Ambulant 2.2
+you should read the toplevel INSTALL file, which will give you a much easier
+recipe for building the 3rd party packages, using the
+"build-third-party-packages.py" script. Only consult this file if you really
+need to build manually, or if somehow the automatic procedure does not work.
+-------------------------------------------------------------------------------
+
 This file explains how to build the third party packages as Universal Binaries:
 - for MacOSX 10.4 and 10.5, to run on both PowerPC and Intel, or
 - For MacOSX 10.6, to build for both 32 and 64 bit Intel.

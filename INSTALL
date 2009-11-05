@@ -3,8 +3,7 @@ Installation Instructions for AmbulantPlayer
 
 =======
 This file contains instructions for building AmbulantPlayer from
-source, for all of Windows, Windows CE, Unix, Mac OS X and
-handheld Linux (Nokia 770/800/810).
+source, for all of Windows, Windows Mobile 5, Unix and Mac OS X.
 
 This file is part of the Ambulant Player source distribution,
 which can be downloaded via <http://www.ambulantplayer.org>.
@@ -14,33 +13,35 @@ Prerequisites
 
 Obviously you will need a compiler/linker/development environment.
 For Windows you need one of:
-- Microsoft Visual Studio .NET version 7.1 or
-- Microsoft Visual Studio .NET 2005 + Service Pack 1.
-For Linux desktop you need GNU gcc, at least version 3.2 (XXX True?)
-For MacOSX you need the Apple Developer tools (gcc 3.3 or gcc 4-based).
-For Windows CE you need Microsoft Embedded Visual C++ version 3.0 (XXX not true).
-For Nokia770/800/810 you need "maemo" development environment, see www.maemo.org
-and more detailed build instructions in Documentation/misc/TIPS-NOKIA770.
+- Microsoft Visual Studio .NET 2008 SP2 (preferred)
+- Microsoft Visual Studio .NET 2005 SP1.
+For Linux desktop you need GNU gcc, at least version 4.0/
+For MacOSX you need the Apple Developer tools (XCode 3.1 or later).
+For Windows Mobile 5 you need Visual Studio and the XXXX
 
 You also need to build and install several third party packages
-that Ambulant depends on. All these are supplied in the third_party_packages
-directory; see the readme file in that directory for detailed instructions 
-on the exact version numbers, download instructions, etc.
-
-These packages can be built from source, but because this may be
-difficult on some platforms (especially Windows and the PDA platforms)
-we have created archives of pre-configured and pre-built
-third_party_packages for a few common platforms. See
-<http://www.ambulantplayer.org> or the sourceforge download area for
-details.
+that Ambulant depends on. For MacOSX and Linux we have a script
+to download/build/install these, for Windows we provide zipfiles with
+sources that are known to work (for us, at least:-). See below
+for per-platform details.
 
 Building for Linux
 ------------------
 
-First make sure you install the third party packages on which Ambulant
-depends, see third_party_packages/readme.txt.
+After unpacking you should first download and build the required 3rd party
+packages. In third_party_packages, run the following command:
 
-Then the normal "configure"/"make"/"make install" combo can be used here
+	python build-third-party-packages.py linux
+	
+This will install all needed packages (insofar they are not installed
+on your system yet) in "third_party_packages/installed", and configure
+and make will pick them up from there.
+
+(In case the automatic build does not suit your needs: see
+third_party_pckages/readme.txt for manual building).
+
+
+After this, the normal "configure"/"make"/"make install" combo can be used here
 in the toplevel directory to create the player, see further down
 in this document for details if you are not familiar with
 this scheme.
@@ -50,15 +51,13 @@ The resulting binary is called AmbulantPlayer and usually deposited in
 configure). Libraries and include files are also installed under
 /usr/local.
 
-By default the player will be built with only the expat XML parser.
-Specify --with-xerces if you want the Xerces validating XML parser too,
-and additionally --with-xerces-plugin if you want that built as a plugin.
-
-If you want support for accessing RTSP streaming servers you need to
-specify that by passing the --with-live option.
-
 If you want to build the Python API to Ambulant you need to add the
 --with-python option to configure.
+
+If you want to build the Firefox plugin you need to add --with-npambulant.
+But: you should first read src/npambulant/README-linux and
+third_party_packages/readme.txt for instructions on downloading the
+Mozilla XPCOM API.
 
 For more special case configure options consult "configure --help".
 
@@ -67,9 +66,15 @@ Building for Mac OS X
 For universal build, make sure you read this whole section.
 
 First make sure you install the third party packages on which Ambulant
-depends, see third_party_packages/readme.txt. Most configure options
-specified in the "Building for Linux" section are also relevant for
-Mac OS X.
+depends. Go to third_party_packages and run
+
+	python build-third-party-packages.py mac10.6
+	
+That is, if you are on MacOSX 10.6. This will build the packages 32/64 bit
+universal. If you are on 10.4 or 10.5 you specify "mac10.4" as the argument,
+and the packages will be built Intel/PowerPC universal (both 32bit).
+
+For manual builds, see third_party_packages/readme.txt and readme-osx.txt.
 
 Then the normal "configure"/"make"/"sudo make install" combo can be used
 here in the toplevel directory to create the player, see further down
@@ -85,137 +90,98 @@ should first run make in the toplevel build directory and then
 "sudo make install" in src/player_macosx. This will not install anything
 into /usr/local.
 
-An XCode project is also available, mainly for debugging purposes, but
+XCode projects is also available, mainly for debugging purposes, but
 this needs some handcrafting to get it to work (it contains absolute
-pathnames to include directories to work around an XCode bug).
+pathnames to include directories to work around an XCode bug). Look in
+the "projects" directory.
 
-You need about 600MB of free diskspace to do the build. After build and
-install you can remove everything but the resultant application, including
-the ambulant and SDL installations in /usr/local, and the application
-is only a few megabytes.
-
-For MacOSX 10.4 or 10.5, you can build a Universal Binary that will run on
-both PowerPC and Intel macintoshes. To do this, in addition to the steps above,
-you will need to do the following:
-- Carefully read third_party_packages/readme-osx.txt, and make sure you
-  build all needed 3rd party libraries with the 10.4 SDK and ppc/intel support.
-- Run ambulant configure with (at least) the options 
-
-	./configure \
-		--with-universalsdk=/Developer/SDKs/MacOSX10.4u.sdk \
-		--disable-dependency-tracking
-		
-For MacOSX 10.6, you can build a Universal Binary that will run both in 32 bit and
-64 bit mode. To do this, in addition to the steps above, you will need to do
-the following:
-- Carefully read third_party_packages/readme-osx.txt, and make sure you
-  build all needed 3rd party libraries with the 32/64 bit support.
-- Run ambulant configure with (at least) the options 
-
+For MacOSX 10.6 you can build a universal 32-bit/64-bit Ambulant, by
+running configure as:
 	./configure --with-macfat --disable-dependency-tracking
+	
+For MacOSX 10.4 or 10.5 you can build a universal PowerPC/Intel Ambulant,
+by running configure as:
+	./configure --with-universalsdk --disable-dependency-tracking
+	
+You can pass an SDK to the --with-universalsdk option to enable doing a
+10.4 compatible build on 10.5 (or 10.6), but then you must also set the
+MACOSX_DEPLOYMENT_TARGET=10.4 environment variable.
+
+To build the Safari/WebKit plugin: see src/webkit_plugin/README.
 
 Building for Windows
 --------------------
 
-As of Ambulant 1.9 and later all projects are located in the "projects" folder
-at the toplevel folder. "vc71" are projects for Visual Studio .NET 2003, a.k.a.
-Visual C++ 7.1. "vc8" are projects for Visual Studio .NET 2005, of which you
-want at least Service Pack 1. "vc9" is for Visual Studio 2008, SP2.
+All projects are located in the "projects" folder
+at the toplevel folder. "vc9" is for Visual Studio 2008, SP2. "vc8",
+for Visual Studio 2005 SP1, should still work too.
 
-Aside from Visual Studio you must probably also install (at least for VS 2005)
-the following two packages from Microsoft:
+For VS2005 you must probably also install the following two packages
+from Microsoft:
 - Microsoft Plaftorm SDK for Windows Server 2003 R2
 - Microsoft DirectX SDK (August 2006), or newer.
 The include and lib files for these have to be added for searching. This is easiest
 done in VS through Tools->Options->Projects and Solutions->VC++ Directories.
 Then select "Include files" and add the include dirs, "Library files" and add the
 library dirs.
+For VS2008 you should have these already.
 
 Installing and building the third party packages on Windows is more of a
 pain than it is on unix. For this reason, read these instructions *very carefully*,
 please. We hope these instructions are complete, otherwise
 please report back.
 
-From the ambulant sourcefore download page, obtain
-third_party_packages_win_20051212.zip archive, it contains versions that
-are known to work on at least one machine. Download and unzip in a temporary
+From the ambulant sourcefore download page, obtain 
+"Third Party Packages, win32_wm5". Download and unzip in a temporary
 location, then move the directories named above into third_party_packages
-in your ambulant distribution. Xerces is not included in this
-third_party_packages_win_20051212.zip, see third_party_packages/readme.txt
-for installation instructions. 
+in your ambulant distribution. Some packages you must download separately, and 
+put the resulting unpacked distribution in third_party_packages:
 
-Next, build these by opening
-projects\XXXX\third_party_packages.sln in Visual Studio. XXXX will be either
-vc71, vc8 or vc9, depending on your version of Visual Studio.
-Select the "Release" configuration,  and do Build->Build Solution.
+- ffmpeg (pre-configured and pre-built) should be obtained from
+  the Ambulant SF download page, package "ffmpeg for Ambulant, win32".
+- SDL is not included, get SDL 1.2.X from www.libsdl.org.
+- Get the live555 libraries from www.live555.com. Apply the modifications
+  from third_party_packages/live555_VC9 (or VC8) before building (in the next step).
+- Xerces is not included, get it yourself (either 3.0 or 2.8)
+  from xerces.apache.org. 
+- libxml2 is not included, get it from xmlsoft.org.
+- if you want to build the Firefox plugin you must also get the Mozilla XPCOM API.
+- If you want Python support get Python 2.6 and install it (standard Windows
+  binary release).
+  
+At this point you may want to inspect projects\vc9\Ambulant-win32.vsprops. This
+has the pathnames of all the components, etc. For VS2005 you have to edit the
+individual projects if you have things in non-standard places.
 
-vc9: If you run into a problem with _vsnprintf being multiply defined:
-get a newer version of libxml2. 
+Next, build Xerces, following their instructions.
 
-vc7: When this succeeds double-click the batchfile
-projects\XXXX\copy_tpp_win32.bat, which copies the various
-libraries (libexpat.lib, libjpeg.lib, libpng13.lib and zlib.lib) to
-lib\win32 in the toplevel Ambulant directory. The corresponding DLLs are
-copied to bin\win32 in the toplevel directory. Copying is done automatically
-for vc8/vc9.
+Then, open projects\vc9\third_party_packages.sln (or vc8), select the "Release"
+configuration and build it. This will build everything (except Xerces, which you
+did manually in the previous step) and put it where Ambulant expects it.
+Also build the "Debug" configuration, if you want it.
 
 After these steps you are ready to build AmbulantPlayer itself. Open
-projects\XXXX\Ambulant-win32.sln and select "Ambulant Player" as the default
+projects\vc9\Ambulant-win32.sln and select "Ambulant Player" as the default
 project (right-click on it for the context menu that allows you to do this).
-Select the build type, use "ReleaseShlib" in case of doubt.
+Select the build type, use "ReleaseShlib" in case of doubt. If you did not
+get Python or XPCOM you can disable the corresponding project in the solution.
 
 The resulting application is deposited in bin\win32 in the toplevel
 directory.
 
-The solutions and projects also have experimental targets that build the
-Ambulant Player as a shared library (and, therefore with support for
-plugin modules, as on Unix/Mac) but this has not been tested very thoroughly yet.
+Building for Windows Mobile 5
+-----------------------------
 
-Building for Windows CE
------------------------
-
-XXXX THESE ARE OLD INSTRUCTIONS. TO BE UPDATED.
-
-Installing and building the third party packages for Windows CE is even more of a
-pain than it is for Windows desktop. For this reason, read these instructions
-*very carefully*, please. We hope these instructions are complete, otherwise
-please report back.
-
-The projects (and these instructions) have been tried only for Windows CE on various
-Compaq (or HP) iPaqs, the oldest one being a 3660. Of the various configurations
-in the project files, only the ones for this specific platform (ARM processor,
-non-debugging, PocketPC operating system) have been kept up-to-date.
-
-Install the following distributions into directories in third_party_packages:
-expat, jpeg, lpng128, mp3lib, zlibce. third_party_packages\readme.txt has the
-version info.
-As most of these need some fiddling (missing Visual Studio projects, that
-sort of things) you are best off downloading the
-third_party_packages-WIN.zip archive, it contains versions that
-are known to work on at least one machine. Download and unzip in a temporary
-location, then move the directories named above into third_party_packages
-in your ambulant distribution.
-
-Next, build these by opening
-third_party_packages\third_party_packages.vcw in Embedded Visual C++ 3.0,
-select the expat project as default project, 
-select the "ARM Release" configuration for the "PocketPC" platform and build.
-Repeat these steps for all projects in the workspace.
-
-When this succeeds double-click the batchfile
-third_party_packages\copy_tpp_wince.bat, which copies the various
-libraries (libexpat.lib, libjpeg.lib, libpng13.lib and zlib.lib) to
-lib\wince-arm in the toplevel Ambulant directory. 
-
-NOTE: if this step fails please inspect the script and do the
-needed copies by hand.
-
-After these steps you are ready to build AmbulantPlayer itself: open
-src\Ambulant-wince.vcw in Embedded Visual C++ 3.0, select the "ARM Release" 
-configuration for the "PocketPC" platform and build.
+Building for Windows Mobile 5 is even more painful than building for Windows
+Desktop. Follow the steps for Windows Desktop above, with the following
+changes:
+- the projects are in projects/vc8-wince5-smil3.
+- get ffmpeg from the Ambulant sf package "ffmpeg for Ambulant, wm5".
+- Xerces and XPCOM are not supported.
 
 The resulting application is deposited in bin\wince-arm in the toplevel
 directory.
+
 Installation Instructions
 *************************
 
