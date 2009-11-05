@@ -168,8 +168,9 @@ AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, ver
 	} else {
 	    char* path = strdup(p.dli_fname); // full path of this firefox plugin 
 	    char* ffplugindir = dirname(path);
-	    char* amplugin_path = (char*) malloc(strlen(ffplugindir)+9); // ambulant plugins
-	    sprintf(amplugin_path, "%s/npambulant/plugins", ffplugindir);
+		char* npambulant_plugins = "/npambulant/plugins";
+	    char* amplugin_path = (char*) malloc(strlen(ffplugindir)+strlen(npambulant_plugins)+1);
+	    sprintf(amplugin_path, "%s%s", ffplugindir, npambulant_plugins);
 	    prefs->m_plugin_dir = amplugin_path;
 	    free (path);
 	}    
