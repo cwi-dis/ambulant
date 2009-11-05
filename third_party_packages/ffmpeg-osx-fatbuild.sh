@@ -47,7 +47,7 @@ X86_64_CONFIGOPTS="--arch=x86_64 --enable-shared"
 #
 # Should be boilerplate from here on
 #
-srcdir=$1
+srcdir=`cd $1; pwd`
 case x$srcdir in
     x)
         echo Usage: $0 ffmpeg-src-dir '[all|mkdirs|mklinks|configure|clean|build|merge|install] ...'
