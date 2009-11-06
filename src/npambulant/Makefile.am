@@ -16,7 +16,8 @@ libambulant_sdl=$(ambulantlibdir)/libambulant_sdl.a
 endif
 
 FIREFOX=firefox
-INSTALLER_ARCHIVE=npambulant-$(VERSION)-linux.xpi
+ARCH=`arch`
+INSTALLER_ARCHIVE=npambulant-$(VERSION)-linux-$(ARCH).xpi
 
 if WITH_CG
 NPAMBULANT=libnpambulant.so
@@ -256,7 +257,7 @@ npambulant_plugin_dir: .libs/$(NPAMBULANT)
 #	Check that internalization worked
 	$(PYTHON) $(srcdir)/internalize_shlibs.py -c npambulant_plugin_dir/plugins
 #	Copy manifest file (only used for xpt distributions)
-	@case `arch` in		    \
+	@case $(ARCH) in		    \
 		x86_64|X86_64)      \
 		 	cp $(srcdir)/install-linux64.rdf npambulant_plugin_dir/install.rdf ;; \
 		i386|i686)			\
