@@ -129,8 +129,11 @@ gtk_mainloop::~gtk_mainloop()
 {
 	AM_DBG m_logger->debug("gtk_mainloop::~gtk_mainloop() m_player=0x%x", m_player);
 //	delete m_gui_screen;
+	// We need to delete gui_player::m_player before deleting m_doc, because the
+	// timenode graph in the player has referrences to the node graph in m_doc.
 	if (m_player) {
-		delete m_player;
+	    m_player->terminate();
+	    m_player->release();
 		m_player = NULL;
 	}
 	if (m_doc) {

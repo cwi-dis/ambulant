@@ -302,12 +302,21 @@ third_party_packages={
 			)
 		],
 	'linux' : [
+		TPP("libtool", 
+			url="http://ftp.gnu.org/gnu/libtool/libtool-2.2.6a.tar.gz",
+			checkcmd="test -f %s/lib/libltdl.a" % COMMON_INSTALLDIR,
+			buildcmd=
+				"cd libtool-2.2.6 && "
+		                "%s --enable-ltdl-install &&"
+				"make $(MAKEFLAGS) && "
+				"make install" % LINUX_COMMON_CONFIGURE
+			),
 		TPP("expat", 
 			url="http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=autoselect",
 			checkcmd="pkg-config --atleast-version=2.0.0 expat",
 			buildcmd=
-				"cd expat-2.0.1 && "
-				"patch < %s/third_party_packages/expat.patch && "
+				"set -x;cd expat-2.0.1 && "
+				"if [ ! -e expat.pc.in ] ; then patch < %s/third_party_packages/expat.patch; fi && "
 				"autoconf && "
 				"%s && "
 				"make $(MAKEFLAGS) && "

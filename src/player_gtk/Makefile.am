@@ -145,6 +145,7 @@ AM_CPPFLAGS = \
 		-I$(top_builddir)/include/ambulant/gui/gtk \
 		-I$(top_srcdir)/include/ambulant/gui/gtk
 
+AM_CXXFLAGS=-fPIC
 #------------------------------------------------------
 # More special case code for the Nokia 770: install the auxiliary files.
 if WITH_NOKIA770

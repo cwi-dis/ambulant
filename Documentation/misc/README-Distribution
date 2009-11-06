@@ -297,16 +297,14 @@ but as we have done one before we should write down the procedure here.
 
 Creating the Firefox plugin on Linux
 ====================================
-XXXWRONG
 
 - download xulrunner-sdk from mozilla.org into third-party-packages
-- as above, configure --with-npambulant [other options]; make;make install
-- TEMP FIX: cd src/npambulant;./link-patch;cp npambulant.so <install-dir, see below>
-- Pack the installed files npambulant.so and npambulant.xpt with
-  src/npambulant/README.linux into npambulant.zip
-  For root installs, files go into /usr/lib/mozilla/plugins, otherwise
-  into ~/.mozilla/plugins
-  
+- as above, configure --with-npambulant --without-xerces [other options]; make;make install
+- cd src/npambulant;make installer
+  This will create a file named: npambulant-<version>-linux.xpi, which can be opened with
+  firefox to install the plugin. 
+  For a 64 bit platform, this installer will work with a 64 bit firefox.
+
 Creating the Windows desktop/FF/IE installers
 =============================================
 XXXUNTESTED

@@ -112,7 +112,8 @@ qt_mainloop::qt_mainloop(qt_gui* gui, int mbheight)
 qt_mainloop::~qt_mainloop() 
 {
 	if (m_player) {
-		delete m_player;
+	    m_player->terminate();
+	    m_player->release();
 		m_player = NULL;
 	}
 	if (m_doc) {

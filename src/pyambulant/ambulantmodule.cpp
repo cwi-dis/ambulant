@@ -37,6 +37,7 @@
 
 // Should have been included through genobj.py but that caused problems
 #ifdef WITH_GTK
+#include <gtk/gtk.h>
 #include "ambulant/gui/gtk/gtk_factory.h"
 #include <pygobject.h>
 #include <pygtk/pygtk.h>
