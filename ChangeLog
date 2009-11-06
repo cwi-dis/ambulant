@@ -1,3 +1,43 @@
+2009-11-06 00:50  jackjansen
+
+	* Obtain absolute pathname for ffmpeg source dir.  Fixes #2686036.
+
+2009-11-06 00:43  jackjansen
+
+	* - Updated build instructions - Revived XCode project, and added
+	  ppc debug target.
+
+2009-11-05 22:44  keesblom
+
+	* Fixed a malloc bug
+
+2009-11-05 17:12  jackjansen
+
+	* Call player->terminate().
+
+2009-11-05 16:52  keesblom
+
+	* Firefox installer now works on 64 bit. Must configure
+	  --without-xerces,
+
+2009-11-05 14:48  jackjansen
+
+	* A couple more little fixes were needed to get the ref_counted
+	  smil_player to work.
+
+2009-11-05 11:57  jackjansen
+
+	* Turning smil_player and player into refcounted objects, to try
+	  and fix the problem with late callbacks being made after the
+	  object has been deleted.
+
+	  Only partially tested, and needs support on qt/gtk as well.
+
+2009-11-05 10:24  keesblom
+
+	* Added os.path.relpath when not available.  Hopefully it works OK.
+	  Fixes #2883340
+
 2009-11-04 17:50  jackjansen
 
 	* If WITH_SPLASH_SCREEN is defined it should be the URL of a splash
