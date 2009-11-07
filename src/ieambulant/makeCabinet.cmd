@@ -40,14 +40,8 @@
 :: Create a new cabinet (.cab) archive
 $(CabArc) -s 6144 n $(OutDir)\ieambulant.cab $(IntDir)\*.manifest $(IntDir)\*.dll $(IntDir)\*.inf
 :: Code sign it with code signing certificate (.pfx = Personal Information Exchange) 
-"$(WindowsSDKDir)\Bin\signtool" sign /f $(ieambulant_certificate) /p ambulant /v $(OutDir)\ieambulant.cab
+"$(WindowsSDKDir)\Bin\signtool" sign /f $(ieambulant_certificate) /p ambulant /v $(TargetPath)
 :: timestamp the signature
-"$(WindowsSDKDir)\Bin\signtool" timestamp  /v /t "http://timestamp.verisign.com/scripts/timstamp.dll" ieambulant.cab
+"$(WindowsSDKDir)\Bin\signtool" timestamp  /v /t "http://timestamp.verisign.com/scripts/timstamp.dll" $(TargetPath)
 :: verify the resulting cabinet (.cab) archive
-"$(WindowsSDKDir)\Bin\signtool" verify /v /a /pa $(OutDir)\ieambulant.cab
-@echo ------------------------------------------------------------------------------
-@echo When the code was signed with the default (test) certificate only, you'll see:
-@echo SignTool Error: File not valid: ieambulant.cab
-@echo ------------------------------------------------------------------------------
-@echo "erasing files copied"
-@erase Microsoft.VC90.MFC.manifest Microsoft.VC90.CRT.manifest mfc90.dll mfc90u.dll mfcm90.dll mfcm90u.dll msvcr90.dll msvcp90.dll msvcm90.dll libambulant_shwin32.dll libamplugin_ffmpeg.dll libamplugin_plugin.dll libamplugin_state_xpath.dll avcodec-51.dll avformat-52.dll avutil-49.dll SDL.dll xerces-c_2_8.dll AmbulantActiveX.inf
+"$(WindowsSDKDir)\Bin\signtool" verify /v /a /pa $(TargetPath)
