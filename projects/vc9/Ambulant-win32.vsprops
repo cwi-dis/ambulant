@@ -56,4 +56,14 @@
 	If you don't want these: disable them in Ambulant-win32.sln
 -->
 <UserMacro Name="python_dir" Value="C:\Python26" PerformEnvironmentSet="true"/>
+<!--
+	If you want to build the IEAmbulant ActiveX plugin you must download the CabArc utility
+	from Microsoft.
+-->
+<UserMacro name="CabArc" Value="..\..\..\bin\Cabarc\bin\CabArc.exe" PerformEnvironmentSet="true"/>
+<!--
+	The certificate used to sign the IEAmbulant ActiveX installer.
+	Obviously, this certificate is only available to CWI employees.
+-->
+<UserMacro Name="ieambulant_certificate" Value="..\..\..\ambulant-private\certificates\Comodo\cwi-certificate.pfx" PerformEnvironmentSet="true"/>
 </VisualStudioPropertySheet>
