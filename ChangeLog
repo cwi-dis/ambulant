@@ -1,3 +1,14 @@
+2009-11-06 15:34  keesblom
+
+	* Added the output of "arch" to the .xpi name, to avoid any
+	  confusion.  The file name itself will eventually be hiden befind
+	  a beautiful webpage.
+
+2009-11-06 12:17  keesblom
+
+	* Modified mainloops for smil_player mods to fix #2848557.  Added
+	  libtool-2.2.6 in TPP to facitate building on older platforms.
+
 2009-11-06 00:50  jackjansen
 
 	* Obtain absolute pathname for ffmpeg source dir.  Fixes #2686036.
