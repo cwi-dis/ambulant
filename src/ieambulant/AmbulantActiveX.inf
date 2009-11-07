@@ -1,4 +1,8 @@
-; Sample INF file for AmbulantACTIVEX.DLL
+; INF file for AmbulantACTIVEX.DLL
+; NOTE: the contents of this file are intimately tied to what is in
+; the makeCabinet.cmd file. You MUST update both files if you change
+; libraries, etc.
+;
 [version] 
 ; version signature (same for both NT and Win95) do not remove
 signature="$CHICAGO$"
@@ -10,9 +14,11 @@ libambulant_shwin32.dll=libambulant_shwin32.dll
 libamplugin_ffmpeg.dll=libamplugin_ffmpeg.dll
 libamplugin_plugin.dll=libamplugin_plugin.dll
 libamplugin_state_xpath.dll=libamplugin_state_xpath.dll
-avcodec-51.dll=avcodec-51.dll
+avcodec-52.dll=avcodec-52.dll
+avdevice-52.dll=avdevice-52.dll
 avformat-52.dll=avformat-52.dll
-avutil-49.dll=avutil-49.dll
+avutil-50.dll=avutil-50.dll
+swscale-0.dll=swscale-0.dll
 SDL.dll=SDL.dll
 xerces-c_2_8.dll=xerces-c_2_8.dll
 Microsoft.VC90.MFC.manifest=Microsoft.VC90.MFC.manifest
@@ -81,7 +87,11 @@ FileVersion=1,0,0,1
 
 ; third-party-packages
 ; ffmpeg audio, video
-[avcodec-51.dll]
+[avcodec-52.dll]
+file-win32-x86=thiscab
+FileVersion=1,0,0,1
+
+[avdevice-52.dll]
 file-win32-x86=thiscab
 FileVersion=1,0,0,1
 
@@ -89,7 +99,11 @@ FileVersion=1,0,0,1
 file-win32-x86=thiscab
 FileVersion=1,0,0,1
 
-[avutil-49.dll]
+[swscale-0.dll]
+file-win32-x86=thiscab
+FileVersion=1,0,0,1
+
+[avutil-50.dll]
 file-win32-x86=thiscab
 FileVersion=1,0,0,1
 

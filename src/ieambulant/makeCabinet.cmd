@@ -1,51 +1,50 @@
-:: This script needs Visual STudio 2009 installed.
-:: To create and codesign ieambulant.cab, first build Ambulant-win32.sln
-:: then ieambulant. CD to "Release" directory, and run this script:
-:: ../makeCabinet.cmd
+:: Script to create CAB file for IEAmbulant ActiveX plugin.
 ::
-:: This script works with a test code signing certificate.
-:: This will only work in Internet Explorer when the server were you host
-:: the resulting cabinet (.cab) file is added to "Trusted sites" and security
-:: level for "Tusted sites" is set to "Low".
-:: For a generally useable plugin, change the file name of the "certificate.pfx"
-:: to that of a valid certificate Personal Information Exchange (.pfx) file.
+:: This script expects to be run from within Visual Studio only,
+:: because it depends on various variable names defined there.
+::
+:: NOTE: if you change this file you must also change the
+:: AmbulantActiveX.inf file, the contents of the two files
+:: MUST match.
+::
 :: For an example how to use the .cab, see: ieambulentWeb.htm
 :: ----------------------------------------------------------------------------
 :: copy all files for the cab into this directory
 @echo "copying all files for the cab into this directory"
 ::
 :: redistributable C-runtime 
-@copy "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest" Microsoft.VC90.CRT.manifest
-@copy "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\msvcr90.dll" msvcr90.dll 
-@copy "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\msvcp90.dll" msvcp90.dll
-@copy "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\msvcm90.dll" msvcm90.dll
+@copy "$(VCInstallDir)\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest" $(intdir)\Microsoft.VC90.CRT.manifest
+@copy "$(VCInstallDir)\Microsoft.VC90.CRT\msvcr90.dll" $(intdir)\msvcr90.dll 
+@copy "$(VCInstallDir)\Microsoft.VC90.CRT\msvcp90.dll" $(intdir)\msvcp90.dll
+@copy "$(VCInstallDir)\Microsoft.VC90.CRT\msvcm90.dll" $(intdir)\msvcm90.dll
 :: redistributable Microsoft Foundation classes
-@copy "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.MFC\Microsoft.VC90.MFC.manifest" Microsoft.VC90.MFC.manifest
-@copy "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.MFC\mfc90.dll" mfc90.dll
-@copy "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.MFC\mfc90u.dll" mfc90u.dll
-@copy "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.MFC\mfcm90.dll" mfcm90.dll
-@copy "C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.MFC\mfcm90u.dll" mfcm90u.dll
+@copy "$(VCInstallDir)\Microsoft.VC90.MFC\Microsoft.VC90.MFC.manifest" $(intdir)\Microsoft.VC90.MFC.manifest
+@copy "$(VCInstallDir)\Microsoft.VC90.MFC\mfc90.dll" $(intdir)\mfc90.dll
+@copy "$(VCInstallDir)\Microsoft.VC90.MFC\mfc90u.dll" $(intdir)\mfc90u.dll
+@copy "$(VCInstallDir)\Microsoft.VC90.MFC\mfcm90.dll" $(intdir)\mfcm90.dll
+@copy "$(VCInstallDir)\Microsoft.VC90.MFC\mfcm90u.dll" $(intdir)\mfcm90u.dll
 :: use manifest tool
 @mt.exe -manifest Microsoft.VC90.CRT.manifest -outputresource:msvcr90.dll;2
 :: Ambulant dll's
-@copy ..\..\..\bin\win32\libambulant_shwin32.dll libambulant_shwin32.dll
-@copy ..\..\..\bin\win32\libamplugin_ffmpeg.dll libamplugin_ffmpeg.dll 
-@copy ..\..\..\bin\win32\libamplugin_plugin.dll libamplugin_plugin.dll
-@copy ..\..\..\bin\win32\libamplugin_state_xpath.dll libamplugin_state_xpath.dll
-@copy ..\..\..\bin\win32\avcodec-51.dll avcodec-51.dll
-@copy ..\..\..\bin\win32\avformat-52.dll avformat-52.dll 
-@copy ..\..\..\bin\win32\avutil-49.dll avutil-49.dll
-@copy ..\..\..\bin\win32\SDL.dll SDL.dll
-@copy ..\..\..\bin\win32\xerces-c_2_8.dll xerces-c_2_8.dll
-@copy ..\AmbulantActiveX.inf AmbulantActiveX.inf
+@copy ..\..\..\bin\win32\libambulant_shwin32.dll $(intdir)\libambulant_shwin32.dll
+@copy ..\..\..\bin\win32\libamplugin_ffmpeg.dll $(intdir)\libamplugin_ffmpeg.dll 
+@copy ..\..\..\bin\win32\libamplugin_state_xpath.dll $(intdir)\libamplugin_state_xpath.dll
+@copy ..\..\..\bin\win32\avcodec-52.dll $(intdir)\avcodec-52.dll
+@copy ..\..\..\bin\win32\avdevice-52.dll $(intdir)\avdevice-52.dll
+@copy ..\..\..\bin\win32\avformat-52.dll $(intdir)\avformat-52.dll 
+@copy ..\..\..\bin\win32\avutil-50.dll $(intdir)\avutil-50.dll
+@copy ..\..\..\bin\win32\swscale-0.dll $(intdir)\swscale-0.dll
+@copy ..\..\..\bin\win32\SDL.dll $(intdir)\SDL.dll
+@copy ..\..\..\bin\win32\xerces-c_2_8.dll $(intdir)\xerces-c_2_8.dll
+@copy ..\..\..\src\ieambulant\AmbulantActiveX.inf $(intdir)\AmbulantActiveX.inf
 :: Create a new cabinet (.cab) archive
-"C:\Program Files\Cabarc\CabArc.Exe" -s 6144 n ieambulant.cab Microsoft.VC90.MFC.manifest Microsoft.VC90.CRT.manifest  mfc90.dll mfc90u.dll mfcm90.dll mfcm90u.dll msvcr90.dll msvcp90.dll msvcm90.dll AmbulantActiveX.dll libambulant_shwin32.dll libamplugin_ffmpeg.dll libamplugin_plugin.dll libamplugin_state_xpath.dll avcodec-51.dll avformat-52.dll avutil-49.dll SDL.dll xerces-c_2_8.dll AmbulantActiveX.inf
+$(CabArc) -s 6144 n $(OutDir)\ieambulant.cab $(IntDir)\*.manifest $(IntDir)\*.dll $(IntDir)\*.inf
 :: Code sign it with code signing certificate (.pfx = Personal Information Exchange) 
-"C:\Program Files\Microsoft SDKs\Windows\v6.1\Bin\signtool" sign /f ..\certificate.pfx /p ambulant /v ieambulant.cab
+"$(WindowsSDKDir)\Bin\signtool" sign /f $(ieambulant_certificate) /p ambulant /v $(OutDir)\ieambulant.cab
 :: timestamp the signature
-"C:\Program Files\Microsoft SDKs\Windows\v6.1\Bin\signtool" timestamp  /v /t "http://timestamp.verisign.com/scripts/timstamp.dll" ieambulant.cab
+"$(WindowsSDKDir)\Bin\signtool" timestamp  /v /t "http://timestamp.verisign.com/scripts/timstamp.dll" ieambulant.cab
 :: verify the resulting cabinet (.cab) archive
-"C:\Program Files\Microsoft SDKs\Windows\v6.1\Bin\signtool" verify /v /a /pa ieambulant.cab
+"$(WindowsSDKDir)\Bin\signtool" verify /v /a /pa $(OutDir)\ieambulant.cab
 @echo ------------------------------------------------------------------------------
 @echo When the code was signed with the default (test) certificate only, you'll see:
 @echo SignTool Error: File not valid: ieambulant.cab
