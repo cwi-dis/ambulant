@@ -20,7 +20,7 @@ REM PNG DLL
 copy %lpng_dir%\projects\visualc71\Win32_LIB_ASM_Release\libpng.lib %AMB_HOME%\lib\win32\libpng.lib
 
 REM ZLib DLL
-copy %lpng_dir%projects\visualc71\Win32_LIB_Release\zlib\zlib.lib %AMB_HOME%\lib\win32\zlib.lib
+copy %lpng_dir%\projects\visualc71\Win32_LIB_Release\zlib\zlib.lib %AMB_HOME%\lib\win32\zlib.lib
 
 REM JPEG static library
 copy %jpeg_dir%\win32\Release\libjpeg.lib %AMB_HOME%\lib\win32\libjpeg.lib

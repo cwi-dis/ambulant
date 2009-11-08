@@ -487,6 +487,13 @@ std::string lib::node_impl::get_sig() const {
 		s += " id=\"";
 		s += pid;
 		s += "\"";
+	} else {
+		pid = get_attribute("src");
+		if (pid) {
+			s += " src=\"";
+			s += pid;
+			s += "\"";
+		}
 	}
     const char *debug = get_attribute("_debug");
     if (debug) {

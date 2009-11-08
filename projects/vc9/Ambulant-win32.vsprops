@@ -32,7 +32,7 @@
 	Picked up by third_party_packages.sln as well as Ambulant_win32.sln.
 -->
 <UserMacro Name="sdl_dir" Value="..\..\third_party_packages\SDL-1.2.12" PerformEnvironmentSet="true"/>
-<UserMacro Name="ffmpeg_dir" Value="..\..\third_party_packages\ffmpeg-r20138-win32" PerformEnvironmentSet="true"/>
+<UserMacro Name="ffmpeg_dir" Value="..\..\third_party_packages\ffmpeg-20091008-win32-prebuilt" PerformEnvironmentSet="true"/>
 <UserMacro Name="live555_dir" Value="..\..\third_party_packages\live" PerformEnvironmentSet="true"/>
 <!--
 	Third party library for plugin_xerces. You can disable this, but
@@ -60,7 +60,7 @@
 	If you want to build the IEAmbulant ActiveX plugin you must download the CabArc utility
 	from Microsoft.
 -->
-<UserMacro name="CabArc" Value="..\..\..\bin\Cabarc\bin\CabArc.exe" PerformEnvironmentSet="true"/>
+<UserMacro Name="CabArc" Value="..\..\..\bin\Cabarc\bin\CabArc.exe" PerformEnvironmentSet="true"/>
 <!--
 	The certificate used to sign the IEAmbulant ActiveX installer.
 	Obviously, this certificate is only available to CWI employees.
