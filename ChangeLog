@@ -1,3 +1,16 @@
+2009-11-07 23:26  jackjansen
+
+	* Getting started on IEAmbulant installer integration.
+
+2009-11-07 23:23  jackjansen
+
+	* Tweaks.
+
+2009-11-07 23:16  jackjansen
+
+	* Attempting to get IEAmbulant installer into the common build
+	  process too.
+
 2009-11-06 15:34  keesblom
 
 	* Added the output of "arch" to the .xpi name, to avoid any
