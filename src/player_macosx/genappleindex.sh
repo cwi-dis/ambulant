@@ -7,4 +7,4 @@ x)
 	helpdir=$1
 	;;
 esac
-"/Developer/Applications/Utilities/Help Indexer.app/Contents/MacOS/Help Indexer" $helpdir -IndexAnchors -TigerIndexing
+hiutil -Cf $helpdir/user.helpindex $helpdir
