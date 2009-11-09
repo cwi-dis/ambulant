@@ -60,7 +60,7 @@ namespace gui {
 
 namespace dx {
 
-class video_player : public common::playable {
+class video_player {
   public:
 	video_player(const std::string& url, IDirectDraw* ddraw);
 	~video_player();
@@ -77,7 +77,6 @@ class video_player : public common::playable {
 	void wantclicks(bool want) { m_wantclicks = want;}
 
 	void preroll(double when, double where, double how_much) {}
-	cookie_type get_cookie() const { return m_cookie;}
 	int ms_per_frame();
 	
 	bool can_play();
@@ -97,7 +96,6 @@ class video_player : public common::playable {
  	void release_player();
  	
 	std::string m_url;
-	cookie_type m_cookie;
 	
 	IMultiMediaStream *m_mmstream;
     IMediaStream *m_vidstream;

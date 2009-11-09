@@ -114,7 +114,7 @@ namespace dx {
 using ambulant::lib::win32::win_report_error;
 using ambulant::lib::logger;
 
-class audio_player : public common::playable {
+class audio_player {
   public:
 	audio_player(const std::string& url);
 	~audio_player();
@@ -131,7 +131,6 @@ class audio_player : public common::playable {
 	common::duration get_dur();
 	void wantclicks(bool want) {}
 	void preroll(double when, double where, double how_much) {}
-	cookie_type get_cookie() const { return m_cookie;}
 
 	bool can_play();
 	bool is_playing();
@@ -156,7 +155,6 @@ class audio_player : public common::playable {
 	void release_player();
 	
 	std::string m_url;
-	cookie_type m_cookie;
 	IGraphBuilder *m_graph_builder;
 	IMediaControl *m_media_control;
 	IMediaPosition *m_media_position;

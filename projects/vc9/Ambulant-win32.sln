@@ -62,11 +62,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "npambulant-installer", "npa
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AmbulantActiveX-installer", "AmbulantActiveX-installer.vcproj", "{8C83D0F9-883F-4677-85CE-FEE59F194124}"
 	ProjectSection(ProjectDependencies) = postProject
-		{F646E80A-97FA-4B60-A415-A6D9EE89F3C6} = {F646E80A-97FA-4B60-A415-A6D9EE89F3C6}
 		{CA6DD7C2-8A6D-4D13-91E8-D60289AAED9E} = {CA6DD7C2-8A6D-4D13-91E8-D60289AAED9E}
 	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "msihelper", "msihelper.vcproj", "{F646E80A-97FA-4B60-A415-A6D9EE89F3C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -176,13 +173,6 @@ Global
 		{8C83D0F9-883F-4677-85CE-FEE59F194124}.ReleaseShlib|Win32.ActiveCfg = Release|Win32
 		{8C83D0F9-883F-4677-85CE-FEE59F194124}.ReleaseShlib|Win32.Build.0 = Release|Win32
 		{8C83D0F9-883F-4677-85CE-FEE59F194124}.ReleaseStatic|Win32.ActiveCfg = Release|Win32
-		{F646E80A-97FA-4B60-A415-A6D9EE89F3C6}.Debug|Win32.ActiveCfg = Debug|Win32
-		{F646E80A-97FA-4B60-A415-A6D9EE89F3C6}.DebugShlib|Win32.ActiveCfg = Debug|Win32
-		{F646E80A-97FA-4B60-A415-A6D9EE89F3C6}.DebugStatic|Win32.ActiveCfg = Debug|Win32
-		{F646E80A-97FA-4B60-A415-A6D9EE89F3C6}.Release|Win32.ActiveCfg = Release|Win32
-		{F646E80A-97FA-4B60-A415-A6D9EE89F3C6}.ReleaseShlib|Win32.ActiveCfg = Release|Win32
-		{F646E80A-97FA-4B60-A415-A6D9EE89F3C6}.ReleaseShlib|Win32.Build.0 = Release|Win32
-		{F646E80A-97FA-4B60-A415-A6D9EE89F3C6}.ReleaseStatic|Win32.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

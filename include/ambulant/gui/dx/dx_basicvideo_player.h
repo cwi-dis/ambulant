@@ -57,7 +57,7 @@ namespace dx {
 using ambulant::lib::win32::win_report_error;
 using ambulant::lib::logger;
 
-class basicvideo_player : public common::playable {
+class basicvideo_player {
   public:
 	basicvideo_player(const std::string& url, HWND parent);
 	~basicvideo_player();
@@ -74,7 +74,6 @@ class basicvideo_player : public common::playable {
 	common::duration get_dur();
 	void wantclicks(bool want) {}
 	void preroll(double when, double where, double how_much) {}
-	cookie_type get_cookie() const { return m_cookie;}
 	void setrect(const lib::rect& rect);
 
 	bool can_play();
@@ -100,7 +99,6 @@ class basicvideo_player : public common::playable {
 	void release_player();
 	
 	std::string m_url;
-	cookie_type m_cookie;
 	IGraphBuilder *m_graph_builder;
 	IMediaControl *m_media_control;
 	IMediaPosition *m_media_position;
