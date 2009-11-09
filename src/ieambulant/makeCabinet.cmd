@@ -17,19 +17,8 @@
 del $(IntDir)\*.*
 mkdir $(IntDir)
 ::
-:: redistributable C-runtime 
-copy ^"$(VCInstallDir)\redist\x86\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest^" $(intdir)\Microsoft.VC90.CRT.manifest
-copy ^"$(VCInstallDir)\redist\x86\Microsoft.VC90.CRT\msvcr90.dll^" $(intdir)\msvcr90.dll 
-copy ^"$(VCInstallDir)\redist\x86\Microsoft.VC90.CRT\msvcp90.dll^" $(intdir)\msvcp90.dll
-copy ^"$(VCInstallDir)\redist\x86\Microsoft.VC90.CRT\msvcm90.dll^" $(intdir)\msvcm90.dll
-:: redistributable Microsoft Foundation classes
-copy ^"$(VCInstallDir)\redist\x86\Microsoft.VC90.MFC\Microsoft.VC90.MFC.manifest^" $(intdir)\Microsoft.VC90.MFC.manifest
-copy ^"$(VCInstallDir)\redist\x86\Microsoft.VC90.MFC\mfc90.dll^" $(intdir)\mfc90.dll
-copy ^"$(VCInstallDir)\redist\x86\Microsoft.VC90.MFC\mfc90u.dll^" $(intdir)\mfc90u.dll
-copy ^"$(VCInstallDir)\redist\x86\Microsoft.VC90.MFC\mfcm90.dll^" $(intdir)\mfcm90.dll
-copy ^"$(VCInstallDir)\redist\x86\Microsoft.VC90.MFC\mfcm90u.dll^" $(intdir)\mfcm90u.dll
-:: use manifest tool
-mt.exe -manifest $(IntDir)\Microsoft.VC90.CRT.manifest -outputresource:$(IntDir)\msvcr90.dll;2
+:: redistributable C-runtime
+copy ^"$(WindowsSDKDir)\Bootstrapper\Packages\vcredist_x86\vcredist_x86.exe^" $(intdir)\vcredist_x86.exe
 :: Ambulant dll's
 copy ..\..\bin\win32\AmbulantActiveX.dll $(intdir)\AmbulantActiveX.dll
 copy ..\..\bin\win32\libambulant_shwin32.dll $(intdir)\libambulant_shwin32.dll
@@ -43,7 +32,7 @@ copy ..\..\bin\win32\SDL.dll $(intdir)\SDL.dll
 copy ..\..\bin\win32\xerces-c_2_8.dll $(intdir)\xerces-c_2_8.dll
 copy ..\..\src\ieambulant\AmbulantActiveX.inf $(intdir)\AmbulantActiveX.inf
 :: Create a new cabinet (.cab) archive
-^"$(CabArc)^" -s 6144 n $(OutDir)\ieambulant.cab $(IntDir)\*.manifest $(IntDir)\*.dll $(IntDir)\*.inf
+^"$(CabArc)^" -s 6144 n $(OutDir)\ieambulant.cab $(IntDir)\*.exe $(IntDir)\*.dll $(IntDir)\*.inf
 :: Code sign it with code signing certificate (.pfx = Personal Information Exchange) 
 set signtool=^"$(WindowsSDKDir)Bin\signtool.exe^"
 %signtool% sign /f $(ieambulant_certificate) /p ambulant /v $(TargetPath)
