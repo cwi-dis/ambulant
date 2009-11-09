@@ -60,7 +60,7 @@
 	If you want to build the IEAmbulant ActiveX plugin you must download the CabArc utility
 	from Microsoft.
 -->
-<UserMacro Name="CabArc" Value="..\..\..\bin\Cabarc\bin\CabArc.exe" PerformEnvironmentSet="true"/>
+<UserMacro Name="CabArc" Value="..\..\..\..\bin\Cabarc\bin\CabArc.exe" PerformEnvironmentSet="true"/>
 <!--
 	The certificate used to sign the IEAmbulant ActiveX installer.
 	Obviously, this certificate is only available to CWI employees.

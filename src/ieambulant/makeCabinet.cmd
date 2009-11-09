@@ -14,6 +14,8 @@
 :: copy all files for the cab into this directory
 @echo on
 @echo "copying all files for the cab into this directory"
+del $(IntDir)/*.*
+mkdir $(IntDir)
 ::
 :: redistributable C-runtime 
 copy ^"$(VCInstallDir)\redist\x86\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest^" $(intdir)\Microsoft.VC90.CRT.manifest
@@ -43,8 +45,9 @@ copy ..\..\src\ieambulant\AmbulantActiveX.inf $(intdir)\AmbulantActiveX.inf
 :: Create a new cabinet (.cab) archive
 ^"$(CabArc)^" -s 6144 n $(OutDir)\ieambulant.cab $(IntDir)\*.manifest $(IntDir)\*.dll $(IntDir)\*.inf
 :: Code sign it with code signing certificate (.pfx = Personal Information Exchange) 
-^"$(WindowsSDKDir)\Bin\signtool^" sign /f $(ieambulant_certificate) /p ambulant /v $(TargetPath)
+set signtool=^"$(WindowsSDKDir)Bin\signtool.exe^"
+%signtool% sign /f $(ieambulant_certificate) /p ambulant /v $(TargetPath)
 :: timestamp the signature
-$^"(WindowsSDKDir)\Bin\signtool^" timestamp  /v /t "http://timestamp.verisign.com/scripts/timstamp.dll" $(TargetPath)
+%signtool% timestamp  /v /t "http://timestamp.verisign.com/scripts/timstamp.dll" $(TargetPath)
 :: verify the resulting cabinet^" (.cab) archive
-^"$(WindowsSDKDir)\Bin\signtool^" verify /v /a /pa $(TargetPath)
+%signtool% verify /v /a /pa $(TargetPath)
