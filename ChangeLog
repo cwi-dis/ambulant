@@ -1,3 +1,16 @@
+2009-11-09 00:09  jackjansen
+
+	* Sigh. Variables are not exported to sub-scripts, so copy the
+	  whole script into the project.
+
+	  Hacked around quoting and such too. About 90% of the steps are
+	  now happening.
+
+2009-11-08 23:26  jackjansen
+
+	* - typo in vsprops - zlib copy line fixed in copy_tpp_win32.bat -
+	  if there's no id use the src attribute in node::get_sig().
+
 2009-11-07 23:26  jackjansen
 
 	* Getting started on IEAmbulant installer integration.
