@@ -12,10 +12,8 @@ AdvancedINF=2.0
 AmbulantActiveX.dll=AmbulantActiveX.dll
 libambulant_shwin32.dll=libambulant_shwin32.dll
 libamplugin_ffmpeg.dll=libamplugin_ffmpeg.dll
-libamplugin_plugin.dll=libamplugin_plugin.dll
 libamplugin_state_xpath.dll=libamplugin_state_xpath.dll
 avcodec-52.dll=avcodec-52.dll
-avdevice-52.dll=avdevice-52.dll
 avformat-52.dll=avformat-52.dll
 avutil-50.dll=avutil-50.dll
 swscale-0.dll=swscale-0.dll
@@ -77,10 +75,6 @@ FileVersion=1,0,0,1
 file-win32-x86=thiscab
 FileVersion=1,0,0,1
 
-[libamplugin_plugin.dll]
-file-win32-x86=thiscab
-FileVersion=1,0,0,1
-
 [libamplugin_state_xpath.dll]
 file-win32-x86=thiscab
 FileVersion=1,0,0,1
@@ -88,10 +82,6 @@ FileVersion=1,0,0,1
 ; third-party-packages
 ; ffmpeg audio, video
 [avcodec-52.dll]
-file-win32-x86=thiscab
-FileVersion=1,0,0,1
-
-[avdevice-52.dll]
 file-win32-x86=thiscab
 FileVersion=1,0,0,1
 

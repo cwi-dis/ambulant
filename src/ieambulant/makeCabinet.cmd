@@ -14,7 +14,7 @@
 :: copy all files for the cab into this directory
 @echo on
 @echo "copying all files for the cab into this directory"
-del $(IntDir)/*.*
+del $(IntDir)\*.*
 mkdir $(IntDir)
 ::
 :: redistributable C-runtime 
@@ -31,11 +31,11 @@ copy ^"$(VCInstallDir)\redist\x86\Microsoft.VC90.MFC\mfcm90u.dll^" $(intdir)\mfc
 :: use manifest tool
 mt.exe -manifest $(IntDir)\Microsoft.VC90.CRT.manifest -outputresource:$(IntDir)\msvcr90.dll;2
 :: Ambulant dll's
+copy ..\..\bin\win32\AmbulantActiveX.dll $(intdir)\AmbulantActiveX.dll
 copy ..\..\bin\win32\libambulant_shwin32.dll $(intdir)\libambulant_shwin32.dll
 copy ..\..\bin\win32\libamplugin_ffmpeg.dll $(intdir)\libamplugin_ffmpeg.dll 
 copy ..\..\bin\win32\libamplugin_state_xpath.dll $(intdir)\libamplugin_state_xpath.dll
 copy ..\..\bin\win32\avcodec-52.dll $(intdir)\avcodec-52.dll
-copy ..\..\bin\win32\avdevice-52.dll $(intdir)\avdevice-52.dll
 copy ..\..\bin\win32\avformat-52.dll $(intdir)\avformat-52.dll 
 copy ..\..\bin\win32\avutil-50.dll $(intdir)\avutil-50.dll
 copy ..\..\bin\win32\swscale-0.dll $(intdir)\swscale-0.dll

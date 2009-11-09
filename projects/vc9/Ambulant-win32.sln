@@ -76,21 +76,25 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Debug|Win32.ActiveCfg = DebugStatic|Win32
+		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Debug|Win32.Build.0 = DebugStatic|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.DebugShlib|Win32.ActiveCfg = DebugShlib|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.DebugShlib|Win32.Build.0 = DebugShlib|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.DebugStatic|Win32.ActiveCfg = DebugStatic|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.DebugStatic|Win32.Build.0 = DebugStatic|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Release|Win32.ActiveCfg = ReleaseStatic|Win32
+		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.Release|Win32.Build.0 = ReleaseStatic|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.ReleaseShlib|Win32.ActiveCfg = ReleaseShlib|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.ReleaseShlib|Win32.Build.0 = ReleaseShlib|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.ReleaseStatic|Win32.ActiveCfg = ReleaseStatic|Win32
 		{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}.ReleaseStatic|Win32.Build.0 = ReleaseStatic|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.Debug|Win32.ActiveCfg = DebugStatic|Win32
+		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.Debug|Win32.Build.0 = DebugStatic|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.DebugShlib|Win32.ActiveCfg = DebugShlib|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.DebugShlib|Win32.Build.0 = DebugShlib|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.DebugStatic|Win32.ActiveCfg = DebugStatic|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.DebugStatic|Win32.Build.0 = DebugStatic|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.Release|Win32.ActiveCfg = ReleaseStatic|Win32
+		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.Release|Win32.Build.0 = ReleaseStatic|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.ReleaseShlib|Win32.ActiveCfg = ReleaseShlib|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.ReleaseShlib|Win32.Build.0 = ReleaseShlib|Win32
 		{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}.ReleaseStatic|Win32.ActiveCfg = ReleaseStatic|Win32
@@ -141,10 +145,8 @@ Global
 		{51CEFA69-BAB3-421F-9A79-17FBB4E73F21}.ReleaseShlib|Win32.Build.0 = Release|Win32
 		{51CEFA69-BAB3-421F-9A79-17FBB4E73F21}.ReleaseStatic|Win32.ActiveCfg = Release|Win32
 		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.Debug|Win32.ActiveCfg = Release|Win32
-		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.Debug|Win32.Build.0 = Release|Win32
 		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.DebugShlib|Win32.ActiveCfg = Release|Win32
 		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.DebugStatic|Win32.ActiveCfg = Release|Win32
-		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.DebugStatic|Win32.Build.0 = Release|Win32
 		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.Release|Win32.ActiveCfg = Release|Win32
 		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.ReleaseShlib|Win32.ActiveCfg = Release|Win32
 		{ABB895C0-7435-406D-A44F-8C68B6DB7093}.ReleaseShlib|Win32.Build.0 = Release|Win32
@@ -165,17 +167,12 @@ Global
 		{E758D8FC-44AE-4D39-B642-94B252CD1559}.ReleaseShlib|Win32.Build.0 = Release|Win32
 		{E758D8FC-44AE-4D39-B642-94B252CD1559}.ReleaseStatic|Win32.ActiveCfg = Release|Win32
 		{8C83D0F9-883F-4677-85CE-FEE59F194124}.Debug|Win32.ActiveCfg = Debug|Win32
-		{8C83D0F9-883F-4677-85CE-FEE59F194124}.Debug|Win32.Build.0 = Debug|Win32
 		{8C83D0F9-883F-4677-85CE-FEE59F194124}.DebugShlib|Win32.ActiveCfg = Debug|Win32
-		{8C83D0F9-883F-4677-85CE-FEE59F194124}.DebugShlib|Win32.Build.0 = Debug|Win32
 		{8C83D0F9-883F-4677-85CE-FEE59F194124}.DebugStatic|Win32.ActiveCfg = Debug|Win32
-		{8C83D0F9-883F-4677-85CE-FEE59F194124}.DebugStatic|Win32.Build.0 = Debug|Win32
 		{8C83D0F9-883F-4677-85CE-FEE59F194124}.Release|Win32.ActiveCfg = Release|Win32
-		{8C83D0F9-883F-4677-85CE-FEE59F194124}.Release|Win32.Build.0 = Release|Win32
 		{8C83D0F9-883F-4677-85CE-FEE59F194124}.ReleaseShlib|Win32.ActiveCfg = Release|Win32
 		{8C83D0F9-883F-4677-85CE-FEE59F194124}.ReleaseShlib|Win32.Build.0 = Release|Win32
 		{8C83D0F9-883F-4677-85CE-FEE59F194124}.ReleaseStatic|Win32.ActiveCfg = Release|Win32
-		{8C83D0F9-883F-4677-85CE-FEE59F194124}.ReleaseStatic|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
