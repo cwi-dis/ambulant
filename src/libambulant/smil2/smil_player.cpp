@@ -105,13 +105,16 @@ smil_player::terminate()
     m_doc = NULL;
 	m_timer->pause();
 	cancel_all_events();
-	cancel_all_events();		
 	m_scheduler->reset_document();
-	delete m_event_processor;
+    // XXXJACK Note by Jack and Kees: it may be unsafe to destroy the event processor here,
+    // because it could have been passed to renderers, datasources, etc. and these are not
+    // cleaned up until later. If we get crashes during 
+	lib::event_processor *evp = m_event_processor;
     m_event_processor = NULL;
 	delete m_timer;
     m_timer = NULL;
     m_lock.leave();
+    delete evp;
 }
 
 smil_player::~smil_player() {
