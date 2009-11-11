@@ -1,3 +1,8 @@
+2009-11-10 12:12  jackjansen
+
+	* Deleting the event processor while holding the smil_player lock
+	  can lead to a deadlock.
+
 2009-11-09 23:28  jackjansen
 
 	* DX continuous media player classes were (erronuously) subclasses
