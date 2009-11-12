@@ -1,3 +1,7 @@
+2009-11-11 16:09  jackjansen
+
+	* Ignore import library.
+
 2009-11-10 12:12  jackjansen
 
 	* Deleting the event processor while holding the smil_player lock
