@@ -301,9 +301,14 @@ Creating the Firefox plugin on Linux
 - download xulrunner-sdk from mozilla.org into third-party-packages
 - as above, configure --with-npambulant --without-xerces [other options]; make;make install
 - cd src/npambulant;make installer
-  This will create a file named: npambulant-<version>-linux.xpi, which can be opened with
-  firefox to install the plugin. 
+  This will create a file named: npambulant-<version>-linux-<arch>.xpi,
+  which can be (downloaded from a website and) opened by firefox to install the plugin. 
   For a 64 bit platform, this installer will work with a 64 bit firefox.
+  
+  NB. gcc4.4 (FC11) has a bug s.t. when it builds a plugin, on loading
+  this plugin by firefox built with gcc4.3 (FC9,FC10), firefox will crash.
+  The reverse is not true.
+
 
 Creating the Windows desktop/FF/IE installers
 =============================================

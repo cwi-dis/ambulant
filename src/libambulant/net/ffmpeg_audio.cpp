@@ -429,7 +429,7 @@ ffmpeg_decoder_datasource::data_avail()
 					AM_DBG lib::logger::get_logger()->debug("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, cursz);
                     int decoded = avcodec_decode_audio2(m_con, ffmpeg_outbuf, &outsize, inbuf, cursz);
 #if FFMPEG_OUTPUT_ALIGNMENT-1
-					if ((uint8_t *)ffmpeg_outbuf != outbuf) memcpy(outbuf, ffmpeg_outbuf, outsize);
+					if ((uint8_t *)ffmpeg_outbuf != outbuf) memmove(outbuf, ffmpeg_outbuf, outsize);
 #endif
 					///// Feeding the successive block of one rtsp mp3 packet to ffmpeg to decode, 
 					///// since ffmpeg can only decode the limited length of around 522(522 or 523 
