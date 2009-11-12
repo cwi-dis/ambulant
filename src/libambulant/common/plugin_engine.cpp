@@ -123,8 +123,10 @@ plugin_engine::plugin_engine()
 }
 
 plugin_engine::~plugin_engine() {
-	if (s_singleton == this)
+	if (s_singleton == this) {
+		lt_dlexit();
 		s_singleton = NULL;
+	}
 }
 void
 plugin_engine::collect_plugin_directories()

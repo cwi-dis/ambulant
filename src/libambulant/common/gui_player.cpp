@@ -40,6 +40,7 @@ gui_player::~gui_player()
 	m_lock.enter();
 	if (m_player) m_player->release();
 	m_player = NULL;
+	delete common::plugin_engine::get_plugin_engine();
 	m_lock.leave();
 }
 
