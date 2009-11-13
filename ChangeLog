@@ -1,3 +1,16 @@
+2009-11-12 14:01  keesblom
+
+	* Added cleanup of plugin_engine (ingui_player) and lt_dl (in
+	  plugin_engine)
+
+2009-11-12 11:40  keesblom
+
+	* Use memmove() instead of memcpy() because memory area overlap
+
+2009-11-12 10:52  jackjansen
+
+	* Fixed a deadlock: bug #2895982.
+
 2009-11-11 16:09  jackjansen
 
 	* Ignore import library.
