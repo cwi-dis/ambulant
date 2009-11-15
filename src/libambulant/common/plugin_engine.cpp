@@ -124,7 +124,9 @@ plugin_engine::plugin_engine()
 
 plugin_engine::~plugin_engine() {
 	if (s_singleton == this) {
+#ifdef WITH_LTDL_PLUGINS
 		lt_dlexit();
+#endif
 		s_singleton = NULL;
 	}
 }
