@@ -76,7 +76,7 @@ event_processor_impl::run()
 	AM_DBG lib::logger::get_logger()->debug("event_processor 0x%x started", (void *)this);
 #if defined(AMBULANT_PLATFORM_WIN32) || defined(AMBULANT_PLATFORM_WIN32_WCE)
     HRESULT hr;
-#if defined(AMBULANT_PLATFORM_WIN32_WCE)
+#if 1 || defined(AMBULANT_PLATFORM_WIN32_WCE)
 	hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
 #else
 	hr = CoInitialize(NULL);
