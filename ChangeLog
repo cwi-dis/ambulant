@@ -1,3 +1,7 @@
+2009-11-15 15:28  jackjansen
+
+	* Added an ifdef WITH_LTDL_PLUGINS
+
 2009-11-12 14:01  keesblom
 
 	* Added cleanup of plugin_engine (ingui_player) and lt_dl (in
