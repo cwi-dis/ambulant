@@ -110,6 +110,12 @@ demux_audio_datasource::stop()
 	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::stop: thread stopped");
 	if (m_client_callback) delete m_client_callback;
 	m_client_callback = NULL;
+	while (m_queue.size() > 0) {
+		ts_packet_t tsp(0,NULL,0);
+		tsp = m_queue.front();
+		free(tsp.data);
+		m_queue.pop();
+	}
 	m_lock.leave();
 }	
 
