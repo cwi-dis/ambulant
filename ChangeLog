@@ -1,3 +1,8 @@
+2009-11-17 11:55  keesblom
+
+	* Free all queue'd data blocks in demux_audio_data_source.
+	  Partially fixes #2883203.
+
 2009-11-16 18:41  stevents
 
 	* Jack here: mods to make VCE work with RTP video viewer. Should
