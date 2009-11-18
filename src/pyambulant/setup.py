@@ -2,6 +2,13 @@ from distutils.core import setup, Extension
 import sys
 import os
 
+# Distinguish 32/64 bit installation
+import struct
+if struct.calcsize('P') == 8:
+    bits='64'
+else:
+    bits=''
+
 # Set these variable identical to your configure options.
 if sys.platform == 'linux2':
     # Not really the correct test, but okay for the time being
@@ -56,7 +63,7 @@ if WITH_GTK:
     INCDIRS.append('/usr/include/cairo')
     INCDIRS.append('/usr/include/pango-1.0')
     INCDIRS.append('/usr/include/glib-2.0')
-    INCDIRS.append('/usr/lib/glib-2.0/include')
+    INCDIRS.append('/usr/lib'+bits+'/glib-2.0/include')
     INCDIRS.append('/usr/include/freetype2')
 if WITH_FFMPEG:
     DEFS.append(('WITH_FFMPEG', '1'))
