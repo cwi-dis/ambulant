@@ -1,3 +1,7 @@
+2009-11-18 15:29  keesblom
+
+	* Made pyambulant compile and link on 64 bit linux installation
+
 2009-11-17 11:55  keesblom
 
 	* Free all queue'd data blocks in demux_audio_data_source.
