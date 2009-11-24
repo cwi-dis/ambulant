@@ -170,15 +170,15 @@ gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, common::player_feedba
 }
 
 gui::dx::dx_player::~dx_player() {
+	lib::event_processor *evp = NULL;
 	if(m_player) stop();
-	lib::event_processor *evp;
 	if (m_player) {
 		evp = m_player->get_evp();
 		if (evp) evp->set_observer(NULL);
+		m_player->terminate();
+		m_player->release();
+		m_player = NULL;
 	}
-	m_player->terminate();
-	m_player->release();
-    m_player = NULL;
 	while(!m_frames.empty()) {
 		frame *pf = m_frames.top();
 		m_frames.pop();
@@ -190,10 +190,10 @@ gui::dx::dx_player::~dx_player() {
 		if (m_player) {
 			evp = m_player->get_evp();
 			if (evp) evp->set_observer(NULL);
+			m_player->terminate();
+			m_player->release();
+			m_player = NULL;
 		}
-		m_player->terminate();
-		m_player->release();
-        m_player = NULL;
 		delete m_doc;
 	}
 	delete m_doc;
@@ -321,6 +321,7 @@ void gui::dx::dx_player::restart(bool reparse) {
 	lib::event_processor *evp = m_player->get_evp();
 	if (evp) evp->set_observer(NULL);
 	
+	assert(m_player);
 	m_player->terminate();
 	m_player->release();
     m_player = NULL;
@@ -331,6 +332,7 @@ void gui::dx::dx_player::restart(bool reparse) {
 		evp = m_player->get_evp();
 		if (evp) evp->set_observer(NULL);
 		m_player = pf->player;
+		assert(m_player);
 		m_doc = pf->doc;
 		delete pf;
 		stop();

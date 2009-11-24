@@ -155,6 +155,7 @@ HRESULT
 Cieambulant::updatePlayer()
 {
 	// added for ambulant
+
 	if (m_url.get_url() == "")
 		get_document_url();
 	if ( ! m_url.is_absolute()) {
@@ -191,14 +192,15 @@ Cieambulant::updatePlayer()
 		m_ambulant_player = new ambulant::gui::dx::dx_player(m_player_callbacks, NULL, m_url);
 //X		m_ambulant_player->set_state_component_factory(NULL); // XXXJACK DEBUG!!!!
 		if (m_ambulant_player) {
-			if ( ! get_player()) {
+			if ( !get_player()) {
+				abort();
 				delete m_ambulant_player;
 				m_ambulant_player = NULL;
 			} else {
 				ambulant::lib::logger::get_logger()->set_show_message(ieambulant_display_message);
 				ambulant::lib::logger::get_logger()->show("ieambulant plugin loaded");
 				if (m_autostart)
-					m_ambulant_player ->play();
+					m_ambulant_player->play();
 			}
 		} 
 	}
