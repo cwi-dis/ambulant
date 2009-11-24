@@ -743,6 +743,7 @@ void gui::dx::dx_player::open(net::url newdoc, bool startnewdoc, common::player 
 	
 	// Parse the document. 
 	m_doc = create_document(newdoc);
+	if (!m_doc) return;
 	
 	// Push the old frame on the stack
 	if(m_player) {

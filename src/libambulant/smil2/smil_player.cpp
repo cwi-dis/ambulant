@@ -85,6 +85,7 @@ smil_player::smil_player(lib::document *doc, common::factories *factory, common:
 void
 smil_player::initialize()
 {
+	assert(m_doc);
 	document_loaded(m_doc);
 	
 	m_event_processor = event_processor_factory(m_timer);
@@ -195,6 +196,7 @@ void smil_player::build_timegraph() {
 
 #ifdef WITH_SMIL30
 void smil_player::create_state_engine() {
+	assert(m_doc);
 	if (m_state_engine) delete m_state_engine;
 	lib::node *doc_root = m_doc->get_root();
 	if (!doc_root) return;
