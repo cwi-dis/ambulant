@@ -776,7 +776,8 @@ ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::selectdecoder(): codec found!");
 		}
     
-		m_con = avcodec_alloc_context();	
+		m_con = avcodec_alloc_context();
+        m_con_owned = true;
 		m_con->channels = 0;
 		if((avcodec_open(m_con,codec) < 0) ) {
 			//lib::logger::get_logger()->error(gettext("%s: Cannot open audio codec %d(%s)"), repr(url).c_str(), m_con->codec_id, m_con->codec_name);

@@ -162,7 +162,10 @@ ffmpeg_demux::~ffmpeg_demux()
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::~ffmpeg_demux()");
-	if (m_con) av_close_input_file(m_con);
+	if (m_con) {
+        av_close_input_file(m_con);
+        // Implies av_free(m_con);
+    }
 	m_con = NULL;
 	m_lock.leave();
 }
