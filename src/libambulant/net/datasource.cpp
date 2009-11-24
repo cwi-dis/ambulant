@@ -495,7 +495,8 @@ datasource_reader::datasource_reader(datasource *src)
 datasource_reader::~datasource_reader()
 {
 	m_lock.enter();
-    m_src->stop();
+	m_src->stop();
+	m_event_processor->cancel_all_events();
 	m_src->release();
 	delete m_event_processor;
 	delete m_timer;
