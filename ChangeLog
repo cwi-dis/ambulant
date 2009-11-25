@@ -1,3 +1,23 @@
+2009-11-24 15:20  jackjansen
+
+	* - Comment fix for ffmpeg cleanup - Micro-fix for ffmpeg-for-=rtsp
+	  which may or may not be a good idea.
+
+2009-11-24 13:47  jackjansen
+
+	* - Made dx_player::open() more robust against missing files.  -
+	  Added a few asserts.	- Generate pdb files even for release
+	  binaries. This allows at least some debugging.
+
+2009-11-24 12:35  keesblom
+
+	* Fixed a destructor order problem causing a mutex deadlock avoided
+	  assertion failure.
+
+2009-11-24 10:32  jackjansen
+
+	* Old checkins still sitting on my disk.
+
 2009-11-18 15:29  keesblom
 
 	* Made pyambulant compile and link on 64 bit linux installation
