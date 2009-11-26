@@ -39,8 +39,6 @@ namespace gui {
 
 namespace gtk {
 
-common::playable_factory *create_gtk_video_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
-
 class gtk_video_renderer :  public gtk_renderer<common::video_renderer>  {
   public:
 	gtk_video_renderer(

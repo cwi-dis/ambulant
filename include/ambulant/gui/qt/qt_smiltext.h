@@ -43,8 +43,6 @@ namespace qt {
 
 class smiltext_renderer;
 
-common::playable_factory *create_qt_smiltext_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
-
 class qt_smiltext_renderer : 
 		public qt_renderer<renderer_playable>,
 		  public smil2::smiltext_notification,

@@ -153,14 +153,23 @@ class MyScanner(CxxScanner):
         return [
             ('#ifdef WITH_QT', [
                 'create_qt_window_factory_unsafe',
-                'create_qt_playable_factory',
                 'create_qt_video_factory',
+                'create_qt_fill_playable_factory',
+                'create_qt_image_playable_factory',
+                'create_qt_smiltext_playable_factory',
+                'create_qt_text_playable_factory',
+                'create_qt_html_playable_factory',
+                'create_qt_video_playable_factory',
                 ]
             ),
             ('#ifdef WITH_GTK', [
                 'create_gtk_window_factory_unsafe',
-                'create_gtk_renderer_factory',
                 'create_gtk_video_factory',
+                'create_gtk_fill_playable_factory',
+                'create_gtk_image_playable_factory',
+                'create_gtk_smiltext_playable_factory',
+                'create_gtk_text_playable_factory',
+                'create_gtk_video_playable_factory',
                 ]
             ),
             ('#ifdef WITH_SDL', [

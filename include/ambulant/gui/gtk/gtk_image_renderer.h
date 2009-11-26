@@ -50,8 +50,6 @@ using namespace net;
 
 namespace gtk {
 
-common::playable_factory *create_gtk_image_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
-
 class gtk_image_renderer : public gtk_renderer<renderer_playable_dsall> {
 
   public:

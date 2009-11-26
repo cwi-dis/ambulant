@@ -39,8 +39,6 @@ namespace gui {
 
 namespace gtk {
 
-common::playable_factory *create_gtk_fill_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
-
 class gtk_fill_renderer : public  renderer_playable {
   public:
 	gtk_fill_renderer(

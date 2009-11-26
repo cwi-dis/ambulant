@@ -38,8 +38,6 @@ namespace gui {
 
 namespace qt {
 
-common::playable_factory *create_qt_fill_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
-
 class qt_fill_renderer : public  renderer_playable {
   public:
 	qt_fill_renderer(

@@ -46,8 +46,6 @@ namespace gui {
 
 namespace qt {
 
-common::playable_factory *create_qt_text_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
-
 class qt_text_renderer : public qt_renderer<renderer_playable_dsall> {
   public:
 	qt_text_renderer(common::playable_notification *context,

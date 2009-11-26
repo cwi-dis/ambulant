@@ -209,6 +209,17 @@ AMBULANTAPI common::window_factory *create_gtk_window_factory(gtk_ambulant_widge
 // Create gtk_ambulant_widget inside gtk_parent_widget, call create_gtk_window_factory.
 AMBULANTAPI common::window_factory *create_gtk_window_factory_unsafe(void* gtk_parent_widget, common::gui_player* gpl);
 
+// Playable factories
+AMBULANTAPI common::playable_factory *create_gtk_video_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+AMBULANTAPI common::playable_factory *create_gtk_text_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+#ifdef WITH_SMIL30
+AMBULANTAPI common::playable_factory *create_gtk_smiltext_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+#endif
+AMBULANTAPI common::playable_factory *create_gtk_image_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+AMBULANTAPI common::playable_factory *create_gtk_fill_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+
+
+
 } // namespace gtk
 
 } // namespace gui

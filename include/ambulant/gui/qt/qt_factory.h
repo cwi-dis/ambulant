@@ -37,6 +37,15 @@ namespace qt {
 AMBULANTAPI common::window_factory *create_qt_window_factory(QWidget *parent_widget, int top_offset, common::gui_player *gpl);
 #endif
 AMBULANTAPI common::window_factory *create_qt_window_factory_unsafe(void *parent_widget, int top_offset, common::gui_player *gpl);
+AMBULANTAPI common::playable_factory *create_qt_video_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+AMBULANTAPI common::playable_factory *create_qt_text_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+AMBULANTAPI common::playable_factory *create_qt_smiltext_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+AMBULANTAPI common::playable_factory *create_qt_image_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+#ifdef	WITH_QT_HTML_WIDGET
+AMBULANTAPI common::playable_factory *create_qt_html_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+#endif
+AMBULANTAPI common::playable_factory *create_qt_fill_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+
 } // namespace qt
 
 } // namespace gui

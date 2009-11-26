@@ -46,8 +46,6 @@ namespace gui {
 
 namespace gtk {
 
-common::playable_factory *create_gtk_text_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
-
 class gtk_text_renderer : public gtk_renderer<renderer_playable_dsall> {
   public:
 	gtk_text_renderer(common::playable_notification *context,

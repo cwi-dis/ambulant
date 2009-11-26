@@ -7,4 +7,11 @@ x)
 	helpdir=$1
 	;;
 esac
-hiutil -Cf $helpdir/user.helpindex $helpdir
+case `uname -r` in
+[789]*)
+	"/Developer/Applications/Utilities/Help Indexer.app/Contents/MacOS/Help Indexer" $helpdir -IndexAnchors -TigerIndexing
+	;;
+*)
+	hiutil -Cf $helpdir/user.helpindex $helpdir
+	;;
+esac
