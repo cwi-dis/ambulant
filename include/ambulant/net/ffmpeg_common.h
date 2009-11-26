@@ -73,17 +73,17 @@ class ffmpeg_demux : public abstract_demux {
 	  
 	void add_datasink(demux_datasink *parent, int stream_index);
 	void remove_datasink(int stream_index);
-    int audio_stream_nr();
+	int audio_stream_nr();
   	int video_stream_nr();
     // XXX this should also be timestamp_t instead of double
   	double duration();
   	int nstreams();
-    void seek(timestamp_t time);
+	void seek(timestamp_t time);
 #ifdef WITH_SEAMLESS_PLAYBACK
-    void set_clip_end(timestamp_t clip_end);
+	void set_clip_end(timestamp_t clip_end);
 #endif
-    void read_ahead(timestamp_t time);
-    audio_format& get_audio_format();
+	void read_ahead(timestamp_t time);
+	audio_format& get_audio_format();
   	video_format& get_video_format();
 	void cancel();
 	timestamp_t get_clip_end(); 

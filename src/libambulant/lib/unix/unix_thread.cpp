@@ -55,7 +55,11 @@ lib::unix::thread::start()
 	while ((err = pthread_create(&m_thread, NULL, &thread::threadproc, this)) != 0) {
 		errno = err;
 		perror("pthread_create()");
+#ifdef  NDEBUG
+		return false;
+#else
 		abort();
+#endif//NDEBUG
 		//m_starting = false;
 	}
 	return true;

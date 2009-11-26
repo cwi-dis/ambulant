@@ -28,7 +28,11 @@
 
 using namespace ambulant;
 #undef unix
+#ifdef  NDEBUG
+#unset  MUTEX_DEBUG
+#else
 #define MUTEX_DEBUG
+#endif//NDEBUG
 
 lib::unix::critical_section::critical_section()
 {
