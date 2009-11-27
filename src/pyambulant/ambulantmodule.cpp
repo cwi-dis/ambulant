@@ -16318,7 +16318,7 @@ static PyObject *PyAm_create_qt_image_playable_factory(PyObject *_self, PyObject
 }
 #endif
 
-#ifdef WITH_QT
+#if defined(WITH_QT) && defined(WITH_QT_HTML_WIDGET)
 
 static PyObject *PyAm_create_qt_html_playable_factory(PyObject *_self, PyObject *_args)
 {
@@ -16753,7 +16753,7 @@ static PyMethodDef PyAm_methods[] = {
 	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
 #endif
 
-#ifdef WITH_QT
+#if defined(WITH_QT) && defined(WITH_QT_HTML_WIDGET)
 	{"create_qt_html_playable_factory", (PyCFunction)PyAm_create_qt_html_playable_factory, 1,
 	 PyDoc_STR("(ambulant::common::factories* factory) -> (ambulant::common::playable_factory* _rv)")},
 #endif

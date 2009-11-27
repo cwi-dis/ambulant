@@ -158,8 +158,11 @@ class MyScanner(CxxScanner):
                 'create_qt_image_playable_factory',
                 'create_qt_smiltext_playable_factory',
                 'create_qt_text_playable_factory',
-                'create_qt_html_playable_factory',
                 'create_qt_video_playable_factory',
+                ]
+            ),
+            ('#if defined(WITH_QT) && defined(WITH_QT_HTML_WIDGET)', [
+                'create_qt_html_playable_factory',
                 ]
             ),
             ('#ifdef WITH_GTK', [
