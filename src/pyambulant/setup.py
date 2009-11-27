@@ -13,9 +13,10 @@ else:
 if sys.platform == 'linux2':
     # Not really the correct test, but okay for the time being
     WITH_GTK=True
+    WITH_QT=True
 else:
     WITH_GTK=False
-WITH_QT= not not os.getenv("QTDIR")
+    WITH_QT=False
 if sys.platform == 'win32':
     WITH_FFMPEG=False
     WITH_SDL=False

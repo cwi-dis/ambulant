@@ -58,7 +58,7 @@ class Glue(ambulant.gui_player, ambulant.factories):
         if hasattr(ambulant, 'create_qt_smiltext_playable_factory'):
             gpf.add_factory(ambulant.create_qt_smiltext_playable_factory(self))
         gpf.add_factory(ambulant.create_qt_text_playable_factory(self))
-        gpf.add_factory(ambulant.create_qt_video_factory(self))
+        gpf.add_factory(ambulant.create_qt_video_playable_factory(self))
         gpf.add_factory(ambulant.create_sdl_playable_factory(self))
         self.set_playable_factory(gpf)
         
