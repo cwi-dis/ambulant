@@ -6,8 +6,8 @@ class jaja:
 class Glue(ambulant.gui_player, ambulant.factories):
 
     def __init__(self, filename, widget):
-	#import pdb
-	#pdb.set_trace()
+    #import pdb
+    #pdb.set_trace()
         ambulant.gui_player.__init__(self)
         self.widget = widget
 
@@ -51,8 +51,14 @@ class Glue(ambulant.gui_player, ambulant.factories):
         
     def init_playable_factory(self):
         gpf = ambulant.get_global_playable_factory()
-        gpf.add_factory(ambulant.create_qt_playable_factory(self))
-	gpf.add_factory(ambulant.create_qt_video_factory(self))
+        gpf.add_factory(ambulant.create_qt_fill_playable_factory(self))
+        if hasattr(ambulant, 'create_qt_html_playable_factory'):
+            gpf.add_factory(ambulant.create_qt_html_playable_factory(self))
+        gpf.add_factory(ambulant.create_qt_image_playable_factory(self))
+        if hasattr(ambulant, 'create_qt_smiltext_playable_factory'):
+            gpf.add_factory(ambulant.create_qt_smiltext_playable_factory(self))
+        gpf.add_factory(ambulant.create_qt_text_playable_factory(self))
+        gpf.add_factory(ambulant.create_qt_video_factory(self))
         gpf.add_factory(ambulant.create_sdl_playable_factory(self))
         self.set_playable_factory(gpf)
         
