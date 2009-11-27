@@ -105,28 +105,6 @@ smil_player::terminate()
     m_lock.enter();
     m_doc = NULL;
 	m_timer->pause();
-	cancel_all_events();
-	m_scheduler->reset_document();
-    // XXXJACK Note by Jack and Kees: it may be unsafe to destroy the event processor here,
-    // because it could have been passed to renderers, datasources, etc. and these are not
-    // cleaned up until later. If we get crashes during 
-	lib::event_processor *evp = m_event_processor;
-    m_event_processor = NULL;
-	delete m_timer;
-    m_timer = NULL;
-    m_lock.leave();
-    delete evp;
-}
-
-smil_player::~smil_player() {
-	m_lock.enter();
-	AM_DBG m_logger->debug("smil_player::~smil_player(0x%x)", this);
-    
-    // Make sure terminate was called first
-    assert(m_doc == NULL);
-    assert(m_timer == NULL);
-    assert(m_event_processor == NULL);
-
 	std::map<const lib::node*, common::playable *>::iterator it;
     m_playables_cs.enter();
 	for(it = m_playables.begin();it!=m_playables.end();it++) {
@@ -145,7 +123,28 @@ smil_player::~smil_player() {
 	}
 #endif
 	m_playables_cs.leave();
-	
+	cancel_all_events();
+	m_scheduler->reset_document();
+    // XXXJACK Note by Jack and Kees: it may be unsafe to destroy the event processor here,
+    // because it could have been passed to renderers, datasources, etc. and these are not
+    // cleaned up until later. If we get crashes during 
+	lib::event_processor *evp = m_event_processor;
+    lib::timer_control *tmr = m_timer;
+    m_event_processor = NULL;
+    m_timer = NULL;
+    m_lock.leave();
+    delete evp;
+    delete tmr;
+}
+
+smil_player::~smil_player() {
+	m_lock.enter();
+	AM_DBG m_logger->debug("smil_player::~smil_player(0x%x)", this);
+    
+    // Make sure terminate was called first
+    assert(m_doc == NULL);
+    assert(m_timer == NULL);
+    assert(m_event_processor == NULL);	
 	delete m_focussed_nodes;
 	delete m_new_focussed_nodes;
 	delete m_scheduler;
