@@ -32,7 +32,7 @@ class Glue(ambulant.gui_player, ambulant.factories):
         
     def gtkwidget_to_ambulant(self, widget):
         """Nothing necessary to do here"""
-    return widget
+        return widget
     
     #
     # Initialization methods - create the various factories
@@ -51,7 +51,8 @@ class Glue(ambulant.gui_player, ambulant.factories):
         gpf.add_factory(ambulant.create_gtk_image_playable_factory(self))
         gpf.add_factory(ambulant.create_gtk_smiltext_playable_factory(self))
         gpf.add_factory(ambulant.create_gtk_text_playable_factory(self))
-        gpf.add_factory(ambulant.create_gtk_video_factory(self))
+        if hasattr(ambulant, 'create_gtk_video_factory'):
+            gpf.add_factory(ambulant.create_gtk_video_factory(self))
         if hasattr(ambulant, 'create_sdl_playable_factory'):
             gpf.add_factory(ambulant.create_sdl_playable_factory(self))
         if hasattr(ambulant, 'create_gstreamer_playable_factory'):
