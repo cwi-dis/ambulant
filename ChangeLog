@@ -1,3 +1,28 @@
+2009-11-27 01:20  jackjansen
+
+	* Fixed player_pyqt as well.
+
+2009-11-27 01:10  jackjansen
+
+	* create_qt_html_widget is only available depending on
+	  WITH_QT_HTML_WIDGET.
+
+2009-11-27 00:51  jackjansen
+
+	* Working on a fix for #2900547: - Moved the declarations of the
+	  gtk playable factory factory functions   to gtk_factory.h - Ditto
+	  for qt factory factory functions - Adapted pyambulant generation
+	  to cope with this - Adapted pygtk_player main program
+
+	  Unfinished.
+
+2009-11-26 12:21  keesblom
+
+	* Added configure option --disable-assert for release builds
+	  through yhe configure macro AC_HEADER_ASSERT. The add -DNDEBUG=1
+	  as compiler flag.  Also adapted unix_mtsync.cpp and
+	  unix_thread.cpp to use the NDEBUG for fatal error conditions.
+
 2009-11-24 15:20  jackjansen
 
 	* - Comment fix for ffmpeg cleanup - Micro-fix for ffmpeg-for-=rtsp
