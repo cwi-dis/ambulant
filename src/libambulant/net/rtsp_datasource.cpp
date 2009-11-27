@@ -417,6 +417,10 @@ ambulant::net::rtsp_demux::run()
 		lib::logger::get_logger()->error("playing RTSP connection failed");
 		return 1;
 	}
+	
+	//xxxbo 13 nov. 2009
+	lib::logger::get_logger()->debug("rtsp_demux::run() m_clip_begin=%lld, m_seektime = %lld\n\n", (long long int)m_clip_begin, (long long int)m_seektime);
+	
 	if(!m_context->rtsp_client->playMediaSession(*m_context->media_session, float((m_clip_begin+m_seektime)/1000000.0), -1.0F, 1.0F)) {
 		lib::logger::get_logger()->error("playing RTSP connection failed");
 		return 1;
@@ -455,10 +459,12 @@ ambulant::net::rtsp_demux::run()
 #else
 			double seektime_secs = m_clip_begin/1000000.0;
 #endif
-			AM_DBG lib::logger::get_logger()->debug("rtsp_demux::run: seeking to %f", seektime_secs);
+			/*AM_DBG*/ lib::logger::get_logger()->debug("rtsp_demux::run: seeking to %f", seektime_secs);
 			if(!m_context->rtsp_client->pauseMediaSession(*m_context->media_session)) {
 				lib::logger::get_logger()->error("pausing RTSP media session failed");
 			}
+			//xxxbo 13 nov. 2009
+			lib::logger::get_logger()->debug("rtsp_demux::run() seektime_secs = %f\n\n", seektime_secs);
 			if(!m_context->rtsp_client->playMediaSession(*m_context->media_session, (float)seektime_secs, -1.0F, 1.0F)) {
 				lib::logger::get_logger()->error("resuming RTSP media session failed");
 			}
@@ -539,19 +545,55 @@ rtsp_demux::after_reading_audio(unsigned sz, unsigned truncated, struct timeval 
 {
 	m_critical_section.enter();
 	AM_DBG lib::logger::get_logger()->debug("after_reading_audio: called sz = %d, truncated = %d", sz, truncated);
-    if (truncated)
-        lib::logger::get_logger()->trace("rtsp_demux: truncated audio packet");
+	if (truncated)
+		lib::logger::get_logger()->trace("rtsp_demux: truncated audio packet");
+        
+        //xxxbo: 13-nov-2009
+        /*AM_DBG*/ lib::logger::get_logger()->debug("after_reading_audio: pts is %d.%ld s", pts.tv_sec, pts.tv_usec);
+        
 	assert(m_context);
 	assert(m_context->audio_packet);
 	assert(m_context->audio_stream >= 0);
+
 	// For the first packet, we remember the timestamp so we can convert Live's wallclock timestamps to
 	// our zero-based timestamps.
 	if (m_context->first_sync_time.tv_sec == 0 && m_context->first_sync_time.tv_usec == 0 ) {
 		m_context->first_sync_time.tv_sec = pts.tv_sec;
 		m_context->first_sync_time.tv_usec = pts.tv_usec;
 		m_context->last_pts=0;
-    }
+	}
+	
+	if (!m_context->first_sync_time_set) {
+	// We have not been synced yet. If the video stream has been synced for this packet
+	// we can set the epoch of the timing info. 
+	MediaSubsession* subsession = m_context->audio_subsession;
+		
+	if (subsession) {
+		// Set the packet's presentation time stamp, depending on whether or
+		// not our RTP source's timestamps have been synchronized yet: 
+		// This idea is borrowed from mplayer at demux_rtp.cpp::after_reading
+		Boolean hasBeenSynchronized = subsession->rtpSource()->hasBeenSynchronizedUsingRTCP();
+		if (hasBeenSynchronized) {
+			AM_DBG lib::logger::get_logger()->debug("after_reading_audio: resync video, from %ds %dus to %ds %dus", m_context->first_sync_time.tv_sec, m_context->first_sync_time.tv_usec, pts.tv_sec, pts.tv_usec);
+			m_context->first_sync_time.tv_sec = pts.tv_sec;
+			m_context->first_sync_time.tv_usec = pts.tv_usec;
+			m_context->last_pts = 0;
+			m_context->first_sync_time_set = true;
+			}
+		}
+	}
+	
+	
+
+	
+	//xxxbo: 13-nov-2009
+        /*AM_DBG*/ lib::logger::get_logger()->debug("after_reading_audio: first_sync_time is %d.%ld s", m_context->first_sync_time.tv_sec, m_context->first_sync_time.tv_usec);
+	
 	timestamp_t rpts =  (timestamp_t)(pts.tv_sec - m_context->first_sync_time.tv_sec) * 1000000LL  +  (timestamp_t) (pts.tv_usec - m_context->first_sync_time.tv_usec);
+	
+	//xxxbo: 13-nov-2009
+        /*AM_DBG*/ lib::logger::get_logger()->debug("after_reading_audio: rtps is %ld us", rpts);
+	
 	if(m_context->sinks[m_context->audio_stream]) {
 		AM_DBG lib::logger::get_logger()->debug("after_reading_audio: calling _push_data_to_sink");
 		//_push_data_to_sink(m_context->audio_stream, rpts, (uint8_t*) m_context->audio_packet, sz);
@@ -565,20 +607,21 @@ rtsp_demux::after_reading_audio(unsigned sz, unsigned truncated, struct timeval 
 		else
 #endif //xxxbo: 15-07-2009
 			//xxxbo: 10-07-2009: note, I don't understand why should I plus m_clip_begin like this, but it does help a little bit.
-			_push_data_to_sink(m_context->audio_stream, rpts+m_clip_begin, (uint8_t*) m_context->audio_packet, sz);
+		_push_data_to_sink(m_context->audio_stream, rpts+m_clip_begin, (uint8_t*) m_context->audio_packet, sz);
 		AM_DBG lib::logger::get_logger()->debug("after_reading_audio: calling push_data_to_sink done");
 	}
 	assert (m_context->audio_packet);
 	free(m_context->audio_packet);
 	m_context->audio_packet = NULL;
-    AM_DBG lib::logger::get_logger()->debug("after reading audio: pts=%lld, end=%lld", rpts, m_context->last_expected_pts);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("after reading audio: rpts=%lld, end=%lld\n\n", rpts, m_context->last_expected_pts);
+	
 	if (m_context->last_expected_pts >= 0 && rpts >= m_context->last_expected_pts) {
-		lib::logger::get_logger()->debug("after_reading_audio: last_pts = %lld", rpts);
+		lib::logger::get_logger()->debug("after_reading_audio: last_pts = %lld\n\n", rpts);
 	 	m_context->eof = true;
 	}
-    if (rpts > m_context->highest_pts_seen)
-        m_context->highest_pts_seen = rpts;
-    m_context->idle_time = 0;
+	if (rpts > m_context->highest_pts_seen)
+		m_context->highest_pts_seen = rpts;
+	m_context->idle_time = 0;
 	m_context->blocking_flag = ~0;
 	m_context->need_audio = true;
 	m_critical_section.leave();
