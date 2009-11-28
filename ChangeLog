@@ -1,3 +1,29 @@
+2009-11-27 16:05  bogao
+
+	* Fixed m4a over rtsp not work.  need to call
+	  "hasBeenSynchronizedUsingRTSP()" first to make sure the
+	  presentation times from live555 are accurate.  Please refer to
+	  http://lists.live555.com/pipermail/live-devel/2008-July/009224.html
+
+2009-11-27 14:31  jackjansen
+
+	* More fixes to smil_player cleanup code: - Delete event processor
+	  before timer - Delete renderers before event processor
+
+2009-11-27 11:12  jackjansen
+
+	* - QTDIR isn't always defined anymore. For now, assume that on
+	  Linux we   always have QT.  - Fixed names for video renderer
+	  factory factories.
+
+2009-11-27 11:05  jackjansen
+
+	* gtk_video is apparently optional.
+
+2009-11-27 10:35  jackjansen
+
+	* Removed superfluous "-lbz2" from ffmpeg compile flags.
+
 2009-11-27 01:20  jackjansen
 
 	* Fixed player_pyqt as well.
