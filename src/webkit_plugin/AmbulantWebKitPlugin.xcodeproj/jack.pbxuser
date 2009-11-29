@@ -2,9 +2,30 @@
 {
 	045D0B7E0958C53F00C194EE /* mainloop.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {558, 3990}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{0, 0}";
+			sepNavIntBoundsRect = "{{0, 0}, {812, 3900}}";
+			sepNavSelRange = "{3450, 0}";
+			sepNavVisRange = "{3384, 191}";
+		};
+	};
+	045D0B7F0958C53F00C194EE /* mainloop.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {761, 840}}";
+			sepNavSelRange = "{1167, 17}";
+			sepNavVisRange = "{574, 1275}";
+		};
+	};
+	049775B70958ADC500A7690F /* AmbulantWebView.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {761, 945}}";
+			sepNavSelRange = "{1810, 0}";
+			sepNavVisRange = "{1087, 1220}";
+		};
+	};
+	049775B80958ADC500A7690F /* AmbulantWebView.mm */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {761, 2865}}";
+			sepNavSelRange = "{1216, 0}";
+			sepNavVisRange = "{1048, 842}";
 		};
 	};
 	049CF80410A03FD400E6593B /* Safari */ = {
@@ -35,6 +56,9 @@
 			};
 		};
 		customDataFormattersEnabled = 1;
+		dataTipCustomDataFormattersEnabled = 1;
+		dataTipShowTypeColumn = 1;
+		dataTipSortType = 0;
 		debuggerPlugin = GDBDebugging;
 		disassemblyDisplayState = 0;
 		dylibVariantSuffix = "";
@@ -53,6 +77,7 @@
 		name = Safari;
 		savedGlobals = {
 		};
+		showTypeColumn = 0;
 		sourceDirectories = (
 		);
 		startupPath = "<<ProjectDirectory>>";
@@ -66,7 +91,7 @@
 		path = /Applications/Safari.app;
 		sourceTree = "<absolute>";
 	};
-	049CF81F10A042B900E6593B /* mainloop.cpp:105 */ = {
+	04D5B7EB10C333EF00D2CC1D /* ffmpeg_common.cpp:403 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -74,39 +99,28 @@
 		continueAfterActions = 0;
 		countType = 0;
 		delayBeforeContinue = 0;
-		fileReference = 045D0B7E0958C53F00C194EE /* mainloop.cpp */;
-		functionName = "mainloop::init_playable_factory()";
+		fileReference = 04D5B7EC10C333EF00D2CC1D /* ffmpeg_common.cpp */;
+		functionName = "ffmpeg_demux::run()";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 105;
-		location = AmbulantWebKitPlugin;
-		modificationTime = 279025393.896283;
-		state = 0;
+		lineNumber = 403;
+		modificationTime = 281228571.279947;
+		originalNumberOfMultipleMatches = 1;
+		state = 1;
 	};
-	049CF82810A0431C00E6593B /* sdl.cpp:53 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		countType = 0;
-		delayBeforeContinue = 0;
-		fileReference = 049CF82910A0431C00E6593B /* sdl.cpp */;
-		functionName = "sdl_renderer_factory::supports(common::renderer_select *rs)";
-		hitCount = 0;
-		ignoreCount = 0;
-		lineNumber = 53;
-		modificationTime = 279025393.9252;
-		state = 0;
-	};
-	049CF82910A0431C00E6593B /* sdl.cpp */ = {
+	04D5B7EC10C333EF00D2CC1D /* ffmpeg_common.cpp */ = {
 		isa = PBXFileReference;
 		lastKnownFileType = sourcecode.cpp.cpp;
-		name = sdl.cpp;
-		path = /Users/jack/src/ambulant/src/libambulant/gui/SDL/sdl.cpp;
+		name = ffmpeg_common.cpp;
+		path = /Users/jack/src/ambulant/src/libambulant/net/ffmpeg_common.cpp;
 		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {812, 8775}}";
+			sepNavSelRange = "{11871, 0}";
+			sepNavVisRange = "{11728, 313}";
+		};
 	};
-	049CF82B10A0432200E6593B /* sdl.cpp:75 */ = {
+	04D5B7EF10C3343100D2CC1D /* AmbulantWebView.mm:60 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -114,55 +128,17 @@
 		continueAfterActions = 0;
 		countType = 0;
 		delayBeforeContinue = 0;
-		fileReference = 049CF82910A0431C00E6593B /* sdl.cpp */;
-		functionName = "sdl_renderer_factory::new_playable( common::playable_notification *context, common::playable_notification::cookie_type cookie, const lib::node *node, lib::event_processor *evp)";
+		fileReference = 049775B80958ADC500A7690F /* AmbulantWebView.mm */;
+		functionName = "-dealloc";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 75;
-		modificationTime = 279025393.9824361;
-		state = 0;
-	};
-	049CF84610A0576C00E6593B /* sdl.cpp:46 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		countType = 0;
-		delayBeforeContinue = 0;
-		fileReference = 049CF82910A0431C00E6593B /* sdl.cpp */;
-		functionName = "sdl_renderer_factory::~sdl_renderer_factory()";
-		hitCount = 0;
-		ignoreCount = 0;
-		lineNumber = 46;
-		modificationTime = 279025394.001256;
-		state = 0;
-	};
-	049CF84A10A057BA00E6593B /* renderer_impl.cpp:326 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		countType = 0;
-		delayBeforeContinue = 0;
-		fileReference = 049CF84B10A057BA00E6593B /* renderer_impl.cpp */;
-		functionName = "global_playable_factory_impl::add_factory(playable_factory *rf)";
-		hitCount = 0;
-		ignoreCount = 0;
-		lineNumber = 326;
-		location = libambulant.0.dylib;
-		modificationTime = 279025390.855746;
+		lineNumber = 60;
+		location = AmbulantWebKitPlugin;
+		modificationTime = 281228519.504729;
+		originalNumberOfMultipleMatches = 1;
 		state = 2;
 	};
-	049CF84B10A057BA00E6593B /* renderer_impl.cpp */ = {
-		isa = PBXFileReference;
-		lastKnownFileType = sourcecode.cpp.cpp;
-		name = renderer_impl.cpp;
-		path = /Users/jack/src/ambulant/src/libambulant/common/renderer_impl.cpp;
-		sourceTree = "<absolute>";
-	};
-	049CF84D10A057C500E6593B /* renderer_impl.cpp:331 */ = {
+	04D5B7F110C3343400D2CC1D /* AmbulantWebView.mm:52 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -170,29 +146,15 @@
 		continueAfterActions = 0;
 		countType = 0;
 		delayBeforeContinue = 0;
-		fileReference = 049CF84B10A057BA00E6593B /* renderer_impl.cpp */;
-		functionName = "global_playable_factory_impl::preferred_renderer(const char* name)";
+		fileReference = 049775B80958ADC500A7690F /* AmbulantWebView.mm */;
+		functionName = "+plugInViewWithArguments:";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 331;
-		modificationTime = 279025394.05699;
-		state = 0;
-	};
-	049CF84F10A057CB00E6593B /* renderer_impl.cpp:350 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		countType = 0;
-		delayBeforeContinue = 0;
-		fileReference = 049CF84B10A057BA00E6593B /* renderer_impl.cpp */;
-		functionName = "global_playable_factory_impl::new_playable( playable_notification *context, playable_notification::cookie_type cookie, const lib::node *node, lib::event_processor *evp)";
-		hitCount = 0;
-		ignoreCount = 0;
-		lineNumber = 350;
-		modificationTime = 279025394.0897719;
-		state = 0;
+		lineNumber = 52;
+		location = AmbulantWebKitPlugin;
+		modificationTime = 281228519.50523;
+		originalNumberOfMultipleMatches = 1;
+		state = 2;
 	};
 	04E8E403109F3BE300B7C8C9 /* Source Control */ = {
 		isa = PBXSourceControlManager;
@@ -210,17 +172,13 @@
 	};
 	089C1669FE841209C02AAC07 /* Project object */ = {
 		activeArchitecturePreference = x86_64;
-		activeBuildConfigurationName = "Release-10.4";
+		activeBuildConfigurationName = "Debug-10.6";
 		activeExecutable = 049CF80410A03FD400E6593B /* Safari */;
 		activeTarget = 8D5B49AC048680CD000E48DA /* AmbulantWebKitPlugin */;
 		breakpoints = (
-			049CF81F10A042B900E6593B /* mainloop.cpp:105 */,
-			049CF82810A0431C00E6593B /* sdl.cpp:53 */,
-			049CF82B10A0432200E6593B /* sdl.cpp:75 */,
-			049CF84610A0576C00E6593B /* sdl.cpp:46 */,
-			049CF84A10A057BA00E6593B /* renderer_impl.cpp:326 */,
-			049CF84D10A057C500E6593B /* renderer_impl.cpp:331 */,
-			049CF84F10A057CB00E6593B /* renderer_impl.cpp:350 */,
+			04D5B7EB10C333EF00D2CC1D /* ffmpeg_common.cpp:403 */,
+			04D5B7EF10C3343100D2CC1D /* AmbulantWebView.mm:60 */,
+			04D5B7F110C3343400D2CC1D /* AmbulantWebView.mm:52 */,
 		);
 		codeSenseManager = 04E8E404109F3BE300B7C8C9 /* Code sense */;
 		executables = (
@@ -339,8 +297,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 279212223;
-			PBXWorkspaceStateSaveDate = 279212223;
+			PBXPerProjectTemplateStateSaveDate = 281228003;
+			PBXWorkspaceStateSaveDate = 281228003;
 		};
 		sourceControlManager = 04E8E403109F3BE300B7C8C9 /* Source Control */;
 		userBuildSettings = {

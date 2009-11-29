@@ -59,6 +59,8 @@ class my_cocoa_window_factory : public ambulant::gui::cocoa::cocoa_window_factor
 - (void)dealloc
 {   
     [m_arguments release];
+    if (m_mainloop) delete m_mainloop;
+    m_mainloop = NULL;
     [super dealloc];
 }
 
