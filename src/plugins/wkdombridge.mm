@@ -483,7 +483,7 @@ wkdom_node::get_qname() const
 int
 wkdom_node::get_numid() const
 {
-	return (int)m_self;
+	return (int)((size_t)m_self & 0x7fffffff);
 }
 
 /// Return the data for this node.
