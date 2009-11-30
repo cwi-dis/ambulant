@@ -120,15 +120,21 @@
 		049656200BCAEA43002C00DF /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656140BCAEA42002C00DF /* libUsageEnvironment.a */; };
 		049656210BCAEA43002C00DF /* libBasicUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656150BCAEA42002C00DF /* libBasicUsageEnvironment.a */; };
 		049656220BCAEA43002C00DF /* libgroupsock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656160BCAEA42002C00DF /* libgroupsock.a */; };
-		049656230BCAEA43002C00DF /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656170BCAEA42002C00DF /* libSDL.a */; };
 		049656240BCAEA43002C00DF /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656180BCAEA42002C00DF /* libz.dylib */; };
 		049656B20BCAEC13002C00DF /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656B10BCAEC13002C00DF /* Carbon.framework */; };
-		04D54B33106B7B6300A4E37A /* cg_dsvideo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B02106B79D000A4E37A /* cg_dsvideo.mm */; };
-		04D54B34106B7B6400A4E37A /* cg_fill.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B03106B79D000A4E37A /* cg_fill.mm */; };
-		04D54B35106B7B6400A4E37A /* cg_gui.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B04106B79D000A4E37A /* cg_gui.mm */; };
-		04D54B36106B7B6500A4E37A /* cg_image.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B05106B79D000A4E37A /* cg_image.mm */; };
-		04D54B37106B7B6600A4E37A /* cg_renderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B06106B79D000A4E37A /* cg_renderer.mm */; };
-		04D54B38106B7B6700A4E37A /* cg_text.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B07106B79D000A4E37A /* cg_text.mm */; };
+		04D5B88010C33DFA00D2CC1D /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04D5B87F10C33DFA00D2CC1D /* libSDL.a */; };
+		04D5B89110C3414800D2CC1D /* cocoa_audio.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652550BCAE3C5002C00DF /* cocoa_audio.mm */; };
+		04D5B89210C3414900D2CC1D /* cocoa_dsvideo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652570BCAE3C5002C00DF /* cocoa_dsvideo.mm */; };
+		04D5B89310C3414A00D2CC1D /* cocoa_fill.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652590BCAE3C5002C00DF /* cocoa_fill.mm */; };
+		04D5B89410C3414A00D2CC1D /* cocoa_gui.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0496525B0BCAE3C5002C00DF /* cocoa_gui.mm */; };
+		04D5B89510C3414B00D2CC1D /* cocoa_html.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0496525D0BCAE3C5002C00DF /* cocoa_html.mm */; };
+		04D5B89610C3414C00D2CC1D /* cocoa_image.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0496525F0BCAE3C5002C00DF /* cocoa_image.mm */; };
+		04D5B89710C3414D00D2CC1D /* cocoa_ink.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652610BCAE3C5002C00DF /* cocoa_ink.mm */; };
+		04D5B89810C3414E00D2CC1D /* cocoa_renderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652630BCAE3C5002C00DF /* cocoa_renderer.mm */; };
+		04D5B89910C3414F00D2CC1D /* cocoa_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B270BD786380074AF09 /* cocoa_smiltext.mm */; };
+		04D5B89A10C3414F00D2CC1D /* cocoa_text.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652650BCAE3C5002C00DF /* cocoa_text.mm */; };
+		04D5B89B10C3415000D2CC1D /* cocoa_transition.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652670BCAE3C5002C00DF /* cocoa_transition.mm */; };
+		04D5B89C10C3415200D2CC1D /* cocoa_video.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652690BCAE3C5002C00DF /* cocoa_video.mm */; };
 		04E13B240BD786120074AF09 /* state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B230BD786120074AF09 /* state.cpp */; };
 		04E13B350BD786A40074AF09 /* smiltext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B340BD786A40074AF09 /* smiltext.cpp */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -543,7 +549,6 @@
 		049656140BCAEA42002C00DF /* libUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libUsageEnvironment.a; path = ../../third_party_packages/live/UsageEnvironment/libUsageEnvironment.a; sourceTree = SOURCE_ROOT; };
 		049656150BCAEA42002C00DF /* libBasicUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBasicUsageEnvironment.a; path = ../../third_party_packages/live/BasicUsageEnvironment/libBasicUsageEnvironment.a; sourceTree = SOURCE_ROOT; };
 		049656160BCAEA42002C00DF /* libgroupsock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgroupsock.a; path = ../../third_party_packages/live/groupsock/libgroupsock.a; sourceTree = SOURCE_ROOT; };
-		049656170BCAEA42002C00DF /* libSDL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL.a; path = /usr/local/lib/libSDL.a; sourceTree = "<absolute>"; };
 		049656180BCAEA42002C00DF /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		049656B10BCAEC13002C00DF /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		04D54B01106B79D000A4E37A /* atsui_text.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = atsui_text.mm; path = cg/atsui_text.mm; sourceTree = "<group>"; };
@@ -561,6 +566,7 @@
 		04D54B15106B79F100A4E37A /* cg_renderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cg_renderer.h; path = cg/cg_renderer.h; sourceTree = "<group>"; };
 		04D54B16106B79F100A4E37A /* cg_text.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cg_text.h; path = cg/cg_text.h; sourceTree = "<group>"; };
 		04D54B17106B79F100A4E37A /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Makefile.am; path = cg/Makefile.am; sourceTree = "<group>"; };
+		04D5B87F10C33DFA00D2CC1D /* libSDL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL.a; path = "../../build-3264/third_party_packages/installed/lib/libSDL.a"; sourceTree = SOURCE_ROOT; };
 		04E13B230BD786120074AF09 /* state.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = state.cpp; sourceTree = "<group>"; };
 		04E13B270BD786380074AF09 /* cocoa_smiltext.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = cocoa_smiltext.mm; sourceTree = "<group>"; };
 		04E13B2A0BD786560074AF09 /* state.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = state.h; sourceTree = "<group>"; };
@@ -608,7 +614,6 @@
 				049656200BCAEA43002C00DF /* libUsageEnvironment.a in Frameworks */,
 				049656210BCAEA43002C00DF /* libBasicUsageEnvironment.a in Frameworks */,
 				049656220BCAEA43002C00DF /* libgroupsock.a in Frameworks */,
-				049656230BCAEA43002C00DF /* libSDL.a in Frameworks */,
 				049656240BCAEA43002C00DF /* libz.dylib in Frameworks */,
 				049656B20BCAEC13002C00DF /* Carbon.framework in Frameworks */,
 				0480CD000CDD1D5C0025344B /* libfaad.a in Frameworks */,
@@ -620,6 +625,7 @@
 				04834E61105A4C4000B7188B /* libswscale.a in Frameworks */,
 				04834E88105A4D6E00B7188B /* ForceFeedback.framework in Frameworks */,
 				04834EA9105A5A0800B7188B /* libltdl.a in Frameworks */,
+				04D5B88010C33DFA00D2CC1D /* libSDL.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1307,6 +1313,7 @@
 		0496560C0BCAEA32002C00DF /* third_party_libraries */ = {
 			isa = PBXGroup;
 			children = (
+				04D5B87F10C33DFA00D2CC1D /* libSDL.a */,
 				0480CCFF0CDD1D5C0025344B /* libfaad.a */,
 				04834E5A105A4C0C00B7188B /* libavcodec.a */,
 				04834E5C105A4C2800B7188B /* libavformat.a */,
@@ -1317,7 +1324,6 @@
 				049656140BCAEA42002C00DF /* libUsageEnvironment.a */,
 				049656150BCAEA42002C00DF /* libBasicUsageEnvironment.a */,
 				049656160BCAEA42002C00DF /* libgroupsock.a */,
-				049656170BCAEA42002C00DF /* libSDL.a */,
 				04430D380E506F6400029503 /* libbz2.dylib */,
 				049656180BCAEA42002C00DF /* libz.dylib */,
 			);
@@ -1618,12 +1624,18 @@
 				04E13B240BD786120074AF09 /* state.cpp in Sources */,
 				04E13B350BD786A40074AF09 /* smiltext.cpp in Sources */,
 				047954AC0F272CA300103C57 /* renderer_select.cpp in Sources */,
-				04D54B33106B7B6300A4E37A /* cg_dsvideo.mm in Sources */,
-				04D54B34106B7B6400A4E37A /* cg_fill.mm in Sources */,
-				04D54B35106B7B6400A4E37A /* cg_gui.mm in Sources */,
-				04D54B36106B7B6500A4E37A /* cg_image.mm in Sources */,
-				04D54B37106B7B6600A4E37A /* cg_renderer.mm in Sources */,
-				04D54B38106B7B6700A4E37A /* cg_text.mm in Sources */,
+				04D5B89110C3414800D2CC1D /* cocoa_audio.mm in Sources */,
+				04D5B89210C3414900D2CC1D /* cocoa_dsvideo.mm in Sources */,
+				04D5B89310C3414A00D2CC1D /* cocoa_fill.mm in Sources */,
+				04D5B89410C3414A00D2CC1D /* cocoa_gui.mm in Sources */,
+				04D5B89510C3414B00D2CC1D /* cocoa_html.mm in Sources */,
+				04D5B89610C3414C00D2CC1D /* cocoa_image.mm in Sources */,
+				04D5B89710C3414D00D2CC1D /* cocoa_ink.mm in Sources */,
+				04D5B89810C3414E00D2CC1D /* cocoa_renderer.mm in Sources */,
+				04D5B89910C3414F00D2CC1D /* cocoa_smiltext.mm in Sources */,
+				04D5B89A10C3414F00D2CC1D /* cocoa_text.mm in Sources */,
+				04D5B89B10C3415000D2CC1D /* cocoa_transition.mm in Sources */,
+				04D5B89C10C3415200D2CC1D /* cocoa_video.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1708,9 +1720,6 @@
 				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"../../../../packages/ffmpeg-0.5/libavformat",
-					"../../../../packages/ffmpeg-0.5/libavcodec",
-					"../../../../packages/ffmpeg-0.5/libavutil",
 					"../../third_party_packages/expat-unix/lib",
 					"../../third_party_packages/xerces-unix/lib",
 					../../third_party_packages/live/liveMedia,
@@ -1722,7 +1731,7 @@
 				);
 				OTHER_CFLAGS = "";
 				PREBINDING = NO;
-				USER_HEADER_SEARCH_PATHS = "../../include ../../../../packages/ffmpeg-0.5 /usr/local/include/SDL ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
+				USER_HEADER_SEARCH_PATHS = "../../include ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
 			};
 			name = "Debug-64";
 		};
@@ -1752,12 +1761,10 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libavcodec\"",
-					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libavformat\"",
-					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libavutil\"",
-					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libswscale\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\"",
 				);
 				PRODUCT_NAME = "Ambulant-mac";
+				USER_HEADER_SEARCH_PATHS = "../../include ../../build-3264/third_party_packages/installed/include/SDL ../../build-3264/third_party_packages/installed/include ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -1822,6 +1829,7 @@
 					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libavformat\"",
 					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libavutil\"",
 					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libswscale\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\"",
 				);
 				PRODUCT_NAME = "Ambulant-mac";
 				WRAPPER_EXTENSION = app;
@@ -1910,6 +1918,7 @@
 					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libavformat\"",
 					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libavutil\"",
 					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libswscale\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\"",
 				);
 				PRODUCT_NAME = "Ambulant-mac";
 				WRAPPER_EXTENSION = app;
@@ -1941,7 +1950,10 @@
 					"WITH_FFMPEG_LIBSWSCALE=1",
 				);
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\"",
+				);
 				PRODUCT_NAME = "Ambulant-mac";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -1974,6 +1986,7 @@
 					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libavformat\"",
 					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libavutil\"",
 					"\"$(SRCROOT)/../../../../packages/ffmpeg-0.5/libswscale\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\"",
 				);
 				PRODUCT_NAME = "Ambulant-mac";
 				WRAPPER_EXTENSION = app;
