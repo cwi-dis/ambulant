@@ -1,3 +1,15 @@
+2009-11-30 01:16  jackjansen
+
+	* Project didn't build anymore on 64bit. Fixed.
+
+2009-11-30 00:05  jackjansen
+
+	* When destroying the webkit plugin, also dealloc the mainloop.
+	  Note that I'm not 100% sure which of the 3 methods called upon
+	  unload is the best place to put this code...
+
+	  Fixes #2891237.
+
 2009-11-27 16:05  bogao
 
 	* Fixed m4a over rtsp not work.  need to call
