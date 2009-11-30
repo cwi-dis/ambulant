@@ -106,6 +106,7 @@ class surface_impl : public surface_template, public surface, public gui_events 
   protected:
 	virtual void transition_done(lib::rect area);
 	void transition_freeze_end(lib::rect area);
+    void background_render_changed();   // Called when drawing the background may have changed
 
   	std::string m_name;					// for debugging
 

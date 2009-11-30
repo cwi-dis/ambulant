@@ -153,6 +153,7 @@ surface_impl::show(gui_events *cur)
 	m_children_cs.enter();
 	// Sanity check: it shouldn't be in here already
 	std::list<gui_events*>::iterator i;
+    bool was_inactive = m_renderers.size() == 0;
 	for(i=m_renderers.begin(); i!=m_renderers.end(); i++)
 		assert((*i) != cur);
 
@@ -165,6 +166,7 @@ surface_impl::show(gui_events *cur)
 		m_parent->add_subregion(z, this);
 	}
 	need_redraw();
+    if (was_inactive) background_render_changed();
 }
 
 void
@@ -191,6 +193,7 @@ surface_impl::renderer_done(gui_events *cur)
 	}
 
 	need_redraw(m_inner_bounds);
+    if (m_renderers.size() == 0) background_render_changed();
 }
 
 void
@@ -778,8 +781,11 @@ void
 surface_impl::add_subregion(zindex_t z, surface_impl *rgn)
 {
 	m_children_cs.enter();
+    const region_info *info = get_info();
+    bool was_inactive = !_is_active();
 	m_subregions[z].push_back(rgn);
 	m_children_cs.leave();
+    if (was_inactive) background_render_changed();
 }
 
 void 
@@ -787,7 +793,23 @@ surface_impl::del_subregion(zindex_t z, surface_impl *rgn)
 {
 	m_children_cs.enter();
 	m_subregions[z].remove(rgn);
+    bool now_inactive = !_is_active();
 	m_children_cs.leave();
+    if (now_inactive) background_render_changed();
+}
+
+void
+surface_impl::background_render_changed()
+{
+    // If we are opaque and have showBackground=whenActive we schedule a redraw
+    const region_info *info = get_info();
+    if (!info->get_transparent() && !info->get_showbackground()) {
+        need_redraw();
+    }
+    // We also forward to our parent
+    if (m_parent) {
+        m_parent->background_render_changed();
+    }    
 }
 
 renderer_private_data*
