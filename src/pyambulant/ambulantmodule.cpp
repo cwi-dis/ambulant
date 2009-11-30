@@ -8,6 +8,7 @@
 #define WITH_EXTERNAL_DOM 1
 #include "ambulant/config/config.h"
 #include "ambulant/version.h"
+#include "ambulant/lib/logger.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/event.h"
@@ -154,6 +155,347 @@ PyTypeObject pycppbridge_Type = {
 };
 
 /* ------------------ End object type pycppbridge ------------------- */
+
+
+/* ----------------------- Object type logger ----------------------- */
+
+extern PyTypeObject logger_Type;
+
+inline bool loggerObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &logger_Type);
+}
+
+typedef struct loggerObject {
+	PyObject_HEAD
+	void *ob_dummy_wrapper; // Overlays bridge object storage
+	ambulant::lib::logger* ob_itself;
+} loggerObject;
+
+PyObject *loggerObj_New(ambulant::lib::logger* itself)
+{
+	loggerObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_logger
+	logger *encaps_itself = dynamic_cast<logger *>(itself);
+	if (encaps_itself && encaps_itself->py_logger)
+	{
+		Py_INCREF(encaps_itself->py_logger);
+		return encaps_itself->py_logger;
+	}
+#endif
+	it = PyObject_NEW(loggerObject, &logger_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_dummy_wrapper = NULL; // XXXX Should be done in base class
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int loggerObj_Convert(PyObject *v, ambulant::lib::logger* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_logger
+	if (!loggerObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_logger(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!loggerObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "logger required");
+		return 0;
+	}
+	*p_itself = ((loggerObject *)v)->ob_itself;
+	return 1;
+}
+
+static void loggerObj_dealloc(loggerObject *self)
+{
+	pycppbridge_Type.tp_dealloc((PyObject *)self);
+}
+
+static PyObject *loggerObj_debug(loggerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	std::string s;
+	char *s_cstr="";
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &s_cstr))
+		return NULL;
+	s = s_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->debug(s);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *loggerObj_trace(loggerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	std::string s;
+	char *s_cstr="";
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &s_cstr))
+		return NULL;
+	s = s_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->trace(s);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *loggerObj_show(loggerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	std::string s;
+	char *s_cstr="";
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &s_cstr))
+		return NULL;
+	s = s_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->show(s);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *loggerObj_warn(loggerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	std::string s;
+	char *s_cstr="";
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &s_cstr))
+		return NULL;
+	s = s_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->warn(s);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *loggerObj_error(loggerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	std::string s;
+	char *s_cstr="";
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &s_cstr))
+		return NULL;
+	s = s_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->error(s);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *loggerObj_fatal(loggerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	std::string s;
+	char *s_cstr="";
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &s_cstr))
+		return NULL;
+	s = s_cstr;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->fatal(s);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *loggerObj_log_cstr(loggerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	int level;
+	char* buf;
+	if (!PyArg_ParseTuple(_args, "is",
+	                      &level,
+	                      &buf))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->log_cstr(level,
+	                           buf);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *loggerObj_suppressed(loggerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	int level;
+	if (!PyArg_ParseTuple(_args, "i",
+	                      &level))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->suppressed(level);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
+static PyObject *loggerObj_set_level(loggerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	int level;
+	if (!PyArg_ParseTuple(_args, "i",
+	                      &level))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_level(level);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef loggerObj_methods[] = {
+	{"debug", (PyCFunction)loggerObj_debug, 1,
+	 PyDoc_STR("(std::string s) -> None")},
+	{"trace", (PyCFunction)loggerObj_trace, 1,
+	 PyDoc_STR("(std::string s) -> None")},
+	{"show", (PyCFunction)loggerObj_show, 1,
+	 PyDoc_STR("(std::string s) -> None")},
+	{"warn", (PyCFunction)loggerObj_warn, 1,
+	 PyDoc_STR("(std::string s) -> None")},
+	{"error", (PyCFunction)loggerObj_error, 1,
+	 PyDoc_STR("(std::string s) -> None")},
+	{"fatal", (PyCFunction)loggerObj_fatal, 1,
+	 PyDoc_STR("(std::string s) -> None")},
+	{"log_cstr", (PyCFunction)loggerObj_log_cstr, 1,
+	 PyDoc_STR("(int level, char* buf) -> None")},
+	{"suppressed", (PyCFunction)loggerObj_suppressed, 1,
+	 PyDoc_STR("(int level) -> (bool _rv)")},
+	{"set_level", (PyCFunction)loggerObj_set_level, 1,
+	 PyDoc_STR("(int level) -> None")},
+	{NULL, NULL, 0}
+};
+
+#define loggerObj_getsetlist NULL
+
+
+static int loggerObj_compare(loggerObject *self, loggerObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define loggerObj_repr NULL
+
+static long loggerObj_hash(loggerObject *self)
+{
+	return (long)self->ob_itself;
+}
+static int loggerObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::lib::logger* itself;
+	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
+
+	{
+		std::string name;
+		char *name_cstr="";
+		if (PyArg_ParseTuple(_args, "s",
+		                     &name_cstr))
+		{
+			name = name_cstr;
+			((loggerObject *)_self)->ob_itself = new ambulant::lib::logger(name);
+			return 0;
+		}
+	}
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, loggerObj_Convert, &itself))
+	{
+		((loggerObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define loggerObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *loggerObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((loggerObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define loggerObj_tp_free PyObject_Del
+
+
+PyTypeObject logger_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.logger", /*tp_name*/
+	sizeof(loggerObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) loggerObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) loggerObj_compare, /*tp_compare*/
+	(reprfunc) loggerObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) loggerObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	loggerObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	loggerObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	loggerObj_tp_init, /* tp_init */
+	loggerObj_tp_alloc, /* tp_alloc */
+	loggerObj_tp_new, /* tp_new */
+	loggerObj_tp_free, /* tp_free */
+};
+
+/* --------------------- End object type logger --------------------- */
 
 
 /* -------------------- Object type node_context -------------------- */
@@ -15976,6 +16318,72 @@ static PyObject *PyAm_get_version(PyObject *_self, PyObject *_args)
 	return _res;
 }
 
+static PyObject *PyAm_get_logger_1(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::logger* _rv;
+	char* name;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &name))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::lib::logger::get_logger(name);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     loggerObj_New, _rv);
+	return _res;
+}
+
+static PyObject *PyAm_get_logger_2(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::logger* _rv;
+	char* name;
+	int pos;
+	if (!PyArg_ParseTuple(_args, "si",
+	                      &name,
+	                      &pos))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::lib::logger::get_logger(name,
+	                                        pos);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     loggerObj_New, _rv);
+	return _res;
+}
+
+static PyObject *PyAm_set_loggers_level(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	int level;
+	if (!PyArg_ParseTuple(_args, "i",
+	                      &level))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::lib::logger::set_loggers_level(level);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *PyAm_get_level_name(PyObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	const char * _rv;
+	int level;
+	if (!PyArg_ParseTuple(_args, "i",
+	                      &level))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_rv = ambulant::lib::logger::get_level_name(level);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("z",
+	                     _rv);
+	return _res;
+}
+
 static PyObject *PyAm_get_builtin_node_factory(PyObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -16699,6 +17107,14 @@ static PyObject *PyAm_create_live_audio_datasource_factory(PyObject *_self, PyOb
 static PyMethodDef PyAm_methods[] = {
 	{"get_version", (PyCFunction)PyAm_get_version, 1,
 	 PyDoc_STR("() -> (const char * _rv)")},
+	{"get_logger_1", (PyCFunction)PyAm_get_logger_1, 1,
+	 PyDoc_STR("(char* name) -> (ambulant::lib::logger* _rv)")},
+	{"get_logger_2", (PyCFunction)PyAm_get_logger_2, 1,
+	 PyDoc_STR("(char* name, int pos) -> (ambulant::lib::logger* _rv)")},
+	{"set_loggers_level", (PyCFunction)PyAm_set_loggers_level, 1,
+	 PyDoc_STR("(int level) -> None")},
+	{"get_level_name", (PyCFunction)PyAm_get_level_name, 1,
+	 PyDoc_STR("(int level) -> (const char * _rv)")},
 	{"get_builtin_node_factory", (PyCFunction)PyAm_get_builtin_node_factory, 1,
 	 PyDoc_STR("() -> (ambulant::lib::node_factory* _rv)")},
 	{"create_from_url", (PyCFunction)PyAm_create_from_url, 1,
@@ -16906,6 +17322,11 @@ void initambulant(void)
 	if (PyType_Ready(&pycppbridge_Type) < 0) return;
 	Py_INCREF(&pycppbridge_Type);
 	PyModule_AddObject(m, "pycppbridge", (PyObject *)&pycppbridge_Type);
+	logger_Type.ob_type = &PyType_Type;
+	logger_Type.tp_base = &pycppbridge_Type;
+	if (PyType_Ready(&logger_Type) < 0) return;
+	Py_INCREF(&logger_Type);
+	PyModule_AddObject(m, "logger", (PyObject *)&logger_Type);
 	node_context_Type.ob_type = &PyType_Type;
 	node_context_Type.tp_base = &pycppbridge_Type;
 	if (PyType_Ready(&node_context_Type) < 0) return;

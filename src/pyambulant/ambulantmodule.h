@@ -1,3 +1,6 @@
+extern PyObject *loggerObj_New(ambulant::lib::logger* itself);
+extern int loggerObj_Convert(PyObject *v, ambulant::lib::logger* *p_itself);
+
 extern PyObject *node_contextObj_New(ambulant::lib::node_context* itself);
 extern int node_contextObj_Convert(PyObject *v, ambulant::lib::node_context* *p_itself);
 

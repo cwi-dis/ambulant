@@ -5,6 +5,7 @@
 
 
 #define WITH_EXTERNAL_DOM 1
+#include "ambulant/lib/logger.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/event.h"

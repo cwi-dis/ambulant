@@ -13,6 +13,7 @@ DO_SCAN=True
 def main():
     input = [
         AMBULANT+ "version.h",
+        AMBULANT+ "lib/logger.h",
         AMBULANT+ "lib/node.h",
         AMBULANT+ "lib/document.h",
         AMBULANT+ "lib/event.h",
@@ -86,6 +87,11 @@ class MyScanner(CxxScanner):
 
     def makeblacklisttypes(self):
         return [
+            "T",    # Artefact (while parsing logger.h)
+            "ostream_ptr",
+            "show_message_type",
+            "std_ostream",
+            "va_list",
             "event_processor_impl",  # Concrete version of event_processor, ignore.
             "audio_datasource", #XXX
             "video_datasource", #XXX

@@ -15,6 +15,9 @@ extern int %(pname)sObj_Convert(PyObject *v, %(cname)s* *p_itself);
 
 
 OBJECTS=[
+    "lib/logger.h",
+    ("logger", "ambulant::lib::logger", None),
+    
 	"lib/node.h",
 	("node_context", "ambulant::lib::node_context", None),
 	("node", "ambulant::lib::node", None),
