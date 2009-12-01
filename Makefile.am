@@ -1,5 +1,5 @@
-SUBDIRS = po src include third_party_packages Documentation Extras
-EXTRA_DIST = libltdl projects installers ambulant.spec libambulant.pc patch_libtool.sh
+SUBDIRS = libltdl po src include third_party_packages Documentation Extras
+EXTRA_DIST = projects installers ambulant.spec libambulant.pc patch_libtool.sh
 
 AM_CPPFLAGS=-rdynamic
 dist-hook:
