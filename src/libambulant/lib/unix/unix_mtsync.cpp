@@ -29,7 +29,7 @@
 using namespace ambulant;
 #undef unix
 #ifdef  NDEBUG
-#unset  MUTEX_DEBUG
+#undef  MUTEX_DEBUG
 #else
 #define MUTEX_DEBUG
 #endif//NDEBUG
