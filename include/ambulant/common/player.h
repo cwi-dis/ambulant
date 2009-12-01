@@ -47,6 +47,7 @@ namespace common {
 class window_factory;
 class playable_factory;
 class embedder;
+class state_component;
 
 /// Current state of the player.
 enum play_state {
@@ -145,6 +146,9 @@ class player : public state_change_callback, virtual public lib::ref_counted
 #ifdef WITH_SMIL30
 	/// Call this when a state variable has changed.
 	virtual void on_state_change(const char *ref) {}
+    
+    /// Returns the SMIL State handler for the current document, or NULL.
+    virtual state_component* get_state_engine() { return NULL; }
 #endif
 	
 	/// Call this to advance the focus.

@@ -5646,6 +5646,7 @@ player::player(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "before_mousemove")) PyErr_Warn(PyExc_Warning, "player: missing attribute: before_mousemove");
 		if (!PyObject_HasAttrString(itself, "on_char")) PyErr_Warn(PyExc_Warning, "player: missing attribute: on_char");
 		if (!PyObject_HasAttrString(itself, "on_state_change")) PyErr_Warn(PyExc_Warning, "player: missing attribute: on_state_change");
+		if (!PyObject_HasAttrString(itself, "get_state_engine")) PyErr_Warn(PyExc_Warning, "player: missing attribute: get_state_engine");
 		if (!PyObject_HasAttrString(itself, "on_focus_advance")) PyErr_Warn(PyExc_Warning, "player: missing attribute: on_focus_advance");
 		if (!PyObject_HasAttrString(itself, "on_focus_activate")) PyErr_Warn(PyExc_Warning, "player: missing attribute: on_focus_activate");
 		if (!PyObject_HasAttrString(itself, "set_feedback")) PyErr_Warn(PyExc_Warning, "player: missing attribute: set_feedback");
@@ -5954,6 +5955,30 @@ void player::on_state_change(const char* ref)
 	Py_XDECREF(py_ref);
 
 	PyGILState_Release(_GILState);
+}
+
+ambulant::common::state_component* player::get_state_engine()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	ambulant::common::state_component* _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_player, "get_state_engine", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during player::get_state_engine() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", state_componentObj_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during player::get_state_engine() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
 }
 
 void player::on_focus_advance()

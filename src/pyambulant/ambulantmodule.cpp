@@ -10664,6 +10664,19 @@ static PyObject *playerObj_on_state_change(playerObject *_self, PyObject *_args)
 	return _res;
 }
 
+static PyObject *playerObj_get_state_engine(playerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	ambulant::common::state_component* _rv = _self->ob_itself->get_state_engine();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     state_componentObj_New, _rv);
+	return _res;
+}
+
 static PyObject *playerObj_on_focus_advance(playerObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -10769,6 +10782,8 @@ static PyMethodDef playerObj_methods[] = {
 	 PyDoc_STR("(int ch) -> None")},
 	{"on_state_change", (PyCFunction)playerObj_on_state_change, 1,
 	 PyDoc_STR("(char* ref) -> None")},
+	{"get_state_engine", (PyCFunction)playerObj_get_state_engine, 1,
+	 PyDoc_STR("() -> (ambulant::common::state_component* _rv)")},
 	{"on_focus_advance", (PyCFunction)playerObj_on_focus_advance, 1,
 	 PyDoc_STR("() -> None")},
 	{"on_focus_activate", (PyCFunction)playerObj_on_focus_activate, 1,

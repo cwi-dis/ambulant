@@ -932,6 +932,7 @@ public:
 	void before_mousemove(int cursor);
 	void on_char(int ch);
 	void on_state_change(const char* ref);
+	ambulant::common::state_component* get_state_engine();
 	void on_focus_advance();
 	void on_focus_activate();
 	void set_feedback(ambulant::common::player_feedback* fb);
