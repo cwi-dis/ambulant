@@ -1,3 +1,23 @@
+2009-11-30 16:06  jackjansen
+
+	* Export the logger interface to Python.
+
+	  Mainly for Ta2, but generally useful too.
+
+2009-11-30 15:58  jackjansen
+
+	* Quick fix to make this compile on 64-bits machines.  Not sure the
+	  fix is always correct, though...
+
+2009-11-30 10:52  jackjansen
+
+	* showBackground=whenActive fix was incomplete: if region active
+	  status is changed this should also be propagated to the parent
+	  region (because it could also have showbackground=whenActive, so
+	  it may also need to redraw).
+
+	  Fixes #2819571.
+
 2009-11-30 01:16  jackjansen
 
 	* Project didn't build anymore on 64bit. Fixed.
