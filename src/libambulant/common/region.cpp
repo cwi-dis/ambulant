@@ -138,13 +138,18 @@ void
 surface_impl::animated()
 {
 	AM_DBG lib::logger::get_logger()->debug("surface_impl::animated(%s, 0x%x)", m_name.c_str(), (void*)this);
+    lib::rect to_redraw = m_outer_bounds;
 	clear_cache();
-// XXX: Temporary: What should be redrawn is the union of the area before and after
-#ifndef AMBULANT_PLATFORM_WIN32
-	need_redraw(m_inner_bounds);
-#else
-	m_parent->need_redraw();
-#endif
+    need_bounds();
+    to_redraw |= m_outer_bounds;
+    // Optimization: if the new are completely contains the old one we do the
+    // redraw ourselves.
+    // The general case is to forward to our parent (but this may lead to flashing
+    if (to_redraw == m_outer_bounds) {
+        need_redraw(m_inner_bounds);
+    } else {
+        m_parent->need_redraw(to_redraw);
+    }
 }
 
 void
