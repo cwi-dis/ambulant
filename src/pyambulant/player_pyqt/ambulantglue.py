@@ -30,7 +30,12 @@ class Glue(ambulant.gui_player, ambulant.factories):
         player = ambulant.create_smil2_player(self.document, self, None)
         player.initialize()
         self.set_player(player)
-        
+
+
+    def terminate(self):
+        self.get_player().terminate()
+        self.set_player(None) # triggers release()
+
     def qwidget_to_ambulant(self, widget):
         """Hack: convert QWidget to CObject (which Ambulant can handle)"""
         import sip

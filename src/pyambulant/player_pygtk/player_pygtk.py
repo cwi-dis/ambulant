@@ -183,7 +183,7 @@ class MyMainWidget():
         if self.glue:
             self.glue.stop()
 	self.update_menus(None)
-        
+    
     def do_pause(self, b):
         if self.glue:
             self.glue.pause()
@@ -237,6 +237,11 @@ class MyMainWidget():
         return None
         
     def open_document(self, document):
+        if not self.glue == None:
+            self.glue.terminate()
+            self.ambulant_widget = gtk.DrawingArea()
+            self.vbox.add(self.ambulant_widget)
+
         self.glue = ambulantglue.Glue(document, self.ambulant_widget)
 	self.update_menus(None)
         self.do_play(None)

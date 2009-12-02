@@ -97,6 +97,8 @@ class MyMainWidget(qt.QWidget):
         return None
         
     def open_document(self, document):
+        if not self.glue == None:
+            self.glue.terminate()
         self.glue = ambulantglue.Glue(document, self)
         self.do_play()
     

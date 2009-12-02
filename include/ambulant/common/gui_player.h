@@ -151,7 +151,7 @@ class AMBULANTAPI gui_player : public factories {
 	/// functionality.
 	virtual player *get_player() const { return m_player; }
 	/// Set the player object.
-	virtual void set_player(player *pl) { m_player = pl; }
+	virtual void set_player(player *pl) { if (m_player) m_player->release(); m_player = pl; }
 
     /// Get URL of current document.
 	virtual net::url get_url() const { return m_url; }

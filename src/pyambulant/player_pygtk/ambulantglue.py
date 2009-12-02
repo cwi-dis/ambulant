@@ -29,7 +29,11 @@ class Glue(ambulant.gui_player, ambulant.factories):
         player = ambulant.create_smil2_player(self.document, self, None)
         player.initialize()
         self.set_player(player)
-        
+
+    def terminate(self):
+        self.get_player().terminate()
+        self.set_player(None) # triggers release()
+
     def gtkwidget_to_ambulant(self, widget):
         """Nothing necessary to do here"""
         return widget
