@@ -91,8 +91,10 @@ class MyMainWidget():
 	self.inittoolbar()
         self.glue = None
         self.update_menus(None)
-	self.ambulant_widget = gtk.DrawingArea()
-	self.vbox.add(self.ambulant_widget)
+        self.ambulant_widget = gtk.DrawingArea() #try1
+        self.vbox.add(self.ambulant_widget) #try1
+#try1	self.document_widget = gtk.VBox()
+#try1	self.vbox.add(self.document_widget)
 
 	# Show the window
 	self.window.show_all()
@@ -239,8 +241,11 @@ class MyMainWidget():
     def open_document(self, document):
         if not self.glue == None:
             self.glue.terminate()
-            self.ambulant_widget = gtk.DrawingArea()
-            self.vbox.add(self.ambulant_widget)
+            self.ambulant_widget.destroy()
+
+        self.ambulant_widget = gtk.DrawingArea()
+#try1   self.document_widget.add(self.ambulant_widget)
+        self.vbox.add(self.ambulant_widget) #try1
 
         self.glue = ambulantglue.Glue(document, self.ambulant_widget)
 	self.update_menus(None)
@@ -249,9 +254,9 @@ class MyMainWidget():
 
     def refresh(self):
    	if self.window:
-     	    width,height = self.window.get_size()
-            self.ambulant_widget.queue_draw_area(0,0,width,height)
-
+     	    width,height = self.window.get_size() 
+#try1       self.document_widget.queue_draw_area(0,0,width,height)
+            self.ambulant_widget.queue_draw_area(0,0,width,height) #try1
     def expose(self, widget, event):
 	self.refresh()
 	return False
