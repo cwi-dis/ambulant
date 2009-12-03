@@ -1,3 +1,16 @@
+2009-12-02 17:34  jackjansen
+
+	* Do redraws more efficiently when animating region bounds. Let the
+	  parent handle it only if the new area does not completely contain
+	  the old area, otherwise let the region itself handle it.
+
+	  Fixes #2907376.
+
+2009-12-02 15:47  keesblom
+
+	* When opening a new file, the current smil_player is now properly
+	  terminate()'d end release()'d in the glue (equiv. of mainloop)
+
 2009-12-01 22:23  jackjansen
 
 	* Added a get_state_engine() call to player, which obtains the
