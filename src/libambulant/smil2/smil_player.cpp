@@ -106,7 +106,8 @@ smil_player::terminate()
     m_doc = NULL;
 	m_timer->pause();
 	std::map<const lib::node*, common::playable *>::iterator it;
-    m_playables_cs.enter();
+	m_scheduler->reset_document();
+	m_playables_cs.enter();
 	for(it = m_playables.begin();it!=m_playables.end();it++) {
         (*it).second->post_stop();
 		int rem = (*it).second->release();
@@ -124,7 +125,6 @@ smil_player::terminate()
 #endif
 	m_playables_cs.leave();
 	cancel_all_events();
-	m_scheduler->reset_document();
     // XXXJACK Note by Jack and Kees: it may be unsafe to destroy the event processor here,
     // because it could have been passed to renderers, datasources, etc. and these are not
     // cleaned up until later. If we get crashes during 
