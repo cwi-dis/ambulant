@@ -919,7 +919,7 @@ void smil_player::on_state_change(const char *ref) {
 	q_smil_time timestamp(m_root, root_time);
 	AM_DBG m_logger->debug("smil_player::state_change('%s'): at %ld", ref, timestamp.second());
 	async_string_arg asa(m_root, std::make_pair(timestamp, ref));
-	async_string_cb *cb = new async_string_cb(this, &smil_player::marker_seen_async, asa);
+	async_string_cb *cb = new async_string_cb(this, &smil_player::on_state_change_async, asa);
 	schedule_event(cb, 0, ep_high);
 }
 

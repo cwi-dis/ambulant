@@ -615,6 +615,7 @@ void
 xpath_state_component::_check_state_change(xmlNodePtr changed)
 {
 	std::vector<std::pair<std::string, common::state_change_callback* > >::iterator i;
+	AM_DBG lib::logger::get_logger()->debug("_check_state_change()");
 	for (i=m_state_change_callbacks.begin(); i != m_state_change_callbacks.end(); i++) {
 		std::string& ref = (*i).first;
 		AM_DBG lib::logger::get_logger()->debug("check_state_change: check for \"%s\"", ref.c_str());
