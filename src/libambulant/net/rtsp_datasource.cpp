@@ -419,7 +419,7 @@ ambulant::net::rtsp_demux::run()
 	}
 	
 	//xxxbo 13 nov. 2009
-	lib::logger::get_logger()->debug("rtsp_demux::run() m_clip_begin=%lld, m_seektime = %lld\n\n", (long long int)m_clip_begin, (long long int)m_seektime);
+	AM_DBG lib::logger::get_logger()->debug("rtsp_demux::run() m_clip_begin=%lld, m_seektime = %lld\n\n", (long long int)m_clip_begin, (long long int)m_seektime);
 	
 	if(!m_context->rtsp_client->playMediaSession(*m_context->media_session, float((m_clip_begin+m_seektime)/1000000.0), -1.0F, 1.0F)) {
 		lib::logger::get_logger()->error("playing RTSP connection failed");
@@ -549,7 +549,7 @@ rtsp_demux::after_reading_audio(unsigned sz, unsigned truncated, struct timeval 
 		lib::logger::get_logger()->trace("rtsp_demux: truncated audio packet");
         
         //xxxbo: 13-nov-2009
-        /*AM_DBG*/ lib::logger::get_logger()->debug("after_reading_audio: pts is %d.%ld s", pts.tv_sec, pts.tv_usec);
+        AM_DBG lib::logger::get_logger()->debug("after_reading_audio: pts is %d.%ld s", pts.tv_sec, pts.tv_usec);
         
 	assert(m_context);
 	assert(m_context->audio_packet);
@@ -587,12 +587,12 @@ rtsp_demux::after_reading_audio(unsigned sz, unsigned truncated, struct timeval 
 
 	
 	//xxxbo: 13-nov-2009
-        /*AM_DBG*/ lib::logger::get_logger()->debug("after_reading_audio: first_sync_time is %d.%ld s", m_context->first_sync_time.tv_sec, m_context->first_sync_time.tv_usec);
+        AM_DBG lib::logger::get_logger()->debug("after_reading_audio: first_sync_time is %d.%ld s", m_context->first_sync_time.tv_sec, m_context->first_sync_time.tv_usec);
 	
 	timestamp_t rpts =  (timestamp_t)(pts.tv_sec - m_context->first_sync_time.tv_sec) * 1000000LL  +  (timestamp_t) (pts.tv_usec - m_context->first_sync_time.tv_usec);
 	
 	//xxxbo: 13-nov-2009
-        /*AM_DBG*/ lib::logger::get_logger()->debug("after_reading_audio: rtps is %ld us", rpts);
+        AM_DBG lib::logger::get_logger()->debug("after_reading_audio: rtps is %ld us", rpts);
 	
 	if(m_context->sinks[m_context->audio_stream]) {
 		AM_DBG lib::logger::get_logger()->debug("after_reading_audio: calling _push_data_to_sink");
@@ -613,7 +613,7 @@ rtsp_demux::after_reading_audio(unsigned sz, unsigned truncated, struct timeval 
 	assert (m_context->audio_packet);
 	free(m_context->audio_packet);
 	m_context->audio_packet = NULL;
-	/*AM_DBG*/ lib::logger::get_logger()->debug("after reading audio: rpts=%lld, end=%lld\n\n", rpts, m_context->last_expected_pts);
+	AM_DBG lib::logger::get_logger()->debug("after reading audio: rpts=%lld, end=%lld\n\n", rpts, m_context->last_expected_pts);
 	
 	if (m_context->last_expected_pts >= 0 && rpts >= m_context->last_expected_pts) {
 		lib::logger::get_logger()->debug("after_reading_audio: last_pts = %lld\n\n", rpts);
