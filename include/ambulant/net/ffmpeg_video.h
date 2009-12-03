@@ -34,7 +34,7 @@ extern "C" {
 #error Cannot use ffmpeg older than release 0.5
 #endif
 
-#ifdef WITH_FFMPEG_LIBSWSCALE
+#ifdef WITH_FFMPEG_SWSCALE
 #include "libswscale/swscale.h"
 #else
 #define SWS_FAST_BILINEAR     1
@@ -47,6 +47,7 @@ void *sws_getCachedContext(void*,int, int, int, int, int, int, int, void*, void*
 //              int srcSliceH, uint8_t* dst[], int dstStride[]);
 int sws_scale(void*, uint8_t* srcSlice[], int srcStride[], int srcSliceY,
               int srcSliceH, uint8_t* dst[], int dstStride[]);
+void sws_freeContext(struct SwsContext *swsContext);
 //met de hand
 #endif
 
