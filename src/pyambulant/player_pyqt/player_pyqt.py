@@ -97,6 +97,10 @@ class MyMainWidget(qt.QWidget):
         return None
         
     def open_document(self, document):
+        if self.find_document (document) == None:
+            print "Cannot find: ", document
+            return None
+
         if not self.glue == None:
             self.glue.terminate()
         self.glue = ambulantglue.Glue(document, self)
