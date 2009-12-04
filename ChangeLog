@@ -1,3 +1,32 @@
+2009-12-03 15:21  jackjansen
+
+	* stateChange(ref) implementation was incorrect (raising
+	  marker_seen:-)
+
+	  Fixed.
+
+2009-12-03 14:21  keesblom
+
+	* Fixed a leak in ffmpeg_video
+
+2009-12-03 12:48  keesblom
+
+	* Added a check in player_pygtk/player_pyqt to check a file exists
+	  before trying to open it, to avoid a crash
+
+2009-12-03 12:26  keesblom
+
+	* player_pygtk.py now displays a new opened file correctly after
+	  playing another
+
+2009-12-03 12:19  bogao
+
+	* Turn off some debug output in rtsp_demux.
+
+2009-12-03 11:53  keesblom
+
+	* Need to reset the document before playables are deleted
+
 2009-12-02 17:34  jackjansen
 
 	* Do redraws more efficiently when animating region bounds. Let the
