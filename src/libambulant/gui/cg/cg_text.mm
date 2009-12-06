@@ -77,6 +77,7 @@ cg_text_renderer::cg_text_renderer(
 		m_font_name = params->get_str("font-family");
 		m_font_size = params->get_float("font-size", 14.0);
 		m_text_color = params->get_color("color", 0);
+        delete params;
 	} else {
 		m_font_name = "Helvetica";
 		m_font_size = 14.0;
