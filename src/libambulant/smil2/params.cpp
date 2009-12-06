@@ -124,4 +124,19 @@ params::get_float(const std::string &paramname, float dft)
 	return (float)atof(s_float);
 }
 
+long
+params::get_long(const char *paramname, long dft)
+{
+	std::string pname(paramname);
+	return get_long(pname, dft);
+}
+
+long
+params::get_long(const std::string &paramname, long dft)
+{
+	const char *s_long = get_str(paramname);
+	if (s_long == NULL) return dft;
+	return (long)atol(s_long);
+}
+
 
