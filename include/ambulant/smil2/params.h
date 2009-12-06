@@ -36,7 +36,7 @@ namespace ambulant {
 	
 namespace smil2 {
 
-class params {
+class AMBULANTAPI params {
   public:
 	static params *for_node(const lib::node *n);
 	
