@@ -1,3 +1,15 @@
+2009-12-06 23:45  jackjansen
+
+	* Class params is part of the official API.
+
+2009-12-06 23:25  jackjansen
+
+	* Added missing delete of params.
+
+2009-12-06 22:10  jackjansen
+
+	* Added get_long() methods to smil2::params.
+
 2009-12-03 15:21  jackjansen
 
 	* stateChange(ref) implementation was incorrect (raising
