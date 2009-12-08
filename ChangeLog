@@ -1,3 +1,7 @@
+2009-12-07 14:43  jackjansen
+
+	* We need at least Windows XP, and IE 6.
+
 2009-12-06 23:45  jackjansen
 
 	* Class params is part of the official API.
