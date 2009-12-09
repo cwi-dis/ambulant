@@ -144,7 +144,8 @@ surface_impl::animated()
     to_redraw |= m_outer_bounds;
     // Optimization: if the new are completely contains the old one we do the
     // redraw ourselves.
-    // The general case is to forward to our parent (but this may lead to flashing
+    // The general case is to forward to our parent (but this may lead to flashing)
+    AM_DBG lib::logger::get_logger()->debug("animated: to_redraw=(%d, %d, %d, %d)", to_redraw.left(), to_redraw.top(), to_redraw.width(), to_redraw.height());
     if (to_redraw == m_outer_bounds) {
         need_redraw(m_inner_bounds);
     } else {

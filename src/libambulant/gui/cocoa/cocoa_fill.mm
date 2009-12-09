@@ -91,7 +91,7 @@ cocoa_fill_renderer::redraw_body(const rect &dirty, gui_window *window)
 {
 	m_lock.enter();
 	const rect &r = m_dest->get_rect();
-	/*AM_DBG*/ logger::get_logger()->debug("cocoa_fill_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG logger::get_logger()->debug("cocoa_fill_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 	
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();

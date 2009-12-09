@@ -459,7 +459,7 @@ ambulant::net::rtsp_demux::run()
 #else
 			double seektime_secs = m_clip_begin/1000000.0;
 #endif
-			/*AM_DBG*/ lib::logger::get_logger()->debug("rtsp_demux::run: seeking to %f", seektime_secs);
+			AM_DBG lib::logger::get_logger()->debug("rtsp_demux::run: seeking to %f", seektime_secs);
 			if(!m_context->rtsp_client->pauseMediaSession(*m_context->media_session)) {
 				lib::logger::get_logger()->error("pausing RTSP media session failed");
 			}
