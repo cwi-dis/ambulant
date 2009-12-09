@@ -119,9 +119,12 @@ gui_player::restart(bool reparse)
 	bool playing = is_play_active();
 	bool pausing = is_pause_active();
 	stop();
-	
-    m_player->release();
-	m_player = NULL;
+	m_lock.enter();
+	if (m_player) {
+		m_player->release();
+		m_player = NULL;
+	}
+	m_lock.leave();
 	if (reparse) {
 		m_doc = create_document(m_url);
 		if(!m_doc) {
