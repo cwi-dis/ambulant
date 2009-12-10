@@ -1,3 +1,19 @@
+2009-12-09 23:01  jackjansen
+
+	* Removed debug.
+
+2009-12-09 13:28  keesblom
+
+	* Added protection and a check for m_player != NULL in restart().
+	  This can happen if first parsing fails, and after modification
+	  and File-Reload the parsing succeeds, then there is no active
+	  player.
+
+2009-12-09 12:27  keesblom
+
+	* Removed the DTD specification as this is incompatable with
+	  SmilState
+
 2009-12-07 14:43  jackjansen
 
 	* We need at least Windows XP, and IE 6.
