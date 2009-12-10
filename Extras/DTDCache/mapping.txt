@@ -2,12 +2,48 @@
 # even lines are relative pathnames of the corresponding cache
 # even line starting with a ! means the entry gives a warning message
 #
-# SMIL 2.0 only has one entry point:
+# SMIL Latest version, as of SMIL 3.0
+#
+http://www.w3.org/ns/SMIL
+DTDCache/SMIL30/SMIL30Language.dtd
+#
+# SMIL 2.0 entry point:
 #
 http://www.w3.org/2001/SMIL20/SMIL20.dtd
 DTDCache/SMIL20/SMIL20.dtd
 #
-# SMIL 2.1:
+# SMIL 2.0 modules. These are indexed by publicID because of a Xerces quirk.
+#
+-//W3C//ENTITIES SMIL 2.0 Modular Framework 1.0//EN
+DTDCache/SMIL20/smil-framework-1.mod
+-//W3C//ENTITIES SMIL 2.0 Datatypes 1.0//EN
+DTDCache/SMIL20/smil-datatypes-1.mod
+-//W3C//ENTITIES SMIL 2.0 Qualified Names 1.0//EN
+DTDCache/SMIL20/smil-qname-1.mod
+-//W3C//ENTITIES SMIL 2.0 Common Attributes 1.0//EN
+DTDCache/SMIL20/smil-attribs-1.mod
+-//W3C//ENTITIES SMIL 2.0 Document Model 1.0//EN
+DTDCache/SMIL20/smil-model-1.mod
+-//W3C//ELEMENTS SMIL 2.0 Document Structure//EN
+DTDCache/SMIL20/SMIL-struct.mod
+-//W3C//ELEMENTS SMIL 2.0 Animation//EN
+DTDCache/SMIL20/SMIL-anim.mod
+-//W3C//ELEMENTS SMIL 2.0 Content Control//EN
+DTDCache/SMIL20/SMIL-control.mod
+-//W3C//ELEMENTS SMIL 2.0 Document Metainformation//EN
+DTDCache/SMIL20/SMIL-metainformation.mod
+-//W3C//ELEMENTS SMIL 2.0 Layout//EN
+DTDCache/SMIL20/SMIL-layout.mod
+-//W3C//ELEMENTS SMIL 2.0 Linking//EN
+DTDCache/SMIL20/SMIL-link.mod
+-//W3C//ELEMENTS SMIL 2.0 Media Objects//EN
+DTDCache/SMIL20/SMIL-media.mod
+-//W3C//ELEMENTS SMIL 2.0 Timing//EN
+DTDCache/SMIL20/SMIL-timing.mod
+-//W3C//ELEMENTS SMIL 2.0 Transition//EN
+DTDCache/SMIL20/SMIL-transition.mod
+#
+# SMIL 2.1 entry points:
 #
 http://www.w3.org/2005/SMIL21/SMIL21.dtd
 DTDCache/SMIL21/SMIL21.dtd
@@ -21,51 +57,87 @@ http://www.w3.org/2005/SMIL21/ExtendedMobile
 DTDCache/SMIL21/SMIL21ExtendedMobile.dtd
 http://www.w3.org/2005/SMIL21/SMIL21ExtendedMobile.dtd
 DTDCache/SMIL21/SMIL21ExtendedMobile.dtd
-http://www.w3.org/ns/SMIL
-DTDCache/SMIL30/SMIL30Language.dtd
 #
-# SMIL 3.0:
+# SMIL 2.1 modules.
+#
+-//W3C//ENTITIES SMIL 2.1 Modular Framework 1.0//EN
+DTDCache/SMIL21/smil-framework-1.mod
+-//W3C//ENTITIES SMIL 2.1 Datatypes 1.0//EN
+DTDCache/SMIL21/smil-datatypes-1.mod
+-//W3C//ENTITIES SMIL 2.1 Qualified Names 1.0//EN
+DTDCache/SMIL21/smil-qname-1.mod
+-//W3C//ENTITIES SMIL 2.1 Common Attributes 1.0//EN
+DTDCache/SMIL21/smil-attribs-1.mod
+-//W3C//ENTITIES SMIL 2.1 Document Model 1.0//EN
+DTDCache/SMIL21/smil-language-profile-model-1.mod
+-//W3C//ELEMENTS SMIL 2.1 Document Structure//EN
+DTDCache/SMIL21/SMIL-struct.mod
+-//W3C//ELEMENTS SMIL 2.1 Animation//EN
+DTDCache/SMIL21/SMIL-anim.mod
+-//W3C//ELEMENTS SMIL 2.1 Content Control//EN
+DTDCache/SMIL21/SMIL-control.mod
+-//W3C//ELEMENTS SMIL 2.1 Document Metainformation//EN
+DTDCache/SMIL21/SMIL-metainformation.mod
+-//W3C//ELEMENTS SMIL 2.1 Layout//EN
+DTDCache/SMIL21/SMIL-layout.mod
+-//W3C//ELEMENTS SMIL 2.1 Linking//EN
+DTDCache/SMIL21/SMIL-link.mod
+-//W3C//ELEMENTS SMIL 2.1 Media Objects//EN
+DTDCache/SMIL21/SMIL-media.mod
+-//W3C//ELEMENTS SMIL 2.1 Timing//EN
+DTDCache/SMIL21/SMIL-timing.mod
+-//W3C//ELEMENTS SMIL 2.1 Transition//EN
+DTDCache/SMIL21/SMIL-transition.mod
+
+#
+# SMIL 3.0 entry points:
 #
 http://www.w3.org/2007/07/SMIL30
-DTDCache/SMIL30/SMIL30Language.dtd
-http://www.w3.org/2007/07/SMIL30/SMIL30.dtd
 DTDCache/SMIL30/SMIL30Language.dtd
 http://www.w3.org/2008/SMIL30
 DTDCache/SMIL30/SMIL30Language.dtd
 http://www.w3.org/2008/SMIL30/SMIL30Language.dtd
 DTDCache/SMIL30/SMIL30Language.dtd
-SMIL-anim.mod
-DTDCache/SMIL30/SMIL-anim.mod
-smil-attribs-1.mod
-DTDCache/SMIL30/smil-attribs-1.mod
-SMIL-control.mod
-DTDCache/SMIL30/SMIL-control.mod
-smil-datatypes-1.mod
-DTDCache/SMIL30/smil-datatypes-1.mod
-smil-framework-1.mod
+http://www.w3.org/2008/SMIL30/SMIL30Daisy.dtd
+DTDCache/SMIL30/SMIL30Daisy.dtd
+http://www.w3.org/2008/SMIL30/SMIL30ExtendedMobile.dtd
+DTDCache/SMIL30/SMIL30ExtendedMobile.dtd
+http://www.w3.org/2008/SMIL30/SMIL30Mobile.dtd
+DTDCache/SMIL30/SMIL30Mobile.dtd
+http://www.w3.org/2008/SMIL30/SMIL30Tiny.dtd
+DTDCache/SMIL30/SMIL30Tiny.dtd
+#
+# SMIL 3.0 modules.
+#
+-//W3C//ENTITIES SMIL 3.0 Modular Framework 1.0//EN
 DTDCache/SMIL30/smil-framework-1.mod
-SMIL-layout.mod
-DTDCache/SMIL30/SMIL-layout.mod
-SMIL-link.mod
-DTDCache/SMIL30/SMIL-link.mod
-SMIL-media.mod
-DTDCache/SMIL30/SMIL-media.mod
-SMIL-metainformation.mod
-DTDCache/SMIL30/SMIL-metainformation.mod
-smil-profile-model-1.mod
-DTDCache/SMIL30/smil-profile-model-1.mod
-smil-qname-1.mod
+-//W3C//ENTITIES SMIL 3.0 Datatypes 1.0//EN
+DTDCache/SMIL30/smil-datatypes-1.mod
+-//W3C//ENTITIES SMIL 3.0 Qualified Names 1.0//EN
 DTDCache/SMIL30/smil-qname-1.mod
-SMIL-smiltext.mod
-DTDCache/SMIL30/SMIL-smiltext.mod
-SMIL-state.mod
-DTDCache/SMIL30/SMIL-state.mod
-SMIL-struct.mod
+-//W3C//ENTITIES SMIL 3.0 Common Attributes 1.0//EN
+DTDCache/SMIL30/smil-attribs-1.mod
+-//W3C//ENTITIES SMIL 3.0 Document Model 1.0//EN
+DTDCache/SMIL30/smil-profile-model-1.mod
+-//W3C//ELEMENTS SMIL 3.0 Document Structure//EN
 DTDCache/SMIL30/SMIL-struct.mod
-SMIL-timesheet.mod
-DTDCache/SMIL30/SMIL-timesheet.mod
-SMIL-timing.mod
+-//W3C//ELEMENTS SMIL 3.0 Animation//EN
+DTDCache/SMIL30/SMIL-anim.mod
+-//W3C//ELEMENTS SMIL 3.0 Content Control//EN
+DTDCache/SMIL30/SMIL-control.mod
+-//W3C//ELEMENTS SMIL 3.0 Document Metainformation//EN
+DTDCache/SMIL30/SMIL-metainformation.mod
+-//W3C//ELEMENTS SMIL 3.0 Layout//EN
+DTDCache/SMIL30/SMIL-layout.mod
+-//W3C//ELEMENTS SMIL 3.0 Linking//EN
+DTDCache/SMIL30/SMIL-link.mod
+-//W3C//ELEMENTS SMIL 3.0 Media Objects//EN
+DTDCache/SMIL30/SMIL-media.mod
+-//W3C//ELEMENTS SMIL 3.0 SMILtext//EN
+DTDCache/SMIL30/SMIL-smiltext.mod
+-//W3C//ELEMENTS SMIL 3.0 State//EN
+DTDCache/SMIL30/SMIL-state.mod
+-//W3C//ELEMENTS SMIL 3.0 Timing//EN
 DTDCache/SMIL30/SMIL-timing.mod
-SMIL-transition.mod
+-//W3C//ELEMENTS SMIL 3.0 Transition//EN
 DTDCache/SMIL30/SMIL-transition.mod
-

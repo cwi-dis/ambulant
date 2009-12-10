@@ -324,7 +324,14 @@ xerces_sax_parser::resolveEntity(const XMLCh* const publicId , const XMLCh* cons
 	XMLCh* XMLCh_local_id = NULL;
 	InputSource* local_input_source = NULL;
 	AM_DBG m_logger->debug("xerces_sax_parser::resolveEntity(%s,%s)",publicId_ts, systemId_ts);
-	const std::string dtd = find_cached_dtd(systemId_ts);
+    // First look for the system ID.
+	std::string dtd = find_cached_dtd(systemId_ts);
+    if (dtd == "") {
+        // Next, look for the public ID. We do this because the systemId can be a relative
+        // pathname, and these can collide between SMIL versions. So, for those that
+        // collide we use the public ID as the cache entry key.
+        dtd = find_cached_dtd(publicId_ts);
+    }
 	if (dtd != "") {
 		XMLCh_local_id = XMLString::transcode(dtd.c_str());
 	}
