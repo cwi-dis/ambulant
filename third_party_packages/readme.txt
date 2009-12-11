@@ -19,37 +19,32 @@ Windows Desktop, Windows Mobile 5
 xerces:
 	windows desktop only.
 	
-	Download xerces-C++ Version 2.7.0 Source Release from
-	<http://xerces.apache.org> and extract xerces-c-src_2_7_0 and put its
-	content in the directory .../ambulant/third_party_packages/
+	Download xerces-C++ Version 3.0.1 Source Release from
+	<http://xerces.apache.org>, extract, and put its
+	content in the directory .../ambulant/third_party_packages/.
 
-	Next read the Readme.html included in the xerces distribution and
-	follow the MSVC Version 7.1 build instructions. After building xerces
-	copy xerces-c_2_7.dll and xerces-depcom_2_7.dll to
-	ambulant/bin/win32 and the xerces-c_2.lib and xerces-depdom_2.lib to
-	ambulant/lib/win32. The files are located in
-	xerces-c-src_2_7_0\Build\Win32\VC7.1\Release.
+	Build according to instructions.
 
 	If you want to compile AmbulantPlayer without xerces support use the
 	NoXerces configurations in the Ambulant solution.
 	
 libxml2:
 	Only for SMIL 3 support. Download source from <http://www.xmlsoft.org>.
-	There are no releases, only hourly snapshots it seems. Copy
-	libxml2-2.7.3 into third_party_packages (if the name has changed you
-	may need to change some Ambulant projects to refer to the new name.)
+	There are no releases, only hourly snapshots it seems. 2.7.6 is known to
+	work, but so are many other versions.
     
-	Building libxml2 should be handled by the projects/*/third_party_packages.sln.
-	In case it fails: read the instructions in libxml2-2.7.3/win32 and do it
-	yourself.
+	Building libxml2 should be handled by the projects/vc9/third_party_packages.sln.
+	You may have to modify Ambulant-win32.vsprops if you downloaded a different
+	release than 2.7.6 to fix the pathname.
     
 	Do not install the libs and binaries.
     
 	WM5 notes TBD.
 
 ffmpeg:
-	Experimental, for when you want to use the ffmpeg renderers on Windows.
-	Needs to be built using MinGW,can then be linked into Visual Studio projects.
+    Version 0.5.
+    
+	Needs to be built using MinGW, can then be linked into Visual Studio projects.
 	
 	The easiest way to get this is to download the prebuilt version from
 	our sourceforge download page. Package "ffmpeg for Ambulant", release
@@ -60,7 +55,7 @@ ffmpeg:
 	with instructions, but these are the only ones that worked for me.
 	
 SDL:
-	Experimental, for when you want to use the SDL renderers on Windows. 
+
 	There are two options:
 	-Pre-built Development Libraries:
 		Download development libraries for win32(VC8) from <http://www.libsdl.org/download-1.2.php>, 
@@ -113,127 +108,65 @@ others:
 	
 Unix (Linux, MacOSX)
 ====================
+
+Again, as stated above: unless you really want to do this manually please try
+the automatic procedure, mentioned at the top of this file.
+If you decide to build manually: you make your life easier by using
+--prefix=.../ambulant/third_party_packages/installed on all your configures.
+The Ambulant configure knows about this location, and automatically add it to
+$PATH, $PKGCONFIG_PATH, etc.
 	
 expat-unix:	
 	Build from source. Download the expat source via
-	<http://expat.sourceforge.net> and extract into expat-2.0.0 in this
+	<http://expat.sourceforge.net> and extract into expat-2.0.1 in this
 	directory (.../ambulant/third_party_packages).
 	Then do the following:
 		$ tppdir=`pwd`  # or setenv tppdir `pwd` if you use tcsh
-		$ cd expat-1.95.7
-		$ ./configure --prefix=$tppdir/expat-unix
+		$ cd expat-2.0.1
+		$ patch < ../expat.patch
+		$ ./configure --prefix=...where-ever...
 		$ make
 		$ make install
+	The patch is needed to add pkgconfig support to expat. Make sure the expat prefix directory
+	(actually lib/pkgconfig therein) is searched by pkgconfig.
 
 xerces-unix:
-	Download xerces-C++ Version 2.7.0 Source Release from
-	<http://xerces.apache.org> and extract xerces-c-src_2_7_0 and extract
-	into xerces-c-src_2_7_0 in the directory
-	(.../ambulant/third_party_packages).
-	Then do the following:
-		$ tppdir=`pwd`  # or setenv tppdir `pwd` if you use tcsh
+	Download xerces-C++ Version 3.0.1 Source Release from
+	<http://xerces.apache.org> and extract
+	into third_party_packages. Build according to instructions.
 
-	Next, follow the instructions for building xerces, open Readme.html
-	and navigate to "Building". You really want to do this, as they have
-	created some wrappers around the normal configure/make combo. You
-	need to add the prefix directory, and for MacOSX the "-n native"
-	option:
-	    linux$ ./runConfigure -p linux -P $tppdir/xerces-unix
-	or
-		macosx$ ./runConfigure -p macosx -n native -t native -P $tppdir/xerces-unix
-	After this "gmake" and "gmake install" will do the job.
-	
-	At this point in time you must specify --with-xerces to the Ambulant
-	configure, by default AmbulantPlayer is built with only expat
-	support.
-	
-	Note that if you want to install Xerces somewhere else (or you have
-	already installed it) you should specify the location to the
-	--with-xerces option on the main ambulant configure: it will
-	normally only look in third_party_packages/xerces-unix.
-
-	To run AmbulantPlayer make sure that you have set LD_LIBRARY_PATH to
-	the directory containing libxerces-c.so.
+    Xerces (as of version 3.0) now also has pkgconfig support, so again: if you use
+    --prefix when building xerces, make sure that pkgconfig searches the correct
+    location.
 	
 ffmpeg:
-	In principle the ffmpeg package is optional, but failing to supply
-	it will result in an AmbulantPlayer that can play no audio (Mac OS
-	X) or no audio and video (Linux).
-
-	As ffmpeg does not provide versioned distributions, and on all Linux
-	distributions we have seen, system installed versions of ffmpeg have
-	too little functionality to be useable for AmbulantPlayer, we need to
-	extract the June 15th, 2008 version from the developers source tree.
-	When configuring ffmpeg, do NOT use its '--enable-swscale' option.
-
-	In addition, for AAC audio decoding, libfaad2 is needs to be installed.
+	First, for AAC audio decoding, libfaad2 is needs to be installed.
 	See: http://www.audiocoding.com/faad2.html how to download and install.
 
 	Warning: while AmbulantPlayer by itself is licensed LGPL, by including
 	libfaad2 the licensing scheme falls back to GPL	(AAC decoding is currently
 	only needed by AmbulantPlayer for audio streaming via RTSP).
 
-	Download ffmpeg from source in the directory 
-	.../ambulant/third_party_packages/ffmpeg using svn:
-
-	$ cd .../ambulant/third_party_packages
-	$ svn checkout -r "{2008-06-15}" svn://svn.mplayerhq.hu/ffmpeg/trunk ffmpeg
-	$ cd ffmpeg
-	$ if [ `arch` = x86_64 ] ; then extracflags=--extra-cflags=-fPIC ; fi
-	$ ./configure --enable-libfaad --enable-gpl $extracflags
-	$ make
-
-	("--extra-cflags=-fPIC" is needed a.o. on Fedora-8 64 bit installations).
-
-	NOTE 1: on Mac OS X, the lib*-uninstalled.pc files have a problem
-	(as of June 17, 2008): they refer to the libraries by filename in stead of with
-	a -L/-l construct. You must change this manually: replace each 
-	"${libdir}/libavxxxx.a" with "-L${libdir} -lavxxxx", otherwise libtool will fail
-	later, while building the ambulant ffmpeg library.
-
-	NOTE 2: for Nokia770/800, see special instructions in .../installers/nokia770/README.
-
-    NOTE 3. for non-root installations (e.g. --prefix=$HOME) to find "libfaad",
-	add the following optoins to the ./configure line:
-	--extra-cflags=-I$HOME/include --extra-ldflags=-L$HOME/lib
-
+	Get ffmpeg 0.5 from www.ffmpeg.org. Build according to what you want to support.
+	Configure options that may be useful:
+	--enable-libfaad --enable-gpk
+	    Use these to include AAC audio support (as mentioned above)
+	--extra-cflags=-fPIC
+	    May be needed on some 64bit linux systems
+	Also: read the build-third-party-packages.py script to see the options we've used.
+	
 sdl:
-	Ambulant has been tested with sdl 1.2.5 thru 1.2.13. You find this at
-	<http://www.libsdl.org>. Build and install normally, and make sure
-	the sdl-config utility is on your $PATH when running the configure
-	for Ambulant.
-
-	Notes for MacOSX:
-	- the SDL install will fail if there are spaces in the 
-	  pathname *of the source directory pathname*.
-	- You may need to use "./configure --disable-cdrom" to build SDL
-	  if you've installed xcode 2.2.
-	- SDL always seems to build the dynamic libraries. IF YOU WANT TO
-	  CREATE A SELFCONTAINED INSTALLER YOU MUST REMOVE THESE BEFORE BUILDING,
-	  use "sudo rm /usr/local/bin/libSDL*dylib".
+	Ambulant has been tested with sdl 1.2 and 1.3. For 1.2, make sure sdl-config
+	is on your $PATH when building Ambulant. 1.3 uses standard pkgconfig.
 	
-arts:
-	Linux only.
-	
-	At some point Ambulant was also able to use Arts audio library
-	instead of SDL, but for this release that support is untested, and
-	believed to be very buggy.
-
 live555.com:
 	You need to download live555-latest.tar.gz at
 	<http://www.live555.com/liveMedia/public/>. Extract the tar file in
-	.../ambulant/third_party_packages (or at anyother place, but
-	remember to use the configure option --with-live=.....). Build live
-	with the following commands:
-			$ cd live
-			$ ./genMakefiles linux
-			$ make
-	For MacOSX you need to supply "macosx" or "macosx-before-version-10.4"
-	to genMakefiles in stead of "linux".
-	
+	.../ambulant/third_party_packages. Build live according to supplied instructions.
+		
 	Live does not have an install procedure. If you have installed live
-	in .../ambulant/third_party_packages/live configure will detect
-	live.com.
+	in .../ambulant/third_party_packages/live, the Ambulant configure will detect
+	it. Otherwise you need to supply --with-live=...pathname...
 
 gettext:
 	On Linux you will usually have gettext pre-installed, on Mac OS X probably
@@ -257,7 +190,7 @@ xulrunner-sdk:
 	
 	where XXX stands for the appropriate archtecture of the target machine.
     Install in /ambulant/third_party_packages and configure ambulant
-    using --with -npambulant
+    using --with-npambulant
  
 
     
