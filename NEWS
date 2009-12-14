@@ -1,52 +1,27 @@
-What's new in Ambulant Player 2.0.2?
-------------------------------------
-
-- The FireFox plugin had random crashes on stop/unload. Fixed.
-- The Linux FireFox plugin was missing, Fixed.
-- FireFox plugin: there were problems with non-local presentations. Fixed.
-- Windows Desktop player had html renderer disabled. Fixed.
-- All: Repeat failed for continuous media. Fixed.
-- All: a random threading crash was fixed. 
-- All: seeking on video files with audio didn't always work. Fixed.
-
-What's new in Ambulant Player 2.0.1?
-------------------------------------
-
-- RTSP video had frame reordering problems on some machines. Fixed.
-- Problems with initial/final text in smilText were fixed.
-- (Mac) RTSP support was disabled in 2.0. Fixed.
-- (Mac) There were problems with PowerPC support. Fixed.
-- (Mac) Video colors were incorrect on 10.4. Fixed.
-- (Mac) Fixed a bug with dirty pixels in transitions.
-- (Mac) Links to another SMIL file were fixed.
-- (Firefox plugin) Various crashes were fixed.
-
-What's new in Ambulant Player 2.0?
+What's new in Ambulant Player 2.2?
 ----------------------------------
 
-Highlights of changes between 1.8 and 2.0:
+- We now have a working plugin for at least one browser on each major
+  platform. On Linux and Windows we have a Firefox plugin (that may also
+  work in Opera, Safari and other browsers). On MacOSX we have a Safari
+  plugin. There is also an Internet Explorer plugin for Windows, but
+  we are slightly less sure about the quality of this one.
+  
+- Timing has improved a lot. This is most clear with video, where
+  audio and video should now remain synchronized a lot better, but also
+  between continuous media and the rest of the presentation.
+  
+- For SMIL authors: there is a <param> mechanism to select specific
+  renderers for a media item. systemComponent allows you to test for
+  availability of this renderer.
+  For developers, this change also means all renderers are now created
+  with a factory function, and these all have the same signature.
+  
+- For developers: the build process has been enhanced. We still rely
+  on lots of third party libraries, but there is a script now that
+  should download and build everything (for Linux and MacOSX developers).
+  The configure process has also been rationalized.
+  For Windows developers there is a single .vsprops file where all external
+  pathhnames are stored.
 
-- Full support for SMIL 3.0: inline text through smilText, variables and
-  extended customization through SMIL State, pan and zoom to display partial
-  images or video, transparency, many more.
-
-- Windows CE support (specifically Windows Mobile 5) has been revived, and
-  is now complete.
-
-- Audio and video support have been enhanced. All platforms can now render
-  through open source components (ffmpeg, sdl, live555), unifying available
-  media types and access methods across platforms. All platforms support rtsp
-  playback, http playback and all common media formats. Performance should
-  also have increased significantly.
-
-- Redraw has been optimized, especially on Windows. This should give much
-  smoother presentations.
-
-- The Firefox plugin (allowing playback of SMIL within web pages) has been
-  revived and for the Mac a Safari plugin is also available. The Safari
-  plugin can be extended in Python, allowing rich interaction between SMIL
-  and HTML.
-
-- Support for extending Ambulant through Python, or embedding Ambulant
-  rendering in Python programs has been enhanced.
-
+As usual, many bugs have been fixed too. The details can be found in ChangeLog.

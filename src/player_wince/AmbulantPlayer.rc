@@ -170,8 +170,8 @@ CAPTION "About AmbulantPlayer"
 FONT 8, "System"
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
-    LTEXT           "Ambulant Player v2.1",IDC_AM_VERSION,31,17,78,8,SS_NOPREFIX
-    LTEXT           "(C) 2004-2008, Stichting CWI",IDC_STATIC,7,47,115,8
+    LTEXT           "Ambulant Player v2.2",IDC_AM_VERSION,31,17,78,8,SS_NOPREFIX
+    LTEXT           "(C) 2004-2009, Stichting CWI",IDC_STATIC,7,47,115,8
     CTEXT           "www.ambulantPlayer.org",IDC_STATIC,30,28,82,8
     LTEXT           "License: LGPL",IDC_STATIC,7,56,70,8
 END
