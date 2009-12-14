@@ -164,7 +164,7 @@
         "DisplayName" = "8:ReleaseShlib"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:FALSE"
-        "OutputFilename" = "8:..\\..\\bin\\wince\\Ambulant-2.2-wince5.cab"
+        "OutputFilename" = "8:..\\..\\bin\\wince\\Ambulant-2.3-wince5.cab"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
         "SignOutput" = "11:FALSE"

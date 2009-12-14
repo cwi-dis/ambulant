@@ -125,7 +125,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>2.2</string>
+	<string>2.3</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>

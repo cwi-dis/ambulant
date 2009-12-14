@@ -2,7 +2,7 @@
 Encoding=UTF-8
 Version=1.0
 Type=Application
-Name=AmbulantPlayer 2.2
+Name=AmbulantPlayer 2.3
 Exec=/usr/bin/AmbulantPlayer_gtk
 Icon=pkg_AmbulantPlayer-app
 X-Window-Icon=tn-bookmarks-link
