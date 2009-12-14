@@ -101,7 +101,7 @@ Before creating the distribution
   - src/player_mfc/AmbulantPlayer.rc (Dialog IDD_ABOUTBOX)
   - src/player_gtk/AmbulantPlayer.desktop
   - src/webkit_plugin/README
-  - src/npambulant/install.rdf
+  - src/npambulant/install-*.rdf
   - installers/nsis-win32/setup-ambulant-installer.nsi
   - projects/vc8-wince5-smil3/ambulant-wince5-installer.vddproj
   - projects/vc9/npambulant-installer.vcproj
