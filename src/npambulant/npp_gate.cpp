@@ -85,16 +85,16 @@ NPError NPP_New(NPMIMEType pluginType,
 	NPBool supportsCG = false;
 	rv = NPN_GetValue(instance, NPNVsupportsCoreGraphicsBool, &supportsCG);
 	if (rv) {
-		/*AM_DBG*/ fprintf(stderr, "GetValue(NPNVsupportsCoreGraphicsBool) returned %d\n", rv);
+		AM_DBG fprintf(stderr, "GetValue(NPNVsupportsCoreGraphicsBool) returned %d\n", rv);
 		return rv;
 	}
 	if (!supportsCG) {
-		/*AM_DBG*/ fprintf(stderr, "Browser does not support NPNVsupportsCoreGraphicsBool\n");
+		AM_DBG fprintf(stderr, "Browser does not support NPNVsupportsCoreGraphicsBool\n");
 		return NPERR_INCOMPATIBLE_VERSION_ERROR;
 	}
 	rv = NPN_SetValue(instance, NPPVpluginDrawingModel, (void*)NPDrawingModelCoreGraphics);
 	if (rv) {
-		/*AM_DBG*/ fprintf(stderr, "SetValue(NPDrawingModelCoreGraphics) returned %d\n", rv);
+		AM_DBG fprintf(stderr, "SetValue(NPDrawingModelCoreGraphics) returned %d\n", rv);
 		return NPERR_INCOMPATIBLE_VERSION_ERROR;
 	}
 #endif

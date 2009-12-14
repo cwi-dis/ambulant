@@ -257,8 +257,8 @@ AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, ver
 #endif // WITH_GTK
 #ifdef WITH_CG
 	NP_CGContext *cg_context = (NP_CGContext *)aWindow->window;
-	/*AM_DBG*/ fprintf(stderr, "npambulant::init_ambulant: context=0x%x, window=0x%x\n", cg_context->context, cg_context->window);
-	/*AM_DBG*/ {
+	AM_DBG fprintf(stderr, "npambulant::init_ambulant: context=0x%x, window=0x%x\n", cg_context->context, cg_context->window);
+	AM_DBG {
 		CGRect rect = CGContextGetClipBoundingBox(cg_context->context);
 		fprintf(stderr, "npambulant::init_ambulant: bounding box (%f, %f, %f, %f)\n", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
 	}
@@ -466,7 +466,7 @@ npambulant::restartPlayer()
 void
 npambulant::pausePlayer()
 {
-	/*AM_DBG*/ lib::logger::get_logger()->debug("npambulant::pausePlayer()\n");
+	AM_DBG lib::logger::get_logger()->debug("npambulant::pausePlayer()\n");
 	if (m_ambulant_player != NULL)
 		get_player()->pause();
 }

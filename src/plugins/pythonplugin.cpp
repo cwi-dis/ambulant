@@ -197,7 +197,7 @@ void initialize(
 #ifdef WITH_OBJC_BRIDGE        
         // Step 6 - Communicate the extra_data, if needed and wanted
         if (extra_data /* plugin_extra_data.m_plugin_extra */) {
-        	/*AM_DBG*/ lib::logger::get_logger()->debug("python_plugin: extra_data is 0x%x", extra_data);
+        	AM_DBG lib::logger::get_logger()->debug("python_plugin: extra_data is 0x%x", extra_data);
             PyObject *objcmod = PyImport_ImportModule("objc");
             if (objcmod == NULL) {
                 PyErr_Print();
