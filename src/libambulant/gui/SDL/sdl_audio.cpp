@@ -366,12 +366,15 @@ gui::sdl::sdl_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
 	
 	// turned this of because I think here also happends a get_read_ptr when it should not
 	//XXXX sometimes we get this one in News when changing video itmes
-	
-	assert(m_is_playing);
-	int rv;
+	//XXXX Kees: should not assert here. Can be called from callback after object destruction.
+	// assert(m_is_playing);
+	int rv = 0;
 	*ptr = NULL;
+	if ( ! m_is_playing) {
+		m_lock.leave();
+		return rv;
+	}
 	if (m_is_paused||!m_audio_src) { 
-		rv = 0;
 		m_read_ptr_called = false;
 		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::get_data: audio source paused, or no audio source");
 	} else {
