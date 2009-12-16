@@ -1,3 +1,57 @@
+2009-12-14 23:39  jackjansen
+
+	* Upped version number to 2.3.
+
+2009-12-14 23:25  jackjansen
+
+	* Changed pathnames.
+
+2009-12-14 23:18  jackjansen
+
+	* Updated translations.
+
+2009-12-14 23:00  jackjansen
+
+	* - Updated version numbers to 2.2.  - Updated year to 2009.  -
+	  Updated various readme files and such.
+
+2009-12-14 22:13  jackjansen
+
+	* Getting rid of debug output.
+
+2009-12-14 16:34  keesblom
+
+	* Removed an assertion that has been turned on/off repeatedly. The
+	  condition appears to be triggered when get_data() is called from
+	  sdl_callback() while the object has been deleted in another
+	  thread.
+
+2009-12-11 11:56  jackjansen
+
+	* iUpdated to current versions.
+
+2009-12-10 15:39  jackjansen
+
+	* Line ending mixup: there are text files, but they had windows
+	  line endings.
+
+2009-12-10 15:37  jackjansen
+
+	* Line endings were mixed up: these are text files (according to
+	  CVS) but they had Windows crlf line endings on Unix.
+
+2009-12-10 15:33  jackjansen
+
+	* smil_player termination code (from the mainloop) was
+	  inconsistent.  Fixed.
+
+2009-12-10 14:55  jackjansen
+
+	* Partial fix for #2908167: Allow finding cache entries by publicId
+	  as well as systemId.	The public IDs are globally unique, so this
+	  also works for modules that have the same systemId in SMIL 2.0
+	  and SMIL 3.0.
+
 2009-12-09 23:01  jackjansen
 
 	* Removed debug.
