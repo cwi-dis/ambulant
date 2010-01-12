@@ -54,6 +54,16 @@ typedef int16_t int16;
 typedef void JRIEnv;
 typedef void *jref;
 #define NewNPP_NewProc(x) (x)
+#define NewNPP_DestroyProc(x) (x)
+#define NewNPP_SetWindowProc(x) (x)
+#define NewNPP_NewStreamProc(x) (x)
+#define NewNPP_DestroyStreamProc(x) (x)
+#define NewNPP_StreamAsFileProc(x) (x)
+#define NewNPP_WriteReadyProc(x) (x)
+#define NewNPP_WriteProc(x) (x)
+#define NewNPP_PrintProc(x) (x)
+#define NewNPP_URLNotifyProc(x) (x)
+#define NewNPP_GetValueProc(x) (x)
 #else
 #include "npupp.h"
 #endif // (NP_VERSION_MAJOR >= 0) && (NP_VERSION_MINOR >= 22)

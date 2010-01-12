@@ -180,8 +180,6 @@ NPError	NPP_GetValue(NPP instance, NPPVariable variable, void *value)
 
   NPError rv = NPERR_NO_ERROR;
 
-  *(NPObject **)value = NULL;
-
   npambulant * plugin = (npambulant *)instance->pdata;
   if(plugin == NULL)
     return NPERR_GENERIC_ERROR;
