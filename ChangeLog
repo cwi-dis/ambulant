@@ -1,3 +1,7 @@
+2010-01-12 16:33  keesblom
+
+	* Found bug in npp_gate.cpp after 3 weeks causing firefox to crash.
+
 2009-12-14 23:39  jackjansen
 
 	* Upped version number to 2.3.
