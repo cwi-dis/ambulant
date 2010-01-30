@@ -77,7 +77,7 @@ class gtk_gui : public GtkWidget{
 #ifdef	LOCK_MESSAGE
 	pthread_cond_t	  m_cond_message;
 	pthread_mutex_t   m_lock_message;
-	unsigned long int m_gui_thread;
+	pthread_t m_gui_thread;
 #endif/*LOCK_MESSAGE*/
 	bool         m_pointinghand_cursor; //XXXX
 	GtkFileChooser* m_file_chooser;

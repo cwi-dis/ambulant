@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libambulant_win32", "libambulant_win32.vcproj", "{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AmbulantPlayer", "AmbulantPlayer.vcproj", "{C9A73F92-DB87-46D2-8808-0CE9CC4B093F}"

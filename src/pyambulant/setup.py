@@ -87,7 +87,7 @@ if sys.platform == 'darwin':
     INCDIRS += ['/usr/local/include']
     
 setup(name='ambulant',
-      version='0.1',
+      version='2.2',
       ext_modules=[
         Extension('ambulant',
             ['ambulantmodule.cpp', 'ambulantinterface.cpp', 'ambulantutilities.cpp'],

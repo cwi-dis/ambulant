@@ -66,8 +66,17 @@ Building for Mac OS X
 ---------------------
 For universal build, make sure you read this whole section.
 
-First make sure you install the third party packages on which Ambulant
-depends. Go to third_party_packages and run
+First there are some packages that need to be installed system-wide, i.e.
+in /usr/local (or /opt, or whereever you want to put them). Eventually we will
+put these in the next category, but for now you need to download, build and
+install them manually:
+- gettext, version 0.17 or later
+- libtool, version 2.2.6 or later
+- pkg-config, version 0.19 or later
+
+Next, make sure you install the third party packages on which Ambulant
+depends. These will be installed locally, for ambulant only (in
+directory third_party_packages/installed). Go to third_party_packages and run
 
 	python build-third-party-packages.py mac10.6
 	

@@ -102,9 +102,11 @@ Before creating the distribution
   - src/player_gtk/AmbulantPlayer.desktop
   - src/webkit_plugin/README
   - src/npambulant/install-*.rdf
+  - sc/pyambulant/setup.py
   - installers/nsis-win32/setup-ambulant-installer.nsi
   - projects/vc8-wince5-smil3/ambulant-wince5-installer.vddproj
   - projects/vc9/npambulant-installer.vcproj
+  - projects/vc9/AmbulantActiveX-installer.vcproj (2 times?)
   - Documentation/user/developer.html (2 times)
   - Documentation/user-htmlhelp/developer.html (2 times, regenerate winHelp)
 - check the following files for being up-to-date:

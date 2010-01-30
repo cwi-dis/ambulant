@@ -106,8 +106,12 @@ gui::sdl::sdl_audio_renderer::init()
 	desired.userdata = NULL;
 	err = SDL_OpenAudio(&desired, &obtained);
 	if (err < 0) {
-	  lib::logger::get_logger()->trace("sdl_renderer_playable_ds.init: SDL_OpenAudio failed: error %s", SDL_GetError());
-		lib::logger::get_logger()->error(gettext("Cannot open SDL audio output stream"));
+		lib::logger::get_logger()->trace("sdl_renderer_playable_ds.init: SDL_OpenAudio failed: error %s", SDL_GetError());
+		static bool warned_before;
+		if (!warned_before) {
+			lib::logger::get_logger()->error(gettext("Cannot open SDL audio output stream: %s"), SDL_GetError());
+			warned_before = true;
+		}
 		s_static_lock.leave();
     	return err;
 	}
@@ -206,7 +210,9 @@ gui::sdl::sdl_audio_renderer::sdl_callback(Uint8 *stream, int len)
 		// No streams, or more than one: use an accumulation buffer
 		memset(stream, 0, len);
 		std::list<sdl_audio_renderer *>::iterator i;
+		int dbg_nstream = 0;
 		for (i=first; i != s_renderers.end(); i++) {
+			dbg_nstream++;
 			Uint8 *next_data;
 			AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::sdl_callback(0x%x, %d))calling get_data() ", (void*) stream, len);
 			int next_len = (*i)->get_data(len, &next_data);
@@ -216,6 +222,7 @@ gui::sdl::sdl_audio_renderer::sdl_callback(Uint8 *stream, int len)
 			AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::sdl_callback(0x%x, %d))calling get_data_done(%d) ", (void*) stream, len, next_len);
 			(*i)->get_data_done(next_len);
 		}
+		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::sdl_callback: got data from %d renderers", dbg_nstream);
 	}
 	s_static_lock.leave();
 }
@@ -366,15 +373,11 @@ gui::sdl::sdl_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
 	
 	// turned this of because I think here also happends a get_read_ptr when it should not
 	//XXXX sometimes we get this one in News when changing video itmes
-	//XXXX Kees: should not assert here. Can be called from callback after object destruction.
-	// assert(m_is_playing);
-	int rv = 0;
+	assert(m_is_playing);
+	int rv;
 	*ptr = NULL;
-	if ( ! m_is_playing) {
-		m_lock.leave();
-		return rv;
-	}
 	if (m_is_paused||!m_audio_src) { 
+		rv = 0;
 		m_read_ptr_called = false;
 		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::get_data: audio source paused, or no audio source");
 	} else {
@@ -425,6 +428,7 @@ gui::sdl::sdl_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
 		rv = m_audio_src->size();
 		*ptr = (Uint8 *) m_audio_src->get_read_ptr();
 		if (rv) assert(*ptr);
+		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::get_data: %d bytes available", rv);
 		if (rv > bytes_wanted)
 			rv = bytes_wanted;
 #ifdef WITH_CLOCK_SYNC
@@ -638,12 +642,20 @@ gui::sdl::sdl_audio_renderer::stop()
 void
 gui::sdl::sdl_audio_renderer::post_stop()
 {
-	m_lock.enter();
-	m_is_playing = false;
     // We must do the unregister outside the lock otherwise
     // we may get a deadlock. Potentially unsafe, but such is life...
-    m_lock.leave();
 	unregister_renderer(this);
+
+	m_lock.enter();
+	m_is_playing = false;
+#ifndef WITH_SEAMLESS_PLAYBACK
+	if (m_audio_src) {
+        m_audio_src->stop();
+		m_audio_src->release();
+		m_audio_src = NULL;
+	}
+#endif // !WITH_SEAMLESS_PLAYBACK
+	m_lock.leave();
 	
 }
 

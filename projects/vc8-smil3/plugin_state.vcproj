@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="8.00"
 	Name="plugin_state"
 	ProjectGUID="{F2A2FA67-7BB9-4609-9A5F-9079BAA7CA67}"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -73,8 +72,6 @@
 				ProgramDatabaseFile="$(OutDir)/plugin.pdb"
 				GenerateMapFile="true"
 				SubSystem="0"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="$(OutDir)/plugin.lib"
 				TargetMachine="1"
 			/>

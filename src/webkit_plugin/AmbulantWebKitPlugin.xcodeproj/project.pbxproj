@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		040DE08F0CD533A300A68D91 /* libambulant_sdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B290958C23900C194EE /* libambulant_sdl.a */; };
 		042AF3D4095AFF780003E706 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D5B49B7048680CD000E48DA /* Info.plist */; };
+		0432F3C81105EFAE0077DDF8 /* libamplugin_xpath_state.la in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04CF56831105ECD300D2C1C0 /* libamplugin_xpath_state.la */; };
+		0432F3C91105EFAE0077DDF8 /* libamplugin_xpath_state.0.so in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04CF56811105ECC200D2C1C0 /* libamplugin_xpath_state.0.so */; };
 		045D0B350958C26800C194EE /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B340958C26800C194EE /* QuickTime.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		045D0B800958C53F00C194EE /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 045D0B7E0958C53F00C194EE /* mainloop.cpp */; };
 		045D0B930958C71E00C194EE /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 045D0B920958C71E00C194EE /* libexpat.a */; };
@@ -41,6 +43,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				0432F3C81105EFAE0077DDF8 /* libamplugin_xpath_state.la in CopyFiles */,
+				0432F3C91105EFAE0077DDF8 /* libamplugin_xpath_state.0.so in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,6 +85,8 @@
 		04C26AEC0CBE0E3700CB8EFE /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		04C26AEF0CBE0E5500CB8EFE /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		04C26AF20CBE0E8700CB8EFE /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
+		04CF56811105ECC200D2C1C0 /* libamplugin_xpath_state.0.so */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.bundle"; name = libamplugin_xpath_state.0.so; path = src/plugins/.libs/libamplugin_xpath_state.0.so; sourceTree = PREBUILT_AMBULANT_ROOT; };
+		04CF56831105ECD300D2C1C0 /* libamplugin_xpath_state.la */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = libamplugin_xpath_state.la; path = src/plugins/libamplugin_xpath_state.la; sourceTree = PREBUILT_AMBULANT_ROOT; };
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		32DBCF630370AF2F00C91783 /* AmbulantWebKitPlugin_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbulantWebKitPlugin_Prefix.pch; sourceTree = "<group>"; };
@@ -140,6 +146,8 @@
 		04C0A4980CD2A17F00CEDCA9 /* PlugIns */ = {
 			isa = PBXGroup;
 			children = (
+				04CF56831105ECD300D2C1C0 /* libamplugin_xpath_state.la */,
+				04CF56811105ECC200D2C1C0 /* libamplugin_xpath_state.0.so */,
 				04C0A4990CD2A19B00CEDCA9 /* pyamplugin_webkitscripting */,
 				04C0A4B20CD2A44A00CEDCA9 /* libamplugin_python.0 */,
 				04C0A4BC0CD2A61700CEDCA9 /* libamplugin_python.la */,

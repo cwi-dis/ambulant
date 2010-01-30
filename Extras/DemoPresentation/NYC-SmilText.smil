@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE smil PUBLIC "-//W3C//DTD SMIL 2.0//EN"
-                      "http://www.w3.org/ns/SMIL">
+                      "http://www.w3.org/2008/SMIL30/SMIL30Language.dtd">
 <smil xmlns="http://www.w3.org/ns/SMIL">
   <head>
     <meta name="title" content="PPC Slideshow with Dual Audio and Text Captions"/>

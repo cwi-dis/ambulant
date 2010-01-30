@@ -537,7 +537,10 @@ void smil_player::stop_playable(const lib::node *n) {
         }
         return;
     }
+#else // WITH_SEAMLESS_PLAYBACK
     // Otherwise we destroy the whole renderer.
+    if (!victim.second->stop())
+        victim.second->post_stop();
 #endif
     _destroy_playable(victim.second, victim.first);
 }

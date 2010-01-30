@@ -191,7 +191,7 @@ qt_pixmap_dump(QPixmap* qpm, std::string id) {
  	QImage img = qpm->convertToImage();
 	qt_image_dump(&img, id);
 }
-#endif /* WITH_DUMPIMAGE */
+#endif /* WITH_DUMPIMAGES */
 
 } // namespace qt
 

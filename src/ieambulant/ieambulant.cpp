@@ -173,10 +173,7 @@ Cieambulant::updatePlayer()
 #if 1
 		ambulant::common::preferences *prefs = ambulant::common::preferences::get_preferences();
 		prefs->m_prefer_ffmpeg = true;
-		prefs->m_use_plugins = false;
-		// for Windows, ffmpeg is only available as plugin
 		prefs->m_use_plugins = true;
-		prefs->m_plugin_dir = ambulant::lib::win32::get_module_dir();//+"\plugins\\";
 #endif
 		// save the HWND for any Ambulant plugins (such as SMIL State)
 		ambulant::common::plugin_engine *pe = ambulant::common::plugin_engine::get_plugin_engine();

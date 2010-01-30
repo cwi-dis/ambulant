@@ -137,29 +137,13 @@ NPError NPP_SetWindow (NPP instance, NPWindow* pNPWindow)
   if(pNPWindow == NULL)
     return NPERR_GENERIC_ERROR;
 
-  npambulant * pPlugin = (npambulant *)instance->pdata;
+  npambulant *pPlugin = (npambulant *)instance->pdata;
 
   if(pPlugin == NULL) 
     return NPERR_GENERIC_ERROR;
 
-  // window just created
-  if(!pPlugin->isInitialized() && (pNPWindow->window != NULL)) { 
-    if(!pPlugin->init(pNPWindow)) {
-      return NPERR_MODULE_LOAD_FAILED_ERROR;
-    }
-  }
-
-  // window goes away
-  if((pNPWindow->window == NULL) && pPlugin->isInitialized())
-    return NPERR_NO_ERROR;
-
-  // window resized
-  if(pPlugin->isInitialized() && (pNPWindow->window != NULL))
-    return NPERR_NO_ERROR;
-
-  // this should not happen, nothing to do
-  if((pNPWindow->window == NULL) && !pPlugin->isInitialized())
-    return NPERR_NO_ERROR;
+  if (!pPlugin->setWindow(pNPWindow))
+	  rv = NPERR_GENERIC_ERROR;
 
   return rv;
 }
@@ -215,6 +199,18 @@ NPError NPP_NewStream(NPP instance,
     return NPERR_INVALID_INSTANCE_ERROR;
 
   NPError rv = NPERR_NO_ERROR;
+  npambulant *pPlugin = (npambulant *)instance->pdata;
+
+  if(pPlugin == NULL) 
+    return NPERR_GENERIC_ERROR;
+
+  if (pPlugin->isInitialized()) {
+	  fprintf(stderr, "npambulant: NPP_NewStream called twice\n");
+    return rv;
+  }
+  if (!pPlugin->init()) {
+	  rv = NPERR_GENERIC_ERROR;
+  }
   return rv;
 }
 

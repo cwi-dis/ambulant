@@ -73,7 +73,6 @@
 #define USE_BASIC_VIDEO
 #else
 #define USE_DX_VIDEO
-#define USE_BASIC_VIDEO // XXXJACK ta2 testing
 #endif
 
 #ifdef USE_DS_VIDEO
@@ -209,8 +208,11 @@ gui::dx::dx_player::cleanup()
 	lib::nscontext::cleanup();
 	common::global_playable_factory *pf = common::get_global_playable_factory();
 	delete pf;
+#if 0
+	// These have been cleaned up by the gui_player
 	common::plugin_engine *plf = common::plugin_engine::get_plugin_engine();
 	delete plf;
+#endif
 	lib::global_parser_factory *prf = lib::global_parser_factory::get_parser_factory();
 	delete prf;
 #ifdef WITH_SMIL30
@@ -228,12 +230,12 @@ gui::dx::dx_player::init_playable_factory()
 	pf->add_factory(create_dx_area_playable_factory(this, this));
 	pf->add_factory(create_dx_audio_playable_factory(this, this));
 	pf->add_factory(create_dx_brush_playable_factory(this, this));
-#ifdef WITH_HTML_WIDGET
-	pf->add_factory(create_dx_html_playable_factory(this, this));
-#endif
 	pf->add_factory(create_dx_image_playable_factory(this, this));
 	pf->add_factory(create_dx_smiltext_playable_factory(this, this));
 	pf->add_factory(create_dx_text_playable_factory(this, this));
+#ifdef WITH_HTML_WIDGET
+	pf->add_factory(create_dx_html_playable_factory(this, this));
+#endif
 #ifdef USE_BASIC_VIDEO
 	pf->add_factory(create_dx_basicvideo_playable_factory(this, this));
 #endif

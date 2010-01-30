@@ -58,7 +58,7 @@
 
 - (void) setLogLevel: (id) sender
 {
-	int lvl = (int)[sender indexOfSelectedItem];
+    int lvl = (int)[sender indexOfSelectedItem];
 	MyAppDelegate *app = [[NSApplication sharedApplication] delegate];
 	[app setLogLevel: lvl];
 }

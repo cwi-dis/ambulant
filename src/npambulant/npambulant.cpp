@@ -58,6 +58,7 @@ const char* mimetypes =
 application/smil+xml:.smil:W3C Smil 3.0 Playable Multimedia file;\
 application/x-ambulant-smil:.smil:W3C Smil 3.0 Ambulant Player compatible file;";
 
+#ifndef NDEBUG
 class stderr_ostream : public ambulant::lib::ostream {
 	bool is_open() const {return true;}
 	void close() {}
@@ -71,6 +72,7 @@ int stderr_ostream::write(const char *cstr)
 	fprintf(stderr, "%s", cstr);
 	return strlen(cstr);
 }
+#endif//!NDEBUG
 
 npambulant::npambulant(NPMIMEType mimetype, NPP pNPInstance, PRUint16 mode,
 		       int argc, char* argn[], char* argv[], NPSavedData* data) :
@@ -85,14 +87,14 @@ npambulant::npambulant(NPMIMEType mimetype, NPP pNPInstance, PRUint16 mode,
 	m_bInitialized(FALSE),
 	m_pScriptableObject(NULL),
 	m_autostart(true),
-	m_ambulant_player(NULL)
+	m_ambulant_player(NULL),
+	m_Window(NULL)
 {
 #ifdef XP_WIN
 	m_hWnd = NULL;
 	m_lpOldProc = NULL;
 	m_OldWindow = NULL;
 #endif
-
 	NPN_GetValue(m_pNPInstance, NPNVWindowNPObject, &m_window_obj);
 
 	sStartPlayer_id = NPN_GetStringIdentifier("startPlayer");
@@ -144,17 +146,21 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 {
         const char* version = ambulant::get_version();
 AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, version);
+#ifndef NDEBUG
 	if (getenv("AMBULANT_DEBUG") != 0) {
 		ambulant::lib::logger::get_logger()->set_ostream(new stderr_ostream);
 		ambulant::lib::logger::get_logger()->set_level(ambulant::lib::logger::LEVEL_DEBUG);
 		ambulant::lib::logger::get_logger()->debug("npambulant: DEBUG enabled. Ambulant version: %s\n", version);
 	}
+#endif//NDEBUG
+	ambulant::lib::logger::get_logger()->set_level(ambulant::lib::logger::LEVEL_SHOW);
 	if(aWindow == NULL)
 		return FALSE;
 	// prepare for dynamic linking ffmpeg
 	ambulant::common::preferences *prefs = ambulant::common::preferences::get_preferences();
 	prefs->m_prefer_ffmpeg = true;
 	prefs->m_use_plugins = true;
+	prefs->m_log_level = ambulant::lib::logger::LEVEL_SHOW;
 #ifdef XP_WIN32
 	// for Windows, ffmpeg is only available as plugin
 	prefs->m_plugin_dir = lib::win32::get_module_dir()+"\\plugins\\";
@@ -166,6 +172,7 @@ AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, ver
 	    fprintf(stderr, "npambulant::init_ambulant:  dladdr(\"main\") failed, cannot use ambulant plugins\n");
 	    prefs->m_use_plugins = false;
 	} else {
+#ifdef WITH_LTDL_PLUGINS
 	    char* path = strdup(p.dli_fname); // full path of this firefox plugin 
 	    char* ffplugindir = dirname(path);
 		char* npambulant_plugins = "/npambulant/plugins";
@@ -173,6 +180,9 @@ AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, ver
 	    sprintf(amplugin_path, "%s%s", ffplugindir, npambulant_plugins);
 	    prefs->m_plugin_dir = amplugin_path;
 	    free (path);
+#else //WITH_LTDL_PLUGINS
+		prefs->m_use_plugins = false;
+#endif//WITH_LTDL_PLUGINS
 	}    
 
 #endif//!XP_WIN3: Linux, Mac
@@ -342,11 +352,15 @@ char* npambulant::get_document_location()
 }
 
 NPBool
-npambulant::init(NPWindow* pNPWindow)
+npambulant::setWindow(NPWindow* pNPWindow)
 {
 	if(pNPWindow == NULL)
 		return FALSE;
+	if (m_Window && m_Window != pNPWindow)
+		ambulant::lib::logger::get_logger()->trace("npambulant: NPWindow changed from 0x%x to 0x%x", m_Window, pNPWindow);
 #ifdef XP_WIN
+	if (m_hWnd && m_hwnd != (HWND)pNPWindow->window)
+		ambulant::lib::logger::get_logger()->trace("npambulant: HWND changed from 0x%x to 0x%x", m_hWnd, (HWND)pNPWindow->window);
 	m_hWnd = (HWND)pNPWindow->window;
 	if(m_hWnd == NULL)
 		return FALSE;
@@ -360,7 +374,24 @@ npambulant::init(NPWindow* pNPWindow)
 #endif
 
 	m_Window = pNPWindow;
+	
+	return TRUE;
+}
 
+NPBool
+npambulant::init()
+{
+	if (!m_pNPInstance) {
+		ambulant::lib::logger::get_logger()->trace("npambulant: init called without NPInstance");
+		return FALSE;
+	}
+	if (!m_Window) {
+		ambulant::lib::logger::get_logger()->trace("npambulant: init called without NPWindow");
+		return FALSE;
+	}
+	if (m_bInitialized) {
+		ambulant::lib::logger::get_logger()->trace("npambulant: init called twice");
+	}
 	m_bInitialized = TRUE;
 	return init_ambulant(m_pNPInstance, m_Window);
 }
@@ -399,6 +430,16 @@ npambulant::shut()
 #endif
 	m_ambulant_player = NULL; // deleted by mainloop
 	m_bInitialized = FALSE;
+    //XXXX SDL_Quit() forgets to do clear the environment variable ESD_NO_SPAWN
+    // the variable was included in the environment by calling  putenv(char* string),
+    // using the data section from the plugin as storage for 'string'.man putenv says:
+    // "The string pointed to by 'string' becomes part of the environment"
+    // this caused firefox to crash after npambulant was shut and removed, because
+    // when using getenv() it hit a pointer to a string that was no longer there.
+    // unsetenv() is not available on Windows.
+#ifndef XP_WIN
+    unsetenv("ESD_NO_SPAWN");
+#endif//XP_WIN
 }
 
 NPBool

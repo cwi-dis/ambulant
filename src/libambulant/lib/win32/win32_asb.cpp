@@ -76,7 +76,16 @@ std::basic_string<text_char> lib::win32::get_module_filename() {
 
 std::string lib::win32::get_module_dir() {
 	text_char buf[MAX_PATH];
+#ifdef USE_MAIN_EXECUTABLE_LOCATION
 	GetModuleFileName(NULL, buf, MAX_PATH);
+#else
+	HMODULE hm = NULL;
+	GetModuleHandleEx(
+		GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+		(LPCTSTR)&lib::win32::get_module_dir,
+		&hm);
+	GetModuleFileName(hm, buf, MAX_PATH);
+#endif
 #ifdef _UNICODE
 	wchar_t *p = wcsrchr(buf, '\\');
 #else

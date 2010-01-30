@@ -121,6 +121,7 @@ gui_player::restart(bool reparse)
 	stop();
 	m_lock.enter();
 	if (m_player) {
+		m_player->terminate();
 		m_player->release();
 		m_player = NULL;
 	}

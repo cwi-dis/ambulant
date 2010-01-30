@@ -159,13 +159,23 @@ third_party_packages={
 				"make $(MAKEFLAGS) && "
 				"make install" % MAC106_COMMON_CONFIGURE
 			),
+##		TPP("ffmpeg",
+##			url="http://ffmpeg.org/releases/ffmpeg-0.5.tar.bz2",
+##			checkcmd="pkg-config --atleast-version=52.20.0 libavformat",
+##			buildcmd=
+##				"mkdir ffmpeg-0.5-universal && "
+##				"cd ffmpeg-0.5-universal && "
+##				"%s/third_party_packages/ffmpeg-osx-fatbuild.sh %s/ffmpeg-0.5 all" % 
+##					(AMBULANT_DIR, os.getcwd())
+##			),
 		TPP("ffmpeg",
-			url="http://ffmpeg.org/releases/ffmpeg-0.5.tar.bz2",
+##			url="http://homepages.cwi.nl/~jack/ambulant/ffmpeg-export-2010-01-22.tgz",
+			url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
 			checkcmd="pkg-config --atleast-version=52.20.0 libavformat",
 			buildcmd=
-				"mkdir ffmpeg-0.5-universal && "
-				"cd ffmpeg-0.5-universal && "
-				"%s/third_party_packages/ffmpeg-osx-fatbuild.sh %s/ffmpeg-0.5 all" % 
+				"mkdir ffmpeg-export-universal && "
+				"cd ffmpeg-export-universal && "
+				"%s/third_party_packages/ffmpeg-osx-fatbuild.sh %s/ffmpeg-export-2010-01-22 all" % 
 					(AMBULANT_DIR, os.getcwd())
 			),
 		TPP("SDL",
@@ -173,7 +183,7 @@ third_party_packages={
 			checkcmd="pkg-config --atleast-version=1.3.0 sdl",
 			buildcmd=
 				"cd SDL-1.3.0-* && "
-				"./configure --prefix='%s' "
+				"./configure --prefix='%s' --disable-dependency-tracking "
 					"CFLAGS='%s -framework ForceFeedback' "
 					"LDFLAGS='%s -framework ForceFeedback' &&"
 				"make $(MAKEFLAGS) && "
@@ -340,13 +350,23 @@ third_party_packages={
 				"make $(MAKEFLAGS) && "
 				"make install" % LINUX_COMMON_CONFIGURE
 			),
+##		TPP("ffmpeg",
+##			url="http://ffmpeg.org/releases/ffmpeg-0.5.tar.bz2",
+##			checkcmd="pkg-config --atleast-version=52.20.0 libavformat",
+##			buildcmd=
+##				"cd ffmpeg-0.5 && "
+##				"%s --enable-gpl --enable-libfaad --enable-swscale --enable-shared --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"
+##				"make $(MAKEFLAGS) && "
+##				"make install " % 
+##					(LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR, COMMON_INSTALLDIR)
+##			),
 		TPP("ffmpeg",
-			url="http://ffmpeg.org/releases/ffmpeg-0.5.tar.bz2",
+##			url="http://homepages.cwi.nl/~jack/ambulant/ffmpeg-export-2010-01-22.tgz",
+			url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
 			checkcmd="pkg-config --atleast-version=52.20.0 libavformat",
 			buildcmd=
-				"cd ffmpeg-0.5 && "
-				"%s --enable-gpl --enable-libfaad --enable-swscale --enable-shared --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"
-				"make $(MAKEFLAGS) && "
+				"cd ffmpeg-export-2010-01-22 && "
+				"%s --enable-gpl --enable-libfaad --enable-shared --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"
 				"make install " % 
 					(LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR, COMMON_INSTALLDIR)
 			),
@@ -364,6 +384,7 @@ third_party_packages={
 			checkcmd="test -f ./live/liveMedia/libliveMedia.a",
 			buildcmd=
 				"cd live && "
+		                "( grep fPIC config.linux >/dev/null || patch -i ../live.patch config.linux ) &&"
 				"./genMakefiles linux && "
 				"make $(MAKEFLAGS) "
 			),

@@ -83,6 +83,8 @@ setup_transition(bool outtrans, ambulant_qt_window *aqw, QPixmap** oldpxmp, QPix
 	} else {
 		*oldpxmp = aqw->get_ambulant_pixmap();
 		*newpxmp = aqw->get_ambulant_surface();
+		DUMPPIXMAP(*oldpxmp, "oldpxmp");
+		DUMPPIXMAP(*newpxmp, "newpxmp");
 	}
 }
 static void

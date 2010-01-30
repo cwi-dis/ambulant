@@ -354,6 +354,10 @@ void plugin_engine::load_plugin(const char *filename)
 void
 plugin_engine::load_plugins(std::string dirname)
 {
+	TCHAR old_dll_dir[1024];
+	bool old_dll_dir_ok = GetDllDirectory(1024, old_dll_dir);
+	lib::textptr dirname_conv(dirname.c_str());
+	(void)SetDllDirectory(dirname_conv);
 	lib::logger::get_logger()->trace("plugin_engine: Scanning plugin directory: %s", dirname.c_str());
 	std::string filepattern = 
 		dirname +
@@ -418,6 +422,7 @@ plugin_engine::load_plugins(std::string dirname)
 	}
 #endif // WITH_PYTHON_PLUGIN
  	lib::logger::get_logger()->trace("plugin_engine: Done with plugin directory: %s", dirname.c_str());
+	if (old_dll_dir_ok) SetDllDirectory(old_dll_dir);
 }
 
 #else

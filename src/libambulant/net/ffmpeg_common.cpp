@@ -54,6 +54,45 @@ const AVRational AMBULANT_TIMEBASE = {1, 1000000};
 using namespace ambulant;
 using namespace net;
 
+// There is a bug in the ffpmeg http seek code, which causes http header data to be
+// interspersed into the datastream. This bug has been registered in the ambulant bug database as
+// #2916230. It has also been submitted to the ffmpeg developer team, as
+// <https://roundup.ffmpeg.org/roundup/ffmpeg/issue1631>, but so far it hasn't been fixed.
+// In the mean time, we have the workaround of disabling http seek, for the versions of
+// ffmpeg we know are faulty.
+// If a new ffmpeg becomes available, please test whether it has been fixed. If not: update
+// FFMPEG_HTTP_SEEK_BUG_MAX_VERSION_TESTED. If it has been fixed: update FFMPEG_HTTP_SEEK_BUG_MAX_VERSION.
+
+#define FFMPEG_HTTP_SEEK_BUG_MIN_VERSION ((51<<16)+(12<<8)+2)
+#define FFMPEG_HTTP_SEEK_BUG_MAX_VERSION ((52<<16)+(46<<8)+99)
+#define FFMPEG_HTTP_SEEK_BUG_MAX_VERSION_TESTED ((52<<16)+(47<<8)+0)
+
+#if LIBAVFORMAT_BUILD >= FFMPEG_HTTP_SEEK_BUG_MIN_VERSION && LIBAVFORMAT_BUILD <= FFMPEG_HTTP_SEEK_BUG_MAX_VERSION
+#if LIBAVFORMAT_BUILD > FFMPEG_HTTP_SEEK_BUG_MAX_VERSION_TESTED
+#error Current libavformat version not tested for http seek bug. See comment here for details.
+#endif
+#define FFMPEG_HTTP_SEEK_BUG
+#endif
+
+#ifdef FFMPEG_HTTP_SEEK_BUG
+extern "C" {
+
+int64_t (*orig_http_seek)(URLContext *h, int64_t pos, int whence);
+
+int64_t http_seek_workaround(URLContext *h, int64_t pos, int whence)
+{
+#if 1
+    return -1;
+#else
+    // Does not work yet
+    if ((pos == 0 && whence == AVSEEK_SIZE) || (pos == -1 && whence == SEEK_END) || pos > 10000000000LL)
+        return -1;
+    return orig_http_seek(h, pos, whence);
+#endif
+}
+}
+#endif // FFMPEG_HTTP_SEEK_BUG
+
 void 
 ambulant::net::ffmpeg_init()
 {
@@ -61,6 +100,15 @@ ambulant::net::ffmpeg_init()
 	if (is_inited) return;
 	avcodec_init();
 	av_register_all();
+#ifdef FFMPEG_HTTP_SEEK_BUG
+	URLProtocol *p = av_protocol_next(NULL);
+	while (p && strcmp(p->name, "http") != 0)
+		p = av_protocol_next(p);
+	if (p) {
+        orig_http_seek = p->url_seek;
+        p->url_seek = http_seek_workaround;
+    }
+#endif // FFMPEG_HTTP_SEEK_BUG
 	is_inited = true;
 }
 
@@ -320,6 +368,7 @@ ffmpeg_demux::add_datasink(demux_datasink *parent, int stream_index)
 	m_sinks[stream_index] = parent;
 	parent->add_ref();
 	m_nstream++;
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::add_datasink(0x%x): stream_index=%d parent=0x%x m_current_sink=0x%x m_nstream=%d", this, stream_index, parent, m_current_sink, m_nstream); //XXXX
 	m_lock.leave();
 }
 
@@ -376,6 +425,7 @@ ffmpeg_demux::remove_datasink(int stream_index)
 			ds->release();
 		}
 	}
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::remove_datasink(0x%x): stream_index=%d ds=0x%x m_current_sink=0x%x m_nstream=%d", this, stream_index, ds, m_current_sink, m_nstream); //XXXX
 	if (m_nstream <= 0) cancel();
 }
 
@@ -422,7 +472,9 @@ ffmpeg_demux::run()
                 seek_streamnr = audio_streamnr;
 			}
             AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %lld scaled to mediatimebase", seektime);
-			int seekresult = av_seek_frame(m_con, seek_streamnr, seektime, AVSEEK_FLAG_BACKWARD);
+			m_lock.leave();
+            int seekresult = av_seek_frame(m_con, seek_streamnr, seektime, AVSEEK_FLAG_BACKWARD);
+            m_lock.enter();
 			if (seekresult < 0) {
 				lib::logger::get_logger()->debug("ffmpeg_demux: av_seek_frame() returned %d", seekresult);
 			}
@@ -511,7 +563,9 @@ ffmpeg_demux::run()
 			}
             // We are now going to push data to one of our clients. This means that we should re-send an EOF at the end, even if
             // we have already sent one earlier.
+#ifdef WITH_SEAMLESS_PLAYBACK
             eof_sent_to_clients = false;
+#endif
 			bool accepted = false;
 			while ( ! accepted && sink && !exit_requested()) { 
 				m_current_sink = sink;

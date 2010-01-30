@@ -268,6 +268,33 @@ primary_Blt(IDirectDrawSurface* primary_surface, LPRECT lpDestRect,
 	HRESULT hr = DD_OK;
 	int retries = MAX_RETRIES;
 	while (retries--) {
+#if 1
+		// Attempted workaround by Jack for the problem that, under
+		// Parallels and other virtual machines, and possibly also sometimes
+		// on a real machine, content is drawn at the topleft of the scree
+		// in stead of where it should be drawn. And this is despite the
+		// use of a clipper on primary_surface...
+		if (lpDestRect->left < 0) {
+			lpSrcRect->left -= lpDestRect->left;
+			lpDestRect->left = 0;
+		}
+		if (lpDestRect->top < 0) {
+			lpSrcRect->top -= lpDestRect->top;
+			lpDestRect->top = 0;
+		}
+		lib::size screensize = gui::dx::viewport::get_size(primary_surface);
+		if (lpDestRect->right > screensize.w) {
+			lpSrcRect->right -= (lpDestRect->right - screensize.w);
+			lpDestRect->right = screensize.w;
+		}
+		if (lpDestRect->bottom > screensize.h) {
+			lpSrcRect->bottom -= (lpDestRect->bottom - screensize.h);
+			lpDestRect->bottom = screensize.h;
+		}
+		if (lpDestRect->left >= lpDestRect->right) return;
+		if (lpDestRect->top >= lpDestRect->bottom) return;
+#endif
+
 		hr = primary_surface->Blt(lpDestRect, lpDDSrcSurface, lpSrcRect, dwFlags, lpDDBltFX);
 		if (hr == DDERR_NOTFOUND) return; // XXXJACK
 		if (hr == DDERR_SURFACELOST && retries >= 0) {

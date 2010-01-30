@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2009-12-14 23:01+0100\n"
+"POT-Creation-Date: 2010-01-19 17:04+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -120,17 +120,17 @@ msgstr ""
 msgid "cocoa_ink_renderer: no <ink> found"
 msgstr ""
 
-#: src/libambulant/gui/cocoa/cocoa_video.mm:204
+#: src/libambulant/gui/cocoa/cocoa_video.mm:217
 #, c-format
 msgid "%s: cannot convert to URL"
 msgstr ""
 
-#: src/libambulant/gui/cocoa/cocoa_video.mm:212
+#: src/libambulant/gui/cocoa/cocoa_video.mm:225
 #, c-format
 msgid "%s: cannot open movie"
 msgstr ""
 
-#: src/libambulant/gui/dx/dx_player.cpp:155 src/player_macosx/mainloop.cpp:99
+#: src/libambulant/gui/dx/dx_player.cpp:154 src/player_macosx/mainloop.cpp:99
 #, c-format
 msgid "%s: node ID not found"
 msgstr ""
@@ -143,25 +143,26 @@ msgstr ""
 msgid "Cannot initialize SDL audio library"
 msgstr ""
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:110
-msgid "Cannot open SDL audio output stream"
+#: src/libambulant/gui/SDL/sdl_audio.cpp:112
+#, c-format
+msgid "Cannot open SDL audio output stream: %s"
 msgstr ""
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:119
+#: src/libambulant/gui/SDL/sdl_audio.cpp:123
 msgid "Cannot open SDL audio output stream with required characteristics"
 msgstr ""
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:267
+#: src/libambulant/gui/SDL/sdl_audio.cpp:274
 #, c-format
 msgid "%s: cannot open audio file"
 msgstr ""
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:269
+#: src/libambulant/gui/SDL/sdl_audio.cpp:276
 #, c-format
 msgid "%s: audio format not supported"
 msgstr ""
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:307
+#: src/libambulant/gui/SDL/sdl_audio.cpp:314
 #, c-format
 msgid "%s: cannot open"
 msgstr ""
@@ -259,10 +260,10 @@ msgstr ""
 #: src/libambulant/net/demux_datasource.cpp:143
 #: src/libambulant/net/ffmpeg_audio.cpp:335
 #: src/libambulant/net/ffmpeg_audio.cpp:404
-#: src/libambulant/net/ffmpeg_audio.cpp:500
-#: src/libambulant/net/ffmpeg_audio.cpp:907
-#: src/libambulant/net/ffmpeg_audio.cpp:946
-#: src/libambulant/net/ffmpeg_audio.cpp:1160
+#: src/libambulant/net/ffmpeg_audio.cpp:508
+#: src/libambulant/net/ffmpeg_audio.cpp:915
+#: src/libambulant/net/ffmpeg_audio.cpp:954
+#: src/libambulant/net/ffmpeg_audio.cpp:1168
 msgid "Programmer error encountered during audio playback"
 msgstr ""
 
@@ -302,13 +303,13 @@ msgstr ""
 msgid "ffmpeg_decoder_datasource: could not select %s(0x%x) decoder"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:718
 #: src/libambulant/net/ffmpeg_audio.cpp:726
+#: src/libambulant/net/ffmpeg_audio.cpp:734
 #, c-format
 msgid "No support for \"%s\" audio"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:894
+#: src/libambulant/net/ffmpeg_audio.cpp:902
 msgid "Audio cannot be converted to 44Khz stereo"
 msgstr ""
 
@@ -402,12 +403,12 @@ msgstr ""
 msgid "No state support for language %s"
 msgstr ""
 
-#: src/libambulant/smil2/smil_player.cpp:1080
+#: src/libambulant/smil2/smil_player.cpp:1083
 #, c-format
 msgid "Link destination not found: %s"
 msgstr ""
 
-#: src/libambulant/smil2/smil_player.cpp:1086
+#: src/libambulant/smil2/smil_player.cpp:1089
 #, c-format
 msgid "This implementation cannot open <%s> in new window"
 msgstr ""
@@ -650,7 +651,7 @@ msgstr ""
 msgid "URL to open:"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:1096 src/player_macosx/MyAppDelegate.mm:144
+#: src/player_gtk/gtk_gui.cpp:1096 src/player_macosx/MyAppDelegate.mm:147
 #: src/player_mfc/MmView.cpp:239 src/player_unix/qt_gui.cpp:605
 #, c-format
 msgid "Ambulant Player: compile time version %s, runtime version %s"
@@ -764,26 +765,26 @@ msgstr ""
 msgid "mkdir(\"%s\") failed: %s"
 msgstr ""
 
-#: src/player_macosx/MyAppDelegate.mm:145
+#: src/player_macosx/MyAppDelegate.mm:148
 #, c-format
 msgid "Ambulant Player: built on %s for Macintosh/%s/%s"
 msgstr ""
 
-#: src/player_macosx/MyAppDelegate.mm:166
+#: src/player_macosx/MyAppDelegate.mm:169
 #, c-format
 msgid "Ambulant Player: localization enabled (english; user requested %s)"
 msgstr ""
 
-#: src/player_macosx/MyAppDelegate.mm:237
-#: src/player_macosx/MyAppDelegate.mm:288
+#: src/player_macosx/MyAppDelegate.mm:240
+#: src/player_macosx/MyAppDelegate.mm:291
 msgid "No Welcome.smil in application bundle"
 msgstr ""
 
-#: src/player_macosx/MyAppDelegate.mm:285
+#: src/player_macosx/MyAppDelegate.mm:288
 msgid "Welcome.smil could not be opened"
 msgstr ""
 
-#: src/player_macosx/MyAppDelegate.mm:300
+#: src/player_macosx/MyAppDelegate.mm:303
 msgid "Cannot open http://www.ambulantplayer.org"
 msgstr ""
 

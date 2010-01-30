@@ -26,6 +26,7 @@
 #include "ambulant/common/video_renderer.h"
 //#include "ambulant/gui/none/none_gui.h"
 //#include "ambulant/net/datasource.h"
+#include "ambulant/lib/profile.h"
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -64,7 +65,6 @@ video_renderer::video_renderer(
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::video_renderer() (this = 0x%x): Constructor ", (void *) this);
 	net::url url = node->get_url("src");
-	
 	_init_clip_begin_end();
 	
 #ifdef WITH_SEAMLESS_PLAYBACK
@@ -269,6 +269,13 @@ video_renderer::post_stop()
         lib::logger::get_logger()->debug("video_renderer: displayed %d frames; skipped %d dups, %d late, %d early, %d NULL",
                                          m_frame_displayed, m_frame_duplicate, m_frame_late, m_frame_early, m_frame_missing);
     }
+#ifndef WITH_SEAMLESS_PLAYBACK
+    if (m_src) {
+        m_src->stop();
+        m_src->release();
+        m_src = NULL;
+    }
+#endif // !WITH_SEAMLESS_PLAYBACK
 	m_lock.leave();	
 }
 

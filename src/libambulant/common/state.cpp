@@ -29,6 +29,10 @@
 #define AM_DBG if(0)
 #endif
 
+// There are bugs with using a singleton, especially in the browser plugins.
+// Disable for now.
+// #define WITH_STATE_COMPONENT_FACTORY_SINGLETON
+
 using namespace ambulant;
 using namespace common;
 using namespace lib;
@@ -44,11 +48,15 @@ class global_state_component_factory_impl : public global_state_component_factor
 	std::vector<state_component_factory *> m_factories;
 };
 
+#ifdef WITH_STATE_COMPONENT_FACTORY_SINGLETON
 static global_state_component_factory *s_gscf;
+#endif // WITH_STATE_COMPONENT_FACTORY_SINGLETON
 
 global_state_component_factory_impl::~global_state_component_factory_impl()
 {
+#ifdef WITH_STATE_COMPONENT_FACTORY_SINGLETON
 	s_gscf = NULL;
+#endif // WITH_STATE_COMPONENT_FACTORY_SINGLETON
 }
 
 void
@@ -72,7 +80,12 @@ global_state_component_factory *
 common::get_global_state_component_factory()
 {
 	
+#ifdef WITH_STATE_COMPONENT_FACTORY_SINGLETON
 	if (s_gscf == NULL) s_gscf = new global_state_component_factory_impl();
 	return s_gscf;
+#else
+    return new global_state_component_factory_impl();
+#endif // WITH_STATE_COMPONENT_FACTORY_SINGLETON
+
 }
 #endif // WITH_SMIL30

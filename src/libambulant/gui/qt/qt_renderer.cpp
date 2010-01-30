@@ -20,6 +20,7 @@
 #include "ambulant/gui/qt/qt_includes.h"
 #include "ambulant/gui/qt/qt_factory_impl.h"
 #include "ambulant/gui/qt/qt_transition.h"
+#include "ambulant/gui/qt/qt_util.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -131,7 +132,9 @@ qt_transition_renderer::redraw_pre(gui_window *window)
 	// See whether we're in a transition
 	if (m_trans_engine && !m_fullscreen) {
 		QPixmap *qpm = aqw->get_ambulant_pixmap();
+		DUMPPIXMAP(qpm, "qpm-redraw_pre");
 		surf = aqw->get_ambulant_surface();
+		DUMPPIXMAP(surf, "surf-redraw_pre");
 		if (surf == NULL)
 			surf = aqw->new_ambulant_surface();
 		if (surf != NULL) {

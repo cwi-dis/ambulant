@@ -50,6 +50,8 @@
 - (QTMovie *)movie;
 - (void)movieWithURL: (NSURL*)url;
 - (void)moviePrepare: (id)sender;
+- (void)movieStart: (id)sender;
+- (void)movieRelease: (id)sender;
 @end
 
 @implementation MovieCreator
@@ -64,6 +66,7 @@
 - (MovieCreator *)init
 {
 	self = [super init];
+    movie = NULL;
 	return self;
 }
     
@@ -79,7 +82,7 @@
 
 - (void)movieWithURL: (NSURL*)url
 {
-	movie = NULL;
+	assert(movie == NULL);
     NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
         (id)url, QTMovieURLAttribute,
         [NSNumber numberWithBool:NO], QTMovieOpenAsyncOKAttribute,
@@ -106,6 +109,19 @@
         MoviesTask(mov, 0);
     }
     position_wanted = -1;
+}
+
+- (void)movieStart: (id) sender
+{
+	Movie mov = [movie quickTimeMovie];
+    SetMovieRate(mov, GetMoviePreferredRate(mov));
+}
+
+- (void)movieRelease: (id) sender
+{
+    assert(movie);
+    [movie release];
+    movie = NULL;
 }
 @end
 
@@ -166,16 +182,13 @@ cocoa_video_renderer::~cocoa_video_renderer()
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	if (m_dest) m_dest->renderer_done(this);
 	m_dest = NULL;
-	if (m_movie) {
-		[m_movie release];
-		m_movie = NULL;
-	}
 	if (m_movie_view) {
 		[MovieCreator performSelectorOnMainThread: @selector(removeFromSuperview:) withObject: m_movie_view waitUntilDone: NO];
 		m_movie_view = NULL;
 		// XXXJACK Should call releaseOverlayWindow here
 	}
     if (m_mc) {
+        [(MovieCreator *)m_mc performSelectorOnMainThread: @selector(releaseMovie:) withObject: nil waitUntilDone: NO];
         [(MovieCreator *)m_mc release];
         m_mc = NULL;
     }
@@ -287,8 +300,7 @@ cocoa_video_renderer::start(double where)
         _fix_video_epoch();
     }
 #endif
-    Fixed playRate = GetMoviePreferredRate(mov);
-    SetMovieRate(mov, playRate);
+    [(MovieCreator *)m_mc performSelectorOnMainThread: @selector(movieStart:) withObject: nil waitUntilDone: YES];
     m_previous_clip_position = -1;
     // And start the poll task
     ambulant::lib::event *e = new poll_callback(this, &cocoa_video_renderer::_poll_playing);
@@ -310,7 +322,12 @@ void
 cocoa_video_renderer::post_stop()
 {
 	m_lock.enter();
+#if 0
+    // This assertion can trigger, but I've only seen it in release builds of the Safari plugin
+    // (which is very difficult to debug). Playing videotests example document from the website.
+    // Stack shows we're called from destroy_playable_in_cache.
     assert(m_renderer_state == rs_stopped);
+#endif
     m_renderer_state = rs_fullstopped;
 	AM_DBG logger::get_logger()->debug("cocoa_video_renderer::post_stop(0x%x)", this);
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -319,6 +336,7 @@ cocoa_video_renderer::post_stop()
 	if (m_movie_view) {
 		AM_DBG logger::get_logger()->debug("cocoa_video_renderer.post_stop: removing m_movie_view 0x%x", (void *)m_movie_view);
 		[MovieCreator performSelectorOnMainThread: @selector(removeFromSuperview:) withObject: m_movie_view waitUntilDone: NO];
+        m_movie_view = NULL;
 	}
 	[pool release];
 	m_lock.leave();

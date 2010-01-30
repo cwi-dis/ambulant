@@ -4,8 +4,16 @@ if WITH_AMBULANT_SHARED_LIB
 # If we link with shared libs: use these. Needed for plugin support.
 #
 libambulant_core=-L$(ambulantlibdir) -lambulant
+if WITH_FFMPEG
 libambulant_ffmpeg=-L$(ambulantlibdir) -lambulant_ffmpeg
+else
+libambulant_ffmpeg=
+endif
+if WITH_LIVE
 libambulant_live=-L$(ambulantlibdir) -lambulant_live
+else
+libambulant_live=
+endif
 libambulant_sdl=-L$(ambulantlibdir) -lambulant_sdl
 libambulant_gstreamer=-L$(ambulantlibdir) -lambulant_gstreamer
 libambulant_gtk=-L$(ambulantlibdir) -lambulant_gtk
@@ -116,7 +124,7 @@ libambulant_gtk_la_SOURCES = \
 	gui/gtk/gtk_video_renderer.cpp \
 	gui/gtk/gtk_factory.cpp
 libambulant_gtk_la_LDFLAGS=$(libambulant_live) $(libambulant_ffmpeg) $(libambulant_core) $(GTK_LIBS)
-libambulant_gtk_la_DEPENDENCIES=libambulant_live.la libambulant_ffmpeg.la libambulant.la
+libambulant_gtk_la_DEPENDENCIES=$(toolkit_live_libraries) $(toolkit_ffmpeg_libraries) libambulant.la
 else
 gtkincludes=
 toolkit_gtk_libraries =
@@ -140,7 +148,7 @@ libambulant_qt_la_SOURCES = \
 	gui/qt/qt_video_renderer.cpp \
 	gui/qt/qt_factory.cpp
 libambulant_qt_la_LDFLAGS=$(libambulant_live) $(libambulant_ffmpeg) $(libambulant_core) $(QT_LIBS)
-libambulant_qt_la_DEPENDENCIES=libambulant_live.la libambulant_ffmpeg.la libambulant.la
+libambulant_qt_la_DEPENDENCIES=$(toolkit_live_libraries) $(toolkit_ffmpeg_libraries) libambulant.la
 else
 qtincludes=
 toolkit_qt_libraries =

@@ -188,8 +188,17 @@ bool gui::dx::audio_player::open(const std::string& url) {
 			logger::get_logger()->error("%s: Unsupported URL protocol", url.c_str());
 		else if (hr == VFW_E_CANNOT_CONNECT)
 			logger::get_logger()->error("%s: Unsupported video format", url.c_str());
-		else
+		else if (hr == VFW_E_NO_AUDIO_HARDWARE) {
+			static bool error_shown;
+			if (!error_shown) {
+				logger::get_logger()->error("%s: No audio hardware on this system", url.c_str());
+				error_shown = true;
+			} else {
+				logger::get_logger()->trace("%s: No audio hardware on this system", url.c_str());
+			}
+		} else {
 			logger::get_logger()->error("%s: DirectX error 0x%x", url.c_str(), hr);
+		}
 		return false;
 	}
 #ifdef WITH_TPB_AUDIO_SPEEDUP

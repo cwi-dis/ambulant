@@ -809,7 +809,7 @@ surface_impl::background_render_changed()
 {
     // If we are opaque and have showBackground=whenActive we schedule a redraw
     const region_info *info = get_info();
-    if (!info->get_transparent() && !info->get_showbackground()) {
+    if (info && !info->get_transparent() && !info->get_showbackground()) {
         need_redraw();
     }
     // We also forward to our parent

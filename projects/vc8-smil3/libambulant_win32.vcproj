@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="8.00"
 	Name="libambulant_win32"
 	ProjectGUID="{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}"
 	RootNamespace="libambulant_win32"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -204,8 +203,6 @@
 				AdditionalLibraryDirectories="..\..\lib\win32"
 				IgnoreDefaultLibraryNames="LIBC.lib;LIBCMT.lib"
 				OptimizeReferences="1"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="..\..\lib\win32\libambulant_shwin32.lib"
 			/>
 			<Tool
@@ -285,8 +282,6 @@
 				IgnoreDefaultLibraryNames="LIBC.lib;LIBCMT.lib"
 				GenerateDebugInformation="true"
 				OptimizeReferences="1"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary="..\..\lib\win32\libambulant_shwin32_D.lib"
 			/>
 			<Tool

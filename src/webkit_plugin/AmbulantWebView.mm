@@ -48,27 +48,27 @@ class my_cocoa_window_factory : public ambulant::gui::cocoa::cocoa_window_factor
 
 @implementation AmbulantWebView
 
+- (AmbulantWebView *)init
+{
+    self = [super init];
+    m_arguments = NULL;
+    m_mainloop = NULL;
+    container = nil;
+    return self;
+}
+    
 + (NSView *)plugInViewWithArguments:(NSDictionary *)arguments
 {
     AmbulantWebView *view = [[[self alloc] init] autorelease];
-	AM_DBG NSLog(@"arguments: %@", arguments);
+	AM_DBG NSLog(@" view: %@ arguments: %@", self, arguments);
     [view setArguments:arguments];
     return view;
 }
 
-- (void)dealloc
-{   
-    [m_arguments release];
-    if (m_mainloop) delete m_mainloop;
-    m_mainloop = NULL;
-    [super dealloc];
-}
-
 - (void)setArguments:(NSDictionary *)arguments
 {
-    [arguments copy];
     [m_arguments release];
-    m_arguments = arguments;
+    m_arguments = [arguments retain];
 }
 
 - (void)webPlugInInitialize
@@ -79,7 +79,7 @@ class my_cocoa_window_factory : public ambulant::gui::cocoa::cocoa_window_factor
 {
 #if 1
 	ambulant::common::preferences *prefs = ambulant::common::preferences::get_preferences();
-	prefs->m_prefer_ffmpeg = false;
+	prefs->m_prefer_ffmpeg = true;
 	prefs->m_use_plugins = true;
 #endif
 	NSDictionary *webPluginAttributesObj = [m_arguments objectForKey:WebPlugInAttributesKey];
@@ -126,6 +126,11 @@ class my_cocoa_window_factory : public ambulant::gui::cocoa::cocoa_window_factor
 
 - (void)webPlugInDestroy
 {
+    AM_DBG NSLog(@" webPluginDestroy %@", self);
+    [m_arguments release];
+    m_arguments = NULL;
+    if (m_mainloop) delete m_mainloop;
+    m_mainloop = NULL;
 	container = nil;
 }
 

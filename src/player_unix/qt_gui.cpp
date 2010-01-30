@@ -591,7 +591,7 @@ The X11 version of Qt also supports some traditional X11 command line options:
 	qt_gui* mywidget = new qt_gui(argv[0], argc > 1 ? argv[1] 
 				      : "AmbulantPlayer");
 //	mywidget->setGeometry(240, 320, 320, 240);
-	mywidget->setGeometry(240, 240, 180, 27);
+	mywidget->setGeometry(240, 240, 200, 32);
 	QCursor qcursor(Qt::ArrowCursor);
 	mywidget->setCursor(qcursor);
 	myapp.setMainWidget(mywidget);

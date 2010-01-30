@@ -70,6 +70,8 @@ qt_image_renderer::redraw_body(const rect &dirty,
 	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("qt_image_renderer.redraw_body(0x%x): m_image=0x%x, ltrb=(%d,%d,%d,%d), p=(%d,%d)", (void *)this, &m_image,r.left(), r.top(), r.right(), r.bottom(),p.x,p.y);
 	if (m_data && !m_image_loaded) {
+		// alpha buffer needed for images w. transparent areas
+		m_image.setAlphaBuffer(TRUE);
 		m_image_loaded = m_image.loadFromData((const uchar*)m_data, m_data_size);
 	}
 	if ( ! m_image_loaded) {
@@ -168,12 +170,21 @@ qt_image_renderer::redraw_body(const rect &dirty,
 	AM_DBG lib::logger::get_logger()->debug("qt_image_renderer.redraw_body(0x%x): src=(%d,%d,%d,%d) scalex=%f, scaley=%f  intermediate (%d,%d,%d,%d) dst=(%d,%d,%d,%d)",(void *)this,S_L,S_T,S_W,S_H,fact_W,fact_H,N_L,N_T,N_W,N_H,D_L,D_T,D_W,D_H);
 	/* copy only the part that will be shown to the screen to be scaled */
 	QImage partialimage(S_W, S_H, m_image.depth());
+	// alpha is cleared here too if depth==32, because alpha is not set yet
 	partialimage.fill(0);
+	// alpha buffer needed for images w. transparent areas, is default off
+	partialimage.setAlphaBuffer(TRUE);
 	bitBlt (&partialimage, 0, 0, &m_image, S_L, S_T, S_W, S_H, 0 );
+	// alpha buffer is supplied here
 	QImage scaledimage = partialimage.smoothScale(D_W, D_H, QImage::ScaleFree);
 	N_L = 0; N_T = 0;
+#ifdef  WITH_DUMPIMAGES
+	char buf[128];
+	sprintf (buf,"m_image(0x%x)",&m_image);
+	DUMPIMAGE(&m_image, buf);
 	DUMPIMAGE(&partialimage, "partialimage");
 	DUMPIMAGE(&scaledimage, "scaledimage");
+#endif//WITH_DUMPIMAGES
 
 #ifdef	WITH_SMIL30
 	if (alpha_chroma != 1.0) {

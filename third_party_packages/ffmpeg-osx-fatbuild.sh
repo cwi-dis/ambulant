@@ -17,21 +17,24 @@ PREFIX="--prefix=`cd ../installed ; pwd`"
 #
 # Set this to the global options you want to configure ffmpeg with.
 #
-CONFIGOPTS="$PREFIX --disable-encoders --enable-swscale --enable-gpl --disable-vhook --disable-ffserver --disable-ffmpeg --disable-ffplay --enable-static --enable-shared --enable-libfaad --disable-libfaac"
+#CONFIGOPTS="$PREFIX --disable-encoders --enable-swscale --enable-gpl --disable-vhook --disable-ffserver --disable-ffmpeg --disable-ffplay --enable-static --enable-shared --enable-libfaad --disable-libfaac"
+CONFIGOPTS="$PREFIX --disable-encoders --enable-gpl --disable-ffserver --disable-ffmpeg --disable-ffplay --enable-static --enable-shared --enable-libfaad --disable-libfaac"
 #
 # If you want to build for a different MacOSX version than the current one
 # define SYSROOT and MACOSX_DEPLOYMENT_TARGET
 #
-SYSROOT=" -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
-export MACOSX_DEPLOYMENT_TARGET=10.4
-CONFIGOPTS="--cc=gcc-4.0  --extra-cflags=-I`cd ../installed/include; pwd` --extra-ldflags=-L`cd ../installed/lib; pwd` "$CONFIGOPTS
+##SYSROOT=" -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
+##export MACOSX_DEPLOYMENT_TARGET=10.4
+##CONFIGOPTS="--cc=gcc-4.0  --extra-cflags=-I`cd ../installed/include; pwd` --extra-ldflags=-L`cd ../installed/lib; pwd` "$CONFIGOPTS
+SYSROOT=" -isysroot /Developer/SDKs/MacOSX10.6.sdk"
+CONFIGOPTS="--extra-cflags=-I`cd ../installed/include; pwd` --extra-ldflags=-L`cd ../installed/lib; pwd` "$CONFIGOPTS
 #
 # Set variables here to true to include the ABI
 #
-PPC=true
+PPC=false
 I386=true
 PPC64=false
-X86_64=false
+X86_64=true
 #
 # Set this variable to any of the architectures you are build
 # (used to pick up .pc files)
@@ -252,6 +255,9 @@ if $merge; then
     for i in avformat avutil avcodec swscale; do
     	cp build-$ANY_RANDOM_ARCH/lib$i/*.pc lib$i/
     done
+    if [ -f build-$ANY_RANDOM_ARCH/libavutil/avconfig.h ]; then
+        cp build-$ANY_RANDOM_ARCH/libavutil/avconfig.h libavutil/avconfig.h
+    fi
 else
     echo $0: skipping merge
 fi

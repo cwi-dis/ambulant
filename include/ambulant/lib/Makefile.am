@@ -25,6 +25,7 @@ library_include_HEADERS= \
 	node.h \
 	nscontext.h \
 	parselets.h \
+	profile.h \
 	refcount.h \
 	sax_handler.h \
 	sax_types.h \

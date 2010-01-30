@@ -153,7 +153,8 @@ public:
           int argc, char* argn[], char* argv[], NPSavedData* data);
   ~npambulant();
 
-  NPBool init(NPWindow* pNPWindow);
+  NPBool setWindow(NPWindow* pNPWindow);
+  NPBool init();
   void shut();
   NPBool isInitialized();
   // next functions are overridden to start the plugin late

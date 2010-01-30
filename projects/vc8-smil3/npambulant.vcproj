@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="8.00"
 	Name="npambulant"
 	ProjectGUID="{4DCBBF00-3086-40AA-B1B7-4FD350835E95}"
 	RootNamespace="npambulant"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -92,8 +91,6 @@
 				ProgramDatabaseFile=".\Debug/npambulant.pdb"
 				MapExports="false"
 				OptimizeReferences="1"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary=".\Debug/npambulant.lib"
 				TargetMachine="1"
 			/>
@@ -190,8 +187,6 @@
 				IgnoreDefaultLibraryNames=""
 				ModuleDefinitionFile="..\..\src\npambulant\npambulant.def"
 				ProgramDatabaseFile=".\Release/npambulant.pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary=".\Release/npambulant.lib"
 				TargetMachine="1"
 			/>

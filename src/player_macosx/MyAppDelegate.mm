@@ -36,6 +36,7 @@
 #include "ambulant/common/preferences.h"
 #include "ambulant/common/plugin_engine.h"
 #include "ambulant/net/url.h"
+#include "ambulant/lib/profile.h"
 #ifdef WITH_XERCES_BUILTIN
 #include "ambulant/lib/xerces_parser.h"
 #endif
@@ -115,6 +116,8 @@ initialize_logger()
 		// Show the logger window immedeately if log level is DEBUG
 		[self showLogWindow: self];
 	}
+    // Initialize profiler (if enabled)
+    ambulant::lib::profile::initialize();
 	
 	// Initialize the gettext library. We support both the MacOS System Preferences
 	// setting and the unix-style LANG variable.
