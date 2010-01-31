@@ -67,6 +67,8 @@ protected:  // control bar embedded members
 
 	BOOL m_fullScreen;
 	RECT m_origRect;
+	DWORD m_origStyle;	// Style of window, kept before going fullscreen
+	DWORD m_origExStyle;	// exStyle of window, kept before going fullscreen
 // Generated message map functions
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);

@@ -178,12 +178,22 @@ CMainFrame::OnViewFullScreen()
 		// Calculate new frame position
 		GetWindowRect(&m_origRect);
 		::GetWindowRect(::GetDesktopWindow(), &wp.rcNormalPosition);
-		::AdjustWindowRectEx(&wp.rcNormalPosition, GetStyle(), TRUE, GetExStyle());
+		DWORD style = GetStyle();
+		DWORD exStyle = GetExStyle();
+		m_origStyle = style;
+		m_origExStyle = exStyle;
+		style = WS_POPUP;
+		exStyle = WS_EX_TOPMOST;
+		ModifyStyleEx(-1, exStyle, 0);
+		ModifyStyle(-1, style, 0);
+		::AdjustWindowRectEx(&wp.rcNormalPosition, style, TRUE, exStyle);
 
 	} else {
 		// Leaving fullscreen mode
         m_wndStatusBar.ShowWindow(SW_SHOW);
 	    m_wndToolBar.ShowWindow(SW_SHOW);
+		ModifyStyleEx(-1, m_origExStyle, 0);
+		ModifyStyle(-1, m_origStyle, 0);
 		wp.rcNormalPosition = m_origRect;
 	}
 	SetWindowPlacement(&wp);
