@@ -1,3 +1,13 @@
+2010-01-31 01:23  jackjansen
+
+	* Modified fullscreen view to be true fullscreen: without any
+	  border or taskbar.
+
+2010-01-31 00:31  jackjansen
+
+	* Merging changes from release-ambulant-22-branch: I need some of
+	  them for Ta2.
+
 2010-01-12 16:33  keesblom
 
 	* Found bug in npp_gate.cpp after 3 weeks causing firefox to crash.
