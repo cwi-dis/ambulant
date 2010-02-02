@@ -48,6 +48,11 @@ lib::document::document()
 lib::document::~document() {
 	if (m_root_owned) delete m_root;
 	// m_state is borrowed.
+    m_node2xpaths.clear();
+    m_xpath2callbacks.clear();
+#ifdef WITH_STATE_AVT_CACHE
+    m_avtcache.clear();
+#endif // WITH_STATE_AVT_CACHE
 }
 
 lib::node* 
@@ -260,6 +265,7 @@ lib::document::apply_avt(const node* n, const lib::xml_string& attrname, const l
 		rv += rest.substr(0, openpos);
 		xml_string expr = rest.substr(openpos+1, closepos-openpos-1);
 		std::string expr_value = m_state->string_expression(expr.c_str());
+        const_cast<document *>(this)->_register_node_avt_dependence(n, expr);
 #ifdef WITH_STATE_AVT_CACHE
         m_avtcache[expr] = expr_value;
         XXX_register_for_changes_to_invalidate_cache(expr);
@@ -268,5 +274,80 @@ lib::document::apply_avt(const node* n, const lib::xml_string& attrname, const l
 		rest = rest.substr(closepos+1);
 	}
 	return rv;		
+}
+void
+lib::document::_register_node_avt_dependence(const node* n, const xml_string& expr)
+{
+    AM_DBG lib::logger::get_logger()->debug("_register_node_avt_dependence(%s, %s)", n->get_sig().c_str(), expr.c_str());
+    // XXXJACK for now, assume only xpaths, not expressions
+    typedef std::multimap<const lib::node*, xml_string >::iterator I;
+    std::pair<I, I> bnds = m_node2xpaths.equal_range(n);
+    I i;
+    bool found = false;
+    for(i=bnds.first; i != bnds.second; i++) {
+        if (i->second == expr) {
+            found = true;
+            break;
+        }
+    }
+    if (found) {
+        AM_DBG lib::logger::get_logger()->debug("_register_node_avt_dependence(%s, %s): already there", n->get_sig().c_str(), expr.c_str());
+    } else {
+        AM_DBG lib::logger::get_logger()->debug("_register_node_avt_dependence(%s, %s): inserted", n->get_sig().c_str(), expr.c_str());
+        m_node2xpaths.insert(make_pair(n, expr));
+    }
+}
+
+
+void
+lib::document::register_for_avt_changes(const node* n, avt_change_notification *handler)
+{
+    AM_DBG lib::logger::get_logger()->debug("register_for_avt_changes(%s)", n->get_sig().c_str());
+    typedef std::multimap<const lib::node*, xml_string >::iterator I;
+    std::pair<I, I> bnds = m_node2xpaths.equal_range(n);
+    I i;
+    for(i=bnds.first; i != bnds.second; i++) {
+        xml_string& expr = i->second;
+        std::pair<const avt_change_notification*, const lib::node*> value(handler, n);
+        typedef std::multimap<const xml_string, std::pair<const avt_change_notification*, const lib::node*> >::iterator J;
+        std::pair<J, J> bnds2 = m_xpath2callbacks.equal_range(expr);
+        J j;
+        bool anyfound = false;
+        bool found = false;
+        for(j=bnds2.first; j != bnds2.second; j++) {
+            anyfound = true;
+            if (j->second == value) {
+                found = true;
+                break;
+            }
+        }
+        if (found) {
+            AM_DBG lib::logger::get_logger()->debug("register_for_avt_changes(%s): already there for %s", n->get_sig().c_str(), expr.c_str());
+        } else {
+            AM_DBG lib::logger::get_logger()->debug("register_for_avt_changes(%s): inserted for %s", n->get_sig().c_str(), expr.c_str());
+            m_xpath2callbacks.insert(make_pair(expr, value));
+            if (!anyfound) {
+                AM_DBG lib::logger::get_logger()->debug("register_for_avt_changes: request callback for %s", expr.c_str());
+                assert(m_state);
+                m_state->want_state_change(expr.c_str(), this);
+            }
+        }
+    }
+}
+
+void
+lib::document::on_state_change(const char *ref)
+{
+    AM_DBG lib::logger::get_logger()->debug("document::on_state_change(%s)", ref);
+    xml_string key(ref);
+    typedef std::multimap<const xml_string, std::pair<const avt_change_notification*, const lib::node*> >::iterator J;
+    std::pair<J, J> bnds = m_xpath2callbacks.equal_range(key);
+    J j;
+    for(j=bnds.first; j != bnds.second; j++) {
+        avt_change_notification *handler = const_cast<avt_change_notification *>(j->second.first);
+        const lib::node *n = j->second.second;
+        AM_DBG lib::logger::get_logger()->debug("document::on_state_change(%s): call handler for %s", ref, n->get_sig().c_str());
+        handler->avt_value_changed_for(n);
+    }
 }
 #endif // WITH_SMIL30

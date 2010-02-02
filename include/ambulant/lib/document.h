@@ -40,6 +40,16 @@ namespace ambulant {
 
 namespace lib {
 
+#ifdef WITH_SMIL30
+/// Interface for getting callbacks if underlying values used
+/// in an Attribuet Value Template have changed.
+class avt_change_notification {
+  public:
+    virtual ~avt_change_notification() {}
+    virtual void avt_value_changed_for(const lib::node *n) = 0;
+};
+#endif // WITH_SMIL30
+
 /// Information on custom test used in the document.
 class custom_test {
   public:
@@ -54,7 +64,12 @@ class custom_test {
 ///
 /// This class is reachable from node objects.
 /// and provides context services to them.
-class AMBULANTAPI document : public node_context {
+class AMBULANTAPI document :
+    public node_context
+#ifdef WITH_SMIL30
+    , public common::state_change_callback
+#endif
+{
 
   public:
 	/// A document factory function.
@@ -114,6 +129,7 @@ class AMBULANTAPI document : public node_context {
 	
 	/// Set the source URL of the document.
 	void set_src_url(ambulant::net::url u) { m_src_url = u;}
+    
 #ifdef WITH_SMIL30
 	/// Return the state engine.
 	common::state_component *get_state() const { return m_state;}
@@ -123,6 +139,13 @@ class AMBULANTAPI document : public node_context {
 
 	/// Apply XSLT Attribute Value Template
 	const lib::xml_string apply_avt(const node* n, const lib::xml_string& attrname, const lib::xml_string& attrvalue) const;
+
+    /// Ask for a callback if any AVT on the given node changes
+    void register_for_avt_changes(const node* n, avt_change_notification *handler);
+    
+    /// Forward state changes to entities that requested AVT change notification
+    void on_state_change(const char *ref);
+
 #endif // WITH_SMIL30
 
   protected:
@@ -167,6 +190,13 @@ class AMBULANTAPI document : public node_context {
     // Implementation of state document
 	common::state_component *m_state;
     
+    // Per node, remember xpath expressions used
+    std::multimap<const lib::node*, xml_string > m_node2xpaths;
+    
+    // Per xpath expression, remember callbacks to apply
+    std::multimap<const xml_string, std::pair<const avt_change_notification*, const lib::node*> > m_xpath2callbacks;
+
+    void _register_node_avt_dependence(const node *n, const xml_string& expr);
 #ifdef WITH_STATE_AVT_CACHE
 	// Cache of per-expression avt values.
 	std::map<const xml_string, xml_string> m_avtcache;
