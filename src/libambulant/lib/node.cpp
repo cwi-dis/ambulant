@@ -406,8 +406,8 @@ lib::node_impl::get_attribute(const char *name) const {
 				const xml_string ns = name;
 				const xml_string& attrval = (*it).second;
 				if (attrval.find('{') != std::string::npos) {
-					const_cast<lib::node_impl*>(this)->m_avtcache[ns] = m_context->apply_avt(ns, attrval);
-					return const_cast<lib::node_impl*>(this)->m_avtcache[ns].c_str();
+					const lib::xml_string rv = m_context->apply_avt(this, ns, attrval);
+					return rv.c_str();
 				}
 			}
 #endif

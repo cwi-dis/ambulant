@@ -237,13 +237,13 @@ void lib::document::read_custom_attributes() {
 }
 
 #ifdef WITH_SMIL30
-lib::xml_string
-lib::document::apply_avt(const xml_string& name, const xml_string& value) const
+const lib::xml_string
+lib::document::apply_avt(const node* n, const lib::xml_string& attrname, const lib::xml_string& attrvalue) const
 {
-	if (!m_state) return value;
+	if (!m_state) return attrvalue;
 	/* XXXJACK Check that applying AVT to attribute "name" is allowed */
 	xml_string rv = "";
-	xml_string rest = value;
+	xml_string rest = attrvalue;
 	while (rest != "") {
 		xml_string::size_type openpos = rest.find('{');
 		xml_string::size_type closepos = rest.find('}');
@@ -254,12 +254,17 @@ lib::document::apply_avt(const xml_string& name, const xml_string& value) const
 		}
 		if (openpos == std::string::npos || closepos == std::string::npos ||
 				openpos > closepos) {
-			lib::logger::get_logger()->trace("Unmatched {} in %s=\"%s\"", name.c_str(), value.c_str());
-			return value;
+			lib::logger::get_logger()->trace("Unmatched {} in %s=\"%s\"", attrname.c_str(), attrvalue.c_str());
+			return attrvalue;
 		}
 		rv += rest.substr(0, openpos);
 		xml_string expr = rest.substr(openpos+1, closepos-openpos-1);
-		rv += m_state->string_expression(expr.c_str());
+		std::string expr_value = m_state->string_expression(expr.c_str());
+#ifdef WITH_STATE_AVT_CACHE
+        m_avtcache[expr] = expr_value;
+        XXX_register_for_changes_to_invalidate_cache(expr);
+#endif // WITH_STATE_AVT_CACHE
+		rv += expr_value;
 		rest = rest.substr(closepos+1);
 	}
 	return rv;		

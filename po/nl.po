@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AmbulantPlayer 1.8\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2010-01-19 17:04+0100\n"
+"POT-Creation-Date: 2010-01-28 15:26+0100\n"
 "PO-Revision-Date: 2004-09-12 15:09+0200\n"
 "Last-Translator: Jack Jansen <Jack.Jansen@cwi.nl>\n"
 "Language-Team: English <Jack.Jansen@cwi.nl>\n"
@@ -19,7 +19,7 @@ msgstr ""
 msgid "Cannot play document: no player"
 msgstr "Kan document niet spelen: geen speler"
 
-#: src/libambulant/common/gui_player.cpp:269
+#: src/libambulant/common/gui_player.cpp:270
 #, c-format
 msgid ""
 "%s: document is SMIL version \"%s\", not 3.0, will attempt to continue anyway"
@@ -27,7 +27,7 @@ msgstr ""
 "%s: document is SMIL versie \"%s\" in plaats van 3.0, ik zal toch proberen "
 "het te spelen"
 
-#: src/libambulant/common/gui_player.cpp:283
+#: src/libambulant/common/gui_player.cpp:284
 #, c-format
 msgid ""
 "%s: document uses unknown SMIL profile \"%s\", will attempt to continue "
@@ -36,7 +36,7 @@ msgstr ""
 "%s: document gebruikt onbekende SMIL profile \"%s\", ik zal toch proberen "
 "het te spelen"
 
-#: src/libambulant/common/gui_player.cpp:291
+#: src/libambulant/common/gui_player.cpp:292
 #, c-format
 msgid "%s: Requires unavailable features, will attempt to continue anyway"
 msgstr ""
@@ -58,8 +58,8 @@ msgstr "Plugin niet geladen vanwege fout: %s "
 msgid "Plugin skipped due to errors: %s"
 msgstr "Plugin niet geladen vanwege fout: %s"
 
-#: src/libambulant/common/plugin_engine.cpp:369
-#: src/libambulant/common/plugin_engine.cpp:404
+#: src/libambulant/common/plugin_engine.cpp:373
+#: src/libambulant/common/plugin_engine.cpp:408
 #, c-format
 msgid "Error reading plugin directory: %s: 0x%x"
 msgstr "Plugin map %s kan niet worden gelezen: 0x%x"

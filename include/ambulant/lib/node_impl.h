@@ -300,11 +300,6 @@ class node_impl : public node_interface {
 	// a magic id
 	int m_numid;
 	
-#ifdef WITH_SMIL30
-	// When we apply attribute value templates we need to keep the
-	// generated data, it is returned as a C string.
-	std::map<xml_string, xml_string> m_avtcache;
-#endif
 //	const node& operator =(const node& o);
 	
   private:

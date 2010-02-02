@@ -49,6 +49,8 @@ preferences::preferences()
 	m_validation_schema_full_checking(false),
 #if	defined(WITH_FFMPEG) || defined(WITH_PLUGINS)
 	m_prefer_ffmpeg(true),
+	m_strict_url_parsing(false),
+	m_tabbed_links(false),
 #else //WITH_FFMPEG
 	m_prefer_ffmpeg(false),
 #endif//WITH_FFMPEG
@@ -58,7 +60,9 @@ preferences::preferences()
 	m_use_plugins(false),
 #endif//WITH_PLUGINS
 	m_plugin_dir(""),
-	m_dynamic_content_control(false)
+	m_dynamic_content_control(false),
+	m_fullscreen(false),
+	m_prefer_rtsp_tcp(false)
 {
 	AM_DBG lib::logger::get_logger()->debug("preferences::preferences()");
 	load_preferences();

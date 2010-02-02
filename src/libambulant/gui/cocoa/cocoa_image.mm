@@ -136,10 +136,11 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 		m_lock.leave();
 		return;
 	}
-	
+	// Compute pixel-to-coordinate factors
+    NSSize cocoa_srcsize = [m_image size];
+    CGFloat x_factor = cocoa_srcsize.width / m_size.w;
+    CGFloat y_factor = cocoa_srcsize.height / m_size.h;
 	// Now find both source and destination area for the bitblit.
-	NSSize cocoa_srcsize = [m_image size];
-	size srcsize = size((int)cocoa_srcsize.width, (int)cocoa_srcsize.height);
 	rect srcrect;
 	NSRect cocoa_srcrect;
 	rect dstrect;
@@ -151,14 +152,16 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 		AM_DBG lib::logger::get_logger()->debug("cocoa_image_renderer.redraw: drawing tiled image");
 		dstrect = m_dest->get_rect();
 		dstrect.translate(m_dest->get_global_topleft());
-		common::tile_positions tiles = m_dest->get_tiles(srcsize, dstrect);
+		common::tile_positions tiles = m_dest->get_tiles(m_size, dstrect);
 		common::tile_positions::iterator it;
 		for(it=tiles.begin(); it!=tiles.end(); it++) {
 			srcrect = (*it).first;
 			dstrect = (*it).second;
-			cocoa_srcrect = NSMakeRect(srcrect.left(), srcrect.top(), srcrect.width(), srcrect.height());
+			cocoa_srcrect = NSMakeRect(srcrect.left()*x_factor, srcrect.top()*y_factor, srcrect.width()*x_factor, srcrect.height()*y_factor);
 			cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
-			AM_DBG logger::get_logger()->debug("cocoa_image_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", cocoa_srcsize.width, cocoa_srcsize.height, NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect), NSMaxX(cocoa_dstrect), NSMaxY(cocoa_dstrect));
+			AM_DBG logger::get_logger()->debug("cocoa_image_renderer.redraw: draw image (%f, %f, %f, %f) -> (%f, %f, %f, %f)",
+                NSMinX(cocoa_srcrect), NSMinY(cocoa_srcrect), NSMaxX(cocoa_srcrect), NSMaxY(cocoa_srcrect),
+                NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect), NSMaxX(cocoa_dstrect), NSMaxY(cocoa_dstrect));
 			[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceOver fraction: 1.0f];
 		}
 		m_lock.leave();
@@ -168,11 +171,11 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	lib::rect croprect = m_dest->get_crop_rect(m_size);
 	AM_DBG logger::get_logger()->debug("cocoa_image::redraw, clip 0x%x (%d %d) -> (%d, %d, %d, %d)", m_dest, m_size.w, m_size.h, croprect.x, croprect.y, croprect.w, croprect.h);
 
-	dstrect = m_dest->get_fit_rect(croprect, srcsize, &srcrect, m_alignment);
-	cocoa_srcrect = NSMakeRect(srcrect.left(), srcrect.top(), srcrect.width(), srcrect.height());
+	dstrect = m_dest->get_fit_rect(croprect, m_size, &srcrect, m_alignment);
+	cocoa_srcrect = NSMakeRect(srcrect.left()*x_factor, srcrect.top()*y_factor, srcrect.width()*x_factor, srcrect.height()*y_factor);
 #else
-	dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
-	cocoa_srcrect = NSMakeRect(0, 0, srcrect.width(), srcrect.height());
+	dstrect = m_dest->get_fit_rect(m_size, &srcrect, m_alignment);
+	cocoa_srcrect = NSMakeRect(0, 0, srcrect.width()*x_factor, srcrect.height()*y_factor);
 #endif
 	dstrect.translate(m_dest->get_global_topleft());
 	cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];

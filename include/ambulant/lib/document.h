@@ -122,7 +122,7 @@ class AMBULANTAPI document : public node_context {
 	void set_state(common::state_component *state) { m_state = state; }	
 
 	/// Apply XSLT Attribute Value Template
-	lib::xml_string apply_avt(const lib::xml_string& name, const lib::xml_string& value) const;
+	const lib::xml_string apply_avt(const node* n, const lib::xml_string& attrname, const lib::xml_string& attrvalue) const;
 #endif // WITH_SMIL30
 
   protected:
@@ -164,7 +164,14 @@ class AMBULANTAPI document : public node_context {
 	std::map<std::string, const node*> m_id2node;
 
 #ifdef WITH_SMIL30
+    // Implementation of state document
 	common::state_component *m_state;
+    
+#ifdef WITH_STATE_AVT_CACHE
+	// Cache of per-expression avt values.
+	std::map<const xml_string, xml_string> m_avtcache;
+#endif // WITH_STATE_AVT_CACHE
+
 #endif // WITH_SMIL30
 };
 

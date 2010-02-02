@@ -152,8 +152,9 @@ AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, ver
 		ambulant::lib::logger::get_logger()->set_level(ambulant::lib::logger::LEVEL_DEBUG);
 		ambulant::lib::logger::get_logger()->debug("npambulant: DEBUG enabled. Ambulant version: %s\n", version);
 	}
-#endif//NDEBUG
+#else //NDEBUG
 	ambulant::lib::logger::get_logger()->set_level(ambulant::lib::logger::LEVEL_SHOW);
+#endif//NDEBUG
 	if(aWindow == NULL)
 		return FALSE;
 	// prepare for dynamic linking ffmpeg

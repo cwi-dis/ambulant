@@ -114,6 +114,7 @@ static void watchDog (rtsp_context_t *context) {
 void 
 ambulant::net::rtsp_demux::add_datasink(demux_datasink *parent, int stream_index)
 {
+        AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::add_datasink(0x%x, parent=0x%x, stream_index=%d, m_context->nsinks=%d)", (void*) this,parent,stream_index,m_context->nsinks);
 	m_critical_section.enter();
 	assert(stream_index >= 0 && stream_index < MAX_STREAMS);
 	assert(m_context && m_context->sinks && m_context->sinks[stream_index] == 0);
@@ -134,6 +135,7 @@ ambulant::net::rtsp_demux::remove_datasink(int stream_index)
 	if (ds) m_context->nsinks--;
     m_context->blocking_flag = ~0;
 	m_critical_section.leave();
+        AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::remove_datasink(0x%x), ds=0x%x,stream_index=%d, m_context->nsinks=%d", (void*) this,ds,stream_index,m_context->nsinks);
     // XXXJACK This code suffers from the same problem as the ffmpeg_demux
     // code: if may get into a deadlock if we hold the lock
     // and it may deallocate ds while it's being used in run() otherwise.
@@ -513,6 +515,7 @@ ambulant::net::rtsp_demux::run()
 			m_context->sinks[i] = NULL;
 		}
 	}
+	m_context->nsinks = 0;
 	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run(0x%x): returning", (void*)this);
 	m_critical_section.leave();
 	release();
@@ -527,9 +530,10 @@ ambulant::net::rtsp_demux::_cancel()
 	 	m_context->eof = true;
 		m_context->blocking_flag = ~0;
 	}
-//	if (is_running())
-//		stop();
-	release();
+	if (is_running())
+		stop();
+// release() is commented out here because the run() function already does this
+//	release();
 }
 
 void
@@ -777,7 +781,7 @@ done:
 	if (m_context->video_packet) free(m_context->video_packet);
 	m_context->video_packet  = NULL;
 	if(m_context->initialPacketDataLen > 0){
-		free(m_context->initialPacketData);
+		delete [] m_context->initialPacketData;
 		m_context->initialPacketData = NULL;
 		m_context->initialPacketDataLen = 0;
 	}
