@@ -242,7 +242,7 @@ void lib::document::read_custom_attributes() {
 }
 
 #ifdef WITH_SMIL30
-const lib::xml_string
+lib::xml_string
 lib::document::apply_avt(const node* n, const lib::xml_string& attrname, const lib::xml_string& attrvalue) const
 {
 	if (!m_state) return attrvalue;

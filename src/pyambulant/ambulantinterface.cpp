@@ -220,14 +220,15 @@ ambulant::common::state_component* node_context::get_state() const
 #endif
 
 #ifdef WITH_SMIL30
-ambulant::lib::xml_string node_context::apply_avt(const ambulant::lib::xml_string& name, const ambulant::lib::xml_string& value) const
+ambulant::lib::xml_string node_context::apply_avt(const ambulant::lib::node* n, const ambulant::lib::xml_string& attrname, const ambulant::lib::xml_string& attrvalue) const
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
 	ambulant::lib::xml_string _rv;
-	PyObject *py_name = Py_BuildValue("s", name.c_str());
-	PyObject *py_value = Py_BuildValue("s", value.c_str());
+	PyObject *py_n = Py_BuildValue("O&", nodeObj_New, n);
+	PyObject *py_attrname = Py_BuildValue("s", attrname.c_str());
+	PyObject *py_attrvalue = Py_BuildValue("s", attrvalue.c_str());
 
-	PyObject *py_rv = PyObject_CallMethod(py_node_context, "apply_avt", "(OO)", py_name, py_value);
+	PyObject *py_rv = PyObject_CallMethod(py_node_context, "apply_avt", "(OOO)", py_n, py_attrname, py_attrvalue);
 	if (PyErr_Occurred())
 	{
 		PySys_WriteStderr("Python exception during node_context::apply_avt() callback:\n");
@@ -243,8 +244,9 @@ ambulant::lib::xml_string node_context::apply_avt(const ambulant::lib::xml_strin
 
 	_rv = _rv_cstr;
 	Py_XDECREF(py_rv);
-	Py_XDECREF(py_name);
-	Py_XDECREF(py_value);
+	Py_XDECREF(py_n);
+	Py_XDECREF(py_attrname);
+	Py_XDECREF(py_attrvalue);
 
 	PyGILState_Release(_GILState);
 	return _rv;
