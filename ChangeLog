@@ -1,3 +1,19 @@
+2010-02-02 17:18  jackjansen
+
+	* Merging the branch again: I also need the pyambulant changes.
+
+2010-02-02 17:00  jackjansen
+
+	* Implemented dynamic notification of updates to AVT-based
+	  attributes, at least for layout-related attributes.  This has the
+	  effect that SMIL State updates to things like panZoom and layout
+	  can be done dynamically (while a media object is being rendered).
+
+2010-02-02 16:56  jackjansen
+
+	* Merging 2.2 branch to the trunk (again, because I stupidly made
+	  some changes on the branch that I need on the trunk).
+
 2010-01-31 01:23  jackjansen
 
 	* Modified fullscreen view to be true fullscreen: without any
