@@ -50,9 +50,7 @@ lib::document::~document() {
 	// m_state is borrowed.
     m_node2xpaths.clear();
     m_xpath2callbacks.clear();
-#ifdef WITH_STATE_AVT_CACHE
     m_avtcache.clear();
-#endif // WITH_STATE_AVT_CACHE
 }
 
 lib::node* 
@@ -242,7 +240,7 @@ void lib::document::read_custom_attributes() {
 }
 
 #ifdef WITH_SMIL30
-lib::xml_string
+const lib::xml_string&
 lib::document::apply_avt(const node* n, const lib::xml_string& attrname, const lib::xml_string& attrvalue) const
 {
 	if (!m_state) return attrvalue;
@@ -266,14 +264,18 @@ lib::document::apply_avt(const node* n, const lib::xml_string& attrname, const l
 		xml_string expr = rest.substr(openpos+1, closepos-openpos-1);
 		std::string expr_value = m_state->string_expression(expr.c_str());
         const_cast<document *>(this)->_register_node_avt_dependence(n, expr);
-#ifdef WITH_STATE_AVT_CACHE
-        m_avtcache[expr] = expr_value;
-        XXX_register_for_changes_to_invalidate_cache(expr);
-#endif // WITH_STATE_AVT_CACHE
 		rv += expr_value;
 		rest = rest.substr(closepos+1);
 	}
-	return rv;		
+	std::map<const node *, std::map<xml_string, xml_string> >::iterator cachepos = const_cast<document *>(this)->m_avtcache.find(n);
+	if (cachepos == m_avtcache.end()) {
+		std::map<xml_string, xml_string> emptymap;
+		const_cast<document *>(this)->m_avtcache.insert(make_pair(n, emptymap));
+		cachepos = const_cast<document *>(this)->m_avtcache.find(n);
+	}
+	cachepos->second.insert(make_pair(attrvalue, rv));
+	const xml_string& rvholder = cachepos->second.find(attrvalue)->second;
+	return rvholder;		
 }
 void
 lib::document::_register_node_avt_dependence(const node* n, const xml_string& expr)
@@ -347,7 +349,8 @@ lib::document::on_state_change(const char *ref)
         avt_change_notification *handler = const_cast<avt_change_notification *>(j->second.first);
         const lib::node *n = j->second.second;
         AM_DBG lib::logger::get_logger()->debug("document::on_state_change(%s): call handler for %s", ref, n->get_sig().c_str());
-        handler->avt_value_changed_for(n);
+        m_avtcache[n].clear();
+		handler->avt_value_changed_for(n);
     }
 }
 #endif // WITH_SMIL30

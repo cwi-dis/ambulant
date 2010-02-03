@@ -317,7 +317,7 @@ class AMBULANTAPI node_context {
 	virtual common::state_component *get_state() const = 0;
 
     /// Apply Attribute Value Template expressions to attribute value, if needed.
-	virtual lib::xml_string apply_avt(const node* n, const lib::xml_string& attrname, const lib::xml_string& attrvalue) const = 0;
+	virtual const lib::xml_string& apply_avt(const node* n, const lib::xml_string& attrname, const lib::xml_string& attrvalue) const = 0;
 	
 #endif
 };

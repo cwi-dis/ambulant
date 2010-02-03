@@ -303,6 +303,7 @@ region_node::fix_from_dom_node()
 		// panZoom
 		const char *panzoom_attr = m_node->get_attribute("panZoom");
 		common::region_dim_spec rds_;
+		AM_DBG lib::logger::get_logger()->debug("panZoom is now '%s'", panzoom_attr);
 		if (panzoom_attr) rds_ = common::region_dim_spec(panzoom_attr, "panZoomRect");
 		if (rds_ != m_panzoom) {
 			changed = true;

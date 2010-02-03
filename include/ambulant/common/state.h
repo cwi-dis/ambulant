@@ -78,7 +78,7 @@ class state_test_methods {
 /// Note: there is currently no refcounting on these, and they're passed to state_component's.
 /// The creator of state_component is required to make sure that objects of this type remain
 /// alive longer than the state_component instance that has a reference.
-class state_change_callback {
+class AMBULANTAPI state_change_callback {
   public:
     virtual ~state_change_callback() {}
 	

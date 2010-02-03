@@ -43,7 +43,7 @@ namespace lib {
 #ifdef WITH_SMIL30
 /// Interface for getting callbacks if underlying values used
 /// in an Attribuet Value Template have changed.
-class avt_change_notification {
+class AMBULANTAPI avt_change_notification {
   public:
     virtual ~avt_change_notification() {}
     virtual void avt_value_changed_for(const lib::node *n) = 0;
@@ -138,7 +138,7 @@ class AMBULANTAPI document :
 	void set_state(common::state_component *state) { m_state = state; }	
 
 	/// Apply XSLT Attribute Value Template
-	lib::xml_string apply_avt(const node* n, const lib::xml_string& attrname, const lib::xml_string& attrvalue) const;
+	const lib::xml_string& apply_avt(const node* n, const lib::xml_string& attrname, const lib::xml_string& attrvalue) const;
 
     /// Ask for a callback if any AVT on the given node changes
     void register_for_avt_changes(const node* n, avt_change_notification *handler);
@@ -197,10 +197,8 @@ class AMBULANTAPI document :
     std::multimap<const xml_string, std::pair<const avt_change_notification*, const lib::node*> > m_xpath2callbacks;
 
     void _register_node_avt_dependence(const node *n, const xml_string& expr);
-#ifdef WITH_STATE_AVT_CACHE
 	// Cache of per-expression avt values.
-	std::map<const xml_string, xml_string> m_avtcache;
-#endif // WITH_STATE_AVT_CACHE
+	std::map<const node *, std::map<xml_string, xml_string> > m_avtcache;
 
 #endif // WITH_SMIL30
 };
