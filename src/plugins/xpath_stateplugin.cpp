@@ -591,6 +591,10 @@ xpath_state_component::string_expression(const char *expr)
 		lib::logger::get_logger()->trace("xpath_state_component: cannot evaluate \"{%s}\"", expr);
 		return "";
 	}
+	// Sanity check, for document authors
+	if (result->type == XPATH_NODESET && xmlXPathNodeSetGetLength(result->nodesetval) != 1) {
+		lib::logger::get_logger()->trace("xpath_state_component: \"{%s}\": evaluates to %d nodes", expr, xmlXPathNodeSetGetLength(result->nodesetval));
+	}
 	xmlChar *result_str = xmlXPathCastToString(result);
 	xmlXPathFreeObject(result);
 	if (result_str == NULL) {
