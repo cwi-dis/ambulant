@@ -700,9 +700,9 @@ static PyObject *node_contextObj_apply_avt(node_contextObject *_self, PyObject *
 	attrname = attrname_cstr;
 	attrvalue = attrvalue_cstr;
 	PyThreadState *_save = PyEval_SaveThread();
-	ambulant::lib::xml_string _rv = _self->ob_itself->apply_avt(n,
-	                                                            attrname,
-	                                                            attrvalue);
+	const ambulant::lib::xml_string& _rv = _self->ob_itself->apply_avt(n,
+	                                                                   attrname,
+	                                                                   attrvalue);
 	PyEval_RestoreThread(_save);
 	_res = Py_BuildValue("s",
 	                     _rv.c_str());
@@ -731,7 +731,7 @@ static PyMethodDef node_contextObj_methods[] = {
 
 #ifdef WITH_SMIL30
 	{"apply_avt", (PyCFunction)node_contextObj_apply_avt, 1,
-	 PyDoc_STR("(ambulant::lib::node* n, ambulant::lib::xml_string attrname, ambulant::lib::xml_string attrvalue) -> (ambulant::lib::xml_string _rv)")},
+	 PyDoc_STR("(ambulant::lib::node* n, ambulant::lib::xml_string attrname, ambulant::lib::xml_string attrvalue) -> (const ambulant::lib::xml_string& _rv)")},
 #endif
 	{NULL, NULL, 0}
 };
@@ -2265,15 +2265,30 @@ static PyObject *documentObj_apply_avt(documentObject *_self, PyObject *_args)
 	attrname = attrname_cstr;
 	attrvalue = attrvalue_cstr;
 	PyThreadState *_save = PyEval_SaveThread();
-	ambulant::lib::xml_string _rv = _self->ob_itself->apply_avt(n,
-	                                                            attrname,
-	                                                            attrvalue);
+	const ambulant::lib::xml_string& _rv = _self->ob_itself->apply_avt(n,
+	                                                                   attrname,
+	                                                                   attrvalue);
 	PyEval_RestoreThread(_save);
 	_res = Py_BuildValue("s",
 	                     _rv.c_str());
 	return _res;
 }
 #endif
+
+static PyObject *documentObj_on_state_change(documentObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char* ref;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &ref))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->on_state_change(ref);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
 
 static PyMethodDef documentObj_methods[] = {
 	{"get_root_1", (PyCFunction)documentObj_get_root_1, 1,
@@ -2315,8 +2330,10 @@ static PyMethodDef documentObj_methods[] = {
 
 #ifdef WITH_SMIL30
 	{"apply_avt", (PyCFunction)documentObj_apply_avt, 1,
-	 PyDoc_STR("(ambulant::lib::node* n, ambulant::lib::xml_string attrname, ambulant::lib::xml_string attrvalue) -> (ambulant::lib::xml_string _rv)")},
+	 PyDoc_STR("(ambulant::lib::node* n, ambulant::lib::xml_string attrname, ambulant::lib::xml_string attrvalue) -> (const ambulant::lib::xml_string& _rv)")},
 #endif
+	{"on_state_change", (PyCFunction)documentObj_on_state_change, 1,
+	 PyDoc_STR("(char* ref) -> None")},
 	{NULL, NULL, 0}
 };
 

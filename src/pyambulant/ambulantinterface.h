@@ -75,12 +75,13 @@ public:
 	ambulant::common::state_component* get_state() const;
 #endif
 #ifdef WITH_SMIL30
-	ambulant::lib::xml_string apply_avt(const ambulant::lib::node* n, const ambulant::lib::xml_string& attrname, const ambulant::lib::xml_string& attrvalue) const;
+	const ambulant::lib::xml_string& apply_avt(const ambulant::lib::node* n, const ambulant::lib::xml_string& attrname, const ambulant::lib::xml_string& attrvalue) const;
 #endif
 	const custom_test_map* get_custom_tests() const { return NULL; }
   private:
 	PyObject *py_node_context;
 	ambulant::lib::xml_string get_namespace_prefix_rvkeepref;
+	ambulant::lib::xml_string apply_avt_rvkeepref;
 
 	friend PyObject *node_contextObj_New(ambulant::lib::node_context *itself);
 };

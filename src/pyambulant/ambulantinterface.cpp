@@ -220,10 +220,10 @@ ambulant::common::state_component* node_context::get_state() const
 #endif
 
 #ifdef WITH_SMIL30
-ambulant::lib::xml_string node_context::apply_avt(const ambulant::lib::node* n, const ambulant::lib::xml_string& attrname, const ambulant::lib::xml_string& attrvalue) const
+const ambulant::lib::xml_string& node_context::apply_avt(const ambulant::lib::node* n, const ambulant::lib::xml_string& attrname, const ambulant::lib::xml_string& attrvalue) const
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	ambulant::lib::xml_string _rv;
+	ambulant::lib::xml_string apply_avt;
 	PyObject *py_n = Py_BuildValue("O&", nodeObj_New, n);
 	PyObject *py_attrname = Py_BuildValue("s", attrname.c_str());
 	PyObject *py_attrvalue = Py_BuildValue("s", attrvalue.c_str());
@@ -235,21 +235,22 @@ ambulant::lib::xml_string node_context::apply_avt(const ambulant::lib::node* n, 
 		PyErr_Print();
 	}
 
-	char *_rv_cstr="";
-	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv_cstr))
+	char *apply_avt_cstr="";
+	if (py_rv && !PyArg_Parse(py_rv, "s", &apply_avt_cstr))
 	{
 		PySys_WriteStderr("Python exception during node_context::apply_avt() return:\n");
 		PyErr_Print();
 	}
 
-	_rv = _rv_cstr;
+	apply_avt = apply_avt_cstr;
 	Py_XDECREF(py_rv);
 	Py_XDECREF(py_n);
 	Py_XDECREF(py_attrname);
 	Py_XDECREF(py_attrvalue);
 
 	PyGILState_Release(_GILState);
-	return _rv;
+	const_cast<node_context *>(this)->apply_avt_rvkeepref = apply_avt;
+	return apply_avt_rvkeepref;
 }
 #endif
 

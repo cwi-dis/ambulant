@@ -133,6 +133,8 @@ class MyScanner(CxxScanner):
             "tile_positions",    # We don't do lists, for now
             "region_dim_spec",   # XXXX Not sure this is needed?
             "const_region_dim_spec_ref",  # XXXX Not sure this is needed?
+            "avt_change_notification", # XXX For now
+            "avt_change_notification_ptr",
             # Next couple are gtk. For now I've excluded them because they cause
             # errors, but it could well be they are needed and need to be handled.
             "QWidget_ptr",
