@@ -1,3 +1,20 @@
+2010-02-03 15:37  jackjansen
+
+	* Added a trace log if a SMIL State string expression refers to
+	  anything other than 1 XML node. Should stop some pulling of
+	  hairs...
+
+2010-02-03 13:09  jackjansen
+
+	* Python interface changes for previous checkin.
+
+2010-02-03 10:47  jackjansen
+
+	* - AVT fixes were incomplete for windows: there the runtime
+	  (rightfully) complains   if you return the c_str() of an auto
+	  std::string. Had to adapt a few interfaces for this.	- Added a
+	  few AMBULANTAPIs
+
 2010-02-02 17:18  jackjansen
 
 	* Merging the branch again: I also need the pyambulant changes.
