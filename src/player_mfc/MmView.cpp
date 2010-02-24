@@ -236,6 +236,9 @@ MmView::MmView()
 #else
 	lib::logger::get_logger()->set_ostream(new logwindow_ostream());
 #endif // WITHOUT_LOG_WINDOW
+	// Tell the logger about the output level preference
+	int level = ambulant::common::preferences::get_preferences()->m_log_level;
+	ambulant::lib::logger::get_logger()->set_level(level);
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Windows/MFC"), __DATE__);
 #if ENABLE_NLS

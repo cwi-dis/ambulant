@@ -6,6 +6,7 @@
 #include "PreferencesDlg.h"
 #include ".\preferencesdlg.h"
 #include "ambulant/common/preferences.h"
+#include "ambulant/lib/logger.h"
 
 #pragma warning( disable: 4800)  // Disable performance warning "forcing value to bool true of false"
 
@@ -47,6 +48,7 @@ void PrefLoggingPropertyPage::OnOK()
 	ambulant::common::preferences *prefs = ambulant::common::preferences::get_preferences();
 	prefs->m_log_level = m_log_level;
 	prefs->save_preferences();
+	ambulant::lib::logger::get_logger()->set_level(m_log_level);
 	CPropertyPage::OnOK();
 }
 
