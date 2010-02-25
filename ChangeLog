@@ -1,3 +1,10 @@
+2010-02-24 16:27  jackjansen
+
+	* The log-level preference was completely ignored on windows,
+	  fixed.
+
+	  Backport candidate.
+
 2010-02-03 15:37  jackjansen
 
 	* Added a trace log if a SMIL State string expression refers to
