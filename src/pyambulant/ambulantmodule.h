@@ -1,3 +1,6 @@
+extern PyObject *ostreamObj_New(ambulant::lib::ostream* itself);
+extern int ostreamObj_Convert(PyObject *v, ambulant::lib::ostream* *p_itself);
+
 extern PyObject *loggerObj_New(ambulant::lib::logger* itself);
 extern int loggerObj_Convert(PyObject *v, ambulant::lib::logger* *p_itself);
 

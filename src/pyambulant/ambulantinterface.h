@@ -5,6 +5,7 @@
 
 
 #define WITH_EXTERNAL_DOM 1
+#include "ambulant/lib/amstream.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/document.h"
@@ -59,6 +60,31 @@ inline bool pycppbridge_Check(PyObject *x) { return false; };
 inline cpppybridge *pycppbridge_getwrapper(PyObject *o) { return NULL; };
 inline void pycppbridge_setwrapper(PyObject *o, cpppybridge *w) {};
 #endif
+
+class ostream : public cpppybridge, public ambulant::lib::ostream {
+public:
+	ostream(PyObject *itself);
+	virtual ~ostream();
+
+	bool is_open() const;
+	void close();
+	int write(const unsigned char * buffer, int nbytes);
+	int write(const char* cstr);
+	void flush();
+  private:
+	PyObject *py_ostream;
+
+	friend PyObject *ostreamObj_New(ambulant::lib::ostream *itself);
+};
+#define BGEN_BACK_SUPPORT_ostream
+inline ostream *Py_WrapAs_ostream(PyObject *o)
+{
+	ostream *rv = dynamic_cast<ostream*>(pycppbridge_getwrapper(o));
+	if (rv) return rv;
+	rv = new ostream(o);
+	pycppbridge_setwrapper(o, rv);
+	return rv;
+}
 
 class node_context : public cpppybridge, public ambulant::lib::node_context {
 public:

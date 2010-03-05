@@ -15,6 +15,9 @@ extern int %(pname)sObj_Convert(PyObject *v, %(cname)s* *p_itself);
 
 
 OBJECTS=[
+    "lib/amstream.h",
+    ("ostream", "ambulant::lib::ostream", None),
+    
     "lib/logger.h",
     ("logger", "ambulant::lib::logger", None),
     

@@ -10,6 +10,143 @@ extern PyObject *audio_format_choicesObj_New(const ambulant::net::audio_format_c
 extern int audio_format_choicesObj_Convert(PyObject *v, ambulant::net::audio_format_choices *p_itself);
 
 
+/* ------------------------- Class ostream -------------------------- */
+
+ostream::ostream(PyObject *itself)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	if (itself)
+	{
+		if (!PyObject_HasAttrString(itself, "is_open")) PyErr_Warn(PyExc_Warning, "ostream: missing attribute: is_open");
+		if (!PyObject_HasAttrString(itself, "close")) PyErr_Warn(PyExc_Warning, "ostream: missing attribute: close");
+		if (!PyObject_HasAttrString(itself, "write")) PyErr_Warn(PyExc_Warning, "ostream: missing attribute: write");
+		if (!PyObject_HasAttrString(itself, "write")) PyErr_Warn(PyExc_Warning, "ostream: missing attribute: write");
+		if (!PyObject_HasAttrString(itself, "flush")) PyErr_Warn(PyExc_Warning, "ostream: missing attribute: flush");
+	}
+	if (itself == NULL) itself = Py_None;
+
+	py_ostream = itself;
+	Py_XINCREF(itself);
+	PyGILState_Release(_GILState);
+}
+
+ostream::~ostream()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	Py_XDECREF(py_ostream);
+	py_ostream = NULL;
+	PyGILState_Release(_GILState);
+}
+
+
+bool ostream::is_open() const
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	bool _rv;
+
+	PyObject *py_rv = PyObject_CallMethod(py_ostream, "is_open", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during ostream::is_open() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "O&", bool_Convert, &_rv))
+	{
+		PySys_WriteStderr("Python exception during ostream::is_open() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+void ostream::close()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_ostream, "close", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during ostream::close() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
+int ostream::write(const unsigned char * buffer, int nbytes)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	int _rv;
+	PyObject *py_buffer = Py_BuildValue("s", buffer);
+	PyObject *py_nbytes = Py_BuildValue("i", nbytes);
+
+	PyObject *py_rv = PyObject_CallMethod(py_ostream, "write", "(OO)", py_buffer, py_nbytes);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during ostream::write() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "i", &_rv))
+	{
+		PySys_WriteStderr("Python exception during ostream::write() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_buffer);
+	Py_XDECREF(py_nbytes);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+int ostream::write(const char* cstr)
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	int _rv;
+	PyObject *py_cstr = Py_BuildValue("s", cstr);
+
+	PyObject *py_rv = PyObject_CallMethod(py_ostream, "write", "(O)", py_cstr);
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during ostream::write() callback:\n");
+		PyErr_Print();
+	}
+
+	if (py_rv && !PyArg_Parse(py_rv, "i", &_rv))
+	{
+		PySys_WriteStderr("Python exception during ostream::write() return:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+	Py_XDECREF(py_cstr);
+
+	PyGILState_Release(_GILState);
+	return _rv;
+}
+
+void ostream::flush()
+{
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	PyObject *py_rv = PyObject_CallMethod(py_ostream, "flush", "()");
+	if (PyErr_Occurred())
+	{
+		PySys_WriteStderr("Python exception during ostream::flush() callback:\n");
+		PyErr_Print();
+	}
+
+	Py_XDECREF(py_rv);
+
+	PyGILState_Release(_GILState);
+}
+
 /* ----------------------- Class node_context ----------------------- */
 
 node_context::node_context(PyObject *itself)

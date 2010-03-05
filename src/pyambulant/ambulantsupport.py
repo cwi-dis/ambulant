@@ -134,6 +134,7 @@ InBuffer = VarInputBufferType('char', 'size_t', 'l')
 return_stringptr = Type("const char *", "z")  # ONLY FOR RETURN VALUES!! May be None/NULL.
 # output_stringptr = Type("char *", "s")  # BE CAREFUL!
 output_malloc_buf = MallocHeapOutputBufferType("char", "size_t", "l")
+unsigned_char_ptr = Type("unsigned char *", "s")
 
 # Ambulant-specific
 q_attributes_list = OpaqueByRefType("ambulant::lib::q_attributes_list", "ambulant_attributes_list")

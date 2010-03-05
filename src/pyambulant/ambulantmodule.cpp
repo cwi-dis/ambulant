@@ -8,6 +8,7 @@
 #define WITH_EXTERNAL_DOM 1
 #include "ambulant/config/config.h"
 #include "ambulant/version.h"
+#include "ambulant/lib/amstream.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/document.h"
@@ -155,6 +156,249 @@ PyTypeObject pycppbridge_Type = {
 };
 
 /* ------------------ End object type pycppbridge ------------------- */
+
+
+/* ---------------------- Object type ostream ----------------------- */
+
+extern PyTypeObject ostream_Type;
+
+inline bool ostreamObj_Check(PyObject *x)
+{
+	return ((x)->ob_type == &ostream_Type);
+}
+
+typedef struct ostreamObject {
+	PyObject_HEAD
+	void *ob_dummy_wrapper; // Overlays bridge object storage
+	ambulant::lib::ostream* ob_itself;
+} ostreamObject;
+
+PyObject *ostreamObj_New(ambulant::lib::ostream* itself)
+{
+	ostreamObject *it;
+	if (itself == NULL)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+#ifdef BGEN_BACK_SUPPORT_ostream
+	ostream *encaps_itself = dynamic_cast<ostream *>(itself);
+	if (encaps_itself && encaps_itself->py_ostream)
+	{
+		Py_INCREF(encaps_itself->py_ostream);
+		return encaps_itself->py_ostream;
+	}
+#endif
+	it = PyObject_NEW(ostreamObject, &ostream_Type);
+	if (it == NULL) return NULL;
+	/* XXXX Should we tp_init or tp_new our basetype? */
+	it->ob_dummy_wrapper = NULL; // XXXX Should be done in base class
+	it->ob_itself = itself;
+	return (PyObject *)it;
+}
+
+int ostreamObj_Convert(PyObject *v, ambulant::lib::ostream* *p_itself)
+{
+	if (v == Py_None)
+	{
+		*p_itself = NULL;
+		return 1;
+	}
+#ifdef BGEN_BACK_SUPPORT_ostream
+	if (!ostreamObj_Check(v))
+	{
+		*p_itself = Py_WrapAs_ostream(v);
+		if (*p_itself) return 1;
+	}
+#endif
+	if (!ostreamObj_Check(v))
+	{
+		PyErr_SetString(PyExc_TypeError, "ostream required");
+		return 0;
+	}
+	*p_itself = ((ostreamObject *)v)->ob_itself;
+	return 1;
+}
+
+static void ostreamObj_dealloc(ostreamObject *self)
+{
+	pycppbridge_Type.tp_dealloc((PyObject *)self);
+}
+
+static PyObject *ostreamObj_is_open(ostreamObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	bool _rv = _self->ob_itself->is_open();
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("O&",
+	                     bool_New, _rv);
+	return _res;
+}
+
+static PyObject *ostreamObj_close(ostreamObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->close();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyObject *ostreamObj_write_1(ostreamObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	unsigned char * buffer;
+	int nbytes;
+	if (!PyArg_ParseTuple(_args, "si",
+	                      &buffer,
+	                      &nbytes))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	int _rv = _self->ob_itself->write(buffer,
+	                                  nbytes);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("i",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *ostreamObj_write_2(ostreamObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	char* cstr;
+	if (!PyArg_ParseTuple(_args, "s",
+	                      &cstr))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	int _rv = _self->ob_itself->write(cstr);
+	PyEval_RestoreThread(_save);
+	_res = Py_BuildValue("i",
+	                     _rv);
+	return _res;
+}
+
+static PyObject *ostreamObj_flush(ostreamObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	if (!PyArg_ParseTuple(_args, ""))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->flush();
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
+static PyMethodDef ostreamObj_methods[] = {
+	{"is_open", (PyCFunction)ostreamObj_is_open, 1,
+	 PyDoc_STR("() -> (bool _rv)")},
+	{"close", (PyCFunction)ostreamObj_close, 1,
+	 PyDoc_STR("() -> None")},
+	{"write_1", (PyCFunction)ostreamObj_write_1, 1,
+	 PyDoc_STR("(unsigned char * buffer, int nbytes) -> (int _rv)")},
+	{"write_2", (PyCFunction)ostreamObj_write_2, 1,
+	 PyDoc_STR("(char* cstr) -> (int _rv)")},
+	{"flush", (PyCFunction)ostreamObj_flush, 1,
+	 PyDoc_STR("() -> None")},
+	{NULL, NULL, 0}
+};
+
+#define ostreamObj_getsetlist NULL
+
+
+static int ostreamObj_compare(ostreamObject *self, ostreamObject *other)
+{
+	if ( self->ob_itself > other->ob_itself ) return 1;
+	if ( self->ob_itself < other->ob_itself ) return -1;
+	return 0;
+}
+
+#define ostreamObj_repr NULL
+
+static long ostreamObj_hash(ostreamObject *self)
+{
+	return (long)self->ob_itself;
+}
+static int ostreamObj_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
+{
+	ambulant::lib::ostream* itself;
+	Py_KEYWORDS_STRING_TYPE *kw[] = {"itself", 0};
+
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, ostreamObj_Convert, &itself))
+	{
+		((ostreamObject *)_self)->ob_itself = itself;
+		return 0;
+	}
+	return -1;
+}
+
+#define ostreamObj_tp_alloc PyType_GenericAlloc
+
+static PyObject *ostreamObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
+{
+	PyObject *_self;
+
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((ostreamObject *)_self)->ob_itself = NULL;
+	return _self;
+}
+
+#define ostreamObj_tp_free PyObject_Del
+
+
+PyTypeObject ostream_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0, /*ob_size*/
+	"ambulant.ostream", /*tp_name*/
+	sizeof(ostreamObject), /*tp_basicsize*/
+	0, /*tp_itemsize*/
+	/* methods */
+	(destructor) ostreamObj_dealloc, /*tp_dealloc*/
+	0, /*tp_print*/
+	(getattrfunc)0, /*tp_getattr*/
+	(setattrfunc)0, /*tp_setattr*/
+	(cmpfunc) ostreamObj_compare, /*tp_compare*/
+	(reprfunc) ostreamObj_repr, /*tp_repr*/
+	(PyNumberMethods *)0, /* tp_as_number */
+	(PySequenceMethods *)0, /* tp_as_sequence */
+	(PyMappingMethods *)0, /* tp_as_mapping */
+	(hashfunc) ostreamObj_hash, /*tp_hash*/
+	0, /*tp_call*/
+	0, /*tp_str*/
+	PyObject_GenericGetAttr, /*tp_getattro*/
+	PyObject_GenericSetAttr, /*tp_setattro */
+	0, /*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /* tp_flags */
+	0, /*tp_doc*/
+	0, /*tp_traverse*/
+	0, /*tp_clear*/
+	0, /*tp_richcompare*/
+	0, /*tp_weaklistoffset*/
+	0, /*tp_iter*/
+	0, /*tp_iternext*/
+	ostreamObj_methods, /* tp_methods */
+	0, /*tp_members*/
+	ostreamObj_getsetlist, /*tp_getset*/
+	0, /*tp_base*/
+	0, /*tp_dict*/
+	0, /*tp_descr_get*/
+	0, /*tp_descr_set*/
+	0, /*tp_dictoffset*/
+	ostreamObj_tp_init, /* tp_init */
+	ostreamObj_tp_alloc, /* tp_alloc */
+	ostreamObj_tp_new, /* tp_new */
+	ostreamObj_tp_free, /* tp_free */
+};
+
+/* -------------------- End object type ostream --------------------- */
 
 
 /* ----------------------- Object type logger ----------------------- */
@@ -374,6 +618,21 @@ static PyObject *loggerObj_set_level(loggerObject *_self, PyObject *_args)
 	return _res;
 }
 
+static PyObject *loggerObj_set_ostream(loggerObject *_self, PyObject *_args)
+{
+	PyObject *_res = NULL;
+	ambulant::lib::ostream* pos;
+	if (!PyArg_ParseTuple(_args, "O&",
+	                      ostreamObj_Convert, &pos))
+		return NULL;
+	PyThreadState *_save = PyEval_SaveThread();
+	_self->ob_itself->set_ostream(pos);
+	PyEval_RestoreThread(_save);
+	Py_INCREF(Py_None);
+	_res = Py_None;
+	return _res;
+}
+
 static PyMethodDef loggerObj_methods[] = {
 	{"debug", (PyCFunction)loggerObj_debug, 1,
 	 PyDoc_STR("(std::string s) -> None")},
@@ -393,6 +652,8 @@ static PyMethodDef loggerObj_methods[] = {
 	 PyDoc_STR("(int level) -> (bool _rv)")},
 	{"set_level", (PyCFunction)loggerObj_set_level, 1,
 	 PyDoc_STR("(int level) -> None")},
+	{"set_ostream", (PyCFunction)loggerObj_set_ostream, 1,
+	 PyDoc_STR("(ambulant::lib::ostream* pos) -> None")},
 	{NULL, NULL, 0}
 };
 
@@ -17360,6 +17621,11 @@ void initambulant(void)
 	if (PyType_Ready(&pycppbridge_Type) < 0) return;
 	Py_INCREF(&pycppbridge_Type);
 	PyModule_AddObject(m, "pycppbridge", (PyObject *)&pycppbridge_Type);
+	ostream_Type.ob_type = &PyType_Type;
+	ostream_Type.tp_base = &pycppbridge_Type;
+	if (PyType_Ready(&ostream_Type) < 0) return;
+	Py_INCREF(&ostream_Type);
+	PyModule_AddObject(m, "ostream", (PyObject *)&ostream_Type);
 	logger_Type.ob_type = &PyType_Type;
 	logger_Type.tp_base = &pycppbridge_Type;
 	if (PyType_Ready(&logger_Type) < 0) return;
