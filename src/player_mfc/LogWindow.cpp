@@ -66,6 +66,7 @@ void
 CLogWindow::AppendText(const char *data)
 {
 	char *myData = _strdup(data);
+	if (m_hWnd == NULL) return;
 	PostMessage(WM_AMBULANT_MESSAGE, 0, (LPARAM)myData);
 }
 

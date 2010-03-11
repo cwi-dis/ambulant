@@ -482,7 +482,7 @@ smil_layout_manager::avt_value_changed_for(const lib::node *n) {
     // XXXJACK: descend children as well???
     common::animation_notification *an = rn->get_animation_notification();
     assert(an);
-    an->animated();
+	if (an) an->animated();
 }
 #endif // WITH_SMIL30
 

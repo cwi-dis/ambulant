@@ -374,6 +374,11 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 	sd.dwSize = sizeof(DDSURFACEDESC);
 	sd.dwFlags = DDSD_CAPS;
 	sd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
+#if 1
+	// Attempt by Jack
+	sd.dwWidth = m_width;
+	sd.dwHeight = m_height;
+#endif
 	hr = m_direct_draw->CreateSurface(&sd, &m_primary_surface, NULL);
 	if (FAILED(hr)) {
 		seterror("DirectDraw::CreateSurface()", hr);
@@ -618,7 +623,10 @@ gui::dx::viewport::redraw(const lib::rect& rc) {
 	
 	// Convert dst to screen coordinates
 	to_screen_rc_ptr(dst_rc);
-	
+	assert(rc.left() <= m_width);
+	assert(rc.right() <= m_width);
+	assert(rc.top() <= m_height);
+	assert(rc.bottom() <= m_height);
 	// Verify:
 	if(IsRectEmpty(&src_rc) || IsRectEmpty(&dst_rc))
 		return;
@@ -700,7 +708,11 @@ gui::dx::viewport::redraw(const lib::rect& rc) {
 		HRESULT hr = m_fstr_surface->Blt(&src_rc, m_surface, &src_rc, flags, NULL);
 		if (hr == DDERR_NOTFOUND) return; // XXXJACK
 		if (FAILED(hr)) {
-			seterror("viewport::redraw()/DirectDrawSurface::Blt()", hr);
+			lib::logger::get_logger()->trace("DirectDrawSurface::Blt: error 0x%x. rect (%d,%d,%d,%d)",
+				hr, src_rc.left, src_rc.top, src_rc.right, src_rc.bottom);
+			static bool warned = false;
+			if (!warned) seterror("viewport::redraw()/DirectDrawSurface::Blt()", hr);
+			warned = true;
 		}
 	}
 }

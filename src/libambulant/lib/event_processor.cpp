@@ -161,9 +161,15 @@ void
 event_processor_impl::_serve_events()
 {
 	if (m_observer) {
+		event_processor_observer *obs = m_observer;
 		m_lock.leave();
-		m_observer->lock_redraw();
+		obs->lock_redraw();
 		m_lock.enter();
+		if (m_observer == NULL) {
+			// We got deleted behind our back
+			m_lock.leave();
+			return;
+		}
 	}
 	// check all delta_timer queues, in the right order
 	while (_events_available(m_high_delta_timer, &m_high_q)
