@@ -101,7 +101,7 @@ class textptr {
 		ptrdiff_t n = m_length*2+1; // Two times wide string size should be enough for mb
 		m_pb = new char[n];
 #ifdef AMBULANT_PLATFORM_WIN32
-		WideCharToMultiByte(CP_UTF8, 0, m_pcw, -1, m_pb, n, NULL, NULL);
+		WideCharToMultiByte(CP_UTF8, 0, m_pcw, -1, m_pb, static_cast<int>(n), NULL, NULL);
 #else
 		wcstombs(m_pb, m_pcw, n);
 
