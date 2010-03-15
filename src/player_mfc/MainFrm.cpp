@@ -94,7 +94,9 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
 	DockControlBar(&m_wndToolBar);
-
+#ifdef WITHOUT_DIALOGS
+	OnViewFullScreen();
+#endif
 	return 0;
 }
 

@@ -230,7 +230,9 @@ MmView::MmView()
 	m_cursor_id(0),
 	m_autoplay(true)
 {
+#ifndef WITHOUT_DIALOGS
 	lib::logger::get_logger()->set_show_message(log_show_message);
+#endif
 #ifdef WITHOUT_LOG_WINDOW
 	lib::logger::get_logger()->set_std_ostream(log_os);
 #else
