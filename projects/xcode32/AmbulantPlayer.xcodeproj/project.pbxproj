@@ -1,0 +1,1054 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		04070424115266770094FB0B /* LogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0407041B115266770094FB0B /* LogController.mm */; };
+		04070425115266770094FB0B /* MyAmbulantView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0407041D115266770094FB0B /* MyAmbulantView.mm */; };
+		04070426115266770094FB0B /* MyAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0407041F115266770094FB0B /* MyAppDelegate.mm */; };
+		04070427115266770094FB0B /* MyDocument.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04070421115266770094FB0B /* MyDocument.mm */; };
+		04070428115266770094FB0B /* mypreferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04070423115266770094FB0B /* mypreferences.mm */; };
+		0407042C115266870094FB0B /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04070429115266870094FB0B /* mainloop.cpp */; };
+		0407042D115266870094FB0B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0407042B115266870094FB0B /* main.m */; };
+		040704D4115266B40094FB0B /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407047B115266B40094FB0B /* pause.png */; };
+		040704D5115266B40094FB0B /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407047C115266B40094FB0B /* play.png */; };
+		040704D6115266B40094FB0B /* playactive.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407047D115266B40094FB0B /* playactive.png */; };
+		040704D7115266B40094FB0B /* stop.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407047E115266B40094FB0B /* stop.png */; };
+		040704E1115266B40094FB0B /* Ambulant.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0407048A115266B40094FB0B /* Ambulant.icns */; };
+		040704E2115266B40094FB0B /* AmbulantDocDaisy.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0407048B115266B40094FB0B /* AmbulantDocDaisy.icns */; };
+		040704E3115266B40094FB0B /* AmbulantDocGrins.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0407048C115266B40094FB0B /* AmbulantDocGrins.icns */; };
+		040704E4115266B40094FB0B /* AmbulantDocSmil.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0407048D115266B40094FB0B /* AmbulantDocSmil.icns */; };
+		040704E5115266B40094FB0B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0407048E115266B40094FB0B /* Info.plist */; };
+		0407052F115266EE0094FB0B /* IPR-Notice-and-Disclaimers.htm in Resources */ = {isa = PBXBuildFile; fileRef = 040704E8115266EE0094FB0B /* IPR-Notice-and-Disclaimers.htm */; };
+		04070530115266EE0094FB0B /* SMIL-anim.mod in Resources */ = {isa = PBXBuildFile; fileRef = 040704E9115266EE0094FB0B /* SMIL-anim.mod */; };
+		04070531115266EE0094FB0B /* SMIL-control.mod in Resources */ = {isa = PBXBuildFile; fileRef = 040704EA115266EE0094FB0B /* SMIL-control.mod */; };
+		04070532115266EE0094FB0B /* SMIL-layout.mod in Resources */ = {isa = PBXBuildFile; fileRef = 040704EB115266EE0094FB0B /* SMIL-layout.mod */; };
+		04070533115266EE0094FB0B /* SMIL-link.mod in Resources */ = {isa = PBXBuildFile; fileRef = 040704EC115266EE0094FB0B /* SMIL-link.mod */; };
+		04070534115266EE0094FB0B /* SMIL-media.mod in Resources */ = {isa = PBXBuildFile; fileRef = 040704ED115266EE0094FB0B /* SMIL-media.mod */; };
+		04070535115266EE0094FB0B /* SMIL-metainformation.mod in Resources */ = {isa = PBXBuildFile; fileRef = 040704EE115266EE0094FB0B /* SMIL-metainformation.mod */; };
+		04070536115266EE0094FB0B /* SMIL-struct.mod in Resources */ = {isa = PBXBuildFile; fileRef = 040704EF115266EE0094FB0B /* SMIL-struct.mod */; };
+		04070537115266EE0094FB0B /* SMIL-timing.mod in Resources */ = {isa = PBXBuildFile; fileRef = 040704F0115266EE0094FB0B /* SMIL-timing.mod */; };
+		04070538115266EE0094FB0B /* SMIL-transition.mod in Resources */ = {isa = PBXBuildFile; fileRef = 040704F1115266EE0094FB0B /* SMIL-transition.mod */; };
+		04070539115266EE0094FB0B /* SMIL20.dtd in Resources */ = {isa = PBXBuildFile; fileRef = 040704F2115266EE0094FB0B /* SMIL20.dtd */; };
+		0407053A115266EE0094FB0B /* base.css in Resources */ = {isa = PBXBuildFile; fileRef = 040704F3115266EE0094FB0B /* base.css */; };
+		0407053B115266EE0094FB0B /* read-me.txt in Resources */ = {isa = PBXBuildFile; fileRef = 040704F4115266EE0094FB0B /* read-me.txt */; };
+		0407053C115266EE0094FB0B /* smil-attribs-1.mod in Resources */ = {isa = PBXBuildFile; fileRef = 040704F5115266EE0094FB0B /* smil-attribs-1.mod */; };
+		0407053D115266EE0094FB0B /* smil-datatypes-1.mod in Resources */ = {isa = PBXBuildFile; fileRef = 040704F6115266EE0094FB0B /* smil-datatypes-1.mod */; };
+		0407053E115266EE0094FB0B /* smil-framework-1.mod in Resources */ = {isa = PBXBuildFile; fileRef = 040704F7115266EE0094FB0B /* smil-framework-1.mod */; };
+		0407053F115266EE0094FB0B /* smil-model-1.mod in Resources */ = {isa = PBXBuildFile; fileRef = 040704F8115266EE0094FB0B /* smil-model-1.mod */; };
+		04070540115266EE0094FB0B /* smil-qname-1.mod in Resources */ = {isa = PBXBuildFile; fileRef = 040704F9115266EE0094FB0B /* smil-qname-1.mod */; };
+		04070541115266EE0094FB0B /* smil2.cat in Resources */ = {isa = PBXBuildFile; fileRef = 040704FA115266EE0094FB0B /* smil2.cat */; };
+		04070542115266EE0094FB0B /* w3c_home in Resources */ = {isa = PBXBuildFile; fileRef = 040704FB115266EE0094FB0B /* w3c_home */; };
+		04070543115266EE0094FB0B /* IPR+Notice+and+Disclaimers.htm in Resources */ = {isa = PBXBuildFile; fileRef = 040704FD115266EE0094FB0B /* IPR+Notice+and+Disclaimers.htm */; };
+		04070544115266EE0094FB0B /* Overview.html in Resources */ = {isa = PBXBuildFile; fileRef = 040704FE115266EE0094FB0B /* Overview.html */; };
+		04070545115266EE0094FB0B /* SMIL-anim.mod in Resources */ = {isa = PBXBuildFile; fileRef = 040704FF115266EE0094FB0B /* SMIL-anim.mod */; };
+		04070546115266EE0094FB0B /* SMIL-control.mod in Resources */ = {isa = PBXBuildFile; fileRef = 04070500115266EE0094FB0B /* SMIL-control.mod */; };
+		04070547115266EE0094FB0B /* SMIL-layout.mod in Resources */ = {isa = PBXBuildFile; fileRef = 04070501115266EE0094FB0B /* SMIL-layout.mod */; };
+		04070548115266EE0094FB0B /* SMIL-link.mod in Resources */ = {isa = PBXBuildFile; fileRef = 04070502115266EE0094FB0B /* SMIL-link.mod */; };
+		04070549115266EE0094FB0B /* SMIL-media.mod in Resources */ = {isa = PBXBuildFile; fileRef = 04070503115266EE0094FB0B /* SMIL-media.mod */; };
+		0407054A115266EE0094FB0B /* SMIL-metainformation.mod in Resources */ = {isa = PBXBuildFile; fileRef = 04070504115266EE0094FB0B /* SMIL-metainformation.mod */; };
+		0407054B115266EE0094FB0B /* SMIL-struct.mod in Resources */ = {isa = PBXBuildFile; fileRef = 04070505115266EE0094FB0B /* SMIL-struct.mod */; };
+		0407054C115266EE0094FB0B /* SMIL-timing.mod in Resources */ = {isa = PBXBuildFile; fileRef = 04070506115266EE0094FB0B /* SMIL-timing.mod */; };
+		0407054D115266EE0094FB0B /* SMIL-transition.mod in Resources */ = {isa = PBXBuildFile; fileRef = 04070507115266EE0094FB0B /* SMIL-transition.mod */; };
+		0407054E115266EE0094FB0B /* SMIL21.dtd in Resources */ = {isa = PBXBuildFile; fileRef = 04070508115266EE0094FB0B /* SMIL21.dtd */; };
+		0407054F115266EE0094FB0B /* SMIL21ExtendedMobile.dtd in Resources */ = {isa = PBXBuildFile; fileRef = 04070509115266EE0094FB0B /* SMIL21ExtendedMobile.dtd */; };
+		04070550115266EE0094FB0B /* SMIL21Mobile.dtd in Resources */ = {isa = PBXBuildFile; fileRef = 0407050A115266EE0094FB0B /* SMIL21Mobile.dtd */; };
+		04070551115266EE0094FB0B /* base.css in Resources */ = {isa = PBXBuildFile; fileRef = 0407050B115266EE0094FB0B /* base.css */; };
+		04070552115266EE0094FB0B /* smil-DTD.html in Resources */ = {isa = PBXBuildFile; fileRef = 0407050C115266EE0094FB0B /* smil-DTD.html */; };
+		04070553115266EE0094FB0B /* smil-attribs-1.mod in Resources */ = {isa = PBXBuildFile; fileRef = 0407050D115266EE0094FB0B /* smil-attribs-1.mod */; };
+		04070554115266EE0094FB0B /* smil-datatypes-1.mod in Resources */ = {isa = PBXBuildFile; fileRef = 0407050E115266EE0094FB0B /* smil-datatypes-1.mod */; };
+		04070555115266EE0094FB0B /* smil-extended-mobile-profile-model-1.mod in Resources */ = {isa = PBXBuildFile; fileRef = 0407050F115266EE0094FB0B /* smil-extended-mobile-profile-model-1.mod */; };
+		04070556115266EE0094FB0B /* smil-framework-1.mod in Resources */ = {isa = PBXBuildFile; fileRef = 04070510115266EE0094FB0B /* smil-framework-1.mod */; };
+		04070557115266EE0094FB0B /* smil-language-profile-model-1.mod in Resources */ = {isa = PBXBuildFile; fileRef = 04070511115266EE0094FB0B /* smil-language-profile-model-1.mod */; };
+		04070558115266EE0094FB0B /* smil-mobile-profile-model-1.mod in Resources */ = {isa = PBXBuildFile; fileRef = 04070512115266EE0094FB0B /* smil-mobile-profile-model-1.mod */; };
+		04070559115266EE0094FB0B /* smil-qname-1.mod in Resources */ = {isa = PBXBuildFile; fileRef = 04070513115266EE0094FB0B /* smil-qname-1.mod */; };
+		0407055A115266EE0094FB0B /* IPR-NoticeandDisclaimers.htm in Resources */ = {isa = PBXBuildFile; fileRef = 04070515115266EE0094FB0B /* IPR-NoticeandDisclaimers.htm */; };
+		0407055B115266EE0094FB0B /* SMIL-anim.mod in Resources */ = {isa = PBXBuildFile; fileRef = 04070516115266EE0094FB0B /* SMIL-anim.mod */; };
+		0407055C115266EE0094FB0B /* SMIL-control.mod in Resources */ = {isa = PBXBuildFile; fileRef = 04070517115266EE0094FB0B /* SMIL-control.mod */; };
+		0407055D115266EE0094FB0B /* SMIL-layout.mod in Resources */ = {isa = PBXBuildFile; fileRef = 04070518115266EE0094FB0B /* SMIL-layout.mod */; };
+		0407055E115266EE0094FB0B /* SMIL-link.mod in Resources */ = {isa = PBXBuildFile; fileRef = 04070519115266EE0094FB0B /* SMIL-link.mod */; };
+		0407055F115266EE0094FB0B /* SMIL-media.mod in Resources */ = {isa = PBXBuildFile; fileRef = 0407051A115266EE0094FB0B /* SMIL-media.mod */; };
+		04070560115266EE0094FB0B /* SMIL-metainformation.mod in Resources */ = {isa = PBXBuildFile; fileRef = 0407051B115266EE0094FB0B /* SMIL-metainformation.mod */; };
+		04070561115266EE0094FB0B /* SMIL-smiltext.mod in Resources */ = {isa = PBXBuildFile; fileRef = 0407051C115266EE0094FB0B /* SMIL-smiltext.mod */; };
+		04070562115266EE0094FB0B /* SMIL-state.mod in Resources */ = {isa = PBXBuildFile; fileRef = 0407051D115266EE0094FB0B /* SMIL-state.mod */; };
+		04070563115266EE0094FB0B /* SMIL-struct.mod in Resources */ = {isa = PBXBuildFile; fileRef = 0407051E115266EE0094FB0B /* SMIL-struct.mod */; };
+		04070564115266EE0094FB0B /* SMIL-timesheet.mod in Resources */ = {isa = PBXBuildFile; fileRef = 0407051F115266EE0094FB0B /* SMIL-timesheet.mod */; };
+		04070565115266EE0094FB0B /* SMIL-timing.mod in Resources */ = {isa = PBXBuildFile; fileRef = 04070520115266EE0094FB0B /* SMIL-timing.mod */; };
+		04070566115266EE0094FB0B /* SMIL-transition.mod in Resources */ = {isa = PBXBuildFile; fileRef = 04070521115266EE0094FB0B /* SMIL-transition.mod */; };
+		04070567115266EE0094FB0B /* SMIL30Daisy.dtd in Resources */ = {isa = PBXBuildFile; fileRef = 04070522115266EE0094FB0B /* SMIL30Daisy.dtd */; };
+		04070568115266EE0094FB0B /* SMIL30ExtendedMobile.dtd in Resources */ = {isa = PBXBuildFile; fileRef = 04070523115266EE0094FB0B /* SMIL30ExtendedMobile.dtd */; };
+		04070569115266EE0094FB0B /* SMIL30Language.dtd in Resources */ = {isa = PBXBuildFile; fileRef = 04070524115266EE0094FB0B /* SMIL30Language.dtd */; };
+		0407056A115266EE0094FB0B /* SMIL30Mobile.dtd in Resources */ = {isa = PBXBuildFile; fileRef = 04070525115266EE0094FB0B /* SMIL30Mobile.dtd */; };
+		0407056B115266EE0094FB0B /* SMIL30Tiny.dtd in Resources */ = {isa = PBXBuildFile; fileRef = 04070526115266EE0094FB0B /* SMIL30Tiny.dtd */; };
+		0407056C115266EE0094FB0B /* Timesheets.dtd in Resources */ = {isa = PBXBuildFile; fileRef = 04070527115266EE0094FB0B /* Timesheets.dtd */; };
+		0407056D115266EE0094FB0B /* smil-attribs-1.mod in Resources */ = {isa = PBXBuildFile; fileRef = 04070528115266EE0094FB0B /* smil-attribs-1.mod */; };
+		0407056E115266EE0094FB0B /* smil-datatypes-1.mod in Resources */ = {isa = PBXBuildFile; fileRef = 04070529115266EE0094FB0B /* smil-datatypes-1.mod */; };
+		0407056F115266EE0094FB0B /* smil-framework-1.mod in Resources */ = {isa = PBXBuildFile; fileRef = 0407052A115266EE0094FB0B /* smil-framework-1.mod */; };
+		04070570115266EE0094FB0B /* smil-profile-model-1.mod in Resources */ = {isa = PBXBuildFile; fileRef = 0407052B115266EE0094FB0B /* smil-profile-model-1.mod */; };
+		04070571115266EE0094FB0B /* smil-qname-1.mod in Resources */ = {isa = PBXBuildFile; fileRef = 0407052C115266EE0094FB0B /* smil-qname-1.mod */; };
+		04070572115266EE0094FB0B /* smilText10.dtd in Resources */ = {isa = PBXBuildFile; fileRef = 0407052D115266EE0094FB0B /* smilText10.dtd */; };
+		04070573115266EE0094FB0B /* mapping.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0407052E115266EE0094FB0B /* mapping.txt */; };
+		0407057F115266F60094FB0B /* AmbulantTune.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 04070576115266F60094FB0B /* AmbulantTune.mp3 */; };
+		04070580115266F60094FB0B /* ambulant.png in Resources */ = {isa = PBXBuildFile; fileRef = 04070577115266F60094FB0B /* ambulant.png */; };
+		04070581115266F60094FB0B /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = 04070578115266F60094FB0B /* background.png */; };
+		04070582115266F60094FB0B /* extensible.png in Resources */ = {isa = PBXBuildFile; fileRef = 04070579115266F60094FB0B /* extensible.png */; };
+		04070583115266F60094FB0B /* fast.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407057A115266F60094FB0B /* fast.png */; };
+		04070584115266F60094FB0B /* opensource.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407057B115266F60094FB0B /* opensource.png */; };
+		04070585115266F60094FB0B /* portable.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407057C115266F60094FB0B /* portable.png */; };
+		04070586115266F60094FB0B /* visit.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407057D115266F60094FB0B /* visit.png */; };
+		04070587115266F60094FB0B /* Welcome.smil in Resources */ = {isa = PBXBuildFile; fileRef = 0407057E115266F60094FB0B /* Welcome.smil */; };
+		0407061611526C240094FB0B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0407060311526C240094FB0B /* Credits.rtf */; };
+		0407061711526C240094FB0B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0407060511526C240094FB0B /* InfoPlist.strings */; };
+		0407061811526C240094FB0B /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0407060711526C240094FB0B /* MainMenu.nib */; };
+		0407061911526C240094FB0B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0407060A11526C240094FB0B /* Credits.rtf */; };
+		0407061A11526C240094FB0B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0407060C11526C240094FB0B /* InfoPlist.strings */; };
+		0407061B11526C240094FB0B /* locversion.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0407060E11526C240094FB0B /* locversion.plist */; };
+		0407061C11526C240094FB0B /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0407061011526C240094FB0B /* Log.nib */; };
+		0407061D11526C240094FB0B /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0407061211526C240094FB0B /* MainMenu.nib */; };
+		0407061E11526C240094FB0B /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0407061411526C240094FB0B /* MyDocument.nib */; };
+		0407064C11526DB70094FB0B /* libambulant.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 040705A1115268480094FB0B /* libambulant.dylib */; };
+		042AD9591152CC6B009CA791 /* libamplugin_plugin.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042AD9561152CC13009CA791 /* libamplugin_plugin.so */; };
+		042ADA421152D83E009CA791 /* libamplugin_xpath_state.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADA411152D831009CA791 /* libamplugin_xpath_state.so */; };
+		042ADAA91152DA4F009CA791 /* libamplugin_xerces.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADAA81152DA4A009CA791 /* libamplugin_xerces.so */; };
+		042ADB0C1152DE69009CA791 /* libamplugin_python.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADB0B1152DE65009CA791 /* libamplugin_python.so */; };
+		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		040705A0115268480094FB0B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 04070599115268480094FB0B /* libambulant.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D2AAC0C705546C1D00DB518D;
+			remoteInfo = libambulant;
+		};
+		042AD9551152CC13009CA791 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 042AD9511152CC13009CA791 /* plugin.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D2AAC09D05546B4700DB518D;
+			remoteInfo = plugin;
+		};
+		042ADA401152D831009CA791 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 042ADA3C1152D831009CA791 /* plugin_xpath_state.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D2AAC09D05546B4700DB518D /* libamplugin_xpath_state.so */;
+			remoteInfo = plugin;
+		};
+		042ADAA71152DA4A009CA791 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 042ADAA31152DA4A009CA791 /* plugin_xerces.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D2AAC09D05546B4700DB518D /* libamplugin_xerces.so */;
+			remoteInfo = plugin;
+		};
+		042ADB0A1152DE65009CA791 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 042ADB061152DE65009CA791 /* plugin_python.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D2AAC09D05546B4700DB518D /* libamplugin_python.so */;
+			remoteInfo = plugin;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		042AD96C1152CC7A009CA791 /* Copy Plugins */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				042ADAA91152DA4F009CA791 /* libamplugin_xerces.so in Copy Plugins */,
+				042ADB0C1152DE69009CA791 /* libamplugin_python.so in Copy Plugins */,
+				042ADA421152D83E009CA791 /* libamplugin_xpath_state.so in Copy Plugins */,
+				042AD9591152CC6B009CA791 /* libamplugin_plugin.so in Copy Plugins */,
+			);
+			name = "Copy Plugins";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		040703A4115266100094FB0B /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "ambulant-common.xcconfig"; sourceTree = "<group>"; };
+		040703A5115266100094FB0B /* ambulant-release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "ambulant-release.xcconfig"; sourceTree = "<group>"; };
+		0407041A115266770094FB0B /* LogController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LogController.h; path = ../../src/player_macosx/LogController.h; sourceTree = SOURCE_ROOT; };
+		0407041B115266770094FB0B /* LogController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = LogController.mm; path = ../../src/player_macosx/LogController.mm; sourceTree = SOURCE_ROOT; };
+		0407041C115266770094FB0B /* MyAmbulantView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyAmbulantView.h; path = ../../src/player_macosx/MyAmbulantView.h; sourceTree = SOURCE_ROOT; };
+		0407041D115266770094FB0B /* MyAmbulantView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = MyAmbulantView.mm; path = ../../src/player_macosx/MyAmbulantView.mm; sourceTree = SOURCE_ROOT; };
+		0407041E115266770094FB0B /* MyAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyAppDelegate.h; path = ../../src/player_macosx/MyAppDelegate.h; sourceTree = SOURCE_ROOT; };
+		0407041F115266770094FB0B /* MyAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = MyAppDelegate.mm; path = ../../src/player_macosx/MyAppDelegate.mm; sourceTree = SOURCE_ROOT; };
+		04070420115266770094FB0B /* MyDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyDocument.h; path = ../../src/player_macosx/MyDocument.h; sourceTree = SOURCE_ROOT; };
+		04070421115266770094FB0B /* MyDocument.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = MyDocument.mm; path = ../../src/player_macosx/MyDocument.mm; sourceTree = SOURCE_ROOT; };
+		04070422115266770094FB0B /* mypreferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mypreferences.h; path = ../../src/player_macosx/mypreferences.h; sourceTree = SOURCE_ROOT; };
+		04070423115266770094FB0B /* mypreferences.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = mypreferences.mm; path = ../../src/player_macosx/mypreferences.mm; sourceTree = SOURCE_ROOT; };
+		04070429115266870094FB0B /* mainloop.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mainloop.cpp; path = ../../src/player_macosx/mainloop.cpp; sourceTree = SOURCE_ROOT; };
+		0407042A115266870094FB0B /* mainloop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mainloop.h; path = ../../src/player_macosx/mainloop.h; sourceTree = SOURCE_ROOT; };
+		0407042B115266870094FB0B /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../../src/player_macosx/main.m; sourceTree = SOURCE_ROOT; };
+		0407047B115266B40094FB0B /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pause.png; path = ../../src/player_macosx/pause.png; sourceTree = SOURCE_ROOT; };
+		0407047C115266B40094FB0B /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = play.png; path = ../../src/player_macosx/play.png; sourceTree = SOURCE_ROOT; };
+		0407047D115266B40094FB0B /* playactive.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = playactive.png; path = ../../src/player_macosx/playactive.png; sourceTree = SOURCE_ROOT; };
+		0407047E115266B40094FB0B /* stop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stop.png; path = ../../src/player_macosx/stop.png; sourceTree = SOURCE_ROOT; };
+		0407048A115266B40094FB0B /* Ambulant.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Ambulant.icns; path = ../../src/player_macosx/Ambulant.icns; sourceTree = SOURCE_ROOT; };
+		0407048B115266B40094FB0B /* AmbulantDocDaisy.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = AmbulantDocDaisy.icns; path = ../../src/player_macosx/AmbulantDocDaisy.icns; sourceTree = SOURCE_ROOT; };
+		0407048C115266B40094FB0B /* AmbulantDocGrins.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = AmbulantDocGrins.icns; path = ../../src/player_macosx/AmbulantDocGrins.icns; sourceTree = SOURCE_ROOT; };
+		0407048D115266B40094FB0B /* AmbulantDocSmil.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = AmbulantDocSmil.icns; path = ../../src/player_macosx/AmbulantDocSmil.icns; sourceTree = SOURCE_ROOT; };
+		0407048E115266B40094FB0B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../../src/player_macosx/Info.plist; sourceTree = SOURCE_ROOT; };
+		040704E8115266EE0094FB0B /* IPR-Notice-and-Disclaimers.htm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "IPR-Notice-and-Disclaimers.htm"; sourceTree = "<group>"; };
+		040704E9115266EE0094FB0B /* SMIL-anim.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-anim.mod"; sourceTree = "<group>"; };
+		040704EA115266EE0094FB0B /* SMIL-control.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-control.mod"; sourceTree = "<group>"; };
+		040704EB115266EE0094FB0B /* SMIL-layout.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-layout.mod"; sourceTree = "<group>"; };
+		040704EC115266EE0094FB0B /* SMIL-link.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-link.mod"; sourceTree = "<group>"; };
+		040704ED115266EE0094FB0B /* SMIL-media.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-media.mod"; sourceTree = "<group>"; };
+		040704EE115266EE0094FB0B /* SMIL-metainformation.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-metainformation.mod"; sourceTree = "<group>"; };
+		040704EF115266EE0094FB0B /* SMIL-struct.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-struct.mod"; sourceTree = "<group>"; };
+		040704F0115266EE0094FB0B /* SMIL-timing.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-timing.mod"; sourceTree = "<group>"; };
+		040704F1115266EE0094FB0B /* SMIL-transition.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-transition.mod"; sourceTree = "<group>"; };
+		040704F2115266EE0094FB0B /* SMIL20.dtd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = SMIL20.dtd; sourceTree = "<group>"; };
+		040704F3115266EE0094FB0B /* base.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = base.css; sourceTree = "<group>"; };
+		040704F4115266EE0094FB0B /* read-me.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "read-me.txt"; sourceTree = "<group>"; };
+		040704F5115266EE0094FB0B /* smil-attribs-1.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "smil-attribs-1.mod"; sourceTree = "<group>"; };
+		040704F6115266EE0094FB0B /* smil-datatypes-1.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "smil-datatypes-1.mod"; sourceTree = "<group>"; };
+		040704F7115266EE0094FB0B /* smil-framework-1.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "smil-framework-1.mod"; sourceTree = "<group>"; };
+		040704F8115266EE0094FB0B /* smil-model-1.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "smil-model-1.mod"; sourceTree = "<group>"; };
+		040704F9115266EE0094FB0B /* smil-qname-1.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "smil-qname-1.mod"; sourceTree = "<group>"; };
+		040704FA115266EE0094FB0B /* smil2.cat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = smil2.cat; sourceTree = "<group>"; };
+		040704FB115266EE0094FB0B /* w3c_home */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = w3c_home; sourceTree = "<group>"; };
+		040704FD115266EE0094FB0B /* IPR+Notice+and+Disclaimers.htm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "IPR+Notice+and+Disclaimers.htm"; sourceTree = "<group>"; };
+		040704FE115266EE0094FB0B /* Overview.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Overview.html; sourceTree = "<group>"; };
+		040704FF115266EE0094FB0B /* SMIL-anim.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-anim.mod"; sourceTree = "<group>"; };
+		04070500115266EE0094FB0B /* SMIL-control.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-control.mod"; sourceTree = "<group>"; };
+		04070501115266EE0094FB0B /* SMIL-layout.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-layout.mod"; sourceTree = "<group>"; };
+		04070502115266EE0094FB0B /* SMIL-link.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-link.mod"; sourceTree = "<group>"; };
+		04070503115266EE0094FB0B /* SMIL-media.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-media.mod"; sourceTree = "<group>"; };
+		04070504115266EE0094FB0B /* SMIL-metainformation.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-metainformation.mod"; sourceTree = "<group>"; };
+		04070505115266EE0094FB0B /* SMIL-struct.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-struct.mod"; sourceTree = "<group>"; };
+		04070506115266EE0094FB0B /* SMIL-timing.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-timing.mod"; sourceTree = "<group>"; };
+		04070507115266EE0094FB0B /* SMIL-transition.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-transition.mod"; sourceTree = "<group>"; };
+		04070508115266EE0094FB0B /* SMIL21.dtd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = SMIL21.dtd; sourceTree = "<group>"; };
+		04070509115266EE0094FB0B /* SMIL21ExtendedMobile.dtd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = SMIL21ExtendedMobile.dtd; sourceTree = "<group>"; };
+		0407050A115266EE0094FB0B /* SMIL21Mobile.dtd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = SMIL21Mobile.dtd; sourceTree = "<group>"; };
+		0407050B115266EE0094FB0B /* base.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = base.css; sourceTree = "<group>"; };
+		0407050C115266EE0094FB0B /* smil-DTD.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "smil-DTD.html"; sourceTree = "<group>"; };
+		0407050D115266EE0094FB0B /* smil-attribs-1.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "smil-attribs-1.mod"; sourceTree = "<group>"; };
+		0407050E115266EE0094FB0B /* smil-datatypes-1.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "smil-datatypes-1.mod"; sourceTree = "<group>"; };
+		0407050F115266EE0094FB0B /* smil-extended-mobile-profile-model-1.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "smil-extended-mobile-profile-model-1.mod"; sourceTree = "<group>"; };
+		04070510115266EE0094FB0B /* smil-framework-1.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "smil-framework-1.mod"; sourceTree = "<group>"; };
+		04070511115266EE0094FB0B /* smil-language-profile-model-1.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "smil-language-profile-model-1.mod"; sourceTree = "<group>"; };
+		04070512115266EE0094FB0B /* smil-mobile-profile-model-1.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "smil-mobile-profile-model-1.mod"; sourceTree = "<group>"; };
+		04070513115266EE0094FB0B /* smil-qname-1.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "smil-qname-1.mod"; sourceTree = "<group>"; };
+		04070515115266EE0094FB0B /* IPR-NoticeandDisclaimers.htm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "IPR-NoticeandDisclaimers.htm"; sourceTree = "<group>"; };
+		04070516115266EE0094FB0B /* SMIL-anim.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-anim.mod"; sourceTree = "<group>"; };
+		04070517115266EE0094FB0B /* SMIL-control.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-control.mod"; sourceTree = "<group>"; };
+		04070518115266EE0094FB0B /* SMIL-layout.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-layout.mod"; sourceTree = "<group>"; };
+		04070519115266EE0094FB0B /* SMIL-link.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-link.mod"; sourceTree = "<group>"; };
+		0407051A115266EE0094FB0B /* SMIL-media.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-media.mod"; sourceTree = "<group>"; };
+		0407051B115266EE0094FB0B /* SMIL-metainformation.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-metainformation.mod"; sourceTree = "<group>"; };
+		0407051C115266EE0094FB0B /* SMIL-smiltext.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-smiltext.mod"; sourceTree = "<group>"; };
+		0407051D115266EE0094FB0B /* SMIL-state.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-state.mod"; sourceTree = "<group>"; };
+		0407051E115266EE0094FB0B /* SMIL-struct.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-struct.mod"; sourceTree = "<group>"; };
+		0407051F115266EE0094FB0B /* SMIL-timesheet.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-timesheet.mod"; sourceTree = "<group>"; };
+		04070520115266EE0094FB0B /* SMIL-timing.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-timing.mod"; sourceTree = "<group>"; };
+		04070521115266EE0094FB0B /* SMIL-transition.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SMIL-transition.mod"; sourceTree = "<group>"; };
+		04070522115266EE0094FB0B /* SMIL30Daisy.dtd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = SMIL30Daisy.dtd; sourceTree = "<group>"; };
+		04070523115266EE0094FB0B /* SMIL30ExtendedMobile.dtd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = SMIL30ExtendedMobile.dtd; sourceTree = "<group>"; };
+		04070524115266EE0094FB0B /* SMIL30Language.dtd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = SMIL30Language.dtd; sourceTree = "<group>"; };
+		04070525115266EE0094FB0B /* SMIL30Mobile.dtd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = SMIL30Mobile.dtd; sourceTree = "<group>"; };
+		04070526115266EE0094FB0B /* SMIL30Tiny.dtd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = SMIL30Tiny.dtd; sourceTree = "<group>"; };
+		04070527115266EE0094FB0B /* Timesheets.dtd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Timesheets.dtd; sourceTree = "<group>"; };
+		04070528115266EE0094FB0B /* smil-attribs-1.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "smil-attribs-1.mod"; sourceTree = "<group>"; };
+		04070529115266EE0094FB0B /* smil-datatypes-1.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "smil-datatypes-1.mod"; sourceTree = "<group>"; };
+		0407052A115266EE0094FB0B /* smil-framework-1.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "smil-framework-1.mod"; sourceTree = "<group>"; };
+		0407052B115266EE0094FB0B /* smil-profile-model-1.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "smil-profile-model-1.mod"; sourceTree = "<group>"; };
+		0407052C115266EE0094FB0B /* smil-qname-1.mod */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "smil-qname-1.mod"; sourceTree = "<group>"; };
+		0407052D115266EE0094FB0B /* smilText10.dtd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = smilText10.dtd; sourceTree = "<group>"; };
+		0407052E115266EE0094FB0B /* mapping.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mapping.txt; sourceTree = "<group>"; };
+		04070576115266F60094FB0B /* AmbulantTune.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = AmbulantTune.mp3; sourceTree = "<group>"; };
+		04070577115266F60094FB0B /* ambulant.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ambulant.png; sourceTree = "<group>"; };
+		04070578115266F60094FB0B /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background.png; sourceTree = "<group>"; };
+		04070579115266F60094FB0B /* extensible.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = extensible.png; sourceTree = "<group>"; };
+		0407057A115266F60094FB0B /* fast.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fast.png; sourceTree = "<group>"; };
+		0407057B115266F60094FB0B /* opensource.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = opensource.png; sourceTree = "<group>"; };
+		0407057C115266F60094FB0B /* portable.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = portable.png; sourceTree = "<group>"; };
+		0407057D115266F60094FB0B /* visit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = visit.png; sourceTree = "<group>"; };
+		0407057E115266F60094FB0B /* Welcome.smil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = Welcome.smil; path = ../../Extras/Welcome/Welcome.smil; sourceTree = SOURCE_ROOT; };
+		04070599115268480094FB0B /* libambulant.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = libambulant.xcodeproj; sourceTree = "<group>"; };
+		0407060411526C240094FB0B /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = Dutch; path = Credits.rtf; sourceTree = "<group>"; };
+		0407060611526C240094FB0B /* Dutch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = Dutch; path = InfoPlist.strings; sourceTree = "<group>"; };
+		0407060811526C240094FB0B /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = MainMenu.nib; sourceTree = "<group>"; };
+		0407060B11526C240094FB0B /* English */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = English; path = Credits.rtf; sourceTree = "<group>"; };
+		0407060D11526C240094FB0B /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = InfoPlist.strings; sourceTree = "<group>"; };
+		0407060F11526C240094FB0B /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = English; path = locversion.plist; sourceTree = "<group>"; };
+		0407061111526C240094FB0B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Log.nib; sourceTree = "<group>"; };
+		0407061311526C240094FB0B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = MainMenu.nib; sourceTree = "<group>"; };
+		0407061511526C240094FB0B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = MyDocument.nib; sourceTree = "<group>"; };
+		0407063611526CAD0094FB0B /* ambulant-debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "ambulant-debug.xcconfig"; sourceTree = "<group>"; };
+		042AD9511152CC13009CA791 /* plugin.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = plugin.xcodeproj; sourceTree = "<group>"; };
+		042ADA3C1152D831009CA791 /* plugin_xpath_state.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = plugin_xpath_state.xcodeproj; sourceTree = "<group>"; };
+		042ADAA31152DA4A009CA791 /* plugin_xerces.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = plugin_xerces.xcodeproj; sourceTree = "<group>"; };
+		042ADB061152DE65009CA791 /* plugin_python.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = plugin_python.xcodeproj; sourceTree = "<group>"; };
+		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+		256AC3F00F4B6AF500CF3369 /* AmbulantPlayer_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbulantPlayer_Prefix.pch; sourceTree = "<group>"; };
+		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		8D1107320486CEB800E47090 /* AmbulantPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmbulantPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D11072E0486CEB800E47090 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
+				0407064C11526DB70094FB0B /* libambulant.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		040703A3115266100094FB0B /* Configuration Files */ = {
+			isa = PBXGroup;
+			children = (
+				0407063611526CAD0094FB0B /* ambulant-debug.xcconfig */,
+				040703A4115266100094FB0B /* ambulant-common.xcconfig */,
+				040703A5115266100094FB0B /* ambulant-release.xcconfig */,
+			);
+			name = "Configuration Files";
+			sourceTree = "<group>";
+		};
+		040704E6115266EE0094FB0B /* DTDCache */ = {
+			isa = PBXGroup;
+			children = (
+				040704E7115266EE0094FB0B /* SMIL20 */,
+				040704FC115266EE0094FB0B /* SMIL21 */,
+				04070514115266EE0094FB0B /* SMIL30 */,
+				0407052E115266EE0094FB0B /* mapping.txt */,
+			);
+			name = DTDCache;
+			path = ../../Extras/DTDCache;
+			sourceTree = SOURCE_ROOT;
+		};
+		040704E7115266EE0094FB0B /* SMIL20 */ = {
+			isa = PBXGroup;
+			children = (
+				040704E8115266EE0094FB0B /* IPR-Notice-and-Disclaimers.htm */,
+				040704E9115266EE0094FB0B /* SMIL-anim.mod */,
+				040704EA115266EE0094FB0B /* SMIL-control.mod */,
+				040704EB115266EE0094FB0B /* SMIL-layout.mod */,
+				040704EC115266EE0094FB0B /* SMIL-link.mod */,
+				040704ED115266EE0094FB0B /* SMIL-media.mod */,
+				040704EE115266EE0094FB0B /* SMIL-metainformation.mod */,
+				040704EF115266EE0094FB0B /* SMIL-struct.mod */,
+				040704F0115266EE0094FB0B /* SMIL-timing.mod */,
+				040704F1115266EE0094FB0B /* SMIL-transition.mod */,
+				040704F2115266EE0094FB0B /* SMIL20.dtd */,
+				040704F3115266EE0094FB0B /* base.css */,
+				040704F4115266EE0094FB0B /* read-me.txt */,
+				040704F5115266EE0094FB0B /* smil-attribs-1.mod */,
+				040704F6115266EE0094FB0B /* smil-datatypes-1.mod */,
+				040704F7115266EE0094FB0B /* smil-framework-1.mod */,
+				040704F8115266EE0094FB0B /* smil-model-1.mod */,
+				040704F9115266EE0094FB0B /* smil-qname-1.mod */,
+				040704FA115266EE0094FB0B /* smil2.cat */,
+				040704FB115266EE0094FB0B /* w3c_home */,
+			);
+			path = SMIL20;
+			sourceTree = "<group>";
+		};
+		040704FC115266EE0094FB0B /* SMIL21 */ = {
+			isa = PBXGroup;
+			children = (
+				040704FD115266EE0094FB0B /* IPR+Notice+and+Disclaimers.htm */,
+				040704FE115266EE0094FB0B /* Overview.html */,
+				040704FF115266EE0094FB0B /* SMIL-anim.mod */,
+				04070500115266EE0094FB0B /* SMIL-control.mod */,
+				04070501115266EE0094FB0B /* SMIL-layout.mod */,
+				04070502115266EE0094FB0B /* SMIL-link.mod */,
+				04070503115266EE0094FB0B /* SMIL-media.mod */,
+				04070504115266EE0094FB0B /* SMIL-metainformation.mod */,
+				04070505115266EE0094FB0B /* SMIL-struct.mod */,
+				04070506115266EE0094FB0B /* SMIL-timing.mod */,
+				04070507115266EE0094FB0B /* SMIL-transition.mod */,
+				04070508115266EE0094FB0B /* SMIL21.dtd */,
+				04070509115266EE0094FB0B /* SMIL21ExtendedMobile.dtd */,
+				0407050A115266EE0094FB0B /* SMIL21Mobile.dtd */,
+				0407050B115266EE0094FB0B /* base.css */,
+				0407050C115266EE0094FB0B /* smil-DTD.html */,
+				0407050D115266EE0094FB0B /* smil-attribs-1.mod */,
+				0407050E115266EE0094FB0B /* smil-datatypes-1.mod */,
+				0407050F115266EE0094FB0B /* smil-extended-mobile-profile-model-1.mod */,
+				04070510115266EE0094FB0B /* smil-framework-1.mod */,
+				04070511115266EE0094FB0B /* smil-language-profile-model-1.mod */,
+				04070512115266EE0094FB0B /* smil-mobile-profile-model-1.mod */,
+				04070513115266EE0094FB0B /* smil-qname-1.mod */,
+			);
+			path = SMIL21;
+			sourceTree = "<group>";
+		};
+		04070514115266EE0094FB0B /* SMIL30 */ = {
+			isa = PBXGroup;
+			children = (
+				04070515115266EE0094FB0B /* IPR-NoticeandDisclaimers.htm */,
+				04070516115266EE0094FB0B /* SMIL-anim.mod */,
+				04070517115266EE0094FB0B /* SMIL-control.mod */,
+				04070518115266EE0094FB0B /* SMIL-layout.mod */,
+				04070519115266EE0094FB0B /* SMIL-link.mod */,
+				0407051A115266EE0094FB0B /* SMIL-media.mod */,
+				0407051B115266EE0094FB0B /* SMIL-metainformation.mod */,
+				0407051C115266EE0094FB0B /* SMIL-smiltext.mod */,
+				0407051D115266EE0094FB0B /* SMIL-state.mod */,
+				0407051E115266EE0094FB0B /* SMIL-struct.mod */,
+				0407051F115266EE0094FB0B /* SMIL-timesheet.mod */,
+				04070520115266EE0094FB0B /* SMIL-timing.mod */,
+				04070521115266EE0094FB0B /* SMIL-transition.mod */,
+				04070522115266EE0094FB0B /* SMIL30Daisy.dtd */,
+				04070523115266EE0094FB0B /* SMIL30ExtendedMobile.dtd */,
+				04070524115266EE0094FB0B /* SMIL30Language.dtd */,
+				04070525115266EE0094FB0B /* SMIL30Mobile.dtd */,
+				04070526115266EE0094FB0B /* SMIL30Tiny.dtd */,
+				04070527115266EE0094FB0B /* Timesheets.dtd */,
+				04070528115266EE0094FB0B /* smil-attribs-1.mod */,
+				04070529115266EE0094FB0B /* smil-datatypes-1.mod */,
+				0407052A115266EE0094FB0B /* smil-framework-1.mod */,
+				0407052B115266EE0094FB0B /* smil-profile-model-1.mod */,
+				0407052C115266EE0094FB0B /* smil-qname-1.mod */,
+				0407052D115266EE0094FB0B /* smilText10.dtd */,
+			);
+			path = SMIL30;
+			sourceTree = "<group>";
+		};
+		04070574115266F60094FB0B /* Welcome */ = {
+			isa = PBXGroup;
+			children = (
+				04070575115266F60094FB0B /* data */,
+				0407057E115266F60094FB0B /* Welcome.smil */,
+			);
+			name = Welcome;
+			sourceTree = "<group>";
+		};
+		04070575115266F60094FB0B /* data */ = {
+			isa = PBXGroup;
+			children = (
+				04070576115266F60094FB0B /* AmbulantTune.mp3 */,
+				04070577115266F60094FB0B /* ambulant.png */,
+				04070578115266F60094FB0B /* background.png */,
+				04070579115266F60094FB0B /* extensible.png */,
+				0407057A115266F60094FB0B /* fast.png */,
+				0407057B115266F60094FB0B /* opensource.png */,
+				0407057C115266F60094FB0B /* portable.png */,
+				0407057D115266F60094FB0B /* visit.png */,
+			);
+			name = data;
+			path = ../../Extras/Welcome/data;
+			sourceTree = SOURCE_ROOT;
+		};
+		040705901152682E0094FB0B /* Subprojects */ = {
+			isa = PBXGroup;
+			children = (
+				042ADAA31152DA4A009CA791 /* plugin_xerces.xcodeproj */,
+				04070599115268480094FB0B /* libambulant.xcodeproj */,
+				042ADA3C1152D831009CA791 /* plugin_xpath_state.xcodeproj */,
+				042AD9511152CC13009CA791 /* plugin.xcodeproj */,
+				042ADB061152DE65009CA791 /* plugin_python.xcodeproj */,
+			);
+			name = Subprojects;
+			sourceTree = "<group>";
+		};
+		0407059A115268480094FB0B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				040705A1115268480094FB0B /* libambulant.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0407060211526C240094FB0B /* Dutch.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				0407060311526C240094FB0B /* Credits.rtf */,
+				0407060511526C240094FB0B /* InfoPlist.strings */,
+				0407060711526C240094FB0B /* MainMenu.nib */,
+			);
+			name = Dutch.lproj;
+			path = ../../src/player_macosx/Dutch.lproj;
+			sourceTree = SOURCE_ROOT;
+		};
+		0407060911526C240094FB0B /* English.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				0407060A11526C240094FB0B /* Credits.rtf */,
+				0407060C11526C240094FB0B /* InfoPlist.strings */,
+				0407060E11526C240094FB0B /* locversion.plist */,
+				0407061011526C240094FB0B /* Log.nib */,
+				0407061211526C240094FB0B /* MainMenu.nib */,
+				0407061411526C240094FB0B /* MyDocument.nib */,
+			);
+			name = English.lproj;
+			path = ../../src/player_macosx/English.lproj;
+			sourceTree = SOURCE_ROOT;
+		};
+		042AD9521152CC13009CA791 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				042AD9561152CC13009CA791 /* libamplugin_plugin.so */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		042ADA3D1152D831009CA791 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				042ADA411152D831009CA791 /* libamplugin_xpath_state.so */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		042ADAA41152DA4A009CA791 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				042ADAA81152DA4A009CA791 /* libamplugin_xerces.so */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		042ADB071152DE65009CA791 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				042ADB0B1152DE65009CA791 /* libamplugin_python.so */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		080E96DDFE201D6D7F000001 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				0407041A115266770094FB0B /* LogController.h */,
+				0407041B115266770094FB0B /* LogController.mm */,
+				0407041C115266770094FB0B /* MyAmbulantView.h */,
+				0407041D115266770094FB0B /* MyAmbulantView.mm */,
+				0407041E115266770094FB0B /* MyAppDelegate.h */,
+				0407041F115266770094FB0B /* MyAppDelegate.mm */,
+				04070420115266770094FB0B /* MyDocument.h */,
+				04070421115266770094FB0B /* MyDocument.mm */,
+				04070422115266770094FB0B /* mypreferences.h */,
+				04070423115266770094FB0B /* mypreferences.mm */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
+				13E42FB307B3F0F600E4EEF1 /* CoreData.framework */,
+				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		19C28FACFE9D520D11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D1107320486CEB800E47090 /* AmbulantPlayer.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		29B97314FDCFA39411CA2CEA /* AmbulantPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				040703A3115266100094FB0B /* Configuration Files */,
+				040705901152682E0094FB0B /* Subprojects */,
+				080E96DDFE201D6D7F000001 /* Classes */,
+				29B97315FDCFA39411CA2CEA /* Other Sources */,
+				29B97317FDCFA39411CA2CEA /* Resources */,
+				29B97323FDCFA39411CA2CEA /* Frameworks */,
+				19C28FACFE9D520D11CA2CBB /* Products */,
+			);
+			name = AmbulantPlayer;
+			sourceTree = "<group>";
+		};
+		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				04070429115266870094FB0B /* mainloop.cpp */,
+				0407042A115266870094FB0B /* mainloop.h */,
+				0407042B115266870094FB0B /* main.m */,
+				256AC3F00F4B6AF500CF3369 /* AmbulantPlayer_Prefix.pch */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		29B97317FDCFA39411CA2CEA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				0407060211526C240094FB0B /* Dutch.lproj */,
+				0407060911526C240094FB0B /* English.lproj */,
+				040704E6115266EE0094FB0B /* DTDCache */,
+				04070574115266F60094FB0B /* Welcome */,
+				0407047B115266B40094FB0B /* pause.png */,
+				0407047C115266B40094FB0B /* play.png */,
+				0407047D115266B40094FB0B /* playactive.png */,
+				0407048A115266B40094FB0B /* Ambulant.icns */,
+				0407048B115266B40094FB0B /* AmbulantDocDaisy.icns */,
+				0407048C115266B40094FB0B /* AmbulantDocGrins.icns */,
+				0407048D115266B40094FB0B /* AmbulantDocSmil.icns */,
+				0407048E115266B40094FB0B /* Info.plist */,
+				0407047E115266B40094FB0B /* stop.png */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
+				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D1107260486CEB800E47090 /* AmbulantPlayer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "AmbulantPlayer" */;
+			buildPhases = (
+				8D1107290486CEB800E47090 /* Resources */,
+				8D11072C0486CEB800E47090 /* Sources */,
+				8D11072E0486CEB800E47090 /* Frameworks */,
+				042AD96C1152CC7A009CA791 /* Copy Plugins */,
+				042AD9871152CEDF009CA791 /* Create plugin .la files */,
+				042AD9701152CD44009CA791 /* Internalize dylibs */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AmbulantPlayer;
+			productInstallPath = "$(HOME)/Applications";
+			productName = AmbulantPlayer;
+			productReference = 8D1107320486CEB800E47090 /* AmbulantPlayer.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		29B97313FDCFA39411CA2CEA /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "AmbulantPlayer" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+				Dutch,
+			);
+			mainGroup = 29B97314FDCFA39411CA2CEA /* AmbulantPlayer */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 0407059A115268480094FB0B /* Products */;
+					ProjectRef = 04070599115268480094FB0B /* libambulant.xcodeproj */;
+				},
+				{
+					ProductGroup = 042AD9521152CC13009CA791 /* Products */;
+					ProjectRef = 042AD9511152CC13009CA791 /* plugin.xcodeproj */;
+				},
+				{
+					ProductGroup = 042ADB071152DE65009CA791 /* Products */;
+					ProjectRef = 042ADB061152DE65009CA791 /* plugin_python.xcodeproj */;
+				},
+				{
+					ProductGroup = 042ADAA41152DA4A009CA791 /* Products */;
+					ProjectRef = 042ADAA31152DA4A009CA791 /* plugin_xerces.xcodeproj */;
+				},
+				{
+					ProductGroup = 042ADA3D1152D831009CA791 /* Products */;
+					ProjectRef = 042ADA3C1152D831009CA791 /* plugin_xpath_state.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				8D1107260486CEB800E47090 /* AmbulantPlayer */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		040705A1115268480094FB0B /* libambulant.dylib */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.dylib";
+			path = libambulant.dylib;
+			remoteRef = 040705A0115268480094FB0B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		042AD9561152CC13009CA791 /* libamplugin_plugin.so */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.dylib";
+			path = libamplugin_plugin.so;
+			remoteRef = 042AD9551152CC13009CA791 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		042ADA411152D831009CA791 /* libamplugin_xpath_state.so */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.dylib";
+			path = libamplugin_xpath_state.so;
+			remoteRef = 042ADA401152D831009CA791 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		042ADAA81152DA4A009CA791 /* libamplugin_xerces.so */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.dylib";
+			path = libamplugin_xerces.so;
+			remoteRef = 042ADAA71152DA4A009CA791 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		042ADB0B1152DE65009CA791 /* libamplugin_python.so */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.dylib";
+			path = libamplugin_python.so;
+			remoteRef = 042ADB0A1152DE65009CA791 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D1107290486CEB800E47090 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				040704D4115266B40094FB0B /* pause.png in Resources */,
+				040704D5115266B40094FB0B /* play.png in Resources */,
+				040704D6115266B40094FB0B /* playactive.png in Resources */,
+				040704D7115266B40094FB0B /* stop.png in Resources */,
+				040704E1115266B40094FB0B /* Ambulant.icns in Resources */,
+				040704E2115266B40094FB0B /* AmbulantDocDaisy.icns in Resources */,
+				040704E3115266B40094FB0B /* AmbulantDocGrins.icns in Resources */,
+				040704E4115266B40094FB0B /* AmbulantDocSmil.icns in Resources */,
+				040704E5115266B40094FB0B /* Info.plist in Resources */,
+				0407052F115266EE0094FB0B /* IPR-Notice-and-Disclaimers.htm in Resources */,
+				04070530115266EE0094FB0B /* SMIL-anim.mod in Resources */,
+				04070531115266EE0094FB0B /* SMIL-control.mod in Resources */,
+				04070532115266EE0094FB0B /* SMIL-layout.mod in Resources */,
+				04070533115266EE0094FB0B /* SMIL-link.mod in Resources */,
+				04070534115266EE0094FB0B /* SMIL-media.mod in Resources */,
+				04070535115266EE0094FB0B /* SMIL-metainformation.mod in Resources */,
+				04070536115266EE0094FB0B /* SMIL-struct.mod in Resources */,
+				04070537115266EE0094FB0B /* SMIL-timing.mod in Resources */,
+				04070538115266EE0094FB0B /* SMIL-transition.mod in Resources */,
+				04070539115266EE0094FB0B /* SMIL20.dtd in Resources */,
+				0407053A115266EE0094FB0B /* base.css in Resources */,
+				0407053B115266EE0094FB0B /* read-me.txt in Resources */,
+				0407053C115266EE0094FB0B /* smil-attribs-1.mod in Resources */,
+				0407053D115266EE0094FB0B /* smil-datatypes-1.mod in Resources */,
+				0407053E115266EE0094FB0B /* smil-framework-1.mod in Resources */,
+				0407053F115266EE0094FB0B /* smil-model-1.mod in Resources */,
+				04070540115266EE0094FB0B /* smil-qname-1.mod in Resources */,
+				04070541115266EE0094FB0B /* smil2.cat in Resources */,
+				04070542115266EE0094FB0B /* w3c_home in Resources */,
+				04070543115266EE0094FB0B /* IPR+Notice+and+Disclaimers.htm in Resources */,
+				04070544115266EE0094FB0B /* Overview.html in Resources */,
+				04070545115266EE0094FB0B /* SMIL-anim.mod in Resources */,
+				04070546115266EE0094FB0B /* SMIL-control.mod in Resources */,
+				04070547115266EE0094FB0B /* SMIL-layout.mod in Resources */,
+				04070548115266EE0094FB0B /* SMIL-link.mod in Resources */,
+				04070549115266EE0094FB0B /* SMIL-media.mod in Resources */,
+				0407054A115266EE0094FB0B /* SMIL-metainformation.mod in Resources */,
+				0407054B115266EE0094FB0B /* SMIL-struct.mod in Resources */,
+				0407054C115266EE0094FB0B /* SMIL-timing.mod in Resources */,
+				0407054D115266EE0094FB0B /* SMIL-transition.mod in Resources */,
+				0407054E115266EE0094FB0B /* SMIL21.dtd in Resources */,
+				0407054F115266EE0094FB0B /* SMIL21ExtendedMobile.dtd in Resources */,
+				04070550115266EE0094FB0B /* SMIL21Mobile.dtd in Resources */,
+				04070551115266EE0094FB0B /* base.css in Resources */,
+				04070552115266EE0094FB0B /* smil-DTD.html in Resources */,
+				04070553115266EE0094FB0B /* smil-attribs-1.mod in Resources */,
+				04070554115266EE0094FB0B /* smil-datatypes-1.mod in Resources */,
+				04070555115266EE0094FB0B /* smil-extended-mobile-profile-model-1.mod in Resources */,
+				04070556115266EE0094FB0B /* smil-framework-1.mod in Resources */,
+				04070557115266EE0094FB0B /* smil-language-profile-model-1.mod in Resources */,
+				04070558115266EE0094FB0B /* smil-mobile-profile-model-1.mod in Resources */,
+				04070559115266EE0094FB0B /* smil-qname-1.mod in Resources */,
+				0407055A115266EE0094FB0B /* IPR-NoticeandDisclaimers.htm in Resources */,
+				0407055B115266EE0094FB0B /* SMIL-anim.mod in Resources */,
+				0407055C115266EE0094FB0B /* SMIL-control.mod in Resources */,
+				0407055D115266EE0094FB0B /* SMIL-layout.mod in Resources */,
+				0407055E115266EE0094FB0B /* SMIL-link.mod in Resources */,
+				0407055F115266EE0094FB0B /* SMIL-media.mod in Resources */,
+				04070560115266EE0094FB0B /* SMIL-metainformation.mod in Resources */,
+				04070561115266EE0094FB0B /* SMIL-smiltext.mod in Resources */,
+				04070562115266EE0094FB0B /* SMIL-state.mod in Resources */,
+				04070563115266EE0094FB0B /* SMIL-struct.mod in Resources */,
+				04070564115266EE0094FB0B /* SMIL-timesheet.mod in Resources */,
+				04070565115266EE0094FB0B /* SMIL-timing.mod in Resources */,
+				04070566115266EE0094FB0B /* SMIL-transition.mod in Resources */,
+				04070567115266EE0094FB0B /* SMIL30Daisy.dtd in Resources */,
+				04070568115266EE0094FB0B /* SMIL30ExtendedMobile.dtd in Resources */,
+				04070569115266EE0094FB0B /* SMIL30Language.dtd in Resources */,
+				0407056A115266EE0094FB0B /* SMIL30Mobile.dtd in Resources */,
+				0407056B115266EE0094FB0B /* SMIL30Tiny.dtd in Resources */,
+				0407056C115266EE0094FB0B /* Timesheets.dtd in Resources */,
+				0407056D115266EE0094FB0B /* smil-attribs-1.mod in Resources */,
+				0407056E115266EE0094FB0B /* smil-datatypes-1.mod in Resources */,
+				0407056F115266EE0094FB0B /* smil-framework-1.mod in Resources */,
+				04070570115266EE0094FB0B /* smil-profile-model-1.mod in Resources */,
+				04070571115266EE0094FB0B /* smil-qname-1.mod in Resources */,
+				04070572115266EE0094FB0B /* smilText10.dtd in Resources */,
+				04070573115266EE0094FB0B /* mapping.txt in Resources */,
+				0407057F115266F60094FB0B /* AmbulantTune.mp3 in Resources */,
+				04070580115266F60094FB0B /* ambulant.png in Resources */,
+				04070581115266F60094FB0B /* background.png in Resources */,
+				04070582115266F60094FB0B /* extensible.png in Resources */,
+				04070583115266F60094FB0B /* fast.png in Resources */,
+				04070584115266F60094FB0B /* opensource.png in Resources */,
+				04070585115266F60094FB0B /* portable.png in Resources */,
+				04070586115266F60094FB0B /* visit.png in Resources */,
+				04070587115266F60094FB0B /* Welcome.smil in Resources */,
+				0407061611526C240094FB0B /* Credits.rtf in Resources */,
+				0407061711526C240094FB0B /* InfoPlist.strings in Resources */,
+				0407061811526C240094FB0B /* MainMenu.nib in Resources */,
+				0407061911526C240094FB0B /* Credits.rtf in Resources */,
+				0407061A11526C240094FB0B /* InfoPlist.strings in Resources */,
+				0407061B11526C240094FB0B /* locversion.plist in Resources */,
+				0407061C11526C240094FB0B /* Log.nib in Resources */,
+				0407061D11526C240094FB0B /* MainMenu.nib in Resources */,
+				0407061E11526C240094FB0B /* MyDocument.nib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		042AD9701152CD44009CA791 /* Internalize dylibs */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Internalize dylibs";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "python \"${SOURCE_ROOT}/../../src/player_macosx/internalize_dylibs.py\" -v -s /usr/local/lib:\"${PREBUILT_AMBULANT_ROOT}/src/libambulant/.libs\" \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"";
+		};
+		042AD9871152CEDF009CA791 /* Create plugin .la files */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Create plugin .la files";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd ${TARGET_BUILD_DIR}/${PLUGINS_FOLDER_PATH}\nfor plugin in libamplugin_*.so; do\n    pluginbase=`basename $plugin .so`\n    echo dlname=\\'$pluginbase.so\\' > $pluginbase.la\n    echo Created $pluginbase.la\ndone\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D11072C0486CEB800E47090 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				04070424115266770094FB0B /* LogController.mm in Sources */,
+				04070425115266770094FB0B /* MyAmbulantView.mm in Sources */,
+				04070426115266770094FB0B /* MyAppDelegate.mm in Sources */,
+				04070427115266770094FB0B /* MyDocument.mm in Sources */,
+				04070428115266770094FB0B /* mypreferences.mm in Sources */,
+				0407042C115266870094FB0B /* mainloop.cpp in Sources */,
+				0407042D115266870094FB0B /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		0407060311526C240094FB0B /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0407060411526C240094FB0B /* Dutch */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		0407060511526C240094FB0B /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0407060611526C240094FB0B /* Dutch */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		0407060711526C240094FB0B /* MainMenu.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0407060811526C240094FB0B /* Dutch */,
+			);
+			name = MainMenu.nib;
+			sourceTree = "<group>";
+		};
+		0407060A11526C240094FB0B /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0407060B11526C240094FB0B /* English */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		0407060C11526C240094FB0B /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0407060D11526C240094FB0B /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		0407060E11526C240094FB0B /* locversion.plist */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0407060F11526C240094FB0B /* English */,
+			);
+			name = locversion.plist;
+			sourceTree = "<group>";
+		};
+		0407061011526C240094FB0B /* Log.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0407061111526C240094FB0B /* English */,
+			);
+			name = Log.nib;
+			sourceTree = "<group>";
+		};
+		0407061211526C240094FB0B /* MainMenu.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0407061311526C240094FB0B /* English */,
+			);
+			name = MainMenu.nib;
+			sourceTree = "<group>";
+		};
+		0407061411526C240094FB0B /* MyDocument.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0407061511526C240094FB0B /* English */,
+			);
+			name = MyDocument.nib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		C01FCF4B08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0407063611526CAD0094FB0B /* ambulant-debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = AmbulantPlayer_Prefix.pch;
+				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = AmbulantPlayer;
+			};
+			name = Debug;
+		};
+		C01FCF4C08A954540054247B /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 040703A5115266100094FB0B /* ambulant-release.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = AmbulantPlayer_Prefix.pch;
+				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = AmbulantPlayer;
+			};
+			name = Release;
+		};
+		C01FCF4F08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 040703A4115266100094FB0B /* ambulant-common.xcconfig */;
+			buildSettings = {
+				ARCHS = (
+					x86_64,
+					i386,
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Debug;
+		};
+		C01FCF5008A954540054247B /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 040703A4115266100094FB0B /* ambulant-common.xcconfig */;
+			buildSettings = {
+				ARCHS = (
+					x86_64,
+					i386,
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "AmbulantPlayer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4B08A954540054247B /* Debug */,
+				C01FCF4C08A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "AmbulantPlayer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4F08A954540054247B /* Debug */,
+				C01FCF5008A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
+}

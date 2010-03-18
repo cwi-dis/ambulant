@@ -1,0 +1,6 @@
+//
+// Prefix header for all source files of the 'plugin' target in the 'plugin' project.
+//
+
+
+#include <iostream>
