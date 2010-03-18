@@ -80,7 +80,6 @@ extern "C" {
 int64_t (*orig_http_seek)(URLContext *h, int64_t pos, int whence);
 
 int64_t http_seek_workaround(URLContext *h, int64_t pos, int whence)
-{
 #if 1
     return -1;
 #else

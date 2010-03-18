@@ -29,8 +29,9 @@
 #include "ambulant/common/renderer_impl.h"
 #include "ambulant/smil2/transition.h"
 #include "ambulant/lib/mtsync.h"
+#ifdef __OBJC__
 #include <Cocoa/Cocoa.h>
-
+#endif
 namespace ambulant {
 
 using namespace lib;

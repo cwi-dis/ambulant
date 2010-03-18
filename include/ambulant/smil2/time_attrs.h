@@ -58,7 +58,6 @@ enum sync_value_type {
 	sv_wallclock, 
 	sv_indefinite
 };
-std::string repr(sync_value_type sv);
 
 struct sync_value_struct {
 	sync_value_type type;
@@ -68,8 +67,6 @@ struct sync_value_struct {
 	std::string sparam;
 	int iparam;
 };
-
-std::string repr(const sync_value_struct& svs);
 
 enum endsync_rule {esr_first, esr_last, esr_all, esr_media, esr_id};
 
@@ -84,16 +81,13 @@ enum fill_behavior {fill_remove, fill_freeze, fill_hold, fill_continue,
 	fill_transition, 
 	fill_auto, fill_default, fill_inherit};	
 #endif
-std::string repr(fill_behavior f);
 
 // The last two values are intermediate values
 // and don't represent a restart_behavior.
 enum restart_behavior { restart_always, restart_when_not_active, restart_never,
 	restart_default, restart_inherit};
-std::string repr(restart_behavior f);
 
 enum actuate { actuate_onload, actuate_onrequest};
-std::string repr(actuate f);
 
 class lib::logger;
 
@@ -289,5 +283,10 @@ class schedulable : public time_traits {
 } // namespace smil2
  
 } // namespace ambulant
+std::string repr(ambulant::smil2::sync_value_type sv);
+std::string repr(const ambulant::smil2::sync_value_struct& svs);
+std::string repr(ambulant::smil2::fill_behavior f);
+std::string repr(ambulant::smil2::restart_behavior f);
+std::string repr(ambulant::smil2::actuate f);
 
 #endif // AMBULANT_SMIL2_TIME_ATTRS_H

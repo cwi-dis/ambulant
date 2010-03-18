@@ -116,53 +116,6 @@ transition_info::from_node(const node *n)
 	return rv;
 }
 
-std::string
-ambulant::lib::repr(transition_type t)
-{
-	switch(t) {
-	case barWipe: return "barWipe";
-	case boxWipe: return "boxWipe";
-	case fourBoxWipe: return "fourBoxWipe";
-	case barnDoorWipe: return "barnDoorWipe";
-	case diagonalWipe: return "diagonalWipe";
-	case bowTieWipe: return "bowTieWipe";
-	case miscDiagonalWipe: return "miscDiagonalWipe";
-	case veeWipe: return "veeWipe";
-	case barnVeeWipe: return "barnVeeWipe";
-	case zigZagWipe: return "zigZagWipe";
-	case barnZigZagWipe: return "barnZigZagWipe";
-	case irisWipe: return "irisWipe";
-	case triangleWipe: return "triangleWipe";
-	case arrowHeadWipe: return "arrowHeadWipe";
-	case pentagonWipe: return "pentagonWipe";
-	case hexagonWipe: return "hexagonWipe";
-	case ellipseWipe: return "ellipseWipe";
-	case eyeWipe: return "eyeWipe";
-	case roundRectWipe: return "roundRectWipe";
-	case starWipe: return "starWipe";
-	case miscShapeWipe: return "miscShapeWipe";
-	case clockWipe: return "clockWipe";
-	case pinWheelWipe: return "pinWheelWipe";
-	case singleSweepWipe: return "singleSweepWipe";
-	case fanWipe: return "fanWipe";
-	case doubleFanWipe: return "doubleFanWipe";
-	case doubleSweepWipe: return "doubleSweepWipe";
-	case saloonDoorWipe: return "saloonDoorWipe";
-	case windshieldWipe: return "windshieldWipe";
-	case snakeWipe: return "snakeWipe";
-	case spiralWipe: return "spiralWipe";
-	case parallelSnakesWipe: return "parallelSnakesWipe";
-	case boxSnakesWipe: return "boxSnakesWipe";
-	case waterfallWipe: return "waterfallWipe";
-	case pushWipe: return "pushWipe";
-	case slideWipe: return "slideWipe";
-	case fade: return "fade";
-	case audioFade: return "audioFade";
-	case audioVisualFade: return "audioVisualFade";
-	default: return "<unknown transition type>";
-	}
-}
-
 transition_info::time_type
 transition_info::get_trans_dur(const node *n)
 {

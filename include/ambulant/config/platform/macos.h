@@ -28,7 +28,7 @@
 #  endif
 // boilerplate code:
 #  ifndef TARGET_CARBON
-#     include <ambulant/config/posix_features.h>
+#     include "ambulant/config/posix_features.h"
 #  endif
 #  ifndef AMBULANT_HAS_STDINT_H
 #     define AMBULANT_HAS_STDINT_H

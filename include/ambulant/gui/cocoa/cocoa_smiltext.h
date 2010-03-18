@@ -29,6 +29,7 @@
 #ifdef WITH_SMIL30
 
 #include "ambulant/gui/cocoa/cocoa_renderer.h"
+#include "ambulant/gui/cocoa/cocoa_gui.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/smil2/smiltext.h"
 #include <Cocoa/Cocoa.h>

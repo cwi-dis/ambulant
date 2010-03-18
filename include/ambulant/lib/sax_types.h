@@ -36,6 +36,8 @@
 // list
 #include <list>
 
+# include <ostream>
+
 namespace ambulant {
 
 namespace lib {

@@ -715,7 +715,7 @@ bool time_attrs::has_time_manipulations() const {
 ///////////////////////
 // Tracing
 
-std::string smil2::repr(sync_value_type sv) {
+std::string repr(smil2::sync_value_type sv) {
 	switch(sv) {
 		case sv_offset: return "offset";
 		case sv_syncbase: return "syncbase";
@@ -733,7 +733,7 @@ std::string smil2::repr(sync_value_type sv) {
 	return "";
 }
 
-std::string smil2::repr(const sync_value_struct& svs) {
+std::string repr(const smil2::sync_value_struct& svs) {
 	std::string os;
 	char sz[64];
 	if(svs.type == sv_offset) {
@@ -762,7 +762,7 @@ std::string smil2::repr(const sync_value_struct& svs) {
 	return os;
 }
 
-std::string smil2::repr(fill_behavior f) {
+std::string repr(smil2::fill_behavior f) {
 	switch(f) {
 		case fill_remove: return "remove";
 		case fill_freeze: return "freeze";
@@ -780,7 +780,7 @@ std::string smil2::repr(fill_behavior f) {
 
 }
 
-std::string smil2::repr(restart_behavior f) {
+std::string repr(smil2::restart_behavior f) {
 	switch(f) {
 		case restart_always: return "always";
 		case restart_when_not_active: return "whenNotActive";
@@ -792,7 +792,7 @@ std::string smil2::repr(restart_behavior f) {
 	return "";
 }
 
-std::string smil2::repr(actuate f) {
+std::string repr(smil2::actuate f) {
 	switch(f) {
 		case actuate_onload: return "onLoad";
 		case actuate_onrequest: return "onRequest";

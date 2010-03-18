@@ -81,8 +81,6 @@ enum transition_scope {
 	scope_screen   ///< Apply to the whole window.
 };
 
-std::string repr(transition_type t);
-
 /// Stores all information regarind a specific transition.
 class AMBULANTAPI transition_info {
   public:
@@ -113,5 +111,51 @@ class AMBULANTAPI transition_info {
 } // namespace lib
  
 } // namespace ambulant
+
+inline std::string repr(ambulant::lib::transition_type t)
+{
+	switch(t) {
+	case ambulant::lib::barWipe: return "barWipe";
+	case ambulant::lib::boxWipe: return "boxWipe";
+	case ambulant::lib::fourBoxWipe: return "fourBoxWipe";
+	case ambulant::lib::barnDoorWipe: return "barnDoorWipe";
+	case ambulant::lib::diagonalWipe: return "diagonalWipe";
+	case ambulant::lib::bowTieWipe: return "bowTieWipe";
+	case ambulant::lib::miscDiagonalWipe: return "miscDiagonalWipe";
+	case ambulant::lib::veeWipe: return "veeWipe";
+	case ambulant::lib::barnVeeWipe: return "barnVeeWipe";
+	case ambulant::lib::zigZagWipe: return "zigZagWipe";
+	case ambulant::lib::barnZigZagWipe: return "barnZigZagWipe";
+	case ambulant::lib::irisWipe: return "irisWipe";
+	case ambulant::lib::triangleWipe: return "triangleWipe";
+	case ambulant::lib::arrowHeadWipe: return "arrowHeadWipe";
+	case ambulant::lib::pentagonWipe: return "pentagonWipe";
+	case ambulant::lib::hexagonWipe: return "hexagonWipe";
+	case ambulant::lib::ellipseWipe: return "ellipseWipe";
+	case ambulant::lib::eyeWipe: return "eyeWipe";
+	case ambulant::lib::roundRectWipe: return "roundRectWipe";
+	case ambulant::lib::starWipe: return "starWipe";
+	case ambulant::lib::miscShapeWipe: return "miscShapeWipe";
+	case ambulant::lib::clockWipe: return "clockWipe";
+	case ambulant::lib::pinWheelWipe: return "pinWheelWipe";
+	case ambulant::lib::singleSweepWipe: return "singleSweepWipe";
+	case ambulant::lib::fanWipe: return "fanWipe";
+	case ambulant::lib::doubleFanWipe: return "doubleFanWipe";
+	case ambulant::lib::doubleSweepWipe: return "doubleSweepWipe";
+	case ambulant::lib::saloonDoorWipe: return "saloonDoorWipe";
+	case ambulant::lib::windshieldWipe: return "windshieldWipe";
+	case ambulant::lib::snakeWipe: return "snakeWipe";
+	case ambulant::lib::spiralWipe: return "spiralWipe";
+	case ambulant::lib::parallelSnakesWipe: return "parallelSnakesWipe";
+	case ambulant::lib::boxSnakesWipe: return "boxSnakesWipe";
+	case ambulant::lib::waterfallWipe: return "waterfallWipe";
+	case ambulant::lib::pushWipe: return "pushWipe";
+	case ambulant::lib::slideWipe: return "slideWipe";
+	case ambulant::lib::fade: return "fade";
+	case ambulant::lib::audioFade: return "audioFade";
+	case ambulant::lib::audioVisualFade: return "audioVisualFade";
+	default: return "<unknown transition type>";
+	}
+}
 
 #endif // AMBULANT_LIB_TRANSITION_INFO_H

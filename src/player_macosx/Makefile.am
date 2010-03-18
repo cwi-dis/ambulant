@@ -205,14 +205,14 @@ $(BUILDAPPNAME).app: cocoambulant_executable
 	$(INSTALL_DATA) $(top_srcdir)/Extras/DTDCache/SMIL30/*.* $(BUILDAPPNAME).app/Contents/Resources/DTDCache/SMIL30
 
 #	Install executable
-	$(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) .libs/cocoambulant_executable `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/Ambulant-mac
-	strip -x `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/Ambulant-mac
+	$(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) .libs/cocoambulant_executable `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/AmbulantPlayer
+	strip -x `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/AmbulantPlayer
 	
 #	Internalize any non-system shared libraries we use
 	$(PYTHON) $(srcdir)/internalize_dylibs.py -v -s $(prefix)/lib:$(ambulantlibdir) $(BUILDAPPNAME).app
 
 #	Test for problematic dependencies
-	$(TESTDEP) `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/Ambulant-mac
+	$(TESTDEP) `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/AmbulantPlayer
 	$(TESTDEP) `pwd`/$(BUILDAPPNAME).app/Contents/PlugIns/*
 	$(TESTDEP) `pwd`/$(BUILDAPPNAME).app/Contents/Frameworks/*
 	$(PYTHON) $(srcdir)/internalize_dylibs.py -c $(BUILDAPPNAME).app
