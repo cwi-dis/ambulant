@@ -315,8 +315,10 @@ global_playable_factory_impl::~global_playable_factory_impl()
 	// Clear the factories
 	delete m_default_factory;
     std::list<playable_factory*>::iterator fi;
-    for(fi=m_factories.begin(); fi != m_factories.end(); fi++)
-		delete (*fi);
+    for(fi=m_factories.begin(); fi != m_factories.end(); fi++) {
+        playable_factory *pf = *fi;
+		delete pf;
+    }
 	m_factories.clear();
 }
     

@@ -222,9 +222,14 @@ initialize_logger()
 		
 	// Test whether we want to run the welcome document (on first run only)
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+#ifdef WITH_SPLASH_SCREEN
+#define NS_SPLASH_SCREEN @ WITH_SPLASH_SCREEN
+    NSString *welcomePath = [thisBundle pathForResource:NS_SPLASH_SCREEN ofType:nil];
+#else
 	if ( [defaults boolForKey: @"welcomeDocumentSeen"] )
 		return;
 	NSString *welcomePath = [thisBundle pathForResource:@"Welcome" ofType:@"smil"];
+#endif // WITH_SPLASH_SCREEN
 	if (welcomePath) {
 		id sender = [aNotification object];
 		AM_DBG NSLog(@"Will play %@", welcomePath);

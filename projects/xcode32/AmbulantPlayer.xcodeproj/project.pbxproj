@@ -34,7 +34,6 @@
 		0407061D11526C240094FB0B /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0407061211526C240094FB0B /* MainMenu.nib */; };
 		0407061E11526C240094FB0B /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0407061411526C240094FB0B /* MyDocument.nib */; };
 		0407064C11526DB70094FB0B /* libambulant.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 040705A1115268480094FB0B /* libambulant.dylib */; };
-		042AD9591152CC6B009CA791 /* libamplugin_plugin.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042AD9561152CC13009CA791 /* libamplugin_plugin.so */; };
 		042ADA421152D83E009CA791 /* libamplugin_xpath_state.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADA411152D831009CA791 /* libamplugin_xpath_state.so */; };
 		042ADAA91152DA4F009CA791 /* libamplugin_xerces.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADAA81152DA4A009CA791 /* libamplugin_xerces.so */; };
 		042ADB0C1152DE69009CA791 /* libamplugin_python.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADB0B1152DE65009CA791 /* libamplugin_python.so */; };
@@ -126,7 +125,6 @@
 				042ADAA91152DA4F009CA791 /* libamplugin_xerces.so in Copy Plugins */,
 				042ADB0C1152DE69009CA791 /* libamplugin_python.so in Copy Plugins */,
 				042ADA421152D83E009CA791 /* libamplugin_xpath_state.so in Copy Plugins */,
-				042AD9591152CC6B009CA791 /* libamplugin_plugin.so in Copy Plugins */,
 			);
 			name = "Copy Plugins";
 			runOnlyForDeploymentPostprocessing = 0;
