@@ -9,13 +9,13 @@
 /* Begin PBXBuildFile section */
 		042AD9321152C91D009CA791 /* libambulant.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 042AD9311152C916009CA791 /* libambulant.dylib */; };
 		042ADAB81152DB0A009CA791 /* pythonplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042ADAB71152DB0A009CA791 /* pythonplugin.cpp */; };
-		042ADAF11152DDAD009CA791 /* Python.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 042ADAF01152DDAD009CA791 /* Python.framework */; };
 		042ADAFB1152DDDB009CA791 /* ambulantinterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042ADAF51152DDDB009CA791 /* ambulantinterface.cpp */; };
 		042ADAFC1152DDDB009CA791 /* ambulantinterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 042ADAF61152DDDB009CA791 /* ambulantinterface.h */; };
 		042ADAFD1152DDDB009CA791 /* ambulantmodule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042ADAF71152DDDB009CA791 /* ambulantmodule.cpp */; };
 		042ADAFE1152DDDB009CA791 /* ambulantmodule.h in Headers */ = {isa = PBXBuildFile; fileRef = 042ADAF81152DDDB009CA791 /* ambulantmodule.h */; };
 		042ADAFF1152DDDB009CA791 /* ambulantutilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042ADAF91152DDDB009CA791 /* ambulantutilities.cpp */; };
 		042ADB001152DDDB009CA791 /* ambulantutilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 042ADAFA1152DDDB009CA791 /* ambulantutilities.h */; };
+		04428E2511577B150067C868 /* Python.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04428E2411577B150067C868 /* Python.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,6 +26,13 @@
 			remoteGlobalIDString = D2AAC0C705546C1D00DB518D;
 			remoteInfo = libambulant;
 		};
+		04428DD5115779450067C868 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 042AD92C1152C916009CA791 /* libambulant.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC0C605546C1D00DB518D;
+			remoteInfo = libambulant;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -34,13 +41,13 @@
 		042AD9251152C8EB009CA791 /* ambulant-release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "ambulant-release.xcconfig"; sourceTree = "<group>"; };
 		042AD92C1152C916009CA791 /* libambulant.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = libambulant.xcodeproj; sourceTree = "<group>"; };
 		042ADAB71152DB0A009CA791 /* pythonplugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pythonplugin.cpp; path = ../../src/plugins/pythonplugin.cpp; sourceTree = SOURCE_ROOT; };
-		042ADAF01152DDAD009CA791 /* Python.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python.framework; path = System/Library/Frameworks/Python.framework; sourceTree = SDKROOT; };
 		042ADAF51152DDDB009CA791 /* ambulantinterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ambulantinterface.cpp; path = ../../src/pyambulant/ambulantinterface.cpp; sourceTree = SOURCE_ROOT; };
 		042ADAF61152DDDB009CA791 /* ambulantinterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ambulantinterface.h; path = ../../src/pyambulant/ambulantinterface.h; sourceTree = SOURCE_ROOT; };
 		042ADAF71152DDDB009CA791 /* ambulantmodule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ambulantmodule.cpp; path = ../../src/pyambulant/ambulantmodule.cpp; sourceTree = SOURCE_ROOT; };
 		042ADAF81152DDDB009CA791 /* ambulantmodule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ambulantmodule.h; path = ../../src/pyambulant/ambulantmodule.h; sourceTree = SOURCE_ROOT; };
 		042ADAF91152DDDB009CA791 /* ambulantutilities.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ambulantutilities.cpp; path = ../../src/pyambulant/ambulantutilities.cpp; sourceTree = SOURCE_ROOT; };
 		042ADAFA1152DDDB009CA791 /* ambulantutilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ambulantutilities.h; path = ../../src/pyambulant/ambulantutilities.h; sourceTree = SOURCE_ROOT; };
+		04428E2411577B150067C868 /* Python.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python.framework; path = /System/Library/Frameworks/Python.framework; sourceTree = "<absolute>"; };
 		32BAE0B70371A74B00C91783 /* plugin_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = plugin_Prefix.pch; sourceTree = "<group>"; };
 		D2AAC09D05546B4700DB518D /* libamplugin_python.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libamplugin_python.so; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -51,7 +58,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				042AD9321152C91D009CA791 /* libambulant.dylib in Frameworks */,
-				042ADAF11152DDAD009CA791 /* Python.framework in Frameworks */,
+				04428E2511577B150067C868 /* Python.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,7 +104,7 @@
 		0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				042ADAF01152DDAD009CA791 /* Python.framework */,
+				04428E2411577B150067C868 /* Python.framework */,
 			);
 			name = "External Frameworks and Libraries";
 			sourceTree = "<group>";
@@ -154,6 +161,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				04428DD6115779450067C868 /* PBXTargetDependency */,
 			);
 			name = plugin;
 			productName = libplugin;
@@ -207,6 +215,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		04428DD6115779450067C868 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = libambulant;
+			targetProxy = 04428DD5115779450067C868 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		1DEB916108733D950010E9CD /* Debug */ = {

@@ -21,6 +21,13 @@
 			remoteGlobalIDString = D2AAC0C705546C1D00DB518D;
 			remoteInfo = libambulant;
 		};
+		04428D96115779060067C868 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 042AD92C1152C916009CA791 /* libambulant.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC0C605546C1D00DB518D /* libambulant */;
+			remoteInfo = libambulant;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -136,6 +143,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				04428D97115779060067C868 /* PBXTargetDependency */,
 			);
 			name = plugin;
 			productName = libplugin;
@@ -187,6 +195,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		04428D97115779060067C868 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = libambulant;
+			targetProxy = 04428D96115779060067C868 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		1DEB916108733D950010E9CD /* Debug */ = {

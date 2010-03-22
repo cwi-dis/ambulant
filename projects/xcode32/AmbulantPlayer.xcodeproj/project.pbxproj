@@ -137,22 +137,57 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 042ADA3C1152D831009CA791 /* plugin_xpath_state.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = D2AAC09D05546B4700DB518D /* libamplugin_xpath_state.so */;
+			remoteGlobalIDString = D2AAC09D05546B4700DB518D;
 			remoteInfo = plugin;
 		};
 		042ADAA71152DA4A009CA791 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 042ADAA31152DA4A009CA791 /* plugin_xerces.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = D2AAC09D05546B4700DB518D /* libamplugin_xerces.so */;
+			remoteGlobalIDString = D2AAC09D05546B4700DB518D;
 			remoteInfo = plugin;
 		};
 		042ADB0A1152DE65009CA791 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 042ADB061152DE65009CA791 /* plugin_python.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = D2AAC09D05546B4700DB518D /* libamplugin_python.so */;
+			remoteGlobalIDString = D2AAC09D05546B4700DB518D;
 			remoteInfo = plugin;
+		};
+		04428D7C1157787A0067C868 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 042ADB061152DE65009CA791 /* plugin_python.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC09C05546B4700DB518D;
+			remoteInfo = plugin;
+		};
+		04428D7E1157787A0067C868 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 042ADA3C1152D831009CA791 /* plugin_xpath_state.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC09C05546B4700DB518D;
+			remoteInfo = plugin;
+		};
+		04428D801157787A0067C868 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 042ADAA31152DA4A009CA791 /* plugin_xerces.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC09C05546B4700DB518D;
+			remoteInfo = plugin;
+		};
+		04428D821157787A0067C868 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 042AD9511152CC13009CA791 /* plugin.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC09C05546B4700DB518D;
+			remoteInfo = plugin;
+		};
+		04428D841157787A0067C868 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 04070599115268480094FB0B /* libambulant.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC0C605546C1D00DB518D;
+			remoteInfo = libambulant;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -639,6 +674,11 @@
 			buildRules = (
 			);
 			dependencies = (
+				04428D7D1157787A0067C868 /* PBXTargetDependency */,
+				04428D7F1157787A0067C868 /* PBXTargetDependency */,
+				04428D811157787A0067C868 /* PBXTargetDependency */,
+				04428D831157787A0067C868 /* PBXTargetDependency */,
+				04428D851157787A0067C868 /* PBXTargetDependency */,
 			);
 			name = AmbulantPlayer;
 			productInstallPath = "$(HOME)/Applications";
@@ -883,6 +923,34 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		04428D7D1157787A0067C868 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = plugin;
+			targetProxy = 04428D7C1157787A0067C868 /* PBXContainerItemProxy */;
+		};
+		04428D7F1157787A0067C868 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = plugin;
+			targetProxy = 04428D7E1157787A0067C868 /* PBXContainerItemProxy */;
+		};
+		04428D811157787A0067C868 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = plugin;
+			targetProxy = 04428D801157787A0067C868 /* PBXContainerItemProxy */;
+		};
+		04428D831157787A0067C868 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = plugin;
+			targetProxy = 04428D821157787A0067C868 /* PBXContainerItemProxy */;
+		};
+		04428D851157787A0067C868 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = libambulant;
+			targetProxy = 04428D841157787A0067C868 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		0407060311526C240094FB0B /* Credits.rtf */ = {
