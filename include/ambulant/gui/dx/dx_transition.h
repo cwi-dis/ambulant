@@ -125,7 +125,7 @@ class dx_transition_engine : public dx_transition {
 	void pause() {m_timer->pause();}
 	void resume() {m_timer->resume();}
 	
-	std::string get_type_str() const {return lib::repr(m_engine->get_info()->m_type);}
+	std::string get_type_str() const {return repr(m_engine->get_info()->m_type);}
 	std::string get_subtype_str() const {return m_engine->get_info()->m_subtype;}
 	
 	double get_progress() const { return m_engine->get_progress();};
