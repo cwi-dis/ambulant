@@ -33,6 +33,7 @@
 #include "ambulant/gui/qt/qt_factory.h"
 #include "ambulant/gui/SDL/sdl_factory.h"
 #include "ambulant/net/ffmpeg_factory.h"
+#include "ambulant/net/rtsp_factory.h"
 
 #include "ambulant/lib/node_navigator.h"
 
