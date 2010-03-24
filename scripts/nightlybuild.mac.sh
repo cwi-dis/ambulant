@@ -34,4 +34,24 @@ cd ..
 ./configure $CONFIGOPTS
 make $MAKEOPTS
 cd src/player_macosx
-make $MAKEOPTS DESTDIR=$BUILDDIR/$DESTDIR install
+make $MAKEOPTS DESTDIR=$BUILDHOME/$DESTDIR install
+#
+# Create installer dmg
+#
+# XXX TODO
+#
+# Build webkit plugin
+#
+# XXX TODO
+#
+# Build plugin installer
+#
+# XXX TODO
+#
+# Upload installers
+#
+# XXX TODO
+#
+# Delete old installers, remember current
+#
+# XXX TODO
