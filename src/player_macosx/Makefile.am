@@ -250,6 +250,7 @@ dist-hook:
 	
 install-exec-hook: $(BUILDAPPNAME).app
 	rm -rf $(DESTDIR)/Applications/$(APPNAME).app
+	mkdir -p $(DESTDIR)/Applications
 	cp -R $(BUILDAPPNAME).app $(DESTDIR)/Applications/$(APPNAME).app
 
 uninstall-hook:

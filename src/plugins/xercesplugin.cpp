@@ -29,8 +29,6 @@
 #endif
 using namespace ambulant;
 
-#ifdef WITH_XERCES
-
 class xerces_plugin_factory : public lib::parser_factory {
   public:
 
@@ -93,5 +91,3 @@ void initialize(
 		lib::logger::get_logger()->trace("xerces_plugin: registered");
 	}
 }
-
-#endif

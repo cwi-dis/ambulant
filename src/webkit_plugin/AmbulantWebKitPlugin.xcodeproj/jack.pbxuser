@@ -13,7 +13,7 @@
 		hitCount = 0;
 		ignoreCount = 0;
 		lineNumber = 208;
-		modificationTime = 285603038.797141;
+		modificationTime = 290640847.642438;
 		originalNumberOfMultipleMatches = 1;
 		state = 0;
 	};
@@ -23,11 +23,6 @@
 		name = smil_player.cpp;
 		path = /Users/jack/src/ambulant/src/libambulant/smil2/smil_player.cpp;
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1264, 18465}}";
-			sepNavSelRange = "{6598, 0}";
-			sepNavVisRange = "{5714, 658}";
-		};
 	};
 	0432F3E71105F0F10077DDF8 /* state.cpp:57 */ = {
 		isa = PBXFileBreakpoint;
@@ -42,7 +37,7 @@
 		hitCount = 0;
 		ignoreCount = 0;
 		lineNumber = 57;
-		modificationTime = 285603038.798417;
+		modificationTime = 290640847.642451;
 		originalNumberOfMultipleMatches = 1;
 		state = 0;
 	};
@@ -52,11 +47,6 @@
 		name = state.cpp;
 		path = /Users/jack/src/ambulant/src/libambulant/common/state.cpp;
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {939, 1290}}";
-			sepNavSelRange = "{2512, 0}";
-			sepNavVisRange = "{1021, 1492}";
-		};
 	};
 	0432F3EA1105F1020077DDF8 /* state.cpp:84 */ = {
 		isa = PBXFileBreakpoint;
@@ -71,7 +61,7 @@
 		hitCount = 0;
 		ignoreCount = 0;
 		lineNumber = 84;
-		modificationTime = 285603038.799246;
+		modificationTime = 290640847.642462;
 		originalNumberOfMultipleMatches = 1;
 		state = 0;
 	};
@@ -85,13 +75,13 @@
 		delayBeforeContinue = 0;
 		fileReference = 045D0B7E0958C53F00C194EE /* mainloop.cpp */;
 		functionName = "mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *app)";
-		hitCount = 1;
+		hitCount = 0;
 		ignoreCount = 0;
 		lineNumber = 93;
-		location = AmbulantWebKitPlugin;
-		modificationTime = 285603808.319765;
+		location = AmbulantPlayer;
+		modificationTime = 290640848.052197;
 		originalNumberOfMultipleMatches = 1;
-		state = 1;
+		state = 0;
 	};
 	045D0B7E0958C53F00C194EE /* mainloop.cpp */ = {
 		uiCtxt = {
@@ -274,7 +264,7 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					315,
+					185,
 					20,
 					48,
 					43,
@@ -312,7 +302,7 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					301,
+					145,
 					60,
 					20,
 					48,
@@ -329,8 +319,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 285601691;
-			PBXWorkspaceStateSaveDate = 285601691;
+			PBXPerProjectTemplateStateSaveDate = 290639421;
+			PBXWorkspaceStateSaveDate = 290639421;
 		};
 		sourceControlManager = 04E8E403109F3BE300B7C8C9 /* Source Control */;
 		userBuildSettings = {
