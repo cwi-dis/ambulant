@@ -5,18 +5,20 @@
 #
 set -e
 set -x
+AMBULANTVERSION=2.3
 CVSUSER="jackjansen"
 CVSARGS="-d $CVSUSER@ambulant.cvs.sourceforge.net:/cvsroot/ambulant"
 CHECKOUTARGS=
 BUILDHOME=$HOME/tmp/ambulant-nightly
-DATE=`date +%Y%m%d`
-BUILDDIR=ambulant-build-$DATE
-DESTDIR=ambulant-install-$DATE
+TODAY=`date +%Y%m%d`
+BUILDDIR=ambulant-build-$TODAY
+DESTDIR=ambulant-install-$TODAY
 BUILD3PPARGS=mac10.6
 CONFIGOPTS="--with-macfat --disable-dependency-tracking --with-xerces-plugin"
 MAKEOPTS=-j2
-DMGNAME=Ambulant-2.3.$DATE-mac
-PLUGINDMGNAME=AmbulantWebKitPlugin-2.3.$DATE-mac
+VERSIONSUFFIX=.$TODAY
+DMGNAME=Ambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
+PLUGINDMGNAME=AmbulantWebKitPlugin-$AMBULANTVERSION$VERSIONSUFFIX-mac
 DESTINATION=ssh.cwi.nl:public_html/ambulant/
 #
 # Check out a fresh copy of Ambulant
@@ -24,6 +26,11 @@ DESTINATION=ssh.cwi.nl:public_html/ambulant/
 mkdir -p $BUILDHOME
 cd $BUILDHOME
 cvs $CVSARGS checkout $CHECKOUTARGS -d "$BUILDDIR" ambulant
+#
+# We are building a binary distribution, so we want to completely ignore any
+# library installed system-wide (in /usr/local, basically)
+#
+export PKG_CONFIG_LIBDIR=$BUILDHOME/$BUILDDIR/third_party_packages/installed/lib/pkgconfig
 #
 # Prepare the tree
 #
