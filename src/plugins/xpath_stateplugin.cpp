@@ -626,6 +626,9 @@ xpath_state_component::_check_state_change(xmlNodePtr changed)
 		m_context->node = xmlDocGetRootElement(m_state);
 		xmlXPathObjectPtr result = xmlXPathEvalExpression(BAD_CAST ref.c_str(), m_context);
 		AM_DBG lib::logger::get_logger()->debug("... result=0x%x, type=%d", result, result?result->type:0);
+		if (result == NULL || result->type != XPATH_NODESET) {
+			lib::logger::get_logger()->trace("xpath_state: stateChange: expression %s is not a nodeset", ref.c_str());
+		}
 		if (result != NULL && result->type == XPATH_NODESET) {
 			xmlNodeSetPtr nodeset = result->nodesetval;
 			AM_DBG lib::logger::get_logger()->debug("... nodeset=0x%x count=%d", nodeset, nodeset?nodeset->nodeNr:0);
