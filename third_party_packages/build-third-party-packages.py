@@ -142,10 +142,10 @@ third_party_packages={
 				"make install" % (AMBULANT_DIR, MAC106_COMMON_CONFIGURE)
 			),
 		TPP("xerces-c",
-			url="http://apache.mirror.transip.nl/xerces/c/3/sources/xerces-c-3.0.1.tar.gz",
+			url="http://apache.mirror.transip.nl/xerces/c/3/sources/xerces-c-3.1.0.tar.gz",
 			checkcmd="pkg-config --atleast-version=3.0.0 xerces-c",
 			buildcmd=
-				"cd xerces-c-3.0.1 && "
+				"cd xerces-c-3.1.0 && "
 				"%s CXXFLAGS='%s' --disable-dependency-tracking && "
 				"make $(MAKEFLAGS) && "
 				"make install" % (MAC106_COMMON_CONFIGURE, MAC106_COMMON_CFLAGS)
@@ -230,10 +230,10 @@ third_party_packages={
 				"make install" % (AMBULANT_DIR, MAC104_COMMON_CONFIGURE)
 			),
 		TPP("xerces-c",
-			url="http://apache.mirror.transip.nl/xerces/c/3/sources/xerces-c-3.0.1.tar.gz",
+			url="http://apache.mirror.transip.nl/xerces/c/3/sources/xerces-c-3.1.0.tar.gz",
 			checkcmd="pkg-config --atleast-version=3.0.0 xerces-c",
 			buildcmd=
-				"cd xerces-c-3.0.1 && "
+				"cd xerces-c-3.1.0 && "
 				"%s CXXFLAGS='%s' --disable-dependency-tracking --without-curl && "
 				"make $(MAKEFLAGS) && "
 				"make install" % (MAC104_COMMON_CONFIGURE, MAC104_COMMON_CFLAGS)
@@ -333,10 +333,10 @@ third_party_packages={
 				"make install" % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
 			),
 		TPP("xerces-c",
-			url="http://apache.mirror.transip.nl/xerces/c/3/sources/xerces-c-3.0.1.tar.gz",
+			url="http://apache.mirror.transip.nl/xerces/c/3/sources/xerces-c-3.1.0.tar.gz",
 			checkcmd="pkg-config --atleast-version=3.0.0 xerces-c",
 			buildcmd=
-				"cd xerces-c-3.0.1 && "
+				"cd xerces-c-3.1.0 && "
 				"%s && "
 				"make $(MAKEFLAGS) && "
 				"make install" % (LINUX_COMMON_CONFIGURE)
@@ -384,9 +384,9 @@ third_party_packages={
 			checkcmd="test -f ./live/liveMedia/libliveMedia.a",
 			buildcmd=
 				"cd live && "
-		                "( grep fPIC config.linux >/dev/null || patch -i ../live.patch config.linux ) &&"
+		                "( grep fPIC config.linux >/dev/null || patch -i %s/third_party_packages/live.patch config.linux ) &&"
 				"./genMakefiles linux && "
-				"make $(MAKEFLAGS) "
+				"make $(MAKEFLAGS) " % (AMBULANT_DIR)
 			),
 		TPP("gettext",
 			url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.17.tar.gz",
