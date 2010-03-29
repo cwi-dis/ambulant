@@ -350,6 +350,12 @@ third_party_packages={
 				"make $(MAKEFLAGS) && "
 				"make install" % LINUX_COMMON_CONFIGURE
 			),
+## xulrunner-sdk is only needed for building npambulant firefox plugin
+		TPP("xulrunner-sdk",
+			url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2/sdk/xulrunner-1.9.2.en-US.linux-i686.sdk.tar.bz2",
+			checkcmd="test -d xulrunner-sdk",
+			buildcmd="test -d xulrunner-sdk"
+			),
 ##		TPP("ffmpeg",
 ##			url="http://ffmpeg.org/releases/ffmpeg-0.5.tar.bz2",
 ##			checkcmd="pkg-config --atleast-version=52.20.0 libavformat",
@@ -424,7 +430,9 @@ def main():
 		else:
 			print "+ failed:", pkg.name
 			allok = False
-	return allok
+	if not allok:
+		return 1
+	return 0
 	
 if __name__ == '__main__':
 	sts = main()
