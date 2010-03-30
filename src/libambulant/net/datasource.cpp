@@ -23,7 +23,7 @@
 #include "ambulant/lib/asb.h"
 #include "ambulant/lib/event_processor.h"
 
-//#define AM_DBG
+//#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif

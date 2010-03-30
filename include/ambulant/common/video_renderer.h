@@ -78,6 +78,13 @@ class video_renderer : public common::renderer_playable {
 	
     virtual void redraw(const lib::rect &dirty, common::gui_window *window);
 	
+    virtual void set_surface(common::surface *dest) {
+        common::renderer_playable::set_surface(dest);
+        if (m_audio_renderer) {
+            renderer *r = m_audio_renderer->get_renderer();
+            if (r) r->set_surface(dest);
+        }
+    }
 	void start(double where);
     //void stop();
 	bool stop();

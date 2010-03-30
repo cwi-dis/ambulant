@@ -42,13 +42,13 @@ libxml2:
 	WM5 notes TBD.
 
 ffmpeg:
-    Version 0.5.
+    Version 0.5 or later.
     
 	Needs to be built using MinGW, can then be linked into Visual Studio projects.
 	
 	The easiest way to get this is to download the prebuilt version from
 	our sourceforge download page. Package "ffmpeg for Ambulant", release
-	"20091008-win32-prebuilt"
+	"ffmpeg-20100122-win32-prebuilt"
 
 	If you want to build from source, follow the build instructions on 
 	<http://ffmpeg.arrozcru.org/wiki/index.php>. There are other webpages
@@ -147,7 +147,13 @@ ffmpeg:
 	libfaad2 the licensing scheme falls back to GPL	(AAC decoding is currently
 	only needed by AmbulantPlayer for audio streaming via RTSP).
 
-	Get ffmpeg 0.5 from www.ffmpeg.org. Build according to what you want to support.
+	You can get ffmpeg 0.5 from www.ffmpeg.org, but this version has a nasty
+	bug with playback of audio/video over http. If this is important to you:
+	get ffmpeg-export-2010-01-22.tar.gz from the Ambulant sourceforge download
+	page. This is a source snapshot that works with ambulant, and has this bug
+	fixed.
+	
+	Build according to what you want to support.
 	Configure options that may be useful:
 	--enable-libfaad --enable-gpk
 	    Use these to include AAC audio support (as mentioned above)

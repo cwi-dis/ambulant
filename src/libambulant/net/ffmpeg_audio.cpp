@@ -315,6 +315,7 @@ ffmpeg_decoder_datasource::start(ambulant::lib::event_processor *evp, ambulant::
 {
 	m_lock.enter();
 	bool restart_input = false;
+
 	if (m_client_callback != NULL) {
 		delete m_client_callback;
 		m_client_callback = NULL;
@@ -427,7 +428,13 @@ ffmpeg_decoder_datasource::data_avail()
 					// So we request 15 bytes more, pass an aligned pointer, and copy down if needed.
 					short *ffmpeg_outbuf = (short *)(((size_t)outbuf+FFMPEG_OUTPUT_ALIGNMENT-1) & ~(FFMPEG_OUTPUT_ALIGNMENT-1));
 					AM_DBG lib::logger::get_logger()->debug("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, cursz);
-					int decoded = avcodec_decode_audio2(m_con, ffmpeg_outbuf, &outsize, inbuf, cursz);
+					/////xxxbo 12-feb-2010: Adapted to the new api avcodec_decode_audio3
+					AVPacket avpkt;
+					av_init_packet(&avpkt);
+					avpkt.data = inbuf;
+					avpkt.size = cursz;
+					//int decoded = avcodec_decode_audio2(m_con, ffmpeg_outbuf, &outsize, inbuf, cursz);
+					int decoded = avcodec_decode_audio3(m_con, ffmpeg_outbuf, &outsize, &avpkt);
 					if (decoded < 0) outsize = 0;
 #if FFMPEG_OUTPUT_ALIGNMENT-1
 					if (outsize > 0 && (uint8_t *)ffmpeg_outbuf != outbuf) 
@@ -446,7 +453,8 @@ ffmpeg_decoder_datasource::data_avail()
 						outsize = AVCODEC_MAX_AUDIO_FRAME_SIZE;
 						outbuf = (uint8_t*) m_buffer.get_write_ptr(outsize);
 						ffmpeg_outbuf = (short *)(((size_t)outbuf+FFMPEG_OUTPUT_ALIGNMENT-1) & ~(FFMPEG_OUTPUT_ALIGNMENT-1));
-						decoded = avcodec_decode_audio2(m_con, (short*) ffmpeg_outbuf, &outsize, inbuf, cursz);
+						//decoded = avcodec_decode_audio2(m_con, (short*) ffmpeg_outbuf, &outsize, inbuf, cursz);
+						decoded = avcodec_decode_audio3(m_con, (short*) ffmpeg_outbuf, &outsize, &avpkt);
 						if (decoded < 0) outsize = 0;
 						AM_DBG lib::logger::get_logger()->debug("avocodec_decode_audio: converted additional %d of %d bytes to %d", decoded, cursz, outsize);
 #if FFMPEG_OUTPUT_ALIGNMENT-1
@@ -494,10 +502,13 @@ ffmpeg_decoder_datasource::data_avail()
 							assert(m_buffer.size() > bytes_unwanted);
 							m_buffer.readdone(bytes_unwanted);
 						}
-					} else {
+					}
+					
+					else {
 						AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail: m_elapsed = %lld < clip_begin = %lld, skipped %d bytes", m_elapsed, m_src->get_clip_begin(), outsize);
 						m_buffer.pushdata(0);
 					}
+					
 
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : m_src->readdone(%d) called m_src=0x%x, this=0x%x", decoded,(void*) m_src, (void*) this );
 				} else {
@@ -614,25 +625,31 @@ void
 ffmpeg_decoder_datasource::seek(timestamp_t time)
 {
 	m_lock.enter();
-    bool skip_seek = false;
-    assert( time >= 0);
+	bool skip_seek = false;
+	assert( time >= 0);
+
 	int nbytes = m_buffer.size();
-    AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource(0x%x)::seek(%ld), discard %d bytes, old time was %ld", (void*)this, (long)time, nbytes, m_elapsed);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource(0x%x)::seek(%ld), discard %d bytes, old time was %ld", (void*)this, (long)time, nbytes, m_elapsed);
 	if (nbytes) {
+#if 0
+        /* Temporarily disabled, to see whether it fixes #2954199 */
         timestamp_t buffer_begin_elapsed = m_elapsed - 1000000LL * (m_buffer.size() * 8) / (m_fmt.samplerate* m_fmt.channels * m_fmt.bits);
         // If the requested seek time falls within the buffer we are in luck, and do the seek by dropping some data.
         if (time >= buffer_begin_elapsed && time < m_elapsed) {
-            nbytes = ((time-buffer_begin_elapsed) * (m_fmt.samplerate* m_fmt.channels * m_fmt.bits)) / (8LL * 1000000LL);
-            skip_seek = true;
+        	nbytes = ((time-buffer_begin_elapsed) * (m_fmt.samplerate* m_fmt.channels * m_fmt.bits)) / (8LL * 1000000LL);
+		nbytes &= ~0x1; //  nbytes may be odd s.t. resulting pointer becomes unuseable for ffmpeg; fixes #2954199
+		skip_seek = true;
         }
+#endif
         AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource: flush buffer (%d bytes) due to seek", nbytes);
 		(void)m_buffer.get_read_ptr();
 		m_buffer.readdone(nbytes);
 	}
-    if (!skip_seek) {
-        m_src->seek(time);
-        m_elapsed = time; // XXXJACK not needed??
-    }
+	/* end of disabled code for #2954199 */
+	if (!skip_seek) {
+		m_src->seek(time);
+		m_elapsed = time; // XXXJACK not needed??
+	}
 	m_lock.leave();
 } 
 

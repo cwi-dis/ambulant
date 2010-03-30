@@ -241,7 +241,6 @@ Creating the WebKit/Safari 10.6 plugin
 
 Creating the MacOSX 10.4 installer
 ==================================
-XXXUNTESTED
 
 These instructions assume you are building on an Intel 10.5 mac.
 
@@ -277,7 +276,6 @@ These instructions assume you are building on an Intel 10.5 mac.
   
 Creating the WebKit/Safari 10.4 plugin
 ======================================
-XXXUNTESTED
 
 - Make sure the prerequisites are built, as above.
 - Make sure the 10.4 desktop build has been done.
@@ -321,13 +319,16 @@ not a *Debug* or *Release* player.
 If you have downloaded all the required packages, and you are using Visual
 Studio 2008 then building Ambulant-win32.sln will not only build the desktop
 player but also the Firefox plugin, the Firefox plugin installer and the
-IE plugin.
+IE plugin and its installer. The installers for the plugins are deposited
+in the bin\win32 folder (the .xpi and .cab files, respectively).
 
-Use the Nullsoft installer. The script is in installers/nsis-win32.
+Use the Nullsoft installer for building the desktop installer. 
+The script is in installers\nsis-win32.
 There are some options at the top of the script, to determine whether
 you do a distribution of a static or dynamically linked player, which
 Visual Studio version you used and a few more options. Check and modify
-these manually before building the installer.
+these manually before building the installer. The installer is created in the
+installers\nsis-win32 directory.
 
 Creating the Windows CE installer
 =================================
@@ -391,32 +392,29 @@ with the final candidate installer.
 Uploading the distributions
 ===========================
 
-Adding a new file release package
----------------------------------
-A release package is a collection of file releases (binary as well as
-source) for different platforms but the with same version number. To add
-a SF release package choose in the admin menu File Releases. At the
-bottom of the page you will find a field where you can add the name of a
-new release package. We have to use different names for our release
-packages. (such that the latest release is always on top). I propose to
-use the following naming scheme, Ambulant <version number> (eg Ambulant
-1.0, Ambulant 1.2). The minor release number is always even for stable
-releases, the development version uses the uneven numbers.
+The new SourceForge file manager scheme is quite a bit simpler than the
+old one, it is basically a hierarchical directory system viewed through the
+web browser. The important toplevel directories are:
+- Ambulant Player Source
+- Ambulant Player for Windows
+- Ambulant Player for MacOSX
+- Ambulant Player for MacOSX 10.4
+- Ambulant Safari Plugin (mac)
+- Ambulant Safari Plugin (mac 10.4)
+- Ambulant Firefox Plugin (win)
+- Ambulant Firefox Plugin (Linux)
+- Ambulant Firefox Plugin (Linux 64bit)
+- Ambulant Explorer Plugin
 
-Adding file releases to a release package
------------------------------------------
-To add files to a release package choose in the admin menu File
-releases. At the bottom you will find an overview of all the release
-packages, click on Add Release next to the release package  you want to
-add a release to. You will be asked a release new release name. Make
-sure this name is a unique name (so we can easily track it down in the
-SF stats). The next step is to upload and add the file belonging to the
-release. Upload the file to upload.sourceforge.net and click on Edit
-Releases belonging to the release package your editing in the package
-overview, and click again on edit release next to the release you want
-to add a file to. Fill in the neccesary information in Step 1, and
-select the file in Step 2. In Step 3 fill in the right processor type
-and file type for the released file.
+Under each of these, create a folder with the number of the current
+release (for example 2.2). In these folders, download the correct
+installers. Click the cogwheel icons.
+
+IMPORTANT: after you have uploaded all the new versions you must set
+the default download for the most common platforms. Use the Windows player,
+Mac player for those platforms, source for everything else. You make
+a file the default download by clicking on its cogwheel icon and
+selecting "properties".
 
 Proposed naming scheme for release names:
 
@@ -428,17 +426,14 @@ Proposed naming scheme for release names:
 Again the minor release number indicates a stable release if the number is even.
 
 
-Hiding a file release package
------------------------------
-Make sure that all file releases belonging to a file release package are hidden.
-If not, you can not hide the release package and it will stay active.
-
 Updating the website
 ====================
 
 To be supplied. Here are some random thoughts:
 - The design and API docs need to be uploaded
 - The SMIL documents need to be uploaded (if changed)
+- The IE plugin may be better off being distributed form our website in
+  stead of from SF.
 
 
 

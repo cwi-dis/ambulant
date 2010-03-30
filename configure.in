@@ -922,24 +922,27 @@ AC_ARG_WITH([npambulant],
 # XULRUNNER_ROOT=`pwd`/third_party_packages/mozilla/ff-opt-static/dist
 if test x$with_npambulant = xtrue;
 then
-   if test -f `pwd`/third_party_packages/xulrunner-sdk/include/plugin/npapi.h; then
+   if test -f `pwd`/third_party_packages/xulrunner-sdk/include/npapi.h; then
 		# Require a xulrunner-sdk installation in third_party_packages
 		withvalabs=`pwd`/third_party_packages/xulrunner-sdk
 		# for mozilla source trunk, uncomment next line
 		# withvalabs=`pwd`/third_party_packages/mozilla/ff-opt-static/dist
 		XULRUNNER_ROOT=${withvalabs}
 		XPIDL=${XULRUNNER_ROOT}/bin/xpidl
-   elif test x`xulrunner --gre-version` = x1.9.0.6
+   else XULRUNNER_VERSION = `xulrunner --gre-version`
+   	# tested with: FC10: 1.9.0.6; FC11: 1.9.1.6; FC12: 1.9.1.8
+   	if test x$XULRUNNER_VERSION = x1.9.0.6 -o x$XULRUNNER_VERSION = x1.9.1.6 -o x$XULRUNNER_VERSION = x1.9.1.8 
    	then	# xulrunner is by default installed from fedora 10
 		withvalabs=/usr
 		XULRUNNER_ROOT=${withvalabs}
 	     	XPIDL=
 
-   else	AC_MSG_ERROR("--with-npambulant requires xulrunner-sdk installed in third_party_packages")
-	XULRUNNER_ROOT=
-	XPIDL=
-	with_npambulant=false
-   fi
+   	else	AC_MSG_ERROR("--with-npambulant requires xulrunner-sdk installed in third_party_packages")
+		XULRUNNER_ROOT=
+		XPIDL=
+		with_npambulant=false
+   	fi
+    fi
 fi
 AC_SUBST(XULRUNNER_ROOT)
 AC_SUBST(XPIDL)

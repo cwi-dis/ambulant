@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2010-01-28 15:26+0100\n"
+"POT-Creation-Date: 2010-03-12 11:46+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -65,7 +65,7 @@ msgstr ""
 msgid "Programmer error encountered, will attempt to continue"
 msgstr ""
 
-#: src/libambulant/common/video_renderer.cpp:76
+#: src/libambulant/common/video_renderer.cpp:77
 #, c-format
 msgid "Cannot open video: %s"
 msgstr ""
@@ -135,8 +135,9 @@ msgstr ""
 msgid "%s: node ID not found"
 msgstr ""
 
-#: src/libambulant/gui/gtk/gtk_smiltext.cpp:652
-msgid "Geometry error in smil document"
+#: src/libambulant/gui/gtk/gtk_smiltext.cpp:658
+#, c-format
+msgid "Geometry error in smil document at %s"
 msgstr ""
 
 #: src/libambulant/gui/SDL/sdl_audio.cpp:92
@@ -148,21 +149,21 @@ msgstr ""
 msgid "Cannot open SDL audio output stream: %s"
 msgstr ""
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:123
+#: src/libambulant/gui/SDL/sdl_audio.cpp:122
 msgid "Cannot open SDL audio output stream with required characteristics"
 msgstr ""
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:274
+#: src/libambulant/gui/SDL/sdl_audio.cpp:332
 #, c-format
 msgid "%s: cannot open audio file"
 msgstr ""
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:276
+#: src/libambulant/gui/SDL/sdl_audio.cpp:334
 #, c-format
 msgid "%s: audio format not supported"
 msgstr ""
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:314
+#: src/libambulant/gui/SDL/sdl_audio.cpp:372
 #, c-format
 msgid "%s: cannot open"
 msgstr ""
@@ -212,11 +213,11 @@ msgstr ""
 msgid "transition: illegal value for %s attribute (%s)"
 msgstr ""
 
-#: src/libambulant/lib/tree_builder.cpp:163
+#: src/libambulant/lib/tree_builder.cpp:165
 msgid "Could not create any XML parser (configuration error?)"
 msgstr ""
 
-#: src/libambulant/lib/tree_builder.cpp:285
+#: src/libambulant/lib/tree_builder.cpp:287
 #, c-format
 msgid "%s: Error parsing document"
 msgstr ""
@@ -260,10 +261,10 @@ msgstr ""
 #: src/libambulant/net/demux_datasource.cpp:143
 #: src/libambulant/net/ffmpeg_audio.cpp:335
 #: src/libambulant/net/ffmpeg_audio.cpp:404
-#: src/libambulant/net/ffmpeg_audio.cpp:508
-#: src/libambulant/net/ffmpeg_audio.cpp:915
-#: src/libambulant/net/ffmpeg_audio.cpp:954
-#: src/libambulant/net/ffmpeg_audio.cpp:1168
+#: src/libambulant/net/ffmpeg_audio.cpp:518
+#: src/libambulant/net/ffmpeg_audio.cpp:931
+#: src/libambulant/net/ffmpeg_audio.cpp:970
+#: src/libambulant/net/ffmpeg_audio.cpp:1184
 msgid "Programmer error encountered during audio playback"
 msgstr ""
 
@@ -303,13 +304,13 @@ msgstr ""
 msgid "ffmpeg_decoder_datasource: could not select %s(0x%x) decoder"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:726
-#: src/libambulant/net/ffmpeg_audio.cpp:734
+#: src/libambulant/net/ffmpeg_audio.cpp:742
+#: src/libambulant/net/ffmpeg_audio.cpp:750
 #, c-format
 msgid "No support for \"%s\" audio"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:902
+#: src/libambulant/net/ffmpeg_audio.cpp:918
 msgid "Audio cannot be converted to 44Khz stereo"
 msgstr ""
 
@@ -394,21 +395,21 @@ msgstr ""
 msgid "Programmer error encountered, attempting to continue"
 msgstr ""
 
-#: src/libambulant/smil2/smil_player.cpp:210
+#: src/libambulant/smil2/smil_player.cpp:212
 msgid "Document uses state, but no state support configured"
 msgstr ""
 
-#: src/libambulant/smil2/smil_player.cpp:215
+#: src/libambulant/smil2/smil_player.cpp:217
 #, c-format
 msgid "No state support for language %s"
 msgstr ""
 
-#: src/libambulant/smil2/smil_player.cpp:1083
+#: src/libambulant/smil2/smil_player.cpp:1089
 #, c-format
 msgid "Link destination not found: %s"
 msgstr ""
 
-#: src/libambulant/smil2/smil_player.cpp:1089
+#: src/libambulant/smil2/smil_player.cpp:1095
 #, c-format
 msgid "This implementation cannot open <%s> in new window"
 msgstr ""
@@ -651,18 +652,18 @@ msgstr ""
 msgid "URL to open:"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:1096 src/player_macosx/MyAppDelegate.mm:147
+#: src/player_gtk/gtk_gui.cpp:1117 src/player_macosx/MyAppDelegate.mm:147
 #: src/player_mfc/MmView.cpp:239 src/player_unix/qt_gui.cpp:605
 #, c-format
 msgid "Ambulant Player: compile time version %s, runtime version %s"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:1097
+#: src/player_gtk/gtk_gui.cpp:1118
 #, c-format
 msgid "Ambulant Player: built on %s for Unix/GTK"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:1099 src/player_mfc/MmView.cpp:242
+#: src/player_gtk/gtk_gui.cpp:1120 src/player_mfc/MmView.cpp:242
 #: src/player_unix/qt_gui.cpp:608
 msgid "Ambulant Player: localization enabled (english)"
 msgstr ""

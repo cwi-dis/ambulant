@@ -299,9 +299,11 @@ void timegraph::add_begin_sync_rules(time_node *tn) {
 	for(it = list.begin(); it!= list.end(); it++) {
 		const sync_value_struct& svs = *it;
 		if((svs.type == sv_offset || svs.type == sv_indefinite)  
-				&& (!parent->is_seq() || (parent->is_seq() && svs.offset>=0))
-				) {
-			sync_rule *sr = create_impl_syncbase_rule(tn, svs.offset);
+			//XXXX Fix for #2950428 (negative begin time). 
+//				&& (!parent->is_seq() || (parent->is_seq() && svs.offset>=0)
+		   ) {
+			long offset = svs.offset <= 0 ? 0 : svs.offset;
+			sync_rule *sr = create_impl_syncbase_rule(tn, offset);
 			tn->add_begin_rule(sr);
 			if(parent->is_seq()) break;
 		} 

@@ -422,6 +422,7 @@ qt_transition_engine(common::surface *dst, bool is_outtrans, const transition_in
 		rv = new qt_transition_engine_slidewipe();
 		break;
 	case fade:
+	case audioVisualFade:
 		rv = new qt_transition_engine_fade();
 		break;
 	default:

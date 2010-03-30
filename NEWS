@@ -3,8 +3,9 @@ What's new in Ambulant Player 2.2?
 
 - We now have a working plugin for at least one browser on each major
   platform. On Linux and Windows we have a Firefox plugin (that may also
-  work in Opera, Safari and other browsers). On MacOSX we have a Safari
-  plugin. There is also an Internet Explorer plugin for Windows, but
+  work in Google-Chrome, Opera, Safari and other browsers).
+  On MacOSX we have a Safari plugin. 
+  There is also an Internet Explorer plugin for Windows, but
   we are slightly less sure about the quality of this one.
   
 - Timing has improved a lot. This is most clear with video, where
@@ -16,7 +17,12 @@ What's new in Ambulant Player 2.2?
   availability of this renderer.
   For developers, this change also means all renderers are now created
   with a factory function, and these all have the same signature.
-  
+  Further, the <prefetch> element is now implemented for audio and video.
+  Currently,for audio media items additionally the element:
+  <param name="renderer" value="http://www.ambulantplayer.org/component/RendererAudio"/> 
+  must be added as a child of the audio media <prefetch> element.
+
+ 
 - For developers: the build process has been enhanced. We still rely
   on lots of third party libraries, but there is a script now that
   should download and build everything (for Linux and MacOSX developers).

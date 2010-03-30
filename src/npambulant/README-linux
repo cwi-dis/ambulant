@@ -1,51 +1,23 @@
-Installation instructions for installing the AmbulantPlayer Firefox plugin
-version 2.1 (xulrunner version, with Firefox and other compliant browsers)
-on Linux (32/64 bit):
+Instructions for building the AmbulantPlayer Firefox plugin version 2.2
+(xulrunner version, with Firefox and other compliant browsers) on Linux (32/64 bit):
 
-Remove all file installed for previous versions (if any).
-
-Move or copy the following file from this .zip file to:
-$HOME/.mozilla/plugins
-(or as root for system-wide installation to: /usr/lib/mozilla/plugins)
-
-npambulant.so
-
-Restart Firefox.
-
-For uninstall, remove above files.
+A. download xulrunner-sdk to ambulant-2.2/third_party_packages (see build-third-party-packages.py)
+B. ./configure --npambulant --without-xerces
+C1. make install      # installs in $HOME/.mozilla/plugins
+C2.  sudo make install # installs in /usr/lib/mozilla/plugins
+C3. make;(cd src/npambulant;make installer) # creates .xpi installer for to be opened by firefox
 
 Notes:
-1. This is an experimental version. Sometimes when npambulant is loaded,
+1. This is an still an experimental version. Sometimes when npambulant is loaded,
    Firefox may hang or crash.
 
-2. The current version of npambulant is incompatible with nspluginwrapper.
+2. When installed using method C1 or C2, the plugin will also be recognized by other compatible
+   browsers, such as Google Chrome, Opera etc. Does not work with Konqueror.
+
+3. The current version of npambulant is incompatible with nspluginwrapper.
    For root installations, you can disable nspluginwrapper by adding
    ":npambulant*" to the variable IGNORE_WRAP in "/etc/sysconfig/nspluginwrapper"
-3. For a 64-bit version, copy npambulant.so-64 in place of npambulant.so 
-   in one of the directories mentioned above.
 
-4. A self-contained version of npambulant (without using shared libraries)
-   was build as follows.
 
-   # faad2:
-   ./configure --prefix=$HOME --without-bmp --disable-shared CFLAGS=-fPIC
-   make;make install
 
-   # ffmpeg:
-   ./configure --enable-libfaad --enable-pthreads --enable-gpl --enable-x11grab --disable-swscale --disable-shared --extra-cflags=-fPIC\ -O0\ -I$HOME/include --extra-ldflags=-L$HOME/lib --prefix=$HOME --disable-mmx
-   # (fPIC and --disable-mmx only for 64 bit)
-   make;make install
-
-   ambulant:
-   # first configure, build and local install WITHOUT plugin and shared objects (libraries)
-   ./configure --without-npambulant --disable-shared --prefix=$HOME CFLAGS=-fPIC CXXFLAGS=-fPIC --with-live --without-python --without-xerces --without-plugins --without-qt LDFLAGS=-L$HOME/lib EXTRA_LIBS=-lfaad 
-   make;make install
-   PATH=$HOME/bin:$PATH
-   LD_LIBRARY_PATH=$HOME/lib:$LD_LIBRARY_PATH
-   # next configure WITH plugin and shared libraries (plugin itself is a shared object)
-   ./configure --with-npambulant --enable-shared --prefix=$HOME CFLAGS=-fPIC CXXFLAGS=-fPIC --with-live --without-python --without-xerces --without-plugins --without-qt LDFLAGS=-L$HOME/lib EXTRA_LIBS=-lfaad 
-   # now ONLY build and (local) install npambulant
-   (cd src/npambulant;make;make install)
-   # This will install npambulant.so in $HOME/.mozilla/plugins, in a form distributable to
-   # any machine of the same architecture
    

@@ -109,6 +109,7 @@ struct transition_factories {
 	add(lib::pushWipe, new trfact<transition_engine_pushwipe>, bt_r1r2r3r4);
 	add(lib::slideWipe, new trfact<transition_engine_slidewipe>, bt_r1r2r3r4);
 	
+	add(lib::audioVisualFade, new trfact<transition_engine_fade>, bt_fade);
 	add(lib::fade, new trfact<transition_engine_fade>, bt_fade);
 	}
 	

@@ -40,7 +40,7 @@
 // WARNING: turning on AM_DBG globally in this file seems to trigger
 // a condition that makes the whole player hang or collapse. So you probably
 // shouldn't do it:-)
-//#define AM_DBG
+//#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif 
@@ -80,12 +80,14 @@ demux_audio_datasource::demux_audio_datasource(const net::url& url, abstract_dem
 	m_src_end_of_file(false),
 	m_event_processor(NULL),
 	m_thread(thread),
+	m_current_time(-1),
 	m_client_callback(NULL)
 {	
 	//AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::demux_audio_datasource: rate=%d, channels=%d", context->streams[m_stream_index]->codec.sample_rate, context->streams[m_stream_index]->codec.channels);
 	// XXX ignoring the codec for now but i'll have to look into this real soon
 	//m_fmt.parameters = (void *)&context->streams[m_stream_index]->codec;
 	m_thread->add_datasink(this, stream_index);
+	m_current_time = m_thread->get_clip_begin();
 }
 
 demux_audio_datasource::~demux_audio_datasource()
@@ -116,6 +118,7 @@ demux_audio_datasource::stop()
 		free(tsp.data);
 		m_queue.pop();
 	}
+	m_current_time = -1;
 	m_lock.leave();
 }	
 
@@ -155,8 +158,16 @@ void
 demux_audio_datasource::seek(timestamp_t time)
 {
 	m_lock.enter();
-    assert( time >= 0);
+	assert( time >= 0);
 	assert(m_thread);
+	
+	if (time == m_current_time) {
+		// The head of our queue has the timestamp we want to seek to. Don't do anything.
+		AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::seek(%d): already there", time);
+		m_lock.leave();
+		return;
+	}
+	
 	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::seek(%d): flushing %d packets", time, m_queue.size());
     int nbuf = m_queue.size();
     if ( nbuf > 0) {
@@ -165,9 +176,12 @@ demux_audio_datasource::seek(timestamp_t time)
 	while (m_queue.size() > 0) {
 		m_queue.pop();
 	}
+	m_current_time = time;
 	m_lock.leave();
 	// NOTE: the seek is outside the lock, otherwise there's a deadlock with the
 	// thread trying to deliver new data to this demux_datasource.
+	// NOTE 2: we do the seek after the flush, this may cause some incorrect data (from
+	// before the seek) to be deposited in our queue.
 	m_thread->seek(time);
 }
 
@@ -188,7 +202,8 @@ demux_audio_datasource::read_ahead(timestamp_t time)
 	m_lock.enter();
 	assert(m_thread);
 	assert(!m_thread->is_running());
-	
+	assert(m_queue.size() == 0);	// Jack assumes this should be true
+	m_current_time = time;
 	m_thread->read_ahead(time);
 	m_thread->start();
 	m_lock.leave();
@@ -264,6 +279,7 @@ demux_audio_datasource::get_ts_packet_t()
 	if (m_queue.size() > 0) {
 		tsp = m_queue.front();
 		m_queue.pop();
+		m_current_time = -1;
 	}
 	m_lock.leave();
 	return tsp;
@@ -345,12 +361,14 @@ demux_video_datasource::demux_video_datasource(const net::url& url, abstract_dem
 	m_src_end_of_file(false),
 	m_event_processor(NULL),
 	m_thread(thread),
+	m_current_time(-1),
 	m_client_callback(NULL),
 	m_audio_src(NULL),
 	m_frame_nr(0)
 {
 	assert(m_thread);
 	m_thread->add_datasink(this, stream_index);
+	m_current_time = m_thread->get_clip_begin();
 	int audio_stream_idx = m_thread->audio_stream_nr();
 	if (audio_stream_idx >= 0) 
 		m_audio_src = new demux_audio_datasource(m_url, m_thread, audio_stream_idx);
@@ -390,6 +408,7 @@ demux_video_datasource::stop()
 			element.second.data = NULL;
 		}
 		m_frames.pop();
+		m_current_time = -1;
 	}
 	m_src_end_of_file = true;
 	m_lock.leave();
@@ -404,6 +423,8 @@ demux_video_datasource::read_ahead(timestamp_t time)
 	m_lock.enter();
 	assert(m_thread);
 	assert(!m_thread->is_running());
+	assert(m_frames.size() == 0);
+	m_current_time = time;
 	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::read_ahead: (this = 0x%x), clip_begin=%d", (void*) this, time);
 
 	m_thread->read_ahead(time);
@@ -415,13 +436,21 @@ void
 demux_video_datasource::seek(timestamp_t time)
 {
 	m_lock.enter();
-    assert( time >= 0);
+	assert( time >= 0);
+	if (time == m_current_time) {
+		AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::seek(%d): already there, skipping", time);
+		m_lock.leave();
+		return;
+	}
+
+	m_thread->seek(time);
+
 	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::seek: (this = 0x%x), time=%d", (void*) this, time);
 	assert(m_thread);
-    int nbuf = m_frames.size();
-    if ( nbuf > 0) {
-        AM_DBG lib::logger::get_logger()->debug("demux_video_datasource: flush %d frames due to seek", nbuf);
-    }
+	int nbuf = m_frames.size();
+	if ( nbuf > 0) {
+		AM_DBG lib::logger::get_logger()->debug("demux_video_datasource: flush %d frames due to seek", nbuf);
+	}
 	while (m_frames.size() > 0) {
 		// flush frame queue
 		ts_frame_pair element = m_frames.front();
@@ -432,15 +461,20 @@ demux_video_datasource::seek(timestamp_t time)
 		m_frames.pop();
 	}
 
+	m_current_time = time;
+
 	m_lock.leave();
 	// NOTE: the seek is outside the lock, otherwise there's a deadlock with the
 	// thread trying to deliver new data to this demux_datasource.
+	// NOTE 2: Jack thinks this is no longer true (should check).In that case, the
+	// same holds for the audio datasource, and the seek there should also be moved 
+	// inside the lock and before the flush.
 #if 1
 	// XXXJACK untested code, but Jack thinks it's needed; if we seek we must reset
 	// any previous end-of-file condition.
 	m_src_end_of_file = false;
 #endif
-	m_thread->seek(time);
+	//m_thread->seek(time);
 }
 
 #ifdef WITH_SEAMLESS_PLAYBACK
@@ -584,7 +618,7 @@ demux_video_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, int sz)
 		vframe.data = frame_data;
 		vframe.size = sz;
 		m_frames.push(ts_frame_pair(pts, vframe));
-		AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): %lld 0x%x %d", pts, vframe.data, vframe.size);
+
 	}		
 	if ( m_frames.size() || _end_of_file()  ) {
 		if ( m_client_callback ) {
@@ -673,6 +707,7 @@ demux_video_datasource::get_frame(timestamp_t now, timestamp_t *timestamp, int *
 	char *rv = (char*) frame.second.data;
 	*sizep = frame.second.size;
 	*timestamp = frame.first;
+	m_current_time = -1;
 	m_lock.leave();
 	return rv;
 }

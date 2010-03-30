@@ -129,6 +129,7 @@ gtk_smiltext_renderer::~gtk_smiltext_renderer()
 void
 gtk_smiltext_renderer::start(double t)
 {
+	gui::gtk::gtk_renderer<common::renderer_playable>::start(t);
 	m_epoch = m_event_processor->get_timer()->elapsed();
 	m_engine.start(t);
 	m_motion_done = false;
@@ -648,8 +649,13 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 		if (pixmap != NULL) 
 			gdk_drawable_get_size (pixmap, &PW, &PH);
 		if (pixmap == NULL || PW < L+W || PH  < T+H ) {
+			g_object_unref (G_OBJECT (text_pixmap));
+			g_object_unref (G_OBJECT (bg_pixmap));
+			g_object_unref (G_OBJECT (text_gc));
+			g_object_unref (G_OBJECT (bg_gc));
+			g_object_unref (G_OBJECT (gc));
 			lib::logger::get_logger()->trace("smilText: gdk_pixbuf_get_from_drawable failed, pixmap.size()=(%d,%d), (L,T,W,H)=(%d,%d,%d,%d)", PW,PH,L,T,W,H);
-			lib::logger::get_logger()->error(gettext("Geometry error in smil document"));
+			lib::logger::get_logger()->error(gettext("Geometry error in smil document at %s"), m_node->get_sig().c_str());
 			return;
 		}
 		GdkPixbuf* screen_pixbuf = gdk_pixbuf_get_from_drawable	(NULL, pixmap, NULL, L, T, 0, 0, W, H);

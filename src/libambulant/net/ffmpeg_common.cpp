@@ -33,7 +33,7 @@
 // WARNING: turning on AM_DBG globally for the ffmpeg code seems to trigger
 // a condition that makes the whole player hang or collapse. So you probably
 // shouldn't do it:-)
-//#define AM_DBG
+//#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif 
@@ -57,22 +57,10 @@ using namespace net;
 // There is a bug in the ffpmeg http seek code, which causes http header data to be
 // interspersed into the datastream. This bug has been registered in the ambulant bug database as
 // #2916230. It has also been submitted to the ffmpeg developer team, as
-// <https://roundup.ffmpeg.org/roundup/ffmpeg/issue1631>, but so far it hasn't been fixed.
-// In the mean time, we have the workaround of disabling http seek, for the versions of
-// ffmpeg we know are faulty.
-// If a new ffmpeg becomes available, please test whether it has been fixed. If not: update
-// FFMPEG_HTTP_SEEK_BUG_MAX_VERSION_TESTED. If it has been fixed: update FFMPEG_HTTP_SEEK_BUG_MAX_VERSION.
+// <https://roundup.ffmpeg.org/roundup/ffmpeg/issue1631>, it was fixed in January 2010.
+// If you are still using an older ffmpeg you could try enabling this fix.
 
-#define FFMPEG_HTTP_SEEK_BUG_MIN_VERSION ((51<<16)+(12<<8)+2)
-#define FFMPEG_HTTP_SEEK_BUG_MAX_VERSION ((52<<16)+(46<<8)+99)
-#define FFMPEG_HTTP_SEEK_BUG_MAX_VERSION_TESTED ((52<<16)+(47<<8)+0)
-
-#if LIBAVFORMAT_BUILD >= FFMPEG_HTTP_SEEK_BUG_MIN_VERSION && LIBAVFORMAT_BUILD <= FFMPEG_HTTP_SEEK_BUG_MAX_VERSION
-#if LIBAVFORMAT_BUILD > FFMPEG_HTTP_SEEK_BUG_MAX_VERSION_TESTED
-#error Current libavformat version not tested for http seek bug. See comment here for details.
-#endif
-#define FFMPEG_HTTP_SEEK_BUG
-#endif
+#undef FFMPEG_HTTP_SEEK_BUG
 
 #ifdef FFMPEG_HTTP_SEEK_BUG
 extern "C" {
@@ -98,6 +86,10 @@ ambulant::net::ffmpeg_init()
 {
 	static bool is_inited = false;
 	if (is_inited) return;
+#if 0
+    // Enable this line to get lots of ffmpeg debug output:
+    av_log_set_level(99);
+#endif
 	avcodec_init();
 	av_register_all();
 #ifdef FFMPEG_HTTP_SEEK_BUG
@@ -187,7 +179,7 @@ ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timesta
 	int audio_idx = audio_stream_nr();
 	if ( audio_idx >= 0) {
 		m_audio_fmt.parameters = (void *) am_get_codec(con->streams[audio_idx]->codec);
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: audio_codec_name=%s", am_get_codec_var(m_con->streams[audio_idx]->codec, codec_name));
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::ffmpeg_demux(): audio_codec_name=%s", am_get_codec_var(m_con->streams[audio_idx]->codec, codec_name));
 		m_audio_fmt.samplerate = am_get_codec_var(con->streams[audio_idx]->codec, sample_rate);
 		m_audio_fmt.channels = am_get_codec_var(con->streams[audio_idx]->codec, channels);
 		m_audio_fmt.bits = 16;
@@ -197,9 +189,9 @@ ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timesta
 	int video_idx = video_stream_nr();
 	if (video_idx >= 0) {
 		m_video_fmt.parameters = (void *) am_get_codec(m_con->streams[video_stream_nr()]->codec);
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: video_codec_name=%s", am_get_codec_var(m_con->streams[video_stream_nr()]->codec, codec_name));
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::ffmpeg_demux(): video_codec_name=%s", am_get_codec_var(m_con->streams[video_stream_nr()]->codec, codec_name));
 	} else {
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::supported: No Video stream ?");
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::ffmpeg_demux(): No Video stream ?");
 		m_video_fmt.parameters = NULL;
 	}
 	memset(m_sinks, 0, sizeof m_sinks);
@@ -368,7 +360,7 @@ ffmpeg_demux::add_datasink(demux_datasink *parent, int stream_index)
 	m_sinks[stream_index] = parent;
 	parent->add_ref();
 	m_nstream++;
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::add_datasink(0x%x): stream_index=%d parent=0x%x m_current_sink=0x%x m_nstream=%d", this, stream_index, parent, m_current_sink, m_nstream); //XXXX
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::add_datasink(0x%x): stream_index=%d parent=0x%x m_current_sink=0x%x m_nstream=%d", this, stream_index, parent, m_current_sink, m_nstream);
 	m_lock.leave();
 }
 
@@ -388,6 +380,7 @@ void
 ffmpeg_demux::seek(timestamp_t time)
 {
 	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::seek(0x%x): time=%d", this, time);
     assert( time >= 0);
 	m_clip_begin = time;
 	m_clip_begin_changed = true;
@@ -400,6 +393,7 @@ void
 ffmpeg_demux::set_clip_end(timestamp_t clip_end)
 {
 	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_set_clip_end(0x%x): clip_end=%d", this, clip_end);
 	m_clip_end = clip_end;
 	m_lock.leave();
 }
@@ -425,9 +419,10 @@ ffmpeg_demux::remove_datasink(int stream_index)
 			ds->release();
 		}
 	}
-	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::remove_datasink(0x%x): stream_index=%d ds=0x%x m_current_sink=0x%x m_nstream=%d", this, stream_index, ds, m_current_sink, m_nstream); //XXXX
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::remove_datasink(0x%x): stream_index=%d ds=0x%x m_current_sink=0x%x m_nstream=%d", this, stream_index, ds, m_current_sink, m_nstream);
 	if (m_nstream <= 0) cancel();
 }
+
 
 unsigned long
 ffmpeg_demux::run()
@@ -442,6 +437,10 @@ ffmpeg_demux::run()
 	timestamp_t initial_audio_pts = 0;
 	bool initial_audio_pts_set = false;
 #endif
+
+///xxxbo 17-feb-2010
+	timestamp_t last_valid_audio_pts = 0;
+
 	pkt_nr = 0;
 	assert(m_con);
 
@@ -464,17 +463,29 @@ ffmpeg_demux::run()
 
 			// If we have a video stream we should rescale our time offset to the timescale of the video stream.
 			int seek_streamnr = -1;
+			
+			//xxxbo 26-mar-2010
+			#if 0
 			if (video_streamnr >= 0) {
 				seektime = av_rescale_q(seektime, AMBULANT_TIMEBASE, m_con->streams[video_streamnr]->time_base);
-                seek_streamnr = video_streamnr;
-            } else if (audio_streamnr >= 0) {
+				seek_streamnr = video_streamnr;
+			} else if (audio_streamnr >= 0) {
 				seektime = av_rescale_q(seektime, AMBULANT_TIMEBASE, m_con->streams[audio_streamnr]->time_base);
-                seek_streamnr = audio_streamnr;
+				seek_streamnr = audio_streamnr;
 			}
-            AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %lld scaled to mediatimebase", seektime);
+			#else
+			if (audio_streamnr >= 0) {
+				seektime = av_rescale_q(seektime, AMBULANT_TIMEBASE, m_con->streams[audio_streamnr]->time_base);
+				seek_streamnr = audio_streamnr;
+			} else if (video_streamnr >= 0) {
+				seektime = av_rescale_q(seektime, AMBULANT_TIMEBASE, m_con->streams[video_streamnr]->time_base);
+				seek_streamnr = video_streamnr;
+			}
+			#endif
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %lld scaled to mediatimebase", seektime);
 			m_lock.leave();
-            int seekresult = av_seek_frame(m_con, seek_streamnr, seektime, AVSEEK_FLAG_BACKWARD);
-            m_lock.enter();
+			int seekresult = av_seek_frame(m_con, seek_streamnr, seektime, AVSEEK_FLAG_BACKWARD);
+			m_lock.enter();
 			if (seekresult < 0) {
 				lib::logger::get_logger()->debug("ffmpeg_demux: av_seek_frame() returned %d", seekresult);
 			}
@@ -483,7 +494,8 @@ ffmpeg_demux::run()
 		m_lock.leave();
 		int ret = av_read_frame(m_con, pkt);
 		m_lock.enter();
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: av_read_packet returned ret= %d, (%d, 0x%x, %d)", ret, (int)pkt->pts ,pkt->data, pkt->size);
+	
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: av_read_packet returned ret= %d, (%d, 0x%x, %d, %d)", ret, (int)pkt->pts ,pkt->data, pkt->size, pkt->stream_index);
 #ifndef WITH_SEAMLESS_PLAYBACK
 		if (ret < 0) break;
 #else
@@ -539,9 +551,31 @@ ffmpeg_demux::run()
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: dts invalid using pts=%lld", pkt->dts);
 					pts = pkt->pts;
 				}
-#endif
+				
+				//xxxbo 17-feb-2010 To fix the chopping audio playback in vobis/ogg 
+				// For some reason which I don't understand, In the current version of ffmpeg, for reading vorbis in ogg,
+				// sometime, the pts and dts got by ffmpeg is not valid any more (which equal to AV_NOPTS_VALUE)
+				// and this kind of invalid value of pts and dts will last in the following packets for some
+				// small while. This invalid pts and dts will cause ffmpeg_decoder_datasource.data_avail dropping
+				// packets which should not be dropped. This kind of dropping will cause the chopping audio
+				// effect when playback vorbis in ogg. In this case, we use the latest valid pts as the current
+				// pts instead of the invalid AV_NOPTS_VALUE
+								
 				if (pts != AV_NOPTS_VALUE) {
 					pts = av_rescale_q(pts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
+					
+					if (pkt->stream_index == audio_streamnr)
+        		           	     last_valid_audio_pts = pts; 
+                		} else {
+					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: pts and dts invalid using pts=%lld", last_valid_audio_pts);
+					
+					last_valid_audio_pts++;
+					pts = last_valid_audio_pts;
+				//xxxbo 17-feb-2010 the end of fixing the chopping audio playback in vobis/ogg	
+				
+#endif
+
+					
 #if RESYNC_TO_INITIAL_AUDIO_PTS
                     // We seem to be getting values with a non-zero epoch sometimes (?)
                     // Remember initial audio pts, and resync everything to that.
@@ -561,13 +595,27 @@ ffmpeg_demux::run()
 #endif // RESYNC_TO_INITIAL_AUDIO_PTS
                 }
 			}
-            // We are now going to push data to one of our clients. This means that we should re-send an EOF at the end, even if
-            // we have already sent one earlier.
+			// We are now going to push data to one of our clients. This means that we should re-send an EOF at the end, even if
+			// we have already sent one earlier.
 #ifdef WITH_SEAMLESS_PLAYBACK
-            eof_sent_to_clients = false;
+			eof_sent_to_clients = false;
 #endif
 			bool accepted = false;
-			while ( ! accepted && sink && !exit_requested()) { 
+			
+			// xxxbo 26-mar-2010
+			// NOTE: Without checking the value of m_cli_begin_changed will possibly
+			// push the wrong packets to demux_datasource, which was read by the  
+			// av_read_frame after demux_datasource flushes its buffer. 
+			// The flushing action sets the value of m_clip_begin_changed to indicate
+			// the seek opperation and the temporary obsolete of the packets read from 
+			// ffmpeg_demux until it checks m_clip_begin_checked again before its 
+			// push_data. 
+			// If ffmpeg_demux doesn't check the latest value of
+			// m_clip_begin_changed, which is changed by demux_datasource when 
+			// ffmpeg_demux is sleeping, and pushs data to demux_datasource will cause
+			// the problem. This problem is found by Bo on linux and fixed by
+			// Jack and Bo.
+			while ( ! accepted && sink && !exit_requested() && !m_clip_begin_changed) { 
 				m_current_sink = sink;
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.push_data(%lld, 0x%x, %d, %d) pts=%lld", pkt->stream_index, pkt->pts, pkt->data, pkt->size, pkt->duration, pts);
 				m_lock.leave();
@@ -584,14 +632,14 @@ ffmpeg_demux::run()
 //					sleep(1);   // This is overdoing it
 				}
 				m_lock.enter();
-                // Check whether our sink should have been deleted while we were outside of the lock.
+				// Check whether our sink should have been deleted while we were outside of the lock.
 				if (m_sinks[pkt->stream_index] == NULL)
 				{
 					sink->push_data(0,0,0); 
 					sink->release();
 				}
-                m_current_sink = NULL;
-                sink = m_sinks[pkt->stream_index];
+                		m_current_sink = NULL;
+                		sink = m_sinks[pkt->stream_index];
 			}
 		}
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: freeing pkt (number %d)",pkt_nr);

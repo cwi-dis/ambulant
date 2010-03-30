@@ -247,13 +247,22 @@ third_party_packages={
 				"make $(MAKEFLAGS) && "
 				"make install" % MAC104_COMMON_CONFIGURE
 			),
+##		TPP("ffmpeg",
+##			url="http://ffmpeg.org/releases/ffmpeg-0.5.tar.bz2",
+##			checkcmd="pkg-config --atleast-version=52.20.0 libavformat",
+##			buildcmd=
+##				"mkdir ffmpeg-0.5-universal && "
+##				"cd ffmpeg-0.5-universal && "
+##				"%s/third_party_packages/ffmpeg-osx-fatbuild.sh %s/ffmpeg-0.5 all" % 
+##					(AMBULANT_DIR, os.getcwd())
+##			),
 		TPP("ffmpeg",
-			url="http://ffmpeg.org/releases/ffmpeg-0.5.tar.bz2",
+			url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
 			checkcmd="pkg-config --atleast-version=52.20.0 libavformat",
 			buildcmd=
-				"mkdir ffmpeg-0.5-universal && "
-				"cd ffmpeg-0.5-universal && "
-				"%s/third_party_packages/ffmpeg-osx-fatbuild.sh %s/ffmpeg-0.5 all" % 
+				"mkdir ffmpeg-export-universal && "
+				"cd ffmpeg-export-universal && "
+				"%s/third_party_packages/ffmpeg-osx-fatbuild.sh %s/ffmpeg-export-2010-01-22 all" % 
 					(AMBULANT_DIR, os.getcwd())
 			),
 ##		TPP("SDL",
@@ -356,6 +365,53 @@ third_party_packages={
 			checkcmd="test -d xulrunner-sdk",
 			buildcmd="test -d xulrunner-sdk"
 			),
+## ogg-vorbis-theora decoding are default enabled on most Linux installations
+##		TPP("libogg",
+##			url=" http://downloads.xiph.org/releases/ogg/libogg-1.1.4.tar.gz",
+##			checkcmd="test -f %s/lib/libogg-1.1.4.a" % COMMON_INSTALLDIR,
+##			buildcmd=
+##				"cd libogg-1.1.4  && "
+##				"%s && "
+##				"make $(MAKEFLAGS) && "
+##				"make install" % LINUX_COMMON_CONFIGURE
+##			),
+##		TPP("libvorbis",
+##			url=" http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.3.tar.gz",
+##			checkcmd="test -f %s/lib/libvorbis-1.2.3.a" % COMMON_INSTALLDIR,
+##			buildcmd=
+##				"cd libvorbis-1.2.3  && "
+##				"%s && "
+##				"make $(MAKEFLAGS) && "
+##				"make install" % LINUX_COMMON_CONFIGURE
+##			),
+##		TPP("libtheora",
+##			url=" http://downloads.xiph.org/releases/theora/libtheora-1.1.1.tar.bz2",
+##			checkcmd="test -f %s/lib/libtheora-1.1.1.a" % COMMON_INSTALLDIR,
+##			buildcmd=
+##				"cd libtheora-1.1.1  && "
+##				"%s && "
+##				"make $(MAKEFLAGS) && "
+##				"make install" % LINUX_COMMON_CONFIGURE
+##			),
+## liboil and libschroedinger needed for dirac video decoding not yet supported
+##		TPP("liboil",
+##			url="http://liboil.freedesktop.org/download/liboil-0.3.17.tar.gz",
+##			checkcmd="test -f %s/lib/liboil-0.3.a" % COMMON_INSTALLDIR,
+##			buildcmd=
+##				"cd liboil-0.3.17  && "
+##				"%s && "
+##				"make $(MAKEFLAGS) && "
+##				"make install" % LINUX_COMMON_CONFIGURE
+##			),
+##		TPP("libschroedinger",
+##			url="http://diracvideo.org/download/schroedinger/schroedinger-1.0.7.tar.gz",
+##			checkcmd="test -f %s/lib/libschroedinger-1.0.a" % COMMON_INSTALLDIR,
+##			buildcmd=
+##				"cd schroedinger-1.0.7  && "
+##				"%s --disable-gstreamer && "
+##				"make $(MAKEFLAGS) && "
+##				"make install" % LINUX_COMMON_CONFIGURE
+##			),
 ##		TPP("ffmpeg",
 ##			url="http://ffmpeg.org/releases/ffmpeg-0.5.tar.bz2",
 ##			checkcmd="pkg-config --atleast-version=52.20.0 libavformat",

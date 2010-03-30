@@ -28,6 +28,7 @@
 //#include "ambulant/net/datasource.h"
 #include "ambulant/lib/profile.h"
 
+//#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -110,23 +111,10 @@ video_renderer::init_with_node(const lib::node *n)
 {
 	m_lock.enter();
 	renderer_playable::init_with_node(n);
-	// Assumption in the following code (by Jack): if we have an audio renderer
-    // then the streams are multiplexed, and we should seek only a single stream.
-    // We let the audio handler do the seeking, as the video handler can
-    // much more easily skip frames, etc.
-#ifdef WITH_SEAMLESS_PLAYBACK
-    AM_DBG lib::logger::get_logger()->debug("video_renderer::init_with_node: old pos %lld new pos %lld for %s", m_previous_clip_position, m_clip_begin, n->get_sig().c_str());
-	if (m_clip_begin != m_previous_clip_position) {
-        AM_DBG lib::logger::get_logger()->debug("video_renderer::init_with_node: seek from %lld to %lld for %s", m_previous_clip_position, m_clip_begin, n->get_sig().c_str());
-		m_lock.leave();
-		seek(m_clip_begin/1000);
-		m_lock.enter();
-        m_previous_clip_position = m_clip_begin;
-	}
-#else
-		m_lock.leave();
-		seek(m_clip_begin/1000);
-		m_lock.enter();
+#ifndef WITH_SEAMLESS_PLAYBACK
+    m_lock.leave();
+    seek(m_clip_begin);
+    m_lock.enter();
 #endif // WITH_SEAMLESS_PLAYBACK
 	if (m_audio_renderer) {
 		m_audio_renderer->init_with_node(n);
@@ -138,8 +126,13 @@ video_renderer::init_with_node(const lib::node *n)
 void
 video_renderer::start (double where)
 {
-    preroll(0, 0, 0);
+    preroll(0, where, 0);
 	m_lock.enter();
+	if (m_clip_end < m_clip_begin) {
+		m_context->stopped(m_cookie, 0);
+		m_lock.leave();
+		return;
+	}
 	AM_DBG { 
         std::string tag = m_node->get_local_name();
         assert(tag != "prefetch");
@@ -201,6 +194,10 @@ video_renderer::preroll(double when, double where, double how_much)
 {
 #ifdef WITH_SEAMLESS_PLAYBACK
 	m_lock.enter();
+	if (m_clip_end != -1 && m_clip_end < m_clip_begin) {
+		m_lock.leave();
+		return;
+	}
 	if (m_activated) {
 		lib::logger::get_logger()->trace("video_renderer.preroll(0x%x): already started", (void*)this);
 		m_lock.leave();
@@ -218,7 +215,6 @@ video_renderer::preroll(double when, double where, double how_much)
 	// and where (seconds).
 	assert(m_clip_begin >= 0);
 	assert(where >= 0);
-	m_epoch = (long)(m_clip_begin/1000) - (int)(where*1000);
 	m_is_paused = false;
 	
 	// We need to initial these variables over here
@@ -228,13 +224,14 @@ video_renderer::preroll(double when, double where, double how_much)
 	m_frame_duplicate = 0;
 	m_frame_early = 0;
 	m_frame_late = 0;
-	m_previous_clip_position = m_clip_begin;
+	m_previous_clip_position = m_clip_begin+(net::timestamp_t)(where*1000000);
 	m_frame_missing = 0;
-	
+
+    m_src->seek(m_clip_begin + (net::timestamp_t)(where*1000000));	
 	AM_DBG lib::logger::get_logger ()->debug ("video_renderer::start(%f) this = 0x%x, cookie=%d, dest=0x%x, timer=0x%x, epoch=%d", where, (void *) this, (int)m_cookie, (void*)m_dest, m_timer, m_epoch);
 	m_src->start_prefetch (m_event_processor);
 	if (m_audio_renderer) 
-		m_audio_renderer->preroll(where);
+		m_audio_renderer->preroll(0, where, 0);
 	
 	m_lock.leave();	
 #endif // WITH_SEAMLESS_PLAYBACK
@@ -283,11 +280,14 @@ video_renderer::post_stop()
 void
 video_renderer::seek(double t)
 {
+    m_lock.enter();
 	//assert(m_audio_renderer == NULL);
+    // XXXJACK: Should we seek the audio renderer too??
 	AM_DBG lib::logger::get_logger()->trace("video_renderer: seek(%f) curtime=%f", t, (double)m_timer->elapsed()/1000.0);
     assert( t >= 0);
-	long int t_ms = (long int)(t*1000.0);
-	if (m_src) m_src->seek(t_ms);
+	net::timestamp_t t_us= (net::timestamp_t)(t*1000000);
+	if (m_src) m_src->seek(t_us);
+    m_lock.leave();
 }
 
 common::duration 
@@ -383,7 +383,7 @@ video_renderer::data_avail()
 	net::timestamp_t now_micros = (net::timestamp_t)(now()*1000000);
 	net::timestamp_t frame_ts_micros;	// Timestamp of frame in "buf" (in microseconds)
 	buf = m_src->get_frame(now_micros, &frame_ts_micros, &size);
-    AM_DBG lib::logger::get_logger()->debug("data_avail(%s): %lld, %d bytes", m_node->get_sig().c_str(), frame_ts_micros, size);
+	AM_DBG lib::logger::get_logger()->debug("data_avail(%s): %lld, %d bytes", m_node->get_sig().c_str(), frame_ts_micros, size);
 
 	if (buf == NULL) {
 		// This can only happen immedeately after a seek, or if we have read past end-of-file.
@@ -453,7 +453,7 @@ video_renderer::data_avail()
 	if (frame_ts_micros + frame_duration < m_clip_begin) {
 		// Frame from before begin-of-movie (funny comparison because of unsignedness). Skip silently, and schedule another callback asap.
 		AM_DBG lib::logger::get_logger()->debug("video_renderer: frame skipped, ts (%lld) < clip_begin(%lld)", frame_ts_micros, m_clip_begin);
-        m_src->frame_processed(frame_ts_micros);
+		m_src->frame_processed(frame_ts_micros);
 	} else
 #ifdef DROP_LATE_FRAMES
 	if (frame_ts_micros <= now_micros - frame_duration && !m_prev_frame_dropped) {

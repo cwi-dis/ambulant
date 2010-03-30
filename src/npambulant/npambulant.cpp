@@ -341,9 +341,9 @@ char* npambulant::get_document_location()
 	// Turn it into a C string.
 	// XXXJACK: the memory for the string isn't released...
 	NPString href = NPVARIANT_TO_STRING(npvHref);
-	rv = (char*) malloc(href.utf8length+1);
-	strncpy(rv, href.utf8characters, href.utf8length);
-	rv[href.utf8length] = '\0';
+	rv = (char*) malloc(href.UTF8Length+1);
+	strncpy(rv, href.UTF8Characters, href.UTF8Length);
+	rv[href.UTF8Length] = '\0';
 	AM_DBG fprintf(stderr, "get_document_location: returning \"%s\"\n", rv);
 	
 	NPN_ReleaseVariantValue(&npvLocation);

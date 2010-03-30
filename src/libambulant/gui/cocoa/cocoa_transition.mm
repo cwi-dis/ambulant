@@ -400,6 +400,7 @@ cocoa_transition_engine(common::surface *dst, bool is_outtrans, const lib::trans
 		rv = new cocoa_transition_engine_slidewipe();
 		break;
 	case lib::fade:
+	case lib::audioVisualFade:
 		rv = new cocoa_transition_engine_fade();
 		break;
 	default:

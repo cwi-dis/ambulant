@@ -84,6 +84,7 @@ class demux_audio_datasource:
 	lib::event_processor *m_event_processor;
 	std::queue<ts_packet_t> m_queue;
 	abstract_demux *m_thread;
+	timestamp_t m_current_time;
 	lib::event *m_client_callback;  // This is our callback to the client
 	lib::critical_section m_lock;
 };
@@ -148,6 +149,7 @@ class demux_video_datasource:
 	std::queue<ts_frame_pair > m_frames;
 	ts_frame_pair m_old_frame;
 	abstract_demux *m_thread;
+	timestamp_t m_current_time;
 	lib::event *m_client_callback;  // This is our calllback to the client
   	pkt_audio_datasource* m_audio_src;
 	lib::critical_section m_lock;

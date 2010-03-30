@@ -724,11 +724,11 @@ void gtk_ambulant_widget::do_paint_event (GdkEventExpose *e) {
 void 
 gtk_ambulant_widget::do_motion_notify_event(GdkEventMotion *e) {
 	int m_o_x = 0, m_o_y = 0; //27; // XXXX Origin of MainWidget
-	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::mouseMoveEvent(0x%x) e=(%d,%d) m_gtk_window=0x%x\n", this, e->x,e->y, m_gtk_window);
+	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::mouseMoveEvent(0x%x) e=(%ld,%ld) m_gtk_window=0x%x\n", this, e->x,e->y, m_gtk_window);
 	if (! m_gtk_window) return;
 	//XXXX This is not right!!!
 	ambulant::lib::point ap = ambulant::lib::point((int)e->x,
-						       (int)e->y-25);
+												   (int)e->y);
 	gui_player* gui_player =  m_gtk_window->get_gui_player();
 	if (gui_player) {
 		gui_player->before_mousemove(0);

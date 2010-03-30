@@ -878,7 +878,22 @@ gtk_gui::do_internal_message(gtk_message_event* e) {
 	//std::cerr<<id<<std::endl;
 	//std::cerr<<id+" type: "<<e->get_type()<<" msg:"<<msg<<std::endl;
 	int level = e->get_type() - gtk_logger::CUSTOM_OFFSET;
+	static char* last_msg = NULL;
+	if (level >= ambulant::lib::logger::LEVEL_SHOW) {
+		/* do not redisplay same windowed (modal) message */
+		if (last_msg != NULL && msg != NULL && strcmp(last_msg, msg) == 0) {
+			free (msg);
+			return;
+		} else if (msg == NULL)
+			return;
+		else {
+			if (last_msg != NULL)
+				free (last_msg);
+			last_msg = strdup (msg);
+		}
+	}
 	GtkMessageDialog* dialog; // just in case is needed
+
 	switch (level) {
 	case gtk_logger::CUSTOM_NEW_DOCUMENT:
 		if (m_mainloop) {
@@ -911,8 +926,10 @@ gtk_gui::do_internal_message(gtk_message_event* e) {
          	GTK_MESSAGE_ERROR,
          	GTK_BUTTONS_OK,
 	 	msg);
- 		gtk_dialog_run (GTK_DIALOG (dialog));
- 		gtk_widget_destroy (GTK_WIDGET (dialog));
+		g_signal_connect_swapped (dialog, "response",
+								  G_CALLBACK (gtk_widget_destroy),
+								  dialog);
+		gtk_widget_show_all (GTK_WIDGET(dialog));
 		break;
 	case ambulant::lib::logger::LEVEL_ERROR:
 		dialog = (GtkMessageDialog*) gtk_message_dialog_new (NULL,
@@ -920,8 +937,10 @@ gtk_gui::do_internal_message(gtk_message_event* e) {
          	GTK_MESSAGE_WARNING,
          	GTK_BUTTONS_OK,
 	 	msg);
- 		gtk_dialog_run (GTK_DIALOG (dialog));
- 		gtk_widget_destroy (GTK_WIDGET (dialog));
+		g_signal_connect_swapped (dialog, "response",
+								  G_CALLBACK (gtk_widget_destroy),
+								  dialog);
+		gtk_widget_show_all (GTK_WIDGET(dialog));
 		break;
 	case ambulant::lib::logger::LEVEL_WARN:
 	default:
@@ -930,8 +949,10 @@ gtk_gui::do_internal_message(gtk_message_event* e) {
          	GTK_MESSAGE_INFO,
          	GTK_BUTTONS_OK,
 	 	msg);
- 		gtk_dialog_run (GTK_DIALOG (dialog));
- 		gtk_widget_destroy (GTK_WIDGET (dialog));
+		g_signal_connect_swapped (dialog, "response",
+								  G_CALLBACK (gtk_widget_destroy),
+								  dialog);
+		gtk_widget_show_all (GTK_WIDGET(dialog));
 		break;
 	}
 #ifdef	LOCK_MESSAGE

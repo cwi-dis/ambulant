@@ -69,9 +69,9 @@ renderer_playable::~renderer_playable()
 void
 renderer_playable::init_with_node(const lib::node *n)
 {
-    m_node = n;
-    m_cookie = m_node->get_numid();
-    _init_clip_begin_end();
+	m_node = n;
+	m_cookie = m_node->get_numid();
+	_init_clip_begin_end();
 	const char *erase = m_node->get_attribute("erase");
 	if (erase && strcmp(erase, "never") == 0)
 		m_erase_never = true;
@@ -134,14 +134,14 @@ renderer_playable::user_event_sensitive(const lib::point &where) {
 void
 renderer_playable::_init_clip_begin_end()
 {
-	// here we have to get clip_begin/clip_end from the node
-	const char *clip_begin_attr = m_node->get_attribute("clipBegin");
 	net::timestamp_t cb = 0;
 	
+	const char* begin_attr =  m_node->get_attribute("begin");
+	// here we have to get clip_begin/clip_end from the node
+	const char *clip_begin_attr = m_node->get_attribute("clipBegin");
 	if (!clip_begin_attr) {
 		clip_begin_attr = m_node->get_attribute("clip-begin");
 	}
-	
 	if (clip_begin_attr) {
 		lib::mediaclipping_p parser;
 		std::string s(clip_begin_attr);
@@ -151,8 +151,8 @@ renderer_playable::_init_clip_begin_end()
 		if (d == -1) {
 			lib::logger::get_logger()->warn("Cannot parse clipBegin");
 		} else {
-			cb = (net::timestamp_t)parser.get_time() * 1000;
-			// lib::logger::get_logger()->warn("parsed clipBegin cb=%lld", cb);
+			cb += (net::timestamp_t)parser.get_time() * 1000;
+			AM_DBG lib::logger::get_logger()->debug("parsed clipBegin cb=%lld", cb);
 
 		}
 	}
@@ -176,6 +176,13 @@ renderer_playable::_init_clip_begin_end()
 		}	
 	}
 	AM_DBG lib::logger::get_logger()->debug("renderer_playable::init_clip_begin_end: cb=%lld, ce=%lld", cb,ce);
+	if (cb < 0) {
+		lib::logger::get_logger()->trace("%s: negative clipBegin value (%s) ignored",  m_node->get_sig().c_str(), clip_begin_attr);
+		cb = 0;
+	}
+	if (ce != -1 && ce < cb) {
+		lib::logger::get_logger()->trace("%s: clipEnd=\"%s\" is before clipBegin=\"%s\", media ignored",  m_node->get_sig().c_str(),  clip_end_attr, clip_begin_attr);
+	}
 	m_clip_begin = cb;
 	m_clip_end = ce;
 }

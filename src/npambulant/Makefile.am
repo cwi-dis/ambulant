@@ -97,7 +97,8 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/include/ambulant/gui \
 	-I$(top_srcdir)/src/player_gtk \
-	-I$(XULRUNNER_ROOT)/sdk/include \
+	-I$(top_srcdir)/src/npambulant \
+	-I$(XULRUNNER_ROOT)/include \
 	$(INCLTDL)
 
 lib_LTLIBRARIES = libnpambulant.la
@@ -105,12 +106,14 @@ libnpambulant_la_SOURCES=\
 	np_entry.cpp \
 	npn_gate.cpp \
 	npp_gate.cpp \
+	ScriptablePluginObjectBase.h \
+	ConstructablePluginObject.h \
+	ScriptablePluginObject.h \
 	ScriptablePluginObjectBase.cpp \
 	ScriptablePluginObject.cpp \
+	npambulant.h \
 	npambulant.cpp \
 	$(mainloop)
-
-nodist_libnpambulant_la_INCLUDES=npambulant.h
 
 libnpambulant_la_LDFLAGS=	\
 	-module -shared	-export-dynamic	\
@@ -291,3 +294,10 @@ $(INSTALLER_ARCHIVE): npambulant_plugin_dir
 		zip -r ../$(INSTALLER_ARCHIVE) *
 #------------------------------------------------------
 
+EXTRA_DIST = \
+	install-linux.rdf \
+	install-linux64.rdf \
+	install-win32.rdf  \
+	internalize_shlibs.py \
+	README-linux \
+	README-win32.txt

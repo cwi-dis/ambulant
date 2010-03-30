@@ -37,8 +37,7 @@
 #include "ambulant/lib/textptr.h"
 #include "ambulant/smil2/test_attrs.h"
 
-// #define AM_DBG if(1)
-
+//#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -92,6 +91,7 @@ void
 gui::qt::qt_smiltext_renderer::start(double t) {
 	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_renderer::start(0x%x)", this);
 		
+	gui::qt::qt_renderer<common::renderer_playable>::start(t);
 	m_lock.enter();
 //JNK?	m_epoch = m_event_processor->get_timer()->elapsed();
 	m_layout_engine.start(t);
@@ -213,7 +213,7 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 
 	if (W == 0 || H == 0)
 		return; // cannot render anything
-	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_render(): r=L=%d,T=%d,W=%d,H=%d",r.x,r.y,r.w,r.h);
+	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_render():p=(%d,%d)  L=%d,T=%d,W=%d,H=%d",p.x,p.y,L,T,W,H);
 	if (m_blending) {
 		// create pixmaps for blending
 		if ( ! strun.m_bg_transparent) {
@@ -377,8 +377,8 @@ gui::qt::qt_smiltext_renderer::redraw_body(const lib::rect& dirty, common::gui_w
 	lib::rect r = dirty;
 	
 	// Translate smiltext region dirty rect. to final viewport coordinates 
-	lib::point pt = m_dest->get_global_topleft();
-	r.translate(pt);
+	//lib::point pt = m_dest->get_global_topleft();
+	//r.translate(pt);
 		
 	m_layout_engine.redraw(r);
 	bool finished = m_layout_engine.is_finished();

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AmbulantPlayer 1.8\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2010-01-28 15:26+0100\n"
+"POT-Creation-Date: 2010-03-12 11:46+0100\n"
 "PO-Revision-Date: 2004-09-12 15:09+0200\n"
 "Last-Translator: Jack Jansen <Jack.Jansen@cwi.nl>\n"
 "Language-Team: English <Jack.Jansen@cwi.nl>\n"
@@ -69,7 +69,7 @@ msgstr "Plugin map %s kan niet worden gelezen: 0x%x"
 msgid "Programmer error encountered, will attempt to continue"
 msgstr "Interne fout gedetecteerd"
 
-#: src/libambulant/common/video_renderer.cpp:76
+#: src/libambulant/common/video_renderer.cpp:77
 #, c-format
 msgid "Cannot open video: %s"
 msgstr "Video-bestand kan niet geopend worden: %s"
@@ -139,8 +139,9 @@ msgstr "Videobestand kan niet geopend worden: %s"
 msgid "%s: node ID not found"
 msgstr "%s: Node ID niet gevonden"
 
-#: src/libambulant/gui/gtk/gtk_smiltext.cpp:652
-msgid "Geometry error in smil document"
+#: src/libambulant/gui/gtk/gtk_smiltext.cpp:658
+#, fuzzy, c-format
+msgid "Geometry error in smil document at %s"
 msgstr "Fout in geometrie in SMIL document"
 
 #: src/libambulant/gui/SDL/sdl_audio.cpp:92
@@ -152,21 +153,21 @@ msgstr "SDL audio-library kan niet geïnitialiseerd worden"
 msgid "Cannot open SDL audio output stream: %s"
 msgstr "SDL audiokanaal kan niet geopend worden"
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:123
+#: src/libambulant/gui/SDL/sdl_audio.cpp:122
 msgid "Cannot open SDL audio output stream with required characteristics"
 msgstr "SDL audiokanaal kan niet geopend worden met de juiste eigenschappen"
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:274
+#: src/libambulant/gui/SDL/sdl_audio.cpp:332
 #, c-format
 msgid "%s: cannot open audio file"
 msgstr "Audiobestand kan niet geopend worden: %s"
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:276
+#: src/libambulant/gui/SDL/sdl_audio.cpp:334
 #, c-format
 msgid "%s: audio format not supported"
 msgstr "Onbekend audio formaat in: %s"
 
-#: src/libambulant/gui/SDL/sdl_audio.cpp:314
+#: src/libambulant/gui/SDL/sdl_audio.cpp:372
 #, c-format
 msgid "%s: cannot open"
 msgstr "Bestand kan niet geopend worden: %s"
@@ -216,11 +217,11 @@ msgstr "Transition: onbekend scope=\"%s\""
 msgid "transition: illegal value for %s attribute (%s)"
 msgstr "Transition: foute waarde voor %s attribuut (%s)"
 
-#: src/libambulant/lib/tree_builder.cpp:163
+#: src/libambulant/lib/tree_builder.cpp:165
 msgid "Could not create any XML parser (configuration error?)"
 msgstr "Geen enkele XML parser gevonden (configuratiefout?)"
 
-#: src/libambulant/lib/tree_builder.cpp:285
+#: src/libambulant/lib/tree_builder.cpp:287
 #, c-format
 msgid "%s: Error parsing document"
 msgstr "%s: Fout opgetreden tijdens parseren"
@@ -264,10 +265,10 @@ msgstr "%s: kan geen audiokanaal meer aanmaken"
 #: src/libambulant/net/demux_datasource.cpp:143
 #: src/libambulant/net/ffmpeg_audio.cpp:335
 #: src/libambulant/net/ffmpeg_audio.cpp:404
-#: src/libambulant/net/ffmpeg_audio.cpp:508
-#: src/libambulant/net/ffmpeg_audio.cpp:915
-#: src/libambulant/net/ffmpeg_audio.cpp:954
-#: src/libambulant/net/ffmpeg_audio.cpp:1168
+#: src/libambulant/net/ffmpeg_audio.cpp:518
+#: src/libambulant/net/ffmpeg_audio.cpp:931
+#: src/libambulant/net/ffmpeg_audio.cpp:970
+#: src/libambulant/net/ffmpeg_audio.cpp:1184
 msgid "Programmer error encountered during audio playback"
 msgstr "Interne fout gedetecteerd tijdens het spelen van audio"
 
@@ -307,13 +308,13 @@ msgstr "%s: audio decoder \"%s\" wordt niet ondersteund"
 msgid "ffmpeg_decoder_datasource: could not select %s(0x%x) decoder"
 msgstr "ffmpeg_decoder_datasource: kan %s(0x%x) decoder niet selecteren"
 
-#: src/libambulant/net/ffmpeg_audio.cpp:726
-#: src/libambulant/net/ffmpeg_audio.cpp:734
+#: src/libambulant/net/ffmpeg_audio.cpp:742
+#: src/libambulant/net/ffmpeg_audio.cpp:750
 #, c-format
 msgid "No support for \"%s\" audio"
 msgstr "Geen ondersteuning voor \"%s\" audio"
 
-#: src/libambulant/net/ffmpeg_audio.cpp:902
+#: src/libambulant/net/ffmpeg_audio.cpp:918
 msgid "Audio cannot be converted to 44Khz stereo"
 msgstr "Audio kan niet geconverteerd worden naar 44Khz stereo"
 
@@ -400,21 +401,21 @@ msgstr "Document bevat geen <body> gedeelte, er kan niets gespeeld worden"
 msgid "Programmer error encountered, attempting to continue"
 msgstr "Interne fout gedetecteerd"
 
-#: src/libambulant/smil2/smil_player.cpp:210
+#: src/libambulant/smil2/smil_player.cpp:212
 msgid "Document uses state, but no state support configured"
 msgstr "Document gebruikt SMIL State, maar dat is niet beschikbaar"
 
-#: src/libambulant/smil2/smil_player.cpp:215
+#: src/libambulant/smil2/smil_player.cpp:217
 #, c-format
 msgid "No state support for language %s"
 msgstr "Geen SMIL State support voor taal: %s"
 
-#: src/libambulant/smil2/smil_player.cpp:1083
+#: src/libambulant/smil2/smil_player.cpp:1089
 #, c-format
 msgid "Link destination not found: %s"
 msgstr "Linkbestemming niet gevonden: %s"
 
-#: src/libambulant/smil2/smil_player.cpp:1089
+#: src/libambulant/smil2/smil_player.cpp:1095
 #, c-format
 msgid "This implementation cannot open <%s> in new window"
 msgstr "Deze versie kan <%s> niet in een nieuw venster openen"
@@ -657,18 +658,18 @@ msgstr "XML bestanden"
 msgid "URL to open:"
 msgstr "Open URL:"
 
-#: src/player_gtk/gtk_gui.cpp:1096 src/player_macosx/MyAppDelegate.mm:147
+#: src/player_gtk/gtk_gui.cpp:1117 src/player_macosx/MyAppDelegate.mm:147
 #: src/player_mfc/MmView.cpp:239 src/player_unix/qt_gui.cpp:605
 #, c-format
 msgid "Ambulant Player: compile time version %s, runtime version %s"
 msgstr "Ambulant Player: gebouwd voor versie %s, draait met versie %s"
 
-#: src/player_gtk/gtk_gui.cpp:1097
+#: src/player_gtk/gtk_gui.cpp:1118
 #, c-format
 msgid "Ambulant Player: built on %s for Unix/GTK"
 msgstr "Ambulant Player: gebouwd op %s voor Unix/GTK"
 
-#: src/player_gtk/gtk_gui.cpp:1099 src/player_mfc/MmView.cpp:242
+#: src/player_gtk/gtk_gui.cpp:1120 src/player_mfc/MmView.cpp:242
 #: src/player_unix/qt_gui.cpp:608
 msgid "Ambulant Player: localization enabled (english)"
 msgstr "Ambulant Player: met taalondersteuning (nederlands)"

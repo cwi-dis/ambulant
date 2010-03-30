@@ -276,8 +276,7 @@ gui_player::create_document(const net::url& url)
 		const char *profile = root->get_attribute("baseProfile");
 		if (profile && 
 				strcmp(profile, "Language") != 0 &&
-				strcmp(profile, "Mobile") != 0 &&
-				strcmp(profile, "ExtendedMobile") != 0 &&
+				strcmp(profile, "UnifiedMobile") != 0 &&
 				strcmp(profile, "Tiny") != 0
 				) {
 			lib::logger::get_logger()->trace("%s: document uses unknown SMIL profile \"%s\"", m_url.get_url().c_str(), profile);

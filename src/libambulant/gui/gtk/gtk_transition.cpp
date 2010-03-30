@@ -427,6 +427,7 @@ gtk_transition_engine(common::surface *dst, bool is_outtrans, const transition_i
 		rv = new gtk_transition_engine_slidewipe();
 		break;
 	case fade:
+	case audioVisualFade:
 		rv = new gtk_transition_engine_fade();
 		break;
 	default:

@@ -124,12 +124,14 @@ lib::tree_builder::build_tree_from_file(const char *filename) {
 
 bool 
 lib::tree_builder::build_tree_from_str(const std::string& str) {
+	if ( ! m_xmlparser) return false;
 	m_well_formed = m_xmlparser->parse(str.data(), int(str.length()), true);
 	return m_well_formed;
 }
 
 bool 
 lib::tree_builder::build_tree_from_str(const char *begin, const char *end) {
+	if ( ! m_xmlparser) return false;
 	m_well_formed = m_xmlparser->parse(begin, int(end-begin), true);
 	return m_well_formed;
 }

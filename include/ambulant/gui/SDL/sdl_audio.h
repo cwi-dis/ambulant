@@ -76,7 +76,12 @@ class sdl_audio_renderer : public common::renderer_playable {
 	net::audio_datasource *ds);
   
 	~sdl_audio_renderer();
-
+	
+//#define SDL_REFCOUNT_TRACKING
+#ifdef  SDL_REFCOUNT_TRACKING
+	long add_ref();
+	long release();
+#endif//SDL_REFCOUNT_TRACKING
 	  
 	bool is_paused();
 	bool is_stopped();
