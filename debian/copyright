@@ -1,0 +1,23 @@
+This package was debianized by Jack Jansen <Jack.Jansen@cwi.nl> on
+Wed, 31 Mar 2010 15:48:48 +0200.
+
+It was downloaded from <http://www.ambulantplayer.org>
+
+Upstream Author(s):
+
+    CWI Ambulant team <ambulant-feedback@ambulantplayer.org>
+
+Copyright:
+
+    Copyright (C) 2010 Centrum Wiskunde & Informatica
+
+License:
+
+    LGPL-2
+
+The Debian packaging is:
+
+    Copyright (C) 2010 Jack Jansen <Jack.Jansen@cwi.nl>
+
+and is licensed under the GPL version 3, 
+see `/usr/share/common-licenses/GPL-3'.

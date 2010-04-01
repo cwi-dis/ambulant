@@ -1,0 +1,4 @@
+usr/share/ambulant
+usr/share/locale
+usr/lib/libambulant*.so*
+usr/lib/ambulant

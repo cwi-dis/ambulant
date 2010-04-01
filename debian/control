@@ -1,0 +1,52 @@
+Source: ambulant
+Section: graphics
+Priority: optional
+Maintainer: Jack Jansen <Jack.Jansen@cwi.nl>
+Build-Depends: debhelper (>= 7), autotools-dev, gettext, libgtk2.0-dev, libxml2-dev, libqt3-mt-dev, liblivemedia-dev, libltdl-dev, libsdl1.2-dev, libavformat-dev, libavcodec-dev, libswscale-dev, libxerces-c-dev, libexpat1-dev, python
+Standards-Version: 3.8.1
+Homepage: http://www.ambulantplayer.org
+
+Package: libambulant
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libltdl, libsdl1.2debian|libsdl1.2debian-all|libsdl1.2debian-alsa|libsdl1.2debian-esd|libsdl1.2debian-nas|libsdl1.2debian-oss, libavformat52, libavcodec52, libswscale0 
+Recommends: libgtk2.0 | libqt3-mt, libxerces-c | libexpat1, libxml2, liblivemedia
+Description: Ambulant SMIL multimedia player - core engine
+ SMIL 3.0 multimedia playback engine.
+ .
+ This package contains the core engine.
+ 
+Package: libambulant-dev
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libambulant
+Suggests: libgtk2.0-dev | libqt3-mt-dev, libxml2-dev, liblivemedia-dev, libltdl-dev, libsdl1.2-dev, libavformat-dev, libavcodec-dev, libswscale-dev, libxerces-c-dev, libexpat1-dev, python
+Description: Ambulant SMIL multimedia player - developer files
+ SMIL 3.0 multimedia playback engine.
+ .
+ This package contains files needed when you want to extend (or embed)
+ Ambulant in C++.
+
+Package: ambulant-gnome
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libambulant, libgtk2.0
+Description: Ambulant SMIL multimedia player - Gnome/GTK application
+ SMIL 3.0 multimedia playback engine.
+ .
+ This package contains the Gnome front-end.
+ 
+Package: ambulant-kde
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libambulant, libqt3-mt
+Description: Ambulant SMIL multimedia player - KDE/Qt application
+ SMIL 3.0 multimedia playback engine.
+ .
+ This package contains the KDE front-end.
+
+Package: ambulant-python
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libambulant, python
+Suggests: python-qt3 | python-gtk2
+Description: <Ambulant SMIL multimedia player - Python API
+ SMIL 3.0 multimedia playback engine.
+ .
+ This package contains files needed when you want to extend (or embed)
+ Ambulant in Python.

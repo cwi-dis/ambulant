@@ -1,0 +1,5 @@
+ambulant (2.3-1) unstable; urgency=low
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- Jack Jansen <Jack.Jansen@cwi.nl>  Wed, 31 Mar 2010 15:48:48 +0200
