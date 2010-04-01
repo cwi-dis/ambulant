@@ -142,7 +142,7 @@ third_party_packages={
 				"make install" % (AMBULANT_DIR, MAC106_COMMON_CONFIGURE)
 			),
 		TPP("xerces-c",
-			url="http://apache.mirror.transip.nl/xerces/c/3/sources/xerces-c-3.1.0.tar.gz",
+			url="http://www.apache-mirror.com/xerces/c/3/sources/xerces-c-3.1.0.tar.gz",
 			checkcmd="pkg-config --atleast-version=3.0.0 xerces-c",
 			buildcmd=
 				"cd xerces-c-3.1.0 && "
@@ -230,7 +230,7 @@ third_party_packages={
 				"make install" % (AMBULANT_DIR, MAC104_COMMON_CONFIGURE)
 			),
 		TPP("xerces-c",
-			url="http://apache.mirror.transip.nl/xerces/c/3/sources/xerces-c-3.1.0.tar.gz",
+			url="http://www.apache-mirror.com/xerces/c/3/sources/xerces-c-3.1.0.tar.gz",
 			checkcmd="pkg-config --atleast-version=3.0.0 xerces-c",
 			buildcmd=
 				"cd xerces-c-3.1.0 && "
@@ -342,7 +342,7 @@ third_party_packages={
 				"make install" % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
 			),
 		TPP("xerces-c",
-			url="http://apache.mirror.transip.nl/xerces/c/3/sources/xerces-c-3.1.0.tar.gz",
+			url="http://www.apache-mirror.com/xerces/c/3/sources/xerces-c-3.1.0.tar.gz",
 			checkcmd="pkg-config --atleast-version=3.0.0 xerces-c",
 			buildcmd=
 				"cd xerces-c-3.1.0 && "
