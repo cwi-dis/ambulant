@@ -359,7 +359,17 @@ if $expat_pkgconfig; then
 	if $test_expat; then
 		:
 	else
-		expat_warning="Expat not found through pkg-config. Check third_party_packages/readme.txt for instructions."
+		dnl No pkgconfig, but maybe available in a standard place?
+		oldLIBS=$LIBS
+		LIBS="$LIBS -lexpat"
+		AC_TRY_LINK([#include <expat.h>], [(void)XML_ParserCreate("");],test_expat=true,test_expat=false)
+		LIBS=$oldLIBS
+		if $test_expat; then
+			EXPAT_LIBS=-lexpat
+			EXPAT_CFLAGS=
+		else
+			expat_warning="Expat not found through pkg-config. Check third_party_packages/readme.txt for instructions."
+		fi
 	fi
 fi
 if $test_expat; then
@@ -756,6 +766,21 @@ if $test_live; then
 		LIVE_CFLAGS="-I$live_root/liveMedia/include -I$live_root/groupsock/include -I$live_root/BasicUsageEnvironment/include -I$live_root/UsageEnvironment/include"
 		LIVE_LIBS="-L$live_root/liveMedia -lliveMedia -L$live_root/groupsock -lgroupsock -L$live_root/BasicUsageEnvironment -lBasicUsageEnvironment -L$live_root/UsageEnvironment -lUsageEnvironment"
 	else
+		# No slurped version. Is it installed system-wide?
+		AC_LANG_PUSH([C++])
+		oldLIBS=$LIBS
+		LIBS="$LIBS -lUsageEnvironment"
+		AC_TRY_LINK([#include <UsageEnvironment/strDup.hh>], [(void)strDupSize("");],,test_live=false)
+		LIBS=$oldLIBS
+		AC_LANG_POP()
+		if $test_live; then
+			LIVE_CFLAGS="-I/usr/include/liveMedia -I/usr/include/groupsock -I/usr/include/BasicUsageEnvironment -I/usr/include/UsageEnvironment"
+			LIVE_LIBS="-lliveMedia -lgroupsock -lBasicUsageEnvironment -lUsageEnvironment"
+		fi
+	fi
+	if $test_live; then
+		:
+	else
 		AC_MSG_ERROR([Live555 not found in $live_root])
 		test_live=false
 	fi
@@ -952,21 +977,10 @@ AM_CONDITIONAL(WITH_NPAMBULANT, test x$with_npambulant = xtrue)
 AC_MSG_RESULT($with_npambulant)
 
 #
-# If we use both npambulant and plugins, we link the plugins against the
-# core shared library. Otherwise there is no need to do this.
+# Nowadays, we always build with linking to the shared Ambulant library.
 #
 AC_MSG_CHECKING([whether we should link against core ambulant shared lib (alternative is static)])
-with_ambulant_shared_lib=false
-case $host_os in
-darwin*)
-	with_ambulant_shared_lib=true;;
-esac
-
-if $with_npambulant; then
-	if $with_ltdl; then
-		with_ambulant_shared_lib=true
-	fi
-fi
+with_ambulant_shared_lib=true
 AM_CONDITIONAL(WITH_AMBULANT_SHARED_LIB, $with_ambulant_shared_lib)
 AC_MSG_RESULT($with_ambulant_shared_lib)
 
@@ -1028,7 +1042,9 @@ fi
 # C compiler flags, and other items are library names, except for "none"
 # which indicates that we try without any flags at all.
 
-acx_pthread_flags="pthreads none -Kthread -kthread lthread -pthread -pthreads -mthreads pthread --thread-safe -mt"
+acx_pthread_flags="pthreads none -Kthread -kthread lthread pthread -pthread -pthreads -mthreads --thread-safe -mt"
+
+# Note: Jack has moved pthread forward, otherwise debian builds failed.
 
 # The ordering *is* (sometimes) important.  Some notes on the
 # individual items follow:
