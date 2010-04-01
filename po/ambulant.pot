@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
-"POT-Creation-Date: 2010-03-12 11:46+0100\n"
+"POT-Creation-Date: 2010-04-01 11:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,14 +26,14 @@ msgid ""
 "%s: document is SMIL version \"%s\", not 3.0, will attempt to continue anyway"
 msgstr ""
 
-#: src/libambulant/common/gui_player.cpp:284
+#: src/libambulant/common/gui_player.cpp:283
 #, c-format
 msgid ""
 "%s: document uses unknown SMIL profile \"%s\", will attempt to continue "
 "anyway"
 msgstr ""
 
-#: src/libambulant/common/gui_player.cpp:292
+#: src/libambulant/common/gui_player.cpp:291
 #, c-format
 msgid "%s: Requires unavailable features, will attempt to continue anyway"
 msgstr ""
@@ -168,18 +168,18 @@ msgstr ""
 msgid "%s: cannot open"
 msgstr ""
 
-#: src/libambulant/lib/document.cpp:79 src/libambulant/lib/document.cpp:113
-#: src/libambulant/lib/document.cpp:133
+#: src/libambulant/lib/document.cpp:82 src/libambulant/lib/document.cpp:116
+#: src/libambulant/lib/document.cpp:136
 #, c-format
 msgid "%s: Not a SMIL document"
 msgstr ""
 
-#: src/libambulant/lib/document.cpp:100 src/libambulant/lib/document.cpp:128
+#: src/libambulant/lib/document.cpp:103 src/libambulant/lib/document.cpp:131
 #, c-format
 msgid "%s: Not a valid XML document"
 msgstr ""
 
-#: src/libambulant/lib/document.cpp:114
+#: src/libambulant/lib/document.cpp:117
 #, c-format
 msgid "expected: `%s', got: `%s'."
 msgstr ""
@@ -207,8 +207,8 @@ msgstr ""
 msgid "transition: unknown scope=\"%s\""
 msgstr ""
 
-#: src/libambulant/lib/transition_info.cpp:178
-#: src/libambulant/lib/transition_info.cpp:196
+#: src/libambulant/lib/transition_info.cpp:131
+#: src/libambulant/lib/transition_info.cpp:149
 #, c-format
 msgid "transition: illegal value for %s attribute (%s)"
 msgstr ""
@@ -253,32 +253,32 @@ msgid "datasource_reader: out of memory"
 msgstr ""
 
 #: src/libambulant/net/demux_datasource.cpp:67
-#: src/libambulant/net/demux_datasource.cpp:331
+#: src/libambulant/net/demux_datasource.cpp:347
 #, c-format
 msgid "%s: no more audio streams"
 msgstr ""
 
-#: src/libambulant/net/demux_datasource.cpp:143
-#: src/libambulant/net/ffmpeg_audio.cpp:335
-#: src/libambulant/net/ffmpeg_audio.cpp:404
-#: src/libambulant/net/ffmpeg_audio.cpp:518
-#: src/libambulant/net/ffmpeg_audio.cpp:931
-#: src/libambulant/net/ffmpeg_audio.cpp:970
-#: src/libambulant/net/ffmpeg_audio.cpp:1184
+#: src/libambulant/net/demux_datasource.cpp:146
+#: src/libambulant/net/ffmpeg_audio.cpp:336
+#: src/libambulant/net/ffmpeg_audio.cpp:405
+#: src/libambulant/net/ffmpeg_audio.cpp:525
+#: src/libambulant/net/ffmpeg_audio.cpp:938
+#: src/libambulant/net/ffmpeg_audio.cpp:977
+#: src/libambulant/net/ffmpeg_audio.cpp:1191
 msgid "Programmer error encountered during audio playback"
 msgstr ""
 
-#: src/libambulant/net/demux_datasource.cpp:481
-#: src/libambulant/net/demux_datasource.cpp:500
+#: src/libambulant/net/demux_datasource.cpp:515
+#: src/libambulant/net/demux_datasource.cpp:534
 #: src/libambulant/net/ffmpeg_video.cpp:282
 #: src/libambulant/net/ffmpeg_video.cpp:312
-#: src/libambulant/net/ffmpeg_video.cpp:945
-#: src/libambulant/net/ffmpeg_video.cpp:950
-#: src/libambulant/net/ffmpeg_video.cpp:958
+#: src/libambulant/net/ffmpeg_video.cpp:951
+#: src/libambulant/net/ffmpeg_video.cpp:956
+#: src/libambulant/net/ffmpeg_video.cpp:964
 msgid "Programmer error encountered during video playback"
 msgstr ""
 
-#: src/libambulant/net/demux_datasource.cpp:751
+#: src/libambulant/net/demux_datasource.cpp:786
 #, c-format
 msgid "%s: Ignoring audio, unsupported encoding"
 msgstr ""
@@ -304,13 +304,13 @@ msgstr ""
 msgid "ffmpeg_decoder_datasource: could not select %s(0x%x) decoder"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:742
-#: src/libambulant/net/ffmpeg_audio.cpp:750
+#: src/libambulant/net/ffmpeg_audio.cpp:749
+#: src/libambulant/net/ffmpeg_audio.cpp:757
 #, c-format
 msgid "No support for \"%s\" audio"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_audio.cpp:918
+#: src/libambulant/net/ffmpeg_audio.cpp:925
 msgid "Audio cannot be converted to 44Khz stereo"
 msgstr ""
 
@@ -328,13 +328,13 @@ msgstr ""
 msgid "ffmpeg_video_decoder_datasource: could not select %s(0x%x) decoder"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_video.cpp:604
+#: src/libambulant/net/ffmpeg_video.cpp:610
 #, c-format
 msgid "error decoding video frame (timestamp=%lld)"
 msgstr ""
 
-#: src/libambulant/net/ffmpeg_video.cpp:920
-#: src/libambulant/net/ffmpeg_video.cpp:928
+#: src/libambulant/net/ffmpeg_video.cpp:926
+#: src/libambulant/net/ffmpeg_video.cpp:934
 #, c-format
 msgid "No support for \"%s\" video"
 msgstr ""
@@ -365,9 +365,9 @@ msgid "Error in SMIL animation"
 msgstr ""
 
 #: src/libambulant/smil2/region_node.cpp:81
-#: src/libambulant/smil2/smil_layout.cpp:507
-#: src/libambulant/smil2/smil_layout.cpp:561
-#: src/libambulant/smil2/smil_layout.cpp:579
+#: src/libambulant/smil2/smil_layout.cpp:527
+#: src/libambulant/smil2/smil_layout.cpp:581
+#: src/libambulant/smil2/smil_layout.cpp:599
 msgid "Syntax error in SMIL document"
 msgstr ""
 
@@ -375,23 +375,23 @@ msgstr ""
 #: src/libambulant/smil2/region_node.cpp:211
 #: src/libambulant/smil2/region_node.cpp:233
 #: src/libambulant/smil2/region_node.cpp:292
-#: src/libambulant/smil2/region_node.cpp:379
-#: src/libambulant/smil2/region_node.cpp:398
-#: src/libambulant/smil2/region_node.cpp:435
+#: src/libambulant/smil2/region_node.cpp:380
+#: src/libambulant/smil2/region_node.cpp:399
+#: src/libambulant/smil2/region_node.cpp:436
 msgid "Ignoring minor errors in document"
 msgstr ""
 
 #: src/libambulant/smil2/smil_layout.cpp:107
 #: src/libambulant/smil2/smil_layout.cpp:124
-#: src/libambulant/smil2/smil_layout.cpp:327
+#: src/libambulant/smil2/smil_layout.cpp:333
 msgid "Problem with layout in SMIL document"
 msgstr ""
 
-#: src/libambulant/smil2/smil_layout.cpp:238
+#: src/libambulant/smil2/smil_layout.cpp:241
 msgid "Document has no <body> section, nothing to play"
 msgstr ""
 
-#: src/libambulant/smil2/smil_layout.cpp:444
+#: src/libambulant/smil2/smil_layout.cpp:450
 msgid "Programmer error encountered, attempting to continue"
 msgstr ""
 
@@ -653,7 +653,7 @@ msgid "URL to open:"
 msgstr ""
 
 #: src/player_gtk/gtk_gui.cpp:1117 src/player_macosx/MyAppDelegate.mm:147
-#: src/player_mfc/MmView.cpp:239 src/player_unix/qt_gui.cpp:605
+#: src/player_mfc/MmView.cpp:244 src/player_unix/qt_gui.cpp:605
 #, c-format
 msgid "Ambulant Player: compile time version %s, runtime version %s"
 msgstr ""
@@ -663,7 +663,7 @@ msgstr ""
 msgid "Ambulant Player: built on %s for Unix/GTK"
 msgstr ""
 
-#: src/player_gtk/gtk_gui.cpp:1120 src/player_mfc/MmView.cpp:242
+#: src/player_gtk/gtk_gui.cpp:1120 src/player_mfc/MmView.cpp:247
 #: src/player_unix/qt_gui.cpp:608
 msgid "Ambulant Player: localization enabled (english)"
 msgstr ""
@@ -776,16 +776,16 @@ msgstr ""
 msgid "Ambulant Player: localization enabled (english; user requested %s)"
 msgstr ""
 
-#: src/player_macosx/MyAppDelegate.mm:240
-#: src/player_macosx/MyAppDelegate.mm:291
+#: src/player_macosx/MyAppDelegate.mm:245
+#: src/player_macosx/MyAppDelegate.mm:296
 msgid "No Welcome.smil in application bundle"
 msgstr ""
 
-#: src/player_macosx/MyAppDelegate.mm:288
+#: src/player_macosx/MyAppDelegate.mm:293
 msgid "Welcome.smil could not be opened"
 msgstr ""
 
-#: src/player_macosx/MyAppDelegate.mm:303
+#: src/player_macosx/MyAppDelegate.mm:308
 msgid "Cannot open http://www.ambulantplayer.org"
 msgstr ""
 
@@ -799,12 +799,12 @@ msgstr ""
 msgid "Cannot open: %s, error: %s"
 msgstr ""
 
-#: src/player_mfc/MmView.cpp:240
+#: src/player_mfc/MmView.cpp:245
 #, c-format
 msgid "Ambulant Player: built on %s for Windows/MFC"
 msgstr ""
 
-#: src/player_mfc/MmView.cpp:245
+#: src/player_mfc/MmView.cpp:250
 msgid "Ambulant Player: using AmbulantPlayer in DLL"
 msgstr ""
 

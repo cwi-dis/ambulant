@@ -91,6 +91,7 @@ LDADD = \
 	$(extra_xerces_LDADD) \
 	$(libambulant_core) \
 	$(QT_LIBS) \
+	$(PTHREAD_LIBS) \
 	$(LIBLTDL)  
 
 AM_LDFLAGS= \

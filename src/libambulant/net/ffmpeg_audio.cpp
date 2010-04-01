@@ -428,13 +428,16 @@ ffmpeg_decoder_datasource::data_avail()
 					// So we request 15 bytes more, pass an aligned pointer, and copy down if needed.
 					short *ffmpeg_outbuf = (short *)(((size_t)outbuf+FFMPEG_OUTPUT_ALIGNMENT-1) & ~(FFMPEG_OUTPUT_ALIGNMENT-1));
 					AM_DBG lib::logger::get_logger()->debug("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, cursz);
-					/////xxxbo 12-feb-2010: Adapted to the new api avcodec_decode_audio3
+
+#if LIBAVCODEC_VERSION_MAJOR >= 53
 					AVPacket avpkt;
 					av_init_packet(&avpkt);
 					avpkt.data = inbuf;
 					avpkt.size = cursz;
-					//int decoded = avcodec_decode_audio2(m_con, ffmpeg_outbuf, &outsize, inbuf, cursz);
 					int decoded = avcodec_decode_audio3(m_con, ffmpeg_outbuf, &outsize, &avpkt);
+#else
+					int decoded = avcodec_decode_audio2(m_con, ffmpeg_outbuf, &outsize, inbuf, cursz);
+#endif // LIBAVCODEC_VERSION_MAJOR >= 53
 					if (decoded < 0) outsize = 0;
 #if FFMPEG_OUTPUT_ALIGNMENT-1
 					if (outsize > 0 && (uint8_t *)ffmpeg_outbuf != outbuf) 
@@ -453,8 +456,11 @@ ffmpeg_decoder_datasource::data_avail()
 						outsize = AVCODEC_MAX_AUDIO_FRAME_SIZE;
 						outbuf = (uint8_t*) m_buffer.get_write_ptr(outsize);
 						ffmpeg_outbuf = (short *)(((size_t)outbuf+FFMPEG_OUTPUT_ALIGNMENT-1) & ~(FFMPEG_OUTPUT_ALIGNMENT-1));
-						//decoded = avcodec_decode_audio2(m_con, (short*) ffmpeg_outbuf, &outsize, inbuf, cursz);
+#if LIBAVCODEC_VERSION_MAJOR >= 53
 						decoded = avcodec_decode_audio3(m_con, (short*) ffmpeg_outbuf, &outsize, &avpkt);
+#else
+						decoded = avcodec_decode_audio2(m_con, (short*) ffmpeg_outbuf, &outsize, inbuf, cursz);
+#endif // LIBAVCODEC_VERSION_MAJOR >= 53
 						if (decoded < 0) outsize = 0;
 						AM_DBG lib::logger::get_logger()->debug("avocodec_decode_audio: converted additional %d of %d bytes to %d", decoded, cursz, outsize);
 #if FFMPEG_OUTPUT_ALIGNMENT-1

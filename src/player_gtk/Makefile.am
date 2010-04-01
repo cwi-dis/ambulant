@@ -123,6 +123,7 @@ LDADD = $(libambulant_gtk) \
 	$(libambulant_core) \
 	$(gtk_libs) \
 	$(LIBLTDL) \
+	$(PTHREAD_LIBS) \
 	$(extra_nokia770_LDADD)
 
 AM_LDFLAGS= \

@@ -255,7 +255,8 @@ libambulant_la_LDFLAGS= \
 	-export-dynamic $(LIBLTDL) \
 	$(expat_core_libs) \
 	$(xerces_core_libs) \
-	$(platlibs)
+	$(platlibs) \
+	$(PTHREAD_LIBS)
 
 libambulant_la_SOURCES = \
 	get_version.cpp \

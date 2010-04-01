@@ -228,6 +228,7 @@ LDADD = \
 	$(LIBINTL) \
 	$(LIBICONV) \
 	$(LIBLTDL) \
+	$(PTHREAD_LIBS) \
 	$(libambulant_core) \
 	-lstdc++
 AM_LDFLAGS= \

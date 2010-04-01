@@ -13,6 +13,8 @@
 
 ambulantlibdir=$(top_builddir)/src/libambulant/.libs
 
+DESTDIR=/
+
 EXTRA_DIST=setup.py \
     bgenCxxSupport.py bgenBackSupport.py \
     ambulantscan.py ambulantsupport.py genobjects.py \
@@ -91,7 +93,7 @@ check-pyambulant:
 	)
 
 install-pyambulant:
-	cd $(srcdir) ; $(PYTHON) setup.py install
+	cd $(srcdir) ; $(PYTHON) setup.py install --root $(DESTDIR)
 	
 mostlyclean-local:
 	-cd $(srcdir) ; $(PYTHON) setup.py clean
