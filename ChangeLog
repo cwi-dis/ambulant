@@ -1,3 +1,134 @@
+2010-04-01 21:53  jackjansen
+
+	* Tweaks to enable building Debian packages
+
+2010-04-01 21:53  jackjansen
+
+	* Our xerces mirror has gone, replaced by another one
+
+2010-04-01 21:51  jackjansen
+
+	* Fixes to enable building of Debian packages: -
+	  with_ambulant_shared_lib is now always true (for dynamic builds)
+	  - live555 can be picked up from a system-wide install - expat can
+	  be picked up from a system-wide install
+
+2010-04-01 21:45  jackjansen
+
+	* autogen.sh was missing from source distributions
+
+2010-03-30 16:35  jackjansen
+
+	* Fixed some issues, script now works
+
+2010-03-30 11:41  jackjansen
+
+	* Mass checkin: merging 2.2 release branch again
+
+2010-03-29 17:19  jackjansen
+
+	* First stab at build script for Linux. Unfinished.
+
+2010-03-29 15:34  jackjansen
+
+	* - xulrunner wasn't included (for Linux) - exit status wasn't
+	  correct.
+
+2010-03-29 11:32  jackjansen
+
+	* - live patch was referred to by incorrect pathname - xerces now
+	  needs 3.1.0.
+
+2010-03-27 17:35  jackjansen
+
+	* More stuff for nightly builds.
+
+2010-03-27 17:34  jackjansen
+
+	* Tweaks, to enable automatic nightly builds.
+
+2010-03-24 23:45  jackjansen
+
+	* Also build webkit plugin.  Also build and upload installers.
+
+2010-03-24 22:25  jackjansen
+
+	* After some serious hacking, creating the installer DMG now no
+	  longer requires manual intervention.
+
+2010-03-24 12:03  jackjansen
+
+	* Minor changes
+
+2010-03-24 11:59  jackjansen
+
+	* Reverted bogus checkin.
+
+2010-03-24 11:54  jackjansen
+
+	* Getting started with nightly build scripts.
+
+2010-03-23 13:16  jackjansen
+
+	* - Add rtsp support to xcode project builds - Add rtsp factories
+	  to Python interface
+
+2010-03-22 15:32  jackjansen
+
+	* New location of repr(), outside namespaces.
+
+2010-03-22 14:59  jackjansen
+
+	* Tweaks
+
+2010-03-22 11:34  jackjansen
+
+	* Fixed bug in the way recursive folders (welcome, dtdcache) were
+	  handled.
+
+2010-03-22 11:29  jackjansen
+
+	* Dependencies on sub-projects were missing. Apparently adding the
+	  "target" flag on the subproject product only isn't good enough:
+	  you must also add it to the "direct dependencies" tab of the main
+	  project.
+
+2010-03-18 23:42  jackjansen
+
+	* Getting started on complete XCode project structure for building
+	  Ambulant, completely with dylibs, plugins, etc.
+
+2010-03-18 21:40  jackjansen
+
+	* Rationalizing some things to enable nested Mac projects and use
+	  of precompiled headers (these should help with iPhone
+	  development, among other things):
+
+	  - repr() is always defined at the outer scope, so overloading
+	  works - some headers included by "" in stead of <> - binary name
+	  of Mac framework changed
+
+2010-03-15 16:54  jackjansen
+
+	* If WITHOUT_DIALOGS is defined (which it is for Ta2): - Don't show
+	  messagebox dialogs - Go to fullscreen on startup.
+
+2010-03-12 12:22  stevents
+
+	* Remove compiler warning under Windows VS2008.
+
+2010-03-11 16:12  jackjansen
+
+	* Fixed the way the directx surface is created, so we can have
+	  documents larger than the screen size.  Give only one error
+	  dialog for invalid rect coords.  Be a bit more forgiving if
+	  things have disappeared while shutting down.
+
+2010-03-05 14:02  jackjansen
+
+	* Adding support for ostream, so we can grab logger output in
+	  Python.
+
 2010-02-24 16:27  jackjansen
 
 	* The log-level preference was completely ignored on windows,
