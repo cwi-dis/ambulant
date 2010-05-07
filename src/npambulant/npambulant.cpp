@@ -213,7 +213,7 @@ AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, ver
 #endif//XP_WIN32
 	assert ( ! m_ambulant_player);
 	ambulant::lib::logger::get_logger()->set_show_message(npambulant_display_message);
-	ambulant::lib::logger::get_logger()->show("Ambulant plugin loaded");
+	ambulant::lib::logger::get_logger()->show(gettext("Ambulant plugin loaded"));
 
 	const char* arg_str = NULL;
 	if (m_argc > 1)

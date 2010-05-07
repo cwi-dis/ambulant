@@ -1,7 +1,7 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2008 Stichting CWI, 
-// Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
+// Copyright (C) 2003-2010 Stichting CWI, 
+// Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -339,7 +339,7 @@ ambulant_qt_window::startScreenTransition()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::startScreenTransition()");
 	if (m_fullscreen_count)
-		logger::get_logger()->warn("ambulant_qt_window::startScreenTransition():multiple Screen transitions in progress (m_fullscreen_count=%d)",m_fullscreen_count);
+		logger::get_logger()->warn(gettext("%s:multiple Screen transitions in progress (m_fullscreen_count=%d)"),"ambulant_qt_window::startScreenTransition()",m_fullscreen_count);
 	m_fullscreen_count++;
 	if (m_fullscreen_old_pixmap) delete m_fullscreen_old_pixmap;
 	m_fullscreen_old_pixmap = m_fullscreen_prev_pixmap;

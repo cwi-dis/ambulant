@@ -29,7 +29,7 @@ copy ..\..\bin\win32\avformat-52.dll $(intdir)\avformat-52.dll
 copy ..\..\bin\win32\avutil-50.dll $(intdir)\avutil-50.dll
 copy ..\..\bin\win32\swscale-0.dll $(intdir)\swscale-0.dll
 copy ..\..\bin\win32\SDL.dll $(intdir)\SDL.dll
-copy ..\..\bin\win32\xerces-c_2_8.dll $(intdir)\xerces-c_2_8.dll
+copy ..\..\bin\win32\xerces-c_3_1.dll $(intdir)\xerces-c_3_1.dll
 copy ..\..\src\ieambulant\AmbulantActiveX.inf $(intdir)\AmbulantActiveX.inf
 :: Create a new cabinet (.cab) archive
 ^"$(CabArc)^" -s 6144 n $(OutDir)\ieambulant.cab $(IntDir)\*.exe $(IntDir)\*.dll $(IntDir)\*.inf

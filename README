@@ -57,7 +57,7 @@ The specific platforms that have been used for testing are:
 - Windows: Windows XP, Windows Vista and Windows 7 on fairly recent Intel hardware
 - MacOSX 10.6: Intel
 - MacOSX 10.4/10.5: Intel Mac 10.5, PowerPC Mac 10.4.
-- Linux: Fedora Core 9-11, Ubuntu 9 on fairly recent Intel hardware
+- Linux: Fedora Core 9-12, Ubuntu 9 on fairly recent Intel hardware
 
 We have preliminary code for the Apple iPhone and iPod Touch, but currently
 lack the time to pursue this platform. Again, contact us if you want to help.

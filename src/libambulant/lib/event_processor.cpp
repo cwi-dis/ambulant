@@ -1,7 +1,7 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2008 Stichting CWI, 
-// Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
+// Copyright (C) 2003-2010 Stichting CWI, 
+// Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -244,8 +244,8 @@ event_processor_impl::_serve_event(delta_timer& dt, std::queue<event*> *qp)
 		qp->pop();
         m_lock.leave();
 		e->fire();
-        m_lock.enter();
 		delete e;
+        m_lock.enter();
 	}
 	return must_serve; 
 }

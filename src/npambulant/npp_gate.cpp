@@ -214,7 +214,7 @@ NPError NPP_NewStream(NPP instance,
   return rv;
 }
 
-int32 NPP_WriteReady (NPP instance, NPStream *stream)
+int32_t NPP_WriteReady (NPP instance, NPStream *stream)
 {
   if(instance == NULL)
     return NPERR_INVALID_INSTANCE_ERROR;
@@ -223,7 +223,7 @@ int32 NPP_WriteReady (NPP instance, NPStream *stream)
   return rv;
 }
 
-int32 NPP_Write (NPP instance, NPStream *stream, int32 offset, int32 len, void *buffer)
+int32_t NPP_Write (NPP instance, NPStream *stream, int32_t offset, int32_t len, void *buffer)
 {   
   if(instance == NULL)
     return NPERR_INVALID_INSTANCE_ERROR;

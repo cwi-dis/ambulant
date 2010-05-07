@@ -1,7 +1,7 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2008 Stichting CWI, 
-// Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
+// Copyright (C) 2003-2010 Stichting CWI, 
+// Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -384,6 +384,7 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 		seterror("DirectDraw::CreateSurface()", hr);
 		return;
 	}
+
 	get_pixel_format();
 #define WITH_DDCLIPPER
 #ifdef	WITH_DDCLIPPER
@@ -404,7 +405,26 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 		clipper->Release();
 	}
 #endif//WITH_DDCLIPPER
-
+#define WITH_WIN7_WORKAROUND
+#ifdef WITH_WIN7_WORKAROUND
+	{
+		// Here follows a bit of magic code. As explained in bug #2996614,
+		// in some situations on Win7 (and vista) Ambulant can black out the whole
+		// screen. It seems this somehow happens because the urface can be queried
+		// before having been used. The following code seems to instantiate the
+		// surface, and fixes this bug.
+		// Note that Lock/Unlock used different LPRECT arguments (despite what the
+		// MS docs say), using the same argument to Unlock causes a "not locked"
+		// error. Sigh.
+		RECT r = {0, 0, 0, 0};
+		DDSURFACEDESC desc;
+		ZeroMemory(&desc, sizeof(desc));
+		desc.dwSize = sizeof(desc);
+		desc.dwFlags = 0;
+		hr = m_primary_surface->Lock(&r, &desc, AM_DDLOCK_WAIT|DDLOCK_READONLY, NULL);
+		hr = m_primary_surface->Unlock(0);
+	}
+#endif // WITH_WIN7_WORKAROUND
 
 	// create drawing surface
 	memset(&sd, 0, sizeof(DDSURFACEDESC));

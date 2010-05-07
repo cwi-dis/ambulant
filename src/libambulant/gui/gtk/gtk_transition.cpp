@@ -1,7 +1,7 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2008 Stichting CWI, 
-// Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
+// Copyright (C) 2003-2010 Stichting CWI, 
+// Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -431,8 +431,7 @@ gtk_transition_engine(common::surface *dst, bool is_outtrans, const transition_i
 		rv = new gtk_transition_engine_fade();
 		break;
 	default:
-		logger::get_logger()->warn("gtk_transition_engine: transition type %s not yet implemented",
-			repr(info->m_type).c_str());
+		logger::get_logger()->warn(gettext("%s: transition type %s not yet implemented"),"gtk_transition_engine",repr(info->m_type).c_str());
 		rv = NULL;
 	}
 	if (rv)

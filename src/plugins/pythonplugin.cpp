@@ -1,7 +1,7 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2008 Stichting CWI, 
-// Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
+// Copyright (C) 2003-2010 Stichting CWI, 
+// Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -122,12 +122,12 @@ void initialize(
     ambulant::common::gui_player *player)
 {
     if ( api_version != AMBULANT_PLUGIN_API_VERSION ) {
-        lib::logger::get_logger()->warn("python_plugin: built for plugin-api version %d, current %d. Skipping.", 
-            AMBULANT_PLUGIN_API_VERSION, api_version);
+        lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"python_plugin", 
+					AMBULANT_PLUGIN_API_VERSION, api_version);
         return;
     }
     if ( !ambulant::check_version() )
-        lib::logger::get_logger()->warn("python_plugin: built for different Ambulant version (%s)", AMBULANT_VERSION);
+        lib::logger::get_logger()->warn(gettext("%s: built for different Ambulant version (%s)"),"python_plugin", AMBULANT_VERSION);
     factory = bug_workaround(factory);
     AM_DBG lib::logger::get_logger()->debug("python_plugin: loaded.");
 

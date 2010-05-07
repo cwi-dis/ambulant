@@ -112,7 +112,7 @@ Section "Core Components" CoreSection
   CreateDirectory "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION_BASE}"
   CreateShortCut "$SMPROGRAMS\Ambulant\${PRODUCT_NAME} ${PRODUCT_VERSION_BASE}\Ambulant Player.lnk" "$INSTDIR\AmbulantPlayer.exe"
   CreateShortCut "$DESKTOP\Ambulant Player.lnk" "$INSTDIR\AmbulantPlayer.exe"
-  File "..\..\bin\win32\xerces-c_2_8.dll"
+  File "..\..\bin\win32\xerces-c_3_1.dll"
   File "..\..\bin\win32\settings.xml"
   File /ONAME=license.txt "..\..\COPYING"
   File /ONAME=Readme.txt "..\..\README"
@@ -281,7 +281,7 @@ Section Uninstall
   
   RMDir /r "$INSTDIR\Downloaded"
 
-  Delete "$INSTDIR\xerces-c_2_8.dll"
+  Delete "$INSTDIR\xerces-c_3_1.dll"
   Delete "$INSTDIR\settings.xml"
   Delete "$INSTDIR\license.txt"
   Delete "$INSTDIR\Readme.txt"

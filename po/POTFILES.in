@@ -1,6 +1,7 @@
 src/libambulant/common/gui_player.cpp
 src/libambulant/common/plugin_engine.cpp
 src/libambulant/common/region.cpp
+src/libambulant/common/renderer_impl.cpp
 src/libambulant/common/video_renderer.cpp
 src/libambulant/gui/cg/cg_gui.mm
 src/libambulant/gui/cocoa/cocoa_audio.mm
@@ -35,6 +36,7 @@ src/libambulant/smil2/smiltext.cpp
 src/libambulant/smil2/sync_rule.cpp
 src/libambulant/smil2/test_attrs.cpp
 src/libambulant/smil2/time_attrs.cpp
+src/npambulant/cg_mainloop.cpp
 src/player_gtk/gtk_gui.cpp
 src/player_gtk/gtk_logger.cpp
 src/player_gtk/gtk_mainloop.cpp
@@ -49,4 +51,4 @@ src/player_unix/qt_logger.cpp
 src/player_unix/qt_mainloop.cpp
 src/player_unix/qt_settings.cpp
 src/player_unix/unix_preferences.cpp
-src/plugins/xercesplugin.cpp
+src/player_wince/AmbulantPlayerView.cpp

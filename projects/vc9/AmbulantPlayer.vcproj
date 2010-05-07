@@ -70,7 +70,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libjpeg.lib libexpat.lib libpng.lib zlib.lib xerces-c_2.lib"
+				AdditionalDependencies="libjpeg.lib libexpat.lib libpng.lib zlib.lib xerces-c_$(xerces_major).lib"
 				OutputFile="../../bin/win32/$(ProjectName).exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\lib\win32;&quot;$(DXSDK_DIR)\lib\x86&quot;"
@@ -157,7 +157,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libjpeg.lib libexpat.lib libpng.lib zlib.lib xerces-c_2.lib"
+				AdditionalDependencies="libjpeg.lib libexpat.lib libpng.lib zlib.lib xerces-c_$(xerces_major).lib"
 				OutputFile="../../bin/win32/AmbulantPlayer.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\lib\win32;&quot;$(DXSDK_DIR)\lib\x86&quot;"

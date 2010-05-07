@@ -8,6 +8,7 @@ Installation from a binary distribution is simple:
   install for the current user) or /Library/Internet Plug-Ins (to install for
   all users, requires Administrator permission). Create this folder if it does
   not exist yet.
+- NOTE: you must restart Safari before the new plugin can be used.
   
 More information on the Ambulant Player and plugin can be found via
 <http://www.ambulantPlayer.org>

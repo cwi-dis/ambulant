@@ -142,10 +142,10 @@ third_party_packages={
 				"make install" % (AMBULANT_DIR, MAC106_COMMON_CONFIGURE)
 			),
 		TPP("xerces-c",
-			url="http://www.apache-mirror.com/xerces/c/3/sources/xerces-c-3.1.0.tar.gz",
+			url="http://apache.proserve.nl/xerces/c/3/sources/xerces-c-3.1.1.tar.gz",
 			checkcmd="pkg-config --atleast-version=3.0.0 xerces-c",
 			buildcmd=
-				"cd xerces-c-3.1.0 && "
+				"cd xerces-c-3.1.1 && "
 				"%s CXXFLAGS='%s' --disable-dependency-tracking && "
 				"make $(MAKEFLAGS) && "
 				"make install" % (MAC106_COMMON_CONFIGURE, MAC106_COMMON_CFLAGS)
@@ -230,10 +230,10 @@ third_party_packages={
 				"make install" % (AMBULANT_DIR, MAC104_COMMON_CONFIGURE)
 			),
 		TPP("xerces-c",
-			url="http://www.apache-mirror.com/xerces/c/3/sources/xerces-c-3.1.0.tar.gz",
+			url="http://apache.proserve.nl/xerces/c/3/sources/xerces-c-3.1.1.tar.gz",
 			checkcmd="pkg-config --atleast-version=3.0.0 xerces-c",
 			buildcmd=
-				"cd xerces-c-3.1.0 && "
+				"cd xerces-c-3.1.1 && "
 				"%s CXXFLAGS='%s' --disable-dependency-tracking --without-curl && "
 				"make $(MAKEFLAGS) && "
 				"make install" % (MAC104_COMMON_CONFIGURE, MAC104_COMMON_CFLAGS)
@@ -342,10 +342,10 @@ third_party_packages={
 				"make install" % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
 			),
 		TPP("xerces-c",
-			url="http://www.apache-mirror.com/xerces/c/3/sources/xerces-c-3.1.0.tar.gz",
+			url="http://apache.proserve.nl/xerces/c/3/sources/xerces-c-3.1.1.tar.gz",
 			checkcmd="pkg-config --atleast-version=3.0.0 xerces-c",
 			buildcmd=
-				"cd xerces-c-3.1.0 && "
+				"cd xerces-c-3.1.1 && "
 				"%s && "
 				"make $(MAKEFLAGS) && "
 				"make install" % (LINUX_COMMON_CONFIGURE)
@@ -428,7 +428,7 @@ third_party_packages={
 			checkcmd="pkg-config --atleast-version=52.20.0 libavformat",
 			buildcmd=
 				"cd ffmpeg-export-2010-01-22 && "
-				"%s --enable-gpl --enable-libfaad --enable-shared --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"
+				"%s --enable-gpl --enable-libfaad --enable-shared --disable-bzlib --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"
 				"make install " % 
 					(LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR, COMMON_INSTALLDIR)
 			),

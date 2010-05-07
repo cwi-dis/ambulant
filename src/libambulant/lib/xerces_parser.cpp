@@ -1,7 +1,7 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2008 Stichting CWI, 
-// Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
+// Copyright (C) 2003-2010 Stichting CWI, 
+// Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -310,7 +310,7 @@ find_cached_dtd(std::string url) {
 		mi = obsolete_dtd_cache_mapping.find(url);
 		if (mi != obsolete_dtd_cache_mapping.end()) {
 			result = mi->second;
-			lib::logger::get_logger()->warn("Obsolete DTD: %s", url.c_str());
+			lib::logger::get_logger()->warn(gettext("Obsolete DTD: %s"), url.c_str());
 		}
 	}
 	return result;

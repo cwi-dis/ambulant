@@ -18,7 +18,7 @@ avformat-52.dll=avformat-52.dll
 avutil-50.dll=avutil-50.dll
 swscale-0.dll=swscale-0.dll
 SDL.dll=SDL.dll
-xerces-c_2_8.dll=xerces-c_2_8.dll
+xerces-c_3_1.dll=xerces-c_3_1.dll
 vcredist_x86.exe=vcredist_86.exe
 AmbulantActiveX.inf=AmbulantActiveX.inf
 
@@ -71,7 +71,7 @@ file-win32-x86=thiscab
 FileVersion=1,0,0,1
 
 ; xerces validating XML parser
-[xerces-c_2_8.dll]
+[xerces-c_3_1.dll]
 file-win32-x86=thiscab
 FileVersion=1,0,0,1
 

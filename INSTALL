@@ -150,12 +150,13 @@ put the resulting unpacked distribution in third_party_packages:
 - ffmpeg (pre-configured and pre-built) should be obtained from
   the Ambulant SF download page, package "ffmpeg for Ambulant, win32".
 - SDL is not included, get SDL 1.2.X from www.libsdl.org.
-- Get the live555 libraries from www.live555.com. Apply the modifications
-  from third_party_packages/live555_VC9 (or VC8) before building (in the next step).
+- Get the live555 libraries from www.live555.com. It should no longer be
+  necessary to apply the modifications from third_party_packages/live555_VC9 (or VC8).
 - Xerces is not included, get it yourself (either 3.0 or 2.8)
   from xerces.apache.org. 
 - libxml2 is not included, get it from xmlsoft.org.
-- if you want to build the Firefox plugin you must also get the Mozilla XPCOM API.
+- if you want to build the Firefox plugin you must also get the Mozilla XPCOM API,
+  most easily found by looking for "xulrunner-sdk" or "Gecko SDK".
 - If you want Python support get Python 2.6 and install it (standard Windows
   binary release).
   
@@ -164,6 +165,8 @@ has the pathnames of all the components, etc. For VS2005 you have to edit the
 individual projects if you have things in non-standard places.
 
 Next, build Xerces, following their instructions.
+
+Next, build SDL. Instructions are in VisualC.html in their toplevel folder.
 
 Then, open projects\vc9\third_party_packages.sln (or vc8), select the "Release"
 configuration and build it. This will build everything (except Xerces, which you

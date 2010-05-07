@@ -23,18 +23,18 @@ CONFIGOPTS="$PREFIX --disable-encoders --enable-gpl --disable-ffserver --disable
 # If you want to build for a different MacOSX version than the current one
 # define SYSROOT and MACOSX_DEPLOYMENT_TARGET
 #
-SYSROOT=" -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
-export MACOSX_DEPLOYMENT_TARGET=10.4
-CONFIGOPTS="--cc=gcc-4.0  --extra-cflags=-I`cd ../installed/include; pwd` --extra-ldflags=-L`cd ../installed/lib; pwd` "$CONFIGOPTS
-##SYSROOT=" -isysroot /Developer/SDKs/MacOSX10.6.sdk"
-##CONFIGOPTS="--extra-cflags=-I`cd ../installed/include; pwd` --extra-ldflags=-L`cd ../installed/lib; pwd` "$CONFIGOPTS
+###SYSROOT=" -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
+##export MACOSX_DEPLOYMENT_TARGET=10.4
+##CONFIGOPTS="--cc=gcc-4.0  --extra-cflags=-I`cd ../installed/include; pwd` --extra-ldflags=-L`cd ../installed/lib; pwd` "$CONFIGOPTS
+SYSROOT=" -isysroot /Developer/SDKs/MacOSX10.6.sdk"
+CONFIGOPTS="--extra-cflags=-I`cd ../installed/include; pwd` --extra-ldflags=-L`cd ../installed/lib; pwd` "$CONFIGOPTS
 #
 # Set variables here to true to include the ABI
 #
-PPC=true
+PPC=false
 I386=true
 PPC64=false
-X86_64=false
+X86_64=true
 #
 # Set this variable to any of the architectures you are build
 # (used to pick up .pc files)

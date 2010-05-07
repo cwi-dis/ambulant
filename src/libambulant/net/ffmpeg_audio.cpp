@@ -1,7 +1,7 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2008 Stichting CWI, 
-// Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
+// Copyright (C) 2003-2010 Stichting CWI, 
+// Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -430,6 +430,8 @@ ffmpeg_decoder_datasource::data_avail()
 					AM_DBG lib::logger::get_logger()->debug("avcodec_decode_audio(0x%x, 0x%x, 0x%x(%d), 0x%x, %d)", (void*)m_con, (void*)outbuf, (void*)&outsize, outsize, (void*)inbuf, cursz);
 
 #if LIBAVCODEC_VERSION_MAJOR >= 53
+=======
+					// Adapted to the new api avcodec_decode_audio3
 					AVPacket avpkt;
 					av_init_packet(&avpkt);
 					avpkt.data = inbuf;
@@ -633,7 +635,14 @@ ffmpeg_decoder_datasource::seek(timestamp_t time)
 	m_lock.enter();
 	bool skip_seek = false;
 	assert( time >= 0);
-
+	
+	// Do the seek before the flush
+	#if 1
+	if (!skip_seek) {
+		m_src->seek(time);
+		m_elapsed = time; // XXXJACK not needed??
+	}
+	#endif
 	int nbytes = m_buffer.size();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource(0x%x)::seek(%ld), discard %d bytes, old time was %ld", (void*)this, (long)time, nbytes, m_elapsed);
 	if (nbytes) {
@@ -652,10 +661,12 @@ ffmpeg_decoder_datasource::seek(timestamp_t time)
 		m_buffer.readdone(nbytes);
 	}
 	/* end of disabled code for #2954199 */
+	#if 0
 	if (!skip_seek) {
 		m_src->seek(time);
 		m_elapsed = time; // XXXJACK not needed??
 	}
+	#endif
 	m_lock.leave();
 } 
 

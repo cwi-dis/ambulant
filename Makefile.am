@@ -1,5 +1,5 @@
 SUBDIRS = libltdl po src include third_party_packages Documentation Extras
-EXTRA_DIST = projects installers ambulant.spec libambulant.pc 	fixlibtool226.sh patch_libtool.sh autogen.sh
+EXTRA_DIST = projects installers ambulant.spec libambulant.pc 	fixlibtool226.sh patch_libtool.sh autogen.sh bin/win32
 
 AM_CPPFLAGS=-rdynamic
 dist-hook:

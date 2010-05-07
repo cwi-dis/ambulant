@@ -1,7 +1,7 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2008 Stichting CWI, 
-// Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
+// Copyright (C) 2003-2010 Stichting CWI, 
+// Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -96,6 +96,7 @@ video_renderer::video_renderer(
 video_renderer::~video_renderer() {
 	AM_DBG lib::logger::get_logger()->debug("~video_renderer(0x%x)", (void*)this);
 	m_lock.enter();
+
     if (m_dest) m_dest->renderer_done(this);
     m_dest = NULL;
 	if (m_audio_renderer) m_audio_renderer->release();
@@ -128,7 +129,8 @@ video_renderer::start (double where)
 {
     preroll(0, where, 0);
 	m_lock.enter();
-	if (m_clip_end < m_clip_begin) {
+
+	if (m_clip_end != -1 && m_clip_end < m_clip_begin) {
 		m_context->stopped(m_cookie, 0);
 		m_lock.leave();
 		return;
@@ -167,13 +169,18 @@ video_renderer::start (double where)
         // Renderer was already playing, possibly due to fill=continue or a late callback
 		lib::logger::get_logger()->trace("video_renderer.start(0x%x): already started", (void*)this);
 		m_post_stop_called = false;
-    } else {
-        lib::event * e = new dataavail_callback (this, &video_renderer::data_avail);
-        AM_DBG lib::logger::get_logger ()->debug ("video_renderer::start(%f) this = 0x%x, cookie=%d, dest=0x%x, timer=0x%x, epoch=%d", where, (void *) this, (int)m_cookie, (void*)m_dest, m_timer, m_epoch);
-        m_src->start_frame (m_event_processor, e, 0);
-        m_activated = true;
-        m_post_stop_called = false;
-    }
+#if 0
+		//xxxbo 15-04-2010 
+		m_lock.leave();
+		return;
+#endif
+    	} else {
+        	lib::event * e = new dataavail_callback (this, &video_renderer::data_avail);
+        	AM_DBG lib::logger::get_logger ()->debug ("video_renderer::start(%f) this = 0x%x, cookie=%d, dest=0x%x, timer=0x%x, epoch=%d", where, (void *) this, (int)m_cookie, (void*)m_dest, m_timer, m_epoch);
+        	m_src->start_frame (m_event_processor, e, 0);
+        	m_activated = true;
+        	m_post_stop_called = false;
+    	}
 	if (m_audio_renderer) 
 		m_audio_renderer->start(where);
 
@@ -198,11 +205,14 @@ video_renderer::preroll(double when, double where, double how_much)
 		m_lock.leave();
 		return;
 	}
+#if 1
+	// Disabled to see if it fixes problem
 	if (m_activated) {
 		lib::logger::get_logger()->trace("video_renderer.preroll(0x%x): already started", (void*)this);
 		m_lock.leave();
 		return;
 	}
+#endif
 	if (!m_src) {
 		lib::logger::get_logger()->trace("video_renderer.preroll: no datasource, skipping media item");
 		m_lock.leave();
@@ -227,9 +237,13 @@ video_renderer::preroll(double when, double where, double how_much)
 	m_previous_clip_position = m_clip_begin+(net::timestamp_t)(where*1000000);
 	m_frame_missing = 0;
 
-    m_src->seek(m_clip_begin + (net::timestamp_t)(where*1000000));	
-	AM_DBG lib::logger::get_logger ()->debug ("video_renderer::start(%f) this = 0x%x, cookie=%d, dest=0x%x, timer=0x%x, epoch=%d", where, (void *) this, (int)m_cookie, (void*)m_dest, m_timer, m_epoch);
-	m_src->start_prefetch (m_event_processor);
+	m_src->seek(m_clip_begin + (net::timestamp_t)(where*1000000));	
+	
+	AM_DBG lib::logger::get_logger()->debug("video_renderer::preroll(%f) seek to %lld", where, m_clip_begin);
+	
+	AM_DBG lib::logger::get_logger ()->debug ("video_renderer::preroll(%f) this = 0x%x, cookie=%d, dest=0x%x, timer=0x%x, epoch=%d", where, (void *) this, (int)m_cookie, (void*)m_dest, m_timer, m_epoch);
+
+	/*if(!m_activated)*/ m_src->start_prefetch (m_event_processor);
 	if (m_audio_renderer) 
 		m_audio_renderer->preroll(0, where, 0);
 	
@@ -247,10 +261,16 @@ video_renderer::stop()
 	if (m_audio_renderer) {
 		m_audio_renderer->stop();
 	} else {
-        m_context->stopped(m_cookie, 0);
-    }
+        	m_context->stopped(m_cookie, 0);
+    	}
+
+#ifdef  WITH_SEAMLESS_PLAYBACK
+	if (!is_fill_continue_node())
+		m_activated = false;
+#endif // WITH_SEAMLESS_PLAYBACK
+	
 	m_lock.leave();
-	return false; // xxxbo: note, "false" means this renderer is reusable (and still running, needing post_stop() to actually stop)
+	return false; // note, "false" means this renderer is reusable (and still running, needing post_stop() to actually stop)
 }
 
 void 
@@ -383,19 +403,28 @@ video_renderer::data_avail()
 	net::timestamp_t now_micros = (net::timestamp_t)(now()*1000000);
 	net::timestamp_t frame_ts_micros;	// Timestamp of frame in "buf" (in microseconds)
 	buf = m_src->get_frame(now_micros, &frame_ts_micros, &size);
-	AM_DBG lib::logger::get_logger()->debug("data_avail(%s): %lld, %d bytes", m_node->get_sig().c_str(), frame_ts_micros, size);
+
+	AM_DBG lib::logger::get_logger()->debug("data_avail(%s): now_micros = %lld, frame_ts_micros = %lld, %d bytes", m_node->get_sig().c_str(), now_micros, frame_ts_micros, size);
 
 	if (buf == NULL) {
 		// This can only happen immedeately after a seek, or if we have read past end-of-file.
  		lib::logger::get_logger()->debug("video_renderer::data_avail: get_frame returned NULL");
-        if (m_src->end_of_file()) {
-            // If we have an audio renderer we let it send the stopped() callback.
-            if (m_audio_renderer == NULL)
-                m_context->stopped(m_cookie, 0);
-        } else {
-	    //xxxbo: the following assertion will cause npambulant crash sometimes 
-            //assert(m_last_frame_timestamp < 0);
-        }
+	        if (m_src->end_of_file()) {
+	            // If we have an audio renderer we let it send the stopped() callback.
+	            if (m_audio_renderer == NULL)
+              		m_context->stopped(m_cookie, 0);
+        	} else {
+			// Sometimes, this callback was scheduled into the queue of scheduler before 
+			// the flush operation(due to seek) and got executed after the flush(due to seek),
+			// in this case, we need to reopen our datasource to feed new data to 
+			// its buffer
+			AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: start_frame(..., %d)", (int)m_clip_begin);
+			lib::event * e = new dataavail_callback (this, &video_renderer::data_avail);
+			// Grmpf. frame_ts_micros is on the movie timescale, but start_frame() expects a time relative to
+			// the m_event_processor clock (even though it is in microseconds, not milliseconds). Very bad design,
+			// for now we hack around it.
+			m_src->start_frame (m_event_processor, e, m_clip_begin);
+        	}
 		m_lock.leave();
 		return;
 	}
@@ -432,8 +461,9 @@ video_renderer::data_avail()
         // XXXJACK: this may lead to multiple stopped() callbacks (above). Need to fix.
         // XXXJACK: but: clearing m_activated (below) may fix that.
         if (m_src->end_of_file() || !is_fill_continue_node()) {
-            m_activated = false;
-            m_lock.leave();
+		AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: m_activated is set to false 11");
+		m_activated = false;
+		m_lock.leave();
             return;
         }
     }		
@@ -505,6 +535,7 @@ video_renderer::data_avail()
 			m_src->frame_processed(frame_ts_micros);
 		}
 	}
+
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: start_frame(..., %d)", (int)frame_ts_micros);
 	lib::event * e = new dataavail_callback (this, &video_renderer::data_avail);
 	// Grmpf. frame_ts_micros is on the movie timescale, but start_frame() expects a time relative to

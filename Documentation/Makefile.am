@@ -1,4 +1,4 @@
-EXTRA_DIST=README API Design man1 misc user user-htmlhelp
+EXTRA_DIST=README API/Doxyfile Design man1 misc user user-htmlhelp
 man1_MANS=man1/ambulantplayer.1
 MKDIR_P=mkdir -p
 

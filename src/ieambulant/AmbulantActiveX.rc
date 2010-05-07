@@ -74,7 +74,7 @@ BEGIN
             VALUE "FileDescription", "AmbulantActiveX Module"
             VALUE "FileVersion", "1, 0, 0, 1"
             VALUE "InternalName", "AmbulantActiveX"
-            VALUE "LegalCopyright", "Copyright 2007"
+            VALUE "LegalCopyright", "Copyright 2010"
             VALUE "LegalTrademarks", "License: GPL"
             VALUE "OLESelfRegister", """\\0"""
             VALUE "OriginalFilename", "AmbulantActiveX.DLL"

@@ -26,12 +26,12 @@ REM JPEG static library
 copy %jpeg_dir%\win32\Release\libjpeg.lib %AMB_HOME%\lib\win32\libjpeg.lib
 
 REM Xerces lib, if it exists.
-set XER_BUILD=%xerces_dir%\Build\Win32\VC8\Release
-set XERD_BUILD=%xerces_dir%\Build\Win32\VC8\Debug
-if exist %XER_BUILD% copy %XER_BUILD%\xerces-c_2.lib %AMB_HOME%\lib\win32\xerces-c_2.lib
-if exist %XER_BUILD% copy %XER_BUILD%\xerces-c_2_8.dll %AMB_HOME%\bin\win32\xerces-c_2_8.dll
-if exist %XERD_BUILD% copy %XERD_BUILD%\xerces-c_2D.lib %AMB_HOME%\lib\win32\xerces-c_2D.lib
-if exist %XERD_BUILD% copy %XERD_BUILD%\xerces-c_2_8D.dll %AMB_HOME%\bin\win32\xerces-c_2_8D.dll
+set XER_BUILD=%xerces_dir%\Build\Win32\VC9\Release
+set XERD_BUILD=%xerces_dir%\Build\Win32\VC9\Debug
+if exist %XER_BUILD% copy %XER_BUILD%\xerces-c_%xerces_major%.lib %AMB_HOME%\lib\win32\xerces-c_%xerces_major%.lib
+if exist %XER_BUILD% copy %XER_BUILD%\xerces-c_%xerces_major%_%xerces_minor%.dll %AMB_HOME%\bin\win32\xerces-c_%xerces_major%_%xerces_minor%.dll
+if exist %XERD_BUILD% copy %XERD_BUILD%\xerces-c_%xerces_major%D.lib %AMB_HOME%\lib\win32\xerces-c_%xerces_major%D.lib
+if exist %XERD_BUILD% copy %XERD_BUILD%\xerces-c_%xerces_major%_%xerces_minor%D.dll %AMB_HOME%\bin\win32\xerces-c_%xerces_major%_%xerces_minor%D.dll
 
 REM ffmpeg
 copy %ffmpeg_dir%\libavcodec\avcodec-52.dll %AMB_HOME%\bin\win32\avcodec-52.dll
@@ -43,9 +43,12 @@ copy %ffmpeg_dir%\libavutil\avutil.lib %AMB_HOME%\lib\win32\avutil.lib
 copy %ffmpeg_dir%\libswscale\swscale-0.dll %AMB_HOME%\bin\win32\swscale-0.dll
 copy %ffmpeg_dir%\libswscale\swscale.lib %AMB_HOME%\lib\win32\swscale.lib
 REM sdl
-copy %sdl_dir%\lib\SDL.dll %AMB_HOME%\bin\win32\SDL.dll
-copy %sdl_dir%\lib\SDL.lib %AMB_HOME%\lib\win32\SDL.lib
-copy %sdl_dir%\lib\SDLmain.lib %AMB_HOME%\lib\win32\SDLmain.lib
+if exist %sdl_dir%\lib copy %sdl_dir%\lib\SDL.dll %AMB_HOME%\bin\win32\SDL.dll
+if exist %sdl_dir%\lib copy %sdl_dir%\lib\SDL.lib %AMB_HOME%\lib\win32\SDL.lib
+if exist %sdl_dir%\lib copy %sdl_dir%\lib\SDLmain.lib %AMB_HOME%\lib\win32\SDLmain.lib
+if exist %sdl_dir%\VisualC\SDL\Release copy %sdl_dir%\VisualC\SDL\Release\SDL.dll %AMB_HOME%\bin\win32\SDL.dll
+if exist %sdl_dir%\VisualC\SDL\Release copy %sdl_dir%\VisualC\SDL\Release\SDL.lib %AMB_HOME%\lib\win32\SDL.lib
+if exist %sdl_dir%\VisualC\SDLmain\Release copy %sdl_dir%\VisualC\SDLmain\Release\SDLmain.lib %AMB_HOME%\lib\win32\SDLmain.lib
 
 REM Live555
 copy %TPP_HOME%\live_VC9\BUILD\BasicUsageEnvironment-Release\BasicUsageEnvironment.lib %AMB_HOME%\lib\win32\BasicUsageEnvironment.lib

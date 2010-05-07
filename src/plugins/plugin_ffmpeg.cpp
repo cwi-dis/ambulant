@@ -1,7 +1,7 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2008 Stichting CWI, 
-// Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
+// Copyright (C) 2003-2010 Stichting CWI, 
+// Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -103,48 +103,48 @@ void initialize(
     ambulant::common::gui_player *player)
 {
     if ( api_version != AMBULANT_PLUGIN_API_VERSION ) {
-        lib::logger::get_logger()->warn("ffmpeg_plugin: built for plugin-api version %d, current %d. Skipping.", 
-            AMBULANT_PLUGIN_API_VERSION, api_version);
+        lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"ffmpeg_plugin", 
+					AMBULANT_PLUGIN_API_VERSION, api_version);
         return;
     }
     if ( !ambulant::check_version() )
-        lib::logger::get_logger()->warn("ffmpeg_plugin: built for different Ambulant version (%s)", AMBULANT_VERSION);
-	factory = bug_workaround(factory);
+        lib::logger::get_logger()->warn(gettext("%s: built for different Ambulant version (%s)"),"ffmpeg_plugin", AMBULANT_VERSION);
+    factory = bug_workaround(factory);
     lib::logger::get_logger()->debug("ffmpeg_plugin: loaded.");
 
-	// Add desired playable factories
-	common::global_playable_factory *pf = factory->get_playable_factory();
+    // Add desired playable factories
+    common::global_playable_factory *pf = factory->get_playable_factory();
     if (pf) {
 #ifdef WITH_SDL
-		pf->add_factory(gui::sdl::create_sdl_playable_factory(factory));
+	pf->add_factory(gui::sdl::create_sdl_playable_factory(factory));
     	lib::logger::get_logger()->trace("ffmpeg_plugin: SDL playable factory registered");
 #endif
 #ifdef WITH_DSVIDEO
-		pf->add_factory(new dsvideo_renderer_factory(factory));
+	pf->add_factory(new dsvideo_renderer_factory(factory));
     	lib::logger::get_logger()->trace("ffmpeg_plugin: video playable factory registered");
 #endif
-	}
-	// Same for datasource foactories
-	net::datasource_factory *df = factory->get_datasource_factory();
-	if (df) {
+    }
+    // Same for datasource foactories
+    net::datasource_factory *df = factory->get_datasource_factory();
+    if (df) {
 #ifdef WITH_LIVE	
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_plugin: add live_audio_datasource_factory");
-		df->add_video_factory(net::create_live_video_datasource_factory());
-		df->add_audio_factory(net::create_live_audio_datasource_factory());
-		lib::logger::get_logger()->trace("ffmpeg_plugin: live555 datasource factories registered");
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_plugin: add live_audio_datasource_factory");
+	df->add_video_factory(net::create_live_video_datasource_factory());
+	df->add_audio_factory(net::create_live_audio_datasource_factory());
+	lib::logger::get_logger()->trace("ffmpeg_plugin: live555 datasource factories registered");
 #endif
 #ifdef WITH_FFMPEG
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_plugin: add ffmpeg_video_datasource_factory");
-		df->add_video_factory(net::get_ffmpeg_video_datasource_factory());
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_plugin: add ffmpeg_audio_datasource_factory");
-		df->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_plugin: add ffmpeg_audio_decoder_finder");
-		df->add_audio_decoder_finder(net::get_ffmpeg_audio_decoder_finder());
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_plugin: add ffmpeg_audio_filter_finder");
-		df->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_plugin: add ffmpeg_raw_datasource_factory");
-		df->add_raw_factory(net::get_ffmpeg_raw_datasource_factory());
-		lib::logger::get_logger()->trace("ffmpeg_plugin: ffmpeg datasource factories registered");
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_plugin: add ffmpeg_video_datasource_factory");
+	df->add_video_factory(net::get_ffmpeg_video_datasource_factory());
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_plugin: add ffmpeg_audio_datasource_factory");
+	df->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_plugin: add ffmpeg_audio_decoder_finder");
+	df->add_audio_decoder_finder(net::get_ffmpeg_audio_decoder_finder());
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_plugin: add ffmpeg_audio_filter_finder");
+	df->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_plugin: add ffmpeg_raw_datasource_factory");
+	df->add_raw_factory(net::get_ffmpeg_raw_datasource_factory());
+	lib::logger::get_logger()->trace("ffmpeg_plugin: ffmpeg datasource factories registered");
 #endif // WITH_FFMPEG
-	}
+    }
 }

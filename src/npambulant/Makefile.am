@@ -299,5 +299,8 @@ EXTRA_DIST = \
 	install-linux64.rdf \
 	install-win32.rdf  \
 	internalize_shlibs.py \
+	npambulant.rc \
+	npambulant.def \
+	resource.h \
 	README-linux \
 	README-win32.txt

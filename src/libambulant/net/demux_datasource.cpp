@@ -1,7 +1,7 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2008 Stichting CWI, 
-// Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
+// Copyright (C) 2003-2010 Stichting CWI, 
+// Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -101,17 +101,22 @@ demux_audio_datasource::stop()
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::stop(0x%x)", (void*)this);
+	
 	if (m_thread) {
 		abstract_demux *tmpthread = m_thread;
 		m_thread = NULL;
 		m_lock.leave();
-		tmpthread->remove_datasink(m_stream_index);
+	 	tmpthread->remove_datasink(m_stream_index);
 		m_lock.enter();
 	}
 	m_thread = NULL;
 	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::stop: thread stopped");
-	if (m_client_callback) delete m_client_callback;
-	m_client_callback = NULL;
+	
+	if (m_client_callback) {
+        lib::logger::get_logger()->debug("demux_audio_datasource::stop: m_client_callback non-NULL, after remove_datasink()");
+        delete m_client_callback;
+        m_client_callback = NULL;
+    }
 	while (m_queue.size() > 0) {
 		ts_packet_t tsp(0,NULL,0);
 		tsp = m_queue.front();
@@ -167,6 +172,8 @@ demux_audio_datasource::seek(timestamp_t time)
 		m_lock.leave();
 		return;
 	}
+
+	m_thread->seek(time);
 	
 	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource::seek(%d): flushing %d packets", time, m_queue.size());
     int nbuf = m_queue.size();
@@ -182,7 +189,7 @@ demux_audio_datasource::seek(timestamp_t time)
 	// thread trying to deliver new data to this demux_datasource.
 	// NOTE 2: we do the seek after the flush, this may cause some incorrect data (from
 	// before the seek) to be deposited in our queue.
-	m_thread->seek(time);
+	//m_thread->seek(time);
 }
 
 #ifdef WITH_SEAMLESS_PLAYBACK
@@ -217,7 +224,9 @@ demux_audio_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, int sz)
 	bool rv = true;
 	m_lock.enter();
 	m_src_end_of_file = (sz == 0);
-	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource.push_data: %d bytes available (ts = %lld)", sz, pts);
+	//xxxbo
+	if (sz == 0)
+	/*AM_DBG*/ lib::logger::get_logger()->debug("demux_audio_datasource.push_data: %d bytes available (ts = %lld)", sz, pts);
 	if ( ! m_src_end_of_file) {
 		if (_buffer_full()) {
 			rv = false;
@@ -396,8 +405,11 @@ demux_video_datasource::stop()
 	}
 	m_thread = NULL;
 	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::stop: thread stopped");
-	if (m_client_callback) delete m_client_callback;
-	m_client_callback = NULL;
+	if (m_client_callback) {
+        lib::logger::get_logger()->debug("demux_video_datasource::stop: m_client_callback != NULL after remove_datasink()");
+        delete m_client_callback;
+        m_client_callback = NULL;
+    }
 	if (m_old_frame.second.data) 
 		m_frames.push(m_old_frame);
 	while (m_frames.size() > 0) {
@@ -591,6 +603,7 @@ demux_video_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, int sz)
 	m_lock.enter();
 
 	m_src_end_of_file = (sz == 0);
+
 	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): receiving data sz=%d ,pts=%lld", sz, pts);
 	if ( ! m_thread) {
 		// video stopped
@@ -600,7 +613,7 @@ demux_video_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, int sz)
 	}
 	if ( _buffer_full()) {
 		// video stopped
-        AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): buffer full, returning");
+	        /*AM_DBG*/ lib::logger::get_logger()->debug("demux_video_datasource::push_data(): buffer full, returning");
 		m_lock.leave();
 		return false;
 	}
@@ -618,11 +631,11 @@ demux_video_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, int sz)
 		vframe.data = frame_data;
 		vframe.size = sz;
 		m_frames.push(ts_frame_pair(pts, vframe));
-
 	}		
 	if ( m_frames.size() || _end_of_file()  ) {
 		if ( m_client_callback ) {
-			AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): calling client callback (eof=%d)", m_src_end_of_file);
+			AM_DBG
+			 lib::logger::get_logger()->debug("demux_video_datasource::push_data(): calling client callback (eof=%d)", m_src_end_of_file);
 			assert(m_event_processor);
 			m_event_processor->add_event(m_client_callback, MIN_EVENT_DELAY, ambulant::lib::ep_med);
 			m_client_callback = NULL;

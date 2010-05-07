@@ -1,7 +1,7 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2008 Stichting CWI, 
-// Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
+// Copyright (C) 2003-2010 Stichting CWI, 
+// Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -58,7 +58,7 @@ gui::gtk::create_gtk_image_playable_factory(common::factories *factory, common::
 
 gtk_image_renderer::~gtk_image_renderer() {
 	m_lock.enter();
-	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer::~gtk_image_renderer(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer::~gtk_image_renderer(0x%x), %s", this, this->get_sig().c_str());
 	if (m_image)
 		g_object_unref(G_OBJECT (m_image));
 	m_lock.leave();
@@ -80,6 +80,7 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 
 	if (m_data && !m_image_loaded && m_data_size > 0) {
 		GdkPixbufLoader *loader =  gdk_pixbuf_loader_new ();
+		AM_DBG logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): load data for %s", this, this->get_sig().c_str());
 		if (gdk_pixbuf_loader_write(loader, (const guchar*) m_data, (gsize) m_data_size, 0))
 		{
 	       		// for small files (m_data_size < 128) gdk_pixbuf_loader_close() is needed

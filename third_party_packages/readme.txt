@@ -19,7 +19,7 @@ Windows Desktop, Windows Mobile 5
 xerces:
 	windows desktop only.
 	
-	Download xerces-C++ Version 3.0.1 Source Release from
+	Download xerces-C++ Version 3.1.0 Source Release from
 	<http://xerces.apache.org>, extract, and put its
 	content in the directory .../ambulant/third_party_packages/.
 
@@ -78,7 +78,7 @@ Live555:
 		
 xulrunner-sdk:
 	For building AmbulantPlayer as a plugin for Firefox Web browser, download:
-	http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.0.1/sdk/xulrunner-1.9.0.1.en-US.win32.sdk.zip 	
+	http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2/sdk/xulrunner-1.9.2.en-US.win32.sdk.zip 	
     Install in /ambulant/third_party_packages
 
 others:

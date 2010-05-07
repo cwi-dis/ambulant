@@ -1,7 +1,7 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2008 Stichting CWI, 
-// Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
+// Copyright (C) 2003-2010 Stichting CWI, 
+// Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -129,7 +129,7 @@ gui_player::restart(bool reparse)
 	if (reparse) {
 		m_doc = create_document(m_url);
 		if(!m_doc) {
-			lib::logger::get_logger()->show("Failed to parse document %s", m_url.get_url().c_str());
+			lib::logger::get_logger()->show(gettext("Failed to parse document %s"), m_url.get_url().c_str());
 			return;
 		}
 	}

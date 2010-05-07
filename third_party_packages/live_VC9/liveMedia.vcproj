@@ -258,6 +258,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\live\liveMedia\DVVideoRTPSource.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\live\liveMedia\FileServerMediaSubsession.cpp"
 				>
 			</File>

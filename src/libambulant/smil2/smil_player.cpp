@@ -1,7 +1,7 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2008 Stichting CWI, 
-// Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
+// Copyright (C) 2003-2010 Stichting CWI, 
+// Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -366,10 +366,20 @@ common::playable *smil_player::create_playable(const lib::node *n) {
 			// XXXJACK: Dirty hack, for now: we don't want prefetch to render to a surface so we zap it. Need to fix.
 			if (n->get_local_name() == "prefetch") surf = NULL;
 			AM_DBG lib::logger::get_logger()->debug("smil_plager::create_playable(0x%x)%s: cached playable 0x%x, renderer 0x%x, surface 0x%x", n, n->get_sig().c_str(), np, rend, surf);
-			if (rend && surf) {
-				rend->set_surface(surf);
-			}
+			//xxxbo 15-april-2010
+#if 0
+            if (rend && surf) {
+                if (rend->get_surface() == NULL)
+                    rend->set_surface(surf);
+            }
+#else //xxxbo we always need to update the surf for every node, even for the node with fill=continue
+            if (rend && surf) {
+                if (rend->get_surface() != NULL)
+                    rend->get_surface()->renderer_done(rend);
+                rend->set_surface(surf);
+            }
 
+#endif
 		} else {
 			AM_DBG lib::logger::get_logger()->debug("smil_plager::create_playable(0x%x)%s: no cached playable", n, n->get_sig().c_str());
 		}
@@ -532,11 +542,15 @@ void smil_player::stop_playable(const lib::node *n) {
 			// Add a event to destroy this playable on next 20000 microseconds, however, Jack thinks there is another option...
 			typedef std::pair<const lib::node*, common::playable*> destroy_event_arg;
 			lib::event *destroy_event = new lib::scalar_arg_callback<smil_player, destroy_event_arg>(this, &smil_player::destroy_playable_in_cache, victim);
-			//xxxbo: the unit of add_event is milisecond. This point is proved at 09-06-2009
-			AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable: schedule destructor in 20ms for %s", victim.first->get_sig().c_str());
-			m_event_processor->add_event(destroy_event, 20, lib::ep_high);
+			// XXXJACK: The following code is possibly incorrect. The assumption behind the design for deleting the
+            // playable with a timeout is that any event scheduled with delta_t=0 will be scheduled before the destruction.
+            // However, this may not be true, because the delta_t can be adjusted by the event processor.
+            // For now, we put the event in the low-priority queue. Kees thinks that this is good enough.
+            // Jack is not sure, but anything that forestalls me diving into this code is a welcome excuse:-)
+            AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable: schedule destructor in 20ms for %s", victim.first->get_sig().c_str());
+			m_event_processor->add_event(destroy_event, 20, lib::ep_low);
 		} else {
-            		AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable: cache %s renderer without destructor callback", victim.first->get_sig().c_str());
+            AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable: cache %s renderer without destructor callback", victim.first->get_sig().c_str());
 		}
 		return;
 	}
@@ -771,7 +785,7 @@ smil_player::pointed(int n, double t) {
 		// This "cannot happen", but it turns out it can:-)
 		// The scenario is that if a window shows up or disappear during
 		// a mouse move, depending on the GUI toolkit it can happen.
-		m_logger->debug("smil_player::pointed: m_new_focussed_nodes==NULL, ignoring");
+		AM_DBG m_logger->debug("smil_player::pointed: m_new_focussed_nodes==NULL, ignoring");
 		return;
 	}
 	m_new_focussed_nodes->insert(n);

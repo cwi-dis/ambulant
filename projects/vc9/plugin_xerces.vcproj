@@ -46,7 +46,7 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				TreatWChar_tAsBuiltInType="false"
+				TreatWChar_tAsBuiltInType="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\lib\win32\xerces-c_2D.lib"
+				AdditionalDependencies="..\..\lib\win32\xerces-c_$(xerces_major)D.lib"
 				OutputFile="../../bin/win32/libampluginD_xerces.dll"
 				LinkIncremental="0"
 				IgnoreDefaultLibraryNames="LIBC.lib"
@@ -126,7 +126,7 @@
 				AdditionalIncludeDirectories="&quot;$(xerces_dir)\src&quot;;..\..\include"
 				PreprocessorDefinitions="$(global_ambulant_defines);WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;WITH_XERCES"
 				RuntimeLibrary="2"
-				TreatWChar_tAsBuiltInType="false"
+				TreatWChar_tAsBuiltInType="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -144,7 +144,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="..\..\lib\win32\xerces-c_2.lib"
+				AdditionalDependencies="..\..\lib\win32\xerces-c_$(xerces_major).lib"
 				OutputFile="../../bin/win32/libamplugin_xerces.dll"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"

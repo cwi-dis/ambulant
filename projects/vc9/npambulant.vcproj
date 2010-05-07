@@ -49,7 +49,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(projectdir)&quot;;&quot;$(xulrunner_dir)&quot;;&quot;$(xulrunner_dir)\sdk\include&quot;;&quot;$(xulrunner_dir)\include\plugin&quot;;&quot;$(xulrunner_dir)\include\nspr&quot;;&quot;$(xulrunner_dir)\include\java&quot;;&quot;$(xulrunner_dir)\include\js&quot;;&quot;$(xulrunner_dir)\include\xpcom&quot;;..\..\include;..\..\src\npambulant"
+				AdditionalIncludeDirectories="&quot;$(projectdir)&quot;;&quot;$(xulrunner_dir)&quot;;&quot;$(xulrunner_dir)\include&quot;;&quot;$(xulrunner_dir)\sdk\include&quot;;&quot;$(xulrunner_dir)\include\plugin&quot;;&quot;$(xulrunner_dir)\include\nspr&quot;;&quot;$(xulrunner_dir)\include\java&quot;;&quot;$(xulrunner_dir)\include\js&quot;;&quot;$(xulrunner_dir)\include\xpcom&quot;;..\..\include;..\..\src\npambulant"
 				PreprocessorDefinitions="$(global_ambulant_defines);WIN32;_DEBUG;_LIB;_AMBULANT;XP_WIN32;AMBULANT_USE_DLL;WITH_EXPAT;WITH_XERCES;WITH_XERCES_BUILTIN;WITH_WINDOWS_PLUGINS;XPCOM_GLUE;MOZILLA_STRICT_API;_X86_;_WINDOWS;_USRDLL;NPSIMPLE_EXPORTS;$(NOINHERIT)"
 				GeneratePreprocessedFile="0"
 				BasicRuntimeChecks="0"
@@ -82,7 +82,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcom.lib ..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcomglue_s.lib ..\..\third_party_packages\xulrunner-sdk\sdk\lib\nspr4.lib ..\..\lib\win32\libexpat.lib ..\..\lib\win32\libjpeg.lib ..\..\lib\win32\libpng.lib ..\..\lib\win32\zlib.lib ..\..\lib\win32\xerces-c_2.lib"
+				AdditionalDependencies="..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcom.lib ..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcomglue_s.lib ..\..\third_party_packages\xulrunner-sdk\sdk\lib\nspr4.lib ..\..\lib\win32\libexpat.lib ..\..\lib\win32\libjpeg.lib ..\..\lib\win32\libpng.lib ..\..\lib\win32\zlib.lib ..\..\lib\win32\xerces-c_$(xerces_major).lib"
 				OutputFile="C:\Program Files\Mozilla Firefox\plugins\$(ProjectName)_D.dll"
 				LinkIncremental="0"
 				SuppressStartupBanner="false"
@@ -118,7 +118,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy /y ..\..\bin\win32\libambulant_shwin32.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libamplugin_state_xpath.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libamplugin_ffmpeg.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libamplugin_xerces.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avcodec-52.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avformat-52.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avutil-50.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\swscale-0.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\SDL.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\xerces-c_2_8.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;mkdir &quot;$(firefox_plugin_dir)\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libamplugin_state_xpath.dll &quot;$(firefox_plugin_dir)\plugins\&quot;&#x0D;&#x0A;"
+				CommandLine="copy /y ..\..\bin\win32\libambulant_shwin32.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libamplugin_state_xpath.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libamplugin_ffmpeg.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libamplugin_xerces.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avcodec-52.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avformat-52.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avutil-50.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\swscale-0.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\SDL.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\xerces-c_$(xerces_major)_$(xerces_minor).dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;mkdir &quot;$(firefox_plugin_dir)\plugins\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libamplugin_state_xpath.dll &quot;$(firefox_plugin_dir)\plugins\&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -156,7 +156,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;$(projectdir)&quot;;&quot;$(xulrunner_dir)&quot;;&quot;$(xulrunner_dir)\sdk\include&quot;;&quot;$(xulrunner_dir)\include\plugin&quot;;&quot;$(xulrunner_dir)\include\nspr&quot;;&quot;$(xulrunner_dir)\include\java&quot;;&quot;$(xulrunner_dir)\include\js&quot;;&quot;$(xulrunner_dir)\include\xpcom&quot;;..\..\include;..\..\src\npambulant"
+				AdditionalIncludeDirectories="&quot;$(projectdir)&quot;;&quot;$(xulrunner_dir)&quot;;&quot;$(xulrunner_dir)\include&quot;;&quot;$(xulrunner_dir)\sdk\include&quot;;&quot;$(xulrunner_dir)\include\plugin&quot;;&quot;$(xulrunner_dir)\include\nspr&quot;;&quot;$(xulrunner_dir)\include\java&quot;;&quot;$(xulrunner_dir)\include\js&quot;;&quot;$(xulrunner_dir)\include\xpcom&quot;;..\..\include;..\..\src\npambulant"
 				PreprocessorDefinitions="$(global_ambulant_defines);WIN32;NDEBUG;_LIB;_AMBULANT;XP_WIN32;AMBULANT_USE_DLL;WITH_EXPAT;WITH_XERCES;WITH_XERCES_BUILTIN;WITH_WINDOWS_PLUGINS;XPCOM_GLUE;MOZILLA_STRICT_API;_X86_;_WINDOWS;_USRDLL;NPSIMPLE_EXPORTS"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -184,7 +184,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcom.lib ..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcomglue_s.lib ..\..\third_party_packages\xulrunner-sdk\sdk\lib\nspr4.lib ..\..\lib\win32\libexpat.lib ..\..\lib\win32\libjpeg.lib ..\..\lib\win32\libpng.lib ..\..\lib\win32\zlib.lib ..\..\lib\win32\xerces-c_2.lib"
+				AdditionalDependencies="..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcom.lib ..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcomglue_s.lib ..\..\third_party_packages\xulrunner-sdk\sdk\lib\nspr4.lib ..\..\lib\win32\libexpat.lib ..\..\lib\win32\libjpeg.lib ..\..\lib\win32\libpng.lib ..\..\lib\win32\zlib.lib ..\..\lib\win32\xerces-c_$(xerces_major).lib"
 				OutputFile="C:\Program Files\Mozilla Firefox\plugins\$(ProjectName).dll"
 				LinkIncremental="0"
 				SuppressStartupBanner="true"
@@ -218,7 +218,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy /y ..\..\bin\win32\libambulant_shwin32.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libamplugin_state_xpath.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libamplugin_ffmpeg.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libamplugin_xerces.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avcodec-52.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avformat-52.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avutil-50.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\swscale-0.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\SDL.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\xerces-c_2_8.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;del /s /q &quot;$(firefox_plugin_dir)\plugins&quot;&#x0D;&#x0A;"
+				CommandLine="copy /y ..\..\bin\win32\libambulant_shwin32.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libamplugin_state_xpath.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libamplugin_ffmpeg.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\libamplugin_xerces.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avcodec-52.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avformat-52.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\avutil-50.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\swscale-0.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\SDL.dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;copy /y ..\..\bin\win32\xerces-c_$(xerces_major)_$(xerces_minor).dll &quot;$(firefox_plugin_dir)\&quot;&#x0D;&#x0A;del /s /q &quot;$(firefox_plugin_dir)\plugins&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>

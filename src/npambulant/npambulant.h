@@ -49,8 +49,10 @@
 //
 #if (NP_VERSION_MAJOR >= 0) && (NP_VERSION_MINOR >= 22)
 #include "npfunctions.h"
+#ifndef XP_WIN
 typedef int32_t int32;
 typedef int16_t int16;
+#endif
 typedef void JRIEnv;
 typedef void *jref;
 #define NewNPP_NewProc(x) (x)
@@ -78,7 +80,6 @@ typedef void *jref;
 // mozilla includes
 #ifdef	XP_WIN32
 #include "npapi.h"
-#include "npupp.h"
 #endif//XP_WIN32
 
 // ambulant player includes

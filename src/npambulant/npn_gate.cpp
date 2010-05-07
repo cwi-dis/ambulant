@@ -160,7 +160,7 @@ const char* NPN_UserAgent(NPP instance)
   return rv;
 }
 
-void* NPN_MemAlloc(uint32 size)
+void* NPN_MemAlloc(uint32_t size)
 {
   void * rv = NULL;
   rv = NPNFuncs.memalloc(size);

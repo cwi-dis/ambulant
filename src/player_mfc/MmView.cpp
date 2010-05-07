@@ -1,7 +1,7 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2008 Stichting CWI, 
-// Kruislaan 413, 1098 SJ Amsterdam, The Netherlands.
+// Copyright (C) 2003-2010 Stichting CWI, 
+// Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -238,7 +238,6 @@ MmView::MmView()
 #else
 	lib::logger::get_logger()->set_ostream(new logwindow_ostream());
 #endif // WITHOUT_LOG_WINDOW
-	// Tell the logger about the output level preference
 	int level = ambulant::common::preferences::get_preferences()->m_log_level;
 	ambulant::lib::logger::get_logger()->set_level(level);
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
