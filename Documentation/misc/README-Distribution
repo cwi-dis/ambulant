@@ -251,10 +251,10 @@ These instructions assume you are building on an Intel 10.5 mac.
     export MACOSX_DEPLOYMENT_TARGET=10.4
     python ../../third_party_packages/build-third-party-packages.py mac10.4
     
-- Configure (in build-dist-106) with
+- Configure (in build-dist-104) with
 
     export MACOSX_DEPLOYMENT_TARGET=10.4
-    ../configure --with-macfat --with-xerces-plugin --disable-dependency-tracking
+    ../configure --with-universalsdk --with-xerces-plugin --disable-dependency-tracking
   
 - make:
     export MACOSX_DEPLOYMENT_TARGET=10.4
@@ -312,7 +312,6 @@ Creating the Firefox plugin on Linux
 
 Creating the Windows desktop/FF/IE installers
 =============================================
-XXXUNTESTED
 
 Build the player. Make sure you are building a *ReleaseShlib* player,
 not a *Debug* or *Release* player.
@@ -329,16 +328,6 @@ you do a distribution of a static or dynamically linked player, which
 Visual Studio version you used and a few more options. Check and modify
 these manually before building the installer. The installer is created in the
 installers\nsis-win32 directory.
-
-Creating the Windows CE installer
-=================================
-XXXUNTESTED
-
-Build the player. Make sure you are building a *Release* player,
-not a *Debug* player.
-The Visual Studio solution contains a deployment project that builds
-the WM5 installer.
-
 
 Testing the distributions
 =========================
