@@ -72,6 +72,7 @@ int gui::sdl::sdl_audio_renderer::s_buffer_size = 4096;
 int gui::sdl::sdl_audio_renderer::s_min_buffer_size_bytes = 2 * 4096 * 2 * 2;  
 lib::critical_section gui::sdl::sdl_audio_renderer::s_static_lock;    
 std::list<gui::sdl::sdl_audio_renderer *> gui::sdl::sdl_audio_renderer::s_renderers;
+gui::sdl::sdl_audio_renderer *gui::sdl::sdl_audio_renderer::s_master_clock_renderer;
 
 int
 gui::sdl::sdl_audio_renderer::init()
@@ -146,6 +147,7 @@ gui::sdl::sdl_audio_renderer::register_renderer(sdl_audio_renderer *rnd)
 {
 	s_static_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::register_renderer(0x%x)", rnd);
+    if (s_master_clock_renderer == NULL) s_master_clock_renderer = rnd; // should depend on syncBehavior==canSlip
 	std::list<sdl_audio_renderer *>::iterator i;
 	for( i=s_renderers.begin(); i != s_renderers.end(); i++) {
 		if ((*i) == rnd) {
@@ -164,6 +166,8 @@ void
 gui::sdl::sdl_audio_renderer::unregister_renderer(sdl_audio_renderer *rnd)
 {
 	s_static_lock.enter();
+    if (rnd == s_master_clock_renderer)
+        s_master_clock_renderer = NULL;
 	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::unregister_renderer(0x%x)", rnd);
 	std::list<sdl_audio_renderer *>::iterator i;
 	for( i=s_renderers.begin(); i != s_renderers.end(); i++) {
@@ -439,6 +443,7 @@ gui::sdl::sdl_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
 		m_read_ptr_called = false;
 		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::get_data: audio source paused, or no audio source");
 	} else {
+        
 #ifdef WITH_CLOCK_SYNC
         // XXXJACK Note that the following code is incorrect: we assume that the time samples arrive here (from
         // our audio datasource) they are immedeately played out. We should probably add a slight delay, because
@@ -467,14 +472,26 @@ gui::sdl::sdl_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
             clock_drift = 0;
         }
         // Now communicate it to the clock.
-        { // if (clock_drift < -20 || clock_drift > 20) {
-        	AM_DBG if (clock_drift) lib::logger::get_logger()->debug("sdl_audio_renderer: audio clock %dms ahead of document clock", clock_drift);
-        	// We communicate the drift to the clock. The clock will return true if it will take
-        	// care of the adjustment, and false if we need to do it (by skipping or inserting audio)
-        	lib::timer::signed_time_type residual_clock_drift = m_event_processor->get_timer()->set_drift(clock_drift);
+        if (clock_drift) {
+        	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer: audio clock %dms ahead of document clock", clock_drift);
+            // First, if there is no master clock, we assume that role
+            if (s_master_clock_renderer == NULL /* And syncBehavior != canSlip */ ) 
+                s_master_clock_renderer = this;
+                
+        	lib::timer::signed_time_type residual_clock_drift;
+            if (s_master_clock_renderer == this) {
+                // We communicate the drift to the clock. If the clock can make only a partial adjustment
+                // it will return us the amount we still have to adjust.
+                residual_clock_drift = m_event_processor->get_timer()->set_drift(clock_drift);
+            } else {
+                // We are not the master, so we don't set the clock. In stead, we adjust our own idea of time.
+                residual_clock_drift = clock_drift;
+            }
         	if (residual_clock_drift) {
-                	lib::logger::get_logger()->debug("sdl_audio_renderer: not implemented: adjusting audio clock by %ld ms", residual_clock_drift);
-		}
+                AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer: adjusting audio clock by %ld ms (audio skip/insert not implemented)", residual_clock_drift);
+                m_audio_clock -= residual_clock_drift;
+                // XXXX We should also read and throw away audio data if residual_clock_drift is < 0, or insert zero bytes if it is > 0.
+            }
         }
         // Update the audio clock
         lib::timer::time_type delta = (bytes_wanted * 1000) / (44100*2*2); // Warning: rounding error possible
@@ -491,6 +508,12 @@ gui::sdl::sdl_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
 		rv = bytes_wanted;
 #ifdef WITH_CLOCK_SYNC
 	AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::get_data: audio-clock=%d, wanted %d bytes, returning %d bytes", m_audio_clock, bytes_wanted, rv);
+    // if rv < bytes_wanted, we should also adjust m_audio_clock (thereby essentially stopping the system clock, until the audio
+    // data has had a chance to catch up).
+    if (rv < bytes_wanted) {
+        lib::timer::time_type pushback_audio_clock = ((bytes_wanted-rv) * 1000) / (44100*2*2);
+        m_audio_clock -= pushback_audio_clock;
+    }
 #endif
 	// Also set volume(s)
 	m_volcount = 0;
@@ -578,6 +601,7 @@ gui::sdl::sdl_audio_renderer::restart_audio_input()
     
 	// end-of-data condition testing is a bit convoluted, because m_node may not always be
 	// available.
+    AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::restart_audio_input: m_audio_src=0x%x, m_is_playing=%d, eof=%d", m_audio_src, m_is_playing, m_audio_src->end_of_file());
 	bool more_data = (m_audio_src != NULL && m_is_playing);
 	if (more_data && m_audio_src->end_of_file())
 		more_data = false;
@@ -596,7 +620,9 @@ gui::sdl::sdl_audio_renderer::restart_audio_input()
 		// Start reading 
 		lib::event *e = new readdone_callback(this, &sdl_audio_renderer::data_avail);
 		m_audio_src->start(m_event_processor, e);
-	}
+	} else {
+        m_audio_src->start_prefetch(m_event_processor);
+    }
 	return true;
 }
 
@@ -746,6 +772,7 @@ gui::sdl::sdl_audio_renderer::start(double where)
 	}
 	if (m_is_playing) {
 		lib::logger::get_logger()->trace("sdl_audio_renderer.start(0x%x): already started", (void*)this);
+        assert(!m_is_paused);
 		m_lock.leave();
 		return;
 	}
@@ -791,6 +818,7 @@ gui::sdl::sdl_audio_renderer::preroll(double when, double where, double how_much
 	}
 	if (m_is_playing) {
 		lib::logger::get_logger()->trace("sdl_audio_renderer::preroll(0x%x): already started", (void*)this);
+        assert(!m_is_paused);
 		m_lock.leave();
 		return;
 	}
@@ -804,8 +832,10 @@ gui::sdl::sdl_audio_renderer::preroll(double when, double where, double how_much
 		}
 		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::preroll(): m_audio_src->start_prefetch(0x%x) this = (x%x)m_audio_src=0x%x", (void*)m_event_processor, this, (void*)m_audio_src);
         net::timestamp_t wtd_position = m_clip_begin + (net::timestamp_t)(where*1000000);
-        m_audio_src->seek(wtd_position);
-		m_previous_clip_position = wtd_position;
+        if (wtd_position != m_previous_clip_position) {
+            m_previous_clip_position = wtd_position;
+            m_audio_src->seek(wtd_position);
+        }
 		m_audio_src->start_prefetch(m_event_processor);
 		m_is_paused = false;
 	} else {

@@ -183,7 +183,7 @@ Section /o "VC90 Runtime" RuntimeSection
 	NSISdl::download "http://download.microsoft.com/download/d/d/9/dd9a82d0-52ef-40db-8dab-795376989c03/vcredist_x86.exe" "${RUNTIME_FILE}"
 	Pop $R0 ;Get the return value
 	StrCmp $R0 "success" install
-	MessageBox MB_YESNO|MB_ICONEXCLAMATION "Download failed: Ambulant may not run until this component is correctly installed.$\n$\nDo you wish to continue?" IDYES true IDNO false
+	MessageBox MB_YESNO|MB_ICONEXCLAMATION "Download of Microsoft VC++ runtime failed, maybe your internet connection is down?$\n$\n Ambulant will not run until this component is correctly installed.$\n$\nDo you wish to continue?" IDYES true IDNO false
 	true:
 		Goto finish
 	false:

@@ -224,9 +224,7 @@ demux_audio_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, int sz)
 	bool rv = true;
 	m_lock.enter();
 	m_src_end_of_file = (sz == 0);
-	//xxxbo
-	if (sz == 0)
-	/*AM_DBG*/ lib::logger::get_logger()->debug("demux_audio_datasource.push_data: %d bytes available (ts = %lld)", sz, pts);
+	AM_DBG if (sz == 0) lib::logger::get_logger()->debug("demux_audio_datasource.push_data: %d bytes available (ts = %lld)", sz, pts);
 	if ( ! m_src_end_of_file) {
 		if (_buffer_full()) {
 			rv = false;
@@ -613,7 +611,7 @@ demux_video_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, int sz)
 	}
 	if ( _buffer_full()) {
 		// video stopped
-	        /*AM_DBG*/ lib::logger::get_logger()->debug("demux_video_datasource::push_data(): buffer full, returning");
+        AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): buffer full, returning");
 		m_lock.leave();
 		return false;
 	}

@@ -100,6 +100,10 @@ static media items and the SMIL file itself can be retrieved via HTTP.
 RTSP support is available, but there are issues with which server
 can actually serve which media types. This seems to be a marketing issue
 on the side of server manufacturers, and is outside our control.
+TCP fallback (if UDP is firewalled) is available on Mac and Windows, but
+must be done manually in the preferences dialog. It is not currently
+available in the Linux players. On some Linux systems (FC11, notably) you
+must disable iptables to allow RTSP playback.
 
 SMIL support
 ------------

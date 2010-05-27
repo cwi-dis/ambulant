@@ -273,7 +273,7 @@ ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_frame: 0x%x: trigger client callback timestamp_milli=%d delta_milli=%d, now_milli=%d, %d frames in buffer", this, (int)timestamp_milli, (int)delta_milli, (int)now_milli, m_frames.size());
 			// Sanity check: we don't want this to be more than a second into the future
 			if (delta_milli > 1000) {
-				lib::logger::get_logger()->trace("ffmpeg_video: frame is %f seconds in the future", delta_milli / 1000.0);
+				lib::logger::get_logger()->debug("ffmpeg_video: frame is %f seconds in the future", delta_milli / 1000.0);
 				lib::logger::get_logger()->debug("ffmpeg_video: elapsed()=%dms, timestamp=%dms", now_milli, timestamp_milli);
 			}
 			evp->add_event(callbackk, delta_milli+1, ambulant::lib::ep_high);
@@ -303,7 +303,7 @@ ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_frame: 0x%x: trigger client callback timestamp_milli=%d delta_milli=%d, now_milli=%d, %d frames in buffer", this, (int)timestamp_milli, (int)delta_milli, (int)now_milli, m_frames.size());
 			// Sanity check: we don't want this to be more than a second into the future
 			if (delta_milli > 1000) {
-				lib::logger::get_logger()->trace("ffmpeg_video: frame is %f seconds in the future", delta_milli / 1000.0);
+				lib::logger::get_logger()->debug("ffmpeg_video: frame is %f seconds in the future", delta_milli / 1000.0);
 				lib::logger::get_logger()->debug("ffmpeg_video: elapsed()=%dms, timestamp=%dms", now_milli, timestamp_milli);
 			}
 			evp->add_event(callbackk, delta_milli+1, ambulant::lib::ep_high);
@@ -495,40 +495,19 @@ void
 ffmpeg_video_decoder_datasource::seek(timestamp_t time)
 {
 	m_lock.enter();
+    int nframes_dropped = 0;
     assert( time >= 0);
-	// We leave one frame in the queue: there could be a callback outstanding which
-	// will otherwise run into problems in get_frame().
-	
-	// Do the seek before flush
-	if (m_src) m_src->seek(time);
 
 	m_oldest_timestamp_wanted = time;
 
-    if (m_frames.size() > 0) {
-        // There are frames in the buffer. If we have to seek back we discard all of them.
-        // If we have to seek ahead we try skipping.
-        int nframes_dropped = 0;
-        
-        if (m_frames.front().first > time + 30000 /* 30ms is a guess for frame duration */) {
-            while ( m_frames.size() > 0) {
-                _pop_top_frame();
-                nframes_dropped++;
-            }	
-        } else {
-            while (m_frames.size() > 0 && m_frames.front().first < time) {
-                _pop_top_frame();
-                nframes_dropped++;
-            }
-            if (m_frames.size() > 0) {
-                // We started with a frame before "time" and now we are after "time".
-                // Therefore, we have implemented the complete seek.
-                m_lock.leave();
-                return;
-            }
-        }
-        AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource: flush cache (%d frames) due to seek", nframes_dropped);
-	}
-	//if (m_src) m_src->seek(time);
+    // Do the seek before flush
+    if (m_src) m_src->seek(time);
+
+    while ( m_frames.size() > 0) {
+        _pop_top_frame();
+        nframes_dropped++;
+    }
+    AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::seek(%d): flushed %d frames", time, nframes_dropped);
 	m_lock.leave();
 }
 

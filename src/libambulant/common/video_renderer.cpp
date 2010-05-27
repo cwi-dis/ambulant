@@ -234,11 +234,13 @@ video_renderer::preroll(double when, double where, double how_much)
 	m_frame_duplicate = 0;
 	m_frame_early = 0;
 	m_frame_late = 0;
-	m_previous_clip_position = m_clip_begin+(net::timestamp_t)(where*1000000);
 	m_frame_missing = 0;
+    net::timestamp_t wtd_position = m_clip_begin+(net::timestamp_t)(where*1000000);
+    if (wtd_position != m_previous_clip_position) {
+        m_previous_clip_position = wtd_position;
+        m_src->seek(wtd_position);
+    }
 
-	m_src->seek(m_clip_begin + (net::timestamp_t)(where*1000000));	
-	
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::preroll(%f) seek to %lld", where, m_clip_begin);
 	
 	AM_DBG lib::logger::get_logger ()->debug ("video_renderer::preroll(%f) this = 0x%x, cookie=%d, dest=0x%x, timer=0x%x, epoch=%d", where, (void *) this, (int)m_cookie, (void*)m_dest, m_timer, m_epoch);

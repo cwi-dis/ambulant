@@ -142,6 +142,7 @@ class sdl_audio_renderer : public common::renderer_playable {
 	static int s_min_buffer_size_bytes;		// Minimum number of bytes we need for the abobe
 	static lib::critical_section s_static_lock;
 	static std::list<sdl_audio_renderer *>s_renderers;
+    static sdl_audio_renderer *s_master_clock_renderer;
 };
 
 } // end namespace sdl

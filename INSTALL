@@ -15,7 +15,10 @@ Obviously you will need a compiler/linker/development environment.
 For Windows you need one of:
 - Microsoft Visual Studio .NET 2008 SP2 (preferred)
 - Microsoft Visual Studio .NET 2005 SP1.
-For Linux desktop you need GNU gcc, at least version 4.0/
+For Linux desktop you need at least autoconf, automake, GNU gcc
+(at least version 4.0), gtk2-devel and/or qt-devel (for graphics),
+and alsa-devel (for sound).
+
 For MacOSX you need the Apple Developer tools (XCode 3.1 or later).
 For Windows Mobile 5 things look a bit bleak, as of this writing.
 Contact us if you need it, and have some time to invest.
@@ -29,8 +32,8 @@ for per-platform details.
 Building for Linux
 ------------------
 
-After unpacking you should first download and build the required 3rd party
-packages. In third_party_packages, run the following command:
+After unpacking Ambulant you should first download and build the required
+3rd party packages. In third_party_packages, run the following command:
 
 	python build-third-party-packages.py linux
 	

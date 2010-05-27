@@ -78,7 +78,11 @@ lib::timer_control_impl::time_type
 lib::timer_control_impl::_elapsed() const
 {
 	if(!m_running) return m_local_epoch;
-	return m_local_epoch + _apply_speed_manip(m_parent->elapsed() - m_parent_epoch);
+    lib::timer_control_impl::time_type pt = m_parent->elapsed();
+#ifdef WITH_CLOCK_SYNC
+    if (pt < m_parent_epoch) return m_local_epoch;
+#endif
+	return m_local_epoch + _apply_speed_manip(pt - m_parent_epoch);
 }
 
 lib::timer_control_impl::time_type
@@ -95,6 +99,9 @@ lib::timer_control_impl::time_type
 lib::timer_control_impl::_elapsed(time_type pt) const
 {
 	if(!m_running) return m_local_epoch;
+#ifdef WITH_CLOCK_SYNC
+    if (pt < m_parent_epoch) return m_local_epoch;
+#endif
 	return m_local_epoch + _apply_speed_manip(pt - m_parent_epoch);
 }
 
@@ -207,3 +214,30 @@ lib::timer_control_impl::_apply_speed_manip(lib::timer::time_type dt) const
 	else if(m_speed == 0.0) return 0;
 	return time_type(::floor(m_speed*dt + 0.5));
 }
+
+#ifdef WITH_CLOCK_SYNC
+void
+lib::timer_control_impl::skew(signed_time_type skew_) {
+    m_lock.enter();
+    m_drift -= skew_;
+    if (skew_ >= 0) {
+        m_local_epoch += skew_;
+    } else {
+        // We don't want the clock to run backward. So, we fiddle the epochs.
+        // We hold the lock, so we don't have to care about the order in which we do things.
+
+        time_type parent_time = m_parent->elapsed();
+        if (parent_time < m_parent_epoch) {
+            // If we are already skewing we don't re-skew, because we don't know whether this
+            // is a new request or a re-issue of the old one (because the perceived clock is
+            // still at the old value).
+            AM_DBG lib::logger::get_logger()->debug("skew: already skewing");
+        } else {
+            m_local_epoch += _apply_speed_manip(m_parent->elapsed() - m_parent_epoch);
+            AM_DBG lib::logger::get_logger()->debug("skew: actually skewing %dms from %d", skew_, parent_time);
+            m_parent_epoch = parent_time - skew_;
+        }
+    }
+    m_lock.leave();
+};
+#endif // WITH_CLOCK_SYNC

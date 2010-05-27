@@ -168,10 +168,10 @@
 		0479C4660E67456600C90467 /* renderer_select.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderer_select.h; sourceTree = "<group>"; };
 		0480CCFF0CDD1D5C0025344B /* libfaad.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfaad.a; path = /usr/local/lib/libfaad.a; sourceTree = "<absolute>"; };
 		04834E48105A4B2400B7188B /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = /System/Library/Frameworks/CoreAudio.framework; sourceTree = "<absolute>"; };
-		04834E5A105A4C0C00B7188B /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = "../../../../packages/ffmpeg-svn/libavcodec/libavcodec.a"; sourceTree = SOURCE_ROOT; };
-		04834E5C105A4C2800B7188B /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = "../../../../packages/ffmpeg-svn/libavformat/libavformat.a"; sourceTree = SOURCE_ROOT; };
-		04834E5E105A4C3400B7188B /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavutil.a; path = "../../../../packages/ffmpeg-svn/libavutil/libavutil.a"; sourceTree = SOURCE_ROOT; };
-		04834E60105A4C4000B7188B /* libswscale.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswscale.a; path = "../../../../packages/ffmpeg-svn/libswscale/libswscale.a"; sourceTree = SOURCE_ROOT; };
+		04834E5A105A4C0C00B7188B /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = "../../build-3264/third_party_packages/installed/lib/libavcodec.a"; sourceTree = SOURCE_ROOT; };
+		04834E5C105A4C2800B7188B /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = "../../build-3264/third_party_packages/installed/lib/libavformat.a"; sourceTree = SOURCE_ROOT; };
+		04834E5E105A4C3400B7188B /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavutil.a; path = "../../build-3264/third_party_packages/installed/lib/libavutil.a"; sourceTree = SOURCE_ROOT; };
+		04834E60105A4C4000B7188B /* libswscale.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswscale.a; path = "../../build-3264/third_party_packages/installed/lib/libswscale.a"; sourceTree = SOURCE_ROOT; };
 		04834E87105A4D6E00B7188B /* ForceFeedback.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ForceFeedback.framework; path = /System/Library/Frameworks/ForceFeedback.framework; sourceTree = "<absolute>"; };
 		04834EA8105A5A0800B7188B /* libltdl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libltdl.a; path = /usr/lib/libltdl.a; sourceTree = "<absolute>"; };
 		049650600BCADE2B002C00DF /* Ambulant.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Ambulant.pch; path = ../../src/player_macosx/Ambulant.pch; sourceTree = SOURCE_ROOT; };
@@ -546,11 +546,11 @@
 		049656010BCAE9E0002C00DF /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
 		049656020BCAE9E0002C00DF /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		049656040BCAE9E0002C00DF /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
-		049656110BCAEA42002C00DF /* libexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libexpat.a; path = "../../third_party_packages/expat-unix/lib/libexpat.a"; sourceTree = SOURCE_ROOT; };
-		049656130BCAEA42002C00DF /* libliveMedia.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libliveMedia.a; path = ../../third_party_packages/live/liveMedia/libliveMedia.a; sourceTree = SOURCE_ROOT; };
-		049656140BCAEA42002C00DF /* libUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libUsageEnvironment.a; path = ../../third_party_packages/live/UsageEnvironment/libUsageEnvironment.a; sourceTree = SOURCE_ROOT; };
-		049656150BCAEA42002C00DF /* libBasicUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBasicUsageEnvironment.a; path = ../../third_party_packages/live/BasicUsageEnvironment/libBasicUsageEnvironment.a; sourceTree = SOURCE_ROOT; };
-		049656160BCAEA42002C00DF /* libgroupsock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgroupsock.a; path = ../../third_party_packages/live/groupsock/libgroupsock.a; sourceTree = SOURCE_ROOT; };
+		049656110BCAEA42002C00DF /* libexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libexpat.a; path = "../../build-3264/third_party_packages/installed/lib//libexpat.a"; sourceTree = SOURCE_ROOT; };
+		049656130BCAEA42002C00DF /* libliveMedia.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libliveMedia.a; path = "../../build-3264/third_party_packages/live/liveMedia/libliveMedia.a"; sourceTree = SOURCE_ROOT; };
+		049656140BCAEA42002C00DF /* libUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libUsageEnvironment.a; path = "../../build-3264/third_party_packages/live/UsageEnvironment/libUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
+		049656150BCAEA42002C00DF /* libBasicUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBasicUsageEnvironment.a; path = "../../build-3264/third_party_packages/live/BasicUsageEnvironment/libBasicUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
+		049656160BCAEA42002C00DF /* libgroupsock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgroupsock.a; path = "../../build-3264/third_party_packages/live/groupsock/libgroupsock.a"; sourceTree = SOURCE_ROOT; };
 		049656180BCAEA42002C00DF /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		049656B10BCAEC13002C00DF /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		04D54B01106B79D000A4E37A /* atsui_text.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = atsui_text.mm; path = cg/atsui_text.mm; sourceTree = "<group>"; };
@@ -1741,7 +1741,7 @@
 				);
 				OTHER_CFLAGS = "";
 				PREBINDING = NO;
-				USER_HEADER_SEARCH_PATHS = "../../include ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
+				USER_HEADER_SEARCH_PATHS = "../../include ../../build-3264/third_party_packages/live/liveMedia/include ../../build-3264/third_party_packages/live/BasicUsageEnvironment/include ../../build-3264/third_party_packages/live/groupsock/include ../../build-3264/third_party_packages/live/UsageEnvironment/include";
 			};
 			name = "Debug-64";
 		};
@@ -1776,17 +1776,13 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\"",
-					"\"$(SRCROOT)/../../third_party_packages/live/BasicUsageEnvironment\"",
-					"\"$(SRCROOT)/../../third_party_packages/live/groupsock\"",
-					"\"$(SRCROOT)/../../third_party_packages/live/liveMedia\"",
-					"\"$(SRCROOT)/../../third_party_packages/live/UsageEnvironment\"",
-					"\"$(SRCROOT)/../../../../packages/ffmpeg-svn/libswscale\"",
-					"\"$(SRCROOT)/../../../../packages/ffmpeg-svn/libavutil\"",
-					"\"$(SRCROOT)/../../../../packages/ffmpeg-svn/libavformat\"",
-					"\"$(SRCROOT)/../../../../packages/ffmpeg-svn/libavcodec\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/BasicUsageEnvironment\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/groupsock\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\"",
 				);
 				PRODUCT_NAME = "Ambulant-mac";
-				USER_HEADER_SEARCH_PATHS = "../../include ../../build-3264/third_party_packages/installed/include/SDL ../../build-3264/third_party_packages/installed/include ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
+				USER_HEADER_SEARCH_PATHS = "../../include ../../build-3264/third_party_packages/installed/include/SDL ../../build-3264/third_party_packages/installed/include ../../build-3264/third_party_packages/live/liveMedia/include ../../build-3264/third_party_packages/live/BasicUsageEnvironment/include ../../build-3264/third_party_packages/live/groupsock/include ../../build-3264/third_party_packages/live/UsageEnvironment/include";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -1815,7 +1811,7 @@
 					"\"$(SRCROOT)/../../third_party_packages/live/UsageEnvironment\"",
 				);
 				PREBINDING = NO;
-				USER_HEADER_SEARCH_PATHS = "../../include ../../build-3264/third_party_packages/installed/include/SDL ../../build-3264/third_party_packages/installed/include ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
+				USER_HEADER_SEARCH_PATHS = "../../include ../../build-3264/third_party_packages/installed/include/SDL ../../build-3264/third_party_packages/installed/include ../../build-3264/third_party_packages/live/liveMedia/include ../../build-3264/third_party_packages/live/BasicUsageEnvironment/include ../../build-3264/third_party_packages/live/groupsock/include ../../build-3264/third_party_packages/live/UsageEnvironment/include";
 			};
 			name = "Debug-llvm";
 		};
@@ -1846,14 +1842,10 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\"",
-					"\"$(SRCROOT)/../../third_party_packages/live/BasicUsageEnvironment\"",
-					"\"$(SRCROOT)/../../third_party_packages/live/groupsock\"",
-					"\"$(SRCROOT)/../../third_party_packages/live/liveMedia\"",
-					"\"$(SRCROOT)/../../third_party_packages/live/UsageEnvironment\"",
-					"\"$(SRCROOT)/../../../../packages/ffmpeg-svn/libswscale\"",
-					"\"$(SRCROOT)/../../../../packages/ffmpeg-svn/libavutil\"",
-					"\"$(SRCROOT)/../../../../packages/ffmpeg-svn/libavformat\"",
-					"\"$(SRCROOT)/../../../../packages/ffmpeg-svn/libavcodec\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/BasicUsageEnvironment\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/groupsock\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\"",
 				);
 				PRODUCT_NAME = "Ambulant-mac";
 				WRAPPER_EXTENSION = app;
@@ -1894,14 +1886,14 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\"",
-					"\"$(SRCROOT)/../../third_party_packages/live/BasicUsageEnvironment\"",
-					"\"$(SRCROOT)/../../third_party_packages/live/groupsock\"",
-					"\"$(SRCROOT)/../../third_party_packages/live/liveMedia\"",
-					"\"$(SRCROOT)/../../third_party_packages/live/UsageEnvironment\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/BasicUsageEnvironment\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/groupsock\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\"",
 				);
 				OTHER_CFLAGS = "";
 				PREBINDING = NO;
-				USER_HEADER_SEARCH_PATHS = "../../include ../../build-3264/third_party_packages/installed/include/SDL ../../build-3264/third_party_packages/installed/include ../../third_party_packages/live/liveMedia/include ../../third_party_packages/live/BasicUsageEnvironment/include ../../third_party_packages/live/groupsock/include ../../third_party_packages/live/UsageEnvironment/include";
+				USER_HEADER_SEARCH_PATHS = "../../include ../../build-3264/third_party_packages/installed/include/SDL ../../build-3264/third_party_packages/installed/include ../../build-3264/third_party_packages/live/liveMedia/include ../../build-3264/third_party_packages/live/BasicUsageEnvironment/include ../../build-3264/third_party_packages/live/groupsock/include ../../build-3264/third_party_packages/live/UsageEnvironment/include";
 			};
 			name = "Debug-64-CG";
 		};
@@ -1937,14 +1929,10 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\"",
-					"\"$(SRCROOT)/../../third_party_packages/live/BasicUsageEnvironment\"",
-					"\"$(SRCROOT)/../../third_party_packages/live/groupsock\"",
-					"\"$(SRCROOT)/../../third_party_packages/live/liveMedia\"",
-					"\"$(SRCROOT)/../../third_party_packages/live/UsageEnvironment\"",
-					"\"$(SRCROOT)/../../../../packages/ffmpeg-svn/libswscale\"",
-					"\"$(SRCROOT)/../../../../packages/ffmpeg-svn/libavutil\"",
-					"\"$(SRCROOT)/../../../../packages/ffmpeg-svn/libavformat\"",
-					"\"$(SRCROOT)/../../../../packages/ffmpeg-svn/libavcodec\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/BasicUsageEnvironment\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/groupsock\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\"",
 				);
 				PRODUCT_NAME = "Ambulant-mac";
 				WRAPPER_EXTENSION = app;
@@ -1987,10 +1975,6 @@
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/groupsock\"",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\"",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\"",
-					"\"$(SRCROOT)/../../../../packages/ffmpeg-svn/libswscale\"",
-					"\"$(SRCROOT)/../../../../packages/ffmpeg-svn/libavutil\"",
-					"\"$(SRCROOT)/../../../../packages/ffmpeg-svn/libavformat\"",
-					"\"$(SRCROOT)/../../../../packages/ffmpeg-svn/libavcodec\"",
 				);
 				PRODUCT_NAME = "Ambulant-mac";
 				USER_HEADER_SEARCH_PATHS = "../../include ../../build-3264/third_party_packages/installed/include ../../build-3264/third_party_packages/installed/include/SDL ../../build-3264/third_party_packages/live/liveMedia/include ../../build-3264/third_party_packages/live/BasicUsageEnvironment/include ../../build-3264/third_party_packages/live/groupsock/include ../../build-3264/third_party_packages/live/UsageEnvironment/include";
@@ -2026,14 +2010,10 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\"",
-					"\"$(SRCROOT)/../../third_party_packages/live/BasicUsageEnvironment\"",
-					"\"$(SRCROOT)/../../third_party_packages/live/groupsock\"",
-					"\"$(SRCROOT)/../../third_party_packages/live/liveMedia\"",
-					"\"$(SRCROOT)/../../third_party_packages/live/UsageEnvironment\"",
-					"\"$(SRCROOT)/../../../../packages/ffmpeg-svn/libswscale\"",
-					"\"$(SRCROOT)/../../../../packages/ffmpeg-svn/libavutil\"",
-					"\"$(SRCROOT)/../../../../packages/ffmpeg-svn/libavformat\"",
-					"\"$(SRCROOT)/../../../../packages/ffmpeg-svn/libavcodec\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/BasicUsageEnvironment\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/groupsock\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\"",
 				);
 				PRODUCT_NAME = "Ambulant-mac";
 				WRAPPER_EXTENSION = app;
