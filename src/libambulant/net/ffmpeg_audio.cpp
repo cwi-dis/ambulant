@@ -744,6 +744,7 @@ ffmpeg_decoder_datasource::get_elapsed()
 {
     m_lock.enter();
     timestamp_t buffer_duration = 1000000LL * (m_buffer.size() * 8) / (m_fmt.samplerate* m_fmt.channels * m_fmt.bits);
+    AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::get_elapsed: m_elapsed %ld, buffer %ld", m_elapsed, buffer_duration);
     timestamp_t  elapsed =  m_elapsed - buffer_duration;
     m_lock.leave();
     return elapsed;
@@ -1125,7 +1126,8 @@ ffmpeg_resample_datasource::get_elapsed()
     m_lock.enter();
     timestamp_t src_elapsed = m_src->get_elapsed();
     int nbytes = m_buffer.size();
-    timestamp_t buffer_elapsed = 1000000L * nbytes / (m_out_fmt.channels * m_out_fmt.samplerate);
+    timestamp_t buffer_elapsed = (1000000LL * nbytes * 8) / (m_out_fmt.channels * m_out_fmt.samplerate * m_out_fmt.bits);
+    AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::get_elapsed: src_elapsed %ld, buffer %ld", src_elapsed, buffer_elapsed);
     timestamp_t rv = src_elapsed - buffer_elapsed;
     m_lock.leave();
     return rv;
