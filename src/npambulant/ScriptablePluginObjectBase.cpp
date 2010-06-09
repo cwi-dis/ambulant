@@ -1,3 +1,4 @@
+/*AMBULANT_FOREIGN_INDENT_RULES*/
 #ifdef	XP_WIN32
 #include <cstddef>		   	 // Needed for ptrdiff_t. Is used in GeckoSDK 1.9,
 #define ptrdiff_t long int // but not defined in Visual C++ 7.1.

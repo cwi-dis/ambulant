@@ -67,8 +67,7 @@ using namespace gui::qt;
 
 
 void
-open_web_browser(const std::string &href)
-{
+open_web_browser(const std::string &href) {
 	// The only standard I could find (sigh): use the $BROWSER variable.
 	// This code is a big hack, because we assume it'll be replaced soon. haha! :-)
 	char *browserlist = getenv("BROWSER");
@@ -90,15 +89,15 @@ open_web_browser(const std::string &href)
 qt_mainloop::qt_mainloop(qt_gui* gui, int mbheight)
 :	m_gui(gui)
 {
- 	m_logger = lib::logger::get_logger();
- 	set_embedder(this);
+	m_logger = lib::logger::get_logger();
+	set_embedder(this);
     smil2::test_attrs::set_default_tests_attrs();
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("Standalone"), true);
 	common::window_factory *wf = create_qt_window_factory(m_gui, mbheight, this);
 	assert(wf);
- 	set_window_factory(wf);
- 	init_factories();
- 	init_plugins();
+	set_window_factory(wf);
+	init_factories();
+	init_plugins();
 	
 	const char *filename = m_gui->filename();
 	net::url url = net::url::from_filename(filename);
@@ -109,8 +108,7 @@ qt_mainloop::qt_mainloop(qt_gui* gui, int mbheight)
 	m_player = create_player(filename);
 }
 
-qt_mainloop::~qt_mainloop() 
-{
+qt_mainloop::~qt_mainloop() {
 	if (m_player) {
 	    m_player->terminate();
 	    m_player->release();
@@ -133,8 +131,7 @@ qt_mainloop::create_player(const char* filename) {
 }
 
 void
-qt_mainloop::init_playable_factory()
-{
+qt_mainloop::init_playable_factory() {
 	common::global_playable_factory *pf = common::get_global_playable_factory();
 	set_playable_factory(pf);
 
@@ -155,8 +152,7 @@ qt_mainloop::init_playable_factory()
 }
 
 void
-qt_mainloop::init_datasource_factory()
-{
+qt_mainloop::init_datasource_factory() {
 	net::datasource_factory *df = new net::datasource_factory();
 	set_datasource_factory(df);
 #ifndef NONE_PLAYER
@@ -191,8 +187,7 @@ qt_mainloop::init_datasource_factory()
 }
 
 void
-qt_mainloop::init_parser_factory()
-{
+qt_mainloop::init_parser_factory() {
 	lib::global_parser_factory *pf = lib::global_parser_factory::get_parser_factory();
 	set_parser_factory(pf);
 #ifdef WITH_XERCES_BUILTIN
@@ -202,22 +197,19 @@ qt_mainloop::init_parser_factory()
 }
 
 void
-qt_mainloop::show_file(const net::url &url)
-{
+qt_mainloop::show_file(const net::url &url) {
 	open_web_browser(url.get_url());
 }
 
 void
-qt_mainloop::done(common::player *p)
-{
+qt_mainloop::done(common::player *p) {
 	AM_DBG m_logger->debug("qt_mainloop: implementing: done()");
 	m_gui->player_done();
 }
 
+// return true when the last player is done
 bool
-qt_mainloop::player_done()
-  // return true when the last player is done
-{
+qt_mainloop::player_done() {
 	AM_DBG m_logger->debug("qt_mainloop: implementing: player_done");
 //TBD	m_timer->pause();
 //TBD	m_update_event = 0;
@@ -238,17 +230,15 @@ qt_mainloop::player_done()
 }
 
 void
-qt_mainloop::close(common::player *p)
-{
+qt_mainloop::close(common::player *p) {
 	AM_DBG m_logger->trace("qt_mainloop: implementing: close document");
 	stop();
 }
 
 void
-qt_mainloop::open(net::url newdoc, bool start, common::player *old)
-{
+qt_mainloop::open(net::url newdoc, bool start, common::player *old) {
 	AM_DBG m_logger->trace("qt_mainloop::open \"%s\"",newdoc.get_url().c_str());
- 	// Parse the provided URL. 
+	// Parse the provided URL. 
 	m_doc = create_document(newdoc);
 	if(!m_doc) {
 		m_logger->error(gettext("%s: Cannot build DOM tree"), 
@@ -265,8 +255,7 @@ qt_mainloop::open(net::url newdoc, bool start, common::player *old)
 }
 
 void
-qt_mainloop::player_start(QString document_name, bool start, bool old)
-{
+qt_mainloop::player_start(QString document_name, bool start, bool old) {
 	AM_DBG m_logger->debug("player_start(%s,%d,%d)",document_name.ascii(),start,old);
 	if (old) {
 		m_player->stop();

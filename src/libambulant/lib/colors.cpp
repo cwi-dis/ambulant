@@ -86,10 +86,11 @@ struct colors_init {
 
 // compute chroma_low, chroma_high
 void 
-compute_chroma_range(lib::color_t chromakey,
-		     lib::color_t chromakeytolerance,
-		     lib::color_t* p_chroma_low,
-		     lib::color_t* p_chroma_high)
+compute_chroma_range(
+	lib::color_t chromakey,
+	lib::color_t chromakeytolerance,
+	lib::color_t* p_chroma_low,
+	lib::color_t* p_chroma_high)
 {
 	lib::color_t chroma_low, chroma_high;
 	if ((int)chromakeytolerance == 0) {

@@ -214,9 +214,15 @@ CDocument* CAmbulantPlayerApp::OpenDocumentFile(LPCTSTR lpszFileName)
 void CAmbulantPlayerApp::OnFileOpen()
 {
 	CString newName;
-	if(!DoPromptFileName(newName, AFX_IDS_OPENFILE,
-	  OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, TRUE, NULL))
+	if(!DoPromptFileName(
+		newName,
+		AFX_IDS_OPENFILE,
+		OFN_HIDEREADONLY | OFN_FILEMUSTEXIST,
+		TRUE,
+		NULL))
+	{
 		return; // open cancelled
+	}
 	MmDoc *mmdoc = (MmDoc *) OpenDocumentFile(newName);
 }
 

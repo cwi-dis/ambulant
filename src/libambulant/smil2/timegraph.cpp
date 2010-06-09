@@ -301,7 +301,7 @@ void timegraph::add_begin_sync_rules(time_node *tn) {
 		if((svs.type == sv_offset || svs.type == sv_indefinite)  
 			//XXXX Fix for #2950428 (negative begin time). 
 //				&& (!parent->is_seq() || (parent->is_seq() && svs.offset>=0)
-		   ) {
+		) {
 			long offset = svs.offset <= 0 ? 0 : svs.offset;
 			sync_rule *sr = create_impl_syncbase_rule(tn, offset);
 			tn->add_begin_rule(sr);

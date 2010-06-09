@@ -281,14 +281,14 @@ uri2string(const std::string uri) {
 	size_t pos;
 
 	while ((pos = s.substr().find("%")) != std::string::npos 
-	       && (pos < s.size()-2)) {
+			&& (pos < s.size()-2)) {
 		// pick next 2 characters
 		std::string hex_chars = s.substr(pos+1,2);
 
 		rv += s.substr(0,pos);
-		if (is_hex(hex_chars))
+		if (is_hex(hex_chars)) {
 			rv += hex2uint(hex_chars);
-		else  {
+		} else  {
 			rv += "%"; // '%' not followed by 2 hex digits;
 			pos -= 2;  // continue next char after '%'
 		}
@@ -314,8 +314,8 @@ string2uri(const std::string str) {
 				if (is_hex(ss)) {
 					unsigned int hc = hex2uint(ss);
 					if (is_unreserved(hc)) {
-					// convert unreserved %xx to char
-				 	        rv += hc;
+						// convert unreserved %xx to char
+						rv += hc;
 						i +=2 ;
 						continue;
 					}
@@ -395,7 +395,7 @@ void net::url::init_statics() {
 	s_handlers.push_back(pair("n:n",&url::set_from_windows_path));
 	s_handlers.push_back(pair("n:/n",&url::set_from_windows_path));
 	*/
- }
+}
  
 // static
 AMBULANTAPI net::url 
@@ -800,8 +800,7 @@ net::url::get_local_datafile() const
 				break;
 			}
 		}
-	} else if (is_local_file() 
-		   && access (get_file().c_str(), 0) >= 0) {
+	} else if (is_local_file() && access (get_file().c_str(), 0) >= 0) {
 		result = get_file().c_str();
 	}
 	

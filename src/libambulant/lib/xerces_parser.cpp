@@ -65,8 +65,9 @@ lib::xerces_factory::get_parser_name()
 
 
 
-xerces_sax_parser::xerces_sax_parser(sax_content_handler*content_handler,
-				     sax_error_handler *error_handler) 
+xerces_sax_parser::xerces_sax_parser(
+	sax_content_handler*content_handler,
+	sax_error_handler *error_handler) 
 :	m_saxparser(0),
 	m_logger(0),
 	m_content_handler(content_handler),

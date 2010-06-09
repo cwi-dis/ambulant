@@ -74,8 +74,15 @@ int stderr_ostream::write(const char *cstr)
 }
 #endif//!NDEBUG
 
-npambulant::npambulant(NPMIMEType mimetype, NPP pNPInstance, PRUint16 mode,
-		       int argc, char* argn[], char* argv[], NPSavedData* data) :
+npambulant::npambulant(
+	NPMIMEType mimetype,
+	NPP pNPInstance, 
+	PRUint16 mode,
+	int argc, 
+	char* argn[], 
+	char* argv[], 
+	NPSavedData* data
+) :
 	m_mimetype(mimetype),
 	m_pNPInstance(pNPInstance ),
 	m_mode(mode),

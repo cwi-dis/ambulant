@@ -49,7 +49,7 @@ class CAmCommandLineInfo : public CCommandLineInfo {
 			m_nShellCommand = m_strFileName.IsEmpty()?FileNew:FileOpen;
 		}
 	}
-   bool m_autostart;
+	bool m_autostart;
 };
 
 // CAmbulantPlayerApp:

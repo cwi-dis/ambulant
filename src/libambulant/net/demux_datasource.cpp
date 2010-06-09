@@ -52,8 +52,8 @@ using namespace net;
 
 demux_audio_datasource *
 demux_audio_datasource::new_demux_audio_datasource(
-  		const net::url& url, 
-		abstract_demux *thread)
+	const net::url& url, 
+	abstract_demux *thread)
 {
 	
 	int stream_index;
@@ -106,7 +106,7 @@ demux_audio_datasource::stop()
 		abstract_demux *tmpthread = m_thread;
 		m_thread = NULL;
 		m_lock.leave();
-	 	tmpthread->remove_datasink(m_stream_index);
+		tmpthread->remove_datasink(m_stream_index);
 		m_lock.enter();
 	}
 	m_thread = NULL;

@@ -78,8 +78,8 @@ BOOL CSelectDlg::OnInitDialog()
 		OnSelchangeList1();
 	}
 	pList->SetFocus();
-	return FALSE;  // return TRUE unless you set the focus to a control
-	              // EXCEPTION: OCX Property Pages should return FALSE
+	return FALSE;	// return TRUE unless you set the focus to a control
+					// EXCEPTION: OCX Property Pages should return FALSE
 }
 
 

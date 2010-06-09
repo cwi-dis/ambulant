@@ -141,8 +141,10 @@ lib::number_p::parse(const_iterator& it, const const_iterator& end) {
 	int_p f;
 	d = f.parse(tit, end);
 	if(d == -1) {
-		 if(needs_fraction) return -1;
-		 else f.m_result = 0;
+        if(needs_fraction)
+            return -1;
+        else
+            f.m_result = 0;
 	}
 	sd += (d == -1)?0:d;
 	m_result = sign*(i.m_result + double(f.m_result)/::pow(10.0, int(d)));

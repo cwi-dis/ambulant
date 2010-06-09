@@ -164,7 +164,7 @@ double gui::dx::basicvideo_player::get_position() {
 bool gui::dx::basicvideo_player::open(const std::string& url, HWND parent) {
 	m_url = url;
 	HRESULT hr = CoCreateInstance(CLSID_FilterGraph,0,CLSCTX_INPROC_SERVER,
-			 IID_IGraphBuilder,(void**)&m_graph_builder);
+		IID_IGraphBuilder,(void**)&m_graph_builder);
 	if(FAILED(hr)) {
 		win_report_error("CoCreateInstance(CLSID_FilterGraph, ...)", hr);	
 		return false;

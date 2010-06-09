@@ -88,11 +88,10 @@ find_datafile(const char **locations)
 	return NULL;
 }
 
-qt_gui::qt_gui(const char* title,
-	       const char* initfile)
- :
+qt_gui::qt_gui(const char* title, const char* initfile)
+:
 #ifdef	WITH_QT_HTML_WIDGET
-  KMainWindow(0L, title),
+    KMainWindow(0L, title),
 #else /*WITH_QT_HTML_WIDGET*/
 	QWidget(),  
 #endif/*WITH_QT_HTML_WIDGET*/
@@ -213,8 +212,7 @@ qt_gui::slot_welcome() {
 			slot_play();
 		}
 	} else {
-		QMessageBox::information(this, m_programfilename, 
-			gettext("Cannot find Welcome.smil document"));
+		QMessageBox::information(this, m_programfilename, gettext("Cannot find Welcome.smil document"));
 	}
 }
 
@@ -225,8 +223,7 @@ qt_gui::slot_help() {
 	if (help_doc) {
 		open_web_browser(help_doc);
 	} else {
-		QMessageBox::information(this, m_programfilename, 
-			gettext("Cannot find Ambulant Player Help"));
+		QMessageBox::information(this, m_programfilename, gettext("Cannot find Ambulant Player Help"));
 	}
 }
 
@@ -250,7 +247,8 @@ checkFilename(QString filename, int mode) {
 void
 qt_gui::fileError(QString smilfilename) {
  	char buf[1024];
-	sprintf(buf, gettext("%s: Cannot open file: %s"),
+	sprintf(buf,
+	    gettext("%s: Cannot open file: %s"),
 		(const char*) smilfilename, strerror(errno));
 	QMessageBox::information(this, m_programfilename, buf);
 }
@@ -281,12 +279,12 @@ void
 qt_gui::slot_open() {
 	QString smilfilename =
 		QFileDialog::getOpenFileName(
-				 ".", // Initial dir
-				 gettext("SMIL files (*.smil *.smi);; All files (*.smil *.smi *.grins);; Any file (*)"), // file types
-				 this,
-				 gettext("open file dialog"),
-				 gettext("Double Click a file to open")
-				 );
+            ".", // Initial dir
+            gettext("SMIL files (*.smil *.smi);; All files (*.smil *.smi *.grins);; Any file (*)"), // file types
+            this,
+            gettext("open file dialog"),
+            gettext("Double Click a file to open")
+            );
 	if (openSMILfile(smilfilename, IO_ReadOnly))
 		slot_play();
 }

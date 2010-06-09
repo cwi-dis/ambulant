@@ -38,8 +38,8 @@ class gtk_settings;
 
 class gtk_gui : public GtkWidget{
 
-   public:
-  	gtk_gui(const char* title, const char* initfile);
+  public:
+	gtk_gui(const char* title, const char* initfile);
 	~gtk_gui();
 
 	const char* filename() { 
@@ -63,7 +63,7 @@ class gtk_gui : public GtkWidget{
 
 /*TMP*/	gtk_mainloop* m_mainloop;
 
-   private:
+  private:
 	const char*  m_programfilename;
 	const char*  m_smilfilename;
 	gtk_settings* m_settings;
@@ -90,7 +90,7 @@ class gtk_gui : public GtkWidget{
 #ifndef GTK_NO_FILEDIALOG	/* Assume plain Qt */
 #define DocLnk void*
 #endif/*GTK_NO_FILEDIALOG*/
-    public:
+  public:
 	void do_file_selected();
 	void do_url_selected();
 	void do_settings_selected();
@@ -101,7 +101,7 @@ class gtk_gui : public GtkWidget{
 	void do_welcome();
 	void do_help();
 	void do_load_settings();
-  	void do_logger_window();
+	void do_logger_window();
 	void do_open();
 	void do_open_url();
 	void do_pause();

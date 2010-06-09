@@ -34,10 +34,10 @@
 using namespace ambulant;
 
 gui::dx::dx_window::dx_window(const std::string& name, 
-  	lib::size bounds,
-  	region *rgn,
-  	common::window_factory *wf,
-  	viewport* v)
+	lib::size bounds,
+	region *rgn,
+	common::window_factory *wf,
+	viewport* v)
 :	common::gui_window(rgn),
 	m_rgn(rgn),
 	m_name(name),

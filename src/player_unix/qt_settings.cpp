@@ -66,8 +66,7 @@ static const char* val_schemes[] = {"never", "always", "auto", 0};
 QWidget* 
 qt_settings::settings_select() {
 //printf("qt_settings::settings_select() m_parser_val=%d\n", m_parser_val);
-  	unix_preferences* m_preferences = (unix_preferences*)
-		common::preferences::get_preferences();
+	unix_preferences* m_preferences = (unix_preferences*)common::preferences::get_preferences();
 	m_settings_vg = new QVGroupBox(gettext("Preferences"), 0);
 	m_settings_vg->move(160,120);
 	
@@ -90,11 +89,9 @@ qt_settings::settings_select() {
 	m_parser_co->setCurrentItem(id_nr);
 	
 	
-	m_xerces_vg	= new QVGroupBox(gettext("Xerces options:"),
-					 m_settings_vg);
+	m_xerces_vg	= new QVGroupBox(gettext("Xerces options:"), m_settings_vg);
 	
-	m_namespace_cb	= new QCheckBox(gettext("Enable XML namespace support"),
-					m_xerces_vg);
+	m_namespace_cb	= new QCheckBox(gettext("Enable XML namespace support"), m_xerces_vg);
 	m_namespace_cb->setChecked(m_preferences->m_do_namespaces);
 	// do validation or not
 	m_validation_hb = new QHBox(m_xerces_vg);
@@ -108,16 +105,13 @@ qt_settings::settings_select() {
 
 	m_validation_vb = new QVBox(m_xerces_vg);
 	m_declaration_bg = new QHButtonGroup(m_validation_vb);
-	m_schema_rb	= new QRadioButton(gettext("Using Schema"),
-					   m_declaration_bg);
+	m_schema_rb	= new QRadioButton(gettext("Using Schema"), m_declaration_bg);
 	m_schema_rb->setChecked(m_preferences->m_do_schema);
-	m_dtd_rb 	= new QRadioButton(gettext("Using DTD"),
-					   m_declaration_bg);
+	m_dtd_rb 	= new QRadioButton(gettext("Using DTD"), m_declaration_bg);
 	m_dtd_rb->setChecked( ! m_preferences->m_do_schema);
 
 	m_full_check_cb = 
-		new QCheckBox(gettext("Validation Schema full checking"),
-			      m_validation_vb);
+		new QCheckBox(gettext("Validation Schema full checking"), m_validation_vb);
 	bool full_chk = m_preferences->m_validation_schema_full_checking;
 	m_full_check_cb->setChecked(full_chk);
 
@@ -156,22 +150,17 @@ qt_settings::settings_ok() {
 	m_preferences->m_parser_id = parsers[m_parser_co->currentItem()];
 //printf("qt_settings::settings_ok(): m_loglevel_val=%d, m_parser_val=%d, m_settings_vg=0x%x\n", m_loglevel_val, m_parser_val, m_settings_vg);
 	if (m_namespace_cb)
-		 m_preferences->m_do_namespaces	=
-		 	m_namespace_cb->isChecked();
+		m_preferences->m_do_namespaces	= m_namespace_cb->isChecked();
 	
 	m_preferences->m_validation_scheme = val_schemes[m_validation_co->currentItem()];
 
-	//	if (m_validation_cb)
-//		 m_preferences->m_validation_scheme =
-//		 	m_validation_cb->isChecked();
 	if (m_full_check_cb)
-		m_preferences->m_validation_schema_full_checking =
-			m_full_check_cb->isChecked();
+		m_preferences->m_validation_schema_full_checking = m_full_check_cb->isChecked();
 	if (m_schema_rb)
-		 m_preferences->m_do_schema = m_schema_rb->isChecked();
+		m_preferences->m_do_schema = m_schema_rb->isChecked();
 	
 	if (m_use_plugin_cb)
-		 m_preferences->m_use_plugins = m_use_plugin_cb->isChecked();
+		m_preferences->m_use_plugins = m_use_plugin_cb->isChecked();
 	
 	m_preferences->m_plugin_dir = std::string((const char*) m_plugin_dir_le->text());
 	
@@ -182,10 +171,9 @@ int
 qt_settings::index_in_string_array(const char* s, const char* sa[]) {
 	int i = 0;
 	for (; sa[i] != NULL; i++) {
-	  if (strcmp(s,sa[i]) == 0)
-	    break;
+		if (strcmp(s,sa[i]) == 0)
+			break;
 	}
-	if (sa[i] == NULL)
-	  return -1;
+	if (sa[i] == NULL) return -1;
 	else return i;
 }

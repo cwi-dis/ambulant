@@ -41,12 +41,16 @@ inline guchar _blend_pixel (uchar c1, uchar c2, uchar weight)
 		return (c1==c2)?c1:(c1 + weight*(c2-c1)/256);
 	}
 void
-gdk_pixbuf_blend (GdkPixbuf* dst, const lib::rect dst_rc, 
-		  GdkPixbuf* src, const lib::rect src_rc,
-		  double opacity_in, double opacity_out,
-		  const lib::color_t chroma_low,
-		  const lib::color_t chroma_high,
-		  const lib::color_t mask_color)
+gdk_pixbuf_blend (
+	GdkPixbuf* dst, 
+	const lib::rect dst_rc, 
+	GdkPixbuf* src, 
+	const lib::rect src_rc,
+	double opacity_in, 
+	double opacity_out,
+	const lib::color_t chroma_low,
+	const lib::color_t chroma_high,
+	const lib::color_t mask_color)
 {
   //TBD: dst(L,T,W,H) != src(L,T,W,H), alpha channel in dst/src
 	assert(dst != NULL && src != NULL);

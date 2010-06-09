@@ -60,9 +60,9 @@ private:
 	bool		m_namespace_val;
 	
 	// Enable XML validation
- 	GtkHBox*	m_validation_hb;// Enable XML validation:
- 	GtkLabel*	m_validation_lb;// Enable XML validation:
- 	GtkComboBox*	m_validation_co;// Enable XML validation:
+	GtkHBox*	m_validation_hb;// Enable XML validation:
+	GtkLabel*	m_validation_lb;// Enable XML validation:
+	GtkComboBox*	m_validation_co;// Enable XML validation:
 		
 	// Using Schema / Using DTD
 	GtkHButtonBox*  m_schema_dtd_hb; // Placeholder of the radio buttons

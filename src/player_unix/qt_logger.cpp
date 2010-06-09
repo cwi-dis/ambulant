@@ -30,7 +30,7 @@
 using namespace ambulant;
 
 qt_logger_ostream::qt_logger_ostream()
-  :		m_qstring(NULL)
+:	m_qstring(NULL)
 {
 }
 
@@ -41,22 +41,19 @@ qt_logger_ostream::is_open() const {
 }
 
 int
-qt_logger_ostream::write(const unsigned char *buffer, int nbytes)
-{
+qt_logger_ostream::write(const unsigned char *buffer, int nbytes) {
 	std::string id("qt_logger_ostream::write(const unsigned char *buffer, int nbytes)");
 	write(id+" not implemented for Qt");
 }
 
 int
-qt_logger_ostream::write(const char *cstr)
-{
+qt_logger_ostream::write(const char *cstr) {
 	m_qstring += cstr;
 	return 1;
 }
 
 int
-qt_logger_ostream::write(std::string s)
-{
+qt_logger_ostream::write(std::string s) {
 	return  write(s.data());
 }
 
@@ -76,12 +73,11 @@ qt_logger_ostream::flush() {
 qt_logger* qt_logger::s_qt_logger = 0;
 
 qt_logger::qt_logger() 
-  : 	m_log_FILE(NULL),
+:	m_log_FILE(NULL),
 	m_logger_window( NULL),
 	m_gui(NULL) 
 {
-	common::preferences* prefs = 
-	  common::preferences::get_preferences();
+	common::preferences* prefs = common::preferences::get_preferences();
 	lib::logger* logger = lib::logger::get_logger();
 	if (prefs != NULL && prefs->m_log_file != "") {
 		if (prefs->m_log_file == "-")
@@ -89,8 +85,7 @@ qt_logger::qt_logger()
 		else
 			m_log_FILE = fopen(prefs->m_log_file.c_str(), "w");
 		if (m_log_FILE == NULL) {
-			logger->warn(gettext("Cannot open logfile: %s"), 
-				     prefs->m_log_file.c_str());
+			logger->warn(gettext("Cannot open logfile: %s"), prefs->m_log_file.c_str());
 		} else setbuf(m_log_FILE, NULL); // no buffering
 	}
 	// Connect logger to our message displayer and output processor
@@ -133,7 +128,7 @@ qt_logger::set_qt_logger_gui(qt_gui* gui) {
 
 void
 qt_logger::log(QString logstring) {
- 	if (m_log_FILE != NULL) {
+	if (m_log_FILE != NULL) {
 		fprintf(m_log_FILE, "%s", (const char*)logstring);
 	}
 	s_qt_logger->m_gui->internal_message(-1, logstring);
@@ -145,20 +140,18 @@ qt_logger::show_message(int level, const char *msg) {
 }
 
 QTextEdit*
-qt_logger::get_logger_window()
-{
+qt_logger::get_logger_window() {
 	return m_logger_window;
 }
 
 qt_message_event::qt_message_event(int level, const char *message)
-  : _message(strdup(message)),
+:	_message(strdup(message)),
     QCustomEvent((QEvent::Type)level)
 {
 	setData(_message);
 }
 
-qt_message_event::~qt_message_event()
-{
+qt_message_event::~qt_message_event() {
 	free(_message);
 
 }

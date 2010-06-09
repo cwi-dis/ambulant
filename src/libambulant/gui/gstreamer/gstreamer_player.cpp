@@ -82,7 +82,7 @@ gstreamer_player_finalize() {
 }
 
 gstreamer_player::gstreamer_player(const char* uri, gstreamer_audio_renderer* rend)
-  : 	m_gst_player(NULL),
+:	m_gst_player(NULL),
 	m_gst_mainloop(NULL),
 	m_audio_renderer(NULL),
 	m_uri(NULL)
@@ -117,10 +117,10 @@ gstreamer_player::run() {
 	m_gst_mainloop = g_main_loop_new (NULL, FALSE);
 	AM_DBG g_print ("%s: %s=0x%x, %s=0x%x\n", id, "starting, m_gst_player", (void*) m_gst_player,"m_gst_mainloop=", (void*) m_gst_mainloop);
 #ifdef  WITH_NOKIA770
-	/* On Nokia770 we use a dedicated gstreamer module "dspmp3sink" which most
-	   efficiently playes mp3 clips using the DSP signal co-processor
-	   It only plays one clip at any time.
-	*/
+	// On Nokia770 we use a dedicated gstreamer module "dspmp3sink" which most
+	// efficiently playes mp3 clips using the DSP signal co-processor
+	// It only plays one clip at any time.
+	//
 	if (pthread_mutex_lock(&s_main_nokia770_mutex) < 0) {
 		lib::logger::get_logger()->fatal("gst_mp3_player:: pthread_mutex_lock(s_main_nokia770_mutex) failed: %s", strerror(errno));
 		abort();
@@ -133,19 +133,18 @@ gstreamer_player::run() {
 	if ( !( m_gst_player && source && sink)) {
 		g_print ("%s:", "gst_mp3_player");
 		if ( ! m_gst_player) g_print (" %s() failed", "get_pipeline_new");
-		if ( ! source) g_print (" %s=%s(%s) failed", "source", 
-					  "gst_element_factory_make", "gnomevfssrc");
+		if ( ! source) g_print (" %s=%s(%s) failed", "source", "gst_element_factory_make", "gnomevfssrc");
 		if ( ! sink) g_print (" %s=%s(%s) failed", "sink", "gst_element_factory_make", "dspmp3sink");
 		g_print ("\n");
 		abort();
 	}
- 	AM_DBG g_print ("%s: %s\n", id, "set the source audio file");
+	AM_DBG g_print ("%s: %s\n", id, "set the source audio file");
 	g_object_set (G_OBJECT(source), "location", m_uri, NULL);
 	/* put all elements  to the main pipeline */
 	gst_bin_add_many (GST_BIN(m_gst_player), source, sink, NULL);
 	/* link the elements */
 	if ( ! gst_element_link (source, sink)) {
-	  g_print ("gst_element_link (source=%s, sink%s) failed\n", (void*) source, (void*) sink);
+		g_print ("gst_element_link (source=%s, sink%s) failed\n", (void*) source, (void*) sink);
 		abort();
 	}
 #else //WITH_NOKIA770
@@ -160,7 +159,7 @@ gstreamer_player::run() {
 		g_print ("\n");
 		abort();
 	}
- 	AM_DBG g_print ("%s: %s\n", id, "set the source audio file");
+	AM_DBG g_print ("%s: %s\n", id, "set the source audio file");
 	g_object_set (G_OBJECT(source), "uri", m_uri, NULL);
 	/* put all elements  to the main pipeline */
 	gst_bin_add_many (GST_BIN(m_gst_player), source, sink, NULL);
@@ -169,13 +168,12 @@ gstreamer_player::run() {
 	/* wait for start */
 	gst_state_changed = gst_element_set_state (m_gst_player, GST_STATE_READY);
 	if (gst_state_changed != GST_STATE_CHANGE_SUCCESS) {
-	  //g_print("gst_element_set_state(..%s) returned %d\n", "GST_STATE_READY", gst_state_changed);
+		//g_print("gst_element_set_state(..%s) returned %d\n", "GST_STATE_READY", gst_state_changed);
 	}
 
 	AM_DBG g_print ("%s: %s\n", id, "add call-back message handler for eos");
 	/* add call-back message handler to check for eos and errors */
-	gst_bus_add_watch (gst_pipeline_get_bus (GST_PIPELINE (m_gst_player)),
-			   gst_bus_callback, m_gst_mainloop);
+	gst_bus_add_watch (gst_pipeline_get_bus (GST_PIPELINE (m_gst_player)), gst_bus_callback, m_gst_mainloop);
 
 	gst_state_changed = gst_element_set_state (m_gst_player, GST_STATE_PAUSED);
 	if (gst_state_changed == GST_STATE_CHANGE_ASYNC) {
@@ -205,11 +203,11 @@ gstreamer_player::run() {
 	}
 	gst_state_changed = gst_element_set_state (m_gst_player, GST_STATE_READY);
 	if (gst_state_changed != GST_STATE_CHANGE_SUCCESS) {
-	  //g_print("gst_element_set_state(..%s) returned %d\n", "GST_STATE_REA", gst_state_changed);
+		//g_print("gst_element_set_state(..%s) returned %d\n", "GST_STATE_REA", gst_state_changed);
 	}
 	gst_state_changed = gst_element_set_state (m_gst_player, GST_STATE_NULL);
 	if (gst_state_changed != GST_STATE_CHANGE_SUCCESS) {
-	  //g_print("gst_element_set_state(..%s) returned %d\n", "GST_STATE_NULL", gst_state_changed);
+		//g_print("gst_element_set_state(..%s) returned %d\n", "GST_STATE_NULL", gst_state_changed);
 	}
 	// inform the scheduler that the gstreamer player has terminated
 	if (m_audio_renderer) {

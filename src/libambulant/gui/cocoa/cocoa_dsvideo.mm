@@ -115,7 +115,14 @@ init_pixel_info() {
 #ifdef ENABLE_COCOA_CGIMAGE
     if ([NSBitmapImageRep instancesRespondToSelector: @selector(initWithCGImage:)]) {
         // Only supported on 10.5, so fallback for 10.4
-        pixel_info_order = ambulant::net::pixel_argb;
+#if defined(__POWERPC__)
+		// This is a hack: we see incorrect video color on PPC. We're going to drop
+		// PPC support anyway, so this is a stopgap to make things work for the 
+		// 2.2 release. Sigh.
+		pixel_info_order = ambulant::net::pixel_bgra;
+#else
+		pixel_info_order = ambulant::net::pixel_argb;
+#endif
         pixel_info_format = (NSBitmapFormat)0;
         pixel_info_bpp = 4;
         pixel_info_bminfo = (kCGImageAlphaNoneSkipFirst|kCGBitmapByteOrder32Host);

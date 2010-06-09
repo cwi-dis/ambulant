@@ -42,29 +42,36 @@ namespace qt {
 // blending
 
 inline unsigned int
-_blend_pixel (int dr, int dg, int db, int da,
-	      int sr, int sg, int sb, int sa,
-	      bool alpha, unsigned int weight, unsigned int remain)
+_blend_pixel (
+	int dr, int dg, int db, int da,
+	int sr, int sg, int sb, int sa,
+	bool alpha, unsigned int weight, unsigned int remain)
 {
 	unsigned int result = 0;
 	if (alpha)
-		result = qRgba ((dr*remain + sr*weight) >> 8,
-				(dg*remain + sg*weight) >> 8,
-				(db*remain + sb*weight) >> 8,
-				(da*remain + sa*weight) >> 8);
+		result = qRgba(
+			(dr*remain + sr*weight) >> 8,
+			(dg*remain + sg*weight) >> 8,
+			(db*remain + sb*weight) >> 8,
+			(da*remain + sa*weight) >> 8);
 	else
-		result = qRgb ((dr*remain + sr*weight) >> 8,
-			       (dg*remain + sg*weight) >> 8,
-			       (db*remain + sb*weight) >> 8);
+		result = qRgb(
+			(dr*remain + sr*weight) >> 8,
+			(dg*remain + sg*weight) >> 8,
+			(db*remain + sb*weight) >> 8);
 	return result;
 }
 
 void
-qt_image_blend (QImage dst, const lib::rect dst_rc, 
-		 QImage src, const lib::rect src_rc,
-		 double opacity_in, double opacity_out,
-		 const lib::color_t chroma_low,
-		 const lib::color_t chroma_high)
+qt_image_blend (
+	QImage dst, 
+	const lib::rect dst_rc, 
+	QImage src, 
+	const lib::rect src_rc,
+	double opacity_in, 
+	double opacity_out,
+	const lib::color_t chroma_low,
+	const lib::color_t chroma_high)
 {
   //TBD: dst(L,T,W,H) != src(L,T,W,H), alpha channel in dst/src
 	assert (dst != NULL && src != NULL);
@@ -73,26 +80,26 @@ qt_image_blend (QImage dst, const lib::rect dst_rc,
 	assert (dst_has_alpha == src_has_alpha);
 
 	/* compute start/stop col/row */
-	  signed int	dst_L = dst_rc.x, dst_T = dst_rc.y;
-	unsigned int	dst_W = dst_rc.w, dst_H = dst_rc.h;
-	  signed int	src_L = src_rc.x, src_T = src_rc.y;
-	unsigned int	src_W = src_rc.w, src_H = src_rc.h;
-	unsigned int	dst_col, dst_row, src_col, src_row;
-	unsigned int	W = dst_W <= src_W ? dst_W : src_W;
-	unsigned int	H = dst_H <= src_H ? dst_H : src_H;
-	unsigned int	max_R = dst.width();
-	unsigned int	max_B = dst.height();
-	unsigned int	dst_R = dst_L + W;
-	unsigned int	dst_B = dst_T + H;
+	signed int dst_L = dst_rc.x, dst_T = dst_rc.y;
+	unsigned int dst_W = dst_rc.w, dst_H = dst_rc.h;
+	signed int src_L = src_rc.x, src_T = src_rc.y;
+	unsigned int src_W = src_rc.w, src_H = src_rc.h;
+	unsigned int dst_col, dst_row, src_col, src_row;
+	unsigned int W = dst_W <= src_W ? dst_W : src_W;
+	unsigned int H = dst_H <= src_H ? dst_H : src_H;
+	unsigned int max_R = dst.width();
+	unsigned int max_B = dst.height();
+	unsigned int dst_R = dst_L + W;
+	unsigned int dst_B = dst_T + H;
 	/* ensure stop col/row within image*/
 	if (dst_R > dst_L+dst_W)
-	  dst_R = dst_L+dst_W;
+		dst_R = dst_L+dst_W;
 	if (dst_R > max_R)
-	  dst_R = max_R;
+		dst_R = max_R;
 	if (dst_B > dst_T+dst_H)
-	  dst_B = dst_T+dst_H;
+		dst_B = dst_T+dst_H;
 	if (dst_B > max_B)
-	  dst_B = max_B;
+		dst_B = max_B;
 
 
 	unsigned int weight_in = static_cast<unsigned int>(round(opacity_in*255.0));
@@ -107,14 +114,12 @@ qt_image_blend (QImage dst, const lib::rect dst_rc,
 	AM_DBG logger::get_logger()->debug("blend_qt_pixbuf:r_h=%3d,g_h=%3d,b_h=%3d", r_h,g_h,b_h);	
 	AM_DBG logger::get_logger()->debug("blend_qt_pixbuf:dst_L=%3d,dst_R=%3d,max_R=%3d,src_L=%3d", dst_L, dst_R, max_R, src_L);
 	for (dst_col = dst_L, src_col = src_L;
-	     dst_col < dst_R;
-	     dst_col++, src_col++) {
+		dst_col < dst_R;
+		dst_col++, src_col++) {
 		AM_DBG logger::get_logger()->debug("blend_qt_pixbuf:dst_T=%3d,dst_B=%3d,max_B=%3d,src_T=%3d", dst_T, dst_B, max_B,src_T);
-		for (dst_row = dst_T, src_row = src_T;
-		     dst_row < dst_B;
-		     dst_row++, src_row++) {
+		for (dst_row = dst_T, src_row = src_T; dst_row < dst_B; dst_row++, src_row++) {
 			QRgb src_pixel = src.pixel(src_col,src_row);
-	    		QRgb dst_pixel = dst.pixel(dst_col,dst_row);
+			QRgb dst_pixel = dst.pixel(dst_col,dst_row);
 			int dr = qRed(dst_pixel);
 			int dg = qGreen(dst_pixel);
 			int db = qBlue(dst_pixel);

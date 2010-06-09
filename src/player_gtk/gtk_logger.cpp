@@ -74,14 +74,13 @@ gtk_logger_ostream::flush() {
 gtk_logger* gtk_logger::s_gtk_logger = 0;
 
 gtk_logger::gtk_logger() 
-  : 	m_log_FILE(NULL),
+:	m_log_FILE(NULL),
 	m_gui(NULL) 
 {
 	m_logger_window = NULL;
 
 	
-	common::preferences* prefs = 
-	  common::preferences::get_preferences();
+	common::preferences* prefs = common::preferences::get_preferences();
 	lib::logger* logger = lib::logger::get_logger();
 
 	if (prefs != NULL && prefs->m_log_file != "") {
@@ -90,8 +89,7 @@ gtk_logger::gtk_logger()
 		else
 			m_log_FILE = fopen(prefs->m_log_file.c_str(), "w");
 		if (m_log_FILE == NULL) {
-			logger->warn(gettext("Cannot open logfile: %s"), 
-				     prefs->m_log_file.c_str());
+			logger->warn(gettext("Cannot open logfile: %s"), prefs->m_log_file.c_str());
 		} else setbuf(m_log_FILE, NULL); // no buffering
 	}
 	
@@ -108,11 +106,12 @@ gtk_logger::gtk_logger()
 	gtk_window_set_resizable (m_logger_window, false);
 	gtk_signal_connect (GTK_OBJECT (m_logger_window), "delete-event",G_CALLBACK (gtk_widget_hide), GTK_WIDGET (m_logger_window));
 	GtkWidget* sw = gtk_scrolled_window_new (NULL, NULL);
-  	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw),
-                                  	GTK_POLICY_AUTOMATIC,
-                                  	GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_policy (
+		GTK_SCROLLED_WINDOW (sw),
+		GTK_POLICY_AUTOMATIC,
+		GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_size_request(GTK_WIDGET (m_logger_window), 560, 240);
-  	gtk_widget_set_uposition(GTK_WIDGET (m_logger_window), 50, 50);
+	gtk_widget_set_uposition(GTK_WIDGET (m_logger_window), 50, 50);
 	gtk_container_add (GTK_CONTAINER (m_logger_window), sw);
 	gtk_widget_show(GTK_WIDGET (sw));	
 	m_text_view =  (GtkTextView*) gtk_text_view_new();
@@ -149,7 +148,7 @@ gtk_logger::set_gtk_logger_gui(gtk_gui* gui) {
 
 void
 gtk_logger::log(gchar *logstring) {
- 	if (m_log_FILE != NULL) {
+	if (m_log_FILE != NULL) {
 		fprintf(m_log_FILE, "%s", (const char*)(logstring));
 	}
 	char* message = strdup(logstring);
@@ -190,6 +189,3 @@ gchar*
 gtk_message_event::get_message(){
 	return message;
 }
- //: QCustomEvent((QEvent::Type)level, (void*) msg)
-//{
-//}

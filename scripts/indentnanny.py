@@ -7,6 +7,11 @@ import os
 import sys
 
 class IndentNanny:
+
+    warn_space_indentation = False
+    open_editor = True
+    
+    foreign_pattern=re.compile(r"/\*AMBULANT_FOREIGN_INDENT_RULES\*/")
     
     GOOD_PATTERNS=[
         r"^[\t ]*$",        # Lines with only whitespace, including empty lines
@@ -17,8 +22,10 @@ class IndentNanny:
     ]
     
     REPLACE_PATTERNS=[
-        (r"^    ", r"\t"),        # 4 initial spaces can be replaced by tab
-        (r"^(\t+)    ", r"\1\t"),     # 4 spaces trailing a tab are replaced by two tabs
+        (r"^    ", r"\t"),          # 4 initial spaces can be replaced by tab
+        (r"^(\t+)    ", r"\1\t"),   # 4 spaces trailing a tab are replaced by two tabs
+        (r"^ public", r"  public"), # Errors in some source files
+        (r"^ private", r"  private"),
     ]
     
     def __init__(self):
@@ -35,9 +42,13 @@ class IndentNanny:
         for pat, rep in self.REPLACE_PATTERNS:
             self.replace_patterns.append((re.compile(pat), rep))
     
+    def check_indentation(self):
+        pass
+        
     def check_line_good(self, line):
         for p in self.good_patterns:
             if p.match(line):
+                self.check_indentation()
                 return True
         return False
         
@@ -59,6 +70,8 @@ class IndentNanny:
         lino = 0
         for line in fp.readlines():
             lino += 1
+            if self.foreign_pattern.match(line):
+                return True
             new_line =  self.check_line(line)
             if new_line is None:
                 print '\t%d: %s' % (lino, line),
@@ -66,21 +79,48 @@ class IndentNanny:
         return rv
 
     def check_file(self, filename):
+        self.level = 0
+        self.indents = [None]
         # XXX Incomplete
         rv = True
         fp = open(filename)
         lino = 0
         for line in fp.readlines():
             lino += 1
+            if self.foreign_pattern.match(line):
+                return True
             ok =  self.check_line_good(line)
             if rv and not ok:
+                rv = False
                 new_line = self.check_line(line)
                 if new_line:
-                    print '%s: tab/space mix (first at line %d)' % (filename, lino)
+                    if not self.warn_space_indentation:
+                        continue
+                    print '%s: space indentation (first at line %d)' % (filename, lino)
                     break
-                print '%s: bad indentation (first at line %d)' % (filename, lino)
+                print '%s: unknown indentation (first at line %d)' % (filename, lino)
+                if self.open_editor:
+                    os.system("bbedit +%d '%s'" % (lino, filename))
                 break
         return rv
+        
+    def check(self, filename):
+        rv = True
+        if os.path.isdir(filename):
+            for root, dirs, files in os.walk(filename):
+                for fn in files:
+                    _, ext = os.path.splitext(fn)
+                    if ext in ('.c', '.h', '.cpp', '.cc', '.C', '.hh', '.H', '.m', '.mm'):
+                        ok = self.check_file(os.path.join(root, fn))
+                        if not ok:
+                            rv = False
+                if '.svn' in dirs:
+                    dirs.remove('.svn')
+                if 'CVS' in dirs:
+                    dirs.remove('CVS')
+            return rv
+        else:
+            return self.check_file(filename)
 
 verbose = True  
         
@@ -88,7 +128,7 @@ def main():
     allok = True
     nanny = IndentNanny()
     for fn in sys.argv[1:]:
-        ok = nanny.check_file(fn)
+        ok = nanny.check(fn)
         if not ok:
             allok = False
         elif verbose:

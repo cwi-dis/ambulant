@@ -34,8 +34,8 @@
 #endif
 #include "ambulant/common/preferences.h"
 
- using namespace ambulant;
- using namespace lib;
+using namespace ambulant;
+using namespace lib;
 
 global_parser_factory* ambulant::lib::global_parser_factory::s_singleton = NULL;
 

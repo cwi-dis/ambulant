@@ -243,13 +243,13 @@ static void
 seterror(const char *funcname, HRESULT hr){
 	char* pszmsg;
 	FormatMessage( 
-		 FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-		 NULL,
-		 hr,
-		 MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-		 (LPTSTR) &pszmsg,
-		 0,
-		 NULL 
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+		NULL,
+		hr,
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+		(LPTSTR) &pszmsg,
+		0,
+		NULL 
 		);
 	for(error *p = errorlist; p->name; p++)
 		if (p->hr == hr){

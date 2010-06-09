@@ -82,7 +82,9 @@ protected:
 
 #ifndef _DEBUG  // debug version in AmbulantPlayerView.cpp
 inline CAmbulantPlayerDoc* CAmbulantPlayerView::GetDocument() const
-   { return (CAmbulantPlayerDoc*)m_pDocument; }
+{
+	return (CAmbulantPlayerDoc*)m_pDocument;
+}
 #endif
 
 extern CAmbulantPlayerView *mainAmbulantWindow;

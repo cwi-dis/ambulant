@@ -163,7 +163,7 @@ bool gui::dx::video_player::open(const std::string& url, IDirectDraw* dd) {
 	
 	IAMMultiMediaStream *mmstream = 0;
 	hr = CoCreateInstance(CLSID_AMMultiMediaStream, NULL, CLSCTX_INPROC_SERVER,
-				 IID_IAMMultiMediaStream, (void**)&mmstream);
+		IID_IAMMultiMediaStream, (void**)&mmstream);
 	if(FAILED(hr)) {
 		win_report_error("CoCreateInstance(CLSID_AMMultiMediaStream, ...)", hr);	
 		return false;

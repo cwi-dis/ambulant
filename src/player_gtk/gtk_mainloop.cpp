@@ -103,8 +103,8 @@ open_web_browser(const std::string &href)
 }
 
 gtk_mainloop::gtk_mainloop(gtk_gui* gui)
-  :	m_gui(gui),
- 	m_running(false),
+:   m_gui(gui),
+    m_running(false),
 	m_gtk_widget(NULL)
 {
 	gui_player();
@@ -191,15 +191,15 @@ gtk_mainloop::init_datasource_factory()
 	df->add_audio_factory(net::create_live_audio_datasource_factory()); 
 #endif
 #ifdef WITH_FFMPEG
-    	AM_DBG m_logger->debug("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
+    AM_DBG m_logger->debug("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
 	df->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
-    	AM_DBG m_logger->debug("gtk_mainloop::gtk_mainloop: add ffmpeg_audio_decoder_finder");
+    AM_DBG m_logger->debug("gtk_mainloop::gtk_mainloop: add ffmpeg_audio_decoder_finder");
 	df->add_audio_decoder_finder(net::get_ffmpeg_audio_decoder_finder());
-    	AM_DBG m_logger->debug("gtk_mainloop::gtk_mainloop: add ffmpeg_audio_filter_finder");
+    AM_DBG m_logger->debug("gtk_mainloop::gtk_mainloop: add ffmpeg_audio_filter_finder");
 	df->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
 	AM_DBG m_logger->debug("mainloop::mainloop: add ffmpeg_video_datasource_factory");
 	df->add_video_factory(net::get_ffmpeg_video_datasource_factory());
-    	AM_DBG m_logger->debug("mainloop::mainloop: add ffmpeg_raw_datasource_factory");
+    AM_DBG m_logger->debug("mainloop::mainloop: add ffmpeg_raw_datasource_factory");
 	df->add_raw_factory(net::get_ffmpeg_raw_datasource_factory());
 #endif
 
@@ -209,7 +209,7 @@ gtk_mainloop::init_datasource_factory()
 	// If you define WITH_STDIO_DATASOURCE we prefer to use the stdio datasource,
 	// however.
 
-    	AM_DBG m_logger->debug("gtk_mainloop::gtk_mainloop: add stdio_datasource_factory");
+    AM_DBG m_logger->debug("gtk_mainloop::gtk_mainloop: add stdio_datasource_factory");
 	df->add_raw_factory(net::create_stdio_datasource_factory());
 #endif
 	AM_DBG m_logger->debug("gtk_mainloop::gtk_mainloop: add posix_datasource_factory");
@@ -282,7 +282,7 @@ void
 gtk_mainloop::open(net::url newdoc, bool start, common::player *old)
 {
 	AM_DBG m_logger->trace("gtk_mainloop::open \"%s\"",newdoc.get_url().c_str());
- 	// Parse the provided URL. 
+    // Parse the provided URL. 
 	m_doc = create_document(newdoc);
 	if(!m_doc) {
 		m_logger->error(gettext("%s: Cannot build DOM tree"), 

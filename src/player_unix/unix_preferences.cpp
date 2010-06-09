@@ -34,17 +34,19 @@ using namespace ambulant;
 using namespace lib;
 /*
 preference_entry preference_table = {
-  {"AMBULANT_USE_PARSER",
-   { "any", "xerces", "expat" }, "any", STRING, &m_parser_id },
-  {"AMBULANT_DO_VALIDATION",
-   { "false", "true" }, "false", BOOL, & m_do_validation },
-  NULL
+	{"AMBULANT_USE_PARSER",
+	{ "any", "xerces", "expat" }, "any", STRING, &m_parser_id },
+	{"AMBULANT_DO_VALIDATION",
+	{ "false", "true" }, "false", BOOL, & m_do_validation },
+	NULL
 };
 */
-preference_entry::preference_entry(std::string name,
-				   datatype type,
-				   void* store,
-				   std::string* valid_val) {
+preference_entry::preference_entry(
+	std::string name,
+	datatype type,
+	void* store,
+	std::string* valid_val
+) {
 	pref_name  = name;
 	pref_type  = type;
 	pref_store = store;
@@ -66,34 +68,24 @@ unix_preferences::unix_preferences() {
 //NO LOGGER YET!	AM_DBG logger::get_logger()->debug("%s", id.c_str());
 	s_preference_table = new std::vector<preference_entry*>();
 
-	ADD_PREF("AMBULANT_WELCOME_SEEN", BOOL,
-	     &m_welcome_seen, valid_bools);
-	ADD_PREF("AMBULANT_LOG_LEVEL", INT, 
-	     &m_log_level, NULL);
-	ADD_PREF("AMBULANT_USE_PARSER", STRING, 
-	     &m_parser_id, valid_parsers);
-	ADD_PREF("AMBULANT_VALIDATION_SCHEME", STRING,
-	     &m_validation_scheme, valid_schemes);
-//	ADD_PREF("AMBULANT_DO_VALIDATION", BOOL,
-//	     &m_do_validation, valid_bools);
-	ADD_PREF("AMBULANT_DO_NAMESPACES", BOOL,
-	     &m_do_namespaces, valid_bools);
-	ADD_PREF("AMBULANT_DO_SCHEMA", BOOL,
-	     &m_do_schema, valid_bools);
-	ADD_PREF("AMBULANT_DO_VALIDATION_SCHEMA_FULL_CHECKING", BOOL, 
-	     &m_validation_schema_full_checking, valid_bools);
-	ADD_PREF("AMBULANT_USE_PLUGINS",BOOL,
-		 &m_use_plugins,valid_bools);
-	ADD_PREF("AMBULANT_PLUGIN_DIR",STRING,
-		 &m_plugin_dir,NULL);
-	ADD_PREF("AMBULANT_LOGFILE",STRING,
-		 &m_log_file,NULL);
+	ADD_PREF("AMBULANT_WELCOME_SEEN", BOOL, &m_welcome_seen, valid_bools);
+	ADD_PREF("AMBULANT_LOG_LEVEL", INT,  &m_log_level, NULL);
+	ADD_PREF("AMBULANT_USE_PARSER", STRING, &m_parser_id, valid_parsers);
+	ADD_PREF("AMBULANT_VALIDATION_SCHEME", STRING, &m_validation_scheme, valid_schemes);
+//	ADD_PREF("AMBULANT_DO_VALIDATION", BOOL, &m_do_validation, valid_bools);
+	ADD_PREF("AMBULANT_DO_NAMESPACES", BOOL, &m_do_namespaces, valid_bools);
+	ADD_PREF("AMBULANT_DO_SCHEMA", BOOL, &m_do_schema, valid_bools);
+	ADD_PREF("AMBULANT_DO_VALIDATION_SCHEMA_FULL_CHECKING", BOOL, &m_validation_schema_full_checking, valid_bools);
+	ADD_PREF("AMBULANT_USE_PLUGINS",BOOL, &m_use_plugins,valid_bools);
+	ADD_PREF("AMBULANT_PLUGIN_DIR",STRING, &m_plugin_dir,NULL);
+	ADD_PREF("AMBULANT_LOGFILE",STRING, &m_log_file,NULL);
 	
 }
 
 unix_preferences::~unix_preferences() {
 	for (preference_iterator pritr = s_preference_table->begin();
-	     pritr != s_preference_table->end(); pritr++) {
+		pritr != s_preference_table->end(); pritr++)
+	{
 		delete *pritr;
 	}
 	delete s_preference_table;
@@ -106,9 +98,7 @@ unix_preferences::load_preferences() {
 	std::string id = "unix_preferences::load_preferences";
 	AM_DBG logger::get_logger()->debug("%s", id.c_str());
 
-	return load_preferences_from_file ()
-//	       || load_preferences_from_environment()
-	  ;
+	return load_preferences_from_file();
 }
 
 bool
@@ -121,7 +111,8 @@ unix_preferences::load_preference(std::string name, std::string value) {
 	if (name == "")
 		return false;
 	for (preference_iterator pritr = s_preference_table->begin();
-	     pritr != s_preference_table->end(); pritr++) {
+		pritr != s_preference_table->end(); pritr++)
+	{
 		preference_entry* pe = *pritr;
 		AM_DBG logger::get_logger()->debug("%s pe=%s", id.c_str(), pe->pref_name.c_str());
 		if (name == pe->pref_name) {
@@ -136,17 +127,16 @@ unix_preferences::load_preference(std::string name, std::string value) {
 				}
 				if (*vv == "") {
 					log->trace("Invalid preference value: %s=%s",
-						   pe->pref_name.c_str(),
-						   value.c_str());
+						pe->pref_name.c_str(),
+						value.c_str());
 					vv = pe->pref_valid_val;
 					while ( ! vv->empty()) {
-						log->trace("Valid value: %s",
-							   vv->c_str());
+						log->trace("Valid value: %s", vv->c_str());
 						vv++;
 					}
 					log->error(gettext("Invalid value from preference file: %s=%s"),
-						   pe->pref_name.c_str(),
-						   value.c_str());
+						pe->pref_name.c_str(),
+						value.c_str());
 					break;
 				}
 			}
@@ -170,7 +160,8 @@ unix_preferences::load_preference(std::string name, std::string value) {
 	if ( ! found ) {
 		log->trace("Invalid preference name: %s", name.c_str());
 		for (preference_iterator pritr = s_preference_table->begin();
-		     pritr != s_preference_table->end(); pritr++) {
+			pritr != s_preference_table->end(); pritr++)
+		{
 			preference_entry* pe = *pritr;
 			log->trace("Valid preference name: %s", pe->pref_name.c_str());
 		}
@@ -186,7 +177,8 @@ unix_preferences::load_preferences_from_environment() {
 	AM_DBG logger::get_logger()->debug("%s()", id.c_str());
 	bool rv = true;
 	for (preference_iterator pritr = s_preference_table->begin();
-	     pritr != s_preference_table->end(); pritr++) {
+	    pritr != s_preference_table->end(); pritr++)
+	{
 		preference_entry* pe = *pritr;
 		char* v = getenv(pe->pref_name.c_str());
 		if (v != NULL) {
@@ -251,7 +243,8 @@ unix_preferences::save_preferences() {
 #define OS(N,S) (void) fprintf(preferences_filep,"%s=%s\n",N,S);
 	OS("# Ambulant Preferences", "Temporary format. DO NOT EDIT this file !");
 	for (preference_iterator pritr = s_preference_table->begin();
-	     pritr != s_preference_table->end(); pritr++) {
+		pritr != s_preference_table->end(); pritr++)
+	{
 		preference_entry* pe = *pritr;
 		switch(pe->pref_type) {
 		case BOOL:

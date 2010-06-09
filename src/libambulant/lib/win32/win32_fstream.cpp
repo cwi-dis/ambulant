@@ -103,7 +103,7 @@ bool lib::win32::fstream::seek(unsigned long pos) {
 	return true;
 }
 	
- int lib::win32::fstream::write(const unsigned char *buffer, int nbytes) {
+int lib::win32::fstream::write(const unsigned char *buffer, int nbytes) {
 	assert(m_hf != INVALID_HANDLE_VALUE);
 	unsigned long nwritten = 0;
 	if(WriteFile(m_hf, buffer, nbytes, &nwritten, NULL) != 0) {

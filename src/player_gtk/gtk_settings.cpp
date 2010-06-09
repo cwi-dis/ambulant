@@ -218,8 +218,9 @@ gtk_settings::settings_ok() {
 
 	m_preferences->m_parser_id = parsers[gtk_combo_box_get_active(m_parser_co)];
 
-	if (m_namespace_cb)
-		 m_preferences->m_do_namespaces	= gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (m_namespace_cb));
+	if (m_namespace_cb) {
+		m_preferences->m_do_namespaces	= gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (m_namespace_cb));
+	}
 	
 	m_preferences->m_validation_scheme = val_schemes[gtk_combo_box_get_active(m_validation_co)];
 
@@ -228,13 +229,13 @@ gtk_settings::settings_ok() {
 	}
 
 	if (m_schema_rb)
-		 m_preferences->m_do_schema = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (m_schema_rb));
+		m_preferences->m_do_schema = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (m_schema_rb));
 
 	if (m_full_check_cb)
 		m_preferences->m_validation_schema_full_checking = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (m_full_check_cb));
 
 	if (m_use_plugins_cb)
-		 m_preferences->m_use_plugins = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (m_use_plugins_cb));
+		m_preferences->m_use_plugins = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (m_use_plugins_cb));
 	
 	m_preferences->m_plugin_dir = std::string((const char*) gtk_entry_get_text(m_plugins_dir_te));
 	
@@ -250,10 +251,12 @@ int
 gtk_settings::index_in_string_array(const char* s, const char* sa[]) {
 	int i = 0;
 	for (; sa[i] != NULL; i++) {
-	  if (strcmp(s,sa[i]) == 0)
-	    break;
+		if (strcmp(s,sa[i]) == 0)
+			break;
 	}
-	if (sa[i] == NULL)
-	  return -1;
-	else return i;
+	if (sa[i] == NULL) {
+		return -1;
+	} else {
+		return i;
+	}
 }

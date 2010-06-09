@@ -18,9 +18,9 @@
 #include "_IieambulantEvents_CP.H"
 typedef ambulant::gui::dx::dx_player_callbacks gui_callbacks; //XX from MmView.cpp
 
-class ambulant_player_callbacks : public ambulant::gui::dx::dx_player_callbacks {
-
- public:
+class ambulant_player_callbacks : public ambulant::gui::dx::dx_player_callbacks
+{
+public:
 	ambulant_player_callbacks();
 	void set_os_window(HWND hwnd);
 	HWND new_os_window();

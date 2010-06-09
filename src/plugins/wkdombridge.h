@@ -10,8 +10,8 @@ using namespace ambulant;
 
 class wkdom_node_factory : public lib::node_factory {
   public:
-  	wkdom_node_factory(DOMImplementation *domimp);
-  	
+	wkdom_node_factory(DOMImplementation *domimp);
+	
 	lib::node *new_node(const char *local_name, const char **attrs = 0, const lib::node_context *ctx = 0);
 
 	/// Construct a new, unconnected, node.
@@ -36,12 +36,12 @@ class wkdom_node : public lib::node_interface {
   private:
 
   private:
-  	wkdom_node(DOMElement *w, const lib::node_context *ctx);
-  	DOMNode *m_self;
-  	const lib::node_context *m_context;
-  	static std::map<const DOMNode *, wkdom_node *> s_id2node; // XXXX Temp static
-  	static std::map<const lib::node_context *, DOMDocument *> s_ctx2doc; // XXXX Temp static
-  	static DOMImplementation *s_implementation;
+	wkdom_node(DOMElement *w, const lib::node_context *ctx);
+	DOMNode *m_self;
+	const lib::node_context *m_context;
+	static std::map<const DOMNode *, wkdom_node *> s_id2node; // XXXX Temp static
+	static std::map<const lib::node_context *, DOMDocument *> s_ctx2doc; // XXXX Temp static
+	static DOMImplementation *s_implementation;
 	static wkdom_node *id2node(const DOMNode *w, const lib::node_context *);
 	static DOMDocument *ctx2doc(const lib::node_context *ctx);
 	

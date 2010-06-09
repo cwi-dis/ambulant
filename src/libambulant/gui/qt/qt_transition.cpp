@@ -42,9 +42,10 @@ namespace gui {
 namespace qt {
 
 void 
-qt_transition_debug::paint_rect(ambulant_qt_window* aqw, // TMP
-	   common::surface * dst,
-	   color_t color) 
+qt_transition_debug::paint_rect(
+	ambulant_qt_window* aqw,
+	common::surface * dst,
+	color_t color) 
 {
 	const rect& dstrect_whole = dst->get_clipped_screen_rect();
 	QPainter paint;
@@ -55,13 +56,14 @@ qt_transition_debug::paint_rect(ambulant_qt_window* aqw, // TMP
 	H = dstrect_whole.height();
 	// XXXX Fill with background color
 	AM_DBG logger::get_logger()->debug(
-				  "qt_transition_debug::paint_rect:"
-				  " %s0x%x,%s(%d,%d,%d,%d)",
-				  " clearing to ", (long)color, 
-				  " local_ltwh=",L,T,W,H);
-	QColor bgc = QColor(redc(color),
-			    greenc(color),
-			    bluec(color));
+		"qt_transition_debug::paint_rect:"
+		" %s0x%x,%s(%d,%d,%d,%d)",
+		" clearing to ", (long)color, 
+		" local_ltwh=",L,T,W,H);
+	QColor bgc = QColor(
+		redc(color),
+		greenc(color),
+		bluec(color));
 	paint.setBrush(bgc);
 	paint.drawRect(L,T,W,H);
 	paint.flush();

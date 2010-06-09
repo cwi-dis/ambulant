@@ -106,8 +106,8 @@ gtk_transition_renderer::stop()
 {
 	m_lock.enter();
 	if (!m_trans_engine) {
-	   m_lock.leave();
-	   return;
+		m_lock.leave();
+		return;
     }
 	delete m_trans_engine;
 	m_trans_engine = NULL;

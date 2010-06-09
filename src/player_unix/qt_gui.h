@@ -29,7 +29,7 @@
 #include "unix_preferences.h"
 
 #include <qfeatures.h>
-# include <qapplication.h>
+#include <qapplication.h>
 #include <qcursor.h>
 #include <qdial.h>
 #include <qevent.h>
@@ -67,17 +67,16 @@ class qt_mainloop;
 #define qt_gui_BASE QWidget
 #endif/*WITH_QT_HTML_WIDGET*/
 
- class qt_gui : public qt_gui_BASE {
+class qt_gui : public qt_gui_BASE
+{
 
-   Q_OBJECT
+	Q_OBJECT
 
-   public:
-  	qt_gui(const char* title, const char* initfile);
+  public:
+	qt_gui(const char* title, const char* initfile);
 	~qt_gui();
 
-	const char* filename() { 
-		return m_smilfilename.ascii();
-	}
+	const char* filename() { return m_smilfilename.ascii(); }
 
 	bool openSMILfile(const QString smilfilename, int mode);
 
@@ -91,7 +90,7 @@ class qt_mainloop;
 
 /*TMP*/	qt_mainloop* m_mainloop;
   private:
-        void _update_menus();
+    void _update_menus();
     
 	QPushButton* m_cancel_pb; // for Settings window
 	QPopupMenu*  m_filemenu;
@@ -138,7 +137,7 @@ class qt_mainloop;
 	void slot_welcome();
 	void slot_help();
 	void slot_load_settings();
-  	void slot_logger_window();
+	void slot_logger_window();
 	void slot_open();
 	void slot_open_url();
 	void slot_pause();

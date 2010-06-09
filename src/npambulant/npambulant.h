@@ -150,8 +150,14 @@ public:
   char m_String[128];
 
 public:
-  npambulant(NPMIMEType mimetype, NPP pNPInstance, uint16 mode,
-          int argc, char* argn[], char* argv[], NPSavedData* data);
+  npambulant(
+		NPMIMEType mimetype, 
+		NPP pNPInstance, 
+		uint16 mode,
+		int argc, 
+		char* argn[], 
+		char* argv[], 
+		NPSavedData* data);
   ~npambulant();
 
   NPBool setWindow(NPWindow* pNPWindow);

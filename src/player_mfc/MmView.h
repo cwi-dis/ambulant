@@ -107,6 +107,5 @@ public:
 };
 
 #ifndef _DEBUG  // debug version in MmView.cpp
-inline MmDoc* MmView::GetDocument() const
-   { return reinterpret_cast<MmDoc*>(m_pDocument); }
+inline MmDoc* MmView::GetDocument() const { return reinterpret_cast<MmDoc*>(m_pDocument); }
 #endif

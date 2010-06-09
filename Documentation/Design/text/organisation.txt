@@ -4,7 +4,7 @@
 Ambulant source code organisation
 =================================
 
-Last updated for Ambulant version 1.8.
+Last updated for Ambulant version 2.3.
 
 
 directory organisation
@@ -12,10 +12,7 @@ directory organisation
 
 Everything is kept under CVS, on sourceforge. On Unix we use the standard *automake*,
 *autoconf*, *configure* and *gcc* (version 3.2 or later) toolset to
-build things. On Windows we use Visual Studio 7. For cross-compilation
-for Windows CE we use Embedded Visual C++ 3.0. For
-cross-compilation for the Zaurus Linux handheld we use the Sharp
-toolset, based on gcc 2.95.
+build things. On Windows we use Visual Studio 2008. 
 
 At the toplevel we have a number of subdirectories:
 
@@ -32,7 +29,6 @@ At the toplevel we have a number of subdirectories:
   two included presentations, Welcome and DemoPresentation.
 - ``po`` has the files used to create localisations. This uses the
   GNU gettext library.
-- ``m4`` has extra macros for automake.
 
 Source code conventions
 -----------------------
@@ -40,7 +36,7 @@ Source code conventions
 Here's a somewhat random list of source code conventions that we have decided
 to use:
 
-- Indent 4 spaces, with the following exceptions:
+- Indent by tab only, with the following exceptions:
 
   - ``namespace`` doesn't indent at all
   - ``public:``, ``private:`` and such indent two spaces
@@ -49,7 +45,9 @@ to use:
   line depends on the circumstances and personal taste. Closing braces,
   when on a line by themselves, must however align with the construct
   that opened them.
-  
+- No visual aligning of long argument lists with the opening parenthesis: it will not work.
+  If you split an argument list, indent on tab. Preferably, when you split, put every argument
+  on a separate line, and provide visual feedback on the next line.
 - no camelCase, CamelCase or Capitalization in class or variable names
 - Underscores to delimit words
 - attribute names start with "m\_"
