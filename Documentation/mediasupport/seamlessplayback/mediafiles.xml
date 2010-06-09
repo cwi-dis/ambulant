@@ -1,4 +1,4 @@
-<!-- Local playback, MPEG-1 video. Uncomment to enable. -->
+<!-- HTTP playback, MPEG-1 video. Uncomment to enable. -->
 <!--
 <data>
   <av1>http://homepages.cwi.nl/~kees/ambulant/media-av.mpg</av1>
@@ -11,19 +11,19 @@
 </data>
  -->
 <!-- Local playback, MPEG-1 video. Uncomment to enable. -->
-<!-- -->
+<!--
 <data>
   <av1>media-av.mpg</av1>
   <av2>media-av-copy.mpg</av2>
-  <audio1>media-audio.mp3</audio1>
+  <audio1>media-audio.wav</audio1>
   <audio2>media-audio-copy.mp3</audio2>
   <audiomod>media-audio-modified.mp3</audiomod>
   <video1>media-video.mpg</video1>
   <video2>media-video-copy.mpg</video2>
 </data>
-
+ -->
 <!-- Local playback, H264 video. Uncomment to enable. -->
-
+<!--
 <data>
   <av1>media-av.mp4</av1>
   <av2>media-av-copy.mp4</av2>
@@ -33,8 +33,19 @@
   <video1>media-video.mp4</video1>
   <video2>media-video-copy.mp4</video2>
 </data>
-
-
+-->
+<!-- Local playback, ogg-vorbis-theora video. Uncomment to enable. -->
+<!--
+<data>
+  <av1>media-av.ogg</av1>
+  <av2>media-av-copy.ogg</av2>
+  <audio1>media-audio.ogg</audio1>
+  <audio2>media-audio-copy.ogg</audio2>
+  <audiomod>media-audio-modified.mp3</audiomod>
+  <video1>media-video.ogg</video1>
+  <video2>media-video-copy.ogg</video2>
+</data>
+ -->
 <!-- HTTP playback, MPEG-1 video. Uncomment to enable. -->
 <!--
 <data>
@@ -48,9 +59,8 @@
 </data>
 -->
 <!-- HTTP playback, H264 video. Uncomment to enable. -->
-<!--
 <data>
-  <av1>http://homepages.cwi.nl/~jack/seamlessplayback/media-av.mp4</av2>
+  <av1>http://homepages.cwi.nl/~jack/seamlessplayback/media-av.mp4</av1>
   <av2>http://homepages.cwi.nl/~jack/seamlessplayback/media-av-copy.mp4</av2>
   <audio1>http://homepages.cwi.nl/~jack/seamlessplayback/media-audio.mp3</audio1>
   <audio2>http://homepages.cwi.nl/~jack/seamlessplayback/media-audio-copy.mp3</audio2>
@@ -58,17 +68,28 @@
   <video1>http://homepages.cwi.nl/~jack/seamlessplayback/media-video.mp4</video1>
   <video2>http://homepages.cwi.nl/~jack/seamlessplayback/media-video-copy.mp4</video2>
 </data>
- -->
+<!-- HTTP playback from Jack's home machine, H264 video. Uncomment to enable. -->
+<!--
+<data>
+  <av1>http://219-164.surfsnel.dsl.internl.net/seamlessplayback/media-av.mp4</av1>
+  <av2>http://219-164.surfsnel.dsl.internl.net/seamlessplayback/media-av-copy.mp4</av2>
+  <audio1>http://219-164.surfsnel.dsl.internl.net/seamlessplayback/media-audio.mp3</audio1>
+  <audio2>http://219-164.surfsnel.dsl.internl.net/seamlessplayback/media-audio-copy.mp3</audio2>
+  <audiomod>http://219-164.surfsnel.dsl.internl.net/seamlessplayback/media-audio-modified.mp3</audiomod>
+  <video1>http://219-164.surfsnel.dsl.internl.net/seamlessplayback/media-video.mp4</video1>
+  <video2>http://219-164.surfsnel.dsl.internl.net/seamlessplayback/media-video-copy.mp4</video2>
+</data>
+-->
 <!-- RTSP playback, MPEG-1 video. Uncomment to enable -->
 <!--
 <data>
-  <av1>rtsp://media2.cwi.nl/seamlessplayback/media-av.mpg</av1>
-  <av2>rtsp://media2.cwi.nl/seamlessplayback/media-av-copy.mpg</av2>
-  <audio1>rtsp://media2.cwi.nl/seamlessplayback/media-audio.mp3</audio1>
-  <audio2>rtsp://media2.cwi.nl/seamlessplayback/media-audio-copy.mp3</audio2>
-  <audiomod>rtsp://media2.cwi.nl/seamlessplayback/media-audio-modified.mp3</audiomod>
-  <video1>rtsp://media2.cwi.nl/seamlessplayback/media-video.mpg</video1>
-  <video2>rtsp://media2.cwi.nl/seamlessplayback/media-video-copy.mpg</video2>
+  <av1>rtsp://media2.cwi.nl/seamlessplayback/media-av.mp4</av1>
+  <av2>rtsp://media2.cwi.nl/seamlessplayback/media-av-copy.mp4</av2>
+  <audio1>rtsp://media2.cwi.nl/seamlessplayback/media-audio.m4a</audio1>
+  <audio2>rtsp://media2.cwi.nl/seamlessplayback/media-audio-copy.m4a</audio2>
+  <audiomod>rtsp://media2.cwi.nl/seamlessplayback/media-audio-modified.m4a</audiomod>
+  <video1>rtsp://media2.cwi.nl/seamlessplayback/media-video.mp4</video1>
+  <video2>rtsp://media2.cwi.nl/seamlessplayback/media-video-copy.mp4</video2>
 </data>
   -->
 <!-- RTSP playback, H264 video. Uncomment to enable. -->
@@ -82,5 +103,4 @@
   <video1>rtsp://localhost/seamlessplayback/media-video.mp4</video1>
   <video2>rtsp://localhost/seamlessplayback/media-video-copy.mp4</video2>
 </data>
-  <video1>http://homepages.cwi.nl/~jack/seamlessplayback/media-video.mp4</video1>
 -->

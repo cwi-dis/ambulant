@@ -58,3 +58,6 @@ sptest-12:
 	Test that clipBegin/clipEnd work in the first place. (This happens to be
 	untrue for Quicktime playback of MPEG-1 movies...)
 	
+sptest-13:
+	Test that playback still works after touch the end of media. Actually this 
+	test is the reverse version of sptest-01.
