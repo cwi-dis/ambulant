@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -242,7 +242,7 @@ plugin_engine::load_plugins(std::string dirname)
 	char filename[1024];
 	dirent **namelist;
 	bool ldpath_added = false;
-	
+
     int nr_of_files = scandir(dirname.c_str(), &namelist, &filter , NULL);
     if (nr_of_files < 0) {
         lib::logger::get_logger()->trace("Error reading plugin directory: %s: %s", dirname.c_str(), strerror(errno));
@@ -257,7 +257,7 @@ plugin_engine::load_plugins(std::string dirname)
 				bool is_python_plugin = false;
 				bool is_python_engine = false;
 #endif // WITH_PYTHON_PLUGIN
-                
+
                 // Check the name is valid
                 if (strncmp(PYTHON_PLUGIN_PREFIX, pluginname, sizeof(PYTHON_PLUGIN_PREFIX)-1) == 0) {
 #ifdef WITH_PYTHON_PLUGIN
@@ -284,12 +284,12 @@ plugin_engine::load_plugins(std::string dirname)
                     continue;
 #endif // WITH_PYTHON_PLUGIN
                 }
-                
+
                 // Construct the full pathname
                 strncpy(filename, dirname.c_str(), sizeof(filename));
                 strncat(filename, "/", sizeof(filename));
                 strncat(filename, pluginname, sizeof(filename));
-				
+
 				// Add the plugin dir to the search path
 				if (!ldpath_added) {
 					setenv(LIBRARY_PATH_ENVVAR, dirname.c_str(), 1);
@@ -359,7 +359,7 @@ plugin_engine::load_plugins(std::string dirname)
 	lib::textptr dirname_conv(dirname.c_str());
 	(void)SetDllDirectory(dirname_conv);
 	lib::logger::get_logger()->trace("plugin_engine: Scanning plugin directory: %s", dirname.c_str());
-	std::string filepattern = 
+	std::string filepattern =
 		dirname +
 //		"\\" +
 		PLUGIN_PREFIX +
@@ -394,7 +394,7 @@ plugin_engine::load_plugins(std::string dirname)
 	}
 #ifdef WITH_PYTHON_PLUGIN
 	{
-		std::string filepattern = 
+		std::string filepattern =
 			dirname +
 	//		"\\" +
 			PYTHON_PLUGIN_PREFIX +

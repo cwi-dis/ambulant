@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_SMIL2_PARAMS_H
@@ -33,13 +33,13 @@
 #include <string>
 
 namespace ambulant {
-	
+
 namespace smil2 {
 
 class AMBULANTAPI params {
   public:
 	static params *for_node(const lib::node *n);
-	
+
 	const char *get_str(const char *paramname);
 	const char *get_str(const std::string &paramname);
 	lib::color_t get_color(const char *paramname, lib::color_t dft);
@@ -50,13 +50,13 @@ class AMBULANTAPI params {
     long get_long(const std::string &paramname, long dft);
   private:
 	void addparamnodes(const lib::node *n);
-	
+
 	std::map<std::string, const char *> m_params;
 	// Add more as needed
 };
 
 } // namespace smil2
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_SMIL2_PARAMS_H

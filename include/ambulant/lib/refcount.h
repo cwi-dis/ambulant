@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,14 +19,14 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
-/* 
+/*
  * Ref-counted mechanism implementation.
  *
  */
- 
+
 #ifndef AMBULANT_LIB_REFCOUNT_H
 #define AMBULANT_LIB_REFCOUNT_H
 
@@ -68,10 +68,10 @@ class AMBULANTAPI ref_counted {
 /// An atomic counter.
 /// Template argument T exposes a critical section interface.
 template <class T>
-class basic_atomic_count {	
+class basic_atomic_count {
   public:
 	explicit basic_atomic_count(long v): m_value(v){}
-	
+
 	/// Increment the counter.
 	long operator++() {
 #ifdef	USE_REF_COUNT_SEMAPHORE
@@ -83,7 +83,7 @@ class basic_atomic_count {
 		return ++m_value;
 #endif//USE_REF_COUNT_SEMAPHORE
 	}
-	
+
 	/// Decrement the counter.
 	long operator--() {
 #ifdef	USE_REF_COUNT_SEMAPHORE
@@ -95,7 +95,7 @@ class basic_atomic_count {
 		return --m_value;
 #endif//USE_REF_COUNT_SEMAPHORE
 	}
-	
+
 	/// Return the current value of the counter.
 	operator long() const {
 #ifdef	USE_REF_COUNT_SEMAPHORE
@@ -107,7 +107,7 @@ class basic_atomic_count {
 		return m_value;
 #endif//USE_REF_COUNT_SEMAPHORE
 	}
-	
+
   private:
 	basic_atomic_count(basic_atomic_count const &);
 	basic_atomic_count & operator=(basic_atomic_count const &);
@@ -128,7 +128,7 @@ typedef AMBULANTAPI basic_atomic_count<critical_section> atomic_count;
 ///		....
 ///		No code related with ref counting.
 ///		Even the m_refcount doesn't have
-///		to be initialized in the constructor of active_player 
+///		to be initialized in the constructor of active_player
 ///		since the base ref_counted_obj does this by default.
 ///		....
 /// };
@@ -136,11 +136,11 @@ class AMBULANTAPI ref_counted_obj : virtual public ref_counted {
   public:
 	ref_counted_obj()
 	:	m_refcount(1) {}
-	
+
     virtual ~ref_counted_obj() {
         assert(m_refcount == 0);
     }
-    
+
 	long add_ref() {return ++m_refcount;}
 
 	long release() {
@@ -167,7 +167,7 @@ class auto_ref : public ref_counted_obj {
   public:
 	auto_ref(T* ptr = 0) : m_ptr(ptr) {}
 	~auto_ref() { delete m_ptr;}
-	
+
     T* get_ptr() { return m_ptr;}
 	void set_ptr(T* ptr = 0) {
 		if(ptr != m_ptr) delete m_ptr;
@@ -175,10 +175,10 @@ class auto_ref : public ref_counted_obj {
 	}
   private:
 	T* m_ptr;
-}; 
+};
 
-/// Save release idiom: 
-/// p = release(p); 
+/// Save release idiom:
+/// p = release(p);
 /// if p is deleted then p == 0.
 template <class T>
 static T* release(T *p) {
@@ -187,7 +187,7 @@ static T* release(T *p) {
 }
 
 } // namespace lib
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_LIB_REFCOUNT_H

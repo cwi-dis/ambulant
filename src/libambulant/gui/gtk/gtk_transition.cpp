@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/gtk/gtk_includes.h"
@@ -90,7 +90,7 @@ gtk_transition_blitclass_fade::~gtk_transition_blitclass_fade()
 	if (m_new_pixbuf != NULL)
 		g_object_unref (G_OBJECT (m_new_pixbuf));
 }
- 
+
 void
 gtk_transition_blitclass_fade::update()
 {
@@ -163,7 +163,7 @@ gtk_transition_blitclass_r1r2r3r4::update()
 		Woldsrc = oldsrcrect_whole.width(),
 		Holdsrc = oldsrcrect_whole.height();
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_r1r2r3r4: (Loldsrc,Toldsrc,Woldsrc,Holdsrc)=(%d,%d,%d,%d)",Loldsrc,Toldsrc,Woldsrc,Holdsrc);
-	int	Lolddst = olddstrect_whole.left(), 
+	int	Lolddst = olddstrect_whole.left(),
 		Tolddst = olddstrect_whole.top(),
 		Wolddst = olddstrect_whole.width(),
 		Holddst = olddstrect_whole.height();
@@ -232,7 +232,7 @@ gtk_transition_blitclass_poly::update()
 	uint n_points = m_newpolygon.size();
 	if (n_points <= 2) { // cannot create polygon, maybe not yet implemented
 		return;
-	}	
+	}
 	GdkPoint* points = (GdkPoint*) malloc (n_points*sizeof(GdkPoint));
 	uint idx = 0;
 	std::vector<point>::iterator newpoint;
@@ -243,7 +243,7 @@ gtk_transition_blitclass_poly::update()
 		points[idx].y = p.y;
 		idx++;
 	}
-	GdkRegion* region = gdk_region_polygon(points, n_points, GDK_WINDING_RULE); 
+	GdkRegion* region = gdk_region_polygon(points, n_points, GDK_WINDING_RULE);
 	free(points);
 	GdkGC *gc = gdk_gc_new (opm);
 	gdk_gc_set_clip_region(gc, region);
@@ -269,12 +269,12 @@ gtk_transition_blitclass_polylist::update()
 	GdkRegion* clip_region = gdk_region_new();
 	AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_polylist: m_newpolygonlist.size()=%d", m_newpolygonlist.size());
 	std::vector< std::vector<point> >::iterator partpolygon;
-	for (partpolygon=m_newpolygonlist.begin(); 
+	for (partpolygon=m_newpolygonlist.begin();
 	     partpolygon!=m_newpolygonlist.end(); partpolygon++) {
 		uint n_points = partpolygon->size();
 		if (n_points <= 2) { // cannot create polygon
 			logger::get_logger()->warn("gtk_transition_blitclass_polylist: cannot create polygon, partpolygon.size()=%d", n_points);			break;
-		}	
+		}
 		GdkPoint* points = (GdkPoint*) malloc (n_points*sizeof(GdkPoint));
 		uint idx = 0;
 		std::vector<point>::iterator newpoint;
@@ -287,7 +287,7 @@ gtk_transition_blitclass_polylist::update()
 			idx++;
 			AM_DBG logger::get_logger()->debug("gtk_transition_blitclass_polylist: idx=%d, p=(%d,%d)", idx, p.x, p.y);
 		}
-		GdkRegion* next_region = gdk_region_polygon(points, n_points, GDK_WINDING_RULE); 
+		GdkRegion* next_region = gdk_region_polygon(points, n_points, GDK_WINDING_RULE);
 		free(points);
 		gdk_region_union (clip_region, next_region);
 		gdk_region_destroy(next_region);
@@ -311,7 +311,7 @@ gtk_transition_engine(common::surface *dst, bool is_outtrans, const transition_i
 {
 	smil2::transition_engine *rv;
 	AM_DBG logger::get_logger()->debug("gtk_transition_engine: info=0x%x info->m_type=%d", info, info->m_type);
-	
+
 	switch(info->m_type) {
 	// Series 1: edge wipes
 	case barWipe:

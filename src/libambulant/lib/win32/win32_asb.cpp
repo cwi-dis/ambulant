@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 // Ambulant standard base (ASB) compatibility implementations
@@ -51,7 +51,7 @@ void lib::win32::sleep_msec(unsigned long msecs) {
 std::basic_string<text_char> lib::win32::getcwd() {
 #ifndef AMBULANT_PLATFORM_WIN32_WCE
 	text_char buf[MAX_PATH];
-	text_char *pFilePart = 0;	
+	text_char *pFilePart = 0;
 	GetFullPathName(text_str("."), MAX_PATH, buf, &pFilePart);
 	return buf;
 #endif
@@ -61,7 +61,7 @@ std::basic_string<text_char> lib::win32::getcwd() {
 std::basic_string<text_char> lib::win32::resolve_path(const text_char *s) {
 #ifndef AMBULANT_PLATFORM_WIN32_WCE
 	text_char buf[MAX_PATH];
-	text_char *pFilePart = 0;	
+	text_char *pFilePart = 0;
 	GetFullPathName(s, MAX_PATH, buf, &pFilePart);
 	return buf;
 #endif
@@ -111,7 +111,7 @@ bool lib::win32::file_exists(const std::string& fn) {
 	memset(&fd, 0, sizeof(WIN32_FIND_DATA));
 	bool exists = false;
 	textptr tp(fn.c_str());
-	HANDLE hFind = FindFirstFile(tp, &fd); 
+	HANDLE hFind = FindFirstFile(tp, &fd);
 	if(hFind != INVALID_HANDLE_VALUE){
 		FindClose(hFind);
 		hFind = INVALID_HANDLE_VALUE;

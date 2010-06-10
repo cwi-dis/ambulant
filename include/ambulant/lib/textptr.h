@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_LIB_TEXTPTR_H
@@ -32,10 +32,10 @@
 	#ifndef _INC_WINDOWS
 	#include <windows.h>
 	#endif
-#else 
+#else
 	#include <stdio.h>
 	#include <wchar.h>
-#endif 
+#endif
 
 #ifndef text_str
 	#ifdef UNICODE
@@ -49,34 +49,34 @@ namespace ambulant {
 
 namespace lib {
 
-// This class is a two writing_modes converter 
+// This class is a two writing_modes converter
 // between UNICODE an MB strings.
 
 class textptr {
   public:
 	typedef wchar_t* wchar_ptr;
 	typedef const wchar_t* const_wchar_ptr;
-	
+
 	typedef char* char_ptr;
 	typedef const char* const_char_ptr;
 
-	textptr(const char *pb) 
+	textptr(const char *pb)
 	:	m_pcb(pb), m_pcw(NULL), m_pb(NULL), m_pw(NULL), m_length(-1) {}
 
-	textptr(const char *pb, size_t length) 
+	textptr(const char *pb, size_t length)
 	:	m_pcb(pb), m_pcw(NULL), m_pb(NULL), m_pw(NULL), m_length(length) {}
 
-	textptr(const wchar_t *pw) 
+	textptr(const wchar_t *pw)
 	:	m_pcb(NULL), m_pcw(pw), m_pb(NULL), m_pw(NULL), m_length(-1) {}
 
-	textptr(const wchar_t *pw, size_t length) 
+	textptr(const wchar_t *pw, size_t length)
 	:	m_pcb(NULL), m_pcw(pw), m_pb(NULL), m_pw(NULL), m_length(length) {}
 
 	~textptr() {
 		if(m_pw != NULL) delete[] m_pw;
 		if(m_pb != NULL) delete[] m_pb;
 	}
-	
+
 	wchar_ptr wstr() {
 		if(m_pcw != NULL) return const_cast<wchar_ptr>(m_pcw);
 		if(m_pw != NULL) return m_pw;
@@ -122,10 +122,10 @@ class textptr {
 	size_t length() {
 		if(m_length>=0) return m_length;
 		const_char_ptr pb = (m_pcb!=NULL)?m_pcb:m_pb;
-		if(pb != NULL) 
+		if(pb != NULL)
 			return (m_length = strlen(pb));
 		const_wchar_ptr pw = (m_pcw!=NULL)?m_pcw:m_pw;
-		if(pw != NULL) 
+		if(pw != NULL)
 			return (m_length = wcslen(pw));
 		return (m_length = 0);
 	}

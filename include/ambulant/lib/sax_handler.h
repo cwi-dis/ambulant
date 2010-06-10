@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_LIB_SAX_HANDLER_H
@@ -52,25 +52,25 @@ namespace lib {
 class sax_content_handler {
   public:
 	virtual ~sax_content_handler(){}
-	
+
 	/// Called at the beginning of the document.
 	virtual void start_document() = 0;
-	
+
 	/// Called at the end of the document.
 	virtual void end_document() = 0;
-	
+
 	/// Called when a new element starts, passing the tag name and attribute list.
 	virtual void start_element(const q_name_pair& qn, const q_attributes_list& qattrs) = 0;
-	
+
 	/// Called when an element ends.
 	virtual void end_element(const q_name_pair& qn) = 0;
-	
+
 	/// Called when an XML namespace declaration is encountered.
 	virtual void start_prefix_mapping(const xml_string& prefix, const xml_string& uri) = 0;
-	
+
 	/// Called when an XML namespace declaration goes out of scope.
 	virtual void end_prefix_mapping(const xml_string& prefix) = 0;
-	
+
 	/// Called when data is encountered.
 	virtual void characters(const char *buf, size_t len) = 0;
 };
@@ -83,8 +83,8 @@ class sax_error : public std::runtime_error {
 	sax_error(const std::string& message, int line, int column)
 	:	std::runtime_error(message), m_line(line), m_column(column) {
 	}
-		
-	
+
+
 	/// Return the line at which the error was encountered.
 	int get_line() const { return m_line;}
 	/// Return the column at which the error was encountered.
@@ -101,7 +101,7 @@ class sax_error : public std::runtime_error {
 class sax_error_handler {
   public:
 	virtual ~sax_error_handler(){}
-	
+
 	/// Called when an error occurs.
 	virtual void error(const sax_error& error) = 0;
 };
@@ -111,20 +111,20 @@ class sax_error_handler {
 class xml_parser {
   public:
 	virtual ~xml_parser(){}
-	
+
 	/// Pass data to the parser. Pass final=true when this is the last
 	/// data to be sent.
 	virtual bool parse(const char *buf, size_t len, bool final) = 0;
-	
+
 	/// Install the SAX content handler.
 	virtual void set_content_handler(sax_content_handler *h) = 0;
-	
+
 	/// Install the SAX error handler.
-	virtual void set_error_handler(sax_error_handler *h) = 0;	
+	virtual void set_error_handler(sax_error_handler *h) = 0;
 };
 
 } // namespace lib
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_LIB_SAX_HANDLER_H

@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/document.h"
@@ -43,7 +43,7 @@
 using namespace ambulant;
 using namespace smil2;
 
-timegraph::timegraph(time_node::context_type *ctx, const document *doc, const schema *sch) 
+timegraph::timegraph(time_node::context_type *ctx, const document *doc, const schema *sch)
 :	m_context(ctx),
 	m_schema(sch),
 	m_root(0),
@@ -76,14 +76,14 @@ time_node* timegraph::detach_root() {
 	return tmp;
 }
 
-std::map<int, time_node*>* 
+std::map<int, time_node*>*
 timegraph::detach_dom2tn() {
 	std::map<int, time_node*>* tmp = m_dom2tn;
 	m_dom2tn = 0;
 	return tmp;
 }
 
-time_node* 
+time_node*
 timegraph::build_time_tree(const lib::node *root) {
 	const std::set<std::string>& te = m_schema->get_time_elements();
 	time_node *time_root = 0;
@@ -98,7 +98,7 @@ timegraph::build_time_tree(const lib::node *root) {
 		bool start_element = pair.first;
 		const lib::node *n = pair.second;
 		const std::string& tag = n->get_local_name();
-		
+
 		// keep switch tree ref
 		if(tag == "switch") {
 			bool dynamic_cc = common::preferences::get_preferences()->m_dynamic_content_control;
@@ -114,7 +114,7 @@ timegraph::build_time_tree(const lib::node *root) {
 				switch_stack.pop();
 				select_stack.pop();
 			}
-		} 
+		}
 		// <a actuate="onLoad"/> we treat as area. This is not pretty, but it
 		// works.
 		bool is_onload_a = false;
@@ -125,7 +125,7 @@ timegraph::build_time_tree(const lib::node *root) {
 		}
 		// if not a time element then continue to next
 		if(te.find(tag) == te.end() && !is_onload_a) continue;
-		
+
 		// when within a switch and not selected then continue to next
 		if(!switch_stack.empty() && (select_stack.top() == 0 ||
 			!const_nnhelper::is_descendent(n, select_stack.top()))) {
@@ -139,17 +139,17 @@ timegraph::build_time_tree(const lib::node *root) {
 		bool dynamic_cc = common::preferences::get_preferences()->m_dynamic_content_control;
 		if(!dynamic_cc && !ta.selected()) {
 			// skip content
-			AM_DBG m_logger->debug("Filtering out node: %s[%s]", 
+			AM_DBG m_logger->debug("Filtering out node: %s[%s]",
 				ta.get_tag().c_str(), ta.get_id().c_str());
 			it++;
 			while((*it).second != n) it++;
 			continue;
 		}
-		
+
 		if(start_element) {
 			// create a time node for each start element
 			time_node *tn = create_time_node(n, stack.empty()?0:stack.top());
-			
+
 			// add 'a' parent as a child
 			if(n->up() && n->up()->get_local_name() == "a") {
 				time_node *tnp = create_time_node(n->up(), tn);
@@ -157,7 +157,7 @@ timegraph::build_time_tree(const lib::node *root) {
 				const char *pidp = n->get_attribute("id");
 				if(pidp) m_id2tn[pidp] = tn;
 			}
-			
+
 			// read or create node id and add it the map
 			std::string ident;
 			const char *pid = n->get_attribute("id");
@@ -168,7 +168,7 @@ timegraph::build_time_tree(const lib::node *root) {
 				ident += b;
 			}
 			m_id2tn[ident] = tn;
-			
+
 			if(stack.empty()) {
 				assert(time_root == 0);
 				time_root = tn;
@@ -184,20 +184,20 @@ timegraph::build_time_tree(const lib::node *root) {
 	return time_root;
 }
 
-time_node* 
+time_node*
 timegraph::create_time_node(const node* n, time_node* tparent) const {
 	time_node *tn = 0;
 	time_container_type tct =
 		m_schema->get_time_type(n->get_local_name());
-	if(tct == tc_seq) 
+	if(tct == tc_seq)
 		tn = new seq(m_context, n);
-	else if(tct == tc_par) 
+	else if(tct == tc_par)
 		tn = new par(m_context, n);
-	else if(tct == tc_excl) 
+	else if(tct == tc_excl)
 		tn = new excl(m_context, n);
-	else if(m_schema->is_animation(n->get_local_name())) 
+	else if(m_schema->is_animation(n->get_local_name()))
 		tn = animate_node::new_instance(m_context, n, tparent->dom_node());
-	else 
+	else
 		tn = new time_node(m_context, n, tc_none, m_schema->is_discrete(n->get_local_name()));
 	(*m_dom2tn)[n->get_numid()] = tn;
 	return tn;
@@ -231,7 +231,7 @@ void timegraph::build_priorities() {
 }
 
 // Builds the network of timers based on the sync behavior declared in the document
-// The spec allows many aspects to be implementation specific  
+// The spec allows many aspects to be implementation specific
 // XXX: for now assume always "can slip sync behavior".
 void timegraph::build_timers_graph() {
 	if(!m_context->get_timer())
@@ -258,10 +258,10 @@ void timegraph::build_trans_out_graph() {
 		const time_attrs *ta = tn->get_time_attrs();
 		if(!ta->get_trans_out()) continue;
 		time_type offset = -ta->get_trans_out_dur();
-		// We should now arrange so that the out transition 
+		// We should now arrange so that the out transition
 		// starts before the node is removed.
 		// To do this we need to consider its freeze behaviour and its context
-		AM_DBG m_logger->debug("%s[%s] transOut with fill: %s start:%ld ms before remove", 
+		AM_DBG m_logger->debug("%s[%s] transOut with fill: %s start:%ld ms before remove",
 			ta->get_tag().c_str(), ta->get_id().c_str(), repr(ta->get_fill()).c_str(), offset());
 		if(ta->get_fill() == fill_remove) {
 			sync_rule *sr = new transout_rule(tn, tn_end, offset);
@@ -275,46 +275,46 @@ void timegraph::build_trans_out_graph() {
 	}
 }
 
-// Adds to the provided time node all begin rules 
+// Adds to the provided time node all begin rules
 void timegraph::add_begin_sync_rules(time_node *tn) {
 	// get node begin list
-	const time_attrs::sync_list& list = 
+	const time_attrs::sync_list& list =
 		tn->get_time_attrs()->get_begin_list();
 	time_attrs::sync_list::const_iterator it;
 	time_node *parent = tn->up();
-	
+
 	if(!parent) {
 		// root is special
 		return;
 	}
-		
+
 	if(list.empty()) {
 		// add implicit begin rule
 		sync_rule *sr = create_impl_syncbase_begin_rule(tn);
 		tn->add_begin_rule(sr);
 		return;
 	}
-	
+
 	// add any specified begin offsets rules
 	for(it = list.begin(); it!= list.end(); it++) {
 		const sync_value_struct& svs = *it;
-		if((svs.type == sv_offset || svs.type == sv_indefinite)  
-			//XXXX Fix for #2950428 (negative begin time). 
+		if((svs.type == sv_offset || svs.type == sv_indefinite)
+			//XXXX Fix for #2950428 (negative begin time).
 //				&& (!parent->is_seq() || (parent->is_seq() && svs.offset>=0)
 		) {
 			long offset = svs.offset <= 0 ? 0 : svs.offset;
 			sync_rule *sr = create_impl_syncbase_rule(tn, offset);
 			tn->add_begin_rule(sr);
 			if(parent->is_seq()) break;
-		} 
+		}
 	}
-	
+
 	if(parent->is_seq()) {
-		// For children of a sequence, the only legal value for 
+		// For children of a sequence, the only legal value for
 		// begin is a single non-negative offset value.
 		return;
 	}
-	
+
 	// add any specified begin syncbase rules
 	for(it = list.begin(); it!= list.end(); it++) {
 		const sync_value_struct& svs = *it;
@@ -330,7 +330,7 @@ void timegraph::add_begin_sync_rules(time_node *tn) {
 			}
 		}
 	}
-	
+
 	// add any specified begin event rules
 	for(it = list.begin(); it!= list.end(); it++) {
 		const sync_value_struct& svs = *it;
@@ -402,19 +402,19 @@ void timegraph::add_begin_sync_rules(time_node *tn) {
 	}
 }
 
-// Adds to the provided time node all end rules 
+// Adds to the provided time node all end rules
 void timegraph::add_end_sync_rules(time_node *tn) {
 	// get node end list
-	const time_attrs::sync_list& list = 
+	const time_attrs::sync_list& list =
 		tn->get_time_attrs()->get_end_list();
 	time_attrs::sync_list::const_iterator it;
 	time_node *parent = tn->up();
-	
+
 	// root is special
 	if(!parent) return;
-	
+
 	if(list.empty()) return;
-	
+
 	// add any specified end offsets rules
 	for(it = list.begin(); it!= list.end(); it++) {
 		const sync_value_struct& svs = *it;
@@ -423,7 +423,7 @@ void timegraph::add_end_sync_rules(time_node *tn) {
 			tn->add_end_rule(sr);
 		}
 	}
-	
+
 	// add any specified end syncbase rules
 	for(it = list.begin(); it!= list.end(); it++) {
 		const sync_value_struct& svs = *it;
@@ -439,7 +439,7 @@ void timegraph::add_end_sync_rules(time_node *tn) {
 			}
 		}
 	}
-	
+
 	// add any specified end event rules
 	for(it = list.begin(); it!= list.end(); it++) {
 		const sync_value_struct& svs = *it;
@@ -509,7 +509,7 @@ void timegraph::add_end_sync_rules(time_node *tn) {
 			tn->add_end_rule(sr);
 		}
 	}
-	
+
 }
 
 sync_rule*
@@ -558,17 +558,17 @@ timegraph::create_impl_syncbase_rule(time_node *tn, time_type offset) {
 	return sr;
 }
 
-time_node* 
+time_node*
 timegraph::get_node_with_id(const std::string& ident) const {
 	std::map<std::string, time_node*>::const_iterator it = m_id2tn.find(ident);
 	return (it != m_id2tn.end())?(*it).second:0;
 }
 
-time_node* 
+time_node*
 timegraph::get_node_with_id(const std::string& ident, time_node *tn) const {
 	std::map<std::string, time_node*>::const_iterator it = m_id2tn.find(ident);
 	if(it != m_id2tn.end()) return (*it).second;
-	// check also for special logical syncbases 
+	// check also for special logical syncbases
 	if(ident == "prev") return tn->previous();
 	return 0;
 }
@@ -590,12 +590,12 @@ nodeLangSortPredicate(const node* lhs, const node* rhs)
 	if (rhsLang) {
 		rhsPrio = test_attrs::get_system_language_weight(rhsLang);
 	}
-	
+
 	return lhsPrio >= rhsPrio;
 }
 #endif
 
-const lib::node* 
+const lib::node*
 timegraph::select_switch_child(const node* sn) const {
 	// Note: this implementation reutnrs only a single switch child. if that child
 	// is not usable for some other reason than selected() (i.e. unknown URL) it
@@ -616,7 +616,7 @@ timegraph::select_switch_child(const node* sn) const {
 		if ((*it)->is_data_node()) continue;
 		test_attrs ta(*it);
 		if(!ta.selected()) {
-			AM_DBG m_logger->debug("Filtering out node: %s[%s]", 
+			AM_DBG m_logger->debug("Filtering out node: %s[%s]",
 				ta.get_tag().c_str(), ta.get_id().c_str());
 		} else return (*it);
 	}

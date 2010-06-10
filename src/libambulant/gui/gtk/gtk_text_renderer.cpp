@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
+/*
  * @$Id$
  */
 
@@ -48,8 +48,8 @@ gui::gtk::create_gtk_text_playable_factory(common::factories *factory, common::p
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererGtk"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererText"), true);
 	return new common::single_playable_factory<
-        gtk_text_renderer, 
-        gtk_text_playable_tag, 
+        gtk_text_renderer,
+        gtk_text_playable_tag,
         gtk_text_playable_renderer_uri,
         gtk_text_playable_renderer_uri2,
         gtk_text_playable_renderer_uri2>(factory, mdp);
@@ -115,12 +115,12 @@ gtk_text_renderer::redraw_body(const lib::rect &r,
 		m_text_storage == NULL ? "(null)": (const char*) m_text_storage,
 		p.x, p.y, m_text_font == NULL ? "(null)": (const char*) m_text_font);
 	if (m_text_storage) {
-		int L = r.left()+p.x, 
+		int L = r.left()+p.x,
 		    T = r.top()+p.y,
 		    W = r.width(),
 		    H = r.height();
 		ambulant_gtk_window* agtkw = (ambulant_gtk_window*) w;
-		
+
 		// initialize the pango context, layout...
 		context = gdk_pango_context_get();
  	 	language = gtk_get_default_language();
@@ -130,7 +130,7 @@ gtk_text_renderer::redraw_body(const lib::rect &r,
 		font_desc = pango_font_description_from_string ("sans 10");
 		// in case we have some specific font style and type
 		if (m_text_font){
-			// TBD: smil font name/style to pango font name/style conversion 
+			// TBD: smil font name/style to pango font name/style conversion
 			pango_font_description_set_family(font_desc, m_text_font);
 		}
 

@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_SMIL2_REGION_BUILDER_H
@@ -47,14 +47,14 @@ namespace smil2 {
 
 class region_node;
 
-class smil_layout_manager : 
+class smil_layout_manager :
     public common::layout_manager,
     public lib::avt_change_notification
 {
   public:
 	smil_layout_manager(common::factories *factory, lib::document *doc);
 	~smil_layout_manager();
-	
+
 	void load_bgimages(common::factories *factories);
 
 	common::surface *get_surface(const lib::node *node);
@@ -65,26 +65,26 @@ class smil_layout_manager :
 #ifdef WITH_SMIL30
     void avt_value_changed_for(const lib::node *n);
 #endif // WITH_SMIL30
-	
+
   private:
 	lib::node *get_document_layout(lib::document *doc);
 	void build_layout_tree(lib::node *layout_root, lib::document *doc);
-	
+
 	region_node *get_region_node_for(const lib::node *n, bool nodeoverride);
 	common::surface *get_default_rendering_surface(const lib::node *n);
-	
+
 	void build_surfaces(common::window_factory *wf);
 	void build_body_regions(lib::document *doc);
-	common::surface_template *create_top_surface(common::window_factory *wf, 
+	common::surface_template *create_top_surface(common::window_factory *wf,
 		const region_node *rn, common::bgrenderer *bgrenderer);
-	
+
 	const common::schema *m_schema;
 	common::surface_factory *m_surface_factory;
-	
+
 	lib::node *m_layout_section;
 	region_node *m_layout_tree;
 	std::vector<region_node *>m_default_region_subregions;
-	
+
 	std::vector<common::surface_template*> m_rootsurfaces;
 	std::map<std::string, region_node*> m_id2region;
 	std::map<std::string, lib::node*> m_id2regpoint;
@@ -94,7 +94,7 @@ class smil_layout_manager :
 };
 
 } // namespace smil2
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_SMIL2_REGION_BUILDER_H

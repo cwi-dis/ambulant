@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_LIB_WIN32_THREAD_H
@@ -61,24 +61,24 @@ class AMBULANTAPI thread : public ambulant::lib::thread {
 
 	virtual bool start();
 	virtual void stop();
-	
+
 	HANDLE get_stop_handle() const;
 	HANDLE get_thread_handle() const;
 
 	bool terminate();
-	
-	void set_winui_exit_listener(HWND hWnd, UINT winui_exit_msg); 
+
+	void set_winui_exit_listener(HWND hWnd, UINT winui_exit_msg);
 
 	bool set_priority(int priority);
-	
+
 	bool relax(DWORD millis);
 	bool is_running() const;
-		
+
   protected:
 	virtual unsigned long run() = 0;
-	
+
 	virtual void signal_exit_thread();
-	
+
 	bool exit_requested() const;
 
   private:

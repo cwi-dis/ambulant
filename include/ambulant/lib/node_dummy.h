@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_LIB_NODE_DUMMY_H
@@ -42,12 +42,12 @@ namespace lib {
 class node_dummy : public node_interface {
 
   public:
-  
+
 	///////////////////////////////
 	// tree iterators
 	typedef tree_iterator<node_dummy> iterator;
 	typedef const_tree_iterator<node_dummy> const_iterator;
-	
+
 	/// Destruct this node and its contents.
 	/// If this node is part of a tree, detach it first
 	/// and then delete the node and its contents.
@@ -55,19 +55,19 @@ class node_dummy : public node_interface {
 
 	/// Return first child of this node.
 	const node_dummy *down() const;
-	
+
 	/// Return parent of this node.
 	const node_dummy *up() const;
-	
+
 	/// Return next sibling of this node.
 	const node_dummy *next() const;
 
 	/// Return first child of this node.
 	node_dummy *down();
-	
+
 	/// Return parent of this node.
 	node_dummy *up();
-	
+
 	/// Return next sibling of this node.
 	node_dummy *next();
 
@@ -76,46 +76,46 @@ class node_dummy : public node_interface {
 
 	/// Set first child of this node, after dynamic typecheck
 	void down(node_interface *n);
-	
+
 	/// Set parent of this node.
 	void up(node_dummy *n);
 
 	/// Set parent of this node, after dynamic typecheck
 	void up(node_interface *n);
-	
+
 	/// Set next sibling of this node.
 	void next(node_dummy *n);
-	
+
 	/// Set next sibling of this node, after dynamic typecheck
 	void next(node_interface *n);
-	
-	/// Returns the previous sibling node 
+
+	/// Returns the previous sibling node
 	/// or null when this is the first child.
 	const node_dummy* previous() const;
-	
-	/// Returns the last child 
+
+	/// Returns the last child
 	/// or null when this has not any children.
 	const node_dummy* get_last_child() const;
-	
+
 	/// Appends the children of this node (if any) to the provided list.
 	void get_children(std::list<const node*>& l) const;
 
 	///////////////////////////////
-	// search operations 
+	// search operations
 	// this section should be extented to allow for XPath selectors
 
 	/// Find a node given a path of the form tag/tag/tag.
 	node_dummy* locate_node(const char *path);
-	
+
 	/// Find the first direct child with the given tag.
 	node_dummy *get_first_child(const char *name);
-	
+
 	/// Find the first direct child with the given tag.
 	const node_dummy *get_first_child(const char *name) const;
-		
+
 	/// Find the root of the tree to which this node belongs.
 	node_dummy* get_root();
-	
+
 	/// Get an attribute from this node or its nearest ancestor that has the attribute.
 	const char *get_container_attribute(const char *name) const;
 	///////////////////////////////
@@ -132,7 +132,7 @@ class node_dummy : public node_interface {
 
 	///////////////////////
 	// build tree functions
-	
+
 	/// Append a child node to this node.
 	node_dummy* append_child(node_dummy* child);
 
@@ -144,16 +144,16 @@ class node_dummy : public node_interface {
 
 	/// Detach this node and its subtree from its parent tree.
 	node_dummy* detach();
-	
+
 	/// Create a deep copy of this node and its subtree.
 	node_dummy* clone() const;
-	
+
 	/// Append data to the data of this node.
 	void append_data(const char *data, size_t len);
-	
+
 	/// Append c_str to the data of this node.
 	void append_data(const char *c_str);
-	
+
 	/// Append str to the data of this node.
 	void append_data(const xml_string& str);
 
@@ -167,7 +167,7 @@ class node_dummy : public node_interface {
 	/// Note: attrs are as per expat parser
 	/// e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
 	void set_attributes(const char **attrs);
-		
+
 	/// Override prefix mapping for this node and descendents
 	virtual void set_prefix_mapping(const std::string& prefix, const std::string& uri) = 0;
 
@@ -176,63 +176,63 @@ class node_dummy : public node_interface {
 
 	/// Return the namespace part of the tag for this node.
 	const xml_string& get_namespace() const;
-	
+
 	/// Return the local part of the tag for this node.
 	const xml_string& get_local_name() const;
-	
+
 	/// Return namespace and local part of the tag for this node.
 	const q_name_pair& get_qname() const;
-	
+
 	/// Return the unique numeric ID for this node.
 	int get_numid() const;
-	
+
 	/// Return the data for this node.
 	const xml_string& get_data() const;
-	
+
 	/// Return true if this is a pure data node (i.e. no tag/attrs)
 	virtual bool is_data_node() const = 0;
 
 	/// Return the trimmed data for this node.
 	xml_string get_trimmed_data() const;
-	
+
 	/// Return the value for the given attribute.
 	const char *get_attribute(const char *name) const;
-	
+
 	/// Return the value for the given attribute.
 	const char *get_attribute(const std::string& name) const;
-	
+
 	/// Remove the first occurrence of the given attribute.
 	virtual void del_attribute(const char *name) = 0;
-	
+
 	/// Return the value for the given attribute, interpreted as a URL.
 	/// Relative URLs are resolved against the document base URL, if possible.
 	net::url get_url(const char *attrname) const;
-	
+
 	/// Return the number of nodes of the xml (sub-)tree starting at this node.
 	unsigned int size() const;
-	
+
 	/// Returns a "friendly" path desription of this node.
 	std::string get_path_display_desc() const;
-	
+
 	/// Return a friendly string describing this node.
 	/// The string will be of a form similar to \<tag id="...">
 	std::string get_sig() const;
-	
+
 	/////////////////////
 	// string repr
-	
+
 	/// Return the
 	xml_string xmlrepr() const;
-	
+
 	/////////////////////
 	// node context
-	
+
 	/// Return the node_context for this node.
 	const node_context* get_context() const;
-	
+
 	/// Set the node_context for this node.
 	void set_context(node_context *c);
-	
+
 	/// Return the next unique ID.
 	static int get_node_counter();
 };

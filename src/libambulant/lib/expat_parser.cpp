@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/expat_parser.h"
@@ -33,20 +33,20 @@ using namespace ambulant;
 
 lib::xml_parser*
 lib::expat_factory::new_parser(
-		sax_content_handler* content_handler, 
-		sax_error_handler* error_handler) 
+		sax_content_handler* content_handler,
+		sax_error_handler* error_handler)
 {
 	AM_DBG lib::logger::get_logger()->debug("expat_factory::new_parser(): expat parser returned");
 	return new lib::expat_parser(content_handler, error_handler);
 }
 
-std::string 
+std::string
 lib::expat_factory::get_parser_name()
 {
 	return "expat";
 }
 
-lib::expat_parser::expat_parser(lib::sax_content_handler *content_handler, 
+lib::expat_parser::expat_parser(lib::sax_content_handler *content_handler,
 	lib::sax_error_handler *error_handler)
 :	m_content_handler(content_handler),
 	m_expatParser(0),
@@ -58,12 +58,12 @@ lib::expat_parser::expat_parser(lib::sax_content_handler *content_handler,
 	m_expatParser = XML_ParserCreateNS(0, char(NS_SEP));
 #endif
 
-	if(m_expatParser == 0) 
+	if(m_expatParser == 0)
 		throw std::runtime_error("XML_ParserCreateNS() failed");
 	XML_SetUserData(m_expatParser, this);
 	XML_SetElementHandler(m_expatParser, expat_parser::start_element, expat_parser::end_element);
 	XML_SetCharacterDataHandler(m_expatParser, expat_parser::characters);
-	XML_SetNamespaceDeclHandler(m_expatParser, expat_parser::start_prefix_mapping, 
+	XML_SetNamespaceDeclHandler(m_expatParser, expat_parser::start_prefix_mapping,
 		expat_parser::end_prefix_mapping);
 }
 
@@ -80,7 +80,7 @@ bool lib::expat_parser::parse(const char *buf, size_t len, bool final) {
 		m_content_handler->start_document();
 	}
 	if(XML_Parse(m_expatParser, buf, int(len), (final?1:0)) != 1)  {
-		sax_error e(XML_ErrorString(XML_GetErrorCode(m_expatParser)), 
+		sax_error e(XML_ErrorString(XML_GetErrorCode(m_expatParser)),
 			XML_GetCurrentLineNumber(m_expatParser),
 			XML_GetCurrentColumnNumber(m_expatParser)
 			);
@@ -97,7 +97,7 @@ bool lib::expat_parser::parse(const char *buf, size_t len, bool final) {
 	return true;
 }
 
-//static 
+//static
 void lib::expat_parser::start_element(void *usrptr, const char *name, const char **attrs) {
 	expat_parser *p = static_cast<expat_parser*>(usrptr);
 	q_name_pair qname = to_q_name_pair(name);
@@ -106,50 +106,50 @@ void lib::expat_parser::start_element(void *usrptr, const char *name, const char
 	p->m_content_handler->start_element(qname, qattrs);
 }
 
-// static 
+// static
 void lib::expat_parser::end_element(void *usrptr, const char *name) {
 	expat_parser *p = static_cast<expat_parser*>(usrptr);
 	q_name_pair qname = to_q_name_pair(name);
 	p->m_content_handler->end_element(qname);
 }
 
-// static 
+// static
 void lib::expat_parser::characters(void *usrptr, const char *buf, int len) {
 	expat_parser *p = static_cast<expat_parser*>(usrptr);
 	p->m_content_handler->characters(buf, len);
 }
-	
-// static 
+
+// static
 void lib::expat_parser::start_prefix_mapping(void *usrptr, const char *prefix, const char *uri) {
 	expat_parser *p = static_cast<expat_parser*>(usrptr);
 	std::string prefix_str((prefix!=0)?prefix:"");
 	std::string uri_str((uri!=0)?uri:"");
 	p->m_content_handler->start_prefix_mapping(prefix_str, uri_str);
 }
-	
-// static 
+
+// static
 void lib::expat_parser::end_prefix_mapping(void *usrptr, const char *prefix) {
 	expat_parser *p = static_cast<expat_parser*>(usrptr);
 	std::string prefix_str((prefix!=0)?prefix:"");
 	p->m_content_handler->end_prefix_mapping(prefix_str);
 }
-	
-//static 
+
+//static
 void lib::expat_parser::to_qattrs(const char **attrs, q_attributes_list& list) {
 	if(attrs == 0) return;
 	for(int i=0;attrs[i];i+=2) {
 		list.push_back(q_attribute_pair(to_q_name_pair(attrs[i]), attrs[i+1]));
 	}
 }
-	
-// static 
-lib::q_name_pair 
+
+// static
+lib::q_name_pair
 lib::expat_parser::to_q_name_pair(const char *name) {
 	const char *p = name;
 	const char ns_sep = char(NS_SEP);
 	while(*p != 0 && *p != ns_sep) p++;
 	q_name_pair qn;
-	if(*p == ns_sep) { 
+	if(*p == ns_sep) {
 		qn.first = std::string(name, int(p-name));
 		qn.second = std::string(p+1);
 	} else {

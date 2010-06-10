@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_COMMON_REGION_INFO_H
@@ -57,40 +57,40 @@ enum tiling { tiling_default, tiling_none, tiling_inherit,
 class region_info {
   public:
     virtual ~region_info(){}
-	
+
 	/// Return the name of the region.
 	virtual std::string get_name() const = 0;
-	
+
 	/// Return the rectangle of the region.
 	virtual rect get_rect(const lib::rect *default_rect = NULL) const = 0;
-	
+
 	/// Return the fit attribute for the region.
 	virtual fit_t get_fit() const = 0;
-	
+
 	/// Return the background color for the region.
 	virtual color_t get_bgcolor() const = 0;
-	
+
 	/// Return the background opacity of the region.
 	virtual double get_bgopacity() const = 0;
-	
+
 	/// Return true if the background is transparent for the region.
 	virtual bool get_transparent() const = 0;
-	
+
 	/// Return the zindex for the region.
 	virtual zindex_t get_zindex() const = 0;
-	
+
 	/// Return true if showbackground=always.
 	virtual bool get_showbackground() const = 0;
-	
+
 	/// Return true if this object represents subregion positioning on a body node.
 	virtual bool is_subregion() const = 0;
-	
+
 	/// Return audio volume
 	virtual double get_soundlevel() const = 0;
-	
+
 	/// Return audio placement
 	virtual sound_alignment get_soundalign() const = 0;
-	
+
 	/// Return image tiling within region
 	virtual tiling get_tiling() const = 0;
 
@@ -127,34 +127,34 @@ class region_info {
 class animation_destination : public region_info {
   public:
     virtual ~animation_destination() {}
-  
+
 	/// Get one of the six dimensions of a region.
 	/// If fromdom is true get the original DOM value, otherwise get the current
 	/// value (as animated by previous set_ calls). The name which is the
 	/// SMIL attribute name.
 	virtual region_dim get_region_dim(const std::string& which, bool fromdom = false) const = 0;
-  
+
 	/// Get one of the region colors.
 	/// If fromdom is true get the original DOM value, otherwise get the current
 	/// value (as animated by previous set_ calls). The name which is the
 	/// SMIL attribute name.
 	virtual color_t get_region_color(const std::string& which, bool fromdom = false) const = 0;
-  
+
 	/// Get the z-index of a region.
 	/// If fromdom is true get the original DOM value, otherwise get the current
 	/// value (as animated by previous set_ calls).
 	virtual zindex_t get_region_zindex(bool fromdom = false) const = 0;
-  
+
 	/// Get the audio volume of a region.
 	/// If fromdom is true get the original DOM value, otherwise get the current
 	/// value (as animated by previous set_ calls).
 	virtual double get_region_soundlevel(bool fromdom = false) const = 0;
-  
+
 	/// Get the audio volume of a region.
 	/// If fromdom is true get the original DOM value, otherwise get the current
 	/// value (as animated by previous set_ calls).
 	virtual sound_alignment get_region_soundalign(bool fromdom = false) const = 0;
-  
+
 #ifdef WITH_SMIL30
 	/// Get the region image cropping parameters.
 	/// If fromdom is true get the original DOM value, otherwise get the current
@@ -169,31 +169,31 @@ class animation_destination : public region_info {
 	/// Set one of the six dimensions of a region to a new value.
 	/// The name which is the SMIL attribute name.
 	virtual void set_region_dim(const std::string& which, const region_dim& rd) = 0;
-	
+
 	/// Set one of the region colors to a new value.
 	/// The name which is the SMIL attribute name.
 	virtual void set_region_color(const std::string& which, lib::color_t clr) = 0;
-	
+
 	/// Set the region z-index to a new value.
 	virtual void set_region_zindex(common::zindex_t z) = 0;
-	
+
 	/// Set the region audio volume to a new value.
 	virtual void set_region_soundlevel(double level) = 0;
 
 	/// Set the region audio volume to a new value.
 	virtual void set_region_soundalign(sound_alignment sa) = 0;
-	
+
 #ifdef WITH_SMIL30
 	/// Set the region image cropping parameters
 	virtual void set_region_panzoom(const region_dim_spec& rds) = 0;
-	
+
 	/// Set the region background opacity to a new value.
 	virtual void set_region_opacity(const std::string& which, double level) = 0;
 #endif
 };
 
 } // namespace common
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_COMMON_REGION_INFO_H

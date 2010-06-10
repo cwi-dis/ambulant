@@ -14,7 +14,7 @@
  *
  * The Original Code is mozilla.org code.
  *
- * The Initial Developer of the Original Code is 
+ * The Initial Developer of the Original Code is
  * Netscape Communications Corporation.
  * Portions created by the Initial Developer are Copyright (C) 1998
  * the Initial Developer. All Rights Reserved.
@@ -22,7 +22,7 @@
  * Contributor(s):
  *
  * Alternatively, the contents of this file may be used under the terms of
- * either the GNU General Public License Version 2 or later (the "GPL"), or 
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
  * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
  * in which case the provisions of the GPL or the LGPL are applicable instead
  * of those above. If you wish to allow use of your version of this file only
@@ -38,7 +38,7 @@
 ////////////////////////////////////////////////////////////
 //
 // Implementation of plugin entry points (NPP_*)
-// most are just empty stubs for this particular plugin 
+// most are just empty stubs for this particular plugin
 //
 #ifdef	XP_WIN32
 #include <cstddef>		   	 // Needed for ptrdiff_t. Is used in GeckoSDK 1.9,
@@ -65,8 +65,8 @@ void NPP_Shutdown(void)
 {
 }
 
-// here the plugin creates an instance of our npambulant object which 
-// will be associated with this newly created plugin instance and 
+// here the plugin creates an instance of our npambulant object which
+// will be associated with this newly created plugin instance and
 // will do all the neccessary job
 NPError NPP_New(NPMIMEType pluginType,
                 NPP instance,
@@ -75,7 +75,7 @@ NPError NPP_New(NPMIMEType pluginType,
                 char* argn[],
                 char* argv[],
                 NPSavedData* saved)
-{   
+{
   if(instance == NULL)
     return NPERR_INVALID_INSTANCE_ERROR;
 
@@ -128,7 +128,7 @@ NPError NPP_Destroy (NPP instance, NPSavedData** save)
 // is about to be destroyed so we can do some gui specific
 // initialization and shutdown
 NPError NPP_SetWindow (NPP instance, NPWindow* pNPWindow)
-{    
+{
   if(instance == NULL)
     return NPERR_INVALID_INSTANCE_ERROR;
 
@@ -139,7 +139,7 @@ NPError NPP_SetWindow (NPP instance, NPWindow* pNPWindow)
 
   npambulant *pPlugin = (npambulant *)instance->pdata;
 
-  if(pPlugin == NULL) 
+  if(pPlugin == NULL)
     return NPERR_GENERIC_ERROR;
 
   if (!pPlugin->setWindow(pNPWindow))
@@ -153,7 +153,7 @@ NPError NPP_SetWindow (NPP instance, NPWindow* pNPWindow)
 // ==============================
 //
 // here the plugin is asked by Mozilla to tell if it is scriptable
-// we should return a valid interface id and a pointer to 
+// we should return a valid interface id and a pointer to
 // nsScriptablePeer interface which we should have implemented
 // and which should be defined in the corressponding *.xpt file
 // in the bin/components folder
@@ -180,10 +180,10 @@ NPError	NPP_GetValue(NPP instance, NPPVariable variable, void *value)
     break;
   case NPPVpluginNeedsXEmbed:
     *(NPBool *) value = TRUE;
-    break;        
+    break;
   default:
 //    rv = NPERR_GENERIC_ERROR;
-	break; 
+	break;
   }
 
   return rv;
@@ -191,7 +191,7 @@ NPError	NPP_GetValue(NPP instance, NPPVariable variable, void *value)
 
 NPError NPP_NewStream(NPP instance,
                       NPMIMEType type,
-                      NPStream* stream, 
+                      NPStream* stream,
                       NPBool seekable,
                       uint16* stype)
 {
@@ -201,7 +201,7 @@ NPError NPP_NewStream(NPP instance,
   NPError rv = NPERR_NO_ERROR;
   npambulant *pPlugin = (npambulant *)instance->pdata;
 
-  if(pPlugin == NULL) 
+  if(pPlugin == NULL)
     return NPERR_GENERIC_ERROR;
 
   if (pPlugin->isInitialized()) {
@@ -224,7 +224,7 @@ int32_t NPP_WriteReady (NPP instance, NPStream *stream)
 }
 
 int32_t NPP_Write (NPP instance, NPStream *stream, int32_t offset, int32_t len, void *buffer)
-{   
+{
   if(instance == NULL)
     return NPERR_INVALID_INSTANCE_ERROR;
 

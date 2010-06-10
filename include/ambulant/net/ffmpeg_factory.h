@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -28,7 +28,7 @@
 
 namespace ambulant {
 
-namespace net {  
+namespace net {
 
 AMBULANTAPI raw_datasource_factory *get_ffmpeg_raw_datasource_factory();
 AMBULANTAPI video_datasource_factory *get_ffmpeg_video_datasource_factory();

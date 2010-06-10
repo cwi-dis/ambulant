@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/logger.h"
@@ -67,7 +67,7 @@ video_renderer::video_renderer(
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::video_renderer() (this = 0x%x): Constructor ", (void *) this);
 	net::url url = node->get_url("src");
 	_init_clip_begin_end();
-	
+
 #ifdef WITH_SEAMLESS_PLAYBACK
 	m_previous_clip_position = m_clip_begin;
 #endif
@@ -78,10 +78,10 @@ video_renderer::video_renderer(
 		m_lock.leave();
 		return;
 	}
-	
+
 	if (m_src->has_audio()) {
 		m_audio_ds = m_src->get_audio_datasource();
-	
+
 		if (m_audio_ds) {
 			AM_DBG lib::logger::get_logger()->debug("active_video_renderer::active_video_renderer: creating audio renderer !");
 			m_audio_renderer = factory->get_playable_factory()->new_aux_audio_playable(context, cookie, node, evp, (net::audio_datasource*) m_audio_ds);
@@ -119,7 +119,7 @@ video_renderer::init_with_node(const lib::node *n)
 #endif // WITH_SEAMLESS_PLAYBACK
 	if (m_audio_renderer) {
 		m_audio_renderer->init_with_node(n);
-	} 
+	}
 	m_lock.leave();
 }
 
@@ -135,11 +135,11 @@ video_renderer::start (double where)
 		m_lock.leave();
 		return;
 	}
-	AM_DBG { 
+	AM_DBG {
         std::string tag = m_node->get_local_name();
         assert(tag != "prefetch");
     }
-	
+
 	if (!m_src) {
 		lib::logger::get_logger()->trace("video_renderer.start: no datasource, skipping media item");
 		m_context->stopped(m_cookie, 0);
@@ -170,7 +170,7 @@ video_renderer::start (double where)
 		lib::logger::get_logger()->trace("video_renderer.start(0x%x): already started", (void*)this);
 		m_post_stop_called = false;
 #if 0
-		//xxxbo 15-04-2010 
+		//xxxbo 15-04-2010
 		m_lock.leave();
 		return;
 #endif
@@ -181,7 +181,7 @@ video_renderer::start (double where)
         	m_activated = true;
         	m_post_stop_called = false;
     	}
-	if (m_audio_renderer) 
+	if (m_audio_renderer)
 		m_audio_renderer->start(where);
 
 #ifdef WITH_SEAMLESS_PLAYBACK
@@ -189,7 +189,7 @@ video_renderer::start (double where)
     m_previous_clip_position = -1;
 #endif
 	m_lock.leave();
-	
+
 	// Note by Jack: I'm not 100% sure that calling show() after releasing the lock is safe, but (a)
 	// calling it inside the lock leads to deadly embrace (this lock and the one in the destination region,
 	// during a redraw) and (b) other renderers also call m_dest->show() without holding the lock.
@@ -226,7 +226,7 @@ video_renderer::preroll(double when, double where, double how_much)
 	assert(m_clip_begin >= 0);
 	assert(where >= 0);
 	m_is_paused = false;
-	
+
 	// We need to initial these variables over here
 	m_paused_epoch = 0;
 	m_last_frame_timestamp = -1;
@@ -242,21 +242,21 @@ video_renderer::preroll(double when, double where, double how_much)
     }
 
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::preroll(%f) seek to %lld", where, m_clip_begin);
-	
+
 	AM_DBG lib::logger::get_logger ()->debug ("video_renderer::preroll(%f) this = 0x%x, cookie=%d, dest=0x%x, timer=0x%x, epoch=%d", where, (void *) this, (int)m_cookie, (void*)m_dest, m_timer, m_epoch);
 
 	/*if(!m_activated)*/ m_src->start_prefetch (m_event_processor);
-	if (m_audio_renderer) 
+	if (m_audio_renderer)
 		m_audio_renderer->preroll(0, where, 0);
-	
-	m_lock.leave();	
+
+	m_lock.leave();
 #endif // WITH_SEAMLESS_PLAYBACK
 }
 
 
 bool
 video_renderer::stop()
-{ 
+{
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::stop() this=0x%x, dest=0x%x", (void *) this, (void*)m_dest);
 
@@ -270,12 +270,12 @@ video_renderer::stop()
 	if (!is_fill_continue_node())
 		m_activated = false;
 #endif // WITH_SEAMLESS_PLAYBACK
-	
+
 	m_lock.leave();
 	return false; // note, "false" means this renderer is reusable (and still running, needing post_stop() to actually stop)
 }
 
-void 
+void
 video_renderer::post_stop()
 {
 	m_lock.enter();
@@ -295,7 +295,7 @@ video_renderer::post_stop()
         m_src = NULL;
     }
 #endif // !WITH_SEAMLESS_PLAYBACK
-	m_lock.leave();	
+	m_lock.leave();
 }
 
 
@@ -312,7 +312,7 @@ video_renderer::seek(double t)
     m_lock.leave();
 }
 
-common::duration 
+common::duration
 video_renderer::get_dur()
 {
 	common::duration rv(false, 0.0);
@@ -330,7 +330,7 @@ video_renderer::get_dur()
 
 // now() returns the time in seconds !
 double
-video_renderer::now() 
+video_renderer::now()
 {
 	assert( m_timer );
 	// private method - no locking
@@ -341,7 +341,7 @@ video_renderer::now()
 		elapsed = m_paused_epoch;
 	else
 		elapsed = m_timer->elapsed();
-		
+
 	if (elapsed < m_epoch)
 		rv = 0;
 	else
@@ -357,7 +357,7 @@ video_renderer::pause(pause_display d)
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::pause() this=0x%x, dest=0x%x", (void *) this, (void*)m_dest);
 	// XXX if d==display_hide we should hide the content
 	if (m_activated && !m_is_paused) {
-		if (m_audio_renderer) 
+		if (m_audio_renderer)
 			m_audio_renderer->pause(d);
 		m_is_paused = true;
 		assert (m_timer);
@@ -372,7 +372,7 @@ video_renderer::resume()
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::resume() this=0x%x, dest=0x%x", (void *) this, (void*)m_dest);
 	if (m_activated && m_is_paused) {
-		if (m_audio_renderer) 
+		if (m_audio_renderer)
 			m_audio_renderer->resume();
 		m_is_paused = false;
 		assert (m_timer);
@@ -394,12 +394,12 @@ video_renderer::data_avail()
 		return;
 	}
 	assert(m_dest);
-    
+
 	m_size.w = m_src->width();
 	m_size.h = m_src->height();
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: size=(%d, %d)", m_size.w, m_size.h);
-	
-	// Get the next frame, dropping any frames whose timestamp has passed. 
+
+	// Get the next frame, dropping any frames whose timestamp has passed.
 	char *buf = NULL;
 	int size = 0;
 	net::timestamp_t now_micros = (net::timestamp_t)(now()*1000000);
@@ -416,9 +416,9 @@ video_renderer::data_avail()
 	            if (m_audio_renderer == NULL)
               		m_context->stopped(m_cookie, 0);
         	} else {
-			// Sometimes, this callback was scheduled into the queue of scheduler before 
+			// Sometimes, this callback was scheduled into the queue of scheduler before
 			// the flush operation(due to seek) and got executed after the flush(due to seek),
-			// in this case, we need to reopen our datasource to feed new data to 
+			// in this case, we need to reopen our datasource to feed new data to
 			// its buffer
 			AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: start_frame(..., %d)", (int)m_clip_begin);
 			lib::event * e = new dataavail_callback (this, &video_renderer::data_avail);
@@ -431,7 +431,7 @@ video_renderer::data_avail()
 		return;
 	}
 	net::timestamp_t frame_duration = m_src->frameduration(); // XXX For now: assume 30fps
-	
+
 	// If we are at the end of the clip we stop and signal the scheduler..
 #ifndef WITH_SEAMLESS_PLAYBACK
 	if (m_src->end_of_file() || (m_clip_end > 0 && frame_ts_micros > m_clip_end)) {
@@ -447,7 +447,7 @@ video_renderer::data_avail()
 		return;
 	}
 #else
-    AM_DBG { 
+    AM_DBG {
         std::string tag = m_node->get_local_name();
         assert(tag != "prefetch");
     }
@@ -455,7 +455,7 @@ video_renderer::data_avail()
         AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: stopping playback. eof=%d, ts=%lld, now=%lld, clip_end=%lld ", (int)m_src->end_of_file(), frame_ts_micros, now_micros, m_clip_end );
         // If we have an audio renderer we should let it do the stopped() callback.
         if (m_audio_renderer == NULL) m_context->stopped(m_cookie, 0);
-        
+
         // Remember how far we officially got (discounting any fill=continue behaviour)
         m_previous_clip_position = m_clip_end;
         // If we are past real end-of-file we always stop playback.
@@ -468,10 +468,10 @@ video_renderer::data_avail()
 		m_lock.leave();
             return;
         }
-    }		
+    }
 #endif
 
-	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: buf=0x%x, size=%d, ts=%d, now=%d", (void *) buf, size, (int)frame_ts_micros, (int)now_micros);	
+	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: buf=0x%x, size=%d, ts=%d, now=%d", (void *) buf, size, (int)frame_ts_micros, (int)now_micros);
 	AM_DBG lib::logger::get_logger()->debug("video_renderer::data_avail: frame_ts_micros=%lld (<=) now_micros(%lld) + frame_duration(%lld)= %lld", frame_ts_micros, now_micros, frame_duration, now_micros + frame_duration);
 
 	// If we have a frame and it should be on-screen already we show it.
@@ -526,7 +526,7 @@ video_renderer::data_avail()
 		w->redraw_now();
 		m_last_frame_timestamp = frame_ts_micros;
 		m_frame_displayed++;
-		
+
 		// Now we need to decide when we want the next callback, by computing what the timestamp
 		// of the next frame is expected to be.
 		frame_ts_micros += frame_duration;
@@ -547,7 +547,7 @@ video_renderer::data_avail()
 	m_lock.leave();
 }
 
-void 
+void
 video_renderer::redraw(const lib::rect &dirty, common::gui_window *window)
 {
 	AM_DBG lib::logger::get_logger ()->debug("video_renderer::redraw (this = 0x%x)", (void *) this);

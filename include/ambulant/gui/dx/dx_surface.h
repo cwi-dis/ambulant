@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_DX_SURFACE_H
@@ -55,13 +55,13 @@ class surface {
 	typedef const T& const_reference;
 
 	surface(int width, int height, int depth, pointer data)
-	:	m_width(width), 
-		m_height(height), 
-		m_depth(depth), 
-		m_pitch((width*sizeof(T)+3) & ~3), 
+	:	m_width(width),
+		m_height(height),
+		m_depth(depth),
+		m_pitch((width*sizeof(T)+3) & ~3),
 		m_data(data) {
 	}
-	
+
 	~surface() {}
 
 	void fill(value_type bkcolor) {
@@ -74,20 +74,20 @@ class surface {
 		}
 	}
 
-	reference pixel(int x, int y) { 
+	reference pixel(int x, int y) {
 		if(x>=m_width || y>=m_height) throw_range_error();
 		uchar_ptr pb = uchar_ptr(m_data) + (m_height - 1 - y)*m_pitch;
 		pointer ptr = pointer(pb);
 		return  ptr[x];
 	}
 
-	const_reference pixel(int x, int y) const { 
+	const_reference pixel(int x, int y) const {
 		return pixel(x,y);
 	}
 
 	value_type set_pixel(int x, int y, T v) {
-		reference r = pixel(x, y); 
-		value_type t = r; r = v; 
+		reference r = pixel(x, y);
+		value_type t = r; r = v;
 		return t;
 	}
 
@@ -103,7 +103,7 @@ class surface {
 	int get_height() const {return m_height;}
 	int get_depth() const {return m_depth;}
 	uchar_ptr get_buffer() {return uchar_ptr(m_data);}
-	
+
 	// argument is a surface with palette
 	template <class rgbquadT>
 	void fill(surface<uchar_t>& surf, rgbquadT *pquad, int n)  {
@@ -181,7 +181,7 @@ class surface {
 } // namespace dx
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_GUI_DX_SURFACE_H

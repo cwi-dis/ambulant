@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef __UNIX_PREFERENCES_H__
@@ -58,7 +58,7 @@ class unix_preferences : public ambulant::common::preferences {
 	bool load_preferences();
 
 	bool save_preferences();
- 
+
  private:
 	FILE* open_preferences_file(std::string mode);
 
@@ -69,7 +69,7 @@ class unix_preferences : public ambulant::common::preferences {
 	bool load_preferences_from_file();
 
 	void get_preference(char* buf, char**namep, char** valuep);
-	
+
 	std::vector<preference_entry*>* s_preference_table;
 
 	typedef std::vector<preference_entry*>::const_iterator

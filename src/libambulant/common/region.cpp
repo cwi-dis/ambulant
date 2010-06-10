@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/logger.h"
@@ -179,7 +179,7 @@ void
 surface_impl::renderer_done(gui_events *cur)
 {
 	AM_DBG lib::logger::get_logger()->debug("surface_impl[0x%x].renderer_done(0x%x)", (void *)this, (void*)cur);
-	
+
 	m_children_cs.enter();
 	std::list<gui_events*>::iterator i = m_renderers.end();
 	for(i=m_renderers.begin(); i!=m_renderers.end(); i++)
@@ -191,7 +191,7 @@ surface_impl::renderer_done(gui_events *cur)
 		m_renderers.erase(i);
 	}
 	m_children_cs.leave();
-	
+
 	zindex_t z = 0;
 	if (m_info) z = m_info->get_zindex();
 	if(m_parent) {
@@ -221,11 +221,11 @@ surface_impl::redraw(const lib::rect &r, gui_window *window)
 	AM_DBG lib::logger::get_logger()->debug("surface_impl.redraw(0x%x %s) returning: nothing to draw", (void *)this, m_name.c_str());
 		return;
 	}
-	
+
 	////////////////
 	// Draw the content of this
 	AM_DBG lib::logger::get_logger()->debug("surface_impl.redraw(0x%x %s, our_ltrb=(%d, %d, %d, %d)) ->draw_background", (void *)this, m_name.c_str(), our_rect.left(), our_rect.top(), our_rect.right(), our_rect.bottom());
-	
+
 	// First the background
 	//marisa added null check july 7 2008
     const region_info *info = get_info();
@@ -249,21 +249,21 @@ surface_impl::redraw(const lib::rect &r, gui_window *window)
 	// Then the active renderers
 	// For the win32 arrangement we should have at most one active
 	m_children_cs.enter();
-	
+
 	//XXX Why is this assertion needed ?
-	//assert(m_renderers.size()<=1); 
-	
+	//assert(m_renderers.size()<=1);
+
 	std::list<gui_events*>::iterator ar;
 	for (ar=m_renderers.begin(); ar!=m_renderers.end(); ar++) {
 		AM_DBG lib::logger::get_logger()->debug("surface_impl.redraw(0x%x %s) ->renderer 0x%x", (void *)this, m_name.c_str(), (void *)(*ar));
 		(*ar)->redraw(our_rect, window);
 	}
-		
+
 	// Draw active subregions in reverse activation order and in the correct z-order
 	for(children_map_t::iterator it1=m_subregions.begin();it1!=m_subregions.end();it1++) {
 		children_list_t& cl = (*it1).second;
 		for(children_list_t::iterator it2=cl.begin();it2!=cl.end();it2++) {
-			
+
 			AM_DBG lib::logger::get_logger()->debug("surface_impl.redraw(0x%x %s) ->subregion 0x%x", (void *)this, m_name.c_str(), (void *)(*it2));
 			const region_info *ri = (*it2)->get_info();
 			if (ri && !ri->is_subregion()) {
@@ -273,10 +273,10 @@ surface_impl::redraw(const lib::rect &r, gui_window *window)
 			(*it2)->redraw(our_rect, window);
 		}
 	}
-	
+
 	// Then the children regions of this
 	// XXXX Should go per z-order value
-	
+
 	for(children_map_t::iterator it2=m_active_children.begin();it2!=m_active_children.end();it2++) {
 		AM_DBG lib::logger::get_logger()->debug("surface_impl.redraw(0x%x %s) examining next z-order list", (void*)this, m_name.c_str());
 		children_list_t& cl = (*it2).second;
@@ -291,7 +291,7 @@ surface_impl::redraw(const lib::rect &r, gui_window *window)
 	// Finally any highlighting needed
 	if (m_highlighting && m_bg_renderer)
 		m_bg_renderer->highlight(window);
-		
+
 	AM_DBG lib::logger::get_logger()->debug("surface_impl.redraw(0x%x %s) returning", (void*)this, m_name.c_str());
 	m_children_cs.leave();
 }
@@ -333,7 +333,7 @@ surface_impl::user_event(const lib::point &where, int what)
 	// Convert to local coordinates
 	point our_point = where;
 	our_point -= m_outer_bounds.left_top();
-	
+
 	m_children_cs.enter();
 	bool handled = false;
 	// First check whether any of our subregions (which are on top of us) are interested.
@@ -410,7 +410,7 @@ surface_impl::get_clipped_screen_rect() const
 {
 	const_cast<surface_impl*>(this)->need_bounds();
 	return m_clipped_screen_bounds;
-}	
+}
 
 void
 surface_impl::need_bounds()
@@ -418,7 +418,7 @@ surface_impl::need_bounds()
 	if (m_bounds_inited) return;
 	AM_DBG lib::logger::get_logger()->debug("surface_impl::need_bounds(%s, 0x%x)", m_name.c_str(), (void*)this);
 	if (m_info) m_outer_bounds = m_info->get_rect();
-	AM_DBG lib::logger::get_logger()->debug("surface_impl::need_bounds: %d %d %d %d", 
+	AM_DBG lib::logger::get_logger()->debug("surface_impl::need_bounds: %d %d %d %d",
 		m_outer_bounds.left(), m_outer_bounds.top(), m_outer_bounds.right(), m_outer_bounds.bottom());
 	m_inner_bounds = m_outer_bounds.innercoordinates(m_outer_bounds);
 	m_window_topleft = m_outer_bounds.left_top();
@@ -454,7 +454,7 @@ surface_impl::clear_cache()
 }
 
 #ifndef WITH_SMIL30
-lib::rect 
+lib::rect
 surface_impl::get_fit_rect_noalign(const lib::size& src_size, lib::rect* out_src_rect) const
 {
 	const_cast<surface_impl*>(this)->need_bounds();
@@ -467,7 +467,7 @@ surface_impl::get_fit_rect_noalign(const lib::size& src_size, lib::rect* out_src
 	const double scale_width = (double)region_width / std::max((double)image_width, 0.1);
 	const double scale_height = (double)region_height / std::max((double)image_height, 0.1);
 	double scale;
-	
+
 	fit_t fit = (m_info == NULL?fit_default : m_info->get_fit());
 	// This is a bit of a hack: if no fit value is specified we pick it up
 	// from our parent. This is needed for subregions (nodes).
@@ -516,19 +516,19 @@ surface_impl::get_crop_rect(const lib::size& srcsize) const
 	return lib::rect(lib::point(0, 0), srcsize);
 }
 
-lib::rect 
+lib::rect
 surface_impl::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, const common::alignment *align) const
 {
 	lib::rect src_clip_rect(lib::point(0,0), src_size);
 	return get_fit_rect(src_clip_rect, src_size, out_src_rect, align);
 }
 
-lib::rect 
+lib::rect
 surface_impl::get_fit_rect(const lib::rect& src_clip_rect, const lib::size& src_real_size, lib::rect* out_src_rect, const common::alignment *align) const
 {
 	const lib::size src_size(src_clip_rect.width(), src_clip_rect.height());
 #else
-lib::rect 
+lib::rect
 surface_impl::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, const common::alignment *align) const
 {
 #endif // WITH_SMIL30
@@ -544,7 +544,7 @@ surface_impl::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, c
 		xy_image = align->get_image_fixpoint(src_size);
 		xy_region = align->get_surface_fixpoint(region_size);
 	}
-	
+
 	const int x_image_left = xy_image.x;
 	const int x_image_right = image_width - xy_image.x;
 	const int y_image_top = xy_image.y;
@@ -553,16 +553,16 @@ surface_impl::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, c
 	const int x_region_right = region_width - xy_region.x;
 	const int y_region_top = xy_region.y;
 	const int y_region_bottom = region_height - xy_region.y;
-	
+
 	AM_DBG lib::logger::get_logger()->debug("get_fit_rect: image size=(%d, %d)", image_width, image_height);
 	AM_DBG lib::logger::get_logger()->debug("get_fit_rect: region size=(%d, %d)", region_width, region_height);
 	AM_DBG lib::logger::get_logger()->debug("get_fit_rect: image fixpoint=(%d, %d)", xy_image.x, xy_image.y);
 	AM_DBG lib::logger::get_logger()->debug("get_fit_rect: region fixpoint=(%d, %d)", xy_region.x, xy_region.y);
 	AM_DBG lib::logger::get_logger()->debug("get_fit_rect: image delta fixpoint to ltrb=(%d, %d, %d, %d)", x_image_left, y_image_top, x_image_right, y_image_bottom);
 	AM_DBG lib::logger::get_logger()->debug("get_fit_rect: region delta fixpoint to ltrb=(%d, %d, %d, %d)", x_region_left, y_region_top, x_region_right, y_region_bottom);
-	
+
 	double scale_min_horizontal, scale_max_horizontal, scale_min_vertical, scale_max_vertical;
-	
+
 	if (x_image_left == 0) {
 		scale_min_horizontal = scale_max_horizontal = (double)x_region_right / (double)x_image_right;
 	} else {
@@ -590,7 +590,7 @@ surface_impl::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, c
 		}
 	}
 	double scale_horizontal, scale_vertical;
-	
+
 	fit_t fit = (m_info == NULL?fit_default : m_info->get_fit());
 	// This is a bit of a hack: if no fit value is specified we pick it up
 	// from our parent. This is needed for subregions (nodes).
@@ -669,7 +669,7 @@ surface_impl::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, c
 	int y_image_for_region_top = 0;
 	int y_image_for_region_bottom = image_height;
 #endif // WITH_SMIL30
-	AM_DBG lib::logger::get_logger()->debug("get_fit_rect: full image would  have region lrtb=(%d, %d, %d, %d)", 
+	AM_DBG lib::logger::get_logger()->debug("get_fit_rect: full image would  have region lrtb=(%d, %d, %d, %d)",
 		x_region_for_image_left, y_region_for_image_top, x_region_for_image_right, y_region_for_image_bottom);
 	// Finally clamp all values
 	if (x_region_for_image_left < 0) {
@@ -690,9 +690,9 @@ surface_impl::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, c
 		y_region_for_image_bottom = region_height;
 		y_image_for_region_bottom = y_image_for_region_bottom - (int)((overshoot / scale_vertical) + 0.5);
 	}
-	AM_DBG lib::logger::get_logger()->debug("get_fit_rect: image selection ltrb=(%d, %d, %d, %d)", 
+	AM_DBG lib::logger::get_logger()->debug("get_fit_rect: image selection ltrb=(%d, %d, %d, %d)",
 		x_image_for_region_left, y_image_for_region_top, x_image_for_region_right, y_image_for_region_bottom);
-	AM_DBG lib::logger::get_logger()->debug("get_fit_rect: region selection lrtb=(%d, %d, %d, %d)", 
+	AM_DBG lib::logger::get_logger()->debug("get_fit_rect: region selection lrtb=(%d, %d, %d, %d)",
 		x_region_for_image_left, y_region_for_image_top, x_region_for_image_right, y_region_for_image_bottom);
 	*out_src_rect = lib::rect(
 		point(x_image_for_region_left, y_image_for_region_top),
@@ -706,7 +706,7 @@ bool
 surface_impl::is_tiled() const
 {
 	common::tiling t = m_info->get_tiling();
-	
+
 	return (t == common::tiling_horizontal || t == common::tiling_vertical || t == common::tiling_both || t == common::tiling_default);
 }
 
@@ -714,9 +714,9 @@ tile_positions
 surface_impl::get_tiles(lib::size image_size, lib::rect surface_rect) const
 {
 	assert(is_tiled());
-	
+
 	tile_positions rv;
-	
+
 	int x, y;
 	int width = image_size.w;
 	int height = image_size.h;
@@ -727,7 +727,7 @@ surface_impl::get_tiles(lib::size image_size, lib::rect surface_rect) const
 		max_x = surface_rect.right();
 	if (t == common::tiling_vertical || t == common::tiling_both || t == common::tiling_default)
 		max_y = surface_rect.bottom();
-		
+
 	for (x=surface_rect.left(); x < max_x; x += width) {
 		for (y=surface_rect.top(); y < max_y; y += height) {
 			int w = std::min<int>(width, max_x-x);
@@ -740,7 +740,7 @@ surface_impl::get_tiles(lib::size image_size, lib::rect surface_rect) const
 	return rv;
 }
 
-void 
+void
 surface_impl::transition_done(lib::rect area)
 {
 	if (!m_parent)
@@ -749,7 +749,7 @@ surface_impl::transition_done(lib::rect area)
 	m_parent->transition_done(m_outer_bounds.outercoordinates(area));
 }
 
-void 
+void
 surface_impl::transition_freeze_end(lib::rect r)
 {
 	AM_DBG lib::logger::get_logger()->debug("surface_impl.transition_freeze_end(0x%x %s, ltrb=(%d, %d, %d, %d))", (void *)this, m_name.c_str(), r.left(), r.top(), r.right(), r.bottom());
@@ -759,7 +759,7 @@ surface_impl::transition_freeze_end(lib::rect r)
 	AM_DBG lib::logger::get_logger()->debug("surface_impl.transition_freeze_end(0x%x %s) returning: no overlap", (void *)this, m_name.c_str());
 		return;
 	}
-	
+
 	// Signal the active renderers
 	// For the win32 arrangement we should have at most one active
 	m_children_cs.enter();
@@ -783,7 +783,7 @@ surface_impl::transition_freeze_end(lib::rect r)
 	m_children_cs.leave();
 }
 
-void 
+void
 surface_impl::add_subregion(zindex_t z, surface_impl *rgn)
 {
 	m_children_cs.enter();
@@ -794,7 +794,7 @@ surface_impl::add_subregion(zindex_t z, surface_impl *rgn)
     if (was_inactive) background_render_changed();
 }
 
-void 
+void
 surface_impl::del_subregion(zindex_t z, surface_impl *rgn)
 {
 	m_children_cs.enter();
@@ -815,7 +815,7 @@ surface_impl::background_render_changed()
     // We also forward to our parent
     if (m_parent) {
         m_parent->background_render_changed();
-    }    
+    }
 }
 
 renderer_private_data*
@@ -829,7 +829,7 @@ surface_impl::get_renderer_private_data(renderer_private_id idd) {
 	return NULL;
 }
 
-void 
+void
 surface_impl::set_renderer_private_data(renderer_private_id idd, renderer_private_data* data) {
 	if (m_info && m_info->is_subregion()) {
 		assert(m_parent);
@@ -849,7 +849,7 @@ surface_impl::highlight(bool onoff)
 	m_highlighting = onoff;
 	need_redraw(m_inner_bounds);
 }
-	
+
 
 // toplevel_surface_impl
 
@@ -864,7 +864,7 @@ toplevel_surface_impl::toplevel_surface_impl(const region_info *info, lib::size 
 	m_gui_window = wf->new_window(m_name, bounds, this);
 	AM_DBG lib::logger::get_logger()->debug("toplevel_surface_impl(0x%x, \"%s\"): window=0x%x", (void *)this, m_name.c_str(), (void *)m_gui_window);
 }
-		
+
 toplevel_surface_impl::~toplevel_surface_impl()
 {
 	AM_DBG lib::logger::get_logger()->debug("~toplevel_surface_impl(0x%x)", (void*)this);

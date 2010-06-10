@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_LIB_COLORS_H
@@ -84,52 +84,52 @@ struct color_trible {
 	uchar r;
 
 	color_trible() : b(0), g(0), r(0) {}
-	
+
 	color_trible(uchar _r, uchar _g, uchar _b) : b(_b), g(_g), r(_r) {}
-	
+
 	template <class T>
 	color_trible(T _r, T _g, T _b) : b(uchar(_b)), g(uchar(_g)), r(uchar(_r)) {}
-	
+
 	color_trible(color_t rgb) : b(bluec(rgb)), g(greenc(rgb)), r(redc(rgb)) {}
-	
+
 	color_trible(const color_quad& q) : b(q.b), g(q.g), r(q.r) {}
-	
+
 	uchar blue() const { return b;}
 	uchar green() const { return g;}
 	uchar red() const { return r;}
 
 	template <class T>
 	void blue(T _b) { b = uchar(_b);}
-	
+
 	template <class T>
 	void green(T _g) { g = uchar(_g);}
-	
+
 	template <class T>
 	void red(T _r) { r = uchar(_r);}
-	
+
 	color_trible& operator=(color_t c) {
 		b = bluec(c);
-		g = greenc(c); 
+		g = greenc(c);
 		r = redc(c);
 		return *this;
 	}
-	
+
 	bool operator==(color_trible o) const {
 		return b == o.b && g == o.g && r == o.r;
 	}
-	
+
 	bool operator!=(color_trible o) const {
 		return b != o.b || g != o.g || r != o.r;
 	}
-	
+
 	operator color_t () { return to_color(r, g, b);}
-	
+
 	// traits
-	static color_encoding& get_encoding() { 
+	static color_encoding& get_encoding() {
 		static color_encoding e = {24, 0, 8, 8, 8, 16, 8};
 		return e;
 	}
-	static int get_bits_size() { return 24;} 
+	static int get_bits_size() { return 24;}
 };
 
 // compute chroma_low, chroma_high
@@ -143,13 +143,13 @@ void compute_chroma_range(
 bool color_t_in_range(lib::color_t c, lib::color_t c_low, lib::color_t c_high);
 
 } // namespace lib
- 
+
 } // namespace ambulant
 
 
 #include <ostream>
 
-inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::color_trible& t) { 
+inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::color_trible& t) {
 	return os << '(' << int(t.r) << ", " << int(t.g) << ", " << int(t.b)  << ')';
 }
 

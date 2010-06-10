@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -39,7 +39,7 @@ struct ambulant::common::plugin_extra_data plugin_extra_data = {
 };
 
 
-static ambulant::common::factories * 
+static ambulant::common::factories *
 bug_workaround(ambulant::common::factories* factory)
 {
 	return factory;
@@ -55,7 +55,7 @@ void initialize(
     ambulant::common::gui_player *player)
 {
     if ( api_version != AMBULANT_PLUGIN_API_VERSION ) {
-        lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"wkdom_plugin", 
+        lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"wkdom_plugin",
 					AMBULANT_PLUGIN_API_VERSION, api_version);
         return;
     }

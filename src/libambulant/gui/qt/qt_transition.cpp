@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/qt/qt_includes.h"
@@ -41,11 +41,11 @@ namespace gui {
 
 namespace qt {
 
-void 
+void
 qt_transition_debug::paint_rect(
 	ambulant_qt_window* aqw,
 	common::surface * dst,
-	color_t color) 
+	color_t color)
 {
 	const rect& dstrect_whole = dst->get_clipped_screen_rect();
 	QPainter paint;
@@ -58,7 +58,7 @@ qt_transition_debug::paint_rect(
 	AM_DBG logger::get_logger()->debug(
 		"qt_transition_debug::paint_rect:"
 		" %s0x%x,%s(%d,%d,%d,%d)",
-		" clearing to ", (long)color, 
+		" clearing to ", (long)color,
 		" local_ltwh=",L,T,W,H);
 	QColor bgc = QColor(
 		redc(color),
@@ -127,7 +127,7 @@ qt_transition_blitclass_fade::update()
 				  " ltwh=(%d,%d,%d,%d)",L,T,W,H);
 	QPixmap rpm(W,H);
 	rpm.convertFromImage(res);
-	bitBlt(qpm, L, T, &rpm, L, T, W, H);	
+	bitBlt(qpm, L, T, &rpm, L, T, W, H);
 	finalize_transition(m_outtrans, aqw, m_dst);
 }
 
@@ -173,7 +173,7 @@ qt_transition_blitclass_r1r2r3r4::update()
 		Woldsrc = oldsrcrect_whole.width(),
 		Holdsrc = oldsrcrect_whole.height();
 //	logger::get_logger()->debug("qt_transition_blitclass_r1r2r3r4: (Loldsrc,Toldsrc,Woldsrc,Holdsrc)=(%d,%d,%d,%d)",Loldsrc,Toldsrc,Woldsrc,Holdsrc);
-	int	Lolddst = olddstrect_whole.left(), 
+	int	Lolddst = olddstrect_whole.left(),
 		Tolddst = olddstrect_whole.top(),
 		Wolddst = olddstrect_whole.width(),
 		Holddst = olddstrect_whole.height();
@@ -274,7 +274,7 @@ qt_transition_blitclass_polylist::update()
 	QRegion clip_region;
 	AM_DBG logger::get_logger()->debug("qt_transition_blitclass_polylist: m_newpolygonlist.size()=%d", m_newpolygonlist.size());
 	std::vector< std::vector<point> >::iterator partpolygon;
-	for (partpolygon=m_newpolygonlist.begin(); 
+	for (partpolygon=m_newpolygonlist.begin();
 	     partpolygon!=m_newpolygonlist.end(); partpolygon++) {
 		std::vector<point>::iterator newpoint;
 		AM_DBG logger::get_logger()->debug("qt_transition_blitclass_polylist: partpolygon.size()=%d", partpolygon->size());
@@ -308,7 +308,7 @@ qt_transition_engine(common::surface *dst, bool is_outtrans, const transition_in
 {
 	smil2::transition_engine *rv;
 	AM_DBG logger::get_logger()->debug("qt_transition_engine: info=0x%x info->m_type=%d", info, info->m_type);
-	
+
 	switch(info->m_type) {
 	// Series 1: edge wipes
 	case barWipe:

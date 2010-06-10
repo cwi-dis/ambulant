@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/gtk/gtk_includes.h"
@@ -55,8 +55,8 @@ create_gtk_smiltext_playable_factory(common::factories *factory, common::playabl
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererGtk"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererSmilText"), true);
 	return new common::single_playable_factory<
-        gtk_smiltext_renderer, 
-        gtk_smiltext_playable_tag, 
+        gtk_smiltext_renderer,
+        gtk_smiltext_playable_tag,
         gtk_smiltext_playable_renderer_uri,
         gtk_smiltext_playable_renderer_uri2,
         gtk_smiltext_playable_renderer_uri2>(factory, mdp);
@@ -193,7 +193,7 @@ AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x)",this);
 		}
 #ifndef	WITH_GTK_ANTI_ALIASING
 		if (m_alpha_media != 1.0 || m_alpha_media_bg != 1.0 || m_alpha_chroma != 1.0) {
-			cairo_font_options_t* 
+			cairo_font_options_t*
 			  cairo_font_options = cairo_font_options_create();
 			/* anti-aliasing by pango/cairo is disabled
 			 * when blending is necessary, because this
@@ -223,7 +223,7 @@ AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x)",this);
 	}
 	if ( ! m_pango_attr_list)
 		m_pango_attr_list = pango_attr_list_new();
-	if ( ! m_bg_layout  && (m_alpha_media != 1.0  || m_alpha_media_bg != 1.0 
+	if ( ! m_bg_layout  && (m_alpha_media != 1.0  || m_alpha_media_bg != 1.0
 				|| m_alpha_chroma != 1.0)) {
 		// prepare for blending: layout is setup twice:
 		// m_bg_layout has textColor as m_transparent
@@ -256,7 +256,7 @@ AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x)",this);
 					pango_layout_set_alignment (m_pango_layout,
 								    PANGO_ALIGN_CENTER);
 					if (m_bg_layout)
-						pango_layout_set_alignment (m_bg_layout, 
+						pango_layout_set_alignment (m_bg_layout,
 									    PANGO_ALIGN_CENTER);
 					break;
 				case smil2::sta_right:
@@ -334,19 +334,19 @@ AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x)",this);
 				}
 				m_text_storage += newdata;
 				break;
-			}				
+			}
 			// Set font attributes
-			_gtk_set_font_attr(m_pango_attr_list, 
+			_gtk_set_font_attr(m_pango_attr_list,
 					   i->m_font_families[0].c_str(),
-					   i->m_font_style, 
+					   i->m_font_style,
 					   i->m_font_weight,
 					   i->m_font_size,
 					   start_index,
 					   m_text_storage.size());
-			if (m_bg_pango_attr_list) 
-				_gtk_set_font_attr(m_bg_pango_attr_list, 
+			if (m_bg_pango_attr_list)
+				_gtk_set_font_attr(m_bg_pango_attr_list,
 						   i->m_font_families[0].c_str(),
-						   i->m_font_style, 
+						   i->m_font_style,
 						   i->m_font_weight,
 						   i->m_font_size,
 						   start_index,
@@ -373,13 +373,13 @@ AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x)",this);
 				// Select altenative color for m_transparent
 				color_t bg_color = i->m_bg_color == m_transparent ?
 					m_alternative : i->m_bg_color;
-				_gtk_set_color_attr(m_pango_attr_list, 
+				_gtk_set_color_attr(m_pango_attr_list,
 						    m_bg_layout ?
 						    	m_transparent : bg_color,
 						    pango_attr_background_new,
 						    start_index, m_text_storage.size());
 				if (m_bg_layout) {
-					_gtk_set_color_attr(m_bg_pango_attr_list, 
+					_gtk_set_color_attr(m_bg_pango_attr_list,
 							    bg_color,
 							    pango_attr_background_new,
 							    start_index,
@@ -515,7 +515,7 @@ AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw(0x%x, local_ltr
 		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
 		switch (m_params.m_mode) {
 		default: // no smilText motion, don't come here again
-			m_motion_done = true; 
+			m_motion_done = true;
 			break;
 		case smil2::stm_crawl:
 			m_origin.x += (int) now * m_params.m_rate / 1000;
@@ -605,7 +605,7 @@ gtk_smiltext_renderer::_gtk_set_color_attr(PangoAttrList* pal,
 	pango_attribute->end_index   = end_index;
 	pango_attr_list_insert(pal, pango_attribute);
 }
-		   
+
 void
 gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point offset,
 					    ambulant_gtk_window* window )
@@ -618,7 +618,7 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 	if ( ! (m_pango_layout && window))
 	  return; // nothing to do
 
-	int L = r.left()+p.x, 
+	int L = r.left()+p.x,
 	    T = r.top()+p.y,
 	    W = r.width(),
 	    H = r.height();
@@ -646,7 +646,7 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 
 		GdkPixmap* pixmap = window->get_ambulant_pixmap();
 		int PW = -1, PH = -1;
-		if (pixmap != NULL) 
+		if (pixmap != NULL)
 			gdk_drawable_get_size (pixmap, &PW, &PH);
 		if (pixmap == NULL || PW < L+W || PH  < T+H ) {
 			g_object_unref (G_OBJECT (text_pixmap));
@@ -684,7 +684,7 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 						 0,0,0,0,W,H);
 		lib::rect rc(lib::point(L,T),lib::size(W,H));
 		// blend the screen pixbuf with th background pixbuf
-		gdk_pixbuf_blend (screen_pixbuf, rc, bg_pixbuf, rc, 
+		gdk_pixbuf_blend (screen_pixbuf, rc, bg_pixbuf, rc,
 				  m_alpha_chroma, m_alpha_media_bg,
 				  m_chroma_low, m_chroma_high, m_transparent);
 //DBG		gdk_pixmap_dump( window->get_ambulant_pixmap(), "screen0");
@@ -698,7 +698,7 @@ gtk_smiltext_renderer::_gtk_smiltext_render(const lib::rect r, const lib::point 
 		GdkPixbuf* text_pixbuf = gdk_pixbuf_get_from_drawable
 		  			       	(NULL, text_pixmap, NULL,
 						0,0,0,0,W,H);
-		gdk_pixbuf_blend (screen_pixbuf, rc, text_pixbuf, rc, 
+		gdk_pixbuf_blend (screen_pixbuf, rc, text_pixbuf, rc,
 				  m_alpha_chroma, m_alpha_media,
 				  m_chroma_low, m_chroma_high, m_transparent);
 		// draw the blended pixbuf on the screen

@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_LIB_TRANSITION_INFO_H
@@ -30,7 +30,7 @@
 #include "ambulant/lib/node.h"
 
 namespace ambulant {
-	
+
 namespace lib {
 
 /// Type of transition, as per the SMIL 2.1 standard.
@@ -86,7 +86,7 @@ class AMBULANTAPI transition_info {
   public:
 	typedef int time_type;
 	typedef double progress_type;
-	
+
 	transition_type m_type;    ///< SMIL 2.1 transition type.
 	std::string m_subtype;     ///< SMIL 2.1 transition subtype.
 	time_type m_dur;           ///< Transition duration (Unit???)
@@ -99,7 +99,7 @@ class AMBULANTAPI transition_info {
 
 	transition_info() { }
 	transition_info(transition_info* info) { *this = *info; }
-	
+
 	/// Factory function: obtain transition_info object from DOM node.
 	static transition_info *from_node(const node *n);
 
@@ -109,7 +109,7 @@ class AMBULANTAPI transition_info {
 };
 
 } // namespace lib
- 
+
 } // namespace ambulant
 
 inline std::string repr(ambulant::lib::transition_type t)

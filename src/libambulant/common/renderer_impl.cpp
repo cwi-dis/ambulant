@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/config/config.h"
@@ -47,7 +47,7 @@ renderer_playable::renderer_playable(
 	const lib::node *node,
 	lib::event_processor* evp,
 	common::factories *fp,
-	common::playable_factory_machdep *mdp) 
+	common::playable_factory_machdep *mdp)
 :	playable_imp(context, cookie, node, evp, fp, mdp),
 	m_dest(0),
 	m_alignment(0),
@@ -135,7 +135,7 @@ void
 renderer_playable::_init_clip_begin_end()
 {
 	net::timestamp_t cb = 0;
-	
+
 	const char* begin_attr =  m_node->get_attribute("begin");
 	// here we have to get clip_begin/clip_end from the node
 	const char *clip_begin_attr = m_node->get_attribute("clipBegin");
@@ -156,13 +156,13 @@ renderer_playable::_init_clip_begin_end()
 
 		}
 	}
-	
+
 	const char *clip_end_attr = m_node->get_attribute("clipEnd");
 	net::timestamp_t ce = -1;
 	if (!clip_end_attr) {
 		clip_end_attr = m_node->get_attribute("clip-end");
 	}
-	
+
 	if (clip_end_attr) {
 		lib::mediaclipping_p parser;
 		std::string s(clip_end_attr);
@@ -173,7 +173,7 @@ renderer_playable::_init_clip_begin_end()
 			lib::logger::get_logger()->warn(gettext("Cannot parse %s"),"clipEnd");
 		} else {
 			ce = (net::timestamp_t)parser.get_time() * 1000;
-		}	
+		}
 	}
 	AM_DBG lib::logger::get_logger()->debug("renderer_playable::init_clip_begin_end: cb=%lld, ce=%lld", cb,ce);
 	if (cb < 0) {
@@ -199,7 +199,7 @@ renderer_playable_ds::renderer_playable_ds(
 {
 	// XXXX m_src = passive_datasource(node->get_url("src"))->activate()
 	net::url url = node->get_url("src");
-	m_src = factory->get_datasource_factory()->new_raw_datasource(url);	
+	m_src = factory->get_datasource_factory()->new_raw_datasource(url);
 }
 
 renderer_playable_ds::~renderer_playable_ds()
@@ -262,15 +262,15 @@ renderer_playable_dsall::~renderer_playable_dsall()
 void
 renderer_playable_dsall::readdone()
 {
-	if (!m_src) return;	
+	if (!m_src) return;
 	unsigned cur_size = m_src->size();
 	AM_DBG lib::logger::get_logger()->debug("renderer_playable_dsall.readdone(0x%x, size=%d) cookie=%d", (void *)this, cur_size, m_cookie);
-	
+
 	if (!m_partial_data)
 		m_partial_data = malloc(cur_size);
 	else
 		m_partial_data = realloc(m_partial_data, m_partial_data_size + cur_size);
-	
+
 	if (m_partial_data == NULL) {
 		lib::logger::get_logger()->fatal("renderer_playable_dsall.readdone: cannot allocate %d bytes", cur_size);
 		// What else can we do...
@@ -286,7 +286,7 @@ renderer_playable_dsall::readdone()
 	m_partial_data_size += cur_size;
 	AM_DBG lib::logger::get_logger()->debug("renderer_playable_dsall.readdone(0x%x): calling m_src->readdone(%d)", (void *)this,cur_size);
 	m_src->readdone(cur_size);
-	
+
 	if (m_src->end_of_file()) {
 		// All done. Move staging area data to the real place.
 		assert(!m_data);
@@ -304,7 +304,7 @@ renderer_playable_dsall::readdone()
 		lib::event *e = new readdone_callback(this, &renderer_playable_ds::readdone);
 		m_src->start(m_event_processor, e);
 	}
-	
+
 }
 
 global_playable_factory_impl::global_playable_factory_impl()
@@ -328,7 +328,7 @@ global_playable_factory_impl::~global_playable_factory_impl()
     }
 	m_factories.clear();
 }
-    
+
 void
 global_playable_factory_impl::add_factory(playable_factory *rf)
 {
@@ -363,14 +363,14 @@ global_playable_factory_impl::new_playable(
 	lib::event_processor *evp)
 {
     std::list<playable_factory *>::iterator i;
-	
+
 	// First make sure we have the node in our renderer selection cache
 	int nid = node->get_numid();
 	if (m_renderer_select.count(nid) == 0) {
 		m_renderer_select[nid] = new renderer_select(node);
 	}
 	renderer_select *rs = m_renderer_select[nid];
-	
+
 	// If we don't have a renderer selected yet select one
 	playable *rv = NULL;
     playable_factory *pf = rs->get_playable_factory();
@@ -397,7 +397,7 @@ global_playable_factory_impl::new_playable(
 		}
 		rs->set_playable_factory(pf);
 	}
-	return rv;    
+	return rv;
 }
 
 playable *
@@ -410,12 +410,12 @@ global_playable_factory_impl::new_aux_audio_playable(
 {
     std::list<playable_factory *>::iterator i;
     playable *rv;
-    
+
     for(i=m_factories.begin(); i != m_factories.end(); i++) {
         rv = (*i)->new_aux_audio_playable(context, cookie, node, evp, src);
         if (rv) return rv;
     }
-	
+
     return NULL;
 }
 

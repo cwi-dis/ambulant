@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -31,15 +31,15 @@ using namespace ambulant;
 class rot13_filter_finder : public net::raw_filter_finder {
   public:
 
-    net::datasource* new_raw_filter(const net::url& url, net::datasource *src);	
+    net::datasource* new_raw_filter(const net::url& url, net::datasource *src);
 };
 
-class rot13_datasource : public net::filter_datasource_impl 
+class rot13_datasource : public net::filter_datasource_impl
 {
   public:
     rot13_datasource(net::datasource *src)
     :   net::filter_datasource_impl(src) {}
-    
+
 	size_t _process(char *data, size_t size);
 };
 
@@ -78,7 +78,7 @@ rot13_datasource::_process(char *data, size_t size)
 	return size;
 }
 
-static ambulant::common::factories * 
+static ambulant::common::factories *
 bug_workaround(ambulant::common::factories* factory)
 {
 	return factory;
@@ -94,7 +94,7 @@ void initialize(
     ambulant::common::gui_player *player)
 {
     if ( api_version != AMBULANT_PLUGIN_API_VERSION ) {
-        lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"rot13_plugin", 
+        lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"rot13_plugin",
 					AMBULANT_PLUGIN_API_VERSION, api_version);
         return;
     }

@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 #include "ambulant/lib/tree_builder.h"
 #include "ambulant/lib/document.h"
@@ -76,14 +76,14 @@ lib::tree_builder::~tree_builder()
 	// m_node_factory is a borrowed reference
 }
 
-lib::node* 
+lib::node*
 lib::tree_builder::detach() {
 	node* temp = m_root;
 	m_root = m_current = 0;
 	return temp;
 }
 
-bool 
+bool
 lib::tree_builder::build_tree_from_file(const char *filename) {
 	if(!m_xmlparser) return false;
 	if(!filename || !*filename) return false;
@@ -122,21 +122,21 @@ lib::tree_builder::build_tree_from_file(const char *filename) {
 #endif
 }
 
-bool 
+bool
 lib::tree_builder::build_tree_from_str(const std::string& str) {
 	if ( ! m_xmlparser) return false;
 	m_well_formed = m_xmlparser->parse(str.data(), int(str.length()), true);
 	return m_well_formed;
 }
 
-bool 
+bool
 lib::tree_builder::build_tree_from_str(const char *begin, const char *end) {
 	if ( ! m_xmlparser) return false;
 	m_well_formed = m_xmlparser->parse(begin, int(end-begin), true);
 	return m_well_formed;
 }
 
-void 
+void
 lib::tree_builder::reset() {
 #ifdef WITH_SMIL30
 	m_xml_space_stack.clear();
@@ -168,15 +168,15 @@ lib::tree_builder::reset() {
 		m_filename = "<no filename>";
 }
 
-void 
+void
 lib::tree_builder::start_document() {
 }
 
-void 
+void
 lib::tree_builder::end_document() {
 }
 
-void 
+void
 lib::tree_builder::start_element(const q_name_pair& qn, const q_attributes_list& qattrs) {
 	if(m_root == 0) {
 		m_root = m_current = m_node_factory->new_node(qn, qattrs, m_context);
@@ -206,7 +206,7 @@ lib::tree_builder::start_element(const q_name_pair& qn, const q_attributes_list&
 #endif // WITH_SMIL30
 }
 
-void 
+void
 lib::tree_builder::end_element(const q_name_pair& qn) {
 #ifdef WITH_SMIL30
 	if (m_xml_space_stack.size() > 0 &&  m_xml_space_stack.back().second == m_current)
@@ -218,11 +218,11 @@ lib::tree_builder::end_element(const q_name_pair& qn) {
 		m_well_formed = false;
 }
 
-void 
+void
 lib::tree_builder::characters(const char *buf, size_t len) {
 	if(m_current != 0) {
 #ifdef WITH_SMIL30
-		// The <smiltext> tag has embedded data and tags 
+		// The <smiltext> tag has embedded data and tags
 		lib::node* n = NULL;
 		if (m_xml_space_stack.size() > 0
 		    && m_xml_space_stack.back().first == "preserve")
@@ -264,7 +264,7 @@ lib::tree_builder::characters(const char *buf, size_t len) {
 #endif // WITH_SMIL30
 }
 
-void 
+void
 lib::tree_builder::start_prefix_mapping(const std::string& prefix, const std::string& uri) {
 	AM_DBG lib::logger::get_logger()->debug("xmlns:%s=\"%s\"", prefix.c_str(), uri.c_str());
 	if(m_context)
@@ -275,12 +275,12 @@ lib::tree_builder::start_prefix_mapping(const std::string& prefix, const std::st
 #endif // WITH_EXTERNAL_DOM
 }
 
-void 
+void
 lib::tree_builder::end_prefix_mapping(const std::string& prefix) {
 	(void)prefix; // UNREFERENCED_PARAMETER(prefix)
 }
 
-void 
+void
 lib::tree_builder::error(const sax_error& err) {
 	m_well_formed = false;
 	lib::logger::get_logger()->trace("%s, line %d, column %d: Parse error: %s", m_filename.c_str(), err.get_line(), err.get_column(), err.what());

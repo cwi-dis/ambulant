@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/cocoa/cocoa_text.h"
@@ -52,8 +52,8 @@ create_cocoa_text_playable_factory(common::factories *factory, common::playable_
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererText"), true);
 	return new common::single_playable_factory<
-        cocoa_text_renderer, 
-        cocoa_text_playable_tag, 
+        cocoa_text_renderer,
+        cocoa_text_playable_tag,
         cocoa_text_playable_renderer_uri,
         cocoa_text_playable_renderer_uri2,
         cocoa_text_playable_renderer_uri2>(factory, mdp);
@@ -83,7 +83,7 @@ cocoa_text_renderer::cocoa_text_renderer(
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		m_text_color = params->get_color("color", text_color);
 		m_font_size = (float)params->get_float("font-size", 0.0F);
-		AM_DBG NSLog(@"params found, color=(%d, %d, %d), font-family=%s, font-size=%g", 
+		AM_DBG NSLog(@"params found, color=(%d, %d, %d), font-family=%s, font-size=%g",
 			redc(text_color), greenc(text_color), bluec(text_color), fontname, fontsize);
 		if (fontname)
 			m_font_name = [NSString stringWithUTF8String: fontname];
@@ -125,7 +125,7 @@ cocoa_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 		unsigned char *ucp = (unsigned char *)m_data;
 		// Check for 16-bit unicode by BOM
 		NSString *the_string;
-		if (m_data_size >= 2 && 
+		if (m_data_size >= 2 &&
 				((ucp[0] == 0xff && ucp[1] == 0xfe) ||
 				 (ucp[0] == 0xfe && ucp[1] == 0xff))) {
 			the_string = [NSString stringWithCharacters: (unichar*)m_data length: m_data_size/2];

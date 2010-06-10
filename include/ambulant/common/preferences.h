@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -43,9 +43,9 @@ const unsigned int default_layout_height = 480;
 /// implementation that is responsible for saving and loading preferences.
 class AMBULANTAPI preferences {
 
-  protected:	
+  protected:
 	preferences();
-	
+
 	virtual ~preferences();
 
 	/// Install the singleton.
@@ -72,35 +72,35 @@ class AMBULANTAPI preferences {
 
 	/// When set, prefer validation with Schema over DTD.
 	bool m_do_schema;
-	
+
 	/// Also do checking on the schema itself
 	bool m_validation_schema_full_checking;
-	
+
 	/// Use plugins or not
 	bool m_use_plugins;
-	
-	/// Where to find the plugins 
+
+	/// Where to find the plugins
 	std::string m_plugin_dir;
-	
+
 	/// Prefer ffmpeg/live555/sdl video/video over quicktime or directshow
 	bool m_prefer_ffmpeg;
 
 	/// Do we do strict URL parsing (i.e. complain about illegal characters
 	/// in URLs)?
 	bool m_strict_url_parsing;
-	
+
 	/// Do we allow selection/activation of anchors with tab/newline?
 	bool m_tabbed_links;
-	
+
 	/// Do we want to do dynamic content control (systemTests and customTests)?
 	bool m_dynamic_content_control;
 
 	/// Was the player in fullscreen mode when the last document was closed?
 	bool m_fullscreen;
-	
+
 	/// Should we use RTSP-over-TCP (in stead of RTSP-over-UDP)?
 	bool m_prefer_rtsp_tcp;
-	
+
 	/// Return the preferences singleton object.
 	static preferences* get_preferences();
 
@@ -109,7 +109,7 @@ class AMBULANTAPI preferences {
 
 	/// Save preferences.
 	virtual bool save_preferences();
-	
+
 
   private:
 	static preferences* s_preferences; // singleton
@@ -117,7 +117,7 @@ class AMBULANTAPI preferences {
 };// class preferences
 
 } // namespace common
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_COMMON_PREFERENCES_H

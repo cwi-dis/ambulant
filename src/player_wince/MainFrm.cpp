@@ -17,7 +17,7 @@ static char THIS_FILE[] = __FILE__;
 
 // Array tbSTDButton contains relevant buttons of bitmap IDB_STD_SMALL_COLOR
 static TBBUTTON tbButtons[] = {
-	{0, 0,				TBSTATE_ENABLED, TBSTYLE_SEP,    0, 0, 0,  0},  
+	{0, 0,				TBSTATE_ENABLED, TBSTYLE_SEP,    0, 0, 0,  0},
 	{0, ID_FILE_OPEN,	TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0, 0, -1},
 	{0, 0,				TBSTATE_ENABLED, TBSTYLE_SEP,    0, 0, 0, -1},
 	{1, ID_PLAY,	    TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0, 0, -1},
@@ -50,7 +50,7 @@ END_MESSAGE_MAP()
 CMainFrame::CMainFrame()
 {
 	// TODO: add member initialization code here
-	
+
 }
 
 CMainFrame::~CMainFrame()
@@ -109,23 +109,23 @@ void CMainFrame::AssertValid() const
 // CMainFrame message handlers
 
 #if 1 // XXXJACK wm5 may not want this
-void CMainFrame::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized) 
+void CMainFrame::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 {
 	CFrameWnd::OnActivate(nState, pWndOther, bMinimized);
 	CWnd* otherOwner = pWndOther?pWndOther->GetTopLevelOwner():0;
-	if(nState == WA_INACTIVE && otherOwner && otherOwner != this) 
+	if(nState == WA_INACTIVE && otherOwner && otherOwner != this)
 		PostMessage(WM_CLOSE);
 }
 #endif
 
-LRESULT CMainFrame::OnCopyData(WPARAM wParam, LPARAM lParam) 
-{ 
-   COPYDATASTRUCT *cds = (COPYDATASTRUCT *)lParam; 
+LRESULT CMainFrame::OnCopyData(WPARAM wParam, LPARAM lParam)
+{
+   COPYDATASTRUCT *cds = (COPYDATASTRUCT *)lParam;
 
    // Send the command line to the main ambulant window.
    if (mainAmbulantWindow) {
 	   mainAmbulantWindow->SetMMDocument((LPCTSTR)cds->lpData);
    }
 
-   return 0; 
-} 
+   return 0;
+}

@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_COMMON_ALIGNMENT_H
@@ -41,7 +41,7 @@ class smil_alignment : public alignment {
 	:   m_image_fixpoint(image_fixpoint),
 		m_surface_fixpoint(surface_fixpoint) {}
 	~smil_alignment() {}
-	
+
 	lib::point get_image_fixpoint(lib::size image_size) const;
 	lib::point get_surface_fixpoint(lib::size surface_size) const;
 
@@ -50,9 +50,9 @@ class smil_alignment : public alignment {
 	regpoint_spec m_surface_fixpoint;
 };
 
-	
+
 } // namespace common
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_COMMON_ALIGNMENT_H

@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_DX_TEXT_H
@@ -49,7 +49,7 @@ class dx_text_renderer : public dx_renderer_playable {
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp,
-		common::factories* factory, 
+		common::factories* factory,
 		common::playable_factory_machdep *dxplayer);
 	~dx_text_renderer();
 	void start(double t);
@@ -67,7 +67,7 @@ class dx_text_renderer : public dx_renderer_playable {
 } // namespace dx
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_GUI_DX_TEXT_H

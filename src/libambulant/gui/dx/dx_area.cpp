@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/dx/dx_area.h"
@@ -46,10 +46,10 @@ gui::dx::create_dx_area_playable_factory(common::factories *factory, common::pla
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectX"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererArea"), true);
 	return new common::single_playable_factory<
-		gui::dx::dx_area, 
-        dx_area_playable_tag, 
-        dx_area_playable_renderer_uri, 
-        dx_area_playable_renderer_uri2, 
+		gui::dx::dx_area,
+        dx_area_playable_tag,
+        dx_area_playable_renderer_uri,
+        dx_area_playable_renderer_uri2,
         dx_area_playable_renderer_uri2 >(factory, mdp);
 }
 
@@ -59,8 +59,8 @@ gui::dx::dx_area::dx_area(
 	const lib::node *node,
 	lib::event_processor* evp,
 	common::factories *fp,
-	common::playable_factory_machdep *dxplayer) 
-:	common::renderer_playable(context, cookie, node, evp, fp, dxplayer), 
+	common::playable_factory_machdep *dxplayer)
+:	common::renderer_playable(context, cookie, node, evp, fp, dxplayer),
 	m_rgn(0) {
 	AM_DBG lib::logger::get_logger()->debug("dx_area::ctr(0x%x)", this);
 }
@@ -69,12 +69,12 @@ gui::dx::dx_area::~dx_area() {
 	delete m_rgn;
 }
 
-void gui::dx::dx_area::start(double t) {		
-	if(m_activated) return;	
+void gui::dx::dx_area::start(double t) {
+	if(m_activated) return;
 	lib::rect rrc = m_dest->get_rect();
-	AM_DBG lib::logger::get_logger()->debug("dx_area::start(%s)", 
+	AM_DBG lib::logger::get_logger()->debug("dx_area::start(%s)",
 		repr(rrc).c_str());
-	
+
 	const char *coords = m_node->get_attribute("coords");
 	const char *shape = m_node->get_attribute("shape");
 	if(!coords || !coords[0]) {
@@ -108,18 +108,18 @@ bool gui::dx::dx_area::stop() {
 	return true;
 }
 
-void gui::dx::dx_area::redraw(const lib::rect &dirty, 
+void gui::dx::dx_area::redraw(const lib::rect &dirty,
 	common::gui_window *window) {
 	if(!m_rgn) return;
 	AM_DBG {
 		dx_window *dxwindow = static_cast<dx_window*>(window);
 		viewport *v = dxwindow->get_viewport();
 		if(!v) return;
-		
+
 		lib::rect reg_rc = m_rgn->get_bounding_box();
 		lib::point pt = m_dest->get_global_topleft();
 		reg_rc.translate(pt);
-		
+
 		v->frame_rect(reg_rc, 0xFF);
 	}
 }

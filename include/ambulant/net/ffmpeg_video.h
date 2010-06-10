@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -58,7 +58,7 @@ namespace ambulant
 {
 
 namespace net
-{  
+{
 
 class ffmpeg_video_datasource_factory : public video_datasource_factory {
   public:
@@ -75,10 +75,10 @@ class ffmpeg_video_decoder_datasource:
 	virtual public lib::ref_counted_obj {
   public:
 	static bool supported(const video_format& fmt);
-	
+
 	//ffmpeg_video_decoder_datasource(const net::url& url, datasource *src);
 	ffmpeg_video_decoder_datasource(video_datasource *src, video_format fmt);
-	 
+
     ~ffmpeg_video_decoder_datasource();
 
 	bool has_audio();
@@ -87,8 +87,8 @@ class ffmpeg_video_decoder_datasource:
 	timestamp_t frameduration();
 	audio_datasource *get_audio_datasource();
 
-    void start_frame(lib::event_processor *evp, lib::event *callback, timestamp_t timestamp);  
-	void stop();  
+    void start_frame(lib::event_processor *evp, lib::event *callback, timestamp_t timestamp);
+	void stop();
 
     bool end_of_file();
 	char* get_frame(timestamp_t now, timestamp_t *timestamp, int *size);
@@ -98,7 +98,7 @@ class ffmpeg_video_decoder_datasource:
 	void seek(timestamp_t time);
 #ifdef WITH_SEAMLESS_PLAYBACK
 	void set_clip_end(timestamp_t clip_end);
-	void start_prefetch(lib::event_processor *evp);  
+	void start_prefetch(lib::event_processor *evp);
 #endif
     void data_avail();
 	bool buffer_full();
@@ -107,7 +107,7 @@ class ffmpeg_video_decoder_datasource:
 	timestamp_t get_start_time() { return m_src->get_start_time(); };
 	void set_pixel_layout(pixel_order l) { m_pixel_layout = l; };
 	common::duration get_dur();
-	
+
   private:
 	bool _select_decoder(const char* file_ext);
 	bool _select_decoder(video_format &fmt);
@@ -116,7 +116,7 @@ class ffmpeg_video_decoder_datasource:
 	bool _buffer_full();
 	void _pop_top_frame();
 	void _need_fmt_uptodate();
-	
+
 	video_datasource* m_src;
 	AVCodecContext *m_con;
 	struct SwsContext *m_img_convert_ctx;
@@ -141,7 +141,7 @@ class ffmpeg_video_decoder_datasource:
 	bool m_start_input;		// True when m_src->start_frame() is needed
 	pixel_order m_pixel_layout;	// Per-pixel format receiver wants.
 	//FILE* m_file;
-  	
+
 };
 
 }	// end namespace net

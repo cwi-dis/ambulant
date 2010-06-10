@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_SMIL2_TRANSITION_H
@@ -37,7 +37,7 @@ namespace ambulant {
 namespace common {
 class surface;
 };
-	
+
 namespace smil2 {
 
 class transition_engine {
@@ -45,10 +45,10 @@ class transition_engine {
 	transition_engine();
 	virtual ~transition_engine();
 	void init(common::surface *dst, bool is_outtrans, const lib::transition_info *info);
-	
+
 	void begin(lib::transition_info::time_type now);
 	void end();
-	
+
 	void step(lib::transition_info::time_type now);
 	bool is_done();
 	lib::transition_info::time_type next_step_delay();
@@ -251,9 +251,9 @@ class angle_computer {
 	:   m_initialized(false) {}
 	angle_computer(lib::rect rect);
 	~angle_computer() {}
-	
+
 	bool matches(lib::rect rect);
-	
+
 	void angle2poly(std::vector<lib::point> &outpoly, double angle, bool clockwise);
   private:
 	void recompute_angles();
@@ -380,7 +380,7 @@ class AMBULANTAPI audio_transition_engine :  virtual public abstract_audio_trans
 };
 
 } // namespace smil2
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_SMIL2_TRANSITION_H

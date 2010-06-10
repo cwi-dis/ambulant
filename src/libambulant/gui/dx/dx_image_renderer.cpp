@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 #include "ambulant/config/config.h"
 #include <objbase.h>
@@ -62,25 +62,25 @@ create_img_decoder(lib::memfile *src, HDC hdc) {
 	typedef gui::dx::gif_decoder<lib::memfile, lib::color_trible> gif_decoder_class;
 	typedef gui::dx::png_decoder<lib::memfile, lib::color_trible> png_decoder_class;
 	typedef gui::dx::bmp_decoder<lib::memfile, lib::color_trible> bmp_decoder_class;
-	
+
 	img_decoder_class* decoder = 0;
-	
+
 	decoder = new jpg_decoder_class(src, hdc);
 	if(decoder->can_decode()) return decoder;
 	delete decoder;
-	
+
 	decoder = new gif_decoder_class(src, hdc);
 	if(decoder->can_decode()) return decoder;
 	delete decoder;
-	
+
 	decoder = new png_decoder_class(src, hdc);
 	if(decoder->can_decode()) return decoder;
 	delete decoder;
-	
+
 	decoder = new bmp_decoder_class(src, hdc);
 	if(decoder->can_decode()) return decoder;
 	delete decoder;
-	
+
 	return 0;
 }
 
@@ -99,7 +99,7 @@ void gui::dx::image_renderer::open(net::datasource *src, viewport* v) {
 	lib::memfile mf(src);
 	if(!mf.read())
 		return;
-		
+
 	// Decode the image
 	HDC hdc = ::GetDC(NULL);
 	img_decoder_class* decoder = create_img_decoder(&mf, hdc);
@@ -109,7 +109,7 @@ void gui::dx::image_renderer::open(net::datasource *src, viewport* v) {
 		lib::logger::get_logger()->show("%s: Cannot create image decoder", m_url.get_url().c_str());
 		return;
 	}
-	
+
 	dib_surface<lib::color_trible>* dibsurf = decoder->decode();
 	if(!dibsurf) {
 		lib::logger::get_logger()->warn("%s: Cannot decode image", m_url.get_url().c_str());
@@ -119,7 +119,7 @@ void gui::dx::image_renderer::open(net::datasource *src, viewport* v) {
 	m_transparent = decoder->is_transparent();
 	lib::color_t tarnsp_color = decoder->get_transparent_color();
 	delete decoder;
-	
+
 	m_size.w = DWORD(dibsurf->get_pixmap()->get_width());
 	m_size.h = DWORD(dibsurf->get_pixmap()->get_height());
 	m_ddsurf = v->create_surface(m_size);
@@ -127,10 +127,10 @@ void gui::dx::image_renderer::open(net::datasource *src, viewport* v) {
 		delete dibsurf;
 		return;
 	}
-	
+
 	//////////////
-	// Create image surface 
-	
+	// Create image surface
+
 	HRESULT hr;
 	hr = m_ddsurf->GetDC(&hdc);
 	if (FAILED(hr)) {
@@ -145,7 +145,7 @@ void gui::dx::image_renderer::open(net::datasource *src, viewport* v) {
 	DeleteDC(bmp_hdc);
 	m_ddsurf->ReleaseDC(hdc);
 	delete dibsurf;
-	
+
 	//////////////
 	// If the image is transparent set the color
 	if(m_transparent) {
@@ -160,5 +160,5 @@ void gui::dx::image_renderer::open(net::datasource *src, viewport* v) {
 		}
 	}
 }
- 
+
 

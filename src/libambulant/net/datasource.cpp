@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -32,7 +32,7 @@ using namespace ambulant;
 using namespace net;
 
 // Helper class for data: urls.
-class mem_datasource : virtual public datasource, virtual public ambulant::lib::ref_counted_obj {  	
+class mem_datasource : virtual public datasource, virtual public ambulant::lib::ref_counted_obj {
   public:
 	mem_datasource(const net::url &url)
 	{
@@ -117,7 +117,7 @@ filter_datasource_impl::data_avail()
 	}
 	m_lock.leave();
 }
-	
+
 void
 filter_datasource_impl::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback)
 {
@@ -177,7 +177,7 @@ filter_datasource_impl::size() const
 	const_cast <filter_datasource_impl*>(this)->m_lock.leave();
 	return rv;
 
-}		
+}
 
 void
 filter_datasource_impl::readdone(int len)
@@ -223,7 +223,7 @@ audio_format_choices::audio_format_choices(const std::string &name)
 }
 
 
-const audio_format& 
+const audio_format&
 audio_format_choices::best() const
 {
 	return m_best;
@@ -264,21 +264,21 @@ bool audio_format_choices::contains(const audio_format& fmt) const
 }
 
 // *********************** datasource_factory ***********************************************
-  
+
 datasource_factory::~datasource_factory()
 {
 	std::vector<raw_datasource_factory*>::iterator i;
 	for (i=m_raw_factories.begin(); i!=m_raw_factories.end(); i++)
 		delete (*i);
-		
+
 	std::vector<audio_datasource_factory*>::iterator i2;
 	for (i2=m_audio_factories.begin(); i2!=m_audio_factories.end(); i2++)
 		delete (*i2);
-		
+
 	std::vector<audio_parser_finder*>::iterator i3;
 	for (i3=m_audio_parser_finders.begin(); i3!=m_audio_parser_finders.end(); i3++)
 		delete (*i3);
-		
+
 	std::vector<audio_filter_finder*>::iterator i4;
 	for (i4=m_audio_filter_finders.begin(); i4!=m_audio_filter_finders.end(); i4++)
 		delete (*i4);
@@ -335,14 +335,14 @@ datasource_factory::add_raw_filter(raw_filter_finder *df)
 {
 	AM_DBG lib::logger::get_logger()->debug("datasource_factory: add_raw_filter(0x%x)", (void*)df);
 	m_raw_filters.push_back(df);
-}	
+}
 
 datasource*
 datasource_factory::new_raw_datasource(const net::url &url)
 {
     std::vector<raw_datasource_factory *>::iterator i;
     datasource *src = NULL;
-    
+
     for(i=m_raw_factories.begin(); i != m_raw_factories.end(); i++) {
         src = (*i)->new_raw_datasource(url);
 		AM_DBG lib::logger::get_logger()->debug("0x%x->new_raw_datasource returned 0x%x", (void*)(*i), (void*)src);
@@ -387,11 +387,11 @@ datasource_factory::new_audio_datasource(const net::url &url, const audio_format
 	// then stack a parser and possibly a filter
 	datasource *rawsrc = new_raw_datasource(url);
 	if (rawsrc == NULL) return NULL;
-		
+
     //next create a raw_audio_datasource;
-	
+
 	audio_datasource *raw_audio_src = new raw_audio_datasource(rawsrc);
-	
+
 	std::vector<audio_parser_finder*>::iterator ip;
 	for(ip=m_audio_parser_finders.begin(); ip != m_audio_parser_finders.end(); ip++) {
 		src = (*ip)->new_audio_parser(url, fmts, raw_audio_src);
@@ -407,7 +407,7 @@ datasource_factory::new_audio_datasource(const net::url &url, const audio_format
 	// Check whether the format happens to match already.
 	if (fmts.contains(src->get_audio_format()))
 		return src;
-	
+
 	// Now stack a filter. Note that the first filter finder is the identity
 	// filter.
 	std::vector<audio_filter_finder*>::iterator ic;
@@ -416,7 +416,7 @@ datasource_factory::new_audio_datasource(const net::url &url, const audio_format
 		convsrc = (*ic)->new_audio_filter(src, fmts);
 		if (convsrc) return convsrc;
 	}
-	
+
 	// Failed to find a filter. Clean up.
     src->stop();
 	int rem = src->release(); // This will also release rawsrc
@@ -428,14 +428,14 @@ datasource_factory::new_audio_datasource(const net::url &url, const audio_format
 audio_datasource*
 datasource_factory::new_audio_filter(const net::url& url, const audio_format_choices& fmts, audio_datasource* ds)
 {
-	if (!ds) 
+	if (!ds)
 		return NULL;
-	
+
 
 	// Check whether the format happens to match already.
 	if (fmts.contains(ds->get_audio_format()))
 		return ds;
-	
+
 	// Now stack a filter. Note that the first filter finder is the identity
 	// filter.
 	std::vector<audio_filter_finder*>::iterator ic;
@@ -444,7 +444,7 @@ datasource_factory::new_audio_filter(const net::url& url, const audio_format_cho
 		convsrc = (*ic)->new_audio_filter(ds, fmts);
 		if (convsrc) return convsrc;
 	}
-	
+
 	// Failed to find a filter. Clean up.
 	lib::logger::get_logger()->warn(gettext("%s: Cannot open, cannot find conversion filter"), repr(url).c_str());
     return NULL;
@@ -455,7 +455,7 @@ datasource_factory::new_video_datasource(const net::url &url, timestamp_t clip_b
 {
     std::vector<video_datasource_factory *>::iterator i;
     video_datasource *src;
-    
+
     for(i=m_video_factories.begin(); i != m_video_factories.end(); i++) {
         src = (*i)->new_video_datasource(url, clip_begin, clip_end );
 		AM_DBG lib::logger::get_logger()->debug("0x%x->new_video_datasource returned 0x%x", (void*)(*i), (void*)src);

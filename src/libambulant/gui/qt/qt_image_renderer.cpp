@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
+/*
  * @$Id$
  */
 
@@ -49,8 +49,8 @@ gui::qt::create_qt_image_playable_factory(common::factories *factory, common::pl
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererQt"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererImg"), true);
 	return new common::single_playable_factory<
-        qt_image_renderer, 
-        qt_image_playable_tag, 
+        qt_image_renderer,
+        qt_image_playable_tag,
         qt_image_playable_renderer_uri,
         qt_image_playable_renderer_uri2,
         qt_image_playable_renderer_uri2>(factory, mdp);
@@ -103,17 +103,17 @@ qt_image_renderer::redraw_body(const rect &dirty,
 		for(it=tiles.begin(); it!=tiles.end(); it++) {
 			srcrect = (*it).first;
 			dstrect = (*it).second;
-			int	S_L = srcrect.left(), 
+			int	S_L = srcrect.left(),
 				S_T = srcrect.top(),
 				S_W = srcrect.width(),
 		        	S_H = srcrect.height();
-			int	D_L = dstrect.left(), 
+			int	D_L = dstrect.left(),
 				D_T = dstrect.top(),
 				D_W = dstrect.width(),
 				D_H = dstrect.height();
 			AM_DBG lib::logger::get_logger()->debug("qt_image_renderer.redraw_body(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H);
 			paint.drawImage(D_L,D_T, m_image, S_L,S_T, S_W,S_H);
-	
+
 		}
 		paint.flush();
 		paint.end();
@@ -150,11 +150,11 @@ qt_image_renderer::redraw_body(const rect &dirty,
 	// D_ for destination coordinates
 	int	O_W = srcsize.w,
 		O_H = srcsize.h;
-	int	S_L = srcrect.left(), 
+	int	S_L = srcrect.left(),
 		S_T = srcrect.top(),
 		S_W = srcrect.width(),
 		S_H = srcrect.height();
-	int	D_L = dstrect.left(), 
+	int	D_L = dstrect.left(),
 		D_T = dstrect.top(),
 		D_W = dstrect.width(),
 		D_H = dstrect.height();
@@ -190,14 +190,14 @@ qt_image_renderer::redraw_body(const rect &dirty,
 	if (alpha_chroma != 1.0) {
 		QImage screen_img = aqw->get_ambulant_pixmap()->convertToImage();
 		lib::rect rct0 (lib::point(0, 0), lib::size(N_W, N_H));
-		qt_image_blend (screen_img, dstrect, scaledimage, rct0, 
+		qt_image_blend (screen_img, dstrect, scaledimage, rct0,
 				alpha_chroma, alpha_media,
 				chroma_low, chroma_high);
 		paint.drawImage(D_L, D_T, screen_img, D_L, D_T, D_W, D_H);
 	} else {
 		paint.drawImage(D_L, D_T, scaledimage, N_L, N_T, D_W, D_H);
 	}
-#else //WITH_SMIL30		
+#else //WITH_SMIL30
 	paint.drawImage(D_L, D_T, scaledimage, N_L, N_T, D_W, D_H);
 #endif//WITH_SMIL30
 	paint.flush();

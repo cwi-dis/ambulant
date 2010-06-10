@@ -14,7 +14,7 @@
  *
  * The Original Code is mozilla.org code.
  *
- * The Initial Developer of the Original Code is 
+ * The Initial Developer of the Original Code is
  * Netscape Communications Corporation.
  * Portions created by the Initial Developer are Copyright (C) 1998
  * the Initial Developer. All Rights Reserved.
@@ -22,7 +22,7 @@
  * Contributor(s):
  *
  * Alternatively, the contents of this file may be used under the terms of
- * either the GNU General Public License Version 2 or later (the "GPL"), or 
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
  * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
  * in which case the provisions of the GPL or the LGPL are applicable instead
  * of those above. If you wish to allow use of your version of this file only
@@ -43,11 +43,11 @@
 struct nsPluginCreateData
 {
   NPP instance;
-  NPMIMEType type; 
-  uint16 mode; 
-  int16 argc; 
-  char** argn; 
-  char** argv; 
+  NPMIMEType type;
+  uint16 mode;
+  int16 argc;
+  char** argn;
+  char** argv;
   NPSavedData* saved;
 };
 
@@ -60,19 +60,19 @@ public:
   virtual void shut() = 0;
   virtual NPBool isInitialized() = 0;
 
-  // implement all or part of those methods in the derived 
+  // implement all or part of those methods in the derived
   // class as needed
   virtual NPError SetWindow(NPWindow* pNPWindow)                    { return NPERR_NO_ERROR; }
-  virtual NPError NewStream(NPMIMEType type, NPStream* stream, 
+  virtual NPError NewStream(NPMIMEType type, NPStream* stream,
                             NPBool seekable, uint16* stype)         { return NPERR_NO_ERROR; }
   virtual NPError DestroyStream(NPStream *stream, NPError reason)   { return NPERR_NO_ERROR; }
   virtual void    StreamAsFile(NPStream* stream, const char* fname) { return; }
   virtual int32   WriteReady(NPStream *stream)                      { return 0x0fffffff; }
-  virtual int32   Write(NPStream *stream, int32 offset, 
+  virtual int32   Write(NPStream *stream, int32 offset,
                         int32 len, void *buffer)                    { return len; }
   virtual void    Print(NPPrint* printInfo)                         { return; }
   virtual uint16  HandleEvent(void* event)                          { return 0; }
-  virtual void    URLNotify(const char* url, NPReason reason, 
+  virtual void    URLNotify(const char* url, NPReason reason,
                             void* notifyData)                       { return; }
   virtual NPError GetValue(NPPVariable variable, void *value)       { return NPERR_NO_ERROR; }
   virtual NPError SetValue(NPNVariable variable, void *value)       { return NPERR_NO_ERROR; }
@@ -90,7 +90,7 @@ NPError NS_PluginInitialize();
 void NS_PluginShutdown();
 
 #ifdef XP_UNIX
-// global to get plugins name & description 
+// global to get plugins name & description
 NPError NS_PluginGetValue(NPPVariable aVariable, void *aValue);
 #endif
 } /* extern "C" */

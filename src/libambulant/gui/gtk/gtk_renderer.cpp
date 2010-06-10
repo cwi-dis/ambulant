@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -45,15 +45,15 @@ gtk_transition_renderer::~gtk_transition_renderer()
 	m_trans_engine = NULL;
 	m_lock.leave();
 }
-	
+
 void
 gtk_transition_renderer::set_surface(common::surface *dest)
-{ 
+{
 	m_transition_dest = dest;
 	if (m_transition_dest && m_intransition && m_intransition->m_scope == scope_screen)
 		m_transition_dest = m_transition_dest->get_top_surface();
 }
-	
+
 void
 gtk_transition_renderer::set_intransition(const lib::transition_info *info)
 {
@@ -132,7 +132,7 @@ gtk_transition_renderer::redraw_pre(gui_window *window)
 	if (m_trans_engine && !m_fullscreen) {
 		GdkPixmap* gpm = agw->get_ambulant_pixmap();
 		surf = agw->get_ambulant_surface();
-		if (surf == NULL) 
+		if (surf == NULL)
 			surf = agw->new_ambulant_surface();
 		if (surf != NULL) {
 			// Copy the background pixels
@@ -158,7 +158,7 @@ gtk_transition_renderer::redraw_post(gui_window *window)
 
 	ambulant_gtk_window* agw = (ambulant_gtk_window*) window;
 	GdkPixmap* surf = agw->get_ambulant_surface();
-	
+
 	if (surf != NULL) {
 		agw->reset_ambulant_surface();
 	}

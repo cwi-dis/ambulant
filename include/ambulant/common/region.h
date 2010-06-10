@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_COMMON_REGION_H
@@ -42,17 +42,17 @@ using namespace ambulant::lib;
 
 class surface_impl : public surface_template, public surface, public gui_events {
 #ifdef	WITH_SMIL_TEST
-  // The only constructor is NOT protected: 
+  // The only constructor is NOT protected:
   public:
 #else/*WITH_SMIL_TEST*/
-  // The only constructor is protected: 
+  // The only constructor is protected:
   protected:
 #endif/*WITH_SMIL_TEST*/
 	surface_impl(const std::string &name, surface_impl *parent, rect bounds,
 		const region_info *info, bgrenderer *bgrenderer);
   public:
 	virtual ~surface_impl();
-	
+
 	// The surface_template interface:
 	common::surface_template *new_subsurface(const region_info *info, bgrenderer *bgrenderer);
 	surface *activate();
@@ -74,7 +74,7 @@ class surface_impl : public surface_template, public surface, public gui_events 
 #endif // WITH_SMIL30
 	bool is_tiled() const;
 	tile_positions get_tiles(lib::size image_size, lib::rect surface_rect) const;
-	const region_info *get_info() const { return m_info; }	
+	const region_info *get_info() const { return m_info; }
 	surface *get_top_surface() { return m_parent->get_top_surface(); }
 	gui_window *get_gui_window() { return m_parent->get_gui_window(); }
 
@@ -87,7 +87,7 @@ class surface_impl : public surface_template, public surface, public gui_events 
 	// The gui_events interface:
 	void redraw(const rect &dirty, gui_window *window);
 	bool user_event(const point &where, int what = 0);
-		
+
 	// Win32 code needs this, but I don't like it:
 	const surface_impl *get_parent() const { return m_parent; }
 #ifdef	WITH_SMIL_TEST
@@ -139,7 +139,7 @@ class toplevel_surface_impl : public surface_impl {
   public:
 	toplevel_surface_impl(const region_info *info, size bounds, bgrenderer *bgrenderer, window_factory *wf);
 	~toplevel_surface_impl();
-	
+
 	void need_redraw(const rect &r);
 	void need_events(bool want);
 	const point &get_global_topleft() const { static point p = point(0, 0); return p; }
@@ -162,7 +162,7 @@ class smil_surface_factory : public surface_factory {
 };
 
 } // namespace common
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_COMMON_REGION_H

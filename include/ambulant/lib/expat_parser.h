@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_LIB_EXPAT_PARSER_H
@@ -39,25 +39,25 @@
 #endif
 #include "expat.h"
 
-// To execute samples depending on libexpat.dll assert 
-// that the dll is reachable at runtime 
+// To execute samples depending on libexpat.dll assert
+// that the dll is reachable at runtime
 // (e.g. its in the path).
 
 
 namespace ambulant {
 
 namespace lib {
-	
+
 class expat_factory : public lib::parser_factory {
   public:
 
 	expat_factory() {};
 	~expat_factory() {};
-		
+
 	lib::xml_parser* new_parser(
-		sax_content_handler* content_handler, 
+		sax_content_handler* content_handler,
 		sax_error_handler* error_handler);
-	
+
 	std::string get_parser_name();
 };
 
@@ -69,7 +69,7 @@ class expat_factory : public lib::parser_factory {
 class expat_parser : public xml_parser {
   public:
 	enum {NS_SEP = '|'};
-	
+
 	expat_parser(sax_content_handler *content_handler, sax_error_handler *error_handler);
 	virtual ~expat_parser();
 
@@ -81,17 +81,17 @@ class expat_parser : public xml_parser {
 	}
 	virtual void set_error_handler(sax_error_handler *h) {
 		m_error_handler = h;
-	}	
-	
+	}
+
   private:
-	static void start_element(void *usrptr, const char *name, const char **attrs); 
+	static void start_element(void *usrptr, const char *name, const char **attrs);
 	static void end_element(void *usrptr, const char *name);
 	static void characters(void *usrptr, const char *buf, int len);
 	static void start_prefix_mapping(void *usrptr, const char *prefix, const char *uri);
-	static void end_prefix_mapping(void *usrptr, const char *prefix);	
-	static void to_qattrs(const char **attrs, q_attributes_list& list); 
+	static void end_prefix_mapping(void *usrptr, const char *prefix);
+	static void to_qattrs(const char **attrs, q_attributes_list& list);
 	static q_name_pair to_q_name_pair(const char *name);
-	
+
 	sax_content_handler *m_content_handler;
 	XML_Parser m_expatParser;
 	sax_error_handler *m_error_handler;
@@ -99,7 +99,7 @@ class expat_parser : public xml_parser {
 };
 
 } // namespace lib
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_LIB_EXPAT_PARSER_H

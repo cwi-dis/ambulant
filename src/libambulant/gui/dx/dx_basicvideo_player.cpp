@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/dx/dx_basicvideo_player.h"
@@ -51,11 +51,11 @@ gui::dx::basicvideo_player::basicvideo_player(const std::string& url, HWND paren
 	m_basic_audio(0) {
 	open(m_url, parent);
 }
-	
+
 gui::dx::basicvideo_player::~basicvideo_player() {
 	stop();
 }
-		
+
 void gui::dx::basicvideo_player::start(double t) {
 	if(is_playing()) pause();
 	seek(t);
@@ -66,7 +66,7 @@ bool gui::dx::basicvideo_player::stop() {
 	if(m_media_control == 0) return true;
 	HRESULT hr = m_media_control->Stop();
 	if(FAILED(hr)) {
-		win_report_error("IMediaControl::stop()", hr);	
+		win_report_error("IMediaControl::stop()", hr);
 	}
 	release_player();
 	return false;
@@ -76,7 +76,7 @@ void gui::dx::basicvideo_player::pause(common::pause_display d) {
 	if(m_media_control == 0) return;
 	HRESULT hr = m_media_control->Pause();
 	if(FAILED(hr)) {
-		win_report_error("IMediaControl::pause()", hr);	
+		win_report_error("IMediaControl::pause()", hr);
 	}
 }
 
@@ -87,7 +87,7 @@ void gui::dx::basicvideo_player::resume() {
 	}
 	HRESULT hr = m_media_control->Run();
 	if(FAILED(hr)) {
-		win_report_error("IMediaControl::run()", hr);	
+		win_report_error("IMediaControl::run()", hr);
 	}
 }
 
@@ -95,14 +95,14 @@ void gui::dx::basicvideo_player::seek(double t) {
 	if(m_media_position == 0) return;
 	HRESULT hr = m_media_position->put_CurrentPosition(REFTIME(t));
 	if(FAILED(hr))
-		win_report_error("IMediaPosition::put_CurrentPosition()", hr);	
+		win_report_error("IMediaPosition::put_CurrentPosition()", hr);
 }
 
 void gui::dx::basicvideo_player::endseek(double t) {
 	if(m_media_position == 0) return;
 	HRESULT hr = m_media_position->put_StopTime(REFTIME(t));
 	if(FAILED(hr))
-		win_report_error("IMediaPosition::put_StopTime()", hr);	
+		win_report_error("IMediaPosition::put_StopTime()", hr);
 }
 
 std::pair<bool, double> gui::dx::basicvideo_player::get_dur() {
@@ -113,14 +113,14 @@ std::pair<bool, double> gui::dx::basicvideo_player::get_dur() {
 	REFTIME dur = 0.0;
 	HRESULT hr = m_media_position->get_Duration(&dur);
 	if(FAILED(hr)) {
-		win_report_error("IMediaPosition::get_Duration()", hr);	
+		win_report_error("IMediaPosition::get_Duration()", hr);
 		return std::pair<bool, double>(false, 0);
 	}
 	return std::pair<bool, double>(dur>0, dur);
 }
 
 bool gui::dx::basicvideo_player::can_play() {
-	return m_graph_builder && 
+	return m_graph_builder &&
 		m_media_event &&
 		m_media_position &&
 		m_media_control &&
@@ -137,7 +137,7 @@ bool gui::dx::basicvideo_player::is_playing() {
 	else if(FAILED(hr)) {
 		// XXXJack: this error occurs all the time...
 		if (hr == 0x80040227) return false;
-		win_trace_error("IMediaEvent::WaitForCompletion()", hr);	
+		win_trace_error("IMediaEvent::WaitForCompletion()", hr);
 		return false;
 	}
 	return evCode == 0;
@@ -152,21 +152,21 @@ double gui::dx::basicvideo_player::get_position() {
 	REFTIME pos = 0.0;
 	HRESULT hr = m_media_position->get_CurrentPosition(&pos);
 	if(FAILED(hr)) {
-		win_report_error("IMediaPosition::get_CurrentPosition()", hr);	
+		win_report_error("IMediaPosition::get_CurrentPosition()", hr);
 		return 0.0;
 	}
 	return pos;
-}	
+}
 #endif
 
 //////////////////////////
-		
+
 bool gui::dx::basicvideo_player::open(const std::string& url, HWND parent) {
 	m_url = url;
 	HRESULT hr = CoCreateInstance(CLSID_FilterGraph,0,CLSCTX_INPROC_SERVER,
 		IID_IGraphBuilder,(void**)&m_graph_builder);
 	if(FAILED(hr)) {
-		win_report_error("CoCreateInstance(CLSID_FilterGraph, ...)", hr);	
+		win_report_error("CoCreateInstance(CLSID_FilterGraph, ...)", hr);
 		return false;
 	}
 
@@ -182,30 +182,30 @@ bool gui::dx::basicvideo_player::open(const std::string& url, HWND parent) {
 			logger::get_logger()->error("%s: DirectX error 0x%x", url.c_str(), hr);
 		return false;
 	}
-		
+
 	hr = m_graph_builder->QueryInterface(IID_IMediaControl, (void **) &m_media_control);
 	if(FAILED(hr)) {
-		win_report_error("QueryInterface(IID_IMediaControl, ...)", hr);	
+		win_report_error("QueryInterface(IID_IMediaControl, ...)", hr);
 		return false;
 	}
 	hr = m_graph_builder->QueryInterface(IID_IMediaPosition, (void **) &m_media_position);
 	if(FAILED(hr)) {
-		win_report_error("QueryInterface(IID_IMediaPosition, ...)", hr);	
+		win_report_error("QueryInterface(IID_IMediaPosition, ...)", hr);
 		return false;
 	}
 	hr = m_graph_builder->QueryInterface(IID_IMediaEvent, (void **) &m_media_event);
 	if(FAILED(hr)) {
-		win_report_error("QueryInterface(IID_IMediaEvent, ...)", hr);	
+		win_report_error("QueryInterface(IID_IMediaEvent, ...)", hr);
 		return false;
 	}
-			
+
 	hr = m_graph_builder->QueryInterface(IID_IBasicAudio, (void **) &m_basic_audio);
 	if(FAILED(hr)) {
-		win_report_error("QueryInterface(IID_IBasicAudio, ...)", hr);	
+		win_report_error("QueryInterface(IID_IBasicAudio, ...)", hr);
 	}
 	hr = m_graph_builder->QueryInterface(IID_IVideoWindow, (void **) &m_video_window);
 	if(FAILED(hr)) {
-		win_report_error("QueryInterface(IID_IVideoWindow, ...)", hr);	
+		win_report_error("QueryInterface(IID_IVideoWindow, ...)", hr);
 	}
 
 	// Reposition output window
@@ -252,7 +252,7 @@ void gui::dx::basicvideo_player::release_player() {
 			m_media_position->Release();
 			m_media_position = 0;
 		}
-		if(m_media_control) { 
+		if(m_media_control) {
 			m_media_control->Release();
 			m_media_control = 0;
 		}
@@ -270,7 +270,7 @@ void gui::dx::basicvideo_player::release_player() {
 }
 
 
-// -val is the attenuation in decibels 
+// -val is the attenuation in decibels
 // can be 0 to 100
 void gui::dx::basicvideo_player::set_volume(long val) {
 	if(m_basic_audio == 0) return;
@@ -279,7 +279,7 @@ void gui::dx::basicvideo_player::set_volume(long val) {
 	long cdb = (long)(20.0*log10((double)val/100.0)*100);
 	m_basic_audio->put_Volume(cdb);
 }
-		
+
 // can be -100 to 100
 // 0 sets a neutral balance
 // and 10 sets -10 db to right and -90 db to left

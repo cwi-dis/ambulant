@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_COMMON_RENDERER_SELECT_H
@@ -59,14 +59,14 @@ class AMBULANTAPI renderer_select {
         m_pf(NULL)
     {}
 	~renderer_select() {}
-	
+
 	const lib::xml_string& get_tag() const { static std::string empty(""); return m_node?m_node->get_local_name():empty; }
 	const net::url& get_url();
 	const std::string& get_mimetype();
 	const char* get_renderer_uri();
 	playable_factory *get_playable_factory() { return m_pf; }
 	void set_playable_factory(playable_factory *pf) { m_pf = pf; }
-	
+
   private:
 	const lib::node *m_node;
 	bool m_url_valid;
@@ -87,7 +87,7 @@ struct renderer_select_template {
 #endif
 
 } // namespace common
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_COMMON_RENDERER_SELECT_H

@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/config/config.h"
@@ -41,14 +41,14 @@ using namespace ambulant;
 using namespace smil2;
 
 // The currently active tests attributes.
-// Some values as set by default 
+// Some values as set by default
 // The map is updated when the user selects a new filter file
-static 
+static
 std::map<std::string, std::string> active_tests_attrs_map;
 
 // The currently active custom tests attributes.
 // The map is filled when the user selects a new filter file
-static 
+static
 std::map<std::string, bool> active_custom_tests_attrs_map;
 
 #ifdef WITH_SMIL30
@@ -63,14 +63,14 @@ inline std::string get_test_attribute(const std::string& attr) {
 }
 
 // Create a tests helper for the provided node and for the document custom tests
-test_attrs::test_attrs(const lib::node *n) 
-:	m_node(n), 
+test_attrs::test_attrs(const lib::node *n)
+:	m_node(n),
 	m_custom_tests(n->get_context()->get_custom_tests()) {
 	m_logger = lib::logger::get_logger();
-	
+
 	if(active_tests_attrs_map.empty())
 		set_default_tests_attrs();
-	
+
 	// debug statements
 	const char *pid = m_node->get_attribute("id");
 	m_id = (pid?pid:"no-id");
@@ -80,81 +80,81 @@ test_attrs::test_attrs(const lib::node *n)
 // Returns true when this node should be included
 bool test_attrs::selected() const {
 	const char *value = 0;
-	
+
 	// systemLanguage
 	value = m_node->get_attribute("systemLanguage");
 	if (!value)
 		value = m_node->get_attribute("system-language");
 	if(value && !test_system_language(value))
 		return false;
-	
+
 	// systemAudioDesc
 	value = m_node->get_attribute("systemAudioDesc");
 	if(value && !test_on_off_attr("systemAudioDesc", value))
 		return false;
-	
+
 	// systemBitrate
 	value = m_node->get_attribute("systemBitrate");
 	if (!value)
 		value = m_node->get_attribute("system-bitrate");
 	if(value && !test_system_bitrate(value))
 		return false;
-	
+
 	// systemCaptions
 	value = m_node->get_attribute("systemCaptions");
 	if (!value)
 		value = m_node->get_attribute("system-captions");
 	if(value && !test_on_off_attr("systemCaptions", value))
 		return false;
-	
+
 	// systemCPU
 	value = m_node->get_attribute("systemCPU");
 	if(value && !test_exact_str_attr("systemCPU", value))
 		return false;
-		
-	// systemOperatingSystem 
+
+	// systemOperatingSystem
 	value = m_node->get_attribute("systemOperatingSystem");
 	if(value && !test_exact_str_attr("systemOperatingSystem", value))
 		return false;
-		
-	// systemOverdubOrSubtitle 
+
+	// systemOverdubOrSubtitle
 	value = m_node->get_attribute("systemOverdubOrSubtitle");
 	if (!value)
 		value = m_node->get_attribute("system-overdub-or-caption");
 	if(value && !test_exact_str_attr("systemOverdubOrSubtitle", value))
 		return false;
-	
+
 	// systemScreenDepth
 	value = m_node->get_attribute("systemScreenDepth");
 	if (!value)
 		value = m_node->get_attribute("system-screen_depth");
 	if(value && !test_system_screen_depth(value))
 		return false;
-	
+
 	// systemScreenSize
 	value = m_node->get_attribute("systemScreenSize");
 	if (!value)
 		value = m_node->get_attribute("system-screen-size");
 	if(value && !test_system_screen_size(value))
 		return false;
-	
+
 	// systemComponent
 	value = m_node->get_attribute("systemComponent");
 	if(value && !test_system_component(value))
 		return false;
-	
+
 	// customTest
 	value = m_node->get_attribute("customTest");
 	if(value && !test_custom_attribute(value))
 		return false;
-	
+
 	// systemRequired, rather different from the others
 	value = m_node->get_attribute("systemRequired");
 	if (!value)
 		value = m_node->get_attribute("system-required");
 	if(value && !test_system_required(value, m_node->get_context()))
 		return false;
-	
+
 	return true;
 }
 
@@ -242,9 +242,9 @@ bool test_attrs::test_system_screen_size(const char *value) {
 	if(s.empty()) return false;
 	lib::tokens_vector sys_v(s.c_str(), "Xx");
 	lib::tokens_vector sel_v(value, "Xx");
-	if(sys_v.size() != 2 || sel_v.size() != 2) 
+	if(sys_v.size() != 2 || sel_v.size() != 2)
 		return false;
-	return (atoi(sys_v[0].c_str())>atoi(sel_v[0].c_str())) && 
+	return (atoi(sys_v[0].c_str())>atoi(sel_v[0].c_str())) &&
 		(atoi(sys_v[1].c_str())>atoi(sel_v[1].c_str()));
 }
 
@@ -305,14 +305,14 @@ bool test_attrs::load_test_attrs(const std::string& filename) {
 		lib::logger::get_logger()->error(gettext("While loading settings: %s: Could not create DOM tree"), filename.c_str());
 		return false;
 	}
-	
+
 	// Clear maps
 	active_tests_attrs_map.clear();
 	active_custom_tests_attrs_map.clear();
-	
+
 	// load default first; some will be overriden below
 	set_default_tests_attrs();
-	
+
 	const lib::node* root = builder.get_tree();
 	lib::node::const_iterator it;
 	lib::node::const_iterator end = root->end();
@@ -346,7 +346,7 @@ bool test_attrs::load_test_attrs(const std::string& filename) {
 					sn.c_str(), (sv == "true")?"true":"false");
 			}
 		}
-	}	
+	}
 	return true;
 }
 
@@ -440,7 +440,7 @@ class smil2::state_test_methods_impl : public common::state_test_methods {
 		std::string s = get_test_attribute("systemScreenSize");
 		if(s.empty()) return 0;
 		lib::tokens_vector sys_v(s.c_str(), "Xx");
-		if(sys_v.size() != 2) 
+		if(sys_v.size() != 2)
 			return 0;
 		return atoi(sys_v[0].c_str());
 	}
@@ -448,7 +448,7 @@ class smil2::state_test_methods_impl : public common::state_test_methods {
 		std::string s = get_test_attribute("systemScreenSize");
 		if(s.empty()) return 0;
 		lib::tokens_vector sys_v(s.c_str(), "Xx");
-		if(sys_v.size() != 2) 
+		if(sys_v.size() != 2)
 			return 0;
 		return atoi(sys_v[1].c_str());
 	}
@@ -458,7 +458,7 @@ common::state_test_methods *
 test_attrs::get_state_test_methods()
 {
 	static smil2::state_test_methods_impl *singleton;
-	
+
 	if (singleton == NULL) {
         if(active_tests_attrs_map.empty())
             set_default_tests_attrs();
@@ -513,7 +513,7 @@ test_attrs::set_current_system_component_value(std::string name, bool enabled)
 			value += ' ';
 		value += *it;
 	}
-	
+
 	active_tests_attrs_map["systemComponent"] = value;
     // XXX should raise contentControlChange
 }

@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_SMIL2_STATE_H
@@ -58,7 +58,7 @@ namespace common {
 class state_test_methods {
   public:
 	virtual ~state_test_methods() {}
-	
+
 	virtual bool smil_audio_desc() const = 0;
 	virtual int smil_bitrate() const = 0;
 	virtual bool smil_captions() const = 0;
@@ -81,7 +81,7 @@ class state_test_methods {
 class AMBULANTAPI state_change_callback {
   public:
     virtual ~state_change_callback() {}
-	
+
 	virtual void on_state_change(const char *ref) = 0;
 };
 
@@ -90,31 +90,31 @@ class AMBULANTAPI state_change_callback {
 class state_component {
   public:
 	virtual ~state_component() {};
-	
+
 	/// Register the systemTest/customTest API
 	virtual void register_state_test_methods(state_test_methods *stm) = 0;
-  
+
     /// Declare the state in the document
     virtual void declare_state(const lib::node *state) = 0;
-    
+
     /// Calculate a boolean expression
     virtual bool bool_expression(const char *expr) = 0;
-    
+
     /// Set a state variable to an expression
     virtual void set_value(const char *var, const char *expr) = 0;
-	
+
 	/// Add a new variable to the state
 	virtual void new_value(const char *ref, const char *where, const char *name, const char *expr) = 0;
-	
+
 	/// Delete a variable from the state
 	virtual void del_value(const char *ref) = 0;
-    
+
     /// Submit the state
     virtual void send(const lib::node *submission) = 0;
-    
+
     /// Calculate a string expression
     virtual std::string string_expression(const char *expr) = 0;
-	
+
 	/// Register the fact that we want stateChange callbacks for a given variable
 	virtual void want_state_change(const char *ref, state_change_callback *cb) = 0;
 };
@@ -140,7 +140,7 @@ class global_state_component_factory : public state_component_factory {
 AMBULANTAPI global_state_component_factory *get_global_state_component_factory();
 
 } // namespace common
- 
+
 } // namespace ambulant
 #endif
 #endif // AMBULANT_SMIL2_STATE_H

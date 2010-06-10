@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/node.h"
@@ -29,7 +29,7 @@
 #include "ambulant/lib/string_util.h"
 
 // tree helper iterators and visitors
-#include "ambulant/lib/node_navigator.h" 
+#include "ambulant/lib/node_navigator.h"
 
 
 using namespace ambulant;
@@ -105,19 +105,19 @@ lib::node_dummy::next()
 //////////////////////
 // set down/up/next
 
-void 
+void
 lib::node_dummy::down(node_dummy *n)
 {
 	readonly();
 }
 
-void 
+void
 lib::node_dummy::up(node_dummy *n)
 {
 	readonly();
 }
 
-void 
+void
 lib::node_dummy::next(node_dummy *n)
 {
 	readonly();
@@ -126,13 +126,13 @@ lib::node_dummy::next(node_dummy *n)
 ///////////////////////////////
 // deduced navigation
 
-const lib::node_dummy* 
-lib::node_dummy::previous() const { 
-	return node_navigator<const node_dummy>::previous(this); 
+const lib::node_dummy*
+lib::node_dummy::previous() const {
+	return node_navigator<const node_dummy>::previous(this);
 }
 
-const lib::node_dummy* 
-lib::node_dummy::get_last_child() const { 
+const lib::node_dummy*
+lib::node_dummy::get_last_child() const {
 	return node_navigator<const node_dummy>::last_child(this);
 }
 
@@ -141,37 +141,37 @@ void lib::node_dummy::get_children(std::list<const lib::node*>& l) const {
 }
 
 ///////////////////////////////
-// search operations 
+// search operations
 
-lib::node_dummy* 
+lib::node_dummy*
 lib::node_dummy::get_first_child(const char *name) {
 	node_dummy *e = down();
 	if(!e) return 0;
 	if(e->get_local_name() == name) return e;
 	e = e->next();
 	while(e != 0) {
-		if(e->get_local_name() == name) 
+		if(e->get_local_name() == name)
 			return e;
 		e = e->next();
 	}
 	return 0;
 }
 
-const lib::node_dummy* 
+const lib::node_dummy*
 lib::node_dummy::get_first_child(const char *name) const {
 	const node_dummy *e = down();
 	if(!e) return 0;
 	if(e->get_local_name() == name) return e;
 	e = e->next();
 	while(e != 0) {
-		if(e->get_local_name() == name) 
+		if(e->get_local_name() == name)
 			return e;
 		e = e->next();
 	}
 	return 0;
 }
 
-lib::node_dummy* 
+lib::node_dummy*
 lib::node_dummy::locate_node(const char *path) {
 	if(!path || !path[0]) {
 		return this;
@@ -184,7 +184,7 @@ lib::node_dummy::locate_node(const char *path) {
 		it++; // skip empty
 		n = get_root();
 		if(it == v.end())
-			return n; 
+			return n;
 		if(n->get_local_name() != (*it))
 			return 0;
 		it++; // skip root
@@ -195,9 +195,9 @@ lib::node_dummy::locate_node(const char *path) {
 	return n;
 }
 
-lib::node_dummy* 
-lib::node_dummy::get_root() { 
-	return node_navigator<node_dummy>::get_root(this); 
+lib::node_dummy*
+lib::node_dummy::get_root() {
+	return node_navigator<node_dummy>::get_root(this);
 }
 
 inline std::string get_path_desc_comp(const lib::node_dummy *n) {
@@ -232,31 +232,31 @@ std::string lib::node_dummy::get_path_display_desc() const {
 
 ///////////////////////
 // build tree functions
-	
-lib::node_dummy* 
-lib::node_dummy::append_child(node_dummy* child) { 
+
+lib::node_dummy*
+lib::node_dummy::append_child(node_dummy* child) {
 	return node_navigator<node_dummy>::append_child(this, child);
 }
-		
-lib::node_dummy* 
-lib::node_dummy::append_child(const char *name) { 
+
+lib::node_dummy*
+lib::node_dummy::append_child(const char *name) {
 	// Create a new node with the given tag and append
 	readonly();
 	return NULL;
 }
 
-lib::node_dummy* 
+lib::node_dummy*
 lib::node_dummy::detach() {
 	readonly();
-	return node_navigator<node_dummy>::detach(this); 
+	return node_navigator<node_dummy>::detach(this);
 }
-	
+
 void lib::node_dummy::append_data(const char *data, size_t len) {
 	// Append to the data of this node
 	readonly();
 }
 
-void lib::node_dummy::append_data(const char *c_str) { 
+void lib::node_dummy::append_data(const char *c_str) {
 	append_data(c_str, strlen(c_str));
 }
 
@@ -265,7 +265,7 @@ void lib::node_dummy::append_data(const xml_string& str) {
 	readonly();
 }
 
-void lib::node_dummy::set_attribute(const char *name, const char *value) { 
+void lib::node_dummy::set_attribute(const char *name, const char *value) {
 	// Add (name, value) to the set of attributes on this node
 	readonly();
 }
@@ -282,14 +282,14 @@ void lib::node_dummy::set_attributes(const char **attrs) {
 	for(int i=0;attrs[i];i+=2)
 		set_attribute(attrs[i], attrs[i+1]);
 }
-	
+
 void lib::node_dummy::set_namespace(const xml_string& ns) {
 	// Set the namespace part of the tag for this node
 	readonly();
 }
 
 // create a deep copy of this
-lib::node_dummy* 
+lib::node_dummy*
 lib::node_dummy::clone() const {
 	unimplemented();
 	return NULL;
@@ -337,8 +337,8 @@ lib::node_dummy::get_data() const
 	return "";
 }
 
-lib::xml_string 
-lib::node_dummy::get_trimmed_data() const { 
+lib::xml_string
+lib::node_dummy::get_trimmed_data() const {
 	return trim(get_data());
 }
 
@@ -355,7 +355,7 @@ lib::node_dummy::get_attribute(const std::string& name) const {
 }
 
 // returns the resolved url of an attribute
-net::url 
+net::url
 lib::node_dummy::get_url(const char *attrname) const {
 	const char *rurl = get_attribute(attrname);
 	if(!rurl) return net::url();
@@ -381,7 +381,7 @@ lib::node_dummy::get_container_attribute(const char *name) const {
 /////////////////////
 // string repr
 
-lib::xml_string 
+lib::xml_string
 lib::node_dummy::xmlrepr() const {
 	// Return a representation of the node, without < and >
 	unimplemented();
@@ -401,7 +401,7 @@ std::string lib::node_dummy::get_sig() const {
 	return s;
 }
 
-unsigned int 
+unsigned int
 lib::node_dummy::size() const {
 	const_iterator it;
 	const_iterator e = end();

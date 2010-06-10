@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -39,10 +39,10 @@ class my_cocoa_window_factory : public ambulant::gui::cocoa::cocoa_window_factor
   public:
 	my_cocoa_window_factory(void *view)
 	:	cocoa_window_factory(view) {};
-	
+
   protected:
 	virtual void init_window_size(
-		ambulant::gui::cocoa::cocoa_window *window, const std::string &name, 
+		ambulant::gui::cocoa::cocoa_window *window, const std::string &name,
 		ambulant::lib::size bounds) {};
 };
 
@@ -56,7 +56,7 @@ class my_cocoa_window_factory : public ambulant::gui::cocoa::cocoa_window_factor
     container = nil;
     return self;
 }
-    
+
 + (NSView *)plugInViewWithArguments:(NSDictionary *)arguments
 {
     AmbulantWebView *view = [[[self alloc] init] autorelease];
@@ -108,7 +108,7 @@ class my_cocoa_window_factory : public ambulant::gui::cocoa::cocoa_window_factor
             NSURL *baseUrl = [m_arguments objectForKey:WebPlugInBaseURLKey];
             NSURL *url = [NSURL URLWithString:urlString relativeToURL:baseUrl];
 			if (url) {
-				m_mainloop = new mainloop([[url absoluteString] UTF8String], self, NULL /*embedder*/);			
+				m_mainloop = new mainloop([[url absoluteString] UTF8String], self, NULL /*embedder*/);
 			}
 		}
     }
@@ -142,11 +142,11 @@ class my_cocoa_window_factory : public ambulant::gui::cocoa::cocoa_window_factor
 
 + (BOOL)isSelectorExcludedFromWebScript:(SEL)selector
 {
-    if (selector == @selector(startPlayer) 
-			|| selector == @selector(stopPlayer) 
+    if (selector == @selector(startPlayer)
+			|| selector == @selector(stopPlayer)
 			|| selector == @selector(restartPlayer)
-			|| selector == @selector(pausePlayer) 
-			|| selector == @selector(resumePlayer) 
+			|| selector == @selector(pausePlayer)
+			|| selector == @selector(resumePlayer)
 		) {
         return NO;
     }

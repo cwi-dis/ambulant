@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/win32/win32_thread.h"
@@ -46,7 +46,7 @@ lib::win32::thread::~thread() {
 }
 
 bool lib::win32::thread::start() {
-	if(m_handle != NULL || m_stop_event == NULL) 
+	if(m_handle != NULL || m_stop_event == NULL)
 		return false;
 	ResetEvent(m_stop_event);
 	m_handle = CreateThread(NULL, 0, &thread::threadproc, this, 0, &m_id);
@@ -64,21 +64,21 @@ void lib::win32::thread::stop(){
 		m_handle = NULL;
 	}
 }
-	
-HANDLE lib::win32::thread::get_stop_handle() const { 
+
+HANDLE lib::win32::thread::get_stop_handle() const {
 	return m_stop_event;
 }
 
-HANDLE lib::win32::thread::get_thread_handle() const { 
+HANDLE lib::win32::thread::get_thread_handle() const {
 	return m_handle;
 }
 
 bool lib::win32::thread::terminate() {
 	return TerminateThread(m_handle, 1) == TRUE;
 }
-	
-void lib::win32::thread::set_winui_exit_listener(HWND hWnd, UINT winui_exit_msg) { 
-	m_wnd = hWnd; 
+
+void lib::win32::thread::set_winui_exit_listener(HWND hWnd, UINT winui_exit_msg) {
+	m_wnd = hWnd;
 	m_winui_exit_msg = winui_exit_msg;
 }
 
@@ -91,7 +91,7 @@ bool lib::win32::thread::set_priority(int priority) {
 		}
 	return true;
 }
-	
+
 bool lib::win32::thread::relax(DWORD millis) {
 	return WaitForSingleObject(get_stop_handle(), millis) != WAIT_OBJECT_0;
 }
@@ -107,12 +107,12 @@ void lib::win32::thread::signal_exit_thread(){
 	if(m_wnd != NULL)
 		PostMessage(m_wnd, m_winui_exit_msg, 0, 0);
 }
-	
+
 bool lib::win32::thread::exit_requested() const {
-	return WaitForSingleObject(get_stop_handle(), 0) == WAIT_OBJECT_0; 
+	return WaitForSingleObject(get_stop_handle(), 0) == WAIT_OBJECT_0;
 }
 
-//static 
+//static
 DWORD __stdcall lib::win32::thread::threadproc(LPVOID pParam) {
 	thread* p = static_cast<thread*>(pParam);
 	unsigned long dw = p->run();

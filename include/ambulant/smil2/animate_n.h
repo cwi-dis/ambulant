@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_SMIL2_ANIMATE_N_H
@@ -59,23 +59,23 @@ struct animate_registers {
 
 // An animate_node is the base class for all animation node flavors
 class animate_node : public time_node {
-  public:	
+  public:
 	animate_node(context_type *ctx, const node *n, animate_attrs *aattrs);
 	~animate_node();
-	
+
 	// Scheduler interface
 	virtual void prepare_interval();
-	
+
 	// Animation engine interface
 	const lib::node *get_animation_target() const { return m_aattrs->get_target();}
 	const std::string& get_animation_attr() const { return m_aattrs->get_target_attr();}
 	virtual void read_dom_value(common::animation_destination *dst, animate_registers& regs) const;
 	virtual bool set_animated_value(common::animation_destination *dst, animate_registers& regs) const;
 	virtual void apply_self_effect(animate_registers& regs) const;
-	
+
 	// Timegraph building interface
 	static animate_node* new_instance(context_type *ctx, const node *n, const node* tparent);
-	
+
   private:
 	// Internal helpers for timegraph building interface
 	static animate_node* new_regdim_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
@@ -95,7 +95,7 @@ class animate_node : public time_node {
 };
 
 } // namespace smil2
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_SMIL2_ANIMATE_N_H

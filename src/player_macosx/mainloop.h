@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -34,14 +34,14 @@ class mainloop :
   public:
 	mainloop(const char *filename, void *view, ambulant::common::embedder *app);
 	~mainloop();
-	
+
 	void restart(bool reparse=true);
 	void init_playable_factory();
 	void init_window_factory();
 	void init_datasource_factory();
 	void init_parser_factory();
 	ambulant::common::gui_screen *get_gui_screen();
-	
+
 	void document_loaded(ambulant::lib::document *doc) {};
 	void document_started() {};
 	void document_stopped() {};

@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/smil2/time_sched.h"
@@ -35,12 +35,12 @@
 using namespace ambulant;
 using namespace smil2;
 
-static scheduler::time_type infinity = 
+static scheduler::time_type infinity =
 std::numeric_limits<scheduler::time_type>::max();
 
 scheduler::scheduler(time_node *root, lib::timer_control *timer)
-:	m_root(root), 
-	m_timer(timer), 
+:	m_root(root),
+	m_timer(timer),
 	m_horizon(0),
 	m_locked(false) {
 }
@@ -71,11 +71,11 @@ void scheduler::start(time_node *tn) {
 	time_node_context *ctx = m_root->get_context();
 	bool oldflag = ctx->wait_for_eom();
 	ctx->set_wait_for_eom(false);
-	
+
 	const time_node::interval_type& i = tn->get_first_interval(true);
 	if(i.is_valid()) goto_previous(tn);
 	else goto_next(tn);
-	
+
 	ctx->set_wait_for_eom(oldflag);
 	m_timer->resume();
 	unlock();
@@ -85,8 +85,8 @@ void scheduler::update_horizon(time_type t) {
 	m_horizon = std::max(m_horizon, t);
 }
 
-// Activates a node that has a valid scheduled 
-// interval after the current time. 
+// Activates a node that has a valid scheduled
+// interval after the current time.
 void scheduler::activate_node(time_node *tn) {
 	int count = 0;
 	timer::time_type next = m_timer->elapsed();
@@ -119,7 +119,7 @@ void scheduler::activate_node(time_node *tn) {
 	AM_DBG lib::logger::get_logger()->debug("scheduler::activate_node(%s): leave next=%d tn->is_active %d", tn->get_sig().c_str(), next, tn->is_active());
 }
 
-// Starts a hyperlink target that has not played yet. 
+// Starts a hyperlink target that has not played yet.
 void scheduler::goto_next(time_node *tn) {
 	// get the path to the time node we want to activate
 	// the first in the list is the root and the last is the target
@@ -152,7 +152,7 @@ void scheduler::goto_next(time_node *tn) {
 	AM_DBG lib::logger::get_logger()->debug("goto_next: finished, time=%d", m_timer->elapsed());
 }
 
-// Starts a hyperlink target that has played. 
+// Starts a hyperlink target that has played.
 void scheduler::goto_previous(time_node *tn) {
 	// restart root
 	_reset_document();
@@ -186,7 +186,7 @@ void scheduler::activate_seq_child(time_node *parent, time_node *child) {
 	std::list<time_node*> children;
 	parent->get_children(children);
 	std::list<time_node*>::iterator it, beginit;
-	
+
 	assert(parent->is_active());
 	// Skip all children that are active (or have been active)
 	for(it = children.begin(); *it != child && ((*it)->is_active() || (*it)->played()); it++) {
@@ -194,7 +194,7 @@ void scheduler::activate_seq_child(time_node *parent, time_node *child) {
 		AM_DBG lib::logger::get_logger()->debug("activate_seq_child: skip already active %s", (*it)->get_sig().c_str());
 	}
 	beginit = it;
-	
+
 	for(it = beginit; (*it) != child; it++) {
 		assert(it != children.end());
 		AM_DBG lib::logger::get_logger()->debug("activate_seq_child: ffwd earlier %s", (*it)->get_sig().c_str());
@@ -255,7 +255,7 @@ void scheduler::restart(time_node *tn) {
 }
 
 // Executes all the current events
-// Returns the time of the next event or the sampling resolution 
+// Returns the time of the next event or the sampling resolution
 scheduler::time_type scheduler::exec() {
 	if(locked()) return idle_resolution;
 	lock();
@@ -274,7 +274,7 @@ scheduler::time_type scheduler::_exec() {
 }
 
 // Executes some of the current events
-// Returns the time of the next event or infinity 
+// Returns the time of the next event or infinity
 scheduler::time_type scheduler::_exec(time_type now) {
 	assert(locked());
 	time_type next = infinity;
@@ -315,7 +315,7 @@ scheduler::time_type scheduler::_exec(time_type now) {
 	return next;
 }
 
-// Sets the fast forward flag of the time node branch 
+// Sets the fast forward flag of the time node branch
 void scheduler::set_ffwd_mode(time_node *tn, bool b) {
 	time_node::iterator it;
 	time_node::iterator end = tn->end();
@@ -324,13 +324,13 @@ void scheduler::set_ffwd_mode(time_node *tn, bool b) {
 	}
 }
 
-// Synchronise playable clocks to time_node clocks 
+// Synchronise playable clocks to time_node clocks
 void scheduler::sync_playable_clocks(time_node *tnroot, time_node *tntarget) {
 	// Note: this implementation is incorrect. We only skip the target but we should really do the clock update.
 	time_node::iterator it;
 	time_node::iterator end = tnroot->end();
 	for(it=tnroot->begin(); it!=end; it++) {
-		if ((*it).first 
+		if ((*it).first
 			&& (*it).second != tntarget
 			) (*it).second->sync_playable_clock();
 	}

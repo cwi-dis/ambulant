@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_CG_CG_RENDERER_H
@@ -49,7 +49,7 @@ class cocoa_transition_renderer : public ref_counted_obj {
 		m_outtransition(NULL),
 		m_trans_engine(NULL) {}
 	~cocoa_transition_renderer();
-	
+
 	void set_surface(common::surface *dest);
 	void start(double where);
 	void stop();
@@ -83,7 +83,7 @@ class cg_renderer : public RP_Base {
 	:	RP_Base(context, cookie, node, evp, factory, mdp)
 		{};
 	virtual ~cg_renderer() {}
-	
+
     void redraw(const rect &dirty, gui_window *window) {
 		redraw_body(dirty, window);
 		if (RP_Base::m_erase_never) RP_Base::m_dest->keep_as_background();
@@ -91,7 +91,7 @@ class cg_renderer : public RP_Base {
 
 	void set_intransition(const lib::transition_info *info) {
 	}
-	
+
 	void start_outtransition(const lib::transition_info *info) {
 	}
   protected:
@@ -102,7 +102,7 @@ class cg_renderer : public RP_Base {
 } // namespace cg
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_GUI_CG_CG_RENDERER_H

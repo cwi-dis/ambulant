@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_JPG_DECODER_H
@@ -54,7 +54,7 @@ class jpg_decoder : public img_decoder<DataSource, ColorType> {
   public:
 	typedef unsigned int JDIMENSION;
 	typedef unsigned char JSAMPLE;
-	typedef JSAMPLE* JSAMPROW;	
+	typedef JSAMPLE* JSAMPROW;
 	typedef JSAMPROW* JSAMPARRAY;
 
 	jpg_decoder(DataSource *src, HDC hdc);
@@ -65,7 +65,7 @@ class jpg_decoder : public img_decoder<DataSource, ColorType> {
 
 	private:
 	void write_pixel_rows(j_decompress_ptr cinfo, surface<ColorType> *psurf);
-	
+
 	void create_buffer(int row_width);
 	void free_buffer();
 
@@ -77,7 +77,7 @@ class jpg_decoder : public img_decoder<DataSource, ColorType> {
 
 template <class DataSource, class ColorType>
 jpg_decoder<DataSource, ColorType>::jpg_decoder(DataSource* src, HDC hdc)
-:	img_decoder<DataSource, ColorType>(src, hdc), 
+:	img_decoder<DataSource, ColorType>(src, hdc),
 	m_dbuffer(0), m_dbuffer_height(1),
 	m_cur_output_row(0),
 	m_logger(lib::logger::get_logger()) {
@@ -115,11 +115,11 @@ bool jpg_decoder<DataSource, ColorType>::can_decode() {
 }
 
 template <class DataSource, class ColorType>
-dib_surface<ColorType>* 
+dib_surface<ColorType>*
 jpg_decoder<DataSource, ColorType>::decode() {
 	jpeg_decompress_struct cinfo;
 	jpeg_error_mgr jerr;
-	
+
 	// Initialize the JPEG decompression object with default error handling.
 	cinfo.err = jpeg_std_error(&jerr);
 	jpeg_create_decompress(&cinfo);
@@ -133,12 +133,12 @@ jpg_decoder<DataSource, ColorType>::decode() {
 
 	// Calculate output image dimensions so we can allocate space
 	jpeg_calc_output_dimensions(&cinfo);
-	
+
 	// Start decompressor
 	jpeg_start_decompress(&cinfo);
-		
+
 	JDIMENSION row_width = cinfo.output_width * cinfo.output_components;
-	
+
 	// release/create buffer
 	if(m_dbuffer != 0) free_buffer();
 	create_buffer(row_width);
@@ -155,8 +155,8 @@ jpg_decoder<DataSource, ColorType>::decode() {
 		jpeg_destroy_decompress(&cinfo);
 		return NULL;
 	}
-	
-	surface<ColorType> *psurf = 
+
+	surface<ColorType> *psurf =
 		new surface<ColorType>(width, height, ColorType::get_bits_size(), pBits);
 
 	// Process data
@@ -175,7 +175,7 @@ jpg_decoder<DataSource, ColorType>::decode() {
 }
 
 template <class DataSource, class ColorType>
-void jpg_decoder<DataSource, ColorType>::write_pixel_rows(j_decompress_ptr cinfo, 
+void jpg_decoder<DataSource, ColorType>::write_pixel_rows(j_decompress_ptr cinfo,
 	surface<ColorType> *psurf) {
 	JSAMPROW inptr = m_dbuffer[0];
 	ColorType* outptr = psurf->get_row(m_cur_output_row);
@@ -187,11 +187,11 @@ void jpg_decoder<DataSource, ColorType>::write_pixel_rows(j_decompress_ptr cinfo
 	}
 	m_cur_output_row++;
 }
-	
+
 } // namespace dx
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_GUI_JPG_DECODER_H

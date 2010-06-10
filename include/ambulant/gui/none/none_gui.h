@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_NONE_NONE_GUI_H
@@ -42,7 +42,7 @@ class none_window : public common::gui_window {
     none_window(const std::string &name, lib::size bounds, common::gui_events *handler)
 	:	common::gui_window(handler)
 	{};
-	
+
 	void need_redraw(const lib::rect &r) { m_handler->redraw(r, this); };
 	void need_events(bool want) {};
 	void redraw_now() {};
@@ -74,7 +74,7 @@ class none_playable : public common::playable_imp {
 		lib::event_processor *evp,
 		common::factories *fp,
 		common::playable_factory_machdep *mdp);
-	
+
 	void start(double where);
 //	void stop();
 	bool stop();
@@ -103,13 +103,13 @@ class none_playable_factory : public common::playable_factory {
 	{
 		return true;
 	}
-	
+
 	common::playable *new_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *evp);
-		
+
 	common::playable *new_aux_audio_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
@@ -123,7 +123,7 @@ AMBULANTAPI common::window_factory *create_none_window_factory();
 } // namespace none
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_GUI_NONE_NONE_GUI_H

@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -106,7 +106,7 @@ using namespace ambulant;
 
 // Ambulant can put anything into this extra_data pointer, which will
 // be passed on to Python
-static ambulant::common::factories * 
+static ambulant::common::factories *
 bug_workaround(ambulant::common::factories* factory)
 {
     return factory;
@@ -122,7 +122,7 @@ void initialize(
     ambulant::common::gui_player *player)
 {
     if ( api_version != AMBULANT_PLUGIN_API_VERSION ) {
-        lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"python_plugin", 
+        lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"python_plugin",
 					AMBULANT_PLUGIN_API_VERSION, api_version);
         return;
     }
@@ -144,10 +144,10 @@ void initialize(
         PyEval_SaveThread();
     }
     AM_DBG lib::logger::get_logger()->debug("python_plugin: initialized Python.");
-    
+
     PyGILState_STATE _GILState = PyGILState_Ensure();
     AM_DBG lib::logger::get_logger()->debug("python_plugin: acquired GIL.");
-    
+
     // Step 2 - Check that we actually do have the ambulant module..
     PyObject *mod = PyImport_ImportModule("ambulant");
     if (mod == NULL) {
@@ -157,15 +157,15 @@ void initialize(
         return;
     }
     AM_DBG lib::logger::get_logger()->debug("python_plugin: imported ambulant.");
-    
+
     // Now we loop over all the Python modules the plugin engine has found.
     PyObject *sys_path = PySys_GetObject("path");
-    
+
     ambulant::common::plugin_engine *pe = ambulant::common::plugin_engine::get_plugin_engine();
     const std::vector<std::string>& all_modules = pe->get_python_plugins();
     std::vector<std::string>::const_iterator i;
     for(i=all_modules.begin(); i!=all_modules.end(); i++) {
-    
+
         // Step 3 - Split into directory and module name
         int last_fsep = (*i).find_last_of("/\\");
         if (last_fsep == std::string::npos) {
@@ -184,7 +184,7 @@ void initialize(
             if (PyList_Append(sys_path, dirname_obj) <= 0)
                 lib::logger::get_logger()->trace("python_plugin: could not append \"%s\" to sys.path", dirname.c_str());
         Py_DECREF(dirname_obj);
-        
+
         // Step 5 - Import the module
         mod = PyImport_ImportModule(const_cast<char*>(modname.c_str()));
         if (mod == NULL) {
@@ -194,7 +194,7 @@ void initialize(
             continue;
         }
         AM_DBG lib::logger::get_logger()->debug("python_plugin: imported %s.", modname.c_str());
-#ifdef WITH_OBJC_BRIDGE        
+#ifdef WITH_OBJC_BRIDGE
         // Step 6 - Communicate the extra_data, if needed and wanted
         if (extra_data /* plugin_extra_data.m_plugin_extra */) {
         	AM_DBG lib::logger::get_logger()->debug("python_plugin: extra_data is 0x%x", extra_data);
@@ -227,7 +227,7 @@ void initialize(
         }
 #endif
         // Step 7 - Call the initialization method
-        PyObject *rv = PyObject_CallMethod(mod, "initialize", "iO&O&", 
+        PyObject *rv = PyObject_CallMethod(mod, "initialize", "iO&O&",
                 api_version,
                 factoriesObj_New, factory,
                 gui_playerObj_New, player

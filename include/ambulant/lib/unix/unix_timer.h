@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_LIB_UNIX_TIMER_H
@@ -34,13 +34,13 @@ namespace lib {
 
 namespace unix {
 
-// XXX: time() returns secs. This timer should be msec based. 
+// XXX: time() returns secs. This timer should be msec based.
 
 // simple unix os timer
 class unix_timer : public ambulant::lib::timer  {
   public:
 	unix_timer() {};
-	
+
 	time_type elapsed() const;
 	void set_speed(double speed);
 	double get_realtime_speed() const { return 1.0; }
@@ -56,9 +56,9 @@ class unix_timer : public ambulant::lib::timer  {
 
 
 } // namespace unix
- 
+
 } // namespace lib
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_LIB_UNIX_TIMER_H

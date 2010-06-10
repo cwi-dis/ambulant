@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_GTK_GTK_TRANSITION_H
@@ -29,7 +29,7 @@
 #include "ambulant/smil2/transition.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/gui/gtk/gtk_factory.h"
-#include "ambulant/gui/gtk/gtk_includes.h" // TMP 
+#include "ambulant/gui/gtk/gtk_includes.h" // TMP
 
 #include <gtk/gtk.h>
 namespace ambulant {
@@ -40,7 +40,7 @@ namespace gtk {
 
 class gtk_transition_debug { // TMP
   public:
-	void paint_rect(ambulant_gtk_window* aqw, 
+	void paint_rect(ambulant_gtk_window* aqw,
 			common::surface * dst,
 			lib::color_t color);
 };
@@ -235,17 +235,17 @@ class gtk_transition_engine_slidewipe :
 	virtual public gtk_transition_blitclass_r1r2r3r4,
 	virtual public smil2::transition_engine_slidewipe {};
 
-class gtk_transition_engine_fade : 
+class gtk_transition_engine_fade :
 	virtual public gtk_transition_blitclass_fade,
 	virtual public smil2::transition_engine_fade {};
 
 smil2::transition_engine *gtk_transition_engine(
 	common::surface *dst, bool is_outtrans, const lib::transition_info *info);
-	
+
 } // namespace gtk
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_GUI_GTK_GTK_TRANSITION_H

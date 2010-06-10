@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_LIB_NODE_ITERATOR_H
@@ -42,8 +42,8 @@ namespace lib {
 /// Root designates the container to be traversed and remains const.
 /// Each node is visited twice: once in the 'down' writing_mode and once in the 'up-next'.
 ///
-/// the first element is: (true, root) 
-/// the last element is: (false, root) 
+/// the first element is: (true, root)
+/// the last element is: (false, root)
 /// incrementing last element results to the universal 'end' element (0, *).
 ///
 /// (*it).first is true or false depending on the writing_mode
@@ -59,15 +59,15 @@ class const_tree_iterator  {
 
 	const_tree_iterator()
 	:	m_root(0), m_cur(0), m_move(&const_tree_iterator::down) {}
-		
+
 	const_tree_iterator(const Node *p)
 	:	m_root(p), m_cur(p), m_move(&const_tree_iterator::down) {}
 
 	// pre-increment
 	const_tree_iterator& operator++() { if(m_cur)(this->*m_move)(); return *this;}
-	
+
 	// post-increment
-	const_tree_iterator operator++(int) 
+	const_tree_iterator operator++(int)
 		{ const_tree_iterator temp(*this); ++*this; return temp;}
 
 	// dereferencing this returns a pair of const_deref_type
@@ -82,14 +82,14 @@ class const_tree_iterator  {
 
 	/// Returns the current node.
 	const Node *get_cur() const { return m_cur;}
-	
+
 	/// Returns the root of this iterator.
  	const Node *get_root() const { return m_root;}
-	
+
 	/// Returns true if the two iterators move in the same direction
-  	bool same_move(const const_tree_iterator& o) const 
+  	bool same_move(const const_tree_iterator& o) const
   		{ return m_move == o.m_move;}
-  	
+
 ///////////////
   protected:
 	void down();
@@ -98,7 +98,7 @@ class const_tree_iterator  {
 
 	// container traversed by this iterator
 	const Node *m_root;
-	
+
 	// iterator state
 	const Node *m_cur;
 	void (const_tree_iterator::*m_move)();
@@ -114,8 +114,8 @@ class const_tree_iterator  {
 /// Root designates the container to be traversed and remains const.
 /// Each node is visited twice: once in the 'down' direction and once in the 'up-next'.
 ///
-/// the first element is: (true, root) 
-/// the last element is: (false, root) 
+/// the first element is: (true, root)
+/// the last element is: (false, root)
 /// incrementing last element results to the universal 'end' element (0, *).
 ///
 /// (*it).first is true or false depending on the writing_mode
@@ -133,13 +133,13 @@ class tree_iterator : public const_tree_iterator<Node> {
 
 	// pre-increment
 	tree_iterator& operator++() { if(this->m_cur)(this->*const_tree_iterator<Node>::m_move)(); return *this;}
-	
+
 	// post-increment
-	tree_iterator operator++(int) 
+	tree_iterator operator++(int)
 		{ tree_iterator temp(*this); ++*this; return temp;}
 
 	// dereferencing this returns a pair of deref_type
-	deref_type operator*() 
+	deref_type operator*()
 		{ return deref_type( (this->m_move == &tree_iterator::down), const_cast<Node*>(this->m_cur));}
 
 	// an instance of this object acts like a pointer to a deref_type
@@ -182,40 +182,40 @@ inline void const_tree_iterator<Node>::up() {
 }
 
 } // namespace lib
- 
+
 } // namespace ambulant
 
 /// Returns true if two iterators are in exactly the same state on the same tree.
 template <class Node>
-bool operator==(const ambulant::lib::const_tree_iterator<Node>& lhs, 
+bool operator==(const ambulant::lib::const_tree_iterator<Node>& lhs,
 	const ambulant::lib::const_tree_iterator<Node>& rhs) {
-		if((lhs.get_cur() == 0 && rhs.get_cur() != 0) || 
+		if((lhs.get_cur() == 0 && rhs.get_cur() != 0) ||
 			(lhs.get_cur() != 0 && rhs.get_cur() == 0)) return false;
 		if(lhs.get_cur() == 0 && rhs.get_cur() == 0) return true;
-		return lhs.get_root() == rhs.get_root() && 
-			lhs.get_cur() == rhs.get_cur() && 
+		return lhs.get_root() == rhs.get_root() &&
+			lhs.get_cur() == rhs.get_cur() &&
 			lhs.same_move(rhs);
 	}
 
 template <class Node>
-bool operator!=(const ambulant::lib::const_tree_iterator<Node>& lhs, 
+bool operator!=(const ambulant::lib::const_tree_iterator<Node>& lhs,
 	const ambulant::lib::const_tree_iterator<Node>& rhs)
 	{ return !(lhs == rhs);}
-	
+
 /// Returns true if two iterators are in exactly the same state on the same tree.
 template <class Node>
-bool operator==(const ambulant::lib::tree_iterator<Node>& lhs, 
+bool operator==(const ambulant::lib::tree_iterator<Node>& lhs,
 	const ambulant::lib::tree_iterator<Node>& rhs) {
-		if((lhs.get_cur() == 0 && rhs.get_cur() != 0) || 
+		if((lhs.get_cur() == 0 && rhs.get_cur() != 0) ||
 			(lhs.get_cur() != 0 && rhs.get_cur() == 0)) return false;
 		if(lhs.get_cur() == 0 && rhs.get_cur() == 0) return true;
-		return lhs.get_root() == rhs.get_root() && 
-			lhs.get_cur() == rhs.get_cur() && 
+		return lhs.get_root() == rhs.get_root() &&
+			lhs.get_cur() == rhs.get_cur() &&
 			lhs.same_move(rhs);
 	}
 
 template <class Node>
-bool operator!=(const ambulant::lib::tree_iterator<Node>& lhs, 
+bool operator!=(const ambulant::lib::tree_iterator<Node>& lhs,
 	const ambulant::lib::tree_iterator<Node>& rhs)
 	{ return !(lhs == rhs);}
 

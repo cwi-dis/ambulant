@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
- 
+
 //#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -36,7 +36,7 @@ using namespace ambulant;
 //////////////////////
 // and_p
 
-std::ptrdiff_t 
+std::ptrdiff_t
 lib::list_p::parse(const_iterator& it, const const_iterator& end) {
 	const_iterator test_it = it;
 	std::ptrdiff_t sd = 0;
@@ -52,26 +52,26 @@ lib::list_p::parse(const_iterator& it, const const_iterator& end) {
 
 lib::list_p::~list_p() {
 	std::list<parselet*>::iterator rit;
-	for(rit = m_result.begin(); rit !=  m_result.end(); rit++) 
+	for(rit = m_result.begin(); rit !=  m_result.end(); rit++)
 		delete *rit;
 }
-	
+
 //////////////////////
 // options_p
 
-std::ptrdiff_t 
+std::ptrdiff_t
 lib::options_p::parse(const_iterator& it, const const_iterator& end) {
 	const_iterator test_it = it;
-	
+
 	std::ptrdiff_t dmax = -1;
-	
+
 	std::ptrdiff_t *aptrdiff = new ptrdiff_t[m_options.size()];
-		
+
 	std::list<parselet*>::iterator rit;
 	int ix = 0;
 	for(rit = m_options.begin(); rit !=  m_options.end(); rit++, ix++)
 		aptrdiff[ix] = (*rit)->parse(test_it, end);
-	
+
 	for(rit = m_options.begin(), ix=0; rit !=  m_options.end(); rit++, ix++) {
 		std::ptrdiff_t cur = aptrdiff[ix];
 		if(cur != -1 && (dmax == -1 || cur > dmax)) {
@@ -85,7 +85,7 @@ lib::options_p::parse(const_iterator& it, const const_iterator& end) {
 
 lib::options_p::~options_p() {
 	std::list<parselet*>::iterator rit;
-	for(rit = m_options.begin(); rit !=  m_options.end(); rit++) 
+	for(rit = m_options.begin(); rit !=  m_options.end(); rit++)
 		delete *rit;
 }
 
@@ -94,32 +94,32 @@ lib::options_p::~options_p() {
 // Parses any decimal number not using scientific notation
 // Includes: (+|-)?d+(.d*)? | .d+
 
-std::ptrdiff_t 
+std::ptrdiff_t
 lib::number_p::parse(const_iterator& it, const const_iterator& end) {
 	const_iterator tit = it;
 	std::ptrdiff_t d;
 	std::ptrdiff_t sd = 0;
 	bool needs_fraction = false;
-	
+
 	delimiter_p space(" \t\r\n");
 	star_p<delimiter_p> opt_space_inst = make_star(space);
 
 	// Pass over any optional space
 	d = opt_space_inst.parse(tit, end);
 	sd += (d == -1)?0:d;
-	
+
 	// Parse optional sign
 	delimiter_p sign_inst("+-");
 	d = sign_inst.parse(tit, end);
 	int sign = (d == -1)?1:( (sign_inst.m_result == '+')?1:-1);
 	sd += (d == -1)?0:d;
-	
+
 	// Pass over any optional space following sign
 	if(d != -1) {
 		d = opt_space_inst.parse(tit, end);
 		sd += (d == -1)?0:d;
 	}
-		
+
 	int_p i;
 	if(*tit != '.') {
 		// the number does not start with '.'
@@ -135,8 +135,8 @@ lib::number_p::parse(const_iterator& it, const const_iterator& end) {
 		tit++; sd += 1;
 		needs_fraction = true;
 	}
-		
-	// get the fractional part if it exists 
+
+	// get the fractional part if it exists
 	// (may be mandatory if the num starts with '.')
 	int_p f;
 	d = f.parse(tit, end);
@@ -157,7 +157,7 @@ lib::number_p::parse(const_iterator& it, const const_iterator& end) {
 // The list is sepatated with white space
 // The parser stops to the first not number sequence or at end
 
-std::ptrdiff_t 
+std::ptrdiff_t
 lib::number_list_p::parse(const_iterator& it, const const_iterator& endit) {
 	m_result.clear();
 	const_iterator tit = it;
@@ -178,7 +178,7 @@ lib::number_list_p::parse(const_iterator& it, const const_iterator& endit) {
 //////////////////////
 // time_unit_p
 
-std::ptrdiff_t 
+std::ptrdiff_t
 lib::time_unit_p::parse(const_iterator& it, const const_iterator& end) {
 	literal_cstr_p h_p("h");
 	literal_cstr_p min_p("min");
@@ -196,7 +196,7 @@ lib::time_unit_p::parse(const_iterator& it, const const_iterator& end) {
 //////////////////////
 // length_unit_p
 
-std::ptrdiff_t 
+std::ptrdiff_t
 lib::length_unit_p::parse(const_iterator& it, const const_iterator& end) {
 	literal_cstr_p px_p("px");
 	literal_cstr_p percent_p("%");
@@ -210,46 +210,46 @@ lib::length_unit_p::parse(const_iterator& it, const const_iterator& end) {
 //////////////////////
 // full_clock_value_p
 
-std::ptrdiff_t 
+std::ptrdiff_t
 lib::full_clock_value_p::parse(const_iterator& it, const const_iterator& end) {
 	const_iterator tit = it;
 	std::ptrdiff_t d;
 	std::ptrdiff_t sd = 0;
-		
+
 	// hours
 	int_p hours;
 	d = hours.parse(tit, end);
 	if(d == -1) return -1;
 	sd += d;
 	m_result.hours = hours.m_result;
-	
+
 	// :
 	d = literal_p<':'>().parse(tit, end);
 	if(d == -1) return -1;
 	sd += d;
-	
+
 	// minutes
 	int_p minutes;
 	d = minutes.parse(tit, end);
 	if(d == -1) return -1;
 	sd += d;
 	m_result.minutes = minutes.m_result;
-	
+
 	// :
 	d = literal_p<':'>().parse(tit, end);
 	if(d == -1) return -1;
 	sd += d;
-	
+
 	// seconds
 	int_p seconds;
 	d = seconds.parse(tit, end);
 	if(d == -1) return -1;
 	sd += d;
 	m_result.seconds = seconds.m_result;
-	
+
 	/////////////////
 	// optional part
-	// . 
+	// .
 	d = literal_p<'.'>().parse(tit, end);
 	if(d == -1) {
 		m_result.fraction = -1;
@@ -257,7 +257,7 @@ lib::full_clock_value_p::parse(const_iterator& it, const const_iterator& end) {
 		return sd;
 	}
 	sd += d;
-	
+
 	// fraction
 	fraction_p fraction;
 	d = fraction.parse(tit, end);
@@ -271,34 +271,34 @@ lib::full_clock_value_p::parse(const_iterator& it, const const_iterator& end) {
 //////////////////////
 // partial_clock_value_p
 
-std::ptrdiff_t 
+std::ptrdiff_t
 lib::partial_clock_value_p::parse(const_iterator& it, const const_iterator& end) {
 	const_iterator tit = it;
 	std::ptrdiff_t d;
 	std::ptrdiff_t sd = 0;
-	
+
 	// minutes
 	int_p minutes;
 	d = minutes.parse(tit, end);
 	if(d == -1) return -1;
 	m_result.minutes = minutes.m_result;
 	sd += d;
-	
+
 	// :
 	d = literal_p<':'>().parse(tit, end);
 	if(d == -1) return -1;
 	sd += d;
-	
+
 	// seconds
 	int_p seconds;
 	d = seconds.parse(tit, end);
 	if(d == -1) return -1;
 	m_result.seconds = seconds.m_result;
 	sd += d;
-	
+
 	/////////////////
 	// optional part
-	// . 
+	// .
 	d = literal_p<'.'>().parse(tit, end);
 	if(d == -1) {
 		m_result.fraction = -1;
@@ -306,7 +306,7 @@ lib::partial_clock_value_p::parse(const_iterator& it, const const_iterator& end)
 		return sd;
 	}
 	sd += d;
-	
+
 	// fraction
 	fraction_p fraction;
 	d = fraction.parse(tit, end);
@@ -320,20 +320,20 @@ lib::partial_clock_value_p::parse(const_iterator& it, const const_iterator& end)
 //////////////////////
 // timecount_value_p
 
-std::ptrdiff_t 
+std::ptrdiff_t
 lib::timecount_value_p::parse(const_iterator& it, const const_iterator& end) {
 	const_iterator tit = it;
 	std::ptrdiff_t d;
 	std::ptrdiff_t sd = 0;
-	
+
 	// parse value
 	number_p p1;
 	d = p1.parse(tit, end);
 	if(d == -1) return -1;
 	m_result.value = p1.m_result;
 	sd += d;
-	
-	// parse optional units	
+
+	// parse optional units
 	time_unit_p p2;
 	d = p2.parse(tit, end);
 	if(d == -1) return (m_result.unit = time_unit_p::tu_s, it = tit, sd);
@@ -349,9 +349,9 @@ inline int fraction_to_ms(int f) {
 	return (f<=0)?0:f;
 }
 
-std::ptrdiff_t 
+std::ptrdiff_t
 lib::clock_value_p::parse(const_iterator& it, const const_iterator& end) {
-	lib::clock_value_sel_p p = make_or_trio_p(full_clock_value_p(), 
+	lib::clock_value_sel_p p = make_or_trio_p(full_clock_value_p(),
 			partial_clock_value_p(), timecount_value_p());
 	const_iterator test_it = it;
 	std::ptrdiff_t d = p.parse(test_it, end);
@@ -381,7 +381,7 @@ lib::clock_value_p::parse(const_iterator& it, const const_iterator& end) {
 	} else {
 		logger::get_logger()->trace("Internal error: clock_value_p logic error");
 		logger::get_logger()->warn(gettext("Programmer error encountered, will attempt to continue"));
-	}	
+	}
 	it = test_it;
 	return d;
 }
@@ -390,26 +390,26 @@ lib::clock_value_p::parse(const_iterator& it, const const_iterator& end) {
 // offset_value_p and converter to ms
 // offset-value ::= (( S? "+" | "-" S? )? ( Clock-value )
 
-std::ptrdiff_t 
+std::ptrdiff_t
 lib::offset_value_p::parse(const_iterator& it, const const_iterator& end) {
 		const_iterator test_it = it;
 		std::ptrdiff_t rd = 0;
 		std::ptrdiff_t d;
-		
+
 		delimiter_p space(" \t\r\n");
 		star_p<delimiter_p> opt_space_inst = make_star(space);
 
 		d = opt_space_inst.parse(test_it, end);
 		rd += (d == -1)?0:d;
-		
+
 		delimiter_p sign_inst("+-");
 		d = sign_inst.parse(test_it, end);
 		int sign = (d == -1)?1:( (sign_inst.m_result == '+')?1:-1 );
 		rd += (d == -1)?0:d;
-	
+
 		d = opt_space_inst.parse(test_it, end);
 		rd += (d == -1)?0:d;
-		
+
 		clock_value_p c;
 		d = c.parse(test_it, end);
 		if(d == -1) return -1;
@@ -422,28 +422,28 @@ lib::offset_value_p::parse(const_iterator& it, const const_iterator& end) {
 //////////////////////
 // coord_p
 
-std::ptrdiff_t 
+std::ptrdiff_t
 lib::coord_p::parse(const_iterator& it, const const_iterator& end) {
 	const_iterator tit = it;
 	std::ptrdiff_t d;
 	std::ptrdiff_t sd = 0;
-	
+
 	// we need this if we want to allow optional space between value and units
 	delimiter_p space(" \t\r\n");
 	star_p<delimiter_p> opt_space_inst = make_star(space);
-		
+
 	// parse value
 	number_p p1;
 	d = p1.parse(tit, end);
 	if(d == -1) return -1;
 	m_result.value = p1.m_result;
 	sd += d;
-	
+
 	// allow optional space between value and units
 	d = opt_space_inst.parse(tit, end);
 	sd += (d == -1)?0:d;
-	
-	// parse optional units	
+
+	// parse optional units
 	length_unit_p p2;
 	d = p2.parse(tit, end);
 	if(d == -1) return (m_result.unit = length_unit_p::px, it = tit, sd);
@@ -454,30 +454,30 @@ lib::coord_p::parse(const_iterator& it, const const_iterator& end) {
 //////////////////////
 // region_dim_p
 
-std::ptrdiff_t 
+std::ptrdiff_t
 lib::region_dim_p::parse(const_iterator& it, const const_iterator& end) {
 	const_iterator tit = it;
 	std::ptrdiff_t d;
 	std::ptrdiff_t sd = 0;
-	
+
 	delimiter_p space(" \t\r\n");
 	star_p<delimiter_p> opt_space_inst = make_star(space);
-		
+
 	// S?
 	d = opt_space_inst.parse(tit, end);
 	sd += (d == -1)?0:d;
-	
+
 	// int | double
 	number_p val_p;
 	d = val_p.parse(tit, end);
 	if(d == -1) return -1;
 	sd += d;
 	m_result.dbl_val = val_p.m_result;
-	
+
 	// S?
 	d = opt_space_inst.parse(tit, end);
 	sd += (d == -1)?0:d;
-	
+
 	// (px)? | %
 	literal_cstr_p px_cstr_p("px");
 	literal_cstr_p pc_cstr_p("%");
@@ -499,35 +499,35 @@ lib::region_dim_p::parse(const_iterator& it, const const_iterator& end) {
 // point_p
 
 // S? (? d+ S? , S? d+  S? )?
-std::ptrdiff_t 
+std::ptrdiff_t
 lib::point_p::parse(const_iterator& it, const const_iterator& end) {
 	const_iterator tit = it;
 	std::ptrdiff_t d;
 	std::ptrdiff_t sd = 0;
-	
+
 	delimiter_p space(" \t\r\n");
 	star_p<delimiter_p> opt_space_inst = make_star(space);
-	
+
 	// S?
 	d = opt_space_inst.parse(tit, end);
 	sd += (d == -1)?0:d;
-	
+
 	// (?
 	d = literal_p<'('>().parse(tit, end);
 	sd += (d == -1)?0:d;
 	bool expectRP = (d == -1)?false:true;
-	
+
 	// x value
 	number_p ip;
 	d = ip.parse(tit, end);
 	if(d == -1) return -1;
 	m_result.x = ip.m_result;
 	sd += d;
-	
+
 	// S?
 	d = opt_space_inst.parse(tit, end);
 	sd += (d == -1)?0:d;
-	
+
 	// value sep opt
 	d = literal_p<','>().parse(tit, end);
 	sd += (d == -1)?0:d;
@@ -535,18 +535,18 @@ lib::point_p::parse(const_iterator& it, const const_iterator& end) {
 	// S?
 	d = opt_space_inst.parse(tit, end);
 	sd += (d == -1)?0:d;
-	
+
 	// y value
 	d = ip.parse(tit, end);
 	if(d == -1) return -1;
 	m_result.y = ip.m_result;
 	sd += d;
-	
+
 	if(expectRP) {
 		// S?
 		d = opt_space_inst.parse(tit, end);
 		sd += (d == -1)?0:d;
-		
+
 		// )
 		d = literal_p<')'>().parse(tit, end);
 		if(d == -1) return -1;
@@ -556,40 +556,40 @@ lib::point_p::parse(const_iterator& it, const const_iterator& end) {
 }
 
 //This parser parses smpte smpte-30-drop and smpte-25 time formats
-std::ptrdiff_t 
+std::ptrdiff_t
 lib::smpte_p::parse(const_iterator& it, const const_iterator& end)
 {
 	const_iterator tit = it;
 	std::ptrdiff_t d;
 	std::ptrdiff_t sd = 0;
-	
+
 	int result;
-	
+
 	m_drop = false;
 	m_frame_rate = 30;
-	
+
 	delimiter_p space(" \t\r\n");
-	
+
 	star_p<delimiter_p> opt_space_inst = make_star(space);
 	d = opt_space_inst.parse(tit, end);
 	sd += (d == -1)?0:d;
 	if (d == -1) {
 		logger::get_logger()->debug("Failed to parse optional space ");
 	}
-	
+
 	d = literal_cstr_p("smpte").parse(tit,end);
 	sd += (d == -1)?0:d;
-	if (d == -1) 
+	if (d == -1)
 		return -1;
-	
+
 	d = literal_p<'-'>().parse(tit,end);
 	sd += (d == -1)?0:d;
 	int_p ip;
 	if (d != -1) {
 		d = ip.parse(tit,end);
 		int r = ip.m_result;
-		if (r == 25) 
-		{	
+		if (r == 25)
+		{
 			AM_DBG logger::get_logger()->debug("smpte-25");
 			m_frame_rate = 25;
 			m_drop = false;
@@ -598,12 +598,12 @@ lib::smpte_p::parse(const_iterator& it, const const_iterator& end)
 			m_frame_rate = 30;
 			m_drop = false;
 		}
-				
+
 	} else {
 		m_frame_rate = 30;
 		m_drop = false;
 	}
-	
+
 	d = literal_cstr_p("-drop").parse(tit,end);
 	if (d == -1) {
 		m_drop = false;
@@ -611,24 +611,24 @@ lib::smpte_p::parse(const_iterator& it, const const_iterator& end)
 		AM_DBG logger::get_logger()->debug("drop");
 		m_drop = true;
 	}
-	
-	
+
+
 	d = literal_p<'='>().parse(tit,end);
 	sd += (d == -1)?0:d;
 	if (d == -1) {
 		AM_DBG logger::get_logger()->debug("smpte parser failed to parse literal = ");
 	}
-	
-	
+
+
 
 	//parse the actual smpte values
 	for(int i=0; i<3; i++) {
 		d = ip.parse(tit,end);
-		if (d == -1) { 
+		if (d == -1) {
 			AM_DBG logger::get_logger()->debug("smpte parser failed to parse smtpe (i=%d)", i);
 			return -1;
 		}
-		
+
 		m_result[i] = ip.m_result;
 		if ( (i > 0) && ( (m_result[i] < 0) || (m_result[i] > 59)) ) {
 			logger::get_logger()->trace("Failed to parse smpte minutes/seconds. Value out of range [0,59]");
@@ -636,15 +636,15 @@ lib::smpte_p::parse(const_iterator& it, const const_iterator& end)
 		}
 
 		sd += d;
-		
+
 		d = literal_p<':'>().parse(tit,end);
 		sd += (d == -1)?0:d;
 	}
-	
-	
-	
+
+
+
 	d = ip.parse(tit,end);
-	if (d != -1) { 
+	if (d != -1) {
 		result = ip.m_result;
 		if ( (result >= 0) && (result < m_frame_rate)) // range [0, framerate-1]
 			m_result[3] = ip.m_result;
@@ -652,18 +652,18 @@ lib::smpte_p::parse(const_iterator& it, const const_iterator& end)
 			logger::get_logger()->trace("Failed to parse smpte frames. Value out of range [0,%d]",m_frame_rate-1);
 			m_result[3] = 0;
 		}
-			
+
 	} else {
 		m_result[3] = 0;
 	}
-	
+
 	sd += (d == -1)?0:d;
-			
+
 	d = literal_p<'.'>().parse(tit,end);
 	sd += (d == -1)?0:d;
-	
+
 	d = ip.parse(tit,end);
-	if (d != -1) { 
+	if (d != -1) {
 		result = ip.m_result;
 		if ( (result >= 0) && (result < 2) ) // range [0,1]
 			m_result[4] = ip.m_result;
@@ -680,35 +680,35 @@ lib::smpte_p::parse(const_iterator& it, const const_iterator& end)
 	return (it=tit, sd);
 }
 
-long int 
+long int
 lib::smpte_p::get_time()
 {
 	long int time;
 	double frame_duration;
-	
-	if ((m_frame_rate == 30)) 
+
+	if ((m_frame_rate == 30))
 		frame_duration = 1.001/30;
-	else 
+	else
 		frame_duration = 1.0/25;
-	
+
 	time = (m_result[0]*60*60*1000) + (m_result[1]*60*1000) + (m_result[2] *1000) + (long int) ::floor( ((m_result[3] * frame_duration  + m_result[4] * frame_duration/2) + 0.5 ) * 1000);
-	
+
 	return time;
 }
 
 //This parser parses npt time format
-std::ptrdiff_t 
+std::ptrdiff_t
 lib::npt_p::parse(const_iterator& it, const const_iterator& end)
 {
 	const_iterator tit = it;
 	std::ptrdiff_t d;
 	std::ptrdiff_t sd = 0;
-	
+
 	m_result = -1;
-	
-	
+
+
 	delimiter_p space(" \t\r\n");
-	
+
 	star_p<delimiter_p> opt_space_inst = make_star(space);
 	d = opt_space_inst.parse(tit, end);
 	sd += (d == -1)?0:d;
@@ -719,23 +719,23 @@ lib::npt_p::parse(const_iterator& it, const const_iterator& end)
 			logger::get_logger()->debug("ntp parser succeded to parse optional space");
 		}
 	}
-	
+
 	d = literal_cstr_p("npt").parse(tit,end);
 	sd += (d == -1)?0:d;
-	
+
 	d = literal_p<'='>().parse(tit,end);
 	sd += (d == -1)?0:d;
-	AM_DBG { 
+	AM_DBG {
 		if (d == -1) {
 			logger::get_logger()->debug("ntp parser failed to parse literal = ");
 		} else {
 			logger::get_logger()->debug("ntp parser succeded to parse literal = ");
 		}
 	}
-	
-		
+
+
 	lib::clock_value_p parser;
-		
+
 	d = parser.parse(tit,end);
 	sd+= (d == -1)?0:d;
 	if (d == -1) {
@@ -746,30 +746,30 @@ lib::npt_p::parse(const_iterator& it, const const_iterator& end)
 		AM_DBG logger::get_logger()->debug("ntp parser succeded to parse time %ld",m_result);
 
 	}
-	
+
 	return (it=tit, sd);
 }
 
 
-long int 
+long int
 lib::npt_p::get_time()
 {
 	return m_result;
 }
 
-std::ptrdiff_t 
+std::ptrdiff_t
 lib::mediaclipping_p::parse(const_iterator& it, const const_iterator& end)
 {
 	const_iterator tit = it;
 	std::ptrdiff_t d;
-	
+
 	lib::smpte_p smpte_parser;
 	lib::npt_p npt_parser;
-	
+
 	m_result = -1;
 
 	d = npt_parser.parse(tit, end);
-	
+
 	if (d != -1) {
 		m_result = npt_parser.get_time();
 		return (it = tit, d);
@@ -780,12 +780,12 @@ lib::mediaclipping_p::parse(const_iterator& it, const const_iterator& end)
 		m_result = smpte_parser.get_time();
 		return (it = tit, d);
 	}
-	
+
 	return -1;
-	
+
 }
 
-long int 
+long int
 lib::mediaclipping_p::get_time()
 {
 	return m_result;

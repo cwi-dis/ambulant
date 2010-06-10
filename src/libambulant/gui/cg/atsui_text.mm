@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/cg/atsui_text.h"
@@ -119,7 +119,7 @@ atsui_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 
 	if (m_data && !m_text_storage) {
 		// Convert through NSString. We hope this will get the unicode intricacies right.
-		NSString *the_string = [[NSString alloc] initWithBytesNoCopy: m_data 
+		NSString *the_string = [[NSString alloc] initWithBytesNoCopy: m_data
 				length: m_data_size
 				encoding: NSUTF8StringEncoding
 				freeWhenDone: NO];
@@ -131,7 +131,7 @@ atsui_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 		[the_string getCharacters: m_text_storage];
 		[the_string release];
 	}
-	
+
 	if (m_text_storage && !m_layout_manager) {
 		// Only now can we set the color: the alfa comes from the region.
 		double alfa = 1.0;
@@ -148,10 +148,10 @@ atsui_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 
 		err = ATSUCreateTextLayout(&m_layout_manager);
 		assert(err == 0);
-		
+
 		err = ATSUSetTextPointerLocation(m_layout_manager, m_text_storage, kATSUFromTextBeginning, kATSUToTextEnd, m_text_storage_length);
 		assert(err == 0);
-		
+
 		err = ATSUSetRunStyle(m_layout_manager, m_style, kATSUFromTextBeginning, kATSUToTextEnd);
 		assert(err == 0);
 	}
@@ -168,7 +168,7 @@ atsui_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 		values[0] = &ctx;
 		err = ATSUSetLayoutControls(m_layout_manager, 1, tags, sizes, values);
 		assert(err == 0);
-		
+
 		// Find line breaks.
 		Fixed flinewidth = FloatToFixed(CGRectGetWidth(cg_dstrect));
 		tags[0] = kATSULineWidthTag;
@@ -176,7 +176,7 @@ atsui_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 		values[0] = &flinewidth;
 		err = ATSUSetLayoutControls(m_layout_manager, 1, tags, sizes, values);
 		assert(err == 0);
-		
+
 		ItemCount nlines;
 		err = ATSUBatchBreakLines(m_layout_manager, kATSUFromTextBeginning, m_text_storage_length, flinewidth, &nlines);
 		assert(err == 0);
@@ -187,7 +187,7 @@ atsui_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 		err = ATSUGetSoftLineBreaks(m_layout_manager, kATSUFromTextBeginning, kATSUToTextEnd, nlines, breaks, NULL);
 		assert(err == 0);
 		breaks[nlines++] = m_text_storage_length;
-		
+
 		// Draw each line
 		UniCharArrayOffset lbegin, lend;
 		int i;
@@ -204,7 +204,7 @@ atsui_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 			err = ATSUDrawText(m_layout_manager, lbegin, lend-lbegin, X2Fix(x), X2Fix(y));
 			assert(err == 0);
 			y -= Fix2X(descent);
-			
+
 			lbegin = lend;
 		}
 		free(breaks);

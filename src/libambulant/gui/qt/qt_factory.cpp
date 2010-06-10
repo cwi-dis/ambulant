@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- 
+
 //#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
- 
+
 #include "ambulant/gui/qt/qt_includes.h"
 #include "ambulant/gui/qt/qt_factory_impl.h"
 #include "ambulant/gui/qt/qt_image_renderer.h"
@@ -60,7 +60,7 @@ ambulant::gui::qt::create_qt_window_factory_unsafe(void *parent_widget, int top_
     return new qt_window_factory(qw, top_offset, gpl);
 }
 
-  
+
 //
 // qt_window_factory
 //
@@ -71,7 +71,7 @@ qt_window_factory::qt_window_factory( QWidget* parent_widget, int top_offset, gu
     m_gui_player(gpl)
 {
 	AM_DBG lib::logger::get_logger()->debug("qt_window_factory (0x%x)", (void*) this);
-}	
+}
 
 common::gui_window *
 qt_window_factory::new_window (const std::string &name,
@@ -127,7 +127,7 @@ qt_video_factory::new_playable(
 		lib::event_processor *evp)
 {
 	common::playable *rv;
-	
+
 	lib::xml_string tag = node->get_qname().second;
     AM_DBG lib::logger::get_logger()->debug("qt_video_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "video") {
@@ -202,7 +202,7 @@ ambulant_qt_window::~ambulant_qt_window()
 		m_surface = NULL;
 	}
 }
-	
+
 void
 ambulant_qt_window::need_redraw(const lib::rect &r)
 {
@@ -227,7 +227,7 @@ ambulant_qt_window::redraw_now()
 }
 
 void
-ambulant_qt_window::need_events(bool want) 
+ambulant_qt_window::need_events(bool want)
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::need_events(0x%x): want=%d", this, want);
 }
@@ -245,7 +245,7 @@ ambulant_qt_window::redraw(const lib::rect &r)
 }
 
 bool
-ambulant_qt_window::user_event(const lib::point &where, int what) 
+ambulant_qt_window::user_event(const lib::point &where, int what)
 {
     AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::user_event(0x%x): point=(%d,%d)", this, where.x, where.y);
 	return m_handler->user_event(where, what);
@@ -334,7 +334,7 @@ ambulant_qt_window::delete_ambulant_surface()
 	m_surface = NULL;
 }
 
-void 
+void
 ambulant_qt_window::startScreenTransition()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::startScreenTransition()");
@@ -346,7 +346,7 @@ ambulant_qt_window::startScreenTransition()
 	m_fullscreen_prev_pixmap = NULL;
 }
 
-void 
+void
 ambulant_qt_window::endScreenTransition()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::endScreenTransition()");
@@ -354,7 +354,7 @@ ambulant_qt_window::endScreenTransition()
 	m_fullscreen_count--;
 }
 
-void 
+void
 ambulant_qt_window::screenTransitionStep(smil2::transition_engine* engine, lib::transition_info::time_type now)
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::screenTransitionStep()");
@@ -362,8 +362,8 @@ ambulant_qt_window::screenTransitionStep(smil2::transition_engine* engine, lib::
 	m_fullscreen_engine = engine;
 	m_fullscreen_now = now;
 }
-		
-void 
+
+void
 ambulant_qt_window::_screenTransitionPreRedraw()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::_screenTransitionPreRedraw()");
@@ -372,7 +372,7 @@ ambulant_qt_window::_screenTransitionPreRedraw()
 //	[[self getTransitionSurface] lockFocus];
 }
 
-void 
+void
 ambulant_qt_window::_screenTransitionPostRedraw(const lib::rect &r)
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::_screenTransitionPostRedraw()");
@@ -392,7 +392,7 @@ ambulant_qt_window::_screenTransitionPostRedraw(const lib::rect &r)
 		m_fullscreen_old_pixmap = m_fullscreen_prev_pixmap;
 		m_fullscreen_prev_pixmap = NULL;
 	}
-	
+
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::_screenTransitionPostRedraw: bitblit");
 	if (m_fullscreen_engine) {
 		// Do the transition step
@@ -413,7 +413,7 @@ ambulant_qt_window::_screenTransitionPostRedraw(const lib::rect &r)
 }
 
 
-void 
+void
 ambulant_qt_window::clear()
 // private helper: clear the widget
 {
@@ -425,7 +425,7 @@ ambulant_qt_window::clear()
 	QColor bgc = QColor(255,255,255); // white color
 	// in debugging mode, initialize with purple background
 	AM_DBG bgc = QColor(255,  0,255); // purple color
-	
+
 	paint.setBrush(bgc);
 	paint.drawRect(0,0,size.width(),size.height());
 	paint.flush();
@@ -468,13 +468,13 @@ qt_ambulant_widget::set_gui_player(gui_player* gpl)
 {
 	m_gui_player = gpl;
 }
-	
-gui_player* 
+
+gui_player*
 qt_ambulant_widget::get_gui_player()
 {
 	return m_gui_player;
 }
-	
+
 void
 qt_ambulant_widget::paintEvent(QPaintEvent* e)
 {
@@ -504,7 +504,7 @@ qt_ambulant_widget::mouseReleaseEvent(QMouseEvent* e) {
 	m_qt_window->user_event(amwhere);
 }
 
-void 
+void
 qt_ambulant_widget::mouseMoveEvent(QMouseEvent* e) {
 	AM_DBG lib::logger::get_logger()->debug("qt_ambulant_widget::mouseMoveEvent:(%d,%d)\n", e->x(),e->y());
 	ambulant::lib::point ap = ambulant::lib::point(e->x(), e->y());
@@ -531,10 +531,10 @@ qt_ambulant_widget::mouseMoveEvent(QMouseEvent* e) {
 	AM_DBG lib::logger::get_logger()->debug("qt_ambulant_widget::mouseMoveEvent(0x%x): cursid=%d)",cursid);
 	setCursor(cursor);
 #endif
-   
+
 }
 
-void 
+void
 qt_ambulant_widget::set_qt_window( ambulant_qt_window* aqw)
 {
 	// Note: the window and widget are destucted independently.
@@ -546,7 +546,7 @@ qt_ambulant_widget::set_qt_window( ambulant_qt_window* aqw)
 }
 
 
-ambulant_qt_window* 
+ambulant_qt_window*
 qt_ambulant_widget::qt_window() {
 	return m_qt_window;
 }

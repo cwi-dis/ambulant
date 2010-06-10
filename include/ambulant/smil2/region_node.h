@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 /////////////////////////////
@@ -62,19 +62,19 @@ class region_node : public common::animation_destination {
 	// tree iterators
 	typedef lib::tree_iterator<region_node> iterator;
 	typedef lib::const_tree_iterator<region_node> const_iterator;
-	
+
 	// static method which tests whether a body node needs
 	// a region counterpart (because it uses subregion positioning
 	// or some such)
 	static bool needs_region_node(const lib::node *n);
-	
+
 	// constructs a region node with local name and attrs
 	region_node(const lib::node *n, dimension_inheritance di);
 	virtual ~region_node();
-	
+
 	// Initialize body subregion nodes from their real region node.
 	void fix_from_region_node(const region_node *parent);
-	
+
 	// Initialize data structures from DOM node attributes.
 	bool fix_from_dom_node();
 
@@ -83,19 +83,19 @@ class region_node : public common::animation_destination {
 	common::surface_template *get_surface_template() { return m_surface_template; }
 	common::animation_notification *get_animation_notification() { return m_surface_template; };
 	common::animation_destination *get_animation_destination() { return this; };
-	
+
 	// query for this region's rectangle
 	// the rectangle is evaluaded on the fly
 	// the evaluation takes into account relative coordinates
 	lib::rect get_rect(const lib::rect *default_rect = NULL) const;
-	
+
 	// gets the underlying region_dim_spec for modification
 	common::region_dim_spec& rds() {return m_rds;}
-	
+
 	// Set and get where this node inherits dimension information from
 	void set_dimension_inheritance(dimension_inheritance di) { m_dim_inherit = di; }
 	dimension_inheritance get_dimension_inheritance() const { return m_dim_inherit; }
-	
+
 	// region_info implementation
 	std::string get_name() const;
 	common::fit_t get_fit() const { return m_fit; }
@@ -138,7 +138,7 @@ class region_node : public common::animation_destination {
 	void set_chromakeytolerance(lib::color_t ct) { m_chromakeytolerance = ct; m_display_chromakeytolerance = ct;};
 #endif // WITH_SMIL30
 	void set_as_subregion(bool b) { m_is_subregion = b; }
-	
+
 	// animation_destination interface
 	common::region_dim get_region_dim(const std::string& which, bool fromdom = false) const;
 	lib::color_t get_region_color(const std::string& which, bool fromdom = false) const;
@@ -149,7 +149,7 @@ class region_node : public common::animation_destination {
 	const common::region_dim_spec& get_region_panzoom(bool fromdom = false) const;
 	double get_region_opacity(const std::string& which, bool fromdom = false) const;
 #endif
-	
+
 	void set_region_dim(const std::string& which, const common::region_dim& rd);
 	void set_region_color(const std::string& which, lib::color_t clr);
 	void set_region_zindex(common::zindex_t z);
@@ -159,14 +159,14 @@ class region_node : public common::animation_destination {
 	void set_region_panzoom(const common::region_dim_spec& rds);
 	void set_region_opacity(const std::string& which, double level);
 #endif // WITH_SMIL30
-	
+
 	// sets explicitly the dimensions of this region
 	template <class L, class W, class R, class T, class H, class B>
 	void set_dims(L l, W w, R r, T t, H h, B b) {
 		m_rds.left = l; m_rds.width = w;  m_rds.right = r;
 		m_rds.top = t; m_rds.height = h;  m_rds.bottom = b;
 	}
-	
+
 	///////////////////////////////
 	// iterators
 
@@ -188,29 +188,29 @@ class region_node : public common::animation_destination {
 	void down(region_node *n)  { m_child = n;}
 	void up(region_node *n)  { m_parent = n;}
 	void next(region_node *n)  { m_next = n;}
-	
+
 	const region_node* previous() const {return const_nnhelper::previous(this);}
 	region_node* previous() { return nnhelper::previous(this);}
-	
+
 	region_node* last_child() { return nnhelper::last_child(this);}
 	const region_node* last_child() const { return const_nnhelper::last_child(this);}
-	
+
 	region_node* get_root() {return nnhelper::get_root(this);}
 	const region_node* get_root() const {return const_nnhelper::get_root(this);}
-	
+
 	bool is_descendent_of(region_node *tn) const {return const_nnhelper::is_descendent(this, tn);}
-	
+
 	region_node *append_child(region_node *child) {return nnhelper::append_child(this, child);}
 	void get_children(std::list<region_node*>& l) { nnhelper::get_children(this, l); }
 	region_node *get_first_child(const char *name);
 	const region_node *get_first_child(const char *name) const;
-	
+
 	const lib::node *dom_node() const { return m_node; }
 
 	static int get_node_counter() { return node_counter;}
-	
+
   private:
-	
+
 	const lib::node *m_node;
 	common::region_dim_spec m_rds;
 	dimension_inheritance m_dim_inherit;
@@ -238,7 +238,7 @@ class region_node : public common::animation_destination {
 	bool m_inherit_bgcolor;
 	common::surface_template *m_surface_template;
 	bool m_is_subregion;
-	
+
 	// display attributes for the animation_destination interface
 	common::region_dim_spec m_display_rds;
 	common::zindex_t m_display_zindex;
@@ -255,17 +255,17 @@ class region_node : public common::animation_destination {
 	lib::color_t m_display_chromakey;
 	lib::color_t m_display_chromakeytolerance;
 #endif // WITH_SMIL30
-	
+
 	// verifier
 	static int node_counter;
-	
+
 	// XML tree glue
 	region_node *m_parent;
 	region_node *m_child;
 	region_node *m_next;
 };
 } // namespace smil2
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_SMIL2_REGION_NODE_H

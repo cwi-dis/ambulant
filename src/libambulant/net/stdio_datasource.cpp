@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/net/datasource.h"
@@ -40,7 +40,7 @@ ambulant::net::create_stdio_datasource_factory()
     return new stdio_datasource_factory();
 }
 
-datasource * 
+datasource *
 stdio_datasource_factory::new_raw_datasource(const url& url)
 {
 	//XXXX Here we should check if url points to a file or to a network location (rtp/rtsp)
@@ -52,7 +52,7 @@ stdio_datasource_factory::new_raw_datasource(const url& url)
 	} else {
 		return NULL;
 	}
-	
+
 }
 
 // *********************** stdio_datasource ***********************************************
@@ -127,7 +127,7 @@ stdio_datasource::filesize()
 		// Seek to the end of the file, and get the filesize
 		fseek(m_stream, 0, SEEK_END);
 		m_filesize = ftell(m_stream);
-	 	fseek(m_stream, 0, SEEK_SET);						
+	 	fseek(m_stream, 0, SEEK_SET);
 	} else {
  		lib::logger::get_logger()->fatal("stdio_datasource.filesize(): no file openXX");
 		m_filesize = 0;
@@ -153,7 +153,7 @@ stdio_datasource::read_file()
 {
 	// private method - no need to lock
   	char *buf;
-  	size_t n; 	
+  	size_t n;
 	//AM_DBG lib::logger::get_logger()->debug("stdio_datasource.readfile: 	reading file ");
 	if (m_stream >= 0) {
 		do {
@@ -161,7 +161,7 @@ stdio_datasource::read_file()
 			assert(buf);
 			n = fread(buf, 1, BUFSIZ, m_stream);
 			assert((int)n == n);
-			m_buffer->pushdata(n > 0 ? (int)n : 0);		
+			m_buffer->pushdata(n > 0 ? (int)n : 0);
 		} while (n > 0);
 		m_end_of_file = true;
 		if (n < 0) {
@@ -169,11 +169,11 @@ stdio_datasource::read_file()
 			lib::logger::get_logger()->trace("%s: %s", m_url.get_url().c_str(), strerror(errno));
 #endif
 			lib::logger::get_logger()->warn(gettext("Error encountered while reading file %s"), m_url.get_url().c_str());
-		} 		
+		}
 	}
 }
- 
-char* 
+
+char*
 stdio_datasource::get_read_ptr()
 {
 	m_lock.enter();
@@ -182,20 +182,20 @@ stdio_datasource::get_read_ptr()
 	m_lock.leave();
 	return rv;
 }
-  
+
 void
 stdio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *cbevent)
  {
 	m_lock.enter();
  	if (! _end_of_file() ) read_file();
-	
+
     assert(evp);
 	assert(cbevent);
 	AM_DBG lib::logger::get_logger()->debug("stdio_datasource.start: trigger readdone callback (x%x)", cbevent);
 	evp->add_event(cbevent, 0, ambulant::lib::ep_med);
 	m_lock.leave();
 }
- 
+
 void
 stdio_datasource::readdone(int sz)
 {

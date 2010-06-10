@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 
 /* Necessary GTK files for the renderers */
 #ifndef AMBULANT_GUI_GTK_GTK_INCLUDES_H
-#define AMBULANT_GUI_GTK_GTK_INCLUDES_H 
+#define AMBULANT_GUI_GTK_GTK_INCLUDES_H
 // file has become empty->superfluous
 // #define AM_DBG
 #endif/*AMBULANT_GUI_GTK_GTK_INCLUDES_H */

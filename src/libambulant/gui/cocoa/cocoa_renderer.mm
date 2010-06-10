@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/cocoa/cocoa_gui.h"
@@ -49,7 +49,7 @@ cocoa_transition_renderer::~cocoa_transition_renderer()
 	m_outtransition = NULL;
 	m_lock.leave();
 }
-	
+
 void
 cocoa_transition_renderer::set_surface(common::surface *dest)
 {
@@ -137,7 +137,7 @@ cocoa_transition_renderer::redraw_pre(gui_window *window)
 {
 	m_lock.enter();
 	AM_DBG logger::get_logger()->debug("cocoa_transition_renderer.redraw(0x%x)", (void *)this);
-	
+
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 
@@ -162,7 +162,7 @@ cocoa_transition_renderer::redraw_post(gui_window *window)
 	m_lock.enter();
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
-	NSImage *surf = NULL;	
+	NSImage *surf = NULL;
 	if (m_trans_engine) {
 		surf = [view getTransitionSurface];
 		if (![surf isValid]) surf = NULL;

@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- 
+
 #ifndef AMBULANT_COMMON_PARSER_FACTORY_H
 #define AMBULANT_COMMON_PARSER_FACTORY_H
 
@@ -35,7 +35,7 @@ namespace lib {
 /// Interface to create XML parsers.
 class AMBULANTAPI parser_factory {
   public:
-	  
+
 	virtual ~parser_factory() {};
 	/// Create an XML parser that will feed the given content and error handlers.
 	virtual xml_parser* new_parser(
@@ -50,10 +50,10 @@ class AMBULANTAPI global_parser_factory : public parser_factory {
     /// Returns (singleton?) global_parser_factory object.
   	static global_parser_factory* get_parser_factory();
     ~global_parser_factory();
-    
+
     /// Provider interface: add new parser factory implementation.
     void add_factory(parser_factory *pf);
-   
+
     xml_parser* new_parser(
 		sax_content_handler* content_handler,
 		sax_error_handler* error_handler);

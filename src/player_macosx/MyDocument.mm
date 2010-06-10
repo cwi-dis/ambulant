@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -58,7 +58,7 @@ document_embedder::show_file(const ambulant::net::url& href)
 	CFStringRef cfhref = CFStringCreateWithCString(NULL, href.get_url().c_str(), kCFStringEncodingUTF8);
 	CFURLRef url = CFURLCreateWithString(NULL, cfhref, NULL);
 	OSErr status;
-	
+
 	if ((status=LSOpenCFURLRef(url, NULL)) != 0) {
 		ambulant::lib::logger::get_logger()->trace("Opening URL <%s>: LSOpenCFURLRef error %d", href.get_url().c_str(), status);
 		ambulant::lib::logger::get_logger()->error(gettext("Cannot open: %s"), href.get_url().c_str());
@@ -82,7 +82,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		aux_open(auxdoc);
 	}
 #endif
-		
+
 	if (old) {
 		AM_DBG NSLog(@"performSelectorOnMainThread: close: on 0x%x", (void*)m_mydocument);
 		[m_mydocument performSelectorOnMainThread: @selector(close:) withObject: nil waitUntilDone: NO];
@@ -98,7 +98,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	}
 	[pool release];
 	// [doc retain] ??
-	
+
 }
 
 #ifdef WITH_OVERLAY_WINDOW
@@ -128,7 +128,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
     if (self) {
         // Add your subclass-specific initialization here.
         // If an error occurs here, send a [self release] message and return nil.
-    
+
     }
 	saved_window = nil;
     return self;
@@ -175,9 +175,9 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	AM_DBG NSLog(@"Show sheet to ask for URL");
 	[self showWindows];
 	[NSApp beginSheet: ask_url_panel
-		modalForWindow:[self windowForSheet] 
-		modalDelegate:self 
-		didEndSelector:@selector(askForURLDidEnd:returnCode:contextInfo:) 
+		modalForWindow:[self windowForSheet]
+		modalDelegate:self
+		didEndSelector:@selector(askForURLDidEnd:returnCode:contextInfo:)
 		contextInfo:nil];
 }
 
@@ -248,7 +248,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		[UIItem setState: NSOffState];
 		return NO;
 	}
-	
+
 	if (theAction == @selector(play:)) {
 		if (myMainloop->is_play_active()) {
 			AM_DBG NSLog(@"play - On");
@@ -322,7 +322,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	// XXXX Jack thinks that this extra thread is no longer needed (20060124)
 	if (!myMainloop) return;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
+
     assert([NSThread isMultiThreaded]);
 	myMainloop->play();
 	// We don't use refcounting on myMainloop, because
@@ -427,7 +427,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	if (myAuxMainloop) ml = myAuxMainloop;
 #endif
 	NSString *chars = [ev characters];
-	
+
 	if (chars && [chars length] == 1 && ml) {
 		unichar ch = [chars characterAtIndex:0];
 		// First, escape will exit fullscreen mode
@@ -475,19 +475,19 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	}
     // Get the screen information.
     NSScreen* screen = [[view window] screen];
-	if (screen == NULL) screen = [NSScreen mainScreen]; 
-    NSDictionary* screenInfo = [screen deviceDescription]; 
+	if (screen == NULL) screen = [NSScreen mainScreen];
+    NSDictionary* screenInfo = [screen deviceDescription];
     NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
 
     // Release the screen.
-    CGDirectDisplayID displayID = (CGDirectDisplayID)[screenID longValue]; 
+    CGDirectDisplayID displayID = (CGDirectDisplayID)[screenID longValue];
     CGDisplayErr err = CGDisplayRelease(displayID);
     if (err != CGDisplayNoErr) {
 		NSLog(@"goFullScreen: CGDisplayRelease failed");
 		return;
 	}
-	
-	// Attach our view to the normal window. 
+
+	// Attach our view to the normal window.
 	NSWindow *mScreenWindow = [view window];
 	NSView *savedcontentview = [saved_window contentView];
 	[savedcontentview addSubview: view];
@@ -510,7 +510,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 		NSPoint baseOrigin = NSMakePoint([view frame].origin.x, [view frame].origin.y);
 		NSPoint screenOrigin = [[view window] convertBaseToScreen: baseOrigin];
-		
+
 		[myAuxWindow setFrameOrigin: screenOrigin];
 		// XXXJACK SIZE
 	}
@@ -525,7 +525,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		[myAuxWindow makeKeyAndOrderFront: self];
 	}
 #endif
-	
+
 	// And clear saved_window, which signals we're in normal mode again.
 	[saved_window release];
 	saved_window = nil;
@@ -542,13 +542,13 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	}
     // Get the screen information.
     NSScreen* screen = [[view window] screen];
-	if (screen == NULL) screen = [NSScreen mainScreen]; 
-    NSDictionary* screenInfo = [screen deviceDescription]; 
+	if (screen == NULL) screen = [NSScreen mainScreen];
+    NSDictionary* screenInfo = [screen deviceDescription];
     NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
 	AM_DBG NSLog(@"0x%x.goFullScreen: view=%@ window=%@ screenID = %@", (void*)self, view, [view window], screenID);
- 
+
     // Capture the screen.
-    CGDirectDisplayID displayID = (CGDirectDisplayID)[screenID longValue]; 
+    CGDirectDisplayID displayID = (CGDirectDisplayID)[screenID longValue];
     CGDisplayErr err = CGDisplayCapture(displayID);
     if (err != CGDisplayNoErr) {
 		NSLog(@"goFullScreen: CGDisplayCapture failed");
@@ -564,9 +564,9 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	winRect.origin.y = 0;
 	NSWindow *mScreenWindow;
 	mScreenWindow = [[FullScreenWindow alloc] initWithContentRect:winRect
-			styleMask:NSBorderlessWindowMask 
-			backing:NSBackingStoreBuffered 
-			defer:NO 
+			styleMask:NSBorderlessWindowMask
+			backing:NSBackingStoreBuffered
+			defer:NO
 			screen:screen];
 
 	// Establish the window attributes.
@@ -581,7 +581,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	// Create the outer view on the fullscreen window, and insert the
 	// ambulant view within it.
 	NSView *fsmainview = [[NSView alloc] initWithFrame: winRect];
-	
+
 	id contentview = view;
 	saved_view_rect = [contentview frame];
 	[fsmainview addSubview: contentview];
@@ -590,7 +590,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	CGFloat yExtra = NSHeight(winRect) - NSHeight(contentRect);
 	NSPoint frameOrigin = NSMakePoint(xExtra/2, yExtra/2);
 	[contentview setFrameOrigin: frameOrigin];
-	
+
 	[mScreenWindow setContentView: fsmainview];
 	[fsmainview setNeedsDisplay:YES];
 	[fsmainview release];
@@ -655,14 +655,14 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		// Determine where on the screen the overlay window should be
 		NSPoint baseOrigin = NSMakePoint([view frame].origin.x, [view frame].origin.y);
 		NSPoint screenOrigin = [[view window] convertBaseToScreen: baseOrigin];
-		
+
 		// Create the window
 		// Note that it is NOT a fullscreen window, but that class gives us
 		// keyboard events, which normally borderless windows don't get.
-		myAuxWindow = [[FullScreenWindow alloc] initWithContentRect: 
-			NSMakeRect(screenOrigin.x,screenOrigin.y,[view frame].size.width,[view frame].size.height) 
-			styleMask:NSBorderlessWindowMask 
-			backing:NSBackingStoreBuffered 
+		myAuxWindow = [[FullScreenWindow alloc] initWithContentRect:
+			NSMakeRect(screenOrigin.x,screenOrigin.y,[view frame].size.width,[view frame].size.height)
+			styleMask:NSBorderlessWindowMask
+			backing:NSBackingStoreBuffered
 			defer:YES];
 		[myAuxWindow setDelegate: self];
 		[myAuxWindow setBackgroundColor: [NSColor clearColor]];
@@ -674,7 +674,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	// Add the view
 	[[myAuxWindow contentView] addSubview: myAuxView];
 //	[myAuxWindow setInitialFirstResponder: myAuxView];
-	
+
 	// Connect the aux window to the main window and put it up front
 	[[view window] addChildWindow: myAuxWindow ordered: NSWindowAbove];
 //	[myAuxWindow makeKeyAndOrderFront: self];

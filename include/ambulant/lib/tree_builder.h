@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 // A utility for building a dom tree
@@ -31,7 +31,7 @@
 #ifndef AMBULANT_LIB_TREE_BUILDER_H
 #define AMBULANT_LIB_TREE_BUILDER_H
 
-//#define WITH_XERCES 
+//#define WITH_XERCES
 #ifdef	WITH_XERCES
 #else /*WITH_XERCES*/
 #endif/*WITH_XERCES*/
@@ -54,8 +54,8 @@ namespace lib {
 class node_context;
 
 /// Build a DOM tree from a document.
-class tree_builder : 
-	public sax_content_handler, 
+class tree_builder :
+	public sax_content_handler,
 	public sax_error_handler {
 
   ///////////////
@@ -75,23 +75,23 @@ class tree_builder :
 
 //	/// build DOM tree from a file anywhere on the net.
 //	bool build_tree_from_url(const net::url& u);
-	
+
 	/// Return true if the document was parsed correctly.
 	bool was_well_formed() const {return m_well_formed;}
-	
+
 	/// Get a pointer to the root node.
 	/// Use detach() to become owner.
 	node* get_tree() { return m_root;}
 
 	/// Get a pointer to the root node.
 	const node* get_tree() const { return m_root;}
-	
+
 	/// Get a pointer to the root node and become the owner of it.
 	node* detach();
 
 	/// Set ready to build next xml tree.
 	void reset();
-	
+
 	/// Check that the root node is of a specific type
 	bool assert_root_tag(const xml_string& tag) { return m_root && m_root->get_local_name() == tag; }
 
@@ -113,11 +113,11 @@ class tree_builder :
 	virtual void end_prefix_mapping(const xml_string& prefix);
 	/// sax_content_handler interface method.
 	virtual void characters(const char *buf, size_t len);
-	
+
 	///////////////
 	/// sax_error_handler interface method.
 	virtual void error(const sax_error& error);
-	
+
   ///////////////
   private:
 	xml_parser *m_xmlparser;
@@ -139,7 +139,7 @@ class tree_builder :
 
 
 } // namespace lib
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_LIB_TREE_BUILDER_H

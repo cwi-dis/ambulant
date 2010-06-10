@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- 
+
 #include <math.h>
 #include <map>
 
-#include "ambulant/net/ffmpeg_video.h" 
-#include "ambulant/net/ffmpeg_audio.h" 
-#include "ambulant/net/ffmpeg_common.h" 
-#include "ambulant/net/ffmpeg_factory.h" 
-#include "ambulant/net/demux_datasource.h" 
+#include "ambulant/net/ffmpeg_video.h"
+#include "ambulant/net/ffmpeg_audio.h"
+#include "ambulant/net/ffmpeg_common.h"
+#include "ambulant/net/ffmpeg_factory.h"
+#include "ambulant/net/demux_datasource.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/asb.h"
 #include "ambulant/net/url.h"
@@ -40,7 +40,7 @@
 //#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
-#endif 
+#endif
 
 // How many video frames we would like to buffer at least. This number should
 // not be too low, otherwise a fast consumer will see only I and P frames
@@ -69,7 +69,7 @@ ambulant::net::get_ffmpeg_video_datasource_factory()
 	// It seems datasource factories are sometimes cleaned up, hence we cannot use
 	// a singleton. Need to fix/document at some point.
 	static video_datasource_factory *s_factory;
-	
+
 	if (!s_factory) s_factory = new ffmpeg_video_datasource_factory();
 	return s_factory;
 #else
@@ -78,12 +78,12 @@ ambulant::net::get_ffmpeg_video_datasource_factory()
 }
 
 
-video_datasource* 
+video_datasource*
 ffmpeg_video_datasource_factory::new_video_datasource(const net::url& url, timestamp_t clip_begin, timestamp_t clip_end)
 {
-	
+
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::new_video_datasource(%s)", repr(url).c_str());
-	
+
 	// First we check that the file format is supported by the file reader.
 	// If it is we create a file reader (demux head end).
 	AVFormatContext *context = ffmpeg_demux::supported(url);
@@ -91,33 +91,33 @@ ffmpeg_video_datasource_factory::new_video_datasource(const net::url& url, times
 		AM_DBG lib::logger::get_logger()->trace("ffmpeg: no support for %s", repr(url).c_str());
 		return NULL;
 	}
-	
+
 
 	ffmpeg_demux *thread = new ffmpeg_demux(context, clip_begin, clip_end);
-	
+
 	// Now, we can check that there is actually video in the file.
 	if (thread->video_stream_nr() < 0) {
 		thread->cancel();
 		lib::logger::get_logger()->trace("ffmpeg: No video stream in %s", repr(url).c_str());
 		return NULL;
 	}
-	
+
 	// Next, if there is video we check that we can decode this type of video
 	// stream.
 	video_format fmt = thread->get_video_format();
 	//fmt.parameters = (void*) context;
 	AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
-	
+
 
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg: Stream type %d, codec_id %d", enc->codec_type, enc->codec_id);
 
-   
+
 	if (!ffmpeg_video_decoder_datasource::supported(fmt)) {
 		thread->cancel();
 		lib::logger::get_logger()->trace("ffmpeg: Unsupported video stream in %s", repr(url).c_str());
 		return NULL;
 	}
-	
+
 	// All seems well. Create the demux reader and the decoder.
 	video_datasource *ds = demux_video_datasource::new_demux_video_datasource(url, thread);
 	if (!ds) {
@@ -136,11 +136,11 @@ ffmpeg_video_datasource_factory::new_video_datasource(const net::url& url, times
 	// it can do so. No harm done if it can't: the decoder will then skip
 	// any unneeded frames.
 	ds->read_ahead(clip_begin);
-	
+
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::new_video_datasource (dds = 0x%x)", (void*) dds);
-	return dds;		
+	return dds;
 }
-		
+
 // **************************** ffmpeg_video_decoder_datasource ********************
 
 
@@ -176,10 +176,10 @@ ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasourc
 	m_elapsed(0),
 	m_start_input(true),
 	m_pixel_layout(pixel_unknown)
-{	
-	
+{
+
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource() (this = 0x%x)", (void*)this);
-	
+
 	ffmpeg_init();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource: Looking for %s(0x%x) decoder", fmt.name.c_str(), fmt.parameters);
 	if (!_select_decoder(fmt))
@@ -203,13 +203,13 @@ ffmpeg_video_decoder_datasource::stop()
 	if (m_src) {
 		m_src->stop();
 		int rem = m_src->release();
-		if (rem) lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::stop(0x%x): m_src refcount=%d", (void*)this, rem); 
+		if (rem) lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::stop(0x%x): m_src refcount=%d", (void*)this, rem);
 	}
 	m_src = NULL;
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::stop(0x%x)", (void*)this);
 	if (m_con && m_con_owned) {
 		avcodec_close(m_con);
-		av_free(m_con); 
+		av_free(m_con);
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::stop(): avcodec_close(m_con=0x%x) called", m_con);
 	}
 	m_con = NULL;
@@ -220,7 +220,7 @@ ffmpeg_video_decoder_datasource::stop()
 		_pop_top_frame();
 	}
 	m_lock.leave();
-}	
+}
 
 bool
 ffmpeg_video_decoder_datasource::has_audio()
@@ -236,14 +236,14 @@ ffmpeg_video_decoder_datasource::get_audio_datasource()
 {
 	m_lock.enter();
 	audio_datasource *rv = NULL;
-	if (m_src) 
+	if (m_src)
 		rv = m_src->get_audio_datasource();
 	m_lock.leave();
 	return rv;
 }
 
-void 
-ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp, 
+void
+ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp,
 	ambulant::lib::event *callbackk, timestamp_t timestamp)
 {
 	m_lock.enter();
@@ -287,7 +287,7 @@ ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp
 		m_client_callback = callbackk;
 		m_event_processor = evp;
 	}
-	
+
 #else
 	if (m_frames.size() > 0 || _end_of_file() ) {
 		// We have data (or EOF) available. Don't bother starting up our source again, in stead
@@ -318,13 +318,13 @@ ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp
 		m_client_callback = callbackk;
 		m_event_processor = evp;
 	}
-	
+
 #endif
 	// Don't restart our source if we are at end of file.
 #ifndef WITH_SEAMLESS_PLAYBACK
 	if ( _end_of_file() ) m_start_input = false;
 #endif
-	
+
 	if (m_start_input) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_frame() Calling m_src->start_frame(..)");
 		lib::event *e = new framedone_callback(this, &ffmpeg_video_decoder_datasource::data_avail);
@@ -336,7 +336,7 @@ ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp
 }
 
 #ifdef WITH_SEAMLESS_PLAYBACK
-void 
+void
 ffmpeg_video_decoder_datasource::start_prefetch(ambulant::lib::event_processor *evp)
 {
 	m_lock.enter();
@@ -345,14 +345,14 @@ ffmpeg_video_decoder_datasource::start_prefetch(ambulant::lib::event_processor *
 	m_pts_last_frame = 0;
   	m_oldest_timestamp_wanted = 0;
 	m_video_clock = 0;
-   
+
     m_event_processor = evp;
-    
+
 	// Don't restart our source if we are at end of file.
 #ifndef WITH_SEAMLESS_PLAYBACK
 	if ( _end_of_file() ) m_start_input = false;
 #endif
-	
+
 	if (m_start_input) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_frame() Calling m_src->start_frame(..)");
 		lib::event *e = new framedone_callback(this, &ffmpeg_video_decoder_datasource::data_avail);
@@ -376,7 +376,7 @@ print_frames(sorted_frames frames) {
 	return;
 }
 
-void 
+void
 ffmpeg_video_decoder_datasource::_pop_top_frame() {
 	if (m_frames.empty()) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._pop_top_frame(): no frames? (programmer error)");
@@ -389,7 +389,7 @@ ffmpeg_video_decoder_datasource::_pop_top_frame() {
 	m_frames.pop();
 }
 
-void 
+void
 ffmpeg_video_decoder_datasource::frame_processed_keepdata(timestamp_t now, char *buf)
 {
 	m_lock.enter();
@@ -403,7 +403,7 @@ ffmpeg_video_decoder_datasource::frame_processed_keepdata(timestamp_t now, char 
 	m_lock.leave();
 }
 
-void 
+void
 ffmpeg_video_decoder_datasource::frame_processed(timestamp_t now)
 {
 	m_lock.enter();
@@ -418,7 +418,7 @@ ffmpeg_video_decoder_datasource::frame_processed(timestamp_t now)
 		return;
 	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.frame_processed(%lld)", now);
-	
+
 	while ( m_frames.size() > 0 && m_frames.front().first <= now) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::frame_processed: discarding first frame timestamp=%d, now=%d, data ptr = 0x%x",(int)m_frames.front().first,(int)now, m_frames.front().second);
 		_pop_top_frame();
@@ -426,16 +426,16 @@ ffmpeg_video_decoder_datasource::frame_processed(timestamp_t now)
 	m_lock.leave();
 }
 
-int 
+int
 ffmpeg_video_decoder_datasource::width()
-{	
+{
 	m_lock.enter();
 	_need_fmt_uptodate();
 	m_lock.leave();
 	return m_fmt.width;
 }
 
-int 
+int
 ffmpeg_video_decoder_datasource::height()
 {
 	m_lock.enter();
@@ -469,7 +469,7 @@ ffmpeg_video_decoder_datasource::_need_fmt_uptodate()
 	}
 	if (m_fmt.width == 0) {
 			m_fmt.width = m_con->width;
-	}		
+	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_need_fmt_uptodate(): frameduration = %lld", m_fmt. frameduration);
 
 	if (m_fmt.frameduration <= 0) {
@@ -522,7 +522,7 @@ ffmpeg_video_decoder_datasource::set_clip_end(timestamp_t clip_end)
 
 #endif
 
-void 
+void
 ffmpeg_video_decoder_datasource::data_avail()
 {
 	m_lock.enter();
@@ -533,24 +533,24 @@ ffmpeg_video_decoder_datasource::data_avail()
 	int w,h;
 	unsigned char* ptr;
 	bool did_generate_frame = false;
-	
+
 	timestamp_t ipts = 0;
 	uint8_t *inbuf;
 	int sz;
 	got_pic = 0;
-	
+
 	if (!m_src) {
 		// Cleaning up, apparently
 		m_lock.leave();
 		return;
 	}
-	
+
 	// Now that we have gotten this callback we need to restart input at some point.
 	m_start_input = true;
-	
+
 	// Get the input data
 	inbuf = (uint8_t*) m_src->get_frame(0, &ipts, &sz);
-	
+
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: %d bytes available", sz);
 
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: %d bytes available, ipts = %lld", sz, ipts);
@@ -565,10 +565,10 @@ ffmpeg_video_decoder_datasource::data_avail()
 		return;
 #endif
 	}
-	
+
 	// No easy error conditions, so let's allocate our frame.
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail called (0x%x) ", (void*) this);
-	if (inbuf && m_con) {	
+	if (inbuf && m_con) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:start decoding (0x%x) ", m_con);
 		assert(sz < 1000000); // XXXX This is soft, and probably incorrect. Remove when it fails.
 		AVFrame *frame = avcodec_alloc_frame();
@@ -579,7 +579,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 			goto out_of_memory;
 		}
 		ptr = inbuf;
-		
+
 		while (sz > 0) {
 			bool drop_this_frame = false;
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: decoding picture(s),  %d bytes of data ", sz);
@@ -607,7 +607,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 				break;
 			}
 			assert(len <= sz);
-			ptr += len;	
+			ptr += len;
 			sz  -= len;
 			if (!got_pic) {
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: incomplete picture, used %d bytes, %d left", len, sz);
@@ -623,7 +623,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 			// of doing image conversion.
 			timestamp_t pts = 0;
 			timestamp_t frame_delay = 0;
-		
+
 			pts = ipts;
 			if (pts != 0) {
 				m_video_clock = pts;
@@ -653,7 +653,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 				m_dropped_count++;
 				continue;
 			}
-			
+
 			// Next step: deocde the frame to the image format we want.
 			int bpp = 0;
 #ifndef FFMPEG_SUPPORTS_ALPHA_LAST
@@ -785,14 +785,14 @@ ffmpeg_video_decoder_datasource::data_avail()
 
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): there is some data for the renderer ! (eof=%d)", m_src->end_of_file());
 		if ( m_client_callback ) {
-			
+
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): calling client callback (eof=%d)", m_src->end_of_file());
 			assert(m_event_processor);
 			m_event_processor->add_event(m_client_callback, 0, ambulant::lib::ep_high);
 			m_client_callback = NULL;
 			//m_event_processor = NULL;
 		} else {
-		
+
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): No client callback!");
 		}
   	}
@@ -808,7 +808,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 	m_lock.leave();
 }
 
-bool 
+bool
 ffmpeg_video_decoder_datasource::end_of_file()
 {
 	m_lock.enter();
@@ -821,7 +821,7 @@ ffmpeg_video_decoder_datasource::end_of_file()
 	return rv;
 }
 
-bool 
+bool
 ffmpeg_video_decoder_datasource::_end_of_file()
 {
 	// private method - no need to lock
@@ -832,33 +832,33 @@ ffmpeg_video_decoder_datasource::_end_of_file()
 	return m_src == NULL || m_src->end_of_file();
 }
 
-bool 
+bool
 ffmpeg_video_decoder_datasource::_clip_end()
-{	
+{
 	return false;
 }
 
-bool 
+bool
 ffmpeg_video_decoder_datasource::buffer_full()
 {
 	m_lock.enter();
 	bool rv = _buffer_full();
 	m_lock.leave();
 	return rv;
-}	
+}
 
 
-bool 
+bool
 ffmpeg_video_decoder_datasource::_buffer_full()
 {
 	// private method - no need to lock
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_buffer_full() (this=0x%x, count=%d)", (void*) this, m_frames.size());
 	bool rv = (m_frames.size() > MAX_VIDEO_FRAMES);
 	return rv;
-}	
+}
 
 
-char* 
+char*
 ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timestamp_p, int *size_p)
 {
 	// pop frames until (just before) "now". Then return the last frame popped.
@@ -872,8 +872,8 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 		return NULL;
 	}
 	assert(m_frames.size() > 0 || _end_of_file());
-	
-	timestamp_t frame_duration = frameduration(); 
+
+	timestamp_t frame_duration = frameduration();
 	assert (frame_duration > 0);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame:  timestamp=%lld, now=%lld, frameduration = %lld",m_frames.front().first, now, frame_duration);
 
@@ -898,7 +898,7 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 	// The next assert assures that we have indeed removed all old frames (and, therefore, either there
 	// are no frames left, or the first frame has a time that is in the future). It also assures that
 	// the frames in m_frames are indeed in the right order.
-	 
+
 	if (timestamp_p) *timestamp_p = m_frames.front().first;
 	if (size_p) *size_p = m_size;
 	char *rv = m_frames.front().second;
@@ -916,7 +916,7 @@ ffmpeg_video_decoder_datasource::get_dur()
 	return m_src->get_dur();
 }
 
-bool 
+bool
 ffmpeg_video_decoder_datasource::_select_decoder(const char* file_ext)
 {
 	// private method - no need to lock
@@ -928,7 +928,7 @@ ffmpeg_video_decoder_datasource::_select_decoder(const char* file_ext)
 	}
 	m_con = avcodec_alloc_context();
 	m_con_owned = true;
-	
+
 	if(avcodec_open(m_con,codec) < 0) {
 			lib::logger::get_logger()->trace("ffmpeg_video_decoder_datasource._select_decoder: Failed to open avcodec for \"%s\"", file_ext);
 			lib::logger::get_logger()->error(gettext("No support for \"%s\" video"), file_ext);
@@ -937,7 +937,7 @@ ffmpeg_video_decoder_datasource::_select_decoder(const char* file_ext)
 	return true;
 }
 
-bool 
+bool
 ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 {
 	// private method - no need to lock
@@ -965,7 +965,7 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 				return false;
 		}
 		//m_con = avcodec_alloc_context();
-		
+
 		if(avcodec_open(m_con,codec) < 0) {
 				lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Failed to open avcodec for %s(0x%x)", fmt.name.c_str(), enc->codec_id);
 				return false;
@@ -975,7 +975,7 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 		return true;
 	} else if (fmt.name == "live") {
 		const char* codec_name = (char*) fmt.parameters;
-	
+
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::selectdecoder(): video codec : %s", codec_name);
 		ffmpeg_codec_id* codecid = ffmpeg_codec_id::instance();
 		AVCodec *codec = avcodec_find_decoder(codecid->get_codec_id(codec_name));
@@ -984,7 +984,7 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 		}
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::selectdecoder(): codec found!");
 
-		m_con = avcodec_alloc_context();		
+		m_con = avcodec_alloc_context();
 		m_con_owned = true;
 		if((avcodec_open(m_con,codec) < 0) ) {
 			//lib::logger::get_logger()->error(gettext("%s: Cannot open video codec %d(%s)"), repr(url).c_str(), m_con->codec_id, m_con->codec_name);
@@ -992,7 +992,7 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 		} else {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::ffmpeg_decoder_datasource(): succesfully opened codec");
 		}
-		
+
 		m_con->codec_type = CODEC_TYPE_VIDEO;
 		// We doe a fmt update here to sure that we have the correct values.
 		_need_fmt_uptodate();

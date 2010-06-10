@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -48,7 +48,7 @@ class gtk_video_renderer :  public gtk_renderer<common::video_renderer>  {
 		lib::event_processor *const evp,
 		common::factories *factory,
 		common::playable_factory_machdep *mdp);
-	
+
 	~gtk_video_renderer();
 	net::pixel_order pixel_layout();
 	void redraw_body(const lib::rect &r, common::gui_window* w);
@@ -65,7 +65,7 @@ private:
 } // namespace gtk
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 

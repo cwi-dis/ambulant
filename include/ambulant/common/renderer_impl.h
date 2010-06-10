@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_COMMON_RENDERER_IMPL_H
@@ -43,7 +43,7 @@ namespace ambulant {
 namespace common {
 
 class global_playable_factory;
-		
+
 /// A convenience class implementing some of the common code for playables.
 /// Most of the methods in this class store parameters that are common
 /// to most playables in protected instance variables.
@@ -59,8 +59,8 @@ class AMBULANTAPI playable_imp : public playable {
 		const lib::node *node,
 		lib::event_processor* evp,
 		common::factories *fp,
-		common::playable_factory_machdep *mdp) 
-	:	m_context(context), 
+		common::playable_factory_machdep *mdp)
+	:	m_context(context),
 		m_cookie(cookie),
 		m_node(node),
 		m_event_processor(evp) {
@@ -83,7 +83,7 @@ class AMBULANTAPI playable_imp : public playable {
 #endif
 	duration get_dur() { return duration(true, 0);}
 	cookie_type get_cookie() const { return m_cookie;}
-    std::string get_sig() const { return std::string(typeid(this).name()) + "(" + m_node->get_sig() + ")"; } 
+    std::string get_sig() const { return std::string(typeid(this).name()) + "(" + m_node->get_sig() + ")"; }
 
   protected:
     playable_notification *m_context;	///< Status feedback object.
@@ -107,7 +107,7 @@ class AMBULANTAPI renderer_playable : public playable_imp, public renderer {
 		common::factories *fp,
 		common::playable_factory_machdep *mdp);
     virtual ~renderer_playable();
-    
+
 	// common::renderer interface
 	void set_surface(common::surface *dest) { m_dest = dest; };
 	void set_alignment(const common::alignment *align) { m_alignment = align; }
@@ -146,9 +146,9 @@ class AMBULANTAPI renderer_playable_ds : public renderer_playable {
 		lib::event_processor *evp,
 		common::factories* factory,
 		common::playable_factory_machdep *mdp);
-		
+
 	virtual ~renderer_playable_ds();
-	
+
 	virtual void start(double where);
 	virtual void seek(double t);
 //	virtual void freeze() {}
@@ -190,7 +190,7 @@ class AMBULANTAPI renderer_playable_dsall : public renderer_playable_ds {
 		m_partial_data(NULL),
 		m_partial_data_size(0) {};
 	virtual ~renderer_playable_dsall();
-	
+
 	virtual void seek(double t) {}  // Assume dsall playables are images and such
   protected:
 	void readdone();
@@ -210,13 +210,13 @@ class global_playable_factory_impl : public global_playable_factory {
   public:
     global_playable_factory_impl();
     ~global_playable_factory_impl();
-    
+
 	/// Add a factory.
     void add_factory(playable_factory *rf);
-    
+
     /// Signal preference for a certain renderer (or category of renderers)
     void preferred_renderer(const char* name);
-    
+
 	/// The global factory supports everything (it says:-)
 	bool supports(renderer_select *rs)
 	{
@@ -229,7 +229,7 @@ class global_playable_factory_impl : public global_playable_factory {
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *evp);
-  
+
   	playable* new_aux_audio_playable(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
@@ -246,7 +246,7 @@ class global_playable_factory_impl : public global_playable_factory {
 /// Convience class: a playable_notification that does nothing.
 class empty_playable_notification : public playable_notification {
   public:
-	// Playables nodifications 
+	// Playables nodifications
 	void started(cookie_type n, double t = 0)  {};
 	void stopped(cookie_type n, double t = 0)  {};
 	void stalled(cookie_type n, double t = 0)  {} ;
@@ -258,7 +258,7 @@ class empty_playable_notification : public playable_notification {
 };
 
 /// Convenience class for background renderers.
-/// It implements some of the methods for a renderer that are applicable 
+/// It implements some of the methods for a renderer that are applicable
 /// to background renderers. Subclasses only need to implement
 /// the redraw method.
 /// Additionally, they should override the keep_as_background method.
@@ -278,7 +278,7 @@ class background_renderer : public bgrenderer {
 
 
 } // namespace common
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_COMMON_RENDERER_IMPL_H

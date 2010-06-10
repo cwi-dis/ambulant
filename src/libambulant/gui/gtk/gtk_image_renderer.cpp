@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
+/*
  * @$Id$
  */
 
@@ -49,8 +49,8 @@ gui::gtk::create_gtk_image_playable_factory(common::factories *factory, common::
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererGtk"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererImg"), true);
 	return new common::single_playable_factory<
-        gtk_image_renderer, 
-        gtk_image_playable_tag, 
+        gtk_image_renderer,
+        gtk_image_playable_tag,
         gtk_image_playable_renderer_uri,
         gtk_image_playable_renderer_uri2,
         gtk_image_playable_renderer_uri2>(factory, mdp);
@@ -63,7 +63,7 @@ gtk_image_renderer::~gtk_image_renderer() {
 		g_object_unref(G_OBJECT (m_image));
 	m_lock.leave();
 }
-	
+
 void
 gtk_image_renderer::redraw_body(const rect &dirty,
 				      gui_window* w) {
@@ -125,11 +125,11 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 		for(it=tiles.begin(); it!=tiles.end(); it++) {
 			srcrect = (*it).first;
 			dstrect = (*it).second;
-			int	S_L = srcrect.left(), 
+			int	S_L = srcrect.left(),
 				S_T = srcrect.top(),
 				S_W = srcrect.width(),
 		        	S_H = srcrect.height();
-			int	D_L = dstrect.left(), 
+			int	D_L = dstrect.left(),
 				D_T = dstrect.top(),
 				D_W = dstrect.width(),
 				D_H = dstrect.height();
@@ -138,7 +138,7 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 			gdk_pixbuf_render_to_drawable(m_image,
                                              GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, S_L, S_T, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);
 			gdk_pixbuf_unref (m_image);
-			g_object_unref (G_OBJECT (gc));			
+			g_object_unref (G_OBJECT (gc));
 		}
 		m_lock.leave();
 		return;
@@ -169,11 +169,11 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 	dstrect.translate(m_dest->get_global_topleft());
 	// S_ for source image coordinates
 	// D_ for destination coordinates
-	int	S_L = srcrect.left(), 
+	int	S_L = srcrect.left(),
 		S_T = srcrect.top(),
 		S_W = srcrect.width(),
 		S_H = srcrect.height();
-	int	D_L = dstrect.left(), 
+	int	D_L = dstrect.left(),
 		D_T = dstrect.top(),
 		D_W = dstrect.width(),
 		D_H = dstrect.height();
@@ -199,7 +199,7 @@ gtk_image_renderer::redraw_body(const rect &dirty,
 	if (alpha_chroma != 1.0) {
 		GdkPixbuf* screen_pixbuf = gdk_pixbuf_get_from_drawable (NULL, agtkw->get_ambulant_pixmap(), NULL, D_L, D_T, 0, 0, D_W, D_H);
 		lib::rect rect0(lib::point(0,0),lib::size(D_W,D_H));
-		gdk_pixbuf_blend (screen_pixbuf, rect0, new_image_pixbuf, rect0, 
+		gdk_pixbuf_blend (screen_pixbuf, rect0, new_image_pixbuf, rect0,
 				  alpha_chroma, alpha_media,
 				  chroma_low, chroma_high);
 		gdk_draw_pixbuf(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, screen_pixbuf, N_L, N_T, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);

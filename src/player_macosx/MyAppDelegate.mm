@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -75,7 +75,7 @@ show_message(int level, const char *format)
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSString *message = [[NSString stringWithUTF8String: format] retain];
 	MyAppDelegate *delegate = [[NSApplication sharedApplication] delegate];
-	[delegate performSelectorOnMainThread: @selector(showMessage:) 
+	[delegate performSelectorOnMainThread: @selector(showMessage:)
 		withObject: message waitUntilDone: NO];
 //	[message release];
 	[pool release];
@@ -94,7 +94,7 @@ initialize_logger()
 	// And tell the UI too
 	LogController *log = [LogController sharedLogController];
 	if (log) [log setLogLevelUI: level];
-	return level;	
+	return level;
 }
 
 @implementation MyAppDelegate
@@ -107,10 +107,10 @@ initialize_logger()
 {
 	// First get our bundle, various initializations need it.
 	NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
-	
+
 	// Install our preferences handler
 	mypreferences::install_singleton();
-	
+
 	// Install our logger
 	if (initialize_logger() == 0 && getenv("AMBULANT_LOGGER_NOWINDOW") == NULL) {
 		// Show the logger window immedeately if log level is DEBUG
@@ -118,7 +118,7 @@ initialize_logger()
 	}
     // Initialize profiler (if enabled)
     ambulant::lib::profile::initialize();
-	
+
 	// Initialize the gettext library. We support both the MacOS System Preferences
 	// setting and the unix-style LANG variable.
 	// In addition we support an LC_MESSAGES file either in the bundle or in the
@@ -213,13 +213,13 @@ initialize_logger()
 	// Install our "open URL" handler.
 	NSAppleEventManager *appleEventManager = [NSAppleEventManager sharedAppleEventManager];
 	// There seem to be two similar events gurl/gurl (official one) and GURL/GURL (used by "open" command line tool).
-	[appleEventManager setEventHandler:self andSelector:@selector(handleGetURLEvent:withReplyEvent:) 
+	[appleEventManager setEventHandler:self andSelector:@selector(handleGetURLEvent:withReplyEvent:)
 		forEventClass:kAEInternetSuite
 		andEventID:kAEISGetURL];
-	[appleEventManager setEventHandler:self andSelector:@selector(handleGetURLEvent:withReplyEvent:) 
+	[appleEventManager setEventHandler:self andSelector:@selector(handleGetURLEvent:withReplyEvent:)
 		forEventClass:'GURL'
 		andEventID:'GURL'];
-		
+
 	// Test whether we want to run the welcome document (on first run only)
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 #ifdef WITH_SPLASH_SCREEN
@@ -302,7 +302,7 @@ initialize_logger()
 	AM_DBG NSLog(@"Show Homepage");
 	CFURLRef url = CFURLCreateWithString(NULL, (CFStringRef)@"http://www.ambulantplayer.org", NULL);
 	OSErr status;
-	
+
 	if ((status=LSOpenCFURLRef(url, NULL)) != 0) {
 		ambulant::lib::logger::get_logger()->trace("Opening http://www.ambulantplayer.org: LSOpenCFURLRef error %d",  status);
 		ambulant::lib::logger::get_logger()->error(gettext("Cannot open http://www.ambulantplayer.org"));
@@ -327,7 +327,7 @@ initialize_logger()
 	ambulant::lib::logger::get_logger()->set_level(level);
 	// And reflect in UI
 	LogController *log = [LogController sharedLogController];
-	if (log) [log setLogLevelUI: level];	
+	if (log) [log setLogLevelUI: level];
 }
 
 - (void)showMessage:(NSString *)message

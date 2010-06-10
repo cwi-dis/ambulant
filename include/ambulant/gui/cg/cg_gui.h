@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_CG_CG_GUI_H
@@ -67,18 +67,18 @@ class cg_window : public common::gui_window {
 	:	common::gui_window(handler),
 		m_view(_view) {};
 	~cg_window();
-		
+
 	void need_redraw(const lib::rect &r);
 	void redraw_now();
 	void need_events(bool want);
-	
+
 	void redraw(const lib::rect &r);
 	bool user_event(const lib::point &where, int what = 0);
 
 	void *view() { return m_view; }
-	
+
 	void set_size(lib::size bounds);
-	
+
   private:
     void *m_view;
 };
@@ -88,7 +88,7 @@ class cg_window_factory : public common::window_factory {
 	cg_window_factory(void *view)
 	:	m_defaultwindow_view(view)
 	{}
-	
+
 	lib::size get_default_size();
 	common::gui_window *new_window(const std::string &name, lib::size bounds, common::gui_events *handler);
 	common::bgrenderer *new_background_renderer(const common::region_info *src);
@@ -120,7 +120,7 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 } // namespace cg
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 #ifdef __OBJC__
@@ -218,7 +218,7 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 - (void) endScreenTransition;
 - (void) screenTransitionStep: (ambulant::smil2::transition_engine *)engine
 		elapsed: (ambulant::lib::transition_info::time_type)now;
-		
+
 - (void) _screenTransitionPreRedraw;
 - (void) _screenTransitionPostRedraw;
 
@@ -234,7 +234,7 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 - (void) useOverlayWindow;
 
 // Called by a renderer if the overlay window is no longer required.
-- (void) releaseOverlayWindow; 
+- (void) releaseOverlayWindow;
 
 // Called when the view hierarchy has changed
 - (void) viewDidMoveToSuperview;

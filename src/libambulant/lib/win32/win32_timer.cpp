@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include <windows.h>
@@ -42,12 +42,12 @@ os_time() {
 #else
 
 const ULONGLONG MILLIS_FACT = 10000;
-// Returns system time in system units (0.1 micro-sec units or 0.0001 msec). 
-static DWORD 
+// Returns system time in system units (0.1 micro-sec units or 0.0001 msec).
+static DWORD
 os_time() {
 	FILETIME ft;
 	SYSTEMTIME st;
-	GetSystemTime(&st);              
+	GetSystemTime(&st);
 	SystemTimeToFileTime(&st, &ft);
 	ULARGE_INTEGER li = {ft.dwLowDateTime, ft.dwHighDateTime};
 	return (DWORD)(li.QuadPart/MILLIS_FACT);
@@ -55,7 +55,7 @@ os_time() {
 
 #endif
 
-lib::win32::win32_timer::win32_timer() 
+lib::win32::win32_timer::win32_timer()
 :	m_epoch(os_time()) {
 }
 

@@ -75,17 +75,17 @@ void CAmbulantPlayerDoc::AssertValid() const
 /////////////////////////////////////////////////////////////////////////////
 // CAmbulantPlayerDoc commands
 
-BOOL CAmbulantPlayerDoc::OnOpenDocument(LPCTSTR lpszPathName) 
+BOOL CAmbulantPlayerDoc::OnOpenDocument(LPCTSTR lpszPathName)
 {
 	//if (!CDocument::OnOpenDocument(lpszPathName))
 	//	return FALSE;
-	
+
 	POSITION pos = GetFirstViewPosition();
 	if(pos != NULL) {
 		CView* pView = GetNextView(pos);
 		ASSERT_VALID(pView);
 		((CAmbulantPlayerView*)pView)->SetMMDocument(lpszPathName);
 	}
-	
+
 	return TRUE;
 }

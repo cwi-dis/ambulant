@@ -31,7 +31,7 @@
 // * __STL_NO_BOOL: defined if the compiler doesn't have bool as a builtin
 //   type.
 // * __STL_HAS_WCHAR_T: defined if the compier has wchar_t as a builtin type.
-// * __STL_NO_DRAND48: defined if the compiler doesn't have the drand48 
+// * __STL_NO_DRAND48: defined if the compiler doesn't have the drand48
 //   function.
 // * __STL_STATIC_TEMPLATE_MEMBER_BUG: defined if the compiler can't handle
 //   static members of template classes.
@@ -40,20 +40,20 @@
 //   of integer type.  (See section 9.4.2, paragraph 4, of the C++ standard.)
 // * __STL_CLASS_PARTIAL_SPECIALIZATION: defined if the compiler supports
 //   partial specialization of template classes.
-// * __STL_PARTIAL_SPECIALIZATION_SYNTAX: defined if the compiler 
+// * __STL_PARTIAL_SPECIALIZATION_SYNTAX: defined if the compiler
 //   supports partial specialization syntax for full specialization of
-//   class templates.  (Even if it doesn't actually support partial 
+//   class templates.  (Even if it doesn't actually support partial
 //   specialization itself.)
 // * __STL_FUNCTION_TMPL_PARTIAL_ORDER: defined if the compiler supports
 //   partial ordering of function templates.  (a.k.a partial specialization
 //   of function templates.)
 // * __STL_MEMBER_TEMPLATES: defined if the compiler supports template
 //   member functions of classes.
-// * __STL_MEMBER_TEMPLATE_CLASSES: defined if the compiler supports 
+// * __STL_MEMBER_TEMPLATE_CLASSES: defined if the compiler supports
 //   nested classes that are member templates of other classes.
 // * __STL_TEMPLATE_FRIENDS: defined if the compiler supports templatized
 //   friend declarations.
-// * __STL_EXPLICIT_FUNCTION_TMPL_ARGS: defined if the compiler 
+// * __STL_EXPLICIT_FUNCTION_TMPL_ARGS: defined if the compiler
 //   supports calling a function template by providing its template
 //   arguments explicitly.
 // * __STL_LIMITED_DEFAULT_TEMPLATES: defined if the compiler is unable
@@ -75,17 +75,17 @@
 //   header, or if <new> does not contain a bad_alloc class.  If a bad_alloc
 //   class exists, it is assumed to be in namespace std.
 // * __STL_SGI_THREADS: defined if this is being compiled for an SGI IRIX
-//   system in multithreaded mode, using native SGI threads instead of 
+//   system in multithreaded mode, using native SGI threads instead of
 //   pthreads.
 // * __STL_WIN32THREADS: defined if this is being compiled on a WIN32
 //   compiler in multithreaded mode.
 // * __STL_PTHREADS: defined if we should use portable pthreads
 //   synchronization.
 // * __STL_UITHREADS: defined if we should use UI / solaris / UnixWare threads
-//   synchronization.  UIthreads are similar to pthreads, but are based 
+//   synchronization.  UIthreads are similar to pthreads, but are based
 //   on an earlier version of the Posix threads standard.
 // * __STL_LONG_LONG if the compiler has long long and unsigned long long
-//   types.  (They're not in the C++ standard, but they are expected to be 
+//   types.  (They're not in the C++ standard, but they are expected to be
 //   included in the forthcoming C9X standard.)
 // * __STL_THREADS is defined if thread safety is needed.
 // * __STL_VOLATILE is defined to be "volatile" if threads are being
@@ -93,7 +93,7 @@
 // * __STL_USE_CONCEPT_CHECKS enables some extra compile-time error
 //   checking to make sure that user-defined template arguments satisfy
 //   all of the appropriate requirements.  This may result in more
-//   comprehensible error messages.  It incurs no runtime overhead.  This 
+//   comprehensible error messages.  It incurs no runtime overhead.  This
 //   feature requires member templates and partial specialization.
 // * __STL_NO_USING_CLAUSE_IN_CLASS: The compiler does not handle "using"
 //   clauses inside of class definitions.
@@ -121,9 +121,9 @@
 // * __STL_ASSERTIONS: if defined, then enable runtime checking through the
 //   __stl_assert macro.
 // * _PTHREADS: if defined, use Posix threads for multithreading support.
-// * _UITHREADS:if defined, use SCO/Solaris/UI threads for multithreading 
+// * _UITHREADS:if defined, use SCO/Solaris/UI threads for multithreading
 //   support
-// * _NOTHREADS: if defined, don't use any multithreading support.  
+// * _NOTHREADS: if defined, don't use any multithreading support.
 // * _STL_NO_CONCEPT_CHECKS: if defined, disables the error checking that
 //   we get from __STL_USE_CONCEPT_CHECKS.
 // * __STL_USE_NEW_IOSTREAMS: if defined, then the STL will use new,
@@ -158,7 +158,7 @@
 #     define __STL_STATIC_CONST_INIT_BUG
 #   endif
 #   if defined(_WCHAR_T_IS_KEYWORD)
-#     define __STL_HAS_WCHAR_T 
+#     define __STL_HAS_WCHAR_T
 #   endif
 #   if !defined(_TYPENAME_IS_KEYWORD)
 #     define __STL_NEED_TYPENAME
@@ -194,7 +194,7 @@
 #   endif
 #   if (_COMPILER_VERSION >= 721) && defined(_NAMESPACES)
 #     define __STL_HAS_NAMESPACES
-#   endif 
+#   endif
 #   if (_COMPILER_VERSION < 721) || \
     !defined(__STL_HAS_NAMESPACES) || defined(__STL_NO_NAMESPACES)
 #     define __STL_NO_EXCEPTION_HEADER
@@ -222,16 +222,16 @@
 
 
 /*
- * Jochen Schlick '1999  - added new #defines (__STL)_UITHREADS (for 
+ * Jochen Schlick '1999  - added new #defines (__STL)_UITHREADS (for
  *                         providing SCO / Solaris / UI thread support)
- *                       - added the necessary defines for the SCO UDK 7 
+ *                       - added the necessary defines for the SCO UDK 7
  *                         compiler (and its template friend behavior)
- *                       - all UDK7 specific STL changes are based on the 
+ *                       - all UDK7 specific STL changes are based on the
  *                         macro __USLC__ being defined
  */
 // SCO UDK 7 compiler (UnixWare 7x, OSR 5, UnixWare 2x)
 # if defined(__USLC__)
-#     define __STL_HAS_WCHAR_T 
+#     define __STL_HAS_WCHAR_T
 #     define __STL_CLASS_PARTIAL_SPECIALIZATION
 #     define __STL_PARTIAL_SPECIALIZATION_SYNTAX
 #     define __STL_FUNCTION_TMPL_PARTIAL_ORDER
@@ -257,7 +257,7 @@
 #   if __GNUC__ == 2 && __GNUC_MINOR__ <= 7
 #     define __STL_STATIC_TEMPLATE_MEMBER_BUG
 #   endif
-#   if __GNUC__ < 2 
+#   if __GNUC__ < 2
 #     define __STL_NEED_TYPENAME
 #     define __STL_NEED_EXPLICIT
 #   endif
@@ -293,7 +293,7 @@
 #   endif
 # endif
 
-# if defined(__SUNPRO_CC) 
+# if defined(__SUNPRO_CC)
 #   define __STL_NO_BOOL
 #   define __STL_NEED_TYPENAME
 #   define __STL_NEED_EXPLICIT
@@ -318,7 +318,7 @@
 
 // Intel compiler, which uses the EDG front end.
 # if defined(__ICL)
-#   define __STL_LONG_LONG 
+#   define __STL_LONG_LONG
 #   define __STL_MEMBER_TEMPLATES
 #   define __STL_MEMBER_TEMPLATE_CLASSES
 #   define __STL_TEMPLATE_FRIENDS
@@ -473,7 +473,7 @@
 # endif
 
 // Use standard-conforming allocators if we have the necessary language
-// features.  __STL_USE_SGI_ALLOCATORS is a hook so that users can 
+// features.  __STL_USE_SGI_ALLOCATORS is a hook so that users can
 // disable new-style allocators, and continue to use the same kind of
 // allocators as before, without having to edit library headers.
 # if defined(__STL_CLASS_PARTIAL_SPECIALIZATION) && \
@@ -482,7 +482,7 @@
     !defined(__STL_NO_BOOL) && \
     !defined(__STL_NON_TYPE_TMPL_PARAM_BUG) && \
     !defined(__STL_LIMITED_DEFAULT_TEMPLATES) && \
-    !defined(__STL_USE_SGI_ALLOCATORS) 
+    !defined(__STL_USE_SGI_ALLOCATORS)
 #   define __STL_USE_STD_ALLOCATORS
 # endif
 
@@ -496,8 +496,8 @@
 
 // __STL_NO_NAMESPACES is a hook so that users can disable namespaces
 // without having to edit library headers.  __STL_NO_RELOPS_NAMESPACE is
-// a hook so that users can disable the std::rel_ops namespace, keeping 
-// the relational operator template in namespace std, without having to 
+// a hook so that users can disable the std::rel_ops namespace, keeping
+// the relational operator template in namespace std, without having to
 // edit library headers.
 # if defined(__STL_HAS_NAMESPACES) && !defined(__STL_NO_NAMESPACES)
 #   define __STL_USE_NAMESPACES
@@ -517,13 +517,13 @@
 #     define __STD_RELOPS std
 #   endif /* Use std::rel_ops namespace */
 # else
-#   define __STD 
-#   define __STL_BEGIN_NAMESPACE 
-#   define __STL_END_NAMESPACE 
+#   define __STD
+#   define __STL_BEGIN_NAMESPACE
+#   define __STL_END_NAMESPACE
 #   undef  __STL_USE_NAMESPACE_FOR_RELOPS
-#   define __STL_BEGIN_RELOPS_NAMESPACE 
-#   define __STL_END_RELOPS_NAMESPACE 
-#   define __STD_RELOPS 
+#   define __STL_BEGIN_RELOPS_NAMESPACE
+#   define __STL_END_RELOPS_NAMESPACE
+#   define __STD_RELOPS
 #   undef  __STL_USE_NAMESPACES
 # endif
 
@@ -547,12 +547,12 @@
 #   define __STL_NOTHROW throw()
 #   define __STL_UNWIND(action) catch(...) { action; throw; }
 # else
-#   define __STL_TRY 
+#   define __STL_TRY
 #   define __STL_CATCH_ALL if (false)
-#   define __STL_THROW(x) 
-#   define __STL_RETHROW 
-#   define __STL_NOTHROW 
-#   define __STL_UNWIND(action) 
+#   define __STL_THROW(x)
+#   define __STL_RETHROW
+#   define __STL_NOTHROW
+#   define __STL_UNWIND(action)
 # endif
 
 #ifdef __STL_ASSERTIONS

@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -82,7 +82,7 @@ BOOL CAmbulantPlayerApp::InitInstance()
 		return FALSE;
 	}
 	AfxEnableControlContainer();
-	
+
 	// Enable RichEdit control
 	AfxInitRichEdit2();
 
@@ -94,7 +94,7 @@ BOOL CAmbulantPlayerApp::InitInstance()
 	// TODO: You should modify this string to be something appropriate
 	// such as the name of your company or organization
 	SetRegistryKey(_T("Ambulant"));
-	
+
 	LoadStdProfileSettings(4);  // Load standard INI file options (including MRU)
 	// Install our preferences handler
 	mypreferences::install_singleton();
@@ -112,12 +112,12 @@ BOOL CAmbulantPlayerApp::InitInstance()
 	//CCommandLineInfo cmdInfo;
 	CAmCommandLineInfo cmdInfo;
 	ParseCommandLine(cmdInfo);
-	
+
 	// Dispatch commands specified on the command line.  Will return FALSE if
 	// app was launched with /RegServer, /Register, /Unregserver or /Unregister.
 	//if(!ProcessShellCommand(cmdInfo))
 	//	return FALSE;
-	
+
 	MmDoc *mmdoc = 0;
 	switch (cmdInfo.m_nShellCommand) {
 		case CCommandLineInfo::FileNew:
@@ -143,11 +143,11 @@ BOOL CAmbulantPlayerApp::InitInstance()
 	m_pMainWnd->DragAcceptFiles(TRUE);
 	// call DragAcceptFiles only if there's a suffix
 	//  In an SDI app, this should occur after ProcessShellCommand
-	
+
 	if(mmdoc /*&& cmdInfo.m_autostart*/) {
 		mmdoc->StartPlayback();
 	}
-		
+
 	return TRUE;
 }
 
@@ -170,7 +170,7 @@ protected:
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
-	CString m_version;	
+	CString m_version;
 	afx_msg void OnStnClickedVersion();
 };
 
@@ -193,7 +193,7 @@ END_MESSAGE_MAP()
 void CAmbulantPlayerApp::OnAppAbout()
 {
 	CAboutDlg aboutDlg;
-	aboutDlg.m_version.Format(TEXT("Ambulant Player version %s\n"), get_version());	
+	aboutDlg.m_version.Format(TEXT("Ambulant Player version %s\n"), get_version());
 	aboutDlg.DoModal();
 }
 
@@ -245,12 +245,12 @@ void CAmbulantPlayerApp::OnFileOpenurl()
 	COpenUrlDlg dlg;
 	dlg.m_url = m_recentUrl;
 	if(dlg.DoModal() != IDOK) return;
-	
+
 	// validate entered URL
 	// ...
 	if(dlg.m_url.IsEmpty())
 		return;
-			
+
 	// Open URL
 	m_recentUrl = dlg.m_url;
 	MmDoc *mmdoc = (MmDoc *) OpenDocumentFile(dlg.m_url);
@@ -269,17 +269,17 @@ bool CAmbulantPlayerApp::LocateHelpDoc(LPCTSTR rpath) {
 	if(p1) *++p1='\0';
 	text_strcat(buf, rpath);
 	TCHAR path[_MAX_PATH];
-	TCHAR *pFilePart = 0;	
+	TCHAR *pFilePart = 0;
 	GetFullPathName(buf, MAX_PATH, path, &pFilePart);
 	WIN32_FIND_DATA fd;
 	memset(&fd, 0, sizeof(WIN32_FIND_DATA));
-	HANDLE hFind = FindFirstFile(path, &fd); 
+	HANDLE hFind = FindFirstFile(path, &fd);
 	if(hFind != INVALID_HANDLE_VALUE){
 		FindClose(hFind);
 		free((void*)m_pszHelpFilePath);
 		m_pszHelpFilePath = _tcsdup(path);
 		return true;
-	} 
+	}
 	return false;
 }
 void CAboutDlg::OnStnClickedVersion()

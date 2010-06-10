@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -45,14 +45,14 @@
 #define GSTREAMER_BUFFER_MIN_BYTES 20480
 
 #define AMBULANT_MAX_CHANNELS 2
- 
+
 void gstreamer_player_initialize(int* argcp, char*** argvp);
 void gstreamer_player_finalize();
 
 namespace ambulant {
 namespace gui {
-namespace gstreamer {	
-  
+namespace gstreamer {
+
 class gstreamer_audio_renderer;
 
 /* The Npkia 770 csn handle only one audio/video at a time.
@@ -66,8 +66,8 @@ static pthread_mutex_t s_main_nokia770_mutex;
 class gstreamer_player :  public lib::unix::thread {
 
  public:
-	gstreamer_player(const char* uri,  gstreamer_audio_renderer* rend); 
-	~gstreamer_player(); 
+	gstreamer_player(const char* uri,  gstreamer_audio_renderer* rend);
+	~gstreamer_player();
 
 	void pause();
 	void play();

@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/cocoa/cocoa_audio.h"
@@ -49,10 +49,10 @@ create_cocoa_audio_playable_factory(common::factories *factory, common::playable
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoaAudio"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererAudio"), true);
 	return new common::single_playable_factory<
-        cocoa_audio_playable, 
-        cocoa_audio_playable_tag, 
-        cocoa_audio_playable_renderer_uri, 
-        cocoa_audio_playable_renderer_uri2, 
+        cocoa_audio_playable,
+        cocoa_audio_playable_tag,
+        cocoa_audio_playable_renderer_uri,
+        cocoa_audio_playable_renderer_uri2,
         cocoa_audio_playable_renderer_uri2 >(factory, mdp);
 }
 
@@ -92,7 +92,7 @@ cocoa_audio_playable::~cocoa_audio_playable()
 	m_lock.leave();
 	[pool release];
 }
-	
+
 void
 cocoa_audio_playable::start(double where)
 {
@@ -121,7 +121,7 @@ cocoa_audio_playable::check_still_playing()
 	m_lock.enter();
 	if (m_sound != NULL) {
 		bool still_playing = [m_sound isPlaying];
-		
+
 		if (still_playing) {
 			AM_DBG lib::logger::get_logger()->debug("cocoa_audio_playable.check_still_playing(0x%x): busy", (void*)this);
 			typedef lib::no_arg_callback<cocoa_audio_playable> check_still_playing_callback;

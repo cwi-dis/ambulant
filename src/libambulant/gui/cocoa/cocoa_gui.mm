@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -69,7 +69,7 @@ cocoa_window::~cocoa_window()
 	}
 	m_view = NULL;
 }
-	
+
 void
 cocoa_window::need_redraw(const rect &r)
 {
@@ -82,7 +82,7 @@ cocoa_window::need_redraw(const rect &r)
 	NSRect my_rect = [my_view NSRectForAmbulantRect: &r];
 	NSRectHolder *arect = [[NSRectHolder alloc] initWithRect: my_rect];
 	// XXX Is it safe to cast C++ objects to ObjC id's?
-	[my_view performSelectorOnMainThread: @selector(asyncRedrawForAmbulantRect:) 
+	[my_view performSelectorOnMainThread: @selector(asyncRedrawForAmbulantRect:)
 		withObject: arect waitUntilDone: NO];
 }
 
@@ -90,7 +90,7 @@ void
 cocoa_window::redraw_now()
 {
 	AmbulantView *my_view = (AmbulantView *)m_view;
-	[my_view performSelectorOnMainThread: @selector(syncDisplayIfNeeded:) 
+	[my_view performSelectorOnMainThread: @selector(syncDisplayIfNeeded:)
 		withObject: nil waitUntilDone: NO];
 }
 
@@ -115,7 +115,7 @@ cocoa_window::need_events(bool want)
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
 	AM_DBG logger::get_logger()->debug("cocoa_window::need_events(0x%x, %d)", (void *)this, want);
-		
+
 	AmbulantView *my_view = (AmbulantView *)m_view;
 	NSWindow *my_window = [my_view window];
 	AM_DBG NSLog(@"my_window acceptsMouseMovedEvents = %d", [my_window acceptsMouseMovedEvents]);
@@ -126,9 +126,9 @@ cocoa_window::need_events(bool want)
 		return;
 	}
 	// Get the main thread to do the real work
-	[my_view performSelectorOnMainThread: @selector(pseudoMouseMove:) 
+	[my_view performSelectorOnMainThread: @selector(pseudoMouseMove:)
 		withObject: nil waitUntilDone: NO];
-	
+
 	[pool release];
 }
 
@@ -155,7 +155,7 @@ cocoa_window_factory::new_window(const std::string &name, size bounds, gui_event
 	[view setAmbulantWindow: window];
 	// And set the window size
 	init_window_size(window, name, bounds);
-	
+
 	return (gui_window *)window;
 }
 
@@ -168,7 +168,7 @@ cocoa_window_factory::init_window_size(cocoa_window *window, const std::string &
 	NSView *superview = [view superview];
 	int32_t     shieldLevel = CGShieldingWindowLevel();
 	if ([view ignoreResize] || [[view window] level] >= shieldLevel) {
-		// We don't muck around with fullscreen windows or windows in other apps (browsers, etc). 
+		// We don't muck around with fullscreen windows or windows in other apps (browsers, etc).
 		// What we should actually do is recenter the content, but that is for later.
 	} else {
 		if (superview) {
@@ -207,7 +207,7 @@ bool
 cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_size)
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
+
 	*out_data = NULL;
 	*out_size = 0;
 	NSBitmapImageFileType filetype;
@@ -336,7 +336,7 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 	ambulant::lib::rect arect = ambulant::lib::rect(
                 ambulant::lib::point(int(NSMinX(*nsrect)), int(NSMinY(*nsrect))),
 				ambulant::lib::size(int(NSWidth(*nsrect)), int(NSHeight(*nsrect))));
-	 
+
 	return arect;
 }
 
@@ -375,7 +375,7 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 		AM_DBG NSLog(@"viewDidMoveToWindow: new origin (%f, %f)", screenOrigin.x, screenOrigin.y);
 		[overlay_window setFrameOrigin: screenOrigin];
 	}
-	
+
 	// If something was drawn into the overlay window during the last redraw
 	// we need to clear the overlay window.
 	if (overlay_window_needs_clear) {
@@ -694,7 +694,7 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 		fullscreen_oldimage = fullscreen_previmage;
 		fullscreen_previmage = NULL;
 	}
-	
+
 	// Do the transition step, or simply copy the bits
 	// if no engine available.
 	AM_DBG NSLog(@"_screenTransitionPostRedraw: bitblit");
@@ -743,12 +743,12 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 	// Find out where to position the window
 	NSPoint baseOrigin = NSMakePoint([self frame].origin.x, [self frame].origin.y);
 	NSPoint screenOrigin = [[self window] convertBaseToScreen: baseOrigin];
-	
+
 	// Create the window
-	overlay_window = [[NSWindow alloc] initWithContentRect: 
-		NSMakeRect(screenOrigin.x,screenOrigin.y,[self frame].size.width,[self frame].size.height) 
-		styleMask:NSBorderlessWindowMask 
-		backing:NSBackingStoreBuffered 
+	overlay_window = [[NSWindow alloc] initWithContentRect:
+		NSMakeRect(screenOrigin.x,screenOrigin.y,[self frame].size.width,[self frame].size.height)
+		styleMask:NSBorderlessWindowMask
+		backing:NSBackingStoreBuffered
 		defer:YES];
 	NSView *oview = [[MyFlippedView alloc] initWithFrame: [self bounds]];
 	[overlay_window setContentView: oview];

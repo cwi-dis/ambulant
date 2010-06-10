@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -125,7 +125,7 @@ html_browser_imp::html_browser_imp(int left, int top, int width, int height)
 		}
 		m_browser = browser;
 		hide();
-	} 
+	}
 	AM_DBG lib::logger::get_logger()->debug("html_browser_imp::html_browser_imp(0x%x): LTWH=(%d,%d,%d,%d) m_browser=0x%x", this, left, top, width, height, m_browser);
 }
 
@@ -140,7 +140,7 @@ html_browser_imp::~html_browser_imp() {
 
 }
 
-bool 
+bool
 html_browser_imp::uses_screen_reader() {
 	return false;
 }

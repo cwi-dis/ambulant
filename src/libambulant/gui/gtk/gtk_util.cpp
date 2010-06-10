@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/gtk/gtk_util.h"
@@ -42,11 +42,11 @@ inline guchar _blend_pixel (uchar c1, uchar c2, uchar weight)
 	}
 void
 gdk_pixbuf_blend (
-	GdkPixbuf* dst, 
-	const lib::rect dst_rc, 
-	GdkPixbuf* src, 
+	GdkPixbuf* dst,
+	const lib::rect dst_rc,
+	GdkPixbuf* src,
 	const lib::rect src_rc,
-	double opacity_in, 
+	double opacity_in,
 	double opacity_out,
 	const lib::color_t chroma_low,
 	const lib::color_t chroma_high,
@@ -75,8 +75,8 @@ gdk_pixbuf_blend (
 	guint weight_in = static_cast<guint>(round(opacity_in*255.0));
 	guint weight_out = static_cast<guint>(round(opacity_out*255.0));
 
-	guchar r_l = redc(chroma_low), r_h = redc(chroma_high), r_m = redc(mask_color); 
-	guchar g_l = greenc(chroma_low), g_h = greenc(chroma_high), g_m = greenc(mask_color); 
+	guchar r_l = redc(chroma_low), r_h = redc(chroma_high), r_m = redc(mask_color);
+	guchar g_l = greenc(chroma_low), g_h = greenc(chroma_high), g_m = greenc(mask_color);
 	guchar b_l = bluec(chroma_low), b_h = bluec(chroma_high), b_m = bluec(mask_color);
 	AM_DBG logger::get_logger()->debug("blend_gdk_pixbuf:r_l=%3d,g_l=%3d,b_l=%3d,w_in=%d,w_out=%d", r_l,g_l,b_l,weight_in, weight_out);
 AM_DBG logger::get_logger()->debug("blend_gdk_pixbuf:r_h=%3d,g_h=%3d,b_h=%3d", r_h,g_h,b_h);
@@ -122,7 +122,7 @@ AM_DBG logger::get_logger()->debug("blend_gdk_pixbuf:r_h=%3d,g_h=%3d,b_h=%3d", r
 		dst_row += gdk_pixbuf_get_rowstride(dst);
 		src_row += gdk_pixbuf_get_rowstride(src);
 	}
-	
+
 }
 
 void

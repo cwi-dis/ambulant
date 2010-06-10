@@ -232,7 +232,7 @@ wkdom_node::next()
 //////////////////////
 // set down/up/next
 
-void 
+void
 wkdom_node::down(wkdom_node *n)
 {
 	DOMNode *firstchild = [m_self firstChild];
@@ -243,13 +243,13 @@ wkdom_node::down(wkdom_node *n)
 	}
 }
 
-void 
+void
 wkdom_node::up(wkdom_node *n)
 {
 	assert(0);
 }
 
-void 
+void
 wkdom_node::next(wkdom_node *n)
 {
 	DOMNode *parent = [m_self parentNode];
@@ -265,13 +265,13 @@ wkdom_node::next(wkdom_node *n)
 ///////////////////////////////
 // deduced navigation
 
-const wkdom_node* 
-wkdom_node::previous() const { 
-	return id2node([m_self previousSibling], m_context); 
+const wkdom_node*
+wkdom_node::previous() const {
+	return id2node([m_self previousSibling], m_context);
 }
 
-const wkdom_node* 
-wkdom_node::get_last_child() const { 
+const wkdom_node*
+wkdom_node::get_last_child() const {
 	return id2node([m_self lastChild], m_context);
 }
 
@@ -280,37 +280,37 @@ void wkdom_node::get_children(std::list<const lib::node*>& l) const {
 }
 
 ///////////////////////////////
-// search operations 
+// search operations
 
-wkdom_node* 
+wkdom_node*
 wkdom_node::get_first_child(const char *name) {
 	wkdom_node *e = down();
 	if(!e) return 0;
 	if(e->get_local_name() == name) return e;
 	e = e->next();
 	while(e != 0) {
-		if(e->get_local_name() == name) 
+		if(e->get_local_name() == name)
 			return e;
 		e = e->next();
 	}
 	return 0;
 }
 
-const wkdom_node* 
+const wkdom_node*
 wkdom_node::get_first_child(const char *name) const {
 	const wkdom_node *e = down();
 	if(!e) return 0;
 	if(e->get_local_name() == name) return e;
 	e = e->next();
 	while(e != 0) {
-		if(e->get_local_name() == name) 
+		if(e->get_local_name() == name)
 			return e;
 		e = e->next();
 	}
 	return 0;
 }
 
-wkdom_node* 
+wkdom_node*
 wkdom_node::locate_node(const char *path) {
 	if(!path || !path[0]) {
 		return this;
@@ -323,7 +323,7 @@ wkdom_node::locate_node(const char *path) {
 		it++; // skip empty
 		n = get_root();
 		if(it == v.end())
-			return n; 
+			return n;
 		if(n->get_local_name() != (*it))
 			return 0;
 		it++; // skip root
@@ -334,9 +334,9 @@ wkdom_node::locate_node(const char *path) {
 	return n;
 }
 
-wkdom_node* 
-wkdom_node::get_root() { 
-	return lib::node_navigator<wkdom_node>::get_root(this); 
+wkdom_node*
+wkdom_node::get_root() {
+	return lib::node_navigator<wkdom_node>::get_root(this);
 }
 
 inline std::string get_path_desc_comp(const wkdom_node *n) {
@@ -371,14 +371,14 @@ std::string wkdom_node::get_path_display_desc() const {
 
 ///////////////////////
 // build tree functions
-	
-wkdom_node* 
-wkdom_node::append_child(wkdom_node* child) { 
+
+wkdom_node*
+wkdom_node::append_child(wkdom_node* child) {
 	return id2node([m_self appendChild: child->m_self], m_context);
 }
-		
-wkdom_node* 
-wkdom_node::append_child(const char *name) { 
+
+wkdom_node*
+wkdom_node::append_child(const char *name) {
 	// Create a new node with the given tag and append
 	DOMDocument *doc = [m_self ownerDocument];
 	assert(doc);
@@ -387,22 +387,22 @@ wkdom_node::append_child(const char *name) {
 	append_child(id2node(w, m_context));
 }
 
-wkdom_node* 
+wkdom_node*
 wkdom_node::detach() {
-	return lib::node_navigator<wkdom_node>::detach(this); 
+	return lib::node_navigator<wkdom_node>::detach(this);
 }
-	
+
 void wkdom_node::append_data(const char *data, size_t len) {
 	// Append to the data of this node
 	readonly();
 }
 
-void wkdom_node::append_data(const char *c_str) { 
+void wkdom_node::append_data(const char *c_str) {
 	NSString *data = [m_self nodeValue];
 	NSString *newdata = [NSString stringWithCString: c_str];
 	data = [data stringByAppendingString: newdata];
 	[m_self setNodeValue: data];
-	
+
 }
 
 void wkdom_node::append_data(const lib::xml_string& str) {
@@ -410,7 +410,7 @@ void wkdom_node::append_data(const lib::xml_string& str) {
 	append_data(str.c_str());
 }
 
-void wkdom_node::set_attribute(const char *name, const char *value) { 
+void wkdom_node::set_attribute(const char *name, const char *value) {
 	NSString *nsattrname = [NSString stringWithCString: name];
 	NSString *nsattrvalue = [NSString stringWithCString: value];
 	assert([m_self nodeType] == DOM_ELEMENT_NODE);
@@ -433,14 +433,14 @@ void wkdom_node::set_attributes(const char **attrs) {
 	for(int i=0;attrs[i];i+=2)
 		set_attribute(attrs[i], attrs[i+1]);
 }
-	
+
 void
 wkdom_node::set_prefix_mapping(const std::string& prefix, const std::string& uri)
 {
 }
 
 // create a deep copy of this
-wkdom_node* 
+wkdom_node*
 wkdom_node::clone() const {
 	return id2node([m_self cloneNode: true], m_context);
 }
@@ -501,8 +501,8 @@ wkdom_node::is_data_node() const
 	return [m_self nodeType] == DOM_TEXT_NODE;
 }
 
-lib::xml_string 
-wkdom_node::get_trimmed_data() const { 
+lib::xml_string
+wkdom_node::get_trimmed_data() const {
 	return lib::trim(get_data());
 }
 
@@ -536,7 +536,7 @@ wkdom_node::get_attribute(const std::string& name) const {
 }
 
 // returns the resolved url of an attribute
-net::url 
+net::url
 wkdom_node::get_url(const char *attrname) const {
 	const char *rurl = get_attribute(attrname);
 	if(!rurl) return net::url();
@@ -562,7 +562,7 @@ wkdom_node::get_container_attribute(const char *name) const {
 /////////////////////
 // string repr
 
-lib::xml_string 
+lib::xml_string
 wkdom_node::xmlrepr() const {
 	// Return a representation of the node, without < and >
 	unimplemented();
@@ -582,7 +582,7 @@ std::string wkdom_node::get_sig() const {
 	return s;
 }
 
-unsigned int 
+unsigned int
 wkdom_node::size() const {
 	const_iterator it;
 	const_iterator e = end();

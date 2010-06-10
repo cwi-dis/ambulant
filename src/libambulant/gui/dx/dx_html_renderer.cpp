@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifdef	WITH_HTML_WIDGET
@@ -55,10 +55,10 @@ gui::dx::create_dx_html_playable_factory(common::factories *factory, common::pla
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererIE"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererHtml"), true);
 	return new common::single_playable_factory<
-		gui::dx::dx_html_renderer, 
-        dx_html_playable_tag, 
-        dx_html_playable_renderer_uri2, 
-        dx_html_playable_renderer_uri2, 
+		gui::dx::dx_html_renderer,
+        dx_html_playable_tag,
+        dx_html_playable_renderer_uri2,
+        dx_html_playable_renderer_uri2,
         dx_html_playable_renderer_uri3 >(factory, mdp);
 }
 
@@ -108,7 +108,7 @@ gui::dx::dx_html_renderer::dx_html_renderer(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
-	common::factories* factory, 
+	common::factories* factory,
 	common::playable_factory_machdep *dxplayer)
 :   dx_renderer_playable(context, cookie, node, evp, factory, dynamic_cast<dx_playables_context*>(dxplayer)),
 	m_html_browser(NULL),
@@ -121,7 +121,7 @@ gui::dx::dx_html_renderer::~dx_html_renderer() {
  	AM_DBG lib::logger::get_logger()->debug("~dx_html_renderer(0x%x)", this);
 }
 
-void 
+void
 gui::dx::dx_html_renderer::start(double t) {
  	AM_DBG lib::logger::get_logger()->debug("dx_html_renderer::start(0x%x)", this);
 

@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/smil2/animate_n.h"
@@ -48,7 +48,7 @@ using namespace smil2;
 // An animate_node is the base class for all animation node flavors
 
 animate_node::animate_node(context_type *ctx, const node *n, animate_attrs *aattrs)
-:	time_node(ctx, n, tc_none, false), 
+:	time_node(ctx, n, tc_none, false),
 	m_aattrs(aattrs) {
 }
 
@@ -74,7 +74,7 @@ void animate_node::apply_self_effect(animate_registers& regs) const {
 
 // A linear_values_animation is applicable for linear-attributes
 // linear-attributes define: addition, subtraction and scaling
-// A linear_values_animation may be continuous or discrete 
+// A linear_values_animation may be continuous or discrete
 // The interpolation mode (calcMode) of a continuous linear_values animation may be linear, paced or spline
 
 // F: the simple function
@@ -85,16 +85,16 @@ class linear_values_animation : public animate_node {
   public:
 	linear_values_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
 	~linear_values_animation();
-	
+
 	void prepare_interval();
-	
+
   protected:
 	bool verify_key_times(std::vector<double>& keyTimes);
-	
+
 	F m_simple_f;
 	animate_f<F> *m_animate_f;
 	std::vector<T> m_values;
-	
+
 };
 
 template <class F, class T>
@@ -126,14 +126,14 @@ void linear_values_animation<F, T>::prepare_interval() {
 		bool keyTimesValid = false;
 		if(keyTimes.empty() || verify_key_times(keyTimes))
 	        	keyTimesValid = true;
-		if(!keyTimes.empty() && keyTimesValid && 
+		if(!keyTimes.empty() && keyTimesValid &&
 			(dur.is_definite() || m_aattrs->get_calc_mode() == "discrete")) {
 			m_simple_f.init(sfdur(), m_values, keyTimes);
-		} else	
+		} else
 			m_simple_f.init(sfdur(), m_values);
 	}
 	m_simple_f.set_auto_reverse(ta->auto_reverse());
-	m_simple_f.set_accelerate(ta->get_accelerate(), ta->get_decelerate());	
+	m_simple_f.set_accelerate(ta->get_accelerate(), ta->get_decelerate());
 	time_type ad = m_interval.end - m_interval.begin;
 	m_animate_f = new animate_f<F>(m_simple_f, dur(), ad(), m_aattrs->is_accumulative());
 }
@@ -146,7 +146,7 @@ bool linear_values_animation<F, T>::verify_key_times(std::vector<double>& keyTim
 		keyTimesValid = false;
 	if(m_aattrs->get_calc_mode() != "discrete" && keyTimes.back() != 1.0)
 		keyTimesValid = false;
-	for(size_t i=1;i<keyTimes.size() && keyTimesValid ;i++) 	
+	for(size_t i=1;i<keyTimes.size() && keyTimesValid ;i++)
 		keyTimesValid = (keyTimes[i]>keyTimes[i-1]);
 	if(!keyTimesValid)
 		m_logger->trace("<%s id=\"%s\">: invalid key times", m_attrs.get_tag().c_str(), m_attrs.get_id().c_str());
@@ -158,7 +158,7 @@ bool linear_values_animation<F, T>::verify_key_times(std::vector<double>& keyTim
 				char sz[64];
 				sprintf(sz,"%.3f;", keyTimes[i]);str += sz;
 			}
-			m_logger->debug("%s[%s] keyTimes: %s", 
+			m_logger->debug("%s[%s] keyTimes: %s",
 				m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), str.c_str());
 		}
 	}
@@ -179,9 +179,9 @@ class underlying_to_animation : public animate_node {
   public:
 	underlying_to_animation(context_type *ctx, const node *n, animate_attrs *aattrs);
 	~underlying_to_animation();
-	
+
 	void prepare_interval();
-		
+
   protected:
 	typedef underlying_to_f<T> F;
 	F m_simple_f;
@@ -219,7 +219,7 @@ void underlying_to_animation<T>::prepare_interval() {
 // regdim_animation
 //
 // A regdim_animation may be used for all region dim animations except for "to" animations
-// 
+//
 // Animateable region/subregion attributes: "left", "top", "width", "height", "right", "bottom"
 
 template <class F>
@@ -227,7 +227,7 @@ class regdim_animation : public linear_values_animation<F, common::region_dim> {
   public:
 	  regdim_animation(time_node_context *ctx, const node *n, animate_attrs *aattrs)
 	:	linear_values_animation<F, common::region_dim>(ctx, n, aattrs) {}
-	
+
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
 		regs.rd = dst->get_region_dim(this->m_aattrs->get_target_attr(), true);
 	}
@@ -237,7 +237,7 @@ class regdim_animation : public linear_values_animation<F, common::region_dim> {
 		if(rd != regs.rd || IGNORE_ATTR_COMP) {
 			AM_DBG {
 				lib::timer::time_type t = this->m_timer->elapsed();
-				lib::logger::get_logger()->debug("%s(%ld) -> %s", 
+				lib::logger::get_logger()->debug("%s(%ld) -> %s",
 					this->m_aattrs->get_target_attr().c_str(), t, ::repr(regs.rd).c_str());
 			}
 			dst->set_region_dim(this->m_aattrs->get_target_attr(), regs.rd);
@@ -252,7 +252,7 @@ class regdim_animation : public linear_values_animation<F, common::region_dim> {
 		common::region_dim rd = this->m_animate_f->at(t);
 		if(this->m_aattrs->is_additive())
 			regs.rd += rd; // add
-			
+
 		else
 			regs.rd = rd; // override
 	}
@@ -262,7 +262,7 @@ class underlying_to_regdim_animation : public underlying_to_animation<common::re
   public:
 	underlying_to_regdim_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
 	:	underlying_to_animation<common::region_dim>(ctx, n, aattrs) {}
-	
+
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
 		regs.rd = dst->get_region_dim(m_aattrs->get_target_attr(), true);
 	}
@@ -272,9 +272,9 @@ class underlying_to_regdim_animation : public underlying_to_animation<common::re
 		if(rd != regs.rd || IGNORE_ATTR_COMP) {
 			AM_DBG {
 				lib::timer::time_type t = m_timer->elapsed();
-				lib::logger::get_logger()->debug("%s(%ld) -> %s", 
+				lib::logger::get_logger()->debug("%s(%ld) -> %s",
 					m_aattrs->get_target_attr().c_str(), t, ::repr(regs.rd).c_str());
-			}		
+			}
 			dst->set_region_dim(m_aattrs->get_target_attr(), regs.rd);
 			return true;
 		}
@@ -293,7 +293,7 @@ class underlying_to_regdim_animation : public underlying_to_animation<common::re
 // color_animation
 //
 // A color_animation may be used for all backgroundColor/color animations except for "to" animations
-// 
+//
 // Animateable region/subregion attributes: "backgroundColor", "color"
 
 
@@ -302,7 +302,7 @@ class color_animation : public linear_values_animation<F, lib::color_t> {
   public:
 	color_animation(time_node_context *ctx, const node *n, animate_attrs *aattrs)
 	:	linear_values_animation<F, lib::color_t>(ctx, n, aattrs) {}
-	
+
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
 		regs.cl = dst->get_region_color(this->m_aattrs->get_target_attr(), true);
 	}
@@ -312,15 +312,15 @@ class color_animation : public linear_values_animation<F, lib::color_t> {
 		if(cl != regs.cl || IGNORE_ATTR_COMP) {
 			AM_DBG {
 				lib::timer::time_type t = this->m_timer->elapsed();
-				lib::logger::get_logger()->debug("%s(%ld) -> 0x%x", 
+				lib::logger::get_logger()->debug("%s(%ld) -> 0x%x",
 					this->m_aattrs->get_target_attr().c_str(), t, regs.cl);
-			}				
+			}
 			dst->set_region_color(this->m_aattrs->get_target_attr(), regs.cl);
 			return true;
 		}
 		return false;
 	}
-	
+
 	void apply_self_effect(animate_registers& regs) const {
 		if(!this->m_animate_f) return;
 		lib::timer::time_type t = this->m_timer->elapsed();
@@ -336,7 +336,7 @@ class underlying_to_color_animation : public underlying_to_animation<lib::color_
   public:
 	underlying_to_color_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
 	:	underlying_to_animation<lib::color_t>(ctx, n, aattrs) {}
-	
+
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
 		regs.cl = dst->get_region_color(m_aattrs->get_target_attr(), true);
 	}
@@ -346,15 +346,15 @@ class underlying_to_color_animation : public underlying_to_animation<lib::color_
 		if(cl != regs.cl || IGNORE_ATTR_COMP) {
 			AM_DBG {
 				lib::timer::time_type t = m_timer->elapsed();
-				lib::logger::get_logger()->debug("%s(%ld) -> 0x%x", 
+				lib::logger::get_logger()->debug("%s(%ld) -> 0x%x",
 					m_aattrs->get_target_attr().c_str(), t, regs.cl);
-			}				
+			}
 			dst->set_region_color(m_aattrs->get_target_attr(), regs.cl);
 			return true;
 		}
 		return false;
 	}
-	
+
 	void apply_self_effect(animate_registers& regs) const {
 		if(!m_animate_f) return;
 		lib::timer::time_type t = m_timer->elapsed();
@@ -369,7 +369,7 @@ class zindex_animation : public linear_values_animation<F, common::zindex_t> {
   public:
 	zindex_animation(time_node_context *ctx, const node *n, animate_attrs *aattrs)
 	:	linear_values_animation<F, common::zindex_t>(ctx, n, aattrs) {}
-	
+
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
 		regs.zi = dst->get_region_zindex(true);
 	}
@@ -379,15 +379,15 @@ class zindex_animation : public linear_values_animation<F, common::zindex_t> {
 		if(zi != regs.zi || IGNORE_ATTR_COMP) {
 			AM_DBG {
 				lib::timer::time_type t = this->m_timer->elapsed();
-				lib::logger::get_logger()->debug("%s(%ld) -> %d", 
+				lib::logger::get_logger()->debug("%s(%ld) -> %d",
 					this->m_aattrs->get_target_attr().c_str(), t, regs.zi);
-			}				
+			}
 			dst->set_region_zindex(regs.zi);
 			return true;
 		}
 		return false;
 	}
-	
+
 	void apply_self_effect(animate_registers& regs) const {
 		if(!this->m_animate_f) return;
 		lib::timer::time_type t = this->m_timer->elapsed();
@@ -403,7 +403,7 @@ class underlying_to_zindex_animation : public underlying_to_animation<common::zi
   public:
 	underlying_to_zindex_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
 	:	underlying_to_animation<int>(ctx, n, aattrs) {}
-	
+
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
 		regs.zi = dst->get_region_zindex(true);
 	}
@@ -413,15 +413,15 @@ class underlying_to_zindex_animation : public underlying_to_animation<common::zi
 		if(zi != regs.zi || IGNORE_ATTR_COMP) {
 			AM_DBG {
 				lib::timer::time_type t = m_timer->elapsed();
-				lib::logger::get_logger()->debug("%s(%ld) -> %d", 
+				lib::logger::get_logger()->debug("%s(%ld) -> %d",
 					m_aattrs->get_target_attr().c_str(), t, regs.zi);
-			}				
+			}
 			dst->set_region_zindex(regs.zi);
 			return true;
 		}
 		return false;
 	}
-	
+
 	void apply_self_effect(animate_registers& regs) const {
 		if(!m_animate_f) return;
 		lib::timer::time_type t = m_timer->elapsed();
@@ -434,7 +434,7 @@ class underlying_to_zindex_animation : public underlying_to_animation<common::zi
 // values_motion_animation
 //
 // A values_motion_animation may be used for all position animations except for "to" and "path" animations
-// 
+//
 // Animateable region/subregion attributes: "position"
 
 template <class F>
@@ -442,7 +442,7 @@ class values_motion_animation : public linear_values_animation<F, lib::point> {
   public:
 	values_motion_animation(time_node_context *ctx, const node *n, animate_attrs *aattrs)
 	:	linear_values_animation<F, lib::point>(ctx, n, aattrs) {}
-	
+
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
 		common::region_dim left = dst->get_region_dim("left", true);
 		common::region_dim top = dst->get_region_dim("top", true);
@@ -457,11 +457,11 @@ class values_motion_animation : public linear_values_animation<F, lib::point> {
 		if(pt != regs.pt || IGNORE_ATTR_COMP) {
 			AM_DBG {
 				lib::timer::time_type t = this->m_timer->elapsed();
-				lib::logger::get_logger()->debug("%s(%ld) -> %s", 
+				lib::logger::get_logger()->debug("%s(%ld) -> %s",
 					this->m_aattrs->get_target_attr().c_str(), t, ::repr(regs.pt).c_str());
-			}			
-			dst->set_region_dim("left", common::region_dim(regs.pt.x));			
-			dst->set_region_dim("top", common::region_dim(regs.pt.y));			
+			}
+			dst->set_region_dim("left", common::region_dim(regs.pt.x));
+			dst->set_region_dim("top", common::region_dim(regs.pt.y));
 			return true;
 		}
 		return false;
@@ -482,7 +482,7 @@ class underlying_to_motion_animation : public underlying_to_animation<lib::point
   public:
 	underlying_to_motion_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
 	:	underlying_to_animation<lib::point>(ctx, n, aattrs) {}
-	
+
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
 		common::region_dim left = dst->get_region_dim("left", true);
 		common::region_dim top = dst->get_region_dim("top", true);
@@ -497,11 +497,11 @@ class underlying_to_motion_animation : public underlying_to_animation<lib::point
 		if(pt != regs.pt || IGNORE_ATTR_COMP) {
 			AM_DBG {
 				lib::timer::time_type t = m_timer->elapsed();
-				lib::logger::get_logger()->debug("%s(%ld) -> %s", 
+				lib::logger::get_logger()->debug("%s(%ld) -> %s",
 					m_aattrs->get_target_attr().c_str(), t, ::repr(regs.pt).c_str());
-			}		
-			dst->set_region_dim("left", common::region_dim(regs.pt.x));			
-			dst->set_region_dim("top", common::region_dim(regs.pt.y));			
+			}
+			dst->set_region_dim("left", common::region_dim(regs.pt.x));
+			dst->set_region_dim("top", common::region_dim(regs.pt.y));
 			return true;
 		}
 		return false;
@@ -567,13 +567,13 @@ soundalign_animation::apply_self_effect(animate_registers& regs) const
 // regdim_animation
 //
 // A panzoom_animation may be used for all panZoom animations except for "to" animations
-// 
+//
 template <class F>
 class panzoom_animation : public linear_values_animation<F, common::region_dim_spec> {
   public:
 	  panzoom_animation(time_node_context *ctx, const node *n, animate_attrs *aattrs)
 	:	linear_values_animation<F, common::region_dim_spec>(ctx, n, aattrs) {}
-	
+
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
 		regs.panzoom = dst->get_region_panzoom(true);
 	}
@@ -593,7 +593,7 @@ class panzoom_animation : public linear_values_animation<F, common::region_dim_s
 		common::region_dim_spec panzoom = this->m_animate_f->at(t);
 		if(this->m_aattrs->is_additive())
 			regs.panzoom += panzoom; // add
-			
+
 		else
 			regs.panzoom = panzoom; // override
 	}
@@ -603,7 +603,7 @@ class underlying_to_panzoom_animation : public underlying_to_animation<common::r
   public:
 	underlying_to_panzoom_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
 	:	underlying_to_animation<common::region_dim_spec>(ctx, n, aattrs) {}
-	
+
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
 		regs.panzoom = dst->get_region_panzoom(true);
 	}
@@ -636,7 +636,7 @@ class opacity_animation : public linear_values_animation<F, double> {
   public:
 	opacity_animation(time_node_context *ctx, const node *n, animate_attrs *aattrs)
 	:	linear_values_animation<F, double>(ctx, n, aattrs) {}
-	
+
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
 		regs.dv = dst->get_region_opacity(this->m_aattrs->get_target_attr(), true)*100;
 	}
@@ -646,15 +646,15 @@ class opacity_animation : public linear_values_animation<F, double> {
 		if(dv != regs.dv || IGNORE_ATTR_COMP) {
 			AM_DBG {
 				lib::timer::time_type t = this->m_timer->elapsed();
-				lib::logger::get_logger()->debug("%s(%ld) -> %f", 
+				lib::logger::get_logger()->debug("%s(%ld) -> %f",
 					this->m_aattrs->get_target_attr().c_str(), t, regs.dv);
-			}				
+			}
 			dst->set_region_opacity(this->m_aattrs->get_target_attr(), regs.dv/100);
 			return true;
 		}
 		return false;
 	}
-	
+
 	void apply_self_effect(animate_registers& regs) const {
 		if(!this->m_animate_f) return;
 		lib::timer::time_type t = this->m_timer->elapsed();
@@ -670,7 +670,7 @@ class underlying_to_opacity_animation : public underlying_to_animation<double> {
   public:
 	underlying_to_opacity_animation(context_type *ctx, const node *n, animate_attrs *aattrs)
 	:	underlying_to_animation<double>(ctx, n, aattrs) {}
-	
+
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
 		regs.dv = dst->get_region_opacity(m_aattrs->get_target_attr(), true)*100;
 	}
@@ -680,15 +680,15 @@ class underlying_to_opacity_animation : public underlying_to_animation<double> {
 		if(dv != regs.dv || IGNORE_ATTR_COMP) {
 			AM_DBG {
 				lib::timer::time_type t = m_timer->elapsed();
-				lib::logger::get_logger()->debug("%s(%ld) -> %f", 
+				lib::logger::get_logger()->debug("%s(%ld) -> %f",
 					m_aattrs->get_target_attr().c_str(), t, regs.dv);
-			}				
+			}
 			dst->set_region_opacity(m_aattrs->get_target_attr(), regs.dv/100);
 			return true;
 		}
 		return false;
 	}
-	
+
 	void apply_self_effect(animate_registers& regs) const {
 		if(!m_animate_f) return;
 		lib::timer::time_type t = m_timer->elapsed();
@@ -701,7 +701,7 @@ class underlying_to_opacity_animation : public underlying_to_animation<double> {
 ////////////////////////////////////
 // animate_node factory functions
 
-// private static 
+// private static
 animate_node* animate_node::new_regdim_animation(context_type *ctx, const node *n, animate_attrs *aattrs) {
 	typedef common::region_dim attr_t;
 	if(aattrs->is_discrete()) {
@@ -714,7 +714,7 @@ animate_node* animate_node::new_regdim_animation(context_type *ctx, const node *
 	return new regdim_animation<F>(ctx, n, aattrs);
 }
 
-// private static 
+// private static
 animate_node* animate_node::new_color_animation(context_type *ctx, const node *n, animate_attrs *aattrs) {
 	typedef lib::color_t attr_t;
 	if(aattrs->is_discrete()) {
@@ -727,7 +727,7 @@ animate_node* animate_node::new_color_animation(context_type *ctx, const node *n
 	return new color_animation<F>(ctx, n, aattrs);
 }
 
-// private static 
+// private static
 animate_node* animate_node::new_zindex_animation(context_type *ctx, const node *n, animate_attrs *aattrs) {
 	typedef common::zindex_t attr_t;
 	if(aattrs->is_discrete()) {
@@ -747,7 +747,7 @@ animate_node* animate_node::new_soundalign_animation(context_type *ctx, const no
 	return new soundalign_animation(ctx, n, aattrs);
 }
 
-// private static 
+// private static
 animate_node* animate_node::new_position_animation(context_type *ctx, const node *n, animate_attrs *aattrs) {
 	typedef lib::point attr_t;
 	if(aattrs->is_discrete()) {
@@ -761,7 +761,7 @@ animate_node* animate_node::new_position_animation(context_type *ctx, const node
 }
 
 #ifdef WITH_SMIL30
-// private static 
+// private static
 animate_node* animate_node::new_panzoom_animation(context_type *ctx, const node *n, animate_attrs *aattrs) {
 	typedef common::region_dim_spec attr_t;
 	if(aattrs->is_discrete()) {
@@ -774,7 +774,7 @@ animate_node* animate_node::new_panzoom_animation(context_type *ctx, const node 
 	return new panzoom_animation<F>(ctx, n, aattrs);
 }
 
-// private static 
+// private static
 animate_node* animate_node::new_opacity_animation(context_type *ctx, const node *n, animate_attrs *aattrs) {
 	typedef double attr_t;
 	if(aattrs->is_discrete()) {
@@ -789,14 +789,14 @@ animate_node* animate_node::new_opacity_animation(context_type *ctx, const node 
 #endif // WITH_SMIL30
 
 
-// public static 
+// public static
 animate_node* animate_node::new_instance(context_type *ctx, const node *n, const node* tparent) {
 	animate_attrs *aattrs = new animate_attrs(n, tparent);
-	
+
 	// Placeholder
 	if(aattrs->get_animate_type() == "invalid")
 		return new animate_node(ctx, n, aattrs);
-	
+
 	// Implemented animations
 	if(aattrs->get_target_attr_type() == "reg_dim") {
 		return new_regdim_animation(ctx, n, aattrs);
@@ -815,7 +815,7 @@ animate_node* animate_node::new_instance(context_type *ctx, const node *n, const
 		return new_opacity_animation(ctx, n, aattrs);
 #endif // WITH_SMIL30
 	}
-	
+
 	// Not implemented
 	return new animate_node(ctx, n, aattrs);
 }

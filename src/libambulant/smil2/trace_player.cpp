@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/document.h"
@@ -93,7 +93,7 @@ bool trace_player::is_done() {
 
 void trace_player::start_playable(const node *n, double t, const lib::transition_info *trans) {
 	playable *p = get_playable(n);
-	std::map<const node*, playable *>::iterator it = 
+	std::map<const node*, playable *>::iterator it =
 		m_playables.find(n);
 	if(p) {
 		p->start(t);
@@ -101,11 +101,11 @@ void trace_player::start_playable(const node *n, double t, const lib::transition
 	}
 	p = new trace_playable(n, n->get_numid());
 	m_playables[n] = p;
-	p->start(t);	
+	p->start(t);
 }
 
 void trace_player::stop_playable(const node *n) {
-	std::map<const node*, playable *>::iterator it = 
+	std::map<const node*, playable *>::iterator it =
 		m_playables.find(n);
 	if(it != m_playables.end()) {
 		(*it).second->stop();
@@ -124,7 +124,7 @@ void trace_player::resume_playable(const node *n) {
 	if(p) p->resume();
 }
 
-common::duration 
+common::duration
 trace_player::get_dur(const node *n) {
 	playable *p = get_playable(n);
 	if(p) return p->get_dur();
@@ -132,7 +132,7 @@ trace_player::get_dur(const node *n) {
 }
 
 common::playable *trace_player::get_playable(const lib::node *n) {
-	std::map<const node*, playable *>::iterator it = 
+	std::map<const node*, playable *>::iterator it =
 		m_playables.find(n);
 	return (it != m_playables.end())?(*it).second:0;
 }

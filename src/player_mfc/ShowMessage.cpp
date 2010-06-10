@@ -14,7 +14,7 @@ void log_show_message(int level, const char *message) {
 	msg.m_message = (LPCTSTR)ambulant::lib::textptr(message);
 	// XXXX How do I find our topmost window??
 	if (msg.DoModal() == IDSHOWLOG && topView) {
-		
+
 		//PostMessage(sLastMmView, WM_COMMAND, ID_VIEW_LOG, 0);
 		topView->PostMessage(WM_COMMAND, ID_VIEW_LOG);
 	}

@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_GIF_DECODER_H
@@ -51,14 +51,14 @@ template <class DataSource, class ColorType>
 class gif_decoder : public img_decoder<DataSource, ColorType> {
   public:
 	typedef unsigned short uint16_t;
-	
+
 	gif_decoder(DataSource* src, HDC hdc);
-	
+
 	virtual ~gif_decoder();
-	
+
 	virtual bool can_decode();
-	virtual dib_surface<ColorType>* decode();	
-	virtual bool is_transparent() 
+	virtual dib_surface<ColorType>* decode();
+	virtual bool is_transparent()
 		{ return m_transparent>=0;}
 	virtual void get_transparent_color(BYTE *rgb) {
 		if(m_transparent>=0) {
@@ -73,7 +73,7 @@ class gif_decoder : public img_decoder<DataSource, ColorType> {
   private:
 	dib_surface<ColorType>* parse_metadata();
 	dib_surface<ColorType>* parse_image();
-	bool parse_image_pixels(int width, int height, 
+	bool parse_image_pixels(int width, int height,
 		int interlace, surface<ColorType> *psurf);
 
 	int next_block(uchar *m_buf);
@@ -105,7 +105,7 @@ class gif_decoder : public img_decoder<DataSource, ColorType> {
 
 template <class DataSource, class ColorType>
 gif_decoder<DataSource, ColorType>::gif_decoder(DataSource* src, HDC hdc)
-:	img_decoder<DataSource, ColorType>(src, hdc), 
+:	img_decoder<DataSource, ColorType>(src, hdc),
 	m_palette(NULL),
 	m_curbit(0), m_lastbit(0), m_lastbyte(0),
 	m_last_block_size(-1), m_done(false),
@@ -128,13 +128,13 @@ inline bool gif_decoder<DataSource, ColorType>::can_decode() {
 }
 
 template <class DataSource, class ColorType>
-inline dib_surface<ColorType>* 
+inline dib_surface<ColorType>*
 gif_decoder<DataSource, ColorType>::decode() {
 	if(!can_decode()) return NULL;
 
 	m_scr_width = m_src->get_be_ushort();
 	m_scr_height = m_src->get_be_ushort();
-	
+
 	uchar_t uch = m_src->get();
 	m_scr_colors = 2 << (uch & 0x07);
 	int screen_color_res = ((uch & 0x70) >> 3) + 1;
@@ -163,18 +163,18 @@ gif_decoder<DataSource, ColorType>::decode() {
 }
 
 template <class DataSource, class ColorType>
-inline dib_surface<ColorType>* 
+inline dib_surface<ColorType>*
 gif_decoder<DataSource, ColorType>::parse_metadata() {
 	uchar ext_buf[256];
 	while(true) {
 		uchar_t blockType = m_src->get();
-		if(blockType == 0x2c) { 
+		if(blockType == 0x2c) {
 			AM_DBG m_logger->debug("Image Descriptor");
 			return parse_image();
 		} else if (blockType == 0x21) {
 			AM_DBG m_logger->debug("Extension block");
 			uchar_t label = m_src->get();
-			if(label == 0xf9) { 
+			if(label == 0xf9) {
 				AM_DBG m_logger->debug("Graphics Control Extension");
 				if(get_data_block(ext_buf)>0) {
 					m_disposal= (ext_buf[0]>>2)	& 0x7;
@@ -186,21 +186,21 @@ gif_decoder<DataSource, ColorType>::parse_metadata() {
 					}
 				}
 				skip_block();
-			} else if (label == 0x1) { 
+			} else if (label == 0x1) {
 				AM_DBG m_logger->debug("Plain text extension");
 				skip_block();
-			} else if (label == 0xfe) { 
+			} else if (label == 0xfe) {
 				AM_DBG m_logger->debug("Comment extension");
 				skip_block();
-			} else if (label == 0xff) { 
+			} else if (label == 0xff) {
 				AM_DBG m_logger->debug("Application extension");
 				skip_block();
-			} else { 
+			} else {
 				AM_DBG m_logger->debug("Unknown extension");
 				skip_block();
 			}
 		}
-	} 
+	}
 	return 0;
 }
 
@@ -223,7 +223,7 @@ inline int gif_decoder<DataSource, ColorType>::get_data_block(uchar *buf) {
 
 // 9 bytes header + color_map + data
 template <class DataSource, class ColorType>
-inline dib_surface<ColorType>* 
+inline dib_surface<ColorType>*
 gif_decoder<DataSource, ColorType>::parse_image() {
 	uint16_t imageLeftPosition = m_src->get_be_ushort();
 	uint16_t imageTopPosition = m_src->get_be_ushort();
@@ -254,9 +254,9 @@ gif_decoder<DataSource, ColorType>::parse_image() {
 		return NULL;
 	}
 
-	surface<ColorType> *psurf = 
+	surface<ColorType> *psurf =
 		new surface<ColorType>(imageWidth, imageHeight, ColorType::get_bits_size(), pBits);
-		
+
 	parse_image_pixels(imageWidth, imageHeight, interlaceFlag, psurf);
 	//uchar_t img_terminator = m_src->get(); // read ';'
 	return new dib_surface<ColorType>(bmp, psurf);
@@ -289,7 +289,7 @@ inline int gif_decoder<DataSource, ColorType>::next_code(int code_size, bool fla
 			}
 			return -1;
 		}
-		m_buf[0] = m_buf[m_lastbyte-2];	
+		m_buf[0] = m_buf[m_lastbyte-2];
 		m_buf[1] = m_buf[m_lastbyte-1];
 
 		count = next_block(&m_buf[2]);
@@ -322,7 +322,7 @@ inline int gif_decoder<DataSource, ColorType>::next_lzwbyte(bool flag, int input
 	static uchar  vals[1 << MAX_LZW_BITS];
 	static uchar  stack[1 << (MAX_LZW_BITS+1)];
 	static uchar  *sp;
-	
+
 	int i;
 
 	if(flag) {
@@ -336,7 +336,7 @@ inline int gif_decoder<DataSource, ColorType>::next_lzwbyte(bool flag, int input
 		next_code(0, true);
 
 		fresh = TRUE;
-	
+
 		for(i=0;i<clear_code;++i) {
 			next[i]=0;
 			vals[i]=i;
@@ -344,11 +344,11 @@ inline int gif_decoder<DataSource, ColorType>::next_lzwbyte(bool flag, int input
 
 		for (;i<(1<<MAX_LZW_BITS);++i)
 			next[i]=vals[0]=0;
-	
+
 		sp=stack;
 
 		return 0;
-		
+
 	} else if (fresh) {
 		fresh = false;
 		do	{
@@ -366,7 +366,7 @@ inline int gif_decoder<DataSource, ColorType>::next_lzwbyte(bool flag, int input
 				next[i]=0;
 				vals[i]=i;
 			}
-			for (;i<(1<<MAX_LZW_BITS);++i)	
+			for (;i<(1<<MAX_LZW_BITS);++i)
 				next[i] = vals[i] = 0;
 			code_size = set_code_size + 1;
 			max_code_size = 2*clear_code;
@@ -377,14 +377,14 @@ inline int gif_decoder<DataSource, ColorType>::next_lzwbyte(bool flag, int input
 		} else if (code == end_code) {
 			int count;
 			uchar m_buf[260];
-		
+
 			if (m_last_block_size == 0)
 				return -2;
-			
+
 			while ((count = next_block(m_buf)) >0);
 
 			if (count != 0)
-				return -2;	
+				return -2;
 		}
 
 		incode = code;
@@ -422,7 +422,7 @@ inline int gif_decoder<DataSource, ColorType>::next_lzwbyte(bool flag, int input
 			return *--sp;
 	}
 	return code;
-}   
+}
 
 
 template <class DataSource, class ColorType>
@@ -433,9 +433,9 @@ inline bool gif_decoder<DataSource, ColorType>::parse_image_pixels(
 	int color;
 	int xpos=0, ypos=0, pass=0;
 
-	if (next_lzwbyte(true, c) < 0) 
+	if (next_lzwbyte(true, c) < 0)
 		return false;
-	
+
 	while((color = next_lzwbyte(false, c)) >= 0) {
 		ColorType rgb(m_palette[color].r, m_palette[color].g, m_palette[color].b);
 		psurf->set_pixel(xpos, ypos, rgb);
@@ -472,11 +472,11 @@ inline bool gif_decoder<DataSource, ColorType>::parse_image_pixels(
 	return true;
 }
 
-	
+
 } // namespace dx
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_GUI_GIF_DECODER_H

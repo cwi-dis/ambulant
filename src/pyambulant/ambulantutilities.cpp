@@ -9,7 +9,7 @@ bool_New(bool itself)
 {
     if (itself) {
         Py_RETURN_TRUE;
-    } 
+    }
     Py_RETURN_FALSE;
 }
 
@@ -64,7 +64,7 @@ ambulant_region_dim_Convert(PyObject *v, ambulant::common::region_dim *p_itself)
     char *tp;
     double dv;
     int iv;
-    
+
     if (PyArg_ParseTuple(v, "sd", &tp, &dv)) {
         if (strcmp(tp, "auto") == 0) {
             *p_itself = ambulant::common::region_dim();
@@ -104,7 +104,7 @@ int
 ambulant_rect_Convert(PyObject *v, ambulant::lib::rect *p_itself)
 {
     int l, t, r, b;
-    
+
     if (!PyArg_ParseTuple(v, "llll", &l, &t, &r, &b))
         return 0;
     *p_itself = ambulant::lib::rect(
@@ -151,7 +151,7 @@ ambulant_attributes_list_New(const ambulant::lib::q_attributes_list& itself)
     ambulant::lib::q_attributes_list::const_iterator i;
     for(i=itself.begin(); i!= itself.end(); i++) {
         const ambulant::lib::q_attribute_pair& item = *i;
-        PyObject *pitem = Py_BuildValue("(ss)s", 
+        PyObject *pitem = Py_BuildValue("(ss)s",
             item.first.first.c_str(),
             item.first.second.c_str(),
             item.second.c_str());
@@ -183,7 +183,7 @@ ambulant_attributes_list_Convert(PyObject *v, ambulant::lib::q_attributes_list *
             return 0;
         }
         Py_DECREF(item);
-        ambulant::lib::q_attribute_pair citem = 
+        ambulant::lib::q_attribute_pair citem =
             ambulant::lib::q_attribute_pair(
                 ambulant::lib::q_name_pair(
                     ambulant::lib::xml_string(attrns),

@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_LIB_STRING_UTIL_H
@@ -38,7 +38,7 @@
 
 // Workaround for toolsets with missing stringstream functionality.
 //
-// The convention is that objects that want to be served by this 
+// The convention is that objects that want to be served by this
 // "stringstream replacement" define a repr() function that returns a string.
 // See for example smil_time and smil_interval.
 //
@@ -80,18 +80,18 @@ const std::string dec_digits = "0123456789";
 
 inline std::string trim(const char* psz) {
 	if(!psz || !psz[0]) return "";
-	
+
 	// find_first_not_of space_chars or eos
 	const char* b = psz;
 	while(*b && isspace(*b)) b++;
 	if(!*b)  return "";
-	
+
 	// find_last_not_of space_chars
 	const char* e = b;
 	while(*e) e++;
 	e--;
 	while(e != b && isspace(*e)) e--;
-	
+
 	return std::string(b, ++e);
 }
 
@@ -177,14 +177,14 @@ class basic_scanner {
  	typedef std::basic_string<char_type> string_type;
 	typedef typename string_type::size_type size_type;
 	enum {EOS = 0, NUMBER = 'd', NAME = 'n', SPACE = 'w'};
-	
+
 	// Creates a basic_scanner for the source string 's' and delimiters 'd'.
 	basic_scanner(const string_type& s, const string_type& d)
-	:	src(s), 
-		delims(d), 
+	:	src(s),
+		delims(d),
 		end(s.length()),
 		pos(0), tok(EOS) {}
-	
+
 	// Returns the next token or EOS if none is available.
 	// The current position is at the start of the next token or at end.
 	// The token returned is either a delimiter character
@@ -192,7 +192,7 @@ class basic_scanner {
 	// The NAME token represents a sequence of one or more name characters,
 	// the NUMBER a sequence of one or more digits, and
 	// the SPACE a sequence of one or more space chars.
-	// A digit can not start a name otherwise digits are name characters.  
+	// A digit can not start a name otherwise digits are name characters.
 	char_type next() {
 		tok = EOS;
 		tokval = "";
@@ -204,7 +204,7 @@ class basic_scanner {
 		} else {
 			if(isascii(src[pos]) && isdigit(src[pos]))
 				scan_set_as(dec_digits, NUMBER);
-			else if(isascii(src[pos]) && isspace(src[pos])) 
+			else if(isascii(src[pos]) && isspace(src[pos]))
 				scan_set_as(space_chars, SPACE);
 			else {
 				std::string exdelims = delims + space_chars;
@@ -215,42 +215,42 @@ class basic_scanner {
 		vals.push_back(tokval);
 		return tok;
 	}
-	
+
 	// Iterator like interface for the scanner
     operator void const*() const { return pos == end? 0: this;}
     basic_scanner& operator++() { next(); return *this; }
     char_type const& operator*() const  { return tok;}
     //char_type const* operator->() const { return &tok;}
-		
+
 	// Returns true when there are more tokens
 	bool has_more() const { return pos != end;}
-	
+
 	// Returns the current token
 	char get_tok() const { return tok;}
-	
+
 	// Returns the current token value
 	const string_type& get_tokval() const { return tokval;}
-	
-	// Returns the src string 
+
+	// Returns the src string
 	const string_type& get_src() const { return src;}
-	
+
 	// Returns the tokens seen
 	const string_type& get_tokens() const { return toks;}
-	
+
 	// Returns the token values seen.
 	const std::vector<string_type>& get_values() const { return vals;}
-		
+
 	// Tokenizes the source string.
 	void tokenize() {
 		if(pos>0) reset();
 		while(next() != EOS);
 	}
-	
+
 	// Returns the i_th token value.
 	string_type val_at(size_type i) const {
 		return (i<vals.size())?vals[i]:"";
 	}
-	
+
 	// Joins token values with indices in [b,e).
 	string_type join(size_type b, size_type e) const {
 		string_type s;
@@ -258,17 +258,17 @@ class basic_scanner {
 			s += vals[ix];
 		return s;
 	}
-	
+
 	// Joins token values with indices >= b.
 	string_type join(size_type b) const {
 		return join(b, vals.size());
 	}
-	
+
   protected:
-  
+
 	// Scans chars in the set 's' as token 't'.
 	void scan_set_as(const string_type& s, char t) {
-		tok = t; 
+		tok = t;
 		size_type ni = src.find_first_not_of(s, pos);
 		if(vpos(ni)) {
 			tokval = string_type(src.c_str() + pos, ni-pos);
@@ -278,10 +278,10 @@ class basic_scanner {
 			pos = end;
 		}
 	}
-	
+
 	// Scans chars not in the set 's' as token 't'.
 	void scan_not_in_set_as(const string_type& s, char t) {
-		tok = t; 
+		tok = t;
 		size_type ni = src.find_first_of(s, pos);
 		if(vpos(ni)) {
 			tokval = string_type(src.c_str() + pos, ni-pos);
@@ -291,17 +291,17 @@ class basic_scanner {
 			pos = end;
 		}
 	}
-	
+
 	// Skips chars in set 's'.
 	void skip_set(const string_type& s) {
 		size_type ni = src.find_first_not_of(s, pos);
 		if(vpos(ni)) pos = ni;
 		else pos = end;
 	}
-	
+
 	// Skips space chars.
 	void skip_space() { skip_set(space_chars);}
-	
+
 	// Resets this scanner; erases its memory
 	void reset() {
 		pos = 0;
@@ -309,33 +309,33 @@ class basic_scanner {
 		toks = "";
 		vals.clear();
 	}
-	
-	bool vpos(size_type ix)  const { 
+
+	bool vpos(size_type ix)  const {
 		return ix != string_type::npos;}
 
   private:
-	
+
 	// The source of this scanner
 	const string_type src;
-	
+
 	// The literals to recognize
 	const string_type delims;
-	
-	// Source end position 
+
+	// Source end position
 	const size_type end;
-	
+
 	// Current pos
 	size_type pos;
-	
+
 	// Current token
 	char tok;
-	
+
 	// Current token value
 	string_type tokval;
-	
+
 	// The tokens seen
 	string_type toks;
-	
+
 	// The tokens values seen
 	std::vector<string_type> vals;
 };
@@ -345,7 +345,7 @@ typedef basic_scanner<wchar_t> wscanner;
 
 
 } // namespace lib
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_LIB_STRING_UTIL_H

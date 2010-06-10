@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_LIB_EVENT_PROCESSOR_H
@@ -46,9 +46,9 @@ class AMBULANTAPI event_processor_observer {
 class event_processor {
   public:
 	typedef timer::time_type time_type;
-	
+
 	virtual ~event_processor() {}
-	
+
 	/// schedule an event pe to fire at relative time t (millis) in the provided priority class.
 	virtual void add_event(event *pe, time_type t, event_priority priority) = 0;
 
@@ -57,10 +57,10 @@ class event_processor {
 
 	/// Cancel a previously scheduled event.
 	virtual bool cancel_event(event *pe, event_priority priority = ep_low) = 0;
-	
+
 	// Get the underlying timer.
 	virtual timer *get_timer() const = 0;
-	
+
 	// Set the observer.
 	virtual void set_observer(event_processor_observer *obs) = 0;
 };
@@ -103,12 +103,12 @@ namespace lib {
 /// complete behaviour.
 class event_processor_impl : public event_processor, public BASE_THREAD {
   public:
-	event_processor_impl(timer *t);	
-	~event_processor_impl();	
-	
+	event_processor_impl(timer *t);
+	~event_processor_impl();
+
     timer *get_timer() const;
 	unsigned long run();
-    
+
 	void add_event(event *pe, time_type t, event_priority priority);
 	bool cancel_event(event *pe, event_priority priority = ep_low);
 	void cancel_all_events();
@@ -120,13 +120,13 @@ class event_processor_impl : public event_processor, public BASE_THREAD {
     // Called by platform-specific subclasses.
     // Should hold m_lock when calling.
 	void _serve_events();
-    
+
 	// the timer for this processor
 	timer *m_timer;
 	event_processor_observer *m_observer;
 
 	// protects whole data structure
-	critical_section_cv m_lock;  
+	critical_section_cv m_lock;
 
   private:
 	// check, if needed, with a delta_timer to fill its run queue
@@ -136,7 +136,7 @@ class event_processor_impl : public event_processor, public BASE_THREAD {
 	// serve a single event from a delta_timer run queue
 	// return true if an event was served
 	bool _serve_event(delta_timer& dt, std::queue<event*> *qp);
-	
+
 	// high priority delta timer and its event queue
 	delta_timer m_high_delta_timer;
 	std::queue<event*> m_high_q;
@@ -144,11 +144,11 @@ class event_processor_impl : public event_processor, public BASE_THREAD {
 	// medium priority delta timer and its event queue
 	delta_timer m_med_delta_timer;
 	std::queue<event*> m_med_q;
-	
+
 	// low priority delta timer and its event queue
 	delta_timer m_low_delta_timer;
 	std::queue<event*> m_low_q;
-	
+
 };
 
 /// Machine-dependent factory function

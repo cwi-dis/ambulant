@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -37,31 +37,31 @@ class xerces_plugin_factory : public lib::parser_factory {
 	xerces_plugin_factory(common::factories* factory)
 	:   m_factory(factory) {}
 	~xerces_plugin_factory() {};
-	
+
 	lib::xml_parser* new_parser(
 		lib::sax_content_handler* content_handler,
 		lib::sax_error_handler* error_handler);
-		
+
 	std::string get_parser_name();
-	
+
   private:
 	common::factories* m_factory;
-	
+
 };
 
 
 lib::xml_parser*
 xerces_plugin_factory::new_parser(
-		lib::sax_content_handler* content_handler, 
-		lib::sax_error_handler* error_handler) 
+		lib::sax_content_handler* content_handler,
+		lib::sax_error_handler* error_handler)
 {
 	AM_DBG lib::logger::get_logger()->debug("xerces_factory::new_parser(): xerces parser returned");
 	//return NULL;
-	return new lib::xerces_sax_parser(content_handler, error_handler);	
+	return new lib::xerces_sax_parser(content_handler, error_handler);
 }
 
 
-std::string 
+std::string
 xerces_plugin_factory::get_parser_name()
 {
 	AM_DBG lib::logger::get_logger()->debug("xerces_factory::get_parser_name(): xerces parser");
@@ -80,7 +80,7 @@ void initialize(
     ambulant::common::gui_player *player)
 {
     if ( api_version != AMBULANT_PLUGIN_API_VERSION ) {
-        lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"xerces_plugin", 
+        lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"xerces_plugin",
 					AMBULANT_PLUGIN_API_VERSION, api_version);
         return;
     }

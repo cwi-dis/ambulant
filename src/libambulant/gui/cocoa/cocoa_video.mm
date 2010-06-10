@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/cocoa/cocoa_video.h"
@@ -56,20 +56,20 @@
 
 @implementation MovieCreator
 
-+ (void)removeFromSuperview: (QTMovieView *)view	 
++ (void)removeFromSuperview: (QTMovieView *)view
 {
     [view retain];
-    [view pause: self];	 
+    [view pause: self];
     [view removeFromSuperview];
 }
- 
+
 - (MovieCreator *)init
 {
 	self = [super init];
     movie = NULL;
 	return self;
 }
-    
+
 - (void)setPositionWanted: (ambulant::net::timestamp_t)begintime
 {
 	position_wanted = begintime;
@@ -148,8 +148,8 @@ create_cocoa_video_playable_factory(common::factories *factory, common::playable
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererVideo"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererQuickTime"), true);
 	return new common::single_playable_factory<
-        cocoa_video_renderer, 
-        cocoa_video_playable_tag, 
+        cocoa_video_renderer,
+        cocoa_video_playable_tag,
         cocoa_video_playable_renderer_uri,
         cocoa_video_playable_renderer_uri2,
         cocoa_video_playable_renderer_uri3>(factory, mdp);
@@ -197,7 +197,7 @@ cocoa_video_renderer::~cocoa_video_renderer()
 
 }
 
-void 
+void
 cocoa_video_renderer::init_with_node(const lib::node *n)
 {
 	m_lock.enter();
@@ -205,7 +205,7 @@ cocoa_video_renderer::init_with_node(const lib::node *n)
 	renderer_playable::init_with_node(n);
     assert(m_renderer_state == rs_created || m_renderer_state == rs_prerolled || m_renderer_state == rs_stopped || m_renderer_state == rs_fullstopped);
     m_renderer_state = rs_inited;
-    
+
     m_node = n;
     if (m_movie == NULL) {
         assert(m_mc == NULL);
@@ -225,21 +225,21 @@ cocoa_video_renderer::init_with_node(const lib::node *n)
 		lib::logger::get_logger()->error(gettext("%s: cannot open movie"), m_url.get_url().c_str());
 		goto bad;
 	}
-	
+
 	_init_clip_begin_end();
     if (m_clip_begin != m_previous_clip_position) {
         [(MovieCreator *)m_mc setPositionWanted: m_clip_begin];
     }
     m_previous_clip_position = m_clip_begin;
-	
+
 	AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer(0x%x)::init_with_node, m_movie=0x%x url=%s clipbegin=%d", this, m_movie, m_url.get_url().c_str(), m_clip_begin);
-	
+
   bad:
 	[pool release];
 	m_lock.leave();
 }
 
-void 
+void
 cocoa_video_renderer::preroll(double when, double where, double how_much)
 {
 	m_lock.enter();
@@ -249,13 +249,13 @@ cocoa_video_renderer::preroll(double when, double where, double how_much)
 	m_lock.leave();
 }
 
-common::duration 
+common::duration
 cocoa_video_renderer::get_dur()
 {
 	common::duration rv(false, 0);
 	m_lock.enter();
     assert(m_renderer_state == rs_inited || m_renderer_state == rs_prerolled || m_renderer_state == rs_started || m_renderer_state == rs_stopped);
-    
+
 	if (m_movie) {
 		Movie mov = [m_movie quickTimeMovie];
 		AM_DBG lib::logger::get_logger()->debug("cocoa_video_renderer::get_dur QTMovie is 0x%x", (void *)mov);
@@ -317,7 +317,7 @@ cocoa_video_renderer::stop()
 	m_context->stopped(m_cookie);
 	return false;
 }
-	
+
 void
 cocoa_video_renderer::post_stop()
 {
@@ -415,7 +415,7 @@ cocoa_video_renderer::_poll_playing()
             m_previous_clip_position = m_clip_end;
 		}
 	}
-	
+
 	if (!is_stopped) {
 #ifdef WITH_CLOCK_SYNC
         _fix_clock_drift();
@@ -460,7 +460,7 @@ cocoa_video_renderer::redraw(const rect &dirty, gui_window *window)
 		[m_movie_view setControllerVisible: NO];
 		[m_movie_view setMovie: m_movie];
     }
-    
+
     NSView *parent = [m_movie_view superview];
     if (parent != (NSView *)view) {
         // Put the movie view into the hierarchy, possibly removing it from the old place first.
@@ -474,17 +474,17 @@ cocoa_video_renderer::redraw(const rect &dirty, gui_window *window)
         // Set things up so subsequent redraws go to the overlay window
         [view useOverlayWindow];
     }
-    
+
     //  Need to compare frameRect to current Qt rect and move if needed
     if (!NSEqualRects(frameRect, [m_movie_view frame]) ) {
         [m_movie_view setFrame: frameRect];
     }
-	
+
 	m_lock.leave();
 }
 
 #ifdef WITH_CLOCK_SYNC
-void 
+void
 cocoa_video_renderer::_fix_video_epoch()
 {
     Movie mov = [m_movie quickTimeMovie];
@@ -494,7 +494,7 @@ cocoa_video_renderer::_fix_video_epoch()
     m_video_epoch = m_event_processor->get_timer()->elapsed() - lib::timer::signed_time_type(curtime*1000.0);
 }
 
-void 
+void
 cocoa_video_renderer::_fix_clock_drift()
 {
     Movie mov = [m_movie quickTimeMovie];
@@ -503,7 +503,7 @@ cocoa_video_renderer::_fix_clock_drift()
     double curtime = (double)movtime / (double)movscale;
     lib::timer::signed_time_type expected_time = m_video_epoch + lib::timer::signed_time_type(curtime*1000.0);
     lib::timer::signed_time_type clock_drift = expected_time - m_event_processor->get_timer()->elapsed();
-    
+
     // If we have drifted too far we assume something fishy is going on and resync.
     if (clock_drift < -100000 || clock_drift > 100000) {
         lib::logger::get_logger()->trace("cocoa_video: Quicktime clock %dms ahead. Resync.");

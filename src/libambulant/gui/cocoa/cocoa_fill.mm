@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/cocoa/cocoa_gui.h"
@@ -50,8 +50,8 @@ create_cocoa_fill_playable_factory(common::factories *factory, common::playable_
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererFill"), true);
 	return new common::single_playable_factory<
-        cocoa_fill_renderer, 
-        cocoa_fill_playable_tag, 
+        cocoa_fill_renderer,
+        cocoa_fill_playable_tag,
         cocoa_fill_playable_renderer_uri,
         cocoa_fill_playable_renderer_uri2,
         cocoa_fill_playable_renderer_uri2>(factory, mdp);
@@ -63,7 +63,7 @@ cocoa_fill_renderer::~cocoa_fill_renderer()
 	AM_DBG lib::logger::get_logger()->debug("~cocoa_fill_renderer(0x%x)", (void *)this);
 	m_lock.leave();
 }
-	
+
 void
 cocoa_fill_renderer::start(double where)
 {
@@ -92,7 +92,7 @@ cocoa_fill_renderer::redraw_body(const rect &dirty, gui_window *window)
 	m_lock.enter();
 	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("cocoa_fill_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
-	
+
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 
@@ -141,7 +141,7 @@ cocoa_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wi
 {
 	const rect &r =  m_dst->get_rect();
 	AM_DBG logger::get_logger()->debug("cocoa_bg_renderer::drawbackground(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
-	
+
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 	AM_DBG lib::logger::get_logger()->debug("cocoa_bg_renderer::drawbackground: clearing to 0x%x opacity %f", (long)m_src->get_bgcolor(), m_src->get_bgopacity());
@@ -175,7 +175,7 @@ cocoa_background_renderer::highlight(common::gui_window *window)
 {
 	const rect &r =  m_dst->get_rect();
 	AM_DBG logger::get_logger()->debug("cocoa_bg_renderer::highlight(0x%x)", (void *)this);
-	
+
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 	rect dstrect_whole = r;
@@ -204,8 +204,8 @@ cocoa_background_renderer::keep_as_background()
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 	rect dstrect_whole = m_dst->get_rect();
 	dstrect_whole.translate(m_dst->get_global_topleft());
-	NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];	
-	
+	NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
+
 	m_bgimage = [[view getOnScreenImageForRect: cocoa_dstrect_whole] retain];
 }
 

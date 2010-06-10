@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -46,8 +46,8 @@ gui::qt::create_qt_fill_playable_factory(common::factories *factory, common::pla
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererQt"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererFill"), true);
 	return new common::single_playable_factory<
-        qt_fill_renderer, 
-        qt_fill_playable_tag, 
+        qt_fill_renderer,
+        qt_fill_playable_tag,
         qt_fill_playable_renderer_uri,
         qt_fill_playable_renderer_uri2,
         qt_fill_playable_renderer_uri2>(factory, mdp);
@@ -64,7 +64,7 @@ qt_fill_renderer::~qt_fill_renderer()
 	m_trans_engine = NULL;
 	m_lock.leave();
 }
-	
+
 void
 qt_fill_renderer::start(double where)
 {
@@ -129,7 +129,7 @@ qt_fill_renderer::redraw(const rect &dirty,
 	m_lock.enter();
 	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("qt_fill_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)",(void *)this,r.left(),r.top(),r.right(),r.bottom());
-	
+
 	ambulant_qt_window* aqw = (ambulant_qt_window*) window;
 	QPixmap *surf = NULL;
 	if (m_trans_engine && m_trans_engine->is_done()) {
@@ -157,7 +157,7 @@ qt_fill_renderer::redraw(const rect &dirty,
 	}
 
 	redraw_body(dirty, window);
-	
+
 	if (surf != NULL) {
 		aqw->reset_ambulant_surface();
 	}
@@ -183,7 +183,7 @@ qt_fill_renderer::transition_step()
 	if (m_dest) m_dest->need_redraw();
 }
 
-bool 
+bool
 qt_fill_renderer::user_event(const point &where, int what)
 {
 	if (!user_event_sensitive(where)) return false;
@@ -205,9 +205,9 @@ qt_fill_renderer::redraw_body(const lib::rect &dirty,
 	// First find our whole area to be cleared to <brush> color
 	lib::rect dstrect_whole = r;
 	dstrect_whole.translate(m_dest->get_global_topleft());
-	int	L = dstrect_whole.left(), 
+	int	L = dstrect_whole.left(),
 		T = dstrect_whole.top(),
-		W = dstrect_whole.width(), 
+		W = dstrect_whole.width(),
 		H = dstrect_whole.height();
 	// Fill with  color
 	const char *color_attr = m_node->get_attribute("color");
@@ -219,7 +219,7 @@ qt_fill_renderer::redraw_body(const lib::rect &dirty,
 	color_t color = lib::to_color(color_attr);
 	//	lib::color_t bgcolor = info->get_bgcolor();
 	AM_DBG lib::logger::get_logger()->debug
-		("qt_fill_renderer.redraw_body: clearing to 0x%x", 
+		("qt_fill_renderer.redraw_body: clearing to 0x%x",
 		 (long)color);
 	QColor bgc = color_t2QColor(color);
 	AM_DBG lib::logger::get_logger()->debug("qt_fill_renderer.redraw_body(0x%x, local_ltrb=(%d,%d,%d,%d)",(void *)this, L,T,W,H);
@@ -232,9 +232,9 @@ qt_fill_renderer::redraw_body(const lib::rect &dirty,
 void
 qt_background_renderer::redraw(const lib::rect &dirty,
 			       common::gui_window *window)
-{	
+{
 	if ( !  (m_src && m_dst))
-		return; 
+		return;
 	const lib::rect &r = m_dst->get_rect();
 	AM_DBG lib::logger::get_logger()->debug("qt_background_renderer::redraw(0x%x)", (void *)this);
 	double opacity = m_src->get_bgopacity();
@@ -290,13 +290,13 @@ qt_background_renderer::redraw(const lib::rect &dirty,
 			QImage bg_image = bg_pixmap.convertToImage();
 			lib::rect rr (lib::point(0, 0), lib::size(W, H));
 			qt_image_blend (screen_image, dstrect_whole,
-					bg_image, rr, 
+					bg_image, rr,
 					opacity, 0.0,
 					bgcolor, bgcolor);
 			QPixmap new_pixmap(W,H);
 			new_pixmap.convertFromImage(screen_image);
 			bitBlt(aqw->get_ambulant_pixmap(), L, T,
-			       &new_pixmap, L, T, W, H);	
+			       &new_pixmap, L, T, W, H);
 
 #endif//WITH_SMIL30
 		}

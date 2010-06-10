@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_SMIL2_SMILTEXT_H
@@ -73,7 +73,7 @@ struct smiltext_params {
 	smiltext_place	m_text_place;	/// Where the text should start
 	smiltext_conceal m_text_conceal; /// Initial/final effects for crawl/scroll
 };
-	
+
 /// Layout commands that the engine can send to the renderer
 enum smiltext_command {
 	stc_ignore,		// ignore this command
@@ -136,7 +136,7 @@ class smiltext_run {
   public:
 	smiltext_command m_command;
 	lib::xml_string m_data;
-	
+
 	std::vector<std::string>			m_font_families;
 	smiltext_font_style		m_font_style;
 	smiltext_font_weight	m_font_weight;
@@ -162,10 +162,10 @@ typedef std::list<smiltext_run> smiltext_runs;
 class smiltext_notification {
   public:
 	virtual ~smiltext_notification() {}
-	
+
 	/// Called whenever something has changed.
 	virtual void smiltext_changed() = 0;
-	
+
 	/// Called whenever a "marker" (tev/clear with id attribute) has been seen
 	virtual void marker_seen(const char *name) = 0;
 };
@@ -175,50 +175,50 @@ class smiltext_engine {
   public:
 	smiltext_engine(const lib::node *n, lib::event_processor *ep, smiltext_notification *client, bool word_mode);
 	~smiltext_engine();
-	
+
 	/// Get the mode parameters
-	
+
 	const smiltext_params& get_params() const { return m_params; }
-	
+
 	/// Start the engine.
 	/// May NOT be called while locked.
 	void start(double t);
-	
+
 	/// Seek the engine in time.
 	/// May NOT be called while locked.
 	void seek(double t);
-	
+
 	/// Stop the engine.
 	/// May NOT be called while locked.
 	void stop();
-	
+
 	/// Returns true if all text has been received.
 	/// Must be called while locked.
 	bool is_finished();
-	
+
 	/// Returns true if the text has changed since the last done() call.
 	/// Must be called while locked.
 	bool is_changed();
-	
+
 	/// Returns true if the text has been cleared and should be re-rendered from scratch.
 	/// Must be called while locked.
 	bool is_cleared();
-	
+
 	/// Returns true while computing textRate="auto"
 	bool is_auto_rate() { return m_auto_rate; }
 
 	/// Returns an iterator pointing to the first smiltext_run.
 	/// Must be called while locked.
 	smiltext_runs::const_iterator begin();
-	
+
 	/// Returns an iterator pointing to the first unseen smiltext_run.
 	/// Must be called while locked.
 	smiltext_runs::const_iterator newbegin();
-	
+
 	/// Returns an iterator pointing to the end of the smiltext_runs.
 	/// Must be called while locked.
 	smiltext_runs::const_iterator end();
-	
+
 	/// Called when the client has processed all runs.
 	/// Must be called while locked.
 	void done();
@@ -254,7 +254,7 @@ class smiltext_engine {
 	void _get_default_params(smiltext_params& params);
 	// generate a sequence of runs each containing a single word with
 	// spacing if needed and with the formatting and styling parameters
-	void _split_into_words(lib::xml_string data, smiltext_xml_space);	
+	void _split_into_words(lib::xml_string data, smiltext_xml_space);
 	// generate a sequence of runs each containing a stc_break command
 	// of a stc_data command without any line-feed (newline) character
 	// but with the formatting and styling parameters
@@ -295,8 +295,8 @@ class smiltext_metrics {
   public:
 	smiltext_metrics(unsigned int ascent, unsigned int descent, unsigned int height,
 		unsigned int width, unsigned int line_spacing)
-	:	m_ascent(ascent), 
-		m_descent(descent), 
+	:	m_ascent(ascent),
+		m_descent(descent),
 		m_height(height),
 		m_width(width),
 		m_line_spacing(line_spacing) {}
@@ -312,9 +312,9 @@ class smiltext_metrics {
   private:
 	unsigned int m_ascent;
 	unsigned int m_descent;
-	unsigned int m_height;	
-	unsigned int m_width;	
-	unsigned int m_line_spacing;	
+	unsigned int m_height;
+	unsigned int m_width;
+	unsigned int m_line_spacing;
 };
 /// Interface to be inherited by a renderer that wants to use smiltext_layout_engine
 class smiltext_layout_provider {
@@ -325,7 +325,7 @@ class smiltext_layout_provider {
 	virtual smiltext_metrics get_smiltext_metrics(const smiltext_run& str) = 0;
 
 	/// Render the smiltext_run in the rectangle specified.
-	/// 'word spacing' is the amount of whitespace pixels in front of the word. 
+	/// 'word spacing' is the amount of whitespace pixels in front of the word.
 	virtual void render_smiltext(const smiltext_run& str, const lib::rect& r) = 0;
 	virtual void smiltext_stopped() = 0;
 	virtual const lib::rect& get_rect() = 0;
@@ -347,19 +347,19 @@ class smiltext_layout_engine {
 	smiltext_layout_engine (const lib::node *n, lib::event_processor *ep, smiltext_layout_provider* provider, smiltext_notification* client, bool process_lf);
 	/// Start the engine.
 	void start(double t);
-	
+
 	/// Seek the engine in time.
 	void seek(double t);
-	
+
 	/// Stop the engine.
 	void stop();
-	
+
 	/// Returns true if all text has been received.
 	/// NOTE: Unlike the smiltext_engine method of the same name
 	/// this one will acquire its own lock.
 	bool is_finished();
 
-	/// Redraw a rectangle.on screen 
+	/// Redraw a rectangle.on screen
 	void redraw(const lib::rect& r);
 
 	/// Set destination rectangle.on screen
@@ -381,7 +381,7 @@ class smiltext_layout_engine {
 	smiltext_layout_provider* m_provider;
 	bool m_needs_conditional_newline;
 	bool m_needs_conditional_space;
-	
+
 	bool m_crawling;
 	bool m_scrolling;
 	lib::point m_shifted_origin; // moving origin for crawl/scroll
@@ -395,7 +395,7 @@ class smiltext_layout_engine {
 
 
 } // namespace smil2
- 
+
 } // namespace ambulant
 
 #endif // WITH_SMIL30

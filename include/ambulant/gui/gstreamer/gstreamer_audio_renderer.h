@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -42,10 +42,10 @@
 
 
 #define AMBULANT_MAX_CHANNELS 2
- 
+
 namespace ambulant {
 namespace gui {
-namespace gstreamer {	  
+namespace gstreamer {
 
 class gstreamer_audio_renderer : public common::renderer_playable {
 
@@ -65,7 +65,7 @@ class gstreamer_audio_renderer : public common::renderer_playable {
 	lib::event_processor *evp,
 	common::factories *factory,
 	net::audio_datasource *ds);
-  
+
 	~gstreamer_audio_renderer();
 
 	static bool is_supported(const lib::node *node);
@@ -73,7 +73,7 @@ class gstreamer_audio_renderer : public common::renderer_playable {
 	bool is_paused();
 	bool is_stopped();
 	bool is_playing();
-	
+
 	common::duration get_dur();
 	void start(double where);
 	bool stop();
@@ -90,7 +90,7 @@ class gstreamer_audio_renderer : public common::renderer_playable {
 //	void set_surface(common::surface *dest) { abort(); }
 //	common::surface *get_surface() { abort(); }
 //	void set_alignment(common::alignment *align) { /* Ignore, for now */ }
-//	void transition_freeze_end(lib::rect area) {}		  
+//	void transition_freeze_end(lib::rect area) {}
 	void redraw(const lib::rect &dirty, common::gui_window *window) {}
 	void set_intransition(const lib::transition_info* info);
 	void start_outtransition(const lib::transition_info* info);
@@ -107,7 +107,7 @@ class gstreamer_audio_renderer : public common::renderer_playable {
 	gstreamer_player* m_player;
 	net::url m_url;
 	lib::critical_section m_lock;
-	
+
 	bool m_is_playing;
 	bool m_is_paused;
 	bool m_read_ptr_called;

@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 // CLSID_FilterGraph
 //#include <uuids.h>
@@ -68,7 +68,7 @@ bool gui::dx::video_player::stop() {
 	if(!m_mmstream) return true;
 	HRESULT hr = m_mmstream->SetState(STREAMSTATE_STOP);
 	if(FAILED(hr)) {
-		win_report_error("IMultiMediaStream::SetState()", hr);	
+		win_report_error("IMultiMediaStream::SetState()", hr);
 	}
 	release_player();
 	return false;
@@ -78,7 +78,7 @@ void gui::dx::video_player::pause(common::pause_display d) {
 	if(!m_mmstream) return;
 	HRESULT hr = m_mmstream->SetState(STREAMSTATE_STOP);
 	if(FAILED(hr)) {
-		win_report_error("IMultiMediaStream::SetState()", hr);	
+		win_report_error("IMultiMediaStream::SetState()", hr);
 	}
 }
 
@@ -86,7 +86,7 @@ void gui::dx::video_player::resume() {
 	if(!m_mmstream) return;
 	HRESULT hr = m_mmstream->SetState(STREAMSTATE_RUN);
 	if(FAILED(hr)) {
-		win_report_error("IMultiMediaStream::SetState()", hr);	
+		win_report_error("IMultiMediaStream::SetState()", hr);
 	}
 }
 
@@ -95,7 +95,7 @@ void gui::dx::video_player::seek(double t) {
 	STREAM_TIME st = MILLIS_FACT*STREAM_TIME(t*1000 + 0.5);
 	HRESULT hr = m_mmstream->Seek(st);
 	if(FAILED(hr)) {
-		win_report_error("IMultiMediaStream::Seek()", hr);	
+		win_report_error("IMultiMediaStream::Seek()", hr);
 	}
 }
 
@@ -105,7 +105,7 @@ std::pair<bool, double> gui::dx::video_player::get_dur() {
 	HRESULT hr;
 	hr = m_mmstream->GetDuration(&stdur);
 	if(FAILED(hr)) {
-		win_report_error("IMultiMediaStream::GetDuration()", hr);	
+		win_report_error("IMultiMediaStream::GetDuration()", hr);
 		return std::pair<bool, double>(false, 0);
 	}
 	double dur = 0.001*double(stdur / MILLIS_FACT);
@@ -121,24 +121,24 @@ bool gui::dx::video_player::is_playing() {
 	STREAM_STATE state;
 	HRESULT hr = m_mmstream->GetState(&state);
 	if(FAILED(hr)) {
-		win_report_error("IMultiMediaStream::GetState()", hr);	
+		win_report_error("IMultiMediaStream::GetState()", hr);
 		return false;
 	}
 	if(state != STREAMSTATE_RUN)
 		return false;
-		
+
 	STREAM_TIME stdur;
 	hr = m_mmstream->GetDuration(&stdur);
 	if(FAILED(hr)) {
-		win_report_error("IMultiMediaStream::GetDuration()", hr);	
+		win_report_error("IMultiMediaStream::GetDuration()", hr);
 		return false;
 	}
-	
+
 	if (hr == S_FALSE) return true;
 	STREAM_TIME st;
 	hr = m_mmstream->GetTime(&st);
 	if(FAILED(hr)) {
-		win_report_error("IMultiMediaStream::GetTime()", hr);	
+		win_report_error("IMultiMediaStream::GetTime()", hr);
 		return false;
 	}
 	return st<stdur;
@@ -149,7 +149,7 @@ double gui::dx::video_player::get_position() {
 	STREAM_TIME st;
 	HRESULT hr = m_mmstream->GetTime(&st);
 	if(FAILED(hr)) {
-		win_report_error("IMultiMediaStream::GetTime()", hr);	
+		win_report_error("IMultiMediaStream::GetTime()", hr);
 		return 0.0;
 	}
 	return  0.001*double(__int64(st / MILLIS_FACT));
@@ -160,34 +160,34 @@ double gui::dx::video_player::get_position() {
 bool gui::dx::video_player::open(const std::string& url, IDirectDraw* dd) {
 	m_url = url;
 	HRESULT hr = S_OK;
-	
+
 	IAMMultiMediaStream *mmstream = 0;
 	hr = CoCreateInstance(CLSID_AMMultiMediaStream, NULL, CLSCTX_INPROC_SERVER,
 		IID_IAMMultiMediaStream, (void**)&mmstream);
 	if(FAILED(hr)) {
-		win_report_error("CoCreateInstance(CLSID_AMMultiMediaStream, ...)", hr);	
+		win_report_error("CoCreateInstance(CLSID_AMMultiMediaStream, ...)", hr);
 		return false;
 	}
 	IGraphBuilder *graph_builder = 0;
 	hr = mmstream->Initialize(STREAMTYPE_READ, 0, graph_builder);
 	if(FAILED(hr)) {
 		mmstream->Release();
-		win_report_error("IAMMultiMediaStream::Initialize()", hr);	
+		win_report_error("IAMMultiMediaStream::Initialize()", hr);
 		return false;
 	}
 	hr = mmstream->AddMediaStream(dd, &MSPID_PrimaryVideo, 0, NULL);
 	if(FAILED(hr)) {
 		mmstream->Release();
-		win_report_error("IAMMultiMediaStream::AddMediaStream(..., &MSPID_PrimaryVideo,...)", hr);	
+		win_report_error("IAMMultiMediaStream::AddMediaStream(..., &MSPID_PrimaryVideo,...)", hr);
 		return false;
 	}
 	hr = mmstream->AddMediaStream(NULL, &MSPID_PrimaryAudio, AMMSF_ADDDEFAULTRENDERER, NULL);
 	if(FAILED(hr)) {
 		mmstream->Release();
-		win_report_error("IAMMultiMediaStream::AddMediaStream(..., &MSPID_PrimaryAudio,...)", hr);	
+		win_report_error("IAMMultiMediaStream::AddMediaStream(..., &MSPID_PrimaryAudio,...)", hr);
 		return false;
 	}
-	
+
 	WCHAR wsz[MAX_PATH];
 	MultiByteToWideChar(CP_ACP, 0, url.c_str(), -1, wsz, MAX_PATH);
 	hr = mmstream->OpenFile(wsz, 0);
@@ -201,26 +201,26 @@ bool gui::dx::video_player::open(const std::string& url, IDirectDraw* dd) {
 			logger::get_logger()->error("%s: DirectX error 0x%x", url.c_str(), hr);
 		return false;
 	}
-	
+
 	m_mmstream = mmstream;
 	hr = m_mmstream->GetMediaStream(MSPID_PrimaryVideo, &m_vidstream);
 	if(FAILED(hr)) {
-		win_report_error("IMultiMediaStream::GetMediaStream()", hr);	
+		win_report_error("IMultiMediaStream::GetMediaStream()", hr);
 		return false;
 	}
 	hr = m_vidstream->QueryInterface(IID_IDirectDrawMediaStream, (void**)&m_ddstream);
 	if(FAILED(hr)) {
-		win_report_error("IMultiMediaStream::QueryInterface(IID_IDirectDrawMediaStream, ...)", hr);	
+		win_report_error("IMultiMediaStream::QueryInterface(IID_IDirectDrawMediaStream, ...)", hr);
 		return false;
 	}
 	hr = m_ddstream->CreateSample(NULL, NULL, 0, &m_ddsample);
 	if(FAILED(hr)) {
-		win_report_error("IMultiMediaStream::CreateSample()", hr);	
+		win_report_error("IMultiMediaStream::CreateSample()", hr);
 		return false;
 	}
 	hr = m_ddsample->GetSurface(&m_ddsurf, &m_rcsurf);
 	if(FAILED(hr)) {
-		win_report_error("IDirectDrawStreamSample::GetSurface()", hr);	
+		win_report_error("IDirectDrawStreamSample::GetSurface()", hr);
 		return false;
 	}
 	return true;

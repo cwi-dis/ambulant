@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/smil2/time_attrs.h"
@@ -64,13 +64,13 @@ bool time_attr_parser::parse_plain_offset(const std::string& s, sync_value_struc
 	svs.type = sv_offset;
 	offset_value_p parser;
 	if(!parser.matches(s)) {
-		m_logger->trace("%s: %s: invalid offset [%s]", 
+		m_logger->trace("%s: %s: invalid offset [%s]",
 			m_node->get_sig().c_str(), m_attrname, s.c_str());
 		m_logger->warn(gettext("Error in SMIL timing info in document"));
-		return false;	
+		return false;
 	}
 	svs.offset = parser.m_result;
-	AM_DBG m_logger->debug("%s: %s += [%s]", 
+	AM_DBG m_logger->debug("%s: %s += [%s]",
 		m_node->get_sig().c_str(), m_attrname, repr(svs).c_str());
 	return true;
 }
@@ -78,7 +78,7 @@ bool time_attr_parser::parse_plain_offset(const std::string& s, sync_value_struc
 bool time_attr_parser::parse_wallclock(const std::string& s, sync_value_struct& svs) {
 	svs.type = sv_wallclock;
 	m_logger->warn(gettext("Ignoring wallclock in document"));
-	return false;	
+	return false;
 }
 
 #ifdef WITH_SMIL30
@@ -96,52 +96,52 @@ bool time_attr_parser::parse_statechange(const std::string& s, sync_value_struct
 		succeeded = true;
 	}
 	if(!succeeded) {
-		m_logger->trace("%s: %s: invalid stateChange [%s]", 
+		m_logger->trace("%s: %s: invalid stateChange [%s]",
 			m_node->get_sig().c_str(), m_attrname, s.c_str());
 		m_logger->warn(gettext("Error in SMIL timing info in document"));
 		return false;
-	}	
-	AM_DBG m_logger->debug("%s: %s += [%s] (for state-variable %d)", 
+	}
+	AM_DBG m_logger->debug("%s: %s += [%s] (for state-variable %d)",
 		m_node->get_sig().c_str(), m_attrname, repr(svs).c_str(), svs.sparam.c_str());
 	return true;
 }
 #endif // WITH_SMIL30
 
-// Accesskey-value  ::= "accesskey(" character ")" ( S? ("+"|"-") S? Clock-value )? 
+// Accesskey-value  ::= "accesskey(" character ")" ( S? ("+"|"-") S? Clock-value )?
 bool time_attr_parser::parse_accesskey(const std::string& s, sync_value_struct& svs) {
 	svs.type = sv_accesskey;
 	size_type open_par_ix = s.find('(');
 	if(open_par_ix == std::string::npos) {
-		m_logger->trace("%s: %s: Invalid accesskey spec [%s]", 
+		m_logger->trace("%s: %s: Invalid accesskey spec [%s]",
 			m_node->get_sig().c_str(), m_attrname, s.c_str());
 		m_logger->warn(gettext("Error in SMIL interaction info in document"));
 		return false;
 	}
 	svs.iparam = int(s[open_par_ix+1]);
-	
+
 	size_type close_par_ix = s.find(')', open_par_ix);
 	if(close_par_ix == std::string::npos) {
-		m_logger->trace("%s: %s: invalid accesskey spec [%s]", 
+		m_logger->trace("%s: %s: invalid accesskey spec [%s]",
 			m_node->get_sig().c_str(), m_attrname, s.c_str());
 		m_logger->warn(gettext("Error in SMIL interaction info in document"));
 		return false;
 	}
 	std::string rest = trim(s.substr(close_par_ix+1));
 	if(rest.empty()) {
-		AM_DBG m_logger->debug("%s: %s: += [%s] (as int %d)", 
+		AM_DBG m_logger->debug("%s: %s: += [%s] (as int %d)",
 			m_node->get_sig().c_str(), m_attrname, repr(svs).c_str(), svs.iparam);
-		return true;	
+		return true;
 	}
-	
+
 	offset_value_p parser;
 	if(!parser.matches(s)) {
-		m_logger->trace("%s: %s: invalid accesskey offset [%s]", 
+		m_logger->trace("%s: %s: invalid accesskey offset [%s]",
 			m_node->get_sig().c_str(), m_attrname, s.c_str());
 		m_logger->warn(gettext("Error in SMIL interaction info in document"));
-		return false;	
+		return false;
 	}
 	svs.offset = parser.m_result;
-	AM_DBG m_logger->debug("%s: %s: += [%s] (as int %d)", 
+	AM_DBG m_logger->debug("%s: %s: += [%s] (as int %d)",
 		m_node->get_sig().c_str(), m_attrname, repr(svs).c_str(), svs.iparam);
 	return true;
 }
@@ -150,7 +150,7 @@ bool time_attr_parser::parse_nmtoken_offset(const std::string& s, sync_value_str
 	std::string::const_iterator b;
 	std::string::const_iterator e;
 	std::ptrdiff_t d;
-	
+
 	std::string s1 = s;
 	std::string offset_str;
 	size_type last_pm_ix = s.find_last_of("+-");
@@ -169,7 +169,7 @@ bool time_attr_parser::parse_nmtoken_offset(const std::string& s, sync_value_str
 	b = s1.begin(); e = s1.end();
 	d = parser.parse(b, e);
 	if(d == -1) {
-		m_logger->trace("%s: %s: invalid attr [%s]", 
+		m_logger->trace("%s: %s: invalid attr [%s]",
 			m_node->get_sig().c_str(), m_attrname, s.c_str());
 		m_logger->warn(gettext("Error in SMIL timing info in document"));
 		return false;
@@ -198,10 +198,10 @@ bool time_attr_parser::parse_nmtoken_offset(const std::string& s, sync_value_str
 		events.insert("marker");
 	}
 #endif // CHECK_EVENT_NAMES
-	
+
 	std::string event;
 	size_type last_dot_ix = nmtoken.find_last_of(".");
-	
+
 	if(last_dot_ix == std::string::npos) {
 		// an event-value with default eventbase-element
 		svs.type = sv_event;
@@ -225,11 +225,11 @@ bool time_attr_parser::parse_nmtoken_offset(const std::string& s, sync_value_str
 			succeeded = true;
 		}
 		if(!succeeded) {
-			m_logger->trace("%s: %s: invalid marker [%s]", 
+			m_logger->trace("%s: %s: invalid marker [%s]",
 				m_node->get_sig().c_str(), m_attrname, s.c_str());
 			m_logger->warn(gettext("Error in SMIL timing info in document"));
 			return false;
-		}	
+		}
 	} else if(ends_with(nmtoken, ".repeat")) {
 		// repeat event-value
 		svs.type = sv_repeat;
@@ -247,11 +247,11 @@ bool time_attr_parser::parse_nmtoken_offset(const std::string& s, sync_value_str
 			}
 		}
 		if(!succeeded) {
-			m_logger->trace("%s: %s: invalid repeat [%s]", 
+			m_logger->trace("%s: %s: invalid repeat [%s]",
 				m_node->get_sig().c_str(), m_attrname, s.c_str());
 			m_logger->warn(gettext("Error in SMIL timing info in document"));
 			return false;
-		}	
+		}
 	} else {
 		// event-value other than repeat
 		svs.type = sv_event;
@@ -265,7 +265,7 @@ bool time_attr_parser::parse_nmtoken_offset(const std::string& s, sync_value_str
 
 #ifdef CHECK_EVENT_NAMES
 	if(events.find(event) == events.end()) {
-		m_logger->trace("%s[%s] invalid event [%s]", 
+		m_logger->trace("%s[%s] invalid event [%s]",
 			m_tag.c_str(), m_id.c_str(), s.c_str());
 		m_logger->warn(gettext("Error in SMIL timing info in document"));
 		return false;
@@ -274,19 +274,19 @@ bool time_attr_parser::parse_nmtoken_offset(const std::string& s, sync_value_str
 	{
 #endif // CHECK_EVENT_NAMES
 		svs.event = event;
-		AM_DBG m_logger->debug("%s: %s: += [%s]", 
+		AM_DBG m_logger->debug("%s: %s: += [%s]",
 			m_node->get_sig().c_str(), m_attrname, repr(svs).c_str());
 	}
-	
+
 	// if base is not empty, locate node
 	// else base is the default
-	if(!svs.event.empty()) 
+	if(!svs.event.empty())
 		return true;
 	return false;
 }
 
-time_attrs::time_attrs(const node *n) 
-:	m_node(n), 
+time_attrs::time_attrs(const node *n)
+:	m_node(n),
 	m_spflags(0) {
 	m_logger = logger::get_logger();
 	const char *pid = m_node->get_attribute("id");
@@ -342,12 +342,12 @@ void time_attrs::parse_dur() {
 	if(sdur == "indefinite") {
 		m_dur.type = dt_indefinite;
 		m_dur.value = time_type::indefinite;
-		AM_DBG m_logger->debug("%s[%s].dur=indefinite", m_tag.c_str(), m_id.c_str());	
+		AM_DBG m_logger->debug("%s[%s].dur=indefinite", m_tag.c_str(), m_id.c_str());
 		return;
 	}
 	if(sdur == "media") {
 		m_dur.type = dt_media;
-		AM_DBG m_logger->debug("%s[%s].dur=media", m_tag.c_str(), m_id.c_str());	
+		AM_DBG m_logger->debug("%s[%s].dur=media", m_tag.c_str(), m_id.c_str());
 		return;
 	}
 	clock_value_p pl;
@@ -355,14 +355,14 @@ void time_attrs::parse_dur() {
 	std::string::const_iterator e = sdur.end();
 	std::ptrdiff_t d = pl.parse(b, e);
 	if(d == -1) {
-		m_logger->trace("<%s id=\"%s\" dur=\"%s\">: invalid dur attr", 
+		m_logger->trace("<%s id=\"%s\" dur=\"%s\">: invalid dur attr",
 			m_tag.c_str(), m_id.c_str(), sdur.c_str());
 		m_logger->warn(gettext("Error in SMIL timing info in document"));
 		return;
 	}
 	m_dur.type = dt_definite;
 	m_dur.value = time_type(pl.m_result);
-	AM_DBG m_logger->debug("%s[%s].dur=%ld", m_tag.c_str(), m_id.c_str(), m_dur.value());	
+	AM_DBG m_logger->debug("%s[%s].dur=%ld", m_tag.c_str(), m_id.c_str(), m_dur.value());
 }
 
 // repeatCount ::= floating_point | "indefinite"
@@ -373,7 +373,7 @@ void time_attrs::parse_rcount() {
 	std::string rcount_str = trim(p);
 	if(rcount_str == "indefinite") {
 		m_rcount = std::numeric_limits<double>::max(); //smil_time<double>::indefinite();
-		AM_DBG m_logger->debug("%s[%s].repeatCount=indefinite", m_tag.c_str(), m_id.c_str());	
+		AM_DBG m_logger->debug("%s[%s].repeatCount=indefinite", m_tag.c_str(), m_id.c_str());
 		return;
 	}
 	number_p parser;
@@ -381,13 +381,13 @@ void time_attrs::parse_rcount() {
 	std::string::const_iterator e = rcount_str.end();
 	std::ptrdiff_t d = parser.parse(b, e);
 	if(d == -1) {
-		m_logger->trace("<%s id=\"%s\" repeatCount=\"%s\">: invalid repeatCount attr", 
+		m_logger->trace("<%s id=\"%s\" repeatCount=\"%s\">: invalid repeatCount attr",
 			m_tag.c_str(), m_id.c_str(), rcount_str.c_str());
 		m_logger->warn(gettext("Error in SMIL timing info in document"));
 		return;
 	}
 	m_rcount = parser.m_result;
-	AM_DBG m_logger->debug("%s[%s].repeatCount=%.3f", m_tag.c_str(), m_id.c_str(), m_rcount);	
+	AM_DBG m_logger->debug("%s[%s].repeatCount=%.3f", m_tag.c_str(), m_id.c_str(), m_rcount);
 }
 
 // repeatDur ::= Clock-value | "indefinite"
@@ -398,7 +398,7 @@ void time_attrs::parse_rdur() {
 	std::string rdur_str = trim(p);
 	if(rdur_str == "indefinite") {
 		m_rdur = time_type::indefinite;
-		AM_DBG m_logger->debug("%s[%s].repeatDur=indefinite", m_tag.c_str(), m_id.c_str());	
+		AM_DBG m_logger->debug("%s[%s].repeatDur=indefinite", m_tag.c_str(), m_id.c_str());
 		return;
 	}
 	clock_value_p parser;
@@ -406,16 +406,16 @@ void time_attrs::parse_rdur() {
 	std::string::const_iterator e = rdur_str.end();
 	std::ptrdiff_t d = parser.parse(b, e);
 	if(d == -1) {
-		m_logger->trace("<%s id=\"%s\" repeatDur=\"%s\">: invalid repeatDur attr", 
+		m_logger->trace("<%s id=\"%s\" repeatDur=\"%s\">: invalid repeatDur attr",
 			m_tag.c_str(), m_id.c_str(), rdur_str.c_str());
 		m_logger->warn(gettext("Error in SMIL timing info in document"));
 		return;
 	}
 	m_rdur = parser.m_result;
-	AM_DBG m_logger->debug("%s[%s].repeatDur=%ld", m_tag.c_str(), m_id.c_str(), m_rdur());	
+	AM_DBG m_logger->debug("%s[%s].repeatDur=%ld", m_tag.c_str(), m_id.c_str(), m_rdur());
 }
 
-// min ::= Clock-value | "media" 
+// min ::= Clock-value | "media"
 void time_attrs::parse_min() {
 	const char *p = m_node->get_attribute("min");
 	if(!p) return;
@@ -432,7 +432,7 @@ void time_attrs::parse_min() {
 	std::string::const_iterator e = min_str.end();
 	std::ptrdiff_t d = parser.parse(b, e);
 	if(d == -1) {
-		m_logger->trace("<%s id=\"%s\" min=\"%s\">: invalid min attr", 
+		m_logger->trace("<%s id=\"%s\" min=\"%s\">: invalid min attr",
 			m_tag.c_str(), m_id.c_str(), min_str.c_str());
 		m_logger->warn(gettext("Error in SMIL timing info in document"));
 		return;
@@ -440,7 +440,7 @@ void time_attrs::parse_min() {
 	m_min.value = parser.m_result;
 }
 
-// max ::= Clock-value | "media" | "indefinite" 
+// max ::= Clock-value | "media" | "indefinite"
 void time_attrs::parse_max() {
 	const char *p = m_node->get_attribute("max");
 	if(!p) return;
@@ -461,7 +461,7 @@ void time_attrs::parse_max() {
 	std::string::const_iterator e = max_str.end();
 	std::ptrdiff_t d = parser.parse(b, e);
 	if(d == -1) {
-		m_logger->trace("<%s id=\"%s\" max=\"%s\">: invalid max attr", 
+		m_logger->trace("<%s id=\"%s\" max=\"%s\">: invalid max attr",
 			m_tag.c_str(), m_id.c_str(), max_str.c_str());
 		m_logger->warn(gettext("Error in SMIL timing info in document"));
 		return;
@@ -473,7 +473,7 @@ void time_attrs::parse_begin() {
 	const char *p = m_node->get_attribute("begin");
 	if(!p) return;
 	set_specified(SP_BEGIN);
-	std::string sbegin = trim(p);	
+	std::string sbegin = trim(p);
 	std::list<std::string> strlist;
 	split_trim_list(sbegin, strlist);
 	parse_sync_list(strlist, m_blist, "begin");
@@ -483,7 +483,7 @@ void time_attrs::parse_end() {
 	const char *p = m_node->get_attribute("end");
 	if(!p) return;
 	set_specified(SP_END);
-	std::string send = trim(p);	
+	std::string send = trim(p);
 	std::list<std::string> strlist;
 	split_trim_list(send, strlist);
 	parse_sync_list(strlist, m_elist, "end");
@@ -517,16 +517,16 @@ void time_attrs::parse_endsync() {
 		m_endsync.rule = esr_id;
 		xml_nmtoken_p parser;
 		if(!parser.matches(endsync_str)) {
-			m_logger->trace("invalid endsync attr [%s] for %s[%s]", 
+			m_logger->trace("invalid endsync attr [%s] for %s[%s]",
 				endsync_str.c_str(), m_tag.c_str(), m_id.c_str());
 			m_logger->warn(gettext("Error in SMIL timing info in document"));
 		} else {
 			m_endsync.ident = endsync_str;
 		}
 	}
-	AM_DBG m_logger->debug("%s[%s].endsync = [%s]", 
+	AM_DBG m_logger->debug("%s[%s].endsync = [%s]",
 			m_tag.c_str(), m_id.c_str(), endsync_str.c_str());
-	
+
 }
 
 // fill ::= remove | freeze | hold | transition | auto | default
@@ -534,7 +534,7 @@ void time_attrs::parse_fill() {
 	m_fill = modulated_fill(get_default_fill());
 	const char *p = m_node->get_attribute("fill");
 	if(!p) {
-		AM_DBG m_logger->debug("%s[%s].fill = [%s]", 
+		AM_DBG m_logger->debug("%s[%s].fill = [%s]",
 			m_tag.c_str(), m_id.c_str(), repr(m_fill).c_str());
 		return;
 	}
@@ -550,9 +550,9 @@ void time_attrs::parse_fill() {
 	else if(fill == "auto") m_fill = fill_auto;
 	// else default or invalid
 	if(m_fill == fill_auto) m_fill = modulated_fill(m_fill);
-	AM_DBG m_logger->debug("%s[%s].fill = [%s]", 
+	AM_DBG m_logger->debug("%s[%s].fill = [%s]",
 			m_tag.c_str(), m_id.c_str(), repr(m_fill).c_str());
-	
+
 }
 
 fill_behavior time_attrs::modulated_fill(fill_behavior fb) {
@@ -562,7 +562,7 @@ fill_behavior time_attrs::modulated_fill(fill_behavior fb) {
 	return dv?fill_remove:fill_freeze;
 }
 
-// Returns the fillDefault attribute active for this. 
+// Returns the fillDefault attribute active for this.
 // fillDefault ::= remove | freeze | hold | transition | auto | inherit
 // Applicable for an element and all descendents
 fill_behavior time_attrs::get_default_fill() {
@@ -599,7 +599,7 @@ void time_attrs::parse_restart() {
 	else if(restart == "whenNotActive") m_restart = restart_when_not_active;
 	else if(restart == "never") m_restart = restart_never;
 	// else restart == "default"
-	AM_DBG m_logger->debug("%s[%s].restart = [%s]", 
+	AM_DBG m_logger->debug("%s[%s].restart = [%s]",
 		m_tag.c_str(), m_id.c_str(), repr(m_restart).c_str());
 }
 
@@ -611,12 +611,12 @@ void time_attrs::parse_actuate() {
 	std::string actuate = trim(p);
 	if(actuate == "onLoad") m_actuate = actuate_onload;
 	else if(actuate == "onRequest") m_actuate = actuate_onrequest;
-	AM_DBG m_logger->debug("%s[%s].actuate = [%s]", 
+	AM_DBG m_logger->debug("%s[%s].actuate = [%s]",
 		m_tag.c_str(), m_id.c_str(), repr(m_actuate).c_str());
 }
 
-// Returns the restartDefault attribute active for this. 
-// restartDefault := always | whenNotActive | never | inherit 
+// Returns the restartDefault attribute active for this.
+// restartDefault := always | whenNotActive | never | inherit
 // Applicable for an element and all descendents
 // Returns one of : always | whenNotActive | never
 restart_behavior time_attrs::get_default_restart() {
@@ -642,14 +642,14 @@ void time_attrs::parse_transitions() {
 	if(p) {
 		m_trans_in = transition_info::from_node(nctx->get_node(p));
 		if(!m_trans_in) {
-			m_logger->trace("%s[%s] failed to locate transIn element: [%s]", 
-				m_tag.c_str(), m_id.c_str(), p);		
+			m_logger->trace("%s[%s] failed to locate transIn element: [%s]",
+				m_tag.c_str(), m_id.c_str(), p);
 			m_logger->warn(gettext("Error in SMIL transition info in document"));
 		} else {
 			if(get_trans_in_dur()() == 0) {
-				m_logger->trace("%s[%s] the specified transIn element has invalid dur", 
+				m_logger->trace("%s[%s] the specified transIn element has invalid dur",
 					m_tag.c_str(), m_id.c_str());
-				m_trans_in	= 0;	
+				m_trans_in	= 0;
 				m_logger->warn(gettext("Error in SMIL transition info in document"));
 			}
 		}
@@ -659,15 +659,15 @@ void time_attrs::parse_transitions() {
 	if(p) {
 		m_trans_out = transition_info::from_node(nctx->get_node(p));
 		if(!m_trans_out) {
-			m_logger->trace("%s[%s] failed to locate transOut element: [%s]", 
-				m_tag.c_str(), m_id.c_str(), p);		
+			m_logger->trace("%s[%s] failed to locate transOut element: [%s]",
+				m_tag.c_str(), m_id.c_str(), p);
 			m_logger->warn(gettext("Error in SMIL transition info in document"));
 		} else {
 			if(get_trans_out_dur()() == 0) {
-				m_logger->trace("%s[%s] the specified transOut element has invalid dur", 
+				m_logger->trace("%s[%s] the specified transOut element has invalid dur",
 					m_tag.c_str(), m_id.c_str());
 				m_logger->warn(gettext("Error in SMIL transition info in document"));
-				m_trans_out	= 0;	
+				m_trans_out	= 0;
 			}
 		}
 	}
@@ -678,27 +678,27 @@ void time_attrs::parse_time_manipulations() {
 	if(p) m_speed = atof(p);
 	else m_speed = 1.0;
 	if(m_speed == 0.0) m_speed = 1.0;
-	
+
 	// limit speed to 0.01 resolution
 	double abs_speed = m_speed>0.0?m_speed:-m_speed;
 	unsigned long speed100 = (unsigned long)(::floor(0.5 + abs_speed * 100));
 	if(speed100 == 0) speed100 = 1;
 	m_speed = m_speed>0.0?0.01*speed100:-0.01*speed100;
-	
+
 	p = m_node->get_attribute("accelerate");
 	if(p) m_accelerate = atof(p);
 	else m_accelerate = 0;
 	m_accelerate = (m_accelerate<0.0)?0.0:((m_accelerate>1.0)?1.0:m_accelerate);
-	
+
 	p = m_node->get_attribute("decelerate");
 	if(p) m_decelerate = std::max(0.0, atof(p));
 	else m_decelerate = 0;
 	m_decelerate = (m_decelerate<0.0)?0.0:((m_decelerate>1.0)?1.0:m_decelerate);
-	
+
 	if(m_accelerate + m_decelerate > 1.0) {
 		m_accelerate = m_decelerate = 0;
 	}
-	
+
 	p = m_node->get_attribute("autoReverse");
 	if(p) m_auto_reverse = (strcmp(p, "true") == 0);
 	else m_auto_reverse = false;
@@ -757,8 +757,8 @@ std::string repr(const smil2::sync_value_struct& svs) {
 			os += "(" + svs.sparam + ")";
 		if(svs.offset>0) {sprintf(sz, " + %ld", svs.offset);os += sz;}
 		else if(svs.offset<0) {sprintf(sz, " - %ld", -svs.offset);os += sz;}
-		
-	} 
+
+	}
 	return os;
 }
 
@@ -805,38 +805,38 @@ std::string repr(smil2::actuate f) {
 // priority_attrs implementation
 
 // static
-priority_attrs* 
+priority_attrs*
 priority_attrs::create_instance(const lib::node *n) {
 	assert(n->get_local_name() == "priorityClass");
 	priority_attrs *pa = new priority_attrs();
 	const char *p;
 	std::string spec;
-	
+
 	p = n->get_attribute("peers");
 	spec = p?p:"stop";
 	if(spec == "stop" || spec == "pause" || spec == "defer" || spec == "never")
 		pa->peers = interrupt_from_str(spec);
-	
+
 	p = n->get_attribute("higher");
 	spec = p?p:"pause";
 	if(spec == "stop" || spec == "pause")
 		pa->higher = interrupt_from_str(spec);
-	
+
 	p = n->get_attribute("lower");
 	spec = p?p:"defer";
 	if(spec == "defer" || spec == "never")
 		pa->lower = interrupt_from_str(spec);
-	
+
 	p = n->get_attribute("pauseDisplay");
 	spec = p?p:"show";
 	if(spec == "disable" || spec == "hide" || spec == "show")
 		pa->display = display_from_str(spec);
-	
+
 	return pa;
 }
 
-// static 
-interrupt_type 
+// static
+interrupt_type
 priority_attrs::interrupt_from_str(const std::string& spec) {
 	if(spec == "stop") return int_stop;
 	else if(spec == "pause") return int_pause;
@@ -845,8 +845,8 @@ priority_attrs::interrupt_from_str(const std::string& spec) {
 	return int_stop;
 }
 
-//static 
-pause_display 
+//static
+pause_display
 priority_attrs::display_from_str(const std::string& spec) {
 	if(spec == "disable") return display_disable;
 	else if(spec == "hide") return display_hide;

@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_IMG_DECODER_H
@@ -57,9 +57,9 @@ struct dib_surface {
 	}
 	surface<ColorType>* get_pixmap() { return m_surf;}
 	HBITMAP get_handle() { return m_hbmp;}
-	
+
 	HBITMAP detach_handle() {HBITMAP hbmp = m_hbmp; m_hbmp = 0; return hbmp;}
-	
+
 	surface<ColorType>* detach_pixmap() {
 		surface<ColorType> *surf = m_surf; m_surf = 0; return surf;}
 };
@@ -73,10 +73,10 @@ class img_decoder {
 	virtual bool can_decode() = 0;
 	virtual dib_surface<ColorType>* decode() = 0;
 	virtual bool is_transparent() { return false;}
-	virtual void get_transparent_color(BYTE *rgb) { 
+	virtual void get_transparent_color(BYTE *rgb) {
 		rgb[0] = 0; rgb[1] = 0; rgb[2] = 0;
 	}
-	virtual lib::color_t get_transparent_color() { 
+	virtual lib::color_t get_transparent_color() {
 		BYTE rgb[3];get_transparent_color(rgb);
 		return lib::to_color(rgb[0], rgb[1], rgb[2]);
 	}
@@ -117,7 +117,7 @@ struct file_reader {
 		m_src->seekg(0);
 		read_file = &file_reader::read_file_impl;
 	}
-	
+
 	DataSource *m_src;
 };
 
@@ -131,7 +131,7 @@ struct color_quad {
 } // namespace dx
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_GUI_IMG_DECODER_H

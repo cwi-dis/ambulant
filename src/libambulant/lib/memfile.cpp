@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/memfile.h"
@@ -51,7 +51,7 @@ memfile::read() {
 }
 
 memfile::size_type
-memfile::size() const 
+memfile::size() const
 { return m_buffer.size();}
 
 memfile::size_type
@@ -71,15 +71,15 @@ const lib::byte*
 memfile::gdata() { return m_buffer.data() + m_gptr;}
 
 lib::byte
-memfile::get() { 
-	if(!available()) 
+memfile::get() {
+	if(!available())
 #ifndef AMBULANT_PLATFORM_WIN32_WCE
 		throw_range_error();
 #else
 		return 0;
 #endif
-	byte b = *gdata(); 
-	m_gptr++; 
+	byte b = *gdata();
+	m_gptr++;
 	return b;
 }
 

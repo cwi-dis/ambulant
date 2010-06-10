@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -51,10 +51,10 @@
 #define SDL_BUFFER_MIN_BYTES 20480
 
 #define AMBULANT_MAX_CHANNELS 2
- 
+
 namespace ambulant {
 namespace gui {
-namespace sdl {	  
+namespace sdl {
 
 class sdl_audio_renderer : public common::renderer_playable {
 
@@ -74,19 +74,19 @@ class sdl_audio_renderer : public common::renderer_playable {
 	lib::event_processor *evp,
 	common::factories *factory,
 	net::audio_datasource *ds);
-  
+
 	~sdl_audio_renderer();
-	
+
 //#define SDL_REFCOUNT_TRACKING
 #ifdef  SDL_REFCOUNT_TRACKING
 	long add_ref();
 	long release();
 #endif//SDL_REFCOUNT_TRACKING
-	  
+
 	bool is_paused();
 	bool is_stopped();
 	bool is_playing();
-	
+
 	common::duration get_dur();
 	void start(double where);
 //	void stop();
@@ -103,7 +103,7 @@ class sdl_audio_renderer : public common::renderer_playable {
 //	void set_surface(common::surface *dest) { abort(); }
 //	common::surface *get_surface() { abort(); }
 //	void set_alignment(common::alignment *align) { /* Ignore, for now */ }
-//	void transition_freeze_end(lib::rect area) {}		  
+//	void transition_freeze_end(lib::rect area) {}
 	void redraw(const lib::rect &dirty, common::gui_window *window) {}
 	static void sdl_callback(Uint8 *stream, int len);
 	void set_intransition(const lib::transition_info* info);
@@ -116,7 +116,7 @@ class sdl_audio_renderer : public common::renderer_playable {
 	void get_data_done(int size);
 	net::audio_datasource *m_audio_src;
 	lib::critical_section m_lock;
-	
+
 	bool m_is_playing;  // Invariant: m_is_playing === register_renderer() has been called.
 	bool m_is_reading;	// Invariant: m_is_reading === m_audio_src->start() has been called.
 	bool m_is_paused;

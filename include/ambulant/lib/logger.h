@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -47,7 +47,7 @@ typedef void (*show_message_type)(int level, const char *message);
 /// All messages below the level set with set_level() are ignored, the
 /// messages at higher level are sent either to a log file or a log window.
 /// In addition, messages of level SHOW, ERROR and FATAL are also passed
-/// to the function set with set_show_message(), which is intended to 
+/// to the function set with set_show_message(), which is intended to
 /// produce an alert dialog or something similar.
 ///
 /// An embedding application can choose where log output goes by calling
@@ -56,7 +56,7 @@ typedef void (*show_message_type)(int level, const char *message);
 class AMBULANTAPI logger {
   public:
 	/// Log levels, least important first.
-	enum log_level { 
+	enum log_level {
 		LEVEL_DEBUG,	///< Message for developers only
 		LEVEL_TRACE,	///< Detailed informative message
 		LEVEL_SHOW,		///< Informative message, shown to user in a dialog
@@ -64,135 +64,135 @@ class AMBULANTAPI logger {
 		LEVEL_ERROR,	///< Error message, operations will terminate
 		LEVEL_FATAL		///< Fatal error, program will terminate
 	};
-		
+
 	logger(const std::string& name);
 	~logger();
-	
+
 	/// static factory function to create or get a logger.
 	static logger* get_logger(const char *name = NULL);
 
 	/// static factory function to create or get a logger.
 	static logger* get_logger(const char *name, int pos);
-	
+
 	/// set minimum level for all loggers.
 	static void set_loggers_level(int level);
-	
+
 	/// log a message at level DEBUG.
 	void debug(const char *format, ...);
-	
+
 	/// log a message at level TRACE.
 	void trace(const char *format, ...);
-	
+
 	/// log a message at level SHOW.
 	void show(const char *format, ...);
-	
+
 	/// log a message at level WARN.
 	void warn(const char *format, ...);
-	
+
 	/// log a message at level ERROR.
 	void error(const char *format, ...);
-	
+
 	/// log a message at level FATAL.
 	void fatal(const char *format, ...);
-	
+
 	/// log a message at level DEBUG.
 	static void assert_expr(bool expr, const char *format, ...);
-	
+
 	// templates for objects defining the operator<<
 	template <class T>
-	void debug(const T& obj) { 
+	void debug(const T& obj) {
 		log_obj(LEVEL_DEBUG, obj);
 	}
 	template <class T>
-	void trace(const T& obj) { 
+	void trace(const T& obj) {
 		log_obj(LEVEL_TRACE, obj);
 	}
 	template <class T>
-	void warn(const T& obj) { 
+	void warn(const T& obj) {
 		log_obj(LEVEL_WARN, obj);
 	}
 	template <class T>
-	void error(const T& obj) { 
+	void error(const T& obj) {
 		log_obj(LEVEL_ERROR, obj);
 	}
 	template <class T>
-	void fatal(const T& obj) { 
+	void fatal(const T& obj) {
 		log_obj(LEVEL_FATAL, obj);
 	}
 	template <class T>
-	void show(const T& obj) { 
+	void show(const T& obj) {
 		log_obj(LEVEL_SHOW, obj);
 	}
-	
+
 	// specialization for strings
 	void debug(const std::string& s) {
 		log_cstr(LEVEL_DEBUG, s.c_str());
-	} 
+	}
 	void trace(const std::string& s) {
 		log_cstr(LEVEL_TRACE, s.c_str());
-	} 
+	}
 	void show(const std::string& s) {
 		log_cstr(LEVEL_SHOW, s.c_str());
-	} 
+	}
 	void warn(const std::string& s) {
 		log_cstr(LEVEL_WARN, s.c_str());
-	} 
+	}
 	void error(const std::string& s) {
 		log_cstr(LEVEL_ERROR, s.c_str());
-	} 
+	}
 	void fatal(const std::string& s) {
 		log_cstr(LEVEL_FATAL, s.c_str());
-	} 
-	
+	}
+
 	/// core logging function.
 	void log_cstr(int level, const char *buf);
-	
+
 	/// Logs any object defining the operator<<
 	template <class T>
 	void log_obj(int level, const T& obj);
 
 	// helper logging function
 	void log_va_list(int level, const char *format, va_list argList);
-	
+
 	/// Is output for this level suppressed?
 	bool suppressed(int level);
-	
+
 	// Suppress output below the given level.
-	void set_level(int level); 
+	void set_level(int level);
 
 // exclude the following stuff when no streams
 	/// Send log output to a std::stream.
-	void set_std_ostream(std::ostream& os); 
+	void set_std_ostream(std::ostream& os);
 
 	/// Set the alert message handler.
 	void set_show_message(show_message_type handler);
-	
+
 	/// Send log output to an object implementing the ostream protocol.
 	/// This becomes the owner of pos,
 	/// when this is deleted will delete pos.
 	void set_ostream(ostream* pos) {
 		if(m_pos) delete m_pos;
 		m_pos = pos;
-	} 
-	
+	}
+
 	/// Get the name for a given level.
 	static const char* get_level_name(int level);
   private:
-	
+
 	// this logger members
 	critical_section m_cs;
-	std::string m_name;	
+	std::string m_name;
 	ostream* m_pos;
 	show_message_type m_show_message;
 	int m_level;
-	
+
 	// configuration and output format
 	static int default_level;
 	static bool logdate;
 	static bool logtime;
 	static bool logname;
 	static bool loglevel;
-	
+
 };
 
 
@@ -209,8 +209,8 @@ inline void logger::log_obj(int level, const T& obj) {
 	log_cstr(level, os.str().c_str());
 }
 
-inline void logger::set_level(int level) { 
-	m_level = level; 
+inline void logger::set_level(int level) {
+	m_level = level;
 }
 
 inline bool logger::suppressed(int level) {

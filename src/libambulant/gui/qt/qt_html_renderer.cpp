@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
+/*
  * @$Id$
  */
 #ifdef	WITH_QT_HTML_WIDGET
@@ -42,12 +42,12 @@ static common::renderer_private_id my_renderer_id = (common::renderer_private_id
 class gui::qt::browser_container : public ref_counted_obj {
     KHTMLPart *m_browser;
     int m_generation;
-    
+
   public:
     browser_container(KHTMLPart *br)
     :   m_browser(br),
         m_generation(0) {}
-  
+
     ~browser_container() {
         m_browser->hide();
         // XXX delete m_browsser
@@ -70,7 +70,7 @@ class gui::qt::browser_container : public ref_counted_obj {
 		hide_cb *cb = new hide_cb(this, &browser_container::hide_generation, m_generation);
 		evp->add_event(cb, 1, lib::ep_med);
 	}
-    
+
 };
 
 extern const char qt_html_playable_tag[] = "text";
@@ -83,8 +83,8 @@ gui::qt::create_qt_html_playable_factory(common::factories *factory, common::pla
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererQt"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererHtml"), true);
 	return new common::single_playable_factory<
-        qt_html_renderer, 
-        qt_html_playable_tag, 
+        qt_html_renderer,
+        qt_html_playable_tag,
         qt_html_playable_renderer_uri,
         qt_html_playable_renderer_uri2,
         qt_html_playable_renderer_uri2>(factory, mdp);
@@ -98,13 +98,13 @@ qt_html_renderer::qt_html_renderer(
 		common::factories *factory,
 		common::playable_factory_machdep *mdp)
 :   renderer_playable(context, cookie, node, evp, factory, mdp),
-    m_html_browser(NULL) 
+    m_html_browser(NULL)
 {
-    
+
 	AM_DBG lib::logger::get_logger()->debug("qt_html_renderer(0x%x)",this);
 }
 
-void 
+void
 gui::qt::qt_html_renderer::start(double t) {
 	m_lock.enter();
  	AM_DBG lib::logger::get_logger()->debug("qt_html_renderer::start(0x%x)", this);

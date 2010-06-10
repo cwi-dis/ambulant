@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/smil2/animate_e.h"
@@ -39,9 +39,9 @@
 using namespace ambulant;
 using namespace smil2;
 
-animation_engine::animation_engine(lib::event_processor* evp, smil_layout_manager *layout) 
-:	m_event_processor(evp), 
-	m_layout(layout), 
+animation_engine::animation_engine(lib::event_processor* evp, smil_layout_manager *layout)
+:	m_event_processor(evp),
+	m_layout(layout),
 	m_counter(0),
 	m_update_event(0) {
 }
@@ -75,17 +75,17 @@ void animation_engine::started(animate_node *animator) {
 	if(!target) return;
     m_lock.enter();
 	node_animators_t& na = m_animators[target];
-	
+
 	attribute_animators_t& aa = na[animator->get_animation_attr()];
 	aa.push_back(animator);
-	
+
 	m_counter++;
 	if(m_update_event == 0) _schedule_update();
-	
+
 	AM_DBG {
-            lib::logger::get_logger()->debug("animation_engine: %s started targeting %s attr=%s (%d animations active)", 
-			animator->dom_node()->get_sig().c_str(), 
-			 target->get_sig().c_str(), 
+            lib::logger::get_logger()->debug("animation_engine: %s started targeting %s attr=%s (%d animations active)",
+			animator->dom_node()->get_sig().c_str(),
+			 target->get_sig().c_str(),
 			animator->get_animation_attr().c_str(), m_counter);
 	}
     m_lock.leave();
@@ -127,7 +127,7 @@ void animation_engine::_stopped(animate_node *animator) {
 void animation_engine::_update() {
 	AM_DBG lib::logger::get_logger()->debug("Updating animators");
 	doc_animators_t::iterator it;
-	for(it = m_animators.begin();it != m_animators.end();it++) 
+	for(it = m_animators.begin();it != m_animators.end();it++)
 		_update_node((*it).first, (*it).second);
 }
 
@@ -136,16 +136,16 @@ void animation_engine::_update_node(const node *target, node_animators_t& animat
 	m_is_node_dirty = false;
 	common::animation_destination *dst = m_layout->get_animation_destination(target);
 	node_animators_t::iterator it;
-	for(it = animators.begin();it != animators.end();it++) 
+	for(it = animators.begin();it != animators.end();it++)
 		_update_attr((*it).first, (*it).second, dst);
 	if(m_is_node_dirty) {
 		common::animation_notification *anotif = m_layout->get_animation_notification(target);
 		if(anotif) anotif->animated();
-	} 
+	}
 }
-	
+
 // Evaluate attribute animations taking into account additivity
-void animation_engine::_update_attr(const std::string& attr, attribute_animators_t& animators, 
+void animation_engine::_update_attr(const std::string& attr, attribute_animators_t& animators,
 	common::animation_destination *dst) {
 	if(animators.empty()) return;
 	// get the dom value
@@ -157,8 +157,8 @@ void animation_engine::_update_attr(const std::string& attr, attribute_animators
 	attribute_animators_t::iterator it;
 	for(it = animators.begin();it != animators.end();it++)
 		(*it)->apply_self_effect(regs);
-	m_is_node_dirty = animator->set_animated_value(dst, regs); 
-	
+	m_is_node_dirty = animator->set_animated_value(dst, regs);
+
 	// XXX: Until the layout or the protocol with the layout is fixed
 	// return always true e.g. always dirty
 	m_is_node_dirty = true;
@@ -183,7 +183,7 @@ void animation_engine::update_callback() {
 
 void animation_engine::_schedule_update() {
     AM_DBG lib::logger::get_logger()->debug("animation_engine: schedule update");
-	m_update_event = new lib::no_arg_callback_event<animation_engine>(this, 
+	m_update_event = new lib::no_arg_callback_event<animation_engine>(this,
 		&animation_engine::update_callback);
 	m_event_processor->add_event(m_update_event, 50, lib::ep_med);
 }

@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_LIB_THREAD_H
@@ -37,33 +37,33 @@ namespace lib {
 /// implementation (the details of starting threads and such),
 /// part by the code implementing the thread functionality.
 class AMBULANTAPI thread {
-  public: 
-	// use the virtual table to invoke the destructor 
+  public:
+	// use the virtual table to invoke the destructor
 	virtual ~thread() {}
-	
+
 	/// Starts the thread, if it has not been started already.
 	/// Returns true if it actually started the thread.
 	virtual bool start() = 0;
-	
+
 	/// Request the thread to stop.
 	/// Sets the stop conditions and waits until the thread exits normally.
 	/// Cannot be called by the thread itself.
 	virtual void stop() = 0;
-	
+
 	// Forced stop or abnormal termination.
 	// To be used only under exceptional conditions.
-	virtual bool terminate() = 0; 
-	
+	virtual bool terminate() = 0;
+
 	/// Returns true if this thread is running.
 	virtual bool is_running() const = 0;
-		
+
   protected:
 	/// The code to be executed by this thread.
 	virtual unsigned long run() = 0;
-	
+
 	/// Not fully implemented...
 	virtual void signal_exit_thread() = 0;
-	
+
 	/// Returns true if the client has called stop().
 	virtual bool exit_requested() const = 0;
 };

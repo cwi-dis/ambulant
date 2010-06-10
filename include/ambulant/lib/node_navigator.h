@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 
@@ -49,7 +49,7 @@ namespace lib {
 /// class N {
 ///  public:
 /// 	virtual ~N() {}
-///	
+///
 ///	const N *down() const = 0;
 ///	const N *up() const = 0;
 ///	const N *next() const = 0;
@@ -66,40 +66,40 @@ namespace lib {
 template <class N>
 class node_navigator {
   public:
-  
+
 	/// Return previous sibling.
 	static N* previous(N *n);
-	
+
 	/// Return last child.
 	static N* last_child(N *n);
-	
+
 	/// Return a list of all children.
 	static void get_children(N *n, std::list<N*>& l);
-	
+
 	/// Append a new child at the end of the existing children.
 	static N* append_child(N *n, N* child);
-	
+
 	/// Detach a node from its tree.
 	static N* detach(N *n);
-	
+
 	/// Delete a subtree.
 	static void delete_tree(N *n);
-	
+
 	/// Return the root of a tree.
 	static N* get_root(N *n);
-	
+
 	/// Return the depth of this node in its tree.
 	static int get_depth(N *n);
-	
+
 	/// Return the path from the root to this node.
 	static void get_path(N *n, std::list<N*>& path);
-	
+
 	/// Return true if n is a descendant of a.
 	static bool is_descendent(N *n, N *a);
-	
+
 	/// Return true if n is an ancestor of a.
 	static bool is_ancestor(N *n, N *d);
-	
+
 	/// Return the nearest common ancestor of two nodes.
 	static  N* get_common_ancestor(N *n1, N *n2);
 };
@@ -269,8 +269,8 @@ inline bool node_navigator<N>::is_descendent(N *n, N *a) {
 	assert(n && a);
 	if(n == a) return true;
 	while(n->up()) {
-		n = n->up(); 
-		if(n == a) 
+		n = n->up();
+		if(n == a)
 			return true;
 	}
 	return false;
@@ -283,7 +283,7 @@ inline bool node_navigator<N>::is_ancestor(N *n, N *d) {
 }
 
 // Returns the common ancestor of n1 and n2.
-// The common ancestor is defined to be the first node 
+// The common ancestor is defined to be the first node
 // that is common to the paths of n1 and n2 and has children.
 template <class N>
 inline N* node_navigator<N>::get_common_ancestor(N *n1, N *n2) {
@@ -303,7 +303,7 @@ inline N* node_navigator<N>::get_common_ancestor(N *n1, N *n2) {
 
 
 } // namespace lib
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_LIB_NODE_NAVIGATOR_H

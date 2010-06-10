@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
+/*
  * @$Id$
  */
 
@@ -46,8 +46,8 @@ gui::qt::create_qt_text_playable_factory(common::factories *factory, common::pla
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("Rendererqt"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererText"), true);
 	return new common::single_playable_factory<
-        qt_text_renderer, 
-        qt_text_playable_tag, 
+        qt_text_renderer,
+        qt_text_playable_tag,
         qt_text_playable_renderer_uri,
         qt_text_playable_renderer_uri2,
         qt_text_playable_renderer_uri2>(factory, mdp);
@@ -107,7 +107,7 @@ qt_text_renderer::redraw_body(const lib::rect &r,
 		m_text_storage == NULL ? "(null)": (const char*) m_text_storage,
 		p.x, p.y);
 	if (m_text_storage) {
-		int L = r.left()+p.x, 
+		int L = r.left()+p.x,
 		    T = r.top()+p.y,
 		    W = r.width(),
 		    H = r.height();
@@ -118,14 +118,14 @@ qt_text_renderer::redraw_body(const lib::rect &r,
 		// Set <param> parameters
 		QColor qt_color(redc(m_text_color), greenc(m_text_color), bluec(m_text_color));
 		paint.setPen(qt_color);
-		
+
 		QFont qt_font(QApplication::font());
 		if (m_text_font)
 			qt_font.setFamily(m_text_font);
 		if (m_text_size)
 			qt_font.setPointSizeFloat(m_text_size);
 		paint.setFont(qt_font);
-		
+
 		paint.drawText(L,T,W,H,
 			Qt::AlignLeft|Qt::AlignTop|Qt::WordBreak,
 			m_text_storage);

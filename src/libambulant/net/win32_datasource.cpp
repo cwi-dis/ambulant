@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/net/datasource.h"
@@ -78,13 +78,13 @@ open_local_file(const net::url& url)
 {
 	std::string filename = url.get_file();
 	lib::textptr tp(filename.c_str());
-	HANDLE hf = CreateFile(tp,  
-		GENERIC_READ,  
-		FILE_SHARE_READ,  // 0 = not shared or FILE_SHARE_READ  
-		0,  // lpSecurityAttributes 
-		OPEN_EXISTING,  
-		FILE_ATTRIBUTE_READONLY,  
-		NULL); 
+	HANDLE hf = CreateFile(tp,
+		GENERIC_READ,
+		FILE_SHARE_READ,  // 0 = not shared or FILE_SHARE_READ
+		0,  // lpSecurityAttributes
+		OPEN_EXISTING,
+		FILE_ATTRIBUTE_READONLY,
+		NULL);
 	if(hf == INVALID_HANDLE_VALUE) {
 		lib::logger::get_logger()->error("%s: Cannot open file", filename.c_str());
 		return NULL;
@@ -95,7 +95,7 @@ open_local_file(const net::url& url)
 static bool
 open_net_file(const net::url& url, HINTERNET *hinet_p, HINTERNET *hf_p)
 {
-	HINTERNET hinet = InternetOpen(text_str("AmbulantPlayer"), 
+	HINTERNET hinet = InternetOpen(text_str("AmbulantPlayer"),
 		INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
 	if(!hinet) {
 		lib::win32::win_report_last_error("InternetOpen()");
@@ -107,7 +107,7 @@ open_net_file(const net::url& url, HINTERNET *hinet_p, HINTERNET *hf_p)
 	if(!hf) {
 		lib::logger::get_logger()->trace("%s: InternetOpenUrl returned error 0x%x", url.get_url().c_str(), GetLastError());
 		lib::logger::get_logger()->error("%s: Cannot open URL", url.get_url().c_str());
-		InternetCloseHandle(hinet); 
+		InternetCloseHandle(hinet);
 		return false;
 	}
 	*hinet_p = hinet;
@@ -121,7 +121,7 @@ ambulant::net::get_win32_datasource_factory()
     return new win32_datasource_factory();
 }
 
-datasource * 
+datasource *
 win32_datasource_factory::new_raw_datasource(const url& url)
 {
 	if (url.is_local_file()) {
@@ -207,7 +207,7 @@ win32_datasource::read(char *data, int sz)
 	m_lock.leave();
 }
 
-char* 
+char*
 win32_datasource::get_read_ptr()
 {
 	m_lock.enter();
@@ -216,20 +216,20 @@ win32_datasource::get_read_ptr()
 	m_lock.leave();
 	return rv;
 }
-  
+
 void
 win32_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *cbevent)
  {
 	m_lock.enter();
  	if (! _end_of_file() ) _read_file();
-	
+
     assert(evp);
 	assert(cbevent);
 	AM_DBG lib::logger::get_logger()->debug("win32_datasource.start: trigger readdone callback (x%x)", cbevent);
 	evp->add_event(cbevent, 0, ambulant::lib::ep_med);
 	m_lock.leave();
 }
- 
+
 void
 win32_datasource::readdone(int sz)
 {

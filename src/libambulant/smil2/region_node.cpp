@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/logger.h"
@@ -85,7 +85,7 @@ get_regiondim_attr(const lib::node *rn, const char *attrname)
 }
 
 
-bool 
+bool
 region_node::needs_region_node(const lib::node *n) {
 	const char **attrnamep = subregionattrs;
 	while (*attrnamep) {
@@ -127,10 +127,10 @@ region_node::region_node(const lib::node *n, dimension_inheritance di)
 	m_child(NULL),
 	m_next(NULL) {node_counter++;}
 
-region_node::~region_node() 
+region_node::~region_node()
 {
 	node_counter--;
-	lib::node_navigator<region_node>::delete_tree(this); 	
+	lib::node_navigator<region_node>::delete_tree(this);
 }
 
 void
@@ -166,7 +166,7 @@ region_node::fix_from_dom_node()
 		AM_DBG {
 			//lib::logger::ostream os = lib::logger::get_logger()->trace_stream();
 			// XXXX Why the &^%$#%& can't we use os << rdspec << lib::endl ??!??
-			//os << "region_node::reset: result=(" 
+			//os << "region_node::reset: result=("
 			//	<< rdspec.left << ", " << rdspec.width << ", " << rdspec.right << ", "
 			//	<< rdspec.top << ", " << rdspec.height << ", " << rdspec.bottom << ")" << lib::endl;
 		}
@@ -176,7 +176,7 @@ region_node::fix_from_dom_node()
 		}
 		m_display_rds = m_rds;
 	}
-	
+
 	{
 		// Next we set background color
 		const char *bgcolor_attr = m_node->get_attribute("backgroundColor");
@@ -216,7 +216,7 @@ region_node::fix_from_dom_node()
 		}
 		set_showbackground(sbg);
 	}
-	
+
 	{
 		// And fit
 		const char *fit_attr = m_node->get_attribute("fit");
@@ -238,7 +238,7 @@ region_node::fix_from_dom_node()
 		}
 		set_fit(fit);
 	}
-	
+
 	{
 		// And z-index.
 		// XXXX Note that the implementation of z-index isn't 100% correct SMIL 2.0:
@@ -273,12 +273,12 @@ region_node::fix_from_dom_node()
 		}
 		set_soundlevel(sl);
 	}
-	
+
 	{
 		// soundAlign
 		const char *soundalign_attr = m_node->get_attribute("soundAlign");
 		common::sound_alignment sa = m_soundalign;
-		
+
 		if (soundalign_attr == NULL)
 			/*do nothing*/;
 		else if (strcmp(soundalign_attr, "both") == 0)
@@ -297,7 +297,7 @@ region_node::fix_from_dom_node()
 		}
 		set_soundalign(sa);
 	}
-	
+
 #ifdef WITH_SMIL30
 	{
 		// panZoom
@@ -310,7 +310,7 @@ region_node::fix_from_dom_node()
 		}
 		set_panzoom(rds_);
 	}
-	
+
 	{
 		// backgroundOpacity.
 		const char *bgopacity_attr = m_node->get_attribute("backgroundOpacity");
@@ -325,7 +325,7 @@ region_node::fix_from_dom_node()
 		}
 		set_bgopacity(bo);
 	}
-	
+
 	{
 		// mediaOpacity.
 		const char *mediaopacity_attr = m_node->get_attribute("mediaOpacity");
@@ -340,7 +340,7 @@ region_node::fix_from_dom_node()
 		}
 		set_mediaopacity(fo);
 	}
-	
+
 	{
 		// mediaBackgroundOpacity.
 		const char *mediabgopacity_attr = m_node->get_attribute("mediaBackgroundOpacity");
@@ -355,7 +355,7 @@ region_node::fix_from_dom_node()
 		}
 		set_mediabgopacity(mbo);
 	}
-		
+
 	{
 		// chromaKeyOpacity.
 		const char *chromakeyopacity_attr = m_node->get_attribute("chromaKeyOpacity");
@@ -388,7 +388,7 @@ region_node::fix_from_dom_node()
 			changed = true;
 		}
 		set_chromakey(chromakey);
-	}	
+	}
 	{
 		// chromaKeyTolerance
 		const char *chromakeytolerance_attr = m_node->get_attribute("chromaKeyTolerance");
@@ -406,19 +406,19 @@ region_node::fix_from_dom_node()
 			changed = true;
 		}
 		set_chromakeytolerance(chromakeytolerance);
-	}	
+	}
 #endif // WITH_SMIL30
 	// backgroundImage
-	
+
 	// Note: we simply share a reference to the char* in the DOM tree,
 	// so we should not free the memory when the region_node gets cleaned up
 	m_bgimage = m_node->get_attribute("backgroundImage");
 	// Don't need to set changed
-	
+
 	{
 		// backgroundRepeat
 		const char *bgrepeat_attr = m_node->get_attribute("backgroundRepeat");
-		
+
 		if (bgrepeat_attr == NULL) {
 			m_tiling = common::tiling_default;
 		} else if (strcmp(bgrepeat_attr, "repeat") == 0) {
@@ -437,7 +437,7 @@ region_node::fix_from_dom_node()
 		}
 		// Don't need to set changed
 	}
-	
+
 	return changed;
 }
 
@@ -481,7 +481,7 @@ region_node::get_rect(const lib::rect *default_rect) const {
 	re.set(m_display_rds);
 	return re.get_rect();
 }
- 
+
 std::string
 region_node::get_name() const {
 	const char *pid = m_node->get_attribute("id");
@@ -609,35 +609,35 @@ region_node::get_bgimage() const
 }
 
 void
-region_node::set_bgcolor(lib::color_t c, bool transparent, bool inherit) { 
+region_node::set_bgcolor(lib::color_t c, bool transparent, bool inherit) {
 	m_display_bgcolor = m_bgcolor = c;
 	m_transparent = transparent;
 	m_inherit_bgcolor = inherit;
 }
 
 // I don't like it that we need this one...
-region_node * 
+region_node *
 region_node::get_first_child(const char *name) {
 	region_node *e = down();
 	if(!e) return 0;
 	if(e->m_node->get_local_name() == name) return e;
 	e = e->next();
 	while(e != 0) {
-		if(e->m_node->get_local_name() == name) 
+		if(e->m_node->get_local_name() == name)
 			return e;
 		e = e->next();
 	}
 	return 0;
 }
 
-const region_node * 
+const region_node *
 region_node::get_first_child(const char *name) const {
 	const region_node *e = down();
 	if(!e) return 0;
 	if(e->m_node->get_local_name() == name) return e;
 	e = e->next();
 	while(e != 0) {
-		if(e->m_node->get_local_name() == name) 
+		if(e->m_node->get_local_name() == name)
 			return e;
 		e = e->next();
 	}

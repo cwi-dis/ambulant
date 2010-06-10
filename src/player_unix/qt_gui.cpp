@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 /* qt_gui.cpp - Qt GUI for Ambulant
- *              
+ *
  */
 
 #include <pthread.h>
@@ -45,9 +45,9 @@
 
 #define	WITH_QT_LOGGER
 
-const QString about_text1 = 
+const QString about_text1 =
 	"Ambulant SMIL 3.0 player.\nVersion: ";
-const QString about_text2 = 
+const QString about_text2 =
 	"\nCopyright Stichting CWI, 2003-2010.\n\n"
 	"License: LGPL";
 
@@ -78,7 +78,7 @@ const char *helpfile_locations[] = {
 	NULL
 };
 
-static const char * 
+static const char *
 find_datafile(const char **locations)
 {
 	const char **p;
@@ -93,7 +93,7 @@ qt_gui::qt_gui(const char* title, const char* initfile)
 #ifdef	WITH_QT_HTML_WIDGET
     KMainWindow(0L, title),
 #else /*WITH_QT_HTML_WIDGET*/
-	QWidget(),  
+	QWidget(),
 #endif/*WITH_QT_HTML_WIDGET*/
 	m_cursor_shape(Qt::ArrowCursor),
 	m_mainloop(NULL),
@@ -126,15 +126,15 @@ qt_gui::qt_gui(const char* title, const char* initfile)
 		m_filemenu->setAccel(CTRL+Key_L, url_id);
 		m_reload_id = m_filemenu->insertItem(gettext("&Reload..."), this, SLOT(slot_reload()));
 		m_filemenu->insertSeparator();
-		
+
 		m_filemenu->insertItem(gettext("&Preferences..."), this, SLOT(slot_settings_select()));
 		m_filemenu->insertItem(gettext("&Document Settings..."), this, SLOT(slot_load_settings()));
 		m_filemenu->insertSeparator();
-		
+
 		int quit_id = m_filemenu->insertItem(gettext("&Quit"), this, SLOT(slot_quit()));
 		m_filemenu->setAccel(CTRL+Key_Q, quit_id);
 		m_menubar->insertItem(gettext("&File"), m_filemenu);
-		
+
 		/* Play */
 		m_playmenu = new QPopupMenu (this, "PlayA");
 		assert(m_playmenu);
@@ -147,7 +147,7 @@ qt_gui::qt_gui(const char* title, const char* initfile)
 		m_stop_id = m_playmenu->insertItem(gettext("&Stop"), this, SLOT(slot_stop()));
 		m_playmenu->setAccel(CTRL+Key_S, m_stop_id);
 		m_menubar->insertItem(gettext("Pla&y"), m_playmenu);
-		
+
 		/* View */
 		m_viewmenu = new QPopupMenu(this, "View");
 		int fullscreen_id = m_viewmenu->insertItem(gettext("&Full Screen"), this, SLOT(showFullScreen()));
@@ -159,7 +159,7 @@ qt_gui::qt_gui(const char* title, const char* initfile)
 		m_viewmenu->insertItem(gettext("&Log Window..."), this, SLOT(slot_logger_window()));
 #endif/*WITH_QT_LOGGER*/
 		m_menubar->insertItem(gettext("&View"), m_viewmenu);
-		
+
 		/* Help */
 		m_helpmenu = new QPopupMenu (this, "HelpA");
 		assert(m_helpmenu);
@@ -182,7 +182,7 @@ qt_gui::~qt_gui() {
 #define DELETE(X) if (X) { delete X; X = NULL; }
 	AM_DBG printf("%s0x%X\n", "qt_gui::~qt_gui(), m_mainloop=",m_mainloop);
 	setCaption(QString::null);
-	DELETE(m_mainloop) 
+	DELETE(m_mainloop)
 	DELETE(m_filemenu)
 	DELETE(m_helpmenu)
 	DELETE(m_playmenu)
@@ -191,22 +191,22 @@ qt_gui::~qt_gui() {
 	m_smilfilename = (char *)NULL;
 }
 
-void 
+void
 qt_gui::slot_about() {
 	int but = QMessageBox::information(this, gettext("About AmbulantPlayer"),
 					   about_text1+get_version()+about_text2,
 					   gettext("OK"));
 }
 
-void 
+void
 qt_gui::slot_homepage() {
 	open_web_browser("http://www.ambulantplayer.org");
 }
 
-void 
+void
 qt_gui::slot_welcome() {
 	const char *welcome_doc = find_datafile(welcome_locations);
-	
+
 	if (welcome_doc) {
 		if( openSMILfile(welcome_doc, IO_ReadOnly)) {
 			slot_play();
@@ -216,10 +216,10 @@ qt_gui::slot_welcome() {
 	}
 }
 
-void 
+void
 qt_gui::slot_help() {
 	const char *help_doc = find_datafile(helpfile_locations);
-	
+
 	if (help_doc) {
 		open_web_browser(help_doc);
 	} else {
@@ -238,7 +238,7 @@ qt_gui::slot_logger_window() {
 		logger_window->hide();
 }
 
-bool 
+bool
 checkFilename(QString filename, int mode) {
 	QFile* file = new QFile(filename);
 	return file->open(mode);
@@ -253,7 +253,7 @@ qt_gui::fileError(QString smilfilename) {
 	QMessageBox::information(this, m_programfilename, buf);
 }
 
-bool 
+bool
 qt_gui::openSMILfile(QString smilfilename, int mode) {
 	if (smilfilename.isNull())
 		return false;
@@ -275,7 +275,7 @@ qt_gui::openSMILfile(QString smilfilename, int mode) {
 	return m_mainloop->is_open();
 }
 
-void 
+void
 qt_gui::slot_open() {
 	QString smilfilename =
 		QFileDialog::getOpenFileName(
@@ -311,7 +311,7 @@ qt_gui::slot_close_settings_selector()
 {
 }
 
-void 
+void
 qt_gui::slot_load_settings() {
 	if (m_mainloop && m_mainloop->is_open())
 	   slot_stop();
@@ -330,7 +330,7 @@ qt_gui::slot_load_settings() {
 	}
 }
 
-void 
+void
 qt_gui::slot_open_url() {
   	bool ok;
 	QString smilfilename =
@@ -348,19 +348,19 @@ qt_gui::slot_open_url() {
 	}
 }
 
-void 
+void
 qt_gui::slot_player_done() {
 	AM_DBG printf("%s-%s\n", m_programfilename, "slot_player_done");
 }
 
-void 
+void
 qt_gui::need_redraw (const void* r, void* w, const void* pt) {
 	AM_DBG printf("qt_gui::need_redraw(0x%x)-r=(0x%x)\n",
 	(void *)this,r?r:0);
 	emit signal_need_redraw(r,w,pt);
 }
 
-void 
+void
 qt_gui::player_done() {
 	emit signal_player_done();
 }
@@ -370,28 +370,28 @@ no_fileopen_infodisplay(QWidget* w, const char* caption) {
 	QMessageBox::information(w,caption,gettext("No file open: Please first select File->Open"));
 }
 
-void 
+void
 qt_gui::slot_play() {
     assert(m_mainloop);
 	m_mainloop->play();
 	_update_menus();
 }
 
-void 
+void
 qt_gui::slot_pause() {
     assert(m_mainloop);
     m_mainloop->pause();
     _update_menus();
 }
 
-void 
+void
 qt_gui::slot_reload() {
     assert(m_mainloop);
     m_mainloop->restart(true);
     _update_menus();
 }
 
-void 
+void
 qt_gui::slot_stop() {
 	AM_DBG printf("%s-%s\n", m_programfilename, "slot_stop");
 	if(m_mainloop)
@@ -399,7 +399,7 @@ qt_gui::slot_stop() {
 	_update_menus();
 }
 
-void 
+void
 qt_gui::slot_settings_select() {
 	m_settings = new qt_settings();
 	QWidget* settings_widget = m_settings->settings_select();
@@ -555,7 +555,7 @@ Qt debugging options (not available if Qt was compiled with the QT_NO_DEBUG flag
 
     * -nograb, tells Qt that it must never grab the mouse or the keyboard.
     * -dograb (only under X11), running under a debugger can cause an implicit -nograb, use -dograb to override.
-    * -sync (only under X11), switches to synchronous mode for debugging. 
+    * -sync (only under X11), switches to synchronous mode for debugging.
 
 See Debugging Techniques for a more detailed explanation.
 
@@ -566,7 +566,7 @@ All Qt programs automatically support the following command line options:
     * -style style, is the same as listed above.
     * -session= session, restores the application from an earlier session.
     * -session session, is the same as listed above.
-    * -widgetcount, prints debug message at the end about number of widgets left undestroyed and maximum number of widgets existed at the same time 
+    * -widgetcount, prints debug message at the end about number of widgets left undestroyed and maximum number of widgets existed at the same time
 
 The X11 version of Qt also supports some traditional X11 command line options:
 
@@ -580,13 +580,13 @@ The X11 version of Qt also supports some traditional X11 command line options:
     * -title title, sets the application title (caption).
     * -visual TrueColor, forces the application to use a TrueColor visual on an 8-bit display.
     * -ncols count, limits the number of colors allocated in the color cube on an 8-bit display, if the application is using the QApplication::ManyColor color specification. If count is 216 then a 6x6x6 color cube is used (i.e. 6 levels of red, 6 of green, and 6 of blue); for other values, a cube approximately proportional to a 2x3x1 cube is used.
-    * -cmap, causes the application to install a private color map on an 8-bit display. 
+    * -cmap, causes the application to install a private color map on an 8-bit display.
     */
 	QApplication myapp(argc, argv);
 #endif/*WITH_QT_HTML_WIDGET*/
 
 	/* Setup widget */
-	qt_gui* mywidget = new qt_gui(argv[0], argc > 1 ? argv[1] 
+	qt_gui* mywidget = new qt_gui(argv[0], argc > 1 ? argv[1]
 				      : "AmbulantPlayer");
 //	mywidget->setGeometry(240, 320, 320, 240);
 	mywidget->setGeometry(240, 240, 200, 32);
@@ -594,7 +594,7 @@ The X11 version of Qt also supports some traditional X11 command line options:
 	mywidget->setCursor(qcursor);
 	myapp.setMainWidget(mywidget);
 	mywidget->show();
-/*TMP initialize logger after gui*/	
+/*TMP initialize logger after gui*/
 	// take log level from preferences
 	qt_logger::set_qt_logger_gui(mywidget);
 	qt_logger* qt_logger = qt_logger::get_qt_logger();

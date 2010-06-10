@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/net/databuffer.h"
@@ -149,7 +149,7 @@ void databuffer::dump(std::ostream& os, bool verbose) const
 	   		os << m_buffer[i];
 	   		}
 		}
-	} 
+	}
  	os << std::endl;
 }
 
@@ -160,15 +160,15 @@ databuffer::get_write_ptr(int sz)
 	assert(!m_writing);
 	assert(sz > 0);
 	m_writing = true;
-	
+
 	char *rv = NULL;
 	AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x).get_write_ptr(%d): start ", (void*)this, sz);
-	
+
     if(!m_buffer_full) {
 			//AM_DBG lib::logger::get_logger()->debug("databuffer.get_write_ptr: returning m_front (%x)",m_buffer + m_size);
 			_grow(sz);
 			rv = m_buffer + m_size;
-		
+
     } else {
         lib::logger::get_logger()->trace("databuffer::databuffer::get_write_ptr : buffer full but still trying to obtain write pointer ");
 		rv = NULL;
@@ -209,7 +209,7 @@ void databuffer::pushdata(int sz)
 	// std::cout << sz << "\n";
 	assert(sz >= 0);
 	assert(m_size >= 0);
-	
+
 	if (!m_reading) {
 		// If we have a read pointer outstanding we simply not realloc. It will
 		// happen the next time.
@@ -244,7 +244,7 @@ databuffer::get_read_ptr()
 	m_reading = true;
 	m_lock.leave();
 	return rv;
-	
+
 }
 
 
@@ -261,7 +261,7 @@ databuffer::readdone(int sz)
 	assert( m_size >= m_rear);
 	m_used = m_size - m_rear;
 	m_buffer_full = (m_max_size > 0 && m_used > m_max_size);
-	
+
 	// If the writer needed more space while m_reading was true it will
 	// have left the old buffer for us to remove.
 	if (m_old_buffer) {
@@ -269,7 +269,7 @@ databuffer::readdone(int sz)
 		free(m_old_buffer);
 		m_old_buffer = NULL;
 	}
-	
+
 	// Free the unused space in the buffer if the buffer is either empty
 	// or underused. Skip this if there is a write outstanding, then it'll
 	// happen the next time around.

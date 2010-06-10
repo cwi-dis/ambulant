@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_LIB_SAX_TYPES_H
@@ -50,7 +50,7 @@ typedef std::basic_string<char> xml_string;
 typedef std::pair<xml_string, xml_string> q_name_pair;
 
 /// The type used to represent and attribute name/value pair.
-/// First is the qualified name of the attribute and second 
+/// First is the qualified name of the attribute and second
 /// is the value of the attribute.
 typedef std::pair<q_name_pair, xml_string> q_attribute_pair;
 
@@ -58,7 +58,7 @@ typedef std::pair<q_name_pair, xml_string> q_attribute_pair;
 typedef std::list<q_attribute_pair> q_attributes_list;
 
 } // namespace lib
- 
+
 } // namespace ambulant
 
 inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::q_name_pair& n) {

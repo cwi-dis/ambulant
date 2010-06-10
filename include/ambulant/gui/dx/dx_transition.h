@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_DX_TRANSITION_H
@@ -69,22 +69,22 @@ class dx_transition {
 	virtual smil2::transition_blitclass_fade *get_as_fade_blitter() = 0;
 };
 
-dx_transition *make_transition(lib::transition_type id, 
+dx_transition *make_transition(lib::transition_type id,
 	common::playable *playable, lib::timer_control *timer);
-	
+
 smil2::blitter_type get_transition_blitter_type(lib::transition_type id);
 
 template<class T>
 class transition_engine_adapter : public T {
   public:
-	const lib::transition_info *get_info() const { return m_info;}	
+	const lib::transition_info *get_info() const { return m_info;}
 	double get_progress() const { return m_progress;}
 	bool is_outtrans() const { return m_outtrans;}
 	bool is_fullscreen() const { return m_info->m_scope == lib::scope_screen; }
   protected:
 	virtual void update() {
 		if(m_dst) m_dst->need_redraw();
-		else lib::logger::get_logger()->show("missing transition dst"); 
+		else lib::logger::get_logger()->show("missing transition dst");
 	}
 };
 
@@ -96,45 +96,45 @@ class dx_transition_engine : public dx_transition {
 	:	/* m_playable(playable),*/ m_timer(timer) {
 		m_engine = new transition_engine_adapter<T>();
 	}
-	
+
 	~dx_transition_engine() {
 		delete m_engine;
 		delete m_timer;
 	}
-	
-	void first_step() { 
-		m_engine->begin(m_timer->elapsed()); 
+
+	void first_step() {
+		m_engine->begin(m_timer->elapsed());
 		m_engine->step(m_timer->elapsed());
 		m_timer->resume();
 	}
-	
-	bool next_step() { 
+
+	bool next_step() {
 		m_engine->step(m_timer->elapsed());
 		return !m_engine->is_done();
 	}
-	
+
 	bool next_step(lib::timer::time_type pt) {
 		bool no_more = m_engine->is_done();
 		m_engine->step(m_timer->elapsed(pt));
 		return !no_more;
 	}
-	
+
 	void init(common::surface *dst, bool is_outtrans, const lib::transition_info *info)
 		{m_engine->init(dst, is_outtrans, info);}
-		
+
 	void pause() {m_timer->pause();}
 	void resume() {m_timer->resume();}
-	
+
 	std::string get_type_str() const {return repr(m_engine->get_info()->m_type);}
 	std::string get_subtype_str() const {return m_engine->get_info()->m_subtype;}
-	
+
 	double get_progress() const { return m_engine->get_progress();};
 	bool is_outtrans() const { return m_engine->is_outtrans();}
 	bool is_fullscreen() const { return m_engine->is_fullscreen(); }
-	smil2::blitter_type get_blitter_type() const { 
+	smil2::blitter_type get_blitter_type() const {
 		return get_transition_blitter_type(m_engine->get_info()->m_type);
 	}
-	
+
 	smil2::transition_blitclass_rect *get_as_rect_blitter() {
 		smil2::blitter_type type = get_blitter_type();
 		return (type==bt_rect)?(smil2::transition_blitclass_rect*)m_engine:0;
@@ -164,7 +164,7 @@ class dx_transition_engine : public dx_transition {
 		smil2::blitter_type type = get_blitter_type();
 		return (type==bt_fade)?(smil2::transition_blitclass_fade*)m_engine:0;
 	}
-		
+
 	transition_engine_adapter<T> *m_engine;
 //	common::playable *m_playable;
 	lib::timer_control *m_timer;
@@ -183,7 +183,7 @@ class r1r2r3r4_adapter : public smil2::transition_blitclass_r1r2r3r4 {
 } // namespace dx
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 #ifndef _INC_WINDOWS
@@ -194,7 +194,7 @@ HRGN create_rect_region(ambulant::gui::dx::dx_transition *tr);
 HRGN create_rectlist_region(ambulant::gui::dx::dx_transition *tr);
 HRGN create_poly_region(ambulant::gui::dx::dx_transition *tr);
 HRGN create_polylist_region(ambulant::gui::dx::dx_transition *tr);
-void clipto_r1r2r3r4(ambulant::gui::dx::dx_transition *tr, 
+void clipto_r1r2r3r4(ambulant::gui::dx::dx_transition *tr,
 	ambulant::lib::rect& src, ambulant::lib::rect& dst);
 
 #endif // AMBULANT_GUI_DX_TRANSITION_H

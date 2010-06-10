@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -38,7 +38,7 @@ static gboolean
 gst_bus_callback (GstBus* bus, GstMessage *msg, gpointer data)
 {
 	GMainLoop* main_loop = (GMainLoop*)data;
-	
+
 	switch (GST_MESSAGE_TYPE (msg)) {
 
 	case GST_MESSAGE_EOS:
@@ -46,7 +46,7 @@ gst_bus_callback (GstBus* bus, GstMessage *msg, gpointer data)
 		g_main_loop_quit (main_loop);
 		break;
 
-	case GST_MESSAGE_ERROR: 
+	case GST_MESSAGE_ERROR:
 	{
 		gchar *debug;
 		GError *err;
@@ -89,7 +89,7 @@ gstreamer_player::gstreamer_player(const char* uri, gstreamer_audio_renderer* re
 {
 	pthread_mutex_init(&m_gst_player_mutex, NULL);
 	// mutex will be unlocked by gst_player after pipeline initialize is complete
-	pthread_mutex_lock(&m_gst_player_mutex); 
+	pthread_mutex_lock(&m_gst_player_mutex);
 	m_uri = strdup(uri);
 	m_audio_renderer = rend;
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_player(0x%x) uri=%s", (void*)this, uri);
@@ -98,11 +98,11 @@ gstreamer_player::gstreamer_player(const char* uri, gstreamer_audio_renderer* re
 
 gstreamer_player::~gstreamer_player() {
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_player::~gstreamer_player()(0x%x) m_uri=%s", (void*)this, m_uri);
-	pthread_mutex_lock(&m_gst_player_mutex); 
+	pthread_mutex_lock(&m_gst_player_mutex);
 	m_audio_renderer = NULL;
 	if (m_uri) free(m_uri);
 	m_uri = NULL;
-	pthread_mutex_unlock(&m_gst_player_mutex); 
+	pthread_mutex_unlock(&m_gst_player_mutex);
 	pthread_mutex_destroy(&m_gst_player_mutex);
 }
 
@@ -128,8 +128,8 @@ gstreamer_player::run() {
 	m_gst_player = (GstElement*)gst_pipeline_new ("mp3-player");
 	/* create elements */
 	AM_DBG g_print ("%s: %s\n", id, "gst_element_factory_make()");
-	source   = gst_element_factory_make ("gnomevfssrc", "source"); 
-	sink     = gst_element_factory_make ("dspmp3sink", "sink"); 
+	source   = gst_element_factory_make ("gnomevfssrc", "source");
+	sink     = gst_element_factory_make ("dspmp3sink", "sink");
 	if ( !( m_gst_player && source && sink)) {
 		g_print ("%s:", "gst_mp3_player");
 		if ( ! m_gst_player) g_print (" %s() failed", "get_pipeline_new");
@@ -151,7 +151,7 @@ gstreamer_player::run() {
 	m_gst_player = (GstElement*)gst_pipeline_new ("mp3-player");
 	/* create elements */
 	AM_DBG g_print ("%s: %s\n", id, "gst_element_factory_make()");
-	source   = gst_element_factory_make ("playbin", "playbin"); 
+	source   = gst_element_factory_make ("playbin", "playbin");
 	if ( !( m_gst_player && source)) {
 		g_print ("%s:", "gstreamer_player::run()");
 		if ( ! m_gst_player) g_print (" %s() failed", "get_pipeline_new");
@@ -218,7 +218,7 @@ gstreamer_player::run() {
 	gst_object_unref (GST_OBJECT(m_gst_player));
 	m_gst_player = NULL;
 	pthread_mutex_unlock(&m_gst_player_mutex);
-  
+
 #ifdef  WITH_NOKIA770
 	if (pthread_mutex_unlock(&s_main_nokia770_mutex) < 0) {
 		lib::logger::get_logger()->fatal("gstreamer_player::run():: pthread_mutex_unlock(s_main_nokia770_mutex) failed: %s", strerror(errno));
@@ -293,7 +293,7 @@ gstreamer_player::get_dur() {
 	pthread_mutex_lock(&m_gst_player_mutex);
 	if (m_gst_player)
 		gst_element_query_duration(m_gst_player, &fmtTime, &length);
-	
+
 	pthread_mutex_unlock(&m_gst_player_mutex);
 	if (length != -1)
 		dur  = double(length) / nanosec;

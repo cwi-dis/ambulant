@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 #ifdef  WITH_SMIL30
 #include "ambulant/gui/dx/dx_viewport.h"
@@ -73,10 +73,10 @@ gui::dx::create_dx_smiltext_playable_factory(common::factories *factory, common:
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectXSmilText"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererSmilText"), true);
 	return new common::single_playable_factory<
-		gui::dx::dx_smiltext_renderer, 
-        dx_smiltext_playable_tag, 
-        dx_smiltext_playable_renderer_uri, 
-        dx_smiltext_playable_renderer_uri2, 
+		gui::dx::dx_smiltext_renderer,
+        dx_smiltext_playable_tag,
+        dx_smiltext_playable_renderer_uri,
+        dx_smiltext_playable_renderer_uri2,
         dx_smiltext_playable_renderer_uri3 >(factory, mdp);
 }
 
@@ -100,11 +100,11 @@ gui::dx::dx_smiltext_renderer::dx_smiltext_renderer(
 	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_renderer(0x%x)", this);
 }
 
-void 
+void
 gui::dx::dx_smiltext_renderer::set_surface(common::surface *dest) {
 	m_lock.enter();
 	m_dest = dest;
-	
+
 	lib::rect rc = dest->get_rect();
 	lib::size bounds(rc.width(), rc.height());
 	m_size = bounds;
@@ -137,7 +137,7 @@ gui::dx::dx_smiltext_renderer::~dx_smiltext_renderer() {
 void
 gui::dx::dx_smiltext_renderer::start(double t) {
 	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_renderer::start(0x%x)", this);
-		
+
 	m_lock.enter();
 	m_layout_engine.start(t);
 	m_layout_engine.set_dest_rect(m_dest->get_rect());
@@ -145,7 +145,7 @@ gui::dx::dx_smiltext_renderer::start(double t) {
 	m_lock.leave();
 }
 
-bool 
+bool
 gui::dx::dx_smiltext_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_renderer::stop(0x%x)", this);
 	m_lock.enter();
@@ -176,12 +176,12 @@ gui::dx::dx_smiltext_renderer::smiltext_changed() {
 	m_layout_engine.smiltext_changed();
 	if ( ! DeleteDC(m_hdc)) {
 		lib::logger::get_logger()->warn("gui::dx::dx_smiltext_renderer::redraw(): DeleteDC failed");
-	}	
+	}
 	m_hdc = NULL;
 	m_dest->need_redraw();
 }
 
-smil2::smiltext_metrics 
+smil2::smiltext_metrics
 gui::dx::dx_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& run) {
 	unsigned int ascent = 0, descent = 0, height = 0, width = 0, line_spacing = 0, word_spacing = 0;
 	SIZE SZ;
@@ -197,7 +197,7 @@ gui::dx::dx_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& r
 			win_report_last_error("GetTextMetric()");
 		else {
 			ascent  = tm.tmAscent;
-			descent = tm.tmDescent;	
+			descent = tm.tmDescent;
 			height	= tm.tmHeight+tm.tmExternalLeading;
 			line_spacing = height+tm.tmInternalLeading+tm.tmExternalLeading;
 
@@ -252,7 +252,7 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 			lib::color_t chromakey = ri->get_chromakey();
 			lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
 			lib::compute_chroma_range(chromakey, chromakeytolerance,
-					     &chroma_low, &chroma_high);   
+					     &chroma_low, &chroma_high);
 		}
 	}
 	IDirectDrawSurface* text_dds = NULL;
@@ -321,7 +321,7 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 								::GetSysColor(COLOR_WINDOW):
 					 	 (run.m_bg_color == CLR_DEFAULT)?
 								CLR_ALTERNATIVE : run.m_bg_color;
-	if (run.m_bg_transparent) 
+	if (run.m_bg_transparent)
 		bg_color_t = CLR_DEFAULT;
 	else if (fg_color_t == CLR_DEFAULT)
 		fg_color_t = CLR_ALTERNATIVE;
@@ -335,19 +335,19 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 	}
 	if (blending) {
 		// on text surface, draw text in required color
-		// and background in transparent color        
+		// and background in transparent color
 		old_color = ::SetTextColor(hdc, crTextColor);
-		if (old_color != CLR_INVALID) 
+		if (old_color != CLR_INVALID)
 			old_bgcolor = ::SetBkColor(hdc, CLR_DEFAULT);
 		// on background surface, draw text in transparent color
-		// and background in required color        
-		if (old_bgcolor != CLR_INVALID) 
+		// and background in required color
+		if (old_bgcolor != CLR_INVALID)
 			old_textbg_color = ::SetTextColor(textbg_hdc, CLR_DEFAULT);
-		if (old_textbg_color != CLR_INVALID) 
+		if (old_textbg_color != CLR_INVALID)
 			old_textbg_bgcolor = ::SetBkColor(textbg_hdc, crBkColor);
 	} else {
 		old_color = ::SetTextColor(hdc, crTextColor);
-		if (old_color != CLR_INVALID) 
+		if (old_color != CLR_INVALID)
 		old_bgcolor = ::SetBkColor(hdc, crBkColor);
 	}
 	if (old_color == CLR_INVALID)
@@ -383,7 +383,7 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 		hr = ::DrawText(textbg_hdc, ttp, ttplen, &dstRC, uFormat);
 	if(FAILED(hr))
 		win_report_last_error("DrawText()");
-	::SelectObject(hdc, old_font); 
+	::SelectObject(hdc, old_font);
 	if (font && ! ::DeleteObject(font))
 		win_report_error("DeleteObject(font)", DDERR_GENERIC);
 
@@ -403,7 +403,7 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 		if (SUCCEEDED(hr)) {
 			if ( ! run.m_bg_transparent) {
 				m_viewport->blend_surface(m_region_dds, rr, textbg_dds, rr,
-					/*use color key from source*/true, alpha_media_bg, 
+					/*use color key from source*/true, alpha_media_bg,
 					/*don't touch out of range pixels*/0, bg_color_t, bg_color_t);
 			}
 			m_viewport->blend_surface(m_region_dds, rr, text_dds, rr,
@@ -498,7 +498,7 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_set_font(const smil2::smiltext_run r
 		case smil2::sts_oblique:
 		case smil2::sts_reverse_oblique:
 		// no (reverse) oblique fonts available in Windows GDI.
-		// For an implementation, see: 
+		// For an implementation, see:
 		// http://www.codeproject.com/useritems/oblique_txt.asp
 			italic = true;
 			break;
@@ -576,7 +576,7 @@ gui::dx::dx_smiltext_renderer::redraw(const lib::rect& dirty, common::gui_window
 			return;
 		}
 	}
-	
+
 	m_layout_engine.redraw(dirty);
 	if (FAILED(m_region_dds->ReleaseDC(m_hdc))) {
 		lib::logger::get_logger()->warn("gui::dx::dx_smiltext_renderer::redraw(): ReelaseDC failed");
@@ -585,16 +585,16 @@ gui::dx::dx_smiltext_renderer::redraw(const lib::rect& dirty, common::gui_window
 
 	lib::rect smiltext_rc = dirty;
 	lib::rect reg_rc = dirty;
-	// Translate smiltext region dirty rect. to viewport coordinates 
+	// Translate smiltext region dirty rect. to viewport coordinates
 	lib::point pt = m_dest->get_global_topleft();
 	reg_rc.translate(pt);
-		
+
 	dx_transition *tr = get_transition();
 	if (tr && tr->is_fullscreen()) {
 		m_viewport->set_fullscreen_transition(tr);
 		tr = NULL;
 	}
-		
+
 	// Finally blit/blend m_ddsurf to viewport
 	m_viewport->draw(m_region_dds, smiltext_rc, reg_rc, true, tr);
 
@@ -618,7 +618,7 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_get_ddsurf(common::gui_window *windo
 //		viewport *srcvp = srcwin->get_viewport();
 		viewport *srcvp = m_viewport;
 		m_region_dds = srcvp->create_surface();
-		AM_DBG lib::logger::get_logger()->debug("dx_smiltext_get_ddsurf(0x%x) m_size=%d,%d m_region_dds=0x%x", this, m_size.w,m_size.h,m_region_dds);	
+		AM_DBG lib::logger::get_logger()->debug("dx_smiltext_get_ddsurf(0x%x) m_size=%d,%d m_region_dds=0x%x", this, m_size.w,m_size.h,m_region_dds);
 		if ( ! m_region_dds) {
 			lib::logger::get_logger()->fatal("DirectDrawSurface::create_surface failed()");
 			return;

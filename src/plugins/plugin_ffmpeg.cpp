@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -50,13 +50,13 @@ class dsvideo_renderer_factory : public common::playable_factory {
 	dsvideo_renderer_factory(common::factories *factory)
 	:   m_factory(factory) {}
 	~dsvideo_renderer_factory() {}
-		
+
 	bool supports(common::renderer_select *rs)
 	{
 		const lib::xml_string& tag = rs->get_tag();
 		if (tag != "" && tag != "video" && tag != "prefetch" && tag != "ref") return false;
 		const char *renderer_uri = rs->get_renderer_uri();
-		if (renderer_uri != NULL && 
+		if (renderer_uri != NULL &&
 			strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererOpen")) != 0 &&
 			strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererVideo")) != 0)
 			return false;
@@ -73,21 +73,21 @@ class dsvideo_renderer_factory : public common::playable_factory {
 		return new gui::dx::dx_dsvideo_renderer(context, cookie, node, evp, m_factory, NULL);
 		return NULL;
 	}
-		
+
 	common::playable *new_aux_audio_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *evp,
-		net::audio_datasource *src) { return NULL; }	
-		
+		net::audio_datasource *src) { return NULL; }
+
   private:
 	common::factories *m_factory;
-	
+
 };
 #endif // WITH_DSVIDEO
 
-static ambulant::common::factories * 
+static ambulant::common::factories *
 bug_workaround(ambulant::common::factories* factory)
 {
 	return factory;
@@ -103,7 +103,7 @@ void initialize(
     ambulant::common::gui_player *player)
 {
     if ( api_version != AMBULANT_PLUGIN_API_VERSION ) {
-        lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"ffmpeg_plugin", 
+        lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"ffmpeg_plugin",
 					AMBULANT_PLUGIN_API_VERSION, api_version);
         return;
     }
@@ -127,7 +127,7 @@ void initialize(
     // Same for datasource foactories
     net::datasource_factory *df = factory->get_datasource_factory();
     if (df) {
-#ifdef WITH_LIVE	
+#ifdef WITH_LIVE
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_plugin: add live_audio_datasource_factory");
 	df->add_video_factory(net::create_live_video_datasource_factory());
 	df->add_audio_factory(net::create_live_audio_datasource_factory());

@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -47,7 +47,7 @@ namespace ambulant
 {
 
 namespace net
-{  
+{
 
 void ffmpeg_init();
 
@@ -59,18 +59,18 @@ class ffmpeg_codec_id {
 	void add_codec(const char* codec_name, 	CodecID id);
 	CodecID get_codec_id(const char* codec_name);
   private:
-	ffmpeg_codec_id(); 
+	ffmpeg_codec_id();
 	static ffmpeg_codec_id* m_uniqueinstance;
-	std::map<std::string, CodecID> m_codec_id;		  
+	std::map<std::string, CodecID> m_codec_id;
 };
 
 class ffmpeg_demux : public abstract_demux {
   public:
 	ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timestamp_t clip_end);
 	~ffmpeg_demux();
-	
+
 	static AVFormatContext *supported(const net::url& url);
-	  
+
 	void add_datasink(demux_datasink *parent, int stream_index);
 	void remove_datasink(int stream_index);
 	int audio_stream_nr();
@@ -86,7 +86,7 @@ class ffmpeg_demux : public abstract_demux {
 	audio_format& get_audio_format();
 	video_format& get_video_format();
 	void cancel();
-	timestamp_t get_clip_end(); 
+	timestamp_t get_clip_end();
 	timestamp_t get_clip_begin();
 	timestamp_t get_start_time() { return m_clip_begin; };
   protected:

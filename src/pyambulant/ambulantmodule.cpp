@@ -17592,7 +17592,7 @@ pycppbridge_setwrapper(PyObject *o, cpppybridge *w)
 
 // Declare initambulant as a C external:
 
-extern "C" void initambulant(); 
+extern "C" void initambulant();
 
 
 void initambulant(void)

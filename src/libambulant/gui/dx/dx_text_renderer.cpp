@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/config/config.h"
@@ -108,7 +108,7 @@ gui::dx::text_renderer::set_text_font(const char *fontname) {
 	m_text_font = fontname;
 }
 
-void 
+void
 gui::dx::text_renderer::open(net::datasource_factory *df) {
 	m_ddsurf = m_viewport->create_surface(m_size);
 	if(!m_ddsurf) {
@@ -134,10 +134,10 @@ gui::dx::text_renderer::render(LONG x, LONG y, HFONT hfont) {
 		free_text_data();
 		return;
 	}
-	
+
 	//////////////
-	// Draw text 
-	
+	// Draw text
+
 	HDC hdc;
 	HRESULT hr = m_ddsurf->GetDC(&hdc);
 	if (FAILED(hr)) {
@@ -152,7 +152,7 @@ gui::dx::text_renderer::render(LONG x, LONG y, HFONT hfont) {
 	::SetTextColor(hdc, crTextColor);
 	COLORREF crBkColor = (m_text_bgcolor == CLR_INVALID)?::GetSysColor(COLOR_WINDOW):m_text_bgcolor;
 	::SetBkColor(hdc, crBkColor);
-	
+
 	DWORD family = FF_DONTCARE | DEFAULT_PITCH;
 	UINT uFormat = DT_NOPREFIX | DT_WORDBREAK;
 	const char *fontname = m_text_font;
@@ -232,7 +232,7 @@ gui::dx::text_renderer::render(LONG x, LONG y, HFONT hfont) {
 		DeleteObject(hfp);
 	//////////////
 	// Text is always transparent; set the color
-	
+
 	DWORD ddTranspColor = m_viewport->convert(RGB(255,255,255));
 	DWORD dwFlags = DDCKEY_SRCBLT;
 	DDCOLORKEY ck;
@@ -243,5 +243,5 @@ gui::dx::text_renderer::render(LONG x, LONG y, HFONT hfont) {
 		win_report_error("SetColorKey()", hr);
 	}
 }
- 
+
 

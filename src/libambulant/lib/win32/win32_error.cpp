@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include <windows.h>
@@ -31,15 +31,15 @@ using namespace ambulant;
 
 void lib::win32::win_report_error(const char *func, unsigned long  err) {
 	char* pMsgBuf;
-	::FormatMessage( 
+	::FormatMessage(
 		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
 		NULL,
 		err,
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
 		(LPTSTR) &pMsgBuf,
 		0,
-		NULL 
-		);	
+		NULL
+		);
 	lib::logger::get_logger()->error("%s failed, Error 0x%x: %s", func, err, pMsgBuf);
 	LocalFree(pMsgBuf);
 }
@@ -50,15 +50,15 @@ void lib::win32::win_report_last_error(const char *func){
 
 void lib::win32::win_show_error(const char *func, unsigned long  err) {
 	char* pMsgBuf;
-	::FormatMessage( 
+	::FormatMessage(
 		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
 		NULL,
 		err,
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
 		(LPTSTR) &pMsgBuf,
 		0,
-		NULL 
-		);	
+		NULL
+		);
 	lib::logger::get_logger()->show("%s failed, Error 0x%x: %s", func, err, pMsgBuf);
 	LocalFree(pMsgBuf);
 }
@@ -70,15 +70,15 @@ void lib::win32::win_show_last_error(const char *func){
 
 void lib::win32::win_trace_error(const char *func, unsigned long  err) {
 	char* pMsgBuf;
-	::FormatMessage( 
+	::FormatMessage(
 		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
 		NULL,
 		err,
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
 		(LPTSTR) &pMsgBuf,
 		0,
-		NULL 
-		);	
+		NULL
+		);
 	lib::logger::get_logger()->trace("%s failed, Error 0x%x: %s", func, err, pMsgBuf);
 	LocalFree(pMsgBuf);
 }

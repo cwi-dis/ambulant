@@ -2,7 +2,7 @@
 
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -51,8 +51,8 @@ gui::qt::create_qt_video_playable_factory(common::factories *factory, common::pl
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererVideo"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererOpen"), true);
 	return new common::single_playable_factory<
-        qt_video_renderer, 
-        qt_video_playable_tag, 
+        qt_video_renderer,
+        qt_video_playable_tag,
         qt_video_playable_renderer_uri,
         qt_video_playable_renderer_uri2,
         qt_video_playable_renderer_uri3>(factory, mdp);
@@ -82,7 +82,7 @@ qt_video_renderer::~qt_video_renderer()
 	m_lock.leave();
 }
 
-void 
+void
 qt_video_renderer::_push_frame(char* frame, int size)
 {
 	assert(frame);
@@ -94,13 +94,13 @@ qt_video_renderer::_push_frame(char* frame, int size)
 	m_image = new QImage(m_data,  m_size.w, m_size.h, 32, NULL, 0, QImage::IgnoreEndian);
 
 	AM_DBG lib::logger::get_logger()->debug("qt_video_renderer::_push_frame(0x%x): frame=0x%x, size=%d, m_image=0x%x", (void*) this, (void*)frame, size, m_image);
- 
+
 }
 
 
 
 void
-qt_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w) 
+qt_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 {
     AM_DBG lib::logger::get_logger()->debug("qt_video_renderer.redraw(0x%x)",(void*) this);
 

@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -39,7 +39,7 @@ class basic_plugin_factory : public common::playable_factory {
 		m_mdp(mdp)
 	{}
 	~basic_plugin_factory() {};
-		
+
 	bool supports(common::renderer_select *rs);
 
 	common::playable *new_playable(
@@ -59,7 +59,7 @@ class basic_plugin_factory : public common::playable_factory {
 	common::playable_factory_machdep *m_mdp;
 };
 
-class basic_plugin : public common::playable_imp 
+class basic_plugin : public common::playable_imp
 {
   public:
   basic_plugin(
@@ -71,7 +71,7 @@ class basic_plugin : public common::playable_imp
 	common::playable_factory_machdep *mdp);
 
   	~basic_plugin() {};
-	
+
     void data_avail();
 	void start(double where);
 	void seek(double where) {};
@@ -82,7 +82,7 @@ class basic_plugin : public common::playable_imp
 };
 
 
-bool 
+bool
 basic_plugin_factory::supports(common::renderer_select *rs)
 {
 	const char *renderer_uri = rs->get_renderer_uri();
@@ -92,7 +92,7 @@ basic_plugin_factory::supports(common::renderer_select *rs)
 	return false;
 }
 
-common::playable* 
+common::playable*
 basic_plugin_factory::new_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
@@ -100,7 +100,7 @@ basic_plugin_factory::new_playable(
 		lib::event_processor *evp)
 {
 	common::playable *rv;
-	
+
 	lib::xml_string tag = node->get_qname().second;
     AM_DBG lib::logger::get_logger()->debug("basic_plugin_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "plugindatatype") /*or any other tag ofcourse */ {
@@ -120,7 +120,7 @@ basic_plugin::basic_plugin(
     const lib::node *node,
     lib::event_processor *evp,
 	common::factories* factory,
-	common::playable_factory_machdep *mdp) 
+	common::playable_factory_machdep *mdp)
 :	common::playable_imp(context, cookie, node, evp, factory, mdp)
 {
 
@@ -138,24 +138,24 @@ basic_plugin::start(double t)
 }
 
 
-bool 
+bool
 basic_plugin::stop()
 {
 	return true;
 }
 
-void 
+void
 basic_plugin::pause()
 {
 }
 
-void 
+void
 basic_plugin::resume()
 {
 }
 
 
-static ambulant::common::factories * 
+static ambulant::common::factories *
 bug_workaround(ambulant::common::factories* factory)
 {
 	return factory;
@@ -171,7 +171,7 @@ void initialize(
     ambulant::common::gui_player *player)
 {
     if ( api_version != AMBULANT_PLUGIN_API_VERSION ) {
-        lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"basic_plugin", 
+        lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"basic_plugin",
 					AMBULANT_PLUGIN_API_VERSION, api_version);
         return;
     }

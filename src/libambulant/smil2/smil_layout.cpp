@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/logger.h"
@@ -61,14 +61,14 @@ smil_layout_manager::smil_layout_manager(common::factories *factory,lib::documen
 
 	// Then scan the DOM tree and create our own tree of region_node objects
 	build_layout_tree(m_layout_section, doc);
-	
+
 	// Next we create the region_nodes for body nodes that need one (subregion
 	// positioning, etc)
 	build_body_regions(doc);
 
 	// Next, create the surfaces that correspond to this tree
 	build_surfaces(factory->get_window_factory());
-	
+
 	// Now we make sure there is at least one root-layout. This allows us
 	// to use this as the default region. XXXX Should be auto-show eventually.
 	if (m_rootsurfaces.empty()) {
@@ -141,7 +141,7 @@ smil_layout_manager::get_document_layout(lib::document *doc)
 			layout_root = layout_root->next();
 		}
 	}
-	
+
 	return NULL;
 }
 
@@ -161,7 +161,7 @@ smil_layout_manager::build_layout_tree(lib::node *layout_root, lib::document *do
 			//if (level == 0) continue; // Skip layout section itself
 			lib::node *n = pair.second;
 			const char *pid = n->get_attribute("id");
-			AM_DBG lib::logger::get_logger()->debug("smil_layout_manager::get_document_layout: examining %s %s", 
+			AM_DBG lib::logger::get_logger()->debug("smil_layout_manager::get_document_layout: examining %s %s",
 				n->get_local_name().c_str(), (pid?pid:"no-id"));
 			// Find node type
 			common::layout_type tp = m_schema->get_layout_type(n->get_local_name());
@@ -209,14 +209,14 @@ smil_layout_manager::build_layout_tree(lib::node *layout_root, lib::document *do
 				AM_DBG lib::logger::get_logger()->debug("smil_layout_manager: mapping id %s", pid);
 				m_id2region[id] = rn;
 			}
-			
+
 			// And the same for the regionName multimap
 			const char *pname = n->get_attribute("regionName");
 			if(pname) {
 				AM_DBG lib::logger::get_logger()->debug("smil_layout_manager: mapping regionName %s", pname);
 				m_name2region[pname].push_back(rn);
 			}
-			
+
 			// See if the node uses background images
 			if (n->get_attribute("backgroundImage")) m_uses_bgimages = true;
 			// And finally into the node->region mapping (for animate)
@@ -271,13 +271,13 @@ smil_layout_manager::build_body_regions(lib::document *doc) {
 		m_node2region[n] = rn;
 	}
 }
-	
+
 void
 smil_layout_manager::build_surfaces(common::window_factory *wf) {
 	std::stack<common::surface_template*> stack;
 	region_node::iterator it;
 	region_node::const_iterator end = m_layout_tree->end();
-	
+
 	AM_DBG lib::logger::get_logger()->debug("smil_layout_manager::build_surfaces called");
 	assert(wf);
 	// First we check for a root-layout node. This will be used as the parent
@@ -292,7 +292,7 @@ smil_layout_manager::build_surfaces(common::window_factory *wf) {
 		assert(root_surface);
 		first_root_layout->set_surface_template(root_surface);
 	}
-		
+
 	// Loop over all the layout elements, create the regions and root_layouts,
 	// and keep a stack to tie everything together.
 	if (m_layout_tree) {
@@ -335,7 +335,7 @@ smil_layout_manager::build_surfaces(common::window_factory *wf) {
 					}
 				}
 				// Create the region or the root-layout
-				if (tag == common::l_toplayout) {	
+				if (tag == common::l_toplayout) {
 					AM_DBG lib::logger::get_logger()->debug("smil_layout_manager::build_surfaces: create topLayout");
 					surf = create_top_surface(wf, rn, bgrenderer);
 				} else if (tag == common::l_region && !stack.empty()) {
@@ -354,7 +354,7 @@ smil_layout_manager::build_surfaces(common::window_factory *wf) {
 				// Store in the region_node
 				assert(surf); // XXXX Good idea?
 				rn->set_surface_template(surf);
-				
+
 				// Finally push on to the stack for reference by child nodes
 				stack.push(surf);
 			} else {
@@ -539,7 +539,7 @@ smil_layout_manager::get_alignment(const lib::node *n)
 	const char *raname = "regAlign";
 	regPoint = n->get_attribute("regPoint");
 	regAlign = n->get_attribute("regAlign");
-	
+
 	const char *mediaAlign = n->get_attribute("mediaAlign");
 	if (mediaAlign && regPoint == NULL) {
 		regPoint = mediaAlign;
@@ -549,7 +549,7 @@ smil_layout_manager::get_alignment(const lib::node *n)
 		regAlign = mediaAlign;
 		raname = "mediaAlign";
 	}
-	
+
 	if (regPoint == NULL || regAlign == NULL) {
 		const region_node *rrn = get_region_node_for(n, false);
 		if (rrn == NULL) return NULL;
@@ -568,7 +568,7 @@ smil_layout_manager::get_alignment(const lib::node *n)
 		}
 	}
 	if (regPoint == NULL && regAlign == NULL) return NULL;
-	
+
 	common::regpoint_spec image_fixpoint = common::regpoint_spec(0, 0);
 	common::regpoint_spec surface_fixpoint = common::regpoint_spec(0, 0);
 	lib::node *regpoint_node = NULL;
@@ -617,10 +617,10 @@ class bgimage_loader : public lib::ref_counted_obj, public common::playable_noti
   public:
 	bgimage_loader(const lib::node *layout_root, common::factories *factories);
 	~bgimage_loader();
-	
+
 	void run(smil_layout_manager *layout_mgr);
-	
-	/// playable_notification interface: 
+
+	/// playable_notification interface:
 	void started(cookie_type n, double t = 0) {};
 	void stopped(cookie_type n, double t = 0);
 	void stalled(cookie_type n, double t = 0) {};
@@ -667,9 +667,9 @@ bgimage_loader::~bgimage_loader()
 	m_lock.enter();
 	std::set<common::gui_window*>::iterator iw;
 	AM_DBG lib::logger::get_logger()->debug("bgimage_loader::~bgimage_loader(): sync redraw");
-	for (iw=m_gui_windows.begin(); iw != m_gui_windows.end(); iw++) 
+	for (iw=m_gui_windows.begin(); iw != m_gui_windows.end(); iw++)
 		(*iw)->redraw_now();
-	
+
 	AM_DBG lib::logger::get_logger()->debug("bgimage_loader::~bgimage_loader(): delete playables");
 	std::vector<common::playable*>::iterator ip;
 	for (ip=m_old_playables.begin(); ip != m_old_playables.end(); ip++) {
@@ -694,7 +694,7 @@ bgimage_loader::run(smil_layout_manager *layout_mgr)
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("load_bgimages: loading background images");
 	// XXX Create an event_processor
-	
+
 	// Loop over the layout section, starting the renderers as we find regions that
 	// want a background image.
 	lib::node::const_iterator it;
@@ -727,7 +727,7 @@ bgimage_loader::run(smil_layout_manager *layout_mgr)
 		}
 		*attrp++ = NULL;
 		lib::node *n = m_factories->get_node_factory()->new_node("img", attrs, context);
-		
+
 		// Create the renderer
 		if (n) {
 			cookie_type p_index = (cookie_type)m_playables.size();
@@ -771,7 +771,7 @@ bgimage_loader::stopped(cookie_type n, double t)
 	AM_DBG lib::logger::get_logger()->debug("bgimage_loader::stopped() called");
 	m_lock.enter();
 	if (m_playables.count(n) > 0) {
-		common::playable *p = m_playables[n];		
+		common::playable *p = m_playables[n];
 		m_old_playables.push_back(p);
 		m_playables.erase(n);
 		if (m_playables.size() == 0)	{

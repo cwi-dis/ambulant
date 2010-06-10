@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_COMMON_PLAYER_H
@@ -63,25 +63,25 @@ enum play_state {
 class player_feedback {
   public:
     virtual ~player_feedback(){}
-	
+
 	/// Called by the player when the document is loaded.
 	/// Called after parsing, but before the
 	/// timegraph is created. At this time the embedding application can
 	/// modify the document, if it needs to.
 	virtual void document_loaded(lib::document *doc) = 0;
-	
+
 	/// Called by the player when the document starts playing
     virtual void document_started() = 0;
-	
+
 	/// Called by the player when the document stopped playing
 	virtual void document_stopped() = 0;
-	
+
 	/// Called by the player to signal that the given node starts playing
 	virtual void node_started(const lib::node *n) = 0;
-	
+
 	/// Called by the player to signal the given node stopped playing
 	virtual void node_stopped(const lib::node *n) = 0;
-	
+
 	/// Called by the player to signal the given node received focus.
 	/// This can happen either through a mouseover event or a tabindex event.
 	virtual void node_focussed(const lib::node *n) = 0;
@@ -99,44 +99,44 @@ class player : public state_change_callback, virtual public lib::ref_counted
 {
   public:
 	virtual ~player() {};
-	
+
 	/// Do any initializations necessary.
 	virtual void initialize() = 0;
-    
+
     /// Call this early during termination, before things like the
     /// lib::document and DOM tree become invalid.
     virtual void terminate() = 0;
 
 	/// Return the timer this player uses.
 	virtual lib::timer* get_timer() = 0;
-	
+
 	/// Return the event_processor this player uses.
 	virtual lib::event_processor* get_evp() = 0;
 
 	/// Start playback.
 	virtual void start() = 0;
-	
+
 	/// Stop playback.
 	virtual void stop() = 0;
-	
+
 	/// Pause playback.
 	virtual void pause() = 0;
-	
+
 	/// Undo the effect of pause.
 	virtual void resume() = 0;
-	
+
 	/// Return true if player is playing.
 	virtual bool is_playing() const { return false;}
-	
+
 	/// Retirn true if player is paused.
 	virtual bool is_pausing() const { return false;}
-	
+
 	/// Return true if player has finished.
 	virtual bool is_done() const { return false;}
-	
+
 	/// Return index of desired cursor (arrow or hand).
 	virtual int after_mousemove() { return 0; }
-	
+
 	/// Set desired cursor.
 	virtual void before_mousemove(int cursor) {}
 
@@ -146,24 +146,24 @@ class player : public state_change_callback, virtual public lib::ref_counted
 #ifdef WITH_SMIL30
 	/// Call this when a state variable has changed.
 	virtual void on_state_change(const char *ref) {}
-    
+
     /// Returns the SMIL State handler for the current document, or NULL.
     virtual state_component* get_state_engine() { return NULL; }
 #endif
-	
+
 	/// Call this to advance the focus.
 	virtual void on_focus_advance() {}
-	
+
 	/// Call this to activate/select the current focus.
 	virtual void on_focus_activate() {}
 
 	/// Set the feedback handler.
 	virtual void set_feedback(player_feedback *fb) {}
-	
+
 	/// Tell the player to start playing a specific node.
-	/// Return true if successful. 
+	/// Return true if successful.
 	virtual bool goto_node(const lib::node *n) { return false; }
-	
+
 	/// Highlight a specific node, if visible, and return true if it happened.
 	virtual bool highlight(const lib::node *n, bool on=true) { return false; }
 //	void set_speed(double speed);
@@ -176,7 +176,7 @@ class player : public state_change_callback, virtual public lib::ref_counted
 AMBULANTAPI player *create_smil2_player(lib::document *doc, common::factories* factory, common::embedder *sys);
 
 } // namespace common
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_COMMON_PLAYER_H

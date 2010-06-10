@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_LIB_XERCES_PARSER_H
@@ -42,7 +42,7 @@
 #include "ambulant/lib/logger.h"
 
 #ifdef	WITH_XERCES
-// Assuming "xml-xerces/c/src" of the distribution 
+// Assuming "xml-xerces/c/src" of the distribution
 // is in the include path and bin directory in the lib path
 
 #include "xercesc/parsers/SAXParser.hpp"
@@ -55,13 +55,13 @@
 namespace ambulant {
 
 namespace lib {
-	
-	
+
+
 class xerces_factory : public parser_factory {
   public:
 	xerces_factory() {};
 	xml_parser* new_parser(
-		sax_content_handler* content_handler, 
+		sax_content_handler* content_handler,
 		sax_error_handler* error_handler);
 	std::string get_parser_name();
 };
@@ -77,23 +77,23 @@ class xerces_sax_parser : public HandlerBase, public xml_parser {
 
 	xerces_sax_parser(sax_content_handler*,sax_error_handler*);
 	virtual ~xerces_sax_parser();
-	
+
 	bool parse(const char *filename);
-	
+
 	bool parse(const char *buf, size_t len, bool final);
 
 	void set_content_handler(sax_content_handler *h);
-       
+
 	void set_error_handler(sax_error_handler *h);
 
 	void startElement(const XMLCh* const name, AttributeList& attrs);
 
-	void endElement(const XMLCh* const name);   
+	void endElement(const XMLCh* const name);
 
 	void characters(const XMLCh* const chars, XMLSize_t length);
-        
+
 	void ignorableWhitespace(const XMLCh* const chars, const unsigned int length) {}
-    
+
 	void resetDocument() {}
 
 	void warning(const SAXParseException& exception);
@@ -112,7 +112,7 @@ class xerces_sax_parser : public HandlerBase, public xml_parser {
 
 	static SAXParser::ValSchemes ambulant_val_scheme_2_xerces_ValSchemes(std::string v);
 
-	SAXParser *m_saxparser;  
+	SAXParser *m_saxparser;
 	lib::logger *m_logger;
 	sax_content_handler *m_content_handler;
 	sax_error_handler *m_error_handler;
@@ -123,7 +123,7 @@ class xerces_sax_parser : public HandlerBase, public xml_parser {
 };
 
 } // namespace lib
- 
+
 } // namespace ambulant
 #endif/*WITH_XERCES*/
 

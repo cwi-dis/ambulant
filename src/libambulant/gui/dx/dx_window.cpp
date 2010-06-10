@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/dx/dx_window.h"
@@ -33,7 +33,7 @@
 
 using namespace ambulant;
 
-gui::dx::dx_window::dx_window(const std::string& name, 
+gui::dx::dx_window::dx_window(const std::string& name,
 	lib::size bounds,
 	region *rgn,
 	common::window_factory *wf,
@@ -44,7 +44,7 @@ gui::dx::dx_window::dx_window(const std::string& name,
 	m_viewrc(lib::point(0, 0), lib::size(bounds.w, bounds.h)),
 	m_wf(wf),
 	m_viewport(v), m_locked(0), m_redraw_rect_valid(false) {
-	//AM_DBG lib::logger::get_logger()->trace_stream() 
+	//AM_DBG lib::logger::get_logger()->trace_stream()
 	//	<< "dx_window(" << name << ", " << bounds << ")" << lib::endl;
 }
 
@@ -52,7 +52,7 @@ gui::dx::dx_window::~dx_window() {
 	AM_DBG lib::logger::get_logger()->debug("~dx_window()");
 	m_wf->window_done(m_name);
 }
-  		
+
 void gui::dx::dx_window::need_redraw(const lib::rect &r) {
 	m_redraw_rect_lock.enter();
 	_need_redraw(r);

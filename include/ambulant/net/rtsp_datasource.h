@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -148,7 +148,7 @@ struct rtsp_context_t {
 		if (env) env->reclaim();
 		if (scheduler) delete scheduler; // XXXJACK no close method?
 	}
-	
+
 	TaskScheduler* scheduler;
 	UsageEnvironment* env;
 	RTSPClient* rtsp_client;
@@ -159,7 +159,7 @@ struct rtsp_context_t {
     MediaSubsession *audio_subsession;
 	int video_stream;	// Index of the video subsession
 	MediaSubsession *video_subsession;
-    
+
 	unsigned char* configData; // For H264 (and maybe other formats): Extra configuration data, to be passed to ffmpeg
 	int configDataLen;
 	unsigned char *initialPacketData;	// For MP4V (and maybe other formats): a synthetic initial packet
@@ -193,19 +193,19 @@ struct rtsp_context_t {
 	video_format video_fmt;
 	demux_datasink *sinks[MAX_STREAMS];
 	int nsinks;
-    
+
 };
-	
+
 class rtsp_demux : public abstract_demux {
   public:
 	rtsp_demux(rtsp_context_t* context, timestamp_t clip_begin, timestamp_t clip_end);
 	~rtsp_demux();
 	static rtsp_context_t* supported(const net::url& url);
-	
+
 	void add_datasink(demux_datasink *parent, int stream_index);
 	void remove_datasink(int stream_index);
   	int audio_stream_nr() { return m_context->audio_stream; };
-	int video_stream_nr() { return m_context->video_stream; };  
+	int video_stream_nr() { return m_context->video_stream; };
 	int nstreams() { return m_context->nstream; };
 	double duration(){ return 0.0; };
 	audio_format& get_audio_format() { return m_context->audio_fmt; };

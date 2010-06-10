@@ -56,11 +56,11 @@
 #endif
 
 #include <aygshell.h>
-#pragma comment(lib, "aygshell.lib") 
+#pragma comment(lib, "aygshell.lib")
 
 #if (_WIN32_WCE < 0x500) && ( defined(WIN32_PLATFORM_PSPC) || defined(WIN32_PLATFORM_WFSP) )
 	#pragma comment(lib, "ccrtrtti.lib")
-	#ifdef _X86_	
+	#ifdef _X86_
 		#if defined(_DEBUG)
 			#pragma comment(lib, "libcmtx86d.lib")
 		#else

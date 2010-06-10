@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_SMIL2_TIME_NCTX_H
@@ -49,18 +49,18 @@ enum dst_playstate { dst_play, dst_pause, dst_external };
 
 // Time nodes context requirements
 // This interface is used by time nodes to communicate with their environment
-// This interface is used by the timegraph builder 
+// This interface is used by the timegraph builder
 class time_node_context : public common::player_feedback {
   public:
 	// Services
 	virtual time_traits::value_type elapsed() const = 0;
 	virtual lib::timer* get_timer() = 0;
-	virtual void show_link(const lib::node *n, const net::url& href, 
+	virtual void show_link(const lib::node *n, const net::url& href,
 		src_playstate srcstate, dst_playstate dststate, const char * target) = 0;
 	virtual animation_engine* get_animation_engine() = 0;
 	virtual bool wait_for_eom() const = 0;
 	virtual void set_wait_for_eom(bool b) = 0;
-	
+
 	// Playable commands
 	virtual common::playable *create_playable(const lib::node *n) = 0;
 	virtual void start_playable(const lib::node *n, double t, const lib::transition_info *trans = 0) = 0;
@@ -70,10 +70,10 @@ class time_node_context : public common::player_feedback {
 	virtual void seek_playable(const lib::node *n, double t) = 0;
 	virtual void wantclicks_playable(const lib::node *n, bool want) = 0;
 	virtual void start_transition(const lib::node *n, const lib::transition_info *trans, bool in) = 0;
-	
+
 	// Playable queries
 	virtual common::duration get_dur(const lib::node *n) = 0;
-		
+
 	// Notifications
 	virtual void started_playback() = 0;
 	virtual void done_playback() = 0;
@@ -90,22 +90,22 @@ class time_node_context : public common::player_feedback {
 //  // count document states
 //  // check if the doc will play from start to end without req events
 //	// dislay states, etc
-// 
+//
 class dummy_time_node_context : public time_node_context {
   public:
 	dummy_time_node_context() {}
 	virtual ~dummy_time_node_context() {}
-	
+
 	// Services
 	virtual smil2::time_traits::value_type elapsed() const {return 0;}
-	
+
 	virtual lib::timer* get_timer() {return 0;}
-	virtual void show_link(const lib::node *n, const net::url& href, 
+	virtual void show_link(const lib::node *n, const net::url& href,
 		src_playstate srcstate, dst_playstate dststate, const char * target) {}
 	virtual smil2::animation_engine* get_animation_engine() { return 0;}
 	virtual bool wait_for_eom() const { return false;}
 	virtual void set_wait_for_eom(bool b) {}
-	
+
 	// Playable commands
 	virtual common::playable *create_playable(const lib::node *n) { return 0;}
 	virtual void start_playable(const lib::node *n, double t, const lib::transition_info *trans = 0) {}
@@ -115,11 +115,11 @@ class dummy_time_node_context : public time_node_context {
 	virtual void seek_playable(const lib::node *n, double t) {}
 	virtual void wantclicks_playable(const lib::node *n, bool want) {}
 	virtual void start_transition(const lib::node *n, const lib::transition_info *trans, bool in) {}
-	
+
 	// Playable queries
-	virtual common::duration get_dur(const lib::node *n) { 
+	virtual common::duration get_dur(const lib::node *n) {
 		return common::duration(true, 1.0);} // allow for fast forward
-		
+
 	// Notifications
 	virtual void started_playback() {}
 	virtual void done_playback(){}
@@ -132,7 +132,7 @@ class dummy_time_node_context : public time_node_context {
 };
 
 } // namespace smil2
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_SMIL2_TIME_NCTX_H

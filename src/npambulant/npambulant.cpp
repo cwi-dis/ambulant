@@ -76,17 +76,17 @@ int stderr_ostream::write(const char *cstr)
 
 npambulant::npambulant(
 	NPMIMEType mimetype,
-	NPP pNPInstance, 
+	NPP pNPInstance,
 	PRUint16 mode,
-	int argc, 
-	char* argn[], 
-	char* argv[], 
+	int argc,
+	char* argn[],
+	char* argv[],
 	NPSavedData* data
 ) :
 	m_mimetype(mimetype),
 	m_pNPInstance(pNPInstance ),
 	m_mode(mode),
-	m_argc(argc),  
+	m_argc(argc),
 	m_argn(argn),
 	m_argv(argv),
 	m_data(data),
@@ -181,7 +181,7 @@ AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, ver
 	    prefs->m_use_plugins = false;
 	} else {
 #ifdef WITH_LTDL_PLUGINS
-	    char* path = strdup(p.dli_fname); // full path of this firefox plugin 
+	    char* path = strdup(p.dli_fname); // full path of this firefox plugin
 	    char* ffplugindir = dirname(path);
 		char* npambulant_plugins = "/npambulant/plugins";
 	    char* amplugin_path = (char*) malloc(strlen(ffplugindir)+strlen(npambulant_plugins)+1);
@@ -191,7 +191,7 @@ AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, ver
 #else //WITH_LTDL_PLUGINS
 		prefs->m_use_plugins = false;
 #endif//WITH_LTDL_PLUGINS
-	}    
+	}
 
 #endif//!XP_WIN3: Linux, Mac
 	// save the NPWindow for any Ambulant plugins (such as SMIL State)
@@ -225,7 +225,7 @@ AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, ver
 	const char* arg_str = NULL;
 	if (m_argc > 1)
 		for (int i =0; i < m_argc; i++) {
-			// Uncomment next line to see the <EMBED/> attr values	
+			// Uncomment next line to see the <EMBED/> attr values
 			// fprintf(stderr, "arg[%i]:%s=%s\n",i,m_argn[i],m_argv[i]);
 			const char* name = m_argn[i];
 			const char* value = m_argv[i];
@@ -262,7 +262,7 @@ AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, ver
 #ifdef WITH_GTK
 	gtk_gui* m_gui = new gtk_gui((char*) gtkwidget, url_str);
 	m_mainloop = new gtk_mainloop(m_gui);
-	if (url_str) 
+	if (url_str)
 	        free((void*)url_str);
 	m_logger = lib::logger::get_logger();
 	m_ambulant_player = m_mainloop->get_player();
@@ -325,7 +325,7 @@ char* npambulant::get_document_location()
 	assert(NPVARIANT_IS_OBJECT(npvDocument));
 	NPObject *document = NPVARIANT_TO_OBJECT(npvDocument);
 	assert(document);
-	
+
 	// Get document.location
 	NPVariant npvLocation;
 	ok = NPN_GetProperty(m_pNPInstance, document, NPN_GetStringIdentifier("location"), &npvLocation);
@@ -334,7 +334,7 @@ char* npambulant::get_document_location()
 	assert(NPVARIANT_IS_OBJECT(npvLocation));
 	NPObject *location = NPVARIANT_TO_OBJECT(npvLocation);
 	assert(location);
-	
+
 	// Get document.location.href
 	NPVariant npvHref;
 	ok = NPN_GetProperty(m_pNPInstance, location, NPN_GetStringIdentifier("href"), &npvHref);
@@ -352,7 +352,7 @@ char* npambulant::get_document_location()
 	strncpy(rv, href.UTF8Characters, href.UTF8Length);
 	rv[href.UTF8Length] = '\0';
 	AM_DBG fprintf(stderr, "get_document_location: returning \"%s\"\n", rv);
-	
+
 	NPN_ReleaseVariantValue(&npvLocation);
 	NPN_ReleaseVariantValue(&npvDocument);
 	NPN_ReleaseVariantValue(&npvHref);
@@ -376,13 +376,13 @@ npambulant::setWindow(NPWindow* pNPWindow)
 	// do our drawing to it
 	m_lpOldProc = SubclassWindow(m_hWnd, (WNDPROC)PluginWinProc);
 
-	// associate window with our npambulant object so we can access 
+	// associate window with our npambulant object so we can access
 	// it in the window procedure
 	m_OldWindow = SetWindowLong(m_hWnd, GWL_USERDATA, (LONG)this);
 #endif
 
 	m_Window = pNPWindow;
-	
+
 	return TRUE;
 }
 
@@ -607,12 +607,12 @@ npambulant::GetScriptableObject()
 	return m_pScriptableObject;
 }
 
-/* status line */	
+/* status line */
 #ifndef WIN32
 extern "C" {
 #endif//WIN32
 NPP s_npambulant_last_instance = NULL;
-  
+
 void
 npambulant_display_message(int level, const char *message) {
 	if (s_npambulant_last_instance)
@@ -666,9 +666,9 @@ PluginWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 							HINSTANCE hIns = 0;
 							HCURSOR new_cursor = 0;
 							if(new_cursor_id == 0) {
-								new_cursor = LoadCursor(hIns, IDC_ARROW); 
+								new_cursor = LoadCursor(hIns, IDC_ARROW);
 							} else {
-								new_cursor = LoadCursor(hIns, IDC_HAND); 
+								new_cursor = LoadCursor(hIns, IDC_HAND);
 							}
 							SetClassLongPtr(hWnd, GCLP_HCURSOR, HandleToLong(new_cursor));
 							plugin->m_cursor_id = new_cursor_id;
@@ -697,7 +697,7 @@ ambulant_player_callbacks::set_os_window(HWND hwnd)
 }
 
 
-HWND 
+HWND
 ambulant_player_callbacks::new_os_window()
 {
 	return m_hwnd;

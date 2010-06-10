@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_COMMON_VIDEO_RENDERER_H
@@ -61,23 +61,23 @@ class video_renderer : public common::renderer_playable {
 	common::playable_factory_machdep *mdp);
 
   	virtual ~video_renderer();
-	
+
 	/// The pixel format this renderer wants. Override in subclass to fit
 	/// what the hardware wants (so we don't need to do an extra pass of
 	/// byte reordering).
 	virtual net::pixel_order pixel_layout() { return net::pixel_argb; }
-	
+
 	/// Return true if video is paused.
   	bool is_paused() { return m_is_paused; };
-	
+
 	/// Return true if video is not playing.
   	bool is_stopped() { return !m_activated;};
-	
+
 	/// Return true if video is playing.
-  	bool is_playing() { return m_activated; };  
-	
+  	bool is_playing() { return m_activated; };
+
     virtual void redraw(const lib::rect &dirty, common::gui_window *window);
-	
+
     virtual void set_surface(common::surface *dest) {
         common::renderer_playable::set_surface(dest);
         if (m_audio_renderer) {
@@ -97,13 +97,13 @@ class video_renderer : public common::renderer_playable {
     void data_avail();
 	duration get_dur();
 //	void playdone() {};
-	
-  protected:		
+
+  protected:
 	/// Display video data. Subclass providing this method is responsible for
 	/// eventually free()ing frame. This method is protected because it shares
     /// the m_lock mutex.
 	virtual void _push_frame(char* frame, int size) = 0;
-	
+
   protected:
 	lib::size m_size;		///< (width, height) of the video data.
   	net::video_datasource* m_src;	///< video datasource.
@@ -126,14 +126,14 @@ class video_renderer : public common::renderer_playable {
 	long int m_frame_late;
 	long int m_frame_missing;
 #ifdef WITH_SEAMLESS_PLAYBACK
-	net::timestamp_t m_previous_clip_position;      
+	net::timestamp_t m_previous_clip_position;
 #endif
   protected:
 	lib::critical_section m_lock;
 };
 
 } // namespace common
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_COMMON_VIDEO_RENDERER_H

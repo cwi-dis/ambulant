@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/logger.h"
@@ -74,12 +74,12 @@ class schema_factory {
 } // namespace common
 } // namespace ambulant
 
-//static 
+//static
 schema schema_factory::schema_inst;
 
-// static 
-const schema* 
-schema::get_instance() { 
+// static
+const schema*
+schema::get_instance() {
 	return &schema_factory::schema_inst;
 }
 
@@ -88,7 +88,7 @@ schema::schema() {
 	int i;
 	for(i =0;i<n;i++)
 		m_time_elements.insert(time_containers[i]);
-	
+
 	n = sizeof(discrete_leafs)/sizeof(const char *);
 	for(i =0;i<n;i++) {
 		m_time_elements.insert(discrete_leafs[i]);
@@ -100,14 +100,14 @@ schema::schema() {
 		m_time_elements.insert(continuous_leafs[i]);
 		m_continuous.insert(continuous_leafs[i]);
 	}
-	
+
 	n = sizeof(animate_elements)/sizeof(const char *);
 	for(i =0;i<n;i++) {
 		m_time_elements.insert(animate_elements[i]);
 		m_continuous.insert(animate_elements[i]);
 		m_animations.insert(animate_elements[i]);
 	}
-		
+
 #ifdef WITH_SMIL30
 	n = sizeof(statecommand_elements)/sizeof(const char *);
 	for(i =0;i<n;i++) {
@@ -116,16 +116,16 @@ schema::schema() {
 		m_statecommands.insert(statecommand_elements[i]);
 	}
 #endif // WITH_SMIL30
-	
+
 #ifdef WITH_SEAMLESS_PLAYBACK
 	n = sizeof(prefetch_elements)/sizeof(const char *);
 	for(i =0;i<n;i++) {
 		m_time_elements.insert(prefetch_elements[i]);
 		m_prefetch.insert(prefetch_elements[i]);
 	}
-	
+
 #endif // WITH_SEAMLESS_PLAYBACK
-		
+
 	n = sizeof(layout_elements)/sizeof(const char *);
 	for(i=0; i<n; i++) {
 		m_layout_elements.insert(layout_elements[i]);
@@ -137,7 +137,7 @@ schema::~schema() {
 }
 
 // Returns one of: tc_par | tc_seq | tc_excl | tc_none
-time_container_type 
+time_container_type
 schema::get_time_type(const lib::xml_string& tag) const {
 	time_container_type type = tc_none;
 	if(tag == "seq" || tag == "body") type = tc_seq;
@@ -166,7 +166,7 @@ bool schema::is_prefetch(const lib::xml_string& tag) const {
 }
 #endif //WITH_SEAMLESS_PLAYBACK
 
-const char* 
+const char*
 ambulant::common::time_container_type_as_str(time_container_type t) {
 	switch(t) {
 		case tc_par: return "par";
@@ -177,7 +177,7 @@ ambulant::common::time_container_type_as_str(time_container_type t) {
 }
 
 // Returns one of: l_rootlayout, l_region or l_none
-layout_type 
+layout_type
 schema::get_layout_type(const lib::xml_string& tag) const {
 	layout_type type = l_none;
 	if(tag == "layout" ) type = l_layout;
@@ -190,7 +190,7 @@ schema::get_layout_type(const lib::xml_string& tag) const {
 	return type;
 }
 
-const char* 
+const char*
 layout_type_as_str(layout_type t) {
 	switch(t) {
 		case l_layout: return "layout";

@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_NONE_AREA_H
@@ -44,7 +44,7 @@ class none_area_renderer : public common::renderer_playable {
 		const lib::node *node,
 		lib::event_processor* evp,
 		common::factories *fp,
-		common::playable_factory_machdep *mdp) 
+		common::playable_factory_machdep *mdp)
 	:   common::renderer_playable(context, cookie, node, evp, fp, mdp),
 		m_rgn(NULL) {}
 	~none_area_renderer();
@@ -62,7 +62,7 @@ class none_area_renderer : public common::renderer_playable {
 } // namespace none
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_GUI_NONE_AREA_H

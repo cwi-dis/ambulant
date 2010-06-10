@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/cocoa/cocoa_smiltext.h"
@@ -50,7 +50,7 @@ _select_font(const char *family, smil2::smiltext_font_style style, smil2::smilte
 	NSFontTraitMask mask = 0;
 	NSFontManager *fm = [NSFontManager sharedFontManager];
 	NSString *ffname = NULL;
-	
+
 	if (strcmp(family, "serif") == 0) {
 		ffname = [NSString stringWithUTF8String: "Times"];
 	} else if (strcmp(family, "monospace") == 0) {
@@ -93,8 +93,8 @@ create_cocoa_smiltext_playable_factory(common::factories *factory, common::playa
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererSmilText"), true);
 	return new common::single_playable_factory<
-        cocoa_smiltext_renderer, 
-        cocoa_smiltext_playable_tag, 
+        cocoa_smiltext_renderer,
+        cocoa_smiltext_playable_tag,
         cocoa_smiltext_playable_renderer_uri,
         cocoa_smiltext_playable_renderer_uri2,
         cocoa_smiltext_playable_renderer_uri2>(factory, mdp);
@@ -262,7 +262,7 @@ cocoa_smiltext_renderer::smiltext_changed()
 				[newdata appendString: @"\u202c"]; // POP DIRECTIONAL FORMATTING
 			}
 			[m_text_storage replaceCharactersInRange:newrange withString:newdata];
-			
+
 			// Prepare for setting the attribute info
 			NSMutableDictionary *attrs = [[NSMutableDictionary alloc] init];
 			newrange.length = [newdata length];
@@ -277,9 +277,9 @@ cocoa_smiltext_renderer::smiltext_changed()
             }
 			if (!text_font)
                 text_font = [NSFont userFontOfSize: (*i).m_font_size];
-                
+
             [attrs setValue:text_font forKey:NSFontAttributeName];
-				
+
 			if (!(*i).m_transparent) {
 				// Find color info
 				double alfa = 1.0;
@@ -366,7 +366,7 @@ cocoa_smiltext_renderer::smiltext_changed()
 
 			// Set the attributes
 			[m_text_storage setAttributes:attrs range:newrange];
-			
+
 			i++;
 		}
 		[m_text_storage endEditing];
@@ -441,7 +441,7 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	assert(m_layout_manager);
 	assert(m_text_container);
 	assert(m_text_storage);
-	
+
 	// If the layout size has changed (due to smil animation or so) change it
 	if (!NSEqualSizes(old_layout_size, layout_size)) {
 		[m_text_container setContainerSize: layout_size];
@@ -541,7 +541,7 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 
 unsigned int
 cocoa_smiltext_renderer::_compute_rate(smil2::smiltext_align align, lib::size size, lib::rect r,  unsigned int dur) {
-  /* First find the distance to travel during scroll for various values 
+  /* First find the distance to travel during scroll for various values
    * for textConceal and textPlace (w=window height, t=text height)
 
   + ---------------------------------------------------+
@@ -567,11 +567,11 @@ cocoa_smiltext_renderer::_compute_rate(smil2::smiltext_align align, lib::size si
 		default:
 			break;
 		case smil2::sta_left:
-			//TBD adapt for textWritingMode		  
+			//TBD adapt for textWritingMode
 			align = smil2::sta_start;
 			break;
 		case smil2::sta_right:
-			//TBD adapt for textWritingMode		  
+			//TBD adapt for textWritingMode
 			align = smil2::sta_end;
 			break;
 		}
@@ -587,7 +587,7 @@ cocoa_smiltext_renderer::_compute_rate(smil2::smiltext_align align, lib::size si
 				dst = txt;
 				break;
 			case smil2::sta_center:
-				dst = txt > win/2 ? txt - win/2 : 0; 
+				dst = txt > win/2 ? txt - win/2 : 0;
 				break;
 			}
 			break;
@@ -615,7 +615,7 @@ cocoa_smiltext_renderer::_compute_rate(smil2::smiltext_align align, lib::size si
 		break;
 	case smil2::stm_scroll:
 		win = r.h;
-		txt = size.h; 
+		txt = size.h;
 		switch (m_params.m_text_conceal) {
 		default:
 		case smil2::stc_none:
@@ -628,7 +628,7 @@ cocoa_smiltext_renderer::_compute_rate(smil2::smiltext_align align, lib::size si
 				dst = txt;
 				break;
 			case smil2::stp_from_center:
-				dst = txt > win/2 ? txt - win/2 : 0; 
+				dst = txt > win/2 ? txt - win/2 : 0;
 				break;
 			}
 			break;

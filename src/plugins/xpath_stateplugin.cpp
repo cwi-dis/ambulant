@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -38,39 +38,39 @@ class xpath_state_component : public common::state_component {
   public:
     xpath_state_component();
 	virtual ~xpath_state_component();
-	
+
 	/// Register the systemTest/customTest API
 	void register_state_test_methods(common::state_test_methods *stm);
-  
+
     /// Declare the state in the document
     void declare_state(const lib::node *state);
-    
+
     /// Calculate a boolean expression
     bool bool_expression(const char *expr);
-    
+
     /// Set a state variable to an expression
     void set_value(const char *var, const char *expr);
-    
+
 	/// Add a new variable to the state
 	void new_value(const char *ref, const char *where, const char *name, const char *expr);
-	
+
 	/// Delete a variable from the state
 	void del_value(const char *ref);
-	
+
     /// Submit the state
     void send(const lib::node *submission);
-    
+
     /// Calculate a string expression
     std::string string_expression(const char *expr);
-	
+
 	/// Get at the state_test_methods structure
 	common::state_test_methods *get_state_test_methods() const { return m_state_test_methods; }
-	
+
 	/// Register interest in stateChange events
 	void want_state_change(const char *ref, common::state_change_callback *cb);
   private:
   	void _check_state_change(xmlNodePtr changed);
-  	
+
   	xmlDocPtr m_state;
   	xmlXPathContextPtr m_context;
 	common::state_test_methods *m_state_test_methods;
@@ -209,7 +209,7 @@ smil_function_lookup(void *ctxt, const xmlChar *name, const xmlChar *nsuri)
 class xpath_state_component_factory : public common::state_component_factory {
   public:
 	virtual ~xpath_state_component_factory() {};
- 
+
  	common::state_component *new_state_component(const char *uri);
 };
 
@@ -297,7 +297,7 @@ xpath_state_component::declare_state(const lib::node *state)
 			assert(m_context);
 			return;
 		}
-			
+
 	}
 	assert(aroot);
 	const lib::node *arootnext = aroot->next();
@@ -479,7 +479,7 @@ xpath_state_component::new_value(const char *ref, const char *where, const char 
 	xmlNodeSetContent(newnodeptr, result_str);
 	xmlFree(result_str);
 
-	// Insert in the right place	
+	// Insert in the right place
 	if (where && strcmp(where, "before") == 0) {
 		xmlNodePtr rv = xmlAddPrevSibling(refnodeptr, newnodeptr);
 		if (rv == NULL) {
@@ -508,7 +508,7 @@ xpath_state_component::new_value(const char *ref, const char *where, const char 
 	// Re-set the context: it may have changed.
 	_check_state_change(newnodeptr); // XXX Or refnodeptr? both?
 }
-	
+
 void
 xpath_state_component::del_value(const char *ref)
 {
@@ -541,7 +541,7 @@ xpath_state_component::del_value(const char *ref)
 	xmlUnlinkNode(refnodeptr);
 	xmlFreeNode(refnodeptr);
 }
-	
+
 void
 xpath_state_component::send(const lib::node *submission)
 {
@@ -661,7 +661,7 @@ xpath_state_component_factory::new_state_component(const char *uri)
 }
 
 // -------------------
-static ambulant::common::factories * 
+static ambulant::common::factories *
 bug_workaround(ambulant::common::factories* factory)
 {
 	return factory;
@@ -677,7 +677,7 @@ void initialize(
     ambulant::common::gui_player *player)
 {
     if ( api_version != AMBULANT_PLUGIN_API_VERSION ) {
-        lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"xpath_state_plugin", 
+        lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"xpath_state_plugin",
 					AMBULANT_PLUGIN_API_VERSION, api_version);
         return;
     }

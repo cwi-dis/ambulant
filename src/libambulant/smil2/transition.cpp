@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/logger.h"
@@ -201,7 +201,7 @@ transition_engine_diagonalwipe::compute()
 	int xcur = xmin + (int)(m_progress*2*dstrect.width());
 	clear();
 	m_stepcount = 2*dstrect.width();
-	
+
 	m_newpolygon.push_back(lib::point(xcur, dstrect.top()));
 	m_newpolygon.push_back(lib::point(xcur+2*dstrect.width(), dstrect.top()));
 	m_newpolygon.push_back(lib::point(xcur+dstrect.width(), dstrect.bottom()));
@@ -255,7 +255,7 @@ transition_engine_bowtiewipe::compute()
 	int ymid = (y0 + y1)/2;
 	int width = x1 - x0;
 	int height = y1 - y0;
-	
+
 	if (m_progress <= 0.5) {
 		int xleft, xright, ytop, ybot;
 		std::vector<lib::point> poly;
@@ -308,8 +308,8 @@ transition_engine__iris::compute()
 	lib::dpoint *pointp = get_template(&pointcount);
 	clear();
 	m_stepcount = dstrect.width()/2;
-	double radius = sqrt( 
-		(0.5*dstrect.width())*(0.5*dstrect.width()) + 
+	double radius = sqrt(
+		(0.5*dstrect.width())*(0.5*dstrect.width()) +
 		(0.5*dstrect.height())*(0.5*dstrect.height()));
 	while (pointcount--) {
 		lib::dpoint rel_point(pointp->x * m_progress, pointp->y * m_progress);
@@ -794,7 +794,7 @@ audio_transition_engine::get_volume(const double soundlevel) {
 		return soundlevel;
 	progress = ((double) (now - m_start_time) / m_dur)
 		* (m_endProgress - m_startProgress);
-	
+
 	progress += m_startProgress;
 	if (progress > m_endProgress) progress = m_endProgress;
 	if (progress < m_startProgress) progress = m_startProgress;

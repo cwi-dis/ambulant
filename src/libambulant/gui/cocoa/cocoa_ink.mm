@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/cocoa/cocoa_ink.h"
@@ -54,8 +54,8 @@ create_cocoa_ink_playable_factory(common::factories *factory, common::playable_f
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererInk"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
 	return new common::single_playable_factory<
-        cocoa_ink_renderer, 
-        cocoa_ink_playable_tag, 
+        cocoa_ink_renderer,
+        cocoa_ink_playable_tag,
         cocoa_ink_playable_renderer_uri,
         cocoa_ink_playable_renderer_uri2,
         cocoa_ink_playable_renderer_uri2>(factory, mdp);
@@ -127,7 +127,7 @@ cocoa_ink_renderer::redraw_body(const rect &dirty, gui_window *window)
 		[m_path setLineCapStyle: NSRoundLineCapStyle];
 		[m_path setLineJoinStyle: NSRoundLineJoinStyle];
 		bool start_new_trace = true;
-		
+
 		// Check root of the tree
 		if (m_tree->get_local_name() != "ink") {
 			lib::logger::get_logger()->error(gettext("cocoa_ink_renderer: no <ink> found"));

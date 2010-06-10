@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -74,7 +74,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	if (CFrameWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
-	
+
 	if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP
 		| CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
 		!m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
@@ -108,11 +108,11 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 		return FALSE;
 	// TODO: Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
-	
-	// Set the startup dimensions for MMS 
+
+	// Set the startup dimensions for MMS
 	//cs.cx = 176 + 28;
 	//cs.cy = 216 + 108;
-	
+
 	return TRUE;
 }
 
@@ -156,7 +156,7 @@ CMainFrame::OnSetMessageString(WPARAM wParam, LPARAM lParam)
 	return CFrameWnd::OnSetMessageString(wParam, lParam);
 }
 
-afx_msg void 
+afx_msg void
 CMainFrame::OnViewFullScreen()
 {
 	WINDOWPLACEMENT wp;
@@ -175,7 +175,7 @@ CMainFrame::OnViewFullScreen()
 		// Entering fullscreen mode
         m_wndStatusBar.ShowWindow(SW_HIDE);
 	    m_wndToolBar.ShowWindow(SW_HIDE);
-		
+
 		// Calculate new frame position
 		GetWindowRect(&m_origRect);
 		::GetWindowRect(::GetDesktopWindow(), &wp.rcNormalPosition);

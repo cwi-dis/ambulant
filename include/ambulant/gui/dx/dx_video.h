@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_DX_VIDEO_H
@@ -61,7 +61,7 @@ class dx_video_renderer : public dx_renderer_playable {
 	bool user_event(const lib::point& pt, int what);
 	void redraw(const lib::rect &dirty, common::gui_window *window);
 	common::duration get_dur();
-	
+
   private:
 	void update_callback();
 	void schedule_update();
@@ -69,16 +69,16 @@ class dx_video_renderer : public dx_renderer_playable {
 	lib::event *m_update_event;
 	lib::event_processor::time_type m_frametime;
 	lib::critical_section m_cs;
-	
+
 	// for debugging
 	lib::rect m_msg_rect;
-	
+
 };
 
 } // namespace dx
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_GUI_DX_VIDEO_H

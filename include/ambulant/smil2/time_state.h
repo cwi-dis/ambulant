@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_SMIL2_TIME_STATE_H
@@ -35,11 +35,11 @@ namespace ambulant {
 
 namespace smil2 {
 
-enum time_state_type { 
+enum time_state_type {
 	ts_reset,
-	ts_proactive, 
-	ts_active, 
-	ts_postactive, 
+	ts_proactive,
+	ts_active,
+	ts_postactive,
 	ts_dead
 };
 
@@ -51,7 +51,7 @@ class time_state : public time_traits {
   public:
 	time_state(time_node *tn);
 	virtual ~time_state(){}
-	
+
 	virtual void enter(qtime_type timestamp) {}
 	virtual void sync_update(qtime_type timestamp);
 	virtual void kill(qtime_type timestamp, time_node *oproot);
@@ -65,10 +65,10 @@ class time_state : public time_traits {
 	void report_state(qtime_type timestamp);
 	void report_state();
 	time_node *m_self;
-	
+
 	// store refs to simplify code layout
 	// these are shared variables between the states
-	// and the time_node. 
+	// and the time_node.
 	interval_type& m_interval;
 	bool& m_active;
 	bool& m_needs_remove;
@@ -85,7 +85,7 @@ class reset_state : public time_state {
 	reset_state(time_node *tn)
 	:	time_state(tn) {}
 	virtual ~reset_state(){}
-	
+
 	virtual void enter(qtime_type timestamp);
 	virtual void sync_update(qtime_type timestamp);
 	virtual void exit(qtime_type timestamp, time_node *oproot);
@@ -99,17 +99,17 @@ class proactive_state : public time_state {
 	proactive_state(time_node *tn)
 	:	time_state(tn) {}
 	virtual ~proactive_state(){}
-	
+
 	virtual void enter(qtime_type timestamp);
 	virtual void sync_update(qtime_type timestamp);
 	virtual void kill(qtime_type timestamp, time_node *oproot);
-	virtual void reset(qtime_type timestamp, time_node *oproot);	 
+	virtual void reset(qtime_type timestamp, time_node *oproot);
 	virtual void exit(qtime_type timestamp, time_node *oproot);
 	virtual time_state_type ident() { return ts_proactive;}
 	virtual const char* name() const { return "proactive";}
 	virtual char sig() const { return 'e';}
   private:
-	void on_sync_update(qtime_type timestamp);  
+	void on_sync_update(qtime_type timestamp);
 };
 
 class active_state : public time_state {
@@ -117,11 +117,11 @@ class active_state : public time_state {
 	active_state(time_node *tn)
 	:	time_state(tn) {}
 	virtual ~active_state(){}
-	
+
 	virtual void enter(qtime_type timestamp);
 	virtual void sync_update(qtime_type timestamp);
 	virtual void kill(qtime_type timestamp, time_node *oproot);
-	virtual void reset(qtime_type timestamp, time_node *oproot);	 
+	virtual void reset(qtime_type timestamp, time_node *oproot);
 	virtual void exit(qtime_type timestamp, time_node *oproot);
 	virtual time_state_type ident() { return ts_active;}
 	virtual const char* name() const { return "active";}
@@ -130,14 +130,14 @@ class active_state : public time_state {
 
 class postactive_state : public time_state {
   public:
-	postactive_state(time_node *tn) 
+	postactive_state(time_node *tn)
 	:	time_state(tn) {}
 	virtual ~postactive_state(){}
-	
+
 	virtual void enter(qtime_type timestamp);
-	virtual void sync_update(qtime_type timestamp); 
+	virtual void sync_update(qtime_type timestamp);
 	virtual void kill(qtime_type timestamp, time_node *oproot);
-	virtual void reset(qtime_type timestamp, time_node *oproot);	 
+	virtual void reset(qtime_type timestamp, time_node *oproot);
 	virtual void exit(qtime_type timestamp, time_node *oproot);
 	virtual time_state_type ident() { return ts_postactive;}
 	virtual const char* name() const { return "postactive";}
@@ -149,10 +149,10 @@ class dead_state : public time_state {
 	dead_state(time_node *tn)
 	:	time_state(tn) {}
 	virtual ~dead_state(){}
-	
+
 	virtual void enter(qtime_type timestamp);
 	virtual void kill(qtime_type timestamp, time_node *oproot);
-	virtual void reset(qtime_type timestamp, time_node *oproot);	 
+	virtual void reset(qtime_type timestamp, time_node *oproot);
 	virtual void exit(qtime_type timestamp, time_node *oproot);
 	virtual time_state_type ident() { return ts_dead;}
 	virtual const char* name() const { return "dead";}
@@ -160,7 +160,7 @@ class dead_state : public time_state {
 };
 
 } // namespace smil2
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_SMIL2_TIME_STATE_H

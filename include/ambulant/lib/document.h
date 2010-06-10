@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_LIB_DOCUMENT_H
@@ -75,29 +75,29 @@ class AMBULANTAPI document :
 	/// A document factory function.
 	/// Creates documents from a url.
 	static document* create_from_url(common::factories* factory, const net::url& u);
-  
+
 	/// A document factory function.
 	/// Creates documents from local files.
 	static document* create_from_file(common::factories* factory, const std::string& filename);
-	
+
 	/// A document factory function.
 	/// Creates documents from source strings.
 	/// The src_id argument is used in error messages only, the caller
 	/// needs to call set_str_url() itself.
 	static document* create_from_string(common::factories* factory, const std::string& smil_src, const std::string& src_id);
-	
+
 	/// This class may be extented to more specific documents.
 	/// Therefore, use the virtual table to invoke the destructor.
 	virtual ~document();
-	
+
 	/// Returns the root node of this document.
 	/// The document remains the owner of the root unless detach is true.
 	node* get_root(bool detach = false);
 	const node* get_root() const;
-	
+
 	/// Signal to the document that the underlying tree has changed.
 	void tree_changed();
-	
+
 	/// Locate a node with a given path.
 	node* locate_node(const char *path) {
 		return m_root?m_root->locate_node(path):0;
@@ -107,12 +107,12 @@ class AMBULANTAPI document :
 	const node* locate_node(const char *path) const {
 		return m_root?m_root->locate_node(path):0;
 	}
-		
+
 	/// Returns the source url of this document.
 	const ambulant::net::url& get_src_url() const { return m_src_url;}
-	
+
 	// node_context interface
-	void set_prefix_mapping(const std::string& prefix, const std::string& uri);	
+	void set_prefix_mapping(const std::string& prefix, const std::string& uri);
 	const xml_string& get_namespace_prefix(const xml_string& uri) const;
 	bool is_supported_prefix(const xml_string& prefix) const;
 	bool is_supported_namespace(const xml_string& uri) const;
@@ -126,23 +126,23 @@ class AMBULANTAPI document :
 	}
 	const std::map<std::string, custom_test>* get_custom_tests() const
 		{ return &m_custom_tests;}
-	
+
 	/// Set the source URL of the document.
 	void set_src_url(ambulant::net::url u) { m_src_url = u;}
-    
+
 #ifdef WITH_SMIL30
 	/// Return the state engine.
 	common::state_component *get_state() const { return m_state;}
-	
+
 	/// Set the state engine.
-	void set_state(common::state_component *state) { m_state = state; }	
+	void set_state(common::state_component *state) { m_state = state; }
 
 	/// Apply XSLT Attribute Value Template
 	const lib::xml_string& apply_avt(const node* n, const lib::xml_string& attrname, const lib::xml_string& attrvalue) const;
 
     /// Ask for a callback if any AVT on the given node changes
     void register_for_avt_changes(const node* n, avt_change_notification *handler);
-    
+
     /// Forward state changes to entities that requested AVT change notification
     void on_state_change(const char *ref);
 
@@ -152,47 +152,47 @@ class AMBULANTAPI document :
 	document();
 //	document(node *root = 0, bool owned=true);
 //	document(node *root, const net::url& src_url);
-	
+
 	void set_root(node* n);
 //	void set_src_base(ambulant::net::url u) { m_src_base = u;}
-	
+
   private:
 	// builds id to node map
 	void build_id2node_map();
-	
+
 	// reads document custom tests attributes
 	void read_custom_attributes();
-	
+
 	// the root of this document
 	node *m_root;
-	
+
 	// Whether m_root should be freed
 	bool m_root_owned;
-	
+
 	// the external source url
 	ambulant::net::url m_src_url;
-	
+
 	// this base url
 //	ambulant::net::url m_src_base;
-	
+
 	bool m_is_file;
-	
+
 	// document namespaces registry
 	nscontext m_namespaces;
-	
+
 	// document custom tests
 	std::map<std::string, custom_test> m_custom_tests;
-	
+
 	// map of id to nodes
 	std::map<std::string, const node*> m_id2node;
 
 #ifdef WITH_SMIL30
     // Implementation of state document
 	common::state_component *m_state;
-    
+
     // Per node, remember xpath expressions used
     std::multimap<const lib::node*, xml_string > m_node2xpaths;
-    
+
     // Per xpath expression, remember callbacks to apply
     std::multimap<const xml_string, std::pair<const avt_change_notification*, const lib::node*> > m_xpath2callbacks;
 
@@ -204,7 +204,7 @@ class AMBULANTAPI document :
 };
 
 } // namespace lib
- 
+
 } // namespace ambulant
 
 // XXX Not sure about next #if. The construct doesn't work for emVC3 and gcc2.95.

@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/smil2/animate_a.h"
@@ -41,20 +41,20 @@ using namespace smil2;
 
 animate_attrs::animate_attrs(const lib::node *n, const lib::node* tparent)
 :	m_node(n),
-	m_tparent(tparent), 
+	m_tparent(tparent),
 	m_target(0) {
 	m_logger = lib::logger::get_logger();
 	const char *pid = m_node->get_attribute("id");
-	m_id = (pid?pid:"no-id");	
+	m_id = (pid?pid:"no-id");
 	m_tag = m_node->get_local_name();
 	locate_target_element();
 	locate_target_attr();
 	m_animtype = find_anim_type();
 	read_enum_atttrs();
-	AM_DBG m_logger->debug("%s[%s].%s --> %s.%s", 
-		m_tag.c_str(), m_id.c_str(), m_animtype.c_str(), 
+	AM_DBG m_logger->debug("%s[%s].%s --> %s.%s",
+		m_tag.c_str(), m_id.c_str(), m_animtype.c_str(),
 		m_target_type.c_str(), m_attrname.c_str());
-	apply_constraints();	
+	apply_constraints();
 }
 
 animate_attrs::~animate_attrs() {
@@ -65,7 +65,7 @@ void animate_attrs::locate_target_element() {
 	if(p) {
 		m_target = m_node->get_context()->get_node(p);
 		if(!m_target) {
-			m_logger->trace("<%s id=\"%s\" targetElement=\"%s\">: target not found", 
+			m_logger->trace("<%s id=\"%s\" targetElement=\"%s\">: target not found",
 					m_tag.c_str(), m_id.c_str(), p);
 			m_logger->warn(gettext("Error in SMIL animation"));
 			return;
@@ -79,7 +79,7 @@ void animate_attrs::locate_target_element() {
 		else if(ttag == "area") m_target_type = "area";
 		else m_target_type = "subregion";
 	} else {
-		m_logger->trace("<%s id=\"%s\">: failed to locate target node", 
+		m_logger->trace("<%s id=\"%s\">: failed to locate target node",
 				m_tag.c_str(), m_id.c_str());
 		m_logger->warn(gettext("Error in SMIL animation"));
 	}
@@ -94,7 +94,7 @@ void animate_attrs::locate_target_attr() {
 	}
 	const char *p = m_node->get_attribute("attributeName");
 	if(!p) {
-		m_logger->trace("<%s id=\"%s\">: attributeName is missing", 
+		m_logger->trace("<%s id=\"%s\">: attributeName is missing",
 				m_tag.c_str(), m_id.c_str());
 		m_logger->warn(gettext("Error in SMIL animation"));
 		return;
@@ -109,7 +109,7 @@ void animate_attrs::locate_target_attr() {
 		}
 	}
 	if(!m_attrtype.empty()) return;
-	
+
 	if(m_attrname == "backgroundColor") {
 		m_attrtype = "color";
 	} else if(m_attrname == "z-index") {
@@ -129,19 +129,19 @@ void animate_attrs::locate_target_attr() {
 		m_attrtype = "opacity";
 #endif // WITH_SMIL30
 	} else {
-		m_logger->trace("<%s id=\"%s\" attributeName=\"%s\">: attribute cannot be animated", 
+		m_logger->trace("<%s id=\"%s\" attributeName=\"%s\">: attribute cannot be animated",
 				m_tag.c_str(), m_id.c_str(), m_attrname.c_str());
 		m_logger->warn(gettext("Error in SMIL animation"));
 	}
 }
 
-// Return true when 
+// Return true when
 // a) calcMode is discrete
 // b) the attribute is not linear (emum or strings)
 // c) for set animations
 bool animate_attrs::is_discrete() const {
 	return m_calc_mode == "discrete" || m_tag == "set";
-	
+
 }
 
 // Returns one of: invalid, values, from-to, from-by, to, by
@@ -161,7 +161,7 @@ const char* animate_attrs::find_anim_type() {
 		if(pto) return "to";
 		else if(pby) return "by";
 	}
-	m_logger->trace("<%s id=\"%s\">: the animation values are invalid", 
+	m_logger->trace("<%s id=\"%s\">: the animation values are invalid",
 			m_tag.c_str(), m_id.c_str());
 	m_logger->warn(gettext("Error in SMIL animation"));
 	return "invalid";
@@ -175,12 +175,12 @@ void animate_attrs::read_enum_atttrs() {
 		m_additive = false; // default is 'replace'
 		if(m_animtype == "by" /* && attr additive */) m_additive = true;
 	}
-	
+
 	p = m_node->get_attribute("accumulate");
 	if(p && strcmp(p, "sum") == 0 /* && attr additive */) m_accumulate = true;
 	else if(p && strcmp(p, "none") == 0) m_accumulate = false;
 	else m_accumulate = false; // default is 'none'
-	
+
 	p = m_node->get_attribute("calcMode");
 	if(p) m_calc_mode = p; // verify in (linear, paced, spline, discrete)
 	else {
@@ -192,18 +192,18 @@ void animate_attrs::read_enum_atttrs() {
 // Apply any constraints after reading attributes
 // Validate attributes
 void animate_attrs::apply_constraints() {
-	if(m_tag == "set") 
+	if(m_tag == "set")
 		m_calc_mode = "discrete";
-				
+
 	// validate
 	if(!m_target || m_attrtype.empty()) {
 		m_animtype = "invalid";
 	}
-	
+
 	// Override additive for "by" animations
-	if(m_animtype == "by" /* && attr additive */) 
+	if(m_animtype == "by" /* && attr additive */)
 		m_additive = true;
-		
+
 	// XXX: check values
 	// ...
 }
@@ -218,7 +218,7 @@ void animate_attrs::get_key_times(std::vector<double>& v) {
 		if(parser.matches(*it))
 			v.push_back(parser.get_result());
 		else {
-			m_logger->trace("<%s id=\"%s\" keyTimes=\"%s\">: invalid keyTime", 
+			m_logger->trace("<%s id=\"%s\" keyTimes=\"%s\">: invalid keyTime",
 					m_tag.c_str(), m_id.c_str(), p);
 			m_logger->warn(gettext("Error in SMIL animation"));
 		}
@@ -235,7 +235,7 @@ void animate_attrs::get_key_splines(std::vector<qtuple>& v) {
 		std::list<std::string> sc;
 		lib::split_trim_list(*it, sc, ' ');
 		if(sc.size() != 4) {
-			m_logger->trace("<%s id=\"%s\" keySplines=\"%s\">: invalid keySplines", 
+			m_logger->trace("<%s id=\"%s\" keySplines=\"%s\">: invalid keySplines",
 					m_tag.c_str(), m_id.c_str(), attr);
 			m_logger->warn(gettext("Error in SMIL animation"));
 		}
@@ -246,7 +246,7 @@ void animate_attrs::get_key_splines(std::vector<qtuple>& v) {
 			if(parser.matches(*it))
 				*p++ = parser.get_result();
 			else {
-				m_logger->trace("<%s id=\"%s\" keySplines=\"%s\">: invalid keySplines", 
+				m_logger->trace("<%s id=\"%s\" keySplines=\"%s\">: invalid keySplines",
 						m_tag.c_str(), m_id.c_str(), p);
 				m_logger->warn(gettext("Error in SMIL animation"));
 				succeeded = false;
@@ -266,7 +266,7 @@ void animate_attrs::get_values(std::vector<int>& v) {
 	if(m_animtype == "values") {
 		const char *pvalues = m_node->get_attribute("values");
 		std::list<std::string> c;
-		if(pvalues) 
+		if(pvalues)
 			lib::split_trim_list(pvalues, c, ';');
 		for(std::list<std::string>::iterator it=c.begin();it!=c.end();it++)
 			v.push_back(safeatoi((*it).c_str()));
@@ -303,7 +303,7 @@ void animate_attrs::get_values(std::vector<double>& v) {
 	if(m_animtype == "values") {
 		const char *pvalues = m_node->get_attribute("values");
 		std::list<std::string> c;
-		if(pvalues) 
+		if(pvalues)
 			lib::split_trim_list(pvalues, c, ';');
 		for(std::list<std::string>::iterator it=c.begin();it!=c.end();it++)
 			v.push_back(safeatof((*it).c_str()));
@@ -335,7 +335,7 @@ void animate_attrs::get_values(std::vector<std::string>& v) {
 	if(m_animtype == "values") {
 		const char *pvalues = m_node->get_attribute("values");
 		std::list<std::string> c;
-		if(pvalues) 
+		if(pvalues)
 			lib::split_trim_list(pvalues, c, ';');
 		for(std::list<std::string>::iterator it=c.begin();it!=c.end();it++)
 			v.push_back(*it);
@@ -363,7 +363,7 @@ common::region_dim animate_attrs::to_region_dim(const std::string& s) {
 	std::string::const_iterator e = s.end();
 	std::ptrdiff_t d = parser.parse(b, e);
 	if(d == -1) {
-		m_logger->trace("<%s id=\"%s\">: invalid region dim \"%s\"", 
+		m_logger->trace("<%s id=\"%s\">: invalid region dim \"%s\"",
 			m_tag.c_str(), m_id.c_str(), s.c_str());
 		m_logger->warn(gettext("Error in SMIL animation"));
 		return common::region_dim();
@@ -376,7 +376,7 @@ void animate_attrs::get_values(std::vector<common::region_dim>& v) {
 	if(m_animtype == "values") {
 		const char *pvalues = m_node->get_attribute("values");
 		std::list<std::string> c;
-		if(pvalues) 
+		if(pvalues)
 			lib::split_trim_list(pvalues, c, ';');
 		for(std::list<std::string>::iterator it=c.begin();it!=c.end();it++)
 			v.push_back(to_region_dim(*it));
@@ -409,7 +409,7 @@ void animate_attrs::get_values(std::vector<lib::color_t>& v) {
 	if(m_animtype == "values") {
 		const char *pvalues = m_node->get_attribute("values");
 		std::list<std::string> c;
-		if(pvalues) 
+		if(pvalues)
 			lib::split_trim_list(pvalues, c, ';');
 		for(std::list<std::string>::iterator it=c.begin();it!=c.end();it++)
 			v.push_back(to_color((*it).c_str()));
@@ -451,7 +451,7 @@ void animate_attrs::get_values(std::vector<common::sound_alignment>& v) {
 		else if (strcmp(pto, "default") == 0)
 			sa = common::sa_default;
 		else {
-			m_logger->trace("<%s id=\"%s\">: invalid soundAlign \"%s\"", 
+			m_logger->trace("<%s id=\"%s\">: invalid soundAlign \"%s\"",
 					m_tag.c_str(), m_id.c_str(), pto);
 			m_logger->warn(gettext("Error in SMIL animation"));
 		}
@@ -468,7 +468,7 @@ lib::point animate_attrs::to_point(const std::string& s) {
 	std::string::const_iterator e = s.end();
 	std::ptrdiff_t d = parser.parse(b, e);
 	if(d == -1) {
-		m_logger->trace("<%s id=\"%s\">: invalid point \"%s\"", 
+		m_logger->trace("<%s id=\"%s\">: invalid point \"%s\"",
 				m_tag.c_str(), m_id.c_str(), s.c_str());
 		m_logger->warn(gettext("Error in SMIL animation"));
 		return lib::point();
@@ -480,13 +480,13 @@ void animate_attrs::get_values(std::vector<lib::point>& v) {
 	if(m_animtype == "path") {
 		const char *ppath = m_node->get_attribute("path");
 		lib::gpath_descr pd(ppath?ppath:"m 0 0");
-		lib::polyline_builder builder; 
+		lib::polyline_builder builder;
 		lib::gpath *path = builder.build_path(&pd);
 		path->get_pivot_points(v);
 	} else if(m_animtype == "values") {
 		const char *pvalues = m_node->get_attribute("values");
 		std::list<std::string> c;
-		if(pvalues) 
+		if(pvalues)
 			lib::split_trim_list(pvalues, c, ';');
 		for(std::list<std::string>::iterator it=c.begin();it!=c.end();it++)
 			v.push_back(to_point(*it));
@@ -526,7 +526,7 @@ common::region_dim_spec animate_attrs::to_rds(const std::string& s) {
 	lib::delimiter_p space(" \t\r\n");
 	lib::literal_p<','> comma;
 	lib::star_p<lib::delimiter_p> opt_space_inst = make_star(space);
-		
+
 	// S?
 	d = opt_space_inst.parse(b, e);
 	if (b == e) goto bad;
@@ -578,9 +578,9 @@ common::region_dim_spec animate_attrs::to_rds(const std::string& s) {
 		if (d <= 0) goto bad;
 	}
 	return rds;
-	
+
 bad:
-	m_logger->trace("<%s id=\"%s\">: invalid region dim spec\"%s\"", 
+	m_logger->trace("<%s id=\"%s\">: invalid region dim spec\"%s\"",
 			m_tag.c_str(), m_id.c_str(), s.c_str());
 	m_logger->warn(gettext("Error in SMIL animation"));
 	return common::region_dim_spec();
@@ -592,19 +592,19 @@ void animate_attrs::get_values(std::vector<common::region_dim_spec>& v) {
 	if(m_animtype == "path") {
 		const char *ppath = m_node->get_attribute("path");
 		lib::gpath_descr pd(ppath?ppath:"m 0 0");
-		lib::polyline_builder builder; 
+		lib::polyline_builder builder;
 		lib::gpath *path = builder.build_path(&pd);
 		path->get_pivot_points(v);
-	} else 
+	} else
 #endif
 	if(m_animtype == "values") {
 		const char *pvalues = m_node->get_attribute("values");
 		std::list<std::string> c;
-		if(pvalues) 
+		if(pvalues)
 			lib::split_trim_list(pvalues, c, ';');
 		for(std::list<std::string>::iterator it=c.begin();it!=c.end();it++)
 			v.push_back(to_rds(*it));
-	} else 
+	} else
 	if(m_animtype == "from-to") {
 		const char *pfrom = m_node->get_attribute("from");
 		const char *pto = m_node->get_attribute("to");

@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_DX_PLAYABLE_H
@@ -44,7 +44,7 @@ class AMBULANTAPI dx_playables_context : public common::playable_factory_machdep
 	virtual void paused(common::playable *p) = 0;
 	virtual void resumed(common::playable *p) = 0;
 	virtual void set_intransition(common::playable *p, const lib::transition_info *info) = 0;
-	virtual void start_outtransition(common::playable *p, const lib::transition_info *info) = 0; 
+	virtual void start_outtransition(common::playable *p, const lib::transition_info *info) = 0;
 	virtual dx_transition *get_transition(common::playable *p) = 0;
 	virtual html_browser_factory *get_html_browser_factory() { return NULL; }
 };
@@ -57,16 +57,16 @@ class AMBULANTAPI dx_renderer_playable : public common::renderer_playable {
 		const lib::node *node,
 		lib::event_processor* evp,
 		common::factories *fp,
-		dx_playables_context *dxplayer) 
-	:	common::renderer_playable(context, cookie, node, evp, fp, dxplayer), 
+		dx_playables_context *dxplayer)
+	:	common::renderer_playable(context, cookie, node, evp, fp, dxplayer),
 		m_dxplayer(dxplayer), m_transitioning(false) {}
-	
+
 	void set_intransition(const lib::transition_info *info) {
-		m_transitioning = true; 
+		m_transitioning = true;
 		m_dxplayer->set_intransition(this, info);
 	}
-	void start_outtransition(const lib::transition_info *info) {  
-		m_transitioning = true; 
+	void start_outtransition(const lib::transition_info *info) {
+		m_transitioning = true;
 		m_dxplayer->start_outtransition(this, info);
 	}
 	gui::dx::dx_transition *get_transition() {
@@ -86,7 +86,7 @@ class AMBULANTAPI dx_renderer_playable : public common::renderer_playable {
 } // namespace dx
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_GUI_DX_PLAYABLE_H

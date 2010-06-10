@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/net/datasource.h"
@@ -41,7 +41,7 @@ ambulant::net::create_posix_datasource_factory()
     return new posix_datasource_factory();
 }
 
-datasource * 
+datasource *
 posix_datasource_factory::new_raw_datasource(const net::url& url)
 {
 	AM_DBG lib::logger::get_logger()->debug("posix_datasource_factory::new_datasource(%s)", repr(url).c_str());
@@ -51,7 +51,7 @@ posix_datasource_factory::new_raw_datasource(const net::url& url)
 		if (in >= 0)
 			return new posix_datasource(filename, in);
 	}
-	return NULL;	
+	return NULL;
 }
 
 // *********************** posix_datasource ***********************************************
@@ -92,7 +92,7 @@ posix_datasource::_end_of_file()
 {
 	bool rv;
 	// private method - no need to lock
-	if (m_buffer->buffer_not_empty()) 
+	if (m_buffer->buffer_not_empty())
 		rv = false;
 	else
 		rv = m_end_of_file;
@@ -133,8 +133,8 @@ posix_datasource::filesize()
 	off_t dummy;
 	if (m_stream >= 0) {
 		// Seek to the end of the file, and get the filesize
-		m_filesize=lseek(m_stream, 0, SEEK_END); 		
-	 	dummy=lseek(m_stream, 0, SEEK_SET);						
+		m_filesize=lseek(m_stream, 0, SEEK_END);
+	 	dummy=lseek(m_stream, 0, SEEK_SET);
 	} else {
  		lib::logger::get_logger()->fatal("posix_datasource.filesize(): no file openXX");
 		m_filesize = 0;
@@ -160,24 +160,24 @@ posix_datasource::read_file()
 {
 	// private method - no need to lock
   	char *buf;
-  	int n; 	
+  	int n;
 	//AM_DBG lib::logger::get_logger()->debug("posix_datasource.readfile: start reading file ");
 	if (m_stream >= 0) {
 		do {
             buf = m_buffer->get_write_ptr(BUFSIZ);
 			assert(buf);
 			n = ::read(m_stream, buf, BUFSIZ);
-			m_buffer->pushdata(n > 0 ? n : 0); 		
+			m_buffer->pushdata(n > 0 ? n : 0);
 		} while (n > 0);
 		m_end_of_file = true;
 		if (n < 0) {
 			lib::logger::get_logger()->trace("%s: %s", m_filename.c_str(), strerror(errno));
 			lib::logger::get_logger()->warn(gettext("Error encountered while reading file %s"), m_filename.c_str());
-		} 		
+		}
 	}
 }
- 
-char* 
+
+char*
 posix_datasource::get_read_ptr()
 {
 	m_lock.enter();
@@ -186,20 +186,20 @@ posix_datasource::get_read_ptr()
 	m_lock.leave();
 	return rv;
 }
-  
+
 void
 posix_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *cbevent)
  {
 	m_lock.enter();
  	if (! _end_of_file() ) read_file();
-	
+
     assert(evp);
 	assert(cbevent);
 	AM_DBG lib::logger::get_logger()->debug("posix_datasource.start: trigger readdone callback (x%x)", cbevent);
 	evp->add_event(cbevent, 0, ambulant::lib::ep_med);
 	m_lock.leave();
 }
- 
+
 void
 posix_datasource::readdone(int sz)
 {
@@ -207,4 +207,4 @@ posix_datasource::readdone(int sz)
 	m_buffer->readdone(sz);
 	m_lock.leave();
 }
-  
+

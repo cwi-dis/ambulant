@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_QT_QT_TRANSITION_H
@@ -29,7 +29,7 @@
 #include "ambulant/smil2/transition.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/gui/qt/qt_factory_impl.h"
-#include "ambulant/gui/qt/qt_includes.h" // TMP 
+#include "ambulant/gui/qt/qt_includes.h" // TMP
 namespace ambulant {
 
 namespace gui {
@@ -38,7 +38,7 @@ namespace qt {
 
 class qt_transition_debug { // TMP
   public:
-	void paint_rect(ambulant_qt_window* aqw, 
+	void paint_rect(ambulant_qt_window* aqw,
 			common::surface * dst,
 			lib::color_t color);
 };
@@ -228,17 +228,17 @@ class qt_transition_engine_slidewipe :
 	virtual public qt_transition_blitclass_r1r2r3r4,
 	virtual public smil2::transition_engine_slidewipe {};
 
-class qt_transition_engine_fade : 
+class qt_transition_engine_fade :
 	virtual public qt_transition_blitclass_fade,
 	virtual public smil2::transition_engine_fade {};
 
 smil2::transition_engine *qt_transition_engine(
 	common::surface *dst, bool is_outtrans, const lib::transition_info *info);
-	
+
 } // namespace qt
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_GUI_QT_QT_TRANSITION_H

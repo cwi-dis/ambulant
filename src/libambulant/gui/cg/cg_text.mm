@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/cg/cg_text.h"
@@ -52,8 +52,8 @@ create_cg_text_playable_factory(common::factories *factory, common::playable_fac
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCoreGraphics"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererText"), true);
 	return new common::single_playable_factory<
-        cg_text_renderer, 
-        cg_text_playable_tag, 
+        cg_text_renderer,
+        cg_text_playable_tag,
         cg_text_playable_renderer_uri,
         cg_text_playable_renderer_uri2,
         cg_text_playable_renderer_uri2>(factory, mdp);
@@ -103,16 +103,16 @@ cg_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("cg_text_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 
-#if 0	
+#if 0
 	if (m_text_storage && !m_layout_manager) {
 		// Only now can we set the color: the alfa comes from the region.
 
 		err = ATSUCreateTextLayout(&m_layout_manager);
 		assert(err == 0);
-		
+
 		err = ATSUSetTextPointerLocation(m_layout_manager, m_text_storage, kATSUFromTextBeginning, kATSUToTextEnd, m_text_storage_length);
 		assert(err == 0);
-		
+
 		err = ATSUSetRunStyle(m_layout_manager, m_style, kATSUFromTextBeginning, kATSUToTextEnd);
 		assert(err == 0);
 	}
@@ -133,7 +133,7 @@ cg_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 #endif
 	CGFloat components[] = {redf(m_text_color), greenf(m_text_color), bluef(m_text_color), alfa};
 	CGColorSpaceRef genericColorSpace = CGColorSpaceCreateDeviceRGB();
-	CGContextSetFillColorSpace(ctx, genericColorSpace); 
+	CGContextSetFillColorSpace(ctx, genericColorSpace);
 	CGContextSetFillColor(ctx, components);
 	// Set the font
 	AM_DBG lib::logger::get_logger()->debug("cg_text: select font %s, size %f", m_font_name, m_font_size);
@@ -143,7 +143,7 @@ cg_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 	// XXXX These calculations assume COCOA_USE_BOTLEFT
 	float x = CGRectGetMinX(cg_dstrect);
 	float y = CGRectGetMaxY(cg_dstrect) - lineheight;
-	float w = CGRectGetWidth(cg_dstrect); 
+	float w = CGRectGetWidth(cg_dstrect);
 	int lbegin, lend;
 	const char *cdata = (char *)m_data;
 	lbegin = 0;
@@ -194,7 +194,7 @@ cg_text_renderer::_fits(CGContextRef ctx, float maxwidth, const char *data, int 
 	float width = endpos.x - beginpos.x;
 	return width <= maxwidth;
 }
-	
+
 
 } // namespace cg
 

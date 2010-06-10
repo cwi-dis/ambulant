@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/gpaths.h"
@@ -38,18 +38,18 @@ using namespace ambulant;
 //////////////////
 // path_descr
 
-lib::gpath_descr::gpath_descr(const std::string& strpath) 
-:	m_strpath(strpath), 
+lib::gpath_descr::gpath_descr(const std::string& strpath)
+:	m_strpath(strpath),
 	m_errors(0) {
-	
+
 	// The range of the string to parse
 	std::string::iterator b = m_strpath.begin();
 	std::string::iterator e = m_strpath.end();
-	
+
 	// The range of svg commands to search for
 	std::string::const_iterator cb = gpath_seg_cmds.begin();
 	std::string::const_iterator ce = gpath_seg_cmds.end();
-	
+
 	// Extract the SVG path segments commands and arguments from strpath
 	lib::number_list_p parser;
 	std::string::iterator it = std::find_first_of(b, e, cb, ce);
@@ -57,14 +57,14 @@ lib::gpath_descr::gpath_descr(const std::string& strpath)
 		// locate the end of this cmd and the start of the next
 		b = it; b++;
 		std::string::iterator next = std::find_first_of(b, e, cb, ce);
-		
+
 		// the cmd and the args string
 		char cmd = *it;
 		std::string args = lib::trim(std::string(++it, next));
-		
+
 		// store cmd
 		m_cmds += cmd;
-		
+
 		// parse the cmd args string and store the numbers into m_args
 		std::string::size_type ix = gpath_seg_cmds.find(cmd);
 		assert(ix != std::string::npos);
@@ -105,7 +105,7 @@ lib::gpath_descr::gpath_descr(const std::string& strpath)
 				m_errors++;
 			}
 		}
-		
+
 		// Update start of next command
 		it = next;
 	}
@@ -134,7 +134,7 @@ lib::gpath_builder::path_seg_hanlders[] = {
 // static
 lib::logger *lib::gpath_builder::plogger = 0;
 
-lib::gpath_builder::gpath_builder() 
+lib::gpath_builder::gpath_builder()
 :	m_cpx(0), m_cpy(0),
 	m_mx(0), m_my(0) {
 	if(!plogger) plogger = lib::logger::get_logger();
@@ -167,12 +167,12 @@ void lib::gpath_builder::reset() {
 }
 
 // z
-void lib::gpath_builder::close_path(bool abs, arg_iterator it) { 
+void lib::gpath_builder::close_path(bool abs, arg_iterator it) {
 	m_cmd = abs?'Z':'z';
 }
 
-// m %f{2} 
-void lib::gpath_builder::moveto(bool abs, arg_iterator it) { 
+// m %f{2}
+void lib::gpath_builder::moveto(bool abs, arg_iterator it) {
 	m_cmd = abs?'M':'m';
 	m_x = *it++;
 	m_y = *it++;
@@ -249,14 +249,14 @@ void lib::gpath_builder::truetype_quadratic_bezier_curveto(bool abs, arg_iterato
 // polyline_builder implementation
 
 // z
-void lib::polyline_builder::close_path(bool abs, arg_iterator it) { 
+void lib::polyline_builder::close_path(bool abs, arg_iterator it) {
 	gpath_builder::close_path(abs, it);
 	m_cpx = m_mx; m_cpy = m_my;
 	AM_DBG plogger->debug("%c [CP: %.0f, %.0f]", m_cmd, m_cpx, m_cpy);
 }
 
-// m %f{2} 
-void lib::polyline_builder::moveto(bool abs, arg_iterator it) { 
+// m %f{2}
+void lib::polyline_builder::moveto(bool abs, arg_iterator it) {
 	gpath_builder::moveto(abs, it);
 	if(abs) {m_cpx = m_x; m_cpy = m_y;}
 	else {m_cpx += m_x; m_cpy += m_y;}
@@ -293,7 +293,7 @@ void lib::polyline_builder::elliptic_arc(bool abs, arg_iterator it) {
 	gpath_builder::elliptic_arc(abs, it);
 	if(abs) {m_cpx = m_x; m_cpy = m_y;}
 	else {m_cpx += m_x; m_cpy += m_y;}
-	AM_DBG plogger->debug("%c %.0f %.0f %.0f %.0f %.0f %.0f [CP: %.0f, %.0f]", 
+	AM_DBG plogger->debug("%c %.0f %.0f %.0f %.0f %.0f %.0f [CP: %.0f, %.0f]",
 		m_cmd,  m_r1, m_r2, m_arc_flag, m_sweep_flag, m_x, m_y, m_cpx, m_cpy);
 }
 
@@ -318,7 +318,7 @@ void lib::polyline_builder::smooth_curveto(bool abs, arg_iterator it) {
 	gpath_builder::smooth_curveto(abs, it);
 	if(abs) {m_cpx = m_x; m_cpy = m_y;}
 	else {m_cpx += m_x; m_cpy += m_y;}
-	AM_DBG plogger->debug("%c %.0f %.0f %.0f %.0f [CP: %.0f, %.0f]", m_cmd, m_x2, m_y2, m_x, m_y, m_cpx, m_cpy); 
+	AM_DBG plogger->debug("%c %.0f %.0f %.0f %.0f [CP: %.0f, %.0f]", m_cmd, m_x2, m_y2, m_x, m_y, m_cpx, m_cpy);
 }
 
 // t %f{2}
@@ -326,7 +326,7 @@ void lib::polyline_builder::truetype_quadratic_bezier_curveto(bool abs, arg_iter
 	gpath_builder::truetype_quadratic_bezier_curveto(abs, it);
 	if(abs) {m_cpx = m_x; m_cpy = m_y;}
 	else {m_cpx += m_x; m_cpy += m_y;}
-	AM_DBG plogger->debug("%c %.0f %.0f %.0f %.0f [CP: %.0f, %.0f]", m_cmd, m_x, m_y, m_cpx, m_cpy); 
+	AM_DBG plogger->debug("%c %.0f %.0f %.0f %.0f [CP: %.0f, %.0f]", m_cmd, m_x, m_y, m_cpx, m_cpy);
 }
 
 // Returns the pivot points of the path as a set of polylines
@@ -335,12 +335,12 @@ void lib::polyline_builder::build_polyline_paths(const lib::gpath_descr* pd, std
 	const std::string& cmds = pd->get_cmds();
 	const std::list<double>& args = pd->get_args();
 	std::string::const_iterator curr_cmd_it = cmds.begin();
-	
+
 	// Record the current point before the first not M|m command
 	// Stop at the following M|m command
 	bool started = false;
 	std::vector<lib::point> points;
-	
+
 	arg_iterator curr_arg_it = args.begin();
 	while(curr_cmd_it != cmds.end()) {
 		char cmd = *curr_cmd_it;

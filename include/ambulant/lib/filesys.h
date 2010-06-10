@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_LIB_FILESYS_H
@@ -93,7 +93,7 @@ std::string join(const std::string& str1, const std::string& str2,
 }
 
 inline
-std::string join(const char *psz1, const char *psz2, 
+std::string join(const char *psz1, const char *psz2,
 	const char *ossep = 0) {
 	if(!psz1 && !psz2) return "";
 	if(!psz2 || !psz2[0]) return psz1;
@@ -109,7 +109,7 @@ std::string join(const std::string& str1, const char *psz2,
 }
 
 inline
-void split(const std::string& s, std::list<std::string>& c, 
+void split(const std::string& s, std::list<std::string>& c,
 	const char *ossep = 0) {
 	std::string sep = (ossep && ossep[0])?ossep:url_path_sep;
 	typedef std::string::size_type size_type;
@@ -123,11 +123,11 @@ void split(const std::string& s, std::list<std::string>& c,
 			c.push_back(std::string(s.c_str() + offset));
 			offset = std::string::npos;
 		}
-	}	
+	}
 }
 
 inline
-std::string join(const std::list<std::string>& c, 
+std::string join(const std::list<std::string>& c,
 	const char *ossep = 0) {
 	std::string sep = (ossep && ossep[0])?ossep:url_path_sep;
 	std::list<std::string>::const_iterator it = c.begin();
@@ -141,7 +141,7 @@ std::string join(const std::list<std::string>& c,
 	return s;
 }
 
-inline 
+inline
 std::string get_base(const std::string& s,
 	const char *ossep = 0) {
 	std::string sep = (ossep && ossep[0])?ossep:url_path_sep;
@@ -157,9 +157,9 @@ std::string get_base(const std::string& s,
 }
 
 } // namespace filesys
- 
+
 } // namespace lib
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_LIB_FILESYS_H

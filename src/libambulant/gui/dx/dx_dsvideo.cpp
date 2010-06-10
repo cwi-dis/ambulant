@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/dx/dx_dsvideo.h"
@@ -129,7 +129,7 @@ dx_dsvideo_renderer::~dx_dsvideo_renderer()
 	m_frame = NULL;
 	m_lock.leave();
 }
-	
+
 void
 dx_dsvideo_renderer::_push_frame(char* frame, int size)
 {
@@ -152,7 +152,7 @@ dx_dsvideo_renderer::_copy_to_ddsurf()
 		win_report_error("DirectDrawSurface::GetDC()", hr);
 		return;
 	}
-	
+
 	HDC bmp_hdc = CreateCompatibleDC(hdc);
 	assert(bmp_hdc);
 	HBITMAP hbmp_old = (HBITMAP) SelectObject(bmp_hdc, m_bitmap);
@@ -263,32 +263,32 @@ dx_dsvideo_renderer::redraw(const rect &dirty, gui_window *window)
 #endif
 	// Use one type of rect to do op
 	lib::rect img_rect(img_rect1);
-	
-	// A complete repaint would be:  
+
+	// A complete repaint would be:
 	// {img, img_rect } -> img_reg_rc
-	
+
 	// We have to paint only the intersection.
-	// Otherwise we will override upper layers 
+	// Otherwise we will override upper layers
 	lib::rect img_reg_rc_dirty = img_reg_rc & dirty;
 	if(img_reg_rc_dirty.empty()) {
 		// this renderer has no pixels for the dirty rect
 		AM_DBG lib::logger::get_logger()->debug("dx_dsvideo_renderer::redraw NOT: empty dirty region %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
 		m_lock.leave();
 		return;
-	}	
-	
+	}
+
 	// Find the part of the image that is mapped to img_reg_rc_dirty
-	lib::rect img_rect_dirty = reverse_transform(&img_reg_rc_dirty, 
+	lib::rect img_rect_dirty = reverse_transform(&img_reg_rc_dirty,
 		&img_rect, &img_reg_rc);
-		
-	// Translate img_reg_rc_dirty to viewport coordinates 
+
+	// Translate img_reg_rc_dirty to viewport coordinates
 	lib::point topleft = m_dest->get_global_topleft();
 	img_reg_rc_dirty.translate(topleft);
-	
-	
+
+
 	// Finally blit img_rect_dirty to img_reg_rc_dirty
 	AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::redraw %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
-	
+
 	dx_transition *tr = get_transition();
 	if (tr && tr->is_fullscreen()) {
 		v->set_fullscreen_transition(tr);

@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/cocoa/cocoa_transition.h"
@@ -56,10 +56,10 @@ finalize_transition_bitblit(bool outtrans, common::surface *dst)
 		cocoa_window *window = (cocoa_window *)dst->get_gui_window();
 		AmbulantView *view = (AmbulantView *)window->view();
 		[[view getTransitionSurface] unlockFocus];
-		
+
 		const lib::rect& dstrect_whole = dst->get_clipped_screen_rect();
 		NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
-		[[view getTransitionNewSource] drawInRect: cocoa_dstrect_whole 
+		[[view getTransitionNewSource] drawInRect: cocoa_dstrect_whole
 			fromRect: cocoa_dstrect_whole
 			operation: NSCompositeSourceOver
 			fraction: 1.0f];
@@ -76,7 +76,7 @@ cocoa_transition_blitclass_fade::update()
 	AM_DBG lib::logger::get_logger()->debug("cocoa_transition_blitclass_fade::update(%f)", m_progress);
 	const lib::rect& dstrect_whole = m_dst->get_clipped_screen_rect();
 	NSRect cocoa_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
-	[newsrc drawInRect: cocoa_dstrect_whole 
+	[newsrc drawInRect: cocoa_dstrect_whole
 		fromRect: cocoa_dstrect_whole
 		operation: NSCompositeSourceOver
 		fraction: (float)m_progress];
@@ -95,7 +95,7 @@ cocoa_transition_blitclass_rect::update()
 	newrect_whole &= m_dst->get_clipped_screen_rect();
 	NSRect cocoa_newrect_whole = [view NSRectForAmbulantRect: &newrect_whole];
 
-	[newsrc drawInRect: cocoa_newrect_whole 
+	[newsrc drawInRect: cocoa_newrect_whole
 		fromRect: cocoa_newrect_whole
 		operation: NSCompositeSourceOver
 		fraction: 1.0f];
@@ -128,22 +128,22 @@ cocoa_transition_blitclass_r1r2r3r4::update()
 	NSRect cocoa_newsrcrect_whole = [view NSRectForAmbulantRect: &newsrcrect_whole];
 	NSRect cocoa_newdstrect_whole = [view NSRectForAmbulantRect: &newdstrect_whole];
 	if (m_outtrans) {
-		[newsrc drawInRect: cocoa_olddstrect_whole 
+		[newsrc drawInRect: cocoa_olddstrect_whole
 			fromRect: cocoa_oldsrcrect_whole
 			operation: NSCompositeCopy
 			fraction: 1.0f];
 
-		[oldsrc drawInRect: cocoa_newdstrect_whole 
+		[oldsrc drawInRect: cocoa_newdstrect_whole
 			fromRect: cocoa_newsrcrect_whole
 			operation: NSCompositeSourceOver
 			fraction: 1.0f];
 	} else {
-		[oldsrc drawInRect: cocoa_olddstrect_whole 
+		[oldsrc drawInRect: cocoa_olddstrect_whole
 			fromRect: cocoa_oldsrcrect_whole
 			operation: NSCompositeCopy
 			fraction: 1.0f];
 
-		[newsrc drawInRect: cocoa_newdstrect_whole 
+		[newsrc drawInRect: cocoa_newdstrect_whole
 			fromRect: cocoa_newsrcrect_whole
 			operation: NSCompositeSourceOver
 			fraction: 1.0f];
@@ -164,7 +164,7 @@ cocoa_transition_blitclass_rectlist::update()
 		newrect_whole &= m_dst->get_clipped_screen_rect();
 		NSRect cocoa_newrect_whole = [view NSRectForAmbulantRect: &newrect_whole];
 
-		[newsrc drawInRect: cocoa_newrect_whole 
+		[newsrc drawInRect: cocoa_newrect_whole
 			fromRect: cocoa_newrect_whole
 			operation: NSCompositeSourceOver
 			fraction: 1.0f];
@@ -222,7 +222,7 @@ composite_path(AmbulantView *view, lib::rect dstrect_whole, NSBezierPath *path, 
 
 	// Next we composit the source image onto the temp bitmap, but only where
 	// the temp bitmap is opaque (the path we just painted there)
-	[newsrc drawInRect: cocoa_dstrect_whole 
+	[newsrc drawInRect: cocoa_dstrect_whole
 		fromRect: cocoa_dstrect_whole
 		operation: NSCompositeSourceIn
 		fraction: 1.0f];
@@ -230,7 +230,7 @@ composite_path(AmbulantView *view, lib::rect dstrect_whole, NSBezierPath *path, 
 	// Finally we put the opaque bits of the temp image onto the destination
 	// image
 	[tmpsrc unlockFocus];
-	[tmpsrc drawInRect: cocoa_dstrect_whole 
+	[tmpsrc drawInRect: cocoa_dstrect_whole
 		fromRect: cocoa_dstrect_whole
 		operation: NSCompositeSourceOver
 		fraction: 1.0f];
@@ -284,7 +284,7 @@ smil2::transition_engine *
 cocoa_transition_engine(common::surface *dst, bool is_outtrans, const lib::transition_info *info)
 {
 	smil2::transition_engine *rv;
-	
+
 	switch(info->m_type) {
 	// Series 1: edge wipes
 	case lib::barWipe:

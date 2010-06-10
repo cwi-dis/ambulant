@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_SMIL2_TEST_ATTRS_H
@@ -54,13 +54,13 @@ class state_test_methods_impl;
 class AMBULANTAPI test_attrs {
   public:
 	test_attrs(const lib::node *n);
-	
+
 	// Returns true when the target node is selected.
 	bool selected() const;
-	
+
 	static bool load_test_attrs(const std::string& filename);
 	static void set_default_tests_attrs();
-	
+
 	const std::string& get_tag() const { return m_tag;}
 	const std::string& get_id() const { return m_id;}
 
@@ -96,7 +96,7 @@ class AMBULANTAPI test_attrs {
 	static bool test_on_off_attr(const std::string& attr,const char *value);
 	static bool test_exact_str_attr(const std::string& attr,const char *value);
 	static bool test_exact_str_list_attr(const std::string& attr,const char *value);
-	
+
 	static bool test_system_language(const char *lang);
 	static bool test_system_component(const char *value);
 	static bool test_system_bitrate(const char *value);
@@ -104,11 +104,11 @@ class AMBULANTAPI test_attrs {
 	static bool test_system_screen_size(const char *value);
 	static bool test_system_required(const char *value, const lib::node_context *ctx);
 	bool test_custom_attribute(const char *value) const;
-	
+
 	// the target node
 	const lib::node *m_node;
 	const std::map<std::string, custom_test>* m_custom_tests;
-	
+
 	// tracing
 	std::string m_id;
 	std::string m_tag;
@@ -117,7 +117,7 @@ class AMBULANTAPI test_attrs {
 };
 
 } // namespace smil2
- 
+
 } // namespace ambulant
 
 AMBULANTAPI bool load_test_attrs(const char *filename);

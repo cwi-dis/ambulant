@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 #ifndef __GTK_MAINLOOP_H__
 #define __GTK_MAINLOOP_H__
@@ -69,14 +69,14 @@ class gtk_mainloop :
   public:
 	gtk_mainloop(gtk_gui* parent);
 	~gtk_mainloop();
-	
+
 	void init_window_factory();
 	void init_playable_factory();
 	void init_datasource_factory();
 	void init_parser_factory();
 
     	bool is_open() const { return m_player != NULL; }
-	
+
 	void show_file(const ambulant::net::url&);
 	void close(common::player *p);
 	void done(common::player *p);
@@ -90,7 +90,7 @@ class gtk_mainloop :
 	// from dx_player
 	// The frames stack
 	struct frame {
-		gtk_gui* windows; 
+		gtk_gui* windows;
 	  	ambulant::common::player* player;
 	};
 	std::stack<frame*> m_frames;

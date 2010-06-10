@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/string_util.h"
@@ -42,8 +42,8 @@ lib::tokens_vector::tokens_vector(const char* entry, const char* delims) {
 			push_back(std::string(s.c_str() + offset));
 			offset = std::string::npos;
 		}
-	}	
-}			
+	}
+}
 
 std::string lib::tokens_vector::join(size_type i, char sep) {
 	std::string s;
@@ -56,8 +56,8 @@ std::string lib::tokens_vector::join(size_type i, char sep) {
 	return s;
 }
 
-// Splits the list, trims white space, skips any empty strings 
-void lib::split_trim_list(const std::string& s, 
+// Splits the list, trims white space, skips any empty strings
+void lib::split_trim_list(const std::string& s,
 	std::list<std::string>& c, char ch) {
 	typedef std::string::size_type size_type;
 	size_type offset = 0;
@@ -72,7 +72,7 @@ void lib::split_trim_list(const std::string& s,
 			if(!entry.empty()) c.push_back(entry);
 			offset = std::string::npos;
 		}
-	}	
+	}
 }
 
 

@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_COMMON_SMIL_HANDLER_H
@@ -54,7 +54,7 @@ register_handler(q_name_pair(smil_xmlns, #name), &smil_handler::start_##name, &s
 
 #define REG_ELEMENT_HANDLER2(ename, hname)\
 register_handler(q_name_pair(smil_xmlns, #ename), &smil_handler::start_##hname, &smil_handler::end_##hname)
-	
+
 ////////////////
 
 namespace ambulant {
@@ -64,8 +64,8 @@ namespace lib {
 const std::string smil_xmlns =
 	"http://www.w3.org/TR/REC-smil/2000/SMIL20/Language";
 
-class smil_handler : 
-	public sax_content_handler, 
+class smil_handler :
+	public sax_content_handler,
 	public sax_error_handler {
 
   ///////////////
@@ -77,7 +77,7 @@ class smil_handler :
 	// use detach() to become owner
 	node* get_tree() { return m_root;}
 	const node* get_tree() const { return m_root;}
-	
+
 	// call this function to get the tree and become owner
 	node* detach() {
 		node* temp = m_root;
@@ -86,7 +86,7 @@ class smil_handler :
 	}
 
 	///////////////
-	// sax_content_handler interface	
+	// sax_content_handler interface
 	virtual void start_document();
 	virtual void end_document();
 	virtual void start_element(const q_name_pair& qn, const q_attributes_list& qattrs);
@@ -94,15 +94,15 @@ class smil_handler :
 	virtual void start_prefix_mapping(const xml_string& prefix, const xml_string& uri);
 	virtual void end_prefix_mapping(const xml_string& prefix);
 	virtual void characters(const char *buf, size_t len);
-	
+
 	///////////////
-	// sax_error_handler interface	
+	// sax_error_handler interface
 	virtual void error(const sax_error& error);
-	
+
   ///////////////
   private:
   ///////////////
-  
+
 	///////////////
 	// element handlers helpers
 	typedef void (smil_handler::*START_HANDLER)(const q_name_pair& qn, const q_attributes_list& qattrs);
@@ -116,10 +116,10 @@ class smil_handler :
 	std::map<q_name_pair, handler_pair> m_handlers;
 	void register_handler(const q_name_pair& qn, START_HANDLER se, END_HANDLER ee){
 		m_handlers[qn] = handler_pair(se, ee);
-	} 
-	
+	}
+
 	///////////////
-	// element handlers	
+	// element handlers
 	DEF_ELEMENT_HANDLER(smil);
 	DEF_ELEMENT_HANDLER(head);
 	DEF_ELEMENT_HANDLER(body);
@@ -138,18 +138,18 @@ class smil_handler :
 	DEF_ELEMENT_HANDLER(prefetch);
 	DEF_ELEMENT_HANDLER(a);
 	DEF_ELEMENT_HANDLER(area);
-	
+
 	void default_start_element(const q_name_pair& qn, const q_attributes_list& qattrs);
 	void default_end_element(const q_name_pair& qn);
-	
+
 	void unknown_start_element(const q_name_pair& qn, const q_attributes_list& qattrs);
 	void unknown_end_element(const q_name_pair& qn);
-	
+
 	///////////////
 	// data members
 	node *m_root;
 	node *m_current;
-	nscontext m_nscontext;	
+	nscontext m_nscontext;
 	node_factory *m_node_factory;
 };
 
@@ -160,7 +160,7 @@ inline smil_handler::smil_handler(node_factory *nf)
 :	m_root(0),
 	m_current(0),
 	m_node_factory(nf) {
-	
+
 	REG_ELEMENT_HANDLER(smil);
 	REG_ELEMENT_HANDLER(head);
 	REG_ELEMENT_HANDLER(body);
@@ -198,17 +198,17 @@ inline void smil_handler::start_element(const q_name_pair& qn, const q_attribute
 	if(it != m_handlers.end()) {
 		START_HANDLER se = (*it).second.first;
 		(this->*se)(qn, qattrs);
-	} else 
+	} else
 		unknown_start_element(qn, qattrs);
 }
 
 inline void smil_handler::end_element(const q_name_pair& qn) {
-	// XXX: create a new 
+	// XXX: create a new
 	std::map<q_name_pair, handler_pair>::iterator it = m_handlers.find(qn);
 	if(it != m_handlers.end()) {
 		END_HANDLER ee = (*it).second.second;
 		(this->*ee)(qn);
-	} else 
+	} else
 		unknown_end_element(qn);
 }
 
@@ -229,7 +229,7 @@ inline void smil_handler::error(const sax_error& err) {
 }
 
 } // namespace lib
- 
+
 } // namespace ambulant
 
 // Undefine preprocessor symbols and macros

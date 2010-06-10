@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/unix/unix_timer.h"
@@ -53,7 +53,7 @@ lib::unix::unix_timer::os_millitime()
 {
 	struct timeval tv;
 	static time_t epoch = 0;
-	
+
 	if (gettimeofday(&tv, NULL) < 0) return 0;
 	if (epoch == 0)
 		epoch = tv.tv_sec;

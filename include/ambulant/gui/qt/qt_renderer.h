@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
+/*
  * $Id$
  */
 
@@ -77,7 +77,7 @@ class qt_transition_renderer : public ref_counted_obj {
 
 	event_processor* m_event_processor;
 	surface* m_transition_dest;
-	void* m_view; //ambulant_qt_window* 
+	void* m_view; //ambulant_qt_window*
 	const lib::transition_info* m_intransition;
 	const lib::transition_info* m_outtransition;
 	bool m_fullscreen;
@@ -117,7 +117,7 @@ class qt_renderer : public RP_Base {
 		start_transition(where);
 		RP_Base::start(where);
 	}
-	
+
 	virtual bool stop() {
 		stop_transition();
 		return RP_Base::stop();
@@ -133,7 +133,7 @@ class qt_renderer : public RP_Base {
 	void set_intransition(const lib::transition_info *info) {
 		m_transition_renderer->set_intransition(info);
 	}
-	
+
 	void start_outtransition(const lib::transition_info *info) {
 		m_transition_renderer->start_outtransition(info);
 	}

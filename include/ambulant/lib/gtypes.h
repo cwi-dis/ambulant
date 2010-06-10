@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 /////////////////////////////
@@ -28,7 +28,7 @@
 // point, size, rect
 /////////////////////////////
 
- 
+
 #ifndef AMBULANT_LIB_GTYPES_H
 #define AMBULANT_LIB_GTYPES_H
 
@@ -55,60 +55,60 @@ template <class T>
 class basic_point {
   public:
 	T x, y;
-	
-	basic_point() 
+
+	basic_point()
 	:	x(0), y(0) {}
-	
-	basic_point(T _x, T _y) 
+
+	basic_point(T _x, T _y)
 	:	x(_x), y(_y) {}
-	 
-	basic_point(const basic_point<T>& o) 
+
+	basic_point(const basic_point<T>& o)
 	:	x(o.x), y(o.y) {}
-	
+
 	bool operator==(basic_point<T> o) {
 		return x == o.x && y == o.y;
 	}
-	
+
 	bool operator!=(basic_point<T> o) {
 		return x != o.x || y != o.y;
 	}
-	
+
 	void operator+=(basic_point<T> o) {
 		x += o.x; y += o.y;
 	}
-	
+
 	void operator-=(basic_point<T> o) {
 		x -= o.x; y -= o.y;
 	}
-	
+
 	basic_point<T> operator+(basic_point<T> o) {
 		return basic_point<T>(x + o.x, y + o.y);
 	}
-	
+
 	basic_point<T> operator-(basic_point<T> o) {
 		return basic_point<T>(x - o.x, y - o.y);
 	}
-	
-	basic_point<T> operator-() { 
+
+	basic_point<T> operator-() {
 		return basic_point<T>(-x, -y);
 	}
-	
+
 	basic_point<T>& operator*=(int n) {
 		x *= n; y *= n; return *this;
 	}
-	
+
 	basic_point<T>& operator/=(int n) {
 		x /= n; y /= n; return *this;
 	}
-	
-	basic_point<T> operator*(int n) const { 
+
+	basic_point<T> operator*(int n) const {
 		basic_point<T> t(*this); t*=n; return t;
 	}
-	
-	basic_point<T> operator/(int n) const { 
+
+	basic_point<T> operator/(int n) const {
 		basic_point<T> t(*this); t/=n; return t;
 	}
-	
+
 };
 
 /// A two-dimensional size.
@@ -117,14 +117,14 @@ template <class S>
 class basic_size {
   public:
 	S w, h;
-	
-	basic_size() 
+
+	basic_size()
 	:	w(0), h(0) {}
-	
-	basic_size(S _w, S _h) 
+
+	basic_size(S _w, S _h)
 	:	w(_w), h(_h) {}
-	 
-	basic_size(const basic_size<S>& o) 
+
+	basic_size(const basic_size<S>& o)
 	:	w(o.w), h(o.h) {}
 
 	bool empty() const { return w==0 || h==0;}
@@ -132,26 +132,26 @@ class basic_size {
 	bool operator==(basic_size<S> o) {
 		return w == o.w && h == o.h;
 	}
-	
+
 	bool operator!=(basic_size<S> o) {
 		return w != o.w || h != o.h;
 	}
-	
+
 	void operator+=(basic_size<S> o) {
 		w += o.w; h += o.h;
 	}
-	
+
 	void operator-=(basic_size<S> o) {
 		w -= o.w; h -= o.h;
 	}
-	
+
 	basic_size<S> operator+(basic_size<S> o) {
 		return basic_size<S>(w + o.w, h + o.h);
 	}
 };
 
 /// A two-dimensional rectangle.
-/// a basic_rect includes the points (xx, yy): 
+/// a basic_rect includes the points (xx, yy):
 /// where xx in [x, x+w) and yy in [y, y+h)
 /// if w == 0 or h == 0 the basic_rect is empty.
 template <class T, class S = T >
@@ -159,56 +159,56 @@ class basic_rect {
   public:
 	T x, y;
 	S w, h;
-	
+
 	basic_rect() : x(0), y(0), w(0), h(0) {}
-		 
-	basic_rect(const basic_rect<T, S>& o) 
+
+	basic_rect(const basic_rect<T, S>& o)
 	:	x(o.x), y(o.y), w(o.w), h(o.h) {}
-	
-	basic_rect(const basic_point<T>& p, const basic_size<S>& s) 
+
+	basic_rect(const basic_point<T>& p, const basic_size<S>& s)
 	:	x(p.x), y(p.y), w(s.w), h(s.h) {}
-	
-	basic_rect(const basic_size<S>& s) 
+
+	basic_rect(const basic_size<S>& s)
 	:	x(0), y(0), w(s.w), h(s.h) {}
-	
+
 	bool empty() const { return w==0 || h==0;}
-	
+
 	bool operator==(basic_rect<T, S> o) const {
 		return x == o.x && y == o.y && w == o.w && h == o.h;
 	}
-	
+
 	bool operator!=(basic_rect<T, S> o) const {
 		return x != o.x || y != o.y || w != o.w || h != o.h;
 	}
-	
+
 	T left() const {
 		return x;
 	}
-	
+
 	T top() const {
 		return y;
 	}
-	
+
 	T right() const {
 		return x+w;
 	}
-	
+
 	T bottom() const {
 		return y+h;
 	}
-	
+
 	basic_point<T> left_top() const {
 		return basic_point<T>(x, y);
 	}
-	
+
 	basic_point<T> right_bottom() const {
 		return basic_point<T>(x+w, y+h);
 	}
-	
+
 	basic_size<S> size() const {
 		return basic_size<S>(w, h);
 	}
-	
+
 	S width() const {
 		return w;
 	}
@@ -221,7 +221,7 @@ class basic_rect {
 	void translate(const basic_point<T>& p) {
 		x += p.x; y += p.y;
 	}
-	
+
 	/// Get coordinates of a rectangle p in a base setup by this rectangle.
 	basic_rect<T, S> innercoordinates(const basic_rect<T, S>& p) const {
 		basic_rect<T, S> rv = p;
@@ -229,7 +229,7 @@ class basic_rect {
 		rv.translate(-left_top());
 		return rv;
 	}
-	
+
 	/// Get coordinates in outer coordinate system for a rectangle p specified
 	/// in the system setup by this rectangle.
 	basic_rect<T, S> outercoordinates(const basic_rect<T, S>& p) const {
@@ -238,15 +238,15 @@ class basic_rect {
 		rv &= *this;
 		return rv;
 	}
-	
+
 	void operator+=(basic_point<T> p) {
 		translate(p);
 	}
-	
+
 	void operator-=(basic_point<T> p) {
 		translate(-p);
 	}
-	
+
 	/// Intersect this rectangle by another rectangle o.
 	void operator&=(const basic_rect<T, S>& o) {
 		// set to intersection
@@ -256,14 +256,14 @@ class basic_rect {
 		if(x2 < x1) w = 0;
 		else w = x2 - x1;
 		x = x1;
-		
+
 		int y1 = lmax(y, o.y);
 		int y2 = lmin(y + h, o.y + o.h);
 		if(y2 < y1) h = 0;
 		else h = y2 - y1;
 		y = y1;
 	}
-	
+
 	/// Set this rectangle to a rectangle that also incorporates rectangle o.
 	void operator|=(const basic_rect<T, S>& o) {
 		// set to union
@@ -272,37 +272,37 @@ class basic_rect {
 		int x2 = lmax(x+w, o.x + o.w);
 		w = x2 - x1;
 		x = x1;
-		
+
 		int y1 = lmin(y, o.y);
 		int y2 = lmax(y+h, o.y + o.h);
 		h = y2 - y1;
 		y = y1;
 	}
-	
+
 	/// Intersect two rectangles.
 	basic_rect<T, S> operator&(const basic_rect<T, S>& r) const {
 		// return intersection
-		basic_rect<T, S> l(*this); 
+		basic_rect<T, S> l(*this);
 		l &= r;
 		return l;
 	}
-	
+
 	/// Return rectangle encompassing both rectangles.
 	basic_rect<T, S> operator|(const basic_rect<T, S>& r)  const {
 		// return union
-		basic_rect<T, S> l(*this); 
+		basic_rect<T, S> l(*this);
 		l |= r;
-		return l; 
+		return l;
 	}
-	
+
 	bool contains(const basic_point<T>& p) const {
 		return contains(p.x, p.y);
 	}
-	
+
 	bool contains(T xp, T yp) const {
 		return (xp >= x ) && (xp < x + (T)w) && (yp >= y ) && (yp < y + (T)h);
 	}
-	
+
 	bool same_size(const basic_rect<T, S>& o) const {
 		return w == o.w && h == o.h;
 	}
@@ -406,9 +406,9 @@ reverse_transform(const rect *pdst, const rect *src, const rect *dst)
 	return rc;
 }
 
-  
+
 } // namespace lib
- 
+
 } // namespace ambulant
 
 #include "ambulant/lib/string_util.h"
@@ -430,7 +430,7 @@ inline std::string repr(const ambulant::lib::rect& r) {
 	return s << '(' << r.left() << ", " << r.top() << ", " << r.right() << ", " << r.bottom() << ')';
 }
 
-#else 
+#else
 inline std::string repr(const ambulant::lib::basic_point<int>& p) { return "";}
 inline std::string repr(const ambulant::lib::basic_size<unsigned int>& z) { return "";}
 inline std::string repr(const ambulant::lib::rect& r) {return "";}
@@ -442,17 +442,17 @@ inline std::string repr(const ambulant::lib::rect& r) {return "";}
 #include <ostream>
 
 template<class T>
-inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::basic_point<T>& p) { 
+inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::basic_point<T>& p) {
 	return os << '(' << p.x << ", " << p.y << ')';
 }
 
 template<class S>
-inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::basic_size<S>& s) { 
+inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::basic_size<S>& s) {
 	return os << '(' << s.w << ", " << s.h << ')';
 }
 
 template<class T, class S>
-inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::basic_rect<T, S>& r) { 
+inline std::ostream& operator<<(std::ostream& os, const ambulant::lib::basic_rect<T, S>& r) {
 	return os << '(' << r.x << ", " << r.y << ", " << r.w << ", " << r.h << ')';
 }
 

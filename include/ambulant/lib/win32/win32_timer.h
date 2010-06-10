@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_LIB_WIN32_TIMER_H
@@ -57,15 +57,15 @@ namespace win32 {
 class win32_timer : public ambulant::lib::timer  {
   public:
 	win32_timer();
-	
+
 	// Returns time in msec since epoch.
-	// Takes into account speed with a 1% precision.	
+	// Takes into account speed with a 1% precision.
 	time_type elapsed() const;
-	
+
 	// Gets the speed of this timer
 	double get_speed() const { return 1.0;}
-	
-	// Gets the realtime speed of this 
+
+	// Gets the realtime speed of this
 	// timer as modulated by its parent
 	double get_realtime_speed() const { return 1.0;}
 #ifdef WITH_CLOCK_SYNC
@@ -73,15 +73,15 @@ class win32_timer : public ambulant::lib::timer  {
     signed_time_type get_drift() const { return 0; };
     void skew(signed_time_type skew);
 #endif
-  private:		
+  private:
 	ULONGLONG m_epoch;
-	
+
 };
 
 } // namespace win32
- 
+
 } // namespace lib
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_LIB_WIN32_TIMER_H

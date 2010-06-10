@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 #ifdef  WITH_SMIL30
 #include "ambulant/gui/qt/qt_includes.h"
@@ -55,8 +55,8 @@ gui::qt::create_qt_smiltext_playable_factory(common::factories *factory, common:
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererQt"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererSmilText"), true);
 	return new common::single_playable_factory<
-        gui::qt::qt_smiltext_renderer, 
-        qt_smiltext_playable_tag, 
+        gui::qt::qt_smiltext_renderer,
+        qt_smiltext_playable_tag,
         qt_smiltext_playable_renderer_uri,
         qt_smiltext_playable_renderer_uri2,
         qt_smiltext_playable_renderer_uri2>(factory, mdp);
@@ -90,7 +90,7 @@ gui::qt::qt_smiltext_renderer::~qt_smiltext_renderer() {
 void
 gui::qt::qt_smiltext_renderer::start(double t) {
 	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_renderer::start(0x%x)", this);
-		
+
 	gui::qt::qt_renderer<common::renderer_playable>::start(t);
 	m_lock.enter();
 //JNK?	m_epoch = m_event_processor->get_timer()->elapsed();
@@ -121,7 +121,7 @@ gui::qt::qt_smiltext_renderer::start(double t) {
 	m_lock.leave();
 }
 
-bool 
+bool
 gui::qt::qt_smiltext_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_renderer::stop(0x%x)", this);
 	m_lock.enter();
@@ -197,7 +197,7 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 			lib::color_t chromakey = ri->get_chromakey();
 			lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
 			compute_chroma_range(chromakey, chromakeytolerance,
-					     &chroma_low, &chroma_high);   
+					     &chroma_low, &chroma_high);
 		}
 	}
 	// prepare for blending
@@ -249,7 +249,7 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 	}
 	QColor qt_color(redc(text_color), greenc(text_color), bluec(text_color));
 	QColor qt_bg_color(redc(bg_color), greenc(bg_color), bluec(bg_color));
-	
+
 	if (m_blending) {
 		tx_paint.begin( tx_pixmap );
 		if ( ! strun.m_bg_transparent) {
@@ -259,7 +259,7 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 		if ( ! strun.m_transparent) {
 			tx_paint.setPen(qt_color);
 		}
-		
+
 		if (bg_pixmap) {
 			bg_paint.begin( bg_pixmap );
 			bg_paint.setFont(m_font);
@@ -276,7 +276,7 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 	} else {
 		// if possible, paint directly into the final destination
 		tx_paint.begin( m_window->get_ambulant_pixmap() );
-	}	
+	}
 	tx_paint.setFont(m_font);
 	if ( ! strun.m_bg_transparent) {
 		tx_paint.setBrush(qt_bg_color);
@@ -292,7 +292,7 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 	}
 	tx_paint.flush();
 	tx_paint.end();
-	
+
 	if (m_blending) {
 		QImage tx_image = tx_pixmap->convertToImage();
 		QImage screen_img = m_window->get_ambulant_pixmap()->convertToImage();
@@ -305,13 +305,13 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 		if (bg_pixmap) {
 			QImage bg_image = bg_pixmap->convertToImage();
 			AM_DBG DUMPIMAGE(&bg_image, "bg");
-			qt_image_blend (screen_img, rct, bg_image, rct0, 
+			qt_image_blend (screen_img, rct, bg_image, rct0,
 					alpha_media_bg, 0.0,
 //XX					chroma_low, chroma_high);
 					bg_color, bg_color);
 			delete bg_pixmap;
 		}
-		qt_image_blend (screen_img, rct, tx_image, rct0, 
+		qt_image_blend (screen_img, rct, tx_image, rct0,
 				alpha_media, 0.0,
 //XX				chroma_low, chroma_high);
 				text_color, text_color);
@@ -325,7 +325,7 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 		new_pixmap.convertFromImage(screen_img);
 		AM_DBG DUMPPIXMAP(&new_pixmap, "nw");
 		bitBlt(m_window->get_ambulant_pixmap(), L, T,
-		       &new_pixmap, L, T, W, H);	
+		       &new_pixmap, L, T, W, H);
 		AM_DBG DUMPPIXMAP(m_window->get_ambulant_pixmap(), "rs");
 		delete tx_pixmap;
 	}
@@ -375,11 +375,11 @@ gui::qt::qt_smiltext_renderer::redraw_body(const lib::rect& dirty, common::gui_w
 	m_window = (ambulant_qt_window*) window;
 
 	lib::rect r = dirty;
-	
-	// Translate smiltext region dirty rect. to final viewport coordinates 
+
+	// Translate smiltext region dirty rect. to final viewport coordinates
 	//lib::point pt = m_dest->get_global_topleft();
 	//r.translate(pt);
-		
+
 	m_layout_engine.redraw(r);
 	bool finished = m_layout_engine.is_finished();
 	m_lock.leave();

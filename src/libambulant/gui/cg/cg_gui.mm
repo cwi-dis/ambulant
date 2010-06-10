@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -63,7 +63,7 @@ cg_window::~cg_window()
 	}
 	m_view = NULL;
 }
-	
+
 void
 cg_window::need_redraw(const rect &r)
 {
@@ -76,7 +76,7 @@ cg_window::need_redraw(const rect &r)
 	CGRect my_rect = [my_view CGRectForAmbulantRect: &r];
 	NSRectHolder *arect = [[NSRectHolder alloc] initWithRect: my_rect];
 	// XXX Is it safe to cast C++ objects to ObjC id's?
-	[my_view performSelectorOnMainThread: @selector(asyncRedrawForAmbulantRect:) 
+	[my_view performSelectorOnMainThread: @selector(asyncRedrawForAmbulantRect:)
 		withObject: arect waitUntilDone: NO];
 }
 
@@ -84,7 +84,7 @@ void
 cg_window::redraw_now()
 {
 	AmbulantView *my_view = (AmbulantView *)m_view;
-	[my_view performSelectorOnMainThread: @selector(syncDisplayIfNeeded:) 
+	[my_view performSelectorOnMainThread: @selector(syncDisplayIfNeeded:)
 		withObject: nil waitUntilDone: YES];
 }
 
@@ -109,7 +109,7 @@ cg_window::need_events(bool want)
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
 	AM_DBG logger::get_logger()->debug("cg_window::need_events(0x%x, %d)", (void *)this, want);
-		
+
 	AmbulantView *my_view = (AmbulantView *)m_view;
 	[my_view ambulantNeedEvents: want];
 	[pool release];
@@ -147,7 +147,7 @@ cg_window_factory::new_window(const std::string &name, size bounds, common::gui_
 	[view setAmbulantWindow: window];
 	// And set the window size
 	window->set_size(bounds);
-	
+
 	return (common::gui_window *)window;
 }
 
@@ -171,7 +171,7 @@ cg_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_siz
 {
 #if NOT_YET_UIKIT
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
+
 	*out_data = NULL;
 	*out_size = 0;
 	NSBitmapImageFileType filetype;
@@ -322,7 +322,7 @@ bad:
 	ambulant::lib::rect arect = ambulant::lib::rect(
                 ambulant::lib::point(int(CGRectGetMinX(*nsrect)), int(CGRectGetMinY(*nsrect))),
 				ambulant::lib::size(int(CGRectGetWidth(*nsrect)), int(CGRectGetHeight(*nsrect))));
-	 
+
 #endif
 	return arect;
 }
@@ -392,7 +392,7 @@ bad:
 		AM_DBG NSLog(@"viewDidMoveToWindow: new origin (%f, %f)", screenOrigin.x, screenOrigin.y);
 		[overlay_window setFrameOrigin: screenOrigin];
 	}
-	
+
 	// If something was drawn into the overlay window during the last redraw
 	// we need to clear the overlay window.
 	if (overlay_window_needs_clear) {
@@ -507,7 +507,7 @@ bad:
 	NSWindow *window = [self window];
 	int32_t     shieldLevel = CGShieldingWindowLevel();
 	if ([self ignoreResize] || [window level] >= shieldLevel) {
-		// We don't muck around with fullscreen windows or windows in other apps (browsers, etc). 
+		// We don't muck around with fullscreen windows or windows in other apps (browsers, etc).
 		// What we should actually do is recenter the content, but that is for later.
 	} else {
 		if (superview) {
@@ -538,9 +538,9 @@ bad:
 		return;
 	}
 	// Get the main thread to do the real work
-	[self performSelectorOnMainThread: @selector(pseudoMouseMove:) 
+	[self performSelectorOnMainThread: @selector(pseudoMouseMove:)
 		withObject: nil waitUntilDone: NO];
-#endif	
+#endif
 }
 
 #ifndef WITH_UIKIT
@@ -805,7 +805,7 @@ bad:
 		fullscreen_oldimage = fullscreen_previmage;
 		fullscreen_previmage = NULL;
 	}
-	
+
 	// Do the transition step, or simply copy the bits
 	// if no engine available.
 	AM_DBG NSLog(@"_screenTransitionPostRedraw: bitblit");
@@ -856,12 +856,12 @@ bad:
 	// Find out where to position the window
 	NSPoint baseOrigin = NSMakePoint([self frame].origin.x, [self frame].origin.y);
 	NSPoint screenOrigin = [[self window] convertBaseToScreen: baseOrigin];
-	
+
 	// Create the window
-	overlay_window = [[NSWindow alloc] initWithContentRect: 
-		CGRectMake(screenOrigin.x,screenOrigin.y,[self frame].size.width,[self frame].size.height) 
-		styleMask:NSBorderlessWindowMask 
-		backing:NSBackingStoreBuffered 
+	overlay_window = [[NSWindow alloc] initWithContentRect:
+		CGRectMake(screenOrigin.x,screenOrigin.y,[self frame].size.width,[self frame].size.height)
+		styleMask:NSBorderlessWindowMask
+		backing:NSBackingStoreBuffered
 		defer:YES];
 	NSView *oview = [[MyFlippedView alloc] initWithFrame: [self bounds]];
 	[overlay_window setContentView: oview];

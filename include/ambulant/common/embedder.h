@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_COMMON_EMBEDDER_H
@@ -42,36 +42,36 @@ class player;
 /// starting and finishing.
 class AMBULANTAPI embedder : public lib::system_embedder {
   public:
-  
+
 	/// Close the window corresponding to player p and free that player.
 	virtual void close(player *p) = 0;
-	
+
 	/// Called to open a new player window.
 	/// The start argument specifies whether the new player starts playing
 	/// or waits for user interaction. If old is specified that player
 	/// is closed, and if possible the new player will re-use its window.
-	
+
 	virtual void open(net::url newdoc, bool start, player *old = 0) = 0;
-	
+
 	/// Called when player p has stopped.
 	/// The embedding application could communicate this fact to the end user
 	/// through the GUI.
 	virtual void done(player *p) {}
-	
+
 	/// Called just before playback starts on player p.
 	/// The embedding application could communicate this fact to the end user
 	/// through the GUI.
 	virtual void starting(player *p) {}
-	
+
 	/// Experimental interface: open a new auxiliary document displayed on
 	/// top of the current document. This document will get all mouse and
 	/// keyboard input, and has some limited control over playback of the
-	/// underlying document. 
+	/// underlying document.
 	virtual bool aux_open(const ambulant::net::url& href) {return false;}
 };
 
 } // namespace common
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_COMMON_EMBEDDER_H

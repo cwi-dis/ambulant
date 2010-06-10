@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_COCOA_COCOA_VIDEO_H
@@ -40,7 +40,7 @@ namespace gui {
 
 namespace cocoa {
 
-class cocoa_video_renderer : 
+class cocoa_video_renderer :
 	public renderer_playable {
   public:
 	cocoa_video_renderer(
@@ -64,7 +64,7 @@ class cocoa_video_renderer :
 	void seek(double t);
 
 	common::duration get_dur();
-	
+
 	void redraw(const rect &dirty, gui_window *window);
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};
@@ -89,7 +89,7 @@ class cocoa_video_renderer :
 } // namespace cocoa
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_GUI_COCOA_COCOA_VIDEO_H

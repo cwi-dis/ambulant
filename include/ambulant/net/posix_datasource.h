@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- 
+
 #ifndef AMBULANT_NET_POSIX_DATASOURCE_H
 #define AMBULANT_NET_POSIX_DATASOURCE_H
 
@@ -68,22 +68,22 @@ class posix_datasource : virtual public datasource, virtual public lib::ref_coun
 	void stop();
 	void readdone(int len);
     bool end_of_file();
-	
-		
+
+
 	char* get_read_ptr();
 	int size() const;
-  
+
 	void read(char *data, int size);
-	
+
 	friend inline std::ostream& operator<<(std::ostream& os, const posix_datasource& n) {
 		os << "posix_datasource(" << (void *)&n << ", \"" << n.m_filename << "\")";
 		return os;
 	}
-  private: 
+  private:
     bool _end_of_file();
 	void filesize();
     void read_file();
-	
+
 	const std::string m_filename;
 	databuffer *m_buffer;
 

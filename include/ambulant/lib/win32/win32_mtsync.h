@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_LIB_WIN32_MTSYNC_H
@@ -66,13 +66,13 @@ class AMBULANTAPI critical_section_cv :public critical_section,  public ambulant
   public:
 	critical_section_cv()
 	:	critical_section()
-	{ 
+	{
 		InitializeConditionVariable(&m_cv);
 	}
 	~critical_section_cv() {
 		CloseHandle(m_event);
 	}
-	
+
 	void signal() {
 		WakeConditionVariable(&m_cv);
 	}
@@ -89,13 +89,13 @@ class AMBULANTAPI critical_section_cv :public critical_section,  public ambulant
   public:
 	critical_section_cv()
 	:	critical_section()
-	{ 
+	{
 		m_event = CreateEvent(NULL, TRUE, FALSE, NULL);
 	}
 	~critical_section_cv() {
 		CloseHandle(m_event);
 	}
-	
+
 	void signal() {
 		SetEvent(m_event);
 	}

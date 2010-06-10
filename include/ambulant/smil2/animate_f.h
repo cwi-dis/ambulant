@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_SMIL2_ANIMATE_F_H
@@ -54,34 +54,34 @@ class simple_animation_f {
 	typedef long time_type;
 
 	simple_animation_f() : m_d(0), m_accelerate(0.0), m_decelerate(0.0) {}
-	
+
 	time_type dur() const {
 		return m_d;
 	}
-	
+
 	time_type manipulated(time_type t) const {
 		return accelerate(auto_reverse(t));
 	}
 
 	void set_auto_reverse(bool b) { m_auto_reverse = b;}
 	void set_accelerate(double a, double d) { m_accelerate = a; m_decelerate = d;}
-	
+
   protected:
 	// a simple_animation_f is defined for the interval [0,d]
 	time_type m_d;
-  
-  private:	
+
+  private:
 	// t in [0, 2*d]
 	time_type auto_reverse(time_type t) const {
 		if(!m_auto_reverse) {
 			t = (t<0)?0:(t>m_d?m_d:t);
 			return t;
-		}	
+		}
 		time_type d = 2*m_d;
 		t = (t<0)?0:(t>d?d:t);
 		return (t<=m_d)?t:(m_d - (t-m_d));
 	}
-	
+
 	// t in [0, dur]
 	// to preserve duration max speed m should be:
 	// d = accTriangle + constRectangle + decTriangle = a*d*m/2 + (d-b*d-a*d)*m + b*d*m/2
@@ -107,17 +107,17 @@ class simple_animation_f {
 		assert(tp>=0.0 && tp<=d);
 		return time_type(floor(tp+0.5));
 	}
-	
+
 
 	// A simple function is defined for the interval [0, d]
 	double m_accelerate;
 	double m_decelerate;
-	bool m_auto_reverse;	
+	bool m_auto_reverse;
 };
 
-// Simple duration animation function for continues attributes 
+// Simple duration animation function for continues attributes
 // The attribute type is T
-// T must define operator minus and multiplication/division with an int or double 
+// T must define operator minus and multiplication/division with an int or double
 // T must have a copy constructor
 //
 template<class T>
@@ -126,7 +126,7 @@ class linear_map_f : public simple_animation_f {
 	typedef T value_type;
 	typedef std::map<time_type, value_type> map_type;
 	typedef typename map_type::const_iterator const_map_iterator;
-	
+
 	value_type at(time_type t) const {
 		t = manipulated(t);
 		const_map_iterator eit = m_ktv.upper_bound(t);
@@ -138,16 +138,16 @@ class linear_map_f : public simple_animation_f {
 		value_type v2 = (*eit).second;
 		return v1 + ((v2-v1)*dt)/dd;
 	}
-	
+
 	value_type at(time_type t, const value_type& u) const {
 		return at(t);
 	}
-	
+
 	time_type dur() const {
 		assert(m_d == (*m_ktv.rbegin()).first - (*m_ktv.begin()).first);
 		return m_d;
 	}
-	
+
 	map_type& get_time_values_map() { return m_ktv;}
 
 	void init(time_type duration, T val) {
@@ -172,14 +172,14 @@ class linear_map_f : public simple_animation_f {
 			init(duration, vals[0]);
 		} else if(n==2) {
 			init(duration, vals[0], vals[1]);
-		} else { 
+		} else {
 			m_ktv.clear();
 			time_type to = 0;
 			for(int i=0;i<n;i++, to+=duration)
 				m_ktv[to/(n-1)] = vals[i];
 		}
 	}
-	
+
 	void init(time_type duration, const std::vector<T>& vals, const std::vector<double>& keyTimes) {
 		assert(!vals.empty());
 		m_d = duration;
@@ -189,7 +189,7 @@ class linear_map_f : public simple_animation_f {
 		} else if(n==2) {
 			init(duration, vals[0], vals[1]);
 		} else {
-			// assumes keyTimes have been verified and thus 
+			// assumes keyTimes have been verified and thus
 			// the following assertions evaluate to true
 			assert(keyTimes.front() == 0.0);
 			assert(keyTimes.back() == 1.0);
@@ -202,7 +202,7 @@ class linear_map_f : public simple_animation_f {
 			}
 		}
 	}
-	
+
 	void paced_init(time_type duration, const std::vector<T>& vals) {
 		assert(!vals.empty());
 		m_d = duration;
@@ -211,7 +211,7 @@ class linear_map_f : public simple_animation_f {
 			init(duration, vals[0]);
 		} else if(n==2) {
 			init(duration, vals[0], vals[1]);
-		} else { 
+		} else {
 			m_ktv.clear();
 			double length = 0.0;
 			for(int i1=1;i1<n;i1++) length += dist(vals[i1-1], vals[i1]);
@@ -221,15 +221,15 @@ class linear_map_f : public simple_animation_f {
 				dl += dist(vals[i2-1], vals[i2]);
 				time_type t = time_type(::floor(0.5+duration*dl/length));
 				m_ktv[t] = vals[i2];
-			}		
+			}
 		}
 	}
 
-  private:	
-	map_type m_ktv;	
+  private:
+	map_type m_ktv;
 };
 
-// Simple duration animation function for discrete attributes 
+// Simple duration animation function for discrete attributes
 // The attribute type is T
 // T must have a copy constructor
 //
@@ -239,7 +239,7 @@ class discrete_map_f : public simple_animation_f {
 	typedef T value_type;
 	typedef std::map<time_type, value_type> map_type;
 	typedef typename map_type::const_iterator const_map_iterator;
-  
+
 	value_type at(time_type t) const {
 		assert(!m_ktv.empty());
 		t = manipulated(t);
@@ -247,11 +247,11 @@ class discrete_map_f : public simple_animation_f {
 		const_map_iterator bit = eit;bit--;
 		return (*bit).second;
 	}
-	
+
 	value_type at(time_type t, const value_type& u) const {
 		return at(t);
 	}
-	
+
 	map_type& get_time_values_map() { return m_ktv;}
 
 	void init(time_type duration, T val) {
@@ -275,22 +275,22 @@ class discrete_map_f : public simple_animation_f {
 			init(duration, vals[0]);
 		} else if(n==2) {
 			init(duration, vals[0], vals[1]);
-		} else { 
+		} else {
 			m_ktv.clear();
 			time_type to = 0;
 			for(int i=0;i<n;i++, to+=duration)
 				m_ktv[to/n] = vals[i];
 		}
 	}
-	
+
 	void init(time_type duration, const std::vector<T>& vals, const std::vector<double>& keyTimes) {
 		assert(!vals.empty());
 		m_d = duration;
 		int n = int(vals.size());
-		// assumes keyTimes have been verified and thus 
+		// assumes keyTimes have been verified and thus
 		// the following assertions evaluate to true
 		assert(keyTimes.front() == 0.0);
-		assert(keyTimes.back()<=1.0);		
+		assert(keyTimes.back()<=1.0);
 		assert(vals.size() == keyTimes.size());
 		for(int j=1;j<n;j++) assert(keyTimes[j]>keyTimes[j-1]);
 		if(n==1) {
@@ -300,7 +300,7 @@ class discrete_map_f : public simple_animation_f {
 			m_ktv[0]= vals[0];
 			time_type t = time_type(floor(keyTimes[1]*duration + 0.5));
 			m_ktv[t] = vals[1];
-		} else { 
+		} else {
 			m_ktv.clear();
 			for(int i=0;i<n;i++) {
 				time_type t = time_type(floor(keyTimes[i]*duration + 0.5));
@@ -312,9 +312,9 @@ class discrete_map_f : public simple_animation_f {
 	void paced_init(long duration, const std::vector<T>& vals) {
 		init(duration, vals);
 	}
-	
-  private:	
-	map_type m_ktv;	
+
+  private:
+	map_type m_ktv;
 };
 
 // Simple duration animate function for "to" aninations
@@ -322,21 +322,21 @@ template<class T>
 class underlying_to_f : public simple_animation_f {
   public:
 	typedef T value_type;
-		
+
 	value_type at(time_type t) const {
 		return at(t, value_type());
 	}
-	
+
 	value_type at(time_type t, const T& u) const {
-		t = manipulated(t);	
+		t = manipulated(t);
 		return (u*(m_d-t))/m_d + (m_v*t)/m_d;
 	}
-	
+
 	void init(time_type duration, value_type v) {
 		m_d = duration; m_v = v;
 	}
-	 
-  private:	
+
+  private:
 	value_type m_v;
 };
 
@@ -355,35 +355,35 @@ class animate_f {
   public:
 	typedef typename F::time_type time_type;
 	typedef typename F::value_type value_type;
-	
+
 	animate_f(const F& f, time_type sd, time_type ad, bool cum = false)
 	:	m_f(f), m_sd(sd), m_ad(ad), m_cum(cum) {
         // XXXJACK Added this clamping of simple duration to active duration, but I'm not sure it's
         // correct. Symptom was bug #1763572: stack overflow if sd is indefinite.
         if (m_sd > m_ad) m_sd = m_ad;
     }
-	
+
 	value_type at(time_type t) const {
 		if(t<=m_ad) return m_cum?(m_f.at(m_sd)*(t/m_sd) + m_f.at(t%m_sd)):m_f.at(t%m_sd);
 		if((m_ad%m_sd) != 0) return this->at(m_ad);
 		assert((m_ad%m_sd) == 0);
 		return m_cum?m_f.at(m_sd)*(m_ad/m_sd):m_f.at(m_sd);
 	}
-	
+
 	value_type at(time_type t, const value_type& u) const {
 		if(t<=m_ad) return m_cum?(m_f.at(m_sd, u)*(t/m_sd) + m_f.at(t%m_sd, u)):m_f.at(t%m_sd, u);
 		if((m_ad%m_sd) != 0) return this->at(m_ad, u);
 		assert((m_ad%m_sd) == 0);
 		return m_cum?m_f.at(m_sd, u)*(m_ad/m_sd):m_f.at(m_sd, u);
 	}
-	
+
 #if 0
 	// Unused, and I don't know what they should return.
 	bool set_cumulative(bool c) { m_cum = c;}
 	bool update_ad(time_type ad) { m_ad = ad;}
 	bool update_sd(time_type sd) { m_sd = sd;}
 #endif
-	
+
 	const F& m_f;
 	time_type m_sd;
 	time_type m_ad;
@@ -411,7 +411,7 @@ void create_bezier_map(double *e, std::map<double, double>& gr) {
 // Distance for scalars
 template <class T>
 double dist(const T& v1, const T& v2) {
-	return std::max(v1, v2) - std::min(v1, v2); 
+	return std::max(v1, v2) - std::min(v1, v2);
 }
 
 // Distance specialization for common::region_dim
@@ -440,7 +440,7 @@ template <>
 double dist(const lib::point& p1, const lib::point& p2) {
 	double dx = double(p2.x - p1.x);
 	double dy = double(p2.y - p1.y);
-	return ::sqrt(dx*dx + dy*dy); 
+	return ::sqrt(dx*dx + dy*dy);
 }
 
 // Distance specialization for lib::color_t
@@ -449,12 +449,12 @@ double dist(const lib::color_t& c1, const lib::color_t& c2) {
 	double dr = double(lib::redc(c2) - lib::redc(c1));
 	double dg = double(lib::greenc(c2) - lib::greenc(c1));
 	double db = double(lib::bluec(c2) - lib::bluec(c1));
-	return ::sqrt(dr*dr + dg*dg + db*db); 
+	return ::sqrt(dr*dr + dg*dg + db*db);
 }
 
 
 } // namespace smil2
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_SMIL2_ANIMATE_F_H

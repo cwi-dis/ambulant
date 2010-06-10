@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -104,7 +104,7 @@ gstreamer_audio_renderer::init_player(const lib::node *node)
 }
 
 void
-gstreamer_audio_renderer::set_intransition(const lib::transition_info* info) 
+gstreamer_audio_renderer::set_intransition(const lib::transition_info* info)
 {
  	if (m_transition_engine)
 		delete m_transition_engine;
@@ -129,7 +129,7 @@ gstreamer_audio_renderer::is_supported(const lib::node *node)
 	if ( ! node)
     		return false;
 	std::string mimetype(node->get_url("src").guesstype());
-	
+
 #ifdef  WITH_NOKIA770
 	if (mimetype == "audio/mpeg") // .mp3
 		return true;
@@ -221,7 +221,7 @@ gstreamer_audio_renderer::seek(double where)
 	m_lock.leave();
 }
 
-common::duration 
+common::duration
 gstreamer_audio_renderer::get_dur()
 {
 	common::duration rv(false, 0.0);
@@ -278,7 +278,7 @@ gstreamer_audio_renderer::_stopped()
 {
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_audio_renderer::stopedp(0x%x)",(void*)this);
 	if (m_is_playing) {
-		// inform scheduler 
+		// inform scheduler
 		m_context->stopped(m_cookie, 0);
 		m_is_playing = false;
 	}

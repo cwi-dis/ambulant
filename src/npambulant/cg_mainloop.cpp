@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -75,7 +75,7 @@ cg_mainloop::cg_mainloop(const char *urlstr, void *view,
 	init_factories();
 	AM_DBG lib::logger::get_logger()->debug("m_node_factory now 0x%x", get_node_factory());
 	init_plugins();
-	
+
 	ambulant::net::url url = ambulant::net::url::from_url(urlstr);
 	AM_DBG lib::logger::get_logger()->debug("m_node_factory now 0x%x", get_node_factory());
 	m_doc = create_document(url);
@@ -114,7 +114,7 @@ cg_mainloop::init_playable_factory()
 #endif // NONE_PLAYER
 #ifdef WITH_SDL
     AM_DBG lib::logger::get_logger()->debug("cg_mainloop::cg_mainloop: add factory for SDL");
-	pf->add_factory(gui::sdl::create_sdl_playable_factory(this));      
+	pf->add_factory(gui::sdl::create_sdl_playable_factory(this));
 #endif // WITH_SDL
 }
 
@@ -134,10 +134,10 @@ cg_mainloop::init_datasource_factory()
 {
 	net::datasource_factory *df = new net::datasource_factory();
 	set_datasource_factory(df);
-#ifdef WITH_LIVE	
+#ifdef WITH_LIVE
 	AM_DBG lib::logger::get_logger()->debug("cg_mainloop::cg_mainloop: add live_audio_datasource_factory");
 	df->add_video_factory(net::create_live_video_datasource_factory());
-	df->add_audio_factory(net::create_live_audio_datasource_factory()); 
+	df->add_audio_factory(net::create_live_audio_datasource_factory());
 #endif
 #ifdef WITH_FFMPEG
     AM_DBG lib::logger::get_logger()->debug("cg_mainloop::cg_mainloop: add ffmpeg_video_datasource_factory");
@@ -166,7 +166,7 @@ cg_mainloop::init_datasource_factory()
 void
 cg_mainloop::init_parser_factory()
 {
-	set_parser_factory(lib::global_parser_factory::get_parser_factory());	
+	set_parser_factory(lib::global_parser_factory::get_parser_factory());
 }
 
 cg_mainloop::~cg_mainloop()
@@ -187,7 +187,7 @@ cg_mainloop::restart(bool reparse)
 	bool playing = is_play_active();
 	bool pausing = is_pause_active();
 	stop();
-	
+
 	delete m_player;
 	m_player = 0;
 	if (reparse) {
@@ -243,4 +243,4 @@ cg_mainloop::node_focussed(const lib::node *n)
 	AM_DBG lib::logger::get_logger()->debug("node_focussed: nothing to show");
 //	set_statusline(m_view, "???");
 }
-			
+

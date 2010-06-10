@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
- 
+
 #include "ambulant/gui/dx/dx_basicvideo.h"
 #include "ambulant/gui/dx/dx_viewport.h"
 #include "ambulant/gui/dx/dx_window.h"
@@ -49,10 +49,10 @@ gui::dx::create_dx_basicvideo_playable_factory(common::factories *factory, commo
 {
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectXBasicVideo"), true);
 	return new common::single_playable_factory<
-		gui::dx::dx_basicvideo_renderer, 
-        dx_basicvideo_playable_tag, 
-        dx_basicvideo_playable_renderer_uri, 
-        dx_basicvideo_playable_renderer_uri, 
+		gui::dx::dx_basicvideo_renderer,
+        dx_basicvideo_playable_tag,
+        dx_basicvideo_playable_renderer_uri,
+        dx_basicvideo_playable_renderer_uri,
         dx_basicvideo_playable_renderer_uri >(factory, mdp);
 }
 
@@ -64,7 +64,7 @@ gui::dx::dx_basicvideo_renderer::dx_basicvideo_renderer(
 	common::factories *fp,
 	common::playable_factory_machdep *dxplayer)
 :   dx_renderer_playable(context, cookie, node, evp, fp, dynamic_cast<dx_playables_context*>(dxplayer)),
-	m_player(0), 
+	m_player(0),
 	m_update_event(0) {
 	AM_DBG lib::logger::get_logger()->debug("dx_basicvideo_renderer(0x%x)", this);
 }
@@ -75,9 +75,9 @@ gui::dx::dx_basicvideo_renderer::~dx_basicvideo_renderer() {
 }
 
 void gui::dx::dx_basicvideo_renderer::start(double t) {
-	AM_DBG lib::logger::get_logger()->debug("start: %s", m_node->get_path_display_desc().c_str()); 
+	AM_DBG lib::logger::get_logger()->debug("start: %s", m_node->get_path_display_desc().c_str());
 	common::surface *surf = get_surface();
-	
+
 	dx_window *dxwindow = static_cast<dx_window*>(surf->get_gui_window());
 	viewport *v = dxwindow->get_viewport();
 	HWND parent = v->get_hwnd();
@@ -93,12 +93,12 @@ void gui::dx::dx_basicvideo_renderer::start(double t) {
 	}
 	if(!m_player) {
 		// Not created or stopped (gone)
-		
+
 		// Notify scheduler
 		m_context->stopped(m_cookie);
 		return;
 	}
-	
+
 	// Does it have all the resources to play?
 	if(!m_player->can_play()) {
 		// Notify scheduler
@@ -115,25 +115,25 @@ void gui::dx::dx_basicvideo_renderer::start(double t) {
 //XXXJACK		m_player->update();
 		m_dest->need_redraw();
 		schedule_update();
-		return;	
+		return;
 	}
-	
+
 	// Activate this renderer.
 	// Add this renderer to the display list of the region
 	m_dest->show(this);
 	m_dest->need_events(m_wantclicks);
 	m_activated = true;
-		
+
 	// Start the underlying player
 	m_player->start(t + (m_clip_begin / 1000000.0));
 //XXXJACK	m_player->update();
-		
+
 	// Request a redraw
 	m_dest->need_redraw();
-		
+
 	// Notify the scheduler; may take benefit
 	m_context->started(m_cookie);
-		
+
 	// Schedule a self-update
 	schedule_update();
 }
@@ -158,7 +158,7 @@ std::pair<bool, double> gui::dx::dx_basicvideo_renderer::get_dur() {
 }
 
 bool gui::dx::dx_basicvideo_renderer::stop() {
-	AM_DBG lib::logger::get_logger()->debug("stop: %s", m_node->get_path_display_desc().c_str()); 
+	AM_DBG lib::logger::get_logger()->debug("stop: %s", m_node->get_path_display_desc().c_str());
 	if(!m_player) return true;
 	m_cs.enter();
 	m_update_event = 0;
@@ -204,48 +204,48 @@ void gui::dx::dx_basicvideo_renderer::redraw(const lib::rect &dirty, common::gui
 		// No bits available
 		return;
 	}
-	
+
 	// Get the top-level surface
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();
 	if(!v) return;
-	
+
 	// Update our bits.
 	if(!m_player->update()) {
 		// next time please...
 		return;
 	}
-	
+
 	// Get fit rectangles
 	lib::rect vid_rect1;
 	lib::rect vid_reg_rc = m_dest->get_fit_rect(m_player->get_size(), &vid_rect1, m_alignment);
-	
+
 	// Use one type of rect to do op
 	lib::rect vid_rect(vid_rect1);
-	
-	// A complete repaint would be:  
+
+	// A complete repaint would be:
 	// vid_rect -> vid_reg_rc
-	
+
 	// We have to paint only the intersection.
-	// Otherwise we will override upper layers 
+	// Otherwise we will override upper layers
 	lib::rect vid_reg_rc_dirty = vid_reg_rc & dirty;
 	if(vid_reg_rc_dirty.empty()) {
 		// this renderer has no pixels for the dirty rect
 		return;
-	}	
-		
+	}
+
 	// Find the part of the image that is mapped to img_reg_rc_dirty
-	lib::rect vid_rect_dirty = reverse_transform(&vid_reg_rc_dirty, 
+	lib::rect vid_rect_dirty = reverse_transform(&vid_reg_rc_dirty,
 		&vid_rect, &vid_reg_rc);
-		
-	
-	// Translate vid_reg_rc_dirty to viewport coordinates 
+
+
+	// Translate vid_reg_rc_dirty to viewport coordinates
 	lib::point pt = m_dest->get_global_topleft();
 	vid_reg_rc_dirty.translate(pt);
-	
+
 	// keep debug message area
 	m_msg_rect |= vid_reg_rc_dirty;
-	
+
 	dx_transition *tr = get_transition();
 	if (tr && tr->is_fullscreen()) {
 		v->set_fullscreen_transition(tr);
@@ -255,7 +255,7 @@ void gui::dx::dx_basicvideo_renderer::redraw(const lib::rect &dirty, common::gui
 	// Finally blit img_rect_dirty to img_reg_rc_dirty
 	//AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::redraw %0x %s", m_dest, m_node->get_url("src").c_str());
 	v->draw(m_player->get_ddsurf(), vid_rect_dirty, vid_reg_rc_dirty, false, tr);
-		
+
 	AM_DBG 	{
 		std::string s = m_node->get_path_display_desc();
 		lib::textptr tp(s.c_str());
@@ -266,7 +266,7 @@ void gui::dx::dx_basicvideo_renderer::redraw(const lib::rect &dirty, common::gui
 }
 
 void gui::dx::dx_basicvideo_renderer::update_callback() {
-	// Schedule a redraw callback 
+	// Schedule a redraw callback
 	m_cs.enter();
 	if(!m_update_event || !m_player) {
 		m_cs.leave();
@@ -285,7 +285,7 @@ void gui::dx::dx_basicvideo_renderer::update_callback() {
 	}
 #endif
 	m_cs.leave();
-	
+
 	if( need_callback ) {
 		schedule_update();
 	} else {
@@ -295,7 +295,7 @@ void gui::dx::dx_basicvideo_renderer::update_callback() {
 }
 
 void gui::dx::dx_basicvideo_renderer::schedule_update() {
-	m_update_event = new lib::no_arg_callback<dx_basicvideo_renderer>(this, 
+	m_update_event = new lib::no_arg_callback<dx_basicvideo_renderer>(this,
 		&dx_basicvideo_renderer::update_callback);
 	m_event_processor->add_event(m_update_event, 50, lib::ep_med);
 }

@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_SMIL2_TIMEGRAPH_H
@@ -39,7 +39,7 @@
 namespace ambulant {
 
 // gcc 3.4 complains about this, since it does not seems to be used i uncommented it.
-	
+
 //template <class N>
 //class lib::node_navigator;
 
@@ -52,24 +52,24 @@ class lib::logger;
 
 // Builds the time tree and the time graph.
 // Wraps the time root.
- 
+
 class timegraph : public time_traits {
   public:
  public:
-	timegraph(time_node::context_type *ctx, 
-		const lib::document *doc, 
+	timegraph(time_node::context_type *ctx,
+		const lib::document *doc,
 		const common::schema *sch);
 	~timegraph();
-	
+
 	time_node* get_root() { return m_root;}
 	const time_node* get_root() const { return m_root;}
 #ifdef WITH_SMIL30
 	const std::set<std::string>& get_state_change_args() {return m_state_change_args; }
 #endif // WITH_SMIL30
-	
+
 	time_node* detach_root();
 	std::map<int, time_node*>* detach_dom2tn();
-	
+
   private:
     typedef node_navigator<const lib::node> const_nnhelper;
 	time_node* build_time_tree(const lib::node *root);
@@ -80,7 +80,7 @@ class timegraph : public time_traits {
 	time_node* create_time_node(const lib::node *n, time_node* tparent) const;
 	time_node *get_node_with_id(const std::string& ident) const;
 	time_node *get_node_with_id(const std::string& ident, time_node *tn) const;
-	
+
 	// helpers for creating sync rules
 	void add_begin_sync_rules(time_node *tn);
 	void add_end_sync_rules(time_node *tn);
@@ -88,7 +88,7 @@ class timegraph : public time_traits {
 	sync_rule* create_impl_syncbase_rule(time_node *tn, time_type offset);
 
 	const lib::node* select_switch_child(const node* sn) const;
-	
+
 	time_node::context_type *m_context;
 	const common::schema *m_schema;
 	const std::map<std::string, custom_test>* m_custom_tests;
@@ -103,7 +103,7 @@ class timegraph : public time_traits {
 
 
 } // namespace smil2
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_SMIL2_TIMEGRAPH_H

@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -44,8 +44,8 @@ gui::gtk::create_gtk_fill_playable_factory(common::factories *factory, common::p
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererGtk"), true);
    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererFill"), true);
 	return new common::single_playable_factory<
-        gtk_fill_renderer, 
-        gtk_fill_playable_tag, 
+        gtk_fill_renderer,
+        gtk_fill_playable_tag,
         gtk_fill_playable_renderer_uri,
         gtk_fill_playable_renderer_uri2,
         gtk_fill_playable_renderer_uri2>(factory, mdp);
@@ -61,7 +61,7 @@ gtk_fill_renderer::~gtk_fill_renderer()
 	m_trans_engine = NULL;
 	m_lock.leave();
 }
-	
+
 void
 gtk_fill_renderer::start(double where)
 {
@@ -127,7 +127,7 @@ gtk_fill_renderer::redraw(const rect &dirty,
 	m_lock.enter();
 	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("gtk_fill_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)",(void *)this,r.left(),r.top(),r.right(),r.bottom());
-	
+
 	ambulant_gtk_window* agtkw = (ambulant_gtk_window*) window;
 	GdkPixmap *surf = NULL;
 	if (m_trans_engine && m_trans_engine->is_done()) {
@@ -155,7 +155,7 @@ gtk_fill_renderer::redraw(const rect &dirty,
 	}
 
 	redraw_body(dirty, window);
-	
+
 	if (surf != NULL) {
 		agtkw->reset_ambulant_surface();
 	}
@@ -181,7 +181,7 @@ gtk_fill_renderer::transition_step()
 	if (m_dest) m_dest->need_redraw();
 }
 
-bool 
+bool
 gtk_fill_renderer::user_event(const point &where, int what)
 {
 	if (!user_event_sensitive(where)) return false;
@@ -202,9 +202,9 @@ gtk_fill_renderer::redraw_body(const lib::rect &dirty,
 	// First find our whole area to be cleared to <brush> color
 	lib::rect dstrect_whole = r;
 	dstrect_whole.translate(m_dest->get_global_topleft());
-	int	L = dstrect_whole.left(), 
+	int	L = dstrect_whole.left(),
 		T = dstrect_whole.top(),
-		W = dstrect_whole.width(), 
+		W = dstrect_whole.width(),
 		H = dstrect_whole.height();
 	// Fill with  color
 	const char *color_attr = m_node->get_attribute("color");
@@ -216,7 +216,7 @@ gtk_fill_renderer::redraw_body(const lib::rect &dirty,
 	color_t color = lib::to_color(color_attr);
 	lib::color_t bgcolor = info->get_bgcolor();
 	AM_DBG lib::logger::get_logger()->debug
-		("gtk_fill_renderer.redraw_body: clearing to 0x%x", 
+		("gtk_fill_renderer.redraw_body: clearing to 0x%x",
 		 (long)color);
 	GdkColor bgc;
 	bgc.red = redc(color)*0x101;
@@ -234,7 +234,7 @@ gtk_background_renderer::redraw(const lib::rect &dirty,
 			       common::gui_window *window)
 {
 	if ( !  (m_src && m_dst))
-		return; 
+		return;
 	const lib::rect &r = m_dst->get_rect();
 	AM_DBG lib::logger::get_logger()->debug("gtk_background_renderer::redraw(0x%x)", (void *)this);
 	double opacity = m_src->get_bgopacity();
@@ -269,7 +269,7 @@ gtk_background_renderer::redraw(const lib::rect &dirty,
 		  	// 1. Get the current on-screen image as a pixmap
 		  	// 2. Create a new pixmap and draw a coloured rectangle on it
 		  	// 3. Blend these 2 pixmaps together by getting their pixbufs
-		  	// 4. Draw the resulting pixbuf to become the new on-screen image  
+		  	// 4. Draw the resulting pixbuf to become the new on-screen image
 			GdkPixmap* opm = agtkw->get_ambulant_pixmap();
 			gint width; gint height;
 			gdk_drawable_get_size(GDK_DRAWABLE (opm), &width, &height);
@@ -282,7 +282,7 @@ gtk_background_renderer::redraw(const lib::rect &dirty,
 			GdkPixbuf* new_pixbuf = gdk_pixbuf_get_from_drawable(NULL, npm, NULL, L, T, 0, 0, W, H);
 			int alpha = static_cast<int>(round(255*opacity));
 			gdk_pixbuf_composite(new_pixbuf, old_pixbuf,0,0,W,H,0,0,1,1,GDK_INTERP_BILINEAR, alpha);
-			gdk_draw_pixbuf(opm, gc, old_pixbuf, 0, 0, L, T, W, H, GDK_RGB_DITHER_NONE,0,0);				
+			gdk_draw_pixbuf(opm, gc, old_pixbuf, 0, 0, L, T, W, H, GDK_RGB_DITHER_NONE,0,0);
 			g_object_unref (G_OBJECT (old_pixbuf));
 			g_object_unref (G_OBJECT (new_pixbuf));
 			g_object_unref (G_OBJECT (ngc));

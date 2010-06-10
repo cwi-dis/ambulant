@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_COCOA_COCOA_SMILTEXT_H
@@ -43,7 +43,7 @@ namespace gui {
 
 namespace cocoa {
 
-class cocoa_smiltext_renderer : 
+class cocoa_smiltext_renderer :
 	public cocoa_renderer<renderer_playable>,
 	public smil2::smiltext_notification
 {
@@ -56,7 +56,7 @@ class cocoa_smiltext_renderer :
 		common::factories *fp,
 		common::playable_factory_machdep *mdp);
         ~cocoa_smiltext_renderer();
-	
+
     void redraw_body(const rect &dirty, gui_window *window);
 	void start(double t);
 	void seek(double t);
@@ -90,7 +90,7 @@ class cocoa_smiltext_renderer :
 } // namespace cocoa
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 #endif // WITH_SMIL30

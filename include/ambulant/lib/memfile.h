@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- 
+
 #ifndef AMBULANT_LIB_MEMFILE_H
 #define AMBULANT_LIB_MEMFILE_H
 
@@ -47,33 +47,33 @@ class memfile {
 	memfile(net::datasource *src)
 	:	m_gptr(0),
 		m_src(src) {}
-		
+
 	~memfile();
-		
+
 	bool read();
 
 	size_type size() const;
-	
+
 	size_type available() const;
-	
+
 	void seekg(size_type pos);
-	
+
 	const byte* data() const;
 	const byte* begin() const;
 	const byte* end() const;
-	
+
 	const byte* gdata();
-	
+
 	byte get();
-	
+
 	size_type read(byte *b, size_type nb);
-	
+
 	size_type skip(size_type nb);
-	
+
 	unsigned short get_be_ushort();
-	
+
 	size_type read(char *b, size_type nb);
-		
+
   private:
 #ifndef AMBULANT_PLATFORM_WIN32_WCE
 	void throw_range_error() {
@@ -84,7 +84,7 @@ class memfile {
 	databuffer m_buffer;
 	size_type m_gptr;
 	net::datasource *m_src;
-  
+
 };
 
 } // end namespace lib

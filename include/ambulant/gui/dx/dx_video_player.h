@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_DX_VIDEO_PLAYER_H
@@ -48,7 +48,7 @@
 #pragma comment (lib,"uuid.lib")
 
 namespace ambulant {
-	namespace lib { 
+	namespace lib {
 		class event_processor;
 		class event;
 	}
@@ -64,7 +64,7 @@ class video_player {
   public:
 	video_player(const std::string& url, IDirectDraw* ddraw);
 	~video_player();
-	
+
 	void start(double t);
 //	void stop();
 	bool stop();
@@ -78,25 +78,25 @@ class video_player {
 
 	void preroll(double when, double where, double how_much) {}
 	int ms_per_frame();
-	
+
 	bool can_play();
 	bool is_playing();
 	double get_position();
 	const std::string& get_url() const { return m_url;}
-	
+
 	// dx implementation artifacts
 	bool update();
 	IDirectDrawSurface *get_ddsurf() { return m_ddsurf;}
 	lib::size get_size() const {
 		return lib::size(m_rcsurf.right, m_rcsurf.bottom);
 	}
-	
+
  private:
 	bool open(const std::string& url, IDirectDraw* dd);
 	void release_player();
-	
+
 	std::string m_url;
-	
+
 	IMultiMediaStream *m_mmstream;
     IMediaStream *m_vidstream;
     IDirectDrawMediaStream *m_ddstream;
@@ -106,11 +106,11 @@ class video_player {
     bool m_wantclicks;
 	bool m_update_busy;
 };
-	
+
 } // namespace dx
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_GUI_DX_VIDEO_PLAYER_H

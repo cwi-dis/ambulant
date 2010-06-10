@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef __QT_GUI_H__
@@ -91,7 +91,7 @@ class qt_gui : public qt_gui_BASE
 /*TMP*/	qt_mainloop* m_mainloop;
   private:
     void _update_menus();
-    
+
 	QPushButton* m_cancel_pb; // for Settings window
 	QPopupMenu*  m_filemenu;
 	QHBox* 	     m_finish_hb; // for Settings window

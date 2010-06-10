@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/document.h"
@@ -53,7 +53,7 @@ lib::document::~document() {
     m_avtcache.clear();
 }
 
-lib::node* 
+lib::node*
 lib::document::get_root(bool detach) {
 	if(!detach)
 		return m_root;
@@ -62,13 +62,13 @@ lib::document::get_root(bool detach) {
 	return tmp;
 }
 
-const lib::node* 
+const lib::node*
 lib::document::get_root() const {
 	return m_root;
 }
 
-//static 
-lib::document* 
+//static
+lib::document*
 lib::document::create_from_file(common::factories* factory, const std::string& filename) {
 	document *d = new document();
 	tree_builder builder(factory->get_node_factory(), d);
@@ -85,15 +85,15 @@ lib::document::create_from_file(common::factories* factory, const std::string& f
 	}
 	d->set_root(builder.detach());
 	d->set_src_url(ambulant::net::url::from_filename(filename));
-	
+
 //	std::string base = filesys::get_base(filename, file_separator.c_str());
 //	d->set_src_base(ambulant::net::url(base));
-	
+
 	return d;
 }
 
-//static 
-lib::document* 
+//static
+lib::document*
 lib::document::create_from_url(common::factories* factory, const net::url& u) {
 	document *d = new document();
 	tree_builder builder(factory->get_node_factory(), d);
@@ -122,8 +122,8 @@ lib::document::create_from_url(common::factories* factory, const net::url& u) {
 	return d;
 }
 
-//static 
-lib::document* 
+//static
+lib::document*
 lib::document::create_from_string(common::factories* factory, const std::string& smil_src, const std::string& src_id) {
 	document *d = new document();
 	tree_builder builder(factory->get_node_factory(), d, src_id.c_str());
@@ -141,27 +141,27 @@ lib::document::create_from_string(common::factories* factory, const std::string&
 	return d;
 }
 
-void 
+void
 lib::document::set_prefix_mapping(const std::string& prefix, const std::string& uri) {
 	m_namespaces.set_prefix_mapping(prefix, uri);
 }
 
-const lib::xml_string& 
+const lib::xml_string&
 lib::document::get_namespace_prefix(const xml_string& uri) const {
 	return m_namespaces.get_namespace_prefix(uri);
 }
 
-bool 
+bool
 lib::document::is_supported_prefix(const xml_string& prefix) const {
 	return m_namespaces.is_supported_prefix(prefix) || m_namespaces.is_supported_namespace(prefix);
 }
 
-bool 
+bool
 lib::document::is_supported_namespace(const xml_string& uri) const {
 	return m_namespaces.is_supported_namespace(uri);
 }
 
-net::url 
+net::url
 lib::document::resolve_url(const net::url& rurl) const {
 	net::url loc(rurl);
 	if (loc.is_absolute()) {
@@ -232,7 +232,7 @@ void lib::document::read_custom_attributes() {
 			s = p?p:"";
 			t.override = (s=="visible")?true:false;
 			p = n->get_attribute("uid");
-			t.uid = p?p:""; 
+			t.uid = p?p:"";
 			m_custom_tests[id] = t;
 			AM_DBG logger::get_logger()->debug("Custom test: %s", ::repr(t).c_str());
 		}
@@ -275,7 +275,7 @@ lib::document::apply_avt(const node* n, const lib::xml_string& attrname, const l
 	}
 	cachepos->second.insert(make_pair(attrvalue, rv));
 	const xml_string& rvholder = cachepos->second.find(attrvalue)->second;
-	return rvholder;		
+	return rvholder;
 }
 void
 lib::document::_register_node_avt_dependence(const node* n, const xml_string& expr)

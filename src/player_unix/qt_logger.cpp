@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "qt_gui.h"
@@ -34,7 +34,7 @@ qt_logger_ostream::qt_logger_ostream()
 {
 }
 
-bool 
+bool
 qt_logger_ostream::is_open() const {
 	std::string id("qt_logger_ostream:::is_open() const");
 	return true;
@@ -72,10 +72,10 @@ qt_logger_ostream::flush() {
 
 qt_logger* qt_logger::s_qt_logger = 0;
 
-qt_logger::qt_logger() 
+qt_logger::qt_logger()
 :	m_log_FILE(NULL),
 	m_logger_window( NULL),
-	m_gui(NULL) 
+	m_gui(NULL)
 {
 	common::preferences* prefs = common::preferences::get_preferences();
 	lib::logger* logger = lib::logger::get_logger();

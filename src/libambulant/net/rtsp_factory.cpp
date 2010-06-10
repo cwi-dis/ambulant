@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -44,7 +44,7 @@ ambulant::net::create_live_audio_datasource_factory()
     return new live_audio_datasource_factory();
 }
 
-audio_datasource* 
+audio_datasource*
 live_audio_datasource_factory::new_audio_datasource(const net::url& url, const audio_format_choices& fmts, timestamp_t clip_begin, timestamp_t clip_end)
 {
 	AM_DBG lib::logger::get_logger()->debug("live_audio_datasource_factory::new_audio_datasource(%s)", repr(url).c_str());
@@ -54,14 +54,14 @@ live_audio_datasource_factory::new_audio_datasource(const net::url& url, const a
 		return NULL;
 	}
 	rtsp_demux *thread = new rtsp_demux(context, clip_begin, clip_end);
-	
+
 	if (context->video_stream > -1) {
 		thread->cancel();
 		AM_DBG lib::logger::get_logger()->debug("live_audio_datasource_factory::new_audio_datasource: rtsp stream contains video");
 		return NULL;
 	}
 	//int stream_index;
-	
+
 	pkt_audio_datasource *pds = demux_audio_datasource::new_demux_audio_datasource(url, thread);
 	if (pds == NULL) {
 		AM_DBG lib::logger::get_logger()->debug("live_audio_datasource_factory::new_audio_datasource: could not allocate live_audio_datasource");
@@ -69,7 +69,7 @@ live_audio_datasource_factory::new_audio_datasource(const net::url& url, const a
 		return NULL;
 	}
 	thread->start();
-	
+
 	AM_DBG lib::logger::get_logger()->debug("live_audio_datasource_factory::new_audio_datasource: parser ds = 0x%x", (void*)pds);
 	// XXXX This code should become generalized in datasource_factory
 	audio_datasource *dds = new ffmpeg_decoder_datasource(pds);
@@ -100,11 +100,11 @@ live_audio_datasource_factory::new_audio_datasource(const net::url& url, const a
     rds->stop();
 	int rem = rds->release();
 	assert(rem == 0);
-	return NULL;	
+	return NULL;
 }
 
 
-video_datasource* 
+video_datasource*
 live_video_datasource_factory::new_video_datasource(const net::url& url, timestamp_t clip_begin, timestamp_t clip_end)
 {
 	AM_DBG lib::logger::get_logger()->debug("live_video_datasource_factory::new_video_datasource(%s)", repr(url).c_str());
@@ -116,7 +116,7 @@ live_video_datasource_factory::new_video_datasource(const net::url& url, timesta
 	rtsp_demux *thread = new rtsp_demux(context, clip_begin, clip_end);
 
 	//int stream_index;
-	
+
 	video_datasource *ds = demux_video_datasource::new_demux_video_datasource(url, thread);
 	if (ds == NULL) {
 		AM_DBG lib::logger::get_logger()->debug("live_audio_datasource_factory::new_video_datasource: could not allocate live_audio_datasource");
@@ -125,7 +125,7 @@ live_video_datasource_factory::new_video_datasource(const net::url& url, timesta
 	}
 	video_datasource *dds = NULL;
 	thread->start();
-	
+
 	if (thread) {
 		 video_format fmt = thread->get_video_format();
 		 //dds = ds;
@@ -133,8 +133,8 @@ live_video_datasource_factory::new_video_datasource(const net::url& url, timesta
 	} else {
 		return NULL;
 	}
-	
-	
+
+
 	AM_DBG lib::logger::get_logger()->debug("live_video_datasource_factory::new_video_datasource (ds = 0x%x)", (void*) ds);
 
 	if (dds == NULL) {
@@ -142,5 +142,5 @@ live_video_datasource_factory::new_video_datasource(const net::url& url, timesta
 		thread->cancel();
 		return NULL;
 	}
-	return dds;		
+	return dds;
 }

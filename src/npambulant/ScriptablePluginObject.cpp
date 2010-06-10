@@ -87,7 +87,7 @@ ScriptablePluginObject::Invoke(NPIdentifier name, const NPVariant *args,
                                uint32_t argCount, NPVariant *result)
 {
   if ( ! mNpp)
-	return FALSE; 
+	return FALSE;
   if (name == sStartPlayer_id) {
 	printf ("startPlayer called !\n");
 	((npambulant*)mNpp->pdata)->startPlayer();

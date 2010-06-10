@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/cocoa/cocoa_gui.h"
@@ -117,7 +117,7 @@ init_pixel_info() {
         // Only supported on 10.5, so fallback for 10.4
 #if defined(__POWERPC__)
 		// This is a hack: we see incorrect video color on PPC. We're going to drop
-		// PPC support anyway, so this is a stopgap to make things work for the 
+		// PPC support anyway, so this is a stopgap to make things work for the
 		// 2.2 release. Sigh.
 		pixel_info_order = ambulant::net::pixel_bgra;
 #else
@@ -132,8 +132,8 @@ init_pixel_info() {
     pixel_info_order = ambulant::net::pixel_rgb;
     pixel_info_format = (NSBitmapFormat)0;
     pixel_info_bpp = 3;
-}        
-        
+}
+
 namespace ambulant {
 
 using namespace lib;
@@ -154,8 +154,8 @@ create_cocoa_dsvideo_playable_factory(common::factories *factory, common::playab
    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererVideo"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
 	return new common::single_playable_factory<
-        cocoa_dsvideo_renderer, 
-        cocoa_dsvideo_playable_tag, 
+        cocoa_dsvideo_renderer,
+        cocoa_dsvideo_playable_tag,
         cocoa_dsvideo_playable_renderer_uri,
         cocoa_dsvideo_playable_renderer_uri2,
         cocoa_dsvideo_playable_renderer_uri3>(factory, mdp);
@@ -235,7 +235,7 @@ cocoa_dsvideo_renderer::_push_frame(char* frame, int size)
 		// - If the image does need scaling things slow down by a factor of 4.
 		//   0 seems to be as good a value for bitmapInfo as any other value.
 		// - If you also set shouldInterpolate=true you get an additional factor of 2 slowdown.
-		CGBitmapInfo bitmapInfo = pixel_info_bminfo; 
+		CGBitmapInfo bitmapInfo = pixel_info_bminfo;
 		CGImage *cgi = CGImageCreate( m_size.w, m_size.h, 8, pixel_info_bpp*8, m_size.w*pixel_info_bpp, genericColorSpace, bitmapInfo, provider, NULL, false, kCGRenderingIntentDefault);
 		CGDataProviderRelease(provider);
 		CGColorSpaceRelease(genericColorSpace);
@@ -295,7 +295,7 @@ cocoa_dsvideo_renderer::redraw(const rect &dirty, gui_window *window)
     assert(m_dest);
 	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("cocoa_dsvideo_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
-	
+
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 #if 0

@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -98,7 +98,7 @@ qt_mainloop::qt_mainloop(qt_gui* gui, int mbheight)
 	set_window_factory(wf);
 	init_factories();
 	init_plugins();
-	
+
 	const char *filename = m_gui->filename();
 	net::url url = net::url::from_filename(filename);
 	m_doc = create_document(url);
@@ -135,7 +135,7 @@ qt_mainloop::init_playable_factory() {
 	common::global_playable_factory *pf = common::get_global_playable_factory();
 	set_playable_factory(pf);
 
-	AM_DBG m_logger->debug("qt_mainloop: adding Qt playable factories");		
+	AM_DBG m_logger->debug("qt_mainloop: adding Qt playable factories");
 	pf->add_factory(create_qt_fill_playable_factory(this, NULL));
 #ifdef	WITH_QT_HTML_WIDGET
 	pf->add_factory(create_qt_html_playable_factory(this, NULL));
@@ -147,7 +147,7 @@ qt_mainloop::init_playable_factory() {
 
 #ifdef WITH_SDL
     AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add factory for SDL");
-	pf->add_factory(gui::sdl::create_sdl_playable_factory(this));      
+	pf->add_factory(gui::sdl::create_sdl_playable_factory(this));
 #endif // WITH_SDL
 }
 
@@ -156,10 +156,10 @@ qt_mainloop::init_datasource_factory() {
 	net::datasource_factory *df = new net::datasource_factory();
 	set_datasource_factory(df);
 #ifndef NONE_PLAYER
-#ifdef WITH_LIVE	
+#ifdef WITH_LIVE
 	AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add live_audio_datasource_factory");
 	df->add_video_factory(net::create_live_video_datasource_factory());
-	df->add_audio_factory(net::create_live_audio_datasource_factory()); 
+	df->add_audio_factory(net::create_live_audio_datasource_factory());
 #endif
 #ifdef WITH_FFMPEG
     AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_video_datasource_factory");
@@ -238,10 +238,10 @@ qt_mainloop::close(common::player *p) {
 void
 qt_mainloop::open(net::url newdoc, bool start, common::player *old) {
 	AM_DBG m_logger->trace("qt_mainloop::open \"%s\"",newdoc.get_url().c_str());
-	// Parse the provided URL. 
+	// Parse the provided URL.
 	m_doc = create_document(newdoc);
 	if(!m_doc) {
-		m_logger->error(gettext("%s: Cannot build DOM tree"), 
+		m_logger->error(gettext("%s: Cannot build DOM tree"),
 				newdoc.get_url().c_str());
 		return;
 	}
@@ -277,7 +277,7 @@ qt_mainloop::player_start(QString document_name, bool start, bool old) {
 		m_frames.push(pf);
 	}
 #endif
-	
+
 	// Create a player instance
 	AM_DBG m_logger->debug("Creating player instance for: %s",
 			       document_name.ascii());

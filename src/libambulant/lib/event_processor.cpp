@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/delta_timer.h"
@@ -43,10 +43,10 @@ lib::event_processor_factory(timer *t)
 	return new event_processor_impl(t);
 }
 
-event_processor_impl::event_processor_impl(timer *t) 
+event_processor_impl::event_processor_impl(timer *t)
 :	m_timer(t),
-    m_high_delta_timer(t), 
-    m_med_delta_timer(t), 
+    m_high_delta_timer(t),
+    m_med_delta_timer(t),
     m_low_delta_timer(t),
     m_observer(NULL)
 {
@@ -86,8 +86,8 @@ event_processor_impl::run()
 	}
 #endif AMBULANT_PLATFORM_WIN32 || AMBULANT_PLATFORM_WIN32_WCE
 	m_lock.enter();
-	while(!exit_requested()) {	
-		_serve_events();		
+	while(!exit_requested()) {
+		_serve_events();
 		(void)m_lock.wait(10000);
 	}
     m_lock.leave();
@@ -98,8 +98,8 @@ event_processor_impl::run()
 	return 0;
 }
 
-void 
-event_processor_impl::add_event(event *pe, time_type t, 
+void
+event_processor_impl::add_event(event *pe, time_type t,
 				    event_priority priority)
 {
 
@@ -107,13 +107,13 @@ event_processor_impl::add_event(event *pe, time_type t,
 	m_lock.enter();
     // Insert the event into the correct queue.
 	switch(priority) {
-		case ep_high: 
+		case ep_high:
 			m_high_delta_timer.insert(pe, t);
 			break;
-		case ep_med: 
+		case ep_med:
 			m_med_delta_timer.insert(pe, t);
 			break;
-		case ep_low: 
+		case ep_low:
 			m_low_delta_timer.insert(pe, t);
 			break;
 	}
@@ -123,27 +123,27 @@ event_processor_impl::add_event(event *pe, time_type t,
 }
 
 bool
-event_processor_impl::cancel_event(event *pe, 
+event_processor_impl::cancel_event(event *pe,
 				       event_priority priority)
 {
 	bool succeeded = false;
  	AM_DBG logger::get_logger()->debug("cancel_event(0x%x, pri=%d)",pe,priority);
 	m_lock.enter();
 	switch(priority) {
-		case ep_high: 
+		case ep_high:
 			succeeded = m_high_delta_timer.cancel(pe);
 			break;
-		case ep_med: 
+		case ep_med:
 			succeeded = m_med_delta_timer.cancel(pe);
 			break;
-		case ep_low: 
+		case ep_low:
 			succeeded = m_low_delta_timer.cancel(pe);
 			break;
 	}
 	m_lock.leave();
 	return succeeded;
 }
-	
+
 void
 event_processor_impl::cancel_all_events()
 {
@@ -157,7 +157,7 @@ event_processor_impl::cancel_all_events()
 
 // serve all events in the high-med-low prioritity run queues
 // in the right order, after checking with their delta timers
-void 
+void
 event_processor_impl::_serve_events()
 {
 	if (m_observer) {
@@ -189,7 +189,7 @@ event_processor_impl::_serve_events()
 			// again, serving this event may generate another
 			// of any priority, so check all queues
 			continue;
-		// There was no medium priority event either, so 
+		// There was no medium priority event either, so
 		// it must be a low priority event
 		(void) _serve_event(m_low_delta_timer, &m_low_q);
 	}
@@ -210,8 +210,8 @@ event_processor_impl::_serve_events()
     AM_DBG if (drift) lib::logger::get_logger()->debug("event_processor: adjust clock %d ms (positive is forward)", drift);
     m_timer->skew(drift);
 #endif
-        
-            
+
+
 	if (m_observer) {
 		m_lock.leave();
 		m_observer->unlock_redraw();
@@ -247,7 +247,7 @@ event_processor_impl::_serve_event(delta_timer& dt, std::queue<event*> *qp)
 		delete e;
         m_lock.enter();
 	}
-	return must_serve; 
+	return must_serve;
 }
 
 #ifndef NDEBUG

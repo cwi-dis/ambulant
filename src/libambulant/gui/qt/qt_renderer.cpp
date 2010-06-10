@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -46,15 +46,15 @@ qt_transition_renderer::~qt_transition_renderer()
 	m_trans_engine = NULL;
 	m_lock.leave();
 }
-	
+
 void
 qt_transition_renderer::set_surface(common::surface *dest)
-{ 
+{
 	m_transition_dest = dest;
 	if (m_transition_dest && m_intransition && m_intransition->m_scope == scope_screen)
 		m_transition_dest = m_transition_dest->get_top_surface();
 }
-	
+
 void
 qt_transition_renderer::set_intransition(const lib::transition_info *info)
 {
@@ -157,7 +157,7 @@ qt_transition_renderer::redraw_post(gui_window *window)
 	m_lock.enter();
 	ambulant_qt_window* aqw = (ambulant_qt_window*) window;
 	QPixmap *surf = aqw->get_ambulant_surface();
-	
+
 	if (surf != NULL) {
 		aqw->reset_ambulant_surface();
 	}

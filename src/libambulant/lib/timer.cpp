@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/timer.h"
@@ -40,7 +40,7 @@ using namespace ambulant;
 
 static long infinite = std::numeric_limits<long>::max();
 
-lib::timer_control_impl::timer_control_impl(lib::timer* parent, double speed /* = 1.0 */, 
+lib::timer_control_impl::timer_control_impl(lib::timer* parent, double speed /* = 1.0 */,
 	bool run /* = true */, bool owned /* = false */)
 :   m_parent(parent),
 	m_parent_owned(owned),
@@ -52,7 +52,7 @@ lib::timer_control_impl::timer_control_impl(lib::timer* parent, double speed /* 
     ,
     m_drift(0)
 #endif
-{	
+{
 	AM_DBG lib::logger::get_logger()->debug("lib::timer_control_impl(0x%x), parent=0x%x", this, parent);
 }
 
@@ -131,21 +131,21 @@ lib::timer_control_impl::_stop() {
 	m_local_epoch = 0;
 	m_running = false;
 }
-	
+
 void
 lib::timer_control_impl::pause() {
 	m_lock.enter();
 	_pause();
 	m_lock.leave();
 }
-void 
+void
 lib::timer_control_impl::_pause() {
 	if(m_running) {
 		m_local_epoch += _apply_speed_manip(m_parent->elapsed() - m_parent_epoch);
 		m_running = false;
 	}
 }
-	
+
 void
 lib::timer_control_impl::resume() {
 	m_lock.enter();
@@ -163,7 +163,7 @@ lib::timer_control_impl::_resume() {
 
 void
 lib::timer_control_impl::set_time(time_type t) {
-	
+
 	m_lock.enter();
 	if(!m_running) {
 		if (t < m_local_epoch) {
@@ -173,7 +173,7 @@ lib::timer_control_impl::set_time(time_type t) {
 	} else {
 		_pause();
 		// XXXJACK: Hard-setting a running clock is a bad idea: it makes things like animations and
-		// transitions "stutter". One possible solution would be to skew the clock if 
+		// transitions "stutter". One possible solution would be to skew the clock if
 		if (t < m_local_epoch) {
 			AM_DBG lib::logger::get_logger()->debug("timer: setting running timer 0x%x from %d to %d", this, m_local_epoch, t);
 		}
@@ -181,7 +181,7 @@ lib::timer_control_impl::set_time(time_type t) {
 		_resume();
 	}
 	m_lock.leave();
-}	
+}
 
 void
 lib::timer_control_impl::set_speed(double speed)
@@ -207,8 +207,8 @@ lib::timer_control_impl::get_realtime_speed() const
 	return rv;
 }
 
-lib::timer_control_impl::time_type 
-lib::timer_control_impl::_apply_speed_manip(lib::timer::time_type dt) const 
+lib::timer_control_impl::time_type
+lib::timer_control_impl::_apply_speed_manip(lib::timer::time_type dt) const
 {
 	if(m_speed == 1.0) return dt;
 	else if(m_speed == 0.0) return 0;

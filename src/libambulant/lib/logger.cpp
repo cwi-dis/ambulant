@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/logger.h"
@@ -46,7 +46,7 @@ using namespace ambulant;
 // A logger per file as: lib::logger::get_logger(__FILE__);
 
 
-// Set default_level to a higher level than debug 
+// Set default_level to a higher level than debug
 // to suppress output at levels below
 
 // static
@@ -55,24 +55,24 @@ int lib::logger::default_level = lib::logger::LEVEL_DEBUG;
 
 // Set the fefault loggers ostream
 // Set this std::cout, to a file or socket ostream or whatever
-// This is the default, each specific named logger may 
+// This is the default, each specific named logger may
 // be configured sepaately
 
 // Output logging date as xx/xx/xx
-//static 
+//static
 bool lib::logger::logdate = false;
 
 // Output logging time as xx:xx:xx
-//static 
+//static
 bool lib::logger::logtime = true;
 
 // Output logger name as [name]
-// static 
+// static
 bool lib::logger::logname = false;
 
-// Output level name 
+// Output level name
 // Level name is one of (DEBUG, TRACE, WARN, ERROR, FATAL, UNKNOWN)
-// static 
+// static
 bool lib::logger::loglevel = true;
 
 ////////////////////////////////
@@ -84,7 +84,7 @@ class loggers_manager {
 	~loggers_manager();
 
 	// loggers repository
-	std::map<std::string, lib::logger*> loggers;	
+	std::map<std::string, lib::logger*> loggers;
 };
 
 // free all loggers
@@ -96,7 +96,7 @@ loggers_manager::~loggers_manager() {
 		delete (*it).second;
 }
 
-static 
+static
 loggers_manager loggers_singleton;
 
 ////////////////////////////////
@@ -105,7 +105,7 @@ const std::string app_logger_name = "app_logger";
 
 // one usage: lib::logger::get_logger(__FILE__);
 // if used this way we should remove critical section
-//static 
+//static
 lib::logger* lib::logger::get_logger(const char *name) {
 	std::string lname = (name==NULL || name[0]==0)?app_logger_name:name;
 	std::map<std::string, logger*>::iterator it;
@@ -120,7 +120,7 @@ lib::logger* lib::logger::get_logger(const char *name) {
 
 // one usage: lib::logger::get_logger(__FILE__, __LINE__);
 // if used this way we should remove critical section
-//static 
+//static
 lib::logger* lib::logger::get_logger(const char *name, int pos) {
 	std::string lname = (name==NULL || name[0]==0)?app_logger_name:name;
 	char sz[16];sprintf(sz, ":%d", pos);
@@ -128,7 +128,7 @@ lib::logger* lib::logger::get_logger(const char *name, int pos) {
 	return get_logger(lname.c_str());
 }
 
-lib::logger::logger(const std::string& name) 
+lib::logger::logger(const std::string& name)
 :	m_name(name),
 	m_pos(new std_ostream(std::cout)),
 	m_show_message(0),
@@ -140,7 +140,7 @@ lib::logger::~logger() {
 }
 
 void lib::logger::set_std_ostream(std::ostream& os) {
-	if(m_pos) delete m_pos; 
+	if(m_pos) delete m_pos;
 	m_pos = new std_ostream(os);
 }
 
@@ -148,7 +148,7 @@ void lib::logger::set_show_message(show_message_type handler) {
 	m_show_message = handler;
 }
 
-// static 
+// static
 void lib::logger::set_loggers_level(int level) {
 	logger::default_level = level;
 }
@@ -222,9 +222,9 @@ void lib::logger::assert_expr(bool expr, const char *format, ...) {
 
 void lib::logger::log_va_list(int level, const char *format, va_list args) {
 	// Do we have a std function for this?
-#if defined(AMBULANT_PLATFORM_WIN32) && !defined(UNICODE) 
+#if defined(AMBULANT_PLATFORM_WIN32) && !defined(UNICODE)
 	int size = _vscprintf(format, args) + 1;
-#else 
+#else
 	int size = 4096;
 #endif
 	char *buf = new char[size];
@@ -237,14 +237,14 @@ void lib::logger::log_va_list(int level, const char *format, va_list args) {
 void lib::logger::log_cstr(int level, const char *buf) {
 	if(suppressed(level))
 		return;
-		
+
 	if(level == LEVEL_SHOW) {
 		// These we prefer to display as a dialog
 		if (m_show_message) {
 			(*m_show_message)(level, buf);
 			return;
 		}
-	} 
+	}
 	if(m_pos == 0) {
 		// Not set and no stdio
 		return;
@@ -260,7 +260,7 @@ void lib::logger::log_cstr(int level, const char *buf) {
 
 	ostream& os = *m_pos;
 	m_cs.enter();
-	
+
 #ifndef AMBULANT_NO_TIME_H
 	char tbuf[32];
 	if(logger::logdate) {
@@ -301,7 +301,7 @@ void lib::logger::log_cstr(int level, const char *buf) {
 }
 
 // static
-const char* 
+const char*
 lib::logger::get_level_name(int level) {
 	switch(level) {
 		case LEVEL_DEBUG: return "DEBUG";

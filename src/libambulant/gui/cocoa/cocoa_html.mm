@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/cocoa/cocoa_gui.h"
@@ -151,8 +151,8 @@ create_cocoa_html_playable_factory(common::factories *factory, common::playable_
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererHtml"), true);
 	return new common::single_playable_factory<
-        cocoa_html_renderer, 
-        cocoa_html_playable_tag, 
+        cocoa_html_renderer,
+        cocoa_html_playable_tag,
         cocoa_html_playable_renderer_uri,
         cocoa_html_playable_renderer_uri2,
         cocoa_html_playable_renderer_uri2>(factory, mdp);
@@ -168,7 +168,7 @@ cocoa_html_renderer::start(double where) {
 		m_html_view = _get_html_view(m_dest);
 		WebViewController *wvc = m_html_view->show();
 		WebView *view = [wvc view];
-		
+
 		AM_DBG lib::logger::get_logger()->debug("cocoa_html_renderer: view=0x%x", view);
 		net::url url = m_node->get_url("src");
 		if (view) {
@@ -209,7 +209,7 @@ cocoa_html_renderer::stop() {
 		m_html_view = NULL;
 		//		lib::logger::get_logger()->debug("cocoa_html_renderer: %f%% done", [view estimatedProgress]);
 		//		if ([[view mainFrame] dataSource] == nil) lib::logger::get_logger()->debug("cocoa_html_renderer: not complete yet!");
-		//		// [view removeFromSuperviewWithoutNeedingDisplay]; 
+		//		// [view removeFromSuperviewWithoutNeedingDisplay];
 	}
 	renderer_playable::stop();
 	m_context->stopped(m_cookie);
@@ -217,7 +217,7 @@ cocoa_html_renderer::stop() {
 	[pool release];
 	return true; //xxxbo notes, true means this renderer cannot be reused.
 }
-	
+
 } // namespace cocoa
 
 } // namespace gui

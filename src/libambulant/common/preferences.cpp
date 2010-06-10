@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -67,7 +67,7 @@ preferences::preferences()
 	AM_DBG lib::logger::get_logger()->debug("preferences::preferences()");
 	load_preferences();
 }
-	
+
 preferences::~preferences()
 	{}
 
@@ -82,7 +82,7 @@ ambulant::common::preferences::set_preferences_singleton(preferences *prefs) {
 	s_preferences = prefs;
 }
 
-preferences* 
+preferences*
 ambulant::common::preferences::get_preferences() {
 	if (s_preferences == 0) {
 		s_preferences =  new preferences;
@@ -90,12 +90,12 @@ ambulant::common::preferences::get_preferences() {
 	return s_preferences;
 }
 
-bool 
+bool
 preferences::load_preferences() {
 	return false;
 }
 
-bool 
+bool
 preferences::save_preferences() {
 	return false;
 }

@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/dx/dx_bgrenderer.h"
@@ -41,7 +41,7 @@ gui::dx::dx_bgrenderer::dx_bgrenderer(const common::region_info *src)
 {
 	AM_DBG lib::logger::get_logger()->debug("new dx_bgrenderer<0x%x>", this);
 }
-	
+
 gui::dx::dx_bgrenderer::~dx_bgrenderer() {
 	AM_DBG lib::logger::get_logger()->debug("~dx_bgrenderer(0x%x)", this);
 }
@@ -50,7 +50,7 @@ void gui::dx::dx_bgrenderer::keep_as_background() {
 	AM_DBG lib::logger::get_logger()->debug("dx_bgrenderer::keep_as_background(0x%x)", this);
 
 	dx_window *dxwindow = (dx_window *)m_dst->get_gui_window();
-	viewport *v = dxwindow->get_viewport();	
+	viewport *v = dxwindow->get_viewport();
 	lib::rect dstrect = m_dst->get_rect();
 	lib::rect srcrect = dstrect;
 	srcrect.translate(m_dst->get_global_topleft());
@@ -60,7 +60,7 @@ void gui::dx::dx_bgrenderer::keep_as_background() {
 
 	if (m_bg_image) m_bg_image->Release();
 	m_bg_image = v->create_surface();
-	
+
 #ifdef DDBLT_WAIT
 #define WAITFLAG DDBLT_WAIT
 #else
@@ -68,16 +68,16 @@ void gui::dx::dx_bgrenderer::keep_as_background() {
 #endif
 	m_bg_image->Blt(&d_dstrect, v->get_surface(), &d_srcrect, WAITFLAG, NULL);
 }
-	
+
 void gui::dx::dx_bgrenderer::redraw(const lib::rect &dirty, common::gui_window *window) {
 	AM_DBG lib::logger::get_logger()->debug("dx_bgrenderer::redraw(%s)",repr(dirty).c_str());
 	dx_window *dxwindow = static_cast<dx_window*>(window);
-	viewport *v = dxwindow->get_viewport();	
+	viewport *v = dxwindow->get_viewport();
 	if (m_bg_image) {
 		lib::rect dstrect_whole = m_dst->get_rect();
 		dstrect_whole.translate(m_dst->get_global_topleft());
 		AM_DBG lib::logger::get_logger()->debug("dx_bgrenderer::redraw: clear to image");
-		v->draw(m_bg_image, dstrect_whole);	
+		v->draw(m_bg_image, dstrect_whole);
 	} else {
 		lib::rect rc = dirty;
 		lib::point pt = m_dst->get_global_topleft();

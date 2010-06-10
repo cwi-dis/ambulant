@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,15 +19,15 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
-// This header defines and exports  
+// This header defines and exports
 // a set of handy not std functions.
 // All functions defined here are accessible
 // through the lib namespace.
-// For example to invoke on unix or windows 
+// For example to invoke on unix or windows
 // sleep(secs) use:
 // lib::sleep(secs); // within ambulant ns
 
@@ -53,7 +53,7 @@ using ambulant::lib::win32::sleep_msec;
 const std::string line_separator = "\n";
 #ifndef AMBULANT_PLATFORM_WIN32_WCE
 const std::string file_separator = "\\/";
-#else 
+#else
 const std::string file_separator = "\\";
 #endif
 
@@ -62,7 +62,7 @@ const std::string file_separator = "\\";
 using ::sleep;
 const std::string file_separator = "/";
 const std::string line_separator = "\n";
- 
+
 #endif
 
 } // namespace lib

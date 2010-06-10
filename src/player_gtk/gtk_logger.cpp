@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "gtk_gui.h"
@@ -33,7 +33,7 @@ gtk_logger_ostream::gtk_logger_ostream(){
 	m_string = g_string_new("");
 }
 
-bool 
+bool
 gtk_logger_ostream::is_open() const {
 	std::string id("gtk_logger_ostream:::is_open() const");
 	return true;
@@ -68,18 +68,18 @@ void
 gtk_logger_ostream::flush() {
 	std::string id("gtk_logger_ostream::flush()");
 	gtk_logger::get_gtk_logger()->log(m_string->str);
-	m_string = g_string_truncate(m_string, 0); 
+	m_string = g_string_truncate(m_string, 0);
 }
 
 gtk_logger* gtk_logger::s_gtk_logger = 0;
 
-gtk_logger::gtk_logger() 
+gtk_logger::gtk_logger()
 :	m_log_FILE(NULL),
-	m_gui(NULL) 
+	m_gui(NULL)
 {
 	m_logger_window = NULL;
 
-	
+
 	common::preferences* prefs = common::preferences::get_preferences();
 	lib::logger* logger = lib::logger::get_logger();
 
@@ -92,14 +92,14 @@ gtk_logger::gtk_logger()
 			logger->warn(gettext("Cannot open logfile: %s"), prefs->m_log_file.c_str());
 		} else setbuf(m_log_FILE, NULL); // no buffering
 	}
-	
+
 	// Connect logger to our message displayer and output processor
 	logger->set_show_message(show_message);
 	// Tell the logger about the output level preference
 	int level = prefs->m_log_level;
 	logger->set_level(level);
 	logger->set_ostream(new gtk_logger_ostream);
-	
+
 	// create the GUI object
 	m_logger_window = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
 	gtk_window_set_title (m_logger_window, "Ambulant-logger");
@@ -113,7 +113,7 @@ gtk_logger::gtk_logger()
 	gtk_widget_set_size_request(GTK_WIDGET (m_logger_window), 560, 240);
 	gtk_widget_set_uposition(GTK_WIDGET (m_logger_window), 50, 50);
 	gtk_container_add (GTK_CONTAINER (m_logger_window), sw);
-	gtk_widget_show(GTK_WIDGET (sw));	
+	gtk_widget_show(GTK_WIDGET (sw));
 	m_text_view =  (GtkTextView*) gtk_text_view_new();
 	gtk_text_view_set_editable(m_text_view, false);
 	gtk_text_view_set_cursor_visible(m_text_view, false);
@@ -180,12 +180,12 @@ gtk_message_event::gtk_message_event(int level, char *msg){
 	message = msg;
 }
 
-int 
+int
 gtk_message_event::get_type(){
 	return type;
 }
 
-gchar* 
+gchar*
 gtk_message_event::get_message(){
 	return message;
 }

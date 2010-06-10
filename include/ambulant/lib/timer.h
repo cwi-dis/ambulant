@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_LIB_TIMER_H
@@ -38,30 +38,30 @@ namespace lib {
 /// current time and the rate at which time passes.
 class timer {
   public:
-	/// The underline time type used by this timer. 
+	/// The underline time type used by this timer.
 	/// Assumed to be an integral type.
 	typedef unsigned long time_type;
     typedef long signed_time_type;
-	
+
 	// Allows subclasses to be deleted using base pointers
 	virtual ~timer() {}
-		
+
 	/// Returns the time elapsed.
 	virtual time_type elapsed() const = 0;
-	
+
 	/// Gets the realtime speed of this timer as modulated by its parent.
 	virtual double get_realtime_speed() const = 0;
-    
+
 #ifdef WITH_CLOCK_SYNC
     /// Signals that some realtime renderer has detected a clock drift.
     /// Positive values means the clock has to speed up, negative numbers that the clock has to slow down.
     /// Returns the amount of drift that the clock will _not_ fix, in other words: the amount of drift
     /// the renderer has to fix itself.
     virtual signed_time_type set_drift(signed_time_type drift) = 0;
-    
+
     /// Returns the currently recorded drift.
     virtual signed_time_type get_drift() const = 0;
-    
+
     /// Skew the clock.
     virtual void skew(signed_time_type skew) = 0;
 #endif
@@ -72,49 +72,49 @@ class timer {
 /// with methods to start and stop the timer, and set its speed.
 
 class timer_control : public timer {
-  public:	
-	
+  public:
+
 	/// Returns the zero-based elapsed time.
 	/// Does not take periodicity into account.
 	virtual time_type elapsed() const = 0;
 
 	// Returns the zero-based time elapsed for the provided parent elapsed time.
 	virtual time_type elapsed(time_type pt) const = 0;
-	
+
 	/// Starts ticking at t (t>=0).
 	virtual void start(time_type t = 0) = 0;
-	
+
 	/// Stop ticking and reset elapsed time to zero.
 	virtual void stop() = 0;
-	
+
 	/// Stop ticking but do not reset the elapsed time.
-	/// While paused this timer's elapsed() returns the same value. 
+	/// While paused this timer's elapsed() returns the same value.
 	/// Speed remains unchanged and when resumed
 	/// will be ticking at that speed.
 	virtual void pause() = 0;
-	
+
 	/// Resumes ticking.
 	virtual void resume() = 0;
-	
+
 	/// Sets the speed of this timer.
-	/// At any state, paused or running, set_speed() 
+	/// At any state, paused or running, set_speed()
 	/// may be called to change speed.
 	/// When paused, the new speed will be
 	/// used when the timer is resumed else
 	/// the new speed is applied immediately.
-	/// The current elapsed time is not affected. 
+	/// The current elapsed time is not affected.
 	virtual void set_speed(double speed) = 0;
-	
+
 	/// Set the current elapsed time.
 	virtual void set_time(time_type t) = 0;
-	
+
 	// Returns the speed of this timer.
 	virtual double get_speed() const = 0;
-	
+
 	/// Returns true when this timer is running.
 	virtual bool running() const = 0;
-	
-	/// Returns the realtime speed of this timer 
+
+	/// Returns the realtime speed of this timer
 	/// as modulated by its parent.
 	virtual double get_realtime_speed() const = 0;
 
@@ -124,10 +124,10 @@ class timer_control : public timer {
     /// Returns the amount of drift that the clock will _not_ fix, in other words: the amount of drift
     /// the renderer has to fix itself.
     virtual signed_time_type set_drift(signed_time_type drift) = 0;
-    
+
     /// Returns the currently recorded drift.
     virtual signed_time_type get_drift() const = 0;
-    
+
     /// Skew the clock.
     virtual void skew(signed_time_type skew) = 0;
 #endif
@@ -137,81 +137,81 @@ class timer_control : public timer {
 
 /// An implementation of timer_control.
 class timer_control_impl : public timer_control {
-  public:	
+  public:
 	/// Creates a timer.
-	/// Pass the parent timer, 
+	/// Pass the parent timer,
 	/// the relative speed and
-	/// initial run/pause status. 
+	/// initial run/pause status.
 	timer_control_impl(timer *parent, double speed = 1.0, bool run = true, bool owned = false);
-	
+
 	~timer_control_impl();
-	
+
 	/// Returns the zero-based elapsed time.
 	/// Does not take periodicity into account.
 	time_type elapsed() const;
-	
+
 	// Returns the zero-based time elapsed for the provided parent elapsed time.
 	time_type elapsed(time_type pet) const;
-		
+
 	/// Starts ticking at t (t>=0).
 	void start(time_type t = 0);
-	
+
 	/// Stop ticking and reset elapsed time to zero.
 	void stop();
-	
+
 	/// Stop ticking but do not reset the elapsed time.
-	/// While paused this timer's elapsed() returns the same value. 
+	/// While paused this timer's elapsed() returns the same value.
 	/// Speed remains unchanged and when resumed
 	/// will be ticking at that speed.
 	void pause();
-	
+
 	/// Resumes ticking.
 	void resume();
-	
+
 	/// Sets the speed of this timer.
-	/// At any state, paused or running, set_speed() 
+	/// At any state, paused or running, set_speed()
 	/// may be called to change speed.
 	/// When paused, the new speed will be
 	/// used when the timer is resumed else
 	/// the new speed is applied immediately.
-	/// The current elapsed time is not affected. 
+	/// The current elapsed time is not affected.
 	void set_speed(double speed);
-	
+
 	/// Set the current elapsed time.
 	void set_time(time_type t);
-	
+
 	// Returns the speed of this timer.
 	double get_speed() const { return m_speed;}
-	
+
 	/// Returns true when this timer is running.
 	bool running() const { return m_running;}
-	
-	/// Returns the realtime speed of this timer 
+
+	/// Returns the realtime speed of this timer
 	/// as modulated by its parent.
 	double get_realtime_speed() const ;
 
 #ifdef WITH_CLOCK_SYNC
     /// Signals that some realtime renderer has detected a clock drift.
     /// Positive values means the clock has to speed up, negative numbers that the clock has to slow down.
-    signed_time_type set_drift(signed_time_type drift) { 
+    signed_time_type set_drift(signed_time_type drift) {
     m_lock.enter();
 	m_drift = drift;
 	m_lock.leave();
 	return 0;
     };
-    
+
     /// Returns the currently recorded drift.
-    signed_time_type get_drift() const { 
+    signed_time_type get_drift() const {
 	const_cast<timer_control_impl*>(this)->m_lock.enter();
 	signed_time_type rv = m_drift;
 	const_cast<timer_control_impl*>(this)->m_lock.leave();
 	return rv;
     };
-    
+
     /// Skew the clock.
     void skew(signed_time_type skew_);
 #endif
-	
+
   private:
 	void _start(time_type t = 0);
 	void _stop();
@@ -220,7 +220,7 @@ class timer_control_impl : public timer_control {
 	time_type _elapsed() const;
 	time_type _elapsed(time_type pt) const;
 	time_type _apply_speed_manip(time_type dt) const;
-	
+
 	timer *m_parent;
 	bool m_parent_owned;
 	time_type m_parent_epoch;
@@ -237,7 +237,7 @@ class timer_control_impl : public timer_control {
 AMBULANTAPI timer *realtime_timer_factory();
 
 } // namespace lib
- 
+
 } // namespace ambulant
 #endif // AMBULANT_LIB_TIMER_H
 

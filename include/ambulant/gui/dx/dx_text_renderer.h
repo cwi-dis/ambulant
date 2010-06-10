@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_DX_TEXT_RENDERER_H
@@ -64,7 +64,7 @@ class text_renderer {
 	void set_text_font(const char *font);
 	void set_text_data(const char* data, size_t datalen);
 	void free_text_data();
-	
+
   private:
 	lib::size m_size;
 	net::url m_url;
@@ -83,7 +83,7 @@ class text_renderer {
 
 } // namespace gui
 
-} // namespace ambulant 
+} // namespace ambulant
 
 #endif // AMBULANT_GUI_DX_TEXT_RENDERER_H
 

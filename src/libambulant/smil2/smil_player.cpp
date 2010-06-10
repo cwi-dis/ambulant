@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -55,7 +55,7 @@ common::create_smil2_player(
 }
 
 smil_player::smil_player(lib::document *doc, common::factories *factory, common::embedder *sys)
-:	
+:
 #ifdef WITH_SMIL30
 	m_state_engine(0),
 #endif
@@ -71,8 +71,8 @@ smil_player::smil_player(lib::document *doc, common::factories *factory, common:
 	m_event_processor(0),
 	m_scheduler(0),
 	m_state(common::ps_idle),
-	m_cursorid(0), 
-	m_pointed_node(0), 
+	m_cursorid(0),
+	m_pointed_node(0),
 	m_wait_for_eom_flag(true),
 	m_focus(0),
 	m_focussed_nodes(new std::set<int>()),
@@ -87,7 +87,7 @@ smil_player::initialize()
 {
 	assert(m_doc);
 	document_loaded(m_doc);
-	
+
 	m_event_processor = event_processor_factory(m_timer);
 #ifdef WITH_SMIL30
 	create_state_engine();
@@ -114,10 +114,10 @@ smil_player::terminate()
 		if (rem > 0)
 			m_logger->trace("smil_player::terminate: playable(0x%x) %s still has refcount of %d", (*it).second, (*it).second->get_sig().c_str(), rem);
 	}
-	
+
 #ifdef WITH_SEAMLESS_PLAYBACK
 	// clean up the playable cache as well
-	std::map<const std::string, common::playable *>::iterator it_url_based; 
+	std::map<const std::string, common::playable *>::iterator it_url_based;
 	for(it_url_based = m_playables_url_based.begin();it_url_based!=m_playables_url_based.end();it_url_based++) {
         (*it_url_based).second->post_stop();
 		long rem = (*it_url_based).second->release();
@@ -129,7 +129,7 @@ smil_player::terminate()
 	cancel_all_events();
     // XXXJACK Note by Jack and Kees: it may be unsafe to destroy the event processor here,
     // because it could have been passed to renderers, datasources, etc. and these are not
-    // cleaned up until later. If we get crashes during 
+    // cleaned up until later. If we get crashes during
 	lib::event_processor *evp = m_event_processor;
     lib::timer_control *tmr = m_timer;
     m_event_processor = NULL;
@@ -142,11 +142,11 @@ smil_player::terminate()
 smil_player::~smil_player() {
 	m_lock.enter();
 	AM_DBG m_logger->debug("smil_player::~smil_player(0x%x)", this);
-    
+
     // Make sure terminate was called first
     assert(m_doc == NULL);
     assert(m_timer == NULL);
-    assert(m_event_processor == NULL);	
+    assert(m_event_processor == NULL);
 	delete m_focussed_nodes;
 	delete m_new_focussed_nodes;
 	delete m_scheduler;
@@ -249,7 +249,7 @@ void smil_player::stop() {
 #ifdef WITH_SEAMLESS_PLAYBACK
    m_playables_cs.enter();
     while (!m_playables_url_based.empty()) {
-        std::map<const std::string, common::playable *>::iterator it_url_based = m_playables_url_based.begin(); 
+        std::map<const std::string, common::playable *>::iterator it_url_based = m_playables_url_based.begin();
         lib::logger::get_logger()->trace("stop: playable still in url-based cache: %s", (*it_url_based).second->get_sig().c_str());
         (*it_url_based).second->post_stop();
         int rem = (*it_url_based).second->release();
@@ -262,7 +262,7 @@ void smil_player::stop() {
 	m_lock.enter();
 	if(m_state == common::ps_pausing || m_state == common::ps_playing) {
 		m_timer->pause();
-		cancel_all_events();		
+		cancel_all_events();
 		m_scheduler->reset_document();
         m_animation_engine->reset();
 		done_playback();
@@ -308,7 +308,7 @@ void smil_player::_resume() {
 
 // Started callback from the scheduler
 void smil_player::started_playback() {
-	// no m_lock.enter();,called in locked state 
+	// no m_lock.enter();,called in locked state
 	m_state = common::ps_playing;
 	// m_lock.leave();
 	document_started();
@@ -316,12 +316,12 @@ void smil_player::started_playback() {
 
 // Done callback from the scheduler
 void smil_player::done_playback() {
-	// no m_lock.enter();,called in locked state 
+	// no m_lock.enter();,called in locked state
 	m_state = common::ps_done;
 	// m_lock.leave();
 	m_timer->pause();
 	document_stopped();
-	if(m_system) 
+	if(m_system)
 		m_system->done(this);
 }
 
@@ -330,7 +330,7 @@ common::playable *smil_player::create_playable(const lib::node *n) {
 	AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x)", (void*)n);
 	assert(n);
 #ifndef WITH_SEAMLESS_PLAYBACK
-	std::map<const lib::node*, common::playable *>::iterator it = 
+	std::map<const lib::node*, common::playable *>::iterator it =
 		m_playables.find(n);
 	common::playable *np = (it != m_playables.end())?(*it).second:0;
 	if(np == NULL) {
@@ -346,13 +346,13 @@ common::playable *smil_player::create_playable(const lib::node *n) {
 	common::playable *np = NULL;
 	if (n->get_attribute("src")) {
 		// It may be in the URL-based playable cache. Let us look.
-		std::map<const std::string, common::playable *>::iterator it_url_based = 
+		std::map<const std::string, common::playable *>::iterator it_url_based =
 			m_playables_url_based.find(n->get_url("src").get_url());
 		if (it_url_based != m_playables_url_based.end()) {
 			np = (*it_url_based).second;
 			m_playables_cs.enter();
 			m_playables_url_based.erase(it_url_based);
-			// In case of prefetch, there are more than one playables( for example, one for audio, 
+			// In case of prefetch, there are more than one playables( for example, one for audio,
 			// the second one for prefetch) stored in the map, so this assert is not true any more.
 			//assert(m_playables_url_based.empty());
 			m_playables_cs.leave();
@@ -384,28 +384,28 @@ common::playable *smil_player::create_playable(const lib::node *n) {
 			AM_DBG lib::logger::get_logger()->debug("smil_plager::create_playable(0x%x)%s: no cached playable", n, n->get_sig().c_str());
 		}
 	}
-	if( np == NULL ) { 
+	if( np == NULL ) {
 		np = _new_playable(n);
 		AM_DBG lib::logger::get_logger()->debug("smil_plager::create_playable(0x%x) _new_playable 0x%x", (void*)n, (void*)np);
 		AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x)cs.enter", (void*)n);
 		m_playables_cs.enter();
 		m_playables[n] = np;
 		m_playables_cs.leave();
-		AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x)cs.leave", (void*)n);		
+		AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x)cs.leave", (void*)n);
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("smil_plager::create_playable(0x%x), prior playable is found 0x%x", (void*)n, (void*)np);
 		AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x)cs.enter", (void*)n);
 		m_playables_cs.enter();
 		m_playables[n] = np;
 		m_playables_cs.leave();
-		AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x)cs.leave", (void*)n);	
+		AM_DBG lib::logger::get_logger()->debug("smil_player::create_playable(0x%x)cs.leave", (void*)n);
 	}
 	if (np) {
         	// Update the context info of np, for example, clipbegin, clipend, and cookie according to the node
 		np->init_with_node(n);
 	}
 #endif
-	
+
 	// We also need to remember any accesskey attribute (as opposed to accesskey
 	// value for a timing attribute) because these are global.
 	// XXX It may be better/cheaper if we simply iterate over the m_playables....
@@ -419,7 +419,7 @@ common::playable *smil_player::create_playable(const lib::node *n) {
 	return np;
 }
 // Request to start the playable of the node.
-// When trans is not null the playable should transition in 
+// When trans is not null the playable should transition in
 void smil_player::start_playable(const lib::node *n, double t, const lib::transition_info *trans) {
 	AM_DBG lib::logger::get_logger()->debug("smil_player::start_playable(0x%x, %f)", (void*)n, t);
 	common::playable *np = create_playable(n);
@@ -449,7 +449,7 @@ void smil_player::seek_playable(const lib::node *n, double t) {
 // Request to start a transition of the playable of the node.
 void smil_player::start_transition(const lib::node *n, const lib::transition_info *trans, bool in) {
 	AM_DBG lib::logger::get_logger()->debug("smil_player::start_transition(%s, -x%x, in=%d)", n->get_sig().c_str(), trans, in);
-	std::map<const lib::node*, common::playable *>::iterator it = 
+	std::map<const lib::node*, common::playable *>::iterator it =
 		m_playables.find(n);
 	common::playable *np = (it != m_playables.end())?(*it).second:0;
 	if(!np) {
@@ -475,12 +475,12 @@ void smil_player::stop_playable(const lib::node *n) {
 	AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable(%s)", n->get_sig().c_str());
 	if (n == m_focus) {
 		m_focus = NULL;
-		highlight(n, false); 
+		highlight(n, false);
 		node_focussed(NULL);
 	}
 	AM_DBG lib::logger::get_logger()->debug("smil_player::stop_playable(0x%x)cs.enter", (void*)n);
 	m_playables_cs.enter();
-	std::map<const lib::node*, common::playable *>::iterator it = 
+	std::map<const lib::node*, common::playable *>::iterator it =
 		m_playables.find(n);
 	std::pair<const lib::node*, common::playable*> victim(NULL,NULL);
 	if(it != m_playables.end()) {
@@ -496,7 +496,7 @@ void smil_player::stop_playable(const lib::node *n) {
 //      assert(victim.second); // Jack thinks we should always have a playable when we get here. Remove assert if untrue:-)
 
 	if (victim.second == NULL) return;
-    
+
 #ifdef WITH_SEAMLESS_PLAYBACK
 	// There are now three possibilities:
 	// 1. Destroy. Not cachable, or no URL.
@@ -510,7 +510,7 @@ void smil_player::stop_playable(const lib::node *n) {
         	can_cache = false;
 	} else {
         	// See if there is one in the cache already
-        	std::map<const std::string, common::playable *>::iterator it_url_based = 
+        	std::map<const std::string, common::playable *>::iterator it_url_based =
 			m_playables_url_based.find((victim.first->get_url("src")).get_url());
 		common::playable *np = (it_url_based != m_playables_url_based.end())?(*it_url_based).second:0;
 		if( np != NULL ) {
@@ -577,10 +577,10 @@ void smil_player::resume_playable(const lib::node *n) {
 }
 
 // Query the node's playable for its duration.
-common::duration 
+common::duration
 smil_player::get_dur(const lib::node *n) {
 	const common::duration not_available(false, 0.0);
-	std::map<const lib::node*, common::playable *>::iterator it = 
+	std::map<const lib::node*, common::playable *>::iterator it =
 		m_playables.find(n);
 	common::playable *np = (it != m_playables.end())?(*it).second:0;
 	if(np) {
@@ -602,7 +602,7 @@ void smil_player::wantclicks_playable(const lib::node *n, bool want) {
 }
 
 // Playable notification for a click event.
-void 
+void
 smil_player::clicked(int n, double t) {
 	AM_DBG m_logger->debug("smil_player::clicked(%d, %f)", n, t);
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
@@ -662,18 +662,18 @@ smil_player::after_mousemove()
 	// the nodes that were in the focus but no longer are.
 	for (i=m_focussed_nodes->begin(); i!=m_focussed_nodes->end(); i++) {
 		int n = *i;
-		
+
 		// If the node is also in the new focus we're done.
 		if (m_new_focussed_nodes->count(n) > 0) continue;
-		
+
 		// If the node can't be found we're done.
 		std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 		if (it == m_dom2tn->end()) continue;
-		
+
 		// Otherwise we send it outofbounds and focusout events, if it is interested.
 		time_node *tn = (*it).second;
 		AM_DBG m_logger->debug("after_mousemove: focus lost by %d, 0x%x", n, tn);
-		
+
 		if (tn->wants_outofbounds_event()) {
 			AM_DBG m_logger->debug("smil_player::pointed: schedule 0x%x.outOfBoundsEvent", (void*)tn);
 			time_node::value_type root_time = m_root->get_simple_time();
@@ -693,12 +693,12 @@ smil_player::after_mousemove()
 			schedule_event(cb, 0, ep_high);
 		}
 	}
-	
+
 	// Next we send inbound and focusin events to the nodes that
 	// are now in the focus, and were not there before.
 	for (i=m_new_focussed_nodes->begin(); i!=m_new_focussed_nodes->end(); i++) {
 		int n = *i;
-				
+
 		// If the node can't be found we're done.
 		std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
 		if (it == m_dom2tn->end()) continue;
@@ -738,7 +738,7 @@ smil_player::after_mousemove()
 				schedule_event(cb, 0, ep_high);
 		}
 	}
-	
+
 	// Finally juggle the old and new focussed nodes set
 	delete m_focussed_nodes;
 	m_focussed_nodes = m_new_focussed_nodes;
@@ -841,7 +841,7 @@ smil_player::stopped_async(async_arg aa) {
 // Playable notification for a transition stop event.
 void
 smil_player::transitioned(int n, double t) {
-	// remove fill effect for nodes specifing fill="transition" 
+	// remove fill effect for nodes specifing fill="transition"
 	// and overlap with n
 	AM_DBG m_logger->debug("smil_player::transitioned(%d, %f)", n, t);
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(n);
@@ -955,7 +955,7 @@ void smil_player::on_focus_advance() {
 	AM_DBG m_logger->debug("smil_player::on_focus_advance");
 	AM_DBG lib::logger::get_logger()->debug("smil_player:::on_focus_advance(0x%x)cs.enter", (void*)this);
 	m_playables_cs.enter();
-	std::map<const lib::node*, common::playable *>::iterator it = 
+	std::map<const lib::node*, common::playable *>::iterator it =
 		m_playables.begin();
 
 	// First find the current focus
@@ -987,7 +987,7 @@ void smil_player::on_focus_advance() {
 	}
 	m_playables_cs.leave();
 AM_DBG lib::logger::get_logger()->debug("smil_player:::on_focus_advance(0x%x)cs.leave", (void*)this);
-	node_focussed(m_focus);	
+	node_focussed(m_focus);
 }
 
 void smil_player::on_focus_activate() {
@@ -1006,7 +1006,7 @@ smil_player::_new_playable(const lib::node *n) {
 	int nid = n->get_numid();
 	std::string tag = n->get_local_name();
 	const char *pid = n->get_attribute("id");
-	
+
 	surface *surf = m_layout_manager->get_surface(n);
 	AM_DBG m_logger->debug("%s[%s]._new_playable 0x%x cookie=%d  rect%s at %s", tag.c_str(), (pid?pid:"no-id"),
 		(void*)n, nid,
@@ -1019,7 +1019,7 @@ smil_player::_new_playable(const lib::node *n) {
 	// And connect it to the rendering surface
 	if (np) {
 		common::renderer *rend = np->get_renderer();
-		
+
 		if (rend) {
 			AM_DBG m_logger->debug("smil_player::_new_playable: surface  set,rend = 0x%x, np = 0x%x", (void*) rend, (void*) np);
 			rend->set_surface(surf);
@@ -1041,7 +1041,7 @@ void smil_player::_destroy_playable(common::playable *np, const lib::node *n) {
 	AM_DBG {
 		std::string tag = n->get_local_name();
 		const char *pid = n->get_attribute("id");
-	
+
 		m_logger->debug("%s[%s]._destroy_playable 0x%x", tag.c_str(), (pid?pid:"no-id"), np);
 	}
 	long rem = np->release();
@@ -1087,12 +1087,12 @@ void smil_player::destroy_playable_in_cache(std::pair<const lib::node*, common::
 }
 #endif
 
-void smil_player::show_link(const lib::node *n, const net::url& href, 
+void smil_player::show_link(const lib::node *n, const net::url& href,
 	src_playstate srcstate, dst_playstate dststate, const char *target)
 {
 	AM_DBG lib::logger::get_logger()->debug("show_link(\"%s\"), srcplaystate=%d, dstplaystate=%d",
 		href.get_url().c_str(), (int)srcstate, (int)dststate);
-	net::url our_url(m_doc->get_src_url()); 
+	net::url our_url(m_doc->get_src_url());
 	if(srcstate == src_replace && href.same_document(our_url)) {
 		// This is an internal hyperjump
 		std::string anchor = href.get_ref();
@@ -1104,12 +1104,12 @@ void smil_player::show_link(const lib::node *n, const net::url& href,
 		}
 		return;
 	}
-	
+
 	if(!m_system) {
 		lib::logger::get_logger()->error(gettext("This implementation cannot open <%s> in new window"), href.get_url().c_str());
 		return;
 	}
-	
+
 	if (srcstate == src_pause) {
 		AM_DBG lib::logger::get_logger()->debug("show_link: pausing source document");
 		pause();
@@ -1128,7 +1128,7 @@ void smil_player::show_link(const lib::node *n, const net::url& href,
 #ifdef WITH_OVERLAY_WINDOW
 		if ( target && strcmp(target, "overlay") == 0) {
 			m_system->aux_open(href);
-		} else 
+		} else
 #endif
 		{
 			if (target)
@@ -1143,7 +1143,7 @@ bool smil_player::goto_node(const lib::node *target)
 	AM_DBG lib::logger::get_logger()->debug("goto_node(%s)", target->get_sig().c_str());
 
 	std::map<int, time_node*>::iterator it = m_dom2tn->find(target->get_numid());
-	
+
 	if(it != m_dom2tn->end()) {
 		bool already_running = m_root->is_active();
 		if (!already_running) {
@@ -1161,7 +1161,7 @@ bool smil_player::goto_node(const lib::node *target)
 bool
 smil_player::highlight(const lib::node *n, bool on)
 {
-	std::map<const lib::node*, common::playable *>::iterator it = 
+	std::map<const lib::node*, common::playable *>::iterator it =
 		m_playables.find(n);
 	common::playable *np = (it != m_playables.end())?(*it).second:0;
 	if (np == NULL) return false;
@@ -1186,7 +1186,7 @@ std::string smil_player::get_pointed_node_str() const {
 	}
 	const char *href = n->get_attribute("href");
 	char buf[256];
-	if(href) 
+	if(href)
 		sprintf(buf, "%.32s - %.32s : %.32s", (pid?pid:"no-id"), (reg?reg:"no-reg"), href);
 	else
 		sprintf(buf, "%.32s - %.32s", (pid?pid:"no-id"), (reg?reg:"no-reg"));
@@ -1203,7 +1203,7 @@ void smil_player::_update() {
 	if(m_scheduler && m_root && m_root->is_active()) {
 		lib::timer::time_type dt = m_scheduler->exec();
 		if(m_root->is_active()) {
-			lib::event *update_event = new lib::no_arg_callback<smil_player>(this, 
+			lib::event *update_event = new lib::no_arg_callback<smil_player>(this,
 				&smil_player::update);
 			m_event_processor->add_event(update_event, dt, lib::ep_high);
 		} else {

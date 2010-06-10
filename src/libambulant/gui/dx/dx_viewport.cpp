@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 
@@ -242,14 +242,14 @@ static lib::logger* viewport_logger = NULL;
 static void
 seterror(const char *funcname, HRESULT hr){
 	char* pszmsg;
-	FormatMessage( 
+	FormatMessage(
 		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
 		NULL,
 		hr,
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
 		(LPTSTR) &pszmsg,
 		0,
-		NULL 
+		NULL
 		);
 	for(error *p = errorlist; p->name; p++)
 		if (p->hr == hr){
@@ -262,8 +262,8 @@ seterror(const char *funcname, HRESULT hr){
 }
 // wrapper for Blt on primary surface to check for recoverable errors
 #define MAX_RETRIES 1
-static void 
-primary_Blt(IDirectDrawSurface* primary_surface, LPRECT lpDestRect, 
+static void
+primary_Blt(IDirectDrawSurface* primary_surface, LPRECT lpDestRect,
 			LPDIRECTDRAWSURFACE lpDDSrcSurface, LPRECT lpSrcRect, DWORD dwFlags, LPDDBLTFX lpDDBltFX){
 	HRESULT hr = DD_OK;
 	int retries = MAX_RETRIES;
@@ -298,7 +298,7 @@ primary_Blt(IDirectDrawSurface* primary_surface, LPRECT lpDestRect,
 		hr = primary_surface->Blt(lpDestRect, lpDDSrcSurface, lpSrcRect, dwFlags, lpDDBltFX);
 		if (hr == DDERR_NOTFOUND) return; // XXXJACK
 		if (hr == DDERR_SURFACELOST && retries >= 0) {
-			viewport_logger->trace("primary_Blt recovering from DDERR_LOSTSURFACE retry=%d", MAX_RETRIES-retries); 
+			viewport_logger->trace("primary_Blt recovering from DDERR_LOSTSURFACE retry=%d", MAX_RETRIES-retries);
 			hr = primary_surface->Restore();
 			if (FAILED(hr)) {
 				seterror("primary_Blt/DirectDrawSurface::Restore()", hr);
@@ -310,7 +310,7 @@ primary_Blt(IDirectDrawSurface* primary_surface, LPRECT lpDestRect,
 		seterror("primary_Blt/DirectDrawSurface::Blt()", hr);
 }
 
-gui::dx::viewport::viewport(int width, int height, HWND hwnd) 
+gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 :	m_width(width), m_height(height),
 	m_direct_draw(NULL),
 	m_primary_surface(NULL),
@@ -323,9 +323,9 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 	lo_red_bit(16), lo_green_bit(8), lo_blue_bit(0),
 	palette_entries(0),
 	m_bgd(CLR_DEFAULT) {
-	
+
 	viewport_logger = lib::logger::get_logger();
-	
+
 #if 0 // VS8
 	IDirectDrawFactory *pDDF = NULL;
     HRESULT hr = CoCreateInstance(CLSID_DirectDrawFactory,
@@ -335,7 +335,7 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 	if (FAILED(hr)){
 		seterror("CoCreateInstance(CLSID_DirectDrawFactory, ...)", hr);
 		return;
-	}	
+	}
 	IDirectDraw  *pDD1=NULL;
 	hr = pDDF->CreateDirectDraw(NULL, m_hwnd, DDSCL_NORMAL , 0, NULL, &pDD1);
 	pDDF->Release();
@@ -367,7 +367,7 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 		seterror("SetCooperativeLevel()", hr);
 		return;
 	}
-	
+
 	// create primary surface
 	DDSURFACEDESC sd;
 	memset(&sd, 0, sizeof(DDSURFACEDESC));
@@ -390,7 +390,7 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 #ifdef	WITH_DDCLIPPER
 	// Clip output to the provided window
 	if(m_hwnd) {
-		IDirectDrawClipper *clipper = NULL; 
+		IDirectDrawClipper *clipper = NULL;
 		hr = m_direct_draw->CreateClipper(0, &clipper, NULL);
 		if (FAILED(hr))
 			seterror("DirectDraw::CreateClipper()", hr);
@@ -443,12 +443,12 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 		seterror("DirectDraw::CreateSurface()", hr);
 		return;
 	}
-	
+
 	m_ddbgd = convert(m_bgd);
-	
+
 	// clear the back buffer
 	clear();
-	
+
 	// create shared transition surface
 	IDirectDrawSurface* surf;
 	memset(&sd, 0, sizeof(DDSURFACEDESC));
@@ -508,7 +508,7 @@ gui::dx::viewport::set_background(lib::color_t color) {
 
 // Creates a DD surface with the provided size.
 // The surface is cleared using the specified color
-IDirectDrawSurface* 
+IDirectDrawSurface*
 gui::dx::viewport::create_surface(DWORD w, DWORD h) {
 	IDirectDrawSurface* surface = 0;
 	DDSURFACEDESC sd;
@@ -588,16 +588,16 @@ gui::dx::viewport::redraw() {
 			HRGN hrgn = NULL;
 			switch (bt) {
 				case smil2::bt_rect:
-					hrgn = create_rect_region(m_fstransition); 
+					hrgn = create_rect_region(m_fstransition);
 					break;
-				case smil2::bt_rectlist: 
-					hrgn = create_rectlist_region(m_fstransition); 
+				case smil2::bt_rectlist:
+					hrgn = create_rectlist_region(m_fstransition);
 					break;
-				case smil2::bt_poly: 
-					hrgn = create_poly_region(m_fstransition); 
+				case smil2::bt_poly:
+					hrgn = create_poly_region(m_fstransition);
 					break;
-				case smil2::bt_polylist: 
-					hrgn = create_polylist_region(m_fstransition); 
+				case smil2::bt_polylist:
+					hrgn = create_polylist_region(m_fstransition);
 					break;
 			}
 			HDC tmps_dc;
@@ -640,7 +640,7 @@ gui::dx::viewport::redraw(const lib::rect& rc) {
 		return;
 	RECT src_rc = {rc.left(), rc.top(), rc.right(), rc.bottom()};
 	RECT dst_rc = {rc.left(), rc.top(), rc.right(), rc.bottom()};
-	
+
 	// Convert dst to screen coordinates
 	to_screen_rc_ptr(dst_rc);
 	assert(rc.left() <= m_width);
@@ -653,7 +653,7 @@ gui::dx::viewport::redraw(const lib::rect& rc) {
 	RECT vrc = {0, 0, m_width, m_height};
 	if(!IntersectRect(&src_rc, &src_rc, &vrc) || IsRectEmpty(&src_rc))
 		return;
-		
+
 	// Blit:
 	lib::rect ourrect(lib::point(0,0), lib::size(m_width, m_height));
 	DWORD flags = AM_DDBLT_WAIT;
@@ -687,16 +687,16 @@ gui::dx::viewport::redraw(const lib::rect& rc) {
 			HRGN hrgn = NULL;
 			switch (bt) {
 				case smil2::bt_rect:
-					hrgn = create_rect_region(m_fstransition); 
+					hrgn = create_rect_region(m_fstransition);
 					break;
-				case smil2::bt_rectlist: 
-					hrgn = create_rectlist_region(m_fstransition); 
+				case smil2::bt_rectlist:
+					hrgn = create_rectlist_region(m_fstransition);
 					break;
-				case smil2::bt_poly: 
-					hrgn = create_poly_region(m_fstransition); 
+				case smil2::bt_poly:
+					hrgn = create_poly_region(m_fstransition);
 					break;
-				case smil2::bt_polylist: 
-					hrgn = create_polylist_region(m_fstransition); 
+				case smil2::bt_polylist:
+					hrgn = create_polylist_region(m_fstransition);
 					break;
 			}
 			HDC tmps_dc;
@@ -763,7 +763,7 @@ gui::dx::viewport::clear() {
 	DDBLTFX bltfx;
 	memset(&bltfx, 0, sizeof(DDBLTFX));
 	bltfx.dwSize = sizeof(bltfx);
-	bltfx.dwFillColor = m_ddbgd; 
+	bltfx.dwFillColor = m_ddbgd;
 	RECT dst_rc = {0, 0, m_width, m_height};
 	HRESULT hr = m_surface->Blt(&dst_rc, 0, 0, DDBLT_COLORFILL | AM_DDBLT_WAIT, &bltfx);
 	if (hr == DDERR_NOTFOUND) return; // XXXJACK
@@ -797,14 +797,14 @@ gui::dx::viewport::blt_blend (IDirectDrawSurface* to, IDirectDrawSurface* from, 
 void
 gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, double opacity, dx_transition *tr) {
 	if(m_surface == NULL || opacity == 0) return;
-	
+
 	if(!tr) {
 		clear(rc, clr, opacity, m_surface);
 		return;
 	}
-	
+
 	smil2::blitter_type bt = tr->get_blitter_type();
-	
+
 	if(bt == smil2::bt_r1r2r3r4) {
 		lib::rect rc_v = rc;
 		clipto_r1r2r3r4(tr, rc_v, rc_v);
@@ -829,23 +829,23 @@ gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, double opacity, 
 		release_surface(s2);
 		return;
 	}
-	
+
 	HRGN hrgn = 0;
 	switch(bt) {
-		case smil2::bt_rect: 
-			hrgn = create_rect_region(tr); 
+		case smil2::bt_rect:
+			hrgn = create_rect_region(tr);
 			break;
-		case smil2::bt_rectlist: 
-			hrgn = create_rectlist_region(tr); 
+		case smil2::bt_rectlist:
+			hrgn = create_rectlist_region(tr);
 			break;
-		case smil2::bt_poly: 
-			hrgn = create_poly_region(tr); 
+		case smil2::bt_poly:
+			hrgn = create_poly_region(tr);
 			break;
-		case smil2::bt_polylist: 
-			hrgn = create_polylist_region(tr); 
+		case smil2::bt_polylist:
+			hrgn = create_polylist_region(tr);
 			break;
 	}
-		
+
 	if(!hrgn) {
 		clear(rc, clr, opacity, m_surface);
 		return;
@@ -870,9 +870,9 @@ void gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, double opac
 	DDBLTFX bltfx;
 	memset(&bltfx, 0, sizeof(DDBLTFX));
 	bltfx.dwSize = sizeof(bltfx);
-	bltfx.dwFillColor = convert(clr); 
+	bltfx.dwFillColor = convert(clr);
 	RECT dstRC = {rc.left(), rc.top(), rc.right(), rc.bottom()};
-	
+
 	// Verify:
 	RECT vrc = {0, 0, m_width, m_height};
 	if(!IntersectRect(&dstRC, &dstRC, &vrc) || IsRectEmpty(&dstRC))
@@ -917,7 +917,7 @@ gui::dx::viewport::clear_surface(IDirectDrawSurface* p, lib::color_t clr, double
 	bltfx.dwSize = sizeof(bltfx);
 	bltfx.dwFillColor = (clr == CLR_INVALID)?m_ddbgd:convert(clr);
 	RECT dst_rc;
-	set_rect(p, &dst_rc);	
+	set_rect(p, &dst_rc);
 	HRESULT hr = p->Blt(&dst_rc, 0, 0, DDBLT_COLORFILL | AM_DDBLT_WAIT, &bltfx);
 	if (hr == DDERR_NOTFOUND) return; // XXXJACK
 	if (FAILED(hr)) {
@@ -931,18 +931,18 @@ gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& dst_rc, bool k
 	if(!m_surface || !src) return;
 	DWORD flags = AM_DDBLT_WAIT;
 	if(keysrc) flags |= DDBLT_KEYSRC;
-	
+
 	// Set srcRC to surf rect
 	RECT srcRC;
 	set_rect(src, &srcRC);
 	RECT dstRC = {dst_rc.left(), dst_rc.top(), dst_rc.right(), dst_rc.bottom()};
-	
+
 	// Verify:
 	// Dest within viewport
 	RECT vrc = {0, 0, m_width, m_height};
 	if(!IntersectRect(&dstRC, &dstRC, &vrc) || IsRectEmpty(&dstRC))
 		return;
-	
+
 	HRESULT hr = m_surface->Blt(&dstRC, src, &srcRC, flags, NULL);
 	if (hr == DDERR_NOTFOUND) return; // XXXJACK
 	if (FAILED(hr)) {
@@ -961,7 +961,7 @@ gui::dx::viewport::blend_surface(const lib::rect& dst_rc, IDirectDrawSurface* sr
 		RELEASE(s2);
 		draw(src, src_rc, dst_rc, keysrc, m_surface);
 		return;
-	}		
+	}
 	if(keysrc) copy_bgd_to(s1, dst_rc);
 	draw(src, src_rc, dst_rc, keysrc, s1);
 	copy_bgd_to(s2, dst_rc);
@@ -1017,16 +1017,16 @@ void
 gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& src_rc,
 	const lib::rect& dst_rc, bool keysrc, dx_transition *tr) {
 	if(!m_surface || !src) return;
-	
+
 	if(!tr) {
 		draw(src, src_rc, dst_rc, keysrc, m_surface);
 		return;
 	}
-	
+
 	smil2::blitter_type bt = tr->get_blitter_type();
-	
+
 	if(bt == smil2::bt_r1r2r3r4) {
-#ifdef XXXX 
+#ifdef XXXX
 // r.1.40 leads to #1619481
 		smil2::transition_blitclass_r1r2r3r4 *p = tr->get_as_r1r2r3r4_blitter();
 		r1r2r3r4_adapter *r1r2r3r4 = (r1r2r3r4_adapter*)p;
@@ -1045,7 +1045,7 @@ gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& src_rc,
 		src_rc_v &= new_src;
 		dst_rc_v &= new_dst;
 		dst_rc_v.w = src_rc_v.w; //XXXX
-		draw(src, src_rc_v, dst_rc_v, keysrc, m_surface);		
+		draw(src, src_rc_v, dst_rc_v, keysrc, m_surface);
 #else /*XXXX*/
 // r.1.39 doesn't have the problem
 		lib::rect src_rc_v = src_rc;
@@ -1058,34 +1058,34 @@ gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& src_rc,
 		blend_surface(dst_rc, src, src_rc, keysrc, tr->get_progress(), 0xFFFFFF, lib::color_t(0x000000), lib::color_t(0xFFFFFF));
 		return;
 	}
-	
+
 	HRGN hrgn = 0;
 	switch(bt) {
-		case smil2::bt_rect: 
-			hrgn = create_rect_region(tr); 
+		case smil2::bt_rect:
+			hrgn = create_rect_region(tr);
 			break;
-		case smil2::bt_rectlist: 
-			hrgn = create_rectlist_region(tr); 
+		case smil2::bt_rectlist:
+			hrgn = create_rectlist_region(tr);
 			break;
-		case smil2::bt_poly: 
-			hrgn = create_poly_region(tr); 
+		case smil2::bt_poly:
+			hrgn = create_poly_region(tr);
 			break;
-		case smil2::bt_polylist: 
-			hrgn = create_polylist_region(tr); 
+		case smil2::bt_polylist:
+			hrgn = create_polylist_region(tr);
 			break;
 	}
-		
+
 	if(!hrgn) {
 		draw(src, src_rc, dst_rc, keysrc, m_surface);
 		return;
 	} else if(is_empty_region(hrgn)) {
 		// nothing to paint
-		viewport_logger->trace("%s: Region is empty for transition", 
+		viewport_logger->trace("%s: Region is empty for transition",
 			tr->get_type_str().c_str());
 		DeleteObject((HGDIOBJ)hrgn);
 		return;
 	}
-	
+
 	IDirectDrawSurface* surf = create_surface();
 	if(!tr->is_outtrans()) copy_bgd_to(surf, dst_rc);
 	draw(src, src_rc, dst_rc, keysrc, surf);
@@ -1099,22 +1099,22 @@ void
 gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& src_rc,
 	const lib::rect& dst_rc, bool keysrc, IDirectDrawSurface* dstview) {
 	if(!dstview || !src) return;
-	
+
 	RECT srcRC = {src_rc.left(), src_rc.top(), src_rc.right(), src_rc.bottom()};
 	RECT dstRC = {dst_rc.left(), dst_rc.top(), dst_rc.right(), dst_rc.bottom()};
-	
+
 	// Verify:
 	// 1. Src within surf
 	RECT surfRC;
 	set_rect(src, &surfRC);
 	if(!IntersectRect(&srcRC, &srcRC, &surfRC) || IsRectEmpty(&srcRC))
 		return;
-		
+
 	// 2. Dest within viewport
 	RECT vrc = {0, 0, m_width, m_height};
 	if(!IntersectRect(&dstRC, &dstRC, &vrc) || IsRectEmpty(&dstRC))
 		return;
-	
+
 	DWORD flags = AM_DDBLT_WAIT;
 	if(keysrc) flags |= DDBLT_KEYSRC;
 	AM_DBG lib::logger::get_logger()->debug("dx_viewport::redraw(0x%x): src=0x%x, flags=0x%x, dstRC(%d,%d,%d,%d), srcRC(%d,%d,%d,%d)", dstview, src, flags, dstRC.top,dstRC.bottom,dstRC.left,dstRC.right,srcRC.top,srcRC.bottom,srcRC.left,srcRC.right);
@@ -1129,7 +1129,7 @@ gui::dx::viewport::draw(IDirectDrawSurface* src, const lib::rect& src_rc,
 // Paints the provided string
 void
 gui::dx::viewport::draw(const std::basic_string<text_char>& text, const lib::rect& rc, lib::color_t clr) {
-	if(!m_surface || text.empty()) return;	
+	if(!m_surface || text.empty()) return;
 	HDC hdc;
 	HRESULT hr = m_surface->GetDC(&hdc);
 	if (FAILED(hr)) {
@@ -1138,10 +1138,10 @@ gui::dx::viewport::draw(const std::basic_string<text_char>& text, const lib::rec
 	}
 	SetBkMode(hdc, TRANSPARENT);
 	COLORREF crTextColor = (clr == CLR_INVALID)?::GetSysColor(COLOR_WINDOWTEXT):clr;
-	::SetTextColor(hdc, crTextColor);	
+	::SetTextColor(hdc, crTextColor);
 	RECT dstRC = {rc.left(), rc.top(), rc.right(), rc.bottom()};
 	UINT uFormat = DT_CENTER | DT_WORDBREAK;
-	int res = ::DrawText(hdc, text.c_str(), int(text.length()), &dstRC, uFormat); 
+	int res = ::DrawText(hdc, text.c_str(), int(text.length()), &dstRC, uFormat);
 	if(res == 0)
 		win_report_last_error("DrawText()");
 	m_surface->ReleaseDC(hdc);
@@ -1150,7 +1150,7 @@ gui::dx::viewport::draw(const std::basic_string<text_char>& text, const lib::rec
 // Frames the provided rect
 void
 gui::dx::viewport::frame_rect(const lib::rect& rc, lib::color_t clr) {
-	if(!m_surface) return;	
+	if(!m_surface) return;
 	HDC hdc;
 	HRESULT hr = m_surface->GetDC(&hdc);
 	if (FAILED(hr)) {
@@ -1169,7 +1169,7 @@ gui::dx::viewport::frame_rect(const lib::rect& rc, lib::color_t clr) {
 	m_surface->ReleaseDC(hdc);
 }
 
-// Helper, that returns the size of a DD surface 
+// Helper, that returns the size of a DD surface
 // static
 lib::size gui::dx::viewport::get_size(IDirectDrawSurface* p) {
 	assert(p);
@@ -1186,23 +1186,23 @@ lib::size gui::dx::viewport::get_size(IDirectDrawSurface* p) {
 void
 gui::dx::viewport::blit(IDirectDrawSurface* src, const lib::rect& src_rc,
 	IDirectDrawSurface* dst, const lib::rect& dst_rc) {
-	
+
 	RECT srcRC = {src_rc.left(), src_rc.top(), src_rc.right(), src_rc.bottom()};
 	RECT dstRC = {dst_rc.left(), dst_rc.top(), dst_rc.right(), dst_rc.bottom()};
-	
+
 	// Verify:
 	// 1. Src within surf
 	RECT srcSurfRC;
 	set_rect(src, &srcSurfRC);
 	if(!IntersectRect(&srcRC, &srcRC, &srcSurfRC) || IsRectEmpty(&srcRC))
 		return;
-		
+
 	// 2. Dst within surf
 	RECT dstSurfRC;
 	set_rect(dst, &dstSurfRC);
 	if(!IntersectRect(&dstRC, &dstRC, &dstSurfRC) || IsRectEmpty(&dstRC))
 		return;
-			
+
 	DWORD flags = AM_DDBLT_WAIT;
 	HRESULT hr = dst->Blt(&dstRC, src, &srcRC, flags, NULL);
 	if (hr == DDERR_NOTFOUND) return; // XXXJACK
@@ -1217,19 +1217,19 @@ void
 gui::dx::viewport::rdraw(IDirectDrawSurface* dst, const lib::rect& from_rc) {
 	if(!m_surface || !dst) return;
 	DWORD flags = AM_DDBLT_WAIT;
-	
+
 	// Set srcRC to surf rect
 	RECT surfRC;
 	set_rect(dst, &surfRC);
-	
+
 	RECT fromRC = {from_rc.left(), from_rc.top(), from_rc.right(), from_rc.bottom()};
-	
+
 	// Verify:
 	// Dest within viewport
 	RECT vrc = {0, 0, m_width, m_height};
 	if(!IntersectRect(&fromRC, &fromRC, &vrc) || IsRectEmpty(&fromRC))
 		return;
-	
+
 	HRESULT hr = dst->Blt(&surfRC, m_surface, &fromRC, flags, NULL);
 	if (hr == DDERR_NOTFOUND) return; // XXXJACK
 	if (FAILED(hr)) {
@@ -1238,7 +1238,7 @@ gui::dx::viewport::rdraw(IDirectDrawSurface* dst, const lib::rect& from_rc) {
 }
 
 void
-gui::dx::viewport::copy_bgd_to(IDirectDrawSurface* surf, const lib::rect& rc) { 
+gui::dx::viewport::copy_bgd_to(IDirectDrawSurface* surf, const lib::rect& rc) {
 	if(!m_surface || !surf) return;
 	DWORD flags = AM_DDBLT_WAIT;
 	RECT RC = {rc.left(), rc.top(), rc.right(), rc.bottom()};
@@ -1258,7 +1258,7 @@ gui::dx::viewport::draw_to_bgd(IDirectDrawSurface* surf, const lib::rect& rc, HR
 	RECT RC = {rc.left(), rc.top(), rc.right(), rc.bottom()};
 	RECT vrc = {0, 0, m_width, m_height};
 	if(!IntersectRect(&RC, &RC, &vrc) || IsRectEmpty(&RC)) return;
-	
+
 	HDC hdc;
 	HRESULT hr = m_surface->GetDC(&hdc);
 	if (FAILED(hr)) {
@@ -1272,15 +1272,15 @@ gui::dx::viewport::draw_to_bgd(IDirectDrawSurface* surf, const lib::rect& rc, HR
 		seterror("DirectDrawSurface::GetDC()", hr);
 		return;
 	}
-	
+
 	if(hrgn)
 		SelectClipRgn(hdc, hrgn);
-	
+
 	int w = RC.right - RC.left;
 	int h = RC.bottom - RC.top;
 	BOOL res = BitBlt(hdc, RC.left, RC.top, w, h, hsurfdc, RC.left, RC.top, SRCCOPY);
 	if(!res) win_report_last_error("BitBlt");
-	
+
 	m_surface->ReleaseDC(hdc);
 	surf->ReleaseDC(hsurfdc);
 }
@@ -1298,7 +1298,7 @@ gui::dx::viewport::low_bit_pos(uint32 dword) {
 	}
 	return 0;
 }
-	
+
 uint16
 gui::dx::viewport::high_bit_pos(uint32 dword) {
 	uint32 test = 1;
@@ -1310,11 +1310,11 @@ gui::dx::viewport::high_bit_pos(uint32 dword) {
 	}
 	return 0;
 }
-	
+
 void
 gui::dx::viewport::get_pixel_format() {
 	if(!m_primary_surface) return;
-	
+
 	DDPIXELFORMAT format;
 	memset(&format, 0, sizeof(format));
 	format.dwSize = sizeof(format);
@@ -1322,7 +1322,7 @@ gui::dx::viewport::get_pixel_format() {
 	if (FAILED(hr)){
 		seterror("DirectDrawSurface::GetPixelFormat()", hr);
 		return;
-	}	
+	}
 	bits_size = format.dwRGBBitCount;
 	//viewport_logger->trace("bits_size: %u", bits_size);
 	lo_red_bit = low_bit_pos( format.dwRBitMask );
@@ -1357,7 +1357,7 @@ gui::dx::viewport::convert(BYTE r, BYTE g, BYTE b) {
 		int bs = 8 - blue_bits;
 		ddcolor = ((r >> rs) << lo_red_bit) | ((g>>gs) << lo_green_bit) | ((b>>bs) << lo_blue_bit);
 	} else if (bits_size==24 || bits_size==32){
-		ddcolor = (r << lo_red_bit) | (g << lo_green_bit) | (b << lo_blue_bit);		
+		ddcolor = (r << lo_red_bit) | (g << lo_green_bit) | (b << lo_blue_bit);
 	}
 	return ddcolor;
 }
@@ -1390,11 +1390,11 @@ gui::dx::viewport::get_low_high_values(uint32 low_ddclr, uint32 high_ddclr, BYTE
 }
 
 HRESULT
-gui::dx::viewport::blt_blend32(const lib::rect& rc, 
+gui::dx::viewport::blt_blend32(const lib::rect& rc,
 	double opacity_in, double opacity_out,
 	IDirectDrawSurface *surf1, IDirectDrawSurface *surf2,
 	uint32 low_ddclr, uint32 high_ddclr) {
-	
+
 	DDSURFACEDESC desc1, desc2;
 	ZeroMemory(&desc1, sizeof(desc1));
 	desc1.dwSize = sizeof(desc1);
@@ -1403,13 +1403,13 @@ gui::dx::viewport::blt_blend32(const lib::rect& rc,
 
 	HRESULT hr = surf1->Lock(0, &desc1, AM_DDLOCK_WAIT | DDLOCK_READONLY, 0);
 	if(hr!=DD_OK) return hr;
-	
+
 	hr = surf2->Lock(0, &desc2, AM_DDLOCK_WAIT, 0);
-	if(hr != DD_OK) {	
+	if(hr != DD_OK) {
 		surf1->Unlock(0);
 		return hr;
 	}
-	
+
 	lib::rect rcv(lib::point(0,0), lib::size(m_width,m_height));
 	lib::rect rcc = rc;
 	rcc &= rcv;
@@ -1420,8 +1420,8 @@ gui::dx::viewport::blt_blend32(const lib::rect& rc,
 	BYTE r_l, r_h, g_l, g_h, b_l, b_h;
 	get_low_high_values(low_ddclr, high_ddclr, &r_l, &r_h, &g_l, &g_h, &b_l, &b_h);
 
-	int weight_in = int(opacity_in*256);	
-	int weight_out = int(opacity_out*256);	
+	int weight_in = int(opacity_in*256);
+	int weight_out = int(opacity_out*256);
 	for(int row = begin_row-1;row>=end_row;row--) {
 		RGBQUAD* px1 = (RGBQUAD*)((BYTE*)desc1.lpSurface+row*desc1.lPitch);
 		RGBQUAD* px2 = (RGBQUAD*)((BYTE*)desc2.lpSurface+row*desc2.lPitch);
@@ -1453,22 +1453,22 @@ gui::dx::viewport::blt_blend24(const lib::rect& rc,
 	double opacity_in, double opacity_out,
 	IDirectDrawSurface *surf1, IDirectDrawSurface *surf2,
 	uint32 low_ddclr, uint32 high_ddclr) {
-	
+
 	DDSURFACEDESC desc1, desc2;
 	ZeroMemory(&desc1, sizeof(desc1));
 	desc1.dwSize = sizeof(desc1);
 	ZeroMemory(&desc2, sizeof(desc2));
 	desc2.dwSize = sizeof(desc2);
-	
+
 	HRESULT hr = surf1->Lock(0, &desc1, AM_DDLOCK_WAIT | DDLOCK_READONLY, 0);
 	if(hr!=DD_OK) return hr;
-	
+
 	hr = surf2->Lock(0, &desc2, AM_DDLOCK_WAIT, 0);
-	if(hr != DD_OK) {	
+	if(hr != DD_OK) {
 		surf1->Unlock(0);
 		return hr;
 	}
-	
+
 	lib::rect rcv(lib::point(0,0), lib::size(m_width,m_height));
 	lib::rect rcc = rc;
 	rcc &= rcv;
@@ -1479,9 +1479,9 @@ gui::dx::viewport::blt_blend24(const lib::rect& rc,
 
 	BYTE r_l, r_h, g_l, g_h, b_l, b_h;
 	get_low_high_values(low_ddclr, high_ddclr, &r_l, &r_h, &g_l, &g_h, &b_l, &b_h);
-	
-	int weight_in = int(opacity_in*256);	
-	int weight_out = int(opacity_out*256);	
+
+	int weight_in = int(opacity_in*256);
+	int weight_out = int(opacity_out*256);
 	for(int row = begin_row-1;row>=end_row;row--) {
 		RGBTRIPLE* px1 = (RGBTRIPLE*)((BYTE*)desc1.lpSurface+row*desc1.lPitch);
 		RGBTRIPLE* px2 = (RGBTRIPLE*)((BYTE*)desc2.lpSurface+row*desc2.lPitch);
@@ -1512,21 +1512,21 @@ struct trible565 {
 	trible565() : v(0) {}
 	trible565(int _r, int _g, int _b)  {
 		lib::color_t bgr = (_b << 16) | (_g << 8) | _r ;
-        v = (uint16)((bgr & 0xf80000)>> 8); 
-        v |= (uint16)(bgr & 0xfc00) >> 5; 
-        v |= (uint16)(bgr & 0xf8) >> 3;  
+        v = (uint16)((bgr & 0xf80000)>> 8);
+        v |= (uint16)(bgr & 0xfc00) >> 5;
+        v |= (uint16)(bgr & 0xf8) >> 3;
 	}
 	trible565(uchar _r, uchar _g, uchar _b) {
 		lib::color_t bgr = (_b << 16) | (_g << 8) | _r ;
-        v = (uint16)((bgr & 0xf80000)>> 8); // blue  
+        v = (uint16)((bgr & 0xf80000)>> 8); // blue
         v |= (uint16)(bgr & 0xfc00) >> 5; // green
         v |= (uint16)(bgr & 0xf8) >> 3; // red
 	}
-	
+
 	trible565(lib::color_t bgr) {
-        v = (uint16)((bgr & 0xf80000) >> 8); 
-        v |= (uint16)(bgr & 0xfc00) >> 5; 
-        v |= (uint16)(bgr & 0xf8) >> 3;  
+        v = (uint16)((bgr & 0xf80000) >> 8);
+        v |= (uint16)(bgr & 0xfc00) >> 5;
+        v |= (uint16)(bgr & 0xf8) >> 3;
 	}
 	// mult and div used to ensure image doesn't become slightly dark
 	BYTE blue() { return (((v & 0xf800) >> 11)*255)/31;}
@@ -1539,22 +1539,22 @@ gui::dx::viewport::blt_blend16(const lib::rect& rc,
 	double opacity_in, double opacity_out,
 	IDirectDrawSurface *surf1, IDirectDrawSurface *surf2,
 	uint32 low_ddclr, uint32 high_ddclr) {
-	
+
 	DDSURFACEDESC desc1, desc2;
 	ZeroMemory(&desc1, sizeof(desc1));
 	desc1.dwSize = sizeof(desc1);
 	ZeroMemory(&desc2, sizeof(desc2));
 	desc2.dwSize = sizeof(desc2);
-	
+
 	HRESULT hr = surf1->Lock(0, &desc1, AM_DDLOCK_WAIT | DDLOCK_READONLY, 0);
 	if(hr!=DD_OK) return hr;
-	
+
 	hr = surf2->Lock(0, &desc2, AM_DDLOCK_WAIT, 0);
-	if(hr != DD_OK) {	
+	if(hr != DD_OK) {
 		surf1->Unlock(0);
 		return hr;
 	}
-	
+
 	lib::rect rcv(lib::point(0,0), lib::size(m_width,m_height));
 	lib::rect rcc = rc;
 	rcc &= rcv;
@@ -1562,12 +1562,12 @@ gui::dx::viewport::blt_blend16(const lib::rect& rc,
 	int end_row = rcc.top();
 	int begin_col = rcc.left();
 	int end_col = rcc.right();
-	
+
 	BYTE r_l, r_h, g_l, g_h, b_l, b_h;
 	get_low_high_values(low_ddclr, high_ddclr, &r_l, &r_h, &g_l, &g_h, &b_l, &b_h);
 
-	int weight_in = int(opacity_in*256);	
-	int weight_out = int(opacity_out*256);	
+	int weight_in = int(opacity_in*256);
+	int weight_out = int(opacity_out*256);
 	for(int row = begin_row-1;row>=end_row;row--) {
 		trible565* px1 = (trible565*)((BYTE*)desc1.lpSurface+row*desc1.lPitch);
 		trible565* px2 = (trible565*)((BYTE*)desc2.lpSurface+row*desc2.lPitch);

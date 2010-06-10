@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/unix/unix_thread.h"
@@ -43,7 +43,7 @@ lib::unix::thread::~thread()
 		stop();
 }
 
-bool 
+bool
 lib::unix::thread::start()
 {
 	if (m_running || m_exit_requested)
@@ -84,7 +84,7 @@ lib::unix::thread::stop()
 	}
 	m_running = false;
 }
-	
+
 bool
 lib::unix::thread::terminate()
 {
@@ -92,11 +92,11 @@ lib::unix::thread::terminate()
 	abort();
 	return false;
 }
-	
+
 bool
 lib::unix::thread::exit_requested() const
 {
-	return m_exit_requested; 
+	return m_exit_requested;
 }
 
 bool
@@ -104,7 +104,7 @@ lib::unix::thread::is_running() const
 {
 	return m_running;
 }
-	
+
 void
 lib::unix::thread::signal_exit_thread(){
 	// Don't know how to do this, yet.
@@ -117,6 +117,6 @@ lib::unix::thread::threadproc(void *pParam)
 	thread* p = static_cast<thread*>(pParam);
 	assert(p->m_running);
 	if (!p->m_exit_requested) (void)p->run();
-	pthread_exit(NULL); // returns never 
+	pthread_exit(NULL); // returns never
 	return NULL;
 }

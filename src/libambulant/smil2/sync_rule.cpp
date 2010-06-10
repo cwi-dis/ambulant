@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/logger.h"
@@ -39,7 +39,7 @@ using namespace smil2;
 //////////////////////////////////
 // sync_rule_impl implementation
 
-sync_rule_impl::sync_rule_impl(time_node *syncbase, sync_event se) 
+sync_rule_impl::sync_rule_impl(time_node *syncbase, sync_event se)
 :	m_target(0),
 	m_target_attr(rt_begin),
 	m_syncbase(syncbase),
@@ -52,27 +52,27 @@ sync_rule_impl::sync_rule_impl(time_node *syncbase, sync_event se)
 	m_trace(false) {}
 #endif
 
-void sync_rule_impl::set_target(time_node *tn, rule_type rt) { 
-	m_target = tn; 
-	m_target_attr = rt; 
+void sync_rule_impl::set_target(time_node *tn, rule_type rt) {
+	m_target = tn;
+	m_target_attr = rt;
 	eval_refnode();
 }
 
-void sync_rule_impl::set_syncbase(time_node *tn, sync_event se) { 
-	m_syncbase = tn; 
+void sync_rule_impl::set_syncbase(time_node *tn, sync_event se) {
+	m_syncbase = tn;
 	m_syncbase_event = se;
 	eval_refnode();
-}	
+}
 
-void sync_rule_impl::eval_refnode() { 
+void sync_rule_impl::eval_refnode() {
 	if(!m_refnode && m_target && m_syncbase) {
 		typedef lib::node_navigator<time_node> nnhelper;
-		m_refnode = nnhelper::get_common_ancestor(m_target->sync_node(), 
+		m_refnode = nnhelper::get_common_ancestor(m_target->sync_node(),
 			m_syncbase->sync_node());
 	}
 }
 
-sync_rule::time_type 
+sync_rule::time_type
 sync_rule_impl::to_ref(time_type instance) const {
 	if(!instance.is_definite()) return instance;
 	assert(m_syncbase && m_refnode);
@@ -80,7 +80,7 @@ sync_rule_impl::to_ref(time_type instance) const {
 	return tc.to_ancestor(m_refnode);
 }
 
-sync_rule::time_type 
+sync_rule::time_type
 sync_rule_impl::from_ref(time_type instance) const {
 	assert(m_target && m_refnode);
 	if(!instance.is_definite()) return instance;
@@ -125,7 +125,7 @@ void model_rule::new_instance(qtime_type timestamp, time_type instance) {
 	if(locked()) return;
 	lock();
 	if(m_trace)
-		AM_DBG logger::get_logger()->debug("model_rule::new_instance(%ld) (%s)", instance(), to_string().c_str());	
+		AM_DBG logger::get_logger()->debug("model_rule::new_instance(%ld) (%s)", instance(), to_string().c_str());
 	m_instances.push_back(to_ref(instance));
 	m_target->sync_update(timestamp);
 	unlock();
@@ -135,18 +135,18 @@ void model_rule::cancel_instance(qtime_type timestamp, time_type instance) {
 	if(locked()) return;
 	lock();
 	if(m_instances.empty()) {
-		logger::get_logger()->debug("Internal error: model_rule::cancel_instance(%ld) failed. List is empty (%s)", 
+		logger::get_logger()->debug("Internal error: model_rule::cancel_instance(%ld) failed. List is empty (%s)",
 			instance(), to_string().c_str());
 		logger::get_logger()->error(gettext("Programmer error, attempting to continue"));
 		unlock();
-		return;	
+		return;
 	}
 	time_type ref_instance = to_ref(instance);
 	time_list::iterator it = std::find(m_instances.begin(), m_instances.end(), ref_instance);
 	if(it != m_instances.end())
 		m_instances.erase(it);
 	else {
-		logger::get_logger()->error("Internal error: model_rule::cancel_instance(%ld) failed (%s)", 
+		logger::get_logger()->error("Internal error: model_rule::cancel_instance(%ld) failed (%s)",
 			instance(), to_string().c_str());
 		logger::get_logger()->error(gettext("Programmer error, attempting to continue"));
 	}
@@ -158,18 +158,18 @@ void model_rule::update_instance(qtime_type timestamp, time_type instance, time_
 	if(locked()) return;
 	lock();
 	if(m_instances.empty()) {
-		logger::get_logger()->error("Internal error: model_rule::update_instance(%ld, %ld) failed. List is empty (%s)", 
+		logger::get_logger()->error("Internal error: model_rule::update_instance(%ld, %ld) failed. List is empty (%s)",
 			instance(), old_instance(), to_string().c_str());
 		logger::get_logger()->error(gettext("Programmer error, attempting to continue"));
 		unlock();
-		return;	
+		return;
 	}
 	time_type old_ref_instance = to_ref(old_instance);
 	time_list::iterator it = std::find(m_instances.begin(), m_instances.end(), old_ref_instance);
 	if(it != m_instances.end())
 		(*it) = to_ref(instance);
 	else {
-		logger::get_logger()->error("Internal error: model_rule::update_instance(%ld, %ld) failed (%s)", 
+		logger::get_logger()->error("Internal error: model_rule::update_instance(%ld, %ld) failed (%s)",
 			instance(), old_instance(), to_string().c_str());
 		logger::get_logger()->error(gettext("Programmer error, attempting to continue"));
 	}
@@ -194,7 +194,7 @@ void event_rule::add_instance(qtime_type timestamp, time_type instance, int data
 	if(locked()) return;
 	lock();
 	if(m_trace)
-		AM_DBG logger::get_logger()->debug("event_rule::add_instance(%ld, %d) (%s)[%d]", instance(), data, to_string().c_str(), m_selector);	
+		AM_DBG logger::get_logger()->debug("event_rule::add_instance(%ld, %d) (%s)[%d]", instance(), data, to_string().c_str(), m_selector);
 	m_instances.push_back(to_ref(instance));
 	m_target->sync_update(timestamp);
 	unlock();
@@ -205,7 +205,7 @@ void event_rule::add_instance(qtime_type timestamp, time_type instance, const st
 	if(locked()) return;
 	lock();
 	if(m_trace)
-		AM_DBG logger::get_logger()->debug("event_rule::add_instance(%ld, %s) (%s)[%s]", instance(), data.c_str(), to_string().c_str(), m_str_selector.c_str());	
+		AM_DBG logger::get_logger()->debug("event_rule::add_instance(%ld, %s) (%s)[%s]", instance(), data.c_str(), to_string().c_str(), m_str_selector.c_str());
 	m_instances.push_back(to_ref(instance));
 	m_target->sync_update(timestamp);
 	unlock();
@@ -229,7 +229,7 @@ void transout_rule::new_instance(qtime_type timestamp, time_type instance) {
 	if(locked()) return;
 	lock();
 	if(m_trace)
-		AM_DBG logger::get_logger()->debug("transout_rule::new_instance(%ld) (%s)", instance(), to_string().c_str());	
+		AM_DBG logger::get_logger()->debug("transout_rule::new_instance(%ld) (%s)", instance(), to_string().c_str());
 	m_instances.push_back(to_ref(instance));
 	unlock();
 }
@@ -238,18 +238,18 @@ void transout_rule::cancel_instance(qtime_type timestamp, time_type instance) {
 	if(locked()) return;
 	lock();
 	if(m_instances.empty()) {
-		logger::get_logger()->error("Internal error: model_rule::cancel_instance(%ld) failed. List is empty (%s)", 
+		logger::get_logger()->error("Internal error: model_rule::cancel_instance(%ld) failed. List is empty (%s)",
 			instance(), to_string().c_str());
 		logger::get_logger()->error(gettext("Programmer error, attempting to continue"));
 		unlock();
-		return;	
+		return;
 	}
 	time_type ref_instance = to_ref(instance);
 	time_list::iterator it = std::find(m_instances.begin(), m_instances.end(), ref_instance);
 	if(it != m_instances.end())
 		m_instances.erase(it);
 	else {
-		logger::get_logger()->error("Internal error: model_rule::cancel_instance(%ld) failed (%s)", 
+		logger::get_logger()->error("Internal error: model_rule::cancel_instance(%ld) failed (%s)",
 			instance(), to_string().c_str());
 		logger::get_logger()->error(gettext("Programmer error, attempting to continue"));
 	}
@@ -260,18 +260,18 @@ void transout_rule::update_instance(qtime_type timestamp, time_type instance, ti
 	if(locked()) return;
 	lock();
 	if(m_instances.empty()) {
-		logger::get_logger()->error("Internal error: model_rule::update_instance(%ld, %ld) failed. List is empty (%s)", 
+		logger::get_logger()->error("Internal error: model_rule::update_instance(%ld, %ld) failed. List is empty (%s)",
 			instance(), old_instance(), to_string().c_str());
 		logger::get_logger()->error(gettext("Programmer error, attempting to continue"));
 		unlock();
-		return;	
+		return;
 	}
 	time_type old_ref_instance = to_ref(old_instance);
 	time_list::iterator it = std::find(m_instances.begin(), m_instances.end(), old_ref_instance);
 	if(it != m_instances.end())
 		(*it) = to_ref(instance);
 	else {
-		logger::get_logger()->error("Internal error: model_rule::update_instance(%ld, %ld) failed (%s)", 
+		logger::get_logger()->error("Internal error: model_rule::update_instance(%ld, %ld) failed (%s)",
 			instance(), old_instance(), to_string().c_str());
 		logger::get_logger()->error(gettext("Programmer error, attempting to continue"));
 	}

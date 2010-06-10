@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -18,8 +18,8 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "ambulant/net/ffmpeg_common.h"
-#include "ambulant/net/ffmpeg_raw.h" 
-#include "ambulant/net/ffmpeg_factory.h" 
+#include "ambulant/net/ffmpeg_raw.h"
+#include "ambulant/net/ffmpeg_factory.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/net/url.h"
 
@@ -29,7 +29,7 @@
 //#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
-#endif 
+#endif
 
 using namespace ambulant;
 using namespace net;
@@ -41,7 +41,7 @@ ambulant::net::get_ffmpeg_raw_datasource_factory()
 	// It seems datasource factories are sometimes cleaned up, hence we cannot use
 	// a singleton. Need to fix/document at some point.
 	static raw_datasource_factory *s_factory;
-	
+
 	if (!s_factory) s_factory = new ffmpeg_raw_datasource_factory();
 	return s_factory;
 #else
@@ -51,10 +51,10 @@ ambulant::net::get_ffmpeg_raw_datasource_factory()
 
 #define DEFAULT_BUFFER_SIZE 128*1024
 
-datasource* 
+datasource*
 ffmpeg_raw_datasource_factory::new_raw_datasource(const net::url& url)
 {
-	
+
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource_factory::new_raw_datasource(%s)", repr(url).c_str());
 	URLContext *context = detail::ffmpeg_rawreader::supported(url);
 	if (!context) {
@@ -116,7 +116,7 @@ detail::ffmpeg_rawreader::cancel()
 	release();
 }
 
-void 
+void
 detail::ffmpeg_rawreader::set_datasink(detail::rawdatasink *parent)
 {
 	m_lock.enter();
@@ -133,7 +133,7 @@ detail::ffmpeg_rawreader::run()
 	while (!exit_requested()) {
 		uint8_t *sinkbuffer;
 		int sinkbuffersize;
-		
+
 		sinkbuffersize = m_sink->get_sinkbuffer(&sinkbuffer);
 		if (sinkbuffersize == 0) {
 			m_lock.leave();
@@ -155,7 +155,7 @@ detail::ffmpeg_rawreader::run()
 	m_lock.leave();
 	return 0;
 }
-		
+
 // **************************** ffmpeg_raw_datasource *****************************
 
 ffmpeg_raw_datasource::ffmpeg_raw_datasource(const net::url& url, URLContext *context,
@@ -200,13 +200,13 @@ ffmpeg_raw_datasource::stop()
 	if (m_client_callback) delete m_client_callback;
 	m_client_callback = NULL;
 	m_lock.leave();
-}	
+}
 
-void 
+void
 ffmpeg_raw_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk)
 {
 	m_lock.enter();
-	
+
 	if (m_client_callback != NULL) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_raw_datasource::start(): m_client_callback already set!");
 		delete m_client_callback;
@@ -230,8 +230,8 @@ ffmpeg_raw_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib:
 	}
 	m_lock.leave();
 }
- 
-void 
+
+void
 ffmpeg_raw_datasource::readdone(int len)
 {
 	m_lock.enter();
@@ -241,7 +241,7 @@ ffmpeg_raw_datasource::readdone(int len)
 	m_lock.leave();
 }
 
-int 
+int
 ffmpeg_raw_datasource::get_sinkbuffer(uint8_t **datap)
 {
 	m_lock.enter();
@@ -250,7 +250,7 @@ ffmpeg_raw_datasource::get_sinkbuffer(uint8_t **datap)
 		m_lock.leave();
 		return 0;
 	}
-	// Otherwise we just take a guess. 
+	// Otherwise we just take a guess.
 	*datap = (uint8_t *)m_buffer.get_write_ptr(DEFAULT_BUFFER_SIZE);
 	m_lock.leave();
 	if (*datap)
@@ -278,7 +278,7 @@ ffmpeg_raw_datasource::pushdata(int sz)
 	m_lock.leave();
 }
 
-bool 
+bool
 ffmpeg_raw_datasource::end_of_file()
 {
 	m_lock.enter();
@@ -287,7 +287,7 @@ ffmpeg_raw_datasource::end_of_file()
 	return rv;
 }
 
-bool 
+bool
 ffmpeg_raw_datasource::_end_of_file()
 {
 	// private method - no need to lock
@@ -295,7 +295,7 @@ ffmpeg_raw_datasource::_end_of_file()
 	return m_src_end_of_file;
 }
 
-char* 
+char*
 ffmpeg_raw_datasource::get_read_ptr()
 {
 	m_lock.enter();
@@ -304,7 +304,7 @@ ffmpeg_raw_datasource::get_read_ptr()
 	return rv;
 }
 
-int 
+int
 ffmpeg_raw_datasource::size() const
 {
 		return m_buffer.size();

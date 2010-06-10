@@ -45,29 +45,29 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CSelectDlg message handlers
 
-void CSelectDlg::OnDblclkList1() 
+void CSelectDlg::OnDblclkList1()
 {
 	// TODO: Add your control notification handler code here
-	
+
 }
 
-void CSelectDlg::OnSelchangeList1() 
+void CSelectDlg::OnSelchangeList1()
 {
 	CListBox *pList = (CListBox*) GetDlgItem(IDC_FILE_LIST);
 	int nIndex = pList->GetCurSel();
 	if(nIndex>=0) {
 		LPTSTR  sb = m_filename.GetBuffer(MAX_PATH);
 		pList->GetText(nIndex, sb);
-		m_filename.ReleaseBuffer(); 
+		m_filename.ReleaseBuffer();
 	}
 }
 
-BOOL CSelectDlg::OnInitDialog() 
+BOOL CSelectDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
-	
+
 	// TODO: Add extra initialization here
-	CComboBox *pCombo = (CComboBox*) GetDlgItem(IDC_DIR_COMBO);	
+	CComboBox *pCombo = (CComboBox*) GetDlgItem(IDC_DIR_COMBO);
 	pCombo->AddString(TEXT("Ambulant documents"));
 	pCombo->SetCurSel(0);
 
@@ -102,8 +102,8 @@ void CSelectDlg::FillList(LPCTSTR ext) {
 	while(FindNextFile(fileHandle, &findData)) {
 		if((findData.dwFileAttributes &  FILE_ATTRIBUTE_DIRECTORY) == 0) {
 			CString fn = findData.cFileName;
-			if(endsWith(fn, TEXT(".smil")) || 
-				endsWith(fn, TEXT(".smi")) || 
+			if(endsWith(fn, TEXT(".smil")) ||
+				endsWith(fn, TEXT(".smi")) ||
 				endsWith(fn, TEXT(".grins")))
 			pList->AddString(fn);
 		}
@@ -118,11 +118,11 @@ CString CSelectDlg::GetPathName() {
 	return TEXT("");
 }
 
-void CSelectDlg::OnCloseupDirCombo() 
+void CSelectDlg::OnCloseupDirCombo()
 {
 	CListBox *pList = (CListBox*) GetDlgItem(IDC_FILE_LIST);
 	pList->ResetContent();
 	FillList(TEXT("*.*"));
 	if(pList->GetCount()>0) pList->SetCurSel(0);
-	
+
 }

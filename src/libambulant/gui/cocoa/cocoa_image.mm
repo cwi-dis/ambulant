@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/cocoa/cocoa_gui.h"
@@ -55,8 +55,8 @@ create_cocoa_image_playable_factory(common::factories *factory, common::playable
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererImg"), true);
 	return new common::single_playable_factory<
-        cocoa_image_renderer, 
-        cocoa_image_playable_tag, 
+        cocoa_image_renderer,
+        cocoa_image_playable_tag,
         cocoa_image_playable_renderer_uri,
         cocoa_image_playable_renderer_uri2,
         cocoa_image_playable_renderer_uri2>(factory, mdp);
@@ -71,7 +71,7 @@ cocoa_image_renderer::~cocoa_image_renderer()
 	m_image = NULL;
 	m_lock.leave();
 }
-	
+
 void
 cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 {
@@ -79,7 +79,7 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	const rect &r = m_dest->get_rect();
 	const common::region_info *ri = m_dest->get_info();
 	AM_DBG logger::get_logger()->debug("cocoa_image_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
-	
+
 	if (m_data && !m_image) {
 		AM_DBG logger::get_logger()->debug("cocoa_image_renderer.redraw: creating image");
 		m_nsdata = [NSData dataWithBytesNoCopy: m_data length: m_data_size freeWhenDone: NO];
@@ -189,7 +189,7 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 #else
 	[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceOver fraction: 1.0f];
 #endif
-	
+
 	m_lock.leave();
 }
 

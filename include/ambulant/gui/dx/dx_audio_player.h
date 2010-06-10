@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_DX_AUDIO_PLAYER_H
@@ -58,19 +58,19 @@
 // If the TPB DirectShow filter is not available we do nothing.
 #include <set>
 
-DEFINE_GUID(CLSID_TPBVupp10, 
+DEFINE_GUID(CLSID_TPBVupp10,
 	0x66172967, 0x56c5, 0x4b89, 0xaa, 0x92, 0xc9, 0xef, 0xec, 0x56, 0x46, 0x7b);
 
 // {A33E626E-D6C4-4559-A1D6-9F1D95F0D8E2}
-DEFINE_GUID(IID_IVuppInterface, 
+DEFINE_GUID(IID_IVuppInterface,
 0xa33e626e, 0xd6c4, 0x4559, 0xa1, 0xd6, 0x9f, 0x1d, 0x95, 0xf0, 0xd8, 0xe2);
 
-DECLARE_INTERFACE_(IVuppInterface, IUnknown) { 
+DECLARE_INTERFACE_(IVuppInterface, IUnknown) {
 
 	//Deklarera metoder:
 	STDMETHOD(setCrossFadeSpeed)
 		( THIS_
-			double speed 
+			double speed
 		) PURE;
 
 	STDMETHOD(setWindowLength)
@@ -118,7 +118,7 @@ class audio_player {
   public:
 	audio_player(const std::string& url);
 	~audio_player();
-		
+
 	void start(double t);
 //	void stop();
 	bool stop();
@@ -136,15 +136,15 @@ class audio_player {
 	bool is_playing();
 	double get_position();
 	const std::string& get_url() const { return m_url;}
-	
+
 	// dx implementation artifacts
 	int get_progress();
 	void set_progress(int p);
-		
-	// -val is the attenuation in decibels 
+
+	// -val is the attenuation in decibels
 	// can be 0 to 100
 	void set_volume(long val);
-		
+
 	// can be -100 to 100
 	// 0 sets a neutral balance
 	// and 10 sets -10 db to right and -90 db to left
@@ -153,7 +153,7 @@ class audio_player {
   private:
 	bool open(const std::string& url);
 	void release_player();
-	
+
 	std::string m_url;
 	IGraphBuilder *m_graph_builder;
 	IMediaControl *m_media_control;
@@ -174,11 +174,11 @@ class audio_player {
 	static double s_current_playback_rate;
 #endif
 };
-	
+
 } // namespace dx
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_GUI_DX_AUDIO_PLAYER_H

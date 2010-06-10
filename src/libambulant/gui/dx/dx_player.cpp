@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/config/config.h"
@@ -117,7 +117,7 @@ using namespace ambulant;
 
 int gui::dx::dx_gui_region::s_counter = 0;
 
-gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, common::player_feedback *feedback, const net::url& u) 
+gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, common::player_feedback *feedback, const net::url& u)
 :	m_hoster(hoster),
 	m_update_event(0),
 	m_logger(lib::logger::get_logger())
@@ -132,12 +132,12 @@ gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, common::player_feedba
 	if (prefs->m_prefer_ffmpeg)
 		get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererOpen"));
 	else
-		get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererDirectX"));   
+		get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererDirectX"));
 
-	// Parse the provided URL. 
-	AM_DBG m_logger->debug("Parsing: %s", u.get_url().c_str());	
+	// Parse the provided URL.
+	AM_DBG m_logger->debug("Parsing: %s", u.get_url().c_str());
 	m_doc = create_document(u);
-	
+
 	if(!m_doc) {
 		// message already logged
 		return;
@@ -156,7 +156,7 @@ gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, common::player_feedba
 	}
 
 	// Create a player instance
-	AM_DBG m_logger->debug("Creating player instance for: %s", u.get_url().c_str());	
+	AM_DBG m_logger->debug("Creating player instance for: %s", u.get_url().c_str());
 	m_player = smil2::create_smil2_player(m_doc, this, m_embedder);
 
 	if (feedback) m_player->set_feedback(feedback);
@@ -164,7 +164,7 @@ gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, common::player_feedba
 	lib::event_processor *evp = m_player->get_evp();
 	assert(evp);
 	evp->set_observer(this);
-	
+
 	// Create a worker processor instance
 }
 
@@ -198,7 +198,7 @@ gui::dx::dx_player::~dx_player() {
 	delete m_doc;
 	m_player = NULL;
 	assert(m_windows.empty());
-	if(dx_gui_region::s_counter != 0) 
+	if(dx_gui_region::s_counter != 0)
 		m_logger->warn("Undeleted gui regions: %d", dx_gui_region::s_counter);
 }
 
@@ -241,16 +241,16 @@ gui::dx::dx_player::init_playable_factory()
 #endif
 #ifdef USE_DS_VIDEO
 	pf->add_factory(create_dx_dsvideo_playable_factory(this, this));
-#endif	
+#endif
 #ifdef USE_DX_VIDEO
 	pf->add_factory(create_dx_video_playable_factory(this, this));
-#endif	
+#endif
 }
 
 void
 gui::dx::dx_player::init_window_factory()
 {
-		set_window_factory(this); 
+		set_window_factory(this);
 }
 
 void
@@ -258,10 +258,10 @@ gui::dx::dx_player::init_datasource_factory()
 {
 	net::datasource_factory *df = new net::datasource_factory();
 	set_datasource_factory(df);
-#ifdef WITH_LIVE	
+#ifdef WITH_LIVE
 	AM_DBG m_logger->debug("dx_player: add live_audio_datasource_factory");
 	df->add_video_factory(net::create_live_video_datasource_factory());
-	df->add_audio_factory(net::create_live_audio_datasource_factory()); 
+	df->add_audio_factory(net::create_live_audio_datasource_factory());
 #endif
 #ifdef WITH_FFMPEG
     AM_DBG m_logger->debug("dx_player: add ffmpeg_audio_datasource_factory");
@@ -325,7 +325,7 @@ void gui::dx::dx_player::restart(bool reparse) {
 	stop();
 	lib::event_processor *evp = m_player->get_evp();
 	if (evp) evp->set_observer(NULL);
-	
+
 	assert(m_player);
 	m_player->terminate();
 	m_player->release();
@@ -353,12 +353,12 @@ void gui::dx::dx_player::restart(bool reparse) {
 			return;
 		}
 	}
-	AM_DBG m_logger->debug("Creating player instance for: %s", m_url.get_url().c_str());	
-	m_player = smil2::create_smil2_player(m_doc, this, m_embedder);	
+	AM_DBG m_logger->debug("Creating player instance for: %s", m_url.get_url().c_str());
+	m_player = smil2::create_smil2_player(m_doc, this, m_embedder);
 	m_player->initialize();
 	evp = m_player->get_evp();
 	if (evp) evp->set_observer(this);
-	if(playing) play();	
+	if(playing) play();
 }
 
 #if 0
@@ -445,42 +445,42 @@ void gui::dx::dx_player::unlock_redraw() {
 // common::window_factory implementation
 
 common::gui_window *
-gui::dx::dx_player::new_window(const std::string &name, 
+gui::dx::dx_player::new_window(const std::string &name,
 	lib::size bounds, common::gui_events *src) {
-	
-	AM_DBG lib::logger::get_logger()->debug("dx_window_factory::new_window(%s): %s", 
+
+	AM_DBG lib::logger::get_logger()->debug("dx_window_factory::new_window(%s): %s",
 		name.c_str(), ::repr(bounds).c_str());
-	
+
 	// wininfo struct that will hold the associated objects
 	wininfo *winfo = new wininfo;
-	
+
 	// Create an os window
 	winfo->h = m_hoster.new_os_window();
-	
+
 	// Create the associated dx viewport
 	winfo->v = create_viewport(bounds.w, bounds.h, winfo->h);
-	
+
 	// Region?
 	region *rgn = (region *) src;
-	
+
 	// Clear the viewport
 	const common::region_info *ri = rgn->get_info();
 	winfo->v->set_background(ri?ri->get_bgcolor():CLR_INVALID);
 	winfo->v->clear();
-	
+
 	// Create a concrete gui_window
 	winfo->w = new dx_window(name, bounds, rgn, this, winfo->v);
 	winfo->f = 0;
-	
+
 	// Store the wininfo struct
 	m_windows[name] = winfo;
 	AM_DBG m_logger->debug("windows: %d", m_windows.size());
-	
+
 	// Return gui_window
 	return winfo->w;
 }
 
-void 
+void
 gui::dx::dx_player::window_done(const std::string &name) {
 	// called when the window is destructed (wi->w)
 	std::map<std::string, wininfo*>::iterator it = m_windows.find(name);
@@ -541,7 +541,7 @@ gui::dx::dx_player::get_main_window() {
 	return (*it).second->h;
 }
 
-void gui::dx::dx_player::set_intransition(common::playable *p, const lib::transition_info *info) { 
+void gui::dx::dx_player::set_intransition(common::playable *p, const lib::transition_info *info) {
 	AM_DBG lib::logger::get_logger()->debug("set_intransition : %s", repr(info->m_type).c_str());
 	dx_transition *tr = set_transition(p, info, false);
 	// XXXX Note by Jack: the next two steps really shouldn't be done for
@@ -550,7 +550,7 @@ void gui::dx::dx_player::set_intransition(common::playable *p, const lib::transi
 	if(!m_update_event) schedule_update();
 }
 
-void gui::dx::dx_player::start_outtransition(common::playable *p, const lib::transition_info *info) {  
+void gui::dx::dx_player::start_outtransition(common::playable *p, const lib::transition_info *info) {
 	lib::logger::get_logger()->debug("start_outtransition : %s", repr(info->m_type).c_str());
 	dx_transition *tr = set_transition(p, info, true);
 	// XXXX Note by Jack: the next two steps really shouldn't be done for
@@ -560,10 +560,10 @@ void gui::dx::dx_player::start_outtransition(common::playable *p, const lib::tra
 }
 
 gui::dx::dx_transition *
-gui::dx::dx_player::set_transition(common::playable *p, 
-								   const lib::transition_info *info, 
+gui::dx::dx_player::set_transition(common::playable *p,
+								   const lib::transition_info *info,
 								   bool is_outtransition)
-{  
+{
 	assert(m_player);
 	lib::timer_control *timer = new lib::timer_control_impl(m_player->get_timer(), 1.0, false);
 	dx_transition *tr = make_transition(info->m_type, p, timer);
@@ -667,7 +667,7 @@ void gui::dx::dx_player::update_callback() {
 void gui::dx::dx_player::schedule_update() {
 	if(!m_player) return;
 	lib::event_processor *evp = m_player->get_evp();
-	m_update_event = new lib::no_arg_callback_event<dx_player>(this, 
+	m_update_event = new lib::no_arg_callback_event<dx_player>(this,
 		&dx_player::update_callback);
 	evp->add_event(m_update_event, 50, lib::event_priority::ep_high);
 }
@@ -678,7 +678,7 @@ void gui::dx::dx_player::schedule_update() {
 typedef common::surface_template iregion;
 typedef common::surface_impl region;
 
-static const region* 
+static const region*
 get_top_layout(smil2::smil_layout_manager *layout, const lib::node* n) {
 	iregion *ir = layout->get_region(n);
 	if(!ir) return 0;
@@ -724,7 +724,7 @@ void gui::dx::dx_player::done(common::player *p) {
 		for(it=m_windows.begin();it!=m_windows.end();it++) {
 			dx_window *dxwin = (dx_window *)(*it).second->w;
 			dxwin->need_redraw();
-		}		
+		}
 	}
 }
 
@@ -736,8 +736,8 @@ void gui::dx::dx_player::open(net::url newdoc, bool startnewdoc, common::player 
 	std::string urlstr = newdoc.get_url();
 	if(old) {
 		// Replace the current document
-		PostMessage(get_main_window(), WM_REPLACE_DOC, 
-			startnewdoc?1:0, LPARAM(new std::string(urlstr))); 
+		PostMessage(get_main_window(), WM_REPLACE_DOC,
+			startnewdoc?1:0, LPARAM(new std::string(urlstr)));
 		return;
 	}
 	if(!lib::ends_with(urlstr, ".smil") && !lib::ends_with(urlstr, ".smi") &&
@@ -745,11 +745,11 @@ void gui::dx::dx_player::open(net::url newdoc, bool startnewdoc, common::player 
 		show_file(newdoc);
 		return;
 	}
-	
-	// Parse the document. 
+
+	// Parse the document.
 	m_doc = create_document(newdoc);
 	if (!m_doc) return;
-	
+
 	// Push the old frame on the stack
 	if(m_player) {
 		pause();
@@ -761,7 +761,7 @@ void gui::dx::dx_player::open(net::url newdoc, bool startnewdoc, common::player 
 		m_player = 0;
 		m_frames.push(pf);
 	}
-	
+
 	// Create a player instance
 	AM_DBG m_logger->debug("Creating player instance for: %s", newdoc.get_url().c_str());
 	m_player = smil2::create_smil2_player(m_doc, this, m_embedder);

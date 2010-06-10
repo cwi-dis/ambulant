@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/dx/dx_brush.h"
@@ -45,10 +45,10 @@ gui::dx::create_dx_brush_playable_factory(common::factories *factory, common::pl
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectX"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectXBrush"), true);
 	return new common::single_playable_factory<
-		gui::dx::dx_brush, 
-        dx_brush_playable_tag, 
-        dx_brush_playable_renderer_uri, 
-        dx_brush_playable_renderer_uri2, 
+		gui::dx::dx_brush,
+        dx_brush_playable_tag,
+        dx_brush_playable_renderer_uri,
+        dx_brush_playable_renderer_uri2,
         dx_brush_playable_renderer_uri2 >(factory, mdp);
 }
 
@@ -70,13 +70,13 @@ gui::dx::dx_brush::~dx_brush() {
 
 void gui::dx::dx_brush::start(double t) {
 	AM_DBG lib::logger::get_logger()->debug("dx_brush::start(0x%x)", this);
-	
+
 	// Has this been activated
 	if(m_activated) {
 		// repeat
-		return;	
+		return;
 	}
-	
+
 	const char *color_attr = m_node->get_attribute("color");
 	if(color_attr && lib::is_color(color_attr))
 		m_color = lib::to_color(color_attr);
@@ -84,13 +84,13 @@ void gui::dx::dx_brush::start(double t) {
 		const common::region_info *ri = m_dest->get_info();
 		m_color = ri?ri->get_bgcolor():0;
 	}
-	
+
 	// Activate this renderer.
 	// Add this renderer to the display list of the region
 	m_dest->show(this);
 	m_dest->need_events(m_wantclicks);
 	m_activated = true;
-		
+
 	// Request a redraw
 	m_dest->need_redraw();
 	m_context->started(m_cookie);
@@ -124,12 +124,12 @@ void gui::dx::dx_brush::redraw(const lib::rect &dirty, common::gui_window *windo
 	dx_window *dxwindow = static_cast<dx_window*>(window);
 	viewport *v = dxwindow->get_viewport();
 	if(!v) return;
-	
+
 	// Draw the pixels of this renderer to the surface specified by m_dest.
 	lib::rect rc = dirty;
 	lib::point pt = m_dest->get_global_topleft();
 	rc.translate(pt);
-	
+
 	dx_transition *tr = get_transition();
 	if (tr && tr->is_fullscreen()) {
 		v->set_fullscreen_transition(tr);
@@ -137,5 +137,5 @@ void gui::dx::dx_brush::redraw(const lib::rect &dirty, common::gui_window *windo
 	}
 	v->clear(rc, m_color, 1.0, tr);
 }
- 
+
 

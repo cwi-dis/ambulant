@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 
@@ -49,41 +49,41 @@ using namespace lib;
 /// representing auto, absolute or relative coordinates.
 ///
 /// Objects of this class may be used to permanently hold
-/// the dimensions of a region (as they are specified in the 
+/// the dimensions of a region (as they are specified in the
 /// original document or by the animated one).
 /// Conversions to absolute coordinates should be done
 /// only dynamically, and as late as possible.
 /// An entity having access to the whole layout tree
-/// (animated or not) should be responsible for all 
+/// (animated or not) should be responsible for all
 /// on the fly conversions.
 ///
 /// For simplicity we assume that all absolute coordinates
 /// have been converted to uniform units.
 class region_dim {
-  
+
 	/// A type holding either an int (for absolute values) or double (for relative values).
 	union dim_value_holder_t {
 		int int_val;
 		double dbl_val;
 	};
-	
+
   public:
 	//////////////////////
 	// region_dim constructors
-	
+
 	/// Default constructor,
 	// constructs an auto region_dim.
 	region_dim()
 	:	m_type(rdt_auto) { m_holder.dbl_val = 0;}
-    
+
 	/// Constructs an absolute dim (assumed in pixels).
     region_dim(int value)
     :	m_type(rdt_absolute) { m_holder.int_val = value;}
-	
+
 	/// Constructs a relative dim (proportion or percent).
     region_dim(double value)
     :	m_type(rdt_relative) { m_holder.dbl_val = value;}
-	
+
 	// Constructs a region_dim from another region_dim.
     region_dim(const region_dim& other)
     :	m_type(other.m_type) {
@@ -91,14 +91,14 @@ class region_dim {
 			m_holder.int_val = other.get_as_int();
 		else if(other.relative())
  			m_holder.dbl_val = other.get_as_dbl();
-   } 
-     
+   }
+
 	/// constructs a region_dim from the provided string.
 	/// Does very little error checking.
-	region_dim(const std::string& s) 
+	region_dim(const std::string& s)
 	:	m_type(rdt_auto) {
 		m_holder.dbl_val = 0;
-		if(s.empty()) return;	
+		if(s.empty()) return;
 		char *endptr;
 		int ivalue = (int)strtol(s.c_str(), &endptr, 10);
 		if(*endptr == '\0' || strcmp(endptr, "px") == 0) {
@@ -107,69 +107,69 @@ class region_dim {
 		} else if (*endptr == '%') {
 			m_holder.dbl_val = ivalue / 100.0;
 			m_type = rdt_relative;
-		} 
+		}
 	}
-     
+
 	//////////////////////
 	// region_dim destructor
-	
+
     ~region_dim(){}
-    
+
 	//////////////////////
 	// region_dim assignments (construct from existing)
-	
+
 	/// Sets this to other.
-    const region_dim& operator=(const region_dim& other) { 
+    const region_dim& operator=(const region_dim& other) {
 		if(&other != this) {
 			m_type = other.m_type;
 			m_holder = other.m_holder;
 		}
 		return *this;
     }
-    
+
 	/// Sets this to the absolute value provided.
-    const region_dim& operator=(int value) { 
+    const region_dim& operator=(int value) {
 		m_type = rdt_absolute;
 		m_holder.int_val = value;
 		return *this;
     }
-    
+
 	/// Sets this to the relative value provided.
-    const region_dim& operator=(double value) { 
+    const region_dim& operator=(double value) {
 		m_type = rdt_relative;
 		m_holder.dbl_val = value;
 		return *this;
     }
-   
+
 	//////////////////////
 	// type queries
-	
+
 	/// Return true if this region_dim is relative.
 	bool relative() const { return m_type == rdt_relative;}
-	
+
 	/// Return true if this region_dim is absolute.
 	bool absolute() const { return m_type == rdt_absolute;}
-	
+
 	/// Return true if this region_dim is not auto.
 	bool defined() const { return m_type != rdt_auto;}
-	
+
 	/// Return true if this region_dim is auto.
 	bool isauto() const { return m_type == rdt_auto;}
-	
+
 	/// Get value as absolute integer (or abort).
-	int get_as_int() const { 
-		if(absolute()) return m_holder.int_val; 
+	int get_as_int() const {
+		if(absolute()) return m_holder.int_val;
 		throw std::runtime_error("Illegal call. Region dim is not absolute");
 		return 0;
 	}
-	
+
 	/// Get value as relative double (or abort).
-	double get_as_dbl() const { 
+	double get_as_dbl() const {
 		if(relative()) return m_holder.dbl_val;
 		throw std::runtime_error("Illegal call. Region dim is not relative");
 		return 0;
 	}
-	
+
 	/// Get value as absolute int.
 	/// Relative values are interpreted with respect to ref,
 	/// auto values will abort.
@@ -181,7 +181,7 @@ class region_dim {
 		}
 		throw std::runtime_error("Illegal call. Region dim is undefined");
 	}
-	
+
 	/// Return true if two region_dim objects are identical.
 	bool operator== (const region_dim& other) const {
 		if (m_type != other.m_type) return false;
@@ -191,7 +191,7 @@ class region_dim {
 	}
 
 	bool operator!= (const region_dim& other) const { return !(*this == other); }
-		
+
 	region_dim& operator+=(const region_dim& rhs) {
 		if(m_type != rhs.m_type)
             lib::logger::get_logger()->trace("region animation: cannot mix percentages and absolute values");
@@ -201,7 +201,7 @@ class region_dim {
  			m_holder.dbl_val += rhs.get_as_dbl();
 		return *this;
 	}
-	
+
 	region_dim& operator-=(const region_dim& rhs) {
 		if(m_type != rhs.m_type)
             lib::logger::get_logger()->trace("region animation: cannot mix percentages and absolute values");
@@ -211,7 +211,7 @@ class region_dim {
  			m_holder.dbl_val -= rhs.get_as_dbl();
 		return *this;
 	}
-	
+
 	region_dim& operator*=(int n) {
 		if(absolute())
 			m_holder.int_val *= n;
@@ -219,7 +219,7 @@ class region_dim {
  			m_holder.dbl_val *= n;
 		return *this;
 	}
-	
+
 	region_dim& operator/=(int n) {
 		if(absolute())
 			m_holder.int_val /= n;
@@ -227,15 +227,15 @@ class region_dim {
  			m_holder.dbl_val /= n;
 		return *this;
 	}
-	
+
 	region_dim operator+(const region_dim& rhs) const { region_dim t(*this); t+=rhs; return t;}
-	
+
 	region_dim operator-(const region_dim& rhs) const { region_dim t(*this); t-=rhs; return t;}
-		
+
 	region_dim operator*(int n) const { region_dim t(*this); t*=n; return t;}
-	
+
 	region_dim operator/(int n) const { region_dim t(*this); t/=n; return t;}
-	
+
 	// define comparisons
 	bool operator<(const region_dim& rhs) const {
 		if(isauto()) return true;
@@ -254,10 +254,10 @@ class region_dim {
 		return  absolute()?m_holder.dbl_val>=rhs.m_holder.dbl_val:
 			m_holder.int_val>=rhs.m_holder.int_val;}
 
-  private: 
+  private:
 	// region dimension types
 	enum region_dim_type {rdt_auto, rdt_relative, rdt_absolute};
-	
+
 	// region dimension data
 	region_dim_type m_type;
 	dim_value_holder_t m_holder;
@@ -267,26 +267,26 @@ class region_dim {
 struct region_dim_spec {
 	/// The 6 possible layout attributes.
 	region_dim left, width, right, top, height, bottom;
-	
+
 	/// Default constructor, sets all values to auto.
 	region_dim_spec() {}
 	region_dim_spec(const region_dim_spec &other) {
 		left = other.left; width = other.width; right = other.right;
 		top = other.top; height = other.height; bottom = other.bottom;
 	}
-	
+
 	/// Constructor using SMIL anchor coords string.
 	/// For non-rectangular coords values this will set the region_dim_spec
 	/// to the bounding box for the shape.
 	region_dim_spec(const std::string& coords, const char *shape = 0);
-	
+
 	bool operator== (region_dim_spec& other) const {
 		return left==other.left && width==other.width && right==other.right
 		    && top == other.top && height==other.height && bottom==other.bottom;
 	}
 
 	bool operator!= (region_dim_spec& other) const { return !(*this == other); }
-	
+
 	/// Convert all relative parameters to absolute.
 	void convert(const lib::rect& rc);
 #ifdef WITH_SMIL30
@@ -369,17 +369,17 @@ inline region_dim_spec::region_dim_spec(const std::string& coords, const char *s
 		top = t;
 		width = r-l;
 		height = b-t;
-	} 
+	}
 }
 
-// Converts those coordinates that are relative to absolute 
+// Converts those coordinates that are relative to absolute
 inline void region_dim_spec::convert(const lib::rect& rc) {
 	int w = rc.width(), h = rc.height();
-	
+
 	if(!left.isauto()) left = left.get(w);
 	if(!right.isauto()) right = right.get(w);
 	if(!width.isauto()) width = width.get(w);
-	
+
 	if(!top.isauto()) top = top.get(h);
 	if(!bottom.isauto()) bottom = bottom.get(h);
 	if(!height.isauto()) height = height.get(h);
@@ -391,24 +391,24 @@ struct regpoint_spec {
 
 	/// The two coordinates.
 	region_dim left, top;
-	
+
 	/// Default constructor initializes everything to auto.
 	regpoint_spec() {}
-	
+
 	/// Specific constructor giving percentage values.
 	regpoint_spec(double hor, double vert)
 	:   left(hor),
 		top(vert) {}
-	
+
 	bool operator== (regpoint_spec& other) const {
 		return left==other.left  && top == other.top;
 	}
-	
+
 	bool operator!= (regpoint_spec& other) const { return !(*this == other); }
 };
 
 } // namespace common
- 
+
 } // namespace ambulant
 
 inline std::string repr(const ambulant::common::region_dim& rd) {
@@ -426,7 +426,7 @@ inline std::string repr(const ambulant::common::region_dim& rd) {
 
 
 // debug region_dim print out
-inline std::ostream& operator<<(std::ostream& os, const ambulant::common::region_dim& rd) { 
+inline std::ostream& operator<<(std::ostream& os, const ambulant::common::region_dim& rd) {
 	if(rd.relative())
 		return os << rd.get_as_dbl() * 100.0 << '%' ;
 	else if(rd.absolute())
@@ -435,7 +435,7 @@ inline std::ostream& operator<<(std::ostream& os, const ambulant::common::region
 }
 
 // debug region_dim_spec printout
-inline std::ostream& operator<<(std::ostream& os, const ambulant::common::region_dim_spec& rds) { 
+inline std::ostream& operator<<(std::ostream& os, const ambulant::common::region_dim_spec& rds) {
 	os << '('  << rds.left << ", " << rds.width  << ", "  << rds.right;
 	os << ", " << rds.top  << ", " << rds.height << ", "  << rds.bottom;
 	return os << ')';

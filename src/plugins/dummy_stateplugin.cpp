@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -35,41 +35,41 @@ class dummy_state_component : public common::state_component {
   public:
     dummy_state_component() {};
 	virtual ~dummy_state_component() {};
-	
+
 	/// Register the systemTest/customTest API
 	void register_state_test_methods(common::state_test_methods *stm);
-  
+
     /// Declare the state in the document
     void declare_state(const lib::node *state);
-    
+
     /// Calculate a boolean expression
     bool bool_expression(const char *expr);
-    
+
     /// Set a state variable to an expression
     void set_value(const char *var, const char *expr);
-    
+
 	/// Add a new variable to the state
 	void new_value(const char *ref, const char *where, const char *name, const char *expr);
-	
+
 	/// Delete a variable from the state
 	void del_value(const char *ref);
 
     /// Submit the state
     void send(const lib::node *submission);
-    
+
     /// Calculate a string expression
     std::string string_expression(const char *expr);
 
 	/// Register the fact that we want stateChange callbacks for a given variable
 	void want_state_change(const char *ref, common::state_change_callback *cb);
-    
+
 };
 
 // -------------------
 class dummy_state_component_factory : public common::state_component_factory {
   public:
 	virtual ~dummy_state_component_factory() {};
- 
+
  	common::state_component *new_state_component(const char *uri);
 };
 
@@ -144,7 +144,7 @@ dummy_state_component_factory::new_state_component(const char *uri)
 }
 
 // -------------------
-static ambulant::common::factories * 
+static ambulant::common::factories *
 bug_workaround(ambulant::common::factories* factory)
 {
 	return factory;
@@ -160,7 +160,7 @@ void initialize(
     ambulant::common::gui_player *player)
 {
     if ( api_version != AMBULANT_PLUGIN_API_VERSION ) {
-        lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"state_dummy_plugin", 
+        lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"state_dummy_plugin",
 					AMBULANT_PLUGIN_API_VERSION, api_version);
         return;
     }

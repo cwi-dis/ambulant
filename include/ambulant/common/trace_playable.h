@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_COMMON_TRACE_PLAYABLE_H
@@ -43,8 +43,8 @@ namespace common {
 class trace_playable : virtual public playable {
 
   public:
-  	
-	trace_playable(const lib::node* n, cookie_type c) 
+
+	trace_playable(const lib::node* n, cookie_type c)
 	:	m_node(n),
 		m_cookie(c)
 	{
@@ -54,30 +54,30 @@ class trace_playable : virtual public playable {
 		m_tag = m_node->get_local_name();
 		trace_call("ctr");
 	}
-	
+
 	~trace_playable() { trace_call("dtr");}
-	
-	
+
+
 	void start(double t)  { trace_call("start", t);}
-	
+
 	//void stop()  { trace_call("stop");}
 	bool stop()  { trace_call("stop"); 	return true;} //xxxbo notes, true means this renderer cannot be reused.
 	void post_stop() {}
 	void init_with_node(const lib::node *n) {};
-	
+
 	void pause(pause_display d=display_show){ trace_call("pause");}
-	
+
 	void resume() { trace_call("resume");}
-	
+
 	void seek(double t) { trace_call("seek", t);}
 
 	void wantclicks(bool want) { trace_call("wantclicks");}
-	
+
 	void preroll(double when, double where, double how_much) {
-		m_logger->trace("PLAYABLE: %s[%s].preroll(%.3f, %.3f, %.3f)", m_tag.c_str(), 
-			m_id.c_str(), when, where, how_much);	
+		m_logger->trace("PLAYABLE: %s[%s].preroll(%.3f, %.3f, %.3f)", m_tag.c_str(),
+			m_id.c_str(), when, where, how_much);
 	}
-	
+
 
 	duration get_dur() {
 		trace_call("get_dur");
@@ -85,25 +85,25 @@ class trace_playable : virtual public playable {
 	}
 
 	cookie_type get_cookie() const { return m_cookie; }
-		
+
   private:
 	const lib::node *m_node;
 	cookie_type m_cookie;
 	std::string m_tag;
 	std::string m_id;
 	lib::logger *m_logger;
-		
+
 	void trace_call(const char *mfn) {
-		m_logger->trace("PLAYABLE: %s[%s].%s()", m_tag.c_str(), m_id.c_str(), mfn);	
+		m_logger->trace("PLAYABLE: %s[%s].%s()", m_tag.c_str(), m_id.c_str(), mfn);
 	}
-	
+
 	void trace_call(const char *mfn, double v) {
-		m_logger->trace("PLAYABLE: %s[%s].%s(%.3f)", m_tag.c_str(), m_id.c_str(), mfn, v);	
+		m_logger->trace("PLAYABLE: %s[%s].%s(%.3f)", m_tag.c_str(), m_id.c_str(), mfn, v);
 	}
 };
 
 } // namespace common
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_COMMON_COUT_PLAYABLE_H

@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_LIB_DELTA_TIMER_H
@@ -50,53 +50,53 @@ class delta_timer {
   public:
 	typedef timer::time_type time_type;
 	typedef std::pair<event*, time_type> timeout_event;
-	
+
 	delta_timer(timer *t);
 	virtual ~delta_timer();
 
-	/// Fires ready events. 
+	/// Fires ready events.
 	/// Must be called periodically,
 	/// the period defines timer resolution.
 	void execute();
-	
+
 	/// Return list of read events.
 	// Like execute but instead of executing events
 	// returns the ready to fire events to the caller.
 	void execute(std::queue<event*>& queue);
-	
+
 	/// Insert a timeout event.
 	void insert(event *pe, time_type t);
 
 	/// Cancels a scheduled event.
 	// Returns true on success.
 	bool cancel(event *pe);
-		
+
 	/// Clear all events.
 	void clear();
-    
+
 #ifdef WITH_CLOCK_SYNC
     /// Return the delay until the next event, or a large number.
     time_type next_event_time() const;
 #endif
-	
+
 	// debug output.
 	void write_trace();
-	
+
   private:
 	void fire_delta_events(time_type delta);
 	void get_ready_delta_events(time_type delta, std::queue<event*>& queue);
-	
+
 	void decr(time_type& t, time_type dt) {
 		if(dt>t) t = 0;
 		else t-= dt;
 	}
-	
+
 	// event list and its critical section
 	std::list<timeout_event> m_events;
-	
+
 	// remember last time run
 	time_type m_last_run;
-	
+
 	// timer
 	timer *m_timer;
 	};

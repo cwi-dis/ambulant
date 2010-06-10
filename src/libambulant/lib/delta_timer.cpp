@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/delta_timer.h"
@@ -39,7 +39,7 @@ using namespace ambulant;
 lib::delta_timer::delta_timer(timer *t)
 :   m_last_run(t->elapsed()),
     m_timer(t) {}
-	
+
 lib::delta_timer::~delta_timer() {
 	std::list<timeout_event>::iterator it;
 	for(it = m_events.begin(); it != m_events.end(); it++)
@@ -47,7 +47,7 @@ lib::delta_timer::~delta_timer() {
 }
 
 // called periodically
-// fires ready events	
+// fires ready events
 void lib::delta_timer::execute() {
 	time_type now = m_timer->elapsed();
 	time_type delta = now - m_last_run;
@@ -63,7 +63,7 @@ void lib::delta_timer::clear() {
 }
 
 // called periodically
-// returns the events that are ready to fire	
+// returns the events that are ready to fire
 void lib::delta_timer::execute(std::queue<event*>& queue) {
 	time_type now = m_timer->elapsed();
 	time_type delta = now - m_last_run;
@@ -78,9 +78,9 @@ void lib::delta_timer::insert(event *pe, time_type t) {
 		// find correct pos (do: pe->incr(-(*i).get_time() as we traverse the list)
 		std::list<timeout_event>::iterator it;
 		for(it = m_events.begin();it!=m_events.end();it++) {
-			if(t < (*it).second) 
+			if(t < (*it).second)
 				break;
-			decr(t, (*it).second); 
+			decr(t, (*it).second);
 		}
 		// insert entry
 		if(it != m_events.end()) {
@@ -98,15 +98,15 @@ void lib::delta_timer::insert(event *pe, time_type t) {
 bool lib::delta_timer::cancel(event *pe) {
 	if(m_events.size() == 0) return false;
 	std::list<timeout_event>::iterator it;
-	for(it = m_events.begin();it!=m_events.end();it++) 
+	for(it = m_events.begin();it!=m_events.end();it++)
 		if((*it).first == pe) break;
 	if(it == m_events.end()) return false;
-	
+
 	// the iterator is positioned at the event we want to cancel
 	time_type dt = (*it).second;
 	delete (*it).first;
 	it = m_events.erase(it);
-	
+
 	// the iterator is positioned at the next event
 	if(it != m_events.end())
 		(*it).second += dt;
@@ -123,15 +123,15 @@ void lib::delta_timer::fire_delta_events(time_type delta) {
 	if(m_events.size()>0)
 		decr(m_events.front().second, delta);
 }
-	
+
 void lib::delta_timer::get_ready_delta_events(time_type delta, std::queue<event*>& queue) {
 	while(m_events.size()>0 && m_events.front().second <= delta) {
 		decr(delta, m_events.front().second);
 		queue.push(m_events.front().first);
 		m_events.erase(m_events.begin());
 	}
-	if(m_events.size()>0) 
-		decr(m_events.front().second, delta); 
+	if(m_events.size()>0)
+		decr(m_events.front().second, delta);
 
 	// debug
 	AM_DBG  if(!queue.empty()) write_trace();
@@ -146,7 +146,7 @@ lib::timer::time_type lib::delta_timer::next_event_time() const
     return (*it).second;
 }
 #endif
-    
+
 
 void lib::delta_timer::write_trace() {
 	std::ostringstream os;

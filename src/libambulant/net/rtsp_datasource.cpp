@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -43,7 +43,7 @@ using namespace net;
 inline long long abs(long long i) { return i < 0 ? -i : i; }
 
 // Helper routines: callback functions passed to live555 that will call back to our methods.
-static void 
+static void
 after_reading_audio_stub(void* data, unsigned sz, unsigned truncated, struct timeval pts, unsigned duration)
 {
 	rtsp_demux* demux = (rtsp_demux*) data;
@@ -51,7 +51,7 @@ after_reading_audio_stub(void* data, unsigned sz, unsigned truncated, struct tim
 	demux->after_reading_audio(sz, truncated, pts, duration);
 }
 
-static void 
+static void
 after_reading_video_stub(void* data, unsigned sz, unsigned truncated, struct timeval pts, unsigned duration)
 {
 	rtsp_demux* demux = (rtsp_demux*) data;
@@ -59,8 +59,8 @@ after_reading_video_stub(void* data, unsigned sz, unsigned truncated, struct tim
 	demux->after_reading_video(sz, truncated, pts, duration);
 }
 
-static void 
-on_source_close(void* data) 
+static void
+on_source_close(void* data)
 {
 	rtsp_context_t* context = (rtsp_context_t*) data;
 	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::on_source_close() context=0x%x", data);
@@ -102,7 +102,7 @@ static void watchDog (rtsp_context_t *context) {
 	// Call this again, after a brief delay:
 	int uSecsToDelay = 100000; // 100 ms
     context->idle_time += uSecsToDelay;
-    if (context->last_expected_pts > 0 && 
+    if (context->last_expected_pts > 0 &&
             context->highest_pts_seen + context->idle_time > context->last_expected_pts) {
         context->eof = true;
     }
@@ -112,7 +112,7 @@ static void watchDog (rtsp_context_t *context) {
 						 (TaskFunc*)watchDog, context);
 }
 
-void 
+void
 ambulant::net::rtsp_demux::add_datasink(demux_datasink *parent, int stream_index)
 {
         AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::add_datasink(0x%x, parent=0x%x, stream_index=%d, m_context->nsinks=%d)", (void*) this,parent,stream_index,m_context->nsinks);
@@ -150,13 +150,13 @@ ambulant::net::rtsp_demux::remove_datasink(int stream_index)
 }
 
 rtsp_context_t*
-ambulant::net::rtsp_demux::supported(const net::url& url) 
+ambulant::net::rtsp_demux::supported(const net::url& url)
 {
 	if (url.get_protocol() != "rtsp") return NULL;
 	rtsp_context_t *context = new rtsp_context_t();
 	context->nstream = 0;
 
-	
+
 	// setup the basics.
 	context->scheduler = BasicTaskScheduler::createNew();
 	if (!context->scheduler) {
@@ -165,7 +165,7 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 		delete context;
 		return NULL;
 	}
-	
+
 	context->env = BasicUsageEnvironment::createNew(*context->scheduler);
 	if (!context->env) {
 		lib::logger::get_logger()->trace("ambulant::net::rtsp_demux(net::url& url) failed to create UsageEnvironment");
@@ -182,7 +182,7 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 		delete context;
 		return NULL;
 	}
-	
+
 	std::string str_url = url.get_url();
 	const char* ch_url = str_url.c_str();
 	assert(ch_url);
@@ -190,18 +190,18 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 	if (!context->sdp) {
 		lib::logger::get_logger()->trace("%s: describeURL failed (no server available, not rtsp, or url not found?)", ch_url);
 		lib::logger::get_logger()->error(gettext("RTSP Connection Failed"));
-		delete context;	
+		delete context;
 		return NULL;
 	}
-	
+
 	AM_DBG lib::logger::get_logger()->debug("rtsp_demux: describe(\"%s\") -> \"%s\"", ch_url, context->sdp);
 	context->media_session = MediaSession::createNew(*context->env, context->sdp);
 	if (!context->media_session) {
 		lib::logger::get_logger()->trace("%s: failed to create a MediaSession, sdp=%s", ch_url, context->sdp);
 		lib::logger::get_logger()->error(gettext("RTSP Connection Failed"));
-		delete context;		
+		delete context;
 		return NULL;
-	}	
+	}
 	context->duration = context->media_session->playEndTime();
 //	context->last_expected_pts = (timestamp_t) (context->duration*1000000 - 40000); // skip last frame
 	context->last_expected_pts = (timestamp_t) (context->duration*1000000); // do not skip last frame
@@ -209,10 +209,10 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 	// next set up the rtp subsessions.
 	context = _init_subsessions(context);
 	if (context == NULL) return NULL;
-	
+
 	lib::logger::get_logger()->debug("rtps_demux::supported(%s): duration=%ld", ch_url, context->last_expected_pts);
 	return context;
-		
+
 }
 
 timestamp_t
@@ -244,7 +244,7 @@ ambulant::net::rtsp_demux::get_clip_end()
 
 void
 ambulant::net::rtsp_demux::read_ahead(timestamp_t time)
-{	
+{
 	m_critical_section.enter();
 	AM_DBG lib::logger::get_logger()->debug("rtsp_demux::read_ahead(0x%x),  time=%lld, m_clip_begin was %lld",  this, time, m_clip_begin);
 #ifndef CLIP_BEGIN_CHANGED
@@ -256,7 +256,7 @@ ambulant::net::rtsp_demux::read_ahead(timestamp_t time)
         m_clip_begin_changed = true;
     }
 #endif
-	
+
 	m_critical_section.leave();
 }
 
@@ -266,7 +266,7 @@ ambulant::net::rtsp_demux::seek(timestamp_t time)
 	m_critical_section.enter();
 	AM_DBG lib::logger::get_logger()->debug("rtsp_demux::seek(0x%x),  time=%lld, m_clip_begin was %lld",this, time, m_clip_begin);
     assert( time >= 0);
-#ifndef CLIP_BEGIN_CHANGED	
+#ifndef CLIP_BEGIN_CHANGED
 	m_seektime = time;
 	m_seektime_changed = true;
 	m_clip_begin = time;
@@ -360,15 +360,15 @@ ambulant::net::rtsp_demux::_init_subsessions(rtsp_context_t *context)
 			//this idea was copied from mplayer libmpdemux/demux_rtp.cpp
 			if(strcmp(context->video_codec_name, "MP4V-ES")==0) {
 				unsigned initialPacketDataLen;
-				unsigned char* initialPacketData 
+				unsigned char* initialPacketData
 					= parseGeneralConfigStr(subsession->fmtp_config(), initialPacketDataLen);
 				context->initialPacketData = initialPacketData;
 				context->initialPacketDataLen = initialPacketDataLen;
-				
+
 			}
 			if ( !strcmp( context->video_codec_name, "H264")){
 				// H264 not only needs a magic first packet, but also four magic bytes at the
-				// start of each subsequent packet. 
+				// start of each subsequent packet.
 				context->extraPacketHeaderSize = 4;
 				context->extraPacketHeaderData = (unsigned char *)malloc(4);
 				assert(context->extraPacketHeaderData);
@@ -380,7 +380,7 @@ ambulant::net::rtsp_demux::_init_subsessions(rtsp_context_t *context)
 				context->notPacketized = true;
 				unsigned configLen;
 				unsigned char* configData;
-				
+
 				configData = parseH264ConfigStr(subsession->fmtp_spropparametersets(), configLen);
 				context->configData = (unsigned char *)malloc(configLen + FF_INPUT_BUFFER_PADDING_SIZE);
                 assert(context->configData);
@@ -420,18 +420,18 @@ ambulant::net::rtsp_demux::_init_subsessions(rtsp_context_t *context)
 	return context;
 }
 
-unsigned long 
-ambulant::net::rtsp_demux::run() 
+unsigned long
+ambulant::net::rtsp_demux::run()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() called (%d)", m_context->need_audio);
 	if (!m_context->media_session) {
 		lib::logger::get_logger()->error(gettext("playing RTSP connection failed"));
 		return 1;
 	}
-	
+
 	//xxxbo 13 nov. 2009
 	AM_DBG lib::logger::get_logger()->debug("rtsp_demux::run() m_clip_begin=%lld, m_seektime = %lld playMediaSession(%f)", (long long int)m_clip_begin, (long long int)m_seektime,float((m_clip_begin+m_seektime)/1000000.0));
-	
+
 	if(!m_context->rtsp_client->playMediaSession(*m_context->media_session, float((m_clip_begin)/1000000.0), -1.0F, 1.0F)) {
 		lib::logger::get_logger()->error(gettext("playing RTSP connection failed"));
 		return 1;
@@ -444,14 +444,14 @@ ambulant::net::rtsp_demux::run()
 	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() starting the loop ");
 	m_critical_section.enter();
 	add_ref();
-    
+
     // Schedul our watchdog timer.
     watchDog(m_context);
-    
+
 	while(!m_context->eof && !exit_requested()) {
 		AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run: start another loop iteration");
 		m_context->blocking_flag = 0;
-		
+
 		// First thing to do for each loop iteration: check whether we need to seek.
 #ifndef CLIP_BEGIN_CHANGED
 		if (m_seektime_changed) {
@@ -507,8 +507,8 @@ ambulant::net::rtsp_demux::run()
 
             m_critical_section.enter();
         }
-		
-		AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() blocking_flag: 0x%x, %d, need_audio %d", &m_context->blocking_flag, m_context->blocking_flag, m_context->need_audio);		
+
+		AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() blocking_flag: 0x%x, %d, need_audio %d", &m_context->blocking_flag, m_context->blocking_flag, m_context->need_audio);
 		TaskScheduler& scheduler = m_context->env->taskScheduler();
 		m_critical_section.leave();
 
@@ -552,17 +552,17 @@ ambulant::net::rtsp_demux::cancel()
 	m_critical_section.leave();
 }
 
-void 
+void
 rtsp_demux::after_reading_audio(unsigned sz, unsigned truncated, struct timeval pts, unsigned dur)
 {
 	m_critical_section.enter();
 	AM_DBG lib::logger::get_logger()->debug("after_reading_audio: called sz = %d, truncated = %d, pts=%lld.%ld, %d",sz , truncated, pts.tv_sec,  pts.tv_usec, dur);
 	if (truncated)
 		lib::logger::get_logger()->trace("rtsp_demux: truncated audio packet");
-        
+
         //xxxbo: 13-nov-2009
 	AM_DBG lib::logger::get_logger()->debug("after_reading_audio: pts is %d.%ld s", pts.tv_sec, pts.tv_usec);
-        
+
 	assert(m_context);
 	assert(m_context->audio_packet);
 	assert(m_context->audio_stream >= 0);
@@ -586,12 +586,12 @@ rtsp_demux::after_reading_audio(unsigned sz, unsigned truncated, struct timeval 
 #endif
 	if (!m_context->first_sync_time_set) {
 		// We have not been synced yet. If the video stream has been synced for this packet
-		// we can set the epoch of the timing info. 
+		// we can set the epoch of the timing info.
 		MediaSubsession* subsession = m_context->audio_subsession;
-		
+
 		if (subsession) {
 			// Set the packet's presentation time stamp, depending on whether or
-			// not our RTP source's timestamps have been synchronized yet: 
+			// not our RTP source's timestamps have been synchronized yet:
 			// This idea is borrowed from mplayer at demux_rtp.cpp::after_reading
 			Boolean hasBeenSynchronized = subsession->rtpSource()->hasBeenSynchronizedUsingRTCP();
 			if (hasBeenSynchronized) {
@@ -605,13 +605,13 @@ rtsp_demux::after_reading_audio(unsigned sz, unsigned truncated, struct timeval 
 	}
 	//xxxbo: 13-nov-2009
 	AM_DBG lib::logger::get_logger()->debug("after_reading_audio: first_sync_time is %d.%ld s", m_context->first_sync_time.tv_sec, m_context->first_sync_time.tv_usec);
-	
+
 	timestamp_t rpts =  (timestamp_t)(pts.tv_sec - m_context->first_sync_time.tv_sec) * 1000000LL  +  (timestamp_t) (pts.tv_usec - m_context->first_sync_time.tv_usec);
-	
+
 #ifndef ENABLE_LIVE555_PTS_CORRECTION
     // Guess frame duration. This assumes that the lowest difference between wto adjacent frames is the duration.
     // If we ever get a stream where the duration increases (i.e. frame rate decreases) we're hosed.
-    
+
     // XXXJACK: I get a compiler warning here about implicit conversion of 64 to 32 bit. Need to check.
     timestamp_t delta_pts = abs(rpts-m_context->last_pts);
     if (m_context->frame_duration == 0 || (delta_pts != 0 && delta_pts < m_context->frame_duration)) {
@@ -621,11 +621,11 @@ rtsp_demux::after_reading_audio(unsigned sz, unsigned truncated, struct timeval 
 #endif
 	//xxxbo: 13-nov-2009
 	AM_DBG lib::logger::get_logger()->debug("after_reading_audio: rtps is %ld us", rpts);
-	
+
 	if(m_context->sinks[m_context->audio_stream]) {
 		AM_DBG lib::logger::get_logger()->debug("after_reading_audio: calling _push_data_to_sink");
 		//_push_data_to_sink(m_context->audio_stream, rpts, (uint8_t*) m_context->audio_packet, sz);
- 
+
 #if 0 //xxxbo: 15-07-2009
 		if (rpts + m_clip_begin > m_clip_end) {
 			m_context->eof = true;
@@ -641,7 +641,7 @@ rtsp_demux::after_reading_audio(unsigned sz, unsigned truncated, struct timeval 
 	free(m_context->audio_packet);
 	m_context->audio_packet = NULL;
 	AM_DBG lib::logger::get_logger()->debug("after reading audio: rpts=%lld, end=%lld\n\n", rpts, m_context->last_expected_pts);
-	
+
 	if (m_context->last_expected_pts >= 0 && rpts >= m_context->last_expected_pts) {
 		lib::logger::get_logger()->debug("after_reading_audio: last_pts = %lld\n\n", rpts);
 	 	m_context->eof = true;
@@ -652,9 +652,9 @@ rtsp_demux::after_reading_audio(unsigned sz, unsigned truncated, struct timeval 
 	m_context->blocking_flag = ~0;
 	m_context->need_audio = true;
 	m_critical_section.leave();
-}	
+}
 
-void 
+void
 rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval pts, unsigned dur)
 {
 	m_critical_section.enter();
@@ -664,7 +664,7 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
         lib::logger::get_logger()->trace("rtsp_demux: truncated video packet");
 	assert(m_context->video_packet);
 	assert(m_context->video_stream >= 0);
-	
+
 	// For the first packet, we remember the timestamp so we can convert Live's wallclock timestamps to
 	// our zero-based timestamps.
 	if (m_context->first_sync_time.tv_sec == 0 && m_context->first_sync_time.tv_usec == 0 ) {
@@ -690,12 +690,12 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
 
 	if (!m_context->first_sync_time_set) {
 		// We have not been synced yet. If the video stream has been synced for this packet
-		// we can set the epoch of the timing info. 
+		// we can set the epoch of the timing info.
 		MediaSubsession* subsession = m_context->video_subsession;
-		
+
 		if (subsession) {
 			// Set the packet's presentation time stamp, depending on whether or
-			// not our RTP source's timestamps have been synchronized yet: 
+			// not our RTP source's timestamps have been synchronized yet:
 			// This idea is borrowed from mplayer at demux_rtp.cpp::after_reading
 			Boolean hasBeenSynchronized = subsession->rtpSource()->hasBeenSynchronizedUsingRTCP();
 			if (hasBeenSynchronized) {
@@ -712,7 +712,7 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
 #ifdef ENABLE_LIVE555_PTS_CORRECTION
     // Guess frame duration. This assumes that the lowest difference between wto adjacent frames is the duration.
     // If we ever get a stream where the duration increases (i.e. frame rate decreases) we're hosed.
-    
+
     // XXXJACK: I get a compiler warning here about implicit conversion of 64 to 32 bit. Need to check.
     timestamp_t delta_pts = abs(rpts-m_context->last_pts);
     if (m_context->frame_duration == 0 || (delta_pts != 0 && delta_pts < m_context->frame_duration)) {
@@ -792,7 +792,7 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
 		AM_DBG lib::logger::get_logger()->debug("Video packet length %d+%d=%d, timestamp=%lld, rpts=%lld", sz, m_context->extraPacketHeaderSize, sz+m_context->extraPacketHeaderSize, out_pts+m_clip_begin, rpts+m_clip_begin);
 		_push_data_to_sink(m_context->video_stream, out_pts, (uint8_t*) m_context->video_packet, sz+m_context->extraPacketHeaderSize);
 	}
-	
+
 done:
     // Record the pts of the last packet processed (not necessarily sent upstream, yet).
 	m_context->last_pts=rpts;

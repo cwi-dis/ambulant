@@ -45,12 +45,12 @@ void COpenUrlDlg::OnOK()
 {
 	USES_CONVERSION;
 	UpdateData(TRUE);
-	
+
 	if(m_url.IsEmpty()) {
 		AfxMessageBox(_T("Please enter a URL or select a local file"));
 		return;
 	}
-	
+
 	std::string urlstr = T2CA((LPCTSTR) m_url);
 	net::url u = net::url::from_url(urlstr);
 	if(u.is_local_file() && !lib::win32::file_exists(u.get_file())) {
@@ -59,7 +59,7 @@ void COpenUrlDlg::OnOK()
 		AfxMessageBox(str);
 		return;
 	}
-	
+
 	CDialog::OnOK();
 }
 
@@ -78,6 +78,6 @@ void COpenUrlDlg::OnBnClickedButtonBrowse()
 		s.Replace(_T("\\"), _T("/"));
 		m_url = "file:///"; m_url += s;
 		GetDlgItem(IDC_EDIT_URL)->SetWindowText(m_url);
-	}	
+	}
 }
 

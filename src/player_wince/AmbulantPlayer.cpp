@@ -61,7 +61,7 @@ BOOL CAmbulantPlayerApp::InitInstance()
 		return FALSE;
 	}
 #endif
-	
+
 	// XXXJACK Desktop version inits a few more things. CE needs that too?
 
 	AfxEnableControlContainer();
@@ -116,19 +116,19 @@ static HWND other_ambulant_window;
 static BOOL CALLBACK
 myFindWindowProc(HWND hwnd, LPARAM lParam)
 {
-	DWORD      dwProcessID; 
-	INT        iLen; 
-	TCHAR      szTempName[MAX_PATH]=TEXT("\0"); 
+	DWORD      dwProcessID;
+	INT        iLen;
+	TCHAR      szTempName[MAX_PATH]=TEXT("\0");
 
-	GetWindowThreadProcessId(hwnd,&dwProcessID); 
-	if (!dwProcessID) 
-		return TRUE; 
+	GetWindowThreadProcessId(hwnd,&dwProcessID);
+	if (!dwProcessID)
+		return TRUE;
 
-	iLen=GetModuleFileName((HMODULE)dwProcessID,szTempName,MAX_PATH); 
-	if (!iLen) 
-		return TRUE; 
+	iLen=GetModuleFileName((HMODULE)dwProcessID,szTempName,MAX_PATH);
+	if (!iLen)
+		return TRUE;
 
-	if (_tcsicmp(szTempName, executable) == 0) 
+	if (_tcsicmp(szTempName, executable) == 0)
 	{
 		// This window belongs to the Ambulant executable. Last thing to
 		// check is that it is actually the toplevel window.
@@ -137,9 +137,9 @@ myFindWindowProc(HWND hwnd, LPARAM lParam)
 			other_ambulant_window = hwnd;
 			return FALSE;
 		}
-	} 
+	}
 
-	return TRUE; 
+	return TRUE;
 
 }
 
@@ -197,7 +197,7 @@ public:
 	//}}AFX_VIRTUAL
 
 public:
-	CString m_version;	
+	CString m_version;
 
 // Implementation
 protected:
@@ -242,8 +242,8 @@ void CAboutDlg::OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/)
 	if (AfxIsDRAEnabled())
     	{
 		DRA::RelayoutDialog(
-			AfxGetResourceHandle(), 
-			this->m_hWnd, 
+			AfxGetResourceHandle(),
+			this->m_hWnd,
 			DRA::GetDisplayMode() != DRA::Portrait ? MAKEINTRESOURCE(IDD_ABOUTBOX_WIDE) : MAKEINTRESOURCE(IDD_ABOUTBOX));
 	}
 }

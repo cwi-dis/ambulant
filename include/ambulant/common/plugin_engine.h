@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -66,44 +66,44 @@ class AMBULANTAPI plugin_engine {
 
 	/// Return the singleton plugin_engine object.
     static plugin_engine *get_plugin_engine();
-    
+
     /// Add plugins to the given global factories.
     void add_plugins(common::factories *factory, common::gui_player *player = 0);
 
 	/// Get extra-data for a named plugin, if available.
 	void *get_extra_data(std::string name);
-	
+
 #ifdef WITH_PYTHON_PLUGIN
 	/// Get list of plugins that need the Python plugin.
 	const std::vector<std::string>& get_python_plugins() const { return m_python_plugins; }
 #endif
   private:
-    
+
     plugin_engine();
-    
+
     /// Determine directories to search for plugins.
     void collect_plugin_directories();
-    
+
     /// Load all plugins from directory dirname.
     void load_plugins(std::string dirname);
-	
+
 	/// Load a single plugin
 	void load_plugin(const char *filename);
 
 	/// The list of directories to search for plugins.
   	std::vector< std::string > m_plugindirs;
-  	
+
   	/// The list of initialize functions to call.
   	std::vector< initfuncptr > m_initfuncs;
 
 	/// All available extra data.
 	std::map< std::string, plugin_extra_data* > m_extra_data;
     static plugin_engine *s_singleton;
-	
+
 #ifdef WITH_PYTHON_PLUGIN
 	/// The pathname of the engine for running the Python plugins
 	std::string m_python_plugin_engine;
-	
+
 	/// The pathnames of the plugins written in Python
 	std::vector<std::string> m_python_plugins;
 

@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_CG_CG_DSVIDEO_H
@@ -40,7 +40,7 @@ namespace gui {
 
 namespace cg {
 
-class cg_dsvideo_renderer : 
+class cg_dsvideo_renderer :
 	public common::video_renderer {
   public:
 	cg_dsvideo_renderer(
@@ -66,7 +66,7 @@ class cg_dsvideo_renderer :
 } // namespace cg
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_GUI_CG_CG_DSVIDEO_H

@@ -14,7 +14,7 @@
  *
  * The Original Code is mozilla.org code.
  *
- * The Initial Developer of the Original Code is 
+ * The Initial Developer of the Original Code is
  * Netscape Communications Corporation.
  * Portions created by the Initial Developer are Copyright (C) 1998
  * the Initial Developer. All Rights Reserved.
@@ -22,7 +22,7 @@
  * Contributor(s):
  *
  * Alternatively, the contents of this file may be used under the terms of
- * either the GNU General Public License Version 2 or later (the "GPL"), or 
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
  * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
  * in which case the provisions of the GPL or the LGPL are applicable instead
  * of those above. If you wish to allow use of your version of this file only
@@ -80,7 +80,7 @@
 // Metrowerks with the exception of pointer return types, which
 // in Metrowerks 68K are returned in A0, instead of the standard
 // D0. Thus, since NPN_MemAlloc and NPN_UserAgent return pointers,
-// Mixed Mode will return the values to a 68K plugin in D0, but 
+// Mixed Mode will return the values to a 68K plugin in D0, but
 // a 68K plugin compiled by Metrowerks will expect the result in
 // A0.  The following pragma forces Metrowerks to use D0 instead.
 //
@@ -97,7 +97,7 @@
 #endif
 
 // The following fix for static initializers (which fixes a preious
-// incompatibility with some parts of PowerPlant, was submitted by 
+// incompatibility with some parts of PowerPlant, was submitted by
 // Jan Ulbrich.
 #ifdef __MWERKS__
 	#ifdef __cplusplus
@@ -117,7 +117,7 @@
 
 // Wrapper functions for all calls from Netscape to the plugin.
 // These functions let the plugin developer just create the APIs
-// as documented and defined in npapi.h, without needing to 
+// as documented and defined in npapi.h, without needing to
 // install those functions in the function table or worry about
 // setting up globals for 68K plugins.
 NPError Private_Initialize(void);

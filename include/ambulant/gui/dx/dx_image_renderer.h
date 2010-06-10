@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_DX_IMAGE_RENDERER_H
@@ -51,12 +51,12 @@ class image_renderer {
   public:
 	image_renderer(const net::url& u, net::datasource *src, viewport* v);
 	~image_renderer();
-	
+
 	bool can_play() const { return m_ddsurf != 0;}
 	bool is_transparent() const { return m_transparent;}
 	const lib::size& get_size() const { return m_size;}
 	IDirectDrawSurface *get_ddsurf() { return m_ddsurf;}
-	
+
   private:
 	void open(net::datasource *src, viewport* v);
 	net::url m_url;
@@ -69,7 +69,7 @@ class image_renderer {
 
 } // namespace gui
 
-} // namespace ambulant 
+} // namespace ambulant
 
 #endif // AMBULANT_GUI_DX_IMAGE_RENDERER_H
 

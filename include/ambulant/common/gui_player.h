@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -36,15 +36,15 @@ namespace common {
 class gui_screen {
   public:
 	virtual ~gui_screen() {};
-	
+
 	/// Return size of the ambulant output window.
 	virtual void get_size(int *width, int *height) = 0;
-	
+
 	/// Obtain a screenshot.
 	/// Type is a string such as "png" or "jpeg". The caller is responsible
 	/// for freeing out_data when done.
 	virtual bool get_screenshot(const char *type, char **out_data, size_t *out_size) = 0;
-	
+
 };
 
 /// Complete Ambulant Player, base class for GUI.
@@ -61,7 +61,7 @@ class AMBULANTAPI gui_player : public factories {
 		m_player(NULL),
 		m_goto_node(NULL) {}
 	virtual ~gui_player();
-	
+
 	/// Initialize playable factory.
 	/// Usually overridden to supply platform- or gui-toolkit-dependent
 	/// renderers.
@@ -80,21 +80,21 @@ class AMBULANTAPI gui_player : public factories {
 	/// (which will in turn extend the various factories).
 	/// Usually not overridden.
 	virtual void init_plugins();
-	
+
 	/// Start document playback. Usually not overridden.
 	virtual void play();
 	/// Stop document playback. Usually not overridden.
 	virtual void stop();
 	/// Pause document playback. Usually not overridden.
 	virtual void pause();
-	
+
 	/// Restart document playback.
 	/// If reparse is true the document is re-read, otherwise the in-core
 	/// tree is restarted from the beginning. Usually called when the embedder
 	/// has modified the document (either the external representation or
 	/// the incore tree).
 	virtual void restart(bool reparse=true);
-	
+
 	/// Set initial playback node.
 	/// Embedder can call this before start() to make the document
 	/// start at this node (in stead of at the root).
@@ -102,7 +102,7 @@ class AMBULANTAPI gui_player : public factories {
 
 //	virtual void set_speed(double speed) = 0;
 //	virtual double get_speed() const = 0;
-	
+
 	/// Call this to check whether "play" menu entry should be enabled.
 	virtual bool is_play_enabled() const;
 	/// Call this to check whether "stop" menu entry should be enabled.
@@ -115,7 +115,7 @@ class AMBULANTAPI gui_player : public factories {
 	virtual bool is_stop_active() const;
 	/// Call this to check whether "pause" menu entry should be flagged.
 	virtual bool is_pause_active() const;
-	
+
 	/// Signal to player that a mousemove event is about to be communicated.
 	/// The embedder MUST call this method before communicating the mouse move
 	/// the the ambulant player core through the gui_event.
@@ -124,19 +124,19 @@ class AMBULANTAPI gui_player : public factories {
 	/// The embedder MUST call this method after communicating the mouse move
 	/// the the ambulant player core through the gui_event.
 	virtual int after_mousemove();
-	
+
 	/// Embedder calls this to communicate keypress to the player.
 	virtual void on_char(int c);
 	/// Embedder calls this to communicate focus advance to the player.
 	virtual void on_focus_advance();
 	/// Embedder calls this to communicate focus activate to the player.
 	virtual void on_focus_activate();
-	
+
 	/// Obtain the current document from the player.
 	virtual lib::document *get_document() const { return m_doc; }
 	/// Set the document to play.
 	virtual void set_document(lib::document *doc) { m_doc = doc; }
-	
+
 	/// Get the current embedder object.
 	/// The embedding application can use this if it wants to extend
 	/// the embedder functionality while keeping the original embedder
@@ -144,7 +144,7 @@ class AMBULANTAPI gui_player : public factories {
 	virtual embedder *get_embedder() const { return m_embedder; }
 	/// Set the embedder object.
 	virtual void set_embedder(embedder *em) { m_embedder = em; }
-	
+
 	/// Get the player object.
 	/// The embedding application can use this if it wants to extend the
 	/// player object while using the original player to implement most
@@ -155,10 +155,10 @@ class AMBULANTAPI gui_player : public factories {
 
     /// Get URL of current document.
 	virtual net::url get_url() const { return m_url; }
-	
+
 	/// Embedder should implement this if it implements the gui_screen interface.
 	virtual gui_screen *get_gui_screen() { return NULL; }
-	
+
 	/// ???
 	static void load_test_attrs(std::string& filename);
   protected:

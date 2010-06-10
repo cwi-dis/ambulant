@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -37,9 +37,9 @@ namespace ambulant
 {
 
 namespace net
-{  
+{
 
-class demux_audio_datasource: 
+class demux_audio_datasource:
 	virtual public pkt_audio_datasource,
 	public demux_datasink,
 	virtual public lib::ref_counted_obj
@@ -50,14 +50,14 @@ class demux_audio_datasource:
 		abstract_demux *thread);
 
 	demux_audio_datasource(
-		const net::url& url, 
-		abstract_demux *thread, 
+		const net::url& url,
+		abstract_demux *thread,
 		int stream_index);
-  
+
 	~demux_audio_datasource();
 
 	void start(lib::event_processor *evp, lib::event *callback);
-	void stop();  
+	void stop();
 	void read_ahead(timestamp_t clip_begin);
 	void seek(timestamp_t time);
 #ifdef WITH_SEAMLESS_PLAYBACK
@@ -92,7 +92,7 @@ class demux_audio_datasource:
 
 typedef std::pair<timestamp_t, video_frame> ts_frame_pair;
 
-class demux_video_datasource: 
+class demux_video_datasource:
 	virtual public video_datasource,
 	public demux_datasink,
 	virtual public lib::ref_counted_obj
@@ -103,10 +103,10 @@ class demux_video_datasource:
 	 	abstract_demux *thread);
 
 	demux_video_datasource(
-		const net::url& url, 
-		abstract_demux *thread, 
+		const net::url& url,
+		abstract_demux *thread,
 		int stream_index);
-  
+
     ~demux_video_datasource();
 	void set_pixel_layout(pixel_order l) { assert(l == pixel_unknown); }
 	void read_ahead(timestamp_t clip_begin);
@@ -116,7 +116,7 @@ class demux_video_datasource:
 	void start_prefetch(lib::event_processor *evp){};
 #endif
 	void start_frame(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk, timestamp_t timestamp);
-	void stop();  
+	void stop();
 	char* get_frame(timestamp_t now, timestamp_t *timestamp, int *sizep);
 	void frame_processed_keepdata(timestamp_t timestamp, char *data);
 	void frame_processed(timestamp_t timestamp);
@@ -128,15 +128,15 @@ class demux_video_datasource:
 	int width();
 	int height();
 	timestamp_t frameduration();
-  
+
         bool has_audio();
 	audio_datasource* get_audio_datasource();
-		
+
 	char* get_read_ptr();
-	int size() const;   
+	int size() const;
 
 	video_format& get_video_format();
-	
+
 	common::duration get_dur();
 
   private:
@@ -157,7 +157,7 @@ class demux_video_datasource:
 	lib::critical_section m_lock;
 	//FILE *m_file;
 	long long int m_frame_nr;
-  
+
 };
 
 

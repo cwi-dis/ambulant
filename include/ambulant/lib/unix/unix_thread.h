@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_LIB_UNIX_THREAD_H
@@ -44,18 +44,18 @@ class thread : public ambulant::lib::thread {
 	virtual bool start();
 	virtual void stop();
 	bool terminate();
-		
+
 	bool exit_requested() const;
 	bool is_running() const;
-		
+
   protected:
 	virtual unsigned long run() = 0;
-	
+
 	virtual void signal_exit_thread();
 
   private:
 	static void *threadproc(void *pParam);
-	
+
 	pthread_t m_thread;
 	bool m_exit_requested; // true as soon as thread exit is imminent
 	bool m_running;	// true as soon as thread running is imminent until join

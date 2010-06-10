@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "gtk_settings.h"
@@ -58,7 +58,7 @@ using namespace ambulant;
 //	 +------------+               +------------+
 //--------------------------------------------------------------
 
-static const char* loglevels[] = 
+static const char* loglevels[] =
   { "debug", "trace", "show", "warn", "error", "fatal"};
 static const char* parsers[]   = { "any", "expat", "xerces"};
 static const char* val_schemes[] = {"never", "always", "auto"};
@@ -72,7 +72,7 @@ gtk_settings::gtk_settings() {
 
 	unix_preferences* m_preferences = (unix_preferences*)
 		common::preferences::get_preferences();
-	
+
 	m_dialog = GTK_DIALOG (gtk_dialog_new_with_buttons
 	("AmbulantPlayer", NULL, GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL));
 
@@ -166,7 +166,7 @@ gtk_settings::gtk_settings() {
 	m_dtd_rb = GTK_RADIO_BUTTON (gtk_radio_button_new_with_label(gtk_radio_button_get_group (m_schema_rb), gettext("Using DTD")));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (m_dtd_rb), ! m_preferences->m_do_schema);
 	gtk_box_pack_start (GTK_BOX (m_schema_dtd_hb), GTK_WIDGET (m_schema_rb), FALSE, TRUE, 0);
-	gtk_box_pack_start (GTK_BOX (m_schema_dtd_hb), GTK_WIDGET (m_dtd_rb), FALSE, TRUE, 0);	
+	gtk_box_pack_start (GTK_BOX (m_schema_dtd_hb), GTK_WIDGET (m_dtd_rb), FALSE, TRUE, 0);
 
 
 	// Validation schema full checking checkbox
@@ -174,7 +174,7 @@ gtk_settings::gtk_settings() {
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (m_full_check_cb), m_preferences->m_validation_schema_full_checking);
 	gtk_box_pack_start (GTK_BOX (m_xerces_vb), GTK_WIDGET (m_full_check_cb), FALSE, TRUE, 0);
 
-	// Plugin options frame	
+	// Plugin options frame
 	m_plugins_fr = GTK_FRAME (gtk_frame_new(gettext("Plugin Options:")));
 //	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(m_dialog)->vbox), GTK_WIDGET (m_plugins_fr));
 	gtk_container_add(GTK_CONTAINER(m_settings_vb), GTK_WIDGET (m_plugins_fr));
@@ -221,7 +221,7 @@ gtk_settings::settings_ok() {
 	if (m_namespace_cb) {
 		m_preferences->m_do_namespaces	= gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (m_namespace_cb));
 	}
-	
+
 	m_preferences->m_validation_scheme = val_schemes[gtk_combo_box_get_active(m_validation_co)];
 
 	if (m_dtd_rb){
@@ -236,18 +236,18 @@ gtk_settings::settings_ok() {
 
 	if (m_use_plugins_cb)
 		m_preferences->m_use_plugins = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (m_use_plugins_cb));
-	
+
 	m_preferences->m_plugin_dir = std::string((const char*) gtk_entry_get_text(m_plugins_dir_te));
-	
+
 	m_preferences->save_preferences();
 }
 
-GtkDialog* 
+GtkDialog*
 gtk_settings::getWidget(){
 	return m_dialog;
 }
 
-int 
+int
 gtk_settings::index_in_string_array(const char* s, const char* sa[]) {
 	int i = 0;
 	for (; sa[i] != NULL; i++) {

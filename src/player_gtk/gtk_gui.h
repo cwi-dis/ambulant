@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef __GTK_GUI_H__
@@ -42,7 +42,7 @@ class gtk_gui : public GtkWidget{
 	gtk_gui(const char* title, const char* initfile);
 	~gtk_gui();
 
-	const char* filename() { 
+	const char* filename() {
 		return m_smilfilename;
 	}
 
@@ -55,7 +55,7 @@ class gtk_gui : public GtkWidget{
 	void need_redraw(const void*, void*, const void*);
 	void player_done();
 	void player_start(GString,bool,bool);
-	
+
 	// major containers
 	GtkWidget* get_gui_container();
 	GtkWidget* get_document_container();
@@ -68,7 +68,7 @@ class gtk_gui : public GtkWidget{
 	const char*  m_smilfilename;
 	gtk_settings* m_settings;
 	GtkWindow*   m_toplevelcontainer; // the actual top level window
-	GtkWidget*   menubar;		 // The UI (menubar)	
+	GtkWidget*   menubar;		 // The UI (menubar)
 	GtkWidget*   m_guicontainer;	// The container (menubar + documentcontainer)
 	GtkWidget*   m_documentcontainer; // The drawable area
 	GtkActionGroup *m_actions;
@@ -120,9 +120,9 @@ class gtk_gui : public GtkWidget{
 	void do_internal_message(gtk_message_event* e);
 
 	void unsetCursor();
-	
+
 	void _update_menus();
-	
+
 	GMainLoop* main_loop;
 
 };

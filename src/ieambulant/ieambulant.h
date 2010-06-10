@@ -34,14 +34,14 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////
 // Cieambulant
-class ATL_NO_VTABLE Cieambulant : 
+class ATL_NO_VTABLE Cieambulant :
 	public CComObjectRootEx<CComSingleThreadModel>,
 	public CStockPropImpl<Cieambulant, Iieambulant, &IID_Iieambulant, &LIBID_AmbulantACTIVEXLib>,
 	public CComControl<Cieambulant>,
 	public IPersistStreamInitImpl<Cieambulant>,
 	public IPersistPropertyBagImpl<Cieambulant>,
-	public IObjectSafetyImpl<Cieambulant, 
-                        INTERFACESAFE_FOR_UNTRUSTED_CALLER | 
+	public IObjectSafetyImpl<Cieambulant,
+                        INTERFACESAFE_FOR_UNTRUSTED_CALLER |
                         INTERFACESAFE_FOR_UNTRUSTED_DATA>,
 	public IOleControlImpl<Cieambulant>,
 	public IOleObjectImpl<Cieambulant>,
@@ -60,7 +60,7 @@ class ATL_NO_VTABLE Cieambulant :
 {
 public:
 	CContainedWindow m_ctlStatic;
-	
+
 
 	Cieambulant() :
 		m_ctlStatic(_T("Static"), this, 1),
@@ -146,7 +146,7 @@ END_MSG_MAP()
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid)
 	{
-		static const IID* arr[] = 
+		static const IID* arr[] =
 		{
 			&IID_Iieambulant,
 		};
@@ -180,7 +180,7 @@ END_MSG_MAP()
 		rc.top = rc.left = 0;
 		//m_ctlStatic.Create(m_hWnd, rc);
 		m_ctlStatic.Create( m_hWnd,
-                    rc, 
+                    rc,
                     _T("Static"),
                     WS_CHILD|WM_PAINT);
 		return 0;
@@ -263,7 +263,7 @@ public:
 };
 
 extern "C" {
-void ieambulant_display_message(int level, const char *message);	
+void ieambulant_display_message(int level, const char *message);
 const char* get_last_log_message();
 extern LPOLECLIENTSITE s_site;
 extern int s_ref_count;

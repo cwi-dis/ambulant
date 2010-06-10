@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
+/*
  * $Id$
  */
 
@@ -70,7 +70,7 @@ class gtk_fill_renderer : public  renderer_playable {
 	void start_outtransition(const lib::transition_info *info) {};
   private:
 	void transition_step();
-	
+
 	bool m_is_showing;
 	lib::transition_info *m_intransition, *m_outtransition;
 	smil2::transition_engine *m_trans_engine;

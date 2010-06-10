@@ -13,7 +13,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // Cieambulant
 
-// convert BSTR to std::string 
+// convert BSTR to std::string
 std::string
 BSTR_to_std_string (BSTR bstrIn)
 {
@@ -22,8 +22,8 @@ BSTR_to_std_string (BSTR bstrIn)
 
 	int nInputStrLen = SysStringLen (bstrIn);
 	// Double NULL Termination
-	int nOutputStrLen = WideCharToMultiByte(CP_ACP, 0, bstrIn, nInputStrLen, NULL, 0, 0, 0) + 2;	
-   
+	int nOutputStrLen = WideCharToMultiByte(CP_ACP, 0, bstrIn, nInputStrLen, NULL, 0, 0, 0) + 2;
+
 	LPSTR lpstr = new char [nOutputStrLen];
 	if (lpstr) {
 	    memset (lpstr, 0x00, sizeof (char)*nOutputStrLen);
@@ -36,7 +36,7 @@ BSTR_to_std_string (BSTR bstrIn)
 
 //  convert CComBSTR to std::string
 std::string
-CComBSTR_to_std_string (CComBSTR BSTR_value) 
+CComBSTR_to_std_string (CComBSTR BSTR_value)
 {
 	std::string result = BSTR_to_std_string((BSTR)BSTR_value);
 	return result;
@@ -44,7 +44,7 @@ CComBSTR_to_std_string (CComBSTR BSTR_value)
 
 
 HRESULT
-Cieambulant::get_document_url() 
+Cieambulant::get_document_url()
 {
 	// here the <url> is obtained from the <PARAM name="src" value="<url>"/> element
 	// and joined with  the base url.
@@ -85,21 +85,21 @@ Cieambulant::get_document_url()
 /* MSG spy
 static HHOOK s_hook;
 LRESULT  CALLBACK
-GetMsgProc(int   nCode,WPARAM   wparam,LPARAM   lparam)   
-{  
+GetMsgProc(int   nCode,WPARAM   wparam,LPARAM   lparam)
+{
     MSG * msg = (MSG *)lparam;
 	ambulant::lib::logger::get_logger()->debug("MSG=0x%x",msg->message);
 	if( msg->message == WM_COMMAND) {
-		//analyse the command message 
+		//analyse the command message
 		ambulant::lib::logger::get_logger()->debug("nCode=0x%x, wparam=0x%x",nCode,wparam);
     }
-    return   CallNextHookEx(s_hook,nCode,wparam,lparam);   
+    return   CallNextHookEx(s_hook,nCode,wparam,lparam);
 }
 */
 LPOLECLIENTSITE s_site;
 int s_ref_count;
 
-STDMETHODIMP 
+STDMETHODIMP
 Cieambulant::SetClientSite(LPOLECLIENTSITE pSite)
 {
     HRESULT hr = CComControlBase::IOleObject_SetClientSite(pSite);
@@ -133,7 +133,7 @@ Cieambulant::SetClientSite(LPOLECLIENTSITE pSite)
 void
 DrawString( HDC hdc, RECT* rc, BSTR caption )
 	{
-		USES_CONVERSION;		
+		USES_CONVERSION;
 		TCHAR* pCaption = OLE2T(caption);
 		DrawText( hdc,
 				 pCaption,
@@ -142,7 +142,7 @@ DrawString( HDC hdc, RECT* rc, BSTR caption )
 				 DT_WORDBREAK );
 	}
 
-// STDMETHODIMP HRESULT 
+// STDMETHODIMP HRESULT
 HRESULT
 Cieambulant::OnDraw(ATL_DRAWINFO& di)
 {
@@ -159,7 +159,7 @@ Cieambulant::updatePlayer()
 	if (m_url.get_url() == "")
 		get_document_url();
 	if ( ! m_url.is_absolute()) {
-		ambulant::net::url tmp_url;    
+		ambulant::net::url tmp_url;
         if (m_base_url.get_url() != "")
             m_url = m_url.join_to_base(m_base_url);
     }
@@ -199,7 +199,7 @@ Cieambulant::updatePlayer()
 				if (m_autostart)
 					m_ambulant_player->play();
 			}
-		} 
+		}
 	}
 	return S_OK;
 }
@@ -253,9 +253,9 @@ Cieambulant::PluginWinProc(UINT msg, WPARAM wParam, LPARAM lParam, BOOL& bHandle
 							HINSTANCE hIns = 0;
 							HCURSOR new_cursor = 0;
 							if(new_cursor_id == 0) {
-								new_cursor = LoadCursor(hIns, IDC_ARROW); 
+								new_cursor = LoadCursor(hIns, IDC_ARROW);
 							} else {
-								new_cursor = LoadCursor(hIns, IDC_HAND); 
+								new_cursor = LoadCursor(hIns, IDC_HAND);
 							}
 							SetClassLongPtr(m_hwnd, GCLP_HCURSOR, HandleToLong(new_cursor));
 							m_cursor_id = new_cursor_id;
@@ -265,7 +265,7 @@ Cieambulant::PluginWinProc(UINT msg, WPARAM wParam, LPARAM lParam, BOOL& bHandle
                     }
                 }
                 break;
-                
+
             default:
                 break;
             }
@@ -286,7 +286,7 @@ ambulant_player_callbacks::set_os_window(HWND hwnd)
 	m_hwnd = hwnd;
 }
 
-HWND 
+HWND
 ambulant_player_callbacks::new_os_window()
 {
 	return m_hwnd;

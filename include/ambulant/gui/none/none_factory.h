@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -29,11 +29,11 @@ namespace none {
 
 class none_video_factory : public common::playable_factory {
   public:
-  
+
 	none_video_factory(common::factories *factory)
 	:   m_factory(factory) {}
 	~none_video_factory();
-		
+
 	bool supports(common::renderer_select *);
 
 	common::playable *new_playable(
@@ -41,7 +41,7 @@ class none_video_factory : public common::playable_factory {
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *evp);
-		
+
 	common::playable *new_aux_audio_playable(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
@@ -50,7 +50,7 @@ class none_video_factory : public common::playable_factory {
 		net::audio_datasource *src);
   private:
 	common::factories *m_factory;
-	
+
 };
 
 AMBULANTAPI common::playable_factory *create_none_video_factory(common::factories *factory);

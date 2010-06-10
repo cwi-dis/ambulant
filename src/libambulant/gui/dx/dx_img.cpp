@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/dx/dx_img.h"
@@ -57,10 +57,10 @@ gui::dx::create_dx_image_playable_factory(common::factories *factory, common::pl
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectXImg"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererImg"), true);
 	return new common::single_playable_factory<
-		gui::dx::dx_img_renderer, 
-        dx_img_playable_tag, 
-        dx_img_playable_renderer_uri, 
-        dx_img_playable_renderer_uri2, 
+		gui::dx::dx_img_renderer,
+        dx_img_playable_tag,
+        dx_img_playable_renderer_uri,
+        dx_img_playable_renderer_uri2,
         dx_img_playable_renderer_uri3 >(factory, mdp);
 }
 
@@ -74,7 +74,7 @@ gui::dx::dx_img_renderer::dx_img_renderer(
 :   dx_renderer_playable(context, cookie, node, evp, factory, dynamic_cast<dx_playables_context*>(dxplayer)),
 	m_image(0),
 	m_factory(factory) {
-	
+
 	AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::ctr(0x%x)", this);
 }
 
@@ -107,19 +107,19 @@ void gui::dx::dx_img_renderer::start(double t) {
 		m_context->stopped(m_cookie);
 		return;
 	}
-	
+
 	// Does the renderer have all the resources to play?
 	if(!m_image->can_play()) {
 		// Notify scheduler
 		m_context->stopped(m_cookie);
 		return;
 	}
-	
+
 	// Has this been activated
 	if(m_activated) {
 		// repeat
 		m_dest->need_redraw();
-		return;	
+		return;
 	}
 	m_context->started(m_cookie);
 
@@ -128,7 +128,7 @@ void gui::dx::dx_img_renderer::start(double t) {
 	m_dest->show(this);
 	m_dest->need_events(m_wantclicks);
 	m_activated = true;
-		
+
 	// Request a redraw
 	// Currently already done by show()
 	// m_dest->need_redraw();
@@ -168,7 +168,7 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 		AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::redraw NOT: no viewport %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
 		return;
 	}
-	
+
 	if(!m_image || !m_image->can_play()) {
 		// No bits available
 		AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::redraw NOT: no image or cannot play %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
@@ -225,33 +225,33 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 #endif
 	// Use one type of rect to do op
 	lib::rect img_rect(img_rect1);
-	
-	// A complete repaint would be:  
+
+	// A complete repaint would be:
 	// {img, img_rect } -> img_reg_rc
-	
+
 	// We have to paint only the intersection.
-	// Otherwise we will override upper layers 
+	// Otherwise we will override upper layers
 	lib::rect img_reg_rc_dirty = img_reg_rc & dirty;
 	if(img_reg_rc_dirty.empty()) {
 		// this renderer has no pixels for the dirty rect
 		AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::redraw NOT: empty dirty region %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
 		return;
-	}	
-	
+	}
+
 	// Find the part of the image that is mapped to img_reg_rc_dirty
-	lib::rect img_rect_dirty = reverse_transform(&img_reg_rc_dirty, 
+	lib::rect img_rect_dirty = reverse_transform(&img_reg_rc_dirty,
 		&img_rect, &img_reg_rc);
-		
-	// Translate img_reg_rc_dirty to viewport coordinates 
+
+	// Translate img_reg_rc_dirty to viewport coordinates
 	lib::point topleft = m_dest->get_global_topleft();
 	img_reg_rc_dirty.translate(topleft);
-	
+
 	// keep rect for debug messages
 	m_msg_rect |= img_reg_rc_dirty;
-	
+
 	// Finally blit img_rect_dirty to img_reg_rc_dirty
 	AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::redraw %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
-	
+
 	dx_transition *tr = get_transition();
 	if (tr && tr->is_fullscreen()) {
 		v->set_fullscreen_transition(tr);
@@ -285,17 +285,17 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 	} else {
 #ifdef	WITH_SMIL30
 		if (alpha_chroma != 1.0) {
-			IDirectDrawSurface* screen_ddsurf = v->get_surface(); 
+			IDirectDrawSurface* screen_ddsurf = v->get_surface();
 			IDirectDrawSurface* image_ddsurf = m_image->get_ddsurf();
 			lib::rect rct0 (lib::point(0, 0), img_reg_rc_dirty.size());
 			v->blend_surface(img_reg_rc_dirty, image_ddsurf,
-							 rct0, m_image->is_transparent(), 
+							 rct0, m_image->is_transparent(),
 							 alpha_chroma, alpha_media,
 							 chroma_low, chroma_high);
 		} else {
 			v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), tr);
 		}
-#else //WITH_SMIL30		
+#else //WITH_SMIL30
 		v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), tr);
 #endif//WITH_SMIL30
 	}

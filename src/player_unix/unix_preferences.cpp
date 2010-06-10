@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
- 
+
 // #define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -79,7 +79,7 @@ unix_preferences::unix_preferences() {
 	ADD_PREF("AMBULANT_USE_PLUGINS",BOOL, &m_use_plugins,valid_bools);
 	ADD_PREF("AMBULANT_PLUGIN_DIR",STRING, &m_plugin_dir,NULL);
 	ADD_PREF("AMBULANT_LOGFILE",STRING, &m_log_file,NULL);
-	
+
 }
 
 unix_preferences::~unix_preferences() {
@@ -107,7 +107,7 @@ unix_preferences::load_preference(std::string name, std::string value) {
 	std::string id = "unix_preferences::load_preference";
 	bool found = false;
 	AM_DBG log->debug("%s(%s=%s)", id.c_str(), name.c_str(), value.c_str());
-	
+
 	if (name == "")
 		return false;
 	for (preference_iterator pritr = s_preference_table->begin();
@@ -154,7 +154,7 @@ unix_preferences::load_preference(std::string name, std::string value) {
 			default:
 				break;
 			}
-			break; 
+			break;
 		}
 	}
 	if ( ! found ) {
@@ -200,10 +200,10 @@ unix_preferences::load_preferences_from_file() {
 	char buf[m_bufsize], * s = buf;
 	int lineno = 0;
 	bool rv = true;
-	
+
 	if (preferences_filep == NULL)
 		return false;
-	
+
 	while (s = fgets(buf, m_bufsize, preferences_filep)) {
 		lineno++;
 		if (*s == '#')
@@ -226,13 +226,13 @@ unix_preferences::load_preferences_from_file() {
 	fclose (preferences_filep);
 	return rv;
 }
-	
+
 bool
 unix_preferences::save_preferences() {
 	std::string id = "unix_preferences::save_preferences";
 	AM_DBG logger::get_logger()->debug("%s()", id.c_str());
 	FILE* preferences_filep = open_preferences_file("w");
-	
+
 	if (preferences_filep == NULL) {
 		return false;
 	}
@@ -266,8 +266,8 @@ unix_preferences::save_preferences() {
 	fclose (preferences_filep);
 	return true;
 }
- 
-FILE* 
+
+FILE*
 unix_preferences::open_preferences_file(std::string mode) {
 	std::string id = "unix_preferences::open_preferences_file";
 	if (m_home == "") {
@@ -275,7 +275,7 @@ unix_preferences::open_preferences_file(std::string mode) {
 		if (home_dir != NULL) {
 			m_home = std::string(home_dir);
 			m_ambulant_home = m_home+"/"+m_ambulant_home;
-			m_preferences_filename = 
+			m_preferences_filename =
 			  m_ambulant_home+"/"+m_preferences_filename;
 		} else {
 			logger::get_logger()->error(gettext("HOME environment variable not set"));
@@ -312,7 +312,7 @@ unix_preferences::open_preferences_file(std::string mode) {
 	return preferences_filep;
 }
 
-void 
+void
 unix_preferences::get_preference(char* buf, char**namep, char** valuep) {
 	char* s = buf;
 	while (*s && *s++ != '=');

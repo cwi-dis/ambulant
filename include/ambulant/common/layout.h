@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_COMMON_LAYOUT_H
@@ -55,10 +55,10 @@ typedef std::vector<tile_position> tile_positions; ///< List of tile_position
 class alignment {
   public:
 	virtual ~alignment() {};
-	
+
 	/// Return image point that should be painted at surface point get_surface_fixpoint().
 	virtual lib::point get_image_fixpoint(lib::size image_size) const = 0;
-	
+
 	/// Return surface point at which image point get_image_fixpoint() should be painted.
 	virtual lib::point get_surface_fixpoint(lib::size surface_size) const = 0;
 };
@@ -69,7 +69,7 @@ class alignment {
 class animation_notification {
   public:
 	virtual ~animation_notification(){}
-  
+
 	/// Called by the animator after some animation parameter has changed.
 	virtual void animated() = 0;
 };
@@ -85,13 +85,13 @@ class gui_window {
 	:   m_handler(handler) {};
   public:
 	virtual ~gui_window() {}
-	
+
 	/// Signals that rectangle r may need to be redrawn.
 	virtual void need_redraw(const lib::rect &r) = 0;
-	
+
 	/// Do any pending redraws right now
 	virtual void redraw_now() = 0;
-	
+
 	/// Signals whether the core is interesting in mouse events and others.
 	virtual void need_events(bool want) = 0;
   protected:
@@ -113,13 +113,13 @@ enum user_event_type {
 class AMBULANTAPI gui_events  {
   public:
     virtual ~gui_events(){}
-    
+
 	/// Request to redraw a certain area.
 	virtual void redraw(const lib::rect &dirty, gui_window *window) = 0;
-	
+
 	/// Signals a mouse click or mouse move. Returns true if handled.
 	virtual bool user_event(const lib::point &where, int what = 0) = 0;
-	
+
 	/// Signals that a transition in the given area has started.
 	/// This event goes through the gui_events interface because SMIL
 	/// semantics dictate that fill=transition ends on underlying
@@ -133,21 +133,21 @@ class AMBULANTAPI gui_events  {
 class AMBULANTAPI renderer : public gui_events {
   public:
 	virtual ~renderer() {};
-	
+
 	/// Render to a specific surface.
 	/// Called (by the scheduler) after the playable is created, to
 	/// tell it where to render to.
 	virtual void set_surface(surface *destination) = 0;
-	
+
 	/// Use alignment align for image display.
 	virtual void set_alignment(const alignment *align) = 0;
-	
+
 	/// Apply an inTransition when starting playback.
 	virtual void set_intransition(const lib::transition_info *info) = 0;
-	
+
 	/// Start an outTransition now.
 	virtual void start_outtransition(const lib::transition_info *info) = 0;
-	
+
 	/// XXXX This is a hack.
 	virtual surface *get_surface() = 0;
 
@@ -159,13 +159,13 @@ class AMBULANTAPI renderer : public gui_events {
 class bgrenderer : public gui_events {
   public:
 	virtual ~bgrenderer() {};
-	
+
 	/// Render to a specific surface.
 	virtual void set_surface(surface *destination) = 0;
-	
+
 	/// Keep current onscreen bits as background
 	virtual void keep_as_background() = 0;
-	
+
 	/// Highlight a region
 	virtual void highlight(gui_window *window) = 0;
 };
@@ -183,37 +183,37 @@ typedef void* renderer_private_id;
 class surface {
   public:
 	virtual ~surface() {};
-	
+
 	/// The given renderer wants redraws and events from now on.
 	virtual void show(gui_events *renderer) = 0;
-	
+
 	/// The given renderer no longer wants redraws and events.
 	virtual void renderer_done(gui_events *renderer) = 0;
 
 	/// The given rect r has changed and needs a redraw.
 	virtual void need_redraw(const lib::rect &r) = 0;
-	
+
 	/// The whole region has changed and needs a redraw.
 	virtual void need_redraw() = 0;
-	
+
 	/// Requests forwarding of mouse events.
 	virtual void need_events(bool want) = 0;
-	
+
 	/// Signals that a transition has finished.
 	virtual void transition_done() = 0;
 
 	/// Signals that the current on-screen bits should be kept as background
 	virtual void keep_as_background() = 0;
-	
+
 	/// Returns the region rectangle, (0, 0) based.
 	virtual const lib::rect& get_rect() const = 0;
-	
+
 	/// Returns the region rectangle, topwindow-coordinate based and clipped.
 	virtual const lib::rect& get_clipped_screen_rect() const = 0;
-	
+
 	/// Returns the gui_window coordinates for (0, 0).
 	virtual const lib::point &get_global_topleft() const = 0;
-	
+
 	/// Determine where to draw an image.
 	/// For a given image size, return portion of source image to display, and where
 	/// to display it. The renderer must do the scaling.
@@ -227,19 +227,19 @@ class surface {
 
 	virtual lib::rect get_crop_rect(const lib::size& src_size) const = 0;
 #endif
-	
+
 	/// Get object holding SMIL region parameters for querying.
 	virtual const region_info *get_info() const = 0;
-	
+
 	/// Get the outermost surface for this surface.
 	virtual surface *get_top_surface() = 0;
 
 	/// Return true if the image needs to be tiled
 	virtual bool is_tiled() const = 0;
-	
+
 	/// Given image size and region rectangle return a list of (srcrect, dstrect).
 	virtual tile_positions get_tiles(lib::size image_size, lib::rect surface_rect) const = 0;
-	
+
 	/// Get the OS window for this surface.
 	virtual gui_window *get_gui_window() = 0;
 
@@ -253,10 +253,10 @@ class surface {
 
 	/// Retrieve a per-renderer private data pointer previously stored with set_renderer_data.
 	virtual renderer_private_data* get_renderer_private_data(renderer_private_id idd) = 0;
-	
+
 	/// Turn highlighting of the region on or off.
 	virtual void highlight(bool on) = 0;
-	
+
 };
 
 /// API for creating windows.
@@ -266,17 +266,17 @@ class surface {
 class AMBULANTAPI window_factory {
   public:
 	virtual ~window_factory() {}
-	
+
 	/// Get the default size for a new window
 	virtual lib::size get_default_size() { return lib::size(default_layout_width, default_layout_height); }
 	/// Create a new window.
 	virtual gui_window *new_window(const std::string &name, lib::size bounds, gui_events *handler) = 0;
-	
+
 	/// Create a new bgrenderer.
 	virtual bgrenderer *new_background_renderer(const region_info *src) = 0;
-	
+
 	/// Close a window.
-	virtual void window_done(const std::string &name) {} 
+	virtual void window_done(const std::string &name) {}
 };
 
 /// Interface for storing SMIL layout information.
@@ -286,10 +286,10 @@ class AMBULANTAPI window_factory {
 class surface_template : public animation_notification {
   public:
 	virtual ~surface_template() {}
-	
+
 	/// Create a new subregion.
 	virtual surface_template *new_subsurface(const region_info *info, bgrenderer *bgrend) = 0;
-	
+
 	/// Get the surface corresponding to this region.
 	virtual surface *activate() = 0;
 #ifdef	WITH_SMIL_TEST
@@ -304,7 +304,7 @@ class surface_template : public animation_notification {
 class surface_factory {
   public:
 	virtual ~surface_factory() {}
-	
+
 	/// Create a new toplevel region.
 	virtual surface_template *new_topsurface(const region_info *info, bgrenderer *bgrend, window_factory *wf) = 0;
 };
@@ -314,16 +314,16 @@ class surface_factory {
 class layout_manager {
   public:
 	virtual ~layout_manager() {};
-	
+
 	/// Return the surface on which the given node should be rendered.
 	virtual surface *get_surface(const lib::node *node) = 0;
-	
+
 	/// Returns the imagge aligment parameters for the given node.
 	virtual alignment *get_alignment(const lib::node *node) = 0;
-	
+
 	/// Return the object that will receive notifications when the given node is animated.
 	virtual animation_notification *get_animation_notification(const lib::node *node) = 0;
-	
+
 	/// Return the object that the animator will control for the given node.
 	virtual animation_destination *get_animation_destination(const lib::node *node) = 0;
 };
@@ -334,9 +334,9 @@ AMBULANTAPI layout_manager *create_smil2_layout_manager(common::factories *facto
 
 /// Factory function for a surface_factory implementation.
 AMBULANTAPI surface_factory *create_smil_surface_factory();
-	
+
 } // namespace common
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_COMMON_LAYOUT_H

@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -68,6 +68,6 @@ mypreferences::save_preferences()
 	pApp->WriteProfileString(_T("Settings"), _T("plugin_dir"), A2CT(m_plugin_dir.c_str()));
 	pApp->WriteProfileInt(_T("Settings"), _T("use_ffmpeg"), m_prefer_ffmpeg);
 	pApp->WriteProfileInt(_T("Settings"), _T("use_rtsp_tcp"), m_prefer_rtsp_tcp);
-	
+
 	return true;
 }

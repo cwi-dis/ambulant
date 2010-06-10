@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/config/config.h"
@@ -48,15 +48,15 @@ using namespace lib;
 
 lib::xml_parser*
 lib::xerces_factory::new_parser(
-		sax_content_handler* content_handler, 
-		sax_error_handler* error_handler) 
+		sax_content_handler* content_handler,
+		sax_error_handler* error_handler)
 {
 	AM_DBG lib::logger::get_logger()->debug("xerces_factory::new_parser(): xerces parser returned");
 	return new lib::xerces_sax_parser(content_handler, error_handler);
 }
 
 
-std::string 
+std::string
 lib::xerces_factory::get_parser_name()
 {
 	AM_DBG lib::logger::get_logger()->debug("xerces_factory::get_parser_name(): xerces parser");
@@ -67,7 +67,7 @@ lib::xerces_factory::get_parser_name()
 
 xerces_sax_parser::xerces_sax_parser(
 	sax_content_handler*content_handler,
-	sax_error_handler *error_handler) 
+	sax_error_handler *error_handler)
 :	m_saxparser(0),
 	m_logger(0),
 	m_content_handler(content_handler),
@@ -81,22 +81,22 @@ xerces_sax_parser::xerces_sax_parser(
         AM_DBG m_logger->debug("xerces_sax_parser::xerces_sax_parser()");
 	XMLPlatformUtils::Initialize();
 	m_saxparser = new SAXParser();
-	
+
 	common::preferences* prefs = common::preferences::get_preferences();
 	// Don't attempt to load external DTD if validation is off
 	m_saxparser->setLoadExternalDTD(false);
 	// Val_Never, Val_Always, Val_Auto
 	m_saxparser->setValidationScheme(ambulant_val_scheme_2_xerces_ValSchemes(prefs->m_validation_scheme));
-	
+
 	// If set to true, namespace processing must also be turned on
 	m_saxparser->setDoSchema(prefs->m_do_schema);
 
 	// True to turn on full schema constraint checking
 	m_saxparser->setValidationSchemaFullChecking(prefs->m_validation_schema_full_checking);
-	
+
 	// true: understand namespaces; false: otherwise
 	m_saxparser->setDoNamespaces(prefs->m_do_namespaces);
-	
+
 	m_saxparser->setDocumentHandler(this);
 	m_saxparser->setErrorHandler(this);
 	m_saxparser->setEntityResolver(this);
@@ -145,7 +145,7 @@ xerces_sax_parser::parse(const char *buf, size_t len, bool final) {
 	} catch (...) {
 		m_logger->error(gettext("%s: Unexpected exception during parsing"), m_id);
 	}
-	
+
 	return succeeded;
 }
 
@@ -181,20 +181,20 @@ xerces_sax_parser::endElement(const XMLCh* const name) {
 	XMLString::release(&cname);
 }
 
-void 
+void
 xerces_sax_parser::characters(const XMLCh* const chars,
 			      const XMLSize_t length) {
 	char *c_chars = XMLString::transcode(chars);
-	m_content_handler->characters(c_chars, length); 
+	m_content_handler->characters(c_chars, length);
 	XMLString::release(&c_chars);
 }
 
-void 
+void
 xerces_sax_parser::warning(const SAXParseException& exception) {
 	throw exception;
 }
 
-void 
+void
 xerces_sax_parser::error(const SAXParseException& exception) {
 	throw exception;
 }
@@ -203,9 +203,9 @@ void
 xerces_sax_parser::fatalError(const SAXParseException& exception)  {
 	throw exception;
 }
-	
+
 void
-xerces_sax_parser::to_qattrs(AttributeList& attrs, 
+xerces_sax_parser::to_qattrs(AttributeList& attrs,
 			     q_attributes_list& list) {
 	if (attrs.getLength() == 0) return;
 	for (int i = 0; i < (int)attrs.getLength(); i++) {
@@ -218,14 +218,14 @@ xerces_sax_parser::to_qattrs(AttributeList& attrs,
 	}
 }
 
-q_name_pair 
+q_name_pair
 xerces_sax_parser::to_q_name_pair(const XMLCh* name) {
 	char *cname = XMLString::transcode(name);
 	const char *p = cname;
 	const char ns_sep = char(NS_SEP);
 	while(*p != 0 && *p != ns_sep) p++;
 	q_name_pair qn;
-	if(*p == ns_sep) { 
+	if(*p == ns_sep) {
 		qn.first = std::string(cname, int(p-cname));
 		qn.second = std::string(p+1);
 	} else {
@@ -253,7 +253,7 @@ static std::map<std::string, std::string> dtd_cache_mapping;
 static std::map<std::string, std::string> obsolete_dtd_cache_mapping;
 
 static void
-init_dtd_cache_mapping() {	
+init_dtd_cache_mapping() {
 	// "DTDCache/mapping.txt" defines the mapping of URLs to local files
 	// odd lines are requested URLs as used in .smil files
 	// even lines are relative pathnames of the corresponding cache
@@ -275,7 +275,7 @@ init_dtd_cache_mapping() {
 		std::string line(buf);
 		if (line == "" || line[0] == '#')
 			continue;
-		// set the requested we're looking for 
+		// set the requested we're looking for
 		if (requested == "") {
 			requested = line;
 			continue;
@@ -286,7 +286,7 @@ init_dtd_cache_mapping() {
 		if (absolute_url.first) {
 			std::string abs_path = absolute_url.second.get_path();
 			std::pair<std::string,std::string> new_map(requested, abs_path);
-			if (relative_url.get_query() == "obsolete") 
+			if (relative_url.get_query() == "obsolete")
 				obsolete_dtd_cache_mapping.insert(new_map);
 			else
 				dtd_cache_mapping.insert(new_map);
@@ -318,7 +318,7 @@ find_cached_dtd(std::string url) {
 }
 
 
-InputSource* 
+InputSource*
 xerces_sax_parser::resolveEntity(const XMLCh* const publicId , const XMLCh* const systemId) {
 	char* publicId_ts = XMLString::transcode(publicId);
 	char* systemId_ts = XMLString::transcode(systemId);

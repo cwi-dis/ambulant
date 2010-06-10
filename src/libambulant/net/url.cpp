@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AM_DBG
@@ -29,11 +29,11 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/string_util.h"
 #include "ambulant/lib/filesys.h"
-#include "ambulant/lib/textptr.h"  
+#include "ambulant/lib/textptr.h"
 
 #include <string>
 #include <sstream>
-	
+
 using namespace ambulant;
 
 static bool s_strict = false;
@@ -56,7 +56,7 @@ void net::url::set_strict_url_parsing(bool strict) {
 
 #include "ambulant/lib/win32/win32_error.h"
 #include <wininet.h>
-	
+
 static std::string
 filepath2urlpath(const std::string& fparg, bool handle_frag=false)
 {
@@ -64,7 +64,7 @@ filepath2urlpath(const std::string& fparg, bool handle_frag=false)
 	size_t urlbufsize = filepath.size()*3+7; // Worst case: all characters escaped
 	LPTSTR urlbuf = (LPTSTR)malloc(urlbufsize*sizeof(TCHAR));
 	DWORD urlbufsizearg = (DWORD)urlbufsize;
-	
+
 	assert(urlbuf);
 	urlbuf[0] = 0;
 	std::string fragment;
@@ -74,7 +74,7 @@ filepath2urlpath(const std::string& fparg, bool handle_frag=false)
 		size_t fragpos = filepath.find('#');
 		if (fragpos != std::string::npos) {
 			fragment = filepath.substr(fragpos);
-			filepath = filepath.substr(0, fragpos);	
+			filepath = filepath.substr(0, fragpos);
 		}
 	}
 	if (!InternetCanonicalizeUrl(lib::textptr(filepath.c_str()), urlbuf, &urlbufsizearg, 0)) {
@@ -82,13 +82,13 @@ filepath2urlpath(const std::string& fparg, bool handle_frag=false)
 		lib::win32::win_report_error(filepath.c_str(), dw);
 		urlbuf[0] = 0;
 	}
-	
+
 	std::string rv = lib::textptr(urlbuf);
-	
+
 	// Work around stupid bug in InternetCanonicalizeURL: it forgets a slash.
 	if (rv.substr(0, 7) == "file://" && rv[7] != '/')
 		rv = "file:///" + rv.substr(7);
-	
+
 	//need to use wstring here; otherwise the ascii filter below breaks
 	// XXXJACK not sure of this code. It roundtrips to wide chars (expensive)
 	// and also it uses isascii() on a wide char. Seems suspect...
@@ -97,16 +97,16 @@ filepath2urlpath(const std::string& fparg, bool handle_frag=false)
 	std::wstring::iterator i;
 	for(i=wrv.begin(); i!=wrv.end(); i++) {
 		wchar_t c = *i;
-		if (c == '\\') 
+		if (c == '\\')
 			*i = '/';
 		else if (isascii(c))
-			*i = tolower(c); 
+			*i = tolower(c);
 		else
 			*i = c;
 	}
-	
-	rv = lib::textptr(wrv.c_str());  
-	
+
+	rv = lib::textptr(wrv.c_str());
+
 #ifdef AMBULANT_PLATFORM_WIN32_WCE
 	// On WinCE InternetCanonicalizeUrl also turns backslash into %5c (sigh).
 	while(1) {
@@ -132,7 +132,7 @@ urlpath2filepath(const std::string& urlpath)
 	assert(filebuf);
 	filebuf[0] = 0;
 	lib::textptr tp(urlpath.c_str());
-	if (!InternetCanonicalizeUrl(tp, filebuf, 
+	if (!InternetCanonicalizeUrl(tp, filebuf,
 			&filebufsizearg, ICU_DECODE | ICU_NO_ENCODE)) {
 		DWORD dw = GetLastError();
 		lib::win32::win_report_error(urlpath.c_str(), dw);
@@ -148,7 +148,7 @@ urlpath2filepath(const std::string& urlpath)
 	std::string::iterator i;
 	for(i=rv.begin(); i!=rv.end(); i++) {
 		char c = *i;
-		if (c == '/') 
+		if (c == '/')
 			*i = '\\';
 	}
 	free(filebuf);
@@ -240,7 +240,7 @@ uint2hex (unsigned int val) {
 static unsigned int
 hex2uint (std::string& s) {
 	unsigned int rv = 0;
-	
+
 	for (size_t i = 0; i < s.size(); i++) {
 		char c = s[i];
 		rv *= 16;
@@ -268,7 +268,7 @@ static bool
 is_unreserved (unsigned int c) {
 	const char cc = c;
 	std::string s(1,cc);
-	
+
 	if (s.find_first_of(unreserved) == std::string::npos)
 		return false;
 	return true;
@@ -280,7 +280,7 @@ uri2string(const std::string uri) {
 	std::string s  = uri;
 	size_t pos;
 
-	while ((pos = s.substr().find("%")) != std::string::npos 
+	while ((pos = s.substr().find("%")) != std::string::npos
 			&& (pos < s.size()-2)) {
 		// pick next 2 characters
 		std::string hex_chars = s.substr(pos+1,2);
@@ -301,7 +301,7 @@ uri2string(const std::string uri) {
 static std::string
 string2uri(const std::string str) {
 	std::string rv = "";
-	
+
 	for (size_t i = 0; i < str.size(); i++) {
 		unsigned char c = str[i];
 
@@ -330,8 +330,8 @@ string2uri(const std::string str) {
 	return rv;
 }
 
-struct url_handler_pair { 
-	const char *first; 
+struct url_handler_pair {
+	const char *first;
 	void (net::url::*second)(ambulant::lib::scanner& sc, const std::string& pat);
 };
 
@@ -343,28 +343,28 @@ void net::url::init_statics() {
 	// workaround for g++ 2.95
 	static url_handler_pair h1 = {"n://n:d/", &url::set_from_host_port_uri};
 	s_handlers.push_back(&h1);
-	
+
 	static url_handler_pair h1a = {"n://n:d", &url::set_from_host_port_uri};
 	s_handlers.push_back(&h1a);
-	
+
 	static url_handler_pair h1b = {"n://dn:d/", &url::set_from_numhost_port_uri};
 	s_handlers.push_back(&h1b);
-	
+
 	static url_handler_pair h1c = {"n://dn:d", &url::set_from_numhost_port_uri};
 	s_handlers.push_back(&h1c);
-	
+
 	static url_handler_pair h2 = {"n://n/", &url::set_from_host_uri};
 	s_handlers.push_back(&h2);
-	
+
 	static url_handler_pair h2a = {"n://n", &url::set_from_host_uri};
 	s_handlers.push_back(&h2a);
-	
+
 	static url_handler_pair h2b= {"n://dn/", &url::set_from_numhost_uri};
 	s_handlers.push_back(&h2b);
-	
+
 	static url_handler_pair h2c = {"n://dn", &url::set_from_numhost_uri};
 	s_handlers.push_back(&h2c);
-	
+
 	static url_handler_pair h3 = { "n:///", &url::set_from_localhost_file_uri};
 	s_handlers.push_back(&h3);
 
@@ -379,13 +379,13 @@ void net::url::init_statics() {
 
 	static url_handler_pair h5 = {"/n", &url::set_from_absolute_path};
 	s_handlers.push_back(&h5);
-	
+
 	static url_handler_pair h6 = {"n:", &url::set_from_scheme};
 	s_handlers.push_back(&h6);
-	
+
 	static url_handler_pair h9 = {"", &url::set_from_relative_path};
 	s_handlers.push_back(&h9);
-	
+
 	/*
 	typedef std::pair<std::string, HANDLER> pair;
 	s_handlers.push_back(pair("n://n:n/",&url::set_from_host_port_uri));
@@ -396,9 +396,9 @@ void net::url::init_statics() {
 	s_handlers.push_back(pair("n:/n",&url::set_from_windows_path));
 	*/
 }
- 
+
 // static
-AMBULANTAPI net::url 
+AMBULANTAPI net::url
 net::url::from_filename(const std::string& spec, bool handle_frag)
 {
 	return net::url(filepath2urlpath(spec, handle_frag));
@@ -420,20 +420,20 @@ void net::url::_checkurl() const
 		lib::logger::get_logger()->warn(gettext("%s: URL contains illegal characters"), get_url().c_str());
 #endif
 }
-net::url::url() 
+net::url::url()
 :	m_absolute(false),
 	m_port(0)
 {
 }
- 
-net::url::url(const string& spec) 
+
+net::url::url(const string& spec)
 :	m_port(0)
 {
 	set_from_spec(spec);
 }
-	 
-net::url::url(const string& protocol, const string& host, 
-	const string& path) 
+
+net::url::url(const string& protocol, const string& host,
+	const string& path)
 :	m_protocol(protocol),
 	m_host(host),
 	m_port(0),
@@ -443,8 +443,8 @@ net::url::url(const string& protocol, const string& host,
 	if (s_strict) _checkurl();
 }
 
-net::url::url(const string& protocol, const string& host, int port, 
-	const string& path) 
+net::url::url(const string& protocol, const string& host, int port,
+	const string& path)
 :	m_protocol(protocol),
 	m_host(host),
 	m_port(short_type(port)),
@@ -454,19 +454,19 @@ net::url::url(const string& protocol, const string& host, int port,
 	if (s_strict) _checkurl();
 }
 
-net::url::url(const string& protocol, const string& host, int port, 
-	const string& path, const string& query, const string& ref) 
+net::url::url(const string& protocol, const string& host, int port,
+	const string& path, const string& query, const string& ref)
 :	m_protocol(protocol),
 	m_host(host),
 	m_port(short_type(port)),
-	m_path(path), 
-	m_query(query), 
+	m_path(path),
+	m_query(query),
 	m_ref(ref)
 {
 	m_absolute = (m_protocol != "");
 	if (s_strict) _checkurl();
 }
- 
+
 net::url::string net::url::get_file() const {
 	std::string file = get_path();
 	// Workaround: we might have split a local file at the ?.
@@ -474,7 +474,7 @@ net::url::string net::url::get_file() const {
 		file += '?';
 		file += m_query;
 	}
-	
+
 	return urlpath2filepath(file);
 }
 
@@ -495,7 +495,7 @@ void net::url::set_from_spec(const string& spec) {
 			return;
 		}
 	}
-	lib::logger::get_logger()->error(gettext("%s: Cannot parse URL"), spec.c_str());	
+	lib::logger::get_logger()->error(gettext("%s: Cannot parse URL"), spec.c_str());
 }
 
 // pat: "n://n:d/"
@@ -506,7 +506,7 @@ void net::url::set_from_host_port_uri(lib::scanner& sc, const std::string& pat) 
 	m_port = short_type(atoi(sc.val_at(6).c_str()));
 	set_parts(sc, pat);
 }
-	
+
 // pat: "n://dn:d/"
 void net::url::set_from_numhost_port_uri(lib::scanner& sc, const std::string& pat) {
 	m_absolute = true;
@@ -515,7 +515,7 @@ void net::url::set_from_numhost_port_uri(lib::scanner& sc, const std::string& pa
 	m_port = short_type(atoi(sc.val_at(7).c_str()));
 	set_parts(sc, pat);
 }
-	
+
 // pat: "n://n/"
 void net::url::set_from_host_uri(lib::scanner& sc, const std::string& pat) {
 	m_absolute = true;
@@ -629,7 +629,7 @@ bool net::url::is_local_file() const
 	}
 	return false;
 }
-	
+
 std::string net::url::get_url() const
 {
 	std::string rv = repr(*this);
@@ -663,7 +663,7 @@ net::url net::url::join_to_base(const net::url &base) const
 	AM_DBG lib::logger::get_logger()->debug("join_to_base: base='%s', new='%s'",basepath.c_str(), newpath.c_str());
 	if (newpath == "") {
 		// New path is, for instance, only #anchor.
-		newpath = basepath; 
+		newpath = basepath;
 	} else if (newpath[0] != '/') {
 		// New_path is not absolute. Prepend base of basepath
 		basepath = lib::filesys::get_base(basepath);
@@ -729,7 +729,7 @@ net::url::guesstype() const
 	size_t dotpos = m_path.find_last_of(".");
 	if (dotpos == std::string::npos) return "";
 	std::string ext = m_path.substr(dotpos);
-	
+
 	if (ext == ".htm" || ext == ".HTM" || ext == ".html" || ext == ".HTML")
 		return "text/html";
 	if (ext == ".smi" || ext == ".SMI" || ext == ".smil" || ext == ".SMIL")
@@ -781,7 +781,7 @@ net::url::get_local_datafile() const
 {
 	const char* result = NULL;
 	if (!is_local_file()) return std::pair<bool, net::url>(false, net::url(*this));
-		
+
 	if (! is_absolute()) {
 		string rel_path = get_path();
 		const char **dir;
@@ -803,9 +803,9 @@ net::url::get_local_datafile() const
 	} else if (is_local_file() && access (get_file().c_str(), 0) >= 0) {
 		result = get_file().c_str();
 	}
-	
+
 	if (!result) return std::pair<bool, net::url>(false, net::url(*this));
-	
+
 	return std::pair<bool, net::url>(true, net::url("file", "", result));
 }
 #else // AMBULANT_PLATFORM_UNIX
@@ -849,7 +849,7 @@ net::url::get_local_datafile() const
 	const char* result = NULL;
 	string path;
 	if (!is_local_file()) return std::pair<bool, net::url>(false, net::url(*this));
-	
+
 	if (! is_absolute()) {
 		string rel_path = get_path();
 		const char **dir;
@@ -866,7 +866,7 @@ net::url::get_local_datafile() const
 		if (lib::win32::file_exists(path))
 			result = path.c_str();
 	}
-	
+
 	if (!result) return std::pair<bool, net::url>(false, net::url(*this));
 	std::string *pathname = new std::string(result);
 	return std::pair<bool, net::url>(true, net::url("file", "", *pathname));

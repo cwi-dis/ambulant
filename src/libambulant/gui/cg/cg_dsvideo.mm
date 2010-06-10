@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/cg/cg_gui.h"
@@ -68,8 +68,8 @@ create_cg_dsvideo_playable_factory(common::factories *factory, common::playable_
    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererVideo"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCoreGraphics"), true);
 	return new common::single_playable_factory<
-        cg_dsvideo_renderer, 
-        cg_dsvideo_playable_tag, 
+        cg_dsvideo_renderer,
+        cg_dsvideo_playable_tag,
         cg_dsvideo_playable_renderer_uri,
         cg_dsvideo_playable_renderer_uri2,
         cg_dsvideo_playable_renderer_uri2>(factory, mdp);
@@ -133,7 +133,7 @@ cg_dsvideo_renderer::_push_frame(char* frame, int size)
 	// - If the image does need scaling things slow down by a factor of 4.
 	//   0 seems to be as good a value for bitmapInfo as any other value.
 	// - If you also set shouldInterpolate=true you get an additional factor of 2 slowdown.
-	CGBitmapInfo bitmapInfo = MY_BITMAP_INFO; 
+	CGBitmapInfo bitmapInfo = MY_BITMAP_INFO;
 	m_image = CGImageCreate( m_size.w, m_size.h, 8, MY_BPP*8, m_size.w*MY_BPP, genericColorSpace, bitmapInfo, provider, NULL, false, kCGRenderingIntentDefault);
 	AM_DBG lib::logger::get_logger()->trace("0x%x: push_frame(0x%x, %d) -> 0x%x -> 0x%x", this, frame, size, provider, m_image);
 	CGDataProviderRelease(provider);
@@ -154,7 +154,7 @@ cg_dsvideo_renderer::redraw(const rect &dirty, gui_window *window)
 	m_lock.enter();
 	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("cg_dsvideo_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
-	
+
 	cg_window *cwindow = (cg_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 #if 0
@@ -181,7 +181,7 @@ cg_dsvideo_renderer::redraw(const rect &dirty, gui_window *window)
 		rect srcrect = rect(size(0, 0));
 		rect dstrect = m_dest->get_fit_rect(m_size, &srcrect, m_alignment);
 		dstrect.translate(m_dest->get_global_topleft());
-		
+
 		CGRect cg_srcrect = CGRectMake(0, 0, srcrect.width(), srcrect.height()); // XXXX 0, 0 is wrong
 		CGRect cg_dstrect = [view CGRectForAmbulantRect: &dstrect];
 		AM_DBG logger::get_logger()->debug("cg_dsvideo_renderer.redraw: draw image %f %f -> (%f, %f, %f, %f)", cg_srcsize.width, cg_srcsize.height, CGRectGetMinX(cg_dstrect), CGRectGetMinY(cg_dstrect), CGRectGetMaxX(cg_dstrect), CGRectGetMaxY(cg_dstrect));

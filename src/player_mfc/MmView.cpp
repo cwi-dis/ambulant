@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -78,7 +78,7 @@ static TCHAR *get_directory(const TCHAR *fn) {
 }
 
 #ifdef WITHOUT_LOG_WINDOW
-std::ofstream 
+std::ofstream
 log_os(get_log_filename().c_str());
 #endif
 
@@ -158,7 +158,7 @@ class my_player_feedback : public common::player_feedback {
 		}
 		set_status_line("");
 	}
- 
+
 };
 
 my_player_feedback s_player_feedback;
@@ -167,7 +167,7 @@ my_player_feedback s_player_feedback;
 void create_player_hook(void *player);
 #endif
 
-static dg_or_dx_player* 
+static dg_or_dx_player*
 create_player_instance(const net::url& u, common::player_feedback *feedback) {
 	dg_or_dx_player *rv = new dg_or_dx_player(s_player_callbacks, feedback, u);
 #ifdef WITH_CREATE_PLAYER_HOOK
@@ -282,7 +282,7 @@ void MmView::OnDraw(CDC* pDC)
 	// TODO: add draw code for native data here
 	if(player)
 		player->redraw(m_hWnd, pDC->m_hDC);
-	
+
 }
 
 
@@ -314,7 +314,7 @@ int MmView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	m_timer_id = SetTimer(1, 500, 0);
-	
+
 	// Set static handle
 	s_hwnd = GetSafeHwnd();
 	ModifyStyle(0, WS_CLIPCHILDREN); // reduce flicker
@@ -326,7 +326,7 @@ int MmView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		LocateWelcomeDoc(TEXT("Welcome.smil"))){;}
 #endif
 
-	PostMessage(WM_SET_CLIENT_RECT, 
+	PostMessage(WM_SET_CLIENT_RECT,
 		common::default_layout_width, ambulant::common::default_layout_height);
 #ifdef WITH_SPLASH_SCREEN
 	PostMessage(WM_COMMAND, ID_HELP_WELCOME);
@@ -380,7 +380,7 @@ void MmView::SetMMDocument(LPCTSTR lpszPathName, bool autostart) {
 	net::url u;
 	TCHAR path[_MAX_PATH];
 	if (is_local_filename) {
-		TCHAR *pFilePart = 0;	
+		TCHAR *pFilePart = 0;
 		GetFullPathName(lpszPathName, MAX_PATH, path, &pFilePart);
 		lib::textptr tppath(path);
 		u = net::url::from_filename(tppath);
@@ -388,7 +388,7 @@ void MmView::SetMMDocument(LPCTSTR lpszPathName, bool autostart) {
 		_tcscpy(path, lpszPathName);
 		u = net::url::from_url(T2CA(path));
 	}
-	
+
 	if (!u.is_absolute()) {
 		lib::logger::get_logger()->error("Cannot play from non-absolute pathname: %s", lpszPathName);
 		return;
@@ -411,7 +411,7 @@ void MmView::OnFilePlay()
 }
 
 void MmView::OnUpdateFilePlay(CCmdUI *pCmdUI)
-{	
+{
 	pCmdUI->Enable((int)(player && player->is_play_enabled()));
 	pCmdUI->SetCheck((int)(player && player->is_play_active()));
 }
@@ -444,7 +444,7 @@ void MmView::OnFileStop()
 		dummy = create_player_instance(u, &s_player_feedback);
 		player = dummy;
 		PostMessage(WM_INITMENUPOPUP,0, 0);
-		InvalidateRect(NULL); 
+		InvalidateRect(NULL);
 		needs_done_redraw = false;
 	}
 #endif
@@ -463,7 +463,7 @@ void MmView::OnTimer(UINT nIDEvent)
 	if(player && needs_done_redraw && player->is_stop_active()) {
 		player->on_done();
 		InvalidateRect(NULL);
-		PostMessage(WM_INITMENUPOPUP,0, 0); 
+		PostMessage(WM_INITMENUPOPUP,0, 0);
 		needs_done_redraw = false;
 	}
 }
@@ -484,9 +484,9 @@ void MmView::OnMouseMove(UINT nFlags, CPoint point)
 		if(new_cursor_id != m_cursor_id) {
 			HCURSOR new_cursor = 0;
 			if(new_cursor_id == 0) {
-				new_cursor = AfxGetApp()->LoadStandardCursor(IDC_ARROW); 
+				new_cursor = AfxGetApp()->LoadStandardCursor(IDC_ARROW);
 			} else {
-				new_cursor = AfxGetApp()->LoadCursor(IDC_CURSOR_HAND); 
+				new_cursor = AfxGetApp()->LoadCursor(IDC_CURSOR_HAND);
 			}
 			SetClassLongPtr(GetSafeHwnd(), GCLP_HCURSOR, HandleToLong(new_cursor));
 			m_cursor_id = new_cursor_id;
@@ -522,7 +522,7 @@ void MmView::OnViewSource() {
 	assert(u.is_local_file());
 	// XXXX Also check OnUpdateViewSource
 	cmd += u.get_file().c_str(); // XXXX Incorrect
-	WinExec(T2CA(cmd), SW_SHOW);	
+	WinExec(T2CA(cmd), SW_SHOW);
 }
 
 void MmView::OnUpdateViewSource(CCmdUI *pCmdUI) {
@@ -559,19 +559,19 @@ void MmView::OnUpdateViewLog(CCmdUI *pCmdUI) {
 
 LPARAM MmView::OnSetClientRect(WPARAM wParam, LPARAM lParam) {
 	CFrameWnd *mainWnd = (CFrameWnd*) AfxGetMainWnd();
-	
+
 	POINT pt = {0, 0}; // margins
-	
+
 	CRect rc1;
 	mainWnd->GetWindowRect(&rc1);
-	
+
 	CRect rc2;
 	GetWindowRect(&rc2);
 	int dx = rc1.Width() - rc2.Width();
 	int dy = rc1.Height() - rc2.Height();
-	
+
 	CSize size(int(wParam) + (2*pt.x + 4) + dx, int(lParam) + (2*pt.y+4) + dy);
-	
+
 	UINT flags = SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE;
 	mainWnd->SetWindowPos(&wndTop, 0, 0, size.cx, size.cy, flags);
 	return 0;
@@ -638,7 +638,7 @@ void MmView::OnViewAutoplay()
 }
 
 void MmView::OnUpdateViewAutoplay(CCmdUI *pCmdUI)
-{	
+{
 	pCmdUI->Enable(TRUE);
 	pCmdUI->SetCheck(m_autoplay?1:0);
 }
@@ -646,7 +646,7 @@ void MmView::OnUpdateViewAutoplay(CCmdUI *pCmdUI)
 BOOL MmView::OnToolTipNotify(UINT id, NMHDR *pNMHDR, LRESULT *pResult)
 {
 	if(!player) return false;
-	
+
 	TOOLTIPTEXTA* pTTTA = (TOOLTIPTEXTA*)pNMHDR;
 	TOOLTIPTEXTW* pTTTW = (TOOLTIPTEXTW*)pNMHDR;
 	UINT_PTR nID = pNMHDR->idFrom;
@@ -679,7 +679,7 @@ INT_PTR MmView::OnToolHitTest(CPoint point, TOOLINFO* pTI) const {
 			}
 			return nHit;
 		}
-	} 
+	}
 	return -1;  // not found
 }
 
@@ -690,16 +690,16 @@ bool MmView::LocateWelcomeDoc(LPCTSTR rpath) {
 	if(p1) *++p1='\0';
 	text_strcat(buf, rpath);
 	TCHAR path[_MAX_PATH];
-	TCHAR *pFilePart = 0;	
+	TCHAR *pFilePart = 0;
 	GetFullPathName(buf, MAX_PATH, path, &pFilePart);
 	WIN32_FIND_DATA fd;
 	memset(&fd, 0, sizeof(WIN32_FIND_DATA));
-	HANDLE hFind = FindFirstFile(path, &fd); 
+	HANDLE hFind = FindFirstFile(path, &fd);
 	if(hFind != INVALID_HANDLE_VALUE){
 		FindClose(hFind);
 		m_welcomeDocFilename = path;
 		return true;
-	} 
+	}
 	return false;
 }
 

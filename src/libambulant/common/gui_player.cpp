@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -194,7 +194,7 @@ gui_player::is_pause_active() const
 //	const_cast<gui_player*>(this)->m_lock.leave();
 	return rv;
 }
-	
+
 int
 gui_player::after_mousemove()
 {
@@ -274,7 +274,7 @@ gui_player::create_document(const net::url& url)
 		// DBG root->dump(std::cout);
 #endif // WITHOUT_EXTERNAL_DOM
 		const char *profile = root->get_attribute("baseProfile");
-		if (profile && 
+		if (profile &&
 				strcmp(profile, "Language") != 0 &&
 				strcmp(profile, "UnifiedMobile") != 0 &&
 				strcmp(profile, "Tiny") != 0
@@ -283,7 +283,7 @@ gui_player::create_document(const net::url& url)
 			lib::logger::get_logger()->warn(gettext("%s: document uses unknown SMIL profile \"%s\", will attempt to continue anyway"),
 				m_url.get_url().c_str(), profile);
 		}
-		
+
 #endif // WITH_SMIL30
 		smil2::test_attrs ta(root);
 		if (!ta.selected()) {
@@ -305,5 +305,5 @@ gui_player::create_document(const net::url& url)
 		lib::logger::get_logger()->trace("%s: Failed to parse document ", m_url.get_url().c_str());
 	}
 	return rv;
-}	
+}
 

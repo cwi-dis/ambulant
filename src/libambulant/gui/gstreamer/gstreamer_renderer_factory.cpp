@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -38,7 +38,7 @@ ambulant::gui::gstreamer::create_gstreamer_renderer_factory(common::factories *f
     return new gstreamer_renderer_factory(factory);
 }
 
-bool 
+bool
 gstreamer_renderer_factory::supports(common::renderer_select *rs)
 {
 	const lib::xml_string& tag = rs->get_tag();
@@ -48,7 +48,7 @@ gstreamer_renderer_factory::supports(common::renderer_select *rs)
 	if (tag != "" && tag != "ref" && tag != "audio" && tag != "prefetch") return false;
 #endif
 	const char *renderer_uri = rs->get_renderer_uri();
-	if (renderer_uri != NULL && 
+	if (renderer_uri != NULL &&
 		strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererGstreamer")) != 0 &&
 		strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererOpen")) != 0 &&
         strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererAudio")) != 0 )

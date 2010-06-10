@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/win32/win32_fstream.h"
@@ -28,8 +28,8 @@
 using namespace ambulant;
 
 lib::win32::fstream::fstream()
-:	m_hf(INVALID_HANDLE_VALUE), 
-	m_gptr(0), 
+:	m_hf(INVALID_HANDLE_VALUE),
+	m_gptr(0),
 	m_pptr(0) {
 }
 
@@ -42,34 +42,34 @@ bool lib::win32::fstream::open(const std::basic_string<char>& url) {
 }
 
 bool lib::win32::fstream::open(const text_char *filename) {
-	m_hf = CreateFile(filename,  
-		GENERIC_READ,  
-		FILE_SHARE_READ, 
-		0,  // lpSecurityAttributes 
-		OPEN_EXISTING,  
-		FILE_ATTRIBUTE_READONLY,  
+	m_hf = CreateFile(filename,
+		GENERIC_READ,
+		FILE_SHARE_READ,
+		0,  // lpSecurityAttributes
+		OPEN_EXISTING,
+		FILE_ATTRIBUTE_READONLY,
 		NULL);
 	return  m_hf != INVALID_HANDLE_VALUE;
 }
-	
+
 bool lib::win32::fstream::open_for_writing(const text_char *filename) {
-	m_hf = CreateFile(filename,  
-		GENERIC_WRITE,  
-		FILE_SHARE_WRITE, 
-		0,  // lpSecurityAttributes 
-		OPEN_ALWAYS,  
-		FILE_ATTRIBUTE_NORMAL,  
+	m_hf = CreateFile(filename,
+		GENERIC_WRITE,
+		FILE_SHARE_WRITE,
+		0,  // lpSecurityAttributes
+		OPEN_ALWAYS,
+		FILE_ATTRIBUTE_NORMAL,
 		NULL);
 	return  m_hf != INVALID_HANDLE_VALUE;
 }
-	
+
 void lib::win32::fstream::close() {
 	if(m_hf != INVALID_HANDLE_VALUE) {
 		CloseHandle(m_hf);
 		m_hf = INVALID_HANDLE_VALUE;
 	}
 }
-	
+
 int lib::win32::fstream::read(unsigned char *buffer, int nbytes) {
 	if(m_hf == INVALID_HANDLE_VALUE) return 0;
 	unsigned long nread = 0;
@@ -79,7 +79,7 @@ int lib::win32::fstream::read(unsigned char *buffer, int nbytes) {
 	}
 	return 0;
 }
-	
+
 int lib::win32::fstream::read() {
 	assert(m_hf != INVALID_HANDLE_VALUE);
 	unsigned char buffer[4];
@@ -90,11 +90,11 @@ int lib::win32::fstream::read() {
 	return buffer[0];
 }
 
-unsigned long lib::win32::fstream::get_size() { 
+unsigned long lib::win32::fstream::get_size() {
 	assert(m_hf != INVALID_HANDLE_VALUE);
 	return GetFileSize(m_hf, NULL);
 }
-	
+
 bool lib::win32::fstream::seek(unsigned long pos) {
 	assert(m_hf != INVALID_HANDLE_VALUE);
 	if(SetFilePointer(m_hf, pos, 0, FILE_BEGIN) == 0xFFFFFFFF)
@@ -102,7 +102,7 @@ bool lib::win32::fstream::seek(unsigned long pos) {
 	m_gptr = pos;
 	return true;
 }
-	
+
 int lib::win32::fstream::write(const unsigned char *buffer, int nbytes) {
 	assert(m_hf != INVALID_HANDLE_VALUE);
 	unsigned long nwritten = 0;
@@ -112,7 +112,7 @@ int lib::win32::fstream::write(const unsigned char *buffer, int nbytes) {
 	}
 	return 0;
 }
-	
+
 int lib::win32::fstream::write(const char *cstr) {
 	assert(m_hf != INVALID_HANDLE_VALUE);
 	return write((const unsigned char *)cstr, (int)strlen(cstr));

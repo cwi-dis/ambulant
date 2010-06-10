@@ -104,10 +104,10 @@ class PrefPropertySheet : public CPropertySheet
 
 // Construction
 public:
-	
+
 
 	PrefPropertySheet(CWnd* pWndParent = NULL);
-	
+
 	~PrefPropertySheet(){}
 
 // Attributes
@@ -130,7 +130,7 @@ public:
 
 // Implementation
 public:
-	
+
 //variables
 private:
 

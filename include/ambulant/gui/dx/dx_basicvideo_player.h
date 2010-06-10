@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_DX_BASICVIDEO_PLAYER_H
@@ -61,7 +61,7 @@ class basicvideo_player {
   public:
 	basicvideo_player(const std::string& url, HWND parent);
 	~basicvideo_player();
-		
+
 	void start(double t);
 //	void stop();
 	bool stop();
@@ -80,15 +80,15 @@ class basicvideo_player {
 	bool is_playing();
 	double get_position();
 	const std::string& get_url() const { return m_url;}
-	
+
 	// dx implementation artifacts
 	int get_progress();
 	void set_progress(int p);
-		
-	// -val is the attenuation in decibels 
+
+	// -val is the attenuation in decibels
 	// can be 0 to 100
 	void set_volume(long val);
-		
+
 	// can be -100 to 100
 	// 0 sets a neutral balance
 	// and 10 sets -10 db to right and -90 db to left
@@ -97,7 +97,7 @@ class basicvideo_player {
   private:
 	bool open(const std::string& url, HWND parent);
 	void release_player();
-	
+
 	std::string m_url;
 	IGraphBuilder *m_graph_builder;
 	IMediaControl *m_media_control;
@@ -106,11 +106,11 @@ class basicvideo_player {
 	IBasicAudio *m_basic_audio;
 	IVideoWindow *m_video_window;
 };
-	
+
 } // namespace dx
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_GUI_DX_BASICVIDEO_PLAYER_H

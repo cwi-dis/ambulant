@@ -14,7 +14,7 @@
  *
  * The Original Code is mozilla.org code.
  *
- * The Initial Developer of the Original Code is 
+ * The Initial Developer of the Original Code is
  * Netscape Communications Corporation.
  * Portions created by the Initial Developer are Copyright (C) 1998
  * the Initial Developer. All Rights Reserved.
@@ -22,7 +22,7 @@
  * Contributor(s):
  *
  * Alternatively, the contents of this file may be used under the terms of
- * either the GNU General Public License Version 2 or later (the "GPL"), or 
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
  * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
  * in which case the provisions of the GPL or the LGPL are applicable instead
  * of those above. If you wish to allow use of your version of this file only
@@ -34,7 +34,7 @@
  * the terms of any one of the NPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
- 
+
 /*AMBULANT_FOREIGN_INDENT_RULES*/
 
 ////////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ NPError NPN_PostURL(NPP instance, const char* url, const char* window, uint32 le
 {
   NPError rv = NPNFuncs.posturl(instance, url, window, len, buf, file);
   return rv;
-} 
+}
 
 NPError NPN_RequestRead(NPStream* stream, NPByteRange* rangeList)
 {

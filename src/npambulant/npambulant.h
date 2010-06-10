@@ -14,7 +14,7 @@
  *
  * The Original Code is mozilla.org code.
  *
- * The Initial Developer of the Original Code is 
+ * The Initial Developer of the Original Code is
  * Netscape Communications Corporation.
  * Portions created by the Initial Developer are Copyright (C) 1998
  * the Initial Developer. All Rights Reserved.
@@ -22,7 +22,7 @@
  * Contributor(s):
  *
  * Alternatively, the contents of this file may be used under the terms of
- * either the GNU General Public License Version 2 or later (the "GPL"), or 
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
  * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
  * in which case the provisions of the GPL or the LGPL are applicable instead
  * of those above. If you wish to allow use of your version of this file only
@@ -126,7 +126,7 @@ private:
   NPMIMEType m_mimetype;
   NPP m_pNPInstance;
   uint16 m_mode;
-  int m_argc;  
+  int m_argc;
   char** m_argn;
   char** m_argv;
   NPSavedData* m_data;
@@ -134,13 +134,13 @@ private:
   NPObject* m_window_obj;
 
 #ifdef XP_WIN
-  HWND m_hWnd; 
+  HWND m_hWnd;
   WNDPROC m_lpOldProc;
   LONG m_OldWindow;
 #endif
 
   NPWindow * m_Window;
-  
+
   NPStream * m_pNPStream;
   NPBool m_bInitialized;
 
@@ -151,12 +151,12 @@ public:
 
 public:
   npambulant(
-		NPMIMEType mimetype, 
-		NPP pNPInstance, 
+		NPMIMEType mimetype,
+		NPP pNPInstance,
 		uint16 mode,
-		int argc, 
-		char* argn[], 
-		char* argv[], 
+		int argc,
+		char* argn[],
+		char* argv[],
 		NPSavedData* data);
   ~npambulant();
 
@@ -172,7 +172,7 @@ public:
   NPError NewStream(NPMIMEType type, NPStream* stream, NPBool seekable, uint16* stype);
   NPP getNPP();
   const char* getValue(const char *name);
-  
+
   int16 handleEvent(void* event);
 
   void showVersion();
@@ -227,7 +227,7 @@ public:
  };
 
 extern "C" {
-void npambulant_display_message(int level, const char *message);	
+void npambulant_display_message(int level, const char *message);
 };
 
 #endif // __CPLUGIN_H__

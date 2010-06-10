@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_SMIL2_TIME_SCHED_H
@@ -42,20 +42,20 @@ class time_node;
 class scheduler {
   public:
 	typedef lib::timer::time_type time_type;
-	
+
 	scheduler(time_node *root, lib::timer_control *timer);
 	~scheduler();
-	
+
 	time_type exec();
 	void reset_document();
 	void start(time_node *tn);
 	void update_horizon(time_type t);
-	
+
 	static void reset(time_node *tn);
 	static void set_context(time_node *tn, time_node_context *ctx);
 	static bool has_resolved_end(time_node *tn);
 	static std::string get_state_sig(time_node *tn);
-	
+
   private:
 	void _reset_document();
 	time_type _exec();
@@ -71,11 +71,11 @@ class scheduler {
 	void activate_media_child(time_node *parent, time_node *child);
 	void set_ffwd_mode(time_node *tn, bool b);
 	void sync_playable_clocks(time_node *tnroot, time_node *tntarget);
-	
+
 	time_node *m_root;
 	lib::timer_control *m_timer;
 	time_type m_horizon;
-	
+
 	bool m_locked;
 	lib::critical_section m_lock;
 	enum { idle_resolution = 100};
@@ -87,7 +87,7 @@ class scheduler {
 
 
 } // namespace smil2
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_SMIL2_TIME_SCHED_H

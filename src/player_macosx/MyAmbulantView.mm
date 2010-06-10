@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -24,7 +24,7 @@ set_statusline(void *view, const char *msg)
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSString *message = [[NSString stringWithCString: msg] retain];
-	[(id)view performSelectorOnMainThread: @selector(setStatusLine:) 
+	[(id)view performSelectorOnMainThread: @selector(setStatusLine:)
 		withObject: message waitUntilDone: NO];
 	[pool release];
 }

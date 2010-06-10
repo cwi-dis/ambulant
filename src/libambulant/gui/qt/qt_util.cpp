@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/qt/qt_util.h"
@@ -64,11 +64,11 @@ _blend_pixel (
 
 void
 qt_image_blend (
-	QImage dst, 
-	const lib::rect dst_rc, 
-	QImage src, 
+	QImage dst,
+	const lib::rect dst_rc,
+	QImage src,
 	const lib::rect src_rc,
-	double opacity_in, 
+	double opacity_in,
 	double opacity_out,
 	const lib::color_t chroma_low,
 	const lib::color_t chroma_high)
@@ -103,15 +103,15 @@ qt_image_blend (
 
 
 	unsigned int weight_in = static_cast<unsigned int>(round(opacity_in*255.0));
-	unsigned int remain_in = 255 - weight_in; 
+	unsigned int remain_in = 255 - weight_in;
 	unsigned int weight_out = static_cast<unsigned int>(round(opacity_out*255.0));
-	unsigned int remain_out = 255 - weight_out; 
+	unsigned int remain_out = 255 - weight_out;
 
-	uchar r_l = redc(chroma_low), r_h = redc(chroma_high); 
-	uchar g_l = greenc(chroma_low), g_h = greenc(chroma_high); 
+	uchar r_l = redc(chroma_low), r_h = redc(chroma_high);
+	uchar g_l = greenc(chroma_low), g_h = greenc(chroma_high);
 	uchar b_l = bluec(chroma_low), b_h = bluec(chroma_high);
 	AM_DBG logger::get_logger()->debug("blend_qt_pixbuf:r_l=%3d,g_l=%3d,b_l=%3d,w_in=%d,w_out=%d", r_l,g_l,b_l,weight_in, weight_out);
-	AM_DBG logger::get_logger()->debug("blend_qt_pixbuf:r_h=%3d,g_h=%3d,b_h=%3d", r_h,g_h,b_h);	
+	AM_DBG logger::get_logger()->debug("blend_qt_pixbuf:r_h=%3d,g_h=%3d,b_h=%3d", r_h,g_h,b_h);
 	AM_DBG logger::get_logger()->debug("blend_qt_pixbuf:dst_L=%3d,dst_R=%3d,max_R=%3d,src_L=%3d", dst_L, dst_R, max_R, src_L);
 	for (dst_col = dst_L, src_col = src_L;
 		dst_col < dst_R;
@@ -140,14 +140,14 @@ qt_image_blend (
 					     _blend_pixel(dr,dg,db,da,
 							  sr,sg,sb,sa,
 							  src_has_alpha,
-							  weight_in, remain_in)); 
+							  weight_in, remain_in));
 			} else {
 				// blend the pixel from 'src' into 'dst'
 				dst.setPixel(dst_col,dst_row,
 					     _blend_pixel(dr,dg,db,da,
 							  sr,sg,sb,sa,
 							  src_has_alpha,
-							  weight_out, remain_out)); 
+							  weight_out, remain_out));
 			}
 		}
 	}
@@ -155,17 +155,17 @@ qt_image_blend (
 
 color_t
 QColor2color_t(QColor c) {
-	return to_color(c.red(), c.green(), c.blue()); 
+	return to_color(c.red(), c.green(), c.blue());
 }
 
 QColor
 color_t2QColor(lib::color_t c) {
-	return QColor(redc(c), greenc(c), bluec(c)); 
+	return QColor(redc(c), greenc(c), bluec(c));
 }
 
 #ifdef	WITH_DUMPIMAGES
 static QImage* oldImageP;
-static bool 
+static bool
 isEqualToPrevious(QImage* img) {
 	if (oldImageP != NULL && *img == *oldImageP) {
 		AM_DBG lib::logger::get_logger()->debug("isEqualToPrevious: new image not different from old one");

@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -79,7 +79,7 @@ open_web_browser(const std::string &href)
 
 #ifdef	WITH_NOKIA770
 	// Nokia770's browser doesn't react on a commandline argument as an URL,
-	// but it does so properlye on the following commands 
+	// but it does so properlye on the following commands
 	snprintf(cmdbuf, sizeof(cmdbuf), "dus-send --print-reply --dest=com.nokia.osso_browser /com/nokia/osso_browser com.nokia.osso_browser.open_new_window;dbus-send --print-reply --dest=com.nokia.osso_browser /com/nokia/osso_browser com.nokia.osso_browser.load_url string:%s", href.c_str());
 	rv = ::system(cmdbuf);
 	if (rv) {
@@ -114,7 +114,7 @@ gtk_mainloop::gtk_mainloop(gtk_gui* gui)
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("Standalone"), true);
 	init_factories();
 	init_plugins();
-	
+
 	const char *filename = "";
 	if (m_gui) filename = m_gui->filename();
 	net::url url = net::url::from_filename(filename);
@@ -159,7 +159,7 @@ gtk_mainloop::init_playable_factory()
 	common::global_playable_factory *pf = common::get_global_playable_factory();
 	set_playable_factory(pf);
 
-	AM_DBG m_logger->debug("gtk_mainloop: adding QGtk playable factories");		
+	AM_DBG m_logger->debug("gtk_mainloop: adding QGtk playable factories");
 	pf->add_factory(create_gtk_fill_playable_factory(this, NULL));
 #ifdef	WITH_GTK_HTML_WIDGET
 	pf->add_factory(create_gtk_html_playable_factory(this, NULL));
@@ -171,13 +171,13 @@ gtk_mainloop::init_playable_factory()
 
 #ifdef WITH_SDL
     AM_DBG lib::logger::get_logger()->debug("gtk_mainloop: add factory for SDL");
-	pf->add_factory(gui::sdl::create_sdl_playable_factory(this));      
+	pf->add_factory(gui::sdl::create_sdl_playable_factory(this));
 #endif // WITH_SDL
 #ifdef WITH_GSTREAMER
 	AM_DBG logger::get_logger()->debug("add factory for GStreamer");
 	pf->add_factory(gui::gstreamer::create_gstreamer_renderer_factory(this));
 	AM_DBG logger::get_logger()->debug("add factory for GStreamer done");
-#endif	
+#endif
 }
 
 void
@@ -185,10 +185,10 @@ gtk_mainloop::init_datasource_factory()
 {
 	net::datasource_factory *df = new net::datasource_factory();
 	set_datasource_factory(df);
-#ifdef WITH_LIVE	
+#ifdef WITH_LIVE
 	AM_DBG m_logger->debug("mainloop::mainloop: add live_audio_datasource_factory");
 	df->add_video_factory(net::create_live_video_datasource_factory());
-	df->add_audio_factory(net::create_live_audio_datasource_factory()); 
+	df->add_audio_factory(net::create_live_audio_datasource_factory());
 #endif
 #ifdef WITH_FFMPEG
     AM_DBG m_logger->debug("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
@@ -282,10 +282,10 @@ void
 gtk_mainloop::open(net::url newdoc, bool start, common::player *old)
 {
 	AM_DBG m_logger->trace("gtk_mainloop::open \"%s\"",newdoc.get_url().c_str());
-    // Parse the provided URL. 
+    // Parse the provided URL.
 	m_doc = create_document(newdoc);
 	if(!m_doc) {
-		m_logger->error(gettext("%s: Cannot build DOM tree"), 
+		m_logger->error(gettext("%s: Cannot build DOM tree"),
 				newdoc.get_url().c_str());
 		return;
 	}
@@ -355,7 +355,7 @@ char* gtk_mainloop::convert_data_to_image(const guchar* data, gsize size){
 }
 */
 
-ambulant::common::gui_screen* 
+ambulant::common::gui_screen*
 gtk_mainloop::get_gui_screen(){
 	return m_gtk_widget;
 }

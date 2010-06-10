@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/nscontext.h"
@@ -34,12 +34,12 @@ nscontext::init_supported_namespaces() {
 	static const char *namespaces[] = {
 		// SMIL 1.0
 		"http://www.w3.org/TR/REC-smil",
-		
+
 		// SMIL 2.0 full feature set and profiles
 		"http://www.w3.org/2001/SMIL20/",
 		"http://www.w3.org/2001/SMIL20/Language",
 		"http://www.w3.org/2001/SMIL20/HostLanguage",
-		"http://www.w3.org/2001/SMIL20/IntegrationSet"	
+		"http://www.w3.org/2001/SMIL20/IntegrationSet"
 		// SMIL 2.0 modules
 		"http://www.w3.org/2001/SMIL20/AccessKeyTiming",
 		"http://www.w3.org/2001/SMIL20/AudioLayout",
@@ -89,7 +89,7 @@ nscontext::init_supported_namespaces() {
 		// SMIL 2.0 miscelaneous identifiers.
 		"http://www.w3.org/2001/SMIL20/NestedTimeContainers",
 		"http://www.w3.org/2001/SMIL20/DeprecatedFeatures",
-		
+
 		// SMIL 2.1 full feature set and profiles
 		"http://www.w3.org/2005/SMIL21/",
 		"http://www.w3.org/2005/SMIL21/Language",
@@ -245,5 +245,5 @@ nscontext::add_supported_namespace(const char *uri) {
 }
 
 } // namespace lib
- 
+
 } // namespace ambulant

@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- 
- 
+
+
 //#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -39,9 +39,9 @@ using namespace lib;
 
 global_parser_factory* ambulant::lib::global_parser_factory::s_singleton = NULL;
 
- 
- 
-global_parser_factory* 
+
+
+global_parser_factory*
 global_parser_factory::get_parser_factory()
 {
 	AM_DBG lib::logger::get_logger()->debug("global_parser_factory::get_parser_factory() called");
@@ -83,14 +83,14 @@ global_parser_factory::~global_parser_factory()
 		s_singleton = NULL;
 	m_default_factory = NULL;
 }
-    
+
 void
 global_parser_factory::add_factory(parser_factory *pf)
 {
 	AM_DBG lib::logger::get_logger()->debug("global_parser_factory::add_factory(0x%x) called", (void*) pf);
     m_factories.push_back(pf);
 }
-    
+
 xml_parser*
 global_parser_factory::new_parser(
 	sax_content_handler* content_handler,
@@ -114,7 +114,7 @@ global_parser_factory::new_parser(
 		if (( (*i)->get_parser_name() == parser_id ) || ( parser_id == "any" )) {
 			AM_DBG lib::logger::get_logger()->debug("global_parser_factory::new_parser() trying parser %s", parser_id.c_str());
         	pv = (*i)->new_parser(content_handler, error_handler);
-			
+
 			if (pv){
 				AM_DBG lib::logger::get_logger()->debug("global_parser_factory::new_parser() returning parser (0x%x)", (void*) pv);
 				return pv;
@@ -122,7 +122,7 @@ global_parser_factory::new_parser(
 		} else {
 			pv = NULL;
 		}
-      
+
     }
 	if (m_default_factory) {
 		if (!m_warned && parser_id != m_default_factory->get_parser_name()) {

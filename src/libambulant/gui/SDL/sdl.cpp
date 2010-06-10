@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -48,7 +48,7 @@ sdl_renderer_factory::~sdl_renderer_factory()
 	sdl_audio_renderer::quit();
 }
 
-bool 
+bool
 sdl_renderer_factory::supports(common::renderer_select *rs)
 {
 	const lib::xml_string& tag = rs->get_tag();
@@ -58,7 +58,7 @@ sdl_renderer_factory::supports(common::renderer_select *rs)
 	if (tag != "" && tag != "ref" && tag != "audio" && tag != "prefetch") return false;
 #endif
 	const char *renderer_uri = rs->get_renderer_uri();
-	if (renderer_uri != NULL && 
+	if (renderer_uri != NULL &&
 		strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererSdl")) != 0 &&
 		strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererOpen")) != 0 &&
         strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererAudio")) != 0 )
@@ -92,7 +92,7 @@ sdl_renderer_factory::new_playable(
 		AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: no SDL renderer for tag \"%s\"", tag.c_str());
         return NULL;
 	}
-	
+
 #endif
 	return rv;
 }

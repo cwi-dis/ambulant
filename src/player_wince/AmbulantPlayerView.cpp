@@ -97,7 +97,7 @@ my_player_callbacks::get_default_size() {
 	return usable_size_on_startup;
 }
 
-static dg_or_dx_player* 
+static dg_or_dx_player*
 create_player_instance(const net::url& u) {
 	return new dg_or_dx_player(s_player_callbacks, NULL, u);
 }
@@ -167,16 +167,16 @@ BOOL CAmbulantPlayerView::PreCreateWindow(CREATESTRUCT& cs)
 	return CView::PreCreateWindow(cs);
 }
 
-int CAmbulantPlayerView::OnCreate(LPCREATESTRUCT lpCreateStruct) 
+int CAmbulantPlayerView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CView::OnCreate(lpCreateStruct) == -1)
 		return -1;
-	
+
 	m_timer_id = SetTimer(1, 1000, 0);
-	
+
 	// Set static handle
 	s_hwnd = GetSafeHwnd();
-	
+
 
 #ifdef DEBUG
 	// Log to the debugger output window in VS2005
@@ -256,31 +256,31 @@ void CAmbulantPlayerView::SetMMDocument(LPCTSTR lpszPathName) {
 		PostMessage(WM_COMMAND, ID_PLAY);
 }
 
-void CAmbulantPlayerView::OnPlay() 
+void CAmbulantPlayerView::OnPlay()
 {
 	if(player) {
 		player->play();
 		needs_done_redraw = true;
 	}
-	
+
 }
 
-void CAmbulantPlayerView::OnUpdatePlay(CCmdUI* pCmdUI) 
+void CAmbulantPlayerView::OnUpdatePlay(CCmdUI* pCmdUI)
 {
 	bool enable = player && player->is_play_enabled();
 	if (enable == m_was_play_enabled) return;
 	m_was_play_enabled = enable;
 	pCmdUI->Enable(enable?TRUE:FALSE);
-	
+
 }
 
-void CAmbulantPlayerView::OnPause() 
+void CAmbulantPlayerView::OnPause()
 {
 	if(player) player->pause();
-	
+
 }
 
-void CAmbulantPlayerView::OnUpdatePause(CCmdUI* pCmdUI) 
+void CAmbulantPlayerView::OnUpdatePause(CCmdUI* pCmdUI)
 {
 	bool enable = player && player->is_pause_enabled();
 	bool active = player && player->is_pause_active();
@@ -289,10 +289,10 @@ void CAmbulantPlayerView::OnUpdatePause(CCmdUI* pCmdUI)
 	m_was_pause_active = active;
 	pCmdUI->Enable(enable?TRUE:FALSE);
 	if(enable) pCmdUI->SetCheck(active?TRUE:FALSE);
-	
+
 }
 
-void CAmbulantPlayerView::OnStop() 
+void CAmbulantPlayerView::OnStop()
 {
 #ifdef WITH_SMIL30
 	if (player)
@@ -308,23 +308,23 @@ void CAmbulantPlayerView::OnStop()
 		}
 		dummy = create_player_instance(u);
 		player = dummy;
-		PostMessage(WM_INITMENUPOPUP,0, 0); 
+		PostMessage(WM_INITMENUPOPUP,0, 0);
 		InvalidateRect(NULL);
 		needs_done_redraw = false;
 	}
 #endif // WITH_SMIL30
 }
 
-void CAmbulantPlayerView::OnUpdateStop(CCmdUI* pCmdUI) 
+void CAmbulantPlayerView::OnUpdateStop(CCmdUI* pCmdUI)
 {
 	bool enable = player && (player->is_stop_enabled());
 	if (enable == m_was_stop_enabled) return;
 	m_was_stop_enabled = enable;
 	pCmdUI->Enable(enable?TRUE:FALSE);
-	
+
 }
 
-void CAmbulantPlayerView::OnDestroy() 
+void CAmbulantPlayerView::OnDestroy()
 {
 	if(player) {
 		player->stop();
@@ -334,31 +334,31 @@ void CAmbulantPlayerView::OnDestroy()
 	lib::logger::get_logger()->set_ostream(0);
 	if(m_timer_id) KillTimer(m_timer_id);
 	CView::OnDestroy();
-	
+
 }
-void CAmbulantPlayerView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) 
+void CAmbulantPlayerView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	if(player) player->on_char(nChar);
 	CView::OnChar(nChar, nRepCnt, nFlags);
 }
 
-void CAmbulantPlayerView::OnLButtonDown(UINT nFlags, CPoint point) 
+void CAmbulantPlayerView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	if(player) player->on_click(point.x, point.y, GetSafeHwnd());
 	CView::OnLButtonDown(nFlags, point);
 }
 
 
-void CAmbulantPlayerView::OnTimer(UINT nIDEvent) 
+void CAmbulantPlayerView::OnTimer(UINT nIDEvent)
 {
 	if(player && needs_done_redraw && player->is_stop_active()) {
 		OnStop();
 	}
-	
+
 	CView::OnTimer(nIDEvent);
 }
 
-void CAmbulantPlayerView::OnHelpWelcome() 
+void CAmbulantPlayerView::OnHelpWelcome()
 {
 #if 0
 	ambulant::net::url wurl = ambulant::net::url::from_filename("Welcome/Welcome.smil");
@@ -378,7 +378,7 @@ void CAmbulantPlayerView::OnHelpWelcome()
 
 }
 
-void CAmbulantPlayerView::OnFileSelect() 
+void CAmbulantPlayerView::OnFileSelect()
 {
 	CSelectDlg dlg(this);
 	if(dlg.DoModal() == IDOK) {
@@ -391,7 +391,7 @@ void CAmbulantPlayerView::OnFileSelect()
 	}
 }
 
-void CAmbulantPlayerView::OnFileLoadSettings() 
+void CAmbulantPlayerView::OnFileLoadSettings()
 {
 	BOOL bOpenFileDialog = TRUE;
 	CString strDefExt = TEXT("*.xml");
@@ -436,7 +436,7 @@ void CAmbulantPlayerView::OnViewSource() {
 	// XXXX Also check OnUpdateViewSource
 	cmd += u.get_file().c_str(); // XXXX Incorrect
 	cmd += "\"";
-	CreateProcess(_T("pword.exe"), cmd, NULL, NULL, false, 0, NULL, NULL, NULL, NULL);	
+	CreateProcess(_T("pword.exe"), cmd, NULL, NULL, false, 0, NULL, NULL, NULL, NULL);
 }
 
 void CAmbulantPlayerView::OnUpdateViewSource(CCmdUI *pCmdUI) {
@@ -460,5 +460,5 @@ void CAmbulantPlayerView::OnViewLog() {
 	CString cmd = TEXT("-opendoc \"");
 	cmd += log_name;
 	cmd += "\"";
-	CreateProcess(_T("pword.exe"), cmd, NULL, NULL, false, 0, NULL, NULL, NULL, NULL);	
+	CreateProcess(_T("pword.exe"), cmd, NULL, NULL, false, 0, NULL, NULL, NULL, NULL);
 }

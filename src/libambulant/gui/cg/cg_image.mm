@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/gui/cg/cg_gui.h"
@@ -50,8 +50,8 @@ create_cg_image_playable_factory(common::factories *factory, common::playable_fa
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCoreGraphics"), true);
     smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererImg"), true);
 	return new common::single_playable_factory<
-        cg_image_renderer, 
-        cg_image_playable_tag, 
+        cg_image_renderer,
+        cg_image_playable_tag,
         cg_image_playable_renderer_uri,
         cg_image_playable_renderer_uri2,
         cg_image_playable_renderer_uri2>(factory, mdp);
@@ -91,7 +91,7 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 #endif
 	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("cg_image_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
-	
+
 	// First we load the image data
 	if (m_data && !m_image) {
 		AM_DBG logger::get_logger()->debug("cg_image_renderer.redraw: creating image");
@@ -105,7 +105,7 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 		if (!m_image)
 			logger::get_logger()->error("%s: could not create CGImage", m_node->get_url("src").get_url().c_str());
 		m_size = lib::size(CGImageGetWidth(m_image), CGImageGetHeight(m_image));
-		
+
 	}
 
 	if (!m_image) {
@@ -115,7 +115,7 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	}
 #ifdef WITH_SMIL30
 	// Next we apply chroma keying.
-	// XXXJACK: by doing this here we disregard animation on chromaKeying 
+	// XXXJACK: by doing this here we disregard animation on chromaKeying
 	if (ri->is_chromakey_specified()) {
 		double opacity = ri->get_chromakeyopacity();
 		if (opacity != 0.0 && opacity != 1.0) {
@@ -139,7 +139,7 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	cg_window *cwindow = (cg_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 	CGContextRef myContext = [view getCGContext];
-	
+
 	// Now find both source and destination area for the bitblit.
 	rect srcrect;
 	rect dstrect;
@@ -206,7 +206,7 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	}
 #endif // WITH_UIKIT
 	CGContextDrawImage(myContext, cg_dstrect, cropped_image);
-	
+
 #ifndef WITH_UIKIT
 	if (flipped) {
 		CGContextRestoreGState(myContext);

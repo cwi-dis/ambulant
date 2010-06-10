@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #include "ambulant/lib/unix/unix_mtsync.h"
@@ -99,7 +99,7 @@ lib::unix::critical_section_cv::critical_section_cv()
 lib::unix::critical_section_cv::~critical_section_cv()
 {
 	int err;
-	
+
 	if ((err = pthread_cond_destroy(&m_condition)) != 0) {
 #ifdef MUTEX_DEBUG
 		lib::logger::get_logger()->fatal("lib::unix::critical_section_cv(): pthread_cond_destroy failed: %s", strerror(err));
@@ -133,7 +133,7 @@ bool
 lib::unix::critical_section_cv::wait(int microseconds)
 {
 	int err;
-	
+
 	if (microseconds >= 0) {
 		struct timespec ts;
 		struct timeval tv;

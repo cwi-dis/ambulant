@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_BMP_DECODER_H
@@ -57,7 +57,7 @@ class bmp_decoder : public img_decoder<DataSource, ColorType> {
 
 template <class DataSource, class ColorType>
 inline bmp_decoder<DataSource, ColorType>::bmp_decoder(DataSource* src, HDC hdc)
-:	img_decoder<DataSource, ColorType>(src, hdc), 
+:	img_decoder<DataSource, ColorType>(src, hdc),
 	m_logger(lib::logger::get_logger()) {
 }
 
@@ -78,7 +78,7 @@ inline bool bmp_decoder<DataSource, ColorType>::can_decode() {
 }
 
 template <class DataSource, class ColorType>
-inline dib_surface<ColorType>* 
+inline dib_surface<ColorType>*
 bmp_decoder<DataSource, ColorType>::decode() {
 	m_src->seekg(0);
 	BITMAPFILEHEADER bfh;
@@ -92,7 +92,7 @@ bmp_decoder<DataSource, ColorType>::decode() {
 		m_logger->error("decode() failed. Not a valid BMP");
 		return NULL;
 	}
-	
+
 	BITMAPINFOHEADER bmi;
 	if(m_src->read((BYTE*)&bmi, sizeof(bmi)) != sizeof(bmi)) {
 		m_logger->error("decode() failed. Not a valid BMP");
@@ -102,7 +102,7 @@ bmp_decoder<DataSource, ColorType>::decode() {
 		m_logger->error("decode() failed. unsupported compressed BMP format");
 		return NULL;
 	}
-	
+
 	if(bmi.biBitCount != 24 && bmi.biBitCount != 16 && bmi.biBitCount != 8) {
 		m_logger->error("decode() failed. Unsupported bits per pixel BMP");
 		return NULL;
@@ -111,7 +111,7 @@ bmp_decoder<DataSource, ColorType>::decode() {
 	int width = bmi.biWidth;
 	int height = bmi.biHeight;
 	int depth = bmi.biBitCount;
-	if (bmi.biSizeImage == 0) 
+	if (bmi.biSizeImage == 0)
 		bmi.biSizeImage = (DWORD)get_pitch_from_bpp(depth, width)*height;
 
 	ColorType *pBits = NULL;
@@ -121,7 +121,7 @@ bmp_decoder<DataSource, ColorType>::decode() {
 		m_logger->error("CreateDIBSection() failed");
 		return NULL;
 	}
-	surface<ColorType> *psurf = 
+	surface<ColorType> *psurf =
 		new surface<ColorType>(width, height, ColorType::get_bits_size(), pBits);
 	m_src->seekg(sizeof(bfh) + bmi.biSize);
 	if(depth == 24 && ColorType::get_bits_size() == 24) {
@@ -134,7 +134,7 @@ bmp_decoder<DataSource, ColorType>::decode() {
 } // namespace dx
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_GUI_BMP_DECODER_H

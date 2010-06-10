@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -48,7 +48,7 @@ class gtk_window_factory : public common::window_factory {
 	~gtk_window_factory();
 	common::gui_window* new_window(const std::string &name, lib::size bounds, common::gui_events *region);
 	common::bgrenderer *new_background_renderer(const common::region_info *src);
-		
+
 
   private:
 //	GtkWidget* m_parent_widget;
@@ -68,27 +68,27 @@ class ambulant_gtk_window : public common::gui_window {
   public:
 	ambulant_gtk_window(const std::string &name, lib::rect* bounds, common::gui_events *region);
 	~ambulant_gtk_window();
-			   
+
 	// gui_window API:
 	void need_redraw(const lib::rect &r);
 	void redraw(const lib::rect &r);
 	void redraw_now();
-	
+
 	// gui_events API:
 	bool user_event(const lib::point &where, int what=0);
 	void need_events(bool want);
 
 	// semi-private helpers:
-    
+
 	/// Set the corresponding widget.
 	void set_ambulant_widget(gtk_ambulant_widget* gtkaw);
-	
+
 	/// Get the GTK widget corresponding to this ambulant window.
 	gtk_ambulant_widget* get_ambulant_widget();
 
 	/// Set our top-level gui_player.
 	void set_gui_player(gui_player* gpl);
-	
+
 	/// Get our top-level gui_player.
 	gui_player* get_gui_player();
 
@@ -111,10 +111,10 @@ class ambulant_gtk_window : public common::gui_window {
 	void startScreenTransition();
 	void endScreenTransition();
 	void screenTransitionStep(smil2::transition_engine* engine, lib::transition_info::time_type now);
-		
+
 	void _screenTransitionPreRedraw();
 	void _screenTransitionPostRedraw(const lib::rect &r);
-	
+
   private:
 	void clear();
 	lib::rect  m_bounds;
@@ -147,7 +147,7 @@ class gtk_ambulant_widget : public GtkWidget, public ambulant::common::gui_scree
 //			   GtkWidget* parent_widget);
 	gtk_ambulant_widget(GtkWidget* widget);
 	~gtk_ambulant_widget();
-	
+
 	/// Helper: set our counterpart gui_window.
 	void set_gtk_window( ambulant_gtk_window* agtkw);
 
@@ -155,7 +155,7 @@ class gtk_ambulant_widget : public GtkWidget, public ambulant::common::gui_scree
 	ambulant_gtk_window* gtk_window();
 
 	/// Helper: get the actual GTK Widget
-	GtkWidget* get_gtk_widget();	
+	GtkWidget* get_gtk_widget();
 
 	// GTKWidget API:
 	void do_paint_event (GdkEventExpose * event);
@@ -180,10 +180,10 @@ class gtk_ambulant_widget : public GtkWidget, public ambulant::common::gui_scree
 	   is executed by the main thread */
 	static lib::critical_section s_lock;
 	static int s_widgets;
-	/* gtk_ambulant_widget::m_draw_area_tags contains the set of tags returned by 
-	   g_idle_queue_add() that are not yet processed. This set is maintained because 
+	/* gtk_ambulant_widget::m_draw_area_tags contains the set of tags returned by
+	   g_idle_queue_add() that are not yet processed. This set is maintained because
 	   in the npambulant plugin, when the plugin is unloaded all unprocessed queue entries
-	   must be removed from the main event loop, otherwise the callback will be done on 
+	   must be removed from the main event loop, otherwise the callback will be done on
 	   removed code and the browser may crash.
 	*/
 	std::set<guint> m_draw_area_tags;

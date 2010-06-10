@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -48,12 +48,12 @@ class qt_video_renderer : public qt_renderer<common::video_renderer> {
 		lib::event_processor *const evp,
 		common::factories *factory,
 		common::playable_factory_machdep *mdp);
-	
+
 	~qt_video_renderer();
 	void redraw_body(const lib::rect &r, common::gui_window* w);
   protected:
 	void _push_frame(char* frame, int size);
- 
+
  private:
 	QImage *m_image;
 	uchar* m_data;
@@ -64,7 +64,7 @@ class qt_video_renderer : public qt_renderer<common::video_renderer> {
 } // namespace qt
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 

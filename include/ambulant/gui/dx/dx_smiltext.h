@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_DX_smiltext_H
@@ -43,13 +43,13 @@ class smiltext_renderer;
 
 common::playable_factory *create_dx_smiltext_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 
-class dx_smiltext_renderer : 
+class dx_smiltext_renderer :
 		public dx_renderer_playable,
 		public smil2::smiltext_notification,
 		public smil2::smiltext_layout_provider
 /*
 	Operation of dx_smiltext_renderer.
-	
+
 	First, called from redraw(), _dx_smiltext_get_ddsurf() copies the
 	background area in m_region_dds. Then redraw() calls m_layout_engine->redraw().
 	From this, for each string (word) in a smiltext_run, if textBackgroundColor/
@@ -70,7 +70,7 @@ class dx_smiltext_renderer :
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp,
-		common::factories* factory, 
+		common::factories* factory,
 		common::playable_factory_machdep *dxplayer);
 	~dx_smiltext_renderer();
 	void start(double t);
@@ -110,7 +110,7 @@ class dx_smiltext_renderer :
 } // namespace dx
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_GUI_DX_TEXT_H

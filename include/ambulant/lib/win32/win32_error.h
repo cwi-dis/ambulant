@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_LIB_WIN32_ERROR_H
@@ -34,15 +34,15 @@ namespace lib {
 
 namespace win32 {
 
-void AMBULANTAPI win_report_error(const char *func, unsigned long  err); 
+void AMBULANTAPI win_report_error(const char *func, unsigned long  err);
 
 void AMBULANTAPI win_report_last_error(const char *func);
 
-void AMBULANTAPI win_trace_error(const char *func, unsigned long  err); 
+void AMBULANTAPI win_trace_error(const char *func, unsigned long  err);
 
 void AMBULANTAPI win_trace_last_error(const char *func);
 
-void AMBULANTAPI win_show_error(const char *func, unsigned long  err); 
+void AMBULANTAPI win_show_error(const char *func, unsigned long  err);
 
 void AMBULANTAPI win_show_last_error(const char *func);
 
@@ -51,6 +51,6 @@ void AMBULANTAPI win_show_last_error(const char *func);
 
 } // namespace lib
 
-} // namespace ambulant 
+} // namespace ambulant
 
 #endif // AMBULANT_LIB_WIN32_ERROR_H

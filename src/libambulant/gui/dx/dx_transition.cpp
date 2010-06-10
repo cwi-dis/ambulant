@@ -1,6 +1,6 @@
 // This file is part of Ambulant Player, www.ambulantplayer.org.
 //
-// Copyright (C) 2003-2010 Stichting CWI, 
+// Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.
 //
 // Ambulant Player is free software; you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
- 
+
 #include "ambulant/gui/dx/dx_transition.h"
 #include "ambulant/lib/win32/win32_error.h"
 #include "ambulant/lib/logger.h"
@@ -48,32 +48,32 @@ struct transition_factory {
 
 template <class T>
 struct trfact : public transition_factory {
-	gui::dx::dx_transition *new_transition(common::playable *playable, lib::timer_control *timer) 
+	gui::dx::dx_transition *new_transition(common::playable *playable, lib::timer_control *timer)
 	{ return new gui::dx::dx_transition_engine<T>(playable, timer);}
 };
 
 // create a map of factories
 struct transition_factories {
 	transition_factories() {
-	
+
 	// Default values
 	typedef transition_engine_fourboxwipe default_class;
 	blitter_type bt_default = bt_rectlist;
-	
+
 	///////////////////////////////////////////////////////////////
 	// Entries: transition type, transition class, blitter type
 	///////////////////////////////////////////////////////////////
-	
+
 	add(lib::barWipe, new trfact<transition_engine_barwipe>, bt_rect);
 	add(lib::boxWipe, new trfact<transition_engine_boxwipe>, bt_rect);
 	add(lib::fourBoxWipe, new trfact<transition_engine_fourboxwipe>, bt_rectlist);
 	add(lib::barnDoorWipe, new trfact<transition_engine_barndoorwipe>, bt_rect);
-	
+
 	add(lib::bowTieWipe, new trfact<transition_engine_bowtiewipe>, bt_polylist);
-	
+
 	add(lib::diagonalWipe, new trfact<transition_engine_diagonalwipe>, bt_poly);
 	add(lib::miscDiagonalWipe, new trfact<transition_engine_diagonalwipe>, bt_poly);
-	
+
 	add(lib::veeWipe, new trfact<default_class>, bt_default);
 	add(lib::barnVeeWipe, new trfact<default_class>, bt_default);
 	add(lib::zigZagWipe, new trfact<default_class>, bt_default);
@@ -88,9 +88,9 @@ struct transition_factories {
 	add(lib::roundRectWipe, new trfact<default_class>, bt_default);
 	add(lib::starWipe, new trfact<default_class>, bt_default);
 	add(lib::miscShapeWipe, new trfact<default_class>, bt_default);
-	
+
 	add(lib::clockWipe, new trfact<transition_engine_clockwipe>, bt_poly);
-	
+
 	add(lib::pinWheelWipe, new trfact<default_class>, bt_default);
 	add(lib::singleSweepWipe, new trfact<default_class>, bt_default);
 	add(lib::fanWipe, new trfact<default_class>, bt_default);
@@ -98,27 +98,27 @@ struct transition_factories {
 	add(lib::doubleSweepWipe, new trfact<default_class>, bt_default);
 	add(lib::saloonDoorWipe, new trfact<default_class>, bt_default);
 	add(lib::windshieldWipe, new trfact<default_class>, bt_default);
-	
+
 	add(lib::snakeWipe, new trfact<transition_engine_snakewipe>, bt_rectlist);
-	
+
 	add(lib::spiralWipe, new trfact<default_class>, bt_default);
 	add(lib::parallelSnakesWipe, new trfact<default_class>, bt_default);
 	add(lib::boxSnakesWipe, new trfact<default_class>, bt_default);
 	add(lib::waterfallWipe, new trfact<transition_engine_waterfallwipe>, bt_rectlist);
-	
+
 	add(lib::pushWipe, new trfact<transition_engine_pushwipe>, bt_r1r2r3r4);
 	add(lib::slideWipe, new trfact<transition_engine_slidewipe>, bt_r1r2r3r4);
-	
+
 	add(lib::audioVisualFade, new trfact<transition_engine_fade>, bt_fade);
 	add(lib::fade, new trfact<transition_engine_fade>, bt_fade);
 	}
-	
+
 	~transition_factories() {
 		std::map<lib::transition_type, transition_factory*>::iterator it;
 		for(it=trfactmap.begin();it!=trfactmap.end();it++)
 			delete (*it).second;
 	}
-	
+
 	std::map<lib::transition_type, transition_factory*> trfactmap;
 	std::map<lib::transition_type, smil2::blitter_type> btmap;
 
@@ -126,7 +126,7 @@ struct transition_factories {
 		trfactmap[id] = f;
 		btmap[id] = bt;
 	}
-	
+
 };
 
 static transition_factories transition_factories_inst;
@@ -134,9 +134,9 @@ static transition_factories transition_factories_inst;
 /////////////////////////////////
 // Public interface
 
-gui::dx::dx_transition *gui::dx::make_transition(lib::transition_type id, 
+gui::dx::dx_transition *gui::dx::make_transition(lib::transition_type id,
 	common::playable *playable, lib::timer_control *timer) {
-	std::map<lib::transition_type, transition_factory*>& m = 
+	std::map<lib::transition_type, transition_factory*>& m =
 		transition_factories_inst.trfactmap;
 	std::map<lib::transition_type, transition_factory*>::iterator it = m.find(id);
 	if(it == m.end()) {
@@ -147,7 +147,7 @@ gui::dx::dx_transition *gui::dx::make_transition(lib::transition_type id,
 }
 
 smil2::blitter_type gui::dx::get_transition_blitter_type(lib::transition_type id) {
-	std::map<lib::transition_type, smil2::blitter_type>& m = 
+	std::map<lib::transition_type, smil2::blitter_type>& m =
 		transition_factories_inst.btmap;
 	std::map<lib::transition_type, smil2::blitter_type>::iterator it = m.find(id);
 	if(it == m.end()) {
@@ -211,7 +211,7 @@ HRGN create_rectlist_region(gui::dx::dx_transition *tr) {
 	rectlist_adapter *dummy = (rectlist_adapter*)p;
 	std::vector< lib::rect >& v = dummy->get_rectlist();
 	if(v.empty()) {
-		lib::logger::get_logger()->trace("%s: Returning empty region. Rectlist is empty!", 
+		lib::logger::get_logger()->trace("%s: Returning empty region. Rectlist is empty!",
 			tr->get_type_str().c_str());
 		return empty_region();
 	}
@@ -221,10 +221,10 @@ HRGN create_rectlist_region(gui::dx::dx_transition *tr) {
 		lib::rect& rect = *it;
 		HRGN next = CreateRectRgn(rect.left(), rect.top(), rect.right(), rect.bottom());
 		CombineRgn(hrgn, hrgn, next, RGN_OR);
-		DeleteObject((HGDIOBJ)next); 
+		DeleteObject((HGDIOBJ)next);
 		if(!hrgn) {
 			win_report_last_error("CombineRgn()");
-			lib::logger::get_logger()->trace("%s: Returning empty region due to a fault", 
+			lib::logger::get_logger()->trace("%s: Returning empty region due to a fault",
 				tr->get_type_str().c_str());
 			return empty_region();
 		}
@@ -259,7 +259,7 @@ HRGN create_poly_region(gui::dx::dx_transition *tr) {
 #else
 	HRGN hrgn = CreatePolygonRgn(ppt, int(v.size()), ALTERNATE);
 #endif
-	delete[] ppt;	
+	delete[] ppt;
 	if(!hrgn) {
 		win_report_last_error("CreatePolygonRgn()");
 		return empty_region();
@@ -277,7 +277,7 @@ HRGN create_polylist_region(gui::dx::dx_transition *tr) {
 	for(it = vv.begin();it!=vv.end();it++) {
 		std::vector<lib::point>& v = *it; int i = 0;
 		POINT *ppt = new POINT[v.size()];
-		for(std::vector<lib::point>::iterator pit = v.begin();pit!=v.end();pit++,i++) 
+		for(std::vector<lib::point>::iterator pit = v.begin();pit!=v.end();pit++,i++)
 			{ppt[i].x = (*pit).x; ppt[i].y = (*pit).y;}
 #ifdef AMBULANT_PLATFORM_WIN32_WCE
 		// XXXJACK: Stopgap: Windows Mobile doesn't seem to have polygon regions.
@@ -286,13 +286,13 @@ HRGN create_polylist_region(gui::dx::dx_transition *tr) {
 #else
 		HRGN next = CreatePolygonRgn(ppt, int(v.size()), ALTERNATE);
 #endif
-		delete[] ppt;	
+		delete[] ppt;
 		if(!next) {
 			win_report_last_error("CreatePolygonRgn()");
 			next = empty_region();
 		}
 		CombineRgn(hrgn, hrgn, next, RGN_OR);
-		DeleteObject((HGDIOBJ)next); 
+		DeleteObject((HGDIOBJ)next);
 		if(!hrgn) {
 			win_report_last_error("CombineRgn()");
 			return empty_region();
@@ -304,7 +304,7 @@ HRGN create_polylist_region(gui::dx::dx_transition *tr) {
 void clipto_r1r2r3r4(gui::dx::dx_transition *tr, lib::rect& src, lib::rect& dst) {
 	smil2::transition_blitclass_r1r2r3r4 *p = tr->get_as_r1r2r3r4_blitter();
 	assert(p);
-	gui::dx::r1r2r3r4_adapter *dummy = (gui::dx::r1r2r3r4_adapter*)p;	
+	gui::dx::r1r2r3r4_adapter *dummy = (gui::dx::r1r2r3r4_adapter*)p;
 	lib::rect& r3 = dummy->get_src_rect(); r3.translate(src.left_top());
 	lib::rect& r4 = dummy->get_dst_rect(); r4.translate(dst.left_top());
 	src &= r3;

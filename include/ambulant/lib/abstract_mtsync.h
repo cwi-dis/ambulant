@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_LIB_ABSTRACT_MTSYNC_H
@@ -38,10 +38,10 @@ namespace lib {
 class AMBULANTAPI base_critical_section {
   public:
 	virtual ~base_critical_section() {}
-	
+
 	/// Enter a critical section.
 	virtual void enter() = 0;
-	
+
 	/// Leave a critical section.
 	virtual void leave() = 0;
 };
@@ -49,7 +49,7 @@ class AMBULANTAPI base_critical_section {
 class AMBULANTAPI base_critical_section_cv {
   public:
     virtual ~base_critical_section_cv() {};
-	
+
 	virtual void signal() = 0;
 //	virtual void signal_all() = 0;
 	virtual bool wait(int microseconds = -1) = 0;

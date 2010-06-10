@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* 
- * @$Id$ 
+/*
+ * @$Id$
  */
 
 #ifndef AMBULANT_GUI_DX_WINDOW_H
@@ -51,13 +51,13 @@ class viewport;
 
 class dx_window : public common::gui_window {
   public:
-	dx_window(const std::string& name, 
+	dx_window(const std::string& name,
 		lib::size bounds,
 		region *rgn,
 		common::window_factory *wf,
 		viewport* m_viewport);
 	~dx_window();
-	
+
 	void need_redraw(const lib::rect& r);
 	void redraw(const lib::rect& r);
 	void need_redraw();
@@ -67,7 +67,7 @@ class dx_window : public common::gui_window {
 	region *get_region() { return m_rgn;}
 	void lock_redraw();
 	void unlock_redraw();
-	
+
 	viewport *get_viewport() { return m_viewport;}
   private:
 	void _need_redraw(const lib::rect& r);
@@ -79,9 +79,9 @@ class dx_window : public common::gui_window {
 	lib::rect m_viewrc;
 	common::window_factory *m_wf;
     viewport* m_viewport;
-    
+
     // lock/unlock redraw
-	lib::critical_section m_redraw_rect_lock; 
+	lib::critical_section m_redraw_rect_lock;
 	int m_locked;
 	lib::rect m_redraw_rect;
 	bool m_redraw_rect_valid;
@@ -90,7 +90,7 @@ class dx_window : public common::gui_window {
 } // namespace dx
 
 } // namespace gui
- 
+
 } // namespace ambulant
 
 #endif // AMBULANT_GUI_DX_WINDOW_H

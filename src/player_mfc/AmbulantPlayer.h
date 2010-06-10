@@ -1,7 +1,7 @@
 /*
  * This file is part of Ambulant Player, www.ambulantplayer.org.
  *
- * Copyright (C) 2003-2010 Stichting CWI, 
+ * Copyright (C) 2003-2010 Stichting CWI,
  * Science Park 123, 1098 XG Amsterdam, The Netherlands.
  *
  * Ambulant Player is free software; you can redistribute it and/or modify
@@ -44,7 +44,7 @@ class CAmCommandLineInfo : public CCommandLineInfo {
 		} else {
 			if (m_strFileName.IsEmpty()) m_strFileName = pszParam;
 		}
-		
+
 		if(bLast) {
 			m_nShellCommand = m_strFileName.IsEmpty()?FileNew:FileOpen;
 		}
@@ -68,7 +68,7 @@ public:
 	CSingleDocTemplate* m_pDocTemplate;
 	bool m_autostart;
 	CString m_recentUrl;
-	
+
 // Implementation
 	afx_msg void OnAppAbout();
 	afx_msg void OnAppHelp();
