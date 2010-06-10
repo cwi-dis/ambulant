@@ -1,3 +1,10 @@
+2010-06-09 17:15  jackjansen
+
+	* Getting started on indentation cleanup: all sources are now tab
+	  or 4-space indented.
+
+	  Also merged last microfix from 2.2 branch
+
 2010-06-08 16:07  jackjansen
 
 	* Getting started on a script to test/fix C++ indentation
