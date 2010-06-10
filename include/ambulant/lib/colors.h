@@ -108,10 +108,10 @@ struct color_trible {
 	void red(T _r) { r = uchar(_r);}
 	
 	color_trible& operator=(color_t c) {
-		 b = bluec(c);
-		 g = greenc(c); 
-		 r = redc(c);
-		 return *this;
+		b = bluec(c);
+		g = greenc(c); 
+		r = redc(c);
+		return *this;
 	}
 	
 	bool operator==(color_trible o) const {
@@ -133,10 +133,11 @@ struct color_trible {
 };
 
 // compute chroma_low, chroma_high
-void compute_chroma_range(lib::color_t chroma_key,
-			  lib::color_t chroma_keytolerance,
-			  lib::color_t* p_chroma_low,
-			  lib::color_t* p_chroma_high);
+void compute_chroma_range(
+	lib::color_t chroma_key,
+	lib::color_t chroma_keytolerance,
+	lib::color_t* p_chroma_low,
+	lib::color_t* p_chroma_high);
 
 // test if given color 'c' is between' c_low' and 'c_high'
 bool color_t_in_range(lib::color_t c, lib::color_t c_low, lib::color_t c_high);

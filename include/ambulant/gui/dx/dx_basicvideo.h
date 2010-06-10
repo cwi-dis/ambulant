@@ -65,7 +65,7 @@ class dx_basicvideo_renderer : public dx_renderer_playable {
   private:
 	void update_callback();
 	void schedule_update();
- 	basicvideo_player *m_player;
+	basicvideo_player *m_player;
 	lib::event *m_update_event;
 	lib::critical_section m_cs;
 	

@@ -47,12 +47,8 @@ class qt_window_factory : public common::window_factory {
   public:
 	qt_window_factory( QWidget* parent_widget, int top_offset, gui_player *gpl);
 		
-	common::gui_window* new_window(
-	   const std::string &name,
-        lib::size bounds,
-        common::gui_events *region);
-        common::bgrenderer *new_background_renderer(
-        const common::region_info *src);
+	common::gui_window* new_window(const std::string &name, lib::size bounds, common::gui_events *region);
+    common::bgrenderer *new_background_renderer(const common::region_info *src);
         
   private:
 	QWidget* m_parent_widget;
@@ -82,15 +78,16 @@ class qt_renderer_factory : public common::playable_factory {
 		lib::event_processor *evp,
 		net::audio_datasource *src);
   protected:
-  	common::factories *m_factory;
+	common::factories *m_factory;
 };
 
 /// Qt implementation of another playable_factory that handles video.
 
 class qt_video_factory : public common::playable_factory {
   public:
-  	qt_video_factory(common::factories *factory)
-	:   m_factory(factory) {}
+	qt_video_factory(common::factories *factory)
+	:   m_factory(factory)
+	{}
 	~qt_video_factory();
 
 	bool supports(common::renderer_select *rs);

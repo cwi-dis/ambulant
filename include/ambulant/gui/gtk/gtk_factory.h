@@ -46,8 +46,7 @@ class gtk_window_factory : public common::window_factory {
   public:
 	gtk_window_factory(gtk_ambulant_widget* gtk_widget, common::gui_player* gpl);
 	~gtk_window_factory();
-	common::gui_window* new_window(const std::string &name, lib::size bounds,
-				       common::gui_events *region);
+	common::gui_window* new_window(const std::string &name, lib::size bounds, common::gui_events *region);
 	common::bgrenderer *new_background_renderer(const common::region_info *src);
 		
 
@@ -67,9 +66,7 @@ class gtk_window_factory : public common::window_factory {
 
 class ambulant_gtk_window : public common::gui_window {
   public:
-	ambulant_gtk_window(const std::string &name,
-			   lib::rect* bounds,
-			   common::gui_events *region);
+	ambulant_gtk_window(const std::string &name, lib::rect* bounds, common::gui_events *region);
 	~ambulant_gtk_window();
 			   
 	// gui_window API:

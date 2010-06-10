@@ -12,6 +12,9 @@ class IndentNanny:
     open_editor = True
     
     foreign_pattern=re.compile(r"/\*AMBULANT_FOREIGN_INDENT_RULES\*/")
+    skip_patterns=[
+        "ambulant/config"
+    ]
     
     GOOD_PATTERNS=[
         r"^[\t ]*$",        # Lines with only whitespace, including empty lines
@@ -104,11 +107,21 @@ class IndentNanny:
                 break
         return rv
         
+    def match_skip_pattern(self, fn):
+        for pat in self.skip_patterns:
+            if pat in fn:
+                return True
+        return False
+        
     def check(self, filename):
         rv = True
         if os.path.isdir(filename):
             for root, dirs, files in os.walk(filename):
+                if self.match_skip_pattern(root):
+                    continue
                 for fn in files:
+                    if self.match_skip_pattern(fn):
+                        continue
                     _, ext = os.path.splitext(fn)
                     if ext in ('.c', '.h', '.cpp', '.cc', '.C', '.hh', '.H', '.m', '.mm'):
                         ok = self.check_file(os.path.join(root, fn))

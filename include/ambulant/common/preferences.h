@@ -52,7 +52,7 @@ class AMBULANTAPI preferences {
 	static void set_preferences_singleton(preferences *prefs);
 
   public:
-  	/// True if this user has seen the Welcome.smil document.
+	/// True if this user has seen the Welcome.smil document.
 	bool m_welcome_seen;
 
 	// Where to log

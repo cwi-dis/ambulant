@@ -39,10 +39,10 @@ namespace qt {
  
 void 
 qt_image_blend (QImage dst, const lib::rect dst_rc, 
-		     QImage src, const lib::rect src_rc,
-		     double opacity_in, double opacity_out,
-		     const lib::color_t chroma_low, 
-		     const lib::color_t chroma_high);
+	QImage src, const lib::rect src_rc,
+	double opacity_in, double opacity_out,
+	const lib::color_t chroma_low, 
+	const lib::color_t chroma_high);
 
 // convert QColor <-> color_t
 color_t QColor2color_t(QColor c);

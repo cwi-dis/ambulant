@@ -37,7 +37,7 @@ namespace lib {
 
 class AMBULANTAPI event_processor_observer {
   public:
-	  virtual ~event_processor_observer() {};
+	virtual ~event_processor_observer() {};
 	virtual void lock_redraw() = 0;
 	virtual void unlock_redraw() = 0;
 };
@@ -103,7 +103,7 @@ namespace lib {
 /// complete behaviour.
 class event_processor_impl : public event_processor, public BASE_THREAD {
   public:
- 	event_processor_impl(timer *t);	
+	event_processor_impl(timer *t);	
 	~event_processor_impl();	
 	
     timer *get_timer() const;

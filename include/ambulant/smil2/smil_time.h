@@ -142,7 +142,6 @@ class smil_time {
 	}
 	
 	smil_time f_rem(const smil_time& m) const {
-	  //assert(false);// not impl
 		return 0; 
 	}
 	

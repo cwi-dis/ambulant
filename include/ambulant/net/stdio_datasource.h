@@ -58,9 +58,9 @@ class stdio_datasource : virtual public datasource, virtual public lib::ref_coun
   public:
 	stdio_datasource();
 	stdio_datasource(const url& url, FILE* file);
-  	~stdio_datasource();
-  	
-  	void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback);
+	~stdio_datasource();
+
+	void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback);
 #ifdef WITH_SEAMLESS_PLAYBACK
 	void start_prefetch(ambulant::lib::event_processor *evp){};
 #endif
@@ -73,8 +73,8 @@ class stdio_datasource : virtual public datasource, virtual public lib::ref_coun
 	int size() const;
   
 	void read(char *data, int size);
-  	
-  	friend inline std::ostream& operator<<(std::ostream& os, const stdio_datasource& n) {
+
+	friend inline std::ostream& operator<<(std::ostream& os, const stdio_datasource& n) {
 		os << "stdio_datasource(" << (void *)&n << ", source=" << n.m_url.get_url() << ")";
 		return os;
 	}

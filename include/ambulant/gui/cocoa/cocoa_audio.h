@@ -61,7 +61,7 @@ class cocoa_audio_playable :
   private:
 	void check_still_playing();
 	net::url m_url;
-  	NSSound *m_sound;
+	NSSound *m_sound;
 	critical_section m_lock;
 };
 

@@ -59,11 +59,11 @@ class posix_datasource_factory : public raw_datasource_factory {
 class posix_datasource : virtual public datasource, virtual public lib::ref_counted_obj {
   public:
 	posix_datasource(std::string filename, int file);
-  	~posix_datasource();
-  	
-  	void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback);
+	~posix_datasource();
+
+	void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback);
 #ifdef WITH_SEAMLESS_PLAYBACK
-  	void start_prefetch(ambulant::lib::event_processor *evp){};
+	void start_prefetch(ambulant::lib::event_processor *evp){};
 #endif
 	void stop();
 	void readdone(int len);
@@ -74,8 +74,8 @@ class posix_datasource : virtual public datasource, virtual public lib::ref_coun
 	int size() const;
   
 	void read(char *data, int size);
-  	
-  	friend inline std::ostream& operator<<(std::ostream& os, const posix_datasource& n) {
+	
+	friend inline std::ostream& operator<<(std::ostream& os, const posix_datasource& n) {
 		os << "posix_datasource(" << (void *)&n << ", \"" << n.m_filename << "\")";
 		return os;
 	}
@@ -85,9 +85,9 @@ class posix_datasource : virtual public datasource, virtual public lib::ref_coun
     void read_file();
 	
 	const std::string m_filename;
-  	databuffer *m_buffer;
+	databuffer *m_buffer;
 
-  	off_t m_filesize;
+	off_t m_filesize;
 	int m_stream;
 	bool m_end_of_file;
 	lib::critical_section m_lock;

@@ -118,7 +118,7 @@ class qt_renderer : public RP_Base {
 		RP_Base::start(where);
 	}
 	
- 	virtual bool stop() {
+	virtual bool stop() {
 		stop_transition();
 		return RP_Base::stop();
 	}

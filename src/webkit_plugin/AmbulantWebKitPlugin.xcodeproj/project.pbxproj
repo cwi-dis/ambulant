@@ -364,6 +364,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
+				PREBUILT_AMBULANT_ROOT = "${SOURCE_ROOT}/../../build-3264";
 				SDKROOT = macosx10.4;
 			};
 			name = "Release-10.4";
@@ -413,6 +414,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
+				PREBUILT_AMBULANT_ROOT = "${SOURCE_ROOT}/../../build-3264";
 				SDKROOT = "";
 			};
 			name = "Debug-10.6";
@@ -462,6 +464,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
+				PREBUILT_AMBULANT_ROOT = "${SOURCE_ROOT}/../../build-3264";
 				SDKROOT = "";
 			};
 			name = "Release-10.6";
@@ -540,6 +543,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
+				PREBUILT_AMBULANT_ROOT = "${SOURCE_ROOT}/../../build-3264";
 				SDKROOT = macosx10.4;
 			};
 			name = "Release-10.4-Python";

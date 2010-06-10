@@ -59,14 +59,13 @@ class qt_image_renderer : public qt_renderer<renderer_playable_dsall> {
 		event_processor *const evp,
 		common::factories *fp,
 		common::playable_factory_machdep *mdp)
-	  :	qt_renderer<renderer_playable_dsall>(context, cookie, node, evp, fp, mdp),
-	 	m_image(NULL),
+	:	qt_renderer<renderer_playable_dsall>(context, cookie, node, evp, fp, mdp),
+		m_image(NULL),
 		m_image_loaded(false)
-	 	{};
+	{};
 	~qt_image_renderer();
 
-	void redraw_body(const rect &dirty,
-			 gui_window *window);
+	void redraw_body(const rect &dirty, gui_window *window);
 
  private:
 	QImage m_image;

@@ -54,7 +54,7 @@ void ffmpeg_init();
 class ffmpeg_codec_id {
   public:
 	static ffmpeg_codec_id* instance();
-  	~ffmpeg_codec_id() {};
+	~ffmpeg_codec_id() {};
 
 	void add_codec(const char* codec_name, 	CodecID id);
 	CodecID get_codec_id(const char* codec_name);
@@ -74,17 +74,17 @@ class ffmpeg_demux : public abstract_demux {
 	void add_datasink(demux_datasink *parent, int stream_index);
 	void remove_datasink(int stream_index);
 	int audio_stream_nr();
-  	int video_stream_nr();
+	int video_stream_nr();
     // XXX this should also be timestamp_t instead of double
-  	double duration();
-  	int nstreams();
+	double duration();
+	int nstreams();
 	void seek(timestamp_t time);
 #ifdef WITH_SEAMLESS_PLAYBACK
 	void set_clip_end(timestamp_t clip_end);
 #endif
 	void read_ahead(timestamp_t time);
 	audio_format& get_audio_format();
-  	video_format& get_video_format();
+	video_format& get_video_format();
 	void cancel();
 	timestamp_t get_clip_end(); 
 	timestamp_t get_clip_begin();
@@ -93,14 +93,14 @@ class ffmpeg_demux : public abstract_demux {
 	unsigned long run();
   private:
 	audio_format m_audio_fmt;
-  	video_format m_video_fmt;
+	video_format m_video_fmt;
 	demux_datasink *m_sinks[MAX_STREAMS];
 	demux_datasink *m_current_sink;
 	AVFormatContext *m_con;
 	int m_nstream;
 	lib::critical_section m_lock;
-  	timestamp_t m_clip_begin;
-  	timestamp_t m_clip_end;
+	timestamp_t m_clip_begin;
+	timestamp_t m_clip_end;
 	bool m_clip_begin_changed;	// True if m_clip_begin has changed.
 };
 

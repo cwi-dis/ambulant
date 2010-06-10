@@ -52,7 +52,7 @@ namespace ambulant {
 namespace net {
 
 	
-  	typedef long long int timestamp_t; ///< Time value in microseconds.
+typedef long long int timestamp_t; ///< Time value in microseconds.
 	
 /// This struct completely describes an audio format.
 /// If name is "" the format is linear samples encoded
@@ -210,7 +210,8 @@ class AMBULANTAPI audio_format_choices {
 
 struct ts_packet_t { timestamp_t timestamp; void* data; int size; 
 	ts_packet_t(timestamp_t t, void* d, int s) 
-	  : timestamp(t), data(d), size(s) {}
+    :   timestamp(t), data(d), size(s)
+    {}
 };
 /// The interface to an object that supplies data to a consumer.
 /// The consumer calls start() whenever it wants
@@ -219,7 +220,7 @@ struct ts_packet_t { timestamp_t timestamp; void* data; int size;
 /// calls size(), get_read_ptr() and end_of_file() to get available data size,
 /// pointer and status. Whenever the consumer has consumed some bytes it calls
 /// read_done().
-class AMBULANTAPI datasource : virtual public ambulant::lib::ref_counted {  	
+class AMBULANTAPI datasource : virtual public ambulant::lib::ref_counted {
   public:
 	virtual ~datasource() {};
 
@@ -248,7 +249,7 @@ class AMBULANTAPI datasource : virtual public ambulant::lib::ref_counted {
 	virtual void readdone(int len) = 0;
 };
 
-class AMBULANTAPI pkt_datasource : virtual public ambulant::lib::ref_counted {  	
+class AMBULANTAPI pkt_datasource : virtual public ambulant::lib::ref_counted {
   public:
 	virtual ~pkt_datasource() {};
 
@@ -319,16 +320,16 @@ class raw_audio_datasource:
 {
   public:
 	raw_audio_datasource(datasource* src) : 
-  		m_src(src),
+		m_src(src),
 		m_fmt(audio_format(0,0,0)),
 		m_duration(false,0.0)  {};
-  	~raw_audio_datasource() {};
-  	
+	~raw_audio_datasource() {};
+
 
     void start(lib::event_processor *evp, lib::event *callback) { m_src->start(evp,callback); };
 	void stop() { m_src->stop(); };  
 	void read_ahead(timestamp_t time){};
-  	void seek(timestamp_t time){};
+	void seek(timestamp_t time){};
 #ifdef WITH_SEAMLESS_PLAYBACK
 	void set_clip_end(timestamp_t clip_end){};
 	void start_prefetch(lib::event_processor *evp) {};
@@ -337,7 +338,7 @@ class raw_audio_datasource:
     void readdone(int len) { m_src->readdone(len); };
     bool end_of_file() { return m_src->end_of_file(); };
 	bool buffer_full() { return false; };
-  	timestamp_t get_clip_end() { return -1; };
+	timestamp_t get_clip_end() { return -1; };
 	timestamp_t get_clip_begin() { return 0; };
 	timestamp_t get_start_time() { return 0; };
 	char* get_read_ptr() { return m_src->get_read_ptr(); };
@@ -348,8 +349,8 @@ class raw_audio_datasource:
   
   private:
 	datasource* m_src;
-  	audio_format m_fmt;
-  	common::duration m_duration;
+	audio_format m_fmt;
+	common::duration m_duration;
 		
 };
 
@@ -360,7 +361,7 @@ class raw_audio_datasource:
 // a datasource for that.
 class video_datasource : virtual public lib::ref_counted_obj {
   public:
-  	virtual ~video_datasource() {};
+	virtual ~video_datasource() {};
 
 	/// Signals the type of pixels the receiver wants.
 	virtual void set_pixel_layout(pixel_order l) = 0;
@@ -381,17 +382,17 @@ class video_datasource : virtual public lib::ref_counted_obj {
 	virtual void start_frame(lib::event_processor *evp, lib::event *callback, timestamp_t pts) = 0;
 	
 	/// Called by the client to indicate it wants no more data.
-  	virtual void stop() = 0;
+	virtual void stop() = 0;
 	
 	/// Return true if all data has been consumed.
-  	virtual bool end_of_file() = 0;
-  	
+	virtual bool end_of_file() = 0;
+	
 	/// Return the current video frame.
 	/// Should only be called from the callback routine.
 	/// The timestamp of the frame and the size of the data returned.
 	/// When the receiver is done with this frame (and any preceding frames)
 	/// it should call frame_processed() or frame_processed_keepdata().
-  	virtual char * get_frame(timestamp_t now, timestamp_t *ts, int *size) = 0; 
+	virtual char * get_frame(timestamp_t now, timestamp_t *ts, int *size) = 0; 
 
 	/// Returns the width of the image returned by get_frame.
 	virtual int width() = 0;
@@ -402,11 +403,11 @@ class video_datasource : virtual public lib::ref_counted_obj {
 	virtual timestamp_t frameduration() = 0;
 	
 	/// Called by the client to indicate all frames up to and including timestamp are consumed.
-  	virtual void frame_processed(timestamp_t timestamp) = 0;
+	virtual void frame_processed(timestamp_t timestamp) = 0;
 	
 	/// Called by the client to indicate it wants to take ownership of this buffer.
 	/// Must only be called with most recent results from get_frame().
-  	virtual void frame_processed_keepdata(timestamp_t timestamp, char *data) = 0;
+	virtual void frame_processed_keepdata(timestamp_t timestamp, char *data) = 0;
 	
 	/// Tells the datasource to start reading data starting from time t.
 	virtual void read_ahead(timestamp_t time) = 0;
@@ -435,7 +436,7 @@ class AMBULANTAPI raw_datasource_factory {
 	
 	/// Create a new datasource to read the given URL.
 	/// Returns NULL if this factory cannot create such a datasource.
-  	virtual datasource* new_raw_datasource(const net::url& url) = 0;
+	virtual datasource* new_raw_datasource(const net::url& url) = 0;
 };
 
 /// Interface to create an audio_datasource for a given URL.
@@ -450,7 +451,7 @@ class AMBULANTAPI audio_datasource_factory  {
 	/// The fmt parameter describes the audio formats the client can handle,
 	/// the actual format can then be obtained from the audio_datasource returned.
 	/// Returns NULL if this factory cannot create such a datasource.
-  	virtual audio_datasource* new_audio_datasource(const net::url& url, const audio_format_choices& fmt, timestamp_t clip_begin, timestamp_t clip_end) = 0;
+	virtual audio_datasource* new_audio_datasource(const net::url& url, const audio_format_choices& fmt, timestamp_t clip_begin, timestamp_t clip_end) = 0;
 };
 
 class AMBULANTAPI pkt_audio_datasource_factory  {
@@ -461,7 +462,7 @@ class AMBULANTAPI pkt_audio_datasource_factory  {
 	/// The fmt parameter describes the audio formats the client can handle,
 	/// the actual format can then be obtained from the audio_datasource returned.
 	/// Returns NULL if this factory cannot create such a datasource.
-  	virtual pkt_audio_datasource* new_pkt_audio_datasource(const net::url& url, const audio_format_choices& fmt, timestamp_t clip_begin, timestamp_t clip_end) = 0;
+	virtual pkt_audio_datasource* new_pkt_audio_datasource(const net::url& url, const audio_format_choices& fmt, timestamp_t clip_begin, timestamp_t clip_end) = 0;
 };
 
 /// Factory for finding an audio format parser.
@@ -486,7 +487,7 @@ class audio_filter_finder {
     virtual ~audio_filter_finder() {};
 	
 	/// Create a filter that converts audio data from src to a format compatible with fmts.
-  	virtual audio_datasource* new_audio_filter(audio_datasource *src, const audio_format_choices& fmts) = 0;
+	virtual audio_datasource* new_audio_filter(audio_datasource *src, const audio_format_choices& fmts) = 0;
 };
 
 class audio_decoder_finder {
@@ -494,7 +495,7 @@ class audio_decoder_finder {
     virtual ~audio_decoder_finder() {};
 	
 	/// Create a filter that converts audio data from src to a format compatible with fmts.
-  	virtual audio_datasource* new_audio_decoder(pkt_audio_datasource *src, const audio_format_choices& fmts) = 0;
+	virtual audio_datasource* new_audio_decoder(pkt_audio_datasource *src, const audio_format_choices& fmts) = 0;
 };
 
 /// Factory for finding a raw data filter.
@@ -515,7 +516,7 @@ class AMBULANTAPI video_datasource_factory  {
     virtual ~video_datasource_factory() {};
 
 	/// Create a new video_datasource to read the given URL.
-  	virtual video_datasource* new_video_datasource(const net::url& url, timestamp_t clip_begin, timestamp_t clip_end) = 0;
+	virtual video_datasource* new_video_datasource(const net::url& url, timestamp_t clip_begin, timestamp_t clip_end) = 0;
 };
 
 /// Implementation of all datasource factories.
@@ -531,16 +532,16 @@ class AMBULANTAPI datasource_factory :
 {
   public:
 	datasource_factory() {};
-  	~datasource_factory();
+	~datasource_factory();
   
 	/// Client interface: obtain a datasource for the given URL.
-  	datasource* new_raw_datasource(const net::url& url);
+	datasource* new_raw_datasource(const net::url& url);
 	
 	/// Client interface: obtain an audio_datasource for the given URL and format.
 	audio_datasource* new_audio_datasource(const net::url& url, const audio_format_choices& fmt, timestamp_t clip_begin, timestamp_t clip_end);
 	
 	/// Client interface: obtain a video datasource for the given URL.
-  	video_datasource* new_video_datasource(const net::url& url, timestamp_t clip_begin, timestamp_t clip_end);
+	video_datasource* new_video_datasource(const net::url& url, timestamp_t clip_begin, timestamp_t clip_end);
 	
 	/// Semi-private interface: obtain an audio filter datasource.
 	audio_datasource* new_audio_filter(const net::url& url, const audio_format_choices& fmt, audio_datasource* ds);
@@ -549,7 +550,7 @@ class AMBULANTAPI datasource_factory :
 //	audio_datasource* new_audio_decoder(const net::url& url, const audio_format_choices& fmt, pkt_audio_datasource* ds);
 	
 	/// Provider interface: add a raw_datasource_factory.
-  	void add_raw_factory(raw_datasource_factory *df);
+	void add_raw_factory(raw_datasource_factory *df);
 	
 	/// Provider interface: add an audio_datasource_factory.
 	void add_audio_factory(audio_datasource_factory *df);

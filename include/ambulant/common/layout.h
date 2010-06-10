@@ -70,7 +70,7 @@ class animation_notification {
   public:
 	virtual ~animation_notification(){}
   
-  	/// Called by the animator after some animation parameter has changed.
+	/// Called by the animator after some animation parameter has changed.
 	virtual void animated() = 0;
 };
 
@@ -114,7 +114,7 @@ class AMBULANTAPI gui_events  {
   public:
     virtual ~gui_events(){}
     
-  	/// Request to redraw a certain area.
+	/// Request to redraw a certain area.
 	virtual void redraw(const lib::rect &dirty, gui_window *window) = 0;
 	
 	/// Signals a mouse click or mouse move. Returns true if handled.

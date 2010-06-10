@@ -294,10 +294,10 @@ class smiltext_engine {
 class smiltext_metrics {
   public:
 	smiltext_metrics(unsigned int ascent, unsigned int descent, unsigned int height,
-			 unsigned int width, unsigned int line_spacing)
-	  :	m_ascent(ascent), 
+		unsigned int width, unsigned int line_spacing)
+	:	m_ascent(ascent), 
 		m_descent(descent), 
-	  	m_height(height),
+		m_height(height),
 		m_width(width),
 		m_line_spacing(line_spacing) {}
 

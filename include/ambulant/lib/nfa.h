@@ -110,7 +110,7 @@ class nfa_matcher;
 // and is the owner of the NFA nodes.
 class nfa_expr {
   public:
-  	typedef unsigned char uchar_t;
+	typedef unsigned char uchar_t;
 	typedef std::string::size_type size_type;
 
 	nfa_expr() : accept(0), start(0) {}
@@ -334,7 +334,7 @@ class nfa_expr {
 	void verify1() const;
 	
 	// match algorithm execution 
-  	static void closure(std::set<nfa_node*>& nodes, std::stack<nfa_node*>& stack);
+	static void closure(std::set<nfa_node*>& nodes, std::stack<nfa_node*>& stack);
 	static void  move(std::set<nfa_node*>& nodes, std::stack<nfa_node*>& stack, int edge);
 	bool accepts_state(const std::set<nfa_node*>& nodes) const {
 		return !nodes.empty() && nodes.find(accept) != nodes.end();
@@ -347,7 +347,7 @@ class nfa_expr {
 
 class nfa_matcher {
   public:
-  	typedef unsigned char uchar_t;
+	typedef unsigned char uchar_t;
 	typedef std::string::size_type size_type;  
 	enum {max_group = 32};
 	

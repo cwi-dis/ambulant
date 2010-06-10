@@ -44,10 +44,10 @@ namespace qt {
 class smiltext_renderer;
 
 class qt_smiltext_renderer : 
-		public qt_renderer<renderer_playable>,
-		  public smil2::smiltext_notification,
- 		public smil2::smiltext_layout_provider  
- {
+	public qt_renderer<renderer_playable>,
+	public smil2::smiltext_notification,
+	public smil2::smiltext_layout_provider  
+{
   public:
 	qt_smiltext_renderer(
 		common::playable_notification *context,

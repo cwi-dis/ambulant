@@ -7,6 +7,8 @@ rem
 rem Location of various programs
 rem
 
+set CVSKEY="%USERPROFILE%\My Documents\Putty Keys\id_dsa.ppk"
+set CVS_RSH="C:\Program Files\TortoiseCVS\TortoisePlink.exe" -i %CVSKEY%
 set cvs="C:\Program Files\TortoiseCVS\cvs.exe"
 set visualstudio="C:\Program Files\Microsoft Visual Studio 9.0"
 set pscp="c:\Program Files\Putty\pscp.exe"
@@ -17,10 +19,11 @@ rem Other settable parameters
 rem
 
 set AMBULANTVERSION=2.3
-set CVSUSER="jackjansen"
-set CVSARGS="-d %CVSUSER%@ambulant.cvs.sourceforge.net:/cvsroot/ambulant"
+set CVSUSER=jackjansen
+set CVSARGS=-d "%CVSUSER%@ambulant.cvs.sourceforge.net:/cvsroot/ambulant"
 set CHECKOUTARGS=
-set CVSPRIVARGS="-d jack@oratrix.oratrix.com:/xxxxxxx"
+set CVSPRIVUSER=jack
+set CVSPRIVARGS=-d "%CVSPRIVUSER%@oratrix.oratrix.com:/ufs/jack/.CVSROOT"
 set CHECKOUTPRIVARGS=
 set BUILDHOME="%TEMP%\ambulant-nightly"
 rem US/UK: set TODAY=%date:~-4%%date:~4,2%%date:~7,2%
@@ -29,7 +32,6 @@ set VERSIONSUFFIX=.%TODAY%
 set BUILDDIR=ambulant-build-%TODAY%
 set BUILD3PPARGS=win32
 set DESTINATION="jack@ssh.cwi.nl:public_html/ambulant/"
-set DESTINATIONKEY="%USERPROFILE%\My Documents\Putty Keys\id_dsa.ppk"
 
 rem
 rem Setup variables
@@ -72,9 +74,9 @@ rem
 cd ..\..\bin\win32
 rename npambulant-%AMBULANTVERSION%-win32.xpi npambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.xpi
 rename ieambulant-%AMBULANTVERSION%-win32.cab ieambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab
-%pscp% -i %DESTINATIONKEY% npambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.xpi %DESTINATION%
+%pscp% -i %KEYFILE% npambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.xpi %DESTINATION%
 if %errorlevel% neq 0 exit
-%pscp% -i %DESTINATIONKEY% ieambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab %DESTINATION%
+%pscp% -i %KEYFILE% ieambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab %DESTINATION%
 if %errorlevel% neq 0 exit
 
 rem 
@@ -85,7 +87,7 @@ cd ..\..\installers\nsis-win32
 %nsis% setup-ambulant-installer.nsi
 if %errorlevel% neq 0 exit
 rename  Ambulant-%AMBULANTVERSION%-win32.exe Ambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.exe
-%pscp% -i %DESTINATIONKEY% Ambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.exe %DESTINATION%
+%pscp% -i %KEYFILE% Ambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.exe %DESTINATION%
 if %errorlevel% neq 0 exit
 
 rem 

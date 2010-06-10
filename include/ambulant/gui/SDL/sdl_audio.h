@@ -110,7 +110,7 @@ class sdl_audio_renderer : public common::renderer_playable {
 	void start_outtransition(const lib::transition_info* info);
 	static void quit();
   private:
-   	void data_avail();
+	void data_avail();
 	bool restart_audio_input();
 	int get_data(int bytes_wanted, Uint8 **ptr);
 	void get_data_done(int size);
@@ -120,7 +120,7 @@ class sdl_audio_renderer : public common::renderer_playable {
 	bool m_is_playing;  // Invariant: m_is_playing === register_renderer() has been called.
 	bool m_is_reading;	// Invariant: m_is_reading === m_audio_src->start() has been called.
 	bool m_is_paused;
-  	bool m_read_ptr_called;
+	bool m_read_ptr_called;
 	bool m_audio_started;
 	int m_volcount;
 	float m_volumes[AMBULANT_MAX_CHANNELS];
@@ -133,8 +133,8 @@ class sdl_audio_renderer : public common::renderer_playable {
 #endif
 	// class methods and attributes:
 	static int init();
- 	static void register_renderer(sdl_audio_renderer *rnd);
- 	static void unregister_renderer(sdl_audio_renderer *rnd);
+	static void register_renderer(sdl_audio_renderer *rnd);
+	static void unregister_renderer(sdl_audio_renderer *rnd);
 	static bool s_sdl_init;			// True when SDL has beeen initialized
 	static Uint16 s_sdl_format;		// Audio format we want, in SDL terms
 	static net::audio_format s_ambulant_format;	// Audio format we want, in Ambulant terms

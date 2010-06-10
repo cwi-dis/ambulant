@@ -92,8 +92,8 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	common::duration get_dur();
 	audio_format& get_audio_format();
 	timestamp_t get_clip_end();
-  	timestamp_t get_clip_begin();
-  	timestamp_t get_start_time() { return m_src->get_start_time(); };
+	timestamp_t get_clip_begin();
+	timestamp_t get_start_time() { return m_src->get_start_time(); };
 #ifdef WITH_SEAMLESS_PLAYBACK
 	timestamp_t get_elapsed();
 #endif
@@ -110,8 +110,8 @@ class ffmpeg_decoder_datasource: virtual public audio_datasource, virtual public
 	bool m_con_owned;
 	audio_format m_fmt;
 	lib::event_processor *m_event_processor;
-  	pkt_audio_datasource* m_src;
-  	timestamp_t m_elapsed;      // Timestamp of the very last sample in the buffer
+	pkt_audio_datasource* m_src;
+	timestamp_t m_elapsed;      // Timestamp of the very last sample in the buffer
 	bool m_is_audio_ds;
 	
 	databuffer m_buffer;
@@ -154,7 +154,7 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
 	timestamp_t get_start_time() { return m_src->get_start_time(); }
   protected:
     int init(); 
-  	
+	
 	  
   private:
     bool _end_of_file();
@@ -166,12 +166,12 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
     ReSampleContext *m_resample_context;
   
     databuffer m_buffer;
-  	
+	
     lib::event_processor *m_event_processor;
     lib::event *m_client_callback;  // This is our calllback to the client
     lib::critical_section m_lock;
-  	audio_format m_in_fmt;
-  	audio_format m_out_fmt;
+	audio_format m_in_fmt;
+	audio_format m_out_fmt;
  
 };
 

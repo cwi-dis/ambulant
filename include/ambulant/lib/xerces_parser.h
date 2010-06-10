@@ -88,12 +88,11 @@ class xerces_sax_parser : public HandlerBase, public xml_parser {
 
 	void startElement(const XMLCh* const name, AttributeList& attrs);
 
- 	void endElement(const XMLCh* const name);   
+	void endElement(const XMLCh* const name);   
 
 	void characters(const XMLCh* const chars, XMLSize_t length);
         
-	void ignorableWhitespace(const XMLCh* const chars,
-				 const unsigned int length) {}
+	void ignorableWhitespace(const XMLCh* const chars, const unsigned int length) {}
     
 	void resetDocument() {}
 

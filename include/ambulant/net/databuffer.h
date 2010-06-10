@@ -57,7 +57,7 @@ class AMBULANTAPI databuffer
 	int  size() const;
 	
 	/// Return true if the buffer is full.
- 	bool buffer_full();
+	bool buffer_full();
 	/// Return true if the buffer is non-empty.
     bool buffer_not_empty();
 	
@@ -99,10 +99,10 @@ class AMBULANTAPI databuffer
     char* m_buffer;			// Our databuffer
     bool m_reading;			// True between get_read_ptr/readdone
 	bool m_writing;			// True between get_write_ptr/pushdata
-  	char* m_old_buffer;		// An old buffer, to be removed in readdone
+	char* m_old_buffer;		// An old buffer, to be removed in readdone
 	unsigned long int m_rear;
 	unsigned long int m_size;
- 	unsigned long int m_max_size;
+	unsigned long int m_max_size;
 	unsigned long int m_max_unused_size;
 	unsigned long int m_used;
 	bool m_buffer_full;

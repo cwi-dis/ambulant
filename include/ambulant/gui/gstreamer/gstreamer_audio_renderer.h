@@ -110,7 +110,7 @@ class gstreamer_audio_renderer : public common::renderer_playable {
 	
 	bool m_is_playing;
 	bool m_is_paused;
-  	bool m_read_ptr_called;
+	bool m_read_ptr_called;
 	bool m_audio_started;
 	int m_volcount;
 	float m_volumes[AMBULANT_MAX_CHANNELS];

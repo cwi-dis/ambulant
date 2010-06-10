@@ -46,28 +46,29 @@ class demux_audio_datasource:
 {
   public:
 	static demux_audio_datasource *new_demux_audio_datasource(
-  		const net::url& url, abstract_demux *thread);
-  	
-  	demux_audio_datasource(
-  		const net::url& url, 
-  		abstract_demux *thread, 
-  		int stream_index);
+		const net::url& url,
+		abstract_demux *thread);
+
+	demux_audio_datasource(
+		const net::url& url, 
+		abstract_demux *thread, 
+		int stream_index);
   
 	~demux_audio_datasource();
 
 	void start(lib::event_processor *evp, lib::event *callback);
 	void stop();  
 	void read_ahead(timestamp_t clip_begin);
-  	void seek(timestamp_t time);
+	void seek(timestamp_t time);
 #ifdef WITH_SEAMLESS_PLAYBACK
-  	void set_clip_end(timestamp_t clip_end);
+	void set_clip_end(timestamp_t clip_end);
     timestamp_t get_elapsed() { assert(0); /* XXXJACK Should be based on pts in head of queue */ return 0; }
 #endif
 	bool push_data(timestamp_t pts, const uint8_t *data, int size);
 	bool end_of_file();
-  	timestamp_t get_clip_end();
+	timestamp_t get_clip_end();
 	timestamp_t get_clip_begin();
-  	timestamp_t get_start_time() { return m_thread->get_start_time(); };
+	timestamp_t get_start_time() { return m_thread->get_start_time(); };
 	ts_packet_t get_ts_packet_t();
 	audio_format& get_audio_format();
 
@@ -98,12 +99,13 @@ class demux_video_datasource:
 {
   public:
 	 static demux_video_datasource *new_demux_video_datasource(
-  		const net::url& url, abstract_demux *thread);
-  	
-  		demux_video_datasource(
-  		const net::url& url, 
-  		abstract_demux *thread, 
-  		int stream_index);
+	 	const net::url& url,
+	 	abstract_demux *thread);
+
+	demux_video_datasource(
+		const net::url& url, 
+		abstract_demux *thread, 
+		int stream_index);
   
     ~demux_video_datasource();
 	void set_pixel_layout(pixel_order l) { assert(l == pixel_unknown); }
@@ -120,15 +122,15 @@ class demux_video_datasource:
 	void frame_processed(timestamp_t timestamp);
 	bool push_data(timestamp_t pts, const uint8_t *data, int size);
 	bool end_of_file();
-  	timestamp_t get_clip_end();
+	timestamp_t get_clip_end();
 	timestamp_t get_clip_begin();
-  	timestamp_t get_start_time() { return m_thread->get_start_time(); };
-  	int width();
-  	int height();
+	timestamp_t get_start_time() { return m_thread->get_start_time(); };
+	int width();
+	int height();
 	timestamp_t frameduration();
   
         bool has_audio();
-  	audio_datasource* get_audio_datasource();
+	audio_datasource* get_audio_datasource();
 		
 	char* get_read_ptr();
 	int size() const;   
@@ -151,10 +153,10 @@ class demux_video_datasource:
 	abstract_demux *m_thread;
 	timestamp_t m_current_time;
 	lib::event *m_client_callback;  // This is our calllback to the client
-  	pkt_audio_datasource* m_audio_src;
+	pkt_audio_datasource* m_audio_src;
 	lib::critical_section m_lock;
-  	//FILE *m_file;
-  	long long int m_frame_nr;
+	//FILE *m_file;
+	long long int m_frame_nr;
   
 };
 

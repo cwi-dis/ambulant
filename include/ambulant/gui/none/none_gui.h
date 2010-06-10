@@ -39,9 +39,10 @@ namespace none {
 /// Dummy implementation of gui_window.
 class none_window : public common::gui_window {
   public:
-  	none_window(const std::string &name, lib::size bounds, common::gui_events *handler)
-  	:	common::gui_window(handler) {};
-  		
+    none_window(const std::string &name, lib::size bounds, common::gui_events *handler)
+	:	common::gui_window(handler)
+	{};
+	
 	void need_redraw(const lib::rect &r) { m_handler->redraw(r, this); };
 	void need_events(bool want) {};
 	void redraw_now() {};
@@ -50,8 +51,8 @@ class none_window : public common::gui_window {
 /// Implementation of window_factory that returns none_window objects.
 class AMBULANTAPI none_window_factory : public common::window_factory {
   public:
-  	none_window_factory() {}
-  	
+	none_window_factory() {}
+
 	common::gui_window *new_window(const std::string &name, lib::size bounds, common::gui_events *handler);
 	common::bgrenderer *new_background_renderer(const common::region_info *src);
 };
@@ -96,8 +97,8 @@ class common::region_info;
 /// Implementation of playable_factory that returns none_playable objects.
 class none_playable_factory : public common::playable_factory {
   public:
-  	none_playable_factory() {}
-  	
+	none_playable_factory() {}
+
 	bool supports(common::renderer_select *)
 	{
 		return true;

@@ -49,22 +49,21 @@ namespace qt {
 class qt_text_renderer : public qt_renderer<renderer_playable_dsall> {
   public:
 	qt_text_renderer(common::playable_notification *context,
-				common::playable_notification::cookie_type cookie,
-				const lib::node *node,
-				lib::event_processor *const evp,
-				common::factories *factory,
-				common::playable_factory_machdep *mdp);
+		common::playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *const evp,
+		common::factories *factory,
+		common::playable_factory_machdep *mdp);
 	~qt_text_renderer();
 
- 	void redraw_body(const lib::rect &r,
-			 common::gui_window* w);
+	void redraw_body(const lib::rect &r, common::gui_window* w);
 
   private:
 	char* m_text_storage;
 	lib::color_t m_text_color;
 	const char *m_text_font;
 	float m_text_size;
- 	lib::critical_section m_lock;
+	lib::critical_section m_lock;
 };
 
 } // namespace qt

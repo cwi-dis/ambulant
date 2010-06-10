@@ -384,9 +384,11 @@ transform(const rect *psrc, const rect *src, const rect *dst)
 {
 	int l = tf_x(psrc->left(), src, dst);
 	int t = tf_y(psrc->top(), src, dst);
-	rect rc(point(l, t),
-		size(tf_x(psrc->right(), src, dst)-l,
-			 tf_y(psrc->bottom(), src, dst)-t));
+	rect rc(
+		point(l, t),
+		size(
+			tf_x(psrc->right(), src, dst)-l,
+			tf_y(psrc->bottom(), src, dst)-t));
 	return rc;
 }
 
@@ -397,9 +399,10 @@ reverse_transform(const rect *pdst, const rect *src, const rect *dst)
 {
 	int l = reverse_tf_x(pdst->left(), src, dst);
 	int t = reverse_tf_y(pdst->top(), src, dst);
-	rect rc(point(l, t),
+	rect rc(
+		point(l, t),
 		size(reverse_tf_x(pdst->right(), src, dst)-l,
-			 reverse_tf_y(pdst->bottom(), src, dst)-t));
+			reverse_tf_y(pdst->bottom(), src, dst)-t));
 	return rc;
 }
 

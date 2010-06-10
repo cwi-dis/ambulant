@@ -55,10 +55,10 @@ class gtk_video_renderer :  public gtk_renderer<common::video_renderer>  {
   protected:
 	void _push_frame(char* frame, int size);
 private:
- 	std::queue< std::pair<int, char*> > m_frames;
- 	long int m_img_displayed;
+	std::queue< std::pair<int, char*> > m_frames;
+	long int m_img_displayed;
 	GdkPixbuf*	m_image;
-	char* 		m_data;
+	char* m_data;
 };
 
 

@@ -86,15 +86,15 @@ class video_player {
 	
 	// dx implementation artifacts
 	bool update();
- 	IDirectDrawSurface *get_ddsurf() { return m_ddsurf;}
+	IDirectDrawSurface *get_ddsurf() { return m_ddsurf;}
 	lib::size get_size() const {
 		return lib::size(m_rcsurf.right, m_rcsurf.bottom);
 	}
 	
  private:
 	bool open(const std::string& url, IDirectDraw* dd);
- 	void release_player();
- 	
+	void release_player();
+	
 	std::string m_url;
 	
 	IMultiMediaStream *m_mmstream;

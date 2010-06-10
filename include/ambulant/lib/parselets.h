@@ -54,8 +54,8 @@ namespace lib {
 template <class CharType>
 class basic_parselet {
   public:
- 	typedef CharType char_type;
- 	typedef std::basic_string<char_type> string_type;
+	typedef CharType char_type;
+	typedef std::basic_string<char_type> string_type;
 	typedef typename string_type::size_type size_type;   
 	typedef typename string_type::iterator iterator;
 	typedef typename string_type::const_iterator const_iterator;
@@ -99,7 +99,7 @@ class range_p : public parselet {
 };
 
 class literal_cstr_p : public parselet {
-   public:
+  public:
 	typedef literal_cstr_p self_type;
 	typedef string_type result_type;
 	result_type m_result;
@@ -118,7 +118,7 @@ class literal_cstr_p : public parselet {
 };
 
 class delimiter_p : public parselet {
-   public:
+  public:
 	typedef delimiter_p self_type;
 	typedef char_type result_type;
 	result_type m_result;
@@ -140,13 +140,13 @@ class delimiter_p : public parselet {
 };
 
 class int_p : public parselet {
-   public:
+  public:
 	typedef int_p self_type;
 	typedef int result_type;
 	result_type m_result;
 
 	std::ptrdiff_t parse(const_iterator& it, const const_iterator& end) {
-		if(it == end || *it < '0' || *it > '9') return -1; 	
+		if(it == end || *it < '0' || *it > '9') return -1;
 		m_result = 0;
 		std::ptrdiff_t len = 0;
 		do {

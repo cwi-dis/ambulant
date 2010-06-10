@@ -76,7 +76,7 @@ void png_decoder<DataSource, ColorType>::png_read_mem_data(png_structp png_ptr,
 	DataSource *src = (DataSource*)png_ptr->io_ptr;
 	DataSource::size_type n = src->read(data, length);
 	if(n != DataSource::size_type(length)) {
-      png_error(png_ptr, "Read Error");
+		png_error(png_ptr, "Read Error");
 	}
 }
 

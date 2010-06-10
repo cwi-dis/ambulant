@@ -46,7 +46,7 @@ void *sws_getCachedContext(void*,int, int, int, int, int, int, int, void*, void*
 //int sws_scale(struct SwsContext *context, uint8_t* srcSlice[], int srcStride[], int srcSliceY,
 //              int srcSliceH, uint8_t* dst[], int dstStride[]);
 int sws_scale(void*, uint8_t* srcSlice[], int srcStride[], int srcSliceY,
-              int srcSliceH, uint8_t* dst[], int dstStride[]);
+	int srcSliceH, uint8_t* dst[], int dstStride[]);
 void sws_freeContext(struct SwsContext *swsContext);
 //met de hand
 #endif
@@ -76,8 +76,8 @@ class ffmpeg_video_decoder_datasource:
   public:
 	static bool supported(const video_format& fmt);
 	
-	 //ffmpeg_video_decoder_datasource(const net::url& url, datasource *src);
-	 ffmpeg_video_decoder_datasource(video_datasource *src, video_format fmt);
+	//ffmpeg_video_decoder_datasource(const net::url& url, datasource *src);
+	ffmpeg_video_decoder_datasource(video_datasource *src, video_format fmt);
 	 
     ~ffmpeg_video_decoder_datasource();
 

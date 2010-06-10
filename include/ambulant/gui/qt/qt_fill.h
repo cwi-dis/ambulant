@@ -47,15 +47,16 @@ class qt_fill_renderer : public  renderer_playable {
 		lib::event_processor *const evp,
 		common::factories *fp,
 		common::playable_factory_machdep *mdp)
-	  :	renderer_playable(context, cookie, node, evp, fp, mdp),
-	  	m_is_showing(false),
+	:	renderer_playable(context, cookie, node, evp, fp, mdp),
+		m_is_showing(false),
 		m_intransition(NULL),
 		m_outtransition(NULL),
-		m_trans_engine(NULL) {};
+		m_trans_engine(NULL)
+	{};
 
 	~qt_fill_renderer();
 
- //	void freeze() {}
+	//	void freeze() {}
 	void start(double where);
 	bool stop();
 	void seek(double t) {}
@@ -64,8 +65,7 @@ class qt_fill_renderer : public  renderer_playable {
 	void start_outtransition(lib::transition_info *info);
 	bool user_event(const point &where, int what = 0);
 	void redraw(const rect &dirty, gui_window *window);
-	void redraw_body(const lib::rect &dirty, 
-			 common::gui_window *window);
+	void redraw_body(const lib::rect &dirty, common::gui_window *window);
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};
   private:
@@ -79,15 +79,16 @@ class qt_fill_renderer : public  renderer_playable {
 
 class qt_background_renderer : public common::background_renderer {
   public:
-  	qt_background_renderer(const common::region_info *src)
-  	:	common::background_renderer(src),
-  		m_background_pixmap(NULL) {}
-  	
+	qt_background_renderer(const common::region_info *src)
+	:	common::background_renderer(src),
+		m_background_pixmap(NULL)
+	{}
+ 
 	void redraw(const lib::rect &dirty, common::gui_window *windo);
 	void highlight(gui_window *window);
 	void keep_as_background();
   private:
-  	QPixmap *m_background_pixmap;
+	QPixmap *m_background_pixmap;
 };
 
 } // namespace qt

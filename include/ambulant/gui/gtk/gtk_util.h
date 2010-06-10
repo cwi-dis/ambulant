@@ -45,11 +45,11 @@ namespace gtk {
 // the 'mask_color', the source pixel is not blended.
 
 void gdk_pixbuf_blend (GdkPixbuf* dst, const lib::rect dst_rc, 
-		       GdkPixbuf* src, const lib::rect src_rc,
-		       double opacity_in, double opacity_out,
-		       const lib::color_t chroma_low, 
-		       const lib::color_t chroma_high,
-		       const lib::color_t mask_color=0);
+	GdkPixbuf* src, const lib::rect src_rc,
+	double opacity_in, double opacity_out,
+	const lib::color_t chroma_low, 
+	const lib::color_t chroma_high,
+	const lib::color_t mask_color=0);
 
 // image debugging: dump images/pixmaps at various stages of drawing process.
 // needed for development and maintenace of image drawing, e.g. in the context

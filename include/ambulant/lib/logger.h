@@ -78,71 +78,71 @@ class AMBULANTAPI logger {
 	static void set_loggers_level(int level);
 	
 	/// log a message at level DEBUG.
- 	void debug(const char *format, ...);
+	void debug(const char *format, ...);
 	
 	/// log a message at level TRACE.
- 	void trace(const char *format, ...);
+	void trace(const char *format, ...);
 	
 	/// log a message at level SHOW.
-  	void show(const char *format, ...);
+	void show(const char *format, ...);
 	
 	/// log a message at level WARN.
-  	void warn(const char *format, ...);
+	void warn(const char *format, ...);
 	
 	/// log a message at level ERROR.
-  	void error(const char *format, ...);
+	void error(const char *format, ...);
 	
 	/// log a message at level FATAL.
-  	void fatal(const char *format, ...);
+	void fatal(const char *format, ...);
 	
 	/// log a message at level DEBUG.
-  	static void assert_expr(bool expr, const char *format, ...);
+	static void assert_expr(bool expr, const char *format, ...);
 	
-  	// templates for objects defining the operator<<
+	// templates for objects defining the operator<<
 	template <class T>
- 	void debug(const T& obj) { 
- 		log_obj(LEVEL_DEBUG, obj);
- 	}
- 	template <class T>
- 	void trace(const T& obj) { 
- 		log_obj(LEVEL_TRACE, obj);
- 	}
- 	template <class T>
- 	void warn(const T& obj) { 
- 		log_obj(LEVEL_WARN, obj);
- 	}
- 	template <class T>
- 	void error(const T& obj) { 
- 		log_obj(LEVEL_ERROR, obj);
- 	}
- 	template <class T>
- 	void fatal(const T& obj) { 
- 		log_obj(LEVEL_FATAL, obj);
- 	}
-  	template <class T>
- 	void show(const T& obj) { 
- 		log_obj(LEVEL_SHOW, obj);
- 	}
+	void debug(const T& obj) { 
+		log_obj(LEVEL_DEBUG, obj);
+	}
+	template <class T>
+	void trace(const T& obj) { 
+		log_obj(LEVEL_TRACE, obj);
+	}
+	template <class T>
+	void warn(const T& obj) { 
+		log_obj(LEVEL_WARN, obj);
+	}
+	template <class T>
+	void error(const T& obj) { 
+		log_obj(LEVEL_ERROR, obj);
+	}
+	template <class T>
+	void fatal(const T& obj) { 
+		log_obj(LEVEL_FATAL, obj);
+	}
+	template <class T>
+	void show(const T& obj) { 
+		log_obj(LEVEL_SHOW, obj);
+	}
 	
- 	// specialization for strings
- 	void debug(const std::string& s) {
- 		log_cstr(LEVEL_DEBUG, s.c_str());
-  	} 
-   	void trace(const std::string& s) {
- 		log_cstr(LEVEL_TRACE, s.c_str());
-  	} 
-   	void show(const std::string& s) {
- 		log_cstr(LEVEL_SHOW, s.c_str());
-  	} 
-   	void warn(const std::string& s) {
- 		log_cstr(LEVEL_WARN, s.c_str());
-  	} 
-   	void error(const std::string& s) {
- 		log_cstr(LEVEL_ERROR, s.c_str());
-  	} 
-   	void fatal(const std::string& s) {
- 		log_cstr(LEVEL_FATAL, s.c_str());
-  	} 
+	// specialization for strings
+	void debug(const std::string& s) {
+		log_cstr(LEVEL_DEBUG, s.c_str());
+	} 
+	void trace(const std::string& s) {
+		log_cstr(LEVEL_TRACE, s.c_str());
+	} 
+	void show(const std::string& s) {
+		log_cstr(LEVEL_SHOW, s.c_str());
+	} 
+	void warn(const std::string& s) {
+		log_cstr(LEVEL_WARN, s.c_str());
+	} 
+	void error(const std::string& s) {
+		log_cstr(LEVEL_ERROR, s.c_str());
+	} 
+	void fatal(const std::string& s) {
+		log_cstr(LEVEL_FATAL, s.c_str());
+	} 
 	
 	/// core logging function.
 	void log_cstr(int level, const char *buf);

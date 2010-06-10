@@ -43,7 +43,7 @@ class player;
 class AMBULANTAPI embedder : public lib::system_embedder {
   public:
   
-  	/// Close the window corresponding to player p and free that player.
+	/// Close the window corresponding to player p and free that player.
 	virtual void close(player *p) = 0;
 	
 	/// Called to open a new player window.

@@ -51,13 +51,13 @@ class viewport;
 
 class dx_window : public common::gui_window {
   public:
-  	dx_window(const std::string& name, 
-  		lib::size bounds,
-  		region *rgn,
-  		common::window_factory *wf,
-  		viewport* m_viewport);
-  	~dx_window();
-  	
+	dx_window(const std::string& name, 
+		lib::size bounds,
+		region *rgn,
+		common::window_factory *wf,
+		viewport* m_viewport);
+	~dx_window();
+	
 	void need_redraw(const lib::rect& r);
 	void redraw(const lib::rect& r);
 	void need_redraw();
@@ -65,7 +65,7 @@ class dx_window : public common::gui_window {
 	void need_events(bool onoff) { /* Always get them on windows */ }
 	const std::string& get_name() const { return m_name;}
 	region *get_region() { return m_rgn;}
-  	void lock_redraw();
+	void lock_redraw();
 	void unlock_redraw();
 	
 	viewport *get_viewport() { return m_viewport;}

@@ -49,11 +49,11 @@ namespace cocoa {
 
 class cocoa_window : public common::gui_window {
   public:
-  	cocoa_window(const std::string &name, lib::size bounds, void *_view, common::gui_events *handler)
-  	:	common::gui_window(handler),
-  		m_view(_view) {};
+	cocoa_window(const std::string &name, lib::size bounds, void *_view, common::gui_events *handler)
+	:	common::gui_window(handler),
+		m_view(_view) {};
 	~cocoa_window();
-  		
+		
 	void need_redraw(const lib::rect &r);
 	void redraw_now();
 	void need_events(bool want);
@@ -70,9 +70,9 @@ class cocoa_window : public common::gui_window {
 ;
 class cocoa_window_factory : public common::window_factory {
   public:
-  	cocoa_window_factory(void *view)
-  	:	m_defaultwindow_view(view) {}
-  	
+	cocoa_window_factory(void *view)
+	:	m_defaultwindow_view(view) {}
+	
 	lib::size get_default_size();
 	common::gui_window *new_window(const std::string &name, lib::size bounds, common::gui_events *handler);
 	common::bgrenderer *new_background_renderer(const common::region_info *src);

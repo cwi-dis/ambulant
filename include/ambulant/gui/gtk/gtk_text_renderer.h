@@ -56,7 +56,7 @@ class gtk_text_renderer : public gtk_renderer<renderer_playable_dsall> {
 		common::playable_factory_machdep *mdp);
 	~gtk_text_renderer();
 
- 	void redraw_body(const lib::rect &r,
+	void redraw_body(const lib::rect &r,
 		common::gui_window* w);
 
   private:
@@ -64,7 +64,7 @@ class gtk_text_renderer : public gtk_renderer<renderer_playable_dsall> {
 	lib::color_t m_text_color;
 	const char *m_text_font;
 	float m_text_size;
- 	lib::critical_section m_lock;
+	lib::critical_section m_lock;
 };
 
 } // namespace gtk

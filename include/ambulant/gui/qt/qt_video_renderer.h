@@ -42,12 +42,12 @@ namespace qt {
 class qt_video_renderer : public qt_renderer<common::video_renderer> {
   public:
 	qt_video_renderer(
-				 common::playable_notification *context,
-				 common::playable_notification::cookie_type cookie,
-				 const lib::node *node,
-				 lib::event_processor *const evp,
-				 common::factories *factory,
-				 common::playable_factory_machdep *mdp);
+		common::playable_notification *context,
+		common::playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *const evp,
+		common::factories *factory,
+		common::playable_factory_machdep *mdp);
 	
 	~qt_video_renderer();
 	void redraw_body(const lib::rect &r, common::gui_window* w);
@@ -56,8 +56,8 @@ class qt_video_renderer : public qt_renderer<common::video_renderer> {
  
  private:
 	QImage *m_image;
- 	uchar* m_data;
-	int   m_datasize;
+	uchar* m_data;
+	int m_datasize;
 };
 
 

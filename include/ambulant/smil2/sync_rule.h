@@ -217,7 +217,7 @@ class model_rule : public sync_rule_impl {
 	virtual void new_instance(qtime_type timestamp, time_type instance);
 	virtual void cancel_instance(qtime_type timestamp, time_type instance);
 	virtual void update_instance(qtime_type timestamp, time_type instance, time_type old_instance);
- protected:	
+  protected:	
 	time_type m_offset;
 	time_list m_instances;
 };
@@ -237,7 +237,7 @@ class event_rule : public sync_rule_impl {
 	virtual void get_instance_times(time_mset& s) const;
 	virtual void reset(time_node *src);
 	virtual void add_instance(qtime_type timestamp, time_type instance, int data = 0);
- 	virtual void add_instance(qtime_type timestamp, time_type instance, const std::string& data);
+	virtual void add_instance(qtime_type timestamp, time_type instance, const std::string& data);
 protected:
 	time_type m_offset;
 	int m_selector;
@@ -254,7 +254,7 @@ class offset_rule : public sync_rule_impl {
 	:	sync_rule_impl(sb, se),
 		m_offset(offset)  {}
 	virtual void get_instance_times(time_mset& s) const { s.insert(m_offset);}
- protected:	
+  protected:	
 	time_type m_offset;
 };
 
@@ -269,7 +269,7 @@ class transout_rule : public sync_rule_impl {
 	virtual void new_instance(qtime_type timestamp, time_type instance);
 	virtual void cancel_instance(qtime_type timestamp, time_type instance);
 	virtual void update_instance(qtime_type timestamp, time_type instance, time_type old_instance);
- protected:	
+  protected:	
 	time_type m_offset;
 	time_list m_instances;
 };
@@ -291,7 +291,7 @@ class trigger_rule : public sync_rule_impl {
 	virtual void new_instance(qtime_type timestamp, time_type instance);
 	virtual void cancel_instance(qtime_type timestamp, time_type instance);
 	virtual void update_instance(qtime_type timestamp, time_type instance, time_type old_instance);
- protected:	
+  protected:	
 	time_type m_offset;
 };
 
