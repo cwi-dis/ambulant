@@ -51,19 +51,19 @@ namespace profile {
 
 #if defined(WITH_PROFILE_CHUD)
 inline void initialize() {
-    chudAcquireRemoteAccess();
+	chudAcquireRemoteAccess();
 }
 
 inline void terminate() {
-    chudReleaseRemoteAccess();
+	chudReleaseRemoteAccess();
 }
 
 inline void start() {
-    chudStartRemotePerfMonitor("ambulant-profile");
+	chudStartRemotePerfMonitor("ambulant-profile");
 }
 
 inline void stop() {
-    chudStopRemotePerfMonitor();
+	chudStopRemotePerfMonitor();
 }
 #else
 inline void initialize() {

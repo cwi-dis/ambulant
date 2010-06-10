@@ -48,7 +48,7 @@ class cg_dsvideo_renderer :
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		event_processor *evp,
-    	common::factories *factory,
+		common::factories *factory,
 		common::playable_factory_machdep *mdp);
 	~cg_dsvideo_renderer();
 
@@ -57,7 +57,7 @@ class cg_dsvideo_renderer :
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};
   protected:
-    void _push_frame(char* frame, int size);
+	void _push_frame(char* frame, int size);
   private:
 	CGImageRef m_image;
 	critical_section m_lock;

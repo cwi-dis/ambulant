@@ -75,7 +75,7 @@ class ffmpeg_demux : public abstract_demux {
 	void remove_datasink(int stream_index);
 	int audio_stream_nr();
 	int video_stream_nr();
-    // XXX this should also be timestamp_t instead of double
+	// XXX this should also be timestamp_t instead of double
 	double duration();
 	int nstreams();
 	void seek(timestamp_t time);

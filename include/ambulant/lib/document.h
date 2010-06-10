@@ -45,8 +45,8 @@ namespace lib {
 /// in an Attribuet Value Template have changed.
 class AMBULANTAPI avt_change_notification {
   public:
-    virtual ~avt_change_notification() {}
-    virtual void avt_value_changed_for(const lib::node *n) = 0;
+	virtual ~avt_change_notification() {}
+	virtual void avt_value_changed_for(const lib::node *n) = 0;
 };
 #endif // WITH_SMIL30
 
@@ -55,8 +55,8 @@ class custom_test {
   public:
 	std::string idd;   /// XML id of the customTest
 	std::string title; /// title attribute value
-	bool state;    /// Current state of the custom test
-	bool override; /// True if custom test can be overridden thru player GUI
+	bool state;        /// Current state of the custom test
+	bool override;     /// True if custom test can be overridden thru player GUI
 	std::string uid;   /// uid attribute value
 };
 
@@ -65,9 +65,9 @@ class custom_test {
 /// This class is reachable from node objects.
 /// and provides context services to them.
 class AMBULANTAPI document :
-    public node_context
+	public node_context
 #ifdef WITH_SMIL30
-    , public common::state_change_callback
+	, public common::state_change_callback
 #endif
 {
 
@@ -140,11 +140,11 @@ class AMBULANTAPI document :
 	/// Apply XSLT Attribute Value Template
 	const lib::xml_string& apply_avt(const node* n, const lib::xml_string& attrname, const lib::xml_string& attrvalue) const;
 
-    /// Ask for a callback if any AVT on the given node changes
-    void register_for_avt_changes(const node* n, avt_change_notification *handler);
+	/// Ask for a callback if any AVT on the given node changes
+	void register_for_avt_changes(const node* n, avt_change_notification *handler);
 
-    /// Forward state changes to entities that requested AVT change notification
-    void on_state_change(const char *ref);
+	/// Forward state changes to entities that requested AVT change notification
+	void on_state_change(const char *ref);
 
 #endif // WITH_SMIL30
 
@@ -187,16 +187,16 @@ class AMBULANTAPI document :
 	std::map<std::string, const node*> m_id2node;
 
 #ifdef WITH_SMIL30
-    // Implementation of state document
+	// Implementation of state document
 	common::state_component *m_state;
 
-    // Per node, remember xpath expressions used
-    std::multimap<const lib::node*, xml_string > m_node2xpaths;
+	// Per node, remember xpath expressions used
+	std::multimap<const lib::node*, xml_string > m_node2xpaths;
 
-    // Per xpath expression, remember callbacks to apply
-    std::multimap<const xml_string, std::pair<const avt_change_notification*, const lib::node*> > m_xpath2callbacks;
+	// Per xpath expression, remember callbacks to apply
+	std::multimap<const xml_string, std::pair<const avt_change_notification*, const lib::node*> > m_xpath2callbacks;
 
-    void _register_node_avt_dependence(const node *n, const xml_string& expr);
+	void _register_node_avt_dependence(const node *n, const xml_string& expr);
 	// Cache of per-expression avt values.
 	std::map<const node *, std::map<xml_string, xml_string> > m_avtcache;
 

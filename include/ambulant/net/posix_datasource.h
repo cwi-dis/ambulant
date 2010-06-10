@@ -67,7 +67,7 @@ class posix_datasource : virtual public datasource, virtual public lib::ref_coun
 #endif
 	void stop();
 	void readdone(int len);
-    bool end_of_file();
+	bool end_of_file();
 
 
 	char* get_read_ptr();
@@ -80,9 +80,9 @@ class posix_datasource : virtual public datasource, virtual public lib::ref_coun
 		return os;
 	}
   private:
-    bool _end_of_file();
+	bool _end_of_file();
 	void filesize();
-    void read_file();
+	void read_file();
 
 	const std::string m_filename;
 	databuffer *m_buffer;

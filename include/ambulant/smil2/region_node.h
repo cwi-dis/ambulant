@@ -170,11 +170,11 @@ class region_node : public common::animation_destination {
 	///////////////////////////////
 	// iterators
 
-    iterator begin() { return iterator(this);}
-    const_iterator begin() const { return const_iterator(this);}
+	iterator begin() { return iterator(this);}
+	const_iterator begin() const { return const_iterator(this);}
 
-    iterator end() { return iterator(0);}
-    const_iterator end() const { return const_iterator(0);}
+	iterator end() { return iterator(0);}
+	const_iterator end() const { return const_iterator(0);}
 
 	// Std xml tree interface
 	const region_node *down() const { return m_child;}

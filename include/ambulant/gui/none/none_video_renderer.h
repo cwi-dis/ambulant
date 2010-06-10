@@ -31,19 +31,19 @@ namespace none {
 
 class none_video_renderer : public common::video_renderer {
   public:
-    none_video_renderer(
-    common::playable_notification *context,
-    common::playable_notification::cookie_type cookie,
-    const lib::node *node,
-    lib::event_processor *evp,
-	common::factories *factory,
-	common::playable_factory_machdep *mdp)
-	:   common::video_renderer(context, cookie, node, evp, factory, mdp)
+	none_video_renderer(
+		common::playable_notification *context,
+		common::playable_notification::cookie_type cookie,
+		const lib::node *node,
+		lib::event_processor *evp,
+		common::factories *factory,
+		common::playable_factory_machdep *mdp)
+	:	common::video_renderer(context, cookie, node, evp, factory, mdp)
 	{ }
 
   	~none_video_renderer() {};
 
-    void redraw(const lib::rect &dirty, common::gui_window *window) {};
+	void redraw(const lib::rect &dirty, common::gui_window *window) {};
 	void wantclicks(bool want) {};
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};

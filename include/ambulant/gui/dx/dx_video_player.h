@@ -98,12 +98,12 @@ class video_player {
 	std::string m_url;
 
 	IMultiMediaStream *m_mmstream;
-    IMediaStream *m_vidstream;
-    IDirectDrawMediaStream *m_ddstream;
-    IDirectDrawStreamSample *m_ddsample;
-    IDirectDrawSurface* m_ddsurf;
-    RECT m_rcsurf;
-    bool m_wantclicks;
+	IMediaStream *m_vidstream;
+	IDirectDrawMediaStream *m_ddstream;
+	IDirectDrawStreamSample *m_ddsample;
+	IDirectDrawSurface* m_ddsurf;
+	RECT m_rcsurf;
+	bool m_wantclicks;
 	bool m_update_busy;
 };
 

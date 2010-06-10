@@ -56,7 +56,7 @@ enum tiling { tiling_default, tiling_none, tiling_inherit,
 /// This is the read-only interface, used to construct windows and such.
 class region_info {
   public:
-    virtual ~region_info(){}
+	virtual ~region_info(){}
 
 	/// Return the name of the region.
 	virtual std::string get_name() const = 0;
@@ -126,7 +126,7 @@ class region_info {
 /// parameters of the region (or node).
 class animation_destination : public region_info {
   public:
-    virtual ~animation_destination() {}
+	virtual ~animation_destination() {}
 
 	/// Get one of the six dimensions of a region.
 	/// If fromdom is true get the original DOM value, otherwise get the current

@@ -51,10 +51,10 @@ class state_component;
 
 /// Current state of the player.
 enum play_state {
-    ps_idle,    ///< The player has not started yet
-    ps_playing, ///< The player is playing
-    ps_pausing, ///< The player is paused
-    ps_done     ///< The player has finished playing the document
+	ps_idle,	///< The player has not started yet
+	ps_playing, ///< The player is playing
+	ps_pausing, ///< The player is paused
+	ps_done	 ///< The player has finished playing the document
 };
 
 /// Interface for getting feedback from the player.
@@ -62,7 +62,7 @@ enum play_state {
 /// any external views with what the player is doing.
 class player_feedback {
   public:
-    virtual ~player_feedback(){}
+	virtual ~player_feedback(){}
 
 	/// Called by the player when the document is loaded.
 	/// Called after parsing, but before the
@@ -71,7 +71,7 @@ class player_feedback {
 	virtual void document_loaded(lib::document *doc) = 0;
 
 	/// Called by the player when the document starts playing
-    virtual void document_started() = 0;
+	virtual void document_started() = 0;
 
 	/// Called by the player when the document stopped playing
 	virtual void document_stopped() = 0;
@@ -103,9 +103,9 @@ class player : public state_change_callback, virtual public lib::ref_counted
 	/// Do any initializations necessary.
 	virtual void initialize() = 0;
 
-    /// Call this early during termination, before things like the
-    /// lib::document and DOM tree become invalid.
-    virtual void terminate() = 0;
+	/// Call this early during termination, before things like the
+	/// lib::document and DOM tree become invalid.
+	virtual void terminate() = 0;
 
 	/// Return the timer this player uses.
 	virtual lib::timer* get_timer() = 0;
@@ -147,8 +147,8 @@ class player : public state_change_callback, virtual public lib::ref_counted
 	/// Call this when a state variable has changed.
 	virtual void on_state_change(const char *ref) {}
 
-    /// Returns the SMIL State handler for the current document, or NULL.
-    virtual state_component* get_state_engine() { return NULL; }
+	/// Returns the SMIL State handler for the current document, or NULL.
+	virtual state_component* get_state_engine() { return NULL; }
 #endif
 
 	/// Call this to advance the focus.

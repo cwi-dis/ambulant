@@ -39,7 +39,7 @@ class AMBULANTAPI system_embedder {
   public:
 	virtual ~system_embedder() {}
 
-    /// Open the given URL with an external program (such as a web browser).
+	/// Open the given URL with an external program (such as a web browser).
 	virtual void show_file(const net::url& href) = 0;
 };
 

@@ -75,19 +75,19 @@ class AMBULANTAPI playable_imp : public playable {
 	void post_stop() {};
 	void init_with_node(const lib::node *n) {};
 #ifdef WITH_SEAMLESS_PLAYBACK
-    /// Return true if we are rendering for a node with fill="ambulant:continue"
-    bool is_fill_continue_node() const {
-        const char * fb = m_node->get_attribute("fill");
-        return fb != NULL && strcmp(fb, "ambulant:continue") == 0;
-    }
+	/// Return true if we are rendering for a node with fill="ambulant:continue"
+	bool is_fill_continue_node() const {
+		const char * fb = m_node->get_attribute("fill");
+		return fb != NULL && strcmp(fb, "ambulant:continue") == 0;
+	}
 #endif
 	duration get_dur() { return duration(true, 0);}
 	cookie_type get_cookie() const { return m_cookie;}
-    std::string get_sig() const { return std::string(typeid(this).name()) + "(" + m_node->get_sig() + ")"; }
+	std::string get_sig() const { return std::string(typeid(this).name()) + "(" + m_node->get_sig() + ")"; }
 
   protected:
-    playable_notification *m_context;	///< Status feedback object.
-    cookie_type m_cookie;				///< Parameter for status feedback object.
+	playable_notification *m_context;	///< Status feedback object.
+	cookie_type m_cookie;				///< Parameter for status feedback object.
 	const lib::node	*m_node;			///< The DOM node this playable corresponds to.
 	lib::event_processor *m_event_processor;	///< The event_processor we can use.
 	bool m_wantclicks;					///< True if we should send gui events to m_context.
@@ -106,7 +106,7 @@ class AMBULANTAPI renderer_playable : public playable_imp, public renderer {
 		lib::event_processor* evp,
 		common::factories *fp,
 		common::playable_factory_machdep *mdp);
-    virtual ~renderer_playable();
+	virtual ~renderer_playable();
 
 	// common::renderer interface
 	void set_surface(common::surface *dest) { m_dest = dest; };
@@ -208,14 +208,14 @@ class AMBULANTAPI renderer_playable_dsall : public renderer_playable_ds {
 /// able to create a playable.
 class global_playable_factory_impl : public global_playable_factory {
   public:
-    global_playable_factory_impl();
-    ~global_playable_factory_impl();
+	global_playable_factory_impl();
+	~global_playable_factory_impl();
 
 	/// Add a factory.
-    void add_factory(playable_factory *rf);
+	void add_factory(playable_factory *rf);
 
-    /// Signal preference for a certain renderer (or category of renderers)
-    void preferred_renderer(const char* name);
+	/// Signal preference for a certain renderer (or category of renderers)
+	void preferred_renderer(const char* name);
 
 	/// The global factory supports everything (it says:-)
 	bool supports(renderer_select *rs)
@@ -224,7 +224,7 @@ class global_playable_factory_impl : public global_playable_factory {
 	}
 
 	/// Create a new playable.
-    playable *new_playable(
+	playable *new_playable(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
@@ -238,8 +238,8 @@ class global_playable_factory_impl : public global_playable_factory {
   		net::audio_datasource *src);
 
   private:
-    std::list<playable_factory *> m_factories;
-    playable_factory *m_default_factory;
+	std::list<playable_factory *> m_factories;
+	playable_factory *m_default_factory;
 	std::map<int, renderer_select*> m_renderer_select;
 };
 

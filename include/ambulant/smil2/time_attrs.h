@@ -94,7 +94,7 @@ class lib::logger;
 class time_attr_parser : public time_traits {
   public:
 	typedef std::string::size_type size_type;
-    time_attr_parser(const lib::node *n, const char *aname, lib::logger *l)
+	time_attr_parser(const lib::node *n, const char *aname, lib::logger *l)
 	:	m_node(n),
 		m_attrname(aname),
 		m_logger(l)
@@ -110,7 +110,7 @@ class time_attr_parser : public time_traits {
   private:
 	const lib::node *m_node;
 	const char *m_attrname;
-    lib::logger *m_logger;
+	lib::logger *m_logger;
 };
 
 class time_attrs : public time_traits {

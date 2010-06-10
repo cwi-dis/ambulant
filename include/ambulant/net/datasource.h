@@ -210,8 +210,8 @@ class AMBULANTAPI audio_format_choices {
 
 struct ts_packet_t { timestamp_t timestamp; void* data; int size;
 	ts_packet_t(timestamp_t t, void* d, int s)
-    :   timestamp(t), data(d), size(s)
-    {}
+	:   timestamp(t), data(d), size(s)
+	{}
 };
 /// The interface to an object that supplies data to a consumer.
 /// The consumer calls start() whenever it wants
@@ -285,7 +285,7 @@ class audio_datasource_mixin {
 	virtual void seek(timestamp_t time) = 0;
 
 #ifdef WITH_SEAMLESS_PLAYBACK
-    /// Set end-of-clip (which works like end of file), or -1 for real end of file.
+	/// Set end-of-clip (which works like end of file), or -1 for real end of file.
 	virtual void set_clip_end(timestamp_t clip_end) = 0;
 #endif
 	/// At what timestamp value should the audio playback stop?
@@ -326,17 +326,17 @@ class raw_audio_datasource:
 	~raw_audio_datasource() {};
 
 
-    void start(lib::event_processor *evp, lib::event *callback) { m_src->start(evp,callback); };
+	void start(lib::event_processor *evp, lib::event *callback) { m_src->start(evp,callback); };
 	void stop() { m_src->stop(); };
 	void read_ahead(timestamp_t time){};
 	void seek(timestamp_t time){};
 #ifdef WITH_SEAMLESS_PLAYBACK
 	void set_clip_end(timestamp_t clip_end){};
 	void start_prefetch(lib::event_processor *evp) {};
-    timestamp_t get_elapsed() { assert(0); /* XXXJACK: Could base on cumulative byte count read */ return 0; }
+	timestamp_t get_elapsed() { assert(0); /* XXXJACK: Could base on cumulative byte count read */ return 0; }
 #endif
-    void readdone(int len) { m_src->readdone(len); };
-    bool end_of_file() { return m_src->end_of_file(); };
+	void readdone(int len) { m_src->readdone(len); };
+	bool end_of_file() { return m_src->end_of_file(); };
 	bool buffer_full() { return false; };
 	timestamp_t get_clip_end() { return -1; };
 	timestamp_t get_clip_begin() { return 0; };
@@ -416,7 +416,7 @@ class video_datasource : virtual public lib::ref_counted_obj {
 	virtual void seek(timestamp_t time) = 0;
 
 #ifdef WITH_SEAMLESS_PLAYBACK
-    /// Set end-of-clip (which works like end of file), or -1 for real end of file.
+	/// Set end-of-clip (which works like end of file), or -1 for real end of file.
 	virtual void set_clip_end(timestamp_t clip_end) = 0;
 	virtual void start_prefetch(lib::event_processor *evp) = 0;
 #endif
@@ -432,7 +432,7 @@ class video_datasource : virtual public lib::ref_counted_obj {
 /// Interface to create a datasource for a given URL.
 class AMBULANTAPI raw_datasource_factory {
   public:
-    virtual ~raw_datasource_factory() {};
+	virtual ~raw_datasource_factory() {};
 
 	/// Create a new datasource to read the given URL.
 	/// Returns NULL if this factory cannot create such a datasource.
@@ -445,7 +445,7 @@ class AMBULANTAPI raw_datasource_factory {
 /// the client is able to handle.
 class AMBULANTAPI audio_datasource_factory  {
   public:
-    virtual ~audio_datasource_factory() {};
+	virtual ~audio_datasource_factory() {};
 
 	/// Create a new audio_datasource to read the given URL.
 	/// The fmt parameter describes the audio formats the client can handle,
@@ -456,7 +456,7 @@ class AMBULANTAPI audio_datasource_factory  {
 
 class AMBULANTAPI pkt_audio_datasource_factory  {
   public:
-    virtual ~pkt_audio_datasource_factory() {};
+	virtual ~pkt_audio_datasource_factory() {};
 
 	/// Create a new audio_datasource to read the given URL.
 	/// The fmt parameter describes the audio formats the client can handle,
@@ -484,7 +484,7 @@ class audio_parser_finder {
 /// wanted by the client.
 class audio_filter_finder {
   public:
-    virtual ~audio_filter_finder() {};
+	virtual ~audio_filter_finder() {};
 
 	/// Create a filter that converts audio data from src to a format compatible with fmts.
 	virtual audio_datasource* new_audio_filter(audio_datasource *src, const audio_format_choices& fmts) = 0;
@@ -492,7 +492,7 @@ class audio_filter_finder {
 
 class audio_decoder_finder {
   public:
-    virtual ~audio_decoder_finder() {};
+	virtual ~audio_decoder_finder() {};
 
 	/// Create a filter that converts audio data from src to a format compatible with fmts.
 	virtual audio_datasource* new_audio_decoder(pkt_audio_datasource *src, const audio_format_choices& fmts) = 0;
@@ -504,7 +504,7 @@ class audio_decoder_finder {
 /// for not applying multiple copies of a filter to the stream.
 class raw_filter_finder {
   public:
-    virtual ~raw_filter_finder() {};
+	virtual ~raw_filter_finder() {};
 
 	/// Return either a new datasource that filters the data, or the original datasource.
 	virtual datasource* new_raw_filter(const net::url& url, datasource *src) = 0;
@@ -513,7 +513,7 @@ class raw_filter_finder {
 /// Interface to create a video_datasource for a given URL.
 class AMBULANTAPI video_datasource_factory  {
   public:
-    virtual ~video_datasource_factory() {};
+	virtual ~video_datasource_factory() {};
 
 	/// Create a new video_datasource to read the given URL.
 	virtual video_datasource* new_video_datasource(const net::url& url, timestamp_t clip_begin, timestamp_t clip_end) = 0;
@@ -594,10 +594,10 @@ class AMBULANTAPI filter_datasource_impl :
 
 	void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback);
 	void stop();
-    bool end_of_file();
+	bool end_of_file();
 	char* get_read_ptr();
 	int size() const;
-    void readdone(int len);
+	void readdone(int len);
   protected:
 	void data_avail();
 	datasource *m_src;
@@ -614,7 +614,7 @@ class AMBULANTAPI filter_datasource_impl :
 /// processing.
 class demux_datasink : virtual public lib::ref_counted_obj {
   public:
-    virtual ~demux_datasink(){}
+	virtual ~demux_datasink(){}
 
 	/// Data push call: consume data with given size and timestamp. Must copy data
 	/// before returning. Returns true if data was swallowed, else false.
@@ -664,7 +664,7 @@ class abstract_demux : public BASE_THREAD, public lib::ref_counted_obj {
 	virtual void seek(timestamp_t time) = 0;
 
 #ifdef WITH_SEAMLESS_PLAYBACK
-    /// Set end-of-clip (which works like end of file), or -1 for real end of file.
+	/// Set end-of-clip (which works like end of file), or -1 for real end of file.
 	virtual void set_clip_end(timestamp_t clip_end) = 0;
 #endif
 

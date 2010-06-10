@@ -66,7 +66,7 @@ namespace lib {
 
 class tokens_vector : public std::vector<std::string> {
   public:
-    tokens_vector(const char* entry, const char* delims);
+	tokens_vector(const char* entry, const char* delims);
 	std::string join(size_type i, char sep);
 };
 
@@ -217,10 +217,10 @@ class basic_scanner {
 	}
 
 	// Iterator like interface for the scanner
-    operator void const*() const { return pos == end? 0: this;}
-    basic_scanner& operator++() { next(); return *this; }
-    char_type const& operator*() const  { return tok;}
-    //char_type const* operator->() const { return &tok;}
+	operator void const*() const { return pos == end? 0: this;}
+	basic_scanner& operator++() { next(); return *this; }
+	char_type const& operator*() const  { return tok;}
+	//char_type const* operator->() const { return &tok;}
 
 	// Returns true when there are more tokens
 	bool has_more() const { return pos != end;}

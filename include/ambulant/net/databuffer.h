@@ -59,7 +59,7 @@ class AMBULANTAPI databuffer
 	/// Return true if the buffer is full.
 	bool buffer_full();
 	/// Return true if the buffer is non-empty.
-    bool buffer_not_empty();
+	bool buffer_not_empty();
 
 	/// Prepare to write size bytes of data.
 	/// Returns a pointer at which the bytes can be written.
@@ -71,7 +71,7 @@ class AMBULANTAPI databuffer
 
 	/// Prepare to read data.
 	/// Returns a pointer from which at most size() bytes can be read.
-    char* get_read_ptr();
+	char* get_read_ptr();
 
 
 	/// Finish reading data.
@@ -96,8 +96,8 @@ class AMBULANTAPI databuffer
 	// Add space to the end of the buffer
 	void _grow(int sz);
 
-    char* m_buffer;			// Our databuffer
-    bool m_reading;			// True between get_read_ptr/readdone
+	char* m_buffer;			// Our databuffer
+	bool m_reading;			// True between get_read_ptr/readdone
 	bool m_writing;			// True between get_write_ptr/pushdata
 	char* m_old_buffer;		// An old buffer, to be removed in readdone
 	unsigned long int m_rear;

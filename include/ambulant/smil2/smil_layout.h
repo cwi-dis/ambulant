@@ -48,8 +48,8 @@ namespace smil2 {
 class region_node;
 
 class smil_layout_manager :
-    public common::layout_manager,
-    public lib::avt_change_notification
+	public common::layout_manager,
+	public lib::avt_change_notification
 {
   public:
 	smil_layout_manager(common::factories *factory, lib::document *doc);
@@ -63,7 +63,7 @@ class smil_layout_manager :
 	common::animation_destination *get_animation_destination(const lib::node *node);
 	common::surface_template *get_region(const lib::node *n);
 #ifdef WITH_SMIL30
-    void avt_value_changed_for(const lib::node *n);
+	void avt_value_changed_for(const lib::node *n);
 #endif // WITH_SMIL30
 
   private:

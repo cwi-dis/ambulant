@@ -56,14 +56,14 @@ class cocoa_fill_renderer : public cocoa_renderer<renderer_playable> {
 	void start(double where);
 	void seek(double t) {}
 
-    void redraw_body(const rect &dirty, gui_window *window);
+	void redraw_body(const rect &dirty, gui_window *window);
   private:
 	critical_section m_lock;
 };
 
 class cocoa_background_renderer : public background_renderer {
   public:
-    cocoa_background_renderer(const common::region_info *src)
+	cocoa_background_renderer(const common::region_info *src)
 	:   background_renderer(src),
 		m_bgimage(NULL) {}
 	~cocoa_background_renderer();

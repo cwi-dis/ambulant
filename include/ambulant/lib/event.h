@@ -47,7 +47,7 @@ enum event_priority {ep_low, ep_med, ep_high};
 /// Convenience event class that sets a flag when the event fires.
 class flag_event : public event {
   public:
-    /// Pass a reference to the boolean that should be set.
+	/// Pass a reference to the boolean that should be set.
 	flag_event(bool& flag)
 	:	m_flag(flag) {}
 

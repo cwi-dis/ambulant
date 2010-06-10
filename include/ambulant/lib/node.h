@@ -79,7 +79,7 @@ class node_interface {
 
   public:
 
-    typedef std::list<const node*> const_node_list;
+	typedef std::list<const node*> const_node_list;
 
 	///////////////////////////////
 	// tree iterators
@@ -153,13 +153,13 @@ class node_interface {
 	// iterators
 
 	/// Return iterator for this node and its subtree.
-    iterator begin() { return iterator(this);}
+	iterator begin() { return iterator(this);}
 
 	/// Return iterator for this node and its subtree.
-    const_iterator begin() const { return const_iterator(this);}
+	const_iterator begin() const { return const_iterator(this);}
 
-    iterator end() { return iterator(0);}
-    const_iterator end() const { return const_iterator(0);}
+	iterator end() { return iterator(0);}
+	const_iterator end() const { return const_iterator(0);}
 
 	///////////////////////
 	// build tree functions
@@ -260,13 +260,13 @@ class node_interface {
 	/// Set the node_context for this node.
 	virtual void set_context(node_context *c) = 0;
 
-    /// Debug method: return true if this node has the specified _debug attribute
-    bool has_debug(const char *attrvalue=NULL) const {
-        const char *debug = get_attribute("_debug");
-        if (debug == NULL) return false;
-        if (attrvalue == NULL) return true;
-        return strcmp(debug, attrvalue) == 0;
-    };
+	/// Debug method: return true if this node has the specified _debug attribute
+	bool has_debug(const char *attrvalue=NULL) const {
+		const char *debug = get_attribute("_debug");
+		if (debug == NULL) return false;
+		if (attrvalue == NULL) return true;
+		return strcmp(debug, attrvalue) == 0;
+	};
 };
 
 // Typedef trickery. Most of the code refers to "node", but this can be one of two things:
@@ -289,7 +289,7 @@ class AMBULANTAPI node_context {
   public:
 	typedef std::map<std::string, custom_test> custom_test_map;
 
-    virtual ~node_context(){}
+	virtual ~node_context(){}
 
 	/// Add a prefix/URI combination for XML namespaces.
 	virtual void set_prefix_mapping(const std::string& prefix, const std::string& uri) = 0;
@@ -316,7 +316,7 @@ class AMBULANTAPI node_context {
 	/// Return the state engine.
 	virtual common::state_component *get_state() const = 0;
 
-    /// Apply Attribute Value Template expressions to attribute value, if needed.
+	/// Apply Attribute Value Template expressions to attribute value, if needed.
 	virtual const lib::xml_string& apply_avt(const node* n, const lib::xml_string& attrname, const lib::xml_string& attrvalue) const = 0;
 
 #endif

@@ -76,8 +76,8 @@ class qt_html_renderer : public renderer_playable {
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};
   private:
-	lib::critical_section  m_lock;
-	browser_container*     m_html_browser;
+	lib::critical_section m_lock;
+	browser_container* m_html_browser;
 };
 
 } // namespace qt

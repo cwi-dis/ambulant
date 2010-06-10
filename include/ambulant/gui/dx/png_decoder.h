@@ -98,29 +98,28 @@ inline bool png_decoder<DataSource, ColorType>::can_decode() {
 template <class DataSource, class ColorType>
 inline dib_surface<ColorType>*
 png_decoder<DataSource, ColorType>::decode() {
-    png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL,
-      (png_error_ptr)NULL, (png_error_ptr)NULL);
-    if(!png_ptr) {
+	png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, (png_error_ptr)NULL, (png_error_ptr)NULL);
+	if(!png_ptr) {
 		m_logger->error("png_create_read_struct() failed");
-        return 0;
-    }
+		return 0;
+	}
 
-    png_infop info_ptr = png_create_info_struct(png_ptr);
-    if(!info_ptr) {
-        png_destroy_read_struct(&png_ptr, NULL, NULL);
+	png_infop info_ptr = png_create_info_struct(png_ptr);
+	if(!info_ptr) {
+		png_destroy_read_struct(&png_ptr, NULL, NULL);
 		m_logger->error("png_create_info_struct() failed");
-        return 0;
-    }
+		return 0;
+	}
 
 	m_src->seekg(8);
 	png_set_read_fn(png_ptr, (png_voidp)m_src, (png_rw_ptr)png_read_mem_data);
-    png_set_sig_bytes(png_ptr, 8);
-    png_read_info(png_ptr, info_ptr);
+	png_set_sig_bytes(png_ptr, 8);
+	png_read_info(png_ptr, info_ptr);
 
-    // get width, height, bit-depth and color-type
+	// get width, height, bit-depth and color-type
 	png_uint_32 width, height;
 	int depth, clrtype;
-    png_get_IHDR(png_ptr, info_ptr, &width, &height, &depth, &clrtype, NULL, NULL, NULL);
+	png_get_IHDR(png_ptr, info_ptr, &width, &height, &depth, &clrtype, NULL, NULL, NULL);
 	AM_DBG m_logger->debug("PNG: %dx%d [depth:%d clrtype:%d]", width, height, depth, clrtype);
 
 	// expand images of all color-type and bit-depth to 3x8 bit RGB images
@@ -151,13 +150,13 @@ png_decoder<DataSource, ColorType>::decode() {
 	png_read_update_info(png_ptr, info_ptr);
 
 	// get again width, height and the new bit-depth and color-type
-    png_get_IHDR(png_ptr, info_ptr, &width, &height, &depth, &clrtype, NULL, NULL, NULL);
+	png_get_IHDR(png_ptr, info_ptr, &width, &height, &depth, &clrtype, NULL, NULL, NULL);
 	AM_DBG m_logger->debug("PNG: %dx%d [depth:%d clrtype:%d]", width, height, depth, clrtype);
 
 	// row_bytes = width x channels
 	png_uint_32 row_bytes = png_get_rowbytes(png_ptr, info_ptr);
-    png_uint_32 channels = png_get_channels(png_ptr, info_ptr);
-    assert(row_bytes == width * channels);
+	png_uint_32 channels = png_get_channels(png_ptr, info_ptr);
+	assert(row_bytes == width * channels);
 	AM_DBG m_logger->debug("PNG: row_bytes = %d, channels=%d", row_bytes, channels);
 	if(channels	!= 3 && channels != 4) {
 		m_logger->warn("PNG: Seen: %d channels. Supported: 3/4 channels", channels);
@@ -188,12 +187,12 @@ png_decoder<DataSource, ColorType>::decode() {
 	png_read_end(png_ptr, NULL);
 	delete[] row_ptrs;
 	png_destroy_info_struct(png_ptr, &info_ptr);
-    png_destroy_read_struct(&png_ptr, NULL, NULL);
+	png_destroy_read_struct(&png_ptr, NULL, NULL);
 
 	// reverse channels inline
 	psurf->rev_rgb_channels();
 
-    return new dib_surface<ColorType>(bmp, psurf);
+	return new dib_surface<ColorType>(bmp, psurf);
 }
 
 } // namespace dx

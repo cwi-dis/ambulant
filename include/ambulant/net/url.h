@@ -53,26 +53,26 @@ class AMBULANTAPI url {
 	// only valid for absolulte URLs.
 	bool m_absolute;
 
-    // The protocol to use (ftp, http, nntp, ... etc.)
-    string m_protocol;
+	// The protocol to use (ftp, http, nntp, ... etc.)
+	string m_protocol;
 
-    // The host name to connect to.
-    string m_host;
+	// The host name to connect to.
+	string m_host;
 
-    // The protocol port to connect to.
-    short_type m_port;
+	// The protocol port to connect to.
+	short_type m_port;
 
 	// The path part of this url.
-    string m_path;
+	string m_path;
 
 	// The query part of this url.
-    string m_query;
+	string m_query;
 
 	// The ref or fragment.
-    string m_ref;
+	string m_ref;
 
-    // The mime type
-    string m_mime;
+	// The mime type
+	string m_mime;
 
   protected:
 	/// Create a URL from a given string.

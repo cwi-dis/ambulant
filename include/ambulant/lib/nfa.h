@@ -397,7 +397,7 @@ class nfa_matcher {
 	bool match(const std::string& str);
 	void  move(std::set<nfa_node*>& nodes, std::stack<nfa_node*>& stack,
 		int edge, std::set<int>& groups);
-    static void get_groups(int anchor, std::set<int>& groups);
+	static void get_groups(int anchor, std::set<int>& groups);
 
 	std::string m_str;
 	const nfa_expr* m_expr;

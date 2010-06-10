@@ -112,57 +112,57 @@ class transition_blitclass_fade : public transition_engine {
 
 class transition_engine_barwipe : virtual public transition_blitclass_rect {
   protected:
-    void compute();
+	void compute();
 };
 
 class transition_engine_boxwipe : virtual public transition_blitclass_rect {
   protected:
-    void compute();
+	void compute();
 };
 
 class transition_engine_fourboxwipe : virtual public transition_blitclass_rectlist {
   protected:
-    void compute();
+	void compute();
 };
 
 class transition_engine_barndoorwipe : virtual public transition_blitclass_rect {
   protected:
-    void compute();
+	void compute();
 };
 
 class transition_engine_diagonalwipe : virtual public transition_blitclass_poly {
   protected:
-    void compute();
+	void compute();
 };
 
 class transition_engine_miscdiagonalwipe : virtual public transition_blitclass_poly {
   protected:
-    void compute();
+	void compute();
 };
 
 class transition_engine_veewipe : virtual public transition_blitclass_poly {
   protected:
-    void compute();
+	void compute();
 };
 
 class transition_engine_barnveewipe : virtual public transition_blitclass_poly {
   protected:
-    void compute();
+	void compute();
 };
 
 class transition_engine_zigzagwipe : virtual public transition_blitclass_poly {
   protected:
-    void compute();
+	void compute();
 };
 
 class transition_engine_barnzigzagwipe : virtual public transition_blitclass_poly {
   protected:
-    void compute();
+	void compute();
 };
 
 class transition_engine_bowtiewipe : virtual public transition_blitclass_polylist {
   protected:
-    void compute();
+	void compute();
 };
 
 // series 2: iris wipes
@@ -170,66 +170,66 @@ class transition_engine_bowtiewipe : virtual public transition_blitclass_polylis
 class transition_engine__iris : virtual public transition_blitclass_poly {
   protected:
 	virtual lib::dpoint *get_template(int *size) = 0;
-    void compute();
+	void compute();
 };
 
 class transition_engine_iriswipe : virtual public transition_engine__iris {
   protected:
-    lib::dpoint *get_template(int *size);
+	lib::dpoint *get_template(int *size);
 	static lib::dpoint m_template[];
 };
 
 class transition_engine_pentagonwipe : virtual public transition_engine__iris {
   protected:
-    lib::dpoint *get_template(int *size);
+	lib::dpoint *get_template(int *size);
 	static lib::dpoint m_template[];
 };
 
 class transition_engine_arrowheadwipe : virtual public transition_engine__iris {
   protected:
-    lib::dpoint *get_template(int *size);
+	lib::dpoint *get_template(int *size);
 	static lib::dpoint m_template[];
 };
 
 class transition_engine_trianglewipe : virtual public transition_engine__iris {
   protected:
-    lib::dpoint *get_template(int *size);
+	lib::dpoint *get_template(int *size);
 	static lib::dpoint m_template[];
 };
 
 class transition_engine_hexagonwipe : virtual public transition_engine__iris {
   protected:
-    lib::dpoint *get_template(int *size);
+	lib::dpoint *get_template(int *size);
 	static lib::dpoint m_template[];
 };
 
 class transition_engine_eyewipe : virtual public transition_engine__iris {
   protected:
-    lib::dpoint *get_template(int *size);
+	lib::dpoint *get_template(int *size);
 	static lib::dpoint m_template[];
 };
 
 class transition_engine_roundrectwipe : virtual public transition_engine__iris {
   protected:
-    lib::dpoint *get_template(int *size);
+	lib::dpoint *get_template(int *size);
 	static lib::dpoint m_template[];
 };
 
 class transition_engine_ellipsewipe : virtual public transition_engine__iris {
   protected:
-    lib::dpoint *get_template(int *size);
+	lib::dpoint *get_template(int *size);
 	static lib::dpoint m_template[];
 };
 
 class transition_engine_starwipe : virtual public transition_engine__iris {
   protected:
-    lib::dpoint *get_template(int *size);
+	lib::dpoint *get_template(int *size);
 	static lib::dpoint m_template[];
 };
 
 class transition_engine_miscshapewipe : virtual public transition_engine__iris {
   protected:
-    lib::dpoint *get_template(int *size);
+	lib::dpoint *get_template(int *size);
 	static lib::dpoint m_template[];
 };
 
@@ -269,83 +269,83 @@ class angle_computer {
 
 class transition_engine_clockwipe : virtual public transition_blitclass_poly {
   protected:
-    void compute();
+	void compute();
   private:
 	detail::angle_computer m_angle_computer;
 };
 
 class transition_engine_singlesweepwipe : virtual public transition_blitclass_poly {
   protected:
-    void compute();
+	void compute();
 };
 
 class transition_engine_doublesweepwipe : virtual public transition_blitclass_polylist {
   protected:
-    void compute();
+	void compute();
 };
 
 class transition_engine_saloondoorwipe : virtual public transition_blitclass_poly {
   protected:
-    void compute();
+	void compute();
 };
 
 class transition_engine_windshieldwipe : virtual public transition_blitclass_poly {
   protected:
-    void compute();
+	void compute();
 };
 
 class transition_engine_fanwipe : virtual public transition_blitclass_poly {
   protected:
-    void compute();
+	void compute();
 };
 
 class transition_engine_doublefanwipe : virtual public transition_blitclass_poly {
   protected:
-    void compute();
+	void compute();
 };
 
 class transition_engine_pinwheelwipe : virtual public transition_blitclass_polylist {
   protected:
-    void compute();
+	void compute();
 };
 
 // series 4: matrix wipe types
 
 class transition_engine_snakewipe : virtual public transition_blitclass_rectlist {
   protected:
-    void compute();
+	void compute();
 };
 
 class transition_engine_waterfallwipe : virtual public transition_blitclass_rectlist {
   protected:
-    void compute();
+	void compute();
 };
 
 class transition_engine_spiralwipe : virtual public transition_blitclass_rectlist {
   protected:
-    void compute();
+	void compute();
 };
 
 class transition_engine_parallelsnakeswipe : virtual public transition_blitclass_rectlist {
   protected:
-    void compute();
+	void compute();
 };
 
 class transition_engine_boxsnakeswipe : virtual public transition_blitclass_rectlist {
   protected:
-    void compute();
+	void compute();
 };
 
 // series 5: SMIL-specific types
 
 class transition_engine_pushwipe : virtual public transition_blitclass_r1r2r3r4 {
   protected:
-    void compute();
+	void compute();
 };
 
 class transition_engine_slidewipe : virtual public transition_blitclass_r1r2r3r4 {
   protected:
-    void compute();
+	void compute();
 };
 
 class transition_engine_fade : virtual public transition_blitclass_fade {

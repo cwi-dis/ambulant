@@ -65,9 +65,9 @@ class dx_gui_region {
 		return new dx_gui_region(hrgn);
 	}
 
-    void clear() {
+	void clear() {
 		SetRectRgn(m_hrgn, 0, 0, 0, 0);
-    }
+	}
 
 	bool is_empty() const {
 		RECT rc;

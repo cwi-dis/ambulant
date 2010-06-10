@@ -55,22 +55,22 @@ class cocoa_smiltext_renderer :
 		event_processor *evp,
 		common::factories *fp,
 		common::playable_factory_machdep *mdp);
-        ~cocoa_smiltext_renderer();
+	~cocoa_smiltext_renderer();
 
-    void redraw_body(const rect &dirty, gui_window *window);
+	void redraw_body(const rect &dirty, gui_window *window);
 	void start(double t);
 	void seek(double t);
 //	void stop();
 	bool stop();
-    void pause(pause_display d=display_show);
-    void resume();
+	void pause(pause_display d=display_show);
+	void resume();
 	// Callbacks from the engine
 	void smiltext_changed();
 	void marker_seen(const char *name);
   private:
 	unsigned int _compute_rate(smil2::smiltext_align align, lib::size size, lib::rect r,  unsigned int dur); // Must go to engine
   private:
-    NSTextStorage *m_text_storage;
+	NSTextStorage *m_text_storage;
 	NSLayoutManager *m_layout_manager;
 	NSTextContainer *m_text_container;
 	smil2::smiltext_engine m_engine;

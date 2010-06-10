@@ -56,14 +56,14 @@ class cg_fill_renderer : public cg_renderer<renderer_playable> {
 	void start(double where);
 	void seek(double t) {}
 
-    void redraw_body(const rect &dirty, gui_window *window);
+	void redraw_body(const rect &dirty, gui_window *window);
   private:
 	critical_section m_lock;
 };
 
 class cg_background_renderer : public background_renderer {
   public:
-    cg_background_renderer(const common::region_info *src)
+	cg_background_renderer(const common::region_info *src)
 	:   background_renderer(src),
 		m_bgimage(NULL) {}
 	~cg_background_renderer();

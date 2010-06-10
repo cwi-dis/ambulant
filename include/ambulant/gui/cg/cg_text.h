@@ -53,9 +53,9 @@ class cg_text_renderer : public cg_renderer<renderer_playable_dsall> {
 		event_processor *evp,
 		common::factories *factory,
 		common::playable_factory_machdep *mdp);
-        ~cg_text_renderer();
+	~cg_text_renderer();
 
-    void redraw_body(const rect &dirty, gui_window *window);
+	void redraw_body(const rect &dirty, gui_window *window);
   private:
 	bool _calc_fit(CGContextRef ctx, float width, int& lbegin, int& lend);
 	bool _fits(CGContextRef ctx, float width, const char *str, int strlen);

@@ -77,16 +77,16 @@ class region_dim {
 	:	m_type(rdt_auto) { m_holder.dbl_val = 0;}
 
 	/// Constructs an absolute dim (assumed in pixels).
-    region_dim(int value)
-    :	m_type(rdt_absolute) { m_holder.int_val = value;}
+	region_dim(int value)
+	:	m_type(rdt_absolute) { m_holder.int_val = value;}
 
 	/// Constructs a relative dim (proportion or percent).
-    region_dim(double value)
-    :	m_type(rdt_relative) { m_holder.dbl_val = value;}
+	region_dim(double value)
+	:	m_type(rdt_relative) { m_holder.dbl_val = value;}
 
 	// Constructs a region_dim from another region_dim.
-    region_dim(const region_dim& other)
-    :	m_type(other.m_type) {
+	region_dim(const region_dim& other)
+	:	m_type(other.m_type) {
 		if(other.absolute())
 			m_holder.int_val = other.get_as_int();
 		else if(other.relative())
@@ -113,33 +113,33 @@ class region_dim {
 	//////////////////////
 	// region_dim destructor
 
-    ~region_dim(){}
+	~region_dim(){}
 
 	//////////////////////
 	// region_dim assignments (construct from existing)
 
 	/// Sets this to other.
-    const region_dim& operator=(const region_dim& other) {
+	const region_dim& operator=(const region_dim& other) {
 		if(&other != this) {
 			m_type = other.m_type;
 			m_holder = other.m_holder;
 		}
 		return *this;
-    }
+	}
 
 	/// Sets this to the absolute value provided.
-    const region_dim& operator=(int value) {
+	const region_dim& operator=(int value) {
 		m_type = rdt_absolute;
 		m_holder.int_val = value;
 		return *this;
-    }
+	}
 
 	/// Sets this to the relative value provided.
-    const region_dim& operator=(double value) {
+	const region_dim& operator=(double value) {
 		m_type = rdt_relative;
 		m_holder.dbl_val = value;
 		return *this;
-    }
+	}
 
 	//////////////////////
 	// type queries
@@ -194,7 +194,7 @@ class region_dim {
 
 	region_dim& operator+=(const region_dim& rhs) {
 		if(m_type != rhs.m_type)
-            lib::logger::get_logger()->trace("region animation: cannot mix percentages and absolute values");
+			lib::logger::get_logger()->trace("region animation: cannot mix percentages and absolute values");
 		else if(absolute())
 			m_holder.int_val += rhs.get_as_int();
 		else if(relative())
@@ -204,8 +204,8 @@ class region_dim {
 
 	region_dim& operator-=(const region_dim& rhs) {
 		if(m_type != rhs.m_type)
-            lib::logger::get_logger()->trace("region animation: cannot mix percentages and absolute values");
-        else if(absolute())
+			lib::logger::get_logger()->trace("region animation: cannot mix percentages and absolute values");
+		else if(absolute())
 			m_holder.int_val -= rhs.get_as_int();
 		else if(relative())
  			m_holder.dbl_val -= rhs.get_as_dbl();
@@ -282,7 +282,7 @@ struct region_dim_spec {
 
 	bool operator== (region_dim_spec& other) const {
 		return left==other.left && width==other.width && right==other.right
-		    && top == other.top && height==other.height && bottom==other.bottom;
+			&& top == other.top && height==other.height && bottom==other.bottom;
 	}
 
 	bool operator!= (region_dim_spec& other) const { return !(*this == other); }

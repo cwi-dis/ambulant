@@ -84,11 +84,11 @@ class region_evaluator {
 	/// Set all parameters from a region_dim_spec.
 	void set(const region_dim_spec& rds) {
 		set_left(rds.left);
-        set_width(rds.width);
-        set_right(rds.right);
+		set_width(rds.width);
+		set_right(rds.right);
 		set_top(rds.top);
-        set_height(rds.height);
-        set_bottom(rds.bottom);
+		set_height(rds.height);
+		set_bottom(rds.bottom);
 	}
 
 	/// Set all parameters from a region_dim array.

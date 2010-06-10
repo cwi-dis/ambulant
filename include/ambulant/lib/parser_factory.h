@@ -47,22 +47,22 @@ class AMBULANTAPI parser_factory {
 /// Implementation of parser_factory plus provider interface.
 class AMBULANTAPI global_parser_factory : public parser_factory {
   public:
-    /// Returns (singleton?) global_parser_factory object.
+	/// Returns (singleton?) global_parser_factory object.
   	static global_parser_factory* get_parser_factory();
-    ~global_parser_factory();
+	~global_parser_factory();
 
-    /// Provider interface: add new parser factory implementation.
-    void add_factory(parser_factory *pf);
+	/// Provider interface: add new parser factory implementation.
+	void add_factory(parser_factory *pf);
 
-    xml_parser* new_parser(
+	xml_parser* new_parser(
 		sax_content_handler* content_handler,
 		sax_error_handler* error_handler);
 
   private:
 	global_parser_factory();
-    std::vector<parser_factory *> m_factories;
+	std::vector<parser_factory *> m_factories;
 	bool m_warned;
-    parser_factory *m_default_factory;
+	parser_factory *m_default_factory;
   	static global_parser_factory* s_singleton;
 };
 

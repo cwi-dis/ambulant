@@ -84,7 +84,7 @@ class cg_renderer : public RP_Base {
 		{};
 	virtual ~cg_renderer() {}
 
-    void redraw(const rect &dirty, gui_window *window) {
+	void redraw(const rect &dirty, gui_window *window) {
 		redraw_body(dirty, window);
 		if (RP_Base::m_erase_never) RP_Base::m_dest->keep_as_background();
 	}
@@ -95,7 +95,7 @@ class cg_renderer : public RP_Base {
 	void start_outtransition(const lib::transition_info *info) {
 	}
   protected:
-    virtual void redraw_body(const rect &dirty, gui_window *window) = 0;
+	virtual void redraw_body(const rect &dirty, gui_window *window) = 0;
 
 };
 

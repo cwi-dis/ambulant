@@ -62,7 +62,7 @@ class dx_dsvideo_renderer :
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		event_processor *evp,
-    	common::factories *factory,
+		common::factories *factory,
 		common::playable_factory_machdep *mdp);
 	~dx_dsvideo_renderer();
 
@@ -77,7 +77,7 @@ class dx_dsvideo_renderer :
   protected:
 	void _push_frame(char* frame, int size);
   private:
-    void _init_bitmap();
+	void _init_bitmap();
 	void _init_ddsurf(gui_window *window);
 	void _copy_to_ddsurf();
 	char *m_frame;				// Current frame

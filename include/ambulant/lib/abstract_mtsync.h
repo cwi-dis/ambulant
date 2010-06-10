@@ -48,7 +48,7 @@ class AMBULANTAPI base_critical_section {
 
 class AMBULANTAPI base_critical_section_cv {
   public:
-    virtual ~base_critical_section_cv() {};
+	virtual ~base_critical_section_cv() {};
 
 	virtual void signal() = 0;
 //	virtual void signal_all() = 0;

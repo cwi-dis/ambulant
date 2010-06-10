@@ -109,9 +109,9 @@ void jpg_decoder<DataSource, ColorType>::free_buffer() {
 template <class DataSource, class ColorType>
 bool jpg_decoder<DataSource, ColorType>::can_decode() {
 	m_src->seekg(0);
-    uchar_t b1 = m_src->get();
-    uchar_t b2 = m_src->get();
-    return ((b1 == 0xFF) && (b2 == 0xD8))?true:false;
+	uchar_t b1 = m_src->get();
+	uchar_t b2 = m_src->get();
+	return ((b1 == 0xFF) && (b2 == 0xD8))?true:false;
 }
 
 template <class DataSource, class ColorType>

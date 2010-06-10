@@ -55,7 +55,7 @@ class cg_image_renderer : public cg_renderer<renderer_playable_dsall> {
 		m_image_cropped(NULL) {};
 	~cg_image_renderer();
 
-    void redraw_body(const rect &dirty, gui_window *window);
+	void redraw_body(const rect &dirty, gui_window *window);
   private:
   	CGImage *_cropped_image(const lib::rect& rect);
 

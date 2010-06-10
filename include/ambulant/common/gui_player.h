@@ -153,7 +153,7 @@ class AMBULANTAPI gui_player : public factories {
 	/// Set the player object.
 	virtual void set_player(player *pl) { if (m_player) m_player->release(); m_player = pl; }
 
-    /// Get URL of current document.
+	/// Get URL of current document.
 	virtual net::url get_url() const { return m_url; }
 
 	/// Embedder should implement this if it implements the gui_screen interface.
@@ -162,7 +162,7 @@ class AMBULANTAPI gui_player : public factories {
 	/// ???
 	static void load_test_attrs(std::string& filename);
   protected:
-    /// Convenience method to parse XML.
+	/// Convenience method to parse XML.
 	lib::document *create_document(const net::url& url);
 	net::url m_url;
 	lib::document *m_doc;

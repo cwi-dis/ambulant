@@ -90,17 +90,17 @@ inline BITMAPINFO* get_bmp_info(size_t width, size_t height, size_t depth) {
 	static BITMAPINFO bmi;
 	BITMAPINFOHEADER& h = bmi.bmiHeader;
 	memset(&h, 0, sizeof(BITMAPINFOHEADER));
-    h.biSize = sizeof(BITMAPINFOHEADER);
-    h.biWidth = long(width);
-    h.biHeight = long(height);
-    h.biPlanes = 1;
-    h.biBitCount = WORD(depth);
-    h.biCompression = BI_RGB;
-    h.biSizeImage = 0;
-    h.biXPelsPerMeter = 0;
-    h.biYPelsPerMeter = 0;
-    h.biClrUsed = 0;
-    h.biClrImportant = 0;
+	h.biSize = sizeof(BITMAPINFOHEADER);
+	h.biWidth = long(width);
+	h.biHeight = long(height);
+	h.biPlanes = 1;
+	h.biBitCount = WORD(depth);
+	h.biCompression = BI_RGB;
+	h.biSizeImage = 0;
+	h.biXPelsPerMeter = 0;
+	h.biYPelsPerMeter = 0;
+	h.biClrUsed = 0;
+	h.biClrImportant = 0;
 	memset(&bmi.bmiColors[0], 0, sizeof(RGBQUAD));
 	return &bmi;
 }

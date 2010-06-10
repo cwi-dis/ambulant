@@ -319,7 +319,7 @@ class smiltext_metrics {
 /// Interface to be inherited by a renderer that wants to use smiltext_layout_engine
 class smiltext_layout_provider {
   public:
-    virtual ~smiltext_layout_provider() {}
+	virtual ~smiltext_layout_provider() {}
 
 	/// Return font information needed for for use smiltext_layout_engine
 	virtual smiltext_metrics get_smiltext_metrics(const smiltext_run& str) = 0;
@@ -334,8 +334,8 @@ class smiltext_layout_provider {
 class smiltext_layout_word {
 
   public:
-  smiltext_layout_word(smiltext_run run, smiltext_metrics stm, int nl);
-    smiltext_run m_run;
+	smiltext_layout_word(smiltext_run run, smiltext_metrics stm, int nl);
+	smiltext_run m_run;
 	int m_leading_newlines;
 	smiltext_metrics m_metrics;
 	lib::rect m_bounding_box;

@@ -64,7 +64,7 @@ class cocoa_window : public common::gui_window {
 	void *view() { return m_view; }
 
   private:
-    void *m_view;
+	void *m_view;
 };
 
 ;
@@ -79,7 +79,7 @@ class cocoa_window_factory : public common::window_factory {
   protected:
 	virtual void init_window_size(cocoa_window *window, const std::string &name, lib::size bounds);
   private:
-    void *m_defaultwindow_view;
+	void *m_defaultwindow_view;
 };
 
 class cocoa_gui_screen : public common::gui_screen {
@@ -126,7 +126,7 @@ common::playable_factory *create_cocoa_video_playable_factory(common::factories 
 
 @interface AmbulantView : NSView
 {
-    ambulant::gui::cocoa::cocoa_window *ambulant_window;
+	ambulant::gui::cocoa::cocoa_window *ambulant_window;
 	NSImage *transition_surface;
 	NSImage *transition_tmpsurface;
 	int transition_count;

@@ -48,9 +48,9 @@ class atsui_text_renderer : public cg_renderer<renderer_playable_dsall> {
 		event_processor *evp,
 		common::factories *factory,
 		common::playable_factory_machdep *mdp);
-        ~atsui_text_renderer();
+		~atsui_text_renderer();
 
-    void redraw_body(const rect &dirty, gui_window *window);
+	void redraw_body(const rect &dirty, gui_window *window);
   private:
 	UniChar *m_text_storage;
 	UniCharCount m_text_storage_length;

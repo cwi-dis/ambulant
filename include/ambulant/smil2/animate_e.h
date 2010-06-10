@@ -59,7 +59,7 @@ class animation_engine {
 	void started(animate_node *anode);
 	void stopped(animate_node *anode);
 
-    void reset();
+	void reset();
 
   private:
 	// Animators for a generalized attribute
@@ -78,7 +78,7 @@ class animation_engine {
 	void _update_node(const lib::node *target, node_animators_t& animators);
 	void _update_attr(const std::string& attr, attribute_animators_t& animators,
 		common::animation_destination *dst);
-    void _stopped(animate_node *anode);
+	void _stopped(animate_node *anode);
 
 	lib::event_processor *m_event_processor;
 	smil_layout_manager *m_layout;
@@ -89,7 +89,7 @@ class animation_engine {
 
 	void update_callback();
 	void _schedule_update();
-    lib::critical_section m_lock;
+	lib::critical_section m_lock;
 	lib::event *m_update_event;
 };
 

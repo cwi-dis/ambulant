@@ -37,19 +37,13 @@ extern "C" {
 #ifdef WITH_FFMPEG_SWSCALE
 #include "libswscale/swscale.h"
 #else
-#define SWS_FAST_BILINEAR     1
-//struct SwsContext *sws_getCachedContext(struct SwsContext *context,
-//                                      int srcW, int srcH, enum PixelFormat srcFormat,
-//                                      int dstW, int dstH, enum PixelFormat dstFormat, int flags,
-//                                      SwsFilter *srcFilter, SwsFilter *dstFilter, double *param);
+// Compatible routines are available, but no declarations. We provide our own.
+#define SWS_FAST_BILINEAR 1
 void *sws_getCachedContext(void*,int, int, int, int, int, int, int, void*, void*, double*);
-//int sws_scale(struct SwsContext *context, uint8_t* srcSlice[], int srcStride[], int srcSliceY,
-//              int srcSliceH, uint8_t* dst[], int dstStride[]);
 int sws_scale(void*, uint8_t* srcSlice[], int srcStride[], int srcSliceY,
 	int srcSliceH, uint8_t* dst[], int dstStride[]);
 void sws_freeContext(struct SwsContext *swsContext);
-//met de hand
-#endif
+#endif // WITH_FFMPEG_SWSCALE
 
 }
 
@@ -79,18 +73,18 @@ class ffmpeg_video_decoder_datasource:
 	//ffmpeg_video_decoder_datasource(const net::url& url, datasource *src);
 	ffmpeg_video_decoder_datasource(video_datasource *src, video_format fmt);
 
-    ~ffmpeg_video_decoder_datasource();
+	~ffmpeg_video_decoder_datasource();
 
 	bool has_audio();
-    int width();
+	int width();
   	int height();
 	timestamp_t frameduration();
 	audio_datasource *get_audio_datasource();
 
-    void start_frame(lib::event_processor *evp, lib::event *callback, timestamp_t timestamp);
+	void start_frame(lib::event_processor *evp, lib::event *callback, timestamp_t timestamp);
 	void stop();
 
-    bool end_of_file();
+	bool end_of_file();
 	char* get_frame(timestamp_t now, timestamp_t *timestamp, int *size);
 	void frame_processed_keepdata(timestamp_t timestamp, char *data);
 	void frame_processed(timestamp_t timestamp);
@@ -100,7 +94,7 @@ class ffmpeg_video_decoder_datasource:
 	void set_clip_end(timestamp_t clip_end);
 	void start_prefetch(lib::event_processor *evp);
 #endif
-    void data_avail();
+	void data_avail();
 	bool buffer_full();
   	timestamp_t get_clip_end() { return m_src->get_clip_end(); };
   	timestamp_t get_clip_begin() { return m_src->get_clip_begin(); };
@@ -136,7 +130,7 @@ class ffmpeg_video_decoder_datasource:
 	timestamp_t m_video_clock;
   	int m_frame_count;
 	int m_dropped_count;
-    lib::critical_section m_lock;
+	lib::critical_section m_lock;
 	timestamp_t m_elapsed;
 	bool m_start_input;		// True when m_src->start_frame() is needed
 	pixel_order m_pixel_layout;	// Per-pixel format receiver wants.

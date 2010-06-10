@@ -123,7 +123,7 @@ inline bool gif_decoder<DataSource, ColorType>::can_decode() {
 	m_src->seekg(0);
 	uchar_t b[16];
 	if(m_src->read(b, 6) != 6) return false;
-    return b[0] == 'G' && b[1] == 'I' && b[2] == 'F' && b[3] == '8' &&
+	return b[0] == 'G' && b[1] == 'I' && b[2] == 'F' && b[3] == '8' &&
 		(b[4] == '7' || b[4] == '9') && b[5] == 'a';
 }
 
@@ -146,7 +146,7 @@ gif_decoder<DataSource, ColorType>::decode() {
 		delete[] m_palette;
 		m_palette = NULL;
 	}
-    if((uch & 0x80) == 0x80) {
+	if((uch & 0x80) == 0x80) {
 		AM_DBG m_logger->debug("Gif palette entries = %d", int(m_scr_colors));
 		m_palette = new color_quad[m_scr_colors];
 		memset(m_palette, 0, m_scr_colors*sizeof(color_quad));
@@ -227,14 +227,14 @@ inline dib_surface<ColorType>*
 gif_decoder<DataSource, ColorType>::parse_image() {
 	uint16_t imageLeftPosition = m_src->get_be_ushort();
 	uint16_t imageTopPosition = m_src->get_be_ushort();
-    uint16_t imageWidth = m_src->get_be_ushort();
-    uint16_t imageHeight = m_src->get_be_ushort();
+	uint16_t imageWidth = m_src->get_be_ushort();
+	uint16_t imageHeight = m_src->get_be_ushort();
 
 	uchar_t packedFields = m_src->get();
-    bool localColorTableFlag = (packedFields & 0x80) != 0;
-    bool interlaceFlag = (packedFields & 0x40) != 0;
-    bool sortFlag = (packedFields & 0x20) != 0;
-    int numLCTEntries = 1 << ((packedFields & 0x7) + 1);
+	bool localColorTableFlag = (packedFields & 0x80) != 0;
+	bool interlaceFlag = (packedFields & 0x40) != 0;
+	bool sortFlag = (packedFields & 0x20) != 0;
+	int numLCTEntries = 1 << ((packedFields & 0x7) + 1);
 	if(localColorTableFlag) {
 		// read color table
 		// numLCTEntries colors

@@ -39,7 +39,7 @@ namespace none {
 /// Dummy implementation of gui_window.
 class none_window : public common::gui_window {
   public:
-    none_window(const std::string &name, lib::size bounds, common::gui_events *handler)
+	none_window(const std::string &name, lib::size bounds, common::gui_events *handler)
 	:	common::gui_window(handler)
 	{};
 

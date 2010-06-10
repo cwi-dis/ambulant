@@ -101,12 +101,12 @@ class surface_impl : public surface_template, public surface, public gui_events 
 	rect get_fit_rect_noalign(const size& src_real_size, rect* out_src_rect) const;
 #endif
 	void draw_background(const rect &r, gui_window *window);
-    bool _is_active();                  // Return true if region is active
+	bool _is_active();                  // Return true if region is active
 
   protected:
 	virtual void transition_done(lib::rect area);
 	void transition_freeze_end(lib::rect area);
-    void background_render_changed();   // Called when drawing the background may have changed
+	void background_render_changed();   // Called when drawing the background may have changed
 
   	std::string m_name;					// for debugging
 

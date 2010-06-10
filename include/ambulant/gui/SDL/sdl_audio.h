@@ -127,9 +127,9 @@ class sdl_audio_renderer : public common::renderer_playable {
 	const lib::transition_info* m_intransition;
 	const lib::transition_info* m_outtransition;
 	smil2::audio_transition_engine* m_transition_engine;
-    net::timestamp_t m_previous_clip_position;
+	net::timestamp_t m_previous_clip_position;
 #ifdef WITH_CLOCK_SYNC
-    lib::timer::time_type m_audio_clock;
+	lib::timer::time_type m_audio_clock;
 #endif
 	// class methods and attributes:
 	static int init();
@@ -142,7 +142,7 @@ class sdl_audio_renderer : public common::renderer_playable {
 	static int s_min_buffer_size_bytes;		// Minimum number of bytes we need for the abobe
 	static lib::critical_section s_static_lock;
 	static std::list<sdl_audio_renderer *>s_renderers;
-    static sdl_audio_renderer *s_master_clock_renderer;
+	static sdl_audio_renderer *s_master_clock_renderer;
 };
 
 } // end namespace sdl

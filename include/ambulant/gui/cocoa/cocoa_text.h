@@ -48,11 +48,11 @@ class cocoa_text_renderer : public cocoa_renderer<renderer_playable_dsall> {
 		event_processor *evp,
 		common::factories *factory,
 		common::playable_factory_machdep *mdp);
-        ~cocoa_text_renderer();
+	~cocoa_text_renderer();
 
-    void redraw_body(const rect &dirty, gui_window *window);
+	void redraw_body(const rect &dirty, gui_window *window);
   private:
-    NSTextStorage *m_text_storage;
+	NSTextStorage *m_text_storage;
 	NSLayoutManager *m_layout_manager;
 	NSTextContainer *m_text_container;
 	lib::color_t m_text_color;

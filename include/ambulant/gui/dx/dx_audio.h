@@ -63,7 +63,7 @@ class dx_audio_renderer : public common::renderer_playable {
 	void set_intransition(const lib::transition_info* info);
 	void start_outtransition(const lib::transition_info* info);
   private:
-    void update_levels();
+	void update_levels();
 	void update_callback();
 	void schedule_update();
 	audio_player *m_player;

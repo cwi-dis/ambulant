@@ -61,18 +61,17 @@ class animation_engine;
 class scheduler;
 
 class smil_player :
-    public common::player,
-    /* public common::player_feedback,*/
-    public time_node_context,
-    public common::playable_notification,
-    virtual public lib::ref_counted_obj
+	public common::player,
+	public time_node_context,
+	public common::playable_notification,
+	virtual public lib::ref_counted_obj
 {
   public:
 	typedef time_traits::value_type time_value_type;
 
 	smil_player(lib::document *doc, common::factories *factory, common::embedder *sys = 0);
 	void initialize();
-    void terminate();
+	void terminate();
 	~smil_player();
 
 	///////////////////
@@ -114,7 +113,7 @@ class smil_player :
 	common::state_component *m_state_engine;
   public:
 	virtual void on_state_change(const char *ref);
-    common::state_component *get_state_engine() { return m_state_engine;}
+	common::state_component *get_state_engine() { return m_state_engine;}
 #endif
 	virtual void on_focus_advance();
 	virtual void on_focus_activate();

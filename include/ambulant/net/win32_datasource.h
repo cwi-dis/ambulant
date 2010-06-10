@@ -64,7 +64,7 @@ class win32_datasource : virtual public datasource, virtual public lib::ref_coun
 	void start(ambulant::lib::event_processor *evp, ambulant::lib::event *callback);
 	void stop();
 	void readdone(int len);
-    bool end_of_file();
+	bool end_of_file();
 	char* get_read_ptr();
 	int size() const;
 	void read(char *data, int size);
@@ -73,8 +73,8 @@ class win32_datasource : virtual public datasource, virtual public lib::ref_coun
 #endif
 
   protected:
-    bool _end_of_file();
-    virtual void _read_file() = 0; // Defined in the concrete subclasses
+	bool _end_of_file();
+	virtual void _read_file() = 0; // Defined in the concrete subclasses
 	const url m_url;
 	databuffer *m_buffer;
 	bool m_end_of_file;

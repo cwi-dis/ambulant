@@ -53,10 +53,10 @@ namespace common {
 class video_renderer : public common::renderer_playable {
   public:
 	video_renderer(
-    common::playable_notification *context,
-    common::playable_notification::cookie_type cookie,
-    const lib::node *node,
-    lib::event_processor *evp,
+	common::playable_notification *context,
+	common::playable_notification::cookie_type cookie,
+	const lib::node *node,
+	lib::event_processor *evp,
 	common::factories *factory,
 	common::playable_factory_machdep *mdp);
 
@@ -76,32 +76,32 @@ class video_renderer : public common::renderer_playable {
 	/// Return true if video is playing.
   	bool is_playing() { return m_activated; };
 
-    virtual void redraw(const lib::rect &dirty, common::gui_window *window);
+	virtual void redraw(const lib::rect &dirty, common::gui_window *window);
 
-    virtual void set_surface(common::surface *dest) {
-        common::renderer_playable::set_surface(dest);
-        if (m_audio_renderer) {
-            renderer *r = m_audio_renderer->get_renderer();
-            if (r) r->set_surface(dest);
-        }
-    }
+	virtual void set_surface(common::surface *dest) {
+		common::renderer_playable::set_surface(dest);
+		if (m_audio_renderer) {
+			renderer *r = m_audio_renderer->get_renderer();
+			if (r) r->set_surface(dest);
+		}
+	}
 	void start(double where);
-    //void stop();
+	//void stop();
 	bool stop();
 	void post_stop();
 	void preroll(double when, double where, double how_much);
 	void init_with_node(const lib::node *n);
 	void seek(double where);
-    void pause(pause_display d=display_show);
-    void resume();
-    void data_avail();
+	void pause(pause_display d=display_show);
+	void resume();
+	void data_avail();
 	duration get_dur();
 //	void playdone() {};
 
   protected:
 	/// Display video data. Subclass providing this method is responsible for
 	/// eventually free()ing frame. This method is protected because it shares
-    /// the m_lock mutex.
+	/// the m_lock mutex.
 	virtual void _push_frame(char* frame, int size) = 0;
 
   protected:

@@ -137,9 +137,9 @@ class AMBULANTAPI ref_counted_obj : virtual public ref_counted {
 	ref_counted_obj()
 	:	m_refcount(1) {}
 
-    virtual ~ref_counted_obj() {
-        assert(m_refcount == 0);
-    }
+	virtual ~ref_counted_obj() {
+		assert(m_refcount == 0);
+	}
 
 	long add_ref() {return ++m_refcount;}
 
@@ -168,7 +168,7 @@ class auto_ref : public ref_counted_obj {
 	auto_ref(T* ptr = 0) : m_ptr(ptr) {}
 	~auto_ref() { delete m_ptr;}
 
-    T* get_ptr() { return m_ptr;}
+	T* get_ptr() { return m_ptr;}
 	void set_ptr(T* ptr = 0) {
 		if(ptr != m_ptr) delete m_ptr;
 		m_ptr = ptr;

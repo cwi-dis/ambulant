@@ -48,9 +48,9 @@ class cocoa_ink_renderer : public cocoa_renderer<renderer_playable_dsall> {
 		event_processor *evp,
 		common::factories *factory,
 		common::playable_factory_machdep *mdp);
-        ~cocoa_ink_renderer();
+	~cocoa_ink_renderer();
 
-    void redraw_body(const rect &dirty, gui_window *window);
+	void redraw_body(const rect &dirty, gui_window *window);
   private:
 	const lib::node *m_tree;
 	NSBezierPath *m_path;

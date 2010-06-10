@@ -112,7 +112,7 @@ enum user_event_type {
 /// the renderer.
 class AMBULANTAPI gui_events  {
   public:
-    virtual ~gui_events(){}
+	virtual ~gui_events(){}
 
 	/// Request to redraw a certain area.
 	virtual void redraw(const lib::rect &dirty, gui_window *window) = 0;

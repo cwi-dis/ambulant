@@ -75,7 +75,7 @@ class const_tree_iterator  {
 
 	// an instance of this object acts like a pointer to a const_deref_type
 	// it->m_cur is the node, it->m_move is true if 'down'
-    const_deref_type* operator->() {return (&**this); }
+	const_deref_type* operator->() {return (&**this); }
 
 	/// True if iterator is exhausted.
 	bool is_end() { return m_cur == 0;}
@@ -129,7 +129,7 @@ class tree_iterator : public const_tree_iterator<Node> {
 
 	tree_iterator() : const_tree_iterator<Node>(){}
 	tree_iterator(Node *p) : const_tree_iterator<Node>(p){}
-    virtual ~tree_iterator() {}
+	virtual ~tree_iterator() {}
 
 	// pre-increment
 	tree_iterator& operator++() { if(this->m_cur)(this->*const_tree_iterator<Node>::m_move)(); return *this;}
@@ -144,7 +144,7 @@ class tree_iterator : public const_tree_iterator<Node> {
 
 	// an instance of this object acts like a pointer to a deref_type
 	// it->m_cur is the node, it->m_move is true if 'down'
-    deref_type* operator->() {return (&**this); }
+	deref_type* operator->() {return (&**this); }
 };
 
 ////////////////////////////

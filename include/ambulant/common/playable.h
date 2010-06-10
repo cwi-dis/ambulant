@@ -52,9 +52,9 @@ class renderer_select;
 
 /// Display mode when the playable is paused.
 enum pause_display {
-    display_disable,    ///< ???
-    display_hide,       ///< Do not show media while paused
-    display_show        ///< Continue showing media while paused
+	display_disable,	///< ???
+	display_hide,	   ///< Do not show media while paused
+	display_show		///< Continue showing media while paused
 };
 
 /// Duration of a node or media item.
@@ -102,11 +102,11 @@ class AMBULANTAPI playable : public lib::ref_counted_obj {
 
   public:
 
-    /// States a playable can be in.
+	/// States a playable can be in.
 	enum playable_state {
-        ps_not_playing, ///< Not playing.
-        ps_playing,     ///< Playing in its SMIL2 active duration.
-        ps_frozen       ///< Frozen (in its SMIL2 fill period).
+		ps_not_playing, ///< Not playing.
+		ps_playing,	 ///< Playing in its SMIL2 active duration.
+		ps_frozen	   ///< Frozen (in its SMIL2 fill period).
 	};
 
 	/// An id identifying this playable to the client code.
@@ -178,8 +178,8 @@ class AMBULANTAPI playable : public lib::ref_counted_obj {
 	/// Return the renderer interface of this playable, or NULL.
 	virtual renderer *get_renderer() { return (renderer *)NULL; }
 
-    /// Return a readable string describing this object
-    virtual std::string get_sig() const { return std::string(typeid(this).name()) + "(...)"; }
+	/// Return a readable string describing this object
+	virtual std::string get_sig() const { return std::string(typeid(this).name()) + "(...)"; }
 };
 
 
@@ -261,12 +261,12 @@ class playable_factory {
 /// factories.
 class global_playable_factory : public playable_factory {
   public:
-    virtual ~global_playable_factory() {}
+	virtual ~global_playable_factory() {}
 
 	/// Add a factory.
-    virtual void add_factory(playable_factory *rf) = 0;
-    /// Signal preference for a certain category of renderers
-    virtual void preferred_renderer(const char* name) = 0;
+	virtual void add_factory(playable_factory *rf) = 0;
+	/// Signal preference for a certain category of renderers
+	virtual void preferred_renderer(const char* name) = 0;
 };
 
 /// Factory function to get a (singleton?) global_playable_factory object.
@@ -293,10 +293,10 @@ class single_playable_factory : public playable_factory {
 #endif
 		const char *renderer_uri = rs->get_renderer_uri();
 		if (renderer_uri != NULL &&
-            strcmp(renderer_uri, "") != 0 &&
-            strcmp(renderer_uri, Renderer_uri) != 0 &&
-            strcmp(renderer_uri, Renderer_uri2) != 0&&
-            strcmp(renderer_uri, Renderer_uri3) != 0) return false;
+			strcmp(renderer_uri, "") != 0 &&
+			strcmp(renderer_uri, Renderer_uri) != 0 &&
+			strcmp(renderer_uri, Renderer_uri2) != 0&&
+			strcmp(renderer_uri, Renderer_uri3) != 0) return false;
 		return true;
 	}
 

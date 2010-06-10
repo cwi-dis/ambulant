@@ -48,7 +48,7 @@ class qt_window_factory : public common::window_factory {
 	qt_window_factory( QWidget* parent_widget, int top_offset, gui_player *gpl);
 
 	common::gui_window* new_window(const std::string &name, lib::size bounds, common::gui_events *region);
-    common::bgrenderer *new_background_renderer(const common::region_info *src);
+	common::bgrenderer *new_background_renderer(const common::region_info *src);
 
   private:
 	QWidget* m_parent_widget;
@@ -105,7 +105,7 @@ class qt_video_factory : public common::playable_factory {
 		lib::event_processor *evp,
 		net::audio_datasource *src);
  private:
-        common::factories *m_factory;
+	common::factories *m_factory;
 };
 
 /// ambulant_qt_window is the Qt implementation of gui_window, it is the
@@ -113,23 +113,21 @@ class qt_video_factory : public common::playable_factory {
 
 class ambulant_qt_window : public common::gui_window {
   public:
-	ambulant_qt_window(const std::string &name,
-        lib::rect* bounds,
-        common::gui_events *region);
+	ambulant_qt_window(const std::string &name, lib::rect* bounds, common::gui_events *region);
 	~ambulant_qt_window();
 
-    // gui_window API:
+	// gui_window API:
 
 	void need_redraw(const lib::rect &r);
 	void redraw_now();
 	void need_events(bool want);
 
-    // gui_events API:
+	// gui_events API:
 
 	void redraw(const lib::rect &r);
 	bool user_event(const lib::point &where, int what=0);
 
-    // semi-private helpers:
+	// semi-private helpers:
 
 	/// Set the corresponding widget.
 	void set_ambulant_widget(qt_ambulant_widget* qaw);
@@ -137,7 +135,7 @@ class ambulant_qt_window : public common::gui_window {
 	/// Get the Qt widget corresponding to this ambulant window.
 	qt_ambulant_widget* get_ambulant_widget();
 
-    // XXX These need to be documented...
+	// XXX These need to be documented...
 	QPixmap* get_ambulant_pixmap();
 	QPixmap* new_ambulant_surface();
 	QPixmap* get_ambulant_surface();
@@ -178,9 +176,7 @@ class ambulant_qt_window : public common::gui_window {
 
 class qt_ambulant_widget : public QWidget {
   public:
-	qt_ambulant_widget(const std::string &name,
-        lib::rect* bounds,
-        QWidget* parent_widget);
+	qt_ambulant_widget(const std::string &name, lib::rect* bounds, QWidget* parent_widget);
 	~qt_ambulant_widget();
 
 	/// Helper: set our counterpart gui_window.

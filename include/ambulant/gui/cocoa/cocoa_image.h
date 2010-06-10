@@ -54,7 +54,7 @@ class cocoa_image_renderer : public cocoa_renderer<renderer_playable_dsall> {
 		m_nsdata(NULL) {};
 	~cocoa_image_renderer();
 
-    void redraw_body(const rect &dirty, gui_window *window);
+	void redraw_body(const rect &dirty, gui_window *window);
   private:
 
   	NSImage *m_image;

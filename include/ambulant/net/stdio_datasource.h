@@ -79,9 +79,9 @@ class stdio_datasource : virtual public datasource, virtual public lib::ref_coun
 		return os;
 	}
   private:
-    bool _end_of_file();
+	bool _end_of_file();
 	void filesize();
-    void read_file();
+	void read_file();
 	const url m_url;
 	databuffer *m_buffer;
 	int m_filesize;

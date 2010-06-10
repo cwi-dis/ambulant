@@ -80,7 +80,7 @@ class state_test_methods {
 /// alive longer than the state_component instance that has a reference.
 class AMBULANTAPI state_change_callback {
   public:
-    virtual ~state_change_callback() {}
+	virtual ~state_change_callback() {}
 
 	virtual void on_state_change(const char *ref) = 0;
 };
@@ -94,14 +94,14 @@ class state_component {
 	/// Register the systemTest/customTest API
 	virtual void register_state_test_methods(state_test_methods *stm) = 0;
 
-    /// Declare the state in the document
-    virtual void declare_state(const lib::node *state) = 0;
+	/// Declare the state in the document
+	virtual void declare_state(const lib::node *state) = 0;
 
-    /// Calculate a boolean expression
-    virtual bool bool_expression(const char *expr) = 0;
+	/// Calculate a boolean expression
+	virtual bool bool_expression(const char *expr) = 0;
 
-    /// Set a state variable to an expression
-    virtual void set_value(const char *var, const char *expr) = 0;
+	/// Set a state variable to an expression
+	virtual void set_value(const char *var, const char *expr) = 0;
 
 	/// Add a new variable to the state
 	virtual void new_value(const char *ref, const char *where, const char *name, const char *expr) = 0;
@@ -109,11 +109,11 @@ class state_component {
 	/// Delete a variable from the state
 	virtual void del_value(const char *ref) = 0;
 
-    /// Submit the state
-    virtual void send(const lib::node *submission) = 0;
+	/// Submit the state
+	virtual void send(const lib::node *submission) = 0;
 
-    /// Calculate a string expression
-    virtual std::string string_expression(const char *expr) = 0;
+	/// Calculate a string expression
+	virtual std::string string_expression(const char *expr) = 0;
 
 	/// Register the fact that we want stateChange callbacks for a given variable
 	virtual void want_state_change(const char *ref, state_change_callback *cb) = 0;
@@ -122,8 +122,8 @@ class state_component {
 class state_component_factory {
   public:
 	virtual ~state_component_factory() {};
-    /// Create a state component.
-    virtual state_component *new_state_component(const char *uri) = 0;
+	/// Create a state component.
+	virtual state_component *new_state_component(const char *uri) = 0;
 	// XXXJACK if we're going to use systemRequired to test for a specific
 	// systemComponent we also need to be able to get the uri
 };

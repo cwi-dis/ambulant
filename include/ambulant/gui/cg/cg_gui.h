@@ -80,7 +80,7 @@ class cg_window : public common::gui_window {
 	void set_size(lib::size bounds);
 
   private:
-    void *m_view;
+	void *m_view;
 };
 
 class cg_window_factory : public common::window_factory {
@@ -93,7 +93,7 @@ class cg_window_factory : public common::window_factory {
 	common::gui_window *new_window(const std::string &name, lib::size bounds, common::gui_events *handler);
 	common::bgrenderer *new_background_renderer(const common::region_info *src);
   private:
-    void *m_defaultwindow_view;
+	void *m_defaultwindow_view;
 };
 
 class cg_gui_screen : public common::gui_screen {
@@ -135,7 +135,7 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 
 @interface AmbulantView : VIEW_SUPERCLASS
 {
-    ambulant::gui::cg::cg_window *ambulant_window;
+	ambulant::gui::cg::cg_window *ambulant_window;
 //	NSImage *transition_surface;
 //	NSImage *transition_tmpsurface;
 	int transition_count;

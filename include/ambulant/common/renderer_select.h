@@ -49,15 +49,15 @@ class AMBULANTAPI renderer_select {
 		m_renderer_uri(NULL),
 		m_pf(NULL)
 	{}
-    renderer_select(const char *uri)
-    :   m_node(NULL),
-        m_url_valid(false),
-        m_mimetype_valid(false),
-        m_mimetype(""),
-        m_renderer_uri_valid(true),
-        m_renderer_uri(uri),
-        m_pf(NULL)
-    {}
+	renderer_select(const char *uri)
+	:   m_node(NULL),
+		m_url_valid(false),
+		m_mimetype_valid(false),
+		m_mimetype(""),
+		m_renderer_uri_valid(true),
+		m_renderer_uri(uri),
+		m_pf(NULL)
+	{}
 	~renderer_select() {}
 
 	const lib::xml_string& get_tag() const { static std::string empty(""); return m_node?m_node->get_local_name():empty; }

@@ -69,18 +69,18 @@ class cocoa_video_renderer :
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};
   private:
-    enum { rs_created, rs_inited, rs_prerolled, rs_started, rs_stopped, rs_fullstopped } m_renderer_state; // Debugging, mainly
+	enum { rs_created, rs_inited, rs_prerolled, rs_started, rs_stopped, rs_fullstopped } m_renderer_state; // Debugging, mainly
 	void _poll_playing();
 	net::url m_url;             // The URL of the movie we play
 	QTMovie *m_movie;           // The movie itself
 	QTMovieView *m_movie_view;  // The view displaying the movie
-    void *m_mc;                 // Our helper ObjC class to run methods in the main thread
+	void *m_mc;                 // Our helper ObjC class to run methods in the main thread
 	bool m_paused;
-    net::timestamp_t m_previous_clip_position; // Where we are officially positioned
+	net::timestamp_t m_previous_clip_position; // Where we are officially positioned
 #ifdef WITH_CLOCK_SYNC
-    lib::timer::signed_time_type m_video_epoch;    // Ambulant clock value corresponding to video clock 0.
-    void _fix_video_epoch();    // Set m_video_epoch according to current movie time
-    void _fix_clock_drift();    // Synchronise movie clock and ambulant clock
+	lib::timer::signed_time_type m_video_epoch;    // Ambulant clock value corresponding to video clock 0.
+	void _fix_video_epoch();    // Set m_video_epoch according to current movie time
+	void _fix_clock_drift();    // Synchronise movie clock and ambulant clock
 #endif
 
 	critical_section m_lock;

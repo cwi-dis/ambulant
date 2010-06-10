@@ -237,11 +237,11 @@ class time_node : public schedulable {
 	typedef tree_iterator<time_node> iterator;
 	typedef const_tree_iterator<time_node> const_iterator;
 
-    iterator begin() { return iterator(this);}
-    const_iterator begin() const { return const_iterator(this);}
+	iterator begin() { return iterator(this);}
+	const_iterator begin() const { return const_iterator(this);}
 
-    iterator end() { return iterator(0);}
-    const_iterator end() const { return const_iterator(0);}
+	iterator end() { return iterator(0);}
+	const_iterator end() const { return const_iterator(0);}
 
 	// Returns the underlying DOM node associated with this
 	const node* dom_node() const { return m_node;}
@@ -420,8 +420,8 @@ class time_node : public schedulable {
 	void set_deferred_interval(qtime_type timestamp);
 	void set_begin_event_inst(time_type inst) {m_begin_event_inst = inst;}
 
-    // Debug method
-    bool has_debug(const char *attrvalue=NULL) const { return m_node->has_debug(attrvalue); }
+	// Debug method
+	bool has_debug(const char *attrvalue=NULL) const { return m_node->has_debug(attrvalue); }
  protected:
 	context_type *m_context;
 
@@ -585,8 +585,8 @@ class time_node : public schedulable {
 	// verifier
 	static int node_counter;
 
-    // Verify that renderers produce started() and stopped() callbacks in the right order.
-    bool m_saw_on_bom, m_saw_on_eom;
+	// Verify that renderers produce started() and stopped() callbacks in the right order.
+	bool m_saw_on_bom, m_saw_on_eom;
 };
 
 class time_container : public time_node {

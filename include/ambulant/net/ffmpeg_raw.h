@@ -73,7 +73,7 @@ namespace detail {
 class rawdatasink {
   public:
 	virtual ~rawdatasink(){}
-    virtual int get_sinkbuffer(uint8_t **datap) = 0;
+	virtual int get_sinkbuffer(uint8_t **datap) = 0;
 	virtual void pushdata(int size) = 0;
 };
 
@@ -90,8 +90,8 @@ class ffmpeg_rawreader : public BASE_THREAD, public lib::ref_counted_obj {
 	unsigned long run();
   private:
 	URLContext *m_con;
-    rawdatasink *m_sink;
-    lib::critical_section m_lock;
+	rawdatasink *m_sink;
+	lib::critical_section m_lock;
 };
 
 }
@@ -102,8 +102,7 @@ class ffmpeg_raw_datasource:
 	virtual public lib::ref_counted_obj
 {
   public:
-	ffmpeg_raw_datasource(const net::url& url, URLContext *context,
-			      detail::ffmpeg_rawreader *thread);
+	ffmpeg_raw_datasource(const net::url& url, URLContext *context, detail::ffmpeg_rawreader *thread);
 	~ffmpeg_raw_datasource();
 
 	void start(lib::event_processor *evp, lib::event *callback);

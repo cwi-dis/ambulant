@@ -106,7 +106,7 @@ class event_processor_impl : public event_processor, public BASE_THREAD {
 	event_processor_impl(timer *t);
 	~event_processor_impl();
 
-    timer *get_timer() const;
+	timer *get_timer() const;
 	unsigned long run();
 
 	void add_event(event *pe, time_type t, event_priority priority);
@@ -117,8 +117,8 @@ class event_processor_impl : public event_processor, public BASE_THREAD {
 	void dump();
 #endif
   protected:
-    // Called by platform-specific subclasses.
-    // Should hold m_lock when calling.
+	// Called by platform-specific subclasses.
+	// Should hold m_lock when calling.
 	void _serve_events();
 
 	// the timer for this processor

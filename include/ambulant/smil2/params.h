@@ -46,8 +46,8 @@ class AMBULANTAPI params {
 	lib::color_t get_color(const std::string &paramname, lib::color_t dft);
 	float get_float(const char *paramname, float dft);
 	float get_float(const std::string &paramname, float dft);
-    long get_long(const char *paramname, long dft);
-    long get_long(const std::string &paramname, long dft);
+	long get_long(const char *paramname, long dft);
+	long get_long(const std::string &paramname, long dft);
   private:
 	void addparamnodes(const lib::node *n);
 

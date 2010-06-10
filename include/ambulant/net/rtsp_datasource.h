@@ -90,9 +90,9 @@ struct rtsp_context_t {
 		sdp(NULL),
 		nstream(0),
 		audio_stream(-1),
-        audio_subsession(NULL),
+		audio_subsession(NULL),
 		video_stream(-1),
-        video_subsession(NULL),
+		video_subsession(NULL),
 		configData(NULL),
 		configDataLen(0),
 		initialPacketData(NULL),
@@ -104,8 +104,8 @@ struct rtsp_context_t {
 		vbufferlen(0),
 		last_pts(0),
 #ifdef ENABLE_LIVE555_PTS_CORRECTION
-        last_emit_pts(0),
-        frame_duration(0),
+		last_emit_pts(0),
+		frame_duration(0),
 #endif
 		need_audio(true),
 		need_video(true),
@@ -116,8 +116,8 @@ struct rtsp_context_t {
 		clip_end(-1),
 		duration(-1),
 		last_expected_pts(-1),
-        highest_pts_seen(-1),
-        idle_time(0),
+		highest_pts_seen(-1),
+		idle_time(0),
 		audio_codec_name("none"),
 		video_codec_name("none"),
 		first_sync_time_set(false),
@@ -156,7 +156,7 @@ struct rtsp_context_t {
 	char* sdp;
 	int nstream;		// Total number of streams
 	int audio_stream;	// Index of the audio subsession
-    MediaSubsession *audio_subsession;
+	MediaSubsession *audio_subsession;
 	int video_stream;	// Index of the video subsession
 	MediaSubsession *video_subsession;
 
@@ -171,8 +171,8 @@ struct rtsp_context_t {
 	int vbufferlen;
 	timestamp_t last_pts;		// Timestamp of packet data being accumulated in vbuffer
 #ifdef ENABLE_LIVE555_PTS_CORRECTION
-    timestamp_t last_emit_pts;  // Last timestamp emitted to higher layers
-    timestamp_t frame_duration; // Current guess at frame duration
+	timestamp_t last_emit_pts;  // Last timestamp emitted to higher layers
+	timestamp_t frame_duration; // Current guess at frame duration
 #endif
 	bool need_audio;			// True if we're interested in an audio packet
 	bool need_video;			// True if we're interested in a video packet
@@ -183,8 +183,8 @@ struct rtsp_context_t {
 	timestamp_t clip_end;	// Where we want to stop (microseconds)
 	float duration;			// How long the stream will take in total (XXXJACK: needed?)
 	timestamp_t last_expected_pts;	// The same, but different
-    timestamp_t highest_pts_seen;   // Highest pts seen in any stream
-    timestamp_t idle_time;      // Amount of time we have not seen any packets
+	timestamp_t highest_pts_seen;   // Highest pts seen in any stream
+	timestamp_t idle_time;      // Amount of time we have not seen any packets
 	const char* audio_codec_name;
 	const char* video_codec_name;
 	timeval first_sync_time;	// timestamp of first synchronized packet

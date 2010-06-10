@@ -78,9 +78,9 @@ class dx_window : public common::gui_window {
 	std::string m_name; // for easy access
 	lib::rect m_viewrc;
 	common::window_factory *m_wf;
-    viewport* m_viewport;
+	viewport* m_viewport;
 
-    // lock/unlock redraw
+	// lock/unlock redraw
 	lib::critical_section m_redraw_rect_lock;
 	int m_locked;
 	lib::rect m_redraw_rect;

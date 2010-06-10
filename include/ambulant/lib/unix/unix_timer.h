@@ -45,9 +45,9 @@ class unix_timer : public ambulant::lib::timer  {
 	void set_speed(double speed);
 	double get_realtime_speed() const { return 1.0; }
 #ifdef WITH_CLOCK_SYNC
-    signed_time_type set_drift(signed_time_type drift) { return drift; };
-    signed_time_type get_drift() const { return 0; };
-    void skew(signed_time_type skew);
+	signed_time_type set_drift(signed_time_type drift) { return drift; };
+	signed_time_type get_drift() const { return 0; };
+	void skew(signed_time_type skew);
 #endif
 
   private:

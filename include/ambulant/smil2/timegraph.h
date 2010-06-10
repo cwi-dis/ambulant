@@ -71,7 +71,7 @@ class timegraph : public time_traits {
 	std::map<int, time_node*>* detach_dom2tn();
 
   private:
-    typedef node_navigator<const lib::node> const_nnhelper;
+	typedef node_navigator<const lib::node> const_nnhelper;
 	time_node* build_time_tree(const lib::node *root);
 	void build_priorities();
 	void build_time_graph();

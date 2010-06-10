@@ -134,7 +134,7 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
 #ifdef WITH_SEAMLESS_PLAYBACK
 	void set_clip_end(timestamp_t clip_end);
 	void start_prefetch(lib::event_processor *evp);
-    timestamp_t get_elapsed();
+	timestamp_t get_elapsed();
 #endif
 	void readdone(int len);
 	void data_avail();
@@ -145,31 +145,31 @@ class ffmpeg_resample_datasource: virtual public audio_datasource, virtual publi
 	char* get_read_ptr();
 	int size() const;
 
-//    void get_input_format(audio_context &fmt);
-//    void get_output_format(audio_context &fmt);
+//	void get_input_format(audio_context &fmt);
+//	void get_output_format(audio_context &fmt);
 	audio_format& get_audio_format() { return m_out_fmt; };
 	common::duration get_dur();
 	timestamp_t get_clip_end();
 	timestamp_t get_clip_begin();
 	timestamp_t get_start_time() { return m_src->get_start_time(); }
   protected:
-    int init();
+	int init();
 
 
   private:
-    bool _end_of_file();
+	bool _end_of_file();
 	bool _src_end_of_file() const;
 
-    audio_datasource* m_src;
+	audio_datasource* m_src;
 
-    bool m_context_set;
-    ReSampleContext *m_resample_context;
+	bool m_context_set;
+	ReSampleContext *m_resample_context;
 
-    databuffer m_buffer;
+	databuffer m_buffer;
 
-    lib::event_processor *m_event_processor;
-    lib::event *m_client_callback;  // This is our calllback to the client
-    lib::critical_section m_lock;
+	lib::event_processor *m_event_processor;
+	lib::event *m_client_callback;  // This is our calllback to the client
+	lib::critical_section m_lock;
 	audio_format m_in_fmt;
 	audio_format m_out_fmt;
 

@@ -41,7 +41,7 @@ class timer {
 	/// The underline time type used by this timer.
 	/// Assumed to be an integral type.
 	typedef unsigned long time_type;
-    typedef long signed_time_type;
+	typedef long signed_time_type;
 
 	// Allows subclasses to be deleted using base pointers
 	virtual ~timer() {}
@@ -53,17 +53,17 @@ class timer {
 	virtual double get_realtime_speed() const = 0;
 
 #ifdef WITH_CLOCK_SYNC
-    /// Signals that some realtime renderer has detected a clock drift.
-    /// Positive values means the clock has to speed up, negative numbers that the clock has to slow down.
-    /// Returns the amount of drift that the clock will _not_ fix, in other words: the amount of drift
-    /// the renderer has to fix itself.
-    virtual signed_time_type set_drift(signed_time_type drift) = 0;
+	/// Signals that some realtime renderer has detected a clock drift.
+	/// Positive values means the clock has to speed up, negative numbers that the clock has to slow down.
+	/// Returns the amount of drift that the clock will _not_ fix, in other words: the amount of drift
+	/// the renderer has to fix itself.
+	virtual signed_time_type set_drift(signed_time_type drift) = 0;
 
-    /// Returns the currently recorded drift.
-    virtual signed_time_type get_drift() const = 0;
+	/// Returns the currently recorded drift.
+	virtual signed_time_type get_drift() const = 0;
 
-    /// Skew the clock.
-    virtual void skew(signed_time_type skew) = 0;
+	/// Skew the clock.
+	virtual void skew(signed_time_type skew) = 0;
 #endif
 };
 
@@ -119,17 +119,17 @@ class timer_control : public timer {
 	virtual double get_realtime_speed() const = 0;
 
 #ifdef WITH_CLOCK_SYNC
-    /// Signals that some realtime renderer has detected a clock drift.
-    /// Positive values means the clock has to speed up, negative numbers that the clock has to slow down.
-    /// Returns the amount of drift that the clock will _not_ fix, in other words: the amount of drift
-    /// the renderer has to fix itself.
-    virtual signed_time_type set_drift(signed_time_type drift) = 0;
+	/// Signals that some realtime renderer has detected a clock drift.
+	/// Positive values means the clock has to speed up, negative numbers that the clock has to slow down.
+	/// Returns the amount of drift that the clock will _not_ fix, in other words: the amount of drift
+	/// the renderer has to fix itself.
+	virtual signed_time_type set_drift(signed_time_type drift) = 0;
 
-    /// Returns the currently recorded drift.
-    virtual signed_time_type get_drift() const = 0;
+	/// Returns the currently recorded drift.
+	virtual signed_time_type get_drift() const = 0;
 
-    /// Skew the clock.
-    virtual void skew(signed_time_type skew) = 0;
+	/// Skew the clock.
+	virtual void skew(signed_time_type skew) = 0;
 #endif
 
 };
@@ -191,25 +191,25 @@ class timer_control_impl : public timer_control {
 	double get_realtime_speed() const ;
 
 #ifdef WITH_CLOCK_SYNC
-    /// Signals that some realtime renderer has detected a clock drift.
-    /// Positive values means the clock has to speed up, negative numbers that the clock has to slow down.
-    signed_time_type set_drift(signed_time_type drift) {
-    m_lock.enter();
-	m_drift = drift;
-	m_lock.leave();
-	return 0;
-    };
+	/// Signals that some realtime renderer has detected a clock drift.
+	/// Positive values means the clock has to speed up, negative numbers that the clock has to slow down.
+	signed_time_type set_drift(signed_time_type drift) {
+		m_lock.enter();
+		m_drift = drift;
+		m_lock.leave();
+		return 0;
+	};
 
-    /// Returns the currently recorded drift.
-    signed_time_type get_drift() const {
-	const_cast<timer_control_impl*>(this)->m_lock.enter();
-	signed_time_type rv = m_drift;
-	const_cast<timer_control_impl*>(this)->m_lock.leave();
-	return rv;
-    };
+	/// Returns the currently recorded drift.
+		signed_time_type get_drift() const {
+		const_cast<timer_control_impl*>(this)->m_lock.enter();
+		signed_time_type rv = m_drift;
+		const_cast<timer_control_impl*>(this)->m_lock.leave();
+		return rv;
+	};
 
-    /// Skew the clock.
-    void skew(signed_time_type skew_);
+	/// Skew the clock.
+	void skew(signed_time_type skew_);
 #endif
 
   private:
@@ -228,7 +228,7 @@ class timer_control_impl : public timer_control {
 	double m_speed;
 	bool m_running;
 #ifdef WITH_CLOCK_SYNC
-    signed_time_type m_drift;
+	signed_time_type m_drift;
 #endif
 	critical_section m_lock;
 };
