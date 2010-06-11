@@ -108,18 +108,18 @@ class surface_impl : public surface_template, public surface, public gui_events 
 	void transition_freeze_end(lib::rect area);
 	void background_render_changed();   // Called when drawing the background may have changed
 
-  	std::string m_name;					// for debugging
+	std::string m_name;					// for debugging
 
 	bool m_bounds_inited;				// True if bounds and topleft initialized
 	bool m_highlighting;
-  	rect m_inner_bounds;	// region rectangle (0, 0) based
-  	rect m_outer_bounds;	// region rectangle in parent coordinate space
+	rect m_inner_bounds;	// region rectangle (0, 0) based
+	rect m_outer_bounds;	// region rectangle in parent coordinate space
 	rect m_clipped_screen_bounds;	// Clipped region rectangle in screen coordinates
 	point m_window_topleft;				// region top-left in window coordinate space
 
-  	surface_impl *m_parent;			// parent region
+	surface_impl *m_parent;			// parent region
 
-  	std::list<gui_events *> m_renderers; // active regions currently responsible for redraws
+	std::list<gui_events *> m_renderers; // active regions currently responsible for redraws
 	lib::critical_section m_children_cs; // Protects m_renderers, m_active_children, m_subregions
 
 	typedef std::list<surface_impl*> children_list_t;

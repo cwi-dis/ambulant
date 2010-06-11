@@ -172,7 +172,7 @@ class smil_player :
 	// Export the layout functionality for those who need it
 	virtual smil_layout_manager *get_layout() { return m_layout_manager;}
 
- 	// Builds or re-builds the layout
+	// Builds or re-builds the layout
 	// The layout may need to be rebuild when the
 	// user changes custom test preferences.
 	void build_layout();

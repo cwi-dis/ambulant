@@ -91,10 +91,10 @@ class AMBULANTAPI plugin_engine {
 	void load_plugin(const char *filename);
 
 	/// The list of directories to search for plugins.
-  	std::vector< std::string > m_plugindirs;
+	std::vector< std::string > m_plugindirs;
 
-  	/// The list of initialize functions to call.
-  	std::vector< initfuncptr > m_initfuncs;
+	/// The list of initialize functions to call.
+	std::vector< initfuncptr > m_initfuncs;
 
 	/// All available extra data.
 	std::map< std::string, plugin_extra_data* > m_extra_data;

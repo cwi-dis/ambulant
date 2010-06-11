@@ -152,7 +152,7 @@ struct rtsp_context_t {
 	TaskScheduler* scheduler;
 	UsageEnvironment* env;
 	RTSPClient* rtsp_client;
-  	MediaSession* media_session;
+	MediaSession* media_session;
 	char* sdp;
 	int nstream;		// Total number of streams
 	int audio_stream;	// Index of the audio subsession
@@ -204,7 +204,7 @@ class rtsp_demux : public abstract_demux {
 
 	void add_datasink(demux_datasink *parent, int stream_index);
 	void remove_datasink(int stream_index);
-  	int audio_stream_nr() { return m_context->audio_stream; };
+	int audio_stream_nr() { return m_context->audio_stream; };
 	int video_stream_nr() { return m_context->video_stream; };
 	int nstreams() { return m_context->nstream; };
 	double duration(){ return 0.0; };
@@ -231,11 +231,11 @@ class rtsp_demux : public abstract_demux {
 	void _cancel();
 	lib::critical_section m_critical_section;
 	rtsp_context_t* m_context;
-  	timestamp_t m_clip_begin;
+	timestamp_t m_clip_begin;
 	timestamp_t m_clip_end;
 	timestamp_t m_seektime;
 #ifndef CLIP_BEGIN_CHANGED
-  	bool m_seektime_changed; // true if either m_clip_begin or m_seektime has changed
+	bool m_seektime_changed; // true if either m_clip_begin or m_seektime has changed
 #else
 	bool m_clip_begin_changed;	// True if m_clip_begin has changed.
 #endif

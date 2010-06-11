@@ -60,7 +60,7 @@ class video_renderer : public common::renderer_playable {
 	common::factories *factory,
 	common::playable_factory_machdep *mdp);
 
-  	virtual ~video_renderer();
+	virtual ~video_renderer();
 
 	/// The pixel format this renderer wants. Override in subclass to fit
 	/// what the hardware wants (so we don't need to do an extra pass of
@@ -68,13 +68,13 @@ class video_renderer : public common::renderer_playable {
 	virtual net::pixel_order pixel_layout() { return net::pixel_argb; }
 
 	/// Return true if video is paused.
-  	bool is_paused() { return m_is_paused; };
+	bool is_paused() { return m_is_paused; };
 
 	/// Return true if video is not playing.
-  	bool is_stopped() { return !m_activated;};
+	bool is_stopped() { return !m_activated;};
 
 	/// Return true if video is playing.
-  	bool is_playing() { return m_activated; };
+	bool is_playing() { return m_activated; };
 
 	virtual void redraw(const lib::rect &dirty, common::gui_window *window);
 
@@ -106,10 +106,10 @@ class video_renderer : public common::renderer_playable {
 
   protected:
 	lib::size m_size;		///< (width, height) of the video data.
-  	net::video_datasource* m_src;	///< video datasource.
-  	net::audio_datasource *m_audio_ds;	///< audio datasource.
-  	common::playable *m_audio_renderer;	///< the audio playable.
-  	empty_playable_notification m_playable_notification;
+	net::video_datasource* m_src;	///< video datasource.
+	net::audio_datasource *m_audio_ds;	///< audio datasource.
+	common::playable *m_audio_renderer;	///< the audio playable.
+	empty_playable_notification m_playable_notification;
   private:
 	typedef lib::no_arg_callback <video_renderer > dataavail_callback;
 	double now();

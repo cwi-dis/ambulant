@@ -412,17 +412,17 @@ class time_node : public schedulable {
 
 	std::string get_sig() const;
 	// Verifier
- 	static int get_node_counter() {return node_counter;}
+	static int get_node_counter() {return node_counter;}
 
- 	friend class time_state;
+	friend class time_state;
 
- 	// public S/O transitions
+	// public S/O transitions
 	void set_deferred_interval(qtime_type timestamp);
 	void set_begin_event_inst(time_type inst) {m_begin_event_inst = inst;}
 
 	// Debug method
 	bool has_debug(const char *attrvalue=NULL) const { return m_node->has_debug(attrvalue); }
- protected:
+  protected:
 	context_type *m_context;
 
 	// The underlying DOM node
@@ -654,7 +654,7 @@ class excl_queue {
 		m_cont.pop_front();
 		return tn;
 	}
- 	void assert_invariants() const;
+	void assert_invariants() const;
  private:
 	typedef std::list<time_node*> cont;
 	cont m_cont;

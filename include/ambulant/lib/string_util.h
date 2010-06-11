@@ -173,8 +173,8 @@ inline std::string to_c_lower(const std::string& s) {
 template <class CharType>
 class basic_scanner {
   public:
- 	typedef CharType char_type;
- 	typedef std::basic_string<char_type> string_type;
+	typedef CharType char_type;
+	typedef std::basic_string<char_type> string_type;
 	typedef typename string_type::size_type size_type;
 	enum {EOS = 0, NUMBER = 'd', NAME = 'n', SPACE = 'w'};
 

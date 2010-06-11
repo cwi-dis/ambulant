@@ -162,7 +162,7 @@ class AMBULANTAPI renderer_playable_ds : public renderer_playable {
 	/// Called whenever data is available.
 	virtual void readdone() = 0;
   protected:
-  	net::datasource *m_src;	///< The datasource.
+	net::datasource *m_src;	///< The datasource.
 };
 
 /// A convenience class implementing some of the common code for playables that
@@ -230,12 +230,12 @@ class global_playable_factory_impl : public global_playable_factory {
 		const lib::node *node,
 		lib::event_processor *evp);
 
-  	playable* new_aux_audio_playable(
+	playable* new_aux_audio_playable(
 		playable_notification *context,
 		playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *evp,
-  		net::audio_datasource *src);
+		net::audio_datasource *src);
 
   private:
 	std::list<playable_factory *> m_factories;

@@ -30,7 +30,7 @@
 
 struct video_frame {
 	char* data;
-	int	  size;
+	int	 size;
 };
 
 namespace ambulant
@@ -98,9 +98,9 @@ class demux_video_datasource:
 	virtual public lib::ref_counted_obj
 {
   public:
-	 static demux_video_datasource *new_demux_video_datasource(
-	 	const net::url& url,
-	 	abstract_demux *thread);
+	static demux_video_datasource *new_demux_video_datasource(
+		const net::url& url,
+		abstract_demux *thread);
 
 	demux_video_datasource(
 		const net::url& url,

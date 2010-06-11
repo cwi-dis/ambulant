@@ -77,7 +77,7 @@ class ffmpeg_video_decoder_datasource:
 
 	bool has_audio();
 	int width();
-  	int height();
+	int height();
 	timestamp_t frameduration();
 	audio_datasource *get_audio_datasource();
 
@@ -96,8 +96,8 @@ class ffmpeg_video_decoder_datasource:
 #endif
 	void data_avail();
 	bool buffer_full();
-  	timestamp_t get_clip_end() { return m_src->get_clip_end(); };
-  	timestamp_t get_clip_begin() { return m_src->get_clip_begin(); };
+	timestamp_t get_clip_end() { return m_src->get_clip_end(); };
+	timestamp_t get_clip_begin() { return m_src->get_clip_begin(); };
 	timestamp_t get_start_time() { return m_src->get_start_time(); };
 	void set_pixel_layout(pixel_order l) { m_pixel_layout = l; };
 	common::duration get_dur();
@@ -106,7 +106,7 @@ class ffmpeg_video_decoder_datasource:
 	bool _select_decoder(const char* file_ext);
 	bool _select_decoder(video_format &fmt);
 	bool _end_of_file();
-  	bool _clip_end();
+	bool _clip_end();
 	bool _buffer_full();
 	void _pop_top_frame();
 	void _need_fmt_uptodate();
@@ -117,18 +117,18 @@ class ffmpeg_video_decoder_datasource:
 
 	bool m_con_owned;	// True if we have to close/free m_con
 //	int m_stream_index;
-  	video_format m_fmt;
-// 	bool m_src_end_of_file;
- 	lib::event_processor *m_event_processor;
+	video_format m_fmt;
+//	bool m_src_end_of_file;
+	lib::event_processor *m_event_processor;
 	sorted_frames  m_frames;
 	int m_size;		// NOTE: this assumes all decoded frames are the same size!
 //	databuffer m_buffer;
 //	detail::ffmpeg_demux *m_thread;
 	lib::event *m_client_callback;  // This is our calllback to the client
-  	timestamp_t m_pts_last_frame;
-  	timestamp_t m_oldest_timestamp_wanted;
+	timestamp_t m_pts_last_frame;
+	timestamp_t m_oldest_timestamp_wanted;
 	timestamp_t m_video_clock;
-  	int m_frame_count;
+	int m_frame_count;
 	int m_dropped_count;
 	lib::critical_section m_lock;
 	timestamp_t m_elapsed;

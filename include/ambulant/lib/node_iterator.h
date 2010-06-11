@@ -84,11 +84,11 @@ class const_tree_iterator  {
 	const Node *get_cur() const { return m_cur;}
 
 	/// Returns the root of this iterator.
- 	const Node *get_root() const { return m_root;}
+	const Node *get_root() const { return m_root;}
 
 	/// Returns true if the two iterators move in the same direction
-  	bool same_move(const const_tree_iterator& o) const
-  		{ return m_move == o.m_move;}
+	bool same_move(const const_tree_iterator& o) const
+		{ return m_move == o.m_move;}
 
 ///////////////
   protected:

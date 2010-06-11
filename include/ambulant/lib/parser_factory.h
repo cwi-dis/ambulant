@@ -48,7 +48,7 @@ class AMBULANTAPI parser_factory {
 class AMBULANTAPI global_parser_factory : public parser_factory {
   public:
 	/// Returns (singleton?) global_parser_factory object.
-  	static global_parser_factory* get_parser_factory();
+	static global_parser_factory* get_parser_factory();
 	~global_parser_factory();
 
 	/// Provider interface: add new parser factory implementation.
@@ -63,7 +63,7 @@ class AMBULANTAPI global_parser_factory : public parser_factory {
 	std::vector<parser_factory *> m_factories;
 	bool m_warned;
 	parser_factory *m_default_factory;
-  	static global_parser_factory* s_singleton;
+	static global_parser_factory* s_singleton;
 };
 
 }

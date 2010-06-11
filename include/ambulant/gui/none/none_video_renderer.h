@@ -41,7 +41,7 @@ class none_video_renderer : public common::video_renderer {
 	:	common::video_renderer(context, cookie, node, evp, factory, mdp)
 	{ }
 
-  	~none_video_renderer() {};
+	~none_video_renderer() {};
 
 	void redraw(const lib::rect &dirty, common::gui_window *window) {};
 	void wantclicks(bool want) {};

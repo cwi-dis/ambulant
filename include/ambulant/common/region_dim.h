@@ -90,8 +90,8 @@ class region_dim {
 		if(other.absolute())
 			m_holder.int_val = other.get_as_int();
 		else if(other.relative())
- 			m_holder.dbl_val = other.get_as_dbl();
-   }
+			m_holder.dbl_val = other.get_as_dbl();
+	}
 
 	/// constructs a region_dim from the provided string.
 	/// Does very little error checking.
@@ -198,7 +198,7 @@ class region_dim {
 		else if(absolute())
 			m_holder.int_val += rhs.get_as_int();
 		else if(relative())
- 			m_holder.dbl_val += rhs.get_as_dbl();
+			m_holder.dbl_val += rhs.get_as_dbl();
 		return *this;
 	}
 
@@ -208,7 +208,7 @@ class region_dim {
 		else if(absolute())
 			m_holder.int_val -= rhs.get_as_int();
 		else if(relative())
- 			m_holder.dbl_val -= rhs.get_as_dbl();
+			m_holder.dbl_val -= rhs.get_as_dbl();
 		return *this;
 	}
 
@@ -216,7 +216,7 @@ class region_dim {
 		if(absolute())
 			m_holder.int_val *= n;
 		else if(relative())
- 			m_holder.dbl_val *= n;
+			m_holder.dbl_val *= n;
 		return *this;
 	}
 
@@ -224,7 +224,7 @@ class region_dim {
 		if(absolute())
 			m_holder.int_val /= n;
 		else if(relative())
- 			m_holder.dbl_val /= n;
+			m_holder.dbl_val /= n;
 		return *this;
 	}
 
@@ -397,7 +397,7 @@ struct regpoint_spec {
 
 	/// Specific constructor giving percentage values.
 	regpoint_spec(double hor, double vert)
-	:   left(hor),
+	:	left(hor),
 		top(vert) {}
 
 	bool operator== (regpoint_spec& other) const {

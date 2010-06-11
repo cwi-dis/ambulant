@@ -91,7 +91,7 @@ class AMBULANTAPI url {
 
   public:
 	/// Default constructor: create an empty URL.
- 	url();
+	url();
 
 	/// Factory function: create URL given a URL string
 	static url from_url(const std::string& spec) {
@@ -201,7 +201,7 @@ class AMBULANTAPI url {
   private:
 
 	// protocols to ports map
- 	// static std::map<string, short_type > s_ports;
+	// static std::map<string, short_type > s_ports;
 
 	// Check that URL has correctly escaped characters
 	void _checkurl() const;
@@ -209,7 +209,7 @@ class AMBULANTAPI url {
 	void set_parts(ambulant::lib::scanner& sc, const std::string& pat);
 
 	// split url string representation
- 	void set_from_spec(const string& spec);
+	void set_from_spec(const string& spec);
 
 	// pat: "n://n:d/"
 	void set_from_host_port_uri(ambulant::lib::scanner& sc, const std::string& pat);

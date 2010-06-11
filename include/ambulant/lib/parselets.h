@@ -494,7 +494,7 @@ class options_p : public parselet {
 // Parses any decimal number not using scientific notation
 // includes: (+|-)?d+(.d*)? | .d+
 class number_p : public parselet {
-   public:
+  public:
 	typedef number_p self_type;
 	typedef double result_type;
 	result_type m_result;
@@ -506,7 +506,7 @@ class number_p : public parselet {
 // The list is sepatated with white space
 // The parser stops to the first not number sequence or at end
 class number_list_p : public parselet {
-   public:
+  public:
 	typedef number_list_p self_type;
 	typedef std::vector<double> result_type;
 	result_type m_result;

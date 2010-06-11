@@ -410,8 +410,9 @@ inline int gif_decoder<DataSource, ColorType>::next_lzwbyte(bool flag, int input
 			vals[code]=firstcode;
 			++max_code;
 			if ((max_code >=max_code_size) &&
-				(max_code_size < (1<<MAX_LZW_BITS))) {
-				 max_code_size*=2;
+				(max_code_size < (1<<MAX_LZW_BITS)))
+			{
+				max_code_size*=2;
 				++code_size;
 			}
 		}

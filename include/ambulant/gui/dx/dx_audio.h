@@ -67,13 +67,13 @@ class dx_audio_renderer : public common::renderer_playable {
 	void update_callback();
 	void schedule_update();
 	audio_player *m_player;
- 	lib::event *m_update_event;
+	lib::event *m_update_event;
 	double m_level;
 	int m_balance;
 	const lib::transition_info* m_intransition;
 	const lib::transition_info* m_outtransition;
 	smil2::audio_transition_engine* m_transition_engine;
- 	lib::critical_section m_cs;
+	lib::critical_section m_cs;
 };
 
 /// Set the overall soundlevel
