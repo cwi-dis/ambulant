@@ -8,12 +8,11 @@ import sys
 
 class IndentNanny:
 
-    warn_space_indentation = False
-    open_editor = True
+    tab_only = False
+    open_editor = None
     
     foreign_pattern=re.compile(r"/\*AMBULANT_FOREIGN_INDENT_RULES\*/")
     skip_patterns=[
-        "ambulant/config"
     ]
     
     GOOD_PATTERNS=[
@@ -97,13 +96,13 @@ class IndentNanny:
                 rv = False
                 new_line = self.check_line(line)
                 if new_line:
-                    if not self.warn_space_indentation:
+                    if not self.tab_only:
                         continue
                     print '%s: space indentation (first at line %d)' % (filename, lino)
-                    break
-                print '%s: unknown indentation (first at line %d)' % (filename, lino)
+                else:
+                    print '%s: unknown indentation (first at line %d)' % (filename, lino)
                 if self.open_editor:
-                    os.system("bbedit +%d '%s'" % (lino, filename))
+                    os.system("%s +%d '%s'" % (self.open_editor, lino, filename))
                 break
         return rv
         
@@ -136,15 +135,30 @@ class IndentNanny:
             return self.check_file(filename)
 
 verbose = True  
-        
+
 def main():
+    from optparse import OptionParser
+    parser = OptionParser(usage="usage: %prog [options] filename-or-dir [...]")
+    parser.add_option("-v", "--verbose", dest="verbose", action="store_true",
+        help="print detailed progress")
+    parser.add_option("-e", "--edit", dest="open_editor", metavar="CMD",
+        help='run "CMD +line file" for each error')
+    parser.add_option("-t", "--tabs", dest="tab_only", action="store_true",
+        help="allow only tab-based indentation (except for 2 spaces)" )
+    parser.add_option("-s", "--skip", dest="skip_patterns", action="append", metavar="STR",
+        help="skip filenames or dirs that contain STR. CVS and .svn are automatically skipped")
+    options, args = parser.parse_args()
+    
     allok = True
     nanny = IndentNanny()
-    for fn in sys.argv[1:]:
+    
+    if options.skip_patterns: nanny.skip_patterns = options.skip_patterns
+    if options.open_editor: nanny.open_editor = options.open_editor
+    for fn in args:
         ok = nanny.check(fn)
         if not ok:
             allok = False
-        elif verbose:
+        elif option.verbose:
             print '%s: ok' % fn
             
     if allok: sys.exit(0)
