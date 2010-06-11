@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -29,7 +29,7 @@
 #ifdef	WITH_GTK_HTML_WIDGET
 #include "ambulant/gui/gtk/gtk_html_renderer.h"
 #endif/*WITH_GTK_HTML_WIDGET*/
-#ifdef  WITH_SMIL30
+#ifdef	WITH_SMIL30
 #include "ambulant/gui/gtk/gtk_smiltext.h"
 #endif/*WITH_SMIL30*/
 #include "ambulant/gui/gtk/gtk_util.h"
@@ -44,23 +44,23 @@ using namespace net;
 common::window_factory *
 ambulant::gui::gtk::create_gtk_window_factory(gtk_ambulant_widget* gtk_widget, gui_player* gpl)
 {
-    return new gtk_window_factory(gtk_widget, gpl);
+	return new gtk_window_factory(gtk_widget, gpl);
 }
 
 common::window_factory *
 ambulant::gui::gtk::create_gtk_window_factory_unsafe(void* gtk_parent_widget, common::gui_player* gpl)
 {
-    GtkWidget *parent = reinterpret_cast<GtkWidget*>(gtk_parent_widget);
-    if (parent == NULL) {
-        lib::logger::get_logger()->fatal("create_gtk_window_factory: Cannot cast parent_widget to GtkWidget");
-        return NULL;
-    }
-    gtk_ambulant_widget *gtkw = new gtk_ambulant_widget(parent);
-    if (gtkw == NULL) {
-        lib::logger::get_logger()->fatal("create_gtk_window_factory: Cannot create gtk_ambulant_widget");
-        return NULL;
-    }
-    return new gtk_window_factory(gtkw, gpl);
+	GtkWidget *parent = reinterpret_cast<GtkWidget*>(gtk_parent_widget);
+	if (parent == NULL) {
+		lib::logger::get_logger()->fatal("create_gtk_window_factory: Cannot cast parent_widget to GtkWidget");
+		return NULL;
+	}
+	gtk_ambulant_widget *gtkw = new gtk_ambulant_widget(parent);
+	if (gtkw == NULL) {
+		lib::logger::get_logger()->fatal("create_gtk_window_factory: Cannot create gtk_ambulant_widget");
+		return NULL;
+	}
+	return new gtk_window_factory(gtkw, gpl);
 }
 
 
@@ -131,15 +131,16 @@ void gtk_C_callback_do_button_release_event(void *userdata, GdkEventButton *even
 	d_gtkw = gaw->get_gtk_widget ();
 	t_gtkw = gtk_widget_get_toplevel (d_gtkw);
 
-	for (GtkWidget* a_gtkw = d_gtkw; a_gtkw != NULL;
-	     a_gtkw = gtk_widget_get_parent (a_gtkw)) {
+	for (GtkWidget* a_gtkw = d_gtkw;
+		a_gtkw != NULL;
+		a_gtkw = gtk_widget_get_parent (a_gtkw))
+	{
 		if (s_gdkw == a_gtkw->window) {
 			/* found corresponding GdkWindow in GtkWidget stack */
 			/* translate if necessary */
-	    		if (a_gtkw != d_gtkw
-			    && gtk_widget_translate_coordinates (a_gtkw, d_gtkw,
-								 s_x, s_y,
-								 &d_x, &d_y)) {
+			if (a_gtkw != d_gtkw
+				&& gtk_widget_translate_coordinates (a_gtkw, d_gtkw, s_x, s_y, &d_x, &d_y))
+			{
 				event->x = d_x;
 				event->y = d_y;
 			}
@@ -182,9 +183,7 @@ gtk_window_factory::~gtk_window_factory( )
 }
 
 common::gui_window *
-gtk_window_factory::new_window (const std::string &name,
-			       lib::size bounds,
-			       common::gui_events *region)
+gtk_window_factory::new_window (const std::string &name, lib::size bounds, common::gui_events *region)
 {
 	lib::rect r (m_p, bounds);
 	AM_DBG lib::logger::get_logger()->debug("gtk_window_factory::new_window (0x%x): name=%s %d,%d,%d,%d",
@@ -285,9 +284,9 @@ void
 ambulant_gtk_window::set_gdk_cursor(GdkCursorType gdk_cursor_type, GdkCursor* gdk_cursor)
 {
 	switch (gdk_cursor_type) {
-	case GDK_ARROW:	m_arrow_cursor = gdk_cursor;
-	case GDK_HAND1:	m_hand1_cursor = gdk_cursor;
-	case GDK_HAND2:	m_hand2_cursor = gdk_cursor;
+	case GDK_ARROW: m_arrow_cursor = gdk_cursor;
+	case GDK_HAND1: m_hand1_cursor = gdk_cursor;
+	case GDK_HAND2: m_hand2_cursor = gdk_cursor;
 	default:	return;
 	}
 
@@ -297,9 +296,9 @@ GdkCursor*
 ambulant_gtk_window::get_gdk_cursor(GdkCursorType gdk_cursor_type)
 {
 	switch (gdk_cursor_type) {
-	case GDK_ARROW:	return m_arrow_cursor;
-	case GDK_HAND1:	return m_hand1_cursor;
-	case GDK_HAND2:	return m_hand2_cursor;
+	case GDK_ARROW: return m_arrow_cursor;
+	case GDK_HAND1: return m_hand1_cursor;
+	case GDK_HAND2: return m_hand2_cursor;
 	default:	return NULL;
 	}
 }
@@ -374,7 +373,7 @@ ambulant_gtk_window::redraw_now()
 bool
 ambulant_gtk_window::user_event(const lib::point &where, int what)
 {
-        AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::user_event(0x%x): point=(%d,%d)", this, where.x, where.y);
+	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::user_event(0x%x): point=(%d,%d)", this, where.x, where.y);
 	return m_handler->user_event(where, what);
 }
 
@@ -411,10 +410,7 @@ ambulant_gtk_window::set_ambulant_widget(gtk_ambulant_widget* gtkaw)
 		// Initialize m_pixmap
 		gint width; gint height;
 		gtk_widget_get_size_request(GTK_WIDGET (gtkaw->get_gtk_widget()), &width, &height);
-		m_pixmap = gdk_pixmap_new(gtkaw->get_gtk_widget()->window,
-                		width,
-                          	height,
-                          	-1);
+		m_pixmap = gdk_pixmap_new(gtkaw->get_gtk_widget()->window, width, height, -1);
 		AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::set_ambulant_widget(0x%x); size (%i,%i)",(void *)gtkaw, width, height);
 		// User Interaction
 	}
@@ -459,12 +455,9 @@ ambulant_gtk_window::new_ambulant_surface()
 	if (m_surface != NULL) delete m_surface;
 	gint width; gint height;
 	gdk_drawable_get_size(GDK_DRAWABLE (m_pixmap), &width, &height);
-	m_surface = gdk_pixmap_new(m_pixmap,
-                          	width,
-                          	height,
-                          	-1);
+	m_surface = gdk_pixmap_new(m_pixmap, width, height, -1);
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::new_ambulant_surface(0x%x)",(void *)m_surface);
-        return m_surface;
+	return m_surface;
 }
 
 GdkPixmap*
@@ -473,14 +466,14 @@ ambulant_gtk_window::get_ambulant_oldpixmap()
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::get_ambulant_oldpixmap(0x%x) = 0x%x",(void *)this,(void *)m_oldpixmap);
 	if (m_fullscreen_count && m_fullscreen_old_pixmap)
 		return m_fullscreen_old_pixmap;
-    return m_oldpixmap;
+	return m_oldpixmap;
 }
 
 GdkPixmap*
 ambulant_gtk_window::get_ambulant_surface()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_gtk_window::get_ambulant_surface(0x%x) = 0x%x",(void *)this,(void *)m_surface);
-        return m_surface;
+	return m_surface;
 }
 
 GdkPixmap*
@@ -570,7 +563,7 @@ ambulant_gtk_window::_screenTransitionPostRedraw(const lib::rect &r)
 	}
 	if (m_fullscreen_old_pixmap == NULL) {
 		// Just starting a new fullscreen transition. Get the
-		//  bits from the snapshot saved during the previous
+		//	bits from the snapshot saved during the previous
 		// redraw.
 		m_fullscreen_old_pixmap = m_fullscreen_prev_pixmap;
 		m_fullscreen_prev_pixmap = NULL;
@@ -616,7 +609,7 @@ ambulant_gtk_window::clear()
 	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (m_pixmap));
 	gdk_gc_set_rgb_fg_color (gc, &bgc);
 	gdk_draw_rectangle (GDK_DRAWABLE (m_pixmap), gc, TRUE,
-			    m_bounds.x, m_bounds.y, m_bounds.w, m_bounds.h);
+		m_bounds.x, m_bounds.y, m_bounds.w, m_bounds.h);
 	g_object_unref (G_OBJECT (gc));
 }
 
@@ -741,8 +734,9 @@ gtk_ambulant_widget::do_motion_notify_event(GdkEventMotion *e) {
 	// Set hand cursor if cursid==1, arrow if cursid==0.
 	GdkCursor* cursor;
 	// gdk cursors need to be cached by the window factory
-	cursor =  cursid == 0 ? m_gtk_window->get_gdk_cursor(GDK_ARROW)
-	                      : m_gtk_window->get_gdk_cursor(GDK_HAND1);
+	cursor = cursid == 0 
+		? m_gtk_window->get_gdk_cursor(GDK_ARROW)
+		: m_gtk_window->get_gdk_cursor(GDK_HAND1);
 	if (cursor)
 		gdk_window_set_cursor (m_widget->window, cursor);
 }

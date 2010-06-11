@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -20,7 +20,7 @@
 /*
  * @$Id$
  */
-#ifdef  WITH_SMIL30
+#ifdef	WITH_SMIL30
 #include "ambulant/gui/dx/dx_viewport.h"
 #include "ambulant/gui/dx/dx_window.h"
 #include "ambulant/gui/dx/dx_smiltext.h"
@@ -69,15 +69,15 @@ extern const char dx_smiltext_playable_renderer_uri3[] = AM_SYSTEM_COMPONENT("Re
 common::playable_factory *
 gui::dx::create_dx_smiltext_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectX"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectXSmilText"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererSmilText"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectX"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectXSmilText"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererSmilText"), true);
 	return new common::single_playable_factory<
 		gui::dx::dx_smiltext_renderer,
-        dx_smiltext_playable_tag,
-        dx_smiltext_playable_renderer_uri,
-        dx_smiltext_playable_renderer_uri2,
-        dx_smiltext_playable_renderer_uri3 >(factory, mdp);
+		dx_smiltext_playable_tag,
+		dx_smiltext_playable_renderer_uri,
+		dx_smiltext_playable_renderer_uri2,
+		dx_smiltext_playable_renderer_uri3 >(factory, mdp);
 }
 
 gui::dx::dx_smiltext_renderer::dx_smiltext_renderer(
@@ -87,7 +87,7 @@ gui::dx::dx_smiltext_renderer::dx_smiltext_renderer(
 	lib::event_processor* evp,
 	common::factories* factory,
 	common::playable_factory_machdep *dxplayer)
-:   dx_renderer_playable(context, cookie, node, evp, factory, dynamic_cast<dx_playables_context*>(dxplayer)),
+:	dx_renderer_playable(context, cookie, node, evp, factory, dynamic_cast<dx_playables_context*>(dxplayer)),
 	m_context(context),
 	m_size(0,0),
 	m_hdc(NULL),
@@ -123,8 +123,8 @@ gui::dx::dx_smiltext_renderer::~dx_smiltext_renderer() {
 	if (m_region_dds) {
 		if (m_hdc) {
 			HRESULT hr = m_region_dds->ReleaseDC(m_hdc);
-		 	if (hr != DD_OK)
-		 	if (m_region_dds->ReleaseDC(m_hdc) == 0)
+			if (hr != DD_OK)
+			if (m_region_dds->ReleaseDC(m_hdc) == 0)
 				lib::logger::get_logger()->warn("~dx_smiltext_renderer(0x%x): ReleaseDC(m_hdc=0x%x) fails, code %d", this, m_hdc, hr);
 			m_hdc = NULL;
 		}
@@ -185,7 +185,7 @@ smil2::smiltext_metrics
 gui::dx::dx_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& run) {
 	unsigned int ascent = 0, descent = 0, height = 0, width = 0, line_spacing = 0, word_spacing = 0;
 	SIZE SZ;
-    HGDIOBJ old_obj = NULL;
+	HGDIOBJ old_obj = NULL;
 	HFONT font = NULL;
 	if (run.m_data.length() != 0) {
 
@@ -196,7 +196,7 @@ gui::dx::dx_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& r
 		if (res == 0)
 			win_report_last_error("GetTextMetric()");
 		else {
-			ascent  = tm.tmAscent;
+			ascent	= tm.tmAscent;
 			descent = tm.tmDescent;
 			height	= tm.tmHeight+tm.tmExternalLeading;
 			line_spacing = height+tm.tmInternalLeading+tm.tmExternalLeading;
@@ -251,8 +251,7 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 			alpha_chroma = ri->get_chromakeyopacity();
 			lib::color_t chromakey = ri->get_chromakey();
 			lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
-			lib::compute_chroma_range(chromakey, chromakeytolerance,
-					     &chroma_low, &chroma_high);
+			lib::compute_chroma_range(chromakey, chromakeytolerance, &chroma_low, &chroma_high);
 		}
 	}
 	IDirectDrawSurface* text_dds = NULL;
@@ -319,7 +318,7 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 	COLORREF old_textbg_bgcolor = CLR_INVALID;
 	lib::color_t bg_color_t = (run.m_bg_color == CLR_INVALID)?
 								::GetSysColor(COLOR_WINDOW):
-					 	 (run.m_bg_color == CLR_DEFAULT)?
+						 (run.m_bg_color == CLR_DEFAULT)?
 								CLR_ALTERNATIVE : run.m_bg_color;
 	if (run.m_bg_transparent)
 		bg_color_t = CLR_DEFAULT;
@@ -371,9 +370,9 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 	const char* text = run.m_data.c_str();
 	lib::textptr tp(text, strlen(text));
 	RECT dstRC;
-	dstRC.left   = rr.left();
-	dstRC.top    = rr.top();
-	dstRC.right  = rr.right();
+	dstRC.left	 = rr.left();
+	dstRC.top	 = rr.top();
+	dstRC.right	 = rr.right();
 	dstRC.bottom = rr.bottom();
 	UINT uFormat = DT_NOPREFIX | DT_LEFT;
 	LPCTSTR ttp = tp;
@@ -402,16 +401,30 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 			hr = textbg_dds->ReleaseDC(textbg_hdc);
 		if (SUCCEEDED(hr)) {
 			if ( ! run.m_bg_transparent) {
-				m_viewport->blend_surface(m_region_dds, rr, textbg_dds, rr,
-					/*use color key from source*/true, alpha_media_bg,
-					/*don't touch out of range pixels*/0, bg_color_t, bg_color_t);
+				m_viewport->blend_surface(
+					m_region_dds,
+					rr,
+					textbg_dds,
+					rr,
+					/*use color key from source*/true,
+					alpha_media_bg,
+					/*don't touch out of range pixels*/0,
+					bg_color_t,
+					bg_color_t);
 			}
-			m_viewport->blend_surface(m_region_dds, rr, text_dds, rr,
-				/*use color key from source*/true, alpha_media,
-				/*do't touch out of range pixels*/0, fg_color_t, fg_color_t);
-		    hr = m_region_dds->GetDC(&m_hdc);
+			m_viewport->blend_surface(
+				m_region_dds,
+				rr,
+				text_dds,
+				rr,
+				/*use color key from source*/true,
+				alpha_media,
+				/*do't touch out of range pixels*/0,
+				fg_color_t,
+				fg_color_t);
+			hr = m_region_dds->GetDC(&m_hdc);
 			if (SUCCEEDED(hr))
-			    hr = text_dds->GetDC(&hdc);
+				hr = text_dds->GetDC(&hdc);
 		}
 		if (FAILED(hr)) {
 			win_report_error("dx_smiltext_render: ReleaseDC()/GetDC()", hr);
@@ -505,20 +518,20 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_set_font(const smil2::smiltext_run r
 	}
 #ifdef AMBULANT_PLATFORM_WIN32_WCE
 	LOGFONT lfFont;
-	lfFont.lfHeight         = -(int)run.m_font_size-adjust_height;
-	lfFont.lfWidth          = 0;
-	lfFont.lfEscapement     = 0;
-	lfFont.lfOrientation    = 0;
-	lfFont.lfWeight         = weight;
-	lfFont.lfItalic         = italic;
-	lfFont.lfUnderline      = 0;
-	lfFont.lfStrikeOut      = 0;
-	lfFont.lfCharSet        = ANSI_CHARSET;
-	lfFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
-	lfFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
-	lfFont.lfQuality        = DEFAULT_QUALITY;
+	lfFont.lfHeight			= -(int)run.m_font_size-adjust_height;
+	lfFont.lfWidth			= 0;
+	lfFont.lfEscapement		= 0;
+	lfFont.lfOrientation	= 0;
+	lfFont.lfWeight			= weight;
+	lfFont.lfItalic			= italic;
+	lfFont.lfUnderline		= 0;
+	lfFont.lfStrikeOut		= 0;
+	lfFont.lfCharSet		= ANSI_CHARSET;
+	lfFont.lfOutPrecision	= OUT_DEFAULT_PRECIS;
+	lfFont.lfClipPrecision	= CLIP_DEFAULT_PRECIS;
+	lfFont.lfQuality		= DEFAULT_QUALITY;
 	lfFont.lfPitchAndFamily = family;
-	lfFont.lfFaceName[0]    = '\0';
+	lfFont.lfFaceName[0]	= '\0';
 	if (fontname) {
 		_tcscpy(lfFont.lfFaceName, STR_TO_TSTR(fontname));
 	}
@@ -539,7 +552,7 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_set_font(const smil2::smiltext_run r
 			CLIP_DEFAULT_PRECIS, // clipping precision
 			DEFAULT_QUALITY,	// output quality
 			family,				// pitch and family
-			STR_TO_TSTR(fontname));	// typeface name
+			STR_TO_TSTR(fontname)); // typeface name
 #endif // AMBULANT_PLATFORM_WIN32_WCE
 	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_run_set_attr(0x%x): m_data=%s font=0x%x, m_font_size=%d,weight=0x%x,italic=%d,family=0x%x,run.m_font_families[...]=%s",this,run.m_data.c_str(),*hfontp,run.m_font_size,weight,italic,family,fontname);
 	return ::SelectObject(hdc, *hfontp);
@@ -629,7 +642,7 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_get_ddsurf(common::gui_window *windo
 		DDCOLORKEY ck;
 		ck.dwColorSpaceLowValue = ddTranspColorLow;
 		ck.dwColorSpaceHighValue = ddTranspColorHigh;
-		HRESULT	hr = m_region_dds->SetColorKey(dwFlags, &ck);
+		HRESULT hr = m_region_dds->SetColorKey(dwFlags, &ck);
 		if (FAILED(hr)) {
 			win_report_error("SetColorKey()", hr);
 		}

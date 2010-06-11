@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -110,11 +110,11 @@ static CGBitmapInfo pixel_info_bminfo;
 
 static void
 init_pixel_info() {
-    if (pixel_info_initialized) return;
-    pixel_info_initialized = true;
+	if (pixel_info_initialized) return;
+	pixel_info_initialized = true;
 #ifdef ENABLE_COCOA_CGIMAGE
-    if ([NSBitmapImageRep instancesRespondToSelector: @selector(initWithCGImage:)]) {
-        // Only supported on 10.5, so fallback for 10.4
+	if ([NSBitmapImageRep instancesRespondToSelector: @selector(initWithCGImage:)]) {
+		// Only supported on 10.5, so fallback for 10.4
 #if defined(__POWERPC__)
 		// This is a hack: we see incorrect video color on PPC. We're going to drop
 		// PPC support anyway, so this is a stopgap to make things work for the
@@ -123,15 +123,15 @@ init_pixel_info() {
 #else
 		pixel_info_order = ambulant::net::pixel_argb;
 #endif
-        pixel_info_format = (NSBitmapFormat)0;
-        pixel_info_bpp = 4;
-        pixel_info_bminfo = (kCGImageAlphaNoneSkipFirst|kCGBitmapByteOrder32Host);
-        return;
-    }
+		pixel_info_format = (NSBitmapFormat)0;
+		pixel_info_bpp = 4;
+		pixel_info_bminfo = (kCGImageAlphaNoneSkipFirst|kCGBitmapByteOrder32Host);
+		return;
+	}
 #endif
-    pixel_info_order = ambulant::net::pixel_rgb;
-    pixel_info_format = (NSBitmapFormat)0;
-    pixel_info_bpp = 3;
+	pixel_info_order = ambulant::net::pixel_rgb;
+	pixel_info_format = (NSBitmapFormat)0;
+	pixel_info_bpp = 3;
 }
 
 namespace ambulant {
@@ -150,15 +150,15 @@ extern const char cocoa_dsvideo_playable_renderer_uri3[] = AM_SYSTEM_COMPONENT("
 common::playable_factory *
 create_cocoa_dsvideo_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererOpen"), true);
-   smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererVideo"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererOpen"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererVideo"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
 	return new common::single_playable_factory<
-        cocoa_dsvideo_renderer,
-        cocoa_dsvideo_playable_tag,
-        cocoa_dsvideo_playable_renderer_uri,
-        cocoa_dsvideo_playable_renderer_uri2,
-        cocoa_dsvideo_playable_renderer_uri3>(factory, mdp);
+		cocoa_dsvideo_renderer,
+		cocoa_dsvideo_playable_tag,
+		cocoa_dsvideo_playable_renderer_uri,
+		cocoa_dsvideo_playable_renderer_uri2,
+		cocoa_dsvideo_playable_renderer_uri3>(factory, mdp);
 }
 
 
@@ -173,7 +173,7 @@ cocoa_dsvideo_renderer::cocoa_dsvideo_renderer(
 	m_image(NULL)
 {
 	AM_DBG lib::logger::get_logger()->debug("cocoa_dsvideo_renderer(): 0x%x created", (void*)this);
-    init_pixel_info();
+	init_pixel_info();
 }
 
 cocoa_dsvideo_renderer::~cocoa_dsvideo_renderer()
@@ -201,7 +201,7 @@ my_free_frame(void *ptr, const void *ptr2, size_t size)
 void
 cocoa_dsvideo_renderer::_push_frame(char* frame, int size)
 {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	if (m_image) {
 		[m_image release];
 		m_image = NULL;
@@ -214,8 +214,8 @@ cocoa_dsvideo_renderer::_push_frame(char* frame, int size)
 	if (!m_image) {
 		logger::get_logger()->trace("cocoa_dsvideo_renderer::_push_frame: cannot allocate NSImage");
 		logger::get_logger()->error(gettext("Out of memory while showing video"));
-        free(frame);
-        [pool release];
+		free(frame);
+		[pool release];
 		return;
 	}
 	NSBitmapImageRep *bitmaprep;
@@ -231,9 +231,9 @@ cocoa_dsvideo_renderer::_push_frame(char* frame, int size)
 		// with various values for kCGBitmapByteOrder32* and kCGImageAlpha*.
 		// The only things that seem to make a difference:
 		// - If the image does not have to be scaled then kCGBitmapByteOrder32Host|kCGImageAlphaNoneSkipFirst is a tiny bit faster. But
-		//   image draw times are dwarfed by background draw times (twice the image draw time!).
+		//	 image draw times are dwarfed by background draw times (twice the image draw time!).
 		// - If the image does need scaling things slow down by a factor of 4.
-		//   0 seems to be as good a value for bitmapInfo as any other value.
+		//	 0 seems to be as good a value for bitmapInfo as any other value.
 		// - If you also set shouldInterpolate=true you get an additional factor of 2 slowdown.
 		CGBitmapInfo bitmapInfo = pixel_info_bminfo;
 		CGImage *cgi = CGImageCreate( m_size.w, m_size.h, 8, pixel_info_bpp*8, m_size.w*pixel_info_bpp, genericColorSpace, bitmapInfo, provider, NULL, false, kCGRenderingIntentDefault);
@@ -242,7 +242,7 @@ cocoa_dsvideo_renderer::_push_frame(char* frame, int size)
 		if (cgi == NULL) {
 			logger::get_logger()->trace("cocoa_dsvideo_renderer::push_frame: cannot allocate CGImage");
 			logger::get_logger()->error(gettext("Out of memory while showing video"));
-            [pool release];
+			[pool release];
 			return;
 		}
 		AM_DBG lib::logger::get_logger()->trace("0x%x: push_frame(0x%x, %d) -> 0x%x -> 0x%x", this, frame, size, provider, m_image);
@@ -275,8 +275,8 @@ cocoa_dsvideo_renderer::_push_frame(char* frame, int size)
 		if (!bitmaprep) {
 			logger::get_logger()->trace("cocoa_dsvideo_renderer::_push_frame: cannot allocate NSBitmapImageRep");
 			logger::get_logger()->error(gettext("Out of memory while showing video"));
-            free(frame);
-            [pool release];
+			free(frame);
+			[pool release];
 			return;
 		}
 		memcpy([bitmaprep bitmapData], frame, size);
@@ -292,7 +292,7 @@ void
 cocoa_dsvideo_renderer::redraw(const rect &dirty, gui_window *window)
 {
 	m_lock.enter();
-    assert(m_dest);
+	assert(m_dest);
 	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("cocoa_dsvideo_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 
@@ -323,14 +323,14 @@ cocoa_dsvideo_renderer::redraw(const rect &dirty, gui_window *window)
 		size srcsize = size((int)cocoa_srcsize.width, (int)cocoa_srcsize.height);
 		rect srcrect = rect(size(0, 0));
 #ifdef WITH_SMIL30
-        lib::rect croprect = m_dest->get_crop_rect(m_size);
-        AM_DBG logger::get_logger()->debug("cocoa_dsvideo::redraw, clip 0x%x (%d %d) -> (%d, %d, %d, %d)", m_dest, m_size.w, m_size.h, croprect.x, croprect.y, croprect.w, croprect.h);
+		lib::rect croprect = m_dest->get_crop_rect(m_size);
+		AM_DBG logger::get_logger()->debug("cocoa_dsvideo::redraw, clip 0x%x (%d %d) -> (%d, %d, %d, %d)", m_dest, m_size.w, m_size.h, croprect.x, croprect.y, croprect.w, croprect.h);
 
-        rect dstrect = m_dest->get_fit_rect(croprect, srcsize, &srcrect, m_alignment);
-        NSRect cocoa_srcrect = NSMakeRect(srcrect.left(), srcrect.top(), srcrect.width(), srcrect.height());
+		rect dstrect = m_dest->get_fit_rect(croprect, srcsize, &srcrect, m_alignment);
+		NSRect cocoa_srcrect = NSMakeRect(srcrect.left(), srcrect.top(), srcrect.width(), srcrect.height());
 #else
-        rect dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
-        NSRect cocoa_srcrect = NSMakeRect(0, 0, srcrect.width(), srcrect.height());
+		rect dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
+		NSRect cocoa_srcrect = NSMakeRect(0, 0, srcrect.width(), srcrect.height());
 #endif
 		dstrect.translate(m_dest->get_global_topleft());
 		NSRect cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];

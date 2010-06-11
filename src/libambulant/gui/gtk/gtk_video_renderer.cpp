@@ -12,7 +12,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -56,15 +56,15 @@ extern const char gtk_video_playable_renderer_uri3[] = AM_SYSTEM_COMPONENT("Rend
 common::playable_factory *
 gui::gtk::create_gtk_video_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererGtk"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererVideo"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererOpen"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererGtk"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererVideo"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererOpen"), true);
 	return new common::single_playable_factory<
-        gtk_video_renderer,
-        gtk_video_playable_tag,
-        gtk_video_playable_renderer_uri,
-        gtk_video_playable_renderer_uri2,
-        gtk_video_playable_renderer_uri3>(factory, mdp);
+		gtk_video_renderer,
+		gtk_video_playable_tag,
+		gtk_video_playable_renderer_uri,
+		gtk_video_playable_renderer_uri2,
+		gtk_video_playable_renderer_uri3>(factory, mdp);
 }
 
 gtk_video_renderer::gtk_video_renderer(
@@ -75,8 +75,8 @@ gtk_video_renderer::gtk_video_renderer(
 	common::factories *factory,
 	common::playable_factory_machdep *mdp)
 :	gtk_renderer<common::video_renderer>(context, cookie, node, evp, factory, mdp),
- 	m_image(NULL),
-  	m_data(NULL),
+	m_image(NULL),
+	m_data(NULL),
 	m_img_displayed(0)
 {
    assert(m_frames.size() == 0);
@@ -111,11 +111,11 @@ gtk_video_renderer::_push_frame(char* frame, int size)
 
 	// This is needed to convert the colors to GTK+
 	// XXXJACK need to check whether we can get RGBA in stead of BGRA data from video_renderer, to save a copy.
-	for(int i=0;i < size;i=i+4){
+	for(int i=0;i < size;i=i+4) {
 		m_data[i] = frame[i+2];		/*R Red*/
 		m_data[i+1] = frame[i+1];	/*G GREEN*/
 		m_data[i+2] = frame[i];		/*B BLUE*/
-		m_data[i+3] = frame[i+3];	/*  A ALPHA*/
+		m_data[i+3] = frame[i+3];	/*	A ALPHA*/
 	}
 	free(frame);
 //	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.push_frame: About to calll need_redraw, (m_dest=0x%x)", (void*) m_dest);
@@ -146,15 +146,15 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 
 		// background drawing
 		if (info && (info->get_bgopacity() > 0.5)) {
-		// First find our whole area (which we have to clear to
-		// background color)
+			// First find our whole area (which we have to clear to
+			// background color)
 			lib::rect dstrect_whole = r;
 			dstrect_whole.translate(m_dest->get_global_topleft());
 			int L = dstrect_whole.left(),
-		    T = dstrect_whole.top(),
-		    W = dstrect_whole.width(),
-		    H = dstrect_whole.height();
-		// XXXX Fill with background color
+				T = dstrect_whole.top(),
+				W = dstrect_whole.width(),
+				H = dstrect_whole.height();
+			// XXXX Fill with background color
 			lib::color_t bgcolor = info->get_bgcolor();
 			AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer.redraw: clearing to 0x%x", (long)bgcolor);
 			GdkColor bgc;
@@ -181,21 +181,23 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 			dstrect.translate(m_dest->get_global_topleft());
 			// S_ for source image coordinates
 			// D_ for destination coordinates
-			int	S_L = srcrect.left(),
+			int S_L = srcrect.left(),
 				S_T = srcrect.top(),
 				S_W = srcrect.width(),
 				S_H = srcrect.height();
-			int	D_L = dstrect.left(),
+			int D_L = dstrect.left(),
 				D_T = dstrect.top(),
 				D_W = dstrect.width(),
 				D_H = dstrect.height();
 			AM_DBG lib::logger::get_logger()->debug("gtk_videorenderer.redraw_body(0x%x): gtk_draw_pixbuf at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d), original(%d,%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H,width,height);
-			/* scale image s.t. the viewbox specified fits in destination area:
-			 * zoom_X=(O_W/S_W), fit_X=(D_W/O_W); fact_W=zoom_X*fit_X  */
-			float	fact_W = (float)D_W/(float)S_W,
-				fact_H = (float)D_H/(float)S_H;
+
+			// scale image s.t. the viewbox specified fits in destination area:
+			// zoom_X=(O_W/S_W), fit_X=(D_W/O_W); fact_W=zoom_X*fit_X
+			float fact_W = (float)D_W/(float)S_W;
+			float fact_H = (float)D_H/(float)S_H;
+		
 			// N_ for new (scaled) image coordinates
-			int	N_L = (int)roundf(S_L*fact_W),
+			int N_L = (int)roundf(S_L*fact_W),
 				N_T = (int)roundf(S_T*fact_H),
 				N_W = (int)roundf(width*fact_W),
 				N_H = (int)roundf(height*fact_H);
@@ -205,8 +207,10 @@ gtk_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 			if (S_W != D_W || S_H != D_H) {
 				scaled_image_pixbuf = gdk_pixbuf_scale_simple(m_image, D_W, D_H, GDK_INTERP_BILINEAR);
 				g_object_unref (m_image);
-			} else // no need for scaling
+			} else {
+				// no need for scaling
 				scaled_image_pixbuf = m_image;
+			}
 			GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
 //			gdk_pixbuf_render_to_drawable(m_image, GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, 0, 0, L, T, W, H, GDK_RGB_DITHER_NONE, 0, 0);
 			gdk_draw_pixbuf(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, scaled_image_pixbuf, N_L, N_T, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);

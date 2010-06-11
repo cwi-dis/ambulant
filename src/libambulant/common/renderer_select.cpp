@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -42,10 +42,10 @@ const std::string&
 renderer_select::get_mimetype()
 {
 	if (!m_mimetype_valid) {
-        if (m_node) {
-            const net::url& url = get_url();
-            m_mimetype = url.guesstype();
-        }
+		if (m_node) {
+			const net::url& url = get_url();
+			m_mimetype = url.guesstype();
+		}
 		m_mimetype_valid = true;
 	}
 	return m_mimetype;

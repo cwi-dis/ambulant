@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -52,14 +52,14 @@ extern const char cocoa_image_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("Re
 common::playable_factory *
 create_cocoa_image_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererImg"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererImg"), true);
 	return new common::single_playable_factory<
-        cocoa_image_renderer,
-        cocoa_image_playable_tag,
-        cocoa_image_playable_renderer_uri,
-        cocoa_image_playable_renderer_uri2,
-        cocoa_image_playable_renderer_uri2>(factory, mdp);
+		cocoa_image_renderer,
+		cocoa_image_playable_tag,
+		cocoa_image_playable_renderer_uri,
+		cocoa_image_playable_renderer_uri2,
+		cocoa_image_playable_renderer_uri2>(factory, mdp);
 }
 
 cocoa_image_renderer::~cocoa_image_renderer()
@@ -137,9 +137,9 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 		return;
 	}
 	// Compute pixel-to-coordinate factors
-    NSSize cocoa_srcsize = [m_image size];
-    CGFloat x_factor = cocoa_srcsize.width / m_size.w;
-    CGFloat y_factor = cocoa_srcsize.height / m_size.h;
+	NSSize cocoa_srcsize = [m_image size];
+	CGFloat x_factor = cocoa_srcsize.width / m_size.w;
+	CGFloat y_factor = cocoa_srcsize.height / m_size.h;
 	// Now find both source and destination area for the bitblit.
 	rect srcrect;
 	NSRect cocoa_srcrect;
@@ -160,8 +160,8 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 			cocoa_srcrect = NSMakeRect(srcrect.left()*x_factor, srcrect.top()*y_factor, srcrect.width()*x_factor, srcrect.height()*y_factor);
 			cocoa_dstrect = [view NSRectForAmbulantRect: &dstrect];
 			AM_DBG logger::get_logger()->debug("cocoa_image_renderer.redraw: draw image (%f, %f, %f, %f) -> (%f, %f, %f, %f)",
-                NSMinX(cocoa_srcrect), NSMinY(cocoa_srcrect), NSMaxX(cocoa_srcrect), NSMaxY(cocoa_srcrect),
-                NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect), NSMaxX(cocoa_dstrect), NSMaxY(cocoa_dstrect));
+				NSMinX(cocoa_srcrect), NSMinY(cocoa_srcrect), NSMaxX(cocoa_srcrect), NSMaxY(cocoa_srcrect),
+				NSMinX(cocoa_dstrect), NSMinY(cocoa_dstrect), NSMaxX(cocoa_dstrect), NSMaxY(cocoa_dstrect));
 			[m_image drawInRect: cocoa_dstrect fromRect: cocoa_srcrect operation: NSCompositeSourceOver fraction: 1.0f];
 		}
 		m_lock.leave();

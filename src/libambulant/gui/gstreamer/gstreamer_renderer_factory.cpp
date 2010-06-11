@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -35,7 +35,7 @@ using namespace gui::gstreamer;
 common::playable_factory *
 ambulant::gui::gstreamer::create_gstreamer_renderer_factory(common::factories *factory)
 {
-    return new gstreamer_renderer_factory(factory);
+	return new gstreamer_renderer_factory(factory);
 }
 
 bool
@@ -51,8 +51,10 @@ gstreamer_renderer_factory::supports(common::renderer_select *rs)
 	if (renderer_uri != NULL &&
 		strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererGstreamer")) != 0 &&
 		strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererOpen")) != 0 &&
-        strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererAudio")) != 0 )
+		strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererAudio")) != 0 )
+	{
 		return false;
+	}
 	return true;
 }
 
@@ -71,13 +73,13 @@ gstreamer_renderer_factory::new_playable(
 {
 	common::playable *rv = NULL;
 	lib::xml_string tag = node->get_qname().second;
-	AM_DBG lib::logger::get_logger()->debug("gstreamer_renderer_factory::new_playable: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
+	AM_DBG lib::logger::get_logger()->debug("gstreamer_renderer_factory::new_playable: node 0x%x:	inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "audio" && gui::gstreamer::gstreamer_audio_renderer::is_supported(node)) {
 	  rv = new gui::gstreamer::gstreamer_audio_renderer(context, cookie, node, evp, m_factory, (common::playable_factory_machdep*)NULL);
 		AM_DBG lib::logger::get_logger()->debug("gstreamer_renderer_factory::new_playable: node 0x%x: returning gstreamer_audio_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("gstreamer_renderer_factory::new_playable: no GStreamer renderer for tag \"%s\"", tag.c_str());
-                return NULL;
+		return NULL;
 	}
 	return rv;
 }
@@ -92,13 +94,13 @@ gstreamer_renderer_factory::new_aux_audio_playable(
 {
 	common::playable *rv = NULL;
 	lib::xml_string tag = node->get_qname().second;
-	AM_DBG lib::logger::get_logger()->debug("gstreamer_renderer_factory::new_aux_playable: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
+	AM_DBG lib::logger::get_logger()->debug("gstreamer_renderer_factory::new_aux_playable: node 0x%x:	inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "audio" && gui::gstreamer::gstreamer_audio_renderer::is_supported(node)) {
 	  rv = new gui::gstreamer::gstreamer_audio_renderer(context, cookie, node, evp, m_factory, src);
 		AM_DBG lib::logger::get_logger()->debug("gstreamer_renderer_factory::new_aux_playable: node 0x%x: returning gstreamer_audio_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("gstreamer_renderer_factory::new_aux_playable: no GStreamer renderer for tag \"%s\"", tag.c_str());
-                return NULL;
+		return NULL;
 	}
 	return rv;
 }

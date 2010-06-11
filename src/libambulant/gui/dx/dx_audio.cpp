@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -48,15 +48,15 @@ extern const char dx_audio_playable_renderer_uri3[] = AM_SYSTEM_COMPONENT("Rende
 common::playable_factory *
 gui::dx::create_dx_audio_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectX"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectXAudio"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererAudio"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectX"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectXAudio"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererAudio"), true);
 	return new common::single_playable_factory<
 		gui::dx::dx_audio_renderer,
-        dx_audio_playable_tag,
-        dx_audio_playable_renderer_uri,
-        dx_audio_playable_renderer_uri2,
-        dx_audio_playable_renderer_uri3 >(factory, mdp);
+		dx_audio_playable_tag,
+		dx_audio_playable_renderer_uri,
+		dx_audio_playable_renderer_uri2,
+		dx_audio_playable_renderer_uri3 >(factory, mdp);
 }
 
 gui::dx::dx_audio_renderer::dx_audio_renderer(
@@ -66,7 +66,7 @@ gui::dx::dx_audio_renderer::dx_audio_renderer(
 	lib::event_processor* evp,
 	common::factories *fp,
 	common::playable_factory_machdep *dxplayer)
-:   common::renderer_playable(context, cookie, node, evp, fp, dxplayer),
+:	common::renderer_playable(context, cookie, node, evp, fp, dxplayer),
 	m_player(0),
 	m_update_event(0),
 	m_level(1.0),
@@ -177,7 +177,7 @@ void gui::dx::dx_audio_renderer::update_levels() {
 
 void
 gui::dx::dx_audio_renderer::set_intransition(const lib::transition_info* info) {
- 	if (m_transition_engine)
+	if (m_transition_engine)
 		delete m_transition_engine;
 	m_intransition = info;
 	m_transition_engine = new smil2::audio_transition_engine();
@@ -186,7 +186,7 @@ gui::dx::dx_audio_renderer::set_intransition(const lib::transition_info* info) {
 
 void
 gui::dx::dx_audio_renderer::start_outtransition(const lib::transition_info* info) {
- 	if (m_transition_engine)
+	if (m_transition_engine)
 		delete m_transition_engine;
 	m_outtransition = info;
 	m_transition_engine = new smil2::audio_transition_engine();

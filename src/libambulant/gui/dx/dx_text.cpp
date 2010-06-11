@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -50,15 +50,15 @@ extern const char dx_text_playable_renderer_uri3[] = AM_SYSTEM_COMPONENT("Render
 common::playable_factory *
 gui::dx::create_dx_text_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectX"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectXText"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererText"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectX"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectXText"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererText"), true);
 	return new common::single_playable_factory<
 		gui::dx::dx_text_renderer,
-        dx_text_playable_tag,
-        dx_text_playable_renderer_uri,
-        dx_text_playable_renderer_uri2,
-        dx_text_playable_renderer_uri3 >(factory, mdp);
+		dx_text_playable_tag,
+		dx_text_playable_renderer_uri,
+		dx_text_playable_renderer_uri2,
+		dx_text_playable_renderer_uri3 >(factory, mdp);
 }
 
 gui::dx::dx_text_renderer::dx_text_renderer(
@@ -68,7 +68,7 @@ gui::dx::dx_text_renderer::dx_text_renderer(
 	lib::event_processor* evp,
 	common::factories* factory,
 	common::playable_factory_machdep *dxplayer)
-:   dx_renderer_playable(context, cookie, node, evp, factory, dynamic_cast<dx_playables_context*>(dxplayer)),
+:	dx_renderer_playable(context, cookie, node, evp, factory, dynamic_cast<dx_playables_context*>(dxplayer)),
 	m_text(0),
 	m_df(factory->get_datasource_factory())
 {

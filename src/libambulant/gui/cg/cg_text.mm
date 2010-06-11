@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -49,14 +49,14 @@ extern const char cg_text_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("Render
 common::playable_factory *
 create_cg_text_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCoreGraphics"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererText"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCoreGraphics"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererText"), true);
 	return new common::single_playable_factory<
-        cg_text_renderer,
-        cg_text_playable_tag,
-        cg_text_playable_renderer_uri,
-        cg_text_playable_renderer_uri2,
-        cg_text_playable_renderer_uri2>(factory, mdp);
+		cg_text_renderer,
+		cg_text_playable_tag,
+		cg_text_playable_renderer_uri,
+		cg_text_playable_renderer_uri2,
+		cg_text_playable_renderer_uri2>(factory, mdp);
 }
 
 
@@ -77,7 +77,7 @@ cg_text_renderer::cg_text_renderer(
 		m_font_name = params->get_str("font-family");
 		m_font_size = params->get_float("font-size", 14.0);
 		m_text_color = params->get_color("color", 0);
-        delete params;
+		delete params;
 	} else {
 		m_font_name = "Helvetica";
 		m_font_size = 14.0;

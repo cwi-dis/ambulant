@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -41,14 +41,14 @@ extern const char gtk_fill_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("Rende
 common::playable_factory *
 gui::gtk::create_gtk_fill_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererGtk"), true);
-   smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererFill"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererGtk"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererFill"), true);
 	return new common::single_playable_factory<
-        gtk_fill_renderer,
-        gtk_fill_playable_tag,
-        gtk_fill_playable_renderer_uri,
-        gtk_fill_playable_renderer_uri2,
-        gtk_fill_playable_renderer_uri2>(factory, mdp);
+		gtk_fill_renderer,
+		gtk_fill_playable_tag,
+		gtk_fill_playable_renderer_uri,
+		gtk_fill_playable_renderer_uri2,
+		gtk_fill_playable_renderer_uri2>(factory, mdp);
 }
 
 gtk_fill_renderer::~gtk_fill_renderer()
@@ -147,9 +147,9 @@ gtk_fill_renderer::redraw(const rect &dirty,
 			dstrect.translate(m_dest->get_global_topleft());
 			AM_DBG logger::get_logger()->debug("gtk_fill.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), qpm,dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
 //			bitBlt(surf, dstrect.left(),dstrect.top(),
-//			       qpm,dstrect.left(),dstrect.top(),dstrect.width(),dstrect.height());
+//				qpm,dstrect.left(),dstrect.top(),dstrect.width(),dstrect.height());
 //			bitBlt(surf, dstrect.left(), dstrect.top(),
-//			       qpm,  dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
+//				qpm,  dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
 			AM_DBG logger::get_logger()->debug("gtk_fill_renderer.redraw: drawing to transition surface");
 		}
 	}
@@ -192,8 +192,7 @@ gtk_fill_renderer::user_event(const point &where, int what)
 }
 
 void
-gtk_fill_renderer::redraw_body(const lib::rect &dirty,
-				     common::gui_window *window) {
+gtk_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *window) {
 
 	const common::region_info *info = m_dest->get_info();
 	const lib::rect &r = m_dest->get_rect();
@@ -202,7 +201,7 @@ gtk_fill_renderer::redraw_body(const lib::rect &dirty,
 	// First find our whole area to be cleared to <brush> color
 	lib::rect dstrect_whole = r;
 	dstrect_whole.translate(m_dest->get_global_topleft());
-	int	L = dstrect_whole.left(),
+	int L = dstrect_whole.left(),
 		T = dstrect_whole.top(),
 		W = dstrect_whole.width(),
 		H = dstrect_whole.height();
@@ -230,10 +229,9 @@ gtk_fill_renderer::redraw_body(const lib::rect &dirty,
 }
 
 void
-gtk_background_renderer::redraw(const lib::rect &dirty,
-			       common::gui_window *window)
+gtk_background_renderer::redraw(const lib::rect &dirty, common::gui_window *window)
 {
-	if ( !  (m_src && m_dst))
+	if ( !	(m_src && m_dst))
 		return;
 	const lib::rect &r = m_dst->get_rect();
 	AM_DBG lib::logger::get_logger()->debug("gtk_background_renderer::redraw(0x%x)", (void *)this);
@@ -244,9 +242,9 @@ gtk_background_renderer::redraw(const lib::rect &dirty,
 		lib::rect dstrect_whole = r;
 		dstrect_whole.translate(m_dst->get_global_topleft());
 		int L = dstrect_whole.left(),
-		    T = dstrect_whole.top(),
-		    W = dstrect_whole.width(),
-		    H = dstrect_whole.height();
+			T = dstrect_whole.top(),
+			W = dstrect_whole.width(),
+			H = dstrect_whole.height();
 		// XXXX Fill with background color
 		lib::color_t bgcolor = m_src->get_bgcolor();
 		AM_DBG lib::logger::get_logger()->debug("gtk_background_renderer::redraw: clearing to %x, agtkw=0x%x local_ltwh(%d,%d,%d,%d)",(long)bgcolor,(void*)agtkw,L,T,W,H);
@@ -266,10 +264,10 @@ gtk_background_renderer::redraw(const lib::rect &dirty,
 #ifdef WITH_SMIL30
 		} else {  //XXXX adapted from gtk_transition. May be some code to be factored out
 			// Method:
-		  	// 1. Get the current on-screen image as a pixmap
-		  	// 2. Create a new pixmap and draw a coloured rectangle on it
-		  	// 3. Blend these 2 pixmaps together by getting their pixbufs
-		  	// 4. Draw the resulting pixbuf to become the new on-screen image
+			// 1. Get the current on-screen image as a pixmap
+			// 2. Create a new pixmap and draw a coloured rectangle on it
+			// 3. Blend these 2 pixmaps together by getting their pixbufs
+			// 4. Draw the resulting pixbuf to become the new on-screen image
 			GdkPixmap* opm = agtkw->get_ambulant_pixmap();
 			gint width; gint height;
 			gdk_drawable_get_size(GDK_DRAWABLE (opm), &width, &height);

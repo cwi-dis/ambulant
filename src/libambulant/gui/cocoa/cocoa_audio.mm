@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -46,14 +46,14 @@ extern const char cocoa_audio_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("Re
 common::playable_factory *
 create_cocoa_audio_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoaAudio"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererAudio"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoaAudio"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererAudio"), true);
 	return new common::single_playable_factory<
-        cocoa_audio_playable,
-        cocoa_audio_playable_tag,
-        cocoa_audio_playable_renderer_uri,
-        cocoa_audio_playable_renderer_uri2,
-        cocoa_audio_playable_renderer_uri2 >(factory, mdp);
+		cocoa_audio_playable,
+		cocoa_audio_playable_tag,
+		cocoa_audio_playable_renderer_uri,
+		cocoa_audio_playable_renderer_uri2,
+		cocoa_audio_playable_renderer_uri2 >(factory, mdp);
 }
 
 cocoa_audio_playable::cocoa_audio_playable(
@@ -67,7 +67,7 @@ cocoa_audio_playable::cocoa_audio_playable(
 	m_url(node->get_url("src")),
 	m_sound(NULL)
 {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	if (!m_url.is_local_file()) {
 		lib::logger::get_logger()->error(gettext("cocoa_audio: cannot play non-local sound %s"), m_url.get_url().c_str());
 	} else {
@@ -82,7 +82,7 @@ cocoa_audio_playable::cocoa_audio_playable(
 
 cocoa_audio_playable::~cocoa_audio_playable()
 {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	m_lock.enter();
 	AM_DBG logger::get_logger()->debug("~cocoa_audio_playable(0x%x)", (void *)this);
 	if (m_sound)
@@ -96,7 +96,7 @@ cocoa_audio_playable::~cocoa_audio_playable()
 void
 cocoa_audio_playable::start(double where)
 {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("cocoa_audio_playable.start(0x%x, %s, %f)", (void *)this, m_url.get_url().c_str(), where);
 	if (where != 0.0)
@@ -166,7 +166,7 @@ cocoa_audio_playable::stop()
 void
 cocoa_audio_playable::pause(pause_display d)
 {
-//    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+//	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("cocoa_audio_playable.pause(0x%x)", (void *)this);
 	if (m_sound) {
@@ -180,7 +180,7 @@ cocoa_audio_playable::pause(pause_display d)
 void
 cocoa_audio_playable::resume()
 {
-//    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+//	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("cocoa_audio_playable.resume(0x%x)", (void *)this);
 	if (m_sound) {

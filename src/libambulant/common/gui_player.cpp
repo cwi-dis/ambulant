@@ -300,7 +300,7 @@ gui_player::create_document(const net::url& url)
             std::list<std::string>::const_iterator it;
             for(it=list.begin(); it!=list.end(); it++)
                 get_playable_factory()->preferred_renderer((*it).c_str());
-        }
+    	}
 	} else {
 		lib::logger::get_logger()->trace("%s: Failed to parse document ", m_url.get_url().c_str());
 	}

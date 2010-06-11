@@ -71,7 +71,7 @@ plugin_engine *ambulant::common::plugin_engine::s_singleton = NULL;
 plugin_engine *
 plugin_engine::get_plugin_engine()
 {
-    if (s_singleton == NULL)
+	if (s_singleton == NULL)
         s_singleton = new plugin_engine;
     return s_singleton;
 }
@@ -251,7 +251,8 @@ plugin_engine::load_plugins(std::string dirname)
         while (nr_of_files--) {
             //only normal files, not dots (. and ..)
             if (strcmp(namelist[nr_of_files]->d_name, ".")  &&
-                    strcmp(namelist[nr_of_files]->d_name, "..")) {
+				strcmp(namelist[nr_of_files]->d_name, ".."))
+			{
                 char *pluginname = namelist[nr_of_files]->d_name;
 #ifdef WITH_PYTHON_PLUGIN
 				bool is_python_plugin = false;
@@ -267,11 +268,10 @@ plugin_engine::load_plugins(std::string dirname)
                     lib::logger::get_logger()->trace("plugin_engine: skipping Python plugin %s", pluginname);
 					continue;
 #endif // WITH_PYTHON_PLUGIN
-                } else
-				if (strncmp(PLUGIN_PREFIX, pluginname, sizeof(PLUGIN_PREFIX)-1) != 0) {
+                } else if (strncmp(PLUGIN_PREFIX, pluginname, sizeof(PLUGIN_PREFIX)-1) != 0) {
                     lib::logger::get_logger()->trace("plugin_engine: skipping %s", pluginname);
-		    free(namelist[nr_of_files]);
-		    continue;
+					free(namelist[nr_of_files]);
+					continue;
                 }
 				// Check whether this is the Python engine
                 if (strncmp(PYTHON_PLUGIN_ENGINE_PREFIX, pluginname, sizeof(PYTHON_PLUGIN_ENGINE_PREFIX)-1) == 0) {
@@ -280,7 +280,7 @@ plugin_engine::load_plugins(std::string dirname)
                     lib::logger::get_logger()->trace("plugin_engine: recording Python engine %s", pluginname);
 #else
                     lib::logger::get_logger()->trace("plugin_engine: skipping Python engine %s", pluginname);
-		    free(namelist[nr_of_files]);
+					free(namelist[nr_of_files]);
                     continue;
 #endif // WITH_PYTHON_PLUGIN
                 }
@@ -369,8 +369,10 @@ plugin_engine::load_plugins(std::string dirname)
 	HANDLE dirHandle = FindFirstFile(fp_conv, &dirData);
     if (dirHandle == INVALID_HANDLE_VALUE) {
 		DWORD err = GetLastError();
-		if (err != ERROR_FILE_NOT_FOUND && err != ERROR_NO_MORE_FILES) // Don't report "No such file"
+		if (err != ERROR_FILE_NOT_FOUND && err != ERROR_NO_MORE_FILES) {
+			// Don't report "No such file"
 			lib::logger::get_logger()->error(gettext("Error reading plugin directory: %s: 0x%x"), dirname.c_str(), err);
+		}
         return;
     } else {
 		do {

@@ -75,7 +75,7 @@ gstreamer_audio_renderer::gstreamer_audio_renderer
 	m_outtransition(NULL),
 	m_transition_engine(NULL)
 {
-        init_player(node);
+	init_player(node);
 }
 
 gstreamer_audio_renderer::~gstreamer_audio_renderer()
@@ -127,7 +127,7 @@ bool
 gstreamer_audio_renderer::is_supported(const lib::node *node)
 {
 	if ( ! node)
-    		return false;
+		return false;
 	std::string mimetype(node->get_url("src").guesstype());
 
 #ifdef  WITH_NOKIA770
@@ -235,14 +235,14 @@ gstreamer_audio_renderer::get_dur()
 	m_lock.leave();
 
 	if (dur != 0.0) {
-	        double microsec = 1e6;
+		double microsec = 1e6;
 		double clip_begin = m_clip_begin / microsec;
 		double clip_end   = m_clip_end / microsec;
 
 		if (clip_end > 0 && dur > clip_end)
-	               dur = clip_end;
+			dur = clip_end;
 		if (clip_begin > 0)
-	               dur -= clip_begin;
+			dur -= clip_begin;
 		lib::logger::get_logger()->trace("gstreamer_audio_renderer: get_dur() clip_begin=%f clip_end=%f dur=%f", clip_begin, clip_end, dur);
 		rv = common::duration(true, dur);
   	}

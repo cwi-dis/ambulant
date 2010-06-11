@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -64,15 +64,15 @@ extern const char cg_dsvideo_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("Ren
 common::playable_factory *
 create_cg_dsvideo_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererOpen"), true);
-   smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererVideo"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCoreGraphics"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererOpen"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererVideo"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCoreGraphics"), true);
 	return new common::single_playable_factory<
-        cg_dsvideo_renderer,
-        cg_dsvideo_playable_tag,
-        cg_dsvideo_playable_renderer_uri,
-        cg_dsvideo_playable_renderer_uri2,
-        cg_dsvideo_playable_renderer_uri2>(factory, mdp);
+		cg_dsvideo_renderer,
+		cg_dsvideo_playable_tag,
+		cg_dsvideo_playable_renderer_uri,
+		cg_dsvideo_playable_renderer_uri2,
+		cg_dsvideo_playable_renderer_uri2>(factory, mdp);
 }
 
 cg_dsvideo_renderer::cg_dsvideo_renderer(
@@ -81,7 +81,7 @@ cg_dsvideo_renderer::cg_dsvideo_renderer(
 	const lib::node *node,
 	event_processor *evp,
 	common::factories *factory,
-    common::playable_factory_machdep *mdp)
+	common::playable_factory_machdep *mdp)
 :	common::video_renderer(context, cookie, node, evp, factory, mdp),
 	m_image(NULL)
 {
@@ -129,9 +129,9 @@ cg_dsvideo_renderer::_push_frame(char* frame, int size)
 	// with various values for kCGBitmapByteOrder32* and kCGImageAlpha*.
 	// The only things that seem to make a difference:
 	// - If the image does not have to be scaled then kCGBitmapByteOrder32Host|kCGImageAlphaNoneSkipFirst is a tiny bit faster. But
-	//   image draw times are dwarfed by background draw times (twice the image draw time!).
+	//	 image draw times are dwarfed by background draw times (twice the image draw time!).
 	// - If the image does need scaling things slow down by a factor of 4.
-	//   0 seems to be as good a value for bitmapInfo as any other value.
+	//	 0 seems to be as good a value for bitmapInfo as any other value.
 	// - If you also set shouldInterpolate=true you get an additional factor of 2 slowdown.
 	CGBitmapInfo bitmapInfo = MY_BITMAP_INFO;
 	m_image = CGImageCreate( m_size.w, m_size.h, 8, MY_BPP*8, m_size.w*MY_BPP, genericColorSpace, bitmapInfo, provider, NULL, false, kCGRenderingIntentDefault);
@@ -195,7 +195,7 @@ cg_dsvideo_renderer::redraw(const rect &dirty, gui_window *window)
 #endif
 		AM_DBG lib::logger::get_logger()->debug("0x%x: drawImage(0x%x)", this, cropped_image);
 		CGContextDrawImage (myContext, cg_dstrect, cropped_image); // ignoring alfa, for now
-		// XXX  release cropped_image
+		// XXX	release cropped_image
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("0x%x: cg_dsvideo.redraw: no image to show", this);
 	}

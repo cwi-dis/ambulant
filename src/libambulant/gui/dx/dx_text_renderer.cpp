@@ -83,7 +83,7 @@ void
 gui::dx::text_renderer::free_text_data() {
 	if (m_text_data) {
 		free((void*)m_text_data);
-	    m_text_data = NULL;
+		m_text_data = NULL;
 	}
 	m_text_datalen = 0;
 }

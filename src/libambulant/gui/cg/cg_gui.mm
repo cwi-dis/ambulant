@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -52,7 +52,7 @@ namespace cg {
 common::window_factory *
 create_cg_window_factory(void *view)
 {
-    return new cg_window_factory(view);
+	return new cg_window_factory(view);
 }
 
 cg_window::~cg_window()
@@ -288,7 +288,7 @@ bad:
 //	transition_tmpsurface = NULL;
 //	if (overlay_window) [overlay_window release];
 //	overlay_window = NULL;
-    [super dealloc];
+	[super dealloc];
 
 }
 
@@ -316,12 +316,12 @@ bad:
 #ifdef USE_COCOA_BOTLEFT
 	float top_delta = CGRectGetMaxY(CGRectFromViewRect([self bounds])) - CGRectGetMaxY(*nsrect);
 	ambulant::lib::rect arect = ambulant::lib::rect(
-                ambulant::lib::point(int(CGRectGetMinX(*nsrect)), int(top_delta)),
-				ambulant::lib::size(int(CGRectGetWidth(*nsrect)), int(CGRectGetHeight(*nsrect))));
+		ambulant::lib::point(int(CGRectGetMinX(*nsrect)), int(top_delta)),
+		ambulant::lib::size(int(CGRectGetWidth(*nsrect)), int(CGRectGetHeight(*nsrect))));
 #else
 	ambulant::lib::rect arect = ambulant::lib::rect(
-                ambulant::lib::point(int(CGRectGetMinX(*nsrect)), int(CGRectGetMinY(*nsrect))),
-				ambulant::lib::size(int(CGRectGetWidth(*nsrect)), int(CGRectGetHeight(*nsrect))));
+		ambulant::lib::point(int(CGRectGetMinX(*nsrect)), int(CGRectGetMinY(*nsrect))),
+		ambulant::lib::size(int(CGRectGetWidth(*nsrect)), int(CGRectGetHeight(*nsrect))));
 
 #endif
 	return arect;
@@ -338,7 +338,7 @@ bad:
 	my_rect.origin.y = (CGRectGetMaxY([self bounds])-(my_rect.origin.y+my_rect.size.height));
 #endif
 	[arect release];
-    AM_DBG NSLog(@"AmbulantView.asyncRedrawForAmbulantRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(my_rect), CGRectGetMinY(my_rect), CGRectGetMaxX(my_rect), CGRectGetMaxY(my_rect));
+	AM_DBG NSLog(@"AmbulantView.asyncRedrawForAmbulantRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(my_rect), CGRectGetMinY(my_rect), CGRectGetMaxX(my_rect), CGRectGetMaxY(my_rect));
 	[self setNeedsDisplayInRect: ViewRectFromCGRect(my_rect)];
 }
 
@@ -352,7 +352,7 @@ bad:
 
 - (void)drawRect:(CGRect)rect
 {
-    AM_DBG NSLog(@"AmbulantView.drawRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(rect), CGRectGetMinY(rect), CGRectGetMaxX(rect), CGRectGetMaxY(rect));
+	AM_DBG NSLog(@"AmbulantView.drawRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(rect), CGRectGetMinY(rect), CGRectGetMaxX(rect), CGRectGetMaxY(rect));
 #ifdef WITH_UIKIT
 	// There is something very funny going on. The coordinates passed in rect seem to be top-left based,
 	// but drawing should use bottom-left. Either I have done something really stupid or there is something
@@ -374,7 +374,7 @@ bad:
 		sleep(1);
 	}
 #endif
-//    redraw_lock.enter();
+//	redraw_lock.enter();
 #ifdef WITH_QUICKTIME_OVERLAY
 	// If our main view has been reparented since the last redraw we need
 	// to move the overlay window.
@@ -410,8 +410,8 @@ bad:
 #endif // WITH_QUICKTIME_OVERLAY
 
 	if (!ambulant_window) {
-        AM_DBG NSLog(@"Redraw AmbulantView: NULL ambulant_window");
-    } else {
+		AM_DBG NSLog(@"Redraw AmbulantView: NULL ambulant_window");
+	} else {
 #ifdef WITH_UIKIT
 		CGRect bounds = [self bounds];
 		AM_DBG NSLog(@"ambulantview: bounds (%f, %f, %f, %f)", bounds.origin.x, bounds.origin.y, bounds.size.width, bounds.size.height);
@@ -425,10 +425,10 @@ bad:
 		// XXXJACK interaction of fullscreen transitions and overlay windows
 		// is completely untested, and probably broken.
 		if (transition_count) rect = CGRectFromViewRect([self bounds]);
-        ambulant::lib::rect arect = [self ambulantRectForCGRect: &rect];
+		ambulant::lib::rect arect = [self ambulantRectForCGRect: &rect];
 //		[self _screenTransitionPreRedraw];
 		AM_DBG NSLog(@"ambulantView: call redraw ambulant-ltrb=(%d, %d, %d, %d)", arect.left(), arect.top(), arect.right(), arect.bottom());
-        ambulant_window->redraw(arect);
+		ambulant_window->redraw(arect);
 //		[self _screenTransitionPostRedraw];
 #ifdef WITH_UIKIT
 		CGContextRestoreGState(myContext);
@@ -438,7 +438,7 @@ bad:
 		[self dumpToImageID: "redraw"];
 #endif
 //		[self _releaseTransitionSurface];
-    }
+	}
 #ifdef WITH_QUICKTIME_OVERLAY
 	// If the overlay window was actually used (and possibly drawn into)
 	// we need to unlock it. We also prepare for flushing it, and clearing
@@ -476,19 +476,19 @@ bad:
 - (void)setAmbulantWindow: (ambulant::gui::cg::cg_window *)window
 {
 //	[[self window] setAcceptsMouseMovedEvents: true];
-    ambulant_window = window;
+	ambulant_window = window;
 }
 
 - (void)ambulantWindowClosed
 {
-    AM_DBG NSLog(@"ambulantWindowClosed called");
-    ambulant_window = NULL;
+	AM_DBG NSLog(@"ambulantWindowClosed called");
+	ambulant_window = NULL;
 	// XXXX Should we close the window too? Based on preference?
 }
 
 - (bool)isAmbulantWindowInUse
 {
-    return (ambulant_window != NULL);
+	return (ambulant_window != NULL);
 }
 
 - (bool)ignoreResize
@@ -505,7 +505,7 @@ bad:
 	NSPoint origin = NSMakePoint(0,0);
 	NSView *superview = [self superview];
 	NSWindow *window = [self window];
-	int32_t     shieldLevel = CGShieldingWindowLevel();
+	int32_t shieldLevel = CGShieldingWindowLevel();
 	if ([self ignoreResize] || [window level] >= shieldLevel) {
 		// We don't muck around with fullscreen windows or windows in other apps (browsers, etc).
 		// What we should actually do is recenter the content, but that is for later.
@@ -810,8 +810,8 @@ bad:
 	// if no engine available.
 	AM_DBG NSLog(@"_screenTransitionPostRedraw: bitblit");
 	[[self getTransitionSurface] unlockFocus];
-//	/*DBG*/	[self dump: [self getTransitionOldSource] toImageID: "fsold"];
-//	/*DBG*/	[self dump: [self getTransitionNewSource] toImageID: "fsnew"];
+//	/*DBG*/ [self dump: [self getTransitionOldSource] toImageID: "fsold"];
+//	/*DBG*/ [self dump: [self getTransitionNewSource] toImageID: "fsnew"];
 	CGRect bounds = [self bounds];
 	if (fullscreen_engine) {
 		[[self getTransitionOldSource] drawInRect: bounds

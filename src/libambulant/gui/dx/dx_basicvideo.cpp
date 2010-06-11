@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -47,13 +47,13 @@ extern const char dx_basicvideo_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("R
 common::playable_factory *
 gui::dx::create_dx_basicvideo_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectXBasicVideo"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectXBasicVideo"), true);
 	return new common::single_playable_factory<
 		gui::dx::dx_basicvideo_renderer,
-        dx_basicvideo_playable_tag,
-        dx_basicvideo_playable_renderer_uri,
-        dx_basicvideo_playable_renderer_uri,
-        dx_basicvideo_playable_renderer_uri >(factory, mdp);
+		dx_basicvideo_playable_tag,
+		dx_basicvideo_playable_renderer_uri,
+		dx_basicvideo_playable_renderer_uri,
+		dx_basicvideo_playable_renderer_uri >(factory, mdp);
 }
 
 gui::dx::dx_basicvideo_renderer::dx_basicvideo_renderer(
@@ -63,7 +63,7 @@ gui::dx::dx_basicvideo_renderer::dx_basicvideo_renderer(
 	lib::event_processor* evp,
 	common::factories *fp,
 	common::playable_factory_machdep *dxplayer)
-:   dx_renderer_playable(context, cookie, node, evp, fp, dynamic_cast<dx_playables_context*>(dxplayer)),
+:	dx_renderer_playable(context, cookie, node, evp, fp, dynamic_cast<dx_playables_context*>(dxplayer)),
 	m_player(0),
 	m_update_event(0) {
 	AM_DBG lib::logger::get_logger()->debug("dx_basicvideo_renderer(0x%x)", this);
@@ -139,7 +139,7 @@ void gui::dx::dx_basicvideo_renderer::start(double t) {
 }
 
 void gui::dx::dx_basicvideo_renderer::seek(double t) {
-    assert( t >= 0);
+	assert( t >= 0);
 	if (m_player) m_player->seek(t + (m_clip_begin / 1000000.0));
 	// ?? if(!m_update_event) schedule_update();
 	// ?? m_dest->need_redraw();
@@ -256,7 +256,7 @@ void gui::dx::dx_basicvideo_renderer::redraw(const lib::rect &dirty, common::gui
 	//AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::redraw %0x %s", m_dest, m_node->get_url("src").c_str());
 	v->draw(m_player->get_ddsurf(), vid_rect_dirty, vid_reg_rc_dirty, false, tr);
 
-	AM_DBG 	{
+	AM_DBG	{
 		std::string s = m_node->get_path_display_desc();
 		lib::textptr tp(s.c_str());
 		std::basic_string<text_char> msg = (text_char*) tp;

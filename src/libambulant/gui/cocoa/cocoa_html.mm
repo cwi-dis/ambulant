@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -101,7 +101,7 @@ class wvc_container : public lib::ref_counted_obj {
 	void hide_generation(int gen) {
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		if (m_generation == gen) {
-            [[m_wvc view] performSelectorOnMainThread: @selector(removeFromSuperviewWithoutNeedingDisplay) withObject: nil waitUntilDone: NO];
+			[[m_wvc view] performSelectorOnMainThread: @selector(removeFromSuperviewWithoutNeedingDisplay) withObject: nil waitUntilDone: NO];
 			m_generation++;
 			AM_DBG lib::logger::get_logger()->debug("wvc_container: %d: hiding HTML view", gen);
 		} else {
@@ -148,19 +148,19 @@ extern const char cocoa_html_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("Ren
 common::playable_factory *
 create_cocoa_html_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererHtml"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererHtml"), true);
 	return new common::single_playable_factory<
-        cocoa_html_renderer,
-        cocoa_html_playable_tag,
-        cocoa_html_playable_renderer_uri,
-        cocoa_html_playable_renderer_uri2,
-        cocoa_html_playable_renderer_uri2>(factory, mdp);
+		cocoa_html_renderer,
+		cocoa_html_playable_tag,
+		cocoa_html_playable_renderer_uri,
+		cocoa_html_playable_renderer_uri2,
+		cocoa_html_playable_renderer_uri2>(factory, mdp);
 }
 
 void
 cocoa_html_renderer::start(double where) {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	m_lock.enter();
 	renderer_playable::start(where);
 	if (m_dest) {

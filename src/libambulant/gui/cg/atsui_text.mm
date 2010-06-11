@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -54,9 +54,9 @@ atsui_text_renderer::atsui_text_renderer(
 	m_layout_manager(NULL)
 {
 	OSStatus err;
-    ATSUAttributeTag tags[1];
-    ByteCount sizes[1];
-    ATSUAttributeValuePtr values[1];
+	ATSUAttributeTag tags[1];
+	ByteCount sizes[1];
+	ATSUAttributeValuePtr values[1];
 	smil2::params *params = smil2::params::for_node(node);
 	color_t text_color = lib::to_color(0, 0, 0);
 	err = ATSUCreateStyle(&m_style);
@@ -109,9 +109,9 @@ void
 atsui_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 {
 	OSStatus err;
-    ATSUAttributeTag tags[1];
-    ByteCount sizes[1];
-    ATSUAttributeValuePtr values[1];
+	ATSUAttributeTag tags[1];
+	ByteCount sizes[1];
+	ATSUAttributeValuePtr values[1];
 
 	m_lock.enter();
 	const rect &r = m_dest->get_rect();

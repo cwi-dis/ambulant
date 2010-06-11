@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -49,15 +49,15 @@ extern const char dx_video_playable_renderer_uri3[] = AM_SYSTEM_COMPONENT("Rende
 common::playable_factory *
 gui::dx::create_dx_video_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectX"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectXVideo"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererVideo"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectX"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectXVideo"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererVideo"), true);
 	return new common::single_playable_factory<
 		gui::dx::dx_video_renderer,
-        dx_video_playable_tag,
-        dx_video_playable_renderer_uri,
-        dx_video_playable_renderer_uri2,
-        dx_video_playable_renderer_uri3 >(factory, mdp);
+		dx_video_playable_tag,
+		dx_video_playable_renderer_uri,
+		dx_video_playable_renderer_uri2,
+		dx_video_playable_renderer_uri3 >(factory, mdp);
 }
 
 gui::dx::dx_video_renderer::dx_video_renderer(
@@ -67,7 +67,7 @@ gui::dx::dx_video_renderer::dx_video_renderer(
 	lib::event_processor* evp,
 	common::factories *fp,
 	common::playable_factory_machdep *dxplayer)
-:   dx_renderer_playable(context, cookie, node, evp, fp, dynamic_cast<dx_playables_context*>(dxplayer)),
+:	dx_renderer_playable(context, cookie, node, evp, fp, dynamic_cast<dx_playables_context*>(dxplayer)),
 	m_player(0),
 	m_update_event(0),
 	m_frametime(50)
@@ -259,7 +259,7 @@ void gui::dx::dx_video_renderer::redraw(const lib::rect &dirty, common::gui_wind
 	//AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::redraw %0x %s", m_dest, m_node->get_url("src").c_str());
 	v->draw(m_player->get_ddsurf(), vid_rect_dirty, vid_reg_rc_dirty, false, tr);
 
-	AM_DBG 	{
+	AM_DBG	{
 		std::string s = m_node->get_path_display_desc();
 		lib::textptr tp(s.c_str());
 		std::basic_string<text_char> msg = (text_char*) tp;

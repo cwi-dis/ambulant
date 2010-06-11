@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -328,20 +328,22 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 
 #if 0 // VS8
 	IDirectDrawFactory *pDDF = NULL;
-    HRESULT hr = CoCreateInstance(CLSID_DirectDrawFactory,
-                              NULL, CLSCTX_INPROC_SERVER,
-                              IID_IDirectDrawFactory,
-                              (void **)&pDDF);
+	HRESULT hr = CoCreateInstance(
+		CLSID_DirectDrawFactory,
+		NULL,
+		CLSCTX_INPROC_SERVER,
+		IID_IDirectDrawFactory,
+		(void **)&pDDF);
 	if (FAILED(hr)){
 		seterror("CoCreateInstance(CLSID_DirectDrawFactory, ...)", hr);
 		return;
 	}
-	IDirectDraw  *pDD1=NULL;
+	IDirectDraw	 *pDD1=NULL;
 	hr = pDDF->CreateDirectDraw(NULL, m_hwnd, DDSCL_NORMAL , 0, NULL, &pDD1);
 	pDDF->Release();
 #else
 	HRESULT hr;
-	IDirectDraw  *pDD1=NULL;
+	IDirectDraw	 *pDD1=NULL;
 	hr = DirectDrawCreate(NULL, &pDD1, NULL);
 #endif
 
@@ -773,9 +775,9 @@ gui::dx::viewport::clear() {
 }
 
 bool
-gui::dx::viewport::blt_blend (IDirectDrawSurface* to, IDirectDrawSurface* from, const lib::rect& rc, double opacity_in,  double opacity_out, lib::color_t low_chroma, lib::color_t high_chroma) {
+gui::dx::viewport::blt_blend (IDirectDrawSurface* to, IDirectDrawSurface* from, const lib::rect& rc, double opacity_in,	 double opacity_out, lib::color_t low_chroma, lib::color_t high_chroma) {
 	bool rv = true;
-	uint32 low_ddclr = convert(low_chroma),  high_ddclr = convert(high_chroma);
+	uint32 low_ddclr = convert(low_chroma),	 high_ddclr = convert(high_chroma);
 	HRESULT hr = S_OK;
 	if (bits_size == 32) {
 		hr = blt_blend32(rc, opacity_in, opacity_out, from, to, low_ddclr, high_ddclr);
@@ -881,7 +883,7 @@ void gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, double opac
 #ifdef XXXX
 		// this code should just work, but since alpha blending is currently
 		// ignored by DirectX, we just do it pixel by pixel in blt_blend()
- 		dwFlags |= DDBLT_ALPHASRCCONSTOVERRIDE;
+		dwFlags |= DDBLT_ALPHASRCCONSTOVERRIDE;
 		bltfx.dwAlphaSrcConstBitDepth = 8;
 		bltfx.dwAlphaSrcConst = opacity*255.0;
 #endif//XXXX
@@ -975,7 +977,7 @@ gui::dx::viewport::blend_surface(const lib::rect& dst_rc, IDirectDrawSurface* sr
 	return;
 }
 
-// blend 'src' surface into 'dst' surface using  using
+// blend 'src' surface into 'dst' surface using	 using
 // 'opacity_in'/'opacity_out' when the color of the pixel in 'from'
 // is inside/outside the range [chroma_low, chroma_high]
 void
@@ -1333,8 +1335,8 @@ gui::dx::viewport::get_pixel_format() {
 	uint16 hi_green_bit = high_bit_pos(format.dwGBitMask);
 	green_bits=(uint16)(hi_green_bit-lo_green_bit+1);
 
-	lo_blue_bit  = low_bit_pos( format.dwBBitMask );
-	uint16 hi_blue_bit  = high_bit_pos(format.dwBBitMask);
+	lo_blue_bit	 = low_bit_pos( format.dwBBitMask );
+	uint16 hi_blue_bit	= high_bit_pos(format.dwBBitMask);
 	blue_bits=(uint16)(hi_blue_bit-lo_blue_bit+1);
 }
 
@@ -1425,18 +1427,19 @@ gui::dx::viewport::blt_blend32(const lib::rect& rc,
 	for(int row = begin_row-1;row>=end_row;row--) {
 		RGBQUAD* px1 = (RGBQUAD*)((BYTE*)desc1.lpSurface+row*desc1.lPitch);
 		RGBQUAD* px2 = (RGBQUAD*)((BYTE*)desc2.lpSurface+row*desc2.lPitch);
-		px1 +=  begin_col;
-		px2 +=  begin_col;
+		px1 +=	begin_col;
+		px2 +=	begin_col;
 		AM_DBG if (row == end_row) lib::logger::get_logger()->debug("px1=0x%x px2=0x%x lox=0x%x high=0x%x",*px1,*px2, low_ddclr, high_ddclr);
 		for(int col=begin_col;col<end_col;col++, px1++, px2++) {
 			if (px1->rgbRed >= r_l && px1->rgbRed <= r_h
-			 && px1->rgbGreen >= g_l && px1->rgbGreen <= g_h
-			 && px1->rgbBlue >= b_l && px1->rgbBlue <= b_h) {
-                px2->rgbRed = (BYTE)blend(weight_in, px2->rgbRed, px1->rgbRed);
+				&& px1->rgbGreen >= g_l && px1->rgbGreen <= g_h
+				&& px1->rgbBlue >= b_l && px1->rgbBlue <= b_h)
+			{
+				px2->rgbRed = (BYTE)blend(weight_in, px2->rgbRed, px1->rgbRed);
 				px2->rgbGreen = (BYTE)blend(weight_in, px2->rgbGreen, px1->rgbGreen);
 				px2->rgbBlue = (BYTE)blend(weight_in, px2->rgbBlue, px1->rgbBlue);
 			} else {
-                px2->rgbRed = (BYTE)blend(weight_out, px2->rgbRed, px1->rgbRed);
+				px2->rgbRed = (BYTE)blend(weight_out, px2->rgbRed, px1->rgbRed);
 				px2->rgbGreen = (BYTE)blend(weight_out, px2->rgbGreen, px1->rgbGreen);
 				px2->rgbBlue = (BYTE)blend(weight_out, px2->rgbBlue, px1->rgbBlue);
 			}
@@ -1485,8 +1488,8 @@ gui::dx::viewport::blt_blend24(const lib::rect& rc,
 	for(int row = begin_row-1;row>=end_row;row--) {
 		RGBTRIPLE* px1 = (RGBTRIPLE*)((BYTE*)desc1.lpSurface+row*desc1.lPitch);
 		RGBTRIPLE* px2 = (RGBTRIPLE*)((BYTE*)desc2.lpSurface+row*desc2.lPitch);
-		px1 +=  begin_col;
-		px2 +=  begin_col;
+		px1 +=	begin_col;
+		px2 +=	begin_col;
 		for(int col=begin_col;col<end_col;col++, px1++, px2++) {
 			if (px1->rgbtRed >= r_l && px1->rgbtRed <= r_h
 			 && px1->rgbtGreen >= g_l && px1->rgbtGreen <= g_h
@@ -1512,21 +1515,21 @@ struct trible565 {
 	trible565() : v(0) {}
 	trible565(int _r, int _g, int _b)  {
 		lib::color_t bgr = (_b << 16) | (_g << 8) | _r ;
-        v = (uint16)((bgr & 0xf80000)>> 8);
-        v |= (uint16)(bgr & 0xfc00) >> 5;
-        v |= (uint16)(bgr & 0xf8) >> 3;
+		v = (uint16)((bgr & 0xf80000)>> 8);
+		v |= (uint16)(bgr & 0xfc00) >> 5;
+		v |= (uint16)(bgr & 0xf8) >> 3;
 	}
 	trible565(uchar _r, uchar _g, uchar _b) {
 		lib::color_t bgr = (_b << 16) | (_g << 8) | _r ;
-        v = (uint16)((bgr & 0xf80000)>> 8); // blue
-        v |= (uint16)(bgr & 0xfc00) >> 5; // green
-        v |= (uint16)(bgr & 0xf8) >> 3; // red
+		v = (uint16)((bgr & 0xf80000)>> 8); // blue
+		v |= (uint16)(bgr & 0xfc00) >> 5; // green
+		v |= (uint16)(bgr & 0xf8) >> 3; // red
 	}
 
 	trible565(lib::color_t bgr) {
-        v = (uint16)((bgr & 0xf80000) >> 8);
-        v |= (uint16)(bgr & 0xfc00) >> 5;
-        v |= (uint16)(bgr & 0xf8) >> 3;
+		v = (uint16)((bgr & 0xf80000) >> 8);
+		v |= (uint16)(bgr & 0xfc00) >> 5;
+		v |= (uint16)(bgr & 0xf8) >> 3;
 	}
 	// mult and div used to ensure image doesn't become slightly dark
 	BYTE blue() { return (((v & 0xf800) >> 11)*255)/31;}
@@ -1571,16 +1574,16 @@ gui::dx::viewport::blt_blend16(const lib::rect& rc,
 	for(int row = begin_row-1;row>=end_row;row--) {
 		trible565* px1 = (trible565*)((BYTE*)desc1.lpSurface+row*desc1.lPitch);
 		trible565* px2 = (trible565*)((BYTE*)desc2.lpSurface+row*desc2.lPitch);
-		px1 +=  begin_col;
-		px2 +=  begin_col;
+		px1 +=	begin_col;
+		px2 +=	begin_col;
 		for(int col=begin_col;col<end_col;col++, px1++, px2++) {
 			BYTE r = px1->red(), g = px1->green(), b = px1->blue();
 			if (r >= r_l && r <= r_h && g >= g_l && g <= g_h && b >= b_l && b <= b_h) {
-                r = (BYTE)blend(weight_in, px2->red(), r);
+				r = (BYTE)blend(weight_in, px2->red(), r);
 				g = (BYTE)blend(weight_in, px2->green(), g);
 				b = (BYTE)blend(weight_in, px2->blue(), b);
 			} else {
-                r = (BYTE)blend(weight_out, px2->red(), r);
+				r = (BYTE)blend(weight_out, px2->red(), r);
 				g = (BYTE)blend(weight_out, px2->green(), g);
 				b = (BYTE)blend(weight_out, px2->blue(), b);
 			}

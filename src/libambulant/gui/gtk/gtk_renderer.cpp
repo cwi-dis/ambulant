@@ -108,7 +108,7 @@ gtk_transition_renderer::stop()
 	if (!m_trans_engine) {
 		m_lock.leave();
 		return;
-    }
+	}
 	delete m_trans_engine;
 	m_trans_engine = NULL;
 	if (m_fullscreen && m_view) {

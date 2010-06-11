@@ -2,8 +2,8 @@
 
 
 // Note: Proxy/Stub Information
-//      To build a separate proxy/stub DLL,
-//      run nmake -f AmbulantActiveXps.mk in the project directory.
+// To build a separate proxy/stub DLL,
+// run nmake -f AmbulantActiveXps.mk in the project directory.
 
 #include "stdafx.h"
 // uncomment next line for Visual Leak Detector

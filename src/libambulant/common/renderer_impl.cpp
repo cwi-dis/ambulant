@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -57,13 +57,13 @@ renderer_playable::renderer_playable(
 	m_clip_end(-1)
 
 {
-    AM_DBG lib::logger::get_logger()->debug("renderer_playable(%s, cookie=%d)", node->get_sig().c_str(), (int)cookie);
+	AM_DBG lib::logger::get_logger()->debug("renderer_playable(%s, cookie=%d)", node->get_sig().c_str(), (int)cookie);
 }
 
 renderer_playable::~renderer_playable()
 {
-    if (m_dest) m_dest->renderer_done(this);
-    m_dest = NULL;
+	if (m_dest) m_dest->renderer_done(this);
+	m_dest = NULL;
 }
 
 void
@@ -100,9 +100,8 @@ renderer_playable::stop()
 	if (!m_activated) {
 		lib::logger::get_logger()->trace("renderer_playable.stop(0x%x): not started", (void*)this);
 	} else {
-		if (m_dest)
-			m_dest->renderer_done(this);
-        m_dest = NULL;
+		if (m_dest) m_dest->renderer_done(this);
+		m_dest = NULL;
 	}
 	m_activated = false;
 	return true;
@@ -204,9 +203,9 @@ renderer_playable_ds::renderer_playable_ds(
 
 renderer_playable_ds::~renderer_playable_ds()
 {
-    AM_DBG lib::logger::get_logger()->debug("~renderer_playable_ds(0x%x)", (void *)this);
-  	if (m_src) {
-        m_src->stop();
+	AM_DBG lib::logger::get_logger()->debug("~renderer_playable_ds(0x%x)", (void *)this);
+	if (m_src) {
+		m_src->stop();
 		m_src->release();
 		m_src = NULL;
 	}
@@ -215,7 +214,7 @@ renderer_playable_ds::~renderer_playable_ds()
 void
 renderer_playable_ds::start(double t)
 {
-    AM_DBG lib::logger::get_logger()->debug("renderer_playable_ds.start(0x%x %s)", (void *)this, m_node->get_sig().c_str());
+	AM_DBG lib::logger::get_logger()->debug("renderer_playable_ds.start(0x%x %s)", (void *)this, m_node->get_sig().c_str());
 	if (m_activated) {
 		lib::logger::get_logger()->trace("renderer_playable_ds.start(0x%x): already started", (void*)this);
 		return;
@@ -308,7 +307,7 @@ renderer_playable_dsall::readdone()
 }
 
 global_playable_factory_impl::global_playable_factory_impl()
-:   m_default_factory(new gui::none::none_playable_factory())
+:	m_default_factory(new gui::none::none_playable_factory())
 {
 }
 
@@ -321,25 +320,25 @@ global_playable_factory_impl::~global_playable_factory_impl()
 	m_renderer_select.clear();
 	// Clear the factories
 	delete m_default_factory;
-    std::list<playable_factory*>::iterator fi;
-    for(fi=m_factories.begin(); fi != m_factories.end(); fi++) {
-        playable_factory *pf = *fi;
+	std::list<playable_factory*>::iterator fi;
+	for(fi=m_factories.begin(); fi != m_factories.end(); fi++) {
+		playable_factory *pf = *fi;
 		delete pf;
-    }
+	}
 	m_factories.clear();
 }
 
 void
 global_playable_factory_impl::add_factory(playable_factory *rf)
 {
-    m_factories.push_back(rf);
+	m_factories.push_back(rf);
 }
 
 void
 global_playable_factory_impl::preferred_renderer(const char* name)
 {
-    renderer_select rs(name);
-    std::list<playable_factory *>::iterator i;
+	renderer_select rs(name);
+	std::list<playable_factory *>::iterator i;
 	std::list<playable_factory *> new_list;
 
 	for (i=m_factories.begin(); i!=m_factories.end(); i++) {
@@ -362,7 +361,7 @@ global_playable_factory_impl::new_playable(
 	const lib::node *node,
 	lib::event_processor *evp)
 {
-    std::list<playable_factory *>::iterator i;
+	std::list<playable_factory *>::iterator i;
 
 	// First make sure we have the node in our renderer selection cache
 	int nid = node->get_numid();
@@ -373,13 +372,13 @@ global_playable_factory_impl::new_playable(
 
 	// If we don't have a renderer selected yet select one
 	playable *rv = NULL;
-    playable_factory *pf = rs->get_playable_factory();
+	playable_factory *pf = rs->get_playable_factory();
 	if (pf) {
-        // We have a cached playable factory. Let's use it.
-        rv = pf->new_playable(context, cookie, node, evp);
-    } else {
-        // No cached playable factory. Iterate over all of them,
-        // and when we find one that works we remember it.
+		// We have a cached playable factory. Let's use it.
+		rv = pf->new_playable(context, cookie, node, evp);
+	} else {
+		// No cached playable factory. Iterate over all of them,
+		// and when we find one that works we remember it.
 		for(i=m_factories.begin(); i != m_factories.end(); i++) {
 			if ((*i)->supports(rs)) {
 				rv = (*i)->new_playable(context, cookie, node, evp);
@@ -408,19 +407,19 @@ global_playable_factory_impl::new_aux_audio_playable(
 	lib::event_processor *evp,
 	net::audio_datasource *src)
 {
-    std::list<playable_factory *>::iterator i;
-    playable *rv;
+	std::list<playable_factory *>::iterator i;
+	playable *rv;
 
-    for(i=m_factories.begin(); i != m_factories.end(); i++) {
-        rv = (*i)->new_aux_audio_playable(context, cookie, node, evp, src);
-        if (rv) return rv;
-    }
+	for(i=m_factories.begin(); i != m_factories.end(); i++) {
+		rv = (*i)->new_aux_audio_playable(context, cookie, node, evp, src);
+		if (rv) return rv;
+	}
 
-    return NULL;
+	return NULL;
 }
 
 global_playable_factory *
 common::get_global_playable_factory()
 {
-    return new global_playable_factory_impl();
+	return new global_playable_factory_impl();
 }

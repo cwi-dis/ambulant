@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -43,7 +43,7 @@ class global_state_component_factory_impl : public global_state_component_factor
   public:
 	virtual ~global_state_component_factory_impl();
 	virtual void add_factory(state_component_factory *sf);
-    virtual state_component *new_state_component(const char *uri);
+	virtual state_component *new_state_component(const char *uri);
   private:
 	std::vector<state_component_factory *> m_factories;
 };
@@ -84,7 +84,7 @@ common::get_global_state_component_factory()
 	if (s_gscf == NULL) s_gscf = new global_state_component_factory_impl();
 	return s_gscf;
 #else
-    return new global_state_component_factory_impl();
+	return new global_state_component_factory_impl();
 #endif // WITH_STATE_COMPONENT_FACTORY_SINGLETON
 
 }

@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -42,14 +42,14 @@ extern const char dx_brush_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("Rende
 common::playable_factory *
 gui::dx::create_dx_brush_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectX"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectXBrush"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectX"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectXBrush"), true);
 	return new common::single_playable_factory<
 		gui::dx::dx_brush,
-        dx_brush_playable_tag,
-        dx_brush_playable_renderer_uri,
-        dx_brush_playable_renderer_uri2,
-        dx_brush_playable_renderer_uri2 >(factory, mdp);
+		dx_brush_playable_tag,
+		dx_brush_playable_renderer_uri,
+		dx_brush_playable_renderer_uri2,
+		dx_brush_playable_renderer_uri2 >(factory, mdp);
 }
 
 gui::dx::dx_brush::dx_brush(
@@ -59,7 +59,7 @@ gui::dx::dx_brush::dx_brush(
 	lib::event_processor* evp,
 	common::factories *fp,
 	common::playable_factory_machdep *dxplayer)
-:   dx_renderer_playable(context, cookie, node, evp, fp, dynamic_cast<dx_playables_context*>(dxplayer)),
+:	dx_renderer_playable(context, cookie, node, evp, fp, dynamic_cast<dx_playables_context*>(dxplayer)),
 	m_color(0) {
 	AM_DBG lib::logger::get_logger()->debug("dx_brush::dx_brush(0x%x)", this);
 }

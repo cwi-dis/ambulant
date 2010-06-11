@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -51,14 +51,14 @@ extern const char cocoa_ink_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("Rend
 common::playable_factory *
 create_cocoa_ink_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererInk"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererInk"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
 	return new common::single_playable_factory<
-        cocoa_ink_renderer,
-        cocoa_ink_playable_tag,
-        cocoa_ink_playable_renderer_uri,
-        cocoa_ink_playable_renderer_uri2,
-        cocoa_ink_playable_renderer_uri2>(factory, mdp);
+		cocoa_ink_renderer,
+		cocoa_ink_playable_tag,
+		cocoa_ink_playable_renderer_uri,
+		cocoa_ink_playable_renderer_uri2,
+		cocoa_ink_playable_renderer_uri2>(factory, mdp);
 }
 
 cocoa_ink_renderer::cocoa_ink_renderer(
@@ -152,7 +152,7 @@ cocoa_ink_renderer::redraw_body(const rect &dirty, gui_window *window)
 				const char *y_str = n->get_attribute("y");
 				double x = strtod(x_str, NULL);
 				double y = strtod(y_str, NULL);
-				AM_DBG lib::logger::get_logger()->debug("cocoa_ink_renderer:     point (%f,%f)", x, y);
+				AM_DBG lib::logger::get_logger()->debug("cocoa_ink_renderer: point (%f,%f)", x, y);
 				NSPoint pt = NSMakePoint((float)x, (float)y);
 				if (start_new_trace) {
 					[m_path moveToPoint: pt];

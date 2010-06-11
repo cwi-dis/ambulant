@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -98,8 +98,8 @@ AM_DBG logger::get_logger()->debug("blend_gdk_pixbuf:r_h=%3d,g_h=%3d,b_h=%3d", r
 			// chromakeying
 				if ( // check all components in chromakey range
 					r_l <= r && r <= r_h
-				    &&  g_l <= g && g <= g_h
-				    &&  b_l <= b && b <= b_h
+					&&	g_l <= g && g <= g_h
+					&&	b_l <= b && b <= b_h
 				) {
 					// blend the pixel from 'src' into 'dst'
 					dst_col[0] = _blend_pixel(dst_col[0], r, weight_in);

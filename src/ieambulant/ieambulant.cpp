@@ -118,9 +118,9 @@ Cieambulant::SetClientSite(LPOLECLIENTSITE pSite)
 		}
 	}
 	m_site = pSite;
-//    if(pSite && !m_pFont)
+//	if(pSite && !m_pFont)
 //		hr = GetAmbientFontDisp(&m_pFont);
-    GetAmbientBackColor(m_clrBackColor);
+	GetAmbientBackColor(m_clrBackColor);
     GetAmbientForeColor(m_clrForeColor);
 	//XXX std::ostream sos = new std::ostream(std::cout);
 	//XXX ambulant::lib::logger::get_logger()->set_std_ostream(sos);
@@ -262,7 +262,7 @@ Cieambulant::PluginWinProc(UINT msg, WPARAM wParam, LPARAM lParam, BOOL& bHandle
 						}
 					} else {
 						m_ambulant_player->on_click(point.x, point.y, m_hwnd);
-                    }
+	                }
                 }
                 break;
 

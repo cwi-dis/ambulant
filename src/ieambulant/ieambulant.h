@@ -1,7 +1,7 @@
 // ieambulant.h : Declaration of the Cieambulant
 #ifndef __ieambulant_H_
 #define __ieambulant_H_
-#include "resource.h"       // main symbols
+#include "resource.h"	   // main symbols
 #include <atlctl.h>
 // ambulant player includes
 #include "ambulant/version.h"
@@ -40,9 +40,7 @@ class ATL_NO_VTABLE Cieambulant :
 	public CComControl<Cieambulant>,
 	public IPersistStreamInitImpl<Cieambulant>,
 	public IPersistPropertyBagImpl<Cieambulant>,
-	public IObjectSafetyImpl<Cieambulant,
-                        INTERFACESAFE_FOR_UNTRUSTED_CALLER |
-                        INTERFACESAFE_FOR_UNTRUSTED_DATA>,
+	public IObjectSafetyImpl<Cieambulant, INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
 	public IOleControlImpl<Cieambulant>,
 	public IOleObjectImpl<Cieambulant>,
 	public IOleInPlaceActiveObjectImpl<Cieambulant>,
@@ -180,9 +178,9 @@ END_MSG_MAP()
 		rc.top = rc.left = 0;
 		//m_ctlStatic.Create(m_hWnd, rc);
 		m_ctlStatic.Create( m_hWnd,
-                    rc,
-                    _T("Static"),
-                    WS_CHILD|WM_PAINT);
+			rc,
+			_T("Static"),
+			WS_CHILD|WM_PAINT);
 		return 0;
 	}
 	LRESULT CALLBACK PluginWinProc(UINT, WPARAM, LPARAM, BOOL& );
@@ -227,9 +225,7 @@ public:
 	ambulant::net::url m_base_url;
 	bool m_autostart;
 	int m_cursor_id;
-    ambulant::common::player* get_player() {
-        return m_ambulant_player->get_player();
-}
+    ambulant::common::player* get_player() { return m_ambulant_player->get_player();}
 /*
 from http://www.ozhiker.com/electronics/vcpp/ActiveXControl.htm
 To make ATL think your CWnd derived class is a CWindow derived class, add the following method:

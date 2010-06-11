@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -51,7 +51,7 @@
 #include "ambulant/gui/dx/html_bridge.h"
 #include "ambulant/gui/dx/dx_bgrenderer.h"
 #include "ambulant/gui/dx/dx_text.h"
-#ifdef  WITH_SMIL30
+#ifdef	WITH_SMIL30
 #include "ambulant/gui/dx/dx_smiltext.h"
 #endif/*WITH_SMIL30*/
 #include "ambulant/gui/dx/dx_html_renderer.h"
@@ -264,15 +264,15 @@ gui::dx::dx_player::init_datasource_factory()
 	df->add_audio_factory(net::create_live_audio_datasource_factory());
 #endif
 #ifdef WITH_FFMPEG
-    AM_DBG m_logger->debug("dx_player: add ffmpeg_audio_datasource_factory");
+	AM_DBG m_logger->debug("dx_player: add ffmpeg_audio_datasource_factory");
 	df->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
-    AM_DBG m_logger->debug("dx_player: add ffmpeg_audio_decoder_finder");
+	AM_DBG m_logger->debug("dx_player: add ffmpeg_audio_decoder_finder");
 	df->add_audio_decoder_finder(net::get_ffmpeg_audio_decoder_finder());
-    AM_DBG m_logger->debug("dx_player: add ffmpeg_audio_filter_finder");
+	AM_DBG m_logger->debug("dx_player: add ffmpeg_audio_filter_finder");
 	df->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
 	AM_DBG m_logger->debug("dx_player: add ffmpeg_video_datasource_factory");
 	df->add_video_factory(net::get_ffmpeg_video_datasource_factory());
-    AM_DBG m_logger->debug("dx_player: add ffmpeg_raw_datasource_factory");
+	AM_DBG m_logger->debug("dx_player: add ffmpeg_raw_datasource_factory");
 	df->add_raw_factory(net::get_ffmpeg_raw_datasource_factory());
 #endif
 	df->add_raw_factory(net::get_win32_datasource_factory());
@@ -329,7 +329,7 @@ void gui::dx::dx_player::restart(bool reparse) {
 	assert(m_player);
 	m_player->terminate();
 	m_player->release();
-    m_player = NULL;
+	m_player = NULL;
 	while(!m_frames.empty()) {
 		frame *pf = m_frames.top();
 		m_frames.pop();
@@ -343,7 +343,7 @@ void gui::dx::dx_player::restart(bool reparse) {
 		stop();
 		m_player->terminate();
 		m_player->release();
-        m_player = NULL;
+		m_player = NULL;
 	}
 	m_player = 0;
 	if (reparse) {

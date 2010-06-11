@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -47,14 +47,14 @@ extern const char cg_fill_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("Render
 common::playable_factory *
 create_cg_fill_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCoreGraphics"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererFill"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCoreGraphics"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererFill"), true);
 	return new common::single_playable_factory<
-        cg_fill_renderer,
-        cg_fill_playable_tag,
-        cg_fill_playable_renderer_uri,
-        cg_fill_playable_renderer_uri2,
-        cg_fill_playable_renderer_uri2>(factory, mdp);
+		cg_fill_renderer,
+		cg_fill_playable_tag,
+		cg_fill_playable_renderer_uri,
+		cg_fill_playable_renderer_uri2,
+		cg_fill_playable_renderer_uri2>(factory, mdp);
 }
 
 cg_fill_renderer::~cg_fill_renderer()
@@ -140,7 +140,7 @@ cg_background_renderer::~cg_background_renderer()
 void
 cg_background_renderer::redraw(const lib::rect &dirty, common::gui_window *window)
 {
-	const rect &r =  m_dst->get_rect();
+	const rect &r =	 m_dst->get_rect();
 	AM_DBG logger::get_logger()->debug("cg_bg_renderer::drawbackground(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 
 	cg_window *cwindow = (cg_window *)window;
@@ -181,7 +181,7 @@ cg_background_renderer::redraw(const lib::rect &dirty, common::gui_window *windo
 void
 cg_background_renderer::highlight(common::gui_window *window)
 {
-	const rect &r =  m_dst->get_rect();
+	const rect &r =	 m_dst->get_rect();
 	AM_DBG logger::get_logger()->debug("cg_bg_renderer::highlight(0x%x)", (void *)this);
 
 	cg_window *cwindow = (cg_window *)window;

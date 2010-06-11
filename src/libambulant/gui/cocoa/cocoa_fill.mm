@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -47,14 +47,14 @@ extern const char cocoa_fill_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("Ren
 common::playable_factory *
 create_cocoa_fill_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererFill"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererFill"), true);
 	return new common::single_playable_factory<
-        cocoa_fill_renderer,
-        cocoa_fill_playable_tag,
-        cocoa_fill_playable_renderer_uri,
-        cocoa_fill_playable_renderer_uri2,
-        cocoa_fill_playable_renderer_uri2>(factory, mdp);
+		cocoa_fill_renderer,
+		cocoa_fill_playable_tag,
+		cocoa_fill_playable_renderer_uri,
+		cocoa_fill_playable_renderer_uri2,
+		cocoa_fill_playable_renderer_uri2>(factory, mdp);
 }
 
 cocoa_fill_renderer::~cocoa_fill_renderer()
@@ -139,7 +139,7 @@ cocoa_background_renderer::~cocoa_background_renderer()
 void
 cocoa_background_renderer::redraw(const lib::rect &dirty, common::gui_window *window)
 {
-	const rect &r =  m_dst->get_rect();
+	const rect &r =	 m_dst->get_rect();
 	AM_DBG logger::get_logger()->debug("cocoa_bg_renderer::drawbackground(0x%x, local_ltrb=(%d,%d,%d,%d)", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 
 	cocoa_window *cwindow = (cocoa_window *)window;
@@ -173,7 +173,7 @@ cocoa_background_renderer::redraw(const lib::rect &dirty, common::gui_window *wi
 void
 cocoa_background_renderer::highlight(common::gui_window *window)
 {
-	const rect &r =  m_dst->get_rect();
+	const rect &r =	 m_dst->get_rect();
 	AM_DBG logger::get_logger()->debug("cocoa_bg_renderer::highlight(0x%x)", (void *)this);
 
 	cocoa_window *cwindow = (cocoa_window *)window;

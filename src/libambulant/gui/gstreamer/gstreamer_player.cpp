@@ -128,13 +128,13 @@ gstreamer_player::run() {
 	m_gst_player = (GstElement*)gst_pipeline_new ("mp3-player");
 	/* create elements */
 	AM_DBG g_print ("%s: %s\n", id, "gst_element_factory_make()");
-	source   = gst_element_factory_make ("gnomevfssrc", "source");
-	sink     = gst_element_factory_make ("dspmp3sink", "sink");
+	source = gst_element_factory_make ("gnomevfssrc", "source");
+	sink = gst_element_factory_make ("dspmp3sink", "sink");
 	if ( !( m_gst_player && source && sink)) {
 		g_print ("%s:", "gst_mp3_player");
-		if ( ! m_gst_player) g_print (" %s() failed", "get_pipeline_new");
-		if ( ! source) g_print (" %s=%s(%s) failed", "source", "gst_element_factory_make", "gnomevfssrc");
-		if ( ! sink) g_print (" %s=%s(%s) failed", "sink", "gst_element_factory_make", "dspmp3sink");
+		if ( !m_gst_player) g_print (" %s() failed", "get_pipeline_new");
+		if ( !source) g_print (" %s=%s(%s) failed", "source", "gst_element_factory_make", "gnomevfssrc");
+		if ( !sink) g_print (" %s=%s(%s) failed", "sink", "gst_element_factory_make", "dspmp3sink");
 		g_print ("\n");
 		abort();
 	}
@@ -278,7 +278,7 @@ gstreamer_player::seek(double where) {
 	lib::logger::get_logger()->trace("gstreamer_player: seek() where=%f, where_guint64=%lu", where, where_guint64);
 	if (m_gst_player) {
 		if ( ! gst_element_seek(m_gst_player, 1.0, GST_FORMAT_TIME, GST_SEEK_FLAG_FLUSH, GST_SEEK_TYPE_SET, where_guint64, GST_SEEK_TYPE_NONE, 0)) {
-		        lib::logger::get_logger()->trace("gstreamer_player: seek() failed.");
+			lib::logger::get_logger()->trace("gstreamer_player: seek() failed.");
 		}
 	}
 	pthread_mutex_unlock(&m_gst_player_mutex);

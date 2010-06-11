@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -90,23 +90,23 @@ extern const char cocoa_smiltext_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT(
 common::playable_factory *
 create_cocoa_smiltext_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererSmilText"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCocoa"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererSmilText"), true);
 	return new common::single_playable_factory<
-        cocoa_smiltext_renderer,
-        cocoa_smiltext_playable_tag,
-        cocoa_smiltext_playable_renderer_uri,
-        cocoa_smiltext_playable_renderer_uri2,
-        cocoa_smiltext_playable_renderer_uri2>(factory, mdp);
+		cocoa_smiltext_renderer,
+		cocoa_smiltext_playable_tag,
+		cocoa_smiltext_playable_renderer_uri,
+		cocoa_smiltext_playable_renderer_uri2,
+		cocoa_smiltext_playable_renderer_uri2>(factory, mdp);
 }
 
 cocoa_smiltext_renderer::cocoa_smiltext_renderer(
-		playable_notification *context,
-		playable_notification::cookie_type cookie,
-		const lib::node *node,
-		event_processor *evp,
-		common::factories *fp,
-		common::playable_factory_machdep *mdp)
+	playable_notification *context,
+	playable_notification::cookie_type cookie,
+	const lib::node *node,
+	event_processor *evp,
+	common::factories *fp,
+	common::playable_factory_machdep *mdp)
 :	cocoa_renderer<renderer_playable>(context, cookie, node, evp, fp, mdp),
 	m_text_storage(NULL),
 	m_layout_manager(NULL),
@@ -128,8 +128,8 @@ cocoa_smiltext_renderer::cocoa_smiltext_renderer(
 cocoa_smiltext_renderer::~cocoa_smiltext_renderer()
 {
 	m_lock.enter();
-    if (m_dest)	m_dest->renderer_done(this);
-    m_dest = NULL;
+	if (m_dest) m_dest->renderer_done(this);
+	m_dest = NULL;
 	[m_text_storage release];
 	m_text_storage = NULL;
 	m_lock.leave();
@@ -147,7 +147,7 @@ cocoa_smiltext_renderer::start(double t)
 void
 cocoa_smiltext_renderer::seek(double t)
 {
-    assert( t >= 0);
+	assert( t >= 0);
 	m_engine.seek(t);
 	//renderer_playable::seek(t);
 }
@@ -182,9 +182,9 @@ void
 cocoa_smiltext_renderer::smiltext_changed()
 {
 	m_lock.enter();
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	assert(m_text_storage);
-    m_engine.lock();
+	m_engine.lock();
 	if (m_engine.is_changed()) {
 		lib::xml_string data;
 		smil2::smiltext_runs::const_iterator i;
@@ -231,21 +231,19 @@ cocoa_smiltext_renderer::smiltext_changed()
 				}
 				break;
 			case smil2::stc_data:
-                {
-                    char lastch = *((*i).m_data.rbegin());
-                    if (lastch == '\r' || lastch == '\n' || lastch == '\f' || lastch == '\v') {
-                        m_needs_conditional_newline = false;
-                        m_needs_conditional_space = false;
-                    } else
-                    if (lastch == ' ' || lastch == '\t') {
-                        m_needs_conditional_newline = true;
-                        m_needs_conditional_space = false;
-                    } else {
-                        m_needs_conditional_newline = true;
-                        m_needs_conditional_space = true;
-                    }
-                    newdata = [NSMutableString stringWithUTF8String:(*i).m_data.c_str()];
-                }
+				char lastch = *((*i).m_data.rbegin());
+				if (lastch == '\r' || lastch == '\n' || lastch == '\f' || lastch == '\v') {
+					m_needs_conditional_newline = false;
+					m_needs_conditional_space = false;
+				} else
+				if (lastch == ' ' || lastch == '\t') {
+					m_needs_conditional_newline = true;
+					m_needs_conditional_space = false;
+				} else {
+					m_needs_conditional_newline = true;
+					m_needs_conditional_space = true;
+				}
+				newdata = [NSMutableString stringWithUTF8String:(*i).m_data.c_str()];
 				break;
 			default:
 				assert(0);
@@ -267,18 +265,19 @@ cocoa_smiltext_renderer::smiltext_changed()
 			NSMutableDictionary *attrs = [[NSMutableDictionary alloc] init];
 			newrange.length = [newdata length];
 			// Find font info
-            NSFont *text_font = NULL;
-            std::vector<std::string>::const_iterator fi;
-            for (fi=(*i).m_font_families.begin(); fi != (*i).m_font_families.end(); fi++) {
-                AM_DBG lib::logger::get_logger()->debug("cocoa_smiltext: look for font '%s'", (*fi).c_str());
-                text_font = _select_font((*fi).c_str(), (*i).m_font_style, (*i).m_font_weight, (*i).m_font_size);
-                if (text_font) break;
-                AM_DBG lib::logger::get_logger()->debug("cocoa_smiltext: not found, try next");
-            }
-			if (!text_font)
-                text_font = [NSFont userFontOfSize: (*i).m_font_size];
+			NSFont *text_font = NULL;
+			std::vector<std::string>::const_iterator fi;
+			for (fi=(*i).m_font_families.begin(); fi != (*i).m_font_families.end(); fi++) {
+				AM_DBG lib::logger::get_logger()->debug("cocoa_smiltext: look for font '%s'", (*fi).c_str());
+				text_font = _select_font((*fi).c_str(), (*i).m_font_style, (*i).m_font_weight, (*i).m_font_size);
+				if (text_font) break;
+				AM_DBG lib::logger::get_logger()->debug("cocoa_smiltext: not found, try next");
+			}
+			if (!text_font) {
+				text_font = [NSFont userFontOfSize: (*i).m_font_size];
+			}
 
-            [attrs setValue:text_font forKey:NSFontAttributeName];
+			[attrs setValue:text_font forKey:NSFontAttributeName];
 
 			if (!(*i).m_transparent) {
 				// Find color info
@@ -375,7 +374,7 @@ cocoa_smiltext_renderer::smiltext_changed()
 		AM_DBG lib::logger::get_logger()->debug("cocoa_smiltext::smiltext_changed: nothing changed");
 	}
 	bool finished = m_engine.is_finished();
-    m_engine.unlock();
+	m_engine.unlock();
 	[pool release];
 	m_lock.leave();
 	m_dest->need_redraw();
@@ -416,10 +415,10 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 		layout_size.width = INFINITE_WIDTH;
 		has_hmovement = true;
 		break;
-    case smil2::stm_replace:
-    case smil2::stm_append:
-        // Normal cases
-        break;
+	case smil2::stm_replace:
+	case smil2::stm_append:
+		// Normal cases
+		break;
 	}
 
 	NSSize old_layout_size;
@@ -432,9 +431,9 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 		[m_text_container setHeightTracksTextView: false];
 		[m_text_container setWidthTracksTextView: false];
 		[m_layout_manager addTextContainer:m_text_container];
-		[m_text_container release];	// The layoutManager will retain the textContainer
+		[m_text_container release]; // The layoutManager will retain the textContainer
 		[m_text_storage addLayoutManager:m_layout_manager];
-		[m_layout_manager release];	// The textStorage will retain the layoutManager
+		[m_layout_manager release]; // The textStorage will retain the layoutManager
 	} else {
 		old_layout_size = [m_text_container containerSize];
 	}
@@ -541,22 +540,22 @@ cocoa_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 
 unsigned int
 cocoa_smiltext_renderer::_compute_rate(smil2::smiltext_align align, lib::size size, lib::rect r,  unsigned int dur) {
-  /* First find the distance to travel during scroll for various values
-   * for textConceal and textPlace (w=window height, t=text height)
-
-  + ---------------------------------------------------+
-  | textConceal |  none    | initial |  final  |  both |
-  |-------------|          |         |         |       |
-  | textPlace   |          |         |         |       |
-  |----------------------------------------------------|
-  |   start     | t>w?t-w:0|    t    |    t    |  w+t  |
-  | ---------------------------------------------------|
-  |   center   |t>w?t-w/2:w/2|  t    | w/2+t   |  w+t  |
-  | ---------------------------------------------------|
-  |   end       |    t     |    t    |  w+t    |  w+t  |
-  + ---------------------------------------------------+
-  */
-  unsigned int dst = 0, win = 0, txt = 0;
+	// First find the distance to travel during scroll for various values
+	// for textConceal and textPlace (w=window height, t=text height)
+	// 
+	// + ---------------------------------------------------+
+	// | textConceal |	none	| initial |	 final	|  both |
+	// |-------------|			|		  |			|		|
+	// | textPlace	 |			|		  |			|		|
+	// |----------------------------------------------------|
+	// |   start	 | t>w?t-w:0|	 t	  |	   t	|  w+t	|
+	// | ---------------------------------------------------|
+	// |   center	|t>w?t-w/2:w/2|	 t	  | w/2+t	|  w+t	|
+	// | ---------------------------------------------------|
+	// |   end		 |	  t		|	 t	  |	 w+t	|  w+t	|
+	// + ---------------------------------------------------+
+	
+	unsigned int dst = 0, win = 0, txt = 0;
 	switch (m_params.m_mode) {
 	case smil2::stm_crawl:
 		win = r.w;

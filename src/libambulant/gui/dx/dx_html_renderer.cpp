@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -52,22 +52,22 @@ extern const char dx_html_playable_renderer_uri3[] = AM_SYSTEM_COMPONENT("Render
 common::playable_factory *
 gui::dx::create_dx_html_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererIE"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererHtml"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererIE"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererHtml"), true);
 	return new common::single_playable_factory<
 		gui::dx::dx_html_renderer,
-        dx_html_playable_tag,
-        dx_html_playable_renderer_uri2,
-        dx_html_playable_renderer_uri2,
-        dx_html_playable_renderer_uri3 >(factory, mdp);
+		dx_html_playable_tag,
+		dx_html_playable_renderer_uri2,
+		dx_html_playable_renderer_uri2,
+		dx_html_playable_renderer_uri3 >(factory, mdp);
 }
 
 // Unique key used to access our renderer_private data
 static common::renderer_private_id my_renderer_id = (common::renderer_private_id)"dx_html_renderer";
 
 class gui::dx::browser_container : public lib::ref_counted_obj {
-    html_browser *m_browser;
-    int m_generation;
+	html_browser *m_browser;
+	int m_generation;
   public:
 	browser_container(html_browser *br)
 		:	m_browser(br),
@@ -78,10 +78,10 @@ class gui::dx::browser_container : public lib::ref_counted_obj {
 		m_browser->hide();
 		// XXX Cannot delete?
 	}
-    html_browser *show() {
-        m_generation++;
-        return m_browser;
-    }
+	html_browser *show() {
+		m_generation++;
+		return m_browser;
+	}
 	void hide_generation(int gen) {
 		if (m_generation == gen) {
 			m_browser->hide();
@@ -110,7 +110,7 @@ gui::dx::dx_html_renderer::dx_html_renderer(
 	lib::event_processor* evp,
 	common::factories* factory,
 	common::playable_factory_machdep *dxplayer)
-:   dx_renderer_playable(context, cookie, node, evp, factory, dynamic_cast<dx_playables_context*>(dxplayer)),
+:	dx_renderer_playable(context, cookie, node, evp, factory, dynamic_cast<dx_playables_context*>(dxplayer)),
 	m_html_browser(NULL),
 	m_df(factory->get_datasource_factory())
 {
@@ -118,12 +118,12 @@ gui::dx::dx_html_renderer::dx_html_renderer(
 }
 
 gui::dx::dx_html_renderer::~dx_html_renderer() {
- 	AM_DBG lib::logger::get_logger()->debug("~dx_html_renderer(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("~dx_html_renderer(0x%x)", this);
 }
 
 void
 gui::dx::dx_html_renderer::start(double t) {
- 	AM_DBG lib::logger::get_logger()->debug("dx_html_renderer::start(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("dx_html_renderer::start(0x%x)", this);
 
 //	assert(!m_html_browser);
 	if (m_html_browser) {
@@ -209,7 +209,7 @@ gui::dx::dx_html_renderer::user_event(const lib::point& pt, int what) {
 void
 gui::dx::dx_html_renderer::redraw(const lib::rect& dirty, common::gui_window *window) {
 	// Get the top-level surface
-//    AM_DBG lib::logger::get_logger()->debug("dx_html_renderer::redraw");
+	AM_DBG lib::logger::get_logger()->debug("dx_html_renderer::redraw");
 }
 
 #endif // WITH_HTML_WIDGET

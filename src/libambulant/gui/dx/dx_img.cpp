@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -53,15 +53,15 @@ extern const char dx_img_playable_renderer_uri3[] = AM_SYSTEM_COMPONENT("Rendere
 common::playable_factory *
 gui::dx::create_dx_image_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectX"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectXImg"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererImg"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectX"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectXImg"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererImg"), true);
 	return new common::single_playable_factory<
 		gui::dx::dx_img_renderer,
-        dx_img_playable_tag,
-        dx_img_playable_renderer_uri,
-        dx_img_playable_renderer_uri2,
-        dx_img_playable_renderer_uri3 >(factory, mdp);
+		dx_img_playable_tag,
+		dx_img_playable_renderer_uri,
+		dx_img_playable_renderer_uri2,
+		dx_img_playable_renderer_uri3 >(factory, mdp);
 }
 
 gui::dx::dx_img_renderer::dx_img_renderer(
@@ -71,7 +71,7 @@ gui::dx::dx_img_renderer::dx_img_renderer(
 	lib::event_processor* evp,
 	common::factories *factory,
 	common::playable_factory_machdep *dxplayer)
-:   dx_renderer_playable(context, cookie, node, evp, factory, dynamic_cast<dx_playables_context*>(dxplayer)),
+:	dx_renderer_playable(context, cookie, node, evp, factory, dynamic_cast<dx_playables_context*>(dxplayer)),
 	m_image(0),
 	m_factory(factory) {
 
@@ -185,7 +185,7 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 	// dirty region and transitions are ignored.
 	// Also, it knows that the node and the region we're painting to are
 	// really the same node.
-	if (m_node->get_attribute("backgroundImage") &&  m_dest->is_tiled()) {
+	if (m_node->get_attribute("backgroundImage") &&	 m_dest->is_tiled()) {
 		AM_DBG lib::logger::get_logger()->debug("dx_img_renderer.redraw: drawing tiled image");
 		img_reg_rc = m_dest->get_rect();
 		img_reg_rc.translate(m_dest->get_global_topleft());
@@ -215,8 +215,7 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 			alpha_chroma = ri->get_chromakeyopacity();
 			lib::color_t chromakey = ri->get_chromakey();
 			lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
-			lib::compute_chroma_range(chromakey, chromakeytolerance,
-							     &chroma_low, &chroma_high);
+			lib::compute_chroma_range(chromakey, chromakeytolerance, &chroma_low, &chroma_high);
 		} else alpha_chroma = alpha_media;
 	}
 #else

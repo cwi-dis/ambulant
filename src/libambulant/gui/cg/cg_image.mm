@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -47,14 +47,14 @@ extern const char cg_image_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("Rende
 common::playable_factory *
 create_cg_image_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCoreGraphics"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererImg"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCoreGraphics"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererImg"), true);
 	return new common::single_playable_factory<
-        cg_image_renderer,
-        cg_image_playable_tag,
-        cg_image_playable_renderer_uri,
-        cg_image_playable_renderer_uri2,
-        cg_image_playable_renderer_uri2>(factory, mdp);
+		cg_image_renderer,
+		cg_image_playable_tag,
+		cg_image_playable_renderer_uri,
+		cg_image_playable_renderer_uri2,
+		cg_image_playable_renderer_uri2>(factory, mdp);
 }
 
 cg_image_renderer::~cg_image_renderer()

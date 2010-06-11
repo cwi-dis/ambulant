@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -58,7 +58,7 @@ common::window_factory *
 create_cocoa_window_factory(void *view)
 {
 
-    return new cocoa_window_factory(view);
+	return new cocoa_window_factory(view);
 }
 
 cocoa_window::~cocoa_window()
@@ -166,7 +166,7 @@ cocoa_window_factory::init_window_size(cocoa_window *window, const std::string &
 	// Get the position of our view in window coordinates
 	NSPoint origin = NSMakePoint(0,0);
 	NSView *superview = [view superview];
-	int32_t     shieldLevel = CGShieldingWindowLevel();
+	int32_t shieldLevel = CGShieldingWindowLevel();
 	if ([view ignoreResize] || [[view window] level] >= shieldLevel) {
 		// We don't muck around with fullscreen windows or windows in other apps (browsers, etc).
 		// What we should actually do is recenter the content, but that is for later.
@@ -219,7 +219,7 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 	else {
 		lib::logger::get_logger()->trace("get_screenshot: unknown filetype \"%s\"", type);
 		[pool release];
-        return false;
+		return false;
 	}
 	NSData *data;
 	AmbulantView *view = (AmbulantView *)m_view;
@@ -227,28 +227,28 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 	if (image == NULL) {
 		lib::logger::get_logger()->trace("get_screenshot: cannot get screen shot");
 		[pool release];
-        return false;
+		return false;
 	}
 	NSImageRep *rep = [image bestRepresentationForDevice: NULL];
 	if (rep == NULL) {
 		lib::logger::get_logger()->trace("get_screenshot: cannot get representation for screen shot");
 //		[image release];
 		[pool release];
-        return false;
+		return false;
 	}
 	data = [rep representationUsingType: filetype properties: NULL];
 //	[image release];
 	if (data == NULL) {
 		lib::logger::get_logger()->trace("get_screenshot: cannot convert screenshot to %s format", type);
 		[pool release];
-        return false;
+		return false;
 	}
 	*out_data = (char *)malloc([data length]);
 	if (*out_data == NULL) {
 		lib::logger::get_logger()->trace("get_screenshot: out of memory");
 //		[data release];
 		[pool release];
-        return false;
+		return false;
 	}
 	*out_size = [data length];
 	[data getBytes: *out_data];
@@ -309,7 +309,7 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 	overlay_window_needs_reparent = NO;
 	overlay_window_needs_flush = NO;
 	overlay_window_needs_clear = NO;
-    [self updateScreenSize];
+	[self updateScreenSize];
 	return self;
 }
 
@@ -320,11 +320,11 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 	transition_tmpsurface = NULL;
 	if (overlay_window) [overlay_window release];
 	overlay_window = NULL;
-    if (fullscreen_previmage) [fullscreen_previmage release];
-    fullscreen_previmage = NULL;
-    if (fullscreen_oldimage) [fullscreen_oldimage release];
-    fullscreen_oldimage = NULL;
-    [super dealloc];
+	if (fullscreen_previmage) [fullscreen_previmage release];
+	fullscreen_previmage = NULL;
+	if (fullscreen_oldimage) [fullscreen_oldimage release];
+	fullscreen_oldimage = NULL;
+	[super dealloc];
 
 }- (NSRect) NSRectForAmbulantRect: (const ambulant::lib::rect *)arect
 {
@@ -334,8 +334,8 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 - (ambulant::lib::rect) ambulantRectForNSRect: (const NSRect *)nsrect
 {
 	ambulant::lib::rect arect = ambulant::lib::rect(
-                ambulant::lib::point(int(NSMinX(*nsrect)), int(NSMinY(*nsrect))),
-				ambulant::lib::size(int(NSWidth(*nsrect)), int(NSHeight(*nsrect))));
+		ambulant::lib::point(int(NSMinX(*nsrect)), int(NSMinY(*nsrect))),
+		ambulant::lib::size(int(NSWidth(*nsrect)), int(NSHeight(*nsrect))));
 
 	return arect;
 }
@@ -344,7 +344,7 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 {
 	NSRect my_rect = [arect rect];
 	[arect release];
-    AM_DBG NSLog(@"AmbulantView.asyncRedrawForAmbulantRect: self=0x%x rect=(%f,%f,%f,%f)", self, NSMinX(my_rect), NSMinY(my_rect), NSMaxX(my_rect), NSMaxY(my_rect));
+	AM_DBG NSLog(@"AmbulantView.asyncRedrawForAmbulantRect: self=0x%x rect=(%f,%f,%f,%f)", self, NSMinX(my_rect), NSMinY(my_rect), NSMaxX(my_rect), NSMaxY(my_rect));
 	[self setNeedsDisplayInRect: my_rect];
 }
 
@@ -356,8 +356,8 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 
 - (void)drawRect:(NSRect)rect
 {
-    AM_DBG NSLog(@"AmbulantView.drawRect: self=0x%x rect=(%f,%f,%f,%f)", self, NSMinX(rect), NSMinY(rect), NSMaxX(rect), NSMaxY(rect));
-//    redraw_lock.enter();
+	AM_DBG NSLog(@"AmbulantView.drawRect: self=0x%x rect=(%f,%f,%f,%f)", self, NSMinX(rect), NSMinY(rect), NSMaxX(rect), NSMaxY(rect));
+//	redraw_lock.enter();
 #ifdef WITH_QUICKTIME_OVERLAY
 	// If our main view has been reparented since the last redraw we need
 	// to move the overlay window.
@@ -393,18 +393,18 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 #endif // WITH_QUICKTIME_OVERLAY
 
 	if (!ambulant_window) {
-        AM_DBG NSLog(@"Redraw AmbulantView: NULL ambulant_window");
-    } else {
+		AM_DBG NSLog(@"Redraw AmbulantView: NULL ambulant_window");
+	} else {
 		// If we have seen transitions we always redraw the whole view
 		// XXXJACK interaction of fullscreen transitions and overlay windows
 		// is completely untested, and probably broken.
 		if (transition_count) rect = [self bounds];
-        ambulant::lib::rect arect = [self ambulantRectForNSRect: &rect];
+		ambulant::lib::rect arect = [self ambulantRectForNSRect: &rect];
 		[self _screenTransitionPreRedraw];
-        ambulant_window->redraw(arect);
+		ambulant_window->redraw(arect);
 		[self _screenTransitionPostRedraw];
 		[self _releaseTransitionSurface];
-    }
+	}
 #ifdef WITH_QUICKTIME_OVERLAY
 	// If the overlay window was actually used (and possibly drawn into)
 	// we need to unlock it. We also prepare for flushing it, and clearing
@@ -430,19 +430,19 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 - (void)setAmbulantWindow: (ambulant::gui::cocoa::cocoa_window *)window
 {
 //	[[self window] setAcceptsMouseMovedEvents: true];
-    ambulant_window = window;
+	ambulant_window = window;
 }
 
 - (void)ambulantWindowClosed
 {
-    AM_DBG NSLog(@"ambulantWindowClosed called");
-    ambulant_window = NULL;
+	AM_DBG NSLog(@"ambulantWindowClosed called");
+	ambulant_window = NULL;
 	// XXXX Should we close the window too? Based on preference?
 }
 
 - (bool)isAmbulantWindowInUse
 {
-    return (ambulant_window != NULL);
+	return (ambulant_window != NULL);
 }
 
 - (bool)ignoreResize
@@ -457,17 +457,17 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 
 - (void)updateScreenSize
 {
-    // XXX Should be called for NSApplicationDidChangeScreenParametersNotification as well
-    NSScreen *screen = [[self window] screen];
-    if (screen) {
-        NSRect rect = [screen frame];
-        ambulant::smil2::test_attrs::set_current_screen_size(int(NSHeight(rect)), int(NSWidth(rect)));
-    }
+	// XXX Should be called for NSApplicationDidChangeScreenParametersNotification as well
+	NSScreen *screen = [[self window] screen];
+	if (screen) {
+		NSRect rect = [screen frame];
+		ambulant::smil2::test_attrs::set_current_screen_size(int(NSHeight(rect)), int(NSWidth(rect)));
+	}
 }
 
 -(void)viewDidMoveToWindow
 {
-    [self updateScreenSize];
+	[self updateScreenSize];
 }
 
 - (void)mouseDown: (NSEvent *)theEvent
@@ -605,19 +605,19 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 	// Note: this method does not take overlaying things such as Quicktime
 	// movies into account.
 	NSSize size = NSMakeSize(NSWidth(bounds), NSHeight(bounds));
-    NSImage *flipped_rv = [[NSImage alloc] initWithSize: size];
+	NSImage *flipped_rv = [[NSImage alloc] initWithSize: size];
 	NSImage *rv = [[NSImage alloc] initWithSize: size];
 	[self lockFocus];
 	NSBitmapImageRep *bits = [[NSBitmapImageRep alloc] initWithFocusedViewRect: bounds];
 	[self unlockFocus];
 	[flipped_rv addRepresentation: [bits autorelease]];
-    [flipped_rv setFlipped: YES];
+	[flipped_rv setFlipped: YES];
 	[flipped_rv lockFocus];
 	bits = [[NSBitmapImageRep alloc] initWithFocusedViewRect: NSMakeRect(0, 0, NSWidth(bounds), NSHeight(bounds))];
 	[flipped_rv unlockFocus];
 	[rv addRepresentation: [bits autorelease]];
 	[rv setFlipped: YES];
-    [flipped_rv release];
+	[flipped_rv release];
 	rv = [rv autorelease];
 	return rv;
 }
@@ -795,7 +795,7 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 // both seem to work.
 - (void) viewDidMoveToSuperview
 {
-    [self updateScreenSize];
+	[self updateScreenSize];
 #ifdef WITH_QUICKTIME_OVERLAY
 	if (overlay_window == nil) return;
 	AM_DBG NSLog(@"viewDidMoveToWindow");

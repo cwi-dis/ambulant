@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -138,19 +138,19 @@ void
 surface_impl::animated()
 {
 	AM_DBG lib::logger::get_logger()->debug("surface_impl::animated(%s, 0x%x)", m_name.c_str(), (void*)this);
-    lib::rect to_redraw = m_outer_bounds;
+	lib::rect to_redraw = m_outer_bounds;
 	clear_cache();
-    need_bounds();
-    to_redraw |= m_outer_bounds;
-    // Optimization: if the new are completely contains the old one we do the
-    // redraw ourselves.
-    // The general case is to forward to our parent (but this may lead to flashing)
-    AM_DBG lib::logger::get_logger()->debug("animated: to_redraw=(%d, %d, %d, %d)", to_redraw.left(), to_redraw.top(), to_redraw.width(), to_redraw.height());
-    if (to_redraw == m_outer_bounds) {
-        need_redraw(m_inner_bounds);
-    } else {
-        m_parent->need_redraw(to_redraw);
-    }
+	need_bounds();
+	to_redraw |= m_outer_bounds;
+	// Optimization: if the new are completely contains the old one we do the
+	// redraw ourselves.
+	// The general case is to forward to our parent (but this may lead to flashing)
+	AM_DBG lib::logger::get_logger()->debug("animated: to_redraw=(%d, %d, %d, %d)", to_redraw.left(), to_redraw.top(), to_redraw.width(), to_redraw.height());
+	if (to_redraw == m_outer_bounds) {
+		need_redraw(m_inner_bounds);
+	} else {
+		m_parent->need_redraw(to_redraw);
+	}
 }
 
 void
@@ -159,9 +159,8 @@ surface_impl::show(gui_events *cur)
 	m_children_cs.enter();
 	// Sanity check: it shouldn't be in here already
 	std::list<gui_events*>::iterator i;
-    bool was_inactive = m_renderers.size() == 0;
-	for(i=m_renderers.begin(); i!=m_renderers.end(); i++)
-		assert((*i) != cur);
+	bool was_inactive = m_renderers.size() == 0;
+	for(i=m_renderers.begin(); i!=m_renderers.end(); i++) assert((*i) != cur);
 
 	m_renderers.push_back(cur);
 	m_children_cs.leave();
@@ -172,7 +171,7 @@ surface_impl::show(gui_events *cur)
 		m_parent->add_subregion(z, this);
 	}
 	need_redraw();
-    if (was_inactive) background_render_changed();
+	if (was_inactive) background_render_changed();
 }
 
 void
@@ -199,7 +198,7 @@ surface_impl::renderer_done(gui_events *cur)
 	}
 
 	need_redraw(m_inner_bounds);
-    if (m_renderers.size() == 0) background_render_changed();
+	if (m_renderers.size() == 0) background_render_changed();
 }
 
 void
@@ -228,23 +227,23 @@ surface_impl::redraw(const lib::rect &r, gui_window *window)
 
 	// First the background
 	//marisa added null check july 7 2008
-    const region_info *info = get_info();
+	const region_info *info = get_info();
 	if (info != NULL) {
-        // We show the background if it isn't transparent. And then, only if showBackground==always, or
-        // if there are active children.
-        // Note: not 100% sure this is correct: should we also draw the background if there are
-        // subregions with active children?
-        bool showbg = !info->get_transparent();
-        if (showbg) {
-            if (!info->get_showbackground()) {
-                if (!_is_active()) {
-                    showbg = false;
-                }
-            }
-        }
+		// We show the background if it isn't transparent. And then, only if showBackground==always, or
+		// if there are active children.
+		// Note: not 100% sure this is correct: should we also draw the background if there are
+		// subregions with active children?
+		bool showbg = !info->get_transparent();
+		if (showbg) {
+			if (!info->get_showbackground()) {
+				if (!_is_active()) {
+					showbg = false;
+				}
+			}
+		}
 		if (showbg) {
 			draw_background(our_rect, window);
-        }
+		}
 	}
 	// Then the active renderers
 	// For the win32 arrangement we should have at most one active
@@ -311,14 +310,15 @@ surface_impl::draw_background(const lib::rect &r, gui_window *window)
 bool
 surface_impl::_is_active()
 {
-    if (m_renderers.begin() != m_renderers.end()) return true;
+	if (m_renderers.begin() != m_renderers.end()) return true;
+	
 	for(children_map_t::iterator it1=m_active_children.begin();it1!=m_active_children.end();it1++) {
 		children_list_t& cl = (*it1).second;
 		for(children_list_t::iterator it2=cl.begin();it2!=cl.end();it2++) {
-            if ((*it2)->_is_active()) return true;
-        }
-    }
-    return false;
+			if ((*it2)->_is_active()) return true;
+		}
+	}
+	return false;
 }
 
 bool
@@ -327,7 +327,7 @@ surface_impl::user_event(const lib::point &where, int what)
 	AM_DBG lib::logger::get_logger()->debug("surface_impl.user_event(0x%x '%s', (%d, %d))", (void *)this, m_name.c_str(), where.x, where.y);
 	// Test that it is in our area
 	if (!m_outer_bounds.contains(where)) {
-		AM_DBG  if (what==0) lib::logger::get_logger()->debug("surface_impl.user_event: not in our bounds");
+		AM_DBG	if (what==0) lib::logger::get_logger()->debug("surface_impl.user_event: not in our bounds");
 		return false;
 	}
 	// Convert to local coordinates
@@ -378,7 +378,7 @@ surface_impl::need_redraw(const lib::rect &r)
 {
 	AM_DBG lib::logger::get_logger()->debug("surface_impl[0x%x].need_redraw(xywh=%d,%d,%d,%d)", (void*)this, r.left(), r.top(), r.width(), r.height());
 	if (!m_parent)
-		return;   // Audio region or some such
+		return;	  // Audio region or some such
 	rect parent_rect = r & m_inner_bounds;
 	m_parent->need_redraw(m_outer_bounds.outercoordinates(parent_rect));
 }
@@ -393,7 +393,7 @@ void
 surface_impl::need_events(bool want)
 {
 	if (!m_parent)
-		return;   // Audio region or some such
+		return;	  // Audio region or some such
 	// Not good enough: we only forward that we want events
 	if (want) m_parent->need_events(want);
 }
@@ -669,7 +669,7 @@ surface_impl::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, c
 	int y_image_for_region_top = 0;
 	int y_image_for_region_bottom = image_height;
 #endif // WITH_SMIL30
-	AM_DBG lib::logger::get_logger()->debug("get_fit_rect: full image would  have region lrtb=(%d, %d, %d, %d)",
+	AM_DBG lib::logger::get_logger()->debug("get_fit_rect: full image would	 have region lrtb=(%d, %d, %d, %d)",
 		x_region_for_image_left, y_region_for_image_top, x_region_for_image_right, y_region_for_image_bottom);
 	// Finally clamp all values
 	if (x_region_for_image_left < 0) {
@@ -744,7 +744,7 @@ void
 surface_impl::transition_done(lib::rect area)
 {
 	if (!m_parent)
-		return;   // Audio region or some such
+		return;	  // Audio region or some such
 	area &= m_inner_bounds;
 	m_parent->transition_done(m_outer_bounds.outercoordinates(area));
 }
@@ -787,11 +787,11 @@ void
 surface_impl::add_subregion(zindex_t z, surface_impl *rgn)
 {
 	m_children_cs.enter();
-    const region_info *info = get_info();
-    bool was_inactive = !_is_active();
+	const region_info *info = get_info();
+	bool was_inactive = !_is_active();
 	m_subregions[z].push_back(rgn);
 	m_children_cs.leave();
-    if (was_inactive) background_render_changed();
+	if (was_inactive) background_render_changed();
 }
 
 void
@@ -799,23 +799,23 @@ surface_impl::del_subregion(zindex_t z, surface_impl *rgn)
 {
 	m_children_cs.enter();
 	m_subregions[z].remove(rgn);
-    bool now_inactive = !_is_active();
+	bool now_inactive = !_is_active();
 	m_children_cs.leave();
-    if (now_inactive) background_render_changed();
+	if (now_inactive) background_render_changed();
 }
 
 void
 surface_impl::background_render_changed()
 {
-    // If we are opaque and have showBackground=whenActive we schedule a redraw
-    const region_info *info = get_info();
-    if (info && !info->get_transparent() && !info->get_showbackground()) {
-        need_redraw();
-    }
-    // We also forward to our parent
-    if (m_parent) {
-        m_parent->background_render_changed();
-    }
+	// If we are opaque and have showBackground=whenActive we schedule a redraw
+	const region_info *info = get_info();
+	if (info && !info->get_transparent() && !info->get_showbackground()) {
+		need_redraw();
+	}
+	// We also forward to our parent
+	if (m_parent) {
+		m_parent->background_render_changed();
+	}
 }
 
 renderer_private_data*
