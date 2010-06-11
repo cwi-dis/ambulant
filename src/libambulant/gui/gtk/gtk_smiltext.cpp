@@ -192,10 +192,11 @@ AM_DBG lib::logger::get_logger()->debug("gtk_smiltext_changed(0x%x)",this);
 #ifndef WITH_GTK_ANTI_ALIASING
 		if (m_alpha_media != 1.0 || m_alpha_media_bg != 1.0 || m_alpha_chroma != 1.0) {
 			cairo_font_options_t* cairo_font_options = cairo_font_options_create();
-			/* anti-aliasing by pango/cairo is disabled
-			 * when blending is necessary, because this
-			 * sometimes results in ugly glyphs.
-			 */
+			//
+			// anti-aliasing by pango/cairo is disabled
+			// when blending is necessary, because this
+			// sometimes results in ugly glyphs.
+			//
 			cairo_font_options_set_antialias (cairo_font_options, CAIRO_ANTIALIAS_NONE);
 			pango_cairo_context_set_font_options (m_pango_context, cairo_font_options);
 			cairo_font_options_destroy (cairo_font_options);
@@ -455,7 +456,7 @@ AM_DBG logger::get_logger()->debug("gtk_smiltext_renderer.redraw(0x%x, local_ltr
 		case smil2::stc_final:
 			break;
 		case smil2::stc_both:
-		  m_start.x = -(int)r.width();
+			m_start.x = -(int)r.width();
 			break;
 		}
 		break;

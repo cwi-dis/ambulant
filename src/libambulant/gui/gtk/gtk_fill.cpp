@@ -120,8 +120,7 @@ gtk_fill_renderer::stop()
 }
 
 void
-gtk_fill_renderer::redraw(const rect &dirty,
-			 gui_window *window)
+gtk_fill_renderer::redraw(const rect &dirty, gui_window *window)
 {
 
 	m_lock.enter();
@@ -160,8 +159,7 @@ gtk_fill_renderer::redraw(const rect &dirty,
 		agtkw->reset_ambulant_surface();
 	}
 	if (m_trans_engine && surf) {
-		AM_DBG logger::get_logger()->debug
-		  ("gtk_fill_renderer.redraw: drawing to view");
+		AM_DBG logger::get_logger()->debug("gtk_fill_renderer.redraw: drawing to view");
 		m_trans_engine->step(m_event_processor->get_timer()->elapsed());
 		typedef no_arg_callback<gtk_fill_renderer>transition_callback;
 		event *ev = new transition_callback(this, &gtk_fill_renderer::transition_step);
@@ -214,9 +212,7 @@ gtk_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *windo
 	// Fill with <brush> color
 	color_t color = lib::to_color(color_attr);
 	lib::color_t bgcolor = info->get_bgcolor();
-	AM_DBG lib::logger::get_logger()->debug
-		("gtk_fill_renderer.redraw_body: clearing to 0x%x",
-		 (long)color);
+	AM_DBG lib::logger::get_logger()->debug("gtk_fill_renderer.redraw_body: clearing to 0x%x", (long)color);
 	GdkColor bgc;
 	bgc.red = redc(color)*0x101;
 	bgc.blue = bluec(color)*0x101;

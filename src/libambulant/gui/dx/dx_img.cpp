@@ -287,10 +287,15 @@ void gui::dx::dx_img_renderer::redraw(const lib::rect& dirty, common::gui_window
 			IDirectDrawSurface* screen_ddsurf = v->get_surface();
 			IDirectDrawSurface* image_ddsurf = m_image->get_ddsurf();
 			lib::rect rct0 (lib::point(0, 0), img_reg_rc_dirty.size());
-			v->blend_surface(img_reg_rc_dirty, image_ddsurf,
-							 rct0, m_image->is_transparent(),
-							 alpha_chroma, alpha_media,
-							 chroma_low, chroma_high);
+			v->blend_surface(
+				img_reg_rc_dirty,
+				image_ddsurf,
+				rct0,
+				m_image->is_transparent(),
+				alpha_chroma,
+				alpha_media,
+				chroma_low,
+				chroma_high);
 		} else {
 			v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), tr);
 		}

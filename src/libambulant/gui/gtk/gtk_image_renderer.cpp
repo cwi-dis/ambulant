@@ -186,8 +186,9 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d), original(%d,%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H,width,height);
 
 	GdkGC *gc = gdk_gc_new (GDK_DRAWABLE (agtkw->get_ambulant_pixmap()));
-	/* scale image s.t. the viewbox specified fits in destination area:
-	 * zoom_X=(O_W/S_W), fit_X=(D_W/O_W); fact_W=zoom_X*fit_X  */
+	
+	// scale image s.t. the viewbox specified fits in destination area:
+	// zoom_X=(O_W/S_W), fit_X=(D_W/O_W); fact_W=zoom_X*fit_X
 	float	fact_W = (float)D_W/(float)S_W,
 		fact_H = (float)D_H/(float)S_H;
 	// N_ for new (scaled) image coordinates
@@ -203,17 +204,50 @@ gtk_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 #ifdef	WITH_SMIL30
 	AM_DBG lib::logger::get_logger()->debug("gtk_image_renderer.redraw_body(0x%x): alpha_chroma=%f, alpha_media=%f, chrona_low=0x%x, chroma_high=0x%x", (void *)this, alpha_chroma, alpha_media, chroma_low, chroma_high);
 	if (alpha_chroma != 1.0) {
-		GdkPixbuf* screen_pixbuf = gdk_pixbuf_get_from_drawable (NULL, agtkw->get_ambulant_pixmap(), NULL, D_L, D_T, 0, 0, D_W, D_H);
+		GdkPixbuf* screen_pixbuf = gdk_pixbuf_get_from_drawable (
+			NULL,
+			agtkw->get_ambulant_pixmap(),
+			NULL,
+			D_L, D_T,
+			0, 0,
+			D_W, D_H);
 		lib::rect rect0(lib::point(0,0),lib::size(D_W,D_H));
-		gdk_pixbuf_blend (screen_pixbuf, rect0, new_image_pixbuf, rect0,
-				  alpha_chroma, alpha_media,
-				  chroma_low, chroma_high);
-		gdk_draw_pixbuf(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, screen_pixbuf, N_L, N_T, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);
+		gdk_pixbuf_blend (
+			screen_pixbuf,
+			rect0,
+			new_image_pixbuf,
+			rect0,
+			alpha_chroma,
+			alpha_media,
+			chroma_low,
+			chroma_high);
+		gdk_draw_pixbuf(GDK_DRAWABLE (
+			agtkw->get_ambulant_pixmap()),
+			gc,
+			screen_pixbuf,
+			N_L, N_T,
+			D_L, D_T,
+			D_W, D_H,
+			GDK_RGB_DITHER_NONE, 0, 0);
 	} else {
-		gdk_draw_pixbuf(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, new_image_pixbuf, N_L, N_T, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);
+		gdk_draw_pixbuf(
+			GDK_DRAWABLE(agtkw->get_ambulant_pixmap()),
+			gc,
+			new_image_pixbuf,
+			N_L, N_T,
+			D_L, D_T,
+			D_W, D_H,
+			GDK_RGB_DITHER_NONE, 0, 0);
 	}
 #else //WITH_SMIL30
-	gdk_draw_pixbuf(GDK_DRAWABLE (agtkw->get_ambulant_pixmap()), gc, new_image_pixbuf, N_L, N_T, D_L, D_T, D_W, D_H, GDK_RGB_DITHER_NONE, 0, 0);
+	gdk_draw_pixbuf(
+		GDK_DRAWABLE(agtkw->get_ambulant_pixmap()),
+		gc,
+		new_image_pixbuf,
+		N_L, N_T,
+		D_L, D_T,
+		D_W, D_H,
+		GDK_RGB_DITHER_NONE, 0, 0);
 #endif//WITH_SMIL30
 	g_object_unref(G_OBJECT (new_image_pixbuf));
 	g_object_unref(G_OBJECT (gc));

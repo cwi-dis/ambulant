@@ -1492,8 +1492,9 @@ gui::dx::viewport::blt_blend24(const lib::rect& rc,
 		px2 +=	begin_col;
 		for(int col=begin_col;col<end_col;col++, px1++, px2++) {
 			if (px1->rgbtRed >= r_l && px1->rgbtRed <= r_h
-			 && px1->rgbtGreen >= g_l && px1->rgbtGreen <= g_h
-			 && px1->rgbtBlue >= b_l && px1->rgbtBlue <= b_h) {
+				&& px1->rgbtGreen >= g_l && px1->rgbtGreen <= g_h
+				&& px1->rgbtBlue >= b_l && px1->rgbtBlue <= b_h)
+			{
 				px2->rgbtRed = (BYTE)blend(weight_in, px2->rgbtRed, px1->rgbtRed);
 				px2->rgbtGreen = (BYTE)blend(weight_in, px2->rgbtGreen, px1->rgbtGreen);
 				px2->rgbtBlue = (BYTE)blend(weight_in, px2->rgbtBlue, px1->rgbtBlue);

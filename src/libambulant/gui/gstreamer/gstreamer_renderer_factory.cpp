@@ -66,16 +66,16 @@ gstreamer_renderer_factory::~gstreamer_renderer_factory()
 
 common::playable *
 gstreamer_renderer_factory::new_playable(
-		common::playable_notification *context,
-		common::playable_notification::cookie_type cookie,
-		const lib::node *node,
-		lib::event_processor *evp)
+    common::playable_notification *context,
+    common::playable_notification::cookie_type cookie,
+    const lib::node *node,
+    lib::event_processor *evp)
 {
 	common::playable *rv = NULL;
 	lib::xml_string tag = node->get_qname().second;
 	AM_DBG lib::logger::get_logger()->debug("gstreamer_renderer_factory::new_playable: node 0x%x:	inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "audio" && gui::gstreamer::gstreamer_audio_renderer::is_supported(node)) {
-	  rv = new gui::gstreamer::gstreamer_audio_renderer(context, cookie, node, evp, m_factory, (common::playable_factory_machdep*)NULL);
+        rv = new gui::gstreamer::gstreamer_audio_renderer(context, cookie, node, evp, m_factory, (common::playable_factory_machdep*)NULL);
 		AM_DBG lib::logger::get_logger()->debug("gstreamer_renderer_factory::new_playable: node 0x%x: returning gstreamer_audio_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("gstreamer_renderer_factory::new_playable: no GStreamer renderer for tag \"%s\"", tag.c_str());
@@ -86,11 +86,11 @@ gstreamer_renderer_factory::new_playable(
 
 common::playable*
 gstreamer_renderer_factory::new_aux_audio_playable(
-		common::playable_notification *context,
-		common::playable_notification::cookie_type cookie,
-		const lib::node *node,
-		lib::event_processor *evp,
-		net::audio_datasource *src)
+    common::playable_notification *context,
+    common::playable_notification::cookie_type cookie,
+    const lib::node *node,
+    lib::event_processor *evp,
+    net::audio_datasource *src)
 {
 	common::playable *rv = NULL;
 	lib::xml_string tag = node->get_qname().second;

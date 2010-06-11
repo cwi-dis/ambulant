@@ -561,8 +561,8 @@ void gui::dx::dx_player::start_outtransition(common::playable *p, const lib::tra
 
 gui::dx::dx_transition *
 gui::dx::dx_player::set_transition(common::playable *p,
-								   const lib::transition_info *info,
-								   bool is_outtransition)
+	const lib::transition_info *info,
+	bool is_outtransition)
 {
 	assert(m_player);
 	lib::timer_control *timer = new lib::timer_control_impl(m_player->get_timer(), 1.0, false);

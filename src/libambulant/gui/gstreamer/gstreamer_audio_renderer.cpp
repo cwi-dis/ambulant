@@ -106,7 +106,7 @@ gstreamer_audio_renderer::init_player(const lib::node *node)
 void
 gstreamer_audio_renderer::set_intransition(const lib::transition_info* info)
 {
- 	if (m_transition_engine)
+	if (m_transition_engine)
 		delete m_transition_engine;
 	m_intransition = info;
 	m_transition_engine = new smil2::audio_transition_engine();
@@ -116,7 +116,7 @@ gstreamer_audio_renderer::set_intransition(const lib::transition_info* info)
 void
 gstreamer_audio_renderer::start_outtransition(const lib::transition_info* info)
 {
- 	if (m_transition_engine)
+	if (m_transition_engine)
 		delete m_transition_engine;
 	m_outtransition = info;
 	m_transition_engine = new smil2::audio_transition_engine();
@@ -134,8 +134,7 @@ gstreamer_audio_renderer::is_supported(const lib::node *node)
 	if (mimetype == "audio/mpeg") // .mp3
 		return true;
 #else //WITH_NOKIA770
-	if (mimetype == "audio/mpeg" // .mp3
-	 || mimetype == "audio/wav") // .wav
+	if (mimetype == "audio/mpeg" || mimetype == "audio/wav")
 		return true;
 #endif//WITH_NOKIA770
 	return false;
@@ -245,7 +244,7 @@ gstreamer_audio_renderer::get_dur()
 			dur -= clip_begin;
 		lib::logger::get_logger()->trace("gstreamer_audio_renderer: get_dur() clip_begin=%f clip_end=%f dur=%f", clip_begin, clip_end, dur);
 		rv = common::duration(true, dur);
-  	}
+	}
 	return rv;
 }
 
@@ -307,8 +306,8 @@ void
 gstreamer_audio_renderer::_seek(double where)
 {
 	double microsec = 1e6;
- 	AM_DBG  lib::logger::get_logger()->trace("gstreamer_audio_renderer: seek(%f) NOT YET IMPLEMENETD", where);
- 	where += (m_clip_begin / microsec);
+	AM_DBG  lib::logger::get_logger()->trace("gstreamer_audio_renderer: seek(%f) NOT YET IMPLEMENETD", where);
+	where += (m_clip_begin / microsec);
 	if (m_player)
 		m_player->seek(where);
 }

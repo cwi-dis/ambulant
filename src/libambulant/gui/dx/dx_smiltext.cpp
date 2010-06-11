@@ -295,7 +295,6 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 			blending = true;
 		} else {
 			win_report_last_error("dx_smiltext_render: CreateCompatibleBitmap()");
-			 (hdc);
 			hdc = m_hdc;
 		}
 
@@ -316,10 +315,12 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 	// set the background color
 	COLORREF old_bgcolor = CLR_INVALID;
 	COLORREF old_textbg_bgcolor = CLR_INVALID;
-	lib::color_t bg_color_t = (run.m_bg_color == CLR_INVALID)?
-								::GetSysColor(COLOR_WINDOW):
-						 (run.m_bg_color == CLR_DEFAULT)?
-								CLR_ALTERNATIVE : run.m_bg_color;
+	lib::color_t bg_color_t =
+		(run.m_bg_color == CLR_INVALID) ?
+			::GetSysColor(COLOR_WINDOW) :
+				(run.m_bg_color == CLR_DEFAULT)?
+					CLR_ALTERNATIVE :
+					run.m_bg_color;
 	if (run.m_bg_transparent)
 		bg_color_t = CLR_DEFAULT;
 	else if (fg_color_t == CLR_DEFAULT)

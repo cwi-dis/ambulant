@@ -82,7 +82,8 @@ bool gtk_C_callback_helper_queue_draw_area(void *arg)
 	AM_DBG ambulant::lib::logger::get_logger()->debug("gtk_C_callback_helper_queue_draw_area with left: %d, top: %d, width: %d, height: %d s_widgets=%d", r->area.left(), r->area.top(), r->area.width(), r->area.height(),gtk_ambulant_widget::s_widgets);
 	gtk_ambulant_widget::s_lock.enter();
 	if (gtk_ambulant_widget::s_widgets > 0)
-		gtk_widget_queue_draw_area(r->widget, r->area.left(), r->area.top(), r->area.width(), r->area.height());
+		gtk_widget_queue_draw_area(r->widget,
+		    r->area.left(), r->area.top(), r->area.width(), r->area.height());
 
 	AM_DBG ambulant::lib::logger::get_logger()->debug("gtk_C_callback_helper_queue_draw_area with left: %d, top: %d, width: %d, height: %d tag=%d", r->area.left(), r->area.top(), r->area.width(), r->area.height(),r->tag);
 
@@ -119,9 +120,9 @@ void gtk_C_callback_do_button_release_event(void *userdata, GdkEventButton *even
 	GtkWidget* d_gtkw; /* destination widget */
 	GtkWidget* t_gtkw; /* toplevel widget */
 
-	/* Find in the widget stack the widget in which window
-	   the event source coordinates (s_x,s_y) are defined
-	*/
+	// Find in the widget stack the widget in which window
+	// the event source coordinates (s_x,s_y) are defined
+	
 	if (gaw == NULL || event == NULL)
 		return; /* cannot handle */
 	s_x = (gint) round (event->x);
@@ -153,10 +154,13 @@ void gtk_C_callback_do_button_release_event(void *userdata, GdkEventButton *even
 }
 }//extern "C"
 
-void gui::gtk::gdk_pixmap_bitblt(GdkPixmap* dst, int dst_x, int dst_y, GdkPixmap* src, int src_x, int src_y, int width, int height) {
+void gui::gtk::gdk_pixmap_bitblt(
+    GdkPixmap* dst, int dst_x, int dst_y,
+    GdkPixmap* src, int src_x, int src_y,
+    int width, int height)
+{
 	GdkGC *gc = gdk_gc_new (dst);
-	gdk_draw_pixmap(GDK_DRAWABLE(dst), gc, GDK_DRAWABLE(src), src_x, src_y,
-			dst_x, dst_y, width, height);
+	gdk_draw_pixmap(GDK_DRAWABLE(dst), gc, GDK_DRAWABLE(src), src_x, src_y, dst_x, dst_y, width, height);
 	g_object_unref (G_OBJECT (gc));
 };
 
@@ -186,14 +190,16 @@ common::gui_window *
 gtk_window_factory::new_window (const std::string &name, lib::size bounds, common::gui_events *region)
 {
 	lib::rect r (m_p, bounds);
-	AM_DBG lib::logger::get_logger()->debug("gtk_window_factory::new_window (0x%x): name=%s %d,%d,%d,%d",
-		(void*) this, name.c_str(), r.left(),r.top(),r.right(),r.bottom());
+	AM_DBG lib::logger::get_logger()->debug("gtk_window_factory::new_window (0x%x): name=%s %d,%d,%d,%d", (void*) this, name.c_str(), r.left(),r.top(),r.right(),r.bottom());
 	ambulant_gtk_window * agtkw = new ambulant_gtk_window(name, &r, region);
 
 
 	// We don't create this widget anymore MainLoop does it!!
 	gtk_widget_set_size_request(m_parent_widget->get_gtk_widget(), r.right(), r.bottom());
-	gtk_widget_set_size_request(gtk_widget_get_toplevel (m_parent_widget->get_gtk_widget()), r.right(), r.bottom()+ 25);
+	gtk_widget_set_size_request(
+		gtk_widget_get_toplevel (m_parent_widget->get_gtk_widget()),
+		r.right(),
+		r.bottom()+ 25);
 	gtk_widget_show(m_parent_widget->get_gtk_widget());
 //	gtk_ambulant_widget * gtkaw = new gtk_ambulant_widget(name, r, m_parent_widget);
 
@@ -203,8 +209,7 @@ gtk_window_factory::new_window (const std::string &name, lib::size bounds, commo
 	agtkw->set_ambulant_widget(m_parent_widget);
 	m_parent_widget->set_gtk_window(agtkw);
 //	gtkaw->set_gtk_window(agtkw);
-	AM_DBG lib::logger::get_logger()->debug("gtk_window_factory::new_window(0x%x): ambulant_widget=0x%x gtk_window=0x%x",
-		(void*) this, (void*) m_parent_widget, (void*) agtkw);
+	AM_DBG lib::logger::get_logger()->debug("gtk_window_factory::new_window(0x%x): ambulant_widget=0x%x gtk_window=0x%x", (void*) this, (void*) m_parent_widget, (void*) agtkw);
 	agtkw->set_gui_player(m_gui_player);
 	agtkw->set_gdk_cursor(GDK_ARROW, m_arrow_cursor);
 	agtkw->set_gdk_cursor(GDK_HAND1, m_hand1_cursor);
@@ -213,11 +218,9 @@ gtk_window_factory::new_window (const std::string &name, lib::size bounds, commo
 }
 
 common::bgrenderer *
-gtk_window_factory::new_background_renderer(const common::region_info
-					   *src)
+gtk_window_factory::new_background_renderer(const common::region_info *src)
 {
-	AM_DBG lib::logger::get_logger()->debug("gtk_window_factory::new_background_renderer(0x%x): src=0x%x",
-		(void*) this, src);
+	AM_DBG lib::logger::get_logger()->debug("gtk_window_factory::new_background_renderer(0x%x): src=0x%x", (void*) this, src);
 	return new gtk_background_renderer(src);
 }
 
@@ -228,8 +231,8 @@ gtk_window_factory::new_background_renderer(const common::region_info
 //
 
 ambulant_gtk_window::ambulant_gtk_window(const std::string &name,
-	   lib::rect* bounds,
-	   common::gui_events *region)
+	lib::rect* bounds,
+	common::gui_events *region)
 :	common::gui_window(region),
 	m_bounds(*bounds),
 	m_ambulant_widget(NULL),
@@ -340,14 +343,20 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 	m_handler->redraw(r, this);
 //XXXX	if ( ! isEqualToPrevious(m_pixmap))
 	_screenTransitionPostRedraw(r);
-	gdk_pixmap_bitblt(m_ambulant_widget->get_gtk_widget()->window, r.left(), r.top(), m_pixmap, r.left(), r.top(), r.width(), r.height());
+	gdk_pixmap_bitblt(
+		m_ambulant_widget->get_gtk_widget()->window, r.left(), r.top(),
+		m_pixmap, r.left(), r.top(),
+		r.width(), r.height());
 #ifdef WITH_SCREENSHOTS
 	GError *error = NULL;
 	gint width; gint height;
 
 	gdk_drawable_get_size(m_ambulant_widget->get_gtk_widget()->window, &width, &height);
 
-	GdkPixbuf* pixbuf = gdk_pixbuf_get_from_drawable(NULL, m_ambulant_widget->get_gtk_widget()->window, 0, 0, 0, 0, 0, width, height);
+	GdkPixbuf* pixbuf = gdk_pixbuf_get_from_drawable(
+		NULL,
+		m_ambulant_widget->get_gtk_widget()->window,
+		0, 0, 0, 0, 0, width, height);
 //	if (!gdk_pixbuf_save_to_buffer (pixbuf, &buffer, &buffer_size, "jpeg", &error, "quality", "100", NULL)) {
 	if (m_ambulant_widget->m_screenshot_data) {
 		g_free(m_ambulant_widget->m_screenshot_data);
@@ -355,7 +364,12 @@ ambulant_gtk_window::redraw(const lib::rect &r)
 		m_ambulant_widget->m_screenshot_size = 0;
 	}
 
-	if (!gdk_pixbuf_save_to_buffer (pixbuf, &m_ambulant_widget->m_screenshot_data, &m_ambulant_widget->m_screenshot_size, "jpeg", &error, "quality", "100", NULL)) {
+	if (!gdk_pixbuf_save_to_buffer (
+		pixbuf,
+		&m_ambulant_widget->m_screenshot_data,
+		&m_ambulant_widget->m_screenshot_size,
+		"jpeg", &error, "quality", "100", NULL))
+	{
 		printf (" Tenemos un error%s", error->message);
 		g_error_free (error);
 	}
@@ -639,10 +653,14 @@ gtk_ambulant_widget::gtk_ambulant_widget(GtkWidget* widget)
 	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::gtk_ambulant_widget(0x%x-0x%x) s_widgets=%d",
 		(void *)this,
 		(void*) widget, gtk_ambulant_widget::s_widgets);
-	m_expose_event_handler_id = g_signal_connect_swapped (G_OBJECT (m_widget), "expose_event", G_CALLBACK (gtk_C_callback_do_paint_event), (void*) this);
-	m_motion_notify_handler_id = g_signal_connect_swapped (ancestor_widget, "motion_notify_event", G_CALLBACK (gtk_C_callback_do_motion_notify_event), (void*) this);
-	m_button_release_handler_id = g_signal_connect_swapped (ancestor_widget, "button_release_event", G_CALLBACK (gtk_C_callback_do_button_release_event), (void*) this);
-	gtk_widget_add_events(GTK_WIDGET (ancestor_widget), GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK);
+	m_expose_event_handler_id = g_signal_connect_swapped (G_OBJECT (m_widget),
+		"expose_event", G_CALLBACK (gtk_C_callback_do_paint_event), (void*) this);
+	m_motion_notify_handler_id = g_signal_connect_swapped (ancestor_widget,
+		"motion_notify_event", G_CALLBACK (gtk_C_callback_do_motion_notify_event), (void*) this);
+	m_button_release_handler_id = g_signal_connect_swapped (ancestor_widget,
+		"button_release_event", G_CALLBACK (gtk_C_callback_do_button_release_event), (void*) this);
+	gtk_widget_add_events(GTK_WIDGET (ancestor_widget),
+		GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK);
 	gtk_ambulant_widget::s_lock.enter();
 	gtk_ambulant_widget::s_widgets++;
 	gtk_ambulant_widget::s_lock.leave();

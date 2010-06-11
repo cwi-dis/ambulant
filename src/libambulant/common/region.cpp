@@ -474,27 +474,27 @@ surface_impl::get_fit_rect_noalign(const lib::size& src_size, lib::rect* out_src
 	if (fit == fit_default && m_parent && m_parent->m_info)
 		fit = m_parent->m_info->get_fit();
 	switch (fit) {
-	  case fit_fill:
+	case fit_fill:
 		// Fill the area with the image, ignore aspect ration
 		*out_src_rect = lib::rect(lib::point(0, 0), src_size);
 		return m_inner_bounds;
-	  case fit_scroll:
-	  case fit_default:
-	  case fit_hidden:
+	case fit_scroll:
+	case fit_default:
+	case fit_hidden:
 		// Don't scale at all
 		*out_src_rect = lib::rect(lib::point(0, 0), lib::size(min_width, min_height));
 		return rect(lib::point(0, 0), lib::size(min_width, min_height));
-	  case fit_meet:
+	case fit_meet:
 		// Scale to make smallest edge fit (showing some background color)
 		scale = std::min(scale_width, scale_height);
 		break;
-	  case fit_meetbest:
+	case fit_meetbest:
 		// Scale to make smallest edge fit (showing some background color),
 		// but never scale up
 		scale = std::min(scale_width, scale_height);
 		if (scale > 1.0) scale = 1.0;
 		break;
-	  case fit_slice:
+	case fit_slice:
 		// Scale to make largest edge fit (not showing the full source image)
 		scale = std::max(scale_width, scale_height);
 		break;
@@ -597,28 +597,28 @@ surface_impl::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, c
 	if (fit == fit_default && m_parent && m_parent->m_info)
 		fit = m_parent->m_info->get_fit();
 	switch (fit) {
-	  case fit_fill:
+	case fit_fill:
 		// Fill the area with the image, ignore aspect ration
 		// XXX I don't think this is correct. Or is it?
 		scale_horizontal = scale_min_horizontal;
 		scale_vertical = scale_min_vertical;
 		break;
-	  case fit_scroll:		// XXXX incorrect
-	  case fit_default:
-	  case fit_hidden:
+	case fit_scroll:		// XXXX incorrect
+	case fit_default:
+	case fit_hidden:
 		scale_horizontal = scale_vertical = 1.0;
 		break;
-	  case fit_meet:
+	case fit_meet:
 		// Scale to make smallest edge fit (showing some background color)
 		scale_horizontal = scale_vertical = std::min(scale_min_horizontal, scale_min_vertical);
 		break;
-	  case fit_meetbest:
+	case fit_meetbest:
 		// Scale to make smallest edge fit (showing some background color)
 		scale_vertical = std::min(scale_min_horizontal, scale_min_vertical);
 		if (scale_vertical > 1.0) scale_vertical = 1.0;
 		scale_horizontal = scale_vertical;
 		break;
-	  case fit_slice:
+	case fit_slice:
 		// Scale to make largest edge fit (not showing the full source image)
 		scale_horizontal = scale_vertical = std::max(scale_max_horizontal, scale_max_vertical);
 		break;

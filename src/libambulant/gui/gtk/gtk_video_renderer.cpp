@@ -79,7 +79,7 @@ gtk_video_renderer::gtk_video_renderer(
 	m_data(NULL),
 	m_img_displayed(0)
 {
-   assert(m_frames.size() == 0);
+	assert(m_frames.size() == 0);
 
 }
 
