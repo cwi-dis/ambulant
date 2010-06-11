@@ -91,7 +91,7 @@ class video_player {
 		return lib::size(m_rcsurf.right, m_rcsurf.bottom);
 	}
 
- private:
+  private:
 	bool open(const std::string& url, IDirectDraw* dd);
 	void release_player();
 

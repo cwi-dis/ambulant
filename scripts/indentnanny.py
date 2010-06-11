@@ -154,11 +154,12 @@ def main():
     
     if options.skip_patterns: nanny.skip_patterns = options.skip_patterns
     if options.open_editor: nanny.open_editor = options.open_editor
+    if options.tab_only: nanny.tab_only = options.tab_only
     for fn in args:
         ok = nanny.check(fn)
         if not ok:
             allok = False
-        elif option.verbose:
+        elif options.verbose:
             print '%s: ok' % fn
             
     if allok: sys.exit(0)

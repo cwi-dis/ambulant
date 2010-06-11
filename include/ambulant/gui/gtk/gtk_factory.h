@@ -132,7 +132,7 @@ class ambulant_gtk_window : public common::gui_window {
 	smil2::transition_engine* m_fullscreen_engine;
 	lib::transition_info::time_type m_fullscreen_now;
 
- public:
+  public:
 	GdkPixmap* m_tmppixmap;
 	guint signal_redraw_id;
 };  // class ambulant_gtk_window
@@ -175,17 +175,17 @@ class gtk_ambulant_widget : public GtkWidget, public ambulant::common::gui_scree
 	gchar * m_screenshot_data;
 	gsize m_screenshot_size;
 
-	/* widget counter (with s_lock protection) is used to assuere that the GtkWidget
-	   in drawing callback functions are still valid pointers at the time the callback
-	   is executed by the main thread */
+	// widget counter (with s_lock protection) is used to assuere that the GtkWidget
+	// in drawing callback functions are still valid pointers at the time the callback
+	// is executed by the main thread */
 	static lib::critical_section s_lock;
 	static int s_widgets;
-	/* gtk_ambulant_widget::m_draw_area_tags contains the set of tags returned by
-	   g_idle_queue_add() that are not yet processed. This set is maintained because
-	   in the npambulant plugin, when the plugin is unloaded all unprocessed queue entries
-	   must be removed from the main event loop, otherwise the callback will be done on
-	   removed code and the browser may crash.
-	*/
+
+	// gtk_ambulant_widget::m_draw_area_tags contains the set of tags returned by
+	// g_idle_queue_add() that are not yet processed. This set is maintained because
+	// in the npambulant plugin, when the plugin is unloaded all unprocessed queue entries
+	// must be removed from the main event loop, otherwise the callback will be done on
+	// removed code and the browser may crash.
 	std::set<guint> m_draw_area_tags;
   private:
 	ambulant_gtk_window* m_gtk_window;

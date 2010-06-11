@@ -79,7 +79,7 @@ class scheduler {
 	bool m_locked;
 	lib::critical_section m_lock;
 	enum { idle_resolution = 100};
- public:
+  public:
 	void lock();
 	void unlock();
 	bool locked() const { return m_locked;}

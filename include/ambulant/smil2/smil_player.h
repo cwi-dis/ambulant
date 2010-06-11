@@ -183,7 +183,7 @@ class smil_player :
 	void build_timegraph();
 
 	animation_engine* get_animation_engine() { return m_animation_engine;}
- private:
+  private:
 	common::playable* _new_playable(const lib::node *n);
 	void _destroy_playable(common::playable *r, const lib::node *n);
 #ifdef WITH_SEAMLESS_PLAYBACK
@@ -231,9 +231,10 @@ class smil_player :
 	std::set<int> *m_focussed_nodes;
 	std::set<int> *m_new_focussed_nodes;
 	lib::critical_section m_lock;
-	/* Calling time_node members must be done while locking
-	 * the scheduler to avoid race conditions.
-	 * Therefore callbacks are needed to avoid deadlock. */
+	
+	// Calling time_node members must be done while locking
+	// the scheduler to avoid race conditions.
+	// Therefore callbacks are needed to avoid deadlock. */
 	typedef std::pair<time_node*, q_smil_time> async_arg;
 	typedef lib::scalar_arg_callback<smil_player, async_arg> async_cb;
 	typedef std::pair<time_node*, std::pair<q_smil_time, int> > async_int_arg;

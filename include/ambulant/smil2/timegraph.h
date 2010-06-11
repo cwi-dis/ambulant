@@ -55,7 +55,6 @@ class lib::logger;
 
 class timegraph : public time_traits {
   public:
- public:
 	timegraph(time_node::context_type *ctx,
 		const lib::document *doc,
 		const common::schema *sch);

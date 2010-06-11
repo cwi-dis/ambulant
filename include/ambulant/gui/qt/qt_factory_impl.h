@@ -104,7 +104,7 @@ class qt_video_factory : public common::playable_factory {
 		const lib::node *node,
 		lib::event_processor *evp,
 		net::audio_datasource *src);
- private:
+  private:
 	common::factories *m_factory;
 };
 
@@ -167,7 +167,7 @@ class ambulant_qt_window : public common::gui_window {
 	smil2::transition_engine* m_fullscreen_engine;
 	lib::transition_info::time_type m_fullscreen_now;
 
- public:
+  public:
 	QPixmap* m_tmppixmap;
 };
 

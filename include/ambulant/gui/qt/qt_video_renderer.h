@@ -54,7 +54,7 @@ class qt_video_renderer : public qt_renderer<common::video_renderer> {
   protected:
 	void _push_frame(char* frame, int size);
 
- private:
+  private:
 	QImage *m_image;
 	uchar* m_data;
 	int m_datasize;

@@ -103,7 +103,7 @@ class AMBULANTAPI transition_info {
 	/// Factory function: obtain transition_info object from DOM node.
 	static transition_info *from_node(const node *n);
 
- private:
+  private:
 	static time_type get_trans_dur(const node *n);
 	static progress_type get_progress(const node *n, const char* progress, progress_type default_value);
 };

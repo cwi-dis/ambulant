@@ -104,7 +104,7 @@ class schema {
 	schema();
 	~schema();
 
- private:
+  private:
 	std::set<std::string> m_time_elements;
 	std::set<std::string> m_discrete;
 	std::set<std::string> m_continuous;

@@ -655,7 +655,7 @@ class excl_queue {
 		return tn;
 	}
 	void assert_invariants() const;
- private:
+  private:
 	typedef std::list<time_node*> cont;
 	cont m_cont;
 };

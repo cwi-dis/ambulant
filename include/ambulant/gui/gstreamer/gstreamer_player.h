@@ -65,7 +65,7 @@ static pthread_mutex_t s_main_nokia770_mutex;
 
 class gstreamer_player :  public lib::unix::thread {
 
- public:
+  public:
 	gstreamer_player(const char* uri,  gstreamer_audio_renderer* rend);
 	~gstreamer_player();
 
