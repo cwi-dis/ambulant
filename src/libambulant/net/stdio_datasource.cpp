@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -37,7 +37,7 @@ using namespace net;
 raw_datasource_factory *
 ambulant::net::create_stdio_datasource_factory()
 {
-    return new stdio_datasource_factory();
+	return new stdio_datasource_factory();
 }
 
 datasource *
@@ -71,7 +71,7 @@ stdio_datasource::stdio_datasource(const url& url, FILE* file)
 		m_buffer = new databuffer(m_filesize);
 		if (!m_buffer) {
 			m_buffer = NULL;
- 			lib::logger::get_logger()->fatal("stdio_datasource(): out of memory");
+			lib::logger::get_logger()->fatal("stdio_datasource(): out of memory");
 		}
 		//AM_DBG m_buffer->dump(std::cout, false);
 	}
@@ -122,14 +122,14 @@ void
 stdio_datasource::filesize()
 {
 	// private method - no need to lock
- 	using namespace std;
+	using namespace std;
 	if (m_stream >= 0) {
 		// Seek to the end of the file, and get the filesize
 		fseek(m_stream, 0, SEEK_END);
 		m_filesize = ftell(m_stream);
-	 	fseek(m_stream, 0, SEEK_SET);
+		fseek(m_stream, 0, SEEK_SET);
 	} else {
- 		lib::logger::get_logger()->fatal("stdio_datasource.filesize(): no file openXX");
+		lib::logger::get_logger()->fatal("stdio_datasource.filesize(): no file openXX");
 		m_filesize = 0;
 	}
 }
@@ -139,12 +139,12 @@ void
 stdio_datasource::read(char *data, int sz)
 {
 	m_lock.enter();
-    char* in_ptr;
-    if (sz <= m_buffer->size()) {
-    	in_ptr = m_buffer->get_read_ptr();
-        memcpy(data,in_ptr,sz);
-        m_buffer->readdone(sz);
-    }
+	char* in_ptr;
+	if (sz <= m_buffer->size()) {
+		in_ptr = m_buffer->get_read_ptr();
+		memcpy(data,in_ptr,sz);
+		m_buffer->readdone(sz);
+	}
 	m_lock.leave();
 }
 
@@ -152,12 +152,12 @@ void
 stdio_datasource::read_file()
 {
 	// private method - no need to lock
-  	char *buf;
-  	size_t n;
-	//AM_DBG lib::logger::get_logger()->debug("stdio_datasource.readfile: 	reading file ");
+	char *buf;
+	size_t n;
+	//AM_DBG lib::logger::get_logger()->debug("stdio_datasource.readfile:	reading file ");
 	if (m_stream >= 0) {
 		do {
-            buf = m_buffer->get_write_ptr(BUFSIZ);
+			buf = m_buffer->get_write_ptr(BUFSIZ);
 			assert(buf);
 			n = fread(buf, 1, BUFSIZ, m_stream);
 			assert((int)n == n);
@@ -185,11 +185,11 @@ stdio_datasource::get_read_ptr()
 
 void
 stdio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *cbevent)
- {
+{
 	m_lock.enter();
- 	if (! _end_of_file() ) read_file();
+	if (! _end_of_file() ) read_file();
 
-    assert(evp);
+	assert(evp);
 	assert(cbevent);
 	AM_DBG lib::logger::get_logger()->debug("stdio_datasource.start: trigger readdone callback (x%x)", cbevent);
 	evp->add_event(cbevent, 0, ambulant::lib::ep_med);

@@ -83,7 +83,7 @@ bool gtk_C_callback_helper_queue_draw_area(void *arg)
 	gtk_ambulant_widget::s_lock.enter();
 	if (gtk_ambulant_widget::s_widgets > 0)
 		gtk_widget_queue_draw_area(r->widget,
-		    r->area.left(), r->area.top(), r->area.width(), r->area.height());
+			r->area.left(), r->area.top(), r->area.width(), r->area.height());
 
 	AM_DBG ambulant::lib::logger::get_logger()->debug("gtk_C_callback_helper_queue_draw_area with left: %d, top: %d, width: %d, height: %d tag=%d", r->area.left(), r->area.top(), r->area.width(), r->area.height(),r->tag);
 
@@ -155,9 +155,9 @@ void gtk_C_callback_do_button_release_event(void *userdata, GdkEventButton *even
 }//extern "C"
 
 void gui::gtk::gdk_pixmap_bitblt(
-    GdkPixmap* dst, int dst_x, int dst_y,
-    GdkPixmap* src, int src_x, int src_y,
-    int width, int height)
+	GdkPixmap* dst, int dst_x, int dst_y,
+	GdkPixmap* src, int src_x, int src_y,
+	int width, int height)
 {
 	GdkGC *gc = gdk_gc_new (dst);
 	gdk_draw_pixmap(GDK_DRAWABLE(dst), gc, GDK_DRAWABLE(src), src_x, src_y, dst_x, dst_y, width, height);
@@ -738,8 +738,7 @@ gtk_ambulant_widget::do_motion_notify_event(GdkEventMotion *e) {
 	AM_DBG lib::logger::get_logger()->debug("gtk_ambulant_widget::mouseMoveEvent(0x%x) e=(%ld,%ld) m_gtk_window=0x%x\n", this, e->x,e->y, m_gtk_window);
 	if (! m_gtk_window) return;
 	//XXXX This is not right!!!
-	ambulant::lib::point ap = ambulant::lib::point((int)e->x,
-												   (int)e->y);
+	ambulant::lib::point ap = ambulant::lib::point((int)e->x, (int)e->y);
 	gui_player* gui_player =  m_gtk_window->get_gui_player();
 	if (gui_player) {
 		gui_player->before_mousemove(0);

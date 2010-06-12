@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -20,7 +20,7 @@
 /*
  * @$Id$
  */
-#ifdef  WITH_SMIL30
+#ifdef	WITH_SMIL30
 #include "ambulant/gui/qt/qt_includes.h"
 #include "ambulant/gui/qt/qt_smiltext.h"
 #include "ambulant/gui/qt/qt_util.h"
@@ -52,14 +52,14 @@ extern const char qt_smiltext_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("Re
 common::playable_factory *
 gui::qt::create_qt_smiltext_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererQt"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererSmilText"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererQt"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererSmilText"), true);
 	return new common::single_playable_factory<
-        gui::qt::qt_smiltext_renderer,
-        qt_smiltext_playable_tag,
-        qt_smiltext_playable_renderer_uri,
-        qt_smiltext_playable_renderer_uri2,
-        qt_smiltext_playable_renderer_uri2>(factory, mdp);
+		gui::qt::qt_smiltext_renderer,
+		qt_smiltext_playable_tag,
+		qt_smiltext_playable_renderer_uri,
+		qt_smiltext_playable_renderer_uri2,
+		qt_smiltext_playable_renderer_uri2>(factory, mdp);
 }
 
 gui::qt::qt_smiltext_renderer::qt_smiltext_renderer(
@@ -67,10 +67,16 @@ gui::qt::qt_smiltext_renderer::qt_smiltext_renderer(
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
-		common::factories *fp,
-		common::playable_factory_machdep *mdp)
-  :     m_qt_transparent(redc(QT_TRANSPARENT_COLOR),greenc(QT_TRANSPARENT_COLOR),bluec( QT_TRANSPARENT_COLOR)),
-        m_qt_alternative(redc(QT_ALTERNATIVE_COLOR),greenc(QT_ALTERNATIVE_COLOR),bluec( QT_ALTERNATIVE_COLOR)),
+	common::factories *fp,
+	common::playable_factory_machdep *mdp)
+:	m_qt_transparent(
+		redc(QT_TRANSPARENT_COLOR),
+		greenc(QT_TRANSPARENT_COLOR),
+		bluec(QT_TRANSPARENT_COLOR)),
+	m_qt_alternative(
+		redc(QT_ALTERNATIVE_COLOR),
+		greenc(QT_ALTERNATIVE_COLOR),
+		bluec(QT_ALTERNATIVE_COLOR)),
 	m_bgopacity(1.0),
 	m_blending(false),
 	qt_renderer<renderer_playable>(context, cookie, node, evp, fp, mdp),
@@ -109,8 +115,7 @@ gui::qt::qt_smiltext_renderer::start(double t) {
 			lib::color_t chromakey = ri->get_chromakey();
 			lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
 			lib::color_t chroma_low, chroma_high;
-			compute_chroma_range(chromakey, chromakeytolerance,
-					     &chroma_low, &chroma_high);
+			compute_chroma_range(chromakey, chromakeytolerance, &chroma_low, &chroma_high);
 		}
 	}
 
@@ -155,23 +160,30 @@ gui::qt::qt_smiltext_renderer::smiltext_changed() {
 
 smil2::smiltext_metrics
 gui::qt::qt_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& strun) {
-	unsigned int ascent = 0, descent = 0, height = 0, width = 0, line_spacing = 0, word_spacing = 0;
+	unsigned int ascent = 0,
+		descent = 0,
+		height = 0,
+		width = 0,
+		line_spacing = 0,
+		word_spacing = 0;
 
 	if (strun.m_data.length() != 0) {
 
 		_qt_smiltext_set_font (strun);
 
 		QFontMetrics qfm(m_font);
-		ascent	= qfm.ascent();
-		descent	= qfm.descent();
-		height	= qfm.height();
+		ascent = qfm.ascent();
+		descent = qfm.descent();
+		height = qfm.height();
 		line_spacing = qfm.lineSpacing();
+		
 		// The simple qfm.boundingRect(QString) function sometimes
 		// returns wrong (too small) rectangle
-		QRect qr = qfm.boundingRect(m_rect.x, m_rect.y, m_rect.w,m_rect.h,
-					    Qt::AlignAuto,
-					    strun.m_data);
-		width	 = qr.width();
+		QRect qr = qfm.boundingRect(
+			m_rect.x, m_rect.y, m_rect.w, m_rect.h,
+			Qt::AlignAuto,
+			strun.m_data);
+		width = qr.width();
 	}
 	return smil2::smiltext_metrics(ascent, descent, height, width, line_spacing);
 }
@@ -196,8 +208,7 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 			alpha_chroma = ri->get_chromakeyopacity();
 			lib::color_t chromakey = ri->get_chromakey();
 			lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
-			compute_chroma_range(chromakey, chromakeytolerance,
-					     &chroma_low, &chroma_high);
+			compute_chroma_range(chromakey, chromakeytolerance, &chroma_low, &chroma_high);
 		}
 	}
 	// prepare for blending
@@ -207,26 +218,26 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_render(): data=%s r=L=%d,T=%d,W=%d,H=%d", strun.m_data.c_str(),r.x,r.y,r.w,r.h);
 	const lib::point p = m_dest->get_global_topleft();
 	int L = rct.left()+p.x,
-	    T = rct.top()+p.y,
-	    W = rct.width(),
-	    H = rct.height();
+		T = rct.top()+p.y,
+		W = rct.width(),
+		H = rct.height();
 
 	if (W == 0 || H == 0)
 		return; // cannot render anything
-	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_render():p=(%d,%d)  L=%d,T=%d,W=%d,H=%d",p.x,p.y,L,T,W,H);
+	AM_DBG lib::logger::get_logger()->debug("qt_smiltext_render():p=(%d,%d)	 L=%d,T=%d,W=%d,H=%d",p.x,p.y,L,T,W,H);
 	if (m_blending) {
 		// create pixmaps for blending
 		if ( ! strun.m_bg_transparent) {
-			/*** optimization suggestion:
-			     maybe it is possible for blending to render
-			     everything in one extra pixmap, then first
-			     blend with text background color, next blend
-			     with text color, without creating bg_ pixmap
-			     and new_pixmap (i.e. directly on the screen)
-			     This should result in far less round trips to
-			     the X-server.
-			***/
-		        bg_pixmap = new QPixmap(W,H);
+			// optimization suggestion:
+			// maybe it is possible for blending to render
+			// everything in one extra pixmap, then first
+			// blend with text background color, next blend
+			// with text color, without creating bg_ pixmap
+			// and new_pixmap (i.e. directly on the screen)
+			// This should result in far less round trips to
+			// the X-server.
+		
+			bg_pixmap = new QPixmap(W,H);
 			assert( bg_pixmap );
 			bg_pixmap->fill(strun.m_bg_color);
 		}
@@ -315,17 +326,16 @@ gui::qt::qt_smiltext_renderer::render_smiltext(const smil2::smiltext_run& strun,
 				alpha_media, 0.0,
 //XX				chroma_low, chroma_high);
 				text_color, text_color);
-		/*** see optimization suggestion above.
-		     also, it should not be necessary to copy
-		     the whole image, only the rect (L,T,W,H)
-		     is sufficient (copyBlt), blend it, then
-		     bitBlt() it back after blending.
-		***/
+		// see optimization suggestion above.
+		// also, it should not be necessary to copy
+		// the whole image, only the rect (L,T,W,H)
+		// is sufficient (copyBlt), blend it, then
+		// bitBlt() it back after blending.
 		QPixmap new_pixmap(W,H);
 		new_pixmap.convertFromImage(screen_img);
 		AM_DBG DUMPPIXMAP(&new_pixmap, "nw");
 		bitBlt(m_window->get_ambulant_pixmap(), L, T,
-		       &new_pixmap, L, T, W, H);
+			&new_pixmap, L, T, W, H);
 		AM_DBG DUMPPIXMAP(m_window->get_ambulant_pixmap(), "rs");
 		delete tx_pixmap;
 	}
@@ -336,32 +346,32 @@ gui::qt::qt_smiltext_renderer::_qt_smiltext_set_font(const smil2::smiltext_run& 
 	const char *fontname = strun.m_font_families[0].c_str();
 	m_font = QFont(QApplication::font());
 	if (fontname) {
-                m_font.setFamily(fontname);
+		m_font.setFamily(fontname);
 	} else {
-	        m_font.setFamily(m_font.defaultFamily());
+		m_font.setFamily(m_font.defaultFamily());
 	}
 	switch(strun.m_font_style) {
-		default:
-		case smil2::sts_normal:
-		// use default style
-			break;
-		case smil2::sts_italic:
-			m_font.setItalic(true);
-			break;
-		case smil2::sts_oblique:
-		case smil2::sts_reverse_oblique:
-		// no (reverse) oblique fonts available in Qt 3.3
-			m_font.setItalic(true);
-			break;
+	default:
+	case smil2::sts_normal:
+	// use default style
+		break;
+	case smil2::sts_italic:
+		m_font.setItalic(true);
+		break;
+	case smil2::sts_oblique:
+	case smil2::sts_reverse_oblique:
+	// no (reverse) oblique fonts available in Qt 3.3
+		m_font.setItalic(true);
+		break;
 	}
 	int weight = QFont::Normal;
 	switch(strun.m_font_weight) {
-		default:
-		case smil2::stw_normal:
-			break;
-		case smil2::stw_bold:
-		  weight = QFont::Bold;
-			break;
+	default:
+	case smil2::stw_normal:
+		break;
+	case smil2::stw_bold:
+		weight = QFont::Bold;
+		break;
 	}
 	m_font.setWeight(weight);
 	m_font.setPixelSize(strun.m_font_size);

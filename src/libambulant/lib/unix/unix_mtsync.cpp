@@ -88,7 +88,7 @@ lib::unix::critical_section::leave()
 
 lib::unix::critical_section_cv::critical_section_cv()
 :
-    critical_section()
+	critical_section()
 {
 	int err;
 	if ((err = pthread_cond_init(&m_condition, NULL)) != 0) {

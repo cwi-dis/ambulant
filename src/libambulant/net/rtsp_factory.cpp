@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -35,13 +35,13 @@ using namespace net;
 video_datasource_factory *
 ambulant::net::create_live_video_datasource_factory()
 {
-    return new live_video_datasource_factory();
+	return new live_video_datasource_factory();
 }
 
 audio_datasource_factory *
 ambulant::net::create_live_audio_datasource_factory()
 {
-    return new live_audio_datasource_factory();
+	return new live_audio_datasource_factory();
 }
 
 audio_datasource*
@@ -75,7 +75,7 @@ live_audio_datasource_factory::new_audio_datasource(const net::url& url, const a
 	audio_datasource *dds = new ffmpeg_decoder_datasource(pds);
 	AM_DBG lib::logger::get_logger()->debug("live_audio_datasource_factory::new_audio_datasource: decoder ds = 0x%x", (void*)dds);
 	if (dds == NULL) {
-        pds->stop();
+		pds->stop();
 		int rem = pds->release();
 		assert(rem == 0);
 		return NULL;
@@ -87,7 +87,7 @@ live_audio_datasource_factory::new_audio_datasource(const net::url& url, const a
 	audio_datasource *rds = new ffmpeg_resample_datasource(dds, fmts);
 	AM_DBG lib::logger::get_logger()->debug("live_audio_datasource_factory::new_audio_datasource: resample ds = 0x%x", (void*)rds);
 	if (rds == NULL)  {
-        dds->stop();
+		dds->stop();
 		int rem = dds->release();
 		assert(rem == 0);
 		return NULL;
@@ -97,7 +97,7 @@ live_audio_datasource_factory::new_audio_datasource(const net::url& url, const a
 		return rds;
 	}
 	lib::logger::get_logger()->error(gettext("%s: unable to create audio resampler"));
-    rds->stop();
+	rds->stop();
 	int rem = rds->release();
 	assert(rem == 0);
 	return NULL;
@@ -127,9 +127,9 @@ live_video_datasource_factory::new_video_datasource(const net::url& url, timesta
 	thread->start();
 
 	if (thread) {
-		 video_format fmt = thread->get_video_format();
-		 //dds = ds;
-		 dds = new ffmpeg_video_decoder_datasource(ds, fmt);
+		video_format fmt = thread->get_video_format();
+		//dds = ds;
+		dds = new ffmpeg_video_decoder_datasource(ds, fmt);
 	} else {
 		return NULL;
 	}

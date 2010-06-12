@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -37,10 +37,10 @@ using namespace gui::sdl;
 common::playable_factory *
 ambulant::gui::sdl::create_sdl_playable_factory(common::factories *factory)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererSdl"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererOpen"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererAudio"), true);
-    return new sdl_renderer_factory(factory);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererSdl"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererOpen"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererAudio"), true);
+	return new sdl_renderer_factory(factory);
 }
 
 sdl_renderer_factory::~sdl_renderer_factory()
@@ -61,8 +61,10 @@ sdl_renderer_factory::supports(common::renderer_select *rs)
 	if (renderer_uri != NULL &&
 		strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererSdl")) != 0 &&
 		strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererOpen")) != 0 &&
-        strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererAudio")) != 0 )
+		strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererAudio")) != 0 )
+	{
 		return false;
+	}
 	return true;
 }
 
@@ -75,14 +77,14 @@ sdl_renderer_factory::new_playable(
 {
 	common::playable *rv;
 	lib::xml_string tag = node->get_local_name();
-    AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
+	AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x:	inspecting %s\n", (void *)node, tag.c_str());
 #ifndef WITH_SEAMLESS_PLAYBACK
 	if ( tag == "audio") {
 		rv = new gui::sdl::sdl_audio_renderer(context, cookie, node, evp, m_factory, (common::playable_factory_machdep*)NULL);
 		AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x: returning sdl_audio_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: no SDL renderer for tag \"%s\"", tag.c_str());
-        return NULL;
+		return NULL;
 	}
 #else
 	if ( tag == "audio" || tag == "prefetch") {
@@ -90,7 +92,7 @@ sdl_renderer_factory::new_playable(
 		AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x: %s returning sdl_audio_renderer 0x%x", (void *)node, node->get_sig().c_str(), (void *)rv);
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: no SDL renderer for tag \"%s\"", tag.c_str());
-        return NULL;
+		return NULL;
 	}
 
 #endif
@@ -107,7 +109,7 @@ sdl_renderer_factory::new_aux_audio_playable(
 {
 	common::playable *rv;
 	lib::xml_string tag = node->get_local_name();
-    AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory:new_aux_audio_playable: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
+	AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory:new_aux_audio_playable: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
 	rv = new gui::sdl::sdl_audio_renderer(context, cookie, node, evp, m_factory, src);
 	AM_DBG lib::logger::get_logger()->debug("sdl_renderer_factory: node 0x%x: returning sdl_audio_renderer 0x%x", (void *)node, (void *)rv);
 	return rv;

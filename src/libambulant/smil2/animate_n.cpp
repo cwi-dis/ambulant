@@ -125,7 +125,7 @@ void linear_values_animation<F, T>::prepare_interval() {
 //		bool keyTimesValid = keyTimes.empty() || verify_key_times(keyTimes);
 		bool keyTimesValid = false;
 		if(keyTimes.empty() || verify_key_times(keyTimes))
-	        	keyTimesValid = true;
+			keyTimesValid = true;
 		if(!keyTimes.empty() && keyTimesValid &&
 			(dur.is_definite() || m_aattrs->get_calc_mode() == "discrete")) {
 			m_simple_f.init(sfdur(), m_values, keyTimes);
@@ -225,8 +225,9 @@ void underlying_to_animation<T>::prepare_interval() {
 template <class F>
 class regdim_animation : public linear_values_animation<F, common::region_dim> {
   public:
-	  regdim_animation(time_node_context *ctx, const node *n, animate_attrs *aattrs)
-	:	linear_values_animation<F, common::region_dim>(ctx, n, aattrs) {}
+	regdim_animation(time_node_context *ctx, const node *n, animate_attrs *aattrs)
+	:	linear_values_animation<F, common::region_dim>(ctx, n, aattrs)
+	{}
 
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {
 		regs.rd = dst->get_region_dim(this->m_aattrs->get_target_attr(), true);
@@ -571,7 +572,7 @@ soundalign_animation::apply_self_effect(animate_registers& regs) const
 template <class F>
 class panzoom_animation : public linear_values_animation<F, common::region_dim_spec> {
   public:
-	  panzoom_animation(time_node_context *ctx, const node *n, animate_attrs *aattrs)
+	panzoom_animation(time_node_context *ctx, const node *n, animate_attrs *aattrs)
 	:	linear_values_animation<F, common::region_dim_spec>(ctx, n, aattrs) {}
 
 	void read_dom_value(common::animation_destination *dst, animate_registers& regs) const {

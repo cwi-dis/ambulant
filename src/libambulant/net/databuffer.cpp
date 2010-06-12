@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -34,7 +34,7 @@
 #define AM_DBG if(0)
 #endif
 
-// ***********************************  C++  CODE  ***********************************
+// ***********************************	C++	 CODE  ***********************************
 
 // data_buffer
 
@@ -98,12 +98,12 @@ databuffer::set_max_size(int max_size)
 {
 	m_lock.enter();
 	// Zero means: no limit, <0 means: default
-    if (max_size >= 0) {
-        m_max_size = max_size;
-    } else {
-        m_max_size = s_default_max_size;
-    }
-    m_buffer_full = (m_max_size > 0 && m_used > m_max_size);
+	if (max_size >= 0) {
+		m_max_size = max_size;
+	} else {
+		m_max_size = s_default_max_size;
+	}
+	m_buffer_full = (m_max_size > 0 && m_used > m_max_size);
 	if (m_buffer_full) lib::logger::get_logger()->debug("databuffer::set_max_size(0x%x, %d): buffer now full (used=%d)",
 		(void*)this, max_size, m_used);
 	m_lock.leave();
@@ -117,7 +117,7 @@ databuffer::~databuffer()
 	assert(!m_writing);
 	if (m_buffer) {
 		free(m_buffer);
-        m_buffer = NULL;
+		m_buffer = NULL;
 	}
 	if (m_old_buffer) {
 		free(m_old_buffer);
@@ -142,15 +142,15 @@ void databuffer::dump(std::ostream& os, bool verbose) const
 
 	os << "BUFFER SIZE : " << m_size << " bytes" << std::endl;
 	os << "BYTES USED : " << m_used << " bytes" << std::endl;
-	os << "m_rear   : " << m_rear << std::endl;
+	os << "m_rear	: " << m_rear << std::endl;
 	if (verbose) {
 		if (m_buffer) {
 			for (i = m_rear;i < m_size;i++) {
-	   		os << m_buffer[i];
-	   		}
+			os << m_buffer[i];
+			}
 		}
 	}
- 	os << std::endl;
+	os << std::endl;
 }
 
 char *
@@ -164,16 +164,16 @@ databuffer::get_write_ptr(int sz)
 	char *rv = NULL;
 	AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x).get_write_ptr(%d): start ", (void*)this, sz);
 
-    if(!m_buffer_full) {
-			//AM_DBG lib::logger::get_logger()->debug("databuffer.get_write_ptr: returning m_front (%x)",m_buffer + m_size);
-			_grow(sz);
-			rv = m_buffer + m_size;
+	if(!m_buffer_full) {
+		//AM_DBG lib::logger::get_logger()->debug("databuffer.get_write_ptr: returning m_front (%x)",m_buffer + m_size);
+		_grow(sz);
+		rv = m_buffer + m_size;
 
-    } else {
-        lib::logger::get_logger()->trace("databuffer::databuffer::get_write_ptr : buffer full but still trying to obtain write pointer ");
+	} else {
+		lib::logger::get_logger()->trace("databuffer::databuffer::get_write_ptr : buffer full but still trying to obtain write pointer ");
 		rv = NULL;
-    }
-    m_lock.leave();
+	}
+	m_lock.leave();
 	return rv;
 }
 
@@ -204,8 +204,8 @@ void databuffer::pushdata(int sz)
 	m_writing = false;
 	AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::pushdata(%d) m_size=%d", (void*)this, sz, m_size);
 	if (m_buffer_full) {
-        lib::logger::get_logger()->trace("databuffer::databuffer::pushdata : buffer full but still trying to fill it");
-    }
+		lib::logger::get_logger()->trace("databuffer::databuffer::pushdata : buffer full but still trying to fill it");
+	}
 	// std::cout << sz << "\n";
 	assert(sz >= 0);
 	assert(m_size >= 0);
@@ -221,10 +221,10 @@ void databuffer::pushdata(int sz)
 	//AM_DBG lib::logger::get_logger()->debug("databuffer.pushdata:size = %d ",sz);
 	assert(m_size >= m_rear);
 	m_used = m_size - m_rear;
-	 if (!m_buffer && (sz > 0)) {
-		 lib::logger::get_logger()->fatal("databuffer::pushdata(size=%d): out of memory", m_size);
-		 abort();
-	 }
+	if (!m_buffer && (sz > 0)) {
+		lib::logger::get_logger()->fatal("databuffer::pushdata(size=%d): out of memory", m_size);
+		abort();
+	}
 	if(m_max_size > 0 && m_used > m_max_size) {
 		AM_DBG lib::logger::get_logger()->debug("databuffer.pushdata: buffer full [size = %d, max size = %d]",m_size, m_max_size);
 		m_buffer_full = true;
@@ -274,16 +274,16 @@ databuffer::readdone(int sz)
 	// or underused. Skip this if there is a write outstanding, then it'll
 	// happen the next time around.
 	if (!m_writing && (m_used == 0 || (m_max_unused_size > 0 && m_rear > m_max_unused_size))) {
-		 AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::readdone(%d) resizing buffer (cur. size = %d)", (void*)this, sz, m_size);
-		 if (m_used) memcpy(m_buffer, m_buffer+m_rear, m_used);
-
-		 m_buffer = (char *)realloc(m_buffer, m_used);
-		 m_size = m_used;
-		 m_rear = 0;
-		 AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::readdone(%d) (m_buffer=x%x) resized to %d",  (void*)this, (void*)m_buffer, m_size);
-		 if (m_buffer == NULL && m_used > 0) {
-			 lib::logger::get_logger()->fatal("databuffer::readdone(size=%d): out of memory", m_size);
-		 }
+		AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::readdone(%d) resizing buffer (cur. size = %d)", (void*)this, sz, m_size);
+		if (m_used) memcpy(m_buffer, m_buffer+m_rear, m_used);
+		
+		m_buffer = (char *)realloc(m_buffer, m_used);
+		m_size = m_used;
+		m_rear = 0;
+		AM_DBG lib::logger::get_logger()->debug("databuffer(0x%x)::readdone(%d) (m_buffer=x%x) resized to %d",	 (void*)this, (void*)m_buffer, m_size);
+		if (m_buffer == NULL && m_used > 0) {
+			lib::logger::get_logger()->fatal("databuffer::readdone(size=%d): out of memory", m_size);
+		}
 	}
 	m_lock.leave();
 }

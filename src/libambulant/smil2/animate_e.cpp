@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -50,22 +50,22 @@ animation_engine::~animation_engine() {
 }
 
 void animation_engine::reset() {
-    m_lock.enter();
-    AM_DBG lib::logger::get_logger()->debug("animation_engine::reset()");
+	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->debug("animation_engine::reset()");
 	doc_animators_t::iterator it;
 	for(it = m_animators.begin();it != m_animators.end();it++) {
-        node_animators_t& nani = (*it).second;
-        node_animators_t::iterator nit;
-        for(nit = nani.begin();nit != nani.end();nit++)  {
-            attribute_animators_t& aani = (*nit).second;
-            while (!aani.empty()) {
-                animate_node *animator = *aani.begin();
-                _stopped(animator);
-            }
-        }
-    }
-    m_update_event = NULL;
-    m_lock.leave();
+		node_animators_t& nani = (*it).second;
+		node_animators_t::iterator nit;
+		for(nit = nani.begin();nit != nani.end();nit++)	 {
+			attribute_animators_t& aani = (*nit).second;
+			while (!aani.empty()) {
+				animate_node *animator = *aani.begin();
+				_stopped(animator);
+			}
+		}
+	}
+	m_update_event = NULL;
+	m_lock.leave();
 }
 
 // Register the provided animator as active
@@ -73,7 +73,7 @@ void animation_engine::reset() {
 void animation_engine::started(animate_node *animator) {
 	const lib::node *target = animator->get_animation_target();
 	if(!target) return;
-    m_lock.enter();
+	m_lock.enter();
 	node_animators_t& na = m_animators[target];
 
 	attribute_animators_t& aa = na[animator->get_animation_attr()];
@@ -83,19 +83,19 @@ void animation_engine::started(animate_node *animator) {
 	if(m_update_event == 0) _schedule_update();
 
 	AM_DBG {
-            lib::logger::get_logger()->debug("animation_engine: %s started targeting %s attr=%s (%d animations active)",
+		lib::logger::get_logger()->debug("animation_engine: %s started targeting %s attr=%s (%d animations active)",
 			animator->dom_node()->get_sig().c_str(),
-			 target->get_sig().c_str(),
+			target->get_sig().c_str(),
 			animator->get_animation_attr().c_str(), m_counter);
 	}
-    m_lock.leave();
+	m_lock.leave();
 }
 
 // Remove animator from the active animations
 void animation_engine::stopped(animate_node *animator) {
-    m_lock.enter();
-    _stopped(animator);
-    m_lock.leave();
+	m_lock.enter();
+	_stopped(animator);
+	m_lock.leave();
 }
 
 // Remove animator from the active animations
@@ -103,20 +103,18 @@ void animation_engine::_stopped(animate_node *animator) {
 	const lib::node *target = animator->get_animation_target();
 	if(!target) return;
 	const std::string aattr = animator->get_animation_attr();
-	AM_DBG lib::logger::get_logger()->debug("animation_engine: %s stopped targeting %s attr=%s",
-        animator->dom_node()->get_sig().c_str(),
-		target->get_sig().c_str(), aattr.c_str());
+	AM_DBG lib::logger::get_logger()->debug("animation_engine: %s stopped targeting %s attr=%s", animator->dom_node()->get_sig().c_str(), target->get_sig().c_str(), aattr.c_str());
 	node_animators_t& na = m_animators[target];
 	attribute_animators_t& aa = na[aattr];
 	aa.remove(animator);
 	m_counter--;
-    AM_DBG lib::logger::get_logger()->debug("animation_engine: %d active animations left", m_counter);
+	AM_DBG lib::logger::get_logger()->debug("animation_engine: %d active animations left", m_counter);
 	if(aa.empty()) {
 		common::animation_destination *dst = m_layout->get_animation_destination(target);
 		animate_registers regs;
 		animator->read_dom_value(dst, regs);
 		m_is_node_dirty = animator->set_animated_value(dst, regs);
-		if(m_is_node_dirty)  {
+		if(m_is_node_dirty)	 {
 			common::animation_notification *anotif = m_layout->get_animation_notification(target);
 			if(anotif) anotif->animated();
 		}
@@ -165,24 +163,24 @@ void animation_engine::_update_attr(const std::string& attr, attribute_animators
 }
 
 void animation_engine::update_callback() {
-    m_lock.enter();
+	m_lock.enter();
 	if(!m_update_event) {
-        lib::logger::get_logger()->debug("animation_engine: update_callback() called with m_update_event == NULL");
-        m_lock.leave();
-        return;
-    }
+		lib::logger::get_logger()->debug("animation_engine: update_callback() called with m_update_event == NULL");
+		m_lock.leave();
+		return;
+	}
 	if(_has_animations()) {
 		_update();
 		_schedule_update();
 	} else {
-        AM_DBG lib::logger::get_logger()->debug("animation_engine: stop scheduling update");
+		AM_DBG lib::logger::get_logger()->debug("animation_engine: stop scheduling update");
 		m_update_event = 0;
 	}
-    m_lock.leave();
+	m_lock.leave();
 }
 
 void animation_engine::_schedule_update() {
-    AM_DBG lib::logger::get_logger()->debug("animation_engine: schedule update");
+	AM_DBG lib::logger::get_logger()->debug("animation_engine: schedule update");
 	m_update_event = new lib::no_arg_callback_event<animation_engine>(this,
 		&animation_engine::update_callback);
 	m_event_processor->add_event(m_update_event, 50, lib::ep_med);

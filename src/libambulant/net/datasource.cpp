@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -155,7 +155,7 @@ bool
 filter_datasource_impl::end_of_file()
 {
 	m_lock.enter();
-	bool rv = !m_databuf.buffer_not_empty() &&  m_src->end_of_file();
+	bool rv = !m_databuf.buffer_not_empty() &&	m_src->end_of_file();
 	m_lock.leave();
 	return rv;
 }
@@ -195,13 +195,13 @@ filter_datasource_impl::readdone(int len)
 
 // *********************** audio_format_choices ***********************************************
 audio_format_choices::audio_format_choices()
-:   m_best(audio_format("unknown"))
+:	m_best(audio_format("unknown"))
 {
 	add_named_format("unknown");
 }
 
 audio_format_choices::audio_format_choices(const audio_format &fmt)
-:   m_best(fmt)
+:	m_best(fmt)
 {
 	add_samplerate(fmt.samplerate);
 	add_channels(fmt.channels);
@@ -209,7 +209,7 @@ audio_format_choices::audio_format_choices(const audio_format &fmt)
 }
 
 audio_format_choices::audio_format_choices(int samplerate, int channels, int bits)
-:   m_best(audio_format(samplerate, channels, bits))
+:	m_best(audio_format(samplerate, channels, bits))
 {
 	add_samplerate(samplerate);
 	add_channels(channels);
@@ -217,7 +217,7 @@ audio_format_choices::audio_format_choices(int samplerate, int channels, int bit
 };
 
 audio_format_choices::audio_format_choices(const std::string &name)
-:   m_best(audio_format(name))
+:	m_best(audio_format(name))
 {
 	add_named_format(name);
 }
@@ -340,14 +340,14 @@ datasource_factory::add_raw_filter(raw_filter_finder *df)
 datasource*
 datasource_factory::new_raw_datasource(const net::url &url)
 {
-    std::vector<raw_datasource_factory *>::iterator i;
-    datasource *src = NULL;
+	std::vector<raw_datasource_factory *>::iterator i;
+	datasource *src = NULL;
 
-    for(i=m_raw_factories.begin(); i != m_raw_factories.end(); i++) {
-        src = (*i)->new_raw_datasource(url);
+	for(i=m_raw_factories.begin(); i != m_raw_factories.end(); i++) {
+		src = (*i)->new_raw_datasource(url);
 		AM_DBG lib::logger::get_logger()->debug("0x%x->new_raw_datasource returned 0x%x", (void*)(*i), (void*)src);
-        if (src) break;
-    }
+		if (src) break;
+	}
 	// Check for a data: url
 	if (src == NULL && lib::starts_with(url.get_url(), "data:")) {
 		AM_DBG lib::logger::get_logger()->debug("new_raw_datasource: returning mem_datasource");
@@ -374,21 +374,21 @@ datasource_factory::new_raw_datasource(const net::url &url)
 audio_datasource*
 datasource_factory::new_audio_datasource(const net::url &url, const audio_format_choices& fmts, timestamp_t clip_begin, timestamp_t clip_end)
 {
-    audio_datasource *src = NULL;
+	audio_datasource *src = NULL;
 
 	// First try to see if anything supports the whole chain
-    std::vector<audio_datasource_factory *>::iterator i;
-    for(i=m_audio_factories.begin(); i != m_audio_factories.end(); i++) {
-        src = (*i)->new_audio_datasource(url, fmts, clip_begin, clip_end);
-        if (src) return src;
-    }
+	std::vector<audio_datasource_factory *>::iterator i;
+	for(i=m_audio_factories.begin(); i != m_audio_factories.end(); i++) {
+		src = (*i)->new_audio_datasource(url, fmts, clip_begin, clip_end);
+		if (src) return src;
+	}
 
 	// If that didn't work we try to first create a raw datasource, and
 	// then stack a parser and possibly a filter
 	datasource *rawsrc = new_raw_datasource(url);
 	if (rawsrc == NULL) return NULL;
 
-    //next create a raw_audio_datasource;
+	//next create a raw_audio_datasource;
 
 	audio_datasource *raw_audio_src = new raw_audio_datasource(rawsrc);
 
@@ -398,7 +398,7 @@ datasource_factory::new_audio_datasource(const net::url &url, const audio_format
 		if (src) break;
 	}
 	if (src == NULL) {
-        rawsrc->stop();
+		rawsrc->stop();
 		int rem = rawsrc->release();
 		assert(rem == 0);
 		lib::logger::get_logger()->warn(gettext("%s: Cannot open, no compatible parser"), repr(url).c_str());
@@ -418,11 +418,11 @@ datasource_factory::new_audio_datasource(const net::url &url, const audio_format
 	}
 
 	// Failed to find a filter. Clean up.
-    src->stop();
+	src->stop();
 	int rem = src->release(); // This will also release rawsrc
 	assert(rem == 0);
 	lib::logger::get_logger()->warn(gettext("%s: Cannot open, cannot find conversion filter"), repr(url).c_str());
-    return NULL;
+	return NULL;
 }
 
 audio_datasource*
@@ -447,22 +447,22 @@ datasource_factory::new_audio_filter(const net::url& url, const audio_format_cho
 
 	// Failed to find a filter. Clean up.
 	lib::logger::get_logger()->warn(gettext("%s: Cannot open, cannot find conversion filter"), repr(url).c_str());
-    return NULL;
+	return NULL;
 }
 
 video_datasource*
 datasource_factory::new_video_datasource(const net::url &url, timestamp_t clip_begin, timestamp_t clip_end)
 {
-    std::vector<video_datasource_factory *>::iterator i;
-    video_datasource *src;
+	std::vector<video_datasource_factory *>::iterator i;
+	video_datasource *src;
 
-    for(i=m_video_factories.begin(); i != m_video_factories.end(); i++) {
-        src = (*i)->new_video_datasource(url, clip_begin, clip_end );
+	for(i=m_video_factories.begin(); i != m_video_factories.end(); i++) {
+		src = (*i)->new_video_datasource(url, clip_begin, clip_end );
 		AM_DBG lib::logger::get_logger()->debug("0x%x->new_video_datasource returned 0x%x", (void*)(*i), (void*)src);
-        if (src) return src;
-    }
+		if (src) return src;
+	}
 	lib::logger::get_logger()->warn(gettext("%s: Cannot open, not supported by any video datasource"), repr(url).c_str());
-    return NULL;
+	return NULL;
 }
 
 // Helper class - Read all data from a datasource
@@ -484,7 +484,7 @@ class datasource_reader : public lib::ref_counted_obj {
 typedef lib::no_arg_callback<datasource_reader> readdone_callback;
 
 datasource_reader::datasource_reader(datasource *src)
-:   m_timer(lib::realtime_timer_factory()),
+:	m_timer(lib::realtime_timer_factory()),
 	m_src(src),
 	m_data(NULL),
 	m_size(0)

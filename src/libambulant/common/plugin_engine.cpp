@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -72,22 +72,22 @@ plugin_engine *
 plugin_engine::get_plugin_engine()
 {
 	if (s_singleton == NULL)
-        s_singleton = new plugin_engine;
-    return s_singleton;
+		s_singleton = new plugin_engine;
+	return s_singleton;
 }
 
 plugin_engine::plugin_engine()
 {
 #ifdef WITH_PLUGINS
 	bool use_plugins = common::preferences::get_preferences()->m_use_plugins;
-    collect_plugin_directories();
+	collect_plugin_directories();
 #ifdef WITH_LTDL_PLUGINS
 	lib::logger::get_logger()->trace("plugin_engine: using LTDL plugin loader");
 	int errors = lt_dlinit();
 	if (errors) {
 		lib::logger::get_logger()->trace("LTDL plugin loader: Cannot initialize: %d error(s)", errors);
 		lib::logger::get_logger()->warn(gettext("Plugin loader encountered problem: plugins disabled"));
-	    return;
+		return;
 	}
 #endif // WITH_LTDL_PLUGINS
 #ifdef WITH_WINDOWS_PLUGINS
@@ -243,52 +243,52 @@ plugin_engine::load_plugins(std::string dirname)
 	dirent **namelist;
 	bool ldpath_added = false;
 
-    int nr_of_files = scandir(dirname.c_str(), &namelist, &filter , NULL);
-    if (nr_of_files < 0) {
-        lib::logger::get_logger()->trace("Error reading plugin directory: %s: %s", dirname.c_str(), strerror(errno));
-        return;
-    } else {
-        while (nr_of_files--) {
-            //only normal files, not dots (. and ..)
-            if (strcmp(namelist[nr_of_files]->d_name, ".")  &&
+	int nr_of_files = scandir(dirname.c_str(), &namelist, &filter , NULL);
+	if (nr_of_files < 0) {
+		lib::logger::get_logger()->trace("Error reading plugin directory: %s: %s", dirname.c_str(), strerror(errno));
+		return;
+	} else {
+		while (nr_of_files--) {
+			//only normal files, not dots (. and ..)
+			if (strcmp(namelist[nr_of_files]->d_name, ".")	&&
 				strcmp(namelist[nr_of_files]->d_name, ".."))
 			{
-                char *pluginname = namelist[nr_of_files]->d_name;
+				char *pluginname = namelist[nr_of_files]->d_name;
 #ifdef WITH_PYTHON_PLUGIN
 				bool is_python_plugin = false;
 				bool is_python_engine = false;
 #endif // WITH_PYTHON_PLUGIN
 
-                // Check the name is valid
-                if (strncmp(PYTHON_PLUGIN_PREFIX, pluginname, sizeof(PYTHON_PLUGIN_PREFIX)-1) == 0) {
+				// Check the name is valid
+				if (strncmp(PYTHON_PLUGIN_PREFIX, pluginname, sizeof(PYTHON_PLUGIN_PREFIX)-1) == 0) {
 #ifdef WITH_PYTHON_PLUGIN
 					is_python_plugin = true;
-                    lib::logger::get_logger()->trace("plugin_engine: recording Python plugin %s", pluginname);
+					lib::logger::get_logger()->trace("plugin_engine: recording Python plugin %s", pluginname);
 #else
-                    lib::logger::get_logger()->trace("plugin_engine: skipping Python plugin %s", pluginname);
+					lib::logger::get_logger()->trace("plugin_engine: skipping Python plugin %s", pluginname);
 					continue;
 #endif // WITH_PYTHON_PLUGIN
-                } else if (strncmp(PLUGIN_PREFIX, pluginname, sizeof(PLUGIN_PREFIX)-1) != 0) {
-                    lib::logger::get_logger()->trace("plugin_engine: skipping %s", pluginname);
+				} else if (strncmp(PLUGIN_PREFIX, pluginname, sizeof(PLUGIN_PREFIX)-1) != 0) {
+					lib::logger::get_logger()->trace("plugin_engine: skipping %s", pluginname);
 					free(namelist[nr_of_files]);
 					continue;
-                }
+				}
 				// Check whether this is the Python engine
-                if (strncmp(PYTHON_PLUGIN_ENGINE_PREFIX, pluginname, sizeof(PYTHON_PLUGIN_ENGINE_PREFIX)-1) == 0) {
+				if (strncmp(PYTHON_PLUGIN_ENGINE_PREFIX, pluginname, sizeof(PYTHON_PLUGIN_ENGINE_PREFIX)-1) == 0) {
 #ifdef WITH_PYTHON_PLUGIN
 					is_python_engine = true;
-                    lib::logger::get_logger()->trace("plugin_engine: recording Python engine %s", pluginname);
+					lib::logger::get_logger()->trace("plugin_engine: recording Python engine %s", pluginname);
 #else
-                    lib::logger::get_logger()->trace("plugin_engine: skipping Python engine %s", pluginname);
+					lib::logger::get_logger()->trace("plugin_engine: skipping Python engine %s", pluginname);
 					free(namelist[nr_of_files]);
-                    continue;
+					continue;
 #endif // WITH_PYTHON_PLUGIN
-                }
+				}
 
-                // Construct the full pathname
-                strncpy(filename, dirname.c_str(), sizeof(filename));
-                strncat(filename, "/", sizeof(filename));
-                strncat(filename, pluginname, sizeof(filename));
+				// Construct the full pathname
+				strncpy(filename, dirname.c_str(), sizeof(filename));
+				strncat(filename, "/", sizeof(filename));
+				strncat(filename, pluginname, sizeof(filename));
 
 				// Add the plugin dir to the search path
 				if (!ldpath_added) {
@@ -312,11 +312,11 @@ plugin_engine::load_plugins(std::string dirname)
 #endif // WITH_PYTHON_PLUGIN
 				// Finally we get to load the plugin
 				load_plugin(filename);
-            }
-            free(namelist[nr_of_files]);
-        }
-        free(namelist);
-    }
+			}
+			free(namelist[nr_of_files]);
+		}
+		free(namelist);
+	}
 	lib::logger::get_logger()->trace("plugin_engine: Done with plugin directory: %s", dirname.c_str());
 	if (ldpath_added)
 		unsetenv(LIBRARY_PATH_ENVVAR);
@@ -344,7 +344,7 @@ void plugin_engine::load_plugin(const char *filename)
 			std::string name = extra->m_plugin_name;
 			m_extra_data[name] = extra;
 		}
-   } else {
+	} else {
 		DWORD err = GetLastError();
 		lib::logger::get_logger()->trace("plugin_engine: %s: LoadLibrary returned error 0x%x", filename, err);
 		lib::logger::get_logger()->warn(gettext("Plugin skipped due to errors: %s"), filename);
@@ -367,20 +367,20 @@ plugin_engine::load_plugins(std::string dirname)
 	lib::textptr fp_conv(filepattern.c_str());
 	WIN32_FIND_DATA dirData;
 	HANDLE dirHandle = FindFirstFile(fp_conv, &dirData);
-    if (dirHandle == INVALID_HANDLE_VALUE) {
+	if (dirHandle == INVALID_HANDLE_VALUE) {
 		DWORD err = GetLastError();
 		if (err != ERROR_FILE_NOT_FOUND && err != ERROR_NO_MORE_FILES) {
 			// Don't report "No such file"
 			lib::logger::get_logger()->error(gettext("Error reading plugin directory: %s: 0x%x"), dirname.c_str(), err);
 		}
-        return;
-    } else {
+		return;
+	} else {
 		do {
-            // Construct the full pathname
+			// Construct the full pathname
 			lib::textptr fn_conv(dirData.cFileName);
 			std::string pathname =
 				dirname +
- 				"\\" +
+				"\\" +
 				fn_conv.c_str();
 			if (strncmp(PYTHON_PLUGIN_ENGINE_PREFIX, fn_conv.c_str(), sizeof(PYTHON_PLUGIN_ENGINE_PREFIX)-1) == 0) {
 #ifdef WITH_PYTHON_PLUGIN
@@ -423,7 +423,7 @@ plugin_engine::load_plugins(std::string dirname)
 		}
 	}
 #endif // WITH_PYTHON_PLUGIN
- 	lib::logger::get_logger()->trace("plugin_engine: Done with plugin directory: %s", dirname.c_str());
+	lib::logger::get_logger()->trace("plugin_engine: Done with plugin directory: %s", dirname.c_str());
 	if (old_dll_dir_ok) SetDllDirectory(old_dll_dir);
 }
 
@@ -437,12 +437,12 @@ plugin_engine::load_plugins(std::string dirname)
 void
 plugin_engine::add_plugins(common::factories* factory, common::gui_player *player)
 {
-    std::vector< initfuncptr >::iterator i;
-    for(i=m_initfuncs.begin(); i!=m_initfuncs.end(); i++) {
-        initfuncptr init;
-        init = *i;
-        (init)(AMBULANT_PLUGIN_API_VERSION, factory, player);
-    }
+	std::vector< initfuncptr >::iterator i;
+	for(i=m_initfuncs.begin(); i!=m_initfuncs.end(); i++) {
+		initfuncptr init;
+		init = *i;
+		(init)(AMBULANT_PLUGIN_API_VERSION, factory, player);
+	}
 }
 
 void *

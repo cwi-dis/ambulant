@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -143,7 +143,7 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, const
 	audio_datasource *dds = new ffmpeg_decoder_datasource(pds);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_datasource_factory::new_audio_datasource: decoder ds = 0x%x", (void*)dds);
 	if (dds == NULL) {
-        pds->stop();
+		pds->stop();
 		int rem = pds->release();
 		assert(rem == 0);
 		return NULL;
@@ -155,7 +155,7 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, const
 	audio_datasource *rds = new ffmpeg_resample_datasource(dds, fmts);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_datasource_factory::new_audio_datasource: resample ds = 0x%x", (void*)rds);
 	if (rds == NULL)  {
-        dds->stop();
+		dds->stop();
 		int rem = dds->release();
 		assert(rem == 0);
 		return NULL;
@@ -165,7 +165,7 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, const
 		return rds;
 	}
 	lib::logger::get_logger()->error(gettext("%s: unable to create audio resampler"));
-    rds->stop();
+	rds->stop();
 	int rem = rds->release();
 	assert(rem == 0);
 	return NULL;
@@ -208,20 +208,20 @@ ffmpeg_audio_filter_finder::new_audio_filter(audio_datasource *src, const audio_
 bool
 ffmpeg_decoder_datasource::supported(const audio_format& fmt)
 {
-	if (fmt.name == "ffmpeg"){
+	if (fmt.name == "ffmpeg") {
 		AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
 		if (enc->codec_type != CODEC_TYPE_AUDIO) return false;
 		if (avcodec_find_decoder(enc->codec_id) == NULL) return false;
 		return true;
 	}
-	if (fmt.name == "live"){
+	if (fmt.name == "live") {
 		//AVCodecContext *enc = (AVCodecContext *)fmt.parameters;
 		const char* codec_name = (char*) fmt.parameters;
 
 		ffmpeg_codec_id* codecid = ffmpeg_codec_id::instance();
 		AVCodec *codec = avcodec_find_decoder(codecid->get_codec_id(codec_name));
 
-		if( !codec) {
+		if(!codec) {
 			return false;
 		}
 
@@ -341,7 +341,7 @@ ffmpeg_decoder_datasource::start(ambulant::lib::event_processor *evp, ambulant::
 		restart_input = true;
 		m_client_callback = callbackk;
 		m_event_processor = evp;
-        AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource: storing callback");
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource: storing callback");
 	}
 
 	// Also restart our source if we still have room and there is
@@ -365,7 +365,7 @@ ffmpeg_decoder_datasource::start_prefetch(ambulant::lib::event_processor *evp)
 	m_lock.enter();
 	bool restart_input = false;
 
-    m_event_processor = evp;
+	m_event_processor = evp;
 
 	if ( !_end_of_file() && !m_buffer.buffer_full() ) restart_input = true;
 
@@ -384,10 +384,10 @@ ffmpeg_decoder_datasource::readdone(int len)
 	m_lock.enter();
 	m_buffer.readdone(len);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.readdone : done with %d bytes", len);
-/* 	if(( !(buffer_full()) && !m_src->end_of_file() )) {
- * 		lib::event *e = new readdone_callback(this, &ffmpeg_decoder_datasource::data_avail);
- * 		m_src->start(m_event_processor, e);
- * 	}
+/*	if(( !(buffer_full()) && !m_src->end_of_file() )) {
+ *		lib::event *e = new readdone_callback(this, &ffmpeg_decoder_datasource::data_avail);
+ *		m_src->start(m_event_processor, e);
+ *	}
  */
 	m_lock.leave();
 }
@@ -409,7 +409,7 @@ ffmpeg_decoder_datasource::data_avail()
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail: m_src->get_read_ptr() m_src=0x%x, this=0x%x", (void*) m_src, (void*) this);
 
 			ts_packet_t audio_packet = m_src->get_ts_packet_t();
-            AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail: m_elapsed %lld, pts %lld", m_elapsed, audio_packet.timestamp);
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail: m_elapsed %lld, pts %lld", m_elapsed, audio_packet.timestamp);
 			uint8_t *inbuf = (uint8_t*) audio_packet.data;
 			sz = audio_packet.size;
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail: %d bytes available", sz);
@@ -500,7 +500,7 @@ ffmpeg_decoder_datasource::data_avail()
 							m_buffer.pushdata(0);
 						}
 						if (old_elapsed < m_src->get_clip_begin()) {
-                            assert(m_buffer.size() == outsize);
+							assert(m_buffer.size() == outsize);
 							timestamp_t delta_t_unwanted = m_src->get_clip_begin() - old_elapsed;
 							assert(delta_t_unwanted > 0);
 							int bytes_unwanted = (int)(delta_t_unwanted * ((m_fmt.samplerate* m_fmt.channels * m_fmt.bits)/(sizeof(uint8_t)*8))/1000000);
@@ -510,13 +510,10 @@ ffmpeg_decoder_datasource::data_avail()
 							assert(m_buffer.size() > bytes_unwanted);
 							m_buffer.readdone(bytes_unwanted);
 						}
-					}
-
-					else {
+					} else {
 						AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail: m_elapsed = %lld < clip_begin = %lld, skipped %d bytes", m_elapsed, m_src->get_clip_begin(), outsize);
 						m_buffer.pushdata(0);
 					}
-
 
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.data_avail : m_src->readdone(%d) called m_src=0x%x, this=0x%x", decoded,(void*) m_src, (void*) this );
 				} else {
@@ -528,7 +525,6 @@ ffmpeg_decoder_datasource::data_avail()
 				m_buffer.pushdata(0);
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail m_src->readdone(0) called this=0x%x");
 			}
-		//	sz = m_src->size();
 		}
 		// Restart reading if we still have room to accomodate more data
 		// XXX The note regarding m_elapsed holds here as well.
@@ -538,8 +534,7 @@ ffmpeg_decoder_datasource::data_avail()
 			lib::event *e = new readdone_callback(this, &ffmpeg_decoder_datasource::data_avail);
 			m_src->start(m_event_processor, e);
 		} else {
-			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail: not calling start: eof=%d m_ep=0x%x buffull=%d",
-				(int)m_src->end_of_file(), (void*)m_event_processor, (int)m_buffer.buffer_full());
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail: not calling start: eof=%d m_ep=0x%x buffull=%d", (int)m_src->end_of_file(), (void*)m_event_processor, (int)m_buffer.buffer_full());
 		}
 
 		if ( m_client_callback && (m_buffer.buffer_not_empty() ||  _end_of_file() || _clip_end()  ) ) {
@@ -559,8 +554,7 @@ ffmpeg_decoder_datasource::data_avail()
 			lib::event *e = new readdone_callback(this, &ffmpeg_decoder_datasource::data_avail);
 			m_src->start(m_event_processor, e);
 		} else {
-			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail: not calling start: eof=%d m_ep=0x%x buffull=%d",
-													(int)m_src->end_of_file(), (void*)m_event_processor, (int)m_buffer.buffer_full());
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail: not calling start: eof=%d m_ep=0x%x buffull=%d", (int)m_src->end_of_file(), (void*)m_event_processor, (int)m_buffer.buffer_full());
 		}
 
 		if ( m_client_callback && (m_buffer.buffer_not_empty() ||  _end_of_file()  ) ) {
@@ -581,7 +575,6 @@ ffmpeg_decoder_datasource::data_avail()
 	m_lock.leave();
 }
 
-
 bool
 ffmpeg_decoder_datasource::end_of_file()
 {
@@ -601,7 +594,6 @@ bool
 ffmpeg_decoder_datasource::_end_of_file()
 {
 	// private method - no need to lock
-
 	if (m_buffer.buffer_not_empty()) return false;
 	return m_src->end_of_file();
 }
@@ -637,36 +629,36 @@ ffmpeg_decoder_datasource::seek(timestamp_t time)
 	assert( time >= 0);
 
 	// Do the seek before the flush
-	#if 1
+#if 1
 	if (!skip_seek) {
 		m_src->seek(time);
 		m_elapsed = time; // XXXJACK not needed??
 	}
-	#endif
+#endif
 	int nbytes = m_buffer.size();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource(0x%x)::seek(%ld), discard %d bytes, old time was %ld", (void*)this, (long)time, nbytes, m_elapsed);
 	if (nbytes) {
 #if 0
-        /* Temporarily disabled, to see whether it fixes #2954199 */
-        timestamp_t buffer_begin_elapsed = m_elapsed - 1000000LL * (m_buffer.size() * 8) / (m_fmt.samplerate* m_fmt.channels * m_fmt.bits);
-        // If the requested seek time falls within the buffer we are in luck, and do the seek by dropping some data.
-        if (time >= buffer_begin_elapsed && time < m_elapsed) {
-        	nbytes = ((time-buffer_begin_elapsed) * (m_fmt.samplerate* m_fmt.channels * m_fmt.bits)) / (8LL * 1000000LL);
-		nbytes &= ~0x1; //  nbytes may be odd s.t. resulting pointer becomes unuseable for ffmpeg; fixes #2954199
-		skip_seek = true;
-        }
+		/* Temporarily disabled, to see whether it fixes #2954199 */
+		timestamp_t buffer_begin_elapsed = m_elapsed - 1000000LL * (m_buffer.size() * 8) / (m_fmt.samplerate* m_fmt.channels * m_fmt.bits);
+		// If the requested seek time falls within the buffer we are in luck, and do the seek by dropping some data.
+		if (time >= buffer_begin_elapsed && time < m_elapsed) {
+			nbytes = ((time-buffer_begin_elapsed) * (m_fmt.samplerate* m_fmt.channels * m_fmt.bits)) / (8LL * 1000000LL);
+			nbytes &= ~0x1; //	nbytes may be odd s.t. resulting pointer becomes unuseable for ffmpeg; fixes #2954199
+			skip_seek = true;
+		}
 #endif
-        AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource: flush buffer (%d bytes) due to seek", nbytes);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource: flush buffer (%d bytes) due to seek", nbytes);
 		(void)m_buffer.get_read_ptr();
 		m_buffer.readdone(nbytes);
 	}
 	/* end of disabled code for #2954199 */
-	#if 0
+#if 0
 	if (!skip_seek) {
 		m_src->seek(time);
 		m_elapsed = time; // XXXJACK not needed??
 	}
-	#endif
+#endif
 	m_lock.leave();
 }
 
@@ -705,7 +697,7 @@ ffmpeg_decoder_datasource::size() const
 	if (_clip_end()) {
 		// Check whether clip end falls within the current buffer (or maybe even before it)
 		timestamp_t clip_end = m_src->get_clip_end();
-        assert(m_elapsed > clip_end);
+		assert(m_elapsed > clip_end);
 		timestamp_t delta_t_unwanted = m_elapsed - clip_end;
 		assert(delta_t_unwanted >= 0);
 		int bytes_unwanted = (int)((delta_t_unwanted * ((m_fmt.samplerate* m_fmt.channels * m_fmt.bits)/(sizeof(uint8_t)*8)))/1000000);
@@ -723,7 +715,7 @@ ffmpeg_decoder_datasource::get_clip_end()
 {
 	m_lock.enter();
 	timestamp_t clip_end;
-	clip_end =  m_src->get_clip_end();
+	clip_end =	m_src->get_clip_end();
 	m_lock.leave();
 	return clip_end;
 }
@@ -742,12 +734,12 @@ ffmpeg_decoder_datasource::get_clip_begin()
 timestamp_t
 ffmpeg_decoder_datasource::get_elapsed()
 {
-    m_lock.enter();
-    timestamp_t buffer_duration = 1000000LL * (m_buffer.size() * 8) / (m_fmt.samplerate* m_fmt.channels * m_fmt.bits);
-    AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::get_elapsed: m_elapsed %ld, buffer %ld", m_elapsed, buffer_duration);
-    timestamp_t  elapsed =  m_elapsed - buffer_duration;
-    m_lock.leave();
-    return elapsed;
+	m_lock.enter();
+	timestamp_t buffer_duration = 1000000LL * (m_buffer.size() * 8) / (m_fmt.samplerate* m_fmt.channels * m_fmt.bits);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::get_elapsed: m_elapsed %ld, buffer %ld", m_elapsed, buffer_duration);
+	timestamp_t	 elapsed =	m_elapsed - buffer_duration;
+	m_lock.leave();
+	return elapsed;
 }
 #endif
 
@@ -757,17 +749,17 @@ ffmpeg_decoder_datasource::_select_decoder(const char* file_ext)
 	// private method - no need to lock
 	AVCodec *codec = avcodec_find_decoder_by_name(file_ext);
 	if (codec == NULL) {
-			lib::logger::get_logger()->trace("ffmpeg_decoder_datasource._select_decoder: Failed to find codec for \"%s\"", file_ext);
-			lib::logger::get_logger()->error(gettext("No support for \"%s\" audio"), file_ext);
-			return false;
+		lib::logger::get_logger()->trace("ffmpeg_decoder_datasource._select_decoder: Failed to find codec for \"%s\"", file_ext);
+		lib::logger::get_logger()->error(gettext("No support for \"%s\" audio"), file_ext);
+		return false;
 	}
 	m_con = avcodec_alloc_context();
 	m_con_owned = true;
 
 	if(avcodec_open(m_con,codec) < 0) {
-			lib::logger::get_logger()->trace("ffmpeg_decoder_datasource._select_decoder: Failed to open avcodec for \"%s\"", file_ext);
-			lib::logger::get_logger()->error(gettext("No support for \"%s\" audio"), file_ext);
-			return false;
+		lib::logger::get_logger()->trace("ffmpeg_decoder_datasource._select_decoder: Failed to open avcodec for \"%s\"", file_ext);
+		lib::logger::get_logger()->error(gettext("No support for \"%s\" audio"), file_ext);
+		return false;
 	}
 	return true;
 }
@@ -781,26 +773,26 @@ ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 		m_con_owned = false;
 
 		if (m_con == NULL) {
-				lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Parameters missing for %s(0x%x)", fmt.name.c_str(), fmt.parameters);
-				return false;
+			lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Parameters missing for %s(0x%x)", fmt.name.c_str(), fmt.parameters);
+			return false;
 		}
 		if (m_con->codec_type != CODEC_TYPE_AUDIO) {
-				lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Non-audio stream for %s(0x%x)", fmt.name.c_str(), m_con->codec_type);
-				return false;
+			lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Non-audio stream for %s(0x%x)", fmt.name.c_str(), m_con->codec_type);
+			return false;
 		}
 
 		AVCodec *codec = avcodec_find_decoder(m_con->codec_id);
 		if (codec == NULL) {
-				lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Failed to find codec for %s(0x%x)", fmt.name.c_str(), m_con->codec_id);
-				return false;
+			lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Failed to find codec for %s(0x%x)", fmt.name.c_str(), m_con->codec_id);
+			return false;
 		}
 //		m_con = avcodec_alloc_context();
 
 		if(avcodec_open(m_con,codec) < 0) {
-				lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Failed to open avcodec for %s(0x%x)", fmt.name.c_str(), m_con->codec_id);
-				av_free(m_con);
-				m_con = NULL;
-				return false;
+			lib::logger::get_logger()->debug("Internal error: ffmpeg_decoder_datasource._select_decoder: Failed to open avcodec for %s(0x%x)", fmt.name.c_str(), m_con->codec_id);
+			av_free(m_con);
+			m_con = NULL;
+			return false;
 		}
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::_select_decoder: codec_name=%s, codec_id=%d", m_con->codec_name, m_con->codec_id);
 		m_fmt = audio_format(m_con->sample_rate, m_con->channels, 16);
@@ -820,7 +812,7 @@ ffmpeg_decoder_datasource::_select_decoder(audio_format &fmt)
 		}
 
 		m_con = avcodec_alloc_context();
-        m_con_owned = true;
+		m_con_owned = true;
 		m_con->channels = 0;
 		if((avcodec_open(m_con,codec) < 0) ) {
 			//lib::logger::get_logger()->error(gettext("%s: Cannot open audio codec %d(%s)"), repr(url).c_str(), m_con->codec_id, m_con->codec_name);
@@ -859,9 +851,9 @@ ffmpeg_decoder_datasource::_need_fmt_uptodate()
 	if (m_fmt.channels == 0) {
 		m_fmt.channels = m_con->channels;
 	}
-    if (m_fmt.channels == 0 || m_fmt.samplerate == 0) {
-        lib::logger::get_logger()->debug("ffmpeg_decoder_datasource: No samplerate/channel data available yet, guessing...");
-    }
+	if (m_fmt.channels == 0 || m_fmt.samplerate == 0) {
+		lib::logger::get_logger()->debug("ffmpeg_decoder_datasource: No samplerate/channel data available yet, guessing...");
+	}
 }
 
 common::duration
@@ -931,7 +923,7 @@ ffmpeg_resample_datasource::data_avail()
 		m_in_fmt = m_src->get_audio_format();
 		assert(m_in_fmt.bits == 16);
 		assert(m_out_fmt.bits == 16);
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource: initializing context: inrate, ch=%d, %d, outrate, ch=%d, %d", m_in_fmt.samplerate,  m_in_fmt.channels, m_out_fmt.samplerate,  m_out_fmt.channels);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource: initializing context: inrate, ch=%d, %d, outrate, ch=%d, %d", m_in_fmt.samplerate,	 m_in_fmt.channels, m_out_fmt.samplerate,  m_out_fmt.channels);
 		m_resample_context = audio_resample_init(m_out_fmt.channels, m_in_fmt.channels, m_out_fmt.samplerate,m_in_fmt.samplerate);
 		if (!m_resample_context) {
 			lib::logger::get_logger()->error(gettext("Audio cannot be converted to 44Khz stereo"));
@@ -1080,7 +1072,6 @@ ffmpeg_resample_datasource::_src_end_of_file() const
 {
 	// private mathod - no need to lock
 
-
 	if (m_src)
 		return m_src->end_of_file();
 
@@ -1099,11 +1090,11 @@ void
 ffmpeg_resample_datasource::seek(timestamp_t time)
 {
 	m_lock.enter();
-    assert( time >= 0);
+	assert( time >= 0);
 	int nbytes = m_buffer.size();
-    AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource(0x%x)::seek(%ld), discard %d bytes", (void*)this, (long)time, nbytes);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource(0x%x)::seek(%ld), discard %d bytes", (void*)this, (long)time, nbytes);
 	if (nbytes) {
-        AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_resample_datasource: flush buffer (%d bytes) due to seek", nbytes);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_resample_datasource: flush buffer (%d bytes) due to seek", nbytes);
 		(void)m_buffer.get_read_ptr();
 		m_buffer.readdone(nbytes);
 	}
@@ -1123,14 +1114,14 @@ ffmpeg_resample_datasource::set_clip_end(timestamp_t clip_end)
 timestamp_t
 ffmpeg_resample_datasource::get_elapsed()
 {
-    m_lock.enter();
-    timestamp_t src_elapsed = m_src->get_elapsed();
-    int nbytes = m_buffer.size();
-    timestamp_t buffer_elapsed = (1000000LL * nbytes * 8) / (m_out_fmt.channels * m_out_fmt.samplerate * m_out_fmt.bits);
-    AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::get_elapsed: src_elapsed %ld, buffer %ld", src_elapsed, buffer_elapsed);
-    timestamp_t rv = src_elapsed - buffer_elapsed;
-    m_lock.leave();
-    return rv;
+	m_lock.enter();
+	timestamp_t src_elapsed = m_src->get_elapsed();
+	int nbytes = m_buffer.size();
+	timestamp_t buffer_elapsed = (1000000LL * nbytes * 8) / (m_out_fmt.channels * m_out_fmt.samplerate * m_out_fmt.bits);
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::get_elapsed: src_elapsed %ld, buffer %ld", src_elapsed, buffer_elapsed);
+	timestamp_t rv = src_elapsed - buffer_elapsed;
+	m_lock.leave();
+	return rv;
 }
 
 #endif
@@ -1237,7 +1228,7 @@ ffmpeg_resample_datasource::start_prefetch(ambulant::lib::event_processor *evp)
 	m_lock.enter();
 	bool restart_input = false;
 
-    m_event_processor = evp;
+	m_event_processor = evp;
 
 	if ( !_end_of_file() && !m_buffer.buffer_full() ) restart_input = true;
 

@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -45,15 +45,15 @@ lib::event_processor_factory(timer *t)
 
 event_processor_impl::event_processor_impl(timer *t)
 :	m_timer(t),
-    m_high_delta_timer(t),
-    m_med_delta_timer(t),
-    m_low_delta_timer(t),
-    m_observer(NULL)
+	m_high_delta_timer(t),
+	m_med_delta_timer(t),
+	m_low_delta_timer(t),
+	m_observer(NULL)
 {
-    m_lock.enter();
-    assert(t != 0);
-    start();
-    m_lock.leave();
+	m_lock.enter();
+	assert(t != 0);
+	start();
+	m_lock.leave();
 }
 
 event_processor_impl::~event_processor_impl()
@@ -61,13 +61,13 @@ event_processor_impl::~event_processor_impl()
 	AM_DBG lib::logger::get_logger()->debug("event_processor 0x%x deleted", (void *)this);
 	stop();
 	assert( ! is_running());
- 	cancel_all_events();
+	cancel_all_events();
 }
 
 timer *
 event_processor_impl::get_timer() const
 {
-    return m_timer;
+	return m_timer;
 }
 
 unsigned long
@@ -75,7 +75,7 @@ event_processor_impl::run()
 {
 	AM_DBG lib::logger::get_logger()->debug("event_processor 0x%x started", (void *)this);
 #if defined(AMBULANT_PLATFORM_WIN32) || defined(AMBULANT_PLATFORM_WIN32_WCE)
-    HRESULT hr;
+	HRESULT hr;
 #if defined(COINIT_MULTITHREADED) || defined(AMBULANT_PLATFORM_WIN32_WCE)
 	hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
 #else
@@ -90,9 +90,9 @@ event_processor_impl::run()
 		_serve_events();
 		(void)m_lock.wait(10000);
 	}
-    m_lock.leave();
+	m_lock.leave();
 #if defined(AMBULANT_PLATFORM_WIN32) || defined(AMBULANT_PLATFORM_WIN32_WCE)
-    CoUninitialize();
+	CoUninitialize();
 #endif
 	AM_DBG lib::logger::get_logger()->debug("event_processor 0x%x stopped", (void *)this);
 	return 0;
@@ -100,12 +100,12 @@ event_processor_impl::run()
 
 void
 event_processor_impl::add_event(event *pe, time_type t,
-				    event_priority priority)
+					event_priority priority)
 {
 
- 	AM_DBG logger::get_logger()->debug("add_event(0x%x, t=%d, pri=%d)",pe,t,priority);
+	AM_DBG logger::get_logger()->debug("add_event(0x%x, t=%d, pri=%d)",pe,t,priority);
 	m_lock.enter();
-    // Insert the event into the correct queue.
+	// Insert the event into the correct queue.
 	switch(priority) {
 		case ep_high:
 			m_high_delta_timer.insert(pe, t);
@@ -117,17 +117,16 @@ event_processor_impl::add_event(event *pe, time_type t,
 			m_low_delta_timer.insert(pe, t);
 			break;
 	}
-    // Signal the event handler thread
+	// Signal the event handler thread
 	m_lock.signal();
 	m_lock.leave();
 }
 
 bool
-event_processor_impl::cancel_event(event *pe,
-				       event_priority priority)
+event_processor_impl::cancel_event(event *pe, event_priority priority)
 {
 	bool succeeded = false;
- 	AM_DBG logger::get_logger()->debug("cancel_event(0x%x, pri=%d)",pe,priority);
+	AM_DBG logger::get_logger()->debug("cancel_event(0x%x, pri=%d)",pe,priority);
 	m_lock.enter();
 	switch(priority) {
 		case ep_high:
@@ -152,7 +151,7 @@ event_processor_impl::cancel_all_events()
 	m_high_delta_timer.clear();
 	m_med_delta_timer.clear();
 	m_low_delta_timer.clear();
- 	m_lock.leave();
+	m_lock.leave();
 }
 
 // serve all events in the high-med-low prioritity run queues
@@ -174,15 +173,16 @@ event_processor_impl::_serve_events()
 	// check all delta_timer queues, in the right order
 	while (_events_available(m_high_delta_timer, &m_high_q)
 		|| _events_available(m_med_delta_timer, &m_med_q)
-		|| _events_available(m_low_delta_timer, &m_low_q)) {
-        AM_DBG lib::logger::get_logger()->debug("_serve_events: %d hi, %d med, %d lo", m_high_q.size(), m_med_q.size(), m_low_q.size());
+		|| _events_available(m_low_delta_timer, &m_low_q))
+	{
+		AM_DBG lib::logger::get_logger()->debug("_serve_events: %d hi, %d med, %d lo", m_high_q.size(), m_med_q.size(), m_low_q.size());
 		// There was at least one event
 		// First try to serve the high priority event
 		if (_serve_event(m_high_delta_timer, &m_high_q)) {
 			// serving the event may generate another event
 			// of any priority, must check all queues again
 			continue;
-	  	}
+		}
 		// If there was no high priority event, then try to
 		// serve one medium priority event
 		if (_serve_event(m_med_delta_timer, &m_med_q))
@@ -194,21 +194,21 @@ event_processor_impl::_serve_events()
 		(void) _serve_event(m_low_delta_timer, &m_low_q);
 	}
 #ifdef WITH_CLOCK_SYNC
-    timer::signed_time_type drift = m_timer->get_drift();
-    if (drift > 0) {
-        // If the clock is behind, we set it forward. But we don't advance it past the
-        // next event that is due to be scheduled.
-        // If the clock is too fast we simply set it back.
-        timer::signed_time_type next_event_time = std::min(
-            m_low_delta_timer.next_event_time(),
-            std::min(
-                m_med_delta_timer.next_event_time(),
-                m_high_delta_timer.next_event_time()));
-        if (drift >= next_event_time)
-            drift = next_event_time-1;
-    }
-    AM_DBG if (drift) lib::logger::get_logger()->debug("event_processor: adjust clock %d ms (positive is forward)", drift);
-    m_timer->skew(drift);
+	timer::signed_time_type drift = m_timer->get_drift();
+	if (drift > 0) {
+		// If the clock is behind, we set it forward. But we don't advance it past the
+		// next event that is due to be scheduled.
+		// If the clock is too fast we simply set it back.
+		timer::signed_time_type next_event_time = std::min(
+			m_low_delta_timer.next_event_time(),
+			std::min(
+				m_med_delta_timer.next_event_time(),
+				m_high_delta_timer.next_event_time()));
+		if (drift >= next_event_time)
+			drift = next_event_time-1;
+	}
+	AM_DBG if (drift) lib::logger::get_logger()->debug("event_processor: adjust clock %d ms (positive is forward)", drift);
+	m_timer->skew(drift);
 #endif
 
 
@@ -224,7 +224,7 @@ event_processor_impl::_events_available(delta_timer& dt, std::queue<event*> *qp)
 // check, if needed, with a delta_timer to fill its run queue
 // return true if the run queue contains any events
 {
-  	if (qp->empty()) {
+	if (qp->empty()) {
 //		m_lock.leave();
 		dt.execute(*qp);
 //		m_lock.enter();
@@ -240,12 +240,12 @@ event_processor_impl::_serve_event(delta_timer& dt, std::queue<event*> *qp)
 	bool must_serve = !qp->empty();
 	if (must_serve) {
 		event *e = qp->front();
-	 	AM_DBG logger::get_logger()->debug("serve_event(0x%x)",e);
+		AM_DBG logger::get_logger()->debug("serve_event(0x%x)",e);
 		qp->pop();
-        m_lock.leave();
+		m_lock.leave();
 		e->fire();
 		delete e;
-        m_lock.enter();
+		m_lock.enter();
 	}
 	return must_serve;
 }
@@ -260,16 +260,16 @@ event_processor_impl::dump()
 	m_high_delta_timer.write_trace();
 //	lib::logger::get_logger()->trace("high runnable:");
 //	for (i=m_high_q.begin(); i != m_high_q.end(); i++)
-//		lib::logger::get_logger()->trace("  0x%x", (void *)*i);
+//		lib::logger::get_logger()->trace("	0x%x", (void *)*i);
 	lib::logger::get_logger()->trace("med waiting:");
 	m_med_delta_timer.write_trace();
 //	lib::logger::get_logger()->trace("med runnable:");
 //	for (i=m_med_q.begin(); i != m_med_q.end(); i++)
-//		lib::logger::get_logger()->trace("  0x%x", (void *)*i);
+//		lib::logger::get_logger()->trace("	0x%x", (void *)*i);
 	lib::logger::get_logger()->trace("low waiting:");
 	m_low_delta_timer.write_trace();
 //	lib::logger::get_logger()->trace("low runnable:");
 //	for (i=m_low_q.begin(); i != m_low_q.end(); i++)
-//		lib::logger::get_logger()->trace("  0x%x", (void *)*i);
+//		lib::logger::get_logger()->trace("	0x%x", (void *)*i);
 }
 #endif

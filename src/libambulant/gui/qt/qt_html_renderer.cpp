@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -40,22 +40,24 @@ using namespace gui::qt;
 static common::renderer_private_id my_renderer_id = (common::renderer_private_id)"qt_html_renderer";
 
 class gui::qt::browser_container : public ref_counted_obj {
-    KHTMLPart *m_browser;
-    int m_generation;
+	KHTMLPart *m_browser;
+	int m_generation;
 
   public:
-    browser_container(KHTMLPart *br)
-    :   m_browser(br),
-        m_generation(0) {}
+	browser_container(KHTMLPart *br)
+	:	m_browser(br),
+		m_generation(0)
+	{}
 
-    ~browser_container() {
-        m_browser->hide();
-        // XXX delete m_browsser
-    }
-    KHTMLPart *show() {
-        m_generation++;
-        return m_browser;
-    }
+	~browser_container() {
+		m_browser->hide();
+		// XXX delete m_browsser
+	}
+	
+	KHTMLPart *show() {
+		m_generation++;
+		return m_browser;
+	}
 	void hide_generation(int gen) {
 		if (m_generation == gen) {
 			m_browser->hide();
@@ -80,14 +82,14 @@ extern const char qt_html_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("Render
 common::playable_factory *
 gui::qt::create_qt_html_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererQt"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererHtml"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererQt"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererHtml"), true);
 	return new common::single_playable_factory<
-        qt_html_renderer,
-        qt_html_playable_tag,
-        qt_html_playable_renderer_uri,
-        qt_html_playable_renderer_uri2,
-        qt_html_playable_renderer_uri2>(factory, mdp);
+		qt_html_renderer,
+		qt_html_playable_tag,
+		qt_html_playable_renderer_uri,
+		qt_html_playable_renderer_uri2,
+		qt_html_playable_renderer_uri2>(factory, mdp);
 }
 
 qt_html_renderer::qt_html_renderer(
@@ -97,8 +99,8 @@ qt_html_renderer::qt_html_renderer(
 		lib::event_processor *const evp,
 		common::factories *factory,
 		common::playable_factory_machdep *mdp)
-:   renderer_playable(context, cookie, node, evp, factory, mdp),
-    m_html_browser(NULL)
+:	renderer_playable(context, cookie, node, evp, factory, mdp),
+	m_html_browser(NULL)
 {
 
 	AM_DBG lib::logger::get_logger()->debug("qt_html_renderer(0x%x)",this);
@@ -107,7 +109,7 @@ qt_html_renderer::qt_html_renderer(
 void
 gui::qt::qt_html_renderer::start(double t) {
 	m_lock.enter();
- 	AM_DBG lib::logger::get_logger()->debug("qt_html_renderer::start(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("qt_html_renderer::start(0x%x)", this);
 
 	assert(!m_html_browser);
 	m_html_browser = dynamic_cast<browser_container*>(m_dest->get_renderer_private_data(my_renderer_id));
@@ -160,7 +162,7 @@ gui::qt::qt_html_renderer::stop() {
 	m_dest = NULL;
 	m_activated = false;
 	if (m_html_browser)
-	   m_html_browser->hide(m_event_processor);
+		m_html_browser->hide(m_event_processor);
 	m_lock.leave();
 	return true;
 }

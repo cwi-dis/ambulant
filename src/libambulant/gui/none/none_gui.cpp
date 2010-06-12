@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -34,7 +34,7 @@ using namespace common;
 common::window_factory *
 ambulant::gui::none::create_none_window_factory()
 {
-    return new none_window_factory();
+	return new none_window_factory();
 }
 
 gui::none::none_playable::none_playable(

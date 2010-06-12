@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -56,7 +56,7 @@ class output_visitor {
 
   public:
 	output_visitor(std::ostream& os_)
-	:	os(os_), strincr("  ") {ns = strincr.length();}
+	:	os(os_), strincr("	") {ns = strincr.length();}
 	void operator()(std::pair<bool, const Node*> x);
 
   private:
@@ -133,7 +133,7 @@ lib::node_impl::node_impl(const char *local_name, const char **attrs, const node
 }
 
 lib::node_impl::node_impl(const xml_string& local_name, const char **attrs, const node_context *ctx)
-:   m_qname("", local_name),
+:	m_qname("", local_name),
 	m_local_name(local_name),
 	m_is_data_node(false),
 	m_context(ctx),
@@ -164,7 +164,7 @@ lib::node_impl::node_impl(const q_name_pair& qn, const q_attributes_list& qattrs
 
 // shallow copy from other
 lib::node_impl::node_impl(const node_impl* other)
-:   m_qname(other->get_qname()),
+:	m_qname(other->get_qname()),
 	m_local_name(other->get_local_name()),
 	m_qattrs(other->get_attrs()),
 	m_data(other->get_data()),
@@ -495,12 +495,12 @@ std::string lib::node_impl::get_sig() const {
 			s += "\"";
 		}
 	}
-    const char *debug = get_attribute("_debug");
-    if (debug) {
-        s += " _debug=\"";
-        s += debug;
-        s += "\"";
-    }
+	const char *debug = get_attribute("_debug");
+	if (debug) {
+		s += " _debug=\"";
+		s += debug;
+		s += "\"";
+	}
 	s += ">";
 	return s;
 }
@@ -706,7 +706,7 @@ class builtin_node_factory : public lib::node_factory {
 // we need to define a couple more things:
 // - factory functions (which are defined inline for non-external DOM builds)
 // - a couple of methods that accept node_interface parameters and do
-//   dynamic typechecks that the arguments are actually node_impl's.
+//	 dynamic typechecks that the arguments are actually node_impl's.
 
 // Factory functions
 lib::node *
@@ -768,13 +768,13 @@ extern "C" {
 	{
 		const char* type = "", *required = "N8ambulant3lib9node_implE";
 		try {
-	  		type = typeid(*p).name();
+			type = typeid(*p).name();
 		} catch (std::bad_typeid) {
 			std::cerr << "Unable to find typeid\n";
 			return;
 		}
 		if (strcmp (type, required) == 0) {
-  			lib::node_impl* node = dynamic_cast<lib::node_impl*>(p);
+			lib::node_impl* node = dynamic_cast<lib::node_impl*>(p);
 			if (node) {
 				static lib::xml_string s = node->to_string();
 				std::cout << s.c_str();

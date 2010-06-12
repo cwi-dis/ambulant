@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -30,9 +30,9 @@ typedef unsigned char byte;
 
 memfile::~memfile() {
 	if (m_src) {
-        m_src->stop();
-        m_src->release();
-    }
+		m_src->stop();
+		m_src->release();
+	}
 	m_src = NULL;
 }
 
@@ -61,9 +61,9 @@ void
 memfile::seekg(size_type pos) { m_gptr = pos;}
 
 const lib::byte*
-memfile::data() const { return  m_buffer.data();}
+memfile::data() const { return	m_buffer.data();}
 const lib::byte*
-memfile::begin() const { return  m_buffer.data();}
+memfile::begin() const { return	 m_buffer.data();}
 const lib::byte*
 memfile::end() const { return  m_buffer.data() + size();}
 

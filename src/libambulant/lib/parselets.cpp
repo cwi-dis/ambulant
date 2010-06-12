@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -41,7 +41,7 @@ lib::list_p::parse(const_iterator& it, const const_iterator& end) {
 	const_iterator test_it = it;
 	std::ptrdiff_t sd = 0;
 	std::list<parselet*>::iterator rit;
-	for(rit = m_result.begin(); rit !=  m_result.end(); rit++) {
+	for(rit = m_result.begin(); rit !=	m_result.end(); rit++) {
 		std::ptrdiff_t d = (*rit)->parse(test_it, end);
 		if(d == -1) return -1;
 		sd += d;
@@ -52,7 +52,7 @@ lib::list_p::parse(const_iterator& it, const const_iterator& end) {
 
 lib::list_p::~list_p() {
 	std::list<parselet*>::iterator rit;
-	for(rit = m_result.begin(); rit !=  m_result.end(); rit++)
+	for(rit = m_result.begin(); rit !=	m_result.end(); rit++)
 		delete *rit;
 }
 
@@ -69,7 +69,7 @@ lib::options_p::parse(const_iterator& it, const const_iterator& end) {
 
 	std::list<parselet*>::iterator rit;
 	int ix = 0;
-	for(rit = m_options.begin(); rit !=  m_options.end(); rit++, ix++)
+	for(rit = m_options.begin(); rit !=	 m_options.end(); rit++, ix++)
 		aptrdiff[ix] = (*rit)->parse(test_it, end);
 
 	for(rit = m_options.begin(), ix=0; rit !=  m_options.end(); rit++, ix++) {
@@ -85,7 +85,7 @@ lib::options_p::parse(const_iterator& it, const const_iterator& end) {
 
 lib::options_p::~options_p() {
 	std::list<parselet*>::iterator rit;
-	for(rit = m_options.begin(); rit !=  m_options.end(); rit++)
+	for(rit = m_options.begin(); rit !=	 m_options.end(); rit++)
 		delete *rit;
 }
 
@@ -141,10 +141,10 @@ lib::number_p::parse(const_iterator& it, const const_iterator& end) {
 	int_p f;
 	d = f.parse(tit, end);
 	if(d == -1) {
-        if(needs_fraction)
-            return -1;
-        else
-            f.m_result = 0;
+		if(needs_fraction)
+			return -1;
+		else
+			f.m_result = 0;
 	}
 	sd += (d == -1)?0:d;
 	m_result = sign*(i.m_result + double(f.m_result)/::pow(10.0, int(d)));
@@ -345,7 +345,7 @@ lib::timecount_value_p::parse(const_iterator& it, const const_iterator& end) {
 // clock_value_p and converter to ms
 
 inline int fraction_to_ms(int f) {
-    // There is now a fraction_p parser, that always ensures fractions are in milliseconds.
+	// There is now a fraction_p parser, that always ensures fractions are in milliseconds.
 	return (f<=0)?0:f;
 }
 
@@ -498,7 +498,7 @@ lib::region_dim_p::parse(const_iterator& it, const const_iterator& end) {
 //////////////////////
 // point_p
 
-// S? (? d+ S? , S? d+  S? )?
+// S? (? d+ S? , S? d+	S? )?
 std::ptrdiff_t
 lib::point_p::parse(const_iterator& it, const const_iterator& end) {
 	const_iterator tit = it;
@@ -691,7 +691,7 @@ lib::smpte_p::get_time()
 	else
 		frame_duration = 1.0/25;
 
-	time = (m_result[0]*60*60*1000) + (m_result[1]*60*1000) + (m_result[2] *1000) + (long int) ::floor( ((m_result[3] * frame_duration  + m_result[4] * frame_duration/2) + 0.5 ) * 1000);
+	time = (m_result[0]*60*60*1000) + (m_result[1]*60*1000) + (m_result[2] *1000) + (long int) ::floor( ((m_result[3] * frame_duration	+ m_result[4] * frame_duration/2) + 0.5 ) * 1000);
 
 	return time;
 }

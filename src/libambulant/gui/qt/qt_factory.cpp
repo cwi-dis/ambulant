@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -29,7 +29,7 @@
 #ifdef	WITH_QT_HTML_WIDGET
 #include "ambulant/gui/qt/qt_html_renderer.h"
 #endif/*WITH_QT_HTML_WIDGET*/
-#ifdef  WITH_SMIL30
+#ifdef	WITH_SMIL30
 #include "ambulant/gui/qt/qt_smiltext.h"
 #endif/*WITH_SMIL30*/
 #include "ambulant/gui/qt/qt_text_renderer.h"
@@ -46,18 +46,18 @@ using namespace net;
 common::window_factory *
 ambulant::gui::qt::create_qt_window_factory(QWidget *parent_widget, int top_offset, gui_player *gpl)
 {
-    return new qt_window_factory(parent_widget, top_offset, gpl);
+	return new qt_window_factory(parent_widget, top_offset, gpl);
 }
 
 common::window_factory *
 ambulant::gui::qt::create_qt_window_factory_unsafe(void *parent_widget, int top_offset, gui_player *gpl)
 {
-    QWidget *qw = reinterpret_cast<QWidget*>(parent_widget);
-    if (qw == NULL) {
-        lib::logger::get_logger()->fatal("create_qt_window_factory: Not a QWidget!");
-        return NULL;
-    }
-    return new qt_window_factory(qw, top_offset, gpl);
+	QWidget *qw = reinterpret_cast<QWidget*>(parent_widget);
+	if (qw == NULL) {
+		lib::logger::get_logger()->fatal("create_qt_window_factory: Not a QWidget!");
+		return NULL;
+	}
+	return new qt_window_factory(qw, top_offset, gpl);
 }
 
 
@@ -67,21 +67,21 @@ ambulant::gui::qt::create_qt_window_factory_unsafe(void *parent_widget, int top_
 
 qt_window_factory::qt_window_factory( QWidget* parent_widget, int top_offset, gui_player *gpl)
 :	m_parent_widget(parent_widget),
-    m_top_offset(top_offset),
-    m_gui_player(gpl)
+	m_top_offset(top_offset),
+	m_gui_player(gpl)
 {
 	AM_DBG lib::logger::get_logger()->debug("qt_window_factory (0x%x)", (void*) this);
 }
 
 common::gui_window *
 qt_window_factory::new_window (const std::string &name,
-    lib::size bounds,
-    common::gui_events *region)
+	lib::size bounds,
+	common::gui_events *region)
 {
 	lib::rect r (lib::point(0, m_top_offset), bounds);
 	AM_DBG lib::logger::get_logger()->debug("qt_window_factory::new_window (0x%x): name=%s %d,%d,%d,%d", (void*) this, name.c_str(), r.left(),r.top(),r.right(),r.bottom());
 
- 	ambulant_qt_window * aqw = new ambulant_qt_window(name, &r, region);
+	ambulant_qt_window * aqw = new ambulant_qt_window(name, &r, region);
 	qt_ambulant_widget * qaw = new qt_ambulant_widget(name, &r, m_parent_widget);
 
 	qaw->setBackgroundMode(Qt::NoBackground);
@@ -92,7 +92,7 @@ qt_window_factory::new_window (const std::string &name,
 	aqw->set_ambulant_widget(qaw);
 	qaw->set_qt_window(aqw);
 	qaw->set_gui_player(m_gui_player);
- 	AM_DBG lib::logger::get_logger()->debug("qt_window_factory::new_window(0x%x): ambulant_widget=0x%x qt_window=0x%x", (void*) this, (void*) qaw, (void*) aqw);
+	AM_DBG lib::logger::get_logger()->debug("qt_window_factory::new_window(0x%x): ambulant_widget=0x%x qt_window=0x%x", (void*) this, (void*) qaw, (void*) aqw);
 	qaw->show();
 	return aqw;
 }
@@ -129,9 +129,9 @@ qt_video_factory::new_playable(
 	common::playable *rv;
 
 	lib::xml_string tag = node->get_qname().second;
-    AM_DBG lib::logger::get_logger()->debug("qt_video_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
+	AM_DBG lib::logger::get_logger()->debug("qt_video_factory: node 0x%x:	inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "video") {
-	  rv = new qt_video_renderer(context, cookie, node, evp, m_factory, NULL);
+		rv = new qt_video_renderer(context, cookie, node, evp, m_factory, NULL);
 		AM_DBG lib::logger::get_logger()->debug("qt_video_factory: node 0x%x: returning qt_video_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("qt_video_factory: no renderer for tag \"%s\"", tag.c_str());
@@ -156,8 +156,8 @@ qt_video_factory::new_aux_audio_playable(
 //
 
 ambulant_qt_window::ambulant_qt_window(const std::string &name,
-	   lib::rect* bounds,
-	   common::gui_events *region)
+	lib::rect* bounds,
+	common::gui_events *region)
 :	common::gui_window(region),
 	m_ambulant_widget(NULL),
 	m_pixmap(NULL),
@@ -190,15 +190,15 @@ ambulant_qt_window::~ambulant_qt_window()
 		}
 	}
 	if ( m_fullscreen_prev_pixmap) {
-		delete  m_fullscreen_prev_pixmap;
+		delete	m_fullscreen_prev_pixmap;
 		m_fullscreen_prev_pixmap = NULL;
 	}
 	if ( m_fullscreen_prev_pixmap) {
-		delete  m_fullscreen_prev_pixmap;
+		delete	m_fullscreen_prev_pixmap;
 		m_fullscreen_prev_pixmap = NULL;
 	}
 	if ( m_surface) {
-		delete  m_surface;
+		delete	m_surface;
 		m_surface = NULL;
 	}
 }
@@ -247,7 +247,7 @@ ambulant_qt_window::redraw(const lib::rect &r)
 bool
 ambulant_qt_window::user_event(const lib::point &where, int what)
 {
-    AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::user_event(0x%x): point=(%d,%d)", this, where.x, where.y);
+	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::user_event(0x%x): point=(%d,%d)", this, where.x, where.y);
 	return m_handler->user_event(where, what);
 }
 
@@ -292,14 +292,14 @@ ambulant_qt_window::new_ambulant_surface()
 	QSize size = m_pixmap->size();
 	m_surface = new QPixmap(size.width(), size.height());
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::new_ambulant_surface(0x%x)",(void *)m_surface);
-        return m_surface;
+	return m_surface;
 }
 
 QPixmap*
 ambulant_qt_window::get_ambulant_surface()
 {
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::get_ambulant_surface(0x%x) = 0x%x",(void *)this,(void *)m_surface);
-        return m_surface;
+	return m_surface;
 }
 
 QPixmap*
@@ -308,7 +308,7 @@ ambulant_qt_window::get_ambulant_oldpixmap()
 	AM_DBG lib::logger::get_logger()->debug("ambulant_qt_window::get_ambulant_oldpixmap(0x%x) = 0x%x",(void *)this,(void *)m_oldpixmap);
 	if (m_fullscreen_count && m_fullscreen_old_pixmap)
 		return m_fullscreen_old_pixmap;
-        return m_oldpixmap;
+	return m_oldpixmap;
 }
 
 void
@@ -440,12 +440,12 @@ qt_ambulant_widget::qt_ambulant_widget(const std::string &name,
 	lib::rect* bounds,
 	QWidget* parent_widget)
 :	QWidget(parent_widget,"qt_ambulant_widget",0),
-    m_gui_player(NULL),
+	m_gui_player(NULL),
 	m_qt_window(NULL)
 {
 	AM_DBG lib::logger::get_logger()->debug("qt_ambulant_widget::qt_ambulant_widget(0x%x-0x%x(%d,%d,%d,%d))",
 		(void *)this,
-		(void*)  parent_widget,
+		(void*)	 parent_widget,
 		bounds->left(),
 		bounds->top(),
 		bounds->right(),
@@ -509,10 +509,10 @@ qt_ambulant_widget::mouseMoveEvent(QMouseEvent* e) {
 	AM_DBG lib::logger::get_logger()->debug("qt_ambulant_widget::mouseMoveEvent:(%d,%d)\n", e->x(),e->y());
 	ambulant::lib::point ap = ambulant::lib::point(e->x(), e->y());
 #if 1
-    // XXX This code was temporarily disabled, because with the current
-    // structure there is no easy way to get at the gui_player, which
-    // is needed to tell the scheduler we're about to start telling it
-    // about pointed() nodes.
+	// XXX This code was temporarily disabled, because with the current
+	// structure there is no easy way to get at the gui_player, which
+	// is needed to tell the scheduler we're about to start telling it
+	// about pointed() nodes.
 	gui_player* pl = get_gui_player();
 	if (pl)
 		pl->before_mousemove(0);
@@ -522,11 +522,11 @@ qt_ambulant_widget::mouseMoveEvent(QMouseEvent* e) {
 		cursid = pl->after_mousemove();
 	QCursor cursor(ArrowCursor);
 	if (cursid == 0) {
-        ; // pass
+		; // pass
 	} else if (cursid == 1) {
-                cursor = PointingHandCursor;
+		cursor = PointingHandCursor;
 	} else {
-                lib::logger::get_logger()->debug("mouseMoveEvent: unknown cursor id %d", cursid);
+		lib::logger::get_logger()->debug("mouseMoveEvent: unknown cursor id %d", cursid);
 	}
 	AM_DBG lib::logger::get_logger()->debug("qt_ambulant_widget::mouseMoveEvent(0x%x): cursid=%d)",cursid);
 	setCursor(cursor);
@@ -541,8 +541,7 @@ qt_ambulant_widget::set_qt_window( ambulant_qt_window* aqw)
 	//	if (m_qt_window != NULL)
 	//	  delete m_qt_window;
 	m_qt_window = aqw;
-	AM_DBG lib::logger::get_logger()->debug("qt_ambulant_widget::set_qt_window(0x%x): m_qt_window==0x%x)",
-		(void*) this, (void*) m_qt_window);
+	AM_DBG lib::logger::get_logger()->debug("qt_ambulant_widget::set_qt_window(0x%x): m_qt_window==0x%x)", (void*) this, (void*) m_qt_window);
 }
 
 

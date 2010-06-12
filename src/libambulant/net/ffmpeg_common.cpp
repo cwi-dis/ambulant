@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -70,15 +70,20 @@ int64_t (*orig_http_seek)(URLContext *h, int64_t pos, int whence);
 int64_t http_seek_workaround(URLContext *h, int64_t pos, int whence)
 {
 #if 1
-    return -1;
+	return -1;
 #else
-    // Does not work yet
-    if ((pos == 0 && whence == AVSEEK_SIZE) || (pos == -1 && whence == SEEK_END) || pos > 10000000000LL)
-        return -1;
-    return orig_http_seek(h, pos, whence);
+	// Does not work yet
+	if ((pos == 0 && whence == AVSEEK_SIZE)
+		|| (pos == -1 && whence == SEEK_END)
+		|| pos > 10000000000LL)
+	{
+		return -1;
+	}
+	return orig_http_seek(h, pos, whence);
 #endif
 }
-}
+
+} // extern "C"
 #endif // FFMPEG_HTTP_SEEK_BUG
 
 void
@@ -87,19 +92,20 @@ ambulant::net::ffmpeg_init()
 	static bool is_inited = false;
 	if (is_inited) return;
 #if 0
-    // Enable this line to get lots of ffmpeg debug output:
-    av_log_set_level(99);
+	// Enable this line to get lots of ffmpeg debug output:
+	av_log_set_level(99);
 #endif
 	avcodec_init();
 	av_register_all();
 #ifdef FFMPEG_HTTP_SEEK_BUG
 	URLProtocol *p = av_protocol_next(NULL);
-	while (p && strcmp(p->name, "http") != 0)
+	while (p && strcmp(p->name, "http") != 0) {
 		p = av_protocol_next(p);
+	}
 	if (p) {
-        orig_http_seek = p->url_seek;
-        p->url_seek = http_seek_workaround;
-    }
+		orig_http_seek = p->url_seek;
+		p->url_seek = http_seek_workaround;
+	}
 #endif // FFMPEG_HTTP_SEEK_BUG
 	is_inited = true;
 }
@@ -111,10 +117,10 @@ ffmpeg_codec_id*
 ffmpeg_codec_id::instance()
 {
 	if (m_uniqueinstance == NULL) {
-        m_uniqueinstance = new ffmpeg_codec_id();
+		m_uniqueinstance = new ffmpeg_codec_id();
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_codec_id::instance() returning 0x%x", (void*) m_uniqueinstance);
 	}
-    return m_uniqueinstance;
+	return m_uniqueinstance;
 }
 
 void
@@ -165,7 +171,7 @@ ffmpeg_codec_id::ffmpeg_codec_id()
 
 
 ffmpeg_demux::ffmpeg_demux(AVFormatContext *con, timestamp_t clip_begin, timestamp_t clip_end)
-:   m_con(con),
+:	m_con(con),
 	m_nstream(0),
 	m_clip_begin(clip_begin),
 	m_clip_end(clip_end),
@@ -203,9 +209,9 @@ ffmpeg_demux::~ffmpeg_demux()
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::~ffmpeg_demux()");
 	if (m_con) {
-        av_close_input_file(m_con);
-        // Implies av_free(m_con);
-    }
+		av_close_input_file(m_con);
+		// Implies av_free(m_con);
+	}
 	m_con = NULL;
 	m_lock.leave();
 }
@@ -233,13 +239,14 @@ ffmpeg_demux::supported(const net::url& url)
 	AVProbeData probe_data;
 	std::string url_str(url.get_url());
 	std::string ffmpeg_name = url_str;
-	if (url.is_local_file())
+	if (url.is_local_file()) {
 		ffmpeg_name = url.get_file();
+	}
 
 #if 1
 	// There appears to be some support for RTSP in ffmpeg, but it doesn'
 	// seem to work yet. Disable it so we don't get confused by error messages.
-    // XXXJACK need to test this with future ffmpeg versions.
+	// XXXJACK need to test this with future ffmpeg versions.
 	if (url_str.substr(0, 5) == "rtsp:") return NULL;
 #endif
 	probe_data.filename = ffmpeg_name.c_str();
@@ -249,9 +256,10 @@ ffmpeg_demux::supported(const net::url& url)
 	if (!fmt && url.is_local_file()) {
 		// get the file extension
 		std::string short_name = ffmpeg_name.substr(ffmpeg_name.length()-3,3);
-		if (short_name == "mov" || short_name == "mp4")
+		if (short_name == "mov" || short_name == "mp4") {
 			// ffmpeg's id for QuickTime/MPEG4/Motion JPEG 2000 format
 			short_name = "mov,mp4,m4a,3gp,3g2,mj2";
+		}
 		fmt = av_find_input_format(short_name.c_str());
 
 	}
@@ -263,8 +271,7 @@ ffmpeg_demux::supported(const net::url& url)
 		if (ic) av_close_input_file(ic);
 		return NULL;
 	}
-	//err = av_read_play(ic);
- 	err = av_find_stream_info(ic);
+	err = av_find_stream_info(ic);
 	if (err < 0) {
 		lib::logger::get_logger()->trace("ffmpeg_demux::supported(%s): av_find_stream_info returned error %d, ic=0x%x", url_str.c_str(), err, (void*)ic);
 		if (ic) av_close_input_file(ic);
@@ -280,8 +287,7 @@ ffmpeg_demux::supported(const net::url& url)
 void
 ffmpeg_demux::cancel()
 {
-	if (is_running())
-		stop();
+	if (is_running()) stop();
 	release();
 }
 
@@ -324,7 +330,7 @@ ffmpeg_demux::duration()
 	if (m_clip_end > 0 && m_clip_end < dur)
 		dur = m_clip_end;
 	dur -= m_clip_begin;
- 	return dur / (double)AV_TIME_BASE;
+	return dur / (double)AV_TIME_BASE;
 
 }
 
@@ -337,15 +343,19 @@ ffmpeg_demux::nstreams()
 audio_format&
 ffmpeg_demux::get_audio_format()
 {
-	 return m_audio_fmt;
+	return m_audio_fmt;
 }
 
 video_format&
 ffmpeg_demux::get_video_format()
 {
 	m_lock.enter();
-	if (m_video_fmt.width == 0) m_video_fmt.width = am_get_codec_var(m_con->streams[video_stream_nr()]->codec, width);
-	if (m_video_fmt.height == 0) m_video_fmt.height = am_get_codec_var(m_con->streams[video_stream_nr()]->codec, height);
+	if (m_video_fmt.width == 0) {
+		m_video_fmt.width = am_get_codec_var(m_con->streams[video_stream_nr()]->codec, width);
+	}
+	if (m_video_fmt.height == 0) {
+		m_video_fmt.height = am_get_codec_var(m_con->streams[video_stream_nr()]->codec, height);
+	}
 	m_lock.leave();
 	return m_video_fmt;
 
@@ -369,10 +379,10 @@ ffmpeg_demux::read_ahead(timestamp_t time)
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::read_ahead(%d), m_clip_begin was %d", time, m_clip_begin);
-    if (m_clip_begin != time) {
-        m_clip_begin = time;
-        m_clip_begin_changed = true;
-    }
+	if (m_clip_begin != time) {
+		m_clip_begin = time;
+		m_clip_begin_changed = true;
+	}
 	m_lock.leave();
 }
 
@@ -381,7 +391,7 @@ ffmpeg_demux::seek(timestamp_t time)
 {
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::seek(0x%x): time=%d", this, time);
-    assert( time >= 0);
+	assert( time >= 0);
 	m_clip_begin = time;
 	m_clip_begin_changed = true;
 	m_lock.leave();
@@ -409,15 +419,12 @@ ffmpeg_demux::remove_datasink(int stream_index)
 	m_sinks[stream_index] = 0;
 	if (ds) m_nstream--;
 	m_lock.leave();
-	if (ds)
-	{
-		if (ds != m_current_sink){
-            // If the sink is currently busy (in run()) then
-            // run() will take care of disposal.
-			// signal EOF
-			ds->push_data(0, 0, 0);
-			ds->release();
-		}
+	if (ds && ds != m_current_sink){
+		// If the sink is currently busy (in run()) then
+		// run() will take care of disposal.
+		// signal EOF
+		ds->push_data(0, 0, 0);
+		ds->release();
 	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_demux::remove_datasink(0x%x): stream_index=%d ds=0x%x m_current_sink=0x%x m_nstream=%d", this, stream_index, ds, m_current_sink, m_nstream);
 	if (m_nstream <= 0) cancel();
@@ -430,7 +437,7 @@ ffmpeg_demux::run()
 	m_lock.enter();
 	int pkt_nr;
 	int video_streamnr = video_stream_nr();
-    int audio_streamnr = audio_stream_nr();
+	int audio_streamnr = audio_stream_nr();
 	int64_t pts = 0;
 //#define RESYNC_TO_INITIAL_AUDIO_PTS 1
 #if RESYNC_TO_INITIAL_AUDIO_PTS
@@ -458,26 +465,26 @@ ffmpeg_demux::run()
 #ifdef WITH_SEAMLESS_PLAYBACK
 			eof_sent_to_clients = false;
 #endif
-            AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %lld", m_clip_begin );
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %lld", m_clip_begin );
 			int64_t seektime = m_clip_begin;
 #define SEEK_ALL_STREAMS
 #ifdef SEEK_ALL_STREAMS
-            // Seeking in ffmpeg seems to cause no end to problems. The previous code, which seeked only one
-            // of the streams, seems to (sometimes? always?) leave the other stream positioned where it was.
-            // We work around this by seeking all streams.
-            int64_t seektime_a, seektime_v;
+			// Seeking in ffmpeg seems to cause no end to problems. The previous code, which seeked only one
+			// of the streams, seems to (sometimes? always?) leave the other stream positioned where it was.
+			// We work around this by seeking all streams.
+			int64_t seektime_a, seektime_v;
 			if (audio_streamnr >= 0)
 				seektime_a = av_rescale_q(seektime, AMBULANT_TIMEBASE, m_con->streams[audio_streamnr]->time_base);
 			if (video_streamnr >= 0)
 				seektime_v = av_rescale_q(seektime, AMBULANT_TIMEBASE, m_con->streams[video_streamnr]->time_base);
 			int seekresult = 0;
-            m_lock.leave();
+			m_lock.leave();
 			if (audio_streamnr >= 0)
-                seekresult = av_seek_frame(m_con, audio_streamnr, seektime_a, AVSEEK_FLAG_BACKWARD);
+				seekresult = av_seek_frame(m_con, audio_streamnr, seektime_a, AVSEEK_FLAG_BACKWARD);
 			if (seekresult > 0 && video_streamnr >= 0)
-                seekresult = av_seek_frame(m_con, video_streamnr, seektime_v, AVSEEK_FLAG_BACKWARD);
+				seekresult = av_seek_frame(m_con, video_streamnr, seektime_v, AVSEEK_FLAG_BACKWARD);
 			m_lock.enter();
-#else
+#else // SEEK_ALL_STREAMS
 			// If we have a video stream we should rescale our time offset to the timescale of the video stream.
 			int seek_streamnr = -1;
 
@@ -489,8 +496,8 @@ ffmpeg_demux::run()
 			// We use the default stream to conduct seek since it is not clear which one
 			// should have priority and the default value is good enough for Laiola's
 			// sample smil for MyVideo ---Bo 08-April-2010
-			#if 0
-			#if 0
+#if 0
+#if 0
 			if (audio_streamnr >= 0) {
 				seektime = av_rescale_q(seektime, AMBULANT_TIMEBASE, m_con->streams[audio_streamnr]->time_base);
 				seek_streamnr = audio_streamnr;
@@ -498,7 +505,7 @@ ffmpeg_demux::run()
 				seektime = av_rescale_q(seektime, AMBULANT_TIMEBASE, m_con->streams[video_streamnr]->time_base);
 				seek_streamnr = video_streamnr;
 			}
-			#else
+#else
 			if (video_streamnr >= 0) {
 				seektime = av_rescale_q(seektime, AMBULANT_TIMEBASE, m_con->streams[video_streamnr]->time_base);
 				seek_streamnr = video_streamnr;
@@ -506,14 +513,14 @@ ffmpeg_demux::run()
 				seektime = av_rescale_q(seektime, AMBULANT_TIMEBASE, m_con->streams[audio_streamnr]->time_base);
 				seek_streamnr = audio_streamnr;
 			}
-			#endif
-			#endif
+#endif // 0
+#endif // 0
 
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %lld scaled to mediatimebase", seektime);
 			m_lock.leave();
 			int seekresult = av_seek_frame(m_con, seek_streamnr, seektime, AVSEEK_FLAG_BACKWARD);
 			m_lock.enter();
-#endif
+#endif // SEEK_ALL_STREAMS
 			if (seekresult < 0) {
 				lib::logger::get_logger()->debug("ffmpeg_demux: av_seek_frame() returned %d", seekresult);
 			}
@@ -544,11 +551,11 @@ ffmpeg_demux::run()
 			ambulant::lib::sleep_msec(10);
 #else
 			usleep(10000);
-#endif//AMBULANT_PLATFORM_WIN32
+#endif // AMBULANT_PLATFORM_WIN32
 			m_lock.enter();
 			continue;
 		}
-#endif
+#endif // WITH_SEAMLESS_PLAYBACK
 
 		pkt_nr++;
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: av_read_packet number : %d",pkt_nr);
@@ -567,7 +574,7 @@ ffmpeg_demux::run()
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: dts invalid using pts=%lld", pkt->dts);
 					pts = pkt->pts;
 				}
-#if 1
+
 				// 17-feb-2010 To fix the chopping audio playback in vobis/ogg
 				// For some reason which I don't understand, In the current version of ffmpeg, for reading vorbis in ogg,
 				// sometime, the pts and dts got by ffmpeg is not valid any more (which equal to AV_NOPTS_VALUE)
@@ -580,33 +587,33 @@ ffmpeg_demux::run()
 				if (pts != AV_NOPTS_VALUE) {
 					pts = av_rescale_q(pts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
 
-					if (pkt->stream_index == audio_streamnr)
-        		           	     last_valid_audio_pts = pts;
-                		} else {
+					if (pkt->stream_index == audio_streamnr) {
+						last_valid_audio_pts = pts;
+					}
+				} else {
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: pts and dts invalid using pts=%lld", last_valid_audio_pts);
 
 					last_valid_audio_pts++;
 					pts = last_valid_audio_pts;
-#endif // 1
 
 #if RESYNC_TO_INITIAL_AUDIO_PTS
-                    // We seem to be getting values with a non-zero epoch sometimes (?)
-                    // Remember initial audio pts, and resync everything to that.
-                    // Fixes bug #2046564.
-                    if (!initial_audio_pts_set && pkt->stream_index == audio_streamnr) {
-                        initial_audio_pts = pts;
-                        // Bugfix to bugfix: need to take initial seek/clipbegin into account too
-                        initial_audio_pts -= m_clip_begin;
-                        initial_audio_pts_set = true;
-                    }
-                    pts -= initial_audio_pts;
+					// We seem to be getting values with a non-zero epoch sometimes (?)
+					// Remember initial audio pts, and resync everything to that.
+					// Fixes bug #2046564.
+					if (!initial_audio_pts_set && pkt->stream_index == audio_streamnr) {
+						initial_audio_pts = pts;
+						// Bugfix to bugfix: need to take initial seek/clipbegin into account too
+						initial_audio_pts -= m_clip_begin;
+						initial_audio_pts_set = true;
+					}
+					pts -= initial_audio_pts;
 #else // RESYNC_TO_INITIAL_AUDIO_PTS
-                    // If we don't resync to initial audio PTS we resync to start_time.
-                    int64_t stream_start = m_con->start_time; // m_con->streams[audio_streamnr]->start_time;
-                    if (stream_start != AV_NOPTS_VALUE) pts -= stream_start;
-                    // assert(pts >= 0);
+					// If we don't resync to initial audio PTS we resync to start_time.
+					int64_t stream_start = m_con->start_time; // m_con->streams[audio_streamnr]->start_time;
+					if (stream_start != AV_NOPTS_VALUE) pts -= stream_start;
+					// assert(pts >= 0);
 #endif // RESYNC_TO_INITIAL_AUDIO_PTS
-                }
+				}
 			}
 			// We are now going to push data to one of our clients. This means that we should re-send an EOF at the end, even if
 			// we have already sent one earlier.
@@ -636,13 +643,12 @@ ffmpeg_demux::run()
 				if ( ! accepted) {
 					// wait until space available in sink
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", pkt->stream_index);
-				 	// sleep 10 millisec, hardly noticeable
+					// sleep 10 millisec, hardly noticeable
 #ifdef	AMBULANT_PLATFORM_WIN32
 					ambulant::lib::sleep_msec(10); // XXXX should be woken by readdone()
 #else
 					usleep(10000);
 #endif//AMBULANT_PLATFORM_WIN32
-//					sleep(1);   // This is overdoing it
 				}
 				m_lock.enter();
 				// Check whether our sink should have been deleted while we were outside of the lock.
@@ -651,8 +657,8 @@ ffmpeg_demux::run()
 					sink->push_data(0,0,0);
 					sink->release();
 				}
-                		m_current_sink = NULL;
-                		sink = m_sinks[pkt->stream_index];
+				m_current_sink = NULL;
+				sink = m_sinks[pkt->stream_index];
 			}
 		}
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: freeing pkt (number %d)",pkt_nr);
@@ -661,12 +667,13 @@ ffmpeg_demux::run()
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: final push_data(0, 0)");
 	int i;
 	m_lock.leave();
-	for (i=0; i<MAX_STREAMS; i++)
+	for (i=0; i<MAX_STREAMS; i++) {
 		if (m_sinks[i]) {
 			m_sinks[i]->push_data(0, 0, 0);
 			m_sinks[i]->release();
 			m_sinks[i] = NULL;
 		}
+	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: returning");
 	return 0;
 }

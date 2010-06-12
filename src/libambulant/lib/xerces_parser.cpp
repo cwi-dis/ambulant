@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -78,7 +78,7 @@ xerces_sax_parser::xerces_sax_parser(
 	m_id("AmbulantXercesParser")
 {
 	m_logger = lib::logger::get_logger();
-        AM_DBG m_logger->debug("xerces_sax_parser::xerces_sax_parser()");
+	AM_DBG m_logger->debug("xerces_sax_parser::xerces_sax_parser()");
 	XMLPlatformUtils::Initialize();
 	m_saxparser = new SAXParser();
 
@@ -151,7 +151,7 @@ xerces_sax_parser::parse(const char *buf, size_t len, bool final) {
 
 void
 xerces_sax_parser::set_content_handler(sax_content_handler *h) {
- 	m_content_handler = h;
+	m_content_handler = h;
 }
 
 void
@@ -182,8 +182,7 @@ xerces_sax_parser::endElement(const XMLCh* const name) {
 }
 
 void
-xerces_sax_parser::characters(const XMLCh* const chars,
-			      const XMLSize_t length) {
+xerces_sax_parser::characters(const XMLCh* const chars, const XMLSize_t length) {
 	char *c_chars = XMLString::transcode(chars);
 	m_content_handler->characters(c_chars, length);
 	XMLString::release(&c_chars);
@@ -205,14 +204,12 @@ xerces_sax_parser::fatalError(const SAXParseException& exception)  {
 }
 
 void
-xerces_sax_parser::to_qattrs(AttributeList& attrs,
-			     q_attributes_list& list) {
+xerces_sax_parser::to_qattrs(AttributeList& attrs, q_attributes_list& list) {
 	if (attrs.getLength() == 0) return;
 	for (int i = 0; i < (int)attrs.getLength(); i++) {
 		char* value = XMLString::transcode(attrs.getValue(i));
 		xml_string xmlvalue(value);
-		q_attribute_pair qap (to_q_name_pair(attrs.getName(i)),
-				      xmlvalue);
+		q_attribute_pair qap (to_q_name_pair(attrs.getName(i)), xmlvalue);
 		list.push_back(q_attribute_pair(qap));
 		XMLString::release(&value);
 	}
@@ -233,7 +230,7 @@ xerces_sax_parser::to_q_name_pair(const XMLCh* name) {
 		qn.second = cname;
 	}
 	XMLString::release(&cname);
-	return  qn;
+	return	qn;
 }
 
 SAXParser::ValSchemes
@@ -325,14 +322,14 @@ xerces_sax_parser::resolveEntity(const XMLCh* const publicId , const XMLCh* cons
 	XMLCh* XMLCh_local_id = NULL;
 	InputSource* local_input_source = NULL;
 	AM_DBG m_logger->debug("xerces_sax_parser::resolveEntity(%s,%s)",publicId_ts, systemId_ts);
-    // First look for the system ID.
+	// First look for the system ID.
 	std::string dtd = find_cached_dtd(systemId_ts);
-    if (dtd == "") {
-        // Next, look for the public ID. We do this because the systemId can be a relative
-        // pathname, and these can collide between SMIL versions. So, for those that
-        // collide we use the public ID as the cache entry key.
-        dtd = find_cached_dtd(publicId_ts);
-    }
+	if (dtd == "") {
+		// Next, look for the public ID. We do this because the systemId can be a relative
+		// pathname, and these can collide between SMIL versions. So, for those that
+		// collide we use the public ID as the cache entry key.
+		dtd = find_cached_dtd(publicId_ts);
+	}
 	if (dtd != "") {
 		XMLCh_local_id = XMLString::transcode(dtd.c_str());
 	}

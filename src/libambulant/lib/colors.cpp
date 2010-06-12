@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -96,10 +96,10 @@ compute_chroma_range(
 	if ((int)chromakeytolerance == 0) {
 		chroma_low = chroma_high = chromakey;
 	} else {
-		uchar	rk = redc(chromakey),
+		uchar rk = redc(chromakey),
 			gk = greenc(chromakey),
 			bk = bluec(chromakey);
-		uchar	rt = redc(chromakeytolerance),
+		uchar rt = redc(chromakeytolerance),
 			gt = greenc(chromakeytolerance),
 			bt = bluec(chromakeytolerance);
 		uchar rl=0, rh=255, gl=0, gh=255, bl=0, bh=255;
@@ -109,7 +109,7 @@ compute_chroma_range(
 		if (gk + gt < 255) gh = gk + gt;
 		if (bk - bt > 0)   bl = bk - bt;
 		if (bk + bt < 255) bh = bk + bt;
-		chroma_low  = to_color(rl, gl, bl);
+		chroma_low	= to_color(rl, gl, bl);
 		chroma_high = to_color(rh, gh, bh);
 	}
 	if (p_chroma_low) *p_chroma_low = chroma_low;
@@ -124,12 +124,15 @@ color_t_in_range(lib::color_t c, lib::color_t c_low, lib::color_t c_high)
 	uchar g_c = greenc(c), g_l = greenc(c_low), g_h = greenc(c_high);
 	uchar b_c = bluec(c), b_l = bluec(c_low), b_h = bluec(c_high);
 	if ( // check all components in color range
-	        r_l <= r_c && r_c <= r_h
-	    &&  g_l <= g_c && g_c <= g_h
-	    &&  b_l <= b_c && b_c <= b_h)
+		r_l <= r_c && r_c <= r_h
+		&&	g_l <= g_c && g_c <= g_h
+		&&	b_l <= b_c && b_c <= b_h)
+	{
 		return true;
-	else    return false;
- }
+	} else {
+		return false;
+	}
+}
 
 } // namespace lib
 

@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -37,8 +37,8 @@ using namespace ambulant;
 // Uses delta timer pattern
 
 lib::delta_timer::delta_timer(timer *t)
-:   m_last_run(t->elapsed()),
-    m_timer(t) {}
+:	m_last_run(t->elapsed()),
+	m_timer(t) {}
 
 lib::delta_timer::~delta_timer() {
 	std::list<timeout_event>::iterator it;
@@ -134,16 +134,16 @@ void lib::delta_timer::get_ready_delta_events(time_type delta, std::queue<event*
 		decr(m_events.front().second, delta);
 
 	// debug
-	AM_DBG  if(!queue.empty()) write_trace();
+	AM_DBG	if(!queue.empty()) write_trace();
 }
 
 #ifdef WITH_CLOCK_SYNC
 lib::timer::time_type lib::delta_timer::next_event_time() const
 {
-    std::list<timeout_event>::const_iterator it = m_events.begin();
-    if (it == m_events.end())
-        return 1000000;
-    return (*it).second;
+	std::list<timeout_event>::const_iterator it = m_events.begin();
+	if (it == m_events.end())
+		return 1000000;
+	return (*it).second;
 }
 #endif
 

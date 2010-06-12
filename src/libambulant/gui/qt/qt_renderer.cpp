@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -142,8 +142,11 @@ qt_transition_renderer::redraw_pre(gui_window *window)
 			rect dstrect = r;
 			dstrect.translate(m_transition_dest->get_global_topleft());
 			AM_DBG logger::get_logger()->debug("qt_renderer.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), qpm,dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
-			bitBlt(surf, dstrect.left(),dstrect.top(),
-                qpm,dstrect.left(),dstrect.top(),dstrect.width(),dstrect.height());
+			bitBlt(
+				surf,
+				dstrect.left(),dstrect.top(),
+				qpm,
+				dstrect.left(),dstrect.top(),dstrect.width(),dstrect.height());
 			AM_DBG logger::get_logger()->debug("qt_renderer.redraw: drawing to transition surface");
 			aqw->set_ambulant_surface(surf);
 		}

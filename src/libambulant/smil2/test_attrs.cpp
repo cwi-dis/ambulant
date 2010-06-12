@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -388,12 +388,12 @@ void test_attrs::set_default_tests_attrs() {
 #endif
 	active_tests_attrs_map["systemScreenSize"] = "1024X1280";
 	active_tests_attrs_map["systemScreenDepth"] = "32";
-    set_current_system_component_value(AM_SYSTEM_COMPONENT("Ambulant"), true);
-    set_current_system_component_value(AM_SYSTEM_COMPONENT("Version2.0"), true);
-    set_current_system_component_value(AM_SYSTEM_COMPONENT("Version" AMBULANT_VERSION), true);
-    set_current_system_component_value(AM_SYSTEM_COMPONENT("Version" AMBULANT_VERSION "Exact"), true);
+	set_current_system_component_value(AM_SYSTEM_COMPONENT("Ambulant"), true);
+	set_current_system_component_value(AM_SYSTEM_COMPONENT("Version2.0"), true);
+	set_current_system_component_value(AM_SYSTEM_COMPONENT("Version" AMBULANT_VERSION), true);
+	set_current_system_component_value(AM_SYSTEM_COMPONENT("Version" AMBULANT_VERSION "Exact"), true);
 #ifdef WITH_SEAMLESS_PLAYBACK
-    set_current_system_component_value(AM_SYSTEM_COMPONENT("SeamlessPlayback"), true);
+	set_current_system_component_value(AM_SYSTEM_COMPONENT("SeamlessPlayback"), true);
 #endif
 }
 
@@ -460,10 +460,10 @@ test_attrs::get_state_test_methods()
 	static smil2::state_test_methods_impl *singleton;
 
 	if (singleton == NULL) {
-        if(active_tests_attrs_map.empty())
-            set_default_tests_attrs();
+		if(active_tests_attrs_map.empty())
+			set_default_tests_attrs();
 		singleton = new smil2::state_test_methods_impl();
-    }
+	}
 	return singleton;
 }
 #endif // WITH_SMIL30
@@ -482,7 +482,7 @@ void
 test_attrs::set_current_custom_test_value(std::string name, bool value)
 {
 	active_custom_tests_attrs_map[name] = value;
-    // XXX should raise contentControlChange
+	// XXX should raise contentControlChange
 }
 
 bool
@@ -515,13 +515,13 @@ test_attrs::set_current_system_component_value(std::string name, bool enabled)
 	}
 
 	active_tests_attrs_map["systemComponent"] = value;
-    // XXX should raise contentControlChange
+	// XXX should raise contentControlChange
 }
 
 void
 test_attrs::set_current_screen_size(int height, int width)
 {
-    char buf[32];
+	char buf[32];
 #if defined(AMBULANT_PLATFORM_WIN32_WCE)
 	sprintf(buf, "%dx%d", height, width);
 #elif defined(AMBULANT_PLATFORM_WIN32)
@@ -529,8 +529,8 @@ test_attrs::set_current_screen_size(int height, int width)
 #else
 	snprintf(buf, sizeof buf, "%dx%d", height, width);
 #endif
-    active_tests_attrs_map["systemScreenSize"] = std::string(buf);
-    // XXX should raise contentControlChange
+	active_tests_attrs_map["systemScreenSize"] = std::string(buf);
+	// XXX should raise contentControlChange
 }
 
 #ifdef WITH_SMIL30
@@ -539,7 +539,7 @@ test_attrs::clear_languages()
 {
 	active_language_map.clear();
 	// XXXX Should we insert language from systemTests???
-    // XXX should raise contentControlChange
+	// XXX should raise contentControlChange
 }
 
 void
@@ -547,7 +547,7 @@ test_attrs::add_language(std::string langname, float weight)
 {
 	AM_DBG lib::logger::get_logger()->trace("add_language('%s', %f)", langname.c_str(), weight);
 	active_language_map[langname] = weight;
-    // XXX should raise contentControlChange
+	// XXX should raise contentControlChange
 }
 
 float

@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -99,12 +99,12 @@ void scheduler::activate_node(time_node *tn) {
 			AM_DBG lib::logger::get_logger()->debug("scheduler:::activate_node:(%s %s) waiting for ever, killing blockers", tn->get_sig().c_str(), tn->get_state()->name());
 			time_traits::qtime_type timestamp(m_root, m_timer->elapsed());
 			tn->kill_blockers(timestamp, m_root);
-            // Yet another bug fix/workaround, for #1640765: nodes with begin="indefinite" cannot be played, even with
-            // a hyperlink.
-            if (count == 8) {
-                AM_DBG lib::logger::get_logger()->debug("scheduler::activate_node: attempting DOM-like start");
-                tn->start();
-            }
+			// Yet another bug fix/workaround, for #1640765: nodes with begin="indefinite" cannot be played, even with
+			// a hyperlink.
+			if (count == 8) {
+				AM_DBG lib::logger::get_logger()->debug("scheduler::activate_node: attempting DOM-like start");
+				tn->start();
+			}
 			if (++count > 10) {
 				AM_DBG lib::logger::get_logger()->debug("scheduler:::activate_node: giving up on %s", tn->get_sig().c_str());
 				break;
@@ -141,7 +141,7 @@ void scheduler::goto_next(time_node *tn) {
 		if(!child->is_active()) {
 			// This can happen if the current child has dynamically evaluated
 			// test attributes that cause it to be skipped.
-			lib::logger::get_logger()->trace("goto_next: %s not active, starting after it",  child->get_sig().c_str());
+			lib::logger::get_logger()->trace("goto_next: %s not active, starting after it",	 child->get_sig().c_str());
 			break;
 		}
 	}

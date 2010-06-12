@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -64,7 +64,8 @@ get_regiondim_attr(const lib::node *rn, const char *attrname)
 	const char *attrvalue = rn->get_attribute(attrname);
 	common::region_dim rd;
 	if (attrvalue == NULL || *attrvalue == '\0'
-	    || strcmp(attrvalue, "auto") == 0) {
+		|| strcmp(attrvalue, "auto") == 0)
+	{
 		// pass: region_dim are initialized as "auto"
 	} else {
 		int ivalue;
@@ -260,12 +261,14 @@ region_node::fix_from_dom_node()
 		double sl = m_soundlevel;
 		if (soundlevel_attr) {
 			sl = strtod(soundlevel_attr, &lastp);
-			if (*lastp == '%')
+			if (*lastp == '%') {
 				sl *= 0.01;
-			else if (strcmp (lastp,"dB") == 0)
+			} else if (strcmp(lastp,"dB") == 0) {
 				sl = pow(10.0, sl/20);
-  		else // default: percentage implied
-			sl *= 0.01;
+			} else {
+				// default: percentage implied
+				sl *= 0.01;
+			}
 		}
 		AM_DBG lib::logger::get_logger()->debug("region_node::reset: soundLevel=%g", sl);
 		if (sl != m_soundlevel) {
@@ -279,15 +282,15 @@ region_node::fix_from_dom_node()
 		const char *soundalign_attr = m_node->get_attribute("soundAlign");
 		common::sound_alignment sa = m_soundalign;
 
-		if (soundalign_attr == NULL)
+		if (soundalign_attr == NULL) {
 			/*do nothing*/;
-		else if (strcmp(soundalign_attr, "both") == 0)
+		} else if (strcmp(soundalign_attr, "both") == 0) {
 			sa = common::sa_both;
-		else if (strcmp(soundalign_attr, "left") == 0)
+		} else if (strcmp(soundalign_attr, "left") == 0) {
 			sa = common::sa_left;
-		else if (strcmp(soundalign_attr, "right") == 0)
+		} else if (strcmp(soundalign_attr, "right") == 0) {
 			sa = common::sa_right;
-		else {
+		} else {
 			lib::logger::get_logger()->trace("%s: Invalid soundAlign value: %s", m_node->get_sig().c_str(), soundalign_attr);
 			lib::logger::get_logger()->warn(gettext("Ignoring minor errors in document"));
 		}
@@ -446,11 +449,11 @@ region_node::get_rect(const lib::rect *default_rect) const {
 	const region_node *inherit_region = NULL;
 	const region_node *parent_node = up();
 	switch(m_dim_inherit) {
-	  case di_parent:
+	case di_parent:
 		if (parent_node)
 			inherit_region = parent_node;
 		break;
-	  case di_rootlayout:
+	case di_rootlayout:
 		{
 			const region_node *root_node = get_root();
 			const region_node *rootlayout_node = root_node->get_first_child("root-layout");
@@ -458,8 +461,8 @@ region_node::get_rect(const lib::rect *default_rect) const {
 				inherit_region = rootlayout_node;
 		}
 		break;
-	  case di_none:
-	  case di_stored:
+	case di_none:
+	case di_stored:
 		break;
 	}
 	lib::rect rc;

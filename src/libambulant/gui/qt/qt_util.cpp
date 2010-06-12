@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -130,24 +130,24 @@ qt_image_blend (
 			int sa = src_has_alpha ? qAlpha(src_pixel) : 0xff;
 
 			if ( // check all components in chromakey range
-			        r_l <= sr && sr <= r_h
-			    &&  g_l <= sg && sg <= g_h
-			    &&  b_l <= sb && sb <= b_h
-				) {
-			        // blend the pixel from 'src' into 'dst'
+				r_l <= sr && sr <= r_h
+				&&	g_l <= sg && sg <= g_h
+				&&	b_l <= sb && sb <= b_h
+			) {
+				// blend the pixel from 'src' into 'dst'
 //logger::get_logger()->debug("dst[%d,%d]=0x%x%x%x, src[%d,%d]=0x%x%x%x, blend=0x%x", dst_col,dst_row,dr,dg,db,src_col,src_row,sr,sg,sb, _blend_pixel(dr,dg,db,da,sr,sg,sb,sa,src_has_alpha, weight, remain));
 				dst.setPixel(dst_col,dst_row,
-					     _blend_pixel(dr,dg,db,da,
-							  sr,sg,sb,sa,
-							  src_has_alpha,
-							  weight_in, remain_in));
+					_blend_pixel(dr,dg,db,da,
+						sr,sg,sb,sa,
+						src_has_alpha,
+						weight_in, remain_in));
 			} else {
 				// blend the pixel from 'src' into 'dst'
 				dst.setPixel(dst_col,dst_row,
-					     _blend_pixel(dr,dg,db,da,
-							  sr,sg,sb,sa,
-							  src_has_alpha,
-							  weight_out, remain_out));
+					_blend_pixel(dr,dg,db,da,
+						sr,sg,sb,sa,
+						src_has_alpha,
+						weight_out, remain_out));
 			}
 		}
 	}
@@ -193,7 +193,7 @@ qt_image_dump(QImage* img, std::string id) {
 void
 qt_pixmap_dump(QPixmap* qpm, std::string id) {
 	if ( ! qpm) return;
- 	QImage img = qpm->convertToImage();
+	QImage img = qpm->convertToImage();
 	qt_image_dump(&img, id);
 }
 #endif /* WITH_DUMPIMAGES */

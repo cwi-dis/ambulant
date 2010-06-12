@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -116,7 +116,7 @@ lib::tree_builder::build_tree_from_file(const char *filename) {
 	}
 	bool rv = build_tree_from_str(data, data+datasize);
 	free(data);
-    ds->stop();
+	ds->stop();
 	ds->release();
 	return rv;
 #endif
@@ -156,13 +156,13 @@ lib::tree_builder::reset() {
 	std::string& parser_id = common::preferences::get_preferences()->m_parser_id;
 
 	lib::logger::get_logger()->trace("Using parser %s", parser_id.c_str());
-	AM_DBG lib::logger::get_logger()->debug("tree_builder::reset():  pf = 0x%x, this = 0x%x", (void*) pf, (void*) this);
+	AM_DBG lib::logger::get_logger()->debug("tree_builder::reset():	 pf = 0x%x, this = 0x%x", (void*) pf, (void*) this);
 
 	if (m_xmlparser == NULL) {
 		m_xmlparser = pf->new_parser(this, this);
 	}
 	if (m_xmlparser == NULL) {
-        	lib::logger::get_logger()->fatal(gettext("Could not create any XML parser (configuration error?)"));
+		lib::logger::get_logger()->fatal(gettext("Could not create any XML parser (configuration error?)"));
 	}
 	if (m_filename == "")
 		m_filename = "<no filename>";
@@ -209,7 +209,7 @@ lib::tree_builder::start_element(const q_name_pair& qn, const q_attributes_list&
 void
 lib::tree_builder::end_element(const q_name_pair& qn) {
 #ifdef WITH_SMIL30
-	if (m_xml_space_stack.size() > 0 &&  m_xml_space_stack.back().second == m_current)
+	if (m_xml_space_stack.size() > 0 &&	 m_xml_space_stack.back().second == m_current)
 		m_xml_space_stack.pop_back();
 #endif // WITH_SMIL30
 	if(m_current != 0)
@@ -225,7 +225,7 @@ lib::tree_builder::characters(const char *buf, size_t len) {
 		// The <smiltext> tag has embedded data and tags
 		lib::node* n = NULL;
 		if (m_xml_space_stack.size() > 0
-		    && m_xml_space_stack.back().first == "preserve")
+			&& m_xml_space_stack.back().first == "preserve")
 			n = m_node_factory->new_data_node(buf, len, m_context);
 		else { // collapse whitespace
 			const char* s = buf;

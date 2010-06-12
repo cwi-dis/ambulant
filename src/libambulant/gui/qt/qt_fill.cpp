@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -43,14 +43,14 @@ extern const char qt_fill_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("Render
 common::playable_factory *
 gui::qt::create_qt_fill_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererQt"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererFill"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererQt"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererFill"), true);
 	return new common::single_playable_factory<
-        qt_fill_renderer,
-        qt_fill_playable_tag,
-        qt_fill_playable_renderer_uri,
-        qt_fill_playable_renderer_uri2,
-        qt_fill_playable_renderer_uri2>(factory, mdp);
+		qt_fill_renderer,
+		qt_fill_playable_tag,
+		qt_fill_playable_renderer_uri,
+		qt_fill_playable_renderer_uri2,
+		qt_fill_playable_renderer_uri2>(factory, mdp);
 }
 
 
@@ -123,8 +123,7 @@ qt_fill_renderer::stop()
 }
 
 void
-qt_fill_renderer::redraw(const rect &dirty,
-			 gui_window *window)
+qt_fill_renderer::redraw(const rect &dirty, gui_window *window)
 {
 	m_lock.enter();
 	const rect &r = m_dest->get_rect();
@@ -148,10 +147,14 @@ qt_fill_renderer::redraw(const rect &dirty,
 			rect dstrect = r;
 			dstrect.translate(m_dest->get_global_topleft());
 			AM_DBG logger::get_logger()->debug("qt_fill.redraw: bitBlt to=0x%x (%d,%d) from=0x%x (%d,%d,%d,%d)",surf, dstrect.left(), dstrect.top(), qpm,dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
-			bitBlt(surf, dstrect.left(),dstrect.top(),
-			       qpm,dstrect.left(),dstrect.top(),dstrect.width(),dstrect.height());
-			bitBlt(surf, dstrect.left(), dstrect.top(),
-			       qpm,  dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
+			bitBlt(
+				surf, dstrect.left(), dstrect.top(),
+				qpm, dstrect.left(), dstrect.top(),
+				dstrect.width(), dstrect.height());
+			bitBlt(
+				surf, dstrect.left(), dstrect.top(),
+				qpm, dstrect.left(), dstrect.top(),
+				dstrect.width(), dstrect.height());
 			AM_DBG logger::get_logger()->debug("qt_fill_renderer.redraw: drawing to transition surface");
 		}
 	}
@@ -162,8 +165,7 @@ qt_fill_renderer::redraw(const rect &dirty,
 		aqw->reset_ambulant_surface();
 	}
 	if (m_trans_engine && surf) {
-		AM_DBG logger::get_logger()->debug
-		  ("qt_fill_renderer.redraw: drawing to view");
+		AM_DBG logger::get_logger()->debug("qt_fill_renderer.redraw: drawing to view");
 		m_trans_engine->step(m_event_processor->get_timer()->elapsed());
 		typedef no_arg_callback<qt_fill_renderer>transition_callback;
 		event *ev = new transition_callback(this, &qt_fill_renderer::transition_step);
@@ -194,8 +196,7 @@ qt_fill_renderer::user_event(const point &where, int what)
 }
 
 void
-qt_fill_renderer::redraw_body(const lib::rect &dirty,
-				     common::gui_window *window) {
+qt_fill_renderer::redraw_body(const lib::rect &dirty, common::gui_window *window) {
 	const common::region_info *info = m_dest->get_info();
 	const lib::rect &r = m_dest->get_rect();
 	ambulant_qt_window* aqw = (ambulant_qt_window*) window;
@@ -205,7 +206,7 @@ qt_fill_renderer::redraw_body(const lib::rect &dirty,
 	// First find our whole area to be cleared to <brush> color
 	lib::rect dstrect_whole = r;
 	dstrect_whole.translate(m_dest->get_global_topleft());
-	int	L = dstrect_whole.left(),
+	int L = dstrect_whole.left(),
 		T = dstrect_whole.top(),
 		W = dstrect_whole.width(),
 		H = dstrect_whole.height();
@@ -218,9 +219,7 @@ qt_fill_renderer::redraw_body(const lib::rect &dirty,
 	// Fill with <brush> color
 	color_t color = lib::to_color(color_attr);
 	//	lib::color_t bgcolor = info->get_bgcolor();
-	AM_DBG lib::logger::get_logger()->debug
-		("qt_fill_renderer.redraw_body: clearing to 0x%x",
-		 (long)color);
+	AM_DBG lib::logger::get_logger()->debug("qt_fill_renderer.redraw_body: clearing to 0x%x", (long)color);
 	QColor bgc = color_t2QColor(color);
 	AM_DBG lib::logger::get_logger()->debug("qt_fill_renderer.redraw_body(0x%x, local_ltrb=(%d,%d,%d,%d)",(void *)this, L,T,W,H);
 	paint.setBrush(bgc);
@@ -230,10 +229,9 @@ qt_fill_renderer::redraw_body(const lib::rect &dirty,
 }
 
 void
-qt_background_renderer::redraw(const lib::rect &dirty,
-			       common::gui_window *window)
+qt_background_renderer::redraw(const lib::rect &dirty, common::gui_window *window)
 {
-	if ( !  (m_src && m_dst))
+	if ( !	(m_src && m_dst))
 		return;
 	const lib::rect &r = m_dst->get_rect();
 	AM_DBG lib::logger::get_logger()->debug("qt_background_renderer::redraw(0x%x)", (void *)this);
@@ -246,9 +244,9 @@ qt_background_renderer::redraw(const lib::rect &dirty,
 		lib::rect dstrect_whole = r;
 		dstrect_whole.translate(m_dst->get_global_topleft());
 		int L = dstrect_whole.left(),
-		    T = dstrect_whole.top(),
-		    W = dstrect_whole.width(),
-		    H = dstrect_whole.height();
+			T = dstrect_whole.top(),
+			W = dstrect_whole.width(),
+			H = dstrect_whole.height();
 		// XXXX Fill with background color
 		lib::color_t bgcolor = m_src->get_bgcolor();
 		AM_DBG lib::logger::get_logger()->debug("qt_background_renderer::redraw: clearing to %x, local_ltwh(%d,%d,%d,%d)",(long)bgcolor,L,T,W,H);
@@ -271,10 +269,10 @@ qt_background_renderer::redraw(const lib::rect &dirty,
 		} else { // Blending
 			//XXXX adapted from gtk_fill. May be not optimal.
 			// Method:
-		  	// 1. Get the current on-screen image as a QImage
-		  	// 2. Create a new pixmap and draw a coloured rectangle on it
-		  	// 3. Blend these 2 pixmaps together by getting their QImages
-		  	// 4. Draw the resulting QImage on the screen
+			// 1. Get the current on-screen image as a QImage
+			// 2. Create a new pixmap and draw a coloured rectangle on it
+			// 3. Blend these 2 pixmaps together by getting their QImages
+			// 4. Draw the resulting QImage on the screen
 			QImage screen_image = aqw->get_ambulant_pixmap()->convertToImage();
 			QPixmap bg_pixmap = QPixmap (W,H);
 			QPainter bg_painter;
@@ -295,8 +293,7 @@ qt_background_renderer::redraw(const lib::rect &dirty,
 					bgcolor, bgcolor);
 			QPixmap new_pixmap(W,H);
 			new_pixmap.convertFromImage(screen_image);
-			bitBlt(aqw->get_ambulant_pixmap(), L, T,
-			       &new_pixmap, L, T, W, H);
+			bitBlt(aqw->get_ambulant_pixmap(), L, T, &new_pixmap, L, T, W, H);
 
 #endif//WITH_SMIL30
 		}

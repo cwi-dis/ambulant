@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -81,7 +81,7 @@ open_local_file(const net::url& url)
 	HANDLE hf = CreateFile(tp,
 		GENERIC_READ,
 		FILE_SHARE_READ,  // 0 = not shared or FILE_SHARE_READ
-		0,  // lpSecurityAttributes
+		0,	// lpSecurityAttributes
 		OPEN_EXISTING,
 		FILE_ATTRIBUTE_READONLY,
 		NULL);
@@ -118,7 +118,7 @@ open_net_file(const net::url& url, HINTERNET *hinet_p, HINTERNET *hf_p)
 raw_datasource_factory *
 ambulant::net::get_win32_datasource_factory()
 {
-    return new win32_datasource_factory();
+	return new win32_datasource_factory();
 }
 
 datasource *
@@ -150,7 +150,7 @@ win32_datasource::win32_datasource(const url& url)
 			m_buffer->set_max_size(0);
 		} else {
 			m_buffer = NULL;
- 			lib::logger::get_logger()->fatal("win32_datasource(): out of memory");
+			lib::logger::get_logger()->fatal("win32_datasource(): out of memory");
 		}
 }
 
@@ -198,12 +198,12 @@ void
 win32_datasource::read(char *data, int sz)
 {
 	m_lock.enter();
-    char* in_ptr;
-    if (sz <= m_buffer->size()) {
-    	in_ptr = m_buffer->get_read_ptr();
-        memcpy(data,in_ptr,sz);
-        m_buffer->readdone(sz);
-    }
+	char* in_ptr;
+	if (sz <= m_buffer->size()) {
+		in_ptr = m_buffer->get_read_ptr();
+		memcpy(data,in_ptr,sz);
+		m_buffer->readdone(sz);
+	}
 	m_lock.leave();
 }
 
@@ -219,11 +219,11 @@ win32_datasource::get_read_ptr()
 
 void
 win32_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::event *cbevent)
- {
+{
 	m_lock.enter();
- 	if (! _end_of_file() ) _read_file();
+	if (! _end_of_file() ) _read_file();
 
-    assert(evp);
+	assert(evp);
 	assert(cbevent);
 	AM_DBG lib::logger::get_logger()->debug("win32_datasource.start: trigger readdone callback (x%x)", cbevent);
 	evp->add_event(cbevent, 0, ambulant::lib::ep_med);

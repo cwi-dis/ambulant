@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -35,8 +35,8 @@ using namespace gui::none;
 common::playable_factory *
 ambulant::gui::none::create_none_video_factory(common::factories *factory)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererNone"), true);
-    return new none_video_factory(factory);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererNone"), true);
+	return new none_video_factory(factory);
 }
 
 none_video_factory::~none_video_factory()
@@ -63,13 +63,13 @@ none_video_factory::new_playable(
 {
 	common::playable *rv;
 	lib::xml_string tag = node->get_local_name();
-    AM_DBG lib::logger::get_logger()->debug("none_video_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
+	AM_DBG lib::logger::get_logger()->debug("none_video_factory: node 0x%x:	  inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "video") {
 		rv = new gui::none::none_video_renderer(context, cookie, node, evp, m_factory, NULL);
 		AM_DBG lib::logger::get_logger()->debug("none_video_factory: node 0x%x: returning none_video_renderer 0x%x", (void *)node, (void *)rv);
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("none_video_factory: no renderer for tag \"%s\"", tag.c_str());
-        return NULL;
+		return NULL;
 	}
 	return rv;
 }

@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -291,16 +291,16 @@ gui_player::create_document(const net::url& url)
 			lib::logger::get_logger()->warn(gettext("%s: Requires unavailable features, will attempt to continue anyway"),
 				m_url.get_url().c_str());
 		}
-        // Push renderer factories to the front if they're mentioned in to root systemComponent
-        const char *sc = root->get_attribute("systemComponent");
-        if (sc) {
-            std::string ssc(sc);
-            std::list<std::string> list;
-            lib::split_trim_list(ssc, list, ' ');
-            std::list<std::string>::const_iterator it;
-            for(it=list.begin(); it!=list.end(); it++)
-                get_playable_factory()->preferred_renderer((*it).c_str());
-    	}
+		// Push renderer factories to the front if they're mentioned in to root systemComponent
+		const char *sc = root->get_attribute("systemComponent");
+		if (sc) {
+			std::string ssc(sc);
+			std::list<std::string> list;
+			lib::split_trim_list(ssc, list, ' ');
+			std::list<std::string>::const_iterator it;
+			for(it=list.begin(); it!=list.end(); it++)
+				get_playable_factory()->preferred_renderer((*it).c_str());
+		}
 	} else {
 		lib::logger::get_logger()->trace("%s: Failed to parse document ", m_url.get_url().c_str());
 	}

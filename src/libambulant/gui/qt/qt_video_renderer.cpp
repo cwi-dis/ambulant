@@ -12,7 +12,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -47,15 +47,15 @@ extern const char qt_video_playable_renderer_uri3[] = AM_SYSTEM_COMPONENT("Rende
 common::playable_factory *
 gui::qt::create_qt_video_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererQt"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererVideo"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererOpen"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererQt"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererVideo"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererOpen"), true);
 	return new common::single_playable_factory<
-        qt_video_renderer,
-        qt_video_playable_tag,
-        qt_video_playable_renderer_uri,
-        qt_video_playable_renderer_uri2,
-        qt_video_playable_renderer_uri3>(factory, mdp);
+		qt_video_renderer,
+		qt_video_playable_tag,
+		qt_video_playable_renderer_uri,
+		qt_video_playable_renderer_uri2,
+		qt_video_playable_renderer_uri3>(factory, mdp);
 }
 
 qt_video_renderer::qt_video_renderer(
@@ -63,7 +63,7 @@ qt_video_renderer::qt_video_renderer(
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor *const evp,
-    	common::factories *factory,
+		common::factories *factory,
 		common::playable_factory_machdep *mdp)
 :	qt_renderer<common::video_renderer>(context, cookie, node, evp, factory, mdp),
 	m_image(NULL),
@@ -77,7 +77,7 @@ qt_video_renderer::~qt_video_renderer()
 {
 	AM_DBG lib::logger::get_logger()->debug("qt_video_renderer::~qt_video_renderer(0x%x) m_data=0x%x m_image=0x%x", (void*) this, (void*)m_data);
 	m_lock.enter();
-    if (m_data) free(m_data);
+	if (m_data) free(m_data);
 	if ( m_image) delete m_image;
 	m_lock.leave();
 }
@@ -102,25 +102,25 @@ qt_video_renderer::_push_frame(char* frame, int size)
 void
 qt_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 {
-    AM_DBG lib::logger::get_logger()->debug("qt_video_renderer.redraw(0x%x)",(void*) this);
+	AM_DBG lib::logger::get_logger()->debug("qt_video_renderer.redraw(0x%x)",(void*) this);
 
-    ambulant_qt_window* aqw = (ambulant_qt_window*) w;
-    QPainter paint;
+	ambulant_qt_window* aqw = (ambulant_qt_window*) w;
+	QPainter paint;
 	//XXXX locking at this point may result in deadly embrace with internal lock,
 	//XXXX but as far as we know this has never happened
 	m_lock.enter();
-    paint.begin(aqw->get_ambulant_pixmap());
+	paint.begin(aqw->get_ambulant_pixmap());
 
-    if ( m_image ) {
-        lib::size srcsize = lib::size(m_size.w, m_size.h);
-        lib::rect srcrect;
+	if ( m_image ) {
+		lib::size srcsize = lib::size(m_size.w, m_size.h);
+		lib::rect srcrect;
 #ifdef WITH_SMIL30
 		lib::rect croprect = m_dest->get_crop_rect(srcsize);
 		lib::rect dstrect = m_dest->get_fit_rect(croprect, srcsize, &srcrect, m_alignment);
 #else
-        lib::rect dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
+		lib::rect dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
 #endif // WITH_SMIL30
-        dstrect.translate(m_dest->get_global_topleft());
+		dstrect.translate(m_dest->get_global_topleft());
 #if ONLY_FOR_QT4
 		QRect q_srcrect(srcrect.left(), srcrect.top(), srcrect.width(), srcrect.height());
 		QRect q_dstrect(dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
@@ -129,7 +129,7 @@ qt_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 		AM_DBG lib::logger::get_logger()->debug("qt_video: %d,%d,%d,%d to %d,%d,%d,%d",
 			srcrect.left(), srcrect.top(), srcrect.width(), srcrect.height(),
 			dstrect.left(), dstrect.top(), dstrect.width(), dstrect.height());
-        if (srcrect.size() == dstrect.size()) {
+		if (srcrect.size() == dstrect.size()) {
 			paint.drawImage(dstrect.left(), dstrect.top(), *m_image,
 				srcrect.left(), srcrect.top(), srcrect.width(), srcrect.height());
 		} else {
@@ -145,10 +145,10 @@ qt_video_renderer::redraw_body(const lib::rect &dirty, common::gui_window* w)
 			paint.drawImage(dstrect.left(), dstrect.top(), scaled, 0, 0, dstrect.width(), dstrect.height());
 		}
 #endif
-    } else {
-        AM_DBG lib::logger::get_logger()->debug("qt_video_renderer.redraw(0x%x): no m_image", (void *) this);
-    }
-    paint.flush();
-    paint.end();
+	} else {
+		AM_DBG lib::logger::get_logger()->debug("qt_video_renderer.redraw(0x%x): no m_image", (void *) this);
+	}
+	paint.flush();
+	paint.end();
 	m_lock.leave();
 }

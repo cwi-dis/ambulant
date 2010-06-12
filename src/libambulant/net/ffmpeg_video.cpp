@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -125,7 +125,7 @@ ffmpeg_video_datasource_factory::new_video_datasource(const net::url& url, times
 		thread->cancel();
 		return NULL;
 	}
-	video_datasource *dds =  new ffmpeg_video_decoder_datasource(ds, fmt);
+	video_datasource *dds =	 new ffmpeg_video_decoder_datasource(ds, fmt);
 	if (dds == NULL) {
 		lib::logger::get_logger()->debug("ffmpeg_video_datasource_factory::new_video_datasource: could not allocate ffmpeg_video_datasource");
 		thread->cancel();
@@ -191,8 +191,7 @@ ffmpeg_video_decoder_datasource::~ffmpeg_video_decoder_datasource()
 {
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::~ffmpeg_video_decoder_datasource(0x%x)", (void*)this);
 	stop();
-	if (m_img_convert_ctx)
-	        sws_freeContext(m_img_convert_ctx);
+	if (m_img_convert_ctx) sws_freeContext(m_img_convert_ctx);
 	/*if (m_dropped_count)*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropped %d of %d frames", m_dropped_count, m_frame_count);
 }
 
@@ -236,8 +235,7 @@ ffmpeg_video_decoder_datasource::get_audio_datasource()
 {
 	m_lock.enter();
 	audio_datasource *rv = NULL;
-	if (m_src)
-		rv = m_src->get_audio_datasource();
+	if (m_src) rv = m_src->get_audio_datasource();
 	m_lock.leave();
 	return rv;
 }
@@ -343,10 +341,10 @@ ffmpeg_video_decoder_datasource::start_prefetch(ambulant::lib::event_processor *
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_prefetch: (this = 0x%x)", (void*) this);
 	m_elapsed = 0;
 	m_pts_last_frame = 0;
-  	m_oldest_timestamp_wanted = 0;
+	m_oldest_timestamp_wanted = 0;
 	m_video_clock = 0;
 
-    m_event_processor = evp;
+	m_event_processor = evp;
 
 	// Don't restart our source if we are at end of file.
 #ifndef WITH_SEAMLESS_PLAYBACK
@@ -366,7 +364,7 @@ ffmpeg_video_decoder_datasource::start_prefetch(ambulant::lib::event_processor *
 
 void
 print_frames(sorted_frames frames) {
-  	sorted_frames f(frames);
+	sorted_frames f(frames);
 	while (f.size()) {
 		ts_pointer_pair e = f.front();
 		printf("e.first=%d ", (int) e.first);
@@ -449,13 +447,14 @@ ffmpeg_video_decoder_datasource::frameduration()
 {
 	if(m_fmt.frameduration <=0)
 		_need_fmt_uptodate();
-	/* frame rates > 100 fps are unlikely
-	   For mp4 H263 video, ffmpeg fills its time_base.den with 1000,
-	   resulting in frameduration == 1000 musec, which is wrong.
-	   ffplay gets the correct frame rate from its stream, only takes
-	   it from the codec if the stream doesn't have that information
-	   See: ffmpeg/libavformat/utils.c, function dump_format().
-	*/
+		
+	// frame rates > 100 fps are unlikely
+	// For mp4 H263 video, ffmpeg fills its time_base.den with 1000,
+	// resulting in frameduration == 1000 musec, which is wrong.
+	// ffplay gets the correct frame rate from its stream, only takes
+	// it from the codec if the stream doesn't have that information
+	// See: ffmpeg/libavformat/utils.c, function dump_format().
+	
 	if(m_fmt.frameduration <= 9999)
 		m_fmt.frameduration = 33000;
 	return m_fmt.frameduration;
@@ -465,10 +464,10 @@ ffmpeg_video_decoder_datasource::_need_fmt_uptodate()
 {
 	// Private method: no locking
 	if (m_fmt.height == 0) {
-			m_fmt.height = m_con->height;
+		m_fmt.height = m_con->height;
 	}
 	if (m_fmt.width == 0) {
-			m_fmt.width = m_con->width;
+		m_fmt.width = m_con->width;
 	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_need_fmt_uptodate(): frameduration = %lld", m_fmt. frameduration);
 
@@ -495,19 +494,19 @@ void
 ffmpeg_video_decoder_datasource::seek(timestamp_t time)
 {
 	m_lock.enter();
-    int nframes_dropped = 0;
-    assert( time >= 0);
+	int nframes_dropped = 0;
+	assert( time >= 0);
 
 	m_oldest_timestamp_wanted = time;
 
-    // Do the seek before flush
-    if (m_src) m_src->seek(time);
+	// Do the seek before flush
+	if (m_src) m_src->seek(time);
 
-    while ( m_frames.size() > 0) {
-        _pop_top_frame();
-        nframes_dropped++;
-    }
-    AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::seek(%d): flushed %d frames", time, nframes_dropped);
+	while ( m_frames.size() > 0) {
+		_pop_top_frame();
+		nframes_dropped++;
+	}
+	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::seek(%d): flushed %d frames", time, nframes_dropped);
 	m_lock.leave();
 }
 
@@ -608,16 +607,18 @@ ffmpeg_video_decoder_datasource::data_avail()
 			}
 			assert(len <= sz);
 			ptr += len;
-			sz  -= len;
+			sz	-= len;
 			if (!got_pic) {
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: incomplete picture, used %d bytes, %d left", len, sz);
 				continue;
 			}
 			AM_DBG lib::logger::get_logger()->debug("pts seems to be : %lld",ipts);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: decoded picture, used %d bytes, %d left", len, sz);
+		
 			// At this point we need m_fmt to be correct, we are going to use
 			// sizes, durations, etc.
 			_need_fmt_uptodate();
+			
 			// Let's first compute the timestamp for this frame. If it is an old frame
 			// we can drop it straight away and don't have to go through the motion
 			// of doing image conversion.
@@ -657,7 +658,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 			// Next step: deocde the frame to the image format we want.
 			int bpp = 0;
 #ifndef FFMPEG_SUPPORTS_ALPHA_LAST
-            // XXXJACK: Need to test with next ffmpeg release whether this has become true.
+			// XXXJACK: Need to test with next ffmpeg release whether this has become true.
 			bool must_swab_2341 = false;
 			bool must_swab_4321 = false;
 			bool must_swab_1432 = false;
@@ -710,7 +711,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 			m_size = w * h * bpp;
 			assert(m_size);
 			char *framedata = (char*) malloc(m_size);
- 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:framedata=0x%x", framedata);
+			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:framedata=0x%x", framedata);
 			if (framedata == NULL) {
 				lib::logger::get_logger()->debug("ffmpeg_video_decoder: malloc(%d) failed", m_size);
 				lib::logger::get_logger()->error(gettext("Out of memory playing video"));
@@ -722,10 +723,11 @@ ffmpeg_video_decoder_datasource::data_avail()
 			assert(datasize == m_size);
 			// The format we have is already in frame. Convert.
 			pic_fmt = m_con->pix_fmt;
-			m_img_convert_ctx = (struct SwsContext *) sws_getCachedContext(m_img_convert_ctx,
-										       w, h, pic_fmt,
-										       w, h, dst_pic_fmt,
-										       SWSCALE_FLAGS, NULL, NULL, NULL);
+			m_img_convert_ctx = (struct SwsContext *) sws_getCachedContext(
+				m_img_convert_ctx,
+				w, h, pic_fmt,
+				w, h, dst_pic_fmt,
+				SWSCALE_FLAGS, NULL, NULL, NULL);
 			assert(m_img_convert_ctx);
 			sws_scale(m_img_convert_ctx, frame->data, frame->linesize, 0, h, picture.data, picture.linesize);
 #ifndef FFMPEG_SUPPORTS_ALPHA_LAST
@@ -777,7 +779,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:done decoding (0x%x) ", m_con);
 		av_free(frame);
 		m_src->frame_processed(0); // XXXJACK: Should pass ipts, for sanity check
-  	}
+	}
   out_of_memory:
 	// Now tell our client, if we have data available or are at end of file.
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): m_frames.size() returns %d, (eof=%d)", m_frames.size(), m_src->end_of_file());
@@ -795,7 +797,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): No client callback!");
 		}
-  	}
+	}
 	// Restart input if there is buffer space and anything remains to be read. Otherwise we
 	// leave m_start_input true, and restarting is taken care of in start_frame().
 	if (!m_src->end_of_file() && !_buffer_full()) {
@@ -826,8 +828,8 @@ ffmpeg_video_decoder_datasource::_end_of_file()
 {
 	// private method - no need to lock
 	if (m_frames.size() > 0)  {
-			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_end_of_file() returning false (still %d frames in local buffer)", m_frames.size());
-			return false;
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::_end_of_file() returning false (still %d frames in local buffer)", m_frames.size());
+		return false;
 	}
 	return m_src == NULL || m_src->end_of_file();
 }
@@ -922,17 +924,17 @@ ffmpeg_video_decoder_datasource::_select_decoder(const char* file_ext)
 	// private method - no need to lock
 	AVCodec *codec = avcodec_find_decoder_by_name(file_ext);
 	if (codec == NULL) {
-			lib::logger::get_logger()->trace("ffmpeg_video_decoder_datasource._select_decoder: Failed to find codec for \"%s\"", file_ext);
-			lib::logger::get_logger()->error(gettext("No support for \"%s\" video"), file_ext);
-			return false;
+		lib::logger::get_logger()->trace("ffmpeg_video_decoder_datasource._select_decoder: Failed to find codec for \"%s\"", file_ext);
+		lib::logger::get_logger()->error(gettext("No support for \"%s\" video"), file_ext);
+		return false;
 	}
 	m_con = avcodec_alloc_context();
 	m_con_owned = true;
 
 	if(avcodec_open(m_con,codec) < 0) {
-			lib::logger::get_logger()->trace("ffmpeg_video_decoder_datasource._select_decoder: Failed to open avcodec for \"%s\"", file_ext);
-			lib::logger::get_logger()->error(gettext("No support for \"%s\" video"), file_ext);
-			return false;
+		lib::logger::get_logger()->trace("ffmpeg_video_decoder_datasource._select_decoder: Failed to open avcodec for \"%s\"", file_ext);
+		lib::logger::get_logger()->error(gettext("No support for \"%s\" video"), file_ext);
+		return false;
 	}
 	return true;
 }
@@ -947,28 +949,28 @@ ffmpeg_video_decoder_datasource::_select_decoder(video_format &fmt)
 		m_con_owned = false;
 
 		if (enc == NULL) {
-				lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Parameters missing for %s(0x%x)", fmt.name.c_str(), fmt.parameters);
-				lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
-				return false;
+			lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Parameters missing for %s(0x%x)", fmt.name.c_str(), fmt.parameters);
+			lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
+			return false;
 		}
 		if (enc->codec_type != CODEC_TYPE_VIDEO) {
-				lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Non-video stream for %s(0x%x)", fmt.name.c_str(), enc->codec_type);
-				lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
-				return false;
+			lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Non-video stream for %s(0x%x)", fmt.name.c_str(), enc->codec_type);
+			lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
+			return false;
 		}
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource._select_decoder: enc->codec_id = 0x%x", enc->codec_id);
 		AVCodec *codec = avcodec_find_decoder(enc->codec_id);
 
 		if (codec == NULL) {
-				lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Failed to find codec for %s(0x%x)", fmt.name.c_str(),  enc->codec_id);
-				lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
-				return false;
+			lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Failed to find codec for %s(0x%x)", fmt.name.c_str(),  enc->codec_id);
+			lib::logger::get_logger()->warn(gettext("Programmer error encountered during video playback"));
+			return false;
 		}
 		//m_con = avcodec_alloc_context();
 
 		if(avcodec_open(m_con,codec) < 0) {
-				lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Failed to open avcodec for %s(0x%x)", fmt.name.c_str(), enc->codec_id);
-				return false;
+			lib::logger::get_logger()->debug("Internal error: ffmpeg_video_decoder_datasource._select_decoder: Failed to open avcodec for %s(0x%x)", fmt.name.c_str(), enc->codec_id);
+			return false;
 		}
 		if (fmt.width == 0) fmt.width = m_con->width;
 		if (fmt.height == 0) fmt.width = m_con->height;

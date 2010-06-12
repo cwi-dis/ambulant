@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -356,7 +356,7 @@ bool time_node::needs_implicit_dur() const {
 // This uses calc_ad() function.
 // Delegates the actual work to the associated time_calc instance.
 time_node::time_type
-time_node::calc_current_interval_end()  {
+time_node::calc_current_interval_end()	{
 	time_mset end_list;
 	get_instance_times(m_end_list, end_list);
 	return m_time_calc->calc_interval_end(m_interval, end_list);
@@ -426,7 +426,7 @@ time_node::calc_next_interval(interval_type prev) {
 // timestamp: "scheduled now" in parent simple time
 // This is the state change hook for this node.
 void time_node::set_state(time_state_type state, qtime_type timestamp, time_node *oproot) {
-    AM_DBG if (has_debug()) m_logger->debug("set_state(%s) %s -> %s", get_sig().c_str(), time_state_str(m_state->ident()), time_state_str(state));
+	AM_DBG if (has_debug()) m_logger->debug("set_state(%s) %s -> %s", get_sig().c_str(), time_state_str(m_state->ident()), time_state_str(state));
 	if(m_state->ident() == state) return;
 #if 1
 	// Stopgap bug fix by Jack: while seeking to a destination node,
@@ -531,7 +531,7 @@ void time_node::update_interval_end(qtime_type timestamp, time_type new_end) {
 // Sets a new interval as current, updates dependents and schedules activation.
 // After this call the state of the node
 // a) Remains the same (proactive or postactive) if the interval is after timestamp.
-//    In this case the interval is scheduled.
+//	  In this case the interval is scheduled.
 // b) Transitions to postactive if the interval is before timestamp
 // c) Transitions to active if the interval contains timestamp
 // See active_state::enter() for the activities executed
@@ -595,13 +595,12 @@ bool time_node::can_set_interval(qtime_type timestamp, const interval_type& i) {
 	if(is_root() || i.after(timestamp.second)) return true;
 	if(up() && up()->is_seq()) {
 		// the node should go active but the interval may be wrong/biased
-		 time_node *prev = previous();
-		 if(prev && prev->is_active()) {
+		time_node *prev = previous();
+		if(prev && prev->is_active()) {
 			// wait
-			AM_DBG m_logger->debug("%s[%s] attempt to set_current_interval() but prev active: %s (DT=%ld)", m_attrs.get_tag().c_str(),
-				m_attrs.get_id().c_str(), ::repr(i).c_str(), timestamp.as_doc_time_value());
+			AM_DBG m_logger->debug("%s[%s] attempt to set_current_interval() but prev active: %s (DT=%ld)", m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), ::repr(i).c_str(), timestamp.as_doc_time_value());
 			return false;
-		 }
+		}
 	}
 	// if an ancestor is paused or deferred return false
 	std::list<const time_node*> path;
@@ -671,7 +670,7 @@ void time_node::activate(qtime_type timestamp) {
 
 	// We need to convert parent's simple time to this node's simple time.
 	// For this convertion we need the dur since,
-	// t_p = t_c + rad_c + begin_c  => rad_c + t_c = t_p - begin_c
+	// t_p = t_c + rad_c + begin_c	=> rad_c + t_c = t_p - begin_c
 	// => t_c = rem(t_p - begin_c, dur) and rad_c = mod(t_p - begin_c, dur)*dur
 
 	// The offset we are now within the current interval
@@ -733,7 +732,7 @@ void time_node::activate(qtime_type timestamp) {
 			assert(m_state->ident() == ts_active);
 			raise_update_event(timestamp);
 			sync_node()->raise_update_event(timestamp);
-        }
+		}
 #endif
 		else start_playable(sd_offset);
 		if(m_timer) m_timer->resume();
@@ -830,15 +829,14 @@ void time_node::start_prefetch(time_type offset) {
 		return;
 	}
 	qtime_type timestamp(this, offset);
-	AM_DBG m_logger->debug("%s[%s].start_prefetch(%ld) DT:%ld", m_attrs.get_tag().c_str(),
-						   m_attrs.get_id().c_str(), offset(), timestamp.as_doc_time_value());
+	AM_DBG m_logger->debug("%s[%s].start_prefetch(%ld) DT:%ld", m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), offset(), timestamp.as_doc_time_value());
 	common::playable *np = create_playable();
 	if(np) {
 		// XXXJACK: I think offset isn't the right parameter here. The intention of the
 		// preroll() first argument is that it indicates when the result of prefetching
 		// is going to be needed.
 		np->preroll(time_type_to_secs(offset()));
-    }
+	}
 }
 #endif //WITH_SEAMLESS_PLAYBACK
 
@@ -898,8 +896,8 @@ void time_node::start_playable(time_type offset) {
 	AM_DBG m_logger->debug("%s[%s].start_playable(%ld) DT:%ld", m_attrs.get_tag().c_str(),
 		m_attrs.get_id().c_str(), offset(), timestamp.as_doc_time_value());
 	m_eom_flag = false;
-    m_saw_on_bom = false;
-    m_saw_on_eom = false;
+	m_saw_on_bom = false;
+	m_saw_on_eom = false;
 	common::playable *np = create_playable();
 	if(np) np->wantclicks(m_want_activate_events);
 	const lib::transition_info *trans_in = m_attrs.get_trans_in();
@@ -951,7 +949,7 @@ void time_node::repeat_playable() {
 	if(!is_playable() || m_ffwd_mode) return;
 	AM_DBG m_logger->debug("%s[%s].repeat()", m_attrs.get_tag().c_str(),
 		m_attrs.get_id().c_str());
-    stop_playable();
+	stop_playable();
 	m_context->start_playable(m_node, 0);
 }
 
@@ -1102,12 +1100,12 @@ void time_node::exec(qtime_type timestamp) {
 		if(m_interval.end.is_definite()) reftime = m_interval.end;
 		else reftime = timestamp.second;
 		qtime_type qt(sync_node(), reftime);
-        // Fix by Jack (who is, as usual, unsure whether it's actually correct:-):
-        // We can now set the last_cdur, and we may need to schedule a repeat. Otherwise
-        // we go to postactive.
-        m_last_cdur = timestamp.as_time_down_to(this);
-        if (!on_eosd(timestamp))
-            set_state_ex(ts_postactive, qt);
+		// Fix by Jack (who is, as usual, unsure whether it's actually correct:-):
+		// We can now set the last_cdur, and we may need to schedule a repeat. Otherwise
+		// we go to postactive.
+		m_last_cdur = timestamp.as_time_down_to(this);
+		if (!on_eosd(timestamp))
+			set_state_ex(ts_postactive, qt);
 		return;
 	}
 #if 1 // Quick fix for: #2663294
@@ -1121,7 +1119,7 @@ void time_node::exec(qtime_type timestamp) {
 	bool repeats = m_attrs.specified_rdur() || m_attrs.specified_rcount();
 	if (repeats && !m_last_cdur.is_definite() && m_eom_flag) {
 		time_type cdur = timestamp.as_time_down_to(this);
-        m_last_cdur = cdur;
+		m_last_cdur = cdur;
 	}
 #endif
 
@@ -1225,7 +1223,7 @@ bool time_node::on_eosd(qtime_type timestamp) {
 			return true;
 		}
 	}
-    return false;
+	return false;
 }
 
 // Begin of media notification
@@ -1233,11 +1231,11 @@ bool time_node::on_eosd(qtime_type timestamp) {
 // Could be used to define the slip sync offset.
 void time_node::on_bom(qtime_type timestamp) {
 	m_eom_flag = false;
-    if (m_saw_on_bom)
-        m_logger->debug("time_node::on_bom: renderer emitted second started() callback for %s", get_sig().c_str());
-    if (m_saw_on_eom)
-        m_logger->debug("time_node::on_bom: renderer emitted started() callback after stopped() callback for %s", get_sig().c_str());
-    m_saw_on_bom = true;
+	if (m_saw_on_bom)
+		m_logger->debug("time_node::on_bom: renderer emitted second started() callback for %s", get_sig().c_str());
+	if (m_saw_on_eom)
+		m_logger->debug("time_node::on_bom: renderer emitted started() callback after stopped() callback for %s", get_sig().c_str());
+	m_saw_on_bom = true;
 	if(!is_discrete()) {
 		qtime_type pt = timestamp.as_qtime_down_to(sync_node());
 		qtime_type st = pt.as_qtime_down_to(this);
@@ -1268,9 +1266,9 @@ void time_node::on_eom(qtime_type timestamp) {
 	AM_DBG m_logger->debug("%s[%s].on_eom()", m_attrs.get_tag().c_str(),
 		m_attrs.get_id().c_str());
 	m_eom_flag = true;
-    if (m_saw_on_eom)
-        m_logger->debug("time_node::on_eom: renderer emitted second stopped() callback for %s", get_sig().c_str());
-    m_saw_on_eom = true;
+	if (m_saw_on_eom)
+		m_logger->debug("time_node::on_eom: renderer emitted second stopped() callback for %s", get_sig().c_str());
+	m_saw_on_eom = true;
 	if(is_playable() && !is_discrete()) {
 		if(m_impldur == time_type::unresolved) {
 			time_type pt = timestamp.as_node_time(sync_node());
@@ -1507,7 +1505,7 @@ void time_node::fill(qtime_type timestamp) {
 		if (fb != fill_continue && is_playable()) pause_playable();
 		else {
 			//xxxbo: Instead of pausing the playable, we should continue it for some short period of time.
-			//       Here, I just print some message and actual action needed to be inserted later after I
+			//		 Here, I just print some message and actual action needed to be inserted later after I
 			//		 figure out how to do it.
 			if (m_node->get_attribute("src")) {
 				m_logger->debug("%s[%s].continue() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(),
@@ -1768,7 +1766,7 @@ void time_node::raise_begin_event(qtime_type timestamp) {
 void time_node::node_started()
 {
 	if(is_root()) m_context->started_playback();
-	 if(!m_ffwd_mode) m_context->node_started(m_node);
+	if(!m_ffwd_mode) m_context->node_started(m_node);
 }
 
 // Called when this node repeats.
@@ -1819,8 +1817,8 @@ void time_node::raise_end_event(qtime_type timestamp, time_node *oproot) {
 	if(p && (p->is_par() || p->is_excl() || (p->is_seq() && !next())))
 		p->raise_update_event(timestamp);
 	if(p && p->is_seq()) {
-		 time_node *n = next();
-		 if(n) n->raise_update_event(timestamp);
+		time_node *n = next();
+		if(n) n->raise_update_event(timestamp);
 	}
 
 	if(is_root()) m_context->done_playback();
@@ -2177,7 +2175,7 @@ void time_node::reset() {
 
 	// when set the associated renderer should notify for activate events
 	// Structure var
-	//  bool m_want_activate_events;
+	//	bool m_want_activate_events;
 
 	// when set the associated UI should notify for accesskey events
 	// Structure var
@@ -2257,19 +2255,19 @@ time_container::get_implicit_dur() {
 	get_children(cl);
 	switch(esr) {
 		case esr_first:
-			idur = 	calc_implicit_dur_for_esr_first(cl);
+			idur =	calc_implicit_dur_for_esr_first(cl);
 			break;
 		case esr_last:
-			idur = 	calc_implicit_dur_for_esr_last(cl);
+			idur =	calc_implicit_dur_for_esr_last(cl);
 			break;
 		case esr_all:
-			idur = 	calc_implicit_dur_for_esr_all(cl);
+			idur =	calc_implicit_dur_for_esr_all(cl);
 			break;
 		case esr_id:
-			idur = 	calc_implicit_dur_for_esr_id(cl);
+			idur =	calc_implicit_dur_for_esr_id(cl);
 			break;
 		default:
-			idur = 	calc_implicit_dur_for_esr_last(cl);
+			idur =	calc_implicit_dur_for_esr_last(cl);
 			break;
 	}
 	return idur;
@@ -2399,7 +2397,7 @@ bool time_container::end_sync_cond() const {
 		// the current interval may not be the first [(*it)->played() maybe true]
 		// (path by Jack) If we're fast-forwarding we ignore continuous-media children
 		for(it=cl.begin();it!=cl.end();it++) {
-    			if (m_ffwd_mode && (*it)->is_cmedia()) continue;
+			if (m_ffwd_mode && (*it)->is_cmedia()) continue;
 			const interval_type& i = (*it)->get_current_interval();
 			if(i.is_valid()) return false;
 		}
@@ -2780,7 +2778,7 @@ void time_node::follow_link(qtime_type timestamp) {
 		source_state = src_play;
 	} else if (sourceplaystate && strcmp(sourceplaystate, "stop") == 0) {
 		source_state = src_replace;
-	} else  if (sourceplaystate && strcmp(sourceplaystate, "pause") == 0) {
+	} else	if (sourceplaystate && strcmp(sourceplaystate, "pause") == 0) {
 		source_state = src_pause;
 	}
 

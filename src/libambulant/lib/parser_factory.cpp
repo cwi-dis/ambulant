@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -47,10 +47,10 @@ global_parser_factory::get_parser_factory()
 	AM_DBG lib::logger::get_logger()->debug("global_parser_factory::get_parser_factory() called");
 
 	if (s_singleton == NULL) {
-        s_singleton = new global_parser_factory();
+		s_singleton = new global_parser_factory();
 		AM_DBG lib::logger::get_logger()->debug("global_parser_factory::get_parser_factory() returning 0x%x", (void*) s_singleton);
 	}
-    return s_singleton;
+	return s_singleton;
 }
 
 
@@ -66,19 +66,19 @@ global_parser_factory::global_parser_factory()
 	m_default_factory = new lib::xerces_factory();
 #else
 #warning No default XML parser specified
-    lib::logger::get_logger()->fatal(gettext("No XML parser configured"));
+	lib::logger::get_logger()->fatal(gettext("No XML parser configured"));
 #endif
 }
 
 global_parser_factory::~global_parser_factory()
 {
-    // XXXX Should I delete the factories in m_factories? I think
-    // so, but I'm not sure...
-    std::vector<parser_factory*>::iterator i;
-    for(i=m_factories.begin(); i != m_factories.end(); i++)
+	// XXXX Should I delete the factories in m_factories? I think
+	// so, but I'm not sure...
+	std::vector<parser_factory*>::iterator i;
+	for(i=m_factories.begin(); i != m_factories.end(); i++)
 		delete (*i);
 	m_factories.clear();
-    delete m_default_factory;
+	delete m_default_factory;
 	if (s_singleton == this)
 		s_singleton = NULL;
 	m_default_factory = NULL;
@@ -88,7 +88,7 @@ void
 global_parser_factory::add_factory(parser_factory *pf)
 {
 	AM_DBG lib::logger::get_logger()->debug("global_parser_factory::add_factory(0x%x) called", (void*) pf);
-    m_factories.push_back(pf);
+	m_factories.push_back(pf);
 }
 
 xml_parser*
@@ -98,22 +98,22 @@ global_parser_factory::new_parser(
 {
 	std::string& parser_id = common::preferences::get_preferences()->m_parser_id;
 	AM_DBG lib::logger::get_logger()->debug("global_parser_factory::new_parser() called (pref = %s)",parser_id.c_str());
-    xml_parser *pv;
+	xml_parser *pv;
 
 	if ( parser_id == "any" && m_default_factory) {
 
-   		pv = m_default_factory->new_parser(content_handler, error_handler);
+		pv = m_default_factory->new_parser(content_handler, error_handler);
 		if (pv) {
 			AM_DBG lib::logger::get_logger()->debug("global_parser_factory::new_parser(\"any\") returning parser (0x%x)", (void*) pv);
 			return pv;
 		}
 	}
-    std::vector<parser_factory*>::iterator i;
+	std::vector<parser_factory*>::iterator i;
 	pv = NULL;
-    for(i=m_factories.begin(); i != m_factories.end(); i++) {
+	for(i=m_factories.begin(); i != m_factories.end(); i++) {
 		if (( (*i)->get_parser_name() == parser_id ) || ( parser_id == "any" )) {
 			AM_DBG lib::logger::get_logger()->debug("global_parser_factory::new_parser() trying parser %s", parser_id.c_str());
-        	pv = (*i)->new_parser(content_handler, error_handler);
+			pv = (*i)->new_parser(content_handler, error_handler);
 
 			if (pv){
 				AM_DBG lib::logger::get_logger()->debug("global_parser_factory::new_parser() returning parser (0x%x)", (void*) pv);
@@ -123,14 +123,14 @@ global_parser_factory::new_parser(
 			pv = NULL;
 		}
 
-    }
+	}
 	if (m_default_factory) {
 		if (!m_warned && parser_id != m_default_factory->get_parser_name()) {
 			m_warned = true;
 			lib::logger::get_logger()->warn(gettext("Parser \"%s\" not available, using \"%s\""),
 				parser_id.c_str(), m_default_factory->get_parser_name().c_str());
 		}
-   		return m_default_factory->new_parser(content_handler, error_handler);
+		return m_default_factory->new_parser(content_handler, error_handler);
 	} else {
 		return NULL;
 	}

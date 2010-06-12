@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -43,29 +43,29 @@ extern const char qt_text_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("Render
 common::playable_factory *
 gui::qt::create_qt_text_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("Rendererqt"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererText"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("Rendererqt"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererText"), true);
 	return new common::single_playable_factory<
-        qt_text_renderer,
-        qt_text_playable_tag,
-        qt_text_playable_renderer_uri,
-        qt_text_playable_renderer_uri2,
-        qt_text_playable_renderer_uri2>(factory, mdp);
+		qt_text_renderer,
+		qt_text_playable_tag,
+		qt_text_playable_renderer_uri,
+		qt_text_playable_renderer_uri2,
+		qt_text_playable_renderer_uri2>(factory, mdp);
 }
 
 
 qt_text_renderer::qt_text_renderer(
-		common::playable_notification *context,
-		common::playable_notification::cookie_type cookie,
-		const lib::node *node,
-    	lib::event_processor *const evp,
-    	common::factories *factory,
-		common::playable_factory_machdep *mdp)
+	common::playable_notification *context,
+	common::playable_notification::cookie_type cookie,
+	const lib::node *node,
+	lib::event_processor *const evp,
+	common::factories *factory,
+	common::playable_factory_machdep *mdp)
 :	qt_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory, mdp),
- 	m_text_storage(NULL),
- 	m_text_color(0),
- 	m_text_font(NULL),
- 	m_text_size(0)
+	m_text_storage(NULL),
+	m_text_color(0),
+	m_text_font(NULL),
+	m_text_size(0)
 {
 	smil2::params *params = smil2::params::for_node(node);
 	AM_DBG lib::logger::get_logger()->debug("qt_text_renderer(0x%x) params=0x%x",this,params);
@@ -89,9 +89,8 @@ qt_text_renderer::~qt_text_renderer() {
 }
 
 void
-qt_text_renderer::redraw_body(const lib::rect &r,
-				     common::gui_window* w) {
-// No m_lock needed, protected by base class
+qt_text_renderer::redraw_body(const lib::rect &r, common::gui_window* w) {
+	// No m_lock needed, protected by base class
 	const lib::point p = m_dest->get_global_topleft();
 	if (m_data && !m_text_storage) {
 		m_text_storage = (char*) malloc(m_data_size+1);
@@ -108,9 +107,9 @@ qt_text_renderer::redraw_body(const lib::rect &r,
 		p.x, p.y);
 	if (m_text_storage) {
 		int L = r.left()+p.x,
-		    T = r.top()+p.y,
-		    W = r.width(),
-		    H = r.height();
+			T = r.top()+p.y,
+			W = r.width(),
+			H = r.height();
 		ambulant_qt_window* aqw = (ambulant_qt_window*) w;
 		QPainter paint;
 		paint.begin(aqw->get_ambulant_pixmap());

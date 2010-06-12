@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -46,14 +46,14 @@ extern const char qt_image_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("Rende
 common::playable_factory *
 gui::qt::create_qt_image_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererQt"), true);
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererImg"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererQt"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererImg"), true);
 	return new common::single_playable_factory<
-        qt_image_renderer,
-        qt_image_playable_tag,
-        qt_image_playable_renderer_uri,
-        qt_image_playable_renderer_uri2,
-        qt_image_playable_renderer_uri2>(factory, mdp);
+		qt_image_renderer,
+		qt_image_playable_tag,
+		qt_image_playable_renderer_uri,
+		qt_image_playable_renderer_uri2,
+		qt_image_playable_renderer_uri2>(factory, mdp);
 }
 
 qt_image_renderer::~qt_image_renderer() {
@@ -63,10 +63,9 @@ qt_image_renderer::~qt_image_renderer() {
 }
 
 void
-qt_image_renderer::redraw_body(const rect &dirty,
-				      gui_window* w) {
+qt_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	m_lock.enter();
-	const point             p = m_dest->get_global_topleft();
+	const point				p = m_dest->get_global_topleft();
 	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("qt_image_renderer.redraw_body(0x%x): m_image=0x%x, ltrb=(%d,%d,%d,%d), p=(%d,%d)", (void *)this, &m_image,r.left(), r.top(), r.right(), r.bottom(),p.x,p.y);
 	if (m_data && !m_image_loaded) {
@@ -76,7 +75,7 @@ qt_image_renderer::redraw_body(const rect &dirty,
 	}
 	if ( ! m_image_loaded) {
 		// Initially the image may not yet be loaded
-	 	m_lock.leave();
+		m_lock.leave();
 		return;
 	}
 // XXXX WRONG! This is the info for the region, not for the node!
@@ -103,11 +102,11 @@ qt_image_renderer::redraw_body(const rect &dirty,
 		for(it=tiles.begin(); it!=tiles.end(); it++) {
 			srcrect = (*it).first;
 			dstrect = (*it).second;
-			int	S_L = srcrect.left(),
+			int S_L = srcrect.left(),
 				S_T = srcrect.top(),
 				S_W = srcrect.width(),
-		        	S_H = srcrect.height();
-			int	D_L = dstrect.left(),
+					S_H = srcrect.height();
+			int D_L = dstrect.left(),
 				D_T = dstrect.top(),
 				D_W = dstrect.width(),
 				D_H = dstrect.height();
@@ -136,8 +135,7 @@ qt_image_renderer::redraw_body(const rect &dirty,
 			alpha_chroma = ri->get_chromakeyopacity();
 			lib::color_t chromakey = ri->get_chromakey();
 			lib::color_t chromakeytolerance = ri->get_chromakeytolerance();
-			compute_chroma_range(chromakey, chromakeytolerance,
-					     &chroma_low, &chroma_high);
+			compute_chroma_range(chromakey, chromakeytolerance, &chroma_low, &chroma_high);
 		} else alpha_chroma = alpha_media;
 	}
 #else //WITH_SMIL30
@@ -148,22 +146,23 @@ qt_image_renderer::redraw_body(const rect &dirty,
 	// S_ for source image coordinates
 	// N_ for new (scaled) image coordinates
 	// D_ for destination coordinates
-	int	O_W = srcsize.w,
+	int O_W = srcsize.w,
 		O_H = srcsize.h;
-	int	S_L = srcrect.left(),
+	int S_L = srcrect.left(),
 		S_T = srcrect.top(),
 		S_W = srcrect.width(),
 		S_H = srcrect.height();
-	int	D_L = dstrect.left(),
+	int D_L = dstrect.left(),
 		D_T = dstrect.top(),
 		D_W = dstrect.width(),
 		D_H = dstrect.height();
 	AM_DBG lib::logger::get_logger()->debug("qt_image_renderer.redraw_body(0x%x): drawImage at (L=%d,T=%d,W=%d,H=%d) from (L=%d,T=%d,W=%d,H=%d)",(void *)this,D_L,D_T,D_W,D_H,S_L,S_T,S_W,S_H);
-	/* scale image s.t. the viewbox specified fits in destination area:
-	 * zoom_X=(O_W/S_W), fit_X=(D_W/O_W); fact_W=zoom_X*fit_X  */
-	float	fact_W = (float)D_W/(float)S_W,
-	  fact_H = (float)D_H/(float)S_H;
-	int	N_L = (int)roundf(S_L*fact_W),
+
+	// scale image s.t. the viewbox specified fits in destination area:
+	// zoom_X=(O_W/S_W), fit_X=(D_W/O_W); fact_W=zoom_X*fit_X
+	float fact_W = (float)D_W/(float)S_W,
+		fact_H = (float)D_H/(float)S_H;
+	int N_L = (int)roundf(S_L*fact_W),
 		N_T = (int)roundf(S_T*fact_H),
 		N_W = (int)roundf(O_W*fact_W),
 		N_H = (int)roundf(O_H*fact_H);
@@ -178,7 +177,7 @@ qt_image_renderer::redraw_body(const rect &dirty,
 	// alpha buffer is supplied here
 	QImage scaledimage = partialimage.smoothScale(D_W, D_H, QImage::ScaleFree);
 	N_L = 0; N_T = 0;
-#ifdef  WITH_DUMPIMAGES
+#ifdef	WITH_DUMPIMAGES
 	char buf[128];
 	sprintf (buf,"m_image(0x%x)",&m_image);
 	DUMPIMAGE(&m_image, buf);
