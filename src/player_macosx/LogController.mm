@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -23,21 +23,21 @@
 @implementation LogController
 
 + (id)sharedLogController {
-    static LogController *s_LogController = nil;
+	static LogController *s_LogController = nil;
 
-    if (!s_LogController) {
-        s_LogController = [[LogController allocWithZone:[self zone]] init];
-    }
-    return s_LogController;
+	if (!s_LogController) {
+		s_LogController = [[LogController allocWithZone:[self zone]] init];
+	}
+	return s_LogController;
 }
 
 - (id)init {
-    self = [self initWithWindowNibName:@"Log"];
-    if (self) {
-        [self setWindowFrameAutosaveName:@"Log"];
-//        needsUpdate = NO;
-    }
-    return self;
+	self = [self initWithWindowNibName:@"Log"];
+	if (self) {
+		[self setWindowFrameAutosaveName:@"Log"];
+//		  needsUpdate = NO;
+	}
+	return self;
 }
 
 - (void) awakeFromNib
@@ -47,18 +47,18 @@
 
 - (void) insertText: (NSString *)data
 {
-    NSRange endRange;
+	NSRange endRange;
 
 	endRange.location = [[text textStorage] length];
-    endRange.length = 0;
-    [text replaceCharactersInRange:endRange withString:data];
-    endRange.length = [data length];
-    [text scrollRangeToVisible:endRange];
+	endRange.length = 0;
+	[text replaceCharactersInRange:endRange withString:data];
+	endRange.length = [data length];
+	[text scrollRangeToVisible:endRange];
 }
 
 - (void) setLogLevel: (id) sender
 {
-    int lvl = (int)[sender indexOfSelectedItem];
+	int lvl = (int)[sender indexOfSelectedItem];
 	MyAppDelegate *app = [[NSApplication sharedApplication] delegate];
 	[app setLogLevel: lvl];
 }

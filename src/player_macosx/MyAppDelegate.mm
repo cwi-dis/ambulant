@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -61,7 +61,7 @@ class nslog_ostream : public ambulant::lib::ostream {
 int
 nslog_ostream::write(const char *cstr)
 {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	LogController *log = [LogController sharedLogController];
 	NSString *nsstr = [NSString stringWithUTF8String: cstr];
 	if (log) [log performSelectorOnMainThread: @selector(insertText:) withObject: nsstr waitUntilDone: NO];
@@ -72,7 +72,7 @@ nslog_ostream::write(const char *cstr)
 void
 show_message(int level, const char *format)
 {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSString *message = [[NSString stringWithUTF8String: format] retain];
 	MyAppDelegate *delegate = [[NSApplication sharedApplication] delegate];
 	[delegate performSelectorOnMainThread: @selector(showMessage:)
@@ -87,7 +87,7 @@ initialize_logger()
 	// Connect logger to our message displayer and output processor
 	ambulant::lib::logger::get_logger()->set_show_message(show_message);
 	if (getenv("AMBULANT_LOGGER_NOWINDOW") == NULL)
-    	ambulant::lib::logger::get_logger()->set_ostream(new nslog_ostream);
+		ambulant::lib::logger::get_logger()->set_ostream(new nslog_ostream);
 	// Tell the logger about the output level preference
 	int level = ambulant::common::preferences::get_preferences()->m_log_level;
 	ambulant::lib::logger::get_logger()->set_level(level);
@@ -116,8 +116,8 @@ initialize_logger()
 		// Show the logger window immedeately if log level is DEBUG
 		[self showLogWindow: self];
 	}
-    // Initialize profiler (if enabled)
-    ambulant::lib::profile::initialize();
+	// Initialize profiler (if enabled)
+	ambulant::lib::profile::initialize();
 
 	// Initialize the gettext library. We support both the MacOS System Preferences
 	// setting and the unix-style LANG variable.
@@ -142,29 +142,29 @@ initialize_logger()
 	} else {
 		bindtextdomain (PACKAGE, LOCALEDIR);
 	}
-    textdomain (PACKAGE);
+	textdomain (PACKAGE);
 #endif
 	ambulant::lib::logger::get_logger()->debug(gettext("Ambulant Player: compile time version %s, runtime version %s"), AMBULANT_VERSION, ambulant::get_version());
 	ambulant::lib::logger::get_logger()->debug(gettext("Ambulant Player: built on %s for Macintosh/%s/%s"), __DATE__,
 #ifdef WITH_CG
-        "CoreGraphics",
+		"CoreGraphics",
 #else
-        "Cocoa",
+		"Cocoa",
 #endif
 #ifdef __ppc64__
-        "ppc64"
+		"ppc64"
 #elif defined(__ppc__)
-        "ppc"
+		"ppc"
 #elif defined(__x86_64__)
-        "x86_64"
+		"x86_64"
 #elif defined(__i386__)
-        "i386"
+		"i386"
 #elif defined(__armv6__)
-        "armv6"
+		"armv6"
 #else
-        "unknown-architecture"
+		"unknown-architecture"
 #endif
-    );
+	);
 #if ENABLE_NLS
 	ambulant::lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english; user requested %s)"), locale);
 #endif
@@ -224,7 +224,7 @@ initialize_logger()
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 #ifdef WITH_SPLASH_SCREEN
 #define NS_SPLASH_SCREEN @ WITH_SPLASH_SCREEN
-    NSString *welcomePath = [thisBundle pathForResource:NS_SPLASH_SCREEN ofType:nil];
+	NSString *welcomePath = [thisBundle pathForResource:NS_SPLASH_SCREEN ofType:nil];
 #else
 	if ( [defaults boolForKey: @"welcomeDocumentSeen"] )
 		return;
@@ -248,7 +248,7 @@ initialize_logger()
 
 - (void)applicationDidChangeScreenParameters:(NSNotification *)aNotification
 {
-    NSLog(@"applicationDidChangeScreenParameters");
+	NSLog(@"applicationDidChangeScreenParameters");
 }
 
 - (void)handleGetURLEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent

@@ -53,14 +53,14 @@ class document_embedder : public ambulant::common::embedder {
 @interface MyDocument : NSDocument
 {
 //	IBOutlet id main_view;
-    IBOutlet id view;
+	IBOutlet id view;
 	IBOutlet id play_button;
 	IBOutlet id stop_button;
 	IBOutlet id pause_button;
 	IBOutlet id ask_url_panel;
 	IBOutlet id url_field;
 	IBOutlet id status_line;
-//    void *window_factory;
+//	void *window_factory;
 	mainloop *myMainloop;
 #ifdef WITH_OVERLAY_WINDOW
 	mainloop *myAuxMainloop;

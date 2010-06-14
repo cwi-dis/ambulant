@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -62,24 +62,24 @@
 using namespace ambulant;
 
 mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *app)
-:   common::gui_player(),
+:	common::gui_player(),
 	m_view(view),
 	m_gui_screen(NULL)
 {
 	set_embedder(app);
 	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop(0x%x): created", (void*)this);
-    // Set systemComponent values that are relevant
-    smil2::test_attrs::set_default_tests_attrs();
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("Standalone"), true);
- 	init_factories();
+	// Set systemComponent values that are relevant
+	smil2::test_attrs::set_default_tests_attrs();
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("Standalone"), true);
+	init_factories();
 
 	init_plugins();
 
-    // Order the factories according to the preferences
-    common::preferences *prefs = common::preferences::get_preferences();
-    get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererOpen"));
-    if (!prefs->m_prefer_ffmpeg)
-        get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererQuickTime"))    ;
+	// Order the factories according to the preferences
+	common::preferences *prefs = common::preferences::get_preferences();
+	get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererOpen"));
+	if (!prefs->m_prefer_ffmpeg)
+		get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererQuickTime"));
 
 	ambulant::net::url url = ambulant::net::url::from_url(urlstr);
 	m_doc = create_document(url);
@@ -132,7 +132,7 @@ mainloop::init_playable_factory()
 #endif
 #endif
 #ifdef WITH_SDL
-    AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add factory for SDL");
+	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add factory for SDL");
 	pf->add_factory(gui::sdl::create_sdl_playable_factory(this));
 #endif // WITH_SDL
 #endif // NONE_PLAYER
@@ -165,15 +165,15 @@ mainloop::init_datasource_factory()
 	df->add_audio_factory(net::create_live_audio_datasource_factory());
 #endif
 #ifdef WITH_FFMPEG
-    AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_video_datasource_factory");
+	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_video_datasource_factory");
 	df->add_video_factory(net::get_ffmpeg_video_datasource_factory());
-    AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
+	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
 	df->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
-    AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_decoder_finder");
+	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_decoder_finder");
 	df->add_audio_decoder_finder(net::get_ffmpeg_audio_decoder_finder());
-    AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_filter_finder");
+	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_audio_filter_finder");
 	df->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
-    AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_raw_datasource_factory");
+	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add ffmpeg_raw_datasource_factory");
 	df->add_raw_factory(net::get_ffmpeg_raw_datasource_factory());
 #endif // WITH_FFMPEG
 #endif // NONE_PLAYER
@@ -182,10 +182,10 @@ mainloop::init_datasource_factory()
 	// should always perform better, and is always available on OSX.
 	// If you define WITH_STDIO_DATASOURCE we prefer to use the stdio datasource,
 	// however.
-    AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add stdio_datasource_factory");
+	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add stdio_datasource_factory");
 	df->add_raw_factory(net::create_stdio_datasource_factory());
 #endif
-    AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add posix_datasource_factory");
+	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop: add posix_datasource_factory");
 	df->add_raw_factory(net::create_posix_datasource_factory());
 }
 
@@ -199,11 +199,11 @@ mainloop::~mainloop()
 {
 	// We need to delete gui_player::m_player before deleting m_doc, because the
 	// timenode graph in the player has referrences to the node graph in m_doc.
-    if (m_player) {
-        m_player->terminate();
-        m_player->release();
-        m_player = NULL;
-    }
+	if (m_player) {
+		m_player->terminate();
+		m_player->release();
+		m_player = NULL;
+	}
 	delete m_doc;
 	m_doc = NULL;
 	delete m_gui_screen;
@@ -217,11 +217,11 @@ mainloop::restart(bool reparse)
 	bool pausing = is_pause_active();
 	stop();
 
-    if (m_player) {
-        m_player->terminate();
-        m_player->release();
-        m_player = NULL;
-    }
+	if (m_player) {
+		m_player->terminate();
+		m_player->release();
+		m_player = NULL;
+	}
 	if (reparse) {
 		m_doc = create_document(m_url);
 		if(!m_doc) {

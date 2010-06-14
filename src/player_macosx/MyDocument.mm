@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -18,11 +18,11 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 //
-//  MyDocument.m
-//  cocoambulant
+//	MyDocument.m
+//	cocoambulant
 //
-//  Created by Jack Jansen on Thu Sep 04 2003.
-//  Copyright (c) 2003 __MyCompanyName__. All rights reserved.
+//	Created by Jack Jansen on Thu Sep 04 2003.
+//	Copyright (c) 2003 __MyCompanyName__. All rights reserved.
 //
 
 #import "MyDocument.h"
@@ -87,11 +87,11 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		AM_DBG NSLog(@"performSelectorOnMainThread: close: on 0x%x", (void*)m_mydocument);
 		[m_mydocument performSelectorOnMainThread: @selector(close:) withObject: nil waitUntilDone: NO];
 	}
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSString *str_url = [NSString stringWithUTF8String: newdoc.get_url().c_str()];
 	NSURL *url = [NSURL URLWithString: str_url];
 	NSDocumentController *docController = [NSDocumentController sharedDocumentController];
-    NSError *error;
+	NSError *error;
 	NSDocument *doc = [docController openDocumentWithContentsOfURL:url display:YES error:&error];
 	if (!doc) {
 		ambulant::lib::logger::get_logger()->error(gettext("Cannot open: %s, error: %s"), newdoc.get_url().c_str(), [[error localizedDescription] UTF8String]);
@@ -105,7 +105,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 bool
 document_embedder::aux_open(const ambulant::net::url& auxdoc)
 {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	if (auxdoc.get_url() == "") {
 		AM_DBG NSLog(@"aux_open: closing");
 		[m_mydocument closeAuxDocument];
@@ -124,27 +124,27 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 - (id)init
 {
-    self = [super init];
-    if (self) {
-        // Add your subclass-specific initialization here.
-        // If an error occurs here, send a [self release] message and return nil.
+	self = [super init];
+	if (self) {
+		// Add your subclass-specific initialization here.
+		// If an error occurs here, send a [self release] message and return nil.
 
-    }
+	}
 	saved_window = nil;
-    return self;
+	return self;
 }
 
 - (NSString *)windowNibName
 {
-    // Override returning the nib file name of the document
-    // If you need to use a subclass of NSWindowController or if your document supports multiple NSWindowControllers, you should remove this method and override -makeWindowControllers instead.
-    return @"MyDocument";
+	// Override returning the nib file name of the document
+	// If you need to use a subclass of NSWindowController or if your document supports multiple NSWindowControllers, you should remove this method and override -makeWindowControllers instead.
+	return @"MyDocument";
 }
 
 - (void)windowControllerDidLoadNib:(NSWindowController *) aController
 {
-    [super windowControllerDidLoadNib:aController];
-    // Add any code here that needs to be executed once the windowController has loaded the document's window.
+	[super windowControllerDidLoadNib:aController];
+	// Add any code here that needs to be executed once the windowController has loaded the document's window.
 	[[view window] makeFirstResponder: view];
 	[[view window] setAcceptsMouseMovedEvents: YES];
 
@@ -167,7 +167,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError
 {
-    return YES;
+	return YES;
 }
 
 - (void)askForURL: (id)sender
@@ -206,7 +206,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 - (void)openTheDocument
 {
-    NSString *url;
+	NSString *url;
 	BOOL compat103 = ![self respondsToSelector: @selector(fileURL)];
 	if (compat103) {
 		url = [self fileName];
@@ -229,14 +229,14 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 - (NSData *)dataRepresentationOfType:(NSString *)aType
 {
-    // Insert code here to write your document from the given data.  You can also choose to override -fileWrapperRepresentationOfType: or -writeToFile:ofType: instead.
-    return nil;
+	// Insert code here to write your document from the given data.	 You can also choose to override -fileWrapperRepresentationOfType: or -writeToFile:ofType: instead.
+	return nil;
 }
 
 - (BOOL)loadDataRepresentation:(NSData *)data ofType:(NSString *)aType
 {
-    // Insert code here to read your document from the given data.  You can also choose to override -loadFileWrapperRepresentation:ofType: or -readFromFile:ofType: instead.
-    return YES;
+	// Insert code here to read your document from the given data.	You can also choose to override -loadFileWrapperRepresentation:ofType: or -readFromFile:ofType: instead.
+	return YES;
 }
 
 - (BOOL) validateUIItem:(id)UIItem
@@ -306,7 +306,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 - (IBAction)pause:(id)sender
 {
-    if (myMainloop) myMainloop->pause();
+	if (myMainloop) myMainloop->pause();
 	[self validateButtons: nil];
 }
 
@@ -321,9 +321,9 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 {
 	// XXXX Jack thinks that this extra thread is no longer needed (20060124)
 	if (!myMainloop) return;
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
-    assert([NSThread isMultiThreaded]);
+	assert([NSThread isMultiThreaded]);
 	myMainloop->play();
 	// We don't use refcounting on myMainloop, because
 	// otherwise our player infrastructure will be destructed in this
@@ -336,20 +336,20 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	}
 	AM_DBG NSLog(@"validating in separate thread - final");
 	[self validateButtons: nil];
-    [pool release];
+	[pool release];
 	// myMainloop->release();
 }
 
 - (IBAction)stop:(id)sender
 {
-    AM_DBG NSLog(@"Stop");
+	AM_DBG NSLog(@"Stop");
 	if (myMainloop) myMainloop->stop();
 	[self validateButtons: nil];
 }
 
 - (void *)view
 {
-    return view;
+	return view;
 }
 
 - (void)close
@@ -473,16 +473,16 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		NSLog(@"goWindowMode: already in window mode");
 		return;
 	}
-    // Get the screen information.
-    NSScreen* screen = [[view window] screen];
+	// Get the screen information.
+	NSScreen* screen = [[view window] screen];
 	if (screen == NULL) screen = [NSScreen mainScreen];
-    NSDictionary* screenInfo = [screen deviceDescription];
-    NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
+	NSDictionary* screenInfo = [screen deviceDescription];
+	NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
 
-    // Release the screen.
-    CGDirectDisplayID displayID = (CGDirectDisplayID)[screenID longValue];
-    CGDisplayErr err = CGDisplayRelease(displayID);
-    if (err != CGDisplayNoErr) {
+	// Release the screen.
+	CGDirectDisplayID displayID = (CGDirectDisplayID)[screenID longValue];
+	CGDisplayErr err = CGDisplayRelease(displayID);
+	if (err != CGDisplayNoErr) {
 		NSLog(@"goFullScreen: CGDisplayRelease failed");
 		return;
 	}
@@ -497,8 +497,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	[saved_window setAcceptsMouseMovedEvents: YES];
 
 	// Tell our controller that the normal window is in use again.
-	NSWindowController* winController = [[self windowControllers]
-											 objectAtIndex:0];
+	NSWindowController* winController = [[self windowControllers] objectAtIndex:0];
 	[winController setWindow:saved_window];
 
 #ifdef WITH_OVERLAY_WINDOW
@@ -540,17 +539,17 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		NSLog(@"goFullScreen: already in fullscreen mode");
 		return;
 	}
-    // Get the screen information.
-    NSScreen* screen = [[view window] screen];
+	// Get the screen information.
+	NSScreen* screen = [[view window] screen];
 	if (screen == NULL) screen = [NSScreen mainScreen];
-    NSDictionary* screenInfo = [screen deviceDescription];
-    NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
+	NSDictionary* screenInfo = [screen deviceDescription];
+	NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
 	AM_DBG NSLog(@"0x%x.goFullScreen: view=%@ window=%@ screenID = %@", (void*)self, view, [view window], screenID);
 
-    // Capture the screen.
-    CGDirectDisplayID displayID = (CGDirectDisplayID)[screenID longValue];
-    CGDisplayErr err = CGDisplayCapture(displayID);
-    if (err != CGDisplayNoErr) {
+	// Capture the screen.
+	CGDirectDisplayID displayID = (CGDirectDisplayID)[screenID longValue];
+	CGDisplayErr err = CGDisplayCapture(displayID);
+	if (err != CGDisplayNoErr) {
 		NSLog(@"goFullScreen: CGDisplayCapture failed");
 		return;
 	}
@@ -598,13 +597,12 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	[mScreenWindow setAcceptsMouseMovedEvents: YES];
 
 	// Make the screen window the current document window.
-	// Be sure to retain the previous window if you want to  use it again.
-	NSWindowController* winController = [[self windowControllers]
-											 objectAtIndex:0];
+	// Be sure to retain the previous window if you want to	 use it again.
+	NSWindowController* winController = [[self windowControllers] objectAtIndex:0];
 	[winController setWindow:mScreenWindow];
 
 	// The window has to be above the level of the shield window.
-	int32_t     shieldLevel = CGShieldingWindowLevel();
+	int32_t shieldLevel = CGShieldingWindowLevel();
 	[mScreenWindow setLevel:shieldLevel];
 
 #ifdef WITH_OVERLAY_WINDOW
@@ -705,7 +703,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 - (void)windowDidChangeScreen: (NSNotification *)notification
 {
-    [view updateScreenSize];
+	[view updateScreenSize];
 }
 
 @end
@@ -713,9 +711,9 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 @implementation NSDocumentController(MyDocumentControllerCategory)
 - (NSString *)typeForContentsOfURL:(NSURL *)inAbsoluteURL error:(NSError **)outError
 {
-    NSString *path = [inAbsoluteURL path];
-    NSString *extension = [path pathExtension];
-    NSString *rv = [self typeFromFileExtension: extension];
-    return rv;
+	NSString *path = [inAbsoluteURL path];
+	NSString *extension = [path pathExtension];
+	NSString *rv = [self typeFromFileExtension: extension];
+	return rv;
 }
 @end
