@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -50,25 +50,25 @@ class my_cocoa_window_factory : public ambulant::gui::cocoa::cocoa_window_factor
 
 - (AmbulantWebView *)init
 {
-    self = [super init];
-    m_arguments = NULL;
-    m_mainloop = NULL;
-    container = nil;
-    return self;
+	self = [super init];
+	m_arguments = NULL;
+	m_mainloop = NULL;
+	container = nil;
+	return self;
 }
 
 + (NSView *)plugInViewWithArguments:(NSDictionary *)arguments
 {
-    AmbulantWebView *view = [[[self alloc] init] autorelease];
+	AmbulantWebView *view = [[[self alloc] init] autorelease];
 	AM_DBG NSLog(@" view: %@ arguments: %@", self, arguments);
-    [view setArguments:arguments];
-    return view;
+	[view setArguments:arguments];
+	return view;
 }
 
 - (void)setArguments:(NSDictionary *)arguments
 {
-    [m_arguments release];
-    m_arguments = [arguments retain];
+	[m_arguments release];
+	m_arguments = [arguments retain];
 }
 
 - (void)webPlugInInitialize
@@ -83,7 +83,7 @@ class my_cocoa_window_factory : public ambulant::gui::cocoa::cocoa_window_factor
 	prefs->m_use_plugins = true;
 #endif
 	NSDictionary *webPluginAttributesObj = [m_arguments objectForKey:WebPlugInAttributesKey];
-    if (!m_mainloop) {
+	if (!m_mainloop) {
 		container = [m_arguments objectForKey:WebPlugInContainerKey];
 		if (container) {
 			[container webPlugInContainerShowStatus: @"Ambulant Plugin: Loaded"];
@@ -103,15 +103,15 @@ class my_cocoa_window_factory : public ambulant::gui::cocoa::cocoa_window_factor
 				AM_DBG NSLog(@"AmbulantWebKitPlugin: Cannot find webkit_extra_data, cannot communicate WebFrame pointer");
 			}
 		}
-        NSString *urlString = [webPluginAttributesObj objectForKey:@"src"];
-        if (urlString != nil && [urlString length] != 0) {
-            NSURL *baseUrl = [m_arguments objectForKey:WebPlugInBaseURLKey];
-            NSURL *url = [NSURL URLWithString:urlString relativeToURL:baseUrl];
+		NSString *urlString = [webPluginAttributesObj objectForKey:@"src"];
+		if (urlString != nil && [urlString length] != 0) {
+			NSURL *baseUrl = [m_arguments objectForKey:WebPlugInBaseURLKey];
+			NSURL *url = [NSURL URLWithString:urlString relativeToURL:baseUrl];
 			if (url) {
 				m_mainloop = new mainloop([[url absoluteString] UTF8String], self, NULL /*embedder*/);
 			}
 		}
-    }
+	}
 	NSString *autostartString = [webPluginAttributesObj objectForKey:@"autostart"];
 	BOOL autostart = autostartString == nil || [autostartString isEqualToString: @"true"];
 	if (m_mainloop && autostart) {
@@ -126,11 +126,11 @@ class my_cocoa_window_factory : public ambulant::gui::cocoa::cocoa_window_factor
 
 - (void)webPlugInDestroy
 {
-    AM_DBG NSLog(@" webPluginDestroy %@", self);
-    [m_arguments release];
-    m_arguments = NULL;
-    if (m_mainloop) delete m_mainloop;
-    m_mainloop = NULL;
+	AM_DBG NSLog(@" webPluginDestroy %@", self);
+	[m_arguments release];
+	m_arguments = NULL;
+	if (m_mainloop) delete m_mainloop;
+	m_mainloop = NULL;
 	container = nil;
 }
 
@@ -142,25 +142,25 @@ class my_cocoa_window_factory : public ambulant::gui::cocoa::cocoa_window_factor
 
 + (BOOL)isSelectorExcludedFromWebScript:(SEL)selector
 {
-    if (selector == @selector(startPlayer)
-			|| selector == @selector(stopPlayer)
-			|| selector == @selector(restartPlayer)
-			|| selector == @selector(pausePlayer)
-			|| selector == @selector(resumePlayer)
-		) {
-        return NO;
-    }
-    return YES;
+	if (selector == @selector(startPlayer)
+		|| selector == @selector(stopPlayer)
+		|| selector == @selector(restartPlayer)
+		|| selector == @selector(pausePlayer)
+		|| selector == @selector(resumePlayer)
+	) {
+		return NO;
+	}
+	return YES;
 }
 
 + (BOOL)isKeyExcludedFromWebScript:(const char *)property
 {
-    return YES;
+	return YES;
 }
 
 - (id)objectForWebScript
 {
-    return self;
+	return self;
 }
 
 - (void)startPlayer
