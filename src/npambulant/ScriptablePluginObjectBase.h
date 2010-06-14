@@ -3,6 +3,7 @@
 #include "npapi.h"
 #include "npruntime.h"
 #include <string>
+/*AMBULANT_FOREIGN_INDENT_RULES*/
 
 // Helper class that can be used to map calls to the NPObject hooks
 // into virtual methods on instances of classes that derive from this

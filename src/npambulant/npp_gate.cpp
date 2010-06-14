@@ -35,6 +35,8 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+/*AMBULANT_FOREIGN_INDENT_RULES*/
+
 ////////////////////////////////////////////////////////////
 //
 // Implementation of plugin entry points (NPP_*)

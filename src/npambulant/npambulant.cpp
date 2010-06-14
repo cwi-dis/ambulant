@@ -81,8 +81,8 @@ npambulant::npambulant(
 	int argc,
 	char* argn[],
 	char* argv[],
-	NPSavedData* data
-) :
+	NPSavedData* data)
+:
 	m_mimetype(mimetype),
 	m_pNPInstance(pNPInstance ),
 	m_mode(mode),
@@ -151,8 +151,11 @@ npambulant::~npambulant()
 bool
 npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 {
-        const char* version = ambulant::get_version();
-AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, version);
+	//
+	// Step 1 - Initialize the logger and such
+	//
+	const char* version = ambulant::get_version();
+	AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, version);
 #ifndef NDEBUG
 	if (getenv("AMBULANT_DEBUG") != 0) {
 		ambulant::lib::logger::get_logger()->set_ostream(new stderr_ostream);
@@ -161,14 +164,19 @@ AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, ver
 	}
 #else //NDEBUG
 	ambulant::lib::logger::get_logger()->set_level(ambulant::lib::logger::LEVEL_SHOW);
-#endif//NDEBUG
+#endif // NDEBUG
 	if(aWindow == NULL)
 		return FALSE;
-	// prepare for dynamic linking ffmpeg
+	
+	//
+	// Step 2 - Initialize preferences, including setting up for loading
+	// Ambulant plugins (which are needed for SMIL State and (on Windows) ffmpeg).
+	//
 	ambulant::common::preferences *prefs = ambulant::common::preferences::get_preferences();
 	prefs->m_prefer_ffmpeg = true;
 	prefs->m_use_plugins = true;
 	prefs->m_log_level = ambulant::lib::logger::LEVEL_SHOW;
+	
 #ifdef XP_WIN32
 	// for Windows, ffmpeg is only available as plugin
 	prefs->m_plugin_dir = lib::win32::get_module_dir()+"\\plugins\\";
@@ -188,13 +196,16 @@ AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, ver
 	    sprintf(amplugin_path, "%s%s", ffplugindir, npambulant_plugins);
 	    prefs->m_plugin_dir = amplugin_path;
 	    free (path);
-#else //WITH_LTDL_PLUGINS
+#else // WITH_LTDL_PLUGINS
 		prefs->m_use_plugins = false;
-#endif//WITH_LTDL_PLUGINS
+#endif // WITH_LTDL_PLUGINS
 	}
 
-#endif//!XP_WIN3: Linux, Mac
-	// save the NPWindow for any Ambulant plugins (such as SMIL State)
+#endif // !XP_WIN3: Linux, Mac
+
+	//
+	// Step 3 - save the NPWindow for any Ambulant plugins (such as SMIL State)
+	//
 	ambulant::common::plugin_engine *pe = ambulant::common::plugin_engine::get_plugin_engine();
 	void *edptr = pe->get_extra_data("npapi_extra_data");
 	if (edptr) {
@@ -203,9 +214,13 @@ AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, ver
 	} else {
 		AM_DBG fprintf(stderr, "npambulant::init_ambulant: Cannot find npapi_extra_data, cannot communicate NPWindow\n");
     }
+    
+    //
+    // Step 4 - Platform-specific window mumbo-jumbo
+    //
+#ifdef WITH_GTK
 	long long ll_winid = reinterpret_cast<long long>(aWindow->window);
 	int i_winid = static_cast<int>(ll_winid);
-#ifdef WITH_GTK
 	GtkWidget* gtkwidget = GTK_WIDGET(gtk_plug_new((GdkNativeWindow) i_winid));
 	if (gtkwidget->window == NULL) {
 		// a.o. google-chrome
@@ -222,57 +237,62 @@ AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, ver
 	ambulant::lib::logger::get_logger()->set_show_message(npambulant_display_message);
 	ambulant::lib::logger::get_logger()->show(gettext("Ambulant plugin loaded"));
 
+	//
+	// Step 5 - Argument processing, and obtaining the document URL.
+	//
 	const char* arg_str = NULL;
-	if (m_argc > 1)
+	if (m_argc > 1) {
 		for (int i =0; i < m_argc; i++) {
 			// Uncomment next line to see the <EMBED/> attr values
 			// fprintf(stderr, "arg[%i]:%s=%s\n",i,m_argn[i],m_argv[i]);
 			const char* name = m_argn[i];
 			const char* value = m_argv[i];
-			if (strcasecmp(name, "data") == 0)
-				if (arg_str == NULL)
-					arg_str = value;
-			if (strcasecmp(name,"src") == 0)
-                if (arg_str == NULL)
-					arg_str = value;
-			if (strcasecmp(name,"autostart") == 0)
-		    	if (strcasecmp(value , "false") == 0)
-					m_autostart = false;
+			if (strcasecmp(name, "data") == 0 && arg_str == NULL)
+				arg_str = value;
+			if (strcasecmp(name,"src") == 0 && arg_str == NULL)
+				arg_str = value;
+			if (strcasecmp(name,"autostart") == 0 && strcasecmp(value , "false") == 0)
+				m_autostart = false;
 		}
+	}
 	if (arg_str == NULL)
         	return false;
     net::url file_url;
-	net::url arg_url = net::url::from_url (arg_str);
+	net::url arg_url = net::url::from_url(arg_str);
 	char* url_str = NULL;
 	if (arg_url.is_absolute()) {
-        	url_str = strdup(arg_url.get_url().c_str());
-			file_url = arg_url;
+		url_str = strdup(arg_url.get_url().c_str());
+		file_url = arg_url;
 	} else {
-        	char* loc_str = get_document_location();
-	        if (loc_str != NULL) {
-		  net::url loc_url = net::url::from_url (loc_str);
-		  file_url = arg_url.join_to_base(loc_url);
-		  free((void*)loc_str);
+		char* loc_str = get_document_location();
+		if (loc_str != NULL) {
+			net::url loc_url = net::url::from_url(loc_str);
+			file_url = arg_url.join_to_base(loc_url);
+			free((void*)loc_str);
 		} else {
 			file_url = arg_url;
 		}
 		url_str = strdup(file_url.get_url().c_str());
 	}
 	m_url = file_url;
+	
+	//
+	// Step 6 - Initialize the platform-specific widget infrastructure, create
+	// the ambulant player and optionally start it
+	//
 #ifdef WITH_GTK
 	gtk_gui* m_gui = new gtk_gui((char*) gtkwidget, url_str);
 	m_mainloop = new gtk_mainloop(m_gui);
 	if (url_str)
-	        free((void*)url_str);
+		free((void*)url_str);
 	m_logger = lib::logger::get_logger();
 	m_ambulant_player = m_mainloop->get_player();
-	if (m_ambulant_player == NULL)
-	        return false;
-	if (m_autostart)
-	  m_ambulant_player->start();
-	gtk_widget_show_all (gtkwidget);
+	if (m_ambulant_player == NULL) return false;
+	if (m_autostart) m_ambulant_player->start();
+	gtk_widget_show_all(gtkwidget);
 	gtk_widget_realize(gtkwidget);
 #endif // WITH_GTK
+
 #ifdef WITH_CG
 	NP_CGContext *cg_context = (NP_CGContext *)aWindow->window;
 	AM_DBG fprintf(stderr, "npambulant::init_ambulant: context=0x%x, window=0x%x\n", cg_context->context, cg_context->window);
@@ -285,14 +305,14 @@ AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, ver
 	m_logger = lib::logger::get_logger();
 	m_ambulant_player = m_mainloop->get_player();
 	if (m_ambulant_player == NULL)
-	        return false;
+		return false;
 	if (m_autostart)
 	  m_ambulant_player->start();
 #endif // WITH_CG
+
 #ifdef	XP_WIN32
 	m_player_callbacks.set_os_window(m_hwnd);
 	m_ambulant_player = new ambulant::gui::dx::dx_player(m_player_callbacks, NULL, m_url);
-//X	m_ambulant_player->set_state_component_factory(NULL); // XXXJACK DEBUG!!!!
 	if (m_ambulant_player) {
 		if ( ! get_player()) {
 			delete m_ambulant_player;
@@ -302,18 +322,16 @@ AM_DBG fprintf(stderr, "npambulant::init(0x%x) ambulant version\n", aWindow, ver
 	}
 	m_bInitialized = TRUE;
 	return TRUE;
-#else // ! XP_WIN32
+#endif // ! XP_WIN32
 	m_bInitialized = true;
 	return true;
-#endif// ! XP_WIN32
 }
 
 
 /// Get the location of the html document.
 /// In javascript this is simply document.location.href. In C it's the
 /// same, but slightly more convoluted:-)
-char* npambulant::get_document_location()
-{
+char* npambulant::get_document_location() {
 	AM_DBG fprintf(stderr, "npambulant::get_document_location()\n");
 	char *rv = NULL;
 
@@ -360,8 +378,7 @@ char* npambulant::get_document_location()
 }
 
 NPBool
-npambulant::setWindow(NPWindow* pNPWindow)
-{
+npambulant::setWindow(NPWindow* pNPWindow) {
 	if(pNPWindow == NULL)
 		return FALSE;
 	if (m_Window && m_Window != pNPWindow)
@@ -387,8 +404,7 @@ npambulant::setWindow(NPWindow* pNPWindow)
 }
 
 NPBool
-npambulant::init()
-{
+npambulant::init() {
 	if (!m_pNPInstance) {
 		ambulant::lib::logger::get_logger()->trace("npambulant: init called without NPInstance");
 		return FALSE;
@@ -405,8 +421,7 @@ npambulant::init()
 }
 
 void
-npambulant::shut()
-{
+npambulant::shut() {
 #ifdef XP_WIN
 	if (m_hWnd) {
 		// reset the userdata association
@@ -428,7 +443,8 @@ npambulant::shut()
 	}
 #else
 		if (m_ambulant_player->is_playing()
-		    || m_ambulant_player->is_pausing() ) {
+		    || m_ambulant_player->is_pausing() )
+		{
 			m_ambulant_player->stop();
 			while ( ! m_ambulant_player->is_done())
 		  		sleep(3);
@@ -451,8 +467,7 @@ npambulant::shut()
 }
 
 NPBool
-npambulant::isInitialized()
-{
+npambulant::isInitialized() {
 	return m_bInitialized;
 }
 
@@ -467,13 +482,14 @@ npambulant::getValue(const char *name) {
 }
 
 int16
-npambulant::handleEvent(void* event)
-{
+npambulant::handleEvent(void* event) {
 #ifdef XP_MAC
+	// XXXJACK thinks this is nonsense.... Old debug code??
 	NPEvent* ev = (NPEvent*)event;
 	if (m_Window) {
-		Rect box = { m_Window->y, m_Window->x,
-			     m_Window->y + m_Window->height, m_Window->x + m_Window->width };
+		Rect box = { 
+			m_Window->y, m_Window->x,
+			m_Window->y + m_Window->height, m_Window->x + m_Window->width };
 		if (ev->what == updateEvt) {
 			::TETextBox(m_String, strlen(m_String), &box, teJustCenter);
 		}
@@ -484,8 +500,7 @@ npambulant::handleEvent(void* event)
 
 // this will start AmbulantPlayer
 void
-npambulant::startPlayer()
-{
+npambulant::startPlayer() {
 	AM_DBG lib::logger::get_logger()->debug("npambulant::startPlayer()\n");
 	if (m_ambulant_player != NULL)
 		get_player()->start();
@@ -493,8 +508,7 @@ npambulant::startPlayer()
 
 // this will stop AmbulantPlayer
 void
-npambulant::stopPlayer()
-{
+npambulant::stopPlayer() {
 	AM_DBG lib::logger::get_logger()->debug("npambulant::stopPlayer()\n");
 	if (m_ambulant_player != NULL)
 		get_player()->stop();
@@ -502,8 +516,7 @@ npambulant::stopPlayer()
 
 // this will restart AmbulantPlayer
 void
-npambulant::restartPlayer()
-{
+npambulant::restartPlayer() {
 	AM_DBG lib::logger::get_logger()->debug("npambulant::restartPlayer()\n");
 	if (m_ambulant_player != NULL) {
 		get_player()->stop();
@@ -513,8 +526,7 @@ npambulant::restartPlayer()
 
 // this will pause AmbulantPlayer
 void
-npambulant::pausePlayer()
-{
+npambulant::pausePlayer() {
 	AM_DBG lib::logger::get_logger()->debug("npambulant::pausePlayer()\n");
 	if (m_ambulant_player != NULL)
 		get_player()->pause();
@@ -522,8 +534,7 @@ npambulant::pausePlayer()
 
 // this will resume AmbulantPlayer
 void
-npambulant::resumePlayer()
-{
+npambulant::resumePlayer() {
 	AM_DBG lib::logger::get_logger()->debug("npambulant::resumePlayer()\n");
 	if (m_ambulant_player != NULL)
 		get_player()->resume();
@@ -531,8 +542,7 @@ npambulant::resumePlayer()
 
 // this will restart AmbulantPlayer
 bool
-npambulant::isDone()
-{
+npambulant::isDone() {
 	AM_DBG lib::logger::get_logger()->debug("npambulant::isDone()\n");
 	if (m_ambulant_player != NULL) {
 		return get_player()->is_done();
@@ -542,8 +552,7 @@ npambulant::isDone()
 
 // this will force to draw a version string in the plugin window
 void
-npambulant::showVersion()
-{
+npambulant::showVersion() {
 	const char *ua = NPN_UserAgent(m_pNPInstance);
 	strcpy(m_String, ua);
 
@@ -569,8 +578,7 @@ npambulant::showVersion()
 
 // this will clean the plugin window
 void
-npambulant::clear()
-{
+npambulant::clear() {
 	strcpy(m_String, "");
 
 #ifdef XP_WIN
@@ -580,8 +588,7 @@ npambulant::clear()
 }
 
 void
-npambulant::getVersion(char* *aVersion)
-{
+npambulant::getVersion(char* *aVersion) {
 	const char *ua = NPN_UserAgent(m_pNPInstance);
 	char*& version = *aVersion;
 	version = (char*)NPN_MemAlloc(1 + strlen(ua));
@@ -590,14 +597,12 @@ npambulant::getVersion(char* *aVersion)
 }
 
 NPObject *
-npambulant::GetScriptableObject()
-{
-	DECLARE_NPOBJECT_CLASS_WITH_BASE(ScriptablePluginObject,
-					 AllocateScriptablePluginObject);//KB
+npambulant::GetScriptableObject() {
+	DECLARE_NPOBJECT_CLASS_WITH_BASE(ScriptablePluginObject, AllocateScriptablePluginObject);//KB
 	if (!m_pScriptableObject) {
-		m_pScriptableObject =
-			NPN_CreateObject(m_pNPInstance,
-					 GET_NPOBJECT_CLASS(ScriptablePluginObject));
+		m_pScriptableObject = NPN_CreateObject(
+			m_pNPInstance,
+			GET_NPOBJECT_CLASS(ScriptablePluginObject));
 	}
 
 	if (m_pScriptableObject) {

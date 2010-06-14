@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -46,7 +46,7 @@ END_MESSAGE_MAP()
 
 static UINT indicators[] =
 {
-	ID_SEPARATOR,           // status line indicator
+	ID_SEPARATOR,			// status line indicator
 	ID_INDICATOR_CAPS,
 	ID_INDICATOR_NUM,
 	ID_INDICATOR_SCRL,
@@ -80,14 +80,14 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		!m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
 	{
 		TRACE0("Failed to create toolbar\n");
-		return -1;      // fail to create
+		return -1;		// fail to create
 	}
 
 	if (!m_wndStatusBar.Create(this) ||
 		!m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT)))
 	{
 		TRACE0("Failed to create status bar\n");
-		return -1;      // fail to create
+		return -1;		// fail to create
 	}
 	// TODO: Delete these three lines if you don't want the toolbar to be dockable
 	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
@@ -107,7 +107,7 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	if( !CFrameWnd::PreCreateWindow(cs) )
 		return FALSE;
 	// TODO: Modify the Window class or styles here by modifying
-	//  the CREATESTRUCT cs
+	//	the CREATESTRUCT cs
 
 	// Set the startup dimensions for MMS
 	//cs.cx = 176 + 28;
@@ -173,8 +173,8 @@ CMainFrame::OnViewFullScreen()
 
 	if (m_fullScreen) {
 		// Entering fullscreen mode
-        m_wndStatusBar.ShowWindow(SW_HIDE);
-	    m_wndToolBar.ShowWindow(SW_HIDE);
+		m_wndStatusBar.ShowWindow(SW_HIDE);
+		m_wndToolBar.ShowWindow(SW_HIDE);
 
 		// Calculate new frame position
 		GetWindowRect(&m_origRect);
@@ -191,8 +191,8 @@ CMainFrame::OnViewFullScreen()
 
 	} else {
 		// Leaving fullscreen mode
-        m_wndStatusBar.ShowWindow(SW_SHOW);
-	    m_wndToolBar.ShowWindow(SW_SHOW);
+		m_wndStatusBar.ShowWindow(SW_SHOW);
+		m_wndToolBar.ShowWindow(SW_SHOW);
 		ModifyStyleEx(-1, m_origExStyle, 0);
 		ModifyStyle(-1, m_origStyle, 0);
 		wp.rcNormalPosition = m_origRect;

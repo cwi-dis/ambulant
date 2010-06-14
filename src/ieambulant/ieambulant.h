@@ -27,7 +27,7 @@ public:
 	SIZE get_default_size();
 	void destroy_os_window(HWND);
 	html_browser *new_html_browser(int left, int top, int width, int height);
-    HWND m_hwnd;
+	HWND m_hwnd;
 };
 //XXX end copied from npambulant.h
 
@@ -115,10 +115,10 @@ END_COM_MAP()
 BEGIN_PROP_MAP(Cieambulant)
 	PROP_DATA_ENTRY("_cx", m_sizeExtent.cx, VT_UI4)
 	PROP_DATA_ENTRY("_cy", m_sizeExtent.cy, VT_UI4)
-    // AmbulantPlayer plugin control properties
-    PROP_ENTRY("type", 1, CLSID_NULL)
-    PROP_ENTRY("src", 2, CLSID_NULL)
-    PROP_ENTRY("autostart", 3, CLSID_NULL)
+	// AmbulantPlayer plugin control properties
+	PROP_ENTRY("type", 1, CLSID_NULL)
+	PROP_ENTRY("src", 2, CLSID_NULL)
+	PROP_ENTRY("autostart", 3, CLSID_NULL)
 END_PROP_MAP()
 
 BEGIN_CONNECTION_POINT_MAP(Cieambulant)
@@ -137,9 +137,9 @@ ALT_MSG_MAP(1)
 	// Replace this with message map entries for superclassed Static
 END_MSG_MAP()
 // Handler prototypes:
-//  LRESULT MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-//  LRESULT CommandHandler(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-//  LRESULT NotifyHandler(int idCtrl, LPNMHDR pnmh, BOOL& bHandled);
+//	LRESULT MessageHandler(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+//	LRESULT CommandHandler(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+//	LRESULT NotifyHandler(int idCtrl, LPNMHDR pnmh, BOOL& bHandled);
 
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid)
@@ -162,7 +162,7 @@ END_MSG_MAP()
 		LRESULT lRes = CComControl<Cieambulant>::OnSetFocus(uMsg, wParam, lParam, bHandled);
 		if (m_bInPlaceActive)
 		{
-			DoVerbUIActivate(&m_rcPos,  NULL);
+			DoVerbUIActivate(&m_rcPos,	NULL);
 			if(!IsChild(::GetFocus()))
 				m_ctlStatic.SetFocus();
 		}
@@ -219,20 +219,20 @@ public:
 	HWND m_hwnd;
 	WNDPROC m_lpOldProc;
 	LONG m_OldWindow;
-    ambulant::gui::dx::dx_player* m_ambulant_player;
+	ambulant::gui::dx::dx_player* m_ambulant_player;
 	ambulant::lib::logger* m_logger;
 	ambulant::net::url m_url;
 	ambulant::net::url m_base_url;
 	bool m_autostart;
 	int m_cursor_id;
-    ambulant::common::player* get_player() { return m_ambulant_player->get_player();}
+	ambulant::common::player* get_player() { return m_ambulant_player->get_player();}
 /*
 from http://www.ozhiker.com/electronics/vcpp/ActiveXControl.htm
 To make ATL think your CWnd derived class is a CWindow derived class, add the following method:
 */
 static LPCTSTR GetWndClassName()
 {
-    return NULL;
+	return NULL;
 }
 // added for Ambulant
 //XX IPersistPropertyBag override

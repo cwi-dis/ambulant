@@ -1,5 +1,6 @@
 #ifndef __SCRIPTABLEPLUGINOBJECT_H__
 #define __SCRIPTABLEPLUGINOBJECT_H__
+/*AMBULANT_FOREIGN_INDENT_RULES*/
 
 #include "ScriptablePluginObjectBase.h"
 class ScriptablePluginObject : public ScriptablePluginObjectBase

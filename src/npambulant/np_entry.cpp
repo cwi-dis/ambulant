@@ -35,6 +35,8 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+/*AMBULANT_FOREIGN_INDENT_RULES*/
+
 //////////////////////////////////////////////////////////////
 //
 // Main plugin entry point implementation

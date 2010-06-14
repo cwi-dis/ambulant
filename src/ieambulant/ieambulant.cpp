@@ -15,8 +15,7 @@
 
 // convert BSTR to std::string
 std::string
-BSTR_to_std_string (BSTR bstrIn)
-{
+BSTR_to_std_string (BSTR bstrIn) {
 	if (bstrIn == NULL)
 		return "";
 
@@ -26,7 +25,7 @@ BSTR_to_std_string (BSTR bstrIn)
 
 	LPSTR lpstr = new char [nOutputStrLen];
 	if (lpstr) {
-	    memset (lpstr, 0x00, sizeof (char)*nOutputStrLen);
+		memset (lpstr, 0x00, sizeof (char)*nOutputStrLen);
 		WideCharToMultiByte (CP_ACP, 0, bstrIn, nInputStrLen, lpstr, nOutputStrLen, 0, 0);
 	}
 	std::string result(lpstr);
@@ -34,20 +33,18 @@ BSTR_to_std_string (BSTR bstrIn)
 	return result;
 }
 
-//  convert CComBSTR to std::string
+//	convert CComBSTR to std::string
 std::string
-CComBSTR_to_std_string (CComBSTR BSTR_value)
-{
+CComBSTR_to_std_string (CComBSTR BSTR_value) {
 	std::string result = BSTR_to_std_string((BSTR)BSTR_value);
 	return result;
 }
 
 
 HRESULT
-Cieambulant::get_document_url()
-{
+Cieambulant::get_document_url() {
 	// here the <url> is obtained from the <PARAM name="src" value="<url>"/> element
-	// and joined with  the base url.
+	// and joined with	the base url.
 	// also the the value of <PARAM name="autostart" value="<true|false>"/> is retrieved.
 
 	HRESULT hr = E_FAIL;
@@ -60,8 +57,7 @@ Cieambulant::get_document_url()
 		return hr;
 
 	IWebBrowser2* pIWebBrowser2 = NULL;
-	hr = pISP->QueryService(IID_IWebBrowserApp, IID_IWebBrowser2,
-					   (void **)&pIWebBrowser2);
+	hr = pISP->QueryService(IID_IWebBrowserApp, IID_IWebBrowser2, (void **)&pIWebBrowser2);
 	if ( ! SUCCEEDED(hr))
 		return hr;
 
@@ -82,27 +78,13 @@ Cieambulant::get_document_url()
 	return S_OK;
 
 }
-/* MSG spy
-static HHOOK s_hook;
-LRESULT  CALLBACK
-GetMsgProc(int   nCode,WPARAM   wparam,LPARAM   lparam)
-{
-    MSG * msg = (MSG *)lparam;
-	ambulant::lib::logger::get_logger()->debug("MSG=0x%x",msg->message);
-	if( msg->message == WM_COMMAND) {
-		//analyse the command message
-		ambulant::lib::logger::get_logger()->debug("nCode=0x%x, wparam=0x%x",nCode,wparam);
-    }
-    return   CallNextHookEx(s_hook,nCode,wparam,lparam);
-}
-*/
+
 LPOLECLIENTSITE s_site;
 int s_ref_count;
 
 STDMETHODIMP
-Cieambulant::SetClientSite(LPOLECLIENTSITE pSite)
-{
-    HRESULT hr = CComControlBase::IOleObject_SetClientSite(pSite);
+Cieambulant::SetClientSite(LPOLECLIENTSITE pSite) {
+	HRESULT hr = CComControlBase::IOleObject_SetClientSite(pSite);
 	if (hr != S_OK)
 		return hr;
 	if (pSite) {
@@ -121,7 +103,7 @@ Cieambulant::SetClientSite(LPOLECLIENTSITE pSite)
 //	if(pSite && !m_pFont)
 //		hr = GetAmbientFontDisp(&m_pFont);
 	GetAmbientBackColor(m_clrBackColor);
-    GetAmbientForeColor(m_clrForeColor);
+	GetAmbientForeColor(m_clrForeColor);
 	//XXX std::ostream sos = new std::ostream(std::cout);
 	//XXX ambulant::lib::logger::get_logger()->set_std_ostream(sos);
 //	static std::ofstream log_os("C:\\Documents and Settings\\kees.AMBULANT-DEV\\My Documents\\Ambulant\\ambulant\\src\\ieambulant\\amlog.txt");
@@ -131,38 +113,36 @@ Cieambulant::SetClientSite(LPOLECLIENTSITE pSite)
 }
 
 void
-DrawString( HDC hdc, RECT* rc, BSTR caption )
-	{
-		USES_CONVERSION;
-		TCHAR* pCaption = OLE2T(caption);
-		DrawText( hdc,
-				 pCaption,
-				 lstrlen( pCaption ),
-				 rc,
-				 DT_WORDBREAK );
-	}
+DrawString( HDC hdc, RECT* rc, BSTR caption ) {
+	USES_CONVERSION;
+	TCHAR* pCaption = OLE2T(caption);
+	DrawText(
+		hdc,
+		pCaption,
+		lstrlen( pCaption ),
+		rc,
+		DT_WORDBREAK );
+}
 
 // STDMETHODIMP HRESULT
 HRESULT
-Cieambulant::OnDraw(ATL_DRAWINFO& di)
-{
+Cieambulant::OnDraw(ATL_DRAWINFO& di) {
 	return S_OK;
 }
 
 HWND s_hwnd = NULL;
 
 HRESULT
-Cieambulant::updatePlayer()
-{
+Cieambulant::updatePlayer() {
 	// added for ambulant
 
 	if (m_url.get_url() == "")
 		get_document_url();
-	if ( ! m_url.is_absolute()) {
+	if ( !m_url.is_absolute()) {
 		ambulant::net::url tmp_url;
-        if (m_base_url.get_url() != "")
-            m_url = m_url.join_to_base(m_base_url);
-    }
+		if (m_base_url.get_url() != "")
+			m_url = m_url.join_to_base(m_base_url);
+	}
 	if (m_hwnd == NULL) {
 		m_hwnd = this->m_hWnd;//::GetWindow(this->m_hWnd, GW_HWNDFIRST);
 		m_player_callbacks.set_os_window(m_hwnd);
@@ -208,68 +188,54 @@ Cieambulant::updatePlayer()
 static ambulant_player_callbacks s_ambulant_player_callbacks;
 
 LRESULT CALLBACK
-Cieambulant::PluginWinProc(UINT msg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
-{
+Cieambulant::PluginWinProc(UINT msg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 	typedef HRGN NPRegion;
 	if (updatePlayer() != S_OK)
 		return S_FALSE;
-//	static FILE* logfile = NULL;
-//	if (logfile == NULL) {
-//		logfile = fopen("C:\\logfile.txt", "w");
-//	}
-//	fprintf(logfile,"msg=%d\n",msg);
 
 	switch (msg) {
-		case WM_PAINT:
-			{
-				PAINTSTRUCT ps;
-				HDC hdc = BeginPaint(&ps);
-//				RECT rc;
-//				GetClientRect(&rc);
-//				FrameRect(hdc, &rc, GetStockBrush(BLACK_BRUSH));
-				if (m_hwnd && m_ambulant_player) {
-					HDC hdc = ::GetDC(m_hwnd);
-					m_ambulant_player->redraw(m_hwnd, hdc);
-					::ShowWindow(m_hwnd, SW_SHOW);
-					::ReleaseDC(m_hwnd, hdc);
-				}
-				EndPaint(&ps);
-				break;
+	case WM_PAINT:
+		{
+			PAINTSTRUCT ps;
+			HDC hdc = BeginPaint(&ps);
+			if (m_hwnd && m_ambulant_player) {
+				HDC hdc = ::GetDC(m_hwnd);
+				m_ambulant_player->redraw(m_hwnd, hdc);
+				::ShowWindow(m_hwnd, SW_SHOW);
+				::ReleaseDC(m_hwnd, hdc);
 			}
-			break;
-		case WM_LBUTTONDOWN:
-		case WM_MOUSEMOVE:
-			{
-				POINT point;
-				point.x=GET_X_LPARAM(lParam);
-				point.y=GET_Y_LPARAM(lParam);
-				if (m_ambulant_player) {
-					if (msg == WM_MOUSEMOVE) {
-						// code copied from MmView.cpp
-						int new_cursor_id = m_ambulant_player->get_cursor(point.x, point.y, m_hwnd);
-//XX					if (new_cursor_id>0) EnableToolTips(TRUE);
-//XX					else CancelToolTips();
-						if(new_cursor_id != m_cursor_id) {
-							HINSTANCE hIns = 0;
-							HCURSOR new_cursor = 0;
-							if(new_cursor_id == 0) {
-								new_cursor = LoadCursor(hIns, IDC_ARROW);
-							} else {
-								new_cursor = LoadCursor(hIns, IDC_HAND);
-							}
-							SetClassLongPtr(m_hwnd, GCLP_HCURSOR, HandleToLong(new_cursor));
-							m_cursor_id = new_cursor_id;
-						}
+			EndPaint(&ps);
+		}
+		break;
+	case WM_LBUTTONDOWN:
+	case WM_MOUSEMOVE:
+		POINT point;
+		point.x=GET_X_LPARAM(lParam);
+		point.y=GET_Y_LPARAM(lParam);
+		if (m_ambulant_player) {
+			if (msg == WM_MOUSEMOVE) {
+				// code copied from MmView.cpp
+				int new_cursor_id = m_ambulant_player->get_cursor(point.x, point.y, m_hwnd);
+				if(new_cursor_id != m_cursor_id) {
+					HINSTANCE hIns = 0;
+					HCURSOR new_cursor = 0;
+					if(new_cursor_id == 0) {
+						new_cursor = LoadCursor(hIns, IDC_ARROW);
 					} else {
-						m_ambulant_player->on_click(point.x, point.y, m_hwnd);
-	                }
-                }
-                break;
+						new_cursor = LoadCursor(hIns, IDC_HAND);
+					}
+					SetClassLongPtr(m_hwnd, GCLP_HCURSOR, HandleToLong(new_cursor));
+					m_cursor_id = new_cursor_id;
+				}
+			} else {
+				m_ambulant_player->on_click(point.x, point.y, m_hwnd);
+			}
+		}
+		break;
 
-            default:
-                break;
-            }
-        }
+	default:
+		break;
+	}
 	BOOL rv = DefWindowProc(msg, wParam, lParam);
 	bHandled = rv;
 	return rv;
@@ -281,20 +247,17 @@ ambulant_player_callbacks::ambulant_player_callbacks()
 }
 
 void
-ambulant_player_callbacks::set_os_window(HWND hwnd)
-{
+ambulant_player_callbacks::set_os_window(HWND hwnd) {
 	m_hwnd = hwnd;
 }
 
 HWND
-ambulant_player_callbacks::new_os_window()
-{
+ambulant_player_callbacks::new_os_window() {
 	return m_hwnd;
 }
 
 SIZE
-ambulant_player_callbacks::get_default_size()
-{
+ambulant_player_callbacks::get_default_size() {
 	SIZE size;
 	size.cx = ambulant::common::default_layout_width;
 	size.cy = ambulant::common::default_layout_height;
@@ -302,71 +265,60 @@ ambulant_player_callbacks::get_default_size()
 }
 
 void
-ambulant_player_callbacks::destroy_os_window(HWND hwnd)
-{
+ambulant_player_callbacks::destroy_os_window(HWND hwnd) {
 	m_hwnd = NULL;
 }
 
 html_browser*
-ambulant_player_callbacks::new_html_browser(int left, int top, int width, int height)
-{
+ambulant_player_callbacks::new_html_browser(int left, int top, int width, int height) {
 	return NULL; // not implemented, but needs to be declared
 }
 
 STDMETHODIMP
-Cieambulant::get_mimeType(BSTR *pVal)
-{
-	if (!pVal)
-    {
-        return E_INVALIDARG;
-    }
-    *pVal = m_bstrType.Copy();
+Cieambulant::get_mimeType(BSTR *pVal) {
+	if (!pVal) {
+		return E_INVALIDARG;
+	}
+	*pVal = m_bstrType.Copy();
 	return S_OK;
 }
 
 STDMETHODIMP
-Cieambulant::put_mimeType(BSTR newVal)
-{
-    m_bstrType.Empty();
-    m_bstrType.Attach(SysAllocString(newVal));
+Cieambulant::put_mimeType(BSTR newVal) {
+	m_bstrType.Empty();
+	m_bstrType.Attach(SysAllocString(newVal));
 	return S_OK;
 }
 
 STDMETHODIMP
-Cieambulant::get_src(BSTR *pVal)
-{
-	if (!pVal)
-    {
-        return E_INVALIDARG;
-    }
-    *pVal = m_bstrSrc.Copy();
+Cieambulant::get_src(BSTR *pVal) {
+	if (!pVal) {
+		return E_INVALIDARG;
+	}
+	*pVal = m_bstrSrc.Copy();
 	return S_OK;
 }
 
 STDMETHODIMP
-Cieambulant::put_src(BSTR newVal)
-{
-    m_bstrSrc.Empty();
-    m_bstrSrc.Attach(SysAllocString(newVal));
+Cieambulant::put_src(BSTR newVal) {
+	m_bstrSrc.Empty();
+	m_bstrSrc.Attach(SysAllocString(newVal));
 	return S_OK;
 }
 
 STDMETHODIMP
-Cieambulant::put_autostart(BSTR newVal)
-{
-    m_bstrAutostart.Empty();
-    m_bstrAutostart.Attach(SysAllocString(newVal));
+Cieambulant::put_autostart(BSTR newVal) {
+	m_bstrAutostart.Empty();
+	m_bstrAutostart.Attach(SysAllocString(newVal));
 	return S_OK;
 }
 
 STDMETHODIMP
-Cieambulant::get_autostart(BSTR *pVal)
-{
-	if (!pVal)
-    {
-        return E_INVALIDARG;
-    }
-    *pVal = m_bstrAutostart.Copy();
+Cieambulant::get_autostart(BSTR *pVal) {
+	if (!pVal) {
+		return E_INVALIDARG;
+	}
+	*pVal = m_bstrAutostart.Copy();
 	return S_OK;
 }
 
@@ -422,8 +374,9 @@ Cieambulant::startPlayer( void) {
 	if (m_ambulant_player != NULL) {
 		m_ambulant_player->play();
 		return S_OK;
-	} else
+	} else {
 		return E_FAIL;
+	}
 }
 
 STDMETHODIMP
@@ -431,8 +384,9 @@ Cieambulant::stopPlayer( void) {
 	if (m_ambulant_player != NULL) {
 		m_ambulant_player->stop();
 		return S_OK;
-	} else
+	} else {
 		return E_FAIL;
+	}
 }
 
 STDMETHODIMP
@@ -441,8 +395,9 @@ Cieambulant::restartPlayer( void) {
 		m_ambulant_player->stop();
 		m_ambulant_player->play();
 		return S_OK;
-	} else
+	} else {
 		return E_FAIL;
+	}
 }
 
 STDMETHODIMP
@@ -450,8 +405,9 @@ Cieambulant::pausePlayer( void) {
 	if (m_ambulant_player != NULL) {
 		m_ambulant_player->pause();
 		return S_OK;
-	} else
+	} else {
 		return E_FAIL;
+	}
 }
 
 STDMETHODIMP
@@ -470,17 +426,18 @@ Cieambulant::resumePlayer( void) {
 		if (m_ambulant_player->get_player()->is_pausing())
 			m_ambulant_player->play();
 		return S_OK;
-	} else
+	} else {
 		return E_FAIL;
+	}
 }
 
-LRESULT Cieambulant::OnMouseMove(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
-{
+LRESULT
+Cieambulant::OnMouseMove(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 	return PluginWinProc(uMsg, wParam, lParam, bHandled);
 }
 
-LRESULT Cieambulant::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
-{
+LRESULT
+Cieambulant::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 	return PluginWinProc(uMsg, wParam, lParam, bHandled);
 }
 

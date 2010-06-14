@@ -1,3 +1,4 @@
+/*AMBULANT_FOREIGN_INDENT_RULES*/
 
 class ConstructablePluginObject : public ScriptablePluginObjectBase
 {

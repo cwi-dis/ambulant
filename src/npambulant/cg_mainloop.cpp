@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -64,7 +64,7 @@ using namespace ambulant;
 
 cg_mainloop::cg_mainloop(const char *urlstr, void *view,
 	bool use_mms, ambulant::common::embedder *app)
-:   common::gui_player(),
+:	common::gui_player(),
 	m_view(view),
 	m_gui_screen(NULL)
 {
@@ -113,7 +113,7 @@ cg_mainloop::init_playable_factory()
 //	pf->add_factory(gui::cg::create_cg_video_playable_factory(this, NULL));
 #endif // NONE_PLAYER
 #ifdef WITH_SDL
-    AM_DBG lib::logger::get_logger()->debug("cg_mainloop::cg_mainloop: add factory for SDL");
+	AM_DBG lib::logger::get_logger()->debug("cg_mainloop::cg_mainloop: add factory for SDL");
 	pf->add_factory(gui::sdl::create_sdl_playable_factory(this));
 #endif // WITH_SDL
 }
@@ -140,15 +140,15 @@ cg_mainloop::init_datasource_factory()
 	df->add_audio_factory(net::create_live_audio_datasource_factory());
 #endif
 #ifdef WITH_FFMPEG
-    AM_DBG lib::logger::get_logger()->debug("cg_mainloop::cg_mainloop: add ffmpeg_video_datasource_factory");
+	AM_DBG lib::logger::get_logger()->debug("cg_mainloop::cg_mainloop: add ffmpeg_video_datasource_factory");
 	df->add_video_factory(net::get_ffmpeg_video_datasource_factory());
-    AM_DBG lib::logger::get_logger()->debug("cg_mainloop::cg_mainloop: add ffmpeg_audio_datasource_factory");
+	AM_DBG lib::logger::get_logger()->debug("cg_mainloop::cg_mainloop: add ffmpeg_audio_datasource_factory");
 	df->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
-    AM_DBG lib::logger::get_logger()->debug("cg_mainloop::cg_mainloop: add ffmpeg_audio_decoder_finder");
+	AM_DBG lib::logger::get_logger()->debug("cg_mainloop::cg_mainloop: add ffmpeg_audio_decoder_finder");
 	df->add_audio_decoder_finder(net::get_ffmpeg_audio_decoder_finder());
-    AM_DBG lib::logger::get_logger()->debug("cg_mainloop::cg_mainloop: add ffmpeg_audio_filter_finder");
+	AM_DBG lib::logger::get_logger()->debug("cg_mainloop::cg_mainloop: add ffmpeg_audio_filter_finder");
 	df->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
-    AM_DBG lib::logger::get_logger()->debug("cg_mainloop::cg_mainloop: add ffmpeg_raw_datasource_factory");
+	AM_DBG lib::logger::get_logger()->debug("cg_mainloop::cg_mainloop: add ffmpeg_raw_datasource_factory");
 	df->add_raw_factory(net::get_ffmpeg_raw_datasource_factory());
 #endif // WITH_FFMPEG
 #ifdef WITH_STDIO_DATASOURCE
@@ -156,10 +156,10 @@ cg_mainloop::init_datasource_factory()
 	// should always perform better, and is always available on OSX.
 	// If you define WITH_STDIO_DATASOURCE we prefer to use the stdio datasource,
 	// however.
-    AM_DBG lib::logger::get_logger()->debug("cg_mainloop::cg_mainloop: add stdio_datasource_factory");
+	AM_DBG lib::logger::get_logger()->debug("cg_mainloop::cg_mainloop: add stdio_datasource_factory");
 	df->add_raw_factory(net::create_stdio_datasource_factory());
 #endif
-    AM_DBG lib::logger::get_logger()->debug("cg_mainloop::cg_mainloop: add posix_datasource_factory");
+	AM_DBG lib::logger::get_logger()->debug("cg_mainloop::cg_mainloop: add posix_datasource_factory");
 	df->add_raw_factory(net::create_posix_datasource_factory());
 }
 
