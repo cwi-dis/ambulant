@@ -5,6 +5,7 @@
 
 
 
+/*AMBULANT_FOREIGN_INDENT_RULES*/
 #define WITH_EXTERNAL_DOM 1
 #include "ambulant/config/config.h"
 #include "ambulant/version.h"
@@ -17592,7 +17593,7 @@ pycppbridge_setwrapper(PyObject *o, cpppybridge *w)
 
 // Declare initambulant as a C external:
 
-extern "C" void initambulant();
+extern "C" void initambulant(); 
 
 
 void initambulant(void)

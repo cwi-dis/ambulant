@@ -19,6 +19,7 @@ CXX2PYDECLFILE = MODNAME + "interface.h"     # The C++ to Python declarations
 # Create the type objects
 
 includestuff = """
+/*AMBULANT_FOREIGN_INDENT_RULES*/
 #define WITH_EXTERNAL_DOM 1
 #include "ambulant/config/config.h"
 #include "ambulant/version.h"

@@ -57,7 +57,7 @@ class BackModule(BackGeneratorGroup):
         OutHeader1("Glue classes to maintain object identity")
         Output("class cpppybridge {")
         Output("  public:")
-        Output("    virtual ~cpppybridge() {};")
+        Output("\tvirtual ~cpppybridge() {};")
         Output("};")
         Output()
         Output("#if 1")

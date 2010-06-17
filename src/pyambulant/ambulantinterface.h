@@ -42,7 +42,7 @@
 
 class cpppybridge {
   public:
-    virtual ~cpppybridge() {};
+	virtual ~cpppybridge() {};
 };
 
 #if 1

@@ -19,7 +19,7 @@
 #ifdef	XP_WIN32
 static LRESULT CALLBACK PluginWinProc(HWND, UINT, WPARAM, LPARAM);
 #else//!XP_WIN32: Linux, Mac
-#include <dlfcn.h>  // for dladdr()
+#include <dlfcn.h>	// for dladdr()
 #include <libgen.h> // for dirname()
 #endif//XP_WIN32: Linux, Mac
 
@@ -185,17 +185,17 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 #else //!XP_WIN3: Linux, Mac
 	Dl_info p;
 	if (dladdr("main", &p) < 0) {
-	    fprintf(stderr, "npambulant::init_ambulant:  dladdr(\"main\") failed, cannot use ambulant plugins\n");
-	    prefs->m_use_plugins = false;
+		fprintf(stderr, "npambulant::init_ambulant:	 dladdr(\"main\") failed, cannot use ambulant plugins\n");
+		prefs->m_use_plugins = false;
 	} else {
 #ifdef WITH_LTDL_PLUGINS
-	    char* path = strdup(p.dli_fname); // full path of this firefox plugin
-	    char* ffplugindir = dirname(path);
+		char* path = strdup(p.dli_fname); // full path of this firefox plugin
+		char* ffplugindir = dirname(path);
 		char* npambulant_plugins = "/npambulant/plugins";
-	    char* amplugin_path = (char*) malloc(strlen(ffplugindir)+strlen(npambulant_plugins)+1);
-	    sprintf(amplugin_path, "%s%s", ffplugindir, npambulant_plugins);
-	    prefs->m_plugin_dir = amplugin_path;
-	    free (path);
+		char* amplugin_path = (char*) malloc(strlen(ffplugindir)+strlen(npambulant_plugins)+1);
+		sprintf(amplugin_path, "%s%s", ffplugindir, npambulant_plugins);
+		prefs->m_plugin_dir = amplugin_path;
+		free (path);
 #else // WITH_LTDL_PLUGINS
 		prefs->m_use_plugins = false;
 #endif // WITH_LTDL_PLUGINS
@@ -213,11 +213,11 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 		AM_DBG fprintf(stderr, "npambulant::init_ambulant: setting npapi_extra_data(0x%x) to NPWindow 0x%x\n", edptr, aWindow);
 	} else {
 		AM_DBG fprintf(stderr, "npambulant::init_ambulant: Cannot find npapi_extra_data, cannot communicate NPWindow\n");
-    }
-    
-    //
-    // Step 4 - Platform-specific window mumbo-jumbo
-    //
+	}
+	
+	//
+	// Step 4 - Platform-specific window mumbo-jumbo
+	//
 #ifdef WITH_GTK
 	long long ll_winid = reinterpret_cast<long long>(aWindow->window);
 	int i_winid = static_cast<int>(ll_winid);
@@ -256,8 +256,8 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 		}
 	}
 	if (arg_str == NULL)
-        	return false;
-    net::url file_url;
+		return false;
+	net::url file_url;
 	net::url arg_url = net::url::from_url(arg_str);
 	char* url_str = NULL;
 	if (arg_url.is_absolute()) {
@@ -439,30 +439,30 @@ npambulant::shut() {
 	if (m_ambulant_player) {
 #ifdef XP_WIN
 		m_ambulant_player->get_player()->stop();
-	  	delete m_ambulant_player;
+		delete m_ambulant_player;
 	}
 #else
 		if (m_ambulant_player->is_playing()
-		    || m_ambulant_player->is_pausing() )
+			|| m_ambulant_player->is_pausing() )
 		{
 			m_ambulant_player->stop();
 			while ( ! m_ambulant_player->is_done())
-		  		sleep(3);
+				sleep(3);
 		}
 		delete m_mainloop;
 	}
 #endif
 	m_ambulant_player = NULL; // deleted by mainloop
 	m_bInitialized = FALSE;
-    //XXXX SDL_Quit() forgets to do clear the environment variable ESD_NO_SPAWN
-    // the variable was included in the environment by calling  putenv(char* string),
-    // using the data section from the plugin as storage for 'string'.man putenv says:
-    // "The string pointed to by 'string' becomes part of the environment"
-    // this caused firefox to crash after npambulant was shut and removed, because
-    // when using getenv() it hit a pointer to a string that was no longer there.
-    // unsetenv() is not available on Windows.
+	//XXXX SDL_Quit() forgets to do clear the environment variable ESD_NO_SPAWN
+	// the variable was included in the environment by calling	putenv(char* string),
+	// using the data section from the plugin as storage for 'string'.man putenv says:
+	// "The string pointed to by 'string' becomes part of the environment"
+	// this caused firefox to crash after npambulant was shut and removed, because
+	// when using getenv() it hit a pointer to a string that was no longer there.
+	// unsetenv() is not available on Windows.
 #ifndef XP_WIN
-    unsetenv("ESD_NO_SPAWN");
+	unsetenv("ESD_NO_SPAWN");
 #endif//XP_WIN
 }
 
