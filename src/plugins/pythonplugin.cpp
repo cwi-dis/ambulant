@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -54,9 +54,9 @@ void initambulant();
 #define WITH_OBJC_BRIDGE
 #ifdef WITH_OBJC_BRIDGE
 struct pyobjc_api {
-	int	      api_version;	/* API version */
-	size_t	      struct_len;	/* Length of this struct */
-	PyTypeObject* class_type;	/* PyObjCClass_Type    */
+	int		  api_version;	/* API version */
+	size_t		  struct_len;	/* Length of this struct */
+	PyTypeObject* class_type;	/* PyObjCClass_Type	   */
 	PyTypeObject* object_type;	/* PyObjCObject_Type   */
 	PyTypeObject* select_type;	/* PyObjCSelector_Type */
 
@@ -89,8 +89,8 @@ struct pyobjc_api {
 };
 static int extra_data;
 struct ambulant::common::plugin_extra_data plugin_extra_data = {
-    "python_extra_data",
-    (void*)&extra_data
+	"python_extra_data",
+	(void*)&extra_data
 };
 #endif
 };
@@ -109,7 +109,7 @@ using namespace ambulant;
 static ambulant::common::factories *
 bug_workaround(ambulant::common::factories* factory)
 {
-    return factory;
+	return factory;
 }
 
 extern "C"
@@ -117,129 +117,131 @@ extern "C"
 __declspec(dllexport)
 #endif
 void initialize(
-    int api_version,
-    ambulant::common::factories* factory,
-    ambulant::common::gui_player *player)
+	int api_version,
+	ambulant::common::factories* factory,
+	ambulant::common::gui_player *player)
 {
-    if ( api_version != AMBULANT_PLUGIN_API_VERSION ) {
-        lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"python_plugin",
-					AMBULANT_PLUGIN_API_VERSION, api_version);
-        return;
-    }
-    if ( !ambulant::check_version() )
-        lib::logger::get_logger()->warn(gettext("%s: built for different Ambulant version (%s)"),"python_plugin", AMBULANT_VERSION);
-    factory = bug_workaround(factory);
-    AM_DBG lib::logger::get_logger()->debug("python_plugin: loaded.");
+	if ( api_version != AMBULANT_PLUGIN_API_VERSION ) {
+		lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"python_plugin", AMBULANT_PLUGIN_API_VERSION, api_version);
+		return;
+	}
+	if ( !ambulant::check_version() ) {
+		lib::logger::get_logger()->warn(gettext("%s: built for different Ambulant version (%s)"),"python_plugin", AMBULANT_VERSION);
+	}
+	factory = bug_workaround(factory);
+	AM_DBG lib::logger::get_logger()->debug("python_plugin: loaded.");
 
-    //
-    // Step 1 - Initialize the Python engine and insert the "ambulant" module.
-    //
-    // Starting up Python is a bit difficult because we want to release the
-    // lock before we return. So the first time we're here we initialze and then
-    // release the GIL only to re-acquire it immediately.
-    if (!PyEval_ThreadsInitialized()) {
-        PyImport_AppendInittab("ambulant", initambulant);
-        Py_Initialize();
-        PyEval_InitThreads();
-        PyEval_SaveThread();
-    }
-    AM_DBG lib::logger::get_logger()->debug("python_plugin: initialized Python.");
+	//
+	// Step 1 - Initialize the Python engine and insert the "ambulant" module.
+	//
+	// Starting up Python is a bit difficult because we want to release the
+	// lock before we return. So the first time we're here we initialze and then
+	// release the GIL only to re-acquire it immediately.
+	if (!PyEval_ThreadsInitialized()) {
+		PyImport_AppendInittab("ambulant", initambulant);
+		Py_Initialize();
+		PyEval_InitThreads();
+		PyEval_SaveThread();
+	}
+	AM_DBG lib::logger::get_logger()->debug("python_plugin: initialized Python.");
 
-    PyGILState_STATE _GILState = PyGILState_Ensure();
-    AM_DBG lib::logger::get_logger()->debug("python_plugin: acquired GIL.");
+	PyGILState_STATE _GILState = PyGILState_Ensure();
+	AM_DBG lib::logger::get_logger()->debug("python_plugin: acquired GIL.");
 
-    // Step 2 - Check that we actually do have the ambulant module..
-    PyObject *mod = PyImport_ImportModule("ambulant");
-    if (mod == NULL) {
-        PyErr_Print();
-        lib::logger::get_logger()->debug("python_plugin: import ambulant failed.");
-        PyGILState_Release(_GILState);
-        return;
-    }
-    AM_DBG lib::logger::get_logger()->debug("python_plugin: imported ambulant.");
+	// Step 2 - Check that we actually do have the ambulant module..
+	PyObject *mod = PyImport_ImportModule("ambulant");
+	if (mod == NULL) {
+		PyErr_Print();
+		lib::logger::get_logger()->debug("python_plugin: import ambulant failed.");
+		PyGILState_Release(_GILState);
+		return;
+	}
+	AM_DBG lib::logger::get_logger()->debug("python_plugin: imported ambulant.");
 
-    // Now we loop over all the Python modules the plugin engine has found.
-    PyObject *sys_path = PySys_GetObject("path");
+	// Now we loop over all the Python modules the plugin engine has found.
+	PyObject *sys_path = PySys_GetObject("path");
 
-    ambulant::common::plugin_engine *pe = ambulant::common::plugin_engine::get_plugin_engine();
-    const std::vector<std::string>& all_modules = pe->get_python_plugins();
-    std::vector<std::string>::const_iterator i;
-    for(i=all_modules.begin(); i!=all_modules.end(); i++) {
+	ambulant::common::plugin_engine *pe = ambulant::common::plugin_engine::get_plugin_engine();
+	const std::vector<std::string>& all_modules = pe->get_python_plugins();
+	std::vector<std::string>::const_iterator i;
+	for(i=all_modules.begin(); i!=all_modules.end(); i++) {
 
-        // Step 3 - Split into directory and module name
-        int last_fsep = (*i).find_last_of("/\\");
-        if (last_fsep == std::string::npos) {
-            lib::logger::get_logger()->trace("python_plugin: cannot find dirpath for %s", (*i).c_str());
-            continue;
-        }
-        std::string dirname = (*i).substr(0, last_fsep);
-        std::string modname = (*i).substr(last_fsep+1);
-        int last_dot = modname.find_last_of(".");
-        if (last_dot != std::string::npos) {
-            modname = modname.substr(0, last_dot);
-        }
-        // Step 4 - Add directory to sys.path
-        PyObject *dirname_obj = PyString_FromString(dirname.c_str());
-        if (!PySequence_Contains(sys_path, dirname_obj))
-            if (PyList_Append(sys_path, dirname_obj) <= 0)
-                lib::logger::get_logger()->trace("python_plugin: could not append \"%s\" to sys.path", dirname.c_str());
-        Py_DECREF(dirname_obj);
+		// Step 3 - Split into directory and module name
+		int last_fsep = (*i).find_last_of("/\\");
+		if (last_fsep == std::string::npos) {
+			lib::logger::get_logger()->trace("python_plugin: cannot find dirpath for %s", (*i).c_str());
+			continue;
+		}
+		std::string dirname = (*i).substr(0, last_fsep);
+		std::string modname = (*i).substr(last_fsep+1);
+		int last_dot = modname.find_last_of(".");
+		if (last_dot != std::string::npos) {
+			modname = modname.substr(0, last_dot);
+		}
+		// Step 4 - Add directory to sys.path
+		PyObject *dirname_obj = PyString_FromString(dirname.c_str());
+		if (!PySequence_Contains(sys_path, dirname_obj)) {
+			if (PyList_Append(sys_path, dirname_obj) <= 0) {
+				lib::logger::get_logger()->trace("python_plugin: could not append \"%s\" to sys.path", dirname.c_str());
+			}
+		}
+		Py_DECREF(dirname_obj);
 
-        // Step 5 - Import the module
-        mod = PyImport_ImportModule(const_cast<char*>(modname.c_str()));
-        if (mod == NULL) {
-            PyErr_Print();
-            lib::logger::get_logger()->trace("python_plugin: plugin file %s", (*i).c_str());
-            lib::logger::get_logger()->debug("python_plugin: import %s failed.", modname.c_str());
-            continue;
-        }
-        AM_DBG lib::logger::get_logger()->debug("python_plugin: imported %s.", modname.c_str());
+		// Step 5 - Import the module
+		mod = PyImport_ImportModule(const_cast<char*>(modname.c_str()));
+		if (mod == NULL) {
+			PyErr_Print();
+			lib::logger::get_logger()->trace("python_plugin: plugin file %s", (*i).c_str());
+			lib::logger::get_logger()->debug("python_plugin: import %s failed.", modname.c_str());
+			continue;
+		}
+		AM_DBG lib::logger::get_logger()->debug("python_plugin: imported %s.", modname.c_str());
 #ifdef WITH_OBJC_BRIDGE
-        // Step 6 - Communicate the extra_data, if needed and wanted
-        if (extra_data /* plugin_extra_data.m_plugin_extra */) {
-        	AM_DBG lib::logger::get_logger()->debug("python_plugin: extra_data is 0x%x", extra_data);
-            PyObject *objcmod = PyImport_ImportModule("objc");
-            if (objcmod == NULL) {
-                PyErr_Print();
-                lib::logger::get_logger()->trace("python_plugin: extra_data: no objc module");
-                continue;
-            }
-            PyObject *api_in_pyobj = PyObject_GetAttrString(objcmod, "__C_API__");
-            if (api_in_pyobj == NULL) {
-                PyErr_Print();
-                lib::logger::get_logger()->trace("python_plugin: extra_data: no __C_API__ in objc module");
-                continue;
+		// Step 6 - Communicate the extra_data, if needed and wanted
+		if (extra_data /* plugin_extra_data.m_plugin_extra */) {
+			AM_DBG lib::logger::get_logger()->debug("python_plugin: extra_data is 0x%x", extra_data);
+			PyObject *objcmod = PyImport_ImportModule("objc");
+			if (objcmod == NULL) {
+				PyErr_Print();
+				lib::logger::get_logger()->trace("python_plugin: extra_data: no objc module");
+				continue;
+			}
+			PyObject *api_in_pyobj = PyObject_GetAttrString(objcmod, "__C_API__");
+			if (api_in_pyobj == NULL) {
+				PyErr_Print();
+				lib::logger::get_logger()->trace("python_plugin: extra_data: no __C_API__ in objc module");
+				continue;
 			}
 			struct pyobjc_api *api = (struct pyobjc_api *)PyCObject_AsVoidPtr(api_in_pyobj);
 			if (api == NULL) {
-                PyErr_Print();
-                lib::logger::get_logger()->trace("python_plugin: extra_data: objc.__C_API__ not a cobject");
-                continue;
+				PyErr_Print();
+				lib::logger::get_logger()->trace("python_plugin: extra_data: objc.__C_API__ not a cobject");
+				continue;
 			}
 			PyObject *extra_data_obj = api->id_to_python((void*)extra_data);
-            PyObject *rv = PyObject_CallMethod(mod, "set_extra_data", "O", extra_data_obj);
-            if (rv == NULL) {
-            	lib::logger::get_logger()->debug("python_plugin: module %s does not want extra_data", modname.c_str());
+			PyObject *rv = PyObject_CallMethod(mod, "set_extra_data", "O", extra_data_obj);
+			if (rv == NULL) {
+				lib::logger::get_logger()->debug("python_plugin: module %s does not want extra_data", modname.c_str());
 				PyErr_Clear();
 			}
-            // ignore errors
-            Py_XDECREF(rv);
-        }
+			// ignore errors
+			Py_XDECREF(rv);
+		}
 #endif
-        // Step 7 - Call the initialization method
-        PyObject *rv = PyObject_CallMethod(mod, "initialize", "iO&O&",
-                api_version,
-                factoriesObj_New, factory,
-                gui_playerObj_New, player
-        );
-        if (rv == NULL) {
-            PyErr_Print();
-            lib::logger::get_logger()->trace("python_plugin: calling of %s.%s failed.", modname.c_str(), "initialize");
-            continue;
-        }
-        Py_DECREF(rv);
-    }
-    AM_DBG lib::logger::get_logger()->debug("python_plugin: about to release GIL");
-    PyGILState_Release(_GILState);
-    AM_DBG lib::logger::get_logger()->debug("python_plugin: returning.");
+		// Step 7 - Call the initialization method
+		PyObject *rv = PyObject_CallMethod(mod, "initialize", "iO&O&",
+			api_version,
+			factoriesObj_New, factory,
+			gui_playerObj_New, player
+		);
+		if (rv == NULL) {
+			PyErr_Print();
+			lib::logger::get_logger()->trace("python_plugin: calling of %s.%s failed.", modname.c_str(), "initialize");
+			continue;
+		}
+		Py_DECREF(rv);
+	}
+	AM_DBG lib::logger::get_logger()->debug("python_plugin: about to release GIL");
+	PyGILState_Release(_GILState);
+	AM_DBG lib::logger::get_logger()->debug("python_plugin: returning.");
 }

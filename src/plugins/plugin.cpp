@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -35,7 +35,7 @@ class basic_plugin_factory : public common::playable_factory {
   public:
 
 	basic_plugin_factory(common::factories* factory, common::playable_factory_machdep *mdp)
-	:   m_factory(factory),
+	:	m_factory(factory),
 		m_mdp(mdp)
 	{}
 	~basic_plugin_factory() {};
@@ -63,22 +63,22 @@ class basic_plugin : public common::playable_imp
 {
   public:
   basic_plugin(
-    common::playable_notification *context,
-    common::playable_notification::cookie_type cookie,
-    const lib::node *node,
-    lib::event_processor *evp,
+	common::playable_notification *context,
+	common::playable_notification::cookie_type cookie,
+	const lib::node *node,
+	lib::event_processor *evp,
 	common::factories *factory,
 	common::playable_factory_machdep *mdp);
 
-  	~basic_plugin() {};
+	~basic_plugin() {};
 
-    void data_avail();
+	void data_avail();
 	void start(double where);
 	void seek(double where) {};
-    //void stop();
+	//void stop();
 	bool stop();
-    void pause();
-    void resume();
+	void pause();
+	void resume();
 };
 
 
@@ -102,23 +102,23 @@ basic_plugin_factory::new_playable(
 	common::playable *rv;
 
 	lib::xml_string tag = node->get_qname().second;
-    AM_DBG lib::logger::get_logger()->debug("basic_plugin_factory: node 0x%x:   inspecting %s\n", (void *)node, tag.c_str());
+	AM_DBG lib::logger::get_logger()->debug("basic_plugin_factory: node 0x%x:	inspecting %s\n", (void *)node, tag.c_str());
 	if ( tag == "plugindatatype") /*or any other tag ofcourse */ {
 		rv = new basic_plugin(context, cookie, node, evp, m_factory, m_mdp);
 		//rv = NULL;
 		AM_DBG lib::logger::get_logger()->debug("basic_plugin_factory: node 0x%x: returning basic_plugin 0x%x", (void *)node, (void *)rv);
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("basic_plugin_factory : plugin does not support \"%s\"", tag.c_str());
-        return NULL;
+		return NULL;
 	}
 	return rv;
 }
 
 basic_plugin::basic_plugin(
 	common::playable_notification *context,
-    common::playable_notification::cookie_type cookie,
-    const lib::node *node,
-    lib::event_processor *evp,
+	common::playable_notification::cookie_type cookie,
+	const lib::node *node,
+	lib::event_processor *evp,
 	common::factories* factory,
 	common::playable_factory_machdep *mdp)
 :	common::playable_imp(context, cookie, node, evp, factory, mdp)
@@ -166,23 +166,23 @@ extern "C"
 __declspec(dllexport)
 #endif
 void initialize(
-    int api_version,
-    ambulant::common::factories* factory,
-    ambulant::common::gui_player *player)
+	int api_version,
+	ambulant::common::factories* factory,
+	ambulant::common::gui_player *player)
 {
-    if ( api_version != AMBULANT_PLUGIN_API_VERSION ) {
-        lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"basic_plugin",
-					AMBULANT_PLUGIN_API_VERSION, api_version);
-        return;
-    }
-    if ( !ambulant::check_version() )
-        lib::logger::get_logger()->warn(gettext("%s: built for different Ambulant version (%s)"),"basic_plugin", AMBULANT_VERSION);
-    factory = bug_workaround(factory);
-    lib::logger::get_logger()->debug("basic_plugin: loaded.");
-    common::global_playable_factory *pf = factory->get_playable_factory();
-    if (pf) {
-    	basic_plugin_factory *bpf = new basic_plugin_factory(factory, NULL);
+	if ( api_version != AMBULANT_PLUGIN_API_VERSION ) {
+		lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"basic_plugin", AMBULANT_PLUGIN_API_VERSION, api_version);
+		return;
+	}
+	if ( !ambulant::check_version() ) {
+		lib::logger::get_logger()->warn(gettext("%s: built for different Ambulant version (%s)"),"basic_plugin", AMBULANT_VERSION);
+	}
+	factory = bug_workaround(factory);
+	lib::logger::get_logger()->debug("basic_plugin: loaded.");
+	common::global_playable_factory *pf = factory->get_playable_factory();
+	if (pf) {
+		basic_plugin_factory *bpf = new basic_plugin_factory(factory, NULL);
 	pf->add_factory(bpf);
-    	lib::logger::get_logger()->trace("basic_plugin: registered");
-    }
+		lib::logger::get_logger()->trace("basic_plugin: registered");
+	}
 }

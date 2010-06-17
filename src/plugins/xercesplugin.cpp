@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -35,7 +35,7 @@ class xerces_plugin_factory : public lib::parser_factory {
   public:
 
 	xerces_plugin_factory(common::factories* factory)
-	:   m_factory(factory) {}
+	:	m_factory(factory) {}
 	~xerces_plugin_factory() {};
 
 	lib::xml_parser* new_parser(
@@ -75,17 +75,17 @@ extern "C"
 __declspec(dllexport)
 #endif
 void initialize(
-    int api_version,
-    ambulant::common::factories* factory,
-    ambulant::common::gui_player *player)
+	int api_version,
+	ambulant::common::factories* factory,
+	ambulant::common::gui_player *player)
 {
-    if ( api_version != AMBULANT_PLUGIN_API_VERSION ) {
-        lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"xerces_plugin",
-					AMBULANT_PLUGIN_API_VERSION, api_version);
-        return;
-    }
-    if ( !ambulant::check_version() )
-        lib::logger::get_logger()->warn(gettext("%s: built for different Ambulant version (%s)"),"xerces_plugin", AMBULANT_VERSION);
+	if ( api_version != AMBULANT_PLUGIN_API_VERSION ) {
+		lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"xerces_plugin", AMBULANT_PLUGIN_API_VERSION, api_version);
+		return;
+	}
+	if ( !ambulant::check_version() ) {
+		lib::logger::get_logger()->warn(gettext("%s: built for different Ambulant version (%s)"),"xerces_plugin", AMBULANT_VERSION);
+	}
 	AM_DBG lib::logger::get_logger()->debug("xerces_plugin::initialize registering factory function");
 	lib::global_parser_factory *pf = factory->get_parser_factory();
 	if (pf) {

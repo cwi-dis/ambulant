@@ -1,4 +1,3 @@
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: NPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -96,15 +95,15 @@ typedef void *jref;
 #endif // MOZ_X11
 #ifdef	WITH_GTK
 class gtk_mainloop;
-#elif	WITH_CG
+#elif WITH_CG
 class cg_mainloop;
-#elif	XP_WIN32
+#elif XP_WIN32
 #include <ambulant/gui/dx/dx_player.h>
 #include <ambulant/net/url.h>
 typedef ambulant::gui::dx::dx_player_callbacks gui_callbacks; //XX from MmView.cpp
 class ambulant_player_callbacks : public ambulant::gui::dx::dx_player_callbacks {
 
-public:
+  public:
 	ambulant_player_callbacks();
 	void set_os_window(HWND hwnd);
 	HWND new_os_window();
@@ -122,35 +121,35 @@ AllocateScriptablePluginObject(NPP npp, NPClass *aClass); //KB
 
 class npambulant
 {
-private:
-  NPMIMEType m_mimetype;
-  NPP m_pNPInstance;
-  uint16 m_mode;
-  int m_argc;
-  char** m_argn;
-  char** m_argv;
-  NPSavedData* m_data;
-  bool m_autostart;
-  NPObject* m_window_obj;
+  private:
+	NPMIMEType m_mimetype;
+	NPP m_pNPInstance;
+	uint16 m_mode;
+	int m_argc;
+	char** m_argn;
+	char** m_argv;
+	NPSavedData* m_data;
+	bool m_autostart;
+	NPObject* m_window_obj;
 
 #ifdef XP_WIN
-  HWND m_hWnd;
-  WNDPROC m_lpOldProc;
-  LONG m_OldWindow;
+	HWND m_hWnd;
+	WNDPROC m_lpOldProc;
+	LONG m_OldWindow;
 #endif
 
-  NPWindow * m_Window;
+	NPWindow * m_Window;
 
-  NPStream * m_pNPStream;
-  NPBool m_bInitialized;
+	NPStream * m_pNPStream;
+	NPBool m_bInitialized;
 
-  NPObject *m_pScriptableObject;
+	NPObject *m_pScriptableObject;
 
-public:
-  char m_String[128];
+  public:
+	char m_String[128];
 
-public:
-  npambulant(
+  public:
+	npambulant(
 		NPMIMEType mimetype,
 		NPP pNPInstance,
 		uint16 mode,
@@ -158,52 +157,52 @@ public:
 		char* argn[],
 		char* argv[],
 		NPSavedData* data);
-  ~npambulant();
+	~npambulant();
 
-  NPBool setWindow(NPWindow* pNPWindow);
-  NPBool init();
-  void shut();
-  NPBool isInitialized();
-  // next functions are overridden to start the plugin late
-  // this solves problems with concurrent plugins like greasemonkey
-  // a more elegant approach could be to do all initialization in the plugin's
-  // init() function and to start the player when WriteReady() is called.
-  NPError SetWindow(NPWindow* pNPWindow);
-  NPError NewStream(NPMIMEType type, NPStream* stream, NPBool seekable, uint16* stype);
-  NPP getNPP();
-  const char* getValue(const char *name);
+	NPBool setWindow(NPWindow* pNPWindow);
+	NPBool init();
+	void shut();
+	NPBool isInitialized();
+	// next functions are overridden to start the plugin late
+	// this solves problems with concurrent plugins like greasemonkey
+	// a more elegant approach could be to do all initialization in the plugin's
+	// init() function and to start the player when WriteReady() is called.
+	NPError SetWindow(NPWindow* pNPWindow);
+	NPError NewStream(NPMIMEType type, NPStream* stream, NPBool seekable, uint16* stype);
+	NPP getNPP();
+	const char* getValue(const char *name);
 
-  int16 handleEvent(void* event);
+	int16 handleEvent(void* event);
 
-  void showVersion();
-  void clear();
-  void getVersion(char* *aVersion);
+	void showVersion();
+	void clear();
+	void getVersion(char* *aVersion);
 
-  void startPlayer();
-  void stopPlayer();
-  void restartPlayer();
-  void pausePlayer();
-  void resumePlayer();
-  bool isDone();
+	void startPlayer();
+	void stopPlayer();
+	void restartPlayer();
+	void pausePlayer();
+	void resumePlayer();
+	bool isDone();
 
-  NPObject *GetScriptableObject();
+	NPObject *GetScriptableObject();
 
-  /* for ambulant player */
-  ambulant::lib::logger* m_logger;
-  ambulant::net::url m_url;
-  int m_cursor_id;
+	/* for ambulant player */
+	ambulant::lib::logger* m_logger;
+	ambulant::net::url m_url;
+	int m_cursor_id;
 
-  static NPP s_last_instance;
-  bool init_ambulant(NPP npp, NPWindow* aWindow);
-  char* get_document_location();
+	static NPP s_last_instance;
+	bool init_ambulant(NPP npp, NPWindow* aWindow);
+	char* get_document_location();
 #ifdef	MOZ_X11
-    Window window;
-    Display* display;
-    int width, height;
+	Window window;
+	Display* display;
+	int width, height;
 #endif // MOZ_X11
 
 #ifdef WITH_GTK
-    gtk_mainloop* m_mainloop;
+	gtk_mainloop* m_mainloop;
 #elif WITH_CG
 	cg_mainloop *m_mainloop;
 #else
@@ -212,19 +211,19 @@ public:
 
 #ifdef	XP_WIN32
 #define strcasecmp(s1,s2) _stricmp(s1,s2)
-    ambulant_player_callbacks m_player_callbacks;
-    HWND m_hwnd;
-    ambulant::gui::dx::dx_player* m_ambulant_player;
-    ambulant::common::player* get_player() {
-        return m_ambulant_player->get_player();
-    }
+	ambulant_player_callbacks m_player_callbacks;
+	HWND m_hwnd;
+	ambulant::gui::dx::dx_player* m_ambulant_player;
+	ambulant::common::player* get_player() {
+		return m_ambulant_player->get_player();
+	}
 #else //!XP_WIN32
-    ambulant::common::player* m_ambulant_player;
-    ambulant::common::player* get_player() {
-        return m_ambulant_player;
-    }
-#endif// XP_WIN32
- };
+	ambulant::common::player* m_ambulant_player;
+	ambulant::common::player* get_player() {
+		return m_ambulant_player;
+	}
+#endif // XP_WIN32
+};
 
 extern "C" {
 void npambulant_display_message(int level, const char *message);

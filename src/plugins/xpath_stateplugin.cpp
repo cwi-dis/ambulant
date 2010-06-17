@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -36,20 +36,20 @@ using namespace ambulant;
 // -------------------
 class xpath_state_component : public common::state_component {
   public:
-    xpath_state_component();
+	xpath_state_component();
 	virtual ~xpath_state_component();
 
 	/// Register the systemTest/customTest API
 	void register_state_test_methods(common::state_test_methods *stm);
 
-    /// Declare the state in the document
-    void declare_state(const lib::node *state);
+	/// Declare the state in the document
+	void declare_state(const lib::node *state);
 
-    /// Calculate a boolean expression
-    bool bool_expression(const char *expr);
+	/// Calculate a boolean expression
+	bool bool_expression(const char *expr);
 
-    /// Set a state variable to an expression
-    void set_value(const char *var, const char *expr);
+	/// Set a state variable to an expression
+	void set_value(const char *var, const char *expr);
 
 	/// Add a new variable to the state
 	void new_value(const char *ref, const char *where, const char *name, const char *expr);
@@ -57,11 +57,11 @@ class xpath_state_component : public common::state_component {
 	/// Delete a variable from the state
 	void del_value(const char *ref);
 
-    /// Submit the state
-    void send(const lib::node *submission);
+	/// Submit the state
+	void send(const lib::node *submission);
 
-    /// Calculate a string expression
-    std::string string_expression(const char *expr);
+	/// Calculate a string expression
+	std::string string_expression(const char *expr);
 
 	/// Get at the state_test_methods structure
 	common::state_test_methods *get_state_test_methods() const { return m_state_test_methods; }
@@ -69,10 +69,10 @@ class xpath_state_component : public common::state_component {
 	/// Register interest in stateChange events
 	void want_state_change(const char *ref, common::state_change_callback *cb);
   private:
-  	void _check_state_change(xmlNodePtr changed);
+	void _check_state_change(xmlNodePtr changed);
 
-  	xmlDocPtr m_state;
-  	xmlXPathContextPtr m_context;
+	xmlDocPtr m_state;
+	xmlXPathContextPtr m_context;
 	common::state_test_methods *m_state_test_methods;
 	std::vector<std::pair<std::string, common::state_change_callback* > > m_state_change_callbacks;
 };
@@ -210,7 +210,7 @@ class xpath_state_component_factory : public common::state_component_factory {
   public:
 	virtual ~xpath_state_component_factory() {};
 
- 	common::state_component *new_state_component(const char *uri);
+	common::state_component *new_state_component(const char *uri);
 };
 
 // -------------------
@@ -633,7 +633,7 @@ xpath_state_component::_check_state_change(xmlNodePtr changed)
 			xmlNodeSetPtr nodeset = result->nodesetval;
 			AM_DBG lib::logger::get_logger()->debug("... nodeset=0x%x count=%d", nodeset, nodeset?nodeset->nodeNr:0);
 			if (nodeset) {
-				int  j;
+				int	 j;
 				for (j=0; j<nodeset->nodeNr; j++) {
 					if (nodeset->nodeTab[j] == changed) {
 						AM_DBG lib::logger::get_logger()->debug("check_state_change: raising stateChange(%s)", ref.c_str());
@@ -672,23 +672,23 @@ extern "C"
 __declspec(dllexport)
 #endif
 void initialize(
-    int api_version,
-    ambulant::common::factories* factory,
-    ambulant::common::gui_player *player)
+	int api_version,
+	ambulant::common::factories* factory,
+	ambulant::common::gui_player *player)
 {
-    if ( api_version != AMBULANT_PLUGIN_API_VERSION ) {
-        lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"xpath_state_plugin",
-					AMBULANT_PLUGIN_API_VERSION, api_version);
-        return;
-    }
-    if ( !ambulant::check_version() )
-        lib::logger::get_logger()->warn(gettext("%s: built for different Ambulant version (%s)"),"xpath_state_plugin", AMBULANT_VERSION);
-    factory = bug_workaround(factory);
-    AM_DBG lib::logger::get_logger()->debug("xpath_state_plugin: loaded.");
-    common::global_state_component_factory *scf = factory->get_state_component_factory();
-    if (scf) {
-    	xpath_state_component_factory *dscf = new xpath_state_component_factory();
-	scf->add_factory(dscf);
-    	lib::logger::get_logger()->trace("xpath_state_plugin: registered");
-    }
+	if ( api_version != AMBULANT_PLUGIN_API_VERSION ) {
+		lib::logger::get_logger()->warn(gettext("%s: built for plugin-api version %d, current %d. Skipping."),"xpath_state_plugin", AMBULANT_PLUGIN_API_VERSION, api_version);
+		return;
+	}
+	if ( !ambulant::check_version() ) {
+		lib::logger::get_logger()->warn(gettext("%s: built for different Ambulant version (%s)"),"xpath_state_plugin", AMBULANT_VERSION);
+	}
+	factory = bug_workaround(factory);
+	AM_DBG lib::logger::get_logger()->debug("xpath_state_plugin: loaded.");
+	common::global_state_component_factory *scf = factory->get_state_component_factory();
+	if (scf) {
+		xpath_state_component_factory *dscf = new xpath_state_component_factory();
+		scf->add_factory(dscf);
+		lib::logger::get_logger()->trace("xpath_state_plugin: registered");
+	}
 }

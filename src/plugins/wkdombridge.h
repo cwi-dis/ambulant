@@ -126,13 +126,13 @@ class wkdom_node : public lib::node_interface {
 	// iterators
 
 	/// Return iterator for this node and its subtree.
-    iterator begin() { return iterator(this);}
+	iterator begin() { return iterator(this);}
 
 	/// Return iterator for this node and its subtree.
-    const_iterator begin() const { return const_iterator(this);}
+	const_iterator begin() const { return const_iterator(this);}
 
-    iterator end() { return iterator(0);}
-    const_iterator end() const { return const_iterator(0);}
+	iterator end() { return iterator(0);}
+	const_iterator end() const { return const_iterator(0);}
 
 	///////////////////////
 	// build tree functions
