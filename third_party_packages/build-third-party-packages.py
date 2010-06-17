@@ -129,9 +129,9 @@ MAC106_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'	" % (COMMON_INSTA
 # ffmpeg: see: http://lists.mplayerhq.hu/pipermail/ffmpeg-devel/2009-October/076618.html
 # SDL: use Xcode 3.0 with SDL-1.3.0-4429/Xcode-iPhoneOS/SDL/SDLiPhoneOS.xcodeproj
 # live: use config.iphone30 as in http://cache.gmane.org//gmane/comp/multimedia/live555/devel/5394-001.bin
-#IPHONE30_COMMON_CONFIGURE="./configure --prefix='%s/arm' --host=arm-apple-darwin9 CC=arm-apple-darwin9-gcc-4.2.1  CXX=arm-apple-darwin9-g++-4.2.1 LD=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/ld CPP=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/cpp CFLAGS=-isysroot\ /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS3.0.sdk" % COMMON_INSTALLDIR
-#XXXX IPHONE30_COMMON_CFLAGS="-arch armv6 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iphoneOS3.0.sdk"
-#XXXX IPHONE30_COMMON_CONFIGURE="./configure --host=arm-apple-darwin9 --prefix='%s'/arm CFLAGS='%s' CC=gcc-4.2 CXX=g++-4.2	" % (COMMON_INSTALLDIR, IPHONE30_COMMON_CFLAGS)
+IPHONE30_COMMON_CONFIGURE="./configure --prefix='%s/arm' --host=arm-apple-darwin9 CC=arm-apple-darwin9-gcc-4.2.1  CXX=arm-apple-darwin9-g++-4.2.1 LD=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/ld CPP=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/cpp CFLAGS=-isysroot\ /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS3.0.sdk" % COMMON_INSTALLDIR
+IPHONE30_COMMON_CFLAGS="-arch armv6 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iphoneOS3.0.sdk"
+IPHONE30_COMMON_CONFIGURE="./configure --host=arm-apple-darwin9 --prefix='%s'/arm CFLAGS='%s' CC=gcc-4.2 CXX=g++-4.2	" % (COMMON_INSTALLDIR, IPHONE30_COMMON_CFLAGS)
 
 LINUX_COMMON_CONFIGURE="./configure --prefix='%s'" % COMMON_INSTALLDIR
 
