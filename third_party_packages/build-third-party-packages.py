@@ -122,11 +122,24 @@ MAC104_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s' CC=gcc-4.0 CXX=g+
 
 MAC106_COMMON_CFLAGS="-arch i386 -arch x86_64"
 MAC106_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'	" % (COMMON_INSTALLDIR, MAC106_COMMON_CFLAGS)
+# Initial iPhone support for iPhoneOS 3.0, unstable, unfinished.
+# for now: --prefix=installed/arm; export IPHONEOS_DEPLOYMENT_TARGET=3.0; export ACOSX_DEPLOYMENT_TARGET=10.4; PATH=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:$PATH
+# other mods needed a couple of lines down
+# packages not yet covered: ffmpeg, SDL and live555, can be build using these separate build procedures.
+# ffmpeg: see: http://lists.mplayerhq.hu/pipermail/ffmpeg-devel/2009-October/076618.html
+# SDL: use Xcode 3.0 with SDL-1.3.0-4429/Xcode-iPhoneOS/SDL/SDLiPhoneOS.xcodeproj
+# live: use config.iphone30 as in http://cache.gmane.org//gmane/comp/multimedia/live555/devel/5394-001.bin
+#IPHONE30_COMMON_CONFIGURE="./configure --prefix='%s/arm' --host=arm-apple-darwin9 CC=arm-apple-darwin9-gcc-4.2.1  CXX=arm-apple-darwin9-g++-4.2.1 LD=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/ld CPP=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/cpp CFLAGS=-isysroot\ /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS3.0.sdk" % COMMON_INSTALLDIR
+#XXXX IPHONE30_COMMON_CFLAGS="-arch armv6 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iphoneOS3.0.sdk"
+#XXXX IPHONE30_COMMON_CONFIGURE="./configure --host=arm-apple-darwin9 --prefix='%s'/arm CFLAGS='%s' CC=gcc-4.2 CXX=g++-4.2	" % (COMMON_INSTALLDIR, IPHONE30_COMMON_CFLAGS)
 
 LINUX_COMMON_CONFIGURE="./configure --prefix='%s'" % COMMON_INSTALLDIR
 
 appendPath("PATH", os.path.join(COMMON_INSTALLDIR, "bin"))
 appendPath("PKG_CONFIG_PATH", os.path.join(COMMON_INSTALLDIR, "lib/pkgconfig"))
+# for iPhone comment prev 2 lines, uncomment next 2 lines
+# appendPath("PATH", os.path.join(COMMON_INSTALLDIR, "arm/bin"))
+# appendPath("PKG_CONFIG_PATH", os.path.join(COMMON_INSTALLDIR, "arm/lib/pkgconfig"))
 
 third_party_packages={
 	'mac10.6' : [
@@ -319,6 +332,108 @@ third_party_packages={
 				"make $(MAKEFLAGS) && "
 				"make install" % MAC104_COMMON_CONFIGURE
 			)
+		],
+	'iPhone30' : [
+		TPP("expat", 
+			url="http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=autoselect",
+			checkcmd="pkg-config --atleast-version=2.0.0 expat",
+			buildcmd=
+				"cd expat-2.0.1 && "
+				"patch < %s/third_party_packages/expat.patch && "
+				"autoconf && "
+				"%s && "
+				"make clean;make $(MAKEFLAGS) && "
+				"make install" % (AMBULANT_DIR, IPHONE30_COMMON_CONFIGURE)
+			),
+##		TPP("xerces-c",
+##			url="http://apache.proserve.nl/xerces/c/3/sources/xerces-c-3.1.1.tar.gz",
+##			checkcmd="pkg-config --atleast-version=3.0.0 xerces-c",
+##			buildcmd=
+##				"cd xerces-c-3.1.1 && "
+##				"%s CXXFLAGS='%s' --disable-dependency-tracking --without-curl && "
+##			"make clean;make $(MAKEFLAGS) && "
+##				"make install" % (IPHONE30_COMMON_CONFIGURE, IPHONE30_COMMON_CFLAGS)
+##			),
+		TPP("faad2",
+			url="http://downloads.sourceforge.net/project/faac/faad2-src/faad2-2.7/faad2-2.7.tar.gz?use_mirror=autoselect",
+			checkcmd="test -f %s/lib/arm/libfaad.a" % COMMON_INSTALLDIR,
+			buildcmd=
+				"cd faad2-2.7 && "
+				"%s --disable-dependency-tracking && "
+				"make clean;make $(MAKEFLAGS) && "
+				"make install" % IPHONE30_COMMON_CONFIGURE
+			),
+##		TPP("ffmpeg",
+##			url="http://ffmpeg.org/releases/ffmpeg-0.5.tar.bz2",
+##			checkcmd="pkg-config --atleast-version=52.20.0 libavformat",
+##			buildcmd=
+##				"mkdir ffmpeg-0.5-universal && "
+##				"cd ffmpeg-0.5-universal && "
+##				"%s/third_party_packages/ffmpeg-osx-fatbuild.sh %s/ffmpeg-0.5 all" % 
+##					(AMBULANT_DIR, os.getcwd())
+##			),
+		TPP("ffmpeg",
+			url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
+			checkcmd="pkg-config --atleast-version=52.20.0 libavformat",
+			buildcmd="./configure --enable-cross-compile --arch=arm --target-os=darwin --cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc --as='gas-preprocessor.pl  \
+				/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc' --sysroot=/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS3.0.sdk --cpu=arm1176jzf-s --extra-cflags='-arch  \
+				armv6 -I../installed/arm/include' --extra-ldflags='-arch armv6 -L../installed/arm/lib' --enable-libfaad --prefix=../installed/arm --enable-gpl"
+				"make clean;make $(MAKEFLAGS); make install"
+			),
+##		TPP("SDL",
+##			url="http://www.libsdl.org/release/SDL-1.2.13.tar.gz",
+##			checkcmd="sdl-config",
+##			buildcmd=
+##				"cd SDL-1.2.13 && "
+##				"./configure --prefix='%s' "
+##					"--disable-dependency-tracking "
+##					"--disable-video-x11 "
+##					"CC=gcc-4.0 CXX=g++-4.0 "
+##					"CFLAGS='%s' "
+##					"LDFLAGS='%s' &&"
+##				"make clean;make $(MAKEFLAGS) && "
+##				"make install" % (COMMON_INSTALLDIR, IPHONE30_COMMON_CFLAGS, IPHONE30_COMMON_CFLAGS)
+##			),
+##		TPP("SDL",
+##			url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
+##			checkcmd="pkg-config --atleast-version=1.3.0 sdl",
+##			buildcmd=
+##				"cd SDL-1.3.0-* && "
+##			"./configure --prefix='%s'/arm "
+##					"--disable-dependency-tracking "
+##					"CC=gcc-4.0 CXX=g++-4.0 "
+##					"CFLAGS='%s' "
+##					"LDFLAGS='%s -framework ForceFeedback' &&"
+##				"make clean;make $(MAKEFLAGS) && "
+##				"make install" % (COMMON_INSTALLDIR, IPHONE30_COMMON_CFLAGS, IPHONE30_COMMON_CFLAGS)
+##			),
+		TPP("live",
+			url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
+			checkcmd="test -f ./live/liveMedia/libliveMedia.a",
+			buildcmd=
+				"cd live && "
+				"tar xf %s/third_party_packages/live-osx-fatbuild-patches.tar && "
+				"./genMakefiles macosxfat && "
+				"make clean;make $(MAKEFLAGS) " % AMBULANT_DIR
+			),
+		TPP("gettext",
+			url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.17.tar.gz",
+			checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
+			buildcmd=
+				"cd gettext-0.17 && "
+				"%s --disable-csharp && "
+				"make clean;make $(MAKEFLAGS) && "
+				"make install" % IPHONE30_COMMON_CONFIGURE
+			),
+#		TPP("libxml2",
+#			url="ftp://xmlsoft.org/libxml2/libxml2-2.7.5.tar.gz",
+#			checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
+#			buildcmd=
+#				"cd libxml2-2.7.5 && "
+#				"%s --disable-dependency-tracking && "
+#				"make clean;make $(MAKEFLAGS) && "
+#				"make install" % IPHONE30_COMMON_CONFIGURE
+#			)
 		],
 	'linux' : [
 		TPP("libtool", 
