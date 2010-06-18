@@ -1,3 +1,21 @@
+2010-06-17 17:03  jackjansen
+
+	* Fix to Kees' iPhone mods
+
+2010-06-17 16:39  jackjansen
+
+	* More spaces converted to tabs
+
+2010-06-17 16:22  keesblom
+
+	* Built all 3pp for iPhone using modified build script and
+	  hand-crafted actions described in comment int the script. Not
+	  tested.
+
+2010-06-17 16:04  jackjansen
+
+	* More spaces converted to tabs
+
 2010-06-14 23:59  jackjansen
 
 	* Tab/space fixing
