@@ -1,4 +1,0 @@
-# AmbulantPlayer service description file
-[D-BUS Service]
-Name=com.nokia.ambulantplayer_app
-Exec=/usr/bin/AmbulantPlayer_gtk
