@@ -37,11 +37,11 @@ static int m_bufsize = 1024;
 enum datatype {STRING = 0, INT, BOOL};
 
 class preference_entry {
- public:
+  public:
 	preference_entry(std::string name,
-			 datatype type,
-			 void* store,
-			 std::string* = NULL);
+		datatype type,
+		void* store,
+		std::string* = NULL);
 	std::string pref_name;
 	std::string* pref_valid_val;
 	datatype pref_type;
@@ -50,7 +50,7 @@ class preference_entry {
 
 class unix_preferences : public ambulant::common::preferences {
 
- public:
+  public:
 	unix_preferences();
 
 	~unix_preferences();
@@ -59,7 +59,7 @@ class unix_preferences : public ambulant::common::preferences {
 
 	bool save_preferences();
 
- private:
+  private:
 	FILE* open_preferences_file(std::string mode);
 
 	bool load_preference(std::string name, std::string value);

@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -103,15 +103,15 @@ open_web_browser(const std::string &href)
 }
 
 gtk_mainloop::gtk_mainloop(gtk_gui* gui)
-:   m_gui(gui),
-    m_running(false),
+:	m_gui(gui),
+	m_running(false),
 	m_gtk_widget(NULL)
 {
 	gui_player();
 	m_logger = lib::logger::get_logger();
 	set_embedder(this);
-    smil2::test_attrs::set_default_tests_attrs();
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("Standalone"), true);
+	smil2::test_attrs::set_default_tests_attrs();
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("Standalone"), true);
 	init_factories();
 	init_plugins();
 
@@ -132,8 +132,8 @@ gtk_mainloop::~gtk_mainloop()
 	// We need to delete gui_player::m_player before deleting m_doc, because the
 	// timenode graph in the player has referrences to the node graph in m_doc.
 	if (m_player) {
-	    m_player->terminate();
-	    m_player->release();
+		m_player->terminate();
+		m_player->release();
 		m_player = NULL;
 	}
 	if (m_doc) {
@@ -170,7 +170,7 @@ gtk_mainloop::init_playable_factory()
 	pf->add_factory(create_gtk_video_playable_factory(this, NULL));
 
 #ifdef WITH_SDL
-    AM_DBG lib::logger::get_logger()->debug("gtk_mainloop: add factory for SDL");
+	AM_DBG lib::logger::get_logger()->debug("gtk_mainloop: add factory for SDL");
 	pf->add_factory(gui::sdl::create_sdl_playable_factory(this));
 #endif // WITH_SDL
 #ifdef WITH_GSTREAMER
@@ -191,15 +191,15 @@ gtk_mainloop::init_datasource_factory()
 	df->add_audio_factory(net::create_live_audio_datasource_factory());
 #endif
 #ifdef WITH_FFMPEG
-    AM_DBG m_logger->debug("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
+	AM_DBG m_logger->debug("mainloop::mainloop: add ffmpeg_audio_datasource_factory");
 	df->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
-    AM_DBG m_logger->debug("gtk_mainloop::gtk_mainloop: add ffmpeg_audio_decoder_finder");
+	AM_DBG m_logger->debug("gtk_mainloop::gtk_mainloop: add ffmpeg_audio_decoder_finder");
 	df->add_audio_decoder_finder(net::get_ffmpeg_audio_decoder_finder());
-    AM_DBG m_logger->debug("gtk_mainloop::gtk_mainloop: add ffmpeg_audio_filter_finder");
+	AM_DBG m_logger->debug("gtk_mainloop::gtk_mainloop: add ffmpeg_audio_filter_finder");
 	df->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
 	AM_DBG m_logger->debug("mainloop::mainloop: add ffmpeg_video_datasource_factory");
 	df->add_video_factory(net::get_ffmpeg_video_datasource_factory());
-    AM_DBG m_logger->debug("mainloop::mainloop: add ffmpeg_raw_datasource_factory");
+	AM_DBG m_logger->debug("mainloop::mainloop: add ffmpeg_raw_datasource_factory");
 	df->add_raw_factory(net::get_ffmpeg_raw_datasource_factory());
 #endif
 
@@ -209,7 +209,7 @@ gtk_mainloop::init_datasource_factory()
 	// If you define WITH_STDIO_DATASOURCE we prefer to use the stdio datasource,
 	// however.
 
-    AM_DBG m_logger->debug("gtk_mainloop::gtk_mainloop: add stdio_datasource_factory");
+	AM_DBG m_logger->debug("gtk_mainloop::gtk_mainloop: add stdio_datasource_factory");
 	df->add_raw_factory(net::create_stdio_datasource_factory());
 #endif
 	AM_DBG m_logger->debug("gtk_mainloop::gtk_mainloop: add posix_datasource_factory");
@@ -282,7 +282,7 @@ void
 gtk_mainloop::open(net::url newdoc, bool start, common::player *old)
 {
 	AM_DBG m_logger->trace("gtk_mainloop::open \"%s\"",newdoc.get_url().c_str());
-    // Parse the provided URL.
+	// Parse the provided URL.
 	m_doc = create_document(newdoc);
 	if(!m_doc) {
 		m_logger->error(gettext("%s: Cannot build DOM tree"),
@@ -291,8 +291,8 @@ gtk_mainloop::open(net::url newdoc, bool start, common::player *old)
 	}
 	// send msg to gui thread
 	std::string msg("");
-	msg += start ? "S-" : "  ";
-	msg += old   ? "O-" : "  ";
+	msg += start ? "S-" : "	 ";
+	msg += old	 ? "O-" : "	 ";
 	msg += newdoc.get_url();
 	m_gui->internal_message(gtk_logger::CUSTOM_NEW_DOCUMENT,
 				strdup(msg.c_str()));
@@ -323,8 +323,7 @@ gtk_mainloop::player_start(gchar* document_name, bool start, bool old)
 	}
 #endif
 	// Create a player instance
-	AM_DBG m_logger->debug("Creating player instance for: %s",
-			       document_name);
+	AM_DBG m_logger->debug("Creating player instance for: %s", document_name);
 	m_player = create_player(document_name);
 	if(start) {
 		m_player->start();
@@ -349,8 +348,7 @@ char* gtk_mainloop::convert_data_to_image(const guchar* data, gsize size){
 		return NULL;
 	}
 	filename = "mytest.jpeg";
-	gdk_pixbuf_save (pixbuf, filename, "jpeg", &error,
-                 "quality", "100", NULL);
+	gdk_pixbuf_save (pixbuf, filename, "jpeg", &error, "quality", "100", NULL);
 	return filename;
 }
 */

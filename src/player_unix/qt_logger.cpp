@@ -146,7 +146,7 @@ qt_logger::get_logger_window() {
 
 qt_message_event::qt_message_event(int level, const char *message)
 :	_message(strdup(message)),
-    QCustomEvent((QEvent::Type)level)
+	QCustomEvent((QEvent::Type)level)
 {
 	setData(_message);
 }

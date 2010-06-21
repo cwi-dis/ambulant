@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -44,21 +44,25 @@
 #define AM_DBG if(0)
 #endif
 
-#define	WITH_GTK_LOGGER
+#define WITH_GTK_LOGGER
 
 //KB XXXX FIXME
-#ifdef  WITH_NOKIA770
-#ifdef  AMBULANT_DATADIR  //KB XXXX
-#undef  AMBULANT_DATADIR
+#ifdef	WITH_NOKIA770
+#ifdef	AMBULANT_DATADIR  //KB XXXX
+#undef	AMBULANT_DATADIR
 #define AMBULANT_DATADIR "/usr/share/ambulant"
-#endif/*AMBULANT_DATADIR*/
+#endif // AMBULANT_DATADIR
 #define UI_FILENAME AMBULANT_DATADIR "/ui_manager.xml"
 //#include <hildon-widgets/hildon-program.h>  // CHINOOK
 #include <hildon/hildon-program.h> // DIABLO
 #include <glib-object.h>
 #else /*WITH_NOKIA770*/
 #define UI_FILENAME "ui_manager.xml"
-#endif/*WITH_NOKIA770*/
+#endif // WITH_NOKIA770
+
+#ifndef AMBULANT_DATADIR
+#define AMBULANT_DATADIR "/usr/local/share/ambulant"
+#endif
 
 const char *ui_description =
 	"<ui> \n"
@@ -98,7 +102,7 @@ const char *ui_description =
 
 const char *about_text =
 	"Ambulant SMIL 3.0 player.\n"
-        "Version: %s\n"
+	"Version: %s\n"
 	"Copyright Stichting CWI, 2003-2010.\n\n"
 	"License: LGPL";
 
@@ -109,11 +113,7 @@ const char *welcome_locations[] = {
 	"../Welcome/Welcome.smil",
 	"Extras/Welcome/Welcome.smil",
 	"../Extras/Welcome/Welcome.smil",
-#ifdef AMBULANT_DATADIR
 	AMBULANT_DATADIR "/Welcome/Welcome.smil",
-#else
-	"/usr/local/share/ambulant/Welcome/Welcome.smil",
-#endif
 #ifdef	GTK_NO_FILEDIALOG	/* Assume embedded Qt */
 	"/home/zaurus/Documents/Ambulant/Extras/Welcome/Welcome.smil",
 #endif/*QT_NO_FILEDIALOG*/
@@ -124,11 +124,7 @@ const char *welcome_locations[] = {
 const char *helpfile_locations[] = {
 	"Documentation/user/index.html",
 	"../Documentation/user/index.html",
-#ifdef AMBULANT_DATADIR
 	AMBULANT_DATADIR "/AmbulantPlayerHelp/index.html",
-#else
-	"/usr/local/share/ambulant/AmbulantPlayerHelp/index.html",
-#endif
 	NULL
 };
 
@@ -249,10 +245,8 @@ find_datafile(const char **locations)
 	return NULL;
 }
 
-gtk_gui::gtk_gui(const char* title,
-	       const char* initfile)
- :
-// initialize all dynamic data pointers in the same order as they are declared
+gtk_gui::gtk_gui(const char* title, const char* initfile)
+:
 	m_programfilename(NULL),
 	m_smilfilename(NULL),
 	m_settings(NULL),
@@ -277,44 +271,44 @@ gtk_gui::gtk_gui(const char* title,
 	static GtkActionEntry entries[] = {
 	{ "FileMenu", NULL, gettext_noop("_File")},
 	{ "open", GTK_STOCK_OPEN, gettext_noop("_Open..."),
-	    "<Control>O", gettext_noop("Open a document from local disk"), NULL},
+		"<Control>O", gettext_noop("Open a document from local disk"), NULL},
 	{ "openurl", NULL, gettext_noop("Open _URL..."),
-	    "<Control>L", gettext_noop("Open a document from the network"), NULL},
+		"<Control>L", gettext_noop("Open a document from the network"), NULL},
 	{ "reload", GTK_STOCK_REFRESH, gettext_noop("_Reload"),
-	    NULL, gettext_noop("Reload current document"), NULL},
+		NULL, gettext_noop("Reload current document"), NULL},
 	{ "preferences", GTK_STOCK_PREFERENCES , gettext_noop("_Preferences"),
-	    NULL, gettext_noop("Change application preferences"), NULL},
+		NULL, gettext_noop("Change application preferences"), NULL},
 	{ "loadsettings", GTK_STOCK_PROPERTIES, gettext_noop("_Load Settings..."),
-	    NULL, gettext_noop("Open SMIL playback settings document"), NULL},
+		NULL, gettext_noop("Open SMIL playback settings document"), NULL},
 	{ "quit", GTK_STOCK_QUIT, gettext_noop("_Quit"),
-	    "<Control>Q", gettext_noop("Quit Ambulant Player"), NULL},
+		"<Control>Q", gettext_noop("Quit Ambulant Player"), NULL},
 
 	// Play Menu
 	{ "PlayMenu", NULL, gettext_noop("Pla_y")},
 	{ "play", GTK_STOCK_MEDIA_PLAY, gettext_noop("Pla_y"),
-	    "<Control>P", gettext_noop("Start document playback"), NULL},
+		"<Control>P", gettext_noop("Start document playback"), NULL},
 	{ "pause", GTK_STOCK_MEDIA_PAUSE, gettext_noop("_Pause"),
-	    "<Control><Shift>P", gettext_noop("Pause document playback"), NULL},
+		"<Control><Shift>P", gettext_noop("Pause document playback"), NULL},
 	{ "stop", GTK_STOCK_MEDIA_STOP, gettext_noop("_Stop"),
-	    "<Control>S", gettext_noop("Stop document playback"), NULL},
+		"<Control>S", gettext_noop("Stop document playback"), NULL},
 	// View Menu
 	{ "ViewMenu", NULL, gettext_noop("_View")},
 	{ "fullscreen", NULL, gettext_noop("_Full Screen"),
-	    "<Control>F", gettext_noop("Full Screen"), NULL},
+		"<Control>F", gettext_noop("Full Screen"), NULL},
 	{ "window", NULL, gettext_noop("_Window"),
-	    "<Control><Alt>F", gettext_noop("Normal Screen"), NULL},
+		"<Control><Alt>F", gettext_noop("Normal Screen"), NULL},
 	{ "logwindow", NULL, gettext_noop("_Log Window..."),
-	    "<Control>L", gettext_noop("Show status output window"), NULL},
+		"<Control>L", gettext_noop("Show status output window"), NULL},
 	// Help Menu
-	  { "HelpMenu", NULL, gettext_noop("_Help")},
+	{ "HelpMenu", NULL, gettext_noop("_Help")},
 	{ "about", GTK_STOCK_ABOUT, gettext_noop("_About AmbulantPlayer"),
-	    NULL, gettext_noop("Information about Ambulant"), NULL},
+		NULL, gettext_noop("Information about Ambulant"), NULL},
 	{ "help", GTK_STOCK_HELP, gettext_noop("AmbulantPlayer _Help..."),
-	    NULL, gettext_noop("Help in AmbulantPlayer Webpage"), NULL},
+		NULL, gettext_noop("Help in AmbulantPlayer Webpage"), NULL},
 	{ "website", NULL, gettext_noop("AmbulantPlayer _Website..."),
-	    NULL, gettext_noop("Open the Ambulant Webpage"), NULL},
+		NULL, gettext_noop("Open the Ambulant Webpage"), NULL},
 	{ "welcome", GTK_STOCK_HOME, gettext_noop("_Play Welcome Document"),
-	    "<Control><shift>H", gettext_noop("Plays a simple SMIL file"), NULL}
+		"<Control><shift>H", gettext_noop("Plays a simple SMIL file"), NULL}
 	};
 
 	int n_entries = G_N_ELEMENTS(entries);
@@ -352,7 +346,7 @@ gtk_gui::gtk_gui(const char* title,
 
 	g_signal_connect_swapped (GTK_OBJECT (m_toplevelcontainer), "signal-need-redraw",  G_CALLBACK (gtk_C_callback_do_player_done), (void*)this);
 
-	g_signal_connect_swapped (GTK_OBJECT (m_toplevelcontainer), "signal-internal-message",  G_CALLBACK (gtk_C_callback_do_internal_message), (void*)this);
+	g_signal_connect_swapped (GTK_OBJECT (m_toplevelcontainer), "signal-internal-message",	G_CALLBACK (gtk_C_callback_do_internal_message), (void*)this);
 
 	/* VBox (m_guicontainer) to place the Menu bar in the correct place */
 	m_guicontainer = gtk_vbox_new(FALSE, 0);
@@ -380,23 +374,23 @@ gtk_gui::gtk_gui(const char* title,
 #endif
 
 	// The actual activation calls
-	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "open"), "activate",  G_CALLBACK (gtk_C_callback_open), (void *) this );
+	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "open"), "activate",	G_CALLBACK (gtk_C_callback_open), (void *) this );
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "openurl"), "activate",  G_CALLBACK (gtk_C_callback_open_url), (void*)this);
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "reload"), "activate",  G_CALLBACK (gtk_C_callback_reload), (void*)this);
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "preferences"), "activate",  G_CALLBACK (gtk_C_callback_settings_select), (void *) this );
-	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "loadsettings"), "activate",  G_CALLBACK (gtk_C_callback_load_settings), (void*)this);
-	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "quit"), "activate",  G_CALLBACK (gtk_C_callback_quit), (void*)this);
+	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "loadsettings"), "activate",	G_CALLBACK (gtk_C_callback_load_settings), (void*)this);
+	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "quit"), "activate",	G_CALLBACK (gtk_C_callback_quit), (void*)this);
 
-	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "play"), "activate",  G_CALLBACK (gtk_C_callback_play), (void*)this);
-	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "pause"), "activate",  G_CALLBACK (gtk_C_callback_pause), (void*)this );
-	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "stop"), "activate",  G_CALLBACK (gtk_C_callback_stop), (void*)this);
+	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "play"), "activate",	G_CALLBACK (gtk_C_callback_play), (void*)this);
+	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "pause"), "activate",	 G_CALLBACK (gtk_C_callback_pause), (void*)this );
+	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "stop"), "activate",	G_CALLBACK (gtk_C_callback_stop), (void*)this);
 
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "fullscreen"), "activate",  G_CALLBACK (gtk_C_callback_full_screen), (void*)this);
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "window"), "activate",  G_CALLBACK (gtk_C_callback_normal_screen), (void*)this);
-	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "logwindow"), "activate",  G_CALLBACK (gtk_C_callback_logger_window), (void*)this);
+	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "logwindow"), "activate",	 G_CALLBACK (gtk_C_callback_logger_window), (void*)this);
 
-	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "about"), "activate",  G_CALLBACK (gtk_C_callback_about), (void*)this);
-	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "help"), "activate",  G_CALLBACK (gtk_C_callback_help), (void*)this);
+	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "about"), "activate",	 G_CALLBACK (gtk_C_callback_about), (void*)this);
+	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "help"), "activate",	G_CALLBACK (gtk_C_callback_help), (void*)this);
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "website"), "activate",  G_CALLBACK (gtk_C_callback_homepage), (void*)this);
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "welcome"), "activate",  G_CALLBACK (gtk_C_callback_welcome), (void*)this);
 
@@ -425,28 +419,15 @@ gtk_gui::~gtk_gui() {
 	// remove all dynamic data in the same order as they are declared
 	// m_programfilename - not dynamic
 
-	if  (m_smilfilename) {
+	if	(m_smilfilename) {
 		free((void*)m_smilfilename);
 		m_smilfilename = NULL;
 	}
-	if  (m_settings) {
+	if	(m_settings) {
 		delete m_settings;
 		m_settings = NULL;
 	}
 	if (m_toplevelcontainer) {
-		/*
-		  Although it seems a good idea to destroy the top-level
-		  widget at this point, by some unrevealed magic
-		  it seems already been done by gtk, resulting in cryptic
-		  error messages like:
-		  GLib-GObject-WARNING **: invalid uninstantiatable type `(null)' in cast to `GtkWidget'
-		  Gtk-CRITICAL **: gtk_widget_destroy: assertion `GTK_IS_WIDGET (widget)' failed
-		  Commenting out next line doesn't seem to contribute to
-		  any extra memory leaks, gtk_init() alone is responsible
-		  for almost all of them
-
-		gtk_widget_destroy(GTK_WIDGET (m_toplevelcontainer));
-		 */
 		m_toplevelcontainer = NULL;
 	}
 	if (menubar) {
@@ -507,15 +488,14 @@ gtk_gui::get_document_container()
 
 void
 gtk_gui::do_about() {
-	GtkMessageDialog* dialog =
-	(GtkMessageDialog*) gtk_message_dialog_new (NULL,
-         GTK_DIALOG_DESTROY_WITH_PARENT,
-         GTK_MESSAGE_INFO,
-         GTK_BUTTONS_OK,
-         gettext("About AmbulantPlayer"));
+	GtkMessageDialog* dialog = (GtkMessageDialog*) gtk_message_dialog_new (NULL,
+		GTK_DIALOG_DESTROY_WITH_PARENT,
+		GTK_MESSAGE_INFO,
+		GTK_BUTTONS_OK,
+		gettext("About AmbulantPlayer"));
 	gtk_message_dialog_format_secondary_text(dialog,about_text,get_version());
- 	gtk_dialog_run (GTK_DIALOG (dialog));
- 	gtk_widget_destroy (GTK_WIDGET (dialog));
+	gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
 void
@@ -528,18 +508,17 @@ gtk_gui::do_welcome() {
 	const char *welcome_doc = find_datafile(welcome_locations);
 
 	if (welcome_doc) {
-	  if( openSMILfile(welcome_doc, 0, true)) {
+		if( openSMILfile(welcome_doc, 0, true)) {
 			do_play();
 		}
 	} else {
-		GtkMessageDialog* dialog =
-		(GtkMessageDialog*) gtk_message_dialog_new (NULL,
-         	GTK_DIALOG_DESTROY_WITH_PARENT,
-         	GTK_MESSAGE_ERROR,
-         	GTK_BUTTONS_OK,
-	 	gettext("Cannot find Welcome.smil document"));
- 		gtk_dialog_run (GTK_DIALOG (dialog));
- 		gtk_widget_destroy (GTK_WIDGET (dialog));
+		GtkMessageDialog* dialog = (GtkMessageDialog*) gtk_message_dialog_new (NULL,
+			GTK_DIALOG_DESTROY_WITH_PARENT,
+			GTK_MESSAGE_ERROR,
+			GTK_BUTTONS_OK,
+			gettext("Cannot find Welcome.smil document"));
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (GTK_WIDGET (dialog));
 	}
 }
 
@@ -550,41 +529,39 @@ gtk_gui::do_help() {
 	if (help_doc) {
 		open_web_browser(help_doc);
 	} else {
-		GtkMessageDialog* dialog =
-		(GtkMessageDialog*) gtk_message_dialog_new (NULL,
-         	GTK_DIALOG_DESTROY_WITH_PARENT,
-         	GTK_MESSAGE_ERROR,
-         	GTK_BUTTONS_OK,
-	        gettext("Cannot find Ambulant Player Help"));
- 		gtk_dialog_run (GTK_DIALOG (dialog));
- 		gtk_widget_destroy (GTK_WIDGET (dialog));
+		GtkMessageDialog* dialog = (GtkMessageDialog*) gtk_message_dialog_new (NULL,
+			GTK_DIALOG_DESTROY_WITH_PARENT,
+			GTK_MESSAGE_ERROR,
+			GTK_BUTTONS_OK,
+			gettext("Cannot find Ambulant Player Help"));
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (GTK_WIDGET (dialog));
 	}
 }
 
 void
 gtk_gui::do_logger_window() {
 	AM_DBG printf("do_logger_window()\n");
-	GtkWindow* logger_window =  gtk_logger::get_gtk_logger()->get_logger_window();
-	if (GTK_WIDGET_VISIBLE (GTK_WIDGET (logger_window)))
+	GtkWindow* logger_window =	gtk_logger::get_gtk_logger()->get_logger_window();
+	if (GTK_WIDGET_VISIBLE (GTK_WIDGET (logger_window))) {
 		gtk_widget_hide(GTK_WIDGET (logger_window));
-	else
+	} else {
 		gtk_widget_show(GTK_WIDGET (logger_window));
+	}
 }
 
 void
 gtk_gui::fileError(const gchar* smilfilename) {
- 	char buf[1024];
-	sprintf(buf, gettext(gettext("%s: Cannot open file: %s")),
-		(const char*) smilfilename, strerror(errno));
-	GtkMessageDialog* dialog =
-	(GtkMessageDialog*) gtk_message_dialog_new (NULL,
-         GTK_DIALOG_DESTROY_WITH_PARENT,
-         GTK_MESSAGE_ERROR,
-         GTK_BUTTONS_OK,
-	 m_programfilename);
+	char buf[1024];
+	sprintf(buf, gettext(gettext("%s: Cannot open file: %s")), (const char*) smilfilename, strerror(errno));
+	GtkMessageDialog* dialog = (GtkMessageDialog*) gtk_message_dialog_new (NULL,
+		GTK_DIALOG_DESTROY_WITH_PARENT,
+		GTK_MESSAGE_ERROR,
+		GTK_BUTTONS_OK,
+		m_programfilename);
 	gtk_message_dialog_format_secondary_text(dialog, buf);
- 	gtk_dialog_run (GTK_DIALOG (dialog));
- 	gtk_widget_destroy (GTK_WIDGET (dialog));
+	gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
 bool
@@ -595,7 +572,7 @@ gtk_gui::openSMILfile(const char *smilfilename, int mode, bool dupFlag) {
 
 	gtk_window_set_title(GTK_WINDOW (m_toplevelcontainer), smilfilename);
 	if (dupFlag) {
-	  if (m_smilfilename) free ((void*)m_smilfilename);
+		if (m_smilfilename) free ((void*)m_smilfilename);
 		m_smilfilename = strdup(smilfilename);
 	}
 	if (m_mainloop)
@@ -627,13 +604,9 @@ gtk_gui::do_open(){
 	gtk_file_chooser_add_filter(m_file_chooser, filter_any);
 
 	gint result = gtk_dialog_run (GTK_DIALOG (m_file_chooser));
-  	switch (result){
-      	case GTK_RESPONSE_ACCEPT:
+	if (result == GTK_RESPONSE_ACCEPT) {
 		do_file_selected();
-         	break;
-      	default:
-         	break;
-    	}
+	}
 	gtk_widget_hide(GTK_WIDGET (m_file_chooser));
 }
 
@@ -650,15 +623,16 @@ void gtk_gui::do_file_selected() {
 void
 gtk_gui::setDocument(const char* smilfilename) {
 #ifdef	GTK_NO_FILEDIALOG	/* Assume embedded GTK */
-	if (openSMILfile(smilfilename, 0, true))
+	if (openSMILfile(smilfilename, 0, true)) {
 		do_play();
+	}
 #endif/*GTK_NO_FILEDIALOG*/
 }
 
 
 void
 gtk_gui::do_settings_selected() {
-	const gchar *settings_filename  = gtk_file_chooser_get_filename (m_settings_chooser);
+	const gchar *settings_filename = gtk_file_chooser_get_filename (m_settings_chooser);
 	if ( settings_filename != NULL) {
 		smil2::test_attrs::load_test_attrs(settings_filename);
 		if (openSMILfile(m_smilfilename, 0, false))
@@ -679,27 +653,23 @@ gtk_gui::do_load_settings() {
 	gtk_file_chooser_add_filter(m_settings_chooser, filter_xml);
 
 	gint result = gtk_dialog_run (GTK_DIALOG (m_settings_chooser));
-  	switch (result){
-      	case GTK_RESPONSE_ACCEPT:
+	if (result == GTK_RESPONSE_ACCEPT) {
 		do_settings_selected();
-         	break;
-      	default:
-         	break;
-    	}
+	}
 	gtk_widget_hide(GTK_WIDGET (m_settings_chooser));
 
 	/* Ensure that the dialog box is hidden when the user clicks a button.
 	We don't need anymore the callbacks, because they can be embedded in this part of the code */
 /*
 	g_signal_connect_swapped (GTK_FILE_SELECTION (m_settings_selector)->ok_button,
-                             "clicked",
-                             G_CALLBACK (gtk_widget_hide),
-                             m_settings_selector);
+		"clicked",
+		G_CALLBACK (gtk_widget_hide),
+		m_settings_selector);
 
-   	g_signal_connect_swapped (GTK_FILE_SELECTION (m_settings_selector)->cancel_button,
-                             "clicked",
-                             G_CALLBACK (gtk_widget_hide),
-                             m_settings_selector);
+	g_signal_connect_swapped (GTK_FILE_SELECTION (m_settings_selector)->cancel_button,
+		"clicked",
+		G_CALLBACK (gtk_widget_hide),
+		m_settings_selector);
 	g_signal_connect_swapped (GTK_OBJECT ((m_settings_selector)->ok_button),"clicked", G_CALLBACK (gtk_C_callback_settings_selected),(void*) this);
 */
 }
@@ -707,11 +677,18 @@ gtk_gui::do_load_settings() {
 
 void
 gtk_gui::do_open_url() {
-	GtkDialog* url_dialog =  GTK_DIALOG (gtk_dialog_new_with_buttons
-	("AmbulantPlayer", NULL, GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL));
+	GtkDialog* url_dialog =	 GTK_DIALOG (gtk_dialog_new_with_buttons(
+		"AmbulantPlayer",
+		NULL,
+		GTK_DIALOG_DESTROY_WITH_PARENT,
+		GTK_STOCK_OK,
+		GTK_RESPONSE_ACCEPT,
+		GTK_STOCK_CANCEL,
+		GTK_RESPONSE_REJECT,
+		NULL));
 
 	GtkLabel* label = GTK_LABEL (gtk_label_new(gettext("URL to open:")));
-		gtk_misc_set_alignment (GTK_MISC (label), 0, 0);
+	gtk_misc_set_alignment (GTK_MISC (label), 0, 0);
 	gtk_widget_show(GTK_WIDGET (label));
 
 	m_url_text_entry = GTK_ENTRY (gtk_entry_new());
@@ -723,27 +700,23 @@ gtk_gui::do_open_url() {
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(url_dialog)->vbox), GTK_WIDGET (m_url_text_entry));
 
 	gint result = gtk_dialog_run (GTK_DIALOG (url_dialog));
-  	switch (result){
-      	case GTK_RESPONSE_ACCEPT:
+	if (result == GTK_RESPONSE_ACCEPT) {
 		do_url_selected();
-         	break;
-      	default:
-         	break;
-    	}
+	}
 	gtk_widget_destroy (GTK_WIDGET (url_dialog));
 /*
 	g_signal_connect_swapped (url_dialog,"response", G_CALLBACK (gtk_C_callback_url_selected), (void*) this);
 
 	g_signal_connect_swapped (url_dialog, "response",
-                             G_CALLBACK (gtk_widget_hide),
-                            GTK_WIDGET (url_dialog));
+		G_CALLBACK (gtk_widget_hide),
+		GTK_WIDGET (url_dialog));
 	gtk_widget_show_all(GTK_WIDGET (url_dialog));
 */
 }
 
 void gtk_gui::do_url_selected() {
-	/* Next string points to internally allocated storage in the widget
-	   and must not be freed, modified or stored.*/
+	// Next string points to internally allocated storage in the widget
+	// and must not be freed, modified or stored.
 	const gchar *smilfilename  = gtk_entry_get_text(m_url_text_entry);
 	gtk_window_set_title(GTK_WINDOW (m_toplevelcontainer), smilfilename);
 	if (openSMILfile(smilfilename, 0, true)) {
@@ -754,14 +727,13 @@ void gtk_gui::do_url_selected() {
 void
 gtk_gui::do_player_done() {
 	AM_DBG printf("%s-%s\n", m_programfilename, "do_player_done");
-    _update_menus();
+	_update_menus();
 }
 
 void
 gtk_gui::need_redraw (const void* r, void* w, const void* pt) {
 
-	AM_DBG printf("gtk_gui::need_redraw(0x%x)-r=(0x%x)\n",
-	(void *)this,r?r:0);
+	AM_DBG printf("gtk_gui::need_redraw(0x%x)-r=(0x%x)\n", (void *)this,r?r:0);
 	g_signal_emit(GTK_OBJECT (m_toplevelcontainer), signal_need_redraw_id, 0, r, w, pt);
 }
 
@@ -773,48 +745,47 @@ gtk_gui::player_done() {
 
 void
 no_fileopen_infodisplay(gtk_gui* w, const char* caption) {
-	GtkMessageDialog* dialog =
-	(GtkMessageDialog*) gtk_message_dialog_new (NULL,
-         GTK_DIALOG_DESTROY_WITH_PARENT,
-         GTK_MESSAGE_INFO,
-         GTK_BUTTONS_OK,
-	 caption);
+	GtkMessageDialog* dialog = (GtkMessageDialog*) gtk_message_dialog_new (NULL,
+		GTK_DIALOG_DESTROY_WITH_PARENT,
+		GTK_MESSAGE_INFO,
+		GTK_BUTTONS_OK,
+		caption);
 	gtk_message_dialog_format_secondary_markup (dialog, "No file open: Please first select File->Open");
- 	gtk_dialog_run (GTK_DIALOG (dialog));
- 	gtk_widget_destroy (GTK_WIDGET (dialog));
+	gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
 void
 gtk_gui::do_play() {
 	AM_DBG printf("%s-%s m_mainloop=0x%x\n", m_programfilename, "do_play", m_mainloop);
- 	assert(m_mainloop);
- 	m_mainloop->play();
- 	_update_menus();
+	assert(m_mainloop);
+	m_mainloop->play();
+	_update_menus();
 }
 
 void
 gtk_gui::do_pause() {
 	AM_DBG printf("%s-%s m_mainloop=0x%x\n", m_programfilename, "do_pause", m_mainloop);
- 	assert(m_mainloop);
- 	m_mainloop->pause();
- 	_update_menus();
+	assert(m_mainloop);
+	m_mainloop->pause();
+	_update_menus();
 }
 
 void
 gtk_gui::do_reload() {
 	AM_DBG printf("%s-%s m_mainloop=0x%x\n", m_programfilename, "do_reload", m_mainloop);
-     	assert(m_mainloop);
-     	m_mainloop->restart(true);
-     	_update_menus();
+	assert(m_mainloop);
+	m_mainloop->restart(true);
+	_update_menus();
 }
 
 void
 gtk_gui::do_stop() {
 	AM_DBG printf("%s-%s m_mainloop=0x%x\n", m_programfilename, "do_stop", m_mainloop);
- 	assert(m_mainloop);
+	assert(m_mainloop);
 	if(m_mainloop)
 		m_mainloop->stop();
- 	_update_menus();
+	_update_menus();
 }
 
 void
@@ -822,20 +793,16 @@ gtk_gui::do_settings_select() {
 
 	m_settings = new gtk_settings();
 	gint result = gtk_dialog_run (GTK_DIALOG (m_settings->getWidget()));
-  	switch (result){
-      	case GTK_RESPONSE_ACCEPT:
+	if (result == GTK_RESPONSE_ACCEPT) {
 		m_settings->settings_ok();
-	       	break;
-      	default:
-         	break;
-    	}
+	}
 	gtk_widget_destroy (GTK_WIDGET (m_settings->getWidget()));
 }
 
 void
 gtk_gui::do_quit() {
 	AM_DBG printf("%s-%s\n", m_programfilename, "do_quit");
-	if (m_mainloop)	{
+	if (m_mainloop) {
 		m_mainloop->stop();
 		delete m_mainloop;
 		m_mainloop = NULL;
@@ -850,33 +817,13 @@ gtk_gui::do_resize(GdkEventConfigure *event) {
 
 
 void
-gtk_gui::unsetCursor() { //XXXX Hack
-//	AM_DBG printf("%s-%s\n", m_programfilename, ":unsetCursor");
-/**
-	Qt::CursorShape cursor_shape = m_mainloop->get_cursor() ?
-		Qt::PointingHandCursor : Qt::ArrowCursor;
-	if (cursor_shape != m_cursor_shape) {
-		m_cursor_shape = cursor_shape;
-		setCursor(cursor_shape);
-	}
-#ifdef	QCURSOR_ON_ZAURUS
-	bool pointinghand_cursor = m_mainloop->get_cursor();
-	QCursor cursor_shape = pointinghand_cursor ?
-		pointingHandCursor : arrowCursor;
-	if (m_pointinghand_cursor != pointinghand_cursor) {
-		m_pointinghand_cursor = pointinghand_cursor;
-		setCursor(cursor_shape);
-	}
-#endif**//*QCURSOR_ON_ZAURUS*/
+gtk_gui::unsetCursor() {
 //	m_mainloop->set_cursor(0);
 }
 
 void
 gtk_gui::do_internal_message(gtk_message_event* e) {
 	char* msg = (char*)e->get_message();
-	//std::string id("gtk_gui::do_internal_message");
-	//std::cerr<<id<<std::endl;
-	//std::cerr<<id+" type: "<<e->get_type()<<" msg:"<<msg<<std::endl;
 	int level = e->get_type() - gtk_logger::CUSTOM_OFFSET;
 	static char* last_msg = NULL;
 	if (level >= ambulant::lib::logger::LEVEL_SHOW) {
@@ -884,9 +831,9 @@ gtk_gui::do_internal_message(gtk_message_event* e) {
 		if (last_msg != NULL && msg != NULL && strcmp(last_msg, msg) == 0) {
 			free (msg);
 			return;
-		} else if (msg == NULL)
+		} else if (msg == NULL) {
 			return;
-		else {
+		} else {
 			if (last_msg != NULL)
 				free (last_msg);
 			last_msg = strdup (msg);
@@ -909,12 +856,11 @@ gtk_gui::do_internal_message(gtk_message_event* e) {
 			abort();
 		}
 #endif /*LOCK_MESSAGE*/
-		/* mutex lcoking is required for calling gtk_text_buffer_insert_at_cursor()
-		 * Otherwiser GTK+ may crash with a cd $Ecryptic message suck as:
-		 * Gtk-WARNING **: Invalid text buffer iterator: either the iterator is
-		 * uninitialized, or the characters/pixbufs/widgets in the buffer have been
-		 * modified since the iterator was created.
-		 */
+		// mutex lcoking is required for calling gtk_text_buffer_insert_at_cursor()
+		// Otherwiser GTK+ may crash with a cd $Ecryptic message suck as:
+		// Gtk-WARNING **: Invalid text buffer iterator: either the iterator is
+		// uninitialized, or the characters/pixbufs/widgets in the buffer have been
+		// modified since the iterator was created.
 		gtk_text_buffer_insert_at_cursor(GTK_TEXT_BUFFER (gtk_logger::get_gtk_logger()->get_logger_buffer()), msg, strlen(msg));
 #ifdef	LOCK_MESSAGE
 		pthread_mutex_unlock(&m_lock_message);
@@ -922,36 +868,36 @@ gtk_gui::do_internal_message(gtk_message_event* e) {
 		break;
 	case ambulant::lib::logger::LEVEL_FATAL:
 		dialog = (GtkMessageDialog*) gtk_message_dialog_new (NULL,
-         	GTK_DIALOG_DESTROY_WITH_PARENT,
-         	GTK_MESSAGE_ERROR,
-         	GTK_BUTTONS_OK,
-	 	msg);
+			GTK_DIALOG_DESTROY_WITH_PARENT,
+			GTK_MESSAGE_ERROR,
+			GTK_BUTTONS_OK,
+			msg);
 		g_signal_connect_swapped (dialog, "response",
-								  G_CALLBACK (gtk_widget_destroy),
-								  dialog);
+			G_CALLBACK (gtk_widget_destroy),
+			dialog);
 		gtk_widget_show_all (GTK_WIDGET(dialog));
 		break;
 	case ambulant::lib::logger::LEVEL_ERROR:
 		dialog = (GtkMessageDialog*) gtk_message_dialog_new (NULL,
-         	GTK_DIALOG_DESTROY_WITH_PARENT,
-         	GTK_MESSAGE_WARNING,
-         	GTK_BUTTONS_OK,
-	 	msg);
+			GTK_DIALOG_DESTROY_WITH_PARENT,
+			GTK_MESSAGE_WARNING,
+			GTK_BUTTONS_OK,
+			msg);
 		g_signal_connect_swapped (dialog, "response",
-								  G_CALLBACK (gtk_widget_destroy),
-								  dialog);
+			G_CALLBACK (gtk_widget_destroy),
+			dialog);
 		gtk_widget_show_all (GTK_WIDGET(dialog));
 		break;
 	case ambulant::lib::logger::LEVEL_WARN:
 	default:
 		dialog = (GtkMessageDialog*) gtk_message_dialog_new (NULL,
-         	GTK_DIALOG_DESTROY_WITH_PARENT,
-         	GTK_MESSAGE_INFO,
-         	GTK_BUTTONS_OK,
-	 	msg);
+			GTK_DIALOG_DESTROY_WITH_PARENT,
+			GTK_MESSAGE_INFO,
+			GTK_BUTTONS_OK,
+			msg);
 		g_signal_connect_swapped (dialog, "response",
-								  G_CALLBACK (gtk_widget_destroy),
-								  dialog);
+			G_CALLBACK (gtk_widget_destroy),
+			dialog);
 		gtk_widget_show_all (GTK_WIDGET(dialog));
 		break;
 	}
@@ -975,8 +921,9 @@ gtk_gui::internal_message(int level, char* msg) {
 
 #ifdef	LOCK_MESSAGE
 	if (level >= ambulant::lib::logger::LEVEL_WARN
-	    && pthread_self() != m_gui_thread) {
-	  // wait until the message as been OK'd by the user
+		&& pthread_self() != m_gui_thread)
+	{
+		// wait until the message as been OK'd by the user
 		pthread_mutex_lock(&m_lock_message);
 		pthread_cond_wait(&m_cond_message, &m_lock_message);
 		pthread_mutex_unlock(&m_lock_message);
@@ -988,14 +935,14 @@ void
 gtk_gui::_update_menus()
 {
   AM_DBG if (m_mainloop) printf("gtk_gui::_update_menus(0x%x) play_enabled=%d play_active=%d pause_enabled=%d pause_active=%d stop_enabled=%d stop_active=%d \n", this, m_mainloop->is_play_enabled(), m_mainloop->is_play_active(), m_mainloop->is_pause_enabled(), m_mainloop->is_pause_active(), m_mainloop->is_stop_enabled(), m_mainloop->is_stop_active());
-    gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "play"),
-        m_mainloop && m_mainloop->is_play_enabled() && ! m_mainloop->is_play_active());
-    gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "pause"),
-        m_mainloop && m_mainloop->is_pause_enabled() && ! m_mainloop->is_pause_active());
-    gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "stop"),
-        m_mainloop && m_mainloop->is_stop_enabled() && ! m_mainloop->is_stop_active());
-    gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "reload"),
-        (m_mainloop != NULL));
+	gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "play"),
+		m_mainloop && m_mainloop->is_play_enabled() && ! m_mainloop->is_play_active());
+	gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "pause"),
+		m_mainloop && m_mainloop->is_pause_enabled() && ! m_mainloop->is_pause_active());
+	gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "stop"),
+		m_mainloop && m_mainloop->is_stop_enabled() && ! m_mainloop->is_stop_active());
+	gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "reload"),
+		(m_mainloop != NULL));
 }
 
 
@@ -1006,16 +953,16 @@ gtk_gui::_update_menus()
 
 gint
 dbus_callback (const gchar *interface, const gchar *method,
-               GArray *arguments, gpointer data,
-               osso_rpc_t *retval)
+	GArray *arguments, gpointer data,
+	osso_rpc_t *retval)
 {
-  printf ("AmbulantPlayer dbus: %s, %s\n", interface, method);
-
-  if (!strcmp (method, "top_application"))
-      gtk_window_present (GTK_WINDOW (data));
-
-  retval->type = DBUS_TYPE_INVALID;
-  return OSSO_OK;
+	printf ("AmbulantPlayer dbus: %s, %s\n", interface, method);
+		
+	if (!strcmp (method, "top_application"))
+		gtk_window_present (GTK_WINDOW (data));
+	
+	retval->type = DBUS_TYPE_INVALID;
+	return OSSO_OK;
 }
 #endif/*WITH_NOKIA770*/
 
@@ -1053,23 +1000,8 @@ main (int argc, char*argv[]) {
 //	g_thread_init(NULL);
 //	gdk_threads_init ();
 
-/* from http://www.gtk.org/tutorial1.2/gtk_tut-2.html
-   arguments parsed and removed by gtk_init(&argc,&argv):
-    * --gtk-module
-    * --g-fatal-warnings
-    * --gtk-debug
-    * --gtk-no-debug
-    * --gdk-debug
-    * --gdk-no-debug
-    * --display
-    * --sync
-    * --no-xshm
-    * --name
-    * --class
-    */
 	gtk_init(&argc,&argv);
 
-//#undef	ENABLE_NLS
 #ifdef	ENABLE_NLS
 	// Load localisation database
 	bool private_locale = false;
@@ -1100,13 +1032,6 @@ main (int argc, char*argv[]) {
 	g_set_application_name("AmbulantPlayer");
 	hildon_window = HILDON_WINDOW(hildon_window_new());
 	hildon_program_add_window(hildon_program, hildon_window);
-	/*XXX
-	gtk_container_add (GTK_CONTAINER(hildon_window),
-			   GTK_WIDGET(gtk_label_new("HildonAmbulantPlayer")));
-	gtk_widget_show_all(GTK_WIDGET(hildon_window));
-	g_signal_connect(G_OBJECT(hildon_window), "delete_event",
-			 G_CALLBACK(g_main_loop_quit), &mywidget->main_loop);
-	*/
 #endif/*WITH_HILDON*/
 
 	// take log level from preferences
@@ -1131,11 +1056,10 @@ main (int argc, char*argv[]) {
 		strcpy(last, &str[len-5]);
 		AM_DBG fprintf(DBG, "%s %s %x\n", str, last);
 		if (strcmp(last, ".smil") == 0
-		|| strcmp(&last[1], ".smi") == 0
-	  	|| strcmp(&last[1], ".sml") == 0) {
- 			if (mywidget->openSMILfile(argv[argc-1],
-						   0, true)
-			    && (exec_flag = true)){
+			|| strcmp(&last[1], ".smi") == 0
+			|| strcmp(&last[1], ".sml") == 0)
+		{
+			if (mywidget->openSMILfile(argv[argc-1], 0, true) && exec_flag) {
 				mywidget->do_play();
 			}
 		}
@@ -1143,9 +1067,7 @@ main (int argc, char*argv[]) {
 		preferences* prefs = preferences::get_preferences();
 		if ( ! prefs->m_welcome_seen) {
 			const char *welcome_doc = find_datafile(welcome_locations);
-			if (welcome_doc
-			&& mywidget->openSMILfile(welcome_doc,
-						  0, true)) {
+			if (welcome_doc && mywidget->openSMILfile(welcome_doc, 0, true)) {
 				mywidget->do_play();
 				prefs->m_welcome_seen = true;
 			}
@@ -1161,13 +1083,6 @@ main (int argc, char*argv[]) {
 	bool busy = true;
 
 	while (busy) {
-	  /*
-	 	gint pri;
-		bool res = g_main_context_prepare(context, &pri);
-		g_main_context_query();
-		g_main_context_check();
-		g_main_context_dispatch();
-	   */
 		g_main_context_iteration(context, false);
 	}
 #endif//TEST_G_MAIN_CONTEXT_ITERATION

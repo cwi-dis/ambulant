@@ -307,7 +307,7 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 	if (m_ambulant_player == NULL)
 		return false;
 	if (m_autostart)
-	  m_ambulant_player->start();
+		m_ambulant_player->start();
 #endif // WITH_CG
 
 #ifdef	XP_WIN32

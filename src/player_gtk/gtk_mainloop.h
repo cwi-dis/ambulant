@@ -63,8 +63,8 @@ class gtk_mainloop_callback_arg {
 class gtk_gui;
 
 class gtk_mainloop :
-    public common::gui_player,
-    public ambulant::common::embedder
+	public common::gui_player,
+	public ambulant::common::embedder
 {
   public:
 	gtk_mainloop(gtk_gui* parent);
@@ -75,7 +75,7 @@ class gtk_mainloop :
 	void init_datasource_factory();
 	void init_parser_factory();
 
-    	bool is_open() const { return m_player != NULL; }
+	bool is_open() const { return m_player != NULL; }
 
 	void show_file(const ambulant::net::url&);
 	void close(common::player *p);
@@ -85,13 +85,13 @@ class gtk_mainloop :
 	void player_start(gchar* document_name, bool start, bool old);
 	ambulant::common::gui_screen *get_gui_screen();
 //	char* convert_data_to_image(const guchar* m_data, gsize size);
- private:
- #if 0
+  private:
+#if 0
 	// from dx_player
 	// The frames stack
 	struct frame {
 		gtk_gui* windows;
-	  	ambulant::common::player* player;
+		ambulant::common::player* player;
 	};
 	std::stack<frame*> m_frames;
 #endif
@@ -100,7 +100,7 @@ class gtk_mainloop :
 
 	gtk_gui *m_gui;
 	lib::logger *m_logger;
- 	bool m_running;
+	bool m_running;
 	ambulant::gui::gtk::gtk_ambulant_widget *m_gtk_widget;
 };
 #endif/*__GTK_MAINLOOP_H__*/

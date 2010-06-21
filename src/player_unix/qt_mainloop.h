@@ -58,20 +58,20 @@ void open_web_browser(const std::string &href);
 class qt_gui;
 
 class qt_mainloop :
-    public common::gui_player,
-    public ambulant::common::embedder
-//    public ambulant::lib::ref_counted
+	public common::gui_player,
+	public ambulant::common::embedder
+//	public ambulant::lib::ref_counted
 {
   //  static bool m_done;
   public:
-    qt_mainloop(qt_gui* parent, int mbheight);
+	qt_mainloop(qt_gui* parent, int mbheight);
 	~qt_mainloop();
 
 	void init_playable_factory();
 	void init_datasource_factory();
 	void init_parser_factory();
 
-    bool is_open() const { return m_player != NULL; }
+	bool is_open() const { return m_player != NULL; }
 
 	void show_file(const ambulant::net::url&);
 	void close(common::player *p);
@@ -80,13 +80,13 @@ class qt_mainloop :
 	bool player_done();
 	void player_start(QString document_name, bool start, bool old);
 
- private:
- #if 0
+  private:
+#if 0
 	// from dx_player
 	// The frames stack
 	struct frame {
 		qt_gui* windows;
-	  	ambulant::common::player* player;
+		ambulant::common::player* player;
 	};
 	std::stack<frame*> m_frames;
 #endif

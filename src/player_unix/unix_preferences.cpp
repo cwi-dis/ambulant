@@ -177,7 +177,7 @@ unix_preferences::load_preferences_from_environment() {
 	AM_DBG logger::get_logger()->debug("%s()", id.c_str());
 	bool rv = true;
 	for (preference_iterator pritr = s_preference_table->begin();
-	    pritr != s_preference_table->end(); pritr++)
+		pritr != s_preference_table->end(); pritr++)
 	{
 		preference_entry* pe = *pritr;
 		char* v = getenv(pe->pref_name.c_str());
@@ -211,11 +211,7 @@ unix_preferences::load_preferences_from_file() {
 		char* name; char* value;
 		get_preference(s, &name, &value);
 		if (name == NULL) {
-			logger::get_logger()->trace("%s(%s): %s %d - %s",
-						    id.c_str(),
-						    m_preferences_filename.c_str(),
-						    "line", lineno,
-						    "malformed");
+			logger::get_logger()->trace("%s(%s): %s %d - %s", id.c_str(), m_preferences_filename.c_str(), "line", lineno, "malformed");
 			logger::get_logger()->error(gettext("Invalid preference file format"));
 			return false;
 		}
@@ -248,16 +244,13 @@ unix_preferences::save_preferences() {
 		preference_entry* pe = *pritr;
 		switch(pe->pref_type) {
 		case BOOL:
-			OS(pe->pref_name.c_str(),
-			    *(bool*)pe->pref_store == false ?
-			    "false" : "true");
+			OS(pe->pref_name.c_str(), *(bool*)pe->pref_store == false ? "false" : "true");
 			break;
 		case INT:
 			OI(pe->pref_name.c_str(), *(int*)pe->pref_store);
 			break;
 		case STRING:
-			OS(pe->pref_name.c_str(),
-			   ((std::string*)pe->pref_store)->c_str());
+			OS(pe->pref_name.c_str(), ((std::string*)pe->pref_store)->c_str());
 			break;
 		default:
 			break;
@@ -275,37 +268,27 @@ unix_preferences::open_preferences_file(std::string mode) {
 		if (home_dir != NULL) {
 			m_home = std::string(home_dir);
 			m_ambulant_home = m_home+"/"+m_ambulant_home;
-			m_preferences_filename =
-			  m_ambulant_home+"/"+m_preferences_filename;
+			m_preferences_filename = m_ambulant_home+"/"+m_preferences_filename;
 		} else {
 			logger::get_logger()->error(gettext("HOME environment variable not set"));
 			return NULL;
 		}
 	}
-	AM_DBG logger::get_logger()->debug("%s(%s,%s)",
-					   id.c_str(),
-					   m_preferences_filename.c_str(),
-					   mode.c_str());
+	AM_DBG logger::get_logger()->debug("%s(%s,%s)", id.c_str(), m_preferences_filename.c_str(), mode.c_str());
 	FILE* preferences_filep = fopen(m_preferences_filename.c_str(),
 					mode.c_str());
 	if (preferences_filep == NULL) {
 		struct stat statbuf;
 		// create directory "$HOME/.ambulant" unless it exists
 		if (stat(m_ambulant_home.c_str(), &statbuf) < 0
-		    && mkdir(m_ambulant_home.c_str(), 0755) < 0) {
-		  	logger::get_logger()->error(gettext("mkdir(\"%s\") failed: %s"),
-				 m_ambulant_home.c_str(),
-				 strerror(errno));
+			&& mkdir(m_ambulant_home.c_str(), 0755) < 0)
+		{
+			logger::get_logger()->error(gettext("mkdir(\"%s\") failed: %s"), m_ambulant_home.c_str(), strerror(errno));
 			return NULL;
 		}
-		preferences_filep = fopen(m_preferences_filename.c_str(),
-					  mode.c_str());
+		preferences_filep = fopen(m_preferences_filename.c_str(), mode.c_str());
 		if (preferences_filep == NULL) {
-			AM_DBG logger::get_logger()->debug
-				("fopen(\"%s\",\"%s\") failed: %s",
-				 m_preferences_filename.c_str(),
-				 mode.c_str(),
-				 strerror(errno));
+			AM_DBG logger::get_logger()->debug("fopen(\"%s\",\"%s\") failed: %s", m_preferences_filename.c_str(), mode.c_str(), strerror(errno));
 			return NULL;
 		}
 	}
@@ -324,5 +307,5 @@ unix_preferences::get_preference(char* buf, char**namep, char** valuep) {
 		*valuep = s;
 	}
 	while (strlen(s) && isspace(s[strlen(s)-1]))
-	        s[strlen(s)-1] = '\0';
+		s[strlen(s)-1] = '\0';
 }

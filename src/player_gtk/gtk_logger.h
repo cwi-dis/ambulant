@@ -85,11 +85,11 @@ class gtk_logger_ostream : public ambulant::lib::ostream {
 
 //: public GtkEvent
 class gtk_message_event{
- public:
+  public:
 	gtk_message_event(int type, gchar* message);
 	int get_type();
 	gchar* get_message();
- private:
+  private:
 	int type;
 	gchar *message;
 };

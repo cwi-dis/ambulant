@@ -10,7 +10,7 @@
 //
 // Ambulant Player is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
@@ -91,8 +91,8 @@ qt_mainloop::qt_mainloop(qt_gui* gui, int mbheight)
 {
 	m_logger = lib::logger::get_logger();
 	set_embedder(this);
-    smil2::test_attrs::set_default_tests_attrs();
-    smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("Standalone"), true);
+	smil2::test_attrs::set_default_tests_attrs();
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("Standalone"), true);
 	common::window_factory *wf = create_qt_window_factory(m_gui, mbheight, this);
 	assert(wf);
 	set_window_factory(wf);
@@ -110,8 +110,8 @@ qt_mainloop::qt_mainloop(qt_gui* gui, int mbheight)
 
 qt_mainloop::~qt_mainloop() {
 	if (m_player) {
-	    m_player->terminate();
-	    m_player->release();
+		m_player->terminate();
+		m_player->release();
 		m_player = NULL;
 	}
 	if (m_doc) {
@@ -146,7 +146,7 @@ qt_mainloop::init_playable_factory() {
 	pf->add_factory(create_qt_video_playable_factory(this, NULL));
 
 #ifdef WITH_SDL
-    AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add factory for SDL");
+	AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add factory for SDL");
 	pf->add_factory(gui::sdl::create_sdl_playable_factory(this));
 #endif // WITH_SDL
 }
@@ -162,15 +162,15 @@ qt_mainloop::init_datasource_factory() {
 	df->add_audio_factory(net::create_live_audio_datasource_factory());
 #endif
 #ifdef WITH_FFMPEG
-    AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_video_datasource_factory");
+	AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_video_datasource_factory");
 	df->add_video_factory(net::get_ffmpeg_video_datasource_factory());
-    AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_audio_datasource_factory");
+	AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_audio_datasource_factory");
 	df->add_audio_factory(net::get_ffmpeg_audio_datasource_factory());
-    AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_audio_decoder_finder");
+	AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_audio_decoder_finder");
 	df->add_audio_decoder_finder(net::get_ffmpeg_audio_decoder_finder());
-    AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_audio_filter_finder");
+	AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_audio_filter_finder");
 	df->add_audio_filter_finder(net::get_ffmpeg_audio_filter_finder());
-    AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_raw_datasource_factory");
+	AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add ffmpeg_raw_datasource_factory");
 	df->add_raw_factory(net::get_ffmpeg_raw_datasource_factory());
 #endif // WITH_FFMPEG
 #endif // NONE_PLAYER
@@ -179,10 +179,10 @@ qt_mainloop::init_datasource_factory() {
 	// should always perform better, and is always available on OSX.
 	// If you define WITH_STDIO_DATASOURCE we prefer to use the stdio datasource,
 	// however.
-    AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add stdio_datasource_factory");
+	AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add stdio_datasource_factory");
 	df->add_raw_factory(net::create_stdio_datasource_factory());
 #endif
-    AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add posix_datasource_factory");
+	AM_DBG lib::logger::get_logger()->debug("qt_mainloop: add posix_datasource_factory");
 	df->add_raw_factory(net::create_posix_datasource_factory());
 }
 
@@ -247,8 +247,8 @@ qt_mainloop::open(net::url newdoc, bool start, common::player *old) {
 	}
 	// send msg to gui thread
 	std::string msg("");
-	msg += start ? "S-" : "  ";
-	msg += old   ? "O-" : "  ";
+	msg += start ? "S-" : "	 ";
+	msg += old	 ? "O-" : "	 ";
 	msg += newdoc.get_url();
 	m_gui->internal_message(qt_logger::CUSTOM_NEW_DOCUMENT,
 				strdup(msg.c_str()));
@@ -279,8 +279,7 @@ qt_mainloop::player_start(QString document_name, bool start, bool old) {
 #endif
 
 	// Create a player instance
-	AM_DBG m_logger->debug("Creating player instance for: %s",
-			       document_name.ascii());
+	AM_DBG m_logger->debug("Creating player instance for: %s", document_name.ascii());
 	m_player = create_player(document_name);
 	if(start) {
 		m_player->start();

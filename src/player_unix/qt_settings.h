@@ -11,7 +11,7 @@
  *
  * Ambulant Player is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -44,50 +44,50 @@
 
 class qt_settings
 {
- public:
+  public:
 	void settings_finish();
 	void settings_ok();
 	QWidget* settings_select();
 
- private:
+  private:
 	// settings
-	QVGroupBox*	m_settings_vg;
+	QVGroupBox* m_settings_vg;
 	// Log level:
-	QHBox*		m_loglevel_hb;
-	QLabel*		m_loglevel_lb;
-	QComboBox*	m_loglevel_co;
+	QHBox* m_loglevel_hb;
+	QLabel* m_loglevel_lb;
+	QComboBox* m_loglevel_co;
 
 	// XML parser:
-	QHBox*		m_parser_hb;
-	QLabel*		m_parser_lb;
-	QComboBox*	m_parser_co;
+	QHBox* m_parser_hb;
+	QLabel* m_parser_lb;
+	QComboBox* m_parser_co;
 
 	// xerces options:
-	QVGroupBox*	m_xerces_vg;
-	QCheckBox*	m_namespace_cb;	// Enable XML namespace support
-	bool		m_namespace_val;
- 	QHBox*		m_validation_hb;// Enable XML validation:
- 	QLabel*		m_validation_lb;// Enable XML validation:
- 	QComboBox*	m_validation_co;// Enable XML validation:
-	//QCheckBox*	m_validation_cb;
-	//bool		m_validation_val;
-	QVBox*		m_validation_vb;
-	QHButtonGroup*	m_declaration_bg;
-	QRadioButton* 	m_schema_rb;	// Using Schema
-	bool		m_schema_val;
-	QRadioButton*	m_dtd_rb;	// Using DTD
-	bool		m_dtd_val;
-	QCheckBox*	m_full_check_cb;// Validation Schema full checking
-	bool		m_full_check_val;
-	QHBox*		m_finish_hb;
-	QPushButton*	m_ok_pb;	// OK
-	QPushButton*	m_cancel_pb;	// Cancel
+	QVGroupBox* m_xerces_vg;
+	QCheckBox* m_namespace_cb;	// Enable XML namespace support
+	bool m_namespace_val;
+	QHBox* m_validation_hb;// Enable XML validation:
+	QLabel* m_validation_lb;// Enable XML validation:
+	QComboBox* m_validation_co;// Enable XML validation:
+	//QCheckBox* m_validation_cb;
+	//bool m_validation_val;
+	QVBox* m_validation_vb;
+	QHButtonGroup* m_declaration_bg;
+	QRadioButton* m_schema_rb;	// Using Schema
+	bool m_schema_val;
+	QRadioButton* m_dtd_rb; // Using DTD
+	bool m_dtd_val;
+	QCheckBox* m_full_check_cb;// Validation Schema full checking
+	bool m_full_check_val;
+	QHBox* m_finish_hb;
+	QPushButton* m_ok_pb;	// OK
+	QPushButton* m_cancel_pb;	// Cancel
 
 	// plugin options
 	QVGroupBox* m_plugin_vg;
-	QCheckBox*  m_use_plugin_cb;
-	QLineEdit*	m_plugin_dir_le;
-	QLabel*		m_plugin_dir_lb;
+	QCheckBox* m_use_plugin_cb;
+	QLineEdit* m_plugin_dir_le;
+	QLabel* m_plugin_dir_lb;
 
 	int index_in_string_array(const char* s, const char* sa[]);
 };
