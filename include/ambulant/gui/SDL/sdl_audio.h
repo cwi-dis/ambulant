@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __SDL_AUDIO__
-#define __SDL_AUDIO__
+#ifndef AMBULANT_GUI_SDL_SDL_AUDIO_H
+#define AMBULANT_GUI_SDL_SDL_AUDIO_H
 
 #ifdef AMBULANT_PLATFORM_WIN32
 // Try to hide duplicate definitions (sdl and ffmpeg) of standard
@@ -150,4 +150,4 @@ class sdl_audio_renderer : public common::renderer_playable {
 } // end namespace ambulant
 
 
-#endif
+#endif // AMBULANT_GUI_SDL_SDL_AUDIO_H

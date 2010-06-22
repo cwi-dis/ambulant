@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef QT_VIDEO_RENDERER
-#define QT_VIDEO_RENDERER
+#ifndef AMBULANT_GUI_QT_VIDEO_RENDERER_H
+#define AMBULANT_GUI_QT_VIDEO_RENDERER_H
 
 #include "ambulant/config/config.h"
 #include "ambulant/common/video_renderer.h"
@@ -70,4 +70,4 @@ class qt_video_renderer : public qt_renderer<common::video_renderer> {
 
 
 
-#endif /* QT_VIDEO_RENDERER */
+#endif // AMBULANT_GUI_QT_VIDEO_RENDERER_H

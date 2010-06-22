@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __GSTREAMER_PLAYER_h
-#define __GSTREAMER_PLAYER_h
+#ifndef AMBULANT_GUI_GSTREAMER_GSTREAMER_PLAYER_H
+#define AMBULANT_GUI_GSTREAMER_GSTREAMER_PLAYER_H
 
 #include <iostream>
 #include <gst/gst.h>
@@ -98,4 +98,4 @@ class gstreamer_player :  public lib::unix::thread {
 } // end namespace gui
 } // end namespace ambulant
 
-#endif // __GSTREAMER_PLAYER_h
+#endif // AMBULANT_GUI_GSTREAMER_GSTREAMER_PLAYER_H

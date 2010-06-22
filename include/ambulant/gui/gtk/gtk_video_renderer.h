@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef gtk_VIDEO_RENDERER
-#define gtk_VIDEO_RENDERER
+#ifndef AMBULANT_GUI_GTK_VIDEO_RENDERER_H
+#define AMBULANT_GUI_GTK_VIDEO_RENDERER_H
 
 #include "ambulant/config/config.h"
 #include "ambulant/common/video_renderer.h"
@@ -71,4 +71,4 @@ private:
 
 
 
-#endif /* GTK_VIDEO_RENDERER */
+#endif // AMBULANT_GUI_GTK_VIDEO_RENDERER_H

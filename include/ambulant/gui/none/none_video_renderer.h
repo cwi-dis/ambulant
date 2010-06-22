@@ -20,8 +20,8 @@
  */
 
 
-#ifndef NONE_VIDEO_RENDERER
-#define NONE_VIDEO_RENDERER
+#ifndef AMBULANT_GUI_NONE_VIDEO_RENDERER_H
+#define AMBULANT_GUI_NONE_VIDEO_RENDERER_H
 
 #include "ambulant/common/video_renderer.h"
 
@@ -57,4 +57,4 @@ class none_video_renderer : public common::video_renderer {
 }
 }
 }
-#endif /* NONE_VIDEO_RENDERER */
+#endif // AMBULANT_GUI_NONE_VIDEO_RENDERER_H
