@@ -268,8 +268,9 @@ primary_Blt(IDirectDrawSurface* primary_surface, LPRECT lpDestRect,
 	HRESULT hr = DD_OK;
 	int retries = MAX_RETRIES;
 	while (retries--) {
-#if 1
-		// Attempted workaround by Jack for the problem that, under
+#define CONSTRAIN_CROP_TO_SCREEN
+#ifdef CONSTRAIN_CROP_TO_SCREEN
+		// Workaround by Jack for the problem that, under
 		// Parallels and other virtual machines, and possibly also sometimes
 		// on a real machine, content is drawn at the topleft of the scree
 		// in stead of where it should be drawn. And this is despite the
@@ -293,7 +294,7 @@ primary_Blt(IDirectDrawSurface* primary_surface, LPRECT lpDestRect,
 		}
 		if (lpDestRect->left >= lpDestRect->right) return;
 		if (lpDestRect->top >= lpDestRect->bottom) return;
-#endif
+#endif // CONSTRAIN_CROP_TO_SCREEN
 
 		hr = primary_surface->Blt(lpDestRect, lpDDSrcSurface, lpSrcRect, dwFlags, lpDDBltFX);
 		if (hr == DDERR_NOTFOUND) return; // XXXJACK
@@ -326,26 +327,9 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 
 	viewport_logger = lib::logger::get_logger();
 
-#if 0 // VS8
-	IDirectDrawFactory *pDDF = NULL;
-	HRESULT hr = CoCreateInstance(
-		CLSID_DirectDrawFactory,
-		NULL,
-		CLSCTX_INPROC_SERVER,
-		IID_IDirectDrawFactory,
-		(void **)&pDDF);
-	if (FAILED(hr)){
-		seterror("CoCreateInstance(CLSID_DirectDrawFactory, ...)", hr);
-		return;
-	}
-	IDirectDraw	 *pDD1=NULL;
-	hr = pDDF->CreateDirectDraw(NULL, m_hwnd, DDSCL_NORMAL , 0, NULL, &pDD1);
-	pDDF->Release();
-#else
 	HRESULT hr;
 	IDirectDraw	 *pDD1=NULL;
 	hr = DirectDrawCreate(NULL, &pDD1, NULL);
-#endif
 
 	if (FAILED(hr)){
 		seterror("CreateDirectDraw()", hr);
@@ -376,11 +360,8 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 	sd.dwSize = sizeof(DDSURFACEDESC);
 	sd.dwFlags = DDSD_CAPS;
 	sd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
-#if 1
-	// Attempt by Jack
 	sd.dwWidth = m_width;
 	sd.dwHeight = m_height;
-#endif
 	hr = m_direct_draw->CreateSurface(&sd, &m_primary_surface, NULL);
 	if (FAILED(hr)) {
 		seterror("DirectDraw::CreateSurface()", hr);

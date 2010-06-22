@@ -51,7 +51,6 @@ class AMBULANTAPI base_critical_section_cv {
 	virtual ~base_critical_section_cv() {};
 
 	virtual void signal() = 0;
-//	virtual void signal_all() = 0;
 	virtual bool wait(int microseconds = -1) = 0;
 };
 

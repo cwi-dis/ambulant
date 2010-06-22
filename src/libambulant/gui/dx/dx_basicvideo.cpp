@@ -198,71 +198,7 @@ bool gui::dx::dx_basicvideo_renderer::user_event(const lib::point& pt, int what)
 }
 
 void gui::dx::dx_basicvideo_renderer::redraw(const lib::rect &dirty, common::gui_window *window) {
-#if 0
-	// XXXJACK This stuff not yet implemented for basicvideo
-	if(!m_player || !m_player->can_play() || !m_update_event) {
-		// No bits available
-		return;
-	}
 
-	// Get the top-level surface
-	dx_window *dxwindow = static_cast<dx_window*>(window);
-	viewport *v = dxwindow->get_viewport();
-	if(!v) return;
-
-	// Update our bits.
-	if(!m_player->update()) {
-		// next time please...
-		return;
-	}
-
-	// Get fit rectangles
-	lib::rect vid_rect1;
-	lib::rect vid_reg_rc = m_dest->get_fit_rect(m_player->get_size(), &vid_rect1, m_alignment);
-
-	// Use one type of rect to do op
-	lib::rect vid_rect(vid_rect1);
-
-	// A complete repaint would be:
-	// vid_rect -> vid_reg_rc
-
-	// We have to paint only the intersection.
-	// Otherwise we will override upper layers
-	lib::rect vid_reg_rc_dirty = vid_reg_rc & dirty;
-	if(vid_reg_rc_dirty.empty()) {
-		// this renderer has no pixels for the dirty rect
-		return;
-	}
-
-	// Find the part of the image that is mapped to img_reg_rc_dirty
-	lib::rect vid_rect_dirty = reverse_transform(&vid_reg_rc_dirty,
-		&vid_rect, &vid_reg_rc);
-
-
-	// Translate vid_reg_rc_dirty to viewport coordinates
-	lib::point pt = m_dest->get_global_topleft();
-	vid_reg_rc_dirty.translate(pt);
-
-	// keep debug message area
-	m_msg_rect |= vid_reg_rc_dirty;
-
-	dx_transition *tr = get_transition();
-	if (tr && tr->is_fullscreen()) {
-		v->set_fullscreen_transition(tr);
-		tr = NULL;
-	}
-
-	// Finally blit img_rect_dirty to img_reg_rc_dirty
-	//AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::redraw %0x %s", m_dest, m_node->get_url("src").c_str());
-	v->draw(m_player->get_ddsurf(), vid_rect_dirty, vid_reg_rc_dirty, false, tr);
-
-	AM_DBG	{
-		std::string s = m_node->get_path_display_desc();
-		lib::textptr tp(s.c_str());
-		std::basic_string<text_char> msg = (text_char*) tp;
-		v->draw(msg, vid_reg_rc_dirty, lib::to_color("orange"));
-	}
-#endif
 }
 
 void gui::dx::dx_basicvideo_renderer::update_callback() {
@@ -274,16 +210,7 @@ void gui::dx::dx_basicvideo_renderer::update_callback() {
 	}
 	m_dest->need_redraw();
 	bool need_callback = m_player->is_playing();
-#if 0
-	if (need_callback && m_clip_end > 0) {
-		// Also check that we haven't gone past clipEnd yet
-		double mediatime = m_player->get_position();
-		if (mediatime > (m_clip_end / 1000000.0)) {
-			m_player->stop();
-			need_callback = false;
-		}
-	}
-#endif
+
 	m_cs.leave();
 
 	if( need_callback ) {

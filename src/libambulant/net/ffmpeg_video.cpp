@@ -556,13 +556,8 @@ ffmpeg_video_decoder_datasource::data_avail()
 
 	if(sz == 0 && !m_src->end_of_file() ) {
 		lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: no data, not eof?");
-#if 1
 		// Attempt at bug fix for hanging video
 		goto out_of_memory;
-#else
-		m_lock.leave();
-		return;
-#endif
 	}
 
 	// No easy error conditions, so let's allocate our frame.
@@ -594,11 +589,9 @@ ffmpeg_video_decoder_datasource::data_avail()
 			}
 			len = avcodec_decode_video(m_con, frame, &got_pic, ptr, sz);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: avcodec_decode_video: used %d of %d bytes, gotpic = %d, ipts = %lld", len, sz, got_pic, ipts);
-#if 1
 			// It seems avcodec_decode_video sometimes returns 0 if skip_frame is used. Sigh.
 			if (len == 0 && !got_pic)
 				len = sz;
-#endif
 			m_con->skip_frame = AVDISCARD_DEFAULT;
 			if (len < 0) {
 				lib::logger::get_logger()->trace(gettext("error decoding video frame (timestamp=%lld)"), ipts);
@@ -878,23 +871,6 @@ ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timesta
 	timestamp_t frame_duration = frameduration();
 	assert (frame_duration > 0);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame:  timestamp=%lld, now=%lld, frameduration = %lld",m_frames.front().first, now, frame_duration);
-
-
-#if 0
-	// XXX Jack thinks it may be better not to do any framedropping here, and in stead do it only in the
-	// renderer (where we can gather statistics)
-	int curdropcount = 0;
-	while ( m_frames.size() > 1 && m_frames.top().first < now - (2*frame_duration)) { //HACK:Due to jitter, the previous condition of dropping frames older than one frameduration was too strict!
-		//A better method to tolerate jitter required ??? This hack may still fail for high fps videos
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: discarding first frame timestamp=%lld, now=%lld, data ptr = 0x%x", m_frames.top().first,now, m_frames.top().second);
-		_pop_top_frame();
-		curdropcount++;
-	}
-	if (curdropcount) {
-		m_dropped_count += curdropcount;
-		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: discarded %d old frames at %lld", curdropcount,  now);
-	}
-#endif
 
 	AM_DBG if (m_frames.size()) lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::get_frame: next timestamp=%lld, now=%lld", m_frames.front().first, now);
 	// The next assert assures that we have indeed removed all old frames (and, therefore, either there

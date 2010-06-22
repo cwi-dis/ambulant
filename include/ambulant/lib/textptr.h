@@ -61,16 +61,16 @@ class textptr {
 	typedef const char* const_char_ptr;
 
 	textptr(const char *pb)
-	:	m_pcb(pb), m_pcw(NULL), m_pb(NULL), m_pw(NULL), m_length(-1) {}
+	:	m_pcb(pb), m_pcw(NULL), m_pb(NULL), m_pw(NULL) {}
 
 	textptr(const char *pb, size_t length)
-	:	m_pcb(pb), m_pcw(NULL), m_pb(NULL), m_pw(NULL), m_length(length) {}
+	:	m_pcb(pb), m_pcw(NULL), m_pb(NULL), m_pw(NULL) {}
 
 	textptr(const wchar_t *pw)
-	:	m_pcb(NULL), m_pcw(pw), m_pb(NULL), m_pw(NULL), m_length(-1) {}
+	:	m_pcb(NULL), m_pcw(pw), m_pb(NULL), m_pw(NULL) {}
 
 	textptr(const wchar_t *pw, size_t length)
-	:	m_pcb(NULL), m_pcw(pw), m_pb(NULL), m_pw(NULL), m_length(length) {}
+	:	m_pcb(NULL), m_pcw(pw), m_pb(NULL), m_pw(NULL) {}
 
 	~textptr() {
 		if(m_pw != NULL) delete[] m_pw;
@@ -81,8 +81,7 @@ class textptr {
 		if(m_pcw != NULL) return const_cast<wchar_ptr>(m_pcw);
 		if(m_pw != NULL) return m_pw;
 		if(m_pcb == NULL) return NULL;
-		if (m_length < 0) m_length = strlen(m_pcb);
-		int n = (int)m_length + 1;
+		size_t n = strlen(m_pcb) + 1;
 		m_pw = new wchar_t[n];
 #ifdef AMBULANT_PLATFORM_WIN32
 		MultiByteToWideChar(CP_UTF8, 0, m_pcb, -1, m_pw, n);
@@ -97,8 +96,7 @@ class textptr {
 		if(m_pcb != NULL) return const_cast<char_ptr>(m_pcb);
 		if(m_pb != NULL) return m_pb;
 		if(m_pcw == NULL) return NULL;
-		if (m_length < 0) m_length = wcslen(m_pcw);
-		ptrdiff_t n = m_length*2+1; // Two times wide string size should be enough for mb
+		ptrdiff_t n = wcslen(m_pcw)*2+1; // Two times wide string size should be enough for mb
 		m_pb = new char[n];
 #ifdef AMBULANT_PLATFORM_WIN32
 		WideCharToMultiByte(CP_UTF8, 0, m_pcw, -1, m_pb, static_cast<int>(n), NULL, NULL);
@@ -115,28 +113,12 @@ class textptr {
 
 	operator char_ptr() { return str();}
 	operator const_char_ptr() { return c_str();}
-#if 0
-	// length() is wrong: cannot tell, because wide and multibyte lengths are
-	// different.
-	// XXXJACK m_length can go altogether.
-	size_t length() {
-		if(m_length>=0) return m_length;
-		const_char_ptr pb = (m_pcb!=NULL)?m_pcb:m_pb;
-		if(pb != NULL)
-			return (m_length = strlen(pb));
-		const_wchar_ptr pw = (m_pcw!=NULL)?m_pcw:m_pw;
-		if(pw != NULL)
-			return (m_length = wcslen(pw));
-		return (m_length = 0);
-	}
-#endif
 
   private:
 	const_char_ptr m_pcb;
 	const_wchar_ptr m_pcw;
 	char_ptr m_pb;
 	wchar_ptr m_pw;
-	ptrdiff_t m_length;
 };
 
 

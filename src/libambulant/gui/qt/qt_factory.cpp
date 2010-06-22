@@ -508,11 +508,7 @@ void
 qt_ambulant_widget::mouseMoveEvent(QMouseEvent* e) {
 	AM_DBG lib::logger::get_logger()->debug("qt_ambulant_widget::mouseMoveEvent:(%d,%d)\n", e->x(),e->y());
 	ambulant::lib::point ap = ambulant::lib::point(e->x(), e->y());
-#if 1
-	// XXX This code was temporarily disabled, because with the current
-	// structure there is no easy way to get at the gui_player, which
-	// is needed to tell the scheduler we're about to start telling it
-	// about pointed() nodes.
+
 	gui_player* pl = get_gui_player();
 	if (pl)
 		pl->before_mousemove(0);
@@ -530,8 +526,6 @@ qt_ambulant_widget::mouseMoveEvent(QMouseEvent* e) {
 	}
 	AM_DBG lib::logger::get_logger()->debug("qt_ambulant_widget::mouseMoveEvent(0x%x): cursid=%d)",cursid);
 	setCursor(cursor);
-#endif
-
 }
 
 void

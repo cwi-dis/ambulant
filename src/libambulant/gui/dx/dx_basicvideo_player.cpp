@@ -143,22 +143,6 @@ bool gui::dx::basicvideo_player::is_playing() {
 	return evCode == 0;
 }
 
-#if 0
-double gui::dx::basicvideo_player::get_position() {
-	if(m_media_position == 0) {
-		logger::get_logger()->debug("Invalid call to basicvideo_player::get_current_position");
-		return 0.0;
-	}
-	REFTIME pos = 0.0;
-	HRESULT hr = m_media_position->get_CurrentPosition(&pos);
-	if(FAILED(hr)) {
-		win_report_error("IMediaPosition::get_CurrentPosition()", hr);
-		return 0.0;
-	}
-	return pos;
-}
-#endif
-
 //////////////////////////
 
 bool gui::dx::basicvideo_player::open(const std::string& url, HWND parent) {

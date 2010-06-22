@@ -239,21 +239,6 @@ smiltext_engine::_update() {
 				_split_into_words(data, run.m_xml_space);
 				continue;
 			}
-#if 0 // XXXJACK
-			// Whitespace handling for the non
-			size_t first_nonblank = data.find_first_not_of(" \t\r\n\f\v");
-			size_t last_nonblank = data.find_last_not_of(" \t\r\n\f\v");
-			bool space_at_end = last_nonblank < data.size()-1;
-			if (run.m_xml_space != stx_preserve
-				&& first_nonblank != std::string::npos
-				&& last_nonblank != std::string::npos) {
-				run.m_data = data.substr(first_nonblank, last_nonblank-first_nonblank+1);
-				if (space_at_end) run.m_data += ' ';
-			} else run.m_data = data;
-			if (run.m_data != "") {
-				_insert_run_at_end(run);
-			}
-#endif
 			if (run.m_xml_space == stx_preserve) {
 				run.m_command = stc_data;
 				run.m_data = data;

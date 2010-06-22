@@ -170,15 +170,6 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	// I.e. [m_image size] can lie about the size. We have to adjust our coordinates too.
 	lib::rect croprect = m_dest->get_crop_rect(m_size);
 	AM_DBG logger::get_logger()->debug("cg_image::redraw, clip 0x%x (%d %d) -> (%d, %d, %d, %d)", m_dest, m_size.w, m_size.h, croprect.x, croprect.y, croprect.w, croprect.h);
-#if 0
-	double x_factor = m_size.w == 0 ? 1 : (double)srcsize.w / (double)m_size.w;
-	double y_factor = m_size.h == 0 ? 1 : (double)srcsize.h / (double)m_size.h;
-	croprect.x = (int)(x_factor * croprect.x + 0.5);
-	croprect.w = (int)(x_factor * croprect.w + 0.5);
-	croprect.y = (int)(y_factor * croprect.y + 0.5);
-	croprect.h = (int)(y_factor * croprect.h + 0.5);
-	AM_DBG logger::get_logger()->debug("factors %f %f, croprect (%d, %d, %d, %d)", x_factor, y_factor, croprect.x, croprect.y, croprect.w, croprect.h);
-#endif
 
 	dstrect = m_dest->get_fit_rect(croprect, m_size, &srcrect, m_alignment);
 #else

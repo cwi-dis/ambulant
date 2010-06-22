@@ -33,72 +33,9 @@
 #define AM_DBG if(0)
 #endif
 
-#define ENABLE_COCOA_CGIMAGE
 // There are two ways to render images: through CGImage or directly manipulating the NSBitmapImageRep. The former should
 // be more efficient.
-#if 0
-// These parameters are now determined dynamically, in init_pixel_info().
-#ifdef ENABLE_COCOA_CGIMAGE
-// These two constants should match. Moreover, the optimal setting may depend on the
-// specific hardware.
-#if 1
-#define MY_PIXEL_LAYOUT net::pixel_argb
-#define MY_BITMAP_INFO (kCGImageAlphaNoneSkipFirst|kCGBitmapByteOrder32Host)
-#define MY_BITMAP_FORMAT (NSBitmapFormat)0
-#define MY_BPP 4
-#endif
-#if 0
-#define MY_PIXEL_LAYOUT net::pixel_rgba
-#define MY_BITMAP_INFO (kCGImageAlphaNoneSkipLast|kCGBitmapByteOrder32Host)
-#define MY_BITMAP_FORMAT (NSBitmapFormat)0
-#define MY_BPP 4
-#endif
-#if 0
-#define MY_PIXEL_LAYOUT net::pixel_bgr
-#define MY_BITMAP_INFO (kCGImageAlphaNone|kCGBitmapByteOrder32Host)
-#define MY_BITMAP_FORMAT (NSBitmapFormat)0
-#define MY_BPP 3
-#endif
-#else // ENABLE_COCOA_CGIMAGE
-// These two constants should match. Moreover, the optimal setting may depend on the
-// specific hardware.
-#if 0
-// This one does not work (tested on 10.5, Intel), too red video
-#define MY_PIXEL_LAYOUT net::pixel_rgba
-#define MY_BITMAP_FORMAT (NSBitmapFormat)0 // NSAlphaFirstBitmapFormat
-#define MY_BPP 4
-#endif
-#if 0
-// This one does not work (tested on 10.5, Intel), too blue video
-#define MY_PIXEL_LAYOUT net::pixel_rgba
-#define MY_BITMAP_FORMAT NSAlphaFirstBitmapFormat
-#define MY_BPP 4
-#endif
-#if 0
-// This one does not work (tested on 10.5, Intel), too blue video
-#define MY_PIXEL_LAYOUT net::pixel_argb
-#define MY_BITMAP_FORMAT (NSBitmapFormat)0 // NSAlphaFirstBitmapFormat
-#define MY_BPP 4
-#endif
-#if 1
-// This one does not work (tested on 10.5, Intel), too blue video
-#define MY_PIXEL_LAYOUT net::pixel_argb
-#define MY_BITMAP_FORMAT NSAlphaFirstBitmapFormat
-#define MY_BPP 4
-#endif
-#if 0
-#define MY_PIXEL_LAYOUT net::pixel_bgr
-#define MY_BITMAP_FORMAT (NSBitmapFormat)0
-#define MY_BPP 3
-#endif
-#if 0
-// This one works (10.5, intel)
-#define MY_PIXEL_LAYOUT net::pixel_rgb
-#define MY_BITMAP_FORMAT (NSBitmapFormat)0
-#define MY_BPP 3
-#endif
-#endif
-#endif
+#define ENABLE_COCOA_CGIMAGE
 
 static bool pixel_info_initialized = false;
 static ambulant::net::pixel_order pixel_info_order;
@@ -146,7 +83,7 @@ extern const char cocoa_dsvideo_playable_tag[] = "video";
 extern const char cocoa_dsvideo_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererOpen");
 extern const char cocoa_dsvideo_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererCocoa");
 extern const char cocoa_dsvideo_playable_renderer_uri3[] = AM_SYSTEM_COMPONENT("RendererVideo");
-// XXXJACK missing RendererVideo...
+
 common::playable_factory *
 create_cocoa_dsvideo_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
@@ -298,7 +235,7 @@ cocoa_dsvideo_renderer::redraw(const rect &dirty, gui_window *window)
 
 	cocoa_window *cwindow = (cocoa_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
-#if 0
+#ifdef WITH_VIDEO_TRANSITION_UNTESTED
 	// See whether we're in a transition
 	NSImage *surf = NULL;
 	if (m_trans_engine && m_trans_engine->is_done()) {
@@ -345,7 +282,7 @@ cocoa_dsvideo_renderer::redraw(const rect &dirty, gui_window *window)
 #endif
 	} else {
 	}
-#if 0
+#ifdef WITH_VIDEO_TRANSITION_UNTESTED
 	if (surf) [surf unlockFocus];
 	if (m_trans_engine && surf) {
 		AM_DBG logger::get_logger()->debug("cocoa_dsvideo_renderer.redraw: drawing to view");

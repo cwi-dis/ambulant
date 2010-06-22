@@ -34,6 +34,8 @@
 
 // These two constants should match. Moreover, the optimal setting may depend on the
 // specific hardware.
+// XXXJACK: we should get rid of these, analoguous to what cocoa_dsvideo does:
+// Get the information dynamically.
 #if 1
 #define MY_PIXEL_LAYOUT net::pixel_argb
 #define MY_BITMAP_INFO (kCGImageAlphaNoneSkipFirst|kCGBitmapByteOrder32Host)
@@ -157,7 +159,7 @@ cg_dsvideo_renderer::redraw(const rect &dirty, gui_window *window)
 
 	cg_window *cwindow = (cg_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
-#if 0
+#ifdef WITH_VIDEO_TRANSITION_UNTESTED
 	// See whether we're in a transition
 	NSImage *surf = NULL;
 	if (m_trans_engine && m_trans_engine->is_done()) {
@@ -199,7 +201,7 @@ cg_dsvideo_renderer::redraw(const rect &dirty, gui_window *window)
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("0x%x: cg_dsvideo.redraw: no image to show", this);
 	}
-#if 0
+#ifdef WITH_VIDEO_TRANSITION_UNTESTED
 	if (surf) [surf unlockFocus];
 	if (m_trans_engine && surf) {
 		AM_DBG logger::get_logger()->debug("cg_dsvideo_renderer.redraw: drawing to view");

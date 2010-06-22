@@ -169,11 +169,6 @@ video_renderer::start (double where)
 		// Renderer was already playing, possibly due to fill=continue or a late callback
 		lib::logger::get_logger()->trace("video_renderer.start(0x%x): already started", (void*)this);
 		m_post_stop_called = false;
-#if 0
-		//xxxbo 15-04-2010
-		m_lock.leave();
-		return;
-#endif
 	} else {
 		lib::event * e = new dataavail_callback (this, &video_renderer::data_avail);
 		AM_DBG lib::logger::get_logger ()->debug ("video_renderer::start(%f) this = 0x%x, cookie=%d, dest=0x%x, timer=0x%x, epoch=%d", where, (void *) this, (int)m_cookie, (void*)m_dest, m_timer, m_epoch);
@@ -206,14 +201,6 @@ video_renderer::preroll(double when, double where, double how_much)
 		m_lock.leave();
 		return;
 	}
-#if 1
-	// Disabled to see if it fixes problem
-	if (m_activated) {
-		lib::logger::get_logger()->trace("video_renderer.preroll(0x%x): already started", (void*)this);
-		m_lock.leave();
-		return;
-	}
-#endif
 	if (!m_src) {
 		lib::logger::get_logger()->trace("video_renderer.preroll: no datasource, skipping media item");
 		m_lock.leave();

@@ -208,11 +208,6 @@ gui::dx::dx_player::cleanup()
 	lib::nscontext::cleanup();
 	common::global_playable_factory *pf = common::get_global_playable_factory();
 	delete pf;
-#if 0
-	// These have been cleaned up by the gui_player
-	common::plugin_engine *plf = common::plugin_engine::get_plugin_engine();
-	delete plf;
-#endif
 	lib::global_parser_factory *prf = lib::global_parser_factory::get_parser_factory();
 	delete prf;
 #ifdef WITH_SMIL30
@@ -361,25 +356,6 @@ void gui::dx::dx_player::restart(bool reparse) {
 	if(playing) play();
 }
 
-#if 0
-bool gui::dx::dx_player::is_playing() const {
-	return (m_player && m_player->is_playing()) || !m_frames.empty();
-}
-
-bool gui::dx::dx_player::is_pausing() const {
-	return m_player && m_player->is_pausing();
-}
-
-bool gui::dx::dx_player::is_done() const {
-	return m_player && m_player->is_done() && m_frames.empty();
-}
-
-void gui::dx::dx_player::set_preferences(const std::string& url) {
-	smil2::test_attrs::load_test_attrs(url);
-	if(is_playing()) stop();
-	if(m_player) m_player->build_timegraph();
-}
-#endif
 void gui::dx::dx_player::on_click(int x, int y, HWND hwnd) {
 	if(!m_player) return;
 	lib::point pt(x, y);

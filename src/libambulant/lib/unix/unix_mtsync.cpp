@@ -118,17 +118,6 @@ lib::unix::critical_section_cv::signal()
 	}
 }
 
-#if 0
-void
-lib::unix::critical_section_cv::signal_all()
-{
-	int err;
-	if ((err =pthread_cond_broadcast(&m_condition)) != 0) {
-		lib::logger::get_logger()->fatal("lib::unix::critical_section_cv::signal_all(): pthread_cond_broadcast failed: %s", strerror(err));
-	}
-}
-#endif
-
 bool
 lib::unix::critical_section_cv::wait(int microseconds)
 {

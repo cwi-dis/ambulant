@@ -34,6 +34,8 @@
 #define AM_DBG if(0)
 #endif
 
+// XXXJACK: we should get rid of these, analoguous to what cocoa_dsvideo does:
+// Get the information dynamically.
 #if 1
 #define MY_PIXEL_LAYOUT net::pixel_argb
 #define MY_HASALPHA TRUE

@@ -652,7 +652,6 @@ ffmpeg_decoder_datasource::seek(timestamp_t time)
 		(void)m_buffer.get_read_ptr();
 		m_buffer.readdone(nbytes);
 	}
-	/* end of disabled code for #2954199 */
 #if 0
 	if (!skip_seek) {
 		m_src->seek(time);

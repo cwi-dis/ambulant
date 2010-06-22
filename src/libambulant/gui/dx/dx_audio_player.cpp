@@ -153,22 +153,6 @@ bool gui::dx::audio_player::is_playing() {
 	return evCode == 0;
 }
 
-#if 0
-double gui::dx::audio_player::get_position() {
-	if(m_media_position == 0) {
-		logger::get_logger()->debug("Invalid call to audio_player::get_current_position");
-		return 0.0;
-	}
-	REFTIME pos = 0.0;
-	HRESULT hr = m_media_position->get_CurrentPosition(&pos);
-	if(FAILED(hr)) {
-		win_report_error("IMediaPosition::get_CurrentPosition()", hr);
-		return 0.0;
-	}
-	return pos;
-}
-#endif
-
 //////////////////////////
 
 bool gui::dx::audio_player::open(const std::string& url) {
@@ -467,16 +451,6 @@ double gui::dx::audio_player::change_global_rate(double adjustment) {
 	return s_current_playback_rate;
 }
 
-#endif
-
-#if 0
-int gui::dx::audio_player::get_progress() {
-	return (int)floor(0.5 + 100.0*get_position()/get_dur().second);
-}
-
-void gui::dx::audio_player::set_progress(int p) {
-	seek(get_dur().second*(double(p)/100.00));
-}
 #endif
 
 // -val is the attenuation in decibels

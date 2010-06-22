@@ -103,20 +103,6 @@ cg_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 	const rect &r = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("cg_text_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 
-#if 0
-	if (m_text_storage && !m_layout_manager) {
-		// Only now can we set the color: the alfa comes from the region.
-
-		err = ATSUCreateTextLayout(&m_layout_manager);
-		assert(err == 0);
-
-		err = ATSUSetTextPointerLocation(m_layout_manager, m_text_storage, kATSUFromTextBeginning, kATSUToTextEnd, m_text_storage_length);
-		assert(err == 0);
-
-		err = ATSUSetRunStyle(m_layout_manager, m_style, kATSUFromTextBeginning, kATSUToTextEnd);
-		assert(err == 0);
-	}
-#endif
 	cg_window *cwindow = (cg_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 	CGContextRef ctx = [view getCGContext];
