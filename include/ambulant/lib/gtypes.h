@@ -413,8 +413,6 @@ reverse_transform(const rect *pdst, const rect *src, const rect *dst)
 
 #include "ambulant/lib/string_util.h"
 
-#if !defined(AMBULANT_PLATFORM_WIN32_WCE)
-
 inline std::string repr(const ambulant::lib::basic_point<int>& p) {
 	std::string s;
 	return s << '(' << p.x << ", " << p.y << ')';
@@ -429,14 +427,6 @@ inline std::string repr(const ambulant::lib::rect& r) {
 	std::string s;
 	return s << '(' << r.left() << ", " << r.top() << ", " << r.right() << ", " << r.bottom() << ')';
 }
-
-#else
-inline std::string repr(const ambulant::lib::basic_point<int>& p) { return "";}
-inline std::string repr(const ambulant::lib::basic_size<unsigned int>& z) { return "";}
-inline std::string repr(const ambulant::lib::rect& r) {return "";}
-#endif
-
-
 
 // gtypes output operators
 #include <ostream>

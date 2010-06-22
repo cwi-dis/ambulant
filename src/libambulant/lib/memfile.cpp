@@ -73,11 +73,7 @@ memfile::gdata() { return m_buffer.data() + m_gptr;}
 lib::byte
 memfile::get() {
 	if(!available())
-#ifndef AMBULANT_PLATFORM_WIN32_WCE
 		throw_range_error();
-#else
-		return 0;
-#endif
 	byte b = *gdata();
 	m_gptr++;
 	return b;
@@ -106,11 +102,7 @@ unsigned short
 memfile::get_be_ushort() {
 	byte b[2];
 	if(read(b, 2) != 2)
-#ifndef AMBULANT_PLATFORM_WIN32_WCE
 		throw_range_error();
-#else
-		return 0;
-#endif
 	return (b[1]<<8)| b[0];
 }
 

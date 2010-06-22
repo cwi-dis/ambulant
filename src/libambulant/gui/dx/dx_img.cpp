@@ -27,7 +27,6 @@
 #include "ambulant/gui/dx/dx_image_renderer.h"
 #include "ambulant/gui/dx/dx_transition.h"
 #include "ambulant/lib/node.h"
-#include "ambulant/lib/memfile.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/colors.h"
 #include "ambulant/common/region_info.h"

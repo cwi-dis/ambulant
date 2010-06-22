@@ -23,29 +23,21 @@
 
 
 #include "ambulant/config/config.h"
-#ifndef AMBULANT_PLATFORM_WIN32_WCE
 #define INITGUID
-#endif
 #include <objbase.h>
 #include <ddraw.h>
 #include <uuids.h>
 #include <windows.h>
 #include <mmsystem.h>
-#ifdef AMBULANT_PLATFORM_WIN32_WCE
-#include <d3dmtypes.h>
-#else
 // For older versions of DirectX, this could be d3d8types.h
 #include <d3d9types.h>
-#endif
 
 #include "ambulant/gui/dx/dx_viewport.h"
 #include "ambulant/gui/dx/dx_audio_player.h" // Only to define the TPB GUID
 
 
-#ifndef AMBULANT_PLATFORM_WIN32_WCE
 #pragma comment (lib,"winmm.lib")
 #pragma comment (lib,"dxguid.lib")
-#endif
 #pragma comment (lib,"ddraw.lib")
 
 #include "ambulant/lib/logger.h"
@@ -86,7 +78,6 @@ static struct error {
 	HRESULT hr;
 	char *name;
 } errorlist [] = {
-#ifndef AMBULANT_PLATFORM_WIN32_WCE
 	{DDERR_ALREADYINITIALIZED, "DDERR_ALREADYINITIALIZED"},
 	{DDERR_CANNOTATTACHSURFACE,"DDERR_CANNOTATTACHSURFACE"},
 	{DDERR_CANNOTDETACHSURFACE,"DDERR_CANNOTDETACHSURFACE"},
@@ -230,9 +221,6 @@ static struct error {
 #endif
 	{DDERR_DEVICEDOESNTOWNSURFACE, "DDERR_DEVICEDOESNTOWNSURFACE"},
 	{DDERR_NOTINITIALIZED, "DDERR_NOTINITIALIZED"},
-#else
-	{0, "null"},
-#endif
 };
 
 #define RELEASE(x) if(x) x->Release();x=NULL;
@@ -335,10 +323,6 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 		seterror("CreateDirectDraw()", hr);
 		return;
 	}
-#ifdef AMBULANT_PLATFORM_WIN32_WCE
-	// XXXJACK: Guessing here that we don't have DD1 on WM5 and get a DD2 surface directly.
-	m_direct_draw = pDD1;
-#else
 	hr = pDD1->QueryInterface(IID_IDirectDraw2, (void**)&m_direct_draw);
 	if (FAILED(hr)){
 		seterror("QueryInterface(IID_IDirectDraw2,...)", hr);
@@ -346,7 +330,7 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 		return;
 	}
 	pDD1->Release();
-#endif // AMBULANT_PLATFORM_WIN32_WCE
+
 	DWORD flags = DDSCL_NORMAL;
 	hr = m_direct_draw->SetCooperativeLevel(m_hwnd, flags);
 	if (FAILED(hr)) {
@@ -1142,12 +1126,8 @@ gui::dx::viewport::frame_rect(const lib::rect& rc, lib::color_t clr) {
 	}
 	RECT RC = {rc.left(), rc.top(), rc.right(), rc.bottom()};
 	HBRUSH hbr = CreateSolidBrush(clr);
-#ifdef AMBULANT_PLATFORM_WIN32_WCE
-	lib::logger::get_logger()->trace("frame_rect: not implemented on Windows Mobile");
-#else
 	if(FrameRect(hdc, &RC, hbr) == 0)
 		win_report_last_error("FrameRect()");
-#endif
 	DeleteObject((HGDIOBJ) hbr);
 	m_surface->ReleaseDC(hdc);
 }

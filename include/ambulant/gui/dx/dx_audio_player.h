@@ -39,16 +39,12 @@
 #include "ambulant/lib/win32/win32_error.h"
 #include "ambulant/lib/logger.h"
 
-#ifndef AMBULANT_PLATFORM_WIN32_WCE
 #pragma comment (lib,"winmm.lib")
 #pragma comment (lib,"amstrmid.lib")
-#endif
 #pragma comment (lib,"strmiids.lib")
 #pragma comment (lib,"uuid.lib")
 
-#ifndef AMBULANT_PLATFORM_WIN32_WCE
-#define WITH_TPB_AUDIO_SPEEDUP
-#endif
+//#define WITH_TPB_AUDIO_SPEEDUP
 
 #ifdef WITH_TPB_AUDIO_SPEEDUP
 // If this option is active during build (which is true when building

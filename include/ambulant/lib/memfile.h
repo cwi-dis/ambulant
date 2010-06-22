@@ -75,11 +75,9 @@ class memfile {
 	size_type read(char *b, size_type nb);
 
   private:
-#ifndef AMBULANT_PLATFORM_WIN32_WCE
 	void throw_range_error() {
 		throw std::range_error("index out of range");
 	}
-#endif
 	std::string m_url;
 	databuffer m_buffer;
 	size_type m_gptr;

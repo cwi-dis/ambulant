@@ -165,9 +165,7 @@ stdio_datasource::read_file()
 		} while (n > 0);
 		m_end_of_file = true;
 		if (n < 0) {
-#ifndef AMBULANT_PLATFORM_WIN32_WCE
 			lib::logger::get_logger()->trace("%s: %s", m_url.get_url().c_str(), strerror(errno));
-#endif
 			lib::logger::get_logger()->warn(gettext("Error encountered while reading file %s"), m_url.get_url().c_str());
 		}
 	}

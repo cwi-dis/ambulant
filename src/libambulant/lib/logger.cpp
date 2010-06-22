@@ -287,9 +287,9 @@ void lib::logger::log_cstr(int level, const char *buf) {
 	os << buf;
 	char hbuf[64];
 	if(logger::logname)
-		sprintf(hbuf, "[%.48s]%s", m_name.c_str(), line_separator.c_str());
+		sprintf(hbuf, "[%.48s]\n", m_name.c_str());
 	else
-		sprintf(hbuf, "%s", line_separator.c_str());
+		sprintf(hbuf, "\n");
 	os << hbuf;
 	os.flush();
 	m_cs.leave();

@@ -29,13 +29,9 @@
 
 #include "ambulant/gui/dx/dx_text_renderer.h"
 #include "ambulant/gui/dx/dx_viewport.h"
-
-#include "ambulant/lib/memfile.h"
 #include "ambulant/lib/string_util.h"
-
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/win32/win32_error.h"
-
 #include "ambulant/lib/textptr.h"
 #ifdef _UNICODE
 #define STR_TO_TSTR(s) ambulant::lib::textptr(s).c_wstr()
@@ -176,44 +172,21 @@ gui::dx::text_renderer::render(LONG x, LONG y, HFONT hfont) {
 	}
 	HFONT hfp = hfont;
 	if (hfp == NULL) {
-#ifdef AMBULANT_PLATFORM_WIN32_WCE
-		LOGFONT lfFont;
-		lfFont.lfHeight         = -(int)m_text_size;
-		lfFont.lfWidth          = 0;
-		lfFont.lfEscapement     = 0;
-		lfFont.lfOrientation    = 0;
-		lfFont.lfWeight         = 0;
-		lfFont.lfItalic         = 0;
-		lfFont.lfUnderline      = 0;
-		lfFont.lfStrikeOut      = 0;
-		lfFont.lfCharSet        = ANSI_CHARSET;
-		lfFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
-		lfFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
-		lfFont.lfQuality        = DEFAULT_QUALITY;
-		lfFont.lfPitchAndFamily = family;
-		lfFont.lfFaceName[0]    = '\0';
-		if (fontname) {
-			_tcscpy(lfFont.lfFaceName, STR_TO_TSTR(fontname));
-		}
-
-		hfp = CreateFontIndirect(&lfFont);
-#else
 		hfp	= ::CreateFont(
-				-(int)m_text_size,	// height of font
-				0,					// average character width
-				0,					// angle of escapement
-				0,					// base-line orientation angle
-				0,					// font weight
-				0,					// italic attribute option
-				0,					// underline attribute option
-				0,					// strikeout attribute option
-				ANSI_CHARSET,		// character set identifier
-				OUT_DEFAULT_PRECIS, // output precision
-				CLIP_DEFAULT_PRECIS, // clipping precision
-				DEFAULT_QUALITY,	// output quality
-				family,				// pitch and family
-				STR_TO_TSTR(fontname));	// typeface name
-#endif
+            -(int)m_text_size,	// height of font
+            0,					// average character width
+            0,					// angle of escapement
+            0,					// base-line orientation angle
+            0,					// font weight
+            0,					// italic attribute option
+            0,					// underline attribute option
+            0,					// strikeout attribute option
+            ANSI_CHARSET,		// character set identifier
+            OUT_DEFAULT_PRECIS, // output precision
+            CLIP_DEFAULT_PRECIS, // clipping precision
+            DEFAULT_QUALITY,	// output quality
+            family,				// pitch and family
+            STR_TO_TSTR(fontname));	// typeface name
 	}
 	::SelectObject(hdc, hfp);
 	RECT dstRC = {x, y, m_size.w, m_size.h};

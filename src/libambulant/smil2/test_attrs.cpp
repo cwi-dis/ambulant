@@ -379,8 +379,6 @@ void test_attrs::set_default_tests_attrs() {
 	active_tests_attrs_map["systemOperatingSystem"] = "macos";
 #elif defined(AMBULANT_PLATFORM_WIN32)
 	active_tests_attrs_map["systemOperatingSystem"] = "win32";
-#elif defined(AMBULANT_PLATFORM_WIN32_WCE)
-	active_tests_attrs_map["systemOperatingSystem"] = "wince";
 #elif defined(AMBULANT_PLATFORM_LINUX)
 	active_tests_attrs_map["systemOperatingSystem"] = "linux";
 #else
@@ -522,9 +520,7 @@ void
 test_attrs::set_current_screen_size(int height, int width)
 {
 	char buf[32];
-#if defined(AMBULANT_PLATFORM_WIN32_WCE)
-	sprintf(buf, "%dx%d", height, width);
-#elif defined(AMBULANT_PLATFORM_WIN32)
+#if defined(AMBULANT_PLATFORM_WIN32)
 	sprintf_s(buf, sizeof buf, "%dx%d", height, width);
 #else
 	snprintf(buf, sizeof buf, "%dx%d", height, width);

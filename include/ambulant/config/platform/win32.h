@@ -50,21 +50,8 @@
 /////////////////////////////
 // BEGIN WIN32 WINCE SECTION
 #if defined(_WIN32_WCE)
-
-#define AMBULANT_PLATFORM_WIN32_WCE
-
-#if _WIN32_WCE < 5
-#error Only WindowsCE 5 and later supported.
+#error WinCE no longer supported by Ambulant
 #endif
-
-// Windows Mobile 5
-#define AMBULANT_PLATFORM_WIN32_WCE_5
-#define AMBULANT_NO_TIME_H
-#define abort() exit(1)
-
-#endif // defined(_WIN32_WCE)
-// END WIN32 WINCE SECTION
-
 /////////////////////////////
 
 ///////////////////////////

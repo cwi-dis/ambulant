@@ -23,13 +23,8 @@
 #include "ambulant/lib/tree_builder.h"
 #include "ambulant/lib/document.h"
 #include "ambulant/lib/logger.h"
-#include "ambulant/lib/memfile.h"
 #include "ambulant/net/url.h"
 #include "ambulant/common/preferences.h"
-
-#ifdef AMBULANT_PLATFORM_WIN32_WCE
-#include "ambulant/net/win32_datasource.h"
-#endif
 
 #include <fstream>
 
@@ -89,7 +84,6 @@ lib::tree_builder::build_tree_from_file(const char *filename) {
 	if(!filename || !*filename) return false;
 	m_filename = filename;
 
-#ifndef AMBULANT_PLATFORM_WIN32_WCE
 	std::ifstream ifs(filename);
 	if(!ifs) return false;
 	const size_t buf_size = 1024;
@@ -105,21 +99,6 @@ lib::tree_builder::build_tree_from_file(const char *filename) {
 	delete[] buf;
 	ifs.close();
 	return m_well_formed;
-#else
-	net::url u = net::url::from_filename(filename);
-	net::datasource *ds = net::get_win32_datasource_factory()->new_raw_datasource(u);
-	char *data;
-	size_t datasize;
-	if (!net::read_data_from_datasource(ds, &data, &datasize)) {
-		// read_data_from_url has given error message
-		return false;
-	}
-	bool rv = build_tree_from_str(data, data+datasize);
-	free(data);
-	ds->stop();
-	ds->release();
-	return rv;
-#endif
 }
 
 bool

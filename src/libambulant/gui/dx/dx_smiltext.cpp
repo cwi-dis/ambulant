@@ -27,7 +27,6 @@
 #include "ambulant/gui/dx/dx_transition.h"
 #include "ambulant/common/region_info.h"
 #include "ambulant/lib/node.h"
-#include "ambulant/lib/memfile.h"
 #include "ambulant/lib/string_util.h"
 #include "ambulant/smil2/params.h"
 #include "ambulant/smil2/test_attrs.h"
@@ -517,28 +516,6 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_set_font(const smil2::smiltext_run r
 			italic = true;
 			break;
 	}
-#ifdef AMBULANT_PLATFORM_WIN32_WCE
-	LOGFONT lfFont;
-	lfFont.lfHeight			= -(int)run.m_font_size-adjust_height;
-	lfFont.lfWidth			= 0;
-	lfFont.lfEscapement		= 0;
-	lfFont.lfOrientation	= 0;
-	lfFont.lfWeight			= weight;
-	lfFont.lfItalic			= italic;
-	lfFont.lfUnderline		= 0;
-	lfFont.lfStrikeOut		= 0;
-	lfFont.lfCharSet		= ANSI_CHARSET;
-	lfFont.lfOutPrecision	= OUT_DEFAULT_PRECIS;
-	lfFont.lfClipPrecision	= CLIP_DEFAULT_PRECIS;
-	lfFont.lfQuality		= DEFAULT_QUALITY;
-	lfFont.lfPitchAndFamily = family;
-	lfFont.lfFaceName[0]	= '\0';
-	if (fontname) {
-		_tcscpy(lfFont.lfFaceName, STR_TO_TSTR(fontname));
-	}
-
-	*hfontp = CreateFontIndirect(&lfFont);
-#else
 	*hfontp = ::CreateFont(
 			-(int)run.m_font_size-adjust_height,	// height of font
 			0,					// average character width
@@ -554,7 +531,6 @@ gui::dx::dx_smiltext_renderer::_dx_smiltext_set_font(const smil2::smiltext_run r
 			DEFAULT_QUALITY,	// output quality
 			family,				// pitch and family
 			STR_TO_TSTR(fontname)); // typeface name
-#endif // AMBULANT_PLATFORM_WIN32_WCE
 	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_run_set_attr(0x%x): m_data=%s font=0x%x, m_font_size=%d,weight=0x%x,italic=%d,family=0x%x,run.m_font_families[...]=%s",this,run.m_data.c_str(),*hfontp,run.m_font_size,weight,italic,family,fontname);
 	return ::SelectObject(hdc, *hfontp);
 }

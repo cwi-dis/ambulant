@@ -49,23 +49,17 @@ void lib::win32::sleep_msec(unsigned long msecs) {
 }
 
 std::basic_string<text_char> lib::win32::getcwd() {
-#ifndef AMBULANT_PLATFORM_WIN32_WCE
 	text_char buf[MAX_PATH];
 	text_char *pFilePart = 0;
 	GetFullPathName(text_str("."), MAX_PATH, buf, &pFilePart);
 	return buf;
-#endif
-	return text_str(".");
 }
 
 std::basic_string<text_char> lib::win32::resolve_path(const text_char *s) {
-#ifndef AMBULANT_PLATFORM_WIN32_WCE
 	text_char buf[MAX_PATH];
 	text_char *pFilePart = 0;
 	GetFullPathName(s, MAX_PATH, buf, &pFilePart);
 	return buf;
-#endif
-	return s;
 }
 
 std::basic_string<text_char> lib::win32::get_module_filename() {
@@ -95,8 +89,6 @@ std::string lib::win32::get_module_dir() {
 	return std::string(TSTR_TO_STR(buf));
 }
 
-#ifndef AMBULANT_PLATFORM_WIN32_WCE
-// WINCE should provide its own version
 void lib::win32::show_message(int level, const char *message) {
 	unsigned int type = MB_OK;
 	if (level == lib::logger::LEVEL_WARN) type |= MB_ICONWARNING;
@@ -104,7 +96,6 @@ void lib::win32::show_message(int level, const char *message) {
 	if (level == lib::logger::LEVEL_FATAL) type |= MB_ICONERROR;
 	MessageBox(NULL, textptr(message), text_str("AmbulantPlayer"), type);
 }
-#endif
 
 bool lib::win32::file_exists(const std::string& fn) {
 	WIN32_FIND_DATA fd;

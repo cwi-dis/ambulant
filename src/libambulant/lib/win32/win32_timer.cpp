@@ -31,16 +31,6 @@
 
 using namespace ambulant;
 
-
-#ifdef AMBULANT_PLATFORM_WIN32_WCE
-
-static DWORD
-os_time() {
-	return GetTickCount();
-}
-
-#else
-
 const ULONGLONG MILLIS_FACT = 10000;
 // Returns system time in system units (0.1 micro-sec units or 0.0001 msec).
 static DWORD
@@ -52,8 +42,6 @@ os_time() {
 	ULARGE_INTEGER li = {ft.dwLowDateTime, ft.dwHighDateTime};
 	return (DWORD)(li.QuadPart/MILLIS_FACT);
 }
-
-#endif
 
 lib::win32::win32_timer::win32_timer()
 :	m_epoch(os_time()) {

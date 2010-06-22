@@ -252,13 +252,7 @@ HRGN create_poly_region(gui::dx::dx_transition *tr) {
 		ppt[i].x = (*it).x;
 		ppt[i].y = (*it).y;
 	}
-#ifdef AMBULANT_PLATFORM_WIN32_WCE
-	// XXXJACK: Stopgap: Windows Mobile doesn't seem to have polygon regions.
-	// Let this fail, for now.
-	HRGN hrgn = NULL;
-#else
 	HRGN hrgn = CreatePolygonRgn(ppt, int(v.size()), ALTERNATE);
-#endif
 	delete[] ppt;
 	if(!hrgn) {
 		win_report_last_error("CreatePolygonRgn()");
@@ -279,13 +273,7 @@ HRGN create_polylist_region(gui::dx::dx_transition *tr) {
 		POINT *ppt = new POINT[v.size()];
 		for(std::vector<lib::point>::iterator pit = v.begin();pit!=v.end();pit++,i++)
 			{ppt[i].x = (*pit).x; ppt[i].y = (*pit).y;}
-#ifdef AMBULANT_PLATFORM_WIN32_WCE
-		// XXXJACK: Stopgap: Windows Mobile doesn't seem to have polygon regions.
-		// Let this fail, for now.
-		HRGN next = NULL;
-#else
 		HRGN next = CreatePolygonRgn(ppt, int(v.size()), ALTERNATE);
-#endif
 		delete[] ppt;
 		if(!next) {
 			win_report_last_error("CreatePolygonRgn()");

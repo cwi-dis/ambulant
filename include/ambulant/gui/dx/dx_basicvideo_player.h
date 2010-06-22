@@ -40,10 +40,8 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/gtypes.h"
 
-#ifndef AMBULANT_PLATFORM_WIN32_WCE
 #pragma comment (lib,"winmm.lib")
 #pragma comment (lib,"amstrmid.lib")
-#endif
 #pragma comment (lib,"strmiids.lib")
 #pragma comment (lib,"uuid.lib")
 

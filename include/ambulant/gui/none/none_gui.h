@@ -62,14 +62,7 @@ class none_playable : public common::playable_imp {
   public:
 	none_playable(
 		common::playable_notification *context,
-#ifdef AMBULANT_PLATFORM_WIN32_WCE
-		// Workaround for bug in emVC 4.0: it gets confused
-		// when getting a subtype from a class within a function
-		// signature, or something like that
-		int cookie,
-#else
 		common::playable_notification::cookie_type cookie,
-#endif
 		const lib::node *node,
 		lib::event_processor *evp,
 		common::factories *fp,

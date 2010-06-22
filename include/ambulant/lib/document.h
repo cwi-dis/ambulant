@@ -207,25 +207,14 @@ class AMBULANTAPI document :
 
 } // namespace ambulant
 
-// XXX Not sure about next #if. The construct doesn't work for emVC3 and gcc2.95.
-#if !defined(AMBULANT_PLATFORM_WIN32_WCE)
 inline std::string repr(const ambulant::lib::custom_test& t) {
 	std::string s;
 	return s << '(' << t.idd << ", state:" << t.state << ", override:" << t.override << ", \'" << t.title << "\')";
 }
+
 inline std::string repr(const ambulant::lib::document& d) {
 	std::string s;
 	return s << "document(" << &d << ", " << d.get_src_url().get_url() << ")";
 }
-
-#else
-inline std::string repr(const ambulant::lib::custom_test& t) {
-	return t.idd;
-}
-inline std::string repr(const ambulant::lib::document& d) {
-	return "document";
-}
-#endif
-
 
 #endif // AMBULANT_LIB_DOCUMENT_H

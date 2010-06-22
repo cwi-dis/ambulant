@@ -26,7 +26,7 @@
 #include "ambulant/lib/logger.h"
 #include <map>
 
-#if defined(AMBULANT_PLATFORM_WIN32) || defined(AMBULANT_PLATFORM_WIN32_WCE)
+#if defined(AMBULANT_PLATFORM_WIN32)
 #include <windows.h>
 #endif
 
@@ -74,24 +74,24 @@ unsigned long
 event_processor_impl::run()
 {
 	AM_DBG lib::logger::get_logger()->debug("event_processor 0x%x started", (void *)this);
-#if defined(AMBULANT_PLATFORM_WIN32) || defined(AMBULANT_PLATFORM_WIN32_WCE)
+#if defined(AMBULANT_PLATFORM_WIN32)
 	HRESULT hr;
-#if defined(COINIT_MULTITHREADED) || defined(AMBULANT_PLATFORM_WIN32_WCE)
+#if defined(COINIT_MULTITHREADED)
 	hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
 #else
 	hr = CoInitialize(NULL);
-#endif // AMBULANT_PLATFORM_WIN32_WCE
+#endif // COINIT_MULTITHREADED
 	if (hr) {
 		lib::logger::get_logger()->trace("win32_event_processor::run: CoInitializeEx failed with 0x%x", hr);
 	}
-#endif AMBULANT_PLATFORM_WIN32 || AMBULANT_PLATFORM_WIN32_WCE
+#endif AMBULANT_PLATFORM_WIN32
 	m_lock.enter();
 	while(!exit_requested()) {
 		_serve_events();
 		(void)m_lock.wait(10000);
 	}
 	m_lock.leave();
-#if defined(AMBULANT_PLATFORM_WIN32) || defined(AMBULANT_PLATFORM_WIN32_WCE)
+#if defined(AMBULANT_PLATFORM_WIN32)
 	CoUninitialize();
 #endif
 	AM_DBG lib::logger::get_logger()->debug("event_processor 0x%x stopped", (void *)this);

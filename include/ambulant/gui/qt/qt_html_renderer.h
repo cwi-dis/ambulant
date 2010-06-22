@@ -30,7 +30,6 @@
 #ifdef	WITH_QT_HTML_WIDGET
 
 #include "ambulant/common/factory.h"
-#include "ambulant/lib/memfile.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/renderer_impl.h"

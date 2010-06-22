@@ -58,27 +58,37 @@
 #include "ambulant/gui/dx/dx_img.h"
 #include "ambulant/gui/dx/dx_brush.h"
 
-// Select audio renderer to use
+// Select audio renderer to use.
+// Multiple selections are possible.
 #ifdef WITH_FFMPEG
+// Use the datasource-based SDL audio renderer
+#define USE_SDL_AUDIO
+#endif
+// Use the DirectX audio renderer
+#define USE_DX_AUDIO
+
+#ifdef USE_SDL_AUDIO
 #include "ambulant/gui/SDL/sdl_audio.h"
-#else
+#endif
+#ifdef USE_DX_AUDIO
 #include "ambulant/gui/dx/dx_audio.h"
 #endif/*WITH_FFMPEG*/
 
-// Select video renderer to use
+// Select video renderer to use.
+// Multiple selections are possible.
 #ifdef WITH_FFMPEG
+// Define this one to use the datasource-based video renderer
 #define USE_DS_VIDEO
 #endif
-#if defined(AMBULANT_PLATFORM_WIN32_WCE)
-#define USE_BASIC_VIDEO
-#else
+// Define this one to use the minimal DirectX video renderer
+// #define USE_BASIC_VIDEO
+// Define this one to use the more full-featured DirectX video renderer
 #define USE_DX_VIDEO
-#endif
 
 #ifdef USE_DS_VIDEO
 #include "ambulant/gui/dx/dx_dsvideo.h"
 #endif
-#if defined(USE_BASIC_VIDEO)
+#ifdef USE_BASIC_VIDEO
 #include "ambulant/gui/dx/dx_basicvideo.h"
 #endif
 #ifdef USE_DX_VIDEO
@@ -223,7 +233,12 @@ gui::dx::dx_player::init_playable_factory()
 	set_playable_factory(pf);
 	// Add the playable factory
 	pf->add_factory(create_dx_area_playable_factory(this, this));
+#ifdef USE_DX_AUDIO
 	pf->add_factory(create_dx_audio_playable_factory(this, this));
+#endif
+#ifdef USE_SDL_AUDIO
+	pf->add_factory(gui::sdl::create_sdl_playable_factory(this));
+#endif
 	pf->add_factory(create_dx_brush_playable_factory(this, this));
 	pf->add_factory(create_dx_image_playable_factory(this, this));
 	pf->add_factory(create_dx_smiltext_playable_factory(this, this));
@@ -672,16 +687,7 @@ get_top_layout_name(smil2::smil_layout_manager *layout, const lib::node* n) {
 }
 
 void gui::dx::dx_player::show_file(const net::url& href) {
-#ifdef AMBULANT_PLATFORM_WIN32_WCE
-	m_logger->error("Not implemented: opening external file %s", href.get_url().c_str());
-#else
 	ShellExecute(GetDesktopWindow(), text_str("open"), lib::textptr(href.get_url().c_str()), NULL, NULL, SW_SHOWNORMAL);
-#endif
-	// Or for smil
-	//std::string this_exe = lib::win32::get_module_filename();
-	//std::string cmd = this_exe + " " + newdoc.get_url();
-	//if(start) cmd += " /start";
-	//WinExec(cmd.c_str(), SW_SHOW);
 }
 
 

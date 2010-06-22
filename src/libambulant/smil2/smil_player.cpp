@@ -478,11 +478,7 @@ void smil_player::stop_playable(const lib::node *n) {
 		m_playables.find(n);
 	std::pair<const lib::node*, common::playable*> victim(NULL,NULL);
 	if(it != m_playables.end()) {
-#ifdef AMBULANT_PLATFORM_WIN32_WCE
-		victim = std::pair<const lib::node*, common::playable*>((*it).first, (*it).second);
-#else
 		victim = *it;
-#endif
 		m_playables.erase(it);
 	}
 	m_playables_cs.leave();

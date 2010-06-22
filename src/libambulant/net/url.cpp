@@ -107,14 +107,6 @@ filepath2urlpath(const std::string& fparg, bool handle_frag=false)
 
 	rv = lib::textptr(wrv.c_str());
 
-#ifdef AMBULANT_PLATFORM_WIN32_WCE
-	// On WinCE InternetCanonicalizeUrl also turns backslash into %5c (sigh).
-	while(1) {
-		size_t bspos = rv.find("%5c");
-		if (bspos == std::string::npos) break;
-		rv.replace(bspos, 3, "/");
-	}
-#endif // AMBULANT_PLATFORM_WIN32_WCE
 	free(urlbuf);
 	// Finally re-apply the fragment id, if there is one
 	if (fragment != "") {
@@ -809,16 +801,11 @@ net::url::get_local_datafile() const
 
 // Places where to look for (cached) datafiles
 static const char *datafile_locations[] = {
-#ifdef AMBULANT_PLATFORM_WIN32_WCE
-	"\\Program Files\\Ambulant\\",
-	"\\Windows\\Ambulant\\",
-#else
 	"Extras\\",
 	"..\\..\\Extras\\",
 	"",
 	"..\\",
 	"..\\Extras\\",
-#endif
 	NULL
 };
 
@@ -833,11 +820,6 @@ net::url::set_datafile_directory(std::string pathname)
 std::pair<bool, net::url>
 net::url::get_local_datafile() const
 {
-	// XXXX Needs work!
-#ifdef AMBULANT_PLATFORM_WIN32_WCE
-	// Too lazy to convert char to wide char right now
-	return std::pair<bool, net::url>(false, net::url(*this));
-#else
 	if (datafile_directory == "") {
 		set_datafile_directory(lib::win32::get_module_dir());
 	}
@@ -845,7 +827,7 @@ net::url::get_local_datafile() const
 	string path;
 	if (!is_local_file()) return std::pair<bool, net::url>(false, net::url(*this));
 
-	if (! is_absolute()) {
+	if (!is_absolute()) {
 		string rel_path = get_path();
 		const char **dir;
 		for(dir = datafile_locations; *dir; dir++) {
@@ -865,7 +847,6 @@ net::url::get_local_datafile() const
 	if (!result) return std::pair<bool, net::url>(false, net::url(*this));
 	std::string *pathname = new std::string(result);
 	return std::pair<bool, net::url>(true, net::url("file", "", *pathname));
-#endif
 }
 #endif //AMBULANT_PLATFORM_UNIX
 ///////////////
