@@ -116,38 +116,6 @@ gstreamer_player::run() {
 
 	m_gst_mainloop = g_main_loop_new (NULL, FALSE);
 	AM_DBG g_print ("%s: %s=0x%x, %s=0x%x\n", id, "starting, m_gst_player", (void*) m_gst_player,"m_gst_mainloop=", (void*) m_gst_mainloop);
-#ifdef  WITH_NOKIA770
-	// On Nokia770 we use a dedicated gstreamer module "dspmp3sink" which most
-	// efficiently playes mp3 clips using the DSP signal co-processor
-	// It only plays one clip at any time.
-	//
-	if (pthread_mutex_lock(&s_main_nokia770_mutex) < 0) {
-		lib::logger::get_logger()->fatal("gst_mp3_player:: pthread_mutex_lock(s_main_nokia770_mutex) failed: %s", strerror(errno));
-		abort();
-	}
-	m_gst_player = (GstElement*)gst_pipeline_new ("mp3-player");
-	/* create elements */
-	AM_DBG g_print ("%s: %s\n", id, "gst_element_factory_make()");
-	source = gst_element_factory_make ("gnomevfssrc", "source");
-	sink = gst_element_factory_make ("dspmp3sink", "sink");
-	if ( !( m_gst_player && source && sink)) {
-		g_print ("%s:", "gst_mp3_player");
-		if ( !m_gst_player) g_print (" %s() failed", "get_pipeline_new");
-		if ( !source) g_print (" %s=%s(%s) failed", "source", "gst_element_factory_make", "gnomevfssrc");
-		if ( !sink) g_print (" %s=%s(%s) failed", "sink", "gst_element_factory_make", "dspmp3sink");
-		g_print ("\n");
-		abort();
-	}
-	AM_DBG g_print ("%s: %s\n", id, "set the source audio file");
-	g_object_set (G_OBJECT(source), "location", m_uri, NULL);
-	/* put all elements  to the main pipeline */
-	gst_bin_add_many (GST_BIN(m_gst_player), source, sink, NULL);
-	/* link the elements */
-	if ( ! gst_element_link (source, sink)) {
-		g_print ("gst_element_link (source=%s, sink%s) failed\n", (void*) source, (void*) sink);
-		abort();
-	}
-#else //WITH_NOKIA770
 	m_gst_player = (GstElement*)gst_pipeline_new ("mp3-player");
 	/* create elements */
 	AM_DBG g_print ("%s: %s\n", id, "gst_element_factory_make()");
@@ -163,7 +131,6 @@ gstreamer_player::run() {
 	g_object_set (G_OBJECT(source), "uri", m_uri, NULL);
 	/* put all elements  to the main pipeline */
 	gst_bin_add_many (GST_BIN(m_gst_player), source, sink, NULL);
-#endif//WITH_NOKIA770
 
 	/* wait for start */
 	gst_state_changed = gst_element_set_state (m_gst_player, GST_STATE_READY);
@@ -219,12 +186,6 @@ gstreamer_player::run() {
 	m_gst_player = NULL;
 	pthread_mutex_unlock(&m_gst_player_mutex);
 
-#ifdef  WITH_NOKIA770
-	if (pthread_mutex_unlock(&s_main_nokia770_mutex) < 0) {
-		lib::logger::get_logger()->fatal("gstreamer_player::run():: pthread_mutex_unlock(s_main_nokia770_mutex) failed: %s", strerror(errno));
-		abort();
-	}
-#endif//WITH_NOKIA770
 	return 0;
 }
 

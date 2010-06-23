@@ -85,20 +85,6 @@ gtk_includes=
 endif # WITH_GTK
 
 #------------------------------------------------------
-if WITH_NOKIA770
-extra_nokia770_DEFINES=-DWITH_NOKIA770 $(HILDONBASE_CFLAGS)  $(HILDONLIBS_CFLAGS) $(OSSO_CFLAGS)
-extra_nokia770_LDADD=$(OSSO_LIBS) $(HILDONBASE_LIBS) $(HILDONLIBS_LIBS)
-# -s no symbol table in executable
-# extra_nokia770_ldflags=-s
-extra_nokia770_ldflags=
-else
-extra_nokia770_DEFINES=
-extra_nokia770_LDADD=
-extra_nokia770_ldflags=
-endif # WITH_NOKIA770
-
-#------------------------------------------------------
-#------------------------------------------------------
 
 bin_PROGRAMS = AmbulantPlayer_gtk
 AmbulantPlayer_gtk_SOURCES = \
@@ -123,8 +109,7 @@ LDADD = $(libambulant_gtk) \
 	$(libambulant_core) \
 	$(gtk_libs) \
 	$(LIBLTDL) \
-	$(PTHREAD_LIBS) \
-	$(extra_nokia770_LDADD)
+	$(PTHREAD_LIBS)
 
 AM_LDFLAGS= \
 	   -export-dynamic
@@ -139,7 +124,6 @@ AM_CPPFLAGS = \
 		$(extra_nls_DEFINES) \
 		$(extra_sdl_DEFINES) \
 		$(extra_xerces_DEFINES) \
-		$(extra_nokia770_DEFINES) \
 		$(gtk_includes) \
 		-I$(top_builddir)/include \
 		-I$(top_srcdir)/include \
@@ -147,68 +131,3 @@ AM_CPPFLAGS = \
 		-I$(top_srcdir)/include/ambulant/gui/gtk
 
 AM_CXXFLAGS=-fPIC
-#------------------------------------------------------
-# More special case code for the Nokia 770: install the auxiliary files.
-if WITH_NOKIA770
-# The icons
-
-icondir = $(datadir)/icons/hicolor
-installerdir = $(srcdir)/../../installers
-
-# 	i=pkg_AmbulantPlayer-app;
-install-data-local:
-	pwd; \
-	i=AmbulantPlayer; \
-	echo "DESTDIR=" $(DESTDIR) " icondir=" $(icondir) " " $i $$i; \
-	$(mkinstalldirs) $(DESTDIR)$(icondir)/26x26/hildon; \
-	$(mkinstalldirs) $(DESTDIR)$(icondir)/40x40/hildon; \
-	$(mkinstalldirs) $(DESTDIR)$(icondir)/scalable/hildon; \
-	$(INSTALL_DATA) $(installerdir)/nokia770/$$i-26x26.png $(DESTDIR)$(icondir)/26x26/hildon/pkg_$$i-app.png; \
-	$(INSTALL_DATA) $(installerdir)/nokia770/$$i-40x40.png $(DESTDIR)$(icondir)/40x40/hildon/pkg_$$i-app.png; \
-	$(INSTALL_DATA) $(installerdir)/nokia770/$$i-scalable.png $(DESTDIR)$(icondir)/scalable/hildon/pkg_$$i-app.png;
-	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir);
-	$(INSTALL_DATA) $(srcdir)/ui_manager.xml $(DESTDIR)$(pkgdatadir);
-#	Install gettext localizations
-	localedir=$(DESTDIR)/$(datadir)/locale \
-	cd ../../po ; \
-	$(MAKE) $(AM_MAKEFLAGS) localedir=$$localedir install
-
-uninstall-local:
-	i=pkg_AmbulantPlayer-app; \
-	rm $(DESTDIR)$(icondir)/26x26/hildon/$$i.png; \
-	rm $(DESTDIR)$(icondir)/40x40/hildon/$$i.png; \
-	rm $(DESTDIR)$(icondir)/scalable/hildon/$$i.png;
-	rm $(DESTDIR)$(pkgdatadir)/ui_manager.xml;
-
-#	Install gettext localizations
-	localedir=$(DESTDIR)/$(datadir)/locale \
-	pwd;cd ../../po ; \
-	$(MAKE) $(AM_MAKEFLAGS) localedir=$$localedir install
-
-# XXXX Jack thinks the rest of this file looks like leftovers from a previous life:
-
-desktopdir = $(datadir)/applications/hildon
-desktop_DATA = AmbulantPlayer.desktop
-
-servicedir = $(datadir)/dbus-1/services
-service_DATA = $(top_srcdir)/installers/nokia770/com.nokia.ambulantplayer_app.service
-
-
-# The backup/restore configuration
-
-EXTRA_DIST = \
-	autogen.sh \
-	ui_manager.xml \
-	debian/changelog \
-	debian/compat \
-	debian/copyright \
-	debian/control \
-	debian/rules \
-	debian/AmbulantPlayer-app.links \
-	AmbulantPlayer.desktop \
-	AmbulantPlayer.conf \
-	com.nokia.AmbulantPlayer_app.service \
-	pkg_AmbulantPlayer-app.26.png \
-	pkg_AmbulantPlayer-app.40.png \
-	pkg_AmbulantPlayer-app.64.png
-endif # WITH_NOKIA770

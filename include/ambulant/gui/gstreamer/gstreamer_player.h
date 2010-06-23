@@ -55,12 +55,6 @@ namespace gstreamer {
 
 class gstreamer_audio_renderer;
 
-/* The Npkia 770 csn handle only one audio/video at a time.
-*/
-#ifdef  WITH_NOKIA770
-static pthread_mutex_t s_main_nokia770_mutex;
-#endif//WITH_NOKIA770
-
 // gstreamer_player: interface to low-level gstreamer code
 
 class gstreamer_player :  public lib::unix::thread {

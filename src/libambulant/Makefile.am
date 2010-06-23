@@ -214,15 +214,6 @@ gstreamer_includes=
 toolkit_gstreamer_libraries=
 endif
 
-if WITH_NOKIA770
-nokia770_includes=-DWITH_NOKIA770 #$(HILDON_CFLAGS) $(OSSO_CFLAGS)
-toolkit_nokia770_libraries= #$(OSSO_LIBS)
-else
-nokia770_includes=
-toolkit_nokia770_libraries=
-endif # WITH_NOKIA770
-
-
 AM_CPPFLAGS = \
 	-DAMBULANT_DATADIR=\"$(pkgdatadir)\" \
 	-DAMBULANT_PLUGINDIR=\"$(pkglibdir)\" \
@@ -233,7 +224,6 @@ AM_CPPFLAGS = \
 	$(qtincludes) \
 	$(gstreamer_includes) \
 	$(gtkincludes) \
-	$(nokia770_includes) \
 	$(sdlincludes) \
 	$(ffmpegincludes) \
 	$(live_includes) \
@@ -248,9 +238,8 @@ lib_LTLIBRARIES = \
 	$(toolkit_cocoa_libraries) \
 	$(toolkit_cg_libraries) \
 	$(toolkit_qt_libraries) \
-	$(toolkit_gtk_libraries) \
-	$(toolkit_nokia770_libraries)
-
+	$(toolkit_gtk_libraries)
+	
 libambulant_la_LDFLAGS= \
 	-export-dynamic $(LIBLTDL) \
 	$(expat_core_libs) \

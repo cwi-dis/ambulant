@@ -77,17 +77,6 @@ open_web_browser(const std::string &href)
 	char *browserlist = getenv("BROWSER");
 	int rv;
 
-#ifdef	WITH_NOKIA770
-	// Nokia770's browser doesn't react on a commandline argument as an URL,
-	// but it does so properlye on the following commands
-	snprintf(cmdbuf, sizeof(cmdbuf), "dus-send --print-reply --dest=com.nokia.osso_browser /com/nokia/osso_browser com.nokia.osso_browser.open_new_window;dbus-send --print-reply --dest=com.nokia.osso_browser /com/nokia/osso_browser com.nokia.osso_browser.load_url string:%s", href.c_str());
-	rv = ::system(cmdbuf);
-	if (rv) {
-		lib::logger::get_logger()->error(gettext("Attempt to start browser returned status %d. Command: %s"), rv, cmdbuf);
-	}
-	return;
-#endif/*WITH_NOKIA770*/
-
 	if (browserlist == NULL) {
 		lib::logger::get_logger()->error(gettext("$BROWSER not set: cannot open webpage <%s>"), href.c_str());
 		return;

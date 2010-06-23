@@ -46,20 +46,6 @@
 
 #define WITH_GTK_LOGGER
 
-//KB XXXX FIXME
-#ifdef	WITH_NOKIA770
-#ifdef	AMBULANT_DATADIR  //KB XXXX
-#undef	AMBULANT_DATADIR
-#define AMBULANT_DATADIR "/usr/share/ambulant"
-#endif // AMBULANT_DATADIR
-#define UI_FILENAME AMBULANT_DATADIR "/ui_manager.xml"
-//#include <hildon-widgets/hildon-program.h>  // CHINOOK
-#include <hildon/hildon-program.h> // DIABLO
-#include <glib-object.h>
-#else /*WITH_NOKIA770*/
-#define UI_FILENAME "ui_manager.xml"
-#endif // WITH_NOKIA770
-
 #ifndef AMBULANT_DATADIR
 #define AMBULANT_DATADIR "/usr/local/share/ambulant"
 #endif
@@ -927,51 +913,9 @@ gtk_gui::_update_menus()
 		(m_mainloop != NULL));
 }
 
-
-#ifdef	WITH_NOKIA770
-#include <libosso.h>
-
-//KB XXXX FIXME #include "libAmbulantPlayer.h"
-
-gint
-dbus_callback (const gchar *interface, const gchar *method,
-	GArray *arguments, gpointer data,
-	osso_rpc_t *retval)
-{
-	printf ("AmbulantPlayer dbus: %s, %s\n", interface, method);
-		
-	if (!strcmp (method, "top_application"))
-		gtk_window_present (GTK_WINDOW (data));
-	
-	retval->type = DBUS_TYPE_INVALID;
-	return OSSO_OK;
-}
-#endif/*WITH_NOKIA770*/
-
-
 int
 main (int argc, char*argv[]) {
-#ifdef	WITH_NOKIA770
-	osso_context_t *ctxt;
-	osso_return_t ret;
-	GtkWindow *window;
-	HildonProgram* hildon_program;
-	HildonWindow* hildon_window;
-#endif/*WITH_NOKIA770*/
-
 	printf ("AmbulantPlayer: starting up\n");
-
-#ifdef	WITH_NOKIA770
-	ctxt = osso_initialize ("ambulantplayer_app", PACKAGE_VERSION, TRUE, NULL);
-	if (ctxt == NULL){
-		fprintf (stderr, "osso_initialize failed.\n");
-		exit (1);
-	}
-	if (chdir(AMBULANT_DATADIR) < 0) {
-		fprintf(stderr, "AmbulantPlayer: cannot chdir(%s) errno=%d\n", AMBULANT_DATADIR, errno);
-		return -1;
-	}
-#endif/*WITH_NOKIA770*/
 
 #ifdef	WITH_GSTREAMER
 	/* initialize GStreamer */
@@ -1007,14 +951,6 @@ main (int argc, char*argv[]) {
 
 	/* Setup widget */
 	gtk_gui *mywidget = new gtk_gui(argv[0], argc > 1 ? argv[1] : "AmbulantPlayer");
-
-#ifdef	WITH_HILDON
-	/* Hildonize AmbulantPlayer */
-	hildon_program = HILDON_PROGRAM(hildon_program_get_instance());
-	g_set_application_name("AmbulantPlayer");
-	hildon_window = HILDON_WINDOW(hildon_window_new());
-	hildon_program_add_window(hildon_program, hildon_window);
-#endif/*WITH_HILDON*/
 
 	// take log level from preferences
 	gtk_logger::set_gtk_logger_gui(mywidget);
@@ -1079,9 +1015,6 @@ main (int argc, char*argv[]) {
 	gstreamer_player_finalize();
 #endif/*WITH_GSTREAMER*/
 
-#ifdef	WITH_NOKIA770
-	if (ctxt) osso_deinitialize (ctxt);
-#endif/*WITH_NOKIA770*/
 	std::cout << "Exiting program" << std::endl;
 	return exec_flag ? 0 : -1;
 }

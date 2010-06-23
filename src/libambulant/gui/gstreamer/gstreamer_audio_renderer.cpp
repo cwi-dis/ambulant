@@ -130,13 +130,8 @@ gstreamer_audio_renderer::is_supported(const lib::node *node)
 		return false;
 	std::string mimetype(node->get_url("src").guesstype());
 
-#ifdef  WITH_NOKIA770
-	if (mimetype == "audio/mpeg") // .mp3
-		return true;
-#else //WITH_NOKIA770
 	if (mimetype == "audio/mpeg" || mimetype == "audio/wav")
 		return true;
-#endif//WITH_NOKIA770
 	return false;
 }
 
