@@ -384,11 +384,6 @@ ffmpeg_decoder_datasource::readdone(int len)
 	m_lock.enter();
 	m_buffer.readdone(len);
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource.readdone : done with %d bytes", len);
-/*	if(( !(buffer_full()) && !m_src->end_of_file() )) {
- *		lib::event *e = new readdone_callback(this, &ffmpeg_decoder_datasource::data_avail);
- *		m_src->start(m_event_processor, e);
- *	}
- */
 	m_lock.leave();
 }
 
@@ -568,7 +563,7 @@ ffmpeg_decoder_datasource::data_avail()
 		} else {
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail(): No client callback!");
 		}
-#endif//WITH_SEAMLESS_PLAYBACK
+#endif // WITH_SEAMLESS_PLAYBACK
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::data_avail(): No decoder, flushing available data");
 	}
@@ -668,7 +663,7 @@ ffmpeg_decoder_datasource::set_clip_end(timestamp_t clip_end)
 	m_src->set_clip_end(clip_end);
 }
 
-#endif
+#endif // WITH_SEAMLESS_PLAYBACK
 
 bool
 ffmpeg_decoder_datasource::buffer_full()
@@ -1123,7 +1118,7 @@ ffmpeg_resample_datasource::get_elapsed()
 	return rv;
 }
 
-#endif
+#endif // WITH_SEAMLESS_PLAYBACK
 
 
 bool

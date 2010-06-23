@@ -54,9 +54,6 @@
 // XXXJACK picked this scalerr because of "FAST" in the name. So there may be a better choice...
 #define SWSCALE_FLAGS SWS_FAST_BILINEAR
 
-#define am_get_codec_var(codec,var) codec->var
-#define am_get_codec(codec) codec
-
 using namespace ambulant;
 using namespace net;
 
@@ -245,9 +242,6 @@ ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp
 	ambulant::lib::event *callbackk, timestamp_t timestamp)
 {
 	m_lock.enter();
-#ifdef WITH_SEAMLESS_PLAYBACK
-//	m_start_input = true;
-#endif
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_frame: (this = 0x%x)", (void*) this);
 
 	if (m_client_callback != NULL) {
@@ -286,7 +280,11 @@ ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp
 		m_event_processor = evp;
 	}
 
-#else
+	// Don't restart our source if we are at end of file.
+	if ( _end_of_file() ) m_start_input = false;
+
+#else // WITH_SEAMLESS_PLAYBACK
+
 	if (m_frames.size() > 0 || _end_of_file() ) {
 		// We have data (or EOF) available. Don't bother starting up our source again, in stead
 		// immedeately signal our client again
@@ -317,11 +315,7 @@ ffmpeg_video_decoder_datasource::start_frame(ambulant::lib::event_processor *evp
 		m_event_processor = evp;
 	}
 
-#endif
-	// Don't restart our source if we are at end of file.
-#ifndef WITH_SEAMLESS_PLAYBACK
-	if ( _end_of_file() ) m_start_input = false;
-#endif
+#endif // WITH_SEAMLESS_PLAYBACK
 
 	if (m_start_input) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_frame() Calling m_src->start_frame(..)");
@@ -346,11 +340,6 @@ ffmpeg_video_decoder_datasource::start_prefetch(ambulant::lib::event_processor *
 
 	m_event_processor = evp;
 
-	// Don't restart our source if we are at end of file.
-#ifndef WITH_SEAMLESS_PLAYBACK
-	if ( _end_of_file() ) m_start_input = false;
-#endif
-
 	if (m_start_input) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_frame() Calling m_src->start_frame(..)");
 		lib::event *e = new framedone_callback(this, &ffmpeg_video_decoder_datasource::data_avail);
@@ -361,18 +350,6 @@ ffmpeg_video_decoder_datasource::start_prefetch(ambulant::lib::event_processor *
 	m_lock.leave();
 }
 #endif
-
-void
-print_frames(sorted_frames frames) {
-	sorted_frames f(frames);
-	while (f.size()) {
-		ts_pointer_pair e = f.front();
-		printf("e.first=%d ", (int) e.first);
-		f.pop();
-	}
-	printf("\n");
-	return;
-}
 
 void
 ffmpeg_video_decoder_datasource::_pop_top_frame() {
