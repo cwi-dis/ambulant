@@ -599,7 +599,7 @@
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		8D1107320486CEB800E47090 /* Ambulant-mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ambulant-mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D1107320486CEB800E47090 /* AmbulantPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmbulantPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1417,12 +1417,12 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8D1107320486CEB800E47090 /* Ambulant-mac.app */,
+				8D1107320486CEB800E47090 /* AmbulantPlayer.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		29B97314FDCFA39411CA2CEA /* Ambulant-mac */ = {
+		29B97314FDCFA39411CA2CEA /* AmbulantPlayer */ = {
 			isa = PBXGroup;
 			children = (
 				080E96DDFE201D6D7F000001 /* Classes */,
@@ -1432,7 +1432,7 @@
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
-			name = "Ambulant-mac";
+			name = AmbulantPlayer;
 			sourceTree = "<group>";
 		};
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
@@ -1496,8 +1496,8 @@
 			);
 			name = "Ambulant Player";
 			productInstallPath = "$(HOME)/Applications";
-			productName = "Ambulant-mac";
-			productReference = 8D1107320486CEB800E47090 /* Ambulant-mac.app */;
+			productName = AmbulantPlayer;
+			productReference = 8D1107320486CEB800E47090 /* AmbulantPlayer.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1515,7 +1515,7 @@
 				German,
 				Dutch,
 			);
-			mainGroup = 29B97314FDCFA39411CA2CEA /* Ambulant-mac */;
+			mainGroup = 29B97314FDCFA39411CA2CEA /* AmbulantPlayer */;
 			projectDirPath = "";
 			projectRoot = ../..;
 			targets = (
@@ -1781,7 +1781,7 @@
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\"",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\"",
 				);
-				PRODUCT_NAME = "Ambulant-mac";
+				PRODUCT_NAME = AmbulantPlayer;
 				USER_HEADER_SEARCH_PATHS = "../../include ../../build-3264/third_party_packages/installed/include/SDL ../../build-3264/third_party_packages/installed/include ../../build-3264/third_party_packages/live/liveMedia/include ../../build-3264/third_party_packages/live/BasicUsageEnvironment/include ../../build-3264/third_party_packages/live/groupsock/include ../../build-3264/third_party_packages/live/UsageEnvironment/include";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -1847,7 +1847,7 @@
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\"",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\"",
 				);
-				PRODUCT_NAME = "Ambulant-mac";
+				PRODUCT_NAME = AmbulantPlayer;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -1934,7 +1934,7 @@
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\"",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\"",
 				);
-				PRODUCT_NAME = "Ambulant-mac";
+				PRODUCT_NAME = AmbulantPlayer;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -1976,7 +1976,7 @@
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\"",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\"",
 				);
-				PRODUCT_NAME = "Ambulant-mac";
+				PRODUCT_NAME = AmbulantPlayer;
 				USER_HEADER_SEARCH_PATHS = "../../include ../../build-3264/third_party_packages/installed/include ../../build-3264/third_party_packages/installed/include/SDL ../../build-3264/third_party_packages/live/liveMedia/include ../../build-3264/third_party_packages/live/BasicUsageEnvironment/include ../../build-3264/third_party_packages/live/groupsock/include ../../build-3264/third_party_packages/live/UsageEnvironment/include";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -2015,7 +2015,7 @@
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\"",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\"",
 				);
-				PRODUCT_NAME = "Ambulant-mac";
+				PRODUCT_NAME = AmbulantPlayer;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
