@@ -114,9 +114,6 @@ const char *welcome_locations[] = {
 	"Extras/Welcome/Welcome.smil",
 	"../Extras/Welcome/Welcome.smil",
 	AMBULANT_DATADIR "/Welcome/Welcome.smil",
-#ifdef	GTK_NO_FILEDIALOG	/* Assume embedded Qt */
-	"/home/zaurus/Documents/Ambulant/Extras/Welcome/Welcome.smil",
-#endif/*QT_NO_FILEDIALOG*/
 	NULL
 };
 
@@ -361,17 +358,11 @@ gtk_gui::gtk_gui(const char* title, const char* initfile)
 	/* The Gtk UI Manager */
 	GtkUIManager *ui = gtk_ui_manager_new();
 
-//	if (!gtk_ui_manager_add_ui_from_file(ui, UI_FILENAME, &error))
 	if (!gtk_ui_manager_add_ui_from_string(ui, ui_description, -1, &error))
 		g_error("Could not merge UI, error was: %s\n", error->message);
 	gtk_ui_manager_insert_action_group(ui, m_actions, 0);
 	gtk_window_add_accel_group(m_toplevelcontainer, gtk_ui_manager_get_accel_group(ui));
 
-	/* Disable and make invisible menus and menu items */
-#ifdef GTK_NO_FILEDIALOG
-	gtk_action_set_sensitive(gtk_action_group_get_action(m_actions, "open"), true);
-	gtk_action_set_sensitive(gtk_action_group_get_action(m_actions, "openurl"), false);
-#endif
 
 	// The actual activation calls
 	g_signal_connect_swapped (gtk_action_group_get_action (m_actions, "open"), "activate",	G_CALLBACK (gtk_C_callback_open), (void *) this );
@@ -618,17 +609,9 @@ void gtk_gui::do_file_selected() {
 	}
 }
 
-
-
 void
 gtk_gui::setDocument(const char* smilfilename) {
-#ifdef	GTK_NO_FILEDIALOG	/* Assume embedded GTK */
-	if (openSMILfile(smilfilename, 0, true)) {
-		do_play();
-	}
-#endif/*GTK_NO_FILEDIALOG*/
 }
-
 
 void
 gtk_gui::do_settings_selected() {
@@ -673,7 +656,6 @@ gtk_gui::do_load_settings() {
 	g_signal_connect_swapped (GTK_OBJECT ((m_settings_selector)->ok_button),"clicked", G_CALLBACK (gtk_C_callback_settings_selected),(void*) this);
 */
 }
-
 
 void
 gtk_gui::do_open_url() {

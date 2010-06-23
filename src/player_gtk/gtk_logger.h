@@ -29,11 +29,6 @@
 
 #include <stdarg.h>
 #include <string.h>
-#ifndef GTK_NO_FILEDIALOG	 /* Assume plain Qt */
-//#include <qtextedit.h>
-#else /*GTK_NO_FILEDIALOG*/
-/* No logger window on an embedded system, logging there on "stdout" */
-#endif/*QT_NO_FILEDIALOG*/
 
 #include "ambulant/version.h"
 #include "ambulant/config/config.h"

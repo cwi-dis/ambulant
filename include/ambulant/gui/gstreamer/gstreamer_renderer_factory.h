@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __GSTREAMER_RENDERER_FACTORY_h
-#define __GSTREAMER_RENDERER_FACTORY_h
+#ifndef AMBULANT_GUI_GSTREAMER_GSTREAMER_RENDERER_FACTORY_H
+#define AMBULANT_GUI_GSTREAMER_GSTREAMER_RENDERER_FACTORY_H
 
 #include "ambulant/common/factory.h"
 
@@ -71,4 +71,4 @@ AMBULANTAPI common::playable_factory *create_gstreamer_renderer_factory(common::
 } // end namespace gui
 } // end namespace ambulant
 
-#endif // __GSTREAMER_RENDERER_FACTORY_h
+#endif // AMBULANT_GUI_GSTREAMER_GSTREAMER_RENDERER_FACTORY_H

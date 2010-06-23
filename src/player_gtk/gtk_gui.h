@@ -64,32 +64,28 @@ class gtk_gui : public GtkWidget{
 /*TMP*/	gtk_mainloop* m_mainloop;
 
   private:
-	const char*  m_programfilename;
-	const char*  m_smilfilename;
+	const char* m_programfilename;
+	const char* m_smilfilename;
 	gtk_settings* m_settings;
-	GtkWindow*   m_toplevelcontainer; // the actual top level window
-	GtkWidget*   menubar;		 // The UI (menubar)
-	GtkWidget*   m_guicontainer;	// The container (menubar + documentcontainer)
-	GtkWidget*   m_documentcontainer; // The drawable area
+	GtkWindow* m_toplevelcontainer; // the actual top level window
+	GtkWidget* menubar;		 // The UI (menubar)
+	GtkWidget* m_guicontainer;	// The container (menubar + documentcontainer)
+	GtkWidget* m_documentcontainer; // The drawable area
 	GtkActionGroup *m_actions;
 
 #define	LOCK_MESSAGE
 #ifdef	LOCK_MESSAGE
-	pthread_cond_t	  m_cond_message;
-	pthread_mutex_t   m_lock_message;
+	pthread_cond_t m_cond_message;
+	pthread_mutex_t m_lock_message;
 	pthread_t m_gui_thread;
 #endif/*LOCK_MESSAGE*/
-	bool         m_pointinghand_cursor; //XXXX
+	bool m_pointinghand_cursor; //XXXX
 	GtkFileChooser* m_file_chooser;
 	GtkFileChooser* m_settings_chooser;
-	GtkEntry*	m_url_text_entry;
-	//const DocLnk m_selectedDocLnk;
-	void	     fileError(const gchar* smilfilename);
+	GtkEntry* m_url_text_entry;
+	void fileError(const gchar* smilfilename);
 
 	void setDocument(const char* string);
-#ifndef GTK_NO_FILEDIALOG	/* Assume plain Qt */
-#define DocLnk void*
-#endif/*GTK_NO_FILEDIALOG*/
   public:
 	void do_file_selected();
 	void do_url_selected();

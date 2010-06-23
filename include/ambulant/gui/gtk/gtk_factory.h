@@ -194,11 +194,6 @@ class gtk_ambulant_widget : public GtkWidget, public ambulant::common::gui_scree
 	gulong m_motion_notify_handler_id;
 	gulong m_button_release_handler_id;
 
-#ifndef GTK_NO_FILEDIALOG	/* Assume plain GTK */
-  protected:
-//	void mouseMoveEvent(QMouseEvent* e);
-#endif/*GTK_NO_FILEDIALOG*/
-
 };  // class gtk_ambulant_widget
 
 AMBULANTAPI common::window_factory *create_gtk_window_factory(gtk_ambulant_widget* gtk_widget, common::gui_player* gpl);
