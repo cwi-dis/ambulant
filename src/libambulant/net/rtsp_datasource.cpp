@@ -392,7 +392,7 @@ ambulant::net::rtsp_demux::_init_subsessions(rtsp_context_t *context)
 				// If anything fails (it shouldn't) we just continue, we'll get the same error later.
 				AVCodecContext *ffcon = ffmpeg_alloc_partial_codec_context(true, "H264");
 				ffcon->extradata = context->configData;
-				ffcon->extradata_size = context->configDataLen;
+				ffcon->extradata_size = (int)context->configDataLen;
 				context->video_fmt = video_format("ffmpeg", ffcon);
 #endif
 			}
@@ -503,7 +503,7 @@ ambulant::net::rtsp_demux::run()
 			AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() video_packet 0x%x", m_context->video_packet);
 			
 			m_critical_section.leave();
-			m_context->video_subsession->readSource()->getNextFrame(&m_context->video_packet[m_context->extraPacketHeaderSize], MAX_RTP_FRAME_SIZE-m_context->extraPacketHeaderSize, after_reading_video_stub, this, on_source_close, m_context);
+			m_context->video_subsession->readSource()->getNextFrame(&m_context->video_packet[m_context->extraPacketHeaderSize], (unsigned)(MAX_RTP_FRAME_SIZE-m_context->extraPacketHeaderSize), after_reading_video_stub, this, on_source_close, m_context);
 			m_critical_section.enter();
 		}
 
