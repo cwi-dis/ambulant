@@ -261,7 +261,7 @@ void
 renderer_playable_dsall::readdone()
 {
 	if (!m_src) return;
-	unsigned cur_size = m_src->size();
+	size_t cur_size = m_src->size();
 	AM_DBG lib::logger::get_logger()->debug("renderer_playable_dsall.readdone(0x%x, size=%d) cookie=%d", (void *)this, cur_size, m_cookie);
 
 	if (!m_partial_data)

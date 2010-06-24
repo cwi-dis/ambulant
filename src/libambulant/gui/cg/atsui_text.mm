@@ -120,7 +120,7 @@ atsui_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 	if (m_data && !m_text_storage) {
 		// Convert through NSString. We hope this will get the unicode intricacies right.
 		NSString *the_string = [[NSString alloc] initWithBytesNoCopy: m_data
-				length: m_data_size
+				length: (unsigned int)m_data_size
 				encoding: NSUTF8StringEncoding
 				freeWhenDone: NO];
 		m_text_storage_length = [the_string length];

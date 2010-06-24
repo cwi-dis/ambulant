@@ -71,7 +71,7 @@ qt_image_renderer::redraw_body(const rect &dirty, gui_window* w) {
 	if (m_data && !m_image_loaded) {
 		// alpha buffer needed for images w. transparent areas
 		m_image.setAlphaBuffer(TRUE);
-		m_image_loaded = m_image.loadFromData((const uchar*)m_data, m_data_size);
+		m_image_loaded = m_image.loadFromData((const uchar*)m_data, (uint)m_data_size);
 	}
 	if ( ! m_image_loaded) {
 		// Initially the image may not yet be loaded

@@ -39,7 +39,7 @@ extern "C" {
 static void
 sdl_C_callback(void *userdata, Uint8 *stream, int len)
 {
-	gui::sdl::sdl_audio_renderer::sdl_callback(stream, len);
+	gui::sdl::sdl_audio_renderer::sdl_callback(stream, (size_t)len);
 }
 
 }
@@ -69,8 +69,8 @@ typedef lib::no_arg_callback<gui::sdl::sdl_audio_renderer> readdone_callback;
 bool gui::sdl::sdl_audio_renderer::s_sdl_init = false;
 Uint16 gui::sdl::sdl_audio_renderer::s_sdl_format = AUDIO_S16SYS;
 net::audio_format gui::sdl::sdl_audio_renderer::s_ambulant_format = net::audio_format(44100, 2, 16);
-int gui::sdl::sdl_audio_renderer::s_buffer_size = 4096;
-int gui::sdl::sdl_audio_renderer::s_min_buffer_size_bytes = 2 * 4096 * 2 * 2;
+size_t gui::sdl::sdl_audio_renderer::s_buffer_size = 4096;
+size_t gui::sdl::sdl_audio_renderer::s_min_buffer_size_bytes = 2 * 4096 * 2 * 2;
 lib::critical_section gui::sdl::sdl_audio_renderer::s_static_lock;
 std::list<gui::sdl::sdl_audio_renderer *> gui::sdl::sdl_audio_renderer::s_renderers;
 gui::sdl::sdl_audio_renderer *gui::sdl::sdl_audio_renderer::s_master_clock_renderer;
@@ -103,7 +103,7 @@ gui::sdl::sdl_audio_renderer::init()
 	desired.freq = s_ambulant_format.samplerate;
 	desired.format = s_sdl_format;
 	desired.channels = s_ambulant_format.channels;
-	desired.samples = s_buffer_size;
+	desired.samples = (Uint32)s_buffer_size;
 	desired.callback = sdl_C_callback;
 	desired.userdata = NULL;
 	err = SDL_OpenAudio(&desired, &obtained);
@@ -185,7 +185,7 @@ gui::sdl::sdl_audio_renderer::unregister_renderer(sdl_audio_renderer *rnd)
 }
 
 void
-gui::sdl::sdl_audio_renderer::sdl_callback(Uint8 *stream, int len)
+gui::sdl::sdl_audio_renderer::sdl_callback(Uint8 *stream, size_t len)
 {
 	s_static_lock.enter();
 	std::list<sdl_audio_renderer *>::iterator first = s_renderers.begin();
@@ -198,7 +198,7 @@ gui::sdl::sdl_audio_renderer::sdl_callback(Uint8 *stream, int len)
 
 		AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::sdl_callback(0x%x, %d) [one stream] calling 0x%x.get_data()", (void*) stream, len, *first);
 
-		int single_len = (*first)->get_data(len, &single_data);
+		size_t single_len = (*first)->get_data(len, &single_data);
 		assert(single_len <= len);
 		if (single_len != 0) {
 			assert(single_data);
@@ -219,7 +219,7 @@ gui::sdl::sdl_audio_renderer::sdl_callback(Uint8 *stream, int len)
 			dbg_nstream++;
 			Uint8 *next_data;
 			AM_DBG lib::logger::get_logger()->debug("sdl_audio_renderer::sdl_callback(0x%x, %d))calling get_data() ", (void*) stream, len);
-			int next_len = (*i)->get_data(len, &next_data);
+			size_t next_len = (*i)->get_data(len, &next_data);
 			if (next_len)
 				add_samples((short*)stream, (short*)next_data, std::min(len/2, next_len/2), (*i)->m_volumes, (*i)->m_volcount);
 
@@ -429,15 +429,15 @@ gui::sdl::sdl_audio_renderer::start_outtransition(const lib::transition_info* in
 	m_transition_engine->init(m_event_processor, true, info);
 }
 
-int
-gui::sdl::sdl_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
+size_t
+gui::sdl::sdl_audio_renderer::get_data(size_t bytes_wanted, Uint8 **ptr)
 {
 	m_lock.enter();
 
 	// turned this of because I think here also happends a get_read_ptr when it should not
 	//XXXX sometimes we get this one in News when changing video itmes
 	assert(m_is_playing);
-	int rv;
+	size_t rv;
 	*ptr = NULL;
 	if (m_is_paused||!m_audio_src) {
 		rv = 0;
@@ -553,7 +553,7 @@ gui::sdl::sdl_audio_renderer::get_data(int bytes_wanted, Uint8 **ptr)
 }
 
 void
-gui::sdl::sdl_audio_renderer::get_data_done(int size)
+gui::sdl::sdl_audio_renderer::get_data_done(size_t size)
 {
 	m_lock.enter();
 	// Acknowledge that we are ready with the data provided to us

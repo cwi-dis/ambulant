@@ -57,8 +57,8 @@ class cg_text_renderer : public cg_renderer<renderer_playable_dsall> {
 
 	void redraw_body(const rect &dirty, gui_window *window);
   private:
-	bool _calc_fit(CGContextRef ctx, float width, int& lbegin, int& lend);
-	bool _fits(CGContextRef ctx, float width, const char *str, int strlen);
+	bool _calc_fit(CGContextRef ctx, float width, size_t& lbegin, size_t& lend);
+	bool _fits(CGContextRef ctx, float width, const char *str, size_t strlen);
 	const char *m_font_name;
 	float m_font_size;
 	lib::color_t m_text_color;

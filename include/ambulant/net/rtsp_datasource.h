@@ -161,14 +161,14 @@ struct rtsp_context_t {
 	MediaSubsession *video_subsession;
 
 	unsigned char* configData; // For H264 (and maybe other formats): Extra configuration data, to be passed to ffmpeg
-	int configDataLen;
+	size_t configDataLen;
 	unsigned char *initialPacketData;	// For MP4V (and maybe other formats): a synthetic initial packet
-	int initialPacketDataLen;
+	size_t initialPacketDataLen;
 	unsigned char *extraPacketHeaderData;	// H264 (and some other formats) need a couple extra bytes at the beginning of each packet.
-	int extraPacketHeaderSize;
+	size_t extraPacketHeaderSize;
 	bool notPacketized;			// H264 streams from live555 are not packetized, we need to do that ourselves.
 	unsigned char* vbuffer;		// Buffer for re-packetizing
-	int vbufferlen;
+	size_t vbufferlen;
 	timestamp_t last_pts;		// Timestamp of packet data being accumulated in vbuffer
 #ifdef ENABLE_LIVE555_PTS_CORRECTION
 	timestamp_t last_emit_pts;  // Last timestamp emitted to higher layers
@@ -181,7 +181,7 @@ struct rtsp_context_t {
 	char blocking_flag;		// Flag determining whether live555 should block in read
 	bool eof;				// True when we reach end-of-file on any stream (XXXJACK: correct behaviour?)
 	timestamp_t clip_end;	// Where we want to stop (microseconds)
-	float duration;			// How long the stream will take in total (XXXJACK: needed?)
+	double duration;			// How long the stream will take in total (XXXJACK: needed?)
 	timestamp_t last_expected_pts;	// The same, but different
 	timestamp_t highest_pts_seen;   // Highest pts seen in any stream
 	timestamp_t idle_time;      // Amount of time we have not seen any packets
@@ -220,8 +220,8 @@ class rtsp_demux : public abstract_demux {
 	timestamp_t get_clip_begin();
 	timestamp_t get_start_time() { return m_clip_begin; };
 	// These next two should be protected, but I don't know how to make a static function a friend.
-	void after_reading_audio(unsigned sz, unsigned truncated, struct timeval pts, unsigned duration);
-	void after_reading_video(unsigned sz, unsigned truncated, struct timeval pts, unsigned duration);
+	void after_reading_audio(size_t sz, unsigned truncated, struct timeval pts, unsigned duration);
+	void after_reading_video(size_t sz, unsigned truncated, struct timeval pts, unsigned duration);
   protected:
 	unsigned long run();
   private:

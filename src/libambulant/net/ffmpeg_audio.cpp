@@ -144,7 +144,7 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, const
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_datasource_factory::new_audio_datasource: decoder ds = 0x%x", (void*)dds);
 	if (dds == NULL) {
 		pds->stop();
-		int rem = pds->release();
+		long rem = pds->release();
 		assert(rem == 0);
 		return NULL;
 	}
@@ -156,7 +156,7 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, const
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_audio_datasource_factory::new_audio_datasource: resample ds = 0x%x", (void*)rds);
 	if (rds == NULL)  {
 		dds->stop();
-		int rem = dds->release();
+		long rem = dds->release();
 		assert(rem == 0);
 		return NULL;
 	}
@@ -166,7 +166,7 @@ ffmpeg_audio_datasource_factory::new_audio_datasource(const net::url& url, const
 	}
 	lib::logger::get_logger()->error(gettext("%s: unable to create audio resampler"));
 	rds->stop();
-	int rem = rds->release();
+	long rem = rds->release();
 	assert(rem == 0);
 	return NULL;
 }
@@ -301,7 +301,7 @@ ffmpeg_decoder_datasource::stop()
 	m_con = NULL;
 	if (m_src) {
 		m_src->stop();
-		int rem = m_src->release();
+		long rem = m_src->release();
 		if (rem) lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::stop(0x%x): m_src refcount=%d", (void*)this, rem);
 	}
 	m_src = NULL;
@@ -446,7 +446,7 @@ ffmpeg_decoder_datasource::data_avail()
 					///// at one time. This idea is borrowed from VLC, according to:
 					///// vlc-0.8.6c/module/codec/ffmpeg/audio.c:L253-L254.
 					AM_DBG lib::logger::get_logger()->debug("avocodec_decode_audio: converted %d of %d bytes to %d", decoded, (int)cursz, outsize);
-					while (decoded > 0 && decoded < cursz) {
+					while (decoded > 0 && decoded < (int)cursz) {
 						inbuf += decoded;
 						cursz -= decoded;
 						m_buffer.pushdata(outsize);
@@ -456,7 +456,7 @@ ffmpeg_decoder_datasource::data_avail()
 #if LIBAVCODEC_VERSION_MAJOR >= 53
 						decoded = avcodec_decode_audio3(m_con, (short*) ffmpeg_outbuf, &outsize, &avpkt);
 #else
-						decoded = avcodec_decode_audio2(m_con, (short*) ffmpeg_outbuf, &outsize, inbuf, cursz);
+						decoded = avcodec_decode_audio2(m_con, (short*) ffmpeg_outbuf, &outsize, inbuf, (int)cursz);
 #endif // LIBAVCODEC_VERSION_MAJOR >= 53
 						if (decoded < 0) outsize = 0;
 						AM_DBG lib::logger::get_logger()->debug("avocodec_decode_audio: converted additional %d of %d bytes to %d", decoded, cursz, outsize);
@@ -495,7 +495,7 @@ ffmpeg_decoder_datasource::data_avail()
 							m_buffer.pushdata(0);
 						}
 						if (old_elapsed < m_src->get_clip_begin()) {
-							assert(m_buffer.size() == outsize);
+							assert(m_buffer.size() == (size_t)outsize);
 							timestamp_t delta_t_unwanted = m_src->get_clip_begin() - old_elapsed;
 							assert(delta_t_unwanted > 0);
 							size_t bytes_unwanted = (size_t)(delta_t_unwanted * ((m_fmt.samplerate* m_fmt.channels * m_fmt.bits)/(sizeof(uint8_t)*8))/1000000);
@@ -880,11 +880,11 @@ void
 ffmpeg_resample_datasource::stop()
 {
 	m_lock.enter();
-	int oldrefcount = get_ref_count();
+	long oldrefcount = get_ref_count();
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::stop(0x%x)", (void*)this);
 	if (m_src) {
 		m_src->stop();
-		int rem = m_src->release();
+		long rem = m_src->release();
 		if (rem) lib::logger::get_logger()->debug("ffmpeg_resample_datasource::stop(0x%x): m_src refcount=%d", (void*)this, rem);
 		m_src = NULL;
 	} else {
@@ -956,7 +956,7 @@ ffmpeg_resample_datasource::data_avail()
 
 		timestamp_t tmp = (timestamp_t)((insamples+1) * m_out_fmt.samplerate * m_out_fmt.channels * sizeof(short) / m_in_fmt.samplerate);
 		size_t outsz = (size_t)tmp;
-		assert(tmp == outsz);
+		assert(tmp == (timestamp_t)outsz); // Check for silly type mismatchees
 
 
 		if (!cursize && !m_src->end_of_file()) {
@@ -978,7 +978,7 @@ ffmpeg_resample_datasource::data_avail()
 			}
 			if (inbuf && outbuf && insamples > 0) {
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail: sz=%d, insamples=%d, outsz=%d, inbuf=0x%x, outbuf=0x%x", cursize, insamples, outsz, inbuf, outbuf);
-				int outsamples = audio_resample(m_resample_context, outbuf, inbuf, insamples);
+				int outsamples = audio_resample(m_resample_context, outbuf, inbuf, (int)insamples);
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_resample_datasource::data_avail(): putting %d bytes in %d bytes buffer space", outsamples*m_out_fmt.channels*sizeof(short), outsz);
 				assert(outsamples*m_out_fmt.channels*sizeof(short) <= outsz);
 				m_buffer.pushdata(outsamples*m_out_fmt.channels*sizeof(short));

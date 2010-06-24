@@ -48,7 +48,7 @@ after_reading_audio_stub(void* data, unsigned sz, unsigned truncated, struct tim
 {
 	rtsp_demux* demux = (rtsp_demux*) data;
 	assert(demux);
-	demux->after_reading_audio(sz, truncated, pts, duration);
+	demux->after_reading_audio((size_t)sz, truncated, pts, duration);
 }
 
 static void
@@ -56,7 +56,7 @@ after_reading_video_stub(void* data, unsigned sz, unsigned truncated, struct tim
 {
 	rtsp_demux* demux = (rtsp_demux*) data;
 	assert(demux);
-	demux->after_reading_video(sz, truncated, pts, duration);
+	demux->after_reading_video((size_t)sz, truncated, pts, duration);
 }
 
 static void
@@ -289,7 +289,7 @@ ambulant::net::rtsp_demux::set_clip_end(timestamp_t clip_end)
 }
 #endif
 
-static unsigned char* parseH264ConfigStr(char const* configStr, unsigned int& configSize);
+static unsigned char* parseH264ConfigStr(char const* configStr, size_t& configSize);
 
 rtsp_context_t *
 ambulant::net::rtsp_demux::_init_subsessions(rtsp_context_t *context)
@@ -361,7 +361,7 @@ ambulant::net::rtsp_demux::_init_subsessions(rtsp_context_t *context)
 				unsigned char* initialPacketData
 					= parseGeneralConfigStr(subsession->fmtp_config(), initialPacketDataLen);
 				context->initialPacketData = initialPacketData;
-				context->initialPacketDataLen = initialPacketDataLen;
+				context->initialPacketDataLen = (size_t)initialPacketDataLen;
 
 			}
 			if ( !strcmp( context->video_codec_name, "H264")){
@@ -376,7 +376,7 @@ ambulant::net::rtsp_demux::_init_subsessions(rtsp_context_t *context)
 				context->extraPacketHeaderData[3] = 0x01;
 				// Also, live555 doesn't deliver H264 streams with correct packetization (sigh)
 				context->notPacketized = true;
-				unsigned configLen;
+				size_t configLen;
 				unsigned char* configData;
 
 				configData = parseH264ConfigStr(subsession->fmtp_spropparametersets(), configLen);
@@ -552,7 +552,7 @@ ambulant::net::rtsp_demux::cancel()
 }
 
 void
-rtsp_demux::after_reading_audio(unsigned sz, unsigned truncated, struct timeval pts, unsigned dur)
+rtsp_demux::after_reading_audio(size_t sz, unsigned truncated, struct timeval pts, unsigned dur)
 {
 	m_critical_section.enter();
 	AM_DBG lib::logger::get_logger()->debug("after_reading_audio: called sz = %d, truncated = %d, pts=%lld.%ld, %d",sz , truncated, pts.tv_sec,	 pts.tv_usec, dur);
@@ -577,8 +577,8 @@ rtsp_demux::after_reading_audio(unsigned sz, unsigned truncated, struct timeval 
 	if (m_context->media_session) {
 		MediaSession* ms = m_context->media_session;
 		//		Boolean hasBeenSynchronized = ms->hasBeenSynchronizedUsingRTCP();
-		float start_time = ms->playStartTime();
-		float stop_time = ms->playEndTime();
+		double start_time = ms->playStartTime();
+		double stop_time = ms->playEndTime();
 		// lib::logger::get_logger()->debug("after_reading_audio: hasBeenSynchronized=%d, start_time=%f, stop_time=%f ", hasBeenSynchronized, start_time, stop_time);
 		AM_DBG lib::logger::get_logger()->debug("after_reading_audio: start_time=%f, stop_time=%f ", start_time, stop_time);
 	}
@@ -656,7 +656,7 @@ rtsp_demux::after_reading_audio(unsigned sz, unsigned truncated, struct timeval 
 }
 
 void
-rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval pts, unsigned dur)
+rtsp_demux::after_reading_video(size_t sz, unsigned truncated, struct timeval pts, unsigned dur)
 {
 	m_critical_section.enter();
 	assert(m_context);
@@ -676,7 +676,7 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
 	// Some formats (notably mp4v and h264) get an initial synthesized packet of data. This is
 	// where we deliver that.
 	if(m_context->initialPacketDataLen > 0) {
-		AM_DBG lib::logger::get_logger()->debug("after_reading_video: inserting initialPacketData packet, size=%d", m_context->initialPacketDataLen);
+		AM_DBG lib::logger::get_logger()->debug("after_reading_video: inserting initialPacketData packet, size=%d", (int)m_context->initialPacketDataLen);
 		if (m_context->notPacketized) {
 			assert(m_context->vbuffer == NULL);
 			assert(m_context->vbufferlen == 0);
@@ -748,7 +748,7 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
 			}
 			m_context->last_emit_pts = out_pts;
 #endif
-			AM_DBG lib::logger::get_logger()->debug("Video packet length (buffered)=%d, timestamp=%lld, rpts=%lld synced=%d", m_context->vbufferlen, out_pts+m_clip_begin, rpts+m_clip_begin, m_context->video_subsession->rtpSource()->hasBeenSynchronizedUsingRTCP());
+			AM_DBG lib::logger::get_logger()->debug("Video packet length (buffered)=%d, timestamp=%lld, rpts=%lld synced=%d", (int)m_context->vbufferlen, out_pts+m_clip_begin, rpts+m_clip_begin, m_context->video_subsession->rtpSource()->hasBeenSynchronizedUsingRTCP());
 			_push_data_to_sink(m_context->video_stream, out_pts, (uint8_t*) m_context->vbuffer, m_context->vbufferlen);
 			free(m_context->vbuffer);
 			m_context->vbuffer = NULL;
@@ -792,7 +792,7 @@ rtsp_demux::after_reading_video(unsigned sz, unsigned truncated, struct timeval 
 		}
 		m_context->last_emit_pts = out_pts;
 #endif
-		AM_DBG lib::logger::get_logger()->debug("Video packet length %d+%d=%d, timestamp=%lld, rpts=%lld", sz, m_context->extraPacketHeaderSize, sz+m_context->extraPacketHeaderSize, out_pts+m_clip_begin, rpts+m_clip_begin);
+		AM_DBG lib::logger::get_logger()->debug("Video packet length %d+%d=%d, timestamp=%lld, rpts=%lld", sz, (int)m_context->extraPacketHeaderSize, sz+m_context->extraPacketHeaderSize, out_pts+m_clip_begin, rpts+m_clip_begin);
 		_push_data_to_sink(m_context->video_stream, out_pts, (uint8_t*) m_context->video_packet, sz+m_context->extraPacketHeaderSize);
 	}
 
@@ -846,9 +846,10 @@ rtsp_demux::_push_data_to_sink (int sink_index, timestamp_t pts, const uint8_t* 
 	}
 }
 // Following code from : vlc-1.0.5/modules/demux/live555.cpp
-static int b64_decode( char *dest, char *src );
+static size_t b64_decode( char *dest, char *src );
 
-static unsigned char* parseH264ConfigStr(char const* configStr, unsigned int& configSize)
+static unsigned char*
+parseH264ConfigStr(char const* configStr, size_t& configSize)
 {
 	char *dup, *psz;
 	int i, i_records = 1;
@@ -902,7 +903,8 @@ static unsigned char* parseH264ConfigStr(char const* configStr, unsigned int& co
 
 
 /*char b64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";*/
-static int b64_decode( char *dest, char *src )
+static size_t
+b64_decode( char *dest, char *src )
 {
 	const char *dest_start = dest;
 	int	 i_level;

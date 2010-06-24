@@ -84,7 +84,7 @@ class stdio_datasource : virtual public datasource, virtual public lib::ref_coun
 	void read_file();
 	const url m_url;
 	databuffer *m_buffer;
-	int m_filesize;
+	off_t m_filesize;
 	FILE *m_stream;
 	bool m_end_of_file;
 	lib::critical_section m_lock;

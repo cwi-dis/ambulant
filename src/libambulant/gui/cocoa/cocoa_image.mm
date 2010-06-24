@@ -82,7 +82,7 @@ cocoa_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 
 	if (m_data && !m_image) {
 		AM_DBG logger::get_logger()->debug("cocoa_image_renderer.redraw: creating image");
-		m_nsdata = [NSData dataWithBytesNoCopy: m_data length: m_data_size freeWhenDone: NO];
+		m_nsdata = [NSData dataWithBytesNoCopy: m_data length: (unsigned int)m_data_size freeWhenDone: NO];
 		m_image = [[NSImage alloc] initWithData: m_nsdata];
 		if (!m_image)
 			logger::get_logger()->error("%s: could not create NSImage", m_node->get_url("src").get_url().c_str());

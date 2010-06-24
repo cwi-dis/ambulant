@@ -129,7 +129,8 @@ cocoa_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 			((ucp[0] == 0xff && ucp[1] == 0xfe) ||
 			(ucp[0] == 0xfe && ucp[1] == 0xff)))
 		{
-			the_string = [NSString stringWithCharacters: (unichar*)m_data length: m_data_size/2];
+			assert((m_data_size & 1) == 0);
+			the_string = [NSString stringWithCharacters: (unichar*)m_data length: (unsigned int)(m_data_size/2)];
 			assert(the_string);
 		} else {
 			// Assume it's a utf-8 file.

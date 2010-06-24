@@ -399,7 +399,7 @@ datasource_factory::new_audio_datasource(const net::url &url, const audio_format
 	}
 	if (src == NULL) {
 		rawsrc->stop();
-		int rem = rawsrc->release();
+		long rem = rawsrc->release();
 		assert(rem == 0);
 		lib::logger::get_logger()->warn(gettext("%s: Cannot open, no compatible parser"), repr(url).c_str());
 		return NULL;
@@ -419,7 +419,7 @@ datasource_factory::new_audio_datasource(const net::url &url, const audio_format
 
 	// Failed to find a filter. Clean up.
 	src->stop();
-	int rem = src->release(); // This will also release rawsrc
+	long rem = src->release(); // This will also release rawsrc
 	assert(rem == 0);
 	lib::logger::get_logger()->warn(gettext("%s: Cannot open, cannot find conversion filter"), repr(url).c_str());
 	return NULL;

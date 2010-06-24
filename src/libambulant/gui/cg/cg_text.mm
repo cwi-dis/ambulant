@@ -130,7 +130,7 @@ cg_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 	float x = CGRectGetMinX(cg_dstrect);
 	float y = CGRectGetMaxY(cg_dstrect) - lineheight;
 	float w = CGRectGetWidth(cg_dstrect);
-	int lbegin, lend;
+	size_t lbegin, lend;
 	const char *cdata = (char *)m_data;
 	lbegin = 0;
 	lend = 0;
@@ -149,7 +149,7 @@ cg_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 }
 
 bool
-cg_text_renderer::_calc_fit(CGContextRef ctx, float width, int& lbegin, int& lend)
+cg_text_renderer::_calc_fit(CGContextRef ctx, float width, size_t& lbegin, size_t& lend)
 {
 	const char *cdata = (const char *)m_data;
 	// Find beginning point
@@ -171,7 +171,7 @@ cg_text_renderer::_calc_fit(CGContextRef ctx, float width, int& lbegin, int& len
 }
 
 bool
-cg_text_renderer::_fits(CGContextRef ctx, float maxwidth, const char *data, int datalen)
+cg_text_renderer::_fits(CGContextRef ctx, float maxwidth, const char *data, size_t datalen)
 {
 	CGPoint beginpos = CGContextGetTextPosition(ctx);
 	CGContextSetTextDrawingMode(ctx, kCGTextInvisible);

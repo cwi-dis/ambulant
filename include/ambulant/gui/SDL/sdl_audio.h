@@ -105,15 +105,15 @@ class sdl_audio_renderer : public common::renderer_playable {
 //	void set_alignment(common::alignment *align) { /* Ignore, for now */ }
 //	void transition_freeze_end(lib::rect area) {}
 	void redraw(const lib::rect &dirty, common::gui_window *window) {}
-	static void sdl_callback(Uint8 *stream, int len);
+	static void sdl_callback(Uint8 *stream, size_t len);
 	void set_intransition(const lib::transition_info* info);
 	void start_outtransition(const lib::transition_info* info);
 	static void quit();
   private:
 	void data_avail();
 	bool restart_audio_input();
-	int get_data(int bytes_wanted, Uint8 **ptr);
-	void get_data_done(int size);
+	size_t get_data(size_t bytes_wanted, Uint8 **ptr);
+	void get_data_done(size_t size);
 	net::audio_datasource *m_audio_src;
 	lib::critical_section m_lock;
 
@@ -138,8 +138,8 @@ class sdl_audio_renderer : public common::renderer_playable {
 	static bool s_sdl_init;			// True when SDL has beeen initialized
 	static Uint16 s_sdl_format;		// Audio format we want, in SDL terms
 	static net::audio_format s_ambulant_format;	// Audio format we want, in Ambulant terms
-	static int s_buffer_size;		// Number of samples we want SDL to process at once
-	static int s_min_buffer_size_bytes;		// Minimum number of bytes we need for the abobe
+	static size_t s_buffer_size;		// Number of samples we want SDL to process at once
+	static size_t s_min_buffer_size_bytes;		// Minimum number of bytes we need for the abobe
 	static lib::critical_section s_static_lock;
 	static std::list<sdl_audio_renderer *>s_renderers;
 	static sdl_audio_renderer *s_master_clock_renderer;

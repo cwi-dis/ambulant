@@ -95,7 +95,7 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	// First we load the image data
 	if (m_data && !m_image) {
 		AM_DBG logger::get_logger()->debug("cg_image_renderer.redraw: creating image");
-		m_nsdata = (CFDataRef)[NSData dataWithBytesNoCopy: m_data length: m_data_size freeWhenDone: NO];
+		m_nsdata = (CFDataRef)[NSData dataWithBytesNoCopy: m_data length: (unsigned int)m_data_size freeWhenDone: NO];
 		CGImageSourceRef rdr = CGImageSourceCreateWithData(m_nsdata, NULL);
 		if (rdr == NULL) {
 			logger::get_logger()->error("%s: could not create image reader", m_node->get_url("src").get_url().c_str());

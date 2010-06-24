@@ -198,7 +198,7 @@ ffmpeg_video_decoder_datasource::stop()
 	m_lock.enter();
 	if (m_src) {
 		m_src->stop();
-		int rem = m_src->release();
+		long rem = m_src->release();
 		if (rem) lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::stop(0x%x): m_src refcount=%d", (void*)this, rem);
 	}
 	m_src = NULL;
@@ -567,15 +567,17 @@ ffmpeg_video_decoder_datasource::data_avail()
 			len = avcodec_decode_video(m_con, frame, &got_pic, ptr, (int)sz);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: avcodec_decode_video: used %d of %d bytes, gotpic = %d, ipts = %lld", len, sz, got_pic, ipts);
 			// It seems avcodec_decode_video sometimes returns 0 if skip_frame is used. Sigh.
-			if (len == 0 && !got_pic)
-				len = sz;
+			if (len == 0 && !got_pic) {
+				len = (int)sz;
+				assert((size_t)len == sz);
+			}
 			m_con->skip_frame = AVDISCARD_DEFAULT;
 			if (len < 0) {
 				lib::logger::get_logger()->trace(gettext("error decoding video frame (timestamp=%lld)"), ipts);
 				sz = 0; // Throw away the rest of the packet, there's little else we can do.
 				break;
 			}
-			assert(len <= sz);
+			assert((size_t)len <= sz);
 			ptr += len;
 			sz	-= len;
 			if (!got_pic) {

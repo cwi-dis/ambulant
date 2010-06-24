@@ -195,10 +195,10 @@ class AMBULANTAPI renderer_playable_dsall : public renderer_playable_ds {
   protected:
 	void readdone();
 	void *m_data;			///< The data to be rendered.
-	unsigned m_data_size;	///< The size of m_data.
+	size_t m_data_size;	///< The size of m_data.
   private:
 	void *m_partial_data;	///< The data while it is being read.
-	unsigned m_partial_data_size;	///< Size of the above.
+	size_t m_partial_data_size;	///< Size of the above.
 };
 
 /// Implementation of playable_factory.
