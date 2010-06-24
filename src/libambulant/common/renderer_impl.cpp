@@ -135,7 +135,6 @@ renderer_playable::_init_clip_begin_end()
 {
 	net::timestamp_t cb = 0;
 
-	const char* begin_attr =  m_node->get_attribute("begin");
 	// here we have to get clip_begin/clip_end from the node
 	const char *clip_begin_attr = m_node->get_attribute("clipBegin");
 	if (!clip_begin_attr) {

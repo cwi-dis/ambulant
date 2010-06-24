@@ -50,6 +50,8 @@ class document_embedder : public ambulant::common::embedder {
 	id m_mydocument;
 };
 
+// MyDocument also implements part of thhe NSWindowDelegate protocol, but how do I state that if
+// I also need to inherit NSDocument??
 @interface MyDocument : NSDocument
 {
 //	IBOutlet id main_view;
@@ -100,6 +102,7 @@ class document_embedder : public ambulant::common::embedder {
 - (BOOL)openAuxDocument: (NSURL *)auxUrl;
 - (void)closeAuxDocument;
 #endif
+
 // Window delegate method:
 - (void)windowDidChangeScreen: (NSNotification *)notification;
 @end

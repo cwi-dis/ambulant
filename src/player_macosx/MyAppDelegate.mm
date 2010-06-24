@@ -69,7 +69,7 @@ nslog_ostream::write(const char *cstr)
 	return 0;
 }
 
-void
+static void
 show_message(int level, const char *format)
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -81,7 +81,7 @@ show_message(int level, const char *format)
 	[pool release];
 }
 
-bool
+static bool
 initialize_logger()
 {
 	// Connect logger to our message displayer and output processor
@@ -220,30 +220,19 @@ initialize_logger()
 		forEventClass:'GURL'
 		andEventID:'GURL'];
 
+#ifdef WITH_SPLASH_SCREEN
+	// For Ta2 (and other embedded apps) we always show the splash screen
+	// (which takes the place of the welcome document)
+	[self playWelcome: self];
+#else
 	// Test whether we want to run the welcome document (on first run only)
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-#ifdef WITH_SPLASH_SCREEN
-#define NS_SPLASH_SCREEN @ WITH_SPLASH_SCREEN
-	NSString *welcomePath = [thisBundle pathForResource:NS_SPLASH_SCREEN ofType:nil];
-#else
-	if ( [defaults boolForKey: @"welcomeDocumentSeen"] )
-		return;
-	NSString *welcomePath = [thisBundle pathForResource:@"Welcome" ofType:@"smil"];
-#endif // WITH_SPLASH_SCREEN
-	if (welcomePath) {
-		id sender = [aNotification object];
-		AM_DBG NSLog(@"Will play %@", welcomePath);
-		AM_DBG NSLog(@"Application is %@", sender);
-		NSDocumentController *controller = [NSDocumentController sharedDocumentController];
-		AM_DBG NSLog(@"DocumentController is %@", controller);
-		MyDocument *welcomeDoc = [controller openDocumentWithContentsOfFile: welcomePath display: YES];
-		if (welcomeDoc) {
-			[welcomeDoc play: sender];
-			[defaults setBool: YES forKey: @"welcomeDocumentSeen"];
-		}
-	} else {
-		ambulant::lib::logger::get_logger()->error(gettext("No Welcome.smil in application bundle"));
+	if ( ![defaults boolForKey: @"welcomeDocumentSeen"] ) {
+		[self playWelcome: self];
+		[defaults setBool: YES forKey: @"welcomeDocumentSeen"];
 	}
+#endif
+
 }
 
 - (void)applicationDidChangeScreenParameters:(NSNotification *)aNotification
@@ -283,14 +272,22 @@ initialize_logger()
 {
 	AM_DBG NSLog(@"Play Welcome");
 	NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
+#ifdef WITH_SPLASH_SCREEN
+	NSString *welcomePath = [thisBundle pathForResource:@ WITH_SPLASH_SCREEN ofType:nil];
+#else
 	NSString *welcomePath = [thisBundle pathForResource:@"Welcome" ofType:@"smil"];
+#endif // WITH_SPLASH_SCREEN
 	if (welcomePath) {
 		NSDocumentController *controller = [NSDocumentController sharedDocumentController];
-		MyDocument *welcomeDoc = [controller openDocumentWithContentsOfFile: welcomePath display: YES];
+		NSError *err;
+		MyDocument *welcomeDoc = [controller
+			openDocumentWithContentsOfURL: [NSURL fileURLWithPath: welcomePath]
+			display: YES
+			error: &err];
 		if (welcomeDoc) {
 			[welcomeDoc play: self];
 		} else {
-			ambulant::lib::logger::get_logger()->error(gettext("Welcome.smil could not be opened"));
+			ambulant::lib::logger::get_logger()->error("%s: %s", gettext("Welcome.smil could not be opened"), [[err localizedDescription] UTF8String]);
 		}
 	} else {
 		ambulant::lib::logger::get_logger()->error(gettext("No Welcome.smil in application bundle"));

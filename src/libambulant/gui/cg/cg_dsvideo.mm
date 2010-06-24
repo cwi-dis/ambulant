@@ -112,7 +112,7 @@ my_free_frame(void *ptr, const void *ptr2, size_t size)
 }
 
 void
-cg_dsvideo_renderer::_push_frame(char* frame, int size)
+cg_dsvideo_renderer::_push_frame(char* frame, size_t size)
 {
 	m_lock.enter();
 	if (m_image) {
@@ -120,7 +120,7 @@ cg_dsvideo_renderer::_push_frame(char* frame, int size)
 		m_image = NULL;
 	}
 	AM_DBG lib::logger::get_logger()->debug("cg_dsvideo_renderer::push_frame: size=%d, w*h*3=%d", size, m_size.w * m_size.h * 4);
-	assert(size == (int)(m_size.w * m_size.h * MY_BPP));
+	assert(size == (m_size.w * m_size.h * MY_BPP));
 	// Step 1 - setup a data provider that reads our in-core image data
 	CGDataProviderRef provider = CGDataProviderCreateWithData(frame, frame, size, my_free_frame);
 	assert(provider);
@@ -137,7 +137,7 @@ cg_dsvideo_renderer::_push_frame(char* frame, int size)
 	// - If you also set shouldInterpolate=true you get an additional factor of 2 slowdown.
 	CGBitmapInfo bitmapInfo = MY_BITMAP_INFO;
 	m_image = CGImageCreate( m_size.w, m_size.h, 8, MY_BPP*8, m_size.w*MY_BPP, genericColorSpace, bitmapInfo, provider, NULL, false, kCGRenderingIntentDefault);
-	AM_DBG lib::logger::get_logger()->trace("0x%x: push_frame(0x%x, %d) -> 0x%x -> 0x%x", this, frame, size, provider, m_image);
+	AM_DBG lib::logger::get_logger()->trace("0x%x: push_frame(0x%x, %d) -> 0x%x -> 0x%x", this, frame, (int)size, provider, m_image);
 	CGDataProviderRelease(provider);
 	CGColorSpaceRelease(genericColorSpace);
 	if (!m_image) {

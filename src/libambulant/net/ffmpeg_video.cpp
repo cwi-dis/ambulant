@@ -512,7 +512,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 
 	timestamp_t ipts = 0;
 	uint8_t *inbuf;
-	int sz;
+	size_t sz;
 	got_pic = 0;
 
 	if (!m_src) {
@@ -564,7 +564,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 			} else {
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: decoder is %lld us ahead of playout", ipts-m_oldest_timestamp_wanted);
 			}
-			len = avcodec_decode_video(m_con, frame, &got_pic, ptr, sz);
+			len = avcodec_decode_video(m_con, frame, &got_pic, ptr, (int)sz);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: avcodec_decode_video: used %d of %d bytes, gotpic = %d, ipts = %lld", len, sz, got_pic, ipts);
 			// It seems avcodec_decode_video sometimes returns 0 if skip_frame is used. Sigh.
 			if (len == 0 && !got_pic)
@@ -773,7 +773,7 @@ ffmpeg_video_decoder_datasource::_buffer_full()
 
 
 char*
-ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timestamp_p, int *size_p)
+ffmpeg_video_decoder_datasource::get_frame(timestamp_t now, timestamp_t *timestamp_p, size_t *size_p)
 {
 	// pop frames until (just before) "now". Then return the last frame popped.
 	m_lock.enter();

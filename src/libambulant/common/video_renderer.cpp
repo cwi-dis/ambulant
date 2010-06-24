@@ -388,7 +388,7 @@ video_renderer::data_avail()
 
 	// Get the next frame, dropping any frames whose timestamp has passed.
 	char *buf = NULL;
-	int size = 0;
+	size_t size = 0;
 	net::timestamp_t now_micros = (net::timestamp_t)(now()*1000000);
 	net::timestamp_t frame_ts_micros;	// Timestamp of frame in "buf" (in microseconds)
 	buf = m_src->get_frame(now_micros, &frame_ts_micros, &size);

@@ -970,7 +970,7 @@ time_node::time_type time_node::get_playable_dur() {
 // Prepare children playables without recursion
 void time_node::prepare_playables() {
 #ifdef WITH_AGGRESSIVE_PRELOADING
-	// Note by Jack: this code is temporarily disabled. It has some serious
+	// Note by Jack: this code is disabled. It has some serious
 	// drawbacks, such as starting all playables for children of a <seq>, which
 	// could (in some documents) cause an incredible number of playables to
 	// be created long before they're actually needed. We need to come up

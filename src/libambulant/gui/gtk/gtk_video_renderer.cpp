@@ -102,7 +102,7 @@ gtk_video_renderer::pixel_layout()
 }
 
 void
-gtk_video_renderer::_push_frame(char* frame, int size)
+gtk_video_renderer::_push_frame(char* frame, size_t size)
 {
 
 	AM_DBG lib::logger::get_logger()->debug("gtk_video_renderer::_push_frame: frame=0x%x, size=%d, this=0x%x", (void*) frame, size, (void*) this);

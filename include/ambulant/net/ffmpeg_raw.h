@@ -73,8 +73,8 @@ namespace detail {
 class rawdatasink {
   public:
 	virtual ~rawdatasink(){}
-	virtual int get_sinkbuffer(uint8_t **datap) = 0;
-	virtual void pushdata(int size) = 0;
+	virtual size_t get_sinkbuffer(uint8_t **datap) = 0;
+	virtual void pushdata(size_t size) = 0;
 };
 
 class ffmpeg_rawreader : public BASE_THREAD, public lib::ref_counted_obj {
@@ -112,12 +112,12 @@ class ffmpeg_raw_datasource:
 	void stop();
 
 	char* get_read_ptr();
-	void readdone(int len);
+	void readdone(size_t len);
 	bool end_of_file();
-	int size() const;
+	size_t size() const;
 
-	int get_sinkbuffer(uint8_t **datap);
-	void pushdata(int size);
+	size_t get_sinkbuffer(uint8_t **datap);
+	void pushdata(size_t size);
 
   private:
 	bool _end_of_file();

@@ -22,6 +22,7 @@
  */
 
 #include "ambulant/gui/cocoa/cocoa_audio.h"
+#include "ambulant/gui/cocoa/cocoa_gui.h"
 #include "ambulant/common/renderer_select.h"
 #include "ambulant/smil2/test_attrs.h"
 
@@ -71,7 +72,7 @@ cocoa_audio_playable::cocoa_audio_playable(
 	if (!m_url.is_local_file()) {
 		lib::logger::get_logger()->error(gettext("cocoa_audio: cannot play non-local sound %s"), m_url.get_url().c_str());
 	} else {
-		NSString *filename = [NSString stringWithCString: m_url.get_file().c_str()];
+		NSString *filename = [NSString stringWithCString: m_url.get_file().c_str() encoding: NSUTF8StringEncoding];
 		m_sound = [[NSSound alloc] initWithContentsOfFile:filename byReference: YES];
 		if (!m_sound)
 			lib::logger::get_logger()->error(gettext("%s: cannot open soundfile"), m_url.get_url().c_str());

@@ -822,7 +822,7 @@ done:
 	m_critical_section.leave();
 }
 void
-rtsp_demux::_push_data_to_sink (int sink_index, timestamp_t pts, const uint8_t* inbuf, int sz) {
+rtsp_demux::_push_data_to_sink (int sink_index, timestamp_t pts, const uint8_t* inbuf, size_t sz) {
 	demux_datasink* sink = m_context->sinks[sink_index];
 
 	bool accepted = false;

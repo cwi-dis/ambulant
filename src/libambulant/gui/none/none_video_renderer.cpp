@@ -29,7 +29,7 @@ using namespace gui;
 using namespace none;
 
 void
-none_video_renderer::_push_frame(char* frame, int size)
+none_video_renderer::_push_frame(char* frame, size_t size)
 {
 	lib::logger::get_logger ()->trace("none_video_renderer::push_frame: display frame");
 	free(frame);

@@ -190,16 +190,4 @@ schema::get_layout_type(const lib::xml_string& tag) const {
 	return type;
 }
 
-const char*
-layout_type_as_str(layout_type t) {
-	switch(t) {
-		case l_layout: return "layout";
-		case l_rootlayout: return "root-layout";
-		case l_toplayout: return "topLayout";
-		case l_region: return "region";
-		case l_regpoint: return "regpoint";
-		default: return "none";
-	}
-}
-
 

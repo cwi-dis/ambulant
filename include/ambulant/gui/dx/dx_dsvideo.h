@@ -73,13 +73,13 @@ class dx_dsvideo_renderer :
 	// XXXJACK: need to copy code from dx_renderer_playable
 	gui::dx::dx_transition *get_transition() { return NULL; }
   protected:
-	void _push_frame(char* frame, int size);
+	void _push_frame(char* frame, size_t size);
   private:
 	void _init_bitmap();
 	void _init_ddsurf(gui_window *window);
 	void _copy_to_ddsurf();
 	char *m_frame;				// Current frame
-	int m_frame_size;			// Size of current frame
+	size_t m_frame_size;			// Size of current frame
 	HBITMAP m_bitmap;			// Bitmap to hold the image (if needed)
 	char *m_bitmap_dataptr;		// Pointer to actual data inside bitmap (if needed)
 	IDirectDrawSurface *m_ddsurf;	// DD surface, for scaling and such

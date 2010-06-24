@@ -597,7 +597,7 @@ ffmpeg_demux::run()
 				if (pts == 10000000)
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.push_data(%lld, 0x%x, %d, %d) pts=%lld", pkt->stream_index, pkt->pts, pkt->data, pkt->size, pkt->duration, pts);
 				m_lock.leave();
-				accepted = sink->push_data((timestamp_t)pts, pkt->data, pkt->size);
+				accepted = sink->push_data((timestamp_t)pts, pkt->data, (size_t)pkt->size);
 				if ( ! accepted) {
 					// wait until space available in sink
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", pkt->stream_index);

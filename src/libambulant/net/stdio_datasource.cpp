@@ -111,7 +111,7 @@ stdio_datasource::stop()
 {
 }
 
-int
+size_t
 stdio_datasource::size() const
 {
 	// const method - cannot lock
@@ -136,7 +136,7 @@ stdio_datasource::filesize()
 
 
 void
-stdio_datasource::read(char *data, int sz)
+stdio_datasource::read(char *data, size_t sz)
 {
 	m_lock.enter();
 	char* in_ptr;
@@ -160,8 +160,7 @@ stdio_datasource::read_file()
 			buf = m_buffer->get_write_ptr(BUFSIZ);
 			assert(buf);
 			n = fread(buf, 1, BUFSIZ, m_stream);
-			assert((int)n == n);
-			m_buffer->pushdata(n > 0 ? (int)n : 0);
+			m_buffer->pushdata(n > 0 ? n : 0);
 		} while (n > 0);
 		m_end_of_file = true;
 		if (n < 0) {
@@ -195,7 +194,7 @@ stdio_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::even
 }
 
 void
-stdio_datasource::readdone(int sz)
+stdio_datasource::readdone(size_t sz)
 {
 	m_lock.enter();
 	m_buffer->readdone(sz);

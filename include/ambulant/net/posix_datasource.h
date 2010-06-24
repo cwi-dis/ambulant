@@ -66,14 +66,14 @@ class posix_datasource : virtual public datasource, virtual public lib::ref_coun
 	void start_prefetch(ambulant::lib::event_processor *evp){};
 #endif
 	void stop();
-	void readdone(int len);
+	void readdone(size_t len);
 	bool end_of_file();
 
 
 	char* get_read_ptr();
-	int size() const;
+	size_t size() const;
 
-	void read(char *data, int size);
+	void read(char *data, size_t size);
 
 	friend inline std::ostream& operator<<(std::ostream& os, const posix_datasource& n) {
 		os << "posix_datasource(" << (void *)&n << ", \"" << n.m_filename << "\")";

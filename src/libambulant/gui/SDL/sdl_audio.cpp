@@ -36,7 +36,8 @@ using namespace ambulant;
 
 extern "C" {
 
-void sdl_C_callback(void *userdata, Uint8 *stream, int len)
+static void
+sdl_C_callback(void *userdata, Uint8 *stream, int len)
 {
 	gui::sdl::sdl_audio_renderer::sdl_callback(stream, len);
 }

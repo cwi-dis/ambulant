@@ -52,7 +52,7 @@ class qt_video_renderer : public qt_renderer<common::video_renderer> {
 	~qt_video_renderer();
 	void redraw_body(const lib::rect &r, common::gui_window* w);
   protected:
-	void _push_frame(char* frame, int size);
+	void _push_frame(char* frame, size_t size);
 
   private:
 	QImage *m_image;

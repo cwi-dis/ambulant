@@ -40,9 +40,9 @@ class mem_datasource : virtual public datasource, virtual public ambulant::lib::
 		const char *data = str_url.c_str();
 		size_t datalen = strlen(data);
 		if (datalen) {
-			char *ptr = m_databuf.get_write_ptr((int)datalen);
+			char *ptr = m_databuf.get_write_ptr(datalen);
 			memcpy(ptr, data, datalen);
-			m_databuf.pushdata((int)datalen);
+			m_databuf.pushdata(datalen);
 		}
 	}
 	~mem_datasource() {};
@@ -53,12 +53,12 @@ class mem_datasource : virtual public datasource, virtual public ambulant::lib::
 #ifdef WITH_SEAMLESS_PLAYBACK
 	void start_prefetch(ambulant::lib::event_processor *evp) {};
 #endif
-	void readdone(int len) { m_databuf.readdone(len); };
+	void readdone(size_t len) { m_databuf.readdone(len); };
 	void stop() {};
 
 	bool end_of_file() { return m_databuf.size() == 0; };
 	char* get_read_ptr() { return m_databuf.get_read_ptr(); };
-	int size() const { return m_databuf.size(); } ;
+	size_t size() const { return m_databuf.size(); } ;
 
   private:
 	databuffer m_databuf;
@@ -169,18 +169,18 @@ filter_datasource_impl::get_read_ptr()
 	return rv;
 }
 
-int
+size_t
 filter_datasource_impl::size() const
 {
 	const_cast <filter_datasource_impl*>(this)->m_lock.enter();
-	int rv = m_databuf.size();
+	size_t rv = m_databuf.size();
 	const_cast <filter_datasource_impl*>(this)->m_lock.leave();
 	return rv;
 
 }
 
 void
-filter_datasource_impl::readdone(int len)
+filter_datasource_impl::readdone(size_t len)
 {
 	m_lock.enter();
 	m_databuf.readdone(len);
@@ -471,14 +471,14 @@ class datasource_reader : public lib::ref_counted_obj {
 	datasource_reader(datasource *src);
 	~datasource_reader();
 	void run();
-	int getresult(char **result) ;
+	size_t getresult(char **result) ;
   private:
 	void readdone();
 	lib::timer *m_timer;
 	lib::event_processor *m_event_processor;
 	datasource *m_src;
 	char *m_data;
-	int m_size;
+	size_t m_size;
 	lib::critical_section m_lock;
 };
 typedef lib::no_arg_callback<datasource_reader> readdone_callback;
@@ -518,13 +518,13 @@ datasource_reader::run()
 	}
 }
 
-int
+size_t
 datasource_reader::getresult(char **result)
 {
 	m_lock.enter();
 	*result = m_data;
 	m_data = NULL;
-	int rv = m_size;
+	size_t rv = m_size;
 	m_lock.leave();
 	return rv;
 }
@@ -538,7 +538,7 @@ datasource_reader::readdone()
 		m_lock.leave();
 		return;
 	}
-	int newsize = m_src->size();
+	size_t newsize = m_src->size();
 	if (newsize) {
 		assert(newsize < 100000000); // TMP sanity check
 		m_data = (char *)realloc(m_data, m_size + newsize);
@@ -571,7 +571,7 @@ ambulant::net::read_data_from_url(const net::url &url, datasource_factory *df, c
 	}
 	datasource_reader *dr = new datasource_reader(src);
 	dr->run();
-	int nbytes = dr->getresult(result);
+	size_t nbytes = dr->getresult(result);
 	dr->release();
 	if( nbytes < 0 ) return false;
 	*sizep = nbytes;
@@ -587,7 +587,7 @@ ambulant::net::read_data_from_datasource(datasource *src, char **result, size_t 
 	src->add_ref();
 	datasource_reader *dr = new datasource_reader(src);
 	dr->run();
-	int nbytes = dr->getresult(result);
+	size_t nbytes = dr->getresult(result);
 	dr->release();
 	if( nbytes < 0 ) return false;
 	*sizep = nbytes;

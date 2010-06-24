@@ -208,11 +208,18 @@ class AMBULANTAPI audio_format_choices {
 	std::set<std::string> m_named_formats;
 };
 
-struct ts_packet_t { timestamp_t timestamp; void* data; int size;
-	ts_packet_t(timestamp_t t, void* d, int s)
-	:   timestamp(t), data(d), size(s)
+struct ts_packet_t {
+	timestamp_t timestamp;
+	void* data;
+	size_t size;
+	
+	ts_packet_t(timestamp_t t, void* d, size_t s)
+	:   timestamp(t),
+		data(d),
+		size(s)
 	{}
 };
+
 /// The interface to an object that supplies data to a consumer.
 /// The consumer calls start() whenever it wants
 /// data. This call returns immedeately and later the datasource arranges
@@ -243,10 +250,10 @@ class AMBULANTAPI datasource : virtual public ambulant::lib::ref_counted {
 	virtual char* get_read_ptr() = 0;
 
 	/// Return the number of bytes available at get_read_ptr().
-	virtual int size() const = 0;
+	virtual size_t size() const = 0;
 
 	/// Called by the client to signal it has consumed len bytes.
-	virtual void readdone(int len) = 0;
+	virtual void readdone(size_t len) = 0;
 };
 
 class AMBULANTAPI pkt_datasource : virtual public ambulant::lib::ref_counted {
@@ -335,14 +342,14 @@ class raw_audio_datasource:
 	void start_prefetch(lib::event_processor *evp) {};
 	timestamp_t get_elapsed() { assert(0); /* XXXJACK: Could base on cumulative byte count read */ return 0; }
 #endif
-	void readdone(int len) { m_src->readdone(len); };
+	void readdone(size_t len) { m_src->readdone(len); };
 	bool end_of_file() { return m_src->end_of_file(); };
 	bool buffer_full() { return false; };
 	timestamp_t get_clip_end() { return -1; };
 	timestamp_t get_clip_begin() { return 0; };
 	timestamp_t get_start_time() { return 0; };
 	char* get_read_ptr() { return m_src->get_read_ptr(); };
-	int size() const { return m_src->size(); };
+	size_t size() const { return m_src->size(); };
 	audio_format& get_audio_format() { return m_fmt; };
 
 	common::duration get_dur() {	return m_duration; };
@@ -392,7 +399,7 @@ class video_datasource : virtual public lib::ref_counted_obj {
 	/// The timestamp of the frame and the size of the data returned.
 	/// When the receiver is done with this frame (and any preceding frames)
 	/// it should call frame_processed() or frame_processed_keepdata().
-	virtual char * get_frame(timestamp_t now, timestamp_t *ts, int *size) = 0;
+	virtual char * get_frame(timestamp_t now, timestamp_t *ts, size_t *size) = 0;
 
 	/// Returns the width of the image returned by get_frame.
 	virtual int width() = 0;
@@ -596,8 +603,8 @@ class AMBULANTAPI filter_datasource_impl :
 	void stop();
 	bool end_of_file();
 	char* get_read_ptr();
-	int size() const;
-	void readdone(int len);
+	size_t size() const;
+	void readdone(size_t len);
   protected:
 	void data_avail();
 	datasource *m_src;
@@ -618,7 +625,7 @@ class demux_datasink : virtual public lib::ref_counted_obj {
 
 	/// Data push call: consume data with given size and timestamp. Must copy data
 	/// before returning. Returns true if data was swallowed, else false.
-	virtual bool push_data(timestamp_t pts, const uint8_t *data, int size) = 0;
+	virtual bool push_data(timestamp_t pts, const uint8_t *data, size_t size) = 0;
 
 };
 

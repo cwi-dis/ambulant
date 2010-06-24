@@ -46,9 +46,6 @@ const char* time_container_type_as_str(time_container_type t);
 /// An enumeration representing layout node types.
 enum layout_type {l_layout, l_rootlayout, l_toplayout, l_region, l_regpoint, l_media, l_none};
 
-/// Return the string representing a layout_type.
-const char* layout_type_as_str(layout_type t);
-
 /// A class encapsulating the XML Schema used by the application.
 /// Components that want to be isolated from the exact XML Schema
 /// may query an instance of this class for the properties they

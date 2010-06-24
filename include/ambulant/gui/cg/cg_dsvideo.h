@@ -57,7 +57,7 @@ class cg_dsvideo_renderer :
 	void set_intransition(const lib::transition_info *info) {};
 	void start_outtransition(const lib::transition_info *info) {};
   protected:
-	void _push_frame(char* frame, int size);
+	void _push_frame(char* frame, size_t size);
   private:
 	CGImageRef m_image;
 	critical_section m_lock;

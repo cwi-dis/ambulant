@@ -132,8 +132,9 @@ detail::ffmpeg_rawreader::run()
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_rawreader::run: started");
 	while (!exit_requested()) {
 		uint8_t *sinkbuffer;
-		int sinkbuffersize;
+		size_t sinkbuffersize;
 
+		assert(m_sink);
 		sinkbuffersize = m_sink->get_sinkbuffer(&sinkbuffer);
 		if (sinkbuffersize == 0) {
 			m_lock.leave();
@@ -141,17 +142,21 @@ detail::ffmpeg_rawreader::run()
 			m_lock.enter();
 		} else {
 			int bytecount;
-			AM_DBG lib::logger::get_logger("ffmpeg_rawreader::run: calling url_read(size=%d)", sinkbuffersize);
-			bytecount = url_read(m_con, sinkbuffer, sinkbuffersize);
-			AM_DBG lib::logger::get_logger("ffmpeg_rawreader::run:url_read() returned %d", sinkbuffersize);
-			if (m_sink && bytecount >= 0)
-				m_sink->pushdata(bytecount);
-			if (bytecount <= 0 || !m_sink)
+			AM_DBG lib::logger::get_logger("ffmpeg_rawreader::run: calling url_read(size=%d)", (int)sinkbuffersize);
+			bytecount = url_read(m_con, sinkbuffer, (int)sinkbuffersize);
+			AM_DBG lib::logger::get_logger("ffmpeg_rawreader::run:url_read() returned %d", bytecount);
+			if (bytecount >= 0)
+				m_sink->pushdata((size_t)bytecount);
+			else {
+				m_sink->pushdata(0);
+			}
+
+			if (bytecount <= 0) {
 				break;
+			}
 		}
 	}
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_rawreader::run: final sinkdata(0)");
-	if (m_sink) m_sink->pushdata(-1);
 	m_lock.leave();
 	return 0;
 }
@@ -232,7 +237,7 @@ ffmpeg_raw_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib:
 }
 
 void
-ffmpeg_raw_datasource::readdone(int len)
+ffmpeg_raw_datasource::readdone(size_t len)
 {
 	m_lock.enter();
 	m_buffer.readdone(len);
@@ -241,7 +246,7 @@ ffmpeg_raw_datasource::readdone(int len)
 	m_lock.leave();
 }
 
-int
+size_t
 ffmpeg_raw_datasource::get_sinkbuffer(uint8_t **datap)
 {
 	m_lock.enter();
@@ -260,7 +265,7 @@ ffmpeg_raw_datasource::get_sinkbuffer(uint8_t **datap)
 }
 
 void
-ffmpeg_raw_datasource::pushdata(int sz)
+ffmpeg_raw_datasource::pushdata(size_t sz)
 {
 	m_lock.enter();
 	if (sz >= 0) m_buffer.pushdata(sz);
@@ -304,7 +309,7 @@ ffmpeg_raw_datasource::get_read_ptr()
 	return rv;
 }
 
-int
+size_t
 ffmpeg_raw_datasource::size() const
 {
 		return m_buffer.size();

@@ -51,7 +51,7 @@ class none_video_renderer : public common::video_renderer {
 //	void set_surface(common::surface *dest) {  };
 //	common::surface *get_surface() { return NULL; };
   protected:
-	void _push_frame(char* frame, int size);
+	void _push_frame(char* frame, size_t size);
 };
 
 }

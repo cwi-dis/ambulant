@@ -44,7 +44,7 @@ class AMBULANTAPI databuffer
 {
   public:
 	// constructors
-	databuffer(int max_size=0);
+	databuffer(size_t max_size=0);
 	// destructor
 	~databuffer();
 
@@ -54,7 +54,7 @@ class AMBULANTAPI databuffer
 
 	/// Returns the number of bytes in the buffer.
 	/// Cannot be called between get_read_ptr/readdone.
-	int  size() const;
+	size_t size() const;
 
 	/// Return true if the buffer is full.
 	bool buffer_full();
@@ -63,11 +63,11 @@ class AMBULANTAPI databuffer
 
 	/// Prepare to write size bytes of data.
 	/// Returns a pointer at which the bytes can be written.
-	char* get_write_ptr(int size);
+	char* get_write_ptr(size_t size);
 
 	/// Finish writing data.
 	/// Size must be less or equal to the size passed to the get_write_ptr call.
-	void  pushdata(int size);
+	void  pushdata(size_t size);
 
 	/// Prepare to read data.
 	/// Returns a pointer from which at most size() bytes can be read.
@@ -75,41 +75,41 @@ class AMBULANTAPI databuffer
 
 
 	/// Finish reading data.
-	void readdone(int size);
+	void readdone(size_t size);
 
 	/// Set the maximum size for the buffer.
 	/// When the buffer becomes this full buffer_full() will start returning true.
 	/// Pass zero to set the size to unlimited.
-	void set_max_size(int max_size);
+	void set_max_size(size_t max_size);
 
 	/// Set the maximum unused size of the buffer.
 	/// As soon as this many unused bytes are occupied by the buffer
 	/// we reallocate and copy the data to free the unused space.
-	void set_max_unused_size(int max_unused_size);
+	void set_max_unused_size(size_t max_unused_size);
 
 	/// Class method to set default value for max_size.
-	static void default_max_size(int max_size);
+	static void default_max_size(size_t max_size);
 
 	/// Class method to set default for max_unused_size.
-	static void default_max_unused_size(int max_unused_size);
+	static void default_max_unused_size(size_t max_unused_size);
   private:
 	// Add space to the end of the buffer
-	void _grow(int sz);
+	void _grow(size_t sz);
 
 	char* m_buffer;			// Our databuffer
 	bool m_reading;			// True between get_read_ptr/readdone
 	bool m_writing;			// True between get_write_ptr/pushdata
 	char* m_old_buffer;		// An old buffer, to be removed in readdone
-	unsigned long int m_rear;
-	unsigned long int m_size;
-	unsigned long int m_max_size;
-	unsigned long int m_max_unused_size;
-	unsigned long int m_used;
+	size_t m_rear;
+	size_t m_size;
+	size_t m_max_size;
+	size_t m_max_unused_size;
+	size_t m_used;
 	bool m_buffer_full;
 	lib::critical_section m_lock;
 
-	static long int s_default_max_size;
-	static long int s_default_max_unused_size;
+	static size_t s_default_max_size;
+	static size_t s_default_max_unused_size;
 };
 
 inline std::ostream& operator<<(std::ostream& os, const databuffer& n) {

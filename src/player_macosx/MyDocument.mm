@@ -148,19 +148,10 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	[[view window] makeFirstResponder: view];
 	[[view window] setAcceptsMouseMovedEvents: YES];
 
-	BOOL compat103 = ![self respondsToSelector: @selector(fileURL)];
-	if (compat103) {
-		if ([self fileName] == nil) {
-			[self askForURL: self];
-		} else {
-			[self openTheDocument];
-		}
+	if ([self fileURL] == nil) {
+		[self askForURL: self];
 	} else {
-		if ([self fileURL] == nil) {
-			[self askForURL: self];
-		} else {
-			[self openTheDocument];
-		}
+		[self openTheDocument];
 	}
 	[self validateButtons: self];
 }
@@ -191,12 +182,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 {
 	if (returnCode == NSOKButton && [[url_field stringValue] length] > 0) {
 		AM_DBG NSLog(@"ask_for_url: User said OK: %@", [url_field stringValue]);
-		BOOL compat103 = ![self respondsToSelector: @selector(fileURL)];
-		if (compat103) {
-			[self setFileName: [url_field stringValue]];
-		} else {
-			[self setFileURL: [NSURL URLWithString: [url_field stringValue]]];
-		}
+		[self setFileURL: [NSURL URLWithString: [url_field stringValue]]];
 		[self openTheDocument];
 	} else {
 		AM_DBG NSLog(@"ask_for_url: User said cancel");
@@ -207,12 +193,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 - (void)openTheDocument
 {
 	NSString *url;
-	BOOL compat103 = ![self respondsToSelector: @selector(fileURL)];
-	if (compat103) {
-		url = [self fileName];
-	} else {
-		url = [[self fileURL] absoluteString];
-	}
+	url = [[self fileURL] absoluteString];
 	embedder = new document_embedder(self);
 	myMainloop = new mainloop([url UTF8String], view, embedder);
 	[self play: self];
@@ -706,14 +687,4 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	[view updateScreenSize];
 }
 
-@end
-
-@implementation NSDocumentController(MyDocumentControllerCategory)
-- (NSString *)typeForContentsOfURL:(NSURL *)inAbsoluteURL error:(NSError **)outError
-{
-	NSString *path = [inAbsoluteURL path];
-	NSString *extension = [path pathExtension];
-	NSString *rv = [self typeFromFileExtension: extension];
-	return rv;
-}
 @end

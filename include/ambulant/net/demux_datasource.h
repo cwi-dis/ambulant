@@ -30,7 +30,7 @@
 
 struct video_frame {
 	char* data;
-	int	 size;
+	size_t size;
 };
 
 namespace ambulant
@@ -64,7 +64,7 @@ class demux_audio_datasource:
 	void set_clip_end(timestamp_t clip_end);
 	timestamp_t get_elapsed() { assert(0); /* XXXJACK Should be based on pts in head of queue */ return 0; }
 #endif
-	bool push_data(timestamp_t pts, const uint8_t *data, int size);
+	bool push_data(timestamp_t pts, const uint8_t *data, size_t size);
 	bool end_of_file();
 	timestamp_t get_clip_end();
 	timestamp_t get_clip_begin();
@@ -117,10 +117,10 @@ class demux_video_datasource:
 #endif
 	void start_frame(ambulant::lib::event_processor *evp, ambulant::lib::event *callbackk, timestamp_t timestamp);
 	void stop();
-	char* get_frame(timestamp_t now, timestamp_t *timestamp, int *sizep);
+	char* get_frame(timestamp_t now, timestamp_t *timestamp, size_t *sizep);
 	void frame_processed_keepdata(timestamp_t timestamp, char *data);
 	void frame_processed(timestamp_t timestamp);
-	bool push_data(timestamp_t pts, const uint8_t *data, int size);
+	bool push_data(timestamp_t pts, const uint8_t *data, size_t size);
 	bool end_of_file();
 	timestamp_t get_clip_end();
 	timestamp_t get_clip_begin();

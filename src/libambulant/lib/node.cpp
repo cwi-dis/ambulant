@@ -175,12 +175,13 @@ lib::node_impl::node_impl(const node_impl* other)
 }
 
 // Data node
-lib::node_impl::node_impl(const char *data, int size, const node_context *ctx)
+lib::node_impl::node_impl(const char *data, size_t sz, const node_context *ctx)
 :	m_local_name(""),
-	m_data(lib::xml_string(data, size)),
+	m_data(lib::xml_string(data, sz)),
 	m_is_data_node(true),
 	m_context(ctx),
-	m_parent(0), m_next(0), m_child(0) {
+	m_parent(0), m_next(0), m_child(0)
+{
 	m_numid = ++node_counter;
 }
 
@@ -586,6 +587,7 @@ lib::node_impl::append_child(lib::node_interface* child)
 #endif
 }
 
+#if 0
 std::ostream& operator<<(std::ostream& os, const ambulant::lib::node_impl& n) {
 	os << "node(" << (void *)&n << ", \"" << n.get_qname() << "\"";
 	std::string url = repr(n.get_url("src"));
@@ -594,7 +596,7 @@ std::ostream& operator<<(std::ostream& os, const ambulant::lib::node_impl& n) {
 	os << ")";
 	return os;
 }
-
+#endif
 //////////////////////////////////////////////
 //////////////////////////////////////////////
 // Visitors implementations

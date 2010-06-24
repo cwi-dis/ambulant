@@ -521,7 +521,7 @@ lib::point_p::parse(const_iterator& it, const const_iterator& end) {
 	number_p ip;
 	d = ip.parse(tit, end);
 	if(d == -1) return -1;
-	m_result.x = ip.m_result;
+	m_result.x = (int)ip.m_result;
 	sd += d;
 
 	// S?
@@ -539,7 +539,7 @@ lib::point_p::parse(const_iterator& it, const const_iterator& end) {
 	// y value
 	d = ip.parse(tit, end);
 	if(d == -1) return -1;
-	m_result.y = ip.m_result;
+	m_result.y = (int)ip.m_result;
 	sd += d;
 
 	if(expectRP) {

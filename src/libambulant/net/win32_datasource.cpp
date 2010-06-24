@@ -187,7 +187,7 @@ win32_datasource::stop()
 {
 }
 
-int
+size_t
 win32_datasource::size() const
 {
 	// const method - cannot lock
@@ -195,7 +195,7 @@ win32_datasource::size() const
 }
 
 void
-win32_datasource::read(char *data, int sz)
+win32_datasource::read(char *data, size_t sz)
 {
 	m_lock.enter();
 	char* in_ptr;
@@ -231,7 +231,7 @@ win32_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::even
 }
 
 void
-win32_datasource::readdone(int sz)
+win32_datasource::readdone(size_t sz)
 {
 	m_lock.enter();
 	m_buffer->readdone(sz);

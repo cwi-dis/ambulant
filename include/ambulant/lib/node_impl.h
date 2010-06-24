@@ -69,7 +69,7 @@ class node_impl : public node_interface {
 	node_impl(const node_impl* other);
 
 	/// Construct a new data node.
-	node_impl(const char *data, int size, const node_context *ctx);
+	node_impl(const char *data, size_t size, const node_context *ctx);
 
 	/// Destruct this node and its contents.
 	/// If this node is part of a tree, detach it first

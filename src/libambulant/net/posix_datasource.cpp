@@ -117,11 +117,11 @@ posix_datasource::stop()
 {
 }
 
-int
+size_t
 posix_datasource::size() const
 {
 	// const method - cannot use the lock.
-	int rv = m_buffer->size();
+	size_t rv = m_buffer->size();
 	return rv;
 }
 
@@ -143,7 +143,7 @@ posix_datasource::filesize()
 
 
 void
-posix_datasource::read(char *data, int sz)
+posix_datasource::read(char *data, size_t sz)
 {
 	m_lock.enter();
 	char* in_ptr;
@@ -160,7 +160,7 @@ posix_datasource::read_file()
 {
 	// private method - no need to lock
 	char *buf;
-	int n;
+	size_t n;
 	//AM_DBG lib::logger::get_logger()->debug("posix_datasource.readfile: start reading file ");
 	if (m_stream >= 0) {
 		do {
@@ -201,7 +201,7 @@ posix_datasource::start(ambulant::lib::event_processor *evp, ambulant::lib::even
 }
 
 void
-posix_datasource::readdone(int sz)
+posix_datasource::readdone(size_t sz)
 {
 	m_lock.enter();
 	m_buffer->readdone(sz);

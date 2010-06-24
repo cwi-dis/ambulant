@@ -212,7 +212,7 @@ cocoa_video_renderer::init_with_node(const lib::node *n)
 		assert(m_url.is_empty_path() || m_url.same_document(m_node->get_url("src")));
 		// Apparently the first call.
 		m_url = m_node->get_url("src");
-		NSURL *nsurl = [NSURL URLWithString: [NSString stringWithCString: m_url.get_url().c_str()]];
+		NSURL *nsurl = [NSURL URLWithString: [NSString stringWithCString: m_url.get_url().c_str() encoding: NSUTF8StringEncoding]];
 		if (!nsurl) {
 			lib::logger::get_logger()->error(gettext("%s: cannot convert to URL"), m_url.get_url().c_str());
 			goto bad;

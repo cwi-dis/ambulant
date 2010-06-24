@@ -218,13 +218,13 @@ demux_audio_datasource::read_ahead(timestamp_t time)
 
 
 bool
-demux_audio_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, int sz)
+demux_audio_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, size_t sz)
 {
 	// XXX timestamp is ignored, for now
 	bool rv = true;
 	m_lock.enter();
 	m_src_end_of_file = (sz == 0);
-	AM_DBG if (sz == 0) lib::logger::get_logger()->debug("demux_audio_datasource.push_data: %d bytes available (ts = %lld)", sz, pts);
+	AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource.push_data: %d bytes available (ts = %lld)", sz, pts);
 	if ( ! m_src_end_of_file) {
 		if (_buffer_full()) {
 			rv = false;
@@ -596,7 +596,7 @@ demux_video_datasource::frame_processed(timestamp_t pts)
 }
 
 bool
-demux_video_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, int sz)
+demux_video_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, size_t sz)
 {
 	m_lock.enter();
 
@@ -698,7 +698,7 @@ demux_video_datasource::get_clip_begin()
 }
 
 char*
-demux_video_datasource::get_frame(timestamp_t now, timestamp_t *timestamp, int *sizep)
+demux_video_datasource::get_frame(timestamp_t now, timestamp_t *timestamp, size_t *sizep)
 {
 
 	// We ignore now here and always return a the oldest frame in the queue.

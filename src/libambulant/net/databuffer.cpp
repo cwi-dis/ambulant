@@ -39,26 +39,26 @@
 // data_buffer
 
 #define DEFAULT_MAX_BUF_SIZE 1000000
-long int ambulant::net::databuffer::s_default_max_size = DEFAULT_MAX_BUF_SIZE;
-long int ambulant::net::databuffer::s_default_max_unused_size = DEFAULT_MAX_BUF_SIZE;
+size_t ambulant::net::databuffer::s_default_max_size = DEFAULT_MAX_BUF_SIZE;
+size_t ambulant::net::databuffer::s_default_max_unused_size = DEFAULT_MAX_BUF_SIZE;
 
 using namespace ambulant;
 using namespace net;
 
 // Static methods:
 void
-databuffer::default_max_size(int max_size)
+databuffer::default_max_size(size_t max_size)
 {
 	s_default_max_size = max_size;
 }
 
 void
-databuffer::default_max_unused_size(int max_unused_size)
+databuffer::default_max_unused_size(size_t max_unused_size)
 {
 	s_default_max_unused_size = max_unused_size;
 }
 
-databuffer::databuffer(int max_size)
+databuffer::databuffer(size_t max_size)
 :	m_buffer(NULL),
 	m_reading(false),
 	m_writing(false),
@@ -94,7 +94,7 @@ databuffer::buffer_not_empty()
 }
 
 void
-databuffer::set_max_size(int max_size)
+databuffer::set_max_size(size_t max_size)
 {
 	m_lock.enter();
 	// Zero means: no limit, <0 means: default
@@ -126,19 +126,21 @@ databuffer::~databuffer()
 	m_lock.leave();
 }
 
-int databuffer::size() const
+size_t
+databuffer::size() const
 {
 	const_cast<databuffer*>(this)->m_lock.enter();
 //XXXX	assert(!m_reading);
-	int rv = m_used;
+	size_t rv = m_used;
 	assert(rv < 10000000); // TMP sanity check
 	const_cast<databuffer*>(this)->m_lock.leave();
 	return rv;
 }
 
-void databuffer::dump(std::ostream& os, bool verbose) const
+void
+databuffer::dump(std::ostream& os, bool verbose) const
 {
-	unsigned long int i;
+	size_t i;
 
 	os << "BUFFER SIZE : " << m_size << " bytes" << std::endl;
 	os << "BYTES USED : " << m_used << " bytes" << std::endl;
@@ -154,7 +156,7 @@ void databuffer::dump(std::ostream& os, bool verbose) const
 }
 
 char *
-databuffer::get_write_ptr(int sz)
+databuffer::get_write_ptr(size_t sz)
 {
 	m_lock.enter();
 	assert(!m_writing);
@@ -178,7 +180,7 @@ databuffer::get_write_ptr(int sz)
 }
 
 void
-databuffer::_grow(int sz)
+databuffer::_grow(size_t sz)
 {
 	assert(sz > 0);
 	if (m_reading && m_old_buffer == NULL) {
@@ -197,7 +199,7 @@ databuffer::_grow(int sz)
 	}
 }
 
-void databuffer::pushdata(int sz)
+void databuffer::pushdata(size_t sz)
 {
 	m_lock.enter();
 	assert(m_writing);
@@ -249,7 +251,7 @@ databuffer::get_read_ptr()
 
 
 void
-databuffer::readdone(int sz)
+databuffer::readdone(size_t sz)
 {
 	m_lock.enter();
 

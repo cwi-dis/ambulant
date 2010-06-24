@@ -85,7 +85,7 @@ class ffmpeg_video_decoder_datasource:
 	void stop();
 
 	bool end_of_file();
-	char* get_frame(timestamp_t now, timestamp_t *timestamp, int *size);
+	char* get_frame(timestamp_t now, timestamp_t *timestamp, size_t *size);
 	void frame_processed_keepdata(timestamp_t timestamp, char *data);
 	void frame_processed(timestamp_t timestamp);
 	void read_ahead(timestamp_t clip_begin);

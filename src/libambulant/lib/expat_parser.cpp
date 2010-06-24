@@ -79,10 +79,10 @@ bool lib::expat_parser::parse(const char *buf, size_t len, bool final) {
 		m_parsing = true;
 		m_content_handler->start_document();
 	}
-	if(XML_Parse(m_expatParser, buf, int(len), (final?1:0)) != 1)  {
+	if(XML_Parse(m_expatParser, buf, int(len), (final?1:0)) != 1) {
 		sax_error e(XML_ErrorString(XML_GetErrorCode(m_expatParser)),
-			XML_GetCurrentLineNumber(m_expatParser),
-			XML_GetCurrentColumnNumber(m_expatParser)
+			(int)XML_GetCurrentLineNumber(m_expatParser),
+			(int)XML_GetCurrentColumnNumber(m_expatParser)
 			);
 		if(m_error_handler != 0)
 			m_error_handler->error(e);

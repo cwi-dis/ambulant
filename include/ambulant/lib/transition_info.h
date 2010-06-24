@@ -28,6 +28,7 @@
 
 #include "ambulant/lib/colors.h"
 #include "ambulant/lib/node.h"
+#include "ambulant/lib/timer.h"
 
 namespace ambulant {
 
@@ -84,7 +85,7 @@ enum transition_scope {
 /// Stores all information regarind a specific transition.
 class AMBULANTAPI transition_info {
   public:
-	typedef int time_type;
+	typedef timer::time_type time_type;
 	typedef double progress_type;
 
 	transition_type m_type;    ///< SMIL 2.1 transition type.
