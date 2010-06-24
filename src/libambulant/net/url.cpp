@@ -159,7 +159,7 @@ filepath2urlpath(const std::string& filepath, bool handle_frag=false)
 		char c = *i;
 		if ( esc->find(c) != std::string::npos ) {
 			char buf[4];
-			sprintf(buf, "%%%02.2x", (unsigned)c);
+			sprintf(buf, "%%%2.2x", (unsigned)c);
 			rv += buf;
 		} else {
 			rv += c;
@@ -236,12 +236,12 @@ hex2uint (std::string& s) {
 	for (size_t i = 0; i < s.size(); i++) {
 		char c = s[i];
 		rv *= 16;
-		unsigned int pos = (unsigned int) hex_digits.find(c);
+		std::string::size_type pos = (unsigned int) hex_digits.find(c);
 		if (pos == std::string::npos) // not found, terminate
 			break;
 		if (pos >= 16) // lowercase a-f
 			pos -= 6;
-		rv += pos; // position in hex_digits is value of char
+		rv += (int)pos; // position in hex_digits is value of char
 	}
 	return (rv);
 }

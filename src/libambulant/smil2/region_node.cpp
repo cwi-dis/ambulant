@@ -70,7 +70,7 @@ get_regiondim_attr(const lib::node *rn, const char *attrname)
 	} else {
 		int ivalue;
 		char *endptr;
-		ivalue = strtol(attrvalue, &endptr, 10);
+		ivalue = (int)strtol(attrvalue, &endptr, 10);
 		if (*endptr == '\0' || strcmp(endptr, "px") == 0) {
 			rd = ivalue;
 		} else if (*endptr == '%') {
@@ -247,7 +247,7 @@ region_node::fix_from_dom_node()
 		// slightly different.
 		const char *z_attr = m_node->get_attribute("z-index");
 		common::zindex_t z = 0;
-		if (z_attr) z = strtol(z_attr, NULL, 10);
+		if (z_attr) z = (common::zindex_t)strtol(z_attr, NULL, 10);
 		AM_DBG lib::logger::get_logger()->debug("region_node::reset: z-index=%d", z);
 		if (z != m_zindex) {
 			changed = true;

@@ -528,7 +528,7 @@ ffmpeg_demux::run()
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: raw pts=%lld, dts=%lld", pkt->pts, pkt->dts);
 
 				pts = pkt->dts;
-				if (pts == AV_NOPTS_VALUE) {
+				if (pts == (int64_t)AV_NOPTS_VALUE) {
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: dts invalid using pts=%lld", pkt->dts);
 					pts = pkt->pts;
 				}
@@ -542,7 +542,7 @@ ffmpeg_demux::run()
 				// effect when playback vorbis in ogg. In this case, we use the latest valid pts as the current
 				// pts instead of the invalid AV_NOPTS_VALUE
 
-				if (pts != AV_NOPTS_VALUE) {
+				if (pts != (int64_t)AV_NOPTS_VALUE) {
 					pts = av_rescale_q(pts, m_con->streams[pkt->stream_index]->time_base, AMBULANT_TIMEBASE);
 
 					if (pkt->stream_index == audio_streamnr) {
@@ -568,7 +568,7 @@ ffmpeg_demux::run()
 #else // RESYNC_TO_INITIAL_AUDIO_PTS
 					// If we don't resync to initial audio PTS we resync to start_time.
 					int64_t stream_start = m_con->start_time; // m_con->streams[audio_streamnr]->start_time;
-					if (stream_start != AV_NOPTS_VALUE) pts -= stream_start;
+					if (stream_start != (int64_t)AV_NOPTS_VALUE) pts -= stream_start;
 					// assert(pts >= 0);
 #endif // RESYNC_TO_INITIAL_AUDIO_PTS
 				}

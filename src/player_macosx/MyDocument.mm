@@ -550,7 +550,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 			screen:screen];
 
 	// Establish the window attributes.
-	[mScreenWindow setDelegate:self];
+	[mScreenWindow setDelegate:id<NSWindowDelegate>(self)];
 	[mScreenWindow setBackgroundColor: [NSColor blackColor]];
 
 	// Remember the old window, and move our view to the fullscreen
@@ -643,7 +643,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 			styleMask:NSBorderlessWindowMask
 			backing:NSBackingStoreBuffered
 			defer:YES];
-		[myAuxWindow setDelegate: self];
+		[myAuxWindow setDelegate: id<NSWindowDelegate>(self)];
 		[myAuxWindow setBackgroundColor: [NSColor clearColor]];
 		[myAuxWindow setOpaque:NO];
 		[myAuxWindow setIgnoresMouseEvents: NO];

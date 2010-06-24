@@ -1780,7 +1780,7 @@ void time_node::raise_repeat_event(qtime_type timestamp) {
 		timestamp.second(),
 		timestamp.as_doc_time_value());
 	assert(timestamp.first == sync_node());
-	on_add_instance(timestamp, tn_repeat_event, timestamp.second, m_precounter);
+	on_add_instance(timestamp, tn_repeat_event, timestamp.second, (int)m_precounter);
 }
 
 // Called when this node exits active.

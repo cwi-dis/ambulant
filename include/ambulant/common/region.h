@@ -147,6 +147,7 @@ class toplevel_surface_impl : public surface_impl {
 	gui_window *get_gui_window() { return m_gui_window; }
   protected:
 	void transition_done(lib::rect area) { transition_freeze_end(area); }
+    
   private:
 #ifdef	WITH_SMIL_TEST
 	common::surface * new_default_subsurface();

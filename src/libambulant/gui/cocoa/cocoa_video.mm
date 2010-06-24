@@ -292,10 +292,10 @@ cocoa_video_renderer::start(double where)
 		m_lock.leave();
 		return;
 	}
-	Movie mov = [m_movie quickTimeMovie];
 	m_paused = false;
 	m_dest->show(this); // XXX Do we need this?
 #ifdef WITH_CLOCK_SYNC
+	Movie mov = [m_movie quickTimeMovie];
 	if (GetMovieRate(mov) == 0) {
 		_fix_video_epoch();
 	}
@@ -442,7 +442,7 @@ cocoa_video_renderer::redraw(const rect &dirty, gui_window *window)
 		m_lock.leave();
 		return;
 	}
-	NSValue *value = [m_movie attributeForKey:QTMovieCurrentSizeAttribute];
+	NSValue *value = [m_movie attributeForKey:QTMovieNaturalSizeAttribute];
 	NSSize nssize = [value sizeValue];
 	size srcsize = size(int(nssize.width), int(nssize.height));
 	rect srcrect;

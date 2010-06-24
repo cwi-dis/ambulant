@@ -649,7 +649,7 @@ surface_impl::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, c
 		x_region_for_image_left = (int)((-x_image_for_region_left * scale_horizontal) + 0.5);
 		x_image_for_region_left = 0;
 	}
-	if (x_image_for_region_right > src_real_size.w) {
+	if (x_image_for_region_right > (int)src_real_size.w) {
 		int overshoot = x_image_for_region_right - src_real_size.w;
 		x_image_for_region_right = src_real_size.w;
 		x_region_for_image_right = x_region_for_image_right - (int)((overshoot * scale_horizontal) + 0.5);
@@ -658,7 +658,7 @@ surface_impl::get_fit_rect(const lib::size& src_size, lib::rect* out_src_rect, c
 		y_region_for_image_top = (int)((-y_image_for_region_top * scale_horizontal) + 0.5);
 		y_image_for_region_top = 0;
 	}
-	if (y_image_for_region_bottom > src_real_size.h) {
+	if (y_image_for_region_bottom > (int)src_real_size.h) {
 		int overshoot = y_image_for_region_bottom - src_real_size.h;
 		y_image_for_region_bottom = src_real_size.h;
 		y_region_for_image_bottom = y_region_for_image_bottom - (int)((overshoot * scale_vertical) + 0.5);
@@ -787,7 +787,6 @@ void
 surface_impl::add_subregion(zindex_t z, surface_impl *rgn)
 {
 	m_children_cs.enter();
-	const region_info *info = get_info();
 	bool was_inactive = !_is_active();
 	m_subregions[z].push_back(rgn);
 	m_children_cs.leave();

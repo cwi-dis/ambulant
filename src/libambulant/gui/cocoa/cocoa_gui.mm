@@ -229,13 +229,15 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 		[pool release];
 		return false;
 	}
-	NSImageRep *rep = [image bestRepresentationForDevice: NULL];
+	NSBitmapImageRep *rep = (NSBitmapImageRep *)[image bestRepresentationForDevice: NULL];
 	if (rep == NULL) {
 		lib::logger::get_logger()->trace("get_screenshot: cannot get representation for screen shot");
 //		[image release];
 		[pool release];
 		return false;
 	}
+    // Make sure we got a bitmap 
+    assert([rep respondsToSelector: @selector(representationUsingType:properties:)]);
 	data = [rep representationUsingType: filetype properties: NULL];
 //	[image release];
 	if (data == NULL) {

@@ -252,7 +252,7 @@ void smil_player::stop() {
 		std::map<const std::string, common::playable *>::iterator it_url_based = m_playables_url_based.begin();
 		lib::logger::get_logger()->trace("stop: playable still in url-based cache: %s", (*it_url_based).second->get_sig().c_str());
 		(*it_url_based).second->post_stop();
-		int rem = (*it_url_based).second->release();
+		(*it_url_based).second->release();
 		m_playables_url_based.erase(it_url_based);
 	}
 	assert(m_playables_url_based.empty());

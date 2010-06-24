@@ -209,23 +209,23 @@ cocoa_smiltext_renderer::smiltext_changed()
 			// Add the new characters
 			newrange.location = [m_text_storage length];
 			newrange.length = 0;
-			NSMutableString *newdata = @"";
+			NSMutableString *newdata = [NSMutableString stringWithUTF8String:""];
 			switch((*i).m_command) {
 			case smil2::stc_break:
-				newdata = @"\n\n";
+				newdata = [NSMutableString stringWithUTF8String:"\n\n"];
 				m_needs_conditional_space = false;
 				m_needs_conditional_newline = false;
 				break;
 			case smil2::stc_condbreak:
 				if (m_needs_conditional_newline) {
-					newdata = @"\n";
+					newdata = [NSMutableString stringWithUTF8String:"\n"];
 					m_needs_conditional_space = false;
 					m_needs_conditional_newline = false;
 				}
 				break;
 			case smil2::stc_condspace:
 				if (m_needs_conditional_space) {
-					newdata = @" ";
+					newdata = [NSMutableString stringWithUTF8String:" "];
 					m_needs_conditional_newline = true;
 					m_needs_conditional_space = false;
 				}

@@ -391,7 +391,7 @@ class animate_f {
 };
 
 enum calc_mode_t {cm_linear, cm_discrete, cm_paced, cm_spline};
-
+#if 0
 void create_bezier_map(double *e, std::map<double, double>& gr) {
 	const int n = 20;
 	double step = 1.0/double(n);
@@ -407,6 +407,7 @@ void create_bezier_map(double *e, std::map<double, double>& gr) {
 		s = s + step;
 	}
 }
+#endif
 
 // Distance for scalars
 template <class T>

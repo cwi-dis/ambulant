@@ -45,14 +45,14 @@ sdl_C_callback(void *userdata, Uint8 *stream, int len)
 }
 
 static void
-add_samples(short *outbuf, short *inbuf, int size, float *volumes, int volcount)
+add_samples(short *outbuf, short *inbuf, size_t size, float *volumes, int volcount)
 {
-	int i;
+	size_t i;
 	int vol_index = 0;
 	for(i=0; i<size; i++) {
 		long value = (long)inbuf[i];
 		if (volcount) {
-			value = (long)(value * volumes[vol_index]);
+			value = (long)((double)value * volumes[vol_index]);
 			if (++vol_index >= volcount) vol_index = 0;
 		}
 		value += (long)outbuf[i];
@@ -621,8 +621,10 @@ gui::sdl::sdl_audio_renderer::restart_audio_input()
 		// Start reading
 		lib::event *e = new readdone_callback(this, &sdl_audio_renderer::data_avail);
 		m_audio_src->start(m_event_processor, e);
+#ifdef WITH_SEAMLESS_PLAYBACK
 	} else {
 		m_audio_src->start_prefetch(m_event_processor);
+#endif // WITH_SEAMLESS_PLAYBACK
 	}
 	return true;
 }
