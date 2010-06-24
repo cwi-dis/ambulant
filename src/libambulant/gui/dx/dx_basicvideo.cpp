@@ -195,6 +195,7 @@ bool gui::dx::dx_basicvideo_renderer::user_event(const lib::point& pt, int what)
 	else if(what == common::user_event_mouse_over) {
 		m_context->pointed(m_cookie);
 	}
+	return true;
 }
 
 void gui::dx::dx_basicvideo_renderer::redraw(const lib::rect &dirty, common::gui_window *window) {

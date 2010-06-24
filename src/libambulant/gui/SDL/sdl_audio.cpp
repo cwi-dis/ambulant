@@ -495,7 +495,7 @@ gui::sdl::sdl_audio_renderer::get_data(size_t bytes_wanted, Uint8 **ptr)
 			}
 		}
 		// Update the audio clock
-		lib::timer::time_type delta = (bytes_wanted * 1000) / (44100*2*2); // Warning: rounding error possible
+		lib::timer::time_type delta = (lib::timer::time_type)((bytes_wanted * 1000) / (44100*2*2)); // Warning: rounding error possible
 		m_audio_clock += delta;
 #endif
 
@@ -512,7 +512,7 @@ gui::sdl::sdl_audio_renderer::get_data(size_t bytes_wanted, Uint8 **ptr)
 	// if rv < bytes_wanted, we should also adjust m_audio_clock (thereby essentially stopping the system clock, until the audio
 	// data has had a chance to catch up).
 	if (rv < bytes_wanted) {
-		lib::timer::time_type pushback_audio_clock = ((bytes_wanted-rv) * 1000) / (44100*2*2);
+		lib::timer::time_type pushback_audio_clock = (lib::timer::time_type)(((bytes_wanted-rv) * 1000) / (44100*2*2));
 		m_audio_clock -= pushback_audio_clock;
 	}
 #endif

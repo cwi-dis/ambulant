@@ -404,9 +404,9 @@ ambulant::net::rtsp_demux::_init_subsessions(rtsp_context_t *context)
 		bool ok;
 		if (prefer_tcp) {
 			AM_DBG lib::logger::get_logger()->debug("rtsp: using TCP as transport stream");
-			ok = context->rtsp_client->setupMediaSubsession(*subsession, false, true);
+			ok = (context->rtsp_client->setupMediaSubsession(*subsession, false, true) != 0);
 		} else {
-			ok = context->rtsp_client->setupMediaSubsession(*subsession, false, false);
+			ok = (context->rtsp_client->setupMediaSubsession(*subsession, false, false) != 0);
 		}
 		if (!ok) {
 			lib::logger::get_logger()->trace("rtsp: setup command to subsession failed");

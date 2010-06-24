@@ -40,7 +40,7 @@
 	Picked up by third_party_packages.sln as well as Ambulant_win32.sln.
 -->
 
-<UserMacro Name="xerces_dir" Value="..\..\third_party_packages\xerces-c-3.1.0" PerformEnvironmentSet="true"/>
+<UserMacro Name="xerces_dir" Value="..\..\third_party_packages\xerces-c-3.1.1" PerformEnvironmentSet="true"/>
 <UserMacro Name="xerces_major" Value="3" PerformEnvironmentSet="true"/>
 <UserMacro Name="xerces_minor" Value="1" PerformEnvironmentSet="true"/>
 <!--

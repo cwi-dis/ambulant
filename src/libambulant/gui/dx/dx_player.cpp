@@ -660,7 +660,7 @@ void gui::dx::dx_player::schedule_update() {
 	lib::event_processor *evp = m_player->get_evp();
 	m_update_event = new lib::no_arg_callback_event<dx_player>(this,
 		&dx_player::update_callback);
-	evp->add_event(m_update_event, 50, lib::event_priority::ep_high);
+	evp->add_event(m_update_event, 50, lib::ep_high);
 }
 
 ////////////////////////

@@ -355,7 +355,7 @@ void
 plugin_engine::load_plugins(std::string dirname)
 {
 	TCHAR old_dll_dir[1024];
-	bool old_dll_dir_ok = GetDllDirectory(1024, old_dll_dir);
+	bool old_dll_dir_ok = (GetDllDirectory(1024, old_dll_dir) > 0);
 	lib::textptr dirname_conv(dirname.c_str());
 	(void)SetDllDirectory(dirname_conv);
 	lib::logger::get_logger()->trace("plugin_engine: Scanning plugin directory: %s", dirname.c_str());

@@ -51,7 +51,10 @@ class AMBULANTAPI params {
   private:
 	void addparamnodes(const lib::node *n);
 
+#pragma warning(push)
+#pragma warning(disable:4251)
 	std::map<std::string, const char *> m_params;
+#pragma warning(pop)
 	// Add more as needed
 };
 

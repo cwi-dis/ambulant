@@ -46,7 +46,7 @@ rem
 mkdir %buildhome%
 cd /d %buildhome%
 %cvs% %CVSARGS% checkout %CHECKOUTARGS% -d %builddir% ambulant
-%cvs% %CVSPRIVARGS% checkout %CHECKOUTPRIVARGS% ambulant-private
+rem XXXX %cvs% %CVSPRIVARGS% checkout %CHECKOUTPRIVARGS% ambulant-private
 if %errorlevel% neq 0 exit
 
 rem 

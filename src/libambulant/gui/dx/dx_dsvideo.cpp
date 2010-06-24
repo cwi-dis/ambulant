@@ -156,10 +156,13 @@ dx_dsvideo_renderer::_copy_to_ddsurf()
 	HDC bmp_hdc = CreateCompatibleDC(hdc);
 	assert(bmp_hdc);
 	HBITMAP hbmp_old = (HBITMAP) SelectObject(bmp_hdc, m_bitmap);
-	bool ok = ::BitBlt(hdc, 0, 0, m_size.w, m_size.h, bmp_hdc, 0, 0, SRCCOPY);
+#pragma warning(push)
+#pragma warning(ignore:4800)
+	bool ok = (bool)::BitBlt(hdc, 0, 0, m_size.w, m_size.h, bmp_hdc, 0, 0, SRCCOPY);
 	assert(ok);
 	SelectObject(bmp_hdc, hbmp_old);
-	ok = DeleteDC(bmp_hdc);
+	ok = (bool)DeleteDC(bmp_hdc);
+#pragma warning(pop)
 	assert(ok);
 	hr = m_ddsurf->ReleaseDC(hdc);
 	if (FAILED(hr)) {

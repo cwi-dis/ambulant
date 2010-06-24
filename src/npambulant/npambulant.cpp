@@ -121,7 +121,7 @@ npambulant::npambulant(
 	DECLARE_NPOBJECT_CLASS_WITH_BASE(ScriptablePluginObject, AllocateScriptablePluginObject);//KB
 
 	const char *ua = NPN_UserAgent(m_pNPInstance);
-	strcpy(m_String, ua);
+	strncpy(m_String, ua, sizeof m_String);
 	extern NPP s_npambulant_last_instance;
 	/* copy argument names and values, as some browers (Chrome) re-use their space */
 	m_argn = (char**) malloc (sizeof(char*)*argc);

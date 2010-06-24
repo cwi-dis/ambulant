@@ -79,6 +79,8 @@ gui::dx::create_dx_smiltext_playable_factory(common::factories *factory, common:
 		dx_smiltext_playable_renderer_uri3 >(factory, mdp);
 }
 
+#pragma warning(push)
+#pragma warning(disable:4355)
 gui::dx::dx_smiltext_renderer::dx_smiltext_renderer(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
@@ -98,7 +100,7 @@ gui::dx::dx_smiltext_renderer::dx_smiltext_renderer(
 {
 	AM_DBG lib::logger::get_logger()->debug("dx_smiltext_renderer(0x%x)", this);
 }
-
+#pragma warning(pop)
 void
 gui::dx::dx_smiltext_renderer::set_surface(common::surface *dest) {
 	m_lock.enter();

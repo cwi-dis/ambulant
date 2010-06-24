@@ -411,12 +411,17 @@ struct regpoint_spec {
 
 } // namespace ambulant
 
+#if !defined(AMBULANT_PLATFORM_WIN32)
+#define sprintf_s snprintf
+#endif
+
 inline std::string repr(const ambulant::common::region_dim& rd) {
 	char sz[16] = "<auto>";
-	if(rd.relative())
-		sprintf(sz, "%d%c", int(floor(0.5+rd.get_as_dbl() * 100.0)), '%');
-	else if(rd.absolute())
-		sprintf(sz, "%d", rd.get_as_int());
+	if(rd.relative()) {
+		sprintf_s(sz, sizeof sz, "%d%c", int(floor(0.5+rd.get_as_dbl() * 100.0)), '%');
+	} else if(rd.absolute()) {
+		sprintf_s(sz, sizeof sz, "%d", rd.get_as_int());
+	}
 	return sz;
 }
 

@@ -272,11 +272,11 @@ primary_Blt(IDirectDrawSurface* primary_surface, LPRECT lpDestRect,
 			lpDestRect->top = 0;
 		}
 		lib::size screensize = gui::dx::viewport::get_size(primary_surface);
-		if (lpDestRect->right > screensize.w) {
+		if (lpDestRect->right > (LONG)screensize.w) {
 			lpSrcRect->right -= (lpDestRect->right - screensize.w);
 			lpDestRect->right = screensize.w;
 		}
-		if (lpDestRect->bottom > screensize.h) {
+		if (lpDestRect->bottom > (LONG)screensize.h) {
 			lpSrcRect->bottom -= (lpDestRect->bottom - screensize.h);
 			lpDestRect->bottom = screensize.h;
 		}

@@ -132,7 +132,7 @@ smil_function_execute(xmlXPathParserContextPtr ctxt, int nargs)
 		if (arg_str == NULL) goto badarg;
 		std::string arg((char*)arg_str);
 		xmlFree(arg_str);
-		bool rv = stm->smil_language(arg);
+		bool rv = (stm->smil_language(arg) > 0);
 		valuePush(ctxt, xmlXPathNewBoolean(rv));
 	} else
 	if (strcmp((char*)xmlcontext->function, "smil-operatingSystem") == 0 ) {
@@ -382,7 +382,7 @@ xpath_state_component::bool_expression(const char *expr)
 			return true;
 		}
 	}
-	bool rv = (bool)xmlXPathCastToBoolean(result);
+	bool rv = xmlXPathCastToBoolean(result) != 0;
 	xmlXPathFreeObject(result);
 	AM_DBG lib::logger::get_logger()->debug("xpath_state_component::bool_expression(%s) -> %d", expr, (int)rv);
 	return rv;

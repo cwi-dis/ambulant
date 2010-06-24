@@ -21,9 +21,6 @@
 #include <math.h>
 #include <map>
 #define round(x) ((int)((x)+0.5))
-#ifndef INT64_C
-#define INT64_C(x) x##LL
-#endif
 
 #include "ambulant/net/ffmpeg_common.h"
 #include "ambulant/net/datasource.h"
