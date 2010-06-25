@@ -170,7 +170,7 @@ badarg:
 	lib::logger::get_logger()->trace("xpath_state_component: argument error for function %s()", xmlcontext->function);
 }
 
-static char *smil_function_names[] = {
+static const char *smil_function_names[] = {
 	"smil-audioDesc",
 	"smil-bitrate",
 	"smil-captions",
@@ -196,7 +196,7 @@ smil_function_lookup(void *ctxt, const xmlChar *name, const xmlChar *nsuri)
 	AM_DBG lib::logger::get_logger()->debug("smil_function_lookup(0x%x, %s, %s)", ctxt, name, nsuri);
 	xpath_state_component *cmp = static_cast<xpath_state_component *>(ctxt);
 	assert(cmp);
-	char **namep;
+	char const **namep;
 	for(namep=smil_function_names; *namep; namep++) {
 		if(strcmp(*namep, (const char*)name) == 0)
 			return smil_function_execute;

@@ -1214,8 +1214,8 @@ public:
 	void start_prefetch(ambulant::lib::event_processor* evp);
 	void stop();
 	bool end_of_file();
-	int size() const;
-	void readdone(int len);
+	size_t size() const;
+	void readdone(size_t len);
 	long add_ref() { return 1; }
 	long release() { return 1;}
 	long get_ref_count() const { return 1; }

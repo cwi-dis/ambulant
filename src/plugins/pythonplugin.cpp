@@ -49,13 +49,23 @@
 #endif
 #include "Python.h"
 #include "ambulantmodule.h"
+
+// The Python interface does not qualify strings with const, so we have to
+// disable warnings about non-writeable strings (zillions of them)
+
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wwrite-strings"
+#endif
+
 extern "C" {
+
 void initambulant();
+
 #define WITH_OBJC_BRIDGE
 #ifdef WITH_OBJC_BRIDGE
 struct pyobjc_api {
-	int		  api_version;	/* API version */
-	size_t		  struct_len;	/* Length of this struct */
+	int api_version;	/* API version */
+	size_t struct_len;	/* Length of this struct */
 	PyTypeObject* class_type;	/* PyObjCClass_Type	   */
 	PyTypeObject* object_type;	/* PyObjCObject_Type   */
 	PyTypeObject* select_type;	/* PyObjCSelector_Type */
@@ -65,9 +75,9 @@ struct pyobjc_api {
 
 	/* PyObjC_RegisterSignatureMapping */
 	int (*register_signature_mapping)(
-			char*,
-			PyObject *(*)(PyObject*, PyObject*, PyObject*),
-			void (*)(void*, void*, void**, void*));
+		char*,
+		PyObject *(*)(PyObject*, PyObject*, PyObject*),
+		void (*)(void*, void*, void**, void*));
 
 	/* PyObjCObject_GetObject */
 	void* (*obj_get_object)(PyObject*);
@@ -87,13 +97,14 @@ struct pyobjc_api {
 	/* PyObjC_IdToPython */
 	PyObject* (*id_to_python)(void*);
 };
+
 static int extra_data;
 struct ambulant::common::plugin_extra_data plugin_extra_data = {
 	"python_extra_data",
 	(void*)&extra_data
 };
-#endif
-};
+#endif // WITH_OBJC_BRIDGE
+}; // extern "C"
 
 //#define AM_DBG
 #ifndef AM_DBG

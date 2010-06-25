@@ -6,6 +6,13 @@
 #include "ambulantutilities.h"
 #include "ambulantmodule.h"
 
+// The Python interface does not qualify strings with const, so we have to
+// disable warnings about non-writeable strings (zillions of them)
+
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wwrite-strings"
+#endif
+
 extern PyObject *audio_format_choicesObj_New(const ambulant::net::audio_format_choices *itself);
 extern int audio_format_choicesObj_Convert(PyObject *v, ambulant::net::audio_format_choices *p_itself);
 
@@ -7897,10 +7904,10 @@ bool datasource::end_of_file()
 	return _rv;
 }
 
-int datasource::size() const
+size_t datasource::size() const
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	int _rv;
+	size_t _rv;
 
 	PyObject *py_rv = PyObject_CallMethod(py_datasource, "size", "()");
 	if (PyErr_Occurred())
@@ -7909,7 +7916,7 @@ int datasource::size() const
 		PyErr_Print();
 	}
 
-	if (py_rv && !PyArg_Parse(py_rv, "i", &_rv))
+	if (py_rv && !PyArg_Parse(py_rv, "l", &_rv))
 	{
 		PySys_WriteStderr("Python exception during datasource::size() return:\n");
 		PyErr_Print();
@@ -7921,10 +7928,10 @@ int datasource::size() const
 	return _rv;
 }
 
-void datasource::readdone(int len)
+void datasource::readdone(size_t len)
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
-	PyObject *py_len = Py_BuildValue("i", len);
+	PyObject *py_len = Py_BuildValue("l", len);
 
 	PyObject *py_rv = PyObject_CallMethod(py_datasource, "readdone", "(O)", py_len);
 	if (PyErr_Occurred())

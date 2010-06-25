@@ -37,6 +37,13 @@ includestuff = includestuff + """
 #include "ambulantutilities.h"
 #include "ambulantmodule.h"
 
+// The Python interface does not qualify strings with const, so we have to
+// disable warnings about non-writeable strings (zillions of them)
+
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wwrite-strings"
+#endif
+
 extern PyObject *audio_format_choicesObj_New(ambulant::net::audio_format_choices *itself);
 extern int audio_format_choicesObj_Convert(PyObject *v, ambulant::net::audio_format_choices *p_itself);
 extern int cobject_Convert(PyObject *v, void **p_itself);
@@ -688,6 +695,13 @@ module.includestuff = """
 #include "ambulantinterface.h"
 #include "ambulantutilities.h"
 #include "ambulantmodule.h"
+
+// The Python interface does not qualify strings with const, so we have to
+// disable warnings about non-writeable strings (zillions of them)
+
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wwrite-strings"
+#endif
 
 extern PyObject *audio_format_choicesObj_New(const ambulant::net::audio_format_choices *itself);
 extern int audio_format_choicesObj_Convert(PyObject *v, ambulant::net::audio_format_choices *p_itself);

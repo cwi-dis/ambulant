@@ -60,10 +60,18 @@ class AMBULANTAPI global_parser_factory : public parser_factory {
 
   private:
 	global_parser_factory();
+
+#ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable:4251)
+#endif // _MSC_VER
+
 	std::vector<parser_factory *> m_factories;
+
+#ifdef _MSC_VER
 #pragma warning(pop)
+#endif // _MSC_VER
+
 	bool m_warned;
 	parser_factory *m_default_factory;
 	static global_parser_factory* s_singleton;

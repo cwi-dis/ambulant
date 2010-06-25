@@ -49,6 +49,13 @@
 #include "ambulantutilities.h"
 #include "ambulantmodule.h"
 
+// The Python interface does not qualify strings with const, so we have to
+// disable warnings about non-writeable strings (zillions of them)
+
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wwrite-strings"
+#endif
+
 extern PyObject *audio_format_choicesObj_New(ambulant::net::audio_format_choices *itself);
 extern int audio_format_choicesObj_Convert(PyObject *v, ambulant::net::audio_format_choices *p_itself);
 extern int cobject_Convert(PyObject *v, void **p_itself);
@@ -13839,9 +13846,9 @@ static PyObject *datasourceObj_size(datasourceObject *_self, PyObject *_args)
 	if (!PyArg_ParseTuple(_args, ""))
 		return NULL;
 	PyThreadState *_save = PyEval_SaveThread();
-	int _rv = _self->ob_itself->size();
+	size_t _rv = _self->ob_itself->size();
 	PyEval_RestoreThread(_save);
-	_res = Py_BuildValue("i",
+	_res = Py_BuildValue("l",
 	                     _rv);
 	return _res;
 }
@@ -13849,8 +13856,8 @@ static PyObject *datasourceObj_size(datasourceObject *_self, PyObject *_args)
 static PyObject *datasourceObj_readdone(datasourceObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
-	int len;
-	if (!PyArg_ParseTuple(_args, "i",
+	size_t len;
+	if (!PyArg_ParseTuple(_args, "l",
 	                      &len))
 		return NULL;
 	PyThreadState *_save = PyEval_SaveThread();
@@ -13871,9 +13878,9 @@ static PyMethodDef datasourceObj_methods[] = {
 	{"end_of_file", (PyCFunction)datasourceObj_end_of_file, 1,
 	 PyDoc_STR("() -> (bool _rv)")},
 	{"size", (PyCFunction)datasourceObj_size, 1,
-	 PyDoc_STR("() -> (int _rv)")},
+	 PyDoc_STR("() -> (size_t _rv)")},
 	{"readdone", (PyCFunction)datasourceObj_readdone, 1,
-	 PyDoc_STR("(int len) -> None")},
+	 PyDoc_STR("(size_t len) -> None")},
 	{NULL, NULL, 0}
 };
 
