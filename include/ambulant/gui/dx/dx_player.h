@@ -170,8 +170,14 @@ class AMBULANTAPI dx_player :
 //	net::url m_url;
 	// The current view
 	struct wininfo {HWND h; viewport *v; dx_window *w; long f;};
-	std::map<std::string, wininfo*> m_windows;
 	wininfo* get_wininfo(HWND hwnd);
+
+	lib::event *m_update_event;
+
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4251)
+#endif
 
 	// The frames stack
 	struct frame {
@@ -179,12 +185,16 @@ class AMBULANTAPI dx_player :
 		common::player* player;
 		lib::document* doc;
 	};
+	std::map<std::string, wininfo*> m_windows;
 	std::stack<frame*> m_frames;
 
-	lib::event *m_update_event;
 	typedef std::map<common::playable *, dx_transition*> trmap_t;
 	trmap_t m_trmap;
 	lib::critical_section m_trmap_cs;
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 	lib::logger *m_logger;
 };

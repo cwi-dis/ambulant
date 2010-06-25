@@ -66,7 +66,7 @@ typedef wchar_t text_char;
 #define text_strtok wcstok
 #define text_strlen wcslen
 #define text_vscprintf _vscwprintf
-#define text_strcat wcscat
+
 #else
 // MB (not UNICODE)
 typedef char text_char;
@@ -76,7 +76,6 @@ typedef char text_char;
 #define text_strtok strtok
 #define text_strlen strlen
 #define text_vscprintf _vscprintf
-#define text_strcat strcat
 #endif //UNICODE (#ifdef ... #else ... $endif)
 
 ///////////////////////////

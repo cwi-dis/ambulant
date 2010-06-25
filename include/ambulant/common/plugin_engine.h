@@ -90,6 +90,11 @@ class AMBULANTAPI plugin_engine {
 	/// Load a single plugin
 	void load_plugin(const char *filename);
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4251)
+#endif
+
 	/// The list of directories to search for plugins.
 	std::vector< std::string > m_plugindirs;
 
@@ -108,6 +113,11 @@ class AMBULANTAPI plugin_engine {
 	std::vector<std::string> m_python_plugins;
 
 #endif // WITH_PYTHON_PLUGIN
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 };
 
 }

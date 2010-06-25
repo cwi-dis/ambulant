@@ -157,7 +157,7 @@ dx_dsvideo_renderer::_copy_to_ddsurf()
 	assert(bmp_hdc);
 	HBITMAP hbmp_old = (HBITMAP) SelectObject(bmp_hdc, m_bitmap);
 #pragma warning(push)
-#pragma warning(ignore:4800)
+#pragma warning(disable:4800)
 	bool ok = (bool)::BitBlt(hdc, 0, 0, m_size.w, m_size.h, bmp_hdc, 0, 0, SRCCOPY);
 	assert(ok);
 	SelectObject(bmp_hdc, hbmp_old);

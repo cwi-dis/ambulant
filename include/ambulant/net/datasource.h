@@ -44,7 +44,7 @@ typedef unsigned char uint8_t;
 #define BASE_THREAD lib::win32::thread
 #endif
 #ifdef _MSC_VER
-#pragma warning(disable : 4251)
+//#pragma warning(disable : 4251)
 #endif
 
 namespace ambulant {
@@ -201,11 +201,22 @@ class AMBULANTAPI audio_format_choices {
 	bool contains(const audio_format& fmt) const;
 
   private:
+
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4251)
+#endif
+
 	audio_format m_best;
 	std::set<int> m_samplerate;
 	std::set<int> m_channels;
 	std::set<int> m_bits;
 	std::set<std::string> m_named_formats;
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 };
 
 struct ts_packet_t {
@@ -577,6 +588,12 @@ class AMBULANTAPI datasource_factory :
 	void add_raw_filter(raw_filter_finder *df);
 
   private:
+  
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4251)
+#endif
+
 	std::vector<raw_datasource_factory*> m_raw_factories;
 	std::vector<audio_datasource_factory*> m_audio_factories;
 	std::vector<audio_parser_finder*> m_audio_parser_finders;
@@ -584,6 +601,11 @@ class AMBULANTAPI datasource_factory :
 	std::vector<audio_decoder_finder*> m_audio_decoder_finders;
 	std::vector<video_datasource_factory*> m_video_factories;
 	std::vector<raw_filter_finder*> m_raw_filters;
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 };
 
 /// Convenience class that implements the framework for a filtering datasource.

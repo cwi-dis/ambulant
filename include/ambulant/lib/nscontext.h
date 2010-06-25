@@ -40,7 +40,7 @@ namespace lib {
 
 /// XML namespace information.
 /// This class holds information on XML namespaces.
-class nscontext {
+class AMBULANTAPI nscontext {
   public:
 	/// Signals that short name prefix matches long name uri.
 	void set_prefix_mapping(const xml_string& prefix, const xml_string& uri);
@@ -73,7 +73,7 @@ class nscontext {
 	static void init_supported_namespaces();
 
 	/// Cleanup any data from init_supported_namespaces
-	static AMBULANTAPI void cleanup();
+	static void cleanup();
 
 	/// Convenience function version of get_namespace_prefix method.
 	static const xml_string&
@@ -88,8 +88,18 @@ class nscontext {
 	get_uri2pre() const { return m_uri2pre;}
 
   private:
+
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4251)
+#endif
+
 	std::map<xml_string, xml_string> m_pre2uri;
 	std::map<xml_string, xml_string> m_uri2pre;
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 	static xml_string s_empty;
 	static std::set<xml_string> *s_supported_namespaces;

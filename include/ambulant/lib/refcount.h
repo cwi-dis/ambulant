@@ -37,9 +37,6 @@
 
 #include "ambulant/lib/mtsync.h"
 
-#ifdef _MSC_VER
-#pragma warning(disable : 4251)
-#endif
 // reference couting should be atomic
 #define USE_REF_COUNT_SEMAPHORE
 
@@ -153,7 +150,18 @@ class AMBULANTAPI ref_counted_obj : virtual public ref_counted {
 	long get_ref_count() const {return m_refcount;}
 
   protected:
+
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4251)
+#endif
+
 	atomic_count m_refcount;
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 };
 
 /// A ref_counted wrapper around a normal objects.

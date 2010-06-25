@@ -20,8 +20,8 @@
 // AmbulantPlayer.cpp : Defines the class behaviors for the application.
 //
 
-#include "ambulant/config/config.h"
 #include "stdafx.h"
+#include "ambulant/config/config.h"
 //#include "vld.h" // Visual Leak Detector
 #include "AmbulantPlayer.h"
 #include "MainFrm.h"
@@ -267,7 +267,7 @@ bool CAmbulantPlayerApp::LocateHelpDoc(LPCTSTR rpath) {
 	GetModuleFileName(NULL, buf, _MAX_PATH);
 	TCHAR *p1 = text_strrchr(buf,'\\');
 	if(p1) *++p1='\0';
-	text_strcat(buf, rpath);
+	_tcscat_s(buf, sizeof(buf)/sizeof(buf[0]), rpath);
 	TCHAR path[_MAX_PATH];
 	TCHAR *pFilePart = 0;
 	GetFullPathName(buf, MAX_PATH, path, &pFilePart);

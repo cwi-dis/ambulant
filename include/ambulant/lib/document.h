@@ -180,6 +180,12 @@ class AMBULANTAPI document :
 	// document namespaces registry
 	nscontext m_namespaces;
 
+
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4251)
+#endif
+
 	// document custom tests
 	std::map<std::string, custom_test> m_custom_tests;
 
@@ -201,6 +207,11 @@ class AMBULANTAPI document :
 	std::map<const node *, std::map<xml_string, xml_string> > m_avtcache;
 
 #endif // WITH_SMIL30
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 };
 
 } // namespace lib

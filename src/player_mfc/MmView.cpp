@@ -20,8 +20,8 @@
 // MmView.cpp : implementation of the MmView class
 //
 
-#include "ambulant/config/config.h"
 #include "stdafx.h"
+#include "ambulant/config/config.h"
 #include "ambulant/gui/dx/html_bridge.h"
 #include "AmbulantPlayer.h"
 #include "MainFrm.h"
@@ -71,7 +71,7 @@ static std::string get_log_filename() {
 static TCHAR *get_directory(const TCHAR *fn) {
 	static TCHAR buf[_MAX_PATH];
 	buf[0] = 0;
-	text_strcat(buf, fn);
+	_tcscat_s(buf, sizeof(buf)/sizeof(buf[0]), fn);
 	TCHAR *p1 = text_strrchr(buf,'\\');
 	if(p1 != NULL) *p1='\0';
 	return buf;
@@ -385,7 +385,7 @@ void MmView::SetMMDocument(LPCTSTR lpszPathName, bool autostart) {
 		lib::textptr tppath(path);
 		u = net::url::from_filename(tppath);
 	} else {
-		_tcscpy(path, lpszPathName);
+		_tcscpy_s(path, sizeof(path)/sizeof(path[0]), lpszPathName);
 		u = net::url::from_url(T2CA(path));
 	}
 
@@ -656,7 +656,7 @@ BOOL MmView::OnToolTipNotify(UINT id, NMHDR *pNMHDR, LRESULT *pResult)
 		std::string str = player->get_pointed_node_str();
 		strTipText.Format(_T("Anchor: %s"), str.c_str());
 		if(pNMHDR->code == TTN_NEEDTEXTA)
-			strncpy(pTTTA->szText, str.c_str(), sizeof(pTTTA->szText));
+			strncpy_s(pTTTA->szText, sizeof(pTTTA->szText), str.c_str(), sizeof(pTTTA->szText));
 		else
 			::MultiByteToWideChar( CP_ACP , 0, str.c_str(), -1, pTTTW->szText, sizeof(pTTTW->szText) );
 		*pResult = 0;
@@ -688,7 +688,7 @@ bool MmView::LocateWelcomeDoc(LPCTSTR rpath) {
 	GetModuleFileName(NULL, buf, _MAX_PATH);
 	TCHAR *p1 = text_strrchr(buf,'\\');
 	if(p1) *++p1='\0';
-	text_strcat(buf, rpath);
+	_tcscat_s(buf, sizeof(buf)/sizeof(buf[0]), rpath);
 	TCHAR path[_MAX_PATH];
 	TCHAR *pFilePart = 0;
 	GetFullPathName(buf, MAX_PATH, path, &pFilePart);

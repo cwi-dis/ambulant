@@ -98,7 +98,7 @@ struct pyobjc_api {
 	PyObject* (*id_to_python)(void*);
 };
 
-static int extra_data;
+static size_t extra_data;
 struct ambulant::common::plugin_extra_data plugin_extra_data = {
 	"python_extra_data",
 	(void*)&extra_data
@@ -178,14 +178,14 @@ void initialize(
 	for(i=all_modules.begin(); i!=all_modules.end(); i++) {
 
 		// Step 3 - Split into directory and module name
-		int last_fsep = (*i).find_last_of("/\\");
+		size_t last_fsep = (*i).find_last_of("/\\");
 		if (last_fsep == std::string::npos) {
 			lib::logger::get_logger()->trace("python_plugin: cannot find dirpath for %s", (*i).c_str());
 			continue;
 		}
 		std::string dirname = (*i).substr(0, last_fsep);
 		std::string modname = (*i).substr(last_fsep+1);
-		int last_dot = modname.find_last_of(".");
+		size_t last_dot = modname.find_last_of(".");
 		if (last_dot != std::string::npos) {
 			modname = modname.substr(0, last_dot);
 		}

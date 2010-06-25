@@ -202,7 +202,17 @@ class AMBULANTAPI viewport {
 	IDirectDrawSurface* m_surface;
 	IDirectDrawSurface* m_fstr_surface;
 	dx_transition* m_fstransition;
+
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4251)
+#endif
+
 	std::list<IDirectDrawSurface*> m_surfaces;
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 	int m_width, m_height;
 	lib::color_t m_bgd;

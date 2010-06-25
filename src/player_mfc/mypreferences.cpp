@@ -17,9 +17,11 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#include "ambulant/config/config.h"
 #include "stdafx.h"
+#include "ambulant/config/config.h"
 #include "mypreferences.h"
+
+#pragma warning( disable: 4800)  // Disable performance warning "forcing value to bool true of false"
 
 void
 mypreferences::install_singleton()
