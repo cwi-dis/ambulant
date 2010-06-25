@@ -1,3 +1,25 @@
+2010-06-25 01:26  jackjansen
+
+	* Squashing more warnings.
+
+2010-06-24 23:53  jackjansen
+
+	* More compiler warnings squashed
+
+2010-06-24 17:05  jackjansen
+
+	* More integers converted to size_t
+
+2010-06-24 17:02  jackjansen
+
+	* More integers converted to size_t
+
+2010-06-24 16:21  jackjansen
+
+	* Made stuff cleaner for 64bit by using size_t in stead of int in
+	  lots of places.  Also cleaned up bits of dead wood that this
+	  exercise revealed.
+
 2010-06-24 00:15  jackjansen
 
 	* - Got rid of some very old ffmpeg workarounds - Started on
