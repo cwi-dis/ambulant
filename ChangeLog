@@ -1,3 +1,15 @@
+2010-06-25 12:40  jackjansen
+
+	* Last batch of Windows warnings bites the dust.
+
+2010-06-25 11:03  jackjansen
+
+	* More warnings squashed, mainly warnings about const strings
+
+2010-06-25 10:08  jackjansen
+
+	* Getting rid of deprecated ffmpeg constructs
+
 2010-06-25 01:26  jackjansen
 
 	* Squashing more warnings.
