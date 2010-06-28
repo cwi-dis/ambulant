@@ -38,6 +38,8 @@
 #endif
 #include "ambulant/net/datasource.h"
 
+// Needed for avcodec.h:
+#define __STDC_CONSTANT_MACROS
 #include <stdint.h>
 extern "C" {
 #include "libavcodec/avcodec.h"

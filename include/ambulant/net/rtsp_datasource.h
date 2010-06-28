@@ -45,6 +45,8 @@
 #include "BasicUsageEnvironment.hh"
 #include "liveMedia.hh"
 
+// Needed for avcodec.h:
+#define __STDC_CONSTANT_MACROS
 #include <stdint.h>
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"
