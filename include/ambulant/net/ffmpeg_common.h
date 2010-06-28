@@ -38,6 +38,7 @@
 #endif
 #include "ambulant/net/datasource.h"
 
+#include <stdint.h>
 extern "C" {
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"
