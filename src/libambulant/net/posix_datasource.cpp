@@ -68,7 +68,8 @@ posix_datasource::posix_datasource(std::string filename, int file)
 	if (file >= 0) {
 		filesize();
 //		m_end_of_file = m_filesize > 0;
-		m_buffer = new databuffer(m_filesize);
+		assert((size_t)m_filesize == m_filesize);
+		m_buffer = new databuffer((size_t)m_filesize);
 		if (!m_buffer) {
 			m_buffer = NULL;
 			lib::logger::get_logger()->fatal("posix_datasource(): out of memory");
