@@ -287,8 +287,8 @@ plugin_engine::load_plugins(std::string dirname)
 
 				// Construct the full pathname
 				strncpy(filename, dirname.c_str(), sizeof(filename));
-				strncat(filename, "/", sizeof(filename));
-				strncat(filename, pluginname, sizeof(filename));
+				strncat(filename, "/", sizeof(filename)-1);
+				strncat(filename, pluginname, sizeof(filename)-strlen(filename)-1);
 
 				// Add the plugin dir to the search path
 				if (!ldpath_added) {

@@ -85,8 +85,6 @@ class none_background_renderer : public common::background_renderer {
 	void highlight(common::gui_window *window);
 };
 
-class common::region_info;
-
 /// Implementation of playable_factory that returns none_playable objects.
 class none_playable_factory : public common::playable_factory {
   public:

@@ -72,8 +72,6 @@ namespace ambulant {
 
 namespace smil2 {
 
-class lib::document;
-
 class trace_player : public time_node_context,
 	public common::playable_notification {
   public:

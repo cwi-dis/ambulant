@@ -84,7 +84,7 @@ event_processor_impl::run()
 	if (hr) {
 		lib::logger::get_logger()->trace("win32_event_processor::run: CoInitializeEx failed with 0x%x", hr);
 	}
-#endif AMBULANT_PLATFORM_WIN32
+#endif // AMBULANT_PLATFORM_WIN32
 	m_lock.enter();
 	while(!exit_requested()) {
 		_serve_events();

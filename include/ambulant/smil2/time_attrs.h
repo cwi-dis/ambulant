@@ -89,8 +89,6 @@ enum restart_behavior { restart_always, restart_when_not_active, restart_never,
 
 enum actuate { actuate_onload, actuate_onrequest};
 
-class lib::logger;
-
 class time_attr_parser : public time_traits {
   public:
 	typedef std::string::size_type size_type;

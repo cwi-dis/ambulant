@@ -174,7 +174,7 @@ third_party_packages={
 			),
 ##		TPP("ffmpeg",
 ##			url="http://ffmpeg.org/releases/ffmpeg-0.5.tar.bz2",
-##			checkcmd="pkg-config --atleast-version=52.20.0 libavformat",
+##			checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
 ##			buildcmd=
 ##				"mkdir ffmpeg-0.5-universal && "
 ##				"cd ffmpeg-0.5-universal && "
@@ -184,7 +184,7 @@ third_party_packages={
 		TPP("ffmpeg",
 ##			url="http://homepages.cwi.nl/~jack/ambulant/ffmpeg-export-2010-01-22.tgz",
 			url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
-			checkcmd="pkg-config --atleast-version=52.20.0 libavformat",
+			checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
 			buildcmd=
 				"mkdir ffmpeg-export-universal && "
 				"cd ffmpeg-export-universal && "
@@ -262,7 +262,7 @@ third_party_packages={
 			),
 ##		TPP("ffmpeg",
 ##			url="http://ffmpeg.org/releases/ffmpeg-0.5.tar.bz2",
-##			checkcmd="pkg-config --atleast-version=52.20.0 libavformat",
+##			checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
 ##			buildcmd=
 ##				"mkdir ffmpeg-0.5-universal && "
 ##				"cd ffmpeg-0.5-universal && "
@@ -271,7 +271,7 @@ third_party_packages={
 ##			),
 		TPP("ffmpeg",
 			url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
-			checkcmd="pkg-config --atleast-version=52.20.0 libavformat",
+			checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
 			buildcmd=
 				"mkdir ffmpeg-export-universal && "
 				"cd ffmpeg-export-universal && "
@@ -365,7 +365,7 @@ third_party_packages={
 			),
 ##		TPP("ffmpeg",
 ##			url="http://ffmpeg.org/releases/ffmpeg-0.5.tar.bz2",
-##			checkcmd="pkg-config --atleast-version=52.20.0 libavformat",
+##			checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
 ##			buildcmd=
 ##				"mkdir ffmpeg-0.5-universal && "
 ##				"cd ffmpeg-0.5-universal && "
@@ -374,7 +374,7 @@ third_party_packages={
 ##			),
 		TPP("ffmpeg",
 			url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
-			checkcmd="pkg-config --atleast-version=52.20.0 libavformat",
+			checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
 			buildcmd="./configure --enable-cross-compile --arch=arm --target-os=darwin --cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc --as='gas-preprocessor.pl  \
 				/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc' --sysroot=/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS3.0.sdk --cpu=arm1176jzf-s --extra-cflags='-arch  \
 				armv6 -I../installed/arm/include' --extra-ldflags='-arch armv6 -L../installed/arm/lib' --enable-libfaad --prefix=../installed/arm --enable-gpl"
@@ -529,7 +529,7 @@ third_party_packages={
 ##			),
 ##		TPP("ffmpeg",
 ##			url="http://ffmpeg.org/releases/ffmpeg-0.5.tar.bz2",
-##			checkcmd="pkg-config --atleast-version=52.20.0 libavformat",
+##			checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
 ##			buildcmd=
 ##				"cd ffmpeg-0.5 && "
 ##				"%s --enable-gpl --enable-libfaad --enable-swscale --enable-shared --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"
@@ -540,7 +540,7 @@ third_party_packages={
 		TPP("ffmpeg",
 ##			url="http://homepages.cwi.nl/~jack/ambulant/ffmpeg-export-2010-01-22.tgz",
 			url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
-			checkcmd="pkg-config --atleast-version=52.20.0 libavformat",
+			checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
 			buildcmd=
 				"cd ffmpeg-export-2010-01-22 && "
 				"%s --enable-gpl --enable-libfaad --enable-shared --disable-bzlib --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"

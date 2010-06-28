@@ -45,11 +45,6 @@ namespace ambulant {
 
 namespace smil2 {
 
-
-class lib::document;
-class common::schema;
-class lib::logger;
-
 // Builds the time tree and the time graph.
 // Wraps the time root.
 

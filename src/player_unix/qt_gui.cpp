@@ -176,7 +176,6 @@ qt_gui::qt_gui(const char* title, const char* initfile)
 
 qt_gui::~qt_gui() {
 #define DELETE(X) if (X) { delete X; X = NULL; }
-	AM_DBG printf("%s0x%X\n", "qt_gui::~qt_gui(), m_mainloop=",m_mainloop);
 	setCaption(QString::null);
 	DELETE(m_mainloop)
 	DELETE(m_filemenu)
@@ -225,7 +224,6 @@ qt_gui::slot_help() {
 
 void
 qt_gui::slot_logger_window() {
-	AM_DBG printf("slot_logger_window()\n");
 	QTextEdit* logger_window = qt_logger::get_qt_logger()->get_logger_window();
 	if (logger_window->isHidden())
 		logger_window->show();
@@ -340,12 +338,10 @@ qt_gui::slot_open_url() {
 
 void
 qt_gui::slot_player_done() {
-	AM_DBG printf("%s-%s\n", m_programfilename, "slot_player_done");
 }
 
 void
 qt_gui::need_redraw (const void* r, void* w, const void* pt) {
-	AM_DBG printf("qt_gui::need_redraw(0x%x)-r=(0x%x)\n", (void *)this,r?r:0);
 	emit signal_need_redraw(r,w,pt);
 }
 
@@ -382,7 +378,6 @@ qt_gui::slot_reload() {
 
 void
 qt_gui::slot_stop() {
-	AM_DBG printf("%s-%s\n", m_programfilename, "slot_stop");
 	if(m_mainloop)
 		m_mainloop->stop();
 	_update_menus();
@@ -416,7 +411,6 @@ qt_gui::slot_settings_cancel() {
 
 void
 qt_gui::slot_quit() {
-	AM_DBG printf("%s-%s\n", m_programfilename, "slot_quit");
 	if (m_mainloop) {
 		m_mainloop->stop();
 		delete m_mainloop;
@@ -559,7 +553,6 @@ main (int argc, char*argv[]) {
 		char* str = argv[argc-1];
 		int len = strlen(str);
 		strcpy(last, &str[len-5]);
-		AM_DBG fprintf(DBG, "%s %s %x\n", str, last);
 		if (strcmp(last, ".smil") == 0
 			|| strcmp(&last[1], ".smi") == 0
 			|| strcmp(&last[1], ".sml") == 0)
@@ -591,6 +584,5 @@ main (int argc, char*argv[]) {
 #endif/*WITH_QT_HTML_WIDGET*/
 	unix_prefs.save_preferences();
 	delete qt_logger::get_qt_logger();
-	std::cout << "Exiting program" << std::endl;
 	return exec_flag ? 0 : -1;
 }

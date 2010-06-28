@@ -61,7 +61,7 @@ static const char* statecommand_elements[] = {
 static const char* prefetch_elements[] = {
 	"prefetch"
 };
-#endif WITH_SEAMLESS_PLAYBACK
+#endif // WITH_SEAMLESS_PLAYBACK
 
 // Create the smplest possible schema factory
 // Its sole purpose is to create privately the schema singleton.

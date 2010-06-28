@@ -337,7 +337,6 @@ gtk_gui::gtk_gui(const char* title, const char* initfile)
 
 	/* The Action Group that includes the menu bar */
 	m_actions = gtk_action_group_new("Actions");
-	AM_DBG printf("%s0x%X\n", "gtk_gui::gtk_gui(), PACKAGE=", PACKAGE);
 	gtk_action_group_set_translation_domain(m_actions, PACKAGE);
 	gtk_action_group_add_actions(m_actions, entries, n_entries, (void*)this);
 
@@ -390,8 +389,6 @@ gtk_gui::gtk_gui(const char* title, const char* initfile)
 
 
 gtk_gui::~gtk_gui() {
-
-	AM_DBG printf("%s0x%X\n", "gtk_gui::~gtk_gui(), m_mainloop=",m_mainloop);
 
 	// remove all dynamic data in the same order as they are declared
 	// m_programfilename - not dynamic
@@ -518,7 +515,6 @@ gtk_gui::do_help() {
 
 void
 gtk_gui::do_logger_window() {
-	AM_DBG printf("do_logger_window()\n");
 	GtkWindow* logger_window =	gtk_logger::get_gtk_logger()->get_logger_window();
 	if (GTK_WIDGET_VISIBLE (GTK_WIDGET (logger_window))) {
 		gtk_widget_hide(GTK_WIDGET (logger_window));
@@ -535,8 +531,9 @@ gtk_gui::fileError(const gchar* smilfilename) {
 		GTK_DIALOG_DESTROY_WITH_PARENT,
 		GTK_MESSAGE_ERROR,
 		GTK_BUTTONS_OK,
+		"%s",
 		m_programfilename);
-	gtk_message_dialog_format_secondary_text(dialog, buf);
+	gtk_message_dialog_format_secondary_text(dialog, "%s", buf);
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
@@ -694,20 +691,17 @@ void gtk_gui::do_url_selected() {
 
 void
 gtk_gui::do_player_done() {
-	AM_DBG printf("%s-%s\n", m_programfilename, "do_player_done");
 	_update_menus();
 }
 
 void
 gtk_gui::need_redraw (const void* r, void* w, const void* pt) {
 
-	AM_DBG printf("gtk_gui::need_redraw(0x%x)-r=(0x%x)\n", (void *)this,r?r:0);
 	g_signal_emit(GTK_OBJECT (m_toplevelcontainer), signal_need_redraw_id, 0, r, w, pt);
 }
 
 void
 gtk_gui::player_done() {
-	AM_DBG printf("%s-%s\n", m_programfilename, "player_done");
 	g_signal_emit(GTK_OBJECT (m_toplevelcontainer), signal_player_done_id, 0);
 }
 
@@ -717,6 +711,7 @@ no_fileopen_infodisplay(gtk_gui* w, const char* caption) {
 		GTK_DIALOG_DESTROY_WITH_PARENT,
 		GTK_MESSAGE_INFO,
 		GTK_BUTTONS_OK,
+		"%s",
 		caption);
 	gtk_message_dialog_format_secondary_markup (dialog, "No file open: Please first select File->Open");
 	gtk_dialog_run (GTK_DIALOG (dialog));
@@ -725,7 +720,6 @@ no_fileopen_infodisplay(gtk_gui* w, const char* caption) {
 
 void
 gtk_gui::do_play() {
-	AM_DBG printf("%s-%s m_mainloop=0x%x\n", m_programfilename, "do_play", m_mainloop);
 	assert(m_mainloop);
 	m_mainloop->play();
 	_update_menus();
@@ -733,7 +727,6 @@ gtk_gui::do_play() {
 
 void
 gtk_gui::do_pause() {
-	AM_DBG printf("%s-%s m_mainloop=0x%x\n", m_programfilename, "do_pause", m_mainloop);
 	assert(m_mainloop);
 	m_mainloop->pause();
 	_update_menus();
@@ -741,7 +734,6 @@ gtk_gui::do_pause() {
 
 void
 gtk_gui::do_reload() {
-	AM_DBG printf("%s-%s m_mainloop=0x%x\n", m_programfilename, "do_reload", m_mainloop);
 	assert(m_mainloop);
 	m_mainloop->restart(true);
 	_update_menus();
@@ -749,7 +741,6 @@ gtk_gui::do_reload() {
 
 void
 gtk_gui::do_stop() {
-	AM_DBG printf("%s-%s m_mainloop=0x%x\n", m_programfilename, "do_stop", m_mainloop);
 	assert(m_mainloop);
 	if(m_mainloop)
 		m_mainloop->stop();
@@ -769,7 +760,6 @@ gtk_gui::do_settings_select() {
 
 void
 gtk_gui::do_quit() {
-	AM_DBG printf("%s-%s\n", m_programfilename, "do_quit");
 	if (m_mainloop) {
 		m_mainloop->stop();
 		delete m_mainloop;
@@ -839,6 +829,7 @@ gtk_gui::do_internal_message(gtk_message_event* e) {
 			GTK_DIALOG_DESTROY_WITH_PARENT,
 			GTK_MESSAGE_ERROR,
 			GTK_BUTTONS_OK,
+			"%s",
 			msg);
 		g_signal_connect_swapped (dialog, "response",
 			G_CALLBACK (gtk_widget_destroy),
@@ -850,6 +841,7 @@ gtk_gui::do_internal_message(gtk_message_event* e) {
 			GTK_DIALOG_DESTROY_WITH_PARENT,
 			GTK_MESSAGE_WARNING,
 			GTK_BUTTONS_OK,
+			"%s",
 			msg);
 		g_signal_connect_swapped (dialog, "response",
 			G_CALLBACK (gtk_widget_destroy),
@@ -862,6 +854,7 @@ gtk_gui::do_internal_message(gtk_message_event* e) {
 			GTK_DIALOG_DESTROY_WITH_PARENT,
 			GTK_MESSAGE_INFO,
 			GTK_BUTTONS_OK,
+			"%s",
 			msg);
 		g_signal_connect_swapped (dialog, "response",
 			G_CALLBACK (gtk_widget_destroy),
@@ -902,7 +895,6 @@ gtk_gui::internal_message(int level, char* msg) {
 void
 gtk_gui::_update_menus()
 {
-  AM_DBG if (m_mainloop) printf("gtk_gui::_update_menus(0x%x) play_enabled=%d play_active=%d pause_enabled=%d pause_active=%d stop_enabled=%d stop_active=%d \n", this, m_mainloop->is_play_enabled(), m_mainloop->is_play_active(), m_mainloop->is_pause_enabled(), m_mainloop->is_pause_active(), m_mainloop->is_stop_enabled(), m_mainloop->is_stop_active());
 	gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "play"),
 		m_mainloop && m_mainloop->is_play_enabled() && ! m_mainloop->is_play_active());
 	gtk_action_set_sensitive(gtk_action_group_get_action (m_actions, "pause"),
@@ -915,11 +907,9 @@ gtk_gui::_update_menus()
 
 int
 main (int argc, char*argv[]) {
-	printf ("AmbulantPlayer: starting up\n");
 
 #ifdef	WITH_GSTREAMER
 	/* initialize GStreamer */
-	AM_DBG fprintf(stderr, "initialize GStreamer\n");
 	gstreamer_player_initialize (&argc, &argv);
 #endif/*WITH_GSTREAMER*/
 
@@ -947,7 +937,6 @@ main (int argc, char*argv[]) {
 	// Load preferences, initialize app and logger
 	unix_preferences unix_prefs;
 	unix_prefs.load_preferences();
-	FILE* DBG = stdout;
 
 	/* Setup widget */
 	gtk_gui *mywidget = new gtk_gui(argv[0], argc > 1 ? argv[1] : "AmbulantPlayer");
@@ -962,8 +951,6 @@ main (int argc, char*argv[]) {
 #if ENABLE_NLS
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english)"));
 #endif
-	AM_DBG fprintf(DBG, "argc=%d argv[0]=%s\n", argc, argv[0]);
-	AM_DBG for (int i=1;i<argc;i++){fprintf(DBG,"%s\n", argv[i]);}
 
 	bool exec_flag = false;
 
@@ -972,7 +959,6 @@ main (int argc, char*argv[]) {
 		char* str = argv[argc-1];
 		int len = strlen(str);
 		strcpy(last, &str[len-5]);
-		AM_DBG fprintf(DBG, "%s %s %x\n", str, last);
 		if (strcmp(last, ".smil") == 0
 			|| strcmp(&last[1], ".smi") == 0
 			|| strcmp(&last[1], ".sml") == 0)
@@ -1015,6 +1001,5 @@ main (int argc, char*argv[]) {
 	gstreamer_player_finalize();
 #endif/*WITH_GSTREAMER*/
 
-	std::cout << "Exiting program" << std::endl;
 	return exec_flag ? 0 : -1;
 }

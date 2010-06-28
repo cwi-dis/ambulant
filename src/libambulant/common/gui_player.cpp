@@ -243,7 +243,7 @@ gui_player::create_document(const net::url& url)
 	// Correct for relative pathnames for local files
 	if (url.is_local_file() && !url.is_absolute()) {
 		char cwdbuf[1024];
-		if (getcwd(cwdbuf, sizeof cwdbuf-2) < 0)
+		if (getcwd(cwdbuf, sizeof cwdbuf-2) == NULL)
 			strcpy(cwdbuf, ".");
 		strcat(cwdbuf, "/");
 		net::url cwd_url = ambulant::net::url::from_filename(cwdbuf);
