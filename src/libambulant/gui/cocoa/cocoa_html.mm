@@ -215,7 +215,7 @@ cocoa_html_renderer::stop() {
 	m_context->stopped(m_cookie);
 	m_lock.leave();
 	[pool release];
-	return true; //xxxbo notes, true means this renderer cannot be reused.
+	return true; // Don't re-use this renderer
 }
 
 } // namespace cocoa

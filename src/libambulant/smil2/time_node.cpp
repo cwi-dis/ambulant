@@ -725,7 +725,6 @@ void time_node::activate(qtime_type timestamp) {
 		}
 #endif // WITH_SMIL30
 #ifdef WITH_SEAMLESS_PLAYBACK
-		//xxxbo: the entrence point for prefetch
 		else if (is_prefetch()) {
 			start_prefetch(sd_offset);
 			assert(m_state->ident() == ts_active);
@@ -1501,18 +1500,14 @@ void time_node::fill(qtime_type timestamp) {
 #ifndef WITH_SEAMLESS_PLAYBACK
 		if(is_playable()) pause_playable();
 #else
-		if (fb != fill_continue && is_playable()) pause_playable();
-		else {
-			//xxxbo: Instead of pausing the playable, we should continue it for some short period of time.
-			//		 Here, I just print some message and actual action needed to be inserted later after I
-			//		 figure out how to do it.
+		if (fb != fill_continue && is_playable()) {
+			pause_playable();
+		} else {
+			// Instead of pausing the playable, we should continue it for some short period of time.
+			// Here, I just print some message and actual action needed to be inserted later after I
+			// figure out how to do it.
 			if (m_node->get_attribute("src")) {
-				m_logger->debug("%s[%s].continue() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(),
-								m_attrs.get_id().c_str(),
-								timestamp.as_time_value_down_to(this), timestamp.second(),
-								timestamp.as_doc_time_value());
-				//xxxbo: It seems that resume_playble doesn't make any difference
-				//if(is_playable()) resume_playable();
+				m_logger->debug("%s[%s].continue() ST:%ld, PT:%ld, DT:%ld", m_attrs.get_tag().c_str(), m_attrs.get_id().c_str(), timestamp.as_time_value_down_to(this), timestamp.second(), timestamp.as_doc_time_value());
 			}
 		}
 #endif

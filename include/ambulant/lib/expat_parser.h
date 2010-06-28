@@ -32,17 +32,7 @@
 #include "ambulant/lib/sax_handler.h"
 #include "ambulant/lib/parser_factory.h"
 
-// On the Mac we use GCC but using cdecl in declarations gives a warning.
-// We suppress that here
-#ifdef AMBULANT_PLATFORM_MACOS
-#define XMLCALL
-#endif
 #include "expat.h"
-
-// To execute samples depending on libexpat.dll assert
-// that the dll is reachable at runtime
-// (e.g. its in the path).
-
 
 namespace ambulant {
 

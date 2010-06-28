@@ -159,10 +159,8 @@ cocoa_audio_playable::stop()
 	}
 	m_lock.leave();
 	[pool release];
-	return true; //xxxbo notes, true means this renderer cannot be reused.
+	return true; // Don't re-use this renderer}
 }
-
-
 
 void
 cocoa_audio_playable::pause(pause_display d)

@@ -836,11 +836,7 @@ rtsp_demux::_push_data_to_sink (int sink_index, timestamp_t pts, const uint8_t* 
 		}
 		// Now we have to wait until there is room in the sink buffer.
 		// sleep 10 millisec, hardly noticeable
-#ifdef	AMBULANT_PLATFORM_WIN32
 		ambulant::lib::sleep_msec(10); // XXXX should be woken by readdone()
-#else
-		usleep(10000);
-#endif //AMBULANT_PLATFORM_WIN32
 		m_critical_section.enter();
 		sink = m_context->sinks[sink_index];
 	}

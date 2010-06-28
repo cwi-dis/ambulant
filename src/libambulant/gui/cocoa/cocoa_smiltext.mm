@@ -158,7 +158,7 @@ cocoa_smiltext_renderer::stop()
 	m_engine.stop();
 	renderer_playable::stop();
 	m_context->stopped(m_cookie);
-	return true; //xxxbo notes, true means this renderer cannot be reused.
+	return true; // Don't re-use this renderer
 }
 void
 cocoa_smiltext_renderer::pause(pause_display d)

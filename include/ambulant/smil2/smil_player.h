@@ -217,7 +217,6 @@ class smil_player :
 	const time_node *m_pointed_node;
 	bool m_wait_for_eom_flag;
 	std::map<const lib::node*, common::playable *> m_playables;
-	//xxxbo:
 #ifdef WITH_SEAMLESS_PLAYBACK
 	std::map<const std::string, common::playable *> m_playables_url_based;
 

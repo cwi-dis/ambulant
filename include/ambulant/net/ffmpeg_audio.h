@@ -35,14 +35,6 @@ extern "C" {
 #include "libavformat/avformat.h"
 }
 
-
-#ifdef AMBULANT_PLATFORM_MACOS
-	#define AM_MAC_CONST const
-#else
-	#define AM_MAC_CONST
-#endif
-
-
 namespace ambulant
 {
 

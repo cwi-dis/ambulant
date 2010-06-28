@@ -221,14 +221,8 @@ void lib::logger::assert_expr(bool expr, const char *format, ...) {
 }
 
 void lib::logger::log_va_list(int level, const char *format, va_list args) {
-	// Do we have a std function for this?
-#if defined(AMBULANT_PLATFORM_WIN32) && !defined(UNICODE)
-	int size = _vscprintf(format, args) + 1;
-#else
-	int size = 4096;
-#endif
-	char *buf = new char[size];
-	vsprintf(buf, format, args);
+	char *buf = new char[4096];
+	vsnprintf(buf, sizeof(buf), format, args);
 	log_cstr(level, buf);
 	delete[] buf;
 }

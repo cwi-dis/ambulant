@@ -54,7 +54,7 @@ using ambulant::lib::win32::sleep_msec;
 #else
 
 using ::sleep;
-
+inline void sleep_msec(unsigned long msecs) { (void)usleep(msecs*1000); }
 #endif
 
 } // namespace lib

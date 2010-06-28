@@ -510,11 +510,7 @@ datasource_reader::run()
 	lib::event *e = new readdone_callback(this, &datasource_reader::readdone);
 	m_src->start(m_event_processor, e);
 	while (!m_src->end_of_file()) {
-#ifdef	AMBULANT_PLATFORM_WIN32
 		ambulant::lib::sleep_msec(10); // XXXX should be woken by readdone()
-#else
-		usleep(10000);
-#endif//AMBULANT_PLATFORM_WIN32
 	}
 }
 

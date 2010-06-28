@@ -502,11 +502,7 @@ ffmpeg_demux::run()
 			// wait some time before continuing the while loop to avoid consuming too much cpu resource
 			// sleep 10 millisec, hardly noticeable
 			m_lock.leave();
-#ifdef	AMBULANT_PLATFORM_WIN32
 			ambulant::lib::sleep_msec(10);
-#else
-			usleep(10000);
-#endif // AMBULANT_PLATFORM_WIN32
 			m_lock.enter();
 			continue;
 		}
@@ -599,11 +595,7 @@ ffmpeg_demux::run()
 					// wait until space available in sink
 					AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: waiting for buffer space for stream %d", pkt->stream_index);
 					// sleep 10 millisec, hardly noticeable
-#ifdef	AMBULANT_PLATFORM_WIN32
 					ambulant::lib::sleep_msec(10); // XXXX should be woken by readdone()
-#else
-					usleep(10000);
-#endif//AMBULANT_PLATFORM_WIN32
 				}
 				m_lock.enter();
 				// Check whether our sink should have been deleted while we were outside of the lock.

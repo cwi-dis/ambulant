@@ -60,20 +60,17 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/lib/event_processor.h"
+
 #ifdef AMBULANT_PLATFORM_UNIX
 #include "ambulant/lib/unix/unix_thread.h"
 #define BASE_THREAD lib::unix::thread
 #endif
+
 #ifdef AMBULANT_PLATFORM_WIN32
 #include "ambulant/lib/win32/win32_thread.h"
-
-//xxxbo for using StrDup
-#include <windows.h>
-#include <shlwapi.h>
-#include <stdio.h>
-
 #define BASE_THREAD lib::win32::thread
 #endif
+
 #include "ambulant/net/databuffer.h"
 //#include "ambulant/net/posix_datasource.h"
 #include "ambulant/net/datasource.h"

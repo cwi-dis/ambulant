@@ -61,7 +61,7 @@ class trace_playable : virtual public playable {
 	void start(double t)  { trace_call("start", t);}
 
 	//void stop()  { trace_call("stop");}
-	bool stop()  { trace_call("stop"); 	return true;} //xxxbo notes, true means this renderer cannot be reused.
+	bool stop()  { trace_call("stop"); 	return true;}
 	void post_stop() {}
 	void init_with_node(const lib::node *n) {};
 

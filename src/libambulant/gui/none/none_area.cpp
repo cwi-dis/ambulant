@@ -79,7 +79,7 @@ none_area_renderer::stop() {
 	}
 	m_context->stopped(m_cookie);
 
-	return true; // xxxbo note, "true" imply that this renderer is not able to be reused.
+	return true; // Don't re-use this renderer
 }
 
 bool
