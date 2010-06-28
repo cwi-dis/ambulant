@@ -46,8 +46,10 @@
 #include "liveMedia.hh"
 
 // Needed for avcodec.h:
-#define __STDC_CONSTANT_MACROS
-#include <stdint.h>
+// Needed for avcodec.h:
+#ifndef INT64_C
+#define INT64_C(x) x ## LL
+#endif
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"
 #include "libavutil/common.h"
