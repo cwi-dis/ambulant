@@ -20,6 +20,14 @@ VERSIONSUFFIX=.$TODAY
 DMGNAME=Ambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
 PLUGINDMGNAME=AmbulantWebKitPlugin-$AMBULANTVERSION$VERSIONSUFFIX-mac
 DESTINATION=ssh.cwi.nl:public_html/ambulant/
+
+
+echo
+echo ==========================================================
+echo Ambulant nightly build for MacOSX, $USER@`hostname`, `date`
+echo ==========================================================
+echo
+
 #
 # Check out a fresh copy of Ambulant
 #

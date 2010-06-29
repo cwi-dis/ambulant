@@ -6,7 +6,7 @@
 set -e
 set -x
 AMBULANTVERSION=2.3
-ARCH=i686
+ARCH=`uname -p`
 CVSUSER="jackjansen"
 CVSARGS="-d $CVSUSER@ambulant.cvs.sourceforge.net:/cvsroot/ambulant"
 CHECKOUTARGS=
@@ -20,6 +20,12 @@ MAKEOPTS=
 VERSIONSUFFIX=.$TODAY
 ##PLUGINDMGNAME=AmbulantWebKitPlugin-$AMBULANTVERSION$VERSIONSUFFIX-mac
 DESTINATION=ssh.cwi.nl:public_html/ambulant/
+
+echo
+echo ==========================================================
+echo Ambulant nightly build for Linux, $ARCH, $USER@`hostname`, `date`
+echo ==========================================================
+echo
 
 #
 # Check that chrpath exists (which it often doesn't)
