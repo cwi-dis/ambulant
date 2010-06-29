@@ -42,6 +42,16 @@ cd third_party_packages
 python build-third-party-packages.py $BUILD3PPARGS
 cd ..
 
+
+#
+# Build source distribution, upload
+#
+./configure $CONFIGOPTS
+make $MAKEOPTS distcheck
+make $MAKEOPTS dist
+mv ambulant-$AMBULANTVERSION.tar.gz ambulant-$AMBULANTVERSION$VERSIONSUFFIX.tar.gz
+scp ambulant-$AMBULANTVERSION$VERSIONSUFFIX.tar.gz $DESTINATION
+
 #
 # configure, make, make install
 #
@@ -62,15 +72,6 @@ make installer
 mv npambulant-$AMBULANTVERSION-linux-$ARCH.xpi npambulant-$AMBULANTVERSION$VERSIONSUFFIX-linux-$ARCH.xpi
 scp npambulant-$AMBULANTVERSION$VERSIONSUFFIX-linux-$ARCH.xpi $DESTINATION
 cd ../..
-
-#
-# Build source distribution, upload
-#
-# XXX TODO
-make $MAKEOPTS distcheck
-make $MAKEOPTS dist
-mv ambulant-$AMBULANTVERSION.tar.gz ambulant-$AMBULANTVERSION$VERSIONSUFFIX.tar.gz
-scp ambulant-$AMBULANTVERSION$VERSIONSUFFIX.tar.gz $DESTINATION
 #
 # Delete old installers, remember current
 #
