@@ -35,6 +35,5 @@ SUBDIRS = libambulant  $(build_pyambulant) plugins $(build_player_unix) $(build_
 DIST_SUBDIRS = libambulant plugins player_unix  player_gtk  player_macosx pyambulant npambulant
 EXTRA_DIST= \
 	player_mfc \
-	player_wince \
 	ieambulant \
 	webkit_plugin 
