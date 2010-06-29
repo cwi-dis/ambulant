@@ -1,0 +1,1 @@
+30 00 * * * $HOME/src/ambulant/scripts/nightlybuild.linux.sh
