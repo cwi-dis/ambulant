@@ -22,6 +22,18 @@ VERSIONSUFFIX=.$TODAY
 DESTINATION=ssh.cwi.nl:public_html/ambulant/
 
 #
+# Check that chrpath exists (which it often doesn't)
+#
+chrpath -v >/dev/null 2>&1
+case $? in
+0)
+	;;
+*)
+	echo $0: chrpath not found, therefore nightly build will fail. Please install it first.
+	exit 1
+	;;
+esac
+#
 # Check out a fresh copy of Ambulant
 #
 mkdir -p $BUILDHOME
