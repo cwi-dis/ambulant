@@ -49,20 +49,18 @@ Supported platforms
 Currently we have support for:
 - Windows
 - MacOSX 10.6
-- MacOSX 10.4/10.5 (Intel or PowerPC)
+- MacOSX 10.4/10.5 (deprecated, may disappear)
 - Linux
-- Windows Mobile 5
 
 The specific platforms that have been used for testing are:
 - Windows: Windows XP, Windows Vista and Windows 7 on fairly recent Intel hardware
-- MacOSX 10.6: Intel
-- MacOSX 10.4/10.5: Intel Mac 10.5, PowerPC Mac 10.4.
-- Linux: Fedora Core 9-12, Ubuntu 9 on fairly recent Intel hardware
+- MacOSX 10.6: Recent Core 2 Duo or Xeon machines
+- Linux: Fedora Core 9-12, Ubuntu 10.04 on fairly recent Intel hardware
 
 We have preliminary code for the Apple iPhone and iPod Touch, but currently
 lack the time to pursue this platform. Again, contact us if you want to help.
 
-We also have old code for Nokia Maemo, but we need developers here too.
+Maemo (Nokia) and Windows Mobile are no longer supported.
 
 Supported media types
 ---------------------
@@ -127,8 +125,8 @@ fast expat parser), which level of logging output you want, etc.
 Documentation
 -------------
 
-Minimal user documentation is available through the Help menu (on
-Mac/Linux/Windows, not on WinCE) or in the unix manpage.
+Minimal user documentation is available through the Help menu
+or in the unix manpage.
 
 Documentation of the overall design and the class relationships can be
 found in: Documentation/Design in a source distribution. Detailed
