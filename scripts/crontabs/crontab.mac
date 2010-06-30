@@ -1,2 +1,3 @@
-MAILTO=ambulant-checkins@lists.sourceforge.net
-30 00 * * * $HOME/src/ambulant/scripts/nightlybuild.mac.sh
+NAME=jack@cwi.nl
+MAILTO=jack@cwi.nl
+50 11 * * * $HOME/src/ambulant/scripts/nightlybuild.mac.sh
