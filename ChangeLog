@@ -1,3 +1,56 @@
+2010-06-29 23:45  jackjansen
+
+	* Add indication of where things are built
+
+2010-06-29 23:36  jackjansen
+
+	* send mail to the developers
+
+2010-06-29 23:33  jackjansen
+
+	* Adding crontab scripts
+
+2010-06-29 23:25  jackjansen
+
+	* Check availability of chrpath
+
+2010-06-29 23:25  jackjansen
+
+	* Got rid of old platforms
+
+2010-06-29 22:47  jackjansen
+
+	* Getting rid of some more wince references
+
+2010-06-29 22:38  jackjansen
+
+	* iDo source distribution first.
+
+2010-06-28 15:41  jackjansen
+
+	* More cleanup: unifying methods, getting rid of xxx comments
+
+2010-06-28 14:24  jackjansen
+
+	* 32-64 bit warnings squashed
+
+2010-06-28 14:11  jackjansen
+
+	* Fixed Linux warnings, mainly debug statements (removed) and
+	  unused empty class declarations (removed).
+
+2010-06-28 11:54  uid33605
+
+	* Sigh. Manually define INT64_C, if needed
+
+2010-06-28 11:52  jackjansen
+
+	* Also need to define __STDC_CONSTANT_MACROS
+
+2010-06-28 11:48  jackjansen
+
+	* Added stdint.h include, to work around avformat.h issue
+
 2010-06-25 12:40  jackjansen
 
 	* Last batch of Windows warnings bites the dust.
