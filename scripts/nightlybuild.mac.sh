@@ -21,6 +21,9 @@ DMGNAME=Ambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
 PLUGINDMGNAME=AmbulantWebKitPlugin-$AMBULANTVERSION$VERSIONSUFFIX-mac
 DESTINATION=ssh.cwi.nl:public_html/ambulant/
 
+echo nightly to stderr >&2
+echo nightly to stdout
+echo nightly to stderr again >2&
 
 echo
 echo ==========================================================

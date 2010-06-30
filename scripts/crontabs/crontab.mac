@@ -1,3 +1,4 @@
 NAME=jack@cwi.nl
 MAILTO=jack@cwi.nl
-50 11 * * * $HOME/src/ambulant/scripts/nightlybuild.mac.sh
+PATH=/Users/jack/bin:/usr/local/bin:/usr/bin:/bin:/sbin
+40 13 * * * $HOME/src/ambulant/scripts/nightlybuild.mac.sh
