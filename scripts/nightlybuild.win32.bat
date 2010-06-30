@@ -47,7 +47,7 @@ mkdir %buildhome%
 cd /d %buildhome%
 %cvs% %CVSARGS% checkout %CHECKOUTARGS% -d %builddir% ambulant
 rem XXXX %cvs% %CVSPRIVARGS% checkout %CHECKOUTPRIVARGS% ambulant-private
-if %errorlevel% neq 0 exit
+if %errorlevel% neq 0 pause
 
 rem 
 rem  Prepare the tree
@@ -63,9 +63,9 @@ rem
 
 cd projects\vc9
 devenv third_party_packages.sln /build Release
-if %errorlevel% neq 0 exit
+if %errorlevel% neq 0 pause
 devenv Ambulant-win32.sln /build ReleaseShlib
-if %errorlevel% neq 0 exit
+if %errorlevel% neq 0 pause
 
 rem
 rem Upload IE, Netscape plugins
@@ -75,9 +75,9 @@ cd ..\..\bin\win32
 rename npambulant-%AMBULANTVERSION%-win32.xpi npambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.xpi
 rename ieambulant-%AMBULANTVERSION%-win32.cab ieambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab
 %pscp% -i %KEYFILE% npambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.xpi %DESTINATION%
-if %errorlevel% neq 0 exit
+if %errorlevel% neq 0 pause
 %pscp% -i %KEYFILE% ieambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab %DESTINATION%
-if %errorlevel% neq 0 exit
+if %errorlevel% neq 0 pause
 
 rem 
 rem  Create desktop installer, upload
@@ -85,10 +85,10 @@ rem
 
 cd ..\..\installers\nsis-win32
 %nsis% setup-ambulant-installer.nsi
-if %errorlevel% neq 0 exit
+if %errorlevel% neq 0 pause
 rename  Ambulant-%AMBULANTVERSION%-win32.exe Ambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.exe
 %pscp% -i %KEYFILE% Ambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.exe %DESTINATION%
-if %errorlevel% neq 0 exit
+if %errorlevel% neq 0 pause
 
 rem 
 rem  Delete old installers, remember current
