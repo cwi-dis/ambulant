@@ -5,6 +5,7 @@
 #
 set -e
 set -x
+export CVS_RSH=ssh
 AMBULANTVERSION=2.3
 CVSUSER="jackjansen"
 CVSARGS="-d $CVSUSER@ambulant.cvs.sourceforge.net:/cvsroot/ambulant"

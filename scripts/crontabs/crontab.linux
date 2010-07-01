@@ -1,4 +1,4 @@
 NAME=jack@cwi.nl
 MAILTO=jack@cwi.nl
 PATH=/ufs/jack/bin/i686:/ufs/jack/bin:/ufs/jack/src/mm/bin:/usr/local/bin:/usr/bin/X11:/usr/sbin:/usr/bsd:/bin:/usr/bin
-30 00 * * * $HOME/src/ambulant/scripts/nightlybuild.linux.sh > $HOME/tmp/ambulant-nightly/log.`date +%Y%m%d`.txt 2>&1
+20 13 * * * $HOME/src/ambulant/scripts/nightlybuild.linux.sh 

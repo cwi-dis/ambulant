@@ -5,6 +5,7 @@
 #
 set -e
 set -x
+export CVS_RSH=ssh
 AMBULANTVERSION=2.3
 ARCH=`uname -p`
 CVSUSER="jackjansen"
