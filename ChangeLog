@@ -1,3 +1,23 @@
+2010-06-30 15:13  jackjansen
+
+	* More changes to nightly scripts
+
+2010-06-30 15:00  jackjansen
+
+	* Donot close on error
+
+2010-06-30 14:43  jackjansen
+
+	* More tweaks to scripts
+
+2010-06-30 13:43  jackjansen
+
+	* More crontab debugging
+
+2010-06-30 11:53  jackjansen
+
+	* Debugging crontabs
+
 2010-06-29 23:45  jackjansen
 
 	* Add indication of where things are built
