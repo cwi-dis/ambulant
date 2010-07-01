@@ -1,5 +1,5 @@
 NAME=jack@cwi.nl
 MAILTO=jack@cwi.nl
 PATH=/Users/jack/bin:/usr/local/bin:/usr/bin:/bin:/sbin
-40 0 * * * $HOME/src/ambulant/scripts/nightlybuild.mac.sh > $HOME/tmp/ambulant-nightly/log.`date +%Y%m%d`.txt 2>&1
-40 3 * * * $HOME/src/ambulant/scripts/nightlybuild-parallels-win32.sh
+20 0 * * * $HOME/src/ambulant/scripts/nightlybuild.mac.sh
+10 14 * * * prlctl start WinXP-Nightly

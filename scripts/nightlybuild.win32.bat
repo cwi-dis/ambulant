@@ -21,10 +21,10 @@ rem
 set AMBULANTVERSION=2.3
 set CVSUSER=jackjansen
 set CVSARGS=-d "%CVSUSER%@ambulant.cvs.sourceforge.net:/cvsroot/ambulant"
-set CHECKOUTARGS=
+set CHECKOUTARGS=-P
 set CVSPRIVUSER=jack
 set CVSPRIVARGS=-d "%CVSPRIVUSER%@oratrix.oratrix.com:/ufs/jack/.CVSROOT"
-set CHECKOUTPRIVARGS=
+set CHECKOUTPRIVARGS=-P
 set BUILDHOME="%TEMP%\ambulant-nightly"
 rem US/UK: set TODAY=%date:~-4%%date:~4,2%%date:~7,2%
 set TODAY=%date:~-4%%date:~-7,2%%date:~-10,2%
