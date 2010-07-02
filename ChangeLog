@@ -1,3 +1,15 @@
+2010-07-02 01:03  jackjansen
+
+	* Getting started on 3pp build for Windows. Untested
+
+2010-07-01 15:48  jackjansen
+
+	* Use -P option for checkout
+
+2010-07-01 13:10  jackjansen
+
+	* Use ssh for cvs
+
 2010-06-30 15:13  jackjansen
 
 	* More changes to nightly scripts
