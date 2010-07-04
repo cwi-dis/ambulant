@@ -630,7 +630,7 @@ third_party_packages={
         TPP("expat-jpeg-lpng-mp3lib-zlib",
             url="https://sourceforge.net/projects/ambulant/files/Third%20Party%20Packages%2Cwin32_wm5/tpp-win-20081123/tpp-win-20081123.zip/download",
             checkcmd="if not exist expat exit 1",
-            buildcmd='xxxmove "INTO third_party_packages"\\* .',
+            buildcmd='xmove "INTO third_party_packages"\\* .',
             # Real building is done by FINAL
             ),
             
