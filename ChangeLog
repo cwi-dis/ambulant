@@ -1,3 +1,39 @@
+2010-07-04 03:35  jackjansen
+
+	* Third fix to windows tpp builds
+
+2010-07-04 03:21  jackjansen
+
+	* Second fix to windows tpp builds
+
+2010-07-04 03:10  jackjansen
+
+	* Sigh, another microfix.
+
+2010-07-04 03:10  jackjansen
+
+	* First fix to windows tpp builds
+
+2010-07-04 03:05  jackjansen
+
+	* fixed build-third-party-packages call.
+
+2010-07-04 02:49  jackjansen
+
+	* Detail
+
+2010-07-04 02:47  jackjansen
+
+	* Temporary fix for unzip program
+
+2010-07-04 02:21  jackjansen
+
+	* vsnprintf fix was incorrect. fixed.
+
+2010-07-04 02:17  jackjansen
+
+	* Build in build-3264 subdir
+
 2010-07-02 01:03  jackjansen
 
 	* Getting started on 3pp build for Windows. Untested
