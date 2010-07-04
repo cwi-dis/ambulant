@@ -8,8 +8,13 @@ import posixpath
 NOCHECK=False
 NORUN=False
 
+#
+# XXXJACK: Hard-coded pathnames, fix this.
+#
+
 WINDOWS_UNZIP="e:\\ufs\\jack\\bin\\unzip.exe"
 WINDOWS_UNTAR='e:\\ufs\\jack\\bin\\7za465\\7za.exe x'
+WINDOWS_DXSDK='"C:\Program Files\Microsoft DirectX SDK (June 2008)"'
 
 class TPP:
     
@@ -185,6 +190,14 @@ else:
         print "** This script needs the Visual Studio environment vars to be able to run"
         print '** Run "call ....\\VC\\bin\\vcvars32.bat" from your VC9 dir first.'
         sys.exit(1)
+    #
+    # There is a Visual Studio bug that temporary object files with pathnames > approx 200
+    # characters are lost. This can happen with Xerces, which uses deep pathnames.
+    # The number below is a bit of a guess, it may be off by one or two.
+    if len(os.getcwd) > 110:
+        print "** The current directory (%s) has too long a pathname."
+        print "** This will make the Xerces build hit a Visual Studio bug and fail"
+        sys.exit(1)
     
 third_party_packages={
     'mac10.6' : [
@@ -217,17 +230,8 @@ third_party_packages={
                 "make $(MAKEFLAGS) && "
                 "make install" % MAC106_COMMON_CONFIGURE
             ),
-##      TPP("ffmpeg",
-##          url="http://ffmpeg.org/releases/ffmpeg-0.5.tar.bz2",
-##          checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
-##          buildcmd=
-##              "mkdir ffmpeg-0.5-universal && "
-##              "cd ffmpeg-0.5-universal && "
-##              "%s/third_party_packages/ffmpeg-osx-fatbuild.sh %s/ffmpeg-0.5 all" % 
-##                  (AMBULANT_DIR, os.getcwd())
-##          ),
+
         TPP("ffmpeg",
-##          url="http://homepages.cwi.nl/~jack/ambulant/ffmpeg-export-2010-01-22.tgz",
             url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
             checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
             buildcmd=
@@ -275,6 +279,10 @@ third_party_packages={
                 "make install" % MAC106_COMMON_CONFIGURE
             )
         ],
+
+
+
+
     'mac10.4' : [
         TPP("expat", 
             url="http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=autoselect",
@@ -305,15 +313,7 @@ third_party_packages={
                 "make $(MAKEFLAGS) && "
                 "make install" % MAC104_COMMON_CONFIGURE
             ),
-##      TPP("ffmpeg",
-##          url="http://ffmpeg.org/releases/ffmpeg-0.5.tar.bz2",
-##          checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
-##          buildcmd=
-##              "mkdir ffmpeg-0.5-universal && "
-##              "cd ffmpeg-0.5-universal && "
-##              "%s/third_party_packages/ffmpeg-osx-fatbuild.sh %s/ffmpeg-0.5 all" % 
-##                  (AMBULANT_DIR, os.getcwd())
-##          ),
+
         TPP("ffmpeg",
             url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
             checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
@@ -323,20 +323,7 @@ third_party_packages={
                 "%s/third_party_packages/ffmpeg-osx-fatbuild.sh %s/ffmpeg-export-2010-01-22 all" % 
                     (AMBULANT_DIR, os.getcwd())
             ),
-##      TPP("SDL",
-##          url="http://www.libsdl.org/release/SDL-1.2.13.tar.gz",
-##          checkcmd="sdl-config",
-##          buildcmd=
-##              "cd SDL-1.2.13 && "
-##              "./configure --prefix='%s' "
-##                  "--disable-dependency-tracking "
-##                  "--disable-video-x11 "
-##                  "CC=gcc-4.0 CXX=g++-4.0 "
-##                  "CFLAGS='%s' "
-##                  "LDFLAGS='%s' &&"
-##              "make $(MAKEFLAGS) && "
-##              "make install" % (COMMON_INSTALLDIR, MAC104_COMMON_CFLAGS, MAC104_COMMON_CFLAGS)
-##          ),
+
         TPP("SDL",
             url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
             checkcmd="pkg-config --atleast-version=1.3.0 sdl",
@@ -378,6 +365,9 @@ third_party_packages={
                 "make install" % MAC104_COMMON_CONFIGURE
             )
         ],
+
+
+
     'iPhone30' : [
         TPP("expat", 
             url="http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=autoselect",
@@ -390,15 +380,7 @@ third_party_packages={
                 "make clean;make $(MAKEFLAGS) && "
                 "make install" % (AMBULANT_DIR, IPHONE30_COMMON_CONFIGURE)
             ),
-##      TPP("xerces-c",
-##          url="http://apache.proserve.nl/xerces/c/3/sources/xerces-c-3.1.1.tar.gz",
-##          checkcmd="pkg-config --atleast-version=3.0.0 xerces-c",
-##          buildcmd=
-##              "cd xerces-c-3.1.1 && "
-##              "%s CXXFLAGS='%s' --disable-dependency-tracking --without-curl && "
-##          "make clean;make $(MAKEFLAGS) && "
-##              "make install" % (IPHONE30_COMMON_CONFIGURE, IPHONE30_COMMON_CFLAGS)
-##          ),
+
         TPP("faad2",
             url="http://downloads.sourceforge.net/project/faac/faad2-src/faad2-2.7/faad2-2.7.tar.gz?use_mirror=autoselect",
             checkcmd="test -f %s/lib/arm/libfaad.a" % COMMON_INSTALLDIR,
@@ -408,15 +390,7 @@ third_party_packages={
                 "make clean;make $(MAKEFLAGS) && "
                 "make install" % IPHONE30_COMMON_CONFIGURE
             ),
-##      TPP("ffmpeg",
-##          url="http://ffmpeg.org/releases/ffmpeg-0.5.tar.bz2",
-##          checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
-##          buildcmd=
-##              "mkdir ffmpeg-0.5-universal && "
-##              "cd ffmpeg-0.5-universal && "
-##              "%s/third_party_packages/ffmpeg-osx-fatbuild.sh %s/ffmpeg-0.5 all" % 
-##                  (AMBULANT_DIR, os.getcwd())
-##          ),
+
         TPP("ffmpeg",
             url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
             checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
@@ -425,20 +399,7 @@ third_party_packages={
                 armv6 -I../installed/arm/include' --extra-ldflags='-arch armv6 -L../installed/arm/lib' --enable-libfaad --prefix=../installed/arm --enable-gpl"
                 "make clean;make $(MAKEFLAGS); make install"
             ),
-##      TPP("SDL",
-##          url="http://www.libsdl.org/release/SDL-1.2.13.tar.gz",
-##          checkcmd="sdl-config",
-##          buildcmd=
-##              "cd SDL-1.2.13 && "
-##              "./configure --prefix='%s' "
-##                  "--disable-dependency-tracking "
-##                  "--disable-video-x11 "
-##                  "CC=gcc-4.0 CXX=g++-4.0 "
-##                  "CFLAGS='%s' "
-##                  "LDFLAGS='%s' &&"
-##              "make clean;make $(MAKEFLAGS) && "
-##              "make install" % (COMMON_INSTALLDIR, IPHONE30_COMMON_CFLAGS, IPHONE30_COMMON_CFLAGS)
-##          ),
+
 ##      TPP("SDL",
 ##          url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
 ##          checkcmd="pkg-config --atleast-version=1.3.0 sdl",
@@ -452,6 +413,7 @@ third_party_packages={
 ##              "make clean;make $(MAKEFLAGS) && "
 ##              "make install" % (COMMON_INSTALLDIR, IPHONE30_COMMON_CFLAGS, IPHONE30_COMMON_CFLAGS)
 ##          ),
+
         TPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
@@ -461,6 +423,7 @@ third_party_packages={
                 "./genMakefiles macosxfat && "
                 "make clean;make $(MAKEFLAGS) " % AMBULANT_DIR
             ),
+
         TPP("gettext",
             url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.17.tar.gz",
             checkcmd="test -f %s/lib/libintl.a" % COMMON_INSTALLDIR,
@@ -470,6 +433,7 @@ third_party_packages={
                 "make clean;make $(MAKEFLAGS) && "
                 "make install" % IPHONE30_COMMON_CONFIGURE
             ),
+
 #       TPP("libxml2",
 #           url="ftp://xmlsoft.org/libxml2/libxml2-2.7.5.tar.gz",
 #           checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
@@ -480,6 +444,8 @@ third_party_packages={
 #               "make install" % IPHONE30_COMMON_CONFIGURE
 #           )
         ],
+
+
     'linux' : [
         TPP("libtool", 
             url="http://ftp.gnu.org/gnu/libtool/libtool-2.2.6a.tar.gz",
@@ -490,6 +456,7 @@ third_party_packages={
                 "make $(MAKEFLAGS) && "
                 "make install" % LINUX_COMMON_CONFIGURE
             ),
+
         TPP("expat", 
             url="http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=autoselect",
             checkcmd="pkg-config --atleast-version=2.0.0 expat",
@@ -501,6 +468,7 @@ third_party_packages={
                 "make $(MAKEFLAGS) && "
                 "make install" % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
             ),
+
         TPP("xerces-c",
             url="http://apache.proserve.nl/xerces/c/3/sources/xerces-c-3.1.1.tar.gz",
             checkcmd="pkg-config --atleast-version=3.0.0 xerces-c",
@@ -510,6 +478,7 @@ third_party_packages={
                 "make $(MAKEFLAGS) && "
                 "make install" % (LINUX_COMMON_CONFIGURE)
             ),
+
         TPP("faad2",
             url="http://downloads.sourceforge.net/project/faac/faad2-src/faad2-2.7/faad2-2.7.tar.gz?use_mirror=autoselect",
             checkcmd="test -f %s/lib/libfaad.a" % COMMON_INSTALLDIR,
@@ -519,7 +488,7 @@ third_party_packages={
                 "make $(MAKEFLAGS) && "
                 "make install" % LINUX_COMMON_CONFIGURE
             ),
-## xulrunner-sdk is only needed for building npambulant firefox plugin
+
         TPP("xulrunner-sdk",
             url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2/sdk/xulrunner-1.9.2.en-US.linux-i686.sdk.tar.bz2",
             checkcmd="test -d xulrunner-sdk",
@@ -553,37 +522,8 @@ third_party_packages={
 ##              "make $(MAKEFLAGS) && "
 ##              "make install" % LINUX_COMMON_CONFIGURE
 ##          ),
-## liboil and libschroedinger needed for dirac video decoding not yet supported
-##      TPP("liboil",
-##          url="http://liboil.freedesktop.org/download/liboil-0.3.17.tar.gz",
-##          checkcmd="test -f %s/lib/liboil-0.3.a" % COMMON_INSTALLDIR,
-##          buildcmd=
-##              "cd liboil-0.3.17  && "
-##              "%s && "
-##              "make $(MAKEFLAGS) && "
-##              "make install" % LINUX_COMMON_CONFIGURE
-##          ),
-##      TPP("libschroedinger",
-##          url="http://diracvideo.org/download/schroedinger/schroedinger-1.0.7.tar.gz",
-##          checkcmd="test -f %s/lib/libschroedinger-1.0.a" % COMMON_INSTALLDIR,
-##          buildcmd=
-##              "cd schroedinger-1.0.7  && "
-##              "%s --disable-gstreamer && "
-##              "make $(MAKEFLAGS) && "
-##              "make install" % LINUX_COMMON_CONFIGURE
-##          ),
-##      TPP("ffmpeg",
-##          url="http://ffmpeg.org/releases/ffmpeg-0.5.tar.bz2",
-##          checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
-##          buildcmd=
-##              "cd ffmpeg-0.5 && "
-##              "%s --enable-gpl --enable-libfaad --enable-swscale --enable-shared --extra-cflags=-I%s/include --extra-ldflags=-L%s/lib&&"
-##              "make $(MAKEFLAGS) && "
-##              "make install " % 
-##                  (LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR, COMMON_INSTALLDIR)
-##          ),
+
         TPP("ffmpeg",
-##          url="http://homepages.cwi.nl/~jack/ambulant/ffmpeg-export-2010-01-22.tgz",
             url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
             checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
             buildcmd=
@@ -592,6 +532,7 @@ third_party_packages={
                 "make install " % 
                     (LINUX_COMMON_CONFIGURE, COMMON_INSTALLDIR, COMMON_INSTALLDIR)
             ),
+
         TPP("SDL",
             url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
             checkcmd="pkg-config --atleast-version=1.3.0 sdl",
@@ -601,6 +542,7 @@ third_party_packages={
                 "make $(MAKEFLAGS) && "
                 "make install" % (LINUX_COMMON_CONFIGURE)
             ),
+
         TPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
@@ -610,6 +552,7 @@ third_party_packages={
                 "./genMakefiles linux && "
                 "make $(MAKEFLAGS) " % (AMBULANT_DIR)
             ),
+
         TPP("gettext",
             url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.17.tar.gz",
             checkcmd="test -d %s/lib/gettext -o -d /usr/lib/gettext" % COMMON_INSTALLDIR,
@@ -619,6 +562,7 @@ third_party_packages={
                 "make $(MAKEFLAGS) && "
                 "make install" % LINUX_COMMON_CONFIGURE
             ),
+
         TPP("libxml2",
             url="ftp://xmlsoft.org/libxml2/libxml2-2.7.5.tar.gz",
             checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
@@ -629,6 +573,9 @@ third_party_packages={
                 "make install" % LINUX_COMMON_CONFIGURE
             )
         ],
+
+
+
     'win32' : [
         WinTPP("expat-jpeg-lpng-mp3lib-zlib",
             url="https://sourceforge.net/projects/ambulant/files/Third%20Party%20Packages%2Cwin32_wm5/tpp-win-20081123/tpp-win-20081123.zip/download",
@@ -662,6 +609,7 @@ third_party_packages={
             # No build needed
             ),
 
+        # XXX The WINDOWS_DXSDK paths (DirectX SDK) need to be added for the SDL build to work.
         WinTPP("SDL",
             url="http://www.libsdl.org/tmp/SDL-1.2.14.zip",
             checkcmd="if not exist SDL-1.2.14\\VisualC\\SDL\\%s\\SDL.dll exit 1" % WIN32_COMMON_CONFIG,
