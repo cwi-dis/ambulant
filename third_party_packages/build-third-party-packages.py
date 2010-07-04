@@ -98,7 +98,7 @@ class TPP:
 class WinTPP(TPP):
 
     DEFAULT_BUILD_COMMAND=None
-    DEFAULT_EXTRACT_COMMAND="xxxunzip %s"
+    DEFAULT_EXTRACT_COMMAND="e:\\ufs\\jack\\bin\\unzip %s"
     
 def appendPath(varname, value):
     """Append a value to a colon-separated environment variable, if
