@@ -627,14 +627,14 @@ third_party_packages={
             )
         ],
     'win32' : [
-        TPP("expat-jpeg-lpng-mp3lib-zlib",
+        WinTPP("expat-jpeg-lpng-mp3lib-zlib",
             url="https://sourceforge.net/projects/ambulant/files/Third%20Party%20Packages%2Cwin32_wm5/tpp-win-20081123/tpp-win-20081123.zip/download",
             checkcmd="if not exist expat exit 1",
             buildcmd='xmove "INTO third_party_packages"\\* .',
             # Real building is done by FINAL
             ),
             
-        TPP("xerces-c",
+        WinTPP("xerces-c",
             url="http://apache.proserve.nl/xerces/c/3/sources/xerces-c-3.1.1.tar.gz",
             checkcmd="if not exist xerces-c-3.1.1\\Build\\Win32\\VC9\\%s\\xerces-c_3.lib exit 1" % WIN32_COMMON_CONFIG,
             buildcmd=
@@ -642,19 +642,19 @@ third_party_packages={
                 "devenv xerces-c-3.1.1\\projects\\Win32\\VC9\\xerces-all.sln /build %s /project XercesLib" % WIN32_COMMON_CONFIG
             ),
             
-        TPP("xulrunner-sdk",
+        WinTPP("xulrunner-sdk",
             url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2/sdk/xulrunner-1.9.2.en-US.win32.sdk.zip",
             checkcmd="if not exist xulrunner-sdk\\sdk\\include\\npapi.h exit 1",
             # No build needed
             ),
 
-        TPP("ffmpeg",
+        WinTPP("ffmpeg",
             url="https://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant%2C%20win32/20100122-win32-prebuilt/ffmpeg-20100122-win32-prebuilt.zip/download",
             checkcmd="if not exist ffmpeg-20100122-win32-prebuilt\\libavformat\\avformat-52.dll exit 1",
             # No build needed
             ),
 
-        TPP("SDL",
+        WinTPP("SDL",
             url="http://www.libsdl.org/tmp/SDL-1.2.14.zip",
             checkcmd="if not exist SDL-1.2.14\\VisualC\\SDL\\%s\\SDL.dll exit 1" % WIN32_COMMON_CONFIG,
             buildcmd=
@@ -663,20 +663,20 @@ third_party_packages={
                 "devenv VisualC\\SDL.sln /build %s" % WIN32_COMMON_CONFIG
             ),
 
-        TPP("live",
+        WinTPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
             checkcmd="if not exist live\\liveMedia\\COPYING exit 1",
             # Build is done by FINAL
             ),
             
-        TPP("libxml2",
+        WinTPP("libxml2",
             url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
             extractcmd="tar xfz libxml2-2.7.7.tar.gz",
             checkcmd="if not exist libxml2-2.7.7\\xml2-config.in exit 1",
             # Build is done by FINAL
             ),
             
-        TPP("FINAL",
+        WinTPP("FINAL",
             # The FINAL step builds some packages and copies everything to
             # where Ambulant expects it (bin\\win32 and lib\\win32)
             buildcmd="devenv ..\\projects\\vc9\\third_party_packages.sln /build %s" % WIN32_COMMON_CONFIG
