@@ -13,6 +13,7 @@ set cvs="C:\Program Files\TortoiseCVS\cvs.exe"
 set visualstudio="C:\Program Files\Microsoft Visual Studio 9.0"
 set pscp="c:\Program Files\Putty\pscp.exe"
 set nsis="c:\Program Files\NSIS\makensis.exe"
+set python="c:\python26\python.exe"
 
 rem
 rem Other settable parameters
@@ -54,7 +55,8 @@ rem  Prepare the tree
 rem 
 
 cd %builddir%\third_party_packages
-echo XXXX python build-third-party-packages.py $BUILD3PPARGS
+%python% build-third-party-packages.py $BUILD3PPARGS win32
+if %errorlevel% neq 0 pause
 cd ..
 
 rem 
