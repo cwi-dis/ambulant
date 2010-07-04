@@ -609,7 +609,7 @@ third_party_packages={
             # No build needed
             ),
 
-        # XXX The WINDOWS_DXSDK paths (DirectX SDK) need to be added for the SDL build to work.
+        #  The WINDOWS_DXSDK paths (DirectX SDK) need to be added for the SDL build to work.
         WinTPP("SDL",
             url="http://www.libsdl.org/tmp/SDL-1.2.14.zip",
             checkcmd="if not exist SDL-1.2.14\\VisualC\\SDL\\%s\\SDL.dll exit 1" % WIN32_COMMON_CONFIG,
@@ -618,7 +618,9 @@ third_party_packages={
                 "%s VisualC.zip && "
                 "cd VisualC && "
                 "devenv SDL.sln /Upgrade && "
-                "devenv SDL.sln /build %s" % (WINDOWS_UNZIP, WIN32_COMMON_CONFIG)
+                "set INCLUDE=%%INCLUDE%%;%%%s%%\\Include && "
+                "set LIBPATH=%%LIBPATH%%;%%%s%%\\Lib\\x86 && "
+                "devenv SDL.sln /UseEnv /build %s" % (WINDOWS_UNZIP, WINDOWS_DXSDK, WINDOWS_DXSDK, WIN32_COMMON_CONFIG)
             ),
 
         WinTPP("live",

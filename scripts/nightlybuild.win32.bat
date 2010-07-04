@@ -26,11 +26,11 @@ set CHECKOUTARGS=-P
 set CVSPRIVUSER=jack
 set CVSPRIVARGS=-d "%CVSPRIVUSER%@oratrix.oratrix.com:/ufs/jack/.CVSROOT"
 set CHECKOUTPRIVARGS=-P
-set BUILDHOME="%TEMP%\ambulant-nightly"
+set BUILDHOME="%TEMP%\nightly"
 rem US/UK: set TODAY=%date:~-4%%date:~4,2%%date:~7,2%
 set TODAY=%date:~-4%%date:~-7,2%%date:~-10,2%
 set VERSIONSUFFIX=.%TODAY%
-set BUILDDIR=ambulant-build-%TODAY%
+set BUILDDIR=build-%TODAY%
 set BUILD3PPARGS=win32
 set DESTINATION="jack@ssh.cwi.nl:public_html/ambulant/"
 
