@@ -9,7 +9,7 @@ NOCHECK=False
 NORUN=False
 
 WINDOWS_UNZIP="e:\\ufs\\jack\\bin\\unzip.exe"
-WINDOWS_TAR='"c:\\Program Files\\GnuWin32\\bin\\tar.exe"'
+WINDOWS_UNTAR='e:\\ufs\\jack\\bin\\7za465\\7za.exe x'
 
 class TPP:
     
@@ -633,7 +633,12 @@ third_party_packages={
         WinTPP("expat-jpeg-lpng-mp3lib-zlib",
             url="https://sourceforge.net/projects/ambulant/files/Third%20Party%20Packages%2Cwin32_wm5/tpp-win-20081123/tpp-win-20081123.zip/download",
             checkcmd="if not exist expat exit 1",
-            buildcmd='move "INTO third_party_packages"\\* .',
+            buildcmd=
+                'move "INTO third_party_packages"\\expat expat && ' +
+                'move "INTO third_party_packages"\\jpeg jpeg && ' +
+                'move "INTO third_party_packages"\\lpng128 lpng128 && ' +
+                'move "INTO third_party_packages"\\mp3lib mp3lib && ' +
+                'move "INTO third_party_packages"\\zlib zlib',
             # Real building is done by FINAL
             ),
             
@@ -642,7 +647,7 @@ third_party_packages={
             checkcmd="if not exist xerces-c-3.1.1\\Build\\Win32\\VC9\\%s\\xerces-c_3.lib exit 1" % WIN32_COMMON_CONFIG,
             buildcmd=
                 "cd xerces-c-3.1.1\\projects\\Win32\\VC9\\xerces-all && "
-                "devenv xerces-c-3.1.1\\projects\\Win32\\VC9\\xerces-all.sln /build %s /project XercesLib" % WIN32_COMMON_CONFIG
+                "devenv xerces-all.sln /build %s /project XercesLib" % WIN32_COMMON_CONFIG
             ),
             
         WinTPP("xulrunner-sdk",
@@ -662,20 +667,22 @@ third_party_packages={
             checkcmd="if not exist SDL-1.2.14\\VisualC\\SDL\\%s\\SDL.dll exit 1" % WIN32_COMMON_CONFIG,
             buildcmd=
                 "cd SDL-1.2.14 && "
-                "%s VisualC.zip &&"
-                "devenv VisualC\\SDL.sln /build %s" % (WINDOWS_UNZIP, WIN32_COMMON_CONFIG)
+                "%s VisualC.zip && "
+                "cd VisualC && "
+                "devenv SDL.sln /Upgrade && "
+                "devenv SDL.sln /build %s" % (WINDOWS_UNZIP, WIN32_COMMON_CONFIG)
             ),
 
         WinTPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            extractcmd="%s xfz live555-latest.tar.gz" % WINDOWS_TAR,
+            extractcmd="%s live555-latest.tar.gz" % WINDOWS_UNTAR,
             checkcmd="if not exist live\\liveMedia\\COPYING exit 1",
             # Build is done by FINAL
             ),
             
         WinTPP("libxml2",
             url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
-            extractcmd="%s xfz libxml2-2.7.7.tar.gz" % WINDOWS_TAR,
+            extractcmd="%s libxml2-2.7.7.tar.gz" % WINDOWS_UNTAR,
             checkcmd="if not exist libxml2-2.7.7\\xml2-config.in exit 1",
             # Build is done by FINAL
             ),
