@@ -221,10 +221,9 @@ void lib::logger::assert_expr(bool expr, const char *format, ...) {
 }
 
 void lib::logger::log_va_list(int level, const char *format, va_list args) {
-	char *buf = new char[4096];
+	char buf[4096];
 	vsnprintf(buf, sizeof(buf), format, args);
 	log_cstr(level, buf);
-	delete[] buf;
 }
 
 // Output format/hook
