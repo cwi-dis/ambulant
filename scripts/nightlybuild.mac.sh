@@ -48,6 +48,10 @@ export PKG_CONFIG_LIBDIR=$BUILDHOME/$BUILDDIR/third_party_packages/installed/lib
 #
 cd $BUILDDIR
 sh autogen.sh
+rm -rf build-3264
+mkdir build-3264
+cd build-3264
+mkdir third_party_packages
 cd third_party_packages
 python build-third-party-packages.py $BUILD3PPARGS
 cd ..
@@ -59,6 +63,7 @@ make $MAKEOPTS
 cd src/player_macosx
 make $MAKEOPTS DESTDIR=$BUILDHOME/$DESTDIR install
 cd ../..
+cd ..
 #
 # Create installer dmg, upload
 #
