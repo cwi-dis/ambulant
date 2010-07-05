@@ -194,7 +194,7 @@ else:
     # There is a Visual Studio bug that temporary object files with pathnames > approx 200
     # characters are lost. This can happen with Xerces, which uses deep pathnames.
     # The number below is a bit of a guess, it may be off by one or two.
-    if len(os.getcwd) > 110:
+    if len(os.getcwd()) > 110:
         print "** The current directory (%s) has too long a pathname."
         print "** This will make the Xerces build hit a Visual Studio bug and fail"
         sys.exit(1)
