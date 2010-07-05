@@ -618,8 +618,8 @@ third_party_packages={
                 "%s VisualC.zip && "
                 "cd VisualC && "
                 "devenv SDL.sln /Upgrade && "
-                "set INCLUDE=%%INCLUDE%%;%%%s%%\\Include && "
-                "set LIBPATH=%%LIBPATH%%;%%%s%%\\Lib\\x86 && "
+                "set INCLUDE=%%INCLUDE%%;%s\\Include && "
+                "set LIBPATH=%%LIBPATH%%;%s\\Lib\\x86 && "
                 "devenv SDL.sln /UseEnv /build %s" % (WINDOWS_UNZIP, WINDOWS_DXSDK, WINDOWS_DXSDK, WIN32_COMMON_CONFIG)
             ),
 
