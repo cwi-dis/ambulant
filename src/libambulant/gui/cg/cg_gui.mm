@@ -19,7 +19,9 @@
 
 #include "ambulant/gui/cg/cg_gui.h"
 #include "ambulant/gui/cg/cg_text.h"
+#ifndef WITH_UIKIT
 #include "ambulant/gui/cg/atsui_text.h"
+#endif
 //#include "ambulant/gui/cg/cg_html.h"
 #include "ambulant/gui/cg/cg_image.h"
 //#include "ambulant/gui/cg/cg_ink.h"
@@ -136,6 +138,7 @@ cg_window_factory::get_default_size()
 common::gui_window *
 cg_window_factory::new_window(const std::string &name, size bounds, common::gui_events *handler)
 {
+	NSLog(@"view %@ responds %d", (AmbulantView *)m_defaultwindow_view, [(AmbulantView *)m_defaultwindow_view respondsToSelector: @selector(isAmbulantWindowInUse)]);
 	if ([(AmbulantView *)m_defaultwindow_view isAmbulantWindowInUse]) {
 		// XXXX Should create new toplevel window and put an ambulantview in it
 		logger::get_logger()->error(gettext("Unsupported: AmbulantPlayer cannot open second toplevel window yet"));
@@ -295,7 +298,13 @@ bad:
 - (CGContextRef) getCGContext
 {
 #ifdef WITH_UIKIT
+#if 0
+	// XXXJACK: Apparently this no longer exists
 	return UICurrentContext();
+#else
+	return UIGraphicsGetCurrentContext();
+//	return NULL;
+#endif
 #else
 	return (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 #endif
@@ -415,6 +424,7 @@ bad:
 #ifdef WITH_UIKIT
 		CGRect bounds = [self bounds];
 		AM_DBG NSLog(@"ambulantview: bounds (%f, %f, %f, %f)", bounds.origin.x, bounds.origin.y, bounds.size.width, bounds.size.height);
+//		CGContextRef myContext = UIGraphicsGetCurrentContext();
 		CGContextRef myContext = [self getCGContext];
 		CGContextSaveGState(myContext);
 		float view_height = CGRectGetHeight(CGRectFromViewRect([self bounds]));
