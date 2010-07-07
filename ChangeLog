@@ -1,3 +1,8 @@
+2010-07-06 16:37  keesblom
+
+	* Use UIGraphicsGetCurrentContext() to get the proper context
+	  (works on iPhone)
+
 2010-07-05 10:49  jackjansen
 
 	* Cater for nightly scripts not being executable
