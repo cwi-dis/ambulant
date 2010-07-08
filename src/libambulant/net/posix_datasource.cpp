@@ -44,10 +44,11 @@ ambulant::net::create_posix_datasource_factory()
 datasource *
 posix_datasource_factory::new_raw_datasource(const net::url& url)
 {
-	AM_DBG lib::logger::get_logger()->debug("posix_datasource_factory::new_datasource(%s)", repr(url).c_str());
+	/*AM_DBG*/ lib::logger::get_logger()->debug("posix_datasource_factory::new_datasource(%s)", repr(url).c_str());
 	if (url.is_local_file()) {
 		std::string filename = url.get_file();
 		int in = open(filename.c_str(), O_RDONLY);
+		/*AM_DBG*/ lib::logger::get_logger()->debug("posix_datasource_factory::new_datasource(): filename=%s, in=%d, errno=%d", filename.c_str(),in,errno);
 		if (in >= 0)
 			return new posix_datasource(filename, in);
 	}

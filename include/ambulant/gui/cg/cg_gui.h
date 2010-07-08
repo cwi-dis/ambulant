@@ -33,7 +33,12 @@
 #include "ambulant/smil2/transition.h"
 #ifdef __OBJC__
 #ifdef WITH_UIKIT
+//#include <CoreFoundation/CoreFoundation.h>
+//#include <CoreGraphics/CoreGraphics.h>
+//#include <CoreServices/CoreCoreServices.h>
+//#include <ApplicationServices/ApplicationServices.h>
 #include <UIKit/UIKit.h>
+//#import <ApplicationServices/ApplicationServices.h>
 #define VIEW_SUPERCLASS UIView
 inline CGRect CGRectFromViewRect(CGRect rect) { return rect; }
 inline CGRect ViewRectFromCGRect(CGRect rect) { return rect; }

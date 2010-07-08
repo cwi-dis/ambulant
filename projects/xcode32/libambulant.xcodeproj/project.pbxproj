@@ -530,11 +530,19 @@
 		0867D6A5FE840307C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		32DBCF5E0370ADEE00C91783 /* libambulant_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libambulant_Prefix.pch; sourceTree = "<group>"; };
+		93C026DF11CBCA30003696F8 /* liblibambulant-iphone-static.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "liblibambulant-iphone-static.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2A6134D07B89F6200DD23D3 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		D2AAC0C705546C1D00DB518D /* libambulant.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libambulant.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		93C026DD11CBCA30003696F8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D2AAC0C505546C1D00DB518D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -568,6 +576,7 @@
 			isa = PBXGroup;
 			children = (
 				D2AAC0C705546C1D00DB518D /* libambulant.dylib */,
+				93C026DF11CBCA30003696F8 /* liblibambulant-iphone-static.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1372,6 +1381,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		93C026DB11CBCA30003696F8 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D2AAC0C305546C1D00DB518D /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -1382,6 +1398,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		93C026DE11CBCA30003696F8 /* libambulant-iphone-static */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 93C026E211CBCA51003696F8 /* Build configuration list for PBXNativeTarget "libambulant-iphone-static" */;
+			buildPhases = (
+				93C026DB11CBCA30003696F8 /* Headers */,
+				93C026DC11CBCA30003696F8 /* Sources */,
+				93C026DD11CBCA30003696F8 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "libambulant-iphone-static";
+			productName = "libambulant-iphone-static";
+			productReference = 93C026DF11CBCA30003696F8 /* liblibambulant-iphone-static.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		D2AAC0C605546C1D00DB518D /* libambulant */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB917D08733D990010E9CD /* Build configuration list for PBXNativeTarget "libambulant" */;
@@ -1413,11 +1446,19 @@
 			projectRoot = "";
 			targets = (
 				D2AAC0C605546C1D00DB518D /* libambulant */,
+				93C026DE11CBCA30003696F8 /* libambulant-iphone-static */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		93C026DC11CBCA30003696F8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D2AAC0C405546C1D00DB518D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1596,6 +1637,31 @@
 			};
 			name = Release;
 		};
+		93C026E011CBCA30003696F8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PREBINDING = NO;
+				PRODUCT_NAME = "libambulant-iphone-static";
+			};
+			name = Debug;
+		};
+		93C026E111CBCA30003696F8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PREBINDING = NO;
+				PRODUCT_NAME = "libambulant-iphone-static";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1613,6 +1679,15 @@
 			buildConfigurations = (
 				1DEB918208733D990010E9CD /* Debug */,
 				1DEB918308733D990010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		93C026E211CBCA51003696F8 /* Build configuration list for PBXNativeTarget "libambulant-iphone-static" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				93C026E011CBCA30003696F8 /* Debug */,
+				93C026E111CBCA30003696F8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

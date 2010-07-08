@@ -113,6 +113,13 @@
 			remoteGlobalIDString = D2AAC0C605546C1D00DB518D;
 			remoteInfo = libambulant;
 		};
+		93C026E411CBCA51003696F8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 04070599115268480094FB0B /* libambulant.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 93C026DF11CBCA30003696F8;
+			remoteInfo = "libambulant-iphone-static";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -180,6 +187,8 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		8D1107320486CEB800E47090 /* AmbulantPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmbulantPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		93C026C511CBC344003696F8 /* iPhone-start.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iPhone-start.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		93C026C711CBC344003696F8 /* iPhone-start-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "iPhone-start-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -189,6 +198,13 @@
 			files = (
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				0407064C11526DB70094FB0B /* libambulant.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		93C026C311CBC344003696F8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -230,6 +246,7 @@
 			isa = PBXGroup;
 			children = (
 				040705A1115268480094FB0B /* libambulant.dylib */,
+				93C026E511CBCA51003696F8 /* liblibambulant-iphone-static.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -330,6 +347,7 @@
 			isa = PBXGroup;
 			children = (
 				8D1107320486CEB800E47090 /* AmbulantPlayer.app */,
+				93C026C511CBC344003696F8 /* iPhone-start.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -344,6 +362,7 @@
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				93C026C711CBC344003696F8 /* iPhone-start-Info.plist */,
 			);
 			name = AmbulantPlayer;
 			sourceTree = "<group>";
@@ -417,6 +436,23 @@
 			productReference = 8D1107320486CEB800E47090 /* AmbulantPlayer.app */;
 			productType = "com.apple.product-type.application";
 		};
+		93C026C411CBC344003696F8 /* iPhone-start */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 93C026CA11CBC345003696F8 /* Build configuration list for PBXNativeTarget "iPhone-start" */;
+			buildPhases = (
+				93C026C111CBC344003696F8 /* Resources */,
+				93C026C211CBC344003696F8 /* Sources */,
+				93C026C311CBC344003696F8 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "iPhone-start";
+			productName = "iPhone-start";
+			productReference = 93C026C511CBC344003696F8 /* iPhone-start.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -459,6 +495,7 @@
 			projectRoot = "";
 			targets = (
 				8D1107260486CEB800E47090 /* AmbulantPlayer */,
+				93C026C411CBC344003696F8 /* iPhone-start */,
 			);
 		};
 /* End PBXProject section */
@@ -499,6 +536,13 @@
 			remoteRef = 042ADB0A1152DE65009CA791 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		93C026E511CBCA51003696F8 /* liblibambulant-iphone-static.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "liblibambulant-iphone-static.a";
+			remoteRef = 93C026E411CBCA51003696F8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -527,6 +571,13 @@
 				0407061E11526C240094FB0B /* MyDocument.nib in Resources */,
 				04428EBE11577E960067C868 /* DTDCache in Resources */,
 				04428EC011577EC30067C868 /* data in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		93C026C111CBC344003696F8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -575,6 +626,13 @@
 				04070428115266770094FB0B /* mypreferences.mm in Sources */,
 				0407042C115266870094FB0B /* mainloop.cpp in Sources */,
 				0407042D115266870094FB0B /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		93C026C211CBC344003696F8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -684,6 +742,56 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		93C026C811CBC345003696F8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
+				INFOPLIST_FILE = "iPhone-start-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				MACOSX_DEPLOYMENT_TARGET = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					UIKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = "iPhone-start";
+				SDKROOT = iphoneos3.2;
+			};
+			name = Debug;
+		};
+		93C026C911CBC345003696F8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
+				INFOPLIST_FILE = "iPhone-start-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					UIKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = "iPhone-start";
+				SDKROOT = iphoneos3.2;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 		C01FCF4B08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0407063611526CAD0094FB0B /* ambulant-debug.xcconfig */;
@@ -754,6 +862,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		93C026CA11CBC345003696F8 /* Build configuration list for PBXNativeTarget "iPhone-start" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				93C026C811CBC345003696F8 /* Debug */,
+				93C026C911CBC345003696F8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "AmbulantPlayer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

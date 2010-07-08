@@ -343,6 +343,7 @@ datasource_factory::new_raw_datasource(const net::url &url)
 	std::vector<raw_datasource_factory *>::iterator i;
 	datasource *src = NULL;
 
+	/*AM_DBG*/ lib::logger::get_logger()->debug("0x%x->new_raw_datasource(%s) called", (void*)this, url.get_url().c_str());
 	for(i=m_raw_factories.begin(); i != m_raw_factories.end(); i++) {
 		src = (*i)->new_raw_datasource(url);
 		AM_DBG lib::logger::get_logger()->debug("0x%x->new_raw_datasource returned 0x%x", (void*)(*i), (void*)src);
