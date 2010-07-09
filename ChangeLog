@@ -1,3 +1,8 @@
+2010-07-08 15:51  keesblom
+
+	* Added some lines to make AmbulantPlayer start on iPhone, #ifdef'd
+	  WITH_IPHONE
+
 2010-07-06 16:37  keesblom
 
 	* Use UIGraphicsGetCurrentContext() to get the proper context
