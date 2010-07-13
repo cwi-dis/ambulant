@@ -160,8 +160,8 @@ MAC106_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'  " % (COMMON_INST
 # SDL: use Xcode 3.2 with SDL-1.3.0-4429/Xcode-iPhoneOS/SDL/SDLiPhoneOS.xcodeproj
 # live: use config.iphone30 as in http://cache.gmane.org//gmane/comp/multimedia/live555/devel/5394-001.bin
 ##XXX IPHONE40DEVICE_COMMON_CONFIGURE="./configure --prefix='%s' --host=arm-apple-darwin10 CC=arm-apple-darwin10-gcc-4.2.1  CXX=arm-apple-darwin10-g++-4.2.1 LD=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/ld CPP=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/cpp CFLAGS=-isysroot\ /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.0.sdk" % COMMON_INSTALLDIR
-IPHONE40DEVICE_COMMON_CFLAGS="-arch armv7 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iphoneOS4.0.sdk"
-IPHONE40DEVICE_COMMON_CONFIGURE="./configure --host=arm-apple-darwin10 --prefix='%s'/arm CFLAGS='%s' CC=gcc-4.2 CXX=g++-4.2    " % (COMMON_INSTALLDIR, IPHONE40DEVICE_COMMON_CFLAGS)
+IPHONE40DEVICE_COMMON_CFLAGS="-arch armv6 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iphoneOS4.0.sdk"
+IPHONE40DEVICE_COMMON_CONFIGURE="./configure --host=arm-apple-darwin10 --prefix='%s' CFLAGS='%s' CC=gcc-4.2 CXX=g++-4.2    " % (COMMON_INSTALLDIR, IPHONE40DEVICE_COMMON_CFLAGS)
 ##XXX IPHONE40SIMULATOR_COMMON_CONFIGURE="./configure --prefix='%s' --host=arm-apple-darwin10 CC=arm-apple-darwin10-gcc-4.2.1  CXX=arm-apple-darwin10-g++-4.2.1 LD=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/ld CPP=/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/cpp CFLAGS=-isysroot\ /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator4.0.sdk" % COMMON_INSTALLDIR
 IPHONE40SIMULATOR_COMMON_CFLAGS="-arch i386 -isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iphoneSimulator4.0.sdk"
 IPHONE40SIMULATOR_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'    " % (COMMON_INSTALLDIR, IPHONE40SIMULATOR_COMMON_CFLAGS)
@@ -399,7 +399,7 @@ third_party_packages={
             	"./configure --enable-cross-compile --arch=arm --target-os=darwin --cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc "
             	"--sysroot=/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.0.sdk --cpu=arm1176jzf-s "
 			  	"--as='gas-preprocessor.pl /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc' "
-            	"--extra-cflags='-arch armv7 -I../installed/include' --extra-ldflags='-arch armv7 -L../installed/lib' "
+            	"--extra-cflags='-arch armv6 -I../installed/include' --extra-ldflags='-arch armv6 -L../installed/lib' "
             	"--enable-libfaad --prefix=../installed/ --enable-gpl ;"
                 "make clean;make $(MAKEFLAGS); make install"
             ),
@@ -409,7 +409,7 @@ third_party_packages={
 ##          checkcmd="pkg-config --atleast-version=1.3.0 sdl",
 ##          buildcmd=
 ##              "cd SDL-1.3.0-* && "
-##          "./configure --prefix='%s'/arm "
+##          "./configure --prefix='%s' "
 ##                  "--disable-dependency-tracking "
 ##                  "CC=gcc-4.0 CXX=g++-4.0 "
 ##                  "CFLAGS='%s' "
@@ -481,7 +481,7 @@ third_party_packages={
             	"--as='gas-preprocessor.pl /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc' "
             	"--sysroot=/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator4.0.sdk "
             	"--extra-cflags='-arch i386 -I../installed/include' --extra-ldflags='-arch i386 -L../installed/lib' "
-            	"--enable-libfaad --prefix=../installed/arm --enable-gpl --disable-mmx --disable-asm;"
+            	"--enable-libfaad --prefix=../installed --enable-gpl --disable-mmx --disable-asm;"
                 "make clean;make $(MAKEFLAGS); make install"
             ),
 
@@ -490,7 +490,7 @@ third_party_packages={
 ##          checkcmd="pkg-config --atleast-version=1.3.0 sdl",
 ##          buildcmd=
 ##              "cd SDL-1.3.0-* && "
-##          "./configure --prefix='%s'/arm "
+##          "./configure --prefix='%s' "
 ##                  "--disable-dependency-tracking "
 ##                  "CC=gcc-4.0 CXX=g++-4.0 "
 ##                  "CFLAGS='%s' "
