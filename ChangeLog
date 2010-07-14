@@ -1,3 +1,12 @@
+2010-07-14 00:23  keesblom
+
+	* Tweaks
+
+2010-07-13 17:46  keesblom
+
+	* Attempt to build 3pp for iPhone Device and iPhone Simulator using
+	  the proper SDK's
+
 2010-07-08 15:51  keesblom
 
 	* Added some lines to make AmbulantPlayer start on iPhone, #ifdef'd
