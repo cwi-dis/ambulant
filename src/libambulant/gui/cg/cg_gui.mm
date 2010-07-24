@@ -533,11 +533,26 @@ bad:
 	[window makeKeyAndOrderFront: self];
 #endif
 }
+#ifdef WITH_UIKIT
+// Equivalent of mouse move/click on iPhone
+@synthesize tapped, tapped_location;
+- (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+	UITouch *touch = [touches anyObject];
+	tapped_location = [touch locationInView:self];
+	NSLog(@"touchesBegan: x=%f y=%f", tapped_location.x, tapped_location.y);
+	[self setNeedsDisplay];
+	ambulant::lib::point amwhere = ambulant::lib::point(
+					(int)tapped_location.x, (int)tapped_location.y);
+//	[[NSApplication sharedApplication] sendAction: SEL("resetMouse:") to: nil from: self];
+	if (ambulant_window) ambulant_window->user_event(amwhere, 0);
+	
+}
+#endif//WITH_UIKIT
 
 - (void)ambulantNeedEvents: (bool)want
 {
 #if WITH_UIKIT
-	NSLog(@"ambulantNeedEvents: not implemented yet for UIKit");
+//	NSLog(@"ambulantNeedEvents: not implemented yet for UIKit");
 #else
 	NSWindow *my_window = [self window];
 	AM_DBG NSLog(@"my_window acceptsMouseMovedEvents = %d", [my_window acceptsMouseMovedEvents]);
@@ -568,7 +583,7 @@ bad:
 - (void)tappedWithPoint: (CGPoint) where
 {
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
-	AM_DBG NSLog(@"0x%x: tappedWithPoint at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
+	/*AM_DBG*/ NSLog(@"0x%x: tappedWithPoint at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
 	if (ambulant_window) ambulant_window->user_event(amwhere);
 }
 #else

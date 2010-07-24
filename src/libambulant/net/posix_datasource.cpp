@@ -44,11 +44,10 @@ ambulant::net::create_posix_datasource_factory()
 datasource *
 posix_datasource_factory::new_raw_datasource(const net::url& url)
 {
-	/*AM_DBG*/ lib::logger::get_logger()->debug("posix_datasource_factory::new_datasource(%s)", repr(url).c_str());
+	AM_DBG lib::logger::get_logger()->debug("posix_datasource_factory::new_datasource(%s)", repr(url).c_str());
 	if (url.is_local_file()) {
 		std::string filename = url.get_file();
 		int in = open(filename.c_str(), O_RDONLY);
-		/*AM_DBG*/ lib::logger::get_logger()->debug("posix_datasource_factory::new_datasource(): filename=%s, in=%d, errno=%d", filename.c_str(),in,errno);
 		if (in >= 0)
 			return new posix_datasource(filename, in);
 	}
@@ -69,8 +68,7 @@ posix_datasource::posix_datasource(std::string filename, int file)
 	if (file >= 0) {
 		filesize();
 //		m_end_of_file = m_filesize > 0;
-		assert((size_t)m_filesize == m_filesize);
-		m_buffer = new databuffer((size_t)m_filesize);
+		m_buffer = new databuffer(m_filesize);
 		if (!m_buffer) {
 			m_buffer = NULL;
 			lib::logger::get_logger()->fatal("posix_datasource(): out of memory");
@@ -123,7 +121,7 @@ size_t
 posix_datasource::size() const
 {
 	// const method - cannot use the lock.
-	size_t rv = m_buffer->size();
+	int rv = m_buffer->size();
 	return rv;
 }
 
@@ -162,7 +160,7 @@ posix_datasource::read_file()
 {
 	// private method - no need to lock
 	char *buf;
-	size_t n;
+	int n;
 	//AM_DBG lib::logger::get_logger()->debug("posix_datasource.readfile: start reading file ");
 	if (m_stream >= 0) {
 		do {

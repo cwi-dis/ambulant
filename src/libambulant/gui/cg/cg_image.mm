@@ -20,7 +20,11 @@
 /*
  * @$Id$
  */
-
+#ifdef	WITH_IPHONE
+//void* _CFXMLNodeGetInfoPtr = NULL;
+#include <CoreGraphics/CoreGraphics.h>
+#include <ImageIO/ImageIO.h>
+#endif//WITH_IPHONE
 #include "ambulant/gui/cg/cg_gui.h"
 #include "ambulant/gui/cg/cg_image.h"
 #include "ambulant/common/region_dim.h"
@@ -95,6 +99,8 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	// First we load the image data
 	if (m_data && !m_image) {
 		AM_DBG logger::get_logger()->debug("cg_image_renderer.redraw: creating image");
+//#ifdef WITH_UIKIT
+		// JACK: Unsure whether this exists on the iPhone. Kees: it does from iPhoneOS4.0, in ImageIO.
 		m_nsdata = (CFDataRef)[NSData dataWithBytesNoCopy: m_data length: (unsigned int)m_data_size freeWhenDone: NO];
 		CGImageSourceRef rdr = CGImageSourceCreateWithData(m_nsdata, NULL);
 		if (rdr == NULL) {
@@ -102,6 +108,7 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 			return;
 		}
 		m_image = CGImageSourceCreateImageAtIndex(rdr, 0, NULL);
+//#endif //WITH_UIKIT
 		if (!m_image)
 			logger::get_logger()->error("%s: could not create CGImage", m_node->get_url("src").get_url().c_str());
 		m_size = lib::size(CGImageGetWidth(m_image), CGImageGetHeight(m_image));

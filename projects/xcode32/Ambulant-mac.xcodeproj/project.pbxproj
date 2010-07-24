@@ -1892,7 +1892,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
 				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\"",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/BasicUsageEnvironment\"",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/groupsock\"",
@@ -1935,7 +1934,6 @@
 				);
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\"",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/BasicUsageEnvironment\"",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/groupsock\"",

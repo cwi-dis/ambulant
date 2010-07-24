@@ -33,12 +33,9 @@
 #include "ambulant/smil2/transition.h"
 #ifdef __OBJC__
 #ifdef WITH_UIKIT
-//#include <CoreFoundation/CoreFoundation.h>
-//#include <CoreGraphics/CoreGraphics.h>
-//#include <CoreServices/CoreCoreServices.h>
-//#include <ApplicationServices/ApplicationServices.h>
+#include <CoreFoundation/CoreFoundation.h>
+#include <ImageIO/ImageIO.h>
 #include <UIKit/UIKit.h>
-//#import <ApplicationServices/ApplicationServices.h>
 #define VIEW_SUPERCLASS UIView
 inline CGRect CGRectFromViewRect(CGRect rect) { return rect; }
 inline CGRect ViewRectFromCGRect(CGRect rect) { return rect; }
@@ -157,7 +154,16 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 	BOOL overlay_window_needs_clear;
 //	int overlay_window_count;
 #endif // WITH_QUICKTIME_OVERLAY
+#ifdef	WITH_UIKIT
+	BOOL tapped;
+	CGPoint tapped_location;
+#endif//WITH_UIKIT
 }
+#ifdef	WITH_UIKIT
+@property(nonatomic) BOOL tapped;
+@property(nonatomic) CGPoint tapped_location;
+#endif//WITH_UIKIT
+
 
 - (id)initWithFrame:(CGRect)frameRect;
 - (void)dealloc;
