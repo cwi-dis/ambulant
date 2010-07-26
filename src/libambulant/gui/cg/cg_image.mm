@@ -65,8 +65,11 @@ cg_image_renderer::~cg_image_renderer()
 {
 	m_lock.enter();
 	AM_DBG logger::get_logger()->debug("~cg_image_renderer(0x%x)", (void *)this);
-	CGImageRelease(m_image);
-	m_image = NULL;
+	if (m_image) {
+		CGImageRelease(m_image);
+		m_image = NULL;
+		m_nsdata = NULL;
+	}
 	CGImageRelease(m_image_cropped);
 	m_image_cropped = NULL;
 	m_lock.leave();
@@ -101,13 +104,20 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 		AM_DBG logger::get_logger()->debug("cg_image_renderer.redraw: creating image");
 //#ifdef WITH_UIKIT
 		// JACK: Unsure whether this exists on the iPhone. Kees: it does from iPhoneOS4.0, in ImageIO.
+		if (m_nsdata != NULL) {
+			CFRelease(m_nsdata);
+		}
 		m_nsdata = (CFDataRef)[NSData dataWithBytesNoCopy: m_data length: (unsigned int)m_data_size freeWhenDone: NO];
 		CGImageSourceRef rdr = CGImageSourceCreateWithData(m_nsdata, NULL);
 		if (rdr == NULL) {
 			logger::get_logger()->error("%s: could not create image reader", m_node->get_url("src").get_url().c_str());
 			return;
 		}
+		if (m_image != NULL) {
+			CGImageRelease(m_image);
+		}
 		m_image = CGImageSourceCreateImageAtIndex(rdr, 0, NULL);
+		CFRelease(rdr);
 //#endif //WITH_UIKIT
 		if (!m_image)
 			logger::get_logger()->error("%s: could not create CGImage", m_node->get_url("src").get_url().c_str());
