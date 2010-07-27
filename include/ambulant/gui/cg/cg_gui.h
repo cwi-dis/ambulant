@@ -67,7 +67,7 @@ class cg_window : public common::gui_window {
   public:
 	cg_window(const std::string &name, lib::size bounds, void *_view, common::gui_events *handler)
 	:	common::gui_window(handler),
-		m_view(_view) {};
+	m_view(_view) {};
 	~cg_window();
 
 	void need_redraw(const lib::rect &r);
@@ -157,13 +157,17 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 #ifdef	WITH_UIKIT
 	BOOL tapped;
 	CGPoint tapped_location;
+	CGRect original_frame;
+	ambulant::lib::size original_bounds;
 #endif//WITH_UIKIT
 }
+
 #ifdef	WITH_UIKIT
 @property(nonatomic) BOOL tapped;
 @property(nonatomic) CGPoint tapped_location;
+@property(nonatomic) CGRect	original_frame;
+@property(nonatomic) ambulant::lib::size original_bounds;
 #endif//WITH_UIKIT
-
 
 - (id)initWithFrame:(CGRect)frameRect;
 - (void)dealloc;

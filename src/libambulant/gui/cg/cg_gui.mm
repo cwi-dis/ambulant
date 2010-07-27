@@ -506,10 +506,42 @@ bad:
 	return false;
 }
 
+#ifdef	WITH_UIKIT
+@synthesize original_frame;
+@synthesize original_bounds;
+#endif//WITH_UIKIT
+
 - (void)ambulantSetSize: (ambulant::lib::size) bounds
 {
 #if WITH_UIKIT
-	NSLog(@"ambulantSetSize: not yet implemented for UIKit");
+//	NSLog(@"ambulantSetSize: not yet implemented for UIKit");
+	if (original_frame.size.height == 0  && original_frame.size.width == 0) {
+		original_frame.size.height = self.frame.size.height;
+		original_frame.size.width  = self.frame.size.width;
+	}
+	if (bounds.w != -1/*Aargh*/) {
+		original_bounds = bounds;
+	}	
+	UIDeviceOrientation orietation =[[UIDevice currentDevice] orientation];
+	CGSize mybounds;
+	mybounds.width = original_bounds.w;
+	mybounds.height = original_bounds.h;
+	CGRect myframe = original_frame; 
+	if (orietation == UIDeviceOrientationLandscapeLeft
+		|| orietation == UIDeviceOrientationLandscapeRight) {
+		myframe.size.height = 300; //XXXX iPhone only, depends on nib
+	} else if (orietation == UIDeviceOrientationPortrait 
+			   || orietation == UIDeviceOrientationPortraitUpsideDown) {
+		myframe.size.width = 320; //XXXX iPhone only, depends on nib
+	} else {
+		return;
+	}
+	float scale_x = myframe.size.width / mybounds.width;
+	float scale_y = myframe.size.height / mybounds.height;
+	// find the scale factor for both x- and y-directions
+	float scale = scale_x < scale_y ? scale_x : scale_y;
+	self.transform = CGAffineTransformMakeScale(scale, scale);
+	self.frame = myframe;
 #else
 	// Get the position of our view in window coordinates
 	NSPoint origin = NSMakePoint(0,0);
@@ -583,7 +615,7 @@ bad:
 - (void)tappedWithPoint: (CGPoint) where
 {
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
-	/*AM_DBG*/ NSLog(@"0x%x: tappedWithPoint at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
+	AM_DBG NSLog(@"0x%x: tappedWithPoint at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
 	if (ambulant_window) ambulant_window->user_event(amwhere);
 }
 #else
