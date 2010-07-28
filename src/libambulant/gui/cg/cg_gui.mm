@@ -512,6 +512,8 @@ bad:
 #endif//WITH_UIKIT
 
 - (void) adaptDisplayAfterRotation {
+	// adapt the ambulant window needed (bounds) in the current View
+	// TBD: make this depenent on a preference
 	UIDeviceOrientation orietation =[[UIDevice currentDevice] orientation];
 	CGSize mybounds;
 	mybounds.width = original_bounds.w;
@@ -530,7 +532,7 @@ bad:
 	}
 	float scale_x = myframe.size.width / mybounds.width;
 	float scale_y = myframe.size.height / mybounds.height;
-	// find the scale factor for both x- and y-directions
+	// find the smallest scale factor for both x- and y-directions
 	float scale = scale_x < scale_y ? scale_x : scale_y;
 	self.transform = CGAffineTransformMakeScale(scale, scale);
 	self.frame = myframe;
@@ -539,6 +541,7 @@ bad:
 
 - (void)ambulantSetSize: (ambulant::lib::size) bounds
 {
+// Remember frame and bounds and adapt the window reqested in the current view
 #if WITH_UIKIT
 //	NSLog(@"ambulantSetSize: not yet implemented for UIKit");
 	if (original_frame.size.height == 0  && original_frame.size.width == 0) {
