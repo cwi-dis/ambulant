@@ -161,7 +161,7 @@ MAC106_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'  " % (COMMON_INST
 # live: use config.iphone30 as in http://cache.gmane.org//gmane/comp/multimedia/live555/devel/5394-001.bin
 ##XXX IPHONE40DEVICE_COMMON_CONFIGURE="./configure --prefix='%s' --host=arm-apple-darwin10 CC=arm-apple-darwin10-gcc-4.2.1  CXX=arm-apple-darwin10-g++-4.2.1 LD=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/ld CPP=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/cpp CFLAGS=-isysroot\ /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.0.sdk" % COMMON_INSTALLDIR
 IPHONE40DEVICE_COMMON_CFLAGS="-arch armv6 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iphoneOS4.0.sdk"
-IPHONE40DEVICE_COMMON_CONFIGURE="./configure --host=arm-apple-darwin10 --prefix='%s' CFLAGS='%s' CC=gcc-4.2 CXX=g++-4.2    " % (COMMON_INSTALLDIR, IPHONE40DEVICE_COMMON_CFLAGS)
+IPHONE40DEVICE_COMMON_CONFIGURE="./configure --host=arm-apple-darwin10 --prefix='%s' CFLAGS='%s' CC=llvm-gcc-4.2 CXX=llvm-g++-4.2    " % (COMMON_INSTALLDIR, IPHONE40DEVICE_COMMON_CFLAGS)
 ##XXX IPHONE40SIMULATOR_COMMON_CONFIGURE="./configure --prefix='%s' --host=arm-apple-darwin10 CC=arm-apple-darwin10-gcc-4.2.1  CXX=arm-apple-darwin10-g++-4.2.1 LD=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/ld CPP=/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/cpp CFLAGS=-isysroot\ /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator4.0.sdk" % COMMON_INSTALLDIR
 IPHONE40SIMULATOR_COMMON_CFLAGS="-arch i386 -isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iphoneSimulator4.0.sdk"
 IPHONE40SIMULATOR_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'    " % (COMMON_INSTALLDIR, IPHONE40SIMULATOR_COMMON_CFLAGS)
@@ -368,7 +368,7 @@ third_party_packages={
         ],
 
 
-    'iPhone40Device' : [
+    'iOS40-Device' : [
         TPP("expat", 
             url="http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=autoselect",
             checkcmd="pkg-config --atleast-version=2.0.0 expat",
@@ -404,29 +404,25 @@ third_party_packages={
                 "make clean;make $(MAKEFLAGS); make install"
             ),
 
-##      TPP("SDL",
-##          url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
-##          checkcmd="pkg-config --atleast-version=1.3.0 sdl",
-##          buildcmd=
-##              "cd SDL-1.3.0-* && "
-##          "./configure --prefix='%s' "
-##                  "--disable-dependency-tracking "
-##                  "CC=gcc-4.0 CXX=g++-4.0 "
-##                  "CFLAGS='%s' "
-##                  "LDFLAGS='%s -framework ForceFeedback' &&"
-##              "make clean;make $(MAKEFLAGS) && "
-##              "make install" % (COMMON_INSTALLDIR, IPHONE40_COMMON_CFLAGS, IPHONE40_COMMON_CFLAGS)
-##          ),
+        TPP("SDL",
+            url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
+            checkcmd="test -f %s/lib/libSDLiPhoneOS.a" % COMMON_INSTALLDIR,
+            buildcmd=
+	            "cd SDL-1.3.0-*/Xcode-iphoneOS/SDL  && "
+				"xcodebuild -target StaticLibiPhoneOS -sdk iphoneos4.0 -configuration Release &&"
+				"mkdir -p ../../../installed/include/SDL && cp ./build/Release-iphoneos/usr/local/include/* ../../../installed/include/SDL &&"
+ 				"mkdir -p ../../../installed/include/lib && cp ./build/Release-iphoneos/libSDLiPhoneOS.a ../../../installed/lib"
+            ),
 
-##      TPP("live",
-##          url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-##          checkcmd="test -f ./live/liveMedia/libliveMedia.a",
-##          buildcmd=
-##              "cd live && "
-##              "tar xf %s/third_party_packages/live-osx-fatbuild-patches.tar && "
-##              "./genMakefiles macosxfat && "
-##              "make clean;make $(MAKEFLAGS) " % AMBULANT_DIR
-##          ),
+        TPP("live",
+            url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
+            checkcmd="test -f ./live/liveMedia/libliveMedia.a",
+            buildcmd=
+                "cd live && "
+                "tar xf %s/third_party_packages/live-iOS40-patches.tar && "
+                "./genMakefiles iOS40-Device && "
+                "make clean;make $(MAKEFLAGS) " % AMBULANT_DIR
+            ),
 
 ##      TPP("gettext",
 ##          url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.17.tar.gz",
@@ -435,7 +431,7 @@ third_party_packages={
 ##              "cd gettext-0.17 && "
 ##              "%s --disable-csharp && "
 ##              "make clean;make $(MAKEFLAGS) && "
-##              "make install" % IPHONE30_COMMON_CONFIGURE
+##              "make install" % IPHONE40_COMMON_CONFIGURE
 ##          ),
 
 #       TPP("libxml2",
@@ -445,11 +441,11 @@ third_party_packages={
 #               "cd libxml2-2.7.5 && "
 #               "%s --disable-dependency-tracking && "
 #               "make clean;make $(MAKEFLAGS) && "
-#               "make install" % IPHONE30_COMMON_CONFIGURE
+#               "make install" % IPHONE40_COMMON_CONFIGURE
 #           )
         ],
 
-    'iPhone40Simulator' : [
+    'iOS40-Simulator' : [
         TPP("expat", 
             url="http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=autoselect",
             checkcmd="pkg-config --atleast-version=2.0.0 expat",
@@ -485,29 +481,25 @@ third_party_packages={
                 "make clean;make $(MAKEFLAGS); make install"
             ),
 
-##      TPP("SDL",
-##          url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
-##          checkcmd="pkg-config --atleast-version=1.3.0 sdl",
-##          buildcmd=
-##              "cd SDL-1.3.0-* && "
-##          "./configure --prefix='%s' "
-##                  "--disable-dependency-tracking "
-##                  "CC=gcc-4.0 CXX=g++-4.0 "
-##                  "CFLAGS='%s' "
-##                  "LDFLAGS='%s -framework ForceFeedback' &&"
-##              "make clean;make $(MAKEFLAGS) && "
-##              "make install" % (COMMON_INSTALLDIR, IPHONE30_COMMON_CFLAGS, IPHONE30_COMMON_CFLAGS)
-##          ),
+        TPP("SDL",
+            url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
+            checkcmd="test -f %s/lib/libSDLiPhoneOS.a" % COMMON_INSTALLDIR,
+            buildcmd=
+	            "cd SDL-1.3.0-*/Xcode-iphoneOS/SDL  && "
+				"xcodebuild -target StaticLibiPhoneOS -sdk iphonesimulator4.0 -configuration Debug &&"
+				"mkdir -p ../../../installed/include/SDL && cp ./build/Debug-iphonesimulator/usr/local/include/* ../../../installed/include/SDL &&"
+ 				"mkdir -p ../../../installed/include/lib && cp ./build/Debug-iphonesimulator/libSDLiPhoneOS.a ../../../installed/lib"
+ ),
 
-##      TPP("live",
-##          url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-##          checkcmd="test -f ./live/liveMedia/libliveMedia.a",
-##          buildcmd=
-##              "cd live && "
-##              "tar xf %s/third_party_packages/live-osx-fatbuild-patches.tar && "
-##              "./genMakefiles macosxfat && "
-##              "make clean;make $(MAKEFLAGS) " % AMBULANT_DIR
-##          ),
+        TPP("live",
+            url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
+            checkcmd="test -f ./live/liveMedia/libliveMedia.a",
+            buildcmd=
+                "cd live && "
+                "tar xf %s/third_party_packages/live-iOS40-patches.tar && "
+                "./genMakefiles iOS40-Simulator && "
+                "make clean;make $(MAKEFLAGS) " % AMBULANT_DIR
+            ),
 
 ##      TPP("gettext",
 ##            url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.17.tar.gz",
@@ -516,18 +508,18 @@ third_party_packages={
 ##              "cd gettext-0.17 && "
 ##              "%s --disable-csharp && "
 ##              "make clean;make $(MAKEFLAGS) && "
-##              "make install" % IPHONE30_COMMON_CONFIGURE
+##              "make install" % IPHONE40_COMMON_CONFIGURE
 ##          ),
 
-#       TPP("libxml2",
-#           url="ftp://xmlsoft.org/libxml2/libxml2-2.7.5.tar.gz",
-#           checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
-#           buildcmd=
-#               "cd libxml2-2.7.5 && "
-#               "%s --disable-dependency-tracking && "
-#               "make clean;make $(MAKEFLAGS) && "
-#               "make install" % IPHONE30_COMMON_CONFIGURE
-#           )
+##      TPP("libxml2",
+##          url="ftp://xmlsoft.org/libxml2/libxml2-2.7.5.tar.gz",
+##          checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
+##          buildcmd=
+##              "cd libxml2-2.7.5 && "
+##              "%s --disable-dependency-tracking && "
+##              "make clean;make $(MAKEFLAGS) && "
+##              "make install" % IPHONE40SIMULATOR_COMMON_CONFIGURE
+##          )
         ],
 
 # -isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator4.0.sdk
