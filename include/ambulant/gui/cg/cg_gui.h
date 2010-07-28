@@ -155,7 +155,6 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 //	int overlay_window_count;
 #endif // WITH_QUICKTIME_OVERLAY
 #ifdef	WITH_UIKIT
-	BOOL tapped;
 	CGPoint tapped_location;
 	CGRect original_frame;
 	ambulant::lib::size original_bounds;
@@ -163,10 +162,10 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 }
 
 #ifdef	WITH_UIKIT
-@property(nonatomic) BOOL tapped;
 @property(nonatomic) CGPoint tapped_location;
 @property(nonatomic) CGRect	original_frame;
 @property(nonatomic) ambulant::lib::size original_bounds;
+- (void) adaptDisplayAfterRotation;
 #endif//WITH_UIKIT
 
 - (id)initWithFrame:(CGRect)frameRect;

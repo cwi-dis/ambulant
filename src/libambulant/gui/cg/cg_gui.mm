@@ -511,17 +511,7 @@ bad:
 @synthesize original_bounds;
 #endif//WITH_UIKIT
 
-- (void)ambulantSetSize: (ambulant::lib::size) bounds
-{
-#if WITH_UIKIT
-//	NSLog(@"ambulantSetSize: not yet implemented for UIKit");
-	if (original_frame.size.height == 0  && original_frame.size.width == 0) {
-		original_frame.size.height = self.frame.size.height;
-		original_frame.size.width  = self.frame.size.width;
-	}
-	if (bounds.w != -1/*Aargh*/) {
-		original_bounds = bounds;
-	}	
+- (void) adaptDisplayAfterRotation {
 	UIDeviceOrientation orietation =[[UIDevice currentDevice] orientation];
 	CGSize mybounds;
 	mybounds.width = original_bounds.w;
@@ -529,11 +519,13 @@ bad:
 	CGRect myframe = original_frame; 
 	if (orietation == UIDeviceOrientationLandscapeLeft
 		|| orietation == UIDeviceOrientationLandscapeRight) {
+#ifdef	WITH_IPHONE // no support for iPad yet, needs iOS 4.0 anyway
 		myframe.size.height = 300; //XXXX iPhone only, depends on nib
 	} else if (orietation == UIDeviceOrientationPortrait 
 			   || orietation == UIDeviceOrientationPortraitUpsideDown) {
 		myframe.size.width = 320; //XXXX iPhone only, depends on nib
 	} else {
+#endif//WITH_IPHONE
 		return;
 	}
 	float scale_x = myframe.size.width / mybounds.width;
@@ -542,6 +534,19 @@ bad:
 	float scale = scale_x < scale_y ? scale_x : scale_y;
 	self.transform = CGAffineTransformMakeScale(scale, scale);
 	self.frame = myframe;
+	[self setNeedsDisplay];
+}
+
+- (void)ambulantSetSize: (ambulant::lib::size) bounds
+{
+#if WITH_UIKIT
+//	NSLog(@"ambulantSetSize: not yet implemented for UIKit");
+	if (original_frame.size.height == 0  && original_frame.size.width == 0) {
+		original_frame.size.height = self.frame.size.height;
+		original_frame.size.width  = self.frame.size.width;
+	}
+	original_bounds = bounds;
+	[self adaptDisplayAfterRotation];
 #else
 	// Get the position of our view in window coordinates
 	NSPoint origin = NSMakePoint(0,0);
@@ -567,7 +572,7 @@ bad:
 }
 #ifdef WITH_UIKIT
 // Equivalent of mouse move/click on iPhone
-@synthesize tapped, tapped_location;
+@synthesize tapped_location;
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	UITouch *touch = [touches anyObject];
 	tapped_location = [touch locationInView:self];
