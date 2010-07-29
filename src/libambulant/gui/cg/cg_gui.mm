@@ -511,21 +511,27 @@ bad:
 @synthesize original_bounds;
 #endif//WITH_UIKIT
 
-- (void) adaptDisplayAfterRotation {
+- (void) adaptDisplayAfterRotation: (UIDeviceOrientation) orientation {
 	// adapt the ambulant window needed (bounds) in the current View
 	// TBD: make this depenent on a preference
-	UIDeviceOrientation orietation =[[UIDevice currentDevice] orientation];
 	CGSize mybounds;
 	mybounds.width = original_bounds.w;
 	mybounds.height = original_bounds.h;
 	CGRect myframe = original_frame; 
-	if (orietation == UIDeviceOrientationLandscapeLeft
-		|| orietation == UIDeviceOrientationLandscapeRight) {
+	CGRect mainframe = [[UIScreen mainScreen] applicationFrame];
+	NSLog(@"Mainscreen: %f,%f,%f,%f",
+		  mainframe.origin.x,mainframe.origin.y,mainframe.size.width,mainframe.size.height);
+	BOOL wasRotated = false;
+	if (orientation == UIDeviceOrientationLandscapeLeft
+		|| orientation == UIDeviceOrientationLandscapeRight) {
+		wasRotated = true;
 #ifdef	WITH_IPHONE // no support for iPad yet, needs iOS 4.0 anyway
-		myframe.size.height = 300; //XXXX iPhone only, depends on nib
-	} else if (orietation == UIDeviceOrientationPortrait 
-			   || orietation == UIDeviceOrientationPortraitUpsideDown) {
-		myframe.size.width = 320; //XXXX iPhone only, depends on nib
+		myframe.size.height = mainframe.size.width; // depends on nib
+		[[UIApplication sharedApplication] setStatusBarHidden: YES withAnimation: UIStatusBarAnimationNone];
+	} else if (orientation == UIDeviceOrientationPortrait 
+			   || orientation == UIDeviceOrientationPortraitUpsideDown) {
+		myframe.size.width = mainframe.size.width; 
+		[[UIApplication sharedApplication] setStatusBarHidden: NO withAnimation: UIStatusBarAnimationNone];
 	} else {
 #endif//WITH_IPHONE
 		return;
@@ -534,6 +540,23 @@ bad:
 	float scale_y = myframe.size.height / mybounds.height;
 	// find the smallest scale factor for both x- and y-directions
 	float scale = scale_x < scale_y ? scale_x : scale_y;
+	// TBD:  make cengering optional based on preference
+	// center my frame in the available space
+	if (wasRotated) {
+		float delta = (myframe.size.width - mybounds.width * scale) / 2;
+		myframe.origin.x += delta;
+		myframe.size.width -= delta;
+		delta = (myframe.size.height - mybounds.height * scale) / 2;
+		myframe.origin.y += delta;
+		myframe.size.height -= delta;
+	} else {
+		float delta = (myframe.size.height - mybounds.height * scale) / 2;
+		myframe.origin.y += delta;
+		myframe.size.height -= delta;
+		delta = (myframe.size.width - mybounds.width * scale) / 2;
+		myframe.origin.x += delta;
+		myframe.size.width -= delta;
+	}
 	self.transform = CGAffineTransformMakeScale(scale, scale);
 	self.frame = myframe;
 	[self setNeedsDisplay];
@@ -549,7 +572,7 @@ bad:
 		original_frame.size.width  = self.frame.size.width;
 	}
 	original_bounds = bounds;
-	[self adaptDisplayAfterRotation];
+	[self adaptDisplayAfterRotation: UIDeviceOrientationPortrait];
 #else
 	// Get the position of our view in window coordinates
 	NSPoint origin = NSMakePoint(0,0);
@@ -573,6 +596,7 @@ bad:
 	[window makeKeyAndOrderFront: self];
 #endif
 }
+
 #ifdef WITH_UIKIT
 // Equivalent of mouse move/click on iPhone
 @synthesize tapped_location;
