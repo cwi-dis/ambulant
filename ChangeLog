@@ -1,3 +1,15 @@
+2010-07-28 17:48  keesblom
+
+	* 3pp build now wordks automically for device and simulator.
+
+2010-07-28 13:39  keesblom
+
+	* Some comment changes
+
+2010-07-28 11:58  keesblom
+
+	* Added method adaptDisplayAfterRotation for iPhone
+
 2010-07-27 17:13  keesblom
 
 	* Added automatic frame size adaption on rotating. Almost works,
