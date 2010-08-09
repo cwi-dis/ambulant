@@ -25,7 +25,7 @@
 #include "GroupsockHelper.hh"
 
 ///// Added by Bo Gao begin 2007-11-07
-AVCodecParserContext * h264parserctx;
+//AVCodecParserContext * h264parserctx;
 
 using namespace ambulant;
 using namespace net;
@@ -474,7 +474,7 @@ ambulant::net::rtsp_demux::run()
 				lib::logger::get_logger()->error(gettext("pausing RTSP media session failed"));
 			}
 			//xxxbo 13 nov. 2009
-			lib::logger::get_logger()->debug("rtsp_demux::run(0x%x) m_clip_begin=%d, playMediaSession(%f)",	 this, m_clip_begin, seektime_secs);
+			AM_DBG lib::logger::get_logger()->debug("rtsp_demux::run(0x%x) m_clip_begin=%d, playMediaSession(%f)",	 this, m_clip_begin, seektime_secs);
 			if(!m_context->rtsp_client->playMediaSession(*m_context->media_session, (float)seektime_secs, -1.0F, 1.0F)) {
 				lib::logger::get_logger()->error(gettext("resuming RTSP media session failed"));
 			}
@@ -644,7 +644,7 @@ rtsp_demux::after_reading_audio(size_t sz, unsigned truncated, struct timeval pt
 	AM_DBG lib::logger::get_logger()->debug("after reading audio: rpts=%lld, end=%lld\n\n", rpts, m_context->last_expected_pts);
 
 	if (m_context->last_expected_pts >= 0 && rpts >= m_context->last_expected_pts) {
-		lib::logger::get_logger()->debug("after_reading_audio: last_pts = %lld\n\n", rpts);
+		AM_DBG lib::logger::get_logger()->debug("after_reading_audio: last_pts = %lld\n\n", rpts);
 		m_context->eof = true;
 	}
 	if (rpts > m_context->highest_pts_seen)

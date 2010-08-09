@@ -110,6 +110,12 @@ class AMBULANTAPI preferences {
 	/// Save preferences.
 	virtual bool save_preferences();
 
+#ifdef	WITH_UIKIT
+	/// iPhone player auto center
+	bool m_auto_center;
+	/// iPhone player auto resize
+	bool m_auto_resize;
+#endif//WITH_UIKIT
 
   private:
 	static preferences* s_preferences; // singleton

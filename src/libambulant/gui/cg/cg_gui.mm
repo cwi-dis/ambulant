@@ -507,17 +507,27 @@ bad:
 }
 
 #ifdef	WITH_UIKIT
+@synthesize current_frame;
 @synthesize original_frame;
 @synthesize original_bounds;
-#endif//WITH_UIKIT
 
 - (void) adaptDisplayAfterRotation: (UIDeviceOrientation) orientation {
 	// adapt the ambulant window needed (bounds) in the current View
-	// TBD: make this depenent on a preference
+	bool auto_resize = ambulant::common::preferences::get_preferences()->m_auto_resize;
+	bool auto_center = ambulant::common::preferences::get_preferences()->m_auto_center;
 	CGSize mybounds;
 	mybounds.width = original_bounds.w;
 	mybounds.height = original_bounds.h;
-	CGRect myframe = original_frame; 
+#if PRESERVE_ZOOM
+	// pan/zoom combined with auto scale/auto center does not work smoothly.
+	// for now, rotating the device implies undo of all pan/zoom settings.
+	// This is useable, albeit maybe not always desirable.
+	// Shake gesture or UIDeviveOrientationFaceDown would be obvious
+	// implementation for Undo pan/zoom (Shake is commonly used fo Undo/Redo).
+	CGRect myframe = current_frame;
+#else
+	CGRect myframe = current_frame = original_frame;
+#endif ///PRESERVE_ZOOM
 	CGRect mainframe = [[UIScreen mainScreen] applicationFrame];
 	NSLog(@"Mainscreen: %f,%f,%f,%f",
 		  mainframe.origin.x,mainframe.origin.y,mainframe.size.width,mainframe.size.height);
@@ -525,42 +535,57 @@ bad:
 	if (orientation == UIDeviceOrientationLandscapeLeft
 		|| orientation == UIDeviceOrientationLandscapeRight) {
 		wasRotated = true;
-#ifdef	WITH_IPHONE // no support for iPad yet, needs iOS 4.0 anyway
-		myframe.size.height = mainframe.size.width; // depends on nib
+		if (auto_center || auto_resize) {
+			myframe.size.height = mainframe.size.width; // depends on nib
+		}
 		[[UIApplication sharedApplication] setStatusBarHidden: YES withAnimation: UIStatusBarAnimationNone];
 	} else if (orientation == UIDeviceOrientationPortrait 
 			   || orientation == UIDeviceOrientationPortraitUpsideDown) {
-		myframe.size.width = mainframe.size.width; 
+		if (auto_center || auto_resize) {
+			myframe.size.width = mainframe.size.width; 
+		}
 		[[UIApplication sharedApplication] setStatusBarHidden: NO withAnimation: UIStatusBarAnimationNone];
 	} else {
-#endif//WITH_IPHONE
 		return;
 	}
-	float scale_x = myframe.size.width / mybounds.width;
-	float scale_y = myframe.size.height / mybounds.height;
-	// find the smallest scale factor for both x- and y-directions
-	float scale = scale_x < scale_y ? scale_x : scale_y;
-	// TBD:  make cengering optional based on preference
-	// center my frame in the available space
-	if (wasRotated) {
-		float delta = (myframe.size.width - mybounds.width * scale) / 2;
-		myframe.origin.x += delta;
-		myframe.size.width -= delta;
-		delta = (myframe.size.height - mybounds.height * scale) / 2;
-		myframe.origin.y += delta;
-		myframe.size.height -= delta;
-	} else {
-		float delta = (myframe.size.height - mybounds.height * scale) / 2;
-		myframe.origin.y += delta;
-		myframe.size.height -= delta;
-		delta = (myframe.size.width - mybounds.width * scale) / 2;
-		myframe.origin.x += delta;
-		myframe.size.width -= delta;
+	float scale = 1.0;
+	if (auto_resize) {
+		float scale_x = myframe.size.width / mybounds.width;
+		float scale_y = myframe.size.height / mybounds.height;
+		// find the smallest scale factor for both x- and y-directions
+		scale = scale_x < scale_y ? scale_x : scale_y;
 	}
+#if PRESERVE_ZOOM
+	//self.transform = CGAffineTransformScale(self.transform, scale, scale);
+#else
 	self.transform = CGAffineTransformMakeScale(scale, scale);
+#endif ///PRESERVE_ZOOM
+	
+	// center my frame in the available space
+	float delta = 0;
+	if (auto_center) {
+		if (wasRotated) {
+			delta = (myframe.size.width - mybounds.width * scale) / 2;
+			myframe.origin.x += delta;
+			myframe.size.width -= delta;
+			delta = (myframe.size.height - mybounds.height * scale) / 2;
+			myframe.origin.y += delta;
+			myframe.size.height -= delta;
+		} else {
+			delta = (myframe.size.height - mybounds.height * scale) / 2;		
+			myframe.origin.y += delta;
+			myframe.size.height -= delta;
+			delta = (myframe.size.width - mybounds.width * scale) / 2;
+			myframe.origin.x += delta;
+			myframe.size.width -= delta;
+		}
+	}
 	self.frame = myframe;
+
+	// redisplay AmbulantView using the new settings
 	[self setNeedsDisplay];
 }
+#endif//WITH_UIKIT
 
 - (void)ambulantSetSize: (ambulant::lib::size) bounds
 {
@@ -572,6 +597,7 @@ bad:
 		original_frame.size.width  = self.frame.size.width;
 	}
 	original_bounds = bounds;
+	current_frame = original_frame;
 	[self adaptDisplayAfterRotation: UIDeviceOrientationPortrait];
 #else
 	// Get the position of our view in window coordinates
@@ -603,7 +629,7 @@ bad:
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	UITouch *touch = [touches anyObject];
 	tapped_location = [touch locationInView:self];
-	NSLog(@"touchesBegan: x=%f y=%f", tapped_location.x, tapped_location.y);
+	// NSLog(@"touchesBegan: x=%f y=%f", tapped_location.x, tapped_location.y);
 	[self setNeedsDisplay];
 	ambulant::lib::point amwhere = ambulant::lib::point(
 					(int)tapped_location.x, (int)tapped_location.y);

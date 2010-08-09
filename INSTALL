@@ -180,3 +180,38 @@ get Python or XPCOM you can disable the corresponding project in the solution.
 
 The resulting application is deposited in bin\win32 in the toplevel
 directory.
+
+Building for iPhane iOS4.0 (unfinished, untested, unreliable).
+--------------------------
+
+third_party_packages:
+NOTE: for iPhone, SDL-1.3.0 currently needs to be modfied:
+- ./src/video/uikit/SDL_uikitappdelegate.m contains an entry point main(int arc,char** argv)
+that must be disabled (either by changing it to Xmain or using #ifdef).
+
+build third_party_packages using the same technique as described for MACOS in
+Documentation/misc/README-Distribution, for both iPhone Simulator and Device:
+
+- cd to toplevel ambulant directory
+- mkdir -p build-iOS40-Simulator/third_party_packages
+- cd build-iOS40-Simulator/third_party_packages
+# Note: next pathname may change with each iOS release, vital to find proper compilers/linkers
+- ORIG_PATH=$PATH;PATH=/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:$PATH
+- export IPHONEOS_DEPLOYMENT_TARGET=4.0; export MACOSX_DEPLOYMENT_TARGET=10.6
+- ../../third_party_packages/build-third-party-packages.py iOS40-Simulator
+- PATH=$ORIG_PATH
+
+- cd to toplevel ambulant directory
+- mkdir -p build-iOS40-Device/third_party_packages
+- cd build-iOS40-Device/third_party_packages
+# Note: next pathname may change with each iOS release, vital to find proper compilers/linkers
+- ORIG_PATH=$PATH;PATH=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:$PATH
+- export IPHONEOS_DEPLOYMENT_TARGET=4.0; export MACOSX_DEPLOYMENT_TARGET=10.6
+- ../../third_party_packages/build-third-party-packages.py iOS40-Device
+- PATH=$ORIG_PATH
+
+Now xcode can be started on th project src/player_iphone/player_iphone.xcodeproj,
+select Target iphone-simulator with Active SDK Simulator
+or Target iphone-device with Active SDK Device.
+Other combinations will not work.
+

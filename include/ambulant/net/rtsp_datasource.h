@@ -23,6 +23,12 @@
 #define AMBULANT_NET_RTSP_DATASOURCE_H
 
 #include "ambulant/config/config.h"
+#include "ambulant/lib/callback.h"
+#include "ambulant/lib/refcount.h"
+#include "ambulant/lib/event_processor.h"
+#include "ambulant/lib/mtsync.h"
+#include "ambulant/lib/event_processor.h"
+
 
 #define MAX_RTP_FRAME_SIZE 50000
 
@@ -53,13 +59,6 @@
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"
 #include "libavutil/common.h"
-
-#include "ambulant/config/config.h"
-#include "ambulant/lib/callback.h"
-#include "ambulant/lib/refcount.h"
-#include "ambulant/lib/event_processor.h"
-#include "ambulant/lib/mtsync.h"
-#include "ambulant/lib/event_processor.h"
 
 #ifdef AMBULANT_PLATFORM_UNIX
 #include "ambulant/lib/unix/unix_thread.h"

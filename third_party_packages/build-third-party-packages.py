@@ -160,7 +160,7 @@ MAC106_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'  " % (COMMON_INST
 # SDL: use Xcode 3.2 with SDL-1.3.0-4429/Xcode-iPhoneOS/SDL/SDLiPhoneOS.xcodeproj
 # live: use config.iphone30 as in http://cache.gmane.org//gmane/comp/multimedia/live555/devel/5394-001.bin
 ##XXX IPHONE40DEVICE_COMMON_CONFIGURE="./configure --prefix='%s' --host=arm-apple-darwin10 CC=arm-apple-darwin10-gcc-4.2.1  CXX=arm-apple-darwin10-g++-4.2.1 LD=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/ld CPP=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/cpp CFLAGS=-isysroot\ /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.0.sdk" % COMMON_INSTALLDIR
-IPHONE40DEVICE_COMMON_CFLAGS="-arch armv6 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iphoneOS4.0.sdk"
+IPHONE40DEVICE_COMMON_CFLAGS="-arch armv6 -O4 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iphoneOS4.0.sdk"
 IPHONE40DEVICE_COMMON_CONFIGURE="./configure --host=arm-apple-darwin10 --prefix='%s' CFLAGS='%s' CC=llvm-gcc-4.2 CXX=llvm-g++-4.2    " % (COMMON_INSTALLDIR, IPHONE40DEVICE_COMMON_CFLAGS)
 ##XXX IPHONE40SIMULATOR_COMMON_CONFIGURE="./configure --prefix='%s' --host=arm-apple-darwin10 CC=arm-apple-darwin10-gcc-4.2.1  CXX=arm-apple-darwin10-g++-4.2.1 LD=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/ld CPP=/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/cpp CFLAGS=-isysroot\ /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator4.0.sdk" % COMMON_INSTALLDIR
 IPHONE40SIMULATOR_COMMON_CFLAGS="-arch i386 -isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iphoneSimulator4.0.sdk"
@@ -400,7 +400,7 @@ third_party_packages={
             	"--sysroot=/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.0.sdk --cpu=arm1176jzf-s "
 			  	"--as='gas-preprocessor.pl /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc' "
             	"--extra-cflags='-arch armv6 -I../installed/include' --extra-ldflags='-arch armv6 -L../installed/lib' "
-            	"--enable-libfaad --prefix=../installed/ --enable-gpl ;"
+            	"--enable-libfaad --prefix=../installed/ --enable-gpl  --disable-mmx --disable-asm;"
                 "make clean;make $(MAKEFLAGS); make install"
             ),
 
@@ -410,7 +410,8 @@ third_party_packages={
             buildcmd=
 	            "cd SDL-1.3.0-*/Xcode-iphoneOS/SDL  && "
 				"xcodebuild -target StaticLibiPhoneOS -sdk iphoneos4.0 -configuration Release &&"
-				"mkdir -p ../../../installed/include/SDL && cp ./build/Release-iphoneos/usr/local/include/* ../../../installed/include/SDL &&"
+				"mkdir -p ../../../installed/include/SDL && "
+				"cp ../../include/* ./build/Release-iphoneos/usr/local/include/* ../../../installed/include/SDL &&"
  				"mkdir -p ../../../installed/include/lib && cp ./build/Release-iphoneos/libSDLiPhoneOS.a ../../../installed/lib"
             ),
 
@@ -487,7 +488,8 @@ third_party_packages={
             buildcmd=
 	            "cd SDL-1.3.0-*/Xcode-iphoneOS/SDL  && "
 				"xcodebuild -target StaticLibiPhoneOS -sdk iphonesimulator4.0 -configuration Debug &&"
-				"mkdir -p ../../../installed/include/SDL && cp ./build/Debug-iphonesimulator/usr/local/include/* ../../../installed/include/SDL &&"
+				"mkdir -p ../../../installed/include/SDL && cp ../../include/* ../../../installed/include/SDL &&"
+				"cp ./build/Debug-iphonesimulator/usr/local/include/* ../../../installed/include/SDL &&"
  				"mkdir -p ../../../installed/include/lib && cp ./build/Debug-iphonesimulator/libSDLiPhoneOS.a ../../../installed/lib"
  ),
 

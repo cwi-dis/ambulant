@@ -156,6 +156,7 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 #endif // WITH_QUICKTIME_OVERLAY
 #ifdef	WITH_UIKIT
 	CGPoint tapped_location;
+	CGRect current_frame;
 	CGRect original_frame;
 	ambulant::lib::size original_bounds;
 #endif//WITH_UIKIT
@@ -163,8 +164,10 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 
 #ifdef	WITH_UIKIT
 @property(nonatomic) CGPoint tapped_location;
+@property(nonatomic) CGRect	current_frame;
 @property(nonatomic) CGRect	original_frame;
 @property(nonatomic) ambulant::lib::size original_bounds;
+
 - (void) adaptDisplayAfterRotation: (UIDeviceOrientation) orientation;
 #endif//WITH_UIKIT
 
