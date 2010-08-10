@@ -1,3 +1,16 @@
+2010-08-09 22:37  keesblom
+
+	* Added -mcpu=arm1176jzf-s to match ffmpeg compile options. Got rid
+	  of crash on Device in static initialization.
+
+2010-08-09 17:50  keesblom
+
+	* Added changes for iphone
+
+2010-08-09 17:48  keesblom
+
+	* Added player_iphone xcode project
+
 2010-07-29 14:01  keesblom
 
 	* Finishing touches for auto-centering
