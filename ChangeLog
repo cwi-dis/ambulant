@@ -1,3 +1,8 @@
+2010-08-10 13:27  keesblom
+
+	* made compiler flags more equal to those used in the porject in an
+	  attempt to get rid of crash in static initializers
+
 2010-08-09 22:37  keesblom
 
 	* Added -mcpu=arm1176jzf-s to match ffmpeg compile options. Got rid
