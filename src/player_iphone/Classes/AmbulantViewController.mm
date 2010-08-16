@@ -58,7 +58,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 @implementation AmbulantViewController
 
 @synthesize interactionView, originalPlayerViewFrame, originalInteractionViewFrame,
-			playerView, URLEntryField, linkURL, playURL, keyboardIsShown,
+			playerView, myMainloop, URLEntryField, linkURL, playURL, keyboardIsShown,
 			currentOrientation,	autoCenter, autoResize, play_active;
 
 /*
@@ -92,6 +92,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	myMainloop = new mainloop([[self playURL] UTF8String], playerView, embedder);	
 	if (myMainloop) {
 		myMainloop->play();
+		self.URLEntryField.text = [self playURL];
 	}
 }
 
@@ -119,7 +120,13 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	 object: nil];
 	autoCenter = ambulant::common::preferences::get_preferences()->m_auto_center;
 	autoResize = ambulant::common::preferences::get_preferences()->m_auto_resize;
-
+	
+	// prepare to react on "tap" gesture (select object in playerView with 1 finger tap)
+	UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]
+											  initWithTarget:self action:@selector(handleTapGesture:)];
+	[self.playerView addGestureRecognizer:tapGesture];
+    [tapGesture release];
+	
 	// prepare to react on "pinch" gesture (zoom playerView with 2 fingers)
 	UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc]
 											  initWithTarget:self action:@selector(handlePinchGesture:)];
@@ -132,16 +139,20 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
     [panGesture release];
 	
 	embedder = new document_embedder(self);
-	NSLog(@"View=%@", [self playerView]);
-	NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
-	NSString *welcomePath = [thisBundle pathForResource:@"Welcome" ofType:@"smil"];
-//	NSString *welcomePath = @"http://ambulantPlayer.org/Demos/Birthday/HappyBirthday.smil";
-	NSLog (@ "%@", welcomePath);
-	if (welcomePath) {
-		void* theview = [self playerView];
-		NSLog(@"view %@ responds %d", (NSObject *)theview, [(NSObject *)theview respondsToSelector: @selector(isAmbulantWindowInUse)]);
-		playURL = [[NSString alloc] initWithString: welcomePath];
-		[self doPlayURL ];
+	NSLog(@"View=%@ playUrl=%@", [self playerView], [self playURL]);
+	if (self.playURL != nil) {
+		[self handleURLEntered];
+	} else {
+		NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
+		NSString *welcomePath = [thisBundle pathForResource:@"Welcome" ofType:@"smil"];
+//		NSString *welcomePath = @"http://ambulantPlayer.org/Demos/Birthday/HappyBirthday.smil";
+		NSLog (@ "%@", welcomePath);
+		if (welcomePath) {
+			void* theview = [self playerView];
+			NSLog(@"view %@ responds %d", (NSObject *)theview, [(NSObject *)theview respondsToSelector: @selector(isAmbulantWindowInUse)]);
+			playURL = [[NSString alloc] initWithString: welcomePath];
+			[self doPlayURL ];
+		}
 	} 
 }
 
@@ -174,27 +185,21 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 
 /*	Code from Apple's developer documentation "Gesture Recognizers"*/
+- (IBAction) handleTapGesture:(UIGestureRecognizer *)sender { // select
+	CGPoint location = [(UITapGestureRecognizer *)sender locationInView:self.playerView];
+	[self.playerView tappedAtPoint:location];
+}
+
 //  XXXX cleanup needed: move the this code into genuine member function of AmbulantPlayer
 - (IBAction) handlePinchGesture:(UIGestureRecognizer *)sender { // zoom
 	CGFloat factor = [(UIPinchGestureRecognizer *)sender scale];
-	// the current scale factors for 'x' and 'y' are in the 'a' and 'd' fields, respectively
-	playerView.transform = CGAffineTransformMakeScale (factor, factor);
-//	playerView.current_transform = playerView.transform;
-	playerView.current_frame = playerView.frame; //changing tranform also changes frame
+	[self.playerView zoomWithScale:factor inState: [sender state]];
 }
 
 //  XXXX cleanup needed: move the this code into genuine member function of AmbulantPlayer
 - (IBAction) handlePanGesture:(UIPanGestureRecognizer *)sender {
-	CGRect newFrame = playerView.current_frame;
-	
 	CGPoint translate = [sender translationInView: playerView.superview];
-	newFrame.origin.x += translate.x;
-	newFrame.origin.y += translate.y;
-
-	playerView.frame = newFrame;
-	if (sender.state == UIGestureRecognizerStateEnded) {
-		playerView.current_frame = newFrame;
-	}
+	[self.playerView  translateWithPoint: (CGPoint) translate inState: [sender state]];
 }
 
 // dismiss the keyboard when the <Return> is tapped
@@ -265,8 +270,12 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	NSLog(@"Selected: %@",whatString);
 	self.handleStopTapped;
 	if ( ! [whatString hasPrefix:@"http://"]) {
-		NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
-		whatString = [thisBundle pathForResource:whatString ofType:@"smil"];
+		NSString* homedir = NSHomeDirectory();
+		homedir = [homedir stringByAppendingString:@"/player_iphone.app/Documents/"];
+		whatString = [homedir stringByAppendingString:whatString];//[thisBundle pathForResource:whatString ofType:@"smil"];
+		if ( ! [whatString hasSuffix:@".smil"]) {
+			whatString = [whatString stringByAppendingString:@".smil"];
+		}
 	}
 	if (whatString != NULL) {
 		if (playURL) {
@@ -381,7 +390,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 
 - (void) close: (NSString*) id {
-	NSLog(@"AmbulantViewController-close: unimplemented");
+	//NSLog(@"AmbulantViewController-close: unimplemented");
 	[self handleStopTapped];
 }
 

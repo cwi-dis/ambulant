@@ -33,16 +33,14 @@
 - (IBAction) playNews;
 - (IBAction) playNewsRTSP;
 
-@property (nonatomic, assign) 
-	id <PlaylistViewControllerDelegate> delegate;
+@property(nonatomic, assign) id <PlaylistViewControllerDelegate> delegate;
 @property(nonatomic,retain) IBOutlet UISwitch* autoCenterSwitch;
 @property(nonatomic,retain) IBOutlet UISwitch* autoResizeSwitch;
 
 @end
 @protocol PlaylistViewControllerDelegate
-- (void) playlistViewControllerDidFinish:
-					(PlaylistViewController *)controller;
+- (void) playlistViewControllerDidFinish: (PlaylistViewController *)controller;
 - (void) playIt: (PlaylistViewController *)controller selected: (NSString*) what;
-- (IBAction) done: (id) sender;
+//- (IBAction) done: (id) sender;
 @end
 

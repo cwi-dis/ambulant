@@ -36,11 +36,11 @@
 }
 
 - (IBAction) playWelcome {
-	[self.delegate playIt:self selected:@"Documents/Welcome"];
+	[self.delegate playIt:self selected:@"Welcome"];
 }
 
 - (IBAction) playNYC {
-	[self.delegate playIt:self selected:@"Documents/NYC-SMIL2"];
+	[self.delegate playIt:self selected:@"NYC-SMIL2"];
 }
 
 - (IBAction) playVideoTests {

@@ -158,6 +158,7 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 	CGPoint tapped_location;
 	CGRect current_frame;
 	CGRect original_frame;
+	CGAffineTransform current_transform;
 	ambulant::lib::size original_bounds;
 #endif//WITH_UIKIT
 }
@@ -166,9 +167,13 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 @property(nonatomic) CGPoint tapped_location;
 @property(nonatomic) CGRect	current_frame;
 @property(nonatomic) CGRect	original_frame;
+@property(nonatomic) CGAffineTransform current_transform;
 @property(nonatomic) ambulant::lib::size original_bounds;
 
 - (void) adaptDisplayAfterRotation: (UIDeviceOrientation) orientation;
+- (void) tappedAtPoint:(CGPoint) location;
+- (void) zoomWithScale: (float) scale inState: (UIGestureRecognizerState) state;
+- (void) translateWithPoint: (CGPoint) point inState: (UIGestureRecognizerState) state;
 #endif//WITH_UIKIT
 
 - (id)initWithFrame:(CGRect)frameRect;

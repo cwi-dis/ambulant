@@ -28,7 +28,6 @@
 		9331E8FB120DAE2A0023B0F1 /* Welcome.smil in Resources */ = {isa = PBXBuildFile; fileRef = 9331E8F9120DAE2A0023B0F1 /* Welcome.smil */; };
 		9331E908120DAEB20023B0F1 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 9331E8FE120DAEB20023B0F1 /* data */; };
 		9331E909120DAEB20023B0F1 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 9331E8FE120DAEB20023B0F1 /* data */; };
-		9331E90C120DB0A30023B0F1 /* player_iphone-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D1107310486CEB800E47090 /* player_iphone-Info.plist */; };
 		9331E90D120DB0A90023B0F1 /* Welcome.smil in Resources */ = {isa = PBXBuildFile; fileRef = 9331E8F9120DAE2A0023B0F1 /* Welcome.smil */; };
 		9331EA02120DCBD40023B0F1 /* AmbulantAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331E9FB120DCBD40023B0F1 /* AmbulantAppDelegate.mm */; };
 		9331EA03120DCBD40023B0F1 /* AmbulantViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331E9FD120DCBD40023B0F1 /* AmbulantViewController.mm */; };
@@ -48,10 +47,6 @@
 		9376A8E01204A94300D5019C /* libSDLiPhoneOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9376A8D71204A94300D5019C /* libSDLiPhoneOS.a */; };
 		9376A8E11204A94300D5019C /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9376A8D81204A94300D5019C /* libswscale.a */; };
 		9376A9291204C0F400D5019C /* PlaylistView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9376A9281204C0F400D5019C /* PlaylistView.xib */; };
-		9376AF49120C44C300D5019C /* libBasicUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9376AF48120C44C300D5019C /* libBasicUsageEnvironment.a */; };
-		9376AF4B120C44F300D5019C /* libgroupsock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9376AF4A120C44F300D5019C /* libgroupsock.a */; };
-		9376AF4D120C452700D5019C /* libliveMedia.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9376AF4C120C452700D5019C /* libliveMedia.a */; };
-		9376AF4F120C455300D5019C /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9376AF4E120C455300D5019C /* libUsageEnvironment.a */; };
 		9376B0A3120C9CC900D5019C /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 93DC0CCF120321C200A3518F /* Icon.png */; };
 		9376B0A5120C9CC900D5019C /* AmbulantViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93DC0CDB120321C200A3518F /* AmbulantViewController.xib */; };
 		9376B0A6120C9CC900D5019C /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93DC0E7512037DB500A3518F /* MainWindow.xib */; };
@@ -255,6 +250,14 @@
 		93DC0CDF120321C200A3518F /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 93DC0CCF120321C200A3518F /* Icon.png */; };
 		93DC0CE9120321C200A3518F /* AmbulantViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93DC0CDB120321C200A3518F /* AmbulantViewController.xib */; };
 		93DC0E7612037DB500A3518F /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93DC0E7512037DB500A3518F /* MainWindow.xib */; };
+		93EC9E45121985F600E0BEDE /* libgroupsock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93EC9E44121985F600E0BEDE /* libgroupsock.a */; };
+		93EC9E46121985F600E0BEDE /* libgroupsock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93EC9E44121985F600E0BEDE /* libgroupsock.a */; };
+		93EC9E481219863000E0BEDE /* libliveMedia.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93EC9E471219863000E0BEDE /* libliveMedia.a */; };
+		93EC9E491219863000E0BEDE /* libliveMedia.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93EC9E471219863000E0BEDE /* libliveMedia.a */; };
+		93EC9E4B1219865F00E0BEDE /* libBasicUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93EC9E4A1219865F00E0BEDE /* libBasicUsageEnvironment.a */; };
+		93EC9E4C1219865F00E0BEDE /* libBasicUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93EC9E4A1219865F00E0BEDE /* libBasicUsageEnvironment.a */; };
+		93EC9E4E1219868D00E0BEDE /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93EC9E4D1219868D00E0BEDE /* libUsageEnvironment.a */; };
+		93EC9E4F1219868D00E0BEDE /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93EC9E4D1219868D00E0BEDE /* libUsageEnvironment.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -709,6 +712,10 @@
 		93DC0CDB120321C200A3518F /* AmbulantViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AmbulantViewController.xib; sourceTree = "<group>"; };
 		93DC0E3D1203650C00A3518F /* player_simulator-Info .plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "player_simulator-Info .plist"; sourceTree = "<group>"; };
 		93DC0E7512037DB500A3518F /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
+		93EC9E44121985F600E0BEDE /* libgroupsock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgroupsock.a; path = "../../build-iOS40-Device/third_party_packages/live/groupsock/libgroupsock.a"; sourceTree = SOURCE_ROOT; };
+		93EC9E471219863000E0BEDE /* libliveMedia.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libliveMedia.a; path = "../../build-iOS40-Device/third_party_packages/live/liveMedia/libliveMedia.a"; sourceTree = SOURCE_ROOT; };
+		93EC9E4A1219865F00E0BEDE /* libBasicUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBasicUsageEnvironment.a; path = "../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment/libBasicUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
+		93EC9E4D1219868D00E0BEDE /* libUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libUsageEnvironment.a; path = "../../build-iOS40-Device/third_party_packages/live/UsageEnvironment/libUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -745,10 +752,10 @@
 				9376A8DF1204A94300D5019C /* libmp4ff.a in Frameworks */,
 				9376A8E01204A94300D5019C /* libSDLiPhoneOS.a in Frameworks */,
 				9376A8E11204A94300D5019C /* libswscale.a in Frameworks */,
-				9376AF49120C44C300D5019C /* libBasicUsageEnvironment.a in Frameworks */,
-				9376AF4B120C44F300D5019C /* libgroupsock.a in Frameworks */,
-				9376AF4D120C452700D5019C /* libliveMedia.a in Frameworks */,
-				9376AF4F120C455300D5019C /* libUsageEnvironment.a in Frameworks */,
+				93EC9E45121985F600E0BEDE /* libgroupsock.a in Frameworks */,
+				93EC9E481219863000E0BEDE /* libliveMedia.a in Frameworks */,
+				93EC9E4B1219865F00E0BEDE /* libBasicUsageEnvironment.a in Frameworks */,
+				93EC9E4E1219868D00E0BEDE /* libUsageEnvironment.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -789,6 +796,10 @@
 				9376B11B120C9CC900D5019C /* libgroupsock.a in Frameworks */,
 				9376B11C120C9CC900D5019C /* libliveMedia.a in Frameworks */,
 				9376B11D120C9CC900D5019C /* libUsageEnvironment.a in Frameworks */,
+				93EC9E46121985F600E0BEDE /* libgroupsock.a in Frameworks */,
+				93EC9E491219863000E0BEDE /* libliveMedia.a in Frameworks */,
+				93EC9E4C1219865F00E0BEDE /* libBasicUsageEnvironment.a in Frameworks */,
+				93EC9E4F1219868D00E0BEDE /* libUsageEnvironment.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -864,6 +875,10 @@
 		931FF38D1201CEFB003B632F /* third_party_packages */ = {
 			isa = PBXGroup;
 			children = (
+				93EC9E4D1219868D00E0BEDE /* libUsageEnvironment.a */,
+				93EC9E4A1219865F00E0BEDE /* libBasicUsageEnvironment.a */,
+				93EC9E471219863000E0BEDE /* libliveMedia.a */,
+				93EC9E44121985F600E0BEDE /* libgroupsock.a */,
 				9376AF4C120C452700D5019C /* libliveMedia.a */,
 				9376AF4E120C455300D5019C /* libUsageEnvironment.a */,
 				9376AF4A120C44F300D5019C /* libgroupsock.a */,
@@ -1674,7 +1689,6 @@
 				9376A9291204C0F400D5019C /* PlaylistView.xib in Resources */,
 				9376B24E120D9C1500D5019C /* Documents in Resources */,
 				9331E908120DAEB20023B0F1 /* data in Resources */,
-				9331E90C120DB0A30023B0F1 /* player_iphone-Info.plist in Resources */,
 				9331E90D120DB0A90023B0F1 /* Welcome.smil in Resources */,
 				937981CE120DE13B00B1A6D2 /* AmbulantWebView.xib in Resources */,
 			);
@@ -1905,7 +1919,7 @@
 					"WITH_SEAMLESS_PLAYBACK=1",
 					"WITH_CLOCK_SYNC=1",
 					"WITH_SDL=1",
-					"XWITH_LIVE=1",
+					"WITH_LIVE=1",
 				);
 				GCC_THREADSAFE_STATICS = YES;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
@@ -1917,6 +1931,10 @@
 					"../../build-iOS40-Device/third_party_packages/live/groupsock",
 					"../../build-iOS40-Device/third_party_packages/live/liveMedia",
 					"../../build-iOS40-Device/third_party_packages/live/UsageEnvironment",
+					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/groupsock\"",
+					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/liveMedia\"",
+					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment\"",
+					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/UsageEnvironment\"",
 				);
 				OTHER_CPLUSPLUSFLAGS = "-mcpu=arm1176jzf-s";
 				PRODUCT_NAME = player_iphone;
@@ -1938,6 +1956,10 @@
 					"\"$(SRCROOT)/../../build-iOS40-Simulator/third_party_packages/live/groupsock\"",
 					"\"$(SRCROOT)/../../build-iOS40-Simulator/third_party_packages/live/liveMedia\"",
 					"\"$(SRCROOT)/../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment\"",
+					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/groupsock\"",
+					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/liveMedia\"",
+					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment\"",
+					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/UsageEnvironment\"",
 				);
 				PRODUCT_NAME = player_iphone;
 				VALIDATE_PRODUCT = YES;
@@ -1968,13 +1990,18 @@
 					"WITH_SDL=1",
 					"WITH_LIVE=1",
 				);
-				INFOPLIST_FILE = "player_iphone-Info copy.plist";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				INFOPLIST_FILE = "player_iphone-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"../../build-iOS40-Simulator/third_party_packages/installed/lib",
 					"../../build-iOS40-Simulator/third_party_packages/live/BasicUsageEnvironment",
 					"../../build-iOS40-Simulator/third_party_packages/live/groupsock",
 					"../../build-iOS40-Simulator/third_party_packages/live/liveMedia",
 					"../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment",
+					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/groupsock\"",
+					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/liveMedia\"",
+					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment\"",
+					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/UsageEnvironment\"",
 				);
 				PRODUCT_NAME = player_iphone;
 				USER_HEADER_SEARCH_PATHS = "$(inherit) ../../include ../../build-iOS40-Device/third_party_packages/installed/include ../../build-iOS40-Device/third_party_packages/installed/include/SDL ../../build-iOS40-Simulator/third_party_packages/live/BasicUsageEnvironment/include ../../build-iOS40-Simulator/third_party_packages/live/groupsock/include ../../build-iOS40-Simulator/third_party_packages/live/liveMedia/include ../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment/include";
@@ -1995,6 +2022,10 @@
 					"\\\"$(SRCROOT)/../../build-iOS40-Simulator/third_party_packages/live/groupsock\\\"",
 					"\\\"$(SRCROOT)/../../build-iOS40-Simulator/third_party_packages/live/liveMedia\\\"",
 					"\\\"$(SRCROOT)/../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment\\\"",
+					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/groupsock\"",
+					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/liveMedia\"",
+					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment\"",
+					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/UsageEnvironment\"",
 				);
 				PRODUCT_NAME = player_iphone;
 				VALIDATE_PRODUCT = YES;
@@ -2031,6 +2062,7 @@
 				);
 				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
+				PRODUCT_NAME = player_iphone;
 				SDKROOT = iphoneos4.0;
 				USER_HEADER_SEARCH_PATHS = "../../include ../../build-iOS40-Simulator/third_party_packages/installed/include ../../build-iOS40-Simulator/third_party_packages/installed/include/SDL ../../build-iOS40-Simulator/third_party_packages/live/BasicUsageEnvironment ../../build-iOS40-Simulator/third_party_packages/live/groupsock ../../build-iOS40-Simulator/third_party_packages/live/liveMedia ../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment";
 			};

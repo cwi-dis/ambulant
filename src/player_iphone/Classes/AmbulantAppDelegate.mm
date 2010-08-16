@@ -46,6 +46,7 @@ initialize_logger()
 
 @synthesize window;
 @synthesize viewController;
+@synthesize webViewController;
 
 
 #pragma mark -
@@ -104,26 +105,72 @@ initialize_logger()
      */
 }
 
+- (BOOL) isValid: (NSURL*) url {
+	return YES;
+}
+
+- (BOOL) application:(UIApplication* ) application handleOpenURL: (NSURL*) url {
+	BOOL validated = NO;
+	if (YES) { //([isValid: url]) {
+		validated = YES;
+		viewController.URLEntryField.text = [[[NSString alloc] initWithString: @"http://"]
+							stringByAppendingString: [[url resourceSpecifier] substringFromIndex:2]];
+		if (viewController.myMainloop) {
+			viewController.myMainloop->stop();
+			delete viewController.myMainloop;
+			viewController.myMainloop = NULL;
+		}
+	}
+	return validated;
+}
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     /*
-     Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-     If your application supports background execution, called instead of applicationWillTerminate: when the user quits.
+     Use this method to release shared resources, save user data, invalidate timers,
+	 and store enough application state information to restore your application to its current state
+	 in case it is terminated later. 
+     If your application supports background execution, called instead of applicationWillTerminate:
+	 when the user quits.
      */
+	//XXXX TBD: store state
+	if (viewController && viewController.myMainloop) {
+		viewController.myMainloop->pause();
+	}
 }
 
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     /*
-     Called as part of  transition from the background to the inactive state: here you can undo many of the changes made on entering the background.
-     */
+     Called as part of  transition from the background to the inactive state:
+	 here you can undo many of the changes made on entering the background.
+	 */
+	//XXXX TBD: restore state
+	if (viewController && viewController.myMainloop) {
+		viewController.myMainloop->play();
+	} else {
+		if (viewController) {
+			[self.viewController handleURLEntered];
+		}
+	}
+
 }
 
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     /*
-     Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+     Restart any tasks that were paused (or not yet started) while the application was inactive. 
+	 If the application was previously in the background, optionally refresh the user interface.
      */
+//XXXX TBD: restore state
+	if (viewController && viewController.myMainloop) {
+		//	viewController.myMainloop->restart(true);
+		viewController.myMainloop->play();
+	} else {
+		if (viewController) {
+			[self.viewController handleURLEntered];
+		}
+	}
+
 }
 
 
@@ -132,6 +179,9 @@ initialize_logger()
      Called when the application is about to terminate.
      See also applicationDidEnterBackground:.
      */
+	if (viewController && viewController.myMainloop) {
+		viewController.myMainloop->stop();
+	}
 }
 
 

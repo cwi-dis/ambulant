@@ -510,6 +510,7 @@ bad:
 @synthesize current_frame;
 @synthesize original_frame;
 @synthesize original_bounds;
+@synthesize current_transform;
 
 - (void) adaptDisplayAfterRotation: (UIDeviceOrientation) orientation {
 	// adapt the ambulant window needed (bounds) in the current View
@@ -625,7 +626,8 @@ bad:
 
 #ifdef WITH_UIKIT
 // Equivalent of mouse move/click on iPhone
-@synthesize tapped_location;
+@synthesize tapped_location; //XXXX JUNK
+/*XXXXX JUNK
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	UITouch *touch = [touches anyObject];
 	tapped_location = [touch locationInView:self];
@@ -635,8 +637,44 @@ bad:
 					(int)tapped_location.x, (int)tapped_location.y);
 //	[[NSApplication sharedApplication] sendAction: SEL("resetMouse:") to: nil from: self];
 	if (ambulant_window) ambulant_window->user_event(amwhere, 0);
-	
 }
+*/
+- (void) tappedAtPoint:(CGPoint) location {
+	tapped_location = location;
+	// NSLog(@"tappedAtPoint: x=%f y=%f", tapped_location.x, tapped_location.y);
+	[self setNeedsDisplay];
+	ambulant::lib::point amwhere = ambulant::lib::point(
+							(int) location.x, (int) location.y);
+	if (ambulant_window) ambulant_window->user_event(amwhere, 0);
+}
+
+- (void) zoomWithScale: (float) scale  inState: (UIGestureRecognizerState) state {
+	if (state == UIGestureRecognizerStateBegan) {
+		self.current_transform = self.transform;
+	}
+	// the current scale factors for 'x' and 'y' are in the 'a' and 'd' fields, respectively
+	// self.transform = CGAffineTransformMakeScale (scale*self.transform.a, scale*self.transform.d);
+	
+	self.transform = CGAffineTransformMakeScale (scale*self.current_transform.a,
+												 scale*self.current_transform.d);
+	// self.current_transform = self.transform;
+	self.current_frame = self.frame; //changing tranform also changes frame
+	if (state == UIGestureRecognizerStateEnded) {
+		self.current_transform = self.transform;
+	}
+}
+
+- (void) translateWithPoint: (CGPoint) point inState: (UIGestureRecognizerState) state {
+	CGRect newFrame = self.current_frame;
+	newFrame.origin.x += point.x;
+	newFrame.origin.y += point.y;
+	
+	self.frame = newFrame;
+	if (state == UIGestureRecognizerStateEnded) {
+		self.current_frame = newFrame;
+	}
+}
+
 #endif//WITH_UIKIT
 
 - (void)ambulantNeedEvents: (bool)want

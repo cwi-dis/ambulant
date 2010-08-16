@@ -138,6 +138,7 @@ detail::ffmpeg_rawreader::run()
 		sinkbuffersize = m_sink->get_sinkbuffer(&sinkbuffer);
 		if (sinkbuffersize == 0) {
 			m_lock.leave();
+			AM_DBG lib::logger::get_logger("ffmpeg_rawreader::run:sleep(1)");
 			lib::sleep(1);
 			m_lock.enter();
 		} else {

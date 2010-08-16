@@ -28,10 +28,9 @@
 #ifndef AMBULANT_NO_TIME_H
 #include <time.h>
 
-//#define WITH_MICROSECOND_LOGTIMES
+#define WITH_MICROSECOND_LOGTIMES
 #ifdef  WITH_MICROSECOND_LOGTIMES
 #include <sys/time.h>
-static long unsigned int s_usec = 0;
 #endif // WITH_MICROSECOND_LOGTIMES
 #endif
 

@@ -60,7 +60,7 @@ private:
 
 @property(nonatomic,retain) IBOutlet UITextField* URLEntryField;
 @property(nonatomic,retain)	IBOutlet AmbulantView* playerView;
-//@property(nonatomic,retain) id view;
+@property(nonatomic) mainloop* myMainloop;
 @property(nonatomic,retain) NSString* linkURL, *playURL;
 @property(nonatomic,retain)	IBOutlet UIView* interactionView;
 @property(nonatomic) CGRect originalPlayerViewFrame, originalInteractionViewFrame;
