@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		04F315A9121AD62900B3D2A0 /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04F315A7121AD62900B3D2A0 /* mainloop.cpp */; };
+		04F315AA121AD62900B3D2A0 /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04F315A7121AD62900B3D2A0 /* mainloop.cpp */; };
 		1D60589B0D05DD56006BFB54 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.mm */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
@@ -125,7 +127,6 @@
 		9376B0F1120C9CC900D5019C /* timegraph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0ABF1203125700A3518F /* timegraph.cpp */; };
 		9376B0F2120C9CC900D5019C /* trace_player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0AC01203125700A3518F /* trace_player.cpp */; };
 		9376B0F3120C9CC900D5019C /* transition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0AC11203125700A3518F /* transition.cpp */; };
-		9376B0F4120C9CC900D5019C /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0C751203127800A3518F /* mainloop.cpp */; };
 		9376B0F5120C9CC900D5019C /* schema.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0A301203125700A3518F /* schema.cpp */; };
 		9376B0FA120C9CC900D5019C /* rtsp_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0AA91203125700A3518F /* rtsp_datasource.cpp */; };
 		9376B0FB120C9CC900D5019C /* rtsp_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0AAA1203125700A3518F /* rtsp_factory.cpp */; };
@@ -242,7 +243,6 @@
 		93DC0C5C1203125800A3518F /* timegraph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0ABF1203125700A3518F /* timegraph.cpp */; };
 		93DC0C5D1203125800A3518F /* trace_player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0AC01203125700A3518F /* trace_player.cpp */; };
 		93DC0C5E1203125800A3518F /* transition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0AC11203125700A3518F /* transition.cpp */; };
-		93DC0C771203127800A3518F /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0C751203127800A3518F /* mainloop.cpp */; };
 		93DC0C95120315AD00A3518F /* schema.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0A301203125700A3518F /* schema.cpp */; };
 		93DC0CC71203216300A3518F /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 93DC0CC41203216300A3518F /* libbz2.dylib */; };
 		93DC0CC81203216300A3518F /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 93DC0CC51203216300A3518F /* libz.dylib */; };
@@ -265,6 +265,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		04F315A7121AD62900B3D2A0 /* mainloop.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mainloop.cpp; sourceTree = "<group>"; };
+		04F315A8121AD62900B3D2A0 /* mainloop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mainloop.h; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* player_iphone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = player_iphone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -707,8 +709,6 @@
 		93DC0BD01203125800A3518F /* trace_player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trace_player.h; sourceTree = "<group>"; };
 		93DC0BD11203125800A3518F /* transition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = transition.h; sourceTree = "<group>"; };
 		93DC0BD21203125800A3518F /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = version.h; sourceTree = "<group>"; };
-		93DC0C751203127800A3518F /* mainloop.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mainloop.cpp; path = ../../../sandbox/iphonetests/Test1Ambulant/mainloop.cpp; sourceTree = SOURCE_ROOT; };
-		93DC0C761203127800A3518F /* mainloop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mainloop.h; path = ../../../sandbox/iphonetests/Test1Ambulant/mainloop.h; sourceTree = SOURCE_ROOT; };
 		93DC0CC41203216300A3518F /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = usr/lib/libbz2.dylib; sourceTree = SDKROOT; };
 		93DC0CC51203216300A3518F /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		93DC0CC61203216300A3518F /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
@@ -841,8 +841,8 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				93DC0C751203127800A3518F /* mainloop.cpp */,
-				93DC0C761203127800A3518F /* mainloop.h */,
+				04F315A7121AD62900B3D2A0 /* mainloop.cpp */,
+				04F315A8121AD62900B3D2A0 /* mainloop.h */,
 				32CA4F630368D1EE00C91783 /* player_iphone_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.mm */,
 			);
@@ -1802,7 +1802,6 @@
 				93DC0C5C1203125800A3518F /* timegraph.cpp in Sources */,
 				93DC0C5D1203125800A3518F /* trace_player.cpp in Sources */,
 				93DC0C5E1203125800A3518F /* transition.cpp in Sources */,
-				93DC0C771203127800A3518F /* mainloop.cpp in Sources */,
 				93DC0C95120315AD00A3518F /* schema.cpp in Sources */,
 				9331EA02120DCBD40023B0F1 /* AmbulantAppDelegate.mm in Sources */,
 				9331EA03120DCBD40023B0F1 /* AmbulantViewController.mm in Sources */,
@@ -1813,6 +1812,7 @@
 				93A812C412108D510060AB6D /* rtsp_factory.cpp in Sources */,
 				93EC9F3B121A9E3B00E0BEDE /* cg_smiltext.m in Sources */,
 				93EC9F3C121A9E3B00E0BEDE /* cg_smiltext.mm in Sources */,
+				04F315AA121AD62900B3D2A0 /* mainloop.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1894,7 +1894,6 @@
 				9376B0F1120C9CC900D5019C /* timegraph.cpp in Sources */,
 				9376B0F2120C9CC900D5019C /* trace_player.cpp in Sources */,
 				9376B0F3120C9CC900D5019C /* transition.cpp in Sources */,
-				9376B0F4120C9CC900D5019C /* mainloop.cpp in Sources */,
 				9376B0F5120C9CC900D5019C /* schema.cpp in Sources */,
 				9376B0FA120C9CC900D5019C /* rtsp_datasource.cpp in Sources */,
 				9376B0FB120C9CC900D5019C /* rtsp_factory.cpp in Sources */,
@@ -1904,6 +1903,7 @@
 				9331EA09120DCBD40023B0F1 /* PlaylistViewController.mm in Sources */,
 				937981D7120DE21700B1A6D2 /* AmbulantWebViewController.mm in Sources */,
 				93EC9F3E121A9E3B00E0BEDE /* cg_smiltext.mm in Sources */,
+				04F315A9121AD62900B3D2A0 /* mainloop.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
