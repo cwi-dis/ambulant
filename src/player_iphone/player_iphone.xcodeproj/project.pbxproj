@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -258,6 +258,10 @@
 		93EC9E4C1219865F00E0BEDE /* libBasicUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93EC9E4A1219865F00E0BEDE /* libBasicUsageEnvironment.a */; };
 		93EC9E4E1219868D00E0BEDE /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93EC9E4D1219868D00E0BEDE /* libUsageEnvironment.a */; };
 		93EC9E4F1219868D00E0BEDE /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93EC9E4D1219868D00E0BEDE /* libUsageEnvironment.a */; };
+		93EC9F3B121A9E3B00E0BEDE /* cg_smiltext.m in Sources */ = {isa = PBXBuildFile; fileRef = 93EC9F39121A9E3B00E0BEDE /* cg_smiltext.m */; };
+		93EC9F3C121A9E3B00E0BEDE /* cg_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93EC9F3A121A9E3B00E0BEDE /* cg_smiltext.mm */; };
+		93EC9F3E121A9E3B00E0BEDE /* cg_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93EC9F3A121A9E3B00E0BEDE /* cg_smiltext.mm */; };
+		93EC9F58121AAFDC00E0BEDE /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93EC9F57121AAFDC00E0BEDE /* CoreText.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -716,6 +720,10 @@
 		93EC9E471219863000E0BEDE /* libliveMedia.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libliveMedia.a; path = "../../build-iOS40-Device/third_party_packages/live/liveMedia/libliveMedia.a"; sourceTree = SOURCE_ROOT; };
 		93EC9E4A1219865F00E0BEDE /* libBasicUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBasicUsageEnvironment.a; path = "../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment/libBasicUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
 		93EC9E4D1219868D00E0BEDE /* libUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libUsageEnvironment.a; path = "../../build-iOS40-Device/third_party_packages/live/UsageEnvironment/libUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
+		93EC9F39121A9E3B00E0BEDE /* cg_smiltext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = cg_smiltext.m; path = cg/cg_smiltext.m; sourceTree = "<group>"; };
+		93EC9F3A121A9E3B00E0BEDE /* cg_smiltext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = cg_smiltext.mm; path = cg/cg_smiltext.mm; sourceTree = "<group>"; };
+		93EC9F3F121A9E5E00E0BEDE /* cg_smiltext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cg_smiltext.h; path = cg/cg_smiltext.h; sourceTree = "<group>"; };
+		93EC9F57121AAFDC00E0BEDE /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -800,6 +808,7 @@
 				93EC9E491219863000E0BEDE /* libliveMedia.a in Frameworks */,
 				93EC9E4C1219865F00E0BEDE /* libBasicUsageEnvironment.a in Frameworks */,
 				93EC9E4F1219868D00E0BEDE /* libUsageEnvironment.a in Frameworks */,
+				93EC9F58121AAFDC00E0BEDE /* CoreText.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -868,6 +877,7 @@
 				931FF3CF1201CFF9003B632F /* ImageIO.framework */,
 				931FF3D11201CFF9003B632F /* OpenGLES.framework */,
 				931FF3D31201CFF9003B632F /* QuartzCore.framework */,
+				93EC9F57121AAFDC00E0BEDE /* CoreText.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1096,6 +1106,8 @@
 		93DC0A791203125700A3518F /* cg */ = {
 			isa = PBXGroup;
 			children = (
+				93EC9F39121A9E3B00E0BEDE /* cg_smiltext.m */,
+				93EC9F3A121A9E3B00E0BEDE /* cg_smiltext.mm */,
 				93DC0A7A1203125700A3518F /* atsui_text.mm */,
 				93DC0A7B1203125700A3518F /* cg_gui.mm */,
 				93DC0A7C1203125700A3518F /* cg_dsvideo.mm */,
@@ -1485,6 +1497,7 @@
 		93DC0B6A1203125800A3518F /* cg */ = {
 			isa = PBXGroup;
 			children = (
+				93EC9F3F121A9E5E00E0BEDE /* cg_smiltext.h */,
 				93DC0B6B1203125800A3518F /* atsui_text.h */,
 				93DC0B6C1203125800A3518F /* cg_dsvideo.h */,
 				93DC0B6D1203125800A3518F /* cg_fill.h */,
@@ -1666,7 +1679,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "player_iphone" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 1;
 			mainGroup = 29B97314FDCFA39411CA2CEA /* CustomTemplate */;
 			projectDirPath = "";
@@ -1798,6 +1811,8 @@
 				937981D6120DE21700B1A6D2 /* AmbulantWebViewController.mm in Sources */,
 				93A812C312108D4C0060AB6D /* rtsp_datasource.cpp in Sources */,
 				93A812C412108D510060AB6D /* rtsp_factory.cpp in Sources */,
+				93EC9F3B121A9E3B00E0BEDE /* cg_smiltext.m in Sources */,
+				93EC9F3C121A9E3B00E0BEDE /* cg_smiltext.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1888,6 +1903,7 @@
 				9331EA08120DCBD40023B0F1 /* PlaylistAppDelegate.mm in Sources */,
 				9331EA09120DCBD40023B0F1 /* PlaylistViewController.mm in Sources */,
 				937981D7120DE21700B1A6D2 /* AmbulantWebViewController.mm in Sources */,
+				93EC9F3E121A9E3B00E0BEDE /* cg_smiltext.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1991,17 +2007,18 @@
 					"WITH_LIVE=1",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				HEADER_SEARCH_PATHS = (
+					"/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator4.0.sdk/usr/include/c++/4.2.1/i686-apple-darwin10",
+					"/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator4.0.sdk/usr/include/c++/4.2.1",
+				);
 				INFOPLIST_FILE = "player_iphone-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
+					../../include,
 					"../../build-iOS40-Simulator/third_party_packages/installed/lib",
 					"../../build-iOS40-Simulator/third_party_packages/live/BasicUsageEnvironment",
 					"../../build-iOS40-Simulator/third_party_packages/live/groupsock",
 					"../../build-iOS40-Simulator/third_party_packages/live/liveMedia",
 					"../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment",
-					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/groupsock\"",
-					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/liveMedia\"",
-					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment\"",
-					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/UsageEnvironment\"",
 				);
 				PRODUCT_NAME = player_iphone;
 				USER_HEADER_SEARCH_PATHS = "$(inherit) ../../include ../../build-iOS40-Device/third_party_packages/installed/include ../../build-iOS40-Device/third_party_packages/installed/include/SDL ../../build-iOS40-Simulator/third_party_packages/live/BasicUsageEnvironment/include ../../build-iOS40-Simulator/third_party_packages/live/groupsock/include ../../build-iOS40-Simulator/third_party_packages/live/liveMedia/include ../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment/include";
