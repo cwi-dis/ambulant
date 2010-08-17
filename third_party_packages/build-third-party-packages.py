@@ -155,12 +155,12 @@ MAC106_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'  " % (COMMON_INST
 # for now (device): --prefix=installed/arm; export IPHONEOS_DEPLOYMENT_TARGET=4.0; export MACOSX_DEPLOYMENT_TARGET=10.6; PATH=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:$PATH
 # or (simulator): --prefix=installed/i386; export IPHONEOS_DEPLOYMENT_TARGET=4.0; export MACOSX_DEPLOYMENT_TARGET=10.6; PATH=/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:$PATH
 # other mods needed a couple of lines down
-# packages not yet covered: ffmpeg, SDL and live555, can be build though using these separate build procedures:
-# ffmpeg: see: http://lists.mplayerhq.hu/pipermail/ffmpeg-devel/2009-October/076618.html
-# SDL: use Xcode 3.2 with SDL-1.3.0-4429/Xcode-iPhoneOS/SDL/SDLiPhoneOS.xcodeproj
-# live: use config.iphone30 as in http://cache.gmane.org//gmane/comp/multimedia/live555/devel/5394-001.bin
+# 
+# ffmpeg: http://lists.mplayerhq.hu/pipermail/ffmpeg-devel/2009-October/076618.html
+# SDL: based on SDL-1.3.0-4429/Xcode-iPhoneOS/SDL/SDLiPhoneOS.xcodeproj
+# live: use config.iphone40-Device/Simulator as in http://cache.gmane.org//gmane/comp/multimedia/live555/devel/5394-001.bin
 ##XXX IPHONE40DEVICE_COMMON_CONFIGURE="./configure --prefix='%s' --host=arm-apple-darwin10 CC=arm-apple-darwin10-gcc-4.2.1  CXX=arm-apple-darwin10-g++-4.2.1 LD=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/ld CPP=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/cpp CFLAGS=-isysroot\ /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.0.sdk" % COMMON_INSTALLDIR
-IPHONE40DEVICE_COMMON_CFLAGS="-arch armv6 -O4 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iphoneOS4.0.sdk"
+IPHONE40DEVICE_COMMON_CFLAGS="-arch armv6 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iphoneOS4.0.sdk"
 IPHONE40DEVICE_COMMON_CONFIGURE="./configure --host=arm-apple-darwin10 --prefix='%s' CFLAGS='%s' CC=llvm-gcc-4.2 CXX=llvm-g++-4.2    " % (COMMON_INSTALLDIR, IPHONE40DEVICE_COMMON_CFLAGS)
 ##XXX IPHONE40SIMULATOR_COMMON_CONFIGURE="./configure --prefix='%s' --host=arm-apple-darwin10 CC=arm-apple-darwin10-gcc-4.2.1  CXX=arm-apple-darwin10-g++-4.2.1 LD=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/ld CPP=/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/cpp CFLAGS=-isysroot\ /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator4.0.sdk" % COMMON_INSTALLDIR
 IPHONE40SIMULATOR_COMMON_CFLAGS="-arch i386 -isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iphoneSimulator4.0.sdk"
