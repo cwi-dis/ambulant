@@ -258,9 +258,6 @@
 		93EC9E4C1219865F00E0BEDE /* libBasicUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93EC9E4A1219865F00E0BEDE /* libBasicUsageEnvironment.a */; };
 		93EC9E4E1219868D00E0BEDE /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93EC9E4D1219868D00E0BEDE /* libUsageEnvironment.a */; };
 		93EC9E4F1219868D00E0BEDE /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93EC9E4D1219868D00E0BEDE /* libUsageEnvironment.a */; };
-		93EC9F3B121A9E3B00E0BEDE /* cg_smiltext.m in Sources */ = {isa = PBXBuildFile; fileRef = 93EC9F39121A9E3B00E0BEDE /* cg_smiltext.m */; };
-		93EC9F3C121A9E3B00E0BEDE /* cg_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93EC9F3A121A9E3B00E0BEDE /* cg_smiltext.mm */; };
-		93EC9F3E121A9E3B00E0BEDE /* cg_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93EC9F3A121A9E3B00E0BEDE /* cg_smiltext.mm */; };
 		93EC9F58121AAFDC00E0BEDE /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93EC9F57121AAFDC00E0BEDE /* CoreText.framework */; };
 /* End PBXBuildFile section */
 
@@ -1810,8 +1807,6 @@
 				937981D6120DE21700B1A6D2 /* AmbulantWebViewController.mm in Sources */,
 				93A812C312108D4C0060AB6D /* rtsp_datasource.cpp in Sources */,
 				93A812C412108D510060AB6D /* rtsp_factory.cpp in Sources */,
-				93EC9F3B121A9E3B00E0BEDE /* cg_smiltext.m in Sources */,
-				93EC9F3C121A9E3B00E0BEDE /* cg_smiltext.mm in Sources */,
 				04F315AA121AD62900B3D2A0 /* mainloop.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1902,7 +1897,6 @@
 				9331EA08120DCBD40023B0F1 /* PlaylistAppDelegate.mm in Sources */,
 				9331EA09120DCBD40023B0F1 /* PlaylistViewController.mm in Sources */,
 				937981D7120DE21700B1A6D2 /* AmbulantWebViewController.mm in Sources */,
-				93EC9F3E121A9E3B00E0BEDE /* cg_smiltext.mm in Sources */,
 				04F315A9121AD62900B3D2A0 /* mainloop.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1965,19 +1959,38 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = player_iphone_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"WITH_IPHONE=1",
+					"WITH_CG=1",
+					"WITH_UIKIT=1",
+					"WITH_EXTERNAL_DOM=1",
+					"AM_PREFER_FFMPEG=1",
+					"WITH_FFMPEG=1",
+					"WITH_EXPAT=1",
+					"WITH_FFMPEG_AVFORMAT=1",
+					"WITH_SMIL30=1",
+					"WITH_SEAMLESS_PLAYBACK=1",
+					"WITH_CLOCK_SYNC=1",
+					"WITH_SDL=1",
+					"WITH_LIVE=1",
+				);
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				HEADER_SEARCH_PATHS = "/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.0.sdk/usr/include/c++/4.2.1//armv6-apple-darwin10";
 				INFOPLIST_FILE = "player_iphone-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"../../build-iOS40-Device/third_party_packages/installed/lib",
-					"\"$(SRCROOT)/../../build-iOS40-Simulator/third_party_packages/live/BasicUsageEnvironment\"",
-					"\"$(SRCROOT)/../../build-iOS40-Simulator/third_party_packages/live/groupsock\"",
-					"\"$(SRCROOT)/../../build-iOS40-Simulator/third_party_packages/live/liveMedia\"",
-					"\"$(SRCROOT)/../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment\"",
+					"../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment",
+					"../../build-iOS40-Device/third_party_packages/live/groupsock",
+					"../../build-iOS40-Device/third_party_packages/live/liveMedia",
+					"../../build-iOS40-Device/third_party_packages/live/UsageEnvironment",
 					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/groupsock\"",
 					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/liveMedia\"",
 					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment\"",
 					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/UsageEnvironment\"",
 				);
+				OTHER_CPLUSPLUSFLAGS = "-mcpu=arm1176jzf-s";
 				PRODUCT_NAME = player_iphone;
+				USER_HEADER_SEARCH_PATHS = "$(inherit) ../../include ../../build-iOS40-Device/third_party_packages/installed/include ../../build-iOS40-Device/third_party_packages/installed/include/SDL ../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment/include ../../build-iOS40-Device/third_party_packages/live/groupsock/include ../../build-iOS40-Device/third_party_packages/live/liveMedia/include ../../build-iOS40-Device/third_party_packages/live/UsageEnvironment/include";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -2032,19 +2045,36 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = player_iphone_Prefix.pch;
-				INFOPLIST_FILE = "player_iphone-Info copy.plist";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"WITH_IPHONE=1",
+					"WITH_CG=1",
+					"WITH_UIKIT=1",
+					"WITH_EXTERNAL_DOM=1",
+					"AM_PREFER_FFMPEG=1",
+					"WITH_FFMPEG=1",
+					"WITH_EXPAT=1",
+					"WITH_FFMPEG_AVFORMAT=1",
+					"WITH_SMIL30=1",
+					"WITH_SEAMLESS_PLAYBACK=1",
+					"WITH_CLOCK_SYNC=1",
+					"WITH_SDL=1",
+					"WITH_LIVE=1",
+				);
+				HEADER_SEARCH_PATHS = (
+					"/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator4.0.sdk/usr/include/c++/4.2.1/i686-apple-darwin10",
+					"/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator4.0.sdk/usr/include/c++/4.2.1",
+				);
+				INFOPLIST_FILE = "player_iphone-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
-					"../../build-iOS40-Device/third_party_packages/installed/lib",
-					"\\\"$(SRCROOT)/../../build-iOS40-Simulator/third_party_packages/live/BasicUsageEnvironment\\\"",
-					"\\\"$(SRCROOT)/../../build-iOS40-Simulator/third_party_packages/live/groupsock\\\"",
-					"\\\"$(SRCROOT)/../../build-iOS40-Simulator/third_party_packages/live/liveMedia\\\"",
-					"\\\"$(SRCROOT)/../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment\\\"",
-					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/groupsock\"",
-					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/liveMedia\"",
-					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment\"",
-					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/UsageEnvironment\"",
+					../../include,
+					"../../build-iOS40-Simulator/third_party_packages/installed/lib",
+					"../../build-iOS40-Simulator/third_party_packages/live/BasicUsageEnvironment",
+					"../../build-iOS40-Simulator/third_party_packages/live/groupsock",
+					"../../build-iOS40-Simulator/third_party_packages/live/liveMedia",
+					"../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment",
 				);
 				PRODUCT_NAME = player_iphone;
+				USER_HEADER_SEARCH_PATHS = "$(inherit) ../../include ../../build-iOS40-Device/third_party_packages/installed/include ../../build-iOS40-Device/third_party_packages/installed/include/SDL ../../build-iOS40-Simulator/third_party_packages/live/BasicUsageEnvironment/include ../../build-iOS40-Simulator/third_party_packages/live/groupsock/include ../../build-iOS40-Simulator/third_party_packages/live/liveMedia/include ../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment/include";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
