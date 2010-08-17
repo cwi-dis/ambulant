@@ -435,15 +435,15 @@ third_party_packages={
 ##              "make install" % IPHONE40_COMMON_CONFIGURE
 ##          ),
 
-#       TPP("libxml2",
-#           url="ftp://xmlsoft.org/libxml2/libxml2-2.7.5.tar.gz",
-#           checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
-#           buildcmd=
-#               "cd libxml2-2.7.5 && "
-#               "%s --disable-dependency-tracking && "
-#               "make clean;make $(MAKEFLAGS) && "
-#               "make install" % IPHONE40_COMMON_CONFIGURE
-#           )
+        TPP("libxml2",
+            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.5.tar.gz",
+            checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
+            buildcmd=
+                "cd libxml2-2.7.5 && "
+                "%s --disable-dependency-tracking && "
+                "make $(MAKEFLAGS) && "
+                "make install" % IPHONE40DEVICE_COMMON_CONFIGURE
+            )
         ],
 
     'iOS40-Simulator' : [
@@ -513,18 +513,17 @@ third_party_packages={
 ##              "make install" % IPHONE40_COMMON_CONFIGURE
 ##          ),
 
-##      TPP("libxml2",
-##          url="ftp://xmlsoft.org/libxml2/libxml2-2.7.5.tar.gz",
-##          checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
-##          buildcmd=
-##              "cd libxml2-2.7.5 && "
-##              "%s --disable-dependency-tracking && "
-##              "make clean;make $(MAKEFLAGS) && "
-##              "make install" % IPHONE40SIMULATOR_COMMON_CONFIGURE
-##          )
+        TPP("libxml2",
+            url="ftp://xmlsoft.org/libxml2/libxml2-2.7.5.tar.gz",
+            checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
+            buildcmd=
+                "cd libxml2-2.7.5 && "
+                "%s --disable-dependency-tracking && "
+                "make $(MAKEFLAGS) && "
+                "make install" % IPHONE40SIMULATOR_COMMON_CONFIGURE
+            )
         ],
 
-# -isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator4.0.sdk
     'linux' : [
         TPP("libtool", 
             url="http://ftp.gnu.org/gnu/libtool/libtool-2.2.6a.tar.gz",
@@ -725,11 +724,50 @@ third_party_packages={
     
 }
 
+def checkenv_mac(target):
+    # Make sure we have MACOSX_DEPLOYMENT_TARGET set
+    if not os.environ.has_key('MACOSX_DEPLOYMENT_TARGET'):
+        print '* MACOSX_DEPLOYMENT_TARGET must be set for %s development' % target
+        return False
+    return True
+
+def checkenv_iphone(target):
+    # Make sure we have MACOSX_DEPLOYMENT_TARGET and IPHONEOS_DEPLOYMENT_TARGET set
+    if not os.environ.has_key('MACOSX_DEPLOYMENT_TARGET') or not os.environ.has_key('IPHONEOS_DEPLOYMENT_TARGET'):
+        print '* Both MACOSX_DEPLOYMENT_TARGET and IPHONEOS_DEPLOYMENT_TARGET must be set for %s development' % target
+        return False
+    # Check that we have the right compilers, etc in PATH
+    if target == 'iOS40-Simulator':
+        wanted = '/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin'
+    elif target == 'IOS40-Device':
+        wanted = '/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin'
+    else:
+        assert 0
+    if not wanted in os.environ['PATH']:
+        print '* %s should be in PATH for %s development' % (wanted, target)
+        return False
+    if not os.environ.has_key('PKG_CONFIG_LIBDIR'):
+        print '* PKG_CONFIG_LIBDIR must be set for cross-development'
+        return False
+    return True
+        
+environment_checkers = {
+    'mac' : checkenv_mac,
+    'mac10.4' : checkenv_mac,
+    'iOS40-Simulator' : checkenv_iphone,
+    'iOS40-Device' : checkenv_iphone,
+    # XXXX Should do this for win32 too
+}
+
 def main():
     if len(sys.argv) != 2 or sys.argv[1] not in third_party_packages:
         print "Usage: %s platform" % sys.argv[0]
         print "Platform is one of:", ' '.join(third_party_packages.keys())
         return 2
+    if environment_checkers.has_key(sys.argv[1]):
+        ok = environment_checkers[sys.argv[1]](sys.argv[1])
+        if not ok:
+            return 1
     allok = True
     final_package = None
     for pkg in third_party_packages[sys.argv[1]]:
