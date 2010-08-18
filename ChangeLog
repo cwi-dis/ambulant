@@ -1,3 +1,23 @@
+2010-08-18 00:11  jackjansen
+
+	* Check environment, based on what we are building
+
+2010-08-17 23:35  jackjansen
+
+	* Got Release builds to work for both iphone and simulator.
+
+2010-08-17 16:38  jackjansen
+
+	* Refer to new location for mainloop.{c,h}
+
+2010-08-17 16:14  keesblom
+
+	* Added some missing (tmp.) files to the repository
+
+2010-08-17 14:59  keesblom
+
+	* Removed -O4 flag
+
 2010-08-16 21:59  keesblom
 
 	* Rewrote/cleanup pan/zoom for iPhone
