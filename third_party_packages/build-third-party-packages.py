@@ -440,7 +440,7 @@ third_party_packages={
             checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
             buildcmd=
                 "cd libxml2-2.7.5 && "
-                "%s --disable-dependency-tracking && "
+                "%s --disable-dependency-tracking --without-python && "
                 "make $(MAKEFLAGS) && "
                 "make install" % IPHONE40DEVICE_COMMON_CONFIGURE
             )
@@ -518,7 +518,7 @@ third_party_packages={
             checkcmd="pkg-config --atleast-version=2.6.9 libxml-2.0",
             buildcmd=
                 "cd libxml2-2.7.5 && "
-                "%s --disable-dependency-tracking && "
+                "%s --disable-dependency-tracking --without-python && "
                 "make $(MAKEFLAGS) && "
                 "make install" % IPHONE40SIMULATOR_COMMON_CONFIGURE
             )
@@ -739,7 +739,7 @@ def checkenv_iphone(target):
     # Check that we have the right compilers, etc in PATH
     if target == 'iOS40-Simulator':
         wanted = '/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin'
-    elif target == 'IOS40-Device':
+    elif target == 'iOS40-Device':
         wanted = '/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin'
     else:
         assert 0
