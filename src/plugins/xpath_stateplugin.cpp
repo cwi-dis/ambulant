@@ -692,3 +692,14 @@ void initialize(
 		lib::logger::get_logger()->trace("xpath_state_plugin: registered");
 	}
 }
+
+#ifdef WITH_STATIC_PLUGINS
+class regplugin {
+  public:
+    regplugin() {
+        register_static_plugin(initialize);
+    }
+};
+
+static regplugin regplugin;
+#endif

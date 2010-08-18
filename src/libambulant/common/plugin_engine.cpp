@@ -27,7 +27,7 @@
 #include<stdlib.h>
 #include<string.h>
 
-#if defined(WITH_LTDL_PLUGINS) || defined(WITH_WINDOWS_PLUGINS)
+#if defined(WITH_LTDL_PLUGINS) || defined(WITH_WINDOWS_PLUGINS) || defined(WITH_STATIC_PLUGINS)
 #define WITH_PLUGINS 1
 #endif
 
@@ -40,6 +40,7 @@
 #define LIBRARY_PATH_ENVVAR "DYLD_LIBRARY_PATH"
 #else
 #define LIBRARY_PATH_ENVVAR "LD_LIBRARY_PATH"
+#define WITH_CF_PLUGIN_FINDER
 #endif // AMBULANT_PLATFORM_MACOS
 
 #endif // WITH_LTDL_PLUGINS
@@ -68,6 +69,25 @@ using namespace common;
 
 plugin_engine *ambulant::common::plugin_engine::s_singleton = NULL;
 
+#ifdef WITH_STATIC_PLUGINS
+class singleton_initfuncs
+{
+  public:
+    static singleton_initfuncs& singleton() {
+        static singleton_initfuncs itself;
+        return itself;
+    }
+        
+    std::vector< initfuncptr > m_all_initfuncs;
+};
+
+
+void ambulant::common::register_static_plugin(initfuncptr ifp)
+{
+    singleton_initfuncs::singleton().m_all_initfuncs.push_back(ifp);
+}
+#endif
+
 plugin_engine *
 plugin_engine::get_plugin_engine()
 {
@@ -93,7 +113,14 @@ plugin_engine::plugin_engine()
 #ifdef WITH_WINDOWS_PLUGINS
 	lib::logger::get_logger()->trace("plugin_engine: using Windows plugin loader");
 #endif // WITH_WINDOWS_PLUGINS
+#ifdef WITH_STATIC_PLUGINS
+    lib::logger::get_logger()->trace("plugin_engine: using statically-linked pseudo-plugins");
+    use_plugins = true;
+#endif // WITH_STATIC_PLUGINS
 	if (use_plugins) {
+#ifdef WITH_STATIC_PLUGINS
+        load_plugins("");
+#else
 		int count = 0;
 		std::vector< std::string >::iterator i;
 		for (i=m_plugindirs.begin(); i!=m_plugindirs.end(); i++) {
@@ -114,6 +141,7 @@ plugin_engine::plugin_engine()
 			}
 		}
 #endif // WITH_PYTHON_PLUGIN
+#endif // WITH_STATIC_PLUGIN
 	} else {
 		lib::logger::get_logger()->trace("plugin_engine: plugins disabled by user preference");
 	}
@@ -145,7 +173,7 @@ plugin_engine::collect_plugin_directories()
 	if(plugin_dir != "")
 		m_plugindirs.push_back(plugin_dir);
 
-#ifdef AMBULANT_PLATFORM_MACOS
+#ifdef WITH_CF_PLUGIN_FINDER
 	// On MacOSX add the bundle's plugin dir
 	// XXXX If Ambulant is used within a plugin, this probably needs to change,
 	// maybe to something with CFBundleGetAllBundles?
@@ -425,6 +453,15 @@ plugin_engine::load_plugins(std::string dirname)
 #endif // WITH_PYTHON_PLUGIN
 	lib::logger::get_logger()->trace("plugin_engine: Done with plugin directory: %s", dirname.c_str());
 	if (old_dll_dir_ok) SetDllDirectory(old_dll_dir);
+}
+
+#elif WITH_STATIC_PLUGINS
+
+void
+plugin_engine::load_plugins(std::string dirname)
+{
+    m_initfuncs = singleton_initfuncs::singleton().m_all_initfuncs;
+    lib::logger::get_logger()->trace("plugin_engine: %d statically linked plugins", m_initfuncs.size());
 }
 
 #else

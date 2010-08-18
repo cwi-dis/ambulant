@@ -10,6 +10,9 @@
 		04879618121BDE42007B4D0F /* xpath_stateplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04879616121BDE42007B4D0F /* xpath_stateplugin.cpp */; };
 		04879624121BE025007B4D0F /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04879623121BE025007B4D0F /* libxml2.a */; };
 		04879626121BE048007B4D0F /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04879625121BE048007B4D0F /* libxml2.a */; };
+		04ABF6BC121C2F9F009B0528 /* xpath_stateplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04879616121BDE42007B4D0F /* xpath_stateplugin.cpp */; };
+		04ABF6E3121C3091009B0528 /* cg_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93EC9F3A121A9E3B00E0BEDE /* cg_smiltext.mm */; };
+		04ABF6E6121C30B8009B0528 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93EC9F57121AAFDC00E0BEDE /* CoreText.framework */; };
 		04F315A9121AD62900B3D2A0 /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04F315A7121AD62900B3D2A0 /* mainloop.cpp */; };
 		04F315AA121AD62900B3D2A0 /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04F315A7121AD62900B3D2A0 /* mainloop.cpp */; };
 		1D60589B0D05DD56006BFB54 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.mm */; };
@@ -769,6 +772,7 @@
 				93EC9E4B1219865F00E0BEDE /* libBasicUsageEnvironment.a in Frameworks */,
 				93EC9E4E1219868D00E0BEDE /* libUsageEnvironment.a in Frameworks */,
 				04879626121BE048007B4D0F /* libxml2.a in Frameworks */,
+				04ABF6E6121C30B8009B0528 /* CoreText.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1829,6 +1833,7 @@
 				93A812C412108D510060AB6D /* rtsp_factory.cpp in Sources */,
 				04F315AA121AD62900B3D2A0 /* mainloop.cpp in Sources */,
 				04879618121BDE42007B4D0F /* xpath_stateplugin.cpp in Sources */,
+				04ABF6E3121C3091009B0528 /* cg_smiltext.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1920,6 +1925,7 @@
 				937981D7120DE21700B1A6D2 /* AmbulantWebViewController.mm in Sources */,
 				04F315A9121AD62900B3D2A0 /* mainloop.cpp in Sources */,
 				93ECA010121BC34500E0BEDE /* cg_smiltext.mm in Sources */,
+				04ABF6BC121C2F9F009B0528 /* xpath_stateplugin.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1949,6 +1955,7 @@
 					"WITH_FFMPEG_AVFORMAT=1",
 					"WITH_SMIL30=1",
 					"WITH_SEAMLESS_PLAYBACK=1",
+					"WITH_STATIC_PLUGINS=1",
 					"WITH_CLOCK_SYNC=1",
 					"WITH_SDL=1",
 					"WITH_LIVE=1",
@@ -1993,6 +2000,7 @@
 					"WITH_FFMPEG_AVFORMAT=1",
 					"WITH_SMIL30=1",
 					"WITH_SEAMLESS_PLAYBACK=1",
+					"WITH_STATIC_PLUGINS=1",
 					"WITH_CLOCK_SYNC=1",
 					"WITH_SDL=1",
 					"WITH_LIVE=1",
@@ -2041,6 +2049,7 @@
 					"WITH_SEAMLESS_PLAYBACK=1",
 					"WITH_CLOCK_SYNC=1",
 					"WITH_SDL=1",
+					"WITH_STATIC_PLUGINS=1",
 					"WITH_LIVE=1",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
@@ -2083,6 +2092,7 @@
 					"WITH_SEAMLESS_PLAYBACK=1",
 					"WITH_CLOCK_SYNC=1",
 					"WITH_SDL=1",
+					"WITH_STATIC_PLUGINS=1",
 					"WITH_LIVE=1",
 				);
 				HEADER_SEARCH_PATHS = (

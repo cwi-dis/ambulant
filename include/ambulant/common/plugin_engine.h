@@ -51,8 +51,11 @@ extern "C" {
 	struct plugin_extra_data {
 		char *m_plugin_name;
 		void *m_plugin_extra;
-	};
+	};    
 };
+#ifdef WITH_STATIC_PLUGINS
+void register_static_plugin(initfuncptr ifp);
+#endif
 
 /// Plugin loader.
 /// This class, of which a singleton is instantiated, collects all plugins and
