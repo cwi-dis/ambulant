@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		04879617121BDE42007B4D0F /* xpath_stateplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04879616121BDE42007B4D0F /* xpath_stateplugin.cpp */; };
+		04879618121BDE42007B4D0F /* xpath_stateplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04879616121BDE42007B4D0F /* xpath_stateplugin.cpp */; };
+		04879624121BE025007B4D0F /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04879623121BE025007B4D0F /* libxml2.a */; };
+		04879626121BE048007B4D0F /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04879625121BE048007B4D0F /* libxml2.a */; };
 		04F315A9121AD62900B3D2A0 /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04F315A7121AD62900B3D2A0 /* mainloop.cpp */; };
 		04F315AA121AD62900B3D2A0 /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04F315A7121AD62900B3D2A0 /* mainloop.cpp */; };
 		1D60589B0D05DD56006BFB54 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.mm */; };
@@ -262,6 +266,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		04879616121BDE42007B4D0F /* xpath_stateplugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xpath_stateplugin.cpp; path = ../plugins/xpath_stateplugin.cpp; sourceTree = SOURCE_ROOT; };
+		04879623121BE025007B4D0F /* libxml2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxml2.a; path = "../../build-iOS40-Simulator/third_party_packages/installed/lib/libxml2.a"; sourceTree = SOURCE_ROOT; };
+		04879625121BE048007B4D0F /* libxml2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxml2.a; path = "../../build-iOS40-Device/third_party_packages/installed/lib/libxml2.a"; sourceTree = SOURCE_ROOT; };
 		04F315A7121AD62900B3D2A0 /* mainloop.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mainloop.cpp; sourceTree = "<group>"; };
 		04F315A8121AD62900B3D2A0 /* mainloop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mainloop.h; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -761,6 +768,7 @@
 				93EC9E481219863000E0BEDE /* libliveMedia.a in Frameworks */,
 				93EC9E4B1219865F00E0BEDE /* libBasicUsageEnvironment.a in Frameworks */,
 				93EC9E4E1219868D00E0BEDE /* libUsageEnvironment.a in Frameworks */,
+				04879626121BE048007B4D0F /* libxml2.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -806,12 +814,21 @@
 				93EC9E4C1219865F00E0BEDE /* libBasicUsageEnvironment.a in Frameworks */,
 				93EC9E4F1219868D00E0BEDE /* libUsageEnvironment.a in Frameworks */,
 				93EC9F58121AAFDC00E0BEDE /* CoreText.framework in Frameworks */,
+				04879624121BE025007B4D0F /* libxml2.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		04879615121BDDFC007B4D0F /* plugins */ = {
+			isa = PBXGroup;
+			children = (
+				04879616121BDE42007B4D0F /* xpath_stateplugin.cpp */,
+			);
+			name = plugins;
+			sourceTree = "<group>";
+		};
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -895,6 +912,7 @@
 				9376A8D21204A94300D5019C /* libavformat.a */,
 				9376A8D31204A94300D5019C /* libavutil.a */,
 				9376A8D41204A94300D5019C /* libexpat.a */,
+				04879625121BE048007B4D0F /* libxml2.a */,
 				9376A8D51204A94300D5019C /* libfaad.a */,
 				9376A8D61204A94300D5019C /* libmp4ff.a */,
 				9376A8D71204A94300D5019C /* libSDLiPhoneOS.a */,
@@ -907,6 +925,7 @@
 				931FF3901201CF52003B632F /* libavformat.a */,
 				931FF3911201CF52003B632F /* libavutil.a */,
 				931FF3921201CF52003B632F /* libexpat.a */,
+				04879623121BE025007B4D0F /* libxml2.a */,
 				931FF3931201CF52003B632F /* libfaad.a */,
 				931FF3941201CF52003B632F /* libmp4ff.a */,
 				931FF3951201CF52003B632F /* libSDLiPhoneOS.a */,
@@ -1215,6 +1234,7 @@
 		93DC0AC21203125700A3518F /* ambulant */ = {
 			isa = PBXGroup;
 			children = (
+				04879615121BDDFC007B4D0F /* plugins */,
 				93DC0AC31203125700A3518F /* common */,
 				93DC0AD91203125700A3518F /* compat */,
 				93DC0ADD1203125700A3518F /* config */,
@@ -1808,6 +1828,7 @@
 				93A812C312108D4C0060AB6D /* rtsp_datasource.cpp in Sources */,
 				93A812C412108D510060AB6D /* rtsp_factory.cpp in Sources */,
 				04F315AA121AD62900B3D2A0 /* mainloop.cpp in Sources */,
+				04879618121BDE42007B4D0F /* xpath_stateplugin.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1898,6 +1919,7 @@
 				9331EA09120DCBD40023B0F1 /* PlaylistViewController.mm in Sources */,
 				937981D7120DE21700B1A6D2 /* AmbulantWebViewController.mm in Sources */,
 				04F315A9121AD62900B3D2A0 /* mainloop.cpp in Sources */,
+				04879617121BDE42007B4D0F /* xpath_stateplugin.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1945,10 +1967,11 @@
 					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/liveMedia\"",
 					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment\"",
 					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/UsageEnvironment\"",
+					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/installed/lib\"",
 				);
 				OTHER_CPLUSPLUSFLAGS = "-mcpu=arm1176jzf-s";
 				PRODUCT_NAME = player_iphone;
-				USER_HEADER_SEARCH_PATHS = "$(inherit) ../../include ../../build-iOS40-Device/third_party_packages/installed/include ../../build-iOS40-Device/third_party_packages/installed/include/SDL ../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment/include ../../build-iOS40-Device/third_party_packages/live/groupsock/include ../../build-iOS40-Device/third_party_packages/live/liveMedia/include ../../build-iOS40-Device/third_party_packages/live/UsageEnvironment/include";
+				USER_HEADER_SEARCH_PATHS = "$(inherit) ../../include ../../build-iOS40-Device/third_party_packages/installed/include ../../build-iOS40-Device/third_party_packages/installed/include/libxml2 ../../build-iOS40-Device/third_party_packages/installed/include/SDL ../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment/include ../../build-iOS40-Device/third_party_packages/live/groupsock/include ../../build-iOS40-Device/third_party_packages/live/liveMedia/include ../../build-iOS40-Device/third_party_packages/live/UsageEnvironment/include";
 			};
 			name = Debug;
 		};
@@ -1987,10 +2010,11 @@
 					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/liveMedia\"",
 					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment\"",
 					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/UsageEnvironment\"",
+					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/installed/lib\"",
 				);
 				OTHER_CPLUSPLUSFLAGS = "-mcpu=arm1176jzf-s";
 				PRODUCT_NAME = player_iphone;
-				USER_HEADER_SEARCH_PATHS = "$(inherit) ../../include ../../build-iOS40-Device/third_party_packages/installed/include ../../build-iOS40-Device/third_party_packages/installed/include/SDL ../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment/include ../../build-iOS40-Device/third_party_packages/live/groupsock/include ../../build-iOS40-Device/third_party_packages/live/liveMedia/include ../../build-iOS40-Device/third_party_packages/live/UsageEnvironment/include";
+				USER_HEADER_SEARCH_PATHS = "$(inherit) ../../include ../../build-iOS40-Device/third_party_packages/installed/include ../../build-iOS40-Device/third_party_packages/installed/include/libxml2 ../../build-iOS40-Device/third_party_packages/installed/include/SDL ../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment/include ../../build-iOS40-Device/third_party_packages/live/groupsock/include ../../build-iOS40-Device/third_party_packages/live/liveMedia/include ../../build-iOS40-Device/third_party_packages/live/UsageEnvironment/include";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -2032,9 +2056,10 @@
 					"../../build-iOS40-Simulator/third_party_packages/live/groupsock",
 					"../../build-iOS40-Simulator/third_party_packages/live/liveMedia",
 					"../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment",
+					"\"$(SRCROOT)/../../build-iOS40-Simulator/third_party_packages/installed/lib\"",
 				);
 				PRODUCT_NAME = player_iphone;
-				USER_HEADER_SEARCH_PATHS = "$(inherit) ../../include ../../build-iOS40-Device/third_party_packages/installed/include ../../build-iOS40-Device/third_party_packages/installed/include/SDL ../../build-iOS40-Simulator/third_party_packages/live/BasicUsageEnvironment/include ../../build-iOS40-Simulator/third_party_packages/live/groupsock/include ../../build-iOS40-Simulator/third_party_packages/live/liveMedia/include ../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment/include";
+				USER_HEADER_SEARCH_PATHS = "$(inherit) ../../include ../../build-iOS40-Device/third_party_packages/installed/include ../../build-iOS40-Device/third_party_packages/installed/include/libxml2 ../../build-iOS40-Device/third_party_packages/installed/include/SDL ../../build-iOS40-Simulator/third_party_packages/live/BasicUsageEnvironment/include ../../build-iOS40-Simulator/third_party_packages/live/groupsock/include ../../build-iOS40-Simulator/third_party_packages/live/liveMedia/include ../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment/include";
 			};
 			name = Debug;
 		};
@@ -2072,9 +2097,10 @@
 					"../../build-iOS40-Simulator/third_party_packages/live/groupsock",
 					"../../build-iOS40-Simulator/third_party_packages/live/liveMedia",
 					"../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment",
+					"\"$(SRCROOT)/../../build-iOS40-Simulator/third_party_packages/installed/lib\"",
 				);
 				PRODUCT_NAME = player_iphone;
-				USER_HEADER_SEARCH_PATHS = "$(inherit) ../../include ../../build-iOS40-Device/third_party_packages/installed/include ../../build-iOS40-Device/third_party_packages/installed/include/SDL ../../build-iOS40-Simulator/third_party_packages/live/BasicUsageEnvironment/include ../../build-iOS40-Simulator/third_party_packages/live/groupsock/include ../../build-iOS40-Simulator/third_party_packages/live/liveMedia/include ../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment/include";
+				USER_HEADER_SEARCH_PATHS = "$(inherit) ../../include ../../build-iOS40-Device/third_party_packages/installed/include ../../build-iOS40-Device/third_party_packages/installed/include/libxml2 ../../build-iOS40-Device/third_party_packages/installed/include/SDL ../../build-iOS40-Simulator/third_party_packages/live/BasicUsageEnvironment/include ../../build-iOS40-Simulator/third_party_packages/live/groupsock/include ../../build-iOS40-Simulator/third_party_packages/live/liveMedia/include ../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment/include";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
