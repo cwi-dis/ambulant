@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		04879617121BDE42007B4D0F /* xpath_stateplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04879616121BDE42007B4D0F /* xpath_stateplugin.cpp */; };
 		04879618121BDE42007B4D0F /* xpath_stateplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04879616121BDE42007B4D0F /* xpath_stateplugin.cpp */; };
 		04879624121BE025007B4D0F /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04879623121BE025007B4D0F /* libxml2.a */; };
 		04879626121BE048007B4D0F /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04879625121BE048007B4D0F /* libxml2.a */; };
@@ -263,6 +262,7 @@
 		93EC9E4E1219868D00E0BEDE /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93EC9E4D1219868D00E0BEDE /* libUsageEnvironment.a */; };
 		93EC9E4F1219868D00E0BEDE /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93EC9E4D1219868D00E0BEDE /* libUsageEnvironment.a */; };
 		93EC9F58121AAFDC00E0BEDE /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93EC9F57121AAFDC00E0BEDE /* CoreText.framework */; };
+		93ECA010121BC34500E0BEDE /* cg_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93EC9F3A121A9E3B00E0BEDE /* cg_smiltext.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1919,7 +1919,7 @@
 				9331EA09120DCBD40023B0F1 /* PlaylistViewController.mm in Sources */,
 				937981D7120DE21700B1A6D2 /* AmbulantWebViewController.mm in Sources */,
 				04F315A9121AD62900B3D2A0 /* mainloop.cpp in Sources */,
-				04879617121BDE42007B4D0F /* xpath_stateplugin.cpp in Sources */,
+				93ECA010121BC34500E0BEDE /* cg_smiltext.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

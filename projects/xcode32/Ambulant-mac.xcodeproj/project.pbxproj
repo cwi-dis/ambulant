@@ -1973,6 +1973,7 @@
 					"WITH_SEAMLESS_PLAYBACK=1",
 					"WITH_CLOCK_SYNC=1",
 					"WITH_FFMPEG_LIBSWSCALE=1",
+					"WITH_CG=1",
 				);
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (

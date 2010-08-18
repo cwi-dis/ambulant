@@ -115,7 +115,7 @@ common::playable_factory *create_cg_fill_playable_factory(common::factories *fac
 //common::playable_factory *create_cg_html_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 common::playable_factory *create_cg_image_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 //common::playable_factory *create_cg_ink_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
-//common::playable_factory *create_cg_smiltext_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+common::playable_factory *create_cg_smiltext_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 common::playable_factory *create_cg_text_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 //common::playable_factory *create_cg_video_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 
@@ -155,7 +155,6 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 //	int overlay_window_count;
 #endif // WITH_QUICKTIME_OVERLAY
 #ifdef	WITH_UIKIT
-	CGPoint tapped_location;
 	CGRect current_frame;
 	CGRect original_frame;
 	CGAffineTransform current_transform;
@@ -164,7 +163,6 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 }
 
 #ifdef	WITH_UIKIT
-@property(nonatomic) CGPoint tapped_location;
 @property(nonatomic) CGRect	current_frame;
 @property(nonatomic) CGRect	original_frame;
 @property(nonatomic) CGAffineTransform current_transform;

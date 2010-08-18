@@ -626,22 +626,8 @@ bad:
 
 #ifdef WITH_UIKIT
 // Equivalent of mouse move/click on iPhone
-@synthesize tapped_location; //XXXX JUNK
-/*XXXXX JUNK
-- (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	UITouch *touch = [touches anyObject];
-	tapped_location = [touch locationInView:self];
-	// NSLog(@"touchesBegan: x=%f y=%f", tapped_location.x, tapped_location.y);
-	[self setNeedsDisplay];
-	ambulant::lib::point amwhere = ambulant::lib::point(
-					(int)tapped_location.x, (int)tapped_location.y);
-//	[[NSApplication sharedApplication] sendAction: SEL("resetMouse:") to: nil from: self];
-	if (ambulant_window) ambulant_window->user_event(amwhere, 0);
-}
-*/
 - (void) tappedAtPoint:(CGPoint) location {
-	tapped_location = location;
-	// NSLog(@"tappedAtPoint: x=%f y=%f", tapped_location.x, tapped_location.y);
+// NSLog(@"tappedAtPoint: x=%f y=%f", location.x, location.y);
 	[self setNeedsDisplay];
 	ambulant::lib::point amwhere = ambulant::lib::point(
 							(int) location.x, (int) location.y);
