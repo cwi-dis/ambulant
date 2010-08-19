@@ -90,10 +90,8 @@ class cg_smiltext_renderer :
 	unsigned int _compute_rate(smil2::smiltext_align align, lib::size size, lib::rect r,  unsigned int dur); // Must go to engine
   private:
 	CFMutableAttributedStringRef m_text_storage;
-	CTFramesetterRef m_framesetter;
 	CTRunRef m_text_container;
 	CTFrameRef m_frame;
-	CGMutablePathRef m_path;
 	smil2::smiltext_engine m_engine;
 	bool m_needs_conditional_newline;
 	bool m_needs_conditional_space;

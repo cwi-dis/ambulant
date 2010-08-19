@@ -7,10 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		04879618121BDE42007B4D0F /* xpath_stateplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04879616121BDE42007B4D0F /* xpath_stateplugin.cpp */; };
 		04879624121BE025007B4D0F /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04879623121BE025007B4D0F /* libxml2.a */; };
 		04879626121BE048007B4D0F /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04879625121BE048007B4D0F /* libxml2.a */; };
-		04ABF6BC121C2F9F009B0528 /* xpath_stateplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04879616121BDE42007B4D0F /* xpath_stateplugin.cpp */; };
 		04ABF6E3121C3091009B0528 /* cg_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93EC9F3A121A9E3B00E0BEDE /* cg_smiltext.mm */; };
 		04ABF6E6121C30B8009B0528 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93EC9F57121AAFDC00E0BEDE /* CoreText.framework */; };
 		04F315A9121AD62900B3D2A0 /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04F315A7121AD62900B3D2A0 /* mainloop.cpp */; };
@@ -1832,7 +1830,6 @@
 				93A812C312108D4C0060AB6D /* rtsp_datasource.cpp in Sources */,
 				93A812C412108D510060AB6D /* rtsp_factory.cpp in Sources */,
 				04F315AA121AD62900B3D2A0 /* mainloop.cpp in Sources */,
-				04879618121BDE42007B4D0F /* xpath_stateplugin.cpp in Sources */,
 				04ABF6E3121C3091009B0528 /* cg_smiltext.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1925,7 +1922,6 @@
 				937981D7120DE21700B1A6D2 /* AmbulantWebViewController.mm in Sources */,
 				04F315A9121AD62900B3D2A0 /* mainloop.cpp in Sources */,
 				93ECA010121BC34500E0BEDE /* cg_smiltext.mm in Sources */,
-				04ABF6BC121C2F9F009B0528 /* xpath_stateplugin.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -40,7 +40,7 @@
 }
 
 - (IBAction) playNYC {
-	[self.delegate playIt:self selected:@"NYC-SMIL2"];
+	[self.delegate playIt:self selected:@"NYC-SmilText"];
 }
 
 - (IBAction) playVideoTests {

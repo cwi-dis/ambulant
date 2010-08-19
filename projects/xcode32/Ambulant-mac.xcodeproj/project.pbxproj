@@ -121,19 +121,31 @@
 		04D5B88010C33DFA00D2CC1D /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04D5B87F10C33DFA00D2CC1D /* libSDL.a */; };
 		04E13B240BD786120074AF09 /* state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B230BD786120074AF09 /* state.cpp */; };
 		04E13B350BD786A40074AF09 /* smiltext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B340BD786A40074AF09 /* smiltext.cpp */; };
-		04FB4B8C10F604B30095F275 /* CHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04FB4B8B10F604B30095F275 /* CHUD.framework */; };
 		04FB4BB310F618770095F275 /* libBasicUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656150BCAEA42002C00DF /* libBasicUsageEnvironment.a */; };
 		04FB4BB410F618790095F275 /* libgroupsock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656160BCAEA42002C00DF /* libgroupsock.a */; };
 		04FB4BB510F6187A0095F275 /* libliveMedia.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656130BCAEA42002C00DF /* libliveMedia.a */; };
 		04FB4BB610F6187C0095F275 /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656140BCAEA42002C00DF /* libUsageEnvironment.a */; };
 		04FB4BBA10F618A80095F275 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04FB4BB910F618A80095F275 /* QuickTime.framework */; };
-		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		93CCDC3711E080DC00B01CD7 /* cg_dsvideo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B02106B79D000A4E37A /* cg_dsvideo.mm */; };
-		93CCDC3811E080DF00B01CD7 /* cg_fill.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B03106B79D000A4E37A /* cg_fill.mm */; };
-		93CCDC3911E080E000B01CD7 /* cg_gui.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B04106B79D000A4E37A /* cg_gui.mm */; };
-		93CCDC3A11E080ED00B01CD7 /* cg_image.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B05106B79D000A4E37A /* cg_image.mm */; };
-		93CCDC3B11E080EF00B01CD7 /* cg_renderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B06106B79D000A4E37A /* cg_renderer.mm */; };
-		93CCDC3C11E080F100B01CD7 /* cg_text.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B07106B79D000A4E37A /* cg_text.mm */; };
+		93ECA146121C879500E0BEDE /* cocoa_audio.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652550BCAE3C5002C00DF /* cocoa_audio.mm */; };
+		93ECA147121C879700E0BEDE /* cocoa_dsvideo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652570BCAE3C5002C00DF /* cocoa_dsvideo.mm */; };
+		93ECA148121C879A00E0BEDE /* cocoa_fill.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652590BCAE3C5002C00DF /* cocoa_fill.mm */; };
+		93ECA149121C879E00E0BEDE /* cocoa_gui.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0496525B0BCAE3C5002C00DF /* cocoa_gui.mm */; };
+		93ECA14A121C879F00E0BEDE /* cocoa_html.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0496525D0BCAE3C5002C00DF /* cocoa_html.mm */; };
+		93ECA14B121C87A000E0BEDE /* cocoa_image.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0496525F0BCAE3C5002C00DF /* cocoa_image.mm */; };
+		93ECA14C121C87A200E0BEDE /* cocoa_ink.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652610BCAE3C5002C00DF /* cocoa_ink.mm */; };
+		93ECA14D121C87A300E0BEDE /* cocoa_renderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652630BCAE3C5002C00DF /* cocoa_renderer.mm */; };
+		93ECA14E121C87A400E0BEDE /* cocoa_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B270BD786380074AF09 /* cocoa_smiltext.mm */; };
+		93ECA14F121C87A500E0BEDE /* cocoa_text.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652650BCAE3C5002C00DF /* cocoa_text.mm */; };
+		93ECA150121C87A800E0BEDE /* cocoa_transition.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652670BCAE3C5002C00DF /* cocoa_transition.mm */; };
+		93ECA151121C87A900E0BEDE /* cocoa_video.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652690BCAE3C5002C00DF /* cocoa_video.mm */; };
+		93ECA15D121C87EB00E0BEDE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		93ECA15E121C87EE00E0BEDE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
+		93ECA15F121C87F000E0BEDE /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 13E42FB307B3F0F600E4EEF1 /* CoreData.framework */; };
+		93ECA162121C881900E0BEDE /* cg_dsvideo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B02106B79D000A4E37A /* cg_dsvideo.mm */; };
+		93ECA163121C881A00E0BEDE /* cg_fill.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B03106B79D000A4E37A /* cg_fill.mm */; };
+		93ECA165121C881D00E0BEDE /* cg_image.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B05106B79D000A4E37A /* cg_image.mm */; };
+		93ECA166121C881E00E0BEDE /* cg_renderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B06106B79D000A4E37A /* cg_renderer.mm */; };
+		93ECA167121C882000E0BEDE /* cg_text.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B07106B79D000A4E37A /* cg_text.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -601,7 +613,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				049656050BCAE9E0002C00DF /* QTKit.framework in Frameworks */,
 				049656060BCAE9E0002C00DF /* AudioUnit.framework in Frameworks */,
 				049656070BCAE9E0002C00DF /* WebKit.framework in Frameworks */,
@@ -616,7 +627,6 @@
 				04834E88105A4D6E00B7188B /* ForceFeedback.framework in Frameworks */,
 				04834EA9105A5A0800B7188B /* libltdl.a in Frameworks */,
 				04D5B88010C33DFA00D2CC1D /* libSDL.a in Frameworks */,
-				04FB4B8C10F604B30095F275 /* CHUD.framework in Frameworks */,
 				04FB4BB310F618770095F275 /* libBasicUsageEnvironment.a in Frameworks */,
 				04FB4BB410F618790095F275 /* libgroupsock.a in Frameworks */,
 				04FB4BB510F6187A0095F275 /* libliveMedia.a in Frameworks */,
@@ -627,6 +637,9 @@
 				048A8D8211479F0100C72D23 /* libavformat.a in Frameworks */,
 				048A8D8311479F0200C72D23 /* libavcodec.a in Frameworks */,
 				048A8D911147A24500C72D23 /* libfaad.a in Frameworks */,
+				93ECA15D121C87EB00E0BEDE /* Cocoa.framework in Frameworks */,
+				93ECA15E121C87EE00E0BEDE /* Foundation.framework in Frameworks */,
+				93ECA15F121C87F000E0BEDE /* CoreData.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1628,12 +1641,23 @@
 				04E13B240BD786120074AF09 /* state.cpp in Sources */,
 				04E13B350BD786A40074AF09 /* smiltext.cpp in Sources */,
 				047954AC0F272CA300103C57 /* renderer_select.cpp in Sources */,
-				93CCDC3711E080DC00B01CD7 /* cg_dsvideo.mm in Sources */,
-				93CCDC3811E080DF00B01CD7 /* cg_fill.mm in Sources */,
-				93CCDC3911E080E000B01CD7 /* cg_gui.mm in Sources */,
-				93CCDC3A11E080ED00B01CD7 /* cg_image.mm in Sources */,
-				93CCDC3B11E080EF00B01CD7 /* cg_renderer.mm in Sources */,
-				93CCDC3C11E080F100B01CD7 /* cg_text.mm in Sources */,
+				93ECA146121C879500E0BEDE /* cocoa_audio.mm in Sources */,
+				93ECA147121C879700E0BEDE /* cocoa_dsvideo.mm in Sources */,
+				93ECA148121C879A00E0BEDE /* cocoa_fill.mm in Sources */,
+				93ECA149121C879E00E0BEDE /* cocoa_gui.mm in Sources */,
+				93ECA14A121C879F00E0BEDE /* cocoa_html.mm in Sources */,
+				93ECA14B121C87A000E0BEDE /* cocoa_image.mm in Sources */,
+				93ECA14C121C87A200E0BEDE /* cocoa_ink.mm in Sources */,
+				93ECA14D121C87A300E0BEDE /* cocoa_renderer.mm in Sources */,
+				93ECA14E121C87A400E0BEDE /* cocoa_smiltext.mm in Sources */,
+				93ECA14F121C87A500E0BEDE /* cocoa_text.mm in Sources */,
+				93ECA150121C87A800E0BEDE /* cocoa_transition.mm in Sources */,
+				93ECA151121C87A900E0BEDE /* cocoa_video.mm in Sources */,
+				93ECA162121C881900E0BEDE /* cg_dsvideo.mm in Sources */,
+				93ECA163121C881A00E0BEDE /* cg_fill.mm in Sources */,
+				93ECA165121C881D00E0BEDE /* cg_image.mm in Sources */,
+				93ECA166121C881E00E0BEDE /* cg_renderer.mm in Sources */,
+				93ECA167121C882000E0BEDE /* cg_text.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1973,7 +1997,7 @@
 					"WITH_SEAMLESS_PLAYBACK=1",
 					"WITH_CLOCK_SYNC=1",
 					"WITH_FFMPEG_LIBSWSCALE=1",
-					"WITH_CG=1",
+					"WITH_COCOA=1",
 				);
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (

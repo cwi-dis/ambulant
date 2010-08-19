@@ -84,13 +84,13 @@ _select_font(const char *family, smil2::smiltext_font_style style, smil2::smilte
 }
 
 extern const char cg_smiltext_playable_tag[] = "smilText";
-extern const char cg_smiltext_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("Renderercg");
+extern const char cg_smiltext_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererCG");
 extern const char cg_smiltext_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererSmilText");
 
 common::playable_factory *
 create_cg_smiltext_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("Renderercg"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererCG"), true);
 	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererSmilText"), true);
 	return new common::single_playable_factory<
 		cg_smiltext_renderer,
@@ -110,8 +110,6 @@ cg_smiltext_renderer::cg_smiltext_renderer(
 :	cg_renderer<renderer_playable>(context, cookie, node, evp, fp, mdp),
 	m_text_storage(NULL),
 	m_frame(NULL),
-	m_framesetter(NULL),
-	m_path(NULL),
 	m_text_container(NULL),
 	m_engine(smil2::smiltext_engine(node, evp, this, false)),
 	m_needs_conditional_newline(false),
@@ -134,12 +132,8 @@ cg_smiltext_renderer::~cg_smiltext_renderer()
 	m_dest = NULL;
 	CFRelease(m_text_storage);
 	m_text_storage = NULL;
-	CFRelease(m_framesetter);
-	m_framesetter = NULL;
 	CFRelease(m_frame);
 	m_frame = NULL;
-	CFRelease(m_path);
-	m_path = NULL;
 	m_lock.leave();
 }
 
@@ -205,7 +199,7 @@ cg_smiltext_renderer::smiltext_changed()
 			NSRange all;
 			all.location = 0;
 			all.length = [m_text_storage length];
-			if (all.length);
+			if (all.length)
 				[m_text_storage deleteCharactersInRange:all];
 			i = m_engine.begin();
 		} else {
@@ -390,6 +384,7 @@ cg_smiltext_renderer::smiltext_changed()
 	m_engine.unlock();
 	[pool release];
 	m_lock.leave();
+	NSLog(@"cg_smiltext_changed: m_text_storage=%@", (NSString*) m_text_storage);
 	m_dest->need_redraw();
 	if (finished)
 		m_context->stopped(m_cookie);
@@ -455,15 +450,17 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	assert(m_text_container);
 	assert(m_text_storage);
 #endif//JUNK
-	if (! m_framesetter) {
-		m_path = CGPathCreateMutable();
-		CGPathAddRect(m_path, NULL, cg_dstrect);
-		m_framesetter = CTFramesetterCreateWithAttributedString(m_text_storage);
-		m_frame = CTFramesetterCreateFrame (m_framesetter, CFRangeMake(0, 0), m_path, NULL);
-		old_layout_size = layout_size;	// Force resize
-	} else {
-//TBD		old_layout_size = [m_text_container containerSize];
-	}
+//JNK	if ( ! m_framesetter) {
+	CGMutablePathRef path = CGPathCreateMutable();
+	CGPathAddRect(path, NULL, cg_dstrect);
+	CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString(m_text_storage);
+	m_frame = CTFramesetterCreateFrame (framesetter, CFRangeMake(0, 0), path, NULL);
+	CFRelease(framesetter);
+	CFRelease(path);
+//JNK		old_layout_size = layout_size;	// Force resize
+//JNK	} else {
+//JNK		old_layout_size = [m_text_container containerSize];
+//JNK	}
 	
 	// If the layout size has changed (due to smil animation or so) change it
 	if ( ! CGSizeEqualToSize(old_layout_size, layout_size)) {
