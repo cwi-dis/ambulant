@@ -1,3 +1,26 @@
+2010-08-18 17:23  jackjansen
+
+	* Implemented a new type of plugins, statically linked plugins.
+	  These aren't really plugins, but the structure is the same. They
+	  are linked into the application, and register themselves through
+	  a new call in the plugin engine. From here on, they function just
+	  like normal plugins.
+
+	  Used this mechanism to enable smil state in the iphone player.
+	  Untested:-)
+
+2010-08-18 14:49  keesblom
+
+	* Added smiltext, for now without attrs, fonts, motion etc.
+
+2010-08-18 11:36  jackjansen
+
+	* xpath_state builds (but doesn't do anything yet)
+
+2010-08-18 11:09  jackjansen
+
+	* Bug fixes to environment-checking code and libxml2 build
+
 2010-08-18 00:11  jackjansen
 
 	* Check environment, based on what we are building
