@@ -27,7 +27,6 @@
 #include "ambulant/smil2/params.h"
 #include "ambulant/common/renderer_select.h"
 #include "ambulant/smil2/test_attrs.h"
-//XXXX #include <cg/cg.h>
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -43,12 +42,15 @@ namespace gui {
 
 namespace cg {
 
+//JNK static NSFont *
 static CTFontRef
 _select_font(const char *family, smil2::smiltext_font_style style, smil2::smiltext_font_weight weight, int size)
 {
+//JNK	NSFont *font = NULL;
+//JNK	NSFontTraitMask mask = 0;
+//JNK	NSFontManager *fm = [NSFontManager sharedFontManager];
 	CTFontRef font = NULL;
 	CTFontSymbolicTraits mask = 0;
-//	NSFontManager *fm = [NSFontManager sharedFontManager];
 	NSString *ffname = NULL;
 
 	if (strcmp(family, "serif") == 0) {
@@ -60,26 +62,33 @@ _select_font(const char *family, smil2::smiltext_font_style style, smil2::smilte
 	} else {
 		ffname = [NSString stringWithUTF8String:family];
 	}
-	if (strcmp(family, "monospace") == 0) mask |= kCTFontCondensedTrait;
+//JNK	if (strcmp(family, "monospace") == 0) mask |= NSFixedPitchFontMask;
+	if (strcmp(family, "monospace") == 0) {
+		mask |= kCTFontCondensedTrait;
+	}
 	switch(style) {
 	case smil2::sts_normal:
 	case smil2::sts_reverse_oblique: // Not supported
 		mask &= ~kCTFontItalicTrait;
+			//JNK |= NSUnitalicFontMask;
 		break;
 	case smil2::sts_italic:
 	case smil2::sts_oblique:
 		mask |= kCTFontItalicTrait;
+			//JNK NSItalicFontMask;
 		break;
 	}
 	switch(weight) {
 	case smil2::stw_normal:
 		mask &= ~kCTFontBoldTrait;
+			//JNK = NSUnboldFontMask;
 		break;
 	case smil2::stw_bold:
 		mask |= kCTFontBoldTrait;
+			//JNK NSBoldFontMask;
 		break;
 	}
-//	font = [fm fontWithFamily: ffname traits: mask weight: 5 size: size];
+//TBD font = [fm fontWithFamily: ffname traits: mask weight: 5 size: size];
 	return font;
 }
 
@@ -110,7 +119,9 @@ cg_smiltext_renderer::cg_smiltext_renderer(
 :	cg_renderer<renderer_playable>(context, cookie, node, evp, fp, mdp),
 	m_text_storage(NULL),
 	m_frame(NULL),
+//JNK m_layout_manager(NULL),
 	m_text_container(NULL),
+	m_rgb_colorspace(NULL),
 	m_engine(smil2::smiltext_engine(node, evp, this, false)),
 	m_needs_conditional_newline(false),
 	m_needs_conditional_space(false),
@@ -122,18 +133,26 @@ cg_smiltext_renderer::cg_smiltext_renderer(
 	m_any_semiopaque_bg(false)
 {
 	m_text_storage = CFAttributedStringCreateMutable(NULL, 0);
+	m_rgb_colorspace = CGColorSpaceCreateDeviceRGB();
+//JNK	m_text_storage = [[NSTextStorage alloc] initWithString:@""];
 	m_render_offscreen = (m_params.m_mode != smil2::stm_replace && m_params.m_mode != smil2::stm_append);
 }
 
 cg_smiltext_renderer::~cg_smiltext_renderer()
 {
 	m_lock.enter();
-	if (m_dest) m_dest->renderer_done(this);
-	m_dest = NULL;
-	CFRelease(m_text_storage);
-	m_text_storage = NULL;
-	CFRelease(m_frame);
-	m_frame = NULL;
+	if (m_dest != NULL) {
+		m_dest->renderer_done(this);
+		m_dest = NULL;
+	}
+	if (m_text_storage != NULL) {
+		CFRelease(m_text_storage);
+		m_text_storage = NULL;
+	}
+	if (m_rgb_colorspace != NULL) {
+		CGColorSpaceRelease (m_rgb_colorspace);
+		m_rgb_colorspace = NULL;
+	}
 	m_lock.leave();
 }
 
@@ -191,7 +210,7 @@ cg_smiltext_renderer::smiltext_changed()
 		lib::xml_string data;
 		smil2::smiltext_runs::const_iterator i;
 		CFAttributedStringBeginEditing(m_text_storage);
-//JUNK	[m_text_storage beginEditing];
+//JNK	[m_text_storage beginEditing];
 		if (m_engine.is_cleared()) {
 			// Completely new text. Clear our copy and render everything.
 			m_needs_conditional_space = false;
@@ -199,7 +218,7 @@ cg_smiltext_renderer::smiltext_changed()
 			NSRange all;
 			all.location = 0;
 			all.length = [m_text_storage length];
-			if (all.length)
+			if (all.length);
 				[m_text_storage deleteCharactersInRange:all];
 			i = m_engine.begin();
 		} else {
@@ -209,6 +228,7 @@ cg_smiltext_renderer::smiltext_changed()
 		while (i != m_engine.end()) {
 			AM_DBG lib::logger::get_logger()->debug("cg_smiltext: another run");
 			CFRange newrange;
+//JNK		NSRange newrange;
 			// Add the new characters
 			newrange.location = [m_text_storage length];
 			newrange.length = 0;
@@ -265,50 +285,75 @@ cg_smiltext_renderer::smiltext_changed()
 				[newdata insertString: @"\u202e" atIndex: 0]; // RIGHT-TO-LEFT OVERRIDE
 				[newdata appendString: @"\u202c"]; // POP DIRECTIONAL FORMATTING
 			}
-//JUNK		[m_text_storage replaceCharactersInRange:newrange withString:newdata];
 			CFAttributedStringReplaceString (m_text_storage, newrange, (CFStringRef) newdata);
+//JNK		[m_text_storage replaceCharactersInRange:newrange withString:newdata];
+
 			// Prepare for setting the attribute info
-			NSMutableDictionary *attrs = [[NSMutableDictionary alloc] init];
+			CFMutableDictionaryRef attrs =
+				CFDictionaryCreateMutable(kCFAllocatorDefault,
+										  0/*inifite*/,
+										  &kCFTypeDictionaryKeyCallBacks,
+										  &kCFTypeDictionaryValueCallBacks);
+//JNK		NSMutableDictionary *attrs = [[NSMutableDictionary alloc] init];
 			newrange.length = [newdata length];
 			// Find font info
 			CTFontRef text_font = NULL;
+//JNK		NSFont *text_font = NULL;
 			std::vector<std::string>::const_iterator fi;
 			for (fi=(*i).m_font_families.begin(); fi != (*i).m_font_families.end(); fi++) {
-				AM_DBG lib::logger::get_logger()->debug("cg_smiltext: look for font '%s'", (*fi).c_str());
+				/*AM_DBG*/ lib::logger::get_logger()->debug("cg_smiltext: look for font '%s'", (*fi).c_str());
 				text_font = _select_font((*fi).c_str(), (*i).m_font_style, (*i).m_font_weight, (*i).m_font_size);
 				if (text_font) break;
-				AM_DBG lib::logger::get_logger()->debug("cg_smiltext: not found, try next");
+				/*AM_DBG*/ lib::logger::get_logger()->debug("cg_smiltext: not found, try next");
 			}
 			if (!text_font) {
 //TBD				text_font = [NSFont userFontOfSize: (*i).m_font_size];
 			}
 
-//TBD			[attrs setValue:text_font forKey:NSFontAttributeName];
-
-			if (!(*i).m_transparent) {
+//TBD		[attrs setValue:text_font forKey:NSFontAttributeName];
+			smil2::smiltext_run run = *i;
+			if ( ! run.m_transparent) {
 				// Find color info
-				double alfa = 1.0;
+				CGFloat alfa = 1.0;
+//JNK			double alfa = 1.0;
 				const common::region_info *ri = m_dest->get_info();
 				if (ri) alfa = ri->get_mediaopacity();
-				UIColor *color = [UIColor colorWithRed:redf((*i).m_color)
-						green:greenf((*i).m_color)
-						blue:bluef((*i).m_color)
-						alpha:(float)alfa];
-//TBD				[attrs setValue:color forKey:NSForegroundColorAttributeName];
+				CGFloat fg_components[] = {redf(run.m_color),
+										   greenf(run.m_color),
+										   bluef(run.m_color),
+										   alfa};
+				CGColorRef run_fg_color = CGColorCreate(m_rgb_colorspace, fg_components);
+//JNK			NSColor *color = [NSColor colorWithCalibratedRed:redf((*i).m_color)
+//JNK													   green:greenf((*i).m_color)
+//JNK														blue:bluef((*i).m_color)
+//JNK													   alpha:(float)alfa];
+				CFDictionaryAddValue (attrs, kCTForegroundColorAttributeName, run_fg_color);
+				CGColorRelease(run_fg_color);
+//JNK			[attrs setValue:color forKey:NSForegroundColorAttributeName];
 			}
-			if (!(*i).m_bg_transparent) {
+#ifdef kCTBackgroundColorAttributeName /* no text background in iOS4.0 */
+			if ( ! run.m_bg_transparent) {
 				// Find background color info
-				double alfa = 1.0;
+				CGFloat alfa = 1.0;
+//JNK			double alfa = 1.0;
 				const common::region_info *ri = m_dest->get_info();
 				if (ri) alfa = ri->get_mediabgopacity();
 				if (alfa != 1.0)
 					m_any_semiopaque_bg = true;
-				UIColor *color = [UIColor colorWithRed:redf((*i).m_bg_color)
-						green:greenf((*i).m_bg_color)
-						blue:bluef((*i).m_bg_color)
-						alpha:(float)alfa];
-//TBD				[attrs setValue:color forKey:NSBackgroundColorAttributeName];
+				CGFloat bg_components[] = {redf(run.m_bg_color),
+										greenf(run.m_bg_color),
+										bluef(run.m_bg_color),
+										alfa};
+				CGColorRef run_bg_color = CGColorCreate(m_rgb_colorspace, bg_components);
+//JNK			NSColor *color = [NSColor colorWithCalibratedRed:redf((*i).m_bg_color)
+//JNK													 green:greenf(run.m_bg_color)
+//JNK													  blue:bluef(run.m_bg_color)
+//JNK													 alpha:(float)alfa];
+				CFDictionaryAddValue (attrs, kCTBackgroundColorAttributeName, run_bg_color);
+				CGColorRelease(run_bg_color);
+//JNK			[attrs setValue:color forKey:NSBackgroundColorAttributeName];
 			}
+#endif// kCTBackgroundColorAttributeName
 			// Finally do paragraph settings (which are cached)
 			if (m_cur_paragraph_style == NULL ||
 					m_cur_para_align != (*i).m_align ||
@@ -322,15 +367,16 @@ cg_smiltext_renderer::smiltext_changed()
 				m_cur_para_writing_mode = (*i).m_writing_mode;
 				m_cur_para_wrap = (*i).m_wrap;
 				// Allocate the new one
-//TBD first create settings
 				CTParagraphStyleRef ps = CTParagraphStyleCreate((const CTParagraphStyleSetting*) NULL, (CFIndex) 0);
+//JNK			NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle alloc] init];
 				m_cur_paragraph_style = ps;
+//JNK				m_cur_paragraph_style = [ps retain];
 				// Set the paragraph writing direction
 				if (m_cur_para_writing_mode == smil2::stw_rl_tb) {
-//TBD					[ps setBaseWritingDirection: NSWritingDirectionRightToLeft];
+//TBD				[ps setBaseWritingDirection: NSWritingDirectionRightToLeft];
 				} else {
 					// All other directions are treated as left-to-right
-//TBD					[ps setBaseWritingDirection: NSWritingDirectionLeftToRight];
+///TBD				[ps setBaseWritingDirection: NSWritingDirectionLeftToRight];
 				}
 				if (m_params.m_mode != smil2::stm_crawl) {
 					// Set the paragraph text alignment, unless we have moving text
@@ -363,28 +409,30 @@ cg_smiltext_renderer::smiltext_changed()
 					}
 				}
 				// Set the paragraph wrap option
-//TBD				if (m_cur_para_wrap)
-//TBD					[ps setLineBreakMode: NSLineBreakByWordWrapping];
-//TBD				else
-//TBD					[ps setLineBreakMode: NSLineBreakByClipping];
+//TBD			if (m_cur_para_wrap)
+//TBD				[ps setLineBreakMode: NSLineBreakByWordWrapping];
+//TBD			else
+//TBD				[ps setLineBreakMode: NSLineBreakByClipping];
 			}
 //TBD			[attrs setValue:m_cur_paragraph_style forKey:NSParagraphStyleAttributeName];
 
 			// Set the attributes
 //TBD		[m_text_storage setAttributes:attrs range:newrange];
-
+			CFAttributedStringSetAttributes (m_text_storage, newrange, (CFDictionaryRef) attrs, true);
+											 
 			i++;
 		}
 		CFAttributedStringEndEditing(m_text_storage);
+//JNK	[m_text_storage endEditing];
 		m_engine.done();
 	} else {
 		AM_DBG lib::logger::get_logger()->debug("cg_smiltext::smiltext_changed: nothing changed");
 	}
 	bool finished = m_engine.is_finished();
+	NSLog(@"cg_smiltext_changed: m_text_storage=%@", (NSString*) m_text_storage);
 	m_engine.unlock();
 	[pool release];
 	m_lock.leave();
-	NSLog(@"cg_smiltext_changed: m_text_storage=%@", (NSString*) m_text_storage);
 	m_dest->need_redraw();
 	if (finished)
 		m_context->stopped(m_cookie);
@@ -404,13 +452,17 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	rect dstrect = r;
 	dstrect.translate(m_dest->get_global_topleft());
 	CGRect cg_dstrect = [view  CGRectForAmbulantRect: &dstrect];
+//JNK	NSRect cg_dstrect = [view NSRectForAmbulantRect: &dstrect];
 	CGPoint visible_origin = CGPointMake(CGRectGetMinX (cg_dstrect), CGRectGetMinY(cg_dstrect));
+	//JNK	NSPoint visible_origin = NSMakePoint(NSMinX(cg_dstrect), NSMinY(cg_dstrect));
 	CGSize visible_size = CGSizeMake(cg_dstrect.size.width, cg_dstrect.size.height);
+//JNK	NSSize visible_size = NSMakeSize(NSWidth(cg_dstrect), NSHeight(cg_dstrect));
 
 // Determine text container layout size. This depends on the type of container.
 #define INFINITE_WIDTH 1000000
 #define INFINITE_HEIGHT 1000000
 	CGSize layout_size = visible_size;
+//JNK	NSSize layout_size = visible_size;
 	bool has_hmovement = false;
 	bool has_vmovement = false;
 	switch(m_params.m_mode) {
@@ -430,9 +482,10 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	}
 
 	CGSize old_layout_size;
+//JNK	NSSize old_layout_size;
 	// Initialize the text engine if we have not already done so.
-#ifdef JUNK
-	if (! m_layout_manager) {
+#ifdef JNK
+	if (!m_layout_manager) {
 		// Initialize the text engine
 		m_layout_manager = [[NSLayoutManager alloc] init];
 		m_text_container = [[NSTextContainer alloc] initWithContainerSize: layout_size];
@@ -449,21 +502,18 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	assert(m_layout_manager);
 	assert(m_text_container);
 	assert(m_text_storage);
-#endif//JUNK
-//JNK	if ( ! m_framesetter) {
+#else // not JNK
 	CGMutablePathRef path = CGPathCreateMutable();
 	CGPathAddRect(path, NULL, cg_dstrect);
 	CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString(m_text_storage);
 	m_frame = CTFramesetterCreateFrame (framesetter, CFRangeMake(0, 0), path, NULL);
 	CFRelease(framesetter);
 	CFRelease(path);
-//JNK		old_layout_size = layout_size;	// Force resize
-//JNK	} else {
-//JNK		old_layout_size = [m_text_container containerSize];
-//JNK	}
-	
+#endif// not JNK
+
 	// If the layout size has changed (due to smil animation or so) change it
 	if ( ! CGSizeEqualToSize(old_layout_size, layout_size)) {
+//JNK	if (!NSEqualSizes(old_layout_size, layout_size)) {
 		[m_text_container setContainerSize: layout_size];
 	}
 	// Now determine text placement (visible_origin)
@@ -500,7 +550,7 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	// If we do auto-scrolling we should now layout the text, so we can determine the rate
 	if (m_engine.is_auto_rate()) {
 		(void)[m_layout_manager glyphRangeForTextContainer: m_text_container];
-		CGSize nsfull_size = [m_layout_manager usedRectForTextContainer: m_text_container].size;
+		NSSize nsfull_size = [m_layout_manager usedRectForTextContainer: m_text_container].size;
 		lib::size full_size((int)nsfull_size.width, (int)nsfull_size.height);
 		unsigned int dur = 11; // XXXX
 		smil2::smiltext_align align = m_cur_para_align;
@@ -511,6 +561,7 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 #endif//TBD
 	// Next compute the layout position of what we want to draw at visible_origin
 	CGPoint logical_origin = CGPointMake(0, 0);
+//JNK	NSPoint logical_origin = NSMakePoint(0, 0);
 	if (m_params.m_mode == smil2::stm_crawl) {
 		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
 		logical_origin.x += float(now * m_params.m_rate / 1000);
@@ -532,12 +583,12 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	// full lines (which is apparently more efficient, google for details) which is not good enough
 	// for ticker tape, so we adjust.
 	CGRect logical_rect = CGRectMake(logical_origin.x, logical_origin.y, visible_size.width, visible_size.height);
-//X	NSRange glyph_range = [m_layout_manager glyphRangeForBoundingRect: logical_rect inTextContainer: m_text_container];
+//JNK	NSRect logical_rect = NSMakeRect(logical_origin.x, logical_origin.y, visible_size.width, visible_size.height);
 	CFRange glyph_range = CTFrameGetVisibleStringRange(m_frame);
-//X	[m_frame glyphRangeForBoundingRect: logical_rect inTextContainer: m_text_container];
+//JNK	NSRange glyph_range = [m_layout_manager glyphRangeForBoundingRect: logical_rect inTextContainer: m_text_container];
 	AM_DBG NSLog(@"Glyph range was %d, %d, origin-x %f", glyph_range.location, glyph_range.length, logical_origin.x);
 	if (glyph_range.location >= 0 && glyph_range.length > 0) {
-#ifdef JUNK
+#ifdef JNK
 		if (m_any_semiopaque_bg) {
 			// Background opacity 1.0 is implemented correctly in NSLayoutManager, but intermediate
 			// values are a bit funny: they still override the underlying image (i.e. they don't
@@ -556,14 +607,14 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 			[m_layout_manager drawBackgroundForGlyphRange: glyph_range atPoint: visible_origin];
 		}
 		[m_layout_manager drawGlyphsForGlyphRange: glyph_range atPoint: visible_origin];
-#else//JUNK
+#else// not JNK
 		CTFrameDraw (m_frame, [view getCGContext]);
-#endif//JUNK
+#endif// not JNK
 	}
 //TBD	layout_size = [m_text_container containerSize];
 	if (m_render_offscreen) {
 	}
-//X	[view unlockFocus];
+//JNK	[view unlockFocus];
 	m_lock.leave();
 }
 

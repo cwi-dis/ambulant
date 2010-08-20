@@ -90,6 +90,7 @@ class cg_smiltext_renderer :
 	unsigned int _compute_rate(smil2::smiltext_align align, lib::size size, lib::rect r,  unsigned int dur); // Must go to engine
   private:
 	CFMutableAttributedStringRef m_text_storage;
+	CGColorSpaceRef m_rgb_colorspace;
 	CTRunRef m_text_container;
 	CTFrameRef m_frame;
 	smil2::smiltext_engine m_engine;
