@@ -1,3 +1,7 @@
+2010-08-19 14:43  keesblom
+
+	* tev now also works
+
 2010-08-18 17:23  jackjansen
 
 	* Implemented a new type of plugins, statically linked plugins.
