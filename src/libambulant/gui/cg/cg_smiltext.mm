@@ -51,6 +51,7 @@ _select_font(const char *family, smil2::smiltext_font_style style, smil2::smilte
 //JNK	NSFontManager *fm = [NSFontManager sharedFontManager];
 	CTFontRef font = NULL;
 	CTFontSymbolicTraits mask = 0;
+	CTFontSymbolicTraits value = 0;
 	NSString *ffname = NULL;
 
 	if (strcmp(family, "serif") == 0) {
@@ -62,33 +63,50 @@ _select_font(const char *family, smil2::smiltext_font_style style, smil2::smilte
 	} else {
 		ffname = [NSString stringWithUTF8String:family];
 	}
+	
+//X	CFStringRef	cf_family = CFStringCreateWithCString(kCFAllocatorDefault,family, kCFStringEncodingUTF8);
+//X	CTFontDescriptorRef font_descr = CTFontDescriptorCreateWithNameAndSize(cf_family, size);
+	CTFontDescriptorRef font_descr = CTFontDescriptorCreateWithNameAndSize((CFStringRef) ffname, size);
+	if (font_descr == NULL) {
+		return NULL;
+	}
+	
 //JNK	if (strcmp(family, "monospace") == 0) mask |= NSFixedPitchFontMask;
 	if (strcmp(family, "monospace") == 0) {
 		mask |= kCTFontCondensedTrait;
+		value |= kCTFontCondensedTrait;
 	}
 	switch(style) {
 	case smil2::sts_normal:
 	case smil2::sts_reverse_oblique: // Not supported
-		mask &= ~kCTFontItalicTrait;
-			//JNK |= NSUnitalicFontMask;
+		mask |= kCTFontItalicTrait;
+		value &= ~kCTFontItalicTrait;
+//JNK	mask |= NSUnitalicFontMask;
 		break;
 	case smil2::sts_italic:
 	case smil2::sts_oblique:
 		mask |= kCTFontItalicTrait;
+		value |= kCTFontItalicTrait;
 			//JNK NSItalicFontMask;
 		break;
 	}
 	switch(weight) {
 	case smil2::stw_normal:
-		mask &= ~kCTFontBoldTrait;
+		mask |= kCTFontBoldTrait;
+		value &= ~kCTFontBoldTrait;
 			//JNK = NSUnboldFontMask;
 		break;
 	case smil2::stw_bold:
 		mask |= kCTFontBoldTrait;
+		value |= kCTFontBoldTrait;
 			//JNK NSBoldFontMask;
 		break;
 	}
-//TBD font = [fm fontWithFamily: ffname traits: mask weight: 5 size: size];
+	font = CTFontCreateWithFontDescriptor(font_descr, size, NULL);
+	CTFontRef desired_font= CTFontCreateCopyWithSymbolicTraits(font, 0.0, NULL, value, mask);
+	if (desired_font != NULL)
+		font = desired_font;
+//JNK font = [fm fontWithFamily: ffname traits: mask weight: 5 size: size];
 	return font;
 }
 
@@ -217,9 +235,11 @@ cg_smiltext_renderer::smiltext_changed()
 			m_needs_conditional_newline = false;
 			NSRange all;
 			all.location = 0;
-			all.length = [m_text_storage length];
-			if (all.length);
-				[m_text_storage deleteCharactersInRange:all];
+			all.length = [(NSMutableAttributedString*) m_text_storage length];
+//JNK		all.length = [m_text_storage length];
+			if (all.length)
+				[(NSMutableAttributedString*) m_text_storage deleteCharactersInRange:all];
+//JNK			[m_text_storage deleteCharactersInRange:all];
 			i = m_engine.begin();
 		} else {
 			// Only additions. Don't clear and only render the new stuff.
@@ -230,7 +250,8 @@ cg_smiltext_renderer::smiltext_changed()
 			CFRange newrange;
 //JNK		NSRange newrange;
 			// Add the new characters
-			newrange.location = [m_text_storage length];
+			newrange.location = [(NSMutableAttributedString*) m_text_storage length]; 
+//JNK		newrange.location = [m_text_storage length];
 			newrange.length = 0;
 			NSMutableString *newdata = [NSMutableString stringWithUTF8String:""];
 			switch((*i).m_command) {
@@ -301,14 +322,18 @@ cg_smiltext_renderer::smiltext_changed()
 //JNK		NSFont *text_font = NULL;
 			std::vector<std::string>::const_iterator fi;
 			for (fi=(*i).m_font_families.begin(); fi != (*i).m_font_families.end(); fi++) {
-				/*AM_DBG*/ lib::logger::get_logger()->debug("cg_smiltext: look for font '%s'", (*fi).c_str());
+				AM_DBG lib::logger::get_logger()->debug("cg_smiltext: look for font '%s'", (*fi).c_str());
 				text_font = _select_font((*fi).c_str(), (*i).m_font_style, (*i).m_font_weight, (*i).m_font_size);
 				if (text_font) break;
-				/*AM_DBG*/ lib::logger::get_logger()->debug("cg_smiltext: not found, try next");
+				AM_DBG lib::logger::get_logger()->debug("cg_smiltext: not found, try next");
 			}
 			if (!text_font) {
 //TBD				text_font = [NSFont userFontOfSize: (*i).m_font_size];
+			} else {
+				CFDictionaryAddValue (attrs, kCTFontAttributeName, text_font);
+				CFRelease(text_font);
 			}
+
 
 //TBD		[attrs setValue:text_font forKey:NSFontAttributeName];
 			smil2::smiltext_run run = *i;
@@ -429,7 +454,7 @@ cg_smiltext_renderer::smiltext_changed()
 		AM_DBG lib::logger::get_logger()->debug("cg_smiltext::smiltext_changed: nothing changed");
 	}
 	bool finished = m_engine.is_finished();
-	NSLog(@"cg_smiltext_changed: m_text_storage=%@", (NSString*) m_text_storage);
+//X	NSLog(@"cg_smiltext_changed: m_text_storage=%@", (NSString*) m_text_storage);
 	m_engine.unlock();
 	[pool release];
 	m_lock.leave();
@@ -514,7 +539,7 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	// If the layout size has changed (due to smil animation or so) change it
 	if ( ! CGSizeEqualToSize(old_layout_size, layout_size)) {
 //JNK	if (!NSEqualSizes(old_layout_size, layout_size)) {
-		[m_text_container setContainerSize: layout_size];
+//TBD		[m_text_container setContainerSize: layout_size];
 	}
 	// Now determine text placement (visible_origin)
 	int firstlineheight = 14; // XXXJACK: should compute this...
