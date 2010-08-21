@@ -88,6 +88,7 @@ class cg_smiltext_renderer :
 	void marker_seen(const char *name);
   private:
 	unsigned int _compute_rate(smil2::smiltext_align align, lib::size size, lib::rect r,  unsigned int dur); // Must go to engine
+	void add_CTParagraphStyleSetting(CTParagraphStyleSetting** settings, size_t* count, void*** style_values, CTParagraphStyleSpecifier spec, long unsigned int value_size, void* value);
   private:
 	CFMutableAttributedStringRef m_text_storage;
 	CGColorSpaceRef m_rgb_colorspace;

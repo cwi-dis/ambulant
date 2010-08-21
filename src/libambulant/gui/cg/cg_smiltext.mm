@@ -68,6 +68,7 @@ _select_font(const char *family, smil2::smiltext_font_style style, smil2::smilte
 //X	CTFontDescriptorRef font_descr = CTFontDescriptorCreateWithNameAndSize(cf_family, size);
 	CTFontDescriptorRef font_descr = CTFontDescriptorCreateWithNameAndSize((CFStringRef) ffname, size);
 	if (font_descr == NULL) {
+		[ffname release];
 		return NULL;
 	}
 	
@@ -103,9 +104,12 @@ _select_font(const char *family, smil2::smiltext_font_style style, smil2::smilte
 		break;
 	}
 	font = CTFontCreateWithFontDescriptor(font_descr, size, NULL);
-	CTFontRef desired_font= CTFontCreateCopyWithSymbolicTraits(font, 0.0, NULL, value, mask);
-	if (desired_font != NULL)
-		font = desired_font;
+	CTFontRef desired_font = CTFontCreateCopyWithSymbolicTraits(font, 0.0, NULL, value, mask);
+	if (desired_font != NULL) {
+		CFRelease(font);
+	}
+	font = desired_font;
+	[ffname release];
 //JNK font = [fm fontWithFamily: ffname traits: mask weight: 5 size: size];
 	return font;
 }
@@ -170,6 +174,10 @@ cg_smiltext_renderer::~cg_smiltext_renderer()
 	if (m_rgb_colorspace != NULL) {
 		CGColorSpaceRelease (m_rgb_colorspace);
 		m_rgb_colorspace = NULL;
+	}
+	if (m_frame != NULL) {
+		CFRelease(m_frame);
+		m_frame = NULL;
 	}
 	m_lock.leave();
 }
@@ -246,6 +254,7 @@ cg_smiltext_renderer::smiltext_changed()
 			i = m_engine.newbegin();
 		}
 		while (i != m_engine.end()) {
+			smil2::smiltext_run run = *i;
 			AM_DBG lib::logger::get_logger()->debug("cg_smiltext: another run");
 			CFRange newrange;
 //JNK		NSRange newrange;
@@ -254,7 +263,7 @@ cg_smiltext_renderer::smiltext_changed()
 //JNK		newrange.location = [m_text_storage length];
 			newrange.length = 0;
 			NSMutableString *newdata = [NSMutableString stringWithUTF8String:""];
-			switch((*i).m_command) {
+			switch(run.m_command) {
 			case smil2::stc_break:
 				newdata = [NSMutableString stringWithUTF8String:"\n\n"];
 				m_needs_conditional_space = false;
@@ -277,7 +286,7 @@ cg_smiltext_renderer::smiltext_changed()
 			case smil2::stc_data:
 				{
 					// Need a block, because of the variable:
-					char lastch = *((*i).m_data.rbegin());
+					char lastch = *(run.m_data.rbegin());
 					if (lastch == '\r' || lastch == '\n' || lastch == '\f' || lastch == '\v') {
 						m_needs_conditional_newline = false;
 						m_needs_conditional_space = false;
@@ -297,7 +306,7 @@ cg_smiltext_renderer::smiltext_changed()
 			}
 			// Handle override textDirection here, by inserting the magic unicode
 			// commands
-			if ((*i).m_direction == smil2::stw_ltro) {
+			if (run.m_direction == smil2::stw_ltro) {
 				lib::logger::get_logger()->debug("cg_smiltext: should do ltro text");
 				[newdata insertString: @"\u202d" atIndex: 0]; // LEFT-TO-RIGHT OVERRIDE
 				[newdata appendString: @"\u202c"]; // POP DIRECTIONAL FORMATTING
@@ -321,9 +330,9 @@ cg_smiltext_renderer::smiltext_changed()
 			CTFontRef text_font = NULL;
 //JNK		NSFont *text_font = NULL;
 			std::vector<std::string>::const_iterator fi;
-			for (fi=(*i).m_font_families.begin(); fi != (*i).m_font_families.end(); fi++) {
+			for (fi=run.m_font_families.begin(); fi != run.m_font_families.end(); fi++) {
 				AM_DBG lib::logger::get_logger()->debug("cg_smiltext: look for font '%s'", (*fi).c_str());
-				text_font = _select_font((*fi).c_str(), (*i).m_font_style, (*i).m_font_weight, (*i).m_font_size);
+				text_font = _select_font((*fi).c_str(), run.m_font_style, run.m_font_weight, run.m_font_size);
 				if (text_font) break;
 				AM_DBG lib::logger::get_logger()->debug("cg_smiltext: not found, try next");
 			}
@@ -334,9 +343,7 @@ cg_smiltext_renderer::smiltext_changed()
 				CFRelease(text_font);
 			}
 
-
 //TBD		[attrs setValue:text_font forKey:NSFontAttributeName];
-			smil2::smiltext_run run = *i;
 			if ( ! run.m_transparent) {
 				// Find color info
 				CGFloat alfa = 1.0;
@@ -381,44 +388,72 @@ cg_smiltext_renderer::smiltext_changed()
 #endif// kCTBackgroundColorAttributeName
 			// Finally do paragraph settings (which are cached)
 			if (m_cur_paragraph_style == NULL ||
-					m_cur_para_align != (*i).m_align ||
-					m_cur_para_writing_mode != (*i).m_writing_mode ||
-					m_cur_para_wrap != (*i).m_wrap) {
+					m_cur_para_align != run.m_align ||
+					m_cur_para_writing_mode != run.m_writing_mode ||
+					m_cur_para_wrap != run.m_wrap) {
 				// Delete the old one, if needed
-				if (m_cur_paragraph_style)
-					[m_cur_paragraph_style release];
+				if (m_cur_paragraph_style != NULL) {
+					CFRelease(m_cur_paragraph_style);
+				}
 				// Remember the values
-				m_cur_para_align = (*i).m_align;
-				m_cur_para_writing_mode = (*i).m_writing_mode;
-				m_cur_para_wrap = (*i).m_wrap;
+				m_cur_para_align = run.m_align;
+				m_cur_para_writing_mode = run.m_writing_mode;
+				m_cur_para_wrap = run.m_wrap;
 				// Allocate the new one
-				CTParagraphStyleRef ps = CTParagraphStyleCreate((const CTParagraphStyleSetting*) NULL, (CFIndex) 0);
+				CTParagraphStyleSetting* settings = NULL;
+				size_t settings_count;
+				void** style_values;
+								
 //JNK			NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle alloc] init];
-				m_cur_paragraph_style = ps;
+//JNK				m_cur_paragraph_style = ps;
 //JNK				m_cur_paragraph_style = [ps retain];
 				// Set the paragraph writing direction
 				if (m_cur_para_writing_mode == smil2::stw_rl_tb) {
-//TBD				[ps setBaseWritingDirection: NSWritingDirectionRightToLeft];
+					add_CTParagraphStyleSetting(&settings, &settings_count, &style_values,
+												kCTParagraphStyleSpecifierBaseWritingDirection,
+												sizeof(CTWritingDirection), 
+												(void*) kCTWritingDirectionRightToLeft);
+//JNK				[ps setBaseWritingDirection: NSWritingDirectionRightToLeft];
 				} else {
 					// All other directions are treated as left-to-right
-///TBD				[ps setBaseWritingDirection: NSWritingDirectionLeftToRight];
+					add_CTParagraphStyleSetting(&settings, &settings_count, &style_values,
+												kCTParagraphStyleSpecifierBaseWritingDirection,
+												sizeof(CTWritingDirection), 
+												(void*) kCTWritingDirectionLeftToRight);
+//JNK				[ps setBaseWritingDirection: NSWritingDirectionLeftToRight];
 				}
 				if (m_params.m_mode != smil2::stm_crawl) {
 					// Set the paragraph text alignment, unless we have moving text
 					switch (m_cur_para_align) {
 					case smil2::sta_start:
 						if (m_cur_para_writing_mode == smil2::stw_rl_tb) {
+							add_CTParagraphStyleSetting(&settings, &settings_count, &style_values,
+														kCTParagraphStyleSpecifierAlignment,
+														sizeof(CTTextAlignment),
+														(void*) kCTRightTextAlignment);
 //TBD							[ps setAlignment: NSRightTextAlignment];
 						} else {
 							// All other directions are treated as left-to-right
+							add_CTParagraphStyleSetting(&settings, &settings_count, &style_values,
+														kCTParagraphStyleSpecifierAlignment,
+														sizeof(CTTextAlignment),
+														(void*) kCTLeftTextAlignment);
 //TBD							[ps setAlignment: NSLeftTextAlignment];
 						}
 						break;
 					case smil2::sta_end:
 						if (m_cur_para_writing_mode == smil2::stw_rl_tb) {
+							add_CTParagraphStyleSetting(&settings, &settings_count, &style_values,
+														kCTParagraphStyleSpecifierAlignment,
+														sizeof(CTTextAlignment),
+														(void*) kCTLeftTextAlignment);
 //TBD							[ps setAlignment: NSLeftTextAlignment];
 						} else {
 							// All other directions are treated as left-to-right
+							add_CTParagraphStyleSetting(&settings, &settings_count, &style_values,
+														kCTParagraphStyleSpecifierAlignment,
+														sizeof(CTTextAlignment),
+														(void*) kCTRightTextAlignment);
 //TBD							[ps setAlignment: NSRightTextAlignment];
 						}
 						break;
@@ -426,24 +461,47 @@ cg_smiltext_renderer::smiltext_changed()
 //TBD						[ps setAlignment: NSLeftTextAlignment];
 						break;
 					case smil2::sta_right:
+						add_CTParagraphStyleSetting(&settings, &settings_count, &style_values,
+													kCTParagraphStyleSpecifierAlignment,
+													sizeof(CTTextAlignment),
+													(void*) kCTRightTextAlignment);
 //TBD						[ps setAlignment: NSRightTextAlignment];
 						break;
 					case smil2::sta_center:
+						add_CTParagraphStyleSetting(&settings, &settings_count, &style_values,
+													kCTParagraphStyleSpecifierAlignment,
+													sizeof(CTTextAlignment),
+													(void*) kCTCenterTextAlignment);
 //TBD						[ps setAlignment: NSCenterTextAlignment];
 						break;
 					}
 				}
 				// Set the paragraph wrap option
-//TBD			if (m_cur_para_wrap)
+				if (m_cur_para_wrap) {
+					add_CTParagraphStyleSetting(&settings, &settings_count, &style_values,
+												kCTParagraphStyleSpecifierLineBreakMode,
+												sizeof(CTLineBreakMode),
+												(void*) kCTLineBreakByWordWrapping);
 //TBD				[ps setLineBreakMode: NSLineBreakByWordWrapping];
-//TBD			else
+				} else {
+					add_CTParagraphStyleSetting(&settings, &settings_count, &style_values,
+												kCTParagraphStyleSpecifierLineBreakMode,
+												sizeof(CTLineBreakMode),
+												(void*) kCTLineBreakByClipping);
 //TBD				[ps setLineBreakMode: NSLineBreakByClipping];
+				}
+				m_cur_paragraph_style = CTParagraphStyleCreate(settings, settings_count);
+				free(settings);
+				free(style_values);
 			}
-//TBD			[attrs setValue:m_cur_paragraph_style forKey:NSParagraphStyleAttributeName];
+			CFDictionaryAddValue (attrs, kCTParagraphStyleAttributeName, m_cur_paragraph_style);
+			
+//TBD		[attrs setValue:m_cur_paragraph_style forKey:NSParagraphStyleAttributeName];
 
 			// Set the attributes
 //TBD		[m_text_storage setAttributes:attrs range:newrange];
 			CFAttributedStringSetAttributes (m_text_storage, newrange, (CFDictionaryRef) attrs, true);
+			CFRelease(attrs);
 											 
 			i++;
 		}
@@ -479,7 +537,7 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	CGRect cg_dstrect = [view  CGRectForAmbulantRect: &dstrect];
 //JNK	NSRect cg_dstrect = [view NSRectForAmbulantRect: &dstrect];
 	CGPoint visible_origin = CGPointMake(CGRectGetMinX (cg_dstrect), CGRectGetMinY(cg_dstrect));
-	//JNK	NSPoint visible_origin = NSMakePoint(NSMinX(cg_dstrect), NSMinY(cg_dstrect));
+//JNK	NSPoint visible_origin = NSMakePoint(NSMinX(cg_dstrect), NSMinY(cg_dstrect));
 	CGSize visible_size = CGSizeMake(cg_dstrect.size.width, cg_dstrect.size.height);
 //JNK	NSSize visible_size = NSMakeSize(NSWidth(cg_dstrect), NSHeight(cg_dstrect));
 
@@ -531,6 +589,9 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	CGMutablePathRef path = CGPathCreateMutable();
 	CGPathAddRect(path, NULL, cg_dstrect);
 	CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString(m_text_storage);
+	if (m_frame != NULL) {
+		CFRelease(m_frame);
+	}
 	m_frame = CTFramesetterCreateFrame (framesetter, CFRangeMake(0, 0), path, NULL);
 	CFRelease(framesetter);
 	CFRelease(path);
@@ -641,6 +702,35 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	}
 //JNK	[view unlockFocus];
 	m_lock.leave();
+}
+
+void
+cg_smiltext_renderer::add_CTParagraphStyleSetting(CTParagraphStyleSetting** settings, size_t* count, void*** style_values,
+												  CTParagraphStyleSpecifier spec, size_t value_size, void* value) {
+	// aux. function to fill a dynamic array with CTParagraphStyleSettings.
+	// The actual (opaque) values are stored in another dynamic array 'style_values'.
+	// The 'settings' and 'style_values' arrays are to be free'd after all settings are saved
+	// the CTParagraphStyleCreate.
+	// see: http://lists.apple.com/archives/mac-opengl/2008/Aug/msg00104.html
+	if (settings == NULL || count == NULL || style_values == NULL)
+		return;
+	if (*settings == NULL) {
+		*settings = (CTParagraphStyleSetting*) malloc (sizeof(CTParagraphStyleSetting));
+		*count = 1;
+		*style_values = (void**) malloc(sizeof(void*));
+	} else {
+		*count += 1;
+		*settings = (CTParagraphStyleSetting*) realloc(*settings, sizeof(CTParagraphStyleSetting)*(*count));
+		*style_values = (void**) realloc(*style_values, sizeof(void*)*(*count));
+	}
+	assert(settings);
+	assert(style_values);
+	(*style_values)[*count-1] = value;
+	CTParagraphStyleSetting new_setting;
+	new_setting.spec = spec;
+	new_setting.valueSize = value_size;
+	new_setting.value = &(*style_values)[*count-1];
+	(*settings)[*count-1] = new_setting;
 }
 
 unsigned int
