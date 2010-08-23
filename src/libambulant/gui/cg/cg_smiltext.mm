@@ -42,8 +42,11 @@ namespace gui {
 
 namespace cg {
 
+	typedef struct _CTFont_info { CTFontRef font; CTFontDescriptorRef font_descr; } CTFont_info;
+	
+
 //JNK static NSFont *
-static CTFontRef
+static CTFont_info
 _select_font(const char *family, smil2::smiltext_font_style style, smil2::smiltext_font_weight weight, int size)
 {
 //JNK	NSFont *font = NULL;
@@ -53,6 +56,7 @@ _select_font(const char *family, smil2::smiltext_font_style style, smil2::smilte
 	CTFontSymbolicTraits mask = 0;
 	CTFontSymbolicTraits value = 0;
 	NSString *ffname = NULL;
+	CTFont_info rv = {NULL, NULL};
 
 	if (strcmp(family, "serif") == 0) {
 		ffname = [NSString stringWithUTF8String: "Times"];
@@ -69,7 +73,7 @@ _select_font(const char *family, smil2::smiltext_font_style style, smil2::smilte
 	CTFontDescriptorRef font_descr = CTFontDescriptorCreateWithNameAndSize((CFStringRef) ffname, size);
 	if (font_descr == NULL) {
 		[ffname release];
-		return NULL;
+		return rv;
 	}
 	
 //JNK	if (strcmp(family, "monospace") == 0) mask |= NSFixedPitchFontMask;
@@ -110,8 +114,11 @@ _select_font(const char *family, smil2::smiltext_font_style style, smil2::smilte
 	}
 	font = desired_font;
 	[ffname release];
+	rv.font = font;
+	rv.font_descr = font_descr;
+	return rv;
 //JNK font = [fm fontWithFamily: ffname traits: mask weight: 5 size: size];
-	return font;
+//JNK	return font;
 }
 
 extern const char cg_smiltext_playable_tag[] = "smilText";
@@ -327,23 +334,26 @@ cg_smiltext_renderer::smiltext_changed()
 //JNK		NSMutableDictionary *attrs = [[NSMutableDictionary alloc] init];
 			newrange.length = [newdata length];
 			// Find font info
-			CTFontRef text_font = NULL;
+			CTFont_info text_font_info = {NULL, NULL};
 //JNK		NSFont *text_font = NULL;
 			std::vector<std::string>::const_iterator fi;
 			for (fi=run.m_font_families.begin(); fi != run.m_font_families.end(); fi++) {
 				AM_DBG lib::logger::get_logger()->debug("cg_smiltext: look for font '%s'", (*fi).c_str());
-				text_font = _select_font((*fi).c_str(), run.m_font_style, run.m_font_weight, run.m_font_size);
-				if (text_font) break;
+				text_font_info = _select_font((*fi).c_str(), run.m_font_style, run.m_font_weight, run.m_font_size);
+//JNK			text_font = _select_font((*fi).c_str(), run.m_font_style, run.m_font_weight, run.m_font_size);
+				if (text_font_info.font) break;
 				AM_DBG lib::logger::get_logger()->debug("cg_smiltext: not found, try next");
 			}
-			if (!text_font) {
-//TBD				text_font = [NSFont userFontOfSize: (*i).m_font_size];
-			} else {
-				CFDictionaryAddValue (attrs, kCTFontAttributeName, text_font);
-				CFRelease(text_font);
-			}
 
-//TBD		[attrs setValue:text_font forKey:NSFontAttributeName];
+			if (text_font_info.font != NULL) {
+				CFDictionaryAddValue (attrs, kCTFontAttributeName, text_font_info.font);
+//				CFRelease(text_font_info.font_descr);
+				CFRelease(text_font_info.font);
+			}
+//JNK		if (!text_font) {
+//TBD			text_font = [NSFont userFontOfSize: (*i).m_font_size];
+//JNK		}
+//JNK		[attrs setValue:text_font forKey:NSFontAttributeName];
 			if ( ! run.m_transparent) {
 				// Find color info
 				CGFloat alfa = 1.0;
@@ -585,17 +595,7 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	assert(m_layout_manager);
 	assert(m_text_container);
 	assert(m_text_storage);
-#else // not JNK
-	CGMutablePathRef path = CGPathCreateMutable();
-	CGPathAddRect(path, NULL, cg_dstrect);
-	CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString(m_text_storage);
-	if (m_frame != NULL) {
-		CFRelease(m_frame);
-	}
-	m_frame = CTFramesetterCreateFrame (framesetter, CFRangeMake(0, 0), path, NULL);
-	CFRelease(framesetter);
-	CFRelease(path);
-#endif// not JNK
+#endif// JNK
 
 	// If the layout size has changed (due to smil animation or so) change it
 	if ( ! CGSizeEqualToSize(old_layout_size, layout_size)) {
@@ -646,13 +646,15 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	}
 #endif//TBD
 	// Next compute the layout position of what we want to draw at visible_origin
-	CGPoint logical_origin = CGPointMake(0, 0);
+	CGPoint logical_origin = CGPointMake(visible_origin.x, visible_origin.y);
 //JNK	NSPoint logical_origin = NSMakePoint(0, 0);
 	if (m_params.m_mode == smil2::stm_crawl) {
 		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
-		logical_origin.x += float(now * m_params.m_rate / 1000);
+		logical_origin.x -= float(now * m_params.m_rate / 1000);
+//JNK	logical_origin.x += float(now * m_params.m_rate / 1000);
 		visible_origin.x -= float(now * m_params.m_rate / 1000);
 		// XXX see below
+		visible_size.width *= 2; //XXX should be width of string
 	}
 	if (m_params.m_mode == smil2::stm_scroll) {
 		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
@@ -693,11 +695,20 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 			[m_layout_manager drawBackgroundForGlyphRange: glyph_range atPoint: visible_origin];
 		}
 		[m_layout_manager drawGlyphsForGlyphRange: glyph_range atPoint: visible_origin];
-#else// not JNK
-		CTFrameDraw (m_frame, [view getCGContext]);
-#endif// not JNK
+#endif// JNK
 	}
-//TBD	layout_size = [m_text_container containerSize];
+	CGMutablePathRef path = CGPathCreateMutable();
+//	CGPathAddRect(path, NULL, cg_dstrect);
+	CGPathAddRect(path, NULL, logical_rect);
+	CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString(m_text_storage);
+	if (m_frame != NULL) {
+		CFRelease(m_frame);
+	}
+	m_frame = CTFramesetterCreateFrame (framesetter, CFRangeMake(0, 0), path, NULL);
+	CTFrameDraw (m_frame, [view getCGContext]);
+	CFRelease(framesetter);
+	CFRelease(path);
+	//TBD	layout_size = [m_text_container containerSize];
 	if (m_render_offscreen) {
 	}
 //JNK	[view unlockFocus];
