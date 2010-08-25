@@ -1,3 +1,8 @@
+2010-08-24 14:59  keesblom
+
+	* Added m_font_descr_cache. cg_smiltext_renderer on iPhone is now
+	  free of leaks with NYC-Smiltext.smil
+
 2010-08-23 15:14  keesblom
 
 	* First quickly hacked implementation for scroll and crawl on
