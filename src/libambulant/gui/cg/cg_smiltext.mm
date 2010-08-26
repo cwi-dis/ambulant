@@ -231,6 +231,10 @@ void
 cg_smiltext_renderer::smiltext_changed()
 {
 	m_lock.enter();
+	if (m_dest == NULL) {
+		m_lock.leave();
+		return;
+	}
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	assert(m_text_storage);
 	m_engine.lock();
@@ -482,7 +486,7 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 {
 	m_lock.enter();
 	const rect &r = m_dest->get_rect();
-	AM_DBG logger::get_logger()->debug("cg_smiltext_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	/*AM_DBG*/ logger::get_logger()->debug("cg_smiltext_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 
 	// Determine current position and size.
 	cg_window *cwindow = (cg_window *)window;
@@ -646,6 +650,8 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	if (m_frame != NULL) {
 		CFRelease(m_frame);
 	}
+	/*AM_DBG*/ logger::get_logger()->debug("logical_rect=(%d,%d, %d,%d)", (int) logical_rect.origin.x, (int) logical_rect.origin.y, (int) logical_rect.size.width, (int) logical_rect.size.height);
+	CGContextSetTextMatrix([view getCGContext], CGAffineTransformIdentity);
 	CGMutablePathRef path = CGPathCreateMutable();
 //	CGPathAddRect(path, NULL, cg_dstrect);
 	CGPathAddRect(path, NULL, logical_rect);

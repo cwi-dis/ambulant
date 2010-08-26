@@ -191,6 +191,9 @@ smiltext_engine::_split_into_words(lib::xml_string data, smil2::smiltext_xml_spa
 void
 smiltext_engine::_update() {
 	assert(m_node);
+	if (m_node == NULL) {
+		return;
+	}
 	lib::timer::time_type next_update_needed = 0;
 	AM_DBG lib::logger::get_logger()->debug("smiltext_engine::_update()");
 	m_update_event = NULL;
@@ -397,6 +400,9 @@ smiltext_engine::_get_formatting(smiltext_run& dst, const lib::node *src)
 	if (style) {
 		const lib::node_context *ctx = src->get_context();
 		assert(ctx);
+		if (ctx == NULL) {
+			return;
+		}
 		const lib::node *stylenode = ctx->get_node(style);
 		if (stylenode) {
 			// XXX check that stylenode.tag == textStyle
@@ -796,6 +802,7 @@ smiltext_layout_engine::smiltext_changed() {
 			switch (i->m_command) {
 			default:
 				assert(0);
+				break;
 			case smil2::stc_break:
 				n_nl += 1;
 				m_needs_conditional_space = false;

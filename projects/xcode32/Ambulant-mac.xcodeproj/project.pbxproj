@@ -126,10 +126,11 @@
 		04FB4BB510F6187A0095F275 /* libliveMedia.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656130BCAEA42002C00DF /* libliveMedia.a */; };
 		04FB4BB610F6187C0095F275 /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656140BCAEA42002C00DF /* libUsageEnvironment.a */; };
 		04FB4BBA10F618A80095F275 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04FB4BB910F618A80095F275 /* QuickTime.framework */; };
+		9309F8B91226AEE400F63B7E /* cg_gui.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B04106B79D000A4E37A /* cg_gui.mm */; };
+		9309F8D21226AF9C00F63B7E /* cg_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9309F8D11226AF9C00F63B7E /* cg_smiltext.mm */; };
 		93ECA146121C879500E0BEDE /* cocoa_audio.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652550BCAE3C5002C00DF /* cocoa_audio.mm */; };
 		93ECA147121C879700E0BEDE /* cocoa_dsvideo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652570BCAE3C5002C00DF /* cocoa_dsvideo.mm */; };
 		93ECA148121C879A00E0BEDE /* cocoa_fill.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652590BCAE3C5002C00DF /* cocoa_fill.mm */; };
-		93ECA149121C879E00E0BEDE /* cocoa_gui.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0496525B0BCAE3C5002C00DF /* cocoa_gui.mm */; };
 		93ECA14A121C879F00E0BEDE /* cocoa_html.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0496525D0BCAE3C5002C00DF /* cocoa_html.mm */; };
 		93ECA14B121C87A000E0BEDE /* cocoa_image.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0496525F0BCAE3C5002C00DF /* cocoa_image.mm */; };
 		93ECA14C121C87A200E0BEDE /* cocoa_ink.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652610BCAE3C5002C00DF /* cocoa_ink.mm */; };
@@ -606,6 +607,8 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		8D1107320486CEB800E47090 /* AmbulantPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmbulantPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9309F8D11226AF9C00F63B7E /* cg_smiltext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = cg_smiltext.mm; path = cg/cg_smiltext.mm; sourceTree = "<group>"; };
+		9309F8D31226AFBF00F63B7E /* cg_smiltext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cg_smiltext.h; path = cg/cg_smiltext.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1348,6 +1351,7 @@
 		04D54B00106B79B000A4E37A /* cg */ = {
 			isa = PBXGroup;
 			children = (
+				9309F8D11226AF9C00F63B7E /* cg_smiltext.mm */,
 				04D54B01106B79D000A4E37A /* atsui_text.mm */,
 				04D54B02106B79D000A4E37A /* cg_dsvideo.mm */,
 				04D54B03106B79D000A4E37A /* cg_fill.mm */,
@@ -1362,6 +1366,7 @@
 		04D54B0F106B79DB00A4E37A /* cg */ = {
 			isa = PBXGroup;
 			children = (
+				9309F8D31226AFBF00F63B7E /* cg_smiltext.h */,
 				04D54B10106B79F100A4E37A /* atsui_text.h */,
 				04D54B11106B79F100A4E37A /* cg_dsvideo.h */,
 				04D54B12106B79F100A4E37A /* cg_fill.h */,
@@ -1644,7 +1649,6 @@
 				93ECA146121C879500E0BEDE /* cocoa_audio.mm in Sources */,
 				93ECA147121C879700E0BEDE /* cocoa_dsvideo.mm in Sources */,
 				93ECA148121C879A00E0BEDE /* cocoa_fill.mm in Sources */,
-				93ECA149121C879E00E0BEDE /* cocoa_gui.mm in Sources */,
 				93ECA14A121C879F00E0BEDE /* cocoa_html.mm in Sources */,
 				93ECA14B121C87A000E0BEDE /* cocoa_image.mm in Sources */,
 				93ECA14C121C87A200E0BEDE /* cocoa_ink.mm in Sources */,
@@ -1658,6 +1662,8 @@
 				93ECA165121C881D00E0BEDE /* cg_image.mm in Sources */,
 				93ECA166121C881E00E0BEDE /* cg_renderer.mm in Sources */,
 				93ECA167121C882000E0BEDE /* cg_text.mm in Sources */,
+				9309F8B91226AEE400F63B7E /* cg_gui.mm in Sources */,
+				9309F8D21226AF9C00F63B7E /* cg_smiltext.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

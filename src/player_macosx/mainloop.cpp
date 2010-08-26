@@ -113,7 +113,7 @@ mainloop::init_playable_factory()
 //	pf->add_factory(gui::cg::create_cg_html_playable_factory(this, NULL));
 	pf->add_factory(gui::cg::create_cg_image_playable_factory(this, NULL));
 //	pf->add_factory(gui::cg::create_cg_ink_playable_factory(this, NULL));
-//	pf->add_factory(gui::cg::create_cg_smiltext_playable_factory(this, NULL));
+	pf->add_factory(gui::cg::create_cg_smiltext_playable_factory(this, NULL));
 	pf->add_factory(gui::cg::create_cg_text_playable_factory(this, NULL));
 //	pf->add_factory(gui::cg::create_cg_video_playable_factory(this, NULL));
 #else
