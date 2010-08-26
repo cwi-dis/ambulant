@@ -281,6 +281,7 @@
 		29B97316FDCFA39411CA2CEA /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* player_iphone_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = player_iphone_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* player_iphone-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "player_iphone-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		9309F7C312253D0B00F63B7E /* test.smil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.smil; sourceTree = "<group>"; };
 		931FF38E1201CF52003B632F /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = "../../build-iOS40-Simulator/third_party_packages/installed/lib/libavcodec.a"; sourceTree = SOURCE_ROOT; };
 		931FF38F1201CF52003B632F /* libavdevice.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavdevice.a; path = "../../build-iOS40-Simulator/third_party_packages/installed/lib/libavdevice.a"; sourceTree = SOURCE_ROOT; };
 		931FF3901201CF52003B632F /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = "../../build-iOS40-Simulator/third_party_packages/installed/lib/libavformat.a"; sourceTree = SOURCE_ROOT; };
@@ -874,6 +875,7 @@
 				9331E8FE120DAEB20023B0F1 /* data */,
 				9331E8F9120DAE2A0023B0F1 /* Welcome.smil */,
 				9376B1D6120D9C1500D5019C /* Documents */,
+				9309F7C312253D0B00F63B7E /* test.smil */,
 				93882662121EB7F40038AF71 /* Welcome-smiltext.smil */,
 				9376A9281204C0F400D5019C /* PlaylistView.xib */,
 				937981CC120DE13B00B1A6D2 /* AmbulantWebView.xib */,

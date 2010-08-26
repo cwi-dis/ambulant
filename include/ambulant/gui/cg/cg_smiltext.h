@@ -87,15 +87,12 @@ class cg_smiltext_renderer :
 	void smiltext_changed();
 	void marker_seen(const char *name);
   private:
-	void _add_CTParagraphStyleSetting(CTParagraphStyleSetting** settings, size_t* count, void*** style_values, CTParagraphStyleSpecifier spec, long unsigned int value_size, void* value);
 	unsigned int _compute_rate(smil2::smiltext_align align, lib::size size, lib::rect r,  unsigned int dur); // Must go to engine
-	CTFontRef _select_font(const char *family, smil2::smiltext_font_style style, smil2::smiltext_font_weight weight, int size);
   private:
 	CFMutableAttributedStringRef m_text_storage;
 	CGColorSpaceRef m_rgb_colorspace;
 	CTRunRef m_text_container;
 	CTFrameRef m_frame;
-	CFMutableDictionaryRef m_font_descr_cache;
 	smil2::smiltext_engine m_engine;
 	bool m_needs_conditional_newline;
 	bool m_needs_conditional_space;
