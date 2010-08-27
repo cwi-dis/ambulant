@@ -1,3 +1,17 @@
+2010-08-26 21:47  keesblom
+
+	* cg_smiltext now also works on AmbulantPlayer-MAC
+
+2010-08-26 14:14  keesblom
+
+	* Adapted smiltext.cpp not to crash player in Release mode (assert
+	  disabled)
+
+2010-08-26 12:23  keesblom
+
+	* Simplified cg_smiltext by eliminating some ugly code. It has no
+	  leaks in NYC-Smiltext.smil
+
 2010-08-24 14:59  keesblom
 
 	* Added m_font_descr_cache. cg_smiltext_renderer on iPhone is now
