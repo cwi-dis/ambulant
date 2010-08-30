@@ -503,7 +503,7 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 
 // Determine text container layout size. This depends on the type of container.
 #define INFINITE_WIDTH 1000000
-#define INFINITE_HEIGHT 148
+#define INFINITE_HEIGHT 148 // does not work with Core Text
 	CGContext* context = [view getCGContext];
 	CGRect clipping_path = CGContextGetClipBoundingBox(context);
 	CGSize layout_size = visible_size;
