@@ -41,7 +41,6 @@
 		049650700BCADE62002C00DF /* MyDocument.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0496506A0BCADE62002C00DF /* MyDocument.mm */; };
 		049650710BCADE62002C00DF /* mypreferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0496506C0BCADE62002C00DF /* mypreferences.mm */; };
 		049650740BCADE83002C00DF /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049650720BCADE83002C00DF /* mainloop.cpp */; };
-		049650770BCAE0AE002C00DF /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 049650760BCAE0AE002C00DF /* Info.plist */; };
 		049652F20BCAE3C5002C00DF /* factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0496523E0BCAE3C5002C00DF /* factory.cpp */; };
 		049652F30BCAE3C5002C00DF /* gui_player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0496523F0BCAE3C5002C00DF /* gui_player.cpp */; };
 		049652F40BCAE3C5002C00DF /* plugin_engine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652400BCAE3C5002C00DF /* plugin_engine.cpp */; };
@@ -1541,7 +1540,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				049650770BCAE0AE002C00DF /* Info.plist in Resources */,
 				040EAA200BCE6BFB00DEE37B /* Credits.rtf in Resources */,
 				040EAA220BCE6BFB00DEE37B /* InfoPlist.strings in Resources */,
 				040EAA230BCE6BFB00DEE37B /* MyDocument.nib in Resources */,

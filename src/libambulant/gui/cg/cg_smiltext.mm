@@ -486,7 +486,7 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 {
 	m_lock.enter();
 	const rect &r = m_dest->get_rect();
-	/*AM_DBG*/ logger::get_logger()->debug("cg_smiltext_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	AM_DBG logger::get_logger()->debug("cg_smiltext_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
 
 	// Determine current position and size.
 	cg_window *cwindow = (cg_window *)window;
@@ -503,19 +503,24 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 
 // Determine text container layout size. This depends on the type of container.
 #define INFINITE_WIDTH 1000000
-#define INFINITE_HEIGHT 1000000
+#define INFINITE_HEIGHT 148
+	CGContext* context = [view getCGContext];
+	CGRect clipping_path = CGContextGetClipBoundingBox(context);
 	CGSize layout_size = visible_size;
-//JNK	NSSize layout_size = visible_size;
+	
+	CGContextSaveGState(context);
+	CGContextSetTextMatrix(context, CGAffineTransformIdentity);
+	//JNK	NSSize layout_size = visible_size;
 	bool has_hmovement = false;
 	bool has_vmovement = false;
 	switch(m_params.m_mode) {
 	case smil2::stm_scroll:
 	case smil2::stm_jump:
-		layout_size.height = INFINITE_HEIGHT;
+		layout_size.height = clipping_path.size.height;
 		has_vmovement = true;
 		break;
 	case smil2::stm_crawl:
-		layout_size.width = INFINITE_WIDTH;
+		layout_size.width = INFINITE_WIDTH; // clipping_path.size.width;
 		has_hmovement = true;
 		break;
 	case smil2::stm_replace:
@@ -567,40 +572,49 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	} else if (has_vmovement) {
 		// For scroll and jump, textConceal and textAlign determine vertical position
 		if (m_params.m_text_conceal == smil2::stc_initial || m_params.m_text_conceal == smil2::stc_both) {
-			visible_origin.y += visible_size.height;
+			// Core Text draws using Quartz, which has bottom-up y-dir, thus substract i.o. addition
+			visible_origin.y -= visible_size.height; 
 		} else if (m_params.m_text_place == smil2::stp_from_end) {
-			visible_origin.y += (visible_size.height - firstlineheight);
+			visible_origin.y -= (visible_size.height - firstlineheight);
 		} else if (m_params.m_text_place == smil2::stp_from_center) {
-			visible_origin.y += (visible_size.height - firstlineheight) / 2;
+			visible_origin.y -= (visible_size.height - firstlineheight) / 2;
 		}
 	} else {
 		// For stationary text, textPlace determines vertical position
 		if (m_params.m_text_place == smil2::stp_from_end) {
-			visible_origin.y += (visible_size.height - firstlineheight);
+			visible_origin.y -= (visible_size.height - firstlineheight);
 		} else if (m_params.m_text_place == smil2::stp_from_center) {
-			visible_origin.y += (visible_size.height - firstlineheight) / 2;
+			visible_origin.y -= (visible_size.height - firstlineheight) / 2;
 		}
 
 	}
-#ifdef TBD
 	// If we do auto-scrolling we should now layout the text, so we can determine the rate
 	if (m_engine.is_auto_rate()) {
+#ifdef TBD
 		(void)[m_layout_manager glyphRangeForTextContainer: m_text_container];
 		NSSize nsfull_size = [m_layout_manager usedRectForTextContainer: m_text_container].size;
 		lib::size full_size((int)nsfull_size.width, (int)nsfull_size.height);
-		unsigned int dur = 11; // XXXX
-		smil2::smiltext_align align = m_cur_para_align;
-		unsigned int rate = _compute_rate(align, full_size, r, dur);
-		m_engine.set_rate(rate);
-		m_params = m_engine.get_params();
-	}
 #endif//TBD
+//XXX	lib::size full_size = dstrect.size();
+//XXX	unsigned int dur = 11; // XXXX
+		unsigned int dur = m_engine.get_dur();
+		if (dur > 0) {
+			/*AM_DBG*/ logger::get_logger()->debug("cg_smiltext_renderer.redraw: dur=%d, cg_rect=(%f,%f),(%f,%f)", dur, cg_dstrect.origin.x, cg_dstrect.origin.y, cg_dstrect.size.width, cg_dstrect.size.height);
+			smil2::smiltext_align align = m_cur_para_align;
+			CGRect cg_layout_rect= get_layout_frame_size (m_text_storage, clipping_path, context);
+			lib::size full_size((int)cg_layout_rect.size.width, (int)cg_layout_rect.size.height);
+			unsigned int rate = _compute_rate(align, full_size, dstrect, dur);
+			m_engine.set_rate(rate);
+			m_params = m_engine.get_params();
+		}
+	}
 	// Next compute the layout position of what we want to draw at visible_origin
 	CGPoint logical_origin = CGPointMake(visible_origin.x, visible_origin.y);
 //JNK	NSPoint logical_origin = NSMakePoint(0, 0);
 	if (m_params.m_mode == smil2::stm_crawl) {
 		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
-		logical_origin.x -= float(now * m_params.m_rate / 1000);
+		
+//JNK	logical_origin.x -= float(now * m_params.m_rate / 1000);
 //JNK	logical_origin.x += float(now * m_params.m_rate / 1000);
 		visible_origin.x -= float(now * m_params.m_rate / 1000);
 		// XXX see below
@@ -608,7 +622,11 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	}
 	if (m_params.m_mode == smil2::stm_scroll) {
 		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
-		visible_origin.y -= float(now * m_params.m_rate / 1000);
+//X		static double now=0;
+//X		now += 100;
+		AM_DBG logger::get_logger()->debug("cg_smiltext_renderer.redraw: now=%lf, visible_origin.y=%f", now, visible_origin.y);
+//JNK	visible_origin.y -= float(now * m_params.m_rate / 1000);
+		visible_origin.y += float(now * m_params.m_rate / 1000);
 		if (visible_origin.y < 0) {
 			logical_origin.y -= visible_origin.y;
 			// visible_origin.y = 0;
@@ -650,23 +668,74 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	if (m_frame != NULL) {
 		CFRelease(m_frame);
 	}
-	/*AM_DBG*/ logger::get_logger()->debug("logical_rect=(%d,%d, %d,%d)", (int) logical_rect.origin.x, (int) logical_rect.origin.y, (int) logical_rect.size.width, (int) logical_rect.size.height);
-	CGContextSetTextMatrix([view getCGContext], CGAffineTransformIdentity);
-	CGMutablePathRef path = CGPathCreateMutable();
-//	CGPathAddRect(path, NULL, cg_dstrect);
-	CGPathAddRect(path, NULL, logical_rect);
-	CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString(m_text_storage);
-	m_frame = CTFramesetterCreateFrame (framesetter, CFRangeMake(0, 0), path, NULL);
-	CFRelease(framesetter);
-	CFRelease(path);
+	AM_DBG logger::get_logger()->debug("logical_rect=(%d,%d, %d,%d)", (int) logical_rect.origin.x, (int) logical_rect.origin.y, (int) logical_rect.size.width, (int) logical_rect.size.height);
+
+	CGRect visible_rect = CGRectMake(visible_origin.x, visible_origin.y, logical_rect.size.width, logical_rect.size.height+20);
+	m_frame = create_frame(m_text_storage, visible_rect);
+	CGContextClipToRect(context, cg_dstrect);
 	CTFrameDraw (m_frame, [view getCGContext]);
-	//TBD	layout_size = [m_text_container containerSize];
+	CGContextRestoreGState(context);
+//TBD	layout_size = [m_text_container containerSize];
 	if (m_render_offscreen) {
 	}
 //JNK	[view unlockFocus];
 	m_lock.leave();
 }
 
+CTFrameRef
+cg_smiltext_renderer::create_frame (CFAttributedStringRef cf_astr, CGRect rect) {
+	CTFrameRef frame = NULL;
+	CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString(cf_astr);
+	if (framesetter == NULL) {
+		return NULL;
+	}
+	CGMutablePathRef path = CGPathCreateMutable();
+	if (path != NULL) {
+		/*AM_DBG*/ logger::get_logger()->debug("cg_smiltext_renderer::create_frame: rect=(%d,%d, %d,%d)", (int) rect.origin.x, (int) rect.origin.y, (int) rect.size.width, (int) rect.size.height);
+		CGPathAddRect(path, NULL, rect);
+		frame = CTFramesetterCreateFrame (framesetter, CFRangeMake(0, 0), path, NULL);
+		CFRelease(framesetter);
+	}
+	CFRelease(path);
+	
+	return frame;
+}
+
+CGRect
+cg_smiltext_renderer::get_layout_frame_size (CFAttributedStringRef cf_astr, CGRect arect,  CGContextRef context) {
+	CTFrameRef frame = NULL;
+	CGRect rect = CGRectMake(0.0, 0.0, 0.0, 0.0);
+	CFIndex string_length = CFAttributedStringGetLength (cf_astr);
+	CFRange string_range = CFRangeMake(0, string_length);
+	CFRange substring_range = CFRangeMake(0, 0);
+	CFAttributedStringRef astr =  CFAttributedStringCreateCopy (NULL, cf_astr);
+	
+	//	format the whole string and find the union of all line's bounding boxes
+	do {
+		CFAttributedStringRef old_astr = astr;
+		astr = CFAttributedStringCreateWithSubstring(NULL, old_astr, string_range);
+		if (astr == NULL) {
+			return rect;
+		}
+		CFRelease(old_astr);
+		frame = create_frame (astr, arect);
+		CFArrayRef lines = CTFrameGetLines (frame);
+		CFIndex i = 0, line_count = CFArrayGetCount(lines);
+		for (; i < line_count; i++) {
+			CTLineRef line = (CTLineRef) CFArrayGetValueAtIndex (lines, i);
+			CGFloat ascent, descent, leading;
+			CTLineGetTypographicBounds(line, &ascent, &descent, &leading);
+//			CGRect r = CTLineGetImageBounds(line, context);
+//			rect = CGRectUnion(rect, r);
+			rect.size.height += ascent+descent+leading;
+			substring_range = CTLineGetStringRange(line);
+		}
+		string_range.location += substring_range.location + substring_range.length;
+		string_range.length = string_length - string_range.location;
+	} while (string_range.length > 0);
+	
+	return rect;
+}
 
 unsigned int
 cg_smiltext_renderer::_compute_rate(smil2::smiltext_align align, lib::size size, lib::rect r,  unsigned int dur) {

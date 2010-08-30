@@ -88,6 +88,8 @@ class cg_smiltext_renderer :
 	void marker_seen(const char *name);
   private:
 	unsigned int _compute_rate(smil2::smiltext_align align, lib::size size, lib::rect r,  unsigned int dur); // Must go to engine
+	CTFrameRef create_frame (CFAttributedStringRef cf_astr, CGRect rect);
+	CGRect get_layout_frame_size (CFAttributedStringRef cf_astr, CGRect arect,  CGContextRef context);
   private:
 	CFMutableAttributedStringRef m_text_storage;
 	CGColorSpaceRef m_rgb_colorspace;
