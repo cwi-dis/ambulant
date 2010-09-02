@@ -491,36 +491,40 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	// Determine current position and size.
 	cg_window *cwindow = (cg_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
-//JNK	[view lockFocus]; // XXXJACK Attempt to workaround for problem in WebKitPlugin
-	rect dstrect = r;
-	dstrect.translate(m_dest->get_global_topleft());
-	CGRect cg_dstrect = [view  CGRectForAmbulantRect: &dstrect];
-//JNK	NSRect cg_dstrect = [view NSRectForAmbulantRect: &dstrect];
-	CGPoint visible_origin = CGPointMake(CGRectGetMinX (cg_dstrect), CGRectGetMinY(cg_dstrect));
-//JNK	NSPoint visible_origin = NSMakePoint(NSMinX(cg_dstrect), NSMinY(cg_dstrect));
-	CGSize visible_size = CGSizeMake(cg_dstrect.size.width, cg_dstrect.size.height);
-//JNK	NSSize visible_size = NSMakeSize(NSWidth(cg_dstrect), NSHeight(cg_dstrect));
-
-// Determine text container layout size. This depends on the type of container.
-#define INFINITE_WIDTH 1000000
-#define INFINITE_HEIGHT 148 // does not work with Core Text
-	CGContext* context = [view getCGContext];
-	CGRect clipping_path = CGContextGetClipBoundingBox(context);
-	CGSize layout_size = visible_size;
 	
+	rect final_dst_rect = r; // where the text ultimately will be shown
+	final_dst_rect.translate(m_dest->get_global_topleft()); 
+	CGRect cg_final_dst_rect = [view  CGRectForAmbulantRect: &final_dst_rect];
+	CGPoint cg_origin = CGPointMake(CGRectGetMinX (cg_final_dst_rect), CGRectGetMinY(cg_final_dst_rect));
+	CGSize visible_size = CGSizeMake(cg_final_dst_rect.size.width, cg_final_dst_rect.size.height);
+
+	// Save the graphics state to be restored on return
+	CGContext* context = [view getCGContext];	
 	CGContextSaveGState(context);
 	CGContextSetTextMatrix(context, CGAffineTransformIdentity);
-	//JNK	NSSize layout_size = visible_size;
+	
+	// Format text to get line height and width information
+	if (m_frame!= NULL) {
+		CFRelease(m_frame);
+	}
+	m_frame = create_frame(m_text_storage, cg_final_dst_rect);
+	int firstlineheight = 22; // XXXJACK: should compute this...
+	CGSize layout_size = measure_frame (m_frame, context, &firstlineheight);
+	// Determine text container layout size. This depends on the type of container.
+#define INFINITE_WIDTH 1000000
+//#define INFINITE_HEIGHT 148 // does not work with Core Text
+//	CGSize layout_size = visible_size;
 	bool has_hmovement = false;
 	bool has_vmovement = false;
 	switch(m_params.m_mode) {
 	case smil2::stm_scroll:
 	case smil2::stm_jump:
-		layout_size.height = clipping_path.size.height;
+		layout_size.height = cg_final_dst_rect.size.height; //INFINITE_HEIGHT
 		has_vmovement = true;
 		break;
 	case smil2::stm_crawl:
-		layout_size.width = INFINITE_WIDTH; // clipping_path.size.width;
+		layout_size.width = INFINITE_WIDTH;
+		layout_size.height = firstlineheight;
 		has_hmovement = true;
 		break;
 	case smil2::stm_replace:
@@ -530,158 +534,140 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	}
 
 	CGSize old_layout_size;
-//JNK	NSSize old_layout_size;
-	// Initialize the text engine if we have not already done so.
-#ifdef JNK
-	if (!m_layout_manager) {
-		// Initialize the text engine
-		m_layout_manager = [[NSLayoutManager alloc] init];
-		m_text_container = [[NSTextContainer alloc] initWithContainerSize: layout_size];
-		old_layout_size = layout_size;	// Force resize
-		[m_text_container setHeightTracksTextView: false];
-		[m_text_container setWidthTracksTextView: false];
-		[m_layout_manager addTextContainer:m_text_container];
-		[m_text_container release]; // The layoutManager will retain the textContainer
-		[m_text_storage addLayoutManager:m_layout_manager];
-		[m_layout_manager release]; // The textStorage will retain the layoutManager
-	} else {
-		old_layout_size = [m_text_container containerSize];
-	}
-	assert(m_layout_manager);
-	assert(m_text_container);
-	assert(m_text_storage);
-#endif// JNK
-
 	// If the layout size has changed (due to smil animation or so) change it
 	if ( ! CGSizeEqualToSize(old_layout_size, layout_size)) {
 //JNK	if (!NSEqualSizes(old_layout_size, layout_size)) {
 //TBD		[m_text_container setContainerSize: layout_size];
 	}
-	// Now determine text placement (visible_origin)
-	int firstlineheight = 14; // XXXJACK: should compute this...
+	// Now determine text placement (cg_frame_origin)
 	if (has_hmovement) {
 		// For crawl, textConceal and textPlace determine horizontal position
 		if (m_params.m_text_conceal == smil2::stc_initial || m_params.m_text_conceal == smil2::stc_both) {
-			visible_origin.x += visible_size.width;
+			cg_origin.x += visible_size.width;
 		} else if (m_cur_para_align == smil2::sta_right || m_cur_para_align == smil2::sta_end) {
 			// XXX Incorrect: should look at writing direction...
-			visible_origin.x += visible_size.width;
+			cg_origin.x += visible_size.width;
 		} else if (m_cur_para_align == smil2::sta_center) {
-			visible_origin.x += visible_size.width / 2;
+			cg_origin.x += visible_size.width / 2;
 		}
+		cg_origin.y -= firstlineheight;
 	} else if (has_vmovement) {
 		// For scroll and jump, textConceal and textAlign determine vertical position
 		if (m_params.m_text_conceal == smil2::stc_initial || m_params.m_text_conceal == smil2::stc_both) {
 			// Core Text draws using Quartz, which has bottom-up y-dir, thus substract i.o. addition
-			visible_origin.y -= visible_size.height; 
+			cg_origin.y += visible_size.height; 
 		} else if (m_params.m_text_place == smil2::stp_from_end) {
-			visible_origin.y -= (visible_size.height - firstlineheight);
+			cg_origin.y += (visible_size.height - firstlineheight);
 		} else if (m_params.m_text_place == smil2::stp_from_center) {
-			visible_origin.y -= (visible_size.height - firstlineheight) / 2;
+			cg_origin.y += (visible_size.height - firstlineheight) / 2;
 		}
 	} else {
 		// For stationary text, textPlace determines vertical position
 		if (m_params.m_text_place == smil2::stp_from_end) {
-			visible_origin.y -= (visible_size.height - firstlineheight);
+			cg_origin.y += (visible_size.height - firstlineheight);
 		} else if (m_params.m_text_place == smil2::stp_from_center) {
-			visible_origin.y -= (visible_size.height - firstlineheight) / 2;
+			cg_origin.y += (visible_size.height - firstlineheight) / 2;
 		}
-
 	}
 	// If we do auto-scrolling we should now layout the text, so we can determine the rate
 	if (m_engine.is_auto_rate()) {
-#ifdef TBD
-		(void)[m_layout_manager glyphRangeForTextContainer: m_text_container];
-		NSSize nsfull_size = [m_layout_manager usedRectForTextContainer: m_text_container].size;
-		lib::size full_size((int)nsfull_size.width, (int)nsfull_size.height);
-#endif//TBD
-//XXX	lib::size full_size = dstrect.size();
-//XXX	unsigned int dur = 11; // XXXX
 		unsigned int dur = m_engine.get_dur();
 		if (dur > 0) {
-			/*AM_DBG*/ logger::get_logger()->debug("cg_smiltext_renderer.redraw: dur=%d, cg_rect=(%f,%f),(%f,%f)", dur, cg_dstrect.origin.x, cg_dstrect.origin.y, cg_dstrect.size.width, cg_dstrect.size.height);
+			AM_DBG logger::get_logger()->debug("cg_smiltext_renderer.redraw: dur=%d, cg_final_dst_rect=(%f,%f),(%f,%f)", dur, cg_final_dst_rect.origin.x, cg_final_dst_rect.origin.y, cg_final_dst_rect.size.width, cg_final_dst_rect.size.height);
 			smil2::smiltext_align align = m_cur_para_align;
-			CGRect cg_layout_rect= get_layout_frame_size (m_text_storage, clipping_path, context);
-			lib::size full_size((int)cg_layout_rect.size.width, (int)cg_layout_rect.size.height);
-			unsigned int rate = _compute_rate(align, full_size, dstrect, dur);
+			CGRect layout_rect = CGRectMake(0,0,  layout_size.width, layout_size.height);
+			CGSize cg_layout_size = get_layout_frame_size (m_text_storage, layout_rect, context);
+			lib::size full_size( (int) cg_layout_size.width, (int) cg_layout_size.height);
+			unsigned int rate = _compute_rate(align, full_size, final_dst_rect, dur);
 			m_engine.set_rate(rate);
 			m_params = m_engine.get_params();
 		}
 	}
-	// Next compute the layout position of what we want to draw at visible_origin
-	CGPoint logical_origin = CGPointMake(visible_origin.x, visible_origin.y);
-//JNK	NSPoint logical_origin = NSMakePoint(0, 0);
+	// Next compute the layout position of what we want to draw at cg_frame_origin
 	if (m_params.m_mode == smil2::stm_crawl) {
 		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
 		
-//JNK	logical_origin.x -= float(now * m_params.m_rate / 1000);
-//JNK	logical_origin.x += float(now * m_params.m_rate / 1000);
-		visible_origin.x -= float(now * m_params.m_rate / 1000);
-		// XXX see below
-		visible_size.width *= 2; //XXX should be width of string
+		cg_origin.x -= float(now * m_params.m_rate / 1000);
 	}
 	if (m_params.m_mode == smil2::stm_scroll) {
 		double now = m_event_processor->get_timer()->elapsed() - m_epoch;
 //X		static double now=0;
 //X		now += 100;
-		AM_DBG logger::get_logger()->debug("cg_smiltext_renderer.redraw: now=%lf, visible_origin.y=%f", now, visible_origin.y);
-//JNK	visible_origin.y -= float(now * m_params.m_rate / 1000);
-		visible_origin.y += float(now * m_params.m_rate / 1000);
-		if (visible_origin.y < 0) {
-			logical_origin.y -= visible_origin.y;
-			// visible_origin.y = 0;
-		}
-	}
-	AM_DBG logger::get_logger()->debug("cg_smiltext_renderer.redraw at cg-point (%f, %f) logical (%f, %f)", visible_origin.x, visible_origin.y, logical_origin.x, logical_origin.y);
-	if (m_render_offscreen) {
+		AM_DBG logger::get_logger()->debug("cg_smiltext_renderer.redraw: now=%lf, cg_origin.y=%f", now, cg_origin.y);
+		cg_origin.y += float(now * m_params.m_rate / 1000);
 	}
 	// Now we need to determine which glyphs to draw. Unfortunately glyphRangeForBoundingRect gives us
 	// full lines (which is apparently more efficient, google for details) which is not good enough
 	// for ticker tape, so we adjust.
-	CGRect logical_rect = CGRectMake(logical_origin.x, logical_origin.y, visible_size.width, visible_size.height);
-//JNK	NSRect logical_rect = NSMakeRect(logical_origin.x, logical_origin.y, visible_size.width, visible_size.height);
-	CFRange glyph_range = CTFrameGetVisibleStringRange(m_frame);
-//JNK	NSRange glyph_range = [m_layout_manager glyphRangeForBoundingRect: logical_rect inTextContainer: m_text_container];
-	AM_DBG NSLog(@"Glyph range was %d, %d, origin-x %f", glyph_range.location, glyph_range.length, logical_origin.x);
-	if (glyph_range.location >= 0 && glyph_range.length > 0) {
-#ifdef JNK
-		if (m_any_semiopaque_bg) {
-			// Background opacity 1.0 is implemented correctly in NSLayoutManager, but intermediate
-			// values are a bit funny: they still override the underlying image (i.e. they don't
-			// use NSCompositeSourceOver or something similar. Therefore, if this is the case we
-			// draw the background color to a separate buffer and bitblit this onto the existing
-			// bits.
-			NSImage *tmpsrc = [view getTransitionTmpSurface];
-			[tmpsrc lockFocus];
-			[[NSColor colorWithDeviceWhite: 1.0f alpha: 0.0f] set];
-			NSRectFill(cg_dstrect);
-			[m_layout_manager drawBackgroundForGlyphRange: glyph_range atPoint: visible_origin];
-			[tmpsrc unlockFocus];
-			[tmpsrc drawInRect: cg_dstrect fromRect: cg_dstrect operation: NSCompositeSourceOver fraction: 1.0f];
-		} else {
-			// Otherwise we simply let NSLayoutManager do the work
-			[m_layout_manager drawBackgroundForGlyphRange: glyph_range atPoint: visible_origin];
-		}
-		[m_layout_manager drawGlyphsForGlyphRange: glyph_range atPoint: visible_origin];
-#endif// JNK
-	}
 	if (m_frame != NULL) {
 		CFRelease(m_frame);
 	}
-	AM_DBG logger::get_logger()->debug("logical_rect=(%d,%d, %d,%d)", (int) logical_rect.origin.x, (int) logical_rect.origin.y, (int) logical_rect.size.width, (int) logical_rect.size.height);
-
-	CGRect visible_rect = CGRectMake(visible_origin.x, visible_origin.y, logical_rect.size.width, logical_rect.size.height+20);
-	m_frame = create_frame(m_text_storage, visible_rect);
-	CGContextClipToRect(context, cg_dstrect);
-	CTFrameDraw (m_frame, [view getCGContext]);
+	CGRect cg_frame_rect = CGRectMake(cg_origin.x, cg_origin.y, visible_size.width, visible_size.height);
+	if (m_params.m_mode == smil2::stm_crawl) {
+		cg_frame_rect.size.width = INFINITE_WIDTH;
+	}
+	AM_DBG logger::get_logger()->debug("cg_frame_rect=(%d,%d, %d,%d)", (int) cg_frame_rect.origin.x, (int) cg_frame_rect.origin.y, (int) cg_frame_rect.size.width, (int) cg_frame_rect.size.height);
+//	m_frame = create_frame(m_text_storage, cg_final_dst_rect);
+	m_frame = create_frame(m_text_storage, cg_frame_rect);
+	CGContextClipToRect(context, cg_final_dst_rect);
+//	CGAffineTransform CTM = CGContextGetCTM(context);
+//	CGContextTranslateCTM(context, cg_origin.x-cg_final_dst_rect.origin.x, cg_origin.y-cg_final_dst_rect.origin.y);
+	CTFrameDraw (m_frame, context);
 	CGContextRestoreGState(context);
-//TBD	layout_size = [m_text_container containerSize];
 	if (m_render_offscreen) {
 	}
-//JNK	[view unlockFocus];
 	m_lock.leave();
 }
 
+CGSize
+cg_smiltext_renderer::measure_frame(CTFrameRef frame, CGContext* cgContext, int* first_line_height) {
+	// adapted from: http://lists.apple.com/archives/quartz-dev/2008/Mar/msg00079.html
+	CGPathRef framePath = CTFrameGetPath(frame);
+	CGRect frameRect = CGPathGetBoundingBox(framePath);
+	
+	CFArrayRef lines = CTFrameGetLines(frame);
+	CFIndex numLines = CFArrayGetCount(lines);
+	
+	CGFloat maxWidth = 0;
+	CGFloat textHeight = 0;
+	
+	// Now run through each line determining the maximum width of all the lines.
+	// We special case the last line of text. While we've got it's descent handy,
+	// we'll use it to calculate the typographic height of the text as well.
+	CFIndex lastLineIndex = numLines - 1;
+	for (CFIndex index = 0; index < numLines; index++) {
+		CGFloat ascent, descent, leading, width;
+		CTLineRef line = (CTLineRef) CFArrayGetValueAtIndex(lines, index);
+		width = CTLineGetTypographicBounds(line, &ascent,  &descent, &leading);
+		
+		if (width > maxWidth) {
+			maxWidth = width;
+		}
+		if (index == 0 & first_line_height != NULL) {
+//			CGPoint first_line_origin;
+//			CTFrameGetLineOrigins(frame, CFRangeMake(0, 1), &first_line_origin);			
+//			*first_line_height = CGRectGetMaxY(frameRect) - first_line_origin.y + descent;
+			*first_line_height = (int) ceil (ascent+descent+leading);
+		}
+		if(index == lastLineIndex) {
+			// Get the origin of the last line. We add the descent to this
+			// (below) to get the bottom edge of the last line of text.
+			CGPoint lastLineOrigin;
+			CTFrameGetLineOrigins(frame, CFRangeMake(lastLineIndex, 1), &lastLineOrigin);
+			
+			// The height needed to draw the text is from the bottom of the last line
+			// to the top of the frame.
+			textHeight =  CGRectGetMaxY(frameRect) - lastLineOrigin.y + descent;
+		}
+	}
+		
+	// For some text the exact typographic bounds is a fraction of a point too
+	// small to fit the text when it is put into a context. We go ahead and round
+	// the returned drawing area up to the nearest point.  This takes care of the
+	// discrepencies.
+	return CGSizeMake(ceil(maxWidth), ceil(textHeight));
+}
+																												   
 CTFrameRef
 cg_smiltext_renderer::create_frame (CFAttributedStringRef cf_astr, CGRect rect) {
 	CTFrameRef frame = NULL;
@@ -691,7 +677,7 @@ cg_smiltext_renderer::create_frame (CFAttributedStringRef cf_astr, CGRect rect) 
 	}
 	CGMutablePathRef path = CGPathCreateMutable();
 	if (path != NULL) {
-		/*AM_DBG*/ logger::get_logger()->debug("cg_smiltext_renderer::create_frame: rect=(%d,%d, %d,%d)", (int) rect.origin.x, (int) rect.origin.y, (int) rect.size.width, (int) rect.size.height);
+		AM_DBG logger::get_logger()->debug("cg_smiltext_renderer::create_frame: rect=(%d,%d, %d,%d)", (int) rect.origin.x, (int) rect.origin.y, (int) rect.size.width, (int) rect.size.height);
 		CGPathAddRect(path, NULL, rect);
 		frame = CTFramesetterCreateFrame (framesetter, CFRangeMake(0, 0), path, NULL);
 		CFRelease(framesetter);
@@ -701,7 +687,7 @@ cg_smiltext_renderer::create_frame (CFAttributedStringRef cf_astr, CGRect rect) 
 	return frame;
 }
 
-CGRect
+CGSize
 cg_smiltext_renderer::get_layout_frame_size (CFAttributedStringRef cf_astr, CGRect arect,  CGContextRef context) {
 	CTFrameRef frame = NULL;
 	CGRect rect = CGRectMake(0.0, 0.0, 0.0, 0.0);
@@ -715,26 +701,38 @@ cg_smiltext_renderer::get_layout_frame_size (CFAttributedStringRef cf_astr, CGRe
 		CFAttributedStringRef old_astr = astr;
 		astr = CFAttributedStringCreateWithSubstring(NULL, old_astr, string_range);
 		if (astr == NULL) {
-			return rect;
+			return rect.size;
 		}
+		NSLog(@"get_layout_frame_size: astr=%@", (NSString*) astr);
 		CFRelease(old_astr);
 		frame = create_frame (astr, arect);
+		if (frame == NULL) {
+			NSLog(@"get_layout_frame_size: returning (%f,%f)", rect.size.width, rect.size.height);
+			return rect.size;
+		}
 		CFArrayRef lines = CTFrameGetLines (frame);
+		if (lines == NULL || CFArrayGetCount(lines) == 0) {
+			NSLog(@"get_layout_frame_size: returning (%f,%f)", rect.size.width, rect.size.height);
+			return rect.size;
+		}
+		CGRect line_rect = CGRectMake(0.0, 0.0, 0.0, 0.0);
 		CFIndex i = 0, line_count = CFArrayGetCount(lines);
 		for (; i < line_count; i++) {
 			CTLineRef line = (CTLineRef) CFArrayGetValueAtIndex (lines, i);
 			CGFloat ascent, descent, leading;
-			CTLineGetTypographicBounds(line, &ascent, &descent, &leading);
-//			CGRect r = CTLineGetImageBounds(line, context);
+			line_rect.size.width = CTLineGetTypographicBounds(line, &ascent, &descent, &leading);
+			line_rect = CTLineGetImageBounds(line, context);
 //			rect = CGRectUnion(rect, r);
 			rect.size.height += ascent+descent+leading;
+			rect.size.width += line_rect.size.width;
 			substring_range = CTLineGetStringRange(line);
 		}
 		string_range.location += substring_range.location + substring_range.length;
 		string_range.length = string_length - string_range.location;
 	} while (string_range.length > 0);
 	
-	return rect;
+	NSLog(@"get_layout_frame_size: returning (%f,%f)", rect.size.width, rect.size.height);
+	return rect.size;
 }
 
 unsigned int

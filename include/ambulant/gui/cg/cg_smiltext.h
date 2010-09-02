@@ -89,7 +89,8 @@ class cg_smiltext_renderer :
   private:
 	unsigned int _compute_rate(smil2::smiltext_align align, lib::size size, lib::rect r,  unsigned int dur); // Must go to engine
 	CTFrameRef create_frame (CFAttributedStringRef cf_astr, CGRect rect);
-	CGRect get_layout_frame_size (CFAttributedStringRef cf_astr, CGRect arect,  CGContextRef context);
+	CGSize get_layout_frame_size (CFAttributedStringRef cf_astr, CGRect arect,  CGContextRef context);
+	CGSize measure_frame(CTFrameRef frame, CGContext* cgContext, int* first_line_height);
   private:
 	CFMutableAttributedStringRef m_text_storage;
 	CGColorSpaceRef m_rgb_colorspace;
@@ -108,6 +109,9 @@ class cg_smiltext_renderer :
 	bool m_any_semiopaque_bg;			// True if any backgroundOpacity != 1.0 is used
 	critical_section m_lock;
 };
+	
+#ifdef __OBJC__
+#endif//__OBJC__
 
 } // namespace cg
 
