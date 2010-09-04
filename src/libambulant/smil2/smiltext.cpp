@@ -451,6 +451,7 @@ smiltext_engine::_get_formatting(smiltext_run& dst, const lib::node *src)
 		if (strcmp(font_size, "xx-small") == 0) dst.m_font_size = 8;
 		else if (strcmp(font_size, "x-small") == 0) dst.m_font_size = 10;
 		else if (strcmp(font_size, "small") == 0) dst.m_font_size = 12;
+		else if (strcmp(font_size, "medium") == 0) dst.m_font_size = 14;
 		else if (strcmp(font_size, "normal") == 0) dst.m_font_size = 14;
 		else if (strcmp(font_size, "large") == 0) dst.m_font_size = 16;
 		else if (strcmp(font_size, "x-large") == 0) dst.m_font_size = 18;
