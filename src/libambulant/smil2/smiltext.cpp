@@ -190,10 +190,10 @@ smiltext_engine::_split_into_words(lib::xml_string data, smil2::smiltext_xml_spa
 
 void
 smiltext_engine::_update() {
-	assert(m_node);
-	if (m_node == NULL) {
+	if (m_node == NULL || m_run_stack.empty()) {
 		return;
 	}
+	assert(m_node);
 	lib::timer::time_type next_update_needed = 0;
 	AM_DBG lib::logger::get_logger()->debug("smiltext_engine::_update()");
 	m_update_event = NULL;
