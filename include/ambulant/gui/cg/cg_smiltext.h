@@ -89,13 +89,13 @@ class cg_smiltext_renderer :
   private:
 	unsigned int _compute_rate(smil2::smiltext_align align, lib::size size, lib::rect r,  unsigned int dur); // Must go to engine
 	CTFrameRef create_frame (CFAttributedStringRef cf_astr, CGRect rect);
-	CGSize get_layout_frame_size (CFAttributedStringRef cf_astr, CGRect arect,  CGContextRef context);
 	CGSize measure_frame(CTFrameRef frame, CGContext* cgContext, int* first_line_height);
   private:
 	CFMutableAttributedStringRef m_text_storage;
 	CGColorSpaceRef m_rgb_colorspace;
-	CTRunRef m_text_container;
+//	CTRunRef m_text_container;
 	CTFrameRef m_frame;
+	CGPoint m_cg_origin;
 	smil2::smiltext_engine m_engine;
 	bool m_needs_conditional_newline;
 	bool m_needs_conditional_space;
