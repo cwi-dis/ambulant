@@ -1,3 +1,17 @@
+2010-09-05 02:04  keesblom
+
+	* Added optimization to layout a cg_smiltext frame once after
+	  change
+
+2010-09-05 02:00  keesblom
+
+	* Avoiding some assert's that may happen on iPhone when player
+	  stops
+
+2010-09-04 21:48  keesblom
+
+	* Added textFontSize="medium" as defined in SMIL 3.0 par.8.4.1
+
 2010-09-02 23:43  keesblom
 
 	* smiltext on iPhone now works properly with crawl and scroll
