@@ -323,7 +323,8 @@ cg_smiltext_renderer::smiltext_changed()
 
 			newrange.length = [newdata length];
 
-			if (newrange.length > 0) {
+			if (newrange.length > 0) { // optimization: do not layput if nothing changed
+				//XXXX Kees: this is probably not correct when attributes are changed by state/animation
 				if (m_frame != NULL) {
 					CFRelease(m_frame);
 					m_frame = NULL; //trigger complete redraw
