@@ -97,7 +97,7 @@ _select_font(const char *family, smil2::smiltext_font_style style, smil2::smilte
 			break;
 	}
 	font = CTFontCreateWithFontDescriptor(font_descr, size, NULL);
-	AM_DBG NSLog(@"cg_smiltext_renderer::_select_font(%s) 4 font=0x%x font_descr=0x%x#%ld", family, font, font_descr, font_descr != NULL ? CFGetRetainCount(font_descr):0);
+	AM_DBG NSLog(@"cg_smiltext_renderer::_select_font(%s) font=0x%x font_descr=0x%x#%ld", family, font, font_descr, font_descr != NULL ? CFGetRetainCount(font_descr):0);
 	if (font != NULL) {
 		CTFontRef desired_font = CTFontCreateCopyWithSymbolicTraits(font, 0.0, NULL, value, mask);
 #if 0 // releasing `font_descr` here, where we don't use anymore, will cause a crash; thus, it is returned 
@@ -105,12 +105,12 @@ _select_font(const char *family, smil2::smiltext_font_style style, smil2::smilte
 	  // it is no longer used by the caller.
 		CFRelease(font_descr);
 #endif	
-		if (desired_font != font) {
+		if (desired_font != NULL) {
 			CFRelease(font);
+			font = desired_font;
 		}
-		font = desired_font;
 	}
-	AM_DBG NSLog(@"cg_smiltext_renderer::_select_font(%s) returns {font=0x%x#%ld font_descr=0x%x#%ld", family, font, font != NULL ? CFGetRetainCount(font):0, font_descr, font_descr != NULL ? CFGetRetainCount(font_descr):0);
+	AM_DBG lib::logger::get_logger()->debug("cg_smiltext_renderer::_select_font(%s) returns {font=0x%x#%ld font_descr=0x%x#%ld", family, font, font != NULL ? CFGetRetainCount(font):0, font_descr, font_descr != NULL ? CFGetRetainCount(font_descr):0);
 	rv.font = font;
 	rv.font_descr = font_descr;
 	return rv;
@@ -259,7 +259,7 @@ cg_smiltext_renderer::smiltext_changed()
 		}
 		while (i != m_engine.end()) { // loop over smiltext_runs
 			smil2::smiltext_run run = *i;
-			AM_DBG lib::logger::get_logger()->debug("cg_smiltext: another run");
+			AM_DBG lib::logger::get_logger()->debug("cg_smiltext_changed: another run");
 			CFRange newrange;
 
 			// Add the new characters
@@ -321,142 +321,148 @@ cg_smiltext_renderer::smiltext_changed()
 			}
 			CFAttributedStringReplaceString (m_text_storage, newrange, (CFStringRef) newdata);
 
-			// Prepare for setting the attribute info
-			CFMutableDictionaryRef attrs =
+			newrange.length = [newdata length];
+
+			if (newrange.length > 0) {
+				if (m_frame != NULL) {
+					CFRelease(m_frame);
+					m_frame = NULL; //trigger complete redraw
+				}				
+				// Prepare for setting the attribute info
+				CFMutableDictionaryRef attrs =
 				CFDictionaryCreateMutable(kCFAllocatorDefault,
 										  0/*inifite*/,
 										  &kCFTypeDictionaryKeyCallBacks,
 										  &kCFTypeDictionaryValueCallBacks);
-			newrange.length = [newdata length];
+				// Find font info
+				CTFont_info text_font = {NULL, NULL};
+				std::vector<std::string>::const_iterator fi;
 
-			// Find font info
-			CTFont_info text_font = {NULL, NULL};
-			std::vector<std::string>::const_iterator fi;
-
-			for (fi=run.m_font_families.begin(); fi != run.m_font_families.end(); fi++) {
-				AM_DBG lib::logger::get_logger()->debug("cg_smiltext: look for font '%s'", (*fi).c_str());
-				text_font = _select_font((*fi).c_str(), run.m_font_style, run.m_font_weight, run.m_font_size);
-				if (text_font.font) break;
-				AM_DBG lib::logger::get_logger()->debug("cg_smiltext: not found, try next");
-				if (text_font.font_descr != NULL) {
-					CFRelease(text_font.font_descr);
-					text_font.font_descr = NULL;
-				}
-			}
-			if (text_font.font != NULL) {
-				CFDictionaryAddValue (attrs, kCTFontAttributeName, text_font.font);
-				CFRelease(text_font.font);
-			}
-			if (text_font.font_descr != NULL) {
-				CFRelease(text_font.font_descr);
-			}
-			if ( ! run.m_transparent) {
-				// Find color info
-				CGFloat alfa = 1.0;
-				const common::region_info *ri = m_dest->get_info();
-				if (ri) alfa = ri->get_mediaopacity();
-				CGFloat fg_components[] = { redf(run.m_color),
-											greenf(run.m_color),
-											bluef(run.m_color),
-											alfa};
-				CGColorRef run_fg_color = CGColorCreate(m_rgb_colorspace, fg_components);
-				CFDictionaryAddValue (attrs, kCTForegroundColorAttributeName, run_fg_color);
-				CGColorRelease(run_fg_color);
-			}
-#ifdef kCTBackgroundColorAttributeName /* no text background in iOS4.0 */
-			if ( ! run.m_bg_transparent) {
-				// Find background color info
-				CGFloat alfa = 1.0;
-				const common::region_info *ri = m_dest->get_info();
-				if (ri) alfa = ri->get_mediabgopacity();
-				if (alfa != 1.0)
-					m_any_semiopaque_bg = true;
-				CGFloat bg_components[] = {	redf(run.m_bg_color),
-											greenf(run.m_bg_color),
-											bluef(run.m_bg_color),
-											alfa};
-				CGColorRef run_bg_color = CGColorCreate(m_rgb_colorspace, bg_components);
-				CFDictionaryAddValue (attrs, kCTBackgroundColorAttributeName, run_bg_color);
-				CGColorRelease(run_bg_color);
-			}
-#endif// kCTBackgroundColorAttributeName
-			
-			// Finally do paragraph settings (which are cached)
-			if (m_cur_paragraph_style == NULL ||
-					m_cur_para_align != run.m_align ||
-					m_cur_para_writing_mode != run.m_writing_mode ||
-					m_cur_para_wrap != run.m_wrap) {
-				// Delete the old one, if needed
-				if (m_cur_paragraph_style != NULL) {
-					CFRelease(m_cur_paragraph_style);
-				}
-				// Remember the values
-				m_cur_para_align = run.m_align;
-				m_cur_para_writing_mode = run.m_writing_mode;
-				m_cur_para_wrap = run.m_wrap;
-
-				// Allocate the new one
-				// see: http://lists.apple.com/archives/mac-opengl/2008/Aug/msg00104.html
-				CTWritingDirection writing_direction = kCTWritingDirectionNatural;
-				CTLineBreakMode line_break_mode = kCTLineBreakByWordWrapping; 
-				CTTextAlignment text_alignment = kCTNaturalTextAlignment;
-								
-				// Set the paragraph writing direction
-				if (m_cur_para_writing_mode == smil2::stw_rl_tb) {
-					writing_direction = kCTWritingDirectionRightToLeft;
-				} else {
-					// All other directions are treated as left-to-right
-					writing_direction = kCTWritingDirectionLeftToRight;
-				}
-				if (m_params.m_mode != smil2::stm_crawl) {
-					// Set the paragraph text alignment, unless we have moving text
-					switch (m_cur_para_align) {
-					case smil2::sta_start:
-						if (m_cur_para_writing_mode == smil2::stw_rl_tb) {
-							text_alignment = kCTRightTextAlignment;
-						} else {
-							// All other directions are treated as left-to-right
-							text_alignment = kCTLeftTextAlignment;
-						}
-						break;
-					case smil2::sta_end:
-						if (m_cur_para_writing_mode == smil2::stw_rl_tb) {
-							text_alignment = kCTLeftTextAlignment;
-						} else {
-							// All other directions are treated as left-to-right
-							text_alignment = kCTRightTextAlignment;
-						}
-						break;
-					case smil2::sta_left:
-						text_alignment = kCTLeftTextAlignment;
-						break;
-					case smil2::sta_right:
-						text_alignment = kCTRightTextAlignment;
-						break;
-					case smil2::sta_center:
-						text_alignment = kCTCenterTextAlignment;
-						break;
+				for (fi=run.m_font_families.begin(); fi != run.m_font_families.end(); fi++) {
+					AM_DBG lib::logger::get_logger()->debug("cg_smiltext_changed: look for font '%s'", (*fi).c_str());
+					text_font = _select_font((*fi).c_str(), run.m_font_style, run.m_font_weight, run.m_font_size);
+					if (text_font.font) break;
+					AM_DBG lib::logger::get_logger()->debug("cg_smiltext_changed: not found, try next");
+					if (text_font.font_descr != NULL) {
+						CFRelease(text_font.font_descr);
+						text_font.font_descr = NULL;
 					}
 				}
-				// Set the paragraph wrap option
-				if (m_cur_para_wrap) {
-					line_break_mode = kCTLineBreakByWordWrapping;
-				} else {
-					line_break_mode = kCTLineBreakByClipping;					
+				if (text_font.font != NULL) {
+					CFDictionaryAddValue (attrs, kCTFontAttributeName, text_font.font);
+					CFRelease(text_font.font);
 				}
-				CTParagraphStyleSetting settings[] = {
-					{kCTParagraphStyleSpecifierAlignment, sizeof(text_alignment), &text_alignment },
-					{kCTParagraphStyleSpecifierLineBreakMode, sizeof(line_break_mode), &line_break_mode },
-					{kCTParagraphStyleSpecifierBaseWritingDirection, sizeof(writing_direction), &writing_direction }
-				};
-				m_cur_paragraph_style = CTParagraphStyleCreate(settings, sizeof(settings)/sizeof(settings[0]));
-			}
-			CFDictionaryAddValue (attrs, kCTParagraphStyleAttributeName, m_cur_paragraph_style);
+				if (text_font.font_descr != NULL) {
+					CFRelease(text_font.font_descr);
+				}
+				if ( ! run.m_transparent) {
+					// Find color info
+					CGFloat alfa = 1.0;
+					const common::region_info *ri = m_dest->get_info();
+					if (ri) alfa = ri->get_mediaopacity();
+					CGFloat fg_components[] = { redf(run.m_color),
+												greenf(run.m_color),
+												bluef(run.m_color),
+												alfa};
+					CGColorRef run_fg_color = CGColorCreate(m_rgb_colorspace, fg_components);
+					CFDictionaryAddValue (attrs, kCTForegroundColorAttributeName, run_fg_color);
+					CGColorRelease(run_fg_color);
+				}
+#ifdef kCTBackgroundColorAttributeName /* no text background in iOS4.0 */
+				if ( ! run.m_bg_transparent) {
+					// Find background color info
+					CGFloat alfa = 1.0;
+					const common::region_info *ri = m_dest->get_info();
+					if (ri) alfa = ri->get_mediabgopacity();
+					if (alfa != 1.0)
+						m_any_semiopaque_bg = true;
+					CGFloat bg_components[] = {	redf(run.m_bg_color),
+												greenf(run.m_bg_color),
+												bluef(run.m_bg_color),
+												alfa};
+					CGColorRef run_bg_color = CGColorCreate(m_rgb_colorspace, bg_components);
+					CFDictionaryAddValue (attrs, kCTBackgroundColorAttributeName, run_bg_color);
+					CGColorRelease(run_bg_color);
+				}
+#endif// kCTBackgroundColorAttributeName
 			
-			// Set the attributes
-			CFAttributedStringSetAttributes (m_text_storage, newrange, (CFDictionaryRef) attrs, true);
-			CFDictionaryRemoveAllValues(attrs);
-			CFRelease(attrs);
+				// Finally do paragraph settings (which are cached)
+				if (m_cur_paragraph_style == NULL ||
+						m_cur_para_align != run.m_align ||
+						m_cur_para_writing_mode != run.m_writing_mode ||
+						m_cur_para_wrap != run.m_wrap) {
+					// Delete the old one, if needed
+					if (m_cur_paragraph_style != NULL) {
+						CFRelease(m_cur_paragraph_style);
+					}
+					// Remember the values
+					m_cur_para_align = run.m_align;
+					m_cur_para_writing_mode = run.m_writing_mode;
+					m_cur_para_wrap = run.m_wrap;
+
+					// Allocate the new one
+					// see: http://lists.apple.com/archives/mac-opengl/2008/Aug/msg00104.html
+					CTWritingDirection writing_direction = kCTWritingDirectionNatural;
+					CTLineBreakMode line_break_mode = kCTLineBreakByWordWrapping; 
+					CTTextAlignment text_alignment = kCTNaturalTextAlignment;
+								
+					// Set the paragraph writing direction
+					if (m_cur_para_writing_mode == smil2::stw_rl_tb) {
+						writing_direction = kCTWritingDirectionRightToLeft;
+					} else {
+						// All other directions are treated as left-to-right
+						writing_direction = kCTWritingDirectionLeftToRight;
+					}
+					if (m_params.m_mode != smil2::stm_crawl) {
+						// Set the paragraph text alignment, unless we have moving text
+						switch (m_cur_para_align) {
+							case smil2::sta_start:
+								if (m_cur_para_writing_mode == smil2::stw_rl_tb) {
+									text_alignment = kCTRightTextAlignment;
+								} else {
+									// All other directions are treated as left-to-right
+									text_alignment = kCTLeftTextAlignment;
+								}
+								break;
+							case smil2::sta_end:
+								if (m_cur_para_writing_mode == smil2::stw_rl_tb) {
+									text_alignment = kCTLeftTextAlignment;
+								} else {
+									// All other directions are treated as left-to-right
+									text_alignment = kCTRightTextAlignment;
+								}
+								break;
+							case smil2::sta_left:
+								text_alignment = kCTLeftTextAlignment;
+								break;
+							case smil2::sta_right:
+								text_alignment = kCTRightTextAlignment;
+								break;
+							case smil2::sta_center:
+								text_alignment = kCTCenterTextAlignment;
+								break;
+						}
+					}
+					// Set the paragraph wrap option
+					if (m_cur_para_wrap) {
+						line_break_mode = kCTLineBreakByWordWrapping;
+					} else {
+						line_break_mode = kCTLineBreakByClipping;					
+					}
+					CTParagraphStyleSetting settings[] = {
+						{kCTParagraphStyleSpecifierAlignment, sizeof(text_alignment), &text_alignment },
+						{kCTParagraphStyleSpecifierLineBreakMode, sizeof(line_break_mode), &line_break_mode },
+						{kCTParagraphStyleSpecifierBaseWritingDirection, sizeof(writing_direction), &writing_direction }
+					};
+					m_cur_paragraph_style = CTParagraphStyleCreate(settings, sizeof(settings)/sizeof(settings[0]));
+				}
+				CFDictionaryAddValue (attrs, kCTParagraphStyleAttributeName, m_cur_paragraph_style);
+			
+				// Set the attributes
+				CFAttributedStringSetAttributes (m_text_storage, newrange, (CFDictionaryRef) attrs, true);
+				CFDictionaryRemoveAllValues(attrs);
+				CFRelease(attrs);
+			} // newrange > 0
 											 
 			i++;
 		} // loop over smiltext_runs
@@ -470,14 +476,10 @@ cg_smiltext_renderer::smiltext_changed()
 			//NSLog(@"cg_smiltext_changed: m_text_storage=%@", (NSString*) m_text_storage);
 		}
 	} else {
-		AM_DBG lib::logger::get_logger()->debug("cg_smiltext::smiltext_changed: nothing changed");
+		AM_DBG lib::logger::get_logger()->debug("cg_smiltext_changed: nothing changed");
 	} // m_engine.is_changed()
 	bool finished = m_engine.is_finished();
 	m_engine.unlock();
-	if (m_frame != NULL) {
-		CFRelease(m_frame);
-		m_frame = NULL; //trigger complete redraw
-	}
 	[pool release];
 	m_lock.leave();
 	m_dest->need_redraw();
@@ -685,9 +687,9 @@ cg_smiltext_renderer::create_frame (CFAttributedStringRef cf_astr, CGRect rect) 
 		AM_DBG logger::get_logger()->debug("cg_smiltext_renderer::create_frame: rect=(%d,%d, %d,%d)", (int) rect.origin.x, (int) rect.origin.y, (int) rect.size.width, (int) rect.size.height);
 		CGPathAddRect(path, NULL, rect);
 		frame = CTFramesetterCreateFrame (framesetter, CFRangeMake(0, 0), path, NULL);
-		CFRelease(framesetter);
+		CFRelease(path);
 	}
-	CFRelease(path);
+	CFRelease(framesetter);
 	
 	return frame;
 }
