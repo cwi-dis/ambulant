@@ -1,3 +1,12 @@
+2010-09-06 17:20  keesblom
+
+	* Added a note aboout cases where an optimization is incorrect
+
+2010-09-06 13:41  keesblom
+
+	* Fixed cg_smiltext layout optimization and made cg_smiltext
+	  leak-free.
+
 2010-09-05 02:04  keesblom
 
 	* Added optimization to layout a cg_smiltext frame once after
