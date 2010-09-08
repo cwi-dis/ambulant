@@ -90,6 +90,7 @@ class cg_smiltext_renderer :
 	unsigned int _compute_rate(smil2::smiltext_align align, lib::size size, lib::rect r,  unsigned int dur); // Must go to engine
 	CTFrameRef create_frame (CFAttributedStringRef cf_astr, CGRect rect);
 	CGSize measure_frame(CTFrameRef frame, CGContext* cgContext, int* first_line_height);
+	bool attributes_are_changed(common::surface* surf);
   private:
 	CFMutableAttributedStringRef m_text_storage;
 	CGColorSpaceRef m_rgb_colorspace;
@@ -107,6 +108,11 @@ class cg_smiltext_renderer :
 	bool m_render_offscreen;			// True if m_params does not allows rendering in-place
 	lib::timer::time_type m_epoch;
 	bool m_any_semiopaque_bg;			// True if any backgroundOpacity != 1.0 is used
+
+	// animatables
+	lib::color_t m_current_bgcolor;
+	lib::point  m_top_left;
+	
 	critical_section m_lock;
 };
 	

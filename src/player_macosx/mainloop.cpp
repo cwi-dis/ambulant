@@ -113,9 +113,13 @@ mainloop::init_playable_factory()
 //	pf->add_factory(gui::cg::create_cg_html_playable_factory(this, NULL));
 	pf->add_factory(gui::cg::create_cg_image_playable_factory(this, NULL));
 //	pf->add_factory(gui::cg::create_cg_ink_playable_factory(this, NULL));
+#ifdef WITH_SMIL30
 	pf->add_factory(gui::cg::create_cg_smiltext_playable_factory(this, NULL));
+#endif
 	pf->add_factory(gui::cg::create_cg_text_playable_factory(this, NULL));
-//	pf->add_factory(gui::cg::create_cg_video_playable_factory(this, NULL));
+#ifdef	WITH_AVFOUNDATION
+	pf->add_factory(gui::cg::create_cg_avfoundation_video_playable_factory(this, NULL));
+#endif//WITH_AVFOUNDATION
 #else
 	pf->add_factory(gui::cocoa::create_cocoa_audio_playable_factory(this, NULL));
 	pf->add_factory(gui::cocoa::create_cocoa_dsvideo_playable_factory(this, NULL));

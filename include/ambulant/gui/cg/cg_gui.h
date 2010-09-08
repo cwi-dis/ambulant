@@ -111,6 +111,9 @@ class cg_gui_screen : public common::gui_screen {
 
 AMBULANTAPI common::window_factory *create_cg_window_factory(void *view);
 common::playable_factory *create_cg_dsvideo_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+#ifdef	WITH_AVFOUNDATION
+common::playable_factory *create_cg_avfoundation_video_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+#endif//WITH_AVFOUNDATION
 common::playable_factory *create_cg_fill_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 //common::playable_factory *create_cg_html_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 common::playable_factory *create_cg_image_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);

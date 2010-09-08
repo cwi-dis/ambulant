@@ -41,6 +41,7 @@
 		049650700BCADE62002C00DF /* MyDocument.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0496506A0BCADE62002C00DF /* MyDocument.mm */; };
 		049650710BCADE62002C00DF /* mypreferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0496506C0BCADE62002C00DF /* mypreferences.mm */; };
 		049650740BCADE83002C00DF /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049650720BCADE83002C00DF /* mainloop.cpp */; };
+		049650770BCAE0AE002C00DF /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 049650760BCAE0AE002C00DF /* Info.plist */; };
 		049652F20BCAE3C5002C00DF /* factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0496523E0BCAE3C5002C00DF /* factory.cpp */; };
 		049652F30BCAE3C5002C00DF /* gui_player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0496523F0BCAE3C5002C00DF /* gui_player.cpp */; };
 		049652F40BCAE3C5002C00DF /* plugin_engine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 049652400BCAE3C5002C00DF /* plugin_engine.cpp */; };
@@ -125,6 +126,7 @@
 		04FB4BB510F6187A0095F275 /* libliveMedia.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656130BCAEA42002C00DF /* libliveMedia.a */; };
 		04FB4BB610F6187C0095F275 /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656140BCAEA42002C00DF /* libUsageEnvironment.a */; };
 		04FB4BBA10F618A80095F275 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04FB4BB910F618A80095F275 /* QuickTime.framework */; };
+		93090269123521F200F63B7E /* cg_avfoundation_video.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93090268123521F200F63B7E /* cg_avfoundation_video.mm */; };
 		9309F8B91226AEE400F63B7E /* cg_gui.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B04106B79D000A4E37A /* cg_gui.mm */; };
 		9309F8D21226AF9C00F63B7E /* cg_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9309F8D11226AF9C00F63B7E /* cg_smiltext.mm */; };
 		93ECA146121C879500E0BEDE /* cocoa_audio.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652550BCAE3C5002C00DF /* cocoa_audio.mm */; };
@@ -606,6 +608,8 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		8D1107320486CEB800E47090 /* AmbulantPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmbulantPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9309026712351F4700F63B7E /* cg_avfoundation_video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cg_avfoundation_video.h; path = cg/cg_avfoundation_video.h; sourceTree = "<group>"; };
+		93090268123521F200F63B7E /* cg_avfoundation_video.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = cg_avfoundation_video.mm; path = cg/cg_avfoundation_video.mm; sourceTree = "<group>"; };
 		9309F8D11226AF9C00F63B7E /* cg_smiltext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = cg_smiltext.mm; path = cg/cg_smiltext.mm; sourceTree = "<group>"; };
 		9309F8D31226AFBF00F63B7E /* cg_smiltext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cg_smiltext.h; path = cg/cg_smiltext.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1350,6 +1354,7 @@
 		04D54B00106B79B000A4E37A /* cg */ = {
 			isa = PBXGroup;
 			children = (
+				93090268123521F200F63B7E /* cg_avfoundation_video.mm */,
 				9309F8D11226AF9C00F63B7E /* cg_smiltext.mm */,
 				04D54B01106B79D000A4E37A /* atsui_text.mm */,
 				04D54B02106B79D000A4E37A /* cg_dsvideo.mm */,
@@ -1365,6 +1370,7 @@
 		04D54B0F106B79DB00A4E37A /* cg */ = {
 			isa = PBXGroup;
 			children = (
+				9309026712351F4700F63B7E /* cg_avfoundation_video.h */,
 				9309F8D31226AFBF00F63B7E /* cg_smiltext.h */,
 				04D54B10106B79F100A4E37A /* atsui_text.h */,
 				04D54B11106B79F100A4E37A /* cg_dsvideo.h */,
@@ -1540,6 +1546,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				049650770BCAE0AE002C00DF /* Info.plist in Resources */,
 				040EAA200BCE6BFB00DEE37B /* Credits.rtf in Resources */,
 				040EAA220BCE6BFB00DEE37B /* InfoPlist.strings in Resources */,
 				040EAA230BCE6BFB00DEE37B /* MyDocument.nib in Resources */,
@@ -1662,6 +1669,7 @@
 				93ECA167121C882000E0BEDE /* cg_text.mm in Sources */,
 				9309F8B91226AEE400F63B7E /* cg_gui.mm in Sources */,
 				9309F8D21226AF9C00F63B7E /* cg_smiltext.mm in Sources */,
+				93090269123521F200F63B7E /* cg_avfoundation_video.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2002,6 +2010,7 @@
 					"WITH_CLOCK_SYNC=1",
 					"WITH_FFMPEG_LIBSWSCALE=1",
 					"WITH_COCOA=1",
+					WITH_AVFOUNDATION,
 				);
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (

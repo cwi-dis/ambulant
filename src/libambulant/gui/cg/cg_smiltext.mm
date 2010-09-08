@@ -44,7 +44,7 @@ namespace gui {
 namespace cg {	
 			
 extern const char cg_smiltext_playable_tag[] = "smilText";
-extern const char cg_smiltext_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererCG");
+extern const char cg_smiltext_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererCoreGraphics");
 extern const char cg_smiltext_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererSmilText");
 			
 typedef struct _CTFont_info { CTFontRef font; CTFontDescriptorRef font_descr; } CTFont_info; //aux.
@@ -150,7 +150,9 @@ cg_smiltext_renderer::cg_smiltext_renderer(
 	m_cur_para_align(smil2::sta_start),
 	m_cur_para_writing_mode(smil2::stw_lr_tb),
 	m_cur_para_wrap(true),
-	m_any_semiopaque_bg(false)
+	m_any_semiopaque_bg(false),
+	m_current_bgcolor(0),
+	m_top_left()
 {
 	m_text_storage = CFAttributedStringCreateMutable(NULL, 0);
 	m_rgb_colorspace = CGColorSpaceCreateDeviceRGB();
@@ -323,11 +325,12 @@ cg_smiltext_renderer::smiltext_changed()
 
 			newrange.length = [newdata length];
 
-			if (newrange.length > 0) { // optimization: do not layput if nothing changed
-				//XXXX Kees: this is probably not correct when attributes are changed by state/animation
+			// optimization: skip layout if nothing really has changed
+			if (attributes_are_changed(m_dest) || newrange.length > 0) {
+				// recompute all attributes and store them together with the text in m_text_storage
 				if (m_frame != NULL) {
 					CFRelease(m_frame);
-					m_frame = NULL; //trigger complete redraw
+					m_frame = NULL; // trigger complete redraw
 				}				
 				// Prepare for setting the attribute info
 				CFMutableDictionaryRef attrs =
@@ -463,7 +466,7 @@ cg_smiltext_renderer::smiltext_changed()
 				CFAttributedStringSetAttributes (m_text_storage, newrange, (CFDictionaryRef) attrs, true);
 				CFDictionaryRemoveAllValues(attrs);
 				CFRelease(attrs);
-			} // newrange > 0
+			} // attributes_changed || newrange > 0
 											 
 			i++;
 		} // loop over smiltext_runs
@@ -501,7 +504,9 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	
 	// Core Graphics (cg_...) uses Carthesian X/Y coordinate system, ambulant (am_...) uses Top-Bottom-Width-Height
 	rect am_final_dst_rect = r; // where the text ultimately will be shown
-	am_final_dst_rect.translate(m_dest->get_global_topleft());
+	lib::point am_top_left = m_dest->get_global_topleft();
+	am_final_dst_rect.translate(am_top_left);
+	AM_DBG logger::get_logger()->debug("cg_smiltext_renderer.redraw(0x%x, am_final_dst_rect=(%d,%d,%d,%d)", (void *)this, am_final_dst_rect.left(), am_final_dst_rect.top(), am_final_dst_rect.right(), am_final_dst_rect.bottom());
 	CGRect cg_final_dst_rect = [view  CGRectForAmbulantRect: &am_final_dst_rect];
 
 	// Save the graphics state to be restored on return
@@ -512,10 +517,12 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	
 #define INFINITE_WIDTH 1000000
 #define INFINITE_HEIGHT 1000000
-	CGRect cg_frame_rect = CGRectMake( cg_final_dst_rect.origin.x,  cg_final_dst_rect.origin.y,  cg_final_dst_rect.size.width,  cg_final_dst_rect.size.height);
-	if (m_frame == NULL) {
+	CGRect cg_frame_rect = CGRectMake(cg_final_dst_rect.origin.x,cg_final_dst_rect.origin.y, cg_final_dst_rect.size.width, cg_final_dst_rect.size.height);
+	if (m_frame == NULL || am_top_left.x != m_top_left.x || am_top_left.y != m_top_left.y) {
+		m_top_left.x = am_top_left.x;
+		m_top_left.y = am_top_left.y;
 		// Format text go get line height and width information, will be drawn later
-		m_cg_origin = CGPointMake(0,0);
+		m_cg_origin = CGPointMake(0,0);//(cg_final_dst_rect.origin.x, cg_final_dst_rect.origin.y);
 
 		if (m_params.m_mode == smil2::stm_crawl) {
 			cg_frame_rect.size.width = INFINITE_WIDTH;
@@ -695,6 +702,36 @@ cg_smiltext_renderer::create_frame (CFAttributedStringRef cf_astr, CGRect rect) 
 	return frame;
 }
 
+bool
+cg_smiltext_renderer::attributes_are_changed(common::surface* surf) {
+	// check ALL animatable attributes for changes, and remember ALL current attributes as member variables.
+	// return true if ANY attribute value was changed.
+	bool rv = false;
+	 
+	if (surf == NULL) {
+		assert(surf == NULL);
+		return rv;
+	}
+	// top, left
+	lib::point top_left = surf->get_global_topleft();
+	if (m_top_left.x != top_left.x || m_top_left.y != top_left.y) {
+		m_top_left = top_left;
+		rv |= true;
+	}
+	const common::region_info* ri = surf->get_info();
+	if (ri == NULL) {
+		assert(ri == NULL);
+		return rv;
+	}
+	// background color
+	lib::color_t current_bgcolor = ri->get_bgcolor();
+	if (current_bgcolor != m_current_bgcolor) {
+		m_current_bgcolor = current_bgcolor;
+		rv |= true;
+	}
+	return rv;
+}
+	
 unsigned int
 cg_smiltext_renderer::_compute_rate(smil2::smiltext_align align, lib::size size, lib::rect r,  unsigned int dur) {
 	// First find the distance to travel during scroll for various values
