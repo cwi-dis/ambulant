@@ -1,3 +1,8 @@
+2010-09-08 16:19  keesblom
+
+	* Added a check for animation in CG smiltext and tested for
+	  attributeName="top"
+
 2010-09-06 17:20  keesblom
 
 	* Added a note aboout cases where an optimization is incorrect
