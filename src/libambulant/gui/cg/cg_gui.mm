@@ -353,7 +353,11 @@ bad:
 
 - (void) syncDisplayIfNeeded: (id) dummy
 {
+#ifdef WITH_UIKIT
 	[self setNeedsDisplay];
+#else // AppKit
+	[self setNeedsDisplay:true];
+#endif
 #if UIKIT_NOT_YET
 	[self display];
 #endif

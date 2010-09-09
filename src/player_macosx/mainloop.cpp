@@ -79,7 +79,11 @@ mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *a
 	common::preferences *prefs = common::preferences::get_preferences();
 	get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererOpen"));
 	if (!prefs->m_prefer_ffmpeg)
+#ifdef	WITH_AVFOUNDATION
+		get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererAVFoundation"));
+#else //WITH_AVFOUNDATION
 		get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererQuickTime"));
+#endif//WITH_AVFOUNDATION
 
 	ambulant::net::url url = ambulant::net::url::from_url(urlstr);
 	m_doc = create_document(url);
@@ -117,9 +121,6 @@ mainloop::init_playable_factory()
 	pf->add_factory(gui::cg::create_cg_smiltext_playable_factory(this, NULL));
 #endif
 	pf->add_factory(gui::cg::create_cg_text_playable_factory(this, NULL));
-#ifdef	WITH_AVFOUNDATION
-	pf->add_factory(gui::cg::create_cg_avfoundation_video_playable_factory(this, NULL));
-#endif//WITH_AVFOUNDATION
 #else
 	pf->add_factory(gui::cocoa::create_cocoa_audio_playable_factory(this, NULL));
 	pf->add_factory(gui::cocoa::create_cocoa_dsvideo_playable_factory(this, NULL));

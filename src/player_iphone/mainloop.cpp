@@ -76,9 +76,10 @@ mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *a
 
     // Order the factories according to the preferences
     common::preferences *prefs = common::preferences::get_preferences();
+	prefs->m_prefer_ffmpeg = false; //XXX
     get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererOpen"));
     if (!prefs->m_prefer_ffmpeg)
-        get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererQuickTime"))    ;   
+        get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererAVFoundation"))    ;   
 	
 	ambulant::net::url url = ambulant::net::url::from_url(urlstr);
 	m_doc = create_document(url);
@@ -127,8 +128,10 @@ mainloop::init_playable_factory()
 //	pf->add_factory(gui::cg::create_cg_ink_playable_factory(this, NULL));
 	pf->add_factory(gui::cg::create_cg_smiltext_playable_factory(this, NULL));
 	pf->add_factory(gui::cg::create_cg_text_playable_factory(this, NULL));
-//	pf->add_factory(gui::cg::create_cg_video_playable_factory(this, NULL));
-#else
+#ifdef	WITH_AVFOUNDATION
+	pf->add_factory(gui::cg::create_cg_avfoundation_video_playable_factory(this, NULL));
+#endif//WITH_AVFOUNDATION
+#else//WITH_CG
 	pf->add_factory(gui::cocoa::create_cocoa_audio_playable_factory(this, NULL));
 	pf->add_factory(gui::cocoa::create_cocoa_dsvideo_playable_factory(this, NULL));
 	pf->add_factory(gui::cocoa::create_cocoa_fill_playable_factory(this, NULL));
