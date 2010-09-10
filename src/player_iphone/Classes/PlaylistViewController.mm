@@ -44,7 +44,8 @@
 }
 
 - (IBAction) playVideoTests {
-	[self.delegate playIt:self selected:@"http://ambulantPlayer.org/Demos/VideoTests/VideoTests.smil"];	
+//	[self.delegate playIt:self selected:@"http://ambulantPlayer.org/Demos/VideoTests/VideoTests.smil"];	
+	[self.delegate playIt:self selected:@"http://homepages.cwi.nl/~kees/ambulant/VideoTests2+3.smil"];	
 }
 
 - (IBAction) playPanZoom {
