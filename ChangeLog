@@ -1,3 +1,7 @@
+2010-09-10 14:22  keesblom
+
+	* First video fragment seen w. AVFoundation and sound too.
+
 2010-09-09 17:33  keesblom
 
 	* Started native video renderer (AVFoundation) on iPhone. Now video
