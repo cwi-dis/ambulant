@@ -48,6 +48,9 @@
 		9364105D123920510046B567 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9364105C123920510046B567 /* AVFoundation.framework */; };
 		93641064123920E10046B567 /* cg_avfoundation_video.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93641063123920E10046B567 /* cg_avfoundation_video.mm */; };
 		93641065123920E10046B567 /* cg_avfoundation_video.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93641063123920E10046B567 /* cg_avfoundation_video.mm */; };
+		9364129D123ABD260046B567 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9364105C123920510046B567 /* AVFoundation.framework */; };
+		936415F3123F95710046B567 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 936415F2123F95710046B567 /* CoreMedia.framework */; };
+		93641600123F95780046B567 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 936415F2123F95710046B567 /* CoreMedia.framework */; };
 		9376A8D91204A94300D5019C /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9376A8D01204A94300D5019C /* libavcodec.a */; };
 		9376A8DA1204A94300D5019C /* libavdevice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9376A8D11204A94300D5019C /* libavdevice.a */; };
 		9376A8DB1204A94300D5019C /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9376A8D21204A94300D5019C /* libavformat.a */; };
@@ -315,6 +318,7 @@
 		9364105C123920510046B567 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		93641063123920E10046B567 /* cg_avfoundation_video.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = cg_avfoundation_video.mm; path = cg/cg_avfoundation_video.mm; sourceTree = "<group>"; };
 		93641066123921030046B567 /* cg_avfoundation_video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cg_avfoundation_video.h; path = cg/cg_avfoundation_video.h; sourceTree = "<group>"; };
+		936415F2123F95710046B567 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		9376A8D01204A94300D5019C /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = "../../build-iOS40-Device/third_party_packages/installed/lib/libavcodec.a"; sourceTree = SOURCE_ROOT; };
 		9376A8D11204A94300D5019C /* libavdevice.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavdevice.a; path = "../../build-iOS40-Device/third_party_packages/installed/lib/libavdevice.a"; sourceTree = SOURCE_ROOT; };
 		9376A8D21204A94300D5019C /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = "../../build-iOS40-Device/third_party_packages/installed/lib/libavformat.a"; sourceTree = SOURCE_ROOT; };
@@ -783,6 +787,8 @@
 				93EC9E4E1219868D00E0BEDE /* libUsageEnvironment.a in Frameworks */,
 				04879626121BE048007B4D0F /* libxml2.a in Frameworks */,
 				04ABF6E6121C30B8009B0528 /* CoreText.framework in Frameworks */,
+				9364129D123ABD260046B567 /* AVFoundation.framework in Frameworks */,
+				93641600123F95780046B567 /* CoreMedia.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -830,6 +836,7 @@
 				93EC9F58121AAFDC00E0BEDE /* CoreText.framework in Frameworks */,
 				04879624121BE025007B4D0F /* libxml2.a in Frameworks */,
 				9364105D123920510046B567 /* AVFoundation.framework in Frameworks */,
+				936415F3123F95710046B567 /* CoreMedia.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -910,6 +917,7 @@
 				931FF3D31201CFF9003B632F /* QuartzCore.framework */,
 				93EC9F57121AAFDC00E0BEDE /* CoreText.framework */,
 				9364105C123920510046B567 /* AVFoundation.framework */,
+				936415F2123F95710046B567 /* CoreMedia.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1969,7 +1977,6 @@
 					"WITH_CG=1",
 					"WITH_UIKIT=1",
 					"WITH_EXTERNAL_DOM=1",
-					"AM_PREFER_FFMPEG=1",
 					"WITH_FFMPEG=1",
 					"WITH_EXPAT=1",
 					"WITH_FFMPEG_AVFORMAT=1",
@@ -1979,6 +1986,7 @@
 					"WITH_CLOCK_SYNC=1",
 					"WITH_SDL=1",
 					"WITH_LIVE=1",
+					"WITH_AVFOUNDATION=1",
 				);
 				GCC_THREADSAFE_STATICS = YES;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;

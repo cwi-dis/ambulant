@@ -517,7 +517,7 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	
 #define INFINITE_WIDTH 1000000
 #define INFINITE_HEIGHT 1000000
-	CGRect cg_frame_rect = CGRectMake(cg_final_dst_rect.origin.x,cg_final_dst_rect.origin.y, cg_final_dst_rect.size.width, cg_final_dst_rect.size.height);
+	CGRect cg_frame_rect = cg_final_dst_rect;
 	if (m_frame == NULL || am_top_left.x != m_top_left.x || am_top_left.y != m_top_left.y) {
 		m_top_left.x = am_top_left.x;
 		m_top_left.y = am_top_left.y;

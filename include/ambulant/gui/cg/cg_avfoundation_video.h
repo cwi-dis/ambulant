@@ -60,11 +60,11 @@ class cg_avfoundation_video_renderer :
 	void post_stop() {}
 	void init_with_node(const lib::node *n);
 	void preroll(double when, double where, double how_much) {}
-	void pause(pause_display d=display_show) {}
-	void resume() {}
+	void pause(pause_display d=display_show);
+	void resume();
 	void seek(double t) {}
-	
-	common::duration get_dur() {}
+
+	common::duration get_dur() {return common::duration(false, 0);}
 	
 	void redraw(const rect &dirty, gui_window *window);
 	void set_intransition(const lib::transition_info *info) {} 
@@ -77,7 +77,9 @@ private:
 //X	QTMovieView *m_movie_view;	// The view displaying the movie
 	AVPlayer* m_avplayer;				// The avplayer itself
 	AVPlayerLayer* m_avplayer_layer;	// The AVPlayerLayer where video is displayed
+	CALayer* m_superlayer;				// The CALayer to which m_avplayer_layer is added
 	UIView* m_avplayer_view;			// The view for the avplayer
+	size m_srcsize;						// size of this view
 	void *m_mc;							// Our helper ObjC class to run methods in the main thread
 	bool m_paused;
 	net::timestamp_t m_previous_clip_position; // Where we are officially positioned

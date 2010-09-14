@@ -192,8 +192,12 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 - (void)ambulantNeedEvents: (bool) want;
 
 - (CGContextRef) getCGContext;
+// Core Graphics (cg_...) uses Carthesian X/Y coordinate system, ambulant (am_...) uses Top-Bottom-Width-Height
+// On iPhone, X/Y is used by Core Graphics, TBWL by ambulant, UIView and Core Animation. 
 - (CGRect) CGRectForAmbulantRect: (const ambulant::lib::rect *)arect;
+- (CGRect) CGRectForAmbulantRectForLayout: (const ambulant::lib::rect *) arect;
 - (ambulant::lib::rect) ambulantRectForCGRect: (const CGRect *)nsrect;
+- (ambulant::lib::rect) ambulantRectForCGRectForLayout: (const CGRect *)nsrect;
 
 - (void) asyncRedrawForAmbulantRect: (NSRectHolder *)arect;
 - (void) syncDisplayIfNeeded: (id) dummy;

@@ -310,7 +310,7 @@ bad:
 #endif
 }
 
-- (CGRect) CGRectForAmbulantRect: (const ambulant::lib::rect *)arect
+- (CGRect) CGRectForAmbulantRect: (const ambulant::lib::rect *) arect
 {
 #ifdef USE_COCOA_BOTLEFT
 	float bot_delta = CGRectGetMaxY(CGRectFromViewRect([self bounds])) - arect->bottom();
@@ -318,6 +318,11 @@ bad:
 #else
 	return CGRectMake(arect->left(), arect->top(), arect->width(), arect->height());
 #endif
+}
+
+- (CGRect) CGRectForAmbulantRectForLayout: (const ambulant::lib::rect *) arect
+{
+	return CGRectMake(arect->left(), arect->top(), arect->width(), arect->height());
 }
 
 - (ambulant::lib::rect) ambulantRectForCGRect: (const CGRect *)nsrect
@@ -334,6 +339,15 @@ bad:
 
 #endif
 	return arect;
+}
+
+- (ambulant::lib::rect) ambulantRectForCGRectForLayout: (const CGRect *)nsrect
+{
+	assert(false); // defined and implemented for completeness, but not tested yet. 
+	ambulant::lib::rect arect = ambulant::lib::rect(
+		ambulant::lib::point(int(CGRectGetMinX(*nsrect)), int(CGRectGetMaxY(*nsrect))),
+		ambulant::lib::size(int(CGRectGetWidth(*nsrect)), int(CGRectGetHeight(*nsrect))));
+	return arect;	
 }
 
 - (void) asyncRedrawForAmbulantRect: (NSRectHolder *)arect

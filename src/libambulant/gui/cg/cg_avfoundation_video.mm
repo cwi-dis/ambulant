@@ -96,6 +96,13 @@ cg_avfoundation_video_renderer::~cg_avfoundation_video_renderer()
 {
 	m_lock.enter();
 	AM_DBG logger::get_logger()->debug("~cg_avfoundation_video_renderer(0x%x)", (void *)this);
+	if (m_avplayer_layer != NULL) {
+		m_avplayer_layer == NULL;
+	}
+	if (m_avplayer != NULL) {
+		[m_avplayer release];
+		m_avplayer = NULL;
+	}
 	m_lock.leave();
 }
 	
@@ -107,7 +114,8 @@ cg_avfoundation_video_renderer::init_with_node(const lib::node *n)
 	renderer_playable::init_with_node(n);
 	assert(m_renderer_state == rs_created || m_renderer_state == rs_prerolled || m_renderer_state == rs_stopped || m_renderer_state == rs_fullstopped);
 	m_renderer_state = rs_inited;
-		
+	CMTime cm_clip_begin;
+	
 	m_node = n;
 	if (m_avplayer == NULL) {
 		assert(m_mc == NULL);
@@ -131,15 +139,18 @@ cg_avfoundation_video_renderer::init_with_node(const lib::node *n)
 		goto bad;
 #endif//JNK
 	}
-#ifdef JNK			
 	_init_clip_begin_end();
+	cm_clip_begin = CMTimeMakeWithSeconds((Float64)m_clip_begin, 1);
+	cm_clip_begin.timescale = USEC_PER_SEC;
+	[m_avplayer seekToTime: cm_clip_begin];
+#ifdef JNK			
 	if (m_clip_begin != m_previous_clip_position) {
 		[(MovieCreator *)m_mc setPositionWanted: m_clip_begin];
 	}
 	m_previous_clip_position = m_clip_begin;
 #endif//JNK
 	
-	/*AM_DBG*/ lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::init_with_node, m_player=0x%x url=%s clipbegin=%d", this, m_avplayer, m_url.get_url().c_str(), m_clip_begin);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::init_with_node, m_player=0x%x, url=%s, clipbegin=%d", this, m_avplayer, m_url.get_url().c_str(), m_clip_begin);
 	
 bad:
 	[pool release];
@@ -149,67 +160,105 @@ bad:
 void
 cg_avfoundation_video_renderer::start(double where) {
 	m_lock.enter();
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];	/*AM_DBG*/ lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::start, m_player=0x%x where=%lf", this, m_avplayer, m_url.get_url().c_str(), where);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::start, m_player=0x%x, where=%lf", this, m_avplayer, where);
 
 	if (m_avplayer) {
-		[m_avplayer play];
 		m_dest->show(this);
 		m_renderer_state = rs_started;
 //		m_dest->need_redraw();
 	}
 
-	[pool release];
 	m_lock.leave();
 }
 
 bool
 cg_avfoundation_video_renderer::stop() {
-	bool rv = [m_avplayer rate] != 0.0;
-	/*AM_DBG*/ lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::stop, m_player=0x%x rate=%lf", this, m_avplayer, m_url.get_url().c_str(), [m_avplayer rate]);
-	[m_avplayer pause];
-	m_renderer_state = rs_stopped;
-	m_context->stopped(m_cookie);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::stop, m_player=0x%x", this, m_avplayer);
+	m_lock.enter();
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	bool rv = true;
+	m_renderer_state = rs_fullstopped;
+//	[m_avplayer pause];
+
+	m_dest->need_redraw();
+	[pool release];
+	m_lock.leave();
 	return rv;
 }
 	
-static void
-my_free_frame(void *ptr, const void *ptr2, size_t size)
-{
-	free(ptr);
+void
+cg_avfoundation_video_renderer::resume() {
+	/*AM_DBG*/ lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::resume, m_player=0x%x, rate=%lf", this, m_avplayer, [m_avplayer rate]);
+	m_lock.enter();
+	m_renderer_state = rs_started;
+	m_dest->need_redraw();
+	m_lock.leave();
 }
+	
+void
+cg_avfoundation_video_renderer::pause(pause_display d) {
+	m_lock.enter();
+	/*AM_DBG*/ lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::pause, m_player=0x%x, rate=%lf, pause_display=%d" , this, m_avplayer, [m_avplayer rate], d);
+	m_renderer_state = rs_stopped;
+	m_dest->need_redraw();
+	m_lock.leave();
+}
+	
 void
 cg_avfoundation_video_renderer::redraw(const rect &dirty, gui_window *window)
 {
 	m_lock.enter();
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	const rect &r = m_dest->get_rect();
-	/*AM_DBG*/ logger::get_logger()->debug("cg_smiltext_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	cg_window *cwindow = (cg_window *)window;
+	AmbulantView *view = (AmbulantView *)cwindow->view();
 	
-	assert(m_renderer_state == rs_started || m_renderer_state == rs_stopped);
+	/*AM_DBG*/ logger::get_logger()->debug("cg_avfoundation_video_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, r.left(), r.top(), r.right(), r.bottom());
+	
+	assert(m_renderer_state == rs_started || m_renderer_state == rs_stopped || m_renderer_state == rs_fullstopped);
 	if (!m_avplayer) {
+		m_context->stopped(m_cookie);
+		[pool release];
 		m_lock.leave();
 		return;
 	}
 	if (m_avplayer_layer == NULL) {		
 		// Determine current position and size.
-		cg_window *cwindow = (cg_window *)window;
-		AmbulantView *view = (AmbulantView *)cwindow->view();
-		
 		CALayer *superlayer = [view layer];
 		m_avplayer_layer = [AVPlayerLayer playerLayerWithPlayer:m_avplayer];
+		m_avplayer_view = view;
 		[superlayer addSublayer:m_avplayer_layer];		
 		CGSize cgsize = [m_avplayer_layer preferredFrameSize];
 		if (cgsize.width == 0 || cgsize.height == 0) {
-			cgsize.width = view.frame.size.width;
-			cgsize.height = view.frame.size.height;
+			cgsize.width = r.width();
+			cgsize.height = r.height();
 		}
-		size srcsize = size(int(cgsize.width), int(cgsize.height));
-		rect srcrect;
-		rect dstrect = m_dest->get_fit_rect(srcsize, &srcrect, m_alignment);
-		dstrect.translate(m_dest->get_global_topleft());
-		
-		CGRect frameRect = [view CGRectForAmbulantRect: &dstrect];
-		m_avplayer_layer.bounds = frameRect;
+		m_srcsize = size(int(cgsize.width), int(cgsize.height));
 	}
+	rect srcrect;
+	rect dstrect = m_dest->get_fit_rect(m_srcsize, &srcrect, m_alignment);
+	dstrect.translate(m_dest->get_global_topleft());
+	CGRect frameRect = [view CGRectForAmbulantRectForLayout: &dstrect];
+	m_avplayer_layer.frame = frameRect;
+
+	if (m_renderer_state == rs_started) {
+		[m_avplayer play];
+	} else if (m_renderer_state == rs_stopped) {
+		[m_avplayer pause];
+	} else if (m_renderer_state == rs_fullstopped) {
+		m_context->stopped(m_cookie);
+		if (m_avplayer_view != NULL) {
+			CALayer *superlayer = [m_avplayer_view layer];
+			NSMutableArray* sublayers = [NSMutableArray arrayWithArray: superlayer.sublayers];
+			NSUInteger idx = [sublayers indexOfObject:m_avplayer_layer];
+			[sublayers removeObjectAtIndex:idx];
+			superlayer.sublayers = [NSArray arrayWithArray: sublayers];
+			m_avplayer_layer = NULL;
+		}
+		[m_avplayer release];
+		m_avplayer = NULL;
+	}
+
 #ifdef JNK		
 	NSValue *value = [m_movie attributeForKey:QTMovieNaturalSizeAttribute];
 	NSSize nssize = [value sizeValue];
@@ -248,6 +297,7 @@ cg_avfoundation_video_renderer::redraw(const rect &dirty, gui_window *window)
 		[m_movie_view setFrame: frameRect];
 	}
 #endif//JNK
+	[pool release];
 	m_lock.leave();
 }
 
