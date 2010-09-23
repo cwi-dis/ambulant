@@ -206,6 +206,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 // dismiss the keyboard when the <Return> is tapped
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	[textField resignFirstResponder]; // dismiss keyboard
+	playURL = [[NSString alloc] initWithString: URLEntryField.text];
 	return YES;
 }
 

@@ -2,8 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleShortVersionString</key>
+	<string></string>
+	<key>NSMainNibFile</key>
+	<string>MainWindow</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
+	<key>UIApplicationExitsOnSuspend</key>
+	<true/>
 	<key>CFBundleDisplayName</key>
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleExecutable</key>
@@ -23,8 +29,19 @@
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
 	<key>LSRequiresIPhoneOS</key>
+	<false/>
+	<key>UIFileSharingEnabled</key>
 	<true/>
-	<key>NSMainNibFile</key>
-	<string></string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.cwi.player_iphone.ambulant</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>ambulant</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>
