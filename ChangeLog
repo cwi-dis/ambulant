@@ -1,3 +1,7 @@
+2010-09-28 15:36  keesblom
+
+	* Added the source of a test that is appended to #3077135
+
 2010-09-23 16:03  keesblom
 
 	* cg_avfoundation_video renderer now has clip_end, get_dur and EOM
