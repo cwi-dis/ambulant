@@ -34,7 +34,7 @@ extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
 #include "ambulant/common/smil_alignment.h"
 #include "ambulant/smil2/test_attrs.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -67,7 +67,7 @@ extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
 
 @implementation CGVideoAVPlayerManager
 
-@synthesize timeObserver, duration, durationIsKnown, url;
+@synthesize timeObserver, duration, durationIsKnown, url, avplayer, avplayer_item;
 
 - (AVPlayer*) avplayer {
 	return avplayer;
@@ -103,7 +103,7 @@ extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
 	NSLog(@"Error: status changed to: %d", playerStatus);
 	NSError* error = self.avplayer.currentItem.error;
 	if (error != NULL) {
-		NSLog(@"Error is0: %@", error);
+		NSLog(@"Error is: %@", error);
 //		[error release];
 	}
 }
@@ -130,8 +130,10 @@ handlePlayerItemDidReachEnd:(NSNotification*) notification {
 }
 
 - (CGVideoAVPlayerManager*) initWithURL:(NSURL*) nsurl parent: (void*)arg endOfData: (void*(*)(void*))fun {
-	avplayer = [[[AVPlayer alloc] initWithURL:nsurl] retain];
-	NSLog(@"CGVideoAVPlayerManager.initWithURL(%@) .self=0x%x self.retainCount=%d avplayer=0x%x [avplayer retainCount]=%d", nsurl, self, [self retainCount], avplayer, [avplayer retainCount]);
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	avplayer_item = [[AVPlayerItem alloc] initWithURL: nsurl];
+	avplayer = [[[AVPlayer alloc] initWithPlayerItem:avplayer_item] retain];
+	NSLog(@"CGVideoAVPlayerManager.initWithURL(%@) .self=0x%x self.retainCount=%d avplayer=0x%x [avplayer retainCount]=%d [avplayer_item retainCount]=%d", nsurl, self, [self retainCount], avplayer, [avplayer retainCount], [avplayer_item retainCount]);
 	fun_arg = arg;
 	eod_fun = fun;
 	[avplayer addObserver:self forKeyPath:@"status" options:0 context:nil];
@@ -145,19 +147,20 @@ handlePlayerItemDidReachEnd:(NSNotification*) notification {
 	 name:AVPlayerItemDidPlayToEndTimeNotification
 	 object: [[self avplayer] currentItem]];
 	
-	AVPlayerStatus status = [[self avplayer] status];
+//X	AVPlayerStatus status = [[self avplayer] status];
 	call_C_function((void*)"dit werkt\n", (void*(*)(void*)) printf);
 	[self handleDurationDidChange];
 	[self handlePlayerStatusDidChange];
 	url = nsurl;
 //	[self addTimeObserver];
-	
+	[pool release];
 	return self;
 }
 
 - (void) dealloc {
 //	[avplayer removeTimeObserver:timeObserver];
 //	[timeObserver release];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	[[NSNotificationCenter defaultCenter]
 	 removeObserver:self
 	 name:AVPlayerItemDidPlayToEndTimeNotification
@@ -165,9 +168,11 @@ handlePlayerItemDidReachEnd:(NSNotification*) notification {
 	[avplayer removeObserver:self forKeyPath:@"status"];
 	[avplayer removeObserver:self forKeyPath:@"currentItem.asset.duration"];
 	[avplayer removeObserver:self forKeyPath:@"currentItem.error"];
-	NSLog(@"avplayer.retainCount=%d",[avplayer retainCount]);
-	[avplayer release];	
+	NSLog(@"avplayer.retainCount=%d [avplayer_item retainCount]=%d",[avplayer retainCount], [avplayer_item retainCount]);
+	[avplayer release];
+	[avplayer_item release];
 	[url release];
+	[pool release];
 	
 	[super dealloc];
 }
@@ -191,15 +196,9 @@ handlePlayerItemDidReachEnd:(NSNotification*) notification {
 - (void) removeFromSuper:(pair*) objs {
 	if (objs == NULL)
 		return;
-	UIView* uiview = (UIView*) objs.first;
-	CALayer* uilayer = (CALayer*) objs.second;
-	NSLog(@"removeFromSuper(0x%x): uiview=0x%x uilayer=0x%x", self, uiview, uilayer);
-	CALayer *superlayer = [uiview layer];
-	NSMutableArray* sublayers = [NSMutableArray arrayWithArray: superlayer.sublayers];
-	NSUInteger idx = [sublayers indexOfObject:uilayer];
-	if (idx >= 0) {
-		[sublayers removeObjectAtIndex:idx];
-		superlayer.sublayers = [NSArray arrayWithArray: sublayers];		
+	else {
+		[(AVPlayerLayer*) objs.second removeFromSuperlayer];
+		return;
 	}
 }
 										 
@@ -295,7 +294,7 @@ cg_avfoundation_video_renderer::init_with_node(const lib::node *n)
 	assert(m_renderer_state == rs_created || m_renderer_state == rs_prerolled || m_renderer_state == rs_stopped || m_renderer_state == rs_fullstopped);
 	m_renderer_state = rs_inited;
 	CMTime cm_clip_begin, cm_clip_end;
-	AVPlayerStatus status;
+//X	AVPlayerStatus status;
 	
 	m_node = n;
 	if (m_avplayer_manager == NULL) {

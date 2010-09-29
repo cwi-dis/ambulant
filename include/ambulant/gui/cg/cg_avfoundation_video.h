@@ -46,12 +46,14 @@
 }
 
 @property (nonatomic, retain) AVPlayer *avplayer;
+@property (nonatomic, retain) AVPlayerItem *avplayer_item;
 @property (nonatomic, assign) CMTime duration;
 @property (nonatomic, assign, readonly) BOOL durationIsKnown;
 @property (nonatomic, retain) id timeObserver;
 @property (nonatomic, retain) NSURL* url;
 
-- (CGVideoAVPlayerManager *)initWithURL:(NSURL*)url ;
+
+- (CGVideoAVPlayerManager*) initWithURL:(NSURL*) nsurl parent: (void*)arg endOfData: (void*(*)(void*))fun;
 - (AVPlayer*) avplayer;
 - (void) play;
 - (void) pause;
