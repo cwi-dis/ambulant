@@ -133,6 +133,11 @@ Building for Windows
 All projects are located in the "projects" folder
 at the toplevel folder. "vc9" is for Visual Studio 2008, SP2.
 
+You must not only have Visual Studio, but also the Microsoft DirectX SDK. This
+can be downloaded from the Microsoft site. NOTE: the version of June 2010 does
+not seem to work, it is missing a library (ddraw.lib) that Ambulant needs. The
+February 2010 is the last version known to work.
+
 Installing and building the third party packages on Windows is more of a
 pain than it is on unix. For this reason, read these instructions *very carefully*,
 please. We hope these instructions are complete, otherwise
