@@ -394,6 +394,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\libambulant\gui\dx\dx_img_wic.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\libambulant\gui\dx\dx_player.cpp"
 						>
 					</File>
@@ -762,6 +766,10 @@
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\dx\dx_img.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\dx\dx_img_wic.h"
 							>
 						</File>
 						<File
