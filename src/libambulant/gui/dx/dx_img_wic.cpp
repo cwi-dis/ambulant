@@ -50,6 +50,8 @@ extern const char dx_img_wic_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("Rend
 extern const char dx_img_wic_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererWicImg");
 extern const char dx_img_wic_playable_renderer_uri3[] = AM_SYSTEM_COMPONENT("RendererImg");
 
+IWICImagingFactory *gui::dx::dx_img_wic_renderer::s_wic_factory = NULL;
+
 common::playable_factory *
 gui::dx::create_dx_image_wic_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
@@ -72,20 +74,25 @@ gui::dx::dx_img_wic_renderer::dx_img_wic_renderer(
 	common::factories *factory,
 	common::playable_factory_machdep *dxplayer)
 :	dx_renderer_playable(context, cookie, node, evp, factory, dynamic_cast<dx_playables_context*>(dxplayer)),
-	m_image(0),
-	m_factory(factory) {
-
+	m_original(0),
+	m_ddsurf(0),
+	m_factory(factory)
+{
+	if (s_wic_factory == NULL) {
+		// init wic factory
+	}
 	AM_DBG lib::logger::get_logger()->debug("dx_img_wic_renderer::ctr(0x%x)", this);
 }
 
 gui::dx::dx_img_wic_renderer::~dx_img_wic_renderer() {
 	AM_DBG lib::logger::get_logger()->debug("dx_img_wic_renderer::dtr(0x%x)", this);
-	delete m_image;
+	// delete m_image;
 }
 
 
 void gui::dx::dx_img_wic_renderer::start(double t) {
 	AM_DBG lib::logger::get_logger()->debug("dx_img_wic_renderer::start(0x%x)", this);
+#if 0
 	net::url url = m_node->get_url("src");
 	net::datasource *src = m_factory->get_datasource_factory()->new_raw_datasource(url);
 	if (src == NULL) {
@@ -135,13 +142,12 @@ void gui::dx::dx_img_wic_renderer::start(double t) {
 
 	// Notify scheduler that we're done playing
 	m_context->stopped(m_cookie);
+#endif 
 }
 
 
 bool gui::dx::dx_img_wic_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->debug("dx_img_wic_renderer::stop(0x%x)", this);
-	delete m_image;
-	m_image = 0;
 	if (m_dest) m_dest->renderer_done(this);
 	m_dest = NULL;
 	m_activated = false;
@@ -169,7 +175,7 @@ void gui::dx::dx_img_wic_renderer::redraw(const lib::rect& dirty, common::gui_wi
 		return;
 	}
 
-	if(!m_image || !m_image->can_play()) {
+	if(!m_ddsurf) {
 		// No bits available
 		AM_DBG lib::logger::get_logger()->debug("dx_img_wic_renderer::redraw NOT: no image or cannot play %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
 		return;
@@ -177,7 +183,10 @@ void gui::dx::dx_img_wic_renderer::redraw(const lib::rect& dirty, common::gui_wi
 
 	lib::rect img_rect1;
 	lib::rect img_reg_rc;
-	lib::size srcsize = m_image->get_size();
+	UINT w, h;
+	HRESULT hr = m_original->GetSize(&w, &h);
+	assert(hr == 0);
+	lib::size srcsize(w, h);
 
 	// This code could be neater: it could share quite a bit with the
 	// code below (for non-tiled images). Also, support for tiled images
@@ -194,7 +203,7 @@ void gui::dx::dx_img_wic_renderer::redraw(const lib::rect& dirty, common::gui_wi
 		for(it=tiles.begin(); it!=tiles.end(); it++) {
 			img_rect1 = (*it).first;
 			img_reg_rc = (*it).second;
-			v->draw(m_image->get_ddsurf(), img_rect1, img_reg_rc, m_image->is_transparent());
+			v->draw(m_ddsurf, img_rect1, img_reg_rc, 0 /*m_image->is_transparent()*/);
 		}
 
 		if (m_erase_never) m_dest->keep_as_background();
@@ -257,13 +266,16 @@ void gui::dx::dx_img_wic_renderer::redraw(const lib::rect& dirty, common::gui_wi
 		tr = NULL;
 	}
 
-	if(tr && tr->is_outtrans()) {
+	if(tr && tr->is_outtrans() && m_original) {
 		// First draw the background color, if applicable
 		const common::region_info *ri = m_dest->get_info();
 		if(ri)
 			v->clear(img_reg_rc_dirty,ri->get_bgcolor(), ri->get_bgopacity());
 		// Next, take a snapshot of the relevant pixels as they are now, before we draw the image
-		lib::size image_size = m_image->get_size();
+		UINT w, h;
+		HRESULT hr = m_original->GetSize(&w, &h);
+		assert(hr == 0);
+		lib::size image_size(w, h);
 		IDirectDrawSurface *bgimage = v->create_surface(image_size);
 		lib::rect dirty_screen = img_rect_dirty;
 		dirty_screen.translate(topleft);
@@ -275,9 +287,9 @@ void gui::dx::dx_img_wic_renderer::redraw(const lib::rect& dirty, common::gui_wi
 #else
 #define WAITFLAG DDBLT_WAITNOTBUSY
 #endif
-		bgimage->Blt(&bgrect_image, v->get_surface(), &bgrect_screen, WAITFLAG, NULL);
+		bgimage->Blt(&bgrect_image, m_ddsurf, &bgrect_screen, WAITFLAG, NULL);
 		// Then draw the image
-		v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), (dx_transition*)0);
+		v->draw(m_ddsurf, img_rect_dirty, img_reg_rc_dirty, 0 /*m_image->is_transparent()*/, (dx_transition*)0);
 		// And finally transition in the background bits saved previously
 		v->draw(bgimage, img_rect_dirty, img_reg_rc_dirty, false, tr);
 		bgimage->Release();
@@ -285,22 +297,22 @@ void gui::dx::dx_img_wic_renderer::redraw(const lib::rect& dirty, common::gui_wi
 #ifdef	WITH_SMIL30
 		if (alpha_chroma != 1.0) {
 			IDirectDrawSurface* screen_ddsurf = v->get_surface();
-			IDirectDrawSurface* image_ddsurf = m_image->get_ddsurf();
+			IDirectDrawSurface* image_ddsurf = m_ddsurf;
 			lib::rect rct0 (lib::point(0, 0), img_reg_rc_dirty.size());
 			v->blend_surface(
 				img_reg_rc_dirty,
 				image_ddsurf,
 				rct0,
-				m_image->is_transparent(),
+				0 /*m_image->is_transparent()*/,
 				alpha_chroma,
 				alpha_media,
 				chroma_low,
 				chroma_high);
 		} else {
-			v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), tr);
+			v->draw(m_ddsurf, img_rect_dirty, img_reg_rc_dirty,0 /* m_image->is_transparent()*/, tr);
 		}
 #else //WITH_SMIL30
-		v->draw(m_image->get_ddsurf(), img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), tr);
+		v->draw(m_ddsurf, img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), tr);
 #endif//WITH_SMIL30
 	}
 	if (m_erase_never) m_dest->keep_as_background();

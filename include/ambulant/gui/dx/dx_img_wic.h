@@ -32,6 +32,9 @@
 
 //#define WITH_WIC
 #ifdef WITH_WIC
+#include <wincodec.h>
+#include <ddraw.h>
+
 namespace ambulant {
 
 namespace gui {
@@ -60,7 +63,9 @@ class dx_img_wic_renderer : public dx_renderer_playable {
 	bool user_event(const lib::point& pt, int what);
 	void redraw(const lib::rect &dirty, common::gui_window *window);
   private:
-	image_renderer *m_image;
+	static IWICImagingFactory *s_wic_factory;
+	IWICBitmapSource *m_original;	// The original image data reader
+	IDirectDrawSurface *m_ddsurf;	// The DD surface, read-to-draw
 	lib::rect m_msg_rect;
 	dx_gui_region *m_rgn;
 	common::factories *m_factory;
