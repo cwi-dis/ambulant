@@ -1,3 +1,8 @@
+2010-09-29 17:43  keesblom
+
+	* Attempt to make cg_avfoundation_video work with self-managed
+	  AVPlayerItem, alas ! did not work
+
 2010-09-28 15:36  keesblom
 
 	* Added the source of a test that is appended to #3077135
