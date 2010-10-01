@@ -144,8 +144,8 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		[self handleURLEntered];
 	} else {
 		NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
-//		NSString *welcomePath = [thisBundle pathForResource:@"test" ofType:@"smil"];
-		NSString *welcomePath = [thisBundle pathForResource:@"iPhoneAVPlayerTest" ofType:@"smil"];
+		NSString *welcomePath = [thisBundle pathForResource:@"test" ofType:@"smil"];
+//		NSString *welcomePath = [thisBundle pathForResource:@"iPhoneAVPlayerTest" ofType:@"smil"];
 //		NSString *welcomePath = [thisBundle pathForResource:@"Welcome" ofType:@"smil"];
 //		NSString *welcomePath = @"http://ambulantPlayer.org/Demos/Birthday/HappyBirthday.smil";
 		NSLog (@ "%@", welcomePath);

@@ -23,7 +23,7 @@
 
 #ifdef WITH_AVFOUNDATION
 
-
+// Used to call a C++ function from Objective C. 
 extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
 	return fun(args);
 };
@@ -40,6 +40,7 @@ extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
 #endif
 
 #ifdef	__OBJC__
+//#ifdef JUNK
 @interface pair : NSObject
 {
 	NSObject* first;
@@ -63,47 +64,69 @@ extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
 }
 
 @end
+//#endif //JUNK
 
+@implementation CGVideoAVPlayer
 
-@implementation CGVideoAVPlayerManager
+//X @synthesize timeObserver, duration, durationIsKnown, url, playerStatus;
+@synthesize duration, durationIsKnown, url, playerStatus;
 
-@synthesize timeObserver, duration, durationIsKnown, url, avplayer, avplayer_item;
-
-- (AVPlayer*) avplayer {
+- (AVPlayer*)
+avplayer {
 	return avplayer;
 }
 
-- (void) setAvplayer:(AVPlayer*) x {
+- (void)
+setAvplayer:(AVPlayer*) x {
 	return; // setter is no-op
 }
 
-- (void)removeTimeObserver {
+#ifdef	JUNK
+// we use AVPlayerItemDidPlayToEndTimeNotification instead of checkIfAtEndOfMovie
+// however, for an user interface accurately displaying the current stream position,
+// using a timeObserver is more appropriate
+- (void)
+addTimeObserver {
+	[self removeTimeObserver];
+	timeObserver = [avplayer addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(1, NSEC_PER_SEC) queue:nil usingBlock:^(CMTime time) {
+		//X		[updateControls];
+		//TBD		[checkIfAtEndOfMovie];
+	}];
+	
+}
+
+- (void)
+removeTimeObserver {
 	if (timeObserver != nil) {
 		[avplayer removeTimeObserver:timeObserver];
 		timeObserver = nil;
 	}
 }
+#endif //JUNK
 
-- (void)handleDurationDidChange {
+- (void)
+handleDurationDidChange {
 	duration = avplayer.currentItem.asset.duration;
 	NSLog(@"duration changed to:"); CMTimeShow(duration);
 //X	[self updateControls];
 }
 
-- (void)handlePlayerStatusDidChange {
-	AVPlayerStatus playerStatus = avplayer.status;
-	NSLog(@"status changed to: %d", playerStatus);
-	if (playerStatus == AVPlayerStatusReadyToPlay) {
-		[avplayer play];
+- (void)
+handlePlayerStatusDidChange {
+	AVPlayerStatus avplayerStatus = avplayer.status;
+	NSLog(@"status changed to: %d", avplayerStatus);
+	if (avplayerStatus == AVPlayerStatusReadyToPlay) {
+//		[avplayer play];
 	}
 }
 
-- (void)handlePlayerError {
-	AVPlayerStatus playerStatus = avplayer.status;
-	NSLog(@"Error: status changed to: %d", playerStatus);
+- (void)
+handlePlayerError {
+	AVPlayerStatus avplayerStatus = avplayer.status;
+	NSLog(@"Error: status changed to: %d", avplayerStatus);
 	NSError* error = self.avplayer.currentItem.error;
 	if (error != NULL) {
-		NSLog(@"Error is: %@", error);
+		NSLog(@"Error is0: %@", error);
 //		[error release];
 	}
 }
@@ -119,65 +142,62 @@ handlePlayerItemDidReachEnd:(NSNotification*) notification {
 	
 }
 
-
-- (void)addTimeObserver {
-	[self removeTimeObserver];
-	timeObserver = [avplayer addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(1, NSEC_PER_SEC) queue:nil usingBlock:^(CMTime time) {
-//X		[updateControls];
-//TBD		[checkIfAtEndOfMovie];
-	}];
-	
-}
-
-- (CGVideoAVPlayerManager*) initWithURL:(NSURL*) nsurl parent: (void*)arg endOfData: (void*(*)(void*))fun {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	avplayer_item = [[AVPlayerItem alloc] initWithURL: nsurl];
-	avplayer = [[[AVPlayer alloc] initWithPlayerItem:avplayer_item] retain];
-	NSLog(@"CGVideoAVPlayerManager.initWithURL(%@) .self=0x%x self.retainCount=%d avplayer=0x%x [avplayer retainCount]=%d [avplayer_item retainCount]=%d", nsurl, self, [self retainCount], avplayer, [avplayer retainCount], [avplayer_item retainCount]);
-	fun_arg = arg;
-	eod_fun = fun;
+-(void) addObservers {
+	playerStatus = CGVideoAVPlayerInitialized;
 	[avplayer addObserver:self forKeyPath:@"status" options:0 context:nil];
 	[avplayer addObserver:self forKeyPath:@"currentItem.asset.duration" options:0 context:nil];
 	[avplayer addObserver:self forKeyPath:@"currentItem.error" options:0 context:nil];
 	avplayer.actionAtItemEnd = AVPlayerActionAtItemEndPause;
 	// prepare to react after keyboard show/hide
 	[[NSNotificationCenter defaultCenter]
-	 addObserver:self
-	 selector:@selector(handlePlayerItemDidReachEnd:)
-	 name:AVPlayerItemDidPlayToEndTimeNotification
-	 object: [[self avplayer] currentItem]];
-	
-//X	AVPlayerStatus status = [[self avplayer] status];
-	call_C_function((void*)"dit werkt\n", (void*(*)(void*)) printf);
+	 addObserver: self
+	 selector: @selector(handlePlayerItemDidReachEnd:)
+	 name: AVPlayerItemDidPlayToEndTimeNotification
+	 object: [[self avplayer] currentItem]];	
+}
+
+- (CGVideoAVPlayer*)
+initWithURL:(NSURL*) nsurl //parent: (void*)arg endOfData: (void*(*)(void*))fun {
+{
+	bool initial = false;
+	if (avplayer == NULL) {
+		playerStatus = CGVideoAVPlayerNull;
+		initial = true;
+		avplayer = [[AVPlayer alloc] retain];
+		NSLog(@"CGVideoAVPlayerManager.initWithURL(%@) self=0x%x self.retainCount=%d avplayer=0x%x [avplayer retainCount]=%d", nsurl, self, [self retainCount], avplayer, [avplayer retainCount]);
+//		fun_arg = arg;
+//		eod_fun = fun;
+	} else {
+		NSLog(@"CGVideoAVPlayerManager.initWithURL(0%x) nsurl=%@:", self,  nsurl);
+	}
+	if (initial) {
+		[avplayer initWithURL: nsurl];
+	} else {
+		AVPlayerItem* new_item = [[AVPlayerItem alloc] initWithURL: nsurl];
+		[avplayer replaceCurrentItemWithPlayerItem:new_item]; 			
+	}
+	[self addObservers];
 	[self handleDurationDidChange];
 	[self handlePlayerStatusDidChange];
 	url = nsurl;
 //	[self addTimeObserver];
-	[pool release];
+	
 	return self;
 }
 
-- (void) dealloc {
-//	[avplayer removeTimeObserver:timeObserver];
-//	[timeObserver release];
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	[[NSNotificationCenter defaultCenter]
-	 removeObserver:self
-	 name:AVPlayerItemDidPlayToEndTimeNotification
-	 object: [[self avplayer] currentItem]];
-	[avplayer removeObserver:self forKeyPath:@"status"];
-	[avplayer removeObserver:self forKeyPath:@"currentItem.asset.duration"];
-	[avplayer removeObserver:self forKeyPath:@"currentItem.error"];
-	NSLog(@"avplayer.retainCount=%d [avplayer_item retainCount]=%d",[avplayer retainCount], [avplayer_item retainCount]);
-	[avplayer release];
-	[avplayer_item release];
+- (void)
+dealloc {
+	NSLog(@"CGVideoAVPlayerManager.dealloc(0x%x): self.retainCount=%d avplayer=0x%x [avplayer retainCount]=%d",  self, [self retainCount], avplayer, [avplayer retainCount]);
+//	NSLog(@"avplayer.retainCount=%d",[avplayer retainCount]);
+//	[avplayer release];	
 	[url release];
-	[pool release];
 	
 	[super dealloc];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+- (void)
+observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+	NSLog(@"CGVideoAVPlayerManager.observeValueForKeyPath(0x%x) keyPath=%@ self.retainCount=%d avplayer=0x%x [avplayer retainCount]=%d", self, keyPath, [self retainCount], avplayer, [avplayer retainCount]);
 	if ([keyPath isEqualToString:@"status"] && object == avplayer)
 		[self handlePlayerStatusDidChange];
 	else if ([keyPath isEqualToString:@"currentItem.asset.duration"] && object == avplayer)
@@ -185,24 +205,116 @@ handlePlayerItemDidReachEnd:(NSNotification*) notification {
 	else if ([keyPath isEqualToString:@"currentItem.error"] && object == avplayer)
 		[self handlePlayerError];
 }
-- (void) play {
-	[avplayer play];
+
+- (void)
+play {
+	NSLog(@"CGVideoAVPlayerManager.play(0x%x) self.retainCount=%d avplayer=0x%x [avplayer retainCount]=%d", self, [self retainCount], avplayer, [avplayer retainCount]);
+	if (playerStatus == CGVideoAVPlayerInitialized || playerStatus == CGVideoAVPlayerPausing) {
+		playerStatus = CGVideoAVPlayerPlaying;
+		[avplayer play];
+	}
 }
 
-- (void) pause {
-	[avplayer pause];
+- (void)
+pause {
+	NSLog(@"CGVideoAVPlayerManager.pause(0x%x) self.retainCount=%d avplayer=0x%x [avplayer retainCount]=%d", self, [self retainCount], avplayer, [avplayer retainCount]);
+	if (playerStatus == CGVideoAVPlayerPlaying) {
+		[avplayer pause];
+		playerStatus == CGVideoAVPlayerPausing;
+	}
 }
 
-- (void) removeFromSuper:(pair*) objs {
+- (void)
+stop {
+	NSLog(@"CGVideoAVPlayerManager.stop(0x%x) self.retainCount=%d avplayer=0x%x [avplayer retainCount]=%d", self, [self retainCount], avplayer, [avplayer retainCount]);
+	if (playerStatus == CGVideoAVPlayerPlaying || playerStatus == CGVideoAVPlayerPausing) {
+		if (playerStatus == CGVideoAVPlayerPlaying) {
+			[avplayer pause];
+		}
+		playerStatus = CGVideoAVPlayerInitialized;
+	}
+}
+
+- (void)
+terminate {
+	NSLog(@"CGVideoAVPlayerManager.terminate(0x%x) self.retainCount=%d avplayer=0x%x [avplayer retainCount]=%d", self, [self retainCount], avplayer, [avplayer retainCount]);
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	//	[avplayer removeTimeObserver:timeObserver];
+	//	[timeObserver release];
+	if (playerStatus == CGVideoAVPlayerPlaying || playerStatus == CGVideoAVPlayerPausing) {
+		[avplayer pause];
+	}		
+	[[NSNotificationCenter defaultCenter]
+	 removeObserver:self
+	 name:AVPlayerItemDidPlayToEndTimeNotification
+	 object: [[self avplayer] currentItem]];
+	[avplayer removeObserver:self forKeyPath:@"status"];
+	[avplayer removeObserver:self forKeyPath:@"currentItem.asset.duration"];
+	[avplayer removeObserver:self forKeyPath:@"currentItem.error"];	
+	playerStatus = CGVideoAVPlayerNull;
+	[pool release];
+}
+
+- (void)
+removeFromSuper:(pair*) objs {
 	if (objs == NULL)
 		return;
-	else {
-		[(AVPlayerLayer*) objs.second removeFromSuperlayer];
-		return;
+	UIView* uiview = (UIView*) objs.first;
+	CALayer* uilayer = (CALayer*) objs.second;
+	NSLog(@"removeFromSuper(0x%x): uiview=0x%x uilayer=0x%x", self, uiview, uilayer);
+	CALayer *superlayer = [uiview layer];
+	NSMutableArray* sublayers = [NSMutableArray arrayWithArray: superlayer.sublayers];
+	NSUInteger idx = [sublayers indexOfObject:uilayer];
+	if (idx >= 0) {
+		[sublayers removeObjectAtIndex:idx];
+		superlayer.sublayers = [NSArray arrayWithArray: sublayers];		
 	}
 }
 										 
 @end
+
+@implementation CGVideoAVPlayerManager
+
+static NSMutableArray* players = NULL;
+		
++ (CGVideoAVPlayer*)
+getCGVideoAVPlayerWithURL: (NSURL*) url
+{
+	CGVideoAVPlayer* player = NULL;
+	if (players == NULL) {
+		players = [[NSMutableArray alloc] init];
+	}
+	for (int i = 0; i < [players count]; i++) {
+		player = (CGVideoAVPlayer*) [players objectAtIndex:i];
+		if (player.playerStatus == CGVideoAVPlayerNull) {
+			AVPlayerItem* playerItem = [[AVPlayerItem alloc] initWithURL: url];
+			[player.avplayer replaceCurrentItemWithPlayerItem:playerItem];
+			[player addObservers];
+			player.playerStatus = CGVideoAVPlayerInitialized;
+			[players replaceObjectAtIndex: i withObject: player];
+			return player;
+		}
+	}
+	player = [[CGVideoAVPlayer alloc] initWithURL: url];
+	player.playerStatus = CGVideoAVPlayerInitialized;
+	[players addObject: player];
+	return player;
+}
+
++ (void)
+releaseCGVideoAVPlayer: (CGVideoAVPlayer*) aplayer
+{
+	for (int i = 0; i < [players count]; i++) {
+		CGVideoAVPlayer* player = (CGVideoAVPlayer*) [players objectAtIndex:i];
+		if (player == aplayer) {
+			aplayer.playerStatus = CGVideoAVPlayerNull;
+			[players replaceObjectAtIndex: i withObject: aplayer];
+			return;
+		}
+	}
+}
+@end
+
 #endif//__OBJC__
 										  
 // These two constants should match. Moreover, the optimal setting may depend on the
@@ -243,6 +355,9 @@ create_cg_avfoundation_video_playable_factory(common::factories *factory, common
 		cg_avfoundation_video_playable_renderer_uri3>(factory, mdp);
 }
 
+// static
+//X CGVideoAVPlayerManager* cg_avfoundation_video_renderer::s_avplayer_manager = NULL;
+
 cg_avfoundation_video_renderer::cg_avfoundation_video_renderer(
 	playable_notification *context,
 	playable_notification::cookie_type cookie,
@@ -252,7 +367,7 @@ cg_avfoundation_video_renderer::cg_avfoundation_video_renderer(
 	common::playable_factory_machdep *mdp)
 :	renderer_playable(context, cookie, node, evp, factory, mdp),
 	m_url(),
-	m_avplayer_manager(NULL),
+	m_avplayer(NULL),
 	m_avplayer_layer(NULL),
 	m_avplayer_view(NULL),
 	m_paused(false),
@@ -265,11 +380,13 @@ cg_avfoundation_video_renderer::cg_avfoundation_video_renderer(
 cg_avfoundation_video_renderer::~cg_avfoundation_video_renderer()
 {
 	m_lock.enter();
-	/*AM_DBG*/ logger::get_logger()->debug("~cg_avfoundation_video_renderer(0x%x) [m_avplayer_manager retainCount]=%d", (void *)this, m_avplayer_manager == NULL ? -999 : [m_avplayer_manager retainCount]);
+	AM_DBG logger::get_logger()->debug("~cg_avfoundation_video_renderer(0x%x) [m_avplayer retainCount]=%d", (void *)this, m_avplayer == NULL ? -999 : [m_avplayer retainCount]);
 	pair* objs = [[pair alloc] initWithFirst:m_avplayer_view Second:m_avplayer_layer];	
 	
 	if (m_avplayer_view != NULL) {
-		[m_avplayer_manager performSelectorOnMainThread:@selector(removeFromSuper:)withObject: objs waitUntilDone:NO];
+		m_lock.leave();
+		[m_avplayer performSelectorOnMainThread:@selector(removeFromSuper:)withObject: objs waitUntilDone:YES];
+		m_lock.enter();
 		m_avplayer_layer = NULL;
 		m_avplayer_view = NULL;
 	}
@@ -278,9 +395,9 @@ cg_avfoundation_video_renderer::~cg_avfoundation_video_renderer()
 	if (m_avplayer_layer != NULL) {
 		m_avplayer_layer == NULL;
 	}
-	if (m_avplayer_manager != NULL) {
-		[m_avplayer_manager release];
-		m_avplayer_manager = NULL;
+	if (m_avplayer != NULL) {
+		[m_avplayer terminate];
+		m_avplayer = NULL;
 	}
 	m_lock.leave();
 }
@@ -289,65 +406,55 @@ void
 cg_avfoundation_video_renderer::init_with_node(const lib::node *n)
 {
 	m_lock.enter();
+	CMTime cm_clip_begin = CMTimeMakeWithSeconds(0.0, 1.0), cm_clip_end;
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	renderer_playable::init_with_node(n);
 	assert(m_renderer_state == rs_created || m_renderer_state == rs_prerolled || m_renderer_state == rs_stopped || m_renderer_state == rs_fullstopped);
-	m_renderer_state = rs_inited;
-	CMTime cm_clip_begin, cm_clip_end;
-//X	AVPlayerStatus status;
-	
+	m_renderer_state = rs_inited;	
 	m_node = n;
-	if (m_avplayer_manager == NULL) {
-		assert(m_url.is_empty_path() || m_url.same_document(m_node->get_url("src")));
-		// Apparently the first call.
+	if (m_avplayer == NULL) {
+		// Apparently the very first call.
+		m_avplayer = [CGVideoAVPlayer alloc];
+	}
+	if (m_url.is_empty_path()) {
 		m_url = m_node->get_url("src");
 		NSURL *nsurl = [NSURL URLWithString: [NSString stringWithCString: m_url.get_url().c_str() encoding: NSUTF8StringEncoding]];
-		if (!nsurl) {
+		if (nsurl == NULL) {
 			lib::logger::get_logger()->error(gettext("%s: cannot convert to URL"), m_url.get_url().c_str());
 			goto bad;
 		}
-		m_avplayer_manager = [[CGVideoAVPlayerManager alloc] initWithURL:nsurl parent:this endOfData:  &ambulant::gui::cg::cg_avfoundation_video_renderer::eod_reached];
-//		[(CGVideoAVPLayerManager *)m_mc performSelectorOnMainThread: @selector(movieWithURL:) withObject: nsurl waitUntilDone: YES];
-//		m_movie = [(CGVideoAVPLayerManager *)m_mc movie];
-#ifdef JNK		
-		m_mc = (void*)[[[MovieCreator alloc] init] retain];
-		[(MovieCreator *)m_mc performSelectorOnMainThread: @selector(movieWithURL:) withObject: nsurl waitUntilDone: YES];
-		m_movie = [(MovieCreator *)m_mc movie];
-	}
-	if (!m_movie) {
-		lib::logger::get_logger()->error(gettext("%s: cannot open movie"), m_url.get_url().c_str());
-		goto bad;
-#endif//JNK
+//TBD		[m_avplayer initWithURL:nsurl parent:this endOfData: &ambulant::gui::cg::cg_avfoundation_video_renderer::eod_reached];
+		m_avplayer = [CGVideoAVPlayerManager getCGVideoAVPlayerWithURL:nsurl];
+		if (m_avplayer == NULL) {
+			goto bad;
+		}
 	}
 	_init_clip_begin_end();
-	cm_clip_begin = CMTimeMakeWithSeconds((Float64)m_clip_begin, 1);
-	cm_clip_begin.timescale = USEC_PER_SEC;
-	[[m_avplayer_manager avplayer] seekToTime: cm_clip_begin];
+	if (m_clip_begin != m_previous_clip_position) {
+		m_previous_clip_position = m_clip_begin;
+		cm_clip_begin = CMTimeMakeWithSeconds((Float64)m_clip_begin, 1);
+		cm_clip_begin.timescale = USEC_PER_SEC;
+		[m_avplayer.avplayer seekToTime: cm_clip_begin];
+	}
 	cm_clip_end = CMTimeMakeWithSeconds((Float64)m_clip_end, 1);
 	cm_clip_end.timescale = USEC_PER_SEC;
-	m_avplayer_manager.avplayer.currentItem.forwardPlaybackEndTime = cm_clip_end;
-//	[[[m_avplayer_manager avplayer] currentItem] forwardPlaybackEndTime] = cm_clip_end;
-#ifdef JNK			
-	if (m_clip_begin != m_previous_clip_position) {
-		[(MovieCreator *)m_mc setPositionWanted: m_clip_begin];
-	}
-	m_previous_clip_position = m_clip_begin;
-#endif//JNK
-	
-	/*AM_DBG*/ lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::init_with_node, [m_avplayer_manager avplayer]=0x%x, url=%s, clipbegin=%d", this, [m_avplayer_manager avplayer], m_url.get_url().c_str(), m_clip_begin);
+	m_avplayer.avplayer.currentItem.forwardPlaybackEndTime = cm_clip_end;	
+
+	AM_DBG lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::init_with_node, m_avplayer=0x%x, url=%s, clipbegin=%d", this, m_avplayer, m_url.get_url().c_str(), m_clip_begin);
 	
 bad:
 	[pool release];
-	/*AM_DBG*/ lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::init_with_node, [m_avplayer_manager retainCount]=%d", (void *)this, m_avplayer_manager == NULL ? -999 : [m_avplayer_manager retainCount]);
+//	AM_DBG lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::init_with_node, [m_avplayer retainCount]=%d", (void *)this, m_avplayer == NULL ? -999 : [m_avplayer retainCount]);
 	m_lock.leave();
 }
 	
 void
 cg_avfoundation_video_renderer::start(double where) {
-	m_lock.enter();
-	/*AM_DBG*/ lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::start, [m_avplayer_manager avplayer]=0x%x, [m_avplayer_manager retainCount]=%d where=%lf", this, [m_avplayer_manager avplayer], [m_avplayer_manager retainCount], where);
 
-	if (m_avplayer_manager) {
+	m_lock.enter();
+	AM_DBG lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::start, m_avplayer=0x%x, [m_avplayer retainCount]=%d where=%lf", this, m_avplayer, [m_avplayer retainCount], where);
+
+	if (m_avplayer) {
 		m_dest->show(this);
 		m_renderer_state = rs_started;
 		m_context->started(m_cookie, where);
@@ -359,20 +466,18 @@ cg_avfoundation_video_renderer::start(double where) {
 
 bool
 cg_avfoundation_video_renderer::stop() {
-	/*AM_DBG*/ lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::stop, [m_avplayer_manager avplayer]=0x%x, [m_avplayer_manager retainCount]=%d", this, [m_avplayer_manager avplayer],  [m_avplayer_manager retainCount]);
+	AM_DBG lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::stop, m_avplayer=0x%x, [m_avplayer retainCount]=%d", this, m_avplayer,  [m_avplayer retainCount]);
 	m_lock.enter();
-//	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	bool rv = true;
 	m_context->stopped(m_cookie);
 	m_renderer_state = rs_stopped;
-//	[pool release];
 	m_lock.leave();
 	return rv;
 }
 	
 void
 cg_avfoundation_video_renderer::post_stop() {
-	/*AM_DBG*/ lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::post_stop, [m_avplayer_manager avplayer]=0x%x, [m_avplayer_manager retainCount]=%d", this, [m_avplayer_manager avplayer], [m_avplayer_manager retainCount]);
+	AM_DBG lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::post_stop, m_avplayer=0x%x, [m_avplayer retainCount]=%d", this, m_avplayer, [m_avplayer retainCount]);
 	m_lock.enter();
 	m_renderer_state = rs_fullstopped;
 	if (m_dest != NULL) {
@@ -384,7 +489,7 @@ cg_avfoundation_video_renderer::post_stop() {
 	
 void
 cg_avfoundation_video_renderer::resume() {
-	/*AM_DBG*/ lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::resume, [m_avplayer_manager avplayer]=0x%x, rate=%lf", this, [m_avplayer_manager avplayer], [[m_avplayer_manager avplayer] rate]);
+	AM_DBG lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::resume, m_avplayer=0x%x, rate=%lf", this, m_avplayer, [m_avplayer.avplayer rate]);
 	m_lock.enter();
 	m_renderer_state = rs_started;
 	if (m_dest != NULL) {
@@ -396,7 +501,7 @@ cg_avfoundation_video_renderer::resume() {
 void
 cg_avfoundation_video_renderer::pause(pause_display d) {
 	m_lock.enter();
-	/*AM_DBG*/ lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::pause, [m_avplayer_manager avplayer]=0x%x, rate=%lf, pause_display=%d" , this, [m_avplayer_manager avplayer], [[m_avplayer_manager avplayer] rate], d);
+	AM_DBG lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::pause, m_avplayer=0x%x, rate=%lf, pause_display=%d" , this, m_avplayer, [m_avplayer.avplayer rate], d);
 	m_renderer_state = rs_stopped;
 	if (m_dest != NULL) {
 		m_dest->need_redraw();
@@ -407,12 +512,12 @@ cg_avfoundation_video_renderer::pause(pause_display d) {
 common::duration 
 cg_avfoundation_video_renderer::get_dur() {
 	common::duration rv = common::duration(false, 0);
-	if ([m_avplayer_manager durationIsKnown]) {
-		CMTime cm_duration = [m_avplayer_manager duration]; 
+	if ([m_avplayer durationIsKnown]) {
+		CMTime cm_duration = [m_avplayer duration]; 
 		if (cm_duration.flags = kCMTimeFlags_Valid)
 			rv = common::duration(true, (double) cm_duration.value * (double) cm_duration.timescale);
 	}
-	 /*AM_DBG*/ lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::get_dur returns: %d, %lf " , this, (bool) rv.first, (double) rv.second);
+	 AM_DBG lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::get_dur returns: %d, %lf " , this, (bool) rv.first, (double) rv.second);
 	 return rv;
 }
 	
@@ -420,28 +525,34 @@ cg_avfoundation_video_renderer::get_dur() {
 void*
 cg_avfoundation_video_renderer::eod_reached(void* arg) {
 	cg_avfoundation_video_renderer* cavr = (cg_avfoundation_video_renderer*) arg;
-	/*AM_DBG*/ lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::eod_eached, [m_avplayer_manager avplayer]=0x%x" , cavr, cavr->m_avplayer_manager.avplayer);
-	cavr->stop();
+	AM_DBG lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::eod_eached, m_avplayer=0x%x" , cavr, cavr->m_avplayer.avplayer);
+	if (cavr != NULL) {
+		cavr->stop();
+	}
+	return NULL;
 }
 	
 void
 cg_avfoundation_video_renderer::redraw(const rect &dirty, gui_window *window)
 {
+	if (m_avplayer == NULL) {
+		return;
+	}
 	m_lock.enter();
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	const rect &r = m_dest->get_rect();
 	cg_window *cwindow = (cg_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 	
-	/*AM_DBG*/ logger::get_logger()->debug("cg_avfoundation_video_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)),  [m_avplayer_manager retainCount]=%d", (void *)this, r.left(), r.top(), r.right(), r.bottom(), [m_avplayer_manager retainCount]);
+	AM_DBG logger::get_logger()->debug("cg_avfoundation_video_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)),  [m_avplayer retainCount]=%d", (void *)this, r.left(), r.top(), r.right(), r.bottom(), [m_avplayer retainCount]);
 	
 	assert(m_renderer_state == rs_started || m_renderer_state == rs_stopped || m_renderer_state == rs_fullstopped|| m_renderer_state == rs_error_state);
-	if (m_avplayer_manager == NULL || [[m_avplayer_manager avplayer] error] != NULL) {
+	if (m_avplayer == NULL || [m_avplayer.avplayer error] != NULL) {
 		[pool release];
 		m_lock.leave();
-		if (m_renderer_state != rs_error_state && m_avplayer_manager != NULL) {
+		if (m_renderer_state != rs_error_state && m_avplayer != NULL) {
 			m_renderer_state = rs_error_state;
-			NSString* ns_error = [[[m_avplayer_manager avplayer] error] localizedDescription];
+			NSString* ns_error = [[m_avplayer.avplayer error] localizedDescription];
 			lib::logger::get_logger()->error("cg_video: %s", [ns_error cStringUsingEncoding:NSUTF8StringEncoding]);
 		}
 		return;
@@ -450,7 +561,7 @@ cg_avfoundation_video_renderer::redraw(const rect &dirty, gui_window *window)
 	if (m_avplayer_layer == NULL) {		
 		// Determine current position and size.
 		CALayer *superlayer = [view layer];
-		m_avplayer_layer = [AVPlayerLayer playerLayerWithPlayer:[m_avplayer_manager avplayer]];
+		m_avplayer_layer = [AVPlayerLayer playerLayerWithPlayer:m_avplayer.avplayer];
 		m_avplayer_view = view;
 		[superlayer addSublayer:m_avplayer_layer];		
 		CGSize cgsize = [m_avplayer_layer preferredFrameSize];
@@ -467,9 +578,9 @@ cg_avfoundation_video_renderer::redraw(const rect &dirty, gui_window *window)
 	m_avplayer_layer.frame = frameRect;
 
 	if (m_renderer_state == rs_started) {
-		[m_avplayer_manager play];
+		[m_avplayer play];
 	} else if (m_renderer_state == rs_stopped) {
-		[m_avplayer_manager pause];
+		[m_avplayer pause];
 	} else if (m_renderer_state == rs_fullstopped) {
 
 	}
