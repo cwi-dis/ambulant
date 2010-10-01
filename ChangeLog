@@ -1,3 +1,16 @@
+2010-10-01 00:54  jackjansen
+
+	* Bits and pieces.
+
+2010-10-01 00:29  jackjansen
+
+	* Added boilerplate code for WIC image renderer. Currently
+	  disabled.
+
+2010-10-01 00:04  jackjansen
+
+	* Added a note that DirectX SDK Feb 2010 is the last one to work.
+
 2010-09-29 17:43  keesblom
 
 	* Attempt to make cg_avfoundation_video work with self-managed
