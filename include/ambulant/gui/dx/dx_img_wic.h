@@ -29,8 +29,9 @@
 #include "ambulant/config/config.h"
 #include "ambulant/common/renderer_impl.h"
 #include "ambulant/gui/dx/dx_playable.h"
+#include "ambulant/gui/dx/dx_viewport.h"
 
-//#define WITH_WIC
+#define WITH_WIC
 #ifdef WITH_WIC
 #include <wincodec.h>
 #include <ddraw.h>
@@ -63,6 +64,8 @@ class dx_img_wic_renderer : public dx_renderer_playable {
 	bool user_event(const lib::point& pt, int what);
 	void redraw(const lib::rect &dirty, common::gui_window *window);
   private:
+	void _create_ddsurf(viewport *v);	// Create m_ddsurf from m_original
+
 	static IWICImagingFactory *s_wic_factory;
 	IWICBitmapSource *m_original;	// The original image data reader
 	IDirectDrawSurface *m_ddsurf;	// The DD surface, read-to-draw

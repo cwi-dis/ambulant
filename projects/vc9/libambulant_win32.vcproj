@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="libambulant_win32"
 	ProjectGUID="{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}"
 	RootNamespace="libambulant_win32"
@@ -280,7 +280,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libjpeg.lib libpng.lib libexpat.lib zlib.lib"
+				AdditionalDependencies="libjpeg.lib libpng.lib libexpat.lib zlib.lib windowscodecs.lib"
 				OutputFile="..\..\bin\win32\libambulant_shwin32_D.dll"
 				AdditionalLibraryDirectories="..\..\lib\win32;&quot;$(DXSDK_DIR)\lib\x86&quot;"
 				IgnoreDefaultLibraryNames="LIBC.lib;LIBCMT.lib"

@@ -22,12 +22,12 @@
  */
 
 #include "ambulant/gui/dx/dx_img_wic.h"
-#include "ambulant/gui/dx/dx_viewport.h"
 #include "ambulant/gui/dx/dx_window.h"
 #include "ambulant/gui/dx/dx_image_renderer.h"
 #include "ambulant/gui/dx/dx_transition.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/lib/textptr.h"
 #include "ambulant/lib/colors.h"
 #include "ambulant/common/region_info.h"
 #include "ambulant/smil2/test_attrs.h"
@@ -80,7 +80,15 @@ gui::dx::dx_img_wic_renderer::dx_img_wic_renderer(
 {
 	if (s_wic_factory == NULL) {
 		// init wic factory
+		HRESULT hr = CoCreateInstance(
+			CLSID_WICImagingFactory,
+			NULL,
+			CLSCTX_INPROC_SERVER,
+			IID_PPV_ARGS(&s_wic_factory)
+			);
+		assert(SUCCEEDED(hr));
 	}
+
 	AM_DBG lib::logger::get_logger()->debug("dx_img_wic_renderer::ctr(0x%x)", this);
 }
 
@@ -92,59 +100,186 @@ gui::dx::dx_img_wic_renderer::~dx_img_wic_renderer() {
 
 void gui::dx::dx_img_wic_renderer::start(double t) {
 	AM_DBG lib::logger::get_logger()->debug("dx_img_wic_renderer::start(0x%x)", this);
-#if 0
+	if (s_wic_factory == NULL) {
+		lib::logger::get_logger()->error("Windows Imaging Component not initialized");
+		return;
+	}
+	HRESULT hr = S_OK;
+	IWICBitmapDecoder *decoder = NULL;
+	IWICFormatConverter *converter = NULL;
+	IWICBitmapFrameDecode *frame = NULL;
+	IWICBitmapSource *source = NULL;
+
 	net::url url = m_node->get_url("src");
-	net::datasource *src = m_factory->get_datasource_factory()->new_raw_datasource(url);
-	if (src == NULL) {
-		m_context->stopped(m_cookie);
-		return;
+	if (url.is_local_file()) {
+		// Local file, let WIC access it directly
+		std::string filename_str(url.get_file());
+		lib::textptr filename(filename_str.c_str());
+		hr = s_wic_factory->CreateDecoderFromFilename(
+			filename.wstr(),
+			NULL,
+			GENERIC_READ,
+			WICDecodeMetadataCacheOnDemand,
+			&decoder);
+	} else {
+		// Remote file, go through data buffer, etc.
+#if 1
+		lib::logger::get_logger()->error("WIC renderer not yet implemented for non-local files");
+		goto fail;
+#else
+		net::datasource *src = m_factory->get_datasource_factory()->new_raw_datasource(url);
+		if (src == NULL) {
+			m_context->stopped(m_cookie);
+			return;
+		}
+		// Read data from src
+		// Use IWICStream::InitializeFromMemory (?) to create IStream
+		// Use CreateDecoderFromStream
+		// 
+#endif
 	}
-	common::surface *surf = get_surface();
-	if(!surf) {
-		lib::logger::get_logger()->show("No surface [%s]",
-			url.get_url().c_str());
-		m_context->stopped(m_cookie);
-		return;
-	}
-	dx_window *dxwindow = static_cast<dx_window*>(surf->get_gui_window());
-	viewport *v = dxwindow->get_viewport();
-	m_image = new image_renderer(url, src, v);
-	if(!m_image) {
-		// Notify scheduler
-		m_context->stopped(m_cookie);
-		return;
+	// Get the first from the bitmap file
+	hr = decoder->GetFrame(0, &frame);
+	if (!SUCCEEDED(hr)) {
+		lib::logger::get_logger()->trace("WIC image renderer: GetFrame() returned 0x%x", hr);
+		lib::logger::get_logger()->error("%s: cannot render image", url.get_url().c_str());
+		goto fail;
 	}
 
-	// Does the renderer have all the resources to play?
-	if(!m_image->can_play()) {
-		// Notify scheduler
-		m_context->stopped(m_cookie);
-		return;
+	// Store this frame as a WIC bitmap source
+	hr = frame->QueryInterface(IID_IWICBitmapSource, (void**)&source);
+	if (!SUCCEEDED(hr)) {
+		lib::logger::get_logger()->trace("WIC image renderer: QueryInterface() returned 0x%x", hr);
+		lib::logger::get_logger()->error("%s: cannot render image", url.get_url().c_str());
+		goto fail;
 	}
 
-	// Has this been activated
-	if(m_activated) {
-		// repeat
-		m_dest->need_redraw();
-		return;
+	// Convert to required pixel format
+	hr = s_wic_factory->CreateFormatConverter(&converter);
+	if (!SUCCEEDED(hr)) {
+		lib::logger::get_logger()->trace("WIC image renderer: CreateFormatConverter() returned 0x%x", hr);
+		lib::logger::get_logger()->error("%s: cannot render image", url.get_url().c_str());
+		goto fail;
 	}
+	hr = converter->Initialize(
+		source,
+		GUID_WICPixelFormat32bppBGR,
+		WICBitmapDitherTypeNone,
+		NULL,
+		0.0,
+		WICBitmapPaletteTypeCustom);
+	if (!SUCCEEDED(hr)) {
+		lib::logger::get_logger()->trace("WIC image renderer: FormatConverter::Initialize() returned 0x%x", hr);
+		lib::logger::get_logger()->error("%s: cannot render image", url.get_url().c_str());
+		goto fail;
+	}
+
+	// Get access to the converter as a bitmap source, and keep this
+	// for future reference.
+	assert(m_original == NULL);
+	hr = converter->QueryInterface(IID_PPV_ARGS(&m_original));
+	if (!SUCCEEDED(hr)) {
+		lib::logger::get_logger()->trace("WIC image renderer: FormatConverter::QueryInterface() returned 0x%x", hr);
+		lib::logger::get_logger()->error("%s: cannot render image", url.get_url().c_str());
+		goto fail;
+	}
+	
+	// Make sure the DD surface is created, next redraw
+	assert(m_ddsurf == NULL);
+
+	// Inform the scheduler, ask for a redraw
 	m_context->started(m_cookie);
-
-	// Activate this renderer.
-	// Add this renderer to the display list of the region
 	m_dest->show(this);
 	m_dest->need_events(m_wantclicks);
-	m_activated = true;
+	//m_dest->need_redraw(); // show already did this
 
-	// Request a redraw
-	// Currently already done by show()
-	// m_dest->need_redraw();
+fail:
+	// Release things
+	if (converter) converter->Release();
+	if (source) source->Release();
+	if (frame) frame->Release();
+	if (decoder) decoder->Release();
 
 	// Notify scheduler that we're done playing
 	m_context->stopped(m_cookie);
-#endif 
 }
 
+void
+gui::dx::dx_img_wic_renderer::_create_ddsurf(viewport *v)
+{
+	if (m_ddsurf) return;
+	assert(m_original);
+	assert(s_wic_factory);
+	HRESULT hr = S_OK;
+
+	// Check format (redundant, really, but still...)
+    WICPixelFormatGUID pixelFormat;
+    hr = m_original->GetPixelFormat(&pixelFormat);
+	if (!SUCCEEDED(hr) || (pixelFormat != GUID_WICPixelFormat32bppBGR)) {
+		lib::logger::get_logger()->debug("WIC renderer: Unexpected pixel format");
+		return;
+	}
+
+	// Create DIB section
+	UINT w = 0, h = 0;
+	hr = m_original->GetSize(&w, &h);
+	if(!SUCCEEDED(hr)) {
+		lib::logger::get_logger()->debug("WIC renderer: GetSize() failed 0x%x", hr);
+		return;
+	}
+	BITMAPINFO bminfo;
+	ZeroMemory(&bminfo, sizeof(bminfo));
+    bminfo.bmiHeader.biSize         = sizeof(BITMAPINFOHEADER);
+    bminfo.bmiHeader.biWidth        = w;
+    bminfo.bmiHeader.biHeight       = -(LONG)h;
+    bminfo.bmiHeader.biPlanes       = 1;
+    bminfo.bmiHeader.biBitCount     = 32;
+    bminfo.bmiHeader.biCompression  = BI_RGB;
+	void *buffer;
+	HBITMAP dib_bitmap = CreateDIBSection(
+		NULL, 
+		&bminfo,
+		DIB_RGB_COLORS,
+		&buffer,
+		NULL,
+		0);
+	assert(dib_bitmap);
+	assert(buffer);
+	if (dib_bitmap == NULL || buffer == NULL) {
+		lib::logger::get_logger()->debug("WIC renderer: Could not allocate DIBSection");
+		return;
+	}
+
+
+	// Copy data into the DIB
+	LONG stride = 4*w;
+	LONG buffer_size = h*stride;
+	ZeroMemory(buffer, buffer_size); // DBG
+	hr = m_original->CopyPixels(NULL, stride, buffer_size, (BYTE *)buffer);
+	if (!SUCCEEDED(hr)) {
+		lib::logger::get_logger()->debug("WIC renderer: CopyPixels failed 0x%x", hr);
+		return;
+	}
+
+	// Create DD surface
+	assert(m_ddsurf == NULL);
+	m_ddsurf = v->create_surface(w, h);
+
+	// Copy the pixels
+	HDC surface_hdc = NULL;
+	hr = m_ddsurf->GetDC(&surface_hdc);
+	assert(SUCCEEDED(hr));
+	HDC bitmap_hdc = CreateCompatibleDC(surface_hdc);
+	assert(bitmap_hdc);
+	HBITMAP hbmp_old = (HBITMAP) SelectObject(bitmap_hdc, dib_bitmap);
+	::BitBlt(surface_hdc, 0, 0, w, h, bitmap_hdc, 0, 0, SRCCOPY);
+	SelectObject(bitmap_hdc, hbmp_old);
+	DeleteDC(bitmap_hdc);
+	m_ddsurf->ReleaseDC(surface_hdc);
+
+	// Clean up
+	if (dib_bitmap) DeleteObject(dib_bitmap);
+}
 
 bool gui::dx::dx_img_wic_renderer::stop() {
 	AM_DBG lib::logger::get_logger()->debug("dx_img_wic_renderer::stop(0x%x)", this);
@@ -174,6 +309,8 @@ void gui::dx::dx_img_wic_renderer::redraw(const lib::rect& dirty, common::gui_wi
 		AM_DBG lib::logger::get_logger()->debug("dx_img_wic_renderer::redraw NOT: no viewport %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
 		return;
 	}
+
+	_create_ddsurf(v);
 
 	if(!m_ddsurf) {
 		// No bits available
