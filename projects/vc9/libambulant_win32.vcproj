@@ -199,7 +199,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libjpeg.lib libpng.lib libexpat.lib zlib.lib"
+				AdditionalDependencies="libjpeg.lib libpng.lib libexpat.lib zlib.lib windowscodecs.lib"
 				OutputFile="..\..\bin\win32\libambulant_shwin32.dll"
 				AdditionalLibraryDirectories="..\..\lib\win32;&quot;$(DXSDK_DIR)\lib\x86&quot;"
 				IgnoreDefaultLibraryNames="LIBC.lib;LIBCMT.lib"

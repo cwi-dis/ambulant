@@ -76,6 +76,7 @@ gui::dx::dx_img_wic_renderer::dx_img_wic_renderer(
 :	dx_renderer_playable(context, cookie, node, evp, factory, dynamic_cast<dx_playables_context*>(dxplayer)),
 	m_original(0),
 	m_ddsurf(0),
+	m_databuf(NULL),
 	m_factory(factory)
 {
 	if (s_wic_factory == NULL) {
@@ -95,6 +96,7 @@ gui::dx::dx_img_wic_renderer::dx_img_wic_renderer(
 gui::dx::dx_img_wic_renderer::~dx_img_wic_renderer() {
 	AM_DBG lib::logger::get_logger()->debug("dx_img_wic_renderer::dtr(0x%x)", this);
 	// delete m_image;
+	if (m_databuf) free(m_databuf);
 }
 
 
@@ -123,19 +125,40 @@ void gui::dx::dx_img_wic_renderer::start(double t) {
 			&decoder);
 	} else {
 		// Remote file, go through data buffer, etc.
-#if 1
+#if 0
 		lib::logger::get_logger()->error("WIC renderer not yet implemented for non-local files");
 		goto fail;
 #else
-		net::datasource *src = m_factory->get_datasource_factory()->new_raw_datasource(url);
-		if (src == NULL) {
+		size_t size;
+		assert(m_databuf == NULL);
+		if ( !net::read_data_from_url(url, m_factory->get_datasource_factory(), &m_databuf, &size)) {
 			m_context->stopped(m_cookie);
 			return;
 		}
-		// Read data from src
-		// Use IWICStream::InitializeFromMemory (?) to create IStream
-		// Use CreateDecoderFromStream
-		// 
+		IWICStream *stream = NULL;
+		hr = s_wic_factory->CreateStream(&stream);
+		if (!SUCCEEDED(hr)) {
+			ambulant::lib::logger::get_logger()->error("Cannot create Windows Imaging Component stream");
+			goto fail;
+		}
+		hr = stream->InitializeFromMemory((BYTE *)m_databuf, size);
+		if (!SUCCEEDED(hr)) {
+			ambulant::lib::logger::get_logger()->error("Cannot create Windows Imaging Component stream from buffer");
+			stream->Release();
+			goto fail;
+		}
+		hr = s_wic_factory->CreateDecoderFromStream(
+			stream,
+			NULL,
+			WICDecodeMetadataCacheOnDemand,
+			&decoder);
+		// We release the stream now, before testing success. It will be increffed
+		// in case things worked fine.
+		stream->Release();
+		if (!SUCCEEDED(hr)) {
+			ambulant::lib::logger::get_logger()->error("Cannot create Windows Imaging Component decoder from stream");
+			goto fail;
+		}
 #endif
 	}
 	// Get the first from the bitmap file
