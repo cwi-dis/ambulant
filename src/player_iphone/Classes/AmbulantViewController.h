@@ -11,6 +11,7 @@
 #import "ambulant/common/embedder.h"
 #import "ambulant/net/url.h"
 #import "ambulant/gui/cg/cg_gui.h"
+#import "ambulant/gui/cg/cg_preferences.h"
 #import "mainloop.h"
 
 class document_embedder : public ambulant::common::embedder {
@@ -44,6 +45,7 @@ private:
 	UIDeviceOrientation currentOrientation;
 	BOOL autoCenter;
 	BOOL autoResize;
+	BOOL nativeRenderer;
 	BOOL play_active;
 }
 - (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation) interfaceOrientation;
@@ -64,8 +66,7 @@ private:
 @property(nonatomic,retain) NSString* linkURL, *playURL;
 @property(nonatomic,retain)	IBOutlet UIView* interactionView;
 @property(nonatomic) CGRect originalPlayerViewFrame, originalInteractionViewFrame;
-@property(nonatomic) BOOL keyboardIsShown, autoCenter, autoResize, play_active;
+@property(nonatomic) BOOL keyboardIsShown, autoCenter, autoResize, nativeRenderer, play_active;
 @property(nonatomic) UIDeviceOrientation currentOrientation;
 
 @end
-

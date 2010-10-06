@@ -31,51 +31,37 @@
 #include "ambulant/lib/mtsync.h"
 #import <AVFoundation/AVFoundation.h>
 
-/* Interfacing with AVFoundation video by a single static CGVideoAVPlayerManager
- * controlling a pool of (possible parallel) AVPlayer objects
- */
-typedef enum CGVideoAVPlayerStatus_decl {
-	CGVideoAVPlayerNull, CGVideoAVPlayerInitialized, CGVideoAVPlayerPlaying, CGVideoAVPlayerPausing, CGVideoAVPlayerError
-} CGVideoAVPlayerStatus;
-
-@interface CGVideoAVPlayer : NSObject
-{
-	AVPlayer* avplayer;
-	CMTime duration;
-//X	id timeObserver;
-	BOOL durationIsKnown;
-	NSURL* url;	
-	void*(*eod_fun)(void*);	// extern function to call on end of data
-	void* fun_arg;			// arguments for this function
-	
-	ambulant::net::timestamp_t position_wanted;
-	
-	CGVideoAVPlayerStatus playerStatus;
-}
-
-@property (nonatomic, retain) AVPlayer *avplayer;
-@property (nonatomic, assign) CMTime duration;
-@property (nonatomic, assign, readonly) BOOL durationIsKnown;
-//X @property (nonatomic, retain) id timeObserver;
-@property (nonatomic, retain) NSURL* url;
-@property (nonatomic, assign) CGVideoAVPlayerStatus_decl playerStatus;
-
-- (CGVideoAVPlayer*) initWithURL:(NSURL*)url; // parent:(void*)an_object endOfData:(void*(*)(void*)) a_method_pointer;
-- (AVPlayer*) avplayer;
-- (void) play;
-- (void) pause;
-- (void) stop;
-- (void) terminate;
-- (void) dealloc;
-@end
-
 @interface CGVideoAVPlayerManager : NSObject
 {
-	NSMutableArray* avplayers;
+	CMTime duration;
+//	id timeObserver;
+	BOOL durationIsKnown;
+	NSURL* url;
+	void*(*eod_fun)(void*);
+	void* eod_arg;
+	void*(*err_fun)(void*);
+	void* err_arg;
+	
+	ambulant::net::timestamp_t position_wanted;
 }
+static AVPlayer* s_avplayer;
 
-+ (CGVideoAVPlayer*) getCGVideoAVPlayerWithURL:(NSURL*) url;
-+ (void) releaseCGVideoAVPlayer: (CGVideoAVPlayer*) player;
+@property (nonatomic, retain) AVPlayer *s_avplayer;
+@property (nonatomic, retain) AVPlayerItem *avplayer_item;
+@property (nonatomic, assign) CMTime duration;
+@property (nonatomic, assign, readonly) BOOL durationIsKnown;
+//@property (nonatomic, retain) id timeObserver;
+@property (nonatomic, retain) NSURL* url;
+
+
+- (CGVideoAVPlayerManager*) initWithURL:(NSURL*) nsurl;
+- (AVPlayer*) s_avplayer;
+- (void) play;
+- (void) pause;
+- (void) dealloc;
+- (void) onErrorCall:(void*(*)(void*))fun withArg: (void*) arg;
+- (void) onEndOfDataCall:(void*(*)(void*))fun withArg: (void*) arg;
+
 @end
 										  
 namespace ambulant {
@@ -100,6 +86,8 @@ class cg_avfoundation_video_renderer :
 	~cg_avfoundation_video_renderer();
 
 	void start(double where);
+//	void freeze() {}
+//	void stop();
 	bool stop();
 	void post_stop();
 	void init_with_node(const lib::node *n);
@@ -115,13 +103,17 @@ class cg_avfoundation_video_renderer :
 	void start_outtransition(const lib::transition_info *info) {}
 private:
 	static void* eod_reached(void* arg);
+	static void* error_occurred(void* arg);
 	enum { rs_created, rs_inited, rs_prerolled, rs_started, rs_stopped, rs_fullstopped, rs_error_state } m_renderer_state; // Debugging, mainly
 	net::url m_url;						// The URL of the movie we play
+//X	QTMovie *m_movie;           
+//X	QTMovieView *m_movie_view;	// The view displaying the movie
+//X	AVPlayer* m_avplayer;				// The avplayer itself
 	AVPlayerLayer* m_avplayer_layer;	// The AVPlayerLayer where video is displayed
 	CALayer* m_superlayer;				// The CALayer to which m_avplayer_layer is added
 	UIView* m_avplayer_view;			// The view for the avplayer
 	size m_srcsize;						// size of this view
-	CGVideoAVPlayer* m_avplayer;			// Helper ObjC class to control the actual player using observers
+	CGVideoAVPlayerManager *m_avplayer_manager;			// Our helper ObjC class to control the players using observers
 	bool m_paused;
 	net::timestamp_t m_previous_clip_position; // Where we are officially positioned
 #ifdef WITH_CLOCK_SYNC

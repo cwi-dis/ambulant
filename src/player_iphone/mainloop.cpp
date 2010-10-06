@@ -29,6 +29,7 @@
 #include "ambulant/lib/node.h"
 #ifdef WITH_CG
 #include "ambulant/gui/cg/cg_gui.h"
+#include "ambulant/gui/cg/cg_preferences.h"
 #else
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 #endif
@@ -75,10 +76,7 @@ mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *a
 	init_plugins();
 
     // Order the factories according to the preferences
-    common::preferences *prefs = common::preferences::get_preferences();
-#ifdef	WITH_AVFOUNDATION
-	prefs->m_prefer_ffmpeg = false; //XXX UI needed for prefs
-#endif//WITH_AVFOUNDATION
+    gui::cg::cg_preferences *prefs = gui::cg::cg_preferences::get_preferences();
     get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererOpen"));
     if (!prefs->m_prefer_ffmpeg)
         get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererAVFoundation"))    ;   

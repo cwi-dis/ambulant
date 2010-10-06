@@ -14,12 +14,14 @@
 @interface PlaylistViewController : UIViewController {
 	id <PlaylistViewControllerDelegate> delegate;
 	UISwitch* autoCenterSwitch;	
-	UISwitch* autoResizeSwitch;	
+	UISwitch* autoRsizeSwitch;	
+	UISwitch* nativeRendererSwitch;	
 }
 
 - (IBAction) done: (id) sender;
 - (BOOL) autoCenter;
 - (BOOL) autoResize;
+- (BOOL) nativeRenderer;
 - (IBAction) playWelcome;
 - (IBAction) playNYC;
 - (IBAction) playPanZoom;
@@ -36,6 +38,7 @@
 @property(nonatomic, assign) id <PlaylistViewControllerDelegate> delegate;
 @property(nonatomic,retain) IBOutlet UISwitch* autoCenterSwitch;
 @property(nonatomic,retain) IBOutlet UISwitch* autoResizeSwitch;
+@property(nonatomic,retain) IBOutlet UISwitch* nativeRendererSwitch;
 
 @end
 @protocol PlaylistViewControllerDelegate

@@ -12,6 +12,7 @@
 #import <CoreFoundation/CoreFoundation.h>
 
 #include "ambulant/lib/logger.h"
+#include "ambulant/gui/cg/cg_preferences.h"
 
 static void
 show_message(int level, const char *format)
@@ -86,10 +87,15 @@ initialize_logger()
 	[webViewController release];
 }
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
-    
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{    
     // Override point for customization after application launch.
     // Add the view controller's view to the window and display.
+
+	// Install ambulent preferences handler
+	ambulant::gui::cg::cg_preferences::install_singleton();
+	
+	// Install ambulant logger
 	initialize_logger();
     [window addSubview:viewController.view];
     [window makeKeyAndVisible];
@@ -192,6 +198,7 @@ initialize_logger()
     /*
      Free up as much memory as possible by purging cached data objects that can be recreated (or reloaded from disk) later.
      */
+	NSLog(@"Memory warning received");
 }
 
 

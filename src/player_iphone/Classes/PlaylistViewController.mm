@@ -12,7 +12,7 @@
 
 @implementation PlaylistViewController
 
-@synthesize delegate, autoCenterSwitch, autoResizeSwitch;
+@synthesize delegate, autoCenterSwitch, autoResizeSwitch, nativeRendererSwitch;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -20,7 +20,7 @@
 	AmbulantViewController* MVC = (AmbulantViewController*)delegate;
 	autoCenterSwitch.on = MVC.autoCenter;
 	autoResizeSwitch.on = MVC.autoResize;
-	
+	nativeRendererSwitch.on = MVC.nativeRenderer;	
 }
 
 - (BOOL) autoCenter {
@@ -29,6 +29,10 @@
 
 - (BOOL) autoResize {
 	return autoResizeSwitch.on;
+}
+
+- (BOOL) nativeRenderer {
+	return nativeRendererSwitch.on;
 }
 
 - (IBAction) done:(id)sender {

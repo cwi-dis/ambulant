@@ -62,10 +62,6 @@ preferences::preferences()
 	m_plugin_dir(""),
 	m_dynamic_content_control(false),
 	m_fullscreen(false),
-#ifdef	WITH_UIKIT
-	m_auto_center(false),
-	m_auto_resize(false),
-#endif//WITH_UIKIT
 	m_prefer_rtsp_tcp(false)
 {
 	AM_DBG lib::logger::get_logger()->debug("preferences::preferences()");

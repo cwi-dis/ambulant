@@ -59,7 +59,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 @synthesize interactionView, originalPlayerViewFrame, originalInteractionViewFrame,
 			playerView, myMainloop, URLEntryField, linkURL, playURL, keyboardIsShown,
-			currentOrientation,	autoCenter, autoResize, play_active;
+			currentOrientation,	autoCenter, autoResize, nativeRenderer, play_active;
 
 /*
 // The designated initializer. Override to perform setup that is required before the view is loaded.
@@ -118,8 +118,11 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	 selector:@selector(orientationChanged:)
 	 name:UIDeviceOrientationDidChangeNotification
 	 object: nil];
-	autoCenter = ambulant::common::preferences::get_preferences()->m_auto_center;
-	autoResize = ambulant::common::preferences::get_preferences()->m_auto_resize;
+	ambulant::gui::cg::cg_preferences::get_preferences()->load_preferences();
+	ambulant::gui::cg::cg_preferences* prefs = ambulant::gui::cg::cg_preferences::get_preferences();
+	autoCenter = prefs->m_auto_center;
+	autoResize = prefs->m_auto_resize;
+	nativeRenderer = ! prefs->m_prefer_ffmpeg;
 	
 	// prepare to react on "tap" gesture (select object in playerView with 1 finger tap)
 	UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]
@@ -242,21 +245,19 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	// get the values entered by the user
 	autoCenter = [controller autoCenter];
 	autoResize = [controller autoResize];
-	ambulant::common::preferences::get_preferences()->m_auto_center = autoCenter;
-	ambulant::common::preferences::get_preferences()->m_auto_resize = autoResize;
-	/*
-	timeZoneName = [controller selectedTimeZone];
-	BOOL uses24Hour = [controller uses24Hour];
-	NSString* selected24HourDisplay = uses24Hour ? @"YES" : @"NO";
-	[clockPrefs setObject:timeZoneName forKey:TIME_ZONE_PREF_KEY];
-	[clockPrefs setObject:selected24HourDisplay
-				   forKey:TWENTY_FOUR_HOUR_PREF_KEY];
-	/// save prefs to Documents folder
-	[self savePrefs];
-	// update displays to possibly changed prefs
-	[self setClockToTimeZoneName:timeZoneName uses24Hour:uses24Hour];
-	[self updateClockView];
-	*/
+	nativeRenderer = [controller nativeRenderer];
+	ambulant::gui::cg::cg_preferences* prefs = ambulant::gui::cg::cg_preferences::get_preferences();
+	prefs->m_auto_center = autoCenter;
+	prefs->m_auto_resize = autoResize;
+	prefs->m_prefer_ffmpeg = ! nativeRenderer;
+	if (myMainloop) {
+		if (nativeRenderer) {
+			myMainloop->get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererAVFoundation"))    ;   
+		} else {
+			myMainloop->get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererOpen"));
+		}
+	}
+	prefs->save_preferences();
 	[self dismissModalViewControllerAnimated:YES];
 	
 	if (myMainloop != NULL) {
@@ -266,7 +267,6 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
 		[playerView adaptDisplayAfterRotation: orientation];
 	}
-	
 }
 
 - (void) playIt: (PlaylistViewController *)controller selected: (NSString*) whatString {
