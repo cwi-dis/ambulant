@@ -1,3 +1,8 @@
+2010-10-06 15:04  keesblom
+
+	* Add persistent preferences in tnp. GUI. Native video now works
+	  reasonably well.
+
 2010-10-03 23:02  jackjansen
 
 	* Implemented WICimage rendering for non-local URLs.
