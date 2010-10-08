@@ -33,34 +33,41 @@
 
 @interface CGVideoAVPlayerManager : NSObject
 {
-	CMTime duration;
-//	id timeObserver;
-	BOOL durationIsKnown;
-	NSURL* url;
-	void*(*eod_fun)(void*);
-	void* eod_arg;
-	void*(*err_fun)(void*);
-	void* err_arg;
+//	id timeObserver;			// A periodic observer to maintain video progress
+	CMTime m_duration;			// The total duration of the video
+	BOOL m_is_duration_known;	// Initially duration is not known
+	NSURL* m_nsurl;				// The url of the video
+	void*(*m_eod_fun)(void*);	// A C++ function to be called at end of the video
+	void* m_eod_arg;			// Arguments for this function 
+	void*(*m_err_fun)(void*);	// A C++ function to be called when an error occurs
+	void* m_err_arg;			// Arguments for this function 
+	BOOL m_observers_added;		// A flag whether any observers are watching the video
+	AVPlayerLayer* m_avplayer_layer; // The AVPlayerLayer where video is displayed
 	
-	ambulant::net::timestamp_t position_wanted;
+	ambulant::net::timestamp_t m_position_wanted;
 }
-static AVPlayer* s_avplayer;
+static AVPlayer* s_avplayer;	// The global AVPlayer
 
 @property (nonatomic, retain) AVPlayer *s_avplayer;
-@property (nonatomic, retain) AVPlayerItem *avplayer_item;
-@property (nonatomic, assign) CMTime duration;
-@property (nonatomic, assign, readonly) BOOL durationIsKnown;
+@property (nonatomic, retain) AVPlayerItem *m_avplayer_item;
+@property (nonatomic, assign) CMTime m_duration;
+@property (nonatomic, assign, readonly) BOOL m_is_duration_known;
 //@property (nonatomic, retain) id timeObserver;
-@property (nonatomic, retain) NSURL* url;
+@property (nonatomic, retain) NSURL* m_nsurl;
+@property (nonatomic, retain) AVPlayerLayer* m_avplayer_layer;
 
 
 - (CGVideoAVPlayerManager*) initWithURL:(NSURL*) nsurl;
 - (AVPlayer*) s_avplayer;
+- (BOOL) s_busy;
 - (void) play;
 - (void) pause;
+- (void) stop;
 - (void) dealloc;
 - (void) onErrorCall:(void*(*)(void*))fun withArg: (void*) arg;
 - (void) onEndOfDataCall:(void*(*)(void*))fun withArg: (void*) arg;
+- (void) add_observers;
+- (void) remove_observers:(void*)v;
 
 @end
 										  
@@ -109,7 +116,6 @@ private:
 //X	QTMovie *m_movie;           
 //X	QTMovieView *m_movie_view;	// The view displaying the movie
 //X	AVPlayer* m_avplayer;				// The avplayer itself
-	AVPlayerLayer* m_avplayer_layer;	// The AVPlayerLayer where video is displayed
 	CALayer* m_superlayer;				// The CALayer to which m_avplayer_layer is added
 	UIView* m_avplayer_view;			// The view for the avplayer
 	size m_srcsize;						// size of this view
