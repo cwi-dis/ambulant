@@ -1,3 +1,9 @@
+2010-10-08 13:50  keesblom
+
+	* Lot of cleanup. Some GUI related actions moved to main dispatch
+	  queue. No simultaneous video's error added. Now fairly stable
+	  implementation.
+
 2010-10-06 15:04  keesblom
 
 	* Add persistent preferences in tnp. GUI. Native video now works
