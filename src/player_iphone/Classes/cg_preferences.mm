@@ -7,7 +7,7 @@
 //
 #include "ambulant/net/url.h"
 
-#include "ambulant/gui/cg/cg_preferences.h"
+#include "cg_preferences.h"
 
 using namespace ambulant::gui::cg;
 
@@ -57,6 +57,7 @@ cg_preferences::load_preferences()
 									 [NSNumber numberWithBool: false], @"autoResize",
 									 @"", @"plugin_dir",
 									 [NSNumber numberWithBool: false], @"dynamic_content_control",
+									 @"Welcome.smil", @"last_used",
 									 nil];
 	[prefs registerDefaults: defaultDefaults];
 	m_parser_id = [[prefs stringForKey: @"parser_id"] UTF8String];
@@ -75,6 +76,7 @@ cg_preferences::load_preferences()
 	m_fullscreen = [prefs boolForKey: @"fullScreen"];
 	m_auto_center = [prefs boolForKey: @"autoCenter"];
 	m_auto_resize = [prefs boolForKey: @"autoResize"];
+	m_last_used = [prefs stringForKey:@"last_used"];
 	save_preferences();
 	return true;
 }
@@ -97,6 +99,8 @@ bool cg_preferences::save_preferences()
 	[prefs setBool: m_fullscreen forKey: @"fullScreen"];
 	[prefs setBool: m_auto_center forKey: @"autoCenter"];
 	[prefs setBool: m_auto_resize forKey: @"autoResize"];
+	[prefs setBool: m_auto_resize forKey: @"autoResize"];
+	[prefs setObject: m_last_used forKey: @"last_used"];
 	
 	[prefs setBool: m_dynamic_content_control forKey: @"dynamic_content_control"];
 	ambulant::net::url::set_strict_url_parsing(m_strict_url_parsing);

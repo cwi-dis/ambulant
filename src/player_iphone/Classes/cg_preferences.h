@@ -33,6 +33,8 @@ public:
 	/// iOs player auto resize
 	bool m_auto_resize;
 	
+	NSString* m_last_used;
+	
 private:
 	static cg_preferences* s_preferences; // singleton
 
