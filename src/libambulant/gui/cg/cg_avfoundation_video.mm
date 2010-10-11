@@ -35,7 +35,7 @@
 #include "ambulant/common/smil_alignment.h"
 #include "ambulant/smil2/test_attrs.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -211,9 +211,9 @@ initWithURL:(NSURL*) nsurl {
 - (void)
 dealloc {
 //	AM_DBG NSLog(@"CGVideoAVPlayerManager.dealloc(0x%x) s_avplayer=0x%x [s_avplayer retainCount=%d m_av_player_item=0x%x [m_avplayer_item retainCount]=%d", self, s_avplayer, [s_avplayer retainCount], m_avplayer_item, [m_avplayer_item retainCount]);
-
+	assert(m_avplayer_layer == NULL);
 	if (m_avplayer_layer != NULL) {
-//	   [m_avplayer_layer removeFromSuperlayer];
+	   [m_avplayer_layer removeFromSuperlayer];
 		m_avplayer_layer = NULL;
 	}
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -264,11 +264,12 @@ pause {
 
 - (void)
 stop {
+	if (s_avplayer != NULL) {
+		[s_avplayer pause];
+	}
+	[self remove_observers];
 	dispatch_async(dispatch_get_main_queue(),
 	^{  // must be done in main thread since GUI is involved
-		if (s_avplayer != NULL) {
-			[s_avplayer pause];
-		}
 		if (m_avplayer_layer != NULL) {
 			[m_avplayer_layer removeFromSuperlayer];
 			m_avplayer_layer = NULL;
@@ -436,7 +437,6 @@ cg_avfoundation_video_renderer::stop() {
 
 	m_lock.enter();
 	bool rv = true;
-	[m_avplayer_manager stop];
 	m_context->stopped(m_cookie);
 	m_renderer_state = rs_stopped;
 	m_dest->need_redraw();
@@ -451,8 +451,9 @@ cg_avfoundation_video_renderer::post_stop() {
 
 	m_lock.enter();
 	m_renderer_state = rs_fullstopped;
+	[m_avplayer_manager stop];
 	if (m_dest != NULL) {
-		m_dest->renderer_done(this); //already done by smil_player::stop_playable()
+//		m_dest->renderer_done(this); //already done by smil_player::stop_playable()
 	}
 	m_lock.leave();
 }

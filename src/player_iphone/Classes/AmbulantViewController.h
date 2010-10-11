@@ -11,7 +11,7 @@
 #import "ambulant/common/embedder.h"
 #import "ambulant/net/url.h"
 #import "ambulant/gui/cg/cg_gui.h"
-#import "ambulant/gui/cg/cg_preferences.h"
+#import "cg_preferences.h"
 #import "mainloop.h"
 
 class document_embedder : public ambulant::common::embedder {

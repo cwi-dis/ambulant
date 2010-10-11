@@ -12,7 +12,7 @@
 #import <CoreFoundation/CoreFoundation.h>
 
 #include "ambulant/lib/logger.h"
-#include "ambulant/gui/cg/cg_preferences.h"
+#include "cg_preferences.h"
 
 static void
 show_message(int level, const char *format)
