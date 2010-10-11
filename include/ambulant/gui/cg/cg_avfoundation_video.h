@@ -31,6 +31,11 @@
 #include "ambulant/lib/mtsync.h"
 #import <AVFoundation/AVFoundation.h>
 
+
+/* CGVideoAVPlayerManager - a class to manage the AVPlayer in iOs 4.0.
+ * currently it appears we can use one AVPlayer object at the same time, and the
+ * only way to play a next video is to call its replaceCurrentItemWithItem.
+ */
 @interface CGVideoAVPlayerManager : NSObject
 {
 //	id timeObserver;			// A periodic observer to maintain video progress
@@ -43,31 +48,54 @@
 	void* m_err_arg;			// Arguments for this function 
 	BOOL m_observers_added;		// A flag whether any observers are watching the video
 	AVPlayerLayer* m_avplayer_layer; // The AVPlayerLayer where video is displayed
+	AVPlayerItem* m_avplayer_item; // The video item being played 
 	
 	ambulant::net::timestamp_t m_position_wanted;
 }
 static AVPlayer* s_avplayer;	// The global AVPlayer
 
-@property (nonatomic, retain) AVPlayer *s_avplayer;
+//@property (nonatomic, retain) AVPlayer *s_avplayer;
 @property (nonatomic, retain) AVPlayerItem *m_avplayer_item;
 @property (nonatomic, assign) CMTime m_duration;
 @property (nonatomic, assign, readonly) BOOL m_is_duration_known;
 //@property (nonatomic, retain) id timeObserver;
 @property (nonatomic, retain) NSURL* m_nsurl;
-@property (nonatomic, retain) AVPlayerLayer* m_avplayer_layer;
+@property (readonly) AVPlayerLayer* m_avplayer_layer;
 
-
+// ** video initialization methods **
+// initWithURL:url - returns NULL on error
 - (CGVideoAVPlayerManager*) initWithURL:(NSURL*) nsurl;
-- (AVPlayer*) s_avplayer;
-- (BOOL) s_busy;
+
+// onEndOfDataCall:fun witharg:arg - call 'fun' the the opaque 'arg' when end of data is reached while playing video
+- (void) onEndOfDataCall:(void*(*)(void*))fun withArg: (void*) arg;
+
+// onErrorCall:fun: witharg:arg - call 'fun' the the opaque 'arg' when an error occures during video play
+- (void) onErrorCall:(void*(*)(void*))fun withArg: (void*) arg;
+
+// set_clip_begin:tb end:te - select video begin/end time
+- (void) set_clip_begin:(Float64) begin_time end: (Float64) end_time;
+
+// add_layer:layer withSize:size - add a video layer to the specified CALayer
+- (void) add_layer: (CALayer*) layer withSize: (CGSize) size;
+
+// set_frame:rect - (re)set the frame of the current video to 'rect'
+- (void) set_frame: (CGRect) rect;
+
+// ** player control methods **
 - (void) play;
 - (void) pause;
 - (void) stop;
-- (void) dealloc;
-- (void) onErrorCall:(void*(*)(void*))fun withArg: (void*) arg;
-- (void) onEndOfDataCall:(void*(*)(void*))fun withArg: (void*) arg;
+// return the last error observed, NULL if none
+- (NSError*) get_error;
+// return the current player rate (0: paused, 1.0:playing at normal speed
+- (Float64) rate;
+
+// ** av_player__manager** private methods **
+- (AVPlayer*) avplayer;
 - (void) add_observers;
-- (void) remove_observers:(void*)v;
+- (void) remove_observers;
+- (BOOL) s_busy;
+- (void) dealloc;
 
 @end
 										  
@@ -117,7 +145,6 @@ private:
 //X	QTMovieView *m_movie_view;	// The view displaying the movie
 //X	AVPlayer* m_avplayer;				// The avplayer itself
 	CALayer* m_superlayer;				// The CALayer to which m_avplayer_layer is added
-	UIView* m_avplayer_view;			// The view for the avplayer
 	size m_srcsize;						// size of this view
 	CGVideoAVPlayerManager *m_avplayer_manager;			// Our helper ObjC class to control the players using observers
 	bool m_paused;

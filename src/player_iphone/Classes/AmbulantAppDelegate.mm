@@ -119,7 +119,7 @@ initialize_logger()
 	BOOL validated = NO;
 	if (YES) { //([isValid: url]) {
 		validated = YES;
-		viewController.URLEntryField.text = [[[NSString alloc] initWithString: @"http://"]
+		viewController.URLEntryField.text = [[[NSMutableString alloc] initWithString: @"http://"]
 							stringByAppendingString: [[url resourceSpecifier] substringFromIndex:2]];
 		if (viewController.myMainloop) {
 			viewController.myMainloop->stop();

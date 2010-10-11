@@ -141,6 +141,9 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
     [self.playerView addGestureRecognizer:panGesture];
     [panGesture release];
 	
+	// prepare to react when text is entered
+	self.URLEntryField.delegate = self;
+	
 	embedder = new document_embedder(self);
 	NSLog(@"View=%@ playUrl=%@", [self playerView], [self playURL]);
 	if (self.playURL != nil) {
@@ -155,10 +158,11 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		if (welcomePath) {
 			void* theview = [self playerView];
 			NSLog(@"view %@ responds %d", (NSObject *)theview, [(NSObject *)theview respondsToSelector: @selector(isAmbulantWindowInUse)]);
-			playURL = [[NSString alloc] initWithString: welcomePath];
+			playURL = [[NSMutableString alloc] initWithString: welcomePath];
 			[self doPlayURL ];
 		}
-	} 
+	} 	
+//X	[URLEntryField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
 }
 
 - (IBAction) handlePlayTapped {
@@ -210,15 +214,31 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 // dismiss the keyboard when the <Return> is tapped
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	[textField resignFirstResponder]; // dismiss keyboard
-	playURL = [[NSString alloc] initWithString: URLEntryField.text];
-	return YES;
+	return NO;
 }
 
+-(IBAction) textFieldTextDidChange {	
+// This method will be called whenever an object sends UITextFieldTextDidChangeNotification
+//	NSLog(@"textFieldTextDidChange: text=%@",URLEntryField.text);
+	[playURL setString: URLEntryField.text];
+} 
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+// A delegate method called by the URL text field when the editing is complete. 
+// We save the current value of the field in our settings.
+{
+	NSLog(@"textFieldDidEndEditing: %@",textField.text);
+}	
 - (IBAction) handleURLEntered {
-	if (URLEntryField.text.length == 0 || URLEntryField.text == playURL) {
+	/*
+	if (URLEntryField.text.length == 0 || [URLEntryField.text isEqual: playURL]) {
 		return;
 	}
+	if (playURL != NULL) {
+		[playURL release];
+	}
 	playURL = [[NSString alloc] initWithString: URLEntryField.text];
+	 */
 	[self doPlayURL];
 }
 
@@ -284,7 +304,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		if (playURL) {
 			[playURL release];
 		}
-		playURL = [[NSString alloc] initWithString: whatString];
+		playURL = [[NSMutableString alloc] initWithString: whatString];
 		[self doPlayURL];
 	}
 	[controller done: self];
@@ -414,7 +434,6 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
 }
-
 
 - (void)dealloc {
     [super dealloc];

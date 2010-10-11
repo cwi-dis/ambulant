@@ -548,8 +548,7 @@ bad:
 	CGRect myframe = current_frame = original_frame;
 #endif ///PRESERVE_ZOOM
 	CGRect mainframe = [[UIScreen mainScreen] applicationFrame];
-	NSLog(@"Mainscreen: %f,%f,%f,%f",
-		  mainframe.origin.x,mainframe.origin.y,mainframe.size.width,mainframe.size.height);
+	AM_DBG NSLog(@"Mainscreen: %f,%f,%f,%f", mainframe.origin.x,mainframe.origin.y,mainframe.size.width,mainframe.size.height);
 	BOOL wasRotated = false;
 	if (orientation == UIDeviceOrientationLandscapeLeft
 		|| orientation == UIDeviceOrientationLandscapeRight) {

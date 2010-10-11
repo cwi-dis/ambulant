@@ -39,8 +39,8 @@ private:
 	IBOutlet UIView* interactionView;
 	IBOutlet UITextField* URLEntryField;
 	CGRect originalPlayerViewFrame, originalInteractionViewFrame;
-	NSString* playURL;
-	NSString* linkURL;
+	NSMutableString* playURL;
+	NSMutableString* linkURL;
 	BOOL keyboardIsShown;
 	UIDeviceOrientation currentOrientation;
 	BOOL autoCenter;
@@ -59,11 +59,12 @@ private:
 - (IBAction) showPlaylist:(id)sender;
 - (IBAction) close:(id) str;
 - (void) pause;
+- (IBAction) textFieldTextDidChange;
 
 @property(nonatomic,retain) IBOutlet UITextField* URLEntryField;
 @property(nonatomic,retain)	IBOutlet AmbulantView* playerView;
 @property(nonatomic) mainloop* myMainloop;
-@property(nonatomic,retain) NSString* linkURL, *playURL;
+@property(nonatomic,retain) NSMutableString* linkURL, *playURL;
 @property(nonatomic,retain)	IBOutlet UIView* interactionView;
 @property(nonatomic) CGRect originalPlayerViewFrame, originalInteractionViewFrame;
 @property(nonatomic) BOOL keyboardIsShown, autoCenter, autoResize, nativeRenderer, play_active;
