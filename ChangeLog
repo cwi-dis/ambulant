@@ -1,3 +1,18 @@
+2010-10-12 00:24  keesblom
+
+	* Moved the cg_preferences from gui/cg to player_iphone
+
+2010-10-12 00:20  keesblom
+
+	* iPhone player now starts with the last file played, initially
+	  Welcome.smil from the bundle.
+
+2010-10-11 17:14  keesblom
+
+	* Fixed a bug that caused the player to pla the previous item when
+	  a new one was typed.	Made the native video implementation more
+	  stable (less crashes/deadlocks) and added some documentation.
+
 2010-10-08 13:50  keesblom
 
 	* Lot of cleanup. Some GUI related actions moved to main dispatch
