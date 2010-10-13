@@ -36,8 +36,12 @@
  * currently it appears we can use one AVPlayer object at the same time, and the
  * only way to play a next video is to call its replaceCurrentItemWithItem.
  */
+// Bit masks for identifying active observers 
+typedef enum observers { ob_none, ob_status=0x1, ob_asset=0x2, ob_duration=0x4, ob_error=0x8, ob_time=0x10, ob_eod=0x20, ob_all=0x3f } observers;
+
 @interface CGVideoAVPlayerManager : NSObject
 {
+	observers m_observers;		// A mask indicating active observers 
 //	id timeObserver;			// A periodic observer to maintain video progress
 	CMTime m_duration;			// The total duration of the video
 	BOOL m_is_duration_known;	// Initially duration is not known
@@ -46,7 +50,6 @@
 	void* m_eod_arg;			// Arguments for this function 
 	void*(*m_err_fun)(void*);	// A C++ function to be called when an error occurs
 	void* m_err_arg;			// Arguments for this function 
-	BOOL m_observers_added;		// A flag whether any observers are watching the video
 	AVPlayerLayer* m_avplayer_layer; // The AVPlayerLayer where video is displayed
 	AVPlayerItem* m_avplayer_item; // The video item being played 
 	
@@ -92,8 +95,8 @@ static AVPlayer* s_avplayer;	// The global AVPlayer
 
 // ** av_player__manager** private methods **
 - (AVPlayer*) avplayer;
-- (void) add_observers;
-- (void) remove_observers;
+- (void) add_observers:(observers) new_observers;
+- (void) remove_observers:(observers) new_observers;
 - (BOOL) s_busy;
 - (void) dealloc;
 
@@ -139,7 +142,7 @@ class cg_avfoundation_video_renderer :
 private:
 	static void* eod_reached(void* arg);
 	static void* error_occurred(void* arg);
-	enum { rs_created, rs_inited, rs_prerolled, rs_started, rs_stopped, rs_fullstopped, rs_error_state } m_renderer_state; // Debugging, mainly
+	enum { rs_created, rs_inited, rs_prerolled, rs_started, rs_playing, rs_pausing, rs_stopped, rs_fullstopped, rs_error_state } m_renderer_state; // Debugging, mainly
 	net::url m_url;						// The URL of the movie we play
 //X	QTMovie *m_movie;           
 //X	QTMovieView *m_movie_view;	// The view displaying the movie

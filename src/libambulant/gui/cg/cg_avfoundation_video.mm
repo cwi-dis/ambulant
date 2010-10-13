@@ -35,7 +35,7 @@
 #include "ambulant/common/smil_alignment.h"
 #include "ambulant/smil2/test_attrs.h"
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -63,7 +63,15 @@ handleDurationDidChange {
 		m_duration = s_avplayer.currentItem.asset.duration;
 	}
 	AM_DBG { NSLog(@"duration changed to:"); CMTimeShow(m_duration); }
-//X	[self updateControls];
+	//X	[self updateControls];
+}
+
+- (void)
+handlePlayerAssetDidChange {
+	if (s_avplayer && s_avplayer.currentItem && s_avplayer.currentItem.asset) {
+		[self add_observers: ob_duration];
+	}
+	AM_DBG NSLog(@"currentItem.asset changed to: 0x%x", s_avplayer.currentItem.asset);
 }
 
 - (void)
@@ -71,7 +79,13 @@ handlePlayerStatusDidChange {
 	AVPlayerStatus playerStatus = s_avplayer.status;
 	AM_DBG NSLog(@"status changed to: %d", playerStatus);
 	if (playerStatus == AVPlayerStatusReadyToPlay) {
-		[s_avplayer play];
+		if (s_avplayer.currentItem.asset != NULL) {
+			[self add_observers: ob_duration];			
+			[s_avplayer play];
+		} else {
+			[self add_observers: ob_asset];
+		}
+		AM_DBG NSLog(@"item=0x%x asset=0x%x", s_avplayer.currentItem, s_avplayer.currentItem.asset);
 	}
 }
 
@@ -134,38 +148,78 @@ handlePlayerItemDidReachEnd:(NSNotification*) notification {
 
 
 - (void)
-add_observers {
-	if ( ! m_observers_added) {
-//		[avplayer_item addObserver:avplayer_item forKeyPath:@"presentationSize" options:0 context:nil];
-//		[self addTimeObserver];
-		[s_avplayer addObserver:self forKeyPath:@"status" options:0 context:nil];
-		[s_avplayer addObserver:self forKeyPath:@"currentItem.asset.duration" options:0 context:nil];
-		[s_avplayer addObserver:self forKeyPath:@"currentItem.error" options:0 context:nil];
-		s_avplayer.actionAtItemEnd = AVPlayerActionAtItemEndPause;
-		// prepare to react after keyboard show/hide
-		[[NSNotificationCenter defaultCenter]
-		 addObserver:self
-		 selector:@selector(handlePlayerItemDidReachEnd:)
-		 name:AVPlayerItemDidPlayToEndTimeNotification
-		 object: [s_avplayer currentItem]];
-		m_observers_added = YES;
+add_observers:(observers) new_observers  {
+	if (new_observers != ob_none) {
+		AM_DBG NSLog(@"add_observers(0x%x) new_observers=0x%x m_observers=0x%x", self, new_observers, m_observers);
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		
+//		if (new_observers&ob_time != 0 && (m_observers&ob_time) == 0)) {
+//			[avplayer_item addObserver:avplayer_item forKeyPath:@"presentationSize" options:0 context:nil];
+//			[self addTimeObserver];
+//			m_observers = (observers)(m_observeers|ob_time);
+//		})
+		if (new_observers&ob_status && ! (m_observers&ob_status)) {
+			[s_avplayer addObserver:self forKeyPath:@"status" options:0 context:nil];
+			m_observers = (observers) (m_observers|ob_status);
+		}
+		if (new_observers&ob_asset && ! (m_observers&ob_asset)) {
+			[s_avplayer addObserver:self forKeyPath:@"currentItem.asset" options:0 context:nil];
+			m_observers = (observers) (m_observers|ob_asset);
+		}
+		if (new_observers&ob_duration && ! (m_observers&ob_duration)) {
+			[s_avplayer addObserver:self forKeyPath:@"currentItem.asset.duration" options:0 context:nil];
+			m_observers = (observers) (m_observers|ob_duration);
+		}
+		if (new_observers&ob_error && ! (m_observers&ob_error)) {
+			[s_avplayer addObserver:self forKeyPath:@"currentItem.error" options:0 context:nil];
+			m_observers = (observers) (m_observers|ob_error);
+		}
+		if (new_observers&ob_eod && ! (m_observers&ob_eod)) {
+			s_avplayer.actionAtItemEnd = AVPlayerActionAtItemEndPause;
+			[[NSNotificationCenter defaultCenter]
+			 addObserver:self
+			 selector:@selector(handlePlayerItemDidReachEnd:)
+			 name:AVPlayerItemDidPlayToEndTimeNotification
+			 object: [s_avplayer currentItem]];
+			m_observers = (observers) (m_observers|ob_eod);
+		}
+		[pool release];
 	}
 }
 
 - (void)
-remove_observers {
-	if (m_observers_added) {
+remove_observers:(observers) new_observers {
+	if (new_observers != ob_none && m_observers != ob_none) {
+		AM_DBG NSLog(@"remove_observers(0x%x)", self);
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		[[NSNotificationCenter defaultCenter]
-		 removeObserver:self
-		 name:AVPlayerItemDidPlayToEndTimeNotification
-		object: [s_avplayer currentItem]];
-		[s_avplayer removeObserver:self forKeyPath:@"currentItem.error"];
-		[s_avplayer removeObserver:self forKeyPath:@"currentItem.asset.duration"];
-		[s_avplayer removeObserver:self forKeyPath:@"status"];
-//		[avplayer removeTimeObserver:timeObserver];
-//		[timeObserver release];
-		m_observers_added = NO;
+		if (new_observers&ob_eod && m_observers&ob_eod) {
+			[[NSNotificationCenter defaultCenter]
+			 removeObserver:self
+			 name:AVPlayerItemDidPlayToEndTimeNotification
+			 object: [s_avplayer currentItem]];
+			m_observers = (observers) (m_observers& ~ob_eod);
+		}
+		if (new_observers&ob_error && m_observers&ob_error) {
+			[s_avplayer removeObserver:self forKeyPath:@"currentItem.error"];
+			m_observers = (observers) (m_observers& ~ob_error);
+		}
+		if (new_observers&ob_asset && m_observers&ob_asset) {
+			[s_avplayer removeObserver:self forKeyPath:@"currentItem.asset"];
+			m_observers = (observers) (m_observers& ~ob_asset);
+		}
+		if (new_observers&ob_duration && m_observers&ob_duration) {
+			[s_avplayer removeObserver:self forKeyPath:@"currentItem.asset.duration"];
+			m_observers = (observers) (m_observers& ~ob_duration);
+		}
+		if (new_observers&ob_status && m_observers&ob_status) {
+			[s_avplayer removeObserver:self forKeyPath:@"status"];
+			m_observers = (observers) (m_observers& ~ob_status);
+		}
+//		if (new_observers&ob_time && m_observers&ob_time) {
+//			[avplayer removeTimeObserver:timeObserver];
+//			[timeObserver release];
+//			m_observers = (observers) (m_observers& ~ob_time);
+//		}
 		[pool release];
 	}
 }
@@ -188,36 +242,27 @@ initWithURL:(NSURL*) nsurl {
 			return NULL;
 		}
 		m_avplayer_item = [[AVPlayerItem alloc] initWithURL: nsurl];
-		@try { 
-		// sometimes here I get an exception 'NSRangeException', reason:
-		//'Cannot remove an observer ... for the key path "presentationSize" from <AVPlayerItem ...> because it is not registered as an observer.'
-			[s_avplayer replaceCurrentItemWithPlayerItem: m_avplayer_item];
-		}
-		@catch (NSException * e) {
-		/*AM_DBG*/ NSLog(@"CGVideoAVPlayerManager.initWithURL() exception %s ignored.\nReason: %s", e.name.UTF8String, e.reason.UTF8String);
-		}
-		@finally {
-		}
+		[s_avplayer replaceCurrentItemWithPlayerItem: m_avplayer_item];
 	}
 	m_nsurl = nsurl;
-	AM_DBG NSLog(@"CGVideoAVPlayerManager.initWithURL(0x%x) self.retainCount=%d s_avplayer=0x%x [s_avplayer retainCount]=%d m_av_player_item=0x%x [m_avplayer_item retainCount]=%d", self, [self retainCount], s_avplayer, [s_avplayer retainCount], m_avplayer_item, [m_avplayer_item retainCount]);
-	[self add_observers];
-	[self handleDurationDidChange];
-	[self handlePlayerStatusDidChange];
+	AM_DBG NSLog(@"CGVideoAVPlayerManager.initWithURL(0x%x) self.retainCount=%d s_avplayer=0x%x [s_avplayer retainCount]=%d m_av_player_item=0x%x [m_avplayer_item retainCount]=%d", self, [self retainCount], s_avplayer, [s_avplayer retainCount], m_avplayer_item, m_avplayer_item?[m_avplayer_item retainCount]:NULL);
+	[self add_observers:(observers)(ob_status|ob_error|ob_eod)];
+//X	[self handleDurationDidChange];
+//X	[self handlePlayerStatusDidChange];
 	s_busy = YES;
 	return self;
 }
 
 - (void)
 dealloc {
-//	AM_DBG NSLog(@"CGVideoAVPlayerManager.dealloc(0x%x) s_avplayer=0x%x [s_avplayer retainCount=%d m_av_player_item=0x%x [m_avplayer_item retainCount]=%d", self, s_avplayer, [s_avplayer retainCount], m_avplayer_item, [m_avplayer_item retainCount]);
-	assert(m_avplayer_layer == NULL);
+	AM_DBG NSLog(@"CGVideoAVPlayerManager.dealloc(0x%x) s_avplayer=0x%x m_av_player_item=0x%x ", self, s_avplayer, m_avplayer_item);
+//	assert(m_avplayer_layer == NULL);
 	if (m_avplayer_layer != NULL) {
 	   [m_avplayer_layer removeFromSuperlayer];
 		m_avplayer_layer = NULL;
 	}
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	[self remove_observers];
+	[self remove_observers: ob_all];
 //	self performSelectorOnMainThread:@selector(remove_observers:)withObject: self waitUntilDone:YES];
 	[pool release];
 	
@@ -244,12 +289,15 @@ observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDiction
 		[self handleDurationDidChange];
 	else if ([keyPath isEqualToString:@"currentItem.error"] && object == s_avplayer)
 		[self handlePlayerError];
+	else if ([keyPath isEqualToString:@"currentItem.asset"] && object == s_avplayer)
+		[self handlePlayerAssetDidChange];
 //X	else if ([keyPath isEqualToString:@"presentationSize"] && object == avplayer_item)
 //X		[self handlePresentationSize];
 }
 
 - (void)
 play {
+	AM_DBG NSLog(@"play(0x%x)", self);
 	if (s_avplayer != NULL) {
 		[s_avplayer play];
 	}
@@ -257,6 +305,7 @@ play {
 
 - (void)
 pause {
+	AM_DBG NSLog(@"pause(0x%x)", self);
 	if (s_avplayer != NULL) {
 		[s_avplayer pause];
 	}
@@ -264,10 +313,12 @@ pause {
 
 - (void)
 stop {
+	AM_DBG NSLog(@"stop(0x%x)", self);
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	if (s_avplayer != NULL) {
 		[s_avplayer pause];
 	}
-	[self remove_observers];
+	[self remove_observers: ob_all];
 	dispatch_async(dispatch_get_main_queue(),
 	^{  // must be done in main thread since GUI is involved
 		if (m_avplayer_layer != NULL) {
@@ -276,10 +327,12 @@ stop {
 		}
 		s_busy = NO;
 	});
+	[pool release];
 }
 
 - (void)
 set_clip_begin:(Float64) begin_time end: (Float64) end_time {
+	AM_DBG NSLog(@"set_clip_begin(0x%x):%f end:%f", self, begin_time, end_time);
 	CMTime cm_clip_begin, cm_clip_end;
 	cm_clip_begin = CMTimeMakeWithSeconds(begin_time, 1);
 	cm_clip_begin.timescale = USEC_PER_SEC;
@@ -296,6 +349,7 @@ get_error {
 
 - (void)
 add_layer: (CALayer*) layer withSize: (CGSize) size {
+	AM_DBG NSLog(@"add_layer(0x%x):0x%x size=(%d,%d", self, layer, size.width, size.height );
 	if (m_avplayer_layer != NULL) {
 		[m_avplayer_layer removeFromSuperlayer];
 	}
@@ -377,19 +431,20 @@ cg_avfoundation_video_renderer::init_with_node(const lib::node *n)
 {
 	m_lock.enter();
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSURL* nsurl = NULL;
 	renderer_playable::init_with_node(n);
 	assert(m_renderer_state == rs_created || m_renderer_state == rs_prerolled || m_renderer_state == rs_stopped || m_renderer_state == rs_fullstopped);
 	if ( ! (m_renderer_state == rs_created || m_renderer_state == rs_prerolled || m_renderer_state == rs_stopped || m_renderer_state == rs_fullstopped)) {
 		lib::logger::get_logger()->debug("cg_avfoundation_video_renderer::init_with_node() called while m_renderer_state==%d", m_renderer_state);
-		return;
+		goto bad;
 	}
 	m_renderer_state = rs_inited;	
 	m_node = n;
 	if (m_avplayer_manager == NULL) {
 		assert(m_url.is_empty_path() || m_url.same_document(m_node->get_url("src")));
 		m_url = m_node->get_url("src");
-		NSURL *nsurl = [NSURL URLWithString: [NSString stringWithCString: m_url.get_url().c_str() encoding: NSUTF8StringEncoding]];
-		if (!nsurl) {
+		nsurl = [NSURL URLWithString: [NSString stringWithCString: m_url.get_url().c_str() encoding: NSUTF8StringEncoding]];
+		if (nsurl == NULL) {
 			lib::logger::get_logger()->error(gettext("%s: cannot convert to URL"), m_url.get_url().c_str());
 			goto bad;
 		}
@@ -432,26 +487,39 @@ cg_avfoundation_video_renderer::start(double where) {
 
 bool
 cg_avfoundation_video_renderer::stop() {
+	m_lock.enter();
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	AM_DBG lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::stop, [m_avplayer_manager retainCount]=%d", this, [m_avplayer_manager retainCount]);
 
-	m_lock.enter();
 	bool rv = true;
+	if (m_renderer_state != rs_playing && m_renderer_state != rs_pausing) {
+		if (m_renderer_state == rs_fullstopped) {
+			rv = false;
+		}
+		[pool release];
+		m_lock.leave();
+		return rv;
+	}
 	m_context->stopped(m_cookie);
 	m_renderer_state = rs_stopped;
 	m_dest->need_redraw();
-	m_lock.leave();
+	[m_avplayer_manager stop];
+//	s_busy = NO; // allow replace video item
+	
 	[pool release];
+	m_lock.leave();
 	return rv;
 }
 	
 void
 cg_avfoundation_video_renderer::post_stop() {
 	AM_DBG lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::post_stop, [m_avplayer_manager retainCount]=%d", this, [m_avplayer_manager retainCount]);
-
 	m_lock.enter();
 	m_renderer_state = rs_fullstopped;
-	[m_avplayer_manager stop];
+	if (m_avplayer_manager != NULL) {
+		[m_avplayer_manager release];
+		m_avplayer_manager = NULL;
+	}
 	if (m_dest != NULL) {
 //		m_dest->renderer_done(this); //already done by smil_player::stop_playable()
 	}
@@ -464,7 +532,7 @@ cg_avfoundation_video_renderer::resume() {
 	AM_DBG lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::resume, rate=%lf", this, [m_avplayer_manager rate]);
 
 	m_lock.enter();
-	m_renderer_state = rs_started;
+	m_renderer_state = rs_started; // triggers redraw() 
 	if (m_dest != NULL) {
 		m_dest->need_redraw();
 	}
@@ -477,7 +545,7 @@ cg_avfoundation_video_renderer::pause(pause_display d) {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::pause, rate=%lf, pause_display=%d" , this, [m_avplayer_manager rate], d);
-	m_renderer_state = rs_stopped;
+	m_renderer_state = rs_stopped; // triggers redraw()
 	if (m_dest != NULL) {
 		m_dest->need_redraw();
 	}
@@ -512,16 +580,18 @@ cg_avfoundation_video_renderer::eod_reached(void* arg) {
 	
 void*
 cg_avfoundation_video_renderer::error_occurred(void* arg) {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	cg_avfoundation_video_renderer* cavr = (cg_avfoundation_video_renderer*) arg;
 	if (cavr == NULL || cavr->m_renderer_state == rs_error_state) {
 		return NULL;
 	}
 	NSError* nserror = [cavr->m_avplayer_manager get_error];
-	AM_DBG lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::error_occurred, error=%s" , cavr, [[nserror localizedDescription] UTF8String]);
-	cavr->stop();
-	cavr->m_renderer_state == rs_error_state;
-	[pool release];
+	if (nserror != NULL) {
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		AM_DBG lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::error_occurred, error=%s" , cavr, [[nserror localizedDescription] UTF8String]);
+		cavr->stop();
+		cavr->m_renderer_state == rs_error_state;
+		[pool release];
+	}
 	return NULL;
 }
 	
@@ -534,20 +604,22 @@ cg_avfoundation_video_renderer::redraw(const rect &dirty, gui_window *window)
 	cg_window *cwindow = (cg_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 	
-	AM_DBG logger::get_logger()->debug("cg_avfoundation_video_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)),  [m_avplayer_manager retainCount]=%d", (void *)this, r.left(), r.top(), r.right(), r.bottom(), [m_avplayer_manager retainCount]);
+	AM_DBG logger::get_logger()->debug("cg_avfoundation_video_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)), m_renderer_state=%d [m_avplayer_manager retainCount]=%d", (void *)this, r.left(), r.top(), r.right(), r.bottom(), m_renderer_state, [m_avplayer_manager retainCount]);
 	
-	assert(m_renderer_state == rs_started || m_renderer_state == rs_stopped || m_renderer_state == rs_fullstopped || m_renderer_state == rs_error_state);
-	if (m_avplayer_manager == NULL || m_renderer_state == rs_error_state) {
+	assert(m_renderer_state == rs_started || m_renderer_state == rs_playing || m_renderer_state == rs_pausing || m_renderer_state == rs_stopped || m_renderer_state == rs_fullstopped || m_renderer_state == rs_error_state);
+	if (m_avplayer_manager == NULL || m_renderer_state == rs_error_state || m_renderer_state == rs_fullstopped) {
 		m_renderer_state = rs_fullstopped;
-		if (m_avplayer_manager != NULL && [m_avplayer_manager get_error] != NULL) {
+		if (m_renderer_state == rs_error_state && m_avplayer_manager != NULL && [m_avplayer_manager get_error] != NULL) {
 			NSString* ns_error = [[m_avplayer_manager get_error] localizedDescription];
-			lib::logger::get_logger()->error("cg_video: %s", [ns_error cStringUsingEncoding:NSUTF8StringEncoding]);
+			if (ns_error != NULL) {
+				lib::logger::get_logger()->error("cg_video: %s", [ns_error cStringUsingEncoding:NSUTF8StringEncoding]);
+			}
 		}
 		[pool release];
 		m_lock.leave();
 		return;
 	}
-	if (m_avplayer_manager.m_avplayer_layer == NULL) {		
+	if (m_renderer_state == rs_started) {		
 		// Determine current position and size.
 		CGSize cgsize = CGSizeMake(r.width(), r.height());
 		m_srcsize = size(int(cgsize.width), int(cgsize.height));
@@ -560,9 +632,11 @@ cg_avfoundation_video_renderer::redraw(const rect &dirty, gui_window *window)
 	[m_avplayer_manager set_frame: frameRect];
 
 	if (m_renderer_state == rs_started) {
+		m_renderer_state = rs_playing;
 		[m_avplayer_manager play];
 	} else if (m_renderer_state == rs_stopped) {
 		[m_avplayer_manager pause];
+		m_renderer_state = rs_pausing;
 	} 
 	[pool release];
 	m_lock.leave();

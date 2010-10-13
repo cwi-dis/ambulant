@@ -17,12 +17,18 @@
 static void
 show_message(int level, const char *format)
 {
+	static NSString* old_message = NULL;
+	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSString *message = [[NSString stringWithUTF8String: format] retain];
 	AmbulantAppDelegate *delegate = [[UIApplication sharedApplication] delegate];
-	[delegate performSelectorOnMainThread: @selector(showAlert:)
+	if (old_message == NULL || ! [old_message isEqualToString:message]) {
+		[delegate performSelectorOnMainThread: @selector(showAlert:)
 							   withObject: message	waitUntilDone: NO];
 	//	[message release];
+		[old_message release];
+		old_message = message;
+	}
 	[pool release];
 }
 
