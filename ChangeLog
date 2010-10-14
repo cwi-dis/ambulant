@@ -1,3 +1,7 @@
+2010-10-13 15:42  keesblom
+
+	* Changed obsever management for avplayer details
+
 2010-10-12 00:24  keesblom
 
 	* Moved the cg_preferences from gui/cg to player_iphone
