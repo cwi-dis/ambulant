@@ -10,6 +10,12 @@
 #import "AmbulantAppDelegate.h"
 #import "PlaylistViewController.h"
 
+//#define AM_DBG
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
+
 void
 document_embedder::show_file(const ambulant::net::url& href)
 {
@@ -43,7 +49,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 #endif
 	
 	if (old) {
-		NSLog(@"performSelectorOnMainThread: close: on 0x%x", (void*)m_mydocument);
+		AM_DBG NSLog(@"performSelectorOnMainThread: close: on 0x%x", (void*)m_mydocument);
 		[m_mydocument performSelectorOnMainThread: @selector(close:) withObject: nil waitUntilDone: NO];
 	}
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -145,7 +151,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	self.URLEntryField.delegate = self;
 	
 	embedder = new document_embedder(self);
-	NSLog(@"View=%@ playUrl=%@", [self playerView], [self playURL]);
+	AM_DBG NSLog(@"View=%@ playUrl=%@", [self playerView], [self playURL]);
 	if (self.playURL != nil) {
 		[self handleURLEntered];
 	} else {
@@ -157,10 +163,10 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 //		NSString *welcomePath = [thisBundle pathForResource:@"test" ofType:@"smil"];
 //		NSString *welcomePath = [thisBundle pathForResource:@"iPhoneAVPlayerTest" ofType:@"smil"];
 //		NSString *welcomePath = @"http://ambulantPlayer.org/Demos/Birthday/HappyBirthday.smil";
-		NSLog (@ "%@", welcomePath);
+		AM_DBG NSLog (@ "%@", welcomePath);
 		if (welcomePath) {
 			void* theview = [self playerView];
-			NSLog(@"view %@ responds %d", (NSObject *)theview, [(NSObject *)theview respondsToSelector: @selector(isAmbulantWindowInUse)]);
+			AM_DBG NSLog(@"view %@ responds %d", (NSObject *)theview, [(NSObject *)theview respondsToSelector: @selector(isAmbulantWindowInUse)]);
 			playURL = [[NSMutableString alloc] initWithString: welcomePath];
 			[self doPlayURL ];
 		}
@@ -222,7 +228,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 -(IBAction) textFieldTextDidChange {	
 // This method will be called whenever an object sends UITextFieldTextDidChangeNotification
-//	NSLog(@"textFieldTextDidChange: text=%@",URLEntryField.text);
+	AM_DBG NSLog(@"textFieldTextDidChange: text=%@",URLEntryField.text);
 	[playURL setString: URLEntryField.text];
 } 
 
@@ -230,7 +236,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 // A delegate method called by the URL text field when the editing is complete. 
 // We save the current value of the field in our settings.
 {
-	NSLog(@"textFieldDidEndEditing: %@",textField.text);
+	AM_DBG NSLog(@"textFieldDidEndEditing: %@",textField.text);
 }	
 - (IBAction) handleURLEntered {
 	/*
@@ -256,8 +262,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	controller.title = @"Playlist";
 	controller.delegate = self;
 	
-	controller.modalTransitionStyle = 
-	UIModalTransitionStyleFlipHorizontal;
+	controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
 	[self presentModalViewController:controller animated:YES];
 	
 	[controller release];
@@ -293,7 +298,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 
 - (void) playIt: (PlaylistViewController *)controller selected: (NSString*) whatString {
-	NSLog(@"Selected: %@",whatString);
+	AM_DBG NSLog(@"Selected: %@",whatString);
 	self.handleStopTapped;
 	if ( ! [whatString hasPrefix:@"http://"]) {
 		NSString* homedir = NSHomeDirectory();
@@ -333,13 +338,13 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
     CGRect keyboardRect = [aValue CGRectValue];
     keyboardRect = [self.view convertRect:keyboardRect fromView:nil];
 	
-	NSLog(@"keyboardRect=(%f,%f,%f,%f",
+	AM_DBG NSLog(@"keyboardRect=(%f,%f,%f,%f",
 		  keyboardRect.origin.x,keyboardRect.origin.y,
 		  keyboardRect.size.width,keyboardRect.size.height);
     CGFloat keyboardHeight = keyboardRect.size.height;
 	originalInteractionViewFrame = interactionView.frame;
     CGRect newInteractionViewFrame = interactionView.frame;
-	NSLog(@"newInteractionViewFrame=(%f,%f,%f,%f",
+	AM_DBG NSLog(@"newInteractionViewFrame=(%f,%f,%f,%f",
 		  newInteractionViewFrame.origin.x,newInteractionViewFrame.origin.y,
 		  newInteractionViewFrame.size.width,newInteractionViewFrame.size.height);
 	newInteractionViewFrame.origin.y -= keyboardHeight;
@@ -403,7 +408,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 // react on device rotation
 - (void) orientationChanged:(NSNotification *)notification {
-//	NSLog(@"orientationChanged");
+	AM_DBG NSLog(@"orientationChanged");
 	UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
 	if (orientation == currentOrientation || ! [self isSupportedOrientation: orientation]) {
 		return;
@@ -416,7 +421,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 
 - (void) close: (NSString*) id {
-	//NSLog(@"AmbulantViewController-close: unimplemented");
+	AM_DBG NSLog(@"AmbulantViewController-close: unimplemented");
 	[self handleStopTapped];
 }
 

@@ -175,7 +175,6 @@
 		9376B11B120C9CC900D5019C /* libgroupsock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9376AF4A120C44F300D5019C /* libgroupsock.a */; };
 		9376B11C120C9CC900D5019C /* libliveMedia.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9376AF4C120C452700D5019C /* libliveMedia.a */; };
 		9376B11D120C9CC900D5019C /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9376AF4E120C455300D5019C /* libUsageEnvironment.a */; };
-		9376B24E120D9C1500D5019C /* Documents in Resources */ = {isa = PBXBuildFile; fileRef = 9376B1D6120D9C1500D5019C /* Documents */; };
 		937981CE120DE13B00B1A6D2 /* AmbulantWebView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 937981CC120DE13B00B1A6D2 /* AmbulantWebView.xib */; };
 		937981D0120DE13B00B1A6D2 /* AmbulantWebView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 937981CC120DE13B00B1A6D2 /* AmbulantWebView.xib */; };
 		937981D6120DE21700B1A6D2 /* AmbulantWebViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 937981D5120DE21700B1A6D2 /* AmbulantWebViewController.mm */; };
@@ -186,6 +185,12 @@
 		93882664121EB7F40038AF71 /* Welcome-smiltext.smil in Resources */ = {isa = PBXBuildFile; fileRef = 93882662121EB7F40038AF71 /* Welcome-smiltext.smil */; };
 		93A812C312108D4C0060AB6D /* rtsp_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0AA91203125700A3518F /* rtsp_datasource.cpp */; };
 		93A812C412108D510060AB6D /* rtsp_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0AAA1203125700A3518F /* rtsp_factory.cpp */; };
+		93B082EF126B3F6500EE380F /* Az3s-iPhone.m4v in Resources */ = {isa = PBXBuildFile; fileRef = 93B082EB126B3F6400EE380F /* Az3s-iPhone.m4v */; };
+		93B082F0126B3F6500EE380F /* Wz3s-iPhone.m4v in Resources */ = {isa = PBXBuildFile; fileRef = 93B082EC126B3F6500EE380F /* Wz3s-iPhone.m4v */; };
+		93B0831C126B9DCD00EE380F /* Az3s-iPhone.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 93B08318126B9DCD00EE380F /* Az3s-iPhone.mp4 */; };
+		93B0831D126B9DCD00EE380F /* Wz3s-iPhone.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 93B08319126B9DCD00EE380F /* Wz3s-iPhone.mp4 */; };
+		93B08380126C837700EE380F /* player_simulator-Info .plist in Resources */ = {isa = PBXBuildFile; fileRef = 93DC0E3D1203650C00A3518F /* player_simulator-Info .plist */; };
+		93B08381126C838500EE380F /* player_iphone-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D1107310486CEB800E47090 /* player_iphone-Info.plist */; };
 		93D9B8E91263633E00C7F2F4 /* cg_preferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93D9B8E81263633E00C7F2F4 /* cg_preferences.mm */; };
 		93D9B8EA1263633E00C7F2F4 /* cg_preferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93D9B8E81263633E00C7F2F4 /* cg_preferences.mm */; };
 		93DC0BD31203125800A3518F /* renderer_select.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0A281203125700A3518F /* renderer_select.cpp */; };
@@ -337,12 +342,15 @@
 		9376AF4A120C44F300D5019C /* libgroupsock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgroupsock.a; path = "../../build-iOS40-Simulator/third_party_packages/live/groupsock/libgroupsock.a"; sourceTree = SOURCE_ROOT; };
 		9376AF4C120C452700D5019C /* libliveMedia.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libliveMedia.a; path = "../../build-iOS40-Simulator/third_party_packages/live/liveMedia/libliveMedia.a"; sourceTree = SOURCE_ROOT; };
 		9376AF4E120C455300D5019C /* libUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libUsageEnvironment.a; path = "../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment/libUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
-		9376B1D6120D9C1500D5019C /* Documents */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Documents; sourceTree = "<group>"; };
 		937981CC120DE13B00B1A6D2 /* AmbulantWebView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = AmbulantWebView.xib; path = Classes/AmbulantWebView.xib; sourceTree = "<group>"; };
 		937981D4120DE21700B1A6D2 /* AmbulantWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AmbulantWebViewController.h; path = ../AmbulantWebViewController.h; sourceTree = "<group>"; };
 		937981D5120DE21700B1A6D2 /* AmbulantWebViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AmbulantWebViewController.mm; path = ../AmbulantWebViewController.mm; sourceTree = "<group>"; };
 		9387C97F1251F3C80013AECB /* iPhoneAVPlayerTest.smil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = iPhoneAVPlayerTest.smil; sourceTree = "<group>"; };
 		93882662121EB7F40038AF71 /* Welcome-smiltext.smil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Welcome-smiltext.smil"; sourceTree = "<group>"; };
+		93B082EB126B3F6400EE380F /* Az3s-iPhone.m4v */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Az3s-iPhone.m4v"; sourceTree = "<group>"; };
+		93B082EC126B3F6500EE380F /* Wz3s-iPhone.m4v */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Wz3s-iPhone.m4v"; sourceTree = "<group>"; };
+		93B08318126B9DCD00EE380F /* Az3s-iPhone.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Az3s-iPhone.mp4"; sourceTree = "<group>"; };
+		93B08319126B9DCD00EE380F /* Wz3s-iPhone.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Wz3s-iPhone.mp4"; sourceTree = "<group>"; };
 		93D9B8E7126362C500C7F2F4 /* cg_preferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cg_preferences.h; sourceTree = "<group>"; };
 		93D9B8E81263633E00C7F2F4 /* cg_preferences.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = cg_preferences.mm; sourceTree = "<group>"; };
 		93DC0A281203125700A3518F /* renderer_select.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderer_select.cpp; sourceTree = "<group>"; };
@@ -870,6 +878,8 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				93B08318126B9DCD00EE380F /* Az3s-iPhone.mp4 */,
+				93B08319126B9DCD00EE380F /* Wz3s-iPhone.mp4 */,
 				9331E9F9120DCADB0023B0F1 /* Classes */,
 				93DC0A251203125700A3518F /* Ambulant */,
 				931FF38D1201CEFB003B632F /* third_party_packages */,
@@ -898,7 +908,8 @@
 				9387C97F1251F3C80013AECB /* iPhoneAVPlayerTest.smil */,
 				9331E8FE120DAEB20023B0F1 /* data */,
 				9331E8F9120DAE2A0023B0F1 /* Welcome.smil */,
-				9376B1D6120D9C1500D5019C /* Documents */,
+				93B082EB126B3F6400EE380F /* Az3s-iPhone.m4v */,
+				93B082EC126B3F6500EE380F /* Wz3s-iPhone.m4v */,
 				9309F7C312253D0B00F63B7E /* test.smil */,
 				93882662121EB7F40038AF71 /* Welcome-smiltext.smil */,
 				9376A9281204C0F400D5019C /* PlaylistView.xib */,
@@ -1755,13 +1766,17 @@
 				93DC0CE9120321C200A3518F /* AmbulantViewController.xib in Resources */,
 				93DC0E7612037DB500A3518F /* MainWindow.xib in Resources */,
 				9376A9291204C0F400D5019C /* PlaylistView.xib in Resources */,
-				9376B24E120D9C1500D5019C /* Documents in Resources */,
 				9331E908120DAEB20023B0F1 /* data in Resources */,
 				9331E90D120DB0A90023B0F1 /* Welcome.smil in Resources */,
 				937981CE120DE13B00B1A6D2 /* AmbulantWebView.xib in Resources */,
 				93882663121EB7F40038AF71 /* Welcome-smiltext.smil in Resources */,
 				9309F8241226AA3400F63B7E /* test.smil in Resources */,
 				9387C9811251F3C80013AECB /* iPhoneAVPlayerTest.smil in Resources */,
+				93B082EF126B3F6500EE380F /* Az3s-iPhone.m4v in Resources */,
+				93B082F0126B3F6500EE380F /* Wz3s-iPhone.m4v in Resources */,
+				93B0831C126B9DCD00EE380F /* Az3s-iPhone.mp4 in Resources */,
+				93B0831D126B9DCD00EE380F /* Wz3s-iPhone.mp4 in Resources */,
+				93B08381126C838500EE380F /* player_iphone-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1779,6 +1794,7 @@
 				93882664121EB7F40038AF71 /* Welcome-smiltext.smil in Resources */,
 				9309F8231226AA3300F63B7E /* test.smil in Resources */,
 				9387C9801251F3C80013AECB /* iPhoneAVPlayerTest.smil in Resources */,
+				93B08380126C837700EE380F /* player_simulator-Info .plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2065,7 +2081,7 @@
 				);
 				OTHER_CPLUSPLUSFLAGS = "-mcpu=arm1176jzf-s";
 				PRODUCT_NAME = player_iphone;
-				USER_HEADER_SEARCH_PATHS = "$(inherit) ../../include ../../build-iOS40-Device/third_party_packages/installed/include ../../build-iOS40-Device/third_party_packages/installed/include/libxml2 ../../build-iOS40-Device/third_party_packages/installed/include/SDL ../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment/include ../../build-iOS40-Device/third_party_packages/live/groupsock/include ../../build-iOS40-Device/third_party_packages/live/liveMedia/include ../../build-iOS40-Device/third_party_packages/live/UsageEnvironment/include";
+				USER_HEADER_SEARCH_PATHS = "$(inherit) ../../include ../../build-iOS40-Device/third_party_packages/installed/include ../../build-iOS40-Device/third_party_packages/installed/include/libxml2 ../../build-iOS40-Device/third_party_packages/installed/include/SDL ../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment/include ../../build-iOS40-Device/third_party_packages/live/groupsock/include ../../build-iOS40-Device/third_party_packages/live/liveMedia/include ../../build-iOS40-Device/third_party_packages/live/UsageEnvironment/include ../../src/player_iphone/Classes";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

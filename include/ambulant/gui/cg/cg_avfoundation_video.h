@@ -55,7 +55,7 @@ typedef enum observers { ob_none, ob_status=0x1, ob_asset=0x2, ob_duration=0x4, 
 	
 	ambulant::net::timestamp_t m_position_wanted;
 }
-static AVPlayer* s_avplayer;	// The global AVPlayer
+static AVPlayer* s_avplayer;	// The global AVPlayer, controlled by 's_busy' flag to prevent > 1 simultaneous video's
 
 //@property (nonatomic, retain) AVPlayer *s_avplayer;
 @property (nonatomic, retain) AVPlayerItem *m_avplayer_item;
@@ -143,21 +143,19 @@ private:
 	static void* eod_reached(void* arg);
 	static void* error_occurred(void* arg);
 	enum { rs_created, rs_inited, rs_prerolled, rs_started, rs_playing, rs_pausing, rs_stopped, rs_fullstopped, rs_error_state } m_renderer_state; // Debugging, mainly
-	net::url m_url;						// The URL of the movie we play
-//X	QTMovie *m_movie;           
-//X	QTMovieView *m_movie_view;	// The view displaying the movie
-//X	AVPlayer* m_avplayer;				// The avplayer itself
+	net::url m_url;						// The URL of the movie being played
+//	AVPlayer* m_avplayer;				// The avplayer itself (currently implemented static)
 	CALayer* m_superlayer;				// The CALayer to which m_avplayer_layer is added
 	size m_srcsize;						// size of this view
-	CGVideoAVPlayerManager *m_avplayer_manager;			// Our helper ObjC class to control the players using observers
+	CGVideoAVPlayerManager *m_avplayer_manager;	// The helper ObjC class to control the players using observers
 	bool m_paused;
-	net::timestamp_t m_previous_clip_position; // Where we are officially positioned
+	net::timestamp_t m_previous_clip_position;	// Last known officially position
 #ifdef WITH_CLOCK_SYNC
-	lib::timer::signed_time_type m_video_epoch;    // Ambulant clock value corresponding to video clock 0.
-	void _fix_video_epoch();    // Set m_video_epoch according to current movie time
-	void _fix_clock_drift();    // Synchronise movie clock and ambulant clock
+	lib::timer::signed_time_type m_video_epoch; // Ambulant clock value corresponding to video clock 0.
+	void _fix_video_epoch();			// Set m_video_epoch according to current movie time
+	void _fix_clock_drift();			// Synchronise movie clock and ambulant clock
 #endif
-	critical_section m_lock;
+	critical_section m_lock;			// thread protection
 };
 
 } // namespace cg

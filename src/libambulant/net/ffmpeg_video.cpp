@@ -541,7 +541,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail called (0x%x) ", (void*) this);
 	if (inbuf && m_con) {
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:start decoding (0x%x) ", m_con);
-		assert(sz < 1000000); // XXXX This is soft, and probably incorrect. Remove when it fails.
+//		assert(sz < 1000000); // XXXX This is soft, and probably incorrect. Remove when it fails.
 		AVFrame *frame = avcodec_alloc_frame();
 		if (frame == NULL) {
 			lib::logger::get_logger()->debug("ffmpeg_video_decoder: avcodec_alloc_frame() failed");

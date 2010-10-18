@@ -10,7 +10,6 @@
 
 @protocol PlaylistViewControllerDelegate;
 
-
 @interface PlaylistViewController : UIViewController {
 	id <PlaylistViewControllerDelegate> delegate;
 	UISwitch* autoCenterSwitch;	

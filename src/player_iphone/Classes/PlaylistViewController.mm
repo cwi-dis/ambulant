@@ -17,10 +17,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	// initialize to values taken from AmbulantView
-	AmbulantViewController* MVC = (AmbulantViewController*)delegate;
-	autoCenterSwitch.on = MVC.autoCenter;
-	autoResizeSwitch.on = MVC.autoResize;
-	nativeRendererSwitch.on = MVC.nativeRenderer;	
+	AmbulantViewController* AmVC = (AmbulantViewController*)delegate;
+	autoCenterSwitch.on = AmVC.autoCenter;
+	autoResizeSwitch.on = AmVC.autoResize;
+	nativeRendererSwitch.on = AmVC.nativeRenderer;	
 }
 
 - (BOOL) autoCenter {

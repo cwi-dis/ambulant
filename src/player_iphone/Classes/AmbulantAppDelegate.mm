@@ -14,6 +14,11 @@
 #include "ambulant/lib/logger.h"
 #include "cg_preferences.h"
 
+//#define AM_DBG
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 static void
 show_message(int level, const char *format)
 {
@@ -59,7 +64,8 @@ initialize_logger()
 #pragma mark -
 #pragma mark Application lifecycle
 
-- (void) showAlert: (NSString*) message {
+- (void)
+showAlert: (NSString*) message {
 	NSString* title_ = @"Ambulant";
 	NSString* _detail;
 
@@ -75,8 +81,9 @@ initialize_logger()
 	[alert release];
 }
 
-- (void) openWebLink: (NSString*) url {
-	NSLog(@"Starting AmbulantWebView");
+- (void)
+openWebLink: (NSString*) url {
+	AM_DBG NSLog(@"AmbulantAppDelegate openWebLink: %@", url);
 	[viewController pause];
 	webViewController = [[AmbulantWebViewController alloc]
 	 initWithNibName: @"AmbulantWebView"
@@ -93,11 +100,13 @@ initialize_logger()
 	[webViewController release];
 }
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+- (BOOL)
+application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {    
     // Override point for customization after application launch.
     // Add the view controller's view to the window and display.
 
+	AM_DBG NSLog(@"AmbulantAppDelegate application didFinishLaunchingWithOptions");
 	// Install ambulent preferences handler
 	ambulant::gui::cg::cg_preferences::install_singleton();
 	
@@ -110,23 +119,34 @@ initialize_logger()
 }
 
 
-- (void)applicationWillResignActive:(UIApplication *)application {
+- (void)
+applicationWillResignActive:(UIApplication *)application {
     /*
      Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
      Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
      */
+	AM_DBG NSLog(@"AmbulantAppDelegate applicationWillResignActive");
+	if (viewController != NULL && viewController.myMainloop != NULL) {
+		viewController.myMainloop->pause();
+	}
 }
 
-- (BOOL) isValid: (NSURL*) url {
+- (BOOL)
+isValid: (NSURL*) url {
+	/* Validate the given 'url'
+	 */
 	return YES;
 }
 
-- (BOOL) application:(UIApplication* ) application handleOpenURL: (NSURL*) url {
+- (BOOL)
+application:(UIApplication* ) application handleOpenURL: (NSURL*) url {
+	AM_DBG NSLog(@"AmbulantAppDelegate application handleOpenURL");
 	BOOL validated = NO;
-	if (YES) { //([isValid: url]) {
+	if ([self isValid:url] && viewController != NULL) { //([isValid: url]) {
 		validated = YES;
 		viewController.URLEntryField.text = [[[NSMutableString alloc] initWithString: @"http://"]
 							stringByAppendingString: [[url resourceSpecifier] substringFromIndex:2]];
+		viewController.playURL = (NSMutableString*) viewController.URLEntryField.text;
 		if (viewController.myMainloop) {
 			viewController.myMainloop->stop();
 			delete viewController.myMainloop;
@@ -136,7 +156,8 @@ initialize_logger()
 	return validated;
 }
 
-- (void)applicationDidEnterBackground:(UIApplication *)application {
+- (void)
+applicationDidEnterBackground:(UIApplication *)application {
     /*
      Use this method to release shared resources, save user data, invalidate timers,
 	 and store enough application state information to restore your application to its current state
@@ -144,6 +165,7 @@ initialize_logger()
      If your application supports background execution, called instead of applicationWillTerminate:
 	 when the user quits.
      */
+	AM_DBG NSLog(@"AmbulantAppDelegate applicationDidEnterBackground");
 	//XXXX TBD: store state
 	if (viewController && viewController.myMainloop) {
 		viewController.myMainloop->pause();
@@ -151,11 +173,13 @@ initialize_logger()
 }
 
 
-- (void)applicationWillEnterForeground:(UIApplication *)application {
+- (void)
+applicationWillEnterForeground:(UIApplication *)application {
     /*
      Called as part of  transition from the background to the inactive state:
 	 here you can undo many of the changes made on entering the background.
 	 */
+	AM_DBG NSLog(@"AmbulantAppDelegate applicationWillEnterForeground");
 	//XXXX TBD: restore state
 	if (viewController && viewController.myMainloop) {
 		viewController.myMainloop->play();
@@ -168,11 +192,13 @@ initialize_logger()
 }
 
 
-- (void)applicationDidBecomeActive:(UIApplication *)application {
+- (void)
+applicationDidBecomeActive:(UIApplication *)application {
     /*
      Restart any tasks that were paused (or not yet started) while the application was inactive. 
 	 If the application was previously in the background, optionally refresh the user interface.
      */
+	AM_DBG NSLog(@"AmbulantAppDelegate applicationDidBecomeActive");
 //XXXX TBD: restore state
 	if (viewController && viewController.myMainloop) {
 		//	viewController.myMainloop->restart(true);
@@ -185,12 +211,13 @@ initialize_logger()
 
 }
 
-
-- (void)applicationWillTerminate:(UIApplication *)application {
+- (void)
+applicationWillTerminate:(UIApplication *)application {
     /*
      Called when the application is about to terminate.
      See also applicationDidEnterBackground:.
      */
+	AM_DBG NSLog(@"AmbulantAppDelegate applicationWillTerminate");
 	if (viewController && viewController.myMainloop) {
 		viewController.myMainloop->stop();
 	}
@@ -200,15 +227,25 @@ initialize_logger()
 #pragma mark -
 #pragma mark Memory management
 
-- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
+- (void)
+applicationDidReceiveMemoryWarning:(UIApplication *)application {
     /*
      Free up as much memory as possible by purging cached data objects that can be recreated (or reloaded from disk) later.
      */
-	NSLog(@"Memory warning received");
+	AM_DBG NSLog(@"AmbulantAppDelegate applicationDidReceiveMemoryWarning");
+	if (viewController && viewController.myMainloop) {
+		viewController.myMainloop->pause();
+	}
+	ambulant::lib::logger::get_logger()->error("Memory low, try reboot iPhone");
+	if (viewController && viewController.myMainloop) {
+		viewController.myMainloop->play();
+	}
 }
 
 
-- (void)dealloc {
+- (void)
+dealloc {
+	AM_DBG NSLog(@"AmbulantAppDelegate dealloc");
     [viewController release];
     [window release];
     [super dealloc];
