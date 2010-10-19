@@ -185,12 +185,7 @@
 		93882664121EB7F40038AF71 /* Welcome-smiltext.smil in Resources */ = {isa = PBXBuildFile; fileRef = 93882662121EB7F40038AF71 /* Welcome-smiltext.smil */; };
 		93A812C312108D4C0060AB6D /* rtsp_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0AA91203125700A3518F /* rtsp_datasource.cpp */; };
 		93A812C412108D510060AB6D /* rtsp_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0AAA1203125700A3518F /* rtsp_factory.cpp */; };
-		93B082EF126B3F6500EE380F /* Az3s-iPhone.m4v in Resources */ = {isa = PBXBuildFile; fileRef = 93B082EB126B3F6400EE380F /* Az3s-iPhone.m4v */; };
-		93B082F0126B3F6500EE380F /* Wz3s-iPhone.m4v in Resources */ = {isa = PBXBuildFile; fileRef = 93B082EC126B3F6500EE380F /* Wz3s-iPhone.m4v */; };
-		93B0831C126B9DCD00EE380F /* Az3s-iPhone.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 93B08318126B9DCD00EE380F /* Az3s-iPhone.mp4 */; };
-		93B0831D126B9DCD00EE380F /* Wz3s-iPhone.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 93B08319126B9DCD00EE380F /* Wz3s-iPhone.mp4 */; };
 		93B08380126C837700EE380F /* player_simulator-Info .plist in Resources */ = {isa = PBXBuildFile; fileRef = 93DC0E3D1203650C00A3518F /* player_simulator-Info .plist */; };
-		93B08381126C838500EE380F /* player_iphone-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D1107310486CEB800E47090 /* player_iphone-Info.plist */; };
 		93D9B8E91263633E00C7F2F4 /* cg_preferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93D9B8E81263633E00C7F2F4 /* cg_preferences.mm */; };
 		93D9B8EA1263633E00C7F2F4 /* cg_preferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93D9B8E81263633E00C7F2F4 /* cg_preferences.mm */; };
 		93DC0BD31203125800A3518F /* renderer_select.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0A281203125700A3518F /* renderer_select.cpp */; };
@@ -1772,11 +1767,6 @@
 				93882663121EB7F40038AF71 /* Welcome-smiltext.smil in Resources */,
 				9309F8241226AA3400F63B7E /* test.smil in Resources */,
 				9387C9811251F3C80013AECB /* iPhoneAVPlayerTest.smil in Resources */,
-				93B082EF126B3F6500EE380F /* Az3s-iPhone.m4v in Resources */,
-				93B082F0126B3F6500EE380F /* Wz3s-iPhone.m4v in Resources */,
-				93B0831C126B9DCD00EE380F /* Az3s-iPhone.mp4 in Resources */,
-				93B0831D126B9DCD00EE380F /* Wz3s-iPhone.mp4 in Resources */,
-				93B08381126C838500EE380F /* player_iphone-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

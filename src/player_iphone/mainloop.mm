@@ -23,13 +23,14 @@
 
 #include <iostream>
 //#include <ApplicationServices/ApplicationServices.h>
+#import <Foundation/Foundation.h>
 #include "mainloop.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/node.h"
 #ifdef WITH_CG
 #include "ambulant/gui/cg/cg_gui.h"
-#include "ambulant/gui/cg/cg_preferences.h"
+#include "cg_preferences.h"
 #else
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 #endif
@@ -89,15 +90,19 @@ mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *a
 	}
 	m_player = common::create_smil2_player(m_doc, this, m_embedder);
 
-	m_player->set_feedback(this);
-	m_player->initialize();
+	if (m_player) {
+		m_player->set_feedback(this);
+		m_player->initialize();
 
-	const std::string& id = url.get_ref();
-	if (id != "") {
-		const ambulant::lib::node *node = m_doc->get_node(id);
-		if (!node)
-			lib::logger::get_logger()->warn(gettext("%s: node ID not found"), id.c_str());
-		goto_node(node);
+		const std::string& id = url.get_ref();
+		if (id != "") {
+			const ambulant::lib::node *node = m_doc->get_node(id);
+			if (!node)
+				lib::logger::get_logger()->warn(gettext("%s: node ID not found"), id.c_str());
+			goto_node(node);
+		}
+		prefs->m_last_used = [NSString stringWithCString:urlstr encoding: NSUTF8StringEncoding];
+		prefs->save_preferences();
 	}
 }
 

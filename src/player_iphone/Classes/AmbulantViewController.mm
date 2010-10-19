@@ -10,7 +10,7 @@
 #import "AmbulantAppDelegate.h"
 #import "PlaylistViewController.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -104,6 +104,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
+	AM_DBG NSLog(@"AmbulantViewController viewDidLoad:self=0x%x", self);
     [super viewDidLoad];
 	// prepare to react after keyboard show/hide
 	[[NSNotificationCenter defaultCenter]
@@ -421,7 +422,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 
 - (void) close: (NSString*) id {
-	AM_DBG NSLog(@"AmbulantViewController-close: unimplemented");
+	AM_DBG NSLog(@"AmbulantViewController close: unimplemented");
 	[self handleStopTapped];
 }
 
@@ -433,7 +434,8 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
+ 	AM_DBG NSLog(@"AmbulantViewController didReceiveMemoryWarning:self=0x%x", self);
+   [super didReceiveMemoryWarning];
 	
 	// Release any cached data, images, etc that aren't in use.
 }
@@ -441,9 +443,11 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
+	AM_DBG NSLog(@"AmbulantViewController viewDidUnLoad:self=0x%x", self);
 }
 
 - (void)dealloc {
+	AM_DBG NSLog(@"AmbulantViewController dealloc:self=0x%x", self);
     [super dealloc];
 	if (myMainloop)
 		delete myMainloop;
