@@ -1,3 +1,8 @@
+2010-10-19 16:00  keesblom
+
+	* Renamed mainloop.cpp to mainloop.mm but forgot to do this in CVS
+	  as well
+
 2010-10-18 16:50  keesblom
 
 	* Some final tweaks for mative video and made Safari launch work
