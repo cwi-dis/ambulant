@@ -305,7 +305,25 @@ Creating the Firefox plugin on Linux
   this plugin by firefox built with gcc4.3 (FC9,FC10), firefox will crash.
   The reverse is not true.
 
+Creating the iOS 4.x Ad-Hoc Distribution for beta-testers.
+==========================================================
 
+As of Oct.22, 2010, the procedure was used as extensively documented at:
+https://developer.apple.com/ios/manage/distribution/index.action
+
+This includes:
+- obtain the UDID's of devices involved in beta testing
+- on the iOS Developer Portal, generate a "Distribution Profile Request" including these UDID's
+- download the Distribution profile and drag this into Xcode
+- in Xcode, for the device target generate a new configuration "Distribution" and modify details therein
+  as outlined in the iOS Developer documentation mentioned above
+- build for the device using this new configuration, open the resulting .app (in "Products") with Finder
+  and right-select "Compress"
+- publish both the resulting xxx.app.zip and the yyy.mobileprovision files to the owners of the
+  devices whose UDID's have been included in the Distribution profile; when they drag these file into
+  "iTunes", connect their devices and "Sync" them, they'll be able to run Ambulant for iPhone (beta).
+ 
+  
 Creating the Windows desktop/FF/IE installers
 =============================================
 
