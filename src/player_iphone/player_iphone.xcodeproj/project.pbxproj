@@ -323,6 +323,7 @@
 		93641063123920E10046B567 /* cg_avfoundation_video.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = cg_avfoundation_video.mm; path = cg/cg_avfoundation_video.mm; sourceTree = "<group>"; };
 		93641066123921030046B567 /* cg_avfoundation_video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cg_avfoundation_video.h; path = cg/cg_avfoundation_video.h; sourceTree = "<group>"; };
 		936415F2123F95710046B567 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		936BB5AF127199E2000E6681 /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
 		9376A8D01204A94300D5019C /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = "../../build-iOS40-Device/third_party_packages/installed/lib/libavcodec.a"; sourceTree = SOURCE_ROOT; };
 		9376A8D11204A94300D5019C /* libavdevice.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavdevice.a; path = "../../build-iOS40-Device/third_party_packages/installed/lib/libavdevice.a"; sourceTree = SOURCE_ROOT; };
 		9376A8D21204A94300D5019C /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = "../../build-iOS40-Device/third_party_packages/installed/lib/libavformat.a"; sourceTree = SOURCE_ROOT; };
@@ -342,10 +343,6 @@
 		937981D5120DE21700B1A6D2 /* AmbulantWebViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AmbulantWebViewController.mm; path = ../AmbulantWebViewController.mm; sourceTree = "<group>"; };
 		9387C97F1251F3C80013AECB /* iPhoneAVPlayerTest.smil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = iPhoneAVPlayerTest.smil; sourceTree = "<group>"; };
 		93882662121EB7F40038AF71 /* Welcome-smiltext.smil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Welcome-smiltext.smil"; sourceTree = "<group>"; };
-		93B082EB126B3F6400EE380F /* Az3s-iPhone.m4v */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Az3s-iPhone.m4v"; sourceTree = "<group>"; };
-		93B082EC126B3F6500EE380F /* Wz3s-iPhone.m4v */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Wz3s-iPhone.m4v"; sourceTree = "<group>"; };
-		93B08318126B9DCD00EE380F /* Az3s-iPhone.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Az3s-iPhone.mp4"; sourceTree = "<group>"; };
-		93B08319126B9DCD00EE380F /* Wz3s-iPhone.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Wz3s-iPhone.mp4"; sourceTree = "<group>"; };
 		93D9B8E7126362C500C7F2F4 /* cg_preferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cg_preferences.h; sourceTree = "<group>"; };
 		93D9B8E81263633E00C7F2F4 /* cg_preferences.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = cg_preferences.mm; sourceTree = "<group>"; };
 		93DC0A281203125700A3518F /* renderer_select.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderer_select.cpp; sourceTree = "<group>"; };
@@ -873,8 +870,6 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				93B08318126B9DCD00EE380F /* Az3s-iPhone.mp4 */,
-				93B08319126B9DCD00EE380F /* Wz3s-iPhone.mp4 */,
 				9331E9F9120DCADB0023B0F1 /* Classes */,
 				93DC0A251203125700A3518F /* Ambulant */,
 				931FF38D1201CEFB003B632F /* third_party_packages */,
@@ -882,6 +877,7 @@
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				936BB5AF127199E2000E6681 /* Entitlements.plist */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -903,8 +899,6 @@
 				9387C97F1251F3C80013AECB /* iPhoneAVPlayerTest.smil */,
 				9331E8FE120DAEB20023B0F1 /* data */,
 				9331E8F9120DAE2A0023B0F1 /* Welcome.smil */,
-				93B082EB126B3F6400EE380F /* Az3s-iPhone.m4v */,
-				93B082EC126B3F6500EE380F /* Wz3s-iPhone.m4v */,
 				9309F7C312253D0B00F63B7E /* test.smil */,
 				93882662121EB7F40038AF71 /* Welcome-smiltext.smil */,
 				9376A9281204C0F400D5019C /* PlaylistView.xib */,
@@ -1984,6 +1978,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				CODE_SIGN_ENTITLEMENTS = "~/Projects/Ambulant/ambulant/src/player_iphone/Entitlements.plist";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
@@ -2034,6 +2029,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				CODE_SIGN_ENTITLEMENTS = "~/Projects/Ambulant/ambulant/src/player_iphone/Entitlements.plist";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = player_iphone_Prefix.pch;
@@ -2075,6 +2071,114 @@
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
+		};
+		936BB59B1271969F000E6681 /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LIBRARY_SEARCH_PATHS = "../../build-iOS40-Device/third_party_packages/installed/lib";
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PREBINDING = NO;
+				SDKROOT = iphoneos4.0;
+				USER_HEADER_SEARCH_PATHS = "../../include ../../build-iOS40-Simulator/third_party_packages/installed/include ../../build-iOS40-Simulator/third_party_packages/installed/include/SDL";
+			};
+			name = Distribution;
+		};
+		936BB59C1271969F000E6681 /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				CODE_SIGN_ENTITLEMENTS = "~/Projects/Ambulant/ambulant/src/player_iphone/Entitlements.plist";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				COPY_PHASE_STRIP = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = player_iphone_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"WITH_IPHONE=1",
+					"WITH_CG=1",
+					"WITH_UIKIT=1",
+					"WITH_EXTERNAL_DOM=1",
+					"AM_PREFER_FFMPEG=1",
+					"WITH_FFMPEG=1",
+					"WITH_EXPAT=1",
+					"WITH_FFMPEG_AVFORMAT=1",
+					"WITH_SMIL30=1",
+					"WITH_SEAMLESS_PLAYBACK=1",
+					"WITH_STATIC_PLUGINS=1",
+					"WITH_CLOCK_SYNC=1",
+					"WITH_SDL=1",
+					"WITH_LIVE=1",
+					"WITH_AVFOUNDATION=1",
+				);
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				HEADER_SEARCH_PATHS = "/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.0.sdk/usr/include/c++/4.2.1//armv6-apple-darwin10";
+				INFOPLIST_FILE = "player_iphone-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"../../build-iOS40-Device/third_party_packages/installed/lib",
+					"../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment",
+					"../../build-iOS40-Device/third_party_packages/live/groupsock",
+					"../../build-iOS40-Device/third_party_packages/live/liveMedia",
+					"../../build-iOS40-Device/third_party_packages/live/UsageEnvironment",
+					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/groupsock\"",
+					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/liveMedia\"",
+					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment\"",
+					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/live/UsageEnvironment\"",
+					"\"$(SRCROOT)/../../build-iOS40-Device/third_party_packages/installed/lib\"",
+				);
+				OTHER_CPLUSPLUSFLAGS = "-mcpu=arm1176jzf-s";
+				PRODUCT_NAME = player_iphone;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				USER_HEADER_SEARCH_PATHS = "$(inherit) ../../include ../../build-iOS40-Device/third_party_packages/installed/include ../../build-iOS40-Device/third_party_packages/installed/include/libxml2 ../../build-iOS40-Device/third_party_packages/installed/include/SDL ../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment/include ../../build-iOS40-Device/third_party_packages/live/groupsock/include ../../build-iOS40-Device/third_party_packages/live/liveMedia/include ../../build-iOS40-Device/third_party_packages/live/UsageEnvironment/include ../../src/player_iphone/Classes";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Distribution;
+		};
+		936BB59D1271969F000E6681 /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				COPY_PHASE_STRIP = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = player_iphone_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"WITH_IPHONE=1",
+					"WITH_CG=1",
+					"WITH_UIKIT=1",
+					"WITH_EXTERNAL_DOM=1",
+					"AM_PREFER_FFMPEG=1",
+					"WITH_FFMPEG=1",
+					"WITH_EXPAT=1",
+					"WITH_FFMPEG_AVFORMAT=1",
+					"WITH_SMIL30=1",
+					"WITH_SEAMLESS_PLAYBACK=1",
+					"WITH_CLOCK_SYNC=1",
+					"WITH_SDL=1",
+					"WITH_STATIC_PLUGINS=1",
+					"WITH_LIVE=1",
+				);
+				HEADER_SEARCH_PATHS = (
+					"/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator4.0.sdk/usr/include/c++/4.2.1/i686-apple-darwin10",
+					"/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator4.0.sdk/usr/include/c++/4.2.1",
+				);
+				INFOPLIST_FILE = "player_iphone-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					../../include,
+					"../../build-iOS40-Simulator/third_party_packages/installed/lib",
+					"../../build-iOS40-Simulator/third_party_packages/live/BasicUsageEnvironment",
+					"../../build-iOS40-Simulator/third_party_packages/live/groupsock",
+					"../../build-iOS40-Simulator/third_party_packages/live/liveMedia",
+					"../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment",
+					"\"$(SRCROOT)/../../build-iOS40-Simulator/third_party_packages/installed/lib\"",
+				);
+				PRODUCT_NAME = player_iphone;
+				USER_HEADER_SEARCH_PATHS = "$(inherit) ../../include ../../build-iOS40-Device/third_party_packages/installed/include ../../build-iOS40-Device/third_party_packages/installed/include/libxml2 ../../build-iOS40-Device/third_party_packages/installed/include/SDL ../../build-iOS40-Simulator/third_party_packages/live/BasicUsageEnvironment/include ../../build-iOS40-Simulator/third_party_packages/live/groupsock/include ../../build-iOS40-Simulator/third_party_packages/live/liveMedia/include ../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment/include";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Distribution;
 		};
 		9376B11F120C9CC900D5019C /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -2225,6 +2329,7 @@
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
 				1D6058950D05DD3E006BFB54 /* Release */,
+				936BB59C1271969F000E6681 /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -2234,6 +2339,7 @@
 			buildConfigurations = (
 				9376B11F120C9CC900D5019C /* Debug */,
 				9376B120120C9CC900D5019C /* Release */,
+				936BB59D1271969F000E6681 /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -2243,6 +2349,7 @@
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
 				C01FCF5008A954540054247B /* Release */,
+				936BB59B1271969F000E6681 /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
