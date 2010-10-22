@@ -303,7 +303,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	self.handleStopTapped;
 	if ( ! [whatString hasPrefix:@"http://"]) {
 		NSString* homedir = NSHomeDirectory();
-		homedir = [homedir stringByAppendingString:@"/player_iphone.app/Documents/"];
+		homedir = [homedir stringByAppendingString:@"/player_iphone.app/"];
 		whatString = [homedir stringByAppendingString:whatString];//[thisBundle pathForResource:whatString ofType:@"smil"];
 		if ( ! [whatString hasSuffix:@".smil"]) {
 			whatString = [whatString stringByAppendingString:@".smil"];

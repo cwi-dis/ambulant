@@ -522,7 +522,6 @@ cg_avfoundation_video_renderer::stop() {
 	m_renderer_state = rs_stopped;
 	[m_avplayer_manager stop];
 	m_dest->need_redraw();
-	
 	[pool release];
 	m_lock.leave();
 	return rv;

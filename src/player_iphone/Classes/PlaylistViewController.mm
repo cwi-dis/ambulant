@@ -44,7 +44,7 @@
 }
 
 - (IBAction) playNYC {
-	[self.delegate playIt:self selected:@"NYC-SmilText"];
+	[self.delegate playIt:self selected:@"http://ambulantPlayer.org/Demos/smilText/NYC-sT.smil"];
 }
 
 - (IBAction) playVideoTests {
