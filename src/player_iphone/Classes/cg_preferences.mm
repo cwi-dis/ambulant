@@ -48,7 +48,7 @@ cg_preferences::load_preferences()
 									 [NSNumber numberWithBool: false], @"validation_schema_full_checking",
 									 [NSNumber numberWithInt: 2], @"log_level",
 									 [NSNumber numberWithBool: true], @"use_plugins",
-									 [NSNumber numberWithBool: false], @"prefer_ffmpeg",
+									 [NSNumber numberWithBool: true], @"prefer_ffmpeg",
 									 [NSNumber numberWithBool: false], @"prefer_rtsp_tcp",
 									 [NSNumber numberWithBool: false], @"strict_url_parsing",
 									 [NSNumber numberWithBool: false], @"tabbed_links",

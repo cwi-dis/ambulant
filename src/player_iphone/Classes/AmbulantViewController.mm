@@ -64,8 +64,9 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 @implementation AmbulantViewController
 
 @synthesize interactionView, originalPlayerViewFrame, originalInteractionViewFrame,
-			playerView, myMainloop, URLEntryField, linkURL, playURL, keyboardIsShown,
-			currentOrientation,	autoCenter, autoResize, nativeRenderer, play_active;
+			playerView, myMainloop, URLEntryField, linkURL, playURL, referringURL,
+			keyboardIsShown, currentOrientation,	autoCenter, autoResize,
+			nativeRenderer, play_active;
 
 /*
 // The designated initializer. Override to perform setup that is required before the view is loaded.

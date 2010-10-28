@@ -41,6 +41,7 @@ private:
 	CGRect originalPlayerViewFrame, originalInteractionViewFrame;
 	NSMutableString* playURL;
 	NSMutableString* linkURL;
+	NSString* referringURL;
 	BOOL keyboardIsShown;
 	UIDeviceOrientation currentOrientation;
 	BOOL autoCenter;
@@ -65,6 +66,7 @@ private:
 @property(nonatomic,retain)	IBOutlet AmbulantView* playerView;
 @property(nonatomic) mainloop* myMainloop;
 @property(nonatomic,retain) NSMutableString* linkURL, *playURL;
+@property(nonatomic,retain) NSString* referringURL;
 @property(nonatomic,retain)	IBOutlet UIView* interactionView;
 @property(nonatomic) CGRect originalPlayerViewFrame, originalInteractionViewFrame;
 @property(nonatomic) BOOL keyboardIsShown, autoCenter, autoResize, nativeRenderer, play_active;

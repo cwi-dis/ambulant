@@ -13,8 +13,9 @@
 
 #include "ambulant/lib/logger.h"
 #include "cg_preferences.h"
+#include <fstream>
 
-#define AM_DBG
+#define AM_DBG	if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -141,9 +142,11 @@ isValid: (NSURL*) url {
 - (BOOL)
 application:(UIApplication* ) application handleOpenURL: (NSURL*) url {
 	AM_DBG NSLog(@"AmbulantAppDelegate application handleOpenURL");
+	NSLog(@"AmbulantAppDelegate handleOpenURL: %@ called from: %@", [url absoluteURL],[url query]);
 	BOOL validated = NO;
 	if ([self isValid:url] && viewController != NULL) { //([isValid: url]) {
 		validated = YES;
+		viewController.referringURL = url.query;
 		viewController.URLEntryField.text = [[[NSMutableString alloc] initWithString: @"http://"]
 							stringByAppendingString: [[url resourceSpecifier] substringFromIndex:2]];
 		viewController.playURL = (NSMutableString*) viewController.URLEntryField.text;
@@ -167,8 +170,11 @@ applicationDidEnterBackground:(UIApplication *)application {
      */
 	AM_DBG NSLog(@"AmbulantAppDelegate applicationDidEnterBackground");
 	//XXXX TBD: store state
-	if (viewController && viewController.myMainloop) {
+	if (viewController != NULL && viewController.myMainloop != NULL) {
 		viewController.myMainloop->pause();
+	}
+	if (viewController != NULL && viewController.referringURL != NULL) {
+		[[UIApplication sharedApplication] openURL: [NSURL URLWithString: viewController.referringURL]];
 	}
 }
 
@@ -181,10 +187,10 @@ applicationWillEnterForeground:(UIApplication *)application {
 	 */
 	AM_DBG NSLog(@"AmbulantAppDelegate applicationWillEnterForeground");
 	//XXXX TBD: restore state
-	if (viewController && viewController.myMainloop) {
+	if (viewController != NULL && viewController.myMainloop != NULL) {
 		viewController.myMainloop->play();
 	} else {
-		if (viewController) {
+		if (viewController != NULL) {
 			[self.viewController handleURLEntered];
 		}
 	}

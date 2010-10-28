@@ -57,7 +57,7 @@
 }
 
 - (IBAction) playBirthday {
-	[self.delegate playIt:self selected:@"http://ambulantPlayer.org/Demos/Birthday/HappyBirthday.smil"];	
+	[self.delegate playIt:self selected:@"http://homepages.cwi.nl/~kees/ambulant/ios/Demos/Birthday/HappyBirthday.smil"];	
 }
 
 - (IBAction) playBirthdayRTSP {
