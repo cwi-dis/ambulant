@@ -337,16 +337,24 @@ stop {
 	s_busy = NO;
 	[pool release];
 }
-
 - (void)
 set_clip_begin:(Float64) begin_time end: (Float64) end_time {
 	AM_DBG NSLog(@"set_clip_begin(0x%x):%f end:%f", self, begin_time, end_time);
 	CMTime cm_clip_begin, cm_clip_end;
-	cm_clip_begin = CMTimeMakeWithSeconds(begin_time, 1);
-	cm_clip_begin.timescale = USEC_PER_SEC;
+	if (begin_time >= 0.0) {
+		cm_clip_begin = CMTimeMakeWithSeconds(begin_time, 1);
+		cm_clip_begin.timescale = USEC_PER_SEC;
+	} else {
+		cm_clip_begin = kCMTimeIndefinite;
+	}
+	
 	[s_avplayer seekToTime: cm_clip_begin];
-	cm_clip_end = CMTimeMakeWithSeconds(end_time, 1);
-	cm_clip_end.timescale = USEC_PER_SEC;
+	if (end_time >= 0) {
+		cm_clip_end = CMTimeMakeWithSeconds(end_time, 1);
+		cm_clip_end.timescale = USEC_PER_SEC;
+	} else {
+		cm_clip_end = kCMTimeIndefinite;
+	}
 	s_avplayer.currentItem.forwardPlaybackEndTime = cm_clip_end;
 }
 
