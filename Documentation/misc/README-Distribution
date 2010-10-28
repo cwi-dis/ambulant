@@ -314,14 +314,12 @@ https://developer.apple.com/ios/manage/distribution/index.action
 This includes:
 - obtain the UDID's of devices involved in beta testing
 - on the iOS Developer Portal, generate a "Distribution Profile Request" including these UDID's
-- download the Distribution profile and drag this into Xcode
-- in Xcode, for the device target generate a new configuration "Distribution" and modify details therein
-  as outlined in the iOS Developer documentation mentioned above
-- build for the device using this new configuration, open the resulting .app (in "Products") with Finder
-  and right-select "Compress"
-- publish both the resulting xxx.app.zip and the yyy.mobileprovision files to the owners of the
-  devices whose UDID's have been included in the Distribution profile; when they drag these file into
-  "iTunes", connect their devices and "Sync" them, they'll be able to run Ambulant for iPhone (beta).
+- download this new Distribution profile and drag this into Xcode
+- build for the device using this the "Distribution" configuration, and when prompted
+  specify a.o. the exact URL of the place where you are going to publish the resulting .app
+- publish both the resulting xxx.app and the yyy.mobileprovision files to the owners of the
+  devices whose UDID's have been included in the Distribution profile; when in Safari on an
+  iPhone/iPad they drag select these files, they will be downloaded in their device.
  
   
 Creating the Windows desktop/FF/IE installers
