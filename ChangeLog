@@ -1,3 +1,17 @@
+2010-10-28 11:59  keesblom
+
+	* set default to ffmpeg, for the time being
+
+2010-10-28 11:03  keesblom
+
+	* Modified iOS dist. note for the new beta distr. directly on the
+	  device, without iTunes.
+
+2010-10-28 11:00  keesblom
+
+	* Fixed a bug s.t. only video's with a specified dur or clipEnd
+	  spec. could be played
+
 2010-10-22 17:09  keesblom
 
 	* Added a new "Distribution" configuration for the Device for
