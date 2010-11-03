@@ -3,7 +3,7 @@
 //  Playlist
 //
 //  Created by Kees Blom on 7/31/10.
-//  Copyright __MyCompanyName__ 2010. All rights reserved.
+//  Copyright CWI 2010. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -34,7 +34,7 @@
 - (IBAction) playNews;
 - (IBAction) playNewsRTSP;
 
-@property(nonatomic, assign) id <PlaylistViewControllerDelegate> delegate;
+@property(nonatomic,assign) id <PlaylistViewControllerDelegate> delegate;
 @property(nonatomic,retain) IBOutlet UISwitch* autoCenterSwitch;
 @property(nonatomic,retain) IBOutlet UISwitch* autoResizeSwitch;
 @property(nonatomic,retain) IBOutlet UISwitch* nativeRendererSwitch;

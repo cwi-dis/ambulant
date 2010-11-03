@@ -3,15 +3,17 @@
 //  Ambulant
 //
 //  Created by Kees Blom on 7/12/10.
-//  Copyright __MyCompanyName__ 2010. All rights reserved.
+//  Copyright CWI 2010. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 #import "PlaylistViewController.h"
+#import "PlaylistViewController.h"
+#import "PresentationViewController.h"
 #import "ambulant/common/embedder.h"
 #import "ambulant/net/url.h"
 #import "ambulant/gui/cg/cg_gui.h"
-#import "cg_preferences.h"
+#import "iOSpreferences.h"
 #import "mainloop.h"
 
 class document_embedder : public ambulant::common::embedder {
@@ -31,7 +33,7 @@ private:
 };
 
 @interface AmbulantViewController : UIViewController 
-				<UITextFieldDelegate, PlaylistViewControllerDelegate> {
+				<UITextFieldDelegate, PlaylistViewControllerDelegate, PresentationViewControllerDelegate> {
 	document_embedder *embedder;
 	mainloop *myMainloop;
 	IBOutlet id view;
@@ -41,7 +43,6 @@ private:
 	CGRect originalPlayerViewFrame, originalInteractionViewFrame;
 	NSMutableString* playURL;
 	NSMutableString* linkURL;
-	NSString* referringURL;
 	BOOL keyboardIsShown;
 	UIDeviceOrientation currentOrientation;
 	BOOL autoCenter;
@@ -57,6 +58,7 @@ private:
 - (IBAction) handleURLEntered;
 - (IBAction) handlePanGesture:(UIPanGestureRecognizer *)sender;
 - (IBAction) handlePinchGesture:(UIGestureRecognizer *)sender;
+- (IBAction) showHistory:(id)sender;
 - (IBAction) showPlaylist:(id)sender;
 - (IBAction) close:(id) str;
 - (void) pause;
@@ -66,7 +68,6 @@ private:
 @property(nonatomic,retain)	IBOutlet AmbulantView* playerView;
 @property(nonatomic) mainloop* myMainloop;
 @property(nonatomic,retain) NSMutableString* linkURL, *playURL;
-@property(nonatomic,retain) NSString* referringURL;
 @property(nonatomic,retain)	IBOutlet UIView* interactionView;
 @property(nonatomic) CGRect originalPlayerViewFrame, originalInteractionViewFrame;
 @property(nonatomic) BOOL keyboardIsShown, autoCenter, autoResize, nativeRenderer, play_active;

@@ -32,7 +32,7 @@
 //#include "ambulant/gui/cg/cg_smiltext.h"
 #endif
 #include "ambulant/lib/mtsync.h"
-#include "ambulant/gui/cg/cg_preferences.h"
+#include "ambulant/gui/cg/iOSpreferences.h"
 
 //#include <CoreGraphics/CoreGraphics.h>
 
@@ -532,8 +532,8 @@ bad:
 
 - (void) adaptDisplayAfterRotation: (UIDeviceOrientation) orientation {
 	// adapt the ambulant window needed (bounds) in the current View
-	bool auto_resize = ambulant::gui::cg::cg_preferences::get_preferences()->m_auto_resize;
-	bool auto_center = ambulant::gui::cg::cg_preferences::get_preferences()->m_auto_center;
+	bool auto_resize = ambulant::iOSpreferences::get_preferences()->m_auto_resize;
+	bool auto_center = ambulant::iOSpreferences::get_preferences()->m_auto_center;
 	CGSize mybounds;
 	mybounds.width = original_bounds.w;
 	mybounds.height = original_bounds.h;

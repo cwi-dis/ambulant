@@ -35,7 +35,7 @@
 #include "ambulant/common/smil_alignment.h"
 #include "ambulant/smil2/test_attrs.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -44,7 +44,7 @@
 
 @implementation CGVideoAVPlayerManager
 
-@synthesize m_duration, m_is_duration_known, m_nsurl, m_avplayer_layer, m_avplayer_item;
+@synthesize m_duration, m_begin_time, m_end_time,  m_is_duration_known, m_nsurl, m_avplayer_layer, m_avplayer_item;
 
 - (AVPlayer*)
 avplayer {
@@ -61,6 +61,8 @@ rate {
 handleDurationDidChange {
 	if (s_avplayer && s_avplayer.currentItem && s_avplayer.currentItem.asset) {
 		m_duration = s_avplayer.currentItem.asset.duration;
+		m_is_duration_known = YES;
+		s_avplayer.currentItem.forwardPlaybackEndTime = m_end_time;
 	}
 	AM_DBG { NSLog(@"duration changed to:"); CMTimeShow(m_duration); }
 	//X	[self updateControls];
@@ -250,6 +252,8 @@ initWithURL:(NSURL*) nsurl {
 	}
 	[m_avplayer_item retain];
 	m_nsurl = nsurl;
+	m_begin_time = kCMTimeZero;
+	m_end_time = kCMTimeIndefinite;
 	AM_DBG NSLog(@"CGVideoAVPlayerManager.initWithURL(0x%x) self.retainCount=%d s_avplayer=0x%x [s_avplayer retainCount]=%d m_av_player_item=0x%x [m_avplayer_item retainCount]=%d", self, [self retainCount], s_avplayer, [s_avplayer retainCount], m_avplayer_item, m_avplayer_item?[m_avplayer_item retainCount]:NULL);
 	[self add_observers:(observers)(ob_status|ob_error|ob_eod)];
 	s_busy = YES;
@@ -340,22 +344,18 @@ stop {
 - (void)
 set_clip_begin:(Float64) begin_time end: (Float64) end_time {
 	AM_DBG NSLog(@"set_clip_begin(0x%x):%f end:%f", self, begin_time, end_time);
-	CMTime cm_clip_begin, cm_clip_end;
 	if (begin_time >= 0.0) {
-		cm_clip_begin = CMTimeMakeWithSeconds(begin_time, 1);
-		cm_clip_begin.timescale = USEC_PER_SEC;
-	} else {
-		cm_clip_begin = kCMTimeIndefinite;
+		m_begin_time = CMTimeMakeWithSeconds(begin_time, 1);
+		m_begin_time.timescale = USEC_PER_SEC;
+		[s_avplayer seekToTime: m_begin_time];
 	}
-	
-	[s_avplayer seekToTime: cm_clip_begin];
 	if (end_time >= 0) {
-		cm_clip_end = CMTimeMakeWithSeconds(end_time, 1);
-		cm_clip_end.timescale = USEC_PER_SEC;
-	} else {
-		cm_clip_end = kCMTimeIndefinite;
+		m_end_time = CMTimeMakeWithSeconds(end_time, 1);
+		m_end_time.timescale = USEC_PER_SEC;
 	}
-	s_avplayer.currentItem.forwardPlaybackEndTime = cm_clip_end;
+	if (m_is_duration_known) {
+		s_avplayer.currentItem.forwardPlaybackEndTime = m_end_time;
+	}
 }
 
 - (NSError*)
@@ -365,7 +365,7 @@ get_error {
 
 - (void)
 add_layer: (CALayer*) layer withSize: (CGSize) size {
-	AM_DBG NSLog(@"add_layer(0x%x):0x%x size=(%d,%d", self, layer, size.width, size.height );
+	AM_DBG NSLog(@"add_layer(0x%x):0x%x size=(%d,%d)", self, layer, size.width, size.height );
 	if (m_avplayer_layer != NULL) {
 		[m_avplayer_layer removeFromSuperlayer];
 	}

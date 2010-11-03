@@ -33,6 +33,24 @@
 		931FF3D01201CFF9003B632F /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 931FF3CF1201CFF9003B632F /* ImageIO.framework */; };
 		931FF3D21201CFF9003B632F /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 931FF3D11201CFF9003B632F /* OpenGLES.framework */; };
 		931FF3D41201CFF9003B632F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 931FF3D31201CFF9003B632F /* QuartzCore.framework */; };
+		93299DDB1279C31B002B9E6A /* PresentationTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93299DDA1279C31B002B9E6A /* PresentationTableViewController.xib */; };
+		93299DDC1279C31B002B9E6A /* PresentationTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93299DDA1279C31B002B9E6A /* PresentationTableViewController.xib */; };
+		93299DDE1279C32A002B9E6A /* PresentationTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93299DDD1279C32A002B9E6A /* PresentationTableCell.xib */; };
+		93299DDF1279C32A002B9E6A /* PresentationTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93299DDD1279C32A002B9E6A /* PresentationTableCell.xib */; };
+		93299E171279C5E0002B9E6A /* PresentationTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 93299E0B1279C5E0002B9E6A /* PresentationTableViewController.m */; };
+		93299E231279C5E0002B9E6A /* PresentationTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 93299E0B1279C5E0002B9E6A /* PresentationTableViewController.m */; };
+		93299E341279C91D002B9E6A /* Presentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 93299E311279C91D002B9E6A /* Presentation.m */; };
+		93299E361279C91D002B9E6A /* Presentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 93299E311279C91D002B9E6A /* Presentation.m */; };
+		93299F60127AED73002B9E6A /* PresentationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93299F5F127AED73002B9E6A /* PresentationView.xib */; };
+		93299F61127AED73002B9E6A /* PresentationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93299F5F127AED73002B9E6A /* PresentationView.xib */; };
+		9329A034127B03E0002B9E6A /* PresentationAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9329A033127B03E0002B9E6A /* PresentationAppDelegate.m */; };
+		9329A035127B03E0002B9E6A /* PresentationAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9329A033127B03E0002B9E6A /* PresentationAppDelegate.m */; };
+		9329A23E127DA345002B9E6A /* PresentationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9329A23D127DA345002B9E6A /* PresentationViewController.xib */; };
+		9329A23F127DA345002B9E6A /* PresentationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9329A23D127DA345002B9E6A /* PresentationViewController.xib */; };
+		9329A242127DA370002B9E6A /* PresentationViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9329A241127DA370002B9E6A /* PresentationViewController.mm */; };
+		9329A243127DA370002B9E6A /* PresentationViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9329A241127DA370002B9E6A /* PresentationViewController.mm */; };
+		9329A441128051F4002B9E6A /* Back.png in Resources */ = {isa = PBXBuildFile; fileRef = 9329A440128051F4002B9E6A /* Back.png */; };
+		9329A442128051F4002B9E6A /* Back.png in Resources */ = {isa = PBXBuildFile; fileRef = 9329A440128051F4002B9E6A /* Back.png */; };
 		9331E8FB120DAE2A0023B0F1 /* Welcome.smil in Resources */ = {isa = PBXBuildFile; fileRef = 9331E8F9120DAE2A0023B0F1 /* Welcome.smil */; };
 		9331E908120DAEB20023B0F1 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 9331E8FE120DAEB20023B0F1 /* data */; };
 		9331E909120DAEB20023B0F1 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 9331E8FE120DAEB20023B0F1 /* data */; };
@@ -60,11 +78,11 @@
 		9376A8DF1204A94300D5019C /* libmp4ff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9376A8D61204A94300D5019C /* libmp4ff.a */; };
 		9376A8E01204A94300D5019C /* libSDLiPhoneOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9376A8D71204A94300D5019C /* libSDLiPhoneOS.a */; };
 		9376A8E11204A94300D5019C /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9376A8D81204A94300D5019C /* libswscale.a */; };
-		9376A9291204C0F400D5019C /* PlaylistView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9376A9281204C0F400D5019C /* PlaylistView.xib */; };
+		9376A9291204C0F400D5019C /* PlaylistViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9376A9281204C0F400D5019C /* PlaylistViewController.xib */; };
 		9376B0A3120C9CC900D5019C /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 93DC0CCF120321C200A3518F /* Icon.png */; };
 		9376B0A5120C9CC900D5019C /* AmbulantViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93DC0CDB120321C200A3518F /* AmbulantViewController.xib */; };
 		9376B0A6120C9CC900D5019C /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93DC0E7512037DB500A3518F /* MainWindow.xib */; };
-		9376B0A8120C9CC900D5019C /* PlaylistView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9376A9281204C0F400D5019C /* PlaylistView.xib */; };
+		9376B0A8120C9CC900D5019C /* PlaylistViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9376A9281204C0F400D5019C /* PlaylistViewController.xib */; };
 		9376B0AA120C9CC900D5019C /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.mm */; };
 		9376B0AB120C9CC900D5019C /* renderer_select.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0A281203125700A3518F /* renderer_select.cpp */; };
 		9376B0AC120C9CC900D5019C /* state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0A291203125700A3518F /* state.cpp */; };
@@ -186,8 +204,8 @@
 		93A812C312108D4C0060AB6D /* rtsp_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0AA91203125700A3518F /* rtsp_datasource.cpp */; };
 		93A812C412108D510060AB6D /* rtsp_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0AAA1203125700A3518F /* rtsp_factory.cpp */; };
 		93B08380126C837700EE380F /* player_simulator-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 93DC0E3D1203650C00A3518F /* player_simulator-Info.plist */; };
-		93D9B8E91263633E00C7F2F4 /* cg_preferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93D9B8E81263633E00C7F2F4 /* cg_preferences.mm */; };
-		93D9B8EA1263633E00C7F2F4 /* cg_preferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93D9B8E81263633E00C7F2F4 /* cg_preferences.mm */; };
+		93D9B8E91263633E00C7F2F4 /* iOSpreferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93D9B8E81263633E00C7F2F4 /* iOSpreferences.mm */; };
+		93D9B8EA1263633E00C7F2F4 /* iOSpreferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93D9B8E81263633E00C7F2F4 /* iOSpreferences.mm */; };
 		93DC0BD31203125800A3518F /* renderer_select.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0A281203125700A3518F /* renderer_select.cpp */; };
 		93DC0BD41203125800A3518F /* state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0A291203125700A3518F /* state.cpp */; };
 		93DC0BD51203125800A3518F /* factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0A2A1203125700A3518F /* factory.cpp */; };
@@ -291,9 +309,9 @@
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765A40DF7441C002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		29B97316FDCFA39411CA2CEA /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
-		32CA4F630368D1EE00C91783 /* player_iphone_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = player_iphone_Prefix.pch; sourceTree = "<group>"; };
+		32CA4F630368D1EE00C91783 /* player_simulator-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "player_simulator-Info.plist"; path = "../player_simulator-Info.plist"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* player_iphone-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "player_iphone-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
-		9309F7C312253D0B00F63B7E /* test.smil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.smil; sourceTree = "<group>"; };
+		9309F7C312253D0B00F63B7E /* test.smil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = test.smil; path = Resources/test.smil; sourceTree = "<group>"; };
 		931FF38E1201CF52003B632F /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = "../../build-iOS40-Simulator/third_party_packages/installed/lib/libavcodec.a"; sourceTree = SOURCE_ROOT; };
 		931FF38F1201CF52003B632F /* libavdevice.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavdevice.a; path = "../../build-iOS40-Simulator/third_party_packages/installed/lib/libavdevice.a"; sourceTree = SOURCE_ROOT; };
 		931FF3901201CF52003B632F /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = "../../build-iOS40-Simulator/third_party_packages/installed/lib/libavformat.a"; sourceTree = SOURCE_ROOT; };
@@ -308,9 +326,22 @@
 		931FF3CF1201CFF9003B632F /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		931FF3D11201CFF9003B632F /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		931FF3D31201CFF9003B632F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		93299DDA1279C31B002B9E6A /* PresentationTableViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = PresentationTableViewController.xib; path = Resources/PresentationTableViewController.xib; sourceTree = "<group>"; };
+		93299DDD1279C32A002B9E6A /* PresentationTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = PresentationTableCell.xib; path = Resources/PresentationTableCell.xib; sourceTree = "<group>"; };
+		93299E0A1279C5E0002B9E6A /* PresentationTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PresentationTableViewController.h; sourceTree = "<group>"; };
+		93299E0B1279C5E0002B9E6A /* PresentationTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PresentationTableViewController.m; sourceTree = "<group>"; };
+		93299E301279C91D002B9E6A /* Presentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Presentation.h; sourceTree = "<group>"; };
+		93299E311279C91D002B9E6A /* Presentation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Presentation.m; sourceTree = "<group>"; };
+		93299F5F127AED73002B9E6A /* PresentationView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = PresentationView.xib; path = Resources/PresentationView.xib; sourceTree = "<group>"; };
+		9329A030127B03CC002B9E6A /* PresentationAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PresentationAppDelegate.h; sourceTree = "<group>"; };
+		9329A033127B03E0002B9E6A /* PresentationAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PresentationAppDelegate.m; sourceTree = "<group>"; };
+		9329A23D127DA345002B9E6A /* PresentationViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PresentationViewController.xib; sourceTree = "<group>"; };
+		9329A240127DA370002B9E6A /* PresentationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PresentationViewController.h; sourceTree = "<group>"; };
+		9329A241127DA370002B9E6A /* PresentationViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PresentationViewController.mm; sourceTree = "<group>"; };
+		9329A440128051F4002B9E6A /* Back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Back.png; sourceTree = "<group>"; };
 		9331E839120DA93B0023B0F1 /* player_iphone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = player_iphone.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		9331E8F9120DAE2A0023B0F1 /* Welcome.smil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Welcome.smil; sourceTree = "<group>"; };
-		9331E8FE120DAEB20023B0F1 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; path = data; sourceTree = "<group>"; };
+		9331E8F9120DAE2A0023B0F1 /* Welcome.smil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = Welcome.smil; path = Resources/Welcome.smil; sourceTree = "<group>"; };
+		9331E8FE120DAEB20023B0F1 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = Resources/data; sourceTree = "<group>"; };
 		9331E9FA120DCBD40023B0F1 /* AmbulantAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbulantAppDelegate.h; sourceTree = "<group>"; };
 		9331E9FB120DCBD40023B0F1 /* AmbulantAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AmbulantAppDelegate.mm; sourceTree = "<group>"; };
 		9331E9FC120DCBD40023B0F1 /* AmbulantViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbulantViewController.h; sourceTree = "<group>"; };
@@ -333,18 +364,18 @@
 		9376A8D61204A94300D5019C /* libmp4ff.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmp4ff.a; path = "../../build-iOS40-Device/third_party_packages/installed/lib/libmp4ff.a"; sourceTree = SOURCE_ROOT; };
 		9376A8D71204A94300D5019C /* libSDLiPhoneOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDLiPhoneOS.a; path = "../../build-iOS40-Device/third_party_packages/installed/lib/libSDLiPhoneOS.a"; sourceTree = SOURCE_ROOT; };
 		9376A8D81204A94300D5019C /* libswscale.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswscale.a; path = "../../build-iOS40-Device/third_party_packages/installed/lib/libswscale.a"; sourceTree = SOURCE_ROOT; };
-		9376A9281204C0F400D5019C /* PlaylistView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlaylistView.xib; sourceTree = "<group>"; };
+		9376A9281204C0F400D5019C /* PlaylistViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = PlaylistViewController.xib; path = Resources/PlaylistViewController.xib; sourceTree = "<group>"; };
 		9376AF48120C44C300D5019C /* libBasicUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBasicUsageEnvironment.a; path = "../../build-iOS40-Simulator/third_party_packages/live/BasicUsageEnvironment/libBasicUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
 		9376AF4A120C44F300D5019C /* libgroupsock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgroupsock.a; path = "../../build-iOS40-Simulator/third_party_packages/live/groupsock/libgroupsock.a"; sourceTree = SOURCE_ROOT; };
 		9376AF4C120C452700D5019C /* libliveMedia.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libliveMedia.a; path = "../../build-iOS40-Simulator/third_party_packages/live/liveMedia/libliveMedia.a"; sourceTree = SOURCE_ROOT; };
 		9376AF4E120C455300D5019C /* libUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libUsageEnvironment.a; path = "../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment/libUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
 		937981CC120DE13B00B1A6D2 /* AmbulantWebView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = AmbulantWebView.xib; path = Classes/AmbulantWebView.xib; sourceTree = "<group>"; };
-		937981D4120DE21700B1A6D2 /* AmbulantWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AmbulantWebViewController.h; path = ../AmbulantWebViewController.h; sourceTree = "<group>"; };
-		937981D5120DE21700B1A6D2 /* AmbulantWebViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AmbulantWebViewController.mm; path = ../AmbulantWebViewController.mm; sourceTree = "<group>"; };
-		9387C97F1251F3C80013AECB /* iPhoneAVPlayerTest.smil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = iPhoneAVPlayerTest.smil; sourceTree = "<group>"; };
-		93882662121EB7F40038AF71 /* Welcome-smiltext.smil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Welcome-smiltext.smil"; sourceTree = "<group>"; };
-		93D9B8E7126362C500C7F2F4 /* cg_preferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cg_preferences.h; sourceTree = "<group>"; };
-		93D9B8E81263633E00C7F2F4 /* cg_preferences.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = cg_preferences.mm; sourceTree = "<group>"; };
+		937981D4120DE21700B1A6D2 /* AmbulantWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbulantWebViewController.h; sourceTree = "<group>"; };
+		937981D5120DE21700B1A6D2 /* AmbulantWebViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AmbulantWebViewController.mm; sourceTree = "<group>"; };
+		9387C97F1251F3C80013AECB /* iPhoneAVPlayerTest.smil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = iPhoneAVPlayerTest.smil; path = Resources/iPhoneAVPlayerTest.smil; sourceTree = "<group>"; };
+		93882662121EB7F40038AF71 /* Welcome-smiltext.smil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "Welcome-smiltext.smil"; path = "Resources/Welcome-smiltext.smil"; sourceTree = "<group>"; };
+		93D9B8E7126362C500C7F2F4 /* iOSpreferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSpreferences.h; sourceTree = "<group>"; };
+		93D9B8E81263633E00C7F2F4 /* iOSpreferences.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSpreferences.mm; sourceTree = "<group>"; };
 		93DC0A281203125700A3518F /* renderer_select.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderer_select.cpp; sourceTree = "<group>"; };
 		93DC0A291203125700A3518F /* state.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = state.cpp; sourceTree = "<group>"; };
 		93DC0A2A1203125700A3518F /* factory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = factory.cpp; sourceTree = "<group>"; };
@@ -741,9 +772,9 @@
 		93DC0CC51203216300A3518F /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		93DC0CC61203216300A3518F /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		93DC0CCF120321C200A3518F /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
-		93DC0CDB120321C200A3518F /* AmbulantViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AmbulantViewController.xib; sourceTree = "<group>"; };
+		93DC0CDB120321C200A3518F /* AmbulantViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = AmbulantViewController.xib; path = Resources/AmbulantViewController.xib; sourceTree = "<group>"; };
 		93DC0E3D1203650C00A3518F /* player_simulator-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "player_simulator-Info.plist"; sourceTree = "<group>"; };
-		93DC0E7512037DB500A3518F /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
+		93DC0E7512037DB500A3518F /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainWindow.xib; path = Resources/MainWindow.xib; sourceTree = "<group>"; };
 		93EC9E44121985F600E0BEDE /* libgroupsock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgroupsock.a; path = "../../build-iOS40-Device/third_party_packages/live/groupsock/libgroupsock.a"; sourceTree = SOURCE_ROOT; };
 		93EC9E471219863000E0BEDE /* libliveMedia.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libliveMedia.a; path = "../../build-iOS40-Device/third_party_packages/live/liveMedia/libliveMedia.a"; sourceTree = SOURCE_ROOT; };
 		93EC9E4A1219865F00E0BEDE /* libBasicUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBasicUsageEnvironment.a; path = "../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment/libBasicUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
@@ -887,21 +918,26 @@
 			children = (
 				04F315A7121AD62900B3D2A0 /* mainloop.mm */,
 				04F315A8121AD62900B3D2A0 /* mainloop.h */,
-				32CA4F630368D1EE00C91783 /* player_iphone_Prefix.pch */,
+				32CA4F630368D1EE00C91783 /* player_simulator-Info.plist */,
 				29B97316FDCFA39411CA2CEA /* main.mm */,
 			);
-			name = "Other Sources";
+			path = "Other Sources";
 			sourceTree = "<group>";
 		};
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				9329A440128051F4002B9E6A /* Back.png */,
+				9329A23D127DA345002B9E6A /* PresentationViewController.xib */,
+				93299F5F127AED73002B9E6A /* PresentationView.xib */,
+				93299DDD1279C32A002B9E6A /* PresentationTableCell.xib */,
+				93299DDA1279C31B002B9E6A /* PresentationTableViewController.xib */,
 				9387C97F1251F3C80013AECB /* iPhoneAVPlayerTest.smil */,
 				9331E8FE120DAEB20023B0F1 /* data */,
 				9331E8F9120DAE2A0023B0F1 /* Welcome.smil */,
 				9309F7C312253D0B00F63B7E /* test.smil */,
 				93882662121EB7F40038AF71 /* Welcome-smiltext.smil */,
-				9376A9281204C0F400D5019C /* PlaylistView.xib */,
+				9376A9281204C0F400D5019C /* PlaylistViewController.xib */,
 				937981CC120DE13B00B1A6D2 /* AmbulantWebView.xib */,
 				93DC0E7512037DB500A3518F /* MainWindow.xib */,
 				93DC0CDB120321C200A3518F /* AmbulantViewController.xib */,
@@ -971,8 +1007,16 @@
 		9331E9F9120DCADB0023B0F1 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				93D9B8E81263633E00C7F2F4 /* cg_preferences.mm */,
-				93D9B8E7126362C500C7F2F4 /* cg_preferences.h */,
+				9329A240127DA370002B9E6A /* PresentationViewController.h */,
+				9329A241127DA370002B9E6A /* PresentationViewController.mm */,
+				9329A033127B03E0002B9E6A /* PresentationAppDelegate.m */,
+				9329A030127B03CC002B9E6A /* PresentationAppDelegate.h */,
+				93299E301279C91D002B9E6A /* Presentation.h */,
+				93299E311279C91D002B9E6A /* Presentation.m */,
+				93299E0A1279C5E0002B9E6A /* PresentationTableViewController.h */,
+				93299E0B1279C5E0002B9E6A /* PresentationTableViewController.m */,
+				93D9B8E81263633E00C7F2F4 /* iOSpreferences.mm */,
+				93D9B8E7126362C500C7F2F4 /* iOSpreferences.h */,
 				9331E9FA120DCBD40023B0F1 /* AmbulantAppDelegate.h */,
 				9331E9FB120DCBD40023B0F1 /* AmbulantAppDelegate.mm */,
 				9331E9FC120DCBD40023B0F1 /* AmbulantViewController.h */,
@@ -1754,13 +1798,18 @@
 				93DC0CDF120321C200A3518F /* Icon.png in Resources */,
 				93DC0CE9120321C200A3518F /* AmbulantViewController.xib in Resources */,
 				93DC0E7612037DB500A3518F /* MainWindow.xib in Resources */,
-				9376A9291204C0F400D5019C /* PlaylistView.xib in Resources */,
+				9376A9291204C0F400D5019C /* PlaylistViewController.xib in Resources */,
 				9331E908120DAEB20023B0F1 /* data in Resources */,
 				9331E90D120DB0A90023B0F1 /* Welcome.smil in Resources */,
 				937981CE120DE13B00B1A6D2 /* AmbulantWebView.xib in Resources */,
 				93882663121EB7F40038AF71 /* Welcome-smiltext.smil in Resources */,
 				9309F8241226AA3400F63B7E /* test.smil in Resources */,
 				9387C9811251F3C80013AECB /* iPhoneAVPlayerTest.smil in Resources */,
+				93299DDB1279C31B002B9E6A /* PresentationTableViewController.xib in Resources */,
+				93299DDE1279C32A002B9E6A /* PresentationTableCell.xib in Resources */,
+				93299F60127AED73002B9E6A /* PresentationView.xib in Resources */,
+				9329A23E127DA345002B9E6A /* PresentationViewController.xib in Resources */,
+				9329A441128051F4002B9E6A /* Back.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1771,7 +1820,7 @@
 				9376B0A3120C9CC900D5019C /* Icon.png in Resources */,
 				9376B0A5120C9CC900D5019C /* AmbulantViewController.xib in Resources */,
 				9376B0A6120C9CC900D5019C /* MainWindow.xib in Resources */,
-				9376B0A8120C9CC900D5019C /* PlaylistView.xib in Resources */,
+				9376B0A8120C9CC900D5019C /* PlaylistViewController.xib in Resources */,
 				9331E8FB120DAE2A0023B0F1 /* Welcome.smil in Resources */,
 				9331E909120DAEB20023B0F1 /* data in Resources */,
 				937981D0120DE13B00B1A6D2 /* AmbulantWebView.xib in Resources */,
@@ -1779,6 +1828,11 @@
 				9309F8231226AA3300F63B7E /* test.smil in Resources */,
 				9387C9801251F3C80013AECB /* iPhoneAVPlayerTest.smil in Resources */,
 				93B08380126C837700EE380F /* player_simulator-Info.plist in Resources */,
+				93299DDC1279C31B002B9E6A /* PresentationTableViewController.xib in Resources */,
+				93299DDF1279C32A002B9E6A /* PresentationTableCell.xib in Resources */,
+				93299F61127AED73002B9E6A /* PresentationView.xib in Resources */,
+				9329A23F127DA345002B9E6A /* PresentationViewController.xib in Resources */,
+				9329A442128051F4002B9E6A /* Back.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1874,7 +1928,11 @@
 				04F315AA121AD62900B3D2A0 /* mainloop.mm in Sources */,
 				04ABF6E3121C3091009B0528 /* cg_smiltext.mm in Sources */,
 				93641065123920E10046B567 /* cg_avfoundation_video.mm in Sources */,
-				93D9B8EA1263633E00C7F2F4 /* cg_preferences.mm in Sources */,
+				93D9B8EA1263633E00C7F2F4 /* iOSpreferences.mm in Sources */,
+				93299E171279C5E0002B9E6A /* PresentationTableViewController.m in Sources */,
+				93299E341279C91D002B9E6A /* Presentation.m in Sources */,
+				9329A034127B03E0002B9E6A /* PresentationAppDelegate.m in Sources */,
+				9329A242127DA370002B9E6A /* PresentationViewController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1967,7 +2025,11 @@
 				04F315A9121AD62900B3D2A0 /* mainloop.mm in Sources */,
 				93ECA010121BC34500E0BEDE /* cg_smiltext.mm in Sources */,
 				93641064123920E10046B567 /* cg_avfoundation_video.mm in Sources */,
-				93D9B8E91263633E00C7F2F4 /* cg_preferences.mm in Sources */,
+				93D9B8E91263633E00C7F2F4 /* iOSpreferences.mm in Sources */,
+				93299E231279C5E0002B9E6A /* PresentationTableViewController.m in Sources */,
+				93299E361279C91D002B9E6A /* Presentation.m in Sources */,
+				9329A035127B03E0002B9E6A /* PresentationAppDelegate.m in Sources */,
+				9329A243127DA370002B9E6A /* PresentationViewController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2021,7 +2083,7 @@
 				);
 				OTHER_CPLUSPLUSFLAGS = "-mcpu=arm1176jzf-s";
 				PRODUCT_NAME = player_iphone;
-				USER_HEADER_SEARCH_PATHS = "$(inherit) ../../include ../../build-iOS40-Device/third_party_packages/installed/include ../../build-iOS40-Device/third_party_packages/installed/include/libxml2 ../../build-iOS40-Device/third_party_packages/installed/include/SDL ../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment/include ../../build-iOS40-Device/third_party_packages/live/groupsock/include ../../build-iOS40-Device/third_party_packages/live/liveMedia/include ../../build-iOS40-Device/third_party_packages/live/UsageEnvironment/include";
+				USER_HEADER_SEARCH_PATHS = "$(inherit) ./Classes ../../include ../../build-iOS40-Device/third_party_packages/installed/include ../../build-iOS40-Device/third_party_packages/installed/include/libxml2 ../../build-iOS40-Device/third_party_packages/installed/include/SDL ../../build-iOS40-Device/third_party_packages/live/BasicUsageEnvironment/include ../../build-iOS40-Device/third_party_packages/live/groupsock/include ../../build-iOS40-Device/third_party_packages/live/liveMedia/include ../../build-iOS40-Device/third_party_packages/live/UsageEnvironment/include";
 			};
 			name = Debug;
 		};
@@ -2175,7 +2237,7 @@
 					"\"$(SRCROOT)/../../build-iOS40-Simulator/third_party_packages/installed/lib\"",
 				);
 				PRODUCT_NAME = player_iphone;
-				USER_HEADER_SEARCH_PATHS = "$(inherit) ../../include ../../build-iOS40-Device/third_party_packages/installed/include ../../build-iOS40-Device/third_party_packages/installed/include/libxml2 ../../build-iOS40-Device/third_party_packages/installed/include/SDL ../../build-iOS40-Simulator/third_party_packages/live/BasicUsageEnvironment/include ../../build-iOS40-Simulator/third_party_packages/live/groupsock/include ../../build-iOS40-Simulator/third_party_packages/live/liveMedia/include ../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment/include";
+				USER_HEADER_SEARCH_PATHS = "$(inherit) ./Classes ../../include ../../build-iOS40-Device/third_party_packages/installed/include ../../build-iOS40-Device/third_party_packages/installed/include/libxml2 ../../build-iOS40-Device/third_party_packages/installed/include/SDL ../../build-iOS40-Simulator/third_party_packages/live/BasicUsageEnvironment/include ../../build-iOS40-Simulator/third_party_packages/live/groupsock/include ../../build-iOS40-Simulator/third_party_packages/live/liveMedia/include ../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment/include";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Distribution;
@@ -2222,7 +2284,7 @@
 					"\"$(SRCROOT)/../../build-iOS40-Simulator/third_party_packages/installed/lib\"",
 				);
 				PRODUCT_NAME = player_iphone;
-				USER_HEADER_SEARCH_PATHS = "$(inherit) ../../include ../../build-iOS40-Device/third_party_packages/installed/include ../../build-iOS40-Device/third_party_packages/installed/include/libxml2 ../../build-iOS40-Device/third_party_packages/installed/include/SDL ../../build-iOS40-Simulator/third_party_packages/live/BasicUsageEnvironment/include ../../build-iOS40-Simulator/third_party_packages/live/groupsock/include ../../build-iOS40-Simulator/third_party_packages/live/liveMedia/include ../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment/include";
+				USER_HEADER_SEARCH_PATHS = "$(inherit) ./Classes ../../include ../../build-iOS40-Device/third_party_packages/installed/include ../../build-iOS40-Device/third_party_packages/installed/include/libxml2 ../../build-iOS40-Device/third_party_packages/installed/include/SDL ../../build-iOS40-Simulator/third_party_packages/live/BasicUsageEnvironment/include ../../build-iOS40-Simulator/third_party_packages/live/groupsock/include ../../build-iOS40-Simulator/third_party_packages/live/liveMedia/include ../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment/include";
 			};
 			name = Debug;
 		};

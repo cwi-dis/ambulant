@@ -3,12 +3,13 @@
 //  Ambulant
 //
 //  Created by Kees Blom on 7/12/10.
-//  Copyright __MyCompanyName__ 2010. All rights reserved.
+//  Copyright CWI 2010. All rights reserved.
 //
 
 #import "AmbulantViewController.h"
 #import "AmbulantAppDelegate.h"
 #import "PlaylistViewController.h"
+#import "PresentationTableViewController.h"
 
 #define AM_DBG
 #ifndef AM_DBG
@@ -64,8 +65,8 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 @implementation AmbulantViewController
 
 @synthesize interactionView, originalPlayerViewFrame, originalInteractionViewFrame,
-			playerView, myMainloop, URLEntryField, linkURL, playURL, referringURL,
-			keyboardIsShown, currentOrientation,	autoCenter, autoResize,
+			playerView, myMainloop, URLEntryField, linkURL, playURL,
+			keyboardIsShown, currentOrientation, autoCenter, autoResize,
 			nativeRenderer, play_active;
 
 /*
@@ -126,8 +127,8 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	 selector:@selector(orientationChanged:)
 	 name:UIDeviceOrientationDidChangeNotification
 	 object: nil];
-	ambulant::gui::cg::cg_preferences::get_preferences()->load_preferences();
-	ambulant::gui::cg::cg_preferences* prefs = ambulant::gui::cg::cg_preferences::get_preferences();
+	ambulant::iOSpreferences::get_preferences()->load_preferences();
+	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	autoCenter = prefs->m_auto_center;
 	autoResize = prefs->m_auto_resize;
 	nativeRenderer = ! prefs->m_prefer_ffmpeg;
@@ -260,7 +261,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		myMainloop->pause();
 	}
 	PlaylistViewController *controller = [[PlaylistViewController alloc]
-										  initWithNibName:@"PlaylistView" bundle:nil];
+										  initWithNibName:@"PlaylistViewController" bundle:nil];
 	controller.title = @"Playlist";
 	controller.delegate = self;
 	
@@ -276,7 +277,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	autoCenter = [controller autoCenter];
 	autoResize = [controller autoResize];
 	nativeRenderer = [controller nativeRenderer];
-	ambulant::gui::cg::cg_preferences* prefs = ambulant::gui::cg::cg_preferences::get_preferences();
+	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	prefs->m_auto_center = autoCenter;
 	prefs->m_auto_resize = autoResize;
 	prefs->m_prefer_ffmpeg = ! nativeRenderer;
@@ -299,7 +300,64 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	}
 }
 
+- (IBAction) showHistory:(id)sender {    
+	
+	if (myMainloop != NULL) {
+		play_active = myMainloop->is_play_active();
+		myMainloop->pause();
+	}
+	PresentationViewController *controller = [[PresentationViewController alloc]
+										  initWithNibName:@"PresentationTableViewController" bundle:nil];
+	controller.title = @"Presentations";
+	controller.delegate = self;
+	
+	controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+	[self presentModalViewController:controller animated:YES];
+	
+	[controller release];
+}
+
+- (void) done: (id) sender {
+	[self presentationViewControllerDidFinish: (PresentationViewController*) sender];
+}
+
+- (void) presentationViewControllerDidFinish: (PresentationViewController *)controller {
+//	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
+	[self dismissModalViewControllerAnimated:YES];
+	
+	if (myMainloop != NULL) {
+		if (play_active) {
+			myMainloop->play();
+		}
+		UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+		[playerView adaptDisplayAfterRotation: orientation];
+	}
+}
+
+
 - (void) playIt: (PlaylistViewController *)controller selected: (NSString*) whatString {
+	AM_DBG NSLog(@"Selected: %@",whatString);
+	self.handleStopTapped;
+	if ( ! [whatString hasPrefix:@"http://"]) {
+		NSString* homedir = NSHomeDirectory();
+		homedir = [homedir stringByAppendingString:@"/player_iphone.app/"];
+		whatString = [homedir stringByAppendingString:whatString];//[thisBundle pathForResource:whatString ofType:@"smil"];
+		if ( ! [whatString hasSuffix:@".smil"]) {
+			whatString = [whatString stringByAppendingString:@".smil"];
+		}
+	}
+	if (whatString != NULL) {
+		if (playURL) {
+			[playURL release];
+		}
+		playURL = [[NSMutableString alloc] initWithString: whatString];
+		[self doPlayURL];
+	}
+	[controller done: self];
+}
+
+
+- (void) playPresentation: (PresentationViewController *)controller selected: (NSString*) whatString {
 	AM_DBG NSLog(@"Selected: %@",whatString);
 	self.handleStopTapped;
 	if ( ! [whatString hasPrefix:@"http://"]) {

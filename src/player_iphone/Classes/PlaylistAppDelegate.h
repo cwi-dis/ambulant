@@ -3,7 +3,7 @@
 //  Playlist
 //
 //  Created by Kees Blom on 7/31/10.
-//  Copyright __MyCompanyName__ 2010. All rights reserved.
+//  Copyright CWI 2010. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

@@ -45,6 +45,8 @@ typedef enum observers { ob_none, ob_status=0x1, ob_asset=0x2, ob_duration=0x4, 
 //	id timeObserver;			// A periodic observer to maintain video progress
 	CMTime m_duration;			// The total duration of the video
 	BOOL m_is_duration_known;	// Initially duration is not known
+	CMTime m_begin_time;		// Where the video should begin playing
+	CMTime m_end_time;			// Where the video should end playing
 	NSURL* m_nsurl;				// The url of the video
 	void*(*m_eod_fun)(void*);	// A C++ function to be called at end of the video
 	void* m_eod_arg;			// Arguments for this function 
@@ -59,7 +61,7 @@ static AVPlayer* s_avplayer;	// The global AVPlayer, controlled by 's_busy' flag
 
 //@property (nonatomic, retain) AVPlayer *s_avplayer;
 @property (nonatomic, retain) AVPlayerItem *m_avplayer_item;
-@property (nonatomic, assign) CMTime m_duration;
+@property (nonatomic, assign) CMTime m_duration, m_begin_time, m_end_time;
 @property (nonatomic, assign, readonly) BOOL m_is_duration_known;
 //@property (nonatomic, retain) id timeObserver;
 @property (nonatomic, retain) NSURL* m_nsurl;

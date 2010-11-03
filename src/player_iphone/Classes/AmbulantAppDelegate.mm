@@ -3,7 +3,7 @@
 //  Ambulant
 //
 //  Created by Kees Blom on 7/12/10.
-//  Copyright __MyCompanyName__ 2010. All rights reserved.
+//  Copyright CWI 2010. All rights reserved.
 //
 
 #import "AmbulantAppDelegate.h"
@@ -12,7 +12,7 @@
 #import <CoreFoundation/CoreFoundation.h>
 
 #include "ambulant/lib/logger.h"
-#include "cg_preferences.h"
+#include "iOSpreferences.h"
 #include <fstream>
 
 #define AM_DBG	if(1)
@@ -109,7 +109,7 @@ application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictio
 
 	AM_DBG NSLog(@"AmbulantAppDelegate application didFinishLaunchingWithOptions");
 	// Install ambulent preferences handler
-	ambulant::gui::cg::cg_preferences::install_singleton();
+	ambulant::iOSpreferences::install_singleton();
 	
 	// Install ambulant logger
 	initialize_logger();
@@ -142,11 +142,9 @@ isValid: (NSURL*) url {
 - (BOOL)
 application:(UIApplication* ) application handleOpenURL: (NSURL*) url {
 	AM_DBG NSLog(@"AmbulantAppDelegate application handleOpenURL");
-	NSLog(@"AmbulantAppDelegate handleOpenURL: %@ called from: %@", [url absoluteURL],[url query]);
+	NSLog(@"AmbulantAppDelegate handleOpenURL: %@", [url absoluteURL]);
 	BOOL validated = NO;
-	if ([self isValid:url] && viewController != NULL) { //([isValid: url]) {
-		validated = YES;
-		viewController.referringURL = url.query;
+	if ([self isValid:url] && viewController != NULL) { 		validated = YES;
 		viewController.URLEntryField.text = [[[NSMutableString alloc] initWithString: @"http://"]
 							stringByAppendingString: [[url resourceSpecifier] substringFromIndex:2]];
 		viewController.playURL = (NSMutableString*) viewController.URLEntryField.text;
@@ -172,9 +170,6 @@ applicationDidEnterBackground:(UIApplication *)application {
 	//XXXX TBD: store state
 	if (viewController != NULL && viewController.myMainloop != NULL) {
 		viewController.myMainloop->pause();
-	}
-	if (viewController != NULL && viewController.referringURL != NULL) {
-		[[UIApplication sharedApplication] openURL: [NSURL URLWithString: viewController.referringURL]];
 	}
 }
 
