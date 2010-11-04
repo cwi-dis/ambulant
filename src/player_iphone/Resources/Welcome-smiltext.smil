@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE smil PUBLIC "-//W3C//DTD SMIL 2.0//EN"
+                      "http://www.w3.org/2008/SMIL30/SMIL30Language.dtd">
+<smil xmlns="http://www.w3.org/ns/SMIL">
+  <head>
+    <meta name="title" content="MMS presentation for small device"/>
+    <meta name="generator" content="GRiNS Pro for SMIL 2.0, v2.2 Mobile win32 build 151"/>
+    <meta name="author" content="Dick Bulterman"/>
+    <layout>
+      <root-layout xml:id="Welcome" backgroundColor="gray" width="240" height="270"/>
+      <region xml:id="background" width="240" height="270" z-index="1"/>
+      <region xml:id="title" width="200" height="43" left="36" top="26" z-index="2"/>
+      <region xml:id="subtitle" width="193" height="19" left="35" top="68" z-index="2"/>
+      <region xml:id="line1" width="116" height="35" left="35" top="95" z-index="2"/>
+      <region xml:id="line2" width="143" height="34" left="60" top="130" z-index="2"/>
+      <region xml:id="line3" width="167" height="40" left="70" top="164" z-index="2"/>
+      <region xml:id="info" width="200" height="60" left="30" top="204" z-index="2"/>
+      <region xml:id="audio"/>
+    </layout>
+  </head>
+  <body>
+    <par xml:id="play_content" dur="16s">
+      <img xml:id="play_background" src="data/background.png" region="background"/>
+      <audio xml:id="play_tune" src="data/AmbulantTune.mp3" dur="7.9" region="audio"/>
+      <par xml:id="play_animation">
+      	<img xml:id="play_ambulant" src="data/ambulant.png" begin="0s" region="title"/>
+     	<smilText xml:id="play_extensible" begin="2s" region="subtitle" textColor="#cc3300" textFontFamily="Helvetica,sansSerif" textFontSize="16">Extensible</smilText>
+      	<smilText xml:id="play_fast" begin="2.5s" region="line1" textColor="red" textFontFamily="Arial Narrow,sansSerif" textFontStyle="italic" textFontSize="28">Fast</smilText>
+      	<smilText xml:id="play_portable" begin="3s" region="line2" textColor="#0f9505" textFontFamily="Brush Script MT,cursive,serif" textFontStyle="italic" textFontSize="26">Portable</smilText>
+      	<smilText xml:id="play_opensource" begin="3.5s" region="line3" textColor="#0602a0" textFontFamily="vt100,monospace" textFontSize="20">Open Source</smilText>
+      	<a xml:id="play_anchor" href="http://www.ambulantplayer.org" show="new" external="true">
+      	  <smilText xml:id="play_link_text" begin="4s" region="info" textFontFamily="Helvetica,sansSerif" textFontSize="16" textMode="crawl" dur="8s" textRate="auto" fill="freeze">
+      	  Want to know more? Visit <span textColor="#f80c06" textFontWeight="bold">www.ambulantplayer.org</span>.
+      	  </smilText>
+      	</a>
+      </par>
+    </par>
+  </body>
+</smil>

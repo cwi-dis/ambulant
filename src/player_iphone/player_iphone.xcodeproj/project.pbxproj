@@ -37,16 +37,8 @@
 		93299DDC1279C31B002B9E6A /* PresentationTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93299DDA1279C31B002B9E6A /* PresentationTableViewController.xib */; };
 		93299DDE1279C32A002B9E6A /* PresentationTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93299DDD1279C32A002B9E6A /* PresentationTableCell.xib */; };
 		93299DDF1279C32A002B9E6A /* PresentationTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93299DDD1279C32A002B9E6A /* PresentationTableCell.xib */; };
-		93299E171279C5E0002B9E6A /* PresentationTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 93299E0B1279C5E0002B9E6A /* PresentationTableViewController.m */; };
-		93299E231279C5E0002B9E6A /* PresentationTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 93299E0B1279C5E0002B9E6A /* PresentationTableViewController.m */; };
 		93299E341279C91D002B9E6A /* Presentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 93299E311279C91D002B9E6A /* Presentation.m */; };
 		93299E361279C91D002B9E6A /* Presentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 93299E311279C91D002B9E6A /* Presentation.m */; };
-		93299F60127AED73002B9E6A /* PresentationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93299F5F127AED73002B9E6A /* PresentationView.xib */; };
-		93299F61127AED73002B9E6A /* PresentationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93299F5F127AED73002B9E6A /* PresentationView.xib */; };
-		9329A034127B03E0002B9E6A /* PresentationAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9329A033127B03E0002B9E6A /* PresentationAppDelegate.m */; };
-		9329A035127B03E0002B9E6A /* PresentationAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9329A033127B03E0002B9E6A /* PresentationAppDelegate.m */; };
-		9329A23E127DA345002B9E6A /* PresentationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9329A23D127DA345002B9E6A /* PresentationViewController.xib */; };
-		9329A23F127DA345002B9E6A /* PresentationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9329A23D127DA345002B9E6A /* PresentationViewController.xib */; };
 		9329A242127DA370002B9E6A /* PresentationViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9329A241127DA370002B9E6A /* PresentationViewController.mm */; };
 		9329A243127DA370002B9E6A /* PresentationViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9329A241127DA370002B9E6A /* PresentationViewController.mm */; };
 		9329A441128051F4002B9E6A /* Back.png in Resources */ = {isa = PBXBuildFile; fileRef = 9329A440128051F4002B9E6A /* Back.png */; };
@@ -328,14 +320,8 @@
 		931FF3D31201CFF9003B632F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		93299DDA1279C31B002B9E6A /* PresentationTableViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = PresentationTableViewController.xib; path = Resources/PresentationTableViewController.xib; sourceTree = "<group>"; };
 		93299DDD1279C32A002B9E6A /* PresentationTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = PresentationTableCell.xib; path = Resources/PresentationTableCell.xib; sourceTree = "<group>"; };
-		93299E0A1279C5E0002B9E6A /* PresentationTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PresentationTableViewController.h; sourceTree = "<group>"; };
-		93299E0B1279C5E0002B9E6A /* PresentationTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PresentationTableViewController.m; sourceTree = "<group>"; };
 		93299E301279C91D002B9E6A /* Presentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Presentation.h; sourceTree = "<group>"; };
 		93299E311279C91D002B9E6A /* Presentation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Presentation.m; sourceTree = "<group>"; };
-		93299F5F127AED73002B9E6A /* PresentationView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = PresentationView.xib; path = Resources/PresentationView.xib; sourceTree = "<group>"; };
-		9329A030127B03CC002B9E6A /* PresentationAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PresentationAppDelegate.h; sourceTree = "<group>"; };
-		9329A033127B03E0002B9E6A /* PresentationAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PresentationAppDelegate.m; sourceTree = "<group>"; };
-		9329A23D127DA345002B9E6A /* PresentationViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PresentationViewController.xib; sourceTree = "<group>"; };
 		9329A240127DA370002B9E6A /* PresentationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PresentationViewController.h; sourceTree = "<group>"; };
 		9329A241127DA370002B9E6A /* PresentationViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PresentationViewController.mm; sourceTree = "<group>"; };
 		9329A440128051F4002B9E6A /* Back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Back.png; sourceTree = "<group>"; };
@@ -346,7 +332,6 @@
 		9331E9FB120DCBD40023B0F1 /* AmbulantAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AmbulantAppDelegate.mm; sourceTree = "<group>"; };
 		9331E9FC120DCBD40023B0F1 /* AmbulantViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbulantViewController.h; sourceTree = "<group>"; };
 		9331E9FD120DCBD40023B0F1 /* AmbulantViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AmbulantViewController.mm; sourceTree = "<group>"; };
-		9331E9FE120DCBD40023B0F1 /* PlaylistAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistAppDelegate.h; sourceTree = "<group>"; };
 		9331E9FF120DCBD40023B0F1 /* PlaylistAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PlaylistAppDelegate.mm; sourceTree = "<group>"; };
 		9331EA00120DCBD40023B0F1 /* PlaylistViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistViewController.h; sourceTree = "<group>"; };
 		9331EA01120DCBD40023B0F1 /* PlaylistViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PlaylistViewController.mm; sourceTree = "<group>"; };
@@ -369,11 +354,12 @@
 		9376AF4A120C44F300D5019C /* libgroupsock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgroupsock.a; path = "../../build-iOS40-Simulator/third_party_packages/live/groupsock/libgroupsock.a"; sourceTree = SOURCE_ROOT; };
 		9376AF4C120C452700D5019C /* libliveMedia.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libliveMedia.a; path = "../../build-iOS40-Simulator/third_party_packages/live/liveMedia/libliveMedia.a"; sourceTree = SOURCE_ROOT; };
 		9376AF4E120C455300D5019C /* libUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libUsageEnvironment.a; path = "../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment/libUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
-		937981CC120DE13B00B1A6D2 /* AmbulantWebView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = AmbulantWebView.xib; path = Classes/AmbulantWebView.xib; sourceTree = "<group>"; };
+		937981CC120DE13B00B1A6D2 /* AmbulantWebView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = AmbulantWebView.xib; path = Resources/AmbulantWebView.xib; sourceTree = "<group>"; };
 		937981D4120DE21700B1A6D2 /* AmbulantWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbulantWebViewController.h; sourceTree = "<group>"; };
 		937981D5120DE21700B1A6D2 /* AmbulantWebViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AmbulantWebViewController.mm; sourceTree = "<group>"; };
 		9387C97F1251F3C80013AECB /* iPhoneAVPlayerTest.smil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = iPhoneAVPlayerTest.smil; path = Resources/iPhoneAVPlayerTest.smil; sourceTree = "<group>"; };
 		93882662121EB7F40038AF71 /* Welcome-smiltext.smil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "Welcome-smiltext.smil"; path = "Resources/Welcome-smiltext.smil"; sourceTree = "<group>"; };
+		93D541A21282DC0900C4EB55 /* PlaylistAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistAppDelegate.h; sourceTree = "<group>"; };
 		93D9B8E7126362C500C7F2F4 /* iOSpreferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSpreferences.h; sourceTree = "<group>"; };
 		93D9B8E81263633E00C7F2F4 /* iOSpreferences.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSpreferences.mm; sourceTree = "<group>"; };
 		93DC0A281203125700A3518F /* renderer_select.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderer_select.cpp; sourceTree = "<group>"; };
@@ -928,8 +914,6 @@
 			isa = PBXGroup;
 			children = (
 				9329A440128051F4002B9E6A /* Back.png */,
-				9329A23D127DA345002B9E6A /* PresentationViewController.xib */,
-				93299F5F127AED73002B9E6A /* PresentationView.xib */,
 				93299DDD1279C32A002B9E6A /* PresentationTableCell.xib */,
 				93299DDA1279C31B002B9E6A /* PresentationTableViewController.xib */,
 				9387C97F1251F3C80013AECB /* iPhoneAVPlayerTest.smil */,
@@ -1007,14 +991,11 @@
 		9331E9F9120DCADB0023B0F1 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				93D541A21282DC0900C4EB55 /* PlaylistAppDelegate.h */,
 				9329A240127DA370002B9E6A /* PresentationViewController.h */,
 				9329A241127DA370002B9E6A /* PresentationViewController.mm */,
-				9329A033127B03E0002B9E6A /* PresentationAppDelegate.m */,
-				9329A030127B03CC002B9E6A /* PresentationAppDelegate.h */,
 				93299E301279C91D002B9E6A /* Presentation.h */,
 				93299E311279C91D002B9E6A /* Presentation.m */,
-				93299E0A1279C5E0002B9E6A /* PresentationTableViewController.h */,
-				93299E0B1279C5E0002B9E6A /* PresentationTableViewController.m */,
 				93D9B8E81263633E00C7F2F4 /* iOSpreferences.mm */,
 				93D9B8E7126362C500C7F2F4 /* iOSpreferences.h */,
 				9331E9FA120DCBD40023B0F1 /* AmbulantAppDelegate.h */,
@@ -1023,7 +1004,6 @@
 				9331E9FD120DCBD40023B0F1 /* AmbulantViewController.mm */,
 				937981D4120DE21700B1A6D2 /* AmbulantWebViewController.h */,
 				937981D5120DE21700B1A6D2 /* AmbulantWebViewController.mm */,
-				9331E9FE120DCBD40023B0F1 /* PlaylistAppDelegate.h */,
 				9331E9FF120DCBD40023B0F1 /* PlaylistAppDelegate.mm */,
 				9331EA00120DCBD40023B0F1 /* PlaylistViewController.h */,
 				9331EA01120DCBD40023B0F1 /* PlaylistViewController.mm */,
@@ -1807,8 +1787,6 @@
 				9387C9811251F3C80013AECB /* iPhoneAVPlayerTest.smil in Resources */,
 				93299DDB1279C31B002B9E6A /* PresentationTableViewController.xib in Resources */,
 				93299DDE1279C32A002B9E6A /* PresentationTableCell.xib in Resources */,
-				93299F60127AED73002B9E6A /* PresentationView.xib in Resources */,
-				9329A23E127DA345002B9E6A /* PresentationViewController.xib in Resources */,
 				9329A441128051F4002B9E6A /* Back.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1830,8 +1808,6 @@
 				93B08380126C837700EE380F /* player_simulator-Info.plist in Resources */,
 				93299DDC1279C31B002B9E6A /* PresentationTableViewController.xib in Resources */,
 				93299DDF1279C32A002B9E6A /* PresentationTableCell.xib in Resources */,
-				93299F61127AED73002B9E6A /* PresentationView.xib in Resources */,
-				9329A23F127DA345002B9E6A /* PresentationViewController.xib in Resources */,
 				9329A442128051F4002B9E6A /* Back.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1929,9 +1905,7 @@
 				04ABF6E3121C3091009B0528 /* cg_smiltext.mm in Sources */,
 				93641065123920E10046B567 /* cg_avfoundation_video.mm in Sources */,
 				93D9B8EA1263633E00C7F2F4 /* iOSpreferences.mm in Sources */,
-				93299E171279C5E0002B9E6A /* PresentationTableViewController.m in Sources */,
 				93299E341279C91D002B9E6A /* Presentation.m in Sources */,
-				9329A034127B03E0002B9E6A /* PresentationAppDelegate.m in Sources */,
 				9329A242127DA370002B9E6A /* PresentationViewController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2026,9 +2000,7 @@
 				93ECA010121BC34500E0BEDE /* cg_smiltext.mm in Sources */,
 				93641064123920E10046B567 /* cg_avfoundation_video.mm in Sources */,
 				93D9B8E91263633E00C7F2F4 /* iOSpreferences.mm in Sources */,
-				93299E231279C5E0002B9E6A /* PresentationTableViewController.m in Sources */,
 				93299E361279C91D002B9E6A /* Presentation.m in Sources */,
-				9329A035127B03E0002B9E6A /* PresentationAppDelegate.m in Sources */,
 				9329A243127DA370002B9E6A /* PresentationViewController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

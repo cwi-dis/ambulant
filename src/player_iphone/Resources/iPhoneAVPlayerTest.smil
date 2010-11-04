@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE smil PUBLIC "-//W3C//DTD SMIL 2.0//EN"
+                      "http://www.w3.org/2008/SMIL30/SMIL30Language.dtd">
+<smil xmlns="http://www.w3.org/ns/SMIL">
+  <head>
+    <meta name="title" content="iPhone AVPlayer Test"/>
+    <meta name="author" content="Kees Blom"/>
+    <layout>
+      <root-layout xml:id="iPhoneAVPlayerTest_root_layout" backgroundColor="white" width="320" height="460"/>
+      <region xml:id="video1" width="160" height="80" top="100" left="100"/>
+    </layout>
+  </head>
+  <body xml:id="iPhoneAVPlayerTest_body">
+    <par xml:id="iPhoneAVPlayerTest_par1">
+	  <brush xml:id="iPhoneAVPlayerTest_brush1.0" region="video1" color="yellow" dur="25" />
+	  <seq xml:id="iPhoneAVPlayerTest_seq1">
+	    <!-- video's adapted for iPhone from www.ambulantplayer.org by QuickTime -->
+	    <video xml:id="iPhoneAVPlayerTest_video1.1" src="http://homepages.cwi.nl/~kees/ambulant/Az3s-iPhone.m4v" region="video1" clipBegin="5s" clipEnd="12" dur="8"/>
+	    <video xml:id="iPhoneAVPlayerTest_video1.2" src="http://homepages.cwi.nl/~kees/ambulant/Wz3s-iPhone.m4v" region="video1" clipBegin="0s" begin="1" clipEnd="10" dur="12"/>
+	  </seq>
+	</par>
+  </body>
+</smil>

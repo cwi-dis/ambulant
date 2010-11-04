@@ -1,0 +1,137 @@
+<?xml version="1.0"?>
+<!DOCTYPE smil PUBLIC "-//W3C//DTD SMIL 2.0//EN"
+                      "http://www.w3.org/2008/SMIL30/SMIL30Language.dtd">
+<smil xmlns="http://www.w3.org/ns/SMIL">
+  <head>
+    <meta name="title" content="Simple iPhone test"/>
+    <meta name="author" content="Kees Blom"/>
+    <layout>
+      <root-layout xml:id="Simple_iPhone_test_root_layout" backgroundColor="white" width="320" height="280"/>
+	  <textStyling>
+		<textStyle id="textStyle" textMode="scroll" textRate="auto" textConceal="final" />
+	  </textStyling>
+      <region xml:id="audio_1"/>
+      <region xml:id="audio_2"/>
+      <region xml:id="video1" width="176" height="128" top="20" left="50"/>
+      <region xml:id="video2" width="176" height="128" top="150" left="50"/>
+      <region xml:id="video3" width="176" height="128" top="280" left="50"/>
+      <region xml:id="bkgd_image" left="0" width="320" top="0" height="460"/>
+      <region xml:id="Images" left="18" width="220" top="6" height="240" z-index="1" fit="meet"/>
+      <region xml:id="Captions1.1" left="19" width="106" top="375" height="85" z-index="2"/>
+      <region xml:id="Captions1.2" left="125" width="106" top="375" height="85" z-index="2"/>
+      <region xml:id="Captions1.3" left="231" width="106" top="375" height="85" z-index="2"/>
+<!--  <region xml:id="Captions3" left="231" width="106" top="184" height="85" z-index="2"/>
+      <region xml:id="Captions2.3" regionName="crawl" left="19" width="320" top="340" height="35" z-index="2" />
+      <region xml:id="cap2.3b" regionName="cap2.3b" left="19" width="320" top="340" height="35" z-index="1" />
+      <region xml:id="cap2.3b" regionName="cap2.3b" left="19" width="320" top="0" height="270" z-index="1" />
+ -->
+      <region xml:id="Captions2.1" regionName="crawl" left="19" width="301" top="270" height="35" z-index="2" textMode="crawl" textRate="auto"/>
+      <region xml:id="Captions2.2" regionName="crawl" left="19" width="301" top="305" height="35" z-index="2" textMode="crawl" textRate="auto"/>
+      <region xml:id="Captions2.3" regionName="crawl" left="19" width="301" top="340" height="35" z-index="2" textMode="crawl" textRate="auto" />
+      <region xml:id="Captions2.4" regionName="crawl" left="19" width="301" top="0" height="35" z-index="2" textMode="crawl" textRate="auto" />
+    </layout>
+    <transition xml:id="slideover" type="slideWipe"/>
+    <transition xml:id="fade" type="fade"/>
+    <transition xml:id="push" type="pushWipe"/>
+  </head>
+  <body xml:id="Simple_iPhone_test_body">
+    <par xml:id="Simple_iPhone_test_par1" repeatCount="99999">
+	  <brush region="video1" color="yellow" />
+	  <seq>
+	    <video src="http://homepages.cwi.nl/~kees/ambulant/ios/Demos/Birthday/HBdata/Fz3-g-ios.m4v" region="video1" clipBegin="5s" clipEnd="12" />
+	    <video src="http://homepages.cwi.nl/~kees/ambulant/ios/Demos/Birthday/HBdata/Az3-g-ios.m4v" region="video1" clipBegin="0s" begin="1" clipEnd="10"/>
+	  </seq>
+<!--
+ -->
+<!-- 
+      <par xml:id="Simple_iPhone_test_par1.1">
+		<smilText xml:id="CapF1.1" region="Captions1.1" dur="10s" textMode="scroll" textRate="auto" textConceal="final" textPlace="start">
+		  <span >
+		    dur="10s" textMode="scroll" textRate="auto" textConceal="final" textPlace="start" >
+		  </span> <br/>
+		  <span textColor="red">  The <span textFontSize="x-large">engines </span> start</span>
+              and all of the lines seem to move in different directions.
+		  <br/> <span textFontSize="medium" textFontWeight="normal">
+		    dur="10s" textStyle="textStyle" textMode="scroll" textRate="auto" textConceal="final" textPlace="start"
+		  </span>
+	    </smilText>
+	  </par>
+      <par xml:id="Simple_iPhone_test_par1.2">
+		<smilText xml:id="CapF1.2" region="Captions1.2" dur="10s" textMode="scroll" textRate="auto" textConceal="final" textPlace="center">
+		  <span textFontSize="medium" textFontWeight="normal">
+		    dur="10s" textMode="scroll" textRate="auto" textConceal="final" textPlace="center"
+		  </span> <br/>
+		  <span textColor="red">  The <span textFontSize="x-large">engines </span> start</span>
+              and all of the lines seem to move in different directions.
+		  <br/> <span textFontSize="medium" textFontWeight="normal">
+		    dur="10s" textMode="scroll" textRate="auto" textConceal="final" textPlace="center"
+		  </span>
+	    </smilText>
+	  </par>
+      <par xml:id="Simple_iPhone_test_par1.3">
+		<smilText xml:id="CapF1.3" region="Captions1.3" dur="10s" textMode="scroll" textRate="auto" textConceal="final" textPlace="end">
+		  <span textFontSize="medium" textFontWeight="normal">
+		    dur="10s" textMode="scroll" textRate="auto" textConceal="final" textPlace="end"
+		  </span> <br/>
+		  <span textColor="red">  The <span textFontSize="x-large">engines </span> start</span>
+              and all of the lines seem to move in different directions.
+		  <br/> <span textFontSize="medium" textFontWeight="normal">
+		    dur="10s" textMode="scroll" textRate="auto" textConceal="final" textPlace="end"
+		  </span>
+	    </smilText>
+	  </par>
+	  <par xml:id="Simple_iPhone_test_par2.1">
+	    <smilText xml:id="CapF2.1" region="Captions2.1" dur="10s" textConceal="none" textRate="auto" textAlign="start">
+		  <span textColor="red"> The <span textFontSize="x-large">engines </span> start</span>
+              and all of the lines seem to move in different directions.
+		</smilText>
+	  </par>
+	  <par xml:id="Simple_iPhone_test_par2.2">
+	    <smilText xml:id="CapF2.2" region="Captions2.2" dur="10s" textConceal="none" textRate="auto" textAlign="center">
+		  <span textColor="red"> The <span textFontSize="x-large">engines </span> start</span>
+              and all of the lines seem to move in different directions.
+		</smilText>
+	  </par>
+	  <par xml:id="Simple_iPhone_test_par2.3">
+	    <smilText xml:id="CapF2.3" region="Captions2.3" dur="10s" textConceal="final" textRate="auto" textAlign="end">
+		  <span textColor="red"> The <span textFontSize="x-large">engines </span> start</span>
+              and all of the lines seem to move in different directions.
+		</smilText>
+	  </par>
+	  <par xml:id="Simple_iPhone_test_par2.4">
+	    <smilText xml:id="CapF2.4" region="Captions2.4" dur="10s" textConceal="both" textRate="auto" textAlign="end">
+		  <span textColor="red"> The <span textFontSize="x-large">engines </span> start</span>
+              and all of the lines seem to move in different directions.
+		</smilText>
+		  <animate targetElement="Captions2.4" attributeName="top" to="270" from="0" dur="10"/>
+	  </par>
+-->
+<!-- storage for unused building blocks
+	  <par xml:id="Simple_iPhone_test_par1.2">
+	    <smilText xml:id="CapF1.2" region="Captions2" dur="10s" textMode="scroll" textRate="20" textConceal="both">
+		  <span textFontSize="medium" textFontWeight="normal">
+			dur="10s" textMode="scroll" textRate="20" textConceal="both"
+		  </span> <br/>
+		  <span textColor="red">  The <span textFontSize="x-large">engines </span> start</span>
+              and all of the lines seem to move in different directions.
+		  <span textFontSize="medium" textFontWeight="normal">
+			dur="10s" textMode="scroll" textRate="20" textConceal="both"
+		  </span> <br/>
+		</smilText>
+	  </par>
+		  <animate targetElement="Captions2.3" attributeName="top" to="0" from="340" dur="10"/>
+	    <text xml:id="CapF2.3" region="Captions2.3" dur="10s"
+		  src="data:,The engines start and all of the lines seem to move in different directions." />
+		 <animateMotion xml:id="mark1_1" begin="2s"
+                  dur="8s"  additive="sum" fill="freeze"
+				  values="19,340;19,0"/>
+	    <smilText xml:id="CapF2.3" region="Captions2.3" dur="10s" textConceal="none" textRate="auto" textAlign="end">
+		  The engines start and all of the lines seem to move in different directions.
+		</smilText>
+		<animate targetElement="CapF2.3" attributeName="backgroundColor" to="#00FF00" from="#000800" dur="10"/>
+		<brush color="yellow" region="cap2.3b" />
+		  <animate targetElement="cap2.3b" attributeName="top" to="270" from="0" dur="10"/>
+ -->
+	</par>
+  </body>
+</smil>

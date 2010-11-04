@@ -1,5 +1,5 @@
 //
-//  cg_preferences.mm
+//  iOSpreferences.mm
 //  player_iphone
 //
 //  Created by Kees Blom on 10/5/10.
@@ -7,37 +7,37 @@
 //
 #include "ambulant/net/url.h"
 
-#include "cg_preferences.h"
+#include "iOSpreferences.h"
 
-using namespace ambulant::gui::cg;
+using namespace ambulant;
 
-cg_preferences*  ambulant::gui::cg::cg_preferences::s_preferences = 0;
+iOSpreferences*  iOSpreferences::s_preferences = 0;
 
-
-ambulant::gui::cg::cg_preferences::cg_preferences()
-	:	ambulant::common::preferences(),
+iOSpreferences::iOSpreferences()
+	:	common::preferences(),
 		m_auto_center(false),
-		m_auto_resize(false)
+		m_auto_resize(false),
+		m_history(NULL)
 		{}
-	
+
 void
-cg_preferences::install_singleton()
+iOSpreferences::install_singleton()
 {
-	set_preferences_singleton(new cg_preferences);
+	set_preferences_singleton(new iOSpreferences);
 	// XXX Workaround
 	get_preferences()->load_preferences();
 }
 
-cg_preferences*
-ambulant::gui::cg::cg_preferences::get_preferences() {
+ambulant::iOSpreferences*
+iOSpreferences::get_preferences() {
 	if (s_preferences == 0) {
-		s_preferences =  new cg_preferences;
+		s_preferences =  new iOSpreferences();
 	}
 	return s_preferences;
 }
 
 bool
-cg_preferences::load_preferences()
+iOSpreferences::load_preferences()
 {
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 	NSDictionary *defaultDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -58,6 +58,8 @@ cg_preferences::load_preferences()
 									 @"", @"plugin_dir",
 									 [NSNumber numberWithBool: false], @"dynamic_content_control",
 									 @"Welcome.smil", @"last_used",
+									 AM_IOS_PLAYLISTVERSION, @"version",
+									 [NSData dataWithBytes:"X" length:1], @"history",
 									 nil];
 	[prefs registerDefaults: defaultDefaults];
 	m_parser_id = [[prefs stringForKey: @"parser_id"] UTF8String];
@@ -77,11 +79,24 @@ cg_preferences::load_preferences()
 	m_auto_center = [prefs boolForKey: @"autoCenter"];
 	m_auto_resize = [prefs boolForKey: @"autoResize"];
 	m_last_used = [prefs stringForKey:@"last_used"];
+	// history is archived
+	NSData* history_archive = [prefs objectForKey:@"history"];
+	NSArray* history = NULL;
+	if ([history_archive length] != 1) {
+		history = [NSKeyedUnarchiver unarchiveObjectWithData:history_archive];
+	}
+	NSString* version = [prefs stringForKey:@"version"];
+	if ( ! [version isEqualToString: AM_IOS_PLAYLISTVERSION]) {
+		[history release];
+		history = NULL;
+	}
+	m_history = new ambulant::Playlist(history);
+	
 	save_preferences();
 	return true;
 }
 
-bool cg_preferences::save_preferences()
+bool iOSpreferences::save_preferences()
 {
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 	[prefs setObject: [NSString stringWithUTF8String: m_parser_id.c_str()] forKey: @"parser_id"];
@@ -101,9 +116,112 @@ bool cg_preferences::save_preferences()
 	[prefs setBool: m_auto_resize forKey: @"autoResize"];
 	[prefs setBool: m_auto_resize forKey: @"autoResize"];
 	[prefs setObject: m_last_used forKey: @"last_used"];
+	NSData *data = [NSKeyedArchiver archivedDataWithRootObject:m_history->get_playlist()];
+	[prefs setObject: data forKey:@"history"];
+	[prefs setObject: [NSString stringWithString: m_history->get_version()] forKey:@"version"];
 	
 	[prefs setBool: m_dynamic_content_control forKey: @"dynamic_content_control"];
+	[prefs synchronize];
 	ambulant::net::url::set_strict_url_parsing(m_strict_url_parsing);
 	return true;
 }
+@implementation PlaylistItem
+@synthesize ns_title, ns_url, ns_description, ns_dur, position;
+- (PlaylistItem*) initWithTitle: (NSString*) atitle
+				   url: (NSURL*) ans_url
+				 image: (id) acg_image
+		   description: (NSString*) ans_description
+			  duration: (NSString*) ans_dur
+			  position: (NSUInteger) aposition
+{
+	ns_title = atitle;
+	ns_url = ans_url;
+	cg_image = acg_image;
+	ns_description = ans_description;
+	ns_dur = ans_dur;
+	position = aposition;
+	return self;
+}
+
+- (bool) equalsPlaylistItem: (PlaylistItem*) playlistitem
+{
+	if ( ! [[self ns_title] compare: [playlistitem ns_title]] == NSOrderedSame) {
+		return false;
+	}
+	return true;
+}
+	
+- (void) encodeWithCoder: (NSCoder*) encoder	
+{
+	[encoder encodeObject:ns_title forKey:@"Ns_title"];
+	[encoder encodeObject:ns_url forKey:@"Ns_url"];
+//	[encoder encodeObject:cg_image forKey:@"Cg_image"];
+	[encoder encodeObject:ns_description forKey:@"Ns_description"];
+	[encoder encodeObject:ns_dur forKey:@"Ns_dur"];
+//	[encoder encodeObject:position forKey:@"Position"];
+}
+	
+-(id) initWithCoder: (NSCoder*) decoder
+{
+	self.ns_title = [decoder decodeObjectForKey:@"Ns_title"];
+	self.ns_url = [decoder decodeObjectForKey:@"Ns_url"];
+//	self.cg_image = [decoder decodeObjectForKey:@"Cg_image"];
+	self.ns_description = [decoder decodeObjectForKey:@"Ns_description"];
+	self.ns_dur = [decoder decodeObjectForKey:@"Ns_dur"];
+//	self.position = [decoder decodeObjectForKey:@"Position"];
+	return self;
+}
+
+@end
+
+ambulant::Playlist::Playlist(NSArray* ansarray)
+{
+	am_ios_version = [NSString stringWithString: AM_IOS_PLAYLISTVERSION];
+	am_ios_playlist = [NSMutableArray arrayWithArray: ansarray];
+}
+
+ambulant::Playlist::~Playlist()
+{
+	[am_ios_playlist enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) { delete obj; }];
+}
+
+void
+ambulant::Playlist::add_item(PlaylistItem* item)
+{
+	if (am_ios_playlist == NULL) {
+		am_ios_playlist = [NSMutableArray arrayWithCapacity:1];
+	}
+	[am_ios_playlist addObject:(NSObject*) item];
+}
+
+void
+ambulant::Playlist::delete_item(PlaylistItem* item)
+{
+}
+
+ambulant::PlaylistItem*
+ambulant::Playlist::get_last_item()
+{
+	if (am_ios_playlist == NULL || [am_ios_playlist count] == 0) {
+		return NULL;
+	} else {
+		return (ambulant::PlaylistItem*) [am_ios_playlist objectAtIndex:[am_ios_playlist count] - 1];
+	}
+
+}
+
+NSString*
+ambulant::Playlist::get_version()
+{
+	return am_ios_version;
+}
+
+NSArray*
+ambulant::Playlist::get_playlist()
+{
+	return [NSArray arrayWithArray: am_ios_playlist];
+}
+
+
+
 
