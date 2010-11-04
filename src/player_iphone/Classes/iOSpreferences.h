@@ -56,7 +56,7 @@ public:
 	
 private:
 	NSString* am_ios_version;
-	NSMutableArray* am_ios_playlist;
+	NSMutableArray* am_ios_playlist; // PlaylistItem* objects
 };
 
 
