@@ -1,3 +1,11 @@
+2010-11-04 15:31  keesblom
+
+	* Improved History list font settings (PresentationTableCell.xib)
+
+2010-11-04 13:28  keesblom
+
+	* Added the other files used for History
+
 2010-11-03 23:04  keesblom
 
 	* Added history. Works, but this checkin is incomplete.
