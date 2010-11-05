@@ -7,25 +7,22 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Presentation.h"
 #import "PresentationViewController.h"
+#import "PlaylistAppDelegate.h"
 
 @protocol PresentationViewControllerDelegate;
 
 @interface PresentationViewController : UIViewController {
-	id <PresentationViewControllerDelegate> delegate;
+	id <PlaylistViewControllerDelegate> delegate;
 	NSMutableArray* presentationsArray;
 	UITableViewCell* nibLoadedCell;
 	UINavigationController* naviationController;
+	Presentation* selectedPresentation;
 }
 - (IBAction) done: (id) sender;
 
-@property(nonatomic, assign) id <PresentationViewControllerDelegate> delegate;
+@property(nonatomic, assign) id <PlaylistViewControllerDelegate> delegate;
 @property(nonatomic, retain) UINavigationController* naviationController;
 @property(nonatomic, retain) IBOutlet UITableViewCell* nibLoadedCell;
-@end
-
-@protocol PresentationViewControllerDelegate
-- (void) presentationViewControllerDidFinish: (PresentationViewController *)controller;
-- (void) playPresentation: (PresentationViewController *)controller selected: (NSString*) what;
-- (IBAction) done: (id) sender;
 @end

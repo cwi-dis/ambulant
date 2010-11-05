@@ -270,8 +270,8 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	[controller release];
 }
 
-
-- (void) playlistViewControllerDidFinish: (PlaylistViewController *)controller {
+- (void)
+playlistViewControllerDidFinish: (PlaylistViewController *)controller {
 	// get the values entered by the user
 	autoCenter = [controller autoCenter];
 	autoResize = [controller autoResize];
@@ -317,7 +317,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 
 - (void) done: (id) sender {
-	[self presentationViewControllerDidFinish: (PresentationViewController*) sender];
+	[self playlistViewControllerDidFinish: (PresentationViewController*) sender];
 }
 
 - (void) presentationViewControllerDidFinish: (PresentationViewController *)controller {
@@ -334,7 +334,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 
 
-- (void) playIt: (PlaylistViewController *)controller selected: (NSString*) whatString {
+- (void) playPresentation: (NSString*) whatString {
 	AM_DBG NSLog(@"Selected: %@",whatString);
 	self.handleStopTapped;
 	if ( ! [whatString hasPrefix:@"http://"]) {
@@ -352,11 +352,11 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		playURL = [[NSMutableString alloc] initWithString: whatString];
 		[self doPlayURL];
 	}
-	[controller done: self];
+	[self done: self];
 }
 
 
-- (void) playPresentation: (PresentationViewController *)controller selected: (NSString*) whatString {
+- (void) playPresentation: selected: (NSString*) whatString {
 	AM_DBG NSLog(@"Selected: %@",whatString);
 	self.handleStopTapped;
 	if ( ! [whatString hasPrefix:@"http://"]) {
@@ -374,7 +374,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		playURL = [[NSMutableString alloc] initWithString: whatString];
 		[self doPlayURL];
 	}
-	[controller done: self];
+	[self done: self];
 }
 
 - (void)keyboardWillShow:(NSNotification *)notification {

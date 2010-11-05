@@ -219,7 +219,6 @@ ambulant::Playlist::Playlist(NSArray* ansarray)
 
 ambulant::Playlist::~Playlist()
 {
-//	[am_ios_playlist enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) { [(NSObject*) obj release]; }];
 	[am_ios_version release];
 	[am_ios_playlist release];
 }

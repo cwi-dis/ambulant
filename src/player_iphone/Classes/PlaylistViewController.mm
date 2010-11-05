@@ -40,52 +40,52 @@
 }
 
 - (IBAction) playWelcome {
-	[self.delegate playIt:self selected:@"Welcome"];
+	[self.delegate playPresentation:@"Welcome"];
 }
 
 - (IBAction) playNYC {
-	[self.delegate playIt:self selected:@"http://ambulantPlayer.org/Demos/smilText/NYC-sT.smil"];
+	[self.delegate playPresentation:@"http://ambulantPlayer.org/Demos/smilText/NYC-sT.smil"];
 }
 
 - (IBAction) playVideoTests {
-	[self.delegate playIt:self selected:@"http://ambulantPlayer.org/Demos/VideoTests/VideoTests.smil"];	
-//	[self.delegate playIt:self selected:@"http://homepages.cwi.nl/~kees/ambulant/VideoTests2+3.smil"];	
+	[self.delegate playPresentation:@"http://ambulantPlayer.org/Demos/VideoTests/VideoTests.smil"];	
+//	[self.delegate playPresentation:@"http://homepages.cwi.nl/~kees/ambulant/VideoTests2+3.smil"];	
 }
 
 - (IBAction) playPanZoom {
-	[self.delegate playIt:self selected:@"http://ambulantPlayer.org/Demos/PanZoom/Fruits-4s.smil"];	
+	[self.delegate playPresentation:@"http://ambulantPlayer.org/Demos/PanZoom/Fruits-4s.smil"];	
 }
 
 - (IBAction) playBirthday {
-	[self.delegate playIt:self selected:@"http://homepages.cwi.nl/~kees/ambulant/ios/Demos/Birthday/HappyBirthday.smil"];	
+	[self.delegate playPresentation:@"http://homepages.cwi.nl/~kees/ambulant/ios/Demos/Birthday/HappyBirthday.smil"];	
 }
 
 - (IBAction) playBirthdayRTSP {
-	[self.delegate playIt:self selected:@"http://ambulantPlayer.org/Demos/Birthday/HappyBirthday-rtsp.smil"];	
+	[self.delegate playPresentation:@"http://ambulantPlayer.org/Demos/Birthday/HappyBirthday-rtsp.smil"];	
 }
 
 - (IBAction) playEuros {
-	[self.delegate playIt:self selected:@"http://ambulantPlayer.org/Demos/Euros/Euros.smil"];	
+	[self.delegate playPresentation:@"http://ambulantPlayer.org/Demos/Euros/Euros.smil"];	
 }
 
 - (IBAction) playEurosRTSP {
-	[self.delegate playIt:self selected:@"http://ambulantPlayer.org/Demos/Euros/Euros-rtsp.smil"];	
+	[self.delegate playPresentation:@"http://ambulantPlayer.org/Demos/Euros/Euros-rtsp.smil"];	
 }
 
 - (IBAction)playFlashlight {
-	[self.delegate playIt:self selected:@"http://ambulantPlayer.org/Demos/Flashlight/Flashlight-US.smil"];	
+	[self.delegate playPresentation:@"http://ambulantPlayer.org/Demos/Flashlight/Flashlight-US.smil"];	
 }
 
 - (IBAction)playFlashlightRTSP {
-	[self.delegate playIt:self selected:@"http://ambulantPlayer.org/Demos/Flashlight/Flashlight-US-rtsp.smil"];	
+	[self.delegate playPresentation:@"http://ambulantPlayer.org/Demos/Flashlight/Flashlight-US-rtsp.smil"];	
 }
 
 - (IBAction)playNews {
-	[self.delegate playIt:self selected:@"http://ambulantPlayer.org/Demos/News/DanesV2-Desktop.smil"];	
+	[self.delegate playPresentation:@"http://ambulantPlayer.org/Demos/News/DanesV2-Desktop.smil"];	
 }
 
 - (IBAction)playNewsRTSP {
-	[self.delegate playIt:self selected:@"http://ambulantPlayer.org/Demos/News/DanesV2-Desktop-rtsp.smil"];	
+	[self.delegate playPresentation:@"http://ambulantPlayer.org/Demos/News/DanesV2-Desktop-rtsp.smil"];	
 }
 
 - (BOOL) shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation) interfaceOrientation {

@@ -7,8 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@protocol PlaylistViewControllerDelegate;
+#import "PlaylistAppDelegate.h"
 
 @interface PlaylistViewController : UIViewController {
 	id <PlaylistViewControllerDelegate> delegate;
@@ -39,10 +38,5 @@
 @property(nonatomic,retain) IBOutlet UISwitch* autoResizeSwitch;
 @property(nonatomic,retain) IBOutlet UISwitch* nativeRendererSwitch;
 
-@end
-@protocol PlaylistViewControllerDelegate
-- (void) playlistViewControllerDidFinish: (PlaylistViewController *)controller;
-- (void) playIt: (PlaylistViewController *)controller selected: (NSString*) what;
-//- (IBAction) done: (id) sender;
 @end
 

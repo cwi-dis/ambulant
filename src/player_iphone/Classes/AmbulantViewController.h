@@ -33,7 +33,7 @@ private:
 };
 
 @interface AmbulantViewController : UIViewController 
-				<UITextFieldDelegate, PlaylistViewControllerDelegate, PresentationViewControllerDelegate> {
+				<UITextFieldDelegate, PlaylistViewControllerDelegate> {
 	document_embedder *embedder;
 	mainloop *myMainloop;
 	IBOutlet id view;

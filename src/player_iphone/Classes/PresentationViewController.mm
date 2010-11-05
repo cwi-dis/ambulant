@@ -59,7 +59,7 @@ viewDidLoad
 
 - (IBAction) done:(id)sender
 {
-	[self.delegate presentationViewControllerDidFinish:self];
+	[self.delegate playlistViewControllerDidFinish:self];
 //	[self.delegate done:self];
 }
 
@@ -120,6 +120,38 @@ tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPat
 	return cell;
 }
 
+// Support row selection in the table view.
+- (void)
+tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	selectedPresentation = [ presentationsArray objectAtIndex: indexPath.row ];
+	[self.delegate playPresentation:[selectedPresentation description]];
+}
+
+#ifdef TBD: adapt following methods 
+// Support conditional editing of the table view.
+- (BOOL
+   tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    // Return NO if you do not want the specified item to be editable.
+    return YES;
+}
+
+// Support editing the table view (deletion only, adding is automatic).
+- (void)
+   tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        // Delete the row from the data source.
+		
+		[ moviesArray removeObjectAtIndex: indexPath.row ];
+		[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+ 	}   
+    else if (editingStyle == UITableViewCellEditingStyleInsert) {
+        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
+    }   
+}
+#endif//TBD
+   
+// Support for TabBarItem selection
 - (void)
 tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
