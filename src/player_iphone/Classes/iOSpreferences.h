@@ -67,13 +67,19 @@ protected:
 	iOSpreferences();
 
 public:
-	~iOSpreferences() {}
+	~iOSpreferences();
 	static void install_singleton();
 	
 	static iOSpreferences* get_preferences();
 	
+	static void set_preferences_singleton(iOSpreferences *prefs);
+	
+	static void delete_preferences_singleton();
+	
 	bool load_preferences();
 	bool save_preferences();
+	
+	bool m_loaded;
 	
 	/// iOs player auto center
 	bool m_auto_center;

@@ -15,10 +15,37 @@ iOSpreferences*  iOSpreferences::s_preferences = 0;
 
 iOSpreferences::iOSpreferences()
 	:	common::preferences(),
+		m_loaded(false),
 		m_auto_center(false),
 		m_auto_resize(false),
 		m_history(NULL)
 		{}
+
+iOSpreferences::~iOSpreferences()
+{
+	if (m_history != NULL) {
+		delete m_history;
+		m_history = NULL;
+	}
+}
+
+void
+iOSpreferences::set_preferences_singleton(iOSpreferences *prefs) {
+	if (s_preferences != 0) {
+//		ambulant::lib::logger::get_logger()->debug("Programmer error: preferences singleton already set");
+		return;
+	}
+	s_preferences = prefs;
+}
+
+void
+iOSpreferences::delete_preferences_singleton()
+{
+	if (s_preferences != NULL) {
+		delete s_preferences;
+		s_preferences = NULL;
+	}
+}
 
 void
 iOSpreferences::install_singleton()
@@ -39,6 +66,11 @@ iOSpreferences::get_preferences() {
 bool
 iOSpreferences::load_preferences()
 {
+	if (m_loaded) {
+		return m_loaded;
+	}
+	m_loaded = true;
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 	NSDictionary *defaultDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
 									 @"any", @"parser_id",
@@ -87,17 +119,21 @@ iOSpreferences::load_preferences()
 	}
 	NSString* version = [prefs stringForKey:@"version"];
 	if ( ! [version isEqualToString: AM_IOS_PLAYLISTVERSION]) {
-		[history release];
-		history = NULL;
+		if (history != NULL) {
+			[history release];
+			history = NULL;
+		}
 	}
 	m_history = new ambulant::Playlist(history);
 	
 	save_preferences();
+	[pool release];
 	return true;
 }
 
 bool iOSpreferences::save_preferences()
 {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 	[prefs setObject: [NSString stringWithUTF8String: m_parser_id.c_str()] forKey: @"parser_id"];
 	[prefs setObject: [NSString stringWithUTF8String: m_validation_scheme.c_str()] forKey: @"validation_scheme"];
@@ -114,15 +150,16 @@ bool iOSpreferences::save_preferences()
 	[prefs setBool: m_fullscreen forKey: @"fullScreen"];
 	[prefs setBool: m_auto_center forKey: @"autoCenter"];
 	[prefs setBool: m_auto_resize forKey: @"autoResize"];
-	[prefs setBool: m_auto_resize forKey: @"autoResize"];
 	[prefs setObject: m_last_used forKey: @"last_used"];
-	NSData *data = [NSKeyedArchiver archivedDataWithRootObject:m_history->get_playlist()];
+	NSArray* history = m_history->get_playlist();
+	NSData* data = [NSKeyedArchiver archivedDataWithRootObject:history];
 	[prefs setObject: data forKey:@"history"];
 	[prefs setObject: [NSString stringWithString: m_history->get_version()] forKey:@"version"];
 	
 	[prefs setBool: m_dynamic_content_control forKey: @"dynamic_content_control"];
 	[prefs synchronize];
 	ambulant::net::url::set_strict_url_parsing(m_strict_url_parsing);
+	[pool release];
 	return true;
 }
 @implementation PlaylistItem
@@ -177,20 +214,20 @@ bool iOSpreferences::save_preferences()
 ambulant::Playlist::Playlist(NSArray* ansarray)
 {
 	am_ios_version = [NSString stringWithString: AM_IOS_PLAYLISTVERSION];
-	am_ios_playlist = [NSMutableArray arrayWithArray: ansarray];
+	am_ios_playlist = [[NSMutableArray arrayWithArray: ansarray] retain];
 }
 
 ambulant::Playlist::~Playlist()
 {
-	[am_ios_playlist enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) { delete obj; }];
+//	[am_ios_playlist enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) { [(NSObject*) obj release]; }];
+	[am_ios_version release];
+	[am_ios_playlist release];
 }
 
 void
 ambulant::Playlist::add_item(PlaylistItem* item)
 {
-	if (am_ios_playlist == NULL) {
-		am_ios_playlist = [NSMutableArray arrayWithCapacity:1];
-	}
+	assert(am_ios_playlist);
 	[am_ios_playlist addObject:(NSObject*) item];
 }
 

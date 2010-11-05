@@ -171,6 +171,7 @@ applicationDidEnterBackground:(UIApplication *)application {
 	if (viewController != NULL && viewController.myMainloop != NULL) {
 		viewController.myMainloop->pause();
 	}
+	
 }
 
 
@@ -189,7 +190,7 @@ applicationWillEnterForeground:(UIApplication *)application {
 			[self.viewController handleURLEntered];
 		}
 	}
-
+	ambulant::iOSpreferences::delete_preferences_singleton();
 }
 
 
@@ -222,6 +223,7 @@ applicationWillTerminate:(UIApplication *)application {
 	if (viewController && viewController.myMainloop) {
 		viewController.myMainloop->stop();
 	}
+	ambulant::iOSpreferences::delete_preferences_singleton();
 }
 
 
