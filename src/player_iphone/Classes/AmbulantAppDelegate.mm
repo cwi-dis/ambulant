@@ -15,7 +15,7 @@
 #include "iOSpreferences.h"
 #include <fstream>
 
-#define AM_DBG	if(1)
+//#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -142,7 +142,7 @@ isValid: (NSURL*) url {
 - (BOOL)
 application:(UIApplication* ) application handleOpenURL: (NSURL*) url {
 	AM_DBG NSLog(@"AmbulantAppDelegate application handleOpenURL");
-	NSLog(@"AmbulantAppDelegate handleOpenURL: %@", [url absoluteURL]);
+	AM_DBG NSLog(@"AmbulantAppDelegate handleOpenURL: %@", [url absoluteURL]);
 	BOOL validated = NO;
 	if ([self isValid:url] && viewController != NULL) { 		validated = YES;
 		viewController.URLEntryField.text = [[[NSMutableString alloc] initWithString: @"http://"]

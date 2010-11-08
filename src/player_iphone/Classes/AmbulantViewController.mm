@@ -157,8 +157,8 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	if (self.playURL != nil) {
 		[self handleURLEntered];
 	} else {
-		NSString *welcomePath = prefs->m_last_used; // default: Welcome.smil
-		if ([welcomePath isEqualToString:@"Welcome.smil"]) {
+		NSString *welcomePath = prefs->m_history ? [[prefs->m_history->get_last_item() ns_url] absoluteString]: NULL;
+		if (welcomePath == NULL) {//[welcomePath isEqualToString:@"Welcome.smil"]) {
 			NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
 			welcomePath = [thisBundle pathForResource:@"Welcome" ofType:@"smil"];
 		}
@@ -271,7 +271,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 
 - (void)
-playlistViewControllerDidFinish: (PlaylistViewController *)controller {
+settingsHaveChanged:(PlaylistViewController *)controller {
 	// get the values entered by the user
 	autoCenter = [controller autoCenter];
 	autoResize = [controller autoResize];
@@ -288,8 +288,13 @@ playlistViewControllerDidFinish: (PlaylistViewController *)controller {
 		}
 	}
 	prefs->save_preferences();
-	[self dismissModalViewControllerAnimated:YES];
+//	[self dismissModalViewControllerAnimated:YES];
+}
+
+- (void)
+playlistViewControllerDidFinish: (PlaylistViewController *)controller {
 	
+	[self dismissModalViewControllerAnimated:YES];
 	if (myMainloop != NULL) {
 		if (play_active) {
 			myMainloop->play();
@@ -335,17 +340,22 @@ playlistViewControllerDidFinish: (PlaylistViewController *)controller {
 
 
 - (void) playPresentation: (NSString*) whatString {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	AM_DBG NSLog(@"Selected: %@",whatString);
 	self.handleStopTapped;
-	if ( ! [whatString hasPrefix:@"http://"]) {
-		NSString* homedir = NSHomeDirectory();
-		homedir = [homedir stringByAppendingString:@"/player_iphone.app/"];
-		whatString = [homedir stringByAppendingString:whatString];//[thisBundle pathForResource:whatString ofType:@"smil"];
+	if ( ! ([whatString hasPrefix:@"file://"] || [whatString hasPrefix:@"http://"])) {
+		// assume local file, check for aboslute path
+		if ( ! [whatString hasPrefix:@"/"]) {
+			NSString* homedir = NSHomeDirectory();
+			homedir = [homedir stringByAppendingString:@"/player_iphone.app/"];
+			whatString = [homedir stringByAppendingString:whatString];//[thisBundle pathForResource:whatString ofType:@"smil"];
+		}
+		whatString = [@"file://" stringByAppendingString:whatString];
+	}
+	if (whatString != NULL) {
 		if ( ! [whatString hasSuffix:@".smil"]) {
 			whatString = [whatString stringByAppendingString:@".smil"];
 		}
-	}
-	if (whatString != NULL) {
 		if (playURL) {
 			[playURL release];
 		}
@@ -353,6 +363,7 @@ playlistViewControllerDidFinish: (PlaylistViewController *)controller {
 		[self doPlayURL];
 	}
 	[self done: self];
+	[pool release];
 }
 
 

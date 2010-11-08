@@ -36,6 +36,7 @@
 }
 
 - (IBAction) done:(id)sender {
+	[self.delegate settingsHaveChanged:self];
 	[self.delegate playlistViewControllerDidFinish:self];	
 }
 

@@ -10,6 +10,11 @@
 #import "iOSpreferences.h"
 #import "Presentation.h"
 
+//#define AM_DBG if(1)
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#endif
+
 @implementation PresentationViewController
 
 @synthesize delegate,naviationController,nibLoadedCell;
@@ -36,6 +41,8 @@
 viewDidLoad
 {
     [super viewDidLoad];
+//	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	AM_DBG NSLog(@"PresentationViewController viewDidLoad(0x%x)", self);
 	naviationController = [[UINavigationController alloc]initWithRootViewController: self];
 	presentationsArray = [ [ NSMutableArray alloc ] init ];
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
@@ -51,14 +58,16 @@ viewDidLoad
 			aPresentation.title = [item ns_title];
 			aPresentation.duration = [item ns_dur];
 			aPresentation.description = [item ns_description];
-			[ presentationsArray addObject:aPresentation ];
-			[ aPresentation release ];								  
+			aPresentation.nsurl = [item ns_url];
+			[ presentationsArray addObject:aPresentation ];							  
 		}];
 	[self presentModalViewController:naviationController animated:YES];
+//	[pool release];
 }
 
 - (IBAction) done:(id)sender
 {
+	AM_DBG NSLog(@"PresentationViewController done(0x%x)", self);
 	[self.delegate playlistViewControllerDidFinish:self];
 //	[self.delegate done:self];
 }
@@ -90,6 +99,7 @@ viewDidLoad
 - (NSInteger)
 tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+	AM_DBG NSLog(@"tableView:0x%x numberOfRowsInSection(0x%x) section=%d", self, section);
     return [ presentationsArray count ];
 }
 
@@ -114,7 +124,7 @@ tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPat
 	label.text = aPresentation.title;
 	label = (UILabel*) [ cell viewWithTag: 2];
 	label.text = aPresentation.duration;
-	//	[ duration release ];
+//	[ duration release ];
 	label = (UILabel*) [ cell viewWithTag: 3];
 	label.text = aPresentation.description;
 	return cell;
@@ -124,7 +134,7 @@ tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPat
 - (void)
 tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	selectedPresentation = [ presentationsArray objectAtIndex: indexPath.row ];
-	[self.delegate playPresentation:[selectedPresentation description]];
+	[self.delegate playPresentation:[[selectedPresentation nsurl]absoluteString]];
 }
 
 #ifdef TBD: adapt following methods 
@@ -167,7 +177,7 @@ tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 	if (tbi == NULL) {
 		idx = -999;
 	}
-	NSLog(@"tabBar:0x%x didSelectItem:0x%x idx=%d", tabBar, item, idx);
+	AM_DBG NSLog(@"tabBar:0x%x didSelectItem:0x%x idx=%d", tabBar, item, idx);
 	switch (idx) {
 		case 0:
 			[self.delegate done:self];

@@ -86,8 +86,6 @@ public:
 	/// iOs player auto resize
 	bool m_auto_resize;
 	
-	NSString* m_last_used;
-	
 	Playlist* m_history;
 	
 private:

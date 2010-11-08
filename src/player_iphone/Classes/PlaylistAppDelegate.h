@@ -21,6 +21,7 @@
 @end
 
 @protocol PlaylistViewControllerDelegate
+- (void) settingsHaveChanged: (UIViewController*) controller;
 - (void) playlistViewControllerDidFinish: (UIViewController *)controller;
 - (void) playPresentation:(NSString*) what;
 - (IBAction) done: (id) sender;

@@ -89,7 +89,6 @@ iOSpreferences::load_preferences()
 									 [NSNumber numberWithBool: false], @"autoResize",
 									 @"", @"plugin_dir",
 									 [NSNumber numberWithBool: false], @"dynamic_content_control",
-									 @"Welcome.smil", @"last_used",
 									 AM_IOS_PLAYLISTVERSION, @"version",
 									 [NSData dataWithBytes:"X" length:1], @"history",
 									 nil];
@@ -110,7 +109,6 @@ iOSpreferences::load_preferences()
 	m_fullscreen = [prefs boolForKey: @"fullScreen"];
 	m_auto_center = [prefs boolForKey: @"autoCenter"];
 	m_auto_resize = [prefs boolForKey: @"autoResize"];
-	m_last_used = [prefs stringForKey:@"last_used"];
 	// history is archived
 	NSData* history_archive = [prefs objectForKey:@"history"];
 	NSArray* history = NULL;
@@ -150,7 +148,6 @@ bool iOSpreferences::save_preferences()
 	[prefs setBool: m_fullscreen forKey: @"fullScreen"];
 	[prefs setBool: m_auto_center forKey: @"autoCenter"];
 	[prefs setBool: m_auto_resize forKey: @"autoResize"];
-	[prefs setObject: m_last_used forKey: @"last_used"];
 	NSArray* history = m_history->get_playlist();
 	NSData* data = [NSKeyedArchiver archivedDataWithRootObject:history];
 	[prefs setObject: data forKey:@"history"];
@@ -209,6 +206,17 @@ bool iOSpreferences::save_preferences()
 	return self;
 }
 
+- (void)
+dealloc {
+	ns_title = nil;
+	ns_url = nil;
+	cg_image = nil;
+	ns_description = nil;
+	ns_dur = nil;
+	position = nil;
+	[super dealloc];
+}
+
 @end
 
 ambulant::Playlist::Playlist(NSArray* ansarray)
@@ -226,7 +234,7 @@ ambulant::Playlist::~Playlist()
 void
 ambulant::Playlist::add_item(PlaylistItem* item)
 {
-	assert(am_ios_playlist);
+	[item retain];
 	[am_ios_playlist addObject:(NSObject*) item];
 }
 
