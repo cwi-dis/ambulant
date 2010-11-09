@@ -1,3 +1,7 @@
+2010-11-08 17:07  keesblom
+
+	* Made Select from History crash-free and leak-proof
+
 2010-11-05 16:33  keesblom
 
 	* Select from history now sometimes works, but mostly crashes. Need
