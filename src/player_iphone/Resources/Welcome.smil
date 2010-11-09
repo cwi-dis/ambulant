@@ -19,17 +19,17 @@
     </layout>
   </head>
   <body>
-    <par dur="16s">
-      <img src="data/background.png" region="background"/>
-      <audio src="data/AmbulantTune.mp3" dur="7.9" region="audio"/>
-      <par>
-      	<img src="data/ambulant.png" begin="0s" region="title"/>
-      	<img src="data/extensible.png" begin="2s" region="subtitle"/>
-      	<img src="data/fast.png" begin="2.5s" region="line1"/>
-      	<img src="data/portable.png" begin="3s" region="line2"/>
-      	<img src="data/opensource.png" begin="3.5s" region="line3"/>
-      	<img src="data/visit.png" begin="4s" region="info">
-      	  <area href="http://www.ambulantplayer.org" show="new" external="true"/>
+    <par xml_id="par-1" dur="16s">
+      <img xml_id="background" src="data/background.png" region="background"/>
+      <audio xml_id="audio" src="data/AmbulantTune.mp3" dur="7.9" region="audio"/>
+      <par xml_id="par-1.1" >
+      	<img xml_id="ambulant" src="data/ambulant.png" begin="0s" region="title"/>
+      	<img xml_id="extensible" src="data/extensible.png" begin="2s" region="subtitle"/>
+      	<img xml_id="fast" src="data/fast.png" begin="2.5s" region="line1"/>
+      	<img xml_id="portable" src="data/portable.png" begin="3s" region="line2"/>
+      	<img xml_id="opensource" src="data/opensource.png" begin="3.5s" region="line3"/>
+      	<img xml_id="visit" src="data/visit.png" begin="4s" region="info">
+      	  <area xml_id="area" href="http://www.ambulantplayer.org" show="new" external="true"/>
       	</img>
       </par>
     </par>
