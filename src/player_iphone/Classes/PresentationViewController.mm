@@ -58,7 +58,6 @@ viewDidLoad
 			aPresentation.title = [item ns_title];
 			aPresentation.duration = [item ns_dur];
 			aPresentation.description = [item ns_description];
-			aPresentation.nsurl = [item ns_url];
 			[ presentationsArray addObject:aPresentation ];							  
 		}];
 	[self presentModalViewController:naviationController animated:YES];
@@ -133,8 +132,9 @@ tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPat
 // Support row selection in the table view.
 - (void)
 tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	selectedPresentation = [ presentationsArray objectAtIndex: indexPath.row ];
-	[self.delegate playPresentation:[[selectedPresentation nsurl]absoluteString]];
+	NSArray* history = ambulant::iOSpreferences::get_preferences()->m_history->get_playlist();
+	PlaylistItem* selectedItem = [history objectAtIndex: [history count] - 1 - indexPath.row];
+	[self.delegate playPresentation:[[selectedItem ns_url] absoluteString]];
 }
 
 #ifdef TBD: adapt following methods 

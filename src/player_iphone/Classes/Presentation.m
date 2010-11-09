@@ -9,13 +9,12 @@
 #import "Presentation.h"
 
 @implementation Presentation
-@synthesize title, duration, description, poster, nsurl;
+@synthesize title, duration, description, poster;
 
 -(id)initWithTitle:(NSString*) newTitle
 			poster:(id)newPoster
 		  duration:(NSString*) newDuration
 	   description:(NSString*) newDescription
-			 nsurl:(NSURL*) newUrl
 {
 	self = [super init];
 	if (self != nil) {
@@ -23,7 +22,6 @@
 		self.poster = newPoster;
 		self.duration = newDuration;
 		self.description = newDescription;
-		self.nsurl = newUrl;
 	}
 	return self;
 }
@@ -33,7 +31,6 @@
 	self.poster = nil;
 	self.duration = nil;
 	self.description = nil;
-	self.nsurl = nil;
 	[super dealloc];
 }
 @end

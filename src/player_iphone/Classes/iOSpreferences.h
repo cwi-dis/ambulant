@@ -9,11 +9,12 @@
 #include "ambulant/common/preferences.h"
 
 @interface PlaylistItem : NSObject {
-	NSString* ns_title;
+	NSString* ns_title; // <meta name="title" content=.. /> 
 	NSURL* ns_url;
 	id cg_image; //CGImageRef
 	NSString* ns_description;
 	NSString* ns_dur;
+	NSString* ns_node_where;
 	NSUInteger position;
 }
 @property(nonatomic,retain) NSString* ns_title;
@@ -25,11 +26,13 @@
 
 // initialize all fields
 - (PlaylistItem*) initWithTitle: (NSString*) atitle
-				   url: (NSURL*) ansurl
-				 image: (id) acg_image // CGImageRef
-		   description: (NSString*) ans_description
-			  duration: (NSString*) ans_dur
-			  position: (NSUInteger) aposition;
+							url: (NSURL*) ansurl
+						  image: (id) acg_image // CGImageRef
+					description: (NSString*) ans_description
+					   duration: (NSString*) ans_dur
+					 node_where: (NSString*) anode_where
+					   position: (NSUInteger) aposition;
+
 // compare with another PlaylistItem
 - (bool) equalsPlaylistItem: (PlaylistItem*) playlistitem;
 

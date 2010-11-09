@@ -162,17 +162,23 @@ bool iOSpreferences::save_preferences()
 @implementation PlaylistItem
 @synthesize ns_title, ns_url, ns_description, ns_dur, position;
 - (PlaylistItem*) initWithTitle: (NSString*) atitle
-				   url: (NSURL*) ans_url
-				 image: (id) acg_image
-		   description: (NSString*) ans_description
-			  duration: (NSString*) ans_dur
-			  position: (NSUInteger) aposition
+							url: (NSURL*) ans_url
+						  image: (id) acg_image
+					description: (NSString*) ans_description
+					   duration: (NSString*) ans_dur
+					 node_where: (NSString*) anode_where
+					   position: (NSUInteger) aposition
 {
 	ns_title = atitle;
 	ns_url = ans_url;
 	cg_image = acg_image;
 	ns_description = ans_description;
 	ns_dur = ans_dur;
+	if (anode_where == NULL) {
+		ns_node_where = [NSString stringWithString: @""];
+	} else {
+		ns_node_where = anode_where;			
+	}
 	position = aposition;
 	return self;
 }

@@ -14,17 +14,14 @@
 	NSString* title;
 	NSString* duration;
 	NSString* description;
-	NSURL* nsurl;
 }
 -(id)initWithTitle:(NSString*) newTitle
 			poster:(id) newPoster
 		  duration:(NSString*) newDuration
-	   description:(NSString*) newDescription
-			 nsurl:(NSURL*) newUrl;
+	   description:(NSString*) newDescription;
 
 @property(nonatomic, copy) 	NSString* title;
 @property(nonatomic, copy) 	id poster;
 @property(nonatomic, copy) 	NSString* duration;
 @property(nonatomic, copy) 	NSString* description;
-@property(nonatomic, copy) 	NSURL* nsurl;
 @end
