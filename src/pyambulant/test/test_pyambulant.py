@@ -117,7 +117,7 @@ class TestBasics(unittest.TestCase):
         self.assertEqual(p1.get_root(), root)
         self.assertNotEqual(p1, root)
 
-        p1_path = p1.get_path_display_desc()
+        p1_path = p1.get_xpath()
         self.assertEqual(p1_path, "smil/body/par:par1")
         self.assertEqual(root.locate_node("body/par"), p1)
 
@@ -144,7 +144,7 @@ class TestBasics(unittest.TestCase):
         self.assertEqual(p1.get_root(), root)
         self.assertNotEqual(p1, root)
 
-        p1_path = p1.get_path_display_desc()
+        p1_path = p1.get_xpath()
         self.assertEqual(p1_path, "smil/body/par:par1")
         self.assertEqual(root.locate_node("body/par"), p1)
         

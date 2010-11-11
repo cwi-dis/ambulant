@@ -118,7 +118,7 @@ class node_impl : public node_interface {
 	/// or null when this is the first child.
 	const node_impl* previous() const;
 
-	/// Returns the last child
+	/// Returns the 'n' direct child
 	/// or null when this has not any children.
 	const node_impl* get_last_child() const;
 
@@ -129,14 +129,18 @@ class node_impl : public node_interface {
 	// search operations
 	// this section should be extented to allow for XPath selectors
 
-	/// Find a node given a path of the form tag/tag/tag.
-	node_impl* locate_node(const char *path);
+	/// Find a node given an xpath expresssion of the form /tag/tag[2]/tag[3] as from get_xpath().
+	node_impl* locate_node(const char *xpath);
 
-	/// Find the first direct child with the given tag.
-	node_impl *get_first_child(const char *name);
+	/// Find the first child with the given tag.
+	node_impl *get_first_child(const char *name) const;
 
-	/// Find the first direct child with the given tag.
+	/// Find the first child with the given tag.
 	const node_impl *get_first_child(const char *name) const;
+
+	/// Find the 'n'th child with the given tag ('n' starts at '1')
+	/// or null when this does not exist
+	node_impl* get_nth_child(const char *name, int n);
 
 	/// Find the root of the tree to which this node belongs.
 	node_impl* get_root();
@@ -241,8 +245,8 @@ class node_impl : public node_interface {
 	/// Return the number of nodes of the xml (sub-)tree starting at this node.
 	unsigned int size() const;
 
-	/// Returns a "friendly" path desription of this node.
-	std::string get_path_display_desc() const;
+	/// Returns a xpath representation of this node, useable with locate_node()
+	std::string get_xpath () const;
 
 	/// Return a friendly string describing this node.
 	/// The string will be of a form similar to \<tag id="...">

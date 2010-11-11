@@ -218,6 +218,25 @@ void lib::node_impl::get_children(std::list<const lib::node*>& l) const {
 	node_navigator<const lib::node>::get_children(this, l);
 }
 
+
+lib::node_impl*
+lib::node_impl::get_nth_child(const char *name, int n) {
+	node_impl *e = down();
+	if(!e) return 0;
+	if(e->m_local_name == name)
+		if (--n == 0)
+			return e;
+	e = e->next();
+	while(e != 0) {
+		if(e->m_local_name == name)
+			if (--n == 0) 
+				return e;
+		e = e->next();
+	}
+	return 0;
+}
+
+
 ///////////////////////////////
 // search operations
 
@@ -268,7 +287,16 @@ lib::node_impl::locate_node(const char *path) {
 		it++; // skip root
 	} else n = this;
 	for(; it != v.end() && n != 0;it++) {
-		n = n->get_first_child((*it).c_str());
+		std::string path_comp = *it;
+		std::string name = path_comp;
+		int idx = 1;
+		unsigned long int pos = path_comp.find('[');
+		if (pos != std::string::npos) {
+			std::string ss = path_comp.substr(pos);			
+			sscanf(ss.c_str(), "[%d]", &idx);
+			name = name.substr(0,pos);
+		}
+		n = n->get_nth_child(name.c_str(), idx);
 	}
 	return n;
 }
@@ -278,29 +306,54 @@ lib::node_impl::get_root() {
 	return node_navigator<node_impl>::get_root(this);
 }
 
+std::string int2string(int number)
+{
+	std::stringstream ss;	//create a stringstream
+	ss << number;		//add number to the stream
+	return ss.str();	//return a string with the contents of the stream
+}
+
 inline std::string get_path_desc_comp(const lib::node_impl *n) {
+	std::string my_id = n->get_local_name();
 	std::string sbuf;
-	const char *pid = n->get_attribute("id");
-	sbuf += n->get_local_name();
-	if(pid) {sbuf += ":"; sbuf += pid;}
+	sbuf += my_id;
+	const lib::node_impl* parent = n->up();
+
+	if (parent != NULL) {
+		std::list<const lib::node*> children;
+		parent->get_children(children);
+		std::list<const lib::node*>::iterator it = children.begin();
+
+		int count = 0;
+		while (it != children.end()) {
+			if ((*it)->get_local_name() == my_id) {
+				count++;
+				if ((*it) == n) {
+					if (count > 1) {
+						sbuf += "["+ int2string(count) + "]";
+					}
+					break;
+				}
+			}
+			it++;
+		}
+	}
 	return sbuf;
 }
 
-std::string lib::node_impl::get_path_display_desc() const {
+std::string lib::node_impl::get_xpath() const {
 	std::string sbuf;
 	std::list<const node_impl*> path;
 	node_navigator<const node_impl>::get_path(this, path);
-	int nc = 0;
+
 	std::list<const node_impl*>::reverse_iterator it = path.rbegin();
-	sbuf += get_path_desc_comp(this);it++;nc++;
-	for(;it != path.rend() && nc<3;it++) {
-		std::string ln = (*it)->get_local_name();
-		if(ln != "priorityClass" && ln != "switch") {
-			sbuf.insert(0, "/");
-			sbuf.insert(0, get_path_desc_comp(*it));
-			nc++;
-		}
+	sbuf += get_path_desc_comp(this);it++;
+	for(;it != path.rend();it++) {
+		sbuf.insert(0, "/");
+		sbuf.insert(0, get_path_desc_comp(*it));
 	}
+	sbuf.insert(0, "/");
+
 	return sbuf;
 }
 ///////////////////////////////

@@ -17,7 +17,6 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
-		9309F8231226AA3300F63B7E /* test.smil in Resources */ = {isa = PBXBuildFile; fileRef = 9309F7C312253D0B00F63B7E /* test.smil */; };
 		9309F8241226AA3400F63B7E /* test.smil in Resources */ = {isa = PBXBuildFile; fileRef = 9309F7C312253D0B00F63B7E /* test.smil */; };
 		931FF3971201CF52003B632F /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 931FF38E1201CF52003B632F /* libavcodec.a */; };
 		931FF3981201CF52003B632F /* libavdevice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 931FF38F1201CF52003B632F /* libavdevice.a */; };
@@ -55,6 +54,7 @@
 		9331EA07120DCBD40023B0F1 /* AmbulantViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331E9FD120DCBD40023B0F1 /* AmbulantViewController.mm */; };
 		9331EA08120DCBD40023B0F1 /* PlaylistAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331E9FF120DCBD40023B0F1 /* PlaylistAppDelegate.mm */; };
 		9331EA09120DCBD40023B0F1 /* PlaylistViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331EA01120DCBD40023B0F1 /* PlaylistViewController.mm */; };
+		933BB5F4128AD6A5007261DC /* test.smil in Resources */ = {isa = PBXBuildFile; fileRef = 9309F7C312253D0B00F63B7E /* test.smil */; };
 		9364105D123920510046B567 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9364105C123920510046B567 /* AVFoundation.framework */; };
 		93641064123920E10046B567 /* cg_avfoundation_video.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93641063123920E10046B567 /* cg_avfoundation_video.mm */; };
 		93641065123920E10046B567 /* cg_avfoundation_video.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93641063123920E10046B567 /* cg_avfoundation_video.mm */; };
@@ -1803,12 +1803,12 @@
 				9331E909120DAEB20023B0F1 /* data in Resources */,
 				937981D0120DE13B00B1A6D2 /* AmbulantWebView.xib in Resources */,
 				93882664121EB7F40038AF71 /* Welcome-smiltext.smil in Resources */,
-				9309F8231226AA3300F63B7E /* test.smil in Resources */,
 				9387C9801251F3C80013AECB /* iPhoneAVPlayerTest.smil in Resources */,
 				93B08380126C837700EE380F /* player_simulator-Info.plist in Resources */,
 				93299DDC1279C31B002B9E6A /* PresentationTableViewController.xib in Resources */,
 				93299DDF1279C32A002B9E6A /* PresentationTableCell.xib in Resources */,
 				9329A442128051F4002B9E6A /* Back.png in Resources */,
+				933BB5F4128AD6A5007261DC /* test.smil in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

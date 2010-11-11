@@ -75,7 +75,7 @@ gui::dx::dx_basicvideo_renderer::~dx_basicvideo_renderer() {
 }
 
 void gui::dx::dx_basicvideo_renderer::start(double t) {
-	AM_DBG lib::logger::get_logger()->debug("start: %s", m_node->get_path_display_desc().c_str());
+	AM_DBG lib::logger::get_logger()->debug("start: %s", m_node->get_xpath().c_str());
 	common::surface *surf = get_surface();
 
 	dx_window *dxwindow = static_cast<dx_window*>(surf->get_gui_window());
@@ -158,7 +158,7 @@ std::pair<bool, double> gui::dx::dx_basicvideo_renderer::get_dur() {
 }
 
 bool gui::dx::dx_basicvideo_renderer::stop() {
-	AM_DBG lib::logger::get_logger()->debug("stop: %s", m_node->get_path_display_desc().c_str());
+	AM_DBG lib::logger::get_logger()->debug("stop: %s", m_node->get_xpath().c_str());
 	if(!m_player) return true;
 	m_cs.enter();
 	m_update_event = 0;

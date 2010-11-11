@@ -107,7 +107,7 @@ class node_dummy : public node_interface {
 	/// Find a node given a path of the form tag/tag/tag.
 	node_dummy* locate_node(const char *path);
 
-	/// Find the first direct child with the given tag.
+	/// Find a node given an xpath expresssion of the form /tag/tag[2]/tag[3] as from get_xpath().
 	node_dummy *get_first_child(const char *name);
 
 	/// Find the first direct child with the given tag.
@@ -211,8 +211,8 @@ class node_dummy : public node_interface {
 	/// Return the number of nodes of the xml (sub-)tree starting at this node.
 	unsigned int size() const;
 
-	/// Returns a "friendly" path desription of this node.
-	std::string get_path_display_desc() const;
+	/// Returns a xpath representation of this node, useable with locate_node()
+	std::string get_xpath() const;
 
 	/// Return a friendly string describing this node.
 	/// The string will be of a form similar to \<tag id="...">

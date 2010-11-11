@@ -14,7 +14,7 @@
 	id cg_image; //CGImageRef
 	NSString* ns_description;
 	NSString* ns_dur;
-	NSString* ns_node_where;
+	NSString* ns_last_node_repr;
 	NSUInteger position;
 }
 @property(nonatomic,retain) NSString* ns_title;
@@ -22,6 +22,7 @@
 //@property(nonatomic,retain) CGImageRef cg_image;
 @property(nonatomic,retain) NSString* ns_description;
 @property(nonatomic,retain) NSString* ns_dur;
+@property(nonatomic,assign) NSString* ns_last_node_repr;
 @property(nonatomic,assign) NSUInteger position;
 
 // initialize all fields
@@ -30,7 +31,7 @@
 						  image: (id) acg_image // CGImageRef
 					description: (NSString*) ans_description
 					   duration: (NSString*) ans_dur
-					 node_where: (NSString*) anode_where
+				 last_node_repr: (NSString*) alast_node_repr
 					   position: (NSUInteger) aposition;
 
 // compare with another PlaylistItem
@@ -44,18 +45,24 @@
 
 namespace ambulant {
 	
-#define AM_IOS_PLAYLISTVERSION @"0.1" // Needs to be updated when Playlist format changes 
+#define AM_IOS_PLAYLISTVERSION @"0.00" // Needs to be updated when Playlist format changes 
 	
 	
 class Playlist {
 public:
 	Playlist(NSArray* ansarray);
 	~Playlist();
-	void add_item(PlaylistItem* item);
-	void delete_item(PlaylistItem* item);
-	PlaylistItem* get_last_item();
+	
+	// get the current version of PlaylistItem 
 	NSString* get_version();
+	// get an immutable copy of the playlist
 	NSArray* get_playlist();
+	
+	// get and manipulate the last item
+	PlaylistItem* get_last_item();
+	void add_item(PlaylistItem* item);
+	void remove_last_item();
+	void replace_last_item(PlaylistItem* new_last_item);
 	
 private:
 	NSString* am_ios_version;

@@ -10,7 +10,7 @@
 #import "AmbulantAppDelegate.h"
 #import "PlaylistViewController.h"
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -91,13 +91,17 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
     [super viewDidLoad];
 }
 */
-- (void) doPlayURL {
+- (void) doPlayURL:(NSString*) ns_node_repr {
 	if (myMainloop != NULL) {
 		myMainloop->stop();
 		delete myMainloop;
 	}		
 	myMainloop = new mainloop([[self playURL] UTF8String], playerView, embedder);	
 	if (myMainloop) {
+		if (ns_node_repr != NULL) {
+			std::string node_repr = [ns_node_repr UTF8String];
+			myMainloop->goto_node_repr(node_repr);
+		}
 		myMainloop->play();
 		self.URLEntryField.text = [self playURL];
 	}
@@ -157,20 +161,22 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	if (self.playURL != nil) {
 		[self handleURLEntered];
 	} else {
-		NSString *welcomePath = prefs->m_history ? [[prefs->m_history->get_last_item() ns_url] absoluteString]: NULL;
-		if (welcomePath == NULL) {//[welcomePath isEqualToString:@"Welcome.smil"]) {
+		PlaylistItem* last_item = prefs->m_history != NULL ? prefs->m_history->get_last_item() : NULL;
+		NSString *startPath = last_item != NULL ? [[last_item ns_url] absoluteString] : NULL;
+		NSString *startNodeRepr = last_item != NULL ? [last_item ns_last_node_repr] : NULL;		
+		if (startPath == NULL) {//[startPath isEqualToString:@"Welcome.smil"]) {
 			NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
-			welcomePath = [thisBundle pathForResource:@"Welcome" ofType:@"smil"];
+			startPath = [thisBundle pathForResource:@"Welcome" ofType:@"smil"];
 		}
-//		NSString *welcomePath = [thisBundle pathForResource:@"test" ofType:@"smil"];
-//		NSString *welcomePath = [thisBundle pathForResource:@"iPhoneAVPlayerTest" ofType:@"smil"];
-//		NSString *welcomePath = @"http://ambulantPlayer.org/Demos/Birthday/HappyBirthday.smil";
-		AM_DBG NSLog (@ "%@", welcomePath);
-		if (welcomePath) {
+//		NSString *startPath = [thisBundle pathForResource:@"test" ofType:@"smil"];
+//		NSString *startPath = [thisBundle pathForResource:@"iPhoneAVPlayerTest" ofType:@"smil"];
+//		NSString *startPath = @"http://ambulantPlayer.org/Demos/Birthday/HappyBirthday.smil";
+		AM_DBG NSLog (@ "%@", startPath);
+		if (startPath) {
 			void* theview = [self playerView];
 			AM_DBG NSLog(@"view %@ responds %d", (NSObject *)theview, [(NSObject *)theview respondsToSelector: @selector(isAmbulantWindowInUse)]);
-			playURL = [[NSMutableString alloc] initWithString: welcomePath];
-			[self doPlayURL ];
+			playURL = [[NSMutableString alloc] initWithString: startPath];
+			[self doPlayURL: startNodeRepr];
 		}
 	} 	
 //X	[URLEntryField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
@@ -180,7 +186,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	if (myMainloop) {
 		myMainloop->play();
 	} else {
-		[self doPlayURL];
+		[self doPlayURL:NULL];
 	}
 }
 
@@ -250,7 +256,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	}
 	playURL = [[NSString alloc] initWithString: URLEntryField.text];
 	 */
-	[self doPlayURL];
+	[self doPlayURL:NULL];
 }
 
 - (IBAction) showPlaylist:(id)sender {    
@@ -360,32 +366,10 @@ playlistViewControllerDidFinish: (PlaylistViewController *)controller {
 			[playURL release];
 		}
 		playURL = [[NSMutableString alloc] initWithString: whatString];
-		[self doPlayURL];
+		[self doPlayURL:NULL];
 	}
 	[self done: self];
 	[pool release];
-}
-
-
-- (void) playPresentation: selected: (NSString*) whatString {
-	AM_DBG NSLog(@"Selected: %@",whatString);
-	self.handleStopTapped;
-	if ( ! [whatString hasPrefix:@"http://"]) {
-		NSString* homedir = NSHomeDirectory();
-		homedir = [homedir stringByAppendingString:@"/player_iphone.app/"];
-		whatString = [homedir stringByAppendingString:whatString];//[thisBundle pathForResource:whatString ofType:@"smil"];
-		if ( ! [whatString hasSuffix:@".smil"]) {
-			whatString = [whatString stringByAppendingString:@".smil"];
-		}
-	}
-	if (whatString != NULL) {
-		if (playURL) {
-			[playURL release];
-		}
-		playURL = [[NSMutableString alloc] initWithString: whatString];
-		[self doPlayURL];
-	}
-	[self done: self];
 }
 
 - (void)keyboardWillShow:(NSNotification *)notification {

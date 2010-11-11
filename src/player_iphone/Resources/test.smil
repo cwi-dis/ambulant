@@ -11,6 +11,7 @@
 		<textStyle id="textStyle" textMode="scroll" textRate="auto" textConceal="final" />
 	  </textStyling>
       <region xml:id="audio_1"/>
+<!--  
       <region xml:id="audio_2"/>
       <region xml:id="video1" width="176" height="128" top="20" left="50"/>
       <region xml:id="video2" width="176" height="128" top="150" left="50"/>
@@ -20,15 +21,15 @@
       <region xml:id="Captions1.1" left="19" width="106" top="375" height="85" z-index="2"/>
       <region xml:id="Captions1.2" left="125" width="106" top="375" height="85" z-index="2"/>
       <region xml:id="Captions1.3" left="231" width="106" top="375" height="85" z-index="2"/>
-<!--  <region xml:id="Captions3" left="231" width="106" top="184" height="85" z-index="2"/>
+	  <region xml:id="Captions3" left="231" width="106" top="184" height="85" z-index="2"/>
       <region xml:id="Captions2.3" regionName="crawl" left="19" width="320" top="340" height="35" z-index="2" />
       <region xml:id="cap2.3b" regionName="cap2.3b" left="19" width="320" top="340" height="35" z-index="1" />
       <region xml:id="cap2.3b" regionName="cap2.3b" left="19" width="320" top="0" height="270" z-index="1" />
- -->
       <region xml:id="Captions2.1" regionName="crawl" left="19" width="301" top="270" height="35" z-index="2" textMode="crawl" textRate="auto"/>
       <region xml:id="Captions2.2" regionName="crawl" left="19" width="301" top="305" height="35" z-index="2" textMode="crawl" textRate="auto"/>
       <region xml:id="Captions2.3" regionName="crawl" left="19" width="301" top="340" height="35" z-index="2" textMode="crawl" textRate="auto" />
       <region xml:id="Captions2.4" regionName="crawl" left="19" width="301" top="0" height="35" z-index="2" textMode="crawl" textRate="auto" />
+ -->
     </layout>
     <transition xml:id="slideover" type="slideWipe"/>
     <transition xml:id="fade" type="fade"/>
@@ -38,11 +39,13 @@
     <par xml:id="Simple_iPhone_test_par1" repeatCount="99999">
 	  <brush region="video1" color="yellow" />
 	  <seq>
+	    <audio src="data/AmbulantTune.mp3" dur="8" region="audio_1" />
+	    <audio src="data/AmbulantTune.mp3" dur="8" region="audio_1" />
+<!--
 	    <video src="http://homepages.cwi.nl/~kees/ambulant/ios/Demos/Birthday/HBdata/Fz3-g-ios.m4v" region="video1" clipBegin="5s" clipEnd="12" />
 	    <video src="http://homepages.cwi.nl/~kees/ambulant/ios/Demos/Birthday/HBdata/Az3-g-ios.m4v" region="video1" clipBegin="0s" begin="1" clipEnd="10"/>
-	  </seq>
-<!--
  -->
+	  </seq>
 <!-- 
       <par xml:id="Simple_iPhone_test_par1.1">
 		<smilText xml:id="CapF1.1" region="Captions1.1" dur="10s" textMode="scroll" textRate="auto" textConceal="final" textPlace="start">

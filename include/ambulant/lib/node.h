@@ -135,7 +135,7 @@ class node_interface {
 	// search operations
 	// this section should be extented to allow for XPath selectors
 
-	/// Find a node given a path of the form tag/tag/tag.
+	/// Find a node given an xpath expresssion of the form /tag/tag[2]/tag[3] as from get_xpath().
 	virtual node_interface* locate_node(const char *path) = 0;
 
 	/// Find the first direct child with the given tag.
@@ -239,8 +239,8 @@ class node_interface {
 	/// Return the number of nodes of the xml (sub-)tree starting at this node.
 	virtual unsigned int size() const = 0;
 
-	/// Returns a "friendly" path desription of this node.
-	virtual std::string get_path_display_desc() const = 0;
+	/// Returns a xpath representation of this node, useable with locate_node()
+	virtual std::string get_xpath() const = 0;
 
 	/// Return a friendly string describing this node.
 	/// The string will be of a form similar to \<tag id="...">

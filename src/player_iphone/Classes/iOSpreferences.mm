@@ -117,10 +117,7 @@ iOSpreferences::load_preferences()
 	}
 	NSString* version = [prefs stringForKey:@"version"];
 	if ( ! [version isEqualToString: AM_IOS_PLAYLISTVERSION]) {
-		if (history != NULL) {
-			[history release];
-			history = NULL;
-		}
+		history = NULL;
 	}
 	m_history = new ambulant::Playlist(history);
 	
@@ -160,13 +157,13 @@ bool iOSpreferences::save_preferences()
 	return true;
 }
 @implementation PlaylistItem
-@synthesize ns_title, ns_url, ns_description, ns_dur, position;
+@synthesize ns_title, ns_url, ns_description, ns_dur, ns_last_node_repr, position;
 - (PlaylistItem*) initWithTitle: (NSString*) atitle
 							url: (NSURL*) ans_url
 						  image: (id) acg_image
 					description: (NSString*) ans_description
 					   duration: (NSString*) ans_dur
-					 node_where: (NSString*) anode_where
+				 last_node_repr: (NSString*) alast_node_repr
 					   position: (NSUInteger) aposition
 {
 	ns_title = atitle;
@@ -174,10 +171,10 @@ bool iOSpreferences::save_preferences()
 	cg_image = acg_image;
 	ns_description = ans_description;
 	ns_dur = ans_dur;
-	if (anode_where == NULL) {
-		ns_node_where = [NSString stringWithString: @""];
+	if (alast_node_repr == NULL) {
+		ns_last_node_repr = [NSString stringWithString: @""];
 	} else {
-		ns_node_where = anode_where;			
+		ns_last_node_repr = alast_node_repr;			
 	}
 	position = aposition;
 	return self;
@@ -198,6 +195,8 @@ bool iOSpreferences::save_preferences()
 //	[encoder encodeObject:cg_image forKey:@"Cg_image"];
 	[encoder encodeObject:ns_description forKey:@"Ns_description"];
 	[encoder encodeObject:ns_dur forKey:@"Ns_dur"];
+	[self.ns_last_node_repr retain];
+	[encoder encodeObject:ns_last_node_repr forKey:@"Ns_lastnode"];
 //	[encoder encodeObject:position forKey:@"Position"];
 }
 	
@@ -208,6 +207,8 @@ bool iOSpreferences::save_preferences()
 //	self.cg_image = [decoder decodeObjectForKey:@"Cg_image"];
 	self.ns_description = [decoder decodeObjectForKey:@"Ns_description"];
 	self.ns_dur = [decoder decodeObjectForKey:@"Ns_dur"];
+	self.ns_last_node_repr = [decoder decodeObjectForKey:@"Ns_lastnode"];
+	[self.ns_last_node_repr retain];
 //	self.position = [decoder decodeObjectForKey:@"Position"];
 	return self;
 }
@@ -238,15 +239,24 @@ ambulant::Playlist::~Playlist()
 }
 
 void
-ambulant::Playlist::add_item(PlaylistItem* item)
+ambulant::Playlist::add_item (PlaylistItem* item)
 {
 	[item retain];
-	[am_ios_playlist addObject:(NSObject*) item];
+	[am_ios_playlist addObject: (NSObject*) item];
 }
 
 void
-ambulant::Playlist::delete_item(PlaylistItem* item)
+ambulant::Playlist::remove_last_item ()
 {
+	if ([am_ios_playlist count] > 0) {
+		[am_ios_playlist removeLastObject];
+	}
+}
+
+void
+ambulant::Playlist::replace_last_item (PlaylistItem* new_item)
+{
+	[am_ios_playlist replaceObjectAtIndex:[am_ios_playlist count] - 1 withObject: new_item];
 }
 
 ambulant::PlaylistItem*
@@ -255,7 +265,7 @@ ambulant::Playlist::get_last_item()
 	if (am_ios_playlist == NULL || [am_ios_playlist count] == 0) {
 		return NULL;
 	} else {
-		return (ambulant::PlaylistItem*) [am_ios_playlist objectAtIndex:[am_ios_playlist count] - 1];
+		return (ambulant::PlaylistItem*) [am_ios_playlist objectAtIndex: [am_ios_playlist count] - 1];
 	}
 
 }
