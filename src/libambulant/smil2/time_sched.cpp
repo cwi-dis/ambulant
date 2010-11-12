@@ -301,6 +301,7 @@ scheduler::time_type scheduler::_exec(time_type now) {
 		std::list<time_node*>::iterator nit;
 		for(nit=elist.begin();nit!=elist.end();nit++) {
 			time_node *nitp = *nit;
+			AM_DBG lib::logger::get_logger()->debug("exec for time node %s", nitp->get_sig().c_str());
 			nitp->exec(timestamp);
 		}
 		AM_DBG lib::logger::get_logger()->debug("scheduler::_exec: horizon %d -> %d", m_horizon, next);
