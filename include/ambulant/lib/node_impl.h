@@ -133,7 +133,7 @@ class node_impl : public node_interface {
 	node_impl* locate_node(const char *xpath);
 
 	/// Find the first child with the given tag.
-	node_impl *get_first_child(const char *name) const;
+	node_impl *get_first_child(const char *name);
 
 	/// Find the first child with the given tag.
 	const node_impl *get_first_child(const char *name) const;
