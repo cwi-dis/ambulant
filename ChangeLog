@@ -1,3 +1,9 @@
+2010-11-11 17:06  keesblom
+
+	* Changed node interface: get_path_display_desc() renamed to
+	  get_xpath() producing an xpath string that can be used in
+	  locate_node(). player_iphone now resumes where it was left
+
 2010-11-09 13:31  keesblom
 
 	* Added (superfluous) code to find all nodes still active on player
