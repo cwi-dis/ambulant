@@ -1,3 +1,11 @@
+2010-11-12 16:12  keesblom
+
+	* Added a debug() line to support chasing #3107960
+
+2010-11-12 11:33  keesblom
+
+	* Fixed compile problem.
+
 2010-11-11 17:06  keesblom
 
 	* Changed node interface: get_path_display_desc() renamed to
