@@ -266,7 +266,7 @@ initWithURL:(NSURL*) nsurl {
 dealloc {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	AM_DBG NSLog(@"CGVideoAVPlayerManager.dealloc(0x%x) s_avplayer=0x%x m_av_player_item=0x%x ", self, s_avplayer, m_avplayer_item);
-
+	
 	if (m_avplayer_layer != NULL) {
 	   [m_avplayer_layer removeFromSuperlayer];
 		m_avplayer_layer = NULL;

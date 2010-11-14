@@ -45,7 +45,7 @@
 
 namespace ambulant {
 	
-#define AM_IOS_PLAYLISTVERSION @"0.00" // Needs to be updated when Playlist format changes 
+#define AM_IOS_PLAYLISTVERSION @"0.0" // Needs to be updated when Playlist format changes 
 	
 	
 class Playlist {

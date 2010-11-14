@@ -219,11 +219,11 @@ applicationWillTerminate:(UIApplication *)application {
      Called when the application is about to terminate.
      See also applicationDidEnterBackground:.
      */
-	AM_DBG NSLog(@"AmbulantAppDelegate applicationWillTerminate");
+	AM_DBG NSLog(@"AmbulantAppDelegate applicationWillTerminate: viewController.retainCount()=%d", [viewController retainCount]);
 	if (viewController && viewController.myMainloop) {
-		viewController.myMainloop->stop();
+		delete viewController.myMainloop;
 	}
-	ambulant::iOSpreferences::delete_preferences_singleton();
+    [viewController release];
 }
 
 
@@ -249,7 +249,10 @@ applicationDidReceiveMemoryWarning:(UIApplication *)application {
 - (void)
 dealloc {
 	AM_DBG NSLog(@"AmbulantAppDelegate dealloc");
-    [viewController release];
+	if (viewController && viewController.myMainloop) {
+		delete viewController.myMainloop;
+	}
+    [viewController release];	
     [window release];
     [super dealloc];
 }
