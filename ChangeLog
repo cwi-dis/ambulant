@@ -1,3 +1,8 @@
+2010-11-14 22:24  keesblom
+
+	* Added code to player save state when ApplicationWillTerminate is
+	  called
+
 2010-11-12 16:12  keesblom
 
 	* Added a debug() line to support chasing #3107960
