@@ -28,7 +28,9 @@
 #ifndef AMBULANT_NO_TIME_H
 #include <time.h>
 
+#ifndef AMBULANT_PLATFORM_WIN32
 #define WITH_MICROSECOND_LOGTIMES
+#endif
 #ifdef  WITH_MICROSECOND_LOGTIMES
 #include <sys/time.h>
 #endif // WITH_MICROSECOND_LOGTIMES

@@ -259,12 +259,6 @@ void gui::dx::dx_video_renderer::redraw(const lib::rect &dirty, common::gui_wind
 	//AM_DBG lib::logger::get_logger()->debug("dx_img_renderer::redraw %0x %s", m_dest, m_node->get_url("src").c_str());
 	v->draw(m_player->get_ddsurf(), vid_rect_dirty, vid_reg_rc_dirty, false, tr);
 
-	AM_DBG	{
-		std::string s = m_node->get_path_display_desc();
-		lib::textptr tp(s.c_str());
-		std::basic_string<text_char> msg = (text_char*) tp;
-		v->draw(msg, vid_reg_rc_dirty, lib::to_color("orange"));
-	}
 }
 
 void gui::dx::dx_video_renderer::update_callback() {
