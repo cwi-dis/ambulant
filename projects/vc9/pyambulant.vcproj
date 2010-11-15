@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="pyambulant"
 	ProjectGUID="{ABB895C0-7435-406D-A44F-8C68B6DB7093}"
 	RootNamespace="pyambulant"
@@ -20,6 +20,48 @@
 			Name="Release|Win32"
 			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
+			ConfigurationType="0"
+			InheritedPropertySheets=".\Ambulant-win32.vsprops"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="cd $(ProjectDir)\..\..\src\pyambulant&#x0D;&#x0A;$(python_dir)\python.exe setup.py install --install-lib ..\..\bin\win32&#x0D;&#x0A;"
+				ReBuildCommandLine="cd $(ProjectDir)\..\..\src\pyambulant&#x0D;&#x0A;$(python_dir)\python.exe setup.py clean --all&#x0D;&#x0A;$(python_dir)\python.exe setup.py install --install-lib ..\..\bin\win32&#x0D;&#x0A;"
+				CleanCommandLine="cd $(ProjectDir)\..\..\src\pyambulant&#x0D;&#x0A;$(python_dir)\python.exe setup.py clean --all&#x0D;&#x0A;"
+				Output="..\..\bin\win32\pyambulant.pyd"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="ReleaseShlibDX|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="0"
+			InheritedPropertySheets=".\Ambulant-win32.vsprops"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="cd $(ProjectDir)\..\..\src\pyambulant&#x0D;&#x0A;$(python_dir)\python.exe setup.py install --install-lib ..\..\bin\win32&#x0D;&#x0A;"
+				ReBuildCommandLine="cd $(ProjectDir)\..\..\src\pyambulant&#x0D;&#x0A;$(python_dir)\python.exe setup.py clean --all&#x0D;&#x0A;$(python_dir)\python.exe setup.py install --install-lib ..\..\bin\win32&#x0D;&#x0A;"
+				CleanCommandLine="cd $(ProjectDir)\..\..\src\pyambulant&#x0D;&#x0A;$(python_dir)\python.exe setup.py clean --all&#x0D;&#x0A;"
+				Output="..\..\bin\win32\pyambulant.pyd"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="DebugShlibDX|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="0"
 			InheritedPropertySheets=".\Ambulant-win32.vsprops"
 			>

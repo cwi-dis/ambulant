@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="npambulant-installer"
 	ProjectGUID="{E758D8FC-44AE-4D39-B642-94B252CD1559}"
 	RootNamespace="npambulant-installer"
@@ -51,6 +51,48 @@
 				CleanCommandLine="del /s /q $(IntDir)\$(TargetName)&#x0D;&#x0A;del /q $(TargetPath)&#x0D;&#x0A;"
 				Output="..\..\bin\win32\npambulant-2.3-win32.xpi"
 				PreprocessorDefinitions="WIN32;NDEBUG"
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="ReleaseShlibDX|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="0"
+			InheritedPropertySheets=".\Ambulant-win32.vsprops"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="del /s /q $(IntDir)\$(TargetName)&#x0D;&#x0A;del /q $(TargetPath)&#x0D;&#x0A;mkdir $(IntDir)\$(TargetName)&#x0D;&#x0A;mkdir $(IntDir)\$(TargetName)\Plugins&#x0D;&#x0A;copy ..\..\src\npambulant\install-win32.rdf $(IntDir)\$(TargetName)\install.rdf&#x0D;&#x0A;copy &quot;$(firefox_plugin_dir)\npambulant.dll&quot; $(IntDir)\$(TargetName)\Plugins&#x0D;&#x0A;copy &quot;$(firefox_plugin_dir)\libambulant_shwin32.dll&quot; $(IntDir)\$(TargetName)\Plugins&#x0D;&#x0A;copy &quot;$(firefox_plugin_dir)\libamplugin_ffmpeg.dll&quot; $(IntDir)\$(TargetName)\Plugins&#x0D;&#x0A;copy &quot;$(firefox_plugin_dir)\libamplugin_state_xpath.dll&quot; $(IntDir)\$(TargetName)\Plugins&#x0D;&#x0A;copy &quot;$(firefox_plugin_dir)\avcodec-52.dll&quot; $(IntDir)\$(TargetName)\Plugins&#x0D;&#x0A;copy &quot;$(firefox_plugin_dir)\avformat-52.dll&quot; $(IntDir)\$(TargetName)\Plugins&#x0D;&#x0A;copy &quot;$(firefox_plugin_dir)\avutil-50.dll&quot; $(IntDir)\$(TargetName)\Plugins&#x0D;&#x0A;copy &quot;$(firefox_plugin_dir)\swscale-0.dll&quot; $(IntDir)\$(TargetName)\Plugins&#x0D;&#x0A;copy &quot;$(firefox_plugin_dir)\SDL.dll&quot; $(IntDir)\$(TargetName)\Plugins&#x0D;&#x0A;copy &quot;$(firefox_plugin_dir)\xerces-c_$(xerces_major)_$(xerces_minor).dll&quot; $(IntDir)\$(TargetName)\Plugins&#x0D;&#x0A;cd $(IntDir)\$(TargetName)&#x0D;&#x0A;&quot;$(zip_executable)&quot; &quot;$(TargetPath)&quot; *.* Plugins\*.* Plugins\plugins\*.*&#x0D;&#x0A;"
+				ReBuildCommandLine="del /s /q $(IntDir)\$(TargetName)&#x0D;&#x0A;del /q $(TargetPath)&#x0D;&#x0A;mkdir $(IntDir)\$(TargetName)&#x0D;&#x0A;mkdir $(IntDir)\$(TargetName)\Plugins&#x0D;&#x0A;copy ..\..\src\npambulant\install-win32.rdf $(IntDir)\$(TargetName)\install.rdf&#x0D;&#x0A;copy &quot;$(firefox_plugin_dir)\npambulant.dll&quot; $(IntDir)\$(TargetName)\Plugins&#x0D;&#x0A;copy &quot;$(firefox_plugin_dir)\libambulant_shwin32.dll&quot; $(IntDir)\$(TargetName)\Plugins&#x0D;&#x0A;copy &quot;$(firefox_plugin_dir)\libamplugin_ffmpeg.dll&quot; $(IntDir)\$(TargetName)\Plugins&#x0D;&#x0A;copy &quot;$(firefox_plugin_dir)\libamplugin_state_xpath.dll&quot; $(IntDir)\$(TargetName)\Plugins&#x0D;&#x0A;copy &quot;$(firefox_plugin_dir)\avcodec-52.dll&quot; $(IntDir)\$(TargetName)\Plugins&#x0D;&#x0A;copy &quot;$(firefox_plugin_dir)\avformat-52.dll&quot; $(IntDir)\$(TargetName)\Plugins&#x0D;&#x0A;copy &quot;$(firefox_plugin_dir)\avutil-50.dll&quot; $(IntDir)\$(TargetName)\Plugins&#x0D;&#x0A;copy &quot;$(firefox_plugin_dir)\swscale-0.dll&quot; $(IntDir)\$(TargetName)\Plugins&#x0D;&#x0A;copy &quot;$(firefox_plugin_dir)\SDL.dll&quot; $(IntDir)\$(TargetName)\Plugins&#x0D;&#x0A;copy &quot;$(firefox_plugin_dir)\xerces-c_$(xerces_major)_$(xerces_minor).dll&quot; $(IntDir)\$(TargetName)\Plugins&#x0D;&#x0A;cd $(IntDir)\$(TargetName)&#x0D;&#x0A;&quot;$(zip_executable)&quot; $(TargetPath) *.* Plugins\*.* Plugins\plugins\*.*&#x0D;&#x0A;"
+				CleanCommandLine="del /s /q $(IntDir)\$(TargetName)&#x0D;&#x0A;del /q $(TargetPath)&#x0D;&#x0A;"
+				Output="..\..\bin\win32\npambulant-2.3-win32.xpi"
+				PreprocessorDefinitions="WIN32;NDEBUG"
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="DebugShlibDX|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="0"
+			InheritedPropertySheets=".\Ambulant-win32.vsprops"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="del /s $(IntDir)\$(TargetName)&#x0D;&#x0A;mkd $(IntDir)\$(TargetName)&#x0D;&#x0A;copy ..\..\src\npambulant\install-win32.rdf $(IntDir)\$(TargetName)\install.rdf&#x0D;&#x0A;copy $(firefox_plugin_dir)\npambulant.dll $(IntDir)\$(TargetName)&#x0D;&#x0A;copy $(firefox_plugin_dir)\libambulant_shwin32.dll $(IntDir)\$(TargetName)&#x0D;&#x0A;copy $(firefox_plugin_dir)\libamplugin_ffmpeg.dll $(IntDir)\$(TargetName)&#x0D;&#x0A;copy $(firefox_plugin_dir)\libamplugin_state.dll $(IntDir)\$(TargetName)&#x0D;&#x0A;copy $(firefox_plugin_dir)\avcodec-52.dll $(IntDir)\$(TargetName)&#x0D;&#x0A;copy $(firefox_plugin_dir)\avformat-52.dll $(IntDir)\$(TargetName)&#x0D;&#x0A;copy $(firefox_plugin_dir)\avutil-50.dll $(IntDir)\$(TargetName)&#x0D;&#x0A;copy $(firefox_plugin_dir)\SDL.dll $(IntDir)\$(TargetName)&#x0D;&#x0A;copy $(firefox_plugin_dir)\xerces-c_$(xerces_major)_$(xerces_minor).dll $(IntDir)\$(TargetName)&#x0D;&#x0A;copy $(firefox_plugin_dir)\swscale-0.dll $(IntDir)\$(TargetName)&#x0D;&#x0A;copy $(firefox_plugin_dir)\swscale-0.dll $(IntDir)\$(TargetName)&#x0D;&#x0A;copy $(firefox_plugin_dir)\swscale-0.dll $(IntDir)\$(TargetName)&#x0D;&#x0A;zip $(TargetPath) $(IntDir)\$(TargetName)&#x0D;&#x0A;"
+				ReBuildCommandLine=""
+				CleanCommandLine=""
+				Output="npambulant-2.3-win32.zip"
+				PreprocessorDefinitions="WIN32;_DEBUG"
 				IncludeSearchPath=""
 				ForcedIncludes=""
 				AssemblySearchPath=""
