@@ -202,7 +202,7 @@ gui::dx::dx_smiltext_renderer::get_smiltext_metrics(const smil2::smiltext_run& r
 			height	= tm.tmHeight+tm.tmExternalLeading;
 			line_spacing = height+tm.tmInternalLeading+tm.tmExternalLeading;
 
-			lib::textptr tp(run.m_data.c_str(), run.m_data.length());
+			lib::textptr tp(run.m_data.c_str());
 			LPCTSTR ttp = tp;
 			res = ::GetTextExtentPoint32(m_hdc, ttp, _tcslen(ttp), &SZ);
 			if (res == 0)
@@ -303,29 +303,31 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 			alpha_media = alpha_chroma = 1.0;
 	}
 	// set the foreground color
-	COLORREF old_color = CLR_INVALID;
-	COLORREF old_textbg_color = CLR_INVALID;
-	lib::color_t fg_color_t = (run.m_color == CLR_INVALID)?
+	COLORREF old_color = dxparams::I()->invalid_color();
+	COLORREF old_textbg_color = dxparams::I()->invalid_color();
+	lib::color_t fg_color_t = (run.m_color == dxparams::I()->invalid_color())?
 						::GetSysColor(COLOR_WINDOWTEXT) : run.m_color;
+	// Transparency needs a bit of work, because of support for non-alpha
+	// bitmaps (where we use a special color).
 	if (run.m_transparent)
-		fg_color_t = CLR_DEFAULT;
-	else if (fg_color_t == CLR_DEFAULT)
-		fg_color_t = CLR_ALTERNATIVE;
+		fg_color_t = dxparams::I()->transparent_color();
+	else if (fg_color_t == dxparams::I()->transparent_color())
+		fg_color_t = dxparams::I()->transparent_replacement_color();
 	COLORREF crTextColor = fg_color_t;
 
 	// set the background color
-	COLORREF old_bgcolor = CLR_INVALID;
-	COLORREF old_textbg_bgcolor = CLR_INVALID;
+	COLORREF old_bgcolor = dxparams::I()->invalid_color();
+	COLORREF old_textbg_bgcolor = dxparams::I()->invalid_color();
 	lib::color_t bg_color_t =
-		(run.m_bg_color == CLR_INVALID) ?
+		(run.m_bg_color == dxparams::I()->invalid_color()) ?
 			::GetSysColor(COLOR_WINDOW) :
-				(run.m_bg_color == CLR_DEFAULT)?
-					CLR_ALTERNATIVE :
+				(run.m_bg_color == dxparams::I()->transparent_color())?
+					dxparams::I()->transparent_replacement_color() :
 					run.m_bg_color;
 	if (run.m_bg_transparent)
-		bg_color_t = CLR_DEFAULT;
-	else if (fg_color_t == CLR_DEFAULT)
-		fg_color_t = CLR_ALTERNATIVE;
+		bg_color_t = dxparams::I()->transparent_color();
+	else if (fg_color_t == dxparams::I()->transparent_color())
+		fg_color_t = dxparams::I()->transparent_replacement_color();
 	COLORREF crBkColor = bg_color_t;
 
 	if (ri && ri->is_chromakey_specified()) {
@@ -338,27 +340,27 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 		// on text surface, draw text in required color
 		// and background in transparent color
 		old_color = ::SetTextColor(hdc, crTextColor);
-		if (old_color != CLR_INVALID)
-			old_bgcolor = ::SetBkColor(hdc, CLR_DEFAULT);
+		if (old_color != dxparams::I()->invalid_color())
+			old_bgcolor = ::SetBkColor(hdc, dxparams::I()->transparent_color());
 		// on background surface, draw text in transparent color
 		// and background in required color
-		if (old_bgcolor != CLR_INVALID)
-			old_textbg_color = ::SetTextColor(textbg_hdc, CLR_DEFAULT);
-		if (old_textbg_color != CLR_INVALID)
+		if (old_bgcolor != dxparams::I()->invalid_color())
+			old_textbg_color = ::SetTextColor(textbg_hdc, dxparams::I()->transparent_color());
+		if (old_textbg_color != dxparams::I()->invalid_color())
 			old_textbg_bgcolor = ::SetBkColor(textbg_hdc, crBkColor);
 	} else {
 		old_color = ::SetTextColor(hdc, crTextColor);
-		if (old_color != CLR_INVALID)
+		if (old_color != dxparams::I()->invalid_color())
 		old_bgcolor = ::SetBkColor(hdc, crBkColor);
 	}
-	if (old_color == CLR_INVALID)
+	if (old_color == dxparams::I()->invalid_color())
 		win_report_last_error("::SetTextColor");
-	else if (old_bgcolor == CLR_INVALID)
+	else if (old_bgcolor == dxparams::I()->invalid_color())
 		win_report_last_error("::SetBkColor");
 	else if (blending) {
-		if (old_textbg_color == CLR_INVALID)
+		if (old_textbg_color == dxparams::I()->invalid_color())
 			win_report_last_error("::SetTextColor(background)");
-		else if (old_textbg_bgcolor == CLR_INVALID)
+		else if (old_textbg_bgcolor == dxparams::I()->invalid_color())
 			win_report_last_error("::SetBkColor(background)");
 	}
 	// set the font
@@ -370,7 +372,7 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 
 	// draw the text
 	const char* text = run.m_data.c_str();
-	lib::textptr tp(text, strlen(text));
+	lib::textptr tp(text);
 	RECT dstRC;
 	dstRC.left	 = rr.left();
 	dstRC.top	 = rr.top();
@@ -433,11 +435,11 @@ gui::dx::dx_smiltext_renderer::render_smiltext(const smil2::smiltext_run& run, c
 		}
 	}
 	// reset the text color
-	if( old_color != CLR_INVALID) {
+	if( old_color != dxparams::I()->invalid_color()) {
 		::SetTextColor(hdc, old_color);
 	}
 	// reset the background color
-	if( old_bgcolor != CLR_INVALID) {
+	if( old_bgcolor != dxparams::I()->invalid_color()) {
 		::SetBkColor(hdc, old_bgcolor);
 	}
 	if (text_dds) {

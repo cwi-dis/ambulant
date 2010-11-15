@@ -31,6 +31,9 @@
 #include "ambulant/common/renderer_impl.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/lib/gtypes.h"
+#ifdef WITH_D2D
+#error Including dx include file while building for Direct2D
+#endif
 
 struct IDirectDrawSurface;
 

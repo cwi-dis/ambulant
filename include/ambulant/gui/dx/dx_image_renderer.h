@@ -36,6 +36,9 @@
 #include "ambulant/net/datasource.h"
 
 #include <string>
+#ifdef WITH_D2D
+#error Including dx include file while building for Direct2D
+#endif
 
 struct IDirectDrawSurface;
 

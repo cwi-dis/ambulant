@@ -33,8 +33,13 @@
 #include "ambulant/gui/SDL/sdl_factory.h"
 #endif
 #ifdef WITH_DSVIDEO
+#ifdef WITH_D2D
+#include "ambulant/gui/d2/d2_dsvideo.h"
+#else
 #include "ambulant/gui/dx/dx_dsvideo.h"
 #endif
+#endif
+
 #include "ambulant/smil2/test_attrs.h"
 
 //#define AM_DBG
@@ -47,8 +52,9 @@ using namespace ambulant;
 class dsvideo_renderer_factory : public common::playable_factory {
   public:
 
-	dsvideo_renderer_factory(common::factories *factory)
-	:	m_factory(factory)
+	dsvideo_renderer_factory(common::factories *factory, common::playable_factory_machdep *mdp)
+	:	m_factory(factory),
+		m_mdp(mdp)
 	{}
 	~dsvideo_renderer_factory() {}
 
@@ -71,7 +77,11 @@ class dsvideo_renderer_factory : public common::playable_factory {
 		lib::event_processor *evp)
 	{
 		lib::xml_string tag = node->get_local_name();
-		return new gui::dx::dx_dsvideo_renderer(context, cookie, node, evp, m_factory, NULL);
+#ifdef WITH_D2D
+		return new gui::d2::d2_dsvideo_renderer(context, cookie, node, evp, m_factory, m_mdp);
+#else
+		return new gui::dx::dx_dsvideo_renderer(context, cookie, node, evp, m_factory, m_mdp);
+#endif
 		return NULL;
 	}
 
@@ -87,6 +97,7 @@ class dsvideo_renderer_factory : public common::playable_factory {
 
   private:
 	common::factories *m_factory;
+	common::playable_factory_machdep *m_mdp;
 
 };
 #endif // WITH_DSVIDEO
@@ -124,7 +135,8 @@ void initialize(
 		lib::logger::get_logger()->trace("ffmpeg_plugin: SDL playable factory registered");
 #endif
 #ifdef WITH_DSVIDEO
-		pf->add_factory(new dsvideo_renderer_factory(factory));
+		common::playable_factory_machdep *mdp = dynamic_cast<common::playable_factory_machdep *>(player);
+		pf->add_factory(new dsvideo_renderer_factory(factory, mdp));
 		lib::logger::get_logger()->trace("ffmpeg_plugin: video playable factory registered");
 #endif
 	}

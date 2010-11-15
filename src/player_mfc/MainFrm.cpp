@@ -110,7 +110,8 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	//	the CREATESTRUCT cs
 
 	// Set the startup dimensions for MMS
-	//cs.cx = 176 + 28;
+	if (cs.cx <= 0) cs.cx = 640;
+	if (cs.cy <= 0) cs.cy = 480;
 	//cs.cy = 216 + 108;
 
 	return TRUE;
@@ -208,6 +209,7 @@ CMainFrame::OnViewFullScreen()
 		child->SetWindowPos(NULL, dx, dy, 0, 0, SWP_NOZORDER);
 	}
 #endif
+	InvalidateRect(NULL);
 }
 
 void

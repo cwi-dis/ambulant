@@ -25,6 +25,7 @@
 
 #include "ambulant/lib/win32/win32_error.h"
 #include "ambulant/lib/logger.h"
+#include "ambulant/lib/textptr.h"
 
 
 using namespace ambulant;
@@ -40,7 +41,8 @@ void lib::win32::win_report_error(const char *func, unsigned long  err) {
 		0,
 		NULL
 		);
-	lib::logger::get_logger()->error("%s failed, Error 0x%x: %s", func, err, pMsgBuf);
+	textptr tp(pMsgBuf);
+	lib::logger::get_logger()->error("%s failed, Error 0x%x: %s", func, err, tp.c_str());
 	LocalFree(pMsgBuf);
 }
 
@@ -59,7 +61,8 @@ void lib::win32::win_show_error(const char *func, unsigned long  err) {
 		0,
 		NULL
 		);
-	lib::logger::get_logger()->show("%s failed, Error 0x%x: %s", func, err, pMsgBuf);
+	textptr tp(pMsgBuf);
+	lib::logger::get_logger()->show("%s failed, Error 0x%x: %s", func, err, tp.c_str());
 	LocalFree(pMsgBuf);
 }
 
@@ -79,7 +82,8 @@ void lib::win32::win_trace_error(const char *func, unsigned long  err) {
 		0,
 		NULL
 		);
-	lib::logger::get_logger()->trace("%s failed, Error 0x%x: %s", func, err, pMsgBuf);
+	textptr tp(pMsgBuf);
+	lib::logger::get_logger()->trace("%s failed, Error 0x%x: %s", func, err, tp.c_str());
 	LocalFree(pMsgBuf);
 }
 

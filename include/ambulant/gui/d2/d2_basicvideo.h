@@ -23,74 +23,99 @@
  * @$Id$
  */
 
-#ifndef AMBULANT_GUI_DX_AUDIO_H
-#define AMBULANT_GUI_DX_AUDIO_H
+#ifndef AMBULANT_GUI_D2_BASICVIDEO_H
+#define AMBULANT_GUI_D2_BASICVIDEO_H
 
 #include "ambulant/config/config.h"
 #include "ambulant/lib/event.h"
 #include "ambulant/common/renderer_impl.h"
+#include "ambulant/gui/d2/d2_player.h"
 #include "ambulant/lib/mtsync.h"
-#include "ambulant/smil2/transition.h"
-#ifdef WITH_D2D
-#error Including dx include file while building for Direct2D
+
+#define WITH_DX_EVR
+
+interface IGraphBuilder;
+interface IMediaControl;
+interface IMediaPosition;
+interface IMediaEvent;
+interface IBasicAudio;
+interface IVideoWindow;
+interface IBaseFilter;
+#ifdef WITH_DX_EVR
+interface IMFVideoDisplayControl;
 #endif
 
 namespace ambulant {
 
 namespace gui {
 
-namespace dx {
+namespace d2 {
 
-class audio_player;
+class basicvideo_player;
 
-common::playable_factory *create_dx_audio_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
+common::playable_factory *create_d2_basicvideo_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 
-class dx_audio_renderer : public common::renderer_playable {
+class d2_basicvideo_renderer : public common::renderer_playable {
   public:
-	dx_audio_renderer(
+	d2_basicvideo_renderer(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp,
 		common::factories *fp,
-		common::playable_factory_machdep *dxplayer);
-	~dx_audio_renderer();
+		common::playable_factory_machdep *d2player);
+	~d2_basicvideo_renderer();
 	void start(double t);
 	//void stop();
 	bool stop();
-	void seek(double t);
 	void pause(common::pause_display d=common::display_show);
+	void seek(double t);
 	void resume();
+	bool user_event(const lib::point& pt, int what);
 	void redraw(const lib::rect &dirty, common::gui_window *window);
 	common::duration get_dur();
-	void set_intransition(const lib::transition_info* info);
-	void start_outtransition(const lib::transition_info* info);
+	void set_intransition(const lib::transition_info *info) {};
+	void start_outtransition(const lib::transition_info *info) {};
+
   private:
-	void update_levels();
-	void update_callback();
-	void schedule_update();
-	audio_player *m_player;
+    bool _open(const std::string& url, HWND parent);
+	bool _can_play();
+	void _start(double t);
+	bool _stop();
+	void _pause(common::pause_display d);
+	void _resume();
+	void _seek(double t);
+	bool _is_playing();
+
+	void _update_callback();
+	void _schedule_update();
 	lib::event *m_update_event;
-	double m_level;
-	int m_balance;
-	const lib::transition_info* m_intransition;
-	const lib::transition_info* m_outtransition;
-	smil2::audio_transition_engine* m_transition_engine;
+	
+	IGraphBuilder *m_graph_builder;
+	IMediaControl *m_media_control;
+	IMediaPosition *m_media_position;
+	IMediaEvent *m_media_event;
+	IBasicAudio *m_basic_audio;
+	IVideoWindow *m_video_window;
+#ifdef WITH_DX_EVR
+	IBaseFilter *m_evr;
+	IMFVideoDisplayControl *m_evr_control;
+	HWND m_evr_hwnd;
+#endif
+
+	d2_player *m_d2player;
 	lib::critical_section m_cs;
+
+	// for debugging
+	lib::rect m_msg_rect;
+	DWORD m_rot_index;
+
 };
 
-/// Set the overall soundlevel
-AMBULANTAPI void set_global_level(double level);
-/// Change the overall soundlevel
-AMBULANTAPI double change_global_level(double factor);
-/// Set the overall playback speed
-AMBULANTAPI void set_global_rate(double rate);
-/// Change the overall playback speed
-AMBULANTAPI double change_global_rate(double factor);
-} // namespace dx
+} // namespace d2
 
 } // namespace gui
 
 } // namespace ambulant
 
-#endif // AMBULANT_GUI_DX_AUDIO_H
+#endif // AMBULANT_GUI_D2_BASICVIDEO_H

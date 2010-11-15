@@ -200,7 +200,7 @@ Cieambulant::PluginWinProc(UINT msg, WPARAM wParam, LPARAM lParam, BOOL& bHandle
 			HDC hdc = BeginPaint(&ps);
 			if (m_hwnd && m_ambulant_player) {
 				HDC hdc = ::GetDC(m_hwnd);
-				m_ambulant_player->redraw(m_hwnd, hdc);
+				m_ambulant_player->redraw(m_hwnd, hdc, NULL); // XXX Should pass dirty rect
 				::ShowWindow(m_hwnd, SW_SHOW);
 				::ReleaseDC(m_hwnd, hdc);
 			}

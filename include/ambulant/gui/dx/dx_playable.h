@@ -29,6 +29,9 @@
 #include "ambulant/config/config.h"
 #include "ambulant/common/renderer_impl.h"
 #include "ambulant/gui/dx/html_bridge.h"
+#ifdef WITH_D2D
+#error Including dx include file while building for Direct2D
+#endif
 
 namespace ambulant {
 

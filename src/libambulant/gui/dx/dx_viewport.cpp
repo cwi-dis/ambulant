@@ -31,6 +31,7 @@
 #include <mmsystem.h>
 // For older versions of DirectX, this could be d3d8types.h
 #include <d3d9types.h>
+#include <wincodec.h>
 
 #include "ambulant/gui/dx/dx_viewport.h"
 #include "ambulant/gui/dx/dx_audio_player.h" // Only to define the TPB GUID
@@ -43,6 +44,7 @@
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/colors.h"
 #include "ambulant/lib/gtypes.h"
+#include "ambulant/lib/textptr.h"
 #include "ambulant/lib/win32/win32_error.h"
 #include "ambulant/gui/dx/dx_transition.h"
 
@@ -74,154 +76,62 @@ using lib::uchar;
 using ambulant::lib::win32::win_report_error;
 using ambulant::lib::win32::win_report_last_error;
 
-static struct error {
-	HRESULT hr;
-	char *name;
-} errorlist [] = {
-	{DDERR_ALREADYINITIALIZED, "DDERR_ALREADYINITIALIZED"},
-	{DDERR_CANNOTATTACHSURFACE,"DDERR_CANNOTATTACHSURFACE"},
-	{DDERR_CANNOTDETACHSURFACE,"DDERR_CANNOTDETACHSURFACE"},
-	{DDERR_CURRENTLYNOTAVAIL,"DDERR_CURRENTLYNOTAVAIL"},
-	{DDERR_EXCEPTION,"DDERR_EXCEPTION"},
-	{DDERR_GENERIC,"DDERR_GENERIC"},
-	{DDERR_HEIGHTALIGN,"DDERR_HEIGHTALIGN"},
-	{DDERR_INCOMPATIBLEPRIMARY, "DDERR_INCOMPATIBLEPRIMARY"},
-	{DDERR_INVALIDCAPS, "DDERR_INVALIDCAPS"},
-	{DDERR_INVALIDCLIPLIST, "DDERR_INVALIDCLIPLIST"},
-	{DDERR_INVALIDMODE, "DDERR_INVALIDMODE"},
-	{DDERR_INVALIDOBJECT, "DDERR_INVALIDOBJECT"},
-	{DDERR_INVALIDPARAMS, "DDERR_INVALIDPARAMS"},
-	{DDERR_INVALIDPIXELFORMAT, "DDERR_INVALIDPIXELFORMAT"},
-	{DDERR_INVALIDRECT, "DDERR_INVALIDRECT"},
-	{DDERR_LOCKEDSURFACES, "DDERR_LOCKEDSURFACES"},
-	{DDERR_NO3D, "DDERR_NO3D"},
-	{DDERR_NOALPHAHW, "DDERR_NOALPHAHW"},
-#ifdef DDERR_NOSTEREOHARDWARE
-	{DDERR_NOSTEREOHARDWARE, "DDERR_NOSTEREOHARDWARE"},
-#endif
-#ifdef DDERR_NOSURFACELEFT
-	{DDERR_NOSURFACELEFT, "DDERR_NOSURFACELEFT"},
-#endif
-	{DDERR_NOCLIPLIST, "DDERR_NOCLIPLIST"},
-	{DDERR_NOCOLORCONVHW, "DDERR_NOCOLORCONVHW"},
-	{DDERR_NOCOOPERATIVELEVELSET, "DDERR_NOCOOPERATIVELEVELSET"},
-	{DDERR_NOCOLORKEY, "DDERR_NOCOLORKEY"},
-	{DDERR_NOCOLORKEYHW, "DDERR_NOCOLORKEYHW"},
-	{DDERR_NODIRECTDRAWSUPPORT, "DDERR_NODIRECTDRAWSUPPORT"},
-	{DDERR_NOEXCLUSIVEMODE, "DDERR_NOEXCLUSIVEMODE"},
-	{DDERR_NOFLIPHW, "DDERR_NOFLIPHW"},
-	{DDERR_NOGDI, "DDERR_NOGDI"},
-	{DDERR_NOMIRRORHW, "DDERR_NOMIRRORHW"},
-	{DDERR_NOTFOUND, "DDERR_NOTFOUND"},
-	{DDERR_NOOVERLAYHW, "DDERR_NOOVERLAYHW"},
-#ifdef DDERR_OVERLAPPINGRECTS
-	{DDERR_OVERLAPPINGRECTS, "DDERR_OVERLAPPINGRECTS"},
-#endif
-	{DDERR_NORASTEROPHW, "DDERR_NORASTEROPHW"},
-	{DDERR_NOROTATIONHW, "DDERR_NOROTATIONHW"},
-	{DDERR_NOSTRETCHHW, "DDERR_NOSTRETCHHW"},
-	{DDERR_NOT4BITCOLOR, "DDERR_NOT4BITCOLOR"},
-	{DDERR_NOT4BITCOLORINDEX, "DDERR_NOT4BITCOLORINDEX"},
-	{DDERR_NOT8BITCOLOR, "DDERR_NOT8BITCOLOR"},
-	{DDERR_NOTEXTUREHW, "DDERR_NOTEXTUREHW"},
-	{DDERR_NOVSYNCHW, "DDERR_NOVSYNCHW"},
-	{DDERR_NOZBUFFERHW, "DDERR_NOZBUFFERHW"},
-	{DDERR_NOZOVERLAYHW, "DDERR_NOZOVERLAYHW"},
-	{DDERR_OUTOFCAPS, "DDERR_OUTOFCAPS"},
-	{DDERR_OUTOFMEMORY, "DDERR_OUTOFMEMORY"},
-	{DDERR_OUTOFVIDEOMEMORY, "DDERR_OUTOFVIDEOMEMORY"},
-	{DDERR_OVERLAYCANTCLIP, "DDERR_OVERLAYCANTCLIP"},
-	{DDERR_OVERLAYCOLORKEYONLYONEACTIVE, "DDERR_OVERLAYCOLORKEYONLYONEACTIVE"},
-	{DDERR_PALETTEBUSY, "DDERR_PALETTEBUSY"},
-	{DDERR_COLORKEYNOTSET, "DDERR_COLORKEYNOTSET"},
-	{DDERR_SURFACEALREADYATTACHED, "DDERR_SURFACEALREADYATTACHED"},
-	{DDERR_SURFACEALREADYDEPENDENT, "DDERR_SURFACEALREADYDEPENDENT"},
-	{DDERR_SURFACEBUSY, "DDERR_SURFACEBUSY"},
-	{DDERR_CANTLOCKSURFACE, "DDERR_CANTLOCKSURFACE"},
-	{DDERR_SURFACEISOBSCURED, "DDERR_SURFACEISOBSCURED"},
-	{DDERR_SURFACELOST, "DDERR_SURFACELOST"},
-	{DDERR_SURFACENOTATTACHED, "DDERR_SURFACENOTATTACHED"},
-	{DDERR_TOOBIGHEIGHT, "DDERR_TOOBIGHEIGHT"},
-	{DDERR_TOOBIGSIZE, "DDERR_TOOBIGSIZE"},
-	{DDERR_TOOBIGWIDTH, "DDERR_TOOBIGWIDTH"},
-	{DDERR_UNSUPPORTED, "DDERR_UNSUPPORTED"},
-	{DDERR_UNSUPPORTEDFORMAT, "DDERR_UNSUPPORTEDFORMAT"},
-	{DDERR_UNSUPPORTEDMASK, "DDERR_UNSUPPORTEDMASK"},
-#ifdef DDERR_INVALIDSTREAM
-	{DDERR_INVALIDSTREAM, "DDERR_INVALIDSTREAM"},
-#endif
-	{DDERR_VERTICALBLANKINPROGRESS, "DDERR_VERTICALBLANKINPROGRESS"},
-	{DDERR_WASSTILLDRAWING, "DDERR_WASSTILLDRAWING"},
-#ifdef DDERR_DDSCAPSCOMPLEXREQUIRED
-	{DDERR_DDSCAPSCOMPLEXREQUIRED, "DDERR_DDSCAPSCOMPLEXREQUIRED"},
-#endif
-	{DDERR_XALIGN, "DDERR_XALIGN"},
-	{DDERR_INVALIDDIRECTDRAWGUID, "DDERR_INVALIDDIRECTDRAWGUID"},
-	{DDERR_DIRECTDRAWALREADYCREATED, "DDERR_DIRECTDRAWALREADYCREATED"},
-	{DDERR_NODIRECTDRAWHW, "DDERR_NODIRECTDRAWHW"},
-	{DDERR_PRIMARYSURFACEALREADYEXISTS, "DDERR_PRIMARYSURFACEALREADYEXISTS"},
-	{DDERR_NOEMULATION, "DDERR_NOEMULATION"},
-	{DDERR_REGIONTOOSMALL, "DDERR_REGIONTOOSMALL"},
-	{DDERR_CLIPPERISUSINGHWND, "DDERR_CLIPPERISUSINGHWND"},
-	{DDERR_NOCLIPPERATTACHED, "DDERR_NOCLIPPERATTACHED"},
-	{DDERR_NOHWND, "DDERR_NOHWND"},
-	{DDERR_HWNDSUBCLASSED, "DDERR_HWNDSUBCLASSED"},
-	{DDERR_HWNDALREADYSET, "DDERR_HWNDALREADYSET"},
-	{DDERR_NOPALETTEATTACHED, "DDERR_NOPALETTEATTACHED"},
-	{DDERR_NOPALETTEHW, "DDERR_NOPALETTEHW"},
-	{DDERR_BLTFASTCANTCLIP, "DDERR_BLTFASTCANTCLIP"},
-	{DDERR_NOBLTHW, "DDERR_NOBLTHW"},
-	{DDERR_NODDROPSHW, "DDERR_NODDROPSHW"},
-	{DDERR_OVERLAYNOTVISIBLE, "DDERR_OVERLAYNOTVISIBLE"},
-	{DDERR_NOOVERLAYDEST, "DDERR_NOOVERLAYDEST"},
-	{DDERR_INVALIDPOSITION, "DDERR_INVALIDPOSITION"},
-	{DDERR_NOTAOVERLAYSURFACE, "DDERR_NOTAOVERLAYSURFACE"},
-	{DDERR_EXCLUSIVEMODEALREADYSET, "DDERR_EXCLUSIVEMODEALREADYSET"},
-	{DDERR_NOTFLIPPABLE, "DDERR_NOTFLIPPABLE"},
-	{DDERR_CANTDUPLICATE, "DDERR_CANTDUPLICATE"},
-	{DDERR_NOTLOCKED, "DDERR_NOTLOCKED"},
-	{DDERR_CANTCREATEDC, "DDERR_CANTCREATEDC"},
-	{DDERR_NODC, "DDERR_NODC"},
-	{DDERR_WRONGMODE, "DDERR_WRONGMODE"},
-	{DDERR_IMPLICITLYCREATED, "DDERR_IMPLICITLYCREATED"},
-	{DDERR_NOTPALETTIZED, "DDERR_NOTPALETTIZED"},
-	{DDERR_UNSUPPORTEDMODE, "DDERR_UNSUPPORTEDMODE"},
-	{DDERR_NOMIPMAPHW, "DDERR_NOMIPMAPHW"},
-	{DDERR_INVALIDSURFACETYPE, "DDERR_INVALIDSURFACETYPE"},
-	{DDERR_NOOPTIMIZEHW, "DDERR_NOOPTIMIZEHW"},
-	{DDERR_NOTLOADED, "DDERR_NOTLOADED"},
-	{DDERR_NOFOCUSWINDOW, "DDERR_NOFOCUSWINDOW"},
-#ifdef DDERR_NOTONMIPMAPSUBLEVEL
-	{DDERR_NOTONMIPMAPSUBLEVEL, "DDERR_NOTONMIPMAPSUBLEVEL"},
-#endif
-	{DDERR_DCALREADYCREATED, "DDERR_DCALREADYCREATED"},
-	{DDERR_NONONLOCALVIDMEM, "DDERR_NONONLOCALVIDMEM"},
-	{DDERR_CANTPAGELOCK, "DDERR_CANTPAGELOCK"},
-	{DDERR_CANTPAGEUNLOCK, "DDERR_CANTPAGEUNLOCK"},
-	{DDERR_NOTPAGELOCKED, "DDERR_NOTPAGELOCKED"},
-	{DDERR_MOREDATA, "DDERR_MOREDATA"},
-#ifdef DDERR_EXPIRED
-	{DDERR_EXPIRED, "DDERR_EXPIRED"},
-#endif
-#ifdef DDERR_TESTFINISHED
-	{DDERR_TESTFINISHED, "DDERR_TESTFINISHED"},
-#endif
-#ifdef DDERR_NEWMODE
-	{DDERR_NEWMODE, "DDERR_NEWMODE"},
-#endif
-#ifdef DDERR_D3DNOTINITIALIZED
-	{DDERR_D3DNOTINITIALIZED, "DDERR_D3DNOTINITIALIZED"},
-#endif
-	{DDERR_VIDEONOTACTIVE, "DDERR_VIDEONOTACTIVE"},
-#ifdef DDERR_NOMONITORINFORMATION
-	{DDERR_NOMONITORINFORMATION, "DDERR_NOMONITORINFORMATION"},
-#endif
-#ifdef DDERR_NODRIVERSUPPORT
-	{DDERR_NODRIVERSUPPORT, "DDERR_NODRIVERSUPPORT"},
-#endif
-	{DDERR_DEVICEDOESNTOWNSURFACE, "DDERR_DEVICEDOESNTOWNSURFACE"},
-	{DDERR_NOTINITIALIZED, "DDERR_NOTINITIALIZED"},
+// --------------------------------------------------------------
+
+// DirectX parameter handling.
+// white is used as transparent color
+const lib::color_t CLR_DEFAULT		= RGB(255, 255, 255);
+// almost white is used as alternative color for white
+const lib::color_t CLR_ALTERNATIVE	= RGB(255, 255, 254);
+
+
+class dxparams_rgb : public gui::dx::dxparams {
+public:
+	lib::color_t transparent_color() { return RGB(255, 255, 255); }
+	lib::color_t transparent_replacement_color() { return RGB(255, 255, 254); }
+	lib::color_t invalid_color() { return CLR_INVALID; }
+	DWORD bmi_compression() { return BI_RGB; }
+	const GUID& wic_format() { return GUID_WICPixelFormat32bppBGR; }
+	void fill_ddsd(DDSURFACEDESC& sd, DWORD flags) {
+		memset(&sd, 0, sizeof(DDSURFACEDESC));
+		sd.dwSize = sizeof(DDSURFACEDESC);
+		sd.dwFlags = flags;
+	}
+	struct _DDBLTFX *ddbltfx() { return NULL; }
 };
+
+
+class dxparams_rgba : public gui::dx::dxparams {
+public:
+	lib::color_t transparent_color() { return 0; }
+	lib::color_t transparent_replacement_color() { return 0; }
+	lib::color_t invalid_color() { return 0x00123456; } // fully-transparent random-value:-)
+	DWORD bmi_compression() { return BI_BITFIELDS; }
+	const GUID& wic_format() { return GUID_WICPixelFormat32bppBGRA; }
+	void fill_ddsd(DDSURFACEDESC& sd, DWORD flags) {
+		memset(&sd, 0, sizeof(DDSURFACEDESC));
+		sd.dwSize = sizeof(DDSURFACEDESC);
+		sd.dwFlags = flags | DDSD_PIXELFORMAT;
+		sd.ddpfPixelFormat.dwSize = sizeof(DDPIXELFORMAT);
+		sd.ddpfPixelFormat.dwFlags = 
+			DDPF_ALPHAPIXELS|DDPF_ALPHAPREMULT|DDPF_RGB;
+		sd.ddpfPixelFormat.dwRGBBitCount = 32;
+		sd.ddpfPixelFormat.dwRBitMask = 0xff0000;
+		sd.ddpfPixelFormat.dwGBitMask = 0xff00;
+		sd.ddpfPixelFormat.dwBBitMask = 0xff;
+		sd.ddpfPixelFormat.dwRGBAlphaBitMask = 0xff000000;
+	}
+	struct _DDBLTFX *ddbltfx() { return NULL; }
+};
+
+static gui::dx::dxparams* cur_dxparams = NULL;
+
+gui::dx::dxparams* gui::dx::dxparams::I() {
+	if (cur_dxparams == NULL) {
+		cur_dxparams = new dxparams_rgb();
+	}
+	return cur_dxparams;
+}
 
 #define RELEASE(x) if(x) x->Release();x=NULL;
 
@@ -229,7 +139,7 @@ static lib::logger* viewport_logger = NULL;
 
 static void
 seterror(const char *funcname, HRESULT hr){
-	char* pszmsg;
+	TCHAR* pszmsg = NULL;
 	FormatMessage(
 		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
 		NULL,
@@ -239,13 +149,8 @@ seterror(const char *funcname, HRESULT hr){
 		0,
 		NULL
 		);
-	for(error *p = errorlist; p->name; p++)
-		if (p->hr == hr){
-			viewport_logger->error("%s failed, error = %s (0x%x), %s", funcname, p->name, hr, pszmsg);
-			LocalFree(pszmsg);
-			return;
-		}
-	viewport_logger->error( "%s failed, error = %x, %s", funcname, hr, pszmsg);
+	lib::textptr msg(pszmsg);
+	viewport_logger->error( "%s failed, error = %x, %s", funcname, hr, msg.c_str());
 	LocalFree(pszmsg);
 }
 // wrapper for Blt on primary surface to check for recoverable errors
@@ -311,7 +216,7 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 	red_bits(8), green_bits(8), blue_bits(8),
 	lo_red_bit(16), lo_green_bit(8), lo_blue_bit(0),
 	palette_entries(0),
-	m_bgd(CLR_DEFAULT) {
+	m_bgd(dxparams::I()->transparent_color()) {
 
 	viewport_logger = lib::logger::get_logger();
 
@@ -340,12 +245,19 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 
 	// create primary surface
 	DDSURFACEDESC sd;
+#if 0
+	dxparams::I()->fill_ddsd(sd, DDSD_CAPS);
+	sd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
+	sd.dwWidth = m_width;
+	sd.dwHeight = m_height;
+#else
 	memset(&sd, 0, sizeof(DDSURFACEDESC));
 	sd.dwSize = sizeof(DDSURFACEDESC);
 	sd.dwFlags = DDSD_CAPS;
 	sd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
 	sd.dwWidth = m_width;
 	sd.dwHeight = m_height;
+#endif
 	hr = m_direct_draw->CreateSurface(&sd, &m_primary_surface, NULL);
 	if (FAILED(hr)) {
 		seterror("DirectDraw::CreateSurface()", hr);
@@ -394,17 +306,19 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 #endif // WITH_WIN7_WORKAROUND
 
 	// create drawing surface
+#if 1
+	dxparams::I()->fill_ddsd(sd, DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS);
+	sd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
+	sd.dwWidth = m_width;
+	sd.dwHeight = m_height;
+#else
 	memset(&sd, 0, sizeof(DDSURFACEDESC));
 	sd.dwSize = sizeof(DDSURFACEDESC);
 	sd.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
-#ifdef DDSCAPS_OFFSCREENPLAIN
 	sd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
-#else
-	// XXXJACK: for WinCE. Maybe we need DDSCAPS_BACKBUFFER or something?
-	sd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY;
-#endif
 	sd.dwWidth = m_width;
 	sd.dwHeight = m_height;
+#endif
 	hr = m_direct_draw->CreateSurface(&sd, &m_surface, NULL);
 	if (FAILED(hr)){
 		seterror("DirectDraw::CreateSurface()", hr);
@@ -418,34 +332,38 @@ gui::dx::viewport::viewport(int width, int height, HWND hwnd)
 
 	// create shared transition surface
 	IDirectDrawSurface* surf;
+#if 1
+	dxparams::I()->fill_ddsd(sd, DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS);
+	sd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
+	sd.dwWidth = m_width;
+	sd.dwHeight = m_height;
+#else
 	memset(&sd, 0, sizeof(DDSURFACEDESC));
 	sd.dwSize = sizeof(DDSURFACEDESC);
 	sd.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
-#ifdef DDSCAPS_OFFSCREENPLAIN
 	sd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
-#else
-	// XXXJACK: for WinCE. Maybe we need DDSCAPS_BACKBUFFER or something?
-	sd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY;
-#endif
 	sd.dwWidth = m_width;
 	sd.dwHeight = m_height;
+#endif
 	hr = m_direct_draw->CreateSurface(&sd, &surf, NULL);
 	if (FAILED(hr)){
 		seterror("DirectDraw::CreateSurface()", hr);
 		return;
 	}
 	m_surfaces.push_back(surf);
+#if 1
+	dxparams::I()->fill_ddsd(sd, DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS);
+	sd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
+	sd.dwWidth = m_width;
+	sd.dwHeight = m_height;
+#else
 	memset(&sd, 0, sizeof(DDSURFACEDESC));
 	sd.dwSize = sizeof(DDSURFACEDESC);
 	sd.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
-#ifdef DDSCAPS_OFFSCREENPLAIN
 	sd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
-#else
-	// XXXJACK: for WinCE. Maybe we need DDSCAPS_BACKBUFFER or something?
-	sd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY;
-#endif
 	sd.dwWidth = m_width;
 	sd.dwHeight = m_height;
+#endif
 	hr = m_direct_draw->CreateSurface(&sd, &m_fstr_surface, NULL);
 	if (FAILED(hr)){
 		seterror("DirectDraw::CreateSurface()", hr);
@@ -469,7 +387,7 @@ gui::dx::viewport::~viewport() {
 // Sets the background color of this viewport
 void
 gui::dx::viewport::set_background(lib::color_t color) {
-	m_bgd = (color == CLR_INVALID)?CLR_DEFAULT:color;
+	m_bgd = (color == dxparams::I()->invalid_color())?dxparams::I()->transparent_color():color;
 	m_ddbgd = convert(m_bgd);
 }
 
@@ -479,17 +397,20 @@ IDirectDrawSurface*
 gui::dx::viewport::create_surface(DWORD w, DWORD h) {
 	IDirectDrawSurface* surface = 0;
 	DDSURFACEDESC sd;
+#if 1
+	dxparams::I()->fill_ddsd(sd, DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS);
+	sd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
+	sd.dwWidth = w;
+	sd.dwHeight = h;
+#else
 	memset(&sd, 0, sizeof(DDSURFACEDESC));
 	sd.dwSize = sizeof(DDSURFACEDESC);
 	sd.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
-#ifdef DDSCAPS_OFFSCREENPLAIN
 	sd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
-#else
-	// XXXJACK: for WinCE. Maybe we need DDSCAPS_BACKBUFFER or something?
-	sd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY;
-#endif
 	sd.dwWidth = w;
 	sd.dwHeight = h;
+#endif
+
 	HRESULT hr = m_direct_draw->CreateSurface(&sd, &surface, NULL);
 	if (FAILED(hr)){
 		seterror("DirectDraw::CreateSurface()", hr);
@@ -587,11 +508,11 @@ gui::dx::viewport::redraw() {
 			tmps->ReleaseDC(tmps_dc);
 			s2->ReleaseDC(s2_dc);
 		}
-		primary_Blt(m_primary_surface, to_screen_rc_ptr(dst_rc), tmps, &src_rc, flags, NULL);
+		primary_Blt(m_primary_surface, to_screen_rc_ptr(dst_rc), tmps, &src_rc, flags, dxparams::I()->ddbltfx());
 		release_surface(tmps);
 	} else {
 		// Copy to screen
-		primary_Blt(m_primary_surface, to_screen_rc_ptr(dst_rc), m_surface, &src_rc, flags, NULL);
+		primary_Blt(m_primary_surface, to_screen_rc_ptr(dst_rc), m_surface, &src_rc, flags, dxparams::I()->ddbltfx());
 		// Copy to backing store for posible fs transition later
 		HRESULT hr = m_fstr_surface->Blt(&src_rc, m_surface, &src_rc, flags, NULL);
 		if (hr == DDERR_NOTFOUND) return;
@@ -686,10 +607,10 @@ gui::dx::viewport::redraw(const lib::rect& rc) {
 			tmps->ReleaseDC(tmps_dc);
 			s2->ReleaseDC(s2_dc);
 		}
-		primary_Blt(m_primary_surface, &dst_rc, tmps, &src_rc, flags, NULL);
+		primary_Blt(m_primary_surface, &dst_rc, tmps, &src_rc, flags, dxparams::I()->ddbltfx());
 	} else {
 		// Copy to screen
-		primary_Blt(m_primary_surface, &dst_rc, m_surface, &src_rc, flags, NULL);
+		primary_Blt(m_primary_surface, &dst_rc, m_surface, &src_rc, flags, dxparams::I()->ddbltfx());
 		// Copy to backing store, for later use with transition
 		// XXX Or should we copy the whole surface?
 		HRESULT hr = m_fstr_surface->Blt(&src_rc, m_surface, &src_rc, flags, NULL);
@@ -876,13 +797,10 @@ void gui::dx::viewport::clear(const lib::rect& rc, lib::color_t clr, double opac
 // Clears a DD surface with the provided color.
 void
 gui::dx::viewport::clear_surface(IDirectDrawSurface* p, lib::color_t clr, double opacity) {
-	DDSURFACEDESC sd;
-	memset(&sd, 0, sizeof(DDSURFACEDESC));
-	sd.dwSize = sizeof(DDSURFACEDESC);
 	DDBLTFX bltfx;
 	memset(&bltfx, 0, sizeof(DDBLTFX));
 	bltfx.dwSize = sizeof(bltfx);
-	bltfx.dwFillColor = (clr == CLR_INVALID)?m_ddbgd:convert(clr);
+	bltfx.dwFillColor = (clr == dxparams::I()->invalid_color())?m_ddbgd:convert(clr);
 	RECT dst_rc;
 	set_rect(p, &dst_rc);
 	HRESULT hr = p->Blt(&dst_rc, 0, 0, DDBLT_COLORFILL | AM_DDBLT_WAIT, &bltfx);
@@ -1104,7 +1022,7 @@ gui::dx::viewport::draw(const std::basic_string<text_char>& text, const lib::rec
 		return;
 	}
 	SetBkMode(hdc, TRANSPARENT);
-	COLORREF crTextColor = (clr == CLR_INVALID)?::GetSysColor(COLOR_WINDOWTEXT):clr;
+	COLORREF crTextColor = (clr == dxparams::I()->invalid_color())?::GetSysColor(COLOR_WINDOWTEXT):clr;
 	::SetTextColor(hdc, crTextColor);
 	RECT dstRC = {rc.left(), rc.top(), rc.right(), rc.bottom()};
 	UINT uFormat = DT_CENTER | DT_WORDBREAK;

@@ -52,9 +52,9 @@ public:
 	CLogWindow *m_logwindow;
 #endif
 // Overrides
-	public:
+  public:
 	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
-virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 protected:
 
 // Implementation

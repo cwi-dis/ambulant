@@ -23,8 +23,8 @@
  * @$Id$
  */
 
-#ifndef AMBULANT_GUI_DX_PLAYER_H
-#define AMBULANT_GUI_DX_PLAYER_H
+#ifndef AMBULANT_GUI_D2_PLAYER_H
+#define AMBULANT_GUI_D2_PLAYER_H
 
 #ifndef _INC_WINDOWS
 #include <windows.h>
@@ -36,7 +36,7 @@
 #include <map>
 #include <stack>
 
-// The interfaces implemented by dx_player
+// The interfaces implemented by d2_player
 #include "ambulant/common/player.h"
 #include "ambulant/common/layout.h"
 #include "ambulant/common/playable.h"
@@ -46,11 +46,30 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/net/url.h"
 #include "ambulant/gui/dx/html_bridge.h"
-#include "ambulant/gui/dx/dx_playable.h"
+//#include "ambulant/gui/d2/d2_playable.h"
+
+#if 1
+// This is a workaround for a bug in VS2008/MSSDK, where installation
+// order can mess up standard include files.
+// See <http://social.msdn.microsoft.com/Forums/en-US/vcgeneral/thread/4bc93a16-4ad5-496c-954c-45efbe4b180b>
+// for details.
+namespace std {
+ // TEMPLATE FUNCTION _Swap_adl
+ template<class _Ty> inline void _Swap_adl(_Ty& _Left, _Ty& _Right) {	// exchange values stored at _Left and _Right, using ADL
+  swap(_Left, _Right);
+ }
+}
+#endif 
+
+interface ID2D1Factory;
+interface ID2D1HwndRenderTarget;
+interface ID2D1RenderTarget;
+interface ID2D1Bitmap;
+interface IWICBitmap;
 
 namespace ambulant {
 
-// classes used by dx_player
+// classes used by d2_player
 
 namespace lib {
 	class event_processor;
@@ -65,31 +84,49 @@ namespace smil2 {
 
 namespace gui {
 
-namespace dx {
-
-class viewport;
-class dx_window;
-class dx_transition;
+namespace d2 {
 
 
-class dx_player_callbacks : public html_browser_factory {
+class d2_window;
+class d2_transition;
+
+/// Abstract class to be implemented by renderers that allocate
+/// Direct2D resources.
+/// After registering the class with the d2_player, the discard_d2d
+/// method will be called when Direct2D signals that cached resources
+/// are no longer valid.
+class AMBULANTAPI d2_resources {
+public:
+	virtual void recreate_d2d() = 0;
+	virtual void discard_d2d() = 0;
+};
+
+/// This is the callback interface to obtain (partial) screenshots
+/// from the rendered content.
+class AMBULANTAPI d2_capture_callback {
+public:
+	virtual void captured(IWICBitmap *bitmap) = 0;
+};
+
+class d2_player_callbacks : public html_browser_factory {
   public:
 	virtual HWND new_os_window() = 0;
 	virtual void destroy_os_window(HWND hwnd) = 0;
 	virtual SIZE get_default_size() = 0;
 };
 
-class AMBULANTAPI dx_player :
+class AMBULANTAPI d2_player :
 	public common::gui_player,
 	public common::window_factory,
-	public dx_playables_context,
+	public common::playable_factory_machdep,
 	public common::embedder,
-	public lib::event_processor_observer
+	public lib::event_processor_observer,
+	public d2_capture_callback
 {
 
   public:
-	dx_player(dx_player_callbacks &hoster, common::player_feedback *feedback, const net::url& u);
-	~dx_player();
+	d2_player(d2_player_callbacks &hoster, common::player_feedback *feedback, const net::url& u);
+	~d2_player();
 
 	/// Call on application termination
 	static void cleanup();
@@ -140,39 +177,84 @@ class AMBULANTAPI dx_player :
 	void on_done();
 
 	common::window_factory *get_window_factory() { return this;}
-	viewport* create_viewport(int w, int h, HWND hwnd);
-	void redraw(HWND hwnd, HDC hdc, RECT *dirty);
+
+	void redraw(HWND hwnd, HDC hdc, RECT *dirty=NULL);
+
 
 	///////////////////
 	// Timeslices services and transitions
-	void update_callback();
-	void schedule_update();
-	void update_transitions();
-	void clear_transitions();
-	bool has_transitions() const;
 	void stopped(common::playable *p);
 	void paused(common::playable *p);
 	void resumed(common::playable *p);
 	void set_intransition(common::playable *p, const lib::transition_info *info);
 	void start_outtransition(common::playable *p, const lib::transition_info *info);
-	dx_transition *get_transition(common::playable *p);
 
-  private:
-	dx_transition *set_transition(common::playable *p, const lib::transition_info *info, bool is_outtransition);
-	common::gui_window* get_window(HWND hwnd);
-	HWND get_main_window();
 	void lock_redraw();
 	void unlock_redraw();
 
-	// The hosting application
-	dx_player_callbacks &m_hoster;
-	// The current document URL
-//	net::url m_url;
-	// The current view
-	struct wininfo {HWND h; viewport *v; dx_window *w; long f;};
-	wininfo* get_wininfo(HWND hwnd);
+	// Direct2D resource management
+	void register_resources(d2_resources *resource) {
+		m_resources.insert(resource);
+	}
+	void unregister_resources(d2_resources *resource) {
+		m_resources.erase(resource);
+	}
 
+	// Schedule a capture of the output are
+	void schedule_capture(lib::rect area, d2_capture_callback *cb) {
+		m_captures.push_back(std::pair<lib::rect, d2_capture_callback *>(area, cb));
+	}
+
+	// Global capture-callback: saves snapshots, keeps bitmap for transitions, etc.
+	void captured(IWICBitmap *bitmap);
+
+	// Get current rendertarget, only valid while redrawing
+	ID2D1HwndRenderTarget *get_rendertarget() {
+		return m_cur_wininfo?m_cur_wininfo->m_rendertarget:NULL;
+	}
+	// Get current hwnd, only valid while redrawing
+	HWND get_hwnd() {
+		return m_cur_wininfo?m_cur_wininfo->m_hwnd:_get_main_window();
+	}
+  private:
+	bool _calc_fit(const RECT& dstrect, const lib::size& srcsize, float& xoff, float& yoff, float& fac);
+
+	// Structure to keep hwnd/window and rendertarget together
+	struct wininfo {
+		HWND m_hwnd;
+		RECT m_rect;
+		ID2D1HwndRenderTarget *m_rendertarget;
+		d2_window *m_window;
+	};
+	// Valid only during redraw():
+	wininfo* m_cur_wininfo;
+	wininfo* _get_wininfo(HWND hwnd);
+	wininfo* _get_wininfo(d2_window *window);
+	common::gui_window* _get_window(HWND hwnd);
+	HWND _get_main_window();
+
+    // Our Direct2D glue
+    ID2D1Factory *m_d2d;
+	void _recreate_d2d(wininfo *wi);
+	void _discard_d2d();
+
+	// Transition handling
 	lib::event *m_update_event;
+	void _update_callback();
+	void _schedule_update();
+	void _update_transitions();
+	void _clear_transitions();
+	bool _has_transitions() const;
+	d2_transition *_get_transition(common::playable *p);
+	d2_transition *_set_transition(common::playable *p, const lib::transition_info *info, bool is_outtransition);
+
+	// Capturing screen output
+	ID2D1Bitmap *_capture_bitmap(lib::rect r, ID2D1RenderTarget *src_rt, ID2D1RenderTarget *dst_rt);
+	IWICBitmap *_capture_wic(lib::rect r, ID2D1RenderTarget *src_rt);
+	std::list<std::pair<lib::rect, d2_capture_callback *> > m_captures;
+
+	// The hosting application
+	d2_player_callbacks &m_hoster;
 
 #ifdef _MSC_VER
 #pragma warning(push)
@@ -188,7 +270,7 @@ class AMBULANTAPI dx_player :
 	std::map<std::string, wininfo*> m_windows;
 	std::stack<frame*> m_frames;
 
-	typedef std::map<common::playable *, dx_transition*> trmap_t;
+	typedef std::map<common::playable *, d2_transition*> trmap_t;
 	trmap_t m_trmap;
 	lib::critical_section m_trmap_cs;
 
@@ -196,13 +278,17 @@ class AMBULANTAPI dx_player :
 #pragma warning(pop)
 #endif
 
+	// Direct2D resource management
+	std::set<d2_resources*> m_resources;
+
+	// The logger
 	lib::logger *m_logger;
 };
 
-} // namespace dx
+} // namespace d2
 
 } // namespace gui
 
 } // namespace ambulant
 
-#endif // AMBULANT_GUI_DX_PLAYER_H
+#endif // AMBULANT_GUI_D2_PLAYER_H

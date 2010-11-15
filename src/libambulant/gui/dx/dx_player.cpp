@@ -18,7 +18,11 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 /*
+<<<<<<< dx_player.cpp
  * @$Id$
+=======
+ * @$Id$
+>>>>>>> 1.116.2.1
  */
 
 #include "ambulant/config/config.h"
@@ -422,7 +426,7 @@ void gui::dx::dx_player::on_char(int ch) {
 	if(m_player) m_player->on_char(ch);
 }
 
-void gui::dx::dx_player::redraw(HWND hwnd, HDC hdc) {
+void gui::dx::dx_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 	wininfo *wi = get_wininfo(hwnd);
 	if(wi) wi->v->redraw(hdc);
 }
@@ -473,7 +477,7 @@ gui::dx::dx_player::new_window(const std::string &name,
 
 	// Clear the viewport
 	const common::region_info *ri = rgn->get_info();
-	winfo->v->set_background(ri?ri->get_bgcolor():CLR_INVALID);
+	winfo->v->set_background(ri?ri->get_bgcolor():dxparams::I()->invalid_color());
 	winfo->v->clear();
 
 	// Create a concrete gui_window

@@ -23,52 +23,57 @@
  * @$Id$
  */
 
-#ifndef AMBULANT_GUI_DX_AREA_H
-#define AMBULANT_GUI_DX_AREA_H
+#ifndef AMBULANT_GUI_D2_IMG_H
+#define AMBULANT_GUI_D2_IMG_H
 
 #include "ambulant/config/config.h"
 #include "ambulant/common/renderer_impl.h"
-#ifdef WITH_D2D
-#error Including dx include file while building for Direct2D
-#endif
+#include "ambulant/gui/d2/d2_renderer.h"
+
+interface IWICImagingFactory;
+interface IWICBitmapSource;
+interface ID2D1Bitmap;
 
 namespace ambulant {
 
 namespace gui {
 
-namespace dx {
+namespace d2 {
 
-class dx_gui_region;
+common::playable_factory *create_d2_image_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
 
-common::playable_factory *create_dx_area_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp);
-
-class dx_area : public common::renderer_playable {
+class d2_img_renderer : public d2_renderer<renderer_playable> {
   public:
-	dx_area (
+	d2_img_renderer(
 		common::playable_notification *context,
 		common::playable_notification::cookie_type cookie,
 		const lib::node *node,
 		lib::event_processor* evp,
 		common::factories *fp,
-		common::playable_factory_machdep *dxplayer);
-	~dx_area();
+		common::playable_factory_machdep *mdp);
+	~d2_img_renderer();
 	void start(double t);
 	//void stop();
 	bool stop();
 	void seek(double t) {}
 	bool user_event(const lib::point& pt, int what);
-	void redraw(const lib::rect &dirty, common::gui_window *window);
-	void set_intransition(const lib::transition_info *info) {};
-	void start_outtransition(const lib::transition_info *info) {};
+	void redraw_body(const rect &dirty, gui_window *window);
 
-	dx_gui_region *m_rgn;
+	void recreate_d2d();
+	void discard_d2d();
+  private:
+
+	static IWICImagingFactory *s_wic_factory;
+	IWICBitmapSource *m_original;	// The original image data reader
+	ID2D1Bitmap *m_d2bitmap;		// The bitmap in Direct2D form
+	char *m_databuf;		// For non-local-url based images.
+	common::factories *m_factory;
+	lib::rect m_msg_rect;
 };
 
-
-} // namespace dx
+} // namespace d2
 
 } // namespace gui
 
 } // namespace ambulant
-
-#endif // AMBULANT_GUI_DX_IMG_H
+#endif // AMBULANT_GUI_D2_IMG_H

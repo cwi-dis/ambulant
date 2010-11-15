@@ -648,7 +648,7 @@ PluginWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				FrameRect(hdc, &rc, GetStockBrush(BLACK_BRUSH));
 				EndPaint(hWnd, &ps);
 				if (plugin->m_ambulant_player)
-					plugin->m_ambulant_player->redraw(hWnd, hdc);
+					plugin->m_ambulant_player->redraw(hWnd, hdc, NULL); // XXX Should pass dirty rect
 				NPRegion invalid_region = CreateRectRgn(rc.left,rc.top,rc.right,rc.bottom);
 				NPN_InvalidateRegion(plugin->getNPP(), invalid_region);
 				break;

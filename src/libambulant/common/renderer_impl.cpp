@@ -265,9 +265,9 @@ renderer_playable_dsall::readdone()
 	AM_DBG lib::logger::get_logger()->debug("renderer_playable_dsall.readdone(0x%x, size=%d) cookie=%d", (void *)this, cur_size, m_cookie);
 
 	if (!m_partial_data)
-		m_partial_data = malloc(cur_size);
+		m_partial_data = malloc(cur_size+1);
 	else
-		m_partial_data = realloc(m_partial_data, m_partial_data_size + cur_size);
+		m_partial_data = realloc(m_partial_data, m_partial_data_size + cur_size + 1);
 
 	if (m_partial_data == NULL) {
 		lib::logger::get_logger()->fatal("renderer_playable_dsall.readdone: cannot allocate %d bytes", cur_size);
@@ -282,6 +282,7 @@ renderer_playable_dsall::readdone()
 
 	memcpy((char *)m_partial_data + m_partial_data_size, cur_data, cur_size);
 	m_partial_data_size += cur_size;
+	((char*)m_partial_data)[m_partial_data_size] = '\0';
 	AM_DBG lib::logger::get_logger()->debug("renderer_playable_dsall.readdone(0x%x): calling m_src->readdone(%d)", (void *)this,cur_size);
 	m_src->readdone(cur_size);
 

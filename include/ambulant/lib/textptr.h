@@ -63,13 +63,7 @@ class textptr {
 	textptr(const char *pb)
 	:	m_pcb(pb), m_pcw(NULL), m_pb(NULL), m_pw(NULL) {}
 
-	textptr(const char *pb, size_t length)
-	:	m_pcb(pb), m_pcw(NULL), m_pb(NULL), m_pw(NULL) {}
-
 	textptr(const wchar_t *pw)
-	:	m_pcb(NULL), m_pcw(pw), m_pb(NULL), m_pw(NULL) {}
-
-	textptr(const wchar_t *pw, size_t length)
 	:	m_pcb(NULL), m_pcw(pw), m_pb(NULL), m_pw(NULL) {}
 
 	~textptr() {

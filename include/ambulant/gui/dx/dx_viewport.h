@@ -40,10 +40,15 @@
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/common/preferences.h"
 #include "ambulant/net/datasource.h"
+#ifdef WITH_D2D
+#error Including dx include file while building for Direct2D
+#endif
 
 struct IDirectDraw;
 struct IDirectDrawSurface;
 struct tagPALETTEENTRY;
+struct _DDSURFACEDESC;
+struct _DDBLTFX;
 
 namespace ambulant {
 
@@ -56,12 +61,30 @@ using lib::uint32;
 using lib::uchar;
 class dx_transition;
 
-// A viewport is a top-level DD surface.
+// Global DirectX parameters, mainly for choosing between 32bit RGB and
+// 32bit ARGB.
+class dxparams {
+public:
+	/// Singleton accessor.
+	static dxparams* I();
+	/// A color used as "transparent".
+	virtual lib::color_t transparent_color() = 0;
+	/// A color used to replace the above, if it occurs in the source data.
+	virtual lib::color_t transparent_replacement_color() = 0;
+	/// A color that "cannot occur".
+	virtual lib::color_t invalid_color() = 0;
+	/// Return value for BITMAPINFO compression field
+	virtual DWORD bmi_compression() = 0;
+	/// Return Windows Imaging Component pixel format
+	virtual const GUID& wic_format() = 0;
+	/// Fill selected portions of a DDSURFACEDESC
+	virtual void fill_ddsd(struct _DDSURFACEDESC& sd, DWORD flags) = 0;
+	/// Return DD blit effects structure for main surface.
+	virtual struct _DDBLTFX *ddbltfx() = 0;
 
-// white is used as transparent color
-const lib::color_t CLR_DEFAULT		= RGB(255, 255, 255);
-// almost white is used as alternative color for white
-const lib::color_t CLR_ALTERNATIVE	= RGB(255, 255, 254);
+};
+
+// A viewport is a top-level DD surface.
 
 class AMBULANTAPI viewport {
   public:

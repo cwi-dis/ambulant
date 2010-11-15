@@ -21,10 +21,7 @@
  * @$Id$
  */
 
-#include "ambulant/gui/dx/dx_img_wic.h"
-#include "ambulant/gui/dx/dx_window.h"
-#include "ambulant/gui/dx/dx_image_renderer.h"
-#include "ambulant/gui/dx/dx_transition.h"
+#include "ambulant/gui/d2/d2_img.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/textptr.h"
@@ -32,9 +29,9 @@
 #include "ambulant/common/region_info.h"
 #include "ambulant/smil2/test_attrs.h"
 
-#ifdef WITH_WIC
-#include <math.h>
-#include <ddraw.h>
+#include <wincodec.h>
+#include <d2d1.h>
+#include <d2d1helper.h>
 
 //#define AM_DBG
 
@@ -43,41 +40,43 @@
 #endif
 
 using namespace ambulant;
+inline D2D1_RECT_F d2_rectf(lib::rect r) {
+	return D2D1::RectF(r.left(), r.top(), r.right(), r.bottom());
+}
 
-using namespace ambulant;
-extern const char dx_img_wic_playable_tag[] = "img";
-extern const char dx_img_wic_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererDirectX");
-extern const char dx_img_wic_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererWicImg");
-extern const char dx_img_wic_playable_renderer_uri3[] = AM_SYSTEM_COMPONENT("RendererImg");
+extern const char d2_img_playable_tag[] = "img";
+extern const char d2_img_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererDirect2D");
+extern const char d2_img_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererWicImg");
+extern const char d2_img_playable_renderer_uri3[] = AM_SYSTEM_COMPONENT("RendererImg");
 
-IWICImagingFactory *gui::dx::dx_img_wic_renderer::s_wic_factory = NULL;
+IWICImagingFactory *gui::d2::d2_img_renderer::s_wic_factory = NULL;
 
 common::playable_factory *
-gui::dx::create_dx_image_wic_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
+gui::d2::create_d2_image_playable_factory(common::factories *factory, common::playable_factory_machdep *mdp)
 {
-	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirectX"), true);
+	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererDirect2D"), true);
 	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererWicImg"), true);
 	smil2::test_attrs::set_current_system_component_value(AM_SYSTEM_COMPONENT("RendererImg"), true);
 	return new common::single_playable_factory<
-		gui::dx::dx_img_wic_renderer,
-		dx_img_wic_playable_tag,
-		dx_img_wic_playable_renderer_uri,
-		dx_img_wic_playable_renderer_uri2,
-		dx_img_wic_playable_renderer_uri3 >(factory, mdp);
+		gui::d2::d2_img_renderer,
+		d2_img_playable_tag,
+		d2_img_playable_renderer_uri,
+		d2_img_playable_renderer_uri2,
+		d2_img_playable_renderer_uri3 >(factory, mdp);
 }
 
-gui::dx::dx_img_wic_renderer::dx_img_wic_renderer(
+gui::d2::d2_img_renderer::d2_img_renderer(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
 	const lib::node *node,
 	lib::event_processor* evp,
-	common::factories *factory,
-	common::playable_factory_machdep *dxplayer)
-:	dx_renderer_playable(context, cookie, node, evp, factory, dynamic_cast<dx_playables_context*>(dxplayer)),
-	m_original(0),
-	m_ddsurf(0),
+	common::factories *fp,
+	common::playable_factory_machdep *mdp)
+:	d2_renderer<renderer_playable>(context, cookie, node, evp, fp, mdp),
+	m_original(NULL),
+	m_d2bitmap(NULL),
 	m_databuf(NULL),
-	m_factory(factory)
+	m_factory(fp)
 {
 	if (s_wic_factory == NULL) {
 		// init wic factory
@@ -90,18 +89,24 @@ gui::dx::dx_img_wic_renderer::dx_img_wic_renderer(
 		assert(SUCCEEDED(hr));
 	}
 
-	AM_DBG lib::logger::get_logger()->debug("dx_img_wic_renderer::ctr(0x%x)", this);
+	AM_DBG lib::logger::get_logger()->debug("d2_img_renderer::ctr(0x%x)", this);
 }
 
-gui::dx::dx_img_wic_renderer::~dx_img_wic_renderer() {
-	AM_DBG lib::logger::get_logger()->debug("dx_img_wic_renderer::dtr(0x%x)", this);
-	// delete m_image;
-	if (m_databuf) free(m_databuf);
+gui::d2::d2_img_renderer::~d2_img_renderer() {
+	AM_DBG lib::logger::get_logger()->debug("d2_img_renderer::dtr(0x%x)", this);
+	if (m_original) {
+		m_original->Release();
+		m_original = NULL;
+	}
+	if (m_databuf) {
+		free(m_databuf);
+		m_databuf = NULL;
+	}
+	discard_d2d();
 }
 
-
-void gui::dx::dx_img_wic_renderer::start(double t) {
-	AM_DBG lib::logger::get_logger()->debug("dx_img_wic_renderer::start(0x%x)", this);
+void gui::d2::d2_img_renderer::start(double t) {
+	AM_DBG lib::logger::get_logger()->debug("d2_img_renderer::start(0x%x)", this);
 	if (s_wic_factory == NULL) {
 		lib::logger::get_logger()->error("Windows Imaging Component not initialized");
 		return;
@@ -123,12 +128,13 @@ void gui::dx::dx_img_wic_renderer::start(double t) {
 			GENERIC_READ,
 			WICDecodeMetadataCacheOnDemand,
 			&decoder);
+		if (!SUCCEEDED(hr)) {
+			lib::logger::get_logger()->trace("%s: cannot CreateDecoderFromFilename: error 0x%x", url.get_url().c_str(), hr);
+			lib::logger::get_logger()->error("%s: cannot open image", url.get_url().c_str());
+			goto fail;
+		}
 	} else {
 		// Remote file, go through data buffer, etc.
-#if 0
-		lib::logger::get_logger()->error("WIC renderer not yet implemented for non-local files");
-		goto fail;
-#else
 		size_t size;
 		assert(m_databuf == NULL);
 		if ( !net::read_data_from_url(url, m_factory->get_datasource_factory(), &m_databuf, &size)) {
@@ -159,7 +165,6 @@ void gui::dx::dx_img_wic_renderer::start(double t) {
 			ambulant::lib::logger::get_logger()->error("Cannot create Windows Imaging Component decoder from stream");
 			goto fail;
 		}
-#endif
 	}
 	// Get the first from the bitmap file
 	hr = decoder->GetFrame(0, &frame);
@@ -186,7 +191,7 @@ void gui::dx::dx_img_wic_renderer::start(double t) {
 	}
 	hr = converter->Initialize(
 		source,
-		dxparams::I()->wic_format(),
+		GUID_WICPixelFormat32bppPBGRA,
 		WICBitmapDitherTypeNone,
 		NULL,
 		0.0,
@@ -208,7 +213,7 @@ void gui::dx::dx_img_wic_renderer::start(double t) {
 	}
 	
 	// Make sure the DD surface is created, next redraw
-	assert(m_ddsurf == NULL);
+	assert(m_d2bitmap == NULL);
 
 	// Inform the scheduler, ask for a redraw
 	m_context->started(m_cookie);
@@ -227,101 +232,16 @@ fail:
 	m_context->stopped(m_cookie);
 }
 
-void
-gui::dx::dx_img_wic_renderer::_create_ddsurf(viewport *v)
-{
-	if (m_ddsurf) return;
-	assert(m_original);
-	assert(s_wic_factory);
-	HRESULT hr = S_OK;
-
-	// Check format (redundant, really, but still...)
-    WICPixelFormatGUID pixelFormat;
-    hr = m_original->GetPixelFormat(&pixelFormat);
-	if (!SUCCEEDED(hr) || (pixelFormat != dxparams::I()->wic_format())) {
-		lib::logger::get_logger()->debug("WIC renderer: Unexpected pixel format");
-		return;
-	}
-
-	// Create DIB section
-	UINT w = 0, h = 0;
-	hr = m_original->GetSize(&w, &h);
-	if(!SUCCEEDED(hr)) {
-		lib::logger::get_logger()->debug("WIC renderer: GetSize() failed 0x%x", hr);
-		return;
-	}
-	struct myBITMAPINFO {
-		BITMAPINFOHEADER bmiHeader;
-		DWORD masks[4];
-	} bminfo;
-	ZeroMemory(&bminfo, sizeof(bminfo));
-    bminfo.bmiHeader.biSize         = sizeof(BITMAPINFOHEADER);
-    bminfo.bmiHeader.biWidth        = w;
-    bminfo.bmiHeader.biHeight       = -(LONG)h;
-    bminfo.bmiHeader.biPlanes       = 1;
-    bminfo.bmiHeader.biBitCount     = 32;
-    bminfo.bmiHeader.biCompression  = dxparams::I()->bmi_compression();
-	bminfo.masks[0] = 0x00ff0000;
-	bminfo.masks[1] = 0x0000ff00;
-	bminfo.masks[2] = 0x000000ff;
-	bminfo.masks[3] = 0xff000000;
-	void *buffer;
-	HBITMAP dib_bitmap = CreateDIBSection(
-		NULL, 
-		(BITMAPINFO *)&bminfo,
-		DIB_RGB_COLORS,
-		&buffer,
-		NULL,
-		0);
-	assert(dib_bitmap);
-	assert(buffer);
-	if (dib_bitmap == NULL || buffer == NULL) {
-		lib::logger::get_logger()->debug("WIC renderer: Could not allocate DIBSection");
-		return;
-	}
-
-
-	// Copy data into the DIB
-	LONG stride = 4*w;
-	LONG buffer_size = h*stride;
-	ZeroMemory(buffer, buffer_size); // DBG
-	hr = m_original->CopyPixels(NULL, stride, buffer_size, (BYTE *)buffer);
-	if (!SUCCEEDED(hr)) {
-		lib::logger::get_logger()->debug("WIC renderer: CopyPixels failed 0x%x", hr);
-		return;
-	}
-
-	// Create DD surface
-	assert(m_ddsurf == NULL);
-	m_ddsurf = v->create_surface(w, h);
-
-	// Copy the pixels
-	HDC surface_hdc = NULL;
-	hr = m_ddsurf->GetDC(&surface_hdc);
-	assert(SUCCEEDED(hr));
-	HDC bitmap_hdc = CreateCompatibleDC(surface_hdc);
-	assert(bitmap_hdc);
-	HBITMAP hbmp_old = (HBITMAP) SelectObject(bitmap_hdc, dib_bitmap);
-	::BitBlt(surface_hdc, 0, 0, w, h, bitmap_hdc, 0, 0, SRCCOPY);
-	SelectObject(bitmap_hdc, hbmp_old);
-	DeleteDC(bitmap_hdc);
-	m_ddsurf->ReleaseDC(surface_hdc);
-
-	// Clean up
-	if (dib_bitmap) DeleteObject(dib_bitmap);
-}
-
-bool gui::dx::dx_img_wic_renderer::stop() {
-	AM_DBG lib::logger::get_logger()->debug("dx_img_wic_renderer::stop(0x%x)", this);
+bool gui::d2::d2_img_renderer::stop() {
+	AM_DBG lib::logger::get_logger()->debug("d2_img_renderer::stop(0x%x)", this);
 	if (m_dest) m_dest->renderer_done(this);
 	m_dest = NULL;
 	m_activated = false;
-	m_dxplayer->stopped(this);
-//	m_dest->need_redraw();
+	m_context->stopped(m_cookie);
 	return true;
 }
 
-bool gui::dx::dx_img_wic_renderer::user_event(const lib::point& pt, int what) {
+bool gui::d2::d2_img_renderer::user_event(const lib::point& pt, int what) {
 	if (!user_event_sensitive(pt)) return false;
 	if(what == common::user_event_click)
 		m_context->clicked(m_cookie);
@@ -331,22 +251,36 @@ bool gui::dx::dx_img_wic_renderer::user_event(const lib::point& pt, int what) {
 	return true;
 }
 
-void gui::dx::dx_img_wic_renderer::redraw(const lib::rect& dirty, common::gui_window *window) {
-	// Get the top-level surface
-	dx_window *dxwindow = static_cast<dx_window*>(window);
-	viewport *v = dxwindow->get_viewport();
-	if(!v) {
-		AM_DBG lib::logger::get_logger()->debug("dx_img_wic_renderer::redraw NOT: no viewport %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
-		return;
+void
+gui::d2::d2_img_renderer::recreate_d2d()
+{
+	if (m_d2bitmap) return;
+	if (m_original == NULL) return;
+	ID2D1RenderTarget *rt = m_d2player->get_rendertarget();
+	assert(rt);
+	HRESULT hr = rt->CreateBitmapFromWicBitmap(m_original, NULL, &m_d2bitmap);
+	if (!SUCCEEDED(hr))
+		lib::logger::get_logger()->trace("CreateBitmapFromWicBitmap: error 0x%x", hr);
+}
+
+void
+gui::d2::d2_img_renderer::discard_d2d()
+{
+	if (m_d2bitmap) {
+//		m_d2bitmap->Release();
+		m_d2bitmap = NULL;
 	}
+}
 
-	_create_ddsurf(v);
-
-	if(!m_ddsurf) {
+void gui::d2::d2_img_renderer::redraw_body(const lib::rect& dirty, common::gui_window *window) {
+	recreate_d2d();
+	if(!m_d2bitmap) {
 		// No bits available
-		AM_DBG lib::logger::get_logger()->debug("dx_img_wic_renderer::redraw NOT: no image or cannot play %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
+		AM_DBG lib::logger::get_logger()->debug("d2_img_renderer::redraw NOT: no image or cannot play %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
 		return;
 	}
+	ID2D1RenderTarget *rt = m_d2player->get_rendertarget();
+	assert(rt);
 
 	lib::rect img_rect1;
 	lib::rect img_reg_rc;
@@ -362,7 +296,7 @@ void gui::dx::dx_img_wic_renderer::redraw(const lib::rect& dirty, common::gui_wi
 	// Also, it knows that the node and the region we're painting to are
 	// really the same node.
 	if (m_node->get_attribute("backgroundImage") &&	 m_dest->is_tiled()) {
-		AM_DBG lib::logger::get_logger()->debug("dx_img_wic_renderer.redraw: drawing tiled image");
+		AM_DBG lib::logger::get_logger()->debug("d2_img_renderer.redraw: drawing tiled image");
 		img_reg_rc = m_dest->get_rect();
 		img_reg_rc.translate(m_dest->get_global_topleft());
 		common::tile_positions tiles = m_dest->get_tiles(srcsize, img_reg_rc);
@@ -370,7 +304,12 @@ void gui::dx::dx_img_wic_renderer::redraw(const lib::rect& dirty, common::gui_wi
 		for(it=tiles.begin(); it!=tiles.end(); it++) {
 			img_rect1 = (*it).first;
 			img_reg_rc = (*it).second;
-			v->draw(m_ddsurf, img_rect1, img_reg_rc, 0 /*m_image->is_transparent()*/);
+			rt->DrawBitmap(
+				m_d2bitmap,
+				d2_rectf(img_reg_rc),
+				1.0f,
+				D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
+				d2_rectf(img_rect1));
 		}
 
 		if (m_erase_never) m_dest->keep_as_background();
@@ -398,35 +337,18 @@ void gui::dx::dx_img_wic_renderer::redraw(const lib::rect& dirty, common::gui_wi
 	// Get fit rectangles
 	img_reg_rc = m_dest->get_fit_rect(srcsize, &img_rect1, m_alignment);
 #endif
-	// Use one type of rect to do op
+	img_reg_rc.translate(m_dest->get_global_topleft());
+
 	lib::rect img_rect(img_rect1);
+	rt->DrawBitmap(
+		m_d2bitmap,
+		d2_rectf(img_reg_rc),
+		alpha_media,
+		D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
+		d2_rectf(img_rect));
 
-	// A complete repaint would be:
-	// {img, img_rect } -> img_reg_rc
 
-	// We have to paint only the intersection.
-	// Otherwise we will override upper layers
-	lib::rect img_reg_rc_dirty = img_reg_rc & dirty;
-	if(img_reg_rc_dirty.empty()) {
-		// this renderer has no pixels for the dirty rect
-		AM_DBG lib::logger::get_logger()->debug("dx_img_wic_renderer::redraw NOT: empty dirty region %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
-		return;
-	}
-
-	// Find the part of the image that is mapped to img_reg_rc_dirty
-	lib::rect img_rect_dirty = reverse_transform(&img_reg_rc_dirty,
-		&img_rect, &img_reg_rc);
-
-	// Translate img_reg_rc_dirty to viewport coordinates
-	lib::point topleft = m_dest->get_global_topleft();
-	img_reg_rc_dirty.translate(topleft);
-
-	// keep rect for debug messages
-	m_msg_rect |= img_reg_rc_dirty;
-
-	// Finally blit img_rect_dirty to img_reg_rc_dirty
-	AM_DBG lib::logger::get_logger()->debug("dx_img_wic_renderer::redraw %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
-
+#ifdef NOTYET
 	dx_transition *tr = get_transition();
 	if (tr && tr->is_fullscreen()) {
 		v->set_fullscreen_transition(tr);
@@ -482,9 +404,6 @@ void gui::dx::dx_img_wic_renderer::redraw(const lib::rect& dirty, common::gui_wi
 		v->draw(m_ddsurf, img_rect_dirty, img_reg_rc_dirty, m_image->is_transparent(), tr);
 #endif//WITH_SMIL30
 	}
+#endif
 	if (m_erase_never) m_dest->keep_as_background();
 }
-
-
-
-#endif // WITH_WIC

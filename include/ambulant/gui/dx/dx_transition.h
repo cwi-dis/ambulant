@@ -35,6 +35,9 @@
 #include "ambulant/smil2/transition.h"
 
 #include "ambulant/lib/logger.h"
+#ifdef WITH_D2D
+#error Including dx include file while building for Direct2D
+#endif
 
 namespace ambulant { namespace smil2 {
 	enum blitter_type {bt_rect, bt_r1r2r3r4, bt_rectlist, bt_poly, bt_polylist, bt_fade, bt_unknown};

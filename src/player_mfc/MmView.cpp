@@ -23,6 +23,7 @@
 #include "stdafx.h"
 #include "ambulant/config/config.h"
 #include "ambulant/gui/dx/html_bridge.h"
+#include "ambulant/common/player.h"
 #include "AmbulantPlayer.h"
 #include "MainFrm.h"
 
@@ -34,9 +35,6 @@
 #include <fstream>
 #include <string>
 
-// DX Player
-#include "ambulant/gui/dx/dx_player.h"
-#include "ambulant/gui/dx/dx_wmuser.h"
 
 #include "ambulant/common/preferences.h"
 #include "ambulant/lib/logger.h"
@@ -83,11 +81,23 @@ log_os(get_log_filename().c_str());
 #endif
 
 using namespace ambulant;
-//#define AM_PLAYER_DG
+#ifdef WITH_D2D
+#include "ambulant/gui/d2/d2_player.h"
+#include "ambulant/gui/dx/dx_wmuser.h"
+#else
+// DX Player
+#include "ambulant/gui/dx/dx_player.h"
+#include "ambulant/gui/dx/dx_wmuser.h"
+#endif
 
+#ifdef WITH_D2D
+typedef ambulant::gui::d2::d2_player dg_or_dx_player;
+typedef ambulant::gui::d2::d2_player_callbacks gui_callbacks;
+
+#else
 typedef gui::dx::dx_player dg_or_dx_player;
 typedef gui::dx::dx_player_callbacks gui_callbacks;
-
+#endif
 // The handle of the single window instance
 static HWND s_hwnd;
 
@@ -186,6 +196,9 @@ CWnd* topView = NULL;
 IMPLEMENT_DYNCREATE(MmView, CView)
 
 BEGIN_MESSAGE_MAP(MmView, CView)
+#ifdef not_WITH_D2D
+	ON_WM_PAINT()
+#endif
 	ON_WM_DESTROY()
 	ON_COMMAND(ID_FILE_PLAY, OnFilePlay)
 	ON_UPDATE_COMMAND_UI(ID_FILE_PLAY, OnUpdateFilePlay)
@@ -259,7 +272,7 @@ MmView::MmView()
 MmView::~MmView()
 {
 	topView = NULL;
-	gui::dx::dx_player::cleanup();
+	dg_or_dx_player::cleanup();
 }
 
 BOOL MmView::PreCreateWindow(CREATESTRUCT& cs)
@@ -271,17 +284,18 @@ BOOL MmView::PreCreateWindow(CREATESTRUCT& cs)
 }
 
 // MmView drawing
-
 void MmView::OnDraw(CDC* pDC)
 {
+	CPaintDC *pPDC = dynamic_cast<CPaintDC*>(pDC);
+	RECT *pRect = NULL;
+	if (pPDC) pRect = &pPDC->m_ps.rcPaint;
 	MmDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
 		return;
-
 	// TODO: add draw code for native data here
 	if(player)
-		player->redraw(m_hWnd, pDC->m_hDC);
+		player->redraw(m_hWnd, pDC->m_hDC, pRect);
 
 }
 
@@ -326,8 +340,11 @@ int MmView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		LocateWelcomeDoc(TEXT("Welcome.smil"))){;}
 #endif
 
+#if 0
+	// This interferes with starting up in fullscreen mode
 	PostMessage(WM_SET_CLIENT_RECT,
 		common::default_layout_width, ambulant::common::default_layout_height);
+#endif
 #ifdef WITH_SPLASH_SCREEN
 	PostMessage(WM_COMMAND, ID_HELP_WELCOME);
 #else

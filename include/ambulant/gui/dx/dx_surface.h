@@ -27,6 +27,9 @@
 #define AMBULANT_GUI_DX_SURFACE_H
 
 #include "ambulant/config/config.h"
+#ifdef WITH_D2D
+#error Including dx include file while building for Direct2D
+#endif
 
 namespace ambulant {
 
