@@ -12,7 +12,7 @@
 @synthesize title, duration, description, poster;
 
 -(id)initWithTitle:(NSString*) newTitle
-			poster:(id)newPoster
+			poster:(CGImageRef)newPoster
 		  duration:(NSString*) newDuration
 	   description:(NSString*) newDescription
 {

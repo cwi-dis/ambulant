@@ -11,7 +11,7 @@
 @interface PlaylistItem : NSObject {
 	NSString* ns_title; // <meta name="title" content=.. /> 
 	NSURL* ns_url;
-	id cg_image; //CGImageRef
+	CGImageRef cg_image; //CGImageRef
 	NSString* ns_description;
 	NSString* ns_dur;
 	NSString* ns_last_node_repr;
@@ -19,7 +19,7 @@
 }
 @property(nonatomic,retain) NSString* ns_title;
 @property(nonatomic,retain) NSURL* ns_url;
-//@property(nonatomic,retain) CGImageRef cg_image;
+@property(nonatomic) CGImageRef cg_image;
 @property(nonatomic,retain) NSString* ns_description;
 @property(nonatomic,retain) NSString* ns_dur;
 @property(nonatomic,assign) NSString* ns_last_node_repr;
@@ -28,7 +28,7 @@
 // initialize all fields
 - (PlaylistItem*) initWithTitle: (NSString*) atitle
 							url: (NSURL*) ansurl
-						  image: (id) acg_image // CGImageRef
+						  image: (CGImageRef) acg_image // CGImageRef
 					description: (NSString*) ans_description
 					   duration: (NSString*) ans_dur
 				 last_node_repr: (NSString*) alast_node_repr

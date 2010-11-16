@@ -158,9 +158,11 @@ bool iOSpreferences::save_preferences()
 }
 @implementation PlaylistItem
 @synthesize ns_title, ns_url, ns_description, ns_dur, ns_last_node_repr, position;
+@synthesize cg_image;
+
 - (PlaylistItem*) initWithTitle: (NSString*) atitle
 							url: (NSURL*) ans_url
-						  image: (id) acg_image
+						  image: (CGImageRef) acg_image
 					description: (NSString*) ans_description
 					   duration: (NSString*) ans_dur
 				 last_node_repr: (NSString*) alast_node_repr
@@ -192,19 +194,27 @@ bool iOSpreferences::save_preferences()
 {
 	[encoder encodeObject:ns_title forKey:@"Ns_title"];
 	[encoder encodeObject:ns_url forKey:@"Ns_url"];
-//	[encoder encodeObject:cg_image forKey:@"Cg_image"];
+	CFDataRef imgCGDataRef = CGDataProviderCopyData(CGImageGetDataProvider((CGImageRef) cg_image));
+	NSData* img_data = (NSData*) imgCGDataRef;
+	[encoder encodeObject:img_data forKey:@"Cg_image"];
+//	CFRelease(imgCGDataRef);
 	[encoder encodeObject:ns_description forKey:@"Ns_description"];
 	[encoder encodeObject:ns_dur forKey:@"Ns_dur"];
 	[self.ns_last_node_repr retain];
 	[encoder encodeObject:ns_last_node_repr forKey:@"Ns_lastnode"];
 //	[encoder encodeObject:position forKey:@"Position"];
 }
-	
+#import <ImageIO/ImageIO.h>
 -(id) initWithCoder: (NSCoder*) decoder
 {
 	self.ns_title = [decoder decodeObjectForKey:@"Ns_title"];
 	self.ns_url = [decoder decodeObjectForKey:@"Ns_url"];
-//	self.cg_image = [decoder decodeObjectForKey:@"Cg_image"];
+	NSData* img_data = [decoder decodeObjectForKey:@"Cg_image"];
+	CFDataRef imgCFDataRef = (CFDataRef) img_data;
+	CGImageSourceRef img_src = CGImageSourceCreateWithData (imgCFDataRef, NULL);
+	self.cg_image = CGImageSourceCreateImageAtIndex(img_src, 0, NULL);
+//	[img_src release];
+//	CFRelease(imgCFDataRef);
 	self.ns_description = [decoder decodeObjectForKey:@"Ns_description"];
 	self.ns_dur = [decoder decodeObjectForKey:@"Ns_dur"];
 	self.ns_last_node_repr = [decoder decodeObjectForKey:@"Ns_lastnode"];

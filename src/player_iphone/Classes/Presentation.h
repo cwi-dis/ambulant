@@ -10,18 +10,18 @@
 
 
 @interface Presentation : NSObject {
-	id poster;
+	CGImageRef poster;
 	NSString* title;
 	NSString* duration;
 	NSString* description;
 }
 -(id)initWithTitle:(NSString*) newTitle
-			poster:(id) newPoster
+			poster:(CGImageRef) newPoster
 		  duration:(NSString*) newDuration
 	   description:(NSString*) newDescription;
 
 @property(nonatomic, copy) 	NSString* title;
-@property(nonatomic, copy) 	id poster;
+@property(nonatomic) 	CGImageRef poster;
 @property(nonatomic, copy) 	NSString* duration;
 @property(nonatomic, copy) 	NSString* description;
 @end

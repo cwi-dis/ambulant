@@ -56,6 +56,7 @@ viewDidLoad
 			PlaylistItem* item = (PlaylistItem*) obj;
 			Presentation* aPresentation = [ [ Presentation alloc ] init ];
 			aPresentation.title = [item ns_title];
+			aPresentation.poster = [item cg_image];
 			aPresentation.duration = [item ns_dur];
 			aPresentation.description = [item ns_description];
 			[ presentationsArray addObject:aPresentation ];							  
@@ -118,8 +119,9 @@ tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPat
     
 	// Configure the cell.
 	Presentation* aPresentation = [ presentationsArray objectAtIndex: indexPath.row ];
+	UIImageView* posterView = (UIImageView*) [ cell viewWithTag:0]; // tags are assigned in the nib
+	posterView.image = [UIImage imageWithCGImage:(CGImageRef) aPresentation.poster];
 	UILabel* label = (UILabel*) [ cell viewWithTag: 1];
-//	label.poster = aPresentation.poster;
 	label.text = aPresentation.title;
 	label = (UILabel*) [ cell viewWithTag: 2];
 	label.text = aPresentation.duration;
