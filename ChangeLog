@@ -1,3 +1,27 @@
+2010-11-15 23:56  keesblom
+
+	* Now using meta tags title, description and dur from the smil file
+	  in PlayListItems
+
+2010-11-15 15:35  jackjansen
+
+	* Merging branch experimental-jack-win-rgba.
+
+	  By default, Ambulant now builds with support for Direct2D
+	  graphics, but there are separate targets to build a
+	  DirectDraw-based ambulant.
+
+	  D2D Ambulant is not feature-complete yet: trnasitions and parts
+	  of smiltext still need to be implemented.
+
+2010-11-15 11:40  jackjansen
+
+	* Added "DX" versions of the projects (preparing for D2D merge)
+
+2010-11-15 11:06  jackjansen
+
+	* Fixed minor issues with win7 building and new code by Kees.
+
 2010-11-14 22:24  keesblom
 
 	* Added code to player save state when ApplicationWillTerminate is
