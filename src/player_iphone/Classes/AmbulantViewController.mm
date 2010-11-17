@@ -153,6 +153,14 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
     [self.playerView addGestureRecognizer:panGesture];
     [panGesture release];
 	
+	// prepare to react on "longPress" gesture (move finger in one direction)
+    UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc]
+										  initWithTarget:self action:@selector(handleLongPressGesture:)];
+//	longPressGesture.direction = (UIlongPressGestureRecognizerDirectionRight | UIlongPressGestureRecognizerDirectionLeft
+//							  | UIlongPressGestureRecognizerDirectionUp | UIlongPressGestureRecognizerDirectionDown);
+    [self.playerView addGestureRecognizer:longPressGesture];
+    [longPressGesture release];
+	
 	// prepare to react when text is entered
 	self.URLEntryField.delegate = self;
 	
@@ -226,6 +234,21 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 - (IBAction) handlePanGesture:(UIPanGestureRecognizer *)sender {
 	CGPoint translate = [sender translationInView: playerView.superview];
 	[self.playerView  translateWithPoint: (CGPoint) translate inState: [sender state]];
+}
+
+//  XXXX cleanup needed: move the this code into genuine member function of AmbulantPlayer
+- (IBAction) handleLongPressGesture:(UILongPressGestureRecognizer *)sender {
+//	CGPoint translate = [sender translationInView: playerView.superview];
+//	[self.playerView  translateWithPoint: (CGPoint) translate inState: [sender state]];
+	NSLog(@"longPress detected");
+	static bool	wasPressed = false;
+	if (wasPressed && interactionView != NULL) {
+		interactionView.hidden = ! interactionView.hidden;
+		interactionView.opaque = ! interactionView.opaque;
+		wasPressed = false;
+	} else if (interactionView != NULL) {
+		wasPressed = ! wasPressed;
+	}
 }
 
 // dismiss the keyboard when the <Return> is tapped

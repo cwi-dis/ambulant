@@ -169,7 +169,7 @@ bool iOSpreferences::save_preferences()
 					   position: (NSUInteger) aposition
 {
 	ns_title = atitle;
-	ns_url = ans_url;
+	ns_url = [ans_url retain];
 	cg_image = acg_image;
 	ns_description = ans_description;
 	ns_dur = ans_dur;
@@ -196,11 +196,11 @@ encodeWithCoder: (NSCoder*) encoder
 {
 	[encoder encodeObject:ns_title forKey:@"Ns_title"];
 	[encoder encodeObject:ns_url forKey:@"Ns_url"];
-//	CFDataRef imgCFDataRef = CGDataProviderCopyData(CGImageGetDataProvider(cg_image));
-//	NSData* img_data = (NSData*) imgCFDataRef;
-	UIImage *img = [UIImage imageWithCGImage:cg_image];
-	NSData *img_data = UIImagePNGRepresentation(img);
-	[encoder encodeObject:img_data forKey:@"Cg_image"];
+	if (cg_image != NULL) {
+		UIImage *img = [UIImage imageWithCGImage:cg_image];
+		NSData *img_data = UIImagePNGRepresentation(img);
+		[encoder encodeObject:img_data forKey:@"Cg_image"];
+	}
 //	CFRelease(imgCFDataRef);
 	[encoder encodeObject:ns_description forKey:@"Ns_description"];
 	[encoder encodeObject:ns_dur forKey:@"Ns_dur"];
@@ -215,8 +215,10 @@ initWithCoder: (NSCoder*) decoder
 	self.ns_title = [decoder decodeObjectForKey:@"Ns_title"];
 	self.ns_url = [decoder decodeObjectForKey:@"Ns_url"];
 	NSData* img_data = [decoder decodeObjectForKey:@"Cg_image"];
-	CGDataProviderRef imgDataProvider = CGDataProviderCreateWithCFData ((CFDataRef)img_data);
-	self.cg_image = CGImageCreateWithPNGDataProvider(imgDataProvider, NULL, false, kCGRenderingIntentDefault);
+	if (img_data != NULL) {
+		CGDataProviderRef imgDataProvider = CGDataProviderCreateWithCFData ((CFDataRef)img_data);
+		self.cg_image = CGImageCreateWithPNGDataProvider(imgDataProvider, NULL, false, kCGRenderingIntentDefault);
+	}
 //	[img_src release];
 //	CFRelease(imgCFDataRef);
 	self.ns_description = [decoder decodeObjectForKey:@"Ns_description"];
@@ -229,12 +231,14 @@ initWithCoder: (NSCoder*) decoder
 
 - (void)
 dealloc {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	ns_title = nil;
 	ns_url = nil;
 	cg_image = nil;
 	ns_description = nil;
 	ns_dur = nil;
 	position = nil;
+	[pool release];
 	[super dealloc];
 }
 

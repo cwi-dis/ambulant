@@ -120,6 +120,7 @@ tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPat
 	// Configure the cell.
 	Presentation* aPresentation = [ presentationsArray objectAtIndex: indexPath.row ];
 	UIImageView* posterView = (UIImageView*) [ cell viewWithTag:0]; // tags are assigned in the nib
+	posterView.image = NULL;
 	posterView.image = [UIImage imageWithCGImage:(CGImageRef) aPresentation.poster];
 	UILabel* label = (UILabel*) [ cell viewWithTag: 1];
 	label.text = aPresentation.title;

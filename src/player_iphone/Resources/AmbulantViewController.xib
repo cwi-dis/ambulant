@@ -12,7 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="14"/>
+			<integer value="6"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -51,11 +51,12 @@
 							<int key="NSColorSpace">1</int>
 							<bytes key="NSRGB">MCAwIDAAA</bytes>
 						</object>
+						<int key="IBUITag">1</int>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 					</object>
 					<object class="IBUIView" id="214127161">
 						<reference key="NSNextResponder" ref="774585933"/>
-						<int key="NSvFlags">290</int>
+						<int key="NSvFlags">-2147483358</int>
 						<object class="NSMutableArray" key="NSSubviews">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBUITextField" id="1023697488">
@@ -65,6 +66,7 @@
 								<reference key="NSSuperview" ref="214127161"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
+								<int key="IBUITag">3</int>
 								<object class="IBUIAccessibilityConfiguration" key="IBUIAccessibilityConfiguration">
 									<string key="IBUIAccessibilityLabel">URL</string>
 									<integer value="32" key="IBUIAccessibilityTraits"/>
@@ -96,6 +98,7 @@
 								<string key="NSFrame">{{50, 4}, {60, 30}}</string>
 								<reference key="NSSuperview" ref="214127161"/>
 								<bool key="IBUIOpaque">NO</bool>
+								<int key="IBUITag">4</int>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
 								<int key="IBUIContentVerticalAlignment">0</int>
@@ -125,6 +128,7 @@
 								<string key="NSFrame">{{129, 4}, {60, 30}}</string>
 								<reference key="NSSuperview" ref="214127161"/>
 								<bool key="IBUIOpaque">NO</bool>
+								<int key="IBUITag">5</int>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
 								<int key="IBUIContentVerticalAlignment">0</int>
@@ -144,6 +148,7 @@
 								<string key="NSFrame">{{211, 4}, {60, 30}}</string>
 								<reference key="NSSuperview" ref="214127161"/>
 								<bool key="IBUIOpaque">NO</bool>
+								<int key="IBUITag">6</int>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
 								<int key="IBUIContentVerticalAlignment">0</int>
@@ -163,6 +168,7 @@
 								<string key="NSFrame">{{290, 45}, {18, 19}}</string>
 								<reference key="NSSuperview" ref="214127161"/>
 								<bool key="IBUIOpaque">NO</bool>
+								<int key="IBUITag">7</int>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
 								<int key="IBUIContentVerticalAlignment">0</int>
@@ -182,6 +188,7 @@
 								<string key="NSFrame">{{13, 43}, {21, 21}}</string>
 								<reference key="NSSuperview" ref="214127161"/>
 								<bool key="IBUIOpaque">NO</bool>
+								<int key="IBUITag">8</int>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
 								<int key="IBUIContentVerticalAlignment">0</int>
@@ -203,6 +210,8 @@
 						<string key="NSFrame">{{0, 386}, {320, 74}}</string>
 						<reference key="NSSuperview" ref="774585933"/>
 						<reference key="IBUIBackgroundColor" ref="546348435"/>
+						<bool key="IBUIOpaque">NO</bool>
+						<int key="IBUITag">2</int>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 					</object>
 				</object>
@@ -441,7 +450,7 @@
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>AmbulantView</string>
-					<string>{{589, 276}, {320, 480}}</string>
+					<string>{{450, 276}, {320, 480}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				</object>
