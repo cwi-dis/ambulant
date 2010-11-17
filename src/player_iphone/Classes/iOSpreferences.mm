@@ -190,29 +190,33 @@ bool iOSpreferences::save_preferences()
 	return true;
 }
 	
-- (void) encodeWithCoder: (NSCoder*) encoder	
+#import <ImageIO/ImageIO.h>
+- (void)
+encodeWithCoder: (NSCoder*) encoder	
 {
 	[encoder encodeObject:ns_title forKey:@"Ns_title"];
 	[encoder encodeObject:ns_url forKey:@"Ns_url"];
-	CFDataRef imgCGDataRef = CGDataProviderCopyData(CGImageGetDataProvider((CGImageRef) cg_image));
-	NSData* img_data = (NSData*) imgCGDataRef;
+//	CFDataRef imgCFDataRef = CGDataProviderCopyData(CGImageGetDataProvider(cg_image));
+//	NSData* img_data = (NSData*) imgCFDataRef;
+	UIImage *img = [UIImage imageWithCGImage:cg_image];
+	NSData *img_data = UIImagePNGRepresentation(img);
 	[encoder encodeObject:img_data forKey:@"Cg_image"];
-//	CFRelease(imgCGDataRef);
+//	CFRelease(imgCFDataRef);
 	[encoder encodeObject:ns_description forKey:@"Ns_description"];
 	[encoder encodeObject:ns_dur forKey:@"Ns_dur"];
 	[self.ns_last_node_repr retain];
 	[encoder encodeObject:ns_last_node_repr forKey:@"Ns_lastnode"];
 //	[encoder encodeObject:position forKey:@"Position"];
 }
-#import <ImageIO/ImageIO.h>
--(id) initWithCoder: (NSCoder*) decoder
+
+- (id)
+initWithCoder: (NSCoder*) decoder
 {
 	self.ns_title = [decoder decodeObjectForKey:@"Ns_title"];
 	self.ns_url = [decoder decodeObjectForKey:@"Ns_url"];
 	NSData* img_data = [decoder decodeObjectForKey:@"Cg_image"];
-	CFDataRef imgCFDataRef = (CFDataRef) img_data;
-	CGImageSourceRef img_src = CGImageSourceCreateWithData (imgCFDataRef, NULL);
-	self.cg_image = CGImageSourceCreateImageAtIndex(img_src, 0, NULL);
+	CGDataProviderRef imgDataProvider = CGDataProviderCreateWithCFData ((CFDataRef)img_data);
+	self.cg_image = CGImageCreateWithPNGDataProvider(imgDataProvider, NULL, false, kCGRenderingIntentDefault);
 //	[img_src release];
 //	CFRelease(imgCFDataRef);
 	self.ns_description = [decoder decodeObjectForKey:@"Ns_description"];
