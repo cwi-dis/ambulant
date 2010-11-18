@@ -1,3 +1,12 @@
+2010-11-17 17:46  keesblom
+
+	* Added a longPress gesture recognizer to hide/unhide the player
+	  controls. Needs testing.
+
+2010-11-17 12:55  keesblom
+
+	* Poster image save/restore now works
+
 2010-11-16 23:24  keesblom
 
 	* Added code to display a custom icon (from <meta name="poster") in
