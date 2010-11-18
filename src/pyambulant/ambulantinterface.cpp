@@ -443,7 +443,7 @@ node::node(PyObject *itself)
 		if (!PyObject_HasAttrString(itself, "del_attribute")) PyErr_Warn(PyExc_Warning, "node: missing attribute: del_attribute");
 		if (!PyObject_HasAttrString(itself, "get_url")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_url");
 		if (!PyObject_HasAttrString(itself, "size")) PyErr_Warn(PyExc_Warning, "node: missing attribute: size");
-		if (!PyObject_HasAttrString(itself, "get_path_display_desc")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_path_display_desc");
+		if (!PyObject_HasAttrString(itself, "get_xpath")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_xpath");
 		if (!PyObject_HasAttrString(itself, "get_sig")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_sig");
 		if (!PyObject_HasAttrString(itself, "xmlrepr")) PyErr_Warn(PyExc_Warning, "node: missing attribute: xmlrepr");
 		if (!PyObject_HasAttrString(itself, "get_context")) PyErr_Warn(PyExc_Warning, "node: missing attribute: get_context");
@@ -1361,22 +1361,22 @@ unsigned int node::size() const
 	return _rv;
 }
 
-std::string node::get_path_display_desc() const
+std::string node::get_xpath() const
 {
 	PyGILState_STATE _GILState = PyGILState_Ensure();
 	std::string _rv;
 
-	PyObject *py_rv = PyObject_CallMethod(py_node, "get_path_display_desc", "()");
+	PyObject *py_rv = PyObject_CallMethod(py_node, "get_xpath", "()");
 	if (PyErr_Occurred())
 	{
-		PySys_WriteStderr("Python exception during node::get_path_display_desc() callback:\n");
+		PySys_WriteStderr("Python exception during node::get_xpath() callback:\n");
 		PyErr_Print();
 	}
 
 	char *_rv_cstr="";
 	if (py_rv && !PyArg_Parse(py_rv, "s", &_rv_cstr))
 	{
-		PySys_WriteStderr("Python exception during node::get_path_display_desc() return:\n");
+		PySys_WriteStderr("Python exception during node::get_xpath() return:\n");
 		PyErr_Print();
 	}
 

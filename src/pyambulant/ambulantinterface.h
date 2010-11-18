@@ -165,7 +165,7 @@ public:
 	void del_attribute(const char* name);
 	ambulant::net::url get_url(const char* attrname) const;
 	unsigned int size() const;
-	std::string get_path_display_desc() const;
+	std::string get_xpath() const;
 	std::string get_sig() const;
 	ambulant::lib::xml_string xmlrepr() const;
 	const ambulant::lib::node_context* get_context() const;

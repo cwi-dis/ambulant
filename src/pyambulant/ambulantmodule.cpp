@@ -1717,13 +1717,13 @@ static PyObject *nodeObj_size(nodeObject *_self, PyObject *_args)
 	return _res;
 }
 
-static PyObject *nodeObj_get_path_display_desc(nodeObject *_self, PyObject *_args)
+static PyObject *nodeObj_get_xpath(nodeObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
 	if (!PyArg_ParseTuple(_args, ""))
 		return NULL;
 	PyThreadState *_save = PyEval_SaveThread();
-	std::string _rv = _self->ob_itself->get_path_display_desc();
+	std::string _rv = _self->ob_itself->get_xpath();
 	PyEval_RestoreThread(_save);
 	_res = Py_BuildValue("s",
 	                     _rv.c_str());
@@ -1876,7 +1876,7 @@ static PyMethodDef nodeObj_methods[] = {
 	 PyDoc_STR("(char* attrname) -> (ambulant::net::url _rv)")},
 	{"size", (PyCFunction)nodeObj_size, 1,
 	 PyDoc_STR("() -> (unsigned int _rv)")},
-	{"get_path_display_desc", (PyCFunction)nodeObj_get_path_display_desc, 1,
+	{"get_xpath", (PyCFunction)nodeObj_get_xpath, 1,
 	 PyDoc_STR("() -> (std::string _rv)")},
 	{"get_sig", (PyCFunction)nodeObj_get_sig, 1,
 	 PyDoc_STR("() -> (std::string _rv)")},
