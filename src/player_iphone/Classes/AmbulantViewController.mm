@@ -105,6 +105,10 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		myMainloop->play();
 		self.URLEntryField.text = [self playURL];
 	}
+	if ( ! interactionView.hidden) {
+		interactionView.hidden = true;
+		interactionView.opaque = false;
+	}
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -172,7 +176,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		PlaylistItem* last_item = prefs->m_history != NULL ? prefs->m_history->get_last_item() : NULL;
 		NSString *startPath = last_item != NULL ? [[last_item ns_url] absoluteString] : NULL;
 		NSString *startNodeRepr = last_item != NULL ? [last_item ns_last_node_repr] : NULL;		
-		if (startPath == NULL) {//[startPath isEqualToString:@"Welcome.smil"]) {
+		if (startPath == NULL) {
 			NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
 			startPath = [thisBundle pathForResource:@"Welcome" ofType:@"smil"];
 		}

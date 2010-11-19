@@ -45,7 +45,7 @@
 					<object class="IBUIView" id="402757605">
 						<reference key="NSNextResponder" ref="774585933"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrameSize">{480, 386}</string>
+						<string key="NSFrameSize">{480, 460}</string>
 						<reference key="NSSuperview" ref="774585933"/>
 						<object class="NSColor" key="IBUIBackgroundColor" id="546348435">
 							<int key="NSColorSpace">1</int>
@@ -211,6 +211,7 @@
 						<reference key="NSSuperview" ref="774585933"/>
 						<reference key="IBUIBackgroundColor" ref="546348435"/>
 						<bool key="IBUIOpaque">NO</bool>
+						<float key="IBUIAlpha">0.7535211443901062</float>
 						<int key="IBUITag">2</int>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 					</object>
@@ -450,7 +451,7 @@
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>AmbulantView</string>
-					<string>{{450, 276}, {320, 480}}</string>
+					<string>{{402, 173}, {320, 480}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				</object>

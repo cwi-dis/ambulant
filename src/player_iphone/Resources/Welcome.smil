@@ -6,7 +6,7 @@
     <meta name="title" content="Welcome"/>
 	<meta name="description" content="Greeter presentation for small device"/>
     <meta name="poster" content="Welcome_Icon-57x57.png"/>
-	<meta name="dur" content="16s"/>
+	<meta name="duration" content="16s"/>
     <meta name="generator" content="GRiNS Pro for SMIL 2.0, v2.2 Mobile win32 build 151"/>
     <meta name="author" content="Dick Bulterman"/>
     <layout>
