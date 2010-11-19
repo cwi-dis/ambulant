@@ -157,11 +157,21 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
     [self.playerView addGestureRecognizer:panGesture];
     [panGesture release];
 	
-	// prepare to react on "longPress" gesture (move finger in one direction)
+/*	swipe doesn't work well with pan
+	// prepare to react on "swipe" gesture (move finger in one direction continuously)
+    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc]
+													  initWithTarget:self action:@selector(handleSwipeOrLongPressGesture:)];
+	swipeGesture.direction = (UISwipeGestureRecognizerDirection)
+							(UISwipeGestureRecognizerDirectionRight | UISwipeGestureRecognizerDirectionLeft
+							  | UISwipeGestureRecognizerDirectionUp | UISwipeGestureRecognizerDirectionDown);
+    [self.playerView addGestureRecognizer:swipeGesture];
+    [swipeGesture release];
+*/	
+	// prepare to react on "longPress" gesture (hold finger in one spot, longer than 0.4 sec.)
     UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc]
-										  initWithTarget:self action:@selector(handleLongPressGesture:)];
-//	longPressGesture.direction = (UIlongPressGestureRecognizerDirectionRight | UIlongPressGestureRecognizerDirectionLeft
-//							  | UIlongPressGestureRecognizerDirectionUp | UIlongPressGestureRecognizerDirectionDown);
+													  initWithTarget:self action:@selector(handleSwipeOrLongPressGesture:)];
+	//	longPressGesture.direction = (UIlongPressGestureRecognizerDirectionRight | UIlongPressGestureRecognizerDirectionLeft
+	//							  | UIlongPressGestureRecognizerDirectionUp | UIlongPressGestureRecognizerDirectionDown);
     [self.playerView addGestureRecognizer:longPressGesture];
     [longPressGesture release];
 	
@@ -228,23 +238,20 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	[self.playerView tappedAtPoint:location];
 }
 
-//  XXXX cleanup needed: move the this code into genuine member function of AmbulantPlayer
 - (IBAction) handlePinchGesture:(UIGestureRecognizer *)sender { // zoom
 	CGFloat factor = [(UIPinchGestureRecognizer *)sender scale];
 	[self.playerView zoomWithScale:factor inState: [sender state]];
 }
 
-//  XXXX cleanup needed: move the this code into genuine member function of AmbulantPlayer
 - (IBAction) handlePanGesture:(UIPanGestureRecognizer *)sender {
 	CGPoint translate = [sender translationInView: playerView.superview];
 	[self.playerView  translateWithPoint: (CGPoint) translate inState: [sender state]];
 }
 
-//  XXXX cleanup needed: move the this code into genuine member function of AmbulantPlayer
-- (IBAction) handleLongPressGesture:(UILongPressGestureRecognizer *)sender {
-//	CGPoint translate = [sender translationInView: playerView.superview];
-//	[self.playerView  translateWithPoint: (CGPoint) translate inState: [sender state]];
-	NSLog(@"longPress detected");
+- (IBAction) handleSwipeOrLongPressGesture:(UIGestureRecognizer *)sender {
+	//	CGPoint translate = [sender translationInView: playerView.superview];
+	//	[self.playerView  translateWithPoint: (CGPoint) translate inState: [sender state]];
+	NSLog(@"SwipeOrLongPress detected");
 	static bool	wasPressed = false;
 	if (wasPressed && interactionView != NULL) {
 		interactionView.hidden = ! interactionView.hidden;

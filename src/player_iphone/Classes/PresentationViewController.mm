@@ -140,28 +140,29 @@ tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexP
 	[self.delegate playPresentation:[[selectedItem ns_url] absoluteString]];
 }
 
-#ifdef TBD: adapt following methods 
 // Support conditional editing of the table view.
-- (BOOL
-   tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+- (BOOL)
+tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return NO if you do not want the specified item to be editable.
     return YES;
 }
 
 // Support editing the table view (deletion only, adding is automatic).
 - (void)
-   tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source.
-		
-		[ moviesArray removeObjectAtIndex: indexPath.row ];
+		ambulant::Playlist* history = ambulant::iOSpreferences::get_preferences()->m_history;
+		history->remove_playlist_item_at_index(indexPath.row);
+		[presentationsArray removeObjectAtIndex: indexPath.row];
 		[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
  	}   
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
     }   
 }
+#ifdef TBD: adapt following methods 
 #endif//TBD
    
 // Support for TabBarItem selection

@@ -57,7 +57,8 @@ public:
 	NSString* get_version();
 	// get an immutable copy of the playlist
 	NSArray* get_playlist();
-	
+	// remove the PlaylistItem at the given index
+	void remove_playlist_item_at_index(NSUInteger idx);
 	// get and manipulate the last item
 	PlaylistItem* get_last_item();
 	void add_item(PlaylistItem* item);

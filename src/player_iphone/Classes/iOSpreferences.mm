@@ -300,6 +300,16 @@ ambulant::Playlist::get_playlist()
 	return [NSArray arrayWithArray: am_ios_playlist];
 }
 
+void
+ambulant::Playlist::remove_playlist_item_at_index(NSUInteger idx)
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	if (idx < [am_ios_playlist count]) {
+		[am_ios_playlist removeObjectAtIndex: idx];
+	}
+	[pool release];
+}
+
 
 
 
