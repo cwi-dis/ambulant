@@ -187,6 +187,7 @@
 						<int key="objectID">16</int>
 						<reference key="object" ref="905898715"/>
 						<reference key="parent" ref="178698193"/>
+						<string key="objectName">History</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">45</int>
@@ -205,11 +206,38 @@
 				<string key="-2.CustomClassName">UIResponder</string>
 				<string key="16.IBEditorWindowLastContentRect">{{887, 471}, {320, 460}}</string>
 				<string key="16.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<object class="NSMutableAttributedString" key="16.notes">
+					<object class="NSMutableString" key="NSString">
+						<characters key="NS.bytes">This is a default note.</characters>
+					</object>
+					<dictionary key="NSAttributes">
+						<object class="NSColor" key="NSColor">
+							<int key="NSColorSpace">6</int>
+							<string key="NSCatalogName">System</string>
+							<string key="NSColorName">textColor</string>
+							<object class="NSColor" key="NSColor">
+								<int key="NSColorSpace">3</int>
+								<bytes key="NSWhite">MAA</bytes>
+							</object>
+						</object>
+						<object class="NSFont" key="NSFont" id="26">
+							<string key="NSName">LucidaGrande</string>
+							<double key="NSSize">11</double>
+							<int key="NSfFlags">3100</int>
+						</object>
+						<reference key="NSOriginalFont" ref="26"/>
+						<object class="NSParagraphStyle" key="NSParagraphStyle">
+							<int key="NSAlignment">4</int>
+							<nil key="NSTabStops"/>
+						</object>
+					</dictionary>
+				</object>
+				<boolean value="YES" key="16.showNotes"/>
 				<string key="40.IBEditorWindowLastContentRect">{{578, 1023}, {320, 49}}</string>
 				<string key="40.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="41.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="42.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-				<string key="43.IBEditorWindowLastContentRect">{{349, 276}, {320, 480}}</string>
+				<string key="43.IBEditorWindowLastContentRect">{{349, 676}, {320, 480}}</string>
 				<string key="43.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="45.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="49.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>

@@ -154,7 +154,8 @@ tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingSty
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source.
 		ambulant::Playlist* history = ambulant::iOSpreferences::get_preferences()->m_history;
-		history->remove_playlist_item_at_index(indexPath.row);
+		
+		history->remove_playlist_item_at_index([history->get_playlist() count] - 1 - indexPath.row);
 		[presentationsArray removeObjectAtIndex: indexPath.row];
 		[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
  	}   

@@ -342,6 +342,10 @@ playlistViewControllerDidFinish: (PlaylistViewController *)controller {
 		UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
 		[playerView adaptDisplayAfterRotation: orientation];
 	}
+	if ( ! interactionView.hidden) {
+		interactionView.hidden = true;
+		interactionView.opaque = false;
+	}
 }
 
 - (IBAction) showHistory:(id)sender {    
@@ -375,6 +379,10 @@ playlistViewControllerDidFinish: (PlaylistViewController *)controller {
 		}
 		UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
 		[playerView adaptDisplayAfterRotation: orientation];
+		if ( ! interactionView.hidden) {
+			interactionView.hidden = true;
+			interactionView.opaque = false;
+		}
 	}
 }
 
