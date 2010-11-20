@@ -1,3 +1,16 @@
+2010-11-19 21:46  keesblom
+
+	* Fixed a bug in Delete from History (wrong item ws deleted).
+
+2010-11-19 16:42  keesblom
+
+	* Added a secret "Delete" button in the History, activates on
+	  "swipe"
+
+2010-11-19 15:11  keesblom
+
+	* Some small bugs and files moving around
+
 2010-11-18 10:19  jackjansen
 
 	* Regenerated
