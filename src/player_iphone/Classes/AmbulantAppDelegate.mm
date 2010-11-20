@@ -30,10 +30,16 @@ show_message(int level, const char *format)
 	AmbulantAppDelegate *delegate = [[UIApplication sharedApplication] delegate];
 	if (old_message == NULL || ! [old_message isEqualToString:message]) {
 		[delegate performSelectorOnMainThread: @selector(showAlert:)
-							   withObject: message	waitUntilDone: NO];
+								   withObject: message
+								waitUntilDone: NO];
 	//	[message release];
+		if (old_message != NULL) {
+			[old_message release];
+		}
 		[old_message release];
 		old_message = message;
+	} else {
+		[message release];
 	}
 	[pool release];
 }

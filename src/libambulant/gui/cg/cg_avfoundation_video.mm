@@ -243,6 +243,7 @@ initWithURL:(NSURL*) nsurl {
 		if (s_busy) {
 			s_busy = NO; //prevents the "no simultaneous video's" error repeating
 			return NULL;
+//			[self stop];
 		}
 		m_avplayer_item = [[AVPlayerItem alloc] initWithURL: nsurl];
 		[s_avplayer replaceCurrentItemWithPlayerItem: m_avplayer_item];
@@ -450,8 +451,8 @@ cg_avfoundation_video_renderer::init_with_node(const lib::node *n)
 	NSString* nsstr = NULL;
 	NSURL* nsurl = NULL;
 	renderer_playable::init_with_node(n);
-	assert(m_renderer_state == rs_created || m_renderer_state == rs_prerolled || m_renderer_state == rs_stopped || m_renderer_state == rs_fullstopped);
-	if ( ! (m_renderer_state == rs_created || m_renderer_state == rs_prerolled || m_renderer_state == rs_stopped || m_renderer_state == rs_fullstopped)) {
+	assert(m_renderer_state == rs_created || m_renderer_state == rs_prerolled || m_renderer_state == rs_pausing || m_renderer_state == rs_stopped || m_renderer_state == rs_fullstopped);
+	if ( ! (m_renderer_state == rs_created || m_renderer_state == rs_prerolled || m_renderer_state == rs_pausing || m_renderer_state == rs_stopped || m_renderer_state == rs_fullstopped)) {
 		lib::logger::get_logger()->debug("cg_avfoundation_video_renderer::init_with_node() called while m_renderer_state==%d", m_renderer_state);
 		goto bad;
 	}

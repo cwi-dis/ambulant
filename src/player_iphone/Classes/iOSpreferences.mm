@@ -184,10 +184,7 @@ bool iOSpreferences::save_preferences()
 
 - (bool) equalsPlaylistItem: (PlaylistItem*) playlistitem
 {
-	if ( ! [[self ns_title] compare: [playlistitem ns_title]] == NSOrderedSame) {
-		return false;
-	}
-	return true;
+	return [[self ns_url] isEqual: [playlistitem ns_url]];
 }
 	
 #import <ImageIO/ImageIO.h>
@@ -231,14 +228,14 @@ initWithCoder: (NSCoder*) decoder
 
 - (void)
 dealloc {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	ns_title = nil;
-	ns_url = nil;
-	cg_image = nil;
-	ns_description = nil;
-	ns_dur = nil;
-	position = nil;
-	[pool release];
+	[ns_title release];
+	[ns_url release];
+	if (cg_image != NULL) {
+		CFRelease( cg_image);
+	}
+	[ns_description release];
+	[ns_dur release];
+
 	[super dealloc];
 }
 
