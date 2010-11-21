@@ -1,3 +1,7 @@
+2010-11-21 00:21  keesblom
+
+	* Got rid of some leaks
+
 2010-11-19 21:46  keesblom
 
 	* Fixed a bug in Delete from History (wrong item ws deleted).
