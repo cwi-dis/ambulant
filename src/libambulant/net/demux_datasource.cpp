@@ -181,6 +181,10 @@ demux_audio_datasource::seek(timestamp_t time)
 		AM_DBG lib::logger::get_logger()->debug("demux_audio_datasource: flush %d buffers due to seek", nbuf);
 	}
 	while (m_queue.size() > 0) {
+		void* data = m_queue.front().data;
+		if (data != NULL) {
+			free(data);
+		}
 		m_queue.pop();
 	}
 	m_current_time = time;
