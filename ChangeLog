@@ -1,3 +1,8 @@
+2010-11-22 01:51  keesblom
+
+	* Fixed leaks in demux_audio_datasource: all data buffers in
+	  packets dropped by seek() were leaked
+
 2010-11-21 00:21  keesblom
 
 	* Got rid of some leaks
