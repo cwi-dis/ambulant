@@ -19,6 +19,7 @@ MACOSX_BUNDLE_DIRS = (
 		'/System/',
 		'/lib/',
 		'/usr/lib/',
+		'/usr/X11/lib/',
 		'@loader_path/',
 		'@executable_path/',
 	]
