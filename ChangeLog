@@ -1,3 +1,7 @@
+2010-11-23 15:11  jackjansen
+
+	* Added /usr/X11/lib
+
 2010-11-22 01:51  keesblom
 
 	* Fixed leaks in demux_audio_datasource: all data buffers in
