@@ -63,7 +63,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 @implementation AmbulantViewController
 
-@synthesize interactionView, originalPlayerViewFrame, originalInteractionViewFrame,
+@synthesize interactionView, modeBar, originalPlayerViewFrame, originalInteractionViewFrame,
 			playerView, myMainloop, URLEntryField, linkURL, playURL,
 			keyboardIsShown, currentOrientation, autoCenter, autoResize,
 			nativeRenderer, play_active;
@@ -108,6 +108,8 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	if ( ! interactionView.hidden) {
 		interactionView.hidden = true;
 		interactionView.opaque = false;
+		modeBar.hidden = true;
+		modeBar.opaque = false;
 	}
 }
 
@@ -256,6 +258,8 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	if (wasPressed && interactionView != NULL) {
 		interactionView.hidden = ! interactionView.hidden;
 		interactionView.opaque = ! interactionView.opaque;
+		modeBar.hidden = ! modeBar.hidden;
+		modeBar.opaque = ! modeBar.opaque;
 		wasPressed = false;
 	} else if (interactionView != NULL) {
 		wasPressed = ! wasPressed;
@@ -312,6 +316,10 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 - (void)
 settingsHaveChanged:(PlaylistViewController *)controller {
+	// check we have the settings view
+	if (controller.view.tag != 40) {
+		return;
+	}
 	// get the values entered by the user
 	autoCenter = [controller autoCenter];
 	autoResize = [controller autoResize];
@@ -332,8 +340,9 @@ settingsHaveChanged:(PlaylistViewController *)controller {
 }
 
 - (void)
-playlistViewControllerDidFinish: (PlaylistViewController *)controller {
+playlistViewControllerDidFinish: (UIViewController *)controller {
 	
+	[self settingsHaveChanged: controller];	
 	[self dismissModalViewControllerAnimated:YES];
 	if (myMainloop != NULL) {
 		if (play_active) {
@@ -345,6 +354,8 @@ playlistViewControllerDidFinish: (PlaylistViewController *)controller {
 	if ( ! interactionView.hidden) {
 		interactionView.hidden = true;
 		interactionView.opaque = false;
+		modeBar.hidden = true;
+		modeBar.opaque = false;
 	}
 }
 
@@ -366,7 +377,7 @@ playlistViewControllerDidFinish: (PlaylistViewController *)controller {
 }
 
 - (void) done: (id) sender {
-	[self playlistViewControllerDidFinish: (PresentationViewController*) sender];
+	[self playlistViewControllerDidFinish: (UIViewController*) sender];
 }
 
 - (void) presentationViewControllerDidFinish: (PresentationViewController *)controller {
@@ -382,6 +393,8 @@ playlistViewControllerDidFinish: (PlaylistViewController *)controller {
 		if ( ! interactionView.hidden) {
 			interactionView.hidden = true;
 			interactionView.opaque = false;
+			modeBar.hidden = true;
+			modeBar.opaque = false;
 		}
 	}
 }

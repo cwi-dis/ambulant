@@ -39,6 +39,7 @@ private:
 	IBOutlet id view;
 	IBOutlet AmbulantView* playerView;
 	IBOutlet UIView* interactionView;
+	IBOutlet UITabBar* modeBar;
 	IBOutlet UITextField* URLEntryField;
 	CGRect originalPlayerViewFrame, originalInteractionViewFrame;
 	NSMutableString* playURL;
@@ -66,6 +67,7 @@ private:
 
 @property(nonatomic,retain) IBOutlet UITextField* URLEntryField;
 @property(nonatomic,retain)	IBOutlet AmbulantView* playerView;
+@property(nonatomic,retain) IBOutlet UITabBar* modeBar;
 @property(nonatomic) mainloop* myMainloop;
 @property(nonatomic,retain) NSMutableString* linkURL, *playURL;
 @property(nonatomic,retain)	IBOutlet UIView* interactionView;

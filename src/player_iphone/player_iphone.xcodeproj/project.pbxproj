@@ -195,6 +195,16 @@
 		9387C9811251F3C80013AECB /* iPhoneAVPlayerTest.smil in Resources */ = {isa = PBXBuildFile; fileRef = 9387C97F1251F3C80013AECB /* iPhoneAVPlayerTest.smil */; };
 		93882663121EB7F40038AF71 /* Welcome-smiltext.smil in Resources */ = {isa = PBXBuildFile; fileRef = 93882662121EB7F40038AF71 /* Welcome-smiltext.smil */; };
 		93882664121EB7F40038AF71 /* Welcome-smiltext.smil in Resources */ = {isa = PBXBuildFile; fileRef = 93882662121EB7F40038AF71 /* Welcome-smiltext.smil */; };
+		93992888129AB48A005EAAED /* FastForward_iPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = 93992869129AB48A005EAAED /* FastForward_iPhone.png */; };
+		93992889129AB48A005EAAED /* Pause_iPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = 9399286A129AB48A005EAAED /* Pause_iPhone.png */; };
+		9399288A129AB48A005EAAED /* Play_iPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = 9399286B129AB48A005EAAED /* Play_iPhone.png */; };
+		9399288B129AB48A005EAAED /* Rewind_iPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = 9399286C129AB48A005EAAED /* Rewind_iPhone.png */; };
+		939928A7129AB48A005EAAED /* FastForward_iPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = 93992869129AB48A005EAAED /* FastForward_iPhone.png */; };
+		939928A8129AB48A005EAAED /* Pause_iPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = 9399286A129AB48A005EAAED /* Pause_iPhone.png */; };
+		939928A9129AB48A005EAAED /* Play_iPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = 9399286B129AB48A005EAAED /* Play_iPhone.png */; };
+		939928AA129AB48A005EAAED /* Rewind_iPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = 9399286C129AB48A005EAAED /* Rewind_iPhone.png */; };
+		939928FE129ABDE5005EAAED /* Background_iPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = 939928FD129ABDE5005EAAED /* Background_iPhone.png */; };
+		939928FF129ABDE5005EAAED /* Background_iPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = 939928FD129ABDE5005EAAED /* Background_iPhone.png */; };
 		93A812C312108D4C0060AB6D /* rtsp_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0AA91203125700A3518F /* rtsp_datasource.cpp */; };
 		93A812C412108D510060AB6D /* rtsp_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0AAA1203125700A3518F /* rtsp_factory.cpp */; };
 		93B08380126C837700EE380F /* player_simulator-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 93DC0E3D1203650C00A3518F /* player_simulator-Info.plist */; };
@@ -362,6 +372,11 @@
 		937981D5120DE21700B1A6D2 /* AmbulantWebViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AmbulantWebViewController.mm; sourceTree = "<group>"; };
 		9387C97F1251F3C80013AECB /* iPhoneAVPlayerTest.smil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = iPhoneAVPlayerTest.smil; path = Resources/iPhoneAVPlayerTest.smil; sourceTree = "<group>"; };
 		93882662121EB7F40038AF71 /* Welcome-smiltext.smil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "Welcome-smiltext.smil"; path = "Resources/Welcome-smiltext.smil"; sourceTree = "<group>"; };
+		93992869129AB48A005EAAED /* FastForward_iPhone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FastForward_iPhone.png; path = Resources/FastForward_iPhone.png; sourceTree = "<group>"; };
+		9399286A129AB48A005EAAED /* Pause_iPhone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Pause_iPhone.png; path = Resources/Pause_iPhone.png; sourceTree = "<group>"; };
+		9399286B129AB48A005EAAED /* Play_iPhone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Play_iPhone.png; path = Resources/Play_iPhone.png; sourceTree = "<group>"; };
+		9399286C129AB48A005EAAED /* Rewind_iPhone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Rewind_iPhone.png; path = Resources/Rewind_iPhone.png; sourceTree = "<group>"; };
+		939928FD129ABDE5005EAAED /* Background_iPhone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Background_iPhone.png; path = Resources/Background_iPhone.png; sourceTree = "<group>"; };
 		93D541A21282DC0900C4EB55 /* PlaylistAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistAppDelegate.h; sourceTree = "<group>"; };
 		93D9B8E7126362C500C7F2F4 /* iOSpreferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSpreferences.h; sourceTree = "<group>"; };
 		93D9B8E81263633E00C7F2F4 /* iOSpreferences.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSpreferences.mm; sourceTree = "<group>"; };
@@ -916,6 +931,11 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				939928FD129ABDE5005EAAED /* Background_iPhone.png */,
+				93992869129AB48A005EAAED /* FastForward_iPhone.png */,
+				9399286A129AB48A005EAAED /* Pause_iPhone.png */,
+				9399286B129AB48A005EAAED /* Play_iPhone.png */,
+				9399286C129AB48A005EAAED /* Rewind_iPhone.png */,
 				933BBF071295E4C6007261DC /* Welcome_Icon-57x57.png */,
 				9329A440128051F4002B9E6A /* Back.png */,
 				93299DDD1279C32A002B9E6A /* PresentationTableCell.xib */,
@@ -1763,7 +1783,14 @@
 			isa = PBXProject;
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "player_iphone" */;
 			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* CustomTemplate */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -1793,6 +1820,11 @@
 				93299DDE1279C32A002B9E6A /* PresentationTableCell.xib in Resources */,
 				9329A441128051F4002B9E6A /* Back.png in Resources */,
 				933BBF091295E4C6007261DC /* Welcome_Icon-57x57.png in Resources */,
+				939928A7129AB48A005EAAED /* FastForward_iPhone.png in Resources */,
+				939928A8129AB48A005EAAED /* Pause_iPhone.png in Resources */,
+				939928A9129AB48A005EAAED /* Play_iPhone.png in Resources */,
+				939928AA129AB48A005EAAED /* Rewind_iPhone.png in Resources */,
+				939928FF129ABDE5005EAAED /* Background_iPhone.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1815,6 +1847,11 @@
 				9329A442128051F4002B9E6A /* Back.png in Resources */,
 				933BB5F4128AD6A5007261DC /* test.smil in Resources */,
 				933BBF081295E4C6007261DC /* Welcome_Icon-57x57.png in Resources */,
+				93992888129AB48A005EAAED /* FastForward_iPhone.png in Resources */,
+				93992889129AB48A005EAAED /* Pause_iPhone.png in Resources */,
+				9399288A129AB48A005EAAED /* Play_iPhone.png in Resources */,
+				9399288B129AB48A005EAAED /* Rewind_iPhone.png in Resources */,
+				939928FE129ABDE5005EAAED /* Background_iPhone.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2045,7 +2082,7 @@
 				);
 				GCC_THREADSAFE_STATICS = YES;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
-				HEADER_SEARCH_PATHS = "/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.0.sdk/usr/include/c++/4.2.1//armv6-apple-darwin10";
+				HEADER_SEARCH_PATHS = "/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/usr/include/c++/4.2.1//armv6-apple-darwin10";
 				INFOPLIST_FILE = "player_iphone-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"../../build-iOS40-Device/third_party_packages/installed/lib",
@@ -2123,7 +2160,7 @@
 				LIBRARY_SEARCH_PATHS = "../../build-iOS40-Device/third_party_packages/installed/lib";
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PREBINDING = NO;
-				SDKROOT = iphoneos4.0;
+				SDKROOT = iphoneos4.2;
 				USER_HEADER_SEARCH_PATHS = "../../include ../../build-iOS40-Simulator/third_party_packages/installed/include ../../build-iOS40-Simulator/third_party_packages/installed/include/SDL";
 			};
 			name = Distribution;
@@ -2340,7 +2377,7 @@
 				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
 				PRODUCT_NAME = player_iphone;
-				SDKROOT = iphoneos4.0;
+				SDKROOT = iphoneos4.2;
 				USER_HEADER_SEARCH_PATHS = "../../include ../../build-iOS40-Simulator/third_party_packages/installed/include ../../build-iOS40-Simulator/third_party_packages/installed/include/SDL ../../build-iOS40-Simulator/third_party_packages/live/BasicUsageEnvironment ../../build-iOS40-Simulator/third_party_packages/live/groupsock ../../build-iOS40-Simulator/third_party_packages/live/liveMedia ../../build-iOS40-Simulator/third_party_packages/live/UsageEnvironment";
 			};
 			name = Debug;
@@ -2356,7 +2393,7 @@
 				LIBRARY_SEARCH_PATHS = "../../build-iOS40-Device/third_party_packages/installed/lib";
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PREBINDING = NO;
-				SDKROOT = iphoneos4.0;
+				SDKROOT = iphoneos4.2;
 				USER_HEADER_SEARCH_PATHS = "../../include ../../build-iOS40-Simulator/third_party_packages/installed/include ../../build-iOS40-Simulator/third_party_packages/installed/include/SDL";
 			};
 			name = Release;

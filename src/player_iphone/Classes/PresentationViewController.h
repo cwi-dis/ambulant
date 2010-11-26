@@ -17,12 +17,10 @@
 	id <PlaylistViewControllerDelegate> delegate;
 	NSMutableArray* presentationsArray;
 	UITableViewCell* nibLoadedCell;
-	UINavigationController* naviationController;
 	Presentation* selectedPresentation;
 }
 - (IBAction) done: (id) sender;
 
 @property(nonatomic, assign) id <PlaylistViewControllerDelegate> delegate;
-@property(nonatomic, retain) UINavigationController* naviationController;
 @property(nonatomic, retain) IBOutlet UITableViewCell* nibLoadedCell;
 @end

@@ -153,6 +153,7 @@ bool iOSpreferences::save_preferences()
 	[prefs setBool: m_dynamic_content_control forKey: @"dynamic_content_control"];
 	[prefs synchronize];
 	ambulant::net::url::set_strict_url_parsing(m_strict_url_parsing);
+
 	[pool release];
 	return true;
 }

@@ -17,7 +17,7 @@
 
 @implementation PresentationViewController
 
-@synthesize delegate,naviationController,nibLoadedCell;
+@synthesize delegate,nibLoadedCell;
 
 /*
 // The designated initializer. Override to perform setup that is required before the view is loaded.
@@ -43,7 +43,6 @@ viewDidLoad
     [super viewDidLoad];
 //	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	AM_DBG NSLog(@"PresentationViewController viewDidLoad(0x%x)", self);
-	naviationController = [[UINavigationController alloc]initWithRootViewController: self];
 	presentationsArray = [ [ NSMutableArray alloc ] init ];
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	prefs->load_preferences();
@@ -61,7 +60,6 @@ viewDidLoad
 			aPresentation.description = [item ns_description];
 			[ presentationsArray addObject:aPresentation ];							  
 		}];
-	[self presentModalViewController:naviationController animated:YES];
 //	[pool release];
 }
 
@@ -72,14 +70,12 @@ viewDidLoad
 //	[self.delegate done:self];
 }
 
-
-/*
-// Override to allow orientations other than the default portrait orientation.
+// Overriden to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    return YES;
 }
-*/
+
 
 - (void)didReceiveMemoryWarning
 {
