@@ -10,7 +10,7 @@
 #import "iOSpreferences.h"
 #import "Presentation.h"
 
-//#define AM_DBG if(1)
+#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif

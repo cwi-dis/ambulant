@@ -64,6 +64,7 @@ initialize_logger()
 @implementation AmbulantAppDelegate
 
 @synthesize window;
+@synthesize tabBarController;
 @synthesize viewController;
 @synthesize webViewController;
 
@@ -120,9 +121,36 @@ application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictio
 	// Install ambulant logger
 	initialize_logger();
     [window addSubview:viewController.view];
+	[window addSubview:tabBarController.view];
+	tabBarController.view.alpha = 0.0;
+	tabBarController.view.hidden = true;
     [window makeKeyAndVisible];
 
     return YES;
+}
+
+- (void)
+//application:(UIApplication *)application 
+showAmbulantPlayer: (void*) id
+{
+	[ UIView animateWithDuration: 2.0 animations: ^
+	 {
+		 tabBarController.view.hidden = true;
+		 tabBarController.view.alpha = 0.0;
+		 viewController.view.alpha = 1.0;
+	 } ];
+}
+
+- (void)
+//application:(UIApplication *)application 
+showPlaylists: (void*) id
+{
+	[ UIView animateWithDuration: 2.0 animations: ^
+	 {
+		 tabBarController.view.hidden = false;
+		 tabBarController.view.alpha = 1.0;
+		 viewController.view.alpha = 0.2;
+	 } ];
 }
 
 

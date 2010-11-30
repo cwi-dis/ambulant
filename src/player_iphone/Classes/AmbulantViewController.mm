@@ -343,7 +343,8 @@ settingsHaveChanged:(PlaylistViewController *)controller {
 playlistViewControllerDidFinish: (UIViewController *)controller {
 	
 	[self settingsHaveChanged: controller];	
-	[self dismissModalViewControllerAnimated:YES];
+//	[self dismissModalViewControllerAnimated:YES];
+	[(AmbulantAppDelegate*)([UIApplication sharedApplication].delegate) showAmbulantPlayer: (id) self];
 	if (myMainloop != NULL) {
 		if (play_active) {
 			myMainloop->play();
@@ -357,6 +358,7 @@ playlistViewControllerDidFinish: (UIViewController *)controller {
 		modeBar.hidden = true;
 		modeBar.opaque = false;
 	}
+	playerView.alpha = 1.0;
 }
 
 - (IBAction) showHistory:(id)sender {    
@@ -365,6 +367,7 @@ playlistViewControllerDidFinish: (UIViewController *)controller {
 		play_active = myMainloop->is_play_active();
 		myMainloop->pause();
 	}
+	/*
 	PresentationViewController *controller = [[PresentationViewController alloc]
 										  initWithNibName:@"PresentationTableViewController" bundle:nil];
 	controller.title = @"Presentations";
@@ -374,6 +377,8 @@ playlistViewControllerDidFinish: (UIViewController *)controller {
 	[self presentModalViewController:controller animated:YES];
 	
 	[controller release];
+	 */
+	[(AmbulantAppDelegate*)([UIApplication sharedApplication].delegate) showPlaylists: self];
 }
 
 - (void) done: (id) sender {

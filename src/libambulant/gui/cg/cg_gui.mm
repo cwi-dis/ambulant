@@ -598,6 +598,7 @@ bad:
 			myframe.size.width -= delta;
 		}
 	}
+	AM_DBG ambulant::lib::logger::get_logger()->debug("adaptDisplayAfterRotation: myframe=orig(%d,%d),size(%d,%d)",(int)myframe.origin.x, (int)myframe.origin.y,(int)myframe.size.width,(int)myframe.size.height);
 	self.frame = myframe;
 
 	// redisplay AmbulantView using the new settings

@@ -145,11 +145,12 @@ bool iOSpreferences::save_preferences()
 	[prefs setBool: m_fullscreen forKey: @"fullScreen"];
 	[prefs setBool: m_auto_center forKey: @"autoCenter"];
 	[prefs setBool: m_auto_resize forKey: @"autoResize"];
-	NSArray* history = m_history->get_playlist();
-	NSData* data = [NSKeyedArchiver archivedDataWithRootObject:history];
-	[prefs setObject: data forKey:@"history"];
-	[prefs setObject: [NSString stringWithString: m_history->get_version()] forKey:@"version"];
-	
+	if (m_history != NULL) {
+		NSArray* history = m_history->get_playlist();
+		NSData* data = [NSKeyedArchiver archivedDataWithRootObject:history];
+		[prefs setObject: data forKey:@"history"];
+		[prefs setObject: [NSString stringWithString: m_history->get_version()] forKey:@"version"];
+	}
 	[prefs setBool: m_dynamic_content_control forKey: @"dynamic_content_control"];
 	[prefs synchronize];
 	ambulant::net::url::set_strict_url_parsing(m_strict_url_parsing);
