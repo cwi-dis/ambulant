@@ -1,3 +1,9 @@
+2010-11-30 15:12  keesblom
+
+	* Started towards a 'final' GUI. When HUD appears and 'Lists...' is
+	  selected,  AmbulantPlayer fades in favor of the last selected
+	  TabbarItem. Only History and Setting work, less of more.
+
 2010-11-26 14:40  keesblom
 
 	* Adapted for 4.2. Added an initial HUD, with images from VLC
