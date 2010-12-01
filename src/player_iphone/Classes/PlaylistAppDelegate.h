@@ -24,5 +24,6 @@
 - (void) settingsHaveChanged: (UIViewController*) controller;
 - (void) playlistViewControllerDidFinish: (UIViewController *)controller;
 - (void) playPresentation:(NSString*) what;
+- (NSString*) playURL;
 - (IBAction) done: (id) sender;
 @end

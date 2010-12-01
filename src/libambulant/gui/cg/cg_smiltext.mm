@@ -198,9 +198,11 @@ cg_smiltext_renderer::start(double t)
 void
 cg_smiltext_renderer::seek(double t)
 {
-	assert( t >= 0);
+//	assert( t >= 0);
+	if (t >= 0 ) {
 	m_engine.seek(t);
-	//renderer_playable::seek(t);
+	}
+//renderer_playable::seek(t);
 }
 
 bool

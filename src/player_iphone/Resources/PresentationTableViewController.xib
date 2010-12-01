@@ -11,7 +11,7 @@
 			<string key="NS.object.0">132</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="43"/>
+			<integer value="52"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -40,7 +40,7 @@
 							<object class="IBUINavigationItem" id="138581281">
 								<reference key="IBUINavigationBar" ref="558127995"/>
 								<string key="IBUITitle">History</string>
-								<object class="IBUIBarButtonItem" key="IBUILeftBarButtonItem" id="86055454">
+								<object class="IBUIBarButtonItem" key="IBUIRightBarButtonItem" id="86055454">
 									<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 									<int key="IBUIStyle">1</int>
 									<reference key="IBUINavigationItem" ref="138581281"/>
@@ -213,7 +213,7 @@
 					</dictionary>
 				</object>
 				<boolean value="YES" key="16.showNotes"/>
-				<string key="43.IBEditorWindowLastContentRect">{{18, 672}, {320, 480}}</string>
+				<string key="43.IBEditorWindowLastContentRect">{{18, 330}, {320, 480}}</string>
 				<string key="43.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="51.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<object class="NSAffineTransform" key="51.IBViewBoundsToFrameTransform">

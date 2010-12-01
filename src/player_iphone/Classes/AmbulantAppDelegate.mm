@@ -145,14 +145,13 @@ showAmbulantPlayer: (void*) id
 //application:(UIApplication *)application 
 showPlaylists: (void*) id
 {
-	[ UIView animateWithDuration: 2.0 animations: ^
+	[ UIView animateWithDuration: 1.0 animations: ^
 	 {
 		 tabBarController.view.hidden = false;
 		 tabBarController.view.alpha = 1.0;
 		 viewController.view.alpha = 0.2;
 	 } ];
 }
-
 
 - (void)
 applicationWillResignActive:(UIApplication *)application {

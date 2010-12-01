@@ -166,7 +166,7 @@
 							<object class="IBUIButton" id="677293511">
 								<reference key="NSNextResponder" ref="214127161"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{5, 10}, {60, 30}}</string>
+								<string key="NSFrame">{{20, 10}, {30, 30}}</string>
 								<reference key="NSSuperview" ref="214127161"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<int key="IBUITag">8</int>
@@ -187,7 +187,7 @@
 								<reference key="IBUINormalTitleShadowColor" ref="93537526"/>
 								<object class="NSCustomResource" key="IBUINormalImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">Icon.png</string>
+									<string key="NSResourceName">InfoIcon-60x60.png</string>
 								</object>
 							</object>
 						</object>
@@ -847,7 +847,7 @@
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<string>Background_iPhone.png</string>
 				<string>FastForward_iPhone.png</string>
-				<string>Icon.png</string>
+				<string>InfoIcon-60x60.png</string>
 				<string>Pause_iPhone.png</string>
 				<string>Rewind_iPhone.png</string>
 			</object>
@@ -855,7 +855,7 @@
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<string>{314, 93}</string>
 				<string>{31, 23}</string>
-				<string>{57, 57}</string>
+				<string>{60, 60}</string>
 				<string>{20, 21}</string>
 				<string>{31, 23}</string>
 			</object>

@@ -21,6 +21,14 @@
 		9306EF6712A4643200C72BFA /* ToolsIcon-30x30.png in Resources */ = {isa = PBXBuildFile; fileRef = 9306EF6512A4643200C72BFA /* ToolsIcon-30x30.png */; };
 		9306EF7712A50F0600C72BFA /* HelpIcon-30x30.png in Resources */ = {isa = PBXBuildFile; fileRef = 9306EF7612A50F0600C72BFA /* HelpIcon-30x30.png */; };
 		9306EF7812A50F0600C72BFA /* HelpIcon-30x30.png in Resources */ = {isa = PBXBuildFile; fileRef = 9306EF7612A50F0600C72BFA /* HelpIcon-30x30.png */; };
+		9306F04912A544F000C72BFA /* InfoIcon-60x60.png in Resources */ = {isa = PBXBuildFile; fileRef = 9306F04812A544F000C72BFA /* InfoIcon-60x60.png */; };
+		9306F04A12A544F000C72BFA /* InfoIcon-60x60.png in Resources */ = {isa = PBXBuildFile; fileRef = 9306F04812A544F000C72BFA /* InfoIcon-60x60.png */; };
+		9306F08512A5612A00C72BFA /* EditIcon-30x30.png in Resources */ = {isa = PBXBuildFile; fileRef = 9306F08412A5612A00C72BFA /* EditIcon-30x30.png */; };
+		9306F08612A5612A00C72BFA /* EditIcon-30x30.png in Resources */ = {isa = PBXBuildFile; fileRef = 9306F08412A5612A00C72BFA /* EditIcon-30x30.png */; };
+		9306F0D312A65E1A00C72BFA /* EditViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9306F0D212A65E1A00C72BFA /* EditViewController.xib */; };
+		9306F0D412A65E1A00C72BFA /* EditViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9306F0D212A65E1A00C72BFA /* EditViewController.xib */; };
+		9306F0F512A68BEF00C72BFA /* EditViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9306F0F412A68BEF00C72BFA /* EditViewController.mm */; };
+		9306F0F612A68BEF00C72BFA /* EditViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9306F0F412A68BEF00C72BFA /* EditViewController.mm */; };
 		9309F8241226AA3400F63B7E /* test.smil in Resources */ = {isa = PBXBuildFile; fileRef = 9309F7C312253D0B00F63B7E /* test.smil */; };
 		931FF3971201CF52003B632F /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 931FF38E1201CF52003B632F /* libavcodec.a */; };
 		931FF3981201CF52003B632F /* libavdevice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 931FF38F1201CF52003B632F /* libavdevice.a */; };
@@ -321,6 +329,12 @@
 		8D1107310486CEB800E47090 /* player_iphone-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "player_iphone-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		9306EF6512A4643200C72BFA /* ToolsIcon-30x30.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ToolsIcon-30x30.png"; path = "Resources/ToolsIcon-30x30.png"; sourceTree = "<group>"; };
 		9306EF7612A50F0600C72BFA /* HelpIcon-30x30.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "HelpIcon-30x30.png"; sourceTree = "<group>"; };
+		9306F04812A544F000C72BFA /* InfoIcon-60x60.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "InfoIcon-60x60.png"; sourceTree = "<group>"; };
+		9306F08412A5612A00C72BFA /* EditIcon-30x30.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "EditIcon-30x30.png"; path = "Resources/EditIcon-30x30.png"; sourceTree = "<group>"; };
+		9306F0B312A65DB300C72BFA /* EditViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = EditViewController.xib; path = Resources/EditViewController.xib; sourceTree = "<group>"; };
+		9306F0D212A65E1A00C72BFA /* EditViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = EditViewController.xib; path = Resources/EditViewController.xib; sourceTree = "<group>"; };
+		9306F0F312A68A7D00C72BFA /* EditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditViewController.h; sourceTree = "<group>"; };
+		9306F0F412A68BEF00C72BFA /* EditViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EditViewController.mm; sourceTree = "<group>"; };
 		9309F7C312253D0B00F63B7E /* test.smil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = test.smil; path = Resources/test.smil; sourceTree = "<group>"; };
 		931FF38E1201CF52003B632F /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = "../../build-iOS40-Simulator/third_party_packages/installed/lib/libavcodec.a"; sourceTree = SOURCE_ROOT; };
 		931FF38F1201CF52003B632F /* libavdevice.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavdevice.a; path = "../../build-iOS40-Simulator/third_party_packages/installed/lib/libavdevice.a"; sourceTree = SOURCE_ROOT; };
@@ -911,6 +925,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				9306F0B312A65DB300C72BFA /* EditViewController.xib */,
 				9331E9F9120DCADB0023B0F1 /* Classes */,
 				93DC0A251203125700A3518F /* Ambulant */,
 				931FF38D1201CEFB003B632F /* third_party_packages */,
@@ -937,6 +952,9 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				9306F0D212A65E1A00C72BFA /* EditViewController.xib */,
+				9306F08412A5612A00C72BFA /* EditIcon-30x30.png */,
+				9306F04812A544F000C72BFA /* InfoIcon-60x60.png */,
 				9306EF7612A50F0600C72BFA /* HelpIcon-30x30.png */,
 				9306EF6512A4643200C72BFA /* ToolsIcon-30x30.png */,
 				939928FD129ABDE5005EAAED /* Background_iPhone.png */,
@@ -1023,6 +1041,8 @@
 		9331E9F9120DCADB0023B0F1 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				9306F0F412A68BEF00C72BFA /* EditViewController.mm */,
+				9306F0F312A68A7D00C72BFA /* EditViewController.h */,
 				93D541A21282DC0900C4EB55 /* PlaylistAppDelegate.h */,
 				9329A240127DA370002B9E6A /* PresentationViewController.h */,
 				9329A241127DA370002B9E6A /* PresentationViewController.mm */,
@@ -1835,6 +1855,9 @@
 				939928FF129ABDE5005EAAED /* Background_iPhone.png in Resources */,
 				9306EF6712A4643200C72BFA /* ToolsIcon-30x30.png in Resources */,
 				9306EF7812A50F0600C72BFA /* HelpIcon-30x30.png in Resources */,
+				9306F04A12A544F000C72BFA /* InfoIcon-60x60.png in Resources */,
+				9306F08612A5612A00C72BFA /* EditIcon-30x30.png in Resources */,
+				9306F0D312A65E1A00C72BFA /* EditViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1864,6 +1887,9 @@
 				939928FE129ABDE5005EAAED /* Background_iPhone.png in Resources */,
 				9306EF6612A4643200C72BFA /* ToolsIcon-30x30.png in Resources */,
 				9306EF7712A50F0600C72BFA /* HelpIcon-30x30.png in Resources */,
+				9306F04912A544F000C72BFA /* InfoIcon-60x60.png in Resources */,
+				9306F08512A5612A00C72BFA /* EditIcon-30x30.png in Resources */,
+				9306F0D412A65E1A00C72BFA /* EditViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1962,6 +1988,7 @@
 				93D9B8EA1263633E00C7F2F4 /* iOSpreferences.mm in Sources */,
 				93299E341279C91D002B9E6A /* Presentation.m in Sources */,
 				9329A242127DA370002B9E6A /* PresentationViewController.mm in Sources */,
+				9306F0F512A68BEF00C72BFA /* EditViewController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2057,6 +2084,7 @@
 				93D9B8E91263633E00C7F2F4 /* iOSpreferences.mm in Sources */,
 				93299E361279C91D002B9E6A /* Presentation.m in Sources */,
 				9329A243127DA370002B9E6A /* PresentationViewController.mm in Sources */,
+				9306F0F612A68BEF00C72BFA /* EditViewController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
