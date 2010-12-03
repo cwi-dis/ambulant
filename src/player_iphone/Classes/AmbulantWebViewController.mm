@@ -29,11 +29,25 @@
 }
 */
 -(void) loadURL {
-	NSURL *url = [[NSURL alloc] initWithString: urlField];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSString* urlstring;
+
+	NSURL* url;
+	if (urlField == nil) {
+		NSBundle* thisBundle = [NSBundle bundleForClass:[self class]];
+		urlstring = [thisBundle pathForResource:@"AmbulantHelp-iOS" ofType:@"html"];
+//		urlstring = [@"file://" stringByAppendingString:urlstring];
+		url = [[NSURL alloc] initFileURLWithPath: urlstring];
+	} else {
+		urlstring = [NSString stringWithString: urlField];
+		url = [[NSURL alloc] initWithString: urlstring];
+	}
 	NSURLRequest *request = [[NSURLRequest alloc] initWithURL: url];
 	[webView loadRequest: request]; 
-	[request release];
-	[url release];
+//	[request release];
+//	[url release];
+//	[urlstring release];
+	[pool release];
 }
 /* */
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.

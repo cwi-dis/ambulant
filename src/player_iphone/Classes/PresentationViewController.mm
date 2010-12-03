@@ -7,8 +7,6 @@
 //
 
 #import "PresentationViewController.h"
-#import "iOSpreferences.h"
-#import "Presentation.h"
 
 #define AM_DBG if(1)
 #ifndef AM_DBG
@@ -17,7 +15,7 @@
 
 @implementation PresentationViewController
 
-@synthesize delegate,nibLoadedCell;
+@synthesize delegate, nibLoadedCell;
 
 /*
 // The designated initializer. Override to perform setup that is required before the view is loaded.
@@ -35,6 +33,16 @@
 }
 */
 
+- (Presentation*)
+getPresentationFromPlaylistItem: (PlaylistItem*) item {
+	Presentation* aPresentation = [ [ Presentation alloc ] init ];
+	aPresentation.title = [item ns_title];
+	aPresentation.poster = [item cg_image];
+	aPresentation.duration = [item ns_dur];
+	aPresentation.description = [item ns_description];
+	[ presentationsArray addObject:aPresentation ];	
+	return aPresentation;
+}
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)
@@ -46,24 +54,37 @@ viewDidLoad
 	presentationsArray = [ [ NSMutableArray alloc ] init ];
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	prefs->load_preferences();
-	NSArray* history = prefs->m_history->get_playlist();
-	// populate the table view with objects in the history, last one at top
-	[history enumerateObjectsWithOptions: NSEnumerationReverse 
-							  usingBlock:
+	NSArray* playlist;
+	BOOL favorites = [self.title isEqualToString:@"Favorites"];
+	isFavorites = favorites;
+	if (favorites) {
+		playlist = prefs->m_favorites->get_playlist();
+		
+	} else {
+		playlist = prefs->m_history->get_playlist();
+	}
+	// populate the table view with objects in the list
+	[playlist enumerateObjectsWithOptions: nil usingBlock:
 		^(id obj, NSUInteger idx, BOOL *stop)
 		{
 			PlaylistItem* item = (PlaylistItem*) obj;
-			Presentation* aPresentation = [ [ Presentation alloc ] init ];
-			aPresentation.title = [item ns_title];
-			aPresentation.poster = [item cg_image];
-			aPresentation.duration = [item ns_dur];
-			aPresentation.description = [item ns_description];
-			[ presentationsArray addObject:aPresentation ];							  
+            [ presentationsArray addObject:[self getPresentationFromPlaylistItem: item]];
 		}];
 //	[pool release];
 }
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+	// update table view if a presentation was added
+	if (newPresentation != nil) {
+		NSIndexPath* updatedPath = [ NSIndexPath indexPathForRow: [ presentationsArray indexOfObject: newPresentation] inSection: 0 ];
+		NSArray* updatedPaths = [ NSArray arrayWithObject:updatedPath ];
+		[ self.tableView reloadRowsAtIndexPaths: updatedPaths withRowAnimation: UITableViewRowAnimationMiddle ];
+		newPresentation = nil;
+	}
+}
 
-- (IBAction) done:(id)sender
+- (IBAction)
+done:(id)sender
 {
 	AM_DBG NSLog(@"PresentationViewController done(0x%x)", self);
 	[self.delegate playlistViewControllerDidFinish:self];
@@ -71,13 +92,15 @@ viewDidLoad
 }
 
 // Overriden to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+- (BOOL)
+shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Return YES for supported orientations
     return YES;
 }
 
 
-- (void)didReceiveMemoryWarning
+- (void)
+didReceiveMemoryWarning
 {
 	// Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
@@ -85,7 +108,8 @@ viewDidLoad
 	// Release any cached data, images, etc that aren't in use.
 }
 
-- (void)viewDidUnload
+- (void)
+viewDidUnload
 {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
@@ -131,8 +155,9 @@ tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPat
 // Support row selection in the table view.
 - (void)
 tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	NSArray* history = ambulant::iOSpreferences::get_preferences()->m_history->get_playlist();
-	PlaylistItem* selectedItem = [history objectAtIndex: [history count] - 1 - indexPath.row];
+	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
+	NSArray* playlist = isFavorites ? prefs->m_favorites->get_playlist() : prefs->m_history->get_playlist();
+	PlaylistItem* selectedItem = [playlist objectAtIndex: indexPath.row];
 	[self.delegate playPresentation:[[selectedItem ns_url] absoluteString]];
 }
 
@@ -149,45 +174,32 @@ tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingSty
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source.
-		ambulant::Playlist* history = ambulant::iOSpreferences::get_preferences()->m_history;
+		ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
+		ambulant::Playlist* playlist = isFavorites ? prefs->m_favorites : prefs->m_history;
 		
-		history->remove_playlist_item_at_index([history->get_playlist() count] - 1 - indexPath.row);
+		playlist->remove_playlist_item_at_index(indexPath.row);
 		[presentationsArray removeObjectAtIndex: indexPath.row];
 		[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+		prefs->save_preferences();
  	}   
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
     }   
 }
-#ifdef TBD: adapt following methods 
-#endif//TBD
-   
-// Support for TabBarItem selection
-- (void)
-tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
+
+- (IBAction)
+addCurrentItem;
 {
-	NSEnumerator* itemsEnum = [[tabBar items] objectEnumerator];
-	UITabBarItem* tbi = NULL;
-	NSInteger idx = 0;
-	while ((tbi = [itemsEnum nextObject]) != NULL) {
-		if (tbi == item) {
-			break;
-		}
-		idx++;
+	if (isFavorites) {
+		ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
+		ambulant::Playlist* playlist = prefs->m_favorites;
+		PlaylistItem* new_item = prefs->m_history->get_last_item();
+		playlist->add_item(new_item);
+		[ presentationsArray insertObject:new_item atIndex: 0];
+		newPresentation = [self getPresentationFromPlaylistItem: new_item];
 	}
-	if (tbi == NULL) {
-		idx = -999;
-	}
-	AM_DBG NSLog(@"tabBar:0x%x didSelectItem:0x%x idx=%d", tabBar, item, idx);
-	switch (idx) {
-		case 0:
-			[self.delegate done:self];
-			break;
-		default:
-			break;
-	}
-	return;
 }
+
 
 - (void)dealloc
 {

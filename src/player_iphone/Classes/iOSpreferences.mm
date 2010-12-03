@@ -109,13 +109,24 @@ iOSpreferences::load_preferences()
 	m_fullscreen = [prefs boolForKey: @"fullScreen"];
 	m_auto_center = [prefs boolForKey: @"autoCenter"];
 	m_auto_resize = [prefs boolForKey: @"autoResize"];
+	// favorites is archived
+	NSData* favorites_archive = [prefs objectForKey:@"favorites"];
+	NSArray* favorites = NULL;
+	if ([favorites_archive length] != 1) {
+		favorites = [NSKeyedUnarchiver unarchiveObjectWithData:favorites_archive];
+	}
+	NSString* version = [prefs stringForKey:@"version"];
+	if ( ! [version isEqualToString: AM_IOS_PLAYLISTVERSION]) {
+		favorites = NULL;
+	}
+	m_favorites = new ambulant::Playlist(favorites);
 	// history is archived
 	NSData* history_archive = [prefs objectForKey:@"history"];
 	NSArray* history = NULL;
 	if ([history_archive length] != 1) {
 		history = [NSKeyedUnarchiver unarchiveObjectWithData:history_archive];
 	}
-	NSString* version = [prefs stringForKey:@"version"];
+	version = [prefs stringForKey:@"version"];
 	if ( ! [version isEqualToString: AM_IOS_PLAYLISTVERSION]) {
 		history = NULL;
 	}
@@ -145,6 +156,12 @@ bool iOSpreferences::save_preferences()
 	[prefs setBool: m_fullscreen forKey: @"fullScreen"];
 	[prefs setBool: m_auto_center forKey: @"autoCenter"];
 	[prefs setBool: m_auto_resize forKey: @"autoResize"];
+	if (m_favorites != NULL) {
+		NSArray* favorites = m_favorites->get_playlist();
+		NSData* data = [NSKeyedArchiver archivedDataWithRootObject:favorites];
+		[prefs setObject: data forKey:@"favorites"];
+		[prefs setObject: [NSString stringWithString: m_favorites->get_version()] forKey:@"version"];
+	}
 	if (m_history != NULL) {
 		NSArray* history = m_history->get_playlist();
 		NSData* data = [NSKeyedArchiver archivedDataWithRootObject:history];
@@ -259,7 +276,12 @@ void
 ambulant::Playlist::add_item (PlaylistItem* item)
 {
 	[item retain];
-	[am_ios_playlist addObject: (NSObject*) item];
+	if ([am_ios_playlist count] == 0) {
+		[am_ios_playlist addObject: (NSObject*) item];
+	} else {
+		[am_ios_playlist insertObject: item atIndex: 0];
+	}
+
 }
 
 void
@@ -282,7 +304,7 @@ ambulant::Playlist::get_last_item()
 	if (am_ios_playlist == NULL || [am_ios_playlist count] == 0) {
 		return NULL;
 	} else {
-		return (ambulant::PlaylistItem*) [am_ios_playlist objectAtIndex: [am_ios_playlist count] - 1];
+		return (ambulant::PlaylistItem*) [am_ios_playlist objectAtIndex: 0];
 	}
 
 }

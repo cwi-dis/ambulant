@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "PlaylistViewController.h"
 #import "PlaylistViewController.h"
+#import "Presentation.h"
 #import "PresentationViewController.h"
 #import "ambulant/common/embedder.h"
 #import "ambulant/net/url.h"
@@ -63,9 +64,10 @@ private:
 - (IBAction) showPlaylist:(id)sender;
 - (IBAction) close:(id) str;
 - (void) pause;
-- (IBAction) textFieldTextDidChange;
+- (IBAction) textFieldTextDidChange; //JNK
+- (PlaylistItem*) currentItem;
 
-@property(nonatomic,retain) IBOutlet UITextField* URLEntryField;
+@property(nonatomic,retain) IBOutlet UITextField* URLEntryField; //JNK
 @property(nonatomic,retain)	IBOutlet AmbulantView* playerView;
 @property(nonatomic,retain) IBOutlet UITabBar* modeBar;
 @property(nonatomic) mainloop* myMainloop;

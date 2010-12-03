@@ -92,6 +92,7 @@ showAlert: (NSString*) message {
 - (void)
 openWebLink: (NSString*) url {
 	AM_DBG NSLog(@"AmbulantAppDelegate openWebLink: %@", url);
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	[viewController pause];
 	webViewController = [[AmbulantWebViewController alloc]
 	 initWithNibName: @"AmbulantWebView"
@@ -106,6 +107,7 @@ openWebLink: (NSString*) url {
 //	[[viewController navigationController] pushViewController:
 //	 webViewController animated:YES];
 	[webViewController release];
+	[pool release];
 }
 
 - (BOOL)
@@ -133,7 +135,7 @@ application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictio
 //application:(UIApplication *)application 
 showAmbulantPlayer: (void*) id
 {
-	[ UIView animateWithDuration: 2.0 animations: ^
+	[ UIView animateWithDuration: 1.0 animations: ^
 	 {
 		 tabBarController.view.hidden = true;
 		 tabBarController.view.alpha = 0.0;

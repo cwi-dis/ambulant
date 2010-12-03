@@ -9,17 +9,23 @@
 #import <UIKit/UIKit.h>
 #import "Presentation.h"
 #import "PresentationViewController.h"
+#import "iOSpreferences.h"
+#import "Presentation.h"
 #import "PlaylistAppDelegate.h"
 
 @protocol PresentationViewControllerDelegate;
 
-@interface PresentationViewController : UIViewController {
+@interface PresentationViewController : UITableViewController < UITableViewDataSource, UITableViewDelegate > {
 	id <PlaylistViewControllerDelegate> delegate;
 	NSMutableArray* presentationsArray;
 	UITableViewCell* nibLoadedCell;
 	Presentation* selectedPresentation;
+	BOOL isFavorites;
+	Presentation* newPresentation;
 }
 - (IBAction) done: (id) sender;
+- (IBAction) addCurrentItem;
+- (Presentation*) getPresentationFromPlaylistItem: (PlaylistItem *) item;
 
 @property(nonatomic, assign) id <PlaylistViewControllerDelegate> delegate;
 @property(nonatomic, retain) IBOutlet UITableViewCell* nibLoadedCell;

@@ -29,6 +29,8 @@
 		9306F0D412A65E1A00C72BFA /* EditViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9306F0D212A65E1A00C72BFA /* EditViewController.xib */; };
 		9306F0F512A68BEF00C72BFA /* EditViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9306F0F412A68BEF00C72BFA /* EditViewController.mm */; };
 		9306F0F612A68BEF00C72BFA /* EditViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9306F0F412A68BEF00C72BFA /* EditViewController.mm */; };
+		9306F2D912A83FA700C72BFA /* AmbulantHelp-iOS.html in Resources */ = {isa = PBXBuildFile; fileRef = 9306F2D812A83FA700C72BFA /* AmbulantHelp-iOS.html */; };
+		9306F2DA12A83FA700C72BFA /* AmbulantHelp-iOS.html in Resources */ = {isa = PBXBuildFile; fileRef = 9306F2D812A83FA700C72BFA /* AmbulantHelp-iOS.html */; };
 		9309F8241226AA3400F63B7E /* test.smil in Resources */ = {isa = PBXBuildFile; fileRef = 9309F7C312253D0B00F63B7E /* test.smil */; };
 		931FF3971201CF52003B632F /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 931FF38E1201CF52003B632F /* libavcodec.a */; };
 		931FF3981201CF52003B632F /* libavdevice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 931FF38F1201CF52003B632F /* libavdevice.a */; };
@@ -335,6 +337,7 @@
 		9306F0D212A65E1A00C72BFA /* EditViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = EditViewController.xib; path = Resources/EditViewController.xib; sourceTree = "<group>"; };
 		9306F0F312A68A7D00C72BFA /* EditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditViewController.h; sourceTree = "<group>"; };
 		9306F0F412A68BEF00C72BFA /* EditViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EditViewController.mm; sourceTree = "<group>"; };
+		9306F2D812A83FA700C72BFA /* AmbulantHelp-iOS.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "AmbulantHelp-iOS.html"; sourceTree = "<group>"; };
 		9309F7C312253D0B00F63B7E /* test.smil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = test.smil; path = Resources/test.smil; sourceTree = "<group>"; };
 		931FF38E1201CF52003B632F /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = "../../build-iOS40-Simulator/third_party_packages/installed/lib/libavcodec.a"; sourceTree = SOURCE_ROOT; };
 		931FF38F1201CF52003B632F /* libavdevice.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavdevice.a; path = "../../build-iOS40-Simulator/third_party_packages/installed/lib/libavdevice.a"; sourceTree = SOURCE_ROOT; };
@@ -952,6 +955,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				9306F2D812A83FA700C72BFA /* AmbulantHelp-iOS.html */,
 				9306F0D212A65E1A00C72BFA /* EditViewController.xib */,
 				9306F08412A5612A00C72BFA /* EditIcon-30x30.png */,
 				9306F04812A544F000C72BFA /* InfoIcon-60x60.png */,
@@ -1858,6 +1862,7 @@
 				9306F04A12A544F000C72BFA /* InfoIcon-60x60.png in Resources */,
 				9306F08612A5612A00C72BFA /* EditIcon-30x30.png in Resources */,
 				9306F0D312A65E1A00C72BFA /* EditViewController.xib in Resources */,
+				9306F2D912A83FA700C72BFA /* AmbulantHelp-iOS.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1890,6 +1895,7 @@
 				9306F04912A544F000C72BFA /* InfoIcon-60x60.png in Resources */,
 				9306F08512A5612A00C72BFA /* EditIcon-30x30.png in Resources */,
 				9306F0D412A65E1A00C72BFA /* EditViewController.xib in Resources */,
+				9306F2DA12A83FA700C72BFA /* AmbulantHelp-iOS.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

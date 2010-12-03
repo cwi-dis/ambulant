@@ -342,6 +342,8 @@ settingsHaveChanged:(PlaylistViewController *)controller {
 - (void)
 playlistViewControllerDidFinish: (UIViewController *)controller {
 	
+//	AM_DBG
+	NSLog(@"playlistViewControllerDidFinish: controller=0x%x", controller);
 	[self settingsHaveChanged: controller];	
 //	[self dismissModalViewControllerAnimated:YES];
 	[(AmbulantAppDelegate*)([UIApplication sharedApplication].delegate) showAmbulantPlayer: (id) self];
@@ -545,6 +547,12 @@ playlistViewControllerDidFinish: (UIViewController *)controller {
 	}
 }
 
+- (PlaylistItem*) currentItem {
+	if (myMainloop) {
+		return myMainloop->get_current_item();
+	}
+	return NULL;
+}
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
  	AM_DBG NSLog(@"AmbulantViewController didReceiveMemoryWarning:self=0x%x", self);

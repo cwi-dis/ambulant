@@ -97,6 +97,7 @@ public:
 	/// iOs player auto resize
 	bool m_auto_resize;
 	
+	Playlist* m_favorites;
 	Playlist* m_history;
 	
 private:
