@@ -16,6 +16,7 @@
 	id <PlaylistViewControllerDelegate> delegate;
 	IBOutlet UITextField* textField;
 }
+- (IBAction) cancel: (id) sender;
 - (IBAction) done: (id) sender;
 
 @property(nonatomic, assign) id <PlaylistViewControllerDelegate> delegate;

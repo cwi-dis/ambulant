@@ -7,15 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PlaylistAppDelegate.h"
 
 
 @interface AmbulantWebViewController : UIViewController {
+	id <PlaylistViewControllerDelegate> delegate;
 	IBOutlet UIWebView* webView;
 	NSString* urlField;
 }
 - (IBAction) handleBackTapped;
+- (IBAction) handleDoneTapped;
 
 @property (nonatomic, retain) UIWebView* webView;
 @property (nonatomic, retain) NSString* urlField;
+@property (nonatomic, retain) id <PlaylistViewControllerDelegate> delegate;
 
 @end

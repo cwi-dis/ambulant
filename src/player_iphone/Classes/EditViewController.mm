@@ -59,11 +59,18 @@ shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientat
 done:(id)sender
 {
 	AM_DBG NSLog(@"EditViewController done(0x%x)", self);
-
-	[self.delegate playPresentation:self.textField.text];
-	[self.delegate playlistViewControllerDidFinish:self];
 	
-//	[self.delegate done:self];
+	[self.delegate playPresentation:self.textField.text];
+	[self cancel: sender];
+	
+}
+
+- (IBAction)
+cancel:(id)sender
+{
+	AM_DBG NSLog(@"EditViewController done(0x%x)", self);
+	
+	[self.delegate playlistViewControllerDidFinish:self];
 }
 
 // From UITextFieldDelegate

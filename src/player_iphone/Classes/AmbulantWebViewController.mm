@@ -11,7 +11,7 @@
 
 @implementation AmbulantWebViewController
 
-@synthesize urlField, webView;
+@synthesize urlField, webView, delegate;
 
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -62,8 +62,13 @@
 	if (webView.canGoBack) {
 		[webView goBack];
 	} else {
-		[self dismissModalViewControllerAnimated:YES];
+		[self.delegate playlistViewControllerDidFinish:self];
 	}
+}
+
+- (IBAction) handleDoneTapped {
+	[ self.delegate playlistViewControllerDidFinish: self];
+//	[self dismissModalViewControllerAnimated:YES];
 }
 
 /*
