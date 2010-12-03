@@ -94,6 +94,7 @@ openWebLink: (NSString*) url {
 	AM_DBG NSLog(@"AmbulantAppDelegate openWebLink: %@", url);
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	[viewController pause];
+#ifdef JNK
 	webViewController = [[AmbulantWebViewController alloc]
 	 initWithNibName: @"AmbulantWebView"
 			  bundle: nil];
@@ -107,6 +108,13 @@ openWebLink: (NSString*) url {
 //	[[viewController navigationController] pushViewController:
 //	 webViewController animated:YES];
 	[webViewController release];
+#endif//JNK
+	if (url != NULL) {
+		NSURL* nsurl = [NSURL URLWithString: url];
+		if ([[UIApplication sharedApplication] canOpenURL: nsurl]) {
+			[[UIApplication sharedApplication] openURL: nsurl];
+		}
+	}
 	[pool release];
 }
 
