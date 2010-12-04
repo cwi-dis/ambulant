@@ -1,3 +1,23 @@
+2010-12-03 16:00  keesblom
+
+	* Added AmbulantHelp-iOS.html. This is part of the 'Help' GUI and
+	  an example how one could write 'html' for iOS.
+
+2010-12-03 15:54  keesblom
+
+	* Added 'Back' and'Done' buttons for 'Help' tabbar item. Maybe the
+	  last visual GUI element to be added.
+
+2010-12-03 14:53  keesblom
+
+	* Invoke Safari to show weblinks from a .smil file.
+	  AmbulantViewContoller is now re-used fror implementing help.
+
+2010-12-03 14:41  keesblom
+
+	* Added implementations for 'Favorites' and 'Help' tabbar items.
+	  GUI is now almost complete, but there are a lot of bugs.
+
 2010-12-01 23:29  keesblom
 
 	* Added an "Edit" tab to enter an URL manually.
