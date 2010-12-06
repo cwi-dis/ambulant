@@ -63,11 +63,11 @@
 		9331EA02120DCBD40023B0F1 /* AmbulantAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331E9FB120DCBD40023B0F1 /* AmbulantAppDelegate.mm */; };
 		9331EA03120DCBD40023B0F1 /* AmbulantViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331E9FD120DCBD40023B0F1 /* AmbulantViewController.mm */; };
 		9331EA04120DCBD40023B0F1 /* PlaylistAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331E9FF120DCBD40023B0F1 /* PlaylistAppDelegate.mm */; };
-		9331EA05120DCBD40023B0F1 /* PlaylistViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331EA01120DCBD40023B0F1 /* PlaylistViewController.mm */; };
+		9331EA05120DCBD40023B0F1 /* SettingsViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331EA01120DCBD40023B0F1 /* SettingsViewController.mm */; };
 		9331EA06120DCBD40023B0F1 /* AmbulantAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331E9FB120DCBD40023B0F1 /* AmbulantAppDelegate.mm */; };
 		9331EA07120DCBD40023B0F1 /* AmbulantViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331E9FD120DCBD40023B0F1 /* AmbulantViewController.mm */; };
 		9331EA08120DCBD40023B0F1 /* PlaylistAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331E9FF120DCBD40023B0F1 /* PlaylistAppDelegate.mm */; };
-		9331EA09120DCBD40023B0F1 /* PlaylistViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331EA01120DCBD40023B0F1 /* PlaylistViewController.mm */; };
+		9331EA09120DCBD40023B0F1 /* SettingsViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331EA01120DCBD40023B0F1 /* SettingsViewController.mm */; };
 		933BB5F4128AD6A5007261DC /* test.smil in Resources */ = {isa = PBXBuildFile; fileRef = 9309F7C312253D0B00F63B7E /* test.smil */; };
 		933BBF081295E4C6007261DC /* Welcome_Icon-57x57.png in Resources */ = {isa = PBXBuildFile; fileRef = 933BBF071295E4C6007261DC /* Welcome_Icon-57x57.png */; };
 		933BBF091295E4C6007261DC /* Welcome_Icon-57x57.png in Resources */ = {isa = PBXBuildFile; fileRef = 933BBF071295E4C6007261DC /* Welcome_Icon-57x57.png */; };
@@ -86,11 +86,11 @@
 		9376A8DF1204A94300D5019C /* libmp4ff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9376A8D61204A94300D5019C /* libmp4ff.a */; };
 		9376A8E01204A94300D5019C /* libSDLiPhoneOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9376A8D71204A94300D5019C /* libSDLiPhoneOS.a */; };
 		9376A8E11204A94300D5019C /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9376A8D81204A94300D5019C /* libswscale.a */; };
-		9376A9291204C0F400D5019C /* PlaylistViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9376A9281204C0F400D5019C /* PlaylistViewController.xib */; };
+		9376A9291204C0F400D5019C /* SettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9376A9281204C0F400D5019C /* SettingsViewController.xib */; };
 		9376B0A3120C9CC900D5019C /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 93DC0CCF120321C200A3518F /* Icon.png */; };
 		9376B0A5120C9CC900D5019C /* AmbulantViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93DC0CDB120321C200A3518F /* AmbulantViewController.xib */; };
 		9376B0A6120C9CC900D5019C /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93DC0E7512037DB500A3518F /* MainWindow.xib */; };
-		9376B0A8120C9CC900D5019C /* PlaylistViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9376A9281204C0F400D5019C /* PlaylistViewController.xib */; };
+		9376B0A8120C9CC900D5019C /* SettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9376A9281204C0F400D5019C /* SettingsViewController.xib */; };
 		9376B0AA120C9CC900D5019C /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.mm */; };
 		9376B0AB120C9CC900D5019C /* renderer_select.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0A281203125700A3518F /* renderer_select.cpp */; };
 		9376B0AC120C9CC900D5019C /* state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93DC0A291203125700A3518F /* state.cpp */; };
@@ -368,8 +368,8 @@
 		9331E9FC120DCBD40023B0F1 /* AmbulantViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbulantViewController.h; sourceTree = "<group>"; };
 		9331E9FD120DCBD40023B0F1 /* AmbulantViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AmbulantViewController.mm; sourceTree = "<group>"; };
 		9331E9FF120DCBD40023B0F1 /* PlaylistAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PlaylistAppDelegate.mm; sourceTree = "<group>"; };
-		9331EA00120DCBD40023B0F1 /* PlaylistViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistViewController.h; sourceTree = "<group>"; };
-		9331EA01120DCBD40023B0F1 /* PlaylistViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PlaylistViewController.mm; sourceTree = "<group>"; };
+		9331EA00120DCBD40023B0F1 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		9331EA01120DCBD40023B0F1 /* SettingsViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SettingsViewController.mm; sourceTree = "<group>"; };
 		933BBF071295E4C6007261DC /* Welcome_Icon-57x57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Welcome_Icon-57x57.png"; path = "Resources/Welcome_Icon-57x57.png"; sourceTree = "<group>"; };
 		9364105C123920510046B567 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		93641063123920E10046B567 /* cg_avfoundation_video.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = cg_avfoundation_video.mm; path = cg/cg_avfoundation_video.mm; sourceTree = "<group>"; };
@@ -385,7 +385,7 @@
 		9376A8D61204A94300D5019C /* libmp4ff.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmp4ff.a; path = "../../build-iOS40-Device/third_party_packages/installed/lib/libmp4ff.a"; sourceTree = SOURCE_ROOT; };
 		9376A8D71204A94300D5019C /* libSDLiPhoneOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDLiPhoneOS.a; path = "../../build-iOS40-Device/third_party_packages/installed/lib/libSDLiPhoneOS.a"; sourceTree = SOURCE_ROOT; };
 		9376A8D81204A94300D5019C /* libswscale.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswscale.a; path = "../../build-iOS40-Device/third_party_packages/installed/lib/libswscale.a"; sourceTree = SOURCE_ROOT; };
-		9376A9281204C0F400D5019C /* PlaylistViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = PlaylistViewController.xib; path = Resources/PlaylistViewController.xib; sourceTree = "<group>"; };
+		9376A9281204C0F400D5019C /* SettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = SettingsViewController.xib; path = Resources/SettingsViewController.xib; sourceTree = "<group>"; };
 		9376AF48120C44C300D5019C /* libBasicUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBasicUsageEnvironment.a; path = "../../build-iOS40-Simulator/third_party_packages/live/BasicUsageEnvironment/libBasicUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
 		9376AF4A120C44F300D5019C /* libgroupsock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgroupsock.a; path = "../../build-iOS40-Simulator/third_party_packages/live/groupsock/libgroupsock.a"; sourceTree = SOURCE_ROOT; };
 		9376AF4C120C452700D5019C /* libliveMedia.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libliveMedia.a; path = "../../build-iOS40-Simulator/third_party_packages/live/liveMedia/libliveMedia.a"; sourceTree = SOURCE_ROOT; };
@@ -975,7 +975,7 @@
 				9331E8F9120DAE2A0023B0F1 /* Welcome.smil */,
 				9309F7C312253D0B00F63B7E /* test.smil */,
 				93882662121EB7F40038AF71 /* Welcome-smiltext.smil */,
-				9376A9281204C0F400D5019C /* PlaylistViewController.xib */,
+				9376A9281204C0F400D5019C /* SettingsViewController.xib */,
 				937981CC120DE13B00B1A6D2 /* AmbulantWebView.xib */,
 				93DC0E7512037DB500A3518F /* MainWindow.xib */,
 				93DC0CDB120321C200A3518F /* AmbulantViewController.xib */,
@@ -1061,8 +1061,8 @@
 				937981D4120DE21700B1A6D2 /* AmbulantWebViewController.h */,
 				937981D5120DE21700B1A6D2 /* AmbulantWebViewController.mm */,
 				9331E9FF120DCBD40023B0F1 /* PlaylistAppDelegate.mm */,
-				9331EA00120DCBD40023B0F1 /* PlaylistViewController.h */,
-				9331EA01120DCBD40023B0F1 /* PlaylistViewController.mm */,
+				9331EA00120DCBD40023B0F1 /* SettingsViewController.h */,
+				9331EA01120DCBD40023B0F1 /* SettingsViewController.mm */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1841,7 +1841,7 @@
 				93DC0CDF120321C200A3518F /* Icon.png in Resources */,
 				93DC0CE9120321C200A3518F /* AmbulantViewController.xib in Resources */,
 				93DC0E7612037DB500A3518F /* MainWindow.xib in Resources */,
-				9376A9291204C0F400D5019C /* PlaylistViewController.xib in Resources */,
+				9376A9291204C0F400D5019C /* SettingsViewController.xib in Resources */,
 				9331E908120DAEB20023B0F1 /* data in Resources */,
 				9331E90D120DB0A90023B0F1 /* Welcome.smil in Resources */,
 				937981CE120DE13B00B1A6D2 /* AmbulantWebView.xib in Resources */,
@@ -1873,7 +1873,7 @@
 				9376B0A3120C9CC900D5019C /* Icon.png in Resources */,
 				9376B0A5120C9CC900D5019C /* AmbulantViewController.xib in Resources */,
 				9376B0A6120C9CC900D5019C /* MainWindow.xib in Resources */,
-				9376B0A8120C9CC900D5019C /* PlaylistViewController.xib in Resources */,
+				9376B0A8120C9CC900D5019C /* SettingsViewController.xib in Resources */,
 				9331E8FB120DAE2A0023B0F1 /* Welcome.smil in Resources */,
 				9331E909120DAEB20023B0F1 /* data in Resources */,
 				937981D0120DE13B00B1A6D2 /* AmbulantWebView.xib in Resources */,
@@ -1984,7 +1984,7 @@
 				9331EA02120DCBD40023B0F1 /* AmbulantAppDelegate.mm in Sources */,
 				9331EA03120DCBD40023B0F1 /* AmbulantViewController.mm in Sources */,
 				9331EA04120DCBD40023B0F1 /* PlaylistAppDelegate.mm in Sources */,
-				9331EA05120DCBD40023B0F1 /* PlaylistViewController.mm in Sources */,
+				9331EA05120DCBD40023B0F1 /* SettingsViewController.mm in Sources */,
 				937981D6120DE21700B1A6D2 /* AmbulantWebViewController.mm in Sources */,
 				93A812C312108D4C0060AB6D /* rtsp_datasource.cpp in Sources */,
 				93A812C412108D510060AB6D /* rtsp_factory.cpp in Sources */,
@@ -2082,7 +2082,7 @@
 				9331EA06120DCBD40023B0F1 /* AmbulantAppDelegate.mm in Sources */,
 				9331EA07120DCBD40023B0F1 /* AmbulantViewController.mm in Sources */,
 				9331EA08120DCBD40023B0F1 /* PlaylistAppDelegate.mm in Sources */,
-				9331EA09120DCBD40023B0F1 /* PlaylistViewController.mm in Sources */,
+				9331EA09120DCBD40023B0F1 /* SettingsViewController.mm in Sources */,
 				937981D7120DE21700B1A6D2 /* AmbulantWebViewController.mm in Sources */,
 				04F315A9121AD62900B3D2A0 /* mainloop.mm in Sources */,
 				93ECA010121BC34500E0BEDE /* cg_smiltext.mm in Sources */,

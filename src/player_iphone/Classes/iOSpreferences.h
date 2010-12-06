@@ -61,7 +61,7 @@ public:
 	void remove_playlist_item_at_index(NSUInteger idx);
 	// get and manipulate the last item
 	PlaylistItem* get_last_item();
-	void add_item(PlaylistItem* item);
+	void insert_item(PlaylistItem* item, NSUInteger index);
 	void remove_last_item();
 	void replace_last_item(PlaylistItem* new_last_item);
 	

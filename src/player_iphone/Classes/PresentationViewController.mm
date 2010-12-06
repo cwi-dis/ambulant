@@ -15,7 +15,7 @@
 
 @implementation PresentationViewController
 
-@synthesize delegate, nibLoadedCell;
+@synthesize delegate, nibLoadedCell, presentationsArray;//, tableView;
 
 /*
 // The designated initializer. Override to perform setup that is required before the view is loaded.
@@ -36,11 +36,13 @@
 - (Presentation*)
 getPresentationFromPlaylistItem: (PlaylistItem*) item {
 	Presentation* aPresentation = [ [ Presentation alloc ] init ];
-	aPresentation.title = [item ns_title];
-	aPresentation.poster = [item cg_image];
-	aPresentation.duration = [item ns_dur];
-	aPresentation.description = [item ns_description];
-	[ presentationsArray addObject:aPresentation ];	
+	if (item != NULL) {
+		aPresentation.title = [item ns_title];
+		aPresentation.poster = [item cg_image];
+		aPresentation.duration = [item ns_dur];
+		aPresentation.description = [item ns_description];
+
+	}
 	return aPresentation;
 }
 
@@ -49,38 +51,41 @@ getPresentationFromPlaylistItem: (PlaylistItem*) item {
 viewDidLoad
 {
     [super viewDidLoad];
+	self.view.frame.origin.y = 45;
 //	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	AM_DBG NSLog(@"PresentationViewController viewDidLoad(0x%x)", self);
 	presentationsArray = [ [ NSMutableArray alloc ] init ];
+#ifdef	FIRST_ITEM
+	for (int i = 0; i < FIRST_ITEM; i++) {
+		[presentationsArray addObject:[self getPresentationFromPlaylistItem: NULL]];
+	}
+#endif//FIRST_ITEM
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	prefs->load_preferences();
-	NSArray* playlist;
 	BOOL favorites = [self.title isEqualToString:@"Favorites"];
 	isFavorites = favorites;
-	if (favorites) {
+	
+	NSArray* playlist;
+	if (isFavorites) {
 		playlist = prefs->m_favorites->get_playlist();
 		
 	} else {
 		playlist = prefs->m_history->get_playlist();
 	}
-	// populate the table view with objects in the list
+	// populate the table view with objects in 'playlist'
 	[playlist enumerateObjectsWithOptions: nil usingBlock:
-		^(id obj, NSUInteger idx, BOOL *stop)
-		{
-			PlaylistItem* item = (PlaylistItem*) obj;
-            [ presentationsArray addObject:[self getPresentationFromPlaylistItem: item]];
-		}];
+	 ^(id obj, NSUInteger idx, BOOL *stop)
+	 {
+		 PlaylistItem* item = (PlaylistItem*) obj;
+		 [ presentationsArray addObject:[self getPresentationFromPlaylistItem: item]];
+	 }];
+	
 //	[pool release];
 }
-- (void)viewWillAppear:(BOOL)animated {
+
+- (void)
+viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-	// update table view if a presentation was added
-	if (newPresentation != nil) {
-		NSIndexPath* updatedPath = [ NSIndexPath indexPathForRow: [ presentationsArray indexOfObject: newPresentation] inSection: 0 ];
-		NSArray* updatedPaths = [ NSArray arrayWithObject:updatedPath ];
-		[ self.tableView reloadRowsAtIndexPaths: updatedPaths withRowAnimation: UITableViewRowAnimationMiddle ];
-		newPresentation = nil;
-	}
 }
 
 - (IBAction)
@@ -155,9 +160,21 @@ tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPat
 // Support row selection in the table view.
 - (void)
 tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	if (editingStyle != UITableViewCellEditingStyleNone) {
+		return;
+	}
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	NSArray* playlist = isFavorites ? prefs->m_favorites->get_playlist() : prefs->m_history->get_playlist();
-	PlaylistItem* selectedItem = [playlist objectAtIndex: indexPath.row];
+	NSUInteger playlistIndex = indexPath.row;
+#ifdef	FIRST_ITEM
+	if (playlistIndex >= FIRST_ITEM) {
+		playlistIndex -= FIRST_ITEM;
+	} else {
+		return;
+	}
+#endif//FIRST_ITEM
+	wantStyleInsert = NO;
+	PlaylistItem* selectedItem = [playlist objectAtIndex: playlistIndex];
 	[self.delegate playPresentation:[[selectedItem ns_url] absoluteString]];
 }
 
@@ -165,43 +182,118 @@ tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexP
 - (BOOL)
 tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return NO if you do not want the specified item to be editable.
+#ifdef	FIRST_ITEM
+	if (indexPath.row < FIRST_ITEM) {
+		return NO;
+	}
+#endif//FIRST_ITEM
     return YES;
+}
+
+// Select editing style: for now, History items show delete button, Fovorites show Insert button.
+- (UITableViewCellEditingStyle)
+tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	return editingStyle;
 }
 
 // Support editing the table view (deletion only, adding is automatic).
 - (void)
-tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
+tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyleArg forRowAtIndexPath:(NSIndexPath *)indexPath
+{    
+	NSUInteger playlistIndex = indexPath.row;
+#ifdef	FIRST_ITEM
+	playlistIndex -= FIRST_ITEM;
+#endif//FIRST_ITEM
+    if (editingStyleArg == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source.
 		ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 		ambulant::Playlist* playlist = isFavorites ? prefs->m_favorites : prefs->m_history;
 		
-		playlist->remove_playlist_item_at_index(indexPath.row);
+		playlist->remove_playlist_item_at_index(playlistIndex);
 		[presentationsArray removeObjectAtIndex: indexPath.row];
 		[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
 		prefs->save_preferences();
  	}   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
+    else if (editingStyleArg == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
+		[self insertCurrentItemAtIndexPath: indexPath];
     }   
 }
 
 - (IBAction)
-addCurrentItem;
+toggleEditMode
 {
-	if (isFavorites) {
-		ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
-		ambulant::Playlist* playlist = prefs->m_favorites;
-		PlaylistItem* new_item = prefs->m_history->get_last_item();
-		playlist->add_item(new_item);
-		[ presentationsArray insertObject:new_item atIndex: 0];
-		newPresentation = [self getPresentationFromPlaylistItem: new_item];
+	switch (editingStyle) {
+		case UITableViewCellEditingStyleNone:
+			if (wantStyleInsert) {
+				wantStyleInsert = NO;
+				if ([presentationsArray count] <= FIRST_ITEM) {
+					// special case: no place to insert
+					[ self insertCurrentItemAtIndexPath: NULL];
+				} else {
+					editingStyle = UITableViewCellEditingStyleInsert;
+				}
+			} else {
+				editingStyle = UITableViewCellEditingStyleDelete;
+			}
+			break;
+		case UITableViewCellEditingStyleDelete:
+			if (isFavorites) {
+				wantStyleInsert = YES;
+			}
+			editingStyle = UITableViewCellEditingStyleNone;
+			break;
+		case UITableViewCellEditingStyleInsert:
+		default:
+			editingStyle = UITableViewCellEditingStyleNone;
+
+			break;
 	}
+	[[self tableView] setEditing: editingStyle != UITableViewCellEditingStyleNone animated: YES];
 }
 
 
-- (void)dealloc
+- (void)
+insertCurrentItemAtIndexPath: (NSIndexPath*) indexPath
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	if (isFavorites) {
+		NSInteger playlistIndex = indexPath != NULL ? indexPath.row : -1;
+#ifdef	FIRST_ITEM
+		playlistIndex -= FIRST_ITEM;
+#endif//FIRST_ITEM
+		ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
+		ambulant::Playlist* playlist = prefs->m_favorites;
+		PlaylistItem* new_item = prefs->m_history->get_last_item();
+		playlist->insert_item(new_item, playlistIndex);
+		newPresentation = [self getPresentationFromPlaylistItem: new_item];
+		if (playlistIndex < 0 || [self.presentationsArray count] == 0) {
+			[self.presentationsArray addObject: newPresentation] ;
+			[self.tableView reloadData];
+		} else {
+			[self.presentationsArray insertObject: newPresentation atIndex: indexPath.row ];
+			NSIndexPath* updatedPath = [ NSIndexPath indexPathForRow:indexPath.row inSection: 0 ];
+			NSLog(@"updatedPath.row=%d",updatedPath.row);
+			NSMutableArray* updatedPaths = [ [NSMutableArray alloc] init ];
+			[updatedPaths addObject: updatedPath];
+			[self.tableView insertRowsAtIndexPaths: updatedPaths withRowAnimation: UITableViewRowAnimationMiddle]; //UITableViewRowAnimationMiddle ];
+		}
+	}
+	[pool release];
+}
+
+- (void)
+viewWillDisappear:(BOOL)animated
+{
+	if (editingStyle != UITableViewCellEditingStyleNone) {
+		[self toggleEditMode];
+	}
+	wantStyleInsert = NO;
+}
+
+- (void)
+dealloc
 {
     [super dealloc];
 }

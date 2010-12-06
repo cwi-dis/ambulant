@@ -7,8 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "PlaylistViewController.h"
-#import "PlaylistViewController.h"
+#import "SettingsViewController.h"
 #import "Presentation.h"
 #import "PresentationViewController.h"
 #import "ambulant/common/embedder.h"
@@ -61,7 +60,7 @@ private:
 - (IBAction) handlePanGesture:(UIPanGestureRecognizer *)sender;
 - (IBAction) handlePinchGesture:(UIGestureRecognizer *)sender;
 - (IBAction) showHistory:(id)sender;
-- (IBAction) showPlaylist:(id)sender;
+- (IBAction) showSettings:(id)sender;
 - (IBAction) close:(id) str;
 - (void) pause;
 - (IBAction) textFieldTextDidChange; //JNK

@@ -273,13 +273,13 @@ ambulant::Playlist::~Playlist()
 }
 
 void
-ambulant::Playlist::add_item (PlaylistItem* item)
+ambulant::Playlist::insert_item (PlaylistItem* item, NSUInteger index)
 {
 	[item retain];
 	if ([am_ios_playlist count] == 0) {
 		[am_ios_playlist addObject: (NSObject*) item];
 	} else {
-		[am_ios_playlist insertObject: item atIndex: 0];
+		[am_ios_playlist insertObject: item atIndex: index];
 	}
 
 }

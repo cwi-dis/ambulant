@@ -8,7 +8,7 @@
 
 #import "AmbulantViewController.h"
 #import "AmbulantAppDelegate.h"
-#import "PlaylistViewController.h"
+#import "SettingsViewController.h"
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -297,15 +297,15 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	[self doPlayURL:NULL];
 }
 
-- (IBAction) showPlaylist:(id)sender {    
+- (IBAction) showSettings:(id)sender {    
 	
 	if (myMainloop != NULL) {
 		play_active = myMainloop->is_play_active();
 		myMainloop->pause();
 	}
-	PlaylistViewController *controller = [[PlaylistViewController alloc]
-										  initWithNibName:@"PlaylistViewController" bundle:nil];
-	controller.title = @"Playlist";
+	SettingsViewController *controller = [[SettingsViewController alloc]
+										  initWithNibName:@"SettingsViewController" bundle:nil];
+	controller.title = @"Settings";
 	controller.delegate = self;
 	
 	controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
@@ -315,7 +315,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 
 - (void)
-settingsHaveChanged:(PlaylistViewController *)controller {
+settingsHaveChanged:(SettingsViewController *)controller {
 	// check we have the settings view
 	if (controller.view.tag != 40) {
 		return;
