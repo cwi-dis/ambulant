@@ -1,6 +1,6 @@
 //
-//  PlaylistViewController.h
-//  Playlist
+//  SettingsViewController.h
+//  Settings
 //
 //  Created by Kees Blom on 7/31/10.
 //  Copyright CWI 2010. All rights reserved.
@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "PlaylistAppDelegate.h"
 
-@interface PlaylistViewController : UIViewController {
+@interface SettingsViewController : UIViewController {
 	id <PlaylistViewControllerDelegate> delegate;
 	UISwitch* autoCenterSwitch;	
 	UISwitch* autoRsizeSwitch;	

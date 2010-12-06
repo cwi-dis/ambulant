@@ -1,16 +1,15 @@
 //
-//  PlaylistViewController.m
-//  FlipableClock
+//  SettingsViewController.m
 //
 //  Created by Kees Blom on 7/31/10.
 //  Copyright CWI 2010. All rights reserved.
 //
 
-#import "PlaylistViewController.h"
+#import "SettingsViewController.h"
 #import "AmbulantViewController.h"
 #include "ambulant/common/preferences.h"
 
-@implementation PlaylistViewController
+@implementation SettingsViewController
 
 @synthesize delegate, autoCenterSwitch, autoResizeSwitch, nativeRendererSwitch;
 
