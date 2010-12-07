@@ -1,3 +1,21 @@
+2010-12-07 01:03  keesblom
+
+	* Added crash protectio. Fixed a bug in History display: when an
+	  item from Favorites (or History) was selected this was not shown.
+
+2010-12-06 17:23  keesblom
+
+	* Renamed PlaylistViewController into SettingsViewController
+
+2010-12-06 17:20  keesblom
+
+	* Renamed PlaylistViewController into SettingsViewController
+
+2010-12-06 17:16  keesblom
+
+	* Functional complete player with InsertButtons in Favorites
+	  selectable by 3-fold tap on Edit
+
 2010-12-03 16:00  keesblom
 
 	* Added AmbulantHelp-iOS.html. This is part of the 'Help' GUI and
