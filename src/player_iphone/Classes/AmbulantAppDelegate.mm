@@ -28,7 +28,7 @@ show_message(int level, const char *format)
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSString *message = [[NSString stringWithUTF8String: format] retain];
 	AmbulantAppDelegate *delegate = [[UIApplication sharedApplication] delegate];
-	if (old_message == NULL || ! [old_message isEqualToString:message]) {
+	if (old_message != NULL && ! [old_message isEqualToString:message]) {
 		[delegate performSelectorOnMainThread: @selector(showAlert:)
 								   withObject: message
 								waitUntilDone: NO];
@@ -159,7 +159,7 @@ showPlaylists: (void*) id
 	 {
 		 tabBarController.view.hidden = false;
 		 tabBarController.view.alpha = 1.0;
-		 viewController.view.alpha = 0.2;
+		 viewController.view.alpha = 0.0;
 	 } ];
 }
 
@@ -244,16 +244,19 @@ applicationDidBecomeActive:(UIApplication *)application {
 	 If the application was previously in the background, optionally refresh the user interface.
      */
 	AM_DBG NSLog(@"AmbulantAppDelegate applicationDidBecomeActive");
+/* AmulantIOS is not a restartable app. */
 //XXXX TBD: restore state
+//	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	if (viewController != NULL && viewController.myMainloop != NULL) {
 		//	viewController.myMainloop->restart(true);
-		viewController.myMainloop->play();
+		if ( ! viewController.myMainloop->is_play_active()) {
+			viewController.myMainloop->play();
+		}
 	} else {
 		if (viewController != NULL && self.viewController.playURL != NULL) {
 			[self.viewController handleURLEntered];
 		}
 	}
-
 }
 
 - (void)

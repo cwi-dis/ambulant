@@ -531,6 +531,9 @@ bad:
 @synthesize current_transform;
 
 - (void) adaptDisplayAfterRotation: (UIDeviceOrientation) orientation {
+	if (ambulant_window == NULL) {
+		return;
+	}
 	// adapt the ambulant window needed (bounds) in the current View
 	bool auto_resize = ambulant::iOSpreferences::get_preferences()->m_auto_resize;
 	bool auto_center = ambulant::iOSpreferences::get_preferences()->m_auto_center;

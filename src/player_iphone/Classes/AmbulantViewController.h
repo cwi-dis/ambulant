@@ -58,14 +58,15 @@ private:
 - (IBAction) handlePauseTapped;
 - (IBAction) handleStopTapped;
 - (IBAction) handleURLEntered;
-- (IBAction) handlePanGesture:(UIPanGestureRecognizer *)sender;
-- (IBAction) handlePinchGesture:(UIGestureRecognizer *)sender;
+- (IBAction) handlePanGesture:(UIPanGestureRecognizer*) sender;
+- (IBAction) handlePinchGesture:(UIGestureRecognizer*) sender;
 - (IBAction) showHistory:(id)sender;
 - (IBAction) showSettings:(id)sender;
 - (IBAction) close:(id) str;
 - (void) pause;
 - (IBAction) textFieldTextDidChange; //JNK
 - (PlaylistItem*) currentItem;
+- (void) initialize_after_crashing;
 
 @property(nonatomic,retain) IBOutlet UITextField* URLEntryField; //JNK
 @property(nonatomic,retain) PresentationViewController* historyViewController;

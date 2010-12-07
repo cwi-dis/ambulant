@@ -58,7 +58,7 @@ gui_player::play()
 {
 	m_lock.enter();
 	if (!m_player) {
-		ambulant::lib::logger::get_logger()->error(gettext("Cannot play document: no player"));
+		AM_DBG ambulant::lib::logger::get_logger()->error(gettext("Cannot play document: no player"));
 		m_lock.leave();
 		return;
 	}

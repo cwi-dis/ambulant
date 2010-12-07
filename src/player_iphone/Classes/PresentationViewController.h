@@ -40,6 +40,7 @@
 - (Presentation*) getPresentationFromPlaylistItem: (PlaylistItem *) item;
 - (NSArray*) get_playlist;
 - (void) updatePlaylist;
+- (BOOL) isFavorites;
 
 
 @property(nonatomic, assign) id <PlaylistViewControllerDelegate> delegate;

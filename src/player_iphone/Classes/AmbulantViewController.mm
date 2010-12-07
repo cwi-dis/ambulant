@@ -27,18 +27,21 @@ document_embedder::show_file(const ambulant::net::url& href)
 //		ambulant::lib::logger::get_logger()->trace("Opening URL <%s>: LSOpenCFURLRef error %d", href.get_url().c_str());
 //		ambulant::lib::logger::get_logger()->error(gettext("Cannot open: %s"), href.get_url().c_str());
 //	}
+	AM_DBG ambulant::lib::logger::get_logger()->trace("document_embedder::show_file(0x%x) href=%s", this, href.get_url().c_str());
 	document_embedder::open(href, true, NULL);
 }
 
 void
 document_embedder::close(ambulant::common::player *p)
 {
+	AM_DBG ambulant::lib::logger::get_logger()->trace("document_embedder::close(0x%x) player=%0x%x", this, p);
 	[m_mydocument performSelectorOnMainThread: @selector(close:) withObject: nil waitUntilDone: NO];
 }
 
 void
 document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common::player *old)
 {
+	AM_DBG ambulant::lib::logger::get_logger()->trace("document_embedder::open(0x%x) new_doc=%s start=%d old_player=%0x%x", this,  newdoc.get_url().c_str(), start, old);
 #ifdef WITH_OVERLAY_WINDOW
 	if (newdoc.get_protocol() == "ambulant_aux") {
 		std::string aux_url = newdoc.get_url();
@@ -92,6 +95,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 */
 - (void) doPlayURL:(NSString*) ns_node_repr {
+	AM_DBG NSLog(@"AmbulantViewController viewDidLoad(0x%x): ns_node_repr=%@", self, ns_node_repr);
 	if (myMainloop != NULL) {
 		myMainloop->stop();
 		delete myMainloop;
@@ -115,7 +119,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
-	AM_DBG NSLog(@"AmbulantViewController viewDidLoad:self=0x%x", self);
+	AM_DBG NSLog(@"AmbulantViewController viewDidLoad(0x%x)", self);
     [super viewDidLoad];
 	// prepare to react after keyboard show/hide
 	[[NSNotificationCenter defaultCenter]
@@ -181,18 +185,26 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	self.URLEntryField.delegate = self;		 //JNK tbd
 	
 	embedder = new document_embedder(self);
-	if ( ! prefs->m_normal_exit) {
+	
+//	if ( ! prefs->m_normal_exit) {
 		// was crashed
-		[self showHistory: self];
-	} else if (self.playURL != nil) {
+//		[self initialize_after_crashing];
+//		return;
+//	}
+	if (self.playURL != nil) {
 		// launched by Safari
 		AM_DBG NSLog(@"View=%@ playUrl=%@", [self playerView], [self playURL]);
 		[self handleURLEntered];
 	} else {
 		// launched by user
-		PlaylistItem* last_item = prefs->m_history != NULL ? prefs->m_history->get_last_item() : NULL;
-		NSString *startPath = last_item != NULL ? [[last_item ns_url] absoluteString] : NULL;
-		NSString *startNodeRepr = last_item != NULL ? [last_item ns_last_node_repr] : NULL;		
+		NSString *startPath = NULL;
+		NSString *startNodeRepr = NULL;
+		if (prefs->m_normal_exit) {
+			// restart were we left
+			PlaylistItem* last_item = prefs->m_history != NULL ? prefs->m_history->get_last_item() : NULL;
+			startPath = last_item != NULL ? [[last_item ns_url] absoluteString] : NULL;
+			startNodeRepr = last_item != NULL ? [last_item ns_last_node_repr] : NULL;		
+		}
 		if (startPath == NULL) {
 			NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
 			startPath = [thisBundle pathForResource:@"Welcome" ofType:@"smil"];
@@ -200,8 +212,10 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 //		NSString *startPath = [thisBundle pathForResource:@"test" ofType:@"smil"];
 //		NSString *startPath = [thisBundle pathForResource:@"iPhoneAVPlayerTest" ofType:@"smil"];
 //		NSString *startPath = @"http://ambulantPlayer.org/Demos/Birthday/HappyBirthday.smil";
-		AM_DBG NSLog (@ "%@", startPath);
-		if (startPath) {
+		AM_DBG NSLog (@"startPath=%@, startNodeRepr%@", startPath, startNodeRepr);
+		if (startPath != NULL) {
+			prefs->m_normal_exit = false;
+			prefs->save_preferences();
 			void* theview = [self playerView];
 			AM_DBG NSLog(@"view %@ responds %d", (NSObject *)theview, [(NSObject *)theview respondsToSelector: @selector(isAmbulantWindowInUse)]);
 			playURL = [[NSMutableString alloc] initWithString: startPath];
@@ -212,6 +226,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 
 - (IBAction) handlePlayTapped {
+	AM_DBG NSLog(@"AmbulantViewController handlePlayTapped(0x%x)", self);
 	if (myMainloop) {
 		myMainloop->play();
 	} else {
@@ -220,12 +235,14 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 
 - (IBAction) handlePauseTapped {
+	AM_DBG NSLog(@"AmbulantViewController handlePauseTapped(0x%x)", self);
 	if (myMainloop) {
 		myMainloop->pause();
 	}
 }
 
 - (IBAction) handleStopTapped {
+	AM_DBG NSLog(@"AmbulantViewController handleStopTapped(0x%x)", self);
 	if (myMainloop == NULL) {
 		return;
 	}
@@ -241,16 +258,19 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 /*	Code from Apple's developer documentation "Gesture Recognizers"*/
 - (IBAction) handleTapGesture:(UIGestureRecognizer *)sender { // select
+	AM_DBG NSLog(@"AmbulantViewController handleTapGesture(0x%x): sender=0x%x", self, sender);
 	CGPoint location = [(UITapGestureRecognizer *)sender locationInView:self.playerView];
 	[self.playerView tappedAtPoint:location];
 }
 
 - (IBAction) handlePinchGesture:(UIGestureRecognizer *)sender { // zoom
+	AM_DBG NSLog(@"AmbulantViewController handlePinchGesture(0x%x): sender=0x%x", self, sender);
 	CGFloat factor = [(UIPinchGestureRecognizer *)sender scale];
 	[self.playerView zoomWithScale:factor inState: [sender state]];
 }
 
 - (IBAction) handlePanGesture:(UIPanGestureRecognizer *)sender {
+	AM_DBG NSLog(@"AmbulantViewController handlePanGesture(0x%x): sender=0x%x", self, sender);
 	CGPoint translate = [sender translationInView: playerView.superview];
 	[self.playerView  translateWithPoint: (CGPoint) translate inState: [sender state]];
 }
@@ -258,8 +278,8 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 - (IBAction) handleSwipeOrLongPressGesture:(UIGestureRecognizer *)sender {
 	//	CGPoint translate = [sender translationInView: playerView.superview];
 	//	[self.playerView  translateWithPoint: (CGPoint) translate inState: [sender state]];
-	NSLog(@"SwipeOrLongPress detected");
 	static bool	wasPressed = false;
+	AM_DBG NSLog(@"AmbulantViewController handleSwipeOrLongPressGesture(0x%x): sender=0x%x, wasPressed=%d", self, sender, wasPressed);
 	if (wasPressed && interactionView != NULL) {
 		interactionView.hidden = ! interactionView.hidden;
 		interactionView.opaque = ! interactionView.opaque;
@@ -273,6 +293,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 // dismiss the keyboard when the <Return> is tapped
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
+	AM_DBG NSLog(@"textFieldShouldReturn: text=%@", textField.text);
 	[textField resignFirstResponder]; // dismiss keyboard
 	return NO;
 }
@@ -287,7 +308,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 // A delegate method called by the URL text field when the editing is complete. 
 // We save the current value of the field in our settings.
 {
-	AM_DBG NSLog(@"textFieldDidEndEditing: %@",textField.text);
+	AM_DBG NSLog(@"textFieldDidEndEditing: text=%@",textField.text);
 }	
 - (IBAction) handleURLEntered {
 	/*
@@ -299,10 +320,12 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	}
 	playURL = [[NSString alloc] initWithString: URLEntryField.text];
 	 */
+	AM_DBG NSLog(@"AmbulantViewController handleURLEntered(0x%x)", self);
 	[self doPlayURL:NULL];
 }
 
-- (IBAction) showSettings:(id)sender {    
+- (IBAction) showSettings:(id)sender {
+	AM_DBG NSLog(@"AmbulantViewController showSettings(0x%x)", self);
 	
 	if (myMainloop != NULL) {
 		play_active = myMainloop->is_play_active();
@@ -321,6 +344,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 - (void)
 settingsHaveChanged:(SettingsViewController *)controller {
+	AM_DBG NSLog(@"AmbulantViewController showSettings(0x%x)", self);
 	// check we have the settings view
 	if (controller.view.tag != 40) {
 		return;
@@ -347,8 +371,7 @@ settingsHaveChanged:(SettingsViewController *)controller {
 - (void)
 playlistViewControllerDidFinish: (UIViewController *)controller {
 	
-//	AM_DBG
-	NSLog(@"playlistViewControllerDidFinish: controller=0x%x", controller);
+	AM_DBG NSLog(@"playlistViewControllerDidFinish: controller=0x%x", controller);
 	[self settingsHaveChanged: controller];	
 //	[self dismissModalViewControllerAnimated:YES];
 	[(AmbulantAppDelegate*)([UIApplication sharedApplication].delegate) showAmbulantPlayer: (id) self];
@@ -369,6 +392,7 @@ playlistViewControllerDidFinish: (UIViewController *)controller {
 }
 
 - (IBAction) showHistory:(id)sender {    
+	AM_DBG NSLog(@"AmbulantViewController (0x%x)", self);
 	
 	if (myMainloop != NULL) {
 		play_active = myMainloop->is_play_active();
@@ -388,11 +412,15 @@ playlistViewControllerDidFinish: (UIViewController *)controller {
 	[(AmbulantAppDelegate*)([UIApplication sharedApplication].delegate) showPlaylists: self];
 }
 
-- (void) done: (id) sender {
+- (void)
+done: (id) sender {
+	AM_DBG NSLog(@"AmbulantViewController done(0x%x): sender=0x%x", self, sender);
 	[self playlistViewControllerDidFinish: (UIViewController*) sender];
 }
 
-- (void) presentationViewControllerDidFinish: (PresentationViewController *)controller {
+- (void)
+presentationViewControllerDidFinish: (PresentationViewController *)controller {
+	AM_DBG NSLog(@"AmbulantViewController presentationViewControllerDidFinish(0x%x): controller=0x%x", self, controller);
 //	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	[self dismissModalViewControllerAnimated:YES];
 	
@@ -414,10 +442,14 @@ playlistViewControllerDidFinish: (UIViewController *)controller {
 - (void)
 setHistoryViewController:(PresentationViewController *)controller
 {
-	historyViewController = controller;
+	AM_DBG NSLog(@"AmbulantViewController setHistoryViewController(0x%x) controller=0x%x", self, controller);
+	if ( ! controller.isFavorites) {
+		historyViewController = controller;
+	}
 }
 - (void)
 playPresentation: (NSString*) whatString {
+	AM_DBG NSLog(@"AmbulantViewController (0x%x)", self);
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	AM_DBG NSLog(@"Selected: %@",whatString);
 	self.handleStopTapped;
@@ -446,7 +478,7 @@ playPresentation: (NSString*) whatString {
 }
 
 - (void)keyboardWillShow:(NSNotification *)notification {
-    
+	AM_DBG NSLog(@"AmbulantViewController keyboardWillShow(0x%x) notification=", self, notification);    
     /*
      Reduce the size of the playerView so that it's not obscured by the keyboard.
      Animate the resize so that it's in sync with the appearance of the keyboard.
@@ -495,7 +527,7 @@ playPresentation: (NSString*) whatString {
 }
 
 - (void)keyboardWillHide:(NSNotification *)notification {
-    
+	AM_DBG NSLog(@"AmbulantViewController keyboardWillHide(0x%x): notification=%d", self, notification);    
 	if ( ! keyboardIsShown) {
 		return;
 	}	
@@ -521,6 +553,7 @@ playPresentation: (NSString*) whatString {
 }	
 
 - (BOOL) isSupportedOrientation: (UIDeviceOrientation) orientation {
+	AM_DBG NSLog(@"AmbulantViewController isSupportedOrientation(0x%x) orientation=%d", self, orientation);
 	return 
 		orientation == UIDeviceOrientationPortrait
 	||	orientation == UIDeviceOrientationPortraitUpsideDown
@@ -531,11 +564,12 @@ playPresentation: (NSString*) whatString {
 /* */
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL) shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation) interfaceOrientation {
+	AM_DBG NSLog(@"AmbulantViewController shouldAutorotateToInterfaceOrientation(0x%x): interfaceOrientation=%d", self, interfaceOrientation);
 	return [self isSupportedOrientation:(UIDeviceOrientation) interfaceOrientation];
 }
 // react on device rotation
 - (void) orientationChanged:(NSNotification *)notification {
-	AM_DBG NSLog(@"orientationChanged");
+	//AM_DBG NSLog(@"AmbulantViewController orientationChanged(0x%x):notification=%d", self, notification);
 	UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
 	if (orientation == currentOrientation || ! [self isSupportedOrientation: orientation]) {
 		return;
@@ -550,17 +584,19 @@ playPresentation: (NSString*) whatString {
 }
 
 - (void) close: (NSString*) id {
-	AM_DBG NSLog(@"AmbulantViewController close: unimplemented");
+	AM_DBG NSLog(@"AmbulantViewController close: id=%@", id);
 	[self handleStopTapped];
 }
 
 - (void) pause {
+	AM_DBG NSLog(@"AmbulantViewController pause(0x%x)", self);
 	if (myMainloop) {
 		myMainloop->pause();
 	}
 }
 
 - (PlaylistItem*) currentItem {
+	AM_DBG NSLog(@"AmbulantViewController currentItem(0x%x)", self);
 	if (myMainloop) {
 		return myMainloop->get_current_item();
 	}
@@ -578,6 +614,15 @@ playPresentation: (NSString*) whatString {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
 	AM_DBG NSLog(@"AmbulantViewController viewDidUnLoad:self=0x%x", self);
+}
+
+- (void) initialize_after_crashing {
+	AM_DBG NSLog(@"AmbulantViewController initialize_after_crashing:self=0x%x", self);
+	// We are in an unknown state. Make 'History' view visible
+//	[self handleSwipeOrLongPressGesture: (UIGestureRecognizer*) self];
+//	sleep(1);
+//	[self handleSwipeOrLongPressGesture:(UIGestureRecognizer*) self];
+	[self showHistory:(id) self];
 }
 
 - (void)dealloc {
