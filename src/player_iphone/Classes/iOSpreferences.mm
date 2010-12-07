@@ -18,6 +18,8 @@ iOSpreferences::iOSpreferences()
 		m_loaded(false),
 		m_auto_center(false),
 		m_auto_resize(false),
+		m_normal_exit(false),
+		m_favorites(NULL),
 		m_history(NULL)
 		{}
 
@@ -87,6 +89,7 @@ iOSpreferences::load_preferences()
 									 [NSNumber numberWithBool: false], @"fullScreen",
 									 [NSNumber numberWithBool: false], @"autoCenter",
 									 [NSNumber numberWithBool: false], @"autoResize",
+									 [NSNumber numberWithBool: true], @"normalExit",
 									 @"", @"plugin_dir",
 									 [NSNumber numberWithBool: false], @"dynamic_content_control",
 									 AM_IOS_PLAYLISTVERSION, @"version",
@@ -109,6 +112,7 @@ iOSpreferences::load_preferences()
 	m_fullscreen = [prefs boolForKey: @"fullScreen"];
 	m_auto_center = [prefs boolForKey: @"autoCenter"];
 	m_auto_resize = [prefs boolForKey: @"autoResize"];
+	m_normal_exit = [prefs boolForKey: @"normalExit"];
 	// favorites is archived
 	NSData* favorites_archive = [prefs objectForKey:@"favorites"];
 	NSArray* favorites = NULL;
@@ -156,6 +160,7 @@ bool iOSpreferences::save_preferences()
 	[prefs setBool: m_fullscreen forKey: @"fullScreen"];
 	[prefs setBool: m_auto_center forKey: @"autoCenter"];
 	[prefs setBool: m_auto_resize forKey: @"autoResize"];
+	[prefs setBool: m_normal_exit forKey: @"normalExit"];
 	if (m_favorites != NULL) {
 		NSArray* favorites = m_favorites->get_playlist();
 		NSData* data = [NSKeyedArchiver archivedDataWithRootObject:favorites];
@@ -273,8 +278,11 @@ ambulant::Playlist::~Playlist()
 }
 
 void
-ambulant::Playlist::insert_item (PlaylistItem* item, NSUInteger index)
+ambulant::Playlist::insert_item_at_index (PlaylistItem* item, NSUInteger index)
 {
+	if (item == NULL) {
+		return;
+	}
 	[item retain];
 	if ([am_ios_playlist count] == 0) {
 		[am_ios_playlist addObject: (NSObject*) item];

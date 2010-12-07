@@ -46,6 +46,20 @@ getPresentationFromPlaylistItem: (PlaylistItem*) item {
 	return aPresentation;
 }
 
+- (NSArray*)
+get_playlist {
+	NSArray* playlist;
+	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
+
+	if (isFavorites) {
+		playlist = prefs->m_favorites->get_playlist();
+		
+	} else {
+		playlist = prefs->m_history->get_playlist();
+	}
+	return playlist;
+}
+
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)
 viewDidLoad
@@ -55,31 +69,16 @@ viewDidLoad
 //	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	AM_DBG NSLog(@"PresentationViewController viewDidLoad(0x%x)", self);
 	presentationsArray = [ [ NSMutableArray alloc ] init ];
-#ifdef	FIRST_ITEM
-	for (int i = 0; i < FIRST_ITEM; i++) {
-		[presentationsArray addObject:[self getPresentationFromPlaylistItem: NULL]];
-	}
-#endif//FIRST_ITEM
+
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	prefs->load_preferences();
 	BOOL favorites = [self.title isEqualToString:@"Favorites"];
 	isFavorites = favorites;
-	
-	NSArray* playlist;
-	if (isFavorites) {
-		playlist = prefs->m_favorites->get_playlist();
-		
-	} else {
-		playlist = prefs->m_history->get_playlist();
+	if ( ! isFavorites) {
+		[self.delegate setHistoryViewController: self];
 	}
-	// populate the table view with objects in 'playlist'
-	[playlist enumerateObjectsWithOptions: nil usingBlock:
-	 ^(id obj, NSUInteger idx, BOOL *stop)
-	 {
-		 PlaylistItem* item = (PlaylistItem*) obj;
-		 [ presentationsArray addObject:[self getPresentationFromPlaylistItem: item]];
-	 }];
-	
+	[self updatePlaylist];
+
 //	[pool release];
 }
 
@@ -266,7 +265,7 @@ insertCurrentItemAtIndexPath: (NSIndexPath*) indexPath
 		ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 		ambulant::Playlist* playlist = prefs->m_favorites;
 		PlaylistItem* new_item = prefs->m_history->get_last_item();
-		playlist->insert_item(new_item, playlistIndex);
+		playlist->insert_item_at_index(new_item, playlistIndex);
 		newPresentation = [self getPresentationFromPlaylistItem: new_item];
 		if (playlistIndex < 0 || [self.presentationsArray count] == 0) {
 			[self.presentationsArray addObject: newPresentation] ;
@@ -282,6 +281,28 @@ insertCurrentItemAtIndexPath: (NSIndexPath*) indexPath
 	}
 	[pool release];
 }
+
+- (void) updatePlaylist {
+
+	NSArray* playlist = [self get_playlist];
+	
+	[presentationsArray removeAllObjects];
+
+#ifdef	FIRST_ITEM
+	for (int i = 0; i < FIRST_ITEM; i++) {
+		[presentationsArray addObject:[self getPresentationFromPlaylistItem: NULL]];
+	}
+#endif//FIRST_ITEM	
+	// populate the table view with objects in 'playlist'
+	[playlist enumerateObjectsWithOptions: nil usingBlock:
+	 ^(id obj, NSUInteger idx, BOOL *stop)
+	 {
+		PlaylistItem* item = (PlaylistItem*) obj;
+		[ presentationsArray addObject:[self getPresentationFromPlaylistItem: item]];
+	}];
+	[[self tableView] reloadData];
+}
+
 
 - (void)
 viewWillDisappear:(BOOL)animated

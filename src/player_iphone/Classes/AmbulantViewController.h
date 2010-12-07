@@ -36,6 +36,7 @@ private:
 				<UITextFieldDelegate, PlaylistViewControllerDelegate> {
 	document_embedder *embedder;
 	mainloop *myMainloop;
+	PresentationViewController* historyViewController;
 	IBOutlet id view;
 	IBOutlet AmbulantView* playerView;
 	IBOutlet UIView* interactionView;
@@ -67,6 +68,7 @@ private:
 - (PlaylistItem*) currentItem;
 
 @property(nonatomic,retain) IBOutlet UITextField* URLEntryField; //JNK
+@property(nonatomic,retain) PresentationViewController* historyViewController;
 @property(nonatomic,retain)	IBOutlet AmbulantView* playerView;
 @property(nonatomic,retain) IBOutlet UITabBar* modeBar;
 @property(nonatomic) mainloop* myMainloop;

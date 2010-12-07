@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @class AmbulantViewController;
+@class PresentationViewController;
 
 @interface PlaylistAppDelegate : NSObject <UIApplicationDelegate> {
     UIWindow *window;
@@ -26,4 +27,5 @@
 - (void) playPresentation:(NSString*) what;
 - (NSString*) playURL;
 - (IBAction) done: (id) sender;
+- (void) setHistoryViewController: (PresentationViewController*) controller;
 @end

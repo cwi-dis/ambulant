@@ -20,7 +20,7 @@
 
 // The current implementation has a hack, that an empty first item is always present in the TableView,
 // which is obscured by the NavigationBar
-#define FIRST_ITEM 2
+#define FIRST_ITEM 1
 
 @interface PresentationViewController : UITableViewController < UITableViewDataSource, UITableViewDelegate > {
 	id <PlaylistViewControllerDelegate> delegate;
@@ -32,10 +32,15 @@
 	BOOL wantStyleInsert;
 	Presentation* newPresentation;
 }
+// user actions
 - (IBAction) toggleEditMode;
 - (IBAction) done: (id) sender;
+// aux.
 - (void) insertCurrentItemAtIndexPath: (NSIndexPath*) indexPath;
 - (Presentation*) getPresentationFromPlaylistItem: (PlaylistItem *) item;
+- (NSArray*) get_playlist;
+- (void) updatePlaylist;
+
 
 @property(nonatomic, assign) id <PlaylistViewControllerDelegate> delegate;
 @property(nonatomic, retain) IBOutlet UITableViewCell* nibLoadedCell;

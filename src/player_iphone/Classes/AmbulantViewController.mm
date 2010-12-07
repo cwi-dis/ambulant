@@ -66,7 +66,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 @synthesize interactionView, modeBar, originalPlayerViewFrame, originalInteractionViewFrame,
 			playerView, myMainloop, URLEntryField, linkURL, playURL,
 			keyboardIsShown, currentOrientation, autoCenter, autoResize,
-			nativeRenderer, play_active;
+			nativeRenderer, play_active, historyViewController;
 
 /*
 // The designated initializer. Override to perform setup that is required before the view is loaded.
@@ -177,14 +177,19 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
     [self.playerView addGestureRecognizer:longPressGesture];
     [longPressGesture release];
 	
-	// prepare to react when text is entered
-	self.URLEntryField.delegate = self;
+	// prepare to react when text is entered //JNK tbd
+	self.URLEntryField.delegate = self;		 //JNK tbd
 	
 	embedder = new document_embedder(self);
-	AM_DBG NSLog(@"View=%@ playUrl=%@", [self playerView], [self playURL]);
-	if (self.playURL != nil) {
+	if ( ! prefs->m_normal_exit) {
+		// was crashed
+		[self showHistory: self];
+	} else if (self.playURL != nil) {
+		// launched by Safari
+		AM_DBG NSLog(@"View=%@ playUrl=%@", [self playerView], [self playURL]);
 		[self handleURLEntered];
 	} else {
+		// launched by user
 		PlaylistItem* last_item = prefs->m_history != NULL ? prefs->m_history->get_last_item() : NULL;
 		NSString *startPath = last_item != NULL ? [[last_item ns_url] absoluteString] : NULL;
 		NSString *startNodeRepr = last_item != NULL ? [last_item ns_last_node_repr] : NULL;		
@@ -406,8 +411,13 @@ playlistViewControllerDidFinish: (UIViewController *)controller {
 	}
 }
 
-
-- (void) playPresentation: (NSString*) whatString {
+- (void)
+setHistoryViewController:(PresentationViewController *)controller
+{
+	historyViewController = controller;
+}
+- (void)
+playPresentation: (NSString*) whatString {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	AM_DBG NSLog(@"Selected: %@",whatString);
 	self.handleStopTapped;
@@ -429,6 +439,7 @@ playlistViewControllerDidFinish: (UIViewController *)controller {
 		}
 		playURL = [[NSMutableString alloc] initWithString: whatString];
 		[self doPlayURL:NULL];
+		[[self historyViewController] updatePlaylist];
 	}
 	[self done: self];
 	[pool release];
@@ -533,7 +544,9 @@ playlistViewControllerDidFinish: (UIViewController *)controller {
 	if (keyboardIsShown) {
 		[[self URLEntryField] resignFirstResponder]; // dismiss keyboard
 	}
-	[playerView adaptDisplayAfterRotation: orientation];
+	if (view != NULL) {
+		[playerView adaptDisplayAfterRotation: orientation];
+	}
 }
 
 - (void) close: (NSString*) id {

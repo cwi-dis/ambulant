@@ -245,11 +245,11 @@ applicationDidBecomeActive:(UIApplication *)application {
      */
 	AM_DBG NSLog(@"AmbulantAppDelegate applicationDidBecomeActive");
 //XXXX TBD: restore state
-	if (viewController && viewController.myMainloop) {
+	if (viewController != NULL && viewController.myMainloop != NULL) {
 		//	viewController.myMainloop->restart(true);
 		viewController.myMainloop->play();
 	} else {
-		if (viewController) {
+		if (viewController != NULL && self.viewController.playURL != NULL) {
 			[self.viewController handleURLEntered];
 		}
 	}

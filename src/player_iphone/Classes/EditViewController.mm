@@ -43,7 +43,10 @@ viewDidLoad
     [super viewDidLoad];
 //	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	AM_DBG NSLog(@"EditViewController viewDidLoad(0x%x)", self);
-	self.textField.text = [NSString stringWithString: [self.delegate playURL]];
+	NSString* url = [self.delegate playURL];
+	if (url != NULL) {
+		self.textField.text = [NSString stringWithString: url];
+	}
 //	[pool release];
 }
 

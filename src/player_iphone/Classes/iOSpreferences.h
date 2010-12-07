@@ -45,7 +45,7 @@
 
 namespace ambulant {
 	
-#define AM_IOS_PLAYLISTVERSION @"0.0" // Needs to be updated when Playlist format changes 
+#define AM_IOS_PLAYLISTVERSION @"0.1" // Needs to be updated when Playlist format changes 
 	
 	
 class Playlist {
@@ -61,7 +61,7 @@ public:
 	void remove_playlist_item_at_index(NSUInteger idx);
 	// get and manipulate the last item
 	PlaylistItem* get_last_item();
-	void insert_item(PlaylistItem* item, NSUInteger index);
+	void insert_item_at_index(PlaylistItem* item, NSUInteger index);
 	void remove_last_item();
 	void replace_last_item(PlaylistItem* new_last_item);
 	
@@ -96,6 +96,8 @@ public:
 	bool m_auto_center;
 	/// iOs player auto resize
 	bool m_auto_resize;
+	/// crash protector
+	bool m_normal_exit;
 	
 	Playlist* m_favorites;
 	Playlist* m_history;
