@@ -1,3 +1,8 @@
+2010-12-07 15:15  keesblom
+
+	* Patched the crash recovery code. Player now plays Welcome (from
+	  bundle) after a crash, from there everything works as usual.
+
 2010-12-07 01:03  keesblom
 
 	* Added crash protectio. Fixed a bug in History display: when an
