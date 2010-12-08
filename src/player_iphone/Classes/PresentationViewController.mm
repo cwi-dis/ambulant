@@ -70,7 +70,7 @@ isFavorites {
 viewDidLoad
 {
     [super viewDidLoad];
-	self.view.frame.origin.y = 45;
+	self.tableView.rowHeight = 60;
 //	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	AM_DBG NSLog(@"PresentationViewController viewDidLoad(0x%x)", self);
 	presentationsArray = [ [ NSMutableArray alloc ] init ];
@@ -158,6 +158,13 @@ tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPat
 //	[ duration release ];
 	label = (UILabel*) [ cell viewWithTag: 3];
 	label.text = aPresentation.description;
+#ifdef	FIRST_ITEM
+	if (indexPath.row < FIRST_ITEM) {
+		UIImageView* lineView = (UIImageView*) [ cell viewWithTag:4];
+		lineView.image = NULL;
+		[lineView setNeedsDisplay];
+	}
+#endif//FIRST_ITEM
 	return cell;
 }
 
@@ -306,6 +313,12 @@ insertCurrentItemAtIndexPath: (NSIndexPath*) indexPath
 		[ presentationsArray addObject:[self getPresentationFromPlaylistItem: item]];
 	}];
 	[[self tableView] reloadData];
+/*JNK
+	self.tableView.frame.origin.y = 66;
+	UITableViewCell* cell = [[self tableView] cellForRowAtIndexPath: [NSIndexPath indexPathForRow: 1 inSection:0]];
+	cell.opaque = false;
+	cell.hidden = true;
+	cell.alpha = 0.0;*/
 }
 
 

@@ -50,7 +50,7 @@
 							<object class="IBUIImageView" id="527232619">
 								<reference key="NSNextResponder" ref="1006509784"/>
 								<int key="NSvFlags">278</int>
-								<string key="NSFrame">{{2, 2}, {56, 56}}</string>
+								<string key="NSFrameSize">{57, 57}</string>
 								<reference key="NSSuperview" ref="1006509784"/>
 								<bool key="IBUIClipsSubviews">YES</bool>
 								<int key="IBUIContentMode">7</int>
@@ -63,7 +63,7 @@
 							<object class="IBUILabel" id="763834353">
 								<reference key="NSNextResponder" ref="1006509784"/>
 								<int key="NSvFlags">278</int>
-								<string key="NSFrame">{{58, 2}, {199, 31}}</string>
+								<string key="NSFrame">{{62, 4}, {195, 31}}</string>
 								<reference key="NSSuperview" ref="1006509784"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
@@ -88,7 +88,7 @@
 							<object class="IBUILabel" id="1001044352">
 								<reference key="NSNextResponder" ref="1006509784"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{250, 2}, {69, 27}}</string>
+								<string key="NSFrame">{{260, 4}, {57, 27}}</string>
 								<reference key="NSSuperview" ref="1006509784"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
@@ -112,7 +112,7 @@
 							<object class="IBUILabel" id="1046103899">
 								<reference key="NSNextResponder" ref="1006509784"/>
 								<int key="NSvFlags">278</int>
-								<string key="NSFrame">{{58, 34}, {225, 26}}</string>
+								<string key="NSFrame">{{60, 30}, {260, 27}}</string>
 								<reference key="NSSuperview" ref="1006509784"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
@@ -135,8 +135,22 @@
 								<int key="IBUINumberOfLines">3</int>
 								<int key="IBUILineBreakMode">5</int>
 							</object>
+							<object class="IBUIImageView" id="595105331">
+								<reference key="NSNextResponder" ref="1006509784"/>
+								<int key="NSvFlags">292</int>
+								<string key="NSFrame">{{0, 59}, {320, 2}}</string>
+								<reference key="NSSuperview" ref="1006509784"/>
+								<float key="IBUIAlpha">0.20000000298023224</float>
+								<int key="IBUITag">4</int>
+								<bool key="IBUIUserInteractionEnabled">NO</bool>
+								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+								<object class="NSCustomResource" key="IBUIImage">
+									<string key="NSClassName">NSImage</string>
+									<string key="NSResourceName">line.png</string>
+								</object>
+							</object>
 						</object>
-						<string key="NSFrameSize">{320, 59}</string>
+						<string key="NSFrameSize">{320, 60}</string>
 						<reference key="NSSuperview" ref="361040697"/>
 						<object class="NSColor" key="IBUIBackgroundColor">
 							<int key="NSColorSpace">3</int>
@@ -149,7 +163,7 @@
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 					</object>
 				</object>
-				<string key="NSFrameSize">{320, 59}</string>
+				<string key="NSFrameSize">{320, 60}</string>
 				<reference key="NSSuperview"/>
 				<object class="NSColor" key="IBUIBackgroundColor">
 					<int key="NSColorSpace">1</int>
@@ -208,6 +222,7 @@
 							<reference ref="763834353"/>
 							<reference ref="527232619"/>
 							<reference ref="1046103899"/>
+							<reference ref="595105331"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -232,6 +247,11 @@
 						<reference key="parent" ref="361040697"/>
 						<string key="objectName">Poster</string>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">14</int>
+						<reference key="object" ref="595105331"/>
+						<reference key="parent" ref="361040697"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -240,6 +260,7 @@
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>-1.CustomClassName</string>
 					<string>-2.CustomClassName</string>
+					<string>14.IBPluginDependency</string>
 					<string>2.IBEditorWindowLastContentRect</string>
 					<string>2.IBPluginDependency</string>
 					<string>4.IBPluginDependency</string>
@@ -251,7 +272,8 @@
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>PresentationViewController</string>
 					<string>UIResponder</string>
-					<string>{{287, 1097}, {320, 59}}</string>
+					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+					<string>{{287, 696}, {320, 60}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -275,7 +297,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">10</int>
+			<int key="maxID">14</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -590,6 +612,10 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<string key="IBDocument.LastKnownRelativeProjectPath">../player_iphone.xcodeproj</string>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
+		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
+			<string key="NS.key.0">line.png</string>
+			<string key="NS.object.0">{320, 5}</string>
+		</object>
 		<string key="IBCocoaTouchPluginVersion">132</string>
 	</data>
 </archive>

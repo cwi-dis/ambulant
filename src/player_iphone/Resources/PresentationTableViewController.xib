@@ -176,7 +176,7 @@
 				<string key="-1.CustomClassName">PresentationViewController</string>
 				<string key="-2.CustomClassName">UIResponder</string>
 				<string key="43.CustomClassName">UITableView</string>
-				<string key="43.IBEditorWindowLastContentRect">{{7, 276}, {320, 480}}</string>
+				<string key="43.IBEditorWindowLastContentRect">{{311, 276}, {320, 480}}</string>
 				<string key="43.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="51.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<object class="NSAffineTransform" key="51.IBViewBoundsToFrameTransform">
