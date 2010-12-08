@@ -22,10 +22,11 @@
 @end
 
 @protocol PlaylistViewControllerDelegate
-- (void) settingsHaveChanged: (UIViewController*) controller;
+- (IBAction) done: (id) sender;
 - (void) playlistViewControllerDidFinish: (UIViewController *)controller;
 - (void) playPresentation:(NSString*) what;
 - (NSString*) playURL;
-- (IBAction) done: (id) sender;
+- (void) presentationViewControllerDidFinish: (PresentationViewController *)controller;
 - (void) setHistoryViewController: (PresentationViewController*) controller;
+- (void) settingsHaveChanged: (UIViewController*) controller;
 @end

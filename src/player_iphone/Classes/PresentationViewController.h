@@ -29,7 +29,6 @@
 	Presentation* selectedPresentation;
 	BOOL isFavorites;
 	UITableViewCellEditingStyle editingStyle;
-	BOOL wantStyleInsert;
 	Presentation* newPresentation;
 }
 // user actions
@@ -44,6 +43,7 @@
 
 
 @property(nonatomic, assign) id <PlaylistViewControllerDelegate> delegate;
+@property(nonatomic, assign) UITableViewCellEditingStyle editingStyle;
 @property(nonatomic, retain) IBOutlet UITableViewCell* nibLoadedCell;
 @property(nonatomic, retain) NSMutableArray* presentationsArray;
 @end

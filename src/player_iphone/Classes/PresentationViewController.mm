@@ -15,7 +15,7 @@
 
 @implementation PresentationViewController
 
-@synthesize delegate, nibLoadedCell, presentationsArray;//, tableView;
+@synthesize delegate, editingStyle, nibLoadedCell, presentationsArray;
 
 /*
 // The designated initializer. Override to perform setup that is required before the view is loaded.
@@ -96,7 +96,7 @@ viewWillAppear:(BOOL)animated {
 done:(id)sender
 {
 	AM_DBG NSLog(@"PresentationViewController done(0x%x)", self);
-	[self.delegate playlistViewControllerDidFinish:self];
+	[self.delegate presentationViewControllerDidFinish:self];
 //	[self.delegate done:self];
 }
 
@@ -184,7 +184,6 @@ tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexP
 		return;
 	}
 #endif//FIRST_ITEM
-	wantStyleInsert = NO;
 	PlaylistItem* selectedItem = [playlist objectAtIndex: playlistIndex];
 	[self.delegate playPresentation:[[selectedItem ns_url] absoluteString]];
 }
@@ -237,28 +236,10 @@ toggleEditMode
 {
 	switch (editingStyle) {
 		case UITableViewCellEditingStyleNone:
-			if (wantStyleInsert) {
-				wantStyleInsert = NO;
-				if ([presentationsArray count] <= FIRST_ITEM) {
-					// special case: no place to insert
-					[ self insertCurrentItemAtIndexPath: NULL];
-				} else {
-					editingStyle = UITableViewCellEditingStyleInsert;
-				}
-			} else {
-				editingStyle = UITableViewCellEditingStyleDelete;
-			}
+			editingStyle = UITableViewCellEditingStyleDelete;
 			break;
-		case UITableViewCellEditingStyleDelete:
-			if (isFavorites) {
-				wantStyleInsert = YES;
-			}
-			editingStyle = UITableViewCellEditingStyleNone;
-			break;
-		case UITableViewCellEditingStyleInsert:
 		default:
 			editingStyle = UITableViewCellEditingStyleNone;
-
 			break;
 	}
 	[[self tableView] setEditing: editingStyle != UITableViewCellEditingStyleNone animated: YES];
@@ -328,7 +309,6 @@ viewWillDisappear:(BOOL)animated
 	if (editingStyle != UITableViewCellEditingStyleNone) {
 		[self toggleEditMode];
 	}
-	wantStyleInsert = NO;
 }
 
 - (void)

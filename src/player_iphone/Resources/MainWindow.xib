@@ -128,7 +128,7 @@
 					<object class="IBUIViewController" id="890828402">
 						<string key="IBUITitle">EditViewController</string>
 						<object class="IBUITabBarItem" key="IBUITabBarItem" id="2199032">
-							<string key="IBUITitle">Edit</string>
+							<string key="IBUITitle">Open</string>
 							<object class="NSCustomResource" key="IBUIImage">
 								<string key="NSClassName">NSImage</string>
 								<string key="NSResourceName">EditIcon-30x30.png</string>

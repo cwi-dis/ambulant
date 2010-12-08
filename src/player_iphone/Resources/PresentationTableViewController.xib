@@ -44,7 +44,7 @@
 									<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 									<int key="IBUIStyle">1</int>
 									<reference key="IBUINavigationItem" ref="138581281"/>
-									<int key="IBUISystemItemIdentifier">2</int>
+									<int key="IBUISystemItemIdentifier">16</int>
 								</object>
 								<object class="IBUIBarButtonItem" key="IBUIRightBarButtonItem" id="86055454">
 									<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -176,7 +176,7 @@
 				<string key="-1.CustomClassName">PresentationViewController</string>
 				<string key="-2.CustomClassName">UIResponder</string>
 				<string key="43.CustomClassName">UITableView</string>
-				<string key="43.IBEditorWindowLastContentRect">{{311, 276}, {320, 480}}</string>
+				<string key="43.IBEditorWindowLastContentRect">{{287, 676}, {320, 480}}</string>
 				<string key="43.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="51.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<object class="NSAffineTransform" key="51.IBViewBoundsToFrameTransform">
@@ -190,7 +190,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">61</int>
+			<int key="maxID">62</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">

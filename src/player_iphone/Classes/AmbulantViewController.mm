@@ -434,22 +434,35 @@ done: (id) sender {
 - (void)
 presentationViewControllerDidFinish: (PresentationViewController *)controller {
 	AM_DBG NSLog(@"AmbulantViewController presentationViewControllerDidFinish(0x%x): controller=0x%x", self, controller);
-//	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
-	[self dismissModalViewControllerAnimated:YES];
-	
+	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
+	[(AmbulantAppDelegate*)([UIApplication sharedApplication].delegate) showAmbulantPlayer: (id) self];
+	if (controller != NULL && controller.editingStyle != UITableViewCellEditingStyleNone) {
+		[controller toggleEditMode];
+	}
+	UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+	[playerView adaptDisplayAfterRotation: orientation];
+	if ( ! interactionView.hidden) {
+		interactionView.hidden = true;
+		interactionView.opaque = false;
+		modeBar.hidden = true;
+		modeBar.opaque = false;
+	}
 	if (myMainloop != NULL) {
+		UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+		[playerView adaptDisplayAfterRotation: orientation];
+		
 		if (play_active) {
 			myMainloop->play();
 		}
-		UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-		[playerView adaptDisplayAfterRotation: orientation];
-		if ( ! interactionView.hidden) {
-			interactionView.hidden = true;
-			interactionView.opaque = false;
-			modeBar.hidden = true;
-			modeBar.opaque = false;
-		}
 	}
+	if ( ! interactionView.hidden) {
+		interactionView.hidden = true;
+		interactionView.opaque = false;
+		modeBar.hidden = true;
+		modeBar.opaque = false;
+	}
+	playerView.alpha = 1.0;
+	prefs->save_preferences(); // save possible edits
 }
 
 - (void)
