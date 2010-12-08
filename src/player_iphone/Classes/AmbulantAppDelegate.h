@@ -17,10 +17,12 @@
     AmbulantViewController *viewController;
     AmbulantWebViewController *webViewController;
 }
-- (void) showAlert: (NSString*) msgtype;
 - (void) openWebLink: (NSString*) url;
+- (PresentationViewController*) getPresentationView: (void*) id withIndex: (NSUInteger) index; 
+- (void) showAlert: (NSString*) msgtype;
 - (void) showAmbulantPlayer: (void*) id;
-- (void) showPlaylists: (void*) id;
+- (void) showPresentationView: (void*) id withIndex: (NSUInteger) index; 
+- (void) showPresentationViews: (void*) id;
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet UITabBarController* tabBarController;

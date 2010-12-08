@@ -12,7 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="17"/>
+			<integer value="16"/>
 			<integer value="10"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
@@ -93,27 +93,6 @@
 				</object>
 				<object class="NSMutableArray" key="IBUIViewControllers">
 					<bool key="EncodedWithXMLCoder">YES</bool>
-					<object class="IBUIViewController" id="123185172">
-						<string key="IBUITitle">Help</string>
-						<object class="IBUITabBarItem" key="IBUITabBarItem" id="132112082">
-							<string key="IBUITitle">Help</string>
-							<object class="NSCustomResource" key="IBUIImage">
-								<string key="NSClassName">NSImage</string>
-								<string key="NSResourceName">HelpIcon-30x30.png</string>
-							</object>
-							<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-							<reference key="IBUITabBar"/>
-						</object>
-						<reference key="IBUIParentViewController" ref="946371551"/>
-						<string key="IBUINibName">AmbulantWebView</string>
-						<object class="IBUISimulatedTabBarMetrics" key="IBUISimulatedBottomBarMetrics"/>
-						<object class="IBUISimulatedStatusBarMetrics" key="IBUISimulatedStatusBarMetrics"/>
-						<object class="IBUISimulatedOrientationMetrics" key="IBUISimulatedOrientationMetrics">
-							<int key="interfaceOrientation">1</int>
-						</object>
-						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-						<bool key="IBUIHorizontal">NO</bool>
-					</object>
 					<object class="IBUIViewController" id="275871887">
 						<string key="IBUITitle">History</string>
 						<object class="IBUITabBarItem" key="IBUITabBarItem" id="613244067">
@@ -167,6 +146,27 @@
 						<bool key="IBUIHorizontal">NO</bool>
 					</object>
 					<reference ref="842693542"/>
+					<object class="IBUIViewController" id="123185172">
+						<string key="IBUITitle">Help</string>
+						<object class="IBUITabBarItem" key="IBUITabBarItem" id="132112082">
+							<string key="IBUITitle">Help</string>
+							<object class="NSCustomResource" key="IBUIImage">
+								<string key="NSClassName">NSImage</string>
+								<string key="NSResourceName">HelpIcon-30x30.png</string>
+							</object>
+							<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+							<reference key="IBUITabBar"/>
+						</object>
+						<reference key="IBUIParentViewController" ref="946371551"/>
+						<string key="IBUINibName">AmbulantWebView</string>
+						<object class="IBUISimulatedTabBarMetrics" key="IBUISimulatedBottomBarMetrics"/>
+						<object class="IBUISimulatedStatusBarMetrics" key="IBUISimulatedStatusBarMetrics"/>
+						<object class="IBUISimulatedOrientationMetrics" key="IBUISimulatedOrientationMetrics">
+							<int key="interfaceOrientation">1</int>
+						</object>
+						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+						<bool key="IBUIHorizontal">NO</bool>
+					</object>
 				</object>
 				<object class="IBUITabBar" key="IBUITabBar" id="550800109">
 					<nil key="NSNextResponder"/>
@@ -343,22 +343,6 @@
 						<reference key="parent" ref="842693542"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">23</int>
-						<reference key="object" ref="123185172"/>
-						<object class="NSMutableArray" key="children">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="132112082"/>
-						</object>
-						<reference key="parent" ref="946371551"/>
-						<string key="objectName">Help</string>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">25</int>
-						<reference key="object" ref="132112082"/>
-						<reference key="parent" ref="123185172"/>
-						<string key="objectName">Help</string>
-					</object>
-					<object class="IBObjectRecord">
 						<int key="objectID">24</int>
 						<reference key="object" ref="961854671"/>
 						<object class="NSMutableArray" key="children">
@@ -388,6 +372,22 @@
 						<reference key="object" ref="2199032"/>
 						<reference key="parent" ref="890828402"/>
 						<string key="objectName">Edit</string>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">23</int>
+						<reference key="object" ref="123185172"/>
+						<object class="NSMutableArray" key="children">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<reference ref="132112082"/>
+						</object>
+						<reference key="parent" ref="946371551"/>
+						<string key="objectName">Help</string>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">25</int>
+						<reference key="object" ref="132112082"/>
+						<reference key="parent" ref="123185172"/>
+						<string key="objectName">Help</string>
 					</object>
 				</object>
 			</object>
@@ -429,11 +429,11 @@
 					<string>UIApplication</string>
 					<string>UIResponder</string>
 					<string>AmbulantViewController</string>
-					<string>{{286, 676}, {320, 480}}</string>
+					<string>{{289, 676}, {320, 480}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>{{525, 346}, {320, 480}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<string>{{285, 676}, {320, 480}}</string>
+					<string>{{289, 676}, {320, 480}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>SettingsViewController</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -472,7 +472,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">38</int>
+			<int key="maxID">45</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -546,6 +546,7 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>addFavorites:</string>
 							<string>close:</string>
 							<string>handlePanGesture:</string>
 							<string>handlePauseTapped</string>
@@ -559,6 +560,7 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>UIPanGestureRecognizer</string>
 							<string>id</string>
@@ -575,6 +577,7 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>addFavorites:</string>
 							<string>close:</string>
 							<string>handlePanGesture:</string>
 							<string>handlePauseTapped</string>
@@ -588,6 +591,10 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<object class="IBActionInfo">
+								<string key="name">addFavorites:</string>
+								<string key="candidateClassName">id</string>
+							</object>
 							<object class="IBActionInfo">
 								<string key="name">close:</string>
 								<string key="candidateClassName">id</string>

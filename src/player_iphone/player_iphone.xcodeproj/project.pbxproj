@@ -316,6 +316,8 @@
 		93ECA010121BC34500E0BEDE /* cg_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93EC9F3A121A9E3B00E0BEDE /* cg_smiltext.mm */; };
 		93F5A63F12AED85700037A0A /* line.png in Resources */ = {isa = PBXBuildFile; fileRef = 93F5A63E12AED85700037A0A /* line.png */; };
 		93F5A64012AED85700037A0A /* line.png in Resources */ = {isa = PBXBuildFile; fileRef = 93F5A63E12AED85700037A0A /* line.png */; };
+		93F5A71012AFC60600037A0A /* favorites.png in Resources */ = {isa = PBXBuildFile; fileRef = 93F5A70F12AFC60600037A0A /* favorites.png */; };
+		93F5A71112AFC60600037A0A /* favorites.png in Resources */ = {isa = PBXBuildFile; fileRef = 93F5A70F12AFC60600037A0A /* favorites.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -813,6 +815,7 @@
 		93EC9F3F121A9E5E00E0BEDE /* cg_smiltext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cg_smiltext.h; path = cg/cg_smiltext.h; sourceTree = "<group>"; };
 		93EC9F57121AAFDC00E0BEDE /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		93F5A63E12AED85700037A0A /* line.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = line.png; path = Resources/line.png; sourceTree = "<group>"; };
+		93F5A70F12AFC60600037A0A /* favorites.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = favorites.png; path = Resources/favorites.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -958,6 +961,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				93F5A70F12AFC60600037A0A /* favorites.png */,
 				93F5A63E12AED85700037A0A /* line.png */,
 				9306F2D812A83FA700C72BFA /* AmbulantHelp-iOS.html */,
 				9306F0D212A65E1A00C72BFA /* EditViewController.xib */,
@@ -1868,6 +1872,7 @@
 				9306F0D312A65E1A00C72BFA /* EditViewController.xib in Resources */,
 				9306F2D912A83FA700C72BFA /* AmbulantHelp-iOS.html in Resources */,
 				93F5A63F12AED85700037A0A /* line.png in Resources */,
+				93F5A71012AFC60600037A0A /* favorites.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1902,6 +1907,7 @@
 				9306F0D412A65E1A00C72BFA /* EditViewController.xib in Resources */,
 				9306F2DA12A83FA700C72BFA /* AmbulantHelp-iOS.html in Resources */,
 				93F5A64012AED85700037A0A /* line.png in Resources */,
+				93F5A71112AFC60600037A0A /* favorites.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

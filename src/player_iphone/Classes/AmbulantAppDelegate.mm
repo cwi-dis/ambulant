@@ -153,7 +153,7 @@ showAmbulantPlayer: (void*) id
 
 - (void)
 //application:(UIApplication *)application 
-showPlaylists: (void*) id
+showPresentationViews:(void *)id
 {
 	[ UIView animateWithDuration: 1.0 animations: ^
 	 {
@@ -161,6 +161,19 @@ showPlaylists: (void*) id
 		 tabBarController.view.alpha = 1.0;
 		 viewController.view.alpha = 0.0;
 	 } ];
+}
+
+- (PresentationViewController*)
+getPresentationView: (void*) id withIndex: (NSUInteger) index
+{
+	return (PresentationViewController*) [tabBarController.viewControllers objectAtIndex: index];
+}
+
+- (void)
+showPresentationView: (void*) id withIndex: (NSUInteger) index
+{
+	tabBarController.selectedIndex = 1;
+	[self showPresentationViews: id];
 }
 
 - (void)

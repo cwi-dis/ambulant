@@ -135,10 +135,10 @@
 								<int key="IBUINumberOfLines">3</int>
 								<int key="IBUILineBreakMode">5</int>
 							</object>
-							<object class="IBUIImageView" id="595105331">
+							<object class="IBUIImageView" id="407694328">
 								<reference key="NSNextResponder" ref="1006509784"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{0, 59}, {320, 2}}</string>
+								<string key="NSFrame">{{-40, 59}, {360, 2}}</string>
 								<reference key="NSSuperview" ref="1006509784"/>
 								<float key="IBUIAlpha">0.20000000298023224</float>
 								<int key="IBUITag">4</int>
@@ -222,7 +222,7 @@
 							<reference ref="763834353"/>
 							<reference ref="527232619"/>
 							<reference ref="1046103899"/>
-							<reference ref="595105331"/>
+							<reference ref="407694328"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -249,7 +249,7 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">14</int>
-						<reference key="object" ref="595105331"/>
+						<reference key="object" ref="407694328"/>
 						<reference key="parent" ref="361040697"/>
 					</object>
 				</object>
@@ -273,7 +273,7 @@
 					<string>PresentationViewController</string>
 					<string>UIResponder</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<string>{{287, 696}, {320, 60}}</string>
+					<string>{{287, 1096}, {320, 60}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>

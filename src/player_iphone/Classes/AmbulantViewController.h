@@ -56,12 +56,13 @@ private:
 - (BOOL) isSupportedOrientation: (UIDeviceOrientation) orientation;
 - (IBAction) handlePlayTapped;
 - (IBAction) handlePauseTapped;
-- (IBAction) handleStopTapped;
-- (IBAction) handleURLEntered;
+- (IBAction) handleStopTapped; //JNK
+- (IBAction) handleURLEntered; //JNK
 - (IBAction) handlePanGesture:(UIPanGestureRecognizer*) sender;
 - (IBAction) handlePinchGesture:(UIGestureRecognizer*) sender;
-- (IBAction) showHistory:(id)sender;
-- (IBAction) showSettings:(id)sender;
+- (IBAction) showHistory:(id)sender; //JNK
+- (IBAction) showSettings:(id)sender;//JNK
+- (IBAction) addFavorites:(id)sender;
 - (IBAction) close:(id) str;
 - (void) pause;
 - (IBAction) textFieldTextDidChange; //JNK

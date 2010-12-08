@@ -324,7 +324,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	[self doPlayURL:NULL];
 }
 
-- (IBAction) showSettings:(id)sender {
+- (IBAction) showSettings:(id)sender { //JNK
 	AM_DBG NSLog(@"AmbulantViewController showSettings(0x%x)", self);
 	
 	if (myMainloop != NULL) {
@@ -341,6 +341,19 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	
 	[controller release];
 }
+
+- (IBAction) addFavorites:(id)sender {
+	AM_DBG NSLog(@"AmbulantViewController addFavorites(0x%x)", sender);
+	AmbulantAppDelegate* app_delegate = (AmbulantAppDelegate*)([UIApplication sharedApplication].delegate);
+	PresentationViewController* favoritesVC = [ app_delegate getPresentationView: self withIndex: 1];	
+#ifdef	FIRST_ITEM
+	[favoritesVC insertCurrentItemAtIndexPath: [ NSIndexPath indexPathForRow:FIRST_ITEM inSection: 0 ]];
+#else //FIRST_ITEM
+	[favoritesVC insertCurrentItemAtIndexPath: [ NSIndexPath indexPathForRow:0 inSection: 0 ]];
+#endif//FIRST_ITEM
+	[app_delegate showPresentationView: self withIndex: 1];
+}
+
 
 - (void)
 settingsHaveChanged:(SettingsViewController *)controller {
@@ -409,7 +422,7 @@ playlistViewControllerDidFinish: (UIViewController *)controller {
 	
 	[controller release];
 	 */
-	[(AmbulantAppDelegate*)([UIApplication sharedApplication].delegate) showPlaylists: self];
+	[(AmbulantAppDelegate*)([UIApplication sharedApplication].delegate) showPresentationViews: self];
 }
 
 - (void)

@@ -12,7 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="14"/>
+			<integer value="58"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -100,7 +100,7 @@
 							<object class="IBUIButton" id="915482674">
 								<reference key="NSNextResponder" ref="214127161"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{90, 10}, {60, 30}}</string>
+								<string key="NSFrame">{{60, 10}, {60, 30}}</string>
 								<reference key="NSSuperview" ref="214127161"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<int key="IBUITag">4</int>
@@ -123,7 +123,7 @@
 							<object class="IBUIButton" id="715918203">
 								<reference key="NSNextResponder" ref="214127161"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{185, 10}, {60, 30}}</string>
+								<string key="NSFrame">{{130, 10}, {60, 30}}</string>
 								<reference key="NSSuperview" ref="214127161"/>
 								<reference key="IBUIBackgroundColor" ref="286202398"/>
 								<bool key="IBUIOpaque">NO</bool>
@@ -145,7 +145,7 @@
 							<object class="IBUIButton" id="350933121">
 								<reference key="NSNextResponder" ref="214127161"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{260, 10}, {60, 30}}</string>
+								<string key="NSFrame">{{200, 10}, {60, 30}}</string>
 								<reference key="NSSuperview" ref="214127161"/>
 								<reference key="IBUIBackgroundColor" ref="286202398"/>
 								<bool key="IBUIOpaque">NO</bool>
@@ -188,6 +188,27 @@
 								<object class="NSCustomResource" key="IBUINormalImage">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">InfoIcon-60x60.png</string>
+								</object>
+							</object>
+							<object class="IBUIButton" id="531566247">
+								<reference key="NSNextResponder" ref="214127161"/>
+								<int key="NSvFlags">292</int>
+								<string key="NSFrame">{{275, 10}, {30, 30}}</string>
+								<reference key="NSSuperview" ref="214127161"/>
+								<bool key="IBUIOpaque">NO</bool>
+								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+								<int key="IBUIContentHorizontalAlignment">0</int>
+								<int key="IBUIContentVerticalAlignment">0</int>
+								<reference key="IBUIFont" ref="65410742"/>
+								<reference key="IBUIHighlightedTitleColor" ref="1018753779"/>
+								<object class="NSColor" key="IBUINormalTitleColor">
+									<int key="NSColorSpace">1</int>
+									<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
+								</object>
+								<reference key="IBUINormalTitleShadowColor" ref="93537526"/>
+								<object class="NSCustomResource" key="IBUINormalImage">
+									<string key="NSClassName">NSImage</string>
+									<string key="NSResourceName">favorites.png</string>
 								</object>
 							</object>
 						</object>
@@ -272,6 +293,15 @@
 					</object>
 					<int key="connectionID">37</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">addFavorites:</string>
+						<reference key="source" ref="531566247"/>
+						<reference key="destination" ref="372490531"/>
+						<int key="IBEventType">7</int>
+					</object>
+					<int key="connectionID">60</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -313,6 +343,7 @@
 							<reference ref="677293511"/>
 							<reference ref="262264559"/>
 							<reference ref="350933121"/>
+							<reference ref="531566247"/>
 						</object>
 						<reference key="parent" ref="774585933"/>
 						<string key="objectName">InteractionView</string>
@@ -356,6 +387,12 @@
 						<reference key="parent" ref="214127161"/>
 						<string key="objectName">Background</string>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">58</int>
+						<reference key="object" ref="531566247"/>
+						<reference key="parent" ref="214127161"/>
+						<string key="objectName">Favorites</string>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -374,6 +411,8 @@
 					<string>35.IBViewBoundsToFrameTransform</string>
 					<string>39.IBPluginDependency</string>
 					<string>39.IBViewBoundsToFrameTransform</string>
+					<string>58.IBPluginDependency</string>
+					<string>58.IBViewBoundsToFrameTransform</string>
 					<string>6.CustomClassName</string>
 					<string>6.IBEditorWindowLastContentRect</string>
 					<string>6.IBPluginDependency</string>
@@ -400,8 +439,12 @@
 					<object class="NSAffineTransform">
 						<bytes key="NSTransformStruct">P4AAAL+AAABAoAAAwpYAAA</bytes>
 					</object>
+					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+					<object class="NSAffineTransform">
+						<bytes key="NSTransformStruct">P4AAAL+AAABC+AAAw4EAAA</bytes>
+					</object>
 					<string>AmbulantView</string>
-					<string>{{1278, 676}, {320, 480}}</string>
+					<string>{{288, 676}, {320, 480}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<object class="NSAffineTransform">
@@ -425,7 +468,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">57</int>
+			<int key="maxID">60</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -445,6 +488,7 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>addFavorites:</string>
 							<string>close:</string>
 							<string>handlePanGesture:</string>
 							<string>handlePauseTapped</string>
@@ -453,11 +497,12 @@
 							<string>handleStopTapped</string>
 							<string>handleURLEntered</string>
 							<string>showHistory:</string>
-							<string>showPlaylist:</string>
+							<string>showSettings:</string>
 							<string>textFieldTextDidChange</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>UIPanGestureRecognizer</string>
 							<string>id</string>
@@ -474,6 +519,7 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>addFavorites:</string>
 							<string>close:</string>
 							<string>handlePanGesture:</string>
 							<string>handlePauseTapped</string>
@@ -482,11 +528,15 @@
 							<string>handleStopTapped</string>
 							<string>handleURLEntered</string>
 							<string>showHistory:</string>
-							<string>showPlaylist:</string>
+							<string>showSettings:</string>
 							<string>textFieldTextDidChange</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<object class="IBActionInfo">
+								<string key="name">addFavorites:</string>
+								<string key="candidateClassName">id</string>
+							</object>
 							<object class="IBActionInfo">
 								<string key="name">close:</string>
 								<string key="candidateClassName">id</string>
@@ -520,7 +570,7 @@
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
-								<string key="name">showPlaylist:</string>
+								<string key="name">showSettings:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
@@ -850,6 +900,7 @@
 				<string>InfoIcon-60x60.png</string>
 				<string>Pause_iPhone.png</string>
 				<string>Rewind_iPhone.png</string>
+				<string>favorites.png</string>
 			</object>
 			<object class="NSMutableArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
@@ -858,6 +909,7 @@
 				<string>{60, 60}</string>
 				<string>{20, 21}</string>
 				<string>{31, 23}</string>
+				<string>{29, 28}</string>
 			</object>
 		</object>
 		<string key="IBCocoaTouchPluginVersion">132</string>
