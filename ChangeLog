@@ -1,3 +1,15 @@
+2010-12-08 17:42  keesblom
+
+	* Removed first implementation of Add Favorites.
+
+2010-12-08 16:27  keesblom
+
+	* Added 'Favorites' button to the HUD and made it work.
+
+2010-12-08 12:08  keesblom
+
+	* Added a line separator between table entries in History/Favorites
+
 2010-12-07 15:15  keesblom
 
 	* Patched the crash recovery code. Player now plays Welcome (from
