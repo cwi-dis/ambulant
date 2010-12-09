@@ -28,17 +28,18 @@ show_message(int level, const char *format)
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSString *message = [[NSString stringWithUTF8String: format] retain];
 	AmbulantAppDelegate *delegate = [[UIApplication sharedApplication] delegate];
-	if (old_message != NULL && ! [old_message isEqualToString:message]) {
+	
+	// do not repeat the same error succesively
+	if (old_message == NULL || ! [old_message isEqualToString:message]) {
 		[delegate performSelectorOnMainThread: @selector(showAlert:)
 								   withObject: message
 								waitUntilDone: NO];
-	//	[message release];
 		if (old_message != NULL) {
 			[old_message release];
 		}
-		[old_message release];
 		old_message = message;
 	} else {
+		// the message was not given to 'showAlert:'
 		[message release];
 	}
 	[pool release];

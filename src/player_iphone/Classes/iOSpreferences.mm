@@ -208,7 +208,10 @@ bool iOSpreferences::save_preferences()
 
 - (bool) equalsPlaylistItem: (PlaylistItem*) playlistitem
 {
-	return [[self ns_url] isEqual: [playlistitem ns_url]];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	BOOL rv = [[self ns_url] isEqual: [playlistitem ns_url]];
+	[pool release];
+	return rv; 
 }
 	
 #import <ImageIO/ImageIO.h>

@@ -331,7 +331,6 @@
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765A40DF7441C002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		29B97316FDCFA39411CA2CEA /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
-		32CA4F630368D1EE00C91783 /* player_simulator-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "player_simulator-Info.plist"; path = "../player_simulator-Info.plist"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* player_iphone-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "player_iphone-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		9306EF6512A4643200C72BFA /* ToolsIcon-30x30.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ToolsIcon-30x30.png"; path = "Resources/ToolsIcon-30x30.png"; sourceTree = "<group>"; };
 		9306EF7612A50F0600C72BFA /* HelpIcon-30x30.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "HelpIcon-30x30.png"; sourceTree = "<group>"; };
@@ -952,7 +951,6 @@
 			children = (
 				04F315A7121AD62900B3D2A0 /* mainloop.mm */,
 				04F315A8121AD62900B3D2A0 /* mainloop.h */,
-				32CA4F630368D1EE00C91783 /* player_simulator-Info.plist */,
 				29B97316FDCFA39411CA2CEA /* main.mm */,
 			);
 			path = "Other Sources";

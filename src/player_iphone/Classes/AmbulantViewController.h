@@ -68,6 +68,7 @@ private:
 - (IBAction) textFieldTextDidChange; //JNK
 - (PlaylistItem*) currentItem;
 - (void) initialize_after_crashing;
+- (void) doPlayURL:(NSString*) ns_node_repr;
 
 @property(nonatomic,retain) IBOutlet UITextField* URLEntryField; //JNK
 @property(nonatomic,retain) PresentationViewController* historyViewController;

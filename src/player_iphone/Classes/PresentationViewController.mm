@@ -200,7 +200,7 @@ tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPat
     return YES;
 }
 
-// Select editing style: for now, History items show delete button, Fovorites show Insert button.
+// Show editing style button
 - (UITableViewCellEditingStyle)
 tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -209,7 +209,8 @@ tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)
 
 // Support editing the table view (deletion only, adding is automatic).
 - (void)
-tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyleArg forRowAtIndexPath:(NSIndexPath *)indexPath
+tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyleArg 
+									forRowAtIndexPath:(NSIndexPath *)indexPath
 {    
 	NSUInteger playlistIndex = indexPath.row;
 #ifdef	FIRST_ITEM
@@ -222,7 +223,8 @@ tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingSty
 		
 		playlist->remove_playlist_item_at_index(playlistIndex);
 		[presentationsArray removeObjectAtIndex: indexPath.row];
-		[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+		[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+						 withRowAnimation:UITableViewRowAnimationMiddle];
 		prefs->save_preferences();
  	}   
     else if (editingStyleArg == UITableViewCellEditingStyleInsert) {
@@ -270,6 +272,7 @@ insertCurrentItemAtIndexPath: (NSIndexPath*) indexPath
 			NSMutableArray* updatedPaths = [ [NSMutableArray alloc] init ];
 			[updatedPaths addObject: updatedPath];
 			[self.tableView insertRowsAtIndexPaths: updatedPaths withRowAnimation: UITableViewRowAnimationMiddle]; //UITableViewRowAnimationMiddle ];
+			[updatedPaths release];
 		}
 	}
 	[pool release];
@@ -315,6 +318,12 @@ viewWillDisappear:(BOOL)animated
 dealloc
 {
     [super dealloc];
+	[presentationsArray enumerateObjectsWithOptions: nil usingBlock:
+	 ^(id obj, NSUInteger idx, BOOL *stop)
+	 {
+		 [(Presentation*)obj release];
+	 }];
+	[presentationsArray dealloc];
 }
 
 @end
