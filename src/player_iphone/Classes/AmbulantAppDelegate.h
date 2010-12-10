@@ -18,6 +18,8 @@
     AmbulantWebViewController *webViewController;
 }
 - (void) openWebLink: (NSString*) url;
+//- (BOOL) application:(UIApplication* ) application handleOpenURL: (NSURL*) url;
+
 - (PresentationViewController*) getPresentationView: (void*) id withIndex: (NSUInteger) index; 
 - (void) showAlert: (NSString*) msgtype;
 - (void) showAmbulantPlayer: (void*) id;
@@ -29,4 +31,9 @@
 @property (nonatomic, retain) IBOutlet AmbulantViewController *viewController;
 @property (nonatomic, retain) IBOutlet AmbulantWebViewController* webViewController;
 @end
-
+#ifdef GLOB_DBG
+extern char* DBG[];
+extern int DBGi;
+#define DBG_ADD(_x)  { DBG[DBGi++] = strdup(_x); }
+#define DBG_ADD_NSSTRING(_x) { const char*s = [_x cStringUsingEncoding: NSUTF8StringEncoding]; DBG_ADD(s); }
+#endif//GLOB_DBG

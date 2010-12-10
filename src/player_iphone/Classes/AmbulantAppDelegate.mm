@@ -6,6 +6,23 @@
 //  Copyright CWI 2010. All rights reserved.
 //
 
+
+#define AM_DBG if(1)
+#ifndef AM_DBG
+#define AM_DBG if(0)
+#define DBG_ADD(_x)
+#define DBG_ADD_NSSTRING(_x)
+#else //AM_DBG is set
+#define GLOB_DBG if(1)
+#ifdef	GLOB_DBG
+// Debugging without debugger from traces in memory stored in a global array of char*.
+// Next code is used to inspect program sections only used when it is not started from debugger, but e.g. by Safari
+// When the programs has been launched, then XCode can attach to it and display the global string array 'DBG'
+char* DBG[80]; int DBGi = 0;
+#define DBG_ADD(_x)  { DBG[DBGi++] = strdup(_x); }
+#define DBG_ADD_NSSTRING(_x) { const char*s = [_x cStringUsingEncoding: NSUTF8StringEncoding]; DBG_ADD(s); }
+#endif//GLOB_DBG
+#endif//AM_DBG
 #import "AmbulantAppDelegate.h"
 #import "AmbulantViewController.h"
 #import "AmbulantWebViewController.h"
@@ -14,11 +31,6 @@
 #include "ambulant/lib/logger.h"
 #include "iOSpreferences.h"
 #include <fstream>
-
-//#define AM_DBG if(1)
-#ifndef AM_DBG
-#define AM_DBG if(0)
-#endif
 
 static void
 show_message(int level, const char *format)
@@ -126,6 +138,8 @@ application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictio
     // Add the view controller's view to the window and display.
 
 	AM_DBG NSLog(@"AmbulantAppDelegate application didFinishLaunchingWithOptions");
+//	AM_DBG [DBG addObject: [NSString stringWithString: @"didFinishLaunchingWithOptions"]]; 
+	AM_DBG DBG_ADD("didFinishLaunchingWithOptions");
 	// Install ambulent preferences handler
 	ambulant::iOSpreferences::install_singleton();
 	
@@ -196,18 +210,31 @@ isValid: (NSURL*) url {
 	return YES;
 }
 
+//XX need to use: application:openURL:sourceApplication:annotation: {}
+
 - (BOOL)
 application:(UIApplication* ) application handleOpenURL: (NSURL*) url {
 	AM_DBG NSLog(@"AmbulantAppDelegate application handleOpenURL");
 	AM_DBG NSLog(@"AmbulantAppDelegate handleOpenURL: %@", [url absoluteURL]);
+	AM_DBG DBG_ADD("handleOpenURL");
+//	const char*s = [[url absoluteString] cStringUsingEncoding: NSUTF8StringEncoding];
+	AM_DBG DBG_ADD_NSSTRING([url absoluteString]);
+	
 	BOOL validated = NO;
-	if ([self isValid:url] && viewController != NULL) { 		validated = YES;
-		viewController.URLEntryField.text = [[[NSMutableString alloc] initWithString: @"http://"]
-							stringByAppendingString: [[url resourceSpecifier] substringFromIndex:2]];
-		viewController.playURL = (NSMutableString*) viewController.URLEntryField.text;
+	if ([self isValid:url] && viewController != NULL) { 
+		validated = YES;
+		viewController.playURL = (NSMutableString*) [[[NSString alloc] initWithString: @"http://"]
+									stringByAppendingString: [[url resourceSpecifier] substringFromIndex:2]];
+		char* s2;
+		if (viewController == NULL)
+			s2 = (char*) "viewController == NULL";
+		else if (viewController.playURL == NULL)
+			s2 =  (char*) "viewController.playURL == NULL";
+		else s2 =  (char*) [viewController.playURL cStringUsingEncoding: NSUTF8StringEncoding];
+		AM_DBG DBG_ADD(s2);
 		if (viewController.myMainloop) {
-			viewController.myMainloop->stop();
-			delete viewController.myMainloop;
+//XXXX		viewController.myMainloop->stop();
+		delete viewController.myMainloop;
 			viewController.myMainloop = NULL;
 		}
 	}

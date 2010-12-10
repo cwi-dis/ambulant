@@ -67,7 +67,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 @implementation AmbulantViewController
 
 @synthesize interactionView, modeBar, originalPlayerViewFrame, originalInteractionViewFrame,
-			playerView, myMainloop, URLEntryField, linkURL, playURL,
+			playerView, myMainloop, linkURL, playURL,
 			keyboardIsShown, currentOrientation, autoCenter, autoResize,
 			nativeRenderer, play_active, historyViewController;
 
@@ -107,7 +107,6 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 			myMainloop->goto_node_repr(node_repr);
 		}
 		myMainloop->play();
-		self.URLEntryField.text = [self playURL];
 	}
 	if ( ! interactionView.hidden) {
 		interactionView.hidden = true;
@@ -181,8 +180,6 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
     [self.playerView addGestureRecognizer:longPressGesture];
     [longPressGesture release];
 	
-	// prepare to react when text is entered //JNK tbd
-	self.URLEntryField.delegate = self;		 //JNK tbd
 	
 	embedder = new document_embedder(self);
 	
@@ -222,7 +219,6 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 			[self doPlayURL: startNodeRepr];
 		}
 	} 	
-//X	[URLEntryField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
 }
 
 - (IBAction) handlePlayTapped {
@@ -297,29 +293,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	[textField resignFirstResponder]; // dismiss keyboard
 	return NO;
 }
-
--(IBAction) textFieldTextDidChange {	
-// This method will be called whenever an object sends UITextFieldTextDidChangeNotification
-	AM_DBG NSLog(@"textFieldTextDidChange: text=%@",URLEntryField.text);
-	[playURL setString: URLEntryField.text];
-} 
-
-- (void)textFieldDidEndEditing:(UITextField *)textField
-// A delegate method called by the URL text field when the editing is complete. 
-// We save the current value of the field in our settings.
-{
-	AM_DBG NSLog(@"textFieldDidEndEditing: text=%@",textField.text);
-}	
 - (IBAction) handleURLEntered {
-	/*
-	if (URLEntryField.text.length == 0 || [URLEntryField.text isEqual: playURL]) {
-		return;
-	}
-	if (playURL != NULL) {
-		[playURL release];
-	}
-	playURL = [[NSString alloc] initWithString: URLEntryField.text];
-	 */
 	AM_DBG NSLog(@"AmbulantViewController handleURLEntered(0x%x)", self);
 	[self doPlayURL:NULL];
 }
@@ -601,9 +575,6 @@ playPresentation: (NSString*) whatString {
 		return;
 	}
 	currentOrientation = orientation;
-	if (keyboardIsShown) {
-		[[self URLEntryField] resignFirstResponder]; // dismiss keyboard
-	}
 	if (view != NULL) {
 		[playerView adaptDisplayAfterRotation: orientation];
 	}

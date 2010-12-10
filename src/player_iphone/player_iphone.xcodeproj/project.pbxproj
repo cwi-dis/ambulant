@@ -62,11 +62,9 @@
 		9331E90D120DB0A90023B0F1 /* Welcome.smil in Resources */ = {isa = PBXBuildFile; fileRef = 9331E8F9120DAE2A0023B0F1 /* Welcome.smil */; };
 		9331EA02120DCBD40023B0F1 /* AmbulantAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331E9FB120DCBD40023B0F1 /* AmbulantAppDelegate.mm */; };
 		9331EA03120DCBD40023B0F1 /* AmbulantViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331E9FD120DCBD40023B0F1 /* AmbulantViewController.mm */; };
-		9331EA04120DCBD40023B0F1 /* PlaylistAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331E9FF120DCBD40023B0F1 /* PlaylistAppDelegate.mm */; };
 		9331EA05120DCBD40023B0F1 /* SettingsViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331EA01120DCBD40023B0F1 /* SettingsViewController.mm */; };
 		9331EA06120DCBD40023B0F1 /* AmbulantAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331E9FB120DCBD40023B0F1 /* AmbulantAppDelegate.mm */; };
 		9331EA07120DCBD40023B0F1 /* AmbulantViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331E9FD120DCBD40023B0F1 /* AmbulantViewController.mm */; };
-		9331EA08120DCBD40023B0F1 /* PlaylistAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331E9FF120DCBD40023B0F1 /* PlaylistAppDelegate.mm */; };
 		9331EA09120DCBD40023B0F1 /* SettingsViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331EA01120DCBD40023B0F1 /* SettingsViewController.mm */; };
 		933BB5F4128AD6A5007261DC /* test.smil in Resources */ = {isa = PBXBuildFile; fileRef = 9309F7C312253D0B00F63B7E /* test.smil */; };
 		933BBF081295E4C6007261DC /* Welcome_Icon-57x57.png in Resources */ = {isa = PBXBuildFile; fileRef = 933BBF071295E4C6007261DC /* Welcome_Icon-57x57.png */; };
@@ -370,7 +368,6 @@
 		9331E9FB120DCBD40023B0F1 /* AmbulantAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AmbulantAppDelegate.mm; sourceTree = "<group>"; };
 		9331E9FC120DCBD40023B0F1 /* AmbulantViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbulantViewController.h; sourceTree = "<group>"; };
 		9331E9FD120DCBD40023B0F1 /* AmbulantViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AmbulantViewController.mm; sourceTree = "<group>"; };
-		9331E9FF120DCBD40023B0F1 /* PlaylistAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PlaylistAppDelegate.mm; sourceTree = "<group>"; };
 		9331EA00120DCBD40023B0F1 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		9331EA01120DCBD40023B0F1 /* SettingsViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SettingsViewController.mm; sourceTree = "<group>"; };
 		933BBF071295E4C6007261DC /* Welcome_Icon-57x57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Welcome_Icon-57x57.png"; path = "Resources/Welcome_Icon-57x57.png"; sourceTree = "<group>"; };
@@ -1066,7 +1063,6 @@
 				9331E9FD120DCBD40023B0F1 /* AmbulantViewController.mm */,
 				937981D4120DE21700B1A6D2 /* AmbulantWebViewController.h */,
 				937981D5120DE21700B1A6D2 /* AmbulantWebViewController.mm */,
-				9331E9FF120DCBD40023B0F1 /* PlaylistAppDelegate.mm */,
 				9331EA00120DCBD40023B0F1 /* SettingsViewController.h */,
 				9331EA01120DCBD40023B0F1 /* SettingsViewController.mm */,
 			);
@@ -1993,7 +1989,6 @@
 				93DC0C95120315AD00A3518F /* schema.cpp in Sources */,
 				9331EA02120DCBD40023B0F1 /* AmbulantAppDelegate.mm in Sources */,
 				9331EA03120DCBD40023B0F1 /* AmbulantViewController.mm in Sources */,
-				9331EA04120DCBD40023B0F1 /* PlaylistAppDelegate.mm in Sources */,
 				9331EA05120DCBD40023B0F1 /* SettingsViewController.mm in Sources */,
 				937981D6120DE21700B1A6D2 /* AmbulantWebViewController.mm in Sources */,
 				93A812C312108D4C0060AB6D /* rtsp_datasource.cpp in Sources */,
@@ -2091,7 +2086,6 @@
 				9376B0FB120C9CC900D5019C /* rtsp_factory.cpp in Sources */,
 				9331EA06120DCBD40023B0F1 /* AmbulantAppDelegate.mm in Sources */,
 				9331EA07120DCBD40023B0F1 /* AmbulantViewController.mm in Sources */,
-				9331EA08120DCBD40023B0F1 /* PlaylistAppDelegate.mm in Sources */,
 				9331EA09120DCBD40023B0F1 /* SettingsViewController.mm in Sources */,
 				937981D7120DE21700B1A6D2 /* AmbulantWebViewController.mm in Sources */,
 				04F315A9121AD62900B3D2A0 /* mainloop.mm in Sources */,

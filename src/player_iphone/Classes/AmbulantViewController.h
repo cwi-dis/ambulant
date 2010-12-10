@@ -36,12 +36,12 @@ private:
 				<UITextFieldDelegate, PlaylistViewControllerDelegate> {
 	document_embedder *embedder;
 	mainloop *myMainloop;
-	PresentationViewController* historyViewController;
+//JNK PresentationViewController* historyViewController;
 	IBOutlet id view;
 	IBOutlet AmbulantView* playerView;
 	IBOutlet UIView* interactionView;
-	IBOutlet UITabBar* modeBar;
-	IBOutlet UITextField* URLEntryField;
+//JNK	IBOutlet UITabBar* modeBar;
+//JNK	IBOutlet UITextField* URLEntryField;
 	CGRect originalPlayerViewFrame, originalInteractionViewFrame;
 	NSMutableString* playURL;
 	NSMutableString* linkURL;
@@ -65,12 +65,12 @@ private:
 - (IBAction) addFavorites:(id)sender;
 - (IBAction) close:(id) str;
 - (void) pause;
-- (IBAction) textFieldTextDidChange; //JNK
+//JNK - (IBAction) textFieldTextDidChange;
 - (PlaylistItem*) currentItem;
 - (void) initialize_after_crashing;
 - (void) doPlayURL:(NSString*) ns_node_repr;
 
-@property(nonatomic,retain) IBOutlet UITextField* URLEntryField; //JNK
+//JNK @property(nonatomic,retain) IBOutlet UITextField* URLEntryField;
 @property(nonatomic,retain) PresentationViewController* historyViewController;
 @property(nonatomic,retain)	IBOutlet AmbulantView* playerView;
 @property(nonatomic,retain) IBOutlet UITabBar* modeBar;
