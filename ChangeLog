@@ -1,3 +1,11 @@
+2010-12-09 23:29  keesblom
+
+	* Fixed some leaks, mainly in the new code for History/Favorites
+
+2010-12-09 22:58  keesblom
+
+	* Tweaked layout of HUD
+
 2010-12-08 17:42  keesblom
 
 	* Removed first implementation of Add Favorites.
