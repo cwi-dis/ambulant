@@ -28,5 +28,10 @@
 #include "ambulant/net/url.h"
 #include "ambulant/net/datasource.h"
 
+#ifdef WITH_CG
+#include "ambulant/gui/cg/cg_gui.h"
+#include "ambulant/gui/cg/cg_renderer.h"
+#else
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 #include "ambulant/gui/cocoa/cocoa_renderer.h"
+#endif

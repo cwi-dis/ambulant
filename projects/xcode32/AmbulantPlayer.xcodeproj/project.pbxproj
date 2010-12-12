@@ -39,6 +39,39 @@
 		042ADB0C1152DE69009CA791 /* libamplugin_python.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADB0B1152DE65009CA791 /* libamplugin_python.so */; };
 		04428EBE11577E960067C868 /* DTDCache in Resources */ = {isa = PBXBuildFile; fileRef = 04428EBD11577E960067C868 /* DTDCache */; };
 		04428EC011577EC30067C868 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 04428EBF11577EC30067C868 /* data */; };
+		04A1E97B12B585D80060F97E /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407047B115266B40094FB0B /* pause.png */; };
+		04A1E97C12B585D80060F97E /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407047C115266B40094FB0B /* play.png */; };
+		04A1E97D12B585D80060F97E /* playactive.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407047D115266B40094FB0B /* playactive.png */; };
+		04A1E97E12B585D80060F97E /* stop.png in Resources */ = {isa = PBXBuildFile; fileRef = 0407047E115266B40094FB0B /* stop.png */; };
+		04A1E97F12B585D80060F97E /* Ambulant.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0407048A115266B40094FB0B /* Ambulant.icns */; };
+		04A1E98012B585D80060F97E /* AmbulantDocDaisy.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0407048B115266B40094FB0B /* AmbulantDocDaisy.icns */; };
+		04A1E98112B585D80060F97E /* AmbulantDocGrins.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0407048C115266B40094FB0B /* AmbulantDocGrins.icns */; };
+		04A1E98212B585D80060F97E /* AmbulantDocSmil.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0407048D115266B40094FB0B /* AmbulantDocSmil.icns */; };
+		04A1E98312B585D80060F97E /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0407048E115266B40094FB0B /* Info.plist */; };
+		04A1E98412B585D80060F97E /* Welcome.smil in Resources */ = {isa = PBXBuildFile; fileRef = 0407057E115266F60094FB0B /* Welcome.smil */; };
+		04A1E98512B585D80060F97E /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0407060311526C240094FB0B /* Credits.rtf */; };
+		04A1E98612B585D80060F97E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0407060511526C240094FB0B /* InfoPlist.strings */; };
+		04A1E98712B585D80060F97E /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0407060711526C240094FB0B /* MainMenu.nib */; };
+		04A1E98812B585D80060F97E /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0407060A11526C240094FB0B /* Credits.rtf */; };
+		04A1E98912B585D80060F97E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0407060C11526C240094FB0B /* InfoPlist.strings */; };
+		04A1E98A12B585D80060F97E /* locversion.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0407060E11526C240094FB0B /* locversion.plist */; };
+		04A1E98B12B585D80060F97E /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0407061011526C240094FB0B /* Log.nib */; };
+		04A1E98C12B585D80060F97E /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0407061211526C240094FB0B /* MainMenu.nib */; };
+		04A1E98D12B585D80060F97E /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0407061411526C240094FB0B /* MyDocument.nib */; };
+		04A1E98E12B585D80060F97E /* DTDCache in Resources */ = {isa = PBXBuildFile; fileRef = 04428EBD11577E960067C868 /* DTDCache */; };
+		04A1E98F12B585D80060F97E /* data in Resources */ = {isa = PBXBuildFile; fileRef = 04428EBF11577EC30067C868 /* data */; };
+		04A1E99112B585D80060F97E /* LogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0407041B115266770094FB0B /* LogController.mm */; };
+		04A1E99212B585D80060F97E /* MyAmbulantView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0407041D115266770094FB0B /* MyAmbulantView.mm */; };
+		04A1E99312B585D80060F97E /* MyAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0407041F115266770094FB0B /* MyAppDelegate.mm */; };
+		04A1E99412B585D80060F97E /* MyDocument.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04070421115266770094FB0B /* MyDocument.mm */; };
+		04A1E99512B585D80060F97E /* mypreferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04070423115266770094FB0B /* mypreferences.mm */; };
+		04A1E99612B585D80060F97E /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04070429115266870094FB0B /* mainloop.cpp */; };
+		04A1E99712B585D80060F97E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0407042B115266870094FB0B /* main.m */; };
+		04A1E99912B585D80060F97E /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		04A1E99C12B585D80060F97E /* libamplugin_xerces.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADAA81152DA4A009CA791 /* libamplugin_xerces.so */; };
+		04A1E99D12B585D80060F97E /* libamplugin_python.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADB0B1152DE65009CA791 /* libamplugin_python.so */; };
+		04A1E99E12B585D80060F97E /* libamplugin_xpath_state.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADA411152D831009CA791 /* libamplugin_xpath_state.so */; };
+		04A1EAA712B588CE0060F97E /* libambulantCG.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04A1E87812B57E100060F97E /* libambulantCG.dylib */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
@@ -113,12 +146,47 @@
 			remoteGlobalIDString = D2AAC0C605546C1D00DB518D;
 			remoteInfo = libambulant;
 		};
-		93C026E411CBCA51003696F8 /* PBXContainerItemProxy */ = {
+		04A1E87712B57E100060F97E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 04070599115268480094FB0B /* libambulant.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 93C026DF11CBCA30003696F8;
-			remoteInfo = "libambulant-iphone-static";
+			remoteGlobalIDString = 04A1E87512B57DF20060F97E;
+			remoteInfo = libambulantCG;
+		};
+		04A1E97112B585D80060F97E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 042ADB061152DE65009CA791 /* plugin_python.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC09C05546B4700DB518D;
+			remoteInfo = plugin;
+		};
+		04A1E97312B585D80060F97E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 042ADA3C1152D831009CA791 /* plugin_xpath_state.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC09C05546B4700DB518D;
+			remoteInfo = plugin;
+		};
+		04A1E97512B585D80060F97E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 042ADAA31152DA4A009CA791 /* plugin_xerces.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC09C05546B4700DB518D;
+			remoteInfo = plugin;
+		};
+		04A1E97712B585D80060F97E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 042AD9511152CC13009CA791 /* plugin.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC09C05546B4700DB518D;
+			remoteInfo = plugin;
+		};
+		04A1E97912B585D80060F97E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 04070599115268480094FB0B /* libambulant.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC0C605546C1D00DB518D;
+			remoteInfo = libambulant;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -132,6 +200,19 @@
 				042ADAA91152DA4F009CA791 /* libamplugin_xerces.so in Copy Plugins */,
 				042ADB0C1152DE69009CA791 /* libamplugin_python.so in Copy Plugins */,
 				042ADA421152D83E009CA791 /* libamplugin_xpath_state.so in Copy Plugins */,
+			);
+			name = "Copy Plugins";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		04A1E99B12B585D80060F97E /* Copy Plugins */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				04A1E99C12B585D80060F97E /* libamplugin_xerces.so in Copy Plugins */,
+				04A1E99D12B585D80060F97E /* libamplugin_python.so in Copy Plugins */,
+				04A1E99E12B585D80060F97E /* libamplugin_xpath_state.so in Copy Plugins */,
 			);
 			name = "Copy Plugins";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -181,17 +262,28 @@
 		042ADB061152DE65009CA791 /* plugin_python.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = plugin_python.xcodeproj; sourceTree = "<group>"; };
 		04428EBD11577E960067C868 /* DTDCache */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DTDCache; path = ../../Extras/DTDCache; sourceTree = SOURCE_ROOT; };
 		04428EBF11577EC30067C868 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = ../../Extras/Welcome/data; sourceTree = SOURCE_ROOT; };
+		04A1E7C312B57C110060F97E /* ambulant-debug-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "ambulant-debug-cg.xcconfig"; sourceTree = "<group>"; };
+		04A1E7C412B57C110060F97E /* ambulant-release-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "ambulant-release-cg.xcconfig"; sourceTree = "<group>"; };
+		04A1E9A412B585D80060F97E /* AmbulantPlayerCG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmbulantPlayerCG.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		04A1E9A612B585D80060F97E /* Info copy 2.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info copy 2.plist"; path = "../../src/player_macosx/Info copy 2.plist"; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		256AC3F00F4B6AF500CF3369 /* AmbulantPlayer_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbulantPlayer_Prefix.pch; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		8D1107320486CEB800E47090 /* AmbulantPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmbulantPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		93C026C511CBC344003696F8 /* iPhone-start.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iPhone-start.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		93C026C711CBC344003696F8 /* iPhone-start-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "iPhone-start-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		04A1E99812B585D80060F97E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				04A1E99912B585D80060F97E /* Cocoa.framework in Frameworks */,
+				04A1EAA712B588CE0060F97E /* libambulantCG.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D11072E0486CEB800E47090 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -201,19 +293,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		93C026C311CBC344003696F8 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		040703A3115266100094FB0B /* Configuration Files */ = {
 			isa = PBXGroup;
 			children = (
+				04A1E7C312B57C110060F97E /* ambulant-debug-cg.xcconfig */,
+				04A1E7C412B57C110060F97E /* ambulant-release-cg.xcconfig */,
 				0407063611526CAD0094FB0B /* ambulant-debug.xcconfig */,
 				040703A4115266100094FB0B /* ambulant-common.xcconfig */,
 				040703A5115266100094FB0B /* ambulant-release.xcconfig */,
@@ -246,7 +333,7 @@
 			isa = PBXGroup;
 			children = (
 				040705A1115268480094FB0B /* libambulant.dylib */,
-				93C026E511CBCA51003696F8 /* liblibambulant-iphone-static.a */,
+				04A1E87812B57E100060F97E /* libambulantCG.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -347,7 +434,7 @@
 			isa = PBXGroup;
 			children = (
 				8D1107320486CEB800E47090 /* AmbulantPlayer.app */,
-				93C026C511CBC344003696F8 /* iPhone-start.app */,
+				04A1E9A412B585D80060F97E /* AmbulantPlayerCG.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -362,7 +449,6 @@
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				93C026C711CBC344003696F8 /* iPhone-start-Info.plist */,
 			);
 			name = AmbulantPlayer;
 			sourceTree = "<group>";
@@ -394,6 +480,7 @@
 				0407048D115266B40094FB0B /* AmbulantDocSmil.icns */,
 				0407048E115266B40094FB0B /* Info.plist */,
 				0407047E115266B40094FB0B /* stop.png */,
+				04A1E9A612B585D80060F97E /* Info copy 2.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -410,6 +497,32 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		04A1E96F12B585D80060F97E /* AmbulantPlayerCG */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 04A1E9A112B585D80060F97E /* Build configuration list for PBXNativeTarget "AmbulantPlayerCG" */;
+			buildPhases = (
+				04A1E97A12B585D80060F97E /* Resources */,
+				04A1E99012B585D80060F97E /* Sources */,
+				04A1E99812B585D80060F97E /* Frameworks */,
+				04A1E99B12B585D80060F97E /* Copy Plugins */,
+				04A1E99F12B585D80060F97E /* Create plugin .la files */,
+				04A1E9A012B585D80060F97E /* Internalize dylibs */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				04A1E97012B585D80060F97E /* PBXTargetDependency */,
+				04A1E97212B585D80060F97E /* PBXTargetDependency */,
+				04A1E97412B585D80060F97E /* PBXTargetDependency */,
+				04A1E97612B585D80060F97E /* PBXTargetDependency */,
+				04A1E97812B585D80060F97E /* PBXTargetDependency */,
+			);
+			name = AmbulantPlayerCG;
+			productInstallPath = "$(HOME)/Applications";
+			productName = AmbulantPlayer;
+			productReference = 04A1E9A412B585D80060F97E /* AmbulantPlayerCG.app */;
+			productType = "com.apple.product-type.application";
+		};
 		8D1107260486CEB800E47090 /* AmbulantPlayer */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "AmbulantPlayer" */;
@@ -434,23 +547,6 @@
 			productInstallPath = "$(HOME)/Applications";
 			productName = AmbulantPlayer;
 			productReference = 8D1107320486CEB800E47090 /* AmbulantPlayer.app */;
-			productType = "com.apple.product-type.application";
-		};
-		93C026C411CBC344003696F8 /* iPhone-start */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 93C026CA11CBC345003696F8 /* Build configuration list for PBXNativeTarget "iPhone-start" */;
-			buildPhases = (
-				93C026C111CBC344003696F8 /* Resources */,
-				93C026C211CBC344003696F8 /* Sources */,
-				93C026C311CBC344003696F8 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "iPhone-start";
-			productName = "iPhone-start";
-			productReference = 93C026C511CBC344003696F8 /* iPhone-start.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -496,7 +592,7 @@
 			projectRoot = "";
 			targets = (
 				8D1107260486CEB800E47090 /* AmbulantPlayer */,
-				93C026C411CBC344003696F8 /* iPhone-start */,
+				04A1E96F12B585D80060F97E /* AmbulantPlayerCG */,
 			);
 		};
 /* End PBXProject section */
@@ -537,16 +633,44 @@
 			remoteRef = 042ADB0A1152DE65009CA791 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		93C026E511CBCA51003696F8 /* liblibambulant-iphone-static.a */ = {
+		04A1E87812B57E100060F97E /* libambulantCG.dylib */ = {
 			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "liblibambulant-iphone-static.a";
-			remoteRef = 93C026E411CBCA51003696F8 /* PBXContainerItemProxy */;
+			fileType = "compiled.mach-o.dylib";
+			path = libambulantCG.dylib;
+			remoteRef = 04A1E87712B57E100060F97E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
+		04A1E97A12B585D80060F97E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				04A1E97B12B585D80060F97E /* pause.png in Resources */,
+				04A1E97C12B585D80060F97E /* play.png in Resources */,
+				04A1E97D12B585D80060F97E /* playactive.png in Resources */,
+				04A1E97E12B585D80060F97E /* stop.png in Resources */,
+				04A1E97F12B585D80060F97E /* Ambulant.icns in Resources */,
+				04A1E98012B585D80060F97E /* AmbulantDocDaisy.icns in Resources */,
+				04A1E98112B585D80060F97E /* AmbulantDocGrins.icns in Resources */,
+				04A1E98212B585D80060F97E /* AmbulantDocSmil.icns in Resources */,
+				04A1E98312B585D80060F97E /* Info.plist in Resources */,
+				04A1E98412B585D80060F97E /* Welcome.smil in Resources */,
+				04A1E98512B585D80060F97E /* Credits.rtf in Resources */,
+				04A1E98612B585D80060F97E /* InfoPlist.strings in Resources */,
+				04A1E98712B585D80060F97E /* MainMenu.nib in Resources */,
+				04A1E98812B585D80060F97E /* Credits.rtf in Resources */,
+				04A1E98912B585D80060F97E /* InfoPlist.strings in Resources */,
+				04A1E98A12B585D80060F97E /* locversion.plist in Resources */,
+				04A1E98B12B585D80060F97E /* Log.nib in Resources */,
+				04A1E98C12B585D80060F97E /* MainMenu.nib in Resources */,
+				04A1E98D12B585D80060F97E /* MyDocument.nib in Resources */,
+				04A1E98E12B585D80060F97E /* DTDCache in Resources */,
+				04A1E98F12B585D80060F97E /* data in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D1107290486CEB800E47090 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -572,13 +696,6 @@
 				0407061E11526C240094FB0B /* MyDocument.nib in Resources */,
 				04428EBE11577E960067C868 /* DTDCache in Resources */,
 				04428EC011577EC30067C868 /* data in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		93C026C111CBC344003696F8 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -613,9 +730,51 @@
 			shellPath = /bin/sh;
 			shellScript = "cd ${TARGET_BUILD_DIR}/${PLUGINS_FOLDER_PATH}\nfor plugin in libamplugin_*.so; do\n    pluginbase=`basename $plugin .so`\n    echo dlname=\\'$pluginbase.so\\' > $pluginbase.la\n    echo Created $pluginbase.la\ndone\n";
 		};
+		04A1E99F12B585D80060F97E /* Create plugin .la files */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Create plugin .la files";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd ${TARGET_BUILD_DIR}/${PLUGINS_FOLDER_PATH}\nfor plugin in libamplugin_*.so; do\n    pluginbase=`basename $plugin .so`\n    echo dlname=\\'$pluginbase.so\\' > $pluginbase.la\n    echo Created $pluginbase.la\ndone\n";
+		};
+		04A1E9A012B585D80060F97E /* Internalize dylibs */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Internalize dylibs";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "python \"${SOURCE_ROOT}/../../src/player_macosx/internalize_dylibs.py\" -v -s /usr/local/lib:\"${PREBUILT_AMBULANT_ROOT}/src/libambulant/.libs\" \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		04A1E99012B585D80060F97E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				04A1E99112B585D80060F97E /* LogController.mm in Sources */,
+				04A1E99212B585D80060F97E /* MyAmbulantView.mm in Sources */,
+				04A1E99312B585D80060F97E /* MyAppDelegate.mm in Sources */,
+				04A1E99412B585D80060F97E /* MyDocument.mm in Sources */,
+				04A1E99512B585D80060F97E /* mypreferences.mm in Sources */,
+				04A1E99612B585D80060F97E /* mainloop.cpp in Sources */,
+				04A1E99712B585D80060F97E /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D11072C0486CEB800E47090 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -627,13 +786,6 @@
 				04070428115266770094FB0B /* mypreferences.mm in Sources */,
 				0407042C115266870094FB0B /* mainloop.cpp in Sources */,
 				0407042D115266870094FB0B /* main.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		93C026C211CBC344003696F8 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -664,6 +816,31 @@
 			isa = PBXTargetDependency;
 			name = libambulant;
 			targetProxy = 04428D841157787A0067C868 /* PBXContainerItemProxy */;
+		};
+		04A1E97012B585D80060F97E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = plugin;
+			targetProxy = 04A1E97112B585D80060F97E /* PBXContainerItemProxy */;
+		};
+		04A1E97212B585D80060F97E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = plugin;
+			targetProxy = 04A1E97312B585D80060F97E /* PBXContainerItemProxy */;
+		};
+		04A1E97412B585D80060F97E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = plugin;
+			targetProxy = 04A1E97512B585D80060F97E /* PBXContainerItemProxy */;
+		};
+		04A1E97612B585D80060F97E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = plugin;
+			targetProxy = 04A1E97712B585D80060F97E /* PBXContainerItemProxy */;
+		};
+		04A1E97812B585D80060F97E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = libambulant;
+			targetProxy = 04A1E97912B585D80060F97E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -743,53 +920,35 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		93C026C811CBC345003696F8 /* Debug */ = {
+		04A1E9A212B585D80060F97E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 04A1E7C312B57C110060F97E /* ambulant-debug-cg.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
-				INFOPLIST_FILE = "iPhone-start-Info.plist";
+				GCC_PREFIX_HEADER = AmbulantPlayer_Prefix.pch;
+				INFOPLIST_FILE = ../../src/player_macosx/info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				MACOSX_DEPLOYMENT_TARGET = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					UIKit,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = "iPhone-start";
-				SDKROOT = iphoneos3.2;
+				PRODUCT_NAME = AmbulantPlayerCG;
 			};
 			name = Debug;
 		};
-		93C026C911CBC345003696F8 /* Release */ = {
+		04A1E9A312B585D80060F97E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 04A1E7C412B57C110060F97E /* ambulant-release-cg.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
-				INFOPLIST_FILE = "iPhone-start-Info.plist";
+				GCC_PREFIX_HEADER = AmbulantPlayer_Prefix.pch;
+				INFOPLIST_FILE = ../../src/player_macosx/info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					UIKit,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = "iPhone-start";
-				SDKROOT = iphoneos3.2;
-				ZERO_LINK = NO;
+				PRODUCT_NAME = AmbulantPlayerCG;
 			};
 			name = Release;
 		};
@@ -817,7 +976,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AmbulantPlayer_Prefix.pch;
 				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
@@ -863,11 +1021,11 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		93C026CA11CBC345003696F8 /* Build configuration list for PBXNativeTarget "iPhone-start" */ = {
+		04A1E9A112B585D80060F97E /* Build configuration list for PBXNativeTarget "AmbulantPlayerCG" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				93C026C811CBC345003696F8 /* Debug */,
-				93C026C911CBC345003696F8 /* Release */,
+				04A1E9A212B585D80060F97E /* Debug */,
+				04A1E9A312B585D80060F97E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

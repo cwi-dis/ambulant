@@ -32,7 +32,9 @@
 //#include "ambulant/gui/cg/cg_smiltext.h"
 #endif
 #include "ambulant/lib/mtsync.h"
+#ifdef WITH_UIKIT
 #include "ambulant/gui/cg/iOSpreferences.h"
+#endif
 
 //#include <CoreGraphics/CoreGraphics.h>
 

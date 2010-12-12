@@ -76,7 +76,7 @@
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
-	<string>AmbulantPlayer</string>
+	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleHelpBookFolder</key>
 	<string>Ambulant Player Help</string>
 	<key>CFBundleHelpBookName</key>
