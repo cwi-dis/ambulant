@@ -118,6 +118,18 @@
 		0496561D0BCAEA42002C00DF /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656110BCAEA42002C00DF /* libexpat.a */; };
 		049656240BCAEA43002C00DF /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656180BCAEA42002C00DF /* libz.dylib */; };
 		049656B20BCAEC13002C00DF /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656B10BCAEC13002C00DF /* Carbon.framework */; };
+		04A1E60C12B575810060F97E /* cocoa_fill.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652590BCAE3C5002C00DF /* cocoa_fill.mm */; };
+		04A1E60D12B575820060F97E /* cocoa_gui.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0496525B0BCAE3C5002C00DF /* cocoa_gui.mm */; };
+		04A1E60E12B575820060F97E /* cocoa_html.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0496525D0BCAE3C5002C00DF /* cocoa_html.mm */; };
+		04A1E60F12B575830060F97E /* cocoa_image.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0496525F0BCAE3C5002C00DF /* cocoa_image.mm */; };
+		04A1E61012B575840060F97E /* cocoa_ink.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652610BCAE3C5002C00DF /* cocoa_ink.mm */; };
+		04A1E61112B575850060F97E /* cocoa_renderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652630BCAE3C5002C00DF /* cocoa_renderer.mm */; };
+		04A1E61212B575860060F97E /* cocoa_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B270BD786380074AF09 /* cocoa_smiltext.mm */; };
+		04A1E61312B575870060F97E /* cocoa_text.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652650BCAE3C5002C00DF /* cocoa_text.mm */; };
+		04A1E61412B575880060F97E /* cocoa_transition.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652670BCAE3C5002C00DF /* cocoa_transition.mm */; };
+		04A1E61512B575880060F97E /* cocoa_video.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652690BCAE3C5002C00DF /* cocoa_video.mm */; };
+		04A1E62312B575D90060F97E /* cocoa_dsvideo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652570BCAE3C5002C00DF /* cocoa_dsvideo.mm */; };
+		04A1E62412B575DA0060F97E /* cocoa_audio.mm in Sources */ = {isa = PBXBuildFile; fileRef = 049652550BCAE3C5002C00DF /* cocoa_audio.mm */; };
 		04D5B88010C33DFA00D2CC1D /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04D5B87F10C33DFA00D2CC1D /* libSDL.a */; };
 		04E13B240BD786120074AF09 /* state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B230BD786120074AF09 /* state.cpp */; };
 		04E13B350BD786A40074AF09 /* smiltext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E13B340BD786A40074AF09 /* smiltext.cpp */; };
@@ -126,14 +138,6 @@
 		04FB4BB510F6187A0095F275 /* libliveMedia.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656130BCAEA42002C00DF /* libliveMedia.a */; };
 		04FB4BB610F6187C0095F275 /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049656140BCAEA42002C00DF /* libUsageEnvironment.a */; };
 		04FB4BBA10F618A80095F275 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04FB4BB910F618A80095F275 /* QuickTime.framework */; };
-		93640F94123905500046B567 /* cg_text.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B07106B79D000A4E37A /* cg_text.mm */; };
-		93640F95123905510046B567 /* cg_renderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B06106B79D000A4E37A /* cg_renderer.mm */; };
-		93640F96123905530046B567 /* cg_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9309F8D11226AF9C00F63B7E /* cg_smiltext.mm */; };
-		93640F97123905540046B567 /* cg_image.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B05106B79D000A4E37A /* cg_image.mm */; };
-		93640F98123905550046B567 /* cg_gui.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B04106B79D000A4E37A /* cg_gui.mm */; };
-		93640F99123905560046B567 /* cg_fill.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B03106B79D000A4E37A /* cg_fill.mm */; };
-		93640F9A123905560046B567 /* cg_dsvideo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04D54B02106B79D000A4E37A /* cg_dsvideo.mm */; };
-		93640F9B123905570046B567 /* cg_avfoundation_video.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93090268123521F200F63B7E /* cg_avfoundation_video.mm */; };
 		93ECA15D121C87EB00E0BEDE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		93ECA15E121C87EE00E0BEDE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
 		93ECA15F121C87F000E0BEDE /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 13E42FB307B3F0F600E4EEF1 /* CoreData.framework */; };
@@ -1513,6 +1517,7 @@
 			isa = PBXProject;
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Ambulant-mac" */;
 			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -1640,14 +1645,18 @@
 				04E13B240BD786120074AF09 /* state.cpp in Sources */,
 				04E13B350BD786A40074AF09 /* smiltext.cpp in Sources */,
 				047954AC0F272CA300103C57 /* renderer_select.cpp in Sources */,
-				93640F94123905500046B567 /* cg_text.mm in Sources */,
-				93640F95123905510046B567 /* cg_renderer.mm in Sources */,
-				93640F96123905530046B567 /* cg_smiltext.mm in Sources */,
-				93640F97123905540046B567 /* cg_image.mm in Sources */,
-				93640F98123905550046B567 /* cg_gui.mm in Sources */,
-				93640F99123905560046B567 /* cg_fill.mm in Sources */,
-				93640F9A123905560046B567 /* cg_dsvideo.mm in Sources */,
-				93640F9B123905570046B567 /* cg_avfoundation_video.mm in Sources */,
+				04A1E60C12B575810060F97E /* cocoa_fill.mm in Sources */,
+				04A1E60D12B575820060F97E /* cocoa_gui.mm in Sources */,
+				04A1E60E12B575820060F97E /* cocoa_html.mm in Sources */,
+				04A1E60F12B575830060F97E /* cocoa_image.mm in Sources */,
+				04A1E61012B575840060F97E /* cocoa_ink.mm in Sources */,
+				04A1E61112B575850060F97E /* cocoa_renderer.mm in Sources */,
+				04A1E61212B575860060F97E /* cocoa_smiltext.mm in Sources */,
+				04A1E61312B575870060F97E /* cocoa_text.mm in Sources */,
+				04A1E61412B575880060F97E /* cocoa_transition.mm in Sources */,
+				04A1E61512B575880060F97E /* cocoa_video.mm in Sources */,
+				04A1E62312B575D90060F97E /* cocoa_dsvideo.mm in Sources */,
+				04A1E62412B575DA0060F97E /* cocoa_audio.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
