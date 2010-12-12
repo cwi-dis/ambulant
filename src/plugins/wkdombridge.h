@@ -214,8 +214,8 @@ class wkdom_node : public lib::node_interface {
 	/// Return the number of nodes of the xml (sub-)tree starting at this node.
 	unsigned int size() const;
 
-	/// Returns a "friendly" path desription of this node.
-	std::string get_path_display_desc() const;
+	/// Returns XPath locator for this node.
+	std::string get_xpath() const;
 
 	/// Return a friendly string describing this node.
 	/// The string will be of a form similar to \<tag id="...">

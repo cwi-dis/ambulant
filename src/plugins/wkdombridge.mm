@@ -339,28 +339,52 @@ wkdom_node::get_root() {
 	return lib::node_navigator<wkdom_node>::get_root(this);
 }
 
+inline std::string int2string(int number)
+{
+	std::stringstream ss;	//create a stringstream
+	ss << number;		//add number to the stream
+	return ss.str();	//return a string with the contents of the stream
+}
+
 inline std::string get_path_desc_comp(const wkdom_node *n) {
+	std::string my_id = n->get_local_name();
 	std::string sbuf;
-	const char *pid = n->get_attribute("id");
-	sbuf += n->get_local_name();
-	if(pid) {sbuf += ":"; sbuf += pid;}
+	sbuf += my_id;
+	const wkdom_node* parent = n->up();
+
+	if (parent != NULL) {
+		std::list<const lib::node*> children;
+		parent->get_children(children);
+		std::list<const lib::node*>::iterator it = children.begin();
+
+		int count = 0;
+		while (it != children.end()) {
+			if ((*it)->get_local_name() == my_id) {
+				count++;
+				if ((*it) == n) {
+					if (count > 1) {
+						sbuf += "["+ int2string(count) + "]";
+					}
+					break;
+				}
+			}
+			it++;
+		}
+	}
 	return sbuf;
 }
 
-std::string wkdom_node::get_path_display_desc() const {
+std::string wkdom_node::get_xpath() const {
 	std::string sbuf;
 	std::list<const wkdom_node*> path;
 	lib::node_navigator<const wkdom_node>::get_path(this, path);
-	int nc = 0;
 	std::list<const wkdom_node*>::reverse_iterator it = path.rbegin();
-	sbuf += get_path_desc_comp(this);it++;nc++;
-	for(;it != path.rend() && nc<3;it++) {
+	sbuf += get_path_desc_comp(this);
+	it++;
+	for(;it != path.rend();it++) {
 		std::string ln = (*it)->get_local_name();
-		if(ln != "priorityClass" && ln != "switch") {
-			sbuf.insert(0, "/");
-			sbuf.insert(0, get_path_desc_comp(*it));
-			nc++;
-		}
+		sbuf.insert(0, "/");
+		sbuf.insert(0, get_path_desc_comp(*it));
 	}
 	return sbuf;
 }
