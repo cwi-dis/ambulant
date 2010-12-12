@@ -66,7 +66,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 @implementation AmbulantViewController
 
-@synthesize interactionView, modeBar, originalPlayerViewFrame, originalInteractionViewFrame,
+@synthesize delegate, interactionView, modeBar, originalPlayerViewFrame, originalInteractionViewFrame,
 			playerView, myMainloop, linkURL, playURL,
 			keyboardIsShown, currentOrientation, autoCenter, autoResize,
 			nativeRenderer, play_active, historyViewController;
@@ -107,15 +107,24 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 			myMainloop->goto_node_repr(node_repr);
 		}
 		myMainloop->play();
-	}
-	if ( ! interactionView.hidden) {
-		interactionView.hidden = true;
-		interactionView.opaque = false;
-		modeBar.hidden = true;
-		modeBar.opaque = false;
+		[self showInteractionView: NO];
 	}
 }
 
+- (void) showInteractionView: (BOOL) want_show {
+	if (want_show && interactionView.hidden) {
+		interactionView.hidden = false;
+		interactionView.opaque = true;
+//JNK	modeBar.hidden = true;
+//JNK	modeBar.opaque = false;
+	} else {
+		interactionView.hidden = true;
+		interactionView.opaque = false;
+//JNK	modeBar.hidden = true;
+//JNK	modeBar.opaque = false;
+	}
+}
+	
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
 	AM_DBG NSLog(@"AmbulantViewController viewDidLoad(0x%x)", self);
@@ -147,9 +156,16 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	
 	// prepare to react on "tap" gesture (select object in playerView with 1 finger tap)
 	UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]
-											  initWithTarget:self action:@selector(handleTapGesture:)];
+										  initWithTarget:self action:@selector(handleTapGesture:)];
 	[self.playerView addGestureRecognizer:tapGesture];
     [tapGesture release];
+	
+	// prepare to react on "double tap" gesture (select object in playerView with 1 finger tap)
+	UITapGestureRecognizer *doubleTapGesture = [[UITapGestureRecognizer alloc]
+										  initWithTarget:self action:@selector(handleDoubleTapGesture:)];
+	doubleTapGesture.numberOfTapsRequired = 2;
+	[self.playerView addGestureRecognizer:doubleTapGesture];
+    [doubleTapGesture release];
 	
 	// prepare to react on "pinch" gesture (zoom playerView with 2 fingers)
 	UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc]
@@ -165,7 +181,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 /*	swipe doesn't work well with pan
 	// prepare to react on "swipe" gesture (move finger in one direction continuously)
     UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc]
-													  initWithTarget:self action:@selector(handleSwipeOrLongPressGesture:)];
+													  initWithTarget:self action:@selector(handleLongPressGesture:)];
 	swipeGesture.direction = (UISwipeGestureRecognizerDirection)
 							(UISwipeGestureRecognizerDirectionRight | UISwipeGestureRecognizerDirectionLeft
 							  | UISwipeGestureRecognizerDirectionUp | UISwipeGestureRecognizerDirectionDown);
@@ -174,7 +190,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 */	
 	// prepare to react on "longPress" gesture (hold finger in one spot, longer than 0.4 sec.)
     UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc]
-													  initWithTarget:self action:@selector(handleSwipeOrLongPressGesture:)];
+													  initWithTarget:self action:@selector(handleLongPressGesture:)];
 	//	longPressGesture.direction = (UIlongPressGestureRecognizerDirectionRight | UIlongPressGestureRecognizerDirectionLeft
 	//							  | UIlongPressGestureRecognizerDirectionUp | UIlongPressGestureRecognizerDirectionDown);
     [self.playerView addGestureRecognizer:longPressGesture];
@@ -252,14 +268,29 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 
 
-/*	Code from Apple's developer documentation "Gesture Recognizers"*/
-- (IBAction) handleTapGesture:(UIGestureRecognizer *)sender { // select
+/*	Code derived from Apple's developer documentation "Gesture Recognizers"*/
+
+- (IBAction) handleLongPressGesture:(UILongPressGestureRecognizer *)sender {
+	AM_DBG NSLog(@"AmbulantViewController handleLongPressGesture(0x%x): sender=0x%x", self, sender);
+	if (interactionView != NULL && interactionView.hidden) {
+		[self handleDoubleTapGesture:(UITapGestureRecognizer*) sender];
+	}
+};
+
+- (IBAction) handleTapGesture:(UITapGestureRecognizer *)sender { // select
 	AM_DBG NSLog(@"AmbulantViewController handleTapGesture(0x%x): sender=0x%x", self, sender);
-	CGPoint location = [(UITapGestureRecognizer *)sender locationInView:self.playerView];
-	[self.playerView tappedAtPoint:location];
+	[self showInteractionView: YES];
 }
 
-- (IBAction) handlePinchGesture:(UIGestureRecognizer *)sender { // zoom
+- (IBAction) handleDoubleTapGesture:(UITapGestureRecognizer *)sender { // select
+	AM_DBG NSLog(@"AmbulantViewController handleDoubleTapGesture(0x%x): sender=0x%x", self, sender);
+	CGPoint location = [sender locationInView:self.playerView];
+	if ( ! [self.playerView tappedAtPoint:location]) {
+//		[self.delegate showPresentationViews:self];
+	}
+}
+
+- (IBAction) handlePinchGesture:(UIPinchGestureRecognizer *)sender { // zoom
 	AM_DBG NSLog(@"AmbulantViewController handlePinchGesture(0x%x): sender=0x%x", self, sender);
 	CGFloat factor = [(UIPinchGestureRecognizer *)sender scale];
 	[self.playerView zoomWithScale:factor inState: [sender state]];
@@ -270,23 +301,6 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	CGPoint translate = [sender translationInView: playerView.superview];
 	[self.playerView  translateWithPoint: (CGPoint) translate inState: [sender state]];
 }
-
-- (IBAction) handleSwipeOrLongPressGesture:(UIGestureRecognizer *)sender {
-	//	CGPoint translate = [sender translationInView: playerView.superview];
-	//	[self.playerView  translateWithPoint: (CGPoint) translate inState: [sender state]];
-	static bool	wasPressed = false;
-	AM_DBG NSLog(@"AmbulantViewController handleSwipeOrLongPressGesture(0x%x): sender=0x%x, wasPressed=%d", self, sender, wasPressed);
-	if (wasPressed && interactionView != NULL) {
-		interactionView.hidden = ! interactionView.hidden;
-		interactionView.opaque = ! interactionView.opaque;
-		modeBar.hidden = ! modeBar.hidden;
-		modeBar.opaque = ! modeBar.opaque;
-		wasPressed = false;
-	} else if (interactionView != NULL) {
-		wasPressed = ! wasPressed;
-	}
-}
-
 // dismiss the keyboard when the <Return> is tapped
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	AM_DBG NSLog(@"textFieldShouldReturn: text=%@", textField.text);
@@ -318,14 +332,13 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 - (IBAction) addFavorites:(id)sender {
 	AM_DBG NSLog(@"AmbulantViewController addFavorites(0x%x)", sender);
-	AmbulantAppDelegate* app_delegate = (AmbulantAppDelegate*)([UIApplication sharedApplication].delegate);
-	PresentationViewController* favoritesVC = [ app_delegate getPresentationView: self withIndex: 1];	
+	PresentationViewController* favoritesVC = [ self.delegate getPresentationView: self withIndex: 1];	
 #ifdef	FIRST_ITEM
 	[favoritesVC insertCurrentItemAtIndexPath: [ NSIndexPath indexPathForRow:FIRST_ITEM inSection: 0 ]];
 #else //FIRST_ITEM
 	[favoritesVC insertCurrentItemAtIndexPath: [ NSIndexPath indexPathForRow:0 inSection: 0 ]];
 #endif//FIRST_ITEM
-	[app_delegate showPresentationView: self withIndex: 1];
+	[self.delegate showPresentationView: self withIndex: 1];
 }
 
 
@@ -361,7 +374,7 @@ playlistViewControllerDidFinish: (UIViewController *)controller {
 	AM_DBG NSLog(@"playlistViewControllerDidFinish: controller=0x%x", controller);
 	[self settingsHaveChanged: controller];	
 //	[self dismissModalViewControllerAnimated:YES];
-	[(AmbulantAppDelegate*)([UIApplication sharedApplication].delegate) showAmbulantPlayer: (id) self];
+	[self.delegate showAmbulantPlayer: (id) self];
 	if (myMainloop != NULL) {
 		if (play_active) {
 			myMainloop->play();
@@ -378,7 +391,7 @@ playlistViewControllerDidFinish: (UIViewController *)controller {
 	playerView.alpha = 1.0;
 }
 
-- (IBAction) showHistory:(id)sender {    
+- (IBAction) showHistory:(id)sender {  // JNK
 	AM_DBG NSLog(@"AmbulantViewController (0x%x)", self);
 	
 	if (myMainloop != NULL) {
@@ -396,7 +409,7 @@ playlistViewControllerDidFinish: (UIViewController *)controller {
 	
 	[controller release];
 	 */
-	[(AmbulantAppDelegate*)([UIApplication sharedApplication].delegate) showPresentationViews: self];
+	[self.delegate showPresentationViews: self];
 }
 
 - (void)
@@ -409,7 +422,7 @@ done: (id) sender {
 presentationViewControllerDidFinish: (PresentationViewController *)controller {
 	AM_DBG NSLog(@"AmbulantViewController presentationViewControllerDidFinish(0x%x): controller=0x%x", self, controller);
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
-	[(AmbulantAppDelegate*)([UIApplication sharedApplication].delegate) showAmbulantPlayer: (id) self];
+	[self.delegate showAmbulantPlayer: (id) self];
 	if (controller != NULL && controller.editingStyle != UITableViewCellEditingStyleNone) {
 		[controller toggleEditMode];
 	}
@@ -575,7 +588,7 @@ playPresentation: (NSString*) whatString {
 		return;
 	}
 	currentOrientation = orientation;
-	if (view != NULL) {
+	if (playerView != NULL) {
 		[playerView adaptDisplayAfterRotation: orientation];
 	}
 }
@@ -588,7 +601,15 @@ playPresentation: (NSString*) whatString {
 - (void) pause {
 	AM_DBG NSLog(@"AmbulantViewController pause(0x%x)", self);
 	if (myMainloop) {
+		play_active = myMainloop->is_play_active();
 		myMainloop->pause();
+	}
+}
+
+- (void) play {
+	AM_DBG NSLog(@"AmbulantViewController play(0x%x)", self);
+	if (myMainloop) {
+		myMainloop->play();
 	}
 }
 
@@ -616,9 +637,9 @@ playPresentation: (NSString*) whatString {
 - (void) initialize_after_crashing {
 	AM_DBG NSLog(@"AmbulantViewController initialize_after_crashing:self=0x%x", self);
 	// We are in an unknown state. Make 'History' view visible
-//	[self handleSwipeOrLongPressGesture: (UIGestureRecognizer*) self];
+//	[self handleLongPressGesture: (UIGestureRecognizer*) self];
 //	sleep(1);
-//	[self handleSwipeOrLongPressGesture:(UIGestureRecognizer*) self];
+//	[self handleLongPressGesture:(UIGestureRecognizer*) self];
 	[self showHistory:(id) self];
 }
 

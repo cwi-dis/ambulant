@@ -172,7 +172,7 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 @property(nonatomic) ambulant::lib::size original_bounds;
 
 - (void) adaptDisplayAfterRotation: (UIDeviceOrientation) orientation;
-- (void) tappedAtPoint:(CGPoint) location;
+- (BOOL) tappedAtPoint:(CGPoint) location;
 - (void) zoomWithScale: (float) scale inState: (UIGestureRecognizerState) state;
 - (void) translateWithPoint: (CGPoint) point inState: (UIGestureRecognizerState) state;
 #endif//WITH_UIKIT

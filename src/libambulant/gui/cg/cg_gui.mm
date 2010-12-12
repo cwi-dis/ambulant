@@ -531,7 +531,11 @@ bad:
 @synthesize current_transform;
 
 - (void) adaptDisplayAfterRotation: (UIDeviceOrientation) orientation {
-	if (ambulant_window == NULL) {
+	if (ambulant_window == NULL ) {
+		return;
+	}
+	if (self.alpha == 0.0) {
+		// view disabled, another view is made visible (e.g. tabBarViewController)
 		return;
 	}
 	// adapt the ambulant window needed (bounds) in the current View
@@ -647,12 +651,15 @@ bad:
 
 #ifdef WITH_UIKIT
 // Equivalent of mouse move/click on iPhone
-- (void) tappedAtPoint:(CGPoint) location {
+- (BOOL) tappedAtPoint:(CGPoint) location {
 // NSLog(@"tappedAtPoint: x=%f y=%f", location.x, location.y);
 	[self setNeedsDisplay];
 	ambulant::lib::point amwhere = ambulant::lib::point(
 							(int) location.x, (int) location.y);
-	if (ambulant_window) ambulant_window->user_event(amwhere, 0);
+	if (ambulant_window) {
+		return ambulant_window->user_event(amwhere, 0);
+	}
+	return false;
 }
 
 - (void) zoomWithScale: (float) scale  inState: (UIGestureRecognizerState) state {

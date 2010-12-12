@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AmbulantAppDelegate.h"
 #import "SettingsViewController.h"
 #import "Presentation.h"
 #import "PresentationViewController.h"
@@ -38,6 +39,7 @@ private:
 	mainloop *myMainloop;
 //JNK PresentationViewController* historyViewController;
 	IBOutlet id view;
+	IBOutlet AmbulantAppDelegate* delegate;
 	IBOutlet AmbulantView* playerView;
 	IBOutlet UIView* interactionView;
 //JNK	IBOutlet UITabBar* modeBar;
@@ -58,6 +60,9 @@ private:
 - (IBAction) handlePauseTapped;
 - (IBAction) handleStopTapped; //JNK
 - (IBAction) handleURLEntered; //JNK
+- (IBAction) handleDoubleTapGesture:(UITapGestureRecognizer*) sender;
+- (IBAction) handleTapGesture:(UITapGestureRecognizer*) sender;
+- (IBAction) handleLongPressGesture:(UILongPressGestureRecognizer *)sender;
 - (IBAction) handlePanGesture:(UIPanGestureRecognizer*) sender;
 - (IBAction) handlePinchGesture:(UIGestureRecognizer*) sender;
 - (IBAction) showHistory:(id)sender; //JNK
@@ -65,12 +70,15 @@ private:
 - (IBAction) addFavorites:(id)sender;
 - (IBAction) close:(id) str;
 - (void) pause;
+- (void) play;
 //JNK - (IBAction) textFieldTextDidChange;
 - (PlaylistItem*) currentItem;
 - (void) initialize_after_crashing;
 - (void) doPlayURL:(NSString*) ns_node_repr;
+- (void) showInteractionView: (BOOL) on;
 
 //JNK @property(nonatomic,retain) IBOutlet UITextField* URLEntryField;
+@property(nonatomic,retain) IBOutlet AmbulantAppDelegate* delegate;
 @property(nonatomic,retain) PresentationViewController* historyViewController;
 @property(nonatomic,retain)	IBOutlet AmbulantView* playerView;
 @property(nonatomic,retain) IBOutlet UITabBar* modeBar;

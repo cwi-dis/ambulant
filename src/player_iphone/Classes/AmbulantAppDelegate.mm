@@ -164,12 +164,14 @@ showAmbulantPlayer: (void*) id
 		 tabBarController.view.alpha = 0.0;
 		 viewController.view.alpha = 1.0;
 	 } ];
+	[viewController play];
 }
 
 - (void)
 //application:(UIApplication *)application 
 showPresentationViews:(void *)id
 {
+	[viewController pause];
 	[ UIView animateWithDuration: 1.0 animations: ^
 	 {
 		 tabBarController.view.hidden = false;
