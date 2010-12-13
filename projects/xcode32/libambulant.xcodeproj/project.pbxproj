@@ -286,6 +286,30 @@
 		D2AAC0CC05546C4400DB518D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		041DCBEE12B662F4003407C8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 041DCBEA12B662D9003407C8 /* third_party_packages.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 041DCBD712B65714003407C8 /* third_party_packages_3264 */;
+			remoteInfo = third_party_packages_3264;
+		};
+		041DCBF012B662FD003407C8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 041DCBEA12B662D9003407C8 /* third_party_packages.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 041DCBD712B65714003407C8 /* third_party_packages_3264 */;
+			remoteInfo = third_party_packages_3264;
+		};
+		041DCBF212B66307003407C8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 041DCBEA12B662D9003407C8 /* third_party_packages.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 041DCBD712B65714003407C8 /* third_party_packages_3264 */;
+			remoteInfo = third_party_packages_3264;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		04070306115263540094FB0B /* libavcodec.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavcodec.dylib; path = "../../build-3264/third_party_packages/installed/lib/libavcodec.dylib"; sourceTree = SOURCE_ROOT; };
 		04070307115263540094FB0B /* libavformat.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavformat.dylib; path = "../../build-3264/third_party_packages/installed/lib/libavformat.dylib"; sourceTree = SOURCE_ROOT; };
@@ -306,6 +330,7 @@
 		04070358115265220094FB0B /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		0407064611526D070094FB0B /* ambulant-debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "ambulant-debug.xcconfig"; sourceTree = "<group>"; };
 		040707151152847A0094FB0B /* libltdl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libltdl.a; path = /usr/lib/libltdl.a; sourceTree = "<absolute>"; };
+		041DCBEA12B662D9003407C8 /* third_party_packages.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = third_party_packages.xcodeproj; sourceTree = "<group>"; };
 		04791AE2115193EB0007DD71 /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "ambulant-common.xcconfig"; sourceTree = "<group>"; };
 		04791AE3115193EB0007DD71 /* ambulant-release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "ambulant-release.xcconfig"; sourceTree = "<group>"; };
 		04791B821151943B0007DD71 /* renderer_select.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderer_select.h; sourceTree = "<group>"; };
@@ -806,6 +831,21 @@
 				040703351152642C0094FB0B /* libUsageEnvironment.a */,
 			);
 			name = "Third Party Libraries";
+			sourceTree = "<group>";
+		};
+		041DCBE912B662B4003407C8 /* Subprojects */ = {
+			isa = PBXGroup;
+			children = (
+				041DCBEA12B662D9003407C8 /* third_party_packages.xcodeproj */,
+			);
+			name = Subprojects;
+			sourceTree = "<group>";
+		};
+		041DCBEB12B662D9003407C8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		04791AE1115193DF0007DD71 /* Configuration Files */ = {
@@ -1529,6 +1569,7 @@
 		0867D691FE84028FC02AAC07 /* libambulant */ = {
 			isa = PBXGroup;
 			children = (
+				041DCBE912B662B4003407C8 /* Subprojects */,
 				04791AE1115193DF0007DD71 /* Configuration Files */,
 				04791C92115194990007DD71 /* include */,
 				04791C93115194A90007DD71 /* src */,
@@ -1625,6 +1666,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				041DCBF112B662FD003407C8 /* PBXTargetDependency */,
 			);
 			name = libambulantCG;
 			productName = libambulantCG;
@@ -1642,6 +1684,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				041DCBF312B66307003407C8 /* PBXTargetDependency */,
 			);
 			name = libambulantCGstatic;
 			productName = libambulantCGstatic;
@@ -1659,6 +1702,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				041DCBEF12B662F4003407C8 /* PBXTargetDependency */,
 			);
 			name = libambulant;
 			productName = libambulant;
@@ -1683,6 +1727,12 @@
 			mainGroup = 0867D691FE84028FC02AAC07 /* libambulant */;
 			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 041DCBEB12B662D9003407C8 /* Products */;
+					ProjectRef = 041DCBEA12B662D9003407C8 /* third_party_packages.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				D2AAC0C605546C1D00DB518D /* libambulant */,
@@ -1954,6 +2004,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		041DCBEF12B662F4003407C8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = third_party_packages_3264;
+			targetProxy = 041DCBEE12B662F4003407C8 /* PBXContainerItemProxy */;
+		};
+		041DCBF112B662FD003407C8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = third_party_packages_3264;
+			targetProxy = 041DCBF012B662FD003407C8 /* PBXContainerItemProxy */;
+		};
+		041DCBF312B66307003407C8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = third_party_packages_3264;
+			targetProxy = 041DCBF212B66307003407C8 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		04A1E87312B57DF20060F97E /* Debug */ = {
