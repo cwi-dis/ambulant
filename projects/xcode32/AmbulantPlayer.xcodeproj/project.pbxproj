@@ -36,11 +36,8 @@
 		0405C04312B6244C007AD3B2 /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04070429115266870094FB0B /* mainloop.cpp */; };
 		0405C04412B6244C007AD3B2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0407042B115266870094FB0B /* main.m */; };
 		0405C04612B6244C007AD3B2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		0405C04912B6244C007AD3B2 /* libamplugin_xerces.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADAA81152DA4A009CA791 /* libamplugin_xerces.so */; };
-		0405C04A12B6244C007AD3B2 /* libamplugin_python.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADB0B1152DE65009CA791 /* libamplugin_python.so */; };
-		0405C04B12B6244C007AD3B2 /* libamplugin_xpath_state.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADA411152D831009CA791 /* libamplugin_xpath_state.so */; };
 		0405C05B12B624C0007AD3B2 /* liblibambulantCGstatic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0405C00D12B62364007AD3B2 /* liblibambulantCGstatic.a */; };
-		0405C05C12B624C8007AD3B2 /* libambulantCG.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04A1E87812B57E100060F97E /* libambulantCG.dylib */; };
+		0405C05C12B624C8007AD3B2 /* libambulantGC.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04A1E87812B57E100060F97E /* libambulantGC.dylib */; };
 		04070424115266770094FB0B /* LogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0407041B115266770094FB0B /* LogController.mm */; };
 		04070425115266770094FB0B /* MyAmbulantView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0407041D115266770094FB0B /* MyAmbulantView.mm */; };
 		04070426115266770094FB0B /* MyAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0407041F115266770094FB0B /* MyAppDelegate.mm */; };
@@ -68,6 +65,20 @@
 		0407061D11526C240094FB0B /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0407061211526C240094FB0B /* MainMenu.nib */; };
 		0407061E11526C240094FB0B /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0407061411526C240094FB0B /* MyDocument.nib */; };
 		0407064C11526DB70094FB0B /* libambulant.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 040705A1115268480094FB0B /* libambulant.dylib */; };
+		041DCB2A12B64CF7003407C8 /* libavcodec.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB1D12B64CF6003407C8 /* libavcodec.dylib */; };
+		041DCB2B12B64CF7003407C8 /* libavformat.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB1E12B64CF6003407C8 /* libavformat.dylib */; };
+		041DCB2C12B64CF7003407C8 /* libavutil.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB1F12B64CF6003407C8 /* libavutil.dylib */; };
+		041DCB2D12B64CF7003407C8 /* libexpat.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB2012B64CF6003407C8 /* libexpat.dylib */; };
+		041DCB2E12B64CF7003407C8 /* libfaad.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB2112B64CF7003407C8 /* libfaad.dylib */; };
+		041DCB2F12B64CF7003407C8 /* libintl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB2212B64CF7003407C8 /* libintl.dylib */; };
+		041DCB3012B64CF7003407C8 /* libSDL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB2312B64CF7003407C8 /* libSDL.dylib */; };
+		041DCB3112B64CF7003407C8 /* libswscale.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB2412B64CF7003407C8 /* libswscale.dylib */; };
+		041DCB3212B64CF7003407C8 /* libxerces-c.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB2512B64CF7003407C8 /* libxerces-c.dylib */; };
+		041DCB3312B64CF7003407C8 /* libBasicUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB2612B64CF7003407C8 /* libBasicUsageEnvironment.a */; };
+		041DCB3412B64CF7003407C8 /* libgroupsock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB2712B64CF7003407C8 /* libgroupsock.a */; };
+		041DCB3512B64CF7003407C8 /* libliveMedia.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB2812B64CF7003407C8 /* libliveMedia.a */; };
+		041DCB3612B64CF7003407C8 /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB2912B64CF7003407C8 /* libUsageEnvironment.a */; };
+		041DCB3A12B64D1D003407C8 /* libltdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB3912B64D1D003407C8 /* libltdl.a */; };
 		042ADA421152D83E009CA791 /* libamplugin_xpath_state.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADA411152D831009CA791 /* libamplugin_xpath_state.so */; };
 		042ADAA91152DA4F009CA791 /* libamplugin_xerces.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADAA81152DA4A009CA791 /* libamplugin_xerces.so */; };
 		042ADB0C1152DE69009CA791 /* libamplugin_python.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADB0B1152DE65009CA791 /* libamplugin_python.so */; };
@@ -123,39 +134,11 @@
 			remoteGlobalIDString = 0405C00812B62363007AD3B2;
 			remoteInfo = libambulantCGstatic;
 		};
-		0405C01E12B6244C007AD3B2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 042ADB061152DE65009CA791 /* plugin_python.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = D2AAC09C05546B4700DB518D;
-			remoteInfo = plugin;
-		};
-		0405C02012B6244C007AD3B2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 042ADA3C1152D831009CA791 /* plugin_xpath_state.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = D2AAC09C05546B4700DB518D;
-			remoteInfo = plugin;
-		};
-		0405C02212B6244C007AD3B2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 042ADAA31152DA4A009CA791 /* plugin_xerces.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = D2AAC09C05546B4700DB518D;
-			remoteInfo = plugin;
-		};
-		0405C02412B6244C007AD3B2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 042AD9511152CC13009CA791 /* plugin.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = D2AAC09C05546B4700DB518D;
-			remoteInfo = plugin;
-		};
 		0405C05512B62479007AD3B2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 04070599115268480094FB0B /* libambulant.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 04D71F8212B628210064FBCB /* libambulantCGstatic */;
+			remoteGlobalIDString = 04D71F8212B628210064FBCB;
 			remoteInfo = libambulantCGstatic;
 		};
 		040705A0115268480094FB0B /* PBXContainerItemProxy */ = {
@@ -266,19 +249,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		0405C04812B6244C007AD3B2 /* Copy Plugins */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-				0405C04912B6244C007AD3B2 /* libamplugin_xerces.so in Copy Plugins */,
-				0405C04A12B6244C007AD3B2 /* libamplugin_python.so in Copy Plugins */,
-				0405C04B12B6244C007AD3B2 /* libamplugin_xpath_state.so in Copy Plugins */,
-			);
-			name = "Copy Plugins";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		042AD96C1152CC7A009CA791 /* Copy Plugins */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -309,7 +279,6 @@
 
 /* Begin PBXFileReference section */
 		0405C05112B6244C007AD3B2 /* AmbulantPlayerCG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmbulantPlayerCG.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		0405C05312B6244C007AD3B2 /* info copy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "info copy.plist"; path = "../../src/player_macosx/info copy.plist"; sourceTree = "<group>"; };
 		040703A4115266100094FB0B /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "ambulant-common.xcconfig"; sourceTree = "<group>"; };
 		040703A5115266100094FB0B /* ambulant-release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "ambulant-release.xcconfig"; sourceTree = "<group>"; };
 		0407041A115266770094FB0B /* LogController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LogController.h; path = ../../src/player_macosx/LogController.h; sourceTree = SOURCE_ROOT; };
@@ -346,6 +315,20 @@
 		0407061311526C240094FB0B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = MainMenu.nib; sourceTree = "<group>"; };
 		0407061511526C240094FB0B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = MyDocument.nib; sourceTree = "<group>"; };
 		0407063611526CAD0094FB0B /* ambulant-debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "ambulant-debug.xcconfig"; sourceTree = "<group>"; };
+		041DCB1D12B64CF6003407C8 /* libavcodec.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavcodec.dylib; path = "../../build-3264/third_party_packages/installed/lib/libavcodec.dylib"; sourceTree = SOURCE_ROOT; };
+		041DCB1E12B64CF6003407C8 /* libavformat.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavformat.dylib; path = "../../build-3264/third_party_packages/installed/lib/libavformat.dylib"; sourceTree = SOURCE_ROOT; };
+		041DCB1F12B64CF6003407C8 /* libavutil.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavutil.dylib; path = "../../build-3264/third_party_packages/installed/lib/libavutil.dylib"; sourceTree = SOURCE_ROOT; };
+		041DCB2012B64CF6003407C8 /* libexpat.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libexpat.dylib; path = "../../build-3264/third_party_packages/installed/lib/libexpat.dylib"; sourceTree = SOURCE_ROOT; };
+		041DCB2112B64CF7003407C8 /* libfaad.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfaad.dylib; path = "../../build-3264/third_party_packages/installed/lib/libfaad.dylib"; sourceTree = SOURCE_ROOT; };
+		041DCB2212B64CF7003407C8 /* libintl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libintl.dylib; path = "../../build-3264/third_party_packages/installed/lib/libintl.dylib"; sourceTree = SOURCE_ROOT; };
+		041DCB2312B64CF7003407C8 /* libSDL.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL.dylib; path = "../../build-3264/third_party_packages/installed/lib/libSDL.dylib"; sourceTree = SOURCE_ROOT; };
+		041DCB2412B64CF7003407C8 /* libswscale.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libswscale.dylib; path = "../../build-3264/third_party_packages/installed/lib/libswscale.dylib"; sourceTree = SOURCE_ROOT; };
+		041DCB2512B64CF7003407C8 /* libxerces-c.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libxerces-c.dylib"; path = "../../build-3264/third_party_packages/installed/lib/libxerces-c.dylib"; sourceTree = SOURCE_ROOT; };
+		041DCB2612B64CF7003407C8 /* libBasicUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBasicUsageEnvironment.a; path = "../../build-3264/third_party_packages/live/BasicUsageEnvironment/libBasicUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
+		041DCB2712B64CF7003407C8 /* libgroupsock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgroupsock.a; path = "../../build-3264/third_party_packages/live/groupsock/libgroupsock.a"; sourceTree = SOURCE_ROOT; };
+		041DCB2812B64CF7003407C8 /* libliveMedia.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libliveMedia.a; path = "../../build-3264/third_party_packages/live/liveMedia/libliveMedia.a"; sourceTree = SOURCE_ROOT; };
+		041DCB2912B64CF7003407C8 /* libUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libUsageEnvironment.a; path = "../../build-3264/third_party_packages/live/UsageEnvironment/libUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
+		041DCB3912B64D1D003407C8 /* libltdl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libltdl.a; path = /usr/lib/libltdl.a; sourceTree = "<absolute>"; };
 		042AD9511152CC13009CA791 /* plugin.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = plugin.xcodeproj; sourceTree = "<group>"; };
 		042ADA3C1152D831009CA791 /* plugin_xpath_state.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = plugin_xpath_state.xcodeproj; sourceTree = "<group>"; };
 		042ADAA31152DA4A009CA791 /* plugin_xerces.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = plugin_xerces.xcodeproj; sourceTree = "<group>"; };
@@ -371,6 +354,20 @@
 			files = (
 				0405C04612B6244C007AD3B2 /* Cocoa.framework in Frameworks */,
 				0405C05B12B624C0007AD3B2 /* liblibambulantCGstatic.a in Frameworks */,
+				041DCB2A12B64CF7003407C8 /* libavcodec.dylib in Frameworks */,
+				041DCB2B12B64CF7003407C8 /* libavformat.dylib in Frameworks */,
+				041DCB2C12B64CF7003407C8 /* libavutil.dylib in Frameworks */,
+				041DCB2D12B64CF7003407C8 /* libexpat.dylib in Frameworks */,
+				041DCB2E12B64CF7003407C8 /* libfaad.dylib in Frameworks */,
+				041DCB2F12B64CF7003407C8 /* libintl.dylib in Frameworks */,
+				041DCB3012B64CF7003407C8 /* libSDL.dylib in Frameworks */,
+				041DCB3112B64CF7003407C8 /* libswscale.dylib in Frameworks */,
+				041DCB3212B64CF7003407C8 /* libxerces-c.dylib in Frameworks */,
+				041DCB3312B64CF7003407C8 /* libBasicUsageEnvironment.a in Frameworks */,
+				041DCB3412B64CF7003407C8 /* libgroupsock.a in Frameworks */,
+				041DCB3512B64CF7003407C8 /* libliveMedia.a in Frameworks */,
+				041DCB3612B64CF7003407C8 /* libUsageEnvironment.a in Frameworks */,
+				041DCB3A12B64D1D003407C8 /* libltdl.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -379,7 +376,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				04A1E99912B585D80060F97E /* Cocoa.framework in Frameworks */,
-				0405C05C12B624C8007AD3B2 /* libambulantCG.dylib in Frameworks */,
+				0405C05C12B624C8007AD3B2 /* libambulantGC.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -432,7 +429,7 @@
 			isa = PBXGroup;
 			children = (
 				040705A1115268480094FB0B /* libambulant.dylib */,
-				04A1E87812B57E100060F97E /* libambulantCG.dylib */,
+				04A1E87812B57E100060F97E /* libambulantGC.dylib */,
 				0405C00D12B62364007AD3B2 /* liblibambulantCGstatic.a */,
 			);
 			name = Products;
@@ -462,6 +459,27 @@
 			name = English.lproj;
 			path = ../../src/player_macosx/English.lproj;
 			sourceTree = SOURCE_ROOT;
+		};
+		041DCB1C12B64CF6003407C8 /* Third Party Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				041DCB1D12B64CF6003407C8 /* libavcodec.dylib */,
+				041DCB1E12B64CF6003407C8 /* libavformat.dylib */,
+				041DCB1F12B64CF6003407C8 /* libavutil.dylib */,
+				041DCB3912B64D1D003407C8 /* libltdl.a */,
+				041DCB2012B64CF6003407C8 /* libexpat.dylib */,
+				041DCB2112B64CF7003407C8 /* libfaad.dylib */,
+				041DCB2212B64CF7003407C8 /* libintl.dylib */,
+				041DCB2312B64CF7003407C8 /* libSDL.dylib */,
+				041DCB2412B64CF7003407C8 /* libswscale.dylib */,
+				041DCB2512B64CF7003407C8 /* libxerces-c.dylib */,
+				041DCB2612B64CF7003407C8 /* libBasicUsageEnvironment.a */,
+				041DCB2712B64CF7003407C8 /* libgroupsock.a */,
+				041DCB2812B64CF7003407C8 /* libliveMedia.a */,
+				041DCB2912B64CF7003407C8 /* libUsageEnvironment.a */,
+			);
+			name = "Third Party Libraries";
+			sourceTree = "<group>";
 		};
 		042AD9521152CC13009CA791 /* Products */ = {
 			isa = PBXGroup;
@@ -550,7 +568,6 @@
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				0405C05312B6244C007AD3B2 /* info copy.plist */,
 			);
 			name = AmbulantPlayer;
 			sourceTree = "<group>";
@@ -590,6 +607,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				041DCB1C12B64CF6003407C8 /* Third Party Libraries */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
@@ -606,17 +624,11 @@
 				0405C02712B6244C007AD3B2 /* Resources */,
 				0405C03D12B6244C007AD3B2 /* Sources */,
 				0405C04512B6244C007AD3B2 /* Frameworks */,
-				0405C04812B6244C007AD3B2 /* Copy Plugins */,
-				0405C04C12B6244C007AD3B2 /* Create plugin .la files */,
 				0405C04D12B6244C007AD3B2 /* Internalize dylibs */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				0405C01D12B6244C007AD3B2 /* PBXTargetDependency */,
-				0405C01F12B6244C007AD3B2 /* PBXTargetDependency */,
-				0405C02112B6244C007AD3B2 /* PBXTargetDependency */,
-				0405C02312B6244C007AD3B2 /* PBXTargetDependency */,
 				0405C05612B62479007AD3B2 /* PBXTargetDependency */,
 			);
 			name = AmbulantPlayerCGstatic;
@@ -684,6 +696,7 @@
 			isa = PBXProject;
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "AmbulantPlayer" */;
 			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -768,10 +781,10 @@
 			remoteRef = 042ADB0A1152DE65009CA791 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		04A1E87812B57E100060F97E /* libambulantCG.dylib */ = {
+		04A1E87812B57E100060F97E /* libambulantGC.dylib */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.dylib";
-			path = libambulantCG.dylib;
+			path = libambulantGC.dylib;
 			remoteRef = 04A1E87712B57E100060F97E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -865,20 +878,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0405C04C12B6244C007AD3B2 /* Create plugin .la files */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Create plugin .la files";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd ${TARGET_BUILD_DIR}/${PLUGINS_FOLDER_PATH}\nfor plugin in libamplugin_*.so; do\n    pluginbase=`basename $plugin .so`\n    echo dlname=\\'$pluginbase.so\\' > $pluginbase.la\n    echo Created $pluginbase.la\ndone\n";
-		};
 		0405C04D12B6244C007AD3B2 /* Internalize dylibs */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 8;
@@ -1001,26 +1000,6 @@
 			isa = PBXTargetDependency;
 			name = libambulantCG;
 			targetProxy = 0405BFF512B621C0007AD3B2 /* PBXContainerItemProxy */;
-		};
-		0405C01D12B6244C007AD3B2 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = plugin;
-			targetProxy = 0405C01E12B6244C007AD3B2 /* PBXContainerItemProxy */;
-		};
-		0405C01F12B6244C007AD3B2 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = plugin;
-			targetProxy = 0405C02012B6244C007AD3B2 /* PBXContainerItemProxy */;
-		};
-		0405C02112B6244C007AD3B2 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = plugin;
-			targetProxy = 0405C02212B6244C007AD3B2 /* PBXContainerItemProxy */;
-		};
-		0405C02312B6244C007AD3B2 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = plugin;
-			targetProxy = 0405C02412B6244C007AD3B2 /* PBXContainerItemProxy */;
 		};
 		0405C05612B62479007AD3B2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1158,12 +1137,22 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AmbulantPlayer_Prefix.pch;
-				INFOPLIST_FILE = "../../src/player_macosx/info copy.plist";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INFOPLIST_FILE = ../../src/player_macosx/info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/BasicUsageEnvironment\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/groupsock\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\"",
+				);
 				PRODUCT_NAME = AmbulantPlayerCG;
 			};
 			name = Debug;
@@ -1174,10 +1163,20 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AmbulantPlayer_Prefix.pch;
-				INFOPLIST_FILE = "../../src/player_macosx/info copy.plist";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INFOPLIST_FILE = ../../src/player_macosx/info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/BasicUsageEnvironment\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/groupsock\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\"",
+					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\"",
+				);
 				PRODUCT_NAME = AmbulantPlayerCG;
 			};
 			name = Release;

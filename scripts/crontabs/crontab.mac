@@ -2,4 +2,4 @@ NAME=jack@cwi.nl
 MAILTO=jack@cwi.nl
 PATH=/Users/jack/bin:/usr/local/bin:/usr/bin:/bin:/sbin
 20 0 * * * sh $HOME/src/ambulant/scripts/nightlybuild.mac.sh
-10 16 * * * prlctl start WinXP-Nightly
+10 3 * * * prlctl start WinXP-Nightly

@@ -25,6 +25,8 @@
 		040703511152650C0094FB0B /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 040703501152650C0094FB0B /* QTKit.framework */; };
 		04070359115265220094FB0B /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04070358115265220094FB0B /* WebKit.framework */; };
 		040707161152847A0094FB0B /* libltdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 040707151152847A0094FB0B /* libltdl.a */; };
+		041DCB3D12B64D75003407C8 /* posix_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D16115194C10007DD71 /* posix_datasource.cpp */; };
+		041DCB3E12B64D8E003407C8 /* get_version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA2115194C10007DD71 /* get_version.cpp */; };
 		04791D30115194C10007DD71 /* renderer_select.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C96115194C10007DD71 /* renderer_select.cpp */; };
 		04791D31115194C10007DD71 /* state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C97115194C10007DD71 /* state.cpp */; };
 		04791D32115194C10007DD71 /* factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C98115194C10007DD71 /* factory.cpp */; };
@@ -791,6 +793,7 @@
 				04070306115263540094FB0B /* libavcodec.dylib */,
 				04070307115263540094FB0B /* libavformat.dylib */,
 				04070308115263540094FB0B /* libavutil.dylib */,
+				040707151152847A0094FB0B /* libltdl.a */,
 				04070309115263540094FB0B /* libexpat.dylib */,
 				0407030A115263540094FB0B /* libfaad.dylib */,
 				0407030B115263540094FB0B /* libintl.dylib */,
@@ -1558,7 +1561,6 @@
 		1058C7B0FEA5585E11CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				040707151152847A0094FB0B /* libltdl.a */,
 				1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */,
 				04070346115264C00094FB0B /* QuickTime.framework */,
 				040703501152650C0094FB0B /* QTKit.framework */,
@@ -1670,6 +1672,7 @@
 			isa = PBXProject;
 			buildConfigurationList = 1DEB918108733D990010E9CD /* Build configuration list for PBXProject "libambulant" */;
 			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -1855,6 +1858,8 @@
 				04ACA7A212B6369900AE64EE /* timegraph.cpp in Sources */,
 				04ACA7A312B6369A00AE64EE /* animate_a.cpp in Sources */,
 				04ACA7A412B6369B00AE64EE /* time_node.cpp in Sources */,
+				041DCB3D12B64D75003407C8 /* posix_datasource.cpp in Sources */,
+				041DCB3E12B64D8E003407C8 /* get_version.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
