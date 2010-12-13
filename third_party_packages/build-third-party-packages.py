@@ -148,23 +148,23 @@ MAC106_COMMON_CFLAGS="-arch i386 -arch x86_64"
 MAC106_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'  " % (COMMON_INSTALLDIR, MAC106_COMMON_CFLAGS)
 
 #
-# Common flags for iphone OS 4.0. Older iPhone releases will not work, essential frameworks missing (ImageIO)
+# Common flags for iphone OS 4.2. Older iPhone releases will not work, essential frameworks missing (ImageIO)
 #
 
-# Initial iPhone support for iPhoneOS 4.0, unstable, unfinished. Both for device and simulator; they use distinct development environments.
-# for now (device): --prefix=installed/arm; export IPHONEOS_DEPLOYMENT_TARGET=4.0; export MACOSX_DEPLOYMENT_TARGET=10.6; PATH=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:$PATH
-# or (simulator): --prefix=installed/i386; export IPHONEOS_DEPLOYMENT_TARGET=4.0; export MACOSX_DEPLOYMENT_TARGET=10.6; PATH=/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:$PATH
+# Initial iPhone support for iPhoneOS 4.2, unstable, unfinished. Both for device and simulator; they use distinct development environments.
+# for now (device): --prefix=installed/arm; export IPHONEOS_DEPLOYMENT_TARGET=4.2; export MACOSX_DEPLOYMENT_TARGET=10.6; PATH=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:$PATH
+# or (simulator): --prefix=installed/i386; export IPHONEOS_DEPLOYMENT_TARGET=4.2; export MACOSX_DEPLOYMENT_TARGET=10.6; PATH=/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:$PATH
 # other mods needed a couple of lines down
 # 
 # ffmpeg: http://lists.mplayerhq.hu/pipermail/ffmpeg-devel/2009-October/076618.html
 # SDL: based on SDL-1.3.0-4429/Xcode-iPhoneOS/SDL/SDLiPhoneOS.xcodeproj
-# live: use config.iphone40-Device/Simulator as in http://cache.gmane.org//gmane/comp/multimedia/live555/devel/5394-001.bin
-##XXX IPHONE40DEVICE_COMMON_CONFIGURE="./configure --prefix='%s' --host=arm-apple-darwin10 CC=arm-apple-darwin10-gcc-4.2.1  CXX=arm-apple-darwin10-g++-4.2.1 LD=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/ld CPP=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/cpp CFLAGS=-isysroot\ /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.0.sdk" % COMMON_INSTALLDIR
-IPHONE40DEVICE_COMMON_CFLAGS="-arch armv6 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iphoneOS4.0.sdk"
-IPHONE40DEVICE_COMMON_CONFIGURE="./configure --host=arm-apple-darwin10 --prefix='%s' --disable-shared CFLAGS='%s' CC=llvm-gcc-4.2 CXX=llvm-g++-4.2    " % (COMMON_INSTALLDIR, IPHONE40DEVICE_COMMON_CFLAGS)
-##XXX IPHONE40SIMULATOR_COMMON_CONFIGURE="./configure --prefix='%s' --host=arm-apple-darwin10 CC=arm-apple-darwin10-gcc-4.2.1  CXX=arm-apple-darwin10-g++-4.2.1 LD=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/ld CPP=/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/cpp CFLAGS=-isysroot\ /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator4.0.sdk" % COMMON_INSTALLDIR
-IPHONE40SIMULATOR_COMMON_CFLAGS="-arch i386 -isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iphoneSimulator4.0.sdk"
-IPHONE40SIMULATOR_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'    " % (COMMON_INSTALLDIR, IPHONE40SIMULATOR_COMMON_CFLAGS)
+# live: use config.iphone42-Device/Simulator as in http://cache.gmane.org//gmane/comp/multimedia/live555/devel/5394-001.bin
+##XXX IPHONE_DEVICE_COMMON_CONFIGURE="./configure --prefix='%s' --host=arm-apple-darwin10 CC=arm-apple-darwin10-gcc-4.2.1  CXX=arm-apple-darwin10-g++-4.2.1 LD=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/ld CPP=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/cpp CFLAGS=-isysroot\ /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS%s.sdk" % (COMMON_INSTALLDIR,  os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
+IPHONE_DEVICE_COMMON_CFLAGS="-arch armv6 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iphoneOS%s.sdk" % os.getenv("IPHONEOS_DEPLOYMENT_TARGET")
+IPHONE_DEVICE_COMMON_CONFIGURE="./configure --host=arm-apple-darwin10 --prefix='%s' --disable-shared CFLAGS='%s' CC=llvm-gcc-4.2 CXX=llvm-g++-4.2    " % (COMMON_INSTALLDIR, IPHONE_DEVICE_COMMON_CFLAGS)
+##XXX IPHONE_SIMULATOR_COMMON_CONFIGURE="./configure --prefix='%s' --host=arm-apple-darwin10 CC=arm-apple-darwin10-gcc-4.2.1  CXX=arm-apple-darwin10-g++-4.2.1 LD=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/ld CPP=/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/cpp CFLAGS=-isysroot\ /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator%s.sdk" % (COMMON_INSTALLDIR,  os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
+IPHONE_SIMULATOR_COMMON_CFLAGS="-arch i386 -isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iphoneSimulator%s.sdk" % os.getenv("IPHONEOS_DEPLOYMENT_TARGET")
+IPHONE_SIMULATOR_COMMON_CONFIGURE="./configure --prefix='%s' CFLAGS='%s'    " % (COMMON_INSTALLDIR, IPHONE_SIMULATOR_COMMON_CFLAGS)
 
 #
 # Common flags for Linux
@@ -207,10 +207,10 @@ third_party_packages={
             checkcmd="pkg-config --atleast-version=2.0.0 expat",
             buildcmd=
                 "cd expat-2.0.1 && "
-                "patch < %s/third_party_packages/expat.patch && "
+                "patch --forward < %s/third_party_packages/expat.patch && "
                 "autoconf && "
                 "%s && "
-                "make $(MAKEFLAGS) && "
+                "make ${MAKEFLAGS} && "
                 "make install" % (AMBULANT_DIR, MAC106_COMMON_CONFIGURE)
             ),
         TPP("xerces-c",
@@ -219,7 +219,7 @@ third_party_packages={
             buildcmd=
                 "cd xerces-c-3.1.1 && "
                 "%s CXXFLAGS='%s' --disable-dependency-tracking && "
-                "make $(MAKEFLAGS) && "
+                "make ${MAKEFLAGS} && "
                 "make install" % (MAC106_COMMON_CONFIGURE, MAC106_COMMON_CFLAGS)
             ),
         TPP("faad2",
@@ -228,7 +228,7 @@ third_party_packages={
             buildcmd=
                 "cd faad2-2.7 && "
                 "%s --disable-dependency-tracking && "
-                "make $(MAKEFLAGS) && "
+                "make ${MAKEFLAGS} && "
                 "make install" % MAC106_COMMON_CONFIGURE
             ),
 
@@ -249,7 +249,7 @@ third_party_packages={
                 "./configure --prefix='%s' --without-x --disable-dependency-tracking "
                     "CFLAGS='%s -framework ForceFeedback' "
                     "LDFLAGS='%s -framework ForceFeedback' &&"
-                "make $(MAKEFLAGS) && "
+                "make ${MAKEFLAGS} && "
                 "make install" % (COMMON_INSTALLDIR, MAC106_COMMON_CFLAGS, MAC106_COMMON_CFLAGS)
             ),
         TPP("live",
@@ -259,7 +259,7 @@ third_party_packages={
                 "cd live && "
                 "tar xf %s/third_party_packages/live-osx-fatbuild-patches.tar && "
                 "./genMakefiles macosx3264 && "
-                "make $(MAKEFLAGS) " % AMBULANT_DIR
+                "make ${MAKEFLAGS} " % AMBULANT_DIR
             ),
         TPP("gettext",
             url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.17.tar.gz",
@@ -267,7 +267,7 @@ third_party_packages={
             buildcmd=
                 "cd gettext-0.17 && "
                 "%s --disable-csharp && "
-                "make $(MAKEFLAGS) && "
+                "make ${MAKEFLAGS} && "
                 "make install" % MAC106_COMMON_CONFIGURE
             ),
         TPP("libxml2",
@@ -276,7 +276,7 @@ third_party_packages={
             buildcmd=
                 "cd libxml2-2.7.5 && "
                 "%s --disable-dependency-tracking && "
-                "make $(MAKEFLAGS) && "
+                "make ${MAKEFLAGS} && "
                 "make install" % MAC106_COMMON_CONFIGURE
             )
         ],
@@ -290,10 +290,10 @@ third_party_packages={
             checkcmd="pkg-config --atleast-version=2.0.0 expat",
             buildcmd=
                 "cd expat-2.0.1 && "
-                "patch < %s/third_party_packages/expat.patch && "
+                "patch --forward < %s/third_party_packages/expat.patch && "
                 "autoconf && "
                 "%s && "
-                "make $(MAKEFLAGS) && "
+                "make ${MAKEFLAGS} && "
                 "make install" % (AMBULANT_DIR, MAC104_COMMON_CONFIGURE)
             ),
         TPP("xerces-c",
@@ -302,7 +302,7 @@ third_party_packages={
             buildcmd=
                 "cd xerces-c-3.1.1 && "
                 "%s CXXFLAGS='%s' --disable-dependency-tracking --without-curl && "
-                "make $(MAKEFLAGS) && "
+                "make ${MAKEFLAGS} && "
                 "make install" % (MAC104_COMMON_CONFIGURE, MAC104_COMMON_CFLAGS)
             ),
         TPP("faad2",
@@ -311,7 +311,7 @@ third_party_packages={
             buildcmd=
                 "cd faad2-2.7 && "
                 "%s --disable-dependency-tracking && "
-                "make $(MAKEFLAGS) && "
+                "make ${MAKEFLAGS} && "
                 "make install" % MAC104_COMMON_CONFIGURE
             ),
 
@@ -335,7 +335,7 @@ third_party_packages={
                     "CC=gcc-4.0 CXX=g++-4.0 "
                     "CFLAGS='%s' "
                     "LDFLAGS='%s -framework ForceFeedback' &&"
-                "make $(MAKEFLAGS) && "
+                "make ${MAKEFLAGS} && "
                 "make install" % (COMMON_INSTALLDIR, MAC104_COMMON_CFLAGS, MAC104_COMMON_CFLAGS)
             ),
         TPP("live",
@@ -345,7 +345,7 @@ third_party_packages={
                 "cd live && "
                 "tar xf %s/third_party_packages/live-osx-fatbuild-patches.tar && "
                 "./genMakefiles macosxfat && "
-                "make $(MAKEFLAGS) " % AMBULANT_DIR
+                "make ${MAKEFLAGS} " % AMBULANT_DIR
             ),
         TPP("gettext",
             url="http://ftp.gnu.org/pub/gnu/gettext/gettext-0.17.tar.gz",
@@ -353,7 +353,7 @@ third_party_packages={
             buildcmd=
                 "cd gettext-0.17 && "
                 "%s --disable-csharp && "
-                "make $(MAKEFLAGS) && "
+                "make ${MAKEFLAGS} && "
                 "make install" % MAC104_COMMON_CONFIGURE
             ),
         TPP("libxml2",
@@ -362,23 +362,23 @@ third_party_packages={
             buildcmd=
                 "cd libxml2-2.7.5 && "
                 "%s --disable-dependency-tracking && "
-                "make $(MAKEFLAGS) && "
+                "make ${MAKEFLAGS} && "
                 "make install" % MAC104_COMMON_CONFIGURE
             )
         ],
 
 
-    'iOS40-Device' : [
+    'iOS-Device' : [
         TPP("expat", 
             url="http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=autoselect",
             checkcmd="pkg-config --atleast-version=2.0.0 expat",
             buildcmd=
                 "cd expat-2.0.1 && "
-                "patch < %s/third_party_packages/expat.patch && "
+                "patch --forward < %s/third_party_packages/expat.patch && "
                 "autoconf && "
                 "%s && "
-                "make clean;make $(MAKEFLAGS) && "
-                "make install" % (AMBULANT_DIR, IPHONE40DEVICE_COMMON_CONFIGURE)
+                "make clean;make ${MAKEFLAGS} && "
+                "make install" % (AMBULANT_DIR, IPHONE_DEVICE_COMMON_CONFIGURE)
             ),
 
         TPP("faad2",
@@ -387,8 +387,8 @@ third_party_packages={
             buildcmd=
                 "cd faad2-2.7 && "
                 "%s --disable-dependency-tracking && "
-                "make clean;make $(MAKEFLAGS) && "
-                "make install" % IPHONE40DEVICE_COMMON_CONFIGURE
+                "make clean;make ${MAKEFLAGS} && "
+                "make install" % IPHONE_DEVICE_COMMON_CONFIGURE
             ),
 
         TPP("ffmpeg",
@@ -397,11 +397,11 @@ third_party_packages={
             buildcmd=
             	"cd ffmpeg-export-2010-01-22 && "
             	"./configure --enable-cross-compile --arch=arm --target-os=darwin --cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc "
-            	"--sysroot=/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.0.sdk --cpu=arm1176jzf-s "
+            	"--sysroot=/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS%s.sdk --cpu=arm1176jzf-s "
 			  	"--as='gas-preprocessor.pl /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc' "
             	"--extra-cflags='-arch armv6 -I../installed/include' --extra-ldflags='-arch armv6 -L../installed/lib' "
             	"--enable-libfaad --prefix=../installed/ --enable-gpl  --disable-mmx --disable-asm;"
-                "make clean;make $(MAKEFLAGS); make install"
+                "make clean;make ${MAKEFLAGS}; make install" % os.getenv("IPHONEOS_DEPLOYMENT_TARGET")
             ),
 
         TPP("SDL",
@@ -409,10 +409,10 @@ third_party_packages={
             checkcmd="test -f %s/lib/libSDLiPhoneOS.a" % COMMON_INSTALLDIR,
             buildcmd=
 	            "cd SDL-1.3.0-*/Xcode-iphoneOS/SDL  && "
-				"xcodebuild -target StaticLibiPhoneOS -sdk iphoneos4.0 -configuration Release &&"
+				"xcodebuild -target StaticLibiPhoneOS -sdk iphoneos%s -configuration Release &&"
 				"mkdir -p ../../../installed/include/SDL && "
 				"cp ../../include/* ./build/Release-iphoneos/usr/local/include/* ../../../installed/include/SDL &&"
- 				"mkdir -p ../../../installed/include/lib && cp ./build/Release-iphoneos/libSDLiPhoneOS.a ../../../installed/lib"
+ 				"mkdir -p ../../../installed/include/lib && cp ./build/Release-iphoneos/libSDLiPhoneOS.a ../../../installed/lib" % os.getenv("IPHONEOS_DEPLOYMENT_TARGET")
             ),
 
         TPP("live",
@@ -420,9 +420,9 @@ third_party_packages={
             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
             buildcmd=
                 "cd live && "
-                "tar xf %s/third_party_packages/live-iOS40-patches.tar && "
-                "./genMakefiles iOS40-Device && "
-                "make clean;make $(MAKEFLAGS) " % AMBULANT_DIR
+                "tar xf %s/third_party_packages/live-iOS-patches.tar && "
+                "./genMakefiles iOS-Device && "
+                "make clean;make ${MAKEFLAGS} " % AMBULANT_DIR
             ),
 
 ##      TPP("gettext",
@@ -431,8 +431,8 @@ third_party_packages={
 ##          buildcmd=
 ##              "cd gettext-0.17 && "
 ##              "%s --disable-csharp && "
-##              "make clean;make $(MAKEFLAGS) && "
-##              "make install" % IPHONE40_COMMON_CONFIGURE
+##              "make clean;make ${MAKEFLAGS} && "
+##              "make install" % IPHONE__COMMON_CONFIGURE
 ##          ),
 
         TPP("libxml2",
@@ -441,22 +441,22 @@ third_party_packages={
             buildcmd=
                 "cd libxml2-2.7.5 && "
                 "%s --disable-dependency-tracking --without-python && "
-                "make $(MAKEFLAGS) && "
-                "make install" % IPHONE40DEVICE_COMMON_CONFIGURE
+                "make ${MAKEFLAGS} && "
+                "make install" % IPHONE_DEVICE_COMMON_CONFIGURE
             )
         ],
 
-    'iOS40-Simulator' : [
+    'iOS-Simulator' : [
         TPP("expat", 
             url="http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=autoselect",
             checkcmd="pkg-config --atleast-version=2.0.0 expat",
             buildcmd=
                 "cd expat-2.0.1 && "
-                "patch < %s/third_party_packages/expat.patch && "
+                "patch --forward < %s/third_party_packages/expat.patch && "
                 "autoconf && "
                 "%s && "
-                "make clean;make $(MAKEFLAGS) && "
-                "make install" % (AMBULANT_DIR, IPHONE40SIMULATOR_COMMON_CONFIGURE)
+                "make clean;make ${MAKEFLAGS} && "
+                "make install" % (AMBULANT_DIR, IPHONE_SIMULATOR_COMMON_CONFIGURE)
             ),
 
         TPP("faad2",
@@ -465,8 +465,8 @@ third_party_packages={
             buildcmd=
                 "cd faad2-2.7 && "
                 "%s --disable-dependency-tracking && "
-                "make clean;make $(MAKEFLAGS) && "
-                "make install" % IPHONE40SIMULATOR_COMMON_CONFIGURE
+                "make clean;make ${MAKEFLAGS} && "
+                "make install" % IPHONE_SIMULATOR_COMMON_CONFIGURE
             ),
 
         TPP("ffmpeg",
@@ -476,10 +476,10 @@ third_party_packages={
             	"cd ffmpeg-export-2010-01-22 && "
             	"./configure --enable-cross-compile --arch=i386 --target-os=darwin --cc=/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc "
             	"--as='gas-preprocessor.pl /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc' "
-            	"--sysroot=/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator4.0.sdk "
+            	"--sysroot=/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator%s.sdk "
             	"--extra-cflags='-arch i386 -I../installed/include' --extra-ldflags='-arch i386 -L../installed/lib' "
             	"--enable-libfaad --prefix=../installed --enable-gpl --disable-mmx --disable-asm;"
-                "make clean;make $(MAKEFLAGS); make install"
+                "make clean;make ${MAKEFLAGS}; make install" %  os.getenv("IPHONEOS_DEPLOYMENT_TARGET")
             ),
 
         TPP("SDL",
@@ -487,10 +487,10 @@ third_party_packages={
             checkcmd="test -f %s/lib/libSDLiPhoneOS.a" % COMMON_INSTALLDIR,
             buildcmd=
 	            "cd SDL-1.3.0-*/Xcode-iphoneOS/SDL  && "
-				"xcodebuild -target StaticLibiPhoneOS -sdk iphonesimulator4.0 -configuration Debug &&"
+				"xcodebuild -target StaticLibiPhoneOS -sdk iphonesimulator%s -configuration Debug &&"
 				"mkdir -p ../../../installed/include/SDL && cp ../../include/* ../../../installed/include/SDL &&"
 				"cp ./build/Debug-iphonesimulator/usr/local/include/* ../../../installed/include/SDL &&"
- 				"mkdir -p ../../../installed/include/lib && cp ./build/Debug-iphonesimulator/libSDLiPhoneOS.a ../../../installed/lib"
+ 				"mkdir -p ../../../installed/include/lib && cp ./build/Debug-iphonesimulator/libSDLiPhoneOS.a ../../../installed/lib" %  os.getenv("IPHONEOS_DEPLOYMENT_TARGET")
  ),
 
         TPP("live",
@@ -498,9 +498,9 @@ third_party_packages={
             checkcmd="test -f ./live/liveMedia/libliveMedia.a",
             buildcmd=
                 "cd live && "
-                "tar xf %s/third_party_packages/live-iOS40-patches.tar && "
-                "./genMakefiles iOS40-Simulator && "
-                "make clean;make $(MAKEFLAGS) " % AMBULANT_DIR
+                "tar xf %s/third_party_packages/live-iOS-patches.tar && "
+                "./genMakefiles iOS-Simulator && "
+                "make clean;make ${MAKEFLAGS} " % AMBULANT_DIR
             ),
 
 ##      TPP("gettext",
@@ -509,8 +509,8 @@ third_party_packages={
 ##          buildcmd=
 ##              "cd gettext-0.17 && "
 ##              "%s --disable-csharp && "
-##              "make clean;make $(MAKEFLAGS) && "
-##              "make install" % IPHONE40_COMMON_CONFIGURE
+##              "make clean;make ${MAKEFLAGS} && "
+##              "make install" % IPHONE__COMMON_CONFIGURE
 ##          ),
 
         TPP("libxml2",
@@ -519,8 +519,8 @@ third_party_packages={
             buildcmd=
                 "cd libxml2-2.7.5 && "
                 "%s --disable-dependency-tracking --without-python && "
-                "make $(MAKEFLAGS) && "
-                "make install" % IPHONE40SIMULATOR_COMMON_CONFIGURE
+                "make ${MAKEFLAGS} && "
+                "make install" % IPHONE_SIMULATOR_COMMON_CONFIGURE
             )
         ],
 
@@ -531,7 +531,7 @@ third_party_packages={
             buildcmd=
                 "cd libtool-2.2.6 && "
                         "%s --enable-ltdl-install &&"
-                "make $(MAKEFLAGS) && "
+                "make ${MAKEFLAGS} && "
                 "make install" % LINUX_COMMON_CONFIGURE
             ),
 
@@ -540,10 +540,10 @@ third_party_packages={
             checkcmd="pkg-config --atleast-version=2.0.0 expat",
             buildcmd=
                 "set -x;cd expat-2.0.1 && "
-                "if [ ! -e expat.pc.in ] ; then patch < %s/third_party_packages/expat.patch; fi && "
+                "if [ ! -e expat.pc.in ] ; then patch --forward < %s/third_party_packages/expat.patch; fi && "
                 "autoconf && "
                 "%s && "
-                "make $(MAKEFLAGS) && "
+                "make ${MAKEFLAGS} && "
                 "make install" % (AMBULANT_DIR, LINUX_COMMON_CONFIGURE)
             ),
 
@@ -553,7 +553,7 @@ third_party_packages={
             buildcmd=
                 "cd xerces-c-3.1.1 && "
                 "%s && "
-                "make $(MAKEFLAGS) && "
+                "make ${MAKEFLAGS} && "
                 "make install" % (LINUX_COMMON_CONFIGURE)
             ),
 
@@ -563,7 +563,7 @@ third_party_packages={
             buildcmd=
                 "cd faad2-2.7 && "
                 "%s && "
-                "make $(MAKEFLAGS) && "
+                "make ${MAKEFLAGS} && "
                 "make install" % LINUX_COMMON_CONFIGURE
             ),
 
@@ -579,7 +579,7 @@ third_party_packages={
 ##          buildcmd=
 ##              "cd libogg-1.1.4  && "
 ##              "%s && "
-##              "make $(MAKEFLAGS) && "
+##              "make ${MAKEFLAGS} && "
 ##              "make install" % LINUX_COMMON_CONFIGURE
 ##          ),
 ##      TPP("libvorbis",
@@ -588,7 +588,7 @@ third_party_packages={
 ##          buildcmd=
 ##              "cd libvorbis-1.2.3  && "
 ##              "%s && "
-##              "make $(MAKEFLAGS) && "
+##              "make ${MAKEFLAGS} && "
 ##              "make install" % LINUX_COMMON_CONFIGURE
 ##          ),
 ##      TPP("libtheora",
@@ -597,7 +597,7 @@ third_party_packages={
 ##          buildcmd=
 ##              "cd libtheora-1.1.1  && "
 ##              "%s && "
-##              "make $(MAKEFLAGS) && "
+##              "make ${MAKEFLAGS} && "
 ##              "make install" % LINUX_COMMON_CONFIGURE
 ##          ),
 
@@ -617,7 +617,7 @@ third_party_packages={
             buildcmd=
                 "cd SDL-1.3.0-* && "
                 "%s &&"
-                "make $(MAKEFLAGS) && "
+                "make ${MAKEFLAGS} && "
                 "make install" % (LINUX_COMMON_CONFIGURE)
             ),
 
@@ -628,7 +628,7 @@ third_party_packages={
                 "cd live && "
                         "( grep fPIC config.linux >/dev/null || patch -i %s/third_party_packages/live.patch config.linux ) &&"
                 "./genMakefiles linux && "
-                "make $(MAKEFLAGS) " % (AMBULANT_DIR)
+                "make ${MAKEFLAGS} " % (AMBULANT_DIR)
             ),
 
         TPP("gettext",
@@ -637,7 +637,7 @@ third_party_packages={
             buildcmd=
                 "cd gettext-0.17 && "
                 "%s --disable-csharp && "
-                "make $(MAKEFLAGS) && "
+                "make ${MAKEFLAGS} && "
                 "make install" % LINUX_COMMON_CONFIGURE
             ),
 
@@ -647,7 +647,7 @@ third_party_packages={
             buildcmd=
                 "cd libxml2-2.7.5 && "
                 "%s && "
-                "make $(MAKEFLAGS) && "
+                "make ${MAKEFLAGS} && "
                 "make install" % LINUX_COMMON_CONFIGURE
             )
         ],
@@ -737,9 +737,9 @@ def checkenv_iphone(target):
         print '* Both MACOSX_DEPLOYMENT_TARGET and IPHONEOS_DEPLOYMENT_TARGET must be set for %s development' % target
         return False
     # Check that we have the right compilers, etc in PATH
-    if target == 'iOS40-Simulator':
+    if target == 'iOS-Simulator':
         wanted = '/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin'
-    elif target == 'iOS40-Device':
+    elif target == 'iOS-Device':
         wanted = '/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin'
     else:
         assert 0
@@ -754,8 +754,8 @@ def checkenv_iphone(target):
 environment_checkers = {
     'mac' : checkenv_mac,
     'mac10.4' : checkenv_mac,
-    'iOS40-Simulator' : checkenv_iphone,
-    'iOS40-Device' : checkenv_iphone,
+    'iOS-Simulator' : checkenv_iphone,
+    'iOS-Device' : checkenv_iphone,
     # XXXX Should do this for win32 too
 }
 
