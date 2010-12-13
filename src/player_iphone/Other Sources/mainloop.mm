@@ -17,20 +17,15 @@
 // along with Ambulant Player; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-// Define NONE_PLAYER to skip all cocoa support but use the dummy
-// none_window and none_playable in stead.
-//#define NONE_PLAYER
-
 #include <iostream>
-//#include <ApplicationServices/ApplicationServices.h>
 #import <Foundation/Foundation.h>
+#include "AmbulantAppDelegate.h" // for document_stopped
 #include "mainloop.h"
 #include "ambulant/lib/logger.h"
 #include "ambulant/lib/timer.h"
 #include "ambulant/lib/node.h"
 #ifdef WITH_CG
 #include "ambulant/gui/cg/cg_gui.h"
-#include "cg_preferences.h"
 #else
 #include "ambulant/gui/cocoa/cocoa_gui.h"
 #endif
@@ -65,8 +60,12 @@ using namespace ambulant;
 mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *app)
 :   common::gui_player(),
 	m_view(view),
-	m_gui_screen(NULL)
+	m_gui_screen(NULL),
+	m_nsurl(NULL),
+	m_current_item(NULL)
 {
+
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	set_embedder(app);
 	AM_DBG lib::logger::get_logger()->debug("mainloop::mainloop(0x%x): created", (void*)this);
     // Set systemComponent values that are relevant
@@ -77,11 +76,18 @@ mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *a
 	init_plugins();
 
     // Order the factories according to the preferences
-    gui::cg::cg_preferences *prefs = gui::cg::cg_preferences::get_preferences();
+    iOSpreferences *prefs = iOSpreferences::get_preferences();
+	prefs->load_preferences();
     get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererOpen"));
     if (!prefs->m_prefer_ffmpeg)
         get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererAVFoundation"))    ;   
 	
+	// check trivial preconditions
+	// assert (urlstr != NULL && view != NULL && app != NULL); 
+	if (urlstr == NULL || view == NULL || app == NULL) {
+		[pool release];
+		return;
+	}
 	ambulant::net::url url = ambulant::net::url::from_url(urlstr);
 	m_doc = create_document(url);
 	if (!m_doc) {
@@ -101,9 +107,81 @@ mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *a
 				lib::logger::get_logger()->warn(gettext("%s: node ID not found"), id.c_str());
 			goto_node(node);
 		}
-		prefs->m_last_used = [NSString stringWithCString:urlstr encoding: NSUTF8StringEncoding];
+		Playlist* history = prefs->m_history;
+		if (history == NULL) {
+			history = new Playlist(NULL);
+		}
+		if (history != NULL) {
+			m_nsurl = [NSURL URLWithString:[NSString stringWithUTF8String:urlstr]];
+			if (m_nsurl == NULL) {
+				m_nsurl = [NSURL fileURLWithPath:[NSString stringWithUTF8String:urlstr]];
+			}
+			[m_nsurl retain];
+			NSString* title = get_meta_content("title");
+			if ([title compare:@""] == NSOrderedSame) {
+				title = [m_nsurl path];
+			}
+			CGImageRef image = NULL; //CGImageRef
+			NSString* poster = get_meta_content("poster");
+			if ([poster compare:@""] != NSOrderedSame) {
+				net::url poster_url = net::url::from_url([poster cStringUsingEncoding: NSUTF8StringEncoding]);
+				const char* abs_poster_charp = NULL;
+				if ( ! poster_url.is_absolute()) {
+					// convert to asolute URL
+					net::url base_url = m_doc->get_src_url();
+					net::url abs_poster_url = poster_url.join_to_base(base_url);
+					std::string abs_poster_string = abs_poster_url.get_protocol();
+					if (abs_poster_string != "file") {
+						abs_poster_string += "://"+abs_poster_url.get_host();
+					} else abs_poster_string += "://";
+					abs_poster_string += abs_poster_url.get_path();
+					abs_poster_charp = strdup(abs_poster_string.c_str());
+				} else {
+					abs_poster_charp = poster_url.get_url().c_str();
+				}
+				CFStringRef posterCFString = CFStringCreateWithCString(NULL, abs_poster_charp , kCFStringEncodingASCII);
+				free((void*) abs_poster_charp);
+				CFStringRef posterCFStringX = CFURLCreateStringByAddingPercentEscapes(NULL, posterCFString, NULL, NULL, kCFStringEncodingUTF8);
+				CFRelease(posterCFString);
+				CFURLRef posterCFURL = CFURLCreateWithString(NULL, posterCFStringX, NULL);
+				CFRelease(posterCFStringX);
+				if (posterCFURL != NULL) {
+					CGImageSourceRef poster_src = CGImageSourceCreateWithURL(posterCFURL, NULL);
+					CFRelease(posterCFURL);
+					if (poster_src != NULL) {
+						CGImageRef cg_image = CGImageSourceCreateImageAtIndex(poster_src, 0, NULL);
+						if (cg_image != NULL)  {
+							image = cg_image;
+						}
+						CFRelease(poster_src);
+					}				
+				}
+			}
+			[poster release];
+			NSString* description = get_meta_content("description");
+			if ([description compare: @""] == NSOrderedSame) {
+				description = [m_nsurl absoluteString];
+			}
+		
+			NSString* dur = get_meta_content("duration");
+//			if ([dur compare: @""] == NSOrderedSame) {
+//				dur = [[NSString stringWithUTF8String:"indefinite"] retain];
+//			}
+			NSUInteger position = 0;
+			PlaylistItem* new_item = [[PlaylistItem alloc] initWithTitle:title url:m_nsurl image:image description:description duration:dur last_node_repr:NULL position:position];
+			PlaylistItem* last_item = history->get_last_item();
+			if (last_item == NULL || ! [new_item equalsPlaylistItem: last_item]) {
+				history->insert_item_at_index(new_item, 0);
+				m_current_item = new_item;
+			} else if (last_item != NULL) {
+				// new item not stored
+				[new_item release];
+			}
+			prefs->m_history = history;
+		}
 		prefs->save_preferences();
 	}
+	[pool release];
 }
 
 void
@@ -219,8 +297,24 @@ mainloop::init_parser_factory()
 
 mainloop::~mainloop()
 {
+	lib::logger::get_logger()->debug("mainloop::~mainloop: %s", m_url.get_url().c_str());
+	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	// We need to delete gui_player::m_player before deleting m_doc, because the
 	// timenode graph in the player has referrences to the node graph in m_doc.
+	std::list<const lib::node*>::iterator nodes_iterator = m_nodes.end();
+	if (nodes_iterator != m_nodes.begin()) {
+		nodes_iterator--;	// need the one just before end()
+		const ambulant::lib::node* last_active_node = *nodes_iterator;
+		/*AM_DBG*/ lib::logger::get_logger()->debug("last_active_node(%s)", last_active_node->get_sig().c_str());
+		lib::xml_string last_node_repr = last_active_node->get_xpath();
+		NSString* ns_last_node_repr = [NSString stringWithUTF8String: last_node_repr.c_str()];
+		PlaylistItem* last_item = iOSpreferences::get_preferences()->m_history->get_last_item();
+		if (last_item != NULL) {
+			last_item.ns_last_node_repr = ns_last_node_repr;
+			prefs->m_history->replace_last_item(last_item);
+		}
+	}
+	
     if (m_player) {
         m_player->terminate();
         m_player->release();
@@ -230,6 +324,18 @@ mainloop::~mainloop()
 	m_doc = NULL;
 	delete m_gui_screen;
 //	delete m_window_factory;
+	if (m_nsurl != NULL) {
+//XX	[m_nsurl release]; //XX crashes when called from Safari: first the last item is played, immediately y Safari
+		m_nsurl =  NULL;
+	}
+	m_current_item = NULL;
+	
+	if (prefs != NULL) {
+		prefs->m_normal_exit = true;
+		prefs->save_preferences();
+		ambulant::iOSpreferences::delete_preferences_singleton();
+	}
+	
 }
 
 void
@@ -279,14 +385,14 @@ mainloop::node_focussed(const lib::node *n)
 {
 	if (n == NULL) {
 		AM_DBG lib::logger::get_logger()->debug("node_focussed(0)");
-//KB	set_statusline(m_view, "");
+//X		set_statusline(m_view, "");
 		return;
 	}
 	AM_DBG lib::logger::get_logger()->debug("node_focussed(%s)", n->get_sig().c_str());
 	const char *alt = n->get_attribute("alt");
 	if (alt) {
 		AM_DBG lib::logger::get_logger()->debug("node_focussed: alt=%s", alt);
-//KB	set_statusline(m_view, alt);
+//X		set_statusline(m_view, alt);
 		return;
 	}
 	const char *href = n->get_attribute("href");
@@ -294,10 +400,99 @@ mainloop::node_focussed(const lib::node *n)
 		AM_DBG lib::logger::get_logger()->debug("node_focussed: href=%s", href);
 		std::string msg = "Go to ";
 		msg += href;
-//KB	set_statusline(m_view, msg.c_str());
+//X		set_statusline(m_view, msg.c_str());
 		return;
 	}
 	AM_DBG lib::logger::get_logger()->debug("node_focussed: nothing to show");
-//	set_statusline(m_view, "???");
+//X	set_statusline(m_view, "???");
 }
-			
+
+void
+mainloop::print_nodes()
+{
+	for (std::list<const lib::node*>::iterator node_iter = m_nodes.begin(); 
+		 node_iter != m_nodes.end(); node_iter++) {
+		AM_DBG lib::logger::get_logger()->debug("node_active(%s)", (*node_iter)->get_sig().c_str());
+	}
+}
+void
+mainloop::node_started(const lib::node *n)
+{
+	AM_DBG lib::logger::get_logger()->debug("node_started(%s)", n->get_sig().c_str());
+	m_nodes.push_back(n);
+//X	print_nodes();
+}
+
+void
+mainloop::node_stopped(const lib::node *n)
+{
+	AM_DBG lib::logger::get_logger()->debug("node_stopped(%s)", n->get_sig().c_str());
+	std::list<const lib::node*>::reverse_iterator rnode_iter = m_nodes.rbegin(); 
+	for ( ; rnode_iter != m_nodes.rend(); rnode_iter++) {
+		AM_DBG lib::logger::get_logger()->debug("node_iter(%s)", (*rnode_iter)->get_sig().c_str());
+		if ((*rnode_iter) == n) {
+			break;
+		}
+	}
+	if (rnode_iter != m_nodes.rend()) {
+		// get corresponding forward iterator for erase
+		std::list<const lib::node*>::iterator node_victim = rnode_iter.base();
+		node_victim--;		
+		AM_DBG lib::logger::get_logger()->debug("node_victim(%s)", (*node_victim)->get_sig().c_str());		
+//X		m_nodes.erase(node_victim);
+	}
+//X	print_nodes();
+}
+
+void
+mainloop::goto_node_repr(const std::string node_repr)
+{
+	if (m_player != NULL) {
+		const lib::node* n = m_doc->locate_node(node_repr.c_str());
+		if (n != NULL) {
+			m_player->goto_node(n);
+		}
+	}
+}
+
+PlaylistItem*
+mainloop::get_current_item()
+{
+	return m_current_item;
+}
+
+NSString*
+mainloop::get_meta_content(const char* name)
+{
+	const char* s = "";
+	char buf[255];
+	bool found = false;
+	int i = 1;
+	lib::node* n = m_doc->locate_node("/smil/head/meta");
+	while (n != NULL) {
+		if (strcmp(n->get_attribute("name"), name) == 0) {
+//X			printf("found %s\n", name);
+			found = true;
+			break;
+		}
+		sprintf(buf, "/smil/head/meta[%d]", ++i);
+		n = m_doc->locate_node(buf);
+	}
+	if (n != NULL && found) {
+		s = n->get_attribute("content");
+	}
+	if (s == NULL) {
+		s = ""; // <meta name="..."/> found, but no content
+	}
+	NSString* rv = [[NSString stringWithUTF8String:s] retain];
+	return rv;
+}
+
+void
+mainloop::document_stopped()
+{
+	AM_DBG NSLog(@"document_stopped");
+	AmbulantAppDelegate* am_delegate = (AmbulantAppDelegate*)[[UIApplication sharedApplication] delegate];
+	[am_delegate performSelectorOnMainThread: @selector(document_stopped:) withObject: NULL waitUntilDone:NO];
+}
+

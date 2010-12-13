@@ -26,6 +26,7 @@
 #include "ambulant/common/playable.h"
 #include "ambulant/common/embedder.h"
 #include "ambulant/net/url.h"
+#include "iOSpreferences.h"
 
 class mainloop :
 	public ambulant::common::gui_player,
@@ -46,12 +47,19 @@ class mainloop :
 	
 	void document_loaded(ambulant::lib::document *doc) {};
 	void document_started() {};
-	void document_stopped() {};
-	void node_started(const ambulant::lib::node *n) {};
-	void node_stopped(const ambulant::lib::node *n) {};
+	void document_stopped();
+	void node_started(const ambulant::lib::node *n);
+	void node_stopped(const ambulant::lib::node *n);
 	void node_focussed(const ambulant::lib::node *n);
+	void goto_node_repr(const std::string node_repr);
+	PlaylistItem* get_current_item();
 
   private:
-	void *m_view;
+	void* m_view;
+	NSURL* m_nsurl;
+	PlaylistItem* m_current_item;
 	ambulant::common::gui_screen *m_gui_screen;
+	std::list<const ambulant::lib::node*> m_nodes;
+	void print_nodes();
+	NSString* get_meta_content(const char* name);
 };
