@@ -48,12 +48,12 @@
 		};
 		041DCBF612B6770B003407C8 /* third_party_packages_iOS */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = " ../../third_party_packages/build-third-party-packages.py iOS40-Device";
+			buildArgumentsString = " ../../third_party_packages/build-third-party-packages.py iOS-Device";
 			buildConfigurationList = 041DCBF712B6770B003407C8 /* Build configuration list for PBXLegacyTarget "third_party_packages_iOS" */;
 			buildPhases = (
 			);
 			buildToolPath = python;
-			buildWorkingDirectory = "../../build-iOS40-Device/third_party_packages";
+			buildWorkingDirectory = "../../build-iOS/third_party_packages";
 			dependencies = (
 			);
 			name = third_party_packages_iOS;
@@ -62,12 +62,12 @@
 		};
 		041DCC0712B6777A003407C8 /* third_party_packages_iOS_Simulator */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = " ../../third_party_packages/build-third-party-packages.py iOS40-Simulator";
+			buildArgumentsString = " ../../third_party_packages/build-third-party-packages.py iOS-Simulator";
 			buildConfigurationList = 041DCC0812B6777A003407C8 /* Build configuration list for PBXLegacyTarget "third_party_packages_iOS_Simulator" */;
 			buildPhases = (
 			);
 			buildToolPath = python;
-			buildWorkingDirectory = "../../build-iOS40-Simulator/third_party_packages";
+			buildWorkingDirectory = "../../build-iOS-Simulator/third_party_packages";
 			dependencies = (
 			);
 			name = third_party_packages_iOS_Simulator;
@@ -125,12 +125,10 @@
 		041DCBF812B6770B003407C8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				PATH = "$PATH: /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin";
+				PATH = "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:$PATH";
+				PKG_CONFIG_LIBDIR = "/Users/jack/src/ambulant/build-iOS40-Device/third_party_packages/installed/lib/pkgconfig";
 				PRODUCT_NAME = third_party_packages_iOS;
 			};
 			name = Debug;
@@ -149,10 +147,11 @@
 		041DCC0912B6777A003407C8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = third_party_packages_3264;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				PATH = "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:$PATH";
+				PKG_CONFIG_LIBDIR = "/Users/jack/src/ambulant/build-iOS-Simulator/third_party_packages/installed/lib/pkgconfig";
+				PRODUCT_NAME = third_party_packages_iOS_Simulator;
 			};
 			name = Debug;
 		};
