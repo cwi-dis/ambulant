@@ -7,6 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		04257C3112B6C5BB0080B2DB /* AmbulantHelp-iOS.html in Resources */ = {isa = PBXBuildFile; fileRef = 04257C3012B6C5BB0080B2DB /* AmbulantHelp-iOS.html */; };
+		04257C3212B6C5BB0080B2DB /* AmbulantHelp-iOS.html in Resources */ = {isa = PBXBuildFile; fileRef = 04257C3012B6C5BB0080B2DB /* AmbulantHelp-iOS.html */; };
+		04257C3412B6C5CC0080B2DB /* InfoIcon-60x60.png in Resources */ = {isa = PBXBuildFile; fileRef = 04257C3312B6C5CC0080B2DB /* InfoIcon-60x60.png */; };
+		04257C3512B6C5CC0080B2DB /* InfoIcon-60x60.png in Resources */ = {isa = PBXBuildFile; fileRef = 04257C3312B6C5CC0080B2DB /* InfoIcon-60x60.png */; };
+		04257C3712B6C5DD0080B2DB /* HelpIcon-30x30.png in Resources */ = {isa = PBXBuildFile; fileRef = 04257C3612B6C5DD0080B2DB /* HelpIcon-30x30.png */; };
+		04257C3812B6C5DD0080B2DB /* HelpIcon-30x30.png in Resources */ = {isa = PBXBuildFile; fileRef = 04257C3612B6C5DD0080B2DB /* HelpIcon-30x30.png */; };
+		04257C3A12B6C5E90080B2DB /* Back.png in Resources */ = {isa = PBXBuildFile; fileRef = 04257C3912B6C5E90080B2DB /* Back.png */; };
+		04257C3B12B6C5E90080B2DB /* Back.png in Resources */ = {isa = PBXBuildFile; fileRef = 04257C3912B6C5E90080B2DB /* Back.png */; };
+		04257C4712B6C6280080B2DB /* data in Resources */ = {isa = PBXBuildFile; fileRef = 04257C3D12B6C6280080B2DB /* data */; };
+		04257C4812B6C6280080B2DB /* data in Resources */ = {isa = PBXBuildFile; fileRef = 04257C3D12B6C6280080B2DB /* data */; };
 		04879624121BE025007B4D0F /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04879623121BE025007B4D0F /* libxml2.a */; };
 		04879626121BE048007B4D0F /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04879625121BE048007B4D0F /* libxml2.a */; };
 		04ABF6E3121C3091009B0528 /* cg_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 93EC9F3A121A9E3B00E0BEDE /* cg_smiltext.mm */; };
@@ -19,18 +29,12 @@
 		288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
 		9306EF6612A4643200C72BFA /* ToolsIcon-30x30.png in Resources */ = {isa = PBXBuildFile; fileRef = 9306EF6512A4643200C72BFA /* ToolsIcon-30x30.png */; };
 		9306EF6712A4643200C72BFA /* ToolsIcon-30x30.png in Resources */ = {isa = PBXBuildFile; fileRef = 9306EF6512A4643200C72BFA /* ToolsIcon-30x30.png */; };
-		9306EF7712A50F0600C72BFA /* HelpIcon-30x30.png in Resources */ = {isa = PBXBuildFile; fileRef = 9306EF7612A50F0600C72BFA /* HelpIcon-30x30.png */; };
-		9306EF7812A50F0600C72BFA /* HelpIcon-30x30.png in Resources */ = {isa = PBXBuildFile; fileRef = 9306EF7612A50F0600C72BFA /* HelpIcon-30x30.png */; };
-		9306F04912A544F000C72BFA /* InfoIcon-60x60.png in Resources */ = {isa = PBXBuildFile; fileRef = 9306F04812A544F000C72BFA /* InfoIcon-60x60.png */; };
-		9306F04A12A544F000C72BFA /* InfoIcon-60x60.png in Resources */ = {isa = PBXBuildFile; fileRef = 9306F04812A544F000C72BFA /* InfoIcon-60x60.png */; };
 		9306F08512A5612A00C72BFA /* EditIcon-30x30.png in Resources */ = {isa = PBXBuildFile; fileRef = 9306F08412A5612A00C72BFA /* EditIcon-30x30.png */; };
 		9306F08612A5612A00C72BFA /* EditIcon-30x30.png in Resources */ = {isa = PBXBuildFile; fileRef = 9306F08412A5612A00C72BFA /* EditIcon-30x30.png */; };
 		9306F0D312A65E1A00C72BFA /* EditViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9306F0D212A65E1A00C72BFA /* EditViewController.xib */; };
 		9306F0D412A65E1A00C72BFA /* EditViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9306F0D212A65E1A00C72BFA /* EditViewController.xib */; };
 		9306F0F512A68BEF00C72BFA /* EditViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9306F0F412A68BEF00C72BFA /* EditViewController.mm */; };
 		9306F0F612A68BEF00C72BFA /* EditViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9306F0F412A68BEF00C72BFA /* EditViewController.mm */; };
-		9306F2D912A83FA700C72BFA /* AmbulantHelp-iOS.html in Resources */ = {isa = PBXBuildFile; fileRef = 9306F2D812A83FA700C72BFA /* AmbulantHelp-iOS.html */; };
-		9306F2DA12A83FA700C72BFA /* AmbulantHelp-iOS.html in Resources */ = {isa = PBXBuildFile; fileRef = 9306F2D812A83FA700C72BFA /* AmbulantHelp-iOS.html */; };
 		9309F8241226AA3400F63B7E /* test.smil in Resources */ = {isa = PBXBuildFile; fileRef = 9309F7C312253D0B00F63B7E /* test.smil */; };
 		931FF3971201CF52003B632F /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 931FF38E1201CF52003B632F /* libavcodec.a */; };
 		931FF3981201CF52003B632F /* libavdevice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 931FF38F1201CF52003B632F /* libavdevice.a */; };
@@ -54,11 +58,7 @@
 		93299E361279C91D002B9E6A /* Presentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 93299E311279C91D002B9E6A /* Presentation.m */; };
 		9329A242127DA370002B9E6A /* PresentationViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9329A241127DA370002B9E6A /* PresentationViewController.mm */; };
 		9329A243127DA370002B9E6A /* PresentationViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9329A241127DA370002B9E6A /* PresentationViewController.mm */; };
-		9329A441128051F4002B9E6A /* Back.png in Resources */ = {isa = PBXBuildFile; fileRef = 9329A440128051F4002B9E6A /* Back.png */; };
-		9329A442128051F4002B9E6A /* Back.png in Resources */ = {isa = PBXBuildFile; fileRef = 9329A440128051F4002B9E6A /* Back.png */; };
 		9331E8FB120DAE2A0023B0F1 /* Welcome.smil in Resources */ = {isa = PBXBuildFile; fileRef = 9331E8F9120DAE2A0023B0F1 /* Welcome.smil */; };
-		9331E908120DAEB20023B0F1 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 9331E8FE120DAEB20023B0F1 /* data */; };
-		9331E909120DAEB20023B0F1 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 9331E8FE120DAEB20023B0F1 /* data */; };
 		9331E90D120DB0A90023B0F1 /* Welcome.smil in Resources */ = {isa = PBXBuildFile; fileRef = 9331E8F9120DAE2A0023B0F1 /* Welcome.smil */; };
 		9331EA02120DCBD40023B0F1 /* AmbulantAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331E9FB120DCBD40023B0F1 /* AmbulantAppDelegate.mm */; };
 		9331EA03120DCBD40023B0F1 /* AmbulantViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9331E9FD120DCBD40023B0F1 /* AmbulantViewController.mm */; };
@@ -319,6 +319,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		04257C3012B6C5BB0080B2DB /* AmbulantHelp-iOS.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "AmbulantHelp-iOS.html"; path = "Resources/AmbulantHelp-iOS.html"; sourceTree = "<group>"; };
+		04257C3312B6C5CC0080B2DB /* InfoIcon-60x60.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "InfoIcon-60x60.png"; path = "Resources/InfoIcon-60x60.png"; sourceTree = "<group>"; };
+		04257C3612B6C5DD0080B2DB /* HelpIcon-30x30.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "HelpIcon-30x30.png"; path = "Resources/HelpIcon-30x30.png"; sourceTree = "<group>"; };
+		04257C3912B6C5E90080B2DB /* Back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Back.png; path = Resources/Back.png; sourceTree = "<group>"; };
+		04257C3D12B6C6280080B2DB /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; path = data; sourceTree = "<group>"; };
 		04879616121BDE42007B4D0F /* xpath_stateplugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xpath_stateplugin.cpp; path = ../plugins/xpath_stateplugin.cpp; sourceTree = SOURCE_ROOT; };
 		04879623121BE025007B4D0F /* libxml2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxml2.a; path = "../../build-iOS40-Simulator/third_party_packages/installed/lib/libxml2.a"; sourceTree = SOURCE_ROOT; };
 		04879625121BE048007B4D0F /* libxml2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxml2.a; path = "../../build-iOS40-Device/third_party_packages/installed/lib/libxml2.a"; sourceTree = SOURCE_ROOT; };
@@ -331,14 +336,11 @@
 		29B97316FDCFA39411CA2CEA /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* player_iphone-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "player_iphone-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		9306EF6512A4643200C72BFA /* ToolsIcon-30x30.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ToolsIcon-30x30.png"; path = "Resources/ToolsIcon-30x30.png"; sourceTree = "<group>"; };
-		9306EF7612A50F0600C72BFA /* HelpIcon-30x30.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "HelpIcon-30x30.png"; sourceTree = "<group>"; };
-		9306F04812A544F000C72BFA /* InfoIcon-60x60.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "InfoIcon-60x60.png"; sourceTree = "<group>"; };
 		9306F08412A5612A00C72BFA /* EditIcon-30x30.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "EditIcon-30x30.png"; path = "Resources/EditIcon-30x30.png"; sourceTree = "<group>"; };
 		9306F0B312A65DB300C72BFA /* EditViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = EditViewController.xib; path = Resources/EditViewController.xib; sourceTree = "<group>"; };
 		9306F0D212A65E1A00C72BFA /* EditViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = EditViewController.xib; path = Resources/EditViewController.xib; sourceTree = "<group>"; };
 		9306F0F312A68A7D00C72BFA /* EditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditViewController.h; sourceTree = "<group>"; };
 		9306F0F412A68BEF00C72BFA /* EditViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EditViewController.mm; sourceTree = "<group>"; };
-		9306F2D812A83FA700C72BFA /* AmbulantHelp-iOS.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "AmbulantHelp-iOS.html"; sourceTree = "<group>"; };
 		9309F7C312253D0B00F63B7E /* test.smil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = test.smil; path = Resources/test.smil; sourceTree = "<group>"; };
 		931FF38E1201CF52003B632F /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = "../../build-iOS40-Simulator/third_party_packages/installed/lib/libavcodec.a"; sourceTree = SOURCE_ROOT; };
 		931FF38F1201CF52003B632F /* libavdevice.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavdevice.a; path = "../../build-iOS40-Simulator/third_party_packages/installed/lib/libavdevice.a"; sourceTree = SOURCE_ROOT; };
@@ -360,10 +362,8 @@
 		93299E311279C91D002B9E6A /* Presentation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Presentation.m; sourceTree = "<group>"; };
 		9329A240127DA370002B9E6A /* PresentationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PresentationViewController.h; sourceTree = "<group>"; };
 		9329A241127DA370002B9E6A /* PresentationViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PresentationViewController.mm; sourceTree = "<group>"; };
-		9329A440128051F4002B9E6A /* Back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Back.png; sourceTree = "<group>"; };
 		9331E839120DA93B0023B0F1 /* player_iphone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = player_iphone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9331E8F9120DAE2A0023B0F1 /* Welcome.smil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = Welcome.smil; path = Resources/Welcome.smil; sourceTree = "<group>"; };
-		9331E8FE120DAEB20023B0F1 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = Resources/data; sourceTree = "<group>"; };
 		9331E9FA120DCBD40023B0F1 /* AmbulantAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbulantAppDelegate.h; sourceTree = "<group>"; };
 		9331E9FB120DCBD40023B0F1 /* AmbulantAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AmbulantAppDelegate.mm; sourceTree = "<group>"; };
 		9331E9FC120DCBD40023B0F1 /* AmbulantViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbulantViewController.h; sourceTree = "<group>"; };
@@ -958,11 +958,11 @@
 			children = (
 				93F5A70F12AFC60600037A0A /* favorites.png */,
 				93F5A63E12AED85700037A0A /* line.png */,
-				9306F2D812A83FA700C72BFA /* AmbulantHelp-iOS.html */,
+				04257C3012B6C5BB0080B2DB /* AmbulantHelp-iOS.html */,
 				9306F0D212A65E1A00C72BFA /* EditViewController.xib */,
 				9306F08412A5612A00C72BFA /* EditIcon-30x30.png */,
-				9306F04812A544F000C72BFA /* InfoIcon-60x60.png */,
-				9306EF7612A50F0600C72BFA /* HelpIcon-30x30.png */,
+				04257C3312B6C5CC0080B2DB /* InfoIcon-60x60.png */,
+				04257C3612B6C5DD0080B2DB /* HelpIcon-30x30.png */,
 				9306EF6512A4643200C72BFA /* ToolsIcon-30x30.png */,
 				939928FD129ABDE5005EAAED /* Background_iPhone.png */,
 				93992869129AB48A005EAAED /* FastForward_iPhone.png */,
@@ -970,11 +970,11 @@
 				9399286B129AB48A005EAAED /* Play_iPhone.png */,
 				9399286C129AB48A005EAAED /* Rewind_iPhone.png */,
 				933BBF071295E4C6007261DC /* Welcome_Icon-57x57.png */,
-				9329A440128051F4002B9E6A /* Back.png */,
+				04257C3912B6C5E90080B2DB /* Back.png */,
 				93299DDD1279C32A002B9E6A /* PresentationTableCell.xib */,
 				93299DDA1279C31B002B9E6A /* PresentationTableViewController.xib */,
 				9387C97F1251F3C80013AECB /* iPhoneAVPlayerTest.smil */,
-				9331E8FE120DAEB20023B0F1 /* data */,
+				04257C3D12B6C6280080B2DB /* data */,
 				9331E8F9120DAE2A0023B0F1 /* Welcome.smil */,
 				9309F7C312253D0B00F63B7E /* test.smil */,
 				93882662121EB7F40038AF71 /* Welcome-smiltext.smil */,
@@ -1844,7 +1844,6 @@
 				93DC0CE9120321C200A3518F /* AmbulantViewController.xib in Resources */,
 				93DC0E7612037DB500A3518F /* MainWindow.xib in Resources */,
 				9376A9291204C0F400D5019C /* SettingsViewController.xib in Resources */,
-				9331E908120DAEB20023B0F1 /* data in Resources */,
 				9331E90D120DB0A90023B0F1 /* Welcome.smil in Resources */,
 				937981CE120DE13B00B1A6D2 /* AmbulantWebView.xib in Resources */,
 				93882663121EB7F40038AF71 /* Welcome-smiltext.smil in Resources */,
@@ -1852,7 +1851,6 @@
 				9387C9811251F3C80013AECB /* iPhoneAVPlayerTest.smil in Resources */,
 				93299DDB1279C31B002B9E6A /* PresentationTableViewController.xib in Resources */,
 				93299DDE1279C32A002B9E6A /* PresentationTableCell.xib in Resources */,
-				9329A441128051F4002B9E6A /* Back.png in Resources */,
 				933BBF091295E4C6007261DC /* Welcome_Icon-57x57.png in Resources */,
 				939928A7129AB48A005EAAED /* FastForward_iPhone.png in Resources */,
 				939928A8129AB48A005EAAED /* Pause_iPhone.png in Resources */,
@@ -1860,13 +1858,15 @@
 				939928AA129AB48A005EAAED /* Rewind_iPhone.png in Resources */,
 				939928FF129ABDE5005EAAED /* Background_iPhone.png in Resources */,
 				9306EF6712A4643200C72BFA /* ToolsIcon-30x30.png in Resources */,
-				9306EF7812A50F0600C72BFA /* HelpIcon-30x30.png in Resources */,
-				9306F04A12A544F000C72BFA /* InfoIcon-60x60.png in Resources */,
 				9306F08612A5612A00C72BFA /* EditIcon-30x30.png in Resources */,
 				9306F0D312A65E1A00C72BFA /* EditViewController.xib in Resources */,
-				9306F2D912A83FA700C72BFA /* AmbulantHelp-iOS.html in Resources */,
 				93F5A63F12AED85700037A0A /* line.png in Resources */,
 				93F5A71012AFC60600037A0A /* favorites.png in Resources */,
+				04257C3212B6C5BB0080B2DB /* AmbulantHelp-iOS.html in Resources */,
+				04257C3512B6C5CC0080B2DB /* InfoIcon-60x60.png in Resources */,
+				04257C3812B6C5DD0080B2DB /* HelpIcon-30x30.png in Resources */,
+				04257C3B12B6C5E90080B2DB /* Back.png in Resources */,
+				04257C4812B6C6280080B2DB /* data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1879,14 +1879,12 @@
 				9376B0A6120C9CC900D5019C /* MainWindow.xib in Resources */,
 				9376B0A8120C9CC900D5019C /* SettingsViewController.xib in Resources */,
 				9331E8FB120DAE2A0023B0F1 /* Welcome.smil in Resources */,
-				9331E909120DAEB20023B0F1 /* data in Resources */,
 				937981D0120DE13B00B1A6D2 /* AmbulantWebView.xib in Resources */,
 				93882664121EB7F40038AF71 /* Welcome-smiltext.smil in Resources */,
 				9387C9801251F3C80013AECB /* iPhoneAVPlayerTest.smil in Resources */,
 				93B08380126C837700EE380F /* player_simulator-Info.plist in Resources */,
 				93299DDC1279C31B002B9E6A /* PresentationTableViewController.xib in Resources */,
 				93299DDF1279C32A002B9E6A /* PresentationTableCell.xib in Resources */,
-				9329A442128051F4002B9E6A /* Back.png in Resources */,
 				933BB5F4128AD6A5007261DC /* test.smil in Resources */,
 				933BBF081295E4C6007261DC /* Welcome_Icon-57x57.png in Resources */,
 				93992888129AB48A005EAAED /* FastForward_iPhone.png in Resources */,
@@ -1895,13 +1893,15 @@
 				9399288B129AB48A005EAAED /* Rewind_iPhone.png in Resources */,
 				939928FE129ABDE5005EAAED /* Background_iPhone.png in Resources */,
 				9306EF6612A4643200C72BFA /* ToolsIcon-30x30.png in Resources */,
-				9306EF7712A50F0600C72BFA /* HelpIcon-30x30.png in Resources */,
-				9306F04912A544F000C72BFA /* InfoIcon-60x60.png in Resources */,
 				9306F08512A5612A00C72BFA /* EditIcon-30x30.png in Resources */,
 				9306F0D412A65E1A00C72BFA /* EditViewController.xib in Resources */,
-				9306F2DA12A83FA700C72BFA /* AmbulantHelp-iOS.html in Resources */,
 				93F5A64012AED85700037A0A /* line.png in Resources */,
 				93F5A71112AFC60600037A0A /* favorites.png in Resources */,
+				04257C3112B6C5BB0080B2DB /* AmbulantHelp-iOS.html in Resources */,
+				04257C3412B6C5CC0080B2DB /* InfoIcon-60x60.png in Resources */,
+				04257C3712B6C5DD0080B2DB /* HelpIcon-30x30.png in Resources */,
+				04257C3A12B6C5E90080B2DB /* Back.png in Resources */,
+				04257C4712B6C6280080B2DB /* data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
