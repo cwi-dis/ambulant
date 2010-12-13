@@ -1,0 +1,226 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXFileReference section */
+		041DCBC612B65519003407C8 /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "ambulant-common.xcconfig"; sourceTree = "<group>"; };
+		041DCBCB12B655E1003407C8 /* build-third-party-packages.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = "build-third-party-packages.py"; path = "../../third_party_packages/build-third-party-packages.py"; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		041DCBAC12B654E5003407C8 /* Configuration Files */ = {
+			isa = PBXGroup;
+			children = (
+				041DCBC612B65519003407C8 /* ambulant-common.xcconfig */,
+			);
+			name = "Configuration Files";
+			sourceTree = "<group>";
+		};
+		08FB7794FE84155DC02AAC07 /* third_party_packages */ = {
+			isa = PBXGroup;
+			children = (
+				041DCBCB12B655E1003407C8 /* build-third-party-packages.py */,
+				041DCBAC12B654E5003407C8 /* Configuration Files */,
+			);
+			name = third_party_packages;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		041DCBD712B65714003407C8 /* third_party_packages_mac */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = " ../../third_party_packages/build-third-party-packages.py mac10.6";
+			buildConfigurationList = 041DCBDA12B65732003407C8 /* Build configuration list for PBXLegacyTarget "third_party_packages_mac" */;
+			buildPhases = (
+			);
+			buildToolPath = python;
+			buildWorkingDirectory = "../../build-3264/third_party_packages";
+			dependencies = (
+			);
+			name = third_party_packages_mac;
+			passBuildSettingsInEnvironment = 1;
+			productName = third_party_packages_3264;
+		};
+		041DCBF612B6770B003407C8 /* third_party_packages_iOS */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = " ../../third_party_packages/build-third-party-packages.py iOS40-Device";
+			buildConfigurationList = 041DCBF712B6770B003407C8 /* Build configuration list for PBXLegacyTarget "third_party_packages_iOS" */;
+			buildPhases = (
+			);
+			buildToolPath = python;
+			buildWorkingDirectory = "../../build-iOS40-Device/third_party_packages";
+			dependencies = (
+			);
+			name = third_party_packages_iOS;
+			passBuildSettingsInEnvironment = 1;
+			productName = third_party_packages_3264;
+		};
+		041DCC0712B6777A003407C8 /* third_party_packages_iOS_Simulator */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = " ../../third_party_packages/build-third-party-packages.py iOS40-Simulator";
+			buildConfigurationList = 041DCC0812B6777A003407C8 /* Build configuration list for PBXLegacyTarget "third_party_packages_iOS_Simulator" */;
+			buildPhases = (
+			);
+			buildToolPath = python;
+			buildWorkingDirectory = "../../build-iOS40-Simulator/third_party_packages";
+			dependencies = (
+			);
+			name = third_party_packages_iOS_Simulator;
+			passBuildSettingsInEnvironment = 1;
+			productName = third_party_packages_3264;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB919308733D9F0010E9CD /* Build configuration list for PBXProject "third_party_packages" */;
+			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 08FB7794FE84155DC02AAC07 /* third_party_packages */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				041DCBD712B65714003407C8 /* third_party_packages_mac */,
+				041DCBF612B6770B003407C8 /* third_party_packages_iOS */,
+				041DCC0712B6777A003407C8 /* third_party_packages_iOS_Simulator */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		041DCBD812B65714003407C8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = third_party_packages_3264;
+			};
+			name = Debug;
+		};
+		041DCBD912B65714003407C8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = third_party_packages_3264;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		041DCBF812B6770B003407C8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				PATH = "$PATH: /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin";
+				PRODUCT_NAME = third_party_packages_iOS;
+			};
+			name = Debug;
+		};
+		041DCBF912B6770B003407C8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = third_party_packages_3264;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		041DCC0912B6777A003407C8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = third_party_packages_3264;
+			};
+			name = Debug;
+		};
+		041DCC0A12B6777A003407C8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = third_party_packages_3264;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		1DEB919408733D9F0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 041DCBC612B65519003407C8 /* ambulant-common.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		1DEB919508733D9F0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 041DCBC612B65519003407C8 /* ambulant-common.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		041DCBDA12B65732003407C8 /* Build configuration list for PBXLegacyTarget "third_party_packages_mac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				041DCBD812B65714003407C8 /* Debug */,
+				041DCBD912B65714003407C8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		041DCBF712B6770B003407C8 /* Build configuration list for PBXLegacyTarget "third_party_packages_iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				041DCBF812B6770B003407C8 /* Debug */,
+				041DCBF912B6770B003407C8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		041DCC0812B6777A003407C8 /* Build configuration list for PBXLegacyTarget "third_party_packages_iOS_Simulator" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				041DCC0912B6777A003407C8 /* Debug */,
+				041DCC0A12B6777A003407C8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB919308733D9F0010E9CD /* Build configuration list for PBXProject "third_party_packages" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB919408733D9F0010E9CD /* Debug */,
+				1DEB919508733D9F0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}
