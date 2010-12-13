@@ -67,7 +67,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 @implementation AmbulantViewController
 
 @synthesize delegate, interactionView, modeBar, originalPlayerViewFrame, originalInteractionViewFrame,
-			playerView, myMainloop, linkURL, playURL,
+			playerView, myMainloop, linkURL, playURL, playPauseButton,
 			keyboardIsShown, currentOrientation, autoCenter, autoResize,
 			nativeRenderer, play_active, historyViewController;
 
@@ -106,8 +106,8 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 			std::string node_repr = [ns_node_repr UTF8String];
 			myMainloop->goto_node_repr(node_repr);
 		}
-		myMainloop->play();
 		[self showInteractionView: NO];
+		[self play];
 	}
 }
 
@@ -237,27 +237,30 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	} 	
 }
 
-- (IBAction) handlePlayTapped {
-	AM_DBG NSLog(@"AmbulantViewController handlePlayTapped(0x%x)", self);
+- (IBAction) handlePlayOrPauseTapped {
+	AM_DBG NSLog(@"AmbulantViewController handlePlayOrPauseTapped(0x%x)", self);
 	if (myMainloop) {
-		myMainloop->play();
+		if (myMainloop->is_play_active()) {
+			[self pause];
+		} else {
+			[self play];
+		}
 	} else {
 		[self doPlayURL:NULL];
 	}
 }
 
-- (IBAction) handlePauseTapped {
+- (IBAction) handlePauseTapped { //JNK
 	AM_DBG NSLog(@"AmbulantViewController handlePauseTapped(0x%x)", self);
-	if (myMainloop) {
-		myMainloop->pause();
-	}
+	[self pause];
 }
 
-- (IBAction) handleStopTapped {
+- (IBAction) handleStopTapped { //JNK
 	AM_DBG NSLog(@"AmbulantViewController handleStopTapped(0x%x)", self);
 	if (myMainloop == NULL) {
 		return;
 	}
+	myMainloop->pause();  //JNK temp. to show play button
 	myMainloop->stop();
 	if (playerView == NULL)
 		//XXXX for some reason the playerView is reset to 0 when play starts
@@ -377,7 +380,7 @@ playlistViewControllerDidFinish: (UIViewController *)controller {
 	[self.delegate showAmbulantPlayer: (id) self];
 	if (myMainloop != NULL) {
 		if (play_active) {
-			myMainloop->play();
+			[self play];
 		}
 		UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
 		[playerView adaptDisplayAfterRotation: orientation];
@@ -393,11 +396,7 @@ playlistViewControllerDidFinish: (UIViewController *)controller {
 
 - (IBAction) showHistory:(id)sender {  // JNK
 	AM_DBG NSLog(@"AmbulantViewController (0x%x)", self);
-	
-	if (myMainloop != NULL) {
-		play_active = myMainloop->is_play_active();
-		myMainloop->pause();
-	}
+	[self pause];
 	/*
 	PresentationViewController *controller = [[PresentationViewController alloc]
 										  initWithNibName:@"PresentationTableViewController" bundle:nil];
@@ -428,26 +427,13 @@ presentationViewControllerDidFinish: (PresentationViewController *)controller {
 	}
 	UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
 	[playerView adaptDisplayAfterRotation: orientation];
-	if ( ! interactionView.hidden) {
-		interactionView.hidden = true;
-		interactionView.opaque = false;
-		modeBar.hidden = true;
-		modeBar.opaque = false;
-	}
 	if (myMainloop != NULL) {
 		UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
 		[playerView adaptDisplayAfterRotation: orientation];
 		
-		if (play_active) {
-			myMainloop->play();
-		}
+		[self play];
 	}
-	if ( ! interactionView.hidden) {
-		interactionView.hidden = true;
-		interactionView.opaque = false;
-		modeBar.hidden = true;
-		modeBar.opaque = false;
-	}
+	[self showInteractionView: NO];
 	playerView.alpha = 1.0;
 	prefs->save_preferences(); // save possible edits
 }
@@ -562,7 +548,7 @@ playPresentation: (NSString*) whatString {
 	interactionView.frame = originalInteractionViewFrame;
 	playerView.frame = originalPlayerViewFrame;
     [UIView commitAnimations];
-	[self handlePlayTapped];
+	[self handlePlayOrPauseTapped];
 }	
 
 - (BOOL) isSupportedOrientation: (UIDeviceOrientation) orientation {
@@ -598,11 +584,15 @@ playPresentation: (NSString*) whatString {
 	[self handleStopTapped];
 }
 
+
+
 - (void) pause {
 	AM_DBG NSLog(@"AmbulantViewController pause(0x%x)", self);
 	if (myMainloop) {
 		play_active = myMainloop->is_play_active();
 		myMainloop->pause();
+		UIImage* playImage = [UIImage imageNamed: @"Play_iPhone.png"];
+	   [self.playPauseButton setImage:playImage forState:UIControlStateNormal];
 	}
 }
 
@@ -610,6 +600,8 @@ playPresentation: (NSString*) whatString {
 	AM_DBG NSLog(@"AmbulantViewController play(0x%x)", self);
 	if (myMainloop) {
 		myMainloop->play();
+		UIImage* pauseImage = [UIImage imageNamed: @"Pause_iPhone.png"];
+		[self.playPauseButton setImage:pauseImage forState:UIControlStateNormal];
 	}
 }
 

@@ -42,6 +42,7 @@ private:
 	IBOutlet AmbulantAppDelegate* delegate;
 	IBOutlet AmbulantView* playerView;
 	IBOutlet UIView* interactionView;
+	IBOutlet UIButton* playPauseButton;
 //JNK	IBOutlet UITabBar* modeBar;
 //JNK	IBOutlet UITextField* URLEntryField;
 	CGRect originalPlayerViewFrame, originalInteractionViewFrame;
@@ -56,8 +57,8 @@ private:
 }
 - (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation) interfaceOrientation;
 - (BOOL) isSupportedOrientation: (UIDeviceOrientation) orientation;
-- (IBAction) handlePlayTapped;
-- (IBAction) handlePauseTapped;
+- (IBAction) handlePlayOrPauseTapped;
+- (IBAction) handlePauseTapped; //JNK
 - (IBAction) handleStopTapped; //JNK
 - (IBAction) handleURLEntered; //JNK
 - (IBAction) handleDoubleTapGesture:(UITapGestureRecognizer*) sender;
@@ -85,6 +86,7 @@ private:
 @property(nonatomic) mainloop* myMainloop;
 @property(nonatomic,retain) NSMutableString* linkURL, *playURL;
 @property(nonatomic,retain)	IBOutlet UIView* interactionView;
+@property(nonatomic,retain) IBOutlet UIButton* playPauseButton;
 @property(nonatomic) CGRect originalPlayerViewFrame, originalInteractionViewFrame;
 @property(nonatomic) BOOL keyboardIsShown, autoCenter, autoResize, nativeRenderer, play_active;
 @property(nonatomic) UIDeviceOrientation currentOrientation;

@@ -18,8 +18,8 @@
     AmbulantWebViewController *webViewController;
 }
 - (void) openWebLink: (NSString*) url;
-//- (BOOL) application:(UIApplication* ) application handleOpenURL: (NSURL*) url;
 
+- (void) document_stopped: (NSObject*) obj;
 - (PresentationViewController*) getPresentationView: (void*) id withIndex: (NSUInteger) index; 
 - (void) showAlert: (NSString*) msgtype;
 - (void) showAmbulantPlayer: (void*) id;
