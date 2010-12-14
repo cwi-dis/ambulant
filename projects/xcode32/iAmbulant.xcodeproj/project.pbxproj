@@ -7,6 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		041E94CC12B816EE00399893 /* Entitlements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 041E94CB12B816EE00399893 /* Entitlements.plist */; };
+		041E94EF12B81AC200399893 /* libambulantIPhone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75D9612B80D1300161EB5 /* libambulantIPhone.a */; };
+		041E94FD12B81CCF00399893 /* libBasicUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E94FC12B81CCF00399893 /* libBasicUsageEnvironment.a */; };
+		041E94FF12B81CDF00399893 /* libgroupsock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E94FE12B81CDF00399893 /* libgroupsock.a */; };
+		041E950112B81CEC00399893 /* libliveMedia.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950012B81CEC00399893 /* libliveMedia.a */; };
+		041E950312B81CF500399893 /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950212B81CF500399893 /* libUsageEnvironment.a */; };
+		041E950E12B81D1000399893 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950412B81D1000399893 /* libavcodec.a */; };
+		041E950F12B81D1000399893 /* libavdevice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950512B81D1000399893 /* libavdevice.a */; };
+		041E951012B81D1000399893 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950612B81D1000399893 /* libavformat.a */; };
+		041E951112B81D1000399893 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950712B81D1000399893 /* libavutil.a */; };
+		041E951212B81D1000399893 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950812B81D1000399893 /* libexpat.a */; };
+		041E951312B81D1000399893 /* libfaad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950912B81D1000399893 /* libfaad.a */; };
+		041E951412B81D1000399893 /* libmp4ff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950A12B81D1000399893 /* libmp4ff.a */; };
+		041E951512B81D1000399893 /* libSDLiPhoneOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950B12B81D1000399893 /* libSDLiPhoneOS.a */; };
+		041E951612B81D1000399893 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950C12B81D1000399893 /* libswscale.a */; };
+		041E951712B81D1000399893 /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950D12B81D1000399893 /* libxml2.a */; };
+		041E954912B825F200399893 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E954812B825F200399893 /* libbz2.dylib */; };
+		041E954D12B8260C00399893 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E954C12B8260C00399893 /* libz.dylib */; };
 		04B75CFD12B80B9800161EB5 /* EditViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75CEC12B80B9800161EB5 /* EditViewController.mm */; };
 		04B75CFE12B80B9800161EB5 /* PresentationViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75CF012B80B9800161EB5 /* PresentationViewController.mm */; };
 		04B75CFF12B80B9800161EB5 /* Presentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 04B75CF212B80B9800161EB5 /* Presentation.m */; };
@@ -42,24 +60,9 @@
 		04B75D4412B80C2A00161EB5 /* Welcome.smil in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D4212B80C2A00161EB5 /* Welcome.smil */; };
 		04B75D4812B80C4900161EB5 /* mainloop.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75D4512B80C4900161EB5 /* mainloop.mm */; };
 		04B75D4912B80C4900161EB5 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75D4712B80C4900161EB5 /* main.mm */; };
-		04B75D9F12B80D4500161EB5 /* libambulantIPhone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75D9612B80D1300161EB5 /* libambulantIPhone.a */; };
-		04B75DB512B80EC900161EB5 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75DAB12B80EC900161EB5 /* libavcodec.a */; };
-		04B75DB612B80EC900161EB5 /* libavdevice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75DAC12B80EC900161EB5 /* libavdevice.a */; };
-		04B75DB712B80EC900161EB5 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75DAD12B80EC900161EB5 /* libavformat.a */; };
-		04B75DB812B80EC900161EB5 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75DAE12B80EC900161EB5 /* libavutil.a */; };
-		04B75DB912B80EC900161EB5 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75DAF12B80EC900161EB5 /* libexpat.a */; };
-		04B75DBA12B80EC900161EB5 /* libfaad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75DB012B80EC900161EB5 /* libfaad.a */; };
-		04B75DBB12B80EC900161EB5 /* libmp4ff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75DB112B80EC900161EB5 /* libmp4ff.a */; };
-		04B75DBC12B80EC900161EB5 /* libSDLiPhoneOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75DB212B80EC900161EB5 /* libSDLiPhoneOS.a */; };
-		04B75DBD12B80EC900161EB5 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75DB312B80EC900161EB5 /* libswscale.a */; };
-		04B75DBE12B80EC900161EB5 /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75DB412B80EC900161EB5 /* libxml2.a */; };
 		04B75DE112B80EED00161EB5 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75DE012B80EED00161EB5 /* OpenGLES.framework */; };
 		04B75DF012B80F1100161EB5 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75DEF12B80F1100161EB5 /* AudioToolbox.framework */; };
 		04B75E2E12B80F5500161EB5 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75E2D12B80F5500161EB5 /* CoreText.framework */; };
-		04B75E5512B80FDB00161EB5 /* libBasicUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75E5412B80FDB00161EB5 /* libBasicUsageEnvironment.a */; };
-		04B75E5712B80FEE00161EB5 /* libgroupsock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75E5612B80FEE00161EB5 /* libgroupsock.a */; };
-		04B75E5912B80FF900161EB5 /* libliveMedia.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75E5812B80FF900161EB5 /* libliveMedia.a */; };
-		04B75E5B12B8100200161EB5 /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75E5A12B8100200161EB5 /* libUsageEnvironment.a */; };
 		04B75E6112B8104A00161EB5 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75E6012B8104A00161EB5 /* ImageIO.framework */; };
 		04B75E6B12B8106900161EB5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75E6A12B8106900161EB5 /* QuartzCore.framework */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -68,6 +71,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		041E94F412B81C7000399893 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 04B75D7012B80CFE00161EB5 /* third_party_packages.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 041DCBF612B6770B003407C8 /* third_party_packages_iOS */;
+			remoteInfo = third_party_packages_iOS;
+		};
+		041E94F612B81C7000399893 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 04B75D7012B80CFE00161EB5 /* third_party_packages.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 041DCC0712B6777A003407C8 /* third_party_packages_iOS_Simulator */;
+			remoteInfo = third_party_packages_iOS_Simulator;
+		};
+		041E94F812B81C7000399893 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 04B75D7812B80D1000161EB5 /* libambulant.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 040DAAE112B790BB002C4DFD /* libambulantiPhone */;
+			remoteInfo = libambulantiPhone;
+		};
 		04B75D8F12B80D1300161EB5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 04B75D7812B80D1000161EB5 /* libambulant.xcodeproj */;
@@ -96,30 +120,26 @@
 			remoteGlobalIDString = 040DAB3812B790BB002C4DFD;
 			remoteInfo = libambulantiPhone;
 		};
-		04B75D9712B80D2C00161EB5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 04B75D7012B80CFE00161EB5 /* third_party_packages.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 041DCBF612B6770B003407C8;
-			remoteInfo = third_party_packages_iOS;
-		};
-		04B75D9912B80D2C00161EB5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 04B75D7012B80CFE00161EB5 /* third_party_packages.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 041DCC0712B6777A003407C8;
-			remoteInfo = third_party_packages_iOS_Simulator;
-		};
-		04B75D9B12B80D2C00161EB5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 04B75D7812B80D1000161EB5 /* libambulant.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 040DAAE112B790BB002C4DFD;
-			remoteInfo = libambulantiPhone;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		041E94CB12B816EE00399893 /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Entitlements.plist; path = ../../src/player_iphone/Entitlements.plist; sourceTree = SOURCE_ROOT; };
+		041E94FC12B81CCF00399893 /* libBasicUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBasicUsageEnvironment.a; path = "../../build-iOS/third_party_packages/live/BasicUsageEnvironment/libBasicUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
+		041E94FE12B81CDF00399893 /* libgroupsock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgroupsock.a; path = "../../build-iOS/third_party_packages/live/groupsock/libgroupsock.a"; sourceTree = SOURCE_ROOT; };
+		041E950012B81CEC00399893 /* libliveMedia.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libliveMedia.a; path = "../../build-iOS/third_party_packages/live/liveMedia/libliveMedia.a"; sourceTree = SOURCE_ROOT; };
+		041E950212B81CF500399893 /* libUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libUsageEnvironment.a; path = "../../build-iOS/third_party_packages/live/UsageEnvironment/libUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
+		041E950412B81D1000399893 /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = "../../build-iOS/third_party_packages/installed/lib/libavcodec.a"; sourceTree = SOURCE_ROOT; };
+		041E950512B81D1000399893 /* libavdevice.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavdevice.a; path = "../../build-iOS/third_party_packages/installed/lib/libavdevice.a"; sourceTree = SOURCE_ROOT; };
+		041E950612B81D1000399893 /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = "../../build-iOS/third_party_packages/installed/lib/libavformat.a"; sourceTree = SOURCE_ROOT; };
+		041E950712B81D1000399893 /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavutil.a; path = "../../build-iOS/third_party_packages/installed/lib/libavutil.a"; sourceTree = SOURCE_ROOT; };
+		041E950812B81D1000399893 /* libexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libexpat.a; path = "../../build-iOS/third_party_packages/installed/lib/libexpat.a"; sourceTree = SOURCE_ROOT; };
+		041E950912B81D1000399893 /* libfaad.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfaad.a; path = "../../build-iOS/third_party_packages/installed/lib/libfaad.a"; sourceTree = SOURCE_ROOT; };
+		041E950A12B81D1000399893 /* libmp4ff.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmp4ff.a; path = "../../build-iOS/third_party_packages/installed/lib/libmp4ff.a"; sourceTree = SOURCE_ROOT; };
+		041E950B12B81D1000399893 /* libSDLiPhoneOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDLiPhoneOS.a; path = "../../build-iOS/third_party_packages/installed/lib/libSDLiPhoneOS.a"; sourceTree = SOURCE_ROOT; };
+		041E950C12B81D1000399893 /* libswscale.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswscale.a; path = "../../build-iOS/third_party_packages/installed/lib/libswscale.a"; sourceTree = SOURCE_ROOT; };
+		041E950D12B81D1000399893 /* libxml2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxml2.a; path = "../../build-iOS/third_party_packages/installed/lib/libxml2.a"; sourceTree = SOURCE_ROOT; };
+		041E954812B825F200399893 /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = usr/lib/libbz2.dylib; sourceTree = SDKROOT; };
+		041E954C12B8260C00399893 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		04B75CEC12B80B9800161EB5 /* EditViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = EditViewController.mm; path = ../../src/player_iphone/Classes/EditViewController.mm; sourceTree = SOURCE_ROOT; };
 		04B75CED12B80B9800161EB5 /* EditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EditViewController.h; path = ../../src/player_iphone/Classes/EditViewController.h; sourceTree = SOURCE_ROOT; };
 		04B75CEE12B80B9800161EB5 /* PlaylistAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlaylistAppDelegate.h; path = ../../src/player_iphone/Classes/PlaylistAppDelegate.h; sourceTree = SOURCE_ROOT; };
@@ -171,23 +191,9 @@
 		04B75D6512B80C8300161EB5 /* ambulant-release-iphone.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-release-iphone.xcconfig"; path = "config/ambulant-release-iphone.xcconfig"; sourceTree = SOURCE_ROOT; };
 		04B75D7012B80CFE00161EB5 /* third_party_packages.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = third_party_packages.xcodeproj; sourceTree = SOURCE_ROOT; };
 		04B75D7812B80D1000161EB5 /* libambulant.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = libambulant.xcodeproj; sourceTree = "<group>"; };
-		04B75DAB12B80EC900161EB5 /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = "../../build-iOS-Simulator/third_party_packages/installed/lib/libavcodec.a"; sourceTree = SOURCE_ROOT; };
-		04B75DAC12B80EC900161EB5 /* libavdevice.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavdevice.a; path = "../../build-iOS-Simulator/third_party_packages/installed/lib/libavdevice.a"; sourceTree = SOURCE_ROOT; };
-		04B75DAD12B80EC900161EB5 /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = "../../build-iOS-Simulator/third_party_packages/installed/lib/libavformat.a"; sourceTree = SOURCE_ROOT; };
-		04B75DAE12B80EC900161EB5 /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavutil.a; path = "../../build-iOS-Simulator/third_party_packages/installed/lib/libavutil.a"; sourceTree = SOURCE_ROOT; };
-		04B75DAF12B80EC900161EB5 /* libexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libexpat.a; path = "../../build-iOS-Simulator/third_party_packages/installed/lib/libexpat.a"; sourceTree = SOURCE_ROOT; };
-		04B75DB012B80EC900161EB5 /* libfaad.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfaad.a; path = "../../build-iOS-Simulator/third_party_packages/installed/lib/libfaad.a"; sourceTree = SOURCE_ROOT; };
-		04B75DB112B80EC900161EB5 /* libmp4ff.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmp4ff.a; path = "../../build-iOS-Simulator/third_party_packages/installed/lib/libmp4ff.a"; sourceTree = SOURCE_ROOT; };
-		04B75DB212B80EC900161EB5 /* libSDLiPhoneOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDLiPhoneOS.a; path = "../../build-iOS-Simulator/third_party_packages/installed/lib/libSDLiPhoneOS.a"; sourceTree = SOURCE_ROOT; };
-		04B75DB312B80EC900161EB5 /* libswscale.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswscale.a; path = "../../build-iOS-Simulator/third_party_packages/installed/lib/libswscale.a"; sourceTree = SOURCE_ROOT; };
-		04B75DB412B80EC900161EB5 /* libxml2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxml2.a; path = "../../build-iOS-Simulator/third_party_packages/installed/lib/libxml2.a"; sourceTree = SOURCE_ROOT; };
 		04B75DE012B80EED00161EB5 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = ../../../../../../Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/System/Library/Frameworks/OpenGLES.framework; sourceTree = SOURCE_ROOT; };
 		04B75DEF12B80F1100161EB5 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = ../../../../../../Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/System/Library/Frameworks/AudioToolbox.framework; sourceTree = SOURCE_ROOT; };
 		04B75E2D12B80F5500161EB5 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
-		04B75E5412B80FDB00161EB5 /* libBasicUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBasicUsageEnvironment.a; path = "../../build-iOS-Simulator/third_party_packages/live/BasicUsageEnvironment/libBasicUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
-		04B75E5612B80FEE00161EB5 /* libgroupsock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgroupsock.a; path = "../../build-iOS-Simulator/third_party_packages/live/groupsock/libgroupsock.a"; sourceTree = SOURCE_ROOT; };
-		04B75E5812B80FF900161EB5 /* libliveMedia.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libliveMedia.a; path = "../../build-iOS-Simulator/third_party_packages/live/liveMedia/libliveMedia.a"; sourceTree = SOURCE_ROOT; };
-		04B75E5A12B8100200161EB5 /* libUsageEnvironment.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libUsageEnvironment.a; path = "../../build-iOS-Simulator/third_party_packages/live/UsageEnvironment/libUsageEnvironment.a"; sourceTree = SOURCE_ROOT; };
 		04B75E6012B8104A00161EB5 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = ../../../../../../Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/System/Library/Frameworks/ImageIO.framework; sourceTree = SOURCE_ROOT; };
 		04B75E6A12B8106900161EB5 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = ../../../../../../Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = SOURCE_ROOT; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -206,26 +212,28 @@
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
-				04B75D9F12B80D4500161EB5 /* libambulantIPhone.a in Frameworks */,
-				04B75DB512B80EC900161EB5 /* libavcodec.a in Frameworks */,
-				04B75DB612B80EC900161EB5 /* libavdevice.a in Frameworks */,
-				04B75DB712B80EC900161EB5 /* libavformat.a in Frameworks */,
-				04B75DB812B80EC900161EB5 /* libavutil.a in Frameworks */,
-				04B75DB912B80EC900161EB5 /* libexpat.a in Frameworks */,
-				04B75DBA12B80EC900161EB5 /* libfaad.a in Frameworks */,
-				04B75DBB12B80EC900161EB5 /* libmp4ff.a in Frameworks */,
-				04B75DBC12B80EC900161EB5 /* libSDLiPhoneOS.a in Frameworks */,
-				04B75DBD12B80EC900161EB5 /* libswscale.a in Frameworks */,
-				04B75DBE12B80EC900161EB5 /* libxml2.a in Frameworks */,
 				04B75DE112B80EED00161EB5 /* OpenGLES.framework in Frameworks */,
 				04B75DF012B80F1100161EB5 /* AudioToolbox.framework in Frameworks */,
 				04B75E2E12B80F5500161EB5 /* CoreText.framework in Frameworks */,
-				04B75E5512B80FDB00161EB5 /* libBasicUsageEnvironment.a in Frameworks */,
-				04B75E5712B80FEE00161EB5 /* libgroupsock.a in Frameworks */,
-				04B75E5912B80FF900161EB5 /* libliveMedia.a in Frameworks */,
-				04B75E5B12B8100200161EB5 /* libUsageEnvironment.a in Frameworks */,
 				04B75E6112B8104A00161EB5 /* ImageIO.framework in Frameworks */,
 				04B75E6B12B8106900161EB5 /* QuartzCore.framework in Frameworks */,
+				041E94EF12B81AC200399893 /* libambulantIPhone.a in Frameworks */,
+				041E94FD12B81CCF00399893 /* libBasicUsageEnvironment.a in Frameworks */,
+				041E94FF12B81CDF00399893 /* libgroupsock.a in Frameworks */,
+				041E950112B81CEC00399893 /* libliveMedia.a in Frameworks */,
+				041E950312B81CF500399893 /* libUsageEnvironment.a in Frameworks */,
+				041E950E12B81D1000399893 /* libavcodec.a in Frameworks */,
+				041E950F12B81D1000399893 /* libavdevice.a in Frameworks */,
+				041E951012B81D1000399893 /* libavformat.a in Frameworks */,
+				041E951112B81D1000399893 /* libavutil.a in Frameworks */,
+				041E951212B81D1000399893 /* libexpat.a in Frameworks */,
+				041E951312B81D1000399893 /* libfaad.a in Frameworks */,
+				041E951412B81D1000399893 /* libmp4ff.a in Frameworks */,
+				041E951512B81D1000399893 /* libSDLiPhoneOS.a in Frameworks */,
+				041E951612B81D1000399893 /* libswscale.a in Frameworks */,
+				041E951712B81D1000399893 /* libxml2.a in Frameworks */,
+				041E954912B825F200399893 /* libbz2.dylib in Frameworks */,
+				041E954D12B8260C00399893 /* libz.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -273,38 +281,22 @@
 		04B75DA512B80E5E00161EB5 /* third_party_packages */ = {
 			isa = PBXGroup;
 			children = (
-				04B75E5D12B8101100161EB5 /* device */,
-				04B75E5C12B8100800161EB5 /* simulator */,
+				041E950412B81D1000399893 /* libavcodec.a */,
+				041E950512B81D1000399893 /* libavdevice.a */,
+				041E950612B81D1000399893 /* libavformat.a */,
+				041E950712B81D1000399893 /* libavutil.a */,
+				041E950812B81D1000399893 /* libexpat.a */,
+				041E950912B81D1000399893 /* libfaad.a */,
+				041E950A12B81D1000399893 /* libmp4ff.a */,
+				041E950B12B81D1000399893 /* libSDLiPhoneOS.a */,
+				041E950C12B81D1000399893 /* libswscale.a */,
+				041E950D12B81D1000399893 /* libxml2.a */,
+				041E94FC12B81CCF00399893 /* libBasicUsageEnvironment.a */,
+				041E94FE12B81CDF00399893 /* libgroupsock.a */,
+				041E950012B81CEC00399893 /* libliveMedia.a */,
+				041E950212B81CF500399893 /* libUsageEnvironment.a */,
 			);
 			name = third_party_packages;
-			sourceTree = "<group>";
-		};
-		04B75E5C12B8100800161EB5 /* simulator */ = {
-			isa = PBXGroup;
-			children = (
-				04B75DAB12B80EC900161EB5 /* libavcodec.a */,
-				04B75DAC12B80EC900161EB5 /* libavdevice.a */,
-				04B75DAD12B80EC900161EB5 /* libavformat.a */,
-				04B75DAE12B80EC900161EB5 /* libavutil.a */,
-				04B75DAF12B80EC900161EB5 /* libexpat.a */,
-				04B75DB012B80EC900161EB5 /* libfaad.a */,
-				04B75DB112B80EC900161EB5 /* libmp4ff.a */,
-				04B75DB212B80EC900161EB5 /* libSDLiPhoneOS.a */,
-				04B75DB312B80EC900161EB5 /* libswscale.a */,
-				04B75DB412B80EC900161EB5 /* libxml2.a */,
-				04B75E5412B80FDB00161EB5 /* libBasicUsageEnvironment.a */,
-				04B75E5612B80FEE00161EB5 /* libgroupsock.a */,
-				04B75E5812B80FF900161EB5 /* libliveMedia.a */,
-				04B75E5A12B8100200161EB5 /* libUsageEnvironment.a */,
-			);
-			name = simulator;
-			sourceTree = "<group>";
-		};
-		04B75E5D12B8101100161EB5 /* device */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = device;
 			sourceTree = "<group>";
 		};
 		080E96DDFE201D6D7F000001 /* Classes */ = {
@@ -369,6 +361,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				041E94CB12B816EE00399893 /* Entitlements.plist */,
 				04B75D3812B80C2A00161EB5 /* data */,
 				04B75D4212B80C2A00161EB5 /* Welcome.smil */,
 				04B75D0712B80C0300161EB5 /* favorites.png */,
@@ -409,6 +402,8 @@
 				04B75DEF12B80F1100161EB5 /* AudioToolbox.framework */,
 				04B75E2D12B80F5500161EB5 /* CoreText.framework */,
 				04B75E6012B8104A00161EB5 /* ImageIO.framework */,
+				041E954812B825F200399893 /* libbz2.dylib */,
+				041E954C12B8260C00399893 /* libz.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -427,9 +422,9 @@
 			buildRules = (
 			);
 			dependencies = (
-				04B75D9812B80D2C00161EB5 /* PBXTargetDependency */,
-				04B75D9A12B80D2C00161EB5 /* PBXTargetDependency */,
-				04B75D9C12B80D2C00161EB5 /* PBXTargetDependency */,
+				041E94F512B81C7000399893 /* PBXTargetDependency */,
+				041E94F712B81C7000399893 /* PBXTargetDependency */,
+				041E94F912B81C7000399893 /* PBXTargetDependency */,
 			);
 			name = iAmbulant;
 			productName = iAmbulant;
@@ -531,6 +526,7 @@
 				04B75D3412B80C0400161EB5 /* Icon.png in Resources */,
 				04B75D4312B80C2A00161EB5 /* data in Resources */,
 				04B75D4412B80C2A00161EB5 /* Welcome.smil in Resources */,
+				041E94CC12B816EE00399893 /* Entitlements.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -557,20 +553,20 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		04B75D9812B80D2C00161EB5 /* PBXTargetDependency */ = {
+		041E94F512B81C7000399893 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = third_party_packages_iOS;
-			targetProxy = 04B75D9712B80D2C00161EB5 /* PBXContainerItemProxy */;
+			targetProxy = 041E94F412B81C7000399893 /* PBXContainerItemProxy */;
 		};
-		04B75D9A12B80D2C00161EB5 /* PBXTargetDependency */ = {
+		041E94F712B81C7000399893 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = third_party_packages_iOS_Simulator;
-			targetProxy = 04B75D9912B80D2C00161EB5 /* PBXContainerItemProxy */;
+			targetProxy = 041E94F612B81C7000399893 /* PBXContainerItemProxy */;
 		};
-		04B75D9C12B80D2C00161EB5 /* PBXTargetDependency */ = {
+		041E94F912B81C7000399893 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = libambulantiPhone;
-			targetProxy = 04B75D9B12B80D2C00161EB5 /* PBXContainerItemProxy */;
+			targetProxy = 041E94F812B81C7000399893 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -580,6 +576,7 @@
 			baseConfigurationReference = 04B75D6212B80C8300161EB5 /* ambulant-debug-iphone.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -588,14 +585,6 @@
 				GCC_PREFIX_HEADER = iAmbulant_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../../build-iOS-Simulator/third_party_packages/installed/lib\"",
-					"\"$(SRCROOT)/../../build-iOS-Simulator/third_party_packages/live/BasicUsageEnvironment\"",
-					"\"$(SRCROOT)/../../build-iOS-Simulator/third_party_packages/live/groupsock\"",
-					"\"$(SRCROOT)/../../build-iOS-Simulator/third_party_packages/live/liveMedia\"",
-					"\"$(SRCROOT)/../../build-iOS-Simulator/third_party_packages/live/UsageEnvironment\"",
-				);
 				PRODUCT_NAME = iAmbulant;
 			};
 			name = Debug;
@@ -605,6 +594,7 @@
 			baseConfigurationReference = 04B75D6512B80C8300161EB5 /* ambulant-release-iphone.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -618,6 +608,11 @@
 					"\"$(SRCROOT)/../../build-iOS-Simulator/third_party_packages/live/groupsock\"",
 					"\"$(SRCROOT)/../../build-iOS-Simulator/third_party_packages/live/liveMedia\"",
 					"\"$(SRCROOT)/../../build-iOS-Simulator/third_party_packages/live/UsageEnvironment\"",
+					"\"$(SRCROOT)/../../build-iOS/third_party_packages/live/BasicUsageEnvironment\"",
+					"\"$(SRCROOT)/../../build-iOS/third_party_packages/live/groupsock\"",
+					"\"$(SRCROOT)/../../build-iOS/third_party_packages/live/liveMedia\"",
+					"\"$(SRCROOT)/../../build-iOS/third_party_packages/live/UsageEnvironment\"",
+					"\"$(SRCROOT)/../../build-iOS/third_party_packages/installed/lib\"",
 				);
 				PRODUCT_NAME = iAmbulant;
 				VALIDATE_PRODUCT = YES;
