@@ -1,3 +1,50 @@
+2010-12-14 00:07  jackjansen
+
+	* Fixed up building of iOS 3pps"
+
+2010-12-13 23:53  jackjansen
+
+	* Fixed armv6/armv7 confusion
+
+2010-12-13 23:49  jackjansen
+
+	* Changed pathnames for some files
+
+2010-12-13 23:48  jackjansen
+
+	* Building for iOS no longer requires version to be passsed in
+	  argument: this is picked up from IPHONEOS_DEPLOYMENT_TARGET,
+	  which has to be set anyway. Also done for the live patches.
+
+2010-12-13 22:25  jackjansen
+
+	* Unfinished third-party-packages xcode wrapper
+
+2010-12-13 16:54  jackjansen
+
+	* Creating wrapper project around building the third party packages
+
+2010-12-13 16:46  keesblom
+
+	* Added some missing/moved files
+
+2010-12-13 13:52  jackjansen
+
+	* Static library build works
+
+2010-12-13 12:19  jackjansen
+
+	* Getting started on static library target
+
+2010-12-13 10:47  jackjansen
+
+	* Fixed GC project dependency
+
+2010-12-13 10:38  keesblom
+
+	* Added a 'Play' button replacing the 'Pause' button in the Control
+	  Panel whenever the playeris paused or stopped.
+
 2010-12-13 00:04  jackjansen
 
 	* Added targets for CG builds of ambulant
