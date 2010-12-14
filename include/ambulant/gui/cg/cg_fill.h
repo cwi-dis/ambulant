@@ -29,9 +29,6 @@
 #include "ambulant/smil2/transition.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/gui/cg/cg_renderer.h"
-#ifndef WITH_IPHONE
-#include <ApplicationServices/ApplicationServices.h>
-#endif//WITH_IPHONE
 
 namespace ambulant {
 
