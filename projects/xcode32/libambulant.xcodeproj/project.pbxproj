@@ -25,6 +25,84 @@
 		040703511152650C0094FB0B /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 040703501152650C0094FB0B /* QTKit.framework */; };
 		04070359115265220094FB0B /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04070358115265220094FB0B /* WebKit.framework */; };
 		040707161152847A0094FB0B /* libltdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 040707151152847A0094FB0B /* libltdl.a */; };
+		040DAAE612B790BB002C4DFD /* state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C97115194C10007DD71 /* state.cpp */; };
+		040DAAE712B790BB002C4DFD /* video_renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA1115194C10007DD71 /* video_renderer.cpp */; };
+		040DAAE812B790BB002C4DFD /* renderer_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C9D115194C10007DD71 /* renderer_impl.cpp */; };
+		040DAAE912B790BB002C4DFD /* smil_alignment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C9F115194C10007DD71 /* smil_alignment.cpp */; };
+		040DAAEA12B790BB002C4DFD /* factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C98115194C10007DD71 /* factory.cpp */; };
+		040DAAEB12B790BB002C4DFD /* schema.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C9E115194C10007DD71 /* schema.cpp */; };
+		040DAAEC12B790BB002C4DFD /* renderer_select.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C96115194C10007DD71 /* renderer_select.cpp */; };
+		040DAAED12B790BB002C4DFD /* plugin_engine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C9A115194C10007DD71 /* plugin_engine.cpp */; };
+		040DAAEE12B790BB002C4DFD /* preferences.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C9B115194C10007DD71 /* preferences.cpp */; };
+		040DAAEF12B790BB002C4DFD /* gui_player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C99115194C10007DD71 /* gui_player.cpp */; };
+		040DAAF012B790BB002C4DFD /* region.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C9C115194C10007DD71 /* region.cpp */; };
+		040DAAF112B790BB002C4DFD /* smil_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA0115194C10007DD71 /* smil_handler.cpp */; };
+		040DAAF212B790BB002C4DFD /* cg_fill.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA7115194C10007DD71 /* cg_fill.mm */; };
+		040DAAF312B790BB002C4DFD /* cg_gui.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA8115194C10007DD71 /* cg_gui.mm */; };
+		040DAAF412B790BB002C4DFD /* cg_renderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04791CAA115194C10007DD71 /* cg_renderer.mm */; };
+		040DAAF512B790BB002C4DFD /* cg_text.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04791CAB115194C10007DD71 /* cg_text.mm */; };
+		040DAAF612B790BB002C4DFD /* cg_smiltext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04A1E95912B585030060F97E /* cg_smiltext.mm */; };
+		040DAAF712B790BB002C4DFD /* cg_dsvideo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA6115194C10007DD71 /* cg_dsvideo.mm */; };
+		040DAAF812B790BB002C4DFD /* cg_image.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA9115194C10007DD71 /* cg_image.mm */; };
+		040DAAF912B790BB002C4DFD /* none_area.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CDD115194C10007DD71 /* none_area.cpp */; };
+		040DAAFA12B790BB002C4DFD /* none_video_renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CE0115194C10007DD71 /* none_video_renderer.cpp */; };
+		040DAAFB12B790BB002C4DFD /* none_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CDE115194C10007DD71 /* none_factory.cpp */; };
+		040DAAFC12B790BB002C4DFD /* none_gui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CDF115194C10007DD71 /* none_gui.cpp */; };
+		040DAAFD12B790BB002C4DFD /* sdl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CED115194C10007DD71 /* sdl.cpp */; };
+		040DAAFE12B790BB002C4DFD /* sdl_audio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CEE115194C10007DD71 /* sdl_audio.cpp */; };
+		040DAAFF12B790BB002C4DFD /* event_processor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CF4115194C10007DD71 /* event_processor.cpp */; };
+		040DAB0012B790BB002C4DFD /* node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CFA115194C10007DD71 /* node.cpp */; };
+		040DAB0112B790BB002C4DFD /* delta_timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CF2115194C10007DD71 /* delta_timer.cpp */; };
+		040DAB0212B790BB002C4DFD /* document.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CF3115194C10007DD71 /* document.cpp */; };
+		040DAB0312B790BB002C4DFD /* nfa.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CF9115194C10007DD71 /* nfa.cpp */; };
+		040DAB0412B790BB002C4DFD /* expat_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CF5115194C10007DD71 /* expat_parser.cpp */; };
+		040DAB0512B790BB002C4DFD /* nscontext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CF0115194C10007DD71 /* nscontext.cpp */; };
+		040DAB0612B790BB002C4DFD /* transition_info.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D00115194C10007DD71 /* transition_info.cpp */; };
+		040DAB0712B790BB002C4DFD /* gpaths.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CF6115194C10007DD71 /* gpaths.cpp */; };
+		040DAB0812B790BB002C4DFD /* string_util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CFE115194C10007DD71 /* string_util.cpp */; };
+		040DAB0912B790BB002C4DFD /* parser_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CFD115194C10007DD71 /* parser_factory.cpp */; };
+		040DAB0A12B790BB002C4DFD /* parselets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CFC115194C10007DD71 /* parselets.cpp */; };
+		040DAB0B12B790BB002C4DFD /* xerces_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D0C115194C10007DD71 /* xerces_parser.cpp */; };
+		040DAB0C12B790BB002C4DFD /* colors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CF1115194C10007DD71 /* colors.cpp */; };
+		040DAB0D12B790BB002C4DFD /* unix_timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D05115194C10007DD71 /* unix_timer.cpp */; };
+		040DAB0E12B790BB002C4DFD /* timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CFF115194C10007DD71 /* timer.cpp */; };
+		040DAB0F12B790BB002C4DFD /* unix_thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D04115194C10007DD71 /* unix_thread.cpp */; };
+		040DAB1012B790BB002C4DFD /* logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CF7115194C10007DD71 /* logger.cpp */; };
+		040DAB1112B790BB002C4DFD /* unix_mtsync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D03115194C10007DD71 /* unix_mtsync.cpp */; };
+		040DAB1212B790BB002C4DFD /* tree_builder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D01115194C10007DD71 /* tree_builder.cpp */; };
+		040DAB1312B790BB002C4DFD /* memfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CF8115194C10007DD71 /* memfile.cpp */; };
+		040DAB1412B790BB002C4DFD /* rtsp_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D17115194C10007DD71 /* rtsp_datasource.cpp */; };
+		040DAB1512B790BB002C4DFD /* ffmpeg_common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D13115194C10007DD71 /* ffmpeg_common.cpp */; };
+		040DAB1612B790BB002C4DFD /* ffmpeg_video.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D15115194C10007DD71 /* ffmpeg_video.cpp */; };
+		040DAB1712B790BB002C4DFD /* stdio_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D19115194C10007DD71 /* stdio_datasource.cpp */; };
+		040DAB1812B790BB002C4DFD /* databuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D0F115194C10007DD71 /* databuffer.cpp */; };
+		040DAB1912B790BB002C4DFD /* ffmpeg_raw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D14115194C10007DD71 /* ffmpeg_raw.cpp */; };
+		040DAB1A12B790BB002C4DFD /* ffmpeg_audio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D12115194C10007DD71 /* ffmpeg_audio.cpp */; };
+		040DAB1B12B790BB002C4DFD /* url.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D1A115194C10007DD71 /* url.cpp */; };
+		040DAB1C12B790BB002C4DFD /* demux_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D11115194C10007DD71 /* demux_datasource.cpp */; };
+		040DAB1D12B790BB002C4DFD /* rtsp_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D18115194C10007DD71 /* rtsp_factory.cpp */; };
+		040DAB1E12B790BB002C4DFD /* datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D10115194C10007DD71 /* datasource.cpp */; };
+		040DAB1F12B790BB002C4DFD /* animate_e.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D1F115194C10007DD71 /* animate_e.cpp */; };
+		040DAB2012B790BB002C4DFD /* time_sched.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D2B115194C10007DD71 /* time_sched.cpp */; };
+		040DAB2112B790BB002C4DFD /* test_attrs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D27115194C10007DD71 /* test_attrs.cpp */; };
+		040DAB2212B790BB002C4DFD /* animate_n.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D20115194C10007DD71 /* animate_n.cpp */; };
+		040DAB2312B790BB002C4DFD /* time_state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D2C115194C10007DD71 /* time_state.cpp */; };
+		040DAB2412B790BB002C4DFD /* time_calc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D29115194C10007DD71 /* time_calc.cpp */; };
+		040DAB2512B790BB002C4DFD /* trace_player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D2E115194C10007DD71 /* trace_player.cpp */; };
+		040DAB2612B790BB002C4DFD /* smil_time.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D25115194C10007DD71 /* smil_time.cpp */; };
+		040DAB2712B790BB002C4DFD /* sync_rule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D26115194C10007DD71 /* sync_rule.cpp */; };
+		040DAB2812B790BB002C4DFD /* smil_layout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D23115194C10007DD71 /* smil_layout.cpp */; };
+		040DAB2912B790BB002C4DFD /* smil_player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D24115194C10007DD71 /* smil_player.cpp */; };
+		040DAB2A12B790BB002C4DFD /* smiltext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D1D115194C10007DD71 /* smiltext.cpp */; };
+		040DAB2B12B790BB002C4DFD /* time_attrs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D28115194C10007DD71 /* time_attrs.cpp */; };
+		040DAB2C12B790BB002C4DFD /* params.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D21115194C10007DD71 /* params.cpp */; };
+		040DAB2D12B790BB002C4DFD /* transition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D2F115194C10007DD71 /* transition.cpp */; };
+		040DAB2E12B790BB002C4DFD /* region_node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D22115194C10007DD71 /* region_node.cpp */; };
+		040DAB2F12B790BB002C4DFD /* timegraph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D2D115194C10007DD71 /* timegraph.cpp */; };
+		040DAB3012B790BB002C4DFD /* animate_a.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D1E115194C10007DD71 /* animate_a.cpp */; };
+		040DAB3112B790BB002C4DFD /* time_node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D2A115194C10007DD71 /* time_node.cpp */; };
+		040DAB3212B790BB002C4DFD /* posix_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D16115194C10007DD71 /* posix_datasource.cpp */; };
+		040DAB3312B790BB002C4DFD /* get_version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA2115194C10007DD71 /* get_version.cpp */; };
 		041DCB3D12B64D75003407C8 /* posix_datasource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D16115194C10007DD71 /* posix_datasource.cpp */; };
 		041DCB3E12B64D8E003407C8 /* get_version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791CA2115194C10007DD71 /* get_version.cpp */; };
 		04791D30115194C10007DD71 /* renderer_select.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791C96115194C10007DD71 /* renderer_select.cpp */; };
@@ -308,6 +386,20 @@
 			remoteGlobalIDString = 041DCBD712B65714003407C8;
 			remoteInfo = third_party_packages_3264;
 		};
+		04B75BA812B79E6600161EB5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 041DCBEA12B662D9003407C8 /* third_party_packages.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 041DCBF612B6770B003407C8;
+			remoteInfo = third_party_packages_iOS;
+		};
+		04B75BAA12B79E6C00161EB5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 041DCBEA12B662D9003407C8 /* third_party_packages.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 041DCC0712B6777A003407C8;
+			remoteInfo = third_party_packages_iOS_Simulator;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -328,11 +420,9 @@
 		0407034E115264F30094FB0B /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
 		040703501152650C0094FB0B /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
 		04070358115265220094FB0B /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
-		0407064611526D070094FB0B /* ambulant-debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "ambulant-debug.xcconfig"; sourceTree = "<group>"; };
 		040707151152847A0094FB0B /* libltdl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libltdl.a; path = /usr/lib/libltdl.a; sourceTree = "<absolute>"; };
+		040DAB3812B790BB002C4DFD /* liblibambulantIPhone.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblibambulantIPhone.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		041DCBEA12B662D9003407C8 /* third_party_packages.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = third_party_packages.xcodeproj; sourceTree = "<group>"; };
-		04791AE2115193EB0007DD71 /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "ambulant-common.xcconfig"; sourceTree = "<group>"; };
-		04791AE3115193EB0007DD71 /* ambulant-release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "ambulant-release.xcconfig"; sourceTree = "<group>"; };
 		04791B821151943B0007DD71 /* renderer_select.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderer_select.h; sourceTree = "<group>"; };
 		04791B831151943B0007DD71 /* state.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = state.h; sourceTree = "<group>"; };
 		04791B841151943B0007DD71 /* embedder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = embedder.h; sourceTree = "<group>"; };
@@ -727,9 +817,16 @@
 		04791D2E115194C10007DD71 /* trace_player.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = trace_player.cpp; sourceTree = "<group>"; };
 		04791D2F115194C10007DD71 /* transition.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = transition.cpp; sourceTree = "<group>"; };
 		04A1E87512B57DF20060F97E /* libambulantGC.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libambulantGC.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
-		04A1E87912B57E2E0060F97E /* ambulant-debug-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "ambulant-debug-cg.xcconfig"; sourceTree = "<group>"; };
-		04A1E87A12B57E2E0060F97E /* ambulant-release-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "ambulant-release-cg.xcconfig"; sourceTree = "<group>"; };
 		04A1E95912B585030060F97E /* cg_smiltext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = cg_smiltext.mm; path = cg/cg_smiltext.mm; sourceTree = "<group>"; };
+		04B75B6A12B79C8900161EB5 /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-common.xcconfig"; path = "config/ambulant-common.xcconfig"; sourceTree = "<group>"; };
+		04B75B6B12B79C8900161EB5 /* ambulant-debug-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-debug-cg.xcconfig"; path = "config/ambulant-debug-cg.xcconfig"; sourceTree = "<group>"; };
+		04B75B6C12B79C8900161EB5 /* ambulant-debug-iphone.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-debug-iphone.xcconfig"; path = "config/ambulant-debug-iphone.xcconfig"; sourceTree = "<group>"; };
+		04B75B6D12B79C8900161EB5 /* ambulant-debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-debug.xcconfig"; path = "config/ambulant-debug.xcconfig"; sourceTree = "<group>"; };
+		04B75B6E12B79C8900161EB5 /* ambulant-iphone.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-iphone.xcconfig"; path = "config/ambulant-iphone.xcconfig"; sourceTree = "<group>"; };
+		04B75B6F12B79C8900161EB5 /* ambulant-mac.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-mac.xcconfig"; path = "config/ambulant-mac.xcconfig"; sourceTree = "<group>"; };
+		04B75B7012B79C8900161EB5 /* ambulant-release-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-release-cg.xcconfig"; path = "config/ambulant-release-cg.xcconfig"; sourceTree = "<group>"; };
+		04B75B7112B79C8900161EB5 /* ambulant-release-iphone.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-release-iphone.xcconfig"; path = "config/ambulant-release-iphone.xcconfig"; sourceTree = "<group>"; };
+		04B75B7212B79C8900161EB5 /* ambulant-release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-release.xcconfig"; path = "config/ambulant-release.xcconfig"; sourceTree = "<group>"; };
 		04D71F8312B628210064FBCB /* liblibambulantCGstatic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblibambulantCGstatic.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		0867D69BFE84028FC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		0867D6A5FE840307C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -740,6 +837,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		040DAB3412B790BB002C4DFD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		04A1E85E12B57DF20060F97E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -808,6 +912,7 @@
 				D2AAC0C705546C1D00DB518D /* libambulant.dylib */,
 				04A1E87512B57DF20060F97E /* libambulantGC.dylib */,
 				04D71F8312B628210064FBCB /* liblibambulantCGstatic.a */,
+				040DAB3812B790BB002C4DFD /* liblibambulantIPhone.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -851,11 +956,15 @@
 		04791AE1115193DF0007DD71 /* Configuration Files */ = {
 			isa = PBXGroup;
 			children = (
-				04A1E87912B57E2E0060F97E /* ambulant-debug-cg.xcconfig */,
-				04A1E87A12B57E2E0060F97E /* ambulant-release-cg.xcconfig */,
-				0407064611526D070094FB0B /* ambulant-debug.xcconfig */,
-				04791AE2115193EB0007DD71 /* ambulant-common.xcconfig */,
-				04791AE3115193EB0007DD71 /* ambulant-release.xcconfig */,
+				04B75B6A12B79C8900161EB5 /* ambulant-common.xcconfig */,
+				04B75B6F12B79C8900161EB5 /* ambulant-mac.xcconfig */,
+				04B75B6E12B79C8900161EB5 /* ambulant-iphone.xcconfig */,
+				04B75B6D12B79C8900161EB5 /* ambulant-debug.xcconfig */,
+				04B75B6B12B79C8900161EB5 /* ambulant-debug-cg.xcconfig */,
+				04B75B6C12B79C8900161EB5 /* ambulant-debug-iphone.xcconfig */,
+				04B75B7212B79C8900161EB5 /* ambulant-release.xcconfig */,
+				04B75B7012B79C8900161EB5 /* ambulant-release-cg.xcconfig */,
+				04B75B7112B79C8900161EB5 /* ambulant-release-iphone.xcconfig */,
 			);
 			name = "Configuration Files";
 			sourceTree = "<group>";
@@ -1631,6 +1740,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		040DAAE412B790BB002C4DFD /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		04A1E80912B57DF20060F97E /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -1655,6 +1771,25 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		040DAAE112B790BB002C4DFD /* libambulantiPhone */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 040DAB3512B790BB002C4DFD /* Build configuration list for PBXNativeTarget "libambulantiPhone" */;
+			buildPhases = (
+				040DAAE412B790BB002C4DFD /* Headers */,
+				040DAAE512B790BB002C4DFD /* Sources */,
+				040DAB3412B790BB002C4DFD /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				04B75BA912B79E6600161EB5 /* PBXTargetDependency */,
+				04B75BAB12B79E6C00161EB5 /* PBXTargetDependency */,
+			);
+			name = libambulantiPhone;
+			productName = libambulantCGstatic;
+			productReference = 040DAB3812B790BB002C4DFD /* liblibambulantIPhone.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		04A1E80812B57DF20060F97E /* libambulantCG */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 04A1E87212B57DF20060F97E /* Build configuration list for PBXNativeTarget "libambulantCG" */;
@@ -1738,11 +1873,97 @@
 				D2AAC0C605546C1D00DB518D /* libambulant */,
 				04A1E80812B57DF20060F97E /* libambulantCG */,
 				04D71F8212B628210064FBCB /* libambulantCGstatic */,
+				040DAAE112B790BB002C4DFD /* libambulantiPhone */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		040DAAE512B790BB002C4DFD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				040DAAE612B790BB002C4DFD /* state.cpp in Sources */,
+				040DAAE712B790BB002C4DFD /* video_renderer.cpp in Sources */,
+				040DAAE812B790BB002C4DFD /* renderer_impl.cpp in Sources */,
+				040DAAE912B790BB002C4DFD /* smil_alignment.cpp in Sources */,
+				040DAAEA12B790BB002C4DFD /* factory.cpp in Sources */,
+				040DAAEB12B790BB002C4DFD /* schema.cpp in Sources */,
+				040DAAEC12B790BB002C4DFD /* renderer_select.cpp in Sources */,
+				040DAAED12B790BB002C4DFD /* plugin_engine.cpp in Sources */,
+				040DAAEE12B790BB002C4DFD /* preferences.cpp in Sources */,
+				040DAAEF12B790BB002C4DFD /* gui_player.cpp in Sources */,
+				040DAAF012B790BB002C4DFD /* region.cpp in Sources */,
+				040DAAF112B790BB002C4DFD /* smil_handler.cpp in Sources */,
+				040DAAF212B790BB002C4DFD /* cg_fill.mm in Sources */,
+				040DAAF312B790BB002C4DFD /* cg_gui.mm in Sources */,
+				040DAAF412B790BB002C4DFD /* cg_renderer.mm in Sources */,
+				040DAAF512B790BB002C4DFD /* cg_text.mm in Sources */,
+				040DAAF612B790BB002C4DFD /* cg_smiltext.mm in Sources */,
+				040DAAF712B790BB002C4DFD /* cg_dsvideo.mm in Sources */,
+				040DAAF812B790BB002C4DFD /* cg_image.mm in Sources */,
+				040DAAF912B790BB002C4DFD /* none_area.cpp in Sources */,
+				040DAAFA12B790BB002C4DFD /* none_video_renderer.cpp in Sources */,
+				040DAAFB12B790BB002C4DFD /* none_factory.cpp in Sources */,
+				040DAAFC12B790BB002C4DFD /* none_gui.cpp in Sources */,
+				040DAAFD12B790BB002C4DFD /* sdl.cpp in Sources */,
+				040DAAFE12B790BB002C4DFD /* sdl_audio.cpp in Sources */,
+				040DAAFF12B790BB002C4DFD /* event_processor.cpp in Sources */,
+				040DAB0012B790BB002C4DFD /* node.cpp in Sources */,
+				040DAB0112B790BB002C4DFD /* delta_timer.cpp in Sources */,
+				040DAB0212B790BB002C4DFD /* document.cpp in Sources */,
+				040DAB0312B790BB002C4DFD /* nfa.cpp in Sources */,
+				040DAB0412B790BB002C4DFD /* expat_parser.cpp in Sources */,
+				040DAB0512B790BB002C4DFD /* nscontext.cpp in Sources */,
+				040DAB0612B790BB002C4DFD /* transition_info.cpp in Sources */,
+				040DAB0712B790BB002C4DFD /* gpaths.cpp in Sources */,
+				040DAB0812B790BB002C4DFD /* string_util.cpp in Sources */,
+				040DAB0912B790BB002C4DFD /* parser_factory.cpp in Sources */,
+				040DAB0A12B790BB002C4DFD /* parselets.cpp in Sources */,
+				040DAB0B12B790BB002C4DFD /* xerces_parser.cpp in Sources */,
+				040DAB0C12B790BB002C4DFD /* colors.cpp in Sources */,
+				040DAB0D12B790BB002C4DFD /* unix_timer.cpp in Sources */,
+				040DAB0E12B790BB002C4DFD /* timer.cpp in Sources */,
+				040DAB0F12B790BB002C4DFD /* unix_thread.cpp in Sources */,
+				040DAB1012B790BB002C4DFD /* logger.cpp in Sources */,
+				040DAB1112B790BB002C4DFD /* unix_mtsync.cpp in Sources */,
+				040DAB1212B790BB002C4DFD /* tree_builder.cpp in Sources */,
+				040DAB1312B790BB002C4DFD /* memfile.cpp in Sources */,
+				040DAB1412B790BB002C4DFD /* rtsp_datasource.cpp in Sources */,
+				040DAB1512B790BB002C4DFD /* ffmpeg_common.cpp in Sources */,
+				040DAB1612B790BB002C4DFD /* ffmpeg_video.cpp in Sources */,
+				040DAB1712B790BB002C4DFD /* stdio_datasource.cpp in Sources */,
+				040DAB1812B790BB002C4DFD /* databuffer.cpp in Sources */,
+				040DAB1912B790BB002C4DFD /* ffmpeg_raw.cpp in Sources */,
+				040DAB1A12B790BB002C4DFD /* ffmpeg_audio.cpp in Sources */,
+				040DAB1B12B790BB002C4DFD /* url.cpp in Sources */,
+				040DAB1C12B790BB002C4DFD /* demux_datasource.cpp in Sources */,
+				040DAB1D12B790BB002C4DFD /* rtsp_factory.cpp in Sources */,
+				040DAB1E12B790BB002C4DFD /* datasource.cpp in Sources */,
+				040DAB1F12B790BB002C4DFD /* animate_e.cpp in Sources */,
+				040DAB2012B790BB002C4DFD /* time_sched.cpp in Sources */,
+				040DAB2112B790BB002C4DFD /* test_attrs.cpp in Sources */,
+				040DAB2212B790BB002C4DFD /* animate_n.cpp in Sources */,
+				040DAB2312B790BB002C4DFD /* time_state.cpp in Sources */,
+				040DAB2412B790BB002C4DFD /* time_calc.cpp in Sources */,
+				040DAB2512B790BB002C4DFD /* trace_player.cpp in Sources */,
+				040DAB2612B790BB002C4DFD /* smil_time.cpp in Sources */,
+				040DAB2712B790BB002C4DFD /* sync_rule.cpp in Sources */,
+				040DAB2812B790BB002C4DFD /* smil_layout.cpp in Sources */,
+				040DAB2912B790BB002C4DFD /* smil_player.cpp in Sources */,
+				040DAB2A12B790BB002C4DFD /* smiltext.cpp in Sources */,
+				040DAB2B12B790BB002C4DFD /* time_attrs.cpp in Sources */,
+				040DAB2C12B790BB002C4DFD /* params.cpp in Sources */,
+				040DAB2D12B790BB002C4DFD /* transition.cpp in Sources */,
+				040DAB2E12B790BB002C4DFD /* region_node.cpp in Sources */,
+				040DAB2F12B790BB002C4DFD /* timegraph.cpp in Sources */,
+				040DAB3012B790BB002C4DFD /* animate_a.cpp in Sources */,
+				040DAB3112B790BB002C4DFD /* time_node.cpp in Sources */,
+				040DAB3212B790BB002C4DFD /* posix_datasource.cpp in Sources */,
+				040DAB3312B790BB002C4DFD /* get_version.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		04A1E80A12B57DF20060F97E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2021,12 +2242,76 @@
 			name = third_party_packages_3264;
 			targetProxy = 041DCBF212B66307003407C8 /* PBXContainerItemProxy */;
 		};
+		04B75BA912B79E6600161EB5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = third_party_packages_iOS;
+			targetProxy = 04B75BA812B79E6600161EB5 /* PBXContainerItemProxy */;
+		};
+		04B75BAB12B79E6C00161EB5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = third_party_packages_iOS_Simulator;
+			targetProxy = 04B75BAA12B79E6C00161EB5 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		040DAB3612B790BB002C4DFD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 04B75B6C12B79C8900161EB5 /* ambulant-debug-iphone.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = libambulant_Prefix.pch;
+				INSTALL_PATH = /usr/local/lib;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = libambulantIPhone;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		040DAB3712B790BB002C4DFD /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 04B75B7112B79C8900161EB5 /* ambulant-release-iphone.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = libambulant_Prefix.pch;
+				INSTALL_PATH = /usr/local/lib;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = libambulantIPhone;
+				SDKROOT = iphoneos;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 		04A1E87312B57DF20060F97E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 04A1E87912B57E2E0060F97E /* ambulant-debug-cg.xcconfig */;
+			baseConfigurationReference = 04B75B6B12B79C8900161EB5 /* ambulant-debug-cg.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
@@ -2053,7 +2338,7 @@
 		};
 		04A1E87412B57DF20060F97E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 04A1E87A12B57E2E0060F97E /* ambulant-release-cg.xcconfig */;
+			baseConfigurationReference = 04B75B7012B79C8900161EB5 /* ambulant-release-cg.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -2077,7 +2362,7 @@
 		};
 		04D71F8412B628220064FBCB /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 04A1E87912B57E2E0060F97E /* ambulant-debug-cg.xcconfig */;
+			baseConfigurationReference = 04B75B6B12B79C8900161EB5 /* ambulant-debug-cg.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
@@ -2101,7 +2386,7 @@
 		};
 		04D71F8512B628220064FBCB /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 04A1E87A12B57E2E0060F97E /* ambulant-release-cg.xcconfig */;
+			baseConfigurationReference = 04B75B7012B79C8900161EB5 /* ambulant-release-cg.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
@@ -2125,7 +2410,7 @@
 		};
 		1DEB917E08733D990010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0407064611526D070094FB0B /* ambulant-debug.xcconfig */;
+			baseConfigurationReference = 04B75B6D12B79C8900161EB5 /* ambulant-debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
@@ -2152,7 +2437,7 @@
 		};
 		1DEB917F08733D990010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 04791AE3115193EB0007DD71 /* ambulant-release.xcconfig */;
+			baseConfigurationReference = 04B75B7212B79C8900161EB5 /* ambulant-release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -2176,7 +2461,7 @@
 		};
 		1DEB918208733D990010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 04791AE2115193EB0007DD71 /* ambulant-common.xcconfig */;
+			baseConfigurationReference = 04B75B6A12B79C8900161EB5 /* ambulant-common.xcconfig */;
 			buildSettings = {
 				ARCHS = (
 					x86_64,
@@ -2194,7 +2479,7 @@
 		};
 		1DEB918308733D990010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 04791AE2115193EB0007DD71 /* ambulant-common.xcconfig */;
+			baseConfigurationReference = 04B75B6A12B79C8900161EB5 /* ambulant-common.xcconfig */;
 			buildSettings = {
 				ARCHS = (
 					x86_64,
@@ -2204,13 +2489,22 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		040DAB3512B790BB002C4DFD /* Build configuration list for PBXNativeTarget "libambulantiPhone" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				040DAB3612B790BB002C4DFD /* Debug */,
+				040DAB3712B790BB002C4DFD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		04A1E87212B57DF20060F97E /* Build configuration list for PBXNativeTarget "libambulantCG" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
