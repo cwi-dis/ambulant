@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AmbulantWebViewController.h"
+//JNK #import "AmbulantWebViewController.h"
+#import "PresentationViewController.h"
 
 @class AmbulantViewController;
 
@@ -15,7 +16,7 @@
     UIWindow *window;
 	IBOutlet UITabBarController* tabBarController;
     AmbulantViewController *viewController;
-    AmbulantWebViewController *webViewController;
+//JNK    AmbulantWebViewController *webViewController;
 }
 - (void) openWebLink: (NSString*) url;
 
@@ -29,7 +30,7 @@
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet UITabBarController* tabBarController;
 @property (nonatomic, retain) IBOutlet AmbulantViewController *viewController;
-@property (nonatomic, retain) IBOutlet AmbulantWebViewController* webViewController;
+//JNK @property (nonatomic, retain) IBOutlet AmbulantWebViewController* webViewController;
 @end
 #ifdef GLOB_DBG
 extern char* DBG[];

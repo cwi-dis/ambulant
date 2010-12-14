@@ -43,8 +43,7 @@ private:
 	IBOutlet AmbulantView* playerView;
 	IBOutlet UIView* interactionView;
 	IBOutlet UIButton* playPauseButton;
-//JNK	IBOutlet UITabBar* modeBar;
-//JNK	IBOutlet UITextField* URLEntryField;
+	PresentationViewController* currentPresentationTable;
 	CGRect originalPlayerViewFrame, originalInteractionViewFrame;
 	NSMutableString* playURL;
 	NSMutableString* linkURL;
@@ -57,28 +56,28 @@ private:
 }
 - (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation) interfaceOrientation;
 - (BOOL) isSupportedOrientation: (UIDeviceOrientation) orientation;
+- (void) handleDoubleTapGesture:(UITapGestureRecognizer*) sender;
+- (void) handleTapGesture:(UITapGestureRecognizer*) sender;
+- (void) handleLongPressGesture:(UILongPressGestureRecognizer *)sender;
+- (void) handlePanGesture:(UIPanGestureRecognizer*) sender;
+- (void) handlePinchGesture:(UIGestureRecognizer*) sender;
+- (IBAction) showHistory:(id)sender;
+- (IBAction) handleRestartTapped;
 - (IBAction) handlePlayOrPauseTapped;
-- (IBAction) handlePauseTapped; //JNK
-- (IBAction) handleStopTapped; //JNK
-- (IBAction) handleURLEntered; //JNK
-- (IBAction) handleDoubleTapGesture:(UITapGestureRecognizer*) sender;
-- (IBAction) handleTapGesture:(UITapGestureRecognizer*) sender;
-- (IBAction) handleLongPressGesture:(UILongPressGestureRecognizer *)sender;
-- (IBAction) handlePanGesture:(UIPanGestureRecognizer*) sender;
-- (IBAction) handlePinchGesture:(UIGestureRecognizer*) sender;
-- (IBAction) showHistory:(id)sender; //JNK
-- (IBAction) showSettings:(id)sender;//JNK
+- (IBAction) playNextItem;
 - (IBAction) addFavorites:(id)sender;
-- (IBAction) close:(id) str;
 - (void) pause;
 - (void) play;
-//JNK - (IBAction) textFieldTextDidChange;
 - (PlaylistItem*) currentItem;
 - (void) initialize_after_crashing;
 - (void) doPlayURL:(NSString*) ns_node_repr;
 - (void) showInteractionView: (BOOL) on;
+//JNK - (IBAction) close:(id) str;
+//JNK - (IBAction) handlePauseTapped;
+//JNK - (IBAction) handleStopTapped;
+//JNK - (void) handleURLEntered; 
+//JNK - (IBAction) showSettings:(id)sender;
 
-//JNK @property(nonatomic,retain) IBOutlet UITextField* URLEntryField;
 @property(nonatomic,retain) IBOutlet AmbulantAppDelegate* delegate;
 @property(nonatomic,retain) PresentationViewController* historyViewController;
 @property(nonatomic,retain)	IBOutlet AmbulantView* playerView;

@@ -61,5 +61,6 @@ class mainloop :
 	ambulant::common::gui_screen *m_gui_screen;
 	std::list<const ambulant::lib::node*> m_nodes;
 	void print_nodes();
+	bool m_restarting; // during the 'restart' operation 'document_stopped' is disabled
 	NSString* get_meta_content(const char* name);
 };

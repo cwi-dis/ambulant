@@ -29,4 +29,6 @@
 - (void) presentationViewControllerDidFinish: (PresentationViewController *)controller;
 - (void) setHistoryViewController: (PresentationViewController*) controller;
 - (void) settingsHaveChanged: (UIViewController*) controller;
+- (void) showAmbulantPlayer: (id) sender;
+- (void) showPresentationViews: (id) sender;
 @end

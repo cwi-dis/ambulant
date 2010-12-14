@@ -79,7 +79,7 @@ initialize_logger()
 @synthesize window;
 @synthesize tabBarController;
 @synthesize viewController;
-@synthesize webViewController;
+//JNK @synthesize webViewController;
 
 
 #pragma mark -
@@ -258,7 +258,9 @@ applicationDidEnterBackground:(UIApplication *)application {
 	 when the user quits.
      */
 	AM_DBG NSLog(@"AmbulantAppDelegate applicationDidEnterBackground");
-	//XXXX TBD: store state
+	// save current state
+	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
+	prefs->save_preferences();
 	if (viewController != NULL && viewController.myMainloop != NULL) {
 		viewController.myMainloop->pause();
 	}
@@ -273,12 +275,14 @@ applicationWillEnterForeground:(UIApplication *)application {
 	 here you can undo many of the changes made on entering the background.
 	 */
 	AM_DBG NSLog(@"AmbulantAppDelegate applicationWillEnterForeground");
-	//XXXX TBD: restore state
+	// restore state
+	// ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
+	NSString* ns_node_repr = NULL;// [prefs->m_history->get_last_item m_last_node];
 	if (viewController != NULL && viewController.myMainloop != NULL) {
 		viewController.myMainloop->play();
 	} else {
 		if (viewController != NULL) {
-			[self.viewController handleURLEntered];
+			[self.viewController doPlayURL: ns_node_repr];
 		}
 	}
 	ambulant::iOSpreferences::delete_preferences_singleton();
@@ -302,7 +306,7 @@ applicationDidBecomeActive:(UIApplication *)application {
 		}
 	} else {
 		if (viewController != NULL && self.viewController.playURL != NULL) {
-			[self.viewController handleURLEntered];
+			[self.viewController doPlayURL:NULL]; //[prefs->m_history.last_item() m_ns_noder_repr];
 		}
 	}
 }

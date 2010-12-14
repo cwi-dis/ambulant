@@ -62,7 +62,8 @@ mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *a
 	m_view(view),
 	m_gui_screen(NULL),
 	m_nsurl(NULL),
-	m_current_item(NULL)
+	m_current_item(NULL),
+	m_restarting(false)
 {
 
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -305,7 +306,7 @@ mainloop::~mainloop()
 	if (nodes_iterator != m_nodes.begin()) {
 		nodes_iterator--;	// need the one just before end()
 		const ambulant::lib::node* last_active_node = *nodes_iterator;
-		/*AM_DBG*/ lib::logger::get_logger()->debug("last_active_node(%s)", last_active_node->get_sig().c_str());
+		AM_DBG lib::logger::get_logger()->debug("last_active_node(%s)", last_active_node->get_sig().c_str());
 		lib::xml_string last_node_repr = last_active_node->get_xpath();
 		NSString* ns_last_node_repr = [NSString stringWithUTF8String: last_node_repr.c_str()];
 		PlaylistItem* last_item = iOSpreferences::get_preferences()->m_history->get_last_item();
@@ -341,8 +342,11 @@ mainloop::~mainloop()
 void
 mainloop::restart(bool reparse)
 {
+	m_restarting = true;
+	
 	bool playing = is_play_active();
 	bool pausing = is_pause_active();
+
 	stop();
 	
     if (m_player) {
@@ -366,6 +370,8 @@ mainloop::restart(bool reparse)
 
 	if (playing || pausing) play();
 	if (pausing) pause();
+	
+	m_restarting = false;
 }
 
 common::gui_screen *
@@ -492,6 +498,9 @@ void
 mainloop::document_stopped()
 {
 	AM_DBG NSLog(@"document_stopped");
+	if (m_restarting) {
+		return;
+	}
 	AmbulantAppDelegate* am_delegate = (AmbulantAppDelegate*)[[UIApplication sharedApplication] delegate];
 	[am_delegate performSelectorOnMainThread: @selector(document_stopped:) withObject: NULL waitUntilDone:NO];
 }
