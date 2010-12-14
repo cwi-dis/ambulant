@@ -75,21 +75,21 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 04B75D7012B80CFE00161EB5 /* third_party_packages.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 041DCBF612B6770B003407C8 /* third_party_packages_iOS */;
+			remoteGlobalIDString = 041DCBF612B6770B003407C8;
 			remoteInfo = third_party_packages_iOS;
 		};
 		041E94F612B81C7000399893 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 04B75D7012B80CFE00161EB5 /* third_party_packages.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 041DCC0712B6777A003407C8 /* third_party_packages_iOS_Simulator */;
+			remoteGlobalIDString = 041DCC0712B6777A003407C8;
 			remoteInfo = third_party_packages_iOS_Simulator;
 		};
 		041E94F812B81C7000399893 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 04B75D7812B80D1000161EB5 /* libambulant.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 040DAAE112B790BB002C4DFD /* libambulantiPhone */;
+			remoteGlobalIDString = 040DAAE112B790BB002C4DFD;
 			remoteInfo = libambulantiPhone;
 		};
 		04B75D8F12B80D1300161EB5 /* PBXContainerItemProxy */ = {
@@ -320,7 +320,8 @@
 				04B75CFB12B80B9800161EB5 /* SettingsViewController.h */,
 				04B75CFC12B80B9800161EB5 /* SettingsViewController.mm */,
 			);
-			path = Classes;
+			name = Classes;
+			path = ../../src/player_iphone/Classes;
 			sourceTree = "<group>";
 		};
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
@@ -601,19 +602,6 @@
 				GCC_PREFIX_HEADER = iAmbulant_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../../build-iOS-Simulator/third_party_packages/installed/lib\"",
-					"\"$(SRCROOT)/../../build-iOS-Simulator/third_party_packages/live/BasicUsageEnvironment\"",
-					"\"$(SRCROOT)/../../build-iOS-Simulator/third_party_packages/live/groupsock\"",
-					"\"$(SRCROOT)/../../build-iOS-Simulator/third_party_packages/live/liveMedia\"",
-					"\"$(SRCROOT)/../../build-iOS-Simulator/third_party_packages/live/UsageEnvironment\"",
-					"\"$(SRCROOT)/../../build-iOS/third_party_packages/live/BasicUsageEnvironment\"",
-					"\"$(SRCROOT)/../../build-iOS/third_party_packages/live/groupsock\"",
-					"\"$(SRCROOT)/../../build-iOS/third_party_packages/live/liveMedia\"",
-					"\"$(SRCROOT)/../../build-iOS/third_party_packages/live/UsageEnvironment\"",
-					"\"$(SRCROOT)/../../build-iOS/third_party_packages/installed/lib\"",
-				);
 				PRODUCT_NAME = iAmbulant;
 				VALIDATE_PRODUCT = YES;
 			};
