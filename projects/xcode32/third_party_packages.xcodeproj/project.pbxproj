@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		041DCBC612B65519003407C8 /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "ambulant-common.xcconfig"; sourceTree = "<group>"; };
 		041DCBCB12B655E1003407C8 /* build-third-party-packages.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = "build-third-party-packages.py"; path = "../../third_party_packages/build-third-party-packages.py"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -15,7 +14,6 @@
 		041DCBAC12B654E5003407C8 /* Configuration Files */ = {
 			isa = PBXGroup;
 			children = (
-				041DCBC612B65519003407C8 /* ambulant-common.xcconfig */,
 			);
 			name = "Configuration Files";
 			sourceTree = "<group>";
@@ -125,6 +123,7 @@
 		041DCBF812B6770B003407C8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DSTROOT = /;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PATH = "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:$PATH";
@@ -136,17 +135,19 @@
 		041DCBF912B6770B003407C8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				PRODUCT_NAME = third_party_packages_3264;
-				ZERO_LINK = NO;
+				DSTROOT = /;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				PATH = "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:$PATH";
+				PKG_CONFIG_LIBDIR = "/Users/jack/src/ambulant/build-iOS40-Device/third_party_packages/installed/lib/pkgconfig";
+				PRODUCT_NAME = third_party_packages_iOS;
 			};
 			name = Release;
 		};
 		041DCC0912B6777A003407C8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DSTROOT = /;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PATH = "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:$PATH";
@@ -158,24 +159,23 @@
 		041DCC0A12B6777A003407C8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				PRODUCT_NAME = third_party_packages_3264;
-				ZERO_LINK = NO;
+				DSTROOT = /;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				PATH = "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:$PATH";
+				PKG_CONFIG_LIBDIR = "/Users/jack/src/ambulant/build-iOS-Simulator/third_party_packages/installed/lib/pkgconfig";
+				PRODUCT_NAME = third_party_packages_iOS_Simulator;
 			};
 			name = Release;
 		};
 		1DEB919408733D9F0010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 041DCBC612B65519003407C8 /* ambulant-common.xcconfig */;
 			buildSettings = {
 			};
 			name = Debug;
 		};
 		1DEB919508733D9F0010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 041DCBC612B65519003407C8 /* ambulant-common.xcconfig */;
 			buildSettings = {
 			};
 			name = Release;
