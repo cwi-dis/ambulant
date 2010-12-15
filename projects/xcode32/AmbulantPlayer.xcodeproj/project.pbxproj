@@ -36,8 +36,8 @@
 		0405C04312B6244C007AD3B2 /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04070429115266870094FB0B /* mainloop.cpp */; };
 		0405C04412B6244C007AD3B2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0407042B115266870094FB0B /* main.m */; };
 		0405C04612B6244C007AD3B2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		0405C05B12B624C0007AD3B2 /* liblibambulantCGstatic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0405C00D12B62364007AD3B2 /* liblibambulantCGstatic.a */; };
-		0405C05C12B624C8007AD3B2 /* libambulantGC.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04A1E87812B57E100060F97E /* libambulantGC.dylib */; };
+		0405C05B12B624C0007AD3B2 /* libambulantCGstatic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0405C00D12B62364007AD3B2 /* libambulantCGstatic.a */; };
+		0405C05C12B624C8007AD3B2 /* libambulantCG.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04A1E87812B57E100060F97E /* libambulantCG.dylib */; };
 		04070424115266770094FB0B /* LogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0407041B115266770094FB0B /* LogController.mm */; };
 		04070425115266770094FB0B /* MyAmbulantView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0407041D115266770094FB0B /* MyAmbulantView.mm */; };
 		04070426115266770094FB0B /* MyAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0407041F115266770094FB0B /* MyAppDelegate.mm */; };
@@ -116,6 +116,12 @@
 		04A1E99C12B585D80060F97E /* libamplugin_xerces.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADAA81152DA4A009CA791 /* libamplugin_xerces.so */; };
 		04A1E99D12B585D80060F97E /* libamplugin_python.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADB0B1152DE65009CA791 /* libamplugin_python.so */; };
 		04A1E99E12B585D80060F97E /* libamplugin_xpath_state.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADA411152D831009CA791 /* libamplugin_xpath_state.so */; };
+		04FA283412B8D1BD0080216B /* ambulant-common.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 04FA282B12B8D1BD0080216B /* ambulant-common.xcconfig */; };
+		04FA283512B8D1BD0080216B /* ambulant-debug-cg.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 04FA282C12B8D1BD0080216B /* ambulant-debug-cg.xcconfig */; };
+		04FA283712B8D1BD0080216B /* ambulant-debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 04FA282E12B8D1BD0080216B /* ambulant-debug.xcconfig */; };
+		04FA283912B8D1BD0080216B /* ambulant-mac.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 04FA283012B8D1BD0080216B /* ambulant-mac.xcconfig */; };
+		04FA283A12B8D1BD0080216B /* ambulant-release-cg.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 04FA283112B8D1BD0080216B /* ambulant-release-cg.xcconfig */; };
+		04FA283C12B8D1BD0080216B /* ambulant-release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 04FA283312B8D1BD0080216B /* ambulant-release.xcconfig */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
@@ -246,6 +252,13 @@
 			remoteGlobalIDString = D2AAC09C05546B4700DB518D;
 			remoteInfo = plugin;
 		};
+		04FA282812B8D16C0080216B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 04070599115268480094FB0B /* libambulant.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 040DAB3812B790BB002C4DFD /* libambulantIPhone.a */;
+			remoteInfo = libambulantiPhone;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -279,8 +292,6 @@
 
 /* Begin PBXFileReference section */
 		0405C05112B6244C007AD3B2 /* AmbulantPlayerCG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmbulantPlayerCG.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		040703A4115266100094FB0B /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "ambulant-common.xcconfig"; sourceTree = "<group>"; };
-		040703A5115266100094FB0B /* ambulant-release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "ambulant-release.xcconfig"; sourceTree = "<group>"; };
 		0407041A115266770094FB0B /* LogController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LogController.h; path = ../../src/player_macosx/LogController.h; sourceTree = SOURCE_ROOT; };
 		0407041B115266770094FB0B /* LogController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = LogController.mm; path = ../../src/player_macosx/LogController.mm; sourceTree = SOURCE_ROOT; };
 		0407041C115266770094FB0B /* MyAmbulantView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyAmbulantView.h; path = ../../src/player_macosx/MyAmbulantView.h; sourceTree = SOURCE_ROOT; };
@@ -314,7 +325,6 @@
 		0407061111526C240094FB0B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Log.nib; sourceTree = "<group>"; };
 		0407061311526C240094FB0B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = MainMenu.nib; sourceTree = "<group>"; };
 		0407061511526C240094FB0B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = MyDocument.nib; sourceTree = "<group>"; };
-		0407063611526CAD0094FB0B /* ambulant-debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "ambulant-debug.xcconfig"; sourceTree = "<group>"; };
 		041DCB1D12B64CF6003407C8 /* libavcodec.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavcodec.dylib; path = "../../build-3264/third_party_packages/installed/lib/libavcodec.dylib"; sourceTree = SOURCE_ROOT; };
 		041DCB1E12B64CF6003407C8 /* libavformat.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavformat.dylib; path = "../../build-3264/third_party_packages/installed/lib/libavformat.dylib"; sourceTree = SOURCE_ROOT; };
 		041DCB1F12B64CF6003407C8 /* libavutil.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavutil.dylib; path = "../../build-3264/third_party_packages/installed/lib/libavutil.dylib"; sourceTree = SOURCE_ROOT; };
@@ -335,10 +345,14 @@
 		042ADB061152DE65009CA791 /* plugin_python.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = plugin_python.xcodeproj; sourceTree = "<group>"; };
 		04428EBD11577E960067C868 /* DTDCache */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DTDCache; path = ../../Extras/DTDCache; sourceTree = SOURCE_ROOT; };
 		04428EBF11577EC30067C868 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = ../../Extras/Welcome/data; sourceTree = SOURCE_ROOT; };
-		04A1E7C312B57C110060F97E /* ambulant-debug-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "ambulant-debug-cg.xcconfig"; sourceTree = "<group>"; };
-		04A1E7C412B57C110060F97E /* ambulant-release-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "ambulant-release-cg.xcconfig"; sourceTree = "<group>"; };
 		04A1E9A412B585D80060F97E /* AmbulantPlayerCG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmbulantPlayerCG.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		04A1E9A612B585D80060F97E /* Info copy 2.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info copy 2.plist"; path = "../../src/player_macosx/Info copy 2.plist"; sourceTree = "<group>"; };
+		04FA282B12B8D1BD0080216B /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-common.xcconfig"; path = "config/ambulant-common.xcconfig"; sourceTree = "<group>"; };
+		04FA282C12B8D1BD0080216B /* ambulant-debug-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-debug-cg.xcconfig"; path = "config/ambulant-debug-cg.xcconfig"; sourceTree = "<group>"; };
+		04FA282E12B8D1BD0080216B /* ambulant-debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-debug.xcconfig"; path = "config/ambulant-debug.xcconfig"; sourceTree = "<group>"; };
+		04FA283012B8D1BD0080216B /* ambulant-mac.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-mac.xcconfig"; path = "config/ambulant-mac.xcconfig"; sourceTree = "<group>"; };
+		04FA283112B8D1BD0080216B /* ambulant-release-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-release-cg.xcconfig"; path = "config/ambulant-release-cg.xcconfig"; sourceTree = "<group>"; };
+		04FA283312B8D1BD0080216B /* ambulant-release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-release.xcconfig"; path = "config/ambulant-release.xcconfig"; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		256AC3F00F4B6AF500CF3369 /* AmbulantPlayer_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbulantPlayer_Prefix.pch; sourceTree = "<group>"; };
@@ -353,7 +367,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0405C04612B6244C007AD3B2 /* Cocoa.framework in Frameworks */,
-				0405C05B12B624C0007AD3B2 /* liblibambulantCGstatic.a in Frameworks */,
+				0405C05B12B624C0007AD3B2 /* libambulantCGstatic.a in Frameworks */,
 				041DCB2A12B64CF7003407C8 /* libavcodec.dylib in Frameworks */,
 				041DCB2B12B64CF7003407C8 /* libavformat.dylib in Frameworks */,
 				041DCB2C12B64CF7003407C8 /* libavutil.dylib in Frameworks */,
@@ -376,7 +390,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				04A1E99912B585D80060F97E /* Cocoa.framework in Frameworks */,
-				0405C05C12B624C8007AD3B2 /* libambulantGC.dylib in Frameworks */,
+				0405C05C12B624C8007AD3B2 /* libambulantCG.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -395,11 +409,12 @@
 		040703A3115266100094FB0B /* Configuration Files */ = {
 			isa = PBXGroup;
 			children = (
-				04A1E7C312B57C110060F97E /* ambulant-debug-cg.xcconfig */,
-				04A1E7C412B57C110060F97E /* ambulant-release-cg.xcconfig */,
-				0407063611526CAD0094FB0B /* ambulant-debug.xcconfig */,
-				040703A4115266100094FB0B /* ambulant-common.xcconfig */,
-				040703A5115266100094FB0B /* ambulant-release.xcconfig */,
+				04FA282B12B8D1BD0080216B /* ambulant-common.xcconfig */,
+				04FA283012B8D1BD0080216B /* ambulant-mac.xcconfig */,
+				04FA282E12B8D1BD0080216B /* ambulant-debug.xcconfig */,
+				04FA282C12B8D1BD0080216B /* ambulant-debug-cg.xcconfig */,
+				04FA283312B8D1BD0080216B /* ambulant-release.xcconfig */,
+				04FA283112B8D1BD0080216B /* ambulant-release-cg.xcconfig */,
 			);
 			name = "Configuration Files";
 			sourceTree = "<group>";
@@ -429,8 +444,9 @@
 			isa = PBXGroup;
 			children = (
 				040705A1115268480094FB0B /* libambulant.dylib */,
-				04A1E87812B57E100060F97E /* libambulantGC.dylib */,
-				0405C00D12B62364007AD3B2 /* liblibambulantCGstatic.a */,
+				04A1E87812B57E100060F97E /* libambulantCG.dylib */,
+				0405C00D12B62364007AD3B2 /* libambulantCGstatic.a */,
+				04FA282912B8D16C0080216B /* libambulantIPhone.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -739,10 +755,10 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		0405C00D12B62364007AD3B2 /* liblibambulantCGstatic.a */ = {
+		0405C00D12B62364007AD3B2 /* libambulantCGstatic.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = liblibambulantCGstatic.a;
+			path = libambulantCGstatic.a;
 			remoteRef = 0405C00C12B62364007AD3B2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -781,11 +797,18 @@
 			remoteRef = 042ADB0A1152DE65009CA791 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		04A1E87812B57E100060F97E /* libambulantGC.dylib */ = {
+		04A1E87812B57E100060F97E /* libambulantCG.dylib */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.dylib";
-			path = libambulantGC.dylib;
+			path = libambulantCG.dylib;
 			remoteRef = 04A1E87712B57E100060F97E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		04FA282912B8D16C0080216B /* libambulantIPhone.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libambulantIPhone.a;
+			remoteRef = 04FA282812B8D16C0080216B /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -816,6 +839,12 @@
 				0405C03A12B6244C007AD3B2 /* MyDocument.nib in Resources */,
 				0405C03B12B6244C007AD3B2 /* DTDCache in Resources */,
 				0405C03C12B6244C007AD3B2 /* data in Resources */,
+				04FA283412B8D1BD0080216B /* ambulant-common.xcconfig in Resources */,
+				04FA283512B8D1BD0080216B /* ambulant-debug-cg.xcconfig in Resources */,
+				04FA283712B8D1BD0080216B /* ambulant-debug.xcconfig in Resources */,
+				04FA283912B8D1BD0080216B /* ambulant-mac.xcconfig in Resources */,
+				04FA283A12B8D1BD0080216B /* ambulant-release-cg.xcconfig in Resources */,
+				04FA283C12B8D1BD0080216B /* ambulant-release.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1131,7 +1160,7 @@
 /* Begin XCBuildConfiguration section */
 		0405C04F12B6244C007AD3B2 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 04A1E7C312B57C110060F97E /* ambulant-debug-cg.xcconfig */;
+			baseConfigurationReference = 04FA282C12B8D1BD0080216B /* ambulant-debug-cg.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
@@ -1159,7 +1188,7 @@
 		};
 		0405C05012B6244C007AD3B2 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 04A1E7C412B57C110060F97E /* ambulant-release-cg.xcconfig */;
+			baseConfigurationReference = 04FA283112B8D1BD0080216B /* ambulant-release-cg.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -1183,7 +1212,7 @@
 		};
 		04A1E9A212B585D80060F97E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 04A1E7C312B57C110060F97E /* ambulant-debug-cg.xcconfig */;
+			baseConfigurationReference = 04FA282C12B8D1BD0080216B /* ambulant-debug-cg.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
@@ -1201,7 +1230,7 @@
 		};
 		04A1E9A312B585D80060F97E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 04A1E7C412B57C110060F97E /* ambulant-release-cg.xcconfig */;
+			baseConfigurationReference = 04FA283112B8D1BD0080216B /* ambulant-release-cg.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -1215,7 +1244,7 @@
 		};
 		C01FCF4B08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0407063611526CAD0094FB0B /* ambulant-debug.xcconfig */;
+			baseConfigurationReference = 04FA282E12B8D1BD0080216B /* ambulant-debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
@@ -1233,7 +1262,7 @@
 		};
 		C01FCF4C08A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 040703A5115266100094FB0B /* ambulant-release.xcconfig */;
+			baseConfigurationReference = 04FA283312B8D1BD0080216B /* ambulant-release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -1247,7 +1276,7 @@
 		};
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 040703A4115266100094FB0B /* ambulant-common.xcconfig */;
+			baseConfigurationReference = 04FA282B12B8D1BD0080216B /* ambulant-common.xcconfig */;
 			buildSettings = {
 				ARCHS = (
 					x86_64,
@@ -1265,7 +1294,7 @@
 		};
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 040703A4115266100094FB0B /* ambulant-common.xcconfig */;
+			baseConfigurationReference = 04FA282B12B8D1BD0080216B /* ambulant-common.xcconfig */;
 			buildSettings = {
 				ARCHS = (
 					x86_64,

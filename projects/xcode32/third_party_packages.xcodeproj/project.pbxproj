@@ -127,7 +127,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PATH = "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:$PATH";
-				PKG_CONFIG_LIBDIR = "/Users/jack/src/ambulant/build-iOS40-Device/third_party_packages/installed/lib/pkgconfig";
+				PKG_CONFIG_LIBDIR = "/Users/jack/src/ambulant/build-iOS/third_party_packages/installed/lib/pkgconfig";
 				PRODUCT_NAME = third_party_packages_iOS;
 			};
 			name = Debug;
@@ -139,7 +139,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PATH = "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:$PATH";
-				PKG_CONFIG_LIBDIR = "/Users/jack/src/ambulant/build-iOS40-Device/third_party_packages/installed/lib/pkgconfig";
+				PKG_CONFIG_LIBDIR = "/Users/jack/src/ambulant/build-iOS/third_party_packages/installed/lib/pkgconfig";
 				PRODUCT_NAME = third_party_packages_iOS;
 			};
 			name = Release;
