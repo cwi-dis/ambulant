@@ -27,6 +27,7 @@
 	NSMutableArray* presentationsArray;
 	UITableViewCell* nibLoadedCell;
 	Presentation* selectedPresentation;
+	NSInteger currentIndex;
 	BOOL isFavorites;
 	UITableViewCellEditingStyle editingStyle;
 	Presentation* newPresentation;
@@ -37,6 +38,7 @@
 // aux.
 - (void) insertCurrentItemAtIndexPath: (NSIndexPath*) indexPath;
 - (Presentation*) getPresentationFromPlaylistItem: (PlaylistItem *) item;
+- (void) selectNextPresentation;
 - (NSArray*) get_playlist;
 - (void) updatePlaylist;
 - (BOOL) isFavorites;

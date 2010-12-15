@@ -43,7 +43,7 @@ private:
 	IBOutlet AmbulantView* playerView;
 	IBOutlet UIView* interactionView;
 	IBOutlet UIButton* playPauseButton;
-	PresentationViewController* currentPresentationTable;
+	PresentationViewController* currentPresentationViewController;
 	CGRect originalPlayerViewFrame, originalInteractionViewFrame;
 	NSMutableString* playURL;
 	NSMutableString* linkURL;

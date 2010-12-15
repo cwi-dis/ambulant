@@ -49,7 +49,6 @@
 
 - (IBAction) playVideoTests {
 	[self.delegate playPresentation:@"http://ambulantPlayer.org/Demos/VideoTests/VideoTests.smil" fromPresentationViewController: NULL];	
-//	[self.delegate playPresentation:@"http://homepages.cwi.nl/~kees/ambulant/VideoTests2+3.smil"];	
 }
 
 - (IBAction) playPanZoom {

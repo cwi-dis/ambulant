@@ -79,6 +79,7 @@ viewDidLoad
 	prefs->load_preferences();
 	BOOL favorites = [self.title isEqualToString:@"Favorites"];
 	isFavorites = favorites;
+	currentIndex = -1; //XXXX should ths be saved in properties ??
 	if ( ! isFavorites) {
 		[self.delegate setHistoryViewController: self];
 	}
@@ -177,11 +178,12 @@ tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexP
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	NSArray* playlist = isFavorites ? prefs->m_favorites->get_playlist() : prefs->m_history->get_playlist();
 	NSUInteger playlistIndex = indexPath.row;
+	currentIndex = playlistIndex;
 #ifdef	FIRST_ITEM
 	if (playlistIndex >= FIRST_ITEM) {
 		playlistIndex -= FIRST_ITEM;
 	} else {
-		return;
+		playlistIndex = FIRST_ITEM;
 	}
 #endif//FIRST_ITEM
 	PlaylistItem* selectedItem = [playlist objectAtIndex: playlistIndex];
@@ -226,11 +228,18 @@ tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingSty
 		[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
 						 withRowAnimation:UITableViewRowAnimationMiddle];
 		prefs->save_preferences();
+// correct currentIndex for this deletion s.t. selectNextPresentation will select the same presentation as before
+		if (playlistIndex <= currentIndex) {
+			currentIndex--;
+		}
+		if (currentIndex < -1) {
+			currentIndex = -1;
+		}
  	}   
     else if (editingStyleArg == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
 		[self insertCurrentItemAtIndexPath: indexPath];
-    }   
+    } 
 }
 
 - (IBAction)
@@ -282,6 +291,14 @@ insertCurrentItemAtIndexPath: (NSIndexPath*) indexPath
 
 	NSArray* playlist = [self get_playlist];
 	
+#ifdef	FIRST_ITEM
+	if ([playlist count] + FIRST_ITEM > [presentationsArray count]) {
+#else //FIRST_ITEM
+	if ([playlist count] > [presentationsArray count]) {
+#endif//FIRST_ITEM
+		currentIndex++; //assume insert at 0 occurred
+	}
+
 	[presentationsArray removeAllObjects];
 
 #ifdef	FIRST_ITEM
@@ -305,7 +322,19 @@ insertCurrentItemAtIndexPath: (NSIndexPath*) indexPath
 	cell.alpha = 0.0;*/
 }
 
-
+- (void)
+selectNextPresentation
+{
+	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
+	NSArray* playlist = isFavorites ? prefs->m_favorites->get_playlist() : prefs->m_history->get_playlist();
+	NSUInteger playlistIndex = ++currentIndex;
+	if (currentIndex >= [playlist count]) {
+		playlistIndex = currentIndex = [playlist count] - 1;
+	}
+	PlaylistItem* selectedItem = [playlist objectAtIndex: playlistIndex];
+	[self.delegate playPresentation:[[selectedItem ns_url] absoluteString] fromPresentationViewController: self];
+}
+	
 - (void)
 viewWillDisappear:(BOOL)animated
 {

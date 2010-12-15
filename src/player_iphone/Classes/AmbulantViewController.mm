@@ -198,19 +198,13 @@ viewDidLoad {
     [self.playerView addGestureRecognizer:longPressGesture];
     [longPressGesture release];
 	
-	
 	embedder = new document_embedder(self);
+	currentPresentationViewController = [self.delegate getPresentationView:self withIndex:0];
 	
-//	if ( ! prefs->m_normal_exit) {
-		// was crashed
-//		[self initialize_after_crashing];
-//		return;
-//	}
 	if (self.playURL != nil) {
-		// playURL was set by openURL on launch by Safari e.a.
+		// self.playURL was set in openURL on launch by Safari e.a.
 		AM_DBG NSLog(@"View=%@ playUrl=%@", [self playerView], [self playURL]);
 		[self doPlayURL:NULL];
-		// JNK [self handleURLEntered];
 	} else {
 		// launched by user
 		NSString *startPath = NULL;
@@ -364,6 +358,9 @@ JNK*/
 - (IBAction)
 playNextItem {
 	/*AM_DBG*/ NSLog(@"AmbulantViewController playNextItem(0x%x): not yet implemented", self);
+	if (currentPresentationViewController != NULL) {
+		[currentPresentationViewController selectNextPresentation];
+	}
 }
 
 - (IBAction)
@@ -496,6 +493,7 @@ playPresentation: (NSString*) whatString fromPresentationViewController: (Presen
 	AM_DBG NSLog(@"AmbulantViewController (0x%x)", self);
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	AM_DBG NSLog(@"Selected: %@",whatString);
+	currentPresentationViewController = controller;
 	if (myMainloop != NULL) {
 		myMainloop->stop();
 	}
