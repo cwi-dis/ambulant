@@ -1,3 +1,37 @@
+2010-12-15 00:12  jackjansen
+
+	* Build-and-archive also seems to work
+
+2010-12-14 23:51  jackjansen
+
+	* Everything works, both for simulator and device
+
+2010-12-14 23:50  jackjansen
+
+	* Temporary script to merge iPhone and iPhone-Sim
+	  third_party_packages into a fat 3pp directory
+
+2010-12-14 21:59  jackjansen
+
+	* iPhone app project starts to work (simulator only)
+
+2010-12-14 17:37  jackjansen
+
+	* Fixed a problem with DESTROOT being set
+
+2010-12-14 17:06  keesblom
+
+	* Made the 'Restart' button work.
+
+2010-12-14 14:20  jackjansen
+
+	* Minor fixes for builing libambulant for all platforms
+
+2010-12-14 14:05  jackjansen
+
+	* - Moving configfiles to a subdirectory - Making progress with
+	  building for iOS.
+
 2010-12-14 00:07  jackjansen
 
 	* Fixed up building of iOS 3pps"
