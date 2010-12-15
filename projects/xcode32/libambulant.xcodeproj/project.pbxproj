@@ -386,18 +386,18 @@
 			remoteGlobalIDString = 041DCBD712B65714003407C8;
 			remoteInfo = third_party_packages_3264;
 		};
-		04B75BA812B79E6600161EB5 /* PBXContainerItemProxy */ = {
+		04CE8CEE12B924DA00801B1A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 041DCBEA12B662D9003407C8 /* third_party_packages.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 041DCBF612B6770B003407C8;
+			remoteGlobalIDString = 041DCBF612B6770B003407C8 /* third_party_packages_iOS */;
 			remoteInfo = third_party_packages_iOS;
 		};
-		04B75BAA12B79E6C00161EB5 /* PBXContainerItemProxy */ = {
+		04CE8CF012B924DA00801B1A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 041DCBEA12B662D9003407C8 /* third_party_packages.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 041DCC0712B6777A003407C8;
+			remoteGlobalIDString = 041DCC0712B6777A003407C8 /* third_party_packages_iOS_Simulator */;
 			remoteInfo = third_party_packages_iOS_Simulator;
 		};
 /* End PBXContainerItemProxy section */
@@ -1782,8 +1782,8 @@
 			buildRules = (
 			);
 			dependencies = (
-				04B75BA912B79E6600161EB5 /* PBXTargetDependency */,
-				04B75BAB12B79E6C00161EB5 /* PBXTargetDependency */,
+				04CE8CEF12B924DA00801B1A /* PBXTargetDependency */,
+				04CE8CF112B924DA00801B1A /* PBXTargetDependency */,
 			);
 			name = libambulantiPhone;
 			productName = libambulantCGstatic;
@@ -2242,15 +2242,15 @@
 			name = third_party_packages_3264;
 			targetProxy = 041DCBF212B66307003407C8 /* PBXContainerItemProxy */;
 		};
-		04B75BA912B79E6600161EB5 /* PBXTargetDependency */ = {
+		04CE8CEF12B924DA00801B1A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = third_party_packages_iOS;
-			targetProxy = 04B75BA812B79E6600161EB5 /* PBXContainerItemProxy */;
+			targetProxy = 04CE8CEE12B924DA00801B1A /* PBXContainerItemProxy */;
 		};
-		04B75BAB12B79E6C00161EB5 /* PBXTargetDependency */ = {
+		04CE8CF112B924DA00801B1A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = third_party_packages_iOS_Simulator;
-			targetProxy = 04B75BAA12B79E6C00161EB5 /* PBXContainerItemProxy */;
+			targetProxy = 04CE8CF012B924DA00801B1A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

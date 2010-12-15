@@ -149,7 +149,8 @@ tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPat
     
 	// Configure the cell.
 	Presentation* aPresentation = [ presentationsArray objectAtIndex: indexPath.row ];
-	UIImageView* posterView = (UIImageView*) [ cell viewWithTag:0]; // tags are assigned in the nib
+	UIImageView* posterView = (UIImageView*) [ cell viewWithTag:5]; // tags are assigned in the nib
+	posterView.contentMode = UIViewContentModeScaleAspectFit;
 	posterView.image = [UIImage imageWithCGImage:(CGImageRef) aPresentation.poster];
 	[posterView setNeedsDisplay];
 	UILabel* label = (UILabel*) [ cell viewWithTag: 1];
