@@ -3,9 +3,11 @@
                       "http://www.w3.org/2008/SMIL30/SMIL30Language.dtd">
 <smil xmlns="http://www.w3.org/ns/SMIL">
   <head>
-    <meta name="title" content="PPC Slideshow with Dual Audio and Text Captions"/>
     <meta name="generator" content="GRiNS Pro for SMIL 2.0, v2.2 Mobile win32 build 150"/>
     <meta name="author" content="Dick Bulterman"/>
+	<meta name="title" content="A geometric look at New York"/>
+    <meta name="poster" content="NYCdata/poster.png"/>
+	<meta name="duration" content="02:50"/>
     <layout>
       <root-layout xml:id="Advanced_PPC_Slideshow" backgroundColor="black" width="240" height="270"/>
       <region xml:id="audio_1"/>
