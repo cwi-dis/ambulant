@@ -416,8 +416,9 @@ playlistViewControllerDidFinish: (UIViewController *)controller {
 		if (play_active) {
 			[self play];
 		}
+		ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 		UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-		[playerView adaptDisplayAfterRotation: orientation];
+		[playerView adaptDisplayAfterRotation: orientation withAutoCenter: prefs->m_auto_center withAutoResize: prefs->m_auto_resize];
 	}
 	if ( ! interactionView.hidden) {
 		interactionView.hidden = true;
@@ -428,7 +429,7 @@ playlistViewControllerDidFinish: (UIViewController *)controller {
 	playerView.alpha = 1.0;
 }
 
-- (IBAction) showHistory:(id)sender {
+- (IBAction) showHistory:(id)sender { //JNK
 	AM_DBG NSLog(@"AmbulantViewController showHistory:(0x%x)", self);
 	[self pause];
 	/*
@@ -446,6 +447,16 @@ playlistViewControllerDidFinish: (UIViewController *)controller {
 }
 
 - (void)
+showAmbulantPlayer:(id)sender {
+	[self.delegate showAmbulantPlayer:sender];
+}
+
+- (void)
+showPresentationViews:(id)sender {
+	[self.delegate showPresentationViews:sender];
+}
+
+- (void)
 done: (id) sender {
 	AM_DBG NSLog(@"AmbulantViewController done(0x%x): sender=0x%x", self, sender);
 	[self playlistViewControllerDidFinish: (UIViewController*) sender];
@@ -460,10 +471,10 @@ presentationViewControllerDidFinish: (PresentationViewController *)controller {
 		[controller toggleEditMode];
 	}
 	UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-	[playerView adaptDisplayAfterRotation: orientation];
+	[playerView adaptDisplayAfterRotation: orientation withAutoCenter: prefs->m_auto_center withAutoResize: prefs->m_auto_resize];
 	if (myMainloop != NULL) {
 		UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-		[playerView adaptDisplayAfterRotation: orientation];
+		[playerView adaptDisplayAfterRotation: orientation withAutoCenter: prefs->m_auto_center withAutoResize: prefs->m_auto_resize];
 		
 		[self play];
 	}
@@ -481,7 +492,7 @@ setHistoryViewController:(PresentationViewController *)controller
 	}
 }
 - (void)
-playPresentation: (NSString*) whatString {
+playPresentation: (NSString*) whatString fromPresentationViewController: (PresentationViewController*) controller {
 	AM_DBG NSLog(@"AmbulantViewController (0x%x)", self);
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	AM_DBG NSLog(@"Selected: %@",whatString);
@@ -613,9 +624,10 @@ orientationChanged:(NSNotification *)notification {
 	if (orientation == currentOrientation || ! [self isSupportedOrientation: orientation]) {
 		return;
 	}
+	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	currentOrientation = orientation;
 	if (playerView != NULL) {
-		[playerView adaptDisplayAfterRotation: orientation];
+		[playerView adaptDisplayAfterRotation: orientation withAutoCenter: prefs->m_auto_center withAutoResize: prefs->m_auto_resize];
 	}
 }
 

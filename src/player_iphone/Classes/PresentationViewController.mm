@@ -185,7 +185,7 @@ tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexP
 	}
 #endif//FIRST_ITEM
 	PlaylistItem* selectedItem = [playlist objectAtIndex: playlistIndex];
-	[self.delegate playPresentation:[[selectedItem ns_url] absoluteString]];
+	[self.delegate playPresentation:[[selectedItem ns_url] absoluteString] fromPresentationViewController: self];
 }
 
 // Support conditional editing of the table view.

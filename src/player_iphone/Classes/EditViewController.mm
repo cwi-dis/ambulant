@@ -63,9 +63,8 @@ done:(id)sender
 {
 	AM_DBG NSLog(@"EditViewController done(0x%x)", self);
 	
-	[self.delegate playPresentation:self.textField.text];
+	[self.delegate playPresentation:self.textField.text fromPresentationViewController: NULL];
 	[self cancel: sender];
-	
 }
 
 - (IBAction)

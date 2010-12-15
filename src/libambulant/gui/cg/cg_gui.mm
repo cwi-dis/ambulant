@@ -32,12 +32,6 @@
 //#include "ambulant/gui/cg/cg_smiltext.h"
 #endif
 #include "ambulant/lib/mtsync.h"
-#ifdef WITH_UIKIT
-#ifdef XXXJACK_NEED_PREFS
-#include "ambulant/gui/cg/iOSpreferences.h"
-#endif
-#endif
-
 //#include <CoreGraphics/CoreGraphics.h>
 
 //#define AM_DBG
@@ -534,7 +528,7 @@ bad:
 @synthesize original_bounds;
 @synthesize current_transform;
 
-- (void) adaptDisplayAfterRotation: (UIDeviceOrientation) orientation {
+- (void) adaptDisplayAfterRotation: (UIDeviceOrientation) orientation withAutoCenter: (BOOL) autoCenter withAutoResize: (bool) autoResize {
 	if (ambulant_window == NULL ) {
 		return;
 	}
@@ -543,13 +537,10 @@ bad:
 		return;
 	}
 	// adapt the ambulant window needed (bounds) in the current View
-#ifndef XXXJACK_NEED_PREFS
-    bool auto_resize = true;
-    bool auto_center = true;
-#else
-	bool auto_resize = ambulant::iOSpreferences::get_preferences()->m_auto_resize;
-	bool auto_center = ambulant::iOSpreferences::get_preferences()->m_auto_center;
-#endif
+	M_auto_center = autoCenter;
+	M_auto_resize = autoResize;
+	bool auto_resize = (bool) autoResize;
+	bool auto_center = (bool) autoCenter;
 	CGSize mybounds;
 	mybounds.width = original_bounds.w;
 	mybounds.height = original_bounds.h;
@@ -633,7 +624,7 @@ bad:
 	}
 	original_bounds = bounds;
 	current_frame = original_frame;
-	[self adaptDisplayAfterRotation: UIDeviceOrientationPortrait];
+	[self adaptDisplayAfterRotation: UIDeviceOrientationPortrait withAutoCenter: M_auto_center withAutoResize: M_auto_resize];
 #else
 	// Get the position of our view in window coordinates
 	NSPoint origin = NSMakePoint(0,0);

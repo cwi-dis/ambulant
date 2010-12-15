@@ -158,6 +158,8 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 //	int overlay_window_count;
 #endif // WITH_QUICKTIME_OVERLAY
 #ifdef	WITH_UIKIT
+	BOOL M_auto_center;
+	BOOL M_auto_resize;
 	CGRect current_frame;
 	CGRect original_frame;
 	CGAffineTransform current_transform;
@@ -171,7 +173,7 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 @property(nonatomic) CGAffineTransform current_transform;
 @property(nonatomic) ambulant::lib::size original_bounds;
 
-- (void) adaptDisplayAfterRotation: (UIDeviceOrientation) orientation;
+- (void) adaptDisplayAfterRotation: (UIDeviceOrientation) orientation withAutoCenter: (BOOL) autoCenter withAutoResize: (bool) autoResize;
 - (BOOL) tappedAtPoint:(CGPoint) location;
 - (void) zoomWithScale: (float) scale inState: (UIGestureRecognizerState) state;
 - (void) translateWithPoint: (CGPoint) point inState: (UIGestureRecognizerState) state;

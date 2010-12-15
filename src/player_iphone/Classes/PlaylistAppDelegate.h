@@ -24,9 +24,9 @@
 @protocol PlaylistViewControllerDelegate
 - (IBAction) done: (id) sender;
 - (void) playlistViewControllerDidFinish: (UIViewController *)controller;
-- (void) playPresentation:(NSString*) what;
+- (void) playPresentation:(NSString*) what fromPresentationViewController:(PresentationViewController*) controller;
 - (NSString*) playURL;
-- (void) presentationViewControllerDidFinish: (PresentationViewController *)controller;
+- (void) presentationViewControllerDidFinish: (PresentationViewController*) controller;
 - (void) setHistoryViewController: (PresentationViewController*) controller;
 - (void) settingsHaveChanged: (UIViewController*) controller;
 - (void) showAmbulantPlayer: (id) sender;
