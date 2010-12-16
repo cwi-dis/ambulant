@@ -110,14 +110,14 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 04B75D7012B80CFE00161EB5 /* third_party_packages.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 041DCBF612B6770B003407C8 /* third_party_packages_iOS */;
+			remoteGlobalIDString = 041DCBF612B6770B003407C8;
 			remoteInfo = third_party_packages_iOS;
 		};
 		04CE8CF512B924ED00801B1A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 04B75D7012B80CFE00161EB5 /* third_party_packages.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 041DCC0712B6777A003407C8 /* third_party_packages_iOS_Simulator */;
+			remoteGlobalIDString = 041DCC0712B6777A003407C8;
 			remoteInfo = third_party_packages_iOS_Simulator;
 		};
 /* End PBXContainerItemProxy section */
