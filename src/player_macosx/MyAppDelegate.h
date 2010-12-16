@@ -23,13 +23,14 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface MyAppDelegate : NSObject
+@interface MyAppDelegate : NSDocumentController
 {
 }
 - (BOOL) applicationShouldOpenUntitledFile: (id) sender;
 - (void) applicationWillFinishLaunching:(NSNotification *)aNotification;
 - (void)applicationDidChangeScreenParameters:(NSNotification *)aNotification;
 - (void)handleGetURLEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent;
+- (NSString *)typeForContentsOfURL:(NSURL *)inAbsoluteURL error:(NSError **)outError;
 - (IBAction)loadFilter:(id)sender;
 - (IBAction)playWelcome:(id)sender;
 - (IBAction)showHomepage:(id)sender;

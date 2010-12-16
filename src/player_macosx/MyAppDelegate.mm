@@ -103,6 +103,13 @@ initialize_logger()
 	return NO;
 }
 
+- (NSString *)typeForContentsOfURL:(NSURL *)inAbsoluteURL error:(NSError **)outError
+{
+    NSLog(@"typeForContentsOfURL called\n");
+    outError = nil;
+    return [NSString stringWithUTF8String: "SMIL document"];
+}
+
 - (void) applicationWillFinishLaunching:(NSNotification *)aNotification
 {
 	// First get our bundle, various initializations need it.
@@ -249,13 +256,24 @@ initialize_logger()
 		return;
 	}
 	NSString *urlstr = [obj stringValue];
+    if ([urlstr hasPrefix: @"ambulant://"]) {
+        // Kees' format: replace http by ambulant
+        urlstr = [NSString stringWithFormat: @"http:%@", [urlstr substringFromIndex: 9]]; // Length of "ambulant:"
+    }
+    if ([urlstr hasPrefix: @"ambulant:"]) {
+        // Jack's format: prepend ambulant:
+        urlstr = [urlstr substringFromIndex: 9]; // Length of "ambulant:"
+    }
 	AM_DBG NSLog(@"handleGetURLEvent: %@\n", urlstr);
 	NSURL *url = [NSURL URLWithString:urlstr];
 	NSDocumentController *controller = [NSDocumentController sharedDocumentController];
 	NSError *error;
 	MyDocument *doc = [controller openDocumentWithContentsOfURL:url display:YES error:&error];
-	if (!doc)
+	if (doc) {
+        [doc play: self];
+    } else {
 		NSLog(@"handleGetURLEvent: error: %@\n", error);
+    }
 }
 
 - (IBAction)loadFilter:(id)sender

@@ -346,7 +346,6 @@
 		04428EBD11577E960067C868 /* DTDCache */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DTDCache; path = ../../Extras/DTDCache; sourceTree = SOURCE_ROOT; };
 		04428EBF11577EC30067C868 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = ../../Extras/Welcome/data; sourceTree = SOURCE_ROOT; };
 		04A1E9A412B585D80060F97E /* AmbulantPlayerCG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmbulantPlayerCG.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		04A1E9A612B585D80060F97E /* Info copy 2.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info copy 2.plist"; path = "../../src/player_macosx/Info copy 2.plist"; sourceTree = "<group>"; };
 		04FA282B12B8D1BD0080216B /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-common.xcconfig"; path = "config/ambulant-common.xcconfig"; sourceTree = "<group>"; };
 		04FA282C12B8D1BD0080216B /* ambulant-debug-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-debug-cg.xcconfig"; path = "config/ambulant-debug-cg.xcconfig"; sourceTree = "<group>"; };
 		04FA282E12B8D1BD0080216B /* ambulant-debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-debug.xcconfig"; path = "config/ambulant-debug.xcconfig"; sourceTree = "<group>"; };
@@ -615,7 +614,6 @@
 				0407048D115266B40094FB0B /* AmbulantDocSmil.icns */,
 				0407048E115266B40094FB0B /* Info.plist */,
 				0407047E115266B40094FB0B /* stop.png */,
-				04A1E9A612B585D80060F97E /* Info copy 2.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
