@@ -208,6 +208,16 @@ void CAmbulantPlayerApp::OnAppHelp()
 CDocument* CAmbulantPlayerApp::OpenDocumentFile(LPCTSTR lpszFileName)
 {
 	OnFileNew();
+	// remove ambulant: from the start of the URL, this is
+	// a trick to allow webpages to start the ambulant player
+	// straight away.
+#ifdef _UNICODE
+	if ( wcsncmp(lpszFileName, L"ambulant:", 9) == 0) {
+#else
+	if ( strncmp((char*)lpszFileName, "ambulant:", 9) == 0) {
+#endif
+		lpszFileName += 9;
+	}
 	return m_pDocTemplate->OpenDocumentFile(lpszFileName);
 }
 

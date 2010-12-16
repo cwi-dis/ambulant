@@ -232,6 +232,11 @@ SectionEnd
 
 Section -Post
   WriteUninstaller "$INSTDIR\uninst.exe"
+
+  WriteRegStr HKCR "ambulant" "" "URL:Ambulant Protocol"
+  WriteRegStr HKCR "ambulant" "URL Protocol" ""
+  WriteRegStr HKCR "ambulant\shell\open\command" "" "$INSTDIR\AmbulantPlayer.exe $\"%1$\""
+
   WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\AmbulantPlayer.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
