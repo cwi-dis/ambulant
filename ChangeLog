@@ -1,3 +1,28 @@
+2010-12-15 17:32  jackjansen
+
+	* Fixed poster image display in history
+
+2010-12-15 17:08  keesblom
+
+	* Implemented the 'Next' button
+
+2010-12-15 17:05  jackjansen
+
+	* Added poster images and descriptions for iPhone.
+
+2010-12-15 14:33  keesblom
+
+	* Removed ambulant::iOSpreferences from cg_gui.mm and expanded the
+	  signature of adaptDisplayAfterRotation with 2 booleans instead.
+
+2010-12-15 13:50  jackjansen
+
+	* Added post and description (for iPhone, initially)
+
+2010-12-15 12:11  jackjansen
+
+	* Minor tweaks to get things to compile and build again
+
 2010-12-15 00:12  jackjansen
 
 	* Build-and-archive also seems to work
