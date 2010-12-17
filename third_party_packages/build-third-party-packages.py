@@ -208,6 +208,7 @@ third_party_packages={
             buildcmd=
                 "cd expat-2.0.1 && "
                 "patch --forward < %s/third_party_packages/expat.patch ; "
+                "echo $PATH ; "
                 "autoconf && "
                 "%s && "
                 "make ${MAKEFLAGS} && "
@@ -395,12 +396,12 @@ third_party_packages={
             url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
             checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
             buildcmd=
-            	"cd ffmpeg-export-2010-01-22 && "
-            	"./configure --enable-cross-compile --arch=arm --target-os=darwin --cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc "
-            	"--sysroot=/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS%s.sdk --cpu=arm1176jzf-s "
-			  	"--as='gas-preprocessor.pl /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc' "
-            	"--extra-cflags='-arch armv6 -I../installed/include' --extra-ldflags='-arch armv6 -L../installed/lib' "
-            	"--enable-libfaad --prefix=../installed/ --enable-gpl  --disable-mmx --disable-asm;"
+                "cd ffmpeg-export-2010-01-22 && "
+                "./configure --enable-cross-compile --arch=arm --target-os=darwin --cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc "
+                "--sysroot=/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS%s.sdk --cpu=arm1176jzf-s "
+                "--as='gas-preprocessor.pl /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc' "
+                "--extra-cflags='-arch armv6 -I../installed/include' --extra-ldflags='-arch armv6 -L../installed/lib' "
+                "--enable-libfaad --prefix=../installed/ --enable-gpl  --disable-mmx --disable-asm;"
                 "make clean;make ${MAKEFLAGS}; make install" % os.getenv("IPHONEOS_DEPLOYMENT_TARGET")
             ),
 
@@ -408,13 +409,13 @@ third_party_packages={
             url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
             checkcmd="test -f %s/lib/libSDLiPhoneOS.a" % COMMON_INSTALLDIR,
             buildcmd=
-	            "cd SDL-1.3.0-*  && "
-            	"patch --strip 1 --forward < %s/third_party_packages/sdl-iOS-patches.patch && "
-	            "cd Xcode-iphoneOS/SDL  && "
-				"xcodebuild -target StaticLibiPhoneOS -sdk iphoneos%s -configuration Release &&"
-				"mkdir -p ../../../installed/include/SDL && "
-				"cp ../../include/* ./build/Release-iphoneos/usr/local/include/* ../../../installed/include/SDL &&"
- 				"mkdir -p ../../../installed/include/lib && cp ./build/Release-iphoneos/libSDLiPhoneOS.a ../../../installed/lib" % (AMBULANT_DIR, os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
+                "cd SDL-1.3.0-*  && "
+                "patch --strip 1 --forward < %s/third_party_packages/sdl-iOS-patches.patch && "
+                "cd Xcode-iphoneOS/SDL  && "
+                "xcodebuild -target StaticLibiPhoneOS -sdk iphoneos%s -configuration Release &&"
+                "mkdir -p ../../../installed/include/SDL && "
+                "cp ../../include/* ./build/Release-iphoneos/usr/local/include/* ../../../installed/include/SDL &&"
+                "mkdir -p ../../../installed/include/lib && cp ./build/Release-iphoneos/libSDLiPhoneOS.a ../../../installed/lib" % (AMBULANT_DIR, os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
             ),
 
         TPP("live",
@@ -475,12 +476,12 @@ third_party_packages={
             url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
             checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
             buildcmd=
-            	"cd ffmpeg-export-2010-01-22 && "
-            	"./configure --enable-cross-compile --arch=i386 --target-os=darwin --cc=/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc "
-            	"--as='gas-preprocessor.pl /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc' "
-            	"--sysroot=/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator%s.sdk "
-            	"--extra-cflags='-arch i386 -I../installed/include' --extra-ldflags='-arch i386 -L../installed/lib' "
-            	"--enable-libfaad --prefix=../installed --enable-gpl --disable-mmx --disable-asm;"
+                "cd ffmpeg-export-2010-01-22 && "
+                "./configure --enable-cross-compile --arch=i386 --target-os=darwin --cc=/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc "
+                "--as='gas-preprocessor.pl /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc' "
+                "--sysroot=/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator%s.sdk "
+                "--extra-cflags='-arch i386 -I../installed/include' --extra-ldflags='-arch i386 -L../installed/lib' "
+                "--enable-libfaad --prefix=../installed --enable-gpl --disable-mmx --disable-asm;"
                 "make clean;make ${MAKEFLAGS}; make install" %  os.getenv("IPHONEOS_DEPLOYMENT_TARGET")
             ),
 
@@ -488,13 +489,13 @@ third_party_packages={
             url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
             checkcmd="test -f %s/lib/libSDLiPhoneOS.a" % COMMON_INSTALLDIR,
             buildcmd=
-	            "cd SDL-1.3.0-*  && "
-            	"patch --strip 1 --forward < %s/third_party_packages/sdl-iOS-patches.patch && "
-	            "cd Xcode-iphoneOS/SDL  && "
-				"xcodebuild -target StaticLibiPhoneOS -sdk iphonesimulator%s -configuration Debug &&"
-				"mkdir -p ../../../installed/include/SDL && cp ../../include/* ../../../installed/include/SDL &&"
-				"cp ./build/Debug-iphonesimulator/usr/local/include/* ../../../installed/include/SDL &&"
- 				"mkdir -p ../../../installed/include/lib && cp ./build/Debug-iphonesimulator/libSDLiPhoneOS.a ../../../installed/lib" % (AMBULANT_DIR, os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
+                "cd SDL-1.3.0-*  && "
+                "patch --strip 1 --forward < %s/third_party_packages/sdl-iOS-patches.patch && "
+                "cd Xcode-iphoneOS/SDL  && "
+                "xcodebuild -target StaticLibiPhoneOS -sdk iphonesimulator%s -configuration Debug &&"
+                "mkdir -p ../../../installed/include/SDL && cp ../../include/* ../../../installed/include/SDL &&"
+                "cp ./build/Debug-iphonesimulator/usr/local/include/* ../../../installed/include/SDL &&"
+                "mkdir -p ../../../installed/include/lib && cp ./build/Debug-iphonesimulator/libSDLiPhoneOS.a ../../../installed/lib" % (AMBULANT_DIR, os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
  ),
 
         TPP("live",
@@ -728,18 +729,53 @@ third_party_packages={
     
 }
 
+def checkenv_win32(target):
+    return True
+
+def checkenv_unix(target):
+    rv = True
+    if os.system("make -v >/dev/null") != 0:
+        print "* make not in $PATH"
+        rv = False
+    if os.system("tar --help >/dev/null") != 0:
+        print "* tar not in $PATH"
+        rv = False
+    if os.system("autoconf --version >/dev/null") != 0:
+        print "* autoconf not in $PATH"
+        rv = False
+    if os.system("patch -v >/dev/null") != 0:
+        print "* patch not in $PATH"
+        rv = False
+    if os.system("pkg-config --version >/dev/null") != 0:
+        print '* pkg-config not in $PATH'
+        rv = False
+    return rv
+    
+
 def checkenv_mac(target):
+    rv = True
+    if not checkenv_unix(target):
+        rv = False
+    if os.system("xcodebuild -version >/dev/null") != 0:
+        print "* xcodebuild not in $PATH"
+        rv = False
     # Make sure we have MACOSX_DEPLOYMENT_TARGET set
     if not os.environ.has_key('MACOSX_DEPLOYMENT_TARGET'):
         print '* MACOSX_DEPLOYMENT_TARGET must be set for %s development' % target
-        return False
-    return True
+        rv = False
+    return rv
 
 def checkenv_iphone(target):
+    rv = True
+    if not checkenv_unix(target):
+        rv = False
+    if os.system("xcodebuild -version >/dev/null") != 0:
+        print "* xcodebuild not in $PATH"
+        rv = False
     # Make sure we have MACOSX_DEPLOYMENT_TARGET and IPHONEOS_DEPLOYMENT_TARGET set
     if not os.environ.has_key('MACOSX_DEPLOYMENT_TARGET') or not os.environ.has_key('IPHONEOS_DEPLOYMENT_TARGET'):
         print '* Both MACOSX_DEPLOYMENT_TARGET and IPHONEOS_DEPLOYMENT_TARGET must be set for %s development' % target
-        return False
+        rv = False
     # Check that we have the right compilers, etc in PATH
     if target == 'iOS-Simulator':
         wanted = '/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin'
@@ -748,18 +784,19 @@ def checkenv_iphone(target):
     else:
         assert 0
     if not wanted in os.environ['PATH']:
-        print '* %s should be in PATH for %s development' % (wanted, target)
-        return False
+        print '* %s should be in $PATH for %s development' % (wanted, target)
+        rv = False
     if not os.environ.has_key('PKG_CONFIG_LIBDIR'):
         print '* PKG_CONFIG_LIBDIR must be set for cross-development'
-        return False
-    return True
+        rv = False
+    return rv
         
 environment_checkers = {
-    'mac' : checkenv_mac,
+    'mac10.6' : checkenv_mac,
     'mac10.4' : checkenv_mac,
     'iOS-Simulator' : checkenv_iphone,
     'iOS-Device' : checkenv_iphone,
+    'linux': checkenv_unix,
     # XXXX Should do this for win32 too
 }
 
@@ -768,10 +805,9 @@ def main():
         print "Usage: %s platform" % sys.argv[0]
         print "Platform is one of:", ' '.join(third_party_packages.keys())
         return 2
-    if environment_checkers.has_key(sys.argv[1]):
-        ok = environment_checkers[sys.argv[1]](sys.argv[1])
-        if not ok:
-            return 1
+    ok = environment_checkers[sys.argv[1]](sys.argv[1])
+    if not ok:
+        return 1
     allok = True
     final_package = None
     for pkg in third_party_packages[sys.argv[1]]:
