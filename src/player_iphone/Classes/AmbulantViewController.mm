@@ -226,7 +226,9 @@ viewDidLoad {
 		AM_DBG NSLog (@"startPath=%@, startNodeRepr%@", startPath, startNodeRepr);
 		if (startPath != NULL) {
 			// turn on crash recovery
+#ifdef	NDEBUG
 			prefs->m_normal_exit = false;
+#endif//NDEBUG
 			prefs->save_preferences();
 			void* theview = [self playerView];
 			AM_DBG NSLog(@"view %@ responds %d", (NSObject *)theview, [(NSObject *)theview respondsToSelector: @selector(isAmbulantWindowInUse)]);
