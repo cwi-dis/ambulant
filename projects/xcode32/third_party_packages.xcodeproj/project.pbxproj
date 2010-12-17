@@ -8,12 +8,14 @@
 
 /* Begin PBXFileReference section */
 		041DCBCB12B655E1003407C8 /* build-third-party-packages.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = "build-third-party-packages.py"; path = "../../third_party_packages/build-third-party-packages.py"; sourceTree = SOURCE_ROOT; };
+		04CE8DA412BB691600801B1A /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-common.xcconfig"; path = "config/ambulant-common.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		041DCBAC12B654E5003407C8 /* Configuration Files */ = {
 			isa = PBXGroup;
 			children = (
+				04CE8DA412BB691600801B1A /* ambulant-common.xcconfig */,
 			);
 			name = "Configuration Files";
 			sourceTree = "<group>";
@@ -103,6 +105,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				DSTROOT = /;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				PRODUCT_NAME = third_party_packages_3264;
@@ -114,6 +117,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DSTROOT = /;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				PRODUCT_NAME = third_party_packages_3264;
 				ZERO_LINK = NO;
@@ -170,12 +174,14 @@
 		};
 		1DEB919408733D9F0010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 04CE8DA412BB691600801B1A /* ambulant-common.xcconfig */;
 			buildSettings = {
 			};
 			name = Debug;
 		};
 		1DEB919508733D9F0010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 04CE8DA412BB691600801B1A /* ambulant-common.xcconfig */;
 			buildSettings = {
 			};
 			name = Release;

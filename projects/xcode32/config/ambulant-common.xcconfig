@@ -1,1 +1,2 @@
 AMBULANT_DIR = $(SRCROOT)/../..
+PATH = $(PATH):/usr/local/bin

@@ -252,6 +252,13 @@
 			remoteGlobalIDString = D2AAC09C05546B4700DB518D;
 			remoteInfo = plugin;
 		};
+		04CE8D8C12BB647A00801B1A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 04CE8D8612BB645600801B1A /* third_party_packages.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 041DCBD712B65714003407C8 /* third_party_packages_mac */;
+			remoteInfo = third_party_packages_mac;
+		};
 		04FA282812B8D16C0080216B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 04070599115268480094FB0B /* libambulant.xcodeproj */;
@@ -346,6 +353,7 @@
 		04428EBD11577E960067C868 /* DTDCache */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DTDCache; path = ../../Extras/DTDCache; sourceTree = SOURCE_ROOT; };
 		04428EBF11577EC30067C868 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = ../../Extras/Welcome/data; sourceTree = SOURCE_ROOT; };
 		04A1E9A412B585D80060F97E /* AmbulantPlayerCG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmbulantPlayerCG.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		04CE8D8612BB645600801B1A /* third_party_packages.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = third_party_packages.xcodeproj; sourceTree = "<group>"; };
 		04FA282B12B8D1BD0080216B /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-common.xcconfig"; path = "config/ambulant-common.xcconfig"; sourceTree = "<group>"; };
 		04FA282C12B8D1BD0080216B /* ambulant-debug-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-debug-cg.xcconfig"; path = "config/ambulant-debug-cg.xcconfig"; sourceTree = "<group>"; };
 		04FA282E12B8D1BD0080216B /* ambulant-debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-debug.xcconfig"; path = "config/ambulant-debug.xcconfig"; sourceTree = "<group>"; };
@@ -430,6 +438,7 @@
 		040705901152682E0094FB0B /* Subprojects */ = {
 			isa = PBXGroup;
 			children = (
+				04CE8D8612BB645600801B1A /* third_party_packages.xcodeproj */,
 				042ADAA31152DA4A009CA791 /* plugin_xerces.xcodeproj */,
 				04070599115268480094FB0B /* libambulant.xcodeproj */,
 				042ADA3C1152D831009CA791 /* plugin_xpath_state.xcodeproj */,
@@ -524,6 +533,13 @@
 			isa = PBXGroup;
 			children = (
 				042ADB0B1152DE65009CA791 /* libamplugin_python.so */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		04CE8D8712BB645600801B1A /* Products */ = {
+			isa = PBXGroup;
+			children = (
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -644,6 +660,7 @@
 			);
 			dependencies = (
 				0405C05612B62479007AD3B2 /* PBXTargetDependency */,
+				04CE8D8D12BB647A00801B1A /* PBXTargetDependency */,
 			);
 			name = AmbulantPlayerCGstatic;
 			productInstallPath = "$(HOME)/Applications";
@@ -741,6 +758,10 @@
 				{
 					ProductGroup = 042ADA3D1152D831009CA791 /* Products */;
 					ProjectRef = 042ADA3C1152D831009CA791 /* plugin_xpath_state.xcodeproj */;
+				},
+				{
+					ProductGroup = 04CE8D8712BB645600801B1A /* Products */;
+					ProjectRef = 04CE8D8612BB645600801B1A /* third_party_packages.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -1077,6 +1098,11 @@
 			isa = PBXTargetDependency;
 			name = plugin;
 			targetProxy = 04A1E97712B585D80060F97E /* PBXContainerItemProxy */;
+		};
+		04CE8D8D12BB647A00801B1A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = third_party_packages_mac;
+			targetProxy = 04CE8D8C12BB647A00801B1A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

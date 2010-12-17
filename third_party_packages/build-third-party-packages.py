@@ -760,7 +760,7 @@ def checkenv_mac(target):
         print "* xcodebuild not in $PATH"
         rv = False
     # Make sure we have MACOSX_DEPLOYMENT_TARGET set
-    if not os.environ.has_key('MACOSX_DEPLOYMENT_TARGET'):
+    if target != 'mac10.6' and not os.environ.has_key('MACOSX_DEPLOYMENT_TARGET'):
         print '* MACOSX_DEPLOYMENT_TARGET must be set for %s development' % target
         rv = False
     return rv
@@ -772,9 +772,9 @@ def checkenv_iphone(target):
     if os.system("xcodebuild -version >/dev/null") != 0:
         print "* xcodebuild not in $PATH"
         rv = False
-    # Make sure we have MACOSX_DEPLOYMENT_TARGET and IPHONEOS_DEPLOYMENT_TARGET set
-    if not os.environ.has_key('MACOSX_DEPLOYMENT_TARGET') or not os.environ.has_key('IPHONEOS_DEPLOYMENT_TARGET'):
-        print '* Both MACOSX_DEPLOYMENT_TARGET and IPHONEOS_DEPLOYMENT_TARGET must be set for %s development' % target
+    # Make sure we have IPHONEOS_DEPLOYMENT_TARGET set
+    if not os.environ.has_key('IPHONEOS_DEPLOYMENT_TARGET'):
+        print '* IPHONEOS_DEPLOYMENT_TARGET must be set for %s development' % target
         rv = False
     # Check that we have the right compilers, etc in PATH
     if target == 'iOS-Simulator':
