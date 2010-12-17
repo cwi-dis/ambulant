@@ -302,6 +302,10 @@ gtk_gui::gtk_gui(const char* title, const char* initfile)
 	pthread_mutex_init(&m_lock_message, NULL);
 	m_gui_thread = pthread_self();
 #endif/*LOCK_MESSAGE*/
+	// If the URL starts with "ambulant:" this is the trick-uri-scheme to
+	// open URLs in Ambulant from the browser. Remove the trick.
+	if (strncmp(initfile, "ambulant:", 9) == 0)
+		initfile += 9;
 	if (initfile != NULL && initfile != "")
 		m_smilfilename = strdup(initfile);
 
@@ -957,13 +961,17 @@ main (int argc, char*argv[]) {
 	if (argc > 1) {
 		char last[6];
 		char* str = argv[argc-1];
+		// If the URL starts with "ambulant:" this is the trick-uri-scheme to
+		// open URLs in Ambulant from the browser. Remove the trick.
+		if (strncmp(str, "ambulant:", 9) == 0)
+			str += 9;
 		int len = strlen(str);
 		strcpy(last, &str[len-5]);
 		if (strcmp(last, ".smil") == 0
 			|| strcmp(&last[1], ".smi") == 0
 			|| strcmp(&last[1], ".sml") == 0)
 		{
-			if (mywidget->openSMILfile(argv[argc-1], 0, true) && exec_flag) {
+			if (mywidget->openSMILfile(str, 0, true) && exec_flag) {
 				mywidget->do_play();
 			}
 		}

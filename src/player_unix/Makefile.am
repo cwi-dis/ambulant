@@ -122,6 +122,8 @@ nodist_AmbulantPlayer_qt_SOURCES=qt_gui-moc.cpp
 install-exec-hook:
 	cd $(DESTDIR)$(bindir) && \
 	$(LN_S) -f $(bin_PROGRAMS) AmbulantPlayer
+	gconftool-2 -s /desktop/gnome/url-handlers/ambulant/enabled --type Boolean true
+	gconftool-2 -s /desktop/gnome/url-handlers/ambulant/command "$(DESTDIR)$(bindir)/AmbulantPlayer  %s" --type String
 
 uninstall-hook:
 	rm -f AmbulantPlayer
