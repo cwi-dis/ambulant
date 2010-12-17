@@ -1,3 +1,21 @@
+2010-12-17 00:12  jackjansen
+
+	* Allow two schemes for ambulant: urls, either replacing http: or
+	  augmenting any url scheme.
+
+2010-12-16 23:18  jackjansen
+
+	* Enable ambulant: URLs in player, and register them in the
+	  installer.
+
+2010-12-16 21:51  jackjansen
+
+	* Implemented ambulant: uri scheme
+
+2010-12-16 15:44  jackjansen
+
+	* Adapted for the move of the config files
+
 2010-12-15 17:32  jackjansen
 
 	* Fixed poster image display in history
