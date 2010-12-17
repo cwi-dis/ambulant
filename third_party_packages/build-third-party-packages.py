@@ -573,7 +573,7 @@ third_party_packages={
             ),
 
         TPP("xulrunner-sdk",
-            url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2/sdk/xulrunner-1.9.2.en-US.linux-i686.sdk.tar.bz2",
+            url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2.13/sdk/xulrunner-1.9.2.13.en-US.linux-i686.sdk.tar.bz2",
             checkcmd="test -d xulrunner-sdk",
             buildcmd="test -d xulrunner-sdk"
             ),
@@ -681,7 +681,7 @@ third_party_packages={
             ),
             
         WinTPP("xulrunner-sdk",
-            url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2/sdk/xulrunner-1.9.2.en-US.win32.sdk.zip",
+            url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2.13/sdk/xulrunner-1.9.2.13.en-US.win32.sdk.zip",
             checkcmd="if not exist xulrunner-sdk\\sdk\\include\\npapi.h exit 1",
             # No build needed
             ),
