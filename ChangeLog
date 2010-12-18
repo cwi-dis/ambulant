@@ -1,3 +1,26 @@
+2010-12-17 21:19  keesblom
+
+	* ~Turned of crash protection in debugging mode
+
+2010-12-17 14:54  jackjansen
+
+	* Implemented ambulant: URL scheme for gtk and qt player, and
+	  install the hook
+
+2010-12-17 13:28  jackjansen
+
+	* New xulrunner version
+
+2010-12-17 11:13  jackjansen
+
+	* Tweaking the 3pp build process so it doesn't rebuild if not
+	  needed
+
+2010-12-17 10:49  jackjansen
+
+	* Check that essential commands (make, pkg-config, etc) are
+	  available.
+
 2010-12-17 00:12  jackjansen
 
 	* Allow two schemes for ambulant: urls, either replacing http: or
