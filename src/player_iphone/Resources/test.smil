@@ -37,13 +37,15 @@
   </head>
   <body xml:id="Simple_iPhone_test_body">
     <par xml:id="Simple_iPhone_test_par1" repeatCount="99999">
-	  <brush region="video1" color="yellow" />
 	  <seq>
-	    <audio src="data/AmbulantTune.mp3" dur="8" region="audio_1" />
-	    <audio src="data/AmbulantTune.mp3" dur="8" region="audio_1" />
+	    <video src="http://homepages.cwi.nl/~kees/ambulant/ios/Demos/Birthday/HBdata/Az3-g-ios.m4v" region="video1"
+				clipBegin="0s" begin="1" clipEnd="10"/>
+	    <video src="http://homepages.cwi.nl/~kees/ambulant/ios/Demos/Birthday/HBdata/Fz3-g-ios.m4v" region="video1" 
+				clipBegin="5s" clipEnd="12" />
 <!--
-	    <video src="http://homepages.cwi.nl/~kees/ambulant/ios/Demos/Birthday/HBdata/Fz3-g-ios.m4v" region="video1" clipBegin="5s" clipEnd="12" />
-	    <video src="http://homepages.cwi.nl/~kees/ambulant/ios/Demos/Birthday/HBdata/Az3-g-ios.m4v" region="video1" clipBegin="0s" begin="1" clipEnd="10"/>
+	    <audio src="data/AmbulantTune.mp3" dur="8" region="audio_1" />
+	    <audio src="data/AmbulantTune.mp3" dur="8" region="audio_1" />
+	  <brush region="video1" color="yellow" />
  -->
 	  </seq>
 <!-- 

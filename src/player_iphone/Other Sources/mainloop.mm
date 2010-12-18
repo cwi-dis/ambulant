@@ -326,7 +326,7 @@ mainloop::~mainloop()
 	delete m_gui_screen;
 //	delete m_window_factory;
 	if (m_nsurl != NULL) {
-//XX	[m_nsurl release]; //XX crashes when called from Safari: first the last item is played, immediately y Safari
+//XX	[m_nsurl release]; //XX crashes when called from Safari
 		m_nsurl =  NULL;
 	}
 	m_current_item = NULL;

@@ -31,78 +31,50 @@
 #include "ambulant/lib/mtsync.h"
 #import <AVFoundation/AVFoundation.h>
 
-
-/* CGVideoAVPlayerManager - a class to manage the AVPlayer in iOs 4.0.
- * currently it appears we can use one AVPlayer object at the same time, and the
- * only way to play a next video is to call its replaceCurrentItemWithItem.
- */
-// Bit masks for identifying active observers 
-typedef enum observers { ob_none, ob_status=0x1, ob_asset=0x2, ob_duration=0x4, ob_error=0x8, ob_time=0x10, ob_eod=0x20, ob_all=0x3f } observers;
-
+//#ifdef	__OBJC__
 @interface CGVideoAVPlayerManager : NSObject
 {
-	observers m_observers;		// A mask indicating active observers 
-//	id timeObserver;			// A periodic observer to maintain video progress
-	CMTime m_duration;			// The total duration of the video
-	BOOL m_is_duration_known;	// Initially duration is not known
-	CMTime m_begin_time;		// Where the video should begin playing
-	CMTime m_end_time;			// Where the video should end playing
-	NSURL* m_nsurl;				// The url of the video
-	void*(*m_eod_fun)(void*);	// A C++ function to be called at end of the video
-	void* m_eod_arg;			// Arguments for this function 
-	void*(*m_err_fun)(void*);	// A C++ function to be called when an error occurs
-	void* m_err_arg;			// Arguments for this function 
-	AVPlayerLayer* m_avplayer_layer; // The AVPlayerLayer where video is displayed
-	AVPlayerItem* m_avplayer_item; // The video item being played 
+	AVPlayer* mAVPlayer;
+	CMTime duration;
+	BOOL mDurationIsKnown;
+	CMTime mBeginTime;
+	CMTime mEndTime;
+	id timeObserver;
+	NSURL* mNSURL;
+	void*(*eod_fun)(void*);
+	void* fun_arg;
+	AVPlayerStatus mStatus;
+	BOOL mCurrentItemObserver;
+	BOOL mAssetObserver;
+	BOOL mDurationObserver;
+	BOOL mStatusObserver;
+	BOOL mErrorObserver;
+	BOOL mWantToPlay;
 	
-	ambulant::net::timestamp_t m_position_wanted;
+	ambulant::net::timestamp_t position_wanted;
 }
-static AVPlayer* s_avplayer;	// The global AVPlayer, controlled by 's_busy' flag to prevent > 1 simultaneous video's
 
-//@property (nonatomic, retain) AVPlayer *s_avplayer;
-@property (nonatomic, retain) AVPlayerItem *m_avplayer_item;
-@property (nonatomic, assign) CMTime m_duration, m_begin_time, m_end_time;
-@property (nonatomic, assign, readonly) BOOL m_is_duration_known;
-//@property (nonatomic, retain) id timeObserver;
-@property (nonatomic, retain) NSURL* m_nsurl;
-@property (readonly) AVPlayerLayer* m_avplayer_layer;
+@property (nonatomic, retain) AVPlayer *mAVPlayer;
+@property (nonatomic, assign) CMTime duration;
+@property (nonatomic, assign, readonly) BOOL durationIsKnown;
+@property (nonatomic, retain) id timeObserver;
+@property (nonatomic, retain) NSURL* mNSURL;
 
-// ** video initialization methods **
-// initWithURL:url - returns NULL on error
-- (CGVideoAVPlayerManager*) initWithURL:(NSURL*) nsurl;
-
-// onEndOfDataCall:fun witharg:arg - call 'fun' the the opaque 'arg' when end of data is reached while playing video
-- (void) onEndOfDataCall:(void*(*)(void*))fun withArg: (void*) arg;
-
-// onErrorCall:fun: witharg:arg - call 'fun' the the opaque 'arg' when an error occures during video play
-- (void) onErrorCall:(void*(*)(void*))fun withArg: (void*) arg;
-
-// set_clip_begin:tb end:te - select video begin/end time
+- (CGVideoAVPlayerManager *)initWithURL:(NSURL*)url parent: (void*)arg endOfData: (void*(*)(void*))fun;
 - (void) set_clip_begin:(Float64) begin_time end: (Float64) end_time;
-
-// add_layer:layer withSize:size - add a video layer to the specified CALayer
-- (void) add_layer: (CALayer*) layer withSize: (CGSize) size;
-
-// set_frame:rect - (re)set the frame of the current video to 'rect'
-- (void) set_frame: (CGRect) rect;
-
-// ** player control methods **
+- (AVPlayer*) mAVPlayer;
 - (void) play;
 - (void) pause;
-- (void) stop;
-// return the last error observed, NULL if none
-- (NSError*) get_error;
-// return the current player rate (0: paused, 1.0:playing at normal speed
-- (Float64) rate;
-
-// ** av_player__manager** private methods **
-- (AVPlayer*) avplayer;
-- (void) add_observers:(observers) new_observers;
-- (void) remove_observers:(observers) new_observers;
-- (BOOL) s_busy;
 - (void) dealloc;
 
+//- (void)setPositionWanted: (ambulant::net::timestamp_t)begintime;
+//- (QTMovie *)movie;
+//- (void)movieWithURL: (NSURL*)url;
+//- (void)moviePrepare: (id)sender;
+//- (void)movieStart: (id)sender;
+//- (void)movieRelease: (id)sender;
 @end
+//#endif//__OBJC__
 										  
 namespace ambulant {
 
@@ -133,6 +105,7 @@ class cg_avfoundation_video_renderer :
 	void init_with_node(const lib::node *n);
 	void preroll(double when, double where, double how_much) {}
 	void pause(pause_display d=display_show);
+	void play();
 	void resume();
 	void seek(double t) {}
 
@@ -143,21 +116,21 @@ class cg_avfoundation_video_renderer :
 	void start_outtransition(const lib::transition_info *info) {}
 private:
 	static void* eod_reached(void* arg);
-	static void* error_occurred(void* arg);
-	enum { rs_created, rs_inited, rs_prerolled, rs_started, rs_playing, rs_pausing, rs_stopped, rs_fullstopped, rs_error_state } m_renderer_state; // Debugging, mainly
-	net::url m_url;						// The URL of the movie being played
-//	AVPlayer* m_avplayer;				// The avplayer itself (currently implemented static)
+	enum { rs_created, rs_inited, rs_prerolled, rs_started, rs_stopped, rs_fullstopped, rs_error_state } m_renderer_state; // Debugging, mainly
+	net::url m_url;						// The URL of the movie we play
+	AVPlayerLayer* m_avplayer_layer;	// The AVPlayerLayer where video is displayed
 	CALayer* m_superlayer;				// The CALayer to which m_avplayer_layer is added
+	UIView* m_avplayer_view;			// The view for the avplayer
 	size m_srcsize;						// size of this view
-	CGVideoAVPlayerManager *m_avplayer_manager;	// The helper ObjC class to control the players using observers
+	CGVideoAVPlayerManager *m_avplayer_manager;			// Our helper ObjC class to control the players using observers
 	bool m_paused;
-	net::timestamp_t m_previous_clip_position;	// Last known officially position
+	net::timestamp_t m_previous_clip_position; // Where we are officially positioned
 #ifdef WITH_CLOCK_SYNC
-	lib::timer::signed_time_type m_video_epoch; // Ambulant clock value corresponding to video clock 0.
-	void _fix_video_epoch();			// Set m_video_epoch according to current movie time
-	void _fix_clock_drift();			// Synchronise movie clock and ambulant clock
+	lib::timer::signed_time_type m_video_epoch;    // Ambulant clock value corresponding to video clock 0.
+	void _fix_video_epoch();    // Set m_video_epoch according to current movie time
+	void _fix_clock_drift();    // Synchronise movie clock and ambulant clock
 #endif
-	critical_section m_lock;			// thread protection
+	critical_section m_lock;
 };
 
 } // namespace cg

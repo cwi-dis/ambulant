@@ -6,8 +6,7 @@
 //  Copyright CWI 2010. All rights reserved.
 //
 
-
-#define AM_DBG if(1)
+//#define AM_DBG if(1)
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #define DBG_ADD(_x)
