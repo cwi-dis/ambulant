@@ -16,8 +16,8 @@ iOSpreferences*  iOSpreferences::s_preferences = 0;
 iOSpreferences::iOSpreferences()
 	:	common::preferences(),
 		m_loaded(false),
-		m_auto_center(false),
-		m_auto_resize(false),
+		m_auto_center(true),
+		m_auto_resize(true),
 		m_normal_exit(false),
 		m_favorites(NULL),
 		m_history(NULL)
