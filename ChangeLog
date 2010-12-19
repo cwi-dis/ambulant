@@ -1,3 +1,9 @@
+2010-12-18 15:58  keesblom
+
+	* Completely revised native video impl. All video's in Birthday now
+	  finanaly do play. Revision is halfway, video's do repeat i.o.
+	  terminate on EOF, and lots of leaks.
+
 2010-12-17 21:19  keesblom
 
 	* ~Turned of crash protection in debugging mode
