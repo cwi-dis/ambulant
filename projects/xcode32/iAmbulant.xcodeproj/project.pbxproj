@@ -25,6 +25,7 @@
 		041E951712B81D1000399893 /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950D12B81D1000399893 /* libxml2.a */; };
 		041E954912B825F200399893 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E954812B825F200399893 /* libbz2.dylib */; };
 		041E954D12B8260C00399893 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E954C12B8260C00399893 /* libz.dylib */; };
+		0483912212BEC681002260A6 /* ITunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 0483912112BEC681002260A6 /* ITunesArtwork */; };
 		04B75CFD12B80B9800161EB5 /* EditViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75CEC12B80B9800161EB5 /* EditViewController.mm */; };
 		04B75CFE12B80B9800161EB5 /* PresentationViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75CF012B80B9800161EB5 /* PresentationViewController.mm */; };
 		04B75CFF12B80B9800161EB5 /* Presentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 04B75CF212B80B9800161EB5 /* Presentation.m */; };
@@ -46,11 +47,9 @@
 		04B75D2812B80C0400161EB5 /* Pause_iPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D1112B80C0300161EB5 /* Pause_iPhone.png */; };
 		04B75D2912B80C0400161EB5 /* Play_iPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D1212B80C0300161EB5 /* Play_iPhone.png */; };
 		04B75D2A12B80C0400161EB5 /* Rewind_iPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D1312B80C0300161EB5 /* Rewind_iPhone.png */; };
-		04B75D2B12B80C0400161EB5 /* Welcome_Icon-57x57.png in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D1412B80C0300161EB5 /* Welcome_Icon-57x57.png */; };
 		04B75D2C12B80C0400161EB5 /* Back.png in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D1512B80C0300161EB5 /* Back.png */; };
 		04B75D2D12B80C0400161EB5 /* PresentationTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D1612B80C0300161EB5 /* PresentationTableCell.xib */; };
 		04B75D2E12B80C0400161EB5 /* PresentationTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D1712B80C0300161EB5 /* PresentationTableViewController.xib */; };
-		04B75D2F12B80C0400161EB5 /* iPhoneAVPlayerTest.smil in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D1812B80C0400161EB5 /* iPhoneAVPlayerTest.smil */; };
 		04B75D3012B80C0400161EB5 /* SettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D1912B80C0400161EB5 /* SettingsViewController.xib */; };
 		04B75D3112B80C0400161EB5 /* AmbulantWebView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D1A12B80C0400161EB5 /* AmbulantWebView.xib */; };
 		04B75D3212B80C0400161EB5 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D1B12B80C0400161EB5 /* MainWindow.xib */; };
@@ -140,6 +139,7 @@
 		041E950D12B81D1000399893 /* libxml2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxml2.a; path = "../../build-iOS/third_party_packages/installed/lib/libxml2.a"; sourceTree = SOURCE_ROOT; };
 		041E954812B825F200399893 /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = usr/lib/libbz2.dylib; sourceTree = SDKROOT; };
 		041E954C12B8260C00399893 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		0483912112BEC681002260A6 /* ITunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; name = ITunesArtwork; path = ../../src/player_iphone/ITunesArtwork; sourceTree = SOURCE_ROOT; };
 		04B75CEC12B80B9800161EB5 /* EditViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = EditViewController.mm; path = ../../src/player_iphone/Classes/EditViewController.mm; sourceTree = SOURCE_ROOT; };
 		04B75CED12B80B9800161EB5 /* EditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EditViewController.h; path = ../../src/player_iphone/Classes/EditViewController.h; sourceTree = SOURCE_ROOT; };
 		04B75CEE12B80B9800161EB5 /* PlaylistAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlaylistAppDelegate.h; path = ../../src/player_iphone/Classes/PlaylistAppDelegate.h; sourceTree = SOURCE_ROOT; };
@@ -170,11 +170,9 @@
 		04B75D1112B80C0300161EB5 /* Pause_iPhone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Pause_iPhone.png; path = ../../src/player_iphone/Resources/Pause_iPhone.png; sourceTree = SOURCE_ROOT; };
 		04B75D1212B80C0300161EB5 /* Play_iPhone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Play_iPhone.png; path = ../../src/player_iphone/Resources/Play_iPhone.png; sourceTree = SOURCE_ROOT; };
 		04B75D1312B80C0300161EB5 /* Rewind_iPhone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Rewind_iPhone.png; path = ../../src/player_iphone/Resources/Rewind_iPhone.png; sourceTree = SOURCE_ROOT; };
-		04B75D1412B80C0300161EB5 /* Welcome_Icon-57x57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Welcome_Icon-57x57.png"; path = "../../src/player_iphone/Resources/Welcome_Icon-57x57.png"; sourceTree = SOURCE_ROOT; };
 		04B75D1512B80C0300161EB5 /* Back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Back.png; path = ../../src/player_iphone/Resources/Back.png; sourceTree = SOURCE_ROOT; };
 		04B75D1612B80C0300161EB5 /* PresentationTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = PresentationTableCell.xib; path = ../../src/player_iphone/Resources/PresentationTableCell.xib; sourceTree = SOURCE_ROOT; };
 		04B75D1712B80C0300161EB5 /* PresentationTableViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = PresentationTableViewController.xib; path = ../../src/player_iphone/Resources/PresentationTableViewController.xib; sourceTree = SOURCE_ROOT; };
-		04B75D1812B80C0400161EB5 /* iPhoneAVPlayerTest.smil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = iPhoneAVPlayerTest.smil; path = ../../src/player_iphone/Resources/iPhoneAVPlayerTest.smil; sourceTree = SOURCE_ROOT; };
 		04B75D1912B80C0400161EB5 /* SettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = SettingsViewController.xib; path = ../../src/player_iphone/Resources/SettingsViewController.xib; sourceTree = SOURCE_ROOT; };
 		04B75D1A12B80C0400161EB5 /* AmbulantWebView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = AmbulantWebView.xib; path = ../../src/player_iphone/Resources/AmbulantWebView.xib; sourceTree = SOURCE_ROOT; };
 		04B75D1B12B80C0400161EB5 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainWindow.xib; path = ../../src/player_iphone/Resources/MainWindow.xib; sourceTree = SOURCE_ROOT; };
@@ -271,7 +269,7 @@
 			isa = PBXGroup;
 			children = (
 				04B75D9012B80D1300161EB5 /* libambulant.dylib */,
-				04B75D9212B80D1300161EB5 /* libambulantCG.dylib */,
+				04B75D9212B80D1300161EB5 /* libambulantGC.dylib */,
 				04B75D9412B80D1300161EB5 /* libambulantCGstatic.a */,
 				04B75D9612B80D1300161EB5 /* libambulantIPhone.a */,
 			);
@@ -362,6 +360,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				0483912112BEC681002260A6 /* ITunesArtwork */,
 				041E94CB12B816EE00399893 /* Entitlements.plist */,
 				04B75D3812B80C2A00161EB5 /* data */,
 				04B75D4212B80C2A00161EB5 /* Welcome.smil */,
@@ -378,11 +377,9 @@
 				04B75D1112B80C0300161EB5 /* Pause_iPhone.png */,
 				04B75D1212B80C0300161EB5 /* Play_iPhone.png */,
 				04B75D1312B80C0300161EB5 /* Rewind_iPhone.png */,
-				04B75D1412B80C0300161EB5 /* Welcome_Icon-57x57.png */,
 				04B75D1512B80C0300161EB5 /* Back.png */,
 				04B75D1612B80C0300161EB5 /* PresentationTableCell.xib */,
 				04B75D1712B80C0300161EB5 /* PresentationTableViewController.xib */,
-				04B75D1812B80C0400161EB5 /* iPhoneAVPlayerTest.smil */,
 				04B75D1912B80C0400161EB5 /* SettingsViewController.xib */,
 				04B75D1A12B80C0400161EB5 /* AmbulantWebView.xib */,
 				04B75D1B12B80C0400161EB5 /* MainWindow.xib */,
@@ -474,10 +471,10 @@
 			remoteRef = 04B75D8F12B80D1300161EB5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		04B75D9212B80D1300161EB5 /* libambulantCG.dylib */ = {
+		04B75D9212B80D1300161EB5 /* libambulantGC.dylib */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.dylib";
-			path = libambulantCG.dylib;
+			path = libambulantGC.dylib;
 			remoteRef = 04B75D9112B80D1300161EB5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -515,11 +512,9 @@
 				04B75D2812B80C0400161EB5 /* Pause_iPhone.png in Resources */,
 				04B75D2912B80C0400161EB5 /* Play_iPhone.png in Resources */,
 				04B75D2A12B80C0400161EB5 /* Rewind_iPhone.png in Resources */,
-				04B75D2B12B80C0400161EB5 /* Welcome_Icon-57x57.png in Resources */,
 				04B75D2C12B80C0400161EB5 /* Back.png in Resources */,
 				04B75D2D12B80C0400161EB5 /* PresentationTableCell.xib in Resources */,
 				04B75D2E12B80C0400161EB5 /* PresentationTableViewController.xib in Resources */,
-				04B75D2F12B80C0400161EB5 /* iPhoneAVPlayerTest.smil in Resources */,
 				04B75D3012B80C0400161EB5 /* SettingsViewController.xib in Resources */,
 				04B75D3112B80C0400161EB5 /* AmbulantWebView.xib in Resources */,
 				04B75D3212B80C0400161EB5 /* MainWindow.xib in Resources */,
@@ -528,6 +523,7 @@
 				04B75D4312B80C2A00161EB5 /* data in Resources */,
 				04B75D4412B80C2A00161EB5 /* Welcome.smil in Resources */,
 				041E94CC12B816EE00399893 /* Entitlements.plist in Resources */,
+				0483912212BEC681002260A6 /* ITunesArtwork in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -572,12 +568,47 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		048390E712BEB4AC002260A6 /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 04B75D5D12B80C8300161EB5 /* ambulant-common.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Jack Jansen";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PREBINDING = NO;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "7744B320-68B5-465C-BE4B-339DA2B2300E";
+				SDKROOT = iphoneos;
+			};
+			name = Distribution;
+		};
+		048390E812BEB4AC002260A6 /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 04B75D6512B80C8300161EB5 /* ambulant-release-iphone.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_ENTITLEMENTS = ../../src/player_iphone/Entitlements.plist;
+				COPY_PHASE_STRIP = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = iAmbulant_Prefix.pch;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INFOPLIST_FILE = "iAmbulant-Info.plist";
+				PRODUCT_NAME = iAmbulant;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Distribution;
+		};
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04B75D6212B80C8300161EB5 /* ambulant-debug-iphone.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_ENTITLEMENTS = "~/src/ambulant/projects/xcode32/iAmbulant-Entitlements.plist";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -596,6 +627,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_ENTITLEMENTS = "~/src/ambulant/projects/xcode32/iAmbulant-Entitlements.plist";
 				COPY_PHASE_STRIP = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -644,6 +676,7 @@
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
 				1D6058950D05DD3E006BFB54 /* Release */,
+				048390E812BEB4AC002260A6 /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -653,6 +686,7 @@
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
 				C01FCF5008A954540054247B /* Release */,
+				048390E712BEB4AC002260A6 /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
