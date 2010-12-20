@@ -9,6 +9,7 @@
 #import "AmbulantViewController.h"
 #import "AmbulantAppDelegate.h"
 #import "SettingsViewController.h"
+#import <QuartzCore/QuartzCore.h>
 
 //#define AM_DBG
 #ifndef AM_DBG
@@ -311,9 +312,27 @@ handleDoubleTapGesture:(UITapGestureRecognizer *)sender { // select
 	}
 }
 
+- (void)adjustAnchorPointForGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer {
+    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        UIView *piece = gestureRecognizer.view;
+        CGPoint locationInView = [gestureRecognizer locationInView:piece];
+        CGPoint locationInSuperview = [gestureRecognizer locationInView:piece.superview];
+        
+        piece.layer.anchorPoint = CGPointMake(locationInView.x / piece.bounds.size.width, locationInView.y / piece.bounds.size.height);
+        piece.center = locationInSuperview;
+    } else if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
+        UIView *piece = gestureRecognizer.view;
+        CGPoint centerInView = CGPointMake(piece.bounds.size.width/2, piece.bounds.size.height/2);
+        CGPoint centerInSuperview = [piece convertPoint: centerInView toView: piece.superview];
+        piece.layer.anchorPoint = CGPointMake(0.5, 0.5);
+        piece.center = centerInSuperview;
+    }
+}
+
 - (IBAction)
 handlePinchGesture:(UIPinchGestureRecognizer *)sender { // zoom
 	AM_DBG NSLog(@"AmbulantViewController handlePinchGesture(0x%x): sender=0x%x", self, sender);
+    [self adjustAnchorPointForGestureRecognizer: sender];
 	CGFloat factor = [(UIPinchGestureRecognizer *)sender scale];
 	[self.playerView zoomWithScale:factor inState: [sender state]];
 }

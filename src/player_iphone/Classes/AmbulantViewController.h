@@ -59,6 +59,7 @@ private:
 - (void) handleDoubleTapGesture:(UITapGestureRecognizer*) sender;
 - (void) handleTapGesture:(UITapGestureRecognizer*) sender;
 - (void) handleLongPressGesture:(UILongPressGestureRecognizer *)sender;
+- (void)adjustAnchorPointForGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer;
 - (void) handlePanGesture:(UIPanGestureRecognizer*) sender;
 - (void) handlePinchGesture:(UIGestureRecognizer*) sender;
 - (IBAction) showHistory:(id)sender;
