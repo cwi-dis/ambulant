@@ -116,14 +116,15 @@ class cg_avfoundation_video_renderer :
 	void start_outtransition(const lib::transition_info *info) {}
 private:
 	static void* eod_reached(void* arg);
-	enum { rs_created, rs_inited, rs_prerolled, rs_started, rs_stopped, rs_fullstopped, rs_error_state } m_renderer_state; // Debugging, mainly
+	// control values: the action triggered for redraw() executing from main thread is controlled by these values 
+	enum { rs_created, rs_inited, rs_prerolled, rs_started, rs_paused, rs_stopping, rs_stopped, rs_fullstopped, rs_error_state } m_renderer_state;
 	net::url m_url;						// The URL of the movie we play
 	AVPlayerLayer* m_avplayer_layer;	// The AVPlayerLayer where video is displayed
 	CALayer* m_superlayer;				// The CALayer to which m_avplayer_layer is added
 	UIView* m_avplayer_view;			// The view for the avplayer
 	size m_srcsize;						// size of this view
-	CGVideoAVPlayerManager *m_avplayer_manager;			// Our helper ObjC class to control the players using observers
-	bool m_paused;
+	CGVideoAVPlayerManager *m_avplayer_manager;	// The helper ObjC class to control the players using observers
+	bool m_stopped;						// Flag indicating whether its layer is added on the layer stack
 	net::timestamp_t m_previous_clip_position; // Where we are officially positioned
 #ifdef WITH_CLOCK_SYNC
 	lib::timer::signed_time_type m_video_epoch;    // Ambulant clock value corresponding to video clock 0.
