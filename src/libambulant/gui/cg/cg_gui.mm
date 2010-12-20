@@ -265,7 +265,7 @@ bad:
 
 - (id)initWithFrame:(CGRect)frameRect
 {
-	[super initWithFrame: ViewRectFromCGRect(frameRect)];
+	self = [super initWithFrame: ViewRectFromCGRect(frameRect)];
 	ambulant_window = NULL;
 //	transition_surface = NULL;
 //	transition_tmpsurface = NULL;
@@ -279,6 +279,33 @@ bad:
 //	overlay_window_needs_reparent = NO;
 //	overlay_window_needs_flush = NO;
 //	overlay_window_needs_clear = NO;
+#ifdef WITH_UIKIT
+	M_auto_center = YES;
+	M_auto_resize = NO;
+#endif
+	return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+	self = [super initWithCoder:aDecoder];
+	ambulant_window = NULL;
+//	transition_surface = NULL;
+//	transition_tmpsurface = NULL;
+	transition_count = 0;
+	fullscreen_count = 0;
+//	fullscreen_previmage = NULL;
+//	fullscreen_oldimage = NULL;
+//	fullscreen_engine = NULL;
+//	overlay_window = NULL;
+//	overlay_window_needs_unlock = NO;
+//	overlay_window_needs_reparent = NO;
+//	overlay_window_needs_flush = NO;
+//	overlay_window_needs_clear = NO;
+#ifdef WITH_UIKIT
+	M_auto_center = YES;
+	M_auto_resize = NO;
+#endif
 	return self;
 }
 
@@ -562,12 +589,14 @@ bad:
 		wasRotated = true;
 		if (auto_center || auto_resize) {
 			myframe.size.height = mainframe.size.width; // depends on nib
+			myframe.size.width = mainframe.size.height;
 		}
 		[[UIApplication sharedApplication] setStatusBarHidden: YES withAnimation: UIStatusBarAnimationNone];
 	} else if (orientation == UIDeviceOrientationPortrait 
 			   || orientation == UIDeviceOrientationPortraitUpsideDown) {
 		if (auto_center || auto_resize) {
-			myframe.size.width = mainframe.size.width; 
+			myframe.size.width = mainframe.size.width;
+			myframe.size.height = mainframe.size.height;
 		}
 		[[UIApplication sharedApplication] setStatusBarHidden: NO withAnimation: UIStatusBarAnimationNone];
 	} else {

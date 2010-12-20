@@ -269,7 +269,7 @@
 			isa = PBXGroup;
 			children = (
 				04B75D9012B80D1300161EB5 /* libambulant.dylib */,
-				04B75D9212B80D1300161EB5 /* libambulantGC.dylib */,
+				04B75D9212B80D1300161EB5 /* libambulantCG.dylib */,
 				04B75D9412B80D1300161EB5 /* libambulantCGstatic.a */,
 				04B75D9612B80D1300161EB5 /* libambulantIPhone.a */,
 			);
@@ -471,10 +471,10 @@
 			remoteRef = 04B75D8F12B80D1300161EB5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		04B75D9212B80D1300161EB5 /* libambulantGC.dylib */ = {
+		04B75D9212B80D1300161EB5 /* libambulantCG.dylib */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.dylib";
-			path = libambulantGC.dylib;
+			path = libambulantCG.dylib;
 			remoteRef = 04B75D9112B80D1300161EB5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};

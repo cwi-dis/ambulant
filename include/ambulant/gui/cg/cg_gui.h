@@ -180,6 +180,7 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 #endif//WITH_UIKIT
 
 - (id)initWithFrame:(CGRect)frameRect;
+- (id)initWithCoder:(NSCoder *)aDecoder;
 - (void)dealloc;
 
 - (void)setAmbulantWindow: (ambulant::gui::cg::cg_window *)window;
