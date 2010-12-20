@@ -65,14 +65,10 @@ isFavorites {
 	return isFavorites;
 }
 
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)
-viewDidLoad
+awakeFromNib
 {
-    [super viewDidLoad];
-	self.tableView.rowHeight = 60;
-//	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	AM_DBG NSLog(@"PresentationViewController viewDidLoad(0x%x)", self);
+	AM_DBG NSLog(@"PresentationViewController awakeFromNib(0x%x)", self);
 	presentationsArray = [ [ NSMutableArray alloc ] init ];
 
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
@@ -83,9 +79,18 @@ viewDidLoad
 	if ( ! isFavorites) {
 		[self.delegate setHistoryViewController: self];
 	}
-	[self updatePlaylist];
+	self.tableView.rowHeight = 60;
+}
 
-//	[pool release];
+// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
+- (void)
+viewDidLoad
+{
+    [super viewDidLoad];
+	AM_DBG NSLog(@"PresentationViewController viewDidLoad(0x%x)", self);
+	presentationsArray = [ [ NSMutableArray alloc ] init ];
+
+	[self updatePlaylist];
 }
 
 - (void)
@@ -258,8 +263,7 @@ toggleEditMode
 }
 
 
-- (void)
-insertCurrentItemAtIndexPath: (NSIndexPath*) indexPath
+- (void) insertCurrentItemAtIndexPath: (NSIndexPath*) indexPath
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	if (isFavorites) {

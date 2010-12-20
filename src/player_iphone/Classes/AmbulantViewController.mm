@@ -365,8 +365,8 @@ playNextItem {
 	}
 }
 
-- (IBAction)
-addFavorites:(id)sender {
+- (IBAction) addFavorites:(id)sender
+{
 	AM_DBG NSLog(@"AmbulantViewController addFavorites(0x%x)", sender);
 	PresentationViewController* favoritesVC = [ self.delegate getPresentationView: self withIndex: 1];	
 #ifdef	FIRST_ITEM

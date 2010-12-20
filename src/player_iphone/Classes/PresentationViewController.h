@@ -32,6 +32,9 @@
 	UITableViewCellEditingStyle editingStyle;
 	Presentation* newPresentation;
 }
+- (void) awakeFromNib;
+- (void) viewDidLoad;
+
 // user actions
 - (IBAction) toggleEditMode;
 - (IBAction) done: (id) sender;
