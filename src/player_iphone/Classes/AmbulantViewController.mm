@@ -292,8 +292,9 @@ handleRestartTapped {
 - (IBAction)
 handleLongPressGesture:(UILongPressGestureRecognizer *)sender {
 	AM_DBG NSLog(@"AmbulantViewController handleLongPressGesture(0x%x): sender=0x%x", self, sender);
-	if (interactionView != NULL && interactionView.hidden) {
-		[self handleDoubleTapGesture:(UITapGestureRecognizer*) sender];
+	CGPoint location = [sender locationInView:self.playerView];
+	if ( ! [self.playerView tappedAtPoint:location]) {
+//		[self.delegate showPresentationViews:self];
 	}
 };
 
@@ -307,9 +308,7 @@ handleTapGesture:(UITapGestureRecognizer *)sender { // select
 handleDoubleTapGesture:(UITapGestureRecognizer *)sender { // select
 	AM_DBG NSLog(@"AmbulantViewController handleDoubleTapGesture(0x%x): sender=0x%x", self, sender);
 	CGPoint location = [sender locationInView:self.playerView];
-	if ( ! [self.playerView tappedAtPoint:location]) {
-//		[self.delegate showPresentationViews:self];
-	}
+	[self.playerView autoZoomAtPoint:location];
 }
 
 - (void)adjustAnchorPointForGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer {

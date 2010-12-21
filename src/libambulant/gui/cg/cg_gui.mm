@@ -568,6 +568,11 @@ bad:
 	M_auto_resize = autoResize;
 	bool auto_resize = (bool) autoResize;
 	bool auto_center = (bool) autoCenter;
+    if (autoResize) {
+        zoomState = zoomFillScreen;
+    } else {
+        zoomState = zoomNaturalSize;
+    }
 	CGSize mybounds;
 	mybounds.width = original_bounds.w;
 	mybounds.height = original_bounds.h;
@@ -716,6 +721,16 @@ bad:
 	if (state == UIGestureRecognizerStateEnded) {
 		self.current_frame = newFrame;
 	}
+}
+
+- (void) autoZoomAtPoint: (CGPoint) point
+{
+    // Advance to "next" zoomstate, currently only fill-screen and natural-size.
+    // Eventually we will add zoom-to-region here.
+    zoomState = (ZoomState)(zoomState + 1);
+    if (zoomState == zoomLast) zoomState = zoomNaturalSize;
+    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    [self adaptDisplayAfterRotation: orientation withAutoCenter: M_auto_center withAutoResize: (zoomState == zoomFillScreen)];
 }
 
 #endif//WITH_UIKIT

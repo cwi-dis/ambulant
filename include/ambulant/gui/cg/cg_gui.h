@@ -138,6 +138,13 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 - (CGRect)rect;
 @end
 
+enum ZoomState {
+    zoomNaturalSize,
+//  zoomRegion,
+    zoomFillScreen,
+    zoomLast
+};
+
 @interface AmbulantView : VIEW_SUPERCLASS
 {
 	ambulant::gui::cg::cg_window *ambulant_window;
@@ -164,6 +171,7 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 	CGRect original_frame;
 	CGAffineTransform current_transform;
 	ambulant::lib::size original_bounds;
+    ZoomState zoomState;
 #endif//WITH_UIKIT
 }
 
@@ -177,6 +185,7 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 - (BOOL) tappedAtPoint:(CGPoint) location;
 - (void) zoomWithScale: (float) scale inState: (UIGestureRecognizerState) state;
 - (void) translateWithPoint: (CGPoint) point inState: (UIGestureRecognizerState) state;
+- (void) autoZoomAtPoint: (CGPoint) point;
 #endif//WITH_UIKIT
 
 - (id)initWithFrame:(CGRect)frameRect;
