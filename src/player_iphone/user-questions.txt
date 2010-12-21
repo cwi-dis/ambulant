@@ -24,6 +24,8 @@ Current open UI design questions (21-Dec-2010)
   The alternative is a "Recent Documents" tab, which will not show duplicates:
   if you play a document again it will move to the top of the list, so it will
   not show duplicates. Which is better?
+  (Note: currently duplicates will also occur in Favorites. This is a bug,
+  it will be fixed).
   
 - Currently if you press "add to favorites" (the little star) while playing back
   a document it will only add that document to the favorites list but continue

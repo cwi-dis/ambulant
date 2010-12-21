@@ -602,6 +602,7 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
 				PRODUCT_NAME = iAmbulant;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "555E3040-5076-4E25-A01F-80540418BDF9";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Distribution;
@@ -612,7 +613,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_ENTITLEMENTS = "~/src/ambulant/projects/xcode32/iAmbulant-Entitlements.plist";
+				CODE_SIGN_ENTITLEMENTS = ../../src/player_iphone/Entitlements.plist;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -631,7 +632,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_ENTITLEMENTS = "~/src/ambulant/projects/xcode32/iAmbulant-Entitlements.plist";
+				CODE_SIGN_ENTITLEMENTS = ../../src/player_iphone/Entitlements.plist;
 				COPY_PHASE_STRIP = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
