@@ -1,3 +1,34 @@
+2010-12-20 23:43  jackjansen
+
+	* Attempting to fix zoom behaviour so the anchorpoint is in the
+	  middle of the two fingers used for zooming. Based on Apple
+	  example from
+	  <http://developer.apple.com/library/ios/#samplecode/Touches/Listings/Touches_GestureRecognizers_Classes_MyView_m.html>
+	  but with one change: at the end of the zoom we reset the
+	  anchorpoint back to the center of the layer.
+
+2010-12-20 23:16  keesblom
+
+	* Added some refinements on cleanup. No leaks. No crashes, except
+	  sometimes in ~critical_section, but this one will not happen in a
+	  Release build.
+
+2010-12-20 14:00  jackjansen
+
+	* Moved some of the init code for PresentationViewController from
+	  viewDidLoad: to awakeFromNib. This has the effect that "add to
+	  favorites" now works even before the favorites view has loaded.
+
+	  Need to check other initialization code too.
+
+2010-12-20 13:39  jackjansen
+
+	* Fiddling with the resize code
+
+2010-12-20 13:05  jackjansen
+
+	* Slightly tweaked for better viewability
+
 2010-12-20 00:37  jackjansen
 
 	* First iPhone ad-hoc distribution on ambulantplayer.org
