@@ -116,15 +116,25 @@ showInteractionView: (BOOL) want_show {
 	if (want_show && interactionView.hidden) {
 		interactionView.hidden = false;
 		interactionView.opaque = true;
+        [NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector(autoHideInteractionView) object:nil];
+        [self performSelector:@selector(autoHideInteractionView) withObject:nil afterDelay:(NSTimeInterval)5.0];
 //JNK	modeBar.hidden = true;
 //JNK	modeBar.opaque = false;
 	} else {
 		interactionView.hidden = true;
 		interactionView.opaque = false;
+        [NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector(autoHideInteractionView) object:nil];
 //JNK	modeBar.hidden = true;
 //JNK	modeBar.opaque = false;
 	}
 }
+
+- (void) autoHideInteractionView
+{
+    interactionView.hidden = true;
+    interactionView.opaque = false;
+}
+
 	
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 // - install gesture recognizers

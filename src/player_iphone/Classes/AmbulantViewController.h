@@ -73,6 +73,7 @@ private:
 - (void) initialize_after_crashing;
 - (void) doPlayURL:(NSString*) ns_node_repr;
 - (void) showInteractionView: (BOOL) on;
+- (void) autoHideInteractionView;
 //JNK - (IBAction) close:(id) str;
 //JNK - (IBAction) handlePauseTapped;
 //JNK - (IBAction) handleStopTapped;
