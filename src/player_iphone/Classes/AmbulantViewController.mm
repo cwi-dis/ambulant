@@ -402,7 +402,9 @@ playNextItem {
 #else //FIRST_ITEM
 	[favoritesVC insertCurrentItemAtIndexPath: [ NSIndexPath indexPathForRow:0 inSection: 0 ]];
 #endif//FIRST_ITEM
+#ifdef XXXJACK_IS_UNSURE
 	[self.delegate showPresentationView: self withIndex: 1];
+#endif
 }
 
 

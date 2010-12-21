@@ -1,0 +1,35 @@
+Current open UI design questions (21-Dec-2010)
+==============================================
+
+- single tap brings up the control panel, long tap follows a link in the
+  SMIL presentation, double tap zooms to natural size or fill screen.
+  Are these the right behaviours?
+  
+- There are currently 2 preferences for initial zoom and positioning of the
+  presentation, "center" (the alternative being show in top-left) and "resize"
+  (which does fill screen, the alternative being showing the SMIL file in
+  natural size). Are these preferences needed, or should we fix these initial
+  values? To what? There is a third possible value for resize: "resize if the
+  presentation is bigger than the screen, but center it if it is smaller",
+  similar to SMIL fit=meetBest. Consider this as a possible answer for the
+  behaviour too.
+
+- When you start iAmbulant (not through clicking a link, but manually) we
+  start playing back the most recent presentation at approximately the place
+  you left off the last time. To get to History or Favorites or anything else
+  you tap and press "(i)". Is this the right startup behaviour?
+  
+- Currently we have a "history" tab, like browser history, which will show
+  multiple instances of the same presentation if you played it multiple times.
+  The alternative is a "Recent Documents" tab, which will not show duplicates:
+  if you play a document again it will move to the top of the list, so it will
+  not show duplicates. Which is better?
+  
+- Currently if you press "add to favorites" (the little star) while playing back
+  a document it will only add that document to the favorites list but continue
+  playback. The alternative is that we pause playback and take you to the
+  favorites list. Which is preferred?
+  
+- We use various animations to switch between views. Do these look "logical"
+  or should we use different ones? Which ones?
+  
