@@ -274,6 +274,23 @@ toggleEditMode
 		ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 		ambulant::Playlist* playlist = prefs->m_favorites;
 		PlaylistItem* new_item = prefs->m_history->get_last_item();
+		// Check if we have 'new_item' already in the playlist; if so ignore
+//		NSLog(@"new_item.ns_url=0x%x: %@", new_item.ns_url, new_item.ns_url != NULL ? [new_item.ns_url absoluteString]:@"<nil>");
+		BOOL found = NO;
+		BOOL* found_ref = &found;
+		NSArray* items = playlist->get_playlist();
+		[items enumerateObjectsWithOptions: nil usingBlock:
+		 ^(id obj, NSUInteger idx, BOOL *stop)
+		 {
+			 PlaylistItem* item = (PlaylistItem*) obj;
+//			 NSLog(@"item.ns_url=0x%x: %@", item.ns_url, item.ns_url != NULL ? [item.ns_url absoluteString]:@"<nil>");
+			 if ([new_item.ns_url isEqual: (id) item.ns_url]) {
+				 *found_ref = YES;
+			 }
+		 }];
+		if (found) {
+			return;
+		}
 		playlist->insert_item_at_index(new_item, playlistIndex);
 		newPresentation = [self getPresentationFromPlaylistItem: new_item];
 		if (playlistIndex < 0 || [self.presentationsArray count] == 0) {

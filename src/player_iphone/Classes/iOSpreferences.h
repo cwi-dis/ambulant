@@ -28,7 +28,7 @@
 // initialize all fields
 - (PlaylistItem*) initWithTitle: (NSString*) atitle
 							url: (NSURL*) ansurl
-						  image: (CGImageRef) acg_image // CGImageRef
+						  image: (CGImageRef) acg_image
 					description: (NSString*) ans_description
 					   duration: (NSString*) ans_dur
 				 last_node_repr: (NSString*) alast_node_repr

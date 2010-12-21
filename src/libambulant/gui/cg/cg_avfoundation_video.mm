@@ -52,8 +52,8 @@ extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
 
 - (pair*) initWithFirst:(NSObject*) first Second: (NSObject*) second;
 
-@property (nonatomic, retain) NSObject*first;
-@property (nonatomic, retain) NSObject*second;
+@property (nonatomic, retain) NSObject* first;
+@property (nonatomic, retain) NSObject* second;
 
 @end
 
@@ -460,8 +460,10 @@ cg_avfoundation_video_renderer::get_dur() {
 void*
 cg_avfoundation_video_renderer::eod_reached(void* arg) {
 	cg_avfoundation_video_renderer* cavr = (cg_avfoundation_video_renderer*) arg;
-	AM_DBG lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::eod_eached, [m_avplayer_manager avplayer]=0x%x" , cavr, cavr->m_avplayer_manager.mAVPlayer);
-	cavr->stop();
+	if (cavr != NULL) {
+		AM_DBG lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::eod_eached, [m_avplayer_manager avplayer]=0x%x" , cavr, cavr->m_avplayer_manager.mAVPlayer);
+		cavr->stop();
+	}
 	return NULL;
 }
 	
