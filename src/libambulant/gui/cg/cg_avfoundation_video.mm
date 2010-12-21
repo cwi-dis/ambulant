@@ -407,7 +407,8 @@ cg_avfoundation_video_renderer::stop() {
 	m_lock.leave();
 	return rv;
 }
-	
+
+// #ifdef	JNK
 void
 cg_avfoundation_video_renderer::post_stop() {
 	AM_DBG lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::post_stop, [m_avplayer_manager mAVPlayer]=0x%x, [m_avplayer_manager retainCount]=%d", this, [m_avplayer_manager mAVPlayer], [m_avplayer_manager retainCount]);
@@ -420,7 +421,7 @@ cg_avfoundation_video_renderer::post_stop() {
 	}
 	m_lock.leave();
 }
-	
+// #endif//JNK
 void
 cg_avfoundation_video_renderer::resume() {
 	AM_DBG lib::logger::get_logger()->debug("cg_avfoundation_video_renderer(0x%x)::resume, [m_avplayer_manager mAVPlayer]=0x%x, rate=%lf", this, [m_avplayer_manager mAVPlayer], [[m_avplayer_manager mAVPlayer] rate]);
@@ -522,6 +523,9 @@ cg_avfoundation_video_renderer::redraw(const rect &dirty, gui_window *window)
 		}
 		m_renderer_state = rs_stopped;
 		m_stopped = true;
+		delete m_avplayer_manager;
+		m_avplayer_manager = NULL;
+//#ifdef	JNK
 	} else if (m_renderer_state == rs_fullstopped) {
 		if (! m_stopped && m_avplayer_layer != NULL) {
 			[m_avplayer_layer removeFromSuperlayer];
@@ -530,6 +534,7 @@ cg_avfoundation_video_renderer::redraw(const rect &dirty, gui_window *window)
 		}
 		delete m_avplayer_manager;
 		m_avplayer_manager = NULL;
+//#endif//JNK
 	}
 
 	[pool release];

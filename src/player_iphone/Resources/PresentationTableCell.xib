@@ -274,7 +274,7 @@
 					<string>PresentationViewController</string>
 					<string>UIResponder</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<string>{{305, 988}, {320, 60}}</string>
+					<string>{{960, 1096}, {320, 60}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -372,7 +372,7 @@
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">../../src/player_iphone/Classes/PresentationViewController.h</string>
+						<string key="minorKey">Classes/PresentationViewController.h</string>
 					</object>
 				</object>
 			</object>
@@ -611,7 +611,7 @@
 			<integer value="3000" key="NS.object.0"/>
 		</object>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
-		<string key="IBDocument.LastKnownRelativeProjectPath">../../../projects/xcode32/iAmbulant.xcodeproj</string>
+		<string key="IBDocument.LastKnownRelativeProjectPath">../player_iphone.xcodeproj</string>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
 			<string key="NS.key.0">line.png</string>

@@ -101,7 +101,7 @@ class cg_avfoundation_video_renderer :
 //	void freeze() {}
 //	void stop();
 	bool stop();
-	void post_stop();
+	void post_stop(); 
 	void init_with_node(const lib::node *n);
 	void preroll(double when, double where, double how_much) {}
 	void pause(pause_display d=display_show);

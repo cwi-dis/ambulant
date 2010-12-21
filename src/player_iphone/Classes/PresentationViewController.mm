@@ -79,7 +79,6 @@ awakeFromNib
 	if ( ! isFavorites) {
 		[self.delegate setHistoryViewController: self];
 	}
-	self.tableView.rowHeight = 60;
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -88,6 +87,7 @@ viewDidLoad
 {
     [super viewDidLoad];
 	AM_DBG NSLog(@"PresentationViewController viewDidLoad(0x%x)", self);
+	self.tableView.rowHeight = 60;
 	presentationsArray = [ [ NSMutableArray alloc ] init ];
 
 	[self updatePlaylist];
