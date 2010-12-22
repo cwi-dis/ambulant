@@ -270,8 +270,8 @@
 		04B75D8912B80D1300161EB5 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				04B75D9012B80D1300161EB5 /* libambulant */,
-				04B75D9212B80D1300161EB5 /* libambulantCG */,
+				04B75D9012B80D1300161EB5 /* libambulant.dylib */,
+				04B75D9212B80D1300161EB5 /* libambulantCG.dylib */,
 				04B75D9412B80D1300161EB5 /* libambulantCGstatic.a */,
 				04B75D9612B80D1300161EB5 /* libambulantIPhone.a */,
 			);
@@ -467,17 +467,17 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		04B75D9012B80D1300161EB5 /* libambulant */ = {
+		04B75D9012B80D1300161EB5 /* libambulant.dylib */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.dylib";
-			path = libambulant;
+			path = libambulant.dylib;
 			remoteRef = 04B75D8F12B80D1300161EB5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		04B75D9212B80D1300161EB5 /* libambulantCG */ = {
+		04B75D9212B80D1300161EB5 /* libambulantCG.dylib */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.dylib";
-			path = libambulantCG;
+			path = libambulantCG.dylib;
 			remoteRef = 04B75D9112B80D1300161EB5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -599,10 +599,25 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iAmbulant_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"NDEBUG=1",
+					"WITH_UIKIT=1",
+					"WITH_CG=1",
+					"WITH_EXTERNAL_DOM=1",
+					"AM_PREFER_FFMPEG=1",
+					"WITH_SDL=1",
+					"WITH_FFMPEG=1",
+					"WITH_LIVE=1",
+					"WITH_EXPAT=1",
+					"WITH_PYTHON_PLUGIN=1",
+					"WITH_FFMPEG_AVFORMAT=1",
+					"WITH_SMIL30=1",
+					"WITH_SEAMLESS_PLAYBACK=1",
+					"WITH_CLOCK_SYNC=1",
+				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
 				PRODUCT_NAME = iAmbulant;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "555E3040-5076-4E25-A01F-80540418BDF9";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Distribution;
@@ -620,6 +635,22 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iAmbulant_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"_DEBUG=1",
+					"WITH_UIKIT=1",
+					"WITH_CG=1",
+					"WITH_EXTERNAL_DOM=1",
+					"AM_PREFER_FFMPEG=1",
+					"WITH_SDL=1",
+					"WITH_FFMPEG=1",
+					"WITH_LIVE=1",
+					"WITH_EXPAT=1",
+					"WITH_PYTHON_PLUGIN=1",
+					"WITH_FFMPEG_AVFORMAT=1",
+					"WITH_SMIL30=1",
+					"WITH_SEAMLESS_PLAYBACK=1",
+					"WITH_CLOCK_SYNC=1",
+				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
 				PRODUCT_NAME = iAmbulant;
@@ -637,6 +668,22 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iAmbulant_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"NDEBUG=1",
+					"WITH_UIKIT=1",
+					"WITH_CG=1",
+					"WITH_EXTERNAL_DOM=1",
+					"AM_PREFER_FFMPEG=1",
+					"WITH_SDL=1",
+					"WITH_FFMPEG=1",
+					"WITH_LIVE=1",
+					"WITH_EXPAT=1",
+					"WITH_PYTHON_PLUGIN=1",
+					"WITH_FFMPEG_AVFORMAT=1",
+					"WITH_SMIL30=1",
+					"WITH_SEAMLESS_PLAYBACK=1",
+					"WITH_CLOCK_SYNC=1",
+				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
 				PRODUCT_NAME = iAmbulant;
