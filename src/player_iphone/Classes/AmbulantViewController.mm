@@ -231,9 +231,6 @@ viewDidLoad {
 			NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
 			startPath = [thisBundle pathForResource:@"Welcome" ofType:@"smil"];
 		}
-//		NSString *startPath = [thisBundle pathForResource:@"test" ofType:@"smil"];
-//		NSString *startPath = [thisBundle pathForResource:@"iPhoneAVPlayerTest" ofType:@"smil"];
-//		NSString *startPath = @"http://ambulantPlayer.org/Demos/Birthday/HappyBirthday.smil";
 		AM_DBG NSLog (@"startPath=%@, startNodeRepr%@", startPath, startNodeRepr);
 		if (startPath != NULL) {
 			// turn on crash recovery
@@ -265,7 +262,7 @@ handlePlayOrPauseTapped {
 
 - (IBAction)
 handleRestartTapped {
-	/*AM_DBG*/ NSLog(@"AmbulantViewController handleRestartTapped(0x%x)", self);
+	AM_DBG NSLog(@"AmbulantViewController handleRestartTapped(0x%x)", self);
 	if (myMainloop != NULL) {
 //		[self pause];
 		//myMainloop->stop();

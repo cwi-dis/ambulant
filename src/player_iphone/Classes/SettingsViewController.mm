@@ -43,50 +43,6 @@
 	[self.delegate playPresentation:@"Welcome" fromPresentationViewController: NULL];
 }
 
-- (IBAction) playNYC {
-	[self.delegate playPresentation:@"http://ambulantPlayer.org/Demos/smilText/NYC-sT.smil" fromPresentationViewController: NULL];
-}
-
-- (IBAction) playVideoTests {
-	[self.delegate playPresentation:@"http://ambulantPlayer.org/Demos/VideoTests/VideoTests.smil" fromPresentationViewController: NULL];	
-}
-
-- (IBAction) playPanZoom {
-	[self.delegate playPresentation:@"http://ambulantPlayer.org/Demos/PanZoom/Fruits-4s.smil" fromPresentationViewController: NULL];	
-}
-
-- (IBAction) playBirthday {
-	[self.delegate playPresentation:@"http://homepages.cwi.nl/~kees/ambulant/ios/Demos/Birthday/HappyBirthday.smil" fromPresentationViewController: NULL];	
-}
-
-- (IBAction) playBirthdayRTSP {
-	[self.delegate playPresentation:@"http://ambulantPlayer.org/Demos/Birthday/HappyBirthday-rtsp.smil" fromPresentationViewController: NULL];	
-}
-
-- (IBAction) playEuros {
-	[self.delegate playPresentation:@"http://ambulantPlayer.org/Demos/Euros/Euros.smil" fromPresentationViewController: NULL];	
-}
-
-- (IBAction) playEurosRTSP {
-	[self.delegate playPresentation:@"http://ambulantPlayer.org/Demos/Euros/Euros-rtsp.smil" fromPresentationViewController: NULL];	
-}
-
-- (IBAction)playFlashlight {
-	[self.delegate playPresentation:@"http://ambulantPlayer.org/Demos/Flashlight/Flashlight-US.smil" fromPresentationViewController: NULL];	
-}
-
-- (IBAction)playFlashlightRTSP {
-	[self.delegate playPresentation:@"http://ambulantPlayer.org/Demos/Flashlight/Flashlight-US-rtsp.smil" fromPresentationViewController: NULL];	
-}
-
-- (IBAction)playNews {
-	[self.delegate playPresentation:@"http://ambulantPlayer.org/Demos/News/DanesV2-Desktop.smil" fromPresentationViewController: NULL];	
-}
-
-- (IBAction)playNewsRTSP {
-	[self.delegate playPresentation:@"http://ambulantPlayer.org/Demos/News/DanesV2-Desktop-rtsp.smil" fromPresentationViewController: NULL];	
-}
-
 - (BOOL) shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation) interfaceOrientation {
 	return YES;
 }

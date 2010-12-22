@@ -21,17 +21,6 @@
 - (BOOL) autoResize;
 - (BOOL) nativeRenderer;
 - (IBAction) playWelcome;
-- (IBAction) playNYC;
-- (IBAction) playPanZoom;
-- (IBAction) playVideoTests;
-- (IBAction) playBirthday;
-- (IBAction) playBirthdayRTSP;
-- (IBAction) playEuros;
-- (IBAction) playEurosRTSP;
-- (IBAction) playFlashlight;
-- (IBAction) playFlashlightRTSP;
-- (IBAction) playNews;
-- (IBAction) playNewsRTSP;
 
 @property(nonatomic,assign) id <PlaylistViewControllerDelegate> delegate;
 @property(nonatomic,retain) IBOutlet UISwitch* autoCenterSwitch;

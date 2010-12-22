@@ -243,7 +243,7 @@ application:(UIApplication* ) application handleOpenURL: (NSURL*) url {
             urlstr = [urlstr substringFromIndex: 9]; // Length of "ambulant:"
         }
         // XXXJACK: Why is this a NSMutableString???? Also, this hard cast looks very dangerous.....
-        viewController.playURL = (NSMutableString*)urlstr;
+        viewController.playURL = [NSMutableString stringWithString:urlstr];
 #endif
 		char* s2;
 		if (viewController == NULL)
