@@ -31,6 +31,36 @@ char* DBG[80]; int DBGi = 0;
 #include "iOSpreferences.h"
 #include <fstream>
 
+#ifndef NDEBUG
+#define WITH_CONSOLE_LOGGING
+#ifdef WITH_CONSOLE_LOGGING
+#include <syslog.h>
+class nslog_ostream : public ambulant::lib::ostream {
+	std::string m_curstring;
+  public:
+	nslog_ostream() {
+		openlog("iAmbulant.app", LOG_CONS, 0);
+	}
+	~nslog_ostream() {
+		closelog();
+	}
+	bool is_open() const {return true;}
+	void close() {}
+	int write(const unsigned char *buffer, int nbytes) {NSLog(@"ostream use of buffer, size not implemented for Cocoa"); return 0;}
+	int write(const char *cstr) {
+		m_curstring += std::string(cstr);
+		if (cstr && *cstr && cstr[strlen(cstr)-1] == '\n') {
+			syslog(LOG_INFO, "%s", m_curstring.c_str());
+			m_curstring = "";
+		}
+		return 0;
+	}
+	void flush() {}
+};
+#endif // WITH_CONSOLE_LOGGING
+#endif // NDEBUG
+
+
 static void
 show_message(int level, const char *format)
 {
@@ -62,8 +92,9 @@ initialize_logger()
 	// Connect logger to our message displayer and output processor
 	ambulant::lib::logger::get_logger()->set_show_message(show_message);
 	ambulant::lib::logger::get_logger()->trace("starting:%s", "player_iphone");
-//	if (getenv("AMBULANT_LOGGER_NOWINDOW") == NULL)
-//		ambulant::lib::logger::get_logger()->set_ostream(new nslog_ostream);
+#ifdef WITH_CONSOLE_LOGGING
+	ambulant::lib::logger::get_logger()->set_ostream(new nslog_ostream);
+#endif
 	// Tell the logger about the output level preference
 	int level = ambulant::lib::logger::LEVEL_DEBUG; //ambulant::common::preferences::get_preferences()->m_log_level;
 	ambulant::lib::logger::get_logger()->set_level(level);
