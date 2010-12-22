@@ -240,7 +240,7 @@ viewDidLoad {
 			prefs->save_preferences();
 			void* theview = [self playerView];
 			AM_DBG NSLog(@"view %@ responds %d", (NSObject *)theview, [(NSObject *)theview respondsToSelector: @selector(isAmbulantWindowInUse)]);
-			playURL = [[NSMutableString alloc] initWithString: startPath];
+			playURL =  startPath;
 			[self doPlayURL: startNodeRepr];
 		}
 	} 	
@@ -542,7 +542,7 @@ playPresentation: (NSString*) whatString fromPresentationViewController: (Presen
 		if (playURL) {
 			[playURL release];
 		}
-		playURL = [[NSMutableString alloc] initWithString: whatString];
+		playURL = whatString;
 		[self doPlayURL:NULL];
 		[[self historyViewController] updatePlaylist];
 	}

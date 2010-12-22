@@ -38,17 +38,18 @@ private:
 	document_embedder *embedder;
 	mainloop *myMainloop;
 //JNK PresentationViewController* historyViewController;
-	IBOutlet id view;
+	IBOutlet id view; // XXXJACK Tied to keyboardIsShown, not needed?
 	IBOutlet AmbulantAppDelegate* delegate;
 	IBOutlet AmbulantView* playerView;
 	IBOutlet UIView* interactionView;
 	IBOutlet UIButton* playPauseButton;
 	PresentationViewController* currentPresentationViewController;
-	CGRect originalPlayerViewFrame, originalInteractionViewFrame;
-	NSMutableString* playURL;
-	NSMutableString* linkURL;
-	BOOL keyboardIsShown;
-	UIDeviceOrientation currentOrientation;
+	CGRect originalPlayerViewFrame; // XXXJACK Tied to keyboardIsShown, not needed?
+    CGRect originalInteractionViewFrame;
+	NSString* playURL;      // The document that is currently playing (or will play shortly)
+	NSString* linkURL;      // XXXJACK seems unused?
+	BOOL keyboardIsShown;   // XXXJACK is this needed?
+	UIDeviceOrientation currentOrientation; // Current orientation of playback window
 	BOOL autoCenter;
 	BOOL autoResize;
 	BOOL nativeRenderer;
@@ -85,7 +86,8 @@ private:
 @property(nonatomic,retain)	IBOutlet AmbulantView* playerView;
 @property(nonatomic,retain) IBOutlet UITabBar* modeBar;
 @property(nonatomic) mainloop* myMainloop;
-@property(nonatomic,retain) NSMutableString* linkURL, *playURL;
+@property(nonatomic,retain) NSString* linkURL;
+@property(nonatomic,retain) NSString* playURL;
 @property(nonatomic,retain)	IBOutlet UIView* interactionView;
 @property(nonatomic,retain) IBOutlet UIButton* playPauseButton;
 @property(nonatomic) CGRect originalPlayerViewFrame, originalInteractionViewFrame;

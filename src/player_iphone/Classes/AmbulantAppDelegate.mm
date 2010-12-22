@@ -262,22 +262,11 @@ application:(UIApplication* ) application handleOpenURL: (NSURL*) url {
 	BOOL validated = NO;
 	if ([self isValid:url] && viewController != NULL) { 
 		validated = YES;
-#if 0
-		viewController.playURL = (NSMutableString*) [[[NSString alloc] initWithString: @"http://"]
-									stringByAppendingString: [[url resourceSpecifier] substringFromIndex:2]];
-#else
         NSString *urlstr = [url absoluteString];
-        if ([urlstr hasPrefix: @"ambulant://"]) {
-            // Kees' format: replace http by ambulant
-            urlstr = [NSMutableString stringWithFormat: @"http:%@", [urlstr substringFromIndex: 9]]; // Length of "ambulant:"
-        }
         if ([urlstr hasPrefix: @"ambulant:"]) {
-            // Jack's format: prepend ambulant:
             urlstr = [urlstr substringFromIndex: 9]; // Length of "ambulant:"
         }
-        // XXXJACK: Why is this a NSMutableString???? Also, this hard cast looks very dangerous.....
-        viewController.playURL = [NSMutableString stringWithString:urlstr];
-#endif
+        viewController.playURL = urlstr;
 		char* s2;
 		if (viewController == NULL)
 			s2 = (char*) "viewController == NULL";
