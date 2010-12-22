@@ -1,3 +1,40 @@
+2010-12-21 17:17  jackjansen
+
+	* Version for 2.3.20101221 distribution
+
+2010-12-21 17:14  keesblom
+
+	* Added code to silently skip additions to Favorites that are
+	  already there, based on comparing url's
+
+2010-12-21 16:52  jackjansen
+
+	* Added "doesn't run in background" flag to plistfile.	Added
+	  startup image (which for the time being includes the version
+	  number).
+
+2010-12-21 15:01  jackjansen
+
+	* - Don't switch to favorites view when adding a new favorite.	-
+	  Created a document where we can collect the UI design questions
+	  we want to ask.
+
+2010-12-21 14:41  keesblom
+
+	* Tables looked ugly after adding awakeFromNIB:..., because ther a
+	  view property was set while probably the view was not yet
+	  established.
+
+2010-12-21 14:34  jackjansen
+
+	* Auto-hide the hud control panel after 5 seconds
+
+2010-12-21 14:18  jackjansen
+
+	* Double-tap is now "auto-zoom". It will switch between zooming to
+	  natural size and zoom to fullscreen. Zoom-to-region should be
+	  added at a later stage.
+
 2010-12-20 23:43  jackjansen
 
 	* Attempting to fix zoom behaviour so the anchorpoint is in the
