@@ -94,7 +94,7 @@ loadView {
 // and start it at the node represented in 'ns_node_repr'
 - (void)
 doPlayURL:(NSString*) ns_node_repr {
-	AM_DBG NSLog(@"AmbulantViewController viewDidLoad(0x%x): ns_node_repr=%@", self, ns_node_repr);
+	AM_DBG ambulant::lib::logger::get_logger()->trace("AmbulantViewController doPlayURL(0x%x): url=%s ns_node_repr=%s", self, playURL? [[self playURL] UTF8String]: "NULL", ns_node_repr? [ns_node_repr UTF8String] : "NULL");
 	if (myMainloop != NULL) {
 		myMainloop->stop();
 		delete myMainloop;
@@ -384,7 +384,7 @@ JNK*/
 
 - (IBAction)
 playNextItem {
-	/*AM_DBG*/ NSLog(@"AmbulantViewController playNextItem(0x%x): not yet implemented", self);
+	AM_DBG NSLog(@"AmbulantViewController playNextItem(0x%x): not yet implemented", self);
 	if (currentPresentationViewController != NULL) {
 		[currentPresentationViewController selectNextPresentation];
 	}

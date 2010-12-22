@@ -50,6 +50,7 @@ class nslog_ostream : public ambulant::lib::ostream {
 	int write(const char *cstr) {
 		m_curstring += std::string(cstr);
 		if (cstr && *cstr && cstr[strlen(cstr)-1] == '\n') {
+			NSLog(@"%s", m_curstring.c_str());
 			syslog(LOG_INFO, "%s", m_curstring.c_str());
 			m_curstring = "";
 		}
@@ -96,11 +97,12 @@ initialize_logger()
 	ambulant::lib::logger::get_logger()->set_ostream(new nslog_ostream);
 #endif
 	// Tell the logger about the output level preference
+#ifdef _DEBUG
 	int level = ambulant::lib::logger::LEVEL_DEBUG; //ambulant::common::preferences::get_preferences()->m_log_level;
+#else
+	int level = ambulant::common::preferences::get_preferences()->m_log_level;
+#endif
 	ambulant::lib::logger::get_logger()->set_level(level);
-	// And tell the UI too
-	// LogController *log = [LogController sharedLogController];
-	// if (log) [log setLogLevelUI: level];
 	return level;
 }
 
@@ -252,7 +254,7 @@ isValid: (NSURL*) url {
 - (BOOL)
 application:(UIApplication* ) application handleOpenURL: (NSURL*) url {
 	AM_DBG NSLog(@"AmbulantAppDelegate application handleOpenURL");
-	AM_DBG NSLog(@"AmbulantAppDelegate handleOpenURL: %@", [url absoluteURL]);
+	AM_DBG ambulant::lib::logger::get_logger()->trace("AmbulantAppDelegate handleOpenURL: %s", [[url absoluteString] UTF8String]);
 	AM_DBG DBG_ADD("handleOpenURL");
 //	const char*s = [[url absoluteString] cStringUsingEncoding: NSUTF8StringEncoding];
 	AM_DBG DBG_ADD_NSSTRING([url absoluteString]);
@@ -318,7 +320,7 @@ applicationWillEnterForeground:(UIApplication *)application {
      Called as part of  transition from the background to the inactive state:
 	 here you can undo many of the changes made on entering the background.
 	 */
-	AM_DBG NSLog(@"AmbulantAppDelegate applicationWillEnterForeground");
+	AM_DBG ambulant::lib::logger::get_logger()->trace(@"AmbulantAppDelegate applicationWillEnterForeground");
 	// restore state
 	// ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	NSString* ns_node_repr = NULL;// [prefs->m_history->get_last_item m_last_node];
@@ -339,7 +341,7 @@ applicationDidBecomeActive:(UIApplication *)application {
      Restart any tasks that were paused (or not yet started) while the application was inactive. 
 	 If the application was previously in the background, optionally refresh the user interface.
      */
-	AM_DBG NSLog(@"AmbulantAppDelegate applicationDidBecomeActive");
+	AM_DBG ambulant::lib::logger::get_logger()->trace(@"AmbulantAppDelegate applicationDidBecomeActive");
 /* AmulantIOS is not a restartable app. */
 //XXXX TBD: restore state
 //	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
