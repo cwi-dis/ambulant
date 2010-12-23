@@ -85,6 +85,7 @@ cg_image_renderer::_cropped_image(const lib::rect& rect)
 	m_image_cropped = NULL;
 	m_rect_cropped = rect;
 	CGRect cg_rect = CGRectMake(rect.left(), rect.top(), rect.width(), rect.height());
+    /*AM_DBG*/ lib::logger::get_logger()->debug("cg_image_renderer: crop to (%d, %d, %d, %d)", rect.left(), rect.top(), rect.width(), rect.height());
 	m_image_cropped = CGImageCreateWithImageInRect(m_image, cg_rect);
 	return m_image_cropped;
 }
@@ -202,6 +203,19 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	if (ri) alfa = ri->get_mediaopacity();
 	// XXX Need to set alpha
 #endif
+#if 0
+    // Attempt by Jack to draw without cropping image
+    CGContextSaveGState(myContext);
+    float x_scale = (float)dstrect.width() / (float)srcrect.width();
+    float y_scale = (float)dstrect.height() / (float)srcrect.height();
+    float x_orgin = (float)srcrect.left() / x_scale;
+    float y_origin = (float)srcrect.top() / y_scale;
+    CGAffineTransform matrix = CGAffineTransformMake(x_scale, 0, 0, y_scale, 0, 0);
+    CGContextConcatCTM(myContext, matrix);
+    CGContextClipToRect(myContext, cg_dstrect);
+    CGContextDrawImage(myContext, xxxxx, m_image);
+    CGContextRestoreGState(myContext);
+#else
 	cropped_image = _cropped_image(srcrect);
 #ifndef WITH_UIKIT
 	bool flipped = [view isFlipped];
@@ -214,6 +228,7 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	}
 #endif // WITH_UIKIT
 	CGContextDrawImage(myContext, cg_dstrect, cropped_image);
+#endif // Attempt by Jack
 
 #ifndef WITH_UIKIT
 	if (flipped) {
