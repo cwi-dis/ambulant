@@ -1,3 +1,43 @@
+2010-12-23 01:59  jackjansen
+
+	* Getting started on using CGLayer to optimize animation.
+
+2010-12-23 01:58  jackjansen
+
+	* Allow ambulant: urls
+
+2010-12-23 01:37  keesblom
+
+	* Fixed a prblem w. native video renderer when restarted at the 2nd
+	  or 3rd Birthday video.
+
+2010-12-23 00:26  jackjansen
+
+	* Made center/resize default
+
+2010-12-22 23:34  jackjansen
+
+	* Got rid of NSMutableString and added some comments to member vars
+
+2010-12-22 17:25  jackjansen
+
+	* Added some hooks for debugging startup sequence
+
+2010-12-22 16:41  jackjansen
+
+	* For debug uilds, there is now the option of doing all logging to
+	  the system console (through syslog(3)). This enables some
+	  debugging of the startup sequence through logger calls.
+
+2010-12-22 16:40  jackjansen
+
+	* Added _DEBUG and NDEBUG defines to the targets
+
+2010-12-22 14:52  keesblom
+
+	* Removed temporary links to smil demo's now that start from
+	  website works.
+
 2010-12-21 17:17  jackjansen
 
 	* Version for 2.3.20101221 distribution
