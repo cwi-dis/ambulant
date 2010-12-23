@@ -33,7 +33,7 @@ iOSpreferences::~iOSpreferences()
 
 void
 iOSpreferences::set_preferences_singleton(iOSpreferences *prefs) {
-	if (s_preferences != 0) {
+	if (s_preferences != NULL) {
 //		ambulant::lib::logger::get_logger()->debug("Programmer error: preferences singleton already set");
 		return;
 	}
@@ -52,14 +52,16 @@ iOSpreferences::delete_preferences_singleton()
 void
 iOSpreferences::install_singleton()
 {
-	set_preferences_singleton(new iOSpreferences);
+	if (s_preferences == NULL) {
+		set_preferences_singleton(new iOSpreferences);
+	}
 	// XXX Workaround
 	get_preferences()->load_preferences();
 }
 
 ambulant::iOSpreferences*
 iOSpreferences::get_preferences() {
-	if (s_preferences == 0) {
+	if (s_preferences == NULL) {
 		s_preferences =  new iOSpreferences();
 	}
 	return s_preferences;
