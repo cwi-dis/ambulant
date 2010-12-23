@@ -52,17 +52,17 @@ class cg_image_renderer : public cg_renderer<renderer_playable_dsall> {
 	:	cg_renderer<renderer_playable_dsall>(context, cookie, node, evp, factory, mdp),
 		m_nsdata(NULL),
 		m_image(NULL),
-		m_image_cropped(NULL) {};
+		m_cglayer(NULL) {};
 	~cg_image_renderer();
 
 	void redraw_body(const rect &dirty, gui_window *window);
   private:
-	CGImage *_cropped_image(const lib::rect& rect);
+	bool _prepare_image();
 
 	CFDataRef m_nsdata;
 	CGImageRef m_image;
 	lib::size m_size;
-	CGImageRef m_image_cropped;
+	CGLayerRef m_cglayer;
 	lib::rect m_rect_cropped;
 	critical_section m_lock;
 };
