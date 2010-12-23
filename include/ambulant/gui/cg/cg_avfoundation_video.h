@@ -66,7 +66,7 @@
 - (void) play;
 - (void) pause;
 - (void) dealloc;
-
+				  
 //- (void)setPositionWanted: (ambulant::net::timestamp_t)begintime;
 //- (QTMovie *)movie;
 //- (void)movieWithURL: (NSURL*)url;

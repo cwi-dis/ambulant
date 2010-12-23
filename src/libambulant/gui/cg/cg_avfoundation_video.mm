@@ -99,9 +99,6 @@ extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
 	AVPlayerStatus playerStatus = mAVPlayer.status;
 	NS_DBG NSLog(@"handlePlayerStatusDidChange(0x%x) status changed to: %d", self, playerStatus);
 	mStatus = playerStatus;
-	if (playerStatus == AVPlayerStatusReadyToPlay) {
-		[mAVPlayer play];
-	}
 }
 
 - (void)handlePlayerCurrentItemAssetDidChange {
@@ -149,7 +146,7 @@ addTimeObserver {
 
 - (CGVideoAVPlayerManager*) initWithURL:(NSURL*) nsurl parent: (void*)arg endOfData: (void*(*)(void*))fun {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-
+	
 	mAVPlayer = [[[AVPlayer alloc] initWithURL:nsurl] retain];
 	NS_DBG NSLog(@"CGVideoAVPlayerManager.initWithURL(0x%x) nsurl=%@ self.retainCount=%d mAVPlayer=0x%x [mAVPlayer retainCount]=%d", self, nsurl, [self retainCount], mAVPlayer, [mAVPlayer retainCount]);
 	fun_arg = arg;
@@ -161,7 +158,7 @@ addTimeObserver {
 	mDurationObserver = false;
 	mWantToPlay = false;
 	mAVPlayer.actionAtItemEnd = AVPlayerActionAtItemEndPause;
-	// prepare to react after keyboard show/hide
+	// prepare to react on end of media data 
 	[[NSNotificationCenter defaultCenter]
 	 addObserver:self
 	 selector:@selector(handlePlayerItemDidReachEnd:)
@@ -211,6 +208,7 @@ addTimeObserver {
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+	NS_DBG NSLog(@"observeValueForKeyPath(0x%x) keyPath=%@", self, keyPath);
 	if ([keyPath isEqualToString:@"status"] && object == mAVPlayer)
 		[self handlePlayerStatusDidChange];
 	else if ([keyPath isEqualToString:@"currentItem.asset"] && object == mAVPlayer)
@@ -348,8 +346,8 @@ cg_avfoundation_video_renderer::init_with_node(const lib::node *n)
 {
 	m_lock.enter();
 	renderer_playable::init_with_node(n);
-	assert(m_renderer_state == rs_created || m_renderer_state == rs_stopped || m_renderer_state == rs_fullstopped);
-	if ( !(m_renderer_state == rs_created || m_renderer_state == rs_stopped || m_renderer_state == rs_fullstopped)) {
+	assert(m_renderer_state == rs_created || m_renderer_state == rs_stopping || m_renderer_state == rs_stopped || m_renderer_state == rs_fullstopped);
+	if ( !(m_renderer_state == rs_created || m_renderer_state == rs_stopping || m_renderer_state == rs_stopped || m_renderer_state == rs_fullstopped)) {
 		m_lock.leave();
 		return;
 	}
@@ -361,7 +359,7 @@ cg_avfoundation_video_renderer::init_with_node(const lib::node *n)
 		assert(m_url.is_empty_path() || m_url.same_document(m_node->get_url("src")));
 		// Apparently the first call.
 		m_url = m_node->get_url("src");
-		NSURL *nsurl = [NSURL URLWithString: [NSString stringWithCString: m_url.get_url().c_str() encoding: NSUTF8StringEncoding]];
+		NSURL *nsurl = [[NSURL URLWithString: [NSString stringWithCString: m_url.get_url().c_str() encoding: NSUTF8StringEncoding]] retain];
 		if (!nsurl) {
 			lib::logger::get_logger()->error(gettext("%s: cannot convert to URL"), m_url.get_url().c_str());
 			goto bad;
@@ -480,7 +478,7 @@ cg_avfoundation_video_renderer::redraw(const rect &dirty, gui_window *window)
 	cg_window *cwindow = (cg_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 	
-	AM_DBG logger::get_logger()->debug("cg_avfoundation_video_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)),  [m_avplayer_manager retainCount]=%d", (void *)this, r.left(), r.top(), r.right(), r.bottom(), [m_avplayer_manager retainCount]);
+	AM_DBG logger::get_logger()->debug("cg_avfoundation_video_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d)), [m_avplayer_manager retainCount]=%d m_renderer_state=%d", (void *)this, r.left(), r.top(), r.right(), r.bottom(), [m_avplayer_manager retainCount], m_renderer_state);
 	
 	assert(m_renderer_state == rs_started || m_renderer_state == rs_stopping || m_renderer_state == rs_stopped || m_renderer_state == rs_fullstopped || m_renderer_state == rs_error_state);
 	if (! (m_renderer_state == rs_started || m_renderer_state == rs_stopping || m_renderer_state == rs_stopped || m_renderer_state == rs_fullstopped || m_renderer_state == rs_error_state)
@@ -525,7 +523,7 @@ cg_avfoundation_video_renderer::redraw(const rect &dirty, gui_window *window)
 		}
 		m_renderer_state = rs_stopped;
 		m_stopped = true;
-		delete m_avplayer_manager;
+		[m_avplayer_manager release];
 		m_avplayer_manager = NULL;
 //#ifdef	JNK
 	} else if (m_renderer_state == rs_fullstopped) {
