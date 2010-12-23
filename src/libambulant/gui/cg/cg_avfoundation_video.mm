@@ -492,7 +492,6 @@ cg_avfoundation_video_renderer::redraw(const rect &dirty, gui_window *window)
 		}
 		return;
 	}
-//X	AVPlayerStatus status = [m_avplayer status];
 	if (m_avplayer_layer == NULL) {		
 		// Determine current position and size.
 		CALayer *superlayer = [view layer];
@@ -520,6 +519,7 @@ cg_avfoundation_video_renderer::redraw(const rect &dirty, gui_window *window)
 		if ( ! m_stopped) {
 			[m_avplayer_manager pause];
 			[m_avplayer_layer removeFromSuperlayer];
+			m_avplayer_layer = NULL;
 		}
 		m_renderer_state = rs_stopped;
 		m_stopped = true;
@@ -530,6 +530,7 @@ cg_avfoundation_video_renderer::redraw(const rect &dirty, gui_window *window)
 		if (! m_stopped && m_avplayer_layer != NULL) {
 			[m_avplayer_layer removeFromSuperlayer];
 			m_stopped = true;
+			m_avplayer_layer = NULL;
 			m_renderer_state = rs_error_state;
 		}
 		delete m_avplayer_manager;

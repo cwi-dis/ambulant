@@ -20,14 +20,6 @@
 void
 document_embedder::show_file(const ambulant::net::url& href)
 {
-//	CFStringRef cfhref = CFStringCreateWithCString(NULL, href.get_url().c_str(), kCFStringEncodingUTF8);
-//	CFURLRef url = CFURLCreateWithString(NULL, cfhref, NULL);
-//	OSErr status;
-	
-//	if ((status=LSOpenCFURLRef(url, NULL)) != 0) {
-//		ambulant::lib::logger::get_logger()->trace("Opening URL <%s>: LSOpenCFURLRef error %d", href.get_url().c_str());
-//		ambulant::lib::logger::get_logger()->error(gettext("Cannot open: %s"), href.get_url().c_str());
-//	}
 	AM_DBG ambulant::lib::logger::get_logger()->trace("document_embedder::show_file(0x%x) href=%s", this, href.get_url().c_str());
 	document_embedder::open(href, true, NULL);
 }
@@ -67,15 +59,14 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 @implementation AmbulantViewController
 
-@synthesize delegate, interactionView, modeBar, originalPlayerViewFrame, originalInteractionViewFrame,
-			playerView, myMainloop, linkURL, playURL, playPauseButton,
-			keyboardIsShown, currentOrientation, autoCenter, autoResize,
+@synthesize delegate, interactionView, modeBar,
+			playerView, myMainloop, playURL, playPauseButton,
+			currentOrientation, autoCenter, autoResize,
 			nativeRenderer, play_active, historyViewController;
 
 /*
 // The designated initializer. Override to perform setup that is required before the view is loaded.
-- (id)
-initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+- (id) initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
         // Custom initialization
     }
@@ -85,15 +76,13 @@ initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
 
 /*
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
-- (void)
-loadView {
+- (void) loadView {
 }
 */
 
 // create a new instance of the smil player using the URL stored in instance variable 'playURL'
 // and start it at the node represented in 'ns_node_repr'
-- (void)
-doPlayURL:(NSString*) ns_node_repr {
+- (void) doPlayURL:(NSString*) ns_node_repr {
 	AM_DBG ambulant::lib::logger::get_logger()->trace("AmbulantViewController doPlayURL(0x%x): url=%s ns_node_repr=%s", self, playURL? [[self playURL] UTF8String]: "NULL", ns_node_repr? [ns_node_repr UTF8String] : "NULL");
 	if (myMainloop != NULL) {
 		myMainloop->stop();
@@ -111,21 +100,16 @@ doPlayURL:(NSString*) ns_node_repr {
 }
 
 // display the Control Panel (as a HUD) at the bottom of the player view 
-- (void)
-showInteractionView: (BOOL) want_show {
+- (void) showInteractionView: (BOOL) want_show {
 	if (want_show && interactionView.hidden) {
 		interactionView.hidden = false;
 		interactionView.opaque = true;
         [NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector(autoHideInteractionView) object:nil];
         [self performSelector:@selector(autoHideInteractionView) withObject:nil afterDelay:(NSTimeInterval)5.0];
-//JNK	modeBar.hidden = true;
-//JNK	modeBar.opaque = false;
 	} else {
 		interactionView.hidden = true;
 		interactionView.opaque = false;
         [NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector(autoHideInteractionView) object:nil];
-//JNK	modeBar.hidden = true;
-//JNK	modeBar.opaque = false;
 	}
 }
 
@@ -138,21 +122,9 @@ showInteractionView: (BOOL) want_show {
 	
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 // - install gesture recognizers
-- (void)
-viewDidLoad {
+- (void) viewDidLoad {
 	AM_DBG NSLog(@"AmbulantViewController viewDidLoad(0x%x)", self);
     [super viewDidLoad];
-	// prepare to react after keyboard show/hide
-	[[NSNotificationCenter defaultCenter]
-	 addObserver:self
-	 selector:@selector(keyboardWillShow:)
-	 name:UIKeyboardWillShowNotification
-	 object: nil];
-	[[NSNotificationCenter defaultCenter]
-	 addObserver:self
-	 selector:@selector(keyboardWillHide:)
-	 name:UIKeyboardWillHideNotification
-	 object: nil];
 
 	// prepare to react when device is rotated
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
@@ -233,9 +205,9 @@ viewDidLoad {
 		}
 		AM_DBG NSLog (@"startPath=%@, startNodeRepr%@", startPath, startNodeRepr);
 		if (startPath != NULL) {
-			// turn on crash recovery
 #ifdef	NDEBUG
-			prefs->m_normal_exit = false;
+			// turn on crash recovery
+			prefs->m_normal_exit = false; 
 #endif//NDEBUG
 			prefs->save_preferences();
 			void* theview = [self playerView];
@@ -246,8 +218,7 @@ viewDidLoad {
 	} 	
 }
 
-- (IBAction)
-handlePlayOrPauseTapped {
+- (IBAction) handlePlayOrPauseTapped {
 	AM_DBG NSLog(@"AmbulantViewController handlePlayOrPauseTapped(0x%x)", self);
 	if (myMainloop) {
 		if (myMainloop->is_play_active()) {
@@ -260,44 +231,18 @@ handlePlayOrPauseTapped {
 	}
 }
 
-- (IBAction)
-handleRestartTapped {
+- (IBAction) handleRestartTapped {
 	AM_DBG NSLog(@"AmbulantViewController handleRestartTapped(0x%x)", self);
 	if (myMainloop != NULL) {
-//		[self pause];
-		//myMainloop->stop();
 		myMainloop->restart(false);
-//		[self play];
 	} else {
 		[self doPlayURL:NULL];
 	}
 } 
-/*
-- (IBAction) handlePauseTapped { //JNK
-	AM_DBG NSLog(@"AmbulantViewController handlePauseTapped(0x%x)", self);
-	[self pause];
-}
-
-- (IBAction) handleStopTapped { //JNK
-	AM_DBG NSLog(@"AmbulantViewController handleStopTapped(0x%x)", self);
-	if (myMainloop == NULL) {
-		return;
-	}
-	myMainloop->pause();  //JNK temp. to show play button
-	myMainloop->stop();
-	if (playerView == NULL)
-		//XXXX for some reason the playerView is reset to 0 when play starts
-		playerView = (id) myMainloop->get_view();
-	delete myMainloop;
-//	[playerView release];
-	myMainloop = NULL;
-}
-*/
 
 /*	Code derived from Apple's developer documentation "Gesture Recognizers"*/
 
-- (IBAction)
-handleLongPressGesture:(UILongPressGestureRecognizer *)sender {
+- (IBAction) handleLongPressGesture:(UILongPressGestureRecognizer *)sender {
 	AM_DBG NSLog(@"AmbulantViewController handleLongPressGesture(0x%x): sender=0x%x", self, sender);
 	CGPoint location = [sender locationInView:self.playerView];
 	if ( ! [self.playerView tappedAtPoint:location]) {
@@ -305,20 +250,18 @@ handleLongPressGesture:(UILongPressGestureRecognizer *)sender {
 	}
 };
 
-- (IBAction)
-handleTapGesture:(UITapGestureRecognizer *)sender { // select
+- (IBAction) handleTapGesture:(UITapGestureRecognizer *)sender { // select
 	AM_DBG NSLog(@"AmbulantViewController handleTapGesture(0x%x): sender=0x%x", self, sender);
 	[self showInteractionView: YES];
 }
 
-- (IBAction)
-handleDoubleTapGesture:(UITapGestureRecognizer *)sender { // select
+- (IBAction) handleDoubleTapGesture:(UITapGestureRecognizer *)sender { // select
 	AM_DBG NSLog(@"AmbulantViewController handleDoubleTapGesture(0x%x): sender=0x%x", self, sender);
 	CGPoint location = [sender locationInView:self.playerView];
 	[self.playerView autoZoomAtPoint:location];
 }
 
-- (void)adjustAnchorPointForGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer {
+- (void) adjustAnchorPointForGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer {
     if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
         UIView *piece = gestureRecognizer.view;
         CGPoint locationInView = [gestureRecognizer locationInView:piece];
@@ -335,35 +278,18 @@ handleDoubleTapGesture:(UITapGestureRecognizer *)sender { // select
     }
 }
 
-- (IBAction)
-handlePinchGesture:(UIPinchGestureRecognizer *)sender { // zoom
+- (IBAction) handlePinchGesture:(UIPinchGestureRecognizer *)sender { // zoom
 	AM_DBG NSLog(@"AmbulantViewController handlePinchGesture(0x%x): sender=0x%x", self, sender);
     [self adjustAnchorPointForGestureRecognizer: sender];
 	CGFloat factor = [(UIPinchGestureRecognizer *)sender scale];
 	[self.playerView zoomWithScale:factor inState: [sender state]];
 }
 
-- (IBAction)
-handlePanGesture:(UIPanGestureRecognizer *)sender {
+- (IBAction) handlePanGesture:(UIPanGestureRecognizer *)sender {
 	AM_DBG NSLog(@"AmbulantViewController handlePanGesture(0x%x): sender=0x%x", self, sender);
 	CGPoint translate = [sender translationInView: playerView.superview];
 	[self.playerView  translateWithPoint: (CGPoint) translate inState: [sender state]];
 }
-//JNK
-// dismiss the keyboard when the <Return> is tapped
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-	AM_DBG NSLog(@"textFieldShouldReturn: text=%@", textField.text);
-	[textField resignFirstResponder]; // dismiss keyboard
-	return NO;
-}
-
-/*JNK
-- (IBAction) handleURLEntered {
-	AM_DBG NSLog(@"AmbulantViewController handleURLEntered(0x%x)", self);
-	[self doPlayURL:NULL];
-}
-JNK*/
-
 - (IBAction) showSettings:(id)sender { //JNK
 	AM_DBG NSLog(@"AmbulantViewController showSettings(0x%x)", self);
 	
@@ -382,9 +308,8 @@ JNK*/
 	[controller release];
 }
 
-- (IBAction)
-playNextItem {
-	AM_DBG NSLog(@"AmbulantViewController playNextItem(0x%x): not yet implemented", self);
+- (IBAction) playNextItem {
+	AM_DBG NSLog(@"AmbulantViewController playNextItem(0x%x)", self);
 	if (currentPresentationViewController != NULL) {
 		[currentPresentationViewController selectNextPresentation];
 	}
@@ -405,8 +330,7 @@ playNextItem {
 }
 
 
-- (void)
-settingsHaveChanged:(SettingsViewController *)controller {
+- (void) settingsHaveChanged:(SettingsViewController *)controller {
 	AM_DBG NSLog(@"AmbulantViewController showSettings(0x%x)", self);
 	// check we have the settings view
 	if (controller.view.tag != 40) {
@@ -428,15 +352,12 @@ settingsHaveChanged:(SettingsViewController *)controller {
 		}
 	}
 	prefs->save_preferences();
-//	[self dismissModalViewControllerAnimated:YES];
 }
 
-- (void)
-playlistViewControllerDidFinish: (UIViewController *)controller {
+- (void) playlistViewControllerDidFinish: (UIViewController *)controller {
 	
 	AM_DBG NSLog(@"playlistViewControllerDidFinish: controller=0x%x", controller);
 	[self settingsHaveChanged: controller];	
-//	[self dismissModalViewControllerAnimated:YES];
 	[self.delegate showAmbulantPlayer: (id) self];
 	if (myMainloop != NULL) {
 		if (play_active) {
@@ -458,38 +379,23 @@ playlistViewControllerDidFinish: (UIViewController *)controller {
 - (IBAction) showHistory:(id)sender { //JNK
 	AM_DBG NSLog(@"AmbulantViewController showHistory:(0x%x)", self);
 	[self pause];
-	/*
-	PresentationViewController *controller = [[PresentationViewController alloc]
-										  initWithNibName:@"PresentationTableViewController" bundle:nil];
-	controller.title = @"Presentations";
-	controller.delegate = self;
-	
-	controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-	[self presentModalViewController:controller animated:YES];
-	
-	[controller release];
-	 */
 	[self.delegate showPresentationViews: self];
 }
 
-- (void)
-showAmbulantPlayer:(id)sender {
+- (void) showAmbulantPlayer:(id)sender {
 	[self.delegate showAmbulantPlayer:sender];
 }
 
-- (void)
-showPresentationViews:(id)sender {
+- (void) showPresentationViews:(id)sender {
 	[self.delegate showPresentationViews:sender];
 }
 
-- (void)
-done: (id) sender {
+- (void) done: (id) sender {
 	AM_DBG NSLog(@"AmbulantViewController done(0x%x): sender=0x%x", self, sender);
 	[self playlistViewControllerDidFinish: (UIViewController*) sender];
 }
 
-- (void)
-presentationViewControllerDidFinish: (PresentationViewController *)controller {
+- (void) presentationViewControllerDidFinish: (PresentationViewController *)controller {
 	AM_DBG NSLog(@"AmbulantViewController presentationViewControllerDidFinish(0x%x): controller=0x%x", self, controller);
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	[self.delegate showAmbulantPlayer: (id) self];
@@ -509,16 +415,14 @@ presentationViewControllerDidFinish: (PresentationViewController *)controller {
 	prefs->save_preferences(); // save possible edits
 }
 
-- (void)
-setHistoryViewController:(PresentationViewController *)controller
+- (void) setHistoryViewController:(PresentationViewController *)controller
 {
 	AM_DBG NSLog(@"AmbulantViewController setHistoryViewController(0x%x) controller=0x%x", self, controller);
 	if ( ! controller.isFavorites) {
 		historyViewController = controller;
 	}
 }
-- (void)
-playPresentation: (NSString*) whatString fromPresentationViewController: (PresentationViewController*) controller {
+- (void) playPresentation: (NSString*) whatString fromPresentationViewController: (PresentationViewController*) controller {
 	AM_DBG NSLog(@"AmbulantViewController (0x%x)", self);
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	AM_DBG NSLog(@"Selected: %@",whatString);
@@ -539,7 +443,7 @@ playPresentation: (NSString*) whatString fromPresentationViewController: (Presen
 		if ( ! [whatString hasSuffix:@".smil"]) {
 			whatString = [whatString stringByAppendingString:@".smil"];
 		}
-		if (playURL) {
+		if (playURL != NULL) {
 			[playURL release];
 		}
 		playURL = [whatString retain];
@@ -549,83 +453,6 @@ playPresentation: (NSString*) whatString fromPresentationViewController: (Presen
 	[self done: self];
 	[pool release];
 }
-
-//JNK
-- (void)keyboardWillShow:(NSNotification *)notification {
-	AM_DBG NSLog(@"AmbulantViewController keyboardWillShow(0x%x) notification=", self, notification);    
-    /*
-     Reduce the size of the playerView so that it's not obscured by the keyboard.
-     Animate the resize so that it's in sync with the appearance of the keyboard.
-     */
-	if (keyboardIsShown) {
-		return;
-	}
-	keyboardIsShown = true;
-    NSDictionary *userInfo = [notification userInfo];
-    
-    // Get the height of the keyboard when it's displayed.
-    NSValue* aValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
-	
-    // Get the top of the keyboard as the y coordinate of its origin in self's view's coordinate system.
-	// The bottom of the text view's frame should align with the top of the keyboard's final position.
-    CGRect keyboardRect = [aValue CGRectValue];
-    keyboardRect = [self.view convertRect:keyboardRect fromView:nil];
-	
-	AM_DBG NSLog(@"keyboardRect=(%f,%f,%f,%f",
-		  keyboardRect.origin.x,keyboardRect.origin.y,
-		  keyboardRect.size.width,keyboardRect.size.height);
-    CGFloat keyboardHeight = keyboardRect.size.height;
-	originalInteractionViewFrame = interactionView.frame;
-    CGRect newInteractionViewFrame = interactionView.frame;
-	AM_DBG NSLog(@"newInteractionViewFrame=(%f,%f,%f,%f",
-		  newInteractionViewFrame.origin.x,newInteractionViewFrame.origin.y,
-		  newInteractionViewFrame.size.width,newInteractionViewFrame.size.height);
-	newInteractionViewFrame.origin.y -= keyboardHeight;
-	originalPlayerViewFrame = playerView.frame;
-    CGRect newPlayerViewFrame = originalPlayerViewFrame;
-	newPlayerViewFrame.origin.y -= keyboardHeight;
-    // Get the duration of the animation.
-    NSValue *animationDurationValue = [userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
-    NSTimeInterval animationDuration;
-    [animationDurationValue getValue:&animationDuration];
-    
-    // Animate the resize of the playerView's frame and the repositioning of the
-	// interactionView in sync with the keyboard's appearance.
-	[UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:animationDuration];
-    
-    interactionView.frame = newInteractionViewFrame;
-	playerView.frame = newPlayerViewFrame;
-	
-    [UIView commitAnimations];
-}
-
-//JNK
-- (void)keyboardWillHide:(NSNotification *)notification {
-	AM_DBG NSLog(@"AmbulantViewController keyboardWillHide(0x%x): notification=%d", self, notification);    
-	if ( ! keyboardIsShown) {
-		return;
-	}	
-	keyboardIsShown = false;
-
-//	[self handlePauseTapped];
-	
-    NSDictionary* userInfo = [notification userInfo];    
-    /*
-     Restore the size of the playerView and the position of the InteractionView.
-     Animate the resize so that it's in sync with the disappearance of the keyboard.
-     */
-    NSValue *animationDurationValue = [userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
-    NSTimeInterval animationDuration;
-    [animationDurationValue getValue:&animationDuration];
-    
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:animationDuration];
-	interactionView.frame = originalInteractionViewFrame;
-	playerView.frame = originalPlayerViewFrame;
-    [UIView commitAnimations];
-	[self handlePlayOrPauseTapped];
-}	
 
 - (BOOL) isSupportedOrientation: (UIDeviceOrientation) orientation {
 	AM_DBG NSLog(@"AmbulantViewController isSupportedOrientation(0x%x) orientation=%d", self, orientation);
@@ -638,15 +465,14 @@ playPresentation: (NSString*) whatString fromPresentationViewController: (Presen
 
 /* */
 // Override to allow orientations other than the default portrait orientation.
-- (BOOL)
-shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation) interfaceOrientation {
+- (BOOL) shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation) interfaceOrientation {
 	AM_DBG NSLog(@"AmbulantViewController shouldAutorotateToInterfaceOrientation(0x%x): interfaceOrientation=%d", self, interfaceOrientation);
 	return [self isSupportedOrientation:(UIDeviceOrientation) interfaceOrientation];
 }
+
 // react on device rotation
-- (void)
-orientationChanged:(NSNotification *)notification {
-	//AM_DBG NSLog(@"AmbulantViewController orientationChanged(0x%x):notification=%d", self, notification);
+- (void) orientationChanged:(NSNotification *)notification {
+//	AM_DBG NSLog(@"AmbulantViewController orientationChanged(0x%x):notification=%d", self, notification);
 	UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
 	if (orientation == currentOrientation || ! [self isSupportedOrientation: orientation]) {
 		return;
@@ -657,15 +483,6 @@ orientationChanged:(NSNotification *)notification {
 		[playerView adaptDisplayAfterRotation: orientation withAutoCenter: prefs->m_auto_center withAutoResize: prefs->m_auto_resize];
 	}
 }
-
-/* JNK
-- (void) close: (NSString*) id {
-	AM_DBG NSLog(@"AmbulantViewController close: id=%@", id);
-	[self handleStopTapped];
-}
-*/
-
-
 
 - (void) pause {
 	AM_DBG NSLog(@"AmbulantViewController pause(0x%x)", self);
@@ -693,6 +510,7 @@ orientationChanged:(NSNotification *)notification {
 	}
 	return NULL;
 }
+
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
  	AM_DBG NSLog(@"AmbulantViewController didReceiveMemoryWarning:self=0x%x", self);

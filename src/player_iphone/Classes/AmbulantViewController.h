@@ -37,18 +37,13 @@ private:
 				<UITextFieldDelegate, PlaylistViewControllerDelegate> {
 	document_embedder *embedder;
 	mainloop *myMainloop;
-//JNK PresentationViewController* historyViewController;
-	IBOutlet id view; // XXXJACK Tied to keyboardIsShown, not needed?
+	IBOutlet id view; // main view, nib-connected to AmbulantView (in cg_gui)
 	IBOutlet AmbulantAppDelegate* delegate;
 	IBOutlet AmbulantView* playerView;
 	IBOutlet UIView* interactionView;
 	IBOutlet UIButton* playPauseButton;
 	PresentationViewController* currentPresentationViewController;
-	CGRect originalPlayerViewFrame; // XXXJACK Tied to keyboardIsShown, not needed?
-    CGRect originalInteractionViewFrame;
 	NSString* playURL;      // The document that is currently playing (or will play shortly)
-	NSString* linkURL;      // XXXJACK seems unused?
-	BOOL keyboardIsShown;   // XXXJACK is this needed?
 	UIDeviceOrientation currentOrientation; // Current orientation of playback window
 	BOOL autoCenter;
 	BOOL autoResize;
@@ -75,23 +70,16 @@ private:
 - (void) doPlayURL:(NSString*) ns_node_repr;
 - (void) showInteractionView: (BOOL) on;
 - (void) autoHideInteractionView;
-//JNK - (IBAction) close:(id) str;
-//JNK - (IBAction) handlePauseTapped;
-//JNK - (IBAction) handleStopTapped;
-//JNK - (void) handleURLEntered; 
-//JNK - (IBAction) showSettings:(id)sender;
 
 @property(nonatomic,retain) IBOutlet AmbulantAppDelegate* delegate;
 @property(nonatomic,retain) PresentationViewController* historyViewController;
 @property(nonatomic,retain)	IBOutlet AmbulantView* playerView;
 @property(nonatomic,retain) IBOutlet UITabBar* modeBar;
 @property(nonatomic) mainloop* myMainloop;
-@property(nonatomic,retain) NSString* linkURL;
 @property(nonatomic,retain) NSString* playURL;
 @property(nonatomic,retain)	IBOutlet UIView* interactionView;
 @property(nonatomic,retain) IBOutlet UIButton* playPauseButton;
-@property(nonatomic) CGRect originalPlayerViewFrame, originalInteractionViewFrame;
-@property(nonatomic) BOOL keyboardIsShown, autoCenter, autoResize, nativeRenderer, play_active;
+@property(nonatomic) BOOL autoCenter, autoResize, nativeRenderer, play_active;
 @property(nonatomic) UIDeviceOrientation currentOrientation;
 
 @end

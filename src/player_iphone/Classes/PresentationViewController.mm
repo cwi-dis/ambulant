@@ -65,12 +65,12 @@ isFavorites {
 	return isFavorites;
 }
 
-- (void)
-awakeFromNib
+- (void) awakeFromNib
 {
 	AM_DBG NSLog(@"PresentationViewController awakeFromNib(0x%x)", self);
-	presentationsArray = [ [ NSMutableArray alloc ] init ];
-
+	if (presentationsArray == NULL) {
+		presentationsArray = [ [ NSMutableArray alloc ] init ];
+	}
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	prefs->load_preferences();
 	BOOL favorites = [self.title isEqualToString:@"Favorites"];
@@ -82,24 +82,22 @@ awakeFromNib
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-- (void)
-viewDidLoad
+- (void) viewDidLoad
 {
     [super viewDidLoad];
 	AM_DBG NSLog(@"PresentationViewController viewDidLoad(0x%x)", self);
 	self.tableView.rowHeight = 60;
-	presentationsArray = [ [ NSMutableArray alloc ] init ];
-
+	if (presentationsArray == NULL) {
+		presentationsArray = [ [ NSMutableArray alloc ] init ];
+	}
 	[self updatePlaylist];
 }
 
-- (void)
-viewWillAppear:(BOOL)animated {
+- (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 }
 
-- (IBAction)
-done:(id)sender
+- (IBAction) done:(id)sender
 {
 	AM_DBG NSLog(@"PresentationViewController done(0x%x)", self);
 	[self.delegate presentationViewControllerDidFinish:self];
@@ -320,9 +318,7 @@ toggleEditMode
 #endif//FIRST_ITEM
 		currentIndex++; //assume insert at 0 occurred
 	}
-
 	[presentationsArray removeAllObjects];
-
 #ifdef	FIRST_ITEM
 	for (int i = 0; i < FIRST_ITEM; i++) {
 		[presentationsArray addObject:[self getPresentationFromPlaylistItem: NULL]];
@@ -332,8 +328,10 @@ toggleEditMode
 	[playlist enumerateObjectsWithOptions: nil usingBlock:
 	 ^(id obj, NSUInteger idx, BOOL *stop)
 	 {
-		PlaylistItem* item = (PlaylistItem*) obj;
-		[ presentationsArray addObject:[self getPresentationFromPlaylistItem: item]];
+		 PlaylistItem* item = (PlaylistItem*) obj;
+		 Presentation* presentation = [self getPresentationFromPlaylistItem: item];
+		 [presentationsArray addObject: presentation];
+		 [presentation release]; // the array now has ownership
 	}];
 	[[self tableView] reloadData];
 /*JNK
@@ -369,11 +367,6 @@ viewWillDisappear:(BOOL)animated
 dealloc
 {
     [super dealloc];
-	[presentationsArray enumerateObjectsWithOptions: nil usingBlock:
-	 ^(id obj, NSUInteger idx, BOOL *stop)
-	 {
-		 [(Presentation*)obj release];
-	 }];
 	[presentationsArray dealloc];
 }
 
