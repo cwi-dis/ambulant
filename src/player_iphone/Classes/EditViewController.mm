@@ -62,8 +62,11 @@ shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientat
 done:(id)sender
 {
 	AM_DBG NSLog(@"EditViewController done(0x%x)", self);
+    NSString *theUrl = self.textField.text;
+    if ([theUrl hasPrefix: @"ambulant:"])
+        theUrl = [theUrl substringFromIndex: 9];
 	
-	[self.delegate playPresentation:self.textField.text fromPresentationViewController: NULL];
+	[self.delegate playPresentation:theUrl fromPresentationViewController: NULL];
 	[self cancel: sender];
 }
 
