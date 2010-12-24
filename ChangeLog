@@ -1,3 +1,24 @@
+2010-12-23 17:17  keesblom
+
+	* Removed some junk code and fixed some leaks
+
+2010-12-23 17:17  jackjansen
+
+	* More bits and pieces to use cglayer for redrawing, to help
+	  animation.  The good news: it is about 10 times faster.  The bad
+	  news: it is incorrect.
+
+	  :-)
+
+2010-12-23 17:02  keesblom
+
+	* Fixed a leak caused by moving code into awakeFromNib()
+
+2010-12-23 16:48  jackjansen
+
+	* Added missing retain calls, which caused various crashes in open
+	  url dialog
+
 2010-12-23 01:59  jackjansen
 
 	* Getting started on using CGLayer to optimize animation.
