@@ -302,6 +302,8 @@ mainloop::~mainloop()
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	// We need to delete gui_player::m_player before deleting m_doc, because the
 	// timenode graph in the player has referrences to the node graph in m_doc.
+#ifdef KEES_LASTNODE_CODE
+
 	std::list<const lib::node*>::iterator nodes_iterator = m_nodes.end();
 	if (nodes_iterator != m_nodes.begin()) {
 		nodes_iterator--;	// need the one just before end()
@@ -315,6 +317,18 @@ mainloop::~mainloop()
 			prefs->m_history->replace_last_item(last_item);
 		}
 	}
+#else
+    PlaylistItem* last_item = iOSpreferences::get_preferences()->m_history->get_last_item();
+    if (last_item) {
+        if (m_last_node_started) {
+            lib::xml_string last_node_repr = m_last_node_started->get_xpath();
+            NSString* ns_last_node_repr = [NSString stringWithUTF8String: last_node_repr.c_str()];
+            last_item.ns_last_node_repr = ns_last_node_repr;
+        } else {
+            last_item.ns_last_node_repr = NULL;
+        }
+    }
+#endif
 	
     if (m_player) {
         m_player->terminate();
@@ -416,22 +430,31 @@ mainloop::node_focussed(const lib::node *n)
 void
 mainloop::print_nodes()
 {
+#ifdef KEES_LASTNODE_CODE
 	for (std::list<const lib::node*>::iterator node_iter = m_nodes.begin(); 
 		 node_iter != m_nodes.end(); node_iter++) {
 		AM_DBG lib::logger::get_logger()->debug("node_active(%s)", (*node_iter)->get_sig().c_str());
 	}
+#endif
 }
+
 void
 mainloop::node_started(const lib::node *n)
 {
+#ifdef KEES_LASTNODE_CODE
+
 	AM_DBG lib::logger::get_logger()->debug("node_started(%s)", n->get_sig().c_str());
 	m_nodes.push_back(n);
 //X	print_nodes();
+#else
+    m_last_node_started = n;
+#endif
 }
 
 void
 mainloop::node_stopped(const lib::node *n)
 {
+#ifdef KEES_LASTNODE_CODE
 	AM_DBG lib::logger::get_logger()->debug("node_stopped(%s)", n->get_sig().c_str());
 	std::list<const lib::node*>::reverse_iterator rnode_iter = m_nodes.rbegin(); 
 	for ( ; rnode_iter != m_nodes.rend(); rnode_iter++) {
@@ -448,6 +471,7 @@ mainloop::node_stopped(const lib::node *n)
 //X		m_nodes.erase(node_victim);
 	}
 //X	print_nodes();
+#endif
 }
 
 void
@@ -497,6 +521,9 @@ mainloop::get_meta_content(const char* name)
 void
 mainloop::document_stopped()
 {
+#ifndef KEES_LASTNODE_CODE
+    m_last_node_started = NULL;
+#endif
 	AM_DBG NSLog(@"document_stopped");
 	if (m_restarting) {
 		return;

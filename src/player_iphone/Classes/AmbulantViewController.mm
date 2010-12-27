@@ -205,10 +205,8 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		}
 		AM_DBG NSLog (@"startPath=%@, startNodeRepr%@", startPath, startNodeRepr);
 		if (startPath != NULL) {
-#ifdef	NDEBUG
 			// turn on crash recovery
 			prefs->m_normal_exit = false; 
-#endif//NDEBUG
 			prefs->save_preferences();
 			void* theview = [self playerView];
 			AM_DBG NSLog(@"view %@ responds %d", (NSObject *)theview, [(NSObject *)theview respondsToSelector: @selector(isAmbulantWindowInUse)]);
