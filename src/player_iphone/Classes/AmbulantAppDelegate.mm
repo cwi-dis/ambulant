@@ -169,7 +169,7 @@ application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictio
     // Override point for customization after application launch.
     // Add the view controller's view to the window and display.
 
-	AM_DBG NSLog(@"AmbulantAppDelegate application didFinishLaunchingWithOptions");
+	/*AM_DBG*/ NSLog(@"AmbulantAppDelegate application didFinishLaunchingWithOptions: %@", launchOptions);
 //	AM_DBG [DBG addObject: [NSString stringWithString: @"didFinishLaunchingWithOptions"]]; 
 	AM_DBG DBG_ADD("didFinishLaunchingWithOptions");
 	// Install ambulent preferences handler
@@ -177,10 +177,12 @@ application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictio
 	
 	// Install ambulant logger
 	initialize_logger();
+//    viewController.view.alpha = 0.0;
+//    viewController.view.hidden = true;
     [window addSubview:viewController.view];
-	[window addSubview:tabBarController.view];
 	tabBarController.view.alpha = 0.0;
 	tabBarController.view.hidden = true;
+	[window addSubview:tabBarController.view];
     [window makeKeyAndVisible];
 
     return YES;
@@ -237,9 +239,7 @@ applicationWillResignActive:(UIApplication *)application {
      Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
      */
 	AM_DBG NSLog(@"AmbulantAppDelegate applicationWillResignActive");
-	if (viewController != NULL && viewController.myMainloop != NULL) {
-		viewController.myMainloop->pause();
-	}
+	if (viewController) [viewController pause];
 }
 
 - (BOOL)
@@ -266,7 +266,8 @@ application:(UIApplication* ) application handleOpenURL: (NSURL*) url {
         if ([urlstr hasPrefix: @"ambulant:"]) {
             urlstr = [urlstr substringFromIndex: 9]; // Length of "ambulant:"
         }
-        viewController.playURL = urlstr;
+        [viewController doPlayURL: urlstr fromNode: nil];
+#ifdef JNK
 		char* s2;
 		if (viewController == NULL)
 			s2 = (char*) "viewController == NULL";
@@ -279,6 +280,7 @@ application:(UIApplication* ) application handleOpenURL: (NSURL*) url {
 		delete viewController.myMainloop;
 			viewController.myMainloop = NULL;
 		}
+#endif
 	}
 	return validated;
 }
@@ -296,15 +298,14 @@ applicationDidEnterBackground:(UIApplication *)application {
 	// save current state
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	prefs->save_preferences();
-	if (viewController != NULL && viewController.myMainloop != NULL) {
-		viewController.myMainloop->pause();
-	}
+	if (viewController) [viewController pause];
 	
 }
 
 
 - (void)
 applicationWillEnterForeground:(UIApplication *)application {
+#ifdef JNK
     /*
      Called as part of  transition from the background to the inactive state:
 	 here you can undo many of the changes made on entering the background.
@@ -320,17 +321,19 @@ applicationWillEnterForeground:(UIApplication *)application {
 			[self.viewController doPlayURL: ns_node_repr];
 		}
 	}
+#endif // JNK
 	ambulant::iOSpreferences::delete_preferences_singleton();
 }
 
 
 - (void)
 applicationDidBecomeActive:(UIApplication *)application {
+#ifdef JNK
     /*
      Restart any tasks that were paused (or not yet started) while the application was inactive. 
 	 If the application was previously in the background, optionally refresh the user interface.
      */
-	AM_DBG ambulant::lib::logger::get_logger()->trace(@"AmbulantAppDelegate applicationDidBecomeActive");
+	/*AM_DBG*/ ambulant::lib::logger::get_logger()->trace(@"AmbulantAppDelegate applicationDidBecomeActive");
 /* AmulantIOS is not a restartable app. */
 //XXXX TBD: restore state
 //	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
@@ -344,6 +347,7 @@ applicationDidBecomeActive:(UIApplication *)application {
 			[self.viewController doPlayURL:NULL]; //[prefs->m_history.last_item() m_ns_noder_repr];
 		}
 	}
+#endif
 }
 
 - (void)
@@ -352,10 +356,8 @@ applicationWillTerminate:(UIApplication *)application {
      Called when the application is about to terminate.
      See also applicationDidEnterBackground:.
      */
-	AM_DBG NSLog(@"AmbulantAppDelegate applicationWillTerminate: viewController.retainCount()=%d", [viewController retainCount]);
-	if (viewController && viewController.myMainloop) {
-		delete viewController.myMainloop;
-	}
+	/*AM_DBG*/ NSLog(@"AmbulantAppDelegate applicationWillTerminate: viewController.retainCount()=%d", [viewController retainCount]);
+    [viewController willTerminate];
     [viewController release];
 }
 
@@ -369,22 +371,14 @@ applicationDidReceiveMemoryWarning:(UIApplication *)application {
      Free up as much memory as possible by purging cached data objects that can be recreated (or reloaded from disk) later.
      */
 	AM_DBG NSLog(@"AmbulantAppDelegate applicationDidReceiveMemoryWarning");
-	if (viewController && viewController.myMainloop) {
-		viewController.myMainloop->pause();
-	}
+	if (viewController) [viewController pause];
 	ambulant::lib::logger::get_logger()->error("Memory low, try reboot iPhone");
-	if (viewController && viewController.myMainloop) {
-		viewController.myMainloop->play();
-	}
 }
 
 
 - (void)
 dealloc {
 	AM_DBG NSLog(@"AmbulantAppDelegate dealloc");
-	if (viewController && viewController.myMainloop) {
-		delete viewController.myMainloop;
-	}
     [viewController release];	
     [window release];
     [super dealloc];

@@ -42,8 +42,10 @@ private:
 	IBOutlet AmbulantView* playerView;
 	IBOutlet UIView* interactionView;
 	IBOutlet UIButton* playPauseButton;
+    IBOutlet UITabBar* modeBar; // XXXJACK is this used?
 	PresentationViewController* currentPresentationViewController;
-	NSString* playURL;      // The document that is currently playing (or will play shortly)
+    PresentationViewController* historyViewController;
+	NSString* currentURL;      // The document that is currently playing (or will play shortly)
 	UIDeviceOrientation currentOrientation; // Current orientation of playback window
 	BOOL autoCenter;
 	BOOL autoResize;
@@ -67,19 +69,22 @@ private:
 - (void) play;
 - (PlaylistItem*) currentItem;
 - (void) initialize_after_crashing;
-- (void) doPlayURL:(NSString*) ns_node_repr;
+- (void) doPlayURL: (NSString*) theUrl fromNode: (NSString*) ns_node_repr;
 - (void) showInteractionView: (BOOL) on;
 - (void) autoHideInteractionView;
+- (void) willTerminate;
 
-@property(nonatomic,retain) IBOutlet AmbulantAppDelegate* delegate;
-@property(nonatomic,retain) PresentationViewController* historyViewController;
-@property(nonatomic,retain)	IBOutlet AmbulantView* playerView;
-@property(nonatomic,retain) IBOutlet UITabBar* modeBar;
-@property(nonatomic) mainloop* myMainloop;
-@property(nonatomic,retain) NSString* playURL;
-@property(nonatomic,retain)	IBOutlet UIView* interactionView;
-@property(nonatomic,retain) IBOutlet UIButton* playPauseButton;
-@property(nonatomic) BOOL autoCenter, autoResize, nativeRenderer, play_active;
-@property(nonatomic) UIDeviceOrientation currentOrientation;
+//@property(nonatomic,retain) IBOutlet AmbulantAppDelegate* delegate;
+//@property(nonatomic,retain) PresentationViewController* historyViewController;
+//@property(nonatomic,retain)	IBOutlet AmbulantView* playerView;
+//@property(nonatomic,retain) IBOutlet UITabBar* modeBar;
+//@property(nonatomic) mainloop* myMainloop;
+//@property(nonatomic,retain)	IBOutlet UIView* interactionView;
+//@property(nonatomic,retain) IBOutlet UIButton* playPauseButton;
+@property(readonly) BOOL autoCenter;
+@property(readonly) BOOL autoResize;
+@property(readonly) BOOL nativeRenderer;
+//@property(nonatomic) BOOL play_active;
+//@property(nonatomic) UIDeviceOrientation currentOrientation;
 
 @end

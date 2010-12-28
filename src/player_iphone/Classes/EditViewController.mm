@@ -43,10 +43,15 @@ viewDidLoad
     [super viewDidLoad];
 //	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	AM_DBG NSLog(@"EditViewController viewDidLoad(0x%x)", self);
+#ifdef JNK
+    // Is there a good reason to initialize the URL field with the URL of the
+    // currently playing presentation? Unsure... If there is we need to re-instate
+    // that interface
 	NSString* url = [self.delegate playURL];
 	if (url != NULL) {
 		self.textField.text = [NSString stringWithString: url];
 	}
+#endif
 //	[pool release];
 }
 

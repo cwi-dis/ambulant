@@ -59,10 +59,18 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 @implementation AmbulantViewController
 
-@synthesize delegate, interactionView, modeBar,
-			playerView, myMainloop, playURL, playPauseButton,
-			currentOrientation, autoCenter, autoResize,
-			nativeRenderer, play_active, historyViewController;
+//@synthesize delegate;
+//@synthesize interactionView;
+//@synthesize modeBar;
+//@synthesize playerView;
+//@synthesize myMainloop;
+//@synthesize playPauseButton;
+//@synthesize currentOrientation;
+@synthesize autoCenter;
+@synthesize autoResize;
+@synthesize nativeRenderer;
+//@synthesize play_active;
+//@synthesize historyViewController;
 
 /*
 // The designated initializer. Override to perform setup that is required before the view is loaded.
@@ -80,22 +88,26 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 */
 
-// create a new instance of the smil player using the URL stored in instance variable 'playURL'
-// and start it at the node represented in 'ns_node_repr'
-- (void) doPlayURL:(NSString*) ns_node_repr {
-	AM_DBG ambulant::lib::logger::get_logger()->trace("AmbulantViewController doPlayURL(0x%x): url=%s ns_node_repr=%s", self, playURL? [[self playURL] UTF8String]: "NULL", ns_node_repr? [ns_node_repr UTF8String] : "NULL");
+// create a new instance of the smil player
+- (void) doPlayURL: (NSString*) theUrl fromNode: (NSString*) ns_node_repr {
+    if (theUrl) {
+        if (currentURL) [currentURL release];
+        currentURL = [theUrl retain];
+    }
+	AM_DBG ambulant::lib::logger::get_logger()->trace("AmbulantViewController doPlayURL(0x%x): url=%s ns_node_repr=%s", self, currentURL? [ currentURL UTF8String]: "NULL", ns_node_repr? [ns_node_repr UTF8String] : "NULL");
 	if (myMainloop != NULL) {
 		myMainloop->stop();
 		delete myMainloop;
+        
 	}		
-	myMainloop = new mainloop([[self playURL] UTF8String], playerView, embedder);	
+	myMainloop = new mainloop([currentURL UTF8String], playerView, embedder);	
 	if (myMainloop) {
 		if (ns_node_repr != NULL) {
 			std::string node_repr = [ns_node_repr UTF8String];
 			myMainloop->goto_node_repr(node_repr);
 		}
 		[self showInteractionView: NO];
-		[self play];
+//		[self play]; // This will be done in viewDidAppear
 	}
 }
 
@@ -142,25 +154,25 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	// prepare to react on "tap" gesture (select object in playerView with 1 finger tap)
 	UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]
 										  initWithTarget:self action:@selector(handleTapGesture:)];
-	[self.playerView addGestureRecognizer:tapGesture];
+	[playerView addGestureRecognizer:tapGesture];
     [tapGesture release];
 	
 	// prepare to react on "double tap" gesture (select object in playerView with 1 finger tap)
 	UITapGestureRecognizer *doubleTapGesture = [[UITapGestureRecognizer alloc]
 										  initWithTarget:self action:@selector(handleDoubleTapGesture:)];
 	doubleTapGesture.numberOfTapsRequired = 2;
-	[self.playerView addGestureRecognizer:doubleTapGesture];
+	[playerView addGestureRecognizer:doubleTapGesture];
     [doubleTapGesture release];
 	
 	// prepare to react on "pinch" gesture (zoom playerView with 2 fingers)
 	UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc]
 											  initWithTarget:self action:@selector(handlePinchGesture:)];
-	[self.playerView addGestureRecognizer:pinchGesture];
+	[playerView addGestureRecognizer:pinchGesture];
     [pinchGesture release];
 	// prepare to react on "pan" gesture (move playerView with one finger)
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]
 										  initWithTarget:self action:@selector(handlePanGesture:)];
-    [self.playerView addGestureRecognizer:panGesture];
+    [playerView addGestureRecognizer:panGesture];
     [panGesture release];
 	
 /*	swipe doesn't work well with pan
@@ -170,7 +182,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	swipeGesture.direction = (UISwipeGestureRecognizerDirection)
 							(UISwipeGestureRecognizerDirectionRight | UISwipeGestureRecognizerDirectionLeft
 							  | UISwipeGestureRecognizerDirectionUp | UISwipeGestureRecognizerDirectionDown);
-    [self.playerView addGestureRecognizer:swipeGesture];
+    [playerView addGestureRecognizer:swipeGesture];
     [swipeGesture release];
 */	
 	// prepare to react on "longPress" gesture (hold finger in one spot, longer than 0.4 sec.)
@@ -178,16 +190,15 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 													  initWithTarget:self action:@selector(handleLongPressGesture:)];
 	//	longPressGesture.direction = (UIlongPressGestureRecognizerDirectionRight | UIlongPressGestureRecognizerDirectionLeft
 	//							  | UIlongPressGestureRecognizerDirectionUp | UIlongPressGestureRecognizerDirectionDown);
-    [self.playerView addGestureRecognizer:longPressGesture];
+    [playerView addGestureRecognizer:longPressGesture];
     [longPressGesture release];
 	
 	embedder = new document_embedder(self);
-	currentPresentationViewController = [self.delegate getPresentationView:self withIndex:0];
+	currentPresentationViewController = [delegate getPresentationView:self withIndex:0];
 	
-	if (self.playURL != nil) {
-		// self.playURL was set in openURL on launch by Safari e.a.
-		AM_DBG NSLog(@"View=%@ playUrl=%@", [self playerView], [self playURL]);
-		[self doPlayURL:NULL];
+	if (currentURL != nil) {
+		AM_DBG NSLog(@"View=%@ currentURL=%@", playerView, currentURL);
+		[self doPlayURL:nil fromNode: nil];
 	} else {
 		// launched by user
 		NSString *startPath = NULL;
@@ -208,13 +219,23 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 			// turn on crash recovery
 			prefs->m_normal_exit = false; 
 			prefs->save_preferences();
-			void* theview = [self playerView];
-			AM_DBG NSLog(@"view %@ responds %d", (NSObject *)theview, [(NSObject *)theview respondsToSelector: @selector(isAmbulantWindowInUse)]);
-			playURL =  [startPath retain];
-			[self doPlayURL: startNodeRepr];
+			AM_DBG NSLog(@"view %@ responds %d", playerView, [playerView respondsToSelector: @selector(isAmbulantWindowInUse)]);
+			[self doPlayURL: startPath fromNode: startNodeRepr];
 		}
 	} 	
 }
+
+- (void)viewWillAppear:(BOOL)animated
+{
+	/*AM_DBG*/ NSLog(@"AmbulantViewController viewWillAppear(0x%x)", self);
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+	/*AM_DBG*/ NSLog(@"AmbulantViewController viewDidAppear(0x%x)", self);
+    [self play];
+}
+
 
 - (IBAction) handlePlayOrPauseTapped {
 	AM_DBG NSLog(@"AmbulantViewController handlePlayOrPauseTapped(0x%x)", self);
@@ -225,7 +246,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 			[self play];
 		}
 	} else {
-		[self doPlayURL:NULL];
+		[self doPlayURL: nil fromNode: nil];
 	}
 }
 
@@ -234,7 +255,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	if (myMainloop != NULL) {
 		myMainloop->restart(false);
 	} else {
-		[self doPlayURL:NULL];
+		[self doPlayURL: nil fromNode: nil];
 	}
 } 
 
@@ -242,9 +263,9 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 - (IBAction) handleLongPressGesture:(UILongPressGestureRecognizer *)sender {
 	AM_DBG NSLog(@"AmbulantViewController handleLongPressGesture(0x%x): sender=0x%x", self, sender);
-	CGPoint location = [sender locationInView:self.playerView];
-	if ( ! [self.playerView tappedAtPoint:location]) {
-//		[self.delegate showPresentationViews:self];
+	CGPoint location = [sender locationInView:playerView];
+	if ( ! [playerView tappedAtPoint:location]) {
+//		[delegate showPresentationViews:self];
 	}
 };
 
@@ -255,8 +276,8 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 - (IBAction) handleDoubleTapGesture:(UITapGestureRecognizer *)sender { // select
 	AM_DBG NSLog(@"AmbulantViewController handleDoubleTapGesture(0x%x): sender=0x%x", self, sender);
-	CGPoint location = [sender locationInView:self.playerView];
-	[self.playerView autoZoomAtPoint:location];
+	CGPoint location = [sender locationInView:playerView];
+	[playerView autoZoomAtPoint:location];
 }
 
 - (void) adjustAnchorPointForGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer {
@@ -280,13 +301,13 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	AM_DBG NSLog(@"AmbulantViewController handlePinchGesture(0x%x): sender=0x%x", self, sender);
     [self adjustAnchorPointForGestureRecognizer: sender];
 	CGFloat factor = [(UIPinchGestureRecognizer *)sender scale];
-	[self.playerView zoomWithScale:factor inState: [sender state]];
+	[playerView zoomWithScale:factor inState: [sender state]];
 }
 
 - (IBAction) handlePanGesture:(UIPanGestureRecognizer *)sender {
 	AM_DBG NSLog(@"AmbulantViewController handlePanGesture(0x%x): sender=0x%x", self, sender);
 	CGPoint translate = [sender translationInView: playerView.superview];
-	[self.playerView  translateWithPoint: (CGPoint) translate inState: [sender state]];
+	[playerView  translateWithPoint: (CGPoint) translate inState: [sender state]];
 }
 - (IBAction) showSettings:(id)sender { //JNK
 	AM_DBG NSLog(@"AmbulantViewController showSettings(0x%x)", self);
@@ -316,14 +337,14 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 - (IBAction) addFavorites:(id)sender
 {
 	AM_DBG NSLog(@"AmbulantViewController addFavorites(0x%x)", sender);
-	PresentationViewController* favoritesVC = [ self.delegate getPresentationView: self withIndex: 1];	
+	PresentationViewController* favoritesVC = [ delegate getPresentationView: self withIndex: 1];	
 #ifdef	FIRST_ITEM
 	[favoritesVC insertCurrentItemAtIndexPath: [ NSIndexPath indexPathForRow:FIRST_ITEM inSection: 0 ]];
 #else //FIRST_ITEM
 	[favoritesVC insertCurrentItemAtIndexPath: [ NSIndexPath indexPathForRow:0 inSection: 0 ]];
 #endif//FIRST_ITEM
 #ifdef XXXJACK_IS_UNSURE
-	[self.delegate showPresentationView: self withIndex: 1];
+	[delegate showPresentationView: self withIndex: 1];
 #endif
 }
 
@@ -356,7 +377,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	
 	AM_DBG NSLog(@"playlistViewControllerDidFinish: controller=0x%x", controller);
 	[self settingsHaveChanged: controller];	
-	[self.delegate showAmbulantPlayer: (id) self];
+	[delegate showAmbulantPlayer: (id) self];
 	if (myMainloop != NULL) {
 		if (play_active) {
 			[self play];
@@ -377,15 +398,15 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 - (IBAction) showHistory:(id)sender { //JNK
 	AM_DBG NSLog(@"AmbulantViewController showHistory:(0x%x)", self);
 	[self pause];
-	[self.delegate showPresentationViews: self];
+	[delegate showPresentationViews: self];
 }
 
 - (void) showAmbulantPlayer:(id)sender {
-	[self.delegate showAmbulantPlayer:sender];
+	[delegate showAmbulantPlayer:sender];
 }
 
 - (void) showPresentationViews:(id)sender {
-	[self.delegate showPresentationViews:sender];
+	[delegate showPresentationViews:sender];
 }
 
 - (void) done: (id) sender {
@@ -396,7 +417,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 - (void) presentationViewControllerDidFinish: (PresentationViewController *)controller {
 	AM_DBG NSLog(@"AmbulantViewController presentationViewControllerDidFinish(0x%x): controller=0x%x", self, controller);
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
-	[self.delegate showAmbulantPlayer: (id) self];
+	[delegate showAmbulantPlayer: (id) self];
 	if (controller != NULL && controller.editingStyle != UITableViewCellEditingStyleNone) {
 		[controller toggleEditMode];
 	}
@@ -441,12 +462,8 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		if ( ! [whatString hasSuffix:@".smil"]) {
 			whatString = [whatString stringByAppendingString:@".smil"];
 		}
-		if (playURL != NULL) {
-			[playURL release];
-		}
-		playURL = [whatString retain];
-		[self doPlayURL:NULL];
-		[[self historyViewController] updatePlaylist];
+		[self doPlayURL: whatString fromNode: nil];
+		[historyViewController updatePlaylist];
 	}
 	[self done: self];
 	[pool release];
@@ -488,7 +505,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		play_active = myMainloop->is_play_active();
 		myMainloop->pause();
 		UIImage* playImage = [UIImage imageNamed: @"Play_iPhone.png"];
-	   [self.playPauseButton setImage:playImage forState:UIControlStateNormal];
+	   [playPauseButton setImage:playImage forState:UIControlStateNormal];
 	}
 }
 
@@ -497,7 +514,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	if (myMainloop) {
 		myMainloop->play();
 		UIImage* pauseImage = [UIImage imageNamed: @"Pause_iPhone.png"];
-		[self.playPauseButton setImage:pauseImage forState:UIControlStateNormal];
+		[playPauseButton setImage:pauseImage forState:UIControlStateNormal];
 	}
 }
 
@@ -532,14 +549,26 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	[self showHistory:(id) self];
 }
 
+- (void) willTerminate
+{
+	if (myMainloop)
+		delete myMainloop;
+    myMainloop = NULL;
+	[playerView release];
+    playerView = nil;
+	if (currentURL)
+		[currentURL release];
+    currentURL = nil;
+}
+
 - (void)dealloc {
 	AM_DBG NSLog(@"AmbulantViewController dealloc:self=0x%x", self);
     [super dealloc];
 	if (myMainloop)
 		delete myMainloop;
 	[playerView release];
-	if (playURL)
-		[playURL release];
+	if (currentURL)
+		[currentURL release];
 }
 
 @end

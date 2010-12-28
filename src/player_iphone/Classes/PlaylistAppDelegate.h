@@ -25,7 +25,7 @@
 - (IBAction) done: (id) sender;
 - (void) playlistViewControllerDidFinish: (UIViewController *)controller;
 - (void) playPresentation:(NSString*) what fromPresentationViewController:(PresentationViewController*) controller;
-- (NSString*) playURL;
+//- (NSString*) playURL;
 - (void) presentationViewControllerDidFinish: (PresentationViewController*) controller;
 - (void) setHistoryViewController: (PresentationViewController*) controller;
 - (void) settingsHaveChanged: (UIViewController*) controller;
