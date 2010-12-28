@@ -60,7 +60,6 @@ private:
 - (void)adjustAnchorPointForGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer;
 - (void) handlePanGesture:(UIPanGestureRecognizer*) sender;
 - (void) handlePinchGesture:(UIGestureRecognizer*) sender;
-- (IBAction) showHistory:(id)sender;
 - (IBAction) handleRestartTapped;
 - (IBAction) handlePlayOrPauseTapped;
 - (IBAction) playNextItem;
@@ -68,7 +67,6 @@ private:
 - (void) pause;
 - (void) play;
 - (PlaylistItem*) currentItem;
-- (void) initialize_after_crashing;
 - (void) doPlayURL: (NSString*) theUrl fromNode: (NSString*) ns_node_repr;
 - (void) showInteractionView: (BOOL) on;
 - (void) autoHideInteractionView;

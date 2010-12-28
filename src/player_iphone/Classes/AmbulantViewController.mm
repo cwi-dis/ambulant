@@ -196,6 +196,13 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	embedder = new document_embedder(self);
 	currentPresentationViewController = [delegate getPresentationView:self withIndex:0];
 	
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+	ambulant::iOSpreferences::get_preferences()->load_preferences();
+	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
+	/*AM_DBG*/ NSLog(@"AmbulantViewController viewWillAppear(0x%x)", self);
 	if (currentURL != nil) {
 		AM_DBG NSLog(@"View=%@ currentURL=%@", playerView, currentURL);
 		[self doPlayURL:nil fromNode: nil];
@@ -223,11 +230,6 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 			[self doPlayURL: startPath fromNode: startNodeRepr];
 		}
 	} 	
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-	/*AM_DBG*/ NSLog(@"AmbulantViewController viewWillAppear(0x%x)", self);
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -374,6 +376,8 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 
 - (void) playlistViewControllerDidFinish: (UIViewController *)controller {
+    // XXXJACK: seems to be a duplicate of presentationViewControllDidFinish.
+    // Even if it isn't: all the comments for that method also hold for this one.
 	
 	AM_DBG NSLog(@"playlistViewControllerDidFinish: controller=0x%x", controller);
 	[self settingsHaveChanged: controller];	
@@ -395,7 +399,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	playerView.alpha = 1.0;
 }
 
-- (IBAction) showHistory:(id)sender { //JNK
+- (IBAction) showHistory:(id)sender {
 	AM_DBG NSLog(@"AmbulantViewController showHistory:(0x%x)", self);
 	[self pause];
 	[delegate showPresentationViews: self];
@@ -406,15 +410,19 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 
 - (void) showPresentationViews:(id)sender {
+    // XXXJACK: Needed?
 	[delegate showPresentationViews:sender];
 }
 
 - (void) done: (id) sender {
+    // XXXJACK: needed?
 	AM_DBG NSLog(@"AmbulantViewController done(0x%x): sender=0x%x", self, sender);
 	[self playlistViewControllerDidFinish: (UIViewController*) sender];
 }
 
 - (void) presentationViewControllerDidFinish: (PresentationViewController *)controller {
+    // XXXJACK: some of the functionality here (ending editing) should move to the the originating
+    // controller. The rest (showing the current view) to the AppDelegate.
 	AM_DBG NSLog(@"AmbulantViewController presentationViewControllerDidFinish(0x%x): controller=0x%x", self, controller);
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	[delegate showAmbulantPlayer: (id) self];
@@ -442,6 +450,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	}
 }
 - (void) playPresentation: (NSString*) whatString fromPresentationViewController: (PresentationViewController*) controller {
+    // XXXJACK: Change interface to get PlayListItem, which has the position as well.
 	AM_DBG NSLog(@"AmbulantViewController (0x%x)", self);
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	AM_DBG NSLog(@"Selected: %@",whatString);
@@ -538,15 +547,6 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
 	AM_DBG NSLog(@"AmbulantViewController viewDidUnLoad:self=0x%x", self);
-}
-
-- (void) initialize_after_crashing {
-	AM_DBG NSLog(@"AmbulantViewController initialize_after_crashing:self=0x%x", self);
-	// We are in an unknown state. Make 'History' view visible
-//	[self handleLongPressGesture: (UIGestureRecognizer*) self];
-//	sleep(1);
-//	[self handleLongPressGesture:(UIGestureRecognizer*) self];
-	[self showHistory:(id) self];
 }
 
 - (void) willTerminate
