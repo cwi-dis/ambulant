@@ -86,7 +86,7 @@ cg_image_renderer::_cropped_image(const lib::rect& rect)
 	m_image_cropped = NULL;
 	m_rect_cropped = rect;
 	CGRect cg_rect = CGRectMake(rect.left(), rect.top(), rect.width(), rect.height());
-    /*AM_DBG*/ lib::logger::get_logger()->debug("cg_image_renderer: crop to (%d, %d, %d, %d)", rect.left(), rect.top(), rect.width(), rect.height());
+    AM_DBG lib::logger::get_logger()->debug("cg_image_renderer: crop to (%d, %d, %d, %d)", rect.left(), rect.top(), rect.width(), rect.height());
 	m_image_cropped = CGImageCreateWithImageInRect(m_image, cg_rect);
 	return m_image_cropped;
 }
@@ -186,7 +186,7 @@ cg_image_renderer::_prepare_image()
 	}
 	want_cglayer = true; // XXXJACK
 	if (want_cglayer) {
-		/*AM_DBG*/ lib::logger::get_logger()->debug("cg_image_renderer._prepare_image: create cglayer");
+		AM_DBG lib::logger::get_logger()->debug("cg_image_renderer._prepare_image: create cglayer");
 		
 		// Create the layer, initially with the same parameters as the current context.
 #ifdef WITH_UIKIT
@@ -277,7 +277,7 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 #endif
 	dstrect.translate(dest_origin);
 	cg_dstrect = [view CGRectForAmbulantRect: &dstrect];
-	/*AM_DBG*/ logger::get_logger()->debug("cg_image_renderer.redraw: draw image (ltrb) (%d, %d, %d, %d) -> (%f, %f, %f, %f)",
+	AM_DBG logger::get_logger()->debug("cg_image_renderer.redraw: draw image (ltrb) (%d, %d, %d, %d) -> (%f, %f, %f, %f)",
 		srcrect.left(), srcrect.top(), srcrect.right(), srcrect.bottom(),
 		CGRectGetMinX(cg_dstrect), CGRectGetMinY(cg_dstrect), CGRectGetMaxX(cg_dstrect), CGRectGetMaxY(cg_dstrect));
 
@@ -299,7 +299,7 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 		fullsrcrect.translate(lib::point(-srcrect.left(), -srcrect.top())); // Translate so the right topleft pixel is in place
 		fullsrcrect.translate(lib::point(dest_origin.x, dest_origin.y)); // And translated again to fit origin of the region
 		CGRect cg_fullsrcrect = CGRectMake(fullsrcrect.left(), CGRectGetMaxY(CGRectFromViewRect([view bounds]))-fullsrcrect.bottom(), fullsrcrect.width(), fullsrcrect.height());
-		/*AM_DBG*/ logger::get_logger()->debug("cg_image_renderer.redraw: draw layer to (%f, %f, %f, %f) clip (%f, %f, %f, %f) scale (%f, %f)",
+		AM_DBG logger::get_logger()->debug("cg_image_renderer.redraw: draw layer to (%f, %f, %f, %f) clip (%f, %f, %f, %f) scale (%f, %f)",
 			CGRectGetMinX(cg_fullsrcrect), CGRectGetMinY(cg_fullsrcrect), CGRectGetMaxX(cg_fullsrcrect), CGRectGetMaxY(cg_fullsrcrect),
 			CGRectGetMinX(cg_dstrect), CGRectGetMinY(cg_dstrect), CGRectGetMaxX(cg_dstrect), CGRectGetMaxY(cg_dstrect),
 			x_scale, y_scale);
