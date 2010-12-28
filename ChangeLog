@@ -1,3 +1,10 @@
+2010-12-27 12:02  jackjansen
+
+	* Changed code for remembering the last node played (for restarting
+	  on application restart) to something much simpler, but kept the
+	  old code in there, for the time being.  Also, zero out the last
+	  node played when the presentation ends.
+
 2010-12-23 17:17  keesblom
 
 	* Removed some junk code and fixed some leaks
