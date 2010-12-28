@@ -50,7 +50,6 @@ private:
 	BOOL autoCenter;
 	BOOL autoResize;
 	BOOL nativeRenderer;
-	BOOL play_active;
 }
 - (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation) interfaceOrientation;
 - (BOOL) isSupportedOrientation: (UIDeviceOrientation) orientation;

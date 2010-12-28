@@ -315,7 +315,6 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	AM_DBG NSLog(@"AmbulantViewController showSettings(0x%x)", self);
 	
 	if (myMainloop != NULL) {
-		play_active = myMainloop->is_play_active();
 		myMainloop->pause();
 	}
 	SettingsViewController *controller = [[SettingsViewController alloc]
@@ -383,9 +382,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	[self settingsHaveChanged: controller];	
 	[delegate showAmbulantPlayer: (id) self];
 	if (myMainloop != NULL) {
-		if (play_active) {
-			[self play];
-		}
+        [self play];
 		ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 		UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
 		[playerView adaptDisplayAfterRotation: orientation withAutoCenter: prefs->m_auto_center withAutoResize: prefs->m_auto_resize];
@@ -511,7 +508,6 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 - (void) pause {
 	AM_DBG NSLog(@"AmbulantViewController pause(0x%x)", self);
 	if (myMainloop) {
-		play_active = myMainloop->is_play_active();
 		myMainloop->pause();
 		UIImage* playImage = [UIImage imageNamed: @"Play_iPhone.png"];
 	   [playPauseButton setImage:playImage forState:UIControlStateNormal];
