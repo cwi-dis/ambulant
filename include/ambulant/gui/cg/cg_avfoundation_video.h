@@ -60,19 +60,21 @@
 @property (nonatomic, retain) id timeObserver;
 @property (nonatomic, retain) NSURL* mNSURL;
 
+// initialize AVPlayer with 'url' and call 'fun' on endOfData with 'parent' as its argument 
 - (CGVideoAVPlayerManager *)initWithURL:(NSURL*)url parent: (void*)arg endOfData: (void*(*)(void*))fun;
-- (void) set_clip_begin:(Float64) begin_time end: (Float64) end_time;
+// set 'beginTime' and 'endTime' for the media to be played
+- (void) setClipBegin:(Float64) beginTime end: (Float64) endTime;
+// return the current AVPlayer
 - (AVPlayer*) mAVPlayer;
+// (re)start playing
 - (void) play;
+// pause playing
 - (void) pause;
-- (void) dealloc;
-				  
-//- (void)setPositionWanted: (ambulant::net::timestamp_t)begintime;
-//- (QTMovie *)movie;
-//- (void)movieWithURL: (NSURL*)url;
-//- (void)moviePrepare: (id)sender;
-//- (void)movieStart: (id)sender;
-//- (void)movieRelease: (id)sender;
+// remove the 'layer' from the 'uiview' that was associated with the player and release
+// callable from main thread only
+- (void) removeLayer: (CALayer*) layer fromView: (UIView*) uiview;
+// private
+// - (void) dealloc;
 @end
 //#endif//__OBJC__
 										  
@@ -116,15 +118,28 @@ class cg_avfoundation_video_renderer :
 	void start_outtransition(const lib::transition_info *info) {}
 private:
 	static void* eod_reached(void* arg);
-	// control values: the action triggered for redraw() executing from main thread is controlled by these values 
-	enum { rs_created, rs_inited, rs_prerolled, rs_started, rs_paused, rs_stopping, rs_stopped, rs_fullstopped, rs_error_state } m_renderer_state;
-	net::url m_url;						// The URL of the movie we play
-	AVPlayerLayer* m_avplayer_layer;	// The AVPlayerLayer where video is displayed
-	CALayer* m_superlayer;				// The CALayer to which m_avplayer_layer is added
-	UIView* m_avplayer_view;			// The view for the avplayer
-	size m_srcsize;						// size of this view
-	CGVideoAVPlayerManager *m_avplayer_manager;	// The helper ObjC class to control the players using observers
-	bool m_stopped;						// Flag indicating whether its layer is added on the layer stack
+	// state values control stages of operation
+	enum {
+		rs_unknown		= 0x0000,	// sanity check
+		rs_created		= 0x0001,	// set in constructor, valid in 'initialize_with_node': basic initialization
+		rs_initialized	= 0x0002,	// set in 'initialize_with_node', valid in 'start': full initialization
+		rs_prerolled	= 0x0004,	// unused: prefetch not supported
+		rs_playing		= 0x0008,	// set in 'start', play', valid in 'redraw', 'play', 'pause', 'stop', 'full_stop', destructor: plays
+		rs_paused		= 0x0010,	// set in 'pause', valid in 'redraw', 'play', 'pause', 'start', 'stop', 'full_stop', destructor 
+		rs_stopping		= 0x0020,	// set in 'stop', valid in 'redraw', 'full_stop', destructor: is paused, wants to stop
+		rs_stopped		= 0x0040,	// set in 'redraw', valid in 'full_stop', destructor: is stopped, wants full stop
+		rs_fullstopped	= 0x0080,	// set in 'full_stop', valid in destructor: avplayer is removed from screen and released
+		rs_error_state	= 0x0100,	// may be set in all members, valid in all members: disables all operations, no error recovery.
+
+	} m_renderer_state;
+
+	net::url m_url;					// The URL of the media we play
+	AVPlayerLayer* m_avplayer_layer;// The AVPlayerLayer where media is displayed
+	CALayer* m_superlayer;			// The CALayer to which m_avplayer_layer is added
+	UIView* m_avplayer_view;		// The view for the avplayer
+	size m_srcsize;					// size of this view
+	CGVideoAVPlayerManager *m_avplayer_manager;	// The helper ObjC class to control AVPlayer using observers
+	bool m_visible;					// Flag indicating whether the player layer is added on the layer stack
 	net::timestamp_t m_previous_clip_position; // Where we are officially positioned
 #ifdef WITH_CLOCK_SYNC
 	lib::timer::signed_time_type m_video_epoch;    // Ambulant clock value corresponding to video clock 0.
