@@ -1,3 +1,28 @@
+2010-12-29 00:15  jackjansen
+
+	* When the player view comes forward we _always_ start playing
+
+2010-12-29 00:10  jackjansen
+
+	* Removed some dead wood, commented on some other methods
+
+2010-12-28 23:47  jackjansen
+
+	* Preparing for a better startup scheme (where we initialize only
+	  the things we need).
+
+	  Step 1 - get rid of most properties in favor of a method-based
+	  scheme for the AmbulantViewController. May have broken some
+	  things, to be fixed later.
+
+	  Additionally, we record the fact that we have finished viewing
+	  the whole presentation (so we don't restart on next application
+	  launch at the very last beat of the app).
+
+2010-12-28 23:45  jackjansen
+
+	* Got rid of debug.
+
 2010-12-27 12:02  jackjansen
 
 	* Changed code for remembering the last node played (for restarting
