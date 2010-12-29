@@ -20,12 +20,13 @@
 }
 - (void) openWebLink: (NSString*) url;
 
-- (void) document_stopped: (NSObject*) obj;
-- (PresentationViewController*) getPresentationView: (void*) id withIndex: (NSUInteger) index; 
+- (void) document_stopped: (id) sender;
+- (PresentationViewController*) getPresentationViewWithIndex: (NSUInteger) index; 
 - (void) showAlert: (NSString*) msgtype;
-- (void) showAmbulantPlayer: (void*) id;
-- (void) showPresentationView: (void*) id withIndex: (NSUInteger) index; 
-- (void) showPresentationViews: (void*) id;
+- (void) showAmbulantPlayer: (id) sender;
+- (void) showPresentationViewWithIndex: (NSUInteger) index; 
+- (void) showPresentationViews: (id) sender;
+- (void) playWelcome: (id)sender;
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet UITabBarController* tabBarController;

@@ -88,6 +88,11 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 */
 
+- (bool) canPlay
+{
+    return myMainloop != NULL;
+}
+
 // create a new instance of the smil player
 - (void) doPlayURL: (NSString*) theUrl fromNode: (NSString*) ns_node_repr {
     if (theUrl) {
@@ -99,7 +104,13 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		myMainloop->stop();
 		delete myMainloop;
         
-	}		
+	}
+    if (!playerView) {
+        (void)self.view; // This loads the view
+    }
+    assert(currentURL);
+    assert(playerView);
+    assert(embedder);	
 	myMainloop = new mainloop([currentURL UTF8String], playerView, embedder);	
 	if (myMainloop) {
 		if (ns_node_repr != NULL) {
@@ -131,26 +142,30 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
     interactionView.opaque = false;
 }
 
-	
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-// - install gesture recognizers
-- (void) viewDidLoad {
-	AM_DBG NSLog(@"AmbulantViewController viewDidLoad(0x%x)", self);
-    [super viewDidLoad];
+
+- (void) awakeFromNib
+{
+    AM_DBG NSLog(@"AmbulantViewController viewDidLoad(0x%x)", self);
 
 	// prepare to react when device is rotated
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 	[[NSNotificationCenter defaultCenter]
-	 addObserver:self
-	 selector:@selector(orientationChanged:)
-	 name:UIDeviceOrientationDidChangeNotification
-	 object: nil];
+        addObserver:self
+        selector:@selector(orientationChanged:)
+        name:UIDeviceOrientationDidChangeNotification
+        object: nil];
 	ambulant::iOSpreferences::get_preferences()->load_preferences();
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	autoCenter = prefs->m_auto_center;
 	autoResize = prefs->m_auto_resize;
 	nativeRenderer = ! prefs->m_prefer_ffmpeg;
 	
+	embedder = new document_embedder(self);
+}
+
+- (void) initGestures
+{
+    assert(playerView);
 	// prepare to react on "tap" gesture (select object in playerView with 1 finger tap)
 	UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]
 										  initWithTarget:self action:@selector(handleTapGesture:)];
@@ -164,72 +179,37 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	[playerView addGestureRecognizer:doubleTapGesture];
     [doubleTapGesture release];
 	
+	
+	// prepare to react on "longPress" gesture (hold finger in one spot, longer than 0.4 sec.)
+    UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc]
+													  initWithTarget:self action:@selector(handleLongPressGesture:)];
+    [playerView addGestureRecognizer:longPressGesture];
+    [longPressGesture release];
+
 	// prepare to react on "pinch" gesture (zoom playerView with 2 fingers)
 	UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc]
 											  initWithTarget:self action:@selector(handlePinchGesture:)];
 	[playerView addGestureRecognizer:pinchGesture];
     [pinchGesture release];
+
 	// prepare to react on "pan" gesture (move playerView with one finger)
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]
 										  initWithTarget:self action:@selector(handlePanGesture:)];
     [playerView addGestureRecognizer:panGesture];
     [panGesture release];
-	
-/*	swipe doesn't work well with pan
-	// prepare to react on "swipe" gesture (move finger in one direction continuously)
-    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc]
-													  initWithTarget:self action:@selector(handleLongPressGesture:)];
-	swipeGesture.direction = (UISwipeGestureRecognizerDirection)
-							(UISwipeGestureRecognizerDirectionRight | UISwipeGestureRecognizerDirectionLeft
-							  | UISwipeGestureRecognizerDirectionUp | UISwipeGestureRecognizerDirectionDown);
-    [playerView addGestureRecognizer:swipeGesture];
-    [swipeGesture release];
-*/	
-	// prepare to react on "longPress" gesture (hold finger in one spot, longer than 0.4 sec.)
-    UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc]
-													  initWithTarget:self action:@selector(handleLongPressGesture:)];
-	//	longPressGesture.direction = (UIlongPressGestureRecognizerDirectionRight | UIlongPressGestureRecognizerDirectionLeft
-	//							  | UIlongPressGestureRecognizerDirectionUp | UIlongPressGestureRecognizerDirectionDown);
-    [playerView addGestureRecognizer:longPressGesture];
-    [longPressGesture release];
-	
-	embedder = new document_embedder(self);
-	currentPresentationViewController = [delegate getPresentationView:self withIndex:0];
-	
+}
+
+// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
+// - install gesture recognizers
+- (void) viewDidLoad {
+	AM_DBG NSLog(@"AmbulantViewController viewDidLoad(0x%x)", self);
+    [super viewDidLoad];
+    [self initGestures];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
-	ambulant::iOSpreferences::get_preferences()->load_preferences();
-	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	/*AM_DBG*/ NSLog(@"AmbulantViewController viewWillAppear(0x%x)", self);
-	if (currentURL != nil) {
-		AM_DBG NSLog(@"View=%@ currentURL=%@", playerView, currentURL);
-		[self doPlayURL:nil fromNode: nil];
-	} else {
-		// launched by user
-		NSString *startPath = NULL;
-		NSString *startNodeRepr = NULL;
-		if (prefs->m_normal_exit) {
-			// restart where left
-			PlaylistItem* last_item = prefs->m_history != NULL ? prefs->m_history->get_last_item() : NULL;
-			startPath = last_item != NULL ? [[last_item ns_url] absoluteString] : NULL;
-			startNodeRepr = last_item != NULL ? [last_item ns_last_node_repr] : NULL;		
-		}
-		if (startPath == NULL) {
-			// No History, start default presentation
-			NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
-			startPath = [thisBundle pathForResource:@"Welcome" ofType:@"smil"];
-		}
-		AM_DBG NSLog (@"startPath=%@, startNodeRepr%@", startPath, startNodeRepr);
-		if (startPath != NULL) {
-			// turn on crash recovery
-			prefs->m_normal_exit = false; 
-			prefs->save_preferences();
-			AM_DBG NSLog(@"view %@ responds %d", playerView, [playerView respondsToSelector: @selector(isAmbulantWindowInUse)]);
-			[self doPlayURL: startPath fromNode: startNodeRepr];
-		}
-	} 	
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -338,14 +318,14 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 - (IBAction) addFavorites:(id)sender
 {
 	AM_DBG NSLog(@"AmbulantViewController addFavorites(0x%x)", sender);
-	PresentationViewController* favoritesVC = [ delegate getPresentationView: self withIndex: 1];	
+	PresentationViewController* favoritesVC = [ delegate getPresentationViewWithIndex: 1];	
 #ifdef	FIRST_ITEM
 	[favoritesVC insertCurrentItemAtIndexPath: [ NSIndexPath indexPathForRow:FIRST_ITEM inSection: 0 ]];
 #else //FIRST_ITEM
 	[favoritesVC insertCurrentItemAtIndexPath: [ NSIndexPath indexPathForRow:0 inSection: 0 ]];
 #endif//FIRST_ITEM
 #ifdef XXXJACK_IS_UNSURE
-	[delegate showPresentationView: self withIndex: 1];
+	[delegate showPresentationViewWithIndex: 1];
 #endif
 }
 

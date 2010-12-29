@@ -177,20 +177,16 @@ application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictio
 	
 	// Install ambulant logger
 	initialize_logger();
-//    viewController.view.alpha = 0.0;
-//    viewController.view.hidden = true;
-    [window addSubview:viewController.view];
-	tabBarController.view.alpha = 0.0;
-	tabBarController.view.hidden = true;
-	[window addSubview:tabBarController.view];
-    [window makeKeyAndVisible];
+    // XXXJACK: what we want to do here is initialize the views (so they can interact) but not
+    // add them yet, so the more expensive initializations can be done later, when needed. Need to
+    // work out how to do that.
 
     return YES;
 }
 
 - (void)
 //application:(UIApplication *)application 
-showAmbulantPlayer: (void*) id
+showAmbulantPlayer: (id)sender
 {
 	[ UIView animateWithDuration: 1.0 animations: ^
 	 {
@@ -203,7 +199,7 @@ showAmbulantPlayer: (void*) id
 
 - (void)
 //application:(UIApplication *)application 
-showPresentationViews:(void *)id
+showPresentationViews: (id)sender
 {
 	[viewController pause];
 	[ UIView animateWithDuration: 1.0 animations: ^
@@ -215,20 +211,20 @@ showPresentationViews:(void *)id
 }
 
 - (PresentationViewController*)
-getPresentationView: (void*) id withIndex: (NSUInteger) index
+getPresentationViewWithIndex: (NSUInteger) index
 {
 	return (PresentationViewController*) [tabBarController.viewControllers objectAtIndex: index];
 }
 
 - (void)
-showPresentationView: (void*) id withIndex: (NSUInteger) index
+showPresentationViewWithIndex: (NSUInteger) index
 {
 	tabBarController.selectedIndex = 1;
-	[self showPresentationViews: id];
+	[self showPresentationViews: self];
 }
 
 - (void)
-document_stopped: (NSObject*) obj
+document_stopped: (id) sender
 {
 	[viewController pause]; // to activate the 'Play" button
 }	
@@ -247,6 +243,20 @@ isValid: (NSURL*) url {
 	/* Validate the given 'url'
 	 */
 	return YES;
+}
+
+- (void) playWelcome: (id)sender
+{
+    NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
+    assert(thisBundle);
+    NSString *startPath = [thisBundle pathForResource:@"Welcome" ofType:@"smil"];
+    if (startPath == NULL) {
+        ambulant::lib::logger::get_logger()->error("Document Welcome.smil missing from application bundle");
+        return;
+    }
+    NSURL *startURL = [NSURL fileURLWithPath: startPath];
+    assert(viewController);
+    [viewController doPlayURL: [startURL absoluteString] fromNode: nil];
 }
 
 //XX need to use: application:openURL:sourceApplication:annotation: {}
@@ -328,26 +338,47 @@ applicationWillEnterForeground:(UIApplication *)application {
 
 - (void)
 applicationDidBecomeActive:(UIApplication *)application {
-#ifdef JNK
-    /*
-     Restart any tasks that were paused (or not yet started) while the application was inactive. 
-	 If the application was previously in the background, optionally refresh the user interface.
-     */
-	/*AM_DBG*/ ambulant::lib::logger::get_logger()->trace(@"AmbulantAppDelegate applicationDidBecomeActive");
-/* AmulantIOS is not a restartable app. */
-//XXXX TBD: restore state
-//	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
-	if (viewController != NULL && viewController.myMainloop != NULL) {
-		//	viewController.myMainloop->restart(true);
-		if ( ! viewController.myMainloop->is_play_active()) {
-			viewController.myMainloop->play();
+    // We are finally becoming active. There are a few possible cases:
+    // 1. Our player view already has a document (presumably throughOpenURL). Play it.
+    // 2. No document in the player view, and Welcome.smil never seen. Show it.
+    // 3. The most recent history item was unfinished, and we didn't crash on
+    //    the previous run. Show it.
+    // 4. Otherwise we show the history.
+    // XXX To be implemented.
+    bool showPlayer = [viewController canPlay];
+
+    if (!showPlayer) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        if ( ![defaults boolForKey: @"welcomeDocumentSeen"] ) {
+            [self playWelcome: self];
+            [defaults setBool: YES forKey: @"welcomeDocumentSeen"];
+            showPlayer = [viewController canPlay];
+        }
+    }
+    if (!showPlayer) {
+        ambulant::iOSpreferences::get_preferences()->load_preferences();
+        ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
+		if (prefs->m_normal_exit) {
+			// restart where left
+			PlaylistItem* last_item = prefs->m_history != NULL ? prefs->m_history->get_last_item() : NULL;
+			NSString *startPath = last_item != NULL ? [[last_item ns_url] absoluteString] : NULL;
+			NSString *startNodeRepr = last_item != NULL ? [last_item ns_last_node_repr] : NULL;
+            if (startPath && startNodeRepr) {
+                [viewController doPlayURL: startPath fromNode: startNodeRepr];
+            }
 		}
-	} else {
-		if (viewController != NULL && self.viewController.playURL != NULL) {
-			[self.viewController doPlayURL:NULL]; //[prefs->m_history.last_item() m_ns_noder_repr];
-		}
-	}
-#endif
+        showPlayer = [viewController canPlay];
+    }
+       
+    // XXXJACK: Don't add views we don't directly need.
+    if (showPlayer) {
+        [window addSubview:tabBarController.view];
+        [window addSubview:viewController.view];
+    } else {
+        [window addSubview:viewController.view];
+        [window addSubview:tabBarController.view];
+    }
+    [window makeKeyAndVisible];
 }
 
 - (void)

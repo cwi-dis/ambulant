@@ -40,6 +40,7 @@
 }
 
 - (IBAction) playWelcome {
+    // XXXJACK send to app delegate
 	[self.delegate playPresentation:@"Welcome" fromPresentationViewController: NULL];
 }
 

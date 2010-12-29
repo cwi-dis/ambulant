@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0409070C12CB9375007B9D84 /* Welcome.smil in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D4212B80C2A00161EB5 /* Welcome.smil */; };
 		041E94CC12B816EE00399893 /* Entitlements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 041E94CB12B816EE00399893 /* Entitlements.plist */; };
 		041E94EF12B81AC200399893 /* libambulantIPhone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75D9612B80D1300161EB5 /* libambulantIPhone.a */; };
 		041E94FD12B81CCF00399893 /* libBasicUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E94FC12B81CCF00399893 /* libBasicUsageEnvironment.a */; };
@@ -57,7 +58,6 @@
 		04B75D3312B80C0400161EB5 /* AmbulantViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D1C12B80C0400161EB5 /* AmbulantViewController.xib */; };
 		04B75D3412B80C0400161EB5 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D1D12B80C0400161EB5 /* Icon.png */; };
 		04B75D4312B80C2A00161EB5 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D3812B80C2A00161EB5 /* data */; };
-		04B75D4412B80C2A00161EB5 /* Welcome.smil in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D4212B80C2A00161EB5 /* Welcome.smil */; };
 		04B75D4812B80C4900161EB5 /* mainloop.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75D4512B80C4900161EB5 /* mainloop.mm */; };
 		04B75D4912B80C4900161EB5 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75D4712B80C4900161EB5 /* main.mm */; };
 		04B75DE112B80EED00161EB5 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B75DE012B80EED00161EB5 /* OpenGLES.framework */; };
@@ -524,10 +524,10 @@
 				04B75D3312B80C0400161EB5 /* AmbulantViewController.xib in Resources */,
 				04B75D3412B80C0400161EB5 /* Icon.png in Resources */,
 				04B75D4312B80C2A00161EB5 /* data in Resources */,
-				04B75D4412B80C2A00161EB5 /* Welcome.smil in Resources */,
 				041E94CC12B816EE00399893 /* Entitlements.plist in Resources */,
 				0483912212BEC681002260A6 /* ITunesArtwork in Resources */,
 				0473F42D12C10289004F23C4 /* Default.png in Resources */,
+				0409070C12CB9375007B9D84 /* Welcome.smil in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

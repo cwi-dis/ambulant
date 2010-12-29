@@ -51,6 +51,8 @@ private:
 	BOOL autoResize;
 	BOOL nativeRenderer;
 }
+- (void) initGestures;
+- (bool) canPlay;
 - (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation) interfaceOrientation;
 - (BOOL) isSupportedOrientation: (UIDeviceOrientation) orientation;
 - (void) handleDoubleTapGesture:(UITapGestureRecognizer*) sender;
