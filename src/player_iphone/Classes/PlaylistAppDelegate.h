@@ -11,6 +11,9 @@
 @class PresentationViewController;
 
 @protocol PlaylistViewControllerDelegate
+@property(readonly) BOOL autoCenter;
+@property(readonly) BOOL autoResize;
+@property(readonly) BOOL nativeRenderer;
 - (void) auxViewControllerDidFinish: (UIViewController *)controller;
 - (void) playPresentation:(NSString*) what fromPresentationViewController:(PresentationViewController*) controller;
 - (void) auxViewControllerDidFinish: (PresentationViewController*) controller;

@@ -44,9 +44,6 @@ class document_embedder : public ambulant::common::embedder {
 	IBOutlet UIButton* playPauseButton;
 	NSString* currentURL;      // The document that is currently playing (or will play shortly)
 	UIDeviceOrientation currentOrientation; // Current orientation of playback window
-	BOOL autoCenter;
-	BOOL autoResize;
-	BOOL nativeRenderer;
 }
 
 // Lifecycle
@@ -90,9 +87,5 @@ class document_embedder : public ambulant::common::embedder {
 // Notifications from other views, etc.
 - (void) settingsHaveChanged;
 - (void) didReceiveMemoryWarning;
-
-@property(readonly) BOOL autoCenter;
-@property(readonly) BOOL autoResize;
-@property(readonly) BOOL nativeRenderer;
 
 @end

@@ -11,15 +11,14 @@
 
 @implementation SettingsViewController
 
-@synthesize delegate, autoCenterSwitch, autoResizeSwitch, nativeRendererSwitch;
+//@synthesize delegate, autoCenterSwitch, autoResizeSwitch, nativeRendererSwitch;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
 	// initialize to values taken from AmbulantView
-	AmbulantViewController* AmVC = (AmbulantViewController*)delegate;
-	autoCenterSwitch.on = AmVC.autoCenter;
-	autoResizeSwitch.on = AmVC.autoResize;
-	nativeRendererSwitch.on = AmVC.nativeRenderer;	
+	autoCenterSwitch.on = delegate.autoCenter;
+	autoResizeSwitch.on = delegate.autoResize;
+	nativeRendererSwitch.on = delegate.nativeRenderer;	
 }
 
 - (BOOL) autoCenter {
@@ -35,13 +34,13 @@
 }
 
 - (IBAction) done:(id)sender {
-	[self.delegate settingsHaveChanged:self];
-	[self.delegate auxViewControllerDidFinish:self];	
+	[delegate settingsHaveChanged:self];
+	[delegate auxViewControllerDidFinish:self];	
 }
 
 - (IBAction) playWelcome {
     // XXXJACK send to app delegate
-	[self.delegate playPresentation:@"Welcome" fromPresentationViewController: NULL];
+	[delegate playPresentation:@"Welcome" fromPresentationViewController: NULL];
 }
 
 - (BOOL) shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation) interfaceOrientation {

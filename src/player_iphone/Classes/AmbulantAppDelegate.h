@@ -19,8 +19,15 @@
     IBOutlet AmbulantViewController *viewController;
     PresentationViewController *history;
     PresentationViewController *currentPVC;    // Either history or favorites
-//JNK    AmbulantWebViewController *webViewController;
+
+	BOOL autoCenter;
+	BOOL autoResize;
+	BOOL nativeRenderer;
 }
+
+@property(readonly) BOOL autoCenter;
+@property(readonly) BOOL autoResize;
+@property(readonly) BOOL nativeRenderer;
 
 - (BOOL) application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
 - (void) applicationWillResignActive:(UIApplication *)application;

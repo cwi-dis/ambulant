@@ -111,6 +111,9 @@ initialize_logger()
 
 @implementation AmbulantAppDelegate
 
+@synthesize autoCenter;
+@synthesize autoResize;
+@synthesize nativeRenderer;
 
 #pragma mark -
 #pragma mark Application lifecycle
@@ -129,9 +132,13 @@ application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictio
 	
 	// Install ambulant logger
 	initialize_logger();
-    // XXXJACK: what we want to do here is initialize the views (so they can interact) but not
-    // add them yet, so the more expensive initializations can be done later, when needed. Need to
-    // work out how to do that.
+
+    // Setup preferences that are important for UI
+	ambulant::iOSpreferences::get_preferences()->load_preferences();
+	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
+	autoCenter = prefs->m_auto_center;
+	autoResize = prefs->m_auto_resize;
+	nativeRenderer = ! prefs->m_prefer_ffmpeg;
 
     return YES;
 }
@@ -402,9 +409,9 @@ document_stopped: (id) sender
 		return;
 	}
 	// get the values entered by the user
-	BOOL autoCenter = [controller autoCenter];
-	BOOL autoResize = [controller autoResize];
-	BOOL nativeRenderer = [controller nativeRenderer];
+	autoCenter = [controller autoCenter];
+	autoResize = [controller autoResize];
+	nativeRenderer = [controller nativeRenderer];
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	prefs->m_auto_center = autoCenter;
 	prefs->m_auto_resize = autoResize;

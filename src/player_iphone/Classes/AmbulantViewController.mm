@@ -53,10 +53,6 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 @implementation AmbulantViewController
 
-@synthesize autoCenter;
-@synthesize autoResize;
-@synthesize nativeRenderer;
-
 #pragma mark -
 #pragma mark Lifecycle
 
@@ -71,11 +67,6 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
         selector:@selector(orientationChanged:)
         name:UIDeviceOrientationDidChangeNotification
         object: nil];
-	ambulant::iOSpreferences::get_preferences()->load_preferences();
-	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
-	autoCenter = prefs->m_auto_center;
-	autoResize = prefs->m_auto_resize;
-	nativeRenderer = ! prefs->m_prefer_ffmpeg;
 	
 	embedder = new document_embedder(self);
 }
@@ -391,13 +382,8 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 - (void)settingsHaveChanged
 {
-	ambulant::iOSpreferences::get_preferences()->load_preferences();
-	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
-	autoCenter = prefs->m_auto_center;
-	autoResize = prefs->m_auto_resize;
-	nativeRenderer = ! prefs->m_prefer_ffmpeg;
 	if (myMainloop) {
-		if (nativeRenderer) {
+		if (delegate.nativeRenderer) {
 			myMainloop->get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererAVFoundation"));   
 		} else {
 			myMainloop->get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererOpen"));
