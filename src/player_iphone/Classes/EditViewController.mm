@@ -17,8 +17,6 @@
 
 @implementation EditViewController
 
-@synthesize delegate, textField;
-
 /*
 // The designated initializer. Override to perform setup that is required before the view is loaded.
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -47,9 +45,9 @@ viewDidLoad
     // Is there a good reason to initialize the URL field with the URL of the
     // currently playing presentation? Unsure... If there is we need to re-instate
     // that interface
-	NSString* url = [self.delegate playURL];
+	NSString* url = [delegate playURL];
 	if (url != NULL) {
-		self.textField.text = [NSString stringWithString: url];
+		textField.text = [NSString stringWithString: url];
 	}
 #endif
 //	[pool release];
@@ -67,11 +65,11 @@ shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientat
 done:(id)sender
 {
 	AM_DBG NSLog(@"EditViewController done(0x%x)", self);
-    NSString *theUrl = self.textField.text;
+    NSString *theUrl = textField.text;
     if ([theUrl hasPrefix: @"ambulant:"])
         theUrl = [theUrl substringFromIndex: 9];
 	
-	[self.delegate playPresentation:theUrl fromPresentationViewController: NULL];
+	[delegate playPresentation:theUrl fromPresentationViewController: NULL];
 	[self cancel: sender];
 }
 
@@ -80,14 +78,14 @@ cancel:(id)sender
 {
 	AM_DBG NSLog(@"EditViewController done(0x%x)", self);
 	[textField resignFirstResponder];
-	[self.delegate auxViewControllerDidFinish:self];
+	[delegate auxViewControllerDidFinish:self];
 }
 
 // From UITextFieldDelegate
 - (BOOL)
-textFieldShouldReturn:(UITextField*) textField {
-	AM_DBG NSLog(@"EditViewController viewDidLoad(0x%x): %@", self, self.textField.text);
-	[self.textField resignFirstResponder];
+textFieldShouldReturn:(UITextField*) sender {
+	AM_DBG NSLog(@"EditViewController viewDidLoad(0x%x): %@", self, textField.text);
+	[textField resignFirstResponder];
 	return YES;
 }
 

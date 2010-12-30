@@ -44,7 +44,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	}
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSString *str_url = [NSString stringWithUTF8String: newdoc.get_url().c_str()];
-	AmbulantAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+	id appDelegate = [[UIApplication sharedApplication] delegate];
 	[appDelegate performSelectorOnMainThread: @selector(openWebLink:)
 							   withObject: str_url	waitUntilDone: NO];
 	

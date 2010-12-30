@@ -45,10 +45,4 @@
 - (NSArray*) get_playlist;
 - (void) updatePlaylist;
 - (BOOL) isFavorites;
-
-
-@property(nonatomic, assign) id <PlaylistViewControllerDelegate> delegate;
-@property(nonatomic, assign) UITableViewCellEditingStyle editingStyle;
-@property(nonatomic, retain) IBOutlet UITableViewCell* nibLoadedCell;
-@property(nonatomic, retain) NSMutableArray* presentationsArray;
 @end

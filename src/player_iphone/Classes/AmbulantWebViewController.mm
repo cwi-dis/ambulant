@@ -11,8 +11,6 @@
 
 @implementation AmbulantWebViewController
 
-@synthesize urlField, webView, delegate;
-
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -62,12 +60,12 @@
 	if (webView.canGoBack) {
 		[webView goBack];
 	} else {
-		[self.delegate auxViewControllerDidFinish:self];
+		[delegate auxViewControllerDidFinish:self];
 	}
 }
 
 - (IBAction) handleDoneTapped {
-	[ self.delegate auxViewControllerDidFinish: self];
+	[delegate auxViewControllerDidFinish: self];
 //	[self dismissModalViewControllerAnimated:YES];
 }
 

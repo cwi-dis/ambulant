@@ -14,9 +14,6 @@
 #endif
 
 @implementation PresentationViewController
-
-@synthesize delegate, editingStyle, nibLoadedCell, presentationsArray;
-
 /*
 // The designated initializer. Override to perform setup that is required before the view is loaded.
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -77,7 +74,7 @@ isFavorites {
 	isFavorites = favorites;
 	currentIndex = -1; //XXXX should ths be saved in properties ??
 	if ( !isFavorites) {
-		[self.delegate setHistoryViewController: self];
+		[delegate setHistoryViewController: self];
 	}
 }
 
@@ -100,7 +97,7 @@ isFavorites {
 - (IBAction) done:(id)sender
 {
 	AM_DBG NSLog(@"PresentationViewController done(0x%x)", self);
-	[self.delegate auxViewControllerDidFinish:self];
+	[delegate auxViewControllerDidFinish:self];
 }
 
 // Overriden to allow orientations other than the default portrait orientation.
@@ -190,7 +187,7 @@ tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexP
 	}
 #endif//FIRST_ITEM
 	PlaylistItem* selectedItem = [playlist objectAtIndex: playlistIndex];
-	[self.delegate playPresentation:[[selectedItem ns_url] absoluteString] fromPresentationViewController: self];
+	[delegate playPresentation:[[selectedItem ns_url] absoluteString] fromPresentationViewController: self];
 }
 
 // Support conditional editing of the table view.
@@ -290,11 +287,11 @@ toggleEditMode
 		}
 		playlist->insert_item_at_index(new_item, playlistIndex);
 		newPresentation = [self getPresentationFromPlaylistItem: new_item];
-		if (playlistIndex < 0 || [self.presentationsArray count] == 0) {
-			[self.presentationsArray addObject: newPresentation] ;
+		if (playlistIndex < 0 || [presentationsArray count] == 0) {
+			[presentationsArray addObject: newPresentation] ;
 			[self.tableView reloadData];
 		} else {
-			[self.presentationsArray insertObject: newPresentation atIndex: indexPath.row ];
+			[presentationsArray insertObject: newPresentation atIndex: indexPath.row ];
 			NSIndexPath* updatedPath = [ NSIndexPath indexPathForRow:indexPath.row inSection: 0 ];
 			NSLog(@"updatedPath.row=%d",updatedPath.row);
 			NSMutableArray* updatedPaths = [ [NSMutableArray alloc] init ];
@@ -351,7 +348,7 @@ selectNextPresentation
 		playlistIndex = currentIndex = [playlist count] - 1;
 	}
 	PlaylistItem* selectedItem = [playlist objectAtIndex: playlistIndex];
-	[self.delegate playPresentation:[[selectedItem ns_url] absoluteString] fromPresentationViewController: self];
+	[delegate playPresentation:[[selectedItem ns_url] absoluteString] fromPresentationViewController: self];
 }
 	
 - (void)

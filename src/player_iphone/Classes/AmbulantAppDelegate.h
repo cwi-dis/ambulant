@@ -9,32 +9,45 @@
 #import <UIKit/UIKit.h>
 //JNK #import "AmbulantWebViewController.h"
 #import "PresentationViewController.h"
+#import "SettingsViewController.h"
 
 @class AmbulantViewController;
 
 @interface AmbulantAppDelegate : NSObject <UIApplicationDelegate, PlaylistViewControllerDelegate> {
-    UIWindow *window;
+    IBOutlet UIWindow *window;
 	IBOutlet UITabBarController* tabBarController;
-    AmbulantViewController *viewController;
+    IBOutlet AmbulantViewController *viewController;
     PresentationViewController *history;
     PresentationViewController *currentPVC;    // Either history or favorites
 //JNK    AmbulantWebViewController *webViewController;
 }
-- (void) openWebLink: (NSString*) url;
 
-- (void) document_stopped: (id) sender;
-- (PresentationViewController*) getPresentationViewWithIndex: (NSUInteger) index; 
-- (void) showAlert: (NSString*) msgtype;
-- (void) showAmbulantPlayer: (id) sender;
+- (BOOL) application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
+- (void) applicationWillResignActive:(UIApplication *)application;
+- (BOOL) isValid: (NSURL*) url;
+- (BOOL) application:(UIApplication* ) application handleOpenURL: (NSURL*) url;
+- (void) applicationWillEnterForeground:(UIApplication *)application;
+- (void) applicationDidBecomeActive:(UIApplication *)application;
+- (void) applicationDidEnterBackground:(UIApplication *)application;
+- (void) applicationWillTerminate:(UIApplication *)application;
+
+- (void) showAmbulantPlayer: (id)sender;
+- (void) showPresentationViews: (id)sender;
 - (void) showPresentationViewWithIndex: (NSUInteger) index; 
-- (void) showPresentationViews: (id) sender;
+- (void) openWebLink: (NSString*) url;
 - (void) playWelcome: (id)sender;
-- (void) selectNextPresentation;
 
-@property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic, retain) IBOutlet UITabBarController* tabBarController;
-@property (nonatomic, retain) IBOutlet AmbulantViewController *viewController;
-//JNK @property (nonatomic, retain) IBOutlet AmbulantWebViewController* webViewController;
+- (void) showAlert: (NSString*) msgtype;
+- (PresentationViewController*) getPresentationViewWithIndex: (NSUInteger) index; 
+- (void) document_stopped: (id) sender;
+- (void) settingsHaveChanged:(SettingsViewController *)controller;
+- (void) auxViewControllerDidFinish: (UIViewController *)controller;
+- (void) setHistoryViewController:(PresentationViewController *)controller;
+- (void) selectNextPresentation;
+- (void) playPresentation: (NSString*) whatString fromPresentationViewController: (PresentationViewController*) controller;
+
+- (void) applicationDidReceiveMemoryWarning:(UIApplication *)application;
+- (void) dealloc;
 @end
 #ifdef GLOB_DBG
 extern char* DBG[];

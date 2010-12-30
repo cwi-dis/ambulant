@@ -42,7 +42,6 @@ class document_embedder : public ambulant::common::embedder {
 	IBOutlet UIView* interactionView;
 	IBOutlet AmbulantAppDelegate* delegate; // Our higher-level controller
 	IBOutlet UIButton* playPauseButton;
-    IBOutlet UITabBar* modeBar; // XXXJACK is this used?
 	NSString* currentURL;      // The document that is currently playing (or will play shortly)
 	UIDeviceOrientation currentOrientation; // Current orientation of playback window
 	BOOL autoCenter;

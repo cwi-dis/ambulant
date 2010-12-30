@@ -18,8 +18,4 @@
 - (IBAction) handleBackTapped;
 - (IBAction) handleDoneTapped;
 
-@property (nonatomic, retain) UIWebView* webView;
-@property (nonatomic, retain) NSString* urlField;
-@property (nonatomic, retain) id <PlaylistViewControllerDelegate> delegate;
-
 @end

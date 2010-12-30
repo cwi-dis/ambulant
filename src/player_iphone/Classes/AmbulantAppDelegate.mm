@@ -31,6 +31,9 @@ char* DBG[80]; int DBGi = 0;
 #include "iOSpreferences.h"
 #include <fstream>
 
+#pragma mark -
+#pragma mark Logger and messages
+
 #ifndef NDEBUG
 #define WITH_CONSOLE_LOGGING
 #ifdef WITH_CONSOLE_LOGGING
@@ -108,60 +111,9 @@ initialize_logger()
 
 @implementation AmbulantAppDelegate
 
-@synthesize window;
-@synthesize tabBarController;
-@synthesize viewController;
-//JNK @synthesize webViewController;
-
 
 #pragma mark -
 #pragma mark Application lifecycle
-
-- (void)
-showAlert: (NSString*) message {
-	NSString* title_ = @"Ambulant";
-	NSString* _detail;
-
-	if (message == nil) _detail = @"";
-	else _detail = message;
-	UIAlertView *alert =
-	[[UIAlertView alloc] initWithTitle: title_
-							   message: _detail
-							  delegate:nil	
-					 cancelButtonTitle:@"OK"
-					 otherButtonTitles:nil];
-	[alert show];
-	[alert release];
-}
-
-- (void)
-openWebLink: (NSString*) url {
-	AM_DBG NSLog(@"AmbulantAppDelegate openWebLink: %@", url);
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	[viewController pause];
-#ifdef JNK
-	webViewController = [[AmbulantWebViewController alloc]
-	 initWithNibName: @"AmbulantWebView"
-			  bundle: nil];
-	webViewController.urlField = url;
-	[window addSubview:webViewController.view];
-	webViewController.modalTransitionStyle = 
-	UIModalTransitionStyleFlipHorizontal;
-	
-	[viewController presentModalViewController: webViewController animated: YES];
-	
-//	[[viewController navigationController] pushViewController:
-//	 webViewController animated:YES];
-	[webViewController release];
-#endif//JNK
-	if (url != NULL) {
-		NSURL* nsurl = [NSURL URLWithString: url];
-		if ([[UIApplication sharedApplication] canOpenURL: nsurl]) {
-			[[UIApplication sharedApplication] openURL: nsurl];
-		}
-	}
-	[pool release];
-}
 
 - (BOOL)
 application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -184,46 +136,7 @@ application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictio
     return YES;
 }
 
-- (void) showAmbulantPlayer: (id)sender
-{
-	[ UIView animateWithDuration: 1.0 animations: ^
-	 {
-		 tabBarController.view.hidden = true;
-		 tabBarController.view.alpha = 0.0;
-		 viewController.view.alpha = 1.0;
-	 } ];
-	[viewController play];
-}
 
-- (void) showPresentationViews: (id)sender
-{
-	[viewController pause];
-	[ UIView animateWithDuration: 1.0 animations: ^
-	 {
-		 tabBarController.view.hidden = false;
-		 tabBarController.view.alpha = 1.0;
-		 viewController.view.alpha = 0.0;
-	 } ];
-}
-
-- (PresentationViewController*)
-getPresentationViewWithIndex: (NSUInteger) index
-{
-	return (PresentationViewController*) [tabBarController.viewControllers objectAtIndex: index];
-}
-
-- (void)
-showPresentationViewWithIndex: (NSUInteger) index
-{
-	tabBarController.selectedIndex = index;
-	[self showPresentationViews: self];
-}
-
-- (void)
-document_stopped: (id) sender
-{
-	[viewController pause]; // to activate the 'Play" button
-}	
 - (void)
 applicationWillResignActive:(UIApplication *)application {
     /*
@@ -239,20 +152,6 @@ isValid: (NSURL*) url {
 	/* Validate the given 'url'
 	 */
 	return YES;
-}
-
-- (void) playWelcome: (id)sender
-{
-    NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
-    assert(thisBundle);
-    NSString *startPath = [thisBundle pathForResource:@"Welcome" ofType:@"smil"];
-    if (startPath == NULL) {
-        ambulant::lib::logger::get_logger()->error("Document Welcome.smil missing from application bundle");
-        return;
-    }
-    NSURL *startURL = [NSURL fileURLWithPath: startPath];
-    assert(viewController);
-    [viewController doPlayURL: [startURL absoluteString] fromNode: nil];
 }
 
 //XX need to use: application:openURL:sourceApplication:annotation: {}
@@ -290,24 +189,6 @@ application:(UIApplication* ) application handleOpenURL: (NSURL*) url {
 	}
 	return validated;
 }
-
-- (void)
-applicationDidEnterBackground:(UIApplication *)application {
-    /*
-     Use this method to release shared resources, save user data, invalidate timers,
-	 and store enough application state information to restore your application to its current state
-	 in case it is terminated later. 
-     If your application supports background execution, called instead of applicationWillTerminate:
-	 when the user quits.
-     */
-	AM_DBG NSLog(@"AmbulantAppDelegate applicationDidEnterBackground");
-	// save current state
-	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
-	prefs->save_preferences();
-	if (viewController) [viewController pause];
-	
-}
-
 
 - (void)
 applicationWillEnterForeground:(UIApplication *)application {
@@ -378,6 +259,24 @@ applicationDidBecomeActive:(UIApplication *)application {
 }
 
 - (void)
+applicationDidEnterBackground:(UIApplication *)application {
+    /*
+     Use this method to release shared resources, save user data, invalidate timers,
+	 and store enough application state information to restore your application to its current state
+	 in case it is terminated later. 
+     If your application supports background execution, called instead of applicationWillTerminate:
+	 when the user quits.
+     */
+	AM_DBG NSLog(@"AmbulantAppDelegate applicationDidEnterBackground");
+	// save current state
+	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
+	prefs->save_preferences();
+	if (viewController) [viewController pause];
+	
+}
+
+
+- (void)
 applicationWillTerminate:(UIApplication *)application {
     /*
      Called when the application is about to terminate.
@@ -390,27 +289,111 @@ applicationWillTerminate:(UIApplication *)application {
 
 
 #pragma mark -
-#pragma mark Memory management
-
-- (void)
-applicationDidReceiveMemoryWarning:(UIApplication *)application {
-    /*
-     Free up as much memory as possible by purging cached data objects that can be recreated (or reloaded from disk) later.
-     */
-	AM_DBG NSLog(@"AmbulantAppDelegate applicationDidReceiveMemoryWarning");
-	if (viewController) [viewController pause];
-	ambulant::lib::logger::get_logger()->error("Memory low, try reboot iPhone");
+#pragma mark Showing views
+- (void) showAmbulantPlayer: (id)sender
+{
+	[ UIView animateWithDuration: 1.0 animations: ^
+	 {
+		 tabBarController.view.hidden = true;
+		 tabBarController.view.alpha = 0.0;
+		 viewController.view.alpha = 1.0;
+	 } ];
+	[viewController play];
 }
 
-
-- (void)
-dealloc {
-	AM_DBG NSLog(@"AmbulantAppDelegate dealloc");
-    [viewController release];	
-    [window release];
-    [super dealloc];
+- (void) showPresentationViews: (id)sender
+{
+	[viewController pause];
+	[ UIView animateWithDuration: 1.0 animations: ^
+	 {
+		 tabBarController.view.hidden = false;
+		 tabBarController.view.alpha = 1.0;
+		 viewController.view.alpha = 0.0;
+	 } ];
 }
 
+- (void)
+showPresentationViewWithIndex: (NSUInteger) index
+{
+	tabBarController.selectedIndex = index;
+	[self showPresentationViews: self];
+}
+
+- (void)
+openWebLink: (NSString*) url {
+	AM_DBG NSLog(@"AmbulantAppDelegate openWebLink: %@", url);
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	[viewController pause];
+#ifdef JNK
+	webViewController = [[AmbulantWebViewController alloc]
+	 initWithNibName: @"AmbulantWebView"
+			  bundle: nil];
+	webViewController.urlField = url;
+	[window addSubview:webViewController.view];
+	webViewController.modalTransitionStyle = 
+	UIModalTransitionStyleFlipHorizontal;
+	
+	[viewController presentModalViewController: webViewController animated: YES];
+	
+//	[[viewController navigationController] pushViewController:
+//	 webViewController animated:YES];
+	[webViewController release];
+#endif//JNK
+	if (url != NULL) {
+		NSURL* nsurl = [NSURL URLWithString: url];
+		if ([[UIApplication sharedApplication] canOpenURL: nsurl]) {
+			[[UIApplication sharedApplication] openURL: nsurl];
+		}
+	}
+	[pool release];
+}
+
+- (void) playWelcome: (id)sender
+{
+    NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
+    assert(thisBundle);
+    NSString *startPath = [thisBundle pathForResource:@"Welcome" ofType:@"smil"];
+    if (startPath == NULL) {
+        ambulant::lib::logger::get_logger()->error("Document Welcome.smil missing from application bundle");
+        return;
+    }
+    NSURL *startURL = [NSURL fileURLWithPath: startPath];
+    assert(viewController);
+    [viewController doPlayURL: [startURL absoluteString] fromNode: nil];
+}
+
+#pragma mark -
+#pragma mark Messages and inter-view services
+
+
+- (void)
+showAlert: (NSString*) message {
+	NSString* title_ = @"Ambulant";
+	NSString* _detail;
+
+	if (message == nil) _detail = @"";
+	else _detail = message;
+	UIAlertView *alert =
+	[[UIAlertView alloc] initWithTitle: title_
+							   message: _detail
+							  delegate:nil	
+					 cancelButtonTitle:@"OK"
+					 otherButtonTitles:nil];
+	[alert show];
+	[alert release];
+}
+
+- (PresentationViewController*)
+getPresentationViewWithIndex: (NSUInteger) index
+{
+	return (PresentationViewController*) [tabBarController.viewControllers objectAtIndex: index];
+}
+
+- (void)
+document_stopped: (id) sender
+{
+	[viewController pause]; // to activate the 'Play" button
+}
 
 - (void) settingsHaveChanged:(SettingsViewController *)controller {
 	AM_DBG NSLog(@"AmbulantViewController showSettings(0x%x)", self);
@@ -463,6 +446,29 @@ dealloc {
         [self showAmbulantPlayer: self];
         [history updatePlaylist];
     }
+}
+
+
+#pragma mark -
+#pragma mark Memory management
+
+- (void)
+applicationDidReceiveMemoryWarning:(UIApplication *)application {
+    /*
+     Free up as much memory as possible by purging cached data objects that can be recreated (or reloaded from disk) later.
+     */
+	AM_DBG NSLog(@"AmbulantAppDelegate applicationDidReceiveMemoryWarning");
+	if (viewController) [viewController pause];
+	ambulant::lib::logger::get_logger()->error("Memory low, try reboot iPhone");
+}
+
+
+- (void)
+dealloc {
+	AM_DBG NSLog(@"AmbulantAppDelegate dealloc");
+    [viewController release];	
+    [window release];
+    [super dealloc];
 }
 
 
