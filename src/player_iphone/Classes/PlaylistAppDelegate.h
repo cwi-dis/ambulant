@@ -8,18 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@class AmbulantViewController;
 @class PresentationViewController;
-
-@interface PlaylistAppDelegate : NSObject <UIApplicationDelegate> {
-    UIWindow *window;
-    AmbulantViewController *ambulantViewController;
-}
-
-@property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic, retain) IBOutlet AmbulantViewController *ambulantViewController;
-
-@end
 
 @protocol PlaylistViewControllerDelegate
 - (void) auxViewControllerDidFinish: (UIViewController *)controller;
