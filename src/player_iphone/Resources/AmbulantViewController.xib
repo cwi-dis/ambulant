@@ -258,15 +258,6 @@
 					<int key="connectionID">25</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchEventConnection" key="connection">
-						<string key="label">addFavorites:</string>
-						<reference key="source" ref="531566247"/>
-						<reference key="destination" ref="372490531"/>
-						<int key="IBEventType">7</int>
-					</object>
-					<int key="connectionID">60</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">playPauseButton</string>
 						<reference key="source" ref="372490531"/>
@@ -276,39 +267,48 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
-						<string key="label">handlePlayOrPauseTapped</string>
-						<reference key="source" ref="715918203"/>
-						<reference key="destination" ref="372490531"/>
-						<int key="IBEventType">7</int>
-					</object>
-					<int key="connectionID">62</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchEventConnection" key="connection">
-						<string key="label">handleRestartTapped</string>
-						<reference key="source" ref="915482674"/>
-						<reference key="destination" ref="372490531"/>
-						<int key="IBEventType">7</int>
-					</object>
-					<int key="connectionID">64</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchEventConnection" key="connection">
-						<string key="label">showHistory:</string>
+						<string key="label">doPlaylists:</string>
 						<reference key="source" ref="677293511"/>
 						<reference key="destination" ref="372490531"/>
 						<int key="IBEventType">7</int>
 					</object>
-					<int key="connectionID">65</int>
+					<int key="connectionID">71</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
-						<string key="label">playNextItem</string>
+						<string key="label">doAddFavorite:</string>
+						<reference key="source" ref="531566247"/>
+						<reference key="destination" ref="372490531"/>
+						<int key="IBEventType">7</int>
+					</object>
+					<int key="connectionID">72</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">doPlayOrPauseTapped:</string>
+						<reference key="source" ref="715918203"/>
+						<reference key="destination" ref="372490531"/>
+						<int key="IBEventType">7</int>
+					</object>
+					<int key="connectionID">73</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">doNextItem:</string>
 						<reference key="source" ref="350933121"/>
 						<reference key="destination" ref="372490531"/>
 						<int key="IBEventType">7</int>
 					</object>
-					<int key="connectionID">66</int>
+					<int key="connectionID">74</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">doRestartTapped:</string>
+						<reference key="source" ref="915482674"/>
+						<reference key="destination" ref="372490531"/>
+						<int key="IBEventType">7</int>
+					</object>
+					<int key="connectionID">75</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -476,7 +476,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">66</int>
+			<int key="maxID">75</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -484,6 +484,52 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">AmbulantAppDelegate</string>
 					<string key="superclassName">NSObject</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>document_stopped:</string>
+							<string>playWelcome:</string>
+							<string>showAmbulantPlayer:</string>
+							<string>showPresentationViews:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>document_stopped:</string>
+							<string>playWelcome:</string>
+							<string>showAmbulantPlayer:</string>
+							<string>showPresentationViews:</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<object class="IBActionInfo">
+								<string key="name">document_stopped:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">playWelcome:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">showAmbulantPlayer:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">showPresentationViews:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+						</object>
+					</object>
 					<object class="NSMutableDictionary" key="outlets">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
@@ -525,15 +571,7 @@
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">Classes/AmbulantAppDelegate.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">AmbulantView</string>
-					<string key="superclassName">NSView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">../../include/ambulant/gui/cocoa/cocoa_gui.h</string>
+						<string key="minorKey">../../src/player_iphone/Classes/AmbulantAppDelegate.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -543,50 +581,66 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>addFavorites:</string>
+							<string>doAddFavorite:</string>
+							<string>doNextItem:</string>
+							<string>doPlayOrPauseTapped:</string>
+							<string>doPlaylists:</string>
+							<string>doRestartTapped:</string>
 							<string>handleDoubleTapGesture:</string>
 							<string>handleLongPressGesture:</string>
 							<string>handlePanGesture:</string>
 							<string>handlePinchGesture:</string>
-							<string>handlePlayOrPauseTapped</string>
-							<string>handleRestartTapped</string>
 							<string>handleTapGesture:</string>
-							<string>playNextItem</string>
-							<string>showHistory:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
 							<string>id</string>
 							<string>UITapGestureRecognizer</string>
 							<string>UILongPressGestureRecognizer</string>
 							<string>UIPanGestureRecognizer</string>
 							<string>UIGestureRecognizer</string>
-							<string>id</string>
-							<string>id</string>
 							<string>UITapGestureRecognizer</string>
-							<string>id</string>
-							<string>id</string>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="actionInfosByName">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>addFavorites:</string>
+							<string>doAddFavorite:</string>
+							<string>doNextItem:</string>
+							<string>doPlayOrPauseTapped:</string>
+							<string>doPlaylists:</string>
+							<string>doRestartTapped:</string>
 							<string>handleDoubleTapGesture:</string>
 							<string>handleLongPressGesture:</string>
 							<string>handlePanGesture:</string>
 							<string>handlePinchGesture:</string>
-							<string>handlePlayOrPauseTapped</string>
-							<string>handleRestartTapped</string>
 							<string>handleTapGesture:</string>
-							<string>playNextItem</string>
-							<string>showHistory:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBActionInfo">
-								<string key="name">addFavorites:</string>
+								<string key="name">doAddFavorite:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">doNextItem:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">doPlayOrPauseTapped:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">doPlaylists:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">doRestartTapped:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
@@ -606,24 +660,8 @@
 								<string key="candidateClassName">UIGestureRecognizer</string>
 							</object>
 							<object class="IBActionInfo">
-								<string key="name">handlePlayOrPauseTapped</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">handleRestartTapped</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
 								<string key="name">handleTapGesture:</string>
 								<string key="candidateClassName">UITapGestureRecognizer</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">playNextItem</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">showHistory:</string>
-								<string key="candidateClassName">id</string>
 							</object>
 						</object>
 					</object>
@@ -689,7 +727,7 @@
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">Classes/AmbulantViewController.h</string>
+						<string key="minorKey">../../src/player_iphone/Classes/AmbulantViewController.h</string>
 					</object>
 				</object>
 			</object>

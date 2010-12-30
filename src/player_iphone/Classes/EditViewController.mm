@@ -80,7 +80,7 @@ cancel:(id)sender
 {
 	AM_DBG NSLog(@"EditViewController done(0x%x)", self);
 	[textField resignFirstResponder];
-	[self.delegate playlistViewControllerDidFinish:self];
+	[self.delegate auxViewControllerDidFinish:self];
 }
 
 // From UITextFieldDelegate

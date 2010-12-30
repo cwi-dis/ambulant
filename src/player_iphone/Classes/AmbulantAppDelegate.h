@@ -12,10 +12,12 @@
 
 @class AmbulantViewController;
 
-@interface AmbulantAppDelegate : NSObject <UIApplicationDelegate> {
+@interface AmbulantAppDelegate : NSObject <UIApplicationDelegate, PlaylistViewControllerDelegate> {
     UIWindow *window;
 	IBOutlet UITabBarController* tabBarController;
     AmbulantViewController *viewController;
+    PresentationViewController *history;
+    PresentationViewController *currentPVC;    // Either history or favorites
 //JNK    AmbulantWebViewController *webViewController;
 }
 - (void) openWebLink: (NSString*) url;
@@ -27,6 +29,7 @@
 - (void) showPresentationViewWithIndex: (NSUInteger) index; 
 - (void) showPresentationViews: (id) sender;
 - (void) playWelcome: (id)sender;
+- (void) selectNextPresentation;
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet UITabBarController* tabBarController;

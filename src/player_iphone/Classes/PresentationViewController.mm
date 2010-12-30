@@ -76,7 +76,7 @@ isFavorites {
 	BOOL favorites = [self.title isEqualToString:@"Favorites"];
 	isFavorites = favorites;
 	currentIndex = -1; //XXXX should ths be saved in properties ??
-	if ( ! isFavorites) {
+	if ( !isFavorites) {
 		[self.delegate setHistoryViewController: self];
 	}
 }
@@ -100,8 +100,7 @@ isFavorites {
 - (IBAction) done:(id)sender
 {
 	AM_DBG NSLog(@"PresentationViewController done(0x%x)", self);
-	[self.delegate presentationViewControllerDidFinish:self];
-//	[self.delegate done:self];
+	[self.delegate auxViewControllerDidFinish:self];
 }
 
 // Overriden to allow orientations other than the default portrait orientation.

@@ -62,12 +62,12 @@
 	if (webView.canGoBack) {
 		[webView goBack];
 	} else {
-		[self.delegate playlistViewControllerDidFinish:self];
+		[self.delegate auxViewControllerDidFinish:self];
 	}
 }
 
 - (IBAction) handleDoneTapped {
-	[ self.delegate playlistViewControllerDidFinish: self];
+	[ self.delegate auxViewControllerDidFinish: self];
 //	[self dismissModalViewControllerAnimated:YES];
 }
 

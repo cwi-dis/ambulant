@@ -36,7 +36,7 @@
 
 - (IBAction) done:(id)sender {
 	[self.delegate settingsHaveChanged:self];
-	[self.delegate playlistViewControllerDidFinish:self];	
+	[self.delegate auxViewControllerDidFinish:self];	
 }
 
 - (IBAction) playWelcome {

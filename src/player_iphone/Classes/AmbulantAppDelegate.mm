@@ -69,11 +69,11 @@ show_message(int level, const char *format)
 	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSString *message = [[NSString stringWithUTF8String: format] retain];
-	AmbulantAppDelegate *delegate = [[UIApplication sharedApplication] delegate];
+	id appDelegate = [[UIApplication sharedApplication] delegate];
 	
 	// do not repeat the same error succesively
 	if (old_message == NULL || ! [old_message isEqualToString:message]) {
-		[delegate performSelectorOnMainThread: @selector(showAlert:)
+		[appDelegate performSelectorOnMainThread: @selector(showAlert:)
 								   withObject: message
 								waitUntilDone: NO];
 		if (old_message != NULL) {
@@ -184,9 +184,7 @@ application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictio
     return YES;
 }
 
-- (void)
-//application:(UIApplication *)application 
-showAmbulantPlayer: (id)sender
+- (void) showAmbulantPlayer: (id)sender
 {
 	[ UIView animateWithDuration: 1.0 animations: ^
 	 {
@@ -197,9 +195,7 @@ showAmbulantPlayer: (id)sender
 	[viewController play];
 }
 
-- (void)
-//application:(UIApplication *)application 
-showPresentationViews: (id)sender
+- (void) showPresentationViews: (id)sender
 {
 	[viewController pause];
 	[ UIView animateWithDuration: 1.0 animations: ^
@@ -219,7 +215,7 @@ getPresentationViewWithIndex: (NSUInteger) index
 - (void)
 showPresentationViewWithIndex: (NSUInteger) index
 {
-	tabBarController.selectedIndex = 1;
+	tabBarController.selectedIndex = index;
 	[self showPresentationViews: self];
 }
 
@@ -413,6 +409,60 @@ dealloc {
     [viewController release];	
     [window release];
     [super dealloc];
+}
+
+
+- (void) settingsHaveChanged:(SettingsViewController *)controller {
+	AM_DBG NSLog(@"AmbulantViewController showSettings(0x%x)", self);
+	// check we have the settings view
+	if (controller.view.tag != 40) {
+		return;
+	}
+	// get the values entered by the user
+	BOOL autoCenter = [controller autoCenter];
+	BOOL autoResize = [controller autoResize];
+	BOOL nativeRenderer = [controller nativeRenderer];
+	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
+	prefs->m_auto_center = autoCenter;
+	prefs->m_auto_resize = autoResize;
+	prefs->m_prefer_ffmpeg = ! nativeRenderer;
+	prefs->save_preferences();
+    if (viewController) {
+        [viewController settingsHaveChanged];
+    }
+}
+
+- (void) auxViewControllerDidFinish: (UIViewController *)controller {
+    // XXXJACK: seems to be a duplicate of presentationViewControllDidFinish.
+    // Even if it isn't: all the comments for that method also hold for this one.
+	
+	AM_DBG NSLog(@"auxViewControllerDidFinish: controller=0x%x", controller);
+    // XXX Needed?[viewController orientationChanged: nil];
+	[self showAmbulantPlayer: self];
+    [viewController play];
+}
+
+- (void) setHistoryViewController:(PresentationViewController *)controller
+{
+	AM_DBG NSLog(@"AmbulantViewController setHistoryViewController(0x%x) controller=0x%x", self, controller);
+    history = controller;
+}
+
+- (void) selectNextPresentation
+{
+    if (currentPVC) [currentPVC selectNextPresentation];
+}
+
+- (void) playPresentation: (NSString*) whatString fromPresentationViewController: (PresentationViewController*) controller {
+    // XXXJACK: Change interface to get PlayListItem, which has the position as well.
+	AM_DBG NSLog(@"AmbulantViewController (0x%x)", self);
+	AM_DBG NSLog(@"Selected: %@",whatString);
+	currentPVC = controller;
+    [viewController doPlayURL: whatString fromNode: nil];
+    if ([viewController canPlay]) {
+        [self showAmbulantPlayer: self];
+        [history updatePlaylist];
+    }
 }
 
 
