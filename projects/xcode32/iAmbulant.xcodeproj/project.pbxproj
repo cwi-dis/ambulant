@@ -26,6 +26,7 @@
 		041E951712B81D1000399893 /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950D12B81D1000399893 /* libxml2.a */; };
 		041E954912B825F200399893 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E954812B825F200399893 /* libbz2.dylib */; };
 		041E954D12B8260C00399893 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E954C12B8260C00399893 /* libz.dylib */; };
+		044BAF6D12CD4C3E00EDBF56 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 044BAF6C12CD4C3E00EDBF56 /* MainWindow-iPad.xib */; };
 		0473F42D12C10289004F23C4 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 0473F42C12C10289004F23C4 /* Default.png */; };
 		0483912212BEC681002260A6 /* ITunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 0483912112BEC681002260A6 /* ITunesArtwork */; };
 		04B75CFD12B80B9800161EB5 /* EditViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75CEC12B80B9800161EB5 /* EditViewController.mm */; };
@@ -140,6 +141,7 @@
 		041E950D12B81D1000399893 /* libxml2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxml2.a; path = "../../build-iOS/third_party_packages/installed/lib/libxml2.a"; sourceTree = SOURCE_ROOT; };
 		041E954812B825F200399893 /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = usr/lib/libbz2.dylib; sourceTree = SDKROOT; };
 		041E954C12B8260C00399893 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		044BAF6C12CD4C3E00EDBF56 /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "../../src/player_iphone/Resources/MainWindow-iPad.xib"; sourceTree = SOURCE_ROOT; };
 		0473F42C12C10289004F23C4 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = ../../src/player_iphone/Default.png; sourceTree = SOURCE_ROOT; };
 		0483912112BEC681002260A6 /* ITunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; name = ITunesArtwork; path = ../../src/player_iphone/ITunesArtwork; sourceTree = SOURCE_ROOT; };
 		04B75CEC12B80B9800161EB5 /* EditViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = EditViewController.mm; path = ../../src/player_iphone/Classes/EditViewController.mm; sourceTree = SOURCE_ROOT; };
@@ -240,6 +242,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		044D9A3912CD4B4600FD9EA2 /* Resources-iPad */ = {
+			isa = PBXGroup;
+			children = (
+				044BAF6C12CD4C3E00EDBF56 /* MainWindow-iPad.xib */,
+			);
+			name = "Resources-iPad";
+			sourceTree = "<group>";
+		};
 		04B75D5C12B80C8300161EB5 /* Configuration Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -340,6 +350,7 @@
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				044D9A3912CD4B4600FD9EA2 /* Resources-iPad */,
 				04B75DA512B80E5E00161EB5 /* third_party_packages */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				04B75E6A12B8106900161EB5 /* QuartzCore.framework */,
@@ -528,6 +539,7 @@
 				0483912212BEC681002260A6 /* ITunesArtwork in Resources */,
 				0473F42D12C10289004F23C4 /* Default.png in Resources */,
 				0409070C12CB9375007B9D84 /* Welcome.smil in Resources */,
+				044BAF6D12CD4C3E00EDBF56 /* MainWindow-iPad.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -618,6 +630,8 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
 				PRODUCT_NAME = iAmbulant;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Distribution;
@@ -654,6 +668,8 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
 				PRODUCT_NAME = iAmbulant;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -687,6 +703,8 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "iAmbulant-Info.plist";
 				PRODUCT_NAME = iAmbulant;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

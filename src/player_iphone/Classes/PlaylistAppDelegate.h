@@ -13,7 +13,6 @@
 @protocol PlaylistViewControllerDelegate
 - (void) auxViewControllerDidFinish: (UIViewController *)controller;
 - (void) playPresentation:(NSString*) what fromPresentationViewController:(PresentationViewController*) controller;
-//- (NSString*) playURL;
 - (void) auxViewControllerDidFinish: (PresentationViewController*) controller;
 - (void) setHistoryViewController: (PresentationViewController*) controller;
 - (void) settingsHaveChanged: (UIViewController*) controller;
