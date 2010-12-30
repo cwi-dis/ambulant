@@ -1,3 +1,19 @@
+2010-12-29 18:02  jackjansen
+
+	* Next step in modifying startup sequence. Lots of initializations
+	  are done in awakeFromNib. Additionally, the document to play (or
+	  view to show) is determined in applicationDidBecomeActive. This
+	  has the advantage that any HandleOpenURL call has happened, so we
+	  don't open multiple documents in this case.
+
+	  What still remains to be done is have the view controllers
+	  communicate through the app delegate.
+
+2010-12-29 17:50  keesblom
+
+	* Revised stopping/destruction of cg_avfoundation (removal of the
+	  player_layer)
+
 2010-12-29 00:15  jackjansen
 
 	* When the player view comes forward we _always_ start playing
