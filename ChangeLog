@@ -1,3 +1,27 @@
+2010-12-31 00:38  jackjansen
+
+	* Forgot to fix prefs view. Also moved three preference properties
+	  to app delegate
+
+2010-12-31 00:28  jackjansen
+
+	* Baby steps for iPad port
+
+2010-12-31 00:01  jackjansen
+
+	* Got rid of dead code
+
+2010-12-30 23:59  jackjansen
+
+	* Got rid of most properties
+
+2010-12-30 23:04  jackjansen
+
+	* Next step in grand restructuring: most communication between the
+	  views now goes via the AmbulantAppDelegate. This should enable
+	  (later) to use completely different implementations of a view,
+	  because the internals are no longer known to other views.
+
 2010-12-29 18:02  jackjansen
 
 	* Next step in modifying startup sequence. Lots of initializations
