@@ -49,7 +49,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBUIImageView" id="527232619">
 								<reference key="NSNextResponder" ref="1006509784"/>
-								<int key="NSvFlags">278</int>
+								<int key="NSvFlags">260</int>
 								<string key="NSFrameSize">{57, 57}</string>
 								<reference key="NSSuperview" ref="1006509784"/>
 								<bool key="IBUIClipsSubviews">YES</bool>
@@ -63,7 +63,7 @@
 							</object>
 							<object class="IBUILabel" id="763834353">
 								<reference key="NSNextResponder" ref="1006509784"/>
-								<int key="NSvFlags">278</int>
+								<int key="NSvFlags">290</int>
 								<string key="NSFrame">{{62, 4}, {195, 31}}</string>
 								<reference key="NSSuperview" ref="1006509784"/>
 								<bool key="IBUIOpaque">NO</bool>
@@ -88,7 +88,7 @@
 							</object>
 							<object class="IBUILabel" id="1001044352">
 								<reference key="NSNextResponder" ref="1006509784"/>
-								<int key="NSvFlags">292</int>
+								<int key="NSvFlags">289</int>
 								<string key="NSFrame">{{260, 4}, {57, 27}}</string>
 								<reference key="NSSuperview" ref="1006509784"/>
 								<bool key="IBUIOpaque">NO</bool>
@@ -112,7 +112,7 @@
 							</object>
 							<object class="IBUILabel" id="1046103899">
 								<reference key="NSNextResponder" ref="1006509784"/>
-								<int key="NSvFlags">278</int>
+								<int key="NSvFlags">266</int>
 								<string key="NSFrame">{{60, 30}, {260, 27}}</string>
 								<reference key="NSSuperview" ref="1006509784"/>
 								<bool key="IBUIOpaque">NO</bool>
@@ -138,7 +138,7 @@
 							</object>
 							<object class="IBUIImageView" id="407694328">
 								<reference key="NSNextResponder" ref="1006509784"/>
-								<int key="NSvFlags">292</int>
+								<int key="NSvFlags">258</int>
 								<string key="NSFrame">{{-40, 59}, {360, 2}}</string>
 								<reference key="NSSuperview" ref="1006509784"/>
 								<float key="IBUIAlpha">0.20000000298023224</float>
@@ -151,7 +151,7 @@
 								</object>
 							</object>
 						</object>
-						<string key="NSFrameSize">{320, 60}</string>
+						<string key="NSFrameSize">{320, 59}</string>
 						<reference key="NSSuperview" ref="361040697"/>
 						<object class="NSColor" key="IBUIBackgroundColor">
 							<int key="NSColorSpace">3</int>
@@ -164,7 +164,7 @@
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 					</object>
 				</object>
-				<string key="NSFrameSize">{320, 60}</string>
+				<string key="NSFrameSize">{320, 59}</string>
 				<reference key="NSSuperview"/>
 				<object class="NSColor" key="IBUIBackgroundColor">
 					<int key="NSColorSpace">1</int>
@@ -274,7 +274,7 @@
 					<string>PresentationViewController</string>
 					<string>UIResponder</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<string>{{960, 1096}, {320, 60}}</string>
+					<string>{{909, 808}, {320, 59}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -339,40 +339,19 @@
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="outlets">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>delegate</string>
-							<string>nibLoadedCell</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
-							<string>UITableViewCell</string>
-						</object>
+						<string key="NS.key.0">delegate</string>
+						<string key="NS.object.0">id</string>
 					</object>
 					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>delegate</string>
-							<string>nibLoadedCell</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="IBToOneOutletInfo">
-								<string key="name">delegate</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">nibLoadedCell</string>
-								<string key="candidateClassName">UITableViewCell</string>
-							</object>
+						<string key="NS.key.0">delegate</string>
+						<object class="IBToOneOutletInfo" key="NS.object.0">
+							<string key="name">delegate</string>
+							<string key="candidateClassName">id</string>
 						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">Classes/PresentationViewController.h</string>
+						<string key="minorKey">../../src/player_iphone/Classes/PresentationViewController.h</string>
 					</object>
 				</object>
 			</object>
@@ -611,7 +590,7 @@
 			<integer value="3000" key="NS.object.0"/>
 		</object>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
-		<string key="IBDocument.LastKnownRelativeProjectPath">../player_iphone.xcodeproj</string>
+		<string key="IBDocument.LastKnownRelativeProjectPath">../../../projects/xcode32/iAmbulant.xcodeproj</string>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
 			<string key="NS.key.0">line.png</string>
