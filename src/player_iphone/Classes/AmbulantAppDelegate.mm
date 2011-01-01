@@ -139,7 +139,12 @@ application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictio
 	autoCenter = prefs->m_auto_center;
 	autoResize = prefs->m_auto_resize;
 	nativeRenderer = ! prefs->m_prefer_ffmpeg;
-
+	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+	[[NSNotificationCenter defaultCenter]
+        addObserver:self
+        selector:@selector(orientationChanged:)
+        name:UIDeviceOrientationDidChangeNotification
+        object: nil];
     return YES;
 }
 
@@ -455,6 +460,14 @@ document_stopped: (id) sender
     }
 }
 
+- (void) orientationChanged:(NSNotification *)notification {
+    [window setNeedsLayout];
+}
+
+- (BOOL) canShowRotatedUIViews
+{
+    return UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+}
 
 #pragma mark -
 #pragma mark Memory management

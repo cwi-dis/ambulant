@@ -21,4 +21,5 @@
 - (void) settingsHaveChanged: (UIViewController*) controller;
 - (void) showAmbulantPlayer: (id) sender;
 - (void) showPresentationViews: (id) sender;
+- (BOOL) canShowRotatedUIViews;
 @end

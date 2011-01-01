@@ -52,6 +52,7 @@
 - (void) setHistoryViewController:(PresentationViewController *)controller;
 - (void) selectNextPresentation;
 - (void) playPresentation: (NSString*) whatString fromPresentationViewController: (PresentationViewController*) controller;
+- (BOOL) canShowRotatedUIViews;
 
 - (void) applicationDidReceiveMemoryWarning:(UIApplication *)application;
 - (void) dealloc;

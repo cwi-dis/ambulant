@@ -44,7 +44,7 @@
 }
 
 - (BOOL) shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation) interfaceOrientation {
-	return YES;
+	return [delegate canShowRotatedUIViews];
 }
 
 - (void)didReceiveMemoryWarning {
