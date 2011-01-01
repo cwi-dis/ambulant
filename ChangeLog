@@ -1,3 +1,12 @@
+2010-12-31 14:45  jackjansen
+
+	* More iPad tweaks
+
+2010-12-31 14:39  jackjansen
+
+	* Fixed positioning and such so it looks good on both iPhone and
+	  iPad
+
 2010-12-31 00:38  jackjansen
 
 	* Forgot to fix prefs view. Also moved three preference properties
