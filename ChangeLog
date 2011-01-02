@@ -1,3 +1,8 @@
+2011-01-02 00:07  jackjansen
+
+	* Allow rotation of aux views on iPad, not on iPhone. Unfortunately
+	  I seem to have broken player view rotation
+
 2010-12-31 14:45  jackjansen
 
 	* More iPad tweaks
