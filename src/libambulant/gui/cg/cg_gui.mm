@@ -265,6 +265,7 @@ bad:
 
 - (id)initWithFrame:(CGRect)frameRect
 {
+	/*AM_DBG*/ NSLog(@"AmbulantView.initWithFrame(0x%x)", self);
 	self = [super initWithFrame: ViewRectFromCGRect(frameRect)];
 	ambulant_window = NULL;
 //	transition_surface = NULL;
@@ -288,6 +289,7 @@ bad:
 
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
+	/*AM_DBG*/ NSLog(@"AmbulantView.initWithCoder(0x%x)", self);
 	self = [super initWithCoder:aDecoder];
 	ambulant_window = NULL;
 //	transition_surface = NULL;
@@ -404,7 +406,17 @@ bad:
 
 - (void)drawRect:(CGRect)rect
 {
-	AM_DBG NSLog(@"AmbulantView.drawRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(rect), CGRectGetMinY(rect), CGRectGetMaxX(rect), CGRectGetMaxY(rect));
+	/*AM_DBG*/ NSLog(@"AmbulantView.drawRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(rect), CGRectGetMinY(rect), CGRectGetMaxX(rect), CGRectGetMaxY(rect));
+	UIView *todo = self;
+	while (todo) {
+		/*AM_DBG*/ NSLog(@"    UIView: 0x%x %@", todo, todo);
+		/*AM_DBG*/ NSLog(@"        frame: (%f, %f, %f, %f)", todo.frame.origin.x, todo.frame.origin.y, todo.frame.size.width, todo.frame.size.height);
+		/*AM_DBG*/ NSLog(@"        bounds: (%f, %f, %f, %f)", todo.bounds.origin.x, todo.bounds.origin.y, todo.bounds.size.width, todo.bounds.size.height);
+		/*AM_DBG*/ NSLog(@"        center: (%f, %f)", todo.center.x, todo.center.y);
+		/*AM_DBG*/ NSLog(@"        matrix: (%f, %f, %f, %f, %f, %f)", todo.transform.a, todo.transform.b, todo.transform.c, todo.transform.d, todo.transform.tx, todo.transform.ty);
+		todo = todo.superview;
+	}
+	NSLog(@"");
 #ifdef WITH_UIKIT
 	// There is something very funny going on. The coordinates passed in rect seem to be top-left based,
 	// but drawing should use bottom-left. Either I have done something really stupid or there is something
