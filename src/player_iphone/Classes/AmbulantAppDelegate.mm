@@ -259,14 +259,25 @@ applicationDidBecomeActive:(UIApplication *)application {
         showPlayer = [viewController canPlay];
     }
        
-    // XXXJACK: Don't add views we don't directly need.
+    // Note: the order of adding the views to the window is important.
+    // Only the first viewController will be informed about rotation, see
+    // <http://developer.apple.com/library/ios/#qa/qa2010/qa1688.html>. 
     if (showPlayer) {
-        [window addSubview:tabBarController.view];
-        [window addSubview:viewController.view];
+        viewController.view.alpha = 1.0;
+        viewController.view.hidden = false;
+
+        tabBarController.view.alpha = 0.0;
+        tabBarController.view.hidden = true;
     } else {
-        [window addSubview:viewController.view];
-        [window addSubview:tabBarController.view];
+        viewController.view.alpha = 0.0;
+        viewController.view.hidden = true;
+
+        tabBarController.view.alpha = 1.0;
+        tabBarController.view.hidden = false;
     }
+    [window addSubview:viewController.view];
+    [window addSubview:tabBarController.view];
+
     [window makeKeyAndVisible];
 }
 
