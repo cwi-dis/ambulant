@@ -1,3 +1,8 @@
+2011-01-03 00:09  jackjansen
+
+	* Fixed strange glitch with project file (dylibs lost their
+	  extension)
+
 2011-01-02 00:07  jackjansen
 
 	* Allow rotation of aux views on iPad, not on iPhone. Unfortunately
