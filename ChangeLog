@@ -1,3 +1,20 @@
+2011-01-03 23:57  jackjansen
+
+	* Partial fix for non-rotation of player view: make sure the
+	  AmbulantView is always the first view added to the UIWindow
+
+2011-01-03 17:39  jackjansen
+
+	* Debug code
+
+2011-01-03 17:20  keesblom
+
+	* Some settings changed by Jack on Kees' machine.
+
+2011-01-03 16:10  jackjansen
+
+	* Missed checkin: patch for SDL on iPhone
+
 2011-01-03 00:09  jackjansen
 
 	* Fixed strange glitch with project file (dylibs lost their
