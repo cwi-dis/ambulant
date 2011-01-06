@@ -75,7 +75,7 @@ cg_image_renderer::~cg_image_renderer()
 	m_lock.leave();
 }
 
-#ifdef JNK
+#ifdef WITH_OLD_CROP_CODE
 CGImage *
 cg_image_renderer::_cropped_image(const lib::rect& rect)
 {
@@ -184,7 +184,9 @@ cg_image_renderer::_prepare_image()
 			want_cglayer = true;
 		}
 	}
-	want_cglayer = true; // XXXJACK
+#ifdef WITH_OLD_CROP_CODE
+	want_cglayer = false; // XXXJACK
+#endif
 	if (want_cglayer) {
 		AM_DBG lib::logger::get_logger()->debug("cg_image_renderer._prepare_image: create cglayer");
 		
@@ -309,9 +311,14 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	} else {
 		// No prerendering done so we render direct. This should only
 		// happen if the pixels can be deposited as-is.
+#ifdef WITH_OLD_CROP_CODE
+        CGImage *imageToDraw = _cropped_image(srcrect);
+#else
+        CGImage *imageToDraw = m_image;
 		assert(dstrect.size() == srcrect.size());
+#endif
 		CGContextClipToRect(myContext, cg_dstrect); // XXXJACK DEBUG
-		CGContextDrawImage(myContext, cg_dstrect, m_image);
+		CGContextDrawImage(myContext, cg_dstrect, imageToDraw);
 	}
     CGContextRestoreGState(myContext);
 	m_lock.leave();
