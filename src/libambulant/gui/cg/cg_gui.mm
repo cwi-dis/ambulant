@@ -406,6 +406,7 @@ bad:
 
 - (void)drawRect:(CGRect)rect
 {
+#ifdef WITH_UIKIT
 	/*AM_DBG*/ NSLog(@"AmbulantView.drawRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(rect), CGRectGetMinY(rect), CGRectGetMaxX(rect), CGRectGetMaxY(rect));
 	UIView *todo = self;
 	while (todo) {
@@ -417,7 +418,6 @@ bad:
 		todo = todo.superview;
 	}
 	NSLog(@"");
-#ifdef WITH_UIKIT
 	// There is something very funny going on. The coordinates passed in rect seem to be top-left based,
 	// but drawing should use bottom-left. Either I have done something really stupid or there is something
 	// I don't understand about the basics of UIKit.
