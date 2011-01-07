@@ -1,3 +1,11 @@
+2011-01-06 21:51  jackjansen
+
+	* Added the old crop code again, in ifdefs
+
+2011-01-06 21:43  jackjansen
+
+	* Fixes for Mac CG player
+
 2011-01-03 23:57  jackjansen
 
 	* Partial fix for non-rotation of player view: make sure the
