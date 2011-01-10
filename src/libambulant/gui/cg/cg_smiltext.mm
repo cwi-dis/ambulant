@@ -514,7 +514,10 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	// Save the graphics state to be restored on return
 	CGContext* context = [view getCGContext];	
 	CGContextSaveGState(context);
-	// Initialize Text Matrix (otherwise giant characters may sometimes appear).
+	// Initialize Text Matrix (otherwise giant characters may sometimes appear) and
+	// transformation matrix.
+	CGAffineTransform matrix = [view transformForRect: &cg_final_dst_rect flipped: YES translated: NO];
+	CGContextConcatCTM(context, matrix);
 	CGContextSetTextMatrix(context, CGAffineTransformIdentity);
 	
 #define INFINITE_WIDTH 1000000

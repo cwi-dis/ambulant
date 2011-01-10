@@ -39,8 +39,6 @@
 #define AM_DBG if(0)
 #endif
 
-#define USE_COCOA_BOTLEFT
-
 namespace ambulant {
 
 using namespace lib;
@@ -237,11 +235,7 @@ bad:
 @implementation MyFlippedView
 - (BOOL) isFlipped
 {
-#ifdef USE_COCOA_BOTLEFT
-	return false;
-#else
 	return true;
-#endif
 }
 @end
 #endif
@@ -325,13 +319,7 @@ bad:
 - (CGContextRef) getCGContext
 {
 #ifdef WITH_UIKIT
-#if 0
-	// XXXJACK: Apparently this no longer exists
-	return UICurrentContext();
-#else
 	return UIGraphicsGetCurrentContext();
-//	return NULL;
-#endif
 #else
 	return (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 #endif
@@ -339,12 +327,7 @@ bad:
 
 - (CGRect) CGRectForAmbulantRect: (const ambulant::lib::rect *) arect
 {
-#ifdef USE_COCOA_BOTLEFT
-	float bot_delta = CGRectGetMaxY(CGRectFromViewRect([self bounds])) - arect->bottom();
-	return CGRectMake(arect->left(), bot_delta, arect->width(), arect->height());
-#else
 	return CGRectMake(arect->left(), arect->top(), arect->width(), arect->height());
-#endif
 }
 
 - (CGRect) CGRectForAmbulantRectForLayout: (const ambulant::lib::rect *) arect
@@ -354,18 +337,29 @@ bad:
 
 - (ambulant::lib::rect) ambulantRectForCGRect: (const CGRect *)nsrect
 {
-#ifdef USE_COCOA_BOTLEFT
-	float top_delta = CGRectGetMaxY(CGRectFromViewRect([self bounds])) - CGRectGetMaxY(*nsrect);
-	ambulant::lib::rect arect = ambulant::lib::rect(
-		ambulant::lib::point(int(CGRectGetMinX(*nsrect)), int(top_delta)),
-		ambulant::lib::size(int(CGRectGetWidth(*nsrect)), int(CGRectGetHeight(*nsrect))));
-#else
 	ambulant::lib::rect arect = ambulant::lib::rect(
 		ambulant::lib::point(int(CGRectGetMinX(*nsrect)), int(CGRectGetMinY(*nsrect))),
 		ambulant::lib::size(int(CGRectGetWidth(*nsrect)), int(CGRectGetHeight(*nsrect))));
-
-#endif
 	return arect;
+}
+
+- (CGAffineTransform) transformForRect: (const CGRect *)rect flipped: (BOOL)flipped translated: (BOOL)translated
+{
+	CGFloat fy = flipped?-1:1;
+	CGFloat tx = 0;
+	CGFloat ty = 0;
+	if (translated) {
+		tx = CGRectGetMinX(*rect);
+		if (flipped) {
+			ty = CGRectGetMinY(*rect)+CGRectGetHeight(*rect);
+		} else {
+			ty = CGRectGetMinY(*rect);
+		}
+	} else if (flipped) {
+		ty = 2*CGRectGetMinY(*rect)+CGRectGetHeight(*rect);
+	}
+	CGAffineTransform matrix = CGAffineTransformMake(1, 0, 0, fy, tx, ty);
+	return matrix;
 }
 
 - (ambulant::lib::rect) ambulantRectForCGRectForLayout: (const CGRect *)nsrect
@@ -380,13 +374,6 @@ bad:
 - (void) asyncRedrawForAmbulantRect: (NSRectHolder *)arect
 {
 	CGRect my_rect = [arect rect];
-#ifdef WITH_UIKIT
-	// There is something very funny going on. The coordinates passed in rect seem to be top-left based,
-	// but drawing should use bottom-left. Either I have done something really stupid or there is something
-	// I don't understand about the basics of UIKit.
-	// For now, we convert the y coordinate.
-	my_rect.origin.y = (CGRectGetMaxY([self bounds])-(my_rect.origin.y+my_rect.size.height));
-#endif
 	[arect release];
 	AM_DBG NSLog(@"AmbulantView.asyncRedrawForAmbulantRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(my_rect), CGRectGetMinY(my_rect), CGRectGetMaxX(my_rect), CGRectGetMaxY(my_rect));
 	[self setNeedsDisplayInRect: ViewRectFromCGRect(my_rect)];
@@ -399,47 +386,50 @@ bad:
 #else // AppKit
 	[self setNeedsDisplay:true];
 #endif
-#if UIKIT_NOT_YET
-	[self display];
-#endif
 }
 
 - (void)drawRect:(CGRect)rect
 {
-#ifdef WITH_UIKIT
-	/*AM_DBG*/ NSLog(@"AmbulantView.drawRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(rect), CGRectGetMinY(rect), CGRectGetMaxX(rect), CGRectGetMaxY(rect));
-	UIView *todo = self;
-	while (todo) {
-		/*AM_DBG*/ NSLog(@"    UIView: 0x%x %@", todo, todo);
-		/*AM_DBG*/ NSLog(@"        frame: (%f, %f, %f, %f)", todo.frame.origin.x, todo.frame.origin.y, todo.frame.size.width, todo.frame.size.height);
-		/*AM_DBG*/ NSLog(@"        bounds: (%f, %f, %f, %f)", todo.bounds.origin.x, todo.bounds.origin.y, todo.bounds.size.width, todo.bounds.size.height);
-		/*AM_DBG*/ NSLog(@"        center: (%f, %f)", todo.center.x, todo.center.y);
-		/*AM_DBG*/ NSLog(@"        matrix: (%f, %f, %f, %f, %f, %f)", todo.transform.a, todo.transform.b, todo.transform.c, todo.transform.d, todo.transform.tx, todo.transform.ty);
-		todo = todo.superview;
-	}
-	NSLog(@"");
-#ifdef WITH_UIKIT
-	// There is something very funny going on. The coordinates passed in rect seem to be top-left based,
-	// but drawing should use bottom-left. Either I have done something really stupid or there is something
-	// I don't understand about the basics of UIKit.
-	// For now, we convert the y coordinate.
-	rect.origin.y = (CGRectGetMaxY([self bounds])-(rect.origin.y+rect.size.height));
+    CGContextRef myContext = [self getCGContext];
+    CGContextSaveGState(myContext);
+#ifndef WITH_UIKIT
+    //
+    // CG has default coordinate system with the origin bottom-left, we want topleft.
+    // But: if we are running in an NSView then the coordinate system has already
+    // been setup wrt. isFlipped, so we do nothing.
+    //
+    if (![self isFlipped]) {
+        float view_height = CGRectGetHeight(CGRectFromViewRect(self.bounds));
+        CGAffineTransform matrix = CGAffineTransformMake(1, 0, 0, -1, 0, view_height);
+        CGContextConcatCTM(myContext, matrix);
+        // Also adapt the dirty rect
+        matrix = CGAffineTransformInvert(matrix);
+        rect = CGRectApplyAffineTransform(rect, matrix);
+    }
 #endif
-//#define CG_REDRAW_DEBUG
+    
+	AM_DBG NSLog(@"AmbulantView.drawRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(rect), CGRectGetMinY(rect), CGRectGetMaxX(rect), CGRectGetMaxY(rect));
+#undef CG_REDRAW_DEBUG
 #ifdef CG_REDRAW_DEBUG
 	{
-		float components[] = { 0, 1, 1, 1};
+		CGFloat components[] = { 0, 1, 1, 1};
 		CGColorSpaceRef genericColorSpace = CGColorSpaceCreateDeviceRGB();
-		CGContextSetFillColorSpace([self getCGContext], genericColorSpace);
+		CGContextSetStrokeColorSpace(myContext, genericColorSpace);
 		CGColorSpaceRelease(genericColorSpace);
-		CGContextSetFillColor([self getCGContext], components);
-		CGContextFillRect([self getCGContext], CGRectFromViewRect([self bounds]));
-		CGContextSynchronize([self getCGContext]);
-		CGContextFlush([self getCGContext]);
-		sleep(1);
+		CGContextSetStrokeColor(myContext, components);
+        CGPoint points[] = {
+            rect.origin,
+            {rect.origin.x + rect.size.width, rect.origin.y},
+            {rect.origin.x, rect.origin.y + rect.size.height},
+            {rect.origin.x + rect.size.width, rect.origin.y + rect.size.height},
+            rect.origin};
+        CGContextAddLines(myContext, points, sizeof(points)/sizeof(points[0]));
+        CGContextStrokePath(myContext);
+//		CGContextSynchronize(myContext);
+//		CGContextFlush(myContext);
+//		sleep(1);
 	}
 #endif
-//	redraw_lock.enter();
 #ifdef WITH_QUICKTIME_OVERLAY
 	// If our main view has been reparented since the last redraw we need
 	// to move the overlay window.
@@ -477,16 +467,6 @@ bad:
 	if (!ambulant_window) {
 		AM_DBG NSLog(@"Redraw AmbulantView: NULL ambulant_window");
 	} else {
-#ifdef WITH_UIKIT
-		CGRect bounds = [self bounds];
-		AM_DBG NSLog(@"ambulantview: bounds (%f, %f, %f, %f)", bounds.origin.x, bounds.origin.y, bounds.size.width, bounds.size.height);
-//		CGContextRef myContext = UIGraphicsGetCurrentContext();
-		CGContextRef myContext = [self getCGContext];
-		CGContextSaveGState(myContext);
-		float view_height = CGRectGetHeight(CGRectFromViewRect([self bounds]));
-		CGAffineTransform matrix = CGAffineTransformMake(1, 0, 0, -1, 0, view_height);
-		CGContextConcatCTM(myContext, matrix);
-#endif
 		// If we have seen transitions we always redraw the whole view
 		// XXXJACK interaction of fullscreen transitions and overlay windows
 		// is completely untested, and probably broken.
@@ -496,13 +476,6 @@ bad:
 		AM_DBG NSLog(@"ambulantView: call redraw ambulant-ltrb=(%d, %d, %d, %d)", arect.left(), arect.top(), arect.right(), arect.bottom());
 		ambulant_window->redraw(arect);
 //		[self _screenTransitionPostRedraw];
-#ifdef WITH_UIKIT
-		CGContextRestoreGState(myContext);
-#endif
-#ifdef DUMP_REDRAW
-		// Debug code: dump the contents of the view into an image
-		[self dumpToImageID: "redraw"];
-#endif
 //		[self _releaseTransitionSurface];
 	}
 #ifdef WITH_QUICKTIME_OVERLAY
@@ -526,22 +499,23 @@ bad:
 
 #ifdef CG_REDRAW_DEBUG
 	{
-		float components[] = { 1, 1, 0, 0.2};
-		CGColorSpaceRef genericColorSpace = CGColorSpaceCreateDeviceRGB();
-		CGContextSetFillColorSpace([self getCGContext], genericColorSpace);
-		CGColorSpaceRelease(genericColorSpace);
-		CGContextSetFillColor([self getCGContext], components);
-		CGContextFillRect([self getCGContext], rect);
-//		CGContextSynchronize([self getCGContext]);
-//		CGContextFlush([self getCGContext]);
+		CGFloat components[] = { 1, 0, 1, 0.2};
+		CGContextSetStrokeColor(myContext, components);
+        CGPoint points[] = {
+            rect.origin,
+            {rect.origin.x + rect.size.width, rect.origin.y},
+            {rect.origin.x, rect.origin.y + rect.size.height},
+            {rect.origin.x + rect.size.width, rect.origin.y + rect.size.height},
+            rect.origin};
+        CGContextAddLines(myContext, points, sizeof(points)/sizeof(points[0]));
+        CGContextStrokePath(myContext);
 	}
 #endif
-//	redraw_lock.leave();
+    CGContextRestoreGState(myContext);
 }
 
 - (void)setAmbulantWindow: (ambulant::gui::cg::cg_window *)window
 {
-//	[[self window] setAcceptsMouseMovedEvents: true];
 	ambulant_window = window;
 }
 
@@ -771,9 +745,8 @@ bad:
 
 - (void)ambulantNeedEvents: (bool)want
 {
-#if WITH_UIKIT
-//	NSLog(@"ambulantNeedEvents: not implemented yet for UIKit");
-#else
+#ifndef WITH_UIKIT
+    // In UIKit, we always pass through the events.
 	NSWindow *my_window = [self window];
 	AM_DBG NSLog(@"my_window acceptsMouseMovedEvents = %d", [my_window acceptsMouseMovedEvents]);
 	// See whether the mouse is actually in our area
@@ -791,11 +764,7 @@ bad:
 #ifndef WITH_UIKIT
 - (BOOL)isFlipped
 {
-#ifdef USE_COCOA_BOTLEFT
-	return false;
-#else
 	return true;
-#endif
 }
 #endif // WITH_UIKIT
 
@@ -816,9 +785,6 @@ bad:
 		AM_DBG NSLog(@"0x%x: mouseDown outside our frame", (void*)self);
 		return;
 	}
-#ifdef USE_COCOA_BOTLEFT
-	where.y = [self bounds].size.height - where.y;
-#endif
 	AM_DBG NSLog(@"0x%x: mouseDown at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
 	if (ambulant_window) ambulant_window->user_event(amwhere);
@@ -832,9 +798,6 @@ bad:
 		AM_DBG NSLog(@"mouseMoved outside our frame");
 		return;
 	}
-#ifdef USE_COCOA_BOTLEFT
-	where.y = [self bounds].size.height - where.y;
-#endif
 	AM_DBG NSLog(@"0x%x: mouseMoved at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
 	[[NSApplication sharedApplication] sendAction: SEL("resetMouse:") to: nil from: self];
@@ -852,9 +815,6 @@ bad:
 		AM_DBG NSLog(@"mouseMoved outside our frame");
 		return;
 	}
-#ifdef USE_COCOA_BOTLEFT
-	where.y = [self bounds].size.height - where.y;
-#endif
 	AM_DBG NSLog(@"0x%x: pseudoMouseMove at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
 	[[NSApplication sharedApplication] sendAction: SEL("resetMouse:") to: nil from: self];
@@ -866,11 +826,7 @@ bad:
 
 - (BOOL)wantsDefaultClipping
 {
-#ifdef DUMP_REDRAW
-	return NO;
-#else
 	return (transition_count == 0);
-#endif
 }
 
 - (void) incrementTransitionCount

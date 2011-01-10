@@ -109,8 +109,9 @@ cg_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 	rect dstrect = r;
 	dstrect.translate(m_dest->get_global_topleft());
 	CGRect cg_dstrect = [view CGRectForAmbulantRect: &dstrect];
-	// Set the text matrix
-	CGContextSetTextMatrix(ctx, CGAffineTransformIdentity);
+	// Set the text matrix. 
+	CGAffineTransform matrix = [view transformForRect: &cg_dstrect flipped: YES translated: NO];
+	CGContextSetTextMatrix(ctx, matrix);
 	// Set the color
 	double alfa = 1.0;
 #ifdef WITH_SMIL30
@@ -126,9 +127,8 @@ cg_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 	CGContextSelectFont(ctx, m_font_name, m_font_size, kCGEncodingMacRoman);
 	// Calculate sizes
 	float lineheight = m_font_size;
-	// XXXX These calculations assume COCOA_USE_BOTLEFT
 	float x = CGRectGetMinX(cg_dstrect);
-	float y = CGRectGetMaxY(cg_dstrect) - lineheight;
+	float y = CGRectGetMinY(cg_dstrect) + lineheight;
 	float w = CGRectGetWidth(cg_dstrect);
 	size_t lbegin, lend;
 	const char *cdata = (char *)m_data;
@@ -142,7 +142,7 @@ cg_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 		CGContextSetTextDrawingMode(ctx, kCGTextFill);
 		CGContextShowText(ctx, cdata+lbegin, lend-lbegin);
 		lbegin = lend;
-		y -= lineheight;
+		y += lineheight;
 	}
 	CGColorSpaceRelease(genericColorSpace);
 	m_lock.leave();

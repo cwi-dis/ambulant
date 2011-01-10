@@ -186,6 +186,8 @@ cg_image_renderer::_prepare_image()
 	}
 #ifdef WITH_OLD_CROP_CODE
 	want_cglayer = false; // XXXJACK
+#else
+	want_cglayer = true; // XXXJACK
 #endif
 	if (want_cglayer) {
 		AM_DBG lib::logger::get_logger()->debug("cg_image_renderer._prepare_image: create cglayer");
@@ -244,14 +246,30 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 			cg_dstrect = [view CGRectForAmbulantRect: &dstrect];
 
 			CGContextSaveGState(myContext);
+			// Draw the pre-rendered image in cglayer. First setup the destination parameters.
 			CGContextClipToRect(myContext, cg_dstrect);
-		float x_scale = (float)dstrect.width() / (float)srcrect.width();
-		float y_scale = (float)dstrect.height() / (float)srcrect.height();
-		CGAffineTransform matrix = CGAffineTransformMake(x_scale, 0, 0, y_scale, 0, 0);
-		CGContextConcatCTM(myContext, matrix);
-			CGRect cg_fullsrcrect = CGRectMake(-srcrect.left()+dest_origin.x, -srcrect.top()+dest_origin.y, srcrect.width(), srcrect.height());
-			CGContextDrawLayerInRect(myContext, cg_fullsrcrect, m_cglayer);
+			// First setup the matrix so that drawing at point (0,0) will appear at the topleft of the destination
+			// rectangle.
+			CGAffineTransform matrix = [view transformForRect: &cg_dstrect flipped: YES translated: YES];
+			CGContextConcatCTM(myContext, matrix);
+			
+			// Now setup the source parameters. Start with scale.
+			float x_scale = (float)dstrect.width() / (float)srcrect.width();
+			float y_scale = (float)dstrect.height() / (float)srcrect.height();
+			matrix = CGAffineTransformMake(x_scale, 0, 0, y_scale, 0, 0);
+			CGContextConcatCTM(myContext, matrix);
+			
+			// Next we do offset. This is a bit tricky, as our srcrect uses topleft-based coordinates and
+			// CG uses cartesian.
+			lib::rect fullsrcrect = lib::rect(lib::point(0, 0), m_size);  // Original image size
+			fullsrcrect.translate(lib::point(-srcrect.left(), srcrect.bottom()-m_size.h)); // Translate so the right topleft pixel is in place
+			CGRect cg_fullsrcrect = [view CGRectForAmbulantRect: &fullsrcrect];
+			AM_DBG logger::get_logger()->debug("cg_image_renderer.redraw: draw layer to (%f, %f, %f, %f) clip (%f, %f, %f, %f) scale (%f, %f)",
+				CGRectGetMinX(cg_fullsrcrect), CGRectGetMinY(cg_fullsrcrect), CGRectGetMaxX(cg_fullsrcrect), CGRectGetMaxY(cg_fullsrcrect),
+				CGRectGetMinX(cg_dstrect), CGRectGetMinY(cg_dstrect), CGRectGetMaxX(cg_dstrect), CGRectGetMaxY(cg_dstrect),
+				x_scale, y_scale);
 
+			CGContextDrawLayerInRect(myContext, cg_fullsrcrect, m_cglayer);
 			CGContextRestoreGState(myContext);
 		}
 		m_lock.leave();
@@ -292,21 +310,29 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	}
 	
 	if (m_cglayer) {
-		// Draw the pre-rendered image in cglayer
+		// Draw the pre-rendered image in cglayer. First setup the destination parameters.
+		CGContextClipToRect(myContext, cg_dstrect);
+		// First setup the matrix so that drawing at point (0,0) will appear at the topleft of the destination
+		// rectangle.
+		CGAffineTransform matrix = [view transformForRect: &cg_dstrect flipped: YES translated: YES];
+		CGContextConcatCTM(myContext, matrix);
+		
+		// Now setup the source parameters. Start with scale.
 		float x_scale = (float)dstrect.width() / (float)srcrect.width();
 		float y_scale = (float)dstrect.height() / (float)srcrect.height();
-		CGContextClipToRect(myContext, cg_dstrect);
+		matrix = CGAffineTransformMake(x_scale, 0, 0, y_scale, 0, 0);
+		CGContextConcatCTM(myContext, matrix);
+		
+		// Next we do offset. This is a bit tricky, as our srcrect uses topleft-based coordinates and
+		// CG uses cartesian.
 		lib::rect fullsrcrect = lib::rect(lib::point(0, 0), m_size);  // Original image size
-		//fullsrcrect.translate(lib::point(dstrect.left()/x_scale, dstrect.top()/y_scale)); // Translate so it is located cliprect		
-		fullsrcrect.translate(lib::point(-srcrect.left(), -srcrect.top())); // Translate so the right topleft pixel is in place
-		fullsrcrect.translate(lib::point(dest_origin.x, dest_origin.y)); // And translated again to fit origin of the region
-		CGRect cg_fullsrcrect = CGRectMake(fullsrcrect.left(), CGRectGetMaxY(CGRectFromViewRect([view bounds]))-fullsrcrect.bottom(), fullsrcrect.width(), fullsrcrect.height());
+		fullsrcrect.translate(lib::point(-srcrect.left(), srcrect.bottom()-m_size.h)); // Translate so the right topleft pixel is in place
+		CGRect cg_fullsrcrect = [view CGRectForAmbulantRect: &fullsrcrect];
 		AM_DBG logger::get_logger()->debug("cg_image_renderer.redraw: draw layer to (%f, %f, %f, %f) clip (%f, %f, %f, %f) scale (%f, %f)",
 			CGRectGetMinX(cg_fullsrcrect), CGRectGetMinY(cg_fullsrcrect), CGRectGetMaxX(cg_fullsrcrect), CGRectGetMaxY(cg_fullsrcrect),
 			CGRectGetMinX(cg_dstrect), CGRectGetMinY(cg_dstrect), CGRectGetMaxX(cg_dstrect), CGRectGetMaxY(cg_dstrect),
 			x_scale, y_scale);
-		CGAffineTransform matrix = CGAffineTransformMake(x_scale, 0, 0, y_scale, 0, 0);
-		CGContextConcatCTM(myContext, matrix);
+
 		CGContextDrawLayerInRect(myContext, cg_fullsrcrect, m_cglayer);
 	} else {
 		// No prerendering done so we render direct. This should only
@@ -318,6 +344,10 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 		assert(dstrect.size() == srcrect.size());
 #endif
 		CGContextClipToRect(myContext, cg_dstrect); // XXXJACK DEBUG
+        // We need to mirror the image, because CGImage uses bottom-left coordinates.
+		CGAffineTransform matrix = [view transformForRect: &cg_dstrect flipped: YES translated: NO];
+        CGContextConcatCTM(myContext, matrix);
+		matrix = CGContextGetCTM(myContext);
 		CGContextDrawImage(myContext, cg_dstrect, imageToDraw);
 	}
     CGContextRestoreGState(myContext);
