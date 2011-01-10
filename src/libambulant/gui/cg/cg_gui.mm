@@ -418,6 +418,7 @@ bad:
 		todo = todo.superview;
 	}
 	NSLog(@"");
+#ifdef WITH_UIKIT
 	// There is something very funny going on. The coordinates passed in rect seem to be top-left based,
 	// but drawing should use bottom-left. Either I have done something really stupid or there is something
 	// I don't understand about the basics of UIKit.
@@ -745,6 +746,27 @@ bad:
     [self adaptDisplayAfterRotation: orientation withAutoCenter: M_auto_center withAutoResize: (zoomState == zoomFillScreen)];
 }
 
+- (void)drawTestRect:(CGRect)rect;
+{   
+    CGContextRef context = UIGraphicsGetCurrentContext(); 
+    CGContextSetRGBStrokeColor(context, 1.0, 1.0, 0.0, 1.0); // yellow line
+	
+    CGContextBeginPath(context);
+	
+    CGContextMoveToPoint(context, rect.origin.x, rect.origin.y); //start point
+    CGContextAddLineToPoint(context, rect.origin.x, rect.origin.y+rect.size.height);
+    CGContextAddLineToPoint(context, rect.origin.x+rect.size.width, rect.origin.y+rect.size.height);
+    CGContextAddLineToPoint(context, rect.origin.x+rect.size.width, rect.origin.y); // end path
+	
+    CGContextClosePath(context); // close path
+	
+    CGContextSetLineWidth(context, 8.0); // this is set from now on until you explicitly change it
+	
+    CGContextStrokePath(context); // do actual stroking
+	
+	CGContextSetRGBFillColor(context, 0.0, 1.0, 0.0, 0.5); // green color, half transparent
+	CGContextFillRect(context, CGRectMake(rect.origin.x, rect.origin.y, rect.size.width/4, rect.size.height/4)); // a square at the bottom left-hand corner
+}
 #endif//WITH_UIKIT
 
 - (void)ambulantNeedEvents: (bool)want

@@ -186,6 +186,7 @@ enum ZoomState {
 - (void) zoomWithScale: (float) scale inState: (UIGestureRecognizerState) state;
 - (void) translateWithPoint: (CGPoint) point inState: (UIGestureRecognizerState) state;
 - (void) autoZoomAtPoint: (CGPoint) point;
+- (void) drawTestRect:(CGRect)rect;
 #endif//WITH_UIKIT
 
 - (id)initWithFrame:(CGRect)frameRect;
