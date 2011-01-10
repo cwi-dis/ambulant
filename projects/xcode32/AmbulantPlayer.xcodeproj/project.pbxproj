@@ -15,17 +15,7 @@
 		0405C02D12B6244C007AD3B2 /* AmbulantDocDaisy.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0407048B115266B40094FB0B /* AmbulantDocDaisy.icns */; };
 		0405C02E12B6244C007AD3B2 /* AmbulantDocGrins.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0407048C115266B40094FB0B /* AmbulantDocGrins.icns */; };
 		0405C02F12B6244C007AD3B2 /* AmbulantDocSmil.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0407048D115266B40094FB0B /* AmbulantDocSmil.icns */; };
-		0405C03012B6244C007AD3B2 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0407048E115266B40094FB0B /* Info.plist */; };
 		0405C03112B6244C007AD3B2 /* Welcome.smil in Resources */ = {isa = PBXBuildFile; fileRef = 0407057E115266F60094FB0B /* Welcome.smil */; };
-		0405C03212B6244C007AD3B2 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0407060311526C240094FB0B /* Credits.rtf */; };
-		0405C03312B6244C007AD3B2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0407060511526C240094FB0B /* InfoPlist.strings */; };
-		0405C03412B6244C007AD3B2 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0407060711526C240094FB0B /* MainMenu.nib */; };
-		0405C03512B6244C007AD3B2 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0407060A11526C240094FB0B /* Credits.rtf */; };
-		0405C03612B6244C007AD3B2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0407060C11526C240094FB0B /* InfoPlist.strings */; };
-		0405C03712B6244C007AD3B2 /* locversion.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0407060E11526C240094FB0B /* locversion.plist */; };
-		0405C03812B6244C007AD3B2 /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0407061011526C240094FB0B /* Log.nib */; };
-		0405C03912B6244C007AD3B2 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0407061211526C240094FB0B /* MainMenu.nib */; };
-		0405C03A12B6244C007AD3B2 /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0407061411526C240094FB0B /* MyDocument.nib */; };
 		0405C03B12B6244C007AD3B2 /* DTDCache in Resources */ = {isa = PBXBuildFile; fileRef = 04428EBD11577E960067C868 /* DTDCache */; };
 		0405C03C12B6244C007AD3B2 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 04428EBF11577EC30067C868 /* data */; };
 		0405C03E12B6244C007AD3B2 /* LogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0407041B115266770094FB0B /* LogController.mm */; };
@@ -53,18 +43,32 @@
 		040704E2115266B40094FB0B /* AmbulantDocDaisy.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0407048B115266B40094FB0B /* AmbulantDocDaisy.icns */; };
 		040704E3115266B40094FB0B /* AmbulantDocGrins.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0407048C115266B40094FB0B /* AmbulantDocGrins.icns */; };
 		040704E4115266B40094FB0B /* AmbulantDocSmil.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0407048D115266B40094FB0B /* AmbulantDocSmil.icns */; };
-		040704E5115266B40094FB0B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0407048E115266B40094FB0B /* Info.plist */; };
 		04070587115266F60094FB0B /* Welcome.smil in Resources */ = {isa = PBXBuildFile; fileRef = 0407057E115266F60094FB0B /* Welcome.smil */; };
-		0407061611526C240094FB0B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0407060311526C240094FB0B /* Credits.rtf */; };
-		0407061711526C240094FB0B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0407060511526C240094FB0B /* InfoPlist.strings */; };
-		0407061811526C240094FB0B /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0407060711526C240094FB0B /* MainMenu.nib */; };
-		0407061911526C240094FB0B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0407060A11526C240094FB0B /* Credits.rtf */; };
-		0407061A11526C240094FB0B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0407060C11526C240094FB0B /* InfoPlist.strings */; };
-		0407061B11526C240094FB0B /* locversion.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0407060E11526C240094FB0B /* locversion.plist */; };
-		0407061C11526C240094FB0B /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0407061011526C240094FB0B /* Log.nib */; };
-		0407061D11526C240094FB0B /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0407061211526C240094FB0B /* MainMenu.nib */; };
-		0407061E11526C240094FB0B /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0407061411526C240094FB0B /* MyDocument.nib */; };
 		0407064C11526DB70094FB0B /* libambulant.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 040705A1115268480094FB0B /* libambulant.dylib */; };
+		0418D24512DA5E4C00C56DCE /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D23F12DA5E4C00C56DCE /* Log.nib */; };
+		0418D24612DA5E4C00C56DCE /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24012DA5E4C00C56DCE /* MainMenu.nib */; };
+		0418D24712DA5E4C00C56DCE /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24112DA5E4C00C56DCE /* MyDocument.nib */; };
+		0418D24B12DA5E4C00C56DCE /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D23F12DA5E4C00C56DCE /* Log.nib */; };
+		0418D24C12DA5E4C00C56DCE /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24012DA5E4C00C56DCE /* MainMenu.nib */; };
+		0418D24D12DA5E4C00C56DCE /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24112DA5E4C00C56DCE /* MyDocument.nib */; };
+		0418D25112DA5EAA00C56DCE /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24E12DA5EAA00C56DCE /* Credits.rtf */; };
+		0418D25212DA5EAA00C56DCE /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24F12DA5EAA00C56DCE /* Info.plist */; };
+		0418D25312DA5EAA00C56DCE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0418D25012DA5EAA00C56DCE /* InfoPlist.strings */; };
+		0418D25412DA5EAA00C56DCE /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24E12DA5EAA00C56DCE /* Credits.rtf */; };
+		0418D25512DA5EAA00C56DCE /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24F12DA5EAA00C56DCE /* Info.plist */; };
+		0418D25612DA5EAA00C56DCE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0418D25012DA5EAA00C56DCE /* InfoPlist.strings */; };
+		0418D25712DA5EAA00C56DCE /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24E12DA5EAA00C56DCE /* Credits.rtf */; };
+		0418D25812DA5EAA00C56DCE /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24F12DA5EAA00C56DCE /* Info.plist */; };
+		0418D25912DA5EAA00C56DCE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0418D25012DA5EAA00C56DCE /* InfoPlist.strings */; };
+		0418D27512DA602B00C56DCE /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D27212DA602B00C56DCE /* Log.nib */; };
+		0418D27612DA602B00C56DCE /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D27312DA602B00C56DCE /* MainMenu.nib */; };
+		0418D27712DA602B00C56DCE /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D27412DA602B00C56DCE /* MyDocument.nib */; };
+		0418D27812DA602B00C56DCE /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D27212DA602B00C56DCE /* Log.nib */; };
+		0418D27912DA602B00C56DCE /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D27312DA602B00C56DCE /* MainMenu.nib */; };
+		0418D27A12DA602B00C56DCE /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D27412DA602B00C56DCE /* MyDocument.nib */; };
+		0418D27B12DA602B00C56DCE /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D27212DA602B00C56DCE /* Log.nib */; };
+		0418D27C12DA602B00C56DCE /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D27312DA602B00C56DCE /* MainMenu.nib */; };
+		0418D27D12DA602B00C56DCE /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D27412DA602B00C56DCE /* MyDocument.nib */; };
 		041DCB2A12B64CF7003407C8 /* libavcodec.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB1D12B64CF6003407C8 /* libavcodec.dylib */; };
 		041DCB2B12B64CF7003407C8 /* libavformat.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB1E12B64CF6003407C8 /* libavformat.dylib */; };
 		041DCB2C12B64CF7003407C8 /* libavutil.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB1F12B64CF6003407C8 /* libavutil.dylib */; };
@@ -92,17 +96,7 @@
 		04A1E98012B585D80060F97E /* AmbulantDocDaisy.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0407048B115266B40094FB0B /* AmbulantDocDaisy.icns */; };
 		04A1E98112B585D80060F97E /* AmbulantDocGrins.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0407048C115266B40094FB0B /* AmbulantDocGrins.icns */; };
 		04A1E98212B585D80060F97E /* AmbulantDocSmil.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0407048D115266B40094FB0B /* AmbulantDocSmil.icns */; };
-		04A1E98312B585D80060F97E /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0407048E115266B40094FB0B /* Info.plist */; };
 		04A1E98412B585D80060F97E /* Welcome.smil in Resources */ = {isa = PBXBuildFile; fileRef = 0407057E115266F60094FB0B /* Welcome.smil */; };
-		04A1E98512B585D80060F97E /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0407060311526C240094FB0B /* Credits.rtf */; };
-		04A1E98612B585D80060F97E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0407060511526C240094FB0B /* InfoPlist.strings */; };
-		04A1E98712B585D80060F97E /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0407060711526C240094FB0B /* MainMenu.nib */; };
-		04A1E98812B585D80060F97E /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0407060A11526C240094FB0B /* Credits.rtf */; };
-		04A1E98912B585D80060F97E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0407060C11526C240094FB0B /* InfoPlist.strings */; };
-		04A1E98A12B585D80060F97E /* locversion.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0407060E11526C240094FB0B /* locversion.plist */; };
-		04A1E98B12B585D80060F97E /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0407061011526C240094FB0B /* Log.nib */; };
-		04A1E98C12B585D80060F97E /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0407061211526C240094FB0B /* MainMenu.nib */; };
-		04A1E98D12B585D80060F97E /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0407061411526C240094FB0B /* MyDocument.nib */; };
 		04A1E98E12B585D80060F97E /* DTDCache in Resources */ = {isa = PBXBuildFile; fileRef = 04428EBD11577E960067C868 /* DTDCache */; };
 		04A1E98F12B585D80060F97E /* data in Resources */ = {isa = PBXBuildFile; fileRef = 04428EBF11577EC30067C868 /* data */; };
 		04A1E99112B585D80060F97E /* LogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0407041B115266770094FB0B /* LogController.mm */; };
@@ -320,18 +314,17 @@
 		0407048B115266B40094FB0B /* AmbulantDocDaisy.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = AmbulantDocDaisy.icns; path = ../../src/player_macosx/AmbulantDocDaisy.icns; sourceTree = SOURCE_ROOT; };
 		0407048C115266B40094FB0B /* AmbulantDocGrins.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = AmbulantDocGrins.icns; path = ../../src/player_macosx/AmbulantDocGrins.icns; sourceTree = SOURCE_ROOT; };
 		0407048D115266B40094FB0B /* AmbulantDocSmil.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = AmbulantDocSmil.icns; path = ../../src/player_macosx/AmbulantDocSmil.icns; sourceTree = SOURCE_ROOT; };
-		0407048E115266B40094FB0B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../../src/player_macosx/Info.plist; sourceTree = SOURCE_ROOT; };
 		0407057E115266F60094FB0B /* Welcome.smil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = Welcome.smil; path = ../../Extras/Welcome/Welcome.smil; sourceTree = SOURCE_ROOT; };
 		04070599115268480094FB0B /* libambulant.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = libambulant.xcodeproj; sourceTree = "<group>"; };
-		0407060411526C240094FB0B /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = Dutch; path = Credits.rtf; sourceTree = "<group>"; };
-		0407060611526C240094FB0B /* Dutch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = Dutch; path = InfoPlist.strings; sourceTree = "<group>"; };
-		0407060811526C240094FB0B /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = MainMenu.nib; sourceTree = "<group>"; };
-		0407060B11526C240094FB0B /* English */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = English; path = Credits.rtf; sourceTree = "<group>"; };
-		0407060D11526C240094FB0B /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = InfoPlist.strings; sourceTree = "<group>"; };
-		0407060F11526C240094FB0B /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = English; path = locversion.plist; sourceTree = "<group>"; };
-		0407061111526C240094FB0B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Log.nib; sourceTree = "<group>"; };
-		0407061311526C240094FB0B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = MainMenu.nib; sourceTree = "<group>"; };
-		0407061511526C240094FB0B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = MyDocument.nib; sourceTree = "<group>"; };
+		0418D23F12DA5E4C00C56DCE /* Log.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Log.nib; path = "../../src/player_macosx/Resources-cg/Log.nib"; sourceTree = SOURCE_ROOT; };
+		0418D24012DA5E4C00C56DCE /* MainMenu.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = MainMenu.nib; path = "../../src/player_macosx/Resources-cg/MainMenu.nib"; sourceTree = SOURCE_ROOT; };
+		0418D24112DA5E4C00C56DCE /* MyDocument.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = MyDocument.nib; path = "../../src/player_macosx/Resources-cg/MyDocument.nib"; sourceTree = SOURCE_ROOT; };
+		0418D24E12DA5EAA00C56DCE /* Credits.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = Credits.rtf; path = ../../src/player_macosx/Resources/Credits.rtf; sourceTree = SOURCE_ROOT; };
+		0418D24F12DA5EAA00C56DCE /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../../src/player_macosx/Resources/Info.plist; sourceTree = SOURCE_ROOT; };
+		0418D25012DA5EAA00C56DCE /* InfoPlist.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = ../../src/player_macosx/Resources/InfoPlist.strings; sourceTree = SOURCE_ROOT; };
+		0418D27212DA602B00C56DCE /* Log.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Log.nib; path = "../../src/player_macosx/Resources-cocoa/Log.nib"; sourceTree = SOURCE_ROOT; };
+		0418D27312DA602B00C56DCE /* MainMenu.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = MainMenu.nib; path = "../../src/player_macosx/Resources-cocoa/MainMenu.nib"; sourceTree = SOURCE_ROOT; };
+		0418D27412DA602B00C56DCE /* MyDocument.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = MyDocument.nib; path = "../../src/player_macosx/Resources-cocoa/MyDocument.nib"; sourceTree = SOURCE_ROOT; };
 		041DCB1D12B64CF6003407C8 /* libavcodec.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavcodec.dylib; path = "../../build-3264/third_party_packages/installed/lib/libavcodec.dylib"; sourceTree = SOURCE_ROOT; };
 		041DCB1E12B64CF6003407C8 /* libavformat.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavformat.dylib; path = "../../build-3264/third_party_packages/installed/lib/libavformat.dylib"; sourceTree = SOURCE_ROOT; };
 		041DCB1F12B64CF6003407C8 /* libavutil.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavutil.dylib; path = "../../build-3264/third_party_packages/installed/lib/libavutil.dylib"; sourceTree = SOURCE_ROOT; };
@@ -459,30 +452,25 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		0407060211526C240094FB0B /* Dutch.lproj */ = {
+		0418D23A12DA5E0900C56DCE /* Resources-cg */ = {
 			isa = PBXGroup;
 			children = (
-				0407060311526C240094FB0B /* Credits.rtf */,
-				0407060511526C240094FB0B /* InfoPlist.strings */,
-				0407060711526C240094FB0B /* MainMenu.nib */,
+				0418D23F12DA5E4C00C56DCE /* Log.nib */,
+				0418D24012DA5E4C00C56DCE /* MainMenu.nib */,
+				0418D24112DA5E4C00C56DCE /* MyDocument.nib */,
 			);
-			name = Dutch.lproj;
-			path = ../../src/player_macosx/Dutch.lproj;
-			sourceTree = SOURCE_ROOT;
+			name = "Resources-cg";
+			sourceTree = "<group>";
 		};
-		0407060911526C240094FB0B /* English.lproj */ = {
+		0418D23B12DA5E1A00C56DCE /* Resources-cocoa */ = {
 			isa = PBXGroup;
 			children = (
-				0407060A11526C240094FB0B /* Credits.rtf */,
-				0407060C11526C240094FB0B /* InfoPlist.strings */,
-				0407060E11526C240094FB0B /* locversion.plist */,
-				0407061011526C240094FB0B /* Log.nib */,
-				0407061211526C240094FB0B /* MainMenu.nib */,
-				0407061411526C240094FB0B /* MyDocument.nib */,
+				0418D27212DA602B00C56DCE /* Log.nib */,
+				0418D27312DA602B00C56DCE /* MainMenu.nib */,
+				0418D27412DA602B00C56DCE /* MyDocument.nib */,
 			);
-			name = English.lproj;
-			path = ../../src/player_macosx/English.lproj;
-			sourceTree = SOURCE_ROOT;
+			name = "Resources-cocoa";
+			sourceTree = "<group>";
 		};
 		041DCB1C12B64CF6003407C8 /* Third Party Libraries */ = {
 			isa = PBXGroup;
@@ -597,6 +585,8 @@
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				0418D23B12DA5E1A00C56DCE /* Resources-cocoa */,
+				0418D23A12DA5E0900C56DCE /* Resources-cg */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -617,9 +607,10 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				0418D24E12DA5EAA00C56DCE /* Credits.rtf */,
+				0418D24F12DA5EAA00C56DCE /* Info.plist */,
+				0418D25012DA5EAA00C56DCE /* InfoPlist.strings */,
 				04428EBD11577E960067C868 /* DTDCache */,
-				0407060211526C240094FB0B /* Dutch.lproj */,
-				0407060911526C240094FB0B /* English.lproj */,
 				04070574115266F60094FB0B /* Welcome */,
 				0407047B115266B40094FB0B /* pause.png */,
 				0407047C115266B40094FB0B /* play.png */,
@@ -628,7 +619,6 @@
 				0407048B115266B40094FB0B /* AmbulantDocDaisy.icns */,
 				0407048C115266B40094FB0B /* AmbulantDocGrins.icns */,
 				0407048D115266B40094FB0B /* AmbulantDocSmil.icns */,
-				0407048E115266B40094FB0B /* Info.plist */,
 				0407047E115266B40094FB0B /* stop.png */,
 			);
 			name = Resources;
@@ -845,17 +835,7 @@
 				0405C02D12B6244C007AD3B2 /* AmbulantDocDaisy.icns in Resources */,
 				0405C02E12B6244C007AD3B2 /* AmbulantDocGrins.icns in Resources */,
 				0405C02F12B6244C007AD3B2 /* AmbulantDocSmil.icns in Resources */,
-				0405C03012B6244C007AD3B2 /* Info.plist in Resources */,
 				0405C03112B6244C007AD3B2 /* Welcome.smil in Resources */,
-				0405C03212B6244C007AD3B2 /* Credits.rtf in Resources */,
-				0405C03312B6244C007AD3B2 /* InfoPlist.strings in Resources */,
-				0405C03412B6244C007AD3B2 /* MainMenu.nib in Resources */,
-				0405C03512B6244C007AD3B2 /* Credits.rtf in Resources */,
-				0405C03612B6244C007AD3B2 /* InfoPlist.strings in Resources */,
-				0405C03712B6244C007AD3B2 /* locversion.plist in Resources */,
-				0405C03812B6244C007AD3B2 /* Log.nib in Resources */,
-				0405C03912B6244C007AD3B2 /* MainMenu.nib in Resources */,
-				0405C03A12B6244C007AD3B2 /* MyDocument.nib in Resources */,
 				0405C03B12B6244C007AD3B2 /* DTDCache in Resources */,
 				0405C03C12B6244C007AD3B2 /* data in Resources */,
 				04FA283412B8D1BD0080216B /* ambulant-common.xcconfig in Resources */,
@@ -864,6 +844,15 @@
 				04FA283912B8D1BD0080216B /* ambulant-mac.xcconfig in Resources */,
 				04FA283A12B8D1BD0080216B /* ambulant-release-cg.xcconfig in Resources */,
 				04FA283C12B8D1BD0080216B /* ambulant-release.xcconfig in Resources */,
+				0418D24B12DA5E4C00C56DCE /* Log.nib in Resources */,
+				0418D24C12DA5E4C00C56DCE /* MainMenu.nib in Resources */,
+				0418D24D12DA5E4C00C56DCE /* MyDocument.nib in Resources */,
+				0418D25412DA5EAA00C56DCE /* Credits.rtf in Resources */,
+				0418D25512DA5EAA00C56DCE /* Info.plist in Resources */,
+				0418D25612DA5EAA00C56DCE /* InfoPlist.strings in Resources */,
+				0418D27812DA602B00C56DCE /* Log.nib in Resources */,
+				0418D27912DA602B00C56DCE /* MainMenu.nib in Resources */,
+				0418D27A12DA602B00C56DCE /* MyDocument.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -879,19 +868,18 @@
 				04A1E98012B585D80060F97E /* AmbulantDocDaisy.icns in Resources */,
 				04A1E98112B585D80060F97E /* AmbulantDocGrins.icns in Resources */,
 				04A1E98212B585D80060F97E /* AmbulantDocSmil.icns in Resources */,
-				04A1E98312B585D80060F97E /* Info.plist in Resources */,
 				04A1E98412B585D80060F97E /* Welcome.smil in Resources */,
-				04A1E98512B585D80060F97E /* Credits.rtf in Resources */,
-				04A1E98612B585D80060F97E /* InfoPlist.strings in Resources */,
-				04A1E98712B585D80060F97E /* MainMenu.nib in Resources */,
-				04A1E98812B585D80060F97E /* Credits.rtf in Resources */,
-				04A1E98912B585D80060F97E /* InfoPlist.strings in Resources */,
-				04A1E98A12B585D80060F97E /* locversion.plist in Resources */,
-				04A1E98B12B585D80060F97E /* Log.nib in Resources */,
-				04A1E98C12B585D80060F97E /* MainMenu.nib in Resources */,
-				04A1E98D12B585D80060F97E /* MyDocument.nib in Resources */,
 				04A1E98E12B585D80060F97E /* DTDCache in Resources */,
 				04A1E98F12B585D80060F97E /* data in Resources */,
+				0418D24512DA5E4C00C56DCE /* Log.nib in Resources */,
+				0418D24612DA5E4C00C56DCE /* MainMenu.nib in Resources */,
+				0418D24712DA5E4C00C56DCE /* MyDocument.nib in Resources */,
+				0418D25112DA5EAA00C56DCE /* Credits.rtf in Resources */,
+				0418D25212DA5EAA00C56DCE /* Info.plist in Resources */,
+				0418D25312DA5EAA00C56DCE /* InfoPlist.strings in Resources */,
+				0418D27512DA602B00C56DCE /* Log.nib in Resources */,
+				0418D27612DA602B00C56DCE /* MainMenu.nib in Resources */,
+				0418D27712DA602B00C56DCE /* MyDocument.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -907,19 +895,15 @@
 				040704E2115266B40094FB0B /* AmbulantDocDaisy.icns in Resources */,
 				040704E3115266B40094FB0B /* AmbulantDocGrins.icns in Resources */,
 				040704E4115266B40094FB0B /* AmbulantDocSmil.icns in Resources */,
-				040704E5115266B40094FB0B /* Info.plist in Resources */,
 				04070587115266F60094FB0B /* Welcome.smil in Resources */,
-				0407061611526C240094FB0B /* Credits.rtf in Resources */,
-				0407061711526C240094FB0B /* InfoPlist.strings in Resources */,
-				0407061811526C240094FB0B /* MainMenu.nib in Resources */,
-				0407061911526C240094FB0B /* Credits.rtf in Resources */,
-				0407061A11526C240094FB0B /* InfoPlist.strings in Resources */,
-				0407061B11526C240094FB0B /* locversion.plist in Resources */,
-				0407061C11526C240094FB0B /* Log.nib in Resources */,
-				0407061D11526C240094FB0B /* MainMenu.nib in Resources */,
-				0407061E11526C240094FB0B /* MyDocument.nib in Resources */,
 				04428EBE11577E960067C868 /* DTDCache in Resources */,
 				04428EC011577EC30067C868 /* data in Resources */,
+				0418D25712DA5EAA00C56DCE /* Credits.rtf in Resources */,
+				0418D25812DA5EAA00C56DCE /* Info.plist in Resources */,
+				0418D25912DA5EAA00C56DCE /* InfoPlist.strings in Resources */,
+				0418D27B12DA602B00C56DCE /* Log.nib in Resources */,
+				0418D27C12DA602B00C56DCE /* MainMenu.nib in Resources */,
+				0418D27D12DA602B00C56DCE /* MyDocument.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1106,81 +1090,6 @@
 		};
 /* End PBXTargetDependency section */
 
-/* Begin PBXVariantGroup section */
-		0407060311526C240094FB0B /* Credits.rtf */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0407060411526C240094FB0B /* Dutch */,
-			);
-			name = Credits.rtf;
-			sourceTree = "<group>";
-		};
-		0407060511526C240094FB0B /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0407060611526C240094FB0B /* Dutch */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		0407060711526C240094FB0B /* MainMenu.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0407060811526C240094FB0B /* Dutch */,
-			);
-			name = MainMenu.nib;
-			sourceTree = "<group>";
-		};
-		0407060A11526C240094FB0B /* Credits.rtf */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0407060B11526C240094FB0B /* English */,
-			);
-			name = Credits.rtf;
-			sourceTree = "<group>";
-		};
-		0407060C11526C240094FB0B /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0407060D11526C240094FB0B /* English */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		0407060E11526C240094FB0B /* locversion.plist */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0407060F11526C240094FB0B /* English */,
-			);
-			name = locversion.plist;
-			sourceTree = "<group>";
-		};
-		0407061011526C240094FB0B /* Log.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0407061111526C240094FB0B /* English */,
-			);
-			name = Log.nib;
-			sourceTree = "<group>";
-		};
-		0407061211526C240094FB0B /* MainMenu.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0407061311526C240094FB0B /* English */,
-			);
-			name = MainMenu.nib;
-			sourceTree = "<group>";
-		};
-		0407061411526C240094FB0B /* MyDocument.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0407061511526C240094FB0B /* English */,
-			);
-			name = MyDocument.nib;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
-
 /* Begin XCBuildConfiguration section */
 		0405C04F12B6244C007AD3B2 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1247,7 +1156,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AmbulantPlayer_Prefix.pch;
-				INFOPLIST_FILE = ../../src/player_macosx/info.plist;
+				INFOPLIST_FILE = ../../src/player_macosx/Resources/info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = AmbulantPlayerCG;
 			};
@@ -1261,7 +1170,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AmbulantPlayer_Prefix.pch;
-				INFOPLIST_FILE = ../../src/player_macosx/info.plist;
+				INFOPLIST_FILE = ../../src/player_macosx/Resources/info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = AmbulantPlayerCG;
 			};
@@ -1279,7 +1188,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AmbulantPlayer_Prefix.pch;
-				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
+				INFOPLIST_FILE = ../../src/player_macosx/Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = AmbulantPlayer;
 			};
@@ -1293,7 +1202,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AmbulantPlayer_Prefix.pch;
-				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
+				INFOPLIST_FILE = ../../src/player_macosx/Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = AmbulantPlayer;
 			};

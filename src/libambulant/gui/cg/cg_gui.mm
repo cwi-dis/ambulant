@@ -637,13 +637,13 @@ bad:
 - (void)ambulantSetSize: (ambulant::lib::size) bounds
 {
 // Remember frame and bounds and adapt the window reqested in the current view
+	original_bounds = bounds;
 #if WITH_UIKIT
 //	NSLog(@"ambulantSetSize: not yet implemented for UIKit");
 	if (original_frame.size.height == 0  && original_frame.size.width == 0) {
 		original_frame.size.height = self.frame.size.height;
 		original_frame.size.width  = self.frame.size.width;
 	}
-	original_bounds = bounds;
 	current_frame = original_frame;
 	[self adaptDisplayAfterRotation: UIDeviceOrientationPortrait withAutoCenter: M_auto_center withAutoResize: M_auto_resize];
 #else
@@ -766,6 +766,25 @@ bad:
 {
 	return true;
 }
+
+- (void)resizeWithOldSuperviewSize:(NSSize)oldBoundsSize
+{
+    /*AM_DBG*/ NSLog(@"resizeWithOldSuperviewSize: %@", self);
+    /*AM_DBG*/ NSLog(@"frame: %f, %f, %f, %f", self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
+    /*AM_DBG*/ NSLog(@"bounds: old %f,%f new %f, %f, %f, %f", oldBoundsSize.width, oldBoundsSize.height, self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, self.bounds.size.height);
+    [super resizeWithOldSuperviewSize: oldBoundsSize];
+    NSSize realSize = {original_bounds.w, original_bounds.h};
+    [self setBoundsSize: realSize];
+#if 0
+    float xscale = self.bounds.size.width / self.frame.size.width;
+    float yscale = self.bounds.size.height / self.frame.size.height;
+    float scale = (xscale < yscale) ? xscale : yscale;
+    NSSize realFrameSize = { self.bounds.size.width * scale, self.bounds.size.height * scale};
+    [self setFrameSize: realFrameSize];
+#endif
+        
+}
+
 #endif // WITH_UIKIT
 
 #ifdef WITH_UIKIT
