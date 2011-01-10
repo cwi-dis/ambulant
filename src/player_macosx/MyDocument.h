@@ -59,6 +59,10 @@ class document_embedder : public ambulant::common::embedder {
 	IBOutlet id play_button;
 	IBOutlet id stop_button;
 	IBOutlet id pause_button;
+    IBOutlet id hud_controls;
+	IBOutlet id play_button_2;
+	IBOutlet id stop_button_2;
+	IBOutlet id pause_button_2;
 	IBOutlet id ask_url_panel;
 	IBOutlet id url_field;
 	IBOutlet id status_line;

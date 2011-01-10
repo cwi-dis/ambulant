@@ -279,10 +279,13 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	BOOL enabled;
 	enabled = [self validateUIItem: play_button];
 	[play_button setEnabled: enabled];
+    if (play_button_2) [play_button_2 setEnabled: enabled];
 	enabled = [self validateUIItem: stop_button];
 	[stop_button setEnabled: enabled];
+    if (stop_button_2) [stop_button_2 setEnabled: enabled];
 	enabled = [self validateUIItem: pause_button];
 	[pause_button setEnabled: enabled];
+    if (pause_button_2) [pause_button_2 setEnabled: enabled];
 }
 
 - (IBAction)pause:(id)sender
@@ -399,6 +402,10 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	}
 #endif
 	if (ml) ml->before_mousemove(0);
+    if (saved_window) {
+        [hud_controls show];
+        // XXXX Schedule for disappearance...
+    }
 }
 
 - (void)keyDown: (NSEvent *)ev
@@ -613,10 +620,12 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 
 - (IBAction) toggleFullScreen: (id)sender
 {
-	if (saved_window)
+	if (saved_window) {
+        [hud_controls hide];
 		[self goWindowMode: sender];
-	else
+	} else {
 		[self goFullScreen:sender];
+    }
 }
 
 #ifdef WITH_OVERLAY_WINDOW
