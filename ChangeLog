@@ -1,3 +1,25 @@
+2011-01-11 00:05  jackjansen
+
+	* Got started on HUD for fullscreen mode
+
+2011-01-10 23:12  jackjansen
+
+	* Fiddling with look and feel
+
+2011-01-10 22:10  jackjansen
+
+	* Added missing resource files from exp-jack-cg-topleft branch
+
+2011-01-10 15:55  keesblom
+
+	* Merged with exp-jack-cg-topleft-working. PanZoom now works
+	  properly and its animation is much faster.
+
+2011-01-10 11:23  keesblom
+
+	* Added a method 'drawTestRect:(CGRect)rect'. Helpful when
+	  debugging image drawing.
+
 2011-01-06 21:51  jackjansen
 
 	* Added the old crop code again, in ifdefs
