@@ -320,6 +320,7 @@ applicationWillTerminate:(UIApplication *)application {
 		 tabBarController.view.hidden = true;
 		 tabBarController.view.alpha = 0.0;
 		 viewController.view.alpha = 1.0;
+		 viewController.view.hidden = false;
 	 } ];
 	[viewController play];
 }
