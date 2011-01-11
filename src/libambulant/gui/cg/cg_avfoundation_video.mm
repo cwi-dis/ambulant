@@ -344,7 +344,7 @@ cg_avfoundation_video_renderer::cg_avfoundation_video_renderer(
 cg_avfoundation_video_renderer::~cg_avfoundation_video_renderer()
 {
 	m_lock.enter();
-	AM_DBG logger::get_logger()->debug("~cg_avfoundation_video_renderer(0x%x) [m_avplayer_manager retainCount]=%d", (void *)this, m_avplayer_manager == NULL ? -999 : [m_avplayer_manager retainCount]);
+	AM_DBG logger::get_logger()->debug("~cg_avfoundation_video_renderer(0x%x) m_dest=0x%x [m_avplayer_manager retainCount]=%d", (void *)this, m_dest, m_avplayer_manager == NULL ? -999 : [m_avplayer_manager retainCount]);
 
 	if (m_avplayer_manager != NULL) {
 		if (m_visible) {
@@ -436,8 +436,7 @@ cg_avfoundation_video_renderer::post_stop() {
 	m_renderer_state = rs_fullstopped;
 	m_context->stopped(m_cookie);
 	if (m_dest != NULL) {
-		m_dest->need_redraw();
-//		m_dest->renderer_done(this); //already done by smil_player::stop_playable()
+		m_dest->renderer_done(this); //already done by smil_player::stop_playable()
 	}
 	m_lock.leave();
 }
