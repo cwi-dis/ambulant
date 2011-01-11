@@ -1,4 +1,4 @@
-// This file is part of Ambulant Player, www.ambulantplayer.org.
+	// This file is part of Ambulant Player, www.ambulantplayer.org.
 //
 // Copyright (C) 2003-2010 Stichting CWI,
 // Science Park 123, 1098 XG Amsterdam, The Netherlands.

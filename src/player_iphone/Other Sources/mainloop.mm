@@ -178,6 +178,7 @@ mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *a
 				// new item not stored
 				[new_item release];
 			}
+			prefs->m_normal_exit = false;
 			prefs->m_history = history;
 		}
 		prefs->save_preferences();
@@ -214,6 +215,7 @@ mainloop::init_playable_factory()
 	pf->add_factory(gui::cg::create_cg_smiltext_playable_factory(this, NULL));
 #endif//WITH_SMIL30
 	pf->add_factory(gui::cg::create_cg_text_playable_factory(this, NULL));
+//XXXX #define WITH_AVFOUNDATION
 #ifdef	WITH_AVFOUNDATION
 	pf->add_factory(gui::cg::create_cg_avfoundation_video_playable_factory(this, NULL));
 #endif//WITH_AVFOUNDATION

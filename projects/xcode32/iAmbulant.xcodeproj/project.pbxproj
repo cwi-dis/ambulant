@@ -59,6 +59,8 @@
 		04B75D4312B80C2A00161EB5 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D3812B80C2A00161EB5 /* data */; };
 		04B75D4812B80C4900161EB5 /* mainloop.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75D4512B80C4900161EB5 /* mainloop.mm */; };
 		04B75D4912B80C4900161EB5 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75D4712B80C4900161EB5 /* main.mm */; };
+		93BBA1F312DC9C2400EE7501 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93BBA1F212DC9C2400EE7501 /* CoreMedia.framework */; };
+		93BBA20012DC9C3100EE7501 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93BBA1FF12DC9C3100EE7501 /* AVFoundation.framework */; };
 		93E20B2412D2225B00D99F74 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 93E20B2312D2225B00D99F74 /* libbz2.dylib */; };
 		93E20B2612D2225B00D99F74 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 93E20B2512D2225B00D99F74 /* libz.dylib */; };
 		93E20B2812D2228800D99F74 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93E20B2712D2228800D99F74 /* AudioToolbox.framework */; };
@@ -194,6 +196,8 @@
 		1D6058910D05DD3D006BFB54 /* iAmbulant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iAmbulant.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		32CA4F630368D1EE00C91783 /* iAmbulant_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iAmbulant_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* iAmbulant-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "iAmbulant-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		93BBA1F212DC9C2400EE7501 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		93BBA1FF12DC9C3100EE7501 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		93E20B2312D2225B00D99F74 /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = usr/lib/libbz2.dylib; sourceTree = SDKROOT; };
 		93E20B2512D2225B00D99F74 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		93E20B2712D2228800D99F74 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -236,6 +240,8 @@
 				93E20B3212D2228800D99F74 /* QuartzCore.framework in Frameworks */,
 				93E20B3412D2228800D99F74 /* UIKit.framework in Frameworks */,
 				93E20B4412D2229600D99F74 /* OpenGLES.framework in Frameworks */,
+				93BBA1F312DC9C2400EE7501 /* CoreMedia.framework in Frameworks */,
+				93BBA20012DC9C3100EE7501 /* AVFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -406,6 +412,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				93BBA1FF12DC9C3100EE7501 /* AVFoundation.framework */,
+				93BBA1F212DC9C2400EE7501 /* CoreMedia.framework */,
 				93E20B2312D2225B00D99F74 /* libbz2.dylib */,
 				93E20B2512D2225B00D99F74 /* libz.dylib */,
 				93E20B2712D2228800D99F74 /* AudioToolbox.framework */,

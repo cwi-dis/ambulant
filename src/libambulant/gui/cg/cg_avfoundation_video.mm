@@ -34,11 +34,11 @@ extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
 #include "ambulant/common/smil_alignment.h"
 #include "ambulant/smil2/test_attrs.h"
 
-//#define NS_DBG
+#define NS_DBG
 #ifndef NS_DBG
 #define NS_DBG if(0)
 #endif
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif

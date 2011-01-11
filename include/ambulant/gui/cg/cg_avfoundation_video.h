@@ -25,7 +25,7 @@
 
 #ifndef AMBULANT_GUI_CG_CG_AVFOUNDATION_VIDEO_H
 #define AMBULANT_GUI_CG_CG_AVFOUNDATION_VIDEO_H
-
+//XXXX #define WITH_AVFOUNDATION 1
 #include "ambulant/gui/cg/cg_renderer.h"
 #include "ambulant/common/video_renderer.h"
 #include "ambulant/lib/mtsync.h"
