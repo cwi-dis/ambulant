@@ -2268,22 +2268,6 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = libambulant_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"_DEBUG=1",
-					"WITH_UIKIT=1",
-					"WITH_CG=1",
-					"WITH_EXTERNAL_DOM=1",
-					"AM_PREFER_FFMPEG=1",
-					"WITH_SDL=1",
-					"WITH_FFMPEG=1",
-					"WITH_LIVE=1",
-					"WITH_EXPAT=1",
-					"WITH_PYTHON_PLUGIN=1",
-					"WITH_FFMPEG_AVFORMAT=1",
-					"WITH_SMIL30=1",
-					"WITH_SEAMLESS_PLAYBACK=1",
-					"WITH_CLOCK_SYNC=1",
-				);
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = NO;
@@ -2311,22 +2295,6 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = libambulant_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"NDEBUG=1",
-					"WITH_UIKIT=1",
-					"WITH_CG=1",
-					"WITH_EXTERNAL_DOM=1",
-					"AM_PREFER_FFMPEG=1",
-					"WITH_SDL=1",
-					"WITH_FFMPEG=1",
-					"WITH_LIVE=1",
-					"WITH_EXPAT=1",
-					"WITH_PYTHON_PLUGIN=1",
-					"WITH_FFMPEG_AVFORMAT=1",
-					"WITH_SMIL30=1",
-					"WITH_SEAMLESS_PLAYBACK=1",
-					"WITH_CLOCK_SYNC=1",
-				);
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = NO;
@@ -2357,23 +2325,6 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = libambulant_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"_DEBUG=1",
-					"WITH_CG=1",
-					"WITH_EXTERNAL_DOM=1",
-					"WITH_LTDL_PLUGINS=1",
-					"AM_PREFER_FFMPEG=1",
-					"WITH_SDL=1",
-					"WITH_FFMPEG=1",
-					"WITH_LIVE=1",
-					"WITH_EXPAT=1",
-					"WITH_PYTHON_PLUGIN=1",
-					"WITH_FFMPEG_AVFORMAT=1",
-					"WITH_OVERLAY_WINDOW=1",
-					"WITH_SMIL30=1",
-					"WITH_SEAMLESS_PLAYBACK=1",
-					"WITH_CLOCK_SYNC=1",
-				);
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2398,23 +2349,6 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = libambulant_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"NDEBUG=1",
-					"WITH_CG=1",
-					"WITH_EXTERNAL_DOM=1",
-					"WITH_LTDL_PLUGINS=1",
-					"AM_PREFER_FFMPEG=1",
-					"WITH_SDL=1",
-					"WITH_FFMPEG=1",
-					"WITH_LIVE=1",
-					"WITH_EXPAT=1",
-					"WITH_PYTHON_PLUGIN=1",
-					"WITH_FFMPEG_AVFORMAT=1",
-					"WITH_OVERLAY_WINDOW=1",
-					"WITH_SMIL30=1",
-					"WITH_SEAMLESS_PLAYBACK=1",
-					"WITH_CLOCK_SYNC=1",
-				);
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2440,23 +2374,6 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = libambulant_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"_DEBUG=1",
-					"WITH_CG=1",
-					"WITH_EXTERNAL_DOM=1",
-					"WITH_LTDL_PLUGINS=1",
-					"AM_PREFER_FFMPEG=1",
-					"WITH_SDL=1",
-					"WITH_FFMPEG=1",
-					"WITH_LIVE=1",
-					"WITH_EXPAT=1",
-					"WITH_PYTHON_PLUGIN=1",
-					"WITH_FFMPEG_AVFORMAT=1",
-					"WITH_OVERLAY_WINDOW=1",
-					"WITH_SMIL30=1",
-					"WITH_SEAMLESS_PLAYBACK=1",
-					"WITH_CLOCK_SYNC=1",
-				);
 				INSTALL_PATH = /usr/local/lib;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -2480,23 +2397,6 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = libambulant_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"NDEBUG=1",
-					"WITH_CG=1",
-					"WITH_EXTERNAL_DOM=1",
-					"WITH_LTDL_PLUGINS=1",
-					"AM_PREFER_FFMPEG=1",
-					"WITH_SDL=1",
-					"WITH_FFMPEG=1",
-					"WITH_LIVE=1",
-					"WITH_EXPAT=1",
-					"WITH_PYTHON_PLUGIN=1",
-					"WITH_FFMPEG_AVFORMAT=1",
-					"WITH_OVERLAY_WINDOW=1",
-					"WITH_SMIL30=1",
-					"WITH_SEAMLESS_PLAYBACK=1",
-					"WITH_CLOCK_SYNC=1",
-				);
 				INSTALL_PATH = /usr/local/lib;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -2524,22 +2424,6 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = libambulant_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"_DEBUG=1",
-					"WITH_EXTERNAL_DOM=1",
-					"WITH_LTDL_PLUGINS=1",
-					"AM_PREFER_FFMPEG=1",
-					"WITH_SDL=1",
-					"WITH_FFMPEG=1",
-					"WITH_LIVE=1",
-					"WITH_EXPAT=1",
-					"WITH_PYTHON_PLUGIN=1",
-					"WITH_FFMPEG_AVFORMAT=1",
-					"WITH_OVERLAY_WINDOW=1",
-					"WITH_SMIL30=1",
-					"WITH_SEAMLESS_PLAYBACK=1",
-					"WITH_CLOCK_SYNC=1",
-				);
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2564,22 +2448,6 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = libambulant_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"NDEBUG=1",
-					"WITH_EXTERNAL_DOM=1",
-					"WITH_LTDL_PLUGINS=1",
-					"AM_PREFER_FFMPEG=1",
-					"WITH_SDL=1",
-					"WITH_FFMPEG=1",
-					"WITH_LIVE=1",
-					"WITH_EXPAT=1",
-					"WITH_PYTHON_PLUGIN=1",
-					"WITH_FFMPEG_AVFORMAT=1",
-					"WITH_OVERLAY_WINDOW=1",
-					"WITH_SMIL30=1",
-					"WITH_SEAMLESS_PLAYBACK=1",
-					"WITH_CLOCK_SYNC=1",
-				);
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
