@@ -14,6 +14,8 @@
 #endif
 
 @implementation PresentationViewController
+
+@synthesize nibLoadedCell;
 /*
 // The designated initializer. Override to perform setup that is required before the view is loaded.
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -134,9 +136,9 @@ isFavorites {
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    static NSString *CellIdentifier = @"Cell";
+    static NSString *CellIdentifier = @"PresentationTableCell"; // this name must match Identity field in nib. 
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
     if (cell == nil) {
 //      cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
 		[ [ NSBundle mainBundle ] loadNibNamed: @"PresentationTableCell" owner: self options: NULL ];
@@ -148,7 +150,6 @@ isFavorites {
 	UIImageView* posterView = (UIImageView*) [ cell viewWithTag:5]; // tags are assigned in the nib
 	posterView.contentMode = UIViewContentModeScaleAspectFit;
 	posterView.image = [UIImage imageWithData: [aPresentation poster_data]];
-//XX	posterView.image = [UIImage imageWithCGImage:(NSData*) aPresentation.poster_data];
 	[posterView setNeedsDisplay];
 	UILabel* label = (UILabel*) [ cell viewWithTag: 1];
 	label.text = aPresentation.title;

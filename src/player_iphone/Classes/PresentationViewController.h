@@ -45,4 +45,6 @@
 - (NSArray*) get_playlist;
 - (void) updatePlaylist;
 - (BOOL) isFavorites;
+
+@property(nonatomic, retain) IBOutlet UITableViewCell* nibLoadedCell;
 @end

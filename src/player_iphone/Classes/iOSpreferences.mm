@@ -223,15 +223,13 @@ iOSpreferences::save_preferences()
 	[encoder encodeObject:ns_title forKey:@"Ns_title"];
 	[encoder encodeObject:ns_url forKey:@"Ns_url"];
 	if (ns_image_data != NULL) {
-//XX	UIImage *img = [UIImage imageWithCGImage:cg_image];
-///X	NSData *img_data = UIImagePNGRepresentation(img);
 		[encoder encodeObject:ns_image_data forKey:@"Ns_image_data"];
 	}
 	[encoder encodeObject:ns_description forKey:@"Ns_description"];
 	[encoder encodeObject:ns_dur forKey:@"Ns_dur"];
 	[self.ns_last_node_repr retain];
 	[encoder encodeObject:ns_last_node_repr forKey:@"Ns_lastnode"];
-//	[encoder encodeObject:position forKey:@"Position"];
+//TBD [encoder encodeObject:position forKey:@"Position"];
 }
 
 - (id) initWithCoder: (NSCoder*) decoder
@@ -239,18 +237,11 @@ iOSpreferences::save_preferences()
 	self.ns_title = [decoder decodeObjectForKey:@"Ns_title"];
 	self.ns_url = [decoder decodeObjectForKey:@"Ns_url"];
 	self.ns_image_data = [decoder decodeObjectForKey:@"Ns_image_data"];
-	
-//XX	if (img_data != NULL) {
-//XX		CGDataProviderRef imgDataProvider = CGDataProviderCreateWithCFData ((CFDataRef)img_data);
-//XX		self.cg_image = CGImageCreateWithPNGDataProvider(imgDataProvider, NULL, false, kCGRenderingIntentDefault);
-//XX	}
-//	[img_src release];
-//	CFRelease(imgCFDataRef);
 	self.ns_description = [decoder decodeObjectForKey:@"Ns_description"];
 	self.ns_dur = [decoder decodeObjectForKey:@"Ns_dur"];
 	self.ns_last_node_repr = [decoder decodeObjectForKey:@"Ns_lastnode"];
 	[self.ns_last_node_repr retain];
-//	self.position = [decoder decodeObjectForKey:@"Position"];
+//TBD self.position = [decoder decodeObjectForKey:@"Position"];
 	return self;
 }
 
@@ -258,9 +249,6 @@ iOSpreferences::save_preferences()
 	[ns_title release];
 	[ns_url release];
 	[ns_image_data release];
-//XX	if (cg_image != NULL) {
-//XX		CFRelease( cg_image);
-//XX	}
 	[ns_description release];
 	[ns_dur release];
 
