@@ -30,8 +30,7 @@
 }
 */
 
-- (Presentation*)
-getPresentationFromPlaylistItem: (PlaylistItem*) item {
+- (Presentation*) getPresentationFromPlaylistItem: (PlaylistItem*) item {
 	Presentation* aPresentation = [ [ Presentation alloc ] init ];
 	if (item != NULL) {
 		aPresentation.title = [item ns_title];
@@ -43,8 +42,7 @@ getPresentationFromPlaylistItem: (PlaylistItem*) item {
 	return aPresentation;
 }
 
-- (NSArray*)
-get_playlist {
+- (NSArray*) get_playlist {
 	NSArray* playlist;
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 
@@ -101,15 +99,13 @@ isFavorites {
 }
 
 // Overriden to allow orientations other than the default portrait orientation.
-- (BOOL)
-shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+- (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Return YES for supported orientations
     return [delegate canShowRotatedUIViews];
 }
 
 
-- (void)
-didReceiveMemoryWarning
+- (void) didReceiveMemoryWarning
 {
 	// Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
@@ -117,24 +113,21 @@ didReceiveMemoryWarning
 	// Release any cached data, images, etc that aren't in use.
 }
 
-- (void)
-viewDidUnload
+- (void) viewDidUnload
 {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
 }
 
 // Customize the number of rows in the table view.
-- (NSInteger)
-tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 	AM_DBG NSLog(@"tableView:0x%x numberOfRowsInSection(0x%x) section=%d", self, section);
     return [ presentationsArray count ];
 }
 
 // Customize the appearance of table view cells.
-- (UITableViewCell *)
-tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
     static NSString *CellIdentifier = @"Cell";
@@ -170,8 +163,7 @@ tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPat
 }
 
 // Support row selection in the table view.
-- (void)
-tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if (editingStyle != UITableViewCellEditingStyleNone) {
 		return;
 	}
@@ -191,8 +183,7 @@ tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexP
 }
 
 // Support conditional editing of the table view.
-- (BOOL)
-tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+- (BOOL) tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return NO if you do not want the specified item to be editable.
 #ifdef	FIRST_ITEM
 	if (indexPath.row < FIRST_ITEM) {
@@ -203,16 +194,14 @@ tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPat
 }
 
 // Show editing style button
-- (UITableViewCellEditingStyle)
-tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCellEditingStyle) tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	return editingStyle;
 }
 
 // Support editing the table view (deletion only, adding is automatic).
-- (void)
-tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyleArg 
-									forRowAtIndexPath:(NSIndexPath *)indexPath
+- (void) tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyleArg 
+											 forRowAtIndexPath:(NSIndexPath *)indexPath
 {    
 	NSUInteger playlistIndex = indexPath.row;
 #ifdef	FIRST_ITEM
@@ -242,8 +231,7 @@ tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingSty
     } 
 }
 
-- (IBAction)
-toggleEditMode
+- (IBAction) toggleEditMode
 {
 	switch (editingStyle) {
 		case UITableViewCellEditingStyleNone:
@@ -256,6 +244,39 @@ toggleEditMode
 	[[self tableView] setEditing: editingStyle != UITableViewCellEditingStyleNone animated: YES];
 }
 
+// Support re-arranging table items (Favorites only)
+- (BOOL) tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
+    // Return NO if you do not want the specified item to be moveable.
+#ifdef	FIRST_ITEM
+	if (indexPath.row < FIRST_ITEM) {
+		return NO;
+	}
+#endif//FIRST_ITEM
+	return isFavorites;
+}
+
+// Implement re-arranging table items (Favorites only)
+- (void) tableView:(UITableView *)tableView moveRowAtIndexPath: (NSIndexPath*) fromIndexPath toIndexPath: (NSIndexPath*) toIndexPath
+{
+	NSUInteger fromPlaylistIndex = fromIndexPath.row, toPlaylistIndex = toIndexPath.row;
+	NSLog(@"moveRowAtIndexPath: %d toIndexPath: %d", fromPlaylistIndex, toPlaylistIndex);
+	if (fromPlaylistIndex == toPlaylistIndex) {
+		return;
+	}
+#ifdef	FIRST_ITEM
+	fromPlaylistIndex -= FIRST_ITEM;
+	toPlaylistIndex -= FIRST_ITEM;
+#endif//FIRST_ITEM
+	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
+	ambulant::Playlist* playlist = isFavorites ? prefs->m_favorites : prefs->m_history;
+	PlaylistItem* selectedItem = [playlist->get_playlist() objectAtIndex: fromPlaylistIndex];
+	playlist->insert_item_at_index(selectedItem, toPlaylistIndex);
+	if (toPlaylistIndex > fromPlaylistIndex) {
+		playlist->remove_playlist_item_at_index(fromPlaylistIndex);
+	} else {
+		playlist->remove_playlist_item_at_index(fromPlaylistIndex + 1);
+	}
+}
 
 - (void) insertCurrentItemAtIndexPath: (NSIndexPath*) indexPath
 {
@@ -338,8 +359,7 @@ toggleEditMode
 	cell.alpha = 0.0;*/
 }
 
-- (void)
-selectNextPresentation
+- (void) selectNextPresentation
 {
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	NSArray* playlist = isFavorites ? prefs->m_favorites->get_playlist() : prefs->m_history->get_playlist();
@@ -351,16 +371,14 @@ selectNextPresentation
 	[delegate playPresentation:[[selectedItem ns_url] absoluteString] fromPresentationViewController: self];
 }
 	
-- (void)
-viewWillDisappear:(BOOL)animated
+- (void) viewWillDisappear:(BOOL)animated
 {
 	if (editingStyle != UITableViewCellEditingStyleNone) {
 		[self toggleEditMode];
 	}
 }
 
-- (void)
-dealloc
+- (void) dealloc
 {
     [super dealloc];
 	[presentationsArray dealloc];

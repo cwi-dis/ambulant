@@ -143,7 +143,8 @@ iOSpreferences::load_preferences()
 	return true;
 }
 
-bool iOSpreferences::save_preferences()
+bool
+iOSpreferences::save_preferences()
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
@@ -217,8 +218,7 @@ bool iOSpreferences::save_preferences()
 }
 	
 #import <ImageIO/ImageIO.h>
-- (void)
-encodeWithCoder: (NSCoder*) encoder	
+- (void) encodeWithCoder: (NSCoder*) encoder	
 {
 	[encoder encodeObject:ns_title forKey:@"Ns_title"];
 	[encoder encodeObject:ns_url forKey:@"Ns_url"];
@@ -235,8 +235,7 @@ encodeWithCoder: (NSCoder*) encoder
 //	[encoder encodeObject:position forKey:@"Position"];
 }
 
-- (id)
-initWithCoder: (NSCoder*) decoder
+- (id) initWithCoder: (NSCoder*) decoder
 {
 	self.ns_title = [decoder decodeObjectForKey:@"Ns_title"];
 	self.ns_url = [decoder decodeObjectForKey:@"Ns_url"];
@@ -255,8 +254,7 @@ initWithCoder: (NSCoder*) decoder
 	return self;
 }
 
-- (void)
-dealloc {
+- (void) dealloc {
 	[ns_title release];
 	[ns_url release];
 	if (cg_image != NULL) {
@@ -289,7 +287,7 @@ ambulant::Playlist::insert_item_at_index (PlaylistItem* item, NSUInteger index)
 		return;
 	}
 	[item retain];
-	if ([am_ios_playlist count] == 0) {
+	if (index >= [am_ios_playlist count]) {
 		[am_ios_playlist addObject: (NSObject*) item];
 	} else {
 		[am_ios_playlist insertObject: item atIndex: index];
