@@ -34,7 +34,7 @@
 	Presentation* aPresentation = [ [ Presentation alloc ] init ];
 	if (item != NULL) {
 		aPresentation.title = [item ns_title];
-		aPresentation.poster = [item cg_image];
+		aPresentation.poster_data = [item ns_image_data];
 		aPresentation.duration = [item ns_dur];
 		aPresentation.description = [item ns_description];
 
@@ -117,6 +117,10 @@ isFavorites {
 {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
+	if (presentationsArray != NULL) {
+		[presentationsArray dealloc];
+		presentationsArray = NULL;
+	}
 }
 
 // Customize the number of rows in the table view.
@@ -143,7 +147,8 @@ isFavorites {
 	Presentation* aPresentation = [ presentationsArray objectAtIndex: indexPath.row ];
 	UIImageView* posterView = (UIImageView*) [ cell viewWithTag:5]; // tags are assigned in the nib
 	posterView.contentMode = UIViewContentModeScaleAspectFit;
-	posterView.image = [UIImage imageWithCGImage:(CGImageRef) aPresentation.poster];
+	posterView.image = [UIImage imageWithData: [aPresentation poster_data]];
+//XX	posterView.image = [UIImage imageWithCGImage:(NSData*) aPresentation.poster_data];
 	[posterView setNeedsDisplay];
 	UILabel* label = (UILabel*) [ cell viewWithTag: 1];
 	label.text = aPresentation.title;
@@ -259,7 +264,7 @@ isFavorites {
 - (void) tableView:(UITableView *)tableView moveRowAtIndexPath: (NSIndexPath*) fromIndexPath toIndexPath: (NSIndexPath*) toIndexPath
 {
 	NSUInteger fromPlaylistIndex = fromIndexPath.row, toPlaylistIndex = toIndexPath.row;
-	NSLog(@"moveRowAtIndexPath: %d toIndexPath: %d", fromPlaylistIndex, toPlaylistIndex);
+	AM_DBG NSLog(@"moveRowAtIndexPath: %d toIndexPath: %d", fromPlaylistIndex, toPlaylistIndex);
 	if (fromPlaylistIndex == toPlaylistIndex) {
 		return;
 	}
@@ -290,7 +295,7 @@ isFavorites {
 		ambulant::Playlist* playlist = prefs->m_favorites;
 		PlaylistItem* new_item = prefs->m_history->get_last_item();
 		// Check if we have 'new_item' already in the playlist; if so ignore
-//		NSLog(@"new_item.ns_url=0x%x: %@", new_item.ns_url, new_item.ns_url != NULL ? [new_item.ns_url absoluteString]:@"<nil>");
+		AM_DBG NSLog(@"new_item.ns_url=0x%x: %@", new_item.ns_url, new_item.ns_url != NULL ? [new_item.ns_url absoluteString]:@"<nil>");
 		BOOL found = NO;
 		BOOL* found_ref = &found;
 		NSArray* items = playlist->get_playlist();
@@ -298,7 +303,7 @@ isFavorites {
 		 ^(id obj, NSUInteger idx, BOOL *stop)
 		 {
 			 PlaylistItem* item = (PlaylistItem*) obj;
-//			 NSLog(@"item.ns_url=0x%x: %@", item.ns_url, item.ns_url != NULL ? [item.ns_url absoluteString]:@"<nil>");
+			 AM_DBG NSLog(@"item.ns_url=0x%x: %@", item.ns_url, item.ns_url != NULL ? [item.ns_url absoluteString]:@"<nil>");
 			 if ([new_item.ns_url isEqual: (id) item.ns_url]) {
 				 *found_ref = YES;
 			 }
@@ -314,7 +319,7 @@ isFavorites {
 		} else {
 			[presentationsArray insertObject: newPresentation atIndex: indexPath.row ];
 			NSIndexPath* updatedPath = [ NSIndexPath indexPathForRow:indexPath.row inSection: 0 ];
-			NSLog(@"updatedPath.row=%d",updatedPath.row);
+			AM_DBG NSLog(@"updatedPath.row=%d",updatedPath.row);
 			NSMutableArray* updatedPaths = [ [NSMutableArray alloc] init ];
 			[updatedPaths addObject: updatedPath];
 			[self.tableView insertRowsAtIndexPaths: updatedPaths withRowAnimation: UITableViewRowAnimationMiddle]; //UITableViewRowAnimationMiddle ];
@@ -351,12 +356,6 @@ isFavorites {
 		 [presentation release]; // the array now has ownership
 	}];
 	[[self tableView] reloadData];
-/*JNK
-	self.tableView.frame.origin.y = 66;
-	UITableViewCell* cell = [[self tableView] cellForRowAtIndexPath: [NSIndexPath indexPathForRow: 1 inSection:0]];
-	cell.opaque = false;
-	cell.hidden = true;
-	cell.alpha = 0.0;*/
 }
 
 - (void) selectNextPresentation
@@ -380,8 +379,7 @@ isFavorites {
 
 - (void) dealloc
 {
-    [super dealloc];
-	[presentationsArray dealloc];
+   [super dealloc];
 }
 
 @end

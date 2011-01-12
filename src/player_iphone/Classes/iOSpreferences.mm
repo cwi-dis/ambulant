@@ -185,11 +185,11 @@ iOSpreferences::save_preferences()
 }
 @implementation PlaylistItem
 @synthesize ns_title, ns_url, ns_description, ns_dur, ns_last_node_repr, position;
-@synthesize cg_image;
+@synthesize ns_image_data;
 
 - (PlaylistItem*) initWithTitle: (NSString*) atitle
 							url: (NSURL*) ans_url
-						  image: (CGImageRef) acg_image
+					image_data: (NSData*) ans_image_data
 					description: (NSString*) ans_description
 					   duration: (NSString*) ans_dur
 				 last_node_repr: (NSString*) alast_node_repr
@@ -197,7 +197,7 @@ iOSpreferences::save_preferences()
 {
 	ns_title = atitle;
 	ns_url = [ans_url retain];
-	cg_image = acg_image;
+	ns_image_data = ans_image_data;
 	ns_description = ans_description;
 	ns_dur = ans_dur;
 	if (alast_node_repr == NULL) {
@@ -222,12 +222,11 @@ iOSpreferences::save_preferences()
 {
 	[encoder encodeObject:ns_title forKey:@"Ns_title"];
 	[encoder encodeObject:ns_url forKey:@"Ns_url"];
-	if (cg_image != NULL) {
-		UIImage *img = [UIImage imageWithCGImage:cg_image];
-		NSData *img_data = UIImagePNGRepresentation(img);
-		[encoder encodeObject:img_data forKey:@"Cg_image"];
+	if (ns_image_data != NULL) {
+//XX	UIImage *img = [UIImage imageWithCGImage:cg_image];
+///X	NSData *img_data = UIImagePNGRepresentation(img);
+		[encoder encodeObject:ns_image_data forKey:@"Ns_image_data"];
 	}
-//	CFRelease(imgCFDataRef);
 	[encoder encodeObject:ns_description forKey:@"Ns_description"];
 	[encoder encodeObject:ns_dur forKey:@"Ns_dur"];
 	[self.ns_last_node_repr retain];
@@ -239,11 +238,12 @@ iOSpreferences::save_preferences()
 {
 	self.ns_title = [decoder decodeObjectForKey:@"Ns_title"];
 	self.ns_url = [decoder decodeObjectForKey:@"Ns_url"];
-	NSData* img_data = [decoder decodeObjectForKey:@"Cg_image"];
-	if (img_data != NULL) {
-		CGDataProviderRef imgDataProvider = CGDataProviderCreateWithCFData ((CFDataRef)img_data);
-		self.cg_image = CGImageCreateWithPNGDataProvider(imgDataProvider, NULL, false, kCGRenderingIntentDefault);
-	}
+	self.ns_image_data = [decoder decodeObjectForKey:@"Ns_image_data"];
+	
+//XX	if (img_data != NULL) {
+//XX		CGDataProviderRef imgDataProvider = CGDataProviderCreateWithCFData ((CFDataRef)img_data);
+//XX		self.cg_image = CGImageCreateWithPNGDataProvider(imgDataProvider, NULL, false, kCGRenderingIntentDefault);
+//XX	}
 //	[img_src release];
 //	CFRelease(imgCFDataRef);
 	self.ns_description = [decoder decodeObjectForKey:@"Ns_description"];
@@ -257,9 +257,10 @@ iOSpreferences::save_preferences()
 - (void) dealloc {
 	[ns_title release];
 	[ns_url release];
-	if (cg_image != NULL) {
-		CFRelease( cg_image);
-	}
+	[ns_image_data release];
+//XX	if (cg_image != NULL) {
+//XX		CFRelease( cg_image);
+//XX	}
 	[ns_description release];
 	[ns_dur release];
 

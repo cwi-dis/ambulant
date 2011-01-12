@@ -11,7 +11,7 @@
 @interface PlaylistItem : NSObject {
 	NSString* ns_title; // <meta name="title" content=.. /> 
 	NSURL* ns_url;
-	CGImageRef cg_image; //CGImageRef
+	NSData* ns_image_data; // contains CGImage
 	NSString* ns_description;
 	NSString* ns_dur;
 	NSString* ns_last_node_repr;
@@ -19,7 +19,7 @@
 }
 @property(nonatomic,retain) NSString* ns_title;
 @property(nonatomic,retain) NSURL* ns_url;
-@property(nonatomic) CGImageRef cg_image;
+@property(nonatomic,retain) NSData* ns_image_data;
 @property(nonatomic,retain) NSString* ns_description;
 @property(nonatomic,retain) NSString* ns_dur;
 @property(nonatomic,assign) NSString* ns_last_node_repr;
@@ -28,7 +28,7 @@
 // initialize all fields
 - (PlaylistItem*) initWithTitle: (NSString*) atitle
 							url: (NSURL*) ansurl
-						  image: (CGImageRef) acg_image
+					 image_data: (NSData*) ans_image_data
 					description: (NSString*) ans_description
 					   duration: (NSString*) ans_dur
 				 last_node_repr: (NSString*) alast_node_repr
@@ -45,7 +45,7 @@
 
 namespace ambulant {
 	
-#define AM_IOS_PLAYLISTVERSION @"0.1" // Needs to be updated when Playlist format changes 
+#define AM_IOS_PLAYLISTVERSION @"0.2" // Needs to be updated when Playlist format changes 
 	
 	
 class Playlist {

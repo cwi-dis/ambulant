@@ -124,7 +124,7 @@ application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictio
     // Override point for customization after application launch.
     // Add the view controller's view to the window and display.
 
-	/*AM_DBG*/ NSLog(@"AmbulantAppDelegate application didFinishLaunchingWithOptions: %@", launchOptions);
+	AM_DBG NSLog(@"AmbulantAppDelegate application didFinishLaunchingWithOptions: %@", launchOptions);
 //	AM_DBG [DBG addObject: [NSString stringWithString: @"didFinishLaunchingWithOptions"]]; 
 	AM_DBG DBG_ADD("didFinishLaunchingWithOptions");
 	// Install ambulent preferences handler
@@ -445,6 +445,8 @@ document_stopped: (id) sender
 	
 	AM_DBG NSLog(@"auxViewControllerDidFinish: controller=0x%x", controller);
     // XXX Needed?[viewController orientationChanged: nil];
+	// Most view auxiliary view controllers may change some of items stored in preferences
+	ambulant::iOSpreferences::get_preferences()->save_preferences();
 	[self showAmbulantPlayer: self];
     [viewController play];
 }
@@ -498,6 +500,7 @@ applicationDidReceiveMemoryWarning:(UIApplication *)application {
 - (void)
 dealloc {
 	AM_DBG NSLog(@"AmbulantAppDelegate dealloc");
+	[tabBarController release];
     [viewController release];	
     [window release];
     [super dealloc];

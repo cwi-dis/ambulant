@@ -9,17 +9,17 @@
 #import "Presentation.h"
 
 @implementation Presentation
-@synthesize title, duration, description, poster;
+@synthesize title, duration, description, poster_data;
 
 -(id)initWithTitle:(NSString*) newTitle
-			poster:(CGImageRef)newPoster
+	   poster_data:(NSData*) newPoster_data
 		  duration:(NSString*) newDuration
 	   description:(NSString*) newDescription
 {
 	self = [super init];
 	if (self != nil) {
 		self.title = newTitle;
-		self.poster = newPoster;
+		self.poster_data = newPoster_data;
 		self.duration = newDuration;
 		self.description = newDescription;
 	}
@@ -28,7 +28,7 @@
 
 -(void) dealloc {
 	self.title = nil;
-	self.poster = nil;
+	self.poster_data = nil;
 	self.duration = nil;
 	self.description = nil;
 	[super dealloc];

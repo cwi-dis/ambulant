@@ -122,7 +122,7 @@ mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *a
 			if ([title compare:@""] == NSOrderedSame) {
 				title = [m_nsurl path];
 			}
-			CGImageRef image = NULL; //CGImageRef
+			NSData* image_data = NULL; // contains data for CGImage
 			NSString* poster = get_meta_content("poster");
 			if ([poster compare:@""] != NSOrderedSame) {
 				net::url poster_url = net::url::from_url([poster cStringUsingEncoding: NSUTF8StringEncoding]);
@@ -152,7 +152,10 @@ mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *a
 					if (poster_src != NULL) {
 						CGImageRef cg_image = CGImageSourceCreateImageAtIndex(poster_src, 0, NULL);
 						if (cg_image != NULL)  {
-							image = cg_image;
+							UIImage *img = [UIImage imageWithCGImage:cg_image];
+							image_data = UIImagePNGRepresentation(img);
+							[image_data retain];
+							CFRelease(cg_image);
 						}
 						CFRelease(poster_src);
 					}				
@@ -169,7 +172,7 @@ mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *a
 //				dur = [[NSString stringWithUTF8String:"indefinite"] retain];
 //			}
 			NSUInteger position = 0;
-			PlaylistItem* new_item = [[PlaylistItem alloc] initWithTitle:title url:m_nsurl image:image description:description duration:dur last_node_repr:NULL position:position];
+			PlaylistItem* new_item = [[PlaylistItem alloc] initWithTitle:title url:m_nsurl image_data:image_data description:description duration:dur last_node_repr:NULL position:position];
 			PlaylistItem* last_item = history->get_last_item();
 			if (last_item == NULL || ! [new_item equalsPlaylistItem: last_item]) {
 				history->insert_item_at_index(new_item, 0);
