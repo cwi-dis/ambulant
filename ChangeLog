@@ -1,3 +1,21 @@
+2011-01-11 16:48  keesblom
+
+	* AVFoundation video now works. Does not work sometimes when
+	  restarted from node (when iAmbulant was stopped).
+
+2011-01-11 16:20  keesblom
+
+	* Added AVFoundation video (does not work yet). Fixed crash
+	  protection.
+
+2011-01-11 15:55  jackjansen
+
+	* Ambulant view doesn't show when not shown at startup
+
+2011-01-11 14:29  jackjansen
+
+	* Previous checkins on a branch, accidentally. Moved to trunk.
+
 2011-01-11 00:05  jackjansen
 
 	* Got started on HUD for fullscreen mode
