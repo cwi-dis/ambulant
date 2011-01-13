@@ -440,9 +440,6 @@ document_stopped: (id) sender
 }
 
 - (void) auxViewControllerDidFinish: (UIViewController *)controller {
-    // XXXJACK: seems to be a duplicate of presentationViewControllDidFinish.
-    // Even if it isn't: all the comments for that method also hold for this one.
-	
 	AM_DBG NSLog(@"auxViewControllerDidFinish: controller=0x%x", controller);
     // XXX Needed?[viewController orientationChanged: nil];
 	// Most view auxiliary view controllers may change some of items stored in preferences
@@ -455,6 +452,9 @@ document_stopped: (id) sender
 {
 	AM_DBG NSLog(@"AmbulantViewController setHistoryViewController(0x%x) controller=0x%x", self, controller);
     history = controller;
+	if (currentPVC == NULL) {
+		currentPVC = history;
+	}
 }
 
 - (void) selectNextPresentation

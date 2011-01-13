@@ -366,9 +366,6 @@ isFavorites {
 	NSUInteger playlistIndex = ++currentIndex;
 	if (currentIndex >= [playlist count]) {
 		playlistIndex = currentIndex = 0;
-#ifdef	FIRST_ITEM
-		playlistIndex = currentIndex = 1;
-#endif	FIRST_ITEM
 	}
 	PlaylistItem* selectedItem = [playlist objectAtIndex: playlistIndex];
 	[delegate playPresentation:[[selectedItem ns_url] absoluteString] fromPresentationViewController: self];
