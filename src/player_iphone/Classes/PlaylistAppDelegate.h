@@ -22,4 +22,5 @@
 - (void) showAmbulantPlayer: (id) sender;
 - (void) showPresentationViews: (id) sender;
 - (BOOL) canShowRotatedUIViews;
+- (void) playWelcome: (UIViewController*) controller;
 @end

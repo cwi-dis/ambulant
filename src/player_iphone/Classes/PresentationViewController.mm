@@ -365,7 +365,10 @@ isFavorites {
 	NSArray* playlist = isFavorites ? prefs->m_favorites->get_playlist() : prefs->m_history->get_playlist();
 	NSUInteger playlistIndex = ++currentIndex;
 	if (currentIndex >= [playlist count]) {
-		playlistIndex = currentIndex = [playlist count] - 1;
+		playlistIndex = currentIndex = 0;
+#ifdef	FIRST_ITEM
+		playlistIndex = currentIndex = 1;
+#endif	FIRST_ITEM
 	}
 	PlaylistItem* selectedItem = [playlist objectAtIndex: playlistIndex];
 	[delegate playPresentation:[[selectedItem ns_url] absoluteString] fromPresentationViewController: self];

@@ -76,8 +76,8 @@
 }
 
 - (IBAction) playWelcome {
-    // XXXJACK send to app delegate
-	[delegate playPresentation:@"Welcome" fromPresentationViewController: NULL];
+	[delegate playWelcome: NULL];
+	[delegate auxViewControllerDidFinish:self];	
 }
 
 - (BOOL) shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation) interfaceOrientation {
