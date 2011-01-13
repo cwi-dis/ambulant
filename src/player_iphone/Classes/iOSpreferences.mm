@@ -91,6 +91,8 @@ iOSpreferences::load_preferences()
 									 [NSNumber numberWithBool: false], @"fullScreen",
 									 [NSNumber numberWithBool: true], @"autoCenter",
 									 [NSNumber numberWithBool: true], @"autoResize",
+									 [NSNumber numberWithBool: true], @"HUDautoHide",
+									 [NSNumber numberWithBool: true], @"HUDshortTap",
 									 [NSNumber numberWithBool: true], @"normalExit",
 									 @"", @"plugin_dir",
 									 [NSNumber numberWithBool: false], @"dynamic_content_control",
@@ -114,6 +116,8 @@ iOSpreferences::load_preferences()
 	m_fullscreen = [prefs boolForKey: @"fullScreen"];
 	m_auto_center = [prefs boolForKey: @"autoCenter"];
 	m_auto_resize = [prefs boolForKey: @"autoResize"];
+	m_hud_auto_hide = [prefs boolForKey: @"HUDautoHide"];
+	m_hud_short_tap = [prefs boolForKey: @"HUDshortTap"];
 	m_normal_exit = [prefs boolForKey: @"normalExit"];
 	// favorites is archived
 	NSData* favorites_archive = [prefs objectForKey:@"favorites"];
@@ -163,6 +167,8 @@ iOSpreferences::save_preferences()
 	[prefs setBool: m_fullscreen forKey: @"fullScreen"];
 	[prefs setBool: m_auto_center forKey: @"autoCenter"];
 	[prefs setBool: m_auto_resize forKey: @"autoResize"];
+	[prefs setBool: m_hud_auto_hide forKey: @"HUDautoHide"];
+	[prefs setBool: m_hud_short_tap forKey: @"HUDshortTap"];
 	[prefs setBool: m_normal_exit forKey: @"normalExit"];
 	if (m_favorites != NULL) {
 		NSArray* favorites = m_favorites->get_playlist();

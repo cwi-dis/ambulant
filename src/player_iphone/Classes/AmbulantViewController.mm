@@ -256,8 +256,11 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	if (want_show && interactionView.hidden) {
 		interactionView.hidden = false;
 		interactionView.opaque = true;
-        [NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector(autoHideInteractionView) object:nil];
-        [self performSelector:@selector(autoHideInteractionView) withObject:nil afterDelay:(NSTimeInterval)5.0];
+		ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
+		if (prefs->m_hud_auto_hide) {
+			[NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector(autoHideInteractionView) object:nil];
+			[self performSelector:@selector(autoHideInteractionView) withObject:nil afterDelay:(NSTimeInterval)5.0];
+		}
 	} else {
 		interactionView.hidden = true;
 		interactionView.opaque = false;

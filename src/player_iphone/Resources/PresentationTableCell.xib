@@ -182,7 +182,7 @@
 					<double key="NSSize">18</double>
 					<int key="NSfFlags">16</int>
 				</object>
-				<string key="IBUIReuseIdentifier">Cell</string>
+				<string key="IBUIReuseIdentifier">PresentationTableCell</string>
 			</object>
 		</object>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
@@ -277,7 +277,7 @@
 					<string>PresentationViewController</string>
 					<string>UIResponder</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<string>{{304, 572}, {320, 59}}</string>
+					<string>{{304, 172}, {320, 59}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>

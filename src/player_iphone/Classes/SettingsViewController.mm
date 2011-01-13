@@ -18,7 +18,18 @@
 	// initialize to values taken from AmbulantView
 	autoCenterSwitch.on = delegate.autoCenter;
 	autoResizeSwitch.on = delegate.autoResize;
-	nativeRendererSwitch.on = delegate.nativeRenderer;	
+	nativeRendererSwitch.on = delegate.nativeRenderer;
+	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
+	if (prefs->m_hud_auto_hide) {
+		HUDhide.selectedSegmentIndex = 0;
+	} else {
+		HUDhide.selectedSegmentIndex = 1;
+	}
+	if (prefs->m_hud_short_tap) {
+		HUDtap.selectedSegmentIndex = 1;
+	} else {
+		HUDtap.selectedSegmentIndex = 0;
+	}	
 }
 
 - (BOOL) autoCenter {
@@ -36,6 +47,32 @@
 - (IBAction) done:(id)sender {
 	[delegate settingsHaveChanged:self];
 	[delegate auxViewControllerDidFinish:self];	
+}
+
+- (IBAction) handleHideChanged {
+	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
+	switch (HUDhide.selectedSegmentIndex) {
+		default:
+		case 0:
+			prefs->m_hud_auto_hide = true;
+			break;
+		case 1:
+			prefs->m_hud_auto_hide = false;			
+			break;
+	}
+}
+
+- (IBAction) handleTapChanged {
+	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
+	switch (HUDtap.selectedSegmentIndex) {
+		default:
+		case 0:
+			prefs->m_hud_short_tap = false;
+			break;
+		case 1:
+			prefs->m_hud_short_tap = true;			
+			break;
+	}
 }
 
 - (IBAction) playWelcome {

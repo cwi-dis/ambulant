@@ -13,7 +13,9 @@
 	id <PlaylistViewControllerDelegate> delegate;
 	IBOutlet UISwitch* autoCenterSwitch;	
 	IBOutlet UISwitch* autoResizeSwitch;	
-	IBOutlet UISwitch* nativeRendererSwitch;	
+	IBOutlet UISwitch* nativeRendererSwitch;
+	IBOutlet UISegmentedControl* HUDhide;
+	IBOutlet UISegmentedControl* HUDtap;
 }
 
 - (IBAction) done: (id) sender;
@@ -21,6 +23,8 @@
 - (BOOL) autoResize;
 - (BOOL) nativeRenderer;
 - (IBAction) playWelcome;
+- (IBAction) handleHideChanged;
+- (IBAction) handleTapChanged;
 
 //@property(nonatomic,assign) id <PlaylistViewControllerDelegate> delegate;
 //@property(nonatomic,retain) IBOutlet UISwitch* autoCenterSwitch;

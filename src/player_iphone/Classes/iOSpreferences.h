@@ -45,7 +45,7 @@
 
 namespace ambulant {
 	
-#define AM_IOS_PLAYLISTVERSION @"0.2" // Needs to be updated when Playlist format changes 
+#define AM_IOS_PLAYLISTVERSION @"0.3" // Needs to be updated when Playlist format changes 
 	
 	
 class Playlist {
@@ -98,7 +98,10 @@ public:
 	bool m_auto_resize;
 	/// crash protector
 	bool m_normal_exit;
-	
+	/// HUD auto hide
+	bool m_hud_auto_hide;
+	/// HUD short tap
+	bool m_hud_short_tap;
 	Playlist* m_favorites;
 	Playlist* m_history;
 	
