@@ -410,7 +410,8 @@ showAlert: (NSString*) message {
 - (PresentationViewController*)
 getPresentationViewWithIndex: (NSUInteger) index
 {
-	return (PresentationViewController*) [tabBarController.viewControllers objectAtIndex: index];
+	UINavigationController* navigationController = [tabBarController.viewControllers objectAtIndex: index];
+	return (PresentationViewController*) [navigationController.viewControllers objectAtIndex:0];
 }
 
 - (void)
