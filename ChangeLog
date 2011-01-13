@@ -1,3 +1,27 @@
+2011-01-13 02:34  keesblom
+
+	* Added settings/prefs for HUD autoHide/shortLongTap and
+	  implemented the former.
+
+2011-01-12 22:25  jackjansen
+
+	* Added a class AmbulantContainerView for the container view
+
+2011-01-12 17:33  keesblom
+
+	* Some cleanup in recently modified code.
+
+2011-01-12 15:39  keesblom
+
+	* Image data for thumbnails is now loaded and stored as NSData, and
+	  converted to CGImage at the moment it is shown. This makes the
+	  tableViews as well as the saving/restoring preferences quite a
+	  lot faster.
+
+2011-01-12 11:57  keesblom
+
+	* Added interactivly re-arranging Favorites in 'Edit' mode.
+
 2011-01-11 16:48  keesblom
 
 	* AVFoundation video now works. Does not work sometimes when
