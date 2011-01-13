@@ -366,11 +366,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	AM_DBG NSLog(@"AmbulantViewController addFavorites(0x%x)", sender);
     assert(delegate);
 	PresentationViewController* favoritesVC = [ delegate getPresentationViewWithIndex: 1];	
-#ifdef	FIRST_ITEM
-	[favoritesVC insertCurrentItemAtIndexPath: [ NSIndexPath indexPathForRow:FIRST_ITEM inSection: 0 ]];
-#else //FIRST_ITEM
 	[favoritesVC insertCurrentItemAtIndexPath: [ NSIndexPath indexPathForRow:0 inSection: 0 ]];
-#endif//FIRST_ITEM
 }
 
 - (IBAction) doPlaylists: (id)sender

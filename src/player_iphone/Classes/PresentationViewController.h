@@ -16,11 +16,6 @@
 @protocol PresentationViewControllerDelegate;
 
 /// The PresentationViewController is used to manage 2 different instances: History and Favorites.
-/// The implementation for the latter also alows for adding the item that is currently being played.
-
-// The current implementation has a hack, that an empty first item is always present in the TableView,
-// which is obscured by the NavigationBar
-#define FIRST_ITEM 1
 
 @interface PresentationViewController : UITableViewController < UITableViewDataSource, UITableViewDelegate > {
 	id <PlaylistViewControllerDelegate> delegate;

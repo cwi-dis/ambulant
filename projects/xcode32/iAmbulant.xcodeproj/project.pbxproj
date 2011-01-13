@@ -36,7 +36,6 @@
 		04B75D0312B80B9800161EB5 /* AmbulantWebViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75CFA12B80B9800161EB5 /* AmbulantWebViewController.mm */; };
 		04B75D0412B80B9800161EB5 /* SettingsViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75CFC12B80B9800161EB5 /* SettingsViewController.mm */; };
 		04B75D1E12B80C0400161EB5 /* favorites.png in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D0712B80C0300161EB5 /* favorites.png */; };
-		04B75D1F12B80C0400161EB5 /* line.png in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D0812B80C0300161EB5 /* line.png */; };
 		04B75D2012B80C0400161EB5 /* AmbulantHelp-iOS.html in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D0912B80C0300161EB5 /* AmbulantHelp-iOS.html */; };
 		04B75D2112B80C0400161EB5 /* EditViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D0A12B80C0300161EB5 /* EditViewController.xib */; };
 		04B75D2212B80C0400161EB5 /* EditIcon-30x30.png in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D0B12B80C0300161EB5 /* EditIcon-30x30.png */; };
@@ -162,7 +161,6 @@
 		04B75CFB12B80B9800161EB5 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SettingsViewController.h; path = ../../src/player_iphone/Classes/SettingsViewController.h; sourceTree = SOURCE_ROOT; };
 		04B75CFC12B80B9800161EB5 /* SettingsViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = SettingsViewController.mm; path = ../../src/player_iphone/Classes/SettingsViewController.mm; sourceTree = SOURCE_ROOT; };
 		04B75D0712B80C0300161EB5 /* favorites.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = favorites.png; path = ../../src/player_iphone/Resources/favorites.png; sourceTree = SOURCE_ROOT; };
-		04B75D0812B80C0300161EB5 /* line.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = line.png; path = ../../src/player_iphone/Resources/line.png; sourceTree = SOURCE_ROOT; };
 		04B75D0912B80C0300161EB5 /* AmbulantHelp-iOS.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "AmbulantHelp-iOS.html"; path = "../../src/player_iphone/Resources/AmbulantHelp-iOS.html"; sourceTree = SOURCE_ROOT; };
 		04B75D0A12B80C0300161EB5 /* EditViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = EditViewController.xib; path = ../../src/player_iphone/Resources/EditViewController.xib; sourceTree = SOURCE_ROOT; };
 		04B75D0B12B80C0300161EB5 /* EditIcon-30x30.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "EditIcon-30x30.png"; path = "../../src/player_iphone/Resources/EditIcon-30x30.png"; sourceTree = SOURCE_ROOT; };
@@ -384,7 +382,6 @@
 				04B75D3812B80C2A00161EB5 /* data */,
 				04B75D4212B80C2A00161EB5 /* Welcome.smil */,
 				04B75D0712B80C0300161EB5 /* favorites.png */,
-				04B75D0812B80C0300161EB5 /* line.png */,
 				04B75D0912B80C0300161EB5 /* AmbulantHelp-iOS.html */,
 				04B75D0A12B80C0300161EB5 /* EditViewController.xib */,
 				04B75D0B12B80C0300161EB5 /* EditIcon-30x30.png */,
@@ -522,7 +519,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				04B75D1E12B80C0400161EB5 /* favorites.png in Resources */,
-				04B75D1F12B80C0400161EB5 /* line.png in Resources */,
 				04B75D2012B80C0400161EB5 /* AmbulantHelp-iOS.html in Resources */,
 				04B75D2112B80C0400161EB5 /* EditViewController.xib in Resources */,
 				04B75D2212B80C0400161EB5 /* EditIcon-30x30.png in Resources */,

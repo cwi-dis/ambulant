@@ -158,13 +158,6 @@ isFavorites {
 //	[ duration release ];
 	label = (UILabel*) [ cell viewWithTag: 3];
 	label.text = aPresentation.description;
-#ifdef	FIRST_ITEM
-	if (indexPath.row < FIRST_ITEM) {
-		UIImageView* lineView = (UIImageView*) [ cell viewWithTag:4];
-		lineView.image = NULL;
-		[lineView setNeedsDisplay];
-	}
-#endif//FIRST_ITEM
 	return cell;
 }
 
@@ -177,13 +170,6 @@ isFavorites {
 	NSArray* playlist = isFavorites ? prefs->m_favorites->get_playlist() : prefs->m_history->get_playlist();
 	NSUInteger playlistIndex = indexPath.row;
 	currentIndex = playlistIndex;
-#ifdef	FIRST_ITEM
-	if (playlistIndex >= FIRST_ITEM) {
-		playlistIndex -= FIRST_ITEM;
-	} else {
-		playlistIndex = FIRST_ITEM;
-	}
-#endif//FIRST_ITEM
 	PlaylistItem* selectedItem = [playlist objectAtIndex: playlistIndex];
 	[delegate playPresentation:[[selectedItem ns_url] absoluteString] fromPresentationViewController: self];
 }
@@ -191,11 +177,6 @@ isFavorites {
 // Support conditional editing of the table view.
 - (BOOL) tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return NO if you do not want the specified item to be editable.
-#ifdef	FIRST_ITEM
-	if (indexPath.row < FIRST_ITEM) {
-		return NO;
-	}
-#endif//FIRST_ITEM
     return YES;
 }
 
@@ -210,9 +191,6 @@ isFavorites {
 											 forRowAtIndexPath:(NSIndexPath *)indexPath
 {    
 	NSUInteger playlistIndex = indexPath.row;
-#ifdef	FIRST_ITEM
-	playlistIndex -= FIRST_ITEM;
-#endif//FIRST_ITEM
     if (editingStyleArg == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source.
 		ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
@@ -253,11 +231,6 @@ isFavorites {
 // Support re-arranging table items (Favorites only)
 - (BOOL) tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return NO if you do not want the specified item to be moveable.
-#ifdef	FIRST_ITEM
-	if (indexPath.row < FIRST_ITEM) {
-		return NO;
-	}
-#endif//FIRST_ITEM
 	return isFavorites;
 }
 
@@ -269,10 +242,6 @@ isFavorites {
 	if (fromPlaylistIndex == toPlaylistIndex) {
 		return;
 	}
-#ifdef	FIRST_ITEM
-	fromPlaylistIndex -= FIRST_ITEM;
-	toPlaylistIndex -= FIRST_ITEM;
-#endif//FIRST_ITEM
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	ambulant::Playlist* playlist = isFavorites ? prefs->m_favorites : prefs->m_history;
 	PlaylistItem* selectedItem = [playlist->get_playlist() objectAtIndex: fromPlaylistIndex];
@@ -289,9 +258,6 @@ isFavorites {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	if (isFavorites) {
 		NSInteger playlistIndex = indexPath != NULL ? indexPath.row : -1;
-#ifdef	FIRST_ITEM
-		playlistIndex -= FIRST_ITEM;
-#endif//FIRST_ITEM
 		ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 		ambulant::Playlist* playlist = prefs->m_favorites;
 		PlaylistItem* new_item = prefs->m_history->get_last_item();
@@ -334,19 +300,10 @@ isFavorites {
 
 	NSArray* playlist = [self get_playlist];
 	
-#ifdef	FIRST_ITEM
-	if ([playlist count] + FIRST_ITEM > [presentationsArray count]) {
-#else //FIRST_ITEM
 	if ([playlist count] > [presentationsArray count]) {
-#endif//FIRST_ITEM
 		currentIndex++; //assume insert at 0 occurred
 	}
 	[presentationsArray removeAllObjects];
-#ifdef	FIRST_ITEM
-	for (int i = 0; i < FIRST_ITEM; i++) {
-		[presentationsArray addObject:[self getPresentationFromPlaylistItem: NULL]];
-	}
-#endif//FIRST_ITEM	
 	// populate the table view with objects in 'playlist'
 	[playlist enumerateObjectsWithOptions: nil usingBlock:
 	 ^(id obj, NSUInteger idx, BOOL *stop)
