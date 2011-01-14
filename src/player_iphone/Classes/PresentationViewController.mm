@@ -48,18 +48,17 @@
 	NSArray* playlist;
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 
-	if (isFavorites) {
-		playlist = prefs->m_favorites->get_playlist();
-		
+	if (isHistory) {
+		playlist = prefs->m_history->get_playlist();		
 	} else {
-		playlist = prefs->m_history->get_playlist();
+		playlist = prefs->m_favorites->get_playlist();
 	}
 	return playlist;
 }
 
 - (BOOL)
-isFavorites {
-	return isFavorites;
+isHistory {
+	return isHistory;
 }
 
 - (void) awakeFromNib
@@ -70,10 +69,10 @@ isFavorites {
 	}
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	prefs->load_preferences();
-	BOOL favorites = [self.title isEqualToString:@"Favorites"];
-	isFavorites = favorites;
+	BOOL history = [self.title isEqualToString:@"History"];
+	isHistory = history;
 	currentIndex = -1; //XXXX should ths be saved in properties ??
-	if ( !isFavorites) {
+	if ( !isHistory) {
 		[delegate setHistoryViewController: self];
 	}
 }
@@ -92,6 +91,7 @@ isFavorites {
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+	[self updatePlaylist];
 }
 
 - (IBAction) done:(id)sender
@@ -167,7 +167,7 @@ isFavorites {
 		return;
 	}
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
-	NSArray* playlist = isFavorites ? prefs->m_favorites->get_playlist() : prefs->m_history->get_playlist();
+	NSArray* playlist = isHistory ? prefs->m_history->get_playlist() : prefs->m_favorites->get_playlist();
 	NSUInteger playlistIndex = indexPath.row;
 	currentIndex = playlistIndex;
 	PlaylistItem* selectedItem = [playlist objectAtIndex: playlistIndex];
@@ -194,7 +194,7 @@ isFavorites {
     if (editingStyleArg == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source.
 		ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
-		ambulant::Playlist* playlist = isFavorites ? prefs->m_favorites : prefs->m_history;
+		ambulant::Playlist* playlist = isHistory ? prefs->m_history : prefs->m_favorites;
 		
 		playlist->remove_playlist_item_at_index(playlistIndex);
 		[presentationsArray removeObjectAtIndex: indexPath.row];
@@ -228,13 +228,13 @@ isFavorites {
 	[[self tableView] setEditing: editingStyle != UITableViewCellEditingStyleNone animated: YES];
 }
 
-// Support re-arranging table items (Favorites only)
+// Support re-arranging table items (not for History)
 - (BOOL) tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return NO if you do not want the specified item to be moveable.
-	return isFavorites;
+	return not isHistory;
 }
 
-// Implement re-arranging table items (Favorites only)
+// Implement re-arranging table items (not for History)
 - (void) tableView:(UITableView *)tableView moveRowAtIndexPath: (NSIndexPath*) fromIndexPath toIndexPath: (NSIndexPath*) toIndexPath
 {
 	NSUInteger fromPlaylistIndex = fromIndexPath.row, toPlaylistIndex = toIndexPath.row;
@@ -243,7 +243,7 @@ isFavorites {
 		return;
 	}
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
-	ambulant::Playlist* playlist = isFavorites ? prefs->m_favorites : prefs->m_history;
+	ambulant::Playlist* playlist = isHistory ? prefs->m_history : prefs->m_favorites;
 	PlaylistItem* selectedItem = [playlist->get_playlist() objectAtIndex: fromPlaylistIndex];
 	playlist->insert_item_at_index(selectedItem, toPlaylistIndex);
 	if (toPlaylistIndex > fromPlaylistIndex) {
@@ -256,7 +256,7 @@ isFavorites {
 - (void) insertCurrentItemAtIndexPath: (NSIndexPath*) indexPath
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	if (isFavorites) {
+	if (not isHistory) {
 		NSInteger playlistIndex = indexPath != NULL ? indexPath.row : -1;
 		ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 		ambulant::Playlist* playlist = prefs->m_favorites;
@@ -319,7 +319,7 @@ isFavorites {
 - (void) selectNextPresentation
 {
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
-	NSArray* playlist = isFavorites ? prefs->m_favorites->get_playlist() : prefs->m_history->get_playlist();
+	NSArray* playlist = isHistory ? prefs->m_history->get_playlist() : prefs->m_favorites->get_playlist();
 	NSUInteger playlistIndex = ++currentIndex;
 	if (currentIndex >= [playlist count]) {
 		playlistIndex = currentIndex = 0;

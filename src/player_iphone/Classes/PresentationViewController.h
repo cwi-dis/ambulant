@@ -23,7 +23,7 @@
 	UITableViewCell* nibLoadedCell;
 	Presentation* selectedPresentation;
 	NSInteger currentIndex;
-	BOOL isFavorites;
+	BOOL isHistory;
 	UITableViewCellEditingStyle editingStyle;
 	Presentation* newPresentation;
 }
@@ -39,7 +39,7 @@
 - (void) selectNextPresentation;
 - (NSArray*) get_playlist;
 - (void) updatePlaylist;
-- (BOOL) isFavorites;
+- (BOOL) isHistory;
 
 @property(nonatomic, retain) IBOutlet UITableViewCell* nibLoadedCell;
 @end
