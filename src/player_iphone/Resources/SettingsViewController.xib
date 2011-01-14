@@ -157,7 +157,7 @@
 					</object>
 					<object class="IBUISegmentedControl" id="79165919">
 						<reference key="NSNextResponder" ref="249263867"/>
-						<int key="NSvFlags">292</int>
+						<int key="NSvFlags">289</int>
 						<string key="NSFrame">{{162, 232}, {138, 30}}</string>
 						<reference key="NSSuperview" ref="249263867"/>
 						<object class="NSColor" key="IBUIBackgroundColor" id="279328095">
@@ -196,7 +196,7 @@
 					</object>
 					<object class="IBUISegmentedControl" id="654970714">
 						<reference key="NSNextResponder" ref="249263867"/>
-						<int key="NSvFlags">292</int>
+						<int key="NSvFlags">289</int>
 						<string key="NSFrame">{{162, 282}, {138, 30}}</string>
 						<reference key="NSSuperview" ref="249263867"/>
 						<object class="NSColor" key="IBUIBackgroundColor">
@@ -268,7 +268,7 @@
 					</object>
 					<object class="IBUIButton" id="623137008">
 						<reference key="NSNextResponder" ref="249263867"/>
-						<int key="NSvFlags">292</int>
+						<int key="NSvFlags">293</int>
 						<string key="NSFrame">{{35, 363}, {250, 37}}</string>
 						<reference key="NSSuperview" ref="249263867"/>
 						<bool key="IBUIOpaque">NO</bool>
@@ -295,7 +295,13 @@
 				</object>
 				<string key="NSFrameSize">{320, 460}</string>
 				<reference key="NSSuperview"/>
-				<reference key="IBUIBackgroundColor" ref="279328095"/>
+				<object class="NSColor" key="IBUIBackgroundColor">
+					<int key="NSColorSpace">3</int>
+					<bytes key="NSWhite">MQA</bytes>
+					<object class="NSColorSpace" key="NSCustomColorSpace">
+						<int key="NSID">2</int>
+					</object>
+				</object>
 				<int key="IBUITag">40</int>
 				<object class="IBUISimulatedStatusBarMetrics" key="IBUISimulatedStatusBarMetrics">
 					<int key="IBUIStatusBarStyle">2</int>
@@ -590,7 +596,7 @@
 					<object class="NSAffineTransform">
 						<bytes key="NSTransformStruct">P4AAAL+AAABCDAAAw9sAAA</bytes>
 					</object>
-					<string>{{293, 337}, {320, 480}}</string>
+					<string>{{1, 338}, {320, 480}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<object class="NSAffineTransform">
