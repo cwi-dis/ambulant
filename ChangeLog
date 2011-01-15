@@ -1,3 +1,18 @@
+2011-01-14 15:28  keesblom
+
+	* Small changes for iPad. Changed logic to refer to 'isHistory'
+	  rather than 'isFavorites' because the former behaves a bit
+	  different from other playlists (e.g. no item rearangementss).
+
+2011-01-14 14:28  keesblom
+
+	* Adapted iPad MainWindow similar to iPhone changed to match the
+	  code.
+
+2011-01-14 13:39  keesblom
+
+	* Changed a few settings to make the views a bit better in Ipad.
+
 2011-01-13 18:27  keesblom
 
 	* Fixed a bug due to new controllers arrangement causing
