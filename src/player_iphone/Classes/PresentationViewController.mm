@@ -146,18 +146,23 @@ isHistory {
     }
     
 	// Configure the cell.
-	Presentation* aPresentation = [ presentationsArray objectAtIndex: indexPath.row ];
-	UIImageView* posterView = (UIImageView*) [ cell viewWithTag:5]; // tags are assigned in the nib
-	posterView.contentMode = UIViewContentModeScaleAspectFit;
-	posterView.image = [UIImage imageWithData: [aPresentation poster_data]];
-	[posterView setNeedsDisplay];
-	UILabel* label = (UILabel*) [ cell viewWithTag: 1];
-	label.text = aPresentation.title;
-	label = (UILabel*) [ cell viewWithTag: 2];
-	label.text = aPresentation.duration;
-//	[ duration release ];
-	label = (UILabel*) [ cell viewWithTag: 3];
-	label.text = aPresentation.description;
+	try {
+		Presentation* aPresentation = [ presentationsArray objectAtIndex: indexPath.row ];
+		UIImageView* posterView = (UIImageView*) [ cell viewWithTag:5]; // tags are assigned in the nib
+		posterView.contentMode = UIViewContentModeScaleAspectFit;
+		posterView.image = [UIImage imageWithData: [aPresentation poster_data]];
+		[posterView setNeedsDisplay];
+		UILabel* label = (UILabel*) [ cell viewWithTag: 1];
+		label.text = aPresentation.title;
+		label = (UILabel*) [ cell viewWithTag: 2];
+		label.text = aPresentation.duration;
+//		[ duration release ];
+		label = (UILabel*) [ cell viewWithTag: 3];
+		label.text = aPresentation.description;
+	}
+	catch (NSException* exception) {
+		AM_DBG NSLog(@"cellForRowAtIndexPath:indexPath=%d exception name=%@ reason=%@", [exception name], [exception reason]);
+	}
 	return cell;
 }
 

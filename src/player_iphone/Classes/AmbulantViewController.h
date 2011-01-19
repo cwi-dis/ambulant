@@ -56,7 +56,7 @@ class document_embedder : public ambulant::common::embedder {
 - (void) viewDidLoad;
 - (void) viewWillAppear:(BOOL)animated;
 - (void) viewDidAppear:(BOOL)animated;
-- (void)viewDidUnload;
+- (void) viewDidUnload;
 - (void) willTerminate;
 
 // Player control
