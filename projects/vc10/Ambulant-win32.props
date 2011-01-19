@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="UserMacros">
+    <global_ambulant_defines>WITH_HTML_WIDGET;WITH_PYTHON_PLUGIN;WITH_SMIL30;WITH_SEAMLESS_PLAYBACK;WITH_CLOCK_SYNC;WITH_EXTERNAL_DOM</global_ambulant_defines>
+    <expat_dir>..\..\third_party_packages\expat</expat_dir>
+    <jpeg_dir>..\..\third_party_packages\jpeg</jpeg_dir>
+    <lpng_dir>..\..\third_party_packages\lpng128</lpng_dir>
+    <zlib_dir>..\..\third_party_packages\zlib</zlib_dir>
+    <libxml2_dir>..\..\third_party_packages\libxml2-2.7.6</libxml2_dir>
+    <sdl_dir>..\..\third_party_packages\SDL-1.2.14</sdl_dir>
+    <ffmpeg_dir>..\..\third_party_packages\ffmpeg-20100122-win32-prebuilt</ffmpeg_dir>
+    <live555_dir>..\..\third_party_packages\live</live555_dir>
+    <xerces_dir>..\..\third_party_packages\xerces-c-3.1.0</xerces_dir>
+    <xerces_major>3</xerces_major>
+    <xerces_minor>1</xerces_minor>
+    <xulrunner_dir>..\..\third_party_packages\xulrunner-sdk</xulrunner_dir>
+    <firefox_plugin_dir>C:\Program Files\Mozilla Firefox\plugins\</firefox_plugin_dir>
+    <zip_executable>E:\ufs\jack\bin\zip.exe</zip_executable>
+    <python_dir>C:\Python27</python_dir>
+    <CabArc>..\..\..\..\bin\Cabarc\bin\CabArc.exe</CabArc>
+    <ieambulant_certificate>..\..\..\ambulant-private\certificates\Comodo\cwi-certificate.pfx</ieambulant_certificate>
+  </PropertyGroup>
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <_PropertySheetDisplayName>Ambulant third party pathnames</_PropertySheetDisplayName>
+  </PropertyGroup>
+  <ItemGroup>
+    <BuildMacro Include="global_ambulant_defines">
+      <Value>$(global_ambulant_defines)</Value>
+    </BuildMacro>
+    <BuildMacro Include="expat_dir">
+      <Value>$(expat_dir)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="jpeg_dir">
+      <Value>$(jpeg_dir)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="lpng_dir">
+      <Value>$(lpng_dir)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="zlib_dir">
+      <Value>$(zlib_dir)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="libxml2_dir">
+      <Value>$(libxml2_dir)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="sdl_dir">
+      <Value>$(sdl_dir)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="ffmpeg_dir">
+      <Value>$(ffmpeg_dir)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="live555_dir">
+      <Value>$(live555_dir)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="xerces_dir">
+      <Value>$(xerces_dir)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="xerces_major">
+      <Value>$(xerces_major)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="xerces_minor">
+      <Value>$(xerces_minor)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="xulrunner_dir">
+      <Value>$(xulrunner_dir)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="firefox_plugin_dir">
+      <Value>$(firefox_plugin_dir)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="zip_executable">
+      <Value>$(zip_executable)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="python_dir">
+      <Value>$(python_dir)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="CabArc">
+      <Value>$(CabArc)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="ieambulant_certificate">
+      <Value>$(ieambulant_certificate)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+  </ItemGroup>
+</Project>

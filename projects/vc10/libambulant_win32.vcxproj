@@ -1,0 +1,659 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="DebugShlibDX|Win32">
+      <Configuration>DebugShlibDX</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="DebugShlib|Win32">
+      <Configuration>DebugShlib</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="DebugStatic|Win32">
+      <Configuration>DebugStatic</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseShlibDX|Win32">
+      <Configuration>ReleaseShlibDX</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseShlib|Win32">
+      <Configuration>ReleaseShlib</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseStatic|Win32">
+      <Configuration>ReleaseStatic</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DBD4EFC0-7551-4FBA-AF5A-BFBFDA7D6785}</ProjectGuid>
+    <RootNamespace>libambulant_win32</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugStatic|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Ambulant-win32.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Ambulant-win32.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Ambulant-win32.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Ambulant-win32.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Ambulant-win32.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugStatic|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Ambulant-win32.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='DebugStatic|Win32'">BUILD\$(ProjectName)-$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='DebugStatic|Win32'">BUILD\$(ProjectName)-$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|Win32'">BUILD\$(ProjectName)-$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|Win32'">BUILD\$(ProjectName)-$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">..\..\bin\win32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">BUILD\$(ProjectName)-$(Configuration)\</IntDir>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">false</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">..\..\bin\win32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">BUILD\$(ProjectName)-$(Configuration)\</IntDir>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">false</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">..\..\bin\win32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">BUILD\$(ProjectName)-$(Configuration)\</IntDir>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">false</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">..\..\bin\win32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">BUILD\$(ProjectName)-$(Configuration)\</IntDir>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">false</PostBuildEventUseInBuild>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='DebugStatic|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='DebugStatic|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='DebugStatic|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|Win32'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">libambulant_shwin32_D</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">libambulantDX_shwin32_D</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='DebugStatic|Win32'">libambulant_win32_D</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">libambulant_shwin32</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">libambulantDX_shwin32</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|Win32'">libambulant_win32</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugStatic|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\include;$(expat_dir)\lib;$(jpeg_dir);$(zlib_dir);$(lpng_dir);$(xerces_dir)\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>$(global_ambulant_defines);WIN32;_DEBUG;_LIB;_AMBULANT;WITH_EXPAT;XML_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)libambulant_win32_D.lib</OutputFile>
+      <AdditionalLibraryDirectories>..\..\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+    </Lib>
+    <PostBuildEvent>
+      <Command>copy "$(TargetPath)" ..\..\lib\win32</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseStatic|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include;$(expat_dir)\lib;$(jpeg_dir);$(zlib_dir);$(lpng_dir);$(xerces_dir)\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>$(global_ambulant_defines);WIN32;NDEBUG;_LIB;_AMBULANT;WITH_EXPAT;XML_STATIC;WITH_XERCES;WITH_XERCES_BUILTIN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)libambulant_win32.lib</OutputFile>
+      <AdditionalLibraryDirectories>..\..\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+    </Lib>
+    <PostBuildEvent>
+      <Command>copy "$(TargetPath)" ..\..\lib\win32</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(WindowsSDKDir)\Samples\multimedia\directshow\baseclasses;..\..\include;$(expat_dir)\lib;$(jpeg_dir);$(zlib_dir);$(lpng_dir);$(xerces_dir)\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>$(global_ambulant_defines);WIN32;NDEBUG;_LIB;USE_SMIL21;_AMBULANT;WITH_EXPAT;XML_STATIC;AMBULANT_BUILD_DLL;WITH_HTML_WIDGET;WITH_WINDOWS_PLUGINS;WITH_D2D;PARALLELS_MACPRO_BUG_WORKAROUND;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libjpeg.lib;libpng.lib;libexpat.lib;zlib.lib;windowscodecs.lib;d2d1.lib;dwrite.lib;strmbase.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>..\..\bin\win32\libambulant_shwin32.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\lib\win32;$(DXSDK_DIR)\lib\x86;$(WindowsSDKDir)\Samples\multimedia\directshow\baseclasses\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>LIBC.lib;LIBCMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OptimizeReferences>false</OptimizeReferences>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\lib\win32\libambulant_shwin32.lib</ImportLibrary>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy "$(TargetPath)" ..\..\lib\win32</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(WindowsSDKDir)\Samples\multimedia\directshow\baseclasses;..\..\include;$(expat_dir)\lib;$(jpeg_dir);$(zlib_dir);$(lpng_dir);$(xerces_dir)\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>$(global_ambulant_defines);WIN32;_DEBUG;_LIB;_AMBULANT;XML_STATIC;AMBULANT_BUILD_DLL;WITH_EXPAT;WITH_WINDOWS_PLUGINS;WITH_D2D;PARALLELS_MACPRO_BUG_WORKAROUND;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libjpeg.lib;libpng.lib;libexpat.lib;zlib.lib;windowscodecs.lib;d2d1.lib;dwrite.lib;strmbasd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>..\..\bin\win32\libambulant_shwin32_D.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\lib\win32;$(DXSDK_DIR)\lib\x86;$(WindowsSDKDir)\Samples\multimedia\directshow\baseclasses\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>LIBC.lib;LIBCMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OptimizeReferences>false</OptimizeReferences>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\lib\win32\libambulant_shwin32_D.lib</ImportLibrary>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy "$(TargetPath)" ..\..\lib\win32</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include;$(expat_dir)\lib;$(jpeg_dir);$(zlib_dir);$(lpng_dir);$(xerces_dir)\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>$(global_ambulant_defines);WIN32;NDEBUG;_LIB;USE_SMIL21;_AMBULANT;WITH_EXPAT;XML_STATIC;AMBULANT_BUILD_DLL;WITH_HTML_WIDGET;WITH_WINDOWS_PLUGINS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libjpeg.lib;libpng.lib;libexpat.lib;zlib.lib;windowscodecs.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>..\..\bin\win32\libambulantDX_shwin32.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\lib\win32;$(DXSDK_DIR)\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>LIBC.lib;LIBCMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OptimizeReferences>false</OptimizeReferences>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\lib\win32\libambulantDX_shwin32.lib</ImportLibrary>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy "$(TargetPath)" ..\..\lib\win32</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\include;$(expat_dir)\lib;$(jpeg_dir);$(zlib_dir);$(lpng_dir);$(xerces_dir)\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>$(global_ambulant_defines);WIN32;_DEBUG;_LIB;_AMBULANT;XML_STATIC;AMBULANT_BUILD_DLL;WITH_EXPAT;WITH_WINDOWS_PLUGINS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libjpeg.lib;libpng.lib;libexpat.lib;zlib.lib;windowscodecs.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>..\..\bin\win32\libambulantDX_shwin32_D.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\lib\win32;$(DXSDK_DIR)\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>LIBC.lib;LIBCMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OptimizeReferences>false</OptimizeReferences>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\lib\win32\libambulantDX_shwin32_D.lib</ImportLibrary>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy "$(TargetPath)" ..\..\lib\win32</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\libambulant\get_version.cpp" />
+    <ClCompile Include="..\..\src\libambulant\gui\none\none_area.cpp" />
+    <ClCompile Include="..\..\src\libambulant\gui\none\none_factory.cpp" />
+    <ClCompile Include="..\..\src\libambulant\gui\none\none_gui.cpp" />
+    <ClCompile Include="..\..\src\libambulant\gui\none\none_video_renderer.cpp" />
+    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_area.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_audio.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_audio_player.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_basicvideo.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_basicvideo_player.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_bgrenderer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_brush.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_html_renderer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_image_renderer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_img.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_img_wic.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_player.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_smiltext.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_text.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_text_renderer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_transition.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_video.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_video_player.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_viewport.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\dx\dx_window.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\d2\d2_basicvideo.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\d2\d2_d2video.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\d2\d2_dshowsink.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">true</ExcludedFromBuild>
+      <TreatWChar_tAsBuiltInType Condition="'$(Configuration)|$(Platform)'=='DebugShlib|Win32'">true</TreatWChar_tAsBuiltInType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">true</ExcludedFromBuild>
+      <TreatWChar_tAsBuiltInType Condition="'$(Configuration)|$(Platform)'=='ReleaseShlib|Win32'">true</TreatWChar_tAsBuiltInType>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\d2\d2_fill.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\d2\d2_img.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\d2\d2_player.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\d2\d2_renderer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\d2\d2_smiltext.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\d2\d2_text.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\gui\d2\d2_window.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\libambulant\lib\colors.cpp" />
+    <ClCompile Include="..\..\src\libambulant\lib\delta_timer.cpp" />
+    <ClCompile Include="..\..\src\libambulant\lib\document.cpp" />
+    <ClCompile Include="..\..\src\libambulant\lib\event_processor.cpp" />
+    <ClCompile Include="..\..\src\libambulant\lib\expat_parser.cpp" />
+    <ClCompile Include="..\..\src\libambulant\lib\gpaths.cpp" />
+    <ClCompile Include="..\..\src\libambulant\lib\logger.cpp" />
+    <ClCompile Include="..\..\src\libambulant\lib\memfile.cpp" />
+    <ClCompile Include="..\..\src\libambulant\lib\nfa.cpp" />
+    <ClCompile Include="..\..\src\libambulant\lib\node.cpp" />
+    <ClCompile Include="..\..\src\libambulant\lib\nscontext.cpp" />
+    <ClCompile Include="..\..\src\libambulant\lib\parselets.cpp" />
+    <ClCompile Include="..\..\src\libambulant\lib\parser_factory.cpp" />
+    <ClCompile Include="..\..\src\libambulant\lib\string_util.cpp" />
+    <ClCompile Include="..\..\src\libambulant\lib\timer.cpp" />
+    <ClCompile Include="..\..\src\libambulant\lib\transition_info.cpp" />
+    <ClCompile Include="..\..\src\libambulant\lib\tree_builder.cpp" />
+    <ClCompile Include="..\..\src\libambulant\lib\win32\win32_asb.cpp" />
+    <ClCompile Include="..\..\src\libambulant\lib\win32\win32_error.cpp" />
+    <ClCompile Include="..\..\src\libambulant\lib\win32\win32_fstream.cpp" />
+    <ClCompile Include="..\..\src\libambulant\lib\win32\win32_thread.cpp" />
+    <ClCompile Include="..\..\src\libambulant\lib\win32\win32_timer.cpp" />
+    <ClCompile Include="..\..\src\libambulant\net\databuffer.cpp" />
+    <ClCompile Include="..\..\src\libambulant\net\datasource.cpp" />
+    <ClCompile Include="..\..\src\libambulant\net\stdio_datasource.cpp" />
+    <ClCompile Include="..\..\src\libambulant\net\url.cpp" />
+    <ClCompile Include="..\..\src\libambulant\net\win32_datasource.cpp" />
+    <ClCompile Include="..\..\src\libambulant\common\factory.cpp" />
+    <ClCompile Include="..\..\src\libambulant\common\gui_player.cpp" />
+    <ClCompile Include="..\..\src\libambulant\common\plugin_engine.cpp" />
+    <ClCompile Include="..\..\src\libambulant\common\preferences.cpp" />
+    <ClCompile Include="..\..\src\libambulant\common\region.cpp" />
+    <ClCompile Include="..\..\src\libambulant\common\renderer_impl.cpp" />
+    <ClCompile Include="..\..\src\libambulant\common\renderer_select.cpp" />
+    <ClCompile Include="..\..\src\libambulant\common\schema.cpp" />
+    <ClCompile Include="..\..\src\libambulant\common\smil_alignment.cpp" />
+    <ClCompile Include="..\..\src\libambulant\common\smil_handler.cpp" />
+    <ClCompile Include="..\..\src\libambulant\common\state.cpp" />
+    <ClCompile Include="..\..\src\libambulant\common\video_renderer.cpp" />
+    <ClCompile Include="..\..\src\libambulant\smil2\animate_a.cpp" />
+    <ClCompile Include="..\..\src\libambulant\smil2\animate_e.cpp" />
+    <ClCompile Include="..\..\src\libambulant\smil2\animate_n.cpp" />
+    <ClCompile Include="..\..\src\libambulant\smil2\params.cpp" />
+    <ClCompile Include="..\..\src\libambulant\smil2\region_node.cpp" />
+    <ClCompile Include="..\..\src\libambulant\smil2\smil_layout.cpp" />
+    <ClCompile Include="..\..\src\libambulant\smil2\smil_player.cpp" />
+    <ClCompile Include="..\..\src\libambulant\smil2\smil_time.cpp" />
+    <ClCompile Include="..\..\src\libambulant\smil2\smiltext.cpp" />
+    <ClCompile Include="..\..\src\libambulant\smil2\sync_rule.cpp" />
+    <ClCompile Include="..\..\src\libambulant\smil2\test_attrs.cpp" />
+    <ClCompile Include="..\..\src\libambulant\smil2\time_attrs.cpp" />
+    <ClCompile Include="..\..\src\libambulant\smil2\time_calc.cpp" />
+    <ClCompile Include="..\..\src\libambulant\smil2\time_node.cpp" />
+    <ClCompile Include="..\..\src\libambulant\smil2\time_sched.cpp" />
+    <ClCompile Include="..\..\src\libambulant\smil2\time_state.cpp" />
+    <ClCompile Include="..\..\src\libambulant\smil2\timegraph.cpp" />
+    <ClCompile Include="..\..\src\libambulant\smil2\transition.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\ambulant\version.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\none\none_gui.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\bmp_decoder.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_area.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_audio.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_audio_player.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_basicvideo.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_basicvideo_player.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_bgrenderer.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_brush.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_html_renderer.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_image_renderer.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_img.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_img_wic.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_playable.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_player.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_rgn.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_smiltext.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_surface.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_text.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_text_renderer.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_transition.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_video.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_video_player.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_viewport.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\dx_window.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\gif_decoder.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\html_bridge.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\img_decoder.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\jpg_decoder.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\dx\png_decoder.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\d2\d2_basicvideo.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\d2\d2_d2video.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\d2\d2_dshowsink.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\d2\d2_fill.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\d2\d2_img.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\d2\d2_player.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\d2\d2_renderer.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\d2\d2_smiltext.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\d2\d2_text.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\d2\d2_window.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\abstract_mtsync.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\amstream.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\asb.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\basic_types.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\callback.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\colors.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\delta_timer.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\document.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\event.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\event_processor.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\expat_parser.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\filesys.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\gpaths.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\gtypes.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\logger.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\memfile.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\mtsync.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\nfa.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\node.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\node_iterator.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\node_navigator.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\nscontext.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\parselets.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\parser_factory.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\refcount.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\sax_handler.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\sax_types.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\string_util.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\system.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\textptr.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\thread.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\timer.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\transition_info.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\tree_builder.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\win32\win32_asb.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\win32\win32_error.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\win32\win32_fstream.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\win32\win32_mtsync.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\win32\win32_thread.h" />
+    <ClInclude Include="..\..\include\ambulant\lib\win32\win32_timer.h" />
+    <ClInclude Include="..\..\include\ambulant\net\connection.h" />
+    <ClInclude Include="..\..\include\ambulant\net\databuffer.h" />
+    <ClInclude Include="..\..\include\ambulant\net\datasource.h" />
+    <ClInclude Include="..\..\include\ambulant\net\socket.h" />
+    <ClInclude Include="..\..\include\ambulant\net\stdio_datasource.h" />
+    <ClInclude Include="..\..\include\ambulant\net\url.h" />
+    <ClInclude Include="..\..\include\ambulant\net\win32_datasource.h" />
+    <ClInclude Include="..\..\include\ambulant\common\embedder.h" />
+    <ClInclude Include="..\..\include\ambulant\common\factory.h" />
+    <ClInclude Include="..\..\include\ambulant\common\gui_player.h" />
+    <ClInclude Include="..\..\include\ambulant\common\layout.h" />
+    <ClInclude Include="..\..\include\ambulant\common\playable.h" />
+    <ClInclude Include="..\..\include\ambulant\common\player.h" />
+    <ClInclude Include="..\..\include\ambulant\common\plugin_engine.h" />
+    <ClInclude Include="..\..\include\ambulant\common\preferences.h" />
+    <ClInclude Include="..\..\include\ambulant\common\region.h" />
+    <ClInclude Include="..\..\include\ambulant\common\region_dim.h" />
+    <ClInclude Include="..\..\include\ambulant\common\region_eval.h" />
+    <ClInclude Include="..\..\include\ambulant\common\region_info.h" />
+    <ClInclude Include="..\..\include\ambulant\common\renderer_impl.h" />
+    <ClInclude Include="..\..\include\ambulant\common\renderer_select.h" />
+    <ClInclude Include="..\..\include\ambulant\common\schema.h" />
+    <ClInclude Include="..\..\include\ambulant\common\smil_alignment.h" />
+    <ClInclude Include="..\..\include\ambulant\common\smil_handler.h" />
+    <ClInclude Include="..\..\include\ambulant\common\state.h" />
+    <ClInclude Include="..\..\include\ambulant\common\trace_playable.h" />
+    <ClInclude Include="..\..\include\ambulant\common\video_renderer.h" />
+    <ClInclude Include="..\..\include\ambulant\config\config.h" />
+    <ClInclude Include="..\..\include\ambulant\config\posix_features.h" />
+    <ClInclude Include="..\..\include\ambulant\config\select_compiler_config.h" />
+    <ClInclude Include="..\..\include\ambulant\config\select_platform_config.h" />
+    <ClInclude Include="..\..\include\ambulant\config\select_stdlib_config.h" />
+    <ClInclude Include="..\..\include\ambulant\config\suffix.h" />
+    <ClInclude Include="..\..\include\ambulant\config\user.h" />
+    <ClInclude Include="..\..\include\ambulant\config\compiler\borland.h" />
+    <ClInclude Include="..\..\include\ambulant\config\compiler\comeau.h" />
+    <ClInclude Include="..\..\include\ambulant\config\compiler\common_edg.h" />
+    <ClInclude Include="..\..\include\ambulant\config\compiler\compaq_cxx.h" />
+    <ClInclude Include="..\..\include\ambulant\config\compiler\gcc.h" />
+    <ClInclude Include="..\..\include\ambulant\config\compiler\greenhills.h" />
+    <ClInclude Include="..\..\include\ambulant\config\compiler\hp_acc.h" />
+    <ClInclude Include="..\..\include\ambulant\config\compiler\intel.h" />
+    <ClInclude Include="..\..\include\ambulant\config\compiler\kai.h" />
+    <ClInclude Include="..\..\include\ambulant\config\compiler\metrowerks.h" />
+    <ClInclude Include="..\..\include\ambulant\config\compiler\mpw.h" />
+    <ClInclude Include="..\..\include\ambulant\config\compiler\sgi_mipspro.h" />
+    <ClInclude Include="..\..\include\ambulant\config\compiler\sunpro_cc.h" />
+    <ClInclude Include="..\..\include\ambulant\config\compiler\vacpp.h" />
+    <ClInclude Include="..\..\include\ambulant\config\compiler\visualc.h" />
+    <ClInclude Include="..\..\include\ambulant\config\platform\aix.h" />
+    <ClInclude Include="..\..\include\ambulant\config\platform\amigaos.h" />
+    <ClInclude Include="..\..\include\ambulant\config\platform\beos.h" />
+    <ClInclude Include="..\..\include\ambulant\config\platform\bsd.h" />
+    <ClInclude Include="..\..\include\ambulant\config\platform\cygwin.h" />
+    <ClInclude Include="..\..\include\ambulant\config\platform\hpux.h" />
+    <ClInclude Include="..\..\include\ambulant\config\platform\irix.h" />
+    <ClInclude Include="..\..\include\ambulant\config\platform\linux.h" />
+    <ClInclude Include="..\..\include\ambulant\config\platform\macos.h" />
+    <ClInclude Include="..\..\include\ambulant\config\platform\solaris.h" />
+    <ClInclude Include="..\..\include\ambulant\config\platform\win32.h" />
+    <ClInclude Include="..\..\include\ambulant\config\stdlib\dinkumware.h" />
+    <ClInclude Include="..\..\include\ambulant\config\stdlib\libcomo.h" />
+    <ClInclude Include="..\..\include\ambulant\config\stdlib\libstdcpp3.h" />
+    <ClInclude Include="..\..\include\ambulant\config\stdlib\modena.h" />
+    <ClInclude Include="..\..\include\ambulant\config\stdlib\msl.h" />
+    <ClInclude Include="..\..\include\ambulant\config\stdlib\roguewave.h" />
+    <ClInclude Include="..\..\include\ambulant\config\stdlib\sgi.h" />
+    <ClInclude Include="..\..\include\ambulant\config\stdlib\stlport.h" />
+    <ClInclude Include="..\..\include\ambulant\config\stdlib\vacpp.h" />
+    <ClInclude Include="..\..\include\ambulant\smil2\animate_a.h" />
+    <ClInclude Include="..\..\include\ambulant\smil2\animate_e.h" />
+    <ClInclude Include="..\..\include\ambulant\smil2\animate_f.h" />
+    <ClInclude Include="..\..\include\ambulant\smil2\animate_n.h" />
+    <ClInclude Include="..\..\include\ambulant\smil2\params.h" />
+    <ClInclude Include="..\..\include\ambulant\smil2\region_node.h" />
+    <ClInclude Include="..\..\include\ambulant\smil2\smil_layout.h" />
+    <ClInclude Include="..\..\include\ambulant\smil2\smil_player.h" />
+    <ClInclude Include="..\..\include\ambulant\smil2\smil_time.h" />
+    <ClInclude Include="..\..\include\ambulant\smil2\smiltext.h" />
+    <ClInclude Include="..\..\include\ambulant\smil2\sync_rule.h" />
+    <ClInclude Include="..\..\include\ambulant\smil2\test_attrs.h" />
+    <ClInclude Include="..\..\include\ambulant\smil2\time_attrs.h" />
+    <ClInclude Include="..\..\include\ambulant\smil2\time_calc.h" />
+    <ClInclude Include="..\..\include\ambulant\smil2\time_nctx.h" />
+    <ClInclude Include="..\..\include\ambulant\smil2\time_node.h" />
+    <ClInclude Include="..\..\include\ambulant\smil2\time_sched.h" />
+    <ClInclude Include="..\..\include\ambulant\smil2\time_state.h" />
+    <ClInclude Include="..\..\include\ambulant\smil2\timegraph.h" />
+    <ClInclude Include="..\..\include\ambulant\smil2\trace_player.h" />
+    <ClInclude Include="..\..\include\ambulant\smil2\transition.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

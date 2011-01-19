@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="9,00"
+	Name="libxml2"
+	ProjectGUID="{AA0AA077-AE1E-4327-A54D-5381A01AEB97}"
+	RootNamespace="libxml2"
+	Keyword="MakeFileProj"
+	TargetFrameworkVersion="131072"
+	>
+	<Platforms>
+		<Platform
+			Name="Win32"
+		/>
+	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="Build\libxml2-Debug"
+			IntermediateDirectory="Build\libxml2-Debug"
+			ConfigurationType="0"
+			InheritedPropertySheets=".\Ambulant-win32.vsprops"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="echo on&#x0D;&#x0A;call &quot;$(VCInstallDir)vcvarsall.bat&quot;&#x0D;&#x0A;echo on&#x0D;&#x0A;cd $(libxml2_dir)\win32&#x0D;&#x0A;cscript configure.js iconv=no&#x0D;&#x0A;nmake /f Makefile.msvc"
+				ReBuildCommandLine="echo on&#x0D;&#x0A;call &quot;$(VCInstallDir)vcvarsall.bat&quot;&#x0D;&#x0A;echo on&#x0D;&#x0A;cd $(libxml2_dir)\win32&#x0D;&#x0A;cscript configure.js iconv=no&#x0D;&#x0A;nmake /f Makefile.msvc rebuild"
+				CleanCommandLine="echo on&#x0D;&#x0A;call &quot;$(VCInstallDir)vcvarsall.bat&quot;&#x0D;&#x0A;echo on&#x0D;&#x0A;cd $(libxml2_dir)\win32&#x0D;&#x0A;cscript configure.js iconv=no&#x0D;&#x0A;nmake /f Makefile.msvc clean"
+				Output=""
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="Build\libxml2-Release"
+			IntermediateDirectory="Build\libxml2-Release"
+			ConfigurationType="0"
+			InheritedPropertySheets=".\Ambulant-win32.vsprops"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="echo on&#x0D;&#x0A;call &quot;$(VCInstallDir)vcvarsall.bat&quot;&#x0D;&#x0A;echo on&#x0D;&#x0A;cd $(libxml2_dir)\win32&#x0D;&#x0A;cscript configure.js iconv=no&#x0D;&#x0A;nmake /f Makefile.msvc"
+				ReBuildCommandLine="echo on&#x0D;&#x0A;call &quot;$(VCInstallDir)vcvarsall.bat&quot;&#x0D;&#x0A;echo on&#x0D;&#x0A;cd $(libxml2_dir)\win32&#x0D;&#x0A;cscript configure.js iconv=no&#x0D;&#x0A;nmake /f Makefile.msvc rebuild"
+				CleanCommandLine="echo on&#x0D;&#x0A;call &quot;$(VCInstallDir)vcvarsall.bat&quot;&#x0D;&#x0A;echo on&#x0D;&#x0A;cd $(libxml2_dir)\win32&#x0D;&#x0A;cscript configure.js iconv=no&#x0D;&#x0A;nmake /f Makefile.msvc clean"
+				Output=""
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>
