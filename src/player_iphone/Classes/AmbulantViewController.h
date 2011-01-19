@@ -75,7 +75,7 @@ class document_embedder : public ambulant::common::embedder {
 
 // User interaction through gestures
 - (void) handleDoubleTapGesture:(UITapGestureRecognizer*) sender;
-- (void) handleTapGesture:(UITapGestureRecognizer*) sender;
+- (void) handleSingleTapGesture:(UITapGestureRecognizer*) sender;
 - (void) handleLongPressGesture:(UILongPressGestureRecognizer *)sender;
 - (void) handlePanGesture:(UIPanGestureRecognizer*) sender;
 - (void) handlePinchGesture:(UIGestureRecognizer*) sender;

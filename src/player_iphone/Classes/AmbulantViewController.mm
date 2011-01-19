@@ -67,42 +67,42 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
         selector:@selector(orientationChanged:)
         name:UIDeviceOrientationDidChangeNotification
         object: nil];
-	
 	embedder = new document_embedder(self);
 }
 
 - (void) initGestures
 {
     assert(playerView);
-	// prepare to react on "tap" gesture (select object in playerView with 1 finger tap)
-	UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]
-										  initWithTarget:self action:@selector(handleTapGesture:)];
-	[playerView addGestureRecognizer:tapGesture];
-    [tapGesture release];
-	
 	// prepare to react on "double tap" gesture (select object in playerView with 1 finger tap)
 	UITapGestureRecognizer *doubleTapGesture = [[UITapGestureRecognizer alloc]
-										  initWithTarget:self action:@selector(handleDoubleTapGesture:)];
+								initWithTarget:self action:@selector(handleDoubleTapGesture:)];
 	doubleTapGesture.numberOfTapsRequired = 2;
 	[playerView addGestureRecognizer:doubleTapGesture];
     [doubleTapGesture release];
-	
+
+	// prepare to react on "tap" gesture (select object in playerView with 1 finger tap)
+	UITapGestureRecognizer *singleTapGesture = [[UITapGestureRecognizer alloc]
+								initWithTarget:self action:@selector(handleSingleTapGesture:)];
+	[playerView addGestureRecognizer:singleTapGesture];	
+    [singleTapGesture release];
+	// do not also errnoneously recognize a single tap when a double tap is recognized
+	[singleTapGesture requireGestureRecognizerToFail:doubleTapGesture];	
 	
 	// prepare to react on "longPress" gesture (hold finger in one spot, longer than 0.4 sec.)
     UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc]
-													  initWithTarget:self action:@selector(handleLongPressGesture:)];
+								initWithTarget:self action:@selector(handleLongPressGesture:)];
     [playerView addGestureRecognizer:longPressGesture];
     [longPressGesture release];
 
 	// prepare to react on "pinch" gesture (zoom playerView with 2 fingers)
 	UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc]
-											  initWithTarget:self action:@selector(handlePinchGesture:)];
+								initWithTarget:self action:@selector(handlePinchGesture:)];
 	[playerView addGestureRecognizer:pinchGesture];
     [pinchGesture release];
 
 	// prepare to react on "pan" gesture (move playerView with one finger)
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]
-										  initWithTarget:self action:@selector(handlePanGesture:)];
+								initWithTarget:self action:@selector(handlePanGesture:)];
     [playerView addGestureRecognizer:panGesture];
     [panGesture release];
 }
@@ -287,8 +287,8 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	}
 };
 
-- (IBAction) handleTapGesture:(UITapGestureRecognizer *)sender { // select
-	AM_DBG NSLog(@"AmbulantViewController handleTapGesture(0x%x): sender=0x%x", self, sender);
+- (IBAction) handleSingleTapGesture:(UITapGestureRecognizer *)sender { // select
+	AM_DBG NSLog(@"AmbulantViewController handleSingleTapGesture(0x%x): sender=0x%x", self, sender);
 	[self showInteractionView: YES];
 }
 
