@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Label="UserMacros">
     <global_ambulant_defines>WITH_HTML_WIDGET;WITH_PYTHON_PLUGIN;WITH_SMIL30;WITH_SEAMLESS_PLAYBACK;WITH_CLOCK_SYNC;WITH_EXTERNAL_DOM</global_ambulant_defines>
@@ -8,7 +8,7 @@
     <zlib_dir>..\..\third_party_packages\zlib</zlib_dir>
     <libxml2_dir>..\..\third_party_packages\libxml2-2.7.6</libxml2_dir>
     <sdl_dir>..\..\third_party_packages\SDL-1.2.14</sdl_dir>
-    <ffmpeg_dir>..\..\third_party_packages\ffmpeg-20100122-win32-prebuilt</ffmpeg_dir>
+    <ffmpeg_dir>..\..\third_party_packages\ffmpeg-20110119-win32-prebuilt</ffmpeg_dir>
     <live555_dir>..\..\third_party_packages\live</live555_dir>
     <xerces_dir>..\..\third_party_packages\xerces-c-3.1.0</xerces_dir>
     <xerces_major>3</xerces_major>

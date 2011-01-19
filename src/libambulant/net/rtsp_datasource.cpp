@@ -18,6 +18,8 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "ambulant/config/config.h"
+#include "ambulant/net/ffmpeg_audio.h"
+#include "ambulant/net/ffmpeg_video.h"
 #include "ambulant/net/rtsp_datasource.h"
 #include "ambulant/net/demux_datasource.h"
 #include "ambulant/lib/logger.h"

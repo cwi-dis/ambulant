@@ -29,6 +29,10 @@
 #ifndef INT64_C
 #define INT64_C(x) x ## LL
 #endif
+#ifndef UINT64_C
+#define UINT64_C(x) x ## ui64
+#endif
+
 extern "C" {
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"
