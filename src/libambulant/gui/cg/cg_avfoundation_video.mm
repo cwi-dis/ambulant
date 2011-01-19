@@ -38,7 +38,7 @@ extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
 #ifndef NS_DBG
 #define NS_DBG if(0)
 #endif
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -89,10 +89,18 @@ extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
 	}
 }
 
+- (void) updatePlayState {
+	if (mWantToPlay) {
+		[mAVPlayer play];
+	} else {
+		[self pause];
+	}		
+}
+
 - (void) handleDurationDidChange {
 	duration = mAVPlayer.currentItem.asset.duration;
 	NS_DBG { NSLog(@"handleDurationDidChange(0x%x) duration changed to:", self); CMTimeShow(duration); }
-	[mAVPlayer play];
+	[self updatePlayState];
 //X	[self updateControls];
 }
 
@@ -100,7 +108,7 @@ extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
 	AVPlayerStatus playerStatus = mAVPlayer.status;
 	NS_DBG NSLog(@"handlePlayerStatusDidChange(0x%x) status changed to: %d", self, playerStatus);
 	mStatus = playerStatus;	
-	[self play];
+	[self updatePlayState];
 }
 
 - (void) handlePlayerCurrentItemAssetDidChange {
@@ -110,7 +118,7 @@ extern "C" void* call_C_function(void* args, void*(*fun)(void*arg)) {
 		[mAVPlayer addObserver:self forKeyPath:@"currentItem.asset.duration" options:0 context:nil];
 		mDurationObserver = true;
 		mStatus = playerStatus;
-		[self play];
+		[self updatePlayState];
 	}
 }
 
