@@ -168,7 +168,7 @@ HRESULT CVideoD2DBitmapRenderer::DoRenderSample( IMediaSample * pSample )
 
 	// Get the video bitmap buffer
 	pSample->GetPointer( &pBmpBuffer );
-	AM_DBG ambulant::lib::logger::get_logger()->debug("CVideoD2DBitmapRenderer::DoRenderSample() called");
+	AM_DBG {long long mTime0=0, mTime1=0; pSample->GetMediaTime(&mTime0, &mTime1); ambulant::lib::logger::get_logger()->debug("CVideoD2DBitmapRenderer::DoRenderSample(%lld, %lld)", mTime0, mTime1); }
 	if (m_rt == NULL) 
 		return S_OK;
 

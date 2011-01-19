@@ -56,15 +56,17 @@
 #   define AMBULANT_COMPILER_VERSION 8.0
 # elif _MSC_VER == 1500
 #   define AMBULANT_COMPILER_VERSION 9.0
-# else
+# elif _MSC_VER == 1600
+#	define AMBULANT_COMPILER_VERSION 10.0
+#else
 #   define AMBULANT_COMPILER_VERSION _MSC_VER
 # endif
 
 #define AMBULANT_COMPILER "Microsoft Visual C++ version " AMBULANT_STRINGIZE(AMBULANT_COMPILER_VERSION)
 
 //
-// last known and checked version is 1400:
-#if (_MSC_VER > 1500)
+// last known and checked version is 1600:
+#if (_MSC_VER > 1600)
 #  if defined(AMBULANT_ASSERT_CONFIG)
 #     error "Unknown compiler version - please run the configure tests and report the results"
 #  else

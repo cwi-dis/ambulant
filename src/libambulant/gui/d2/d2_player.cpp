@@ -458,10 +458,6 @@ std::string gui::d2::d2_player::get_pointed_node_str() {
 }
 
 void gui::d2::d2_player::on_char(int ch) {
-	/*AM_DBG*/ if (ch == 's') {
-		m_logger->debug("d2_player: scheduling screen snapshot");
-		schedule_capture(lib::rect(), this);
-	}
 	if(m_player) m_player->on_char(ch);
 }
 
@@ -1090,6 +1086,6 @@ void gui::d2::d2_player::open(net::url newdoc, bool startnewdoc, common::player 
 void
 gui::d2::d2_player::captured(IWICBitmap *bitmap)
 {
-	/*AM_DBG*/ m_logger->debug("d2_player::captured called");
+	AM_DBG m_logger->debug("d2_player::captured called");
 	if (bitmap) bitmap->Release();
 }

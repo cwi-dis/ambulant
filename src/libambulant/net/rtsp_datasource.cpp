@@ -39,8 +39,10 @@ using namespace net;
 #define DESIRED_AUDIO_BUF_SIZE 100000
 #define DESIRED_VIDEO_BUF_SIZE 2000000
 
-// VC9 doesn't seem to define this, how about other compilers?
+#if AMBULANT_MSVC == 1500
+// VC9 doesn't seem to define this
 inline long long abs(long long i) { return i < 0 ? -i : i; }
+#endif
 
 // Helper routines: callback functions passed to live555 that will call back to our methods.
 static void

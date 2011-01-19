@@ -476,7 +476,7 @@ void smil_player::stop_playable(const lib::node *n) {
 	m_playables_cs.enter();
 	std::map<const lib::node*, common::playable *>::iterator it =
 		m_playables.find(n);
-	std::pair<const lib::node*, common::playable*> victim(NULL,NULL);
+	std::pair<const lib::node*, common::playable*> victim((const lib::node*)NULL,(common::playable*)NULL);
 	if(it != m_playables.end()) {
 		victim = *it;
 		m_playables.erase(it);
