@@ -1,3 +1,32 @@
+2011-01-19 17:34  jackjansen
+
+	* Toying with new ffmpeg version, because it is supposed to have a
+	  better libswscale.
+
+2011-01-19 16:59  jackjansen
+
+	* Got VC10 projects to work.
+
+2011-01-19 16:45  keesblom
+
+	* Fixed a bug causing the player to crash (without recovery) when
+	  no title was present in smil metadata.
+
+2011-01-19 15:43  jackjansen
+
+	* Getting started with allowing Visual Studio 2010 builds.
+
+2011-01-19 14:17  keesblom
+
+	* Fixed a bug causing the HUD to show (single tap) when the resize
+	  (double tap) was specified by making the former dependent on the
+	  latter using 'requireGestureRecognizerToFail:'.
+
+2011-01-19 14:13  keesblom
+
+	* Fixed a bug causing the player to continue playing while is
+	  should have paused.
+
 2011-01-14 15:28  keesblom
 
 	* Small changes for iPad. Changed logic to refer to 'isHistory'
