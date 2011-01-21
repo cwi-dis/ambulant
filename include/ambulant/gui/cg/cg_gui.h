@@ -20,7 +20,11 @@
  */
 
 /*
+<<<<<<< cg_gui.h
  * @$Id$
+=======
+ * @$Id$
+>>>>>>> 1.24.4.2
  */
 
 #ifndef AMBULANT_GUI_CG_CG_GUI_H
@@ -138,13 +142,6 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 - (CGRect)rect;
 @end
 
-enum ZoomState {
-    zoomNaturalSize,
-//  zoomRegion,
-    zoomFillScreen,
-    zoomLast
-};
-
 @interface AmbulantView : VIEW_SUPERCLASS
 {
 	ambulant::gui::cg::cg_window *ambulant_window;
@@ -165,27 +162,14 @@ enum ZoomState {
 //	int overlay_window_count;
 #endif // WITH_QUICKTIME_OVERLAY
 #ifdef	WITH_UIKIT
-	BOOL M_auto_center;
-	BOOL M_auto_resize;
-	CGRect current_frame;
-	CGRect original_frame;
-	CGAffineTransform current_transform;
-	ambulant::lib::size original_bounds;
-    ZoomState zoomState;
 #endif//WITH_UIKIT
+	ambulant::lib::size original_bounds;
 }
 
 #ifdef	WITH_UIKIT
-@property(nonatomic) CGRect	current_frame;
-@property(nonatomic) CGRect	original_frame;
-@property(nonatomic) CGAffineTransform current_transform;
 @property(nonatomic) ambulant::lib::size original_bounds;
 
-- (void) adaptDisplayAfterRotation: (UIDeviceOrientation) orientation withAutoCenter: (BOOL) autoCenter withAutoResize: (bool) autoResize;
 - (BOOL) tappedAtPoint:(CGPoint) location;
-- (void) zoomWithScale: (float) scale inState: (UIGestureRecognizerState) state;
-- (void) translateWithPoint: (CGPoint) point inState: (UIGestureRecognizerState) state;
-- (void) autoZoomAtPoint: (CGPoint) point;
 - (void) drawTestRect:(CGRect)rect;
 #endif//WITH_UIKIT
 
@@ -199,6 +183,7 @@ enum ZoomState {
 - (bool)ignoreResize;
 #ifndef WITH_UIKIT
 - (BOOL)isFlipped;
+- (void)resizeWithOldSuperviewSize:(NSSize)oldBoundsSize;
 #endif
 
 - (void)ambulantSetSize: (ambulant::lib::size) bounds;

@@ -20,7 +20,10 @@ MAKEOPTS=-j2
 VERSIONSUFFIX=.$TODAY
 DMGNAME=Ambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
 PLUGINDMGNAME=AmbulantWebKitPlugin-$AMBULANTVERSION$VERSIONSUFFIX-mac
-DESTINATION=ssh.cwi.nl:public_html/ambulant/
+DESTINATION=ssh.cwi.nl:public_html/ambulant/nightly
+DESTINATION_DESKTOP=$DESTINATION/mac-intel-desktop-cocoa/
+DESTINATION_PLUGIN=$DESTINATION/mac-intel-webkitplugin/
+DESTINATION_CG=$DESTINATION/mac-intel-desktop-cg/
 
 echo nightly to stderr >&2
 echo nightly to stdout
@@ -69,7 +72,20 @@ cd ..
 #
 cd installers/sh-macos
 sh mkmacdist.sh $DMGNAME $BUILDHOME/$DESTDIR
-scp $DMGNAME.dmg $DESTINATION
+scp $DMGNAME.dmg $DESTINATION_DESKTOP
+cd ../..
+#
+# Build CG player
+#
+cd projects/xcode32
+xcodebuild -project AmbulantPlayer.xcodeproj \
+	-target AmbulantPlayer \
+	-configuration Release \
+	AMBULANT_BUILDDIR=$BUILDHOME/$BUILDDIR \
+	AMBULANT_3PP=$BUILDHOME/$BUILDDIR/third_party_packages \
+	DSTROOT=$BUILDHOME/DESTDIR \
+	install
+echo XXXX Installer TBD.
 cd ../..
 #
 # Build webkit plugin

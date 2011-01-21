@@ -37,11 +37,33 @@ class document_embedder : public ambulant::common::embedder {
 }
 @end
 
+enum ZoomState {
+    zoomUnknown,    // Only before first setting, will load from preferences
+    zoomFillScreen,
+    zoomNaturalSize,
+//  zoomRegion,
+    zoomUser
+};
+
+@interface AmbulantScalerView : UIView {
+    ZoomState zoomState;  // What sort of zooming we currently use
+	bool anchorTopLeft;	// Only for zoomFillScreen and zoomNaturalSize: anchorpoint is not center
+    CGPoint translation_origin; // During translation: point of origin of subwindow
+    CGAffineTransform zoom_transform; // During zoom: original scale factor
+}
+- (void) adaptDisplayAfterRotation;
+- (void) zoomWithScale: (float) scale inState: (UIGestureRecognizerState) state;
+- (void) autoZoomAtPoint: (CGPoint) point;
+- (void) translateWithPoint: (CGPoint) point inState: (UIGestureRecognizerState) state;
+- (void) recomputeZoom;
+@end
+
 @interface AmbulantViewController : UIViewController 
 				<UITextFieldDelegate> {
 	document_embedder *embedder;    // Our class to handle inter-SMIL-document commands.
 	mainloop *myMainloop;   // Controller object for the SMIL player
-	IBOutlet AmbulantContainerView* view; // our main view, contains playerView and interactionView
+//	IBOutlet AmbulantContainerView* view; // our main view, contains scalerView and interactionView
+    IBOutlet AmbulantScalerView* scalerView; // The zoom/pan view, contains playerView
 	IBOutlet AmbulantView* playerView;
 	IBOutlet UIView* interactionView;
 	IBOutlet AmbulantAppDelegate* delegate; // Our higher-level controller

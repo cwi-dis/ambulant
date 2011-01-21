@@ -20,7 +20,9 @@ CONFIGOPTS="--with-qt --with-gtk --with-xerces --with-xerces-plugin --with-npamb
 MAKEOPTS=
 VERSIONSUFFIX=.$TODAY
 ##PLUGINDMGNAME=AmbulantWebKitPlugin-$AMBULANTVERSION$VERSIONSUFFIX-mac
-DESTINATION=ssh.cwi.nl:public_html/ambulant/
+DESTINATION=ssh.cwi.nl:public_html/ambulant/nightly
+DESTINATION_SRC=$DESTINATION/src
+DESTINATION_NPAMBULANT=$destination/linux-intel-firefoxplugin
 
 echo
 echo ==========================================================
@@ -69,7 +71,7 @@ cd ..
 make $MAKEOPTS distcheck
 make $MAKEOPTS dist
 mv ambulant-$AMBULANTVERSION.tar.gz ambulant-$AMBULANTVERSION$VERSIONSUFFIX.tar.gz
-scp ambulant-$AMBULANTVERSION$VERSIONSUFFIX.tar.gz $DESTINATION
+scp ambulant-$AMBULANTVERSION$VERSIONSUFFIX.tar.gz $DESTINATION_SRC
 
 #
 # configure, make, make install
@@ -89,7 +91,7 @@ make $MAKEOPTS DESTDIR=$BUILDHOME/$DESTDIR install
 cd src/npambulant
 make installer
 mv npambulant-$AMBULANTVERSION-linux-$ARCH.xpi npambulant-$AMBULANTVERSION$VERSIONSUFFIX-linux-$ARCH.xpi
-scp npambulant-$AMBULANTVERSION$VERSIONSUFFIX-linux-$ARCH.xpi $DESTINATION
+scp npambulant-$AMBULANTVERSION$VERSIONSUFFIX-linux-$ARCH.xpi $DESTINATION_NPAMBULANT
 cd ../..
 #
 # Delete old installers, remember current

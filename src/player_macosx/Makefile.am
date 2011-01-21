@@ -2,8 +2,10 @@ EXTRA_DIST=MyAmbulantView.mm MyDocument.mm LogController.mm mainloop.cpp MyAppDe
 	mypreferences.mm mypreferences.h \
 	MyAmbulantView.h MyAppDelegate.h MyDocument.h LogController.h mainloop.h \
 	cocoambulant_Prefix.pch \
-	English.lproj Dutch.lproj \
-	Info.plist version.plist \
+	Resources \
+	Resources-cocoa \
+	Resources-cg \
+	version.plist \
 	fullcocoambulant.xcodeproj \
 	Ambulant.icns \
 	AmbulantDocSmil.icns \
@@ -48,8 +50,10 @@ endif
 
 if WITH_CG
 extra_cg_LDADD=$(libambulant_cg)
+toolkit_resources=Resources-cg
 else
 extra_cg_LDADD=
+toolkit_resources=Resources-cocoa
 endif
 
 if WITH_EXPAT
@@ -125,7 +129,7 @@ $(BUILDAPPNAME).app: cocoambulant_executable
 	mkdir -p $(BUILDAPPNAME).app/Contents/MacOS
 	mkdir -p $(BUILDAPPNAME).app/Contents/Resources
 	echo -n "APPLAmbl" > $(BUILDAPPNAME).app/Contents/PkgInfo
-	$(INSTALL_DATA) $(srcdir)/Info.plist $(BUILDAPPNAME).app/Contents/Info.plist
+	$(INSTALL_DATA) $(srcdir)/Resources/Info.plist $(BUILDAPPNAME).app/Contents/Info.plist
 	$(INSTALL_DATA) $(srcdir)/Ambulant.icns $(BUILDAPPNAME).app/Contents/Resources
 	$(INSTALL_DATA) $(srcdir)/AmbulantDocDaisy.icns $(BUILDAPPNAME).app/Contents/Resources
 	$(INSTALL_DATA) $(srcdir)/AmbulantDocGrins.icns $(BUILDAPPNAME).app/Contents/Resources
@@ -150,44 +154,23 @@ $(BUILDAPPNAME).app: cocoambulant_executable
 	cd ../../po ; \
 	$(MAKE) $(AM_MAKEFLAGS) localedir=$$localedir install
 	
-#	Install Cocoa localizations
-	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/English.lproj
-	$(INSTALL_DATA) $(srcdir)/English.lproj/Credits.rtf $(BUILDAPPNAME).app/Contents/Resources/English.lproj
-	$(INSTALL_DATA) $(srcdir)/English.lproj/InfoPlist.strings $(BUILDAPPNAME).app/Contents/Resources/English.lproj
-	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/English.lproj/MainMenu.nib
-	$(INSTALL_DATA) $(srcdir)/English.lproj/MainMenu.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/English.lproj/MainMenu.nib
-	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/English.lproj/MyDocument.nib
-	$(INSTALL_DATA) $(srcdir)/English.lproj/MyDocument.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/English.lproj/MyDocument.nib
-	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/English.lproj/Log.nib
-	$(INSTALL_DATA) $(srcdir)/English.lproj/Log.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/English.lproj/Log.nib
-
-	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Dutch.lproj
-	$(INSTALL_DATA) $(srcdir)/Dutch.lproj/Credits.rtf $(BUILDAPPNAME).app/Contents/Resources/Dutch.lproj
-	$(INSTALL_DATA) $(srcdir)/Dutch.lproj/InfoPlist.strings $(BUILDAPPNAME).app/Contents/Resources/Dutch.lproj
-	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Dutch.lproj/MainMenu.nib
-	$(INSTALL_DATA) $(srcdir)/Dutch.lproj/MainMenu.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/Dutch.lproj/MainMenu.nib
-#	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Dutch.lproj/MyDocument.nib
-#	$(INSTALL_DATA) $(srcdir)/Dutch.lproj/MyDocument.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/Dutch.lproj/MyDocument.nib
-#	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Dutch.lproj/Log.nib
-#	$(INSTALL_DATA) $(srcdir)/Dutch.lproj/Log.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/Dutch.lproj/Log.nib
-
-##	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Hindi.lproj
-##	$(INSTALL_DATA) $(srcdir)/Hindi.lproj/Credits.rtf $(BUILDAPPNAME).app/Contents/Resources/Hindi.lproj
-##	$(INSTALL_DATA) $(srcdir)/Hindi.lproj/InfoPlist.strings $(BUILDAPPNAME).app/Contents/Resources/Hindi.lproj
-##	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Hindi.lproj/MainMenu.nib
-##	$(INSTALL_DATA) $(srcdir)/Hindi.lproj/MainMenu.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/Hindi.lproj/MainMenu.nib
-##	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Hindi.lproj/MyDocument.nib
-##	$(INSTALL_DATA) $(srcdir)/Hindi.lproj/MyDocument.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/Hindi.lproj/MyDocument.nib
-##	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Hindi.lproj/Log.nib
-##	$(INSTALL_DATA) $(srcdir)/Hindi.lproj/Log.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/Hindi.lproj/Log.nib
+	mkdir -p $(BUILDAPPNAME).app/Contents/Resources
+	$(INSTALL_DATA) $(srcdir)/Resources/Credits.rtf $(BUILDAPPNAME).app/Contents/Resources
+	$(INSTALL_DATA) $(srcdir)/Resources/InfoPlist.strings $(BUILDAPPNAME).app/Contents/Resources
+	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/MainMenu.nib
+	$(INSTALL_DATA) $(srcdir)/$(toolkit_resources)/MainMenu.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/MainMenu.nib
+	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/MyDocument.nib
+	$(INSTALL_DATA) $(srcdir)/$(toolkit_resources)/MyDocument.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/MyDocument.nib
+	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Log.nib
+	$(INSTALL_DATA) $(srcdir)/$(toolkit_resources)/Log.nib/*.nib $(BUILDAPPNAME).app/Contents/Resources/Log.nib
 
 #	$(INSTALL_DATA) $(srcdir)/*.png $(BUILDAPPNAME).app/Contents/Resources
 
 #	Install documentation
-	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/English.lproj/Ambulant\ Player\ Help
+	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/Ambulant\ Player\ Help
 	sh $(srcdir)/genappleindex.sh $(srcdir)/../../Documentation/user
-	$(INSTALL_DATA) $(srcdir)/../../Documentation/user/*.* $(BUILDAPPNAME).app/Contents/Resources/English.lproj/Ambulant\ Player\ Help
-#	sh $(srcdir)/genappleindex.sh $(BUILDAPPNAME).app/Contents/Resources/English.lproj/Ambulant\ Player\ Help
+	$(INSTALL_DATA) $(srcdir)/../../Documentation/user/*.* $(BUILDAPPNAME).app/Contents/Resources/Ambulant\ Player\ Help
+#	sh $(srcdir)/genappleindex.sh $(BUILDAPPNAME).app/Contents/Resources/Ambulant\ Player\ Help
 
 #	Install welcome document
 	mkdir -p $(BUILDAPPNAME).app/Contents/Resources/data

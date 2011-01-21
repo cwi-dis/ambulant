@@ -114,6 +114,7 @@ initialize_logger()
 @synthesize autoCenter;
 @synthesize autoResize;
 @synthesize nativeRenderer;
+@synthesize autoHideHUD;
 
 #pragma mark -
 #pragma mark Application lifecycle
@@ -138,6 +139,7 @@ application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictio
 	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	autoCenter = prefs->m_auto_center;
 	autoResize = prefs->m_auto_resize;
+	autoHideHUD = prefs->m_hud_auto_hide;
 	nativeRenderer = ! prefs->m_prefer_ffmpeg;
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 	[[NSNotificationCenter defaultCenter]

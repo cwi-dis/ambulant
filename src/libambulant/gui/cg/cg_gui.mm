@@ -274,10 +274,6 @@ bad:
 //	overlay_window_needs_reparent = NO;
 //	overlay_window_needs_flush = NO;
 //	overlay_window_needs_clear = NO;
-#ifdef WITH_UIKIT
-	M_auto_center = YES;
-	M_auto_resize = NO;
-#endif
 	return self;
 }
 
@@ -298,10 +294,6 @@ bad:
 //	overlay_window_needs_reparent = NO;
 //	overlay_window_needs_flush = NO;
 //	overlay_window_needs_clear = NO;
-#ifdef WITH_UIKIT
-	M_auto_center = YES;
-	M_auto_resize = NO;
-#endif
 	return self;
 }
 
@@ -537,116 +529,26 @@ bad:
 }
 
 #ifdef	WITH_UIKIT
-@synthesize current_frame;
-@synthesize original_frame;
 @synthesize original_bounds;
-@synthesize current_transform;
 
-- (void) adaptDisplayAfterRotation: (UIDeviceOrientation) orientation withAutoCenter: (BOOL) autoCenter withAutoResize: (bool) autoResize {
-	if (ambulant_window == NULL ) {
-		return;
-	}
-	if (self.alpha == 0.0) {
-		// view disabled, another view is made visible (e.g. tabBarViewController)
-		return;
-	}
-	// adapt the ambulant window needed (bounds) in the current View
-	M_auto_center = autoCenter;
-	M_auto_resize = autoResize;
-	bool auto_resize = (bool) autoResize;
-	bool auto_center = (bool) autoCenter;
-    if (autoResize) {
-        zoomState = zoomFillScreen;
-    } else {
-        zoomState = zoomNaturalSize;
-    }
-	CGSize mybounds;
-	mybounds.width = original_bounds.w;
-	mybounds.height = original_bounds.h;
-#if PRESERVE_ZOOM
-	// pan/zoom combined with auto scale/auto center does not work smoothly.
-	// for now, rotating the device implies undo of all pan/zoom settings.
-	// This is useable, albeit maybe not always desirable.
-	// Shake gesture or UIDeviveOrientationFaceDown would be obvious
-	// implementation for Undo pan/zoom (Shake is commonly used fo Undo/Redo).
-	CGRect myframe = current_frame;
-#else
-	CGRect myframe = current_frame = original_frame;
-#endif ///PRESERVE_ZOOM
-	CGRect mainframe = [[UIScreen mainScreen] applicationFrame];
-	AM_DBG NSLog(@"Mainscreen: %f,%f,%f,%f", mainframe.origin.x,mainframe.origin.y,mainframe.size.width,mainframe.size.height);
-	BOOL wasRotated = false;
-	if (orientation == UIDeviceOrientationLandscapeLeft
-		|| orientation == UIDeviceOrientationLandscapeRight) {
-		wasRotated = true;
-		if (auto_center || auto_resize) {
-			myframe.size.height = mainframe.size.width; // depends on nib
-			myframe.size.width = mainframe.size.height;
-		}
-		[[UIApplication sharedApplication] setStatusBarHidden: YES withAnimation: UIStatusBarAnimationNone];
-	} else if (orientation == UIDeviceOrientationPortrait 
-			   || orientation == UIDeviceOrientationPortraitUpsideDown) {
-		if (auto_center || auto_resize) {
-			myframe.size.width = mainframe.size.width;
-			myframe.size.height = mainframe.size.height;
-		}
-		[[UIApplication sharedApplication] setStatusBarHidden: NO withAnimation: UIStatusBarAnimationNone];
-	} else {
-		return;
-	}
-	float scale = 1.0;
-	if (auto_resize) {
-		float scale_x = myframe.size.width / mybounds.width;
-		float scale_y = myframe.size.height / mybounds.height;
-		// find the smallest scale factor for both x- and y-directions
-		scale = scale_x < scale_y ? scale_x : scale_y;
-	}
-#if PRESERVE_ZOOM
-	//self.transform = CGAffineTransformScale(self.transform, scale, scale);
-#else
-	self.transform = CGAffineTransformMakeScale(scale, scale);
-#endif ///PRESERVE_ZOOM
-	
-	// center my frame in the available space
-	float delta = 0;
-	if (auto_center) {
-		if (wasRotated) {
-			delta = (myframe.size.width - mybounds.width * scale) / 2;
-			myframe.origin.x += delta;
-			myframe.size.width -= delta;
-			delta = (myframe.size.height - mybounds.height * scale) / 2;
-			myframe.origin.y += delta;
-			myframe.size.height -= delta;
-		} else {
-			delta = (myframe.size.height - mybounds.height * scale) / 2;		
-			myframe.origin.y += delta;
-			myframe.size.height -= delta;
-			delta = (myframe.size.width - mybounds.width * scale) / 2;
-			myframe.origin.x += delta;
-			myframe.size.width -= delta;
-		}
-	}
-	AM_DBG ambulant::lib::logger::get_logger()->debug("adaptDisplayAfterRotation: myframe=orig(%d,%d),size(%d,%d)",(int)myframe.origin.x, (int)myframe.origin.y,(int)myframe.size.width,(int)myframe.size.height);
-	self.frame = myframe;
-
-	// redisplay AmbulantView using the new settings
-	[self setNeedsDisplay];
-}
 #endif//WITH_UIKIT
 
 - (void)ambulantSetSize: (ambulant::lib::size) bounds
 {
-// Remember frame and bounds and adapt the window reqested in the current view
-	original_bounds = bounds;
-#if WITH_UIKIT
-//	NSLog(@"ambulantSetSize: not yet implemented for UIKit");
-	if (original_frame.size.height == 0  && original_frame.size.width == 0) {
-		original_frame.size.height = self.frame.size.height;
-		original_frame.size.width  = self.frame.size.width;
-	}
-	current_frame = original_frame;
-	[self adaptDisplayAfterRotation: UIDeviceOrientationPortrait withAutoCenter: M_auto_center withAutoResize: M_auto_resize];
-#else
+    // Remember frame and bounds and adapt the window reqested in the current view
+	AM_DBG NSLog(@"setSize before: %@ %f,%f", self, self.bounds.size.width, self.bounds.size.height);
+    original_bounds = bounds;
+    CGRect newBounds = CGRectMake(0, 0, bounds.w, bounds.h);
+    self.bounds = newBounds;
+    CGRect newFrame = self.frame;
+    newFrame.size = newBounds.size;
+    self.frame = newFrame;
+    AM_DBG NSLog(@"setSize after set bounds: %@ %f,%f", self, self.bounds.size.width, self.bounds.size.height);
+	if ([[self superview] respondsToSelector:@selector(recomputeZoom)])
+		[[self superview] recomputeZoom];
+
+    AM_DBG NSLog(@"setSize after aDAR: %@ %f,%f", self, self.bounds.size.width, self.bounds.size.height);
+#ifndef WITH_UIKIT
 	// Get the position of our view in window coordinates
 	NSPoint origin = NSMakePoint(0,0);
 	NSView *superview = [self superview];
@@ -667,7 +569,7 @@ bad:
 		AM_DBG NSLog(@"Size changed on %@ to (%f, %f)", window, ns_size.width, ns_size.height);
 	}
 	[window makeKeyAndOrderFront: self];
-#endif
+#endif // !WITH_UIKIT
 }
 
 #ifdef WITH_UIKIT
@@ -681,43 +583,6 @@ bad:
 		return ambulant_window->user_event(amwhere, 0);
 	}
 	return false;
-}
-
-- (void) zoomWithScale: (float) scale  inState: (UIGestureRecognizerState) state {
-	if (state == UIGestureRecognizerStateBegan) {
-		self.current_transform = self.transform;
-	}
-	// the current scale factors for 'x' and 'y' are in the 'a' and 'd' fields, respectively
-	// self.transform = CGAffineTransformMakeScale (scale*self.transform.a, scale*self.transform.d);
-	
-	self.transform = CGAffineTransformMakeScale (scale*self.current_transform.a,
-												 scale*self.current_transform.d);
-	// self.current_transform = self.transform;
-	self.current_frame = self.frame; //changing tranform also changes frame
-	if (state == UIGestureRecognizerStateEnded) {
-		self.current_transform = self.transform;
-	}
-}
-
-- (void) translateWithPoint: (CGPoint) point inState: (UIGestureRecognizerState) state {
-	CGRect newFrame = self.current_frame;
-	newFrame.origin.x += point.x;
-	newFrame.origin.y += point.y;
-	
-	self.frame = newFrame;
-	if (state == UIGestureRecognizerStateEnded) {
-		self.current_frame = newFrame;
-	}
-}
-
-- (void) autoZoomAtPoint: (CGPoint) point
-{
-    // Advance to "next" zoomstate, currently only fill-screen and natural-size.
-    // Eventually we will add zoom-to-region here.
-    zoomState = (ZoomState)(zoomState + 1);
-    if (zoomState == zoomLast) zoomState = zoomNaturalSize;
-    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-    [self adaptDisplayAfterRotation: orientation withAutoCenter: M_auto_center withAutoResize: (zoomState == zoomFillScreen)];
 }
 
 - (void)drawTestRect:(CGRect)rect;

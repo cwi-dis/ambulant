@@ -23,11 +23,13 @@
 	BOOL autoCenter;
 	BOOL autoResize;
 	BOOL nativeRenderer;
+	BOOL autoHideHUD;
 }
 
 @property(readonly) BOOL autoCenter;
 @property(readonly) BOOL autoResize;
 @property(readonly) BOOL nativeRenderer;
+@property(readonly) BOOL autoHideHUD;
 
 - (BOOL) application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
 - (void) applicationWillResignActive:(UIApplication *)application;

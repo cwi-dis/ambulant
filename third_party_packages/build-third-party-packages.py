@@ -121,6 +121,13 @@ def appendPath(varname, value):
     if not value in oldlist:
         oldlist.append(value)
     os.putenv(varname, ':'.join(oldlist))
+
+# If the environment variable AMBULANT_3PP has been set that is where we should
+# build the third party packages
+override_3pp = os.getenv("AMBULANT_3PP")
+if override_3pp:
+    os.chdir(override_3pp)
+    print '+ building in', os.getcwd()
     
 # Locate ambulant base directory
 dir=os.getcwd()
@@ -233,13 +240,23 @@ third_party_packages={
                 "make install" % MAC106_COMMON_CONFIGURE
             ),
 
+##        TPP("ffmpeg",
+##            url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
+##            checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
+##            buildcmd=
+##                "mkdir ffmpeg-export-universal && "
+##                "cd ffmpeg-export-universal && "
+##                "%s/third_party_packages/ffmpeg-osx-fatbuild.sh %s/ffmpeg-export-2010-01-22 all" % 
+##                    (AMBULANT_DIR, os.getcwd())
+##            ),
+
         TPP("ffmpeg",
-            url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
-            checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
+            url="http://ffmpeg.org/releases/ffmpeg-0.6.1.tar.gz",
+            checkcmd="pkg-config --atleast-version=52.64.2 libavformat",
             buildcmd=
-                "mkdir ffmpeg-export-universal && "
-                "cd ffmpeg-export-universal && "
-                "%s/third_party_packages/ffmpeg-osx-fatbuild.sh %s/ffmpeg-export-2010-01-22 all" % 
+                "mkdir ffmpeg-0.6.1-universal && "
+                "cd ffmpeg-0.6.1-universal && "
+                "%s/third_party_packages/ffmpeg-osx-fatbuild.sh %s/ffmpeg-0.6.1 all" % 
                     (AMBULANT_DIR, os.getcwd())
             ),
         TPP("SDL",

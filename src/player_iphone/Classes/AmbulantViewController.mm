@@ -16,6 +16,17 @@
 #define AM_DBG if(0)
 #endif
 
+#if 1
+static void dumpView(const char *label, UIView *v) {
+    std::string indent = "";
+    while (v) {
+        NSLog(@"%s %s%@ bounds=(%f,%f,%f,%f) anchor=%f,%f center=%f,%f", label, indent.c_str(), v, v.bounds.origin.x, v.bounds.origin.y, v.bounds.size.width, v.bounds.size.height, v.layer.anchorPoint.x, v.layer.anchorPoint.y, v.center.x, v.center.y);
+        indent = indent + "-> ";
+        v = [v superview];
+    }
+}
+#endif // 1
+
 #pragma mark -
 #pragma mark document_embedder
 
@@ -73,16 +84,20 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 - (void) initGestures
 {
     assert(playerView);
+    assert(scalerView);
+	
 	// prepare to react on "double tap" gesture (select object in playerView with 1 finger tap)
 	UITapGestureRecognizer *doubleTapGesture = [[UITapGestureRecognizer alloc]
-								initWithTarget:self action:@selector(handleDoubleTapGesture:)];
+		initWithTarget:self
+		action:@selector(handleDoubleTapGesture:)];
 	doubleTapGesture.numberOfTapsRequired = 2;
-	[playerView addGestureRecognizer:doubleTapGesture];
+	[scalerView addGestureRecognizer:doubleTapGesture];
     [doubleTapGesture release];
 
 	// prepare to react on "tap" gesture (select object in playerView with 1 finger tap)
 	UITapGestureRecognizer *singleTapGesture = [[UITapGestureRecognizer alloc]
-								initWithTarget:self action:@selector(handleSingleTapGesture:)];
+		initWithTarget:self
+		action:@selector(handleSingleTapGesture:)];
 	[playerView addGestureRecognizer:singleTapGesture];	
     [singleTapGesture release];
 	// do not also errnoneously recognize a single tap when a double tap is recognized
@@ -90,20 +105,23 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	
 	// prepare to react on "longPress" gesture (hold finger in one spot, longer than 0.4 sec.)
     UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc]
-								initWithTarget:self action:@selector(handleLongPressGesture:)];
-    [playerView addGestureRecognizer:longPressGesture];
+		initWithTarget:self
+		action:@selector(handleLongPressGesture:)];
+    [scalerView addGestureRecognizer:longPressGesture];
     [longPressGesture release];
 
 	// prepare to react on "pinch" gesture (zoom playerView with 2 fingers)
 	UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc]
-								initWithTarget:self action:@selector(handlePinchGesture:)];
-	[playerView addGestureRecognizer:pinchGesture];
+		initWithTarget:self
+		action:@selector(handlePinchGesture:)];
+	[scalerView addGestureRecognizer:pinchGesture];
     [pinchGesture release];
 
 	// prepare to react on "pan" gesture (move playerView with one finger)
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]
-								initWithTarget:self action:@selector(handlePanGesture:)];
-    [playerView addGestureRecognizer:panGesture];
+		initWithTarget:self
+		action:@selector(handlePanGesture:)];
+    [scalerView addGestureRecognizer:panGesture];
     [panGesture release];
 }
 
@@ -117,12 +135,12 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 - (void)viewWillAppear:(BOOL)animated
 {
-	/*AM_DBG*/ NSLog(@"AmbulantViewController viewWillAppear(0x%x)", self);
+	AM_DBG NSLog(@"AmbulantViewController viewWillAppear(0x%x)", self);
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
-	/*AM_DBG*/ NSLog(@"AmbulantViewController viewDidAppear(0x%x)", self);
+	AM_DBG NSLog(@"AmbulantViewController viewDidAppear(0x%x)", self);
     [self play];
 }
 
@@ -171,8 +189,9 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	}
     if (!currentURL) return;
     if (!playerView) {
-        (void)self.view; // This loads the view
+        [self view]; // This loads the view
     }
+    assert(self.view);
     assert(currentURL);
     assert(playerView);
     assert(embedder);	
@@ -244,10 +263,9 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	if (orientation == currentOrientation || ! [self isSupportedOrientation: orientation]) {
 		return;
 	}
-	ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
 	currentOrientation = orientation;
-	if (playerView != NULL) {
-		[playerView adaptDisplayAfterRotation: orientation withAutoCenter: prefs->m_auto_center withAutoResize: prefs->m_auto_resize];
+	if (scalerView != NULL) {
+		[scalerView adaptDisplayAfterRotation];
 	}
 }
 
@@ -256,8 +274,10 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	if (want_show && interactionView.hidden) {
 		interactionView.hidden = false;
 		interactionView.opaque = true;
-		ambulant::iOSpreferences* prefs = ambulant::iOSpreferences::get_preferences();
-		if (prefs->m_hud_auto_hide) {
+        assert(self.view);
+        assert(interactionView);
+        [self.view bringSubviewToFront:interactionView];
+		if (delegate.autoHideHUD) {
 			[NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector(autoHideInteractionView) object:nil];
 			[self performSelector:@selector(autoHideInteractionView) withObject:nil afterDelay:(NSTimeInterval)5.0];
 		}
@@ -294,11 +314,12 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 - (IBAction) handleDoubleTapGesture:(UITapGestureRecognizer *)sender { // select
 	AM_DBG NSLog(@"AmbulantViewController handleDoubleTapGesture(0x%x): sender=0x%x", self, sender);
-	CGPoint location = [sender locationInView:playerView];
-	[playerView autoZoomAtPoint:location];
+	CGPoint location = [sender locationInView:scalerView];
+	[scalerView autoZoomAtPoint:location];
 }
 
 - (void) adjustAnchorPointForGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer {
+    // XXXJACK: should move to zoomView?
     if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
         UIView *piece = gestureRecognizer.view;
         CGPoint locationInView = [gestureRecognizer locationInView:piece];
@@ -319,13 +340,13 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	AM_DBG NSLog(@"AmbulantViewController handlePinchGesture(0x%x): sender=0x%x", self, sender);
     [self adjustAnchorPointForGestureRecognizer: sender];
 	CGFloat factor = [(UIPinchGestureRecognizer *)sender scale];
-	[playerView zoomWithScale:factor inState: [sender state]];
+	[scalerView zoomWithScale:factor inState: [sender state]];
 }
 
 - (IBAction) handlePanGesture:(UIPanGestureRecognizer *)sender {
 	AM_DBG NSLog(@"AmbulantViewController handlePanGesture(0x%x): sender=0x%x", self, sender);
 	CGPoint translate = [sender translationInView: playerView.superview];
-	[playerView  translateWithPoint: (CGPoint) translate inState: [sender state]];
+	[scalerView  translateWithPoint: (CGPoint) translate inState: [sender state]];
 }
 
 #pragma mark -
@@ -388,6 +409,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 			myMainloop->get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererOpen"));
 		}
 	}
+	[scalerView recomputeZoom];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -399,3 +421,142 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 
 @end
+
+#pragma mark -
+
+@implementation AmbulantContainerView
+- (void) layoutSubviews {
+    AM_DBG dumpView("layoutSubviews container before", [[self subviews] objectAtIndex: 0]);
+    [super layoutSubviews];
+    AM_DBG dumpView("layoutSubviews container after", [[self subviews] objectAtIndex: 0]);
+}
+
+@end
+
+#pragma mark -
+
+@implementation AmbulantScalerView
+- (void) adaptDisplayAfterRotation
+{
+    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+	if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
+		[[UIApplication sharedApplication] setStatusBarHidden: YES withAnimation: UIStatusBarAnimationNone];
+	} else if (orientation == UIDeviceOrientationPortrait || orientation == UIDeviceOrientationPortraitUpsideDown) {
+		[[UIApplication sharedApplication] setStatusBarHidden: NO withAnimation: UIStatusBarAnimationNone];
+	} else {
+		return;
+	}
+
+	// redisplay AmbulantView using the new settings
+    [self setNeedsLayout];
+	[self setNeedsDisplay];
+}
+
+- (void) recomputeZoom {
+	zoomState = zoomUnknown;
+	[self layoutSubviews];
+}
+
+- (void) layoutSubviews {
+    dumpView("layoutSubviews before", [[self subviews] objectAtIndex: 0]);
+    UIView *playerView = [[self subviews] objectAtIndex: 0];
+    assert(playerView);
+    if (!playerView) return;
+ 
+	   // Initialize the zoomState, if not done already
+    if (zoomState == zoomUnknown) {
+        // adapt the ambulant window needed (bounds) in the current View
+        ambulant::iOSpreferences *prefs = ambulant::iOSpreferences::get_preferences();
+         anchorTopLeft = !(bool) prefs->m_auto_center;
+        if (prefs->m_auto_resize) {
+            zoomState = zoomFillScreen;
+        } else {
+            zoomState = zoomNaturalSize;
+        }
+    }
+	
+    if (zoomState == zoomFillScreen || zoomState == zoomNaturalSize) {
+		// If we were showing the  presentation with a well-known aspect ratio (not
+		// user panned or zoomed) we recreate that from scratch
+        /*AM_DBG*/ NSLog(@"LayoutSubviews fillScreen");
+        
+        // We start by making ourselves the same size as the child, and centering the child.
+        self.bounds = playerView.bounds;
+        playerView.bounds = self.bounds;
+        CGSize pSize = self.bounds.size;
+        CGFloat ourWidth, ourHeight;
+        ourWidth = pSize.width;
+        ourHeight = pSize.height;
+        playerView.center = CGPointMake(ourWidth/2, ourHeight/2);
+        
+        // Now we need to determine our scale factor and (x,y) offset
+        pSize = [self superview].bounds.size;
+        CGFloat availableWidth, availableHeight;
+		// It seems our width/height has been adapted when we get here during an orientation change.
+		availableWidth = pSize.width;
+		availableHeight = pSize.height;
+		// find the smallest scale factor for both x- and y-directions
+		float scale_x = availableWidth / ourWidth;
+		float scale_y = availableHeight / ourHeight;
+		float scale = scale_x < scale_y ? scale_x : scale_y;
+		if (zoomState == zoomNaturalSize)
+			scale = 1;
+        float scale_cur = fabs(self.transform.a+self.transform.c); // We know x/y scale are same, and one of a/c is zero.
+        self.transform = CGAffineTransformScale(self.transform, scale/scale_cur, scale/scale_cur);
+
+        if (anchorTopLeft) {
+			CGRect curFrame = self.frame;
+			curFrame.origin = CGPointMake(0, 0);
+			self.frame = curFrame;
+		} else {
+			self.center = CGPointMake(availableWidth/2, availableHeight/2);
+		}
+		
+    } else {
+		// if we were showing a user-determined pan/zoom we keep the current
+		// aspect ratio and maintain the center.
+		// XXX to be done
+	}
+    dumpView("layoutSubviews after", [[self subviews] objectAtIndex: 0]);
+}
+
+- (void) zoomWithScale: (float) scale  inState: (UIGestureRecognizerState) state {
+	if (state == UIGestureRecognizerStateBegan) {
+		zoom_transform = self.transform;
+	}
+    self.transform = CGAffineTransformScale(zoom_transform, scale, scale);
+	if (state == UIGestureRecognizerStateEnded) {
+	}
+    zoomState = zoomUser;
+}
+
+- (void) translateWithPoint: (CGPoint) point inState: (UIGestureRecognizerState) state {
+    UIView *playerView = [[self subviews] objectAtIndex: 0];
+    assert(playerView);
+    if (!playerView) return;
+	if (state == UIGestureRecognizerStateBegan) {
+        translation_origin = self.center;
+    }
+    
+    CGPoint newCenter = translation_origin;
+	newCenter.x += point.x*self.transform.a;
+	newCenter.y += point.y*self.transform.d;
+    self.center = newCenter;
+	
+	if (state == UIGestureRecognizerStateEnded) {
+	}
+    zoomState = zoomUser;
+}
+
+- (void) autoZoomAtPoint: (CGPoint) point
+{
+    // Advance to "next" zoomstate, currently only fill-screen and natural-size.
+    // Eventually we will add zoom-to-region here.
+    AM_DBG dumpView("autoZoomAtPoint", [[self subviews] objectAtIndex: 0]);
+    zoomState = (ZoomState)(zoomState + 1);
+    if (zoomState >= zoomUser) zoomState = zoomFillScreen;
+    [self setNeedsLayout];
+}
+
+@end
+
