@@ -115,6 +115,7 @@ initialize_logger()
 @synthesize autoResize;
 @synthesize nativeRenderer;
 @synthesize autoHideHUD;
+@synthesize shortTapForHUD;
 
 #pragma mark -
 #pragma mark Application lifecycle
@@ -140,6 +141,7 @@ application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictio
 	autoCenter = prefs->m_auto_center;
 	autoResize = prefs->m_auto_resize;
 	autoHideHUD = prefs->m_hud_auto_hide;
+	shortTapForHUD = prefs->m_hud_short_tap;
 	nativeRenderer = ! prefs->m_prefer_ffmpeg;
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 	[[NSNotificationCenter defaultCenter]

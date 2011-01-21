@@ -97,8 +97,8 @@ enum ZoomState {
 
 // User interaction through gestures
 - (void) handleDoubleTapGesture:(UITapGestureRecognizer*) sender;
-- (void) handleSingleTapGesture:(UITapGestureRecognizer*) sender;
-- (void) handleLongPressGesture:(UILongPressGestureRecognizer *)sender;
+- (void) showHUDGesture:(UITapGestureRecognizer*) sender;
+- (void) selectPointGesture:(UILongPressGestureRecognizer *)sender;
 - (void) handlePanGesture:(UIPanGestureRecognizer*) sender;
 - (void) handlePinchGesture:(UIGestureRecognizer*) sender;
 - (void) adjustAnchorPointForGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer;

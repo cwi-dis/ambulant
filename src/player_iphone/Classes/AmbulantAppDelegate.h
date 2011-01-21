@@ -24,12 +24,14 @@
 	BOOL autoResize;
 	BOOL nativeRenderer;
 	BOOL autoHideHUD;
+	BOOL shortTapForHUD;
 }
 
 @property(readonly) BOOL autoCenter;
 @property(readonly) BOOL autoResize;
 @property(readonly) BOOL nativeRenderer;
 @property(readonly) BOOL autoHideHUD;
+@property(readonly) BOOL shortTapForHUD;
 
 - (BOOL) application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
 - (void) applicationWillResignActive:(UIApplication *)application;

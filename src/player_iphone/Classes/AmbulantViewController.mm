@@ -86,6 +86,12 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
     assert(playerView);
     assert(scalerView);
 	
+	SEL shortTapAction = @selector(selectPointGesture:);
+	SEL longTapAction = @selector(showHUDGesture:);
+	if (delegate.shortTapForHUD) {
+		shortTapAction = @selector(showHUDGesture:);
+		longTapAction = @selector(selectPointGesture:);
+	}
 	// prepare to react on "double tap" gesture (select object in playerView with 1 finger tap)
 	UITapGestureRecognizer *doubleTapGesture = [[UITapGestureRecognizer alloc]
 		initWithTarget:self
@@ -97,8 +103,8 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	// prepare to react on "tap" gesture (select object in playerView with 1 finger tap)
 	UITapGestureRecognizer *singleTapGesture = [[UITapGestureRecognizer alloc]
 		initWithTarget:self
-		action:@selector(handleSingleTapGesture:)];
-	[playerView addGestureRecognizer:singleTapGesture];	
+		action:shortTapAction];
+	[scalerView addGestureRecognizer:singleTapGesture];	
     [singleTapGesture release];
 	// do not also errnoneously recognize a single tap when a double tap is recognized
 	[singleTapGesture requireGestureRecognizerToFail:doubleTapGesture];	
@@ -106,7 +112,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 	// prepare to react on "longPress" gesture (hold finger in one spot, longer than 0.4 sec.)
     UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc]
 		initWithTarget:self
-		action:@selector(handleLongPressGesture:)];
+		action:longTapAction];
     [scalerView addGestureRecognizer:longPressGesture];
     [longPressGesture release];
 
@@ -299,16 +305,16 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 
 /*	Code derived from Apple's developer documentation "Gesture Recognizers"*/
 
-- (IBAction) handleLongPressGesture:(UILongPressGestureRecognizer *)sender {
-	AM_DBG NSLog(@"AmbulantViewController handleLongPressGesture(0x%x): sender=0x%x", self, sender);
+- (IBAction) selectPointGesture:(UILongPressGestureRecognizer *)sender {
+	AM_DBG NSLog(@"AmbulantViewController selectPointGesture(0x%x): sender=0x%x", self, sender);
 	CGPoint location = [sender locationInView:playerView];
 	if ( ! [playerView tappedAtPoint:location]) {
 //		[delegate showPresentationViews:self];
 	}
 };
 
-- (IBAction) handleSingleTapGesture:(UITapGestureRecognizer *)sender { // select
-	AM_DBG NSLog(@"AmbulantViewController handleSingleTapGesture(0x%x): sender=0x%x", self, sender);
+- (IBAction) showHUDGesture:(UITapGestureRecognizer *)sender { // select
+	AM_DBG NSLog(@"AmbulantViewController showHUDGesture(0x%x): sender=0x%x", self, sender);
 	[self showInteractionView: YES];
 }
 
