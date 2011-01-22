@@ -46,7 +46,6 @@
 		04070587115266F60094FB0B /* Welcome.smil in Resources */ = {isa = PBXBuildFile; fileRef = 0407057E115266F60094FB0B /* Welcome.smil */; };
 		0407064C11526DB70094FB0B /* libambulant.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 040705A1115268480094FB0B /* libambulant.dylib */; };
 		0418D24512DA5E4C00C56DCE /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D23F12DA5E4C00C56DCE /* Log.nib */; };
-		0418D24612DA5E4C00C56DCE /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24012DA5E4C00C56DCE /* MainMenu.nib */; };
 		0418D24712DA5E4C00C56DCE /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24112DA5E4C00C56DCE /* MyDocument.nib */; };
 		0418D24B12DA5E4C00C56DCE /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D23F12DA5E4C00C56DCE /* Log.nib */; };
 		0418D24C12DA5E4C00C56DCE /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24012DA5E4C00C56DCE /* MainMenu.nib */; };
@@ -60,9 +59,6 @@
 		0418D25712DA5EAA00C56DCE /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24E12DA5EAA00C56DCE /* Credits.rtf */; };
 		0418D25812DA5EAA00C56DCE /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24F12DA5EAA00C56DCE /* Info.plist */; };
 		0418D25912DA5EAA00C56DCE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0418D25012DA5EAA00C56DCE /* InfoPlist.strings */; };
-		0418D27512DA602B00C56DCE /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D27212DA602B00C56DCE /* Log.nib */; };
-		0418D27612DA602B00C56DCE /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D27312DA602B00C56DCE /* MainMenu.nib */; };
-		0418D27712DA602B00C56DCE /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D27412DA602B00C56DCE /* MyDocument.nib */; };
 		0418D27812DA602B00C56DCE /* Log.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D27212DA602B00C56DCE /* Log.nib */; };
 		0418D27912DA602B00C56DCE /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D27312DA602B00C56DCE /* MainMenu.nib */; };
 		0418D27A12DA602B00C56DCE /* MyDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D27412DA602B00C56DCE /* MyDocument.nib */; };
@@ -110,6 +106,7 @@
 		04A1E99C12B585D80060F97E /* libamplugin_xerces.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADAA81152DA4A009CA791 /* libamplugin_xerces.so */; };
 		04A1E99D12B585D80060F97E /* libamplugin_python.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADB0B1152DE65009CA791 /* libamplugin_python.so */; };
 		04A1E99E12B585D80060F97E /* libamplugin_xpath_state.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADA411152D831009CA791 /* libamplugin_xpath_state.so */; };
+		04D38A9612EB9C7F000F445D /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24012DA5E4C00C56DCE /* MainMenu.nib */; };
 		04FA283412B8D1BD0080216B /* ambulant-common.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 04FA282B12B8D1BD0080216B /* ambulant-common.xcconfig */; };
 		04FA283512B8D1BD0080216B /* ambulant-debug-cg.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 04FA282C12B8D1BD0080216B /* ambulant-debug-cg.xcconfig */; };
 		04FA283712B8D1BD0080216B /* ambulant-debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 04FA282E12B8D1BD0080216B /* ambulant-debug.xcconfig */; };
@@ -872,14 +869,11 @@
 				04A1E98E12B585D80060F97E /* DTDCache in Resources */,
 				04A1E98F12B585D80060F97E /* data in Resources */,
 				0418D24512DA5E4C00C56DCE /* Log.nib in Resources */,
-				0418D24612DA5E4C00C56DCE /* MainMenu.nib in Resources */,
 				0418D24712DA5E4C00C56DCE /* MyDocument.nib in Resources */,
 				0418D25112DA5EAA00C56DCE /* Credits.rtf in Resources */,
 				0418D25212DA5EAA00C56DCE /* Info.plist in Resources */,
 				0418D25312DA5EAA00C56DCE /* InfoPlist.strings in Resources */,
-				0418D27512DA602B00C56DCE /* Log.nib in Resources */,
-				0418D27612DA602B00C56DCE /* MainMenu.nib in Resources */,
-				0418D27712DA602B00C56DCE /* MyDocument.nib in Resources */,
+				04D38A9612EB9C7F000F445D /* MainMenu.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

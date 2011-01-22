@@ -54,18 +54,18 @@ class document_embedder : public ambulant::common::embedder {
 // I also need to inherit NSDocument??
 @interface MyDocument : NSDocument
 {
-//	IBOutlet id main_view;
-	IBOutlet id view;
-	IBOutlet id play_button;
-	IBOutlet id stop_button;
-	IBOutlet id pause_button;
-    IBOutlet id hud_controls;
-	IBOutlet id play_button_2;
-	IBOutlet id stop_button_2;
-	IBOutlet id pause_button_2;
-	IBOutlet id ask_url_panel;
-	IBOutlet id url_field;
-	IBOutlet id status_line;
+    IBOutlet NSView* scaler_view;
+	IBOutlet NSView* view;
+	IBOutlet NSButton* play_button;
+	IBOutlet NSButton* stop_button;
+	IBOutlet NSButton* pause_button;
+    IBOutlet NSView* hud_controls;
+	IBOutlet NSButton* play_button_2;
+	IBOutlet NSButton* stop_button_2;
+	IBOutlet NSButton* pause_button_2;
+	IBOutlet NSPanel* ask_url_panel;
+	IBOutlet NSTextField* url_field;
+	IBOutlet NSTextField* status_line;
 //	void *window_factory;
 	mainloop *myMainloop;
 #ifdef WITH_OVERLAY_WINDOW
