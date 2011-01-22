@@ -1,3 +1,17 @@
+2011-01-21 14:13  jackjansen
+
+	* Implemented short/long tap switching. Still not perfect
+
+2011-01-21 13:48  jackjansen
+
+	* Merged branch exp-jack-extra-view: there is now an extra view
+	  between the toplevel view and the player. This handles all
+	  pan/zoom/rotate. The effect is that the player will always have
+	  its bounds be equal to the SMIL bounds, and its matrix the
+	  identity matrix. This cleans up the code, and should greatly
+	  facilitate reusing the libambulant code in the desktop and
+	  browser plugin.
+
 2011-01-19 17:34  jackjansen
 
 	* Toying with new ffmpeg version, because it is supposed to have a
