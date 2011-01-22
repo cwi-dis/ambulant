@@ -56,7 +56,7 @@ mkdir build-3264
 cd build-3264
 mkdir third_party_packages
 cd third_party_packages
-python build-third-party-packages.py $BUILD3PPARGS
+python ../../third_party_packages/build-third-party-packages.py $BUILD3PPARGS
 cd ..
 #
 # configure, make, make install
@@ -65,8 +65,8 @@ cd ..
 make $MAKEOPTS
 cd src/player_macosx
 make $MAKEOPTS DESTDIR=$BUILDHOME/$DESTDIR install
-cd ../..
-cd ..
+cd ../.. # Back to build dir
+cd .. # Back to source dir
 #
 # Create installer dmg, upload
 #
@@ -82,7 +82,7 @@ xcodebuild -project AmbulantPlayer.xcodeproj \
 	-target AmbulantPlayer \
 	-configuration Release \
 	AMBULANT_BUILDDIR=$BUILDHOME/$BUILDDIR \
-	AMBULANT_3PP=$BUILDHOME/$BUILDDIR/third_party_packages \
+	AMBULANT_3PP=$BUILDHOME/$BUILDDIR/build-3264/third_party_packages \
 	DSTROOT=$BUILDHOME/DESTDIR \
 	install
 echo XXXX Installer TBD.
