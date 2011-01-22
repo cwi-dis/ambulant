@@ -224,11 +224,7 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	lib::point dest_origin = m_dest->get_global_topleft();
  	cg_window *cwindow = (cg_window *)window;
  	AmbulantView *view = (AmbulantView *)cwindow->view();
-#ifdef WITH_UIKIT
-	CGContextRef myContext = UIGraphicsGetCurrentContext();
-#else
-	CGContextRef myContext = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
-#endif
+	CGContextRef myContext = [view getCGContext];
 
 	// While rendering background images only, check for tiling. This code is
 	// convoluted, it knows that the node and the region we're painting to are

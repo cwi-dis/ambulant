@@ -161,8 +161,6 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 	BOOL overlay_window_needs_clear;
 //	int overlay_window_count;
 #endif // WITH_QUICKTIME_OVERLAY
-#ifdef	WITH_UIKIT
-#endif//WITH_UIKIT
 	ambulant::lib::size original_bounds;
 }
 

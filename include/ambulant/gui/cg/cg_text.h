@@ -28,12 +28,6 @@
 
 #include "ambulant/gui/cg/cg_renderer.h"
 #include "ambulant/lib/mtsync.h"
-//#include <CoreGraphics/CGContext.h>
-#ifdef WITH_UIKIT
-#include <UIKit/UIKit.h>
-#else
-#include <AppKit/AppKit.h>
-#endif
 
 namespace ambulant {
 

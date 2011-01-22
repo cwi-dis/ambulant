@@ -32,26 +32,6 @@
 #include "ambulant/gui/cg/cg_gui.h"
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/smil2/smiltext.h"
-#ifdef __OBJC__
-#ifdef WITH_UIKIT
-#include <CoreFoundation/CoreFoundation.h>
-#include <CoreText/CoreText.h>
-#include <CoreText/CTLine.h>
-#include <UIKit/UIKit.h>
-#define VIEW_SUPERCLASS UIView
-//XXXX inline CGRect CGRectFromViewRect(ambulant::lib::rect rect) { return rect; }
-//XXXX inline CGRect ViewRectFromCGRect(CGRect rect) { return rect; }
-//XXXX inline CGPoint CGPointFromViewPoint(CGPoint point) { return point; }
-//XXXX inline CGSize CGSizeFromViewSize(CGSize size) { return size; }
-#else
-#include <AppKit/AppKit.h>
-#define VIEW_SUPERCLASS NSView
-//XXXX inline CGRect CGRectFromViewRect(NSRect rect) { return *(CGRect*)&rect; }
-//XXXX inline NSRect ViewRectFromCGRect(CGRect rect) { return *(NSRect*)&rect; }
-//XXXX inline CGPoint CGPointFromViewPoint(NSPoint point) { return *(CGPoint*)&point; }
-//XXXX inline CGSize CGSizeFromViewSize(NSSize size) { return *(CGSize*)&size; }
-#endif
-#endif // __OBJC__
 
 namespace ambulant {
 
