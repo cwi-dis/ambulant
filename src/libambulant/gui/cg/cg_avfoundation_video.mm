@@ -543,7 +543,7 @@ cg_avfoundation_video_renderer::redraw(const rect &dirty, gui_window *window)
 		rect srcrect;
 		rect dstrect = m_dest->get_fit_rect(m_srcsize, &srcrect, m_alignment);
 		dstrect.translate(m_dest->get_global_topleft());
-		CGRect frameRect = [view CGRectForAmbulantRectForLayout: &dstrect];
+		CGRect frameRect = CGRectFromAmbulantRect(dstrect);
 		m_avplayer_layer.frame = frameRect;
 	}
 	if (m_renderer_state == rs_stopping) {

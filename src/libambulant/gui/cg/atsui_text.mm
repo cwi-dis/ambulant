@@ -159,7 +159,7 @@ atsui_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 	rect dstrect = r;
 	dstrect.translate(m_dest->get_global_topleft());
-	CGRect cg_dstrect = [view CGRectForAmbulantRect: &dstrect];
+	CGRect cg_dstrect = CGRectFromAmbulantRect(dstrect);
 	if (m_layout_manager) {
 		// Setup context
 		CGContextRef ctx = [view getCGContext];

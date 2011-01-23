@@ -19,9 +19,6 @@
 
 #include "ambulant/gui/cg/cg_gui.h"
 #include "ambulant/gui/cg/cg_text.h"
-#ifndef WITH_UIKIT
-#include "ambulant/gui/cg/atsui_text.h"
-#endif
 //#include "ambulant/gui/cg/cg_html.h"
 #include "ambulant/gui/cg/cg_image.h"
 //#include "ambulant/gui/cg/cg_ink.h"
@@ -71,7 +68,7 @@ cg_window::need_redraw(const rect &r)
 		return;
 	}
 	AmbulantView *my_view = (AmbulantView *)m_view;
-	CGRect my_rect = [my_view CGRectForAmbulantRect: &r];
+	CGRect my_rect = CGRectFromAmbulantRect(r);
 	NSRectHolder *arect = [[NSRectHolder alloc] initWithRect: my_rect];
 	// XXX Is it safe to cast C++ objects to ObjC id's?
 	[my_view performSelectorOnMainThread: @selector(asyncRedrawForAmbulantRect:)
@@ -127,7 +124,7 @@ cg_window_factory::get_default_size()
 {
 	if (m_defaultwindow_view == NULL)
 		return lib::size(common::default_layout_width, common::default_layout_height);
-	CGSize size = CGSizeFromViewSize([(AmbulantView *)m_defaultwindow_view bounds].size);
+	CGSize size = [(AmbulantView *)m_defaultwindow_view bounds].size;
 	return lib::size((int)size.width, (int)size.height);
 }
 
@@ -160,7 +157,7 @@ void
 cg_gui_screen::get_size(int *width, int *height)
 {
 	AmbulantView *view = (AmbulantView *)m_view;
-	CGRect bounds = CGRectFromViewRect([view bounds]);
+	CGRect bounds = [view bounds];
 	*width = int(bounds.size.width);
 	*height = int(bounds.size.height);
 }
@@ -227,18 +224,6 @@ bad:
 
 #ifdef __OBJC__
 
-#ifndef WITH_UIKIT
-// Helper class: flipped view
-@interface MyFlippedView : VIEW_SUPERCLASS
-- (BOOL) isFlipped;
-@end
-@implementation MyFlippedView
-- (BOOL) isFlipped
-{
-	return true;
-}
-@end
-#endif
 
 // Helper class: NSRect as an object
 @implementation NSRectHolder
@@ -260,7 +245,7 @@ bad:
 - (id)initWithFrame:(CGRect)frameRect
 {
 	/*AM_DBG*/ NSLog(@"AmbulantView.initWithFrame(0x%x)", self);
-	self = [super initWithFrame: ViewRectFromCGRect(frameRect)];
+	self = [super initWithFrame: frameRect];
 	ambulant_window = NULL;
 //	transition_surface = NULL;
 //	transition_tmpsurface = NULL;
@@ -317,16 +302,6 @@ bad:
 #endif
 }
 
-- (CGRect) CGRectForAmbulantRect: (const ambulant::lib::rect *) arect
-{
-	return CGRectMake(arect->left(), arect->top(), arect->width(), arect->height());
-}
-
-- (CGRect) CGRectForAmbulantRectForLayout: (const ambulant::lib::rect *) arect
-{
-	return CGRectMake(arect->left(), arect->top(), arect->width(), arect->height());
-}
-
 - (ambulant::lib::rect) ambulantRectForCGRect: (const CGRect *)nsrect
 {
 	ambulant::lib::rect arect = ambulant::lib::rect(
@@ -354,21 +329,12 @@ bad:
 	return matrix;
 }
 
-- (ambulant::lib::rect) ambulantRectForCGRectForLayout: (const CGRect *)nsrect
-{
-	assert(false); // defined and implemented for completeness, but not tested yet. 
-	ambulant::lib::rect arect = ambulant::lib::rect(
-		ambulant::lib::point(int(CGRectGetMinX(*nsrect)), int(CGRectGetMaxY(*nsrect))),
-		ambulant::lib::size(int(CGRectGetWidth(*nsrect)), int(CGRectGetHeight(*nsrect))));
-	return arect;	
-}
-
 - (void) asyncRedrawForAmbulantRect: (NSRectHolder *)arect
 {
 	CGRect my_rect = [arect rect];
 	[arect release];
 	AM_DBG NSLog(@"AmbulantView.asyncRedrawForAmbulantRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(my_rect), CGRectGetMinY(my_rect), CGRectGetMaxX(my_rect), CGRectGetMaxY(my_rect));
-	[self setNeedsDisplayInRect: ViewRectFromCGRect(my_rect)];
+	[self setNeedsDisplayInRect: my_rect];
 }
 
 - (void) syncDisplayIfNeeded: (id) dummy
@@ -391,7 +357,7 @@ bad:
     // been setup wrt. isFlipped, so we do nothing.
     //
     if (![self isFlipped]) {
-        float view_height = CGRectGetHeight(CGRectFromViewRect(self.bounds));
+        float view_height = CGRectGetHeight(self.bounds);
         CGAffineTransform matrix = CGAffineTransformMake(1, 0, 0, -1, 0, view_height);
         CGContextConcatCTM(myContext, matrix);
         // Also adapt the dirty rect
@@ -422,39 +388,6 @@ bad:
 //		sleep(1);
 	}
 #endif
-#ifdef WITH_QUICKTIME_OVERLAY
-	// If our main view has been reparented since the last redraw we need
-	// to move the overlay window.
-	if (overlay_window_needs_reparent) {
-		assert(overlay_window);
-		NSWindow *window = [self window];
-		overlay_window_needs_reparent = NO;
-		[[overlay_window parentWindow] removeChildWindow: overlay_window];
-		[window addChildWindow: overlay_window ordered: NSWindowAbove];
-
-		// XXXJACK This goes wrong when going back to windowed mode: for some reason
-		// [self frame].origin still has the position as it was during fullscreen mode...
-		NSPoint baseOrigin = NSMakePoint([self frame].origin.x, [self frame].origin.y);
-		NSPoint screenOrigin = [window convertBaseToScreen: baseOrigin];
-		AM_DBG NSLog(@"viewDidMoveToWindow: new origin (%f, %f)", screenOrigin.x, screenOrigin.y);
-		[overlay_window setFrameOrigin: screenOrigin];
-	}
-
-	// If something was drawn into the overlay window during the last redraw
-	// we need to clear the overlay window.
-	if (overlay_window_needs_clear) {
-		assert(overlay_window);
-		NSView *oview = [overlay_window contentView];
-		[oview lockFocus];
-		[[NSColor clearColor] set];
-		CGRect area = [oview bounds];
-		AM_DBG NSLog(@"clear %f %f %f %f in %@", area.origin.x, area.origin.y, area.size.width, area.size.height, oview);
-		NSRectFill(area);
-		overlay_window_needs_clear = NO;
-		overlay_window_needs_flush = YES;
-		[oview unlockFocus];
-	}
-#endif // WITH_QUICKTIME_OVERLAY
 
 	if (!ambulant_window) {
 		AM_DBG NSLog(@"Redraw AmbulantView: NULL ambulant_window");
@@ -462,32 +395,14 @@ bad:
 		// If we have seen transitions we always redraw the whole view
 		// XXXJACK interaction of fullscreen transitions and overlay windows
 		// is completely untested, and probably broken.
-		if (transition_count) rect = CGRectFromViewRect([self bounds]);
-		ambulant::lib::rect arect = [self ambulantRectForCGRect: &rect];
+		if (transition_count) rect = [self bounds];
+		ambulant::lib::rect arect = ambulant::gui::cg::ambulantRectFromCGRect(rect);
 //		[self _screenTransitionPreRedraw];
 		AM_DBG NSLog(@"ambulantView: call redraw ambulant-ltrb=(%d, %d, %d, %d)", arect.left(), arect.top(), arect.right(), arect.bottom());
 		ambulant_window->redraw(arect);
 //		[self _screenTransitionPostRedraw];
 //		[self _releaseTransitionSurface];
 	}
-#ifdef WITH_QUICKTIME_OVERLAY
-	// If the overlay window was actually used (and possibly drawn into)
-	// we need to unlock it. We also prepare for flushing it, and clearing
-	// it the next redraw cycle.
-	if (overlay_window_needs_unlock) {
-		assert(overlay_window);
-		[[overlay_window contentView] unlockFocus];
-		overlay_window_needs_unlock = NO;
-		overlay_window_needs_flush = YES;
-		overlay_window_needs_clear = YES;
-	}
-	// Finally we flush the window, if required.
-	if (overlay_window_needs_flush) {
-		assert(overlay_window);
-		[overlay_window flushWindow];
-		overlay_window_needs_flush = NO;
-	}
-#endif // WITH_QUICKTIME_OVERLAY
 
 #ifdef CG_REDRAW_DEBUG
 	{
@@ -762,21 +677,6 @@ bad:
 {
 	NSView *src_view = self;
 	NSWindow *tmp_window = NULL;
-#ifdef WITH_QUICKTIME_OVERLAY
-	if (overlay_window) {
-		NSLog(@"Doing screenshot with overlay window");
-		[[self window] makeKeyAndOrderFront: self];
-		tmp_window = [[NSWindow alloc] initWithContentRect:[overlay_window frame] styleMask:NSBorderlessWindowMask
-					backing:NSBackingStoreNonretained defer:NO];
-		[tmp_window setBackgroundColor:[NSColor clearColor]];
-		[tmp_window setLevel:[overlay_window level]];
-		[tmp_window setHasShadow:NO];
-		[tmp_window setAlphaValue:0.0];
-		src_view = [[NSView alloc] initWithFrame:[self bounds]];
-		[tmp_window setContentView:src_view];
-		[tmp_window orderFront:self];
-	}
-#endif /* WITH_QUICKTIME_OVERLAY */
 	CGRect bounds = [self bounds];
 	CGSize size = NSMakeSize(NSWidth(bounds), NSHeight(bounds));
 	NSImage *rv = [[NSImage alloc] initWithSize: size];
@@ -923,89 +823,6 @@ bad:
 	}
 }
 
-// Called by a renderer if it requires an overlay window.
-// The overlay window is refcounted.
-- (void) requireOverlayWindow
-{
-	[self performSelectorOnMainThread:@selector(_createOverlayWindow:) withObject: nil waitUntilDone:YES];
-}
-
-- (void) _createOverlayWindow: (id)dummy
-{
-#ifdef WITH_QUICKTIME_OVERLAY
-	AM_DBG NSLog(@"requireOverlayWindow");
-	if (overlay_window) {
-		// XXXJACK shoould inc refcount here
-		return;
-	}
-	// Find out where to position the window
-	NSPoint baseOrigin = NSMakePoint([self frame].origin.x, [self frame].origin.y);
-	NSPoint screenOrigin = [[self window] convertBaseToScreen: baseOrigin];
-
-	// Create the window
-	overlay_window = [[NSWindow alloc] initWithContentRect:
-		CGRectMake(screenOrigin.x,screenOrigin.y,[self frame].size.width,[self frame].size.height)
-		styleMask:NSBorderlessWindowMask
-		backing:NSBackingStoreBuffered
-		defer:YES];
-	NSView *oview = [[MyFlippedView alloc] initWithFrame: [self bounds]];
-	[overlay_window setContentView: oview];
-	[overlay_window setBackgroundColor: [NSColor clearColor]];
-	//[overlay_window setBackgroundColor: [NSColor colorWithCalibratedRed: 0.5 green: 0.0 blue:0.0 alpha: 0.5]]; // XXXJACK
-	[overlay_window setOpaque:NO];
-	[overlay_window setHasShadow:NO];
-	[overlay_window setIgnoresMouseEvents:YES];
-	[[self window] addChildWindow: overlay_window ordered: NSWindowAbove];
-#endif // WITH_QUICKTIME_OVERLAY
-}
-
-// Called by a renderer redraw() if subsequent redraws in the current redraw sequence
-// should go to the overlay window
-- (void) useOverlayWindow
-{
-#ifdef WITH_QUICKTIME_OVERLAY
-	AM_DBG NSLog(@"useOverlayWindow");
-	assert(overlay_window);
-	if (overlay_window_needs_unlock) {
-		NSLog(@"userOverlayWindow: already lockFocus'sed");
-		return;
-	}
-	NSView *oview = [overlay_window contentView];
-	overlay_window_needs_unlock = YES;
-	[oview lockFocus];
-	// No need to clear, did that in drawRect: already
-#endif // WITH_QUICKTIME_OVERLAY
-}
-
-// Called by a renderer if the overlay window is no longer required.
-- (void) releaseOverlayWindow
-{
-#ifdef WITH_QUICKTIME_OVERLAY
-	AM_DBG NSLog(@"releaseOverlayWindow");
-	// XXXJACK Currently we don't actually delete the overlay window once it
-	// has been created (until the presentation stops). Need to work out whether
-	// this is indeed a good idea.
-#endif // WITH_QUICKTIME_OVERLAY
-}
-
-// Called by the window manager when our view has moved to a different window.
-// XXXJACK not sure wheter implementing this or viewDidMoveToSuperview is better,
-// both seem to work.
-- (void) viewDidMoveToSuperview
-{
-#ifdef WITH_QUICKTIME_OVERLAY
-	if (overlay_window == nil) return;
-	AM_DBG NSLog(@"viewDidMoveToWindow");
-	NSWindow *window = [self window];
-	if (window == nil) {
-		// Remove. Ignore, assume another call is coming when we're re-attached
-		// to another window.
-		AM_DBG NSLog(@"Ignore viewDidMoveToWindow -> nil");
-		return;
-	}
-	overlay_window_needs_reparent = YES;
-#endif // WITH_QUICKTIME_OVERLAY
-}
 #endif // NOT_YET_UIKIT
 @end
 #endif // __OBJC__

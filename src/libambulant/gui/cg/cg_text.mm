@@ -108,7 +108,7 @@ cg_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 	CGContextRef ctx = [view getCGContext];
 	rect dstrect = r;
 	dstrect.translate(m_dest->get_global_topleft());
-	CGRect cg_dstrect = [view CGRectForAmbulantRect: &dstrect];
+	CGRect cg_dstrect = CGRectFromAmbulantRect(dstrect);
 	// Set the text matrix. 
 	CGAffineTransform matrix = [view transformForRect: &cg_dstrect flipped: YES translated: NO];
 	CGContextSetTextMatrix(ctx, matrix);

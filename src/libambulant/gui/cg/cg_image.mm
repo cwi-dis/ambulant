@@ -239,7 +239,7 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 		for(it=tiles.begin(); it!=tiles.end(); it++) {
 			srcrect = (*it).first;
 			dstrect = (*it).second;
-			cg_dstrect = [view CGRectForAmbulantRect: &dstrect];
+			cg_dstrect = CGRectFromAmbulantRect(dstrect);
 
 			CGContextSaveGState(myContext);
 			// Draw the pre-rendered image in cglayer. First setup the destination parameters.
@@ -259,7 +259,7 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 			// CG uses cartesian.
 			lib::rect fullsrcrect = lib::rect(lib::point(0, 0), m_size);  // Original image size
 			fullsrcrect.translate(lib::point(-srcrect.left(), srcrect.bottom()-m_size.h)); // Translate so the right topleft pixel is in place
-			CGRect cg_fullsrcrect = [view CGRectForAmbulantRect: &fullsrcrect];
+			CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
 			AM_DBG logger::get_logger()->debug("cg_image_renderer.redraw: draw layer to (%f, %f, %f, %f) clip (%f, %f, %f, %f) scale (%f, %f)",
 				CGRectGetMinX(cg_fullsrcrect), CGRectGetMinY(cg_fullsrcrect), CGRectGetMaxX(cg_fullsrcrect), CGRectGetMaxY(cg_fullsrcrect),
 				CGRectGetMinX(cg_dstrect), CGRectGetMinY(cg_dstrect), CGRectGetMaxX(cg_dstrect), CGRectGetMaxY(cg_dstrect),
@@ -292,7 +292,7 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	dstrect = m_dest->get_fit_rect(m_size, &srcrect, m_alignment);
 #endif
 	dstrect.translate(dest_origin);
-	cg_dstrect = [view CGRectForAmbulantRect: &dstrect];
+	cg_dstrect = CGRectFromAmbulantRect(dstrect);
 	AM_DBG logger::get_logger()->debug("cg_image_renderer.redraw: draw image (ltrb) (%d, %d, %d, %d) -> (%f, %f, %f, %f)",
 		srcrect.left(), srcrect.top(), srcrect.right(), srcrect.bottom(),
 		CGRectGetMinX(cg_dstrect), CGRectGetMinY(cg_dstrect), CGRectGetMaxX(cg_dstrect), CGRectGetMaxY(cg_dstrect));
@@ -323,7 +323,7 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 		// CG uses cartesian.
 		lib::rect fullsrcrect = lib::rect(lib::point(0, 0), m_size);  // Original image size
 		fullsrcrect.translate(lib::point(-srcrect.left(), srcrect.bottom()-m_size.h)); // Translate so the right topleft pixel is in place
-		CGRect cg_fullsrcrect = [view CGRectForAmbulantRect: &fullsrcrect];
+		CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
 		AM_DBG logger::get_logger()->debug("cg_image_renderer.redraw: draw layer to (%f, %f, %f, %f) clip (%f, %f, %f, %f) scale (%f, %f)",
 			CGRectGetMinX(cg_fullsrcrect), CGRectGetMinY(cg_fullsrcrect), CGRectGetMaxX(cg_fullsrcrect), CGRectGetMaxY(cg_fullsrcrect),
 			CGRectGetMinX(cg_dstrect), CGRectGetMinY(cg_dstrect), CGRectGetMaxX(cg_dstrect), CGRectGetMaxY(cg_dstrect),

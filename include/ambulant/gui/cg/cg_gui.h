@@ -23,8 +23,12 @@
 <<<<<<< cg_gui.h
  * @$Id$
 =======
+<<<<<<< cg_gui.h
+ * @$Id$
+=======
  * @$Id$
 >>>>>>> 1.24.4.2
+>>>>>>> 1.28
  */
 
 #ifndef AMBULANT_GUI_CG_CG_GUI_H
@@ -41,31 +45,32 @@
 #include <ImageIO/ImageIO.h>
 #include <UIKit/UIKit.h>
 #define VIEW_SUPERCLASS UIView
-inline CGRect CGRectFromViewRect(CGRect rect) { return rect; }
-inline CGRect ViewRectFromCGRect(CGRect rect) { return rect; }
-inline CGPoint CGPointFromViewPoint(CGPoint point) { return point; }
-inline CGSize CGSizeFromViewSize(CGSize size) { return size; }
 #else
 #include <AppKit/AppKit.h>
 #define VIEW_SUPERCLASS NSView
-inline CGRect CGRectFromViewRect(NSRect rect) { return *(CGRect*)&rect; }
-inline NSRect ViewRectFromCGRect(CGRect rect) { return *(NSRect*)&rect; }
-inline CGPoint CGPointFromViewPoint(NSPoint point) { return *(CGPoint*)&point; }
-inline CGSize CGSizeFromViewSize(NSSize size) { return *(CGSize*)&size; }
 #endif
-#endif // __OBJC__
+#endif
 
-// The following define enables code that allows drawing things
-// on top of quicktime movies, using a separate overlay window.
-// Not defining this means that anything drawn on top of a quicktime
-// movie is simply not seen.
-#undef WITH_QUICKTIME_OVERLAY
+#ifndef WITH_UIKIT
+#include <ApplicationServices/ApplicationServices.h>
+#endif
 
 namespace ambulant {
 
 namespace gui {
 
 namespace cg {
+
+inline CGRect CGRectFromAmbulantRect(const lib::rect& arect) {
+    return CGRectMake(arect.left(), arect.top(), arect.width(), arect.height());
+}
+
+inline ambulant::lib::rect ambulantRectFromCGRect(const CGRect& nsrect) {
+	ambulant::lib::rect arect = ambulant::lib::rect(
+		ambulant::lib::point(int(CGRectGetMinX(nsrect)), int(CGRectGetMinY(nsrect))),
+		ambulant::lib::size(int(CGRectGetWidth(nsrect)), int(CGRectGetHeight(nsrect))));
+	return arect;
+}
 
 class cg_window : public common::gui_window {
   public:
@@ -153,14 +158,6 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 //	NSImage *fullscreen_oldimage;
 //	ambulant::smil2::transition_engine *fullscreen_engine;
 	ambulant::lib::transition_info::time_type fullscreen_now;
-#ifdef WITH_QUICKTIME_OVERLAY
-	NSWindow *overlay_window;
-	BOOL overlay_window_needs_unlock;
-	BOOL overlay_window_needs_reparent;
-	BOOL overlay_window_needs_flush;
-	BOOL overlay_window_needs_clear;
-//	int overlay_window_count;
-#endif // WITH_QUICKTIME_OVERLAY
 	ambulant::lib::size original_bounds;
 }
 
@@ -188,12 +185,6 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 - (void)ambulantNeedEvents: (bool) want;
 
 - (CGContextRef) getCGContext;
-// Core Graphics (cg_...) uses Carthesian X/Y coordinate system, ambulant (am_...) uses Top-Bottom-Width-Height
-// On iPhone, X/Y is used by Core Graphics, TBWL by ambulant, UIView and Core Animation. 
-- (CGRect) CGRectForAmbulantRect: (const ambulant::lib::rect *)arect;
-- (CGRect) CGRectForAmbulantRectForLayout: (const ambulant::lib::rect *) arect;
-- (ambulant::lib::rect) ambulantRectForCGRect: (const CGRect *)nsrect;
-- (ambulant::lib::rect) ambulantRectForCGRectForLayout: (const CGRect *)nsrect;
 - (CGAffineTransform) transformForRect: (const CGRect *)rect flipped: (BOOL)flipped translated: (BOOL)translated;
 
 - (void) asyncRedrawForAmbulantRect: (NSRectHolder *)arect;
@@ -246,22 +237,6 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 - (void) _screenTransitionPreRedraw;
 - (void) _screenTransitionPostRedraw;
 
-// Called by a renderer if it requires an overlay window.
-// The overlay window is refcounted.
-- (void) requireOverlayWindow;
-
-// Helper
-- (void) _createOverlayWindow: (id)dummy;
-
-// Called by a renderer redraw() if subsequent redraws in the current redraw sequence
-// should go to the overlay window
-- (void) useOverlayWindow;
-
-// Called by a renderer if the overlay window is no longer required.
-- (void) releaseOverlayWindow;
-
-// Called when the view hierarchy has changed
-- (void) viewDidMoveToSuperview;
 #endif // NOT_YET_UIKIT
 @end
 

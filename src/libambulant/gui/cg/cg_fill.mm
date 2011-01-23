@@ -100,7 +100,7 @@ cg_fill_renderer::redraw_body(const rect &dirty, gui_window *window)
 	rect dstrect_whole = r;
 	dstrect_whole.translate(m_dest->get_global_topleft());
 	AM_DBG logger::get_logger()->debug("cg_fill_renderer.redraw(0x%x, dstrect_whole=(%d,%d,%d,%d)", (void *)this, dstrect_whole.left(), dstrect_whole.top(), dstrect_whole.right(), dstrect_whole.bottom());
-	CGRect cg_dstrect_whole = [view CGRectForAmbulantRect: &dstrect_whole];
+	CGRect cg_dstrect_whole = CGRectFromAmbulantRect(dstrect_whole);
 	// Fill with  color
 	const char *color_attr = m_node->get_attribute("color");
 	if (!color_attr) {
@@ -151,7 +151,7 @@ cg_background_renderer::redraw(const lib::rect &dirty, common::gui_window *windo
 	AM_DBG lib::logger::get_logger()->debug("cg_bg_renderer::drawbackground: clearing to 0x%x opacity %f", (long)m_src->get_bgcolor(), m_src->get_bgopacity());
 	rect dstrect_whole = r;
 	dstrect_whole.translate(m_dst->get_global_topleft());
-	CGRect cg_dstrect_whole = [view CGRectForAmbulantRect: &dstrect_whole];
+	CGRect cg_dstrect_whole = CGRectFromAmbulantRect(dstrect_whole);
 	double opacity = m_src->get_bgopacity();
 	if (m_src && opacity > 0) {
 		// First find our whole area (which we have to clear to background color)
@@ -189,7 +189,7 @@ cg_background_renderer::highlight(common::gui_window *window)
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 	rect dstrect_whole = r;
 	dstrect_whole.translate(m_dst->get_global_topleft());
-	CGRect cg_dstrect_whole = [view CGRectForAmbulantRect: &dstrect_whole];
+	CGRect cg_dstrect_whole = CGRectFromAmbulantRect(dstrect_whole);
 	color_t hicolor = 0x0000ff;
 	AM_DBG lib::logger::get_logger()->debug("cg_bg_renderer::highlight: framing with color 0x%x", (long)hicolor);
 	CGFloat components[] = {redf(hicolor), greenf(hicolor), bluef(hicolor), 1.0};
@@ -215,11 +215,9 @@ cg_background_renderer::keep_as_background()
 		CGImageRelease(m_bgimage);
 		m_bgimage = NULL;
 	}
-	cg_window *cwindow = (cg_window *)m_dst->get_gui_window();
-	AmbulantView *view = (AmbulantView *)cwindow->view();
 	rect dstrect_whole = m_dst->get_rect();
 	dstrect_whole.translate(m_dst->get_global_topleft());
-	CGRect cg_dstrect_whole = [view CGRectForAmbulantRect: &dstrect_whole];
+	CGRect cg_dstrect_whole = CGRectFromAmbulantRect(dstrect_whole);
 
 //	XYZZY m_bgimage = [[view getOnScreenImageForRect: cg_dstrect_whole] retain];
 }

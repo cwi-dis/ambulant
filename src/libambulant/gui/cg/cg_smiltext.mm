@@ -509,7 +509,7 @@ cg_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 	lib::point am_top_left = m_dest->get_global_topleft();
 	am_final_dst_rect.translate(am_top_left);
 	AM_DBG logger::get_logger()->debug("cg_smiltext_renderer.redraw(0x%x, am_final_dst_rect=(%d,%d,%d,%d)", (void *)this, am_final_dst_rect.left(), am_final_dst_rect.top(), am_final_dst_rect.right(), am_final_dst_rect.bottom());
-	CGRect cg_final_dst_rect = [view  CGRectForAmbulantRect: &am_final_dst_rect];
+	CGRect cg_final_dst_rect = CGRectFromAmbulantRect(am_final_dst_rect);
 
 	// Save the graphics state to be restored on return
 	CGContext* context = [view getCGContext];	
