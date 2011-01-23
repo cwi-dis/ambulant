@@ -1,3 +1,19 @@
+2011-01-23 00:56  jackjansen
+
+	* Tweak build script
+
+2011-01-23 00:50  jackjansen
+
+	* A bit more work on the CG player
+
+2011-01-23 00:26  jackjansen
+
+	* Moving to the trunk
+
+2011-01-22 23:43  jackjansen
+
+	* Getting rid of various WITH_UIKIT ifdefs
+
 2011-01-21 14:13  jackjansen
 
 	* Implemented short/long tap switching. Still not perfect
