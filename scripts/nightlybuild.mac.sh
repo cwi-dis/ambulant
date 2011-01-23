@@ -45,7 +45,7 @@ cvs $CVSARGS checkout $CHECKOUTARGS -d "$BUILDDIR" ambulant
 # We are building a binary distribution, so we want to completely ignore any
 # library installed system-wide (in /usr/local, basically)
 #
-export PKG_CONFIG_LIBDIR=$BUILDHOME/$BUILDDIR/third_party_packages/installed/lib/pkgconfig
+export PKG_CONFIG_LIBDIR=$BUILDHOME/$BUILDDIR/build-3264/third_party_packages/installed/lib/pkgconfig
 #
 # Prepare the tree
 #
