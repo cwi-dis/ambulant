@@ -61,7 +61,7 @@ cd ..
 #
 # configure, make, make install
 #
-./configure $CONFIGOPTS
+../configure $CONFIGOPTS
 make $MAKEOPTS
 cd src/player_macosx
 make $MAKEOPTS DESTDIR=$BUILDHOME/$DESTDIR install
