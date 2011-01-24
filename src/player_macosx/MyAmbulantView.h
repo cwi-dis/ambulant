@@ -32,6 +32,8 @@ void set_statusline(void *view, const char *msg);
 	IBOutlet id document;
 }
 - (void) keyDown: (NSEvent *)theEvent;
+- (void) resetMouse: (id) sender;
+- (void) fixMouse: (id) sender;
 - (void) setStatusLine: (NSString *)message;
 @end
 #endif

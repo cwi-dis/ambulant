@@ -187,6 +187,11 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 //	[self recomputeZoom];
 }
 
+- (BOOL)acceptsFirstResponder
+{
+    return YES;
+}
+
 @end
 
 @implementation MyDocument
@@ -475,7 +480,8 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 #endif
 	if (ml) ml->before_mousemove(0);
     if (saved_window) {
-        [view addSubview:hud_controls];
+        [[[view window] contentView] addSubview:hud_controls];
+        NSLog(@"Showing HUD");
         // XXXX Schedule for disappearance...
     }
 }

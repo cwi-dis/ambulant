@@ -41,9 +41,27 @@ set_statusline(void *view, const char *msg)
 	}
 }
 
+- (void) resetMouse: (id)sender
+{
+	if (document) {
+		[document resetMouse: sender];
+    }
+}
+
+- (void) fixMouse: (id)sender
+{
+	if (document) {
+		[document fixMouse: sender];
+    }
+}
+
 - (void) setStatusLine: (NSString *)message
 {
 	if (document) [document setStatusLine: message];
 }
 
+- (BOOL)acceptsFirstResponder
+{
+    return YES;
+}
 @end

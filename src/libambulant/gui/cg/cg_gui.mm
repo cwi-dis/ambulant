@@ -602,6 +602,7 @@ bad:
 	}
 	AM_DBG NSLog(@"0x%x: mouseMoved at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
+    /*AM_DBG*/ { id target=[[NSApplication sharedApplication] targetForAction: SEL("resetMouse:") ]; if(!target) NSLog(@"No target for resetMouse: ??"); }
 	[[NSApplication sharedApplication] sendAction: SEL("resetMouse:") to: nil from: self];
 	if (ambulant_window) ambulant_window->user_event(amwhere, 1);
 	// XXX Set correct cursor
