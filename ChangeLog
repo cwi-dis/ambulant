@@ -1,3 +1,27 @@
+2011-01-24 00:04  jackjansen
+
+	* Getting rid of more dead wood: - QUICKTIME_OVERLAY_WINDOW will
+	  never work for CG. Removed.  - NSRect is nowadays typedeffed as
+	  CGRect, so get rid of conversions.  - We always use a identity
+	  transformation between ambulant and cg   coordinates, so no need
+	  to have the conversion routine be a method   of the view.
+
+2011-01-23 23:02  jackjansen
+
+	* url panel lost its connection. fixed.
+
+2011-01-23 22:43  jackjansen
+
+	* Another pathname fix
+
+2011-01-23 16:57  jackjansen
+
+	* Fixed minor bug with libswscale detection
+
+2011-01-23 12:39  jackjansen
+
+	* Another fix to nightlybuild
+
 2011-01-23 00:56  jackjansen
 
 	* Tweak build script
