@@ -37,6 +37,15 @@ typedef float CGFloat;
 #define AM_DBG if(0)
 #endif
 
+/*AM_DBG*/ void dumpResponderChain(NSResponder *r) {
+    std::string x = "";
+    while (r) {
+        NSLog(@"%snext responder %@", x.c_str(), r);
+        x += " ";
+        r = [r nextResponder];
+    }
+}
+
 // Help class for fullscreen windows: normally, windows
 // with style NSBorderlessWindowMask don't get any keyboard input.
 // By overriding canBecomeKeyWindow we fix that.
@@ -209,6 +218,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	// Add any code here that needs to be executed once the windowController has loaded the document's window.
 	[[view window] makeFirstResponder: view];
 	[[view window] setAcceptsMouseMovedEvents: YES];
+    if (hud_controls) [hud_controls retain];
 
 	if ([self fileURL] == nil) {
 		[self askForURL: self];
@@ -523,12 +533,6 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		NSLog(@"goWindowMode: already in window mode");
 		return;
 	}
-#ifdef WITH_CG
-	// For the CoreGraphics player, we simply set the content view to go full screen
-	[scaler_view exitFullScreenModeWithOptions: nil];
-	saved_window = nil;
-#else
-	// For the Cocoa player, we use an older method to go fullscreen. May be revised later.
 	// Get the screen information.
 	NSScreen* screen = [[view window] screen];
 	if (screen == NULL) screen = [NSScreen mainScreen];
@@ -543,11 +547,13 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		return;
 	}
 
+    NSView* ourView = view;
+    if (scaler_view) ourView = scaler_view;
 	// Attach our view to the normal window.
-	NSWindow *mScreenWindow = [view window];
+	NSWindow *mScreenWindow = [ourView window];
 	NSView *savedcontentview = [saved_window contentView];
-	[savedcontentview addSubview: view];
-	[view setFrame: saved_view_rect];
+	[savedcontentview addSubview: ourView];
+	[ourView setFrame: saved_view_rect];
 	[savedcontentview setNeedsDisplay:YES];
 	[saved_window makeFirstResponder: view];
 	[saved_window setAcceptsMouseMovedEvents: YES];
@@ -556,35 +562,13 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	NSWindowController* winController = [[self windowControllers] objectAtIndex:0];
 	[winController setWindow:saved_window];
 
-#ifdef WITH_OVERLAY_WINDOW
-	// If we have overlay documents in a separate window reparent that
-	// window to the fullscreen one
-	if (myAuxWindow) {
-		[[myAuxWindow parentWindow] removeChildWindow: myAuxWindow];
-		[saved_window addChildWindow: myAuxWindow ordered: NSWindowAbove];
-
-		NSPoint baseOrigin = NSMakePoint([view frame].origin.x, [view frame].origin.y);
-		NSPoint screenOrigin = [[view window] convertBaseToScreen: baseOrigin];
-
-		[myAuxWindow setFrameOrigin: screenOrigin];
-		// XXXJACK SIZE
-	}
-#endif
 	// Get rid of the fullscreen window
 	[mScreenWindow close];
 	[saved_window makeKeyAndOrderFront:self];
-#ifdef WITH_OVERLAY_WINDOW
-	// If we have overlay documents in a separate window reparent that
-	// window to the fullscreen one
-	if (myAuxWindow) {
-		[myAuxWindow makeKeyAndOrderFront: self];
-	}
-#endif
 
 	// And clear saved_window, which signals we're in normal mode again.
 	[saved_window release];
 	saved_window = nil;
-#endif // WITH_CG
 }
 
 - (IBAction)goFullScreen:(id)sender
@@ -592,17 +576,6 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	ambulant::common::preferences *prefs = ambulant::common::preferences::get_preferences();
 	prefs->m_fullscreen = true;
 	prefs->save_preferences();
-#ifdef WITH_CG
-	NSLog(@"nextResonder %@", [scaler_view nextResponder]);
-	saved_window = [scaler_view window]; // This is a boolean, really
-	// For the CoreGraphics player, we simply set the content view to go full screen
-	NSDictionary *opts = [NSDictionary dictionaryWithObjectsAndKeys:
-		[NSNumber numberWithBool: NO], NSFullScreenModeAllScreens,
-		nil];
-	[view enterFullScreenMode:[[view window] screen] withOptions:opts];
-	NSLog(@"nextResonder now %@", [scaler_view nextResponder]);
-#else
-	// For the Cocoa player, we use an older method to go fullscreen. May be revised later.
 	if (saved_window) {
 		NSLog(@"goFullScreen: already in fullscreen mode");
 		return;
@@ -650,6 +623,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	NSView *fsmainview = [[NSView alloc] initWithFrame: winRect];
 
 	id contentview = view;
+    if (scaler_view) contentview = scaler_view; // For CG-based player
 	saved_view_rect = [contentview frame];
 	[fsmainview addSubview: contentview];
 	NSRect contentRect = [contentview frame];
@@ -673,30 +647,9 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	int32_t shieldLevel = CGShieldingWindowLevel();
 	[mScreenWindow setLevel:shieldLevel];
 
-#ifdef WITH_OVERLAY_WINDOW
-	// If we have overlay documents in a separate window reparent that
-	// window to the fullscreen one
-	if (myAuxWindow) {
-		[[myAuxWindow parentWindow] removeChildWindow: myAuxWindow];
-		[mScreenWindow addChildWindow: myAuxWindow ordered: NSWindowAbove];
-		winRect = [screen frame];
-		frameOrigin.x += winRect.origin.x;
-		frameOrigin.y += winRect.origin.y;
-		[myAuxWindow setFrameOrigin: frameOrigin];
-		// XXXJACK SIZE
-	}
-#endif
 
 	// Show the window.
 	[mScreenWindow makeKeyAndOrderFront:self];
-#ifdef WITH_OVERLAY_WINDOW
-	// If we have overlay documents in a separate window reparent that
-	// window to the fullscreen one
-	if (myAuxWindow) {
-		[myAuxWindow makeKeyAndOrderFront: self];
-	}
-#endif
-#endif // WITH_CG
 }
 
 - (IBAction) toggleFullScreen: (id)sender
