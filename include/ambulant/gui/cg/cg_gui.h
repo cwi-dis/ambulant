@@ -20,15 +20,7 @@
  */
 
 /*
-<<<<<<< cg_gui.h
  * @$Id$
-=======
-<<<<<<< cg_gui.h
- * @$Id$
-=======
- * @$Id$
->>>>>>> 1.24.4.2
->>>>>>> 1.28
  */
 
 #ifndef AMBULANT_GUI_CG_CG_GUI_H
@@ -51,7 +43,9 @@
 #endif
 #endif
 
-#ifndef WITH_UIKIT
+#ifdef WITH_UIKIT
+#include <CoreGraphics/CoreGraphics.h>
+#else
 #include <ApplicationServices/ApplicationServices.h>
 #endif
 

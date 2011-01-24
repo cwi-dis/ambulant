@@ -33,6 +33,10 @@
 #include "ambulant/lib/mtsync.h"
 #include "ambulant/smil2/smiltext.h"
 
+#ifdef WITH_UIKIT
+#include <CoreText/CoreText.h>
+#endif
+
 namespace ambulant {
 
 using namespace lib;

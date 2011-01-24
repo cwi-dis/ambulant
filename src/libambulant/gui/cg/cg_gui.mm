@@ -451,18 +451,19 @@ bad:
 - (void)ambulantSetSize: (ambulant::lib::size) bounds
 {
     // Remember frame and bounds and adapt the window reqested in the current view
-	AM_DBG NSLog(@"setSize before: %@ %f,%f", self, self.bounds.size.width, self.bounds.size.height);
+	/*AM_DBG*/ NSLog(@"setSize before: %@ %f,%f", self, self.bounds.size.width, self.bounds.size.height);
     original_bounds = bounds;
     CGRect newBounds = CGRectMake(0, 0, bounds.w, bounds.h);
-    self.bounds = newBounds;
     CGRect newFrame = self.frame;
     newFrame.size = newBounds.size;
     self.frame = newFrame;
+    self.bounds = newBounds;
     AM_DBG NSLog(@"setSize after set bounds: %@ %f,%f", self, self.bounds.size.width, self.bounds.size.height);
 	if ([[self superview] respondsToSelector:@selector(recomputeZoom)])
 		[[self superview] recomputeZoom];
 
     AM_DBG NSLog(@"setSize after aDAR: %@ %f,%f", self, self.bounds.size.width, self.bounds.size.height);
+#ifdef JNK
 #ifndef WITH_UIKIT
 	// Get the position of our view in window coordinates
 	NSPoint origin = NSMakePoint(0,0);
@@ -485,6 +486,7 @@ bad:
 	}
 	[window makeKeyAndOrderFront: self];
 #endif // !WITH_UIKIT
+#endif // JNK
 }
 
 #ifdef WITH_UIKIT
@@ -547,6 +549,7 @@ bad:
 	return true;
 }
 
+#ifdef JNK
 - (void)resizeWithOldSuperviewSize:(NSSize)oldBoundsSize
 {
     /*AM_DBG*/ NSLog(@"resizeWithOldSuperviewSize: %@", self);
@@ -564,7 +567,7 @@ bad:
 #endif
         
 }
-
+#endif // JNK
 #endif // WITH_UIKIT
 
 #ifdef WITH_UIKIT

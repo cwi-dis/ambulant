@@ -50,11 +50,21 @@ class document_embedder : public ambulant::common::embedder {
 	id m_mydocument;
 };
 
+@interface ScalerView : NSView
+{
+	BOOL autoScale;
+	BOOL autoCenter;
+	CGFloat scaleFactor;
+}
+- (void)recomputeZoom;
+
+@end
+
 // MyDocument also implements part of thhe NSWindowDelegate protocol, but how do I state that if
 // I also need to inherit NSDocument??
 @interface MyDocument : NSDocument
 {
-    IBOutlet NSView* scaler_view;
+    IBOutlet ScalerView* scaler_view;
 	IBOutlet NSView* view;
 	IBOutlet NSButton* play_button;
 	IBOutlet NSButton* stop_button;

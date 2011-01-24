@@ -120,6 +120,66 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 }
 #endif // WITH_OVERLAY_WINDOW
 
+@implementation ScalerView
+- (void) awakeFromNib
+{
+	autoScale = YES;
+	autoCenter = YES;
+	scaleFactor = 1.0;
+}
+
+- (BOOL)isFlipped
+{
+	return true;
+}
+
+- (void) recomputeZoom
+{
+	MyAmbulantView *playerView = [[self subviews] objectAtIndex: 0];
+	if (playerView == nil) return;
+	/*AM_DBG*/ NSLog(@"recomputeZoom, self.bounds %f,%f,%f,%f",
+		self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, self.bounds.size.height);
+	/*AM_DBG*/ NSLog(@"recomputeZoom,  playerview.frame %f,%f,%f,%f",
+		playerView.frame.origin.x, playerView.frame.origin.y, playerView.frame.size.width, playerView.frame.size.height);
+
+	bool resizeWindow = true;
+	NSWindow *window = [self window];
+	int32_t shieldLevel = CGShieldingWindowLevel();
+	if ([window level] >= shieldLevel)
+		resizeWindow = false;
+	if (resizeWindow) {
+		// Compute the new window size and set it.
+		NSView* contentView = [window contentView];
+		CGFloat extraWidth = contentView.bounds.size.width - self.frame.size.width;
+		CGFloat extraHeight = contentView.bounds.size.height - self.frame.size.height;
+		[playerView setFrame: playerView.bounds];
+		CGSize newWindowSize = CGSizeMake(playerView.bounds.size.width+extraWidth, playerView.bounds.size.height+extraHeight);
+		[window setContentSize: newWindowSize];
+		[window makeKeyAndOrderFront: self];
+//		[self setFrameSize:self.bounds.size];
+		[self setBounds:playerView.bounds];
+		return;
+	}
+//	[playerView setFrameSize: self.bounds.size];
+	CGFloat scaleX = playerView.bounds.size.width / self.frame.size.width;
+	CGFloat scaleY = playerView.bounds.size.height / self.frame.size.height;
+	CGFloat scale = fmin(scaleX, scaleY);
+	self.bounds = playerView.bounds;
+	[self scaleUnitSquareToSize:CGSizeMake(scale, scale)];
+	/*AM_DBG*/ NSLog(@"recomputeZoom after, self.bounds %f,%f,%f,%f",
+		self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, self.bounds.size.height);
+	/*AM_DBG*/ NSLog(@"recomputeZoom after,  playerview.frame %f,%f,%f,%f",
+		playerView.frame.origin.x, playerView.frame.origin.y, playerView.frame.size.width, playerView.frame.size.height);
+}
+
+- (void) resizeWithOldSuperviewSize:(NSSize)oldSize
+{
+	[super resizeWithOldSuperviewSize: oldSize];
+//	[self recomputeZoom];
+}
+
+@end
+
 @implementation MyDocument
 
 - (id)init
