@@ -79,13 +79,19 @@ cd ../..
 #
 cd projects/xcode32
 xcodebuild -project AmbulantPlayer.xcodeproj \
-	-target AmbulantPlayer \
+	-target AmbulantPlayerCG \
 	-configuration Release \
 	AMBULANT_BUILDDIR=$BUILDHOME/$BUILDDIR \
 	AMBULANT_3PP=$BUILDHOME/$BUILDDIR/build-3264/third_party_packages \
-	DSTROOT=$BUILDHOME/DESTDIR \
+	DSTROOT=$BUILDHOME/$DESTDIR \
 	install
-echo XXXX Installer TBD.
+cd ../..
+#
+# Create installer dmg, upload
+#
+cd installers/sh-macos
+sh mkmacdist.sh -a AmbulantPlayerCG.app $DMGNAME-CG $BUILDHOME/$DESTDIR
+scp $DMGNAME-CG.dmg $DESTINATION_DESKTOP
 cd ../..
 #
 # Build webkit plugin

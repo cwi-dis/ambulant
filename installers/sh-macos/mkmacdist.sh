@@ -2,11 +2,18 @@
 scriptdir=`dirname $0`
 topdir=$scriptdir/../..
 interactive=false
+appname="Ambulant Player.app"
+if [ x$1 == -a ]; then
+	appname=$2
+	shift
+	shift
+fi
 dirname=$1
 installroot=$2
 if [ x$dirname == x ]; then
-	echo Usage: $0 dirname [installroot]
+	echo Usage: $0 [-a appname] dirname [installroot]
 	echo dirname is where the distribution will be created.
+	echo Default for appname is \"Ambulant Player.app\"
 	echo Something like Ambulant-1.8-mac is what we usually use.
 	exit 2
 fi
@@ -30,8 +37,8 @@ mkdir $dirname
 # Copy all other files
 #
 cp $topdir/README $dirname/README
-rm -rf "$dirname/Ambulant Player.app"
-cp -r "$installroot/Applications/Ambulant Player.app" "$dirname/Ambulant Player.app"
+rm -rf "$dirname/$appname"
+cp -r "$installroot/Applications/$appname" "$dirname/$appname"
 ln -s /Applications $dirname/Applications
 cp -r $topdir/Extras/DemoPresentation $dirname/DemoPresentation
 find $dirname/DemoPresentation -name 'CVS' -a -exec rm -r '{}' ';'
