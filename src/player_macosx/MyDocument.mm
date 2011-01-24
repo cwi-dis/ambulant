@@ -190,7 +190,9 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		// If an error occurs here, send a [self release] message and return nil.
 
 	}
+#ifndef WITH_CG
 	saved_window = nil;
+#endif
 	return self;
 }
 
@@ -463,7 +465,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 #endif
 	if (ml) ml->before_mousemove(0);
     if (saved_window) {
-        [hud_controls show];
+        [view addSubview:hud_controls];
         // XXXX Schedule for disappearance...
     }
 }
@@ -521,6 +523,12 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		NSLog(@"goWindowMode: already in window mode");
 		return;
 	}
+#ifdef WITH_CG
+	// For the CoreGraphics player, we simply set the content view to go full screen
+	[scaler_view exitFullScreenModeWithOptions: nil];
+	saved_window = nil;
+#else
+	// For the Cocoa player, we use an older method to go fullscreen. May be revised later.
 	// Get the screen information.
 	NSScreen* screen = [[view window] screen];
 	if (screen == NULL) screen = [NSScreen mainScreen];
@@ -576,6 +584,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	// And clear saved_window, which signals we're in normal mode again.
 	[saved_window release];
 	saved_window = nil;
+#endif // WITH_CG
 }
 
 - (IBAction)goFullScreen:(id)sender
@@ -583,6 +592,17 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	ambulant::common::preferences *prefs = ambulant::common::preferences::get_preferences();
 	prefs->m_fullscreen = true;
 	prefs->save_preferences();
+#ifdef WITH_CG
+	NSLog(@"nextResonder %@", [scaler_view nextResponder]);
+	saved_window = [scaler_view window]; // This is a boolean, really
+	// For the CoreGraphics player, we simply set the content view to go full screen
+	NSDictionary *opts = [NSDictionary dictionaryWithObjectsAndKeys:
+		[NSNumber numberWithBool: NO], NSFullScreenModeAllScreens,
+		nil];
+	[view enterFullScreenMode:[[view window] screen] withOptions:opts];
+	NSLog(@"nextResonder now %@", [scaler_view nextResponder]);
+#else
+	// For the Cocoa player, we use an older method to go fullscreen. May be revised later.
 	if (saved_window) {
 		NSLog(@"goFullScreen: already in fullscreen mode");
 		return;
@@ -676,12 +696,13 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		[myAuxWindow makeKeyAndOrderFront: self];
 	}
 #endif
+#endif // WITH_CG
 }
 
 - (IBAction) toggleFullScreen: (id)sender
 {
 	if (saved_window) {
-        [hud_controls hide];
+        [hud_controls removeFromSuperview];
 		[self goWindowMode: sender];
 	} else {
 		[self goFullScreen:sender];
