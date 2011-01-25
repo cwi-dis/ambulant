@@ -31,6 +31,13 @@
 #include "ambulant/lib/mtsync.h"
 //#include <CoreGraphics/CoreGraphics.h>
 
+#ifdef WITH_UIKIT
+#define NSSizeToCGSize(x) (x)
+#define NSRectToCGRect(x) (x)
+#define NSSizeFromCGSize(x) (x)
+#define NSRectFromCGRect(x) (x)
+#endif
+
 //#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
