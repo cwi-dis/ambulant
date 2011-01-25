@@ -116,9 +116,6 @@ class document_embedder : public ambulant::common::embedder {
 - (BOOL)openAuxDocument: (NSURL *)auxUrl;
 - (void)closeAuxDocument;
 #endif
-
-// Window delegate method:
-- (void)windowDidChangeScreen: (NSNotification *)notification;
 @end
 
 @interface NSDocumentController(MyDocumentControllerCategory)

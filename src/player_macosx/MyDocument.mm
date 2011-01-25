@@ -163,7 +163,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 		CGFloat extraHeight = contentView.bounds.size.height - self.frame.size.height;
 		[playerView setFrame: playerView.bounds];
 		CGSize newWindowSize = CGSizeMake(playerView.bounds.size.width+extraWidth, playerView.bounds.size.height+extraHeight);
-		[window setContentSize: newWindowSize];
+		[window setContentSize: NSSizeFromCGSize(newWindowSize)];
 		[window makeKeyAndOrderFront: self];
 //		[self setFrameSize:self.bounds.size];
 		[self setBounds:playerView.bounds];
@@ -174,7 +174,7 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	CGFloat scaleY = playerView.bounds.size.height / self.frame.size.height;
 	CGFloat scale = fmin(scaleX, scaleY);
 	self.bounds = playerView.bounds;
-	[self scaleUnitSquareToSize:CGSizeMake(scale, scale)];
+	[self scaleUnitSquareToSize:NSSizeFromCGSize(CGSizeMake(scale, scale))];
 	/*AM_DBG*/ NSLog(@"recomputeZoom after, self.bounds %f,%f,%f,%f",
 		self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, self.bounds.size.height);
 	/*AM_DBG*/ NSLog(@"recomputeZoom after,  playerview.frame %f,%f,%f,%f",
@@ -730,10 +730,4 @@ document_embedder::aux_open(const ambulant::net::url& auxdoc)
 	}
 }
 #endif // WITH_OVERLAY_WINDOW
-
-- (void)windowDidChangeScreen: (NSNotification *)notification
-{
-	[view updateScreenSize];
-}
-
 @end
