@@ -21,7 +21,7 @@
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
 	<key>NSPrincipalClass</key>
-	<string>AmbulantWebView</string>
+	<string>AmbulantWebKitPluginView</string>
 	<key>WebPluginDescription</key>
 	<string>Play SMIL multimedia documents with the Ambulant engine</string>
 	<key>WebPluginMIMETypes</key>
@@ -58,6 +58,6 @@
 		</dict>
 	</dict>
 	<key>WebPluginName</key>
-	<string>Ambulant SMIL Plug-In</string>
+	<string>Ambulant SMIL Plug-In for Safari</string>
 </dict>
 </plist>

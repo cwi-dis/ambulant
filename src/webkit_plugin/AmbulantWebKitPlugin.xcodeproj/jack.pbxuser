@@ -85,9 +85,9 @@
 	};
 	045D0B7E0958C53F00C194EE /* mainloop.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1264, 4095}}";
+			sepNavIntBoundsRect = "{{0, 0}, {733, 4110}}";
 			sepNavSelRange = "{7453, 19}";
-			sepNavVisRange = "{2846, 562}";
+			sepNavVisRange = "{2950, 413}";
 		};
 	};
 	045D0B7F0958C53F00C194EE /* mainloop.h */ = {
@@ -99,9 +99,9 @@
 	};
 	049775B70958ADC500A7690F /* AmbulantWebView.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {939, 945}}";
-			sepNavSelRange = "{2093, 9}";
-			sepNavVisRange = "{114, 2193}";
+			sepNavIntBoundsRect = "{{0, 0}, {558, 510}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 772}";
 		};
 	};
 	049775B80958ADC500A7690F /* AmbulantWebView.mm */ = {
@@ -251,7 +251,7 @@
 				PBXFileTableDataSourceColumnWidthsKey = (
 					22,
 					300,
-					73,
+					229,
 				);
 				PBXFileTableDataSourceColumnsKey = (
 					PBXExecutablesDataSource_ActiveFlagID,
@@ -264,7 +264,7 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					185,
+					341,
 					20,
 					48,
 					43,
@@ -302,7 +302,7 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					145,
+					301,
 					60,
 					20,
 					48,
@@ -319,8 +319,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 298245226;
-			PBXWorkspaceStateSaveDate = 298245226;
+			PBXPerProjectTemplateStateSaveDate = 317658043;
+			PBXWorkspaceStateSaveDate = 317658043;
 		};
 		sourceControlManager = 04E8E403109F3BE300B7C8C9 /* Source Control */;
 		userBuildSettings = {

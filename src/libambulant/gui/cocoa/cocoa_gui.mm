@@ -495,10 +495,10 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 	}
 	AM_DBG NSLog(@"0x%x: mouseMoved at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
-	[[NSApplication sharedApplication] sendAction: SEL("resetMouse:") to: nil from: self];
+	[[NSApplication sharedApplication] sendAction: @selector(resetMouse:) to: nil from: self];
 	if (ambulant_window) ambulant_window->user_event(amwhere, 1);
 	// XXX Set correct cursor
-	[[NSApplication sharedApplication] sendAction: SEL("fixMouse:") to: nil from: self];
+	[[NSApplication sharedApplication] sendAction: @selector(fixMouse:) to: nil from: self];
 }
 
 - (void)pseudoMouseMove: (id)dummy
@@ -512,10 +512,10 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 	}
 	AM_DBG NSLog(@"0x%x: pseudoMouseMove at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
-	[[NSApplication sharedApplication] sendAction: SEL("resetMouse:") to: nil from: self];
+	[[NSApplication sharedApplication] sendAction: @selector(resetMouse:) to: nil from: self];
 	if (ambulant_window) ambulant_window->user_event(amwhere, 1);
 	// XXX Set correct cursor
-	[[NSApplication sharedApplication] sendAction: SEL("fixMouse:") to: nil from: self];
+	[[NSApplication sharedApplication] sendAction: @selector(fixMouse:) to: nil from: self];
 }
 
 - (BOOL)wantsDefaultClipping

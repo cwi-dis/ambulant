@@ -43,6 +43,18 @@
 #define AM_DBG if(0)
 #endif
 
+#if 0
+/*AM_DBG*/
+void dumpResponderChain(NSResponder *r) {
+    std::string x = "";
+    while (r) {
+        NSLog(@"%snext responder %@", x.c_str(), r);
+        x += " ";
+        r = [r nextResponder];
+    }
+}
+#endif
+
 namespace ambulant {
 
 using namespace lib;
@@ -609,11 +621,11 @@ bad:
 	}
 	AM_DBG NSLog(@"0x%x: mouseMoved at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
-    /*AM_DBG*/ { id target=[[NSApplication sharedApplication] targetForAction: SEL("resetMouse:") ]; if(!target) NSLog(@"No target for resetMouse: ??"); }
-	[[NSApplication sharedApplication] sendAction: SEL("resetMouse:") to: nil from: self];
+//  AM_DBG { id target=[[NSApplication sharedApplication] targetForAction: @selector(resetMouse:) ]; if(!target) { NSLog(@"No target for resetMouse: ??"); dumpResponderChain([[self window] firstResponder]);}}
+	[[NSApplication sharedApplication] sendAction: @selector(resetMouse:) to: nil from: self];
 	if (ambulant_window) ambulant_window->user_event(amwhere, 1);
 	// XXX Set correct cursor
-	[[NSApplication sharedApplication] sendAction: SEL("fixMouse:") to: nil from: self];
+	[[NSApplication sharedApplication] sendAction: @selector(fixMouse:) to: nil from: self];
 }
 
 - (void)pseudoMouseMove: (id)dummy
@@ -627,10 +639,10 @@ bad:
 	}
 	AM_DBG NSLog(@"0x%x: pseudoMouseMove at ambulant-point(%f, %f)", (void*)self, where.x, where.y);
 	ambulant::lib::point amwhere = ambulant::lib::point((int)where.x, (int)where.y);
-	[[NSApplication sharedApplication] sendAction: SEL("resetMouse:") to: nil from: self];
+	[[NSApplication sharedApplication] sendAction: @selector(resetMouse:) to: nil from: self];
 	if (ambulant_window) ambulant_window->user_event(amwhere, 1);
 	// XXX Set correct cursor
-	[[NSApplication sharedApplication] sendAction: SEL("fixMouse:") to: nil from: self];
+	[[NSApplication sharedApplication] sendAction: @selector(fixMouse:) to: nil from: self];
 }
 #endif
 
