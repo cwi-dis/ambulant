@@ -3,7 +3,7 @@ scriptdir=`dirname $0`
 topdir=$scriptdir/../..
 interactive=false
 appname="Ambulant Player.app"
-if [ x$1 == -a ]; then
+if [ x$1 == x-a ]; then
 	appname=$2
 	shift
 	shift
