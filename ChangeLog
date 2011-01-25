@@ -1,3 +1,25 @@
+2011-01-25 00:08  jackjansen
+
+	* Attempting to get fixMouse/resetMouse to work again, for HUD and
+	  mouse-over. No success so far
+
+2011-01-24 23:42  jackjansen
+
+	* enterFullScreen is brain-dead. Reverting to old manual fullscreen
+	  method
+
+2011-01-24 22:16  jackjansen
+
+	* Merging recent chanegs to the trunk (sigh)
+
+2011-01-24 17:10  jackjansen
+
+	* Playing with fullscreen mode
+
+2011-01-24 15:57  jackjansen
+
+	* Desktop CG player view starts to behave again, somewhat
+
 2011-01-24 00:04  jackjansen
 
 	* Getting rid of more dead wood: - QUICKTIME_OVERLAY_WINDOW will
