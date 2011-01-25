@@ -97,7 +97,14 @@ transition_engine::step(lib::transition_info::time_type now)
 {
 	AM_DBG lib::logger::get_logger()->debug("transition_engine::step(%d)", now);
 	assert(m_info);
+	//lib::transition_info::time_type orig_now = now;
+	if (now < m_begin_time) {
+		// sometimes clock steps back, then the calculation of 'm_progress' results in a huge value
+		// and no transition effect would be visible, without the next line.
+		now = m_begin_time;
+	}
 	m_progress = (now-m_begin_time) * m_progress_per_milli + m_info->m_startProgress;
+	//printf("m_begin_time=%ld, now=%ld, orig_now=%ld, m_progress_per_milli=%f, m_progress=%f\n",m_begin_time, now, orig_now, m_progress_per_milli, m_progress);
 	if (m_progress <= m_old_progress)
 		m_progress = m_old_progress;
 	else
