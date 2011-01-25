@@ -124,7 +124,7 @@ cg_window_factory::get_default_size()
 {
 	if (m_defaultwindow_view == NULL)
 		return lib::size(common::default_layout_width, common::default_layout_height);
-	CGSize size = [(AmbulantView *)m_defaultwindow_view bounds].size;
+	CGSize size = NSSizeToCGSize([(AmbulantView *)m_defaultwindow_view bounds].size);
 	return lib::size((int)size.width, (int)size.height);
 }
 
@@ -157,7 +157,7 @@ void
 cg_gui_screen::get_size(int *width, int *height)
 {
 	AmbulantView *view = (AmbulantView *)m_view;
-	CGRect bounds = [view bounds];
+	CGRect bounds = NSRectToCGRect([view bounds]);
 	*width = int(bounds.size.width);
 	*height = int(bounds.size.height);
 }
@@ -245,7 +245,7 @@ bad:
 - (id)initWithFrame:(CGRect)frameRect
 {
 	/*AM_DBG*/ NSLog(@"AmbulantView.initWithFrame(0x%x)", self);
-	self = [super initWithFrame: frameRect];
+	self = [super initWithFrame: NSRectFromCGRect(frameRect)];
 	ambulant_window = NULL;
 //	transition_surface = NULL;
 //	transition_tmpsurface = NULL;
@@ -334,7 +334,7 @@ bad:
 	CGRect my_rect = [arect rect];
 	[arect release];
 	AM_DBG NSLog(@"AmbulantView.asyncRedrawForAmbulantRect: self=0x%x ltrb=(%f,%f,%f,%f)", self, CGRectGetMinX(my_rect), CGRectGetMinY(my_rect), CGRectGetMaxX(my_rect), CGRectGetMaxY(my_rect));
-	[self setNeedsDisplayInRect: my_rect];
+	[self setNeedsDisplayInRect: NSRectFromCGRect(my_rect)];
 }
 
 - (void) syncDisplayIfNeeded: (id) dummy
@@ -357,7 +357,7 @@ bad:
     // been setup wrt. isFlipped, so we do nothing.
     //
     if (![self isFlipped]) {
-        float view_height = CGRectGetHeight(self.bounds);
+        float view_height = CGRectGetHeight(NSRectToCGRect(self.bounds));
         CGAffineTransform matrix = CGAffineTransformMake(1, 0, 0, -1, 0, view_height);
         CGContextConcatCTM(myContext, matrix);
         // Also adapt the dirty rect
@@ -395,7 +395,7 @@ bad:
 		// If we have seen transitions we always redraw the whole view
 		// XXXJACK interaction of fullscreen transitions and overlay windows
 		// is completely untested, and probably broken.
-		if (transition_count) rect = [self bounds];
+		if (transition_count) rect = NSRectToCGRect([self bounds]);
 		ambulant::lib::rect arect = ambulant::gui::cg::ambulantRectFromCGRect(rect);
 //		[self _screenTransitionPreRedraw];
 		AM_DBG NSLog(@"ambulantView: call redraw ambulant-ltrb=(%d, %d, %d, %d)", arect.left(), arect.top(), arect.right(), arect.bottom());
@@ -454,10 +454,10 @@ bad:
 	/*AM_DBG*/ NSLog(@"setSize before: %@ %f,%f", self, self.bounds.size.width, self.bounds.size.height);
     original_bounds = bounds;
     CGRect newBounds = CGRectMake(0, 0, bounds.w, bounds.h);
-    CGRect newFrame = self.frame;
+    CGRect newFrame = NSRectToCGRect(self.frame);
     newFrame.size = newBounds.size;
-    self.frame = newFrame;
-    self.bounds = newBounds;
+    self.frame = NSRectFromCGRect(newFrame);
+    self.bounds = NSRectFromCGRect(newBounds);
     AM_DBG NSLog(@"setSize after set bounds: %@ %f,%f", self, self.bounds.size.width, self.bounds.size.height);
 	if ([[self superview] respondsToSelector:@selector(recomputeZoom)])
 		[[self superview] recomputeZoom];
