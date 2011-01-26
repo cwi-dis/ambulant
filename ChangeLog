@@ -1,3 +1,32 @@
+2011-01-25 16:22  jackjansen
+
+	* Detail
+
+2011-01-25 16:21  jackjansen
+
+	* Fixed mouse-moved code
+
+2011-01-25 15:58  jackjansen
+
+	* Adding projects for the Safari plugin
+
+2011-01-25 15:56  keesblom
+
+	* Added code to protect transitions for clock values stepping back.
+
+2011-01-25 15:11  jackjansen
+
+	* Disable ns/cg conersion on iPhone
+
+2011-01-25 15:07  jackjansen
+
+	* More cg/ns conversion
+
+2011-01-25 11:33  jackjansen
+
+	* In 32bit mode NSSize and CGSize are not identical, so add
+	  converters
+
 2011-01-25 00:08  jackjansen
 
 	* Attempting to get fixMouse/resetMouse to work again, for HUD and
