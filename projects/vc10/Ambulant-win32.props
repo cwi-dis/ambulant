@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Label="UserMacros">
+    <!--
+	Set global_ambulant_defines to the build-time options that influence all products (shared lib, plugins, browser plugins, etc) built. Picked up by many projects inside Ambulant_win32.sln.
+-->
+
     <global_ambulant_defines>WITH_HTML_WIDGET;WITH_PYTHON_PLUGIN;WITH_SMIL30;WITH_SEAMLESS_PLAYBACK;WITH_CLOCK_SYNC;WITH_EXTERNAL_DOM</global_ambulant_defines>
+<!--
+	Set the following variables to the locations where you downloaded the various
+	third party libraries. Building Ambulant without these will be disappointing.
+	Picked up by third_party_packages.sln as well as Ambulant_win32.sln.
+-->
+
     <expat_dir>..\..\third_party_packages\expat</expat_dir>
     <jpeg_dir>..\..\third_party_packages\jpeg</jpeg_dir>
     <lpng_dir>..\..\third_party_packages\lpng128</lpng_dir>
     <zlib_dir>..\..\third_party_packages\zlib</zlib_dir>
-    <libxml2_dir>..\..\third_party_packages\libxml2-2.7.6</libxml2_dir>
+    <libxml2_dir>..\..\third_party_packages\libxml2-2.7.8</libxml2_dir>
     <sdl_dir>..\..\third_party_packages\SDL-1.2.14</sdl_dir>
     <ffmpeg_dir>..\..\third_party_packages\ffmpeg-20110119-win32-prebuilt</ffmpeg_dir>
     <live555_dir>..\..\third_party_packages\live</live555_dir>
