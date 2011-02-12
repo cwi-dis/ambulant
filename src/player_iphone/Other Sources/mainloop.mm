@@ -120,7 +120,12 @@ mainloop::mainloop(const char *urlstr, void *view, ambulant::common::embedder *a
 			[m_nsurl retain];
 			NSString* title = get_meta_content("title");
 			if ([title compare:@""] == NSOrderedSame) {
-				title = [m_nsurl path];
+				title = [m_nsurl lastPathComponent];
+				NSLog(@"title=%@", title);
+				if (title == nil || [title compare:@""] == NSOrderedSame) {
+					title = [NSString stringWithUTF8String: urlstr];
+				}
+				[title retain];
 			}
 			NSData* image_data = NULL; // contains data for CGImage
 			NSString* poster = get_meta_content("poster");

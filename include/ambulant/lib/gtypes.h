@@ -272,13 +272,13 @@ class basic_rect {
 		int x2 = lmax(x+w, o.x + o.w);
 		w = x2 - x1;
 		x = x1;
-
+		
 		int y1 = lmin(y, o.y);
 		int y2 = lmax(y+h, o.y + o.h);
 		h = y2 - y1;
 		y = y1;
 	}
-
+	
 	/// Intersect two rectangles.
 	basic_rect<T, S> operator&(const basic_rect<T, S>& r) const {
 		// return intersection

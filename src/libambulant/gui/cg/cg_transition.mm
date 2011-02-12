@@ -84,7 +84,7 @@ cg_transition_blitclass_fade::update()
 	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
 //  fullsrcrect.translate(m_dst->get_global_topleft(lib::point(-srcrect.left(), srcrect.bottom()-m_size.h)
 	fullsrcrect.translate(m_dst->get_global_topleft()); // Translate so the right topleft pixel is in place
-	CGRect cg_fullsrcrect = [view CGRectForAmbulantRect: &fullsrcrect];
+	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
 //	CGRect cg_fullsrcrect = [view CGRectForAmbulantRect: &dstrect_whole];
 	
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
@@ -133,10 +133,10 @@ cg_transition_blitclass_rect::update()
 	newrect_whole &= m_dst->get_clipped_screen_rect();
 	lib::point LT = newrect_whole.left_top();
 	lib::point RB = newrect_whole.right_bottom();
-	CGRect cg_clipped_rect = [view CGRectForAmbulantRect: &newrect_whole];
+	CGRect cg_clipped_rect = CGRectFromAmbulantRect(newrect_whole);
 	AM_DBG NSLog(@"cg_transition_blitclass_rect::update(%f) newrect_whole=(%d,%d),(%d,%d)",m_progress,LT.x,LT.y,RB.x,RB.y);
 	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
-	CGRect cg_fullsrcrect = [view CGRectForAmbulantRect: &fullsrcrect];
+	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	if ( ! m_outtrans) {
 	}
@@ -147,7 +147,7 @@ cg_transition_blitclass_rect::update()
 		if (nr > 0) {
 			CGRect cg_clip_rects[4];
 			for (int i=0; i < nr; i++) {
-				cg_clip_rects[i] = [view CGRectForAmbulantRect:&clip_rects[i]];
+				cg_clip_rects[i] = CGRectFromAmbulantRect(clip_rects[i]);
 			}
 			CGContextClipToRects(ctx,cg_clip_rects, nr);
 		}
@@ -190,7 +190,7 @@ cg_transition_blitclass_r1r2r3r4::update()
 	CGContextTranslateCTM (ctx, dx, dy);
 
 	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
-	CGRect cg_fullsrcrect = [view CGRectForAmbulantRect: &fullsrcrect];
+	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
 	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
 
 /*XX*
@@ -349,7 +349,7 @@ cg_transition_blitclass_poly::update()
 			polygon.push_back(*ri);
 		}
 		lib::rect region = m_dst->get_rect();
-		CGRect cg_region = [view CGRectForAmbulantRect: &region];
+		CGRect cg_region = CGRectFromAmbulantRect(region);
 		CGContextAddRect(ctx, cg_region);
 	} else {
 		polygon = m_newpolygon;
@@ -366,9 +366,10 @@ cg_transition_blitclass_poly::update()
 //X	composite_path(view, dstrect_whole, path, m_outtrans);
 	
 	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
-	CGRect cg_fullsrcrect = [view CGRectForAmbulantRect: &fullsrcrect];
+	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
 	CGContextSaveGState(ctx);
-	CGContextSetBlendMode(ctx, kCGBlendModeNormal);
+//	CGContextSetBlendMode(ctx, kCGBlendModeMultiply);
+//	CGContextSetAlpha(ctx, 0.5);
 	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
 	CGContextRestoreGState(ctx);
 	CFRelease(path);

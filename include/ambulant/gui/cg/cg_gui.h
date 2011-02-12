@@ -37,17 +37,17 @@
 #include <ImageIO/ImageIO.h>
 #include <UIKit/UIKit.h>
 #define VIEW_SUPERCLASS UIView
-#else
+#else// ! WITH_UIKIT
 #include <AppKit/AppKit.h>
 #define VIEW_SUPERCLASS NSView
-#endif
-#endif
+#endif// ! WITH_UIKIT
+#endif//__OBJC__
 
 #ifdef WITH_UIKIT
 #include <CoreGraphics/CoreGraphics.h>
-#else
+#else// ! WITH_UIKIT
 #include <ApplicationServices/ApplicationServices.h>
-#endif
+#endif// ! WITH_UIKIT
 
 namespace ambulant {
 
@@ -144,22 +144,41 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 @interface AmbulantView : VIEW_SUPERCLASS
 {
 	ambulant::gui::cg::cg_window *ambulant_window;
-//	NSImage *transition_surface;
-//	NSImage *transition_tmpsurface;
 	int transition_count;
 	int fullscreen_count;
+#ifdef	WITH_UIKIT
+	CGLayerRef transition_surface;
+	CGLayerRef transition_tmpsurface;
+	ambulant::smil2::transition_engine *fullscreen_engine;
+	ambulant::lib::transition_info::time_type fullscreen_now;
+#else // ! WITH_UIKIT
+//	NSImage *transition_surface;
+//	NSImage *transition_tmpsurface;
 //	NSImage *fullscreen_previmage;
 //	NSImage *fullscreen_oldimage;
-//	ambulant::smil2::transition_engine *fullscreen_engine;
+	ambulant::smil2::transition_engine *fullscreen_engine;
 	ambulant::lib::transition_info::time_type fullscreen_now;
+#endif// ! WITH_UIKIT
+#ifdef	JNK
+#ifdef	WITH_UIKIT
+	BOOL M_auto_center;
+	BOOL M_auto_resize;
+	CGRect current_frame;
+	CGRect original_frame;
+	CGAffineTransform current_transform;
 	ambulant::lib::size original_bounds;
+#endif//WITH_UIKIT
+#endif//JNK
 }
 
 #ifdef	WITH_UIKIT
+#ifdef	JNK
 @property(nonatomic) ambulant::lib::size original_bounds;
-
+(void) adaptDisplayAfterRotation: (UIDeviceOrientation) orientation withAutoCenter: (BOOL) autoCenter withAutoResize: (bool) autoResize;
+#endif//JNK
 - (BOOL) tappedAtPoint:(CGPoint) location;
 - (void) drawTestRect:(CGRect)rect;
+
 #endif//WITH_UIKIT
 
 - (id)initWithFrame:(CGRect)frameRect;
@@ -186,18 +205,80 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 
 #ifdef WITH_UIKIT
 - (void) tappedWithPoint: (CGPoint)where;
-#else
+#else // ! WITH_UIKIT
 - (void)mouseDown: (NSEvent *)theEvent;
 - (void)mouseMoved: (NSEvent *)theEvent;
 - (void)pseudoMouseMove: (id)dummy;
-#endif
+#endif //! WITH_UIKIT
 
 - (BOOL)wantsDefaultClipping;
 
 - (void) incrementTransitionCount;
 - (void) decrementTransitionCount;
 
-#if NOT_YET_UIKIT
+#ifdef WITH_UIKIT
+
+// Graphics debugging routines
+
+// Get an UIImage of the iPhone/iPad screen
++ (UIImage*) UIImageFromScreen; 
+
+// Get the entire content of an UIView*  (without subviews) as an UIImage*
++ (UIImage*) UIImageFromUIView: (UIView*) view;
+
+// Get an UIImage* from the contents of a CGLayerRef
++ (UIImage*) UIImageFromCGLayer: (CGLayerRef) layer;
+
+// write a CGImageRef to the file: "$HOME/Documents/<number>.<id>.png" where
+// where $HOME refers to the Application home directory and
+// and number is a numeric string circular variying between "0000" and "9999".   
++ (void) dumpCGImage: (CGImageRef) img withId: (NSString*) id;
+
+// write the contents of an UIView to the file: "$HOME/Documents/<number>.<id>.png" where
+// where $HOME refers to the Application home directory and
+// and number is a numeric string circular variying between "0000" and "9999".   
++ (void) dumpUIView: (UIView*) view withId: (NSString*) id;
+
+// write the contents of an iPhone/iPad screen to the file: "$HOME/Documents/<number>.<id>.png" where
+// where $HOME refers to the Application home directory and
+// and number is a numeric string circular variying between "0000" and "9999".   
++ (void) dumpScreenWithId: (NSString*) id;
+
+// while in a transition, getTransitionSurface returns the surface that the
+// transitioning element should be drawn to.
+- (CGLayerRef) getTransitionSurface;
+
+// internal: release the transition surfaces when we're done with it.
+- (void)_releaseTransitionSurfaces;
+
+// while in a transition, if we need an auxiliary surface (to draw a clipping
+// path or something like that) getTransitionTmpSurface will return one.
+- (CGLayerRef) getTransitionTmpSurface;
+
+// while in a transition, getTransitionOldSource will return the old pixels,
+// i.e. the pixels "behind" the transitioning element.
+- (CGLayerRef) getTransitionOldSource;
+
+// while in a transition, getTransitionNewSource will return the new pixels,
+// i.e. the pixels the transitioning element drew into getTransitionSurface.
+- (CGLayerRef) getTransitionNewSource;
+
+// Return the current on-screen image, caters for AVFoundation movies
+- (CGLayerRef) _getOnScreenImage;
+
+// Return part of the onscreen image, does not cater for AVFoundation
+- (CGImageRef) getOnScreenImageForRect: (CGRect)bounds;
+
+- (void) startScreenTransition;
+- (void) endScreenTransition;
+- (void) screenTransitionStep: (ambulant::smil2::transition_engine *)engine
+		elapsed: (ambulant::lib::transition_info::time_type)now;
+
+- (void) _screenTransitionPreRedraw;
+- (void) _screenTransitionPostRedraw;
+
+#else // ! WITH_UIKIT
+
 // while in a transition, getTransitionSurface returns the surface that the
 // transitioning element should be drawn to.
 - (NSImage *)getTransitionSurface;
@@ -225,13 +306,13 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 
 - (void) startScreenTransition;
 - (void) endScreenTransition;
-- (void) screenTransitionStep: (ambulant::smil2::transition_engine *)engine
-		elapsed: (ambulant::lib::transition_info::time_type)now;
+- (void) screenTransitionStep: (ambulant::smil2::transition_engine*) engine
+					  elapsed: (ambulant::lib::transition_info::time_type) now;
 
 - (void) _screenTransitionPreRedraw;
 - (void) _screenTransitionPostRedraw;
 
-#endif // NOT_YET_UIKIT
+#endif // ! WITH_UIKIT
 @end
 
 #endif // __OBJC__

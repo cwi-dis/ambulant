@@ -27,6 +27,7 @@
 #endif//WITH_IPHONE
 #include "ambulant/gui/cg/cg_gui.h"
 #include "ambulant/gui/cg/cg_image.h"
+#include "ambulant/gui/cg/cg_transition.h"
 #include "ambulant/common/region_dim.h"
 #include "ambulant/common/region_info.h"
 #include "ambulant/smil2/test_attrs.h"
@@ -285,7 +286,7 @@ cg_image_renderer::redraw_body(const rect &dirty, gui_window *window)
 	//
 #ifdef WITH_SMIL30
 	lib::rect croprect = m_dest->get_crop_rect(m_size);
-	AM_DBG logger::get_logger()->debug("cg_image::redraw, clip 0x%x (%d %d) -> (%d, %d, %d, %d)", m_dest, m_size.w, m_size.h, croprect.x, croprect.y, croprect.w, croprect.h);
+	AM_DBG logger::get_logger()->debug("cg_image::redraw_body(0x%x): clip 0x%x (%d %d) -> (%d, %d, %d, %d)", this, m_dest, m_size.w, m_size.h, croprect.x, croprect.y, croprect.w, croprect.h);
 
 	dstrect = m_dest->get_fit_rect(croprect, m_size, &srcrect, m_alignment);
 #else

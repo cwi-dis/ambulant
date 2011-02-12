@@ -189,7 +189,7 @@
 		0496506C0BCADE62002C00DF /* mypreferences.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = mypreferences.mm; path = ../../src/player_macosx/mypreferences.mm; sourceTree = SOURCE_ROOT; };
 		049650720BCADE83002C00DF /* mainloop.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mainloop.cpp; path = ../../src/player_macosx/mainloop.cpp; sourceTree = SOURCE_ROOT; };
 		049650730BCADE83002C00DF /* mainloop.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mainloop.h; path = ../../src/player_macosx/mainloop.h; sourceTree = SOURCE_ROOT; };
-		049650760BCAE0AE002C00DF /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../../src/player_macosx/Info.plist; sourceTree = SOURCE_ROOT; };
+		049650760BCAE0AE002C00DF /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../../src/player_macosx/Resources/Info.plist; sourceTree = SOURCE_ROOT; };
 		049650C40BCAE333002C00DF /* embedder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = embedder.h; sourceTree = "<group>"; };
 		049650C50BCAE333002C00DF /* factory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = factory.h; sourceTree = "<group>"; };
 		049650C60BCAE333002C00DF /* gui_player.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = gui_player.h; sourceTree = "<group>"; };
@@ -1738,7 +1738,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
+				INFOPLIST_FILE = ../../src/player_macosx/Resource/Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PREBUILT_AMBULANT_ROOT)/third_party_packages/installed/lib",
@@ -1809,7 +1809,7 @@
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = NO;
 				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
+				INFOPLIST_FILE = ../../src/player_macosx/Resources/Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\"",
@@ -1913,7 +1913,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
+				INFOPLIST_FILE = ../../src/player_macosx/Resources/Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\"",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/live/BasicUsageEnvironment\"",
@@ -2080,7 +2080,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
+				INFOPLIST_FILE = ../../src/player_macosx/Resources/;
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_CFLAGS = "";
 				PREBINDING = NO;
@@ -2103,7 +2103,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = ../../src/player_macosx/Info.plist;
+				INFOPLIST_FILE = ../../src/player_macosx/Resources/Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\"",
