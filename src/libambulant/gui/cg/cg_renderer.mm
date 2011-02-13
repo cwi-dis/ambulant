@@ -406,7 +406,7 @@ void
 cg_transition_renderer::transition_step()
 {
 	m_lock.enter();
-	/*AM_DBG*/ lib::logger::get_logger()->debug("cg_transition_renderer.transition_step: now=%d", m_event_processor->get_timer()->elapsed());
+	AM_DBG lib::logger::get_logger()->debug("cg_transition_renderer.transition_step: now=%d", m_event_processor->get_timer()->elapsed());
 	if (m_transition_dest) m_transition_dest->need_redraw();
 	m_lock.leave();
 }

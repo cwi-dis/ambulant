@@ -559,7 +559,7 @@ bad:
 	AM_DBG ambulant::lib::logger::get_logger()->debug("adaptDisplayAfterRotation: myframe=orig(%d,%d),size(%d,%d)",(int)myframe.origin.x, (int)myframe.origin.y,(int)myframe.size.width,(int)myframe.size.height);
 	self.frame = myframe;
 	// invalidate transition surfaces
-	[self _releaseTransitionSurfaces];
+	[self releaseTransitionSurfaces];
 	// redisplay AmbulantView using the new settings
 	[self setNeedsDisplay];
 	
@@ -1016,12 +1016,12 @@ bad:
 		// Center the context around the view's anchor point
 		CGContextTranslateCTM(context, [view center].x, [view center].y);
 		// Apply the view's transform about the anchor point
-		CGContextConcatCTM(context, [view transform]);
+		CGContextConcatCTM(context, CGAffineTransformMakeScale(1.0, -1.0));
+//		CGContextConcatCTM(context, [view transform]);
 		// Offset by the portion of the bounds left of and above the anchor point
 		CGContextTranslateCTM(context,
 							  -[view bounds].size.width * [[view layer] anchorPoint].x,
 							  -[view bounds].size.height * [[view layer] anchorPoint].y);
-		
 		// Render the layer hierarchy to the current context
 		[[view layer] renderInContext:context];
 		
@@ -1184,15 +1184,7 @@ CGContextRef CreateBitmapContext (CGSize size)
 	if (transition_surface == NULL) {
 		// It does not exist yet. Create it.
 		CGContextRef ctxr = [self getCGContext];
-		CGContextRef tr_ctxr = CreateBitmapContext(self.bounds.size);
-		transition_surface = CGLayerCreateWithContext(tr_ctxr, self.bounds.size, NULL);
-		CGRect rect = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, self.bounds.size.width);
-//		CGContextClearRect(tr_ctxr, rect);
-		CGContextSaveGState(tr_ctxr);
-		CGContextSetBlendMode(tr_ctxr, kCGBlendModeClear);
-		CGContextFillRect(tr_ctxr, rect);
-		CGContextRestoreGState(tr_ctxr);
-		[AmbulantView dumpCGLayer:transition_surface withId:@"TS0"];
+		transition_surface = CGLayerCreateWithContext(ctxr, self.bounds.size, NULL);
 	}
 	return transition_surface;
 }
@@ -1207,7 +1199,7 @@ CGContextRef CreateBitmapContext (CGSize size)
 	return transition_tmpsurface;
 }
 
-- (void)_releaseTransitionSurfaces
+- (void) releaseTransitionSurfaces
 {
 	if (transition_surface != NULL) {
 		CFRelease(transition_surface);
@@ -1215,18 +1207,28 @@ CGContextRef CreateBitmapContext (CGSize size)
 	}
 }
 
+static UIImage* oldFullScreen;
 
 - (void) startScreenTransition
 {
-	/*AM_DBG*/ NSLog(@"startScreenTransition");
+	AM_DBG NSLog(@"startScreenTransition");
 	if (fullscreen_count)
 		NSLog(@"Warning: multiple Screen transitions in progress");
 	fullscreen_count++;
+	if (oldFullScreen == NULL) {
+		oldFullScreen = [AmbulantView UIImageFromUIView: self];
+	}
+	CGContextDrawImage(CGLayerGetContext([self getTransitionSurface]), [self bounds], [oldFullScreen CGImage]);
+//BDG [AmbulantView dumpCGLayer: [self getTransitionSurface] withId: @"old"];
 }
 
 - (void) endScreenTransition
 {
-	/*AM_DBG*/ NSLog(@"endScreenTransition");
+	AM_DBG NSLog(@"endScreenTransition");
+	if (oldFullScreen != NULL) {
+		[oldFullScreen release];
+		oldFullScreen = NULL;
+	}
 	assert(fullscreen_count > 0);
 	fullscreen_count--;
 }
@@ -1234,7 +1236,7 @@ CGContextRef CreateBitmapContext (CGSize size)
 - (void) screenTransitionStep: (ambulant::smil2::transition_engine *)engine
 					  elapsed: (ambulant::lib::transition_info::time_type)now
 {
-	/*AM_DBG*/ NSLog(@"screenTransitionStep %d", (int)now);
+	AM_DBG NSLog(@"screenTransitionStep %d", (int)now);
 	assert(fullscreen_count > 0);
 	fullscreen_engine = engine;
 	fullscreen_now = now;
@@ -1244,9 +1246,10 @@ CGContextRef CreateBitmapContext (CGSize size)
 {
 	if (fullscreen_count == 0) return;
 	// setup drawing to transition surface
-	/*AM_DBG*/ NSLog(@"_screenTransitionPreRedraw: setup for transition redraw");
+	AM_DBG NSLog(@"_screenTransitionPreRedraw: setup for transition redraw");
 	CGLayerRef surf = [self getTransitionSurface];
 //DBG	[AmbulantView dumpScreenWithId: @"pre"];
+	CGContextDrawImage(UIGraphicsGetCurrentContext(), [self bounds], [oldFullScreen CGImage]);
 	UIGraphicsPushContext(CGLayerGetContext(surf));
 }
 
@@ -1256,7 +1259,7 @@ CGContextRef CreateBitmapContext (CGSize size)
 		// Neither in fullscreen transition nor wrapping one up.
 		// Take a snapshot of the screen and return.
 //XXX No idea yet what to do here
-		/*DBG	[self dump: fullscreen_previmage toImageID: "fsprev"]; */
+/*DBG	[self dump: fullscreen_previmage toImageID: "fsprev"]; */
 		return;
 	}
 	UIGraphicsPopContext();
@@ -1271,22 +1274,22 @@ CGContextRef CreateBitmapContext (CGSize size)
 	
 	// Do the transition step, or simply copy the bits
 	// if no engine available.
-	/*AM_DBG*/ NSLog(@"_screenTransitionPostRedraw: bitblit");
+	AM_DBG NSLog(@"_screenTransitionPostRedraw:");
 //X	[[self getTransitionSurface] unlockFocus];
-	//	/*DBG*/ [self dump: [self getTransitionOldSource] toImageID: "fsold"];
-	//	/*DBG*/ [self dump: [self getTransitionNewSource] toImageID: "fsnew"];
+//	/*DBG*/ [self dump: [self getTransitionOldSource] toImageID: "fsold"];
+//	/*DBG*/ [self dump: [self getTransitionNewSource] toImageID: "fsnew"];
 	CGRect bounds = [self bounds];
 	if (fullscreen_engine) {
 		fullscreen_engine->step(fullscreen_now);
 	} else {
-		/*AM_DBG*/ NSLog(@"_screenTransitionPostRedraw: no screen transition engine");
+		AM_DBG NSLog(@"_screenTransitionPostRedraw: no screen transition engine");
 //XXX No idea yet what to do here
 	}
 	
 	if (fullscreen_count == 0) {
 		// Finishing a fullscreen transition.
 //XXX No idea yet what to do here
-		/*AM_DBG*/ NSLog(@"_screenTransitionPostRedraw: cleanup after transition done");
+		AM_DBG NSLog(@"_screenTransitionPostRedraw: cleanup after transition done");
 		fullscreen_engine = NULL;
 	}
 //DBG	[AmbulantView dumpScreenWithId: @"pst"];

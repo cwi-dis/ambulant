@@ -239,6 +239,11 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 // and number is a numeric string circular variying between "0000" and "9999".   
 + (void) dumpUIView: (UIView*) view withId: (NSString*) id;
 
+// write the contents of an CGLayer to the file: "$HOME/Documents/<number>.<id>.png" where
+// where $HOME refers to the Application home directory and
+// and number is a numeric string circular variying between "0000" and "9999".   
++ (void) dumpCGLayer: (CGLayerRef) cglr withId: (NSString*) id;
+
 // write the contents of an iPhone/iPad screen to the file: "$HOME/Documents/<number>.<id>.png" where
 // where $HOME refers to the Application home directory and
 // and number is a numeric string circular variying between "0000" and "9999".   
@@ -249,7 +254,7 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 - (CGLayerRef) getTransitionSurface;
 
 // internal: release the transition surfaces when we're done with it.
-- (void)_releaseTransitionSurfaces;
+- (void) releaseTransitionSurfaces;
 
 // while in a transition, if we need an auxiliary surface (to draw a clipping
 // path or something like that) getTransitionTmpSurface will return one.
