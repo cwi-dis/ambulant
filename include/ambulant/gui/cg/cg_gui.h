@@ -229,6 +229,9 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 // Get an UIImage* from the contents of a CGLayerRef
 + (UIImage*) UIImageFromCGLayer: (CGLayerRef) layer;
 
+// Create a new CGLayer containing a CGImage
++ (CGLayerRef) CGLayerCreateFromCGImage: (CGImageRef) image;
+
 // write a CGImageRef to the file: "$HOME/Documents/<number>.<id>.png" where
 // where $HOME refers to the Application home directory and
 // and number is a numeric string circular variying between "0000" and "9999".   
