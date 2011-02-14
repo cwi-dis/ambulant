@@ -464,7 +464,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 }
 
 - (void) layoutSubviews {
-    dumpView("layoutSubviews before", [[self subviews] objectAtIndex: 0]);
+    AM_DBG dumpView("layoutSubviews before", [[self subviews] objectAtIndex: 0]);
     UIView *playerView = [[self subviews] objectAtIndex: 0];
     assert(playerView);
     if (!playerView) return;
@@ -484,7 +484,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
     if (zoomState == zoomFillScreen || zoomState == zoomNaturalSize) {
 		// If we were showing the  presentation with a well-known aspect ratio (not
 		// user panned or zoomed) we recreate that from scratch
-        /*AM_DBG*/ NSLog(@"LayoutSubviews fillScreen");
+        AM_DBG NSLog(@"LayoutSubviews fillScreen");
         
         // We start by making ourselves the same size as the child, and centering the child.
         self.bounds = playerView.bounds;
@@ -523,7 +523,7 @@ document_embedder::open(ambulant::net::url newdoc, bool start, ambulant::common:
 		// aspect ratio and maintain the center.
 		// XXX to be done
 	}
-    dumpView("layoutSubviews after", [[self subviews] objectAtIndex: 0]);
+    AM_DBG dumpView("layoutSubviews after", [[self subviews] objectAtIndex: 0]);
 }
 
 - (void) zoomWithScale: (float) scale  inState: (UIGestureRecognizerState) state {

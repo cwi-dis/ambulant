@@ -66,13 +66,17 @@ cg_image_renderer::~cg_image_renderer()
 {
 	m_lock.enter();
 	AM_DBG logger::get_logger()->debug("~cg_image_renderer(0x%x)", (void *)this);
-	if (m_image) {
+	if (m_image != NULL) {
 		CGImageRelease(m_image);
 		m_image = NULL;
+	}
+	if (m_nsdata != NULL) {
 		m_nsdata = NULL;
 	}
-	CGLayerRelease(m_cglayer);
-	m_cglayer = NULL;
+	if (m_cglayer != NULL) {
+		CGLayerRelease(m_cglayer);
+		m_cglayer = NULL;
+	}
 	m_lock.leave();
 }
 
@@ -118,6 +122,7 @@ cg_image_renderer::_prepare_image()
 		AM_DBG logger::get_logger()->debug("cg_image_renderer._prepare_image: creating image");
 		if (m_nsdata != NULL) {
 			CFRelease(m_nsdata);
+			m_nsdata = NULL;
 		}
 
 		// Get the data as an image source

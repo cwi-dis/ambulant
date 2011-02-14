@@ -570,7 +570,7 @@ bad:
 - (void)ambulantSetSize: (ambulant::lib::size) bounds
 {
     // Remember frame and bounds and adapt the window reqested in the current view
-	/*AM_DBG*/ NSLog(@"setSize before: %@ %f,%f", self, self.bounds.size.width, self.bounds.size.height);
+	AM_DBG NSLog(@"setSize before: %@ %f,%f", self, self.bounds.size.width, self.bounds.size.height);
 //JNK original_bounds = bounds;
     CGRect newBounds = CGRectMake(0, 0, bounds.w, bounds.h);
     CGRect newFrame = NSRectToCGRect(self.frame);
@@ -1199,27 +1199,33 @@ CGContextRef CreateBitmapContext (CGSize size)
 	return transition_tmpsurface;
 }
 
+static UIImage* oldFullScreen;
+
 - (void) releaseTransitionSurfaces
 {
 	if (transition_surface != NULL) {
 		CFRelease(transition_surface);
 		transition_surface = NULL;
 	}
+	if (oldFullScreen != NULL) {
+		[oldFullScreen release];
+	}
 }
-
-static UIImage* oldFullScreen;
 
 - (void) startScreenTransition
 {
+	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	AM_DBG NSLog(@"startScreenTransition");
 	if (fullscreen_count)
 		NSLog(@"Warning: multiple Screen transitions in progress");
 	fullscreen_count++;
 	if (oldFullScreen == NULL) {
 		oldFullScreen = [AmbulantView UIImageFromUIView: self];
+		[oldFullScreen retain];
 	}
 	CGContextDrawImage(CGLayerGetContext([self getTransitionSurface]), [self bounds], [oldFullScreen CGImage]);
 //BDG [AmbulantView dumpCGLayer: [self getTransitionSurface] withId: @"old"];
+	[pool release];
 }
 
 - (void) endScreenTransition

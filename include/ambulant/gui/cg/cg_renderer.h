@@ -124,7 +124,9 @@ class cg_renderer : public RP_Base {
 	:	RP_Base(context, cookie, node, evp, factory, mdp),
 	m_transition_renderer(new cg_transition_renderer(evp))
 		{};
-	virtual ~cg_renderer() {}
+	virtual ~cg_renderer() {
+		release(m_transition_renderer);
+	}
 
 	void redraw(const rect &dirty, gui_window *window) {
 		m_transition_renderer->redraw_pre(window);
