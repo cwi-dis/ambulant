@@ -12,9 +12,12 @@ NORUN=False
 # XXXJACK: Hard-coded pathnames, fix this.
 #
 
-WINDOWS_UNZIP="e:\\ufs\\jack\\bin\\unzip.exe"
-WINDOWS_UNTAR='e:\\ufs\\jack\\bin\\7za465\\7za.exe x'
-WINDOWS_DXSDK='"C:\Program Files\Microsoft DirectX SDK (June 2008)"'
+WINDOWS_UNZIP_PATH="C:\\ufs\\jack\\bin\\unzip.exe"
+WINDOWS_UNZIP='"%s" -o' % WINDOWS_UNZIP_PATH
+WINDOWS_UNTAR_PATH="C:\\Program Files\\7-Zip\\7z.exe"
+WINDOWS_UNTAR='"%s" x -y' % WINDOWS_UNTAR_PATH
+WINDOWS_DXSDK_PATH="C:\\Program Files\\Microsoft DirectX SDK (February 2010)"
+WINDOWS_DXSDK='"%s"' % WINDOWS_DXSDK_PATH
 
 class TPP:
     
@@ -717,8 +720,8 @@ third_party_packages={
                 "%s VisualC.zip && "
                 "cd VisualC && "
                 "devenv SDL.sln /Upgrade && "
-                "set INCLUDE=%%INCLUDE%%;%s\\Include && "
-                "set LIBPATH=%%LIBPATH%%;%s\\Lib\\x86 && "
+                "set INCLUDE=%s\\Include;%%INCLUDE%% && "
+                "set LIB=%s\\Lib\\x86;%%LIB%% && "
                 "devenv SDL.sln /UseEnv /build %s" % (WINDOWS_UNZIP, WINDOWS_DXSDK, WINDOWS_DXSDK, WIN32_COMMON_CONFIG)
             ),
 
@@ -746,6 +749,18 @@ third_party_packages={
 }
 
 def checkenv_win32(target):
+    if not os.path.exists(WINDOWS_UNZIP_PATH):
+        print "* Expected unzip at \"%s\", not found." % WINDOWS_UNZIP_PATH
+        print "* Please install, and/or edit build_third_party_packages.py to fix"
+        return False
+    if not os.path.exists(WINDOWS_UNTAR_PATH):
+        print "* Expected 7-zip (for tar extraction) at \"%s\", not found." % WINDOWS_UNTAR_PATH
+        print "* Please install, and/or edit build_third_party_packages.py to fix"
+        return False
+    if not os.path.exists(WINDOWS_DXSDK_PATH):
+        print "* Expected DirectX SDK at \"%s\", not found." % WINDOWS_DXSDK_PATH
+        print "* Please install, and/or edit build_third_party_packages.py to fix"
+        return False
     return True
 
 def checkenv_unix(target):
@@ -813,7 +828,7 @@ environment_checkers = {
     'iOS-Simulator' : checkenv_iphone,
     'iOS-Device' : checkenv_iphone,
     'linux': checkenv_unix,
-    # XXXX Should do this for win32 too
+    'win32': checkenv_win32,
 }
 
 def main():
