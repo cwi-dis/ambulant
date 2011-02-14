@@ -21,7 +21,7 @@
 		041E951212B81D1000399893 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950812B81D1000399893 /* libexpat.a */; };
 		041E951312B81D1000399893 /* libfaad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950912B81D1000399893 /* libfaad.a */; };
 		041E951412B81D1000399893 /* libmp4ff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950A12B81D1000399893 /* libmp4ff.a */; };
-		041E951512B81D1000399893 /* libSDLiPhoneOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950B12B81D1000399893 /* libSDLiPhoneOS.a */; };
+		041E951512B81D1000399893 /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950B12B81D1000399893 /* libSDL.a */; };
 		041E951612B81D1000399893 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950C12B81D1000399893 /* libswscale.a */; };
 		041E951712B81D1000399893 /* libxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041E950D12B81D1000399893 /* libxml2.a */; };
 		044BAF6D12CD4C3E00EDBF56 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 044BAF6C12CD4C3E00EDBF56 /* MainWindow-iPad.xib */; };
@@ -137,7 +137,7 @@
 		041E950812B81D1000399893 /* libexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libexpat.a; path = "../../build-iOS/third_party_packages/installed/lib/libexpat.a"; sourceTree = SOURCE_ROOT; };
 		041E950912B81D1000399893 /* libfaad.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfaad.a; path = "../../build-iOS/third_party_packages/installed/lib/libfaad.a"; sourceTree = SOURCE_ROOT; };
 		041E950A12B81D1000399893 /* libmp4ff.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmp4ff.a; path = "../../build-iOS/third_party_packages/installed/lib/libmp4ff.a"; sourceTree = SOURCE_ROOT; };
-		041E950B12B81D1000399893 /* libSDLiPhoneOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDLiPhoneOS.a; path = "../../build-iOS/third_party_packages/installed/lib/libSDLiPhoneOS.a"; sourceTree = SOURCE_ROOT; };
+		041E950B12B81D1000399893 /* libSDL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL.a; path = "../../build-iOS/third_party_packages/installed/lib/libSDL.a"; sourceTree = SOURCE_ROOT; };
 		041E950C12B81D1000399893 /* libswscale.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswscale.a; path = "../../build-iOS/third_party_packages/installed/lib/libswscale.a"; sourceTree = SOURCE_ROOT; };
 		041E950D12B81D1000399893 /* libxml2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxml2.a; path = "../../build-iOS/third_party_packages/installed/lib/libxml2.a"; sourceTree = SOURCE_ROOT; };
 		044BAF6C12CD4C3E00EDBF56 /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "../../src/player_iphone/Resources/MainWindow-iPad.xib"; sourceTree = SOURCE_ROOT; };
@@ -225,7 +225,7 @@
 				041E951212B81D1000399893 /* libexpat.a in Frameworks */,
 				041E951312B81D1000399893 /* libfaad.a in Frameworks */,
 				041E951412B81D1000399893 /* libmp4ff.a in Frameworks */,
-				041E951512B81D1000399893 /* libSDLiPhoneOS.a in Frameworks */,
+				041E951512B81D1000399893 /* libSDL.a in Frameworks */,
 				041E951612B81D1000399893 /* libswscale.a in Frameworks */,
 				041E951712B81D1000399893 /* libxml2.a in Frameworks */,
 				93E20B2412D2225B00D99F74 /* libbz2.dylib in Frameworks */,
@@ -302,7 +302,7 @@
 				041E950812B81D1000399893 /* libexpat.a */,
 				041E950912B81D1000399893 /* libfaad.a */,
 				041E950A12B81D1000399893 /* libmp4ff.a */,
-				041E950B12B81D1000399893 /* libSDLiPhoneOS.a */,
+				041E950B12B81D1000399893 /* libSDL.a */,
 				041E950C12B81D1000399893 /* libswscale.a */,
 				041E950D12B81D1000399893 /* libxml2.a */,
 				041E94FC12B81CCF00399893 /* libBasicUsageEnvironment.a */,
