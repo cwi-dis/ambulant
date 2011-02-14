@@ -1091,6 +1091,17 @@ bad:
 	return ui_img;
 }
 
+// Create a new CGLayer containing a CGImage
++ (CGLayerRef) CGLayerCreateFromCGImage: (CGImageRef) image {
+	CGContextRef context = UIGraphicsGetCurrentContext();
+	CGRect layer_rect = CGRectMake(0, 0, CGImageGetWidth(image), CGImageGetHeight(image));
+	CGLayerRef newCGLayer = CGLayerCreateWithContext(context, layer_rect.size, NULL);
+	// Draw the image in the layer
+	CGContextRef newContext = CGLayerGetContext(newCGLayer);
+	CGContextDrawImage(newContext, layer_rect, image);
+	return newCGLayer;
+}
+
 // write a CGImageRef to the file: "$HOME/Documents/<number>.<id>.png" where
 // where $HOME refers to the Application home directory and
 // and number is a numeric string circular variying between "0000" and "9999".   
@@ -1199,7 +1210,7 @@ CGContextRef CreateBitmapContext (CGSize size)
 	return transition_tmpsurface;
 }
 
-static UIImage* oldFullScreen;
+static CGLayerRef oldFullScreen;
 
 - (void) releaseTransitionSurfaces
 {
@@ -1208,7 +1219,7 @@ static UIImage* oldFullScreen;
 		transition_surface = NULL;
 	}
 	if (oldFullScreen != NULL) {
-		[oldFullScreen release];
+		CFRelease(oldFullScreen);
 	}
 }
 
@@ -1220,10 +1231,11 @@ static UIImage* oldFullScreen;
 		NSLog(@"Warning: multiple Screen transitions in progress");
 	fullscreen_count++;
 	if (oldFullScreen == NULL) {
-		oldFullScreen = [AmbulantView UIImageFromUIView: self];
-		[oldFullScreen retain];
+		UIImage* oldFullScreenImage = [AmbulantView UIImageFromUIView: self];
+		oldFullScreen = [AmbulantView CGLayerCreateFromCGImage: oldFullScreenImage.CGImage];
+		CFRetain(oldFullScreen);
 	}
-	CGContextDrawImage(CGLayerGetContext([self getTransitionSurface]), [self bounds], [oldFullScreen CGImage]);
+	CGContextDrawLayerInRect(CGLayerGetContext([self getTransitionSurface]), [self bounds], oldFullScreen);
 //BDG [AmbulantView dumpCGLayer: [self getTransitionSurface] withId: @"old"];
 	[pool release];
 }
@@ -1255,7 +1267,7 @@ static UIImage* oldFullScreen;
 	AM_DBG NSLog(@"_screenTransitionPreRedraw: setup for transition redraw");
 	CGLayerRef surf = [self getTransitionSurface];
 //DBG	[AmbulantView dumpScreenWithId: @"pre"];
-	CGContextDrawImage(UIGraphicsGetCurrentContext(), [self bounds], [oldFullScreen CGImage]);
+	CGContextDrawLayerInRect(UIGraphicsGetCurrentContext(), [self bounds], oldFullScreen);
 	UIGraphicsPushContext(CGLayerGetContext(surf));
 }
 
