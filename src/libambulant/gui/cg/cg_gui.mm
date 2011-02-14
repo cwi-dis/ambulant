@@ -1092,7 +1092,7 @@ bad:
 }
 
 // Create a new CGLayer containing a CGImage
-+ (CGLayerRef) CGLayerCreateFromCGImage: (CGImageRef) image {
++ (CGLayerRef) CGLayerFromCGImage: (CGImageRef) image {
 	CGContextRef context = UIGraphicsGetCurrentContext();
 	CGRect layer_rect = CGRectMake(0, 0, CGImageGetWidth(image), CGImageGetHeight(image));
 	CGLayerRef newCGLayer = CGLayerCreateWithContext(context, layer_rect.size, NULL);
@@ -1232,7 +1232,7 @@ static CGLayerRef oldFullScreen;
 	fullscreen_count++;
 	if (oldFullScreen == NULL) {
 		UIImage* oldFullScreenImage = [AmbulantView UIImageFromUIView: self];
-		oldFullScreen = [AmbulantView CGLayerCreateFromCGImage: oldFullScreenImage.CGImage];
+		oldFullScreen = [AmbulantView CGLayerFromCGImage: oldFullScreenImage.CGImage];
 		CFRetain(oldFullScreen);
 	}
 	CGContextDrawLayerInRect(CGLayerGetContext([self getTransitionSurface]), [self bounds], oldFullScreen);
