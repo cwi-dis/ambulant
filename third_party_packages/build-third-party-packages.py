@@ -427,14 +427,14 @@ third_party_packages={
 
         TPP("SDL",
             url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
-            checkcmd="test -f %s/lib/libSDLiPhoneOS.a" % COMMON_INSTALLDIR,
+            checkcmd="test -f %s/lib/libSDL.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd SDL-1.3.0-*  && "
                 "cd Xcode-iphoneOS/SDL  && "
-                "xcodebuild -target StaticLibiPhoneOS -sdk iphoneos%s -configuration Release &&"
+                "xcodebuild -target libSDL -sdk iphoneos%s -configuration Release &&"
                 "mkdir -p ../../../installed/include/SDL && "
                 "cp ../../include/* ./build/Release-iphoneos/usr/local/include/* ../../../installed/include/SDL &&"
-                "mkdir -p ../../../installed/include/lib && cp ./build/Release-iphoneos/libSDLiPhoneOS.a ../../../installed/lib" % (os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
+                "mkdir -p ../../../installed/include/lib && cp ./build/Release-iphoneos/libSDL.a ../../../installed/lib" % (os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
             ),
 
         TPP("live",
@@ -506,15 +506,15 @@ third_party_packages={
 
         TPP("SDL",
             url="http://www.libsdl.org/tmp/SDL-1.3.tar.gz",
-            checkcmd="test -f %s/lib/libSDLiPhoneOS.a" % COMMON_INSTALLDIR,
+            checkcmd="test -f %s/lib/libSDL.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd SDL-1.3.0-*  && "
-                "patch --strip 1 --forward < %s/third_party_packages/sdl-iOS-patches.patch && "
+                "echo skip: patch --strip 1 --forward < %s/third_party_packages/sdl-iOS-patches.patch && "
                 "cd Xcode-iphoneOS/SDL  && "
-                "xcodebuild -target StaticLibiPhoneOS -sdk iphonesimulator%s -configuration Debug &&"
+                "xcodebuild -target libSDL -sdk iphonesimulator%s -configuration Debug &&"
                 "mkdir -p ../../../installed/include/SDL && cp ../../include/* ../../../installed/include/SDL &&"
                 "cp ./build/Debug-iphonesimulator/usr/local/include/* ../../../installed/include/SDL &&"
-                "mkdir -p ../../../installed/include/lib && cp ./build/Debug-iphonesimulator/libSDLiPhoneOS.a ../../../installed/lib" % (AMBULANT_DIR, os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
+                "mkdir -p ../../../installed/include/lib && cp ./build/Debug-iphonesimulator/libSDL.a ../../../installed/lib" % (AMBULANT_DIR, os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
  ),
 
         TPP("live",
