@@ -64,7 +64,7 @@ class TPP:
     def check(self):
         if not self.checkcmd:
             print >>self.output, "+ skip availability check"
-            return True
+            return False
         if NOCHECK:
             print >>self.output, "+ dry run, pretend failure:", self.checkcmd
             return False
@@ -94,9 +94,10 @@ class TPP:
             print >>self.output, "+ already installed"
             self.end()
             return True
-        ok = self.download()
-        if ok:
-            ok = self.extract()
+        if self.url:
+            ok = self.download()
+            if ok:
+                ok = self.extract()
         if ok:
             ok = self.build()
         if ok:
@@ -701,7 +702,7 @@ third_party_packages={
             
         WinTPP("xulrunner-sdk",
             url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2.13/sdk/xulrunner-1.9.2.13.en-US.win32.sdk.zip",
-            checkcmd="if not exist xulrunner-sdk\\sdk\\include\\npapi.h exit 1",
+            checkcmd="if not exist xulrunner-sdk\\include\\npapi.h exit 1",
             # No build needed
             ),
 
@@ -727,14 +728,14 @@ third_party_packages={
 
         WinTPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            extractcmd="%s live555-latest.tar.gz" % WINDOWS_UNTAR,
+            extractcmd="%s live555-latest.tar.gz && %s live555-latest.tar" % (WINDOWS_UNTAR, WINDOWS_UNTAR),
             checkcmd="if not exist live\\liveMedia\\COPYING exit 1",
             # Build is done by FINAL
             ),
             
         WinTPP("libxml2",
             url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
-            extractcmd="%s libxml2-2.7.7.tar.gz" % WINDOWS_UNTAR,
+            extractcmd="%s libxml2-2.7.7.tar.gz && %s libxml2-2.7.7.tar" % (WINDOWS_UNTAR, WINDOWS_UNTAR),
             checkcmd="if not exist libxml2-2.7.7\\xml2-config.in exit 1",
             # Build is done by FINAL
             ),
@@ -742,7 +743,7 @@ third_party_packages={
         WinTPP("FINAL",
             # The FINAL step builds some packages and copies everything to
             # where Ambulant expects it (bin\\win32 and lib\\win32)
-            buildcmd="devenv ..\\projects\\vc9\\third_party_packages.sln /build %s" % WIN32_COMMON_CONFIG
+            buildcmd="cd ..\\projects\\vc9 && devenv third_party_packages.sln /build %s" % WIN32_COMMON_CONFIG
             ),
         ],
     
