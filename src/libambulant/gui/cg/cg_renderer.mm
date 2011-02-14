@@ -223,11 +223,9 @@ cg_transition_renderer::transition_step()
 }
 #ifdef _OBJC_
 #endif//_OBJC_
-
-static int indx = 0;
-
 #ifndef	AM_NO_DMP
 #endif//AM_NO_DMP	
+
 void
 cg_transition_renderer::set_surface(common::surface *dest)
 {
@@ -247,7 +245,7 @@ void
 cg_transition_renderer::start(double where)
 {
 	m_lock.enter();
-	/*AM_DBG*/ logger::get_logger()->debug("cg_transition_renderer.start(%f)", where);
+	AM_DBG logger::get_logger()->debug("cg_transition_renderer.start(%f)", where);
 	if (m_intransition && m_transition_dest) {
 		AM_DBG logger::get_logger()->debug("cg_transition_renderer.start: with intransition");
 		m_trans_engine = cg_transition_engine(m_transition_dest, false, m_intransition);
@@ -271,7 +269,7 @@ cg_transition_renderer::start_outtransition(const lib::transition_info *info)
 {
 	if (m_trans_engine) stop();
 	m_lock.enter();
-	/*AM_DBG*/ logger::get_logger()->debug("cg_transition_renderer.start_outtransition(0x%x)", (void *)this);
+	AM_DBG logger::get_logger()->debug("cg_transition_renderer.start_outtransition(0x%x)", (void *)this);
 	m_outtransition = info;
 	m_trans_engine = cg_transition_engine(m_transition_dest, true, m_outtransition);
 	if (m_transition_dest && m_trans_engine) {
@@ -322,7 +320,7 @@ cg_transition_renderer::stop()
 static CGImageRef
 get_partial_image (AmbulantView* view, lib::rect r) {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];	
-	UIImage* screen_img = [AmbulantView viewDump: view];
+	UIImage* screen_img = [AmbulantView UIImageFromUIView: view];
 	CGImageRef cg_screen_img = screen_img.CGImage;
 //X	CFRetain(cg_screen_img); //X
 //X	if (1) return cg_screen_img; //X
@@ -357,7 +355,6 @@ cg_transition_renderer::redraw_pre(gui_window *window)
 void
 cg_transition_renderer::redraw_post(gui_window *window)
 {
-	bool restore_old_image = NO;
 	m_lock.enter();
 	cg_window *cwindow = (cg_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
