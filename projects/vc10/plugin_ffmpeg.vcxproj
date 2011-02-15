@@ -90,6 +90,8 @@
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">libamplugin_ffmpeg</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">libampluginD_ffmpeg</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -107,7 +109,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL.lib;avformat.lib;avcodec.lib;swscale.lib;avutil.lib;liveMedia.lib;BasicUsageEnvironment.lib;UsageEnvironment.lib;groupsock.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../bin/win32/libampluginD_ffmpeg.dll</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib\win32;$(DXSDK_DIR)\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>LIBC.lib;libcmt.lib;libcpmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -134,7 +136,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL.lib;avformat.lib;avcodec.lib;swscale.lib;avutil.lib;liveMedia.lib;BasicUsageEnvironment.lib;UsageEnvironment.lib;groupsock.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../bin/win32/libamplugin_ffmpeg.dll</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib\win32;$(DXSDK_DIR)\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;libcpmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -161,7 +163,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL.lib;avformat.lib;avcodec.lib;swscale.lib;avutil.lib;liveMedia.lib;BasicUsageEnvironment.lib;UsageEnvironment.lib;groupsock.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../bin/win32/libamplugin_ffmpegDX.dll</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib\win32;$(DXSDK_DIR)\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;libcpmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -191,7 +193,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL.lib;avformat.lib;avcodec.lib;swscale.lib;avutil.lib;liveMedia.lib;BasicUsageEnvironment.lib;UsageEnvironment.lib;groupsock.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../bin/win32/libampluginD_ffmpegDX.dll</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib\win32;$(DXSDK_DIR)\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>LIBC.lib;libcmt.lib;libcpmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -241,6 +243,11 @@
     <ClInclude Include="..\..\include\ambulant\gui\SDL\sdl_audio.h" />
     <ClInclude Include="..\..\include\ambulant\gui\SDL\sdl_factory.h" />
     <ClInclude Include="..\..\include\ambulant\gui\SDL\sdl_gui.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="libambulant_win32.vcxproj">
+      <Project>{dbd4efc0-7551-4fba-af5a-bfbfda7d6785}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

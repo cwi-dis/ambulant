@@ -391,6 +391,11 @@ echo regsvr32 exec. time &gt; "$(IntDir)regsvr32.trg"
     <ClInclude Include="..\..\src\ieambulant\Resource.h" />
     <ClInclude Include="..\..\src\ieambulant\StdAfx.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="libambulant_win32.vcxproj">
+      <Project>{dbd4efc0-7551-4fba-af5a-bfbfda7d6785}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -20,7 +20,7 @@
     <sdl_dir>..\..\third_party_packages\SDL-1.2.14</sdl_dir>
     <ffmpeg_dir>..\..\third_party_packages\ffmpeg-20110119-win32-prebuilt</ffmpeg_dir>
     <live555_dir>..\..\third_party_packages\live</live555_dir>
-    <xerces_dir>..\..\third_party_packages\xerces-c-3.1.0</xerces_dir>
+    <xerces_dir>..\..\third_party_packages\xerces-c-3.1.1</xerces_dir>
     <xerces_major>3</xerces_major>
     <xerces_minor>1</xerces_minor>
     <xulrunner_dir>..\..\third_party_packages\xulrunner-sdk</xulrunner_dir>
@@ -97,6 +97,10 @@
     </BuildMacro>
     <BuildMacro Include="python_dir">
       <Value>$(python_dir)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="python_version">
+      <Value>$(python_version)</Value>
       <EnvironmentVariable>true</EnvironmentVariable>
     </BuildMacro>
     <BuildMacro Include="CabArc">

@@ -87,6 +87,10 @@
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">libamplugin_xerces</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">libampluginD_xerces</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">libamplugin_xerces</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">libamplugin_xerces</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -104,7 +108,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>..\..\lib\win32\xerces-c_$(xerces_major)D.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../bin/win32/libampluginD_xerces.dll</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <IgnoreSpecificDefaultLibraries>LIBC.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>../../bin/win32/libampluginD_xerces.pdb</ProgramDatabaseFile>
@@ -130,7 +134,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>..\..\lib\win32\xerces-c_$(xerces_major).lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../bin/win32/libamplugin_xerces.dll</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -155,7 +159,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>..\..\lib\win32\xerces-c_$(xerces_major).lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../bin/win32/libamplugin_xercesDX.dll</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -183,7 +187,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>..\..\lib\win32\xerces-c_$(xerces_major)D.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../bin/win32/libampluginD_xercesDX.dll</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <IgnoreSpecificDefaultLibraries>LIBC.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>../../bin/win32/libampluginD_xerces.pdb</ProgramDatabaseFile>
@@ -202,6 +206,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\ambulant\lib\xerces_parser.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="libambulant_win32.vcxproj">
+      <Project>{dbd4efc0-7551-4fba-af5a-bfbfda7d6785}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

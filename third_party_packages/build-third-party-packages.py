@@ -244,16 +244,6 @@ third_party_packages={
                 "make install" % MAC106_COMMON_CONFIGURE
             ),
 
-##        TPP("ffmpeg",
-##            url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
-##            checkcmd="pkg-config --atleast-version=52.47.0 libavformat",
-##            buildcmd=
-##                "mkdir ffmpeg-export-universal && "
-##                "cd ffmpeg-export-universal && "
-##                "%s/third_party_packages/ffmpeg-osx-fatbuild.sh %s/ffmpeg-export-2010-01-22 all" % 
-##                    (AMBULANT_DIR, os.getcwd())
-##            ),
-
         TPP("ffmpeg",
             url="http://ffmpeg.org/releases/ffmpeg-0.6.1.tar.gz",
             checkcmd="pkg-config --atleast-version=52.64.2 libavformat",
@@ -596,34 +586,6 @@ third_party_packages={
             checkcmd="test -d xulrunner-sdk",
             buildcmd="test -d xulrunner-sdk"
             ),
-## ogg-vorbis-theora decoding are default enabled on most Linux installations
-##      TPP("libogg",
-##          url=" http://downloads.xiph.org/releases/ogg/libogg-1.1.4.tar.gz",
-##          checkcmd="test -f %s/lib/libogg-1.1.4.a" % COMMON_INSTALLDIR,
-##          buildcmd=
-##              "cd libogg-1.1.4  && "
-##              "%s && "
-##              "make ${MAKEFLAGS} && "
-##              "make install" % LINUX_COMMON_CONFIGURE
-##          ),
-##      TPP("libvorbis",
-##          url=" http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.3.tar.gz",
-##          checkcmd="test -f %s/lib/libvorbis-1.2.3.a" % COMMON_INSTALLDIR,
-##          buildcmd=
-##              "cd libvorbis-1.2.3  && "
-##              "%s && "
-##              "make ${MAKEFLAGS} && "
-##              "make install" % LINUX_COMMON_CONFIGURE
-##          ),
-##      TPP("libtheora",
-##          url=" http://downloads.xiph.org/releases/theora/libtheora-1.1.1.tar.bz2",
-##          checkcmd="test -f %s/lib/libtheora-1.1.1.a" % COMMON_INSTALLDIR,
-##          buildcmd=
-##              "cd libtheora-1.1.1  && "
-##              "%s && "
-##              "make ${MAKEFLAGS} && "
-##              "make install" % LINUX_COMMON_CONFIGURE
-##          ),
 
         TPP("ffmpeg",
             url="http://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant/ffmpeg-export-2010-01-22.tar.gz/download",
@@ -707,8 +669,8 @@ third_party_packages={
             ),
 
         WinTPP("ffmpeg",
-            url="https://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant%2C%20win32/20100122-win32-prebuilt/ffmpeg-20100122-win32-prebuilt.zip/download",
-            checkcmd="if not exist ffmpeg-20100122-win32-prebuilt\\libavformat\\avformat-52.dll exit 1",
+            url="https://sourceforge.net/projects/ambulant/files/ffmpeg%20for%20Ambulant%2C%20win32/20110119-win32-prebuilt/ffmpeg-20110119-win32-prebuilt.zip/download",
+            checkcmd="if not exist ffmpeg-20110119-win32-prebuilt\\libavformat\\avformat-52.dll exit 1",
             # No build needed
             ),
 

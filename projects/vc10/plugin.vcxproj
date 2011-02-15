@@ -195,6 +195,11 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\plugins\plugin.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="libambulant_win32.vcxproj">
+      <Project>{dbd4efc0-7551-4fba-af5a-bfbfda7d6785}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
