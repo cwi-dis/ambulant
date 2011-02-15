@@ -1,6 +1,7 @@
 ^build-.*
 /build/
 /BUILD/
+/Build/
 /Release/
 /Debug/
 ^lib/win32/.*\.exp
