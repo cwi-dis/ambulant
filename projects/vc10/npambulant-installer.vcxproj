@@ -1,0 +1,217 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="DebugShlibDX|Win32">
+      <Configuration>DebugShlibDX</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseShlibDX|Win32">
+      <Configuration>ReleaseShlibDX</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{E758D8FC-44AE-4D39-B642-94B252CD1559}</ProjectGuid>
+    <RootNamespace>npambulant-installer</RootNamespace>
+    <Keyword>MakeFileProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Ambulant-win32.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Ambulant-win32.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Ambulant-win32.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Ambulant-win32.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">BUILD\$(ProjectName)-$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">BUILD\$(ProjectName)-$(Configuration)\</IntDir>
+    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">del /s $(IntDir)$(TargetName)
+mkd $(IntDir)$(TargetName)
+copy ..\..\src\npambulant\install-win32.rdf $(IntDir)$(TargetName)\install.rdf
+copy $(firefox_plugin_dir)\npambulant.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\libambulant_shwin32.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\libamplugin_ffmpeg.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\libamplugin_state.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\avcodec-52.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\avformat-52.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\avutil-50.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\SDL.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\xerces-c_$(xerces_major)_$(xerces_minor).dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\swscale-0.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\swscale-0.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\swscale-0.dll $(IntDir)$(TargetName)
+zip $(TargetPath) $(IntDir)$(TargetName)
+</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">npambulant-2.3-win32.zip</NMakeOutput>
+    <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeIncludeSearchPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <NMakeForcedIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(NMakeForcedIncludes)</NMakeForcedIncludes>
+    <NMakeAssemblySearchPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(NMakeAssemblySearchPath)</NMakeAssemblySearchPath>
+    <NMakeForcedUsingAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(NMakeForcedUsingAssemblies)</NMakeForcedUsingAssemblies>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">BUILD\$(ProjectName)-$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">BUILD\$(ProjectName)-$(Configuration)\</IntDir>
+    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">del /s /q $(IntDir)$(TargetName)
+del /q $(TargetPath)
+mkdir $(IntDir)$(TargetName)
+mkdir $(IntDir)$(TargetName)\Plugins
+copy ..\..\src\npambulant\install-win32.rdf $(IntDir)$(TargetName)\install.rdf
+copy "$(firefox_plugin_dir)\npambulant.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\libambulant_shwin32.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\libamplugin_ffmpeg.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\libamplugin_state_xpath.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\avcodec-52.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\avformat-52.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\avutil-50.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\swscale-0.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\SDL.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\xerces-c_$(xerces_major)_$(xerces_minor).dll" $(IntDir)$(TargetName)\Plugins
+cd $(IntDir)$(TargetName)
+"$(zip_executable)" "$(TargetPath)" *.* Plugins\*.* Plugins\plugins\*.*
+</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">del /s /q $(IntDir)$(TargetName)
+del /q $(TargetPath)
+mkdir $(IntDir)$(TargetName)
+mkdir $(IntDir)$(TargetName)\Plugins
+copy ..\..\src\npambulant\install-win32.rdf $(IntDir)$(TargetName)\install.rdf
+copy "$(firefox_plugin_dir)\npambulant.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\libambulant_shwin32.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\libamplugin_ffmpeg.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\libamplugin_state_xpath.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\avcodec-52.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\avformat-52.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\avutil-50.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\swscale-0.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\SDL.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\xerces-c_$(xerces_major)_$(xerces_minor).dll" $(IntDir)$(TargetName)\Plugins
+cd $(IntDir)$(TargetName)
+"$(zip_executable)" $(TargetPath) *.* Plugins\*.* Plugins\plugins\*.*
+</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">del /s /q $(IntDir)$(TargetName)
+del /q $(TargetPath)
+</NMakeCleanCommandLine>
+    <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\bin\win32\npambulant-2.3-win32.xpi</NMakeOutput>
+    <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeIncludeSearchPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <NMakeForcedIncludes Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(NMakeForcedIncludes)</NMakeForcedIncludes>
+    <NMakeAssemblySearchPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(NMakeAssemblySearchPath)</NMakeAssemblySearchPath>
+    <NMakeForcedUsingAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(NMakeForcedUsingAssemblies)</NMakeForcedUsingAssemblies>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">$(Configuration)\</IntDir>
+    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">del /s /q $(IntDir)$(TargetName)
+del /q $(TargetPath)
+mkdir $(IntDir)$(TargetName)
+mkdir $(IntDir)$(TargetName)\Plugins
+copy ..\..\src\npambulant\install-win32.rdf $(IntDir)$(TargetName)\install.rdf
+copy "$(firefox_plugin_dir)\npambulant.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\libambulant_shwin32.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\libamplugin_ffmpeg.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\libamplugin_state_xpath.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\avcodec-52.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\avformat-52.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\avutil-50.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\swscale-0.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\SDL.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\xerces-c_$(xerces_major)_$(xerces_minor).dll" $(IntDir)$(TargetName)\Plugins
+cd $(IntDir)$(TargetName)
+"$(zip_executable)" "$(TargetPath)" *.* Plugins\*.* Plugins\plugins\*.*
+</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">del /s /q $(IntDir)$(TargetName)
+del /q $(TargetPath)
+mkdir $(IntDir)$(TargetName)
+mkdir $(IntDir)$(TargetName)\Plugins
+copy ..\..\src\npambulant\install-win32.rdf $(IntDir)$(TargetName)\install.rdf
+copy "$(firefox_plugin_dir)\npambulant.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\libambulant_shwin32.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\libamplugin_ffmpeg.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\libamplugin_state_xpath.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\avcodec-52.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\avformat-52.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\avutil-50.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\swscale-0.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\SDL.dll" $(IntDir)$(TargetName)\Plugins
+copy "$(firefox_plugin_dir)\xerces-c_$(xerces_major)_$(xerces_minor).dll" $(IntDir)$(TargetName)\Plugins
+cd $(IntDir)$(TargetName)
+"$(zip_executable)" $(TargetPath) *.* Plugins\*.* Plugins\plugins\*.*
+</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">del /s /q $(IntDir)$(TargetName)
+del /q $(TargetPath)
+</NMakeCleanCommandLine>
+    <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">..\..\bin\win32\npambulant-2.3-win32.xpi</NMakeOutput>
+    <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeIncludeSearchPath Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <NMakeForcedIncludes Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">$(NMakeForcedIncludes)</NMakeForcedIncludes>
+    <NMakeAssemblySearchPath Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">$(NMakeAssemblySearchPath)</NMakeAssemblySearchPath>
+    <NMakeForcedUsingAssemblies Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">$(NMakeForcedUsingAssemblies)</NMakeForcedUsingAssemblies>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">$(Configuration)\</IntDir>
+    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">del /s $(IntDir)$(TargetName)
+mkd $(IntDir)$(TargetName)
+copy ..\..\src\npambulant\install-win32.rdf $(IntDir)$(TargetName)\install.rdf
+copy $(firefox_plugin_dir)\npambulant.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\libambulant_shwin32.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\libamplugin_ffmpeg.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\libamplugin_state.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\avcodec-52.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\avformat-52.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\avutil-50.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\SDL.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\xerces-c_$(xerces_major)_$(xerces_minor).dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\swscale-0.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\swscale-0.dll $(IntDir)$(TargetName)
+copy $(firefox_plugin_dir)\swscale-0.dll $(IntDir)$(TargetName)
+zip $(TargetPath) $(IntDir)$(TargetName)
+</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'" />
+    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'" />
+    <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">npambulant-2.3-win32.zip</NMakeOutput>
+    <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeIncludeSearchPath Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <NMakeForcedIncludes Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">$(NMakeForcedIncludes)</NMakeForcedIncludes>
+    <NMakeAssemblySearchPath Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">$(NMakeAssemblySearchPath)</NMakeAssemblySearchPath>
+    <NMakeForcedUsingAssemblies Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">$(NMakeForcedUsingAssemblies)</NMakeForcedUsingAssemblies>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

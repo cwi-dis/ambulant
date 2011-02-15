@@ -16,7 +16,7 @@
     <jpeg_dir>..\..\third_party_packages\jpeg</jpeg_dir>
     <lpng_dir>..\..\third_party_packages\lpng128</lpng_dir>
     <zlib_dir>..\..\third_party_packages\zlib</zlib_dir>
-    <libxml2_dir>..\..\third_party_packages\libxml2-2.7.8</libxml2_dir>
+    <libxml2_dir>..\..\third_party_packages\libxml2-2.7.7</libxml2_dir>
     <sdl_dir>..\..\third_party_packages\SDL-1.2.14</sdl_dir>
     <ffmpeg_dir>..\..\third_party_packages\ffmpeg-20110119-win32-prebuilt</ffmpeg_dir>
     <live555_dir>..\..\third_party_packages\live</live555_dir>
@@ -27,6 +27,7 @@
     <firefox_plugin_dir>C:\Program Files\Mozilla Firefox\plugins\</firefox_plugin_dir>
     <zip_executable>E:\ufs\jack\bin\zip.exe</zip_executable>
     <python_dir>C:\Python27</python_dir>
+    <python_version>2.7</python_version>
     <CabArc>..\..\..\..\bin\Cabarc\bin\CabArc.exe</CabArc>
     <ieambulant_certificate>..\..\..\ambulant-private\certificates\Comodo\cwi-certificate.pfx</ieambulant_certificate>
   </PropertyGroup>
