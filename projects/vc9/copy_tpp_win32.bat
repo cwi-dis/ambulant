@@ -38,6 +38,8 @@ copy %ffmpeg_dir%\libavcodec\avcodec-52.dll %AMB_HOME%\bin\win32\avcodec-52.dll
 copy %ffmpeg_dir%\libavcodec\avcodec.lib %AMB_HOME%\lib\win32\avcodec.lib
 copy %ffmpeg_dir%\libavformat\avformat-52.dll %AMB_HOME%\bin\win32\avformat-52.dll
 copy %ffmpeg_dir%\libavformat\avformat.lib %AMB_HOME%\lib\win32\avformat.lib
+copy %ffmpeg_dir%\libavcore\avcore-0.dll %AMB_HOME%\bin\win32\avcore-0.dll
+copy %ffmpeg_dir%\libavcore\avcore.lib %AMB_HOME%\lib\win32\avcore.lib
 copy %ffmpeg_dir%\libavutil\avutil-50.dll %AMB_HOME%\bin\win32\avutil-50.dll
 copy %ffmpeg_dir%\libavutil\avutil.lib %AMB_HOME%\lib\win32\avutil.lib
 copy %ffmpeg_dir%\libswscale\swscale-0.dll %AMB_HOME%\bin\win32\swscale-0.dll
