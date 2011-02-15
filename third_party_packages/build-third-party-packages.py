@@ -514,7 +514,7 @@ third_party_packages={
                 "xcodebuild -target libSDL -sdk iphonesimulator%s -configuration Debug &&"
                 "mkdir -p ../../../installed/include/SDL && cp ../../include/* ../../../installed/include/SDL &&"
                 "cp ./build/Debug-iphonesimulator/usr/local/include/* ../../../installed/include/SDL &&"
-                "mkdir -p ../../../installed/include/lib && cp ./build/Debug-iphonesimulator/libSDL.a ../../../installed/lib" % (AMBULANT_DIR, os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
+                "mkdir -p ../../../installed/include/lib && cp ./build/Debug-iphonesimulator/libSDL.a ../../../installed/lib" % (os.getenv("IPHONEOS_DEPLOYMENT_TARGET"))
  ),
 
         TPP("live",

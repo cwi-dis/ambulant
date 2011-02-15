@@ -39,8 +39,8 @@ echo
 #
 mkdir -p $BUILDHOME
 cd $BUILDHOME
-hg $HGARGS clone $HGCLONEARGS $BUILDDIR/ambulant
-exit 0
+rm -rf $BUILDDIR
+hg $HGARGS clone $HGCLONEARGS $BUILDDIR
 #
 # We are building a binary distribution, so we want to completely ignore any
 # library installed system-wide (in /usr/local, basically)
