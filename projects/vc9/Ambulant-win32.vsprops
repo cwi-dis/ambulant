@@ -40,7 +40,7 @@
 	Picked up by third_party_packages.sln as well as Ambulant_win32.sln.
 -->
 
-<UserMacro Name="xerces_dir" Value="..\..\third_party_packages\xerces-c-3.1.0" PerformEnvironmentSet="true"/>
+<UserMacro Name="xerces_dir" Value="..\..\third_party_packages\xerces-c-3.1.1" PerformEnvironmentSet="true"/>
 <UserMacro Name="xerces_major" Value="3" PerformEnvironmentSet="true"/>
 <UserMacro Name="xerces_minor" Value="1" PerformEnvironmentSet="true"/>
 <!--
@@ -58,6 +58,7 @@
 	If you don't want these: disable them in Ambulant-win32.sln
 -->
 <UserMacro Name="python_dir" Value="C:\Python27" PerformEnvironmentSet="true"/>
+<UserMacro Name="python_version" Value="2.7" PerformEnvironmentSet="true"/>
 <!--
 	If you want to build the IEAmbulant ActiveX plugin you must download the CabArc utility
 	from Microsoft.

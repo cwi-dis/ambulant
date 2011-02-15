@@ -193,7 +193,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="ReleaseShlib|Win32"
+			Name="Release|Win32"
 			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			ConfigurationType="1"
@@ -278,7 +278,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="DebugShlib|Win32"
+			Name="Debug|Win32"
 			OutputDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			IntermediateDirectory="BUILD\$(ProjectName)-$(ConfigurationName)"
 			ConfigurationType="1"
@@ -603,7 +603,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="ReleaseShlib|Win32"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -611,7 +611,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="DebugShlib|Win32"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"

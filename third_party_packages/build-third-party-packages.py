@@ -200,7 +200,7 @@ else:
     #
     if not os.getenv("DevEnvDir"):
         print "** This script needs the Visual Studio environment vars to be able to run"
-        print '** Run "call ....\\VC\\bin\\vcvars32.bat" from your VC9 dir first.'
+        print '** Run "call ....Microsoft Visual Studio X.Y\\VC\\bin\\vcvars32.bat" from your VC9 dir first.'
         sys.exit(1)
     #
     # There is a Visual Studio bug that temporary object files with pathnames > approx 200
@@ -696,6 +696,7 @@ third_party_packages={
             checkcmd="if not exist xerces-c-3.1.1\\Build\\Win32\\VC9\\%s\\xerces-c_3.lib exit 1" % WIN32_COMMON_CONFIG,
             buildcmd=
                 "cd xerces-c-3.1.1\\projects\\Win32\\VC9\\xerces-all && "
+                "devenv xerces-all.sln /build Debug /project XercesLib"
                 "devenv xerces-all.sln /build %s /project XercesLib" % WIN32_COMMON_CONFIG
             ),
             
@@ -742,43 +743,44 @@ third_party_packages={
         WinTPP("FINAL",
             # The FINAL step builds some packages and copies everything to
             # where Ambulant expects it (bin\\win32 and lib\\win32)
-            buildcmd="cd ..\\projects\\vc9 && devenv third_party_packages.sln /build %s" % WIN32_COMMON_CONFIG
+            buildcmd="cd ..\\projects\\vc9 && devenv third_party_packages.sln /build Debug && devenv third_party_packages.sln /build %s" % WIN32_COMMON_CONFIG
             ),
         ],
     
 }
 
 def checkenv_win32(target):
+    ok = True
     if not os.path.exists(WINDOWS_UNZIP_PATH):
-        print "* Expected unzip at \"%s\", not found." % WINDOWS_UNZIP_PATH
-        print "* Please install, and/or edit build_third_party_packages.py to fix"
-        return False
+        print "** Expected unzip at \"%s\", not found." % WINDOWS_UNZIP_PATH
+        ok = False
     if not os.path.exists(WINDOWS_UNTAR_PATH):
-        print "* Expected 7-zip (for tar extraction) at \"%s\", not found." % WINDOWS_UNTAR_PATH
-        print "* Please install, and/or edit build_third_party_packages.py to fix"
-        return False
+        print "** Expected 7-zip (for tar extraction) at \"%s\", not found." % WINDOWS_UNTAR_PATH
+        ok = False
     if not os.path.exists(WINDOWS_DXSDK_PATH):
-        print "* Expected DirectX SDK at \"%s\", not found." % WINDOWS_DXSDK_PATH
-        print "* Please install, and/or edit build_third_party_packages.py to fix"
+        print "** Expected DirectX SDK at \"%s\", not found." % WINDOWS_DXSDK_PATH
+        ok = False
+    if not ok:
+        print "** Please install, and/or edit build_third_party_packages.py to fix"
         return False
     return True
 
 def checkenv_unix(target):
     rv = True
     if os.system("make -v >/dev/null") != 0:
-        print "* make not in $PATH"
+        print "** make not in $PATH"
         rv = False
     if os.system("tar --help >/dev/null") != 0:
-        print "* tar not in $PATH"
+        print "** tar not in $PATH"
         rv = False
     if os.system("autoconf --version >/dev/null") != 0:
-        print "* autoconf not in $PATH"
+        print "** autoconf not in $PATH"
         rv = False
     if os.system("patch -v >/dev/null") != 0:
-        print "* patch not in $PATH"
+        print "** patch not in $PATH"
         rv = False
     if os.system("pkg-config --version >/dev/null") != 0:
-        print '* pkg-config not in $PATH'
+        print '** pkg-config not in $PATH'
         rv = False
     return rv
     
@@ -788,11 +790,11 @@ def checkenv_mac(target):
     if not checkenv_unix(target):
         rv = False
     if os.system("xcodebuild -version >/dev/null") != 0:
-        print "* xcodebuild not in $PATH"
+        print "** xcodebuild not in $PATH"
         rv = False
     # Make sure we have MACOSX_DEPLOYMENT_TARGET set
     if target != 'mac10.6' and not os.environ.has_key('MACOSX_DEPLOYMENT_TARGET'):
-        print '* MACOSX_DEPLOYMENT_TARGET must be set for %s development' % target
+        print '** MACOSX_DEPLOYMENT_TARGET must be set for %s development' % target
         rv = False
     return rv
 
@@ -801,11 +803,11 @@ def checkenv_iphone(target):
     if not checkenv_unix(target):
         rv = False
     if os.system("xcodebuild -version >/dev/null") != 0:
-        print "* xcodebuild not in $PATH"
+        print "** xcodebuild not in $PATH"
         rv = False
     # Make sure we have IPHONEOS_DEPLOYMENT_TARGET set
     if not os.environ.has_key('IPHONEOS_DEPLOYMENT_TARGET'):
-        print '* IPHONEOS_DEPLOYMENT_TARGET must be set for %s development' % target
+        print '** IPHONEOS_DEPLOYMENT_TARGET must be set for %s development' % target
         rv = False
     # Check that we have the right compilers, etc in PATH
     if target == 'iOS-Simulator':
@@ -815,10 +817,10 @@ def checkenv_iphone(target):
     else:
         assert 0
     if not wanted in os.environ['PATH']:
-        print '* %s should be in $PATH for %s development' % (wanted, target)
+        print '** %s should be in $PATH for %s development' % (wanted, target)
         rv = False
     if not os.environ.has_key('PKG_CONFIG_LIBDIR'):
-        print '* PKG_CONFIG_LIBDIR must be set for cross-development'
+        print '** PKG_CONFIG_LIBDIR must be set for cross-development'
         rv = False
     return rv
         
