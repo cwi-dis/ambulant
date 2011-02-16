@@ -130,6 +130,9 @@ def appendPath(varname, value):
 # build the third party packages
 override_3pp = os.getenv("AMBULANT_3PP")
 if override_3pp:
+    if not os.path.exists(override_3pp):
+        print '+ creating directory', override_3pp
+        os.makedirs(override_3pp)
     os.chdir(override_3pp)
     print '+ building in', os.getcwd()
     
@@ -394,7 +397,7 @@ third_party_packages={
             url="http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=autoselect",
             checkcmd="pkg-config --atleast-version=2.0.0 expat",
             buildcmd=
-                "cd expat-2.0.1 && "
+                "set && cd expat-2.0.1 && "
                 "patch --forward < %s/third_party_packages/expat.patch && "
                 "autoconf && "
                 "%s && "
@@ -430,6 +433,8 @@ third_party_packages={
             checkcmd="test -f %s/lib/libSDL.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd SDL-1.3.0-*  && "
+                "cp include/SDL_config.h.generated include/SDL_config.h.default && "    # For build 5313, may need to go away again
+                "sh build-scripts/updaterev.sh && "    # For build 5313, may need to go away again
                 "cd Xcode-iphoneOS/SDL  && "
                 "xcodebuild -target libSDL -sdk iphoneos%s -configuration Release &&"
                 "mkdir -p ../../../installed/include/SDL && "
@@ -509,6 +514,8 @@ third_party_packages={
             checkcmd="test -f %s/lib/libSDL.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd SDL-1.3.0-*  && "
+                "cp include/SDL_config.h.generated include/SDL_config.h.default && "    # For build 5313, may need to go away again
+                "sh build-scripts/updaterev.sh && "    # For build 5313, may need to go away again
                 "cd Xcode-iphoneOS/SDL  && "
                 "xcodebuild -target libSDL -sdk iphonesimulator%s -configuration Debug &&"
                 "mkdir -p ../../../installed/include/SDL && cp ../../include/* ../../../installed/include/SDL &&"
@@ -784,13 +791,20 @@ def checkenv_iphone(target):
     # Check that we have the right compilers, etc in PATH
     if target == 'iOS-Simulator':
         wanted = '/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin'
+        notwanted = '/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin'
     elif target == 'iOS-Device':
         wanted = '/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin'
+        notwanted = '/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin'
+
     else:
         assert 0
     if not wanted in os.environ['PATH']:
         print '** %s should be in $PATH for %s development' % (wanted, target)
         rv = False
+    if notwanted in os.environ['PATH']:
+        newpath = os.environ['PATH'].replace(notwanted, wanted)
+        os.putenv('PATH', newpath)
+        print '+ WARNING: removed %s from $PATH for %s development' % (notwanted, target)
     if not os.environ.has_key('PKG_CONFIG_LIBDIR'):
         print '** PKG_CONFIG_LIBDIR must be set for cross-development'
         rv = False

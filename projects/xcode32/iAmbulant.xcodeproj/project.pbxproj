@@ -73,11 +73,18 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		041E94F812B81C7000399893 /* PBXContainerItemProxy */ = {
+		043EFD88130BF5AD0050B2BA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 04B75D7012B80CFE00161EB5 /* third_party_packages.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 043EFD30130BF57E0050B2BA;
+			remoteInfo = third_party_packages_iOS_Fat;
+		};
+		043EFDE8130BFEEC0050B2BA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 04B75D7812B80D1000161EB5 /* libambulant.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 040DAAE112B790BB002C4DFD;
+			remoteGlobalIDString = 040DAAE112B790BB002C4DFD /* libambulantiPhone */;
 			remoteInfo = libambulantiPhone;
 		};
 		04B75D8F12B80D1300161EB5 /* PBXContainerItemProxy */ = {
@@ -107,20 +114,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 040DAB3812B790BB002C4DFD;
 			remoteInfo = libambulantiPhone;
-		};
-		04CE8CF312B924ED00801B1A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 04B75D7012B80CFE00161EB5 /* third_party_packages.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 041DCBF612B6770B003407C8;
-			remoteInfo = third_party_packages_iOS;
-		};
-		04CE8CF512B924ED00801B1A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 04B75D7012B80CFE00161EB5 /* third_party_packages.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 041DCC0712B6777A003407C8;
-			remoteInfo = third_party_packages_iOS_Simulator;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -284,8 +277,8 @@
 		04B75D8912B80D1300161EB5 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				04B75D9012B80D1300161EB5 /* libambulant */,
-				04B75D9212B80D1300161EB5 /* libambulantCG */,
+				04B75D9012B80D1300161EB5 /* libambulant.dylib */,
+				04B75D9212B80D1300161EB5 /* libambulantCG.dylib */,
 				04B75D9412B80D1300161EB5 /* libambulantCGstatic.a */,
 				04B75D9612B80D1300161EB5 /* libambulantIPhone.a */,
 			);
@@ -439,9 +432,8 @@
 			buildRules = (
 			);
 			dependencies = (
-				041E94F912B81C7000399893 /* PBXTargetDependency */,
-				04CE8CF412B924ED00801B1A /* PBXTargetDependency */,
-				04CE8CF612B924ED00801B1A /* PBXTargetDependency */,
+				043EFD89130BF5AD0050B2BA /* PBXTargetDependency */,
+				043EFDE9130BFEEC0050B2BA /* PBXTargetDependency */,
 			);
 			name = iAmbulant;
 			productName = iAmbulant;
@@ -483,17 +475,17 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		04B75D9012B80D1300161EB5 /* libambulant */ = {
+		04B75D9012B80D1300161EB5 /* libambulant.dylib */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.dylib";
-			path = libambulant;
+			path = libambulant.dylib;
 			remoteRef = 04B75D8F12B80D1300161EB5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		04B75D9212B80D1300161EB5 /* libambulantCG */ = {
+		04B75D9212B80D1300161EB5 /* libambulantCG.dylib */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.dylib";
-			path = libambulantCG;
+			path = libambulantCG.dylib;
 			remoteRef = 04B75D9112B80D1300161EB5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -570,20 +562,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		041E94F912B81C7000399893 /* PBXTargetDependency */ = {
+		043EFD89130BF5AD0050B2BA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = third_party_packages_iOS_Fat;
+			targetProxy = 043EFD88130BF5AD0050B2BA /* PBXContainerItemProxy */;
+		};
+		043EFDE9130BFEEC0050B2BA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = libambulantiPhone;
-			targetProxy = 041E94F812B81C7000399893 /* PBXContainerItemProxy */;
-		};
-		04CE8CF412B924ED00801B1A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = third_party_packages_iOS;
-			targetProxy = 04CE8CF312B924ED00801B1A /* PBXContainerItemProxy */;
-		};
-		04CE8CF612B924ED00801B1A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = third_party_packages_iOS_Simulator;
-			targetProxy = 04CE8CF512B924ED00801B1A /* PBXContainerItemProxy */;
+			targetProxy = 043EFDE8130BFEEC0050B2BA /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

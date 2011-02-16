@@ -4,6 +4,20 @@ if [ ! -d build-iOS -o ! -d build-iOS-Simulator ]; then
 	echo Please run only in ambulant root where build-iOS and build-iOS-Simulator are located
 	exit 1
 fi
+ok=true
+for i in $ALLLIBS; do
+	if [ ! build-iOS-Fat/third_party_packages/$i -nt build-iOS/third_party_packages/$i ]; then
+		ok=false
+		break
+	fi
+	if [ ! build-iOS-Fat/third_party_packages/$i -nt build-iOS-Simulator/third_party_packages/$i ]; then
+		ok=false
+		break
+	fi
+done
+if $ok; then
+	exit 0
+fi
 rm -rf build-iOS-Fat
 mkdir build-iOS-Fat
 cd build-iOS-Fat
