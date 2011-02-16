@@ -187,6 +187,7 @@ LINUX_COMMON_CONFIGURE="./configure --prefix='%s'" % COMMON_INSTALLDIR
 #
 WIN32_COMMON_CONFIG="Release"
 #WIN32_COMMON_CONFIG="Debug"
+WIN32_VSVERSION="unknown"
 
 if os.path.sep == '/':
     #
