@@ -5,7 +5,6 @@
 #
 set -e
 set -x
-export CVS_RSH=ssh
 AMBULANTVERSION=2.3
 HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"

@@ -10,7 +10,12 @@ rem
 set CVSKEY="%USERPROFILE%\My Documents\Putty Keys\id_dsa.ppk"
 set CVS_RSH="C:\Program Files\TortoiseCVS\TortoisePlink.exe" -i %CVSKEY%
 set cvs="C:\Program Files\TortoiseCVS\cvs.exe"
+set hg="C:\TortoiseHg\hg.exe"
+set pageant="C:\Program Files\PuTTY\pageant.exe"
 set visualstudio="C:\Program Files\Microsoft Visual Studio 9.0"
+set vcdir="vc9"
+rem ALTERNATIVE set visualstudio="C:\Program Files\Microsoft Visual Studio 10.0"
+rem ALTERNATIVE set vcdir="vc10"
 set pscp="c:\Program Files\Putty\pscp.exe"
 set nsis="c:\Program Files\NSIS\makensis.exe"
 set python="c:\python26\python.exe"
@@ -20,9 +25,10 @@ rem Other settable parameters
 rem
 
 set AMBULANTVERSION=2.3
-set CVSUSER=jackjansen
-set CVSARGS=-d "%CVSUSER%@ambulant.cvs.sourceforge.net:/cvsroot/ambulant"
-set CHECKOUTARGS=-P
+set HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
+rem xxx set CVSUSER=jackjansen
+rem xxx set CVSARGS=-d "%CVSUSER%@ambulant.cvs.sourceforge.net:/cvsroot/ambulant"
+rem xxx set CHECKOUTARGS=-P
 set CVSPRIVUSER=jack
 set CVSPRIVARGS=-d "%CVSPRIVUSER%@oratrix.oratrix.com:/ufs/jack/.CVSROOT"
 set CHECKOUTPRIVARGS=-P
@@ -46,7 +52,8 @@ rem
 
 mkdir %buildhome%
 cd /d %buildhome%
-%cvs% %CVSARGS% checkout %CHECKOUTARGS% -d %builddir% ambulant
+%hg% clone %HGCLONEARGS%
+rem XXXX %cvs% %CVSARGS% checkout %CHECKOUTARGS% -d %builddir% ambulant
 rem XXXX %cvs% %CVSPRIVARGS% checkout %CHECKOUTPRIVARGS% ambulant-private
 if %errorlevel% neq 0 pause
 
@@ -63,7 +70,7 @@ rem
 rem  configure, make, make install
 rem
 
-cd projects\vc9
+cd projects\%vcdir%
 devenv third_party_packages.sln /build Release
 if %errorlevel% neq 0 pause
 devenv Ambulant-win32.sln /build ReleaseShlib

@@ -5,12 +5,10 @@
 #
 set -e
 set -x
-export CVS_RSH=ssh
 AMBULANTVERSION=2.3
 ARCH=`uname -p`
-CVSUSER="jackjansen"
-CVSARGS="-d $CVSUSER@ambulant.cvs.sourceforge.net:/cvsroot/ambulant"
-CHECKOUTARGS=-P
+HGARGS=""
+HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
 BUILDHOME=$HOME/tmp/ambulant-nightly
 TODAY=`date +%Y%m%d`
 BUILDDIR=ambulant-build-$TODAY
@@ -47,7 +45,8 @@ esac
 #
 mkdir -p $BUILDHOME
 cd $BUILDHOME
-cvs $CVSARGS checkout $CHECKOUTARGS -d "$BUILDDIR" ambulant
+rm -rf $BUILDDIR
+hg $HGARGS clone $HGCLONEARGS $BUILDDIR
 ###
 ### We are building a binary distribution, so we want to completely ignore any
 ### library installed system-wide (in /usr/local, basically)
