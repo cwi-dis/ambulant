@@ -12,10 +12,10 @@ NORUN=False
 # XXXJACK: Hard-coded pathnames, fix this.
 #
 
-WINDOWS_UNZIP_PATH="\\ufs\\jack\\bin\\unzip.exe"
-WINDOWS_UNZIP='"%s" -o' % WINDOWS_UNZIP_PATH
 WINDOWS_UNTAR_PATH="C:\\Program Files\\7-Zip\\7z.exe"
 WINDOWS_UNTAR='"%s" x -y' % WINDOWS_UNTAR_PATH
+WINDOWS_UNZIP_PATH=WINDOWS_UNTAR_PATH
+WINDOWS_UNZIP=WINDOWS_UNTAR
 WINDOWS_DXSDK_PATH="C:\\Program Files\\Microsoft DirectX SDK (February 2010)"
 WINDOWS_DXSDK='"%s"' % WINDOWS_DXSDK_PATH
 
@@ -706,7 +706,7 @@ third_party_packages={
         # NOTE: the double quotes are needed because of weird cmd.exe unquoting
         WinTPP("live",
             url="http://www.live555.com/liveMedia/public/live555-latest.tar.gz",
-            extractcmd="\"%s live555-latest.tar.gz && %s live555-latest.tar\"" % (WINDOWS_UNTAR, WINDOWS_UNTAR),
+            extractcmd="%s live555-latest.tar.gz && %s live555-latest.tar" % (WINDOWS_UNTAR, WINDOWS_UNTAR),
             checkcmd="if not exist live\\liveMedia\\COPYING exit 1",
             # Build is done by FINAL
             ),
@@ -714,7 +714,7 @@ third_party_packages={
         # NOTE: the double quotes are needed because of weird cmd.exe unquoting
         WinTPP("libxml2",
             url="ftp://xmlsoft.org/libxml2/libxml2-2.7.7.tar.gz",
-            extractcmd="\"%s libxml2-2.7.7.tar.gz && %s libxml2-2.7.7.tar\"" % (WINDOWS_UNTAR, WINDOWS_UNTAR),
+            extractcmd="%s libxml2-2.7.7.tar.gz && %s libxml2-2.7.7.tar" % (WINDOWS_UNTAR, WINDOWS_UNTAR),
             checkcmd="if not exist libxml2-2.7.7\\xml2-config.in exit 1",
             # Build is done by FINAL
             ),
@@ -722,7 +722,7 @@ third_party_packages={
         WinTPP("FINAL",
             # The FINAL step builds some packages and copies everything to
             # where Ambulant expects it (bin\\win32 and lib\\win32)
-            buildcmd="cd ..\\projects\\%s && devenv third_party_packages.sln /build Debug && devenv third_party_packages.sln /build %s" % (WIN32_VSVERSION, WIN32_COMMON_CONFIG)
+            buildcmd="cd ..\\projects\\%s && devenv third_party_packages.sln /Upgrade && devenv third_party_packages.sln /build Debug && devenv third_party_packages.sln /build %s" % (WIN32_VSVERSION, WIN32_COMMON_CONFIG)
             ),
         ],
     
