@@ -25,6 +25,11 @@
 ^third_party_packages/log\..*\.txt
 ^third_party_packages/
 ^projects/vc.*/.*\.user
+^autom4te.cache
+^aclocal.m4
+^configure
+^Documentation/user/user.helpindex
+^libltdl
 .*\.dll
 .*\.exe
 .*\.lib
@@ -35,4 +40,6 @@
 .*\.map
 .*\.pyo
 .*\.pyd
+Makefile.in
+
 
