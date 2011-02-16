@@ -198,10 +198,18 @@ else:
     #
     # Assume we are running on Windows. Check that vcvars32.bat has been run.
     #
-    if not os.getenv("DevEnvDir"):
+    vsdir = os.getenv("DevEnvDir")
+    if not vsdir:
         print "** This script needs the Visual Studio environment vars to be able to run"
         print '** Run "call ....Microsoft Visual Studio X.Y\\VC\\bin\\vcvars32.bat" from your VC9 dir first.'
         sys.exit(1)
+    if '10.0' in vsdir:
+        WIN32_VSVERSION="vc10"
+    elif '9.0' in vsdir:
+        WIN32_VSVERSION="vc9"
+    else:
+        print "** Unknown version of Visual Studio:", vsdir
+        sysexit(1)
     #
     # There is a Visual Studio bug that temporary object files with pathnames > approx 200
     # characters are lost. This can happen with Xerces, which uses deep pathnames.
@@ -655,11 +663,11 @@ third_party_packages={
             
         WinTPP("xerces-c",
             url="http://apache.proserve.nl/xerces/c/3/sources/xerces-c-3.1.1.zip",
-            checkcmd="if not exist xerces-c-3.1.1\\Build\\Win32\\VC9\\%s\\xerces-c_3.lib exit 1" % WIN32_COMMON_CONFIG,
+            checkcmd="if not exist xerces-c-3.1.1\\Build\\Win32\\%s\\%s\\xerces-c_3.lib exit 1" % (WIN32_VSVERSION, WIN32_COMMON_CONFIG),
             buildcmd=
-                "cd xerces-c-3.1.1\\projects\\Win32\\VC9\\xerces-all && "
+                "cd xerces-c-3.1.1\\projects\\Win32\\%s\\xerces-all && "
                 "devenv xerces-all.sln /build Debug /project XercesLib"
-                "devenv xerces-all.sln /build %s /project XercesLib" % WIN32_COMMON_CONFIG
+                "devenv xerces-all.sln /build %s /project XercesLib" % (WIN32_VSVERSION, WIN32_COMMON_CONFIG)
             ),
             
         WinTPP("xulrunner-sdk",
@@ -706,7 +714,7 @@ third_party_packages={
         WinTPP("FINAL",
             # The FINAL step builds some packages and copies everything to
             # where Ambulant expects it (bin\\win32 and lib\\win32)
-            buildcmd="cd ..\\projects\\vc9 && devenv third_party_packages.sln /build Debug && devenv third_party_packages.sln /build %s" % WIN32_COMMON_CONFIG
+            buildcmd="cd ..\\projects\\%s && devenv third_party_packages.sln /build Debug && devenv third_party_packages.sln /build %s" % (WIN32_VSVERSION, WIN32_COMMON_CONFIG)
             ),
         ],
     
