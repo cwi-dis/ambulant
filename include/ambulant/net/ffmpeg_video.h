@@ -30,7 +30,7 @@
 #define INT64_C(x) x ## LL
 #endif
 #ifndef UINT64_C
-#define UINT64_C(x) x ## ui64
+#define UINT64_C(x) x ## ULL
 #endif
 
 extern "C" {
