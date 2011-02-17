@@ -29,9 +29,15 @@
 #include "ambulant/lib/logger.h"
 
 #include <gtk-2.0/gdk/gdkx.h>
+#if 1
+// This is needed on Ubuntu 10.10, but maybe the old pathnames are still needed
+// on another platform? If so, we need to find a define to trigger on.
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gdk-pixbuf-xlib/gdk-pixbuf-xlib.h>
+#else
 #include <gtk-2.0/gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk-2.0/gdk-pixbuf-xlib/gdk-pixbuf-xlib.h>
-
+#endif
 //#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)

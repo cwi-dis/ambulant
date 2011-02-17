@@ -1,0 +1,22 @@
+<gconfschemafile>
+	<schemalist>
+		<schema>
+			<key>/desktop/gnome/url-handlers/ambulant/enabled</key>
+			<owner>AmbulantPlayer</owner>
+			<type>bool</type>
+			<default>true</default>
+			<locale name="C">
+				<short>Enable ambulant: schema for URLs</short>
+			</locale>
+		</schema>
+		<schema>
+			<key>/desktop/gnome/url-handlers/ambulant/command</key>
+			<owner>AmbulantPlayer</owner>
+			<type>string</type>
+			<default>AmbulantPlayer %s</default>
+			<locale name="C">
+				<short>Enable ambulant: schema for URLs</short>
+			</locale>
+		</schema>
+	</schemalist>
+</gconfschemafile>

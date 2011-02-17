@@ -32,6 +32,13 @@ else
 extra_qt_cflags=
 extra_qt_ldflags=
 endif
+if WITH_GTK
+extra_gtk_cflags=-DWITH_GTK $(GTK_CFLAGS)
+extra_gtk_ldflags=-lambulant_gtk $(GTK_LIBS)
+else
+extra_gtk_cflags=
+extra_gtk_ldflags=
+endif
 if WITH_FFMPEG
 extra_ffmpeg_ldflags=-lambulant_ffmpeg $(FFMPEG_LIBS)
 else
@@ -46,7 +53,7 @@ endif
 
 # Get all the extra bits together
 # XXXX Why does this not work??? EXTRA_LDFLAGS=$(extra_qt_ldflags)
-EXTRA_CFLAGS=$(extra_qt_cflags)
+EXTRA_CFLAGS=$(extra_qt_cflags) $(extra_gtk_cflags)
 
 # These targets are magic for automake
 
@@ -83,7 +90,7 @@ BUILDLIBDIR=`echo ./build/lib.*`
 build-pyambulant: $(srcdir)/setup.py $(BGENOUTPUT) $(srcdir)/ambulantutilities.cpp $(srcdir)/ambulantutilities.h $(srcdir)/ambulantmodule.h
 	( a=`cd $(ambulantlibdir); pwd` ; \
 	  cd $(srcdir) ; \
-	  LDFLAGS="-L$$a $(extra_qt_ldflags) $(extra_ffmpeg_ldflags) $(extra_sdl_ldflags) $(LDFLAGS)" $(PYTHON) setup.py build ; \
+	  LDFLAGS="-L$$a $(extra_qt_ldflags) $(extra_gtk_ldflags) $(extra_ffmpeg_ldflags) $(extra_sdl_ldflags) $(LDFLAGS)" $(PYTHON) setup.py build ; \
 	)
 
 check-pyambulant:
