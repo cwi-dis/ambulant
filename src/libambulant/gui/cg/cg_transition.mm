@@ -139,17 +139,6 @@ cg_transition_blitclass_rect::update()
 		CGContextClipToRect (ctx, cg_clipped_rect);					
 	}
 	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, cg_layer);
-//	NSImage *newsrc = setup_transition_bitblit(m_outtrans, view);
-//	AM_DBG lib::logger::get_logger()->debug("cg_transition_blitclass_rect::update(%f)", m_progress);
-/*XX*
-	NSRect cg_newrect_whole = [view NSRectForAmbulantRect: &newrect_whole];
-
-	[newsrc drawInRect: cg_newrect_whole
-		fromRect: cg_newrect_whole
-		operation: NSCompositeSourceOver
-		fraction: 1.0f];
-	finalize_transition_bitblit(m_outtrans, m_dst);
-	*XX*/
 }
 
 void
