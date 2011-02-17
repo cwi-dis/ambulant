@@ -400,7 +400,6 @@ cg_transition_blitclass_polylist::update()
 	lib::rect dstrect_whole = m_dst->get_rect();
 	dstrect_whole.translate(dst_global_topleft);
 	dstrect_whole &= m_dst->get_clipped_screen_rect();
-//X	composite_path(view, dstrect_whole, path, m_outtrans);
 	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
 	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
 	CGContextSaveGState(ctx);
