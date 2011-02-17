@@ -339,7 +339,6 @@ cg_transition_blitclass_poly::update()
 	AM_DBG lib::logger::get_logger()->debug("cg_transition_blitclass_poly::update(%f)", m_progress);
 	// First we create the path
 	const lib::point& dst_global_topleft = m_dst->get_global_topleft();
-//X	NSBezierPath *path = polygon2path(dst_global_topleft, m_newpolygon);
 	std::vector<lib::point>  polygon;
 	if (m_outtrans) {
 		// reverse the order of the elements to get the correct clipping path for use with the
