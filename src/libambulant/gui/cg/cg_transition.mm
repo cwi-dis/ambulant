@@ -73,7 +73,7 @@ finalize_transition(bool outtrans, common::surface *dst)
 XX*/
 }
 
-	void
+void
 cg_transition_blitclass_fade::update()
 {
 	cg_window *window = (cg_window *)m_dst->get_gui_window();
