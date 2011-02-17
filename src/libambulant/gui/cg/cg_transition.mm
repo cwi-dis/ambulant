@@ -262,7 +262,6 @@ cg_transition_blitclass_rectlist::update()
 *XX*/
 }
 
-
 // Helper function: convert a point list to a CGPath
 static CGPathRef
 polygon2path(const lib::point& origin, std::vector<lib::point> polygon)
