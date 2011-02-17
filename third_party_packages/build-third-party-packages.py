@@ -19,14 +19,31 @@ WINDOWS_UNZIP=WINDOWS_UNTAR
 WINDOWS_DXSDK_PATH="C:\\Program Files\\Microsoft DirectX SDK (February 2010)"
 WINDOWS_DXSDK='"%s"' % WINDOWS_DXSDK_PATH
 
-class TPP:
+class CommonTPP:
+    def __init__(self, name):
+        self.name = name
+        self.output = sys.stdout
+        
+    def _command(self, cmd, force=False):
+        if not cmd:
+            return True
+        print >>self.output, "+ run:", cmd
+        if NORUN and not force:
+            print >>self.output, "+ dry run, skip execution"
+            return True
+        self.output.flush()
+        sts = subprocess.call(cmd, shell=True, stdout=self.output, stderr=subprocess.STDOUT)
+        print >>self.output, "+ run status:", sts
+        return sts == 0
+
+class TPP(CommonTPP):
     
     DEFAULT_BUILD_COMMAND="cd %s && ./configure && make && make install"
     DEFAULT_EXTRACT_COMMAND="tar xf %s"
     
     def __init__(self, name, url=None, downloadedfile=None, extractcmd=None, checkcmd=None, buildcmd=None):
-        self.name = name
-
+        CommonTPP.__init__(self, name)
+        
         self.url = url
         if url and not downloadedfile:
             _, _, path, _, _, _ = urlparse.urlparse(url)
@@ -107,6 +124,12 @@ class TPP:
         self.end()
         return ok
 
+class DebianTPP(CommonTPP):
+    PACKAGE_INSTALL_CMD = "apt-get -y install %s"
+    
+    def run(self):
+        return self._command(self.PACKAGE_INSTALL_CMD % self.name)
+    
 class WinTPP(TPP):
 
     DEFAULT_BUILD_COMMAND=None
@@ -224,6 +247,28 @@ else:
         sys.exit(1)
     
 third_party_packages={
+    'debian' : [
+        DebianTPP("automake"),
+        DebianTPP("autoconf"),
+        DebianTPP("autotools-dev"),
+        DebianTPP("gettext"),
+        DebianTPP("libgtk2.0-dev"),
+        DebianTPP("libgdk-pixbuf2.0-dev"),
+        DebianTPP("libxml2-dev"),
+        DebianTPP("libqt3-mt-dev"),
+        DebianTPP("liblivemedia-dev"),
+        DebianTPP("libltdl-dev"),
+        DebianTPP("libsdl1.2-dev"),
+        DebianTPP("libavformat-dev"),
+        DebianTPP("libavcodec-dev"),
+        DebianTPP("libswscale-dev"),
+        DebianTPP("libxerces-c-dev"),
+        DebianTPP("libexpat1-dev"),
+        DebianTPP("python-dev"),
+        DebianTPP("python-gtk2-dev"),
+        DebianTPP("python-gobject-dev"),
+    ],
+ 
     'mac10.6' : [
         TPP("expat", 
             url="http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=autoselect",
@@ -744,6 +789,11 @@ def checkenv_win32(target):
         return False
     return True
 
+def checkenv_debian(target):
+    if os.geteuid() != 0:
+        print '** WARNING: you should probably run this as superuser (with sudo)'
+    return True
+    
 def checkenv_unix(target):
     rv = True
     if os.system("make -v >/dev/null") != 0:
@@ -817,6 +867,7 @@ environment_checkers = {
     'iOS-Device' : checkenv_iphone,
     'linux': checkenv_unix,
     'win32': checkenv_win32,
+    'debian': checkenv_debian,
 }
 
 def main():
