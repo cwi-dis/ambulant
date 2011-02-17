@@ -53,7 +53,6 @@ setup_transition (bool outtrans, AmbulantView *view)
 	}
 	return rv;
 }
-	
 
 static void
 finalize_transition(bool outtrans, common::surface *dst)
