@@ -78,27 +78,13 @@ cg_transition_blitclass_fade::update()
 {
 	cg_window *window = (cg_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
-//	NSImage *newsrc = setup_transition_bitblit(m_outtrans, view);
-//	AM_DBG lib::logger::get_logger()->debug("cg_transition_blitclass_fade::update(%f)", m_progress);
-//	const lib::rect& dstrect_whole = m_dst->get_clipped_screen_rect();
+	AM_DBG lib::logger::get_logger()->debug("cg_transition_blitclass_fade::update(%f)", m_progress);
 	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
-//  fullsrcrect.translate(m_dst->get_global_topleft(lib::point(-srcrect.left(), srcrect.bottom()-m_size.h)
 	fullsrcrect.translate(m_dst->get_global_topleft()); // Translate so the right topleft pixel is in place
 	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
-//	CGRect cg_fullsrcrect = [view CGRectForAmbulantRect: &dstrect_whole];
-	
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	CGContextSetAlpha (ctx, m_outtrans ? 1.0 - m_progress : m_progress);
 	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
-
-	/*XX
-	NSRect cg_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
-	[newsrc drawInRect: cg_dstrect_whole
-		fromRect: cg_dstrect_whole
-		operation: NSCompositeSourceOver
-		fraction: (float)m_progress];
-	finalize_transition_bitblit(m_outtrans, m_dst);
-*XX*/
 }
 
 // Helper function: substract rect R2 from rect R1. The result is an array of max. 4 non-empty rects
