@@ -59,6 +59,7 @@ if WITH_GTK:
     LIBRARIES.append('pangocairo-1.0')
     INCDIRS.append('/usr/include/pygtk-2.0')
     INCDIRS.append('/usr/include/gtk-2.0')
+    INCDIRS.append('/usr/include/gdk-pixbuf-2.0')
     INCDIRS.append('/usr/lib/gtk-2.0/include')
     INCDIRS.append('/usr/include/atk-1.0')
     INCDIRS.append('/usr/include/cairo')
