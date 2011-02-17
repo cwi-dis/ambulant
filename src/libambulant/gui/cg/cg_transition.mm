@@ -280,7 +280,6 @@ polygon2path(const lib::point& origin, std::vector<lib::point> polygon)
 			first = false;
 		} else {
 			CGPathAddLineToPoint(path, NULL, p.x, p.y);
-//			[path lineToPoint: pc];
 		}
 	}
 	CGPathCloseSubpath(path);
