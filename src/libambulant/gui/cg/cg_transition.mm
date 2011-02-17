@@ -73,32 +73,18 @@ finalize_transition(bool outtrans, common::surface *dst)
 XX*/
 }
 
-	void
+void
 cg_transition_blitclass_fade::update()
 {
 	cg_window *window = (cg_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
-//	NSImage *newsrc = setup_transition_bitblit(m_outtrans, view);
-//	AM_DBG lib::logger::get_logger()->debug("cg_transition_blitclass_fade::update(%f)", m_progress);
-//	const lib::rect& dstrect_whole = m_dst->get_clipped_screen_rect();
+	AM_DBG lib::logger::get_logger()->debug("cg_transition_blitclass_fade::update(%f)", m_progress);
 	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
-//  fullsrcrect.translate(m_dst->get_global_topleft(lib::point(-srcrect.left(), srcrect.bottom()-m_size.h)
 	fullsrcrect.translate(m_dst->get_global_topleft()); // Translate so the right topleft pixel is in place
 	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
-//	CGRect cg_fullsrcrect = [view CGRectForAmbulantRect: &dstrect_whole];
-	
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	CGContextSetAlpha (ctx, m_outtrans ? 1.0 - m_progress : m_progress);
 	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
-
-	/*XX
-	NSRect cg_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
-	[newsrc drawInRect: cg_dstrect_whole
-		fromRect: cg_dstrect_whole
-		operation: NSCompositeSourceOver
-		fraction: (float)m_progress];
-	finalize_transition_bitblit(m_outtrans, m_dst);
-*XX*/
 }
 
 // Helper function: substract rect R2 from rect R1. The result is an array of max. 4 non-empty rects
@@ -138,8 +124,6 @@ cg_transition_blitclass_rect::update()
 	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
 	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
-	if ( ! m_outtrans) {
-	}
 	if (m_outtrans) {
 		lib::rect region = m_dst->get_rect();
 		lib::rect clip_rects[4];
@@ -155,17 +139,6 @@ cg_transition_blitclass_rect::update()
 		CGContextClipToRect (ctx, cg_clipped_rect);					
 	}
 	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, cg_layer);
-//	NSImage *newsrc = setup_transition_bitblit(m_outtrans, view);
-//	AM_DBG lib::logger::get_logger()->debug("cg_transition_blitclass_rect::update(%f)", m_progress);
-/*XX*
-	NSRect cg_newrect_whole = [view NSRectForAmbulantRect: &newrect_whole];
-
-	[newsrc drawInRect: cg_newrect_whole
-		fromRect: cg_newrect_whole
-		operation: NSCompositeSourceOver
-		fraction: 1.0f];
-	finalize_transition_bitblit(m_outtrans, m_dst);
-	*XX*/
 }
 
 void
@@ -180,6 +153,7 @@ cg_transition_blitclass_r1r2r3r4::update()
 	int dx = 0;
 	int dy = 0;
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
+	CGContextSaveGState(ctx);
 	if (m_outtrans) {
 		dx = m_newdstrect.width() * m_progress;
 //		dy = m_newdstrect.height() * m_progress;
@@ -192,7 +166,7 @@ cg_transition_blitclass_r1r2r3r4::update()
 	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
 	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
 	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
-
+	CGContextRestoreGState(ctx);
 /*XX*
 	NSImage *oldsrc = [view getTransitionOldSource];
 	NSImage *newsrc = [view getTransitionNewSource];
@@ -234,13 +208,40 @@ cg_transition_blitclass_r1r2r3r4::update()
 			operation: NSCompositeSourceOver
 			fraction: 1.0f];
 	}
-	 *XX*/
+*XX*/
 }
 
 void
 cg_transition_blitclass_rectlist::update()
 {
-	/*XX
+	cg_window *window = (cg_window *)m_dst->get_gui_window();
+	AmbulantView *view = (AmbulantView *)window->view();
+	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
+	fullsrcrect.translate(m_dst->get_global_topleft()); // Translate so the right topleft pixel is in place
+	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
+	CGLayerRef cg_layer = setup_transition(false, view);
+	CGContextRef ctx = CGLayerGetContext(cg_layer);
+	CGContextSaveGState(ctx);
+	CGRect* cg_new_rects = (CGRect*) malloc(sizeof(CGRect));
+	int n_rects = 1;
+	AM_DBG lib::logger::get_logger()->debug("cg_transition_blitclass_rectlist::update(%f)", m_progress);
+	std::vector< lib::rect >::iterator newrect;
+	
+	for(newrect=m_newrectlist.begin(); newrect != m_newrectlist.end(); newrect++) {
+		lib::rect newrect_whole = *newrect;
+		if (newrect_whole.empty()) {
+			continue;
+		}
+		newrect_whole.translate(m_dst->get_global_topleft());
+		newrect_whole &= m_dst->get_clipped_screen_rect();
+		cg_new_rects[n_rects-1] = CGRectFromAmbulantRect(newrect_whole);
+		cg_new_rects = (CGRect*) realloc(cg_new_rects, ++n_rects*sizeof(CGRect));
+	}
+	CGContextClipToRects(ctx, cg_new_rects, n_rects-1);
+	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
+	CGContextRestoreGState(ctx);
+	free((void*) cg_new_rects);
+/*XX
 	cg_window *window = (cg_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
 	NSImage *newsrc = setup_transition_bitblit(m_outtrans, view);
@@ -258,7 +259,7 @@ cg_transition_blitclass_rectlist::update()
 			fraction: 1.0f];
 	}
 	finalize_transition_bitblit(m_outtrans, m_dst);
-	 *XX*/
+*XX*/
 }
 
 
@@ -275,11 +276,9 @@ polygon2path(const lib::point& origin, std::vector<lib::point> polygon)
 		CGPoint pc = CGPointMake(p.x, p.y);
 		if (first) {
 			CGPathMoveToPoint(path, NULL, p.x, p.y);
-//			[path moveToPoint: pc];
 			first = false;
 		} else {
 			CGPathAddLineToPoint(path, NULL, p.x, p.y);
-//			[path lineToPoint: pc];
 		}
 	}
 	CGPathCloseSubpath(path);
@@ -335,12 +334,10 @@ cg_transition_blitclass_poly::update()
 	cg_window *window = (cg_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
-	CGLayerRef cg_layer = setup_transition(false, view);
 
 	AM_DBG lib::logger::get_logger()->debug("cg_transition_blitclass_poly::update(%f)", m_progress);
 	// First we create the path
 	const lib::point& dst_global_topleft = m_dst->get_global_topleft();
-//X	NSBezierPath *path = polygon2path(dst_global_topleft, m_newpolygon);
 	std::vector<lib::point>  polygon;
 	if (m_outtrans) {
 		// reverse the order of the elements to get the correct clipping path for use with the
@@ -363,13 +360,9 @@ cg_transition_blitclass_poly::update()
 	dstrect_whole.translate(dst_global_topleft);
 	dstrect_whole &= m_dst->get_clipped_screen_rect();
 
-//X	composite_path(view, dstrect_whole, path, m_outtrans);
-	
 	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
 	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
 	CGContextSaveGState(ctx);
-//	CGContextSetBlendMode(ctx, kCGBlendModeMultiply);
-//	CGContextSetAlpha(ctx, 0.5);
 	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
 	CGContextRestoreGState(ctx);
 	CFRelease(path);
@@ -380,26 +373,38 @@ cg_transition_blitclass_polylist::update()
 {
 	cg_window *window = (cg_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
+	CGContextRef ctx = UIGraphicsGetCurrentContext();
 
 	AM_DBG lib::logger::get_logger()->debug("cg_transition_blitclass_poly::update(%f)", m_progress);
 	// First we create the path
 	const lib::point& dst_global_topleft = m_dst->get_global_topleft();
-//X	NSBezierPath *path = NULL;
 	std::vector< std::vector<lib::point> >::iterator partpolygon;
+	AM_DBG {
+	int n = 0;
 	for (partpolygon=m_newpolygonlist.begin(); partpolygon!=m_newpolygonlist.end(); partpolygon++) {
-/*XX
-		NSBezierPath *part_path = polygon2path(dst_global_topleft, *partpolygon);
-		if (path == NULL)
-			path = part_path;
-		else
-			[path appendBezierPath: part_path];
- XX*/
+		lib::logger::get_logger()->debug("partpolygon: %d", n++);
+			for (std::vector<lib::point>::iterator i=(*partpolygon).begin(); i != (*partpolygon).end(); i++) {
+				lib::logger::get_logger()->debug("\tx=%d, y=%d", (*i).x, (*i).y);
+			}
 	}
+	}//AM_DBG
+	for (partpolygon=m_newpolygonlist.begin(); partpolygon!=m_newpolygonlist.end(); partpolygon++) {
+	//X	NSBezierPath *path = polygon2path(dst_global_topleft, m_newpolygon);
+		CGPathRef path = polygon2path(dst_global_topleft, *partpolygon);
+		CGContextAddPath(ctx, path);
+		CFRelease(path);
+	}
+	CGContextClip(ctx);
 	// Then we composite it onto the screen
 	lib::rect dstrect_whole = m_dst->get_rect();
 	dstrect_whole.translate(dst_global_topleft);
 	dstrect_whole &= m_dst->get_clipped_screen_rect();
 //X	composite_path(view, dstrect_whole, path, m_outtrans);
+	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
+	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
+	CGContextSaveGState(ctx);
+	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
+	CGContextRestoreGState(ctx);
 }
 
 smil2::transition_engine *

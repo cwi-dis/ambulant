@@ -1235,7 +1235,7 @@ static CGLayerRef oldFullScreen;
 		oldFullScreen = [AmbulantView CGLayerFromCGImage: oldFullScreenImage.CGImage];
 		CFRetain(oldFullScreen);
 	}
-	CGContextDrawLayerInRect(CGLayerGetContext([self getTransitionSurface]), [self bounds], oldFullScreen);
+	CGContextDrawLayerInRect(CGLayerGetContext(self.getTransitionSurface), self.bounds, oldFullScreen);
 //BDG [AmbulantView dumpCGLayer: [self getTransitionSurface] withId: @"old"];
 	[pool release];
 }
@@ -1244,7 +1244,7 @@ static CGLayerRef oldFullScreen;
 {
 	AM_DBG NSLog(@"endScreenTransition");
 	if (oldFullScreen != NULL) {
-		[oldFullScreen release];
+		CFRelease(oldFullScreen);
 		oldFullScreen = NULL;
 	}
 	assert(fullscreen_count > 0);
