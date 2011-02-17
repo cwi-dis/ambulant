@@ -737,7 +737,13 @@ if $test_live; then
 		AC_LANG_POP()
 		if $test_live; then
 			LIVE_CFLAGS="-I/usr/include/liveMedia -I/usr/include/groupsock -I/usr/include/BasicUsageEnvironment -I/usr/include/UsageEnvironment"
-			LIVE_LIBS="-lliveMedia -lgroupsock -lBasicUsageEnvironment -lUsageEnvironment"
+			live_pic=false
+			AC_CHECK_LIB(UsageEnvironment_pic, _Z10strDupSizePKc, live_pic=true, live_pic=false, -lstdc++)
+			if $live_pic; then
+				LIVE_LIBS="-lliveMedia_pic -lgroupsock_pic -lBasicUsageEnvironment_pic -lUsageEnvironment_pic"
+			else
+				LIVE_LIBS="-lliveMedia -lgroupsock -lBasicUsageEnvironment -lUsageEnvironment"
+			fi
 		fi
 	fi
 	if $test_live; then
