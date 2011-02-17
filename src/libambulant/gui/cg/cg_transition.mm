@@ -277,7 +277,6 @@ polygon2path(const lib::point& origin, std::vector<lib::point> polygon)
 		CGPoint pc = CGPointMake(p.x, p.y);
 		if (first) {
 			CGPathMoveToPoint(path, NULL, p.x, p.y);
-//			[path moveToPoint: pc];
 			first = false;
 		} else {
 			CGPathAddLineToPoint(path, NULL, p.x, p.y);
