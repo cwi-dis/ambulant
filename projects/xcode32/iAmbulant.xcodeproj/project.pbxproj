@@ -73,18 +73,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		043EFD88130BF5AD0050B2BA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 04B75D7012B80CFE00161EB5 /* third_party_packages.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 043EFD30130BF57E0050B2BA;
-			remoteInfo = third_party_packages_iOS_Fat;
-		};
 		043EFDE8130BFEEC0050B2BA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 04B75D7812B80D1000161EB5 /* libambulant.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 040DAAE112B790BB002C4DFD /* libambulantiPhone */;
+			remoteGlobalIDString = 040DAAE112B790BB002C4DFD;
 			remoteInfo = libambulantiPhone;
 		};
 		04B75D8F12B80D1300161EB5 /* PBXContainerItemProxy */ = {
@@ -432,7 +425,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				043EFD89130BF5AD0050B2BA /* PBXTargetDependency */,
 				043EFDE9130BFEEC0050B2BA /* PBXTargetDependency */,
 			);
 			name = iAmbulant;
@@ -562,11 +554,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		043EFD89130BF5AD0050B2BA /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = third_party_packages_iOS_Fat;
-			targetProxy = 043EFD88130BF5AD0050B2BA /* PBXContainerItemProxy */;
-		};
 		043EFDE9130BFEEC0050B2BA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = libambulantiPhone;
