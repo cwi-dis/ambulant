@@ -100,7 +100,7 @@ check-pyambulant:
 	)
 
 install-pyambulant:
-	cd $(srcdir) ; $(PYTHON) setup.py install --root $(DESTDIR)
+	cd $(srcdir) ; $(PYTHON) setup.py install --root $(DESTDIR) --prefix `$(PYTHON) -c "import sys; print sys.prefix"`
 	
 mostlyclean-local:
 	-cd $(srcdir) ; $(PYTHON) setup.py clean
