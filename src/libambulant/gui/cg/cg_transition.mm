@@ -379,7 +379,6 @@ cg_transition_blitclass_polylist::update()
 	AM_DBG lib::logger::get_logger()->debug("cg_transition_blitclass_poly::update(%f)", m_progress);
 	// First we create the path
 	const lib::point& dst_global_topleft = m_dst->get_global_topleft();
-//X	NSBezierPath *path = NULL;
 	std::vector< std::vector<lib::point> >::iterator partpolygon;
 	AM_DBG {
 	int n = 0;
