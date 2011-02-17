@@ -1,5 +1,5 @@
 ambulant (2.3-1) unstable; urgency=low
 
-  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+  * Initial release, for testing only
 
- -- Jack Jansen <Jack.Jansen@cwi.nl>  Wed, 31 Mar 2010 15:48:48 +0200
+ -- Jack Jansen <jack@boom-ubuntu>  Thu, 17 Feb 2011 23:43:02 +0100
