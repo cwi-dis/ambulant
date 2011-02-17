@@ -167,7 +167,6 @@ cg_transition_blitclass_r1r2r3r4::update()
 	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
 	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
 	CGContextRestoreGState(ctx);
-
 /*XX*
 	NSImage *oldsrc = [view getTransitionOldSource];
 	NSImage *newsrc = [view getTransitionNewSource];
@@ -209,7 +208,7 @@ cg_transition_blitclass_r1r2r3r4::update()
 			operation: NSCompositeSourceOver
 			fraction: 1.0f];
 	}
-	 *XX*/
+*XX*/
 }
 
 void
