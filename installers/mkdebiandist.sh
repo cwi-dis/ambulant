@@ -16,7 +16,7 @@ hg clone .. ambulant-$VERSION
 rm -rf ambulant-$VERSION/.hg
 tar cfz ambulant_$VERSION.orig.tar.gz ambulant-$VERSION
 cd ambulant-$VERSION
-debuild
+debuild -kC75B80BC
 cd ..
 rm -rf ambulant-$VERSION
 dpkg-scanpackages . /dev/null | gzip -9c >Packages.gz
