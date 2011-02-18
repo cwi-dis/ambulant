@@ -73,12 +73,12 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">BUILD\$(ProjectName)-$(Configuration)\</IntDir>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</IgnoreImportLibrary>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">BUILD\$(ProjectName)-$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">BUILD\$(ProjectName)-$(Configuration)\</IntDir>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">true</IgnoreImportLibrary>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'" />
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">BUILD\$(ProjectName)-$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">BUILD\$(ProjectName)-$(Configuration)\</IntDir>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">true</IgnoreImportLibrary>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'" />
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
@@ -93,6 +93,10 @@
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">npambulant_D</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">npambulant_D</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">npambulant</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">npambulant</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -133,7 +137,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcom.lib;..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcomglue_s.lib;..\..\third_party_packages\xulrunner-sdk\sdk\lib\nspr4.lib;..\..\lib\win32\libexpat.lib;..\..\lib\win32\libjpeg.lib;..\..\lib\win32\libpng.lib;..\..\lib\win32\zlib.lib;..\..\lib\win32\xerces-c_$(xerces_major).lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)$(ProjectName)_D.dll</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>false</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>LIBC.lib;LIBCMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
@@ -199,7 +203,7 @@ copy /y ..\..\bin\win32\libamplugin_state_xpath.dll "$(firefox_plugin_dir)\plugi
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcom.lib;..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcomglue_s.lib;..\..\third_party_packages\xulrunner-sdk\sdk\lib\nspr4.lib;..\..\lib\win32\libexpat.lib;..\..\lib\win32\libjpeg.lib;..\..\lib\win32\libpng.lib;..\..\lib\win32\zlib.lib;..\..\lib\win32\xerces-c_$(xerces_major).lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
@@ -262,7 +266,7 @@ del /s /q "$(firefox_plugin_dir)\plugins"
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcom.lib;..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcomglue_s.lib;..\..\third_party_packages\xulrunner-sdk\sdk\lib\nspr4.lib;..\..\lib\win32\libexpat.lib;..\..\lib\win32\libjpeg.lib;..\..\lib\win32\libpng.lib;..\..\lib\win32\zlib.lib;..\..\lib\win32\xerces-c_$(xerces_major).lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
@@ -330,7 +334,7 @@ del /s /q "$(firefox_plugin_dir)\plugins"
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcom.lib;..\..\third_party_packages\xulrunner-sdk\sdk\lib\xpcomglue_s.lib;..\..\third_party_packages\xulrunner-sdk\sdk\lib\nspr4.lib;..\..\lib\win32\libexpat.lib;..\..\lib\win32\libjpeg.lib;..\..\lib\win32\libpng.lib;..\..\lib\win32\zlib.lib;..\..\lib\win32\xerces-c_$(xerces_major).lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)$(ProjectName)_D.dll</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>false</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>LIBC.lib;LIBCMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
