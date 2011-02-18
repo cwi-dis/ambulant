@@ -404,8 +404,7 @@ cg_transition_blitclass_polylist::update()
 	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
 	CGContextRestoreGState(ctx);
 }
-
-	
+
 smil2::transition_engine *
 cg_transition_engine(common::surface *dst, bool is_outtrans, const lib::transition_info *info)
 {
