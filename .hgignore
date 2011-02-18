@@ -41,5 +41,7 @@
 .*\.pyo
 .*\.pyd
 Makefile.in
+.*\.xcodeproj/.*\.pbxuser
+.*\.xcodeproj/.*\.mode1v3
 
 
