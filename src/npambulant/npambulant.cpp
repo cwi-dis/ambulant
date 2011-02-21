@@ -69,6 +69,7 @@ class stderr_ostream : public ambulant::lib::ostream {
 
 int stderr_ostream::write(const char *cstr)
 {
+	OutputDebugString(cstr);
 	fprintf(stderr, "%s", cstr);
 	return strlen(cstr);
 }
@@ -135,6 +136,9 @@ npambulant::npambulant(
 
 npambulant::~npambulant()
 {
+#ifndef NDEBUG
+	ambulant::lib::logger::get_logger()->set_ostream(NULL);
+#endif
 	if (m_window_obj)
 		NPN_ReleaseObject(m_window_obj);
 	if (m_pScriptableObject)
@@ -428,8 +432,8 @@ npambulant::shut() {
 		if (m_OldWindow)
 			SetWindowLong(m_hWnd, GWL_USERDATA, m_OldWindow);
 		// subclass it back
-		if (m_lpOldProc);
-		SubclassWindow(m_hWnd, m_lpOldProc);
+		if (m_lpOldProc)
+			SubclassWindow(m_hWnd, m_lpOldProc);
 	}
 	m_OldWindow = NULL;
 	m_hWnd = NULL;
