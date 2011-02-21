@@ -29,6 +29,7 @@
 ^aclocal.m4
 ^configure
 ^Documentation/user/user.helpindex
+po/stamp-po
 ^libltdl
 .*\.dll
 .*\.exe
