@@ -27,14 +27,14 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 041DCC0712B6777A003407C8 /* third_party_packages_iOS_Simulator */;
+			remoteGlobalIDString = 041DCC0712B6777A003407C8;
 			remoteInfo = third_party_packages_iOS_Simulator;
 		};
 		043EFDF8130BFF110050B2BA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 041DCBF612B6770B003407C8 /* third_party_packages_iOS */;
+			remoteGlobalIDString = 041DCBF612B6770B003407C8;
 			remoteInfo = third_party_packages_iOS;
 		};
 /* End PBXContainerItemProxy section */
@@ -208,10 +208,11 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DSTROOT = /;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PATH = "/usr/local/bin:$(PATH)";
-				PLATFORM_DIR = /Rabarber/Rabarber;
-				PLATFORM_NAME = broccoli;
 				PRODUCT_NAME = third_party_packages_iOS_Fat;
 				ZERO_LINK = NO;
 			};
