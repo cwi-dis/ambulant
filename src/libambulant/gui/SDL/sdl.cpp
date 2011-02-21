@@ -58,6 +58,12 @@ sdl_renderer_factory::supports(common::renderer_select *rs)
 	if (tag != "" && tag != "ref" && tag != "audio" && tag != "prefetch") return false;
 #endif
 	const char *renderer_uri = rs->get_renderer_uri();
+#if 1
+	// Stopgap for MyVideos: We don't want the SDL renderer to
+	// grab prefetches, they should go to the video renderer
+	if (renderer_uri == NULL && tag == "prefetch")
+		return false;
+#endif
 	if (renderer_uri != NULL &&
 		strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererSdl")) != 0 &&
 		strcmp(renderer_uri, AM_SYSTEM_COMPONENT("RendererOpen")) != 0 &&
