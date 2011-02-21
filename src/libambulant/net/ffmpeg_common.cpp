@@ -436,7 +436,9 @@ ffmpeg_demux::run()
 			m_lock.leave();
 			if (audio_streamnr >= 0)
 				seekresult = av_seek_frame(m_con, audio_streamnr, seektime_a, AVSEEK_FLAG_BACKWARD);
-			if (seekresult > 0 && video_streamnr >= 0)
+			//if (seekresult > 0 && video_streamnr >= 0)
+			// xxxbo: the original seekresult > 0 will make the video only not work
+			if (seekresult >= 0 && video_streamnr >= 0)
 				seekresult = av_seek_frame(m_con, video_streamnr, seektime_v, AVSEEK_FLAG_BACKWARD);
 			m_lock.enter();
 #else // SEEK_ALL_STREAMS

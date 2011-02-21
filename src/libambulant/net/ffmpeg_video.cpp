@@ -335,7 +335,11 @@ ffmpeg_video_decoder_datasource::start_prefetch(ambulant::lib::event_processor *
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::start_prefetch: (this = 0x%x)", (void*) this);
 	m_elapsed = 0;
 	m_pts_last_frame = 0;
-	m_oldest_timestamp_wanted = 0;
+	// xxxbo: should not set m_oldest_timestamp_wanted to zero over here,
+	// because prior to start_prefetch, seek already set m_oldest_timestamp_wanted
+	// to the value according to m_clip_begin
+	//m_oldest_timestamp_wanted = 0;	
+
 	m_video_clock = 0;
 
 	m_event_processor = evp;
@@ -473,6 +477,14 @@ ffmpeg_video_decoder_datasource::seek(timestamp_t time)
 	m_lock.enter();
 	int nframes_dropped = 0;
 	assert( time >= 0);
+
+	//xxxbo: For the node which is already prefetched in advance,
+	//       there is no need to call m_src->seek.
+	if (m_oldest_timestamp_wanted == time) {
+		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::seek: m_oldest_timestamp_wanted = %lld, time = %lld", m_oldest_timestamp_wanted, time);
+		m_lock.leave();
+		return;
+	}
 
 	m_oldest_timestamp_wanted = time;
 

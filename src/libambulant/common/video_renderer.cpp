@@ -69,7 +69,8 @@ video_renderer::video_renderer(
 	_init_clip_begin_end();
 
 #ifdef WITH_SEAMLESS_PLAYBACK
-	m_previous_clip_position = m_clip_begin;
+	// xxxbo: we should not set m_previous_clip_position to m_clip_begin
+	//m_previous_clip_position = m_clip_begin;
 #endif
 
 	m_src = factory->get_datasource_factory()->new_video_datasource(url,m_clip_begin, m_clip_end);
