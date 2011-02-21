@@ -395,7 +395,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 041DCBEA12B662D9003407C8 /* third_party_packages.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 043EFD30130BF57E0050B2BA /* third_party_packages_iOS_Fat */;
+			remoteGlobalIDString = 043EFD30130BF57E0050B2BA;
 			remoteInfo = third_party_packages_iOS_Fat;
 		};
 		041DCBEE12B662F4003407C8 /* PBXContainerItemProxy */ = {

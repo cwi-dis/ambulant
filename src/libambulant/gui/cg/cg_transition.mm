@@ -72,7 +72,23 @@ finalize_transition(bool outtrans, common::surface *dst)
 	}
 XX*/
 }
-
+	
+// Helper function: add a clockwise defined rectangle to the path of a CGContext
+// This is used for out transitions to reverse the effect of the counter-clockwise defined 
+// clipping paths by enclosing them in a clockwise defined rectangle for the whole region
+// using the non-zero winding rule
+void
+add_clockwise_rectangle (CGContextRef ctx, CGRect cg_rect)
+{	
+	CGFloat cg_minX = CGRectGetMinX(cg_rect), cg_maxX = CGRectGetMaxX(cg_rect),
+	cg_minY = CGRectGetMinY(cg_rect), cg_maxY = CGRectGetMaxY(cg_rect);
+	CGContextMoveToPoint(ctx, cg_minX, cg_minY);
+	CGContextAddLineToPoint(ctx, cg_minX, cg_maxY);
+	CGContextAddLineToPoint(ctx, cg_maxX, cg_maxY);
+	CGContextAddLineToPoint(ctx, cg_maxX, cg_minY);
+	CGContextAddLineToPoint(ctx, cg_minX, cg_minY);
+}
+	
 void
 cg_transition_blitclass_fade::update()
 {
@@ -87,27 +103,6 @@ cg_transition_blitclass_fade::update()
 	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
 }
 
-// Helper function: substract rect R2 from rect R1. The result is an array of max. 4 non-empty rects
-// possibly overlapping rects. The number of rects is returned.
-int substract_rect(lib::rect R1, lib::rect R2, lib::rect AR[4]) {
-	int rv = 0;
-	int L1 = R1.x, T1 = R1.y, L2 = R2.x, T2 = R2.y;
-	unsigned int W1 = R1.w, H1 = R1.h, W2 = R2.w, H2 = R2.h;
-	lib::rect r1 = lib::rect(lib::point(L1,	T1),	lib::size(W1, (unsigned int)T2-T1));
-	lib::rect r2 = lib::rect(lib::point(L1,	T2+H2),	lib::size(W1, (unsigned int)T1+H1-T2-H2));
-	lib::rect r3 = lib::rect(lib::point(L1,	T1),	lib::size((unsigned int)L2-L1, H1));
-	lib::rect r4 = lib::rect(lib::point(L2+W2, T1),	lib::size((unsigned int)L1+W1-L2-W2, H1));
-	if (r1.w > 0 && r1.h >0) 
-		AR[rv++] = r1;
-	if (r2.w > 0 && r2.h >0)
-		AR[rv++] = r2;
-	if (r3.w > 0 && r3.h >0)
-		AR[rv++] = r3;
-	if (r4.w > 0 && r4.h >0)
-		AR[rv++] = r4;
-	return rv;
-}
-	
 void
 cg_transition_blitclass_rect::update()
 {
@@ -125,19 +120,10 @@ cg_transition_blitclass_rect::update()
 	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	if (m_outtrans) {
-		lib::rect region = m_dst->get_rect();
-		lib::rect clip_rects[4];
-		int nr = substract_rect(region, newrect_whole, clip_rects);
-		if (nr > 0) {
-			CGRect cg_clip_rects[4];
-			for (int i=0; i < nr; i++) {
-				cg_clip_rects[i] = CGRectFromAmbulantRect(clip_rects[i]);
-			}
-			CGContextClipToRects(ctx,cg_clip_rects, nr);
-		}
-	} else {
-		CGContextClipToRect (ctx, cg_clipped_rect);					
+		add_clockwise_rectangle (ctx, CGRectFromAmbulantRect(m_dst->get_rect()));
 	}
+	CGContextAddRect(ctx, cg_clipped_rect);
+	CGContextClip(ctx);
 	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, cg_layer);
 }
 
@@ -219,47 +205,31 @@ cg_transition_blitclass_rectlist::update()
 	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
 	fullsrcrect.translate(m_dst->get_global_topleft()); // Translate so the right topleft pixel is in place
 	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
-	CGLayerRef cg_layer = setup_transition(false, view);
-	CGContextRef ctx = CGLayerGetContext(cg_layer);
+	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	CGContextSaveGState(ctx);
-	CGRect* cg_new_rects = (CGRect*) malloc(sizeof(CGRect));
-	int n_rects = 1;
+	bool is_clipped = false;
 	AM_DBG lib::logger::get_logger()->debug("cg_transition_blitclass_rectlist::update(%f)", m_progress);
 	std::vector< lib::rect >::iterator newrect;
-	
-	for(newrect=m_newrectlist.begin(); newrect != m_newrectlist.end(); newrect++) {
+	for (newrect=m_newrectlist.begin(); newrect != m_newrectlist.end(); newrect++) {
 		lib::rect newrect_whole = *newrect;
 		if (newrect_whole.empty()) {
 			continue;
 		}
+		is_clipped = true;
 		newrect_whole.translate(m_dst->get_global_topleft());
 		newrect_whole &= m_dst->get_clipped_screen_rect();
-		cg_new_rects[n_rects-1] = CGRectFromAmbulantRect(newrect_whole);
-		cg_new_rects = (CGRect*) realloc(cg_new_rects, ++n_rects*sizeof(CGRect));
+		CGContextAddRect(ctx, CGRectFromAmbulantRect(newrect_whole));
 	}
-	CGContextClipToRects(ctx, cg_new_rects, n_rects-1);
-	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
+	if (is_clipped) {
+		if (m_outtrans) {
+			add_clockwise_rectangle (ctx, CGRectFromAmbulantRect(m_dst->get_rect()));
+		}		
+		CGContextClip(ctx);
+		CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
+	} else if (m_outtrans) {
+		CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
+	}
 	CGContextRestoreGState(ctx);
-	free((void*) cg_new_rects);
-/*XX
-	cg_window *window = (cg_window *)m_dst->get_gui_window();
-	AmbulantView *view = (AmbulantView *)window->view();
-	NSImage *newsrc = setup_transition_bitblit(m_outtrans, view);
-	AM_DBG lib::logger::get_logger()->debug("cg_transition_blitclass_rectlist::update(%f)", m_progress);
-	std::vector< lib::rect >::iterator newrect;
-	for(newrect=m_newrectlist.begin(); newrect != m_newrectlist.end(); newrect++) {
-		lib::rect newrect_whole = *newrect;
-		newrect_whole.translate(m_dst->get_global_topleft());
-		newrect_whole &= m_dst->get_clipped_screen_rect();
-		NSRect cg_newrect_whole = [view NSRectForAmbulantRect: &newrect_whole];
-
-		[newsrc drawInRect: cg_newrect_whole
-			fromRect: cg_newrect_whole
-			operation: NSCompositeSourceOver
-			fraction: 1.0f];
-	}
-	finalize_transition_bitblit(m_outtrans, m_dst);
-*XX*/
 }
 
 // Helper function: convert a point list to a CGPath
@@ -269,8 +239,15 @@ polygon2path(const lib::point& origin, std::vector<lib::point> polygon)
 	CGMutablePathRef path = CGPathCreateMutable ();
 	std::vector<lib::point>::iterator newpoint;
 	bool first = true;
+	lib:point old_point;
 	for( newpoint=polygon.begin(); newpoint != polygon.end(); newpoint++) {
 		lib::point p = *newpoint + origin;
+		if ( ! first) {
+			if (p.x == old_point.x && p.y == old_point.y) {
+				continue;
+			}
+		}
+		old_point  = p;
 		AM_DBG lib::logger::get_logger()->debug("polygon2path: point=%d, %d", p.x, p.y);
 		CGPoint pc = CGPointMake(p.x, p.y);
 		if (first) {
@@ -333,35 +310,23 @@ cg_transition_blitclass_poly::update()
 	cg_window *window = (cg_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
+	CGContextSaveGState(ctx);
 
 	AM_DBG lib::logger::get_logger()->debug("cg_transition_blitclass_poly::update(%f)", m_progress);
-	// First we create the path
 	const lib::point& dst_global_topleft = m_dst->get_global_topleft();
-	std::vector<lib::point>  polygon;
-	if (m_outtrans) {
-		// reverse the order of the elements to get the correct clipping path for use with the
-		// non-zero winding rule when the region is added to the path
-		for (std::vector<lib::point>::reverse_iterator ri=m_newpolygon.rbegin(); ri != m_newpolygon.rend(); ri++) {
-			polygon.push_back(*ri);
-		}
-		lib::rect region = m_dst->get_rect();
-		CGRect cg_region = CGRectFromAmbulantRect(region);
-		CGContextAddRect(ctx, cg_region);
-	} else {
-		polygon = m_newpolygon;
-	}
-	CGPathRef path = polygon2path(dst_global_topleft, polygon);
-
-	// Then we composite it onto the screen
-	CGContextAddPath(ctx, path);
-	CGContextClip(ctx);
 	lib::rect dstrect_whole = m_dst->get_rect();
 	dstrect_whole.translate(dst_global_topleft);
 	dstrect_whole &= m_dst->get_clipped_screen_rect();
-
+	if (m_outtrans) {
+		add_clockwise_rectangle(ctx, CGRectFromAmbulantRect(dstrect_whole));
+	}
+	// Define the clipping path
+	CGPathRef path = polygon2path(dst_global_topleft, m_newpolygon);
+	CGContextAddPath(ctx, path);
+	CGContextClip(ctx);
+								
 	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
 	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
-	CGContextSaveGState(ctx);
 	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
 	CGContextRestoreGState(ctx);
 	CFRelease(path);
@@ -373,10 +338,17 @@ cg_transition_blitclass_polylist::update()
 	cg_window *window = (cg_window *)m_dst->get_gui_window();
 	AmbulantView *view = (AmbulantView *)window->view();
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
+	CGContextSaveGState(ctx);
 
 	AM_DBG lib::logger::get_logger()->debug("cg_transition_blitclass_poly::update(%f)", m_progress);
-	// First we create the path
 	const lib::point& dst_global_topleft = m_dst->get_global_topleft();
+	lib::rect dstrect_whole = m_dst->get_rect();
+	dstrect_whole.translate(dst_global_topleft);
+	dstrect_whole &= m_dst->get_clipped_screen_rect();
+	if (m_outtrans) {
+		add_clockwise_rectangle(ctx, CGRectFromAmbulantRect(dstrect_whole));
+	}
+	// First we create the path
 	std::vector< std::vector<lib::point> >::iterator partpolygon;
 	AM_DBG {
 	int n = 0;
@@ -388,24 +360,19 @@ cg_transition_blitclass_polylist::update()
 	}
 	}//AM_DBG
 	for (partpolygon=m_newpolygonlist.begin(); partpolygon!=m_newpolygonlist.end(); partpolygon++) {
-	//X	NSBezierPath *path = polygon2path(dst_global_topleft, m_newpolygon);
 		CGPathRef path = polygon2path(dst_global_topleft, *partpolygon);
 		CGContextAddPath(ctx, path);
 		CFRelease(path);
 	}
-	CGContextClip(ctx);
 	// Then we composite it onto the screen
-	lib::rect dstrect_whole = m_dst->get_rect();
-	dstrect_whole.translate(dst_global_topleft);
-	dstrect_whole &= m_dst->get_clipped_screen_rect();
+	CGContextClip(ctx);
 	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
 	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
-	CGContextSaveGState(ctx);
 	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
 	CGContextRestoreGState(ctx);
 }
 
-
+ 
 smil2::transition_engine *
 cg_transition_engine(common::surface *dst, bool is_outtrans, const lib::transition_info *info)
 {

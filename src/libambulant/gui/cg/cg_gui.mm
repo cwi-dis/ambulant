@@ -1233,10 +1233,11 @@ static CGLayerRef oldFullScreen;
 	if (oldFullScreen == NULL) {
 		UIImage* oldFullScreenImage = [AmbulantView UIImageFromUIView: self];
 		oldFullScreen = [AmbulantView CGLayerFromCGImage: oldFullScreenImage.CGImage];
+//DBG	[AmbulantView dumpCGLayer: oldFullScreen withId: @"scr"];
 		CFRetain(oldFullScreen);
 	}
 	CGContextDrawLayerInRect(CGLayerGetContext(self.getTransitionSurface), self.bounds, oldFullScreen);
-//BDG [AmbulantView dumpCGLayer: [self getTransitionSurface] withId: @"old"];
+//DBG [AmbulantView dumpCGLayer: [self getTransitionSurface] withId: @"old"];
 	[pool release];
 }
 

@@ -38,6 +38,10 @@
 #define AM_DBG if(0)
 #endif
 
+#ifdef	WITH_UIKIT
+#define	CLOCKWISE
+#endif//WITH_UIKIT
+
 #define MATRIX_HSTEPS 8
 #define MATRIX_VSTEPS 8
 
@@ -262,14 +266,20 @@ transition_engine_bowtiewipe::compute()
 	int ymid = (y0 + y1)/2;
 	int width = x1 - x0;
 	int height = y1 - y0;
-
+#ifdef	CLOCKWISE
+	m_newpolygonlist.clear();
+#endif//CLOCKWISE
 	if (m_progress <= 0.5) {
 		int xleft, xright, ytop, ybot;
 		std::vector<lib::point> poly;
 		double deltax = m_progress*width;
 		xleft  = static_cast<int>(round(xmid - deltax));
 		xright = static_cast<int>(round(xmid + deltax));
+#ifdef	CLOCKWISE
 		double deltay = m_progress*height;
+#else //CLOCKWISE
+		double deltay = m_progress*width;
+#endif//CLOCKWISE
 		ytop   = static_cast<int>(round(y0   + deltay));
 		ybot   = static_cast<int>(round(y1   - deltay));
 		poly.push_back(lib::point(xleft,  y0));
@@ -277,9 +287,15 @@ transition_engine_bowtiewipe::compute()
 		poly.push_back(lib::point(xmid,   ytop));
 		m_newpolygonlist.push_back(poly);
 		poly.clear();
-		poly.push_back(lib::point(xleft,  y1));
+#ifdef	CLOCKWISE
 		poly.push_back(lib::point(xright, y1));
+		poly.push_back(lib::point(xleft,  y1));
 		poly.push_back(lib::point(xmid,   ybot));
+#else //CLOCKWISE
+ 		poly.push_back(lib::point(xleft,  y1));
+		poly.push_back(lib::point(xright, y1));
+ 		poly.push_back(lib::point(xmid,   ybot));
+#endif//CLOCKWISE
 		m_newpolygonlist.push_back(poly);
 	} else {
 		lib::transition_info::progress_type value = m_progress - 0.5;
@@ -288,10 +304,21 @@ transition_engine_bowtiewipe::compute()
 		double deltax = value*width;
 		xleft  = static_cast<int>(round(xmid - deltax));
 		xright = static_cast<int>(round(xmid + deltax));
-		double deltay = value*width;
+		double deltay = value*height;
 		ytop   = static_cast<int>(round(y0   + deltay));
 		ybot   = static_cast<int>(round(y1   - deltay));
 		poly.push_back(lib::point(x0,  y0));
+#ifdef	CLOCKWISE
+		poly.push_back(lib::point(x1,  y0));
+		poly.push_back(lib::point(x1,  ytop));
+		poly.push_back(lib::point(xright, ymid));
+		poly.push_back(lib::point(x1,  ybot));
+		poly.push_back(lib::point(x1,  y1));
+		poly.push_back(lib::point(x0,  y1));
+		poly.push_back(lib::point(x0,  ybot));
+		poly.push_back(lib::point(xleft, ymid));
+		poly.push_back(lib::point(x0,  ytop));
+#else //CLOCKWISE
 		poly.push_back(lib::point(x0,  ytop));
 		poly.push_back(lib::point(xleft, ymid));
 		poly.push_back(lib::point(x0,  ybot));
@@ -301,6 +328,7 @@ transition_engine_bowtiewipe::compute()
 		poly.push_back(lib::point(xright, ymid));
 		poly.push_back(lib::point(x1,  ytop));
 		poly.push_back(lib::point(x1,  y0));
+#endif//CLOCKWISE
 		m_newpolygonlist.push_back(poly);
 	}
 }
@@ -358,10 +386,17 @@ transition_engine_pentagonwipe::get_template(int *size)
 }
 
 lib::dpoint ambulant::smil2::transition_engine_arrowheadwipe::m_template[] = {
+#ifdef	CLOCKWISE
+	lib::dpoint(0.000000, 0.500000),
+	lib::dpoint(-1.732051, 1.000000),
+	lib::dpoint(0.000000, -2.000000),
+	lib::dpoint(1.732051, 1.000000)
+#else //CLOCKWISE
 	lib::dpoint(0.000000, 0.500000),
 	lib::dpoint(1.732051, 1.000000),
 	lib::dpoint(0.000000, -2.000000),
 	lib::dpoint(-1.732051, 1.000000)
+#endif//CLOCKWISE
 };
 
 lib::dpoint *
@@ -385,12 +420,21 @@ transition_engine_trianglewipe::get_template(int *size)
 }
 
 lib::dpoint ambulant::smil2::transition_engine_hexagonwipe::m_template[] = {
+#ifdef	CLOCKWISE
+	lib::dpoint(0.000000, 1.154701),//1
+	lib::dpoint(-1.000000, 0.577350),//6
+	lib::dpoint(-1.000000, -0.577350),//5
+	lib::dpoint(0.000000, -1.154701),//4
+	lib::dpoint(1.000000, -0.577350),//3
+	lib::dpoint(1.000000, 0.577350)//2
+#else //CLOCKWISE
 	lib::dpoint(0.000000, 1.154701),
 	lib::dpoint(1.000000, 0.577350),
 	lib::dpoint(1.000000, -0.577350),
 	lib::dpoint(0.000000, -1.154701),
 	lib::dpoint(-1.000000, -0.577350),
 	lib::dpoint(-1.000000, 0.577350)
+#endif//CLOCKWISE
 };
 
 lib::dpoint *

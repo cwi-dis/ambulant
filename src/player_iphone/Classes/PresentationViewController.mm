@@ -72,7 +72,7 @@ isHistory {
 	BOOL history = [self.title isEqualToString:@"History"];
 	isHistory = history;
 	currentIndex = -1; //XXXX should ths be saved in properties ??
-	if ( !isHistory) {
+	if (isHistory) {
 		[delegate setHistoryViewController: self];
 	}
 }
