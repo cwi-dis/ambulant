@@ -61,19 +61,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">BUILD\$(ProjectName)-$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\win32\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">BUILD\$(ProjectName)-$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">BUILD\$(ProjectName)-$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\bin\win32\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">BUILD\$(ProjectName)-$(Configuration)\</IntDir>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</IgnoreImportLibrary>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">..\..\bin\win32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">BUILD\$(ProjectName)-$(Configuration)\</IntDir>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">true</IgnoreImportLibrary>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">..\..\bin\win32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">BUILD\$(ProjectName)-$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'" />
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'" />
@@ -87,9 +87,9 @@
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">libamplugin_xerces</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='DebugShlibDX|Win32'">libampluginD_xercesDX</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">libampluginD_xerces</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">libamplugin_xerces</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">libamplugin_xercesDX</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">libamplugin_xerces</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

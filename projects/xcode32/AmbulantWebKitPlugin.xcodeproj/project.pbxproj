@@ -330,7 +330,7 @@
 		0406034312EF13E70032074D /* libambulantCG.dylib */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.dylib";
-			path = libambulantCG.dylib;
+			path = libambulantGC.dylib;
 			remoteRef = 0406034212EF13E70032074D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
