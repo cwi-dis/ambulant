@@ -5,6 +5,7 @@
 /Release/
 /Debug/
 ^lib/win32/.*\.exp
+^bin/win32/.*\.exp
 ^bin/win32/.*\.egg-info
 ^third_party_packages/installed
 ^third_party_packages/SDL-1\..*
