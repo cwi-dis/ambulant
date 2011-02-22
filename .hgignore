@@ -28,6 +28,9 @@
 ^projects/vc.*/.*\.user
 ^projects/vc.*/.*\.sdf
 ^projects/vc.*/.*\.opensdf
+^projects/vc.*/.*\.ctl
+^projects/vc.*/.*\.vsp
+^projects/vc.*/ipch
 ^autom4te.cache
 ^aclocal.m4
 ^configure
@@ -44,6 +47,8 @@ po/stamp-po
 .*\.map
 .*\.pyo
 .*\.pyd
+.*\.psess
+.*\.bsc
 Makefile.in
 .*\.xcodeproj/.*\.pbxuser
 .*\.xcodeproj/.*\.mode1v3
