@@ -276,6 +276,8 @@ bad:
 //	fullscreen_previmage = NULL;
 //	fullscreen_oldimage = NULL;
 	fullscreen_engine = NULL;
+	fullscreen_outtrans = NO;
+	transition_pushed = NO;
 //	overlay_window = NULL;
 //	overlay_window_needs_unlock = NO;
 //	overlay_window_needs_reparent = NO;
@@ -296,6 +298,8 @@ bad:
 //	fullscreen_previmage = NULL;
 //	fullscreen_oldimage = NULL;
 	fullscreen_engine = NULL;
+	fullscreen_outtrans = NO;
+	transition_pushed = NO;
 //	overlay_window = NULL;
 //	overlay_window_needs_unlock = NO;
 //	overlay_window_needs_reparent = NO;
@@ -468,105 +472,6 @@ bad:
 	return false;
 }
 
-#ifdef	JNK
-#ifdef	WITH_UIKIT
-@synthesize original_bounds;
-@synthesize current_transform;
-- (void) adaptDisplayAfterRotation: (UIDeviceOrientation) orientation withAutoCenter: (BOOL) autoCenter withAutoResize: (bool) autoResize {
-	if (ambulant_window == NULL ) {
-		return;
-	}
-	if (self.alpha == 0.0) {
-		// view disabled, another view is made visible (e.g. tabBarViewController)
-		return;
-	}
-	// adapt the ambulant window needed (bounds) in the current View
-	M_auto_center = autoCenter;
-	M_auto_resize = autoResize;
-	bool auto_resize = (bool) autoResize;
-	bool auto_center = (bool) autoCenter;
-    if (autoResize) {
-        zoomState = zoomFillScreen;
-    } else {
-        zoomState = zoomNaturalSize;
-    }
-	CGSize mybounds;
-	mybounds.width = original_bounds.w;
-	mybounds.height = original_bounds.h;
-#if PRESERVE_ZOOM
-	// pan/zoom combined with auto scale/auto center does not work smoothly.
-	// for now, rotating the device implies undo of all pan/zoom settings.
-	// This is useable, albeit maybe not always desirable.
-	// Shake gesture or UIDeviveOrientationFaceDown would be obvious
-	// implementation for Undo pan/zoom (Shake is commonly used fo Undo/Redo).
-	CGRect myframe = current_frame;
-#else
-	CGRect myframe = current_frame = original_frame;
-#endif ///PRESERVE_ZOOM
-	CGRect mainframe = [[UIScreen mainScreen] applicationFrame];
-	AM_DBG NSLog(@"Mainscreen: %f,%f,%f,%f", mainframe.origin.x,mainframe.origin.y,mainframe.size.width,mainframe.size.height);
-	BOOL wasRotated = false;
-	if (orientation == UIDeviceOrientationLandscapeLeft
-		|| orientation == UIDeviceOrientationLandscapeRight) {
-		wasRotated = true;
-		if (auto_center || auto_resize) {
-			myframe.size.height = mainframe.size.width; // depends on nib
-			myframe.size.width = mainframe.size.height;
-		}
-		[[UIApplication sharedApplication] setStatusBarHidden: YES withAnimation: UIStatusBarAnimationNone];
-	} else if (orientation == UIDeviceOrientationPortrait 
-			   || orientation == UIDeviceOrientationPortraitUpsideDown) {
-		if (auto_center || auto_resize) {
-			myframe.size.width = mainframe.size.width;
-			myframe.size.height = mainframe.size.height;
-		}
-		[[UIApplication sharedApplication] setStatusBarHidden: NO withAnimation: UIStatusBarAnimationNone];
-	} else {
-		return;
-	}
-	float scale = 1.0;
-	if (auto_resize) {
-		float scale_x = myframe.size.width / mybounds.width;
-		float scale_y = myframe.size.height / mybounds.height;
-		// find the smallest scale factor for both x- and y-directions
-		scale = scale_x < scale_y ? scale_x : scale_y;
-	}
-#if PRESERVE_ZOOM
-	//self.transform = CGAffineTransformScale(self.transform, scale, scale);
-#else
-	self.transform = CGAffineTransformMakeScale(scale, scale);
-#endif ///PRESERVE_ZOOM
-	
-	// center my frame in the available space
-	float delta = 0;
-	if (auto_center) {
-		if (wasRotated) {
-			delta = (myframe.size.width - mybounds.width * scale) / 2;
-			myframe.origin.x += delta;
-			myframe.size.width -= delta;
-			delta = (myframe.size.height - mybounds.height * scale) / 2;
-			myframe.origin.y += delta;
-			myframe.size.height -= delta;
-		} else {
-			delta = (myframe.size.height - mybounds.height * scale) / 2;		
-			myframe.origin.y += delta;
-			myframe.size.height -= delta;
-			delta = (myframe.size.width - mybounds.width * scale) / 2;
-			myframe.origin.x += delta;
-			myframe.size.width -= delta;
-		}
-	}
-	AM_DBG ambulant::lib::logger::get_logger()->debug("adaptDisplayAfterRotation: myframe=orig(%d,%d),size(%d,%d)",(int)myframe.origin.x, (int)myframe.origin.y,(int)myframe.size.width,(int)myframe.size.height);
-	self.frame = myframe;
-	// invalidate transition surfaces
-	[self releaseTransitionSurfaces];
-	// redisplay AmbulantView using the new settings
-	[self setNeedsDisplay];
-	
-}
-#endif//WITH_UIKIT
-#endif//JNK
-
 - (void)ambulantSetSize: (ambulant::lib::size) bounds
 {
     // Remember frame and bounds and adapt the window reqested in the current view
@@ -582,30 +487,6 @@ bad:
 		[[self superview] recomputeZoom];
 
     AM_DBG NSLog(@"setSize after aDAR: %@ %f,%f", self, self.bounds.size.width, self.bounds.size.height);
-#ifdef JNK
-#ifndef WITH_UIKIT
-	// Get the position of our view in window coordinates
-	NSPoint origin = NSMakePoint(0,0);
-	NSView *superview = [self superview];
-	NSWindow *window = [self window];
-	int32_t shieldLevel = CGShieldingWindowLevel();
-	if ([self ignoreResize] || [window level] >= shieldLevel) {
-		// We don't muck around with fullscreen windows or windows in other apps (browsers, etc).
-		// What we should actually do is recenter the content, but that is for later.
-	} else {
-		if (superview) {
-			NSRect rect = [superview convertRect: [self frame] toView: nil];
-			origin = rect.origin;
-		}
-		// And set the window size
-		AM_DBG NSLog(@"Size changed request: (%d, %d)", bounds.w, bounds.h);
-		NSSize ns_size = NSMakeSize(bounds.w + origin.x, bounds.h + origin.y);
-		[window setContentSize: ns_size];
-		AM_DBG NSLog(@"Size changed on %@ to (%f, %f)", window, ns_size.width, ns_size.height);
-	}
-	[window makeKeyAndOrderFront: self];
-#endif // !WITH_UIKIT
-#endif // JNK
 }
 
 #ifdef WITH_UIKIT
@@ -904,7 +785,6 @@ bad:
 		// Take a snapshot of the screen and return.
 		if (fullscreen_previmage) [fullscreen_previmage release];
 		fullscreen_previmage = [[self getOnScreenImageForRect: [self bounds]] retain];
-		/*DBG	[self dump: fullscreen_previmage toImageID: "fsprev"]; */
 		return;
 	}
 	if (fullscreen_oldimage == NULL) {
@@ -1223,13 +1103,39 @@ static CGLayerRef oldFullScreen;
 	}
 }
 
-- (void) startScreenTransition
+- (void) pushTransitionSurface
+{
+	AM_DBG NSLog(@"pushTransitionSurface 0x%x fullscreen_outtrans=%d transition_pushed=%d", self, fullscreen_outtrans, transition_pushed);
+	if ( ! transition_pushed) {
+		CGLayerRef surf = [self getTransitionSurface];
+//DBG	[AmbulantView dumpScreenWithId: @"pre"];
+		UIGraphicsPushContext(CGLayerGetContext(surf));
+		transition_pushed = YES;
+	} else { // programmer error
+//		assert ( ! transition_pushed);
+	}
+
+}
+
+- (void) popTransitionSurface
+{
+	AM_DBG NSLog(@"popTransitionSurface 0x%x fullscreen_outtrans=%d transition_pushed=%d", self, fullscreen_outtrans, transition_pushed);
+	if (transition_pushed) {
+		UIGraphicsPopContext();
+		transition_pushed = NO;
+	} else { // programmer error
+		assert (transition_pushed);
+	}
+}
+
+- (void) startScreenTransition: (BOOL) isOuttrans
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	AM_DBG NSLog(@"startScreenTransition");
 	if (fullscreen_count)
 		NSLog(@"Warning: multiple Screen transitions in progress");
 	fullscreen_count++;
+	fullscreen_outtrans = isOuttrans;
 	if (oldFullScreen == NULL) {
 		UIImage* oldFullScreenImage = [AmbulantView UIImageFromUIView: self];
 		oldFullScreen = [AmbulantView CGLayerFromCGImage: oldFullScreenImage.CGImage];
@@ -1266,10 +1172,12 @@ static CGLayerRef oldFullScreen;
 	if (fullscreen_count == 0) return;
 	// setup drawing to transition surface
 	AM_DBG NSLog(@"_screenTransitionPreRedraw: setup for transition redraw");
-	CGLayerRef surf = [self getTransitionSurface];
-//DBG	[AmbulantView dumpScreenWithId: @"pre"];
-	CGContextDrawLayerInRect(UIGraphicsGetCurrentContext(), [self bounds], oldFullScreen);
-	UIGraphicsPushContext(CGLayerGetContext(surf));
+	if (! fullscreen_outtrans) {
+		CGContextDrawLayerInRect(UIGraphicsGetCurrentContext(), [self bounds], oldFullScreen);
+	}
+	if ( ! fullscreen_outtrans) {
+		[self pushTransitionSurface];
+	}
 }
 
 - (void) _screenTransitionPostRedraw
@@ -1281,7 +1189,9 @@ static CGLayerRef oldFullScreen;
 /*DBG	[self dump: fullscreen_previmage toImageID: "fsprev"]; */
 		return;
 	}
-	UIGraphicsPopContext();
+	if ( ! fullscreen_outtrans) {
+		[self popTransitionSurface];
+	}
 //X	if (fullscreen_oldimage == NULL) {
 //XXX No idea yet what to do here
 		// Just starting a new fullscreen transition. Get the
@@ -1294,9 +1204,6 @@ static CGLayerRef oldFullScreen;
 	// Do the transition step, or simply copy the bits
 	// if no engine available.
 	AM_DBG NSLog(@"_screenTransitionPostRedraw:");
-//X	[[self getTransitionSurface] unlockFocus];
-//	/*DBG*/ [self dump: [self getTransitionOldSource] toImageID: "fsold"];
-//	/*DBG*/ [self dump: [self getTransitionNewSource] toImageID: "fsnew"];
 	CGRect bounds = [self bounds];
 	if (fullscreen_engine) {
 		fullscreen_engine->step(fullscreen_now);
