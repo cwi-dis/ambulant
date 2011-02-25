@@ -151,6 +151,8 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 	CGLayerRef transition_tmpsurface;
 	ambulant::smil2::transition_engine *fullscreen_engine;
 	ambulant::lib::transition_info::time_type fullscreen_now;
+	BOOL fullscreen_outtrans;
+	BOOL transition_pushed; 
 #else // ! WITH_UIKIT
 //	NSImage *transition_surface;
 //	NSImage *transition_tmpsurface;
@@ -159,23 +161,9 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 	ambulant::smil2::transition_engine *fullscreen_engine;
 	ambulant::lib::transition_info::time_type fullscreen_now;
 #endif// ! WITH_UIKIT
-#ifdef	JNK
-#ifdef	WITH_UIKIT
-	BOOL M_auto_center;
-	BOOL M_auto_resize;
-	CGRect current_frame;
-	CGRect original_frame;
-	CGAffineTransform current_transform;
-	ambulant::lib::size original_bounds;
-#endif//WITH_UIKIT
-#endif//JNK
 }
 
 #ifdef	WITH_UIKIT
-#ifdef	JNK
-@property(nonatomic) ambulant::lib::size original_bounds;
-(void) adaptDisplayAfterRotation: (UIDeviceOrientation) orientation withAutoCenter: (BOOL) autoCenter withAutoResize: (bool) autoResize;
-#endif//JNK
 - (BOOL) tappedAtPoint:(CGPoint) location;
 - (void) drawTestRect:(CGRect)rect;
 
@@ -265,19 +253,27 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 
 // while in a transition, getTransitionOldSource will return the old pixels,
 // i.e. the pixels "behind" the transitioning element.
-- (CGLayerRef) getTransitionOldSource;
+- (CGLayerRef) getTransitionOldSource; // Not used
 
 // while in a transition, getTransitionNewSource will return the new pixels,
 // i.e. the pixels the transitioning element drew into getTransitionSurface.
-- (CGLayerRef) getTransitionNewSource;
+- (CGLayerRef) getTransitionNewSource; //TBD
 
-// Return the current on-screen image, caters for AVFoundation movies
-- (CGLayerRef) _getOnScreenImage;
+// Return the current on-screen image, caters for AVFoundation movies 
+- (CGLayerRef) _getOnScreenImage; //TBD
 
 // Return part of the onscreen image, does not cater for AVFoundation
-- (CGImageRef) getOnScreenImageForRect: (CGRect)bounds;
+- (CGImageRef) getOnScreenImageForRect: (CGRect)bounds; //TBD
 
-- (void) startScreenTransition;
+// pushes the context associated with transition_surface on the CGContext stack
+// this has the effect that subsequents drawings will be done on transition_surface
+- (void) pushTransitionSurface;
+
+// pops the context associated with transition_surface from the CGContext stack
+// this has the effect that subsequents drawings will be done on screen back buffer
+- (void) popTransitionSurface;
+
+- (void) startScreenTransition: (BOOL) isOuttrans;
 - (void) endScreenTransition;
 - (void) screenTransitionStep: (ambulant::smil2::transition_engine *)engine
 		elapsed: (ambulant::lib::transition_info::time_type)now;
