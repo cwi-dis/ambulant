@@ -581,7 +581,7 @@ bad:
 
 - (void)mouseDown: (NSEvent *)theEvent
 {
-	NSPoint where = [theEvent locationInq];
+	NSPoint where = [theEvent locationInWindow];
 	where = [self convertPoint: where fromView: nil];
 	if (!NSPointInRect(where, [self bounds])) {
 		AM_DBG NSLog(@"0x%x: mouseDown outside our frame", (void*)self);
@@ -648,7 +648,7 @@ bad:
 	// XXXX Should we delete transition_tmpsurface?
 }
 
-#if NOT_YET_UIKIT
+#ifndef	WITH_UIKIT
 - (NSImage *)getTransitionSurface
 {
 	if (!transition_surface) {
@@ -827,7 +827,7 @@ bad:
 	}
 }
 
-#else// NOT_YET_UIKIT
+#else// ! WITH_UIKIT
 
 // Get an UIImage of the iPhone/iPad screen
 // From: http://developer.apple.com/library/ios/#qa/qa2010/qa1703.html
@@ -983,9 +983,9 @@ bad:
 }
 
 // write a CGImageRef to the file: "$HOME/Documents/<number>.<id>.png" where
-// where $HOME refers to the Application home directory and
-// and number is a numeric string circular variying between "0000" and "9999".   
-+ (void) dumpCGImage: (CGImageRef) img withId: (NSString*) id {
+// $HOME refers to the Application home directory and number is a numeric string
+// circular variying between "0000" and "9999", which is returned as an int.   
++ (int) dumpCGImage: (CGImageRef) img withId: (NSString*) id {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	UIImage* ui_image = [UIImage imageWithCGImage: img];
 	NSData *imageData = UIImagePNGRepresentation(ui_image);
@@ -1008,35 +1008,34 @@ bad:
 		}
 	}
 	[pool release];
+	return i;
 }
 
 // write the contents of an iPhone/iPad screen to the file: "$HOME/Documents/<number>.<id>.png" where
-// where $HOME refers to the Application home directory and
-// and number is a numeric string circular variying between "0000" and "9999".   
-+ (void) dumpScreenWithId: (NSString*) id
+// $HOME refers to the Application home directory and number is a numeric string
+// circular variying between "0000" and "9999", which is returned as an int.   
++ (int) dumpScreenWithId: (NSString*) id
 {
 	UIImage *image = [AmbulantView UIImageFromScreen];
-	[AmbulantView dumpCGImage:image.CGImage withId: id];
-	//	[image release];
+	return [AmbulantView dumpCGImage:image.CGImage withId: id];
 }
 
 // write the contents of an UIView to the file: "$HOME/Documents/<number>.<id>.png" where
-// where $HOME refers to the Application home directory and
-// and number is a numeric string circular variying between "0000" and "9999".   
-+ (void) dumpUIView: (UIView*) view withId: (NSString*) id
+// $HOME refers to the Application home directory and number is a numeric string
+// circular variying between "0000" and "9999", which is returned as an int.   
++ (int) dumpUIView: (UIView*) view withId: (NSString*) id
 {
 	UIImage *image = [AmbulantView UIImageFromUIView:view];
-	[AmbulantView dumpCGImage:image.CGImage withId: id];
-	//	[image release];
+	return [AmbulantView dumpCGImage:image.CGImage withId: id];
 }
 
 // write the contents of an CGLayer to the file: "$HOME/Documents/<number>.<id>.png" where
-// where $HOME refers to the Application home directory and
-// and number is a numeric string circular variying between "0000" and "9999".   
-+ (void) dumpCGLayer: (CGLayerRef) cglr withId: (NSString*) id
+// $HOME refers to the Application home directory and number is a numeric string
+// circular variying between "0000" and "9999", which is returned as an int.   
++ (int) dumpCGLayer: (CGLayerRef) cglr withId: (NSString*) id
 {
 	UIImage* image = [AmbulantView UIImageFromCGLayer: cglr];
-	[AmbulantView dumpCGImage:image.CGImage withId: id];
+	return [AmbulantView dumpCGImage:image.CGImage withId: id];
 }
 
 // From: http://developer.apple.com/library/ios/#documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/dq_context/dq_context.html%23//apple_ref/doc/uid/TP30001066-CH203-TPXREF101
@@ -1080,6 +1079,7 @@ CGContextRef CreateBitmapContext (CGSize size)
 	return transition_surface;
 }
 
+#if	JNK		
 - (CGLayerRef) getTransitionTmpSurface
 {
 	if (transition_tmpsurface == NULL) {
@@ -1089,8 +1089,7 @@ CGContextRef CreateBitmapContext (CGSize size)
 	}
 	return transition_tmpsurface;
 }
-
-static CGLayerRef oldFullScreen;
+#endif//JNK
 
 - (void) releaseTransitionSurfaces
 {
@@ -1098,8 +1097,8 @@ static CGLayerRef oldFullScreen;
 		CFRelease(transition_surface);
 		transition_surface = NULL;
 	}
-	if (oldFullScreen != NULL) {
-		CFRelease(oldFullScreen);
+	if (fullscreen_oldimage != NULL) {
+		CFRelease(fullscreen_oldimage);
 	}
 }
 
@@ -1136,13 +1135,13 @@ static CGLayerRef oldFullScreen;
 		NSLog(@"Warning: multiple Screen transitions in progress");
 	fullscreen_count++;
 	fullscreen_outtrans = isOuttrans;
-	if (oldFullScreen == NULL) {
+	if (fullscreen_oldimage == NULL && ! isOuttrans) {
 		UIImage* oldFullScreenImage = [AmbulantView UIImageFromUIView: self];
-		oldFullScreen = [AmbulantView CGLayerFromCGImage: oldFullScreenImage.CGImage];
-//DBG	[AmbulantView dumpCGLayer: oldFullScreen withId: @"scr"];
-		CFRetain(oldFullScreen);
+		fullscreen_oldimage = [AmbulantView CGLayerFromCGImage: oldFullScreenImage.CGImage];
+//DBG	[AmbulantView dumpCGLayer: fullscreen_oldimage withId: @"scr"];
+		CFRetain(fullscreen_oldimage);
 	}
-	CGContextDrawLayerInRect(CGLayerGetContext(self.getTransitionSurface), self.bounds, oldFullScreen);
+	CGContextDrawLayerInRect(CGLayerGetContext(self.getTransitionSurface), self.bounds, fullscreen_oldimage);
 //DBG [AmbulantView dumpCGLayer: [self getTransitionSurface] withId: @"old"];
 	[pool release];
 }
@@ -1150,9 +1149,9 @@ static CGLayerRef oldFullScreen;
 - (void) endScreenTransition
 {
 	AM_DBG NSLog(@"endScreenTransition");
-	if (oldFullScreen != NULL) {
-		CFRelease(oldFullScreen);
-		oldFullScreen = NULL;
+	if (fullscreen_oldimage != NULL) {
+		CFRelease(fullscreen_oldimage);
+		fullscreen_oldimage = NULL;
 	}
 	assert(fullscreen_count > 0);
 	fullscreen_count--;
@@ -1173,7 +1172,7 @@ static CGLayerRef oldFullScreen;
 	// setup drawing to transition surface
 	AM_DBG NSLog(@"_screenTransitionPreRedraw: setup for transition redraw");
 	if (! fullscreen_outtrans) {
-		CGContextDrawLayerInRect(UIGraphicsGetCurrentContext(), [self bounds], oldFullScreen);
+		CGContextDrawLayerInRect(UIGraphicsGetCurrentContext(), [self bounds], fullscreen_oldimage);
 	}
 	if ( ! fullscreen_outtrans) {
 		[self pushTransitionSurface];
@@ -1189,9 +1188,9 @@ static CGLayerRef oldFullScreen;
 /*DBG	[self dump: fullscreen_previmage toImageID: "fsprev"]; */
 		return;
 	}
-	if ( ! fullscreen_outtrans) {
+//	if ( ! fullscreen_outtrans) {
 		[self popTransitionSurface];
-	}
+//	}
 //X	if (fullscreen_oldimage == NULL) {
 //XXX No idea yet what to do here
 		// Just starting a new fullscreen transition. Get the
@@ -1220,6 +1219,6 @@ static CGLayerRef oldFullScreen;
 	}
 //DBG	[AmbulantView dumpScreenWithId: @"pst"];
 }
-#endif // NOT_YET_UIKIT
+#endif // ! WITH_UIKIT
 @end
 #endif // __OBJC__

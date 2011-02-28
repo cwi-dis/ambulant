@@ -146,18 +146,19 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 	ambulant::gui::cg::cg_window *ambulant_window;
 	int transition_count;
 	int fullscreen_count;
-#ifdef	WITH_UIKIT
-	CGLayerRef transition_surface;
-	CGLayerRef transition_tmpsurface;
-	ambulant::smil2::transition_engine *fullscreen_engine;
-	ambulant::lib::transition_info::time_type fullscreen_now;
 	BOOL fullscreen_outtrans;
 	BOOL transition_pushed; 
+#ifdef	WITH_UIKIT
+	CGLayerRef transition_surface;
+	CGLayerRef fullscreen_oldimage;
+//	CGLayerRef transition_tmpsurface;
+	ambulant::smil2::transition_engine *fullscreen_engine;
+	ambulant::lib::transition_info::time_type fullscreen_now;
 #else // ! WITH_UIKIT
-//	NSImage *transition_surface;
-//	NSImage *transition_tmpsurface;
-//	NSImage *fullscreen_previmage;
-//	NSImage *fullscreen_oldimage;
+	NSImage *transition_surface;
+	NSImage *transition_tmpsurface;
+	NSImage *fullscreen_previmage;
+	NSImage *fullscreen_oldimage;
 	ambulant::smil2::transition_engine *fullscreen_engine;
 	ambulant::lib::transition_info::time_type fullscreen_now;
 #endif// ! WITH_UIKIT
@@ -221,24 +222,24 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 + (CGLayerRef) CGLayerCreateFromCGImage: (CGImageRef) image;
 
 // write a CGImageRef to the file: "$HOME/Documents/<number>.<id>.png" where
-// where $HOME refers to the Application home directory and
-// and number is a numeric string circular variying between "0000" and "9999".   
-+ (void) dumpCGImage: (CGImageRef) img withId: (NSString*) id;
+// $HOME refers to the Application home directory and number is a numeric string
+// circular variying between "0000" and "9999", which is returned as an int.   
++ (int) dumpCGImage: (CGImageRef) img withId: (NSString*) id;
 
 // write the contents of an UIView to the file: "$HOME/Documents/<number>.<id>.png" where
-// where $HOME refers to the Application home directory and
-// and number is a numeric string circular variying between "0000" and "9999".   
-+ (void) dumpUIView: (UIView*) view withId: (NSString*) id;
+// $HOME refers to the Application home directory and number is a numeric string
+// circular variying between "0000" and "9999", which is returned as an int.   
++ (int) dumpUIView: (UIView*) view withId: (NSString*) id;
 
 // write the contents of an CGLayer to the file: "$HOME/Documents/<number>.<id>.png" where
-// where $HOME refers to the Application home directory and
-// and number is a numeric string circular variying between "0000" and "9999".   
-+ (void) dumpCGLayer: (CGLayerRef) cglr withId: (NSString*) id;
+// $HOME refers to the Application home directory and number is a numeric string
+// circular variying between "0000" and "9999", which is returned as an int.   
++ (int) dumpCGLayer: (CGLayerRef) cglr withId: (NSString*) id;
 
 // write the contents of an iPhone/iPad screen to the file: "$HOME/Documents/<number>.<id>.png" where
-// where $HOME refers to the Application home directory and
-// and number is a numeric string circular variying between "0000" and "9999".   
-+ (void) dumpScreenWithId: (NSString*) id;
+// $HOME refers to the Application home directory and number is a numeric string
+// circular variying between "0000" and "9999", which is returned as an int.   
++ (int) dumpScreenWithId: (NSString*) id;
 
 // while in a transition, getTransitionSurface returns the surface that the
 // transitioning element should be drawn to.
