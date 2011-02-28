@@ -42,7 +42,7 @@ namespace gui {
 
 namespace cg {
 
-#ifdef UIKIT_NOT_YET
+#ifndef WITH_UIKIT
 cg_transition_renderer::~cg_transition_renderer()
 {
 	stop();
