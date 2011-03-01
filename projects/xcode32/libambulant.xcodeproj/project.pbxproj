@@ -361,6 +361,7 @@
 		04ACA7A212B6369900AE64EE /* timegraph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D2D115194C10007DD71 /* timegraph.cpp */; };
 		04ACA7A312B6369A00AE64EE /* animate_a.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D1E115194C10007DD71 /* animate_a.cpp */; };
 		04ACA7A412B6369B00AE64EE /* time_node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04791D2A115194C10007DD71 /* time_node.cpp */; };
+		9361F108131C04A90075FC35 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C8CE89131668970085212A /* ApplicationServices.framework */; };
 		939CEABC12E85FD40003D62E /* cg_transition.h in Headers */ = {isa = PBXBuildFile; fileRef = 939CEABB12E85FD40003D62E /* cg_transition.h */; };
 		939CEABD12E85FD40003D62E /* cg_transition.h in Headers */ = {isa = PBXBuildFile; fileRef = 939CEABB12E85FD40003D62E /* cg_transition.h */; };
 		939CEACD12E8659E0003D62E /* cg_transition.mm in Sources */ = {isa = PBXBuildFile; fileRef = 939CEACC12E8659E0003D62E /* cg_transition.mm */; };
@@ -372,21 +373,19 @@
 		93BBA28A12DCAC1B00EE7501 /* cg_smiltext.h in Headers */ = {isa = PBXBuildFile; fileRef = 93BBA28812DCAC1B00EE7501 /* cg_smiltext.h */; };
 		93BBA28B12DCAC1B00EE7501 /* cg_smiltext.h in Headers */ = {isa = PBXBuildFile; fileRef = 93BBA28812DCAC1B00EE7501 /* cg_smiltext.h */; };
 		93C6F71912FC480B0001EA04 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C6F71812FC480B0001EA04 /* UIKit.framework */; };
-		93C6F77312FC48430001EA04 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C6F77212FC48430001EA04 /* ImageIO.framework */; };
-		93C6F85E12FDF0EF0001EA04 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C6F85D12FDF0EF0001EA04 /* CoreText.framework */; };
-		93C6F86412FDF1960001EA04 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C6F86312FDF1960001EA04 /* CoreGraphics.framework */; };
 		93C6F86C12FDFB180001EA04 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C6F86B12FDFB180001EA04 /* QuartzCore.framework */; };
 		93C6F94E12FDFE5E0001EA04 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C6F86B12FDFB180001EA04 /* QuartzCore.framework */; };
 		93C6F94F12FDFE5E0001EA04 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D6A5FE840307C02AAC07 /* AppKit.framework */; };
 		93C6F95012FDFE5E0001EA04 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2A6134D07B89F6200DD23D3 /* CoreData.framework */; };
 		93C6F95112FDFE5E0001EA04 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D69BFE84028FC02AAC07 /* Foundation.framework */; };
-		93C6F95212FDFE5E0001EA04 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C6F77212FC48430001EA04 /* ImageIO.framework */; };
 		93C6F95312FDFE5E0001EA04 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C6F71812FC480B0001EA04 /* UIKit.framework */; };
-		93C6F95412FDFE5E0001EA04 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C6F85D12FDF0EF0001EA04 /* CoreText.framework */; };
-		93C6F95512FDFE5E0001EA04 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C6F86312FDF1960001EA04 /* CoreGraphics.framework */; };
 		93C6F95612FDFE610001EA04 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D6A5FE840307C02AAC07 /* AppKit.framework */; };
 		93C6F95712FDFE610001EA04 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2A6134D07B89F6200DD23D3 /* CoreData.framework */; };
 		93C6F95812FDFE610001EA04 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D69BFE84028FC02AAC07 /* Foundation.framework */; };
+		93C8CE8A131668970085212A /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C8CE89131668970085212A /* ApplicationServices.framework */; };
+		93C8CEA313166F360085212A /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C8CEA113166F360085212A /* CoreText.framework */; };
+		93C8CEA513166F450085212A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C8CE9D13166EF80085212A /* CoreGraphics.framework */; };
+		93C8CEA713166F650085212A /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C8CE9F13166F130085212A /* ImageIO.framework */; };
 		D2AAC0CC05546C4400DB518D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
@@ -857,10 +856,11 @@
 		93BBA28612DCABF700EE7501 /* cg_avfoundation_video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cg_avfoundation_video.h; path = cg/cg_avfoundation_video.h; sourceTree = "<group>"; };
 		93BBA28812DCAC1B00EE7501 /* cg_smiltext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cg_smiltext.h; path = cg/cg_smiltext.h; sourceTree = "<group>"; };
 		93C6F71812FC480B0001EA04 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		93C6F77212FC48430001EA04 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
-		93C6F85D12FDF0EF0001EA04 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
-		93C6F86312FDF1960001EA04 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		93C6F86B12FDFB180001EA04 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		93C8CE89131668970085212A /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
+		93C8CE9D13166EF80085212A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/ApplicationServices.framework/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		93C8CE9F13166F130085212A /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ApplicationServices.framework/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		93C8CEA113166F360085212A /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/ApplicationServices.framework/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		D2A6134D07B89F6200DD23D3 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		D2AAC0C705546C1D00DB518D /* libambulant.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libambulant.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -871,9 +871,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				93C6F71912FC480B0001EA04 /* UIKit.framework in Frameworks */,
-				93C6F77312FC48430001EA04 /* ImageIO.framework in Frameworks */,
-				93C6F85E12FDF0EF0001EA04 /* CoreText.framework in Frameworks */,
-				93C6F86412FDF1960001EA04 /* CoreGraphics.framework in Frameworks */,
 				93C6F86C12FDFB180001EA04 /* QuartzCore.framework in Frameworks */,
 				93C6F95612FDFE610001EA04 /* AppKit.framework in Frameworks */,
 				93C6F95712FDFE610001EA04 /* CoreData.framework in Frameworks */,
@@ -904,6 +901,7 @@
 				04A1E86F12B57DF20060F97E /* QTKit.framework in Frameworks */,
 				04A1E87012B57DF20060F97E /* WebKit.framework in Frameworks */,
 				04A1E87112B57DF20060F97E /* libltdl.a in Frameworks */,
+				9361F108131C04A90075FC35 /* ApplicationServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -915,10 +913,10 @@
 				93C6F94F12FDFE5E0001EA04 /* AppKit.framework in Frameworks */,
 				93C6F95012FDFE5E0001EA04 /* CoreData.framework in Frameworks */,
 				93C6F95112FDFE5E0001EA04 /* Foundation.framework in Frameworks */,
-				93C6F95212FDFE5E0001EA04 /* ImageIO.framework in Frameworks */,
 				93C6F95312FDFE5E0001EA04 /* UIKit.framework in Frameworks */,
-				93C6F95412FDFE5E0001EA04 /* CoreText.framework in Frameworks */,
-				93C6F95512FDFE5E0001EA04 /* CoreGraphics.framework in Frameworks */,
+				93C8CEA313166F360085212A /* CoreText.framework in Frameworks */,
+				93C8CEA513166F450085212A /* CoreGraphics.framework in Frameworks */,
+				93C8CEA713166F650085212A /* ImageIO.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -945,6 +943,7 @@
 				040703511152650C0094FB0B /* QTKit.framework in Frameworks */,
 				04070359115265220094FB0B /* WebKit.framework in Frameworks */,
 				040707161152847A0094FB0B /* libltdl.a in Frameworks */,
+				93C8CE8A131668970085212A /* ApplicationServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1772,14 +1771,15 @@
 		1058C7B2FEA5585E11CA2CBB /* Other Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				93C8CEA113166F360085212A /* CoreText.framework */,
+				93C8CE9F13166F130085212A /* ImageIO.framework */,
+				93C8CE9D13166EF80085212A /* CoreGraphics.framework */,
 				93C6F86B12FDFB180001EA04 /* QuartzCore.framework */,
 				0867D6A5FE840307C02AAC07 /* AppKit.framework */,
 				D2A6134D07B89F6200DD23D3 /* CoreData.framework */,
 				0867D69BFE84028FC02AAC07 /* Foundation.framework */,
-				93C6F77212FC48430001EA04 /* ImageIO.framework */,
 				93C6F71812FC480B0001EA04 /* UIKit.framework */,
-				93C6F85D12FDF0EF0001EA04 /* CoreText.framework */,
-				93C6F86312FDF1960001EA04 /* CoreGraphics.framework */,
+				93C8CE89131668970085212A /* ApplicationServices.framework */,
 			);
 			name = "Other Frameworks";
 			sourceTree = "<group>";
@@ -2321,6 +2321,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/Frameworks/ApplicationServices.framework/Frameworks\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
@@ -2354,6 +2358,10 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/Frameworks/ApplicationServices.framework/Frameworks\"",
+				);
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -2382,13 +2390,17 @@
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/Frameworks/ApplicationServices.framework/Frameworks\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = libambulant_Prefix.pch;
-				INSTALL_PATH = /usr/local/lib;
+				INSTALL_PATH = "";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/installed/lib\\\"",
@@ -2409,6 +2421,10 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/Frameworks/ApplicationServices.framework/Frameworks\"",
+				);
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = libambulant_Prefix.pch;
@@ -2431,6 +2447,10 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/Frameworks/ApplicationServices.framework/Frameworks\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
@@ -2474,6 +2494,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/Frameworks/ApplicationServices.framework/Frameworks\"",
+				);
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -2499,6 +2523,10 @@
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/Frameworks/ApplicationServices.framework/Frameworks\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
@@ -2526,6 +2554,10 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/Frameworks/ApplicationServices.framework/Frameworks\"",
+				);
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = libambulant_Prefix.pch;

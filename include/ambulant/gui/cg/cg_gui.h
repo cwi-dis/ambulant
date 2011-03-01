@@ -36,6 +36,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <ImageIO/ImageIO.h>
 #include <UIKit/UIKit.h>
+#include <ApplicationServices/ApplicationServices.h>
 #define VIEW_SUPERCLASS UIView
 #else// ! WITH_UIKIT
 #include <AppKit/AppKit.h>
@@ -146,36 +147,25 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 	ambulant::gui::cg::cg_window *ambulant_window;
 	int transition_count;
 	int fullscreen_count;
+	BOOL fullscreen_outtrans;
+	BOOL transition_pushed; 
 #ifdef	WITH_UIKIT
 	CGLayerRef transition_surface;
-	CGLayerRef transition_tmpsurface;
+	CGLayerRef fullscreen_oldimage;
+//	CGLayerRef transition_tmpsurface;
 	ambulant::smil2::transition_engine *fullscreen_engine;
 	ambulant::lib::transition_info::time_type fullscreen_now;
 #else // ! WITH_UIKIT
-//	NSImage *transition_surface;
-//	NSImage *transition_tmpsurface;
-//	NSImage *fullscreen_previmage;
-//	NSImage *fullscreen_oldimage;
+	NSImage *transition_surface;
+	NSImage *transition_tmpsurface;
+	NSImage *fullscreen_previmage;
+	NSImage *fullscreen_oldimage;
 	ambulant::smil2::transition_engine *fullscreen_engine;
 	ambulant::lib::transition_info::time_type fullscreen_now;
 #endif// ! WITH_UIKIT
-#ifdef	JNK
-#ifdef	WITH_UIKIT
-	BOOL M_auto_center;
-	BOOL M_auto_resize;
-	CGRect current_frame;
-	CGRect original_frame;
-	CGAffineTransform current_transform;
-	ambulant::lib::size original_bounds;
-#endif//WITH_UIKIT
-#endif//JNK
 }
 
 #ifdef	WITH_UIKIT
-#ifdef	JNK
-@property(nonatomic) ambulant::lib::size original_bounds;
-(void) adaptDisplayAfterRotation: (UIDeviceOrientation) orientation withAutoCenter: (BOOL) autoCenter withAutoResize: (bool) autoResize;
-#endif//JNK
 - (BOOL) tappedAtPoint:(CGPoint) location;
 - (void) drawTestRect:(CGRect)rect;
 
@@ -233,24 +223,24 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 + (CGLayerRef) CGLayerCreateFromCGImage: (CGImageRef) image;
 
 // write a CGImageRef to the file: "$HOME/Documents/<number>.<id>.png" where
-// where $HOME refers to the Application home directory and
-// and number is a numeric string circular variying between "0000" and "9999".   
-+ (void) dumpCGImage: (CGImageRef) img withId: (NSString*) id;
+// $HOME refers to the Application home directory and number is a numeric string
+// circular variying between "0000" and "9999", which is returned as an int.   
++ (int) dumpCGImage: (CGImageRef) img withId: (NSString*) id;
 
 // write the contents of an UIView to the file: "$HOME/Documents/<number>.<id>.png" where
-// where $HOME refers to the Application home directory and
-// and number is a numeric string circular variying between "0000" and "9999".   
-+ (void) dumpUIView: (UIView*) view withId: (NSString*) id;
+// $HOME refers to the Application home directory and number is a numeric string
+// circular variying between "0000" and "9999", which is returned as an int.   
++ (int) dumpUIView: (UIView*) view withId: (NSString*) id;
 
 // write the contents of an CGLayer to the file: "$HOME/Documents/<number>.<id>.png" where
-// where $HOME refers to the Application home directory and
-// and number is a numeric string circular variying between "0000" and "9999".   
-+ (void) dumpCGLayer: (CGLayerRef) cglr withId: (NSString*) id;
+// $HOME refers to the Application home directory and number is a numeric string
+// circular variying between "0000" and "9999", which is returned as an int.   
++ (int) dumpCGLayer: (CGLayerRef) cglr withId: (NSString*) id;
 
 // write the contents of an iPhone/iPad screen to the file: "$HOME/Documents/<number>.<id>.png" where
-// where $HOME refers to the Application home directory and
-// and number is a numeric string circular variying between "0000" and "9999".   
-+ (void) dumpScreenWithId: (NSString*) id;
+// $HOME refers to the Application home directory and number is a numeric string
+// circular variying between "0000" and "9999", which is returned as an int.   
++ (int) dumpScreenWithId: (NSString*) id;
 
 // while in a transition, getTransitionSurface returns the surface that the
 // transitioning element should be drawn to.
@@ -265,19 +255,27 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 
 // while in a transition, getTransitionOldSource will return the old pixels,
 // i.e. the pixels "behind" the transitioning element.
-- (CGLayerRef) getTransitionOldSource;
+- (CGLayerRef) getTransitionOldSource; // Not used
 
 // while in a transition, getTransitionNewSource will return the new pixels,
 // i.e. the pixels the transitioning element drew into getTransitionSurface.
-- (CGLayerRef) getTransitionNewSource;
+- (CGLayerRef) getTransitionNewSource; //TBD
 
-// Return the current on-screen image, caters for AVFoundation movies
-- (CGLayerRef) _getOnScreenImage;
+// Return the current on-screen image, caters for AVFoundation movies 
+- (CGLayerRef) _getOnScreenImage; //TBD
 
 // Return part of the onscreen image, does not cater for AVFoundation
-- (CGImageRef) getOnScreenImageForRect: (CGRect)bounds;
+- (CGImageRef) getOnScreenImageForRect: (CGRect)bounds; //TBD
 
-- (void) startScreenTransition;
+// pushes the context associated with transition_surface on the CGContext stack
+// this has the effect that subsequents drawings will be done on transition_surface
+- (void) pushTransitionSurface;
+
+// pops the context associated with transition_surface from the CGContext stack
+// this has the effect that subsequents drawings will be done on screen back buffer
+- (void) popTransitionSurface;
+
+- (void) startScreenTransition: (BOOL) isOuttrans;
 - (void) endScreenTransition;
 - (void) screenTransitionStep: (ambulant::smil2::transition_engine *)engine
 		elapsed: (ambulant::lib::transition_info::time_type)now;

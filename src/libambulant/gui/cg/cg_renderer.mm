@@ -42,7 +42,7 @@ namespace gui {
 
 namespace cg {
 
-#ifdef UIKIT_NOT_YET
+#ifndef WITH_UIKIT
 cg_transition_renderer::~cg_transition_renderer()
 {
 	stop();
@@ -257,7 +257,7 @@ cg_transition_renderer::start(double where)
 			m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 			m_fullscreen = m_intransition->m_scope == scope_screen;
 			if (m_fullscreen) {
-				[view startScreenTransition];
+				[view startScreenTransition: NO];
 			}
 		}
 	}
@@ -280,7 +280,7 @@ cg_transition_renderer::start_outtransition(const lib::transition_info *info)
 		m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 		m_fullscreen = m_outtransition->m_scope == scope_screen;
 		if (m_fullscreen) {
-			[view startScreenTransition];
+			[view startScreenTransition: YES];
 		}
 	}
 	m_lock.leave();
@@ -337,18 +337,23 @@ void
 cg_transition_renderer::redraw_pre(gui_window *window)
 {
 	m_lock.enter();
-	AM_DBG logger::get_logger()->debug("cg_transition_renderer.redraw(0x%x)", (void *)this);
-		
 	cg_window *cwindow = (cg_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
-//X	dumpUIView (view, @"pre");
-	
+	int i = 0;
+	AM_DMP i = [AmbulantView dumpUIView:view withId: @"pre"];
+	AM_DBG logger::get_logger()->debug("cg_transition_renderer.redraw_pre(0x%x) i=%d", (void *)this, i);
+		
 	// See whether we're in a transition
-	CGLayerRef surf = NULL;
 	if (m_trans_engine && ! m_fullscreen) {
-		surf = [view getTransitionSurface];
-		UIGraphicsPushContext(CGLayerGetContext(surf));
+//X		surf = [view getTransitionSurface];
+//X		UIGraphicsPushContext(CGLayerGetContext(surf));
+		[view pushTransitionSurface];
+	} else if (m_fullscreen && m_outtransition != NULL) {
+		// activate the transition now
+		[view pushTransitionSurface];
+		m_fullscreen_outtrans_active = true;
 	}
+
 	m_lock.leave();
 }
 	
@@ -360,14 +365,16 @@ cg_transition_renderer::redraw_post(gui_window *window)
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 	CGLayerRef surf = NULL;
 //X	dumpUIView (view, @"pst");
+	
 	if (m_trans_engine) {
 		AM_DMP	[AmbulantView dumpUIView: view withId: @"bef"];	
-		if ( ! m_fullscreen)
-			UIGraphicsPopContext();
+		if ( ! m_fullscreen ) {
+			[view popTransitionSurface];
+		}
 		surf = [view getTransitionSurface];
 	
 		AM_DMP	[AmbulantView dumpCGLayer: [view getTransitionSurface] withId: @"ts1"];
-		AM_DBG logger::get_logger()->debug("cg_transition_renderer.redraw: drawing to view");
+		AM_DBG logger::get_logger()->debug("cg_transition_renderer.redraw_post: drawing to view");
 		if (m_fullscreen)
 			[view screenTransitionStep: m_trans_engine
 							   elapsed: m_event_processor->get_timer()->elapsed()];
@@ -381,7 +388,7 @@ cg_transition_renderer::redraw_post(gui_window *window)
 		lib::event *ev = new transition_callback(this, &cg_transition_renderer::transition_step);
 		lib::transition_info::time_type delay = m_trans_engine->next_step_delay();
 		if (delay < 33) delay = 33; // XXX band-aid
-		AM_DBG lib::logger::get_logger()->debug("cg_transition_renderer.redraw: now=%d, schedule step for %d", m_event_processor->get_timer()->elapsed(), m_event_processor->get_timer()->elapsed()+delay);
+		AM_DBG lib::logger::get_logger()->debug("cg_transition_renderer.redraw_post: now=%d, schedule step for %d", m_event_processor->get_timer()->elapsed(), m_event_processor->get_timer()->elapsed()+delay);
 		m_event_processor->add_event(ev, delay, lib::ep_med);
 	}
 	//XX Finally, if the transition is done clean it up and signal that freeze_transition
