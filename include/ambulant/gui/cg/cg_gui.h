@@ -36,7 +36,6 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <ImageIO/ImageIO.h>
 #include <UIKit/UIKit.h>
-#include <ApplicationServices/ApplicationServices.h>
 #define VIEW_SUPERCLASS UIView
 #else// ! WITH_UIKIT
 #include <AppKit/AppKit.h>
