@@ -372,8 +372,14 @@ bad:
 #endif//WITH_UIKIT
 }
 
+#ifdef WITH_UIKIT
 - (void)drawRect:(CGRect)rect
 {
+#else
+- (void)drawRect:(NSRect)_rect
+{
+	CGRect rect = NSRectToCGRect(_rect);
+#endif // WITH_UIKIT
 //DBG	[AmbulantView dumpScreenWithId: @"rd0"];
 
     CGContextRef myContext = [self getCGContext];
@@ -653,7 +659,7 @@ bad:
 {
 	if (!transition_surface) {
 		// It does not exist yet. Create it.
-		transition_surface = [self getOnScreenImageForRect: [self bounds]];
+		transition_surface = [self getOnScreenImageForRect: NSRectToCGRect([self bounds])];
 		[transition_surface retain];
 	}
 	return transition_surface;
@@ -671,7 +677,7 @@ bad:
 {
 	if (!transition_tmpsurface) {
 		// It does not exist yet. Create it.
-		transition_tmpsurface = [self getOnScreenImageForRect: [self bounds]];
+		transition_tmpsurface = [self getOnScreenImageForRect: NSRectToCGRect([self bounds])];
 		[transition_tmpsurface retain];
 		[transition_tmpsurface setFlipped: NO];
 	}
@@ -682,9 +688,9 @@ bad:
 {
 	NSView *src_view = self;
 	NSWindow *tmp_window = NULL;
-	CGRect bounds = [self bounds];
-	CGSize size = NSMakeSize(NSWidth(bounds), NSHeight(bounds));
-	NSImage *rv = [[NSImage alloc] initWithSize: size];
+	CGRect bounds = NSRectToCGRect([self bounds]);
+	CGSize size = CGSizeMake(bounds.size.width, bounds.size.height);
+	NSImage *rv = [[NSImage alloc] initWithSize: NSSizeFromCGSize(size)];
 	[src_view lockFocus];
 	NSBitmapImageRep *bits = [[NSBitmapImageRep alloc] initWithFocusedViewRect: [self bounds]];
 	[src_view unlockFocus];
@@ -705,10 +711,10 @@ bad:
 {
 	// Note: this method does not take overlaying things such as Quicktime
 	// movies into account.
-	CGSize size = NSMakeSize(NSWidth(bounds), NSHeight(bounds));
-	NSImage *rv = [[NSImage alloc] initWithSize: size];
+	CGSize size = CGSizeMake(bounds.size.width, bounds.size.height);
+	NSImage *rv = [[NSImage alloc] initWithSize: NSSizeFromCGSize(size)];
 	[self lockFocus];
-	NSBitmapImageRep *bits = [[NSBitmapImageRep alloc] initWithFocusedViewRect: bounds];
+	NSBitmapImageRep *bits = [[NSBitmapImageRep alloc] initWithFocusedViewRect: NSRectFromCGRect(bounds)];
 	[self unlockFocus];
 	[rv addRepresentation: [bits autorelease]];
 	[rv setFlipped: YES];
@@ -723,14 +729,14 @@ bad:
 {
 	if (fullscreen_count && fullscreen_oldimage)
 		return fullscreen_oldimage;
-	return [self getOnScreenImageForRect: [self bounds]];
+	return [self getOnScreenImageForRect: NSRectToCGRect([self bounds])];
 }
 
 - (NSImage *)getTransitionNewSource
 {
-	CGRect bounds = [self bounds];
-	CGSize size = NSMakeSize(NSWidth(bounds), NSHeight(bounds));
-	NSImage *rv = [[NSImage alloc] initWithSize: size];
+	CGRect bounds = NSRectToCGRect([self bounds]);
+	CGSize size = CGSizeMake(bounds.size.width, bounds.size.height);
+	NSImage *rv = [[NSImage alloc] initWithSize: NSSizeFromCGSize(size)];
 	[rv setFlipped: YES];
 	[transition_surface lockFocus];
 	NSBitmapImageRep *bits = [[NSBitmapImageRep alloc] initWithFocusedViewRect: [self bounds]];
@@ -784,7 +790,7 @@ bad:
 		// Neither in fullscreen transition nor wrapping one up.
 		// Take a snapshot of the screen and return.
 		if (fullscreen_previmage) [fullscreen_previmage release];
-		fullscreen_previmage = [[self getOnScreenImageForRect: [self bounds]] retain];
+		fullscreen_previmage = [[self getOnScreenImageForRect: NSRectToCGRect([self bounds])] retain];
 		return;
 	}
 	if (fullscreen_oldimage == NULL) {
@@ -801,10 +807,10 @@ bad:
 	[[self getTransitionSurface] unlockFocus];
 //	/*DBG*/ [self dump: [self getTransitionOldSource] toImageID: "fsold"];
 //	/*DBG*/ [self dump: [self getTransitionNewSource] toImageID: "fsnew"];
-	CGRect bounds = [self bounds];
+	CGRect bounds = NSRectToCGRect([self bounds]);
 	if (fullscreen_engine) {
-		[[self getTransitionOldSource] drawInRect: bounds
-			fromRect: bounds
+		[[self getTransitionOldSource] drawInRect: NSRectFromCGRect(bounds)
+			fromRect: NSRectFromCGRect(bounds)
 			operation: NSCompositeCopy
 			fraction: 1.0];
 		fullscreen_engine->step(fullscreen_now);
@@ -812,8 +818,8 @@ bad:
 		AM_DBG NSLog(@"_screenTransitionPostRedraw: no screen transition engine");
 //		[[self getTransitionNewSource] compositeToPoint: NSZeroPoint
 //			operation: NSCompositeCopy];
-		[[self getTransitionNewSource] drawInRect: bounds
-			fromRect: bounds
+		[[self getTransitionNewSource] drawInRect: NSRectFromCGRect(bounds)
+			fromRect: NSRectFromCGRect(bounds)
 			operation: NSCompositeCopy
 			fraction: 1.0];
 	}
