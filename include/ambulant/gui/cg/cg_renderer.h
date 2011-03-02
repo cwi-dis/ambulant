@@ -78,6 +78,7 @@ class cocoa_transition_renderer : public ref_counted_obj {
 		m_outtransition(NULL),
 		m_trans_engine(NULL),
 		m_fullscreen(false),
+		m_fullscreen_outtrans_active(false),
 		m_old_screen_image(NULL),
 		m_new_screen_image(NULL),
 		m_rect(CGRectMake(0,0,1,1))
@@ -102,6 +103,7 @@ class cocoa_transition_renderer : public ref_counted_obj {
 		common::surface *m_transition_dest;
 		const lib::transition_info *m_intransition;
 		const lib::transition_info *m_outtransition;
+		bool m_fullscreen_outtrans_active;
 		CGImageRef m_old_screen_image;
 		CGImageRef m_new_screen_image;
 		CGRect m_rect;
