@@ -278,6 +278,7 @@ bad:
 	fullscreen_engine = NULL;
 	fullscreen_outtrans = NO;
 	transition_pushed = NO;
+	fullscreen_ended = NO;
 //	overlay_window = NULL;
 //	overlay_window_needs_unlock = NO;
 //	overlay_window_needs_reparent = NO;
@@ -300,6 +301,7 @@ bad:
 	fullscreen_engine = NULL;
 	fullscreen_outtrans = NO;
 	transition_pushed = NO;
+	fullscreen_ended = NO;
 //	overlay_window = NULL;
 //	overlay_window_needs_unlock = NO;
 //	overlay_window_needs_reparent = NO;
@@ -453,7 +455,8 @@ bad:
 	}
 #endif// CG_REDRAW_DEBUG
     CGContextRestoreGState(myContext);
-//DBG	[AmbulantView dumpScreenWithId: @"rd1"];
+//	int idx = [AmbulantView dumpUIView: self withId: @"rdw"];
+//	AM_DBG NSLog(@"ambulantView drawRect: idx=%d", idx);	
 }
 
 - (void)setAmbulantWindow: (ambulant::gui::cg::cg_window *)window
@@ -978,7 +981,7 @@ bad:
 }
 
 // Create a new CGLayer containing a CGImage
-+ (CGLayerRef) CGLayerFromCGImage: (CGImageRef) image {
++ (CGLayerRef) CGLayerCreateFromCGImage: (CGImageRef) image {
 	CGContextRef context = UIGraphicsGetCurrentContext();
 	CGRect layer_rect = CGRectMake(0, 0, CGImageGetWidth(image), CGImageGetHeight(image));
 	CGLayerRef newCGLayer = CGLayerCreateWithContext(context, layer_rect.size, NULL);
@@ -1105,6 +1108,7 @@ CGContextRef CreateBitmapContext (CGSize size)
 	}
 	if (fullscreen_oldimage != NULL) {
 		CFRelease(fullscreen_oldimage);
+		fullscreen_oldimage = NULL;
 	}
 }
 
@@ -1141,9 +1145,10 @@ CGContextRef CreateBitmapContext (CGSize size)
 		NSLog(@"Warning: multiple Screen transitions in progress");
 	fullscreen_count++;
 	fullscreen_outtrans = isOuttrans;
+	fullscreen_ended = NO;
 	if (fullscreen_oldimage == NULL && ! isOuttrans) {
 		UIImage* oldFullScreenImage = [AmbulantView UIImageFromUIView: self];
-		fullscreen_oldimage = [AmbulantView CGLayerFromCGImage: oldFullScreenImage.CGImage];
+		fullscreen_oldimage = [AmbulantView CGLayerCreateFromCGImage: oldFullScreenImage.CGImage];
 //DBG	[AmbulantView dumpCGLayer: fullscreen_oldimage withId: @"scr"];
 		CFRetain(fullscreen_oldimage);
 	}
@@ -1155,18 +1160,18 @@ CGContextRef CreateBitmapContext (CGSize size)
 - (void) endScreenTransition
 {
 	AM_DBG NSLog(@"endScreenTransition");
-	if (fullscreen_oldimage != NULL) {
-		CFRelease(fullscreen_oldimage);
-		fullscreen_oldimage = NULL;
-	}
 	assert(fullscreen_count > 0);
 	fullscreen_count--;
+	fullscreen_ended = YES; // let the drawing thread fix-up
+//	[self releaseTransitionSurfaces];
+//	ambulant::lib::rect r = ambulant::gui::cg::ambulantRectFromCGRect([self bounds]);
+//	ambulant_window->need_redraw(r);
 }
 
 - (void) screenTransitionStep: (ambulant::smil2::transition_engine *)engine
 					  elapsed: (ambulant::lib::transition_info::time_type)now
 {
-	AM_DBG NSLog(@"screenTransitionStep %d", (int)now);
+	AM_DBG NSLog(@"screenTransitionStep %d engine=0x%x", (int)now, engine);
 	assert(fullscreen_count > 0);
 	fullscreen_engine = engine;
 	fullscreen_now = now;
@@ -1176,27 +1181,28 @@ CGContextRef CreateBitmapContext (CGSize size)
 {
 	if (fullscreen_count == 0) return;
 	// setup drawing to transition surface
-	AM_DBG NSLog(@"_screenTransitionPreRedraw: setup for transition redraw");
-	if (! fullscreen_outtrans) {
-		CGContextDrawLayerInRect(UIGraphicsGetCurrentContext(), [self bounds], fullscreen_oldimage);
+	AM_DBG NSLog(@"_screenTransitionPreRedraw: fullscreen_outtrans=%d fullscreen_oldimage=0x%x",fullscreen_outtrans,fullscreen_oldimage);
+
+	if (fullscreen_outtrans || fullscreen_oldimage == NULL) {
+		return;
 	}
-	if ( ! fullscreen_outtrans) {
-		[self pushTransitionSurface];
-	}
+	CGContextDrawLayerInRect(UIGraphicsGetCurrentContext(), [self bounds], fullscreen_oldimage);
+	[self pushTransitionSurface];
 }
 
 - (void) _screenTransitionPostRedraw
 {
-	if (fullscreen_count == 0) {
-		// Neither in fullscreen transition nor wrapping one up.
+	AM_DBG NSLog(@"_screenTransitionPostRedraw: fullscreen_count=%d fullscreen_engine=0x%x", fullscreen_count,fullscreen_engine);
+	if (fullscreen_count == 0 && fullscreen_oldimage == NULL) {
+		// Neither in fullscreen transition nor winding one down.
 		// Take a snapshot of the screen and return.
 //XXX No idea yet what to do here
 /*DBG	[self dump: fullscreen_previmage toImageID: "fsprev"]; */
 		return;
 	}
-//	if ( ! fullscreen_outtrans) {
+	if (transition_pushed) {
 		[self popTransitionSurface];
-//	}
+	}
 //X	if (fullscreen_oldimage == NULL) {
 //XXX No idea yet what to do here
 		// Just starting a new fullscreen transition. Get the
@@ -1208,13 +1214,19 @@ CGContextRef CreateBitmapContext (CGSize size)
 	
 	// Do the transition step, or simply copy the bits
 	// if no engine available.
-	AM_DBG NSLog(@"_screenTransitionPostRedraw:");
+	AM_DBG NSLog(@"_screenTransitionPostRedraw: fullscreen_count=%d fullscreen_engine=0x%x", fullscreen_count,fullscreen_engine);
 	CGRect bounds = [self bounds];
-	if (fullscreen_engine) {
+	if (fullscreen_engine && ! fullscreen_ended) {
 		fullscreen_engine->step(fullscreen_now);
 	} else {
 		AM_DBG NSLog(@"_screenTransitionPostRedraw: no screen transition engine");
-//XXX No idea yet what to do here
+		if (fullscreen_ended) { // fix-up interrupted transition step
+			ambulant::lib::rect fullsrcrect = ambulant::lib::rect(ambulant::lib::point(0, 0), ambulant::lib::size(self.bounds.size.width,self.bounds.size.height));  // Original image size
+			CGRect cg_fullsrcrect = ambulant::gui::cg::CGRectFromAmbulantRect(fullsrcrect);
+			CGContextRef ctx = UIGraphicsGetCurrentContext();	
+			CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [self getTransitionSurface]);
+			[self releaseTransitionSurfaces];
+		}		
 	}
 	
 	if (fullscreen_count == 0) {

@@ -58,6 +58,7 @@
 		04B75D4312B80C2A00161EB5 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 04B75D3812B80C2A00161EB5 /* data */; };
 		04B75D4812B80C4900161EB5 /* mainloop.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75D4512B80C4900161EB5 /* mainloop.mm */; };
 		04B75D4912B80C4900161EB5 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75D4712B80C4900161EB5 /* main.mm */; };
+		9352AC14131D0E6F00D0192D /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9352AC13131D0E6F00D0192D /* CoreFoundation.framework */; };
 		93BBA1F312DC9C2400EE7501 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93BBA1F212DC9C2400EE7501 /* CoreMedia.framework */; };
 		93BBA20012DC9C3100EE7501 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93BBA1FF12DC9C3100EE7501 /* AVFoundation.framework */; };
 		93E20B2412D2225B00D99F74 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 93E20B2312D2225B00D99F74 /* libbz2.dylib */; };
@@ -180,6 +181,7 @@
 		1D6058910D05DD3D006BFB54 /* iAmbulant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iAmbulant.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		32CA4F630368D1EE00C91783 /* iAmbulant_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iAmbulant_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* iAmbulant-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "iAmbulant-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		9352AC13131D0E6F00D0192D /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		93BBA1F212DC9C2400EE7501 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		93BBA1FF12DC9C3100EE7501 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		93E20B2312D2225B00D99F74 /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = usr/lib/libbz2.dylib; sourceTree = SDKROOT; };
@@ -226,6 +228,7 @@
 				93E20B4412D2229600D99F74 /* OpenGLES.framework in Frameworks */,
 				93BBA1F312DC9C2400EE7501 /* CoreMedia.framework in Frameworks */,
 				93BBA20012DC9C3100EE7501 /* AVFoundation.framework in Frameworks */,
+				9352AC14131D0E6F00D0192D /* CoreFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -407,6 +410,7 @@
 				93E20B3112D2228800D99F74 /* QuartzCore.framework */,
 				93E20B3312D2228800D99F74 /* UIKit.framework */,
 				93E20B4312D2229600D99F74 /* OpenGLES.framework */,
+				9352AC13131D0E6F00D0192D /* CoreFoundation.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

@@ -27,7 +27,7 @@
 		0405C04412B6244C007AD3B2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0407042B115266870094FB0B /* main.m */; };
 		0405C04612B6244C007AD3B2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		0405C05B12B624C0007AD3B2 /* libambulantCGstatic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0405C00D12B62364007AD3B2 /* libambulantCGstatic.a */; };
-		0405C05C12B624C8007AD3B2 /* libambulantCG.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04A1E87812B57E100060F97E /* libambulantCG.dylib */; };
+		0405C05C12B624C8007AD3B2 /* libambulantGC.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04A1E87812B57E100060F97E /* libambulantGC.dylib */; };
 		04070424115266770094FB0B /* LogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0407041B115266770094FB0B /* LogController.mm */; };
 		04070425115266770094FB0B /* MyAmbulantView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0407041D115266770094FB0B /* MyAmbulantView.mm */; };
 		04070426115266770094FB0B /* MyAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0407041F115266770094FB0B /* MyAppDelegate.mm */; };
@@ -79,7 +79,7 @@
 		041DCB3512B64CF7003407C8 /* libliveMedia.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB2812B64CF7003407C8 /* libliveMedia.a */; };
 		041DCB3612B64CF7003407C8 /* libUsageEnvironment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB2912B64CF7003407C8 /* libUsageEnvironment.a */; };
 		041DCB3A12B64D1D003407C8 /* libltdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB3912B64D1D003407C8 /* libltdl.a */; };
-		042ADA421152D83E009CA791 /* libamplugin_plugin.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADA411152D831009CA791 /* libamplugin_plugin.so */; };
+		042ADA421152D83E009CA791 /* libamplugin_xpath_state.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADA411152D831009CA791 /* libamplugin_xpath_state.so */; };
 		042ADAA91152DA4F009CA791 /* libamplugin_xerces.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADAA81152DA4A009CA791 /* libamplugin_xerces.so */; };
 		042ADB0C1152DE69009CA791 /* libamplugin_python.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADB0B1152DE65009CA791 /* libamplugin_python.so */; };
 		04428EBE11577E960067C868 /* DTDCache in Resources */ = {isa = PBXBuildFile; fileRef = 04428EBD11577E960067C868 /* DTDCache */; };
@@ -105,7 +105,7 @@
 		04A1E99912B585D80060F97E /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		04A1E99C12B585D80060F97E /* libamplugin_xerces.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADAA81152DA4A009CA791 /* libamplugin_xerces.so */; };
 		04A1E99D12B585D80060F97E /* libamplugin_python.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADB0B1152DE65009CA791 /* libamplugin_python.so */; };
-		04A1E99E12B585D80060F97E /* libamplugin_plugin.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADA411152D831009CA791 /* libamplugin_plugin.so */; };
+		04A1E99E12B585D80060F97E /* libamplugin_xpath_state.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADA411152D831009CA791 /* libamplugin_xpath_state.so */; };
 		04D38A9612EB9C7F000F445D /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24012DA5E4C00C56DCE /* MainMenu.nib */; };
 		04FA283412B8D1BD0080216B /* ambulant-common.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 04FA282B12B8D1BD0080216B /* ambulant-common.xcconfig */; };
 		04FA283512B8D1BD0080216B /* ambulant-debug-cg.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 04FA282C12B8D1BD0080216B /* ambulant-debug-cg.xcconfig */; };
@@ -269,7 +269,7 @@
 			files = (
 				042ADAA91152DA4F009CA791 /* libamplugin_xerces.so in Copy Plugins */,
 				042ADB0C1152DE69009CA791 /* libamplugin_python.so in Copy Plugins */,
-				042ADA421152D83E009CA791 /* libamplugin_plugin.so in Copy Plugins */,
+				042ADA421152D83E009CA791 /* libamplugin_xpath_state.so in Copy Plugins */,
 			);
 			name = "Copy Plugins";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -282,7 +282,7 @@
 			files = (
 				04A1E99C12B585D80060F97E /* libamplugin_xerces.so in Copy Plugins */,
 				04A1E99D12B585D80060F97E /* libamplugin_python.so in Copy Plugins */,
-				04A1E99E12B585D80060F97E /* libamplugin_plugin.so in Copy Plugins */,
+				04A1E99E12B585D80060F97E /* libamplugin_xpath_state.so in Copy Plugins */,
 			);
 			name = "Copy Plugins";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -389,7 +389,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				04A1E99912B585D80060F97E /* Cocoa.framework in Frameworks */,
-				0405C05C12B624C8007AD3B2 /* libambulantCG.dylib in Frameworks */,
+				0405C05C12B624C8007AD3B2 /* libambulantGC.dylib in Frameworks */,
 				93C8CCFC1316666D0085212A /* ApplicationServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -445,7 +445,7 @@
 			isa = PBXGroup;
 			children = (
 				040705A1115268480094FB0B /* libambulant.dylib */,
-				04A1E87812B57E100060F97E /* libambulantCG.dylib */,
+				04A1E87812B57E100060F97E /* libambulantGC.dylib */,
 				0405C00D12B62364007AD3B2 /* libambulantCGstatic.a */,
 				04FA282912B8D16C0080216B /* libambulantIPhone.a */,
 			);
@@ -504,7 +504,7 @@
 		042ADA3D1152D831009CA791 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				042ADA411152D831009CA791 /* libamplugin_plugin.so */,
+				042ADA411152D831009CA791 /* libamplugin_xpath_state.so */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -786,10 +786,10 @@
 			remoteRef = 042AD9551152CC13009CA791 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		042ADA411152D831009CA791 /* libamplugin_plugin.so */ = {
+		042ADA411152D831009CA791 /* libamplugin_xpath_state.so */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.dylib";
-			path = libamplugin_plugin.so;
+			path = libamplugin_xpath_state.so;
 			remoteRef = 042ADA401152D831009CA791 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -807,10 +807,10 @@
 			remoteRef = 042ADB0A1152DE65009CA791 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		04A1E87812B57E100060F97E /* libambulantCG.dylib */ = {
+		04A1E87812B57E100060F97E /* libambulantGC.dylib */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.dylib";
-			path = libambulantCG.dylib;
+			path = libambulantGC.dylib;
 			remoteRef = 04A1E87712B57E100060F97E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};

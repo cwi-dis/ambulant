@@ -38,16 +38,18 @@
 #include <UIKit/UIKit.h>
 #define VIEW_SUPERCLASS UIView
 #else// ! WITH_UIKIT
+#include <ApplicationServices/ApplicationServices.h>
 #include <AppKit/AppKit.h>
 #define VIEW_SUPERCLASS NSView
 #endif// ! WITH_UIKIT
 #endif//__OBJC__
 
 #ifdef WITH_UIKIT
+#define __WEBSERVICESCORE__ // HACK! HACK!
 #include <CoreGraphics/CoreGraphics.h>
-#else// ! WITH_UIKIT
+#else // ! WITH_UIKIT
 #include <ApplicationServices/ApplicationServices.h>
-#endif// ! WITH_UIKIT
+#endif // ! WITH_UIKIT
 
 namespace ambulant {
 
@@ -147,7 +149,8 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 	int transition_count;
 	int fullscreen_count;
 	BOOL fullscreen_outtrans;
-	BOOL transition_pushed; 
+	BOOL transition_pushed;
+	BOOL fullscreen_ended;
 #ifdef	WITH_UIKIT
 	CGLayerRef transition_surface;
 	CGLayerRef fullscreen_oldimage;
