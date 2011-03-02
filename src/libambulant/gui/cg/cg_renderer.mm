@@ -398,9 +398,7 @@ cg_transition_renderer::redraw_post(gui_window *window)
 		typedef lib::no_arg_callback<cg_transition_renderer> stop_transition_callback;
 		lib::event *ev = new stop_transition_callback(this, &cg_transition_renderer::stop);
 		m_event_processor->add_event(ev, 0, lib::ep_med);
-		if (m_fullscreen)
-			[view screenTransitionStep: NULL elapsed: 0];
-		else {
+		if ( ! m_fullscreen) {
 			m_trans_engine->step(m_event_processor->get_timer()->elapsed());
 		}
 	}

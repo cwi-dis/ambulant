@@ -1,9 +1,9 @@
 //
 // Prefix header for all source files of the 'libambulant' target in the 'libambulant' project.
 //
-
 #ifdef __OBJC__
 #ifdef WITH_UIKIT
+#define __WEBSERVICESCORE__
     #import <UIKit/UIKit.h>
 #else
     #import <Cocoa/Cocoa.h>
