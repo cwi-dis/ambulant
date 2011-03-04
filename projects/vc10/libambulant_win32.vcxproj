@@ -481,6 +481,7 @@
     <ClCompile Include="..\..\src\libambulant\smil2\transition.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\d2_transition.h" />
     <ClInclude Include="..\..\include\ambulant\version.h" />
     <ClInclude Include="..\..\include\ambulant\gui\none\none_gui.h" />
     <ClInclude Include="..\..\include\ambulant\gui\dx\bmp_decoder.h" />
