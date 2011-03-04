@@ -875,8 +875,5 @@
     <ClInclude Include="..\..\include\ambulant\smil2\transition.h">
       <Filter>Header Files\ambulant\smil2</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\d2_transition.h">
-      <Filter>Header Files\ambulant\gui\d2</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

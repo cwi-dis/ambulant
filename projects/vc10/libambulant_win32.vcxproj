@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="DebugShlibDX|Win32">
@@ -522,6 +522,7 @@
     <ClInclude Include="..\..\include\ambulant\gui\d2\d2_renderer.h" />
     <ClInclude Include="..\..\include\ambulant\gui\d2\d2_smiltext.h" />
     <ClInclude Include="..\..\include\ambulant\gui\d2\d2_text.h" />
+   <ClInclude Include="..\..\include\ambulant\gui\d2\d2_transition.h" />
     <ClInclude Include="..\..\include\ambulant\gui\d2\d2_window.h" />
     <ClInclude Include="..\..\include\ambulant\lib\abstract_mtsync.h" />
     <ClInclude Include="..\..\include\ambulant\lib\amstream.h" />
@@ -653,6 +654,7 @@
     <ClInclude Include="..\..\include\ambulant\smil2\timegraph.h" />
     <ClInclude Include="..\..\include\ambulant\smil2\trace_player.h" />
     <ClInclude Include="..\..\include\ambulant\smil2\transition.h" />
+ 
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
