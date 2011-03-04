@@ -24,7 +24,7 @@
 #include "ambulant/gui/d2/d2_d2video.h"
 #include "ambulant/gui/d2/d2_dshowsink.h"
 //#include "ambulant/gui/d2/d2_window.h"
-//#include "ambulant/gui/d2/d2_transition.h"
+#include "ambulant/gui/d2/d2_transition.h"
 #include "ambulant/lib/node.h"
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/lib/logger.h"

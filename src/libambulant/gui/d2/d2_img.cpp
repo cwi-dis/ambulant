@@ -204,7 +204,7 @@ void gui::d2::d2_img_renderer::start(double t) {
 
 	// Get access to the converter as a bitmap source, and keep this
 	// for future reference.
-	assert(m_original == NULL);
+//	assert(m_original == NULL);
 	hr = converter->QueryInterface(IID_PPV_ARGS(&m_original));
 	if (!SUCCEEDED(hr)) {
 		lib::logger::get_logger()->trace("WIC image renderer: FormatConverter::QueryInterface() returned 0x%x", hr);
@@ -213,7 +213,7 @@ void gui::d2::d2_img_renderer::start(double t) {
 	}
 	
 	// Make sure the DD surface is created, next redraw
-	assert(m_d2bitmap == NULL);
+//	assert(m_d2bitmap == NULL);
 
 	// Inform the scheduler, ask for a redraw
 	m_context->started(m_cookie);

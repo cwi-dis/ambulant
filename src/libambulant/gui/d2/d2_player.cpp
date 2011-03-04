@@ -26,7 +26,7 @@
 #include "ambulant/gui/d2/d2_window.h"
 #include "ambulant/gui/dx/dx_wmuser.h"
 #include "ambulant/gui/dx/dx_rgn.h"
-//#include "ambulant/gui/d2/d2_transition.h"
+#include "ambulant/gui/d2/d2_transition.h"
 
 #include "ambulant/lib/event.h"
 #include "ambulant/lib/event_processor.h"

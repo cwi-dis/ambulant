@@ -21,11 +21,11 @@
  * @$Id$
  */
 
-//#include "ambulant/gui/d2/d2_gui.h"
+#include "ambulant/gui/d2/d2_player.h"
 #include "ambulant/gui/d2/d2_renderer.h"
-//#include "ambulant/gui/d2/d2_transition.h"
+#include "ambulant/gui/d2/d2_transition.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -67,7 +67,6 @@ void
 d2_transition_renderer::start(double where)
 {
 	m_lock.enter();
-#ifdef D2D_NOTYET
 	AM_DBG logger::get_logger()->debug("d2_transition_renderer.start(%f)", where);
 	if (m_intransition && m_transition_dest) {
 		AM_DBG logger::get_logger()->debug("d2_transition_renderer.start: with intransition");
@@ -75,16 +74,17 @@ d2_transition_renderer::start(double where)
 		if (m_trans_engine) {
 			gui_window *window = m_transition_dest->get_gui_window();
 			d2_window *cwindow = (d2_window *)window;
+#ifdef D2D_NOTYET
 			AmbulantView *view = (AmbulantView *)cwindow->view();
 			[view incrementTransitionCount];
+#endif
 			m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 			m_fullscreen = m_intransition->m_scope == scope_screen;
 			if (m_fullscreen) {
-				[view startScreenTransition];
+//				[view startScreenTransition];
 			}
 		}
 	}
-#endif
 	m_lock.leave();
 }
 
@@ -116,7 +116,6 @@ d2_transition_renderer::start_outtransition(const lib::transition_info *info)
 void
 d2_transition_renderer::stop()
 {
-#ifdef D2D_NOTYET
 	m_lock.enter();
 	if (m_trans_engine == NULL) {
 		m_lock.leave();
@@ -126,23 +125,23 @@ d2_transition_renderer::stop()
 	m_trans_engine = NULL;
 	gui_window *window = m_transition_dest->get_gui_window();
 	d2_window *cwindow = (d2_window *)window;
+#ifdef D2D_NOTYET
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 	[view decrementTransitionCount];
 	if (m_fullscreen) {
 		[view endScreenTransition];
 	}
+#endif
 	m_lock.leave();
 	if (m_transition_dest) m_transition_dest->transition_done();
-#endif
 }
 
 void
 d2_transition_renderer::redraw_pre(gui_window *window)
 {
-#ifdef D2D_NOTYET
 	m_lock.enter();
 	AM_DBG logger::get_logger()->debug("d2_transition_renderer.redraw(0x%x)", (void *)this);
-
+#ifdef D2D_NOTYET
 	d2_window *cwindow = (d2_window *)window;
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 
@@ -158,8 +157,8 @@ d2_transition_renderer::redraw_pre(gui_window *window)
 			surf = NULL;
 		}
 	}
-	m_lock.leave();
 #endif
+	m_lock.leave();
 }
 
 void
@@ -207,12 +206,12 @@ d2_transition_renderer::redraw_post(gui_window *window)
 void
 d2_transition_renderer::transition_step()
 {
-#ifdef D2D_NOTYET
+//#ifdef D2D_NOTYET
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("d2_transition_renderer.transition_step: now=%d", m_event_processor->get_timer()->elapsed());
 	if (m_transition_dest) m_transition_dest->need_redraw();
 	m_lock.leave();
-#endif
+//#endif
 }
 
 

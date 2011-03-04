@@ -23,7 +23,7 @@
 
 #include "ambulant/gui/d2/d2_fill.h"
 #include "ambulant/gui/d2/d2_window.h"
-//#include "ambulant/gui/d2/d2_transition.h"
+#include "ambulant/gui/d2/d2_transition.h"
 #include "ambulant/common/region_info.h"
 #include "ambulant/common/renderer_select.h"
 #include "ambulant/smil2/test_attrs.h"

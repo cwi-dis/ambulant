@@ -81,10 +81,10 @@ class d2_renderer : public d2_resources, public RP_Base {
 		common::playable_factory_machdep *mdp)
 	:	RP_Base(context, cookie, node, evp, factory, mdp),
 		m_d2player(dynamic_cast<d2_player*>(mdp))
-#ifdef D2D_NOTYET
+//#ifdef D2D_NOTYET
 		,
 		m_transition_renderer(new d2_transition_renderer(evp))
-#endif
+//#endif
 	{
 		assert(m_d2player);
 		m_d2player->register_resources(this);
@@ -92,12 +92,12 @@ class d2_renderer : public d2_resources, public RP_Base {
 	~d2_renderer() {
 		if(m_d2player)	m_d2player->unregister_resources(this);
 
-//		m_transition_renderer->release();
+		m_transition_renderer->release();
 	}
 
 	void set_surface(common::surface *dest) {
 		RP_Base::set_surface(dest);
-//		m_transition_renderer->set_surface(dest);
+		m_transition_renderer->set_surface(dest);
 	}
 
 	virtual void start(double where) {
@@ -112,31 +112,31 @@ class d2_renderer : public d2_resources, public RP_Base {
 
 	void redraw(const rect &dirty, gui_window *window) {
 		recreate_d2d();
-//		m_transition_renderer->redraw_pre(window);
+		m_transition_renderer->redraw_pre(window);
 		redraw_body(dirty, window);
-//		m_transition_renderer->redraw_post(window);
+		m_transition_renderer->redraw_post(window);
 		if (RP_Base::m_erase_never) RP_Base::m_dest->keep_as_background();
 	}
 
 	void set_intransition(const lib::transition_info *info) {
-//		m_transition_renderer->set_intransition(info);
+		m_transition_renderer->set_intransition(info);
 	}
 
 	void start_outtransition(const lib::transition_info *info) {
-//		m_transition_renderer->start_outtransition(info);
+		m_transition_renderer->start_outtransition(info);
 	}
   protected:
 	void start_transition(double where) {
-//		m_transition_renderer->start(where);
+		m_transition_renderer->start(where);
 	}
 	void stop_transition() {
-//		m_transition_renderer->stop();
+		m_transition_renderer->stop();
 	}
 	virtual void redraw_body(const rect &dirty, gui_window *window) = 0;
 
     d2_player *m_d2player;
   private:
-//	d2_transition_renderer *m_transition_renderer;
+	d2_transition_renderer *m_transition_renderer;
 };
 
 } // namespace d2
