@@ -95,7 +95,7 @@ cd ../..
 #
 # Build webkit plugin
 #
-cd src/webkit_plugin
+cd projects/xcode32
 rm -rf "$HOME/Library/Internet Plug-Ins/AmbulantWebKitPlugin.plugin"
 mkdir -p "$HOME/Library/Internet Plug-Ins"
 xcodebuild -project AmbulantWebKitPlugin.xcodeproj -target AmbulantWebKitPlugin -configuration Release-10.6 -sdk macosx10.6
