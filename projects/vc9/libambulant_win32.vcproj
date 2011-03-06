@@ -1117,6 +1117,10 @@
 						</FileConfiguration>
 					</File>
 					<File
+						RelativePath="..\..\src\libambulant\gui\d2\d2_transition.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\libambulant\gui\d2\d2_window.cpp"
 						>
 						<FileConfiguration
@@ -1567,6 +1571,10 @@
 						</File>
 						<File
 							RelativePath="..\..\include\ambulant\gui\d2\d2_text.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\include\ambulant\gui\d2\d2_transition.h"
 							>
 						</File>
 						<File

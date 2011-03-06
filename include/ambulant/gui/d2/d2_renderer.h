@@ -40,7 +40,7 @@ namespace gui {
 
 namespace d2 {
 
-class d2_transition_renderer : public ref_counted_obj {
+class AMBULANTAPI d2_transition_renderer : public ref_counted_obj {
   public:
 	d2_transition_renderer(event_processor *evp)
 	:	m_event_processor(evp),
