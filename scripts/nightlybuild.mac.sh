@@ -90,7 +90,7 @@ cd ../..
 #
 cd installers/sh-macos
 sh mkmacdist.sh -a AmbulantPlayerCG.app $DMGNAME-CG $BUILDHOME/$DESTDIR
-scp $DMGNAME-CG.dmg $DESTINATION_DESKTOP
+scp $DMGNAME-CG.dmg $DESTINATION_CG
 cd ../..
 #
 # Build webkit plugin
@@ -98,7 +98,7 @@ cd ../..
 cd projects/xcode32
 rm -rf "$HOME/Library/Internet Plug-Ins/AmbulantWebKitPlugin.plugin"
 mkdir -p "$HOME/Library/Internet Plug-Ins"
-xcodebuild -project AmbulantWebKitPlugin.xcodeproj -target AmbulantWebKitPlugin -configuration Release-10.6 -sdk macosx10.6
+xcodebuild -project AmbulantWebKitPlugin.xcodeproj -target AmbulantWebKitPlugin -configuration Release -sdk macosx10.6
 cd ../..
 #
 # Build plugin installer, upload
@@ -110,7 +110,7 @@ mkdir $PLUGINDMGNAME
 mv "$HOME/Library/Internet Plug-Ins/AmbulantWebKitPlugin.plugin" $PLUGINDMGNAME
 cp $BUILDHOME/$BUILDDIR/src/webkit_plugin/README $PLUGINDMGNAME
 zip -r $PLUGINDMGNAME.zip $PLUGINDMGNAME
-scp $PLUGINDMGNAME.zip $DESTINATION
+scp $PLUGINDMGNAME.zip $DESTINATION_PLUGIN
 #
 # Delete old installers, remember current
 #
