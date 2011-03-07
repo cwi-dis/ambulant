@@ -211,7 +211,7 @@
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(WindowsSDKDir)\Samples\multimedia\directshow\baseclasses;..\..\include;$(expat_dir)\lib;$(jpeg_dir);$(zlib_dir);$(lpng_dir);$(xerces_dir)\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>$(global_ambulant_defines);WIN32;_DEBUG;_LIB;_AMBULANT;XML_STATIC;AMBULANT_BUILD_DLL;WITH_EXPAT;WITH_WINDOWS_PLUGINS;WITH_D2D;PARALLELS_MACPRO_BUG_WORKAROUND;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>$(global_ambulant_defines);WIN32;_DEBUG;_LIB;_AMBULANT;XML_STATIC;AMBULANT_BUILD_DLL;WITH_EXPAT;WITH_WINDOWS_PLUGINS;WITH_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -481,7 +481,7 @@
     <ClCompile Include="..\..\src\libambulant\smil2\transition.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\d2_transition.h" />
+    <ClInclude Include="..\..\include\ambulant\gui\d2\d2_transition.h" />
     <ClInclude Include="..\..\include\ambulant\version.h" />
     <ClInclude Include="..\..\include\ambulant\gui\none\none_gui.h" />
     <ClInclude Include="..\..\include\ambulant\gui\dx\bmp_decoder.h" />

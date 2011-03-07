@@ -61,9 +61,9 @@ class AMBULANTAPI d2_transition_renderer : public ref_counted_obj {
 	void transition_step();
 
 	event_processor *m_event_processor;
-	common::surface *m_transition_dest;
-	const lib::transition_info *m_intransition;
-	const lib::transition_info *m_outtransition;
+	surface *m_transition_dest;
+	const transition_info *m_intransition;
+	const transition_info *m_outtransition;
 	smil2::transition_engine *m_trans_engine;
 	bool m_fullscreen;
 	critical_section m_lock;
@@ -118,11 +118,11 @@ class d2_renderer : public d2_resources, public RP_Base {
 		if (RP_Base::m_erase_never) RP_Base::m_dest->keep_as_background();
 	}
 
-	void set_intransition(const lib::transition_info *info) {
+	void set_intransition(const transition_info *info) {
 		m_transition_renderer->set_intransition(info);
 	}
 
-	void start_outtransition(const lib::transition_info *info) {
+	void start_outtransition(const transition_info *info) {
 		m_transition_renderer->start_outtransition(info);
 	}
   protected:

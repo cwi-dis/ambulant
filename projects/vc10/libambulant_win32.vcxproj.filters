@@ -70,16 +70,16 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx</Extensions>
     </Filter>
-    <Filter Include="Header Files\ambulant\gui\d2\config">
+    <Filter Include="Header Files\ambulant\config">
       <UniqueIdentifier>{02459f4b-f7cd-496b-bbc6-825cb06c3992}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\ambulant\gui\d2\config\compiler">
+    <Filter Include="Header Files\ambulant\config\compiler">
       <UniqueIdentifier>{42017da9-46d3-4b69-86fe-c26a593c82de}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\ambulant\gui\d2\config\platform">
+    <Filter Include="Header Files\ambulant\config\platform">
       <UniqueIdentifier>{0f95ef8e-b433-4a17-920e-36d720a1284a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\ambulant\gui\d2\config\stdlib">
+    <Filter Include="Header Files\ambulant\config\stdlib">
       <UniqueIdentifier>{debe3b36-eb59-42dc-a340-c7956c664e71}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -690,130 +690,130 @@
       <Filter>Header Files\ambulant\common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\config.h">
-      <Filter>Header Files\ambulant\gui\d2\config</Filter>
+      <Filter>Header Files\ambulant\config</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\posix_features.h">
-      <Filter>Header Files\ambulant\gui\d2\config</Filter>
+      <Filter>Header Files\ambulant\config</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\select_compiler_config.h">
-      <Filter>Header Files\ambulant\gui\d2\config</Filter>
+      <Filter>Header Files\ambulant\config</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\select_platform_config.h">
-      <Filter>Header Files\ambulant\gui\d2\config</Filter>
+      <Filter>Header Files\ambulant\config</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\select_stdlib_config.h">
-      <Filter>Header Files\ambulant\gui\d2\config</Filter>
+      <Filter>Header Files\ambulant\config</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\suffix.h">
-      <Filter>Header Files\ambulant\gui\d2\config</Filter>
+      <Filter>Header Files\ambulant\config</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\user.h">
-      <Filter>Header Files\ambulant\gui\d2\config</Filter>
+      <Filter>Header Files\ambulant\config</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\compiler\borland.h">
-      <Filter>Header Files\ambulant\gui\d2\config\compiler</Filter>
+      <Filter>Header Files\ambulant\config\compiler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\compiler\comeau.h">
-      <Filter>Header Files\ambulant\gui\d2\config\compiler</Filter>
+      <Filter>Header Files\ambulant\config\compiler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\compiler\common_edg.h">
-      <Filter>Header Files\ambulant\gui\d2\config\compiler</Filter>
+      <Filter>Header Files\ambulant\config\compiler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\compiler\compaq_cxx.h">
-      <Filter>Header Files\ambulant\gui\d2\config\compiler</Filter>
+      <Filter>Header Files\ambulant\config\compiler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\compiler\gcc.h">
-      <Filter>Header Files\ambulant\gui\d2\config\compiler</Filter>
+      <Filter>Header Files\ambulant\config\compiler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\compiler\greenhills.h">
-      <Filter>Header Files\ambulant\gui\d2\config\compiler</Filter>
+      <Filter>Header Files\ambulant\config\compiler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\compiler\hp_acc.h">
-      <Filter>Header Files\ambulant\gui\d2\config\compiler</Filter>
+      <Filter>Header Files\ambulant\config\compiler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\compiler\intel.h">
-      <Filter>Header Files\ambulant\gui\d2\config\compiler</Filter>
+      <Filter>Header Files\ambulant\config\compiler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\compiler\kai.h">
-      <Filter>Header Files\ambulant\gui\d2\config\compiler</Filter>
+      <Filter>Header Files\ambulant\config\compiler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\compiler\metrowerks.h">
-      <Filter>Header Files\ambulant\gui\d2\config\compiler</Filter>
+      <Filter>Header Files\ambulant\config\compiler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\compiler\mpw.h">
-      <Filter>Header Files\ambulant\gui\d2\config\compiler</Filter>
+      <Filter>Header Files\ambulant\config\compiler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\compiler\sgi_mipspro.h">
-      <Filter>Header Files\ambulant\gui\d2\config\compiler</Filter>
+      <Filter>Header Files\ambulant\config\compiler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\compiler\sunpro_cc.h">
-      <Filter>Header Files\ambulant\gui\d2\config\compiler</Filter>
+      <Filter>Header Files\ambulant\config\compiler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\compiler\vacpp.h">
-      <Filter>Header Files\ambulant\gui\d2\config\compiler</Filter>
+      <Filter>Header Files\ambulant\config\compiler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\compiler\visualc.h">
-      <Filter>Header Files\ambulant\gui\d2\config\compiler</Filter>
+      <Filter>Header Files\ambulant\config\compiler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\platform\aix.h">
-      <Filter>Header Files\ambulant\gui\d2\config\platform</Filter>
+      <Filter>Header Files\ambulant\config\platform</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\platform\amigaos.h">
-      <Filter>Header Files\ambulant\gui\d2\config\platform</Filter>
+      <Filter>Header Files\ambulant\config\platform</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\platform\beos.h">
-      <Filter>Header Files\ambulant\gui\d2\config\platform</Filter>
+      <Filter>Header Files\ambulant\config\platform</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\platform\bsd.h">
-      <Filter>Header Files\ambulant\gui\d2\config\platform</Filter>
+      <Filter>Header Files\ambulant\config\platform</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\platform\cygwin.h">
-      <Filter>Header Files\ambulant\gui\d2\config\platform</Filter>
+      <Filter>Header Files\ambulant\config\platform</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\platform\hpux.h">
-      <Filter>Header Files\ambulant\gui\d2\config\platform</Filter>
+      <Filter>Header Files\ambulant\config\platform</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\platform\irix.h">
-      <Filter>Header Files\ambulant\gui\d2\config\platform</Filter>
+      <Filter>Header Files\ambulant\config\platform</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\platform\linux.h">
-      <Filter>Header Files\ambulant\gui\d2\config\platform</Filter>
+      <Filter>Header Files\ambulant\config\platform</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\platform\macos.h">
-      <Filter>Header Files\ambulant\gui\d2\config\platform</Filter>
+      <Filter>Header Files\ambulant\config\platform</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\platform\solaris.h">
-      <Filter>Header Files\ambulant\gui\d2\config\platform</Filter>
+      <Filter>Header Files\ambulant\config\platform</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\platform\win32.h">
-      <Filter>Header Files\ambulant\gui\d2\config\platform</Filter>
+      <Filter>Header Files\ambulant\config\platform</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\stdlib\dinkumware.h">
-      <Filter>Header Files\ambulant\gui\d2\config\stdlib</Filter>
+      <Filter>Header Files\ambulant\config\stdlib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\stdlib\libcomo.h">
-      <Filter>Header Files\ambulant\gui\d2\config\stdlib</Filter>
+      <Filter>Header Files\ambulant\config\stdlib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\stdlib\libstdcpp3.h">
-      <Filter>Header Files\ambulant\gui\d2\config\stdlib</Filter>
+      <Filter>Header Files\ambulant\config\stdlib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\stdlib\modena.h">
-      <Filter>Header Files\ambulant\gui\d2\config\stdlib</Filter>
+      <Filter>Header Files\ambulant\config\stdlib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\stdlib\msl.h">
-      <Filter>Header Files\ambulant\gui\d2\config\stdlib</Filter>
+      <Filter>Header Files\ambulant\config\stdlib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\stdlib\roguewave.h">
-      <Filter>Header Files\ambulant\gui\d2\config\stdlib</Filter>
+      <Filter>Header Files\ambulant\config\stdlib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\stdlib\sgi.h">
-      <Filter>Header Files\ambulant\gui\d2\config\stdlib</Filter>
+      <Filter>Header Files\ambulant\config\stdlib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\stdlib\stlport.h">
-      <Filter>Header Files\ambulant\gui\d2\config\stdlib</Filter>
+      <Filter>Header Files\ambulant\config\stdlib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\config\stdlib\vacpp.h">
-      <Filter>Header Files\ambulant\gui\d2\config\stdlib</Filter>
+      <Filter>Header Files\ambulant\config\stdlib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ambulant\smil2\animate_a.h">
       <Filter>Header Files\ambulant\smil2</Filter>
@@ -878,7 +878,7 @@
     <ClInclude Include="..\..\include\ambulant\smil2\transition.h">
       <Filter>Header Files\ambulant\smil2</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\d2_transition.h">
+    <ClInclude Include="..\..\include\ambulant\gui\d2\d2_transition.h">
       <Filter>Header Files\ambulant\gui\d2</Filter>
     </ClInclude>
   </ItemGroup>
