@@ -27,7 +27,7 @@
 		0405C04412B6244C007AD3B2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0407042B115266870094FB0B /* main.m */; };
 		0405C04612B6244C007AD3B2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		0405C05B12B624C0007AD3B2 /* libambulantCGstatic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0405C00D12B62364007AD3B2 /* libambulantCGstatic.a */; };
-		0405C05C12B624C8007AD3B2 /* libambulantGC.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04A1E87812B57E100060F97E /* libambulantGC.dylib */; };
+		0405C05C12B624C8007AD3B2 /* libambulantCG.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04A1E87812B57E100060F97E /* libambulantCG.dylib */; };
 		04070424115266770094FB0B /* LogController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0407041B115266770094FB0B /* LogController.mm */; };
 		04070425115266770094FB0B /* MyAmbulantView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0407041D115266770094FB0B /* MyAmbulantView.mm */; };
 		04070426115266770094FB0B /* MyAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0407041F115266770094FB0B /* MyAppDelegate.mm */; };
@@ -389,7 +389,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				04A1E99912B585D80060F97E /* Cocoa.framework in Frameworks */,
-				0405C05C12B624C8007AD3B2 /* libambulantGC.dylib in Frameworks */,
+				0405C05C12B624C8007AD3B2 /* libambulantCG.dylib in Frameworks */,
 				93C8CCFC1316666D0085212A /* ApplicationServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -445,7 +445,7 @@
 			isa = PBXGroup;
 			children = (
 				040705A1115268480094FB0B /* libambulant.dylib */,
-				04A1E87812B57E100060F97E /* libambulantGC.dylib */,
+				04A1E87812B57E100060F97E /* libambulantCG.dylib */,
 				0405C00D12B62364007AD3B2 /* libambulantCGstatic.a */,
 				04FA282912B8D16C0080216B /* libambulantIPhone.a */,
 			);
@@ -807,10 +807,10 @@
 			remoteRef = 042ADB0A1152DE65009CA791 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		04A1E87812B57E100060F97E /* libambulantGC.dylib */ = {
+		04A1E87812B57E100060F97E /* libambulantCG.dylib */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.dylib";
-			path = libambulantGC.dylib;
+			path = libambulantCG.dylib;
 			remoteRef = 04A1E87712B57E100060F97E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};

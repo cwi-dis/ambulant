@@ -45,6 +45,7 @@ using namespace smil2;
 // The map is updated when the user selects a new filter file
 static
 std::map<std::string, std::string> active_tests_attrs_map;
+bool active_test_attrs_map_inited;
 
 // The currently active custom tests attributes.
 // The map is filled when the user selects a new filter file
@@ -308,6 +309,7 @@ bool test_attrs::load_test_attrs(const std::string& filename) {
 
 	// Clear maps
 	active_tests_attrs_map.clear();
+    active_test_attrs_map_inited = false;
 	active_custom_tests_attrs_map.clear();
 
 	// load default first; some will be overriden below
@@ -325,7 +327,7 @@ bool test_attrs::load_test_attrs(const std::string& filename) {
 			const char *value = n->get_attribute("value");
 			if(name && value) {
 				active_tests_attrs_map[name] = value;
-				AM_DBG lib::logger::get_logger()->debug("systemTest %s: %s", name, value);
+				/*AM_DBG*/ lib::logger::get_logger()->debug("systemTest %s: %s", name, value);
 				if (std::string(name) == "systemLanguage") {
 
 #ifdef WITH_SMIL30
@@ -356,6 +358,9 @@ bool load_test_attrs(const char *filename) {
 
 // static
 void test_attrs::set_default_tests_attrs() {
+    if (active_test_attrs_map_inited) return;
+    active_test_attrs_map_inited = true;
+
 	active_tests_attrs_map["systemAudioDesc"] = "on";
 	active_tests_attrs_map["systemBitrate"] = "56000";
 	active_tests_attrs_map["systemCaptions"] = "on";
