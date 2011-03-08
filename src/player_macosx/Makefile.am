@@ -129,7 +129,8 @@ $(BUILDAPPNAME).app: cocoambulant_executable
 	mkdir -p $(BUILDAPPNAME).app/Contents/MacOS
 	mkdir -p $(BUILDAPPNAME).app/Contents/Resources
 	echo -n "APPLAmbl" > $(BUILDAPPNAME).app/Contents/PkgInfo
-	$(INSTALL_DATA) $(srcdir)/Resources/Info.plist $(BUILDAPPNAME).app/Contents/Info.plist
+#	$(INSTALL_DATA) $(srcdir)/Resources/Info.plist $(BUILDAPPNAME).app/Contents/Info.plist
+	sed -e 's/..PRODUCT_NAME./AmbulantPlayer/' $(srcdir)/Resources/Info.plist > $(BUILDAPPNAME).app/Contents/Info.plist
 	$(INSTALL_DATA) $(srcdir)/Ambulant.icns $(BUILDAPPNAME).app/Contents/Resources
 	$(INSTALL_DATA) $(srcdir)/AmbulantDocDaisy.icns $(BUILDAPPNAME).app/Contents/Resources
 	$(INSTALL_DATA) $(srcdir)/AmbulantDocGrins.icns $(BUILDAPPNAME).app/Contents/Resources
