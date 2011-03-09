@@ -89,6 +89,7 @@ class animation_engine {
 
 	void update_callback();
 	void _schedule_update();
+    void _ensure_schedule_update();
 	lib::critical_section m_lock;
 	lib::event *m_update_event;
 };
