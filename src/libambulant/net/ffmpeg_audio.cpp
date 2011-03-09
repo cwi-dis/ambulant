@@ -724,7 +724,11 @@ timestamp_t
 ffmpeg_decoder_datasource::get_elapsed()
 {
 	m_lock.enter();
-	timestamp_t buffer_duration = 1000000LL * (m_buffer.size() * 8) / (m_fmt.samplerate* m_fmt.channels * m_fmt.bits);
+   	_need_fmt_uptodate();
+    int bps = m_fmt.samplerate* m_fmt.channels * m_fmt.bits;
+    timestamp_t buffer_duration = 0;
+    if (bps != 0)
+        buffer_duration = 1000000LL * (m_buffer.size() * 8) / bps;
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource::get_elapsed: m_elapsed %ld, buffer %ld", m_elapsed, buffer_duration);
 	timestamp_t	 elapsed =	m_elapsed - buffer_duration;
 	m_lock.leave();
