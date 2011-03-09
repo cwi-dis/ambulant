@@ -21,6 +21,7 @@
  * @$Id$
  */
 
+
 #include "ambulant/gui/d2/d2_player.h"
 #include "ambulant/gui/d2/d2_renderer.h"
 #include "ambulant/gui/d2/d2_transition.h"
@@ -29,6 +30,12 @@
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
+
+#ifdef	AM_DMP
+#include <d2d1.h>
+#include <d2d1Helper.h>
+#include <wincodec.h>
+#endif//AM_DMP
 
 namespace ambulant {
 
@@ -214,6 +221,56 @@ d2_transition_renderer::transition_step()
 //#endif
 }
 
+#ifdef	AM_DMP
+void //static
+d2_transition_renderer::dump(ID2D1RenderTarget* rt, std::string id) {
+	IWICImagingFactory* wicFactory;
+    ID2D1Factory* d2dFactory;
+    IWICBitmap* wicBitmap;
+    ID2D1RenderTarget* wicRenderTarget;
+
+    // Clear backup information from previous save
+    //m_imageInfo.backupFileName.clear();
+
+    // Don't save if there are no image operations applied to this image unless the user specifed 'Save As'
+    //if (m_imageOperations.empty() && nullptr == saveAsItem)
+    //{
+    //   return S_OK;
+    //}
+
+    HRESULT hr = Direct2DUtility::GetWICFactory(&wicFactory);
+    if (SUCCEEDED(hr))
+    {
+        hr = Direct2DUtility::GetD2DFactory(&d2dFactory);
+    }
+
+    // Get the original bitmap rectangle in terms of the current crop
+    D2D1_RECT_F originalBitmapRect =
+        D2D1::RectF(0, 0, Direct2DUtility::GetRectWidth(m_clipRect), Direct2DUtility::GetRectHeight(m_clipRect));
+
+    // Adjust height and width based on current orientation and clipping rectangle
+    float width = m_isHorizontal ? Direct2DUtility::GetRectWidth(m_clipRect) : Direct2DUtility::GetRectHeight(m_clipRect);
+    float height = m_isHorizontal ? Direct2DUtility::GetRectHeight(m_clipRect) : Direct2DUtility::GetRectWidth(m_clipRect);
+
+    if (SUCCEEDED(hr))
+    {
+        // Create WIC bitmap for rendering
+        hr = wicFactory->CreateBitmap(
+            static_cast<unsigned int>(width),
+            static_cast<unsigned int>(height),
+            GUID_WICPixelFormat32bppBGR,
+            WICBitmapCacheOnLoad,
+            &wicBitmap);
+    }
+
+    if (SUCCEEDED(hr))
+    {
+        hr = d2dFactory->CreateWicBitmapRenderTarget(wicBitmap, D2D1::RenderTargetProperties(), &wicRenderTarget);
+    }
+
+}
+
+#endif 
 
 } // namespace d2
 
