@@ -371,7 +371,7 @@ class animate_f {
 	}
 
 	value_type at(time_type t, const value_type& u) const {
-		if(t<=m_ad) return m_cum?(m_f.at(m_sd, u)*(t/m_sd) + m_f.at(t%m_sd, u)):m_f.at(t%m_sd, u);
+		if(t<m_ad) return m_cum?(m_f.at(m_sd, u)*(t/m_sd) + m_f.at(t%m_sd, u)):m_f.at(t%m_sd, u);
 		if((m_ad%m_sd) != 0) return this->at(m_ad, u);
 		assert((m_ad%m_sd) == 0);
 		return m_cum?m_f.at(m_sd, u)*(m_ad/m_sd):m_f.at(m_sd, u);
