@@ -55,7 +55,9 @@
 #define AM_DBG if(0)
 #endif
 
-#ifdef _DEBUG
+#if defined(_DEBUG) && defined(AMBULANT_PLATFORM_WIN32)
+// On Windows, debug and release builds cannot be mixed due to different
+// runtime system libraries
 #define PLUGIN_PREFIX "libampluginD_"
 #define PYTHON_PLUGIN_ENGINE_PREFIX "libampluginD_python"
 #else
