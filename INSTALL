@@ -12,13 +12,14 @@ Prerequisites
 -------------
 
 Obviously you will need a compiler/linker/development environment.
-For Windows you need:
-- Microsoft Visual Studio .NET 2008 SP2
+For Windows you need Microsoft Visual Studio .NET 2008 SP2 or Visual
+Studio 2010.
+
 For Linux desktop you need at least autoconf, automake, GNU gcc
 (at least version 4.0), gtk2-devel and/or qt-devel (for graphics),
 and alsa-devel (for sound).
 
-For MacOSX you need the Apple Developer tools (XCode 3.2 or later).
+For MacOSX and iOS you need the Apple Developer tools (XCode 3.2 or later).
 
 You also need to build and install several third party packages that
 Ambulant depends on. We have a script to download/build/install these,
@@ -61,9 +62,8 @@ Mozilla XPCOM API.
 
 For more special case configure options consult "configure --help".
 
-Building for Mac OS X
----------------------
-For universal build, make sure you read this whole section.
+Building for Mac OS X, configure/make style
+-------------------------------------------
 
 First there are some packages that need to be installed system-wide, i.e.
 in /usr/local (or /opt, or whereever you want to put them). Eventually we will
@@ -101,7 +101,18 @@ should first run make in the toplevel build directory and then
 "sudo make install" in src/player_macosx. This will not install anything
 into /usr/local.
 
-XCode projects are also available, in projects/xcode32. For some components
+Building for Mac OS X 10.6 using XCode
+--------------------------------------
+
+First there are some packages that need to be installed system-wide, i.e.
+in /usr/local (or /opt, or whereever you want to put them). Eventually we will
+put these in the next category, but for now you need to download, build and
+install them manually:
+- gettext, version 0.17 or later
+- libtool, version 2.2.6 or later
+- pkg-config, version 0.19 or later
+
+XCode projects are available in projects/xcode32. For some components
 such as the iOS player or the Safari plugin you must use these, for
 the desktop player you can use either the configure/make scheme described
 above or the projects. To build using the projects you need to do first
@@ -132,7 +143,7 @@ You can pass an SDK to the --with-universalsdk option to enable doing a
 10.4 compatible build on 10.5 (or 10.6), but then you must also set the
 MACOSX_DEPLOYMENT_TARGET=10.4 environment variable.
 
-To build the Safari/WebKit plugin: see src/webkit_plugin/README.
+Building the Safari plugin will probably not work for 10.4 anymore.
 
 Building for Windows
 --------------------
@@ -158,7 +169,7 @@ example because a new version of some package has replaced an older one,
 you will probably also have to change the project properties files. Sometimes
 you need to re-run the Python script after fixing the property files.
   
-At this point you may want to inspect projects\vc9\Ambulant-win32.vsprops
+At this point you may want to inspect projects/vc9/Ambulant-win32.vsprops
 and/or projects/vc10/Ambulant-win32.props. These files
 have the pathnames of all the components, etc. Change things here to reflect
 your setup.
@@ -201,7 +212,7 @@ projects/xcode32/config and change things there (possibly in addition to
 changing the build-third-party-packages.py script).
 
 Finally a word of warning: if you do both MacOSX and iOS development the
-projects (or XCode) sometimes get confused. If you can't build, or debug, this
+projects (or XCode?) sometimes get confused. If you can't build, or debug, this
 may be the issue. Usually, removing all user.mode1v3 and user.pbxuser from
 the projects and removing the "build" subdirectory in projects/xcode32 will
 clean things up.
