@@ -66,6 +66,9 @@ interface ID2D1HwndRenderTarget;
 interface ID2D1RenderTarget;
 interface ID2D1Bitmap;
 interface IWICBitmap;
+#include <wincodec.h>
+//interface IWICImagingFactory;
+//interface IWICStream;
 
 namespace ambulant {
 
@@ -237,6 +240,8 @@ class AMBULANTAPI d2_player :
     ID2D1Factory *m_d2d;
 	void _recreate_d2d(wininfo *wi);
 	void _discard_d2d();
+	// and the WIC (Windows Imaging Component)
+	IWICImagingFactory* m_WICFactory;
 
 	// Transition handling
 	lib::event *m_update_event;
@@ -283,6 +288,12 @@ class AMBULANTAPI d2_player :
 
 	// The logger
 	lib::logger *m_logger;
+
+//#define	AM_DMP /* dump images (for debugging). Can create lots of image files, slows down all drawing. */
+#ifdef	AM_DMP
+  public:
+	 void dump (ID2D1RenderTarget* rt, std::string id);
+#endif//AM_DMP
 };
 
 } // namespace d2

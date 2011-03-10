@@ -67,12 +67,6 @@ class AMBULANTAPI d2_transition_renderer : public ref_counted_obj {
 	smil2::transition_engine *m_trans_engine;
 	bool m_fullscreen;
 	critical_section m_lock;
-
-#define	AM_DMP /* add code to dump images (for debugging) */
-#ifdef	AM_DMP
-public:
-	static void dump (ID2D1RenderTarget* rt, std::string id);
-#endif//AM_DMP
 };
 
 template <class RP_Base>
