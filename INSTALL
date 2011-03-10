@@ -18,13 +18,13 @@ For Linux desktop you need at least autoconf, automake, GNU gcc
 (at least version 4.0), gtk2-devel and/or qt-devel (for graphics),
 and alsa-devel (for sound).
 
-For MacOSX you need the Apple Developer tools (XCode 3.1 or later).
+For MacOSX you need the Apple Developer tools (XCode 3.2 or later).
 
-You also need to build and install several third party packages
-that Ambulant depends on. For MacOSX and Linux we have a script
-to download/build/install these, for Windows we provide zipfiles with
-sources that are known to work (for us, at least:-). See below
-for per-platform details.
+You also need to build and install several third party packages that
+Ambulant depends on. We have a script to download/build/install these,
+build-third-party-packages.py. This script contains many hardcoded URLs,
+you may need to adapt it when new versions of packages have become
+available.
 
 Building for Linux
 ------------------
@@ -36,10 +36,9 @@ After unpacking Ambulant you should first download and build the required
 	
 This will install all needed packages (insofar they are not installed
 on your system yet) in "third_party_packages/installed", and configure
-and make will pick them up from there.
-
-(In case the automatic build does not suit your needs: see
-third_party_pckages/readme.txt for manual building).
+and make will pick them up from there. You could also use "debian"
+in stead of "linux", then the third party packages will be installed
+system-wide through the package manager.
 
 
 After this, the normal "configure"/"make"/"make install" combo can be used here
@@ -76,20 +75,22 @@ install them manually:
 
 Next, make sure you install the third party packages on which Ambulant
 depends. These will be installed locally, for ambulant only (in
-directory third_party_packages/installed). Go to third_party_packages and run
+directory third_party_packages/installed). Go to third_party_packages
+and run
 
 	python build-third-party-packages.py mac10.6
 	
-That is, if you are on MacOSX 10.6. This will build the packages 32/64 bit
-universal. If you are on 10.4 or 10.5 you specify "mac10.4" as the argument,
-and the packages will be built Intel/PowerPC universal (both 32bit).
+That is, if you are on MacOSX 10.6. This will build the packages 32/64
+bit universal. If you are on 10.4 or 10.5 you specify "mac10.4" as the
+argument, and the packages will be built Intel/PowerPC universal (both
+32bit).
 
 For manual builds, see third_party_packages/readme.txt and readme-osx.txt.
 
 Then the normal "configure"/"make"/"sudo make install" combo can be used
-here in the toplevel directory to create the player, see further down
-in this document for details if you are not familiar with
-this scheme.
+here in the toplevel directory to create the player. For MacOSX 10.6 you
+can build a universal 32-bit/64-bit Ambulant, by running configure as:
+	./configure --with-macfat --disable-dependency-tracking
 
 "make install" installs the shared libraries and such into the path
 specified with the --prefix configure option, but the application,
@@ -100,15 +101,21 @@ should first run make in the toplevel build directory and then
 "sudo make install" in src/player_macosx. This will not install anything
 into /usr/local.
 
-XCode projects are also available, mainly for debugging purposes, but
-this needs some handcrafting to get it to work (it contains absolute
-pathnames to include directories to work around an XCode bug). Look in
-the "projects" directory.
+XCode projects are also available, in projects/xcode32. For some components
+such as the iOS player or the Safari plugin you must use these, for
+the desktop player you can use either the configure/make scheme described
+above or the projects. To build using the projects you need to do first
+do one initial step (in the toplevel ambulant directory):
+	$ mkdir build-3264
+	$ mkdir build-3264/third_party_packages
+Then you open any of the projects in project/xcode32, and it will build
+not only that product but also everything it depends on (including third
+party packages).
 
-For MacOSX 10.6 you can build a universal 32-bit/64-bit Ambulant, by
-running configure as:
-	./configure --with-macfat --disable-dependency-tracking
-	
+The projects are parameterized, so if something like the pathname of a
+third party package changes you should inspect the files in
+projects/xcode32/config and change things there (possibly in addition to
+changing the build-third-party-packages.py script).
 
 Building for older MacOSX releases
 ----------------------------------
@@ -131,92 +138,70 @@ Building for Windows
 --------------------
 
 All projects are located in the "projects" folder
-at the toplevel folder. "vc9" is for Visual Studio 2008, SP2.
+at the toplevel folder. "vc9" is for Visual Studio 2008, SP2, "vc10" for
+Visual Studio 2010.
 
 You must not only have Visual Studio, but also the Microsoft DirectX SDK. This
 can be downloaded from the Microsoft site. NOTE: the version of June 2010 does
 not seem to work, it is missing a library (ddraw.lib) that Ambulant needs. The
-February 2010 is the last version known to work.
+February 2010 is the last version known to work. You also need 7-Zip and
+Python 2.6 or 2.7.
 
-Installing and building the third party packages on Windows is more of a
-pain than it is on unix. For this reason, read these instructions *very carefully*,
-please. We hope these instructions are complete, otherwise
-please report back.
-
-From the ambulant sourcefore download page, obtain 
-"Third Party Packages, win32_wm5". Download and unzip in a temporary
-location, then move the directories named above into third_party_packages
-in your ambulant distribution. Some packages you must download separately, and 
-put the resulting unpacked distribution in third_party_packages:
-
-- ffmpeg (pre-configured and pre-built) should be obtained from
-  the Ambulant SF download page, package "ffmpeg for Ambulant, win32".
-- SDL is not included, get SDL 1.2.X from www.libsdl.org.
-- Get the live555 libraries from www.live555.com. It should no longer be
-  necessary to apply the modifications from third_party_packages/live555_VC9 (or VC8).
-- Xerces is not included, get it yourself (either 3.0 or 2.8)
-  from xerces.apache.org. 
-- libxml2 is not included, get it from xmlsoft.org.
-- if you want to build the Firefox plugin you must also get the Mozilla XPCOM API,
-  most easily found by looking for "xulrunner-sdk" or "Gecko SDK".
-- If you want Python support get Python 2.6 and install it (standard Windows
-  binary release).
+First, you build the third party packages, by opening a "cmd" command window
+and navigating to ambulant/third_party_packages. You now run the following
+two commands:
+	xxx> call "c:\Program Files\Microsoft Visual Studio xxx\VC\bin\vcvars.bat"
+	xxx> call "c:\PythonXX\python.exe" build-third-party-packages.py win32
+This should build all third party packages and put them where the Ambulant
+build expects them. If you have to change anything in this python script, for
+example because a new version of some package has replaced an older one,
+you will probably also have to change the project properties files. Sometimes
+you need to re-run the Python script after fixing the property files.
   
-At this point you may want to inspect projects\vc9\Ambulant-win32.vsprops. This
-has the pathnames of all the components, etc. For VS2005 you have to edit the
-individual projects if you have things in non-standard places. (If you did not
-heed the second paragraph and opened some projects already: close them. They
-depend on settings in this vsprops file).
-
-Next, build Xerces, following their instructions.
-
-Next, build SDL. Instructions are in VisualC.html in their toplevel folder.
-
-Then, open projects\vc9\third_party_packages.sln, select the "Release"
-configuration and build it. This will build everything (except Xerces, which you
-did manually in the previous step) and put it where Ambulant expects it.
-Also build the "Debug" configuration, if you want it.
+At this point you may want to inspect projects\vc9\Ambulant-win32.vsprops
+and/or projects/vc10/Ambulant-win32.props. These files
+have the pathnames of all the components, etc. Change things here to reflect
+your setup.
 
 After these steps you are ready to build AmbulantPlayer itself. Open
-projects\vc9\Ambulant-win32.sln and select "Ambulant Player" as the default
+Ambulant-win32.sln and select "Ambulant Player" as the default
 project (right-click on it for the context menu that allows you to do this).
-Select the build type, use "ReleaseShlib" in case of doubt. If you did not
-get Python or XPCOM you can disable the corresponding project in the solution.
+Select the build type, for example "Release" for Direct2D (Windows 7 only) or
+"ReleaseDX" for DirectDraw (XP or later).
 
 The resulting application is deposited in bin\win32 in the toplevel
 directory.
 
-Building for iPhane iOS4.0 (unfinished, untested, unreliable).
---------------------------
+If you want to build the Firefox or IE plugin you may need to install some
+additional tools such as CabArc. Also, to build the IE plugin you must run
+Visual Studio (sic!) with Administrator permissions.
 
-third_party_packages:
-NOTE: for iPhone, SDL-1.3.0 currently needs to be modfied:
-- ./src/video/uikit/SDL_uikitappdelegate.m contains an entry point main(int arc,char** argv)
-that must be disabled (either by changing it to Xmain or using #ifdef).
+Building for iPhane iOS4
+------------------------
 
-build third_party_packages using the same technique as described for MACOS in
-Documentation/misc/README-Distribution, for both iPhone Simulator and Device:
+First there are some packages that need to be installed system-wide, i.e.
+in /usr/local (or /opt, or whereever you want to put them). Eventually we will
+put these in the next category, but for now you need to download, build and
+install them manually:
+- gettext, version 0.17 or later
+- libtool, version 2.2.6 or later
+- pkg-config, version 0.19 or later
 
-- cd to toplevel ambulant directory
-- mkdir -p build-iOS40-Simulator/third_party_packages
-- cd build-iOS40-Simulator/third_party_packages
-# Note: next pathname may change with each iOS release, vital to find proper compilers/linkers
-- ORIG_PATH=$PATH;PATH=/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:$PATH
-- export IPHONEOS_DEPLOYMENT_TARGET=4.0; export MACOSX_DEPLOYMENT_TARGET=10.6
-- ../../third_party_packages/build-third-party-packages.py iOS40-Simulator
-- PATH=$ORIG_PATH
+Before opening the XCode projects, do the following (at the toplevel Ambulant
+directory):
+	$ mkdir build-{iOS,iOS-Fat,iOS-Simulator}
+	$ mkdir build-{iOS,iOS-Fat,iOS-Simulator}/third_party_packages
 
-- cd to toplevel ambulant directory
-- mkdir -p build-iOS40-Device/third_party_packages
-- cd build-iOS40-Device/third_party_packages
-# Note: next pathname may change with each iOS release, vital to find proper compilers/linkers
-- ORIG_PATH=$PATH;PATH=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:$PATH
-- export IPHONEOS_DEPLOYMENT_TARGET=4.0; export MACOSX_DEPLOYMENT_TARGET=10.6
-- ../../third_party_packages/build-third-party-packages.py iOS40-Device
-- PATH=$ORIG_PATH
+Now you can open projects/xcode32/iAmbulant.xcodeproj and it will build everything
+needed.
 
-Now xcode can be started on th project src/player_iphone/player_iphone.xcodeproj,
-select Target iphone-simulator with Active SDK Simulator
-or Target iphone-device with Active SDK Device.
-Other combinations will not work.
+The projects are parameterized, so if something like the pathname of a
+third party package changes you should inspect the files in
+projects/xcode32/config and change things there (possibly in addition to
+changing the build-third-party-packages.py script).
 
+Finally a word of warning: if you do both MacOSX and iOS development the
+projects (or XCode) sometimes get confused. If you can't build, or debug, this
+may be the issue. Usually, removing all user.mode1v3 and user.pbxuser from
+the projects and removing the "build" subdirectory in projects/xcode32 will
+clean things up.
