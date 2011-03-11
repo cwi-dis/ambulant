@@ -17,10 +17,9 @@ BUILD3PPARGS=linux
 CONFIGOPTS="--with-qt --with-gtk --with-xerces --with-xerces-plugin --with-npambulant"
 MAKEOPTS=
 VERSIONSUFFIX=.$TODAY
-##PLUGINDMGNAME=AmbulantWebKitPlugin-$AMBULANTVERSION$VERSIONSUFFIX-mac
 DESTINATION=ssh.cwi.nl:public_html/ambulant/nightly
 DESTINATION_SRC=$DESTINATION/src
-DESTINATION_NPAMBULANT=$destination/linux-intel-firefoxplugin
+DESTINATION_NPAMBULANT=$DESTINATION/linux-intel-firefoxplugin
 
 echo
 echo ==========================================================
@@ -46,6 +45,8 @@ esac
 mkdir -p $BUILDHOME
 cd $BUILDHOME
 rm -rf $BUILDDIR
+rm -rf $DESTDIR
+ls -t | tail +6 | grep ambulant- | xargs rm -rf
 hg $HGARGS clone $HGCLONEARGS $BUILDDIR
 ###
 ### We are building a binary distribution, so we want to completely ignore any
