@@ -107,7 +107,7 @@
 			isa = PBXGroup;
 			children = (
 				042AD9311152C916009CA791 /* libambulant.dylib */,
-				041E967C12BA4D5B00399893 /* libambulantCG.dylib */,
+				041E967C12BA4D5B00399893 /* libambulantGC.dylib */,
 				041E967E12BA4D5B00399893 /* libambulantCGstatic.a */,
 				041E968012BA4D5B00399893 /* libambulantIPhone.a */,
 			);
@@ -226,7 +226,7 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		041E967C12BA4D5B00399893 /* libambulantCG.dylib */ = {
+		041E967C12BA4D5B00399893 /* libambulantGC.dylib */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.dylib";
 			path = libambulantCG.dylib;

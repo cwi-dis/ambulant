@@ -278,7 +278,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = plugin_Prefix.pch;
-				PRODUCT_NAME = libamplugin_plugin;
+				PRODUCT_NAME = libamplugin_xpath_state;
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = "non-global";
 			};
