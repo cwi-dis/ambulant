@@ -37,6 +37,10 @@ class Internalizer:
 		self.safe_prefixes = safe_prefixes
 		self.safe_prefixes.append(bundle) # XXX good idea?
 		
+		self.dstroot = None
+		if os.environ.has_key('DSTROOT'):
+			self.dstroot = os.environ['DSTROOT']
+		
 		self.todo = {}
 		self.done = {}
 		self.used = {}
@@ -47,6 +51,13 @@ class Internalizer:
 		
 		self.instlibdir = None
 		self.staginglibdir = None
+		
+	def dstrelative(self, path):
+		if self.dstroot and os.path.isabs(path):
+			newpath = self.dstroot + path
+			if os.path.exists(newpath):
+				return newpath
+		return path
 		
 	def set_staging_libdir(self, instlibdir, staginglibdir):
 		self.instlibdir = instlibdir
@@ -69,14 +80,14 @@ class Internalizer:
 	def add(self, src, copy=False):
 		if self.instlibdir and os.path.commonprefix([src, self.instlibdir]) == self.instlibdir:
 			src = self.staginglibdir + src[len(self.instlibdir):]
-		while os.path.islink(src):
-			src = os.path.realpath(src)
+		while os.path.islink(self.dstrelative(src)):
+			src = os.path.realpath(self.dstrelative(src))
 		if src in self.todo or src in self.done:
 			return
-		if not os.path.exists(src):
+		if not os.path.exists(self.dstrelative(src)):
 			print '** file does not exist:', src
 			self.work_done = True
-		if not self.is_loadable(src):
+		if not self.is_loadable(self.dstrelative(src)):
 			return
 		if self.verbose: print '* add', src
 		if copy:
@@ -92,7 +103,7 @@ class Internalizer:
 	def run(self):
 		while self.todo:
 			src, dst = self.todo.items()[0]
-			self.process(src, dst)
+			self.process(self.dstrelative(src), dst)
 			del self.todo[src]
 			self.done[src] = dst
 		
@@ -195,7 +206,7 @@ def main():
 					raise getopt.error
 				instlibdir, reallibdir = v.split(':')
 		if len(args) != 1:
-			raise getopt.error
+			raise getopt.error('missing arguments')
 	except getopt.error:
 		print 'Usage: %s [-vnc] [-s instlibdir:reallibdir] bundlepath '% sys.argv[0]
 		print 'Recursively slurp dylibs used in a bundle.'

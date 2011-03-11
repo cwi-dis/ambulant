@@ -117,7 +117,7 @@ mkdir -p "$BUILDHOME/$DESTDIR/Library/Internet Plug-Ins"
 cd "$BUILDHOME/$DESTDIR/Library/Internet Plug-Ins"
 rm -rf $PLUGINDMGNAME
 mkdir $PLUGINDMGNAME
-mv "AmbulantWebKitPlugin.plugin" $PLUGINDMGNAME
+mv "AmbulantWebKitPlugin.webplugin" $PLUGINDMGNAME
 cp $BUILDHOME/$BUILDDIR/src/webkit_plugin/README $PLUGINDMGNAME
 zip -r $PLUGINDMGNAME.zip $PLUGINDMGNAME
 scp $PLUGINDMGNAME.zip $DESTINATION_PLUGIN
