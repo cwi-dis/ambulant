@@ -32,13 +32,18 @@ mkdir $dirname
 #
 # Unpack the template (which contains icon position, etc)
 #
-(cd $dirname ; tar xf ../foldertemplate.tar)
+(cd $dirname ; tar xf ../foldertemplate.tar; mv placeholder.app $appname)
 #
 # Copy all other files
 #
 cp $topdir/README $dirname/README
-rm -rf "$dirname/$appname"
-cp -r "$installroot/Applications/$appname" "$dirname/$appname"
+rm -rf "$dirname/Ambulant Player.app"
+cp -r "$installroot/Applications/$appname" "$dirname/Ambulant Player.app"
+case $appname in
+"Ambulant Player.app") ;;
+*) mv "$dirname/Ambulant Player.app" "$dirname/$appname"
+   ;;
+esac
 ln -s /Applications $dirname/Applications
 cp -r $topdir/Extras/DemoPresentation $dirname/DemoPresentation
 find $dirname/DemoPresentation -name 'CVS' -a -exec rm -r '{}' ';'
