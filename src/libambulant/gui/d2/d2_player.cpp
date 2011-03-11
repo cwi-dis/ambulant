@@ -128,6 +128,7 @@ gui::d2::d2_player::d2_player(
 	common::player_feedback *feedback,
 	const net::url& u)
 :	m_d2d(NULL),
+	m_WICFactory(NULL),
 	m_hoster(hoster),
 	m_update_event(0),
 	m_cur_wininfo(NULL),
@@ -331,7 +332,11 @@ gui::d2::d2_player::_recreate_d2d(wininfo *wi)
 	D2D1_SIZE_U size = D2D1::SizeU(rc.right-rc.left, rc.bottom-rc.top);
 
 	HRESULT hr = m_d2d->CreateHwndRenderTarget(
-		D2D1::RenderTargetProperties(),
+#ifdef	AM_DMP
+		D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_SOFTWARE),
+#else //AM_DMP
+		D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_SOFTWARE),
+#endif//AM_DMP
 		D2D1::HwndRenderTargetProperties(wi->m_hwnd, size, D2D1_PRESENT_OPTIONS_RETAIN_CONTENTS),
 		&wi->m_rendertarget);
 
@@ -502,6 +507,7 @@ bool gui::d2::d2_player::_calc_fit(
 }
 
 void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
+
 	HRESULT hr = S_OK;
 	// Create the Direct2D resources, in case they were lost
 	wininfo *wi = _get_wininfo(hwnd);
@@ -555,6 +561,9 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 		wi->m_window->redraw();
 	}
 	hr = rt->EndDraw();
+#ifdef	AM_DMP
+	dump (rt, "d2_player-redraw2");
+#endif//AM_DMP
 	m_cur_wininfo = NULL;
 	if (hr == D2DERR_RECREATE_TARGET) {
 		// This happens if something serious changed (like move to a
@@ -580,8 +589,8 @@ gui::d2::d2_player::_capture_bitmap(lib::rect r, ID2D1RenderTarget *src_rt, ID2D
 	D2D1_SIZE_U src_size = { r.width(), r.height() };
 	if (r.size() == lib::size(0,0)) {
 		D2D1_SIZE_F rt_size = src_rt->GetSize();
-		src_size.width = rt_size.width;
-		src_size.height = rt_size.height;
+		src_size.width = (float) rt_size.width;
+		src_size.height = (float) rt_size.height;
 	}
 //	D2D1_RECT_U src_rect = { r.left(), r.top(), r.left()+src_size.width, r.top()+src_size.height };
 	ID2D1Bitmap *bitmap;
@@ -606,16 +615,19 @@ gui::d2::d2_player::_capture_bitmap(lib::rect r, ID2D1RenderTarget *src_rt, ID2D
 IWICBitmap *
 gui::d2::d2_player::_capture_wic(lib::rect r, ID2D1RenderTarget *src_rt)
 {
-	static IWICImagingFactory *wf = NULL;
+	if (src_rt == NULL)
+		return NULL;
+	D2D1_SIZE_F src_size = src_rt->GetSize();
+
 	HRESULT hr;
 	// Create the WIC factory, if it hasn'tbeen done earlier
-	if (wf == NULL) {
+	if (m_WICFactory == NULL) {
 		hr = CoCreateInstance(
 			CLSID_WICImagingFactory,
 			NULL,
 			CLSCTX_INPROC_SERVER,
 			IID_IWICImagingFactory,
-			reinterpret_cast<void **>(&wf)
+			reinterpret_cast<void **>(&m_WICFactory)
 			);
 		if (!SUCCEEDED(hr)) {
 			lib::win32::win_trace_error("capture: CoCreateInstance(IWICImagingFactory)", hr);
@@ -624,15 +636,14 @@ gui::d2::d2_player::_capture_wic(lib::rect r, ID2D1RenderTarget *src_rt)
 	}
 
 	// Create the WIC bitmap
-	D2D1_SIZE_F src_size = src_rt->GetSize();
 	if (r.size() == lib::size(0,0)) {
 		r = lib::rect(lib::point(0,0), lib::size(int(src_size.width), int(src_size.height)));
 	}
 	IWICBitmap *bitmap;
-    hr = wf->CreateBitmap(
+    hr = m_WICFactory->CreateBitmap(
         r.width(),
         r.height(),
-        GUID_WICPixelFormat32bppBGRA,
+        GUID_WICPixelFormat32bppBGR,
         WICBitmapCacheOnLoad,
         &bitmap
         );
@@ -642,10 +653,10 @@ gui::d2::d2_player::_capture_wic(lib::rect r, ID2D1RenderTarget *src_rt)
 	}
 
 	// Create the D2D render target for the new bitmap
-	ID2D1RenderTarget *dst_rt;
-    hr = m_d2d->CreateWicBitmapRenderTarget(
+	ID2D1RenderTarget *dst_rt = NULL;
+	hr = m_d2d->CreateWicBitmapRenderTarget(
         bitmap,
-        D2D1::RenderTargetProperties(),
+        D2D1::RenderTargetProperties(), //D2D1_RENDER_TARGET_TYPE_SOFTWARE,D2D1::PixelFormat(DXGI_FORMAT_B8G8R8X8_UNORM,D2D1_ALPHA_MODE_IGNORE)),
         &dst_rt
         );
 	if (!SUCCEEDED(hr)) {
@@ -1089,3 +1100,67 @@ gui::d2::d2_player::captured(IWICBitmap *bitmap)
 	AM_DBG m_logger->debug("d2_player::captured called");
 	if (bitmap) bitmap->Release();
 }
+
+#ifdef	AM_DMP
+#define SafeRelease(x) if(x!=NULL){if(*x!=NULL){(*x)->Release();*x=NULL;}}
+#define CheckError(x) if(FAILED(x))goto cleanup;
+
+void
+gui::d2::d2_player::dump(ID2D1RenderTarget* rt, std::string id) {
+	if (rt == NULL)
+		return;
+	D2D1_SIZE_F sizeF = rt->GetSize();
+
+	// create file name
+	static int indx;
+	int i = indx++;
+	if (indx == 9999) indx = 0;
+	std::string filename = ".\\";
+	char num[4];
+	sprintf(num, "%.4d-", i);
+	filename += std::string(num);
+	filename += id;
+	filename += ".png";
+	std::wstring wide_filename = std::wstring(filename.begin(), filename.end());
+	const wchar_t* wide_cstr_filename = wide_filename.c_str();
+
+	// create the IWICBitmap from the ID2D1RenderTarget
+    IWICBitmap* wicBitmap = NULL;
+	IWICStream* wicStream = NULL;
+	IWICBitmapEncoder* wicBitmapEncoder = NULL;
+	IWICBitmapFrameEncode* wicBitmapFrameEncode = NULL;
+
+	WICPixelFormatGUID format = GUID_WICPixelFormatDontCare;
+	HRESULT hr = 0;
+	if ((wicBitmap = _capture_wic(lib::rect(), rt)) == NULL)
+		goto cleanup;
+	hr = m_WICFactory->CreateStream(&wicStream);
+	CheckError(hr);
+	hr = wicStream->InitializeFromFilename(wide_cstr_filename, GENERIC_WRITE);
+	hr = m_WICFactory->CreateEncoder(GUID_ContainerFormatPng, NULL, &wicBitmapEncoder);
+	CheckError(hr);
+	hr = wicBitmapEncoder->Initialize(wicStream, WICBitmapEncoderNoCache);
+	CheckError(hr);
+	hr = wicBitmapEncoder->CreateNewFrame(&wicBitmapFrameEncode, NULL);
+	CheckError(hr);
+	hr = wicBitmapFrameEncode->Initialize(NULL);
+	CheckError(hr);
+	hr = wicBitmapFrameEncode->SetSize((UINT) sizeF.width, (UINT) sizeF.height);
+	CheckError(hr);
+	hr = wicBitmapFrameEncode->SetPixelFormat(&format);
+	CheckError(hr);
+	hr = wicBitmapFrameEncode->WriteSource(wicBitmap, NULL);
+	CheckError(hr);
+	hr = wicBitmapFrameEncode->Commit();
+	CheckError(hr);
+	hr = wicBitmapEncoder->Commit();
+	CheckError(hr);
+
+  cleanup:
+	SafeRelease(&wicBitmap);
+	SafeRelease(&wicStream);
+	SafeRelease(&wicBitmapEncoder);
+	SafeRelease(&wicBitmapFrameEncode);
+}
+
+#endif 

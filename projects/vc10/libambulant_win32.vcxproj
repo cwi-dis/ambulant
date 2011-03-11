@@ -220,6 +220,7 @@
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level2</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalDependencies>libjpeg.lib;libpng.lib;libexpat.lib;zlib.lib;windowscodecs.lib;d2d1.lib;dwrite.lib;strmbasd.lib;%(AdditionalDependencies)</AdditionalDependencies>
