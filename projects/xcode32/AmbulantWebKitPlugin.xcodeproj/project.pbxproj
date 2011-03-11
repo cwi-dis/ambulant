@@ -322,7 +322,7 @@
 		0406034312EF13E70032074D /* libambulantCG.dylib */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.dylib";
-			path = libambulantGC.dylib;
+			path = libambulantCG.dylib;
 			remoteRef = 0406034212EF13E70032074D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -380,7 +380,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "python \"${AMBULANT_DIR}/src/player_macosx/internalize_dylibs.py\" -v -s /usr/local/lib:\"${PREBUILT_AMBULANT_ROOT}/src/libambulant/.libs\" \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"";
+			shellScript = "python \"${AMBULANT_DIR}/src/player_macosx/internalize_dylibs.py\" -v \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"";
 		};
 		0427885A12F6E8CC0033D6EB /* Run Script - install */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -394,7 +394,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# clean up any previous products/symbolic links in the Internet Plug-Ins folder\nif [ -a \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\" ]; then\n  rm -Rf \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\"\nfi\n\n# Depending on the build configuration, either copy or link to the most recent product\ncase \"${CONFIGURATION}\" in\nDebug*)\n  # if we're debugging, add a symbolic link to the plug-in\n  ln -sf \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\" \\\n    \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\"\n  ;;\nRelease*)\n  # if we're compiling for release, just copy the plugin to the Internet Plug-ins folder\n  cp -Rfv \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\" \\\n    \"${USER_LIBRARY_DIR}/Internet Plug-Ins/${FULL_PRODUCT_NAME}\"\n  ;;\n*)\n  echo \"Unknown configuration type ${CONFIGURATION}, edit target deployment script please\"\n  exit 1\n  ;;\nesac";
+			shellScript = "# clean up any previous products/symbolic links in the Internet Plug-Ins folder\nif [ -a \"${DSTROOT}/${INSTALL_PATH}/${FULL_PRODUCT_NAME}\" ]; then\n  rm -Rf \"${DSTROOT}/${INSTALL_PATH}/${FULL_PRODUCT_NAME}\"\nfi\n\n# Depending on the build configuration, either copy or link to the most recent product\ncase \"${CONFIGURATION}\" in\nDebug*)\n  # if we're debugging, add a symbolic link to the plug-in\n  ln -sf \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\" \\\n    \"${DSTROOT}/${INSTALL_PATH}/${FULL_PRODUCT_NAME}\"\n  ;;\nRelease*)\n  # if we're compiling for release, just copy the plugin to the Internet Plug-ins folder\n  cp -Rfv \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\" \\\n    \"${DSTROOT}/${INSTALL_PATH}/${FULL_PRODUCT_NAME}\"\n  ;;\n*)\n  echo \"Unknown configuration type ${CONFIGURATION}, edit target deployment script please\"\n  exit 1\n  ;;\nesac";
 		};
 /* End PBXShellScriptBuildPhase section */
 
