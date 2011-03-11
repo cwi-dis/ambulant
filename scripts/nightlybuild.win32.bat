@@ -7,10 +7,7 @@ rem
 rem Location of various programs
 rem
 
-set CVSKEY="%USERPROFILE%\My Documents\Putty Keys\id_dsa.ppk"
-set CVS_RSH="C:\Program Files\TortoiseCVS\TortoisePlink.exe" -i %CVSKEY%
-set cvs="C:\Program Files\TortoiseCVS\cvs.exe"
-set hg="C:\TortoiseHg\hg.exe"
+set hg="C:\Program Files\TortoiseHg\hg.exe"
 set pageant="C:\Program Files\PuTTY\pageant.exe"
 set visualstudio="C:\Program Files\Microsoft Visual Studio 9.0"
 set vcdir="vc9"
