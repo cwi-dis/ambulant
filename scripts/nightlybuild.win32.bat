@@ -30,8 +30,9 @@ set CVSPRIVUSER=jack
 set CVSPRIVARGS=-d "%CVSPRIVUSER%@oratrix.oratrix.com:/ufs/jack/.CVSROOT"
 set CHECKOUTPRIVARGS=-P
 set BUILDHOME="%TEMP%\nightly"
-rem US/UK: set TODAY=%date:~-4%%date:~4,2%%date:~7,2%
-set TODAY=%date:~-4%%date:~-7,2%%date:~-10,2%
+rem XP US/UK: set TODAY=%date:~-4%%date:~4,2%%date:~7,2%
+rem XP NL: set TODAY=%date:~-4%%date:~-7,2%%date:~-10,2%
+set TODAY=%date%
 set VERSIONSUFFIX=.%TODAY%
 set BUILDDIR=build-%TODAY%
 set BUILD3PPARGS=win32
@@ -49,7 +50,7 @@ rem
 
 mkdir %buildhome%
 cd /d %buildhome%
-%hg% clone %HGCLONEARGS%
+%hg% clone %HGCLONEARGS% %builddir%
 rem XXXX %cvs% %CVSARGS% checkout %CHECKOUTARGS% -d %builddir% ambulant
 rem XXXX %cvs% %CVSPRIVARGS% checkout %CHECKOUTPRIVARGS% ambulant-private
 if %errorlevel% neq 0 pause
