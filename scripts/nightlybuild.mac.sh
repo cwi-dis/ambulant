@@ -97,7 +97,6 @@ scp $DMGNAME-CG.dmg $DESTINATION_CG
 cd ../..
 #
 # Build webkit plugin.
-# Note we don't build the install target, the build target does the right thing.
 #
 cd projects/xcode32
 rm -rf "$HOME/Library/Internet Plug-Ins/AmbulantWebKitPlugin.plugin"
@@ -108,7 +107,8 @@ xcodebuild -project AmbulantWebKitPlugin.xcodeproj \
 	AMBULANT_BUILDDIR=$BUILDHOME/$BUILDDIR \
 	AMBULANT_3PP=$BUILDHOME/$BUILDDIR/build-3264/third_party_packages \
 	DSTROOT=$BUILDHOME/$DESTDIR \
-	INSTALL_PATH="/Library/Internet Plug-ins"
+	INSTALL_PATH="/Library/Internet Plug-ins" \
+	install
 cd ../..
 #
 # Build plugin installer, upload
