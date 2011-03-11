@@ -12,7 +12,7 @@
 		0406035B12EF14380032074D /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0406035A12EF14380032074D /* Info.plist */; };
 		0406036E12EF17000032074D /* libambulant.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0406034112EF13E70032074D /* libambulant.dylib */; };
 		0406037012EF172F0032074D /* libamplugin_python.so in Copy Files - plugins */ = {isa = PBXBuildFile; fileRef = 0406035012EF13E70032074D /* libamplugin_python.so */; };
-		047FB404132A50EF009D2C3C /* libamplugin_xpath_state.so in Frameworks */ = {isa = PBXBuildFile; fileRef = 0406034A12EF13E70032074D /* libamplugin_xpath_state.so */; };
+		047FB404132A50EF009D2C3C /* libamplugin_xpath_state.so in Copy Files - plugins */ = {isa = PBXBuildFile; fileRef = 0406034A12EF13E70032074D /* libamplugin_xpath_state.so */; };
 		224339580A6F05F3000348D4 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 224339570A6F05F3000348D4 /* WebKit.framework */; };
 		8D1AC9700486D14A00FE50C9 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD92D38A0106425D02CA0E72 /* Cocoa.framework */; };
 /* End PBXBuildFile section */
@@ -97,6 +97,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				047FB404132A50EF009D2C3C /* libamplugin_xpath_state.so in Copy Files - plugins */,
 				0406037012EF172F0032074D /* libamplugin_python.so in Copy Files - plugins */,
 			);
 			name = "Copy Files - plugins";
@@ -134,7 +135,6 @@
 				8D1AC9700486D14A00FE50C9 /* Cocoa.framework in Frameworks */,
 				224339580A6F05F3000348D4 /* WebKit.framework in Frameworks */,
 				0406036E12EF17000032074D /* libambulant.dylib in Frameworks */,
-				047FB404132A50EF009D2C3C /* libamplugin_xpath_state.so in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
