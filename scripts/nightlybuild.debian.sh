@@ -14,7 +14,7 @@ TODAY=`date +%Y%m%d`
 CLDATE=`date --rfc-2822`
 BUILDDIR=ambulant-debian-$TODAY
 VERSIONSUFFIX=.$TODAY
-DESTINATION=ssh.cwi.nl:public_html/ambulant/nightly/debian
+DESTINATION=ssh.cwi.nl:public_html/ambulant/nightly/debian/
 
 echo
 echo ==========================================================
@@ -48,12 +48,20 @@ xyzzy
 # Build debian package (incomplete)
 #
 cd debian
-debuild -kC75B80BC
+debuild -kC75B80BC << xyzzy
+ambulant
+ambulant
+xyzzy
+cd ..
 
 #
 # Upload
 #
-# XXX TODO
+
+cd ..
+mkdir debian-$TODAY
+mv *.tar.gz *.deb *.dsc *.changes *.build debian-$TODAY/
+scp -r debian-$TODAY $DESTINATION
 
 #
 # Delete old installers, remember current
