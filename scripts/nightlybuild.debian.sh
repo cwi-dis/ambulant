@@ -11,6 +11,7 @@ HGARGS=""
 HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
 BUILDHOME=$HOME/tmp/ambulant-nightly
 TODAY=`date +%Y%m%d`
+CLDATE=`date --rfc2822`
 BUILDDIR=ambulant-debian-$TODAY
 VERSIONSUFFIX=.$TODAY
 DESTINATION=ssh.cwi.nl:public_html/ambulant/nightly/debian
@@ -40,7 +41,7 @@ ambulant ($AMBULANTVERSION.$TODAY) unstable; urgency=low
 
   * Nightly build, for testing only
 
- -- CWI Ambulant Team <ambulant@cwi.nl>  `date --rfc2822`
+ -- CWI Ambulant Team <ambulant@cwi.nl>  $CLDATE
 xyzzy
 
 #
