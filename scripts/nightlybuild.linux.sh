@@ -17,7 +17,7 @@ BUILD3PPARGS=linux
 CONFIGOPTS="--with-qt --with-gtk --with-xerces --with-xerces-plugin --with-npambulant"
 MAKEOPTS=
 VERSIONSUFFIX=.$TODAY
-DESTINATION=ssh.cwi.nl:public_html/ambulant/nightly
+DESTINATION=sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds
 DESTINATION_SRC=$DESTINATION/src
 DESTINATION_NPAMBULANT=$DESTINATION/linux-intel-firefoxplugin
 

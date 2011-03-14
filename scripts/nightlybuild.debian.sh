@@ -14,7 +14,7 @@ TODAY=`date +%Y%m%d`
 CLDATE=`date --rfc-2822`
 BUILDDIR=ambulant-debian-$TODAY
 VERSIONSUFFIX=.$TODAY
-DESTINATION=ssh.cwi.nl:public_html/ambulant/nightly/debian/
+DESTINATION=sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds/debian/
 
 echo
 echo ==========================================================

@@ -33,10 +33,10 @@ set TODAY=%date%
 set VERSIONSUFFIX=.%TODAY%
 set BUILDDIR=build-%TODAY%
 set BUILD3PPARGS=win32
-set DESTINATION="jack@ssh.cwi.nl:public_html/ambulant/nightly/"
-set DESTINATIONDESKTOP="%DESTINATION%/win32-desktop/"
-set DESTINATIONNP="%DESTINATION%/win32-firefoxplugin/"
-set DESTINATIONIE="%DESTINATION%/win32-ieplugin/"
+set DESTINATION="sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds/"
+set DESTINATIONDESKTOP="%DESTINATION%/win32-intel-desktop/"
+set DESTINATIONNP="%DESTINATION%/win32-intel-firefoxplugin/"
+set DESTINATIONIE="%DESTINATION%/win32-intel-ieplugin/"
 
 rem
 rem Setup variables
