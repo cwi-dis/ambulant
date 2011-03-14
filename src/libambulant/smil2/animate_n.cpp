@@ -256,6 +256,8 @@ class regdim_animation : public linear_values_animation<F, common::region_dim> {
 
 		else
 			regs.rd = rd; // override
+        AM_DBG lib::logger::get_logger()->debug("regdim_animation: now at %s",regs.rd.repr().c_str());
+
 	}
 };
 
@@ -286,7 +288,8 @@ class underlying_to_regdim_animation : public underlying_to_animation<common::re
 		if(!m_animate_f) return;
 		lib::timer::time_type t = m_timer->elapsed();
 		common::region_dim rd = m_animate_f->at(t, regs.rd);
-		regs.rd = rd; // override
+        regs.rd = rd; // override
+       AM_DBG lib::logger::get_logger()->debug("underlying_to_regdim_animation: (t=%d) now at %s", (int)t, regs.rd.repr().c_str());
 	}
 };
 
@@ -476,6 +479,7 @@ class values_motion_animation : public linear_values_animation<F, lib::point> {
 			regs.pt += pt; // add
 		else
 			regs.pt = pt; // override
+        AM_DBG lib::logger::get_logger()->debug("animate_motion: now at (%d, %d)", regs.pt.x, regs.pt.y);
 	}
 };
 

@@ -54,6 +54,7 @@
 // See <http://social.msdn.microsoft.com/Forums/en-US/vcgeneral/thread/4bc93a16-4ad5-496c-954c-45efbe4b180b>
 // for details.
 namespace std {
+
  // TEMPLATE FUNCTION _Swap_adl
  template<class _Ty> inline void _Swap_adl(_Ty& _Left, _Ty& _Right) {	// exchange values stored at _Left and _Right, using ADL
   swap(_Left, _Right);
@@ -64,6 +65,7 @@ namespace std {
 interface ID2D1Factory;
 interface ID2D1HwndRenderTarget;
 interface ID2D1RenderTarget;
+interface ID2D1BitmapRenderTarget;
 interface ID2D1Bitmap;
 interface IWICBitmap;
 #include <wincodec.h>
@@ -191,6 +193,8 @@ class AMBULANTAPI d2_player :
 	void resumed(common::playable *p);
 	void set_intransition(common::playable *p, const lib::transition_info *info);
 	void start_outtransition(common::playable *p, const lib::transition_info *info);
+	common::surface* select_transition_surface(bool onoff);
+//	void set_transition_surface(common::surface* surf) { m_transition_surface = surf; }
 
 	void lock_redraw();
 	void unlock_redraw();
@@ -212,8 +216,10 @@ class AMBULANTAPI d2_player :
 	void captured(IWICBitmap *bitmap);
 
 	// Get current rendertarget, only valid while redrawing
-	ID2D1HwndRenderTarget *get_rendertarget() {
-		return m_cur_wininfo?m_cur_wininfo->m_rendertarget:NULL;
+	ID2D1RenderTarget *get_rendertarget() {
+		return m_cur_wininfo?(m_cur_wininfo->m_transition_active?(ID2D1RenderTarget*) m_cur_wininfo->m_transition_rendertarget
+																:(ID2D1RenderTarget*) m_cur_wininfo->m_rendertarget)
+							:NULL;
 	}
 	// Get current hwnd, only valid while redrawing
 	HWND get_hwnd() {
@@ -227,6 +233,8 @@ class AMBULANTAPI d2_player :
 		HWND m_hwnd;
 		RECT m_rect;
 		ID2D1HwndRenderTarget *m_rendertarget;
+		ID2D1BitmapRenderTarget* m_transition_rendertarget;
+		bool m_transition_active;
 		d2_window *m_window;
 	};
 	// Valid only during redraw():

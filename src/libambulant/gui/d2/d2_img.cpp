@@ -111,6 +111,8 @@ void gui::d2::d2_img_renderer::start(double t) {
 		lib::logger::get_logger()->error("Windows Imaging Component not initialized");
 		return;
 	}
+	start_transition(t);
+
 	HRESULT hr = S_OK;
 	IWICBitmapDecoder *decoder = NULL;
 	IWICFormatConverter *converter = NULL;
@@ -259,14 +261,14 @@ gui::d2::d2_img_renderer::recreate_d2d()
 	ID2D1RenderTarget *rt = m_d2player->get_rendertarget();
 	assert(rt);
 #ifdef	AM_DMP
-	m_d2player->dump (rt, "d2_image-recreate1");
+//	m_d2player->dump (rt, "d2_image-recreate1");
 #endif//AM_DMP
 
 	HRESULT hr = rt->CreateBitmapFromWicBitmap(m_original, NULL, &m_d2bitmap);
 	if (!SUCCEEDED(hr))
 		lib::logger::get_logger()->trace("CreateBitmapFromWicBitmap: error 0x%x", hr);
 #ifdef	AM_DMP
-	m_d2player->dump (rt, "d2_image-recreate2");
+//	m_d2player->dump (rt, "d2_image-recreate2");
 #endif//AM_DMP
 }
 

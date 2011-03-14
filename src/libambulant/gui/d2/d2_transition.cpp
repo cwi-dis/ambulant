@@ -25,7 +25,14 @@
 #endif//WITH_D2
 #include "ambulant/gui/d2/d2_transition.h"
 #include "ambulant/gui/d2/d2_player.h"
+#include "ambulant/gui/d2/d2_window.h"
 #include "ambulant/lib/logger.h"
+
+
+#include <wincodec.h>
+#include <d2d1.h>
+#include <d2d1helper.h>
+
 #define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -33,9 +40,16 @@
 
 namespace ambulant {
 
+using namespace common;
+
 namespace gui {
 
 namespace d2 {
+
+inline D2D1_RECT_F d2_rectf(lib::rect r) {
+	return D2D1::RectF(r.left(), r.top(), r.right(), r.bottom());
+}
+
 #ifdef	WITH_D2
 // Helper functions to setup and finalize transitions
 static CGLayer*
@@ -117,11 +131,47 @@ d2_transition_blitclass_rect::update()
 	AmbulantView *view = (AmbulantView *)window->view();
 	CGLayerRef cg_layer = setup_transition(false, view);
 #endif//WITH_D2
+	gui_window *window = m_dst->get_gui_window();
+	d2_window *cwindow = (d2_window *)window;
+	d2_player* d2_player  = cwindow->get_d2_player();
+
 	lib::rect newrect_whole = m_newrect;
 	newrect_whole.translate(m_dst->get_global_topleft());
 	newrect_whole &= m_dst->get_clipped_screen_rect();
 	lib::point LT = newrect_whole.left_top();
 	lib::point RB = newrect_whole.right_bottom();
+	if (newrect_whole.empty())
+		return;
+#if 1
+	ID2D1BitmapRenderTarget* brt = (ID2D1BitmapRenderTarget*) d2_player->select_transition_surface(false);
+	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
+	D2D1_RECT_F d2_new_rect_f = d2_rectf(newrect_whole);
+
+	D2D1_SIZE_F d2_full_size_f = brt->GetSize();
+	D2D1_RECT_F d2_full_rect_f = D2D1::RectF(0,0,d2_full_size_f.width,d2_full_size_f.height);
+	ID2D1Bitmap* bitmap = NULL;
+#ifdef	AM_DMP
+	d2_player->dump(brt, "rect::update:bmt");
+#endif//AM_DMP
+	HRESULT hr = brt->GetBitmap(&bitmap);
+	if (SUCCEEDED(hr)) {
+//		rt->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
+//X		rt->BeginDraw();
+		rt->PushAxisAlignedClip(d2_new_rect_f,
+						        D2D1_ANTIALIAS_MODE_ALIASED);
+		rt->DrawBitmap(bitmap,
+						d2_full_rect_f,
+						1.0f,
+						D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
+						d2_full_rect_f);
+		rt->PopAxisAlignedClip();
+//X		hr = rt->EndDraw();
+		hr = rt->Flush();
+	}
+	if (FAILED(hr)) {
+			lib::logger::get_logger()->trace("d2_transition_renderer::blitclass::rect::update: DrawBitmap returns 0x%x", hr);
+	}
+#endif//0
 #ifdef	WITH_D2
 	CGRect cg_clipped_rect = CGRectFromAmbulantRect(newrect_whole);
 #endif//WITH_D2

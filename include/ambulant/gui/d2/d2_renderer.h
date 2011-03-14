@@ -66,6 +66,7 @@ class AMBULANTAPI d2_transition_renderer : public ref_counted_obj {
 	const transition_info *m_outtransition;
 	smil2::transition_engine *m_trans_engine;
 	bool m_fullscreen;
+	d2_player* m_d2_player;
 	critical_section m_lock;
 };
 

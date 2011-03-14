@@ -324,24 +324,31 @@ gui::d2::d2_player::init_parser_factory()
 void
 gui::d2::d2_player::_recreate_d2d(wininfo *wi)
 {
-	if (wi->m_rendertarget) return;
+	if (wi->m_rendertarget&&(! wi->m_transition_active || wi->m_transition_rendertarget)) return;
 	assert(wi->m_hwnd);
 
-	RECT rc;
-	GetClientRect(wi->m_hwnd, &rc);
-	D2D1_SIZE_U size = D2D1::SizeU(rc.right-rc.left, rc.bottom-rc.top);
+	if (wi->m_rendertarget == NULL) {
+		RECT rc;
+		GetClientRect(wi->m_hwnd, &rc);
+		D2D1_SIZE_U size = D2D1::SizeU(rc.right-rc.left, rc.bottom-rc.top);
 
-	HRESULT hr = m_d2d->CreateHwndRenderTarget(
+		HRESULT hr = m_d2d->CreateHwndRenderTarget(
 #ifdef	AM_DMP
-		D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_SOFTWARE),
+			D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_SOFTWARE),
 #else //AM_DMP
-		D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_SOFTWARE),
+			D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_DEFAULT),
 #endif//AM_DMP
-		D2D1::HwndRenderTargetProperties(wi->m_hwnd, size, D2D1_PRESENT_OPTIONS_RETAIN_CONTENTS),
-		&wi->m_rendertarget);
-
-	if (!SUCCEEDED(hr))
-		lib::win32::win_trace_error("CreateHwndRenderTarget", hr);
+			D2D1::HwndRenderTargetProperties(wi->m_hwnd, size, D2D1_PRESENT_OPTIONS_RETAIN_CONTENTS),
+											&wi->m_rendertarget);
+		if (!SUCCEEDED(hr))
+			lib::win32::win_trace_error("CreateHwndRenderTarget", hr);
+	}
+	if (wi->m_transition_active) {
+		HRESULT hr = wi->m_rendertarget->CreateCompatibleRenderTarget(&wi->m_transition_rendertarget);
+		if (FAILED(hr)) {
+			lib::win32::win_trace_error("CreateCompatibleRenderTarget", hr);
+		}
+	}
 }
 
 void
@@ -353,6 +360,10 @@ gui::d2::d2_player::_discard_d2d()
 		if (wi->m_rendertarget) {
 			wi->m_rendertarget->Release();
 			wi->m_rendertarget = NULL;
+		}
+		if (wi->m_transition_rendertarget) {
+			wi->m_transition_rendertarget->Release();
+			wi->m_transition_rendertarget = NULL;
 		}
 	}
 	std::set<d2_resources*>::iterator rit;
@@ -515,8 +526,8 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 	if (wi == NULL) return;
 	_recreate_d2d(wi);
 	m_cur_wininfo = wi;
-	ID2D1HwndRenderTarget *rt = wi->m_rendertarget;
-	if (rt == NULL) return;
+	ID2D1HwndRenderTarget *hwrt = wi->m_rendertarget;
+	if (hwrt == NULL) return;
 
 	// Check whether our window changed size. If so: communicate to d2d and
 	// paint background again.
@@ -528,9 +539,9 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 		wi->m_rect = client_rect;
 		dirty = NULL;
 		D2D1_SIZE_U new_size = { client_rect.right-client_rect.left, client_rect.bottom-client_rect.top };
-		rt->Resize(new_size);
+		hwrt->Resize(new_size);
 	}
-
+	ID2D1RenderTarget* rt = get_rendertarget();
 	rt->BeginDraw();
 
 	// Set the transformation
@@ -562,7 +573,7 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 	}
 	hr = rt->EndDraw();
 #ifdef	AM_DMP
-	dump (rt, "d2_player-redraw2");
+//	dump (rt, "d2_player-redraw2");
 #endif//AM_DMP
 	m_cur_wininfo = NULL;
 	if (hr == D2DERR_RECREATE_TARGET) {
@@ -711,6 +722,32 @@ void gui::d2::d2_player::unlock_redraw() {
 	}
 }
 
+common::surface* gui::d2::d2_player::select_transition_surface(bool onoff) {
+	common::surface* rv = NULL;
+	if (m_cur_wininfo != NULL) {
+		if (m_cur_wininfo->m_transition_active) { // turn off
+			rv = (common::surface*) m_cur_wininfo->m_transition_rendertarget;
+			if ( ! onoff) {
+				if (this->m_cur_wininfo->m_transition_rendertarget)
+					m_cur_wininfo->m_transition_rendertarget->EndDraw();
+				m_cur_wininfo->m_transition_active = false;
+//				_discard_d2d();
+//				_recreate_d2d(m_cur_wininfo);
+			}
+		} else {
+			rv = (common::surface*) m_cur_wininfo->m_rendertarget;
+			if (onoff) {
+				if (this->m_cur_wininfo->m_transition_rendertarget)
+					m_cur_wininfo->m_transition_rendertarget->BeginDraw();
+				m_cur_wininfo->m_transition_active = true;
+//				_discard_d2d();
+				_recreate_d2d(m_cur_wininfo);
+			}
+		}
+	}
+	return rv;
+}
+
 ////////////////////
 // common::window_factory implementation
 
@@ -736,7 +773,8 @@ gui::d2::d2_player::new_window(const std::string &name,
 
 	// Rendertarget will be created on-demand
 	winfo->m_rendertarget = NULL;
-
+	winfo->m_transition_rendertarget = NULL;
+	winfo->m_transition_active = false;
 	// Region?
 	region *rgn = (region *) src;
 	bool is_fullscreen = false;
@@ -800,6 +838,10 @@ gui::d2::d2_player::window_done(const std::string &name) {
 	if (wi->m_rendertarget) {
 		wi->m_rendertarget->Release();
 	}
+	if (wi->m_transition_rendertarget) {
+		wi->m_transition_rendertarget->Release();
+	}
+	wi->m_transition_active = false;
 	m_hoster.destroy_os_window(wi->m_hwnd);
 	delete wi;
 	AM_DBG m_logger->debug("windows: %d", m_windows.size());
@@ -882,16 +924,16 @@ gui::d2::d2_player::_set_transition(
 	const lib::transition_info *info,
 	bool is_outtransition)
 {
-#ifdef D2NOTYET
+#ifndef D2NOTYET
 	assert(m_player);
 	lib::timer_control *timer = new lib::timer_control_impl(m_player->get_timer(), 1.0, false);
-	d2_transition *tr = make_transition(info->m_type, p, timer);
-	m_trmap[p] = tr;
+// TBD see: dx_transition	d2_transition *tr = make_transition(info->m_type, p, timer);
+//	m_trmap[p] = tr;
 	common::surface *surf = p->get_renderer()->get_surface();
 	if (info->m_scope == lib::scope_screen) surf = surf->get_top_surface();
-	tr->init(surf, is_outtransition, info);
-	return tr;
-#else
+//	tr->init(surf, is_outtransition, info);
+//	return tr;
+//#else
 	return NULL;
 #endif
 }

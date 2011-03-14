@@ -254,6 +254,18 @@ class region_dim {
 		return  absolute()?m_holder.dbl_val>=rhs.m_holder.dbl_val:
 			m_holder.int_val>=rhs.m_holder.int_val;}
 
+    std::string repr() {
+        if (isauto()) return "auto";
+        std::stringstream ss;
+        if (absolute()) {
+            ss << m_holder.int_val;
+        } else {
+            ss << m_holder.dbl_val;
+            ss << "%";
+        }
+        return ss.str();
+    }
+            
   private:
 	// region dimension types
 	enum region_dim_type {rdt_auto, rdt_relative, rdt_absolute};

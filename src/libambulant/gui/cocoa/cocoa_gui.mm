@@ -89,9 +89,12 @@ cocoa_window::need_redraw(const rect &r)
 void
 cocoa_window::redraw_now()
 {
+#if 0
+    // Disabled by Jack: this seems to block the main thread and eat up a lot of CPU
 	AmbulantView *my_view = (AmbulantView *)m_view;
 	[my_view performSelectorOnMainThread: @selector(syncDisplayIfNeeded:)
 		withObject: nil waitUntilDone: NO];
+#endif
 }
 
 void
@@ -352,8 +355,8 @@ cocoa_gui_screen::get_screenshot(const char *type, char **out_data, size_t *out_
 
 - (void) syncDisplayIfNeeded: (id) dummy
 {
-//	[self displayIfNeeded];
-	[self display];
+	[self displayIfNeeded];
+//	[self display];
 }
 
 - (void)drawRect:(NSRect)rect

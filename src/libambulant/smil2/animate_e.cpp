@@ -80,7 +80,7 @@ void animation_engine::started(animate_node *animator) {
 	aa.push_back(animator);
 
 	m_counter++;
-	if(m_update_event == 0) _schedule_update();
+    _ensure_schedule_update();
 
 	AM_DBG {
 		lib::logger::get_logger()->debug("animation_engine: %s started targeting %s attr=%s (%d animations active)",
@@ -186,6 +186,9 @@ void animation_engine::_schedule_update() {
 	m_event_processor->add_event(m_update_event, 50, lib::ep_med);
 }
 
+void animation_engine::_ensure_schedule_update() {
+	if(m_update_event == 0) _schedule_update();
+}
 
 
 
