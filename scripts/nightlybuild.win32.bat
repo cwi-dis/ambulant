@@ -43,6 +43,7 @@ rem Setup variables
 rem
 
 call %visualstudio%\VC\bin\vcvars32.bat
+%pageant%
 %pageant% %KEYFILE%
 
 rem 
