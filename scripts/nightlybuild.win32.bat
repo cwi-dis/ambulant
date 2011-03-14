@@ -82,12 +82,16 @@ rem Upload IE, Netscape plugins
 rem
 
 cd ..\..\bin\win32
+if not exist npambulant-%AMBULANTVERSION%-win32.xpi goto skipnpambulant
 rename npambulant-%AMBULANTVERSION%-win32.xpi npambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.xpi
-rename ieambulant-%AMBULANTVERSION%-win32.cab ieambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab
 %pscp% -i %KEYFILE% npambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.xpi %DESTINATION%
 if %errorlevel% neq 0 pause
+:skipnpambulant
+if not exist ieambulant-%AMBULANTVERSION%-win32.cab goto skipieambulant
+rename ieambulant-%AMBULANTVERSION%-win32.cab ieambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab
 %pscp% -i %KEYFILE% ieambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab %DESTINATION%
 if %errorlevel% neq 0 pause
+:skipieambulant
 
 rem 
 rem  Create desktop installer, upload
