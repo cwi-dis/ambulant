@@ -24,17 +24,19 @@ rem
 set AMBULANTVERSION=2.3
 set HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
 set KEYFILE="%USERPROFILE%\My Documents\Putty Keys\id_dsa.ppk"
-set CVSPRIVUSER=jack
-set CVSPRIVARGS=-d "%CVSPRIVUSER%@oratrix.oratrix.com:/ufs/jack/.CVSROOT"
+set HGCLONEPRIVARGS="ssh://hg@ambulantplayer.org/hgpriv/ambulant-private"
 set CHECKOUTPRIVARGS=-P
-set BUILDHOME="%TEMP%\nightly"
+set BUILDHOME="%USERPROFILE%\My Documents\AmbulantNightly"
 rem XP US/UK: set TODAY=%date:~-4%%date:~4,2%%date:~7,2%
 rem XP NL: set TODAY=%date:~-4%%date:~-7,2%%date:~-10,2%
 set TODAY=%date%
 set VERSIONSUFFIX=.%TODAY%
 set BUILDDIR=build-%TODAY%
 set BUILD3PPARGS=win32
-set DESTINATION="jack@ssh.cwi.nl:public_html/ambulant/"
+set DESTINATION="jack@ssh.cwi.nl:public_html/ambulant/nightly/"
+set DESTINATIONDESKTOP="%DESTINATION%/win32-desktop/"
+set DESTINATIONNP="%DESTINATION%/win32-firefoxplugin/"
+set DESTINATIONIE="%DESTINATION%/win32-ieplugin/"
 
 rem
 rem Setup variables
@@ -52,6 +54,8 @@ cd /d %buildhome%
 if exist %builddir% rmdir /s /q %builddir%
 if exist %builddir% rmdir /s /q %builddir%
 %hg% clone %HGCLONEARGS% %builddir%
+if exist ambulant-private rmdir /s /q ambulant-private
+%hg% clone %HGCLONEPRIVARGS%
 rem XXXX %cvs% %CVSARGS% checkout %CHECKOUTARGS% -d %builddir% ambulant
 rem XXXX %cvs% %CVSPRIVARGS% checkout %CHECKOUTPRIVARGS% ambulant-private
 if %errorlevel% neq 0 pause
@@ -82,12 +86,12 @@ rem
 cd ..\..\bin\win32
 if not exist npambulant-%AMBULANTVERSION%-win32.xpi goto skipnpambulant
 rename npambulant-%AMBULANTVERSION%-win32.xpi npambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.xpi
-%pscp% -i %KEYFILE% npambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.xpi %DESTINATION%
+%pscp% -i %KEYFILE% npambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.xpi %DESTINATIONNP%
 if %errorlevel% neq 0 pause
 :skipnpambulant
 if not exist ieambulant-%AMBULANTVERSION%-win32.cab goto skipieambulant
 rename ieambulant-%AMBULANTVERSION%-win32.cab ieambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab
-%pscp% -i %KEYFILE% ieambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab %DESTINATION%
+%pscp% -i %KEYFILE% ieambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.cab %DESTINATIONIE%
 if %errorlevel% neq 0 pause
 :skipieambulant
 
@@ -99,7 +103,7 @@ cd ..\..\installers\nsis-win32
 %nsis% setup-ambulant-installer.nsi
 if %errorlevel% neq 0 pause
 rename  Ambulant-%AMBULANTVERSION%-win32.exe Ambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.exe
-%pscp% -i %KEYFILE% Ambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.exe %DESTINATION%
+%pscp% -i %KEYFILE% Ambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.exe %DESTINATIONDESKTOP%
 if %errorlevel% neq 0 pause
 
 rem 
