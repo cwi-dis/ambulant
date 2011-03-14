@@ -23,9 +23,7 @@ rem
 
 set AMBULANTVERSION=2.3
 set HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
-rem xxx set CVSUSER=jackjansen
-rem xxx set CVSARGS=-d "%CVSUSER%@ambulant.cvs.sourceforge.net:/cvsroot/ambulant"
-rem xxx set CHECKOUTARGS=-P
+set KEYFILE="%USERPROFILE%\My Documents\Putty Keys\id_dsa.ppk"
 set CVSPRIVUSER=jack
 set CVSPRIVARGS=-d "%CVSPRIVUSER%@oratrix.oratrix.com:/ufs/jack/.CVSROOT"
 set CHECKOUTPRIVARGS=-P
