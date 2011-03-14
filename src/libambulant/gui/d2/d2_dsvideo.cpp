@@ -169,7 +169,7 @@ d2_dsvideo_renderer::_copy_to_ddsurf()
 #endif
 
 void
-d2_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window)
+d2_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window, ID2D1RenderTarget* rt)
 {
 	m_lock.enter();
 	recreate_d2d();
@@ -178,8 +178,9 @@ d2_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window)
 		AM_DBG lib::logger::get_logger()->debug("d2_img_renderer::redraw NOT: no image or cannot play %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
 		return;
 	}
-	ID2D1RenderTarget *rt = m_d2player->get_rendertarget();
 	assert(rt);
+	if (rt == NULL)
+		return;
 	lib::rect img_rect1;
 	lib::rect img_reg_rc;
 

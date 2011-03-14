@@ -498,7 +498,7 @@ d2_smiltext_renderer::_recreate_layout()
 }
 
 void
-d2_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
+d2_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window, ID2D1RenderTarget* rt)
 {
 	recreate_d2d();
 
@@ -508,10 +508,9 @@ d2_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 		m_lock.leave();
 		return;
 	}
-
-	ID2D1RenderTarget *rt = m_d2player->get_rendertarget();
 	assert(rt);
-
+	if (rt == NULL)
+		return;
 	rect destrect = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("d2_smiltext_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, destrect.left(), destrect.top(), destrect.right(), destrect.bottom());
 

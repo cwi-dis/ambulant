@@ -281,15 +281,16 @@ gui::d2::d2_img_renderer::discard_d2d()
 	}
 }
 
-void gui::d2::d2_img_renderer::redraw_body(const lib::rect& dirty, common::gui_window *window) {
+void gui::d2::d2_img_renderer::redraw_body(const lib::rect& dirty, common::gui_window *window, ID2D1RenderTarget* rt) {
 	recreate_d2d();
 	if(!m_d2bitmap) {
 		// No bits available
 		AM_DBG lib::logger::get_logger()->debug("d2_img_renderer::redraw NOT: no image or cannot play %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
 		return;
 	}
-	ID2D1RenderTarget *rt = m_d2player->get_rendertarget();
 	assert(rt);
+	if (rt == NULL)
+		return;
 #ifdef	AM_DMP
 //	m_d2player->dump (rt, "d2_image-redraw1");
 #endif//AM_DMP

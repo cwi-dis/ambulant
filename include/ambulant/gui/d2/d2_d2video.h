@@ -72,7 +72,7 @@ class d2_d2video_renderer
 	void seek(double t);
 	void resume();
 	bool user_event(const lib::point& pt, int what);
-	void redraw_body(const lib::rect &dirty, common::gui_window *window);
+	void redraw_body(const lib::rect &dirty, common::gui_window *window, ID2D1RenderTarget* rt);
 
 	void recreate_d2d();
 	void discard_d2d();

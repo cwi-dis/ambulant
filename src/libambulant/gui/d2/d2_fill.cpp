@@ -90,7 +90,7 @@ d2_fill_renderer::start(double where)
 }
 
 void
-d2_fill_renderer::redraw_body(const rect &dirty, gui_window *window)
+d2_fill_renderer::redraw_body(const rect &dirty, gui_window *window, ID2D1RenderTarget* rt)
 {
 	recreate_d2d();
 	if (m_brush == NULL) return;
@@ -105,8 +105,9 @@ d2_fill_renderer::redraw_body(const rect &dirty, gui_window *window)
 	dstrect_whole.translate(m_dest->get_global_topleft());
 	AM_DBG logger::get_logger()->debug("d2_fill_renderer.redraw(0x%x, global_ltrb=(%d,%d,%d,%d)", (void *)this, dstrect_whole.left(), dstrect_whole.top(), dstrect_whole.right(), dstrect_whole.bottom());
 	
-	ID2D1RenderTarget *rt = m_d2player->get_rendertarget();
 	assert(rt);
+	if (rt == NULL)
+		return;
 	D2D1_RECT_F rr = D2D1::RectF(dstrect_whole.left(), dstrect_whole.top(), dstrect_whole.right(), dstrect_whole.bottom());
 	rt->FillRectangle(rr, m_brush);
 	m_lock.leave();

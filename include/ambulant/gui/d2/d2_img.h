@@ -57,7 +57,7 @@ class d2_img_renderer : public d2_renderer<renderer_playable> {
 	bool stop();
 	void seek(double t) {}
 	bool user_event(const lib::point& pt, int what);
-	void redraw_body(const rect &dirty, gui_window *window);
+	void redraw_body(const rect &dirty, gui_window *window, ID2D1RenderTarget*);
 
 	void recreate_d2d();
 	void discard_d2d();

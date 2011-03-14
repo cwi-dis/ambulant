@@ -415,11 +415,10 @@ bool gui::d2::d2_d2video_renderer::user_event(const lib::point& pt, int what) {
 	return true;
 }
 
-void gui::d2::d2_d2video_renderer::redraw_body(const lib::rect &dirty, common::gui_window *window)
+void gui::d2::d2_d2video_renderer::redraw_body(const lib::rect &dirty, common::gui_window *window, ID2D1RenderTarget* rt)
 {
 	recreate_d2d();
 	if (m_video_sink == NULL) return;
-	ID2D1RenderTarget *rt = m_d2player->get_rendertarget();
 	if (rt == NULL) return;
 	m_video_sink->SetRenderTarget(rt);
 	ID2D1Bitmap *bitmap = m_video_sink->LockBitmap();

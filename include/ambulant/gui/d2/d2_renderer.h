@@ -114,7 +114,7 @@ class d2_renderer : public d2_resources, public RP_Base {
 	void redraw(const rect &dirty, gui_window *window) {
 		recreate_d2d();
 		m_transition_renderer->redraw_pre(window);
-		redraw_body(dirty, window);
+		redraw_body(dirty, window, m_d2player->get_rendertarget());
 		m_transition_renderer->redraw_post(window);
 		if (RP_Base::m_erase_never) RP_Base::m_dest->keep_as_background();
 	}
@@ -133,7 +133,7 @@ class d2_renderer : public d2_resources, public RP_Base {
 	void stop_transition() {
 		m_transition_renderer->stop();
 	}
-	virtual void redraw_body(const rect &dirty, gui_window *window) = 0;
+	virtual void redraw_body(const rect &dirty, gui_window *window, ID2D1RenderTarget* rt) = 0;
 
     d2_player *m_d2player;
   private:
