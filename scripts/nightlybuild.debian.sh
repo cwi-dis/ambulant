@@ -40,7 +40,7 @@ ambulant ($AMBULANTVERSION.$TODAY) unstable; urgency=low
 
   * Nightly build, for testing only
 
- -- CWI Ambulant Team <ambulant@cwi.nl>  `date`
+ -- CWI Ambulant Team <ambulant@cwi.nl>  `date --rfc2822`
 xyzzy
 
 #
