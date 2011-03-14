@@ -45,12 +45,14 @@ rem
 call %visualstudio%\VC\bin\vcvars32.bat
 
 rem 
-rem  Check out a fresh copy of Ambulant
+rem Check out a fresh copy of Ambulant after possibly cleaning out
+rem old build dir (twice: this is windows, after all:-).
 rem 
 
 mkdir %buildhome%
 cd /d %buildhome%
-if exist %builddir% del /q %builddir%
+if exist %builddir% rmdir /s /q %builddir%
+if exist %builddir% rmdir /s /q %builddir%
 %hg% clone %HGCLONEARGS% %builddir%
 rem XXXX %cvs% %CVSARGS% checkout %CHECKOUTARGS% -d %builddir% ambulant
 rem XXXX %cvs% %CVSPRIVARGS% checkout %CHECKOUTPRIVARGS% ambulant-private
