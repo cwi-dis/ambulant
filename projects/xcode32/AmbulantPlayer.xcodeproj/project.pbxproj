@@ -106,6 +106,9 @@
 		04A1E99612B585D80060F97E /* mainloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04070429115266870094FB0B /* mainloop.cpp */; };
 		04A1E99712B585D80060F97E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0407042B115266870094FB0B /* main.m */; };
 		04A1E99912B585D80060F97E /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		04CE00CC132EC5130079553C /* systemTestSettings.xml in Resources */ = {isa = PBXBuildFile; fileRef = 04CE00CB132EC5130079553C /* systemTestSettings.xml */; };
+		04CE00CD132EC5130079553C /* systemTestSettings.xml in Resources */ = {isa = PBXBuildFile; fileRef = 04CE00CB132EC5130079553C /* systemTestSettings.xml */; };
+		04CE00CE132EC5130079553C /* systemTestSettings.xml in Resources */ = {isa = PBXBuildFile; fileRef = 04CE00CB132EC5130079553C /* systemTestSettings.xml */; };
 		04D38A9612EB9C7F000F445D /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0418D24012DA5E4C00C56DCE /* MainMenu.nib */; };
 		04FA283412B8D1BD0080216B /* ambulant-common.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 04FA282B12B8D1BD0080216B /* ambulant-common.xcconfig */; };
 		04FA283512B8D1BD0080216B /* ambulant-debug-cg.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 04FA282C12B8D1BD0080216B /* ambulant-debug-cg.xcconfig */; };
@@ -365,6 +368,7 @@
 		04428EBD11577E960067C868 /* DTDCache */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DTDCache; path = ../../Extras/DTDCache; sourceTree = SOURCE_ROOT; };
 		04428EBF11577EC30067C868 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = ../../Extras/Welcome/data; sourceTree = SOURCE_ROOT; };
 		04A1E9A412B585D80060F97E /* AmbulantPlayerCG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmbulantPlayerCG.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		04CE00CB132EC5130079553C /* systemTestSettings.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = systemTestSettings.xml; path = ../../src/player_macosx/systemTestSettings.xml; sourceTree = SOURCE_ROOT; };
 		04CE8D8612BB645600801B1A /* third_party_packages.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = third_party_packages.xcodeproj; sourceTree = "<group>"; };
 		04FA282B12B8D1BD0080216B /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-common.xcconfig"; path = "config/ambulant-common.xcconfig"; sourceTree = "<group>"; };
 		04FA282C12B8D1BD0080216B /* ambulant-debug-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-debug-cg.xcconfig"; path = "config/ambulant-debug-cg.xcconfig"; sourceTree = "<group>"; };
@@ -633,6 +637,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				04CE00CB132EC5130079553C /* systemTestSettings.xml */,
 				0418D24E12DA5EAA00C56DCE /* Credits.rtf */,
 				0418D24F12DA5EAA00C56DCE /* Info.plist */,
 				0418D25012DA5EAA00C56DCE /* InfoPlist.strings */,
@@ -906,6 +911,7 @@
 				0418D27812DA602B00C56DCE /* Log.nib in Resources */,
 				0418D27912DA602B00C56DCE /* MainMenu.nib in Resources */,
 				0418D27A12DA602B00C56DCE /* MyDocument.nib in Resources */,
+				04CE00CE132EC5130079553C /* systemTestSettings.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -930,6 +936,7 @@
 				0418D25212DA5EAA00C56DCE /* Info.plist in Resources */,
 				0418D25312DA5EAA00C56DCE /* InfoPlist.strings in Resources */,
 				04D38A9612EB9C7F000F445D /* MainMenu.nib in Resources */,
+				04CE00CD132EC5130079553C /* systemTestSettings.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -954,6 +961,7 @@
 				0418D27B12DA602B00C56DCE /* Log.nib in Resources */,
 				0418D27C12DA602B00C56DCE /* MainMenu.nib in Resources */,
 				0418D27D12DA602B00C56DCE /* MyDocument.nib in Resources */,
+				04CE00CC132EC5130079553C /* systemTestSettings.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
