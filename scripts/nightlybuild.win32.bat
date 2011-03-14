@@ -43,6 +43,7 @@ rem Setup variables
 rem
 
 call %visualstudio%\VC\bin\vcvars32.bat
+%pageant% %KEYFILE%
 
 rem 
 rem Check out a fresh copy of Ambulant after possibly cleaning out
