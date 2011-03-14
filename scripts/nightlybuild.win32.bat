@@ -23,10 +23,10 @@ rem
 
 set AMBULANTVERSION=2.3
 set HGCLONEARGS="http://ambulantplayer.org/cgi-bin/hgweb.cgi/hg/ambulant"
-set KEYFILE="%USERPROFILE%\My Documents\Putty Keys\id_dsa.ppk"
+set KEYFILE="%USERPROFILE%\Documents\Putty Keys\id_dsa.ppk"
 set HGCLONEPRIVARGS="ssh://hg@ambulantplayer.org/hgpriv/ambulant-private"
 set CHECKOUTPRIVARGS=-P
-set BUILDHOME="%USERPROFILE%\My Documents\AmbulantNightly"
+set BUILDHOME="%USERPROFILE%\Documents\AmbulantNightly"
 rem XP US/UK: set TODAY=%date:~-4%%date:~4,2%%date:~7,2%
 rem XP NL: set TODAY=%date:~-4%%date:~-7,2%%date:~-10,2%
 set TODAY=%date%
