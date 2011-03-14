@@ -44,9 +44,11 @@ class AMBULANTAPI d2_transition_renderer : public ref_counted_obj {
   public:
 	d2_transition_renderer(event_processor *evp)
 	:	m_event_processor(evp),
+		m_d2_player(NULL),
 		m_transition_dest(NULL),
 		m_intransition(NULL),
 		m_outtransition(NULL),
+		m_rendertarget(NULL),
 		m_trans_engine(NULL) {}
 	~d2_transition_renderer();
 
@@ -57,6 +59,13 @@ class AMBULANTAPI d2_transition_renderer : public ref_counted_obj {
 	void redraw_post(gui_window *window);
 	void set_intransition(const lib::transition_info *info);
 	void start_outtransition(const lib::transition_info *info);
+	ID2D1RenderTarget* get_rendertarget();
+
+  protected:
+	d2_player* m_d2_player;
+	ID2D1BitmapRenderTarget* m_rendertarget;
+	void release_rendertarget();
+
   private:
 	void transition_step();
 
@@ -66,7 +75,6 @@ class AMBULANTAPI d2_transition_renderer : public ref_counted_obj {
 	const transition_info *m_outtransition;
 	smil2::transition_engine *m_trans_engine;
 	bool m_fullscreen;
-	d2_player* m_d2_player;
 	critical_section m_lock;
 };
 
@@ -81,6 +89,7 @@ class d2_renderer : public d2_resources, public RP_Base {
 		common::factories *factory,
 		common::playable_factory_machdep *mdp)
 	:	RP_Base(context, cookie, node, evp, factory, mdp),
+		m_transition_rendertarget(NULL),
 		m_d2player(dynamic_cast<d2_player*>(mdp))
 //#ifdef D2D_NOTYET
 		,
@@ -114,7 +123,7 @@ class d2_renderer : public d2_resources, public RP_Base {
 	void redraw(const rect &dirty, gui_window *window) {
 		recreate_d2d();
 		m_transition_renderer->redraw_pre(window);
-		redraw_body(dirty, window, m_d2player->get_rendertarget());
+		redraw_body(dirty, window, (ID2D1RenderTarget*) m_transition_renderer->get_rendertarget());
 		m_transition_renderer->redraw_post(window);
 		if (RP_Base::m_erase_never) RP_Base::m_dest->keep_as_background();
 	}
@@ -138,6 +147,17 @@ class d2_renderer : public d2_resources, public RP_Base {
     d2_player *m_d2player;
   private:
 	d2_transition_renderer *m_transition_renderer;
+
+	ID2D1RenderTarget* m_transition_rendertarget;
+	ID2D1RenderTarget* _get_transition_rendertarget() {
+		if (m_transition_rendertarget == NULL) {
+			HRESULT hr = m_rendertarget->CreateCompatibleRenderTarget(&m_transition_rendertarget);
+			if (FAILED(hr)) {
+				lib::win32::win_trace_error("CreateCompatibleRenderTarget", hr);
+			}
+		}
+		return m_transition_rendertarget;
+	}
 };
 
 } // namespace d2

@@ -48,8 +48,6 @@ namespace gui {
 
 namespace d2 {
 
-
-
 d2_transition_renderer::~d2_transition_renderer()
 {
 	stop();
@@ -58,6 +56,34 @@ d2_transition_renderer::~d2_transition_renderer()
 	m_intransition = NULL;
 	m_outtransition = NULL;
 	m_lock.leave();
+}
+
+ID2D1RenderTarget*
+d2_transition_renderer::get_rendertarget ()
+{
+	if (this->m_d2_player == NULL) {
+		gui_window *window = m_transition_dest->get_gui_window();
+		d2_window *cwindow = (d2_window *)window;
+		m_d2_player  = cwindow->get_d2_player();
+	}
+
+	if (this->m_trans_engine != NULL) {
+		if (this->m_rendertarget == NULL) {
+			ID2D1RenderTarget* rt = this->m_d2_player->get_rendertarget();
+			HRESULT hr = rt->CreateCompatibleRenderTarget(&this->m_rendertarget);
+			if (FAILED(hr)) {
+				lib::logger::get_logger()->trace("d2_transition_renderer::get_rendertarget: CreateCompatibleRenderTarget reurns 0x%x", hr);
+			}
+		}
+		return this->m_rendertarget;
+	}
+	return this->m_d2_player->get_rendertarget();
+}
+
+void
+d2_transition_renderer::release_rendertarget()
+{
+	this->m_rendertarget->EndDraw();
 }
 
 void
@@ -84,9 +110,6 @@ d2_transition_renderer::start(double where)
 		AM_DBG logger::get_logger()->debug("d2_transition_renderer.start: with intransition");
 		m_trans_engine = d2_transition_engine(m_transition_dest, false, m_intransition);
 		if (m_trans_engine) {
-			gui_window *window = m_transition_dest->get_gui_window();
-			d2_window *cwindow = (d2_window *)window;
-			m_d2_player  = cwindow->get_d2_player();
 #ifdef D2D_NOTYET
 			AmbulantView *view = (AmbulantView *)cwindow->view();
 			[view incrementTransitionCount];
@@ -156,7 +179,8 @@ d2_transition_renderer::redraw_pre(gui_window *window)
 	m_lock.enter();
 	AM_DBG logger::get_logger()->debug("d2_transition_renderer.redraw(0x%x)", (void *)this);
 	if (m_trans_engine != NULL) {
-		m_d2_player->select_transition_surface(true);
+		this->get_rendertarget()->BeginDraw();
+		this->m_d2_player->set_transition_rendertarget((ID2D1BitmapRenderTarget*) this->get_rendertarget());
 	}
 #ifdef D2D_NOTYET
 	d2_window *cwindow = (d2_window *)window;
@@ -184,28 +208,31 @@ d2_transition_renderer::redraw_post(gui_window *window)
 	m_lock.enter();
 	if (m_trans_engine != NULL) {
 #if 0
-		ID2D1BitmapRenderTarget* brt = (ID2D1BitmapRenderTarget*)m_d2_player->select_transition_surface(false);
-		ID2D1RenderTarget* rt = (ID2D1RenderTarget*) m_d2_player->get_rendertarget();
-		lib::rect region_rect = m_transition_dest->get_rect();
-		region_rect.translate(m_transition_dest->get_global_topleft());
-		D2D1_RECT_F d2_region_rect_float = d2_rectf(region_rect);
-		ID2D1Bitmap* bitmap = NULL;
-//		brt->Release();
-		HRESULT hr = brt->GetBitmap(&bitmap);
+		ID2D1BitmapRenderTarget* brt = (ID2D1BitmapRenderTarget*) this->get_rendertarget();
+		HRESULT hr = brt->EndDraw();
 		if (SUCCEEDED(hr)) {
-//X			rt->BeginDraw();
-			rt->DrawBitmap(bitmap,
-						d2_region_rect_float,
-						1.0f,
-						D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
-						d2_region_rect_float);
-//X			 hr = rt->EndDraw();
-			hr = rt->Flush(); 
+			ID2D1RenderTarget* rt = (ID2D1RenderTarget*) m_d2_player->get_rendertarget();
+			lib::rect region_rect = m_transition_dest->get_rect();
+			region_rect.translate(m_transition_dest->get_global_topleft());
+			D2D1_RECT_F d2_region_rect_float = d2_rectf(region_rect);
+			ID2D1Bitmap* bitmap = NULL;
+			hr = brt->GetBitmap(&bitmap);
+			if (SUCCEEDED(hr)) {
+//X				rt->BeginDraw();
+				rt->DrawBitmap(bitmap,
+							d2_region_rect_float,
+							1.0f,
+							D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
+							d2_region_rect_float);
+//X				hr = rt->EndDraw();
+				hr = rt->Flush(); 
+			}
 		}
 		if (FAILED(hr)) {
 			lib::logger::get_logger()->trace("d2_renderer::redraw_post: DrawBitmap returns 0x%x", hr);
 		}
-#endif//0
+		this->release_rendertarget();
+#endif//1
 		if (m_fullscreen) {
 //			[view screenTransitionStep: m_trans_engine elapsed: m_event_processor->get_timer()->elapsed()];
 		} else {
@@ -217,7 +244,7 @@ d2_transition_renderer::redraw_post(gui_window *window)
 		if (delay < 33) delay = 33; // XXX band-aid
 		AM_DBG lib::logger::get_logger()->debug("d2_transition_renderer.redraw: now=%d, schedule step for %d", m_event_processor->get_timer()->elapsed(), m_event_processor->get_timer()->elapsed()+delay);
 		m_event_processor->add_event(ev, delay, lib::ep_med);
-		m_d2_player->select_transition_surface(false);
+//XX	m_d2_player->select_transition_surface(false);
 	}
 	if (m_trans_engine && m_trans_engine->is_done()) {
 		typedef lib::no_arg_callback<d2_transition_renderer> stop_transition_callback;

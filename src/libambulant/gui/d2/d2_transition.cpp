@@ -142,36 +142,36 @@ d2_transition_blitclass_rect::update()
 	lib::point RB = newrect_whole.right_bottom();
 	if (newrect_whole.empty())
 		return;
-#if 1
-	ID2D1BitmapRenderTarget* brt = (ID2D1BitmapRenderTarget*) d2_player->select_transition_surface(false);
-	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
-	D2D1_RECT_F d2_new_rect_f = d2_rectf(newrect_whole);
-
-	D2D1_SIZE_F d2_full_size_f = brt->GetSize();
-	D2D1_RECT_F d2_full_rect_f = D2D1::RectF(0,0,d2_full_size_f.width,d2_full_size_f.height);
-	ID2D1Bitmap* bitmap = NULL;
-#ifdef	AM_DMP
-	d2_player->dump(brt, "rect::update:bmt");
-#endif//AM_DMP
-	HRESULT hr = brt->GetBitmap(&bitmap);
+	ID2D1BitmapRenderTarget* brt = (ID2D1BitmapRenderTarget*) d2_player->get_transition_rendertarget();
+	HRESULT hr = brt->EndDraw();
 	if (SUCCEEDED(hr)) {
-//		rt->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
-//X		rt->BeginDraw();
-		rt->PushAxisAlignedClip(d2_new_rect_f,
-						        D2D1_ANTIALIAS_MODE_ALIASED);
-		rt->DrawBitmap(bitmap,
-						d2_full_rect_f,
-						1.0f,
-						D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
-						d2_full_rect_f);
-		rt->PopAxisAlignedClip();
-//X		hr = rt->EndDraw();
-		hr = rt->Flush();
+		ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
+		D2D1_RECT_F d2_new_rect_f = d2_rectf(newrect_whole);
+		D2D1_SIZE_F d2_full_size_f = brt->GetSize();
+		D2D1_RECT_F d2_full_rect_f = D2D1::RectF(0,0,d2_full_size_f.width,d2_full_size_f.height);
+		ID2D1Bitmap* bitmap = NULL;
+#ifdef	AM_DMP
+		d2_player->dump(brt, "rect::update:bmt");
+#endif//AM_DMP
+		hr = brt->GetBitmap(&bitmap);
+		if (SUCCEEDED(hr)) {
+//			rt->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
+//X			rt->BeginDraw();
+			rt->PushAxisAlignedClip(d2_new_rect_f,
+							        D2D1_ANTIALIAS_MODE_ALIASED);
+			rt->DrawBitmap(bitmap,
+							d2_full_rect_f,
+							1.0f,
+							D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
+							d2_full_rect_f);
+			rt->PopAxisAlignedClip();
+//X			hr = rt->EndDraw();
+			hr = rt->Flush();
+		}
 	}
 	if (FAILED(hr)) {
 			lib::logger::get_logger()->trace("d2_transition_renderer::blitclass::rect::update: DrawBitmap returns 0x%x", hr);
 	}
-#endif//0
 #ifdef	WITH_D2
 	CGRect cg_clipped_rect = CGRectFromAmbulantRect(newrect_whole);
 #endif//WITH_D2
