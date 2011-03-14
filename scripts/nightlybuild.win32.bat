@@ -50,7 +50,7 @@ rem
 
 mkdir %buildhome%
 cd /d %buildhome%
-if exist %builddir% del %builddir%
+if exist %builddir% del /q %builddir%
 %hg% clone %HGCLONEARGS% %builddir%
 rem XXXX %cvs% %CVSARGS% checkout %CHECKOUTARGS% -d %builddir% ambulant
 rem XXXX %cvs% %CVSPRIVARGS% checkout %CHECKOUTPRIVARGS% ambulant-private
