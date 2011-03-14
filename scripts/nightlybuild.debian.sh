@@ -35,17 +35,19 @@ hg $HGARGS clone $HGCLONEARGS $BUILDDIR
 #
 cd $BUILDDIR
 sh autogen.sh
-ed debian/changelog << xyzzy
-1s/(.*)/($AMBULANTVERSION.$TODAY)/
-w
-q
+cat > debian/changelog << xyzzy
+ambulant ($AMBULANTVERSION.$TODAY) unstable; urgency=low
+
+  * Nightly build, for testing only
+
+ -- CWI Ambulant Team <ambulant@cwi.nl>  `date`
 xyzzy
 
 #
 # Build debian package (incomplete)
 #
 cd debian
-debuild
+debuild -kC75B80BC
 
 #
 # Upload
