@@ -11,14 +11,22 @@
 #include "ambulant/lib/logger.h"
 #include <windowsx.h>
 
-//XXX begin copied from npambulant.h
-#include <ambulant/gui/dx/dx_player.h>
+#ifdef WITH_D2D
+#include "ambulant/gui/d2/d2_player.h"
+typedef ambulant::gui::d2::d2_player ambulant_gui_player;
+typedef ambulant::gui::d2::d2_player_callbacks gui_callbacks; //XX from MmView.cpp
+typedef ambulant::gui::d2::d2_player_callbacks ambulant_baseclass_player_callbacks;
+#else
+#include "ambulant/gui/dx/dx_player.h"
+typedef ambulant::gui::dx::dx_player ambulant_gui_player;
+typedef ambulant::gui::dx::dx_player_callbacks gui_callbacks;
+typedef ambulant::gui::dx::dx_player_callbacks ambulant_baseclass_player_callbacks;
+#endif // WITH_D2D
 #include <ambulant/net/url.h>
 #include "AmbulantActiveX.h"
 #include "_IieambulantEvents_CP.H"
-typedef ambulant::gui::dx::dx_player_callbacks gui_callbacks; //XX from MmView.cpp
 
-class ambulant_player_callbacks : public ambulant::gui::dx::dx_player_callbacks
+class ambulant_player_callbacks : public ambulant_baseclass_player_callbacks
 {
 public:
 	ambulant_player_callbacks();
@@ -79,7 +87,7 @@ public:
 			m_ambulant_player->stop();
 			delete m_ambulant_player;
 			m_ambulant_player = NULL;
-			ambulant::gui::dx::dx_player::cleanup();//causes crash
+			ambulant_gui_player::cleanup();//causes crash
 		}
 	}
 DECLARE_REGISTRY_RESOURCEID(IDR_ieambulant)
@@ -219,7 +227,7 @@ public:
 	HWND m_hwnd;
 	WNDPROC m_lpOldProc;
 	LONG m_OldWindow;
-	ambulant::gui::dx::dx_player* m_ambulant_player;
+	ambulant_gui_player* m_ambulant_player;
 	ambulant::lib::logger* m_logger;
 	ambulant::net::url m_url;
 	ambulant::net::url m_base_url;

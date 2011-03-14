@@ -1119,6 +1119,14 @@
 					<File
 						RelativePath="..\..\src\libambulant\gui\d2\d2_transition.cpp"
 						>
+						<FileConfiguration
+							Name="ReleaseShlibDX|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\libambulant\gui\d2\d2_window.cpp"
