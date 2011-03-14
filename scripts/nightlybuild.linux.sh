@@ -46,7 +46,7 @@ mkdir -p $BUILDHOME
 cd $BUILDHOME
 rm -rf $BUILDDIR
 rm -rf $DESTDIR
-ls -t | tail +6 | grep ambulant- | xargs rm -rf
+ls -t | tail -n +6 | grep ambulant- | xargs rm -rf
 hg $HGARGS clone $HGCLONEARGS $BUILDDIR
 ###
 ### We are building a binary distribution, so we want to completely ignore any

@@ -28,7 +28,7 @@ mkdir -p $BUILDHOME
 cd $BUILDHOME
 rm -rf $BUILDDIR
 rm -rf $DESTDIR
-ls -t | tail +6 | grep ambulant- | xargs rm -rf
+ls -t | tail -n +6 | grep ambulant- | xargs rm -rf
 hg $HGARGS clone $HGCLONEARGS $BUILDDIR
 #
 # Prepare the tree
