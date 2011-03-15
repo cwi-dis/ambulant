@@ -21,7 +21,7 @@ set vcdir="vc9"
 rem ALTERNATIVE set visualstudio="C:\Program Files\Microsoft Visual Studio 10.0"
 rem ALTERNATIVE set vcdir="vc10"
 set KEYFILE="%USERPROFILE%\Documents\Putty Keys\id_dsa.ppk"
-set pscp="c:\Program Files\Putty\pscp.exe -i %KEYFILE%"
+set pscp="c:\Program Files\Putty\pscp.exe" -i %KEYFILE%
 set nsis="c:\Program Files\NSIS\makensis.exe"
 set python="c:\python26\python.exe"
 
