@@ -485,7 +485,7 @@ bad:
 {
     // Remember frame and bounds and adapt the window reqested in the current view
 	AM_DBG NSLog(@"setSize before: %@ %f,%f", self, self.bounds.size.width, self.bounds.size.height);
-//JNK original_bounds = bounds;
+    original_bounds = bounds;
     CGRect newBounds = CGRectMake(0, 0, bounds.w, bounds.h);
     CGRect newFrame = NSRectToCGRect(self.frame);
     newFrame.size = newBounds.size;
@@ -552,13 +552,13 @@ bad:
 #endif
 }
 
-#ifdef JNK
 #ifndef WITH_UIKIT
 - (BOOL)isFlipped
 {
 	return true;
 }
 
+#ifndef JNK
 - (void)resizeWithOldSuperviewSize:(NSSize)oldBoundsSize
 {
     /*AM_DBG*/ NSLog(@"resizeWithOldSuperviewSize: %@", self);
