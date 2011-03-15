@@ -4,6 +4,13 @@ rem  Windows version
 rem 
 
 rem
+rem Add the following to your mercurial.ini file:
+rem [ui]
+rem username = Jack Jansen <Jack.Jansen@cwi.nl>
+rem ssh = "TortoisePlink.exe" -ssh -2 -i "C:\Users\Jack\Documents\Putty Keys\id_dsa.ppk"
+rem
+
+rem
 rem Location of various programs
 rem
 
@@ -13,7 +20,8 @@ set visualstudio="C:\Program Files\Microsoft Visual Studio 9.0"
 set vcdir="vc9"
 rem ALTERNATIVE set visualstudio="C:\Program Files\Microsoft Visual Studio 10.0"
 rem ALTERNATIVE set vcdir="vc10"
-set pscp="c:\Program Files\Putty\pscp.exe"
+set KEYFILE="%USERPROFILE%\Documents\Putty Keys\id_dsa.ppk"
+set pscp="c:\Program Files\Putty\pscp.exe -i %KEYFILE%"
 set nsis="c:\Program Files\NSIS\makensis.exe"
 set python="c:\python26\python.exe"
 
@@ -43,8 +51,6 @@ rem Setup variables
 rem
 
 call %visualstudio%\VC\bin\vcvars32.bat
-%pageant%
-%pageant% %KEYFILE%
 
 rem 
 rem Check out a fresh copy of Ambulant after possibly cleaning out
