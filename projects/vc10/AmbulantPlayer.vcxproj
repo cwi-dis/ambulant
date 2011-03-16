@@ -285,6 +285,7 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
+      <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseShlibDX|Win32'">
@@ -366,7 +367,9 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\player_mfc\AmbulantPlayer.cpp" />
+    <ClCompile Include="..\..\src\player_mfc\AmbulantPlayer.cpp">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Program Files\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
     <ClCompile Include="..\..\src\player_mfc\HtmlView.cpp" />
     <ClCompile Include="..\..\src\player_mfc\LogWindow.cpp" />
     <ClCompile Include="..\..\src\player_mfc\MainFrm.cpp" />

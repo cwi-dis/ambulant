@@ -48,6 +48,8 @@ namespace gui {
 
 namespace d2 {
 
+ID2D1BitmapRenderTarget* d2_transition_renderer::s_transition_rendertarget = NULL;
+
 d2_transition_renderer::~d2_transition_renderer()
 {
 	stop();
@@ -180,7 +182,7 @@ d2_transition_renderer::redraw_pre(gui_window *window)
 	AM_DBG logger::get_logger()->debug("d2_transition_renderer.redraw(0x%x)", (void *)this);
 	if (m_trans_engine != NULL) {
 		this->get_rendertarget()->BeginDraw();
-		this->m_d2_player->set_transition_rendertarget((ID2D1BitmapRenderTarget*) this->get_rendertarget());
+		d2_transition_renderer::s_transition_rendertarget = (ID2D1BitmapRenderTarget*) this->get_rendertarget();
 	}
 #ifdef D2D_NOTYET
 	d2_window *cwindow = (d2_window *)window;
@@ -232,7 +234,7 @@ d2_transition_renderer::redraw_post(gui_window *window)
 			lib::logger::get_logger()->trace("d2_renderer::redraw_post: DrawBitmap returns 0x%x", hr);
 		}
 		this->release_rendertarget();
-#endif//1
+#endif//0
 		if (m_fullscreen) {
 //			[view screenTransitionStep: m_trans_engine elapsed: m_event_processor->get_timer()->elapsed()];
 		} else {

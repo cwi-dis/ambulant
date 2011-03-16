@@ -22,7 +22,7 @@
 
 #include "stdafx.h"
 #include "ambulant/config/config.h"
-//#include <vld.h> // Visual Leak Detector
+#include "vld.h" // Visual Leak Detector
 #include "AmbulantPlayer.h"
 #include "MainFrm.h"
 

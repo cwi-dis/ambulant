@@ -60,6 +60,8 @@ class AMBULANTAPI d2_transition_renderer : public ref_counted_obj {
 	void set_intransition(const lib::transition_info *info);
 	void start_outtransition(const lib::transition_info *info);
 	ID2D1RenderTarget* get_rendertarget();
+	// used to communicate the current transition_rendertarget to the blitclass renderers
+	static ID2D1BitmapRenderTarget* s_transition_rendertarget;
 
   protected:
 	d2_player* m_d2_player;
@@ -89,7 +91,7 @@ class d2_renderer : public d2_resources, public RP_Base {
 		common::factories *factory,
 		common::playable_factory_machdep *mdp)
 	:	RP_Base(context, cookie, node, evp, factory, mdp),
-		m_transition_rendertarget(NULL),
+//JNK	m_transition_rendertarget(NULL),
 		m_d2player(dynamic_cast<d2_player*>(mdp))
 //#ifdef D2D_NOTYET
 		,
@@ -100,9 +102,11 @@ class d2_renderer : public d2_resources, public RP_Base {
 		m_d2player->register_resources(this);
 	};
 	~d2_renderer() {
-		if(m_d2player)	m_d2player->unregister_resources(this);
-
+		if(m_d2player)
+			m_d2player->unregister_resources(this);
 		m_transition_renderer->release();
+//JNK	if (this->m_transition_rendertarget != NULL)
+//JNK		this->m_transition_rendertarget->Release();
 	}
 
 	void set_surface(common::surface *dest) {
@@ -148,7 +152,9 @@ class d2_renderer : public d2_resources, public RP_Base {
   private:
 	d2_transition_renderer *m_transition_renderer;
 
+#ifdef JNK
 	ID2D1RenderTarget* m_transition_rendertarget;
+
 	ID2D1RenderTarget* _get_transition_rendertarget() {
 		if (m_transition_rendertarget == NULL) {
 			HRESULT hr = m_rendertarget->CreateCompatibleRenderTarget(&m_transition_rendertarget);
@@ -158,6 +164,7 @@ class d2_renderer : public d2_resources, public RP_Base {
 		}
 		return m_transition_rendertarget;
 	}
+#endif//JNK
 };
 
 } // namespace d2

@@ -214,9 +214,7 @@ class AMBULANTAPI d2_player :
 	// Global capture-callback: saves snapshots, keeps bitmap for transitions, etc.
 	void captured(IWICBitmap *bitmap);
 
-	// Set/Get current transition_rendertarget, used while redrawing transitions
-	void set_transition_rendertarget(ID2D1BitmapRenderTarget* brt) { this->m_transition_rendertarget = brt; }
-	ID2D1BitmapRenderTarget* get_transition_rendertarget() {return this->m_transition_rendertarget; }
+	// Get current rendertarget, used while redrawing transitions
 	ID2D1HwndRenderTarget* get_rendertarget() {return m_cur_wininfo ? m_cur_wininfo->m_rendertarget : NULL; }
 	// Get current hwnd, only valid while redrawing
 	HWND get_hwnd() {
@@ -255,7 +253,6 @@ class AMBULANTAPI d2_player :
 	bool _has_transitions() const;
 	d2_transition *_get_transition(common::playable *p);
 	d2_transition *_set_transition(common::playable *p, const lib::transition_info *info, bool is_outtransition);
-	ID2D1BitmapRenderTarget* m_transition_rendertarget;
 
 	// Capturing screen output
 	ID2D1Bitmap *_capture_bitmap(lib::rect r, ID2D1RenderTarget *src_rt, ID2D1RenderTarget *dst_rt);

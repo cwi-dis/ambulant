@@ -33,7 +33,7 @@
 #include <d2d1.h>
 #include <d2d1helper.h>
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -126,11 +126,6 @@ d2_transition_blitclass_fade::update()
 void
 d2_transition_blitclass_rect::update()
 {
-#ifdef	WITH_D2
-	d2_window *window = (d2_window *)m_dst->get_gui_window();
-	AmbulantView *view = (AmbulantView *)window->view();
-	CGLayerRef cg_layer = setup_transition(false, view);
-#endif//WITH_D2
 	gui_window *window = m_dst->get_gui_window();
 	d2_window *cwindow = (d2_window *)window;
 	d2_player* d2_player  = cwindow->get_d2_player();
@@ -142,7 +137,7 @@ d2_transition_blitclass_rect::update()
 	lib::point RB = newrect_whole.right_bottom();
 	if (newrect_whole.empty())
 		return;
-	ID2D1BitmapRenderTarget* brt = (ID2D1BitmapRenderTarget*) d2_player->get_transition_rendertarget();
+	ID2D1BitmapRenderTarget* brt = d2_transition_renderer::s_transition_rendertarget;
 	HRESULT hr = brt->EndDraw();
 	if (SUCCEEDED(hr)) {
 		ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
@@ -155,8 +150,6 @@ d2_transition_blitclass_rect::update()
 #endif//AM_DMP
 		hr = brt->GetBitmap(&bitmap);
 		if (SUCCEEDED(hr)) {
-//			rt->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
-//X			rt->BeginDraw();
 			rt->PushAxisAlignedClip(d2_new_rect_f,
 							        D2D1_ANTIALIAS_MODE_ALIASED);
 			rt->DrawBitmap(bitmap,
@@ -165,28 +158,13 @@ d2_transition_blitclass_rect::update()
 							D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
 							d2_full_rect_f);
 			rt->PopAxisAlignedClip();
-//X			hr = rt->EndDraw();
 			hr = rt->Flush();
-		}
-	}
-	if (FAILED(hr)) {
-			lib::logger::get_logger()->trace("d2_transition_renderer::blitclass::rect::update: DrawBitmap returns 0x%x", hr);
-	}
-#ifdef	WITH_D2
-	CGRect cg_clipped_rect = CGRectFromAmbulantRect(newrect_whole);
-#endif//WITH_D2
+			if (FAILED(hr)) {
+				lib::logger::get_logger()->trace("d2_transition_renderer::blitclass::rect::update: DrawBitmap returns 0x%x", hr);
+			}
+		} // other HRESULT failures ignored, may happen e.g. when bitmap is empty
+	} 
 	AM_DBG lib::logger::get_logger()->debug("d2_transition_blitclass_rect::update(%f) newrect_whole=(%d,%d),(%d,%d)",m_progress,LT.x,LT.y,RB.x,RB.y);
-#ifdef	WITH_D2
-	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
-	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
-	CGContextRef ctx = [view getCGContext];
-	if (m_outtrans) {
-		add_clockwise_rectangle (ctx, CGRectFromAmbulantRect(m_dst->get_rect()));
-	}
-	CGContextAddRect(ctx, cg_clipped_rect);
-	CGContextClip(ctx);
-	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, cg_layer);
-#endif//WITH_D2
 }
 
 void
@@ -262,38 +240,60 @@ void
 d2_transition_blitclass_rectlist::update()
 {
 	AM_DBG lib::logger::get_logger()->debug("cg_transition_blitclass_rectlist::update(%f)", m_progress);
-#ifdef	WITH_D2
-	d2_window *window = (d2_window *)m_dst->get_gui_window();
-	AmbulantView *view = (AmbulantView *)window->view();
-	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
-	fullsrcrect.translate(m_dst->get_global_topleft()); // Translate so the right topleft pixel is in place
-	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
-	CGContextRef ctx = [view getCGContext];
-	CGContextSaveGState(ctx);
-	bool is_clipped = false;
-	std::vector< lib::rect >::iterator newrect;
-	for (newrect=m_newrectlist.begin(); newrect != m_newrectlist.end(); newrect++) {
-		lib::rect newrect_whole = *newrect;
-		if (newrect_whole.empty()) {
-			continue;
+	gui_window *window = m_dst->get_gui_window();
+	d2_window *cwindow = (d2_window *)window;
+	d2_player* d2_player  = cwindow->get_d2_player();
+
+	lib::rect newrect_whole = m_dst->get_rect();
+	newrect_whole.translate(m_dst->get_global_topleft());
+	newrect_whole &= m_dst->get_clipped_screen_rect();
+	lib::point LT = newrect_whole.left_top();
+	lib::point RB = newrect_whole.right_bottom();
+	if (newrect_whole.empty())
+		return;
+	ID2D1BitmapRenderTarget* brt = d2_transition_renderer::s_transition_rendertarget;
+	HRESULT hr = brt->EndDraw();
+	if (SUCCEEDED(hr)) {
+		ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
+		D2D1_SIZE_F d2_full_size_f = brt->GetSize();
+		D2D1_RECT_F d2_full_rect_f = D2D1::RectF(0,0,d2_full_size_f.width,d2_full_size_f.height);
+		ID2D1Bitmap* bitmap = NULL;
+		hr = brt->GetBitmap(&bitmap);
+		if (FAILED(hr))
+			return;
+#ifdef	AM_DMP
+		d2_player->dump(brt, "rect::update:bmt");
+#endif//AM_DMP
+		std::vector< lib::rect >::iterator newrect;
+		for (newrect=m_newrectlist.begin(); newrect != m_newrectlist.end(); newrect++) {
+			lib::rect newrect_whole = *newrect;
+			if (newrect_whole.empty()) {
+				continue;
+			}
+		//	is_clipped = true;
+			newrect_whole.translate(m_dst->get_global_topleft());
+			newrect_whole &= m_dst->get_clipped_screen_rect();
+			D2D1_RECT_F d2_new_rect_f = d2_rectf(newrect_whole);
+
+			rt->PushAxisAlignedClip(d2_new_rect_f,
+								        D2D1_ANTIALIAS_MODE_ALIASED);
+			rt->DrawBitmap(bitmap,
+							d2_full_rect_f,
+							1.0f,
+							D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
+							d2_full_rect_f);
+			rt->PopAxisAlignedClip();
+			hr = rt->Flush();
+			if (FAILED(hr)) {
+				lib::logger::get_logger()->trace("d2_transition_renderer::blitclass::rect::update: DrawBitmap returns 0x%x", hr);
+				break;
+			}
+//XX		CGContextAddRect(ctx, CGRectFromAmbulantRect(newrect_whole));
+//XX		Instead of calling DrawBitmap a better idea is: add multiple rectangles to a clipping layer and call
+//XX		DrawBitmap once after finishing the loop. See cg_transition_renderer.
 		}
-		is_clipped = true;
-		newrect_whole.translate(m_dst->get_global_topleft());
-		newrect_whole &= m_dst->get_clipped_screen_rect();
-		CGContextAddRect(ctx, CGRectFromAmbulantRect(newrect_whole));
 	}
-	if (is_clipped) {
-		if (m_outtrans) {
-			add_clockwise_rectangle (ctx, CGRectFromAmbulantRect(m_dst->get_rect()));
-		}		
-		CGContextClip(ctx);
-		CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
-	} else if (m_outtrans) {
-		CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
-	}
-	
-	CGContextRestoreGState(ctx);
-#endif//WITH_D2
+	AM_DBG lib::logger::get_logger()->debug("d2_transition_blitclass_rect::update(%f) newrect_whole=(%d,%d),(%d,%d)",m_progress,LT.x,LT.y,RB.x,RB.y);
 }
 
 #ifdef	WITH_D2
