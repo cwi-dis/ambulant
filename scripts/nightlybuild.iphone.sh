@@ -12,16 +12,8 @@ BUILDHOME=$HOME/tmp/ambulant-nightly
 TODAY=`date +%Y%m%d`
 BUILDDIR=ambulant-iphone-build-$TODAY
 DESTDIR=ambulant-iphone-install-$TODAY
-BUILD3PPARGS=mac10.6 xyzzy
-CONFIGOPTS="--with-macfat --disable-dependency-tracking --with-xerces-plugin --with-python --with-python-plugin"
-MAKEOPTS=-j2
 VERSIONSUFFIX=.$TODAY
-DMGNAME=Ambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
-PLUGINDMGNAME=AmbulantWebKitPlugin-$AMBULANTVERSION$VERSIONSUFFIX-mac
-DESTINATION=sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds
-DESTINATION_DESKTOP=$DESTINATION/mac-intel-desktop-cocoa/
-DESTINATION_PLUGIN=$DESTINATION/mac-intel-webkitplugin/
-DESTINATION_CG=$DESTINATION/mac-intel-desktop-cg/
+DESTINATION=sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds/iPhone/
 
 echo nightly to stderr >&2
 echo nightly to stdout
