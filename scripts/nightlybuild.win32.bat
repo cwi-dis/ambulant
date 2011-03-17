@@ -10,6 +10,8 @@ rem username = Jack Jansen <Jack.Jansen@cwi.nl>
 rem ssh = "TortoisePlink.exe" -ssh -2 -i "C:\Users\Jack\Documents\Putty Keys\id_dsa.ppk"
 rem
 
+set
+
 rem
 rem Location of various programs
 rem
