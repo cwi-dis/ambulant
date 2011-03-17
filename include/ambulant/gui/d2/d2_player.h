@@ -71,6 +71,8 @@ interface IWICBitmap;
 #include <wincodec.h>
 //interface IWICImagingFactory;
 //interface IWICStream;
+#define SafeRelease(x) if(x!=NULL){if(*x!=NULL){(*x)->Release();*x=NULL;}}
+#define CheckError(x) if(FAILED(x))goto cleanup;
 
 namespace ambulant {
 
@@ -220,6 +222,7 @@ class AMBULANTAPI d2_player :
 	HWND get_hwnd() {
 		return m_cur_wininfo?m_cur_wininfo->m_hwnd:_get_main_window();
 	}
+	ID2D1Factory* get_D2D1Factory() { return m_d2d; };
   private:
 	bool _calc_fit(const RECT& dstrect, const lib::size& srcsize, float& xoff, float& yoff, float& fac);
 

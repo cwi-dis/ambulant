@@ -1101,8 +1101,6 @@ gui::d2::d2_player::captured(IWICBitmap *bitmap)
 }
 
 #ifdef	AM_DMP
-#define SafeRelease(x) if(x!=NULL){if(*x!=NULL){(*x)->Release();*x=NULL;}}
-#define CheckError(x) if(FAILED(x))goto cleanup;
 
 void
 gui::d2::d2_player::dump(ID2D1RenderTarget* rt, std::string id) {
