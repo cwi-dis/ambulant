@@ -478,8 +478,6 @@ third_party_packages={
             checkcmd="test -f %s/lib/libSDL.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd SDL-1.3.0-*  && "
-                "cp include/SDL_config.h.generated include/SDL_config.h.default && "    # For build 5313, may need to go away again
-                "sh build-scripts/updaterev.sh && "    # For build 5313, may need to go away again
                 "cd Xcode-iphoneOS/SDL  && "
                 "xcodebuild -target libSDL -sdk iphoneos%s -configuration Release &&"
                 "mkdir -p ../../../installed/include/SDL && "
@@ -559,8 +557,6 @@ third_party_packages={
             checkcmd="test -f %s/lib/libSDL.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd SDL-1.3.0-*  && "
-                "cp include/SDL_config.h.generated include/SDL_config.h.default && "    # For build 5313, may need to go away again
-                "sh build-scripts/updaterev.sh && "    # For build 5313, may need to go away again
                 "cd Xcode-iphoneOS/SDL  && "
                 "xcodebuild -target libSDL -sdk iphonesimulator%s -configuration Debug &&"
                 "mkdir -p ../../../installed/include/SDL && cp ../../include/* ../../../installed/include/SDL &&"
