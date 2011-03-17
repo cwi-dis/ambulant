@@ -58,41 +58,11 @@ xcodebuild -project iAmbulant.xcodeproj \
 ##	DSTROOT=$BUILDHOME/$DESTDIR \
 ##	INSTALL_PATH=/Applications \
 cd ../..
-echo That went well!
-exit
 #
-# Create installer dmg, upload
+# Create installer IPA file and upload
 #
-cd installers/sh-macos
-sh mkmacdist.sh -a AmbulantPlayerCG.app $DMGNAME-CG $BUILDHOME/$DESTDIR
-scp $DMGNAME-CG.dmg $DESTINATION_CG
-cd ../..
-#
-# Build webkit plugin.
-#
-cd projects/xcode32
-rm -rf "$HOME/Library/Internet Plug-Ins/AmbulantWebKitPlugin.plugin"
-mkdir -p "$HOME/Library/Internet Plug-Ins"
-xcodebuild -project AmbulantWebKitPlugin.xcodeproj \
-	-target AmbulantWebKitPlugin \
-	-configuration Release -sdk macosx10.6 \
-	AMBULANT_BUILDDIR=$BUILDHOME/$BUILDDIR \
-	AMBULANT_3PP=$BUILDHOME/$BUILDDIR/build-3264/third_party_packages \
-	DSTROOT=$BUILDHOME/$DESTDIR \
-	INSTALL_PATH="/Library/Internet Plug-ins" \
-	install
-cd ../..
-#
-# Build plugin installer, upload
-#
-mkdir -p "$BUILDHOME/$DESTDIR/Library/Internet Plug-Ins"
-cd "$BUILDHOME/$DESTDIR/Library/Internet Plug-Ins"
-rm -rf $PLUGINDMGNAME
-mkdir $PLUGINDMGNAME
-mv "AmbulantWebKitPlugin.webplugin" $PLUGINDMGNAME
-cp $BUILDHOME/$BUILDDIR/src/webkit_plugin/README $PLUGINDMGNAME
-zip -r $PLUGINDMGNAME.zip $PLUGINDMGNAME
-scp $PLUGINDMGNAME.zip $DESTINATION_PLUGIN
+sh installers/mkiphonedist.sh iAmbulant-$AMBULANTVERSION.$TODAY.ipa
+scp iAmbulant-$AMBULANTVERSION.$TODAY.ipa $DESTINATION
 #
 # Delete old installers, remember current
 #
