@@ -536,7 +536,7 @@ demux_video_datasource::start_frame(ambulant::lib::event_processor *evp,
 		m_event_processor = evp;
 	}
 #else
-	if (m_frames.size() > 0 /* XXXX Check timestamp! */ || _end_of_file() ) {
+	if (m_frames.size() > 5 /* XXXX Check timestamp! */ || _end_of_file() ) {
 		// We have data (or EOF) available. Don't bother starting up our source again, in stead
 		// immedeately signal our client again
 		if (callbackk) {
@@ -571,6 +571,7 @@ demux_video_datasource::frame_processed_keepdata(timestamp_t pts, char *data)
 	assert(pts == 0);
 	assert(m_frames.size() == 0);
 	ts_frame_pair& frontref = m_frames.front();
+
 	frontref.second.data = NULL;
 	m_lock.leave();
 }
@@ -634,6 +635,7 @@ demux_video_datasource::push_data(timestamp_t pts, const uint8_t *inbuf, size_t 
 		vframe.size = sz;
 		m_frames.push(ts_frame_pair(pts, vframe));
 	}
+
 	if ( m_frames.size() || _end_of_file()	) {
 		if ( m_client_callback ) {
 			AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::push_data(): calling client callback (eof=%d)", m_src_end_of_file);
@@ -717,6 +719,7 @@ demux_video_datasource::get_frame(timestamp_t now, timestamp_t *timestamp, size_
 		return NULL;
 	}
 	ts_frame_pair frame = m_frames.front();
+
 	AM_DBG lib::logger::get_logger()->debug("demux_video_datasource::get_frame(): ts=%lld 0x%x %d", frame.first, frame.second.data, frame.second.size);
 	char *rv = (char*) frame.second.data;
 	*sizep = frame.second.size;

@@ -570,7 +570,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 			// We use skip_frame to make the decoder run faster in case we
 			// are not interested in the data (still seeking forward).
 			if (ipts != (int64_t)AV_NOPTS_VALUE && ipts < m_oldest_timestamp_wanted) {
-				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: setting hurry_up: ipts=%lld, m_oldest_timestamp_wanted=%lld (%lld us late)",ipts, m_oldest_timestamp_wanted, m_oldest_timestamp_wanted-ipts);
+				/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: setting hurry_up: ipts=%lld, m_oldest_timestamp_wanted=%lld (%lld us late)",ipts, m_oldest_timestamp_wanted, m_oldest_timestamp_wanted-ipts);
 				m_con->skip_frame = AVDISCARD_NONREF;
 				m_dropped_count++; // This is not necessarily correct
 			} else {
@@ -581,6 +581,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 			avpkt.data = ptr;
 			avpkt.size = sz;
 			len = avcodec_decode_video2(m_con, frame, &got_pic, &avpkt);
+			//len = avcodec_decode_video(m_con, frame, &got_pic, ptr, sz);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: avcodec_decode_video: used %d of %d bytes, gotpic = %d, ipts = %lld", len, sz, got_pic, ipts);
 			// It seems avcodec_decode_video sometimes returns 0 if skip_frame is used. Sigh.
 			if (len == 0 && !got_pic) {

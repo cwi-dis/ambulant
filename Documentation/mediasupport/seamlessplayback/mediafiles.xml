@@ -11,7 +11,7 @@
 </data>
  -->
 <!-- Local playback, MPEG-1 video. Uncomment to enable. -->
-<!-- -->
+<!-- 
 <data>
   <av1>media-av.mpg</av1>
   <av2>media-av-copy.mpg</av2>
@@ -21,9 +21,9 @@
   <video1>media-video.mpg</video1>
   <video2>media-video-copy.mpg</video2>
 </data>
-
+-->
 <!-- Local playback, H264 video. Uncomment to enable. -->
-
+<!--
 <data>
   <av1>media-av.mp4</av1>
   <av2>media-av-copy.mp4</av2>
@@ -33,7 +33,7 @@
   <video1>media-video.mp4</video1>
   <video2>media-video-copy.mp4</video2>
 </data>
-
+-->
 
 <!-- HTTP playback, MPEG-1 video. Uncomment to enable. -->
 <!--
@@ -72,15 +72,14 @@
 </data>
   -->
 <!-- RTSP playback, H264 video. Uncomment to enable. -->
-<!--
+
 <data>
-  <av1>rtsp://localhost/seamlessplayback/media-av.mp4</av1>
-  <av2>rtsp://localhost/seamlessplayback/media-av-copy.mp4</av2>
-  <audio1>rtsp://localhost/seamlessplayback/media-audio.mp3</audio1>
-  <audio2>rtsp://localhost/seamlessplayback/media-audio-copy.mp3</audio2>
-  <audiomod>rtsp://localhost/seamlessplayback/media-audio-modified.mp3</audiomod>
-  <video1>rtsp://localhost/seamlessplayback/media-video.mp4</video1>
-  <video2>rtsp://localhost/seamlessplayback/media-video-copy.mp4</video2>
+  <av1>rtsp://media2.cwi.nl/seamlessplayback/media-av.mp4</av1>
+  <av2>rtsp://media2.cwi.nl/seamlessplayback/media-av-copy.mp4</av2>
+  <audio1>rtsp://media2.cwi.nl/seamlessplayback/media-audio.mp3</audio1>
+  <audio2>rtsp://media2.cwi.nl/seamlessplayback/media-audio-copy.mp3</audio2>
+  <audiomod>rtsp://media2.cwi.nl/seamlessplayback/media-audio-modified.mp3</audiomod>
+  <video1>rtsp://media2.cwi.nl/seamlessplayback/media-video.mp4</video1>
+  <video2>rtsp://media2.cwi.nl/seamlessplayback/media-video-copy.mp4</video2>
 </data>
-  <video1>http://homepages.cwi.nl/~jack/seamlessplayback/media-video.mp4</video1>
--->
+  
