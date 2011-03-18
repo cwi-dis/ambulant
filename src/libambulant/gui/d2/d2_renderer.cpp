@@ -243,7 +243,6 @@ d2_transition_renderer::redraw_post(gui_window *window)
 		typedef lib::no_arg_callback<d2_transition_renderer> transition_callback;
 		lib::event *ev = new transition_callback(this, &d2_transition_renderer::transition_step);
 		lib::transition_info::time_type delay = m_trans_engine->next_step_delay();
-		if (delay < 33) delay = 33; // XXX band-aid
 		AM_DBG lib::logger::get_logger()->debug("d2_transition_renderer.redraw: now=%d, schedule step for %d", m_event_processor->get_timer()->elapsed(), m_event_processor->get_timer()->elapsed()+delay);
 		m_event_processor->add_event(ev, delay, lib::ep_med);
 //XX	m_d2_player->select_transition_surface(false);
