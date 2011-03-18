@@ -47,7 +47,7 @@ namespace gui {
 namespace d2 {
 
 inline D2D1_RECT_F d2_rectf(lib::rect r) {
-	return D2D1::RectF(r.left(), r.top(), r.right(), r.bottom());
+	return D2D1::RectF((float) r.left(), (float) r.top(), (float) r.right(), (float) r.bottom());
 }
 
 #ifdef	WITH_D2
@@ -110,17 +110,38 @@ add_clockwise_rectangle (CGContextRef ctx, CGRect cg_rect)
 void
 d2_transition_blitclass_fade::update()
 {
+	ID2D1Layer* layer = NULL;
+	ID2D1Bitmap* bitmap = NULL;
+
 	AM_DBG lib::logger::get_logger()->debug("d2_transition_blitclass_fade::update(%f)", m_progress);
-#ifdef	WITH_D2
-	d2_window *window = (d2_window *)m_dst->get_gui_window();
-	AmbulantView *view = (AmbulantView *)window->view();
-	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
-	fullsrcrect.translate(m_dst->get_global_topleft()); // Translate so the right topleft pixel is in place
-	CGRect d2_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
-	CGContextRef ctx = [view getCGContext];
-	CGContextSetAlpha (ctx, m_outtrans ? 1.0 - m_progress : m_progress);
-	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
-#endif//WITH_D2
+	gui_window *window = m_dst->get_gui_window();
+	d2_window *cwindow = (d2_window *)window;
+	d2_player* d2_player = cwindow->get_d2_player();
+
+	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
+	ID2D1BitmapRenderTarget* brt = d2_transition_renderer::s_transition_rendertarget;
+	HRESULT hr = brt->EndDraw();
+	CheckError(hr);
+	hr = brt->GetBitmap(&bitmap);
+	CheckError(hr);
+	if (this->m_progress < 1.0) {
+		hr = rt->CreateLayer(&layer);
+		CheckError(hr);
+		rt->PushLayer(D2D1::LayerParameters(D2D1::InfiniteRect(),
+											(ID2D1Geometry*) NULL,
+											D2D1_ANTIALIAS_MODE_PER_PRIMITIVE,
+											D2D1::IdentityMatrix(),
+											m_progress,
+											(ID2D1Brush*) NULL,
+											D2D1_LAYER_OPTIONS_NONE), layer);
+	}
+	rt->DrawBitmap(bitmap);
+	if (this->m_progress < 1.0) {
+		rt->PopLayer();
+	}
+cleanup:
+	SafeRelease(&layer);
+	SafeRelease(&bitmap);
 }
 
 void
@@ -288,10 +309,10 @@ d2_transition_blitclass_rectlist::update()
 			break;
 		}
 	}
-	AM_DBG lib::logger::get_logger()->debug("d2_transition_blitclass_rect::update(%f) newrect_whole=(%d,%d),(%d,%d)",m_progress,LT.x,LT.y,RB.x,RB.y);
+	AM_DBG lib::logger::get_logger()->debug("d2_transition_blitclass_rectlist::update(%f) newrect_whole=(%d,%d),(%d,%d)",m_progress,LT.x,LT.y,RB.x,RB.y);
 }
 
-// Helper function: add the path coordinates
+// Helper function: add clipping path from the list of polygons
 static ID2D1PathGeometry*
 path_from_polygon_list(ID2D1Factory* factory, const lib::point& origin, std::vector< std::vector<lib::point> > polygon_list)
 {
@@ -315,11 +336,11 @@ path_from_polygon_list(ID2D1Factory* factory, const lib::point& origin, std::vec
 		newpoint_p = (*polygon_p).begin(); 
 		old_point = *newpoint_p + origin;
 		newpoint_p++;
-		sink->BeginFigure(D2D1::Point2F(old_point.x, old_point.y), D2D1_FIGURE_BEGIN_FILLED);
+		sink->BeginFigure(D2D1::Point2F((float) old_point.x, (float) old_point.y), D2D1_FIGURE_BEGIN_FILLED);
 		for(;newpoint_p != (*polygon_p).end(); newpoint_p++) {
 			lib::point p = *newpoint_p + origin;
 			AM_DBG lib::logger::get_logger()->debug("path_from_polygon_list: point=%d, %d", p.x, p.y);
-			new_d2_point_2f = D2D1::Point2F(p.x, p.y);
+			new_d2_point_2f = D2D1::Point2F((float) p.x, (float) p.y);
 			sink->AddLine(new_d2_point_2f);
 			old_point  = p;
 		}
@@ -332,51 +353,6 @@ cleanup:
 	return path;
 }
 	
-#ifdef	WITH_D2
-/*XX
-// Helper function: compositing newsrc onto screen with respect
-// to a path
-static void
-composite_path(AmbulantView *view, lib::rect dstrect_whole, NSBezierPath *path, bool outtrans)
-{
-	NSImage *newsrc = [view getTransitionNewSource];
-	NSImage *tmpsrc = [view getTransitionTmpSurface];
-	NSRect cg_dstrect_whole = [view NSRectForAmbulantRect: &dstrect_whole];
-
-	// First, we fill the temporary bitmap with transparent white
-	float oldalpha, newalpha;
-	if (outtrans) {
-		oldalpha = 1.0F;
-		newalpha = 0.0F;
-	} else {
-		oldalpha = 0.0F;
-		newalpha = 1.0F;
-	}
-	[tmpsrc lockFocus];
-	[[NSColor colorWithDeviceWhite: 1.0f alpha: (float)oldalpha] set];
-	NSRectFill(cg_dstrect_whole);
-
-	// Now we fill draw the path on the temp bitmap, with opaque white
-	[[NSColor colorWithDeviceWhite: 1.0f alpha: (float)newalpha] set];
-	[path fill];
-
-	// Next we composit the source image onto the temp bitmap, but only where
-	// the temp bitmap is opaque (the path we just painted there)
-	[newsrc drawInRect: cg_dstrect_whole
-		fromRect: cg_dstrect_whole
-		operation: NSCompositeSourceIn
-		fraction: 1.0f];
-
-	// Finally we put the opaque bits of the temp image onto the destination
-	// image
-	[tmpsrc unlockFocus];
-	[tmpsrc drawInRect: cg_dstrect_whole
-		fromRect: cg_dstrect_whole
-		operation: NSCompositeSourceOver
-		fraction: 1.0f];
-}
-XX*/
-#endif//WITH_D2
 
 static void
 _d2_polygon_list_update (common::surface* dst, std::vector< std::vector<lib::point> > polygon_list)
@@ -389,27 +365,30 @@ _d2_polygon_list_update (common::surface* dst, std::vector< std::vector<lib::poi
 	ID2D1Layer* layer = NULL;
 	ID2D1PathGeometry* path = NULL;
 	D2D1_RECT_F d2_full_rect_f = D2D1::RectF();
+	D2D1_SIZE_F d2_full_size_f = D2D1::SizeF();
 	ID2D1BitmapRenderTarget* brt = d2_transition_renderer::s_transition_rendertarget;
 	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
 	HRESULT hr = rt->CreateLayer(&layer);
 	if (FAILED(hr)) {
-		lib::logger::get_logger()->trace("d2_transition_renderer::blitclass::rectlist::update: CreateLayer returns 0x%x", hr);
+		lib::logger::get_logger()->trace("d2_transition_renderer::blitclass::polygon[list]::update: CreateLayer returns 0x%x", hr);
 	}
 	CheckError(hr);
 	hr = brt->EndDraw();
 	CheckError(hr);
-	D2D1_SIZE_F d2_full_size_f = brt->GetSize();
+	d2_full_size_f = brt->GetSize();
 	d2_full_rect_f = D2D1::RectF(0,0,d2_full_size_f.width,d2_full_size_f.height);
 	ID2D1Bitmap* bitmap = NULL;
 	hr = brt->GetBitmap(&bitmap);
 	CheckError(hr);
+
 	path = path_from_polygon_list(d2_player->get_D2D1Factory(), dst_global_topleft, polygon_list);
+
 	rt->PushLayer(D2D1::LayerParameters(D2D1::InfiniteRect(), path), layer);
 	rt->DrawBitmap(bitmap, d2_full_rect_f, 1.0f, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,	d2_full_rect_f);
 	rt->PopLayer();
 	hr = rt->Flush();
 	if (FAILED(hr)) {
-		lib::logger::get_logger()->trace("d2_transition_renderer::blitclass::poly::update: DrawBitmap returns 0x%x", hr);
+		lib::logger::get_logger()->trace("d2_transition_renderer::blitclass::polygon[list]::update: DrawBitmap returns 0x%x", hr);
 	}
 cleanup:
 	SafeRelease(&layer);
@@ -430,45 +409,8 @@ d2_transition_blitclass_polylist::update()
 {
 	AM_DBG lib::logger::get_logger()->debug("d2_transition_blitclass_polylist::update(%f)", m_progress);
 	_d2_polygon_list_update(m_dst, this->m_newpolygonlist);
-#ifdef	WITH_D2
-	d2_window *window = (d2_window *)m_dst->get_gui_window();
-	AmbulantView *view = (AmbulantView *)window->view();
-	CGContextRef ctx = [view getCGContext];
-	CGContextSaveGState(ctx);
-
-	const lib::point& dst_global_topleft = m_dst->get_global_topleft();
-	lib::rect dstrect_whole = m_dst->get_rect();
-	dstrect_whole.translate(dst_global_topleft);
-	dstrect_whole &= m_dst->get_clipped_screen_rect();
-	if (m_outtrans) {
-		add_clockwise_rectangle(ctx, CGRectFromAmbulantRect(dstrect_whole));
-	}
-	// First we create the path
-	std::vector< std::vector<lib::point> >::iterator partpolygon;
-	AM_DBG {
-	int n = 0;
-	for (partpolygon=m_newpolygonlist.begin(); partpolygon!=m_newpolygonlist.end(); partpolygon++) {
-		lib::logger::get_logger()->debug("partpolygon: %d", n++);
-			for (std::vector<lib::point>::iterator i=(*partpolygon).begin(); i != (*partpolygon).end(); i++) {
-				lib::logger::get_logger()->debug("\tx=%d, y=%d", (*i).x, (*i).y);
-			}
-	}
-	}//AM_DBG
-	for (partpolygon=m_newpolygonlist.begin(); partpolygon!=m_newpolygonlist.end(); partpolygon++) {
-		CGPathRef path = polygon2path(dst_global_topleft, *partpolygon);
-		CGContextAddPath(ctx, path);
-		CFRelease(path);
-	}
-	// Then we composite it onto the screen
-	CGContextClip(ctx);
-	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
-	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
-	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
-	CGContextRestoreGState(ctx);
-#endif//WITH_D2
 }
 
- 
 smil2::transition_engine *
 d2_transition_engine(common::surface *dst, bool is_outtrans, const lib::transition_info *info)
 {
@@ -608,4 +550,3 @@ d2_transition_engine(common::surface *dst, bool is_outtrans, const lib::transiti
 
 } //namespace ambulant
 
-//#endif//JNK
