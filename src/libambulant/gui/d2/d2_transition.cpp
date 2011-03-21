@@ -49,6 +49,15 @@ namespace d2 {
 inline D2D1_RECT_F d2_rectf(lib::rect r) {
 	return D2D1::RectF((float) r.left(), (float) r.top(), (float) r.right(), (float) r.bottom());
 }
+inline D2D1_RECT_U d2_rectu(lib::rect r) {
+	return D2D1::RectU((UINT32) r.left(), (UINT32) r.top(), (UINT32) r.right(), (UINT32) r.bottom());
+}
+inline D2D1_SIZE_F d2_sizef(lib::rect r) {
+	return D2D1::SizeF((float) r.width(), (float) r.height());
+}
+inline D2D1_SIZE_U d2_sizeu(lib::rect r) {
+	return D2D1::SizeU((UINT32) r.width(), (UINT32) r.height());
+}
 
 #ifdef	WITH_D2
 // Helper functions to setup and finalize transitions
@@ -110,14 +119,14 @@ add_clockwise_rectangle (CGContextRef ctx, CGRect cg_rect)
 void
 d2_transition_blitclass_fade::update()
 {
-	ID2D1Layer* layer = NULL;
-	ID2D1Bitmap* bitmap = NULL;
-
 	AM_DBG lib::logger::get_logger()->debug("d2_transition_blitclass_fade::update(%f)", m_progress);
 	gui_window *window = m_dst->get_gui_window();
 	d2_window *cwindow = (d2_window *)window;
 	d2_player* d2_player = cwindow->get_d2_player();
 
+	ID2D1Layer* layer = NULL;
+	ID2D1Bitmap* bitmap = NULL;
+	D2D1_LAYER_PARAMETERS layer_params = D2D1::LayerParameters();
 	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
 	ID2D1BitmapRenderTarget* brt = d2_transition_renderer::s_transition_rendertarget;
 	HRESULT hr = brt->EndDraw();
@@ -127,13 +136,8 @@ d2_transition_blitclass_fade::update()
 	if (this->m_progress < 1.0) {
 		hr = rt->CreateLayer(&layer);
 		CheckError(hr);
-		rt->PushLayer(D2D1::LayerParameters(D2D1::InfiniteRect(),
-											(ID2D1Geometry*) NULL,
-											D2D1_ANTIALIAS_MODE_PER_PRIMITIVE,
-											D2D1::IdentityMatrix(),
-											m_progress,
-											(ID2D1Brush*) NULL,
-											D2D1_LAYER_OPTIONS_NONE), layer);
+		layer_params.opacity = m_progress;
+		rt->PushLayer(layer_params, layer);
 	}
 	rt->DrawBitmap(bitmap);
 	if (this->m_progress < 1.0) {
@@ -192,69 +196,62 @@ void
 d2_transition_blitclass_r1r2r3r4::update()
 {
 	AM_DBG lib::logger::get_logger()->debug("d2_transition_blitclass_r1r2r3r4::update(%f)", m_progress);
-#ifdef	WITH_D2
-	d2_window *window = (d2_window *)m_dst->get_gui_window();
-	AmbulantView *view = (AmbulantView *)window->view();
-	lib::rect oldrect = m_dst->get_rect();
-	lib::rect newrect_whole = m_newsrcrect;
-	newrect_whole.translate(m_dst->get_global_topleft());
-	newrect_whole &= m_dst->get_clipped_screen_rect();
-	int dx = 0;
-	int dy = 0;
-	CGContextRef ctx = [view getCGContext];
-	CGContextSaveGState(ctx);
-	if (m_outtrans) {
-		dx = m_newdstrect.width() * m_progress;
-//		dy = m_newdstrect.height() * m_progress;
-	} else {
-		dx = m_newdstrect.left() - m_newsrcrect.left();
-		dy = m_newdstrect.top() - m_newsrcrect.top();
-	}
-	CGContextTranslateCTM (ctx, dx, dy);
-	lib::rect fullsrcrect = lib::rect(lib::point(0, 0), lib::size(view.bounds.size.width,view.bounds.size.height));  // Original image size
-	CGRect cg_fullsrcrect = CGRectFromAmbulantRect(fullsrcrect);
-	CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [view getTransitionSurface]);
-	CGContextRestoreGState(ctx);
-	NSImage *oldsrc = [view getTransitionOldSource];
-	NSImage *newsrc = [view getTransitionNewSource];
-	lib::rect oldsrcrect_whole = m_oldsrcrect;
-	lib::rect olddstrect_whole = m_olddstrect;
-	lib::rect newsrcrect_whole = m_newsrcrect;
-	lib::rect newdstrect_whole = m_newdstrect;
-	oldsrcrect_whole.translate(m_dst->get_global_topleft());
-	oldsrcrect_whole &= m_dst->get_clipped_screen_rect();
-	olddstrect_whole.translate(m_dst->get_global_topleft());
-	olddstrect_whole &= m_dst->get_clipped_screen_rect();
-	newsrcrect_whole.translate(m_dst->get_global_topleft());
-	newsrcrect_whole &= m_dst->get_clipped_screen_rect();
-	newdstrect_whole.translate(m_dst->get_global_topleft());
-	newdstrect_whole &= m_dst->get_clipped_screen_rect();
-	NSRect cg_oldsrcrect_whole = [view NSRectForAmbulantRect: &oldsrcrect_whole];
-	NSRect cg_olddstrect_whole = [view NSRectForAmbulantRect: &olddstrect_whole];
-	NSRect cg_newsrcrect_whole = [view NSRectForAmbulantRect: &newsrcrect_whole];
-	NSRect cg_newdstrect_whole = [view NSRectForAmbulantRect: &newdstrect_whole];
-	if (m_outtrans) {
-		[newsrc drawInRect: cg_olddstrect_whole
-			fromRect: cg_oldsrcrect_whole
-			operation: NSCompositeCopy
-			fraction: 1.0f];
 
-		[oldsrc drawInRect: cg_newdstrect_whole
-			fromRect: cg_newsrcrect_whole
-			operation: NSCompositeSourceOver
-			fraction: 1.0f];
-	} else {
-		[oldsrc drawInRect: cg_olddstrect_whole
-			fromRect: cg_oldsrcrect_whole
-			operation: NSCompositeCopy
-			fraction: 1.0f];
+	gui_window *window = m_dst->get_gui_window();
+	d2_window *cwindow = (d2_window *)window;
+	d2_player* d2_player = cwindow->get_d2_player();
+	lib::rect newsrcrect = m_newsrcrect;
+	lib::rect newdstrect = m_newdstrect;
+	lib::rect oldsrcrect = m_oldsrcrect;
+	lib::rect olddstrect = m_olddstrect;
+	ID2D1Layer* layer = NULL;
+	ID2D1Bitmap* bitmap_old = NULL; // bitmap for the "old" stuff
+	ID2D1Bitmap* bitmap_new = NULL; // bitmap for the "new" stuff
+	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
+	D2D1_BITMAP_PROPERTIES props = D2D1::BitmapProperties();
+	D2D1_PIXEL_FORMAT rt_format = rt->GetPixelFormat();
+	D2D1_MATRIX_3X2_F d2_rt_transform, d2_brt_transform;
+	ID2D1BitmapRenderTarget* brt = d2_transition_renderer::s_transition_rendertarget;
+	rt->GetTransform(&d2_rt_transform);
+	brt->GetTransform(&d2_brt_transform);
+	HRESULT hr = brt->EndDraw();
+	CheckError(hr);
+	newsrcrect.translate(m_dst->get_global_topleft());
+	newsrcrect &= m_dst->get_clipped_screen_rect();
+	newdstrect.translate(m_dst->get_global_topleft());
+	newdstrect &= m_dst->get_clipped_screen_rect();
+	oldsrcrect.translate(m_dst->get_global_topleft());
+	oldsrcrect &= m_dst->get_clipped_screen_rect();
+	// compensate for any adjustments made by d2_player::_calc_fit(&xoff, &yoff)
+	oldsrcrect.translate(lib::point((int) d2_rt_transform._31, (int) d2_rt_transform._32));
+	olddstrect.translate(m_dst->get_global_topleft());
+	olddstrect &= m_dst->get_clipped_screen_rect();
+	// Get needed parts of the old and new stuff (as bitmaps) and draw them at their final destinations
+	props.pixelFormat = rt_format;
+	CheckError(hr);
+	// copy the bits of the old stuff to the new destination
+	hr = rt->CreateBitmap(d2_sizeu(oldsrcrect), props, &bitmap_old);
+	CheckError(hr);
+	hr = bitmap_old->CopyFromRenderTarget(NULL, rt, &d2_rectu(oldsrcrect));
+	CheckError(hr);
+	rt->DrawBitmap(bitmap_old, d2_rectf(olddstrect));
+	// copy the bits of the new stuff (from the back bitmap 'brt') to the right spot on screen;
+	// we need to use ID2D1Bitmap::CopyFromRenderTarget, therefore we must create the bitmap
+	// where we put the data into ('bitmap_new') with equal properties as its data source ('brt')
+	props.pixelFormat = brt->GetPixelFormat();
+	FLOAT dpiX = 0.0, dpiY = 0.0;
+	brt->GetDpi(&dpiX, &dpiY);
+	props.dpiX = dpiX;
+	props.dpiY = dpiY;
+	hr = brt->CreateBitmap(d2_sizeu(newsrcrect), props, &bitmap_new);
+	CheckError(hr);
+	hr = bitmap_new->CopyFromRenderTarget(NULL, brt, &d2_rectu(newsrcrect));
+	CheckError(hr);
+	rt->DrawBitmap(bitmap_new, d2_rectf(newdstrect));
 
-		[newsrc drawInRect: cg_newdstrect_whole
-			fromRect: cg_newsrcrect_whole
-			operation: NSCompositeSourceOver
-			fraction: 1.0f];
-	}
-#endif//WITH_D2
+cleanup:
+	SafeRelease(&bitmap_old);
+	SafeRelease(&bitmap_new);
 }
 
 void
