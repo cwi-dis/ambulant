@@ -98,23 +98,23 @@ finalize_transition(bool outtrans, common::surface *dst)
 #endif//WITH_D2
 }
 
-#ifdef	WITH_D2
-// Helper function: add a clockwise defined rectangle to the path of a CGContext
-// This is used for out transitions to reverse the effect of the counter-clockwise defined 
-// clipping paths by enclosing them in a clockwise defined rectangle for the whole region
-// using the non-zero winding rule
+//#ifdef	WITH_D2
+// Helper function: add a counter clockwise defined rectangle to the path of a ID2D1GeometrySink
+// This is used for out transitions to reverse the effect of the clockwise defined clipping paths
+// by enclosing them in a counter clockwise defined rectangle for the whole region using the
+// non-zero winding rule
 void
-add_clockwise_rectangle (CGContextRef ctx, CGRect cg_rect)
+add_counter_clockwise_rect (ID2D1GeometrySink* sink, D2D1_RECT_U rect)
 {	
-	CGFloat cg_minX = CGRectGetMinX(cg_rect), cg_maxX = CGRectGetMaxX(cg_rect),
-	cg_minY = CGRectGetMinY(cg_rect), cg_maxY = CGRectGetMaxY(cg_rect);
-	CGContextMoveToPoint(ctx, cg_minX, cg_minY);
-	CGContextAddLineToPoint(ctx, cg_minX, cg_maxY);
-	CGContextAddLineToPoint(ctx, cg_maxX, cg_maxY);
-	CGContextAddLineToPoint(ctx, cg_maxX, cg_minY);
-	CGContextAddLineToPoint(ctx, cg_minX, cg_minY);
+	UINT32 minX = rect.left, maxX = rect.right, minY = rect.bottom, maxY = rect.top;
+	sink->BeginFigure(D2D1::Point2F((float) minX, (float) minY), D2D1_FIGURE_BEGIN_FILLED);
+	sink->AddLine( D2D1::Point2F((float) maxX, (float) minY));
+	sink->AddLine( D2D1::Point2F((float) maxX, (float) maxY));
+	sink->AddLine( D2D1::Point2F((float) minX, (float) maxY));
+	sink->AddLine( D2D1::Point2F((float) minX, (float) minX));
+	sink->EndFigure(D2D1_FIGURE_END_CLOSED);
 }
-#endif//WITH_D2
+//#endif//WITH_D2
 	
 void
 d2_transition_blitclass_fade::update()
@@ -162,34 +162,38 @@ d2_transition_blitclass_rect::update()
 	lib::point RB = newrect_whole.right_bottom();
 	if (newrect_whole.empty())
 		return;
+	D2D1_RECT_F d2_new_rect_f;
+	D2D1_RECT_F d2_full_rect_f;
+	D2D1_SIZE_F d2_full_size_f;
 	ID2D1BitmapRenderTarget* brt = d2_transition_renderer::s_transition_rendertarget;
 	HRESULT hr = brt->EndDraw();
-	if (SUCCEEDED(hr)) {
-		ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
-		D2D1_RECT_F d2_new_rect_f = d2_rectf(newrect_whole);
-		D2D1_SIZE_F d2_full_size_f = brt->GetSize();
-		D2D1_RECT_F d2_full_rect_f = D2D1::RectF(0,0,d2_full_size_f.width,d2_full_size_f.height);
-		ID2D1Bitmap* bitmap = NULL;
+	CheckError(hr);
+	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
+	d2_new_rect_f = d2_rectf(newrect_whole);
+	d2_full_size_f = brt->GetSize();
+	d2_full_rect_f = D2D1::RectF(0,0,d2_full_size_f.width,d2_full_size_f.height);
+	ID2D1Bitmap* bitmap = NULL;
 #ifdef	AM_DMP
-		d2_player->dump(brt, "rect::update:bmt");
+	d2_player->dump(brt, "rect::update:bmt");
 #endif//AM_DMP
-		hr = brt->GetBitmap(&bitmap);
-		if (SUCCEEDED(hr)) {
-			rt->PushAxisAlignedClip(d2_new_rect_f,
-							        D2D1_ANTIALIAS_MODE_ALIASED);
-			rt->DrawBitmap(bitmap,
-							d2_full_rect_f,
-							1.0f,
-							D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
-							d2_full_rect_f);
-			rt->PopAxisAlignedClip();
-			hr = rt->Flush();
-			if (FAILED(hr)) {
-				lib::logger::get_logger()->trace("d2_transition_renderer::blitclass::rect::update: DrawBitmap returns 0x%x", hr);
-			}
-		} // other HRESULT failures ignored, may happen e.g. when bitmap is empty
-	} 
+	hr = brt->GetBitmap(&bitmap);
+	if (SUCCEEDED(hr)) {
+		rt->PushAxisAlignedClip(d2_new_rect_f, D2D1_ANTIALIAS_MODE_ALIASED);
+		rt->DrawBitmap(bitmap,
+						d2_full_rect_f,
+						1.0f,
+						D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
+						d2_full_rect_f);
+		rt->PopAxisAlignedClip();
+		hr = rt->Flush();
+		if (FAILED(hr)) {
+			lib::logger::get_logger()->trace("d2_transition_renderer::blitclass::rect::update: DrawBitmap returns 0x%x", hr);
+		}
+	} // other HRESULT failures ignored, may happen e.g. when bitmap is empty
+
+cleanup:
 	AM_DBG lib::logger::get_logger()->debug("d2_transition_blitclass_rect::update(%f) newrect_whole=(%d,%d),(%d,%d)",m_progress,LT.x,LT.y,RB.x,RB.y);
+
 }
 
 void
@@ -311,7 +315,7 @@ d2_transition_blitclass_rectlist::update()
 
 // Helper function: add clipping path from the list of polygons
 static ID2D1PathGeometry*
-path_from_polygon_list(ID2D1Factory* factory, const lib::point& origin, std::vector< std::vector<lib::point> > polygon_list)
+path_from_polygon_list(ID2D1Factory* factory, const lib::point& origin, std::vector< std::vector<lib::point> > polygon_list, bool outtrans, lib::rect whole_rect)
 {
 	ID2D1PathGeometry* path = NULL;
 	ID2D1GeometrySink* sink = NULL;
@@ -324,7 +328,10 @@ path_from_polygon_list(ID2D1Factory* factory, const lib::point& origin, std::vec
 	hr = path->Open(&sink);
 	CheckError(hr);
 	sink->SetFillMode(D2D1_FILL_MODE_WINDING);
-
+	if (outtrans) {
+		add_counter_clockwise_rect(sink, d2_rectu(whole_rect));
+	}
+ 
 	for( std::vector< std::vector<lib::point> >::iterator polygon_p = polygon_list.begin(); polygon_p != polygon_list.end(); polygon_p++) {
 		if ((*polygon_p).size() < 3) {
 			lib::logger::get_logger()->debug("path_from_polygon_list: invalid polygon size=%d", (*polygon_p).size());
@@ -352,7 +359,7 @@ cleanup:
 	
 
 static void
-_d2_polygon_list_update (common::surface* dst, std::vector< std::vector<lib::point> > polygon_list)
+_d2_polygon_list_update (common::surface* dst, std::vector< std::vector<lib::point> > polygon_list, bool outtrans, lib::rect whole_rect)
 {
 	gui_window *window = dst->get_gui_window();
 	d2_window *cwindow = (d2_window *)window;
@@ -378,7 +385,7 @@ _d2_polygon_list_update (common::surface* dst, std::vector< std::vector<lib::poi
 	hr = brt->GetBitmap(&bitmap);
 	CheckError(hr);
 
-	path = path_from_polygon_list(d2_player->get_D2D1Factory(), dst_global_topleft, polygon_list);
+	path = path_from_polygon_list(d2_player->get_D2D1Factory(), dst_global_topleft, polygon_list, outtrans, whole_rect);
 
 	rt->PushLayer(D2D1::LayerParameters(D2D1::InfiniteRect(), path), layer);
 	rt->DrawBitmap(bitmap, d2_full_rect_f, 1.0f, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,	d2_full_rect_f);
@@ -398,14 +405,14 @@ d2_transition_blitclass_poly::update()
 	AM_DBG lib::logger::get_logger()->debug("cg_transition_blitclass_poly::update(%f)", m_progress);
 	std::vector< std::vector<lib::point> > polygon_list;
 	polygon_list.push_back(this->m_newpolygon);
-	_d2_polygon_list_update(m_dst, polygon_list);
+	_d2_polygon_list_update(m_dst, polygon_list, m_outtrans, m_dst->get_rect());
 }
 
 void
 d2_transition_blitclass_polylist::update()
 {
 	AM_DBG lib::logger::get_logger()->debug("d2_transition_blitclass_polylist::update(%f)", m_progress);
-	_d2_polygon_list_update(m_dst, this->m_newpolygonlist);
+	_d2_polygon_list_update(m_dst, this->m_newpolygonlist, m_outtrans, m_dst->get_rect());
 }
 
 smil2::transition_engine *
