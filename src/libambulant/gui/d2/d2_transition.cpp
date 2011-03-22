@@ -346,7 +346,7 @@ d2_transition_blitclass_r1r2r3r4::update()
 	olddstrect &= m_dst->get_clipped_screen_rect();
 	// Get needed parts of the old and new stuff (as bitmaps) and draw them at their final destinations
 	if (this->m_outtrans) {
-		// exchange "old" and "new" rects
+		// exchange "old" and "new" rects, but not the rendered stuff
 		lib::rect tmp_rect;
 		tmp_rect = oldsrcrect;
 		oldsrcrect = newsrcrect;
@@ -355,28 +355,31 @@ d2_transition_blitclass_r1r2r3r4::update()
 		olddstrect = newdstrect;
 		newdstrect = tmp_rect;
 	}
-	// compensate for any adjustments made by d2_player::_calc_fit(&xoff, &yoff)		
+	// compensate for any adjustments made by d2_player::_calc_fit(&xoff, &yoff)
+	// XXXX this code is not sufficient when size parameters in 'd2_rt_transform' change as well
 	oldsrcrect.translate(lib::point((int) d2_rt_transform._31, (int) d2_rt_transform._32));
 #ifdef	AM_DMP
 		d2_player->dump(old_rt, "old");
 #endif//AM_DMP
 #ifdef	AM_DMP
 		d2_player->dump(new_rt, "new");
-#endif//AM_DMP	// copy the bits of the old stuff to the new destination
+#endif//AM_DMP
 	// we need to use ID2D1Bitmap::CopyFromRenderTarget, therefore we must create the bitmap
 	// where we put the data into ('bitmap_new') with equal properties as its data source ('old_rt')
 	old_rt->GetDpi(&props.dpiX, &props.dpiY);
 	props.pixelFormat = old_rt->GetPixelFormat();
 	hr = old_rt->CreateBitmap(d2_sizeu(oldsrcrect), props, &bitmap_old);
 	CheckError(hr);
+	// copy the bits of the old stuff (from 'old_rt') to the new destination
 	hr = bitmap_old->CopyFromRenderTarget(NULL, old_rt, &d2_rectu(oldsrcrect));
 	CheckError(hr);
 	dst_rt->DrawBitmap(bitmap_old, d2_rectf(olddstrect));
-	// copy the bits of the new stuff (from the back bitmap 'brt') to the right spot on screen;
+	// likewise create a compatible bitmap for the new stuff
 	props.pixelFormat = new_rt->GetPixelFormat();
 	new_rt->GetDpi(&props.dpiX, &props.dpiY);
 	hr = new_rt->CreateBitmap(d2_sizeu(newsrcrect), props, &bitmap_new);
 	CheckError(hr);
+	// copy the bits of the new stuff (from 'new_rt') to the right spot on screen;
 	hr = bitmap_new->CopyFromRenderTarget(NULL, new_rt, &d2_rectu(newsrcrect));
 	CheckError(hr);
 	dst_rt->DrawBitmap(bitmap_new, d2_rectf(newdstrect));
