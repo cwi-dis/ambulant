@@ -114,203 +114,24 @@ add_counter_clockwise_rect (ID2D1GeometrySink* sink, D2D1_RECT_U rect)
 	sink->AddLine( D2D1::Point2F((float) minX, (float) minX));
 	sink->EndFigure(D2D1_FIGURE_END_CLOSED);
 }
-//#endif//WITH_D2
-	
-void
-d2_transition_blitclass_fade::update()
-{
-	AM_DBG lib::logger::get_logger()->debug("d2_transition_blitclass_fade::update(%f)", m_progress);
-	gui_window *window = m_dst->get_gui_window();
-	d2_window *cwindow = (d2_window *)window;
-	d2_player* d2_player = cwindow->get_d2_player();
-
-	ID2D1Layer* layer = NULL;
-	ID2D1Bitmap* bitmap = NULL;
-	D2D1_LAYER_PARAMETERS layer_params = D2D1::LayerParameters();
-	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
-	ID2D1BitmapRenderTarget* brt = d2_transition_renderer::s_transition_rendertarget;
-	HRESULT hr = brt->EndDraw();
-	CheckError(hr);
-	hr = brt->GetBitmap(&bitmap);
-	CheckError(hr);
-	if (this->m_progress < 1.0) {
-		hr = rt->CreateLayer(&layer);
-		CheckError(hr);
-		layer_params.opacity = m_progress;
-		rt->PushLayer(layer_params, layer);
-	}
-	rt->DrawBitmap(bitmap);
-	if (this->m_progress < 1.0) {
-		rt->PopLayer();
-	}
-cleanup:
-	SafeRelease(&layer);
-	SafeRelease(&bitmap);
+// Helper function: convert a lib::rect into a polyon (std::vector of lib::points)
+std::vector<lib::point> polygon_from_rect(lib::rect rect) {
+	lib::point right_top = lib::point(rect.right(), rect.top());
+	lib::point left_bottom = lib::point(rect.left(), rect.bottom());
+	std::vector <lib::point> rv = std::vector <lib::point>();
+	rv.push_back(rect.left_top());
+	rv.push_back(right_top);
+	rv.push_back(rect.right_bottom());
+	rv.push_back(left_bottom);
+	return rv;
 }
-
-void
-d2_transition_blitclass_rect::update()
-{
-	gui_window *window = m_dst->get_gui_window();
-	d2_window *cwindow = (d2_window *)window;
-	d2_player* d2_player = cwindow->get_d2_player();
-
-	lib::rect newrect_whole = m_newrect;
-	newrect_whole.translate(m_dst->get_global_topleft());
-	newrect_whole &= m_dst->get_clipped_screen_rect();
-	lib::point LT = newrect_whole.left_top();
-	lib::point RB = newrect_whole.right_bottom();
-	if (newrect_whole.empty())
-		return;
-	D2D1_RECT_F d2_new_rect_f;
-	D2D1_RECT_F d2_full_rect_f;
-	D2D1_SIZE_F d2_full_size_f;
-	ID2D1BitmapRenderTarget* brt = d2_transition_renderer::s_transition_rendertarget;
-	HRESULT hr = brt->EndDraw();
-	CheckError(hr);
-	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
-	d2_new_rect_f = d2_rectf(newrect_whole);
-	d2_full_size_f = brt->GetSize();
-	d2_full_rect_f = D2D1::RectF(0,0,d2_full_size_f.width,d2_full_size_f.height);
-	ID2D1Bitmap* bitmap = NULL;
-#ifdef	AM_DMP
-	d2_player->dump(brt, "rect::update:bmt");
-#endif//AM_DMP
-	hr = brt->GetBitmap(&bitmap);
-	if (SUCCEEDED(hr)) {
-		rt->PushAxisAlignedClip(d2_new_rect_f, D2D1_ANTIALIAS_MODE_ALIASED);
-		rt->DrawBitmap(bitmap,
-						d2_full_rect_f,
-						1.0f,
-						D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
-						d2_full_rect_f);
-		rt->PopAxisAlignedClip();
-		hr = rt->Flush();
-		if (FAILED(hr)) {
-			lib::logger::get_logger()->trace("d2_transition_renderer::blitclass::rect::update: DrawBitmap returns 0x%x", hr);
-		}
-	} // other HRESULT failures ignored, may happen e.g. when bitmap is empty
-
-cleanup:
-	AM_DBG lib::logger::get_logger()->debug("d2_transition_blitclass_rect::update(%f) newrect_whole=(%d,%d),(%d,%d)",m_progress,LT.x,LT.y,RB.x,RB.y);
-
-}
-
-void
-d2_transition_blitclass_r1r2r3r4::update()
-{
-	AM_DBG lib::logger::get_logger()->debug("d2_transition_blitclass_r1r2r3r4::update(%f)", m_progress);
-
-	gui_window *window = m_dst->get_gui_window();
-	d2_window *cwindow = (d2_window *)window;
-	d2_player* d2_player = cwindow->get_d2_player();
-	lib::rect newsrcrect = m_newsrcrect;
-	lib::rect newdstrect = m_newdstrect;
-	lib::rect oldsrcrect = m_oldsrcrect;
-	lib::rect olddstrect = m_olddstrect;
-	ID2D1Layer* layer = NULL;
-	ID2D1Bitmap* bitmap_old = NULL; // bitmap for the "old" stuff
-	ID2D1Bitmap* bitmap_new = NULL; // bitmap for the "new" stuff
-	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
-	D2D1_BITMAP_PROPERTIES props = D2D1::BitmapProperties();
-	D2D1_PIXEL_FORMAT rt_format = rt->GetPixelFormat();
-	D2D1_MATRIX_3X2_F d2_rt_transform, d2_brt_transform;
-	ID2D1BitmapRenderTarget* brt = d2_transition_renderer::s_transition_rendertarget;
-	rt->GetTransform(&d2_rt_transform);
-	brt->GetTransform(&d2_brt_transform);
-	HRESULT hr = brt->EndDraw();
-	CheckError(hr);
-	newsrcrect.translate(m_dst->get_global_topleft());
-	newsrcrect &= m_dst->get_clipped_screen_rect();
-	newdstrect.translate(m_dst->get_global_topleft());
-	newdstrect &= m_dst->get_clipped_screen_rect();
-	oldsrcrect.translate(m_dst->get_global_topleft());
-	oldsrcrect &= m_dst->get_clipped_screen_rect();
-	// compensate for any adjustments made by d2_player::_calc_fit(&xoff, &yoff)
-	oldsrcrect.translate(lib::point((int) d2_rt_transform._31, (int) d2_rt_transform._32));
-	olddstrect.translate(m_dst->get_global_topleft());
-	olddstrect &= m_dst->get_clipped_screen_rect();
-	// Get needed parts of the old and new stuff (as bitmaps) and draw them at their final destinations
-	props.pixelFormat = rt_format;
-	CheckError(hr);
-	// copy the bits of the old stuff to the new destination
-	hr = rt->CreateBitmap(d2_sizeu(oldsrcrect), props, &bitmap_old);
-	CheckError(hr);
-	hr = bitmap_old->CopyFromRenderTarget(NULL, rt, &d2_rectu(oldsrcrect));
-	CheckError(hr);
-	rt->DrawBitmap(bitmap_old, d2_rectf(olddstrect));
-	// copy the bits of the new stuff (from the back bitmap 'brt') to the right spot on screen;
-	// we need to use ID2D1Bitmap::CopyFromRenderTarget, therefore we must create the bitmap
-	// where we put the data into ('bitmap_new') with equal properties as its data source ('brt')
-	props.pixelFormat = brt->GetPixelFormat();
-	FLOAT dpiX = 0.0, dpiY = 0.0;
-	brt->GetDpi(&dpiX, &dpiY);
-	props.dpiX = dpiX;
-	props.dpiY = dpiY;
-	hr = brt->CreateBitmap(d2_sizeu(newsrcrect), props, &bitmap_new);
-	CheckError(hr);
-	hr = bitmap_new->CopyFromRenderTarget(NULL, brt, &d2_rectu(newsrcrect));
-	CheckError(hr);
-	rt->DrawBitmap(bitmap_new, d2_rectf(newdstrect));
-
-cleanup:
-	SafeRelease(&bitmap_old);
-	SafeRelease(&bitmap_new);
-}
-
-void
-d2_transition_blitclass_rectlist::update()
-{
-	AM_DBG lib::logger::get_logger()->debug("cg_transition_blitclass_rectlist::update(%f)", m_progress);
-	gui_window *window = m_dst->get_gui_window();
-	d2_window *cwindow = (d2_window *)window;
-	d2_player* d2_player = cwindow->get_d2_player();
-
-	lib::rect newrect_whole = m_dst->get_rect();
-	newrect_whole.translate(m_dst->get_global_topleft());
-	newrect_whole &= m_dst->get_clipped_screen_rect();
-	lib::point LT = newrect_whole.left_top();
-	lib::point RB = newrect_whole.right_bottom();
-	if (newrect_whole.empty())
-		return;
-	std::vector< lib::rect >::iterator newrect;
-
-	ID2D1BitmapRenderTarget* brt = d2_transition_renderer::s_transition_rendertarget;	
-	HRESULT hr = brt->EndDraw();
-	if (FAILED(hr)) {
-		return;
+// Helper function: convert a std::list of lib::rect into a polyon list (std::list of std::vector of lib::points)
+std::vector<std::vector<lib::point>> polygon_list_from_rect_list(std::vector<lib::rect>* rect_list) {
+	std::vector<std::vector<lib::point>> rv =  std::vector<std::vector<lib::point>>();
+	for (std::vector<lib::rect>::iterator it = rect_list->begin(); it != rect_list->end(); it++) {
+		rv.push_back(polygon_from_rect(*it));
 	}
-	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
-	D2D1_SIZE_F d2_full_size_f = brt->GetSize();
-	D2D1_RECT_F d2_full_rect_f = D2D1::RectF(0,0,d2_full_size_f.width,d2_full_size_f.height);
-	ID2D1Bitmap* bitmap = NULL;
-	hr = brt->GetBitmap(&bitmap);
-	if (FAILED(hr)) {
-		return;
-	}
-#ifdef	AM_DMP
-	d2_player->dump(brt, "rect::update:bmt");
-#endif//AM_DMP
-	for (newrect=m_newrectlist.begin(); newrect != m_newrectlist.end(); newrect++) {
-		lib::rect newrect_whole = *newrect;
-		if (newrect_whole.empty()) {
-			continue;
-		}
-//		is_clipped = true;
-		newrect_whole.translate(m_dst->get_global_topleft());
-		newrect_whole &= m_dst->get_clipped_screen_rect();
-		D2D1_RECT_F d2_new_rect_f = d2_rectf(newrect_whole);
-// Using axis aligened clip is more effecient than using a path, though DrawBitmap is called inside the loop
-		rt->PushAxisAlignedClip(d2_new_rect_f, D2D1_ANTIALIAS_MODE_ALIASED);
-		rt->DrawBitmap(bitmap, d2_full_rect_f, 1.0f, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,	d2_full_rect_f);
-		rt->PopAxisAlignedClip();
-		hr = rt->Flush();
-		if (FAILED(hr)) {
-			lib::logger::get_logger()->trace("d2_transition_renderer::blitclass::rectlist::update: DrawBitmap returns 0x%x", hr);
-			break;
-		}
-	}
-	AM_DBG lib::logger::get_logger()->debug("d2_transition_blitclass_rectlist::update(%f) newrect_whole=(%d,%d),(%d,%d)",m_progress,LT.x,LT.y,RB.x,RB.y);
+	return rv;
 }
 
 // Helper function: add clipping path from the list of polygons
@@ -356,8 +177,9 @@ cleanup:
 	SafeRelease(&sink);
 	return path;
 }
-	
 
+// Helper function: draw the current render target (from 'dst') using 'polyon list' as a clipping path
+// This function does all the work necessary, including the EndDraw() of the bitmap render target (back buffer)
 static void
 _d2_polygon_list_update (common::surface* dst, std::vector< std::vector<lib::point> > polygon_list, bool outtrans, lib::rect whole_rect)
 {
@@ -365,6 +187,8 @@ _d2_polygon_list_update (common::surface* dst, std::vector< std::vector<lib::poi
 	d2_window *cwindow = (d2_window *)window;
 	d2_player* d2_player = cwindow->get_d2_player();
 	const lib::point& dst_global_topleft = dst->get_global_topleft();
+	whole_rect.translate(dst_global_topleft);
+	whole_rect &= dst->get_clipped_screen_rect();
 	
 	ID2D1Layer* layer = NULL;
 	ID2D1PathGeometry* path = NULL;
@@ -398,6 +222,234 @@ cleanup:
 	SafeRelease(&layer);
 	SafeRelease(&path);
 }
+
+void
+d2_transition_blitclass_fade::update()
+{
+	AM_DBG lib::logger::get_logger()->debug("d2_transition_blitclass_fade::update(%f)", m_progress);
+	gui_window *window = m_dst->get_gui_window();
+	d2_window *cwindow = (d2_window *)window;
+	d2_player* d2_player = cwindow->get_d2_player();
+
+	ID2D1Layer* layer = NULL;
+	ID2D1Bitmap* bitmap = NULL;
+	D2D1_LAYER_PARAMETERS layer_params = D2D1::LayerParameters();
+	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
+	ID2D1BitmapRenderTarget* brt = d2_transition_renderer::s_transition_rendertarget;
+	HRESULT hr = brt->EndDraw();
+	CheckError(hr);
+	hr = brt->GetBitmap(&bitmap);
+	CheckError(hr);
+	if (this->m_progress < 1.0) {
+		hr = rt->CreateLayer(&layer);
+		CheckError(hr);
+		layer_params.opacity = this->m_outtrans ? (1.0 - this->m_progress) : this->m_progress;
+		rt->PushLayer(layer_params, layer);
+	}
+	rt->DrawBitmap(bitmap);
+	if (this->m_progress < 1.0) {
+		rt->PopLayer();
+	}
+cleanup:
+	SafeRelease(&layer);
+	SafeRelease(&bitmap);
+}
+
+void
+d2_transition_blitclass_rect::update()
+{
+	AM_DBG lib::logger::get_logger()->debug("d2_transition_blitclass_rect::update(%f)",m_progress);
+	if (this->m_outtrans) {
+		// draw using clipping paths
+		std::vector< lib::rect > rect_list = std::vector< lib::rect >();
+		rect_list.push_back(this->m_newrect);
+		std::vector< std::vector<lib::point> > polygon_list = polygon_list_from_rect_list(&rect_list);
+		_d2_polygon_list_update (m_dst, polygon_list, m_outtrans, m_dst->get_rect());
+	} else {
+		// Using AxisAlignedClip is more efficient than constructing a clipping path
+		gui_window *window = m_dst->get_gui_window();
+		d2_window *cwindow = (d2_window *)window;
+		d2_player* d2_player = cwindow->get_d2_player();
+
+		lib::rect newrect_whole = m_newrect;
+		newrect_whole.translate(m_dst->get_global_topleft());
+		newrect_whole &= m_dst->get_clipped_screen_rect();
+		if (newrect_whole.empty())
+			return;
+		D2D1_RECT_F d2_new_rect_f;
+		D2D1_RECT_F d2_full_rect_f;
+		D2D1_SIZE_F d2_full_size_f;
+		ID2D1BitmapRenderTarget* brt = d2_transition_renderer::s_transition_rendertarget;
+		HRESULT hr = brt->EndDraw();
+		if (FAILED(hr)) {
+			return;
+		}
+		ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
+		d2_new_rect_f = d2_rectf(newrect_whole);
+		d2_full_size_f = brt->GetSize();
+		d2_full_rect_f = D2D1::RectF(0,0,d2_full_size_f.width,d2_full_size_f.height);
+		ID2D1Bitmap* bitmap = NULL;
+#ifdef	AM_DMP
+		d2_player->dump(brt, "rect::update:bmt");
+#endif//AM_DMP
+		hr = brt->GetBitmap(&bitmap);
+		if (SUCCEEDED(hr)) {
+			rt->PushAxisAlignedClip(d2_new_rect_f, D2D1_ANTIALIAS_MODE_ALIASED);
+			rt->DrawBitmap(bitmap,
+							d2_full_rect_f,
+							1.0f,
+							D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
+							d2_full_rect_f);
+			rt->PopAxisAlignedClip();
+			hr = rt->Flush();
+			if (FAILED(hr)) {
+				lib::logger::get_logger()->trace("d2_transition_renderer::blitclass::rect::update: DrawBitmap returns 0x%x", hr);
+			}
+		}  // otherwise HRESULT failure is ignored, may happen e.g. when bitmap is empty
+	}
+}
+
+void
+d2_transition_blitclass_r1r2r3r4::update()
+{
+	AM_DBG lib::logger::get_logger()->debug("d2_transition_blitclass_r1r2r3r4::update(%f)", m_progress);
+
+	gui_window *window = m_dst->get_gui_window();
+	d2_window *cwindow = (d2_window *)window;
+	d2_player* d2_player = cwindow->get_d2_player();
+	lib::rect newsrcrect = m_newsrcrect;
+	lib::rect newdstrect = m_newdstrect;
+	lib::rect oldsrcrect = m_oldsrcrect;
+	lib::rect olddstrect = m_olddstrect;
+//	if( oldsrcrect.empty() || newsrcrect.empty() || olddstrect.empty() || newdstrect.empty()) {
+//		return;
+//	}
+	ID2D1Layer* layer = NULL;
+	ID2D1Bitmap* bitmap_old = NULL; // bitmap for the "old" stuff
+	ID2D1Bitmap* bitmap_new = NULL; // bitmap for the "new" stuff
+	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
+	D2D1_BITMAP_PROPERTIES props = D2D1::BitmapProperties();
+	D2D1_MATRIX_3X2_F d2_rt_transform;
+	ID2D1BitmapRenderTarget* brt = d2_transition_renderer::s_transition_rendertarget;
+	ID2D1RenderTarget* dst_rt = rt, *old_rt = rt, *new_rt = brt;
+	rt->GetTransform(&d2_rt_transform);
+	HRESULT hr = brt->EndDraw();
+	CheckError(hr);
+
+	newsrcrect.translate(m_dst->get_global_topleft());
+	newsrcrect &= m_dst->get_clipped_screen_rect();
+	newdstrect.translate(m_dst->get_global_topleft());
+	newdstrect &= m_dst->get_clipped_screen_rect();
+	oldsrcrect.translate(m_dst->get_global_topleft());
+	oldsrcrect &= m_dst->get_clipped_screen_rect();
+	olddstrect.translate(m_dst->get_global_topleft());
+	olddstrect &= m_dst->get_clipped_screen_rect();
+	// Get needed parts of the old and new stuff (as bitmaps) and draw them at their final destinations
+	if (this->m_outtrans) {
+		// exchange "old" and "new" rects
+		lib::rect tmp_rect;
+		tmp_rect = oldsrcrect;
+		oldsrcrect = newsrcrect;
+		newsrcrect = tmp_rect;
+		tmp_rect = olddstrect;
+		olddstrect = newdstrect;
+		newdstrect = tmp_rect;
+	}
+	// compensate for any adjustments made by d2_player::_calc_fit(&xoff, &yoff)		
+	oldsrcrect.translate(lib::point((int) d2_rt_transform._31, (int) d2_rt_transform._32));
+#ifdef	AM_DMP
+		d2_player->dump(old_rt, "old");
+#endif//AM_DMP
+#ifdef	AM_DMP
+		d2_player->dump(new_rt, "new");
+#endif//AM_DMP	// copy the bits of the old stuff to the new destination
+	// we need to use ID2D1Bitmap::CopyFromRenderTarget, therefore we must create the bitmap
+	// where we put the data into ('bitmap_new') with equal properties as its data source ('old_rt')
+	old_rt->GetDpi(&props.dpiX, &props.dpiY);
+	props.pixelFormat = old_rt->GetPixelFormat();
+	hr = old_rt->CreateBitmap(d2_sizeu(oldsrcrect), props, &bitmap_old);
+	CheckError(hr);
+	hr = bitmap_old->CopyFromRenderTarget(NULL, old_rt, &d2_rectu(oldsrcrect));
+	CheckError(hr);
+	dst_rt->DrawBitmap(bitmap_old, d2_rectf(olddstrect));
+	// copy the bits of the new stuff (from the back bitmap 'brt') to the right spot on screen;
+	props.pixelFormat = new_rt->GetPixelFormat();
+	new_rt->GetDpi(&props.dpiX, &props.dpiY);
+	hr = new_rt->CreateBitmap(d2_sizeu(newsrcrect), props, &bitmap_new);
+	CheckError(hr);
+	hr = bitmap_new->CopyFromRenderTarget(NULL, new_rt, &d2_rectu(newsrcrect));
+	CheckError(hr);
+	dst_rt->DrawBitmap(bitmap_new, d2_rectf(newdstrect));
+	hr = dst_rt->Flush();
+#ifdef	AM_DMP
+		d2_player->dump(dst_rt, "dst");
+#endif//AM_DMP
+cleanup:
+	SafeRelease(&bitmap_old);
+	SafeRelease(&bitmap_new);
+}
+
+void
+d2_transition_blitclass_rectlist::update()
+{
+	AM_DBG lib::logger::get_logger()->debug("cg_transition_blitclass_rectlist::update(%f)", m_progress);
+	if (this->m_outtrans) {
+		// draw using clipping paths
+		std::vector< std::vector<lib::point> > polygon_list = polygon_list_from_rect_list(&this->m_newrectlist);
+		_d2_polygon_list_update (m_dst, polygon_list, m_outtrans, m_dst->get_rect());
+	} else {
+// Using axis aligened clip is more effecient than using a path, though DrawBitmap is called inside a loop
+		gui_window *window = m_dst->get_gui_window();
+		d2_window *cwindow = (d2_window *)window;
+		d2_player* d2_player = cwindow->get_d2_player();
+
+		lib::rect newrect_whole = m_dst->get_rect();
+		newrect_whole.translate(m_dst->get_global_topleft());
+		newrect_whole &= m_dst->get_clipped_screen_rect();
+		lib::point LT = newrect_whole.left_top();
+		lib::point RB = newrect_whole.right_bottom();
+		if (newrect_whole.empty())
+			return;
+		std::vector< lib::rect >::iterator newrect;
+			
+		ID2D1BitmapRenderTarget* brt = d2_transition_renderer::s_transition_rendertarget;	
+		HRESULT hr = brt->EndDraw();
+		if (FAILED(hr)) {
+			return;
+		}
+		ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
+		D2D1_SIZE_F d2_full_size_f = brt->GetSize();
+		D2D1_RECT_F d2_full_rect_f = D2D1::RectF(0,0,d2_full_size_f.width,d2_full_size_f.height);
+		ID2D1Bitmap* bitmap = NULL;
+		hr = brt->GetBitmap(&bitmap);
+		if (FAILED(hr)) {
+			return;
+		}
+#ifdef	AM_DMP
+		d2_player->dump(brt, "rect::update:bmt");
+#endif//AM_DMP
+		for (newrect=m_newrectlist.begin(); newrect != m_newrectlist.end(); newrect++) {
+			lib::rect newrect_whole = *newrect;
+			if (newrect_whole.empty()) {
+				continue;
+			}
+//			is_clipped = true;
+			newrect_whole.translate(m_dst->get_global_topleft());
+			newrect_whole &= m_dst->get_clipped_screen_rect();
+			D2D1_RECT_F d2_new_rect_f = d2_rectf(newrect_whole);
+			rt->PushAxisAlignedClip(d2_new_rect_f, D2D1_ANTIALIAS_MODE_ALIASED);
+			rt->DrawBitmap(bitmap, d2_full_rect_f, 1.0f, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,	d2_full_rect_f);
+			rt->PopAxisAlignedClip();
+			hr = rt->Flush();
+			if (FAILED(hr)) {
+				lib::logger::get_logger()->trace("d2_transition_renderer::blitclass::rectlist::update: DrawBitmap returns 0x%x", hr);
+				break;
+			}
+		}
+		AM_DBG lib::logger::get_logger()->debug("d2_transition_blitclass_rectlist::update(%f) newrect_whole=(%d,%d),(%d,%d)",m_progress,LT.x,LT.y,RB.x,RB.y);
+	}
+}
+	
 
 void
 d2_transition_blitclass_poly::update()

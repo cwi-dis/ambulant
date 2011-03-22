@@ -594,8 +594,9 @@ gui::d2::d2_player::_capture_bitmap(lib::rect r, ID2D1RenderTarget *src_rt, ID2D
 //	D2D1_RECT_U src_rect = { r.left(), r.top(), r.left()+src_size.width, r.top()+src_size.height };
 	ID2D1Bitmap *bitmap;
 	D2D1_BITMAP_PROPERTIES props = D2D1::BitmapProperties();
-	D2D1_PIXEL_FORMAT rt_format = dst_rt->GetPixelFormat();
+	D2D1_PIXEL_FORMAT rt_format = src_rt->GetPixelFormat();
 	props.pixelFormat = rt_format;
+	src_rt->GetDpi(&props.dpiX, &props.dpiY);
 	hr = dst_rt->CreateBitmap(src_size, props, &bitmap);
 	if (!SUCCEEDED(hr)) {
 		lib::win32::win_trace_error("capture: CreateBitmap", hr);
@@ -1134,6 +1135,7 @@ gui::d2::d2_player::dump(ID2D1RenderTarget* rt, std::string id) {
 	hr = m_WICFactory->CreateStream(&wicStream);
 	CheckError(hr);
 	hr = wicStream->InitializeFromFilename(wide_cstr_filename, GENERIC_WRITE);
+	CheckError(hr);
 	hr = m_WICFactory->CreateEncoder(GUID_ContainerFormatPng, NULL, &wicBitmapEncoder);
 	CheckError(hr);
 	hr = wicBitmapEncoder->Initialize(wicStream, WICBitmapEncoderNoCache);
