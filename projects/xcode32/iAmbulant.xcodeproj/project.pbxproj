@@ -27,6 +27,7 @@
 		044BAF6D12CD4C3E00EDBF56 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 044BAF6C12CD4C3E00EDBF56 /* MainWindow-iPad.xib */; };
 		0473F42D12C10289004F23C4 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 0473F42C12C10289004F23C4 /* Default.png */; };
 		0483912212BEC681002260A6 /* ITunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 0483912112BEC681002260A6 /* ITunesArtwork */; };
+		048503E3133B5BF4006CE724 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 048503E2133B5BF4006CE724 /* Icon-72.png */; };
 		04B75CFD12B80B9800161EB5 /* EditViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75CEC12B80B9800161EB5 /* EditViewController.mm */; };
 		04B75CFE12B80B9800161EB5 /* PresentationViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04B75CF012B80B9800161EB5 /* PresentationViewController.mm */; };
 		04B75CFF12B80B9800161EB5 /* Presentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 04B75CF212B80B9800161EB5 /* Presentation.m */; };
@@ -130,6 +131,7 @@
 		044BAF6C12CD4C3E00EDBF56 /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "../../src/player_iphone/Resources/MainWindow-iPad.xib"; sourceTree = SOURCE_ROOT; };
 		0473F42C12C10289004F23C4 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = ../../src/player_iphone/Default.png; sourceTree = SOURCE_ROOT; };
 		0483912112BEC681002260A6 /* ITunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; name = ITunesArtwork; path = ../../src/player_iphone/ITunesArtwork; sourceTree = SOURCE_ROOT; };
+		048503E2133B5BF4006CE724 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "../../src/player_iphone/Icon-72.png"; sourceTree = SOURCE_ROOT; };
 		04B75CEC12B80B9800161EB5 /* EditViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = EditViewController.mm; path = ../../src/player_iphone/Classes/EditViewController.mm; sourceTree = SOURCE_ROOT; };
 		04B75CED12B80B9800161EB5 /* EditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EditViewController.h; path = ../../src/player_iphone/Classes/EditViewController.h; sourceTree = SOURCE_ROOT; };
 		04B75CEE12B80B9800161EB5 /* PlaylistAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlaylistAppDelegate.h; path = ../../src/player_iphone/Classes/PlaylistAppDelegate.h; sourceTree = SOURCE_ROOT; };
@@ -365,6 +367,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				048503E2133B5BF4006CE724 /* Icon-72.png */,
 				0473F42C12C10289004F23C4 /* Default.png */,
 				0483912112BEC681002260A6 /* ITunesArtwork */,
 				041E94CB12B816EE00399893 /* Entitlements.plist */,
@@ -373,8 +376,8 @@
 				04B75D0712B80C0300161EB5 /* favorites.png */,
 				04B75D0912B80C0300161EB5 /* AmbulantHelp-iOS.html */,
 				04B75D0A12B80C0300161EB5 /* EditViewController.xib */,
-				04B75D0B12B80C0300161EB5 /* EditIcon-30x30.png */,
 				04B75D0C12B80C0300161EB5 /* InfoIcon-60x60.png */,
+				04B75D0B12B80C0300161EB5 /* EditIcon-30x30.png */,
 				04B75D0D12B80C0300161EB5 /* HelpIcon-30x30.png */,
 				04B75D0E12B80C0300161EB5 /* ToolsIcon-30x30.png */,
 				04B75D0F12B80C0300161EB5 /* Background_iPhone.png */,
@@ -532,6 +535,7 @@
 				0473F42D12C10289004F23C4 /* Default.png in Resources */,
 				0409070C12CB9375007B9D84 /* Welcome.smil in Resources */,
 				044BAF6D12CD4C3E00EDBF56 /* MainWindow-iPad.xib in Resources */,
+				048503E3133B5BF4006CE724 /* Icon-72.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
