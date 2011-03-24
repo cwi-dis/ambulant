@@ -50,7 +50,7 @@
 -->
 <UserMacro Name="xulrunner_dir" Value="..\..\third_party_packages\xulrunner-sdk" PerformEnvironmentSet="true"/>
 <UserMacro Name="firefox_plugin_dir" Value="C:\Program Files\Mozilla Firefox\plugins\" PerformEnvironmentSet="true"/>
-<UserMacro Name="zip_executable" Value="E:\ufs\jack\bin\zip.exe" PerformEnvironmentSet="true"/>
+<UserMacro Name="zip7_executable" Value="C:\Program Files\7-Zip\7z.exe" PerformEnvironmentSet="true"/>
 <!--
 	The next one is only needed if you want to build pyambulant (the glue
 	that allows you to use ambulant from within Python) or plugin_python
