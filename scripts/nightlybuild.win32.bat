@@ -4,11 +4,16 @@ rem  Windows version
 rem 
 
 rem
+rem NOTES ON THINGS THIS SCRIPT NEEDS, BUT WHICH ARE NOT CHECKED
+rem
 rem Add the following to your mercurial.ini file:
 rem [ui]
 rem username = Jack Jansen <Jack.Jansen@cwi.nl>
 rem ssh = "TortoisePlink.exe" -ssh -2 -i "C:\Users\Jack\Documents\Putty Keys\id_dsa.ppk"
 rem
+rem Make sure your data format (Region and Language control panel) is M/d/yyyy
+rem
+rem Cabarc should live in a folder up one level from where this script runs
 
 set
 
