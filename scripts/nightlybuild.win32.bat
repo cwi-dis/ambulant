@@ -13,7 +13,7 @@ rem ssh = "TortoisePlink.exe" -ssh -2 -i "C:\Users\Jack\Documents\Putty Keys\id_
 rem
 rem Make sure your data format (Region and Language control panel) is M/d/yyyy
 rem
-rem Cabarc should live in a folder up one level from where this script runs
+rem Cabarc should live in a folder bin\Cabarc\bin\Cabarc.exe from where this script runs
 
 set
 
@@ -43,7 +43,7 @@ set HGCLONEPRIVARGS="ssh://hg@ambulantplayer.org/hgpriv/ambulant-private"
 set CHECKOUTPRIVARGS=-P
 set BUILDHOME="%USERPROFILE%\Documents\AmbulantNightly"
 rem XP US/UK: set TODAY=%date:~-4%%date:~4,2%%date:~7,2%
-set TODAY=%date:~-4%%date:~-7,2%%date:~-10,2%
+set TODAY=%date:~-4%%date:~-10,2%%date:~-7,2%
 set Win7 Jack: TODAY=%date%
 set VERSIONSUFFIX=.%TODAY%
 set BUILDDIR=build-%TODAY%
