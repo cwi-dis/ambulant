@@ -13,7 +13,7 @@ TODAY=`date +%Y%m%d`
 BUILDDIR=ambulant-iphone-build-$TODAY
 DESTDIR=ambulant-iphone-install-$TODAY
 VERSIONSUFFIX=.$TODAY
-DESTINATION=sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds/iPhone/
+DESTINATION=sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds/iphone/
 
 echo nightly to stderr >&2
 echo nightly to stdout
