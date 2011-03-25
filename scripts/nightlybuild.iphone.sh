@@ -52,7 +52,6 @@ xcodebuild -project iAmbulant.xcodeproj \
 	-target iAmbulant \
 	-configuration Distribution \
 	-sdk iphoneos4.2 \
-	AMBULANT_BUILDDIR=$BUILDHOME/$BUILDDIR \
 	build
 ##	DSTROOT=$BUILDHOME/$DESTDIR \
 ##	INSTALL_PATH=/Applications \
