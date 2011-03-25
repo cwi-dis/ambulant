@@ -53,7 +53,6 @@ xcodebuild -project iAmbulant.xcodeproj \
 	-configuration Distribution \
 	-sdk iphoneos4.2 \
 	AMBULANT_BUILDDIR=$BUILDHOME/$BUILDDIR \
-	AMBULANT_3PP=$BUILDHOME/$BUILDDIR/build-iOS-Fat/third_party_packages \
 	build
 ##	DSTROOT=$BUILDHOME/$DESTDIR \
 ##	INSTALL_PATH=/Applications \
