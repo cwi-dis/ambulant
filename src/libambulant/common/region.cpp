@@ -257,14 +257,17 @@ surface_impl::redraw(const lib::rect &r, gui_window *window)
 		AM_DBG lib::logger::get_logger()->debug("surface_impl.redraw(0x%x %s) ->renderer 0x%x", (void *)this, m_name.c_str(), (void *)(*ar));
 		(*ar)->redraw(our_rect, window);
 	}
-
+	zindex_t last_z_index = -1;
 	// Draw active subregions in reverse activation order and in the correct z-order
 	for(children_map_t::iterator it1=m_subregions.begin();it1!=m_subregions.end();it1++) {
 		children_list_t& cl = (*it1).second;
 		for(children_list_t::iterator it2=cl.begin();it2!=cl.end();it2++) {
 
-			AM_DBG lib::logger::get_logger()->debug("surface_impl.redraw(0x%x %s) ->subregion 0x%x", (void *)this, m_name.c_str(), (void *)(*it2));
 			const region_info *ri = (*it2)->get_info();
+			zindex_t z = ri->get_zindex();
+			AM_DBG lib::logger::get_logger()->debug("surface_impl.redraw(0x%x %s) ->subregion 0x%x (z=%d)", (void *)this, m_name.c_str(), (void *)(*it2), z);
+			if (z < last_z_index)
+				lib::logger::get_logger()->debug("surface_impl.redraw(0x%x %s): Error: z-index %d for subregion 0x%x below previous z-index",  (void *)this, m_name.c_str(), z, (void *)(*it2));
 			if (ri && !ri->is_subregion()) {
 				AM_DBG lib::logger::get_logger()->debug("surface_impl.redraw(0x%x): subregion 0x%x is not a subregion", (void*)this, (void*)(*it2));
 				//(*it2)->redraw(our_rect, window);
@@ -275,14 +278,17 @@ surface_impl::redraw(const lib::rect &r, gui_window *window)
 
 	// Then the children regions of this
 	// XXXX Should go per z-order value
-
+	last_z_index = -1;
 	for(children_map_t::iterator it2=m_active_children.begin();it2!=m_active_children.end();it2++) {
 		AM_DBG lib::logger::get_logger()->debug("surface_impl.redraw(0x%x %s) examining next z-order list", (void*)this, m_name.c_str());
 		children_list_t& cl = (*it2).second;
 		for(children_list_t::iterator it3=cl.begin();it3!=cl.end();it3++) {
 			const region_info *ri = (*it3)->get_info();
 			if(!ri || !ri->is_subregion()) {
-				AM_DBG lib::logger::get_logger()->debug("surface_impl.redraw(0x%x %s) -> child 0x%x", (void *)this, m_name.c_str(), (void *)(*it3));
+				zindex_t z = ri->get_zindex();
+				AM_DBG lib::logger::get_logger()->debug("surface_impl.redraw(0x%x %s) ->child region 0x%x (z=%d)", (void *)this, m_name.c_str(), (void *)(*it3), z);
+				if (z < last_z_index)
+					lib::logger::get_logger()->debug("surface_impl.redraw(0x%x %s): Error: z-index %d for child region 0x%x below previous z-index",  (void *)this, m_name.c_str(), z, (void *)(*it3));
 				(*it3)->redraw(our_rect, window);
 			}
 		}
