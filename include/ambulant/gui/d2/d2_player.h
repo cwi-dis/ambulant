@@ -46,7 +46,7 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/net/url.h"
 #include "ambulant/gui/dx/html_bridge.h"
-//#include "ambulant/gui/d2/d2_playable.h"
+#include "ambulant/smil2/transition.h"
 
 #if _MSC_VER == 1500
 // This is a workaround for a bug in VS2008/MSSDK, where installation
@@ -62,17 +62,11 @@ namespace std {
 }
 #endif 
 
-interface ID2D1Factory;
-interface ID2D1BitmapRenderTarget;
-interface ID2D1HwndRenderTarget;
-interface ID2D1RenderTarget;
-interface ID2D1Bitmap;
-interface IWICBitmap;
+#include <d2d1.h>
 #include <wincodec.h>
-//interface IWICImagingFactory;
-//interface IWICStream;
 #define SafeRelease(x) if(x!=NULL){if(*x!=NULL){(*x)->Release();*x=NULL;}}
 #define CheckError(x) if(FAILED(x))goto cleanup;
+#define OnErrorGoto_cleanup(x,id) if(FAILED(x)) {ambulant::lib::win32::win_trace_error(id, x); goto cleanup;}
 
 namespace ambulant {
 
@@ -197,6 +191,12 @@ class AMBULANTAPI d2_player :
 	void start_outtransition(common::playable *p, const lib::transition_info *info);
 //	void set_transition_surface(common::surface* surf) { m_transition_surface = surf; }
 
+	// Full screen transition support
+	void start_screen_transition(bool outtrans);
+	void end_screen_transition();
+	void screen_transition_step(smil2::transition_engine* engine, lib::transition_info::time_type now);
+	void select_transition_rendertarget(ID2D1BitmapRenderTarget* bmrt) { this->m_transition_rendertarget = bmrt; }
+
 	void lock_redraw();
 	void unlock_redraw();
 
@@ -218,6 +218,7 @@ class AMBULANTAPI d2_player :
 
 	// Get current rendertarget, used while redrawing transitions
 	ID2D1HwndRenderTarget* get_rendertarget() {return m_cur_wininfo ? m_cur_wininfo->m_rendertarget : NULL; }
+	ID2D1BitmapRenderTarget* get_transition_rendertarget() {return m_transition_rendertarget; }
 	// Get current hwnd, only valid while redrawing
 	HWND get_hwnd() {
 		return m_cur_wininfo?m_cur_wininfo->m_hwnd:_get_main_window();
@@ -256,6 +257,18 @@ class AMBULANTAPI d2_player :
 	bool _has_transitions() const;
 	d2_transition *_get_transition(common::playable *p);
 	d2_transition *_set_transition(common::playable *p, const lib::transition_info *info, bool is_outtransition);
+	ID2D1RenderTarget* m_rendertarget;
+	ID2D1BitmapRenderTarget* m_transition_rendertarget;
+
+	// full screen transitions
+	int m_fullscreen_count;
+	smil2::transition_engine* m_fullscreen_engine;
+	lib::transition_info::time_type m_fullscreen_now;
+	bool m_fullscreen_outtrans;
+	bool m_fullscreen_ended;
+	ID2D1Bitmap* _get_bitmap_from_render_target(ID2D1RenderTarget* rt, const D2D1_RECT_U d2_rect);
+	void _screenTransitionPreRedraw();
+	void _screenTransitionPostRedraw(lib::rect* r);
 
 	// Capturing screen output
 	ID2D1Bitmap *_capture_bitmap(lib::rect r, ID2D1RenderTarget *src_rt, ID2D1RenderTarget *dst_rt);

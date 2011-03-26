@@ -43,6 +43,10 @@ namespace gui {
 
 namespace d2 {
 
+inline D2D1_RECT_F d2_rectf(lib::rect r) {
+	return D2D1::RectF((float) r.left(), (float) r.top(), (float) r.right(), (float) r.bottom());
+}
+
 extern const char d2_fill_playable_tag[] = "brush";
 extern const char d2_fill_playable_renderer_uri[] = AM_SYSTEM_COMPONENT("RendererDirect2D");
 extern const char d2_fill_playable_renderer_uri2[] = AM_SYSTEM_COMPONENT("RendererFill");
@@ -92,6 +96,9 @@ d2_fill_renderer::start(double where)
 void
 d2_fill_renderer::redraw_body(const rect &dirty, gui_window *window, ID2D1RenderTarget* rt)
 {
+	assert(rt);
+	if (rt == NULL)
+		return;
 	recreate_d2d();
 	if (m_brush == NULL) return;
 	m_lock.enter();
@@ -108,7 +115,7 @@ d2_fill_renderer::redraw_body(const rect &dirty, gui_window *window, ID2D1Render
 	assert(rt);
 	if (rt == NULL)
 		return;
-	D2D1_RECT_F rr = D2D1::RectF(dstrect_whole.left(), dstrect_whole.top(), dstrect_whole.right(), dstrect_whole.bottom());
+	D2D1_RECT_F rr = d2_rectf(dstrect_whole);
 	rt->FillRectangle(rr, m_brush);
 	m_lock.leave();
 }
@@ -181,7 +188,7 @@ d2_background_renderer::redraw(const lib::rect &dirty, common::gui_window *windo
 	ID2D1RenderTarget *rt = m_d2player->get_rendertarget();
 	assert(rt);
 //	D2D1_RECT_F rr = D2D1::RectF(dstrect_whole.left(), dstrect_whole.top(), dstrect_whole.right(), dstrect_whole.bottom());
-	D2D1_RECT_F rr = D2D1::RectF(dstrect.left(), dstrect.top(), dstrect.right(), dstrect.bottom());
+	D2D1_RECT_F rr = d2_rectf(dstrect);
 	rt->FillRectangle(rr, m_brush);
 #ifdef D2D_NOTYET
 	if (m_bgimage) {

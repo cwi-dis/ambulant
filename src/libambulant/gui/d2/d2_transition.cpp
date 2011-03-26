@@ -134,8 +134,31 @@ std::vector<std::vector<lib::point>> polygon_list_from_rect_list(std::vector<lib
 	return rv;
 }
 
+// Helper function: create a bitmap with the contents of a rendertarger
+ID2D1Bitmap*
+BitmapFromRenderTarget(ID2D1RenderTarget* rt, D2D1_RECT_F rect_f)
+{
+	ID2D1Bitmap* bitmap = NULL; // bitmap for the "new" stuff
+	D2D1_BITMAP_PROPERTIES props = D2D1::BitmapProperties();
+	// we need to use ID2D1Bitmap::CopyFromRenderTarget, therefore we must create the bitmap
+	// where we put the data into ('bitmap_new') with equal properties as its data source ('old_rt')
+	rt->GetDpi(&props.dpiX, &props.dpiY);
+	props.pixelFormat = rt->GetPixelFormat();
+	D2D1_RECT_U rect = D2D1::RectU((UINT)rect_f.left,(UINT)rect_f.top,(UINT)rect_f.right,(UINT)rect_f.bottom); 
+	D2D1_SIZE_U size = D2D1::SizeU(rect.right-rect.left, rect.bottom-rect.top);
+	HRESULT hr = rt->CreateBitmap(size, props, &bitmap);
+	OnErrorGoto_cleanup(hr,"d2_transition_blitclass_r1r2r3r4 old_rt->CreateBitmap");
+	// copy the bits of the old stuff (from 'old_rt') to the new destination
+	hr = bitmap->CopyFromRenderTarget(NULL, rt, &rect);
+	OnErrorGoto_cleanup(hr,"d2_transition_blitclass_r1r2r3r4 bitmap_old->CopyFromRenderTarget");
+	return bitmap;
+cleanup:
+	SafeRelease(&bitmap);
+	return NULL;
+}
+
 // Helper function: add clipping path from the list of polygons
-static ID2D1PathGeometry*
+ID2D1PathGeometry*
 path_from_polygon_list(ID2D1Factory* factory, const lib::point& origin, std::vector< std::vector<lib::point> > polygon_list, bool outtrans, lib::rect whole_rect)
 {
 	ID2D1PathGeometry* path = NULL;
@@ -145,9 +168,9 @@ path_from_polygon_list(ID2D1Factory* factory, const lib::point& origin, std::vec
 	std::vector<lib::point>::iterator newpoint_p;
 
 	HRESULT hr = factory->CreatePathGeometry(&path);
-	CheckError(hr);
+	OnErrorGoto_cleanup(hr, "path_from_polygon_list() factory->CreatePathGeometry");
 	hr = path->Open(&sink);
-	CheckError(hr);
+	OnErrorGoto_cleanup(hr, "path_from_polygon_list path->Open");
 	sink->SetFillMode(D2D1_FILL_MODE_WINDING);
 	if (outtrans) {
 		add_counter_clockwise_rect(sink, d2_rectu(whole_rect));
@@ -172,6 +195,7 @@ path_from_polygon_list(ID2D1Factory* factory, const lib::point& origin, std::vec
 		sink->EndFigure(D2D1_FIGURE_END_CLOSED);
 	}
 	hr = sink->Close();
+	OnErrorGoto_cleanup(hr, "path_from_polygon_list path->Close");
 
 cleanup:
 	SafeRelease(&sink);
@@ -194,20 +218,23 @@ _d2_polygon_list_update (common::surface* dst, std::vector< std::vector<lib::poi
 	ID2D1PathGeometry* path = NULL;
 	D2D1_RECT_F d2_full_rect_f = D2D1::RectF();
 	D2D1_SIZE_F d2_full_size_f = D2D1::SizeF();
-	ID2D1BitmapRenderTarget* brt = d2_transition_renderer::s_transition_rendertarget;
+	ID2D1BitmapRenderTarget* brt = d2_player->get_transition_rendertarget();
 	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
+	if (brt == NULL || rt == NULL) {
+		return; // nothing to do
+	}
 	HRESULT hr = rt->CreateLayer(&layer);
 	if (FAILED(hr)) {
 		lib::logger::get_logger()->trace("d2_transition_renderer::blitclass::polygon[list]::update: CreateLayer returns 0x%x", hr);
 	}
-	CheckError(hr);
+	OnErrorGoto_cleanup(hr, "_d2_polygon_list_update()  rt->CreateLayer");
 	hr = brt->EndDraw();
-	CheckError(hr);
+	OnErrorGoto_cleanup(hr, "_d2_polygon_list_update()  brt->EndDraw()");
 	d2_full_size_f = brt->GetSize();
 	d2_full_rect_f = D2D1::RectF(0,0,d2_full_size_f.width,d2_full_size_f.height);
 	ID2D1Bitmap* bitmap = NULL;
 	hr = brt->GetBitmap(&bitmap);
-	CheckError(hr);
+	OnErrorGoto_cleanup(hr, "_d2_polygon_list_update() brt->GetBitmap()");
 
 	path = path_from_polygon_list(d2_player->get_D2D1Factory(), dst_global_topleft, polygon_list, outtrans, whole_rect);
 
@@ -215,9 +242,8 @@ _d2_polygon_list_update (common::surface* dst, std::vector< std::vector<lib::poi
 	rt->DrawBitmap(bitmap, d2_full_rect_f, 1.0f, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,	d2_full_rect_f);
 	rt->PopLayer();
 	hr = rt->Flush();
-	if (FAILED(hr)) {
-		lib::logger::get_logger()->trace("d2_transition_renderer::blitclass::polygon[list]::update: DrawBitmap returns 0x%x", hr);
-	}
+	OnErrorGoto_cleanup(hr, "_d2_polygon_list_update() rt->Flush()");
+
 cleanup:
 	SafeRelease(&layer);
 	SafeRelease(&path);
@@ -237,12 +263,14 @@ d2_transition_blitclass_fade::update()
 	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
 	ID2D1BitmapRenderTarget* brt = d2_transition_renderer::s_transition_rendertarget;
 	HRESULT hr = brt->EndDraw();
-	CheckError(hr);
+	OnErrorGoto_cleanup(hr, "d2_transition_blitclass_fade::update()  brt->EndDraw");
 	hr = brt->GetBitmap(&bitmap);
-	CheckError(hr);
+	if (bitmap == NULL) {
+		goto cleanup;
+	}
 	if (this->m_progress < 1.0) {
 		hr = rt->CreateLayer(&layer);
-		CheckError(hr);
+		OnErrorGoto_cleanup(hr, "d2_transition_blitclass_fade::update()  rt->CreateLayer");
 		layer_params.opacity = this->m_outtrans ? (1.0 - this->m_progress) : this->m_progress;
 		rt->PushLayer(layer_params, layer);
 	}
@@ -292,14 +320,15 @@ d2_transition_blitclass_rect::update()
 #ifdef	AM_DMP
 		d2_player->dump(brt, "rect::update:bmt");
 #endif//AM_DMP
+//X		bitmap = BitmapFromRenderTarget(brt, d2_full_rect_f);
 		hr = brt->GetBitmap(&bitmap);
 		if (SUCCEEDED(hr)) {
 			rt->PushAxisAlignedClip(d2_new_rect_f, D2D1_ANTIALIAS_MODE_ALIASED);
 			rt->DrawBitmap(bitmap,
-							d2_full_rect_f,
-							1.0f,
-							D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
-							d2_full_rect_f);
+					d2_full_rect_f,
+					1.0f,
+					D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
+					d2_full_rect_f);
 			rt->PopAxisAlignedClip();
 			hr = rt->Flush();
 			if (FAILED(hr)) {
@@ -321,10 +350,7 @@ d2_transition_blitclass_r1r2r3r4::update()
 	lib::rect newdstrect = m_newdstrect;
 	lib::rect oldsrcrect = m_oldsrcrect;
 	lib::rect olddstrect = m_olddstrect;
-//	if( oldsrcrect.empty() || newsrcrect.empty() || olddstrect.empty() || newdstrect.empty()) {
-//		return;
-//	}
-	ID2D1Layer* layer = NULL;
+
 	ID2D1Bitmap* bitmap_old = NULL; // bitmap for the "old" stuff
 	ID2D1Bitmap* bitmap_new = NULL; // bitmap for the "new" stuff
 	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
@@ -334,7 +360,7 @@ d2_transition_blitclass_r1r2r3r4::update()
 	ID2D1RenderTarget* dst_rt = rt, *old_rt = rt, *new_rt = brt;
 	rt->GetTransform(&d2_rt_transform);
 	HRESULT hr = brt->EndDraw();
-	CheckError(hr);
+	OnErrorGoto_cleanup(hr, "d2_transition_blitclass_r1r2r3r4() brt->EndDraw()");
 
 	newsrcrect.translate(m_dst->get_global_topleft());
 	newsrcrect &= m_dst->get_clipped_screen_rect();
@@ -346,7 +372,7 @@ d2_transition_blitclass_r1r2r3r4::update()
 	olddstrect &= m_dst->get_clipped_screen_rect();
 	// Get needed parts of the old and new stuff (as bitmaps) and draw them at their final destinations
 	if (this->m_outtrans) {
-		// exchange "old" and "new" rects, but not the rendered stuff
+		// exchange "old" and "new" rects, but not the render targets
 		lib::rect tmp_rect;
 		tmp_rect = oldsrcrect;
 		oldsrcrect = newsrcrect;
@@ -369,21 +395,22 @@ d2_transition_blitclass_r1r2r3r4::update()
 	old_rt->GetDpi(&props.dpiX, &props.dpiY);
 	props.pixelFormat = old_rt->GetPixelFormat();
 	hr = old_rt->CreateBitmap(d2_sizeu(oldsrcrect), props, &bitmap_old);
-	CheckError(hr);
+	OnErrorGoto_cleanup(hr,"d2_transition_blitclass_r1r2r3r4 old_rt->CreateBitmap");
 	// copy the bits of the old stuff (from 'old_rt') to the new destination
 	hr = bitmap_old->CopyFromRenderTarget(NULL, old_rt, &d2_rectu(oldsrcrect));
-	CheckError(hr);
+	OnErrorGoto_cleanup(hr,"d2_transition_blitclass_r1r2r3r4 bitmap_old->CopyFromRenderTarget");
 	dst_rt->DrawBitmap(bitmap_old, d2_rectf(olddstrect));
 	// likewise create a compatible bitmap for the new stuff
 	props.pixelFormat = new_rt->GetPixelFormat();
 	new_rt->GetDpi(&props.dpiX, &props.dpiY);
 	hr = new_rt->CreateBitmap(d2_sizeu(newsrcrect), props, &bitmap_new);
-	CheckError(hr);
+	OnErrorGoto_cleanup(hr,"d2_transition_blitclass_r1r2r3r4 new_rt->CreateBitmap");
 	// copy the bits of the new stuff (from 'new_rt') to the right spot on screen;
 	hr = bitmap_new->CopyFromRenderTarget(NULL, new_rt, &d2_rectu(newsrcrect));
-	CheckError(hr);
+	OnErrorGoto_cleanup(hr,"d2_transition_blitclass_r1r2r3r4 bitmap_new->CopyFromRenderTarget");
 	dst_rt->DrawBitmap(bitmap_new, d2_rectf(newdstrect));
 	hr = dst_rt->Flush();
+	OnErrorGoto_cleanup(hr,"d2_transition_blitclass_r1r2r3r4 dst_rt->Flush");
 #ifdef	AM_DMP
 		d2_player->dump(dst_rt, "dst");
 #endif//AM_DMP

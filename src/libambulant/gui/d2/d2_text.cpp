@@ -44,7 +44,7 @@ namespace gui {
 namespace d2 {
 
 inline D2D1_RECT_F d2_rectf(lib::rect r) {
-	return D2D1::RectF(r.left(), r.top(), r.right(), r.bottom());
+	return D2D1::RectF((float) r.left(), (float) r.top(), (float) r.right(), (float) r.bottom());
 }
 
 extern const char d2_text_playable_tag[] = "text";

@@ -44,7 +44,7 @@ class AMBULANTAPI d2_transition_renderer : public ref_counted_obj {
   public:
 	d2_transition_renderer(event_processor *evp)
 	:	m_event_processor(evp),
-		m_d2_player(NULL),
+		m_d2player(NULL),
 		m_transition_dest(NULL),
 		m_intransition(NULL),
 		m_outtransition(NULL),
@@ -64,9 +64,9 @@ class AMBULANTAPI d2_transition_renderer : public ref_counted_obj {
 	static ID2D1BitmapRenderTarget* s_transition_rendertarget;
 
   protected:
-	d2_player* m_d2_player;
+	d2_player* m_d2player;
+	d2_player* get_d2player ();
 	ID2D1BitmapRenderTarget* m_rendertarget;
-	void release_rendertarget();
 
   private:
 	void transition_step();
