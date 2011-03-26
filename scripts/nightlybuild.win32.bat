@@ -125,3 +125,9 @@ rem
 rem  Delete old installers, remember current
 rem 
 rem  XXX TODO
+
+rem
+rem attempt to shutdown the computer
+rem
+shutdown /s
+
