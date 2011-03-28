@@ -18,7 +18,7 @@ MAKEOPTS=-j2
 VERSIONSUFFIX=.$TODAY
 DMGNAME=Ambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
 PLUGINDMGNAME=AmbulantWebKitPlugin-$AMBULANTVERSION$VERSIONSUFFIX-mac
-DESTINATION=ssh.cwi.nl:public_html/ambulant/nightly
+DESTINATION=sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds
 DESTINATION_DESKTOP=$DESTINATION/mac-intel-desktop-cocoa/
 DESTINATION_PLUGIN=$DESTINATION/mac-intel-webkitplugin/
 DESTINATION_CG=$DESTINATION/mac-intel-desktop-cg/
@@ -97,7 +97,6 @@ scp $DMGNAME-CG.dmg $DESTINATION_CG
 cd ../..
 #
 # Build webkit plugin.
-# Note we don't build the install target, the build target does the right thing.
 #
 cd projects/xcode32
 rm -rf "$HOME/Library/Internet Plug-Ins/AmbulantWebKitPlugin.plugin"
@@ -108,7 +107,8 @@ xcodebuild -project AmbulantWebKitPlugin.xcodeproj \
 	AMBULANT_BUILDDIR=$BUILDHOME/$BUILDDIR \
 	AMBULANT_3PP=$BUILDHOME/$BUILDDIR/build-3264/third_party_packages \
 	DSTROOT=$BUILDHOME/$DESTDIR \
-	INSTALL_PATH="/Library/Internet Plug-ins"
+	INSTALL_PATH="/Library/Internet Plug-ins" \
+	install
 cd ../..
 #
 # Build plugin installer, upload
@@ -117,7 +117,7 @@ mkdir -p "$BUILDHOME/$DESTDIR/Library/Internet Plug-Ins"
 cd "$BUILDHOME/$DESTDIR/Library/Internet Plug-Ins"
 rm -rf $PLUGINDMGNAME
 mkdir $PLUGINDMGNAME
-mv "$DSTROOT/Library/Internet Plug-Ins/AmbulantWebKitPlugin.plugin" $PLUGINDMGNAME
+mv "AmbulantWebKitPlugin.webplugin" $PLUGINDMGNAME
 cp $BUILDHOME/$BUILDDIR/src/webkit_plugin/README $PLUGINDMGNAME
 zip -r $PLUGINDMGNAME.zip $PLUGINDMGNAME
 scp $PLUGINDMGNAME.zip $DESTINATION_PLUGIN

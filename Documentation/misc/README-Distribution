@@ -314,12 +314,15 @@ https://developer.apple.com/ios/manage/distribution/index.action
 This includes:
 - obtain the UDID's of devices involved in beta testing
 - on the iOS Developer Portal, generate a "Distribution Profile Request" including these UDID's
-- download this new Distribution profile and drag this into Xcode
-- build for the device using this the "Distribution" configuration, and when prompted
-  specify a.o. the exact URL of the place where you are going to publish the resulting .app
-- publish both the resulting xxx.app and the yyy.mobileprovision files to the owners of the
-  devices whose UDID's have been included in the Distribution profile; when in Safari on an
-  iPhone/iPad they drag select these files, they will be downloaded in their device.
+- download this new Distribution profile and drag this into Xcode.
+  The project you need is projects/xcode32/iAmbulant.xcodeproj .
+- build for the device using this the "Distribution" configuration.
+  The result will be in projects/xcode32/build/Distribution-iphoneos/iAmbulant.app 
+- Use the installers/mkiphonedist.sh to create an IPA file, which is a zipfile
+  containing a Payload dir containing the app. The app will contain the embedded
+  ad-hoc distribution profile.
+- Upload, tell people to download the IPA file and feed it to iTunes. It will
+  be put on their device during the next sync.
  
   
 Creating the Windows desktop/FF/IE installers

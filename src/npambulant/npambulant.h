@@ -98,10 +98,19 @@ class gtk_mainloop;
 #elif WITH_CG
 class cg_mainloop;
 #elif XP_WIN32
-#include <ambulant/gui/dx/dx_player.h>
+#ifdef WITH_D2D
+#include "ambulant/gui/d2/d2_player.h"
+typedef ambulant::gui::d2::d2_player ambulant_gui_player;
+typedef ambulant::gui::d2::d2_player_callbacks gui_callbacks; //XX from MmView.cpp
+typedef ambulant::gui::d2::d2_player_callbacks ambulant_baseclass_player_callbacks;
+#else
+#include "ambulant/gui/dx/dx_player.h"
+typedef ambulant::gui::dx::dx_player ambulant_gui_player;
+typedef ambulant::gui::dx::dx_player_callbacks gui_callbacks;
+typedef ambulant::gui::dx::dx_player_callbacks ambulant_baseclass_player_callbacks;
+#endif // WITH_D2D
 #include <ambulant/net/url.h>
-typedef ambulant::gui::dx::dx_player_callbacks gui_callbacks; //XX from MmView.cpp
-class ambulant_player_callbacks : public ambulant::gui::dx::dx_player_callbacks {
+class ambulant_player_callbacks : public ambulant_baseclass_player_callbacks {
 
   public:
 	ambulant_player_callbacks();
@@ -213,7 +222,7 @@ class npambulant
 #define strcasecmp(s1,s2) _stricmp(s1,s2)
 	ambulant_player_callbacks m_player_callbacks;
 	HWND m_hwnd;
-	ambulant::gui::dx::dx_player* m_ambulant_player;
+	ambulant_gui_player* m_ambulant_player;
 	ambulant::common::player* get_player() {
 		return m_ambulant_player->get_player();
 	}

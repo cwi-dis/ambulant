@@ -166,7 +166,7 @@ Cieambulant::updatePlayer() {
 		}
 
 		m_player_callbacks.set_os_window(m_hwnd);
-		m_ambulant_player = new ambulant::gui::dx::dx_player(m_player_callbacks, NULL, m_url);
+		m_ambulant_player = new ambulant_gui_player(m_player_callbacks, NULL, m_url);
 //X		m_ambulant_player->set_state_component_factory(NULL); // XXXJACK DEBUG!!!!
 		if (m_ambulant_player) {
 			if ( !get_player()) {

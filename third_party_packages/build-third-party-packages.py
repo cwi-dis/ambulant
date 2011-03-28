@@ -478,8 +478,6 @@ third_party_packages={
             checkcmd="test -f %s/lib/libSDL.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd SDL-1.3.0-*  && "
-                "cp include/SDL_config.h.generated include/SDL_config.h.default && "    # For build 5313, may need to go away again
-                "sh build-scripts/updaterev.sh && "    # For build 5313, may need to go away again
                 "cd Xcode-iphoneOS/SDL  && "
                 "xcodebuild -target libSDL -sdk iphoneos%s -configuration Release &&"
                 "mkdir -p ../../../installed/include/SDL && "
@@ -559,8 +557,6 @@ third_party_packages={
             checkcmd="test -f %s/lib/libSDL.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd SDL-1.3.0-*  && "
-                "cp include/SDL_config.h.generated include/SDL_config.h.default && "    # For build 5313, may need to go away again
-                "sh build-scripts/updaterev.sh && "    # For build 5313, may need to go away again
                 "cd Xcode-iphoneOS/SDL  && "
                 "xcodebuild -target libSDL -sdk iphonesimulator%s -configuration Debug &&"
                 "mkdir -p ../../../installed/include/SDL && cp ../../include/* ../../../installed/include/SDL &&"
@@ -643,7 +639,7 @@ third_party_packages={
             ),
 
         TPP("xulrunner-sdk",
-            url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2.15/sdk/xulrunner-1.9.2.15.en-US.linux-i686.sdk.tar.bz2",
+            url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2.16/sdk/xulrunner-1.9.2.16.en-US.linux-i686.sdk.tar.bz2",
             checkcmd="test -d xulrunner-sdk",
             buildcmd="test -d xulrunner-sdk"
             ),
@@ -724,7 +720,7 @@ third_party_packages={
             ),
             
         WinTPP("xulrunner-sdk",
-            url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2.15/sdk/xulrunner-1.9.2.15.en-US.win32.sdk.zip",
+            url="http://releases.mozilla.org/pub/mozilla.org/xulrunner/releases/1.9.2.16/sdk/xulrunner-1.9.2.16.en-US.win32.sdk.zip",
             checkcmd="if not exist xulrunner-sdk\\include\\npapi.h exit 1",
             # No build needed
             ),

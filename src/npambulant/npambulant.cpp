@@ -318,7 +318,7 @@ npambulant::init_ambulant(NPP npp, NPWindow* aWindow)
 
 #ifdef	XP_WIN32
 	m_player_callbacks.set_os_window(m_hwnd);
-	m_ambulant_player = new ambulant::gui::dx::dx_player(m_player_callbacks, NULL, m_url);
+	m_ambulant_player = new ambulant_gui_player(m_player_callbacks, NULL, m_url);
 	if (m_ambulant_player) {
 		if ( ! get_player()) {
 			delete m_ambulant_player;

@@ -145,7 +145,8 @@ common::playable_factory *create_cg_text_playable_factory(common::factories *fac
 
 @interface AmbulantView : VIEW_SUPERCLASS
 {
-	ambulant::gui::cg::cg_window *ambulant_window;
+	ambulant::gui::cg::cg_window *ambulant_window;  // Our counterpart-object on the Ambulant side
+    ambulant::lib::size original_bounds;            // The size specified in the SMIL document
 	int transition_count;
 	int fullscreen_count;
 	BOOL fullscreen_outtrans;
