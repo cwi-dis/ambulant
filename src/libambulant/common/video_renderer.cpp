@@ -68,11 +68,6 @@ video_renderer::video_renderer(
 	net::url url = node->get_url("src");
 	_init_clip_begin_end();
 
-#ifdef WITH_SEAMLESS_PLAYBACK
-	// xxxbo: we should not set m_previous_clip_position to m_clip_begin
-	//m_previous_clip_position = m_clip_begin;
-#endif
-
 	m_src = factory->get_datasource_factory()->new_video_datasource(url,m_clip_begin, m_clip_end);
 	if (m_src == NULL) {
 		lib::logger::get_logger()->warn(gettext("Cannot open video: %s"), url.get_url().c_str());
@@ -234,7 +229,7 @@ video_renderer::preroll(double when, double where, double how_much)
 
 	AM_DBG lib::logger::get_logger ()->debug ("video_renderer::preroll(%f) this = 0x%x, cookie=%d, dest=0x%x, timer=0x%x, epoch=%d", where, (void *) this, (int)m_cookie, (void*)m_dest, m_timer, m_epoch);
 
-	/*if(!m_activated)*/ m_src->start_prefetch (m_event_processor);
+	m_src->start_prefetch (m_event_processor);
 	if (m_audio_renderer)
 		m_audio_renderer->preroll(0, where, 0);
 
