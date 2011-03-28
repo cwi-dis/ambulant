@@ -400,7 +400,6 @@ ffmpeg_demux::run()
 	bool initial_audio_pts_set = false;
 #endif
 
-// 17-feb-2010
 	timestamp_t last_valid_audio_pts = 0;
 
 	pkt_nr = 0;
@@ -437,7 +436,7 @@ ffmpeg_demux::run()
 			if (audio_streamnr >= 0)
 				seekresult = av_seek_frame(m_con, audio_streamnr, seektime_a, AVSEEK_FLAG_BACKWARD);
 			//if (seekresult > 0 && video_streamnr >= 0)
-			// xxxbo: the original seekresult > 0 will make the video only not work
+			// xxxbo: the original seekresult > 0 will make the video-only not work
 			if (seekresult >= 0 && video_streamnr >= 0)
 				seekresult = av_seek_frame(m_con, video_streamnr, seektime_v, AVSEEK_FLAG_BACKWARD);
 			m_lock.enter();
@@ -453,25 +452,6 @@ ffmpeg_demux::run()
 			// We use the default stream to conduct seek since it is not clear which one
 			// should have priority and the default value is good enough for Laiola's
 			// sample smil for MyVideo ---Bo 08-April-2010
-#if 0
-#if 0
-			if (audio_streamnr >= 0) {
-				seektime = av_rescale_q(seektime, AMBULANT_TIMEBASE, m_con->streams[audio_streamnr]->time_base);
-				seek_streamnr = audio_streamnr;
-			} else if (video_streamnr >= 0) {
-				seektime = av_rescale_q(seektime, AMBULANT_TIMEBASE, m_con->streams[video_streamnr]->time_base);
-				seek_streamnr = video_streamnr;
-			}
-#else
-			if (video_streamnr >= 0) {
-				seektime = av_rescale_q(seektime, AMBULANT_TIMEBASE, m_con->streams[video_streamnr]->time_base);
-				seek_streamnr = video_streamnr;
-			} else if (audio_streamnr >= 0) {
-				seektime = av_rescale_q(seektime, AMBULANT_TIMEBASE, m_con->streams[audio_streamnr]->time_base);
-				seek_streamnr = audio_streamnr;
-			}
-#endif // 0
-#endif // 0
 
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: seek to %lld scaled to mediatimebase", seektime);
 			m_lock.leave();
@@ -589,7 +569,7 @@ ffmpeg_demux::run()
 			// Jack and Bo.
 			while ( ! accepted && sink && !exit_requested() && !m_clip_begin_changed) {
 				m_current_sink = sink;
-				if (pts == 10000000)
+
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_parser::run: calling %d.push_data(%lld, 0x%x, %d, %d) pts=%lld", pkt->stream_index, pkt->pts, pkt->data, pkt->size, pkt->duration, pts);
 				m_lock.leave();
 				accepted = sink->push_data((timestamp_t)pts, pkt->data, (size_t)pkt->size);
