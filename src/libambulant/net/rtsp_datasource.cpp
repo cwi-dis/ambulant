@@ -206,7 +206,6 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 		return NULL;
 	}
 	context->duration = context->media_session->playEndTime();
-//	context->last_expected_pts = (timestamp_t) (context->duration*1000000 - 40000); // skip last frame
 	context->last_expected_pts = (timestamp_t) (context->duration*1000000); // do not skip last frame
 	AM_DBG lib::logger::get_logger()->debug("rtps_demux::supported: last_expected_pts = %ld", context->last_expected_pts);
 	// next set up the rtp subsessions.
@@ -544,8 +543,6 @@ ambulant::net::rtsp_demux::_cancel()
 	}
 	if (is_running())
 		stop();
-// release() is commented out here because the run() function already does this
-//	release();
 }
 
 void
@@ -607,7 +604,7 @@ rtsp_demux::after_reading_audio(size_t sz, unsigned truncated, struct timeval pt
 			}
 		}
 	}
-	//xxxbo: 13-nov-2009
+
 	AM_DBG lib::logger::get_logger()->debug("after_reading_audio: first_sync_time is %d.%ld s", m_context->first_sync_time.tv_sec, m_context->first_sync_time.tv_usec);
 
 	timestamp_t rpts =	(timestamp_t)(pts.tv_sec - m_context->first_sync_time.tv_sec) * 1000000LL  +  (timestamp_t) (pts.tv_usec - m_context->first_sync_time.tv_usec);
@@ -625,21 +622,11 @@ rtsp_demux::after_reading_audio(size_t sz, unsigned truncated, struct timeval pt
 		m_context->last_emit_pts = rpts - m_context->frame_duration;
 	}
 #endif
-	//xxxbo: 13-nov-2009
+
 	AM_DBG lib::logger::get_logger()->debug("after_reading_audio: rtps is %lld us", rpts);
 
 	if(m_context->sinks[m_context->audio_stream]) {
 		AM_DBG lib::logger::get_logger()->debug("after_reading_audio: calling _push_data_to_sink");
-		//_push_data_to_sink(m_context->audio_stream, rpts, (uint8_t*) m_context->audio_packet, sz);
-
-#if 0 //xxxbo: 15-07-2009
-		if (rpts + m_clip_begin > m_clip_end) {
-			m_context->eof = true;
-			m_critical_section.leave();
-			return;
-		}
-		else
-#endif //xxxbo: 15-07-2009
 		_push_data_to_sink(m_context->audio_stream, rpts, (uint8_t*) m_context->audio_packet, sz);
 		AM_DBG lib::logger::get_logger()->debug("after_reading_audio: calling push_data_to_sink done");
 	}
@@ -714,7 +701,7 @@ rtsp_demux::after_reading_video(size_t sz, unsigned truncated, struct timeval pt
 		}
 	}
 	timestamp_t rpts =	(timestamp_t)(pts.tv_sec - m_context->first_sync_time.tv_sec) * 1000000LL  +  (timestamp_t) (pts.tv_usec - m_context->first_sync_time.tv_usec);
-	//xxxbo 24-march-2011
+
 	AM_DBG lib::logger::get_logger()->debug("after_reading_video: rpts = %lld", rpts);
 	timestamp_t delta_pts = abs(rpts-m_context->last_pts);
 	if (m_context->frame_duration == 0 || (delta_pts != 0 && delta_pts < m_context->frame_duration)) 
