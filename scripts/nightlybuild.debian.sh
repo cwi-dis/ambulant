@@ -63,7 +63,7 @@ cd ..
 mkdir debian-$TODAY
 mv *.tar.gz *.deb *.dsc *.changes *.build debian-$TODAY/
 dpkg-scanpackages debian-$TODAY | gzip -9c > Packages.gz
-dpkg-scansources debian-$TODAT | gzip -9c > Sources.gz
+dpkg-scansources debian-$TODAY | gzip -9c > Sources.gz
 scp -r debian-$TODAY $DESTINATION
 scp Packages.gz Sources.gz $DESTINATION
 
