@@ -3,9 +3,9 @@
 # Script to do a nightly clean build of a full Ambulant
 # Debian packages, built on Ubuntu version
 #
-# Note: your .gnupg/gpg.conf must have the no-tty and batch options,
-# otherwise debuild will fail (because it will call gpg, which will
-# try to open a tty) if you are building unattended.
+# Note: the key used for signing (in debuild) must have no passphrase.
+# I think this can only be done with the gpg --edit-key command line
+# interface.
 #
 set -e
 set -x
@@ -52,10 +52,7 @@ xyzzy
 # Build debian package (incomplete)
 #
 cd debian
-debuild -kC75B80BC << xyzzy
-ambulant
-ambulant
-xyzzy
+debuild -kC75B80BC
 cd ..
 
 #

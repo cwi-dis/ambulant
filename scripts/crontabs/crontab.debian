@@ -1,4 +1,4 @@
 NAME=jack@cwi.nl
 MAILTO=jack@cwi.nl
 PATH=/home/jack/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-10 11 * * * sh $HOME/src/ambulant/scripts/nightlyrun.debian.sh 
+50 11 * * * sh $HOME/src/ambulant/scripts/nightlyrun.debian.sh 
