@@ -1,7 +1,11 @@
 #!/bin/sh
 #
 # Script to do a nightly clean build of a full Ambulant
-# Mac 10.6 version
+# Debian packages, built on Ubuntu version
+#
+# Note: your .gnupg/gpg.conf must have the no-tty and batch options,
+# otherwise debuild will fail (because it will call gpg, which will
+# try to open a tty) if you are building unattended.
 #
 set -e
 set -x
