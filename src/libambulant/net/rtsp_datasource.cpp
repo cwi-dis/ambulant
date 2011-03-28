@@ -714,7 +714,8 @@ rtsp_demux::after_reading_video(size_t sz, unsigned truncated, struct timeval pt
 		}
 	}
 	timestamp_t rpts =	(timestamp_t)(pts.tv_sec - m_context->first_sync_time.tv_sec) * 1000000LL  +  (timestamp_t) (pts.tv_usec - m_context->first_sync_time.tv_usec);
-
+	//xxxbo 24-march-2011
+	AM_DBG lib::logger::get_logger()->debug("after_reading_video: rpts = %lld", rpts);
 	timestamp_t delta_pts = abs(rpts-m_context->last_pts);
 	if (m_context->frame_duration == 0 || (delta_pts != 0 && delta_pts < m_context->frame_duration)) 
 		m_context->frame_duration = delta_pts;
