@@ -116,8 +116,10 @@ d2_dsvideo_renderer::~d2_dsvideo_renderer()
 {
 	m_lock.enter();
 	AM_DBG logger::get_logger()->debug("~d2_dsvideo_renderer(0x%x)", (void *)this);
-	if (m_d2bitmap)
+	if (m_d2bitmap) {
 		m_d2bitmap->Release();
+		m_d2bitmap = NULL;
+	}
 	if (m_frame)
 		free(m_frame);
 	m_frame = NULL;
@@ -176,6 +178,7 @@ d2_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window)
 	if(!m_d2bitmap) {
 		// No bits available
 		AM_DBG lib::logger::get_logger()->debug("d2_img_renderer::redraw NOT: no image or cannot play %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
+		m_lock.leave();
 		return;
 	}
 	ID2D1RenderTarget *rt = m_d2player->get_rendertarget();
