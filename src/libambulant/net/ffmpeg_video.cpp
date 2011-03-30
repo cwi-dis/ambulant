@@ -170,6 +170,7 @@ ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasourc
 	m_video_clock(0), // XXX Mod by Jack (unsure). Was: src->get_clip_begin()
 	m_frame_count(0),
 	m_dropped_count(0),
+	m_dropped_count_before_decoding(0),
 	m_elapsed(0),
 	m_start_input(true),
 	m_pixel_layout(pixel_unknown)
@@ -189,7 +190,8 @@ ffmpeg_video_decoder_datasource::~ffmpeg_video_decoder_datasource()
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::~ffmpeg_video_decoder_datasource(0x%x)", (void*)this);
 	stop();
 	if (m_img_convert_ctx) sws_freeContext(m_img_convert_ctx);
-	/*if (m_dropped_count)*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropped %d of %d frames", m_dropped_count, m_frame_count);
+	if (m_dropped_count_before_decoding) lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropped %d frames before decoding", m_dropped_count, m_frame_count);
+	if (m_dropped_count) lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropped %d of %d frames", m_dropped_count, m_frame_count);
 }
 
 void
@@ -572,7 +574,9 @@ ffmpeg_video_decoder_datasource::data_avail()
 			if (ipts != (int64_t)AV_NOPTS_VALUE && ipts < m_oldest_timestamp_wanted) {
 				/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: setting hurry_up: ipts=%lld, m_oldest_timestamp_wanted=%lld (%lld us late)",ipts, m_oldest_timestamp_wanted, m_oldest_timestamp_wanted-ipts);
 				m_con->skip_frame = AVDISCARD_NONREF;
-				m_dropped_count++; // This is not necessarily correct
+				//m_dropped_count++; // This is not necessarily correct
+				m_dropped_count_before_decoding++;
+				/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: frame analysis before decoding dropping frame ipts=%lld, m_oldest_timestamp_wanted=%lld (%lld us late)", ipts, m_oldest_timestamp_wanted, m_oldest_timestamp_wanted-ipts);
 			} else {
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: decoder is %lld us ahead of playout", ipts-m_oldest_timestamp_wanted);
 			}
@@ -628,13 +632,13 @@ ffmpeg_video_decoder_datasource::data_avail()
 			m_frame_count++;
 			if (pts < m_oldest_timestamp_wanted) {
 				// A non-essential frame while skipping forward.
-				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropping frame %d, ts=%lld < oldest-wanted=%lld", m_frame_count, pts, m_oldest_timestamp_wanted);
+				/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder: frame analysis after decoding dropping frame %d, ts=%lld < oldest-wanted=%lld", m_frame_count, pts, m_oldest_timestamp_wanted);
 				drop_this_frame = true;
 			}
 			if (m_frames.size() > 0 && pts < m_frames.front().first) {
 				// A frame that came after this frame has already been consumed.
 				// We should drop this frame.
-				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropping frame %d (ts=%lld): too late, later frame (ts=%lld) already displayed", m_frame_count, pts, m_frames.front().first);
+				/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder: frame analysis after decoding dropping frame %d (ts=%lld): too late, later frame (ts=%lld) already displayed", m_frame_count, pts, m_frames.front().first);
 				drop_this_frame = true;
 			}
 			m_elapsed = pts;
