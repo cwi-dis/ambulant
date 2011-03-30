@@ -31,7 +31,7 @@
 #include <d2d1.h>
 #include <d2d1helper.h>
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -48,8 +48,6 @@ namespace gui {
 
 namespace d2 {
 
-ID2D1BitmapRenderTarget* d2_transition_renderer::s_transition_rendertarget = NULL;
-
 d2_transition_renderer::~d2_transition_renderer()
 {
 	stop();
@@ -57,13 +55,14 @@ d2_transition_renderer::~d2_transition_renderer()
 	AM_DBG logger::get_logger()->debug("~d2_transition_renderer(0x%x)", (void *)this);
 	m_intransition = NULL;
 	m_outtransition = NULL;
+	SafeRelease(&this->m_transition_rendertarget);
 	m_lock.leave();
 }
 
 d2_player*
 d2_transition_renderer::get_d2player()
 {
-	if (this->m_d2player == NULL) {
+	if (m_d2player == NULL) {
 		gui_window *window = m_transition_dest->get_gui_window();
 		d2_window *cwindow = (d2_window *)window;
 		m_d2player  = cwindow->get_d2_player();
@@ -72,20 +71,31 @@ d2_transition_renderer::get_d2player()
 }
 
 ID2D1RenderTarget*
-d2_transition_renderer::get_rendertarget ()
+d2_transition_renderer::get_current_rendertarget ()
 {
-	if (this->m_trans_engine != NULL) {
-		if (this->m_rendertarget == NULL) {
+	ID2D1RenderTarget* rv = get_transition_rendertarget();
+	if (rv == NULL) {
+		rv = get_d2player()->get_rendertarget();
+	}
+	return rv;
+}
+
+
+ID2D1BitmapRenderTarget*
+d2_transition_renderer::get_transition_rendertarget ()
+{
+	if (m_trans_engine != NULL) {
+		if (m_transition_rendertarget == NULL) {
 			// Create a new target for drawing objects that need to be translated
-			ID2D1RenderTarget* rt = this->get_d2player()->get_rendertarget();
-			HRESULT hr = rt->CreateCompatibleRenderTarget(&this->m_rendertarget);
+			ID2D1RenderTarget* rt = get_d2player()->get_rendertarget();
+			HRESULT hr = rt->CreateCompatibleRenderTarget(&m_transition_rendertarget);
 			if (FAILED(hr)) {
-				lib::logger::get_logger()->trace("d2_transition_renderer::get_rendertarget: CreateCompatibleRenderTarget reurns 0x%x", hr);
+				lib::win32::win_trace_error("d2_transition_renderer::get_rendertarget: CreateCompatibleRenderTarget", hr);
 			}
 		}
-		return this->m_rendertarget;
+		return m_transition_rendertarget;
 	}
-	return this->get_d2player()->get_rendertarget();
+	return NULL;
 }
 
 void
@@ -119,7 +129,7 @@ d2_transition_renderer::start(double where)
 			m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 			m_fullscreen = m_intransition->m_scope == scope_screen;
 			if (m_fullscreen) {
-				this->get_d2player()->start_screen_transition(false);
+				get_d2player()->start_screen_transition(false);
 			}
 		}
 	}
@@ -144,7 +154,7 @@ d2_transition_renderer::start_outtransition(const lib::transition_info *info)
 		m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 		m_fullscreen = m_outtransition->m_scope == scope_screen;
 		if (m_fullscreen) {
-			this->get_d2player()->start_screen_transition(true);
+			get_d2player()->start_screen_transition(true);
 		}
 	}
 
@@ -160,8 +170,9 @@ d2_transition_renderer::stop()
 		m_lock.leave();
 		return;
 	}
-	if (this->m_fullscreen) {
-		this->get_d2player()->end_screen_transition();
+	if (m_fullscreen) {
+		get_d2player()->end_screen_transition();
+		m_fullscreen = false;
 	} else {
 		delete m_trans_engine;
 		m_trans_engine = NULL;
@@ -184,12 +195,10 @@ void
 d2_transition_renderer::redraw_pre(gui_window *window)
 {
 	m_lock.enter();
-	AM_DBG logger::get_logger()->debug("d2_transition_renderer.redraw(0x%x)", (void *)this);
+	AM_DBG logger::get_logger()->debug("d2_transition_renderer.redraw(0x%x) m_trans_engine=0x%x m_fullscreen=%d", (void *)this,m_trans_engine,m_fullscreen);
 	if (m_trans_engine != NULL) {
-		this->get_rendertarget()->BeginDraw();
-		d2_transition_renderer::s_transition_rendertarget = (ID2D1BitmapRenderTarget*) this->get_rendertarget();
-//		if (this->m_fullscreen)
-			this->get_d2player()->select_transition_rendertarget((ID2D1BitmapRenderTarget*) this->get_rendertarget());
+		get_transition_rendertarget()->BeginDraw();
+		get_d2player()->set_transition_rendertarget((ID2D1BitmapRenderTarget*) get_transition_rendertarget());
 	}
 #ifdef D2D_NOTYET
 	d2_window *cwindow = (d2_window *)window;
@@ -217,18 +226,27 @@ d2_transition_renderer::redraw_post(gui_window *window)
 	m_lock.enter();
 	if (m_trans_engine != NULL) {
 		if (m_fullscreen) {
-			this->get_d2player()->screen_transition_step(this->m_trans_engine, this->m_event_processor->get_timer()->elapsed());
-//			[view screenTransitionStep: m_trans_engine elapsed: m_event_processor->get_timer()->elapsed()];
+			d2::d2_player* d2_player = get_d2player();
+			ID2D1Bitmap* old_bitmap = d2_player->get_fullscreen_old_bitmap();
+			if (old_bitmap != NULL) {
+				ID2D1RenderTarget* rt =	d2_player->get_rendertarget();
+				rt->DrawBitmap(old_bitmap);
+				HRESULT hr = rt->Flush();
+#ifdef	AM_DMP
+				int idx = d2_player->dump(d2_player->get_rendertarget(), "obm");
+				lib::logger::get_logger()->debug("d2_transition_renderer.redraw_pre(0x%x) DrawBitmap(oldbitmap) hr=0x%x idx=%d", this, hr, idx);
+#endif//AM_DMP
+			}
+			get_d2player()->screen_transition_step(m_trans_engine, m_event_processor->get_timer()->elapsed());
 		} else {
 			m_trans_engine->step(m_event_processor->get_timer()->elapsed());
 		}
-		s_transition_rendertarget = NULL;
 		typedef lib::no_arg_callback<d2_transition_renderer> transition_callback;
 		lib::event *ev = new transition_callback(this, &d2_transition_renderer::transition_step);
 		lib::transition_info::time_type delay = m_trans_engine->next_step_delay();
+		if (delay < 20) delay = 20;
 		AM_DBG lib::logger::get_logger()->debug("d2_transition_renderer.redraw: now=%d, schedule step for %d", m_event_processor->get_timer()->elapsed(), m_event_processor->get_timer()->elapsed()+delay);
 		m_event_processor->add_event(ev, delay, lib::ep_med);
-//XX	m_d2_player->select_transition_surface(false);
 	}
 	if (m_trans_engine && m_trans_engine->is_done()) {
 		typedef lib::no_arg_callback<d2_transition_renderer> stop_transition_callback;
@@ -270,20 +288,17 @@ d2_transition_renderer::redraw_post(gui_window *window)
 			[view screenTransitionStep: NULL elapsed: 0];
 	}
 #endif
-//	if ( ! this->m_fullscreen)
-	this->get_d2player()->select_transition_rendertarget(NULL);
+	SafeRelease(&this->m_transition_rendertarget);
 	m_lock.leave();
 }
 
 void
 d2_transition_renderer::transition_step()
 {
-//#ifdef D2D_NOTYET
 	m_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("d2_transition_renderer.transition_step: now=%d", m_event_processor->get_timer()->elapsed());
 	if (m_transition_dest) m_transition_dest->need_redraw();
 	m_lock.leave();
-//#endif
 }
 
 } // namespace d2

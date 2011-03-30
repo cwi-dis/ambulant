@@ -48,7 +48,8 @@ class AMBULANTAPI d2_transition_renderer : public ref_counted_obj {
 		m_transition_dest(NULL),
 		m_intransition(NULL),
 		m_outtransition(NULL),
-		m_rendertarget(NULL),
+		m_transition_rendertarget(NULL),
+		m_fullscreen(false),
 		m_trans_engine(NULL) {}
 	~d2_transition_renderer();
 
@@ -59,14 +60,13 @@ class AMBULANTAPI d2_transition_renderer : public ref_counted_obj {
 	void redraw_post(gui_window *window);
 	void set_intransition(const lib::transition_info *info);
 	void start_outtransition(const lib::transition_info *info);
-	ID2D1RenderTarget* get_rendertarget();
-	// used to communicate the current transition_rendertarget to the blitclass renderers
-	static ID2D1BitmapRenderTarget* s_transition_rendertarget;
+	ID2D1RenderTarget* get_current_rendertarget();
+	ID2D1BitmapRenderTarget* get_transition_rendertarget();
 
   protected:
 	d2_player* m_d2player;
 	d2_player* get_d2player ();
-	ID2D1BitmapRenderTarget* m_rendertarget;
+	ID2D1BitmapRenderTarget* m_transition_rendertarget;
 
   private:
 	void transition_step();
@@ -91,7 +91,6 @@ class d2_renderer : public d2_resources, public RP_Base {
 		common::factories *factory,
 		common::playable_factory_machdep *mdp)
 	:	RP_Base(context, cookie, node, evp, factory, mdp),
-//JNK	m_transition_rendertarget(NULL),
 		m_d2player(dynamic_cast<d2_player*>(mdp))
 //#ifdef D2D_NOTYET
 		,
@@ -105,8 +104,8 @@ class d2_renderer : public d2_resources, public RP_Base {
 		if(m_d2player)
 			m_d2player->unregister_resources(this);
 		m_transition_renderer->release();
-//JNK	if (this->m_transition_rendertarget != NULL)
-//JNK		this->m_transition_rendertarget->Release();
+//JNK	if (m_transition_rendertarget != NULL)
+//JNK		m_transition_rendertarget->Release();
 	}
 
 	void set_surface(common::surface *dest) {
@@ -127,7 +126,7 @@ class d2_renderer : public d2_resources, public RP_Base {
 	void redraw(const rect &dirty, gui_window *window) {
 		recreate_d2d();
 		m_transition_renderer->redraw_pre(window);
-		redraw_body(dirty, window, (ID2D1RenderTarget*) m_transition_renderer->get_rendertarget());
+		redraw_body(dirty, window, (ID2D1RenderTarget*) m_transition_renderer->get_current_rendertarget());
 		m_transition_renderer->redraw_post(window);
 		if (RP_Base::m_erase_never) RP_Base::m_dest->keep_as_background();
 	}

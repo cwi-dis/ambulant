@@ -65,7 +65,7 @@ namespace std {
 #include <d2d1.h>
 #include <wincodec.h>
 #define SafeRelease(x) if(x!=NULL){if(*x!=NULL){(*x)->Release();*x=NULL;}}
-#define CheckError(x) if(FAILED(x))goto cleanup;
+//X #define CheckError(x) if(FAILED(x))goto cleanup;
 #define OnErrorGoto_cleanup(x,id) if(FAILED(x)) {ambulant::lib::win32::win_trace_error(id, x); goto cleanup;}
 
 namespace ambulant {
@@ -195,7 +195,9 @@ class AMBULANTAPI d2_player :
 	void start_screen_transition(bool outtrans);
 	void end_screen_transition();
 	void screen_transition_step(smil2::transition_engine* engine, lib::transition_info::time_type now);
-	void select_transition_rendertarget(ID2D1BitmapRenderTarget* bmrt) { this->m_transition_rendertarget = bmrt; }
+	void set_transition_rendertarget(ID2D1BitmapRenderTarget* bmrt) { m_transition_rendertarget = bmrt; }
+	ID2D1Bitmap* get_fullscreen_old_bitmap();
+//X //{return m_fullscreen_old_bitmap ? m_fullscreen_old_bitmap : m_fullscreen_old_bitmap = _get_bitmap_from_render_target(get_rendertarget()); }
 
 	void lock_redraw();
 	void unlock_redraw();
@@ -257,7 +259,6 @@ class AMBULANTAPI d2_player :
 	bool _has_transitions() const;
 	d2_transition *_get_transition(common::playable *p);
 	d2_transition *_set_transition(common::playable *p, const lib::transition_info *info, bool is_outtransition);
-	ID2D1RenderTarget* m_rendertarget;
 	ID2D1BitmapRenderTarget* m_transition_rendertarget;
 
 	// full screen transitions
@@ -266,7 +267,10 @@ class AMBULANTAPI d2_player :
 	lib::transition_info::time_type m_fullscreen_now;
 	bool m_fullscreen_outtrans;
 	bool m_fullscreen_ended;
-	ID2D1Bitmap* _get_bitmap_from_render_target(ID2D1RenderTarget* rt, const D2D1_RECT_U d2_rect);
+	ID2D1Bitmap* m_fullscreen_old_bitmap;
+	ID2D1Bitmap* m_fullscreen_cur_bitmap;
+	void _set_fullscreen_cur_bitmap(ID2D1RenderTarget* rt);
+	ID2D1Bitmap* _get_bitmap_from_render_target(ID2D1RenderTarget* rt);
 	void _screenTransitionPreRedraw();
 	void _screenTransitionPostRedraw(lib::rect* r);
 
@@ -306,10 +310,10 @@ class AMBULANTAPI d2_player :
 	// The logger
 	lib::logger *m_logger;
 
-//#define	AM_DMP /* dump images (for debugging). Can create lots of image files, slows down all drawing. */
+#define	AM_DMP /* dump images (for debugging). Can create lots of image files, slows down all drawing. */
 #ifdef	AM_DMP
   public:
-	 void dump (ID2D1RenderTarget* rt, std::string id);
+	int dump (ID2D1RenderTarget* rt, std::string id);
 #endif//AM_DMP
 };
 

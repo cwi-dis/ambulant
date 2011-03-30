@@ -33,7 +33,7 @@
 #include <d2d1.h>
 #include <d2d1helper.h>
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -230,6 +230,13 @@ _d2_polygon_list_update (common::surface* dst, std::vector< std::vector<lib::poi
 	OnErrorGoto_cleanup(hr, "_d2_polygon_list_update()  rt->CreateLayer");
 	hr = brt->EndDraw();
 	OnErrorGoto_cleanup(hr, "_d2_polygon_list_update()  brt->EndDraw()");
+#ifdef	AM_DMP
+		d2_player->dump(rt, "old");
+#endif//AM_DMP
+#ifdef	AM_DMP
+		d2_player->dump(brt, "new");
+#endif//AM_DMP
+
 	d2_full_size_f = brt->GetSize();
 	d2_full_rect_f = D2D1::RectF(0,0,d2_full_size_f.width,d2_full_size_f.height);
 	ID2D1Bitmap* bitmap = NULL;
@@ -261,21 +268,21 @@ d2_transition_blitclass_fade::update()
 	ID2D1Bitmap* bitmap = NULL;
 	D2D1_LAYER_PARAMETERS layer_params = D2D1::LayerParameters();
 	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
-	ID2D1BitmapRenderTarget* brt = d2_transition_renderer::s_transition_rendertarget;
+	ID2D1BitmapRenderTarget* brt = d2_player->get_transition_rendertarget();
 	HRESULT hr = brt->EndDraw();
 	OnErrorGoto_cleanup(hr, "d2_transition_blitclass_fade::update()  brt->EndDraw");
 	hr = brt->GetBitmap(&bitmap);
 	if (bitmap == NULL) {
 		goto cleanup;
 	}
-	if (this->m_progress < 1.0) {
+	if (m_progress < 1.0) {
 		hr = rt->CreateLayer(&layer);
 		OnErrorGoto_cleanup(hr, "d2_transition_blitclass_fade::update()  rt->CreateLayer");
-		layer_params.opacity = this->m_outtrans ? (1.0 - this->m_progress) : this->m_progress;
+		layer_params.opacity = m_outtrans ? (1.0 - m_progress) : m_progress;
 		rt->PushLayer(layer_params, layer);
 	}
 	rt->DrawBitmap(bitmap);
-	if (this->m_progress < 1.0) {
+	if (m_progress < 1.0) {
 		rt->PopLayer();
 	}
 cleanup:
@@ -287,10 +294,10 @@ void
 d2_transition_blitclass_rect::update()
 {
 	AM_DBG lib::logger::get_logger()->debug("d2_transition_blitclass_rect::update(%f)",m_progress);
-	if (this->m_outtrans) {
+	if (m_outtrans) {
 		// draw using clipping paths
 		std::vector< lib::rect > rect_list = std::vector< lib::rect >();
-		rect_list.push_back(this->m_newrect);
+		rect_list.push_back(m_newrect);
 		std::vector< std::vector<lib::point> > polygon_list = polygon_list_from_rect_list(&rect_list);
 		_d2_polygon_list_update (m_dst, polygon_list, m_outtrans, m_dst->get_rect());
 	} else {
@@ -307,7 +314,10 @@ d2_transition_blitclass_rect::update()
 		D2D1_RECT_F d2_new_rect_f;
 		D2D1_RECT_F d2_full_rect_f;
 		D2D1_SIZE_F d2_full_size_f;
-		ID2D1BitmapRenderTarget* brt = d2_transition_renderer::s_transition_rendertarget;
+		ID2D1BitmapRenderTarget* brt = d2_player->get_transition_rendertarget();
+		if (brt == NULL) {
+			return;
+		}
 		HRESULT hr = brt->EndDraw();
 		if (FAILED(hr)) {
 			return;
@@ -356,7 +366,7 @@ d2_transition_blitclass_r1r2r3r4::update()
 	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
 	D2D1_BITMAP_PROPERTIES props = D2D1::BitmapProperties();
 	D2D1_MATRIX_3X2_F d2_rt_transform;
-	ID2D1BitmapRenderTarget* brt = d2_transition_renderer::s_transition_rendertarget;
+	ID2D1BitmapRenderTarget* brt = d2_player->get_transition_rendertarget();
 	ID2D1RenderTarget* dst_rt = rt, *old_rt = rt, *new_rt = brt;
 	rt->GetTransform(&d2_rt_transform);
 	HRESULT hr = brt->EndDraw();
@@ -371,7 +381,7 @@ d2_transition_blitclass_r1r2r3r4::update()
 	olddstrect.translate(m_dst->get_global_topleft());
 	olddstrect &= m_dst->get_clipped_screen_rect();
 	// Get needed parts of the old and new stuff (as bitmaps) and draw them at their final destinations
-	if (this->m_outtrans) {
+	if (m_outtrans) {
 		// exchange "old" and "new" rects, but not the render targets
 		lib::rect tmp_rect;
 		tmp_rect = oldsrcrect;
@@ -384,12 +394,6 @@ d2_transition_blitclass_r1r2r3r4::update()
 	// compensate for any adjustments made by d2_player::_calc_fit(&xoff, &yoff)
 	// XXXX this code is not sufficient when size parameters in 'd2_rt_transform' change as well
 	oldsrcrect.translate(lib::point((int) d2_rt_transform._31, (int) d2_rt_transform._32));
-#ifdef	AM_DMP
-		d2_player->dump(old_rt, "old");
-#endif//AM_DMP
-#ifdef	AM_DMP
-		d2_player->dump(new_rt, "new");
-#endif//AM_DMP
 	// we need to use ID2D1Bitmap::CopyFromRenderTarget, therefore we must create the bitmap
 	// where we put the data into ('bitmap_new') with equal properties as its data source ('old_rt')
 	old_rt->GetDpi(&props.dpiX, &props.dpiY);
@@ -423,9 +427,9 @@ void
 d2_transition_blitclass_rectlist::update()
 {
 	AM_DBG lib::logger::get_logger()->debug("cg_transition_blitclass_rectlist::update(%f)", m_progress);
-	if (this->m_outtrans) {
+	if (m_outtrans) {
 		// draw using clipping paths
-		std::vector< std::vector<lib::point> > polygon_list = polygon_list_from_rect_list(&this->m_newrectlist);
+		std::vector< std::vector<lib::point> > polygon_list = polygon_list_from_rect_list(&m_newrectlist);
 		_d2_polygon_list_update (m_dst, polygon_list, m_outtrans, m_dst->get_rect());
 	} else {
 // Using axis aligened clip is more effecient than using a path, though DrawBitmap is called inside a loop
@@ -442,7 +446,7 @@ d2_transition_blitclass_rectlist::update()
 			return;
 		std::vector< lib::rect >::iterator newrect;
 			
-		ID2D1BitmapRenderTarget* brt = d2_transition_renderer::s_transition_rendertarget;	
+		ID2D1BitmapRenderTarget* brt = d2_player->get_transition_rendertarget();	
 		HRESULT hr = brt->EndDraw();
 		if (FAILED(hr)) {
 			return;
@@ -486,7 +490,7 @@ d2_transition_blitclass_poly::update()
 {
 	AM_DBG lib::logger::get_logger()->debug("cg_transition_blitclass_poly::update(%f)", m_progress);
 	std::vector< std::vector<lib::point> > polygon_list;
-	polygon_list.push_back(this->m_newpolygon);
+	polygon_list.push_back(m_newpolygon);
 	_d2_polygon_list_update(m_dst, polygon_list, m_outtrans, m_dst->get_rect());
 }
 
@@ -494,7 +498,7 @@ void
 d2_transition_blitclass_polylist::update()
 {
 	AM_DBG lib::logger::get_logger()->debug("d2_transition_blitclass_polylist::update(%f)", m_progress);
-	_d2_polygon_list_update(m_dst, this->m_newpolygonlist, m_outtrans, m_dst->get_rect());
+	_d2_polygon_list_update(m_dst, m_newpolygonlist, m_outtrans, m_dst->get_rect());
 }
 
 smil2::transition_engine *
