@@ -535,11 +535,17 @@ smil_layout_manager::get_alignment(const lib::node *n)
 {
 	const char *regPoint;
 	const char *regAlign;
+	// Keep the names and nodes used to get regPoint and regAlign data, so we can give meaningful error messages
 	const char *rpname = "regPoint";
 	const char *raname = "regAlign";
+	const lib::node *rpnode = n;
+	const lib::node *ranode = n;
+	
+	// Highest priority for rp/ra values are regPoint and regAlign on the media item itself
 	regPoint = n->get_attribute("regPoint");
 	regAlign = n->get_attribute("regAlign");
 
+	// Second priority: mediaAlign on media item
 	const char *mediaAlign = n->get_attribute("mediaAlign");
 	if (mediaAlign && regPoint == NULL) {
 		regPoint = mediaAlign;
@@ -551,53 +557,63 @@ smil_layout_manager::get_alignment(const lib::node *n)
 	}
 
 	if (regPoint == NULL || regAlign == NULL) {
+		assert(mediaAlign == NULL);
 		const region_node *rrn = get_region_node_for(n, false);
-		if (rrn == NULL) return NULL;
-		const lib::node *rn = rrn->dom_node();
-		if (regPoint == NULL) {
-			regPoint = rn->get_attribute("regPoint");
-			// XXXX this means mediaAlign overrides regPoint/regAlign, which is open to discussion
-			if (regPoint == NULL)
-				regPoint = rn->get_attribute("mediaAlign");
-		}
-		if (regAlign == NULL) {
-			regAlign = rn->get_attribute("regAlign");
-			// XXXX this means mediaAlign overrides regPoint/regAlign, which is open to discussion
-			if (regAlign == NULL)
-				regAlign = rn->get_attribute("mediaAlign");
+		if (rrn != NULL) {
+			const lib::node *rn = rrn->dom_node();
+			// Third priority: regPoint and regAlign attributes on the region node
+			if (regPoint == NULL) {
+				regPoint = rn->get_attribute("regPoint");
+				rpnode = rn;
+			}
+			if (regAlign == NULL) {
+				regAlign = rn->get_attribute("regAlign");
+				ranode = rn;
+			}
+			// Fourth priority: mediaAlign on the region node
+			mediaAlign = rn->get_attribute("mediaAlign");
+			if (mediaAlign && regPoint == NULL) {
+				regPoint = mediaAlign;
+				rpname = "mediaAlign";
+				rpnode = rn;
+			}
+			if (mediaAlign && regAlign == NULL) {
+				regAlign = mediaAlign;
+				raname = "mediaAlign";
+				ranode = rn;
+			}			
 		}
 	}
+	// If at this point we have neither regPoint nor regAlign we don't have any alignment and we can return
 	if (regPoint == NULL && regAlign == NULL) return NULL;
 
 	common::regpoint_spec image_fixpoint = common::regpoint_spec(0, 0);
 	common::regpoint_spec surface_fixpoint = common::regpoint_spec(0, 0);
 	lib::node *regpoint_node = NULL;
 
+	// Now we try to decode the regPoint. Note that this means a predefined regPoint name cannot be overridden
+	// with a regPoint element with that same name.
 	if (!decode_regpoint(surface_fixpoint, regPoint) && regPoint != NULL) {
 		// Non-standard regpoint. Look it up.
 		std::map<std::string, lib::node*>::iterator it = m_id2regpoint.find(regPoint);
 		if (it == m_id2regpoint.end()) {
-			lib::logger::get_logger()->trace("%s: unknown %s value: %s", n->get_sig().c_str(), rpname, regPoint);
+			lib::logger::get_logger()->trace("%s: unknown %s value: %s", rpnode->get_sig().c_str(), rpname, regPoint);
 			lib::logger::get_logger()->warn(gettext("Syntax error in SMIL document"));
 		} else {
 			regpoint_node = (*it).second;
-			// XXX Just for now:-)
+			// XXXJACK we only look at top/left here, but we should look at bottom and right too...
 			surface_fixpoint.left = get_regiondim_attr(regpoint_node, "left");
 			surface_fixpoint.top = get_regiondim_attr(regpoint_node, "top");
+			// Fifth priority: pick up regAlign from regPoint
+			if (regAlign == NULL) {
+				regAlign = regpoint_node->get_attribute("regAlign");
+				ranode = regpoint_node;
+			}
 		}
 	}
 	if (!decode_regpoint(image_fixpoint, regAlign)) {
-		// See if we can get one from the regPoint node, if there is one
-		bool found = false;
-		if (regpoint_node) {
-			const char *regPointAlign = regpoint_node->get_attribute("regAlign");
-			if (decode_regpoint(image_fixpoint, regPointAlign))
-				found = true;
-		}
-		if (!found && regAlign != NULL) {
-			lib::logger::get_logger()->trace("%s: unknown %s value: %s", n->get_sig().c_str(), raname, regAlign);
-			lib::logger::get_logger()->warn(gettext("Syntax error in SMIL document"));
-		}
+		lib::logger::get_logger()->trace("%s: unknown %s value: %s", ranode->get_sig().c_str(), raname, regAlign);
+		lib::logger::get_logger()->warn(gettext("Syntax error in SMIL document"));
 	}
 	return new common::smil_alignment(image_fixpoint, surface_fixpoint);
 }
