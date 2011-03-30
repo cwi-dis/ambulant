@@ -171,6 +171,9 @@ ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasourc
 	m_frame_count(0),
 	m_dropped_count(0),
 	m_dropped_count_before_decoding(0),
+	m_possibility_dropping_nonref(0),
+	m_frame_count_temp(0),
+	m_dropped_count_temp(0),
 	m_elapsed(0),
 	m_start_input(true),
 	m_pixel_layout(pixel_unknown)
@@ -183,6 +186,8 @@ ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasourc
 	if (!_select_decoder(fmt))
 		lib::logger::get_logger()->error(gettext("ffmpeg_video_decoder_datasource: could not select %s(0x%x) decoder"), fmt.name.c_str(), fmt.parameters);
 	m_fmt = fmt;
+	// initialize random seed
+	srand ( time(NULL) );
 	m_beforeDecodingDroppingFile = fopen ("beforeDecodingDropping.txt","w");
 	m_afterDecodingDroppingFile = fopen ("afterDecodingDropping.txt","w");
 	m_noDroppingFile = fopen ("noDropping.txt","w");
@@ -575,8 +580,37 @@ ffmpeg_video_decoder_datasource::data_avail()
 			bool drop_this_frame = false;
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: decoding picture(s),  %d bytes of data ", sz);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: m_con: 0x%x, gotpic = %d, sz = %d ", m_con, got_pic, sz);
-			//xxxbo tell ffmpeg to always drop no reference frames
-			//m_con->skip_frame = AVDISCARD_NONREF; 
+
+			// we begin to compute the dropping rate 
+			if (m_dropped_count_temp > 5 ) {
+				// if the dropping rate is bigger than 1/2 
+				// then increase the threshold value of dropping possibility 
+				if (m_frame_count_temp/m_dropped_count_temp <= 2) {
+					m_possibility_dropping_nonref+=3;
+					m_frame_count_temp = 0;
+					m_dropped_count_temp = 0;
+				} else {
+					// otherwise decrease the threshold of dropping possibility
+					m_possibility_dropping_nonref-=3;
+					if (m_possibility_dropping_nonref < 0 )
+						m_possibility_dropping_nonref = 0;
+					m_frame_count_temp = 0;
+					m_dropped_count_temp = 0;				
+				}
+			}
+			
+			/*AM_DBG*/ lib::logger::get_logger()->debug("m_possibility_dropping_nonref = %d", m_possibility_dropping_nonref);
+			
+			//xxxbo tell ffmpeg to drop no reference frames with some possibility 
+			// generate a random number between 1 to 10
+			int random_dropping_nonref;
+			random_dropping_nonref = rand() % 10 + 1;
+			
+			// the possibility of dropping no refence frame
+			assert(random_dropping_nonref > 0);
+			
+			if (random_dropping_nonref < m_possibility_dropping_nonref)
+				m_con->skip_frame = AVDISCARD_NONREF; 
 			// We use skip_frame to make the decoder run faster in case we
 			// are not interested in the data (still seeking forward).
 			if (ipts != (int64_t)AV_NOPTS_VALUE && ipts < m_oldest_timestamp_wanted) {
@@ -640,6 +674,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 			AM_DBG lib::logger::get_logger()->debug("videoclock: ipts=%lld pts=%lld video_clock=%lld, frame_delay=%lld", ipts, pts, m_video_clock, frame_delay);
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: storing frame with pts = %lld",pts );
 			m_frame_count++;
+			m_frame_count_temp++;
 			if (pts < m_oldest_timestamp_wanted) {
 				// A non-essential frame while skipping forward.
 				///*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder: frame analysis after decoding dropping frame %d, ts=%lld < oldest-wanted=%lld", m_frame_count, pts, m_oldest_timestamp_wanted);
@@ -660,6 +695,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 			m_elapsed = pts;
 			if (drop_this_frame) {
 				m_dropped_count++;
+				m_dropped_count_temp++;
 				continue;
 			}
 

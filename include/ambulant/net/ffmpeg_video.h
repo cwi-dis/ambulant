@@ -143,9 +143,12 @@ class ffmpeg_video_decoder_datasource:
 	timestamp_t m_elapsed;
 	bool m_start_input;		// True when m_src->start_frame() is needed
 	pixel_order m_pixel_layout;	// Per-pixel format receiver wants.
-		FILE* m_beforeDecodingDroppingFile;
-		FILE* m_afterDecodingDroppingFile;
-		FILE* m_noDroppingFile;
+	FILE* m_beforeDecodingDroppingFile;
+	FILE* m_afterDecodingDroppingFile;
+	FILE* m_noDroppingFile;
+	int m_possibility_dropping_nonref;
+	int m_dropped_count_temp;
+	int m_frame_count_temp;
 
 };
 
