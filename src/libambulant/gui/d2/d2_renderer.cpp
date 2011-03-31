@@ -48,6 +48,9 @@ namespace gui {
 
 namespace d2 {
 
+ID2D1BitmapRenderTarget*
+d2_transition_renderer::s_fullscreen_rendertarget = NULL;
+
 d2_transition_renderer::~d2_transition_renderer()
 {
 	stop();
@@ -73,13 +76,11 @@ d2_transition_renderer::get_d2player()
 ID2D1RenderTarget*
 d2_transition_renderer::get_current_rendertarget ()
 {
-	ID2D1RenderTarget* rv = get_transition_rendertarget();
-	if (rv == NULL) {
-		rv = get_d2player()->get_rendertarget();
-	}
+	ID2D1RenderTarget*	rv = d2_transition_renderer::s_fullscreen_rendertarget;
+	if (rv == NULL)		rv = this->m_transition_rendertarget;
+	if (rv == NULL)		rv = get_d2player()->get_rendertarget();
 	return rv;
 }
-
 
 ID2D1BitmapRenderTarget*
 d2_transition_renderer::get_transition_rendertarget ()
@@ -92,6 +93,7 @@ d2_transition_renderer::get_transition_rendertarget ()
 			if (FAILED(hr)) {
 				lib::win32::win_trace_error("d2_transition_renderer::get_rendertarget: CreateCompatibleRenderTarget", hr);
 			}
+			else m_transition_rendertarget->BeginDraw();
 		}
 		return m_transition_rendertarget;
 	}
@@ -195,10 +197,16 @@ void
 d2_transition_renderer::redraw_pre(gui_window *window)
 {
 	m_lock.enter();
-	AM_DBG logger::get_logger()->debug("d2_transition_renderer.redraw(0x%x) m_trans_engine=0x%x m_fullscreen=%d", (void *)this,m_trans_engine,m_fullscreen);
+	AM_DBG logger::get_logger()->debug("d2_transition_renderer.redraw_pre(0x%x) m_trans_engine=0x%x m_fullscreen=%d", (void *)this,m_trans_engine,m_fullscreen);
 	if (m_trans_engine != NULL) {
-		get_transition_rendertarget()->BeginDraw();
-		get_d2player()->set_transition_rendertarget((ID2D1BitmapRenderTarget*) get_transition_rendertarget());
+		if (m_fullscreen) {
+			AM_DBG lib::logger::get_logger()->debug("d2_transition_renderer.redraw_pre(0x%x): now=%d",this, m_event_processor->get_timer()->elapsed());
+			set_fullscreen_rendertarget(get_transition_rendertarget());
+			AM_DBG lib::logger::get_logger()->debug("d2_transition_renderer.redraw_pre(0x%x): s_fullscreen_rendertarget=0x%x",this, d2_transition_renderer::s_fullscreen_rendertarget);
+			m_transition_rendertarget = NULL; // prevents Release() by destructor, to be done in d2_player::_screenTransitionPostRedraw()
+		} else {
+			get_d2player()->set_transition_rendertarget((ID2D1BitmapRenderTarget*) get_transition_rendertarget());
+		}
 	}
 #ifdef D2D_NOTYET
 	d2_window *cwindow = (d2_window *)window;
@@ -288,7 +296,8 @@ d2_transition_renderer::redraw_post(gui_window *window)
 			[view screenTransitionStep: NULL elapsed: 0];
 	}
 #endif
-	SafeRelease(&this->m_transition_rendertarget);
+	if ( ! this->m_fullscreen)
+		SafeRelease(&this->m_transition_rendertarget);
 	m_lock.leave();
 }
 

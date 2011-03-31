@@ -64,8 +64,7 @@ namespace std {
 
 #include <d2d1.h>
 #include <wincodec.h>
-#define SafeRelease(x) if(x!=NULL){if(*x!=NULL){(*x)->Release();*x=NULL;}}
-//X #define CheckError(x) if(FAILED(x))goto cleanup;
+#define SafeRelease(x) {if(x!=NULL){if(*x!=NULL){(*x)->Release();*x=NULL;}}}
 #define OnErrorGoto_cleanup(x,id) if(FAILED(x)) {ambulant::lib::win32::win_trace_error(id, x); goto cleanup;}
 
 namespace ambulant {
@@ -310,7 +309,7 @@ class AMBULANTAPI d2_player :
 	// The logger
 	lib::logger *m_logger;
 
-#define	AM_DMP /* dump images (for debugging). Can create lots of image files, slows down all drawing. */
+//#define	AM_DMP /* dump images (for debugging). Can create lots of image files, slows down all drawing. */
 #ifdef	AM_DMP
   public:
 	int dump (ID2D1RenderTarget* rt, std::string id);

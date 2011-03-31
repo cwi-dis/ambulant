@@ -113,8 +113,7 @@
 #include <d2d1.h>
 #include <wincodec.h>
 
-#define AM_DBG
-
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -209,6 +208,7 @@ gui::d2::d2_player::~d2_player() {
 
 	SafeRelease(&m_fullscreen_cur_bitmap);
 	SafeRelease(&m_fullscreen_old_bitmap);
+	d2_transition_renderer::set_fullscreen_rendertarget(NULL); // just to be sure
 
 	lib::event_processor *evp = NULL;
 	if(m_player) stop();
@@ -1173,10 +1173,10 @@ gui::d2::d2_player::_screenTransitionPostRedraw(ambulant::lib::rect* r)
 	
 	if (m_fullscreen_count == 0) {
 		// Finishing a fullscreen transition.
-//XXX No idea yet what to do here
 		AM_DBG lib::logger::get_logger()->debug("_screenTransitionPostRedraw: cleanup after transition done");
 		m_fullscreen_engine = NULL;
 		m_transition_rendertarget = NULL;
+		d2_transition_renderer::set_fullscreen_rendertarget(NULL);
 	}
 }
 

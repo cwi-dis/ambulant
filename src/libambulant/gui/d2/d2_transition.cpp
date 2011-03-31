@@ -33,7 +33,7 @@
 #include <d2d1.h>
 #include <d2d1helper.h>
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -218,7 +218,10 @@ _d2_polygon_list_update (common::surface* dst, std::vector< std::vector<lib::poi
 	ID2D1PathGeometry* path = NULL;
 	D2D1_RECT_F d2_full_rect_f = D2D1::RectF();
 	D2D1_SIZE_F d2_full_size_f = D2D1::SizeF();
-	ID2D1BitmapRenderTarget* brt = d2_player->get_transition_rendertarget();
+	ID2D1BitmapRenderTarget* brt = d2_transition_renderer::get_fullscreen_rendertarget();
+	if (brt == NULL) {
+		d2_player->get_transition_rendertarget();
+	}
 	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
 	if (brt == NULL || rt == NULL) {
 		return; // nothing to do
@@ -227,9 +230,9 @@ _d2_polygon_list_update (common::surface* dst, std::vector< std::vector<lib::poi
 	if (FAILED(hr)) {
 		lib::logger::get_logger()->trace("d2_transition_renderer::blitclass::polygon[list]::update: CreateLayer returns 0x%x", hr);
 	}
-	OnErrorGoto_cleanup(hr, "_d2_polygon_list_update()  rt->CreateLayer");
+	OnErrorGoto_cleanup(hr, "_d2_polygon_list_update() rt->CreateLayer");
 	hr = brt->EndDraw();
-	OnErrorGoto_cleanup(hr, "_d2_polygon_list_update()  brt->EndDraw()");
+	OnErrorGoto_cleanup(hr, "_d2_polygon_list_update() brt->EndDraw()");
 #ifdef	AM_DMP
 		d2_player->dump(rt, "old");
 #endif//AM_DMP

@@ -62,11 +62,15 @@ class AMBULANTAPI d2_transition_renderer : public ref_counted_obj {
 	void start_outtransition(const lib::transition_info *info);
 	ID2D1RenderTarget* get_current_rendertarget();
 	ID2D1BitmapRenderTarget* get_transition_rendertarget();
+	static ID2D1BitmapRenderTarget* s_fullscreen_rendertarget;
+	static void set_fullscreen_rendertarget(ID2D1BitmapRenderTarget* bmrt) { if (bmrt == NULL) {SafeRelease(&d2_transition_renderer::s_fullscreen_rendertarget);} else d2_transition_renderer::s_fullscreen_rendertarget = bmrt; }
+	static ID2D1BitmapRenderTarget* get_fullscreen_rendertarget() { return d2_transition_renderer::s_fullscreen_rendertarget; }
 
   protected:
 	d2_player* m_d2player;
 	d2_player* get_d2player ();
 	ID2D1BitmapRenderTarget* m_transition_rendertarget;
+
 
   private:
 	void transition_step();
