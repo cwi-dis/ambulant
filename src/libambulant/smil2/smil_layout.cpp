@@ -161,7 +161,7 @@ smil_layout_manager::build_layout_tree(lib::node *layout_root, lib::document *do
 			//if (level == 0) continue; // Skip layout section itself
 			lib::node *n = pair.second;
 			const char *pid = n->get_attribute("id");
-			AM_DBG lib::logger::get_logger()->debug("smil_layout_manager::get_document_layout: examining %s %s",
+			/*AM_DBG*/ lib::logger::get_logger()->debug("smil_layout_manager::get_document_layout: examining %s %s",
 				n->get_local_name().c_str(), (pid?pid:"no-id"));
 			// Find node type
 			common::layout_type tp = m_schema->get_layout_type(n->get_local_name());
@@ -173,6 +173,8 @@ smil_layout_manager::build_layout_tree(lib::node *layout_root, lib::document *do
 				} else {
 					lib::logger::get_logger()->trace("smil_layout_manager: regPoint node without id attribute");
 				}
+				// We should push something on the stack, because it is popped later
+				stack.push(NULL);
 				continue;
 			}
 			dimension_inheritance di;
@@ -193,7 +195,7 @@ smil_layout_manager::build_layout_tree(lib::node *layout_root, lib::document *do
 			doc->register_for_avt_changes(n, this);
 #endif // WITH_SMIL30
 			if (stack.empty()) {
-				AM_DBG lib::logger::get_logger()->debug("smil_layout_manager::get_document_layout: 0x%x is m_layout_tree", (void*)rn);
+				/*AM_DBG*/ lib::logger::get_logger()->debug("smil_layout_manager::get_document_layout: 0x%x is m_layout_tree", (void*)rn);
 				if(m_layout_tree != NULL) {
 					lib::logger::get_logger()->error("smil_layout_manager: multiple layout roots!");
 				}
@@ -201,19 +203,19 @@ smil_layout_manager::build_layout_tree(lib::node *layout_root, lib::document *do
 			} else {
 				region_node *parent = stack.top();
 				parent->append_child(rn);
-				AM_DBG lib::logger::get_logger()->debug("smil_layout_manager::get_document_layout: 0x%x is child of 0x%x", (void*)rn, (void*)parent);
+				/*AM_DBG*/ lib::logger::get_logger()->debug("smil_layout_manager::get_document_layout: 0x%x is child of 0x%x", (void*)rn, (void*)parent);
 			}
 			// Enter the region ID into the id-mapping
 			if(pid) {
 				std::string id = pid;
-				AM_DBG lib::logger::get_logger()->debug("smil_layout_manager: mapping id %s", pid);
+				/*AM_DBG*/ lib::logger::get_logger()->debug("smil_layout_manager: mapping id %s", pid);
 				m_id2region[id] = rn;
 			}
 
 			// And the same for the regionName multimap
 			const char *pname = n->get_attribute("regionName");
 			if(pname) {
-				AM_DBG lib::logger::get_logger()->debug("smil_layout_manager: mapping regionName %s", pname);
+				/*AM_DBG*/ lib::logger::get_logger()->debug("smil_layout_manager: mapping regionName %s", pname);
 				m_name2region[pname].push_back(rn);
 			}
 
