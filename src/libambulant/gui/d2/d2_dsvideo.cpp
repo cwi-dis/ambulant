@@ -173,8 +173,8 @@ d2_dsvideo_renderer::_copy_to_ddsurf()
 void
 d2_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window)
 {
-	m_lock.enter();
 	recreate_d2d();
+	m_lock.enter();
 	if(!m_d2bitmap) {
 		// No bits available
 		AM_DBG lib::logger::get_logger()->debug("d2_img_renderer::redraw NOT: no image or cannot play %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
@@ -211,26 +211,10 @@ d2_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window)
 	// Use one type of rect to do op
 	lib::rect img_rect(img_rect1);
 
-	// A complete repaint would be:
-	// {img, img_rect } -> img_reg_rc
-
-	// We have to paint only the intersection.
-	// Otherwise we will override upper layers
-	lib::rect img_reg_rc_dirty = img_reg_rc & dirty;
-	if(img_reg_rc_dirty.empty()) {
-		// this renderer has no pixels for the dirty rect
-		AM_DBG lib::logger::get_logger()->debug("d2_dsvideo_renderer::redraw NOT: empty dirty region %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
-		m_lock.leave();
-		return;
-	}
-
-	// Find the part of the image that is mapped to img_reg_rc_dirty
-	lib::rect img_rect_dirty = reverse_transform(&img_reg_rc_dirty,
-		&img_rect, &img_reg_rc);
 
 	// Translate img_reg_rc_dirty to viewport coordinates
 	lib::point topleft = m_dest->get_global_topleft();
-	img_reg_rc_dirty.translate(topleft);
+	img_reg_rc.translate(topleft);
 
 
 	// Finally blit img_rect_dirty to img_reg_rc_dirty
@@ -249,8 +233,12 @@ d2_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window)
 void
 d2_dsvideo_renderer::recreate_d2d()
 {
-	if (m_d2bitmap) return;
-	if (m_frame == NULL) return;
+	m_lock.enter();
+	// Check that we actually have work to do 
+	if (m_d2bitmap || m_frame == NULL) {
+		m_lock.leave();
+		return;
+	}
 	D2D1_SIZE_U size = {m_size.w, m_size.h};
 	D2D1_BITMAP_PROPERTIES props = D2D1::BitmapProperties();
 	props.pixelFormat = D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_IGNORE);
@@ -259,15 +247,18 @@ d2_dsvideo_renderer::recreate_d2d()
 	HRESULT hr = rt->CreateBitmap(size, m_frame, m_size.w*4, props, &m_d2bitmap);
 	if (!SUCCEEDED(hr))
 		lib::logger::get_logger()->trace("CreateBitmapFromWicBitmap: error 0x%x", hr);
+	m_lock.leave();
 }
 
 void
 d2_dsvideo_renderer::discard_d2d()
 {
+	m_lock.enter();
 	if (m_d2bitmap) {
 		m_d2bitmap->Release();
 		m_d2bitmap = NULL;
 	}
+	m_lock.leave();
 }
 
 } // namespace d2
