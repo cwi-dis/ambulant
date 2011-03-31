@@ -335,7 +335,7 @@ gui::d2::d2_player::_recreate_d2d(wininfo *wi)
 #ifdef	AM_DMP
 		D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_SOFTWARE),
 #else //AM_DMP
-		D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_SOFTWARE),
+		D2D1::RenderTargetProperties(),
 #endif//AM_DMP
 		D2D1::HwndRenderTargetProperties(wi->m_hwnd, size, D2D1_PRESENT_OPTIONS_RETAIN_CONTENTS),
 		&wi->m_rendertarget);
@@ -367,7 +367,7 @@ void gui::d2::d2_player::play() {
 		std::map<std::string, wininfo*>::iterator it;
 		for(it=m_windows.begin();it!=m_windows.end();it++) {
 			d2_window *d2win = (d2_window *)(*it).second->m_window;
-			d2win->redraw();
+			d2win->need_redraw();
 		}
 		common::gui_player::play();
 		unlock_redraw();
