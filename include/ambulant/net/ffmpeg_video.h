@@ -146,9 +146,11 @@ class ffmpeg_video_decoder_datasource:
 	FILE* m_beforeDecodingDroppingFile;
 	FILE* m_afterDecodingDroppingFile;
 	FILE* m_noDroppingFile;
+#ifdef BO_EXP_DROPPING
 	int m_possibility_dropping_nonref;
 	int m_dropped_count_temp;
 	int m_frame_count_temp;
+#endif
 
 };
 
