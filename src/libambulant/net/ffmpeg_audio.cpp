@@ -845,7 +845,7 @@ ffmpeg_decoder_datasource::_need_fmt_uptodate()
 		m_fmt.channels = m_con->channels;
 	}
 	if (m_fmt.channels == 0 || m_fmt.samplerate == 0) {
-		lib::logger::get_logger()->debug("ffmpeg_decoder_datasource: No samplerate/channel data available yet, guessing...");
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_decoder_datasource: No samplerate/channel data available yet, guessing...");
 	}
 }
 
