@@ -65,7 +65,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="..\..\src\pyambulant\build\temp.win32-$(python_version)\Release\ambulant.lib"
+				AdditionalDependencies="..\..\src\pyambulant\build\temp.win32-$(python_version)\Debug\ambulant_d.lib"
 				OutputFile="../../bin/win32/libampluginD_python.dll"
 				LinkIncremental="0"
 				AdditionalLibraryDirectories="$(python_dir)\libs"
