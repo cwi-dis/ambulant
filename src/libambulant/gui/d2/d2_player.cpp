@@ -1041,7 +1041,7 @@ void gui::d2::d2_player::done(common::player *p) {
 		m_player = pf->player;
 		m_doc = pf->doc;
 		delete pf;
-		assert(0); // resume();
+//XXXJACK No idea why this assert was here...		assert(0); // resume();
 		std::map<std::string, wininfo*>::iterator it;
 		for(it=m_windows.begin();it!=m_windows.end();it++) {
 			d2_window *d2win = (*it).second->m_window;

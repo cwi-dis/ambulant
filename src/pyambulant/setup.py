@@ -75,7 +75,10 @@ if WITH_SDL:
     LIBRARIES.append('ambulant_sdl')
 
 if sys.platform == 'win32':
-    LIBRARIES.append('libambulant_shwin32')
+    if "--debug" in sys.argv: # THIS IS GROSS!!
+        LIBRARIES.append('libambulant_shwin32_D')
+    else:
+        LIBRARIES.append('libambulant_shwin32')
     LIBRARIES.append('libexpat')
     LIBDIRS.append('../../lib/win32')
 else:
