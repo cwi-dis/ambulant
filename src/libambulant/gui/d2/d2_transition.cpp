@@ -220,7 +220,7 @@ _d2_polygon_list_update (common::surface* dst, std::vector< std::vector<lib::poi
 	D2D1_SIZE_F d2_full_size_f = D2D1::SizeF();
 	ID2D1BitmapRenderTarget* brt = d2_transition_renderer::get_fullscreen_rendertarget();
 	if (brt == NULL) {
-		d2_player->get_transition_rendertarget();
+		brt = d2_player->get_transition_rendertarget();
 	}
 	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
 	if (brt == NULL || rt == NULL) {
@@ -271,7 +271,13 @@ d2_transition_blitclass_fade::update()
 	ID2D1Bitmap* bitmap = NULL;
 	D2D1_LAYER_PARAMETERS layer_params = D2D1::LayerParameters();
 	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
-	ID2D1BitmapRenderTarget* brt = d2_player->get_transition_rendertarget();
+	ID2D1BitmapRenderTarget* brt = d2_transition_renderer::get_fullscreen_rendertarget();
+	if (brt == NULL) {
+		brt = d2_player->get_transition_rendertarget();
+	}
+	if (rt == NULL || brt == NULL) {
+		return; // nothing to do
+	}
 	HRESULT hr = brt->EndDraw();
 	OnErrorGoto_cleanup(hr, "d2_transition_blitclass_fade::update()  brt->EndDraw");
 	hr = brt->GetBitmap(&bitmap);
@@ -317,15 +323,18 @@ d2_transition_blitclass_rect::update()
 		D2D1_RECT_F d2_new_rect_f;
 		D2D1_RECT_F d2_full_rect_f;
 		D2D1_SIZE_F d2_full_size_f;
-		ID2D1BitmapRenderTarget* brt = d2_player->get_transition_rendertarget();
+		ID2D1BitmapRenderTarget* brt = d2_transition_renderer::get_fullscreen_rendertarget();
 		if (brt == NULL) {
-			return;
+			brt = d2_player->get_transition_rendertarget();
+		}
+		ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
+		if (brt == NULL || rt == NULL) {
+			return; // nothing to do
 		}
 		HRESULT hr = brt->EndDraw();
 		if (FAILED(hr)) {
 			return;
 		}
-		ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
 		d2_new_rect_f = d2_rectf(newrect_whole);
 		d2_full_size_f = brt->GetSize();
 		d2_full_rect_f = D2D1::RectF(0,0,d2_full_size_f.width,d2_full_size_f.height);
@@ -369,7 +378,13 @@ d2_transition_blitclass_r1r2r3r4::update()
 	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
 	D2D1_BITMAP_PROPERTIES props = D2D1::BitmapProperties();
 	D2D1_MATRIX_3X2_F d2_rt_transform;
-	ID2D1BitmapRenderTarget* brt = d2_player->get_transition_rendertarget();
+	ID2D1BitmapRenderTarget* brt = d2_transition_renderer::get_fullscreen_rendertarget();
+	if (brt == NULL) {
+		brt = d2_player->get_transition_rendertarget();
+	}
+	if (brt == NULL || rt == NULL) {
+		return; // nothing to do
+	}
 	ID2D1RenderTarget* dst_rt = rt, *old_rt = rt, *new_rt = brt;
 	rt->GetTransform(&d2_rt_transform);
 	HRESULT hr = brt->EndDraw();
@@ -449,12 +464,18 @@ d2_transition_blitclass_rectlist::update()
 			return;
 		std::vector< lib::rect >::iterator newrect;
 			
-		ID2D1BitmapRenderTarget* brt = d2_player->get_transition_rendertarget();	
+		ID2D1BitmapRenderTarget* brt = d2_transition_renderer::get_fullscreen_rendertarget();
+		if (brt == NULL) {
+			brt = d2_player->get_transition_rendertarget();
+		}
+		ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
+		if (brt == NULL || rt ==  NULL) {
+			return; // nothing to do
+		}
 		HRESULT hr = brt->EndDraw();
 		if (FAILED(hr)) {
 			return;
 		}
-		ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
 		D2D1_SIZE_F d2_full_size_f = brt->GetSize();
 		D2D1_RECT_F d2_full_rect_f = D2D1::RectF(0,0,d2_full_size_f.width,d2_full_size_f.height);
 		ID2D1Bitmap* bitmap = NULL;

@@ -302,6 +302,7 @@ void gui::d2::d2_img_renderer::redraw_body(const lib::rect& dirty, common::gui_w
 	HRESULT hr = m_original->GetSize(&w, &h);
 	assert(hr == 0);
 	lib::size srcsize(w, h);
+	/*AM_DBG*/ lib::logger::get_logger()->debug("d2_img_renderer::redraw(0x%x) rt=0x%x", this, rt);
 
 	// This code could be neater: it could share quite a bit with the
 	// code below (for non-tiled images). Also, support for tiled images

@@ -267,10 +267,9 @@ class AMBULANTAPI d2_player :
 	bool m_fullscreen_outtrans;
 	bool m_fullscreen_ended;
 	ID2D1Bitmap* m_fullscreen_old_bitmap;
-	ID2D1Bitmap* m_fullscreen_cur_bitmap;
-	void _set_fullscreen_cur_bitmap(ID2D1RenderTarget* rt);
+	void _set_fullscreen_old_bitmap(ID2D1RenderTarget* rt);
 	ID2D1Bitmap* _get_bitmap_from_render_target(ID2D1RenderTarget* rt);
-	void _screenTransitionPreRedraw();
+	void _screenTransitionPreRedraw(ID2D1RenderTarget* rt);
 	void _screenTransitionPostRedraw(lib::rect* r);
 
 	// Capturing screen output
@@ -312,7 +311,15 @@ class AMBULANTAPI d2_player :
 //#define	AM_DMP /* dump images (for debugging). Can create lots of image files, slows down all drawing. */
 #ifdef	AM_DMP
   public:
+// write the contents of the ID2D1RenderTarget* <rt> to the file: ".\<number>.<id>.png" where number is
+// a generated numeric string circular variying between "0000" and "9999", which is returned as an int.   
 	int dump (ID2D1RenderTarget* rt, std::string id);
+
+	// write the contents of the (ID2D1Bitmap* <bmp> associated with ID2D1RenderTarget* <rt> to the file:
+// ".\<number>.<id>.png" where number is a generated numeric string circular variying between
+//	"0000" and "9999", which is returned as an int.   
+	int dump_bitmap(ID2D1Bitmap* bmp, ID2D1RenderTarget* rt, std::string id);
+
 #endif//AM_DMP
 };
 
