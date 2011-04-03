@@ -196,6 +196,9 @@ class AMBULANTAPI d2_player :
 	void screen_transition_step(smil2::transition_engine* engine, lib::transition_info::time_type now);
 	void set_transition_rendertarget(ID2D1BitmapRenderTarget* bmrt) { m_transition_rendertarget = bmrt; }
 	ID2D1Bitmap* get_fullscreen_old_bitmap();
+	void set_fullscreen_rendertarget(ID2D1BitmapRenderTarget* bmrt) { if (bmrt == NULL) {SafeRelease(&m_fullscreen_rendertarget);} else m_fullscreen_rendertarget = bmrt; }
+	ID2D1BitmapRenderTarget* get_fullscreen_rendertarget() { return m_fullscreen_rendertarget; }
+
 //X //{return m_fullscreen_old_bitmap ? m_fullscreen_old_bitmap : m_fullscreen_old_bitmap = _get_bitmap_from_render_target(get_rendertarget()); }
 
 	void lock_redraw();
@@ -258,11 +261,13 @@ class AMBULANTAPI d2_player :
 	bool _has_transitions() const;
 	d2_transition *_get_transition(common::playable *p);
 	d2_transition *_set_transition(common::playable *p, const lib::transition_info *info, bool is_outtransition);
-	ID2D1BitmapRenderTarget* m_transition_rendertarget;
+	ID2D1BitmapRenderTarget* m_transition_rendertarget; // managed by d2_renderer (for use by d2_transition*update())
 
 	// full screen transitions
 	int m_fullscreen_count;
 	smil2::transition_engine* m_fullscreen_engine;
+	ID2D1BitmapRenderTarget* m_fullscreen_rendertarget;
+
 	lib::transition_info::time_type m_fullscreen_now;
 	bool m_fullscreen_outtrans;
 	bool m_fullscreen_ended;

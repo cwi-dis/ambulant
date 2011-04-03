@@ -142,6 +142,7 @@ gui::d2::d2_player::d2_player(
 	m_fullscreen_outtrans(false),
 	m_fullscreen_ended(false),
 	m_fullscreen_old_bitmap(NULL),
+	m_fullscreen_rendertarget(NULL),
 	m_logger(lib::logger::get_logger())
 {
 	set_embedder(this);
@@ -206,7 +207,7 @@ gui::d2::d2_player::d2_player(
 gui::d2::d2_player::~d2_player() {
 
 	SafeRelease(&m_fullscreen_old_bitmap);
-	d2_transition_renderer::set_fullscreen_rendertarget(NULL); // just to be sure
+	set_fullscreen_rendertarget(NULL); // just to be sure
 
 	lib::event_processor *evp = NULL;
 	if(m_player) stop();
@@ -1132,7 +1133,7 @@ gui::d2::d2_player::end_screen_transition()
 	AM_DBG lib::logger::get_logger()->debug("d2_player::end_screen_transition()");
 	m_fullscreen_count--;
 	if (this->m_fullscreen_count == 0) {
-		d2_transition_renderer::set_fullscreen_rendertarget(NULL);
+		set_fullscreen_rendertarget(NULL);
 	}
 }
 
@@ -1176,7 +1177,7 @@ gui::d2::d2_player::_screenTransitionPostRedraw(ambulant::lib::rect* r)
 		AM_DBG lib::logger::get_logger()->debug("_screenTransitionPostRedraw: cleanup after transition done");
 		m_fullscreen_engine = NULL;
 		m_transition_rendertarget = NULL;
-		d2_transition_renderer::set_fullscreen_rendertarget(NULL);
+		set_fullscreen_rendertarget(NULL);
 	}
 }
 

@@ -218,7 +218,7 @@ _d2_polygon_list_update (common::surface* dst, std::vector< std::vector<lib::poi
 	ID2D1PathGeometry* path = NULL;
 	D2D1_RECT_F d2_full_rect_f = D2D1::RectF();
 	D2D1_SIZE_F d2_full_size_f = D2D1::SizeF();
-	ID2D1BitmapRenderTarget* brt = d2_transition_renderer::get_fullscreen_rendertarget();
+	ID2D1BitmapRenderTarget* brt = d2_player->get_fullscreen_rendertarget();
 	if (brt == NULL) {
 		brt = d2_player->get_transition_rendertarget();
 	}
@@ -271,7 +271,7 @@ d2_transition_blitclass_fade::update()
 	ID2D1Bitmap* bitmap = NULL;
 	D2D1_LAYER_PARAMETERS layer_params = D2D1::LayerParameters();
 	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
-	ID2D1BitmapRenderTarget* brt = d2_transition_renderer::get_fullscreen_rendertarget();
+	ID2D1BitmapRenderTarget* brt = d2_player->get_fullscreen_rendertarget();
 	if (brt == NULL) {
 		brt = d2_player->get_transition_rendertarget();
 	}
@@ -323,7 +323,7 @@ d2_transition_blitclass_rect::update()
 		D2D1_RECT_F d2_new_rect_f;
 		D2D1_RECT_F d2_full_rect_f;
 		D2D1_SIZE_F d2_full_size_f;
-		ID2D1BitmapRenderTarget* brt = d2_transition_renderer::get_fullscreen_rendertarget();
+		ID2D1BitmapRenderTarget* brt = d2_player->get_fullscreen_rendertarget();
 		if (brt == NULL) {
 			brt = d2_player->get_transition_rendertarget();
 		}
@@ -378,7 +378,7 @@ d2_transition_blitclass_r1r2r3r4::update()
 	ID2D1RenderTarget* rt = (ID2D1RenderTarget*) d2_player->get_rendertarget();
 	D2D1_BITMAP_PROPERTIES props = D2D1::BitmapProperties();
 	D2D1_MATRIX_3X2_F d2_rt_transform;
-	ID2D1BitmapRenderTarget* brt = d2_transition_renderer::get_fullscreen_rendertarget();
+	ID2D1BitmapRenderTarget* brt = d2_player->get_fullscreen_rendertarget();
 	if (brt == NULL) {
 		brt = d2_player->get_transition_rendertarget();
 	}
@@ -464,7 +464,7 @@ d2_transition_blitclass_rectlist::update()
 			return;
 		std::vector< lib::rect >::iterator newrect;
 			
-		ID2D1BitmapRenderTarget* brt = d2_transition_renderer::get_fullscreen_rendertarget();
+		ID2D1BitmapRenderTarget* brt = d2_player->get_fullscreen_rendertarget();
 		if (brt == NULL) {
 			brt = d2_player->get_transition_rendertarget();
 		}
