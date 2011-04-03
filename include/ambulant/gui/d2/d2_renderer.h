@@ -154,20 +154,6 @@ class d2_renderer : public d2_resources, public RP_Base {
     d2_player *m_d2player;
   private:
 	d2_transition_renderer *m_transition_renderer;
-
-#ifdef JNK
-	ID2D1RenderTarget* m_transition_rendertarget;
-
-	ID2D1RenderTarget* _get_transition_rendertarget() {
-		if (m_transition_rendertarget == NULL) {
-			HRESULT hr = m_rendertarget->CreateCompatibleRenderTarget(&m_transition_rendertarget);
-			if (FAILED(hr)) {
-				lib::win32::win_trace_error("CreateCompatibleRenderTarget", hr);
-			}
-		}
-		return m_transition_rendertarget;
-	}
-#endif//JNK
 };
 
 } // namespace d2
