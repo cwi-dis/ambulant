@@ -119,7 +119,7 @@ void gui::d2::d2_window::unlock_redraw() {
 	m_redraw_rect_lock.enter();
 	assert(m_locked > 0);
 	m_locked--;
-	/*AM_DBG*/ if(m_locked > 0 && m_redraw_rect_valid) ambulant::lib::logger::get_logger()->debug("unlock_redraw: count is now %d", m_locked);
+	AM_DBG if(m_locked > 0 && m_redraw_rect_valid) ambulant::lib::logger::get_logger()->debug("unlock_redraw: count is now %d", m_locked);
 	if (m_locked == 0 && m_redraw_rect_valid) {
 		lib::rect to_redraw = m_redraw_rect;
 		m_redraw_rect_valid = false;
