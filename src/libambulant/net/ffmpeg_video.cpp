@@ -170,8 +170,8 @@ ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasourc
 	m_video_clock(0), // XXX Mod by Jack (unsure). Was: src->get_clip_begin()
 	m_frame_count(0),
 	m_dropped_count(0),
-	m_dropped_count_before_decoding(0),
 #ifdef BO_EXP_DROPPING
+	m_dropped_count_before_decoding(0),
 	m_possibility_dropping_nonref(0),
 	m_frame_count_temp(0),
 	m_dropped_count_temp(0),
@@ -188,11 +188,13 @@ ffmpeg_video_decoder_datasource::ffmpeg_video_decoder_datasource(video_datasourc
 	if (!_select_decoder(fmt))
 		lib::logger::get_logger()->error(gettext("ffmpeg_video_decoder_datasource: could not select %s(0x%x) decoder"), fmt.name.c_str(), fmt.parameters);
 	m_fmt = fmt;
+#ifdef BO_EXP_DROPPING
 	// initialize random seed
 	srand ( time(NULL) );
 	m_beforeDecodingDroppingFile = fopen ("beforeDecodingDropping.txt","w");
 	m_afterDecodingDroppingFile = fopen ("afterDecodingDropping.txt","w");
 	m_noDroppingFile = fopen ("noDropping.txt","w");
+#endif
 }
 
 ffmpeg_video_decoder_datasource::~ffmpeg_video_decoder_datasource()
@@ -200,11 +202,13 @@ ffmpeg_video_decoder_datasource::~ffmpeg_video_decoder_datasource()
 	AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::~ffmpeg_video_decoder_datasource(0x%x)", (void*)this);
 	stop();
 	if (m_img_convert_ctx) sws_freeContext(m_img_convert_ctx);
-	if (m_dropped_count_before_decoding) lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropped %d frames before decoding", m_dropped_count_before_decoding);
 	if (m_dropped_count) lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropped %d of %d frames after decoding", m_dropped_count, m_frame_count);
+#ifdef BO_EXP_DROPPING
+	if (m_dropped_count_before_decoding) lib::logger::get_logger()->debug("ffmpeg_video_decoder: dropped %d frames before decoding", m_dropped_count_before_decoding);
 	fclose(m_beforeDecodingDroppingFile);
 	fclose(m_afterDecodingDroppingFile);
 	fclose(m_noDroppingFile);
+#endif
 }
 
 void
@@ -619,11 +623,13 @@ ffmpeg_video_decoder_datasource::data_avail()
 			if (ipts != (int64_t)AV_NOPTS_VALUE && ipts < m_oldest_timestamp_wanted) {
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: setting hurry_up: ipts=%lld, m_oldest_timestamp_wanted=%lld (%lld us late)",ipts, m_oldest_timestamp_wanted, m_oldest_timestamp_wanted-ipts);
 				m_con->skip_frame = AVDISCARD_NONREF;
+#ifdef BO_EXP_DROPPING
 				//m_dropped_count++; // This is not necessarily correct
 				m_dropped_count_before_decoding++;
 				///*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: frame analysis before decoding dropping frame ipts=%lld, m_oldest_timestamp_wanted=%lld (%lld us late)", ipts, m_oldest_timestamp_wanted, m_oldest_timestamp_wanted-ipts);
 				/*AM_DBG*/ lib::logger::get_logger()->debug("BeforeDecodingDropping pts %lld m_dropped_count_before_decoding %d", ipts, m_dropped_count_before_decoding);
 				fprintf(m_beforeDecodingDroppingFile,"BeforeDecodingDropping\t pts\t %lld\t 1\n",ipts);
+#endif
 			} else {
 				AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: decoder is %lld us ahead of playout", ipts-m_oldest_timestamp_wanted);
 			}
@@ -682,19 +688,23 @@ ffmpeg_video_decoder_datasource::data_avail()
 #endif
 			if (pts < m_oldest_timestamp_wanted) {
 				// A non-essential frame while skipping forward.
+#ifdef BO_EXP_DROPPING
 				///*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder: frame analysis after decoding dropping frame %d, ts=%lld < oldest-wanted=%lld", m_frame_count, pts, m_oldest_timestamp_wanted);
 				/*AM_DBG*/ lib::logger::get_logger()->debug("AfterDecodingDropping pts %lld", pts);
 				m_dropped_count_before_decoding--;
 				fprintf(m_afterDecodingDroppingFile, "AfterDecodingDropping\t pts\t %lld\t 2\n",pts);
+#endif
 				drop_this_frame = true;
 			}
 			if (m_frames.size() > 0 && pts < m_frames.front().first) {
 				// A frame that came after this frame has already been consumed.
 				// We should drop this frame.
+#ifdef BO_EXP_DROPPING
 				///*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder: frame analysis after decoding dropping frame %d (ts=%lld): too late, later frame (ts=%lld) already displayed", m_frame_count, pts, m_frames.front().first);
 				/*AM_DBG*/ lib::logger::get_logger()->debug("AfterDecodingDropping pts %lld", pts);
 				m_dropped_count_before_decoding--;
 				fprintf(m_afterDecodingDroppingFile, "AfterDecodingDropping\t pts\t %lld\t 2\n",pts);
+#endif
 				drop_this_frame = true;
 			}
 			m_elapsed = pts;
@@ -767,8 +777,10 @@ ffmpeg_video_decoder_datasource::data_avail()
 			m_frames.push(element);
 
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): push pts = %lld into buffer", pts);
+#ifdef BO_EXP_DROPPING
 			/*AM_DBG*/ lib::logger::get_logger()->debug("NoDropping pts %lld", pts); 
 			fprintf(m_noDroppingFile, "NoDropping\t pts\t %lld\t 3\n",pts);
+#endif
 			did_generate_frame = true;
 		} // End of while loop
 		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail:done decoding (0x%x) ", m_con);
