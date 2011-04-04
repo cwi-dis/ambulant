@@ -196,17 +196,11 @@ class AMBULANTAPI d2_player :
 	void unlock_redraw();
 
 	// Direct2D resource management
-	void register_resources(d2_resources *resource) {
-		m_resources.insert(resource);
-	}
-	void unregister_resources(d2_resources *resource) {
-		m_resources.erase(resource);
-	}
+	void register_resources(d2_resources *resource);
+	void unregister_resources(d2_resources *resource);
 
 	// Schedule a capture of the output are
-	void schedule_capture(lib::rect area, d2_capture_callback *cb) {
-		m_captures.push_back(std::pair<lib::rect, d2_capture_callback *>(area, cb));
-	}
+	void schedule_capture(lib::rect area, d2_capture_callback *cb);
 
 	// Global capture-callback: saves snapshots, keeps bitmap for transitions, etc.
 	void captured(IWICBitmap *bitmap);
@@ -285,6 +279,7 @@ class AMBULANTAPI d2_player :
 
 	// Direct2D resource management
 	std::set<d2_resources*> m_resources;
+	lib::critical_section m_resources_lock;
 
 	// The logger
 	lib::logger *m_logger;

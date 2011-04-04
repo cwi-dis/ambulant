@@ -356,9 +356,11 @@ gui::d2::d2_player::_discard_d2d()
 		}
 	}
 	std::set<d2_resources*>::iterator rit;
+	m_resources_lock.enter();
 	for(rit=m_resources.begin(); rit!=m_resources.end(); rit++) {
 		(*rit)->discard_d2d();
 	}
+	m_resources_lock.leave();
 }
 
 void gui::d2::d2_player::play() {
@@ -508,6 +510,7 @@ bool gui::d2::d2_player::_calc_fit(
 
 void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 
+	RECT dirtyMod;
 	HRESULT hr = S_OK;
 	// Create the Direct2D resources, in case they were lost
 	wininfo *wi = _get_wininfo(hwnd);
@@ -545,10 +548,29 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 			xoff, yoff
 		};
 		AM_DBG lib::logger::get_logger()->debug("d2_player::redraw offset %f,%f factor %f", xoff, yoff, factor);
-		rt->SetTransform(transform);
+		D2D1_MATRIX_3X2_F oldTransform;
+		rt->GetTransform(&oldTransform);
+		if (memcmp(&oldTransform, &transform, sizeof(D2D1_MATRIX_3X2_F)) != 0) {
+			rt->SetTransform(transform);
+		}
+#if 1
+		if (dirty) {
+			dirtyMod = *dirty;
+			dirtyMod.left -= xoff;
+			dirtyMod.right -= xoff;
+			dirtyMod.top -= yoff;
+			dirtyMod.bottom -= yoff;
+			dirtyMod.left /= factor;
+			dirtyMod.right /= factor;
+			dirtyMod.top /= factor;
+			dirtyMod.bottom /= factor;
+			dirty = &dirtyMod;
+		}
+#else
 		// Lazy programmer alert: we cannot use the dirty rect as-is, 
 		// need to do the transform, at some time. For now we clear it.
 		dirty = NULL;
+#endif
 	} else {
 		rt->SetTransform(D2D1::Matrix3x2F::Identity());
 	}
@@ -709,6 +731,21 @@ void gui::d2::d2_player::unlock_redraw() {
 	for(it=m_windows.begin();it!=m_windows.end();it++) {
 		(*it).second->m_window->unlock_redraw();
 	}
+}
+void gui::d2::d2_player::register_resources(d2_resources *resource) {
+	m_resources_lock.enter();
+	m_resources.insert(resource);
+	m_resources_lock.leave();
+}
+void gui::d2::d2_player::unregister_resources(d2_resources *resource) {
+	m_resources_lock.enter();
+	m_resources.erase(resource);
+	m_resources_lock.leave();
+}
+
+// Schedule a capture of the output are
+void gui::d2::d2_player::schedule_capture(lib::rect area, d2_capture_callback *cb) {
+	m_captures.push_back(std::pair<lib::rect, d2_capture_callback *>(area, cb));
 }
 
 ////////////////////
