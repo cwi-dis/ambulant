@@ -239,7 +239,6 @@ _d2_polygon_list_update (common::surface* dst, std::vector< std::vector<lib::poi
 #ifdef	AM_DMP
 		d2_player->dump(brt, "new");
 #endif//AM_DMP
-
 	d2_full_size_f = brt->GetSize();
 	d2_full_rect_f = D2D1::RectF(0,0,d2_full_size_f.width,d2_full_size_f.height);
 	ID2D1Bitmap* bitmap = NULL;

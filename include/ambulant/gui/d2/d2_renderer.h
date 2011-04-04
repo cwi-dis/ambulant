@@ -62,6 +62,7 @@ class AMBULANTAPI d2_transition_renderer : public ref_counted_obj {
 	void start_outtransition(const lib::transition_info *info);
 	ID2D1RenderTarget* get_current_rendertarget();
 	ID2D1BitmapRenderTarget* get_transition_rendertarget();
+	void check_fullscreen_outtrans(/*common::surface surf, */const lib::node* node);
 
   protected:
 	d2_player* m_d2player;
@@ -125,6 +126,7 @@ class d2_renderer : public d2_resources, public RP_Base {
 	}
 
 	void redraw(const rect &dirty, gui_window *window) {
+		m_transition_renderer->check_fullscreen_outtrans(m_node);
 		recreate_d2d();
 		m_transition_renderer->redraw_pre(window);
 		redraw_body(dirty, window, (ID2D1RenderTarget*) m_transition_renderer->get_current_rendertarget());

@@ -141,6 +141,8 @@ gui::d2::d2_player::d2_player(
 	m_fullscreen_now(0),
 	m_fullscreen_outtrans(false),
 	m_fullscreen_ended(false),
+	m_fullscreen_cur_bitmap(NULL),
+	m_fullscreen_new_bitmap(NULL),
 	m_fullscreen_old_bitmap(NULL),
 	m_fullscreen_rendertarget(NULL),
 	m_logger(lib::logger::get_logger())
@@ -206,6 +208,8 @@ gui::d2::d2_player::d2_player(
 
 gui::d2::d2_player::~d2_player() {
 
+	SafeRelease(&m_fullscreen_cur_bitmap);
+	SafeRelease(&m_fullscreen_new_bitmap);
 	SafeRelease(&m_fullscreen_old_bitmap);
 	set_fullscreen_rendertarget(NULL); // just to be sure
 
@@ -578,6 +582,8 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 		_screenTransitionPostRedraw(NULL);
 	}
 	hr = rt->EndDraw();
+	// after each redraw a bitmap screen copy is made for possible fullscreen transitions
+	_set_fullscreen_cur_bitmap(rt); 
 #ifdef	AM_DMP
 //	dump (rt, "d2_player-redraw2");
 #endif//AM_DMP
@@ -1132,7 +1138,7 @@ gui::d2::d2_player::end_screen_transition()
 	}
 	AM_DBG lib::logger::get_logger()->debug("d2_player::end_screen_transition()");
 	m_fullscreen_count--;
-	if (this->m_fullscreen_count == 0) {
+	if (m_fullscreen_count == 0) {
 		set_fullscreen_rendertarget(NULL);
 	}
 }
@@ -1141,10 +1147,19 @@ void
 gui::d2::d2_player::_screenTransitionPreRedraw(ID2D1RenderTarget* rt)
 {
 	AM_DBG lib::logger::get_logger()->debug("d2_player::_screenTransitionPreRedraw()");
-		if (this->m_fullscreen_count > 0 && m_fullscreen_engine == NULL) {
-		_set_fullscreen_old_bitmap(rt);
+	if (m_fullscreen_count > 0 && m_fullscreen_engine == NULL) {
+		// fullscreen in: at first call (m_fullscreen_engine == NULL), save the old screen image
+		if (m_fullscreen_outtrans) {
+			_set_fullscreen_new_bitmap(rt);
+		} else {
+			_set_fullscreen_old_bitmap(rt);
+		}
+#ifdef	JNK
+		RECT d2_rect = this->m_cur_wininfo->m_rect;
+		lib::rect r = lib::rect(lib::size(d2_rect.right - d2_rect.left, d2_rect.bottom - d2_rect.top));
+		this->m_cur_wininfo->m_window->need_redraw(r);
+#endif//JNK
 	}
-
 }
 
 void
@@ -1228,19 +1243,35 @@ gui::d2::d2_player::captured(IWICBitmap *bitmap)
 	if (bitmap) bitmap->Release();
 }
 
-ID2D1Bitmap*
-gui::d2::d2_player::get_fullscreen_old_bitmap()
+void
+gui::d2::d2_player::_set_fullscreen_cur_bitmap(ID2D1RenderTarget* rt) 
 {
-	return m_fullscreen_old_bitmap;
+	SafeRelease(&this->m_fullscreen_cur_bitmap);
+	this->m_fullscreen_cur_bitmap = this->_get_bitmap_from_render_target(rt);
+#ifdef	AM_DMP
+//	dump_bitmap(m_fullscreen_old_bitmap, rt, "cbm");
+#endif//AM_DMP
+}
+
+void
+gui::d2::d2_player::_set_fullscreen_new_bitmap(ID2D1RenderTarget* rt) 
+{
+	SafeRelease(&this->m_fullscreen_new_bitmap);
+	m_fullscreen_new_bitmap = m_fullscreen_cur_bitmap;
+	m_fullscreen_cur_bitmap = NULL; // prevents Release (old_bitmap now has ownership)
+#ifdef	AM_DMP
+//	dump_bitmap(m_fullscreen_new_bitmap, rt, "nbm");
+#endif//AM_DMP
 }
 
 void
 gui::d2::d2_player::_set_fullscreen_old_bitmap(ID2D1RenderTarget* rt) 
 {
 	SafeRelease(&this->m_fullscreen_old_bitmap);
-	this->m_fullscreen_old_bitmap = this->_get_bitmap_from_render_target(rt);
+	m_fullscreen_old_bitmap = m_fullscreen_cur_bitmap;
+	m_fullscreen_cur_bitmap = NULL; // prevents Release (old_bitmap now has ownership)
 #ifdef	AM_DMP
-	dump_bitmap(m_fullscreen_old_bitmap, rt, "cbm");
+//	dump_bitmap(m_fullscreen_old_bitmap, rt, "obm");
 #endif//AM_DMP
 }
 

@@ -102,8 +102,12 @@ void
 d2_transition_renderer::set_surface(common::surface *dest)
 {
 	m_transition_dest = dest;
-	if (m_transition_dest && m_intransition && m_intransition->m_scope == scope_screen)
-		m_transition_dest = m_transition_dest->get_top_surface();
+	if (m_transition_dest) {
+		if ((m_intransition && m_intransition->m_scope == scope_screen)
+			|| (m_outtransition && m_outtransition->m_scope == scope_screen)) {
+			m_transition_dest = m_transition_dest->get_top_surface();
+		}
+	}
 }
 
 void
@@ -137,12 +141,31 @@ d2_transition_renderer::start(double where)
 }
 
 void
+d2_transition_renderer::check_fullscreen_outtrans(/*common::surface surf, */const lib::node* node)
+{
+	const char* id = node->get_attribute("transOut");
+	if (id != NULL) {
+		lib::logger::get_logger()->debug("d2_transition_renderer:check_fullscreen_outtrans(0x%x) transOut=%s", this, id);
+		const lib::node* trans_node = node->get_context()->get_node(id);
+		const char* scope = trans_node->get_attribute("scope");
+		if (scope != NULL && strcmp(scope, "screen") == 0) {
+			lib::logger::get_logger()->debug("d2_transition_renderer:check_fullscreen_outtrans(0x%x) scope=%s", this, scope);
+			d2_player* d2player = get_d2player();
+			if (d2player->get_fullscreen_old_bitmap() == NULL) {
+				d2player->take_fullscreen_shot(d2player->get_rendertarget());
+			}
+		}
+	}
+}
+
+void
 d2_transition_renderer::start_outtransition(const lib::transition_info *info)
 {
 	if (m_trans_engine) stop();
 	m_lock.enter();
 	AM_DBG logger::get_logger()->debug("d2_transition_renderer.start_outtransition(0x%x)", (void *)this);
 	m_outtransition = info;
+	set_surface(m_transition_dest); // fullscreen: reset the destination area to full screen 
 	m_trans_engine = d2_transition_engine(m_transition_dest, true, m_outtransition);
 	if (m_transition_dest && m_trans_engine) {
 		gui_window *window = m_transition_dest->get_gui_window();
@@ -176,10 +199,11 @@ d2_transition_renderer::stop()
 	} else {
 		delete m_trans_engine;
 		m_trans_engine = NULL;
+		get_d2player()->set_transition_rendertarget(NULL);
 	}
+#ifdef D2D_NOTYET
 	gui_window *window = m_transition_dest->get_gui_window();
 	d2_window *cwindow = (d2_window *)window;
-#ifdef D2D_NOTYET
 	AmbulantView *view = (AmbulantView *)cwindow->view();
 	[view decrementTransitionCount];
 	if (m_fullscreen) {
@@ -195,11 +219,11 @@ void
 d2_transition_renderer::redraw_pre(gui_window *window)
 {
 	m_lock.enter();
-	AM_DBG logger::get_logger()->debug("d2_transition_renderer.redraw_pre(0x%x) m_trans_engine=0x%x m_fullscreen=%d", (void *)this,m_trans_engine,m_fullscreen);
+	/*AM_DBG*/ logger::get_logger()->debug("d2_transition_renderer.redraw_pre(0x%x) m_trans_engine=0x%x m_fullscreen=%d", (void *)this,m_trans_engine,m_fullscreen);
 	if (m_trans_engine != NULL) {
 		if (m_fullscreen) {
 			AM_DBG lib::logger::get_logger()->debug("d2_transition_renderer.redraw_pre(0x%x): now=%d",this, m_event_processor->get_timer()->elapsed());
-			get_d2player()->set_fullscreen_rendertarget(get_transition_rendertarget());
+			get_d2player()->set_fullscreen_rendertarget(get_transition_rendertarget()); // turned of by d2_player::_endScreenTransition
 			m_transition_rendertarget = NULL; // prevents Release() by destructor, to be done in d2_player::_screenTransitionPostRedraw()
 		} else {
 			get_d2player()->set_transition_rendertarget((ID2D1BitmapRenderTarget*) get_transition_rendertarget());
@@ -233,14 +257,24 @@ d2_transition_renderer::redraw_post(gui_window *window)
 		if (m_fullscreen) {
 			d2::d2_player* d2_player = get_d2player();
 			ID2D1Bitmap* old_bitmap = d2_player->get_fullscreen_old_bitmap();
-			if (old_bitmap != NULL) {
-				ID2D1RenderTarget* rt =	d2_player->get_rendertarget();
-				rt->DrawBitmap(old_bitmap);
-				HRESULT hr = rt->Flush();
-#ifdef	AM_DMP
-				int idx = d2_player->dump(d2_player->get_rendertarget(), "obm");
-				lib::logger::get_logger()->debug("d2_transition_renderer.redraw_pre(0x%x) DrawBitmap(oldbitmap) hr=0x%x idx=%d", this, hr, idx);
-#endif//AM_DMP
+			if (this->m_outtransition) {
+				ID2D1Bitmap* new_bitmap = d2_player->get_fullscreen_new_bitmap();
+				if (old_bitmap != NULL) {
+					ID2D1RenderTarget* rt =	d2_player->get_rendertarget();
+					rt->DrawBitmap(old_bitmap);
+					HRESULT hr = rt->Flush();
+				}
+				if (new_bitmap != NULL) {
+					ID2D1RenderTarget* brt = d2_player->get_fullscreen_rendertarget();
+					brt->DrawBitmap(new_bitmap);
+					HRESULT hr = brt->Flush();
+				}
+			} else {
+				if (old_bitmap != NULL) {
+					ID2D1RenderTarget* rt =	d2_player->get_rendertarget();
+					rt->DrawBitmap(old_bitmap);
+					HRESULT hr = rt->Flush();
+				}
 			}
 			get_d2player()->screen_transition_step(m_trans_engine, m_event_processor->get_timer()->elapsed());
 		} else {
