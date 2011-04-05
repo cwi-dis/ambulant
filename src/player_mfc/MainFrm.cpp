@@ -212,6 +212,12 @@ CMainFrame::OnViewFullScreen()
 	InvalidateRect(NULL);
 }
 
+afx_msg BOOL 
+CMainFrame::OnEraseBkgnd(CDC *pDC)
+{
+	return CFrameWnd::OnEraseBkgnd(pDC);
+}
+
 void
 set_status_line(const char *message)
 {

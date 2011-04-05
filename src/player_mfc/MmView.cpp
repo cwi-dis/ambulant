@@ -731,3 +731,9 @@ void MmView::OnUpdateHelpWelcome(CCmdUI *pCmdUI)
 	pCmdUI->Enable(!m_welcomeDocFilename.IsEmpty());
 }
 
+
+afx_msg BOOL 
+MmView::OnEraseBkgnd(CDC *pDC)
+{
+	return CWnd::OnEraseBkgnd(pDC);
+}
