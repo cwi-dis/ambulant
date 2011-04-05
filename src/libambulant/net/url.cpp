@@ -409,12 +409,25 @@ void net::url::_checkurl() const
 }
 net::url::url()
 :	m_absolute(false),
-	m_port(0)
+	m_protocol(""),
+	m_host(""),
+	m_port(0),
+	m_path(""),
+	m_query(""),
+	m_ref(""),
+	m_mime("")
 {
 }
 
 net::url::url(const string& spec)
-:	m_port(0)
+:	m_absolute(false),
+	m_protocol(""),
+	m_host(""),
+	m_port(0),
+	m_path(""),
+	m_query(""),
+	m_ref(""),
+	m_mime("")
 {
 	set_from_spec(spec);
 }
@@ -424,7 +437,9 @@ net::url::url(const string& protocol, const string& host,
 :	m_protocol(protocol),
 	m_host(host),
 	m_port(0),
-	m_path(path)
+	m_path(path),
+	m_query(""),
+	m_mime("")
 {
 	m_absolute = (m_protocol != "");
 	if (s_strict) _checkurl();
@@ -435,7 +450,9 @@ net::url::url(const string& protocol, const string& host, int port,
 :	m_protocol(protocol),
 	m_host(host),
 	m_port(short_type(port)),
-	m_path(path)
+	m_path(path),
+	m_query(""),
+	m_mime("")
 {
 	m_absolute = (m_protocol != "");
 	if (s_strict) _checkurl();
@@ -448,7 +465,8 @@ net::url::url(const string& protocol, const string& host, int port,
 	m_port(short_type(port)),
 	m_path(path),
 	m_query(query),
-	m_ref(ref)
+	m_ref(ref),
+	m_mime("")
 {
 	m_absolute = (m_protocol != "");
 	if (s_strict) _checkurl();

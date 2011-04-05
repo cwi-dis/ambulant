@@ -104,6 +104,7 @@ public:
 	afx_msg void OnHelpWelcome();
 	afx_msg void OnUpdateHelpWelcome(CCmdUI *pCmdUI);
 	afx_msg LRESULT OnReplaceDoc(WPARAM wParam, LPARAM lParam);
+	afx_msg BOOL OnEraseBkgnd(CDC *pDC);
 };
 
 #ifndef _DEBUG  // debug version in MmView.cpp

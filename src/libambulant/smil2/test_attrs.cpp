@@ -327,7 +327,7 @@ bool test_attrs::load_test_attrs(const std::string& filename) {
 			const char *value = n->get_attribute("value");
 			if(name && value) {
 				active_tests_attrs_map[name] = value;
-				/*AM_DBG*/ lib::logger::get_logger()->debug("systemTest %s: %s", name, value);
+				AM_DBG lib::logger::get_logger()->debug("systemTest %s: %s", name, value);
 				if (std::string(name) == "systemLanguage") {
 
 #ifdef WITH_SMIL30

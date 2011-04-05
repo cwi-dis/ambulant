@@ -60,6 +60,8 @@ public:
 
 	afx_msg void OnViewFullScreen();
 
+	afx_msg BOOL OnEraseBkgnd(CDC *pDC);
+
 protected:  // control bar embedded members
 	CStatusBar  m_wndStatusBar;
 	CToolBar    m_wndToolBar;

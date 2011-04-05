@@ -500,7 +500,7 @@ ffmpeg_video_decoder_datasource::seek(timestamp_t time)
 	//xxxbo: For the node which is already prefetched in advance,
 	//       there is no need to call m_src->seek.
 	if (m_oldest_timestamp_wanted == time) {
-		/*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::seek: m_oldest_timestamp_wanted = %lld, time = %lld", m_oldest_timestamp_wanted, time);
+		AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::seek: m_oldest_timestamp_wanted = %lld, time = %lld", m_oldest_timestamp_wanted, time);
 		m_lock.leave();
 		return;
 	}
@@ -605,7 +605,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 					m_dropped_count_temp = 0;				
 				}
 			}
-			/*AM_DBG*/ lib::logger::get_logger()->debug("m_possibility_dropping_nonref = %d", m_possibility_dropping_nonref);
+			AM_DBG lib::logger::get_logger()->debug("m_possibility_dropping_nonref = %d", m_possibility_dropping_nonref);
 			
 			//xxxbo tell ffmpeg to drop no reference frames with some possibility 
 			// generate a random number between 1 to 10
@@ -626,8 +626,8 @@ ffmpeg_video_decoder_datasource::data_avail()
 #ifdef BO_EXP_DROPPING
 				//m_dropped_count++; // This is not necessarily correct
 				m_dropped_count_before_decoding++;
-				///*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: frame analysis before decoding dropping frame ipts=%lld, m_oldest_timestamp_wanted=%lld (%lld us late)", ipts, m_oldest_timestamp_wanted, m_oldest_timestamp_wanted-ipts);
-				/*AM_DBG*/ lib::logger::get_logger()->debug("BeforeDecodingDropping pts %lld m_dropped_count_before_decoding %d", ipts, m_dropped_count_before_decoding);
+				//AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource.data_avail: frame analysis before decoding dropping frame ipts=%lld, m_oldest_timestamp_wanted=%lld (%lld us late)", ipts, m_oldest_timestamp_wanted, m_oldest_timestamp_wanted-ipts);
+				AM_DBG lib::logger::get_logger()->debug("BeforeDecodingDropping pts %lld m_dropped_count_before_decoding %d", ipts, m_dropped_count_before_decoding);
 				fprintf(m_beforeDecodingDroppingFile,"BeforeDecodingDropping\t pts\t %lld\t 1\n",ipts);
 #endif
 			} else {
@@ -689,8 +689,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 			if (pts < m_oldest_timestamp_wanted) {
 				// A non-essential frame while skipping forward.
 #ifdef BO_EXP_DROPPING
-				///*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder: frame analysis after decoding dropping frame %d, ts=%lld < oldest-wanted=%lld", m_frame_count, pts, m_oldest_timestamp_wanted);
-				/*AM_DBG*/ lib::logger::get_logger()->debug("AfterDecodingDropping pts %lld", pts);
+				AM_DBG lib::logger::get_logger()->debug("AfterDecodingDropping pts %lld", pts);
 				m_dropped_count_before_decoding--;
 				fprintf(m_afterDecodingDroppingFile, "AfterDecodingDropping\t pts\t %lld\t 2\n",pts);
 #endif
@@ -700,8 +699,7 @@ ffmpeg_video_decoder_datasource::data_avail()
 				// A frame that came after this frame has already been consumed.
 				// We should drop this frame.
 #ifdef BO_EXP_DROPPING
-				///*AM_DBG*/ lib::logger::get_logger()->debug("ffmpeg_video_decoder: frame analysis after decoding dropping frame %d (ts=%lld): too late, later frame (ts=%lld) already displayed", m_frame_count, pts, m_frames.front().first);
-				/*AM_DBG*/ lib::logger::get_logger()->debug("AfterDecodingDropping pts %lld", pts);
+				AM_DBG lib::logger::get_logger()->debug("AfterDecodingDropping pts %lld", pts);
 				m_dropped_count_before_decoding--;
 				fprintf(m_afterDecodingDroppingFile, "AfterDecodingDropping\t pts\t %lld\t 2\n",pts);
 #endif
@@ -778,7 +776,6 @@ ffmpeg_video_decoder_datasource::data_avail()
 
 			AM_DBG lib::logger::get_logger()->debug("ffmpeg_video_decoder_datasource::data_avail(): push pts = %lld into buffer", pts);
 #ifdef BO_EXP_DROPPING
-			/*AM_DBG*/ lib::logger::get_logger()->debug("NoDropping pts %lld", pts); 
 			fprintf(m_noDroppingFile, "NoDropping\t pts\t %lld\t 3\n",pts);
 #endif
 			did_generate_frame = true;
