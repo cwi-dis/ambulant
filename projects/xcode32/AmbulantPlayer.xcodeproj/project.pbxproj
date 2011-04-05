@@ -81,7 +81,7 @@
 		041DCB3A12B64D1D003407C8 /* libltdl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 041DCB3912B64D1D003407C8 /* libltdl.a */; };
 		04290D17132EBB3E0015D7B7 /* libamplugin_xerces(CG).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 04290B46132EB5F60015D7B7 /* libamplugin_xerces(CG).so */; };
 		04290D19132EBB4C0015D7B7 /* libamplugin_python(CG).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 04290BB2132EB71D0015D7B7 /* libamplugin_python(CG).so */; };
-		042ADA421152D83E009CA791 /* libamplugin_xpath_state.so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADA411152D831009CA791 /* libamplugin_xpath_state.so */; };
+		042ADA421152D83E009CA791 /* libamplugin_xpath_state(Cocoa).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADA411152D831009CA791 /* libamplugin_xpath_state(Cocoa).so */; };
 		042ADAA91152DA4F009CA791 /* libamplugin_xerces(Cocoa).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADAA81152DA4A009CA791 /* libamplugin_xerces(Cocoa).so */; };
 		042ADB0C1152DE69009CA791 /* libamplugin_python(Cocoa).so in Copy Plugins */ = {isa = PBXBuildFile; fileRef = 042ADB0B1152DE65009CA791 /* libamplugin_python(Cocoa).so */; };
 		04428EBE11577E960067C868 /* DTDCache in Resources */ = {isa = PBXBuildFile; fileRef = 04428EBD11577E960067C868 /* DTDCache */; };
@@ -285,7 +285,7 @@
 			files = (
 				042ADAA91152DA4F009CA791 /* libamplugin_xerces(Cocoa).so in Copy Plugins */,
 				042ADB0C1152DE69009CA791 /* libamplugin_python(Cocoa).so in Copy Plugins */,
-				042ADA421152D83E009CA791 /* libamplugin_xpath_state.so in Copy Plugins */,
+				042ADA421152D83E009CA791 /* libamplugin_xpath_state(Cocoa).so in Copy Plugins */,
 			);
 			name = "Copy Plugins";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -521,7 +521,7 @@
 		042ADA3D1152D831009CA791 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				042ADA411152D831009CA791 /* libamplugin_xpath_state.so */,
+				042ADA411152D831009CA791 /* libamplugin_xpath_state(Cocoa).so */,
 				0441E8CC134324880025FCF9 /* libamplugin_xpath_state(CG).so */,
 			);
 			name = Products;
@@ -826,10 +826,10 @@
 			remoteRef = 042AD9551152CC13009CA791 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		042ADA411152D831009CA791 /* libamplugin_xpath_state.so */ = {
+		042ADA411152D831009CA791 /* libamplugin_xpath_state(Cocoa).so */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.dylib";
-			path = libamplugin_xpath_state.so;
+			path = "libamplugin_xpath_state(Cocoa).so";
 			remoteRef = 042ADA401152D831009CA791 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};

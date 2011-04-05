@@ -48,7 +48,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 042AD92C1152C916009CA791 /* libambulant.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 04A1E80812B57DF20060F97E /* libambulantCG */;
+			remoteGlobalIDString = 04A1E80812B57DF20060F97E;
 			remoteInfo = libambulantCG;
 		};
 		04428DB8115779240067C868 /* PBXContainerItemProxy */ = {
@@ -363,7 +363,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = plugin_Prefix.pch;
-				PRODUCT_NAME = libamplugin_xpath_state;
+				PRODUCT_NAME = "libamplugin_xpath_state(Cocoa)";
 				USER_HEADER_SEARCH_PATHS = "$(AMBULANT_DIR)/include $(AMBULANT_INCLUDE_3PP) $(AMBULANT_INCLUDE_3PP)/SDL /usr/include/libxml2 $(AMBULANT_3PP)/live/BasicUsageEnvironment/include $(AMBULANT_3PP)/live/groupsock/include $(AMBULANT_3PP)/live/liveMedia/include $(AMBULANT_3PP)/live/UsageEnvironment/include";
 			};
 			name = Debug;
