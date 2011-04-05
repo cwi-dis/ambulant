@@ -52,6 +52,9 @@ set DESTINATION="sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuild
 set DESTINATIONDESKTOP="%DESTINATION%/win32-intel-desktop/"
 set DESTINATIONNP="%DESTINATION%/win32-intel-firefoxplugin/"
 set DESTINATIONIE="%DESTINATION%/win32-intel-ieplugin/"
+set DESTINATIONDESKTOPXP="%DESTINATION%/win32-intel-desktop-xp/"
+set DESTINATIONNPXP="%DESTINATION%/win32-intel-firefoxplugin-xp/"
+set DESTINATIONIEXP="%DESTINATION%/win32-intel-ieplugin-xp/"
 
 rem
 rem Setup variables
@@ -120,6 +123,19 @@ if %errorlevel% neq 0 pause
 rename  Ambulant-%AMBULANTVERSION%-win32.exe Ambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.exe
 %pscp% -i %KEYFILE% Ambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32.exe %DESTINATIONDESKTOP%
 if %errorlevel% neq 0 pause
+
+rem
+rem Build XP desktop player
+rem
+cd ..\..\projects\%vcdir%
+devenv Ambulant-win32.sln /build ReleaseShlibDX
+cd ..\..\installers\nsis-win32
+%nsis% setup-ambulant-installer-xp.nsi
+if %errorlevel% neq 0 pause
+rename  Ambulant-%AMBULANTVERSION%-win32xp.exe Ambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32xp.exe
+%pscp% -i %KEYFILE% Ambulant-%AMBULANTVERSION%%VERSIONSUFFIX%-win32xp.exe %DESTINATIONDESKTOPXP%
+if %errorlevel% neq 0 pause
+
 
 rem 
 rem  Delete old installers, remember current
