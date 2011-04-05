@@ -1,0 +1,9 @@
+**.vcproj = CRLF
+**.sln = CRLF
+**.png = BIN
+**.jpg = BIN
+**.mp3 = BIN
+**.mp4 = BIN
+**.mpg = BIN
+** = native
+
