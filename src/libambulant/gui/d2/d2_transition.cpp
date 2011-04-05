@@ -32,7 +32,7 @@
 // will disappeaer in full screen transition is first drawn.
 // The fullscreen_orig_bitmap is then later used to transition into.
 // To achieve this, all drawables are checked at first redraw whether they will eventually
-// disappear in fullscreen mode d2_transition_renderer::check_fullscreen_outtrans(lib::node)
+// disappear in fullscreen mode d2_transition_renderer::check_fullscreen_outtrans(lib::node).
 
 #ifdef	WITH_D2
 #undef	WITH_D2
@@ -379,6 +379,10 @@ d2_transition_blitclass_r1r2r3r4::update()
 	// compensate for any adjustments made by d2_player::_calc_fit(&xoff, &yoff)
 	// XXXX this code is not sufficient when size parameters in 'd2_rt_transform' change as well
 	oldsrcrect.translate(lib::point((int) d2_rt_transform._31, (int) d2_rt_transform._32));
+	oldsrcrect.x *= (int) d2_rt_transform._11;
+	oldsrcrect.w *= (int) d2_rt_transform._11;
+	oldsrcrect.y *= (int) d2_rt_transform._22;
+	oldsrcrect.h *= (int) d2_rt_transform._22;
 	// we need to use ID2D1Bitmap::CopyFromRenderTarget, therefore we must create the bitmap
 	// where we put the data into ('bitmap_new') with equal properties as its data source ('old_rt')
 	old_rt->GetDpi(&props.dpiX, &props.dpiY);
