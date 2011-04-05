@@ -143,6 +143,7 @@ d2_transition_renderer::start(double where)
 void
 d2_transition_renderer::check_fullscreen_outtrans(/*common::surface surf, */const lib::node* node)
 {
+	if (m_fullscreen_checked) return;
 	const char* id = node->get_attribute("transOut");
 	if (id != NULL) {
 		lib::logger::get_logger()->debug("d2_transition_renderer:check_fullscreen_outtrans(0x%x) transOut=%s", this, id);
@@ -156,6 +157,7 @@ d2_transition_renderer::check_fullscreen_outtrans(/*common::surface surf, */cons
 			}
 		}
 	}
+	m_fullscreen_checked = true;
 }
 
 void
@@ -219,7 +221,7 @@ void
 d2_transition_renderer::redraw_pre(gui_window *window)
 {
 	m_lock.enter();
-	/*AM_DBG*/ logger::get_logger()->debug("d2_transition_renderer.redraw_pre(0x%x) m_trans_engine=0x%x m_fullscreen=%d", (void *)this,m_trans_engine,m_fullscreen);
+	AM_DBG logger::get_logger()->debug("d2_transition_renderer.redraw_pre(0x%x) m_trans_engine=0x%x m_fullscreen=%d", (void *)this,m_trans_engine,m_fullscreen);
 	if (m_trans_engine != NULL) {
 		if (m_fullscreen) {
 			AM_DBG lib::logger::get_logger()->debug("d2_transition_renderer.redraw_pre(0x%x): now=%d",this, m_event_processor->get_timer()->elapsed());
@@ -258,7 +260,7 @@ d2_transition_renderer::redraw_post(gui_window *window)
 			d2::d2_player* d2_player = get_d2player();
 			ID2D1Bitmap* old_bitmap = d2_player->get_fullscreen_old_bitmap();
 			if (this->m_outtransition) {
-				ID2D1Bitmap* new_bitmap = d2_player->get_fullscreen_new_bitmap();
+				ID2D1Bitmap* new_bitmap = d2_player->get_fullscreen_orig_bitmap();
 				if (old_bitmap != NULL) {
 					ID2D1RenderTarget* rt =	d2_player->get_rendertarget();
 					rt->DrawBitmap(old_bitmap);

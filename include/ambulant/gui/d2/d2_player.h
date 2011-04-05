@@ -195,7 +195,7 @@ class AMBULANTAPI d2_player :
 	void end_screen_transition();
 	void screen_transition_step(smil2::transition_engine* engine, lib::transition_info::time_type now);
 	void set_transition_rendertarget(ID2D1BitmapRenderTarget* bmrt) { m_transition_rendertarget = bmrt; }
-	ID2D1Bitmap* get_fullscreen_new_bitmap() { return m_fullscreen_new_bitmap; }
+	ID2D1Bitmap* get_fullscreen_orig_bitmap() { return m_fullscreen_orig_bitmap; }
 	ID2D1Bitmap* get_fullscreen_old_bitmap() { return m_fullscreen_old_bitmap; }
 	void set_fullscreen_rendertarget(ID2D1BitmapRenderTarget* bmrt) { if (bmrt == NULL) {SafeRelease(&m_fullscreen_rendertarget);} else m_fullscreen_rendertarget = bmrt; }
 	ID2D1BitmapRenderTarget* get_fullscreen_rendertarget() { return m_fullscreen_rendertarget; }
@@ -271,12 +271,12 @@ class AMBULANTAPI d2_player :
 	lib::transition_info::time_type m_fullscreen_now;
 	bool m_fullscreen_outtrans;
 	bool m_fullscreen_ended;
-	ID2D1Bitmap* m_fullscreen_cur_bitmap;
-	ID2D1Bitmap* m_fullscreen_new_bitmap;
-	ID2D1Bitmap* m_fullscreen_old_bitmap;
+	ID2D1Bitmap* m_fullscreen_cur_bitmap;	// last fullscreen drawn (needed for full screen trnasitions)
+	ID2D1Bitmap* m_fullscreen_orig_bitmap;	// for fullscreen out transitions
+	ID2D1Bitmap* m_fullscreen_old_bitmap;	// for fullscreen transitions
 	ID2D1Bitmap* _get_fullscreen_cur_bitmap() { return m_fullscreen_cur_bitmap; }
 	void _set_fullscreen_cur_bitmap(ID2D1RenderTarget* rt);
-	void _set_fullscreen_new_bitmap(ID2D1RenderTarget* rt);
+	void _set_fullscreen_orig_bitmap(ID2D1RenderTarget* rt);
 	void _set_fullscreen_old_bitmap(ID2D1RenderTarget* rt);
 	ID2D1Bitmap* _get_bitmap_from_render_target(ID2D1RenderTarget* rt);
 	void _screenTransitionPreRedraw(ID2D1RenderTarget* rt);
@@ -318,7 +318,7 @@ class AMBULANTAPI d2_player :
 	// The logger
 	lib::logger *m_logger;
 
-#define	AM_DMP /* dump images (for debugging). Can create lots of image files, slows down all drawing. */
+//#define	AM_DMP /* dump images (for debugging). Can create lots of image files, slows down all drawing. */
 #ifdef	AM_DMP
   public:
 // write the contents of the ID2D1RenderTarget* <rt> to the file: ".\<number>.<id>.png" where number is

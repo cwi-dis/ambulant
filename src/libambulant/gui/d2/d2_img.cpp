@@ -261,16 +261,11 @@ gui::d2::d2_img_renderer::recreate_d2d()
 	if (m_original == NULL) return;
 	ID2D1RenderTarget *rt = m_d2player->get_rendertarget();
 	assert(rt);
-#ifdef	AM_DMP
-//	m_d2player->dump (rt, "d2_image-recreate1");
-#endif//AM_DMP
+	if (rt == NULL) return;
 
 	HRESULT hr = rt->CreateBitmapFromWicBitmap(m_original, NULL, &m_d2bitmap);
 	if (!SUCCEEDED(hr))
 		lib::logger::get_logger()->trace("CreateBitmapFromWicBitmap: error 0x%x", hr);
-#ifdef	AM_DMP
-//	m_d2player->dump (rt, "d2_image-recreate2");
-#endif//AM_DMP
 }
 
 void
@@ -290,17 +285,13 @@ void gui::d2::d2_img_renderer::redraw_body(const lib::rect& dirty, common::gui_w
 		return;
 	}
 	assert(rt);
-	if (rt == NULL)
-		return;
-#ifdef	AM_DMP
-//	m_d2player->dump (rt, "d2_image-redraw1");
-#endif//AM_DMP
-
+	if (rt == NULL) return;
 	lib::rect img_rect1;
 	lib::rect img_reg_rc;
 	UINT w, h;
 	HRESULT hr = m_original->GetSize(&w, &h);
-	assert(hr == 0);
+	assert(hr == S_OK);
+	if (hr != S_OK) return;
 	lib::size srcsize(w, h);
 	AM_DBG lib::logger::get_logger()->debug("d2_img_renderer::redraw(0x%x) rt=0x%x", this, rt);
 
@@ -330,10 +321,6 @@ void gui::d2::d2_img_renderer::redraw_body(const lib::rect& dirty, common::gui_w
 		if (m_erase_never) m_dest->keep_as_background();
 		return;
 	}
-#ifdef	AM_DMP
-//	m_d2player->dump (rt, "d2_image-redraw2");
-#endif//AM_DMP
-
 #ifdef WITH_SMIL30
 	lib::rect croprect = m_dest->get_crop_rect(srcsize);
 //	AM_DBG lib::logger::get_logger()->debug("get_crop_rect(%d,%d) -> (%d, %d, %d, %d)", srcsize.w, srcsize.h, croprect.left(), croprect.top(), croprect.width(), croprect.height());

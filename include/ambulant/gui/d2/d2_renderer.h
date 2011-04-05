@@ -50,6 +50,7 @@ class AMBULANTAPI d2_transition_renderer : public ref_counted_obj {
 		m_outtransition(NULL),
 		m_transition_rendertarget(NULL),
 		m_fullscreen(false),
+		m_fullscreen_checked(false),
 		m_trans_engine(NULL) {}
 	~d2_transition_renderer();
 
@@ -79,6 +80,7 @@ class AMBULANTAPI d2_transition_renderer : public ref_counted_obj {
 	const transition_info *m_outtransition;
 	smil2::transition_engine *m_trans_engine;
 	bool m_fullscreen;
+	bool m_fullscreen_checked;
 	critical_section m_lock;
 };
 
