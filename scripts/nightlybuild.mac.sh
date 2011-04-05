@@ -13,12 +13,12 @@ TODAY=`date +%Y%m%d`
 BUILDDIR=ambulant-build-$TODAY
 DESTDIR=ambulant-install-$TODAY
 BUILD3PPARGS=mac10.6
-CONFIGOPTS="--with-macfat --disable-dependency-tracking --with-xerces-plugin"
+CONFIGOPTS="--with-macfat --disable-dependency-tracking --with-xerces-plugin --with-python --with-python-plugin"
 MAKEOPTS=-j2
 VERSIONSUFFIX=.$TODAY
 DMGNAME=Ambulant-$AMBULANTVERSION$VERSIONSUFFIX-mac
 PLUGINDMGNAME=AmbulantWebKitPlugin-$AMBULANTVERSION$VERSIONSUFFIX-mac
-DESTINATION=ssh.cwi.nl:public_html/ambulant/nightly
+DESTINATION=sen5@ambulantplayer.org:/var/www/AmbulantPlayerOrg/nightlybuilds
 DESTINATION_DESKTOP=$DESTINATION/mac-intel-desktop-cocoa/
 DESTINATION_PLUGIN=$DESTINATION/mac-intel-webkitplugin/
 DESTINATION_CG=$DESTINATION/mac-intel-desktop-cg/
@@ -39,6 +39,8 @@ echo
 mkdir -p $BUILDHOME
 cd $BUILDHOME
 rm -rf $BUILDDIR
+rm -rf $DESTDIR
+ls -t | tail +6 | grep ambulant- | xargs rm -rf
 hg $HGARGS clone $HGCLONEARGS $BUILDDIR
 #
 # We are building a binary distribution, so we want to completely ignore any
@@ -83,6 +85,7 @@ xcodebuild -project AmbulantPlayer.xcodeproj \
 	AMBULANT_BUILDDIR=$BUILDHOME/$BUILDDIR \
 	AMBULANT_3PP=$BUILDHOME/$BUILDDIR/build-3264/third_party_packages \
 	DSTROOT=$BUILDHOME/$DESTDIR \
+	INSTALL_PATH=/Applications \
 	install
 cd ../..
 #
@@ -93,12 +96,19 @@ sh mkmacdist.sh -a AmbulantPlayerCG.app $DMGNAME-CG $BUILDHOME/$DESTDIR
 scp $DMGNAME-CG.dmg $DESTINATION_CG
 cd ../..
 #
-# Build webkit plugin
+# Build webkit plugin.
 #
 cd projects/xcode32
 rm -rf "$HOME/Library/Internet Plug-Ins/AmbulantWebKitPlugin.plugin"
 mkdir -p "$HOME/Library/Internet Plug-Ins"
-xcodebuild -project AmbulantWebKitPlugin.xcodeproj -target AmbulantWebKitPlugin -configuration Release -sdk macosx10.6
+xcodebuild -project AmbulantWebKitPlugin.xcodeproj \
+	-target AmbulantWebKitPlugin \
+	-configuration Release -sdk macosx10.6 \
+	AMBULANT_BUILDDIR=$BUILDHOME/$BUILDDIR \
+	AMBULANT_3PP=$BUILDHOME/$BUILDDIR/build-3264/third_party_packages \
+	DSTROOT=$BUILDHOME/$DESTDIR \
+	INSTALL_PATH="/Library/Internet Plug-ins" \
+	install
 cd ../..
 #
 # Build plugin installer, upload
@@ -107,7 +117,7 @@ mkdir -p "$BUILDHOME/$DESTDIR/Library/Internet Plug-Ins"
 cd "$BUILDHOME/$DESTDIR/Library/Internet Plug-Ins"
 rm -rf $PLUGINDMGNAME
 mkdir $PLUGINDMGNAME
-mv "$HOME/Library/Internet Plug-Ins/AmbulantWebKitPlugin.plugin" $PLUGINDMGNAME
+mv "AmbulantWebKitPlugin.webplugin" $PLUGINDMGNAME
 cp $BUILDHOME/$BUILDDIR/src/webkit_plugin/README $PLUGINDMGNAME
 zip -r $PLUGINDMGNAME.zip $PLUGINDMGNAME
 scp $PLUGINDMGNAME.zip $DESTINATION_PLUGIN

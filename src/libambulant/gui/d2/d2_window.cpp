@@ -70,6 +70,12 @@ void gui::d2::d2_window::_need_redraw(const lib::rect &r) {
 	}
 }
 
+void gui::d2::d2_window::need_redraw() {
+	m_redraw_rect_lock.enter();
+	_need_redraw(m_viewrc);
+	m_redraw_rect_lock.leave();
+}
+
 void gui::d2::d2_window::need_redraw(const lib::rect &r) {
 	m_redraw_rect_lock.enter();
 	_need_redraw(r);
@@ -80,22 +86,13 @@ void gui::d2::d2_window::redraw(const lib::rect &r) {
 	// clip rect to this window since the layout does not do this
 	lib::rect rc = r;
 	rc &= m_viewrc;
-	if(!m_locked) {
-		AM_DBG lib::logger::get_logger()->debug("d2_window::redraw(%d,%d,%d,%d): drawing", rc.left(), rc.top(), rc.width(), rc.height());
-		//assert(!m_redraw_rect_valid);
-		m_rgn->redraw(rc, this);
-	} else {
-		AM_DBG lib::logger::get_logger()->debug("d2_window::redraw(%d,%d,%d,%d): queueing", rc.left(), rc.top(), rc.width(), rc.height());
-		if(!m_redraw_rect_valid) {
-			m_redraw_rect = rc;
-			m_redraw_rect_valid = true;
-		} else m_redraw_rect |= rc;
-	}
+	AM_DBG lib::logger::get_logger()->debug("d2_window::redraw(%d,%d,%d,%d): drawing", rc.left(), rc.top(), rc.width(), rc.height());
+	//assert(!m_redraw_rect_valid);
+	m_rgn->redraw(rc, this);
 }
 
 void gui::d2::d2_window::redraw_now() {
-#ifdef JNK
-	assert(0); // When is this called??
+#if 1 // #ifdef JNK
 	m_redraw_rect_lock.enter();
 	int keep_lock = m_locked;
 	m_locked = 0;
@@ -114,6 +111,7 @@ void gui::d2::d2_window::redraw() {
 void gui::d2::d2_window::lock_redraw() {
 	m_redraw_rect_lock.enter();
 	m_locked++;
+	AM_DBG ambulant::lib::logger::get_logger()->debug("lock_redraw: count is now %d", m_locked);
 	m_redraw_rect_lock.leave();
 }
 
@@ -121,6 +119,7 @@ void gui::d2::d2_window::unlock_redraw() {
 	m_redraw_rect_lock.enter();
 	assert(m_locked > 0);
 	m_locked--;
+	/*AM_DBG*/ if(m_locked > 0 && m_redraw_rect_valid) ambulant::lib::logger::get_logger()->debug("unlock_redraw: count is now %d", m_locked);
 	if (m_locked == 0 && m_redraw_rect_valid) {
 		lib::rect to_redraw = m_redraw_rect;
 		m_redraw_rect_valid = false;

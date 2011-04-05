@@ -74,6 +74,7 @@ on_source_close(void* data)
 	}
 }
 
+
 ambulant::net::rtsp_demux::rtsp_demux(rtsp_context_t* context, timestamp_t clip_begin, timestamp_t clip_end)
 :	m_context(context),
 	m_clip_begin(clip_begin),
@@ -159,7 +160,6 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 	rtsp_context_t *context = new rtsp_context_t();
 	context->nstream = 0;
 
-
 	// setup the basics.
 	context->scheduler = BasicTaskScheduler::createNew();
 	if (!context->scheduler) {
@@ -206,7 +206,6 @@ ambulant::net::rtsp_demux::supported(const net::url& url)
 		return NULL;
 	}
 	context->duration = context->media_session->playEndTime();
-//	context->last_expected_pts = (timestamp_t) (context->duration*1000000 - 40000); // skip last frame
 	context->last_expected_pts = (timestamp_t) (context->duration*1000000); // do not skip last frame
 	AM_DBG lib::logger::get_logger()->debug("rtps_demux::supported: last_expected_pts = %ld", context->last_expected_pts);
 	// next set up the rtp subsessions.
@@ -425,6 +424,7 @@ ambulant::net::rtsp_demux::_init_subsessions(rtsp_context_t *context)
 unsigned long
 ambulant::net::rtsp_demux::run()
 {
+
 	AM_DBG lib::logger::get_logger()->debug("ambulant::net::rtsp_demux::run() called (%d)", m_context->need_audio);
 	if (!m_context->media_session) {
 		lib::logger::get_logger()->error(gettext("playing RTSP connection failed"));
@@ -543,8 +543,6 @@ ambulant::net::rtsp_demux::_cancel()
 	}
 	if (is_running())
 		stop();
-// release() is commented out here because the run() function already does this
-//	release();
 }
 
 void
@@ -606,7 +604,7 @@ rtsp_demux::after_reading_audio(size_t sz, unsigned truncated, struct timeval pt
 			}
 		}
 	}
-	//xxxbo: 13-nov-2009
+
 	AM_DBG lib::logger::get_logger()->debug("after_reading_audio: first_sync_time is %d.%ld s", m_context->first_sync_time.tv_sec, m_context->first_sync_time.tv_usec);
 
 	timestamp_t rpts =	(timestamp_t)(pts.tv_sec - m_context->first_sync_time.tv_sec) * 1000000LL  +  (timestamp_t) (pts.tv_usec - m_context->first_sync_time.tv_usec);
@@ -624,21 +622,11 @@ rtsp_demux::after_reading_audio(size_t sz, unsigned truncated, struct timeval pt
 		m_context->last_emit_pts = rpts - m_context->frame_duration;
 	}
 #endif
-	//xxxbo: 13-nov-2009
-	AM_DBG lib::logger::get_logger()->debug("after_reading_audio: rtps is %ld us", rpts);
+
+	AM_DBG lib::logger::get_logger()->debug("after_reading_audio: rtps is %lld us", rpts);
 
 	if(m_context->sinks[m_context->audio_stream]) {
 		AM_DBG lib::logger::get_logger()->debug("after_reading_audio: calling _push_data_to_sink");
-		//_push_data_to_sink(m_context->audio_stream, rpts, (uint8_t*) m_context->audio_packet, sz);
-
-#if 0 //xxxbo: 15-07-2009
-		if (rpts + m_clip_begin > m_clip_end) {
-			m_context->eof = true;
-			m_critical_section.leave();
-			return;
-		}
-		else
-#endif //xxxbo: 15-07-2009
 		_push_data_to_sink(m_context->audio_stream, rpts, (uint8_t*) m_context->audio_packet, sz);
 		AM_DBG lib::logger::get_logger()->debug("after_reading_audio: calling push_data_to_sink done");
 	}
@@ -669,7 +657,7 @@ rtsp_demux::after_reading_video(size_t sz, unsigned truncated, struct timeval pt
 		lib::logger::get_logger()->trace("rtsp_demux: truncated video packet");
 	assert(m_context->video_packet);
 	assert(m_context->video_stream >= 0);
-
+	
 	// For the first packet, we remember the timestamp so we can convert Live's wallclock timestamps to
 	// our zero-based timestamps.
 	if (m_context->first_sync_time.tv_sec == 0 && m_context->first_sync_time.tv_usec == 0 ) {
@@ -692,12 +680,12 @@ rtsp_demux::after_reading_video(size_t sz, unsigned truncated, struct timeval pt
 			_push_data_to_sink(m_context->video_stream, 0, (uint8_t*) m_context->initialPacketData , m_context->initialPacketDataLen);
 		}
 	}
-
+	
 	if (!m_context->first_sync_time_set) {
 		// We have not been synced yet. If the video stream has been synced for this packet
 		// we can set the epoch of the timing info.
 		MediaSubsession* subsession = m_context->video_subsession;
-
+		
 		if (subsession) {
 			// Set the packet's presentation time stamp, depending on whether or
 			// not our RTP source's timestamps have been synchronized yet:
@@ -713,18 +701,12 @@ rtsp_demux::after_reading_video(size_t sz, unsigned truncated, struct timeval pt
 		}
 	}
 	timestamp_t rpts =	(timestamp_t)(pts.tv_sec - m_context->first_sync_time.tv_sec) * 1000000LL  +  (timestamp_t) (pts.tv_usec - m_context->first_sync_time.tv_usec);
-	AM_DBG lib::logger::get_logger()->debug("after_reading_video: called timestamp 0x%08.8x%08.8x, sec = %d, usec =	 %d", (long)(rpts>>32), (long)(rpts&0xffffffff), pts.tv_sec, pts.tv_usec);
-#ifdef ENABLE_LIVE555_PTS_CORRECTION
-	// Guess frame duration. This assumes that the lowest difference between wto adjacent frames is the duration.
-	// If we ever get a stream where the duration increases (i.e. frame rate decreases) we're hosed.
 
-	// XXXJACK: I get a compiler warning here about implicit conversion of 64 to 32 bit. Need to check.
+	AM_DBG lib::logger::get_logger()->debug("after_reading_video: rpts = %lld", rpts);
 	timestamp_t delta_pts = abs(rpts-m_context->last_pts);
-	if (m_context->frame_duration == 0 || (delta_pts != 0 && delta_pts < m_context->frame_duration)) {
+	if (m_context->frame_duration == 0 || (delta_pts != 0 && delta_pts < m_context->frame_duration)) 
 		m_context->frame_duration = delta_pts;
-		m_context->last_emit_pts = rpts - m_context->frame_duration;
-	}
-#endif
+	
 	// We may beed to insert a few bytes at the front of the packet. run() has made sure
 	// there's room for that.
 	if (m_context->extraPacketHeaderSize) {
@@ -732,32 +714,27 @@ rtsp_demux::after_reading_video(size_t sz, unsigned truncated, struct timeval pt
 		// The space in video_packet was already left free in run().
 		memcpy(m_context->video_packet, m_context->extraPacketHeaderData, m_context->extraPacketHeaderSize);
 	}
+	
 	if (m_context->notPacketized) {
 		// We have to re-packetize ourselves. We do this by combining all data with the same timestamp.
 		if (rpts != 0 && rpts != m_context->last_pts && m_context->vbuffer) {
 			// The new fragment has a different timestamp from what we have buffered. We first emit the buffered data.
-			timestamp_t out_pts = m_context->last_pts;
-#ifdef ENABLE_LIVE555_PTS_CORRECTION
 			// Determine the pts we want to send to upper layers. The pts live555 gives us seems to be incorrect:
 			// the data we get in the packets is in strictly increasing order, but the timestamps are not.
 			// We re-invent the timestamp.
-			// Because we also have to cater for seeking and packect loss we use a heuristic here: if we received
-			// a pts that is more than 1 second off we re-synchronise.
-			if (m_context->last_emit_pts) {
-				if (out_pts < m_context->last_emit_pts-1000000 || out_pts > m_context->last_emit_pts+1000000) {
-					m_context->last_emit_pts = 0;
-				} else {
-					out_pts = m_context->last_emit_pts + m_context->frame_duration;
-				}
-			}
-			m_context->last_emit_pts = out_pts;
-#endif
+			timestamp_t out_pts;
+			if (rpts > m_context->last_pts)
+				out_pts = rpts;
+			else 
+				out_pts = m_context->last_pts + m_context->frame_duration;
+
 			AM_DBG lib::logger::get_logger()->debug("Video packet length (buffered)=%d, timestamp=%lld, rpts=%lld synced=%d", (int)m_context->vbufferlen, out_pts+m_clip_begin, rpts+m_clip_begin, m_context->video_subsession->rtpSource()->hasBeenSynchronizedUsingRTCP());
 			_push_data_to_sink(m_context->video_stream, out_pts, (uint8_t*) m_context->vbuffer, m_context->vbufferlen);
 			free(m_context->vbuffer);
 			m_context->vbuffer = NULL;
 			m_context->vbufferlen = 0;
-			m_context->last_pts=rpts;
+			//m_context->last_pts=rpts;
+			m_context->last_pts = out_pts;
 		}
 		// We store the new data but don't process it yet (the next fragment may belong to the same packet).
 		if (m_context->vbuffer == NULL) {
@@ -780,33 +757,28 @@ rtsp_demux::after_reading_video(size_t sz, unsigned truncated, struct timeval pt
 		}
 	} else {
 		// The data is correctly packetized. Simply send it upstream.
-		timestamp_t out_pts = rpts;
-#ifdef ENABLE_LIVE555_PTS_CORRECTION
+		
 		// Determine the pts we want to send to upper layers. The pts live555 gives us seems to be incorrect:
 		// the data we get in the packets is in strictly increasing order, but the timestamps are not.
 		// We re-invent the timestamp.
-		// Because we also have to cater for seeking and packect loss we use a heuristic here: if we received
-		// a pts that is more than 1 second off we re-synchronise.
-		if (m_context->last_emit_pts) {
-			if (out_pts < m_context->last_emit_pts-1000000 || out_pts > m_context->last_emit_pts+1000000) {
-				m_context->last_emit_pts = 0;
-			} else {
-				out_pts = m_context->last_emit_pts + m_context->frame_duration;
-			}
-		}
-		m_context->last_emit_pts = out_pts;
-#endif
+		timestamp_t out_pts;
+		if (rpts > m_context->last_pts)
+			out_pts = rpts;
+		else 
+			out_pts = m_context->last_pts + m_context->frame_duration;
+		
 		AM_DBG lib::logger::get_logger()->debug("Video packet length %d+%d=%d, timestamp=%lld, rpts=%lld", sz, (int)m_context->extraPacketHeaderSize, sz+m_context->extraPacketHeaderSize, out_pts+m_clip_begin, rpts+m_clip_begin);
 		_push_data_to_sink(m_context->video_stream, out_pts, (uint8_t*) m_context->video_packet, sz+m_context->extraPacketHeaderSize);
 	}
-
+	
 done:
 	// Record the pts of the last packet processed (not necessarily sent upstream, yet).
 	m_context->last_pts=rpts;
+
 	if (rpts > m_context->highest_pts_seen)
 		m_context->highest_pts_seen = rpts;
 	m_context->idle_time = 0;
-// Tell the main demux loop that we're ready for another packet.
+	// Tell the main demux loop that we're ready for another packet.
 	m_context->need_video = true;
 	if (m_context->video_packet) free(m_context->video_packet);
 	m_context->video_packet	 = NULL;
@@ -815,7 +787,7 @@ done:
 		m_context->initialPacketData = NULL;
 		m_context->initialPacketDataLen = 0;
 	}
-
+	
 	AM_DBG lib::logger::get_logger()->debug("after reading video: pts=%lld, end=%lld", m_context->last_pts, m_context->last_expected_pts);
 	if (m_context->last_expected_pts >= 0 && m_context->last_pts >= m_context->last_expected_pts) {
 		lib::logger::get_logger()->debug("after_reading_video: last_pts = %lld", m_context->last_pts);
@@ -824,7 +796,8 @@ done:
 	m_context->blocking_flag = ~0;
 	//XXX Do we need to free data here ?
 	m_critical_section.leave();
-}
+}	
+	
 void
 rtsp_demux::_push_data_to_sink (int sink_index, timestamp_t pts, const uint8_t* inbuf, size_t sz) {
 	demux_datasink* sink = m_context->sinks[sink_index];

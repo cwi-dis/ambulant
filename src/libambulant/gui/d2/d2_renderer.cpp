@@ -55,6 +55,7 @@ d2_transition_renderer::~d2_transition_renderer()
 	AM_DBG logger::get_logger()->debug("~d2_transition_renderer(0x%x)", (void *)this);
 	m_intransition = NULL;
 	m_outtransition = NULL;
+
 	SafeRelease(&m_transition_rendertarget);
 	m_lock.leave();
 }
@@ -102,6 +103,7 @@ void
 d2_transition_renderer::set_surface(common::surface *dest)
 {
 	m_transition_dest = dest;
+
 	if (m_transition_dest) {
 		if ((m_intransition && m_intransition->m_scope == scope_screen)
 			|| (m_outtransition && m_outtransition->m_scope == scope_screen)) {
@@ -126,10 +128,6 @@ d2_transition_renderer::start(double where)
 		AM_DBG logger::get_logger()->debug("d2_transition_renderer.start: with intransition");
 		m_trans_engine = d2_transition_engine(m_transition_dest, false, m_intransition);
 		if (m_trans_engine) {
-#ifdef D2D_NOTYET
-			AmbulantView *view = (AmbulantView *)cwindow->view();
-			[view incrementTransitionCount];
-#endif
 			m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 			m_fullscreen = m_intransition->m_scope == scope_screen;
 			if (m_fullscreen) {
@@ -172,17 +170,12 @@ d2_transition_renderer::start_outtransition(const lib::transition_info *info)
 	if (m_transition_dest && m_trans_engine) {
 		gui_window *window = m_transition_dest->get_gui_window();
 		d2_window *cwindow = (d2_window *)window;
-#ifdef D2D_NOTYET
-		AmbulantView *view = (AmbulantView *)cwindow->view();
-		[view incrementTransitionCount];
-#endif
 		m_trans_engine->begin(m_event_processor->get_timer()->elapsed());
 		m_fullscreen = m_outtransition->m_scope == scope_screen;
 		if (m_fullscreen) {
 			get_d2player()->start_screen_transition(true);
 		}
 	}
-
 	m_lock.leave();
 	if (m_transition_dest) m_transition_dest->need_redraw();
 }
@@ -203,15 +196,8 @@ d2_transition_renderer::stop()
 		m_trans_engine = NULL;
 		get_d2player()->set_transition_rendertarget(NULL);
 	}
-#ifdef D2D_NOTYET
-	gui_window *window = m_transition_dest->get_gui_window();
-	d2_window *cwindow = (d2_window *)window;
-	AmbulantView *view = (AmbulantView *)cwindow->view();
-	[view decrementTransitionCount];
-	if (m_fullscreen) {
-		[view endScreenTransition];
-	}
-#endif
+	delete m_trans_engine;
+	m_trans_engine = NULL;
 	m_lock.leave();
 	if (m_transition_dest) m_transition_dest->transition_done();
 	m_d2player = NULL;
@@ -231,23 +217,6 @@ d2_transition_renderer::redraw_pre(gui_window *window)
 			get_d2player()->set_transition_rendertarget((ID2D1BitmapRenderTarget*) get_transition_rendertarget());
 		}
 	}
-#ifdef D2D_NOTYET
-	d2_window *cwindow = (d2_window *)window;
-	AmbulantView *view = (AmbulantView *)cwindow->view();
-
-	// See whether we're in a transition
-	NSImage *surf = NULL;
-	if (m_trans_engine) {
-		surf = [view getTransitionSurface];
-		if (surf && [surf isValid]) {
-			[surf lockFocus];
-			AM_DBG logger::get_logger()->debug("d2_transition_renderer.redraw: drawing to transition surface");
-		} else {
-			lib::logger::get_logger()->trace("d2_transition_renderer.redraw: cannot lockFocus for transition");
-			surf = NULL;
-		}
-	}
-#endif
 	m_lock.leave();
 }
 
@@ -255,6 +224,7 @@ void
 d2_transition_renderer::redraw_post(gui_window *window)
 {
 	m_lock.enter();
+
 	if (m_trans_engine != NULL) {
 		if (m_fullscreen) {
 			d2::d2_player* d2_player = get_d2player();
@@ -294,41 +264,6 @@ d2_transition_renderer::redraw_post(gui_window *window)
 		lib::event *ev = new stop_transition_callback(this, &d2_transition_renderer::stop);
 		m_event_processor->add_event(ev, 0, lib::ep_med);
 	}
-#ifdef D2D_NOTYET
-	d2_window *cwindow = (d2_window *)window;
-	AmbulantView *view = (AmbulantView *)cwindow->view();
-	NSImage *surf = NULL;
-	if (m_trans_engine) {
-		surf = [view getTransitionSurface];
-		if (![surf isValid]) surf = NULL;
-	}
-	if (surf) {
-		[surf unlockFocus];
-		AM_DBG logger::get_logger()->debug("d2_transition_renderer.redraw: drawing to view");
-		if (m_fullscreen)
-			[view screenTransitionStep: m_trans_engine
-				elapsed: m_event_processor->get_timer()->elapsed()];
-		else
-			m_trans_engine->step(m_event_processor->get_timer()->elapsed());
-		typedef lib::no_arg_callback<d2_transition_renderer> transition_callback;
-		lib::event *ev = new transition_callback(this, &d2_transition_renderer::transition_step);
-		lib::transition_info::time_type delay = m_trans_engine->next_step_delay();
-		if (delay < 33) delay = 33; // XXX band-aid
-		AM_DBG lib::logger::get_logger()->debug("d2_transition_renderer.redraw: now=%d, schedule step for %d", m_event_processor->get_timer()->elapsed(), m_event_processor->get_timer()->elapsed()+delay);
-		m_event_processor->add_event(ev, delay, lib::ep_med);
-	}
-
-	// Finally, if the transition is done clean it up and signal that freeze_transition
-	// can end for our peer renderers.
-	// Note that we have to do this through an event because of locking issues.
-	if (m_trans_engine && m_trans_engine->is_done()) {
-		typedef lib::no_arg_callback<d2_transition_renderer> stop_transition_callback;
-		lib::event *ev = new stop_transition_callback(this, &d2_transition_renderer::stop);
-		m_event_processor->add_event(ev, 0, lib::ep_med);
-		if (m_fullscreen)
-			[view screenTransitionStep: NULL elapsed: 0];
-	}
-#endif
 	if ( ! m_fullscreen)
 		SafeRelease(&m_transition_rendertarget);
 	m_lock.leave();

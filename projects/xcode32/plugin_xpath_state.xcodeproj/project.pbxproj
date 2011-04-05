@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		042AD9321152C91D009CA791 /* libambulant.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 042AD9311152C916009CA791 /* libambulant.dylib */; };
 		042AD9E61152D42B009CA791 /* xpath_stateplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042AD9E51152D42B009CA791 /* xpath_stateplugin.cpp */; };
+		0441E7BE1343132C0025FCF9 /* libambulant.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 042AD9311152C916009CA791 /* libambulant.dylib */; };
+		0441E7BF1343132C0025FCF9 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0495994813168A6600311F05 /* libxml2.dylib */; };
+		0441E7C11343132C0025FCF9 /* xpath_stateplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 042AD9E51152D42B009CA791 /* xpath_stateplugin.cpp */; };
 		0495994913168A6600311F05 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0495994813168A6600311F05 /* libxml2.dylib */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +44,13 @@
 			remoteGlobalIDString = D2AAC0C705546C1D00DB518D;
 			remoteInfo = libambulant;
 		};
+		0441E7CE134313DE0025FCF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 042AD92C1152C916009CA791 /* libambulant.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 04A1E80812B57DF20060F97E;
+			remoteInfo = libambulantCG;
+		};
 		04428DB8115779240067C868 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 042AD92C1152C916009CA791 /* libambulant.xcodeproj */;
@@ -56,12 +66,25 @@
 		041E96BA12BA4DF100399893 /* ambulant-release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-release.xcconfig"; path = "config/ambulant-release.xcconfig"; sourceTree = "<group>"; };
 		042AD92C1152C916009CA791 /* libambulant.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = libambulant.xcodeproj; sourceTree = "<group>"; };
 		042AD9E51152D42B009CA791 /* xpath_stateplugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xpath_stateplugin.cpp; path = ../../src/plugins/xpath_stateplugin.cpp; sourceTree = SOURCE_ROOT; };
+		0441E7C51343132C0025FCF9 /* libamplugin_xpath_state(CG).so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libamplugin_xpath_state(CG).so"; sourceTree = BUILT_PRODUCTS_DIR; };
+		0441E7CB1343139B0025FCF9 /* ambulant-debug-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-debug-cg.xcconfig"; path = "config/ambulant-debug-cg.xcconfig"; sourceTree = "<group>"; };
+		0441E7CC1343139B0025FCF9 /* ambulant-mac.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-mac.xcconfig"; path = "config/ambulant-mac.xcconfig"; sourceTree = "<group>"; };
+		0441E7CD1343139B0025FCF9 /* ambulant-release-cg.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-release-cg.xcconfig"; path = "config/ambulant-release-cg.xcconfig"; sourceTree = "<group>"; };
 		0495994813168A6600311F05 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = /usr/lib/libxml2.dylib; sourceTree = "<absolute>"; };
 		32BAE0B70371A74B00C91783 /* plugin_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = plugin_Prefix.pch; sourceTree = "<group>"; };
-		D2AAC09D05546B4700DB518D /* libamplugin_xpath_state.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libamplugin_xpath_state.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2AAC09D05546B4700DB518D /* libamplugin_xpath_state(Cocoa).so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libamplugin_xpath_state(Cocoa).so"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		0441E7BD1343132C0025FCF9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0441E7BE1343132C0025FCF9 /* libambulant.dylib in Frameworks */,
+				0441E7BF1343132C0025FCF9 /* libxml2.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D2AAC09B05546B4700DB518D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -77,7 +100,8 @@
 		034768DDFF38A45A11DB9C8B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D2AAC09D05546B4700DB518D /* libamplugin_xpath_state.so */,
+				D2AAC09D05546B4700DB518D /* libamplugin_xpath_state(Cocoa).so */,
+				0441E7C51343132C0025FCF9 /* libamplugin_xpath_state(CG).so */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -133,6 +157,9 @@
 		5073E0CA09E734BC00EC74B6 /* Configuration Files */ = {
 			isa = PBXGroup;
 			children = (
+				0441E7CB1343139B0025FCF9 /* ambulant-debug-cg.xcconfig */,
+				0441E7CC1343139B0025FCF9 /* ambulant-mac.xcconfig */,
+				0441E7CD1343139B0025FCF9 /* ambulant-release-cg.xcconfig */,
 				041E96B812BA4DF100399893 /* ambulant-common.xcconfig */,
 				041E96B912BA4DF100399893 /* ambulant-debug.xcconfig */,
 				041E96BA12BA4DF100399893 /* ambulant-release.xcconfig */,
@@ -143,6 +170,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		0441E7BC1343132C0025FCF9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D2AAC09905546B4700DB518D /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -153,9 +187,27 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		D2AAC09C05546B4700DB518D /* plugin_xpath_state */ = {
+		0441E7B91343132C0025FCF9 /* plugin_xpath_state(CG) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1DEB916008733D950010E9CD /* Build configuration list for PBXNativeTarget "plugin_xpath_state" */;
+			buildConfigurationList = 0441E7C21343132C0025FCF9 /* Build configuration list for PBXNativeTarget "plugin_xpath_state(CG)" */;
+			buildPhases = (
+				0441E7BC1343132C0025FCF9 /* Headers */,
+				0441E7BD1343132C0025FCF9 /* Frameworks */,
+				0441E7C01343132C0025FCF9 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0441E7CF134313DE0025FCF9 /* PBXTargetDependency */,
+			);
+			name = "plugin_xpath_state(CG)";
+			productName = libplugin;
+			productReference = 0441E7C51343132C0025FCF9 /* libamplugin_xpath_state(CG).so */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		D2AAC09C05546B4700DB518D /* plugin_xpath_state(Cocoa) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB916008733D950010E9CD /* Build configuration list for PBXNativeTarget "plugin_xpath_state(Cocoa)" */;
 			buildPhases = (
 				D2AAC09905546B4700DB518D /* Headers */,
 				D2AAC09B05546B4700DB518D /* Frameworks */,
@@ -166,9 +218,9 @@
 			dependencies = (
 				04428DB9115779240067C868 /* PBXTargetDependency */,
 			);
-			name = plugin_xpath_state;
+			name = "plugin_xpath_state(Cocoa)";
 			productName = libplugin;
-			productReference = D2AAC09D05546B4700DB518D /* libamplugin_xpath_state.so */;
+			productReference = D2AAC09D05546B4700DB518D /* libamplugin_xpath_state(Cocoa).so */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */
@@ -197,7 +249,8 @@
 			);
 			projectRoot = "";
 			targets = (
-				D2AAC09C05546B4700DB518D /* plugin_xpath_state */,
+				D2AAC09C05546B4700DB518D /* plugin_xpath_state(Cocoa) */,
+				0441E7B91343132C0025FCF9 /* plugin_xpath_state(CG) */,
 			);
 		};
 /* End PBXProject section */
@@ -234,6 +287,14 @@
 /* End PBXReferenceProxy section */
 
 /* Begin PBXSourcesBuildPhase section */
+		0441E7C01343132C0025FCF9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0441E7C11343132C0025FCF9 /* xpath_stateplugin.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D2AAC09A05546B4700DB518D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -245,6 +306,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		0441E7CF134313DE0025FCF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = libambulantCG;
+			targetProxy = 0441E7CE134313DE0025FCF9 /* PBXContainerItemProxy */;
+		};
 		04428DB9115779240067C868 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = libambulant;
@@ -253,6 +319,38 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		0441E7C31343132C0025FCF9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0441E7CB1343139B0025FCF9 /* ambulant-debug-cg.xcconfig */;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_EXTENSION = so;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = plugin_Prefix.pch;
+				PRODUCT_NAME = "libamplugin_xpath_state(CG)";
+				USER_HEADER_SEARCH_PATHS = "$(AMBULANT_DIR)/include $(AMBULANT_INCLUDE_3PP) $(AMBULANT_INCLUDE_3PP)/SDL /usr/include/libxml2 $(AMBULANT_3PP)/live/BasicUsageEnvironment/include $(AMBULANT_3PP)/live/groupsock/include $(AMBULANT_3PP)/live/liveMedia/include $(AMBULANT_3PP)/live/UsageEnvironment/include";
+			};
+			name = Debug;
+		};
+		0441E7C41343132C0025FCF9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0441E7CD1343139B0025FCF9 /* ambulant-release-cg.xcconfig */;
+			buildSettings = {
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXECUTABLE_EXTENSION = so;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = plugin_Prefix.pch;
+				PRODUCT_NAME = "libamplugin_xpath_state(CG)";
+				STRIP_INSTALLED_PRODUCT = YES;
+				STRIP_STYLE = "non-global";
+			};
+			name = Release;
+		};
 		1DEB916108733D950010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 041E96B912BA4DF100399893 /* ambulant-debug.xcconfig */;
@@ -265,7 +363,8 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = plugin_Prefix.pch;
-				PRODUCT_NAME = libamplugin_xpath_state;
+				PRODUCT_NAME = "libamplugin_xpath_state(Cocoa)";
+				USER_HEADER_SEARCH_PATHS = "$(AMBULANT_DIR)/include $(AMBULANT_INCLUDE_3PP) $(AMBULANT_INCLUDE_3PP)/SDL /usr/include/libxml2 $(AMBULANT_3PP)/live/BasicUsageEnvironment/include $(AMBULANT_3PP)/live/groupsock/include $(AMBULANT_3PP)/live/liveMedia/include $(AMBULANT_3PP)/live/UsageEnvironment/include";
 			};
 			name = Debug;
 		};
@@ -278,7 +377,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = plugin_Prefix.pch;
-				PRODUCT_NAME = libamplugin_plugin;
+				PRODUCT_NAME = "libamplugin_xpath_state(Cocoa)";
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = "non-global";
 			};
@@ -333,7 +432,16 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1DEB916008733D950010E9CD /* Build configuration list for PBXNativeTarget "plugin_xpath_state" */ = {
+		0441E7C21343132C0025FCF9 /* Build configuration list for PBXNativeTarget "plugin_xpath_state(CG)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0441E7C31343132C0025FCF9 /* Debug */,
+				0441E7C41343132C0025FCF9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB916008733D950010E9CD /* Build configuration list for PBXNativeTarget "plugin_xpath_state(Cocoa)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB916108733D950010E9CD /* Debug */,

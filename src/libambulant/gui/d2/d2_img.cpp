@@ -42,7 +42,7 @@
 using namespace ambulant;
 
 inline D2D1_RECT_F d2_rectf(lib::rect r) {
-	return D2D1::RectF((float) r.left(), (float) r.top(), (float) r.right(), (float) r.bottom());
+	return D2D1::RectF((FLOAT) r.left(), (FLOAT) r.top(), (FLOAT) r.right(), (FLOAT) r.bottom());
 }
 
 extern const char d2_img_playable_tag[] = "img";
@@ -266,6 +266,12 @@ gui::d2::d2_img_renderer::recreate_d2d()
 	HRESULT hr = rt->CreateBitmapFromWicBitmap(m_original, NULL, &m_d2bitmap);
 	if (!SUCCEEDED(hr))
 		lib::logger::get_logger()->trace("CreateBitmapFromWicBitmap: error 0x%x", hr);
+#ifdef	AM_DMP
+
+	m_d2player->dump (rt, "d2_image-recreate2");
+
+#endif//AM_DMP
+
 }
 
 void
@@ -321,6 +327,13 @@ void gui::d2::d2_img_renderer::redraw_body(const lib::rect& dirty, common::gui_w
 		if (m_erase_never) m_dest->keep_as_background();
 		return;
 	}
+#ifdef	AM_DMP
+
+//	m_d2player->dump (rt, "d2_image-redraw2");
+
+#endif//AM_DMP
+
+
 #ifdef WITH_SMIL30
 	lib::rect croprect = m_dest->get_crop_rect(srcsize);
 //	AM_DBG lib::logger::get_logger()->debug("get_crop_rect(%d,%d) -> (%d, %d, %d, %d)", srcsize.w, srcsize.h, croprect.left(), croprect.top(), croprect.width(), croprect.height());

@@ -156,7 +156,12 @@ gui::d2::d2_player::d2_player(
 	HRESULT hr;
 	hr = CoInitialize(NULL);
 	assert(SUCCEEDED(hr));
-	D2D1_FACTORY_OPTIONS options = { D2D1_DEBUG_LEVEL_INFORMATION };
+	D2D1_FACTORY_OPTIONS options =
+#ifdef	NDEBUG
+	{ D2D1_DEBUG_LEVEL_NONE };
+#else
+	{ D2D1_DEBUG_LEVEL_INFORMATION };
+#endif//NDEBUG
 	hr = D2D1CreateFactory(
 		D2D1_FACTORY_TYPE_MULTI_THREADED,
 		IID_ID2D1Factory,
@@ -354,7 +359,7 @@ gui::d2::d2_player::_recreate_d2d(wininfo *wi)
 #ifdef	AM_DMP
 		D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_SOFTWARE),
 #else //AM_DMP
-		D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_SOFTWARE),
+		D2D1::RenderTargetProperties(),
 #endif//AM_DMP
 		D2D1::HwndRenderTargetProperties(wi->m_hwnd, size, D2D1_PRESENT_OPTIONS_RETAIN_CONTENTS),
 		&wi->m_rendertarget);
@@ -386,7 +391,7 @@ void gui::d2::d2_player::play() {
 		std::map<std::string, wininfo*>::iterator it;
 		for(it=m_windows.begin();it!=m_windows.end();it++) {
 			d2_window *d2win = (d2_window *)(*it).second->m_window;
-			d2win->redraw();
+			d2win->need_redraw();
 		}
 		common::gui_player::play();
 		unlock_redraw();
@@ -582,11 +587,10 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 		_screenTransitionPostRedraw(NULL);
 	}
 	hr = rt->EndDraw();
+
 	// after each redraw a bitmap screen copy is made for possible fullscreen transitions
 	_set_fullscreen_cur_bitmap(rt); 
-#ifdef	AM_DMP
-//	dump (rt, "d2_player-redraw2");
-#endif//AM_DMP
+
 	m_cur_wininfo = NULL;
 	if (hr == D2DERR_RECREATE_TARGET) {
 		// This happens if something serious changed (like move to a
@@ -615,7 +619,6 @@ gui::d2::d2_player::_capture_bitmap(lib::rect r, ID2D1RenderTarget *src_rt, ID2D
 		src_size.width = (UINT32) rt_size.width;
 		src_size.height = (UINT32) rt_size.height;
 	}
-//	D2D1_RECT_U src_rect = { r.left(), r.top(), r.left()+src_size.width, r.top()+src_size.height };
 	ID2D1Bitmap *bitmap;
 	D2D1_BITMAP_PROPERTIES props = D2D1::BitmapProperties();
 	D2D1_PIXEL_FORMAT rt_format = src_rt->GetPixelFormat();
@@ -626,7 +629,6 @@ gui::d2::d2_player::_capture_bitmap(lib::rect r, ID2D1RenderTarget *src_rt, ID2D
 		lib::win32::win_trace_error("capture: CreateBitmap", hr);
 		return NULL;
 	}
-//	D2D1_POINT_2U dst_point = { 0, 0};
 	hr = bitmap->CopyFromRenderTarget(NULL, src_rt, NULL);
 	if (!SUCCEEDED(hr)) {
 		lib::win32::win_trace_error("capture: CopyFromRenderTarget", hr);
@@ -1248,9 +1250,6 @@ gui::d2::d2_player::_set_fullscreen_cur_bitmap(ID2D1RenderTarget* rt)
 {
 	SafeRelease(&this->m_fullscreen_cur_bitmap);
 	this->m_fullscreen_cur_bitmap = this->_get_bitmap_from_render_target(rt);
-#ifdef	AM_DMP
-//	dump_bitmap(m_fullscreen_old_bitmap, rt, "cbm");
-#endif//AM_DMP
 }
 
 void
@@ -1259,9 +1258,6 @@ gui::d2::d2_player::_set_fullscreen_orig_bitmap(ID2D1RenderTarget* rt)
 	SafeRelease(&this->m_fullscreen_orig_bitmap);
 	m_fullscreen_orig_bitmap = m_fullscreen_cur_bitmap;
 	m_fullscreen_cur_bitmap = NULL; // prevents Release (old_bitmap now has ownership)
-#ifdef	AM_DMP
-//	dump_bitmap(m_fullscreen_orig_bitmap, rt, "nbm");
-#endif//AM_DMP
 }
 
 void
@@ -1270,15 +1266,13 @@ gui::d2::d2_player::_set_fullscreen_old_bitmap(ID2D1RenderTarget* rt)
 	SafeRelease(&this->m_fullscreen_old_bitmap);
 	m_fullscreen_old_bitmap = m_fullscreen_cur_bitmap;
 	m_fullscreen_cur_bitmap = NULL; // prevents Release (old_bitmap now has ownership)
-#ifdef	AM_DMP
-//	dump_bitmap(m_fullscreen_old_bitmap, rt, "obm");
-#endif//AM_DMP
 }
 
 #ifdef	AM_DMP
-// screen dump support (for debugging only).
+// screen dump support (for debugging). Returns index nr. of dump file
 int
-gui::d2::d2_player::dump(ID2D1RenderTarget* rt, std::string id) {
+gui::d2::d2_player::dump(ID2D1RenderTarget* rt, std::string id)
+{
 	int rv = -1;
 	if (rt == NULL)
 		return rv;
@@ -1310,33 +1304,43 @@ gui::d2::d2_player::dump(ID2D1RenderTarget* rt, std::string id) {
 		goto cleanup;
 	hr = m_WICFactory->CreateStream(&wicStream);
 	OnErrorGoto_cleanup(hr, "dump() m_WICFactory->CreateStream");
+
 	hr = wicStream->InitializeFromFilename(wide_cstr_filename, GENERIC_WRITE);
 	OnErrorGoto_cleanup(hr, "dump() wicStream->InitializeFromFilename");
+
 	hr = m_WICFactory->CreateEncoder(GUID_ContainerFormatPng, NULL, &wicBitmapEncoder);
 	OnErrorGoto_cleanup(hr, "dump() m_WICFactory->CreateEncoder");
+
 	hr = wicBitmapEncoder->Initialize(wicStream, WICBitmapEncoderNoCache);
 	OnErrorGoto_cleanup(hr, "dump() wicBitmapEncoder->Initialize");
+
 	hr = wicBitmapEncoder->CreateNewFrame(&wicBitmapFrameEncode, NULL);
 	OnErrorGoto_cleanup(hr, "dump() wicBitmapEncoder->CreateNewFrame");
+
 	hr = wicBitmapFrameEncode->Initialize(NULL);
 	OnErrorGoto_cleanup(hr, "dump() wicBitmapFrameEncode->Initialize");
+
 	hr = wicBitmapFrameEncode->SetSize((UINT) sizeF.width, (UINT) sizeF.height);
 	OnErrorGoto_cleanup(hr, "dump() wicBitmapFrameEncode->SetSize");
+
 	hr = wicBitmapFrameEncode->SetPixelFormat(&format);
 	OnErrorGoto_cleanup(hr, "dump() hr = wicBitmapFrameEncode->SetPixelFormat");
+
 	hr = wicBitmapFrameEncode->WriteSource(wicBitmap, NULL);
 	OnErrorGoto_cleanup(hr, "dump() wicBitmapFrameEncode->WriteSource");
+
 	hr = wicBitmapFrameEncode->Commit();
 	OnErrorGoto_cleanup(hr, "dump() wicBitmapFrameEncode->Commit");
+
 	hr = wicBitmapEncoder->Commit();
 	OnErrorGoto_cleanup(hr, "dump() wicBitmapEncoder->Commit");
 	rv = rvi;
+
 cleanup:
 	SafeRelease(&wicBitmap);
 	SafeRelease(&wicStream);
 	SafeRelease(&wicBitmapEncoder);
 	SafeRelease(&wicBitmapFrameEncode);
-
 	return rv;
 }
 

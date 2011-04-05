@@ -111,6 +111,10 @@ void animation_engine::_stopped(animate_node *animator) {
 	AM_DBG lib::logger::get_logger()->debug("animation_engine: %d active animations left", m_counter);
 	if(aa.empty()) {
 		common::animation_destination *dst = m_layout->get_animation_destination(target);
+		if (dst == NULL) {
+			lib::logger::get_logger()->trace("Implementation error: animation_destination NULL for %s", target->get_sig().c_str());
+			return;
+		}
 		animate_registers regs;
 		animator->read_dom_value(dst, regs);
 		m_is_node_dirty = animator->set_animated_value(dst, regs);
@@ -133,6 +137,10 @@ void animation_engine::_update() {
 void animation_engine::_update_node(const node *target, node_animators_t& animators) {
 	m_is_node_dirty = false;
 	common::animation_destination *dst = m_layout->get_animation_destination(target);
+	if (dst == NULL) {
+		lib::logger::get_logger()->trace("Implementation error: animation_destination NULL for %s", target->get_sig().c_str());
+		return;
+	}
 	node_animators_t::iterator it;
 	for(it = animators.begin();it != animators.end();it++)
 		_update_attr((*it).first, (*it).second, dst);

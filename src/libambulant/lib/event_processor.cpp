@@ -166,6 +166,7 @@ event_processor_impl::_serve_events()
 		m_lock.enter();
 		if (m_observer == NULL) {
 			// We got deleted behind our back
+			lib::logger::get_logger()->debug("event_processor: cannot unlock_redraw() because observer disappeared");
 			m_lock.leave();
 			return;
 		}

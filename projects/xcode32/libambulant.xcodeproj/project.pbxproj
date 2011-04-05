@@ -2407,7 +2407,7 @@
 					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/liveMedia\\\"",
 					"\\\"$(SRCROOT)/../../build-3264/third_party_packages/live/UsageEnvironment\\\"",
 				);
-				PRODUCT_NAME = libambulantGC;
+				PRODUCT_NAME = libambulantCG;
 			};
 			name = Release;
 		};
