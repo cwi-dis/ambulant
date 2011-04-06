@@ -33,15 +33,16 @@
 #include <d2d1.h>
 #include <d2d1helper.h>
 
-//#define AM_DBG
+#define AM_DBG
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
 
 using namespace ambulant;
+
 inline D2D1_RECT_F d2_rectf(lib::rect r) {
-	return D2D1::RectF(r.left(), r.top(), r.right(), r.bottom());
+	return D2D1::RectF((FLOAT) r.left(), (FLOAT) r.top(), (FLOAT) r.right(), (FLOAT) r.bottom());
 }
 
 extern const char d2_img_playable_tag[] = "img";
@@ -111,6 +112,8 @@ void gui::d2::d2_img_renderer::start(double t) {
 		lib::logger::get_logger()->error("Windows Imaging Component not initialized");
 		return;
 	}
+	start_transition(t);
+
 	HRESULT hr = S_OK;
 	IWICBitmapDecoder *decoder = NULL;
 	IWICFormatConverter *converter = NULL;
@@ -258,12 +261,7 @@ gui::d2::d2_img_renderer::recreate_d2d()
 	if (m_original == NULL) return;
 	ID2D1RenderTarget *rt = m_d2player->get_rendertarget();
 	assert(rt);
-#ifdef	AM_DMP
-
-	m_d2player->dump (rt, "d2_image-recreate1");
-
-#endif//AM_DMP
-
+	if (rt == NULL) return;
 
 	HRESULT hr = rt->CreateBitmapFromWicBitmap(m_original, NULL, &m_d2bitmap);
 	if (!SUCCEEDED(hr))
@@ -285,28 +283,23 @@ gui::d2::d2_img_renderer::discard_d2d()
 	}
 }
 
-void gui::d2::d2_img_renderer::redraw_body(const lib::rect& dirty, common::gui_window *window) {
+void gui::d2::d2_img_renderer::redraw_body(const lib::rect& dirty, common::gui_window *window, ID2D1RenderTarget* rt) {
 	recreate_d2d();
 	if(!m_d2bitmap) {
 		// No bits available
 		AM_DBG lib::logger::get_logger()->debug("d2_img_renderer::redraw NOT: no image or cannot play %0x %s ", m_dest, m_node->get_url("src").get_url().c_str());
 		return;
 	}
-	ID2D1RenderTarget *rt = m_d2player->get_rendertarget();
 	assert(rt);
-#ifdef	AM_DMP
-
-//	m_d2player->dump (rt, "d2_image-redraw1");
-
-#endif//AM_DMP
-
-
+	if (rt == NULL) return;
 	lib::rect img_rect1;
 	lib::rect img_reg_rc;
 	UINT w, h;
 	HRESULT hr = m_original->GetSize(&w, &h);
-	assert(hr == 0);
+	assert(hr == S_OK);
+	if (hr != S_OK) return;
 	lib::size srcsize(w, h);
+	AM_DBG lib::logger::get_logger()->debug("d2_img_renderer::redraw(0x%x) rt=0x%x", this, rt);
 
 	// This code could be neater: it could share quite a bit with the
 	// code below (for non-tiled images). Also, support for tiled images
@@ -343,7 +336,7 @@ void gui::d2::d2_img_renderer::redraw_body(const lib::rect& dirty, common::gui_w
 
 #ifdef WITH_SMIL30
 	lib::rect croprect = m_dest->get_crop_rect(srcsize);
-	AM_DBG lib::logger::get_logger()->debug("get_crop_rect(%d,%d) -> (%d, %d, %d, %d)", srcsize.w, srcsize.h, croprect.left(), croprect.top(), croprect.width(), croprect.height());
+//	AM_DBG lib::logger::get_logger()->debug("get_crop_rect(%d,%d) -> (%d, %d, %d, %d)", srcsize.w, srcsize.h, croprect.left(), croprect.top(), croprect.width(), croprect.height());
 	img_reg_rc = m_dest->get_fit_rect(croprect, srcsize, &img_rect1, m_alignment);
 	double alpha_media = 1.0, alpha_media_bg = 1.0, alpha_chroma = 1.0;
 	lib::color_t chroma_low = lib::color_t(0x000000), chroma_high = lib::color_t(0xFFFFFF);

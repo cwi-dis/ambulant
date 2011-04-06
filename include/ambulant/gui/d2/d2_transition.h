@@ -28,6 +28,7 @@
 
 #include "ambulant/smil2/transition.h"
 #include "ambulant/common/layout.h"
+#include "ambulant/gui/d2/d2_renderer.h"
 
 namespace ambulant {
 

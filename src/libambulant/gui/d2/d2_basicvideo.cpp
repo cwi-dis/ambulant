@@ -441,7 +441,7 @@ std::pair<bool, double> gui::d2::d2_basicvideo_renderer::get_dur() {
 		return std::pair<bool, double>(false, 0);
 	}
 	if (m_clip_end > 0 && dur > m_clip_end / 1000000)
-		dur = m_clip_end / 1000000;
+		dur = (REFTIME) m_clip_end / 1000000;
 	dur -= (m_clip_begin / 1000000);
 	return std::pair<bool, double>(true, dur);
 }
