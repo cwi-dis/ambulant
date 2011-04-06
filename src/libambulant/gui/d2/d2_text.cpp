@@ -44,7 +44,7 @@ namespace gui {
 namespace d2 {
 
 inline D2D1_RECT_F d2_rectf(lib::rect r) {
-	return D2D1::RectF(r.left(), r.top(), r.right(), r.bottom());
+	return D2D1::RectF((float) r.left(), (float) r.top(), (float) r.right(), (float) r.bottom());
 }
 
 extern const char d2_text_playable_tag[] = "text";
@@ -140,7 +140,7 @@ d2_text_renderer::~d2_text_renderer()
 }
 
 void
-d2_text_renderer::redraw_body(const rect &dirty, gui_window *window)
+d2_text_renderer::redraw_body(const rect &dirty, gui_window *window, ID2D1RenderTarget* rt)
 {
 	// XXXJACK: if our color.opacity has been animated we should re-create
 	recreate_d2d();
@@ -150,10 +150,9 @@ d2_text_renderer::redraw_body(const rect &dirty, gui_window *window)
 		m_lock.leave();
 		return;
 	}
-
-	ID2D1RenderTarget *rt = m_d2player->get_rendertarget();
 	assert(rt);
-
+	if (rt == NULL)
+		return;
 	rect destrect = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("d2_text_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, destrect.left(), destrect.top(), destrect.right(), destrect.bottom());
 

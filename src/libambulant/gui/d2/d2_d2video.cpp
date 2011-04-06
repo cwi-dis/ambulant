@@ -102,9 +102,8 @@ RemoveFromRot(DWORD pdwRegister)
 #endif
 using namespace ambulant;
 
-
 inline D2D1_RECT_F d2_rectf(lib::rect r) {
-	return D2D1::RectF(r.left(), r.top(), r.right(), r.bottom());
+	return D2D1::RectF((float) r.left(), (float) r.top(), (float) r.right(), (float) r.bottom());
 }
 
 extern const char d2_d2video_playable_tag[] = "video";
@@ -374,8 +373,8 @@ std::pair<bool, double> gui::d2::d2_d2video_renderer::get_dur() {
 		return std::pair<bool, double>(false, 0);
 	}
 	if (m_clip_end > 0 && dur > m_clip_end / 1000000)
-		dur = m_clip_end / 1000000;
-	dur -= (m_clip_begin / 1000000);
+		dur = (REFTIME) m_clip_end / 1000000;
+	dur -= (REFTIME) (m_clip_begin / 1000000);
 	return std::pair<bool, double>(true, dur);
 }
 
@@ -415,11 +414,10 @@ bool gui::d2::d2_d2video_renderer::user_event(const lib::point& pt, int what) {
 	return true;
 }
 
-void gui::d2::d2_d2video_renderer::redraw_body(const lib::rect &dirty, common::gui_window *window)
+void gui::d2::d2_d2video_renderer::redraw_body(const lib::rect &dirty, common::gui_window *window, ID2D1RenderTarget* rt)
 {
 	recreate_d2d();
 	if (m_video_sink == NULL) return;
-	ID2D1RenderTarget *rt = m_d2player->get_rendertarget();
 	if (rt == NULL) return;
 	m_video_sink->SetRenderTarget(rt);
 	ID2D1Bitmap *bitmap = m_video_sink->LockBitmap();

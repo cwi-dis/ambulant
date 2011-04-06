@@ -44,7 +44,7 @@ namespace gui {
 namespace d2 {
 
 inline D2D1_RECT_F d2_rectf(lib::rect r) {
-	return D2D1::RectF(r.left(), r.top(), r.right(), r.bottom());
+	return D2D1::RectF((float) r.left(), (float) r.top(), (float) r.right(), (float) r.bottom());
 }
 
 extern const char d2_smiltext_playable_tag[] = "smilText";
@@ -87,8 +87,6 @@ d2_smiltext_renderer::d2_smiltext_renderer(
 	m_cur_para_writing_mode(smil2::stw_lr_tb),
 	m_cur_para_wrap(true),
 	m_any_semiopaque_bg(false)
-
-
 {
 #ifdef PARALLELS_MACPRO_BUG_WORKAROUND
 	lib::logger::get_logger()->trace("DirectWrite disabled, bug workaround by Jack");
@@ -293,8 +291,8 @@ d2_smiltext_renderer::_recreate_layout()
 	if (m_text_layout) m_text_layout->Release();
 	if (m_dest == NULL) return;
 	rect destrect = m_dest->get_rect();
-	FLOAT w = destrect.width();
-	FLOAT h = destrect.height();
+	FLOAT w = (float) destrect.width();
+	FLOAT h = (float) destrect.height();
 	HRESULT hr;
 	if (s_write_factory == NULL) return;
 	hr = s_write_factory->CreateTextLayout(m_data.c_str(), m_data.length(), m_text_format, w, h, &m_text_layout);
@@ -498,7 +496,7 @@ d2_smiltext_renderer::_recreate_layout()
 }
 
 void
-d2_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
+d2_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window, ID2D1RenderTarget* rt)
 {
 	recreate_d2d();
 
@@ -508,16 +506,15 @@ d2_smiltext_renderer::redraw_body(const rect &dirty, gui_window *window)
 		m_lock.leave();
 		return;
 	}
-
-	ID2D1RenderTarget *rt = m_d2player->get_rendertarget();
 	assert(rt);
-
+	if (rt == NULL)
+		return;
 	rect destrect = m_dest->get_rect();
 	AM_DBG logger::get_logger()->debug("d2_smiltext_renderer.redraw(0x%x, local_ltrb=(%d,%d,%d,%d))", (void *)this, destrect.left(), destrect.top(), destrect.right(), destrect.bottom());
 
 	destrect.translate(m_dest->get_global_topleft());
 
-	D2D1_POINT_2F origin = { destrect.left(), destrect.top() };
+	D2D1_POINT_2F origin = { (float) destrect.left(), (float) destrect.top() };
 	rt->DrawTextLayout(origin, m_text_layout, m_brush);
 
 #ifdef JNK

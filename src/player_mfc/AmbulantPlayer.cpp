@@ -24,7 +24,11 @@
 #include "ambulant/config/config.h"
 
 #ifdef	_DEBUG
+<<<<<<< local
 //#include "vld.h" // Visual Leak Detector
+=======
+#include "vld.h" // Visual Leak Detector
+>>>>>>> other
 #endif//_DEBUG
 
 #include "AmbulantPlayer.h"

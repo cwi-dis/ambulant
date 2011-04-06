@@ -171,7 +171,7 @@ d2_dsvideo_renderer::_copy_to_ddsurf()
 #endif
 
 void
-d2_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window)
+d2_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window, ID2D1RenderTarget* rt)
 {
 	recreate_d2d();
 	m_lock.enter();
@@ -181,8 +181,9 @@ d2_dsvideo_renderer::redraw_body(const rect &dirty, gui_window *window)
 		m_lock.leave();
 		return;
 	}
-	ID2D1RenderTarget *rt = m_d2player->get_rendertarget();
 	assert(rt);
+	if (rt == NULL)
+		return;
 	lib::rect img_rect1;
 	lib::rect img_reg_rc;
 
