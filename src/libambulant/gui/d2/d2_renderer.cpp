@@ -64,8 +64,10 @@ d2_player*
 d2_transition_renderer::get_d2player()
 {
 	if (m_d2player == NULL) {
+		assert(m_transition_dest);
 		gui_window *window = m_transition_dest->get_gui_window();
 		d2_window *cwindow = (d2_window *)window;
+		assert(cwindow);
 		m_d2player  = cwindow->get_d2_player();
 	}
 	return m_d2player;
