@@ -240,6 +240,7 @@ d2_transition_renderer::redraw_post(gui_window *window)
 				}
 				if (new_bitmap != NULL) {
 					ID2D1RenderTarget* brt = d2_player->get_fullscreen_rendertarget();
+					if (brt == NULL) return;
 					brt->DrawBitmap(new_bitmap);
 					HRESULT hr = brt->Flush();
 				}

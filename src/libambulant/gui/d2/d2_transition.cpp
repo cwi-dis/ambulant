@@ -220,9 +220,9 @@ _d2_polygon_list_update (common::surface* dst, std::vector< std::vector<lib::poi
 	hr = rt->Flush();
 	OnErrorGoto_cleanup(hr, "_d2_polygon_list_update() rt->Flush()");
 #ifdef	AM_DMP
-	int idx = d2_player->dump(d2_player->get_fullscreen_rendertarget(), "res");
-	idx = d2_player->dump_bitmap(bitmap, brt, "bmp");
-	lib::logger::get_logger()->debug("d2_transition_renderer.redraw_pre(0x%x) DrawBitmap(bitmap) idx=%d", this, idx);
+//	int idx = d2_player->dump(d2_player->get_fullscreen_rendertarget(), "res");
+//	idx = d2_player->dump_bitmap(bitmap, brt, "bmp");
+//	lib::logger::get_logger()->debug("d2_transition_renderer.redraw_pre(0x%x) DrawBitmap(bitmap) idx=%d", this, idx);
 #endif//AM_DMP
 
 cleanup:

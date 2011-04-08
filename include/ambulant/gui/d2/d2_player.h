@@ -198,7 +198,7 @@ class AMBULANTAPI d2_player :
 	ID2D1Bitmap* get_fullscreen_orig_bitmap() { return m_fullscreen_orig_bitmap; }
 	ID2D1Bitmap* get_fullscreen_old_bitmap() { return m_fullscreen_old_bitmap; }
 	void set_fullscreen_rendertarget(ID2D1BitmapRenderTarget* bmrt) { if (bmrt == NULL) {SafeRelease(&m_fullscreen_rendertarget);} else m_fullscreen_rendertarget = bmrt; }
-	ID2D1BitmapRenderTarget* get_fullscreen_rendertarget() { return m_fullscreen_rendertarget; }
+	ID2D1BitmapRenderTarget* get_fullscreen_rendertarget() {return m_fullscreen_ended ? NULL : m_fullscreen_rendertarget; }
 	void take_fullscreen_shot (ID2D1RenderTarget* rt) { _set_fullscreen_old_bitmap(rt); }
 
 	void lock_redraw();
@@ -324,7 +324,6 @@ class AMBULANTAPI d2_player :
 // ".\<number>.<id>.png" where number is a generated numeric string circular variying between
 //	"0000" and "9999", which is returned as an int.   
 	int dump_bitmap(ID2D1Bitmap* bmp, ID2D1RenderTarget* rt, std::string id);
-
 #endif//AM_DMP
 };
 
