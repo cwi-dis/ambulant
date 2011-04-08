@@ -11,8 +11,8 @@ NORUN=False
 #
 # Path names for Windows programs and such
 #
-WINDOWS_PROGRAMFILES=os.getenv("ProgramFiles")
-WINDOWS_PROGRAMFILES32=os.getenv("ProgramFiles(x86)")
+WINDOWS_PROGRAMFILES=os.getenv("ProgramFiles", "c:\Program Files")
+WINDOWS_PROGRAMFILES32=os.getenv("ProgramFiles(x86)", "")
 WINDOWS_UNTAR_PATH="%s\\7-Zip\\7z.exe" % WINDOWS_PROGRAMFILES
 if not os.path.exists(WINDOWS_UNTAR_PATH) and os.path.exists(WINDOWS_PROGRAMFILES32):
     WINDOWS_UNTAR_PATH="%s\\7-Zip\\7z.exe" % WINDOWS_PROGRAMFILES32
