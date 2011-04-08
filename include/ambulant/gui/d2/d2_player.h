@@ -178,6 +178,7 @@ class AMBULANTAPI d2_player :
 
 	common::window_factory *get_window_factory() { return this;}
 
+	RECT screen_rect(const d2_window *w, const lib::rect &r);
 	void redraw(HWND hwnd, HDC hdc, RECT *dirty=NULL);
 
 
@@ -235,7 +236,7 @@ class AMBULANTAPI d2_player :
 	// Valid only during redraw():
 	wininfo* m_cur_wininfo;
 	wininfo* _get_wininfo(HWND hwnd);
-	wininfo* _get_wininfo(d2_window *window);
+	wininfo* _get_wininfo(const d2_window *window);
 	common::gui_window* _get_window(HWND hwnd);
 	HWND _get_main_window();
 

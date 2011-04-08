@@ -532,8 +532,30 @@ bool gui::d2::d2_player::_calc_fit(
 	return xoff != 0 || yoff != 0 || fac != 1;
 }
 
+RECT gui::d2::d2_player::screen_rect(const d2_window *w, const lib::rect &r) {
+	RECT rv = {r.left(), r.top(), r.right(), r.bottom()};
+	wininfo *wi = _get_wininfo(w);
+	assert(wi);
+	ID2D1HwndRenderTarget*rt = wi->m_rendertarget;
+	if (rt) {
+		// Note: this code knows the matrix is scale/translate only.
+		D2D1_MATRIX_3X2_F transform;
+		rt->GetTransform(&transform);
+		rv.left = rv.left*transform._11 + transform._31;
+		rv.right = rv.right*transform._11 + transform._31 + 0.99;
+		rv.top = rv.top*transform._22 + transform._32;
+		rv.bottom = rv.bottom*transform._22 + transform._32 + 0.99;
+	}
+	/*AM_DBG*/ lib::logger::get_logger()->debug("screen_rect(%d, %d, %d, %d) -> (%d, %d, %d, %d)",
+		r.left(), r.top(), r.right(), r.bottom(),
+		rv.left, rv.top, rv.right, rv.bottom);
+	return rv;
+}
+
 void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 
+	/*AM_DBG*/ lib::logger::get_logger()->debug("d2_player::redraw(0x%x, 0x%x, (%d, %d, %d, %d))", hwnd, hdc,
+		dirty->left, dirty->top, dirty->right, dirty->bottom);
 	RECT dirtyMod;
 	HRESULT hr = S_OK;
 	// Create the Direct2D resources, in case they were lost
@@ -563,10 +585,6 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 	// Set the transformation
 	const lib::rect& wanted_rect = wi->m_window->get_rect();
 	float xoff, yoff, factor;
-	if (dirty != NULL) {
-		D2D1_RECT_F d2rectf = D2D1::RectF( (FLOAT)dirty->left,(FLOAT)dirty->top,(FLOAT)dirty->right,(FLOAT)dirty->bottom);
-		rt->PushAxisAlignedClip(d2rectf, D2D1_ANTIALIAS_MODE_ALIASED);
-	}
 	AM_DBG lib::logger::get_logger()->debug("d2_player::redraw(%d, %d, %d, %d)", client_rect.left, client_rect.top, client_rect.right, client_rect.bottom);
 	if (_calc_fit(client_rect, wanted_rect.size(), xoff, yoff, factor)) {
 		// WE have to do scaling. Setup the matrix.
@@ -602,9 +620,18 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 	} else {
 		rt->SetTransform(D2D1::Matrix3x2F::Identity());
 	}
+	// Set the correct clipping mask
+	if (dirty != NULL) {
+		// Note that by the time we get here, the dirty rect is converted to our coordinates.
+		D2D1_RECT_F d2rectf = D2D1::RectF( (FLOAT)dirty->left,(FLOAT)dirty->top,(FLOAT)dirty->right,(FLOAT)dirty->bottom);
+		rt->PushAxisAlignedClip(d2rectf, D2D1_ANTIALIAS_MODE_ALIASED);
+	}
+
 	// Do the redraw
 	_screenTransitionPreRedraw(rt);
 	if (dirty) {
+		/*AM_DBG*/ lib::logger::get_logger()->debug("d2_player::redraw() ambulant coordinates (%d, %d, %d, %d))", 
+		dirty->left, dirty->top, dirty->right, dirty->bottom);
 		lib::rect r(lib::point(dirty->left, dirty->top), lib::size(dirty->right-dirty->left, dirty->bottom-dirty->top));
 		wi->m_window->redraw(r);
 		_screenTransitionPostRedraw(&r);
@@ -900,7 +927,7 @@ gui::d2::d2_player::_get_wininfo(HWND hwnd) {
 }
 
 gui::d2::d2_player::wininfo*
-gui::d2::d2_player::_get_wininfo(d2_window *window) {
+gui::d2::d2_player::_get_wininfo(const d2_window *window) {
 	wininfo *winfo = 0;
 	std::map<std::string, wininfo*>::iterator it;
 	for(it=m_windows.begin();it!=m_windows.end();it++) {

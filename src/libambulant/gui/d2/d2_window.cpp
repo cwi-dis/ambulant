@@ -58,7 +58,7 @@ gui::d2::d2_window::~d2_window() {
 
 void gui::d2::d2_window::_need_redraw(const lib::rect &r) {
 	if(!m_locked) {
-		RECT rr = {r.left(), r.top(), r.right(), r.bottom()};
+		RECT rr = m_player->screen_rect(this, r);
 		InvalidateRect(m_hwnd, &rr, 0);
 	} else {
 		if(!m_redraw_rect_valid) {
