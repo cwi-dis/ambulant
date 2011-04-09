@@ -39,7 +39,7 @@
 #include "ambulant/gui/qt/qt_includes.h"
 #include "ambulant/gui/qt/qt_factory.h"
 
-#define AM_DBG
+//#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -366,7 +366,7 @@ no_fileopen_infodisplay(QWidget* w, const char* caption) {
 #ifdef	AUTO_TEST
 void
 qt_gui::slot_watch_player_done() {
-	/*AM_DBG*/ fprintf(stdout, "slot_watch_player_done()\n");
+	AM_DBG fprintf(stdout, "slot_watch_player_done()\n");
 	if (m_mainloop != NULL) {
 		if (m_mainloop->player_done()) {
 			slot_quit();
