@@ -25,6 +25,7 @@
 #include <libgen.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include <unistd.h>
 #include "qt_gui.h"
 #include "qt_mainloop.h"
 #include "qt_logger.h"
@@ -38,7 +39,7 @@
 #include "ambulant/gui/qt/qt_includes.h"
 #include "ambulant/gui/qt/qt_factory.h"
 
-//#define AM_DBG
+#define AM_DBG
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
@@ -97,6 +98,9 @@ qt_gui::qt_gui(const char* title, const char* initfile)
 #ifdef	TRY_LOCKING
 	m_gui_thread(0),
 #endif/*TRY_LOCKING*/
+#ifdef	AUTO_TEST
+	m_qtimer(new QTimer(this)),
+#endif//AUTO_TEST
 	m_smilfilename(NULL)
 {
 
@@ -359,6 +363,25 @@ no_fileopen_infodisplay(QWidget* w, const char* caption) {
 	QMessageBox::information(w,caption,gettext("No file open: Please first select File->Open"));
 }
 
+#ifdef	AUTO_TEST
+void
+qt_gui::slot_watch_player_done() {
+	/*AM_DBG*/ fprintf(stdout, "slot_watch_player_done()\n");
+	if (m_mainloop != NULL) {
+		if (m_mainloop->player_done()) {
+			slot_quit();
+
+		}
+	}
+}
+
+void
+qt_gui::set_watchdog() {
+	m_qtimer->start(1000, false);
+	connect(m_qtimer, SIGNAL(timeout()), this, SLOT(slot_watch_player_done()) );
+
+}
+#endif//AUTO_TEST
 void
 qt_gui::slot_play() {
 	assert(m_mainloop);
@@ -490,6 +513,68 @@ qt_gui::_update_menus()
 	m_filemenu->setItemEnabled(m_reload_id, (m_mainloop != NULL));
 }
 
+#ifdef	AUTO_TEST
+void
+set_logger_filename(char* filename)
+{
+	//XXX std::ostream sos = new std::ostream(std::cout);
+	//XXX ambulant::lib::logger::get_logger()->set_std_ostream(sos);
+//	static std::ofstream log_os("C:\\Documents and Settings\\kees.AMBULANT-DEV\\My Documents\\Ambulant\\ambulant\\src\\ieambulant\\amlog.txt");
+//	ambulant::lib::logger::get_logger()->set_std_ostream(log_os)
+}
+
+void
+usage(char* name, char* opt) {
+	if (opt == NULL) {
+		fprintf(stderr, "%s: [-a] [-l<filename> [-h[opt]\n]", name);
+	} else {
+		int idx = 0;
+		if (optarg[0] == '-') idx = 1;
+		char* xplain;
+		switch (optarg[idx]) {
+			case 'a': xplain = "-a: automatically stop player when SMIL presentation ends.";
+				break;
+			case 'l': xplain = "-l[ ]<filename>: used <filename> for logging.";
+				break;
+			case 'h': xplain = "-h[<option>]: explain details of <option> or show all options.";
+				break;
+		default: xplain  = "unknown option";
+		}
+		fprintf(stderr, "%s\n", xplain);
+	}
+}
+
+bool s_auto_stop = false;
+char* s_log_file = NULL;
+
+void
+parse_args (int* argc, char**argv[]) {
+	const char* opts = "al:h::";
+	int opt = 0;
+
+	while (opt != -1) {
+		opt = getopt(*argc, *argv, opts);
+		switch (opt) {
+			case 'a': s_auto_stop = true;	
+			  break;
+			case 'l': s_log_file = optarg;
+			  set_logger_filename (s_log_file);
+			  break;
+			case 'h': usage(*argv[0], optarg);	break;
+			default:  usage(*argv[0], NULL);	break;
+			case -1:	break;
+		}
+	}
+	int first = 1;
+	for (int i = first; i < optind; i++) {
+		int j = optind + i - first;
+		if (j > *argc) break;
+		(*argv)[i] = (*argv)[j];
+	}
+	*argc -= (optind - first);
+}
+#endif//AUTO_TEST
+
 int
 main (int argc, char*argv[]) {
 
@@ -499,6 +584,9 @@ main (int argc, char*argv[]) {
 	AM_DBG for (int i=1;i<argc;i++) {
 		fprintf(DBG,"%s\n", argv[i]);
 	}
+#ifdef	AUTO_TEST
+	parse_args(&argc, &argv);
+#endif//AUTO_TEST
 	// Initializing Xlib for threading early helps to get rid of assertions such as:
 	// xcb_lock.c:77: _XGetXCBBuffer: Assertion `((int) ((xcb_req) - (dpy->request)) >= 0)' failed
 	// ref: http://www.mail-archive.com/debian-bugs-dist@lists.debian.org/msg557273.html
@@ -567,6 +655,11 @@ main (int argc, char*argv[]) {
 		{
 			if (mywidget->openSMILfile(str, IO_ReadOnly) && (exec_flag = true))
 				mywidget->slot_play();
+#ifdef	AUTO_TEST
+			if (s_auto_stop) {
+				mywidget->set_watchdog();
+			}
+#endif//AUTO_TEST
 		}
 	} else {
 		preferences* prefs = preferences::get_preferences();
