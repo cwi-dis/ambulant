@@ -59,7 +59,7 @@ class d2_text_renderer : public d2_renderer<renderer_playable_dsall> {
 	~d2_text_renderer();
 
 	void init_with_node(const lib::node *n);
-	void redraw_body(const rect &dirty, gui_window *window);
+	void redraw_body(const rect &dirty, gui_window *window, ID2D1RenderTarget*);
 
 	void recreate_d2d();
 	void discard_d2d();

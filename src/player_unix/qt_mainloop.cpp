@@ -226,7 +226,7 @@ qt_mainloop::player_done() {
 		return false;
 	}
 #endif
-	return true;
+	return m_player->is_done();
 }
 
 void

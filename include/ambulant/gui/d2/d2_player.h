@@ -46,7 +46,7 @@
 #include "ambulant/lib/event_processor.h"
 #include "ambulant/net/url.h"
 #include "ambulant/gui/dx/html_bridge.h"
-//#include "ambulant/gui/d2/d2_playable.h"
+#include "ambulant/smil2/transition.h"
 
 #if _MSC_VER == 1500
 // This is a workaround for a bug in VS2008/MSSDK, where installation
@@ -54,6 +54,7 @@
 // See <http://social.msdn.microsoft.com/Forums/en-US/vcgeneral/thread/4bc93a16-4ad5-496c-954c-45efbe4b180b>
 // for details.
 namespace std {
+
  // TEMPLATE FUNCTION _Swap_adl
  template<class _Ty> inline void _Swap_adl(_Ty& _Left, _Ty& _Right) {	// exchange values stored at _Left and _Right, using ADL
   swap(_Left, _Right);
@@ -61,14 +62,10 @@ namespace std {
 }
 #endif 
 
-interface ID2D1Factory;
-interface ID2D1HwndRenderTarget;
-interface ID2D1RenderTarget;
-interface ID2D1Bitmap;
-interface IWICBitmap;
+#include <d2d1.h>
 #include <wincodec.h>
-//interface IWICImagingFactory;
-//interface IWICStream;
+#define SafeRelease(x) {if(x!=NULL){if(*x!=NULL){(*x)->Release();*x=NULL;}}}
+#define OnErrorGoto_cleanup(x,id) if(FAILED(x)) {ambulant::lib::win32::win_trace_error(id, x); goto cleanup;}
 
 namespace ambulant {
 
@@ -181,6 +178,7 @@ class AMBULANTAPI d2_player :
 
 	common::window_factory *get_window_factory() { return this;}
 
+	RECT screen_rect(const d2_window *w, const lib::rect &r);
 	void redraw(HWND hwnd, HDC hdc, RECT *dirty=NULL);
 
 
@@ -191,6 +189,18 @@ class AMBULANTAPI d2_player :
 	void resumed(common::playable *p);
 	void set_intransition(common::playable *p, const lib::transition_info *info);
 	void start_outtransition(common::playable *p, const lib::transition_info *info);
+//	void set_transition_surface(common::surface* surf) { m_transition_surface = surf; }
+
+	// Full screen transition support
+	void start_screen_transition(bool outtrans);
+	void end_screen_transition();
+	void screen_transition_step(smil2::transition_engine* engine, lib::transition_info::time_type now);
+	void set_transition_rendertarget(ID2D1BitmapRenderTarget* bmrt) { m_transition_rendertarget = bmrt; }
+	ID2D1Bitmap* get_fullscreen_orig_bitmap() { return m_fullscreen_orig_bitmap; }
+	ID2D1Bitmap* get_fullscreen_old_bitmap() { return m_fullscreen_old_bitmap; }
+	void set_fullscreen_rendertarget(ID2D1BitmapRenderTarget* bmrt) { if (bmrt == NULL) {SafeRelease(&m_fullscreen_rendertarget);} else m_fullscreen_rendertarget = bmrt; }
+	ID2D1BitmapRenderTarget* get_fullscreen_rendertarget() {return m_fullscreen_ended ? NULL : m_fullscreen_rendertarget; }
+	void take_fullscreen_shot (ID2D1RenderTarget* rt) { _set_fullscreen_old_bitmap(rt); }
 
 	void lock_redraw();
 	void unlock_redraw();
@@ -205,14 +215,14 @@ class AMBULANTAPI d2_player :
 	// Global capture-callback: saves snapshots, keeps bitmap for transitions, etc.
 	void captured(IWICBitmap *bitmap);
 
-	// Get current rendertarget, only valid while redrawing
-	ID2D1HwndRenderTarget *get_rendertarget() {
-		return m_cur_wininfo?m_cur_wininfo->m_rendertarget:NULL;
-	}
+	// Get current rendertarget, used while redrawing transitions
+	ID2D1HwndRenderTarget* get_rendertarget() {return m_cur_wininfo ? m_cur_wininfo->m_rendertarget : NULL; }
+	ID2D1BitmapRenderTarget* get_transition_rendertarget() {return m_transition_rendertarget; }
 	// Get current hwnd, only valid while redrawing
 	HWND get_hwnd() {
 		return m_cur_wininfo?m_cur_wininfo->m_hwnd:_get_main_window();
 	}
+	ID2D1Factory* get_D2D1Factory() { return m_d2d; };
   private:
 	bool _calc_fit(const RECT& dstrect, const lib::size& srcsize, float& xoff, float& yoff, float& fac);
 
@@ -226,7 +236,7 @@ class AMBULANTAPI d2_player :
 	// Valid only during redraw():
 	wininfo* m_cur_wininfo;
 	wininfo* _get_wininfo(HWND hwnd);
-	wininfo* _get_wininfo(d2_window *window);
+	wininfo* _get_wininfo(const d2_window *window);
 	common::gui_window* _get_window(HWND hwnd);
 	HWND _get_main_window();
 
@@ -246,6 +256,26 @@ class AMBULANTAPI d2_player :
 	bool _has_transitions() const;
 	d2_transition *_get_transition(common::playable *p);
 	d2_transition *_set_transition(common::playable *p, const lib::transition_info *info, bool is_outtransition);
+	ID2D1BitmapRenderTarget* m_transition_rendertarget; // managed by d2_renderer (for use by d2_transition*update())
+
+	// full screen transitions
+	int m_fullscreen_count;
+	smil2::transition_engine* m_fullscreen_engine;
+	ID2D1BitmapRenderTarget* m_fullscreen_rendertarget;
+
+	lib::transition_info::time_type m_fullscreen_now;
+	bool m_fullscreen_outtrans;
+	bool m_fullscreen_ended;
+	ID2D1Bitmap* m_fullscreen_cur_bitmap;	// last fullscreen drawn (needed for full screen trnasitions)
+	ID2D1Bitmap* m_fullscreen_orig_bitmap;	// for fullscreen out transitions
+	ID2D1Bitmap* m_fullscreen_old_bitmap;	// for fullscreen transitions
+	ID2D1Bitmap* _get_fullscreen_cur_bitmap() { return m_fullscreen_cur_bitmap; }
+	void _set_fullscreen_cur_bitmap(ID2D1RenderTarget* rt);
+	void _set_fullscreen_orig_bitmap(ID2D1RenderTarget* rt);
+	void _set_fullscreen_old_bitmap(ID2D1RenderTarget* rt);
+	ID2D1Bitmap* _get_bitmap_from_render_target(ID2D1RenderTarget* rt);
+	void _screenTransitionPreRedraw(ID2D1RenderTarget* rt);
+	void _screenTransitionPostRedraw(lib::rect* r);
 
 	// Capturing screen output
 	ID2D1Bitmap *_capture_bitmap(lib::rect r, ID2D1RenderTarget *src_rt, ID2D1RenderTarget *dst_rt);
@@ -287,7 +317,14 @@ class AMBULANTAPI d2_player :
 //#define	AM_DMP /* dump images (for debugging). Can create lots of image files, slows down all drawing. */
 #ifdef	AM_DMP
   public:
-	 void dump (ID2D1RenderTarget* rt, std::string id);
+// write the contents of the ID2D1RenderTarget* <rt> to the file: ".\<number>.<id>.png" where number is
+// a generated numeric string circular variying between "0000" and "9999", which is returned as an int.   
+	int dump (ID2D1RenderTarget* rt, std::string id);
+
+	// write the contents of the (ID2D1Bitmap* <bmp> associated with ID2D1RenderTarget* <rt> to the file:
+// ".\<number>.<id>.png" where number is a generated numeric string circular variying between
+//	"0000" and "9999", which is returned as an int.   
+	int dump_bitmap(ID2D1Bitmap* bmp, ID2D1RenderTarget* rt, std::string id);
 #endif//AM_DMP
 };
 

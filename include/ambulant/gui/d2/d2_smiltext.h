@@ -64,7 +64,7 @@ class d2_smiltext_renderer :
 	~d2_smiltext_renderer();
 
 	void init_with_node(const lib::node *n);
-	void redraw_body(const rect &dirty, gui_window *window);
+	void redraw_body(const rect &dirty, gui_window *window, ID2D1RenderTarget*);
 
 	void start(double t);
 	void seek(double t);

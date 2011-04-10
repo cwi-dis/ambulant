@@ -114,12 +114,15 @@
 #include <wincodec.h>
 
 //#define AM_DBG
-
 #ifndef AM_DBG
 #define AM_DBG if(0)
 #endif
 
 using namespace ambulant;
+
+inline D2D1_RECT_F d2_rectf(ambulant::lib::rect r) {
+	return D2D1::RectF((float) r.left(), (float) r.top(), (float) r.right(), (float) r.bottom());
+}
 
 int gui::dx::dx_gui_region::s_counter = 0;
 
@@ -132,6 +135,16 @@ gui::d2::d2_player::d2_player(
 	m_hoster(hoster),
 	m_update_event(0),
 	m_cur_wininfo(NULL),
+	m_transition_rendertarget(NULL),
+	m_fullscreen_count(0),
+	m_fullscreen_engine(NULL),
+	m_fullscreen_now(0),
+	m_fullscreen_outtrans(false),
+	m_fullscreen_ended(false),
+	m_fullscreen_cur_bitmap(NULL),
+	m_fullscreen_orig_bitmap(NULL),
+	m_fullscreen_old_bitmap(NULL),
+	m_fullscreen_rendertarget(NULL),
 	m_logger(lib::logger::get_logger())
 {
 	set_embedder(this);
@@ -143,7 +156,12 @@ gui::d2::d2_player::d2_player(
 	HRESULT hr;
 	hr = CoInitialize(NULL);
 	assert(SUCCEEDED(hr));
-	D2D1_FACTORY_OPTIONS options = { D2D1_DEBUG_LEVEL_INFORMATION };
+	D2D1_FACTORY_OPTIONS options =
+#ifdef	NDEBUG
+	{ D2D1_DEBUG_LEVEL_NONE };
+#else
+	{ D2D1_DEBUG_LEVEL_INFORMATION };
+#endif//NDEBUG
 	hr = D2D1CreateFactory(
 		D2D1_FACTORY_TYPE_MULTI_THREADED,
 		IID_ID2D1Factory,
@@ -194,6 +212,12 @@ gui::d2::d2_player::d2_player(
 }
 
 gui::d2::d2_player::~d2_player() {
+
+	SafeRelease(&m_fullscreen_cur_bitmap);
+	SafeRelease(&m_fullscreen_orig_bitmap);
+	SafeRelease(&m_fullscreen_old_bitmap);
+	set_fullscreen_rendertarget(NULL); // just to be sure
+
 	lib::event_processor *evp = NULL;
 	if(m_player) stop();
 	if (m_player) {
@@ -477,8 +501,8 @@ bool gui::d2::d2_player::_calc_fit(
 {
 	// First some sanity checks
 	if (srcsize.w == 0 || srcsize.h == 0) return false;
-	float w = dstrect.right-dstrect.left;
-	float h = dstrect.bottom-dstrect.top;
+	float w = (float) dstrect.right-dstrect.left;
+	float h = (float) dstrect.bottom-dstrect.top;
 	if (w == 0 || h == 0) return false;
 
 	// Compute sizes if we simply want to fill the area
@@ -508,8 +532,30 @@ bool gui::d2::d2_player::_calc_fit(
 	return xoff != 0 || yoff != 0 || fac != 1;
 }
 
+RECT gui::d2::d2_player::screen_rect(const d2_window *w, const lib::rect &r) {
+	RECT rv = {r.left(), r.top(), r.right(), r.bottom()};
+	wininfo *wi = _get_wininfo(w);
+	assert(wi);
+	ID2D1HwndRenderTarget*rt = wi->m_rendertarget;
+	if (rt) {
+		// Note: this code knows the matrix is scale/translate only.
+		D2D1_MATRIX_3X2_F transform;
+		rt->GetTransform(&transform);
+		rv.left = rv.left*transform._11 + transform._31;
+		rv.right = rv.right*transform._11 + transform._31 + 0.99;
+		rv.top = rv.top*transform._22 + transform._32;
+		rv.bottom = rv.bottom*transform._22 + transform._32 + 0.99;
+	}
+	/*AM_DBG*/ lib::logger::get_logger()->debug("screen_rect(%d, %d, %d, %d) -> (%d, %d, %d, %d)",
+		r.left(), r.top(), r.right(), r.bottom(),
+		rv.left, rv.top, rv.right, rv.bottom);
+	return rv;
+}
+
 void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 
+	/*AM_DBG*/ lib::logger::get_logger()->debug("d2_player::redraw(0x%x, 0x%x, (%d, %d, %d, %d))", hwnd, hdc,
+		dirty->left, dirty->top, dirty->right, dirty->bottom);
 	RECT dirtyMod;
 	HRESULT hr = S_OK;
 	// Create the Direct2D resources, in case they were lost
@@ -574,18 +620,33 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 	} else {
 		rt->SetTransform(D2D1::Matrix3x2F::Identity());
 	}
+	// Set the correct clipping mask
+	if (dirty != NULL) {
+		// Note that by the time we get here, the dirty rect is converted to our coordinates.
+		D2D1_RECT_F d2rectf = D2D1::RectF( (FLOAT)dirty->left,(FLOAT)dirty->top,(FLOAT)dirty->right,(FLOAT)dirty->bottom);
+		rt->PushAxisAlignedClip(d2rectf, D2D1_ANTIALIAS_MODE_ALIASED);
+	}
 
 	// Do the redraw
+	_screenTransitionPreRedraw(rt);
 	if (dirty) {
+		/*AM_DBG*/ lib::logger::get_logger()->debug("d2_player::redraw() ambulant coordinates (%d, %d, %d, %d))", 
+		dirty->left, dirty->top, dirty->right, dirty->bottom);
 		lib::rect r(lib::point(dirty->left, dirty->top), lib::size(dirty->right-dirty->left, dirty->bottom-dirty->top));
 		wi->m_window->redraw(r);
+		_screenTransitionPostRedraw(&r);
 	} else {
 		wi->m_window->redraw();
+		_screenTransitionPostRedraw(NULL);
+	}
+	if (dirty != NULL) {
+		rt->PopAxisAlignedClip();
 	}
 	hr = rt->EndDraw();
-#ifdef	AM_DMP
-	dump (rt, "d2_player-redraw2");
-#endif//AM_DMP
+
+	// after each redraw a bitmap screen copy is made for possible fullscreen transitions
+	_set_fullscreen_cur_bitmap(rt); 
+
 	m_cur_wininfo = NULL;
 	if (hr == D2DERR_RECREATE_TARGET) {
 		// This happens if something serious changed (like move to a
@@ -611,20 +672,19 @@ gui::d2::d2_player::_capture_bitmap(lib::rect r, ID2D1RenderTarget *src_rt, ID2D
 	D2D1_SIZE_U src_size = { r.width(), r.height() };
 	if (r.size() == lib::size(0,0)) {
 		D2D1_SIZE_F rt_size = src_rt->GetSize();
-		src_size.width = (float) rt_size.width;
-		src_size.height = (float) rt_size.height;
+		src_size.width = (UINT32) rt_size.width;
+		src_size.height = (UINT32) rt_size.height;
 	}
-//	D2D1_RECT_U src_rect = { r.left(), r.top(), r.left()+src_size.width, r.top()+src_size.height };
 	ID2D1Bitmap *bitmap;
 	D2D1_BITMAP_PROPERTIES props = D2D1::BitmapProperties();
-	D2D1_PIXEL_FORMAT rt_format = dst_rt->GetPixelFormat();
+	D2D1_PIXEL_FORMAT rt_format = src_rt->GetPixelFormat();
 	props.pixelFormat = rt_format;
+	src_rt->GetDpi(&props.dpiX, &props.dpiY);
 	hr = dst_rt->CreateBitmap(src_size, props, &bitmap);
 	if (!SUCCEEDED(hr)) {
 		lib::win32::win_trace_error("capture: CreateBitmap", hr);
 		return NULL;
 	}
-//	D2D1_POINT_2U dst_point = { 0, 0};
 	hr = bitmap->CopyFromRenderTarget(NULL, src_rt, NULL);
 	if (!SUCCEEDED(hr)) {
 		lib::win32::win_trace_error("capture: CopyFromRenderTarget", hr);
@@ -691,7 +751,7 @@ gui::d2::d2_player::_capture_wic(lib::rect r, ID2D1RenderTarget *src_rt)
 	ID2D1Bitmap *src_bitmap = _capture_bitmap(r, src_rt, dst_rt);
 	if (src_bitmap) {
 		dst_rt->BeginDraw();
-		D2D1_RECT_F dst_rect = { r.left(), r.top(), r.right(), r.bottom() };
+		D2D1_RECT_F dst_rect =  d2_rectf(r); //X{ r.left(), r.top(), r.right(), r.bottom() };
 		dst_rt->DrawBitmap(src_bitmap, dst_rect);
 		hr = dst_rt->EndDraw();
 		// Ignore result, nothing we can do.
@@ -773,7 +833,6 @@ gui::d2::d2_player::new_window(const std::string &name,
 
 	// Rendertarget will be created on-demand
 	winfo->m_rendertarget = NULL;
-
 	// Region?
 	region *rgn = (region *) src;
 	bool is_fullscreen = false;
@@ -836,6 +895,7 @@ gui::d2::d2_player::window_done(const std::string &name) {
 #endif
 	if (wi->m_rendertarget) {
 		wi->m_rendertarget->Release();
+		wi->m_rendertarget = NULL;
 	}
 	m_hoster.destroy_os_window(wi->m_hwnd);
 	delete wi;
@@ -867,7 +927,7 @@ gui::d2::d2_player::_get_wininfo(HWND hwnd) {
 }
 
 gui::d2::d2_player::wininfo*
-gui::d2::d2_player::_get_wininfo(d2_window *window) {
+gui::d2::d2_player::_get_wininfo(const d2_window *window) {
 	wininfo *winfo = 0;
 	std::map<std::string, wininfo*>::iterator it;
 	for(it=m_windows.begin();it!=m_windows.end();it++) {
@@ -1131,6 +1191,120 @@ void gui::d2::d2_player::open(net::url newdoc, bool startnewdoc, common::player 
 	if(startnewdoc) play();
 }
 
+// Full screen transition support
+void
+gui::d2::d2_player::start_screen_transition(bool outtrans)
+{
+	AM_DBG lib::logger::get_logger()->debug("d2_player::start_screen_transition()");
+	if (m_fullscreen_count)
+		logger::get_logger()->warn(gettext("%s:multiple screen transitions in progress (m_fullscreen_count=%d)"),"ambulant_qt_window::startScreenTransition()",m_fullscreen_count);
+	m_fullscreen_count++;
+	m_fullscreen_outtrans = outtrans;
+}
+
+void
+gui::d2::d2_player::end_screen_transition()
+{
+//	assert(m_fullscreen_count > 0);
+	if (m_fullscreen_count == 0) {
+		return;
+	}
+	AM_DBG lib::logger::get_logger()->debug("d2_player::end_screen_transition()");
+	m_fullscreen_count--;
+	if (m_fullscreen_count == 0) {
+		this->m_fullscreen_ended = true;
+	}
+}
+
+void
+gui::d2::d2_player::_screenTransitionPreRedraw(ID2D1RenderTarget* rt)
+{
+	AM_DBG lib::logger::get_logger()->debug("d2_player::_screenTransitionPreRedraw()");
+	if (m_fullscreen_count > 0 && m_fullscreen_engine == NULL) {
+		// fullscreen in: at first call (m_fullscreen_engine == NULL), save the old screen image
+		if (m_fullscreen_outtrans) {
+			_set_fullscreen_orig_bitmap(rt);
+		} else {
+			_set_fullscreen_old_bitmap(rt);
+		}
+	}
+}
+
+void
+gui::d2::d2_player::_screenTransitionPostRedraw(ambulant::lib::rect* r)
+{
+//	if (m_fullscreen_count == 0 /*&& fullscreen_oldimage == NULL*/) {
+//		return;
+//	}
+	if (r == NULL) {
+		AM_DBG lib::logger::get_logger()->debug("d2_player::_screenTransitionPostRedraw() r=<NULL>");
+	} else {
+		AM_DBG lib::logger::get_logger()->debug("d2_player::_screenTransitionPostRedraw() *r=(%d,%d),(%d,%d)", r->left(), r->top(), r->right(), r->bottom());
+	}
+	AM_DBG lib::logger::get_logger()->debug("_screenTransitionPostRedraw: fullscreen_count=%d fullscreen_engine=0x%x", m_fullscreen_count,m_fullscreen_engine);
+	if (m_fullscreen_engine && ! m_fullscreen_ended) {
+		m_fullscreen_engine->step(m_fullscreen_now);
+	} else {
+		AM_DBG lib::logger::get_logger()->debug("_screenTransitionPostRedraw: no screen transition engine");
+		if (m_fullscreen_ended) { // fix-up interrupted transition step
+//			ambulant::lib::rect fullsrcrect = ambulant::lib::rect(ambulant::lib::point(0, 0), ambulant::lib::size(self.bounds.size.width,self.bounds.size.height));  // Original image size
+//			CGRect cg_fullsrcrect = ambulant::gui::cg::CGRectFromAmbulantRect(fullsrcrect);
+//			CGContextRef ctx = UIGraphicsGetCurrentContext();	
+//			CGContextDrawLayerInRect(ctx, cg_fullsrcrect, [self getTransitionSurface]);
+//			[self releaseTransitionSurfaces];
+			set_fullscreen_rendertarget(NULL);
+		}		
+	}
+	
+	if (m_fullscreen_count == 0) {
+		// Finishing a fullscreen transition.
+		AM_DBG lib::logger::get_logger()->debug("_screenTransitionPostRedraw: cleanup after transition done");
+		m_fullscreen_engine = NULL;
+		m_transition_rendertarget = NULL;
+		set_fullscreen_rendertarget(NULL);
+	}
+}
+
+void
+gui::d2::d2_player::screen_transition_step(smil2::transition_engine* engine, lib::transition_info::time_type now)
+{
+	AM_DBG lib::logger::get_logger()->debug("d2_player::screen_transition_step()");
+//	assert(m_fullscreen_count > 0);
+	if ( ! (m_fullscreen_count > 0)) {
+		return;
+	}
+	m_fullscreen_engine = engine;
+	m_fullscreen_now = now;
+}
+
+ID2D1Bitmap*
+gui::d2::d2_player::_get_bitmap_from_render_target(ID2D1RenderTarget* rt) {
+	// we need to use ID2D1Bitmap::CopyFromRenderTarget, therefore we must create the bitmap
+	// where we put the data into ('bitmap_new') with equal properties as its data source ('old_rt')
+	if (rt == NULL) {
+		assert(rt == NULL);
+		return NULL;
+	}
+	D2D1_SIZE_F d2_size_f= rt->GetSize();
+	D2D1_SIZE_U d2_size_u = D2D1::SizeU((UINT32) d2_size_f.width, (UINT32) d2_size_f.height); 
+	D2D1_RECT_U d2_rect_u = D2D1::RectU(0U, 0U, d2_size_u.width, d2_size_u.height); 
+	D2D1_BITMAP_PROPERTIES props = D2D1::BitmapProperties();
+	ID2D1Bitmap* rv = NULL;
+	rt->GetDpi(&props.dpiX, &props.dpiY);
+	props.pixelFormat = rt->GetPixelFormat();
+	HRESULT hr = rt->CreateBitmap(d2_size_u, props, &rv);
+	OnErrorGoto_cleanup(hr,"d2_player _get_bitmap_from_render_targetold_rt->CreateBitmap");
+	// copy the bits of the old stuff (from 'old_rt') to the new destination
+	hr = rv->CopyFromRenderTarget(NULL, rt, &d2_rect_u);
+	if (SUCCEEDED(hr)) {
+		return rv;
+	}
+	OnErrorGoto_cleanup(hr,"d2_player _get_bitmap_from_render_target bitmap_old->CopyFromRenderTarget");
+cleanup:
+	SafeRelease(&rv);
+	return rv;
+}
+// screen capture support
 void
 gui::d2::d2_player::captured(IWICBitmap *bitmap)
 {
@@ -1138,19 +1312,50 @@ gui::d2::d2_player::captured(IWICBitmap *bitmap)
 	if (bitmap) bitmap->Release();
 }
 
+void
+gui::d2::d2_player::_set_fullscreen_cur_bitmap(ID2D1RenderTarget* rt) 
+{
+	SafeRelease(&this->m_fullscreen_cur_bitmap);
+	this->m_fullscreen_cur_bitmap = this->_get_bitmap_from_render_target(rt);
 #ifdef	AM_DMP
-#define SafeRelease(x) if(x!=NULL){if(*x!=NULL){(*x)->Release();*x=NULL;}}
-#define CheckError(x) if(FAILED(x))goto cleanup;
+//	int idx = dump(d2_player->get_fullscreen_rendertarget(), "res");
+	int idx = dump_bitmap(this->m_fullscreen_cur_bitmap, rt, "rdr");
+	lib::logger::get_logger()->debug("d2_player.redraw_pre(0x%x) bitmap: idx=%d", this, idx);
+#endif//AM_DMP
+
+
+}
 
 void
-gui::d2::d2_player::dump(ID2D1RenderTarget* rt, std::string id) {
+gui::d2::d2_player::_set_fullscreen_orig_bitmap(ID2D1RenderTarget* rt) 
+{
+	SafeRelease(&this->m_fullscreen_orig_bitmap);
+	m_fullscreen_orig_bitmap = m_fullscreen_cur_bitmap;
+	m_fullscreen_cur_bitmap = NULL; // prevents Release (old_bitmap now has ownership)
+}
+
+void
+gui::d2::d2_player::_set_fullscreen_old_bitmap(ID2D1RenderTarget* rt) 
+{
+	SafeRelease(&this->m_fullscreen_old_bitmap);
+	m_fullscreen_old_bitmap = m_fullscreen_cur_bitmap;
+	m_fullscreen_cur_bitmap = NULL; // prevents Release (old_bitmap now has ownership)
+}
+
+#ifdef	AM_DMP
+// screen dump support (for debugging). Returns index nr. of dump file
+int
+gui::d2::d2_player::dump(ID2D1RenderTarget* rt, std::string id)
+{
+	int rv = -1;
 	if (rt == NULL)
-		return;
+		return rv;
 	D2D1_SIZE_F sizeF = rt->GetSize();
 
 	// create file name
 	static int indx;
 	int i = indx++;
+	int rvi = i;
 	if (indx == 9999) indx = 0;
 	std::string filename = ".\\";
 	char num[4];
@@ -1172,32 +1377,92 @@ gui::d2::d2_player::dump(ID2D1RenderTarget* rt, std::string id) {
 	if ((wicBitmap = _capture_wic(lib::rect(), rt)) == NULL)
 		goto cleanup;
 	hr = m_WICFactory->CreateStream(&wicStream);
-	CheckError(hr);
+	OnErrorGoto_cleanup(hr, "dump() m_WICFactory->CreateStream");
+
 	hr = wicStream->InitializeFromFilename(wide_cstr_filename, GENERIC_WRITE);
+	OnErrorGoto_cleanup(hr, "dump() wicStream->InitializeFromFilename");
+
 	hr = m_WICFactory->CreateEncoder(GUID_ContainerFormatPng, NULL, &wicBitmapEncoder);
-	CheckError(hr);
+	OnErrorGoto_cleanup(hr, "dump() m_WICFactory->CreateEncoder");
+
 	hr = wicBitmapEncoder->Initialize(wicStream, WICBitmapEncoderNoCache);
-	CheckError(hr);
+	OnErrorGoto_cleanup(hr, "dump() wicBitmapEncoder->Initialize");
+
 	hr = wicBitmapEncoder->CreateNewFrame(&wicBitmapFrameEncode, NULL);
-	CheckError(hr);
+	OnErrorGoto_cleanup(hr, "dump() wicBitmapEncoder->CreateNewFrame");
+
 	hr = wicBitmapFrameEncode->Initialize(NULL);
-	CheckError(hr);
+	OnErrorGoto_cleanup(hr, "dump() wicBitmapFrameEncode->Initialize");
+
 	hr = wicBitmapFrameEncode->SetSize((UINT) sizeF.width, (UINT) sizeF.height);
-	CheckError(hr);
+	OnErrorGoto_cleanup(hr, "dump() wicBitmapFrameEncode->SetSize");
+
 	hr = wicBitmapFrameEncode->SetPixelFormat(&format);
-	CheckError(hr);
+	OnErrorGoto_cleanup(hr, "dump() hr = wicBitmapFrameEncode->SetPixelFormat");
+
 	hr = wicBitmapFrameEncode->WriteSource(wicBitmap, NULL);
-	CheckError(hr);
+	OnErrorGoto_cleanup(hr, "dump() wicBitmapFrameEncode->WriteSource");
+
 	hr = wicBitmapFrameEncode->Commit();
-	CheckError(hr);
+	OnErrorGoto_cleanup(hr, "dump() wicBitmapFrameEncode->Commit");
+
 	hr = wicBitmapEncoder->Commit();
-	CheckError(hr);
+	OnErrorGoto_cleanup(hr, "dump() wicBitmapEncoder->Commit");
+	rv = rvi;
 
   cleanup:
 	SafeRelease(&wicBitmap);
 	SafeRelease(&wicStream);
 	SafeRelease(&wicBitmapEncoder);
 	SafeRelease(&wicBitmapFrameEncode);
+	return rv;
 }
+
+
+
+int
+
+gui::d2::d2_player::dump_bitmap(ID2D1Bitmap* bmp, ID2D1RenderTarget* rt, std::string id)
+
+{
+
+	if (bmp == NULL || rt == NULL) {
+
+		return -1;
+
+	}
+
+ 	int rv = -1;
+
+ 	D2D1_SIZE_F size_f = bmp->GetSize();
+
+ 	D2D1_RECT_F rect_f = D2D1::RectF(0.0F, 0.0F, size_f.width, size_f.height);
+
+ 	ID2D1BitmapRenderTarget* bmrt = NULL;
+
+ 	HRESULT hr = rt->CreateCompatibleRenderTarget(size_f, &bmrt);
+
+	OnErrorGoto_cleanup(hr, "dump_bitmap() CreateCompatibleRenderTarget");
+
+	bmrt->BeginDraw();
+
+	bmrt->DrawBitmap(bmp, rect_f);
+
+	hr = bmrt->EndDraw();
+
+	OnErrorGoto_cleanup(hr, "dump_bitmap() DrawBitmap");
+
+	rv = this->dump(rt, id);
+
+
+
+cleanup:
+
+	SafeRelease(&bmrt);
+
+	return rv;
+
+}
+
 
 #endif 

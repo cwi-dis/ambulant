@@ -69,6 +69,7 @@ class d2_window : public common::gui_window {
 	const lib::rect& get_rect() { return m_viewrc; }
 	void lock_redraw();
 	void unlock_redraw();
+	d2_player*  get_d2_player() { return m_player; }
 
   private:
 	void _need_redraw(const lib::rect& r);

@@ -33,6 +33,7 @@
 #include "ambulant/gui/d2/d2_renderer.h"
 
 interface ID2D1Bitmap;
+interface ID2D1RenderTarget;
 
 namespace ambulant {
 
@@ -59,7 +60,7 @@ class d2_dsvideo_renderer :
 	~d2_dsvideo_renderer();
 
 	net::pixel_order pixel_layout();
-	void redraw_body(const rect &dirty, gui_window *window);
+	void redraw_body(const rect &dirty, gui_window *window, ID2D1RenderTarget* rt);
 
 	void recreate_d2d();
 	void discard_d2d();

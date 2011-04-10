@@ -63,7 +63,7 @@ class d2_fill_renderer : public d2_renderer<renderer_playable> {
 	void start(double where);
 	void seek(double t) {}
 
-	void redraw_body(const rect &dirty, gui_window *window);
+	void redraw_body(const rect &dirty, gui_window *window, ID2D1RenderTarget*);
 
 	void recreate_d2d();
 	void discard_d2d();
