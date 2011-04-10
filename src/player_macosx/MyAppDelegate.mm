@@ -23,6 +23,7 @@
 #import "mypreferences.h"
 #import <CoreFoundation/CoreFoundation.h>
 #include <locale.h>
+#include <crt_externs.h>
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -117,6 +118,11 @@ initialize_logger()
 
 	// Install our preferences handler
 	mypreferences::install_singleton();
+    
+    // Process command line options
+    char **argv = *_NSGetArgv();
+    int argc = *_NSGetArgc();
+    // process args
 
 	// Install our logger
 	if (initialize_logger() == 0 && getenv("AMBULANT_LOGGER_NOWINDOW") == NULL) {
