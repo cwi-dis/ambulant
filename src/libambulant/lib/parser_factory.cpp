@@ -74,6 +74,7 @@ global_parser_factory::~global_parser_factory()
 {
 	// XXXX Should I delete the factories in m_factories? I think
 	// so, but I'm not sure...
+	/*AM_DBG*/ lib::logger::get_logger()->debug("global_parser_factory::~global_parser_factory()");
 	std::vector<parser_factory*>::iterator i;
 	for(i=m_factories.begin(); i != m_factories.end(); i++)
 		delete (*i);

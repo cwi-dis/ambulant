@@ -153,12 +153,19 @@ plugin_engine::plugin_engine()
 }
 
 plugin_engine::~plugin_engine() {
+#if 0
+	// We should not delete the plugin engine, unless we are sure that there
+	// are no references left to any of the DLLs we have loaded with this instance of
+	// the plugin_engine. Currently we cannot be sure, as some of those dlls (such as
+	// parser plugins) are long-lived. For this reason we don't cleanup the
+	// plugin engine.
 	if (s_singleton == this) {
 #ifdef WITH_LTDL_PLUGINS
 		lt_dlexit();
 #endif
 		s_singleton = NULL;
 	}
+#endif
 }
 void
 plugin_engine::collect_plugin_directories()
