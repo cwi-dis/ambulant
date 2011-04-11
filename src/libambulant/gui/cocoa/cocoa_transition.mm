@@ -42,6 +42,7 @@ setup_transition_bitblit(bool outtrans, AmbulantView *view)
 {
 	if (outtrans) {
 		NSImage *rv = [view getTransitionOldSource];
+        [rv setFlipped: NO];
 		[[view getTransitionSurface] lockFocus];
 		return rv;
 	} else {

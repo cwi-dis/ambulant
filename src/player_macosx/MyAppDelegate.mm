@@ -23,6 +23,7 @@
 #import "mypreferences.h"
 #import <CoreFoundation/CoreFoundation.h>
 #include <locale.h>
+#include <crt_externs.h>
 
 #ifndef AM_DBG
 #define AM_DBG if(0)
@@ -117,6 +118,11 @@ initialize_logger()
 
 	// Install our preferences handler
 	mypreferences::install_singleton();
+    
+    // Process command line options
+    char **argv = *_NSGetArgv();
+    int argc = *_NSGetArgc();
+    // process args
 
 	// Install our logger
 	if (initialize_logger() == 0 && getenv("AMBULANT_LOGGER_NOWINDOW") == NULL) {
@@ -198,13 +204,13 @@ initialize_logger()
 
 	// Initialize the plugins, so we can parser the system test settings file
 	{
-		ambulant::common::factories fact;
-		fact.set_parser_factory(ambulant::lib::global_parser_factory::get_parser_factory());
+		ambulant::common::factories *fact = new ambulant::common::factories();
+		fact->set_parser_factory(ambulant::lib::global_parser_factory::get_parser_factory());
 #ifdef WITH_XERCES_BUILTIN
 		fact.get_parser_factory()->add_factory(new ambulant::lib::xerces_factory());
 #endif
 		ambulant::common::plugin_engine *pe = ambulant::common::plugin_engine::get_plugin_engine();
-		pe->add_plugins(&fact, NULL);
+		pe->add_plugins(fact, NULL);
 	}
 
 	// Initialize the default system test settings

@@ -1419,27 +1419,50 @@ gui::d2::d2_player::dump(ID2D1RenderTarget* rt, std::string id)
 }
 
 
+
 int
+
 gui::d2::d2_player::dump_bitmap(ID2D1Bitmap* bmp, ID2D1RenderTarget* rt, std::string id)
+
 {
+
 	if (bmp == NULL || rt == NULL) {
+
 		return -1;
+
 	}
+
  	int rv = -1;
+
  	D2D1_SIZE_F size_f = bmp->GetSize();
+
  	D2D1_RECT_F rect_f = D2D1::RectF(0.0F, 0.0F, size_f.width, size_f.height);
+
  	ID2D1BitmapRenderTarget* bmrt = NULL;
+
  	HRESULT hr = rt->CreateCompatibleRenderTarget(size_f, &bmrt);
+
 	OnErrorGoto_cleanup(hr, "dump_bitmap() CreateCompatibleRenderTarget");
+
 	bmrt->BeginDraw();
+
 	bmrt->DrawBitmap(bmp, rect_f);
+
 	hr = bmrt->EndDraw();
+
 	OnErrorGoto_cleanup(hr, "dump_bitmap() DrawBitmap");
+
 	rv = this->dump(rt, id);
 
+
+
 cleanup:
+
 	SafeRelease(&bmrt);
+
 	return rv;
+
 }
+
 
 #endif 
