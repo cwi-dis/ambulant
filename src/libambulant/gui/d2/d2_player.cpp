@@ -566,7 +566,7 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 	m_cur_wininfo = wi;
 	ID2D1HwndRenderTarget *rt = wi->m_rendertarget;
 	if (rt == NULL) return;
-
+	rt->AddRef();
 	// Check whether our window changed size. If so: communicate to d2d and
 	// paint background again.
 	RECT client_rect;
@@ -652,6 +652,7 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 		// This happens if something serious changed (like move to a
 		// different display). Throw away evertyhing that is device-dependent,
 		// it will be re-created next time around.
+		rt->Release();
 		_discard_d2d();
 	} else {
 		// Handle capture callbacks.
@@ -661,6 +662,7 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 			IWICBitmap *bitmap = _capture_wic(it->first, rt);
 			cb->captured(bitmap);
 		}
+		rt->Release();
 		m_captures.clear();
 	}
 }
