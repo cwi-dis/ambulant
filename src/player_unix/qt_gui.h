@@ -118,14 +118,6 @@ class qt_gui : public qt_gui_BASE
 #endif/*TRY_LOCKING*/
 	Qt::CursorShape m_cursor_shape;
 	void fileError(QString smilfilename);
-#define	AUTO_TEST
-#ifdef	AUTO_TEST
- private:
-	QTimer* m_qtimer;
- public:
-	void set_watchdog();
- 
-#endif//AUTO_TEST
 
   public slots:
 	void setDocument(const QString&);
@@ -156,9 +148,6 @@ class qt_gui : public qt_gui_BASE
 	void slot_settings_ok();
 	void slot_settings_select();
 	void slot_stop();
-#ifdef	AUTO_TEST
-	void slot_watch_player_done();
-#endif//AUTO_TEST
 
   signals:
 	void signal_player_done();
@@ -167,11 +156,4 @@ class qt_gui : public qt_gui_BASE
   protected:
 	void customEvent(QCustomEvent*);
 };
-
-#ifdef	AUTO_TEST
-extern bool s_auto_stop;
-extern char* s_log_file;
-
-void parse_args (int* argc, char** argv[]);
-#endif//AUTO_TEST
 #endif/*__QT_GUI_H__*/
