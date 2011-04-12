@@ -204,9 +204,12 @@ gui::d2::d2_player::d2_player(
 
 	if (feedback) m_player->set_feedback(feedback);
 	m_player->initialize();
+#if 0
+	// Seems to cause crashes (maybe because we are not fully initialized yet?)
 	lib::event_processor *evp = m_player->get_evp();
 	assert(evp);
 	evp->set_observer(this);
+#endif
 
 	// Create a worker processor instance
 }
@@ -227,6 +230,9 @@ gui::d2::d2_player::~d2_player() {
 		m_player->release();
 		m_player = NULL;
 	}
+	delete m_doc;
+	m_player = NULL;
+	assert(m_windows.empty());
 	while(!m_frames.empty()) {
 		frame *pf = m_frames.top();
 		m_frames.pop();
@@ -244,9 +250,6 @@ gui::d2::d2_player::~d2_player() {
 		}
 		delete m_doc;
 	}
-	delete m_doc;
-	m_player = NULL;
-	assert(m_windows.empty());
 	if(gui::dx::dx_gui_region::s_counter != 0)
 		m_logger->warn("Undeleted gui regions: %d", dx::dx_gui_region::s_counter);
 	assert(m_d2d);
@@ -418,12 +421,11 @@ void gui::d2::d2_player::pause() {
 }
 
 void gui::d2::d2_player::restart(bool reparse) {
+	assert(m_player);
 	bool playing = is_play_active();
 	stop();
 	lib::event_processor *evp = m_player->get_evp();
 	if (evp) evp->set_observer(NULL);
-
-	assert(m_player);
 	m_player->terminate();
 	m_player->release();
 	m_player = NULL;
@@ -431,10 +433,10 @@ void gui::d2::d2_player::restart(bool reparse) {
 		frame *pf = m_frames.top();
 		m_frames.pop();
 		m_windows = pf->windows;
-		evp = m_player->get_evp();
-		if (evp) evp->set_observer(NULL);
 		m_player = pf->player;
 		assert(m_player);
+		evp = m_player->get_evp();
+		if (evp) evp->set_observer(NULL);
 		m_doc = pf->doc;
 		delete pf;
 		stop();
@@ -1131,9 +1133,12 @@ void gui::d2::d2_player::show_file(const net::url& href) {
 
 
 void gui::d2::d2_player::done(common::player *p) {
+	assert(p == m_player);
 	m_update_event = 0;
 	_clear_transitions();
 	if(!m_frames.empty()) {
+		lib::event_processor *evp = m_player->get_evp();
+		if (evp) evp->set_observer(NULL);
 		frame *pf = m_frames.top();
 		m_frames.pop();
 		m_windows = pf->windows;
