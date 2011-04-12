@@ -273,8 +273,8 @@ lib::document::apply_avt(const node* n, const lib::xml_string& attrname, const l
 		const_cast<document *>(this)->m_avtcache.insert(make_pair(n, emptymap));
 		cachepos = const_cast<document *>(this)->m_avtcache.find(n);
 	}
-	cachepos->second.insert(make_pair(attrvalue, rv));
-	const xml_string& rvholder = cachepos->second.find(attrvalue)->second;
+	cachepos->second[attrvalue] = rv;
+	const xml_string& rvholder = cachepos->second[attrvalue];
 	return rvholder;
 }
 void
