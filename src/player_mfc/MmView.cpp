@@ -229,6 +229,9 @@ BEGIN_MESSAGE_MAP(MmView, CView)
 	ON_COMMAND(ID_HELP_WELCOME, OnHelpWelcome)
 	ON_UPDATE_COMMAND_UI(ID_HELP_WELCOME, OnUpdateHelpWelcome)
 	ON_MESSAGE(WM_REPLACE_DOC, OnReplaceDoc)
+#ifdef WITH_D2D
+	ON_MESSAGE(WM_ERASEBKGND, OnMyEraseBkgnd)
+#endif
 END_MESSAGE_MAP()
 
 
@@ -731,9 +734,11 @@ void MmView::OnUpdateHelpWelcome(CCmdUI *pCmdUI)
 	pCmdUI->Enable(!m_welcomeDocFilename.IsEmpty());
 }
 
-
-afx_msg BOOL 
-MmView::OnEraseBkgnd(CDC *pDC)
+#ifdef WITH_D2D
+// We don't want MFC to clear the background for Direct2D rendering
+afx_msg LRESULT 
+MmView::OnMyEraseBkgnd(WPARAM wParam, LPARAM lParam)
 {
-	return CWnd::OnEraseBkgnd(pDC);
+	return S_OK;
 }
+#endif

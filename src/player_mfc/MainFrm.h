@@ -60,7 +60,9 @@ public:
 
 	afx_msg void OnViewFullScreen();
 
-	afx_msg BOOL OnEraseBkgnd(CDC *pDC);
+#ifdef WITH_D2D
+	afx_msg LRESULT OnMyEraseBkgnd(WPARAM wParam, LPARAM lParam);
+#endif
 
 protected:  // control bar embedded members
 	CStatusBar  m_wndStatusBar;
