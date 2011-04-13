@@ -548,7 +548,7 @@ RECT gui::d2::d2_player::screen_rect(const d2_window *w, const lib::rect &r) {
 		rv.top = rv.top*transform._22 + transform._32;
 		rv.bottom = rv.bottom*transform._22 + transform._32 + 0.99;
 	}
-	/*AM_DBG*/ lib::logger::get_logger()->debug("screen_rect(%d, %d, %d, %d) -> (%d, %d, %d, %d)",
+	AM_DBG lib::logger::get_logger()->debug("screen_rect(%d, %d, %d, %d) -> (%d, %d, %d, %d)",
 		r.left(), r.top(), r.right(), r.bottom(),
 		rv.left, rv.top, rv.right, rv.bottom);
 	return rv;
@@ -556,7 +556,7 @@ RECT gui::d2::d2_player::screen_rect(const d2_window *w, const lib::rect &r) {
 
 void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 
-	/*AM_DBG*/ lib::logger::get_logger()->debug("d2_player::redraw(0x%x, 0x%x, (%d, %d, %d, %d))", hwnd, hdc,
+	AM_DBG lib::logger::get_logger()->debug("d2_player::redraw(0x%x, 0x%x, (%d, %d, %d, %d))", hwnd, hdc,
 		dirty->left, dirty->top, dirty->right, dirty->bottom);
 	RECT dirtyMod;
 	HRESULT hr = S_OK;
@@ -632,7 +632,7 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 	// Do the redraw
 	_screenTransitionPreRedraw(rt);
 	if (dirty) {
-		/*AM_DBG*/ lib::logger::get_logger()->debug("d2_player::redraw() ambulant coordinates (%d, %d, %d, %d))", 
+		AM_DBG lib::logger::get_logger()->debug("d2_player::redraw() ambulant coordinates (%d, %d, %d, %d))", 
 		dirty->left, dirty->top, dirty->right, dirty->bottom);
 		lib::rect r(lib::point(dirty->left, dirty->top), lib::size(dirty->right-dirty->left, dirty->bottom-dirty->top));
 		wi->m_window->redraw(r);
