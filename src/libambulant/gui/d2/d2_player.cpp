@@ -495,9 +495,94 @@ gui::d2::d2_player::get_size(int *width, int *height) {
 bool
 gui::d2::d2_player::get_screenshot(const char *type, char **out_data, size_t *out_size)
 {
+#if 1
+	// XXXJACK Hack for Python/VCE
+	static bool beenhere;
+	if (!beenhere) {
+		CoInitialize(NULL);
+		beenhere = true;
+	}
+#endif
+	bool rv = false;
 	*out_data = NULL;
 	*out_size = 0;
-	return false;
+	wininfo *wi = _get_wininfo(get_hwnd());	// Always do screenshots from main window
+	if (wi == NULL) return false;
+	const lib::rect r; // Not: = wi->m_window->get_rect();
+	ID2D1RenderTarget *rt = wi->m_rendertarget;
+	IWICBitmap *bitmap = _capture_wic(r, rt);
+	if (bitmap) {
+		D2D1_SIZE_F sizeF = rt->GetSize();
+		WICPixelFormatGUID format = GUID_WICPixelFormatDontCare;
+		HRESULT hr;
+		// First allocate a handle to receive the data
+		HGLOBAL hdata = NULL;
+		IStream* stream = NULL;
+		IWICStream* wicStream = NULL;
+		IWICBitmapEncoder* wicBitmapEncoder = NULL;
+		IWICBitmapFrameEncode* wicBitmapFrameEncode = NULL;
+
+		hdata = GlobalAlloc(GHND, 32);
+		if (hdata == NULL) goto cleanup;
+
+		hr = CreateStreamOnHGlobal(hdata, 0, &stream);
+		OnErrorGoto_cleanup(hr, "get_screenshot() CreateStreamOnHGlobal");
+
+		hr = m_WICFactory->CreateStream(&wicStream);
+		OnErrorGoto_cleanup(hr, "get_screenshot() CreateStream");
+
+		hr = wicStream->InitializeFromIStream(stream);
+		OnErrorGoto_cleanup(hr, "get_screenshot() InitializeFromIStream");
+		
+		hr = m_WICFactory->CreateEncoder(GUID_ContainerFormatPng, NULL, &wicBitmapEncoder);
+		OnErrorGoto_cleanup(hr, "get_screenshot() m_WICFactory->CreateEncoder");
+
+		hr = wicBitmapEncoder->Initialize(wicStream, WICBitmapEncoderNoCache);
+		OnErrorGoto_cleanup(hr, "get_screenshot() wicBitmapEncoder->Initialize");
+
+		hr = wicBitmapEncoder->CreateNewFrame(&wicBitmapFrameEncode, NULL);
+		OnErrorGoto_cleanup(hr, "get_screenshot() wicBitmapEncoder->CreateNewFrame");
+
+		hr = wicBitmapFrameEncode->Initialize(NULL);
+		OnErrorGoto_cleanup(hr, "get_screenshot() wicBitmapFrameEncode->Initialize");
+
+		hr = wicBitmapFrameEncode->SetSize((UINT) sizeF.width, (UINT) sizeF.height);
+		OnErrorGoto_cleanup(hr, "get_screenshot() wicBitmapFrameEncode->SetSize");
+
+		hr = wicBitmapFrameEncode->SetPixelFormat(&format);
+		OnErrorGoto_cleanup(hr, "get_screenshot() hr = wicBitmapFrameEncode->SetPixelFormat");
+
+		hr = wicBitmapFrameEncode->WriteSource(bitmap, NULL);
+		OnErrorGoto_cleanup(hr, "get_screenshot() wicBitmapFrameEncode->WriteSource");
+
+		hr = wicBitmapFrameEncode->Commit();
+		OnErrorGoto_cleanup(hr, "get_screenshot() wicBitmapFrameEncode->Commit");
+
+		hr = wicBitmapEncoder->Commit();
+		OnErrorGoto_cleanup(hr, "get_screenshot() wicBitmapEncoder->Commit");
+
+		void *bmdata = GlobalLock(hdata);
+		SIZE_T bmdatasize = GlobalSize(hdata);
+		*out_data = (char *)malloc(bmdatasize);
+		*out_size = bmdatasize;
+		memcpy(*out_data, bmdata, *out_size);
+		
+		rv = true;
+
+	  cleanup:
+
+		// Rest
+		SafeRelease(&wicStream);
+		SafeRelease(&wicBitmapEncoder);
+		SafeRelease(&wicBitmapFrameEncode);
+		SafeRelease(&stream);
+		if (hdata) {
+			GlobalUnlock(hdata);
+			GlobalFree(hdata);
+		}
+		bitmap->Release();
+	}
+	return rv;
 }
 
 std::string gui::d2::d2_player::get_pointed_node_str() {
@@ -731,8 +816,7 @@ gui::d2::d2_player::_capture_wic(lib::rect r, ID2D1RenderTarget *src_rt)
 			CLSID_WICImagingFactory,
 			NULL,
 			CLSCTX_INPROC_SERVER,
-			IID_IWICImagingFactory,
-			reinterpret_cast<void **>(&m_WICFactory)
+			IID_PPV_ARGS(&m_WICFactory)
 			);
 		if (!SUCCEEDED(hr)) {
 			lib::win32::win_trace_error("capture: CoCreateInstance(IWICImagingFactory)", hr);
