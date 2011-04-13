@@ -117,6 +117,7 @@ class d2_player_callbacks : public html_browser_factory {
 
 class AMBULANTAPI d2_player :
 	public common::gui_player,
+	public common::gui_screen,
 	public common::window_factory,
 	public common::playable_factory_machdep,
 	public common::embedder,
@@ -145,6 +146,14 @@ class AMBULANTAPI d2_player :
 	void restart(bool reparse=true);
 
 	void set_preferences(const std::string& url);
+
+	common::gui_screen *get_gui_screen();
+	
+	////////////////////
+	// common::gui_screen implementation
+	void get_size(int *width, int *height);
+	bool get_screenshot(const char *type, char **out_data, size_t *out_size);
+
 
 	////////////////////
 	// common::window_factory implementation

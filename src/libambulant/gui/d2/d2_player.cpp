@@ -481,6 +481,25 @@ int gui::d2::d2_player::get_cursor(int x, int y, HWND hwnd) {
 	return m_player->after_mousemove();
 }
 
+common::gui_screen *
+gui::d2::d2_player::get_gui_screen()
+{
+	return this;
+}
+
+void
+gui::d2::d2_player::get_size(int *width, int *height) {
+	*width = *height = 0;
+}
+
+bool
+gui::d2::d2_player::get_screenshot(const char *type, char **out_data, size_t *out_size)
+{
+	*out_data = NULL;
+	*out_size = 0;
+	return false;
+}
+
 std::string gui::d2::d2_player::get_pointed_node_str() {
 #if 1
 	return "";
