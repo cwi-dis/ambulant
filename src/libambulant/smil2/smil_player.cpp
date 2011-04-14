@@ -373,7 +373,11 @@ common::playable *smil_player::create_playable(const lib::node *n) {
 				if (rend->get_surface() != NULL)
 					rend->get_surface()->renderer_done(rend);
 				rend->set_surface(surf);
-			}
+                // XXXJACK Because true animation (and setting through state) doesn't always
+                // work for regpoint/regalign we re-set it here. Can go once we implement
+                // animating regpoint/align.
+                const alignment *align = m_layout_manager->get_alignment(n);
+                rend->set_alignment(align);			}
 		} else {
 			AM_DBG lib::logger::get_logger()->debug("smil_plager::create_playable(0x%x)%s: no cached playable", n, n->get_sig().c_str());
 		}
