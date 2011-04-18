@@ -12,7 +12,7 @@ else:
 # Set these variable identical to your configure options.
 if sys.platform == 'linux2':
     # Not really the correct test, but okay for the time being
-    WITH_GTK=True
+    WITH_GTK=False
     WITH_QT=True
 else:
     WITH_GTK=False

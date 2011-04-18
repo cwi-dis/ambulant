@@ -29,6 +29,7 @@ class Reporting_feedback(ambulant.player_feedback):
     def document_stopped(self):
         t = time.time()
         print 'TEST', t-self.old_time, 'document_stopped'
+        sys.exit()
 
     def node_started(self, node):
         t = time.time()
