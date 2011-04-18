@@ -320,6 +320,10 @@ class AMBULANTAPI d2_player :
 	std::set<d2_resources*> m_resources;
 	lib::critical_section m_resources_lock;
 
+	// Only one redraw should be active at the same time (again due to resource
+	// management
+	lib::critical_section m_redraw_lock;
+
 	// The logger
 	lib::logger *m_logger;
 

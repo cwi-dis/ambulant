@@ -374,6 +374,7 @@ gui::d2::d2_player::_recreate_d2d(wininfo *wi)
 void
 gui::d2::d2_player::_discard_d2d()
 {
+	// Note: we must hold m_redraw_lock before we get here.
 	std::map<std::string, wininfo*>::iterator it;
 	for(it=m_windows.begin();it!=m_windows.end();it++) {
 		wininfo *wi = it->second;
@@ -409,7 +410,9 @@ void gui::d2::d2_player::stop() {
 		_clear_transitions();
 		common::gui_player::stop();
 	}
+	m_redraw_lock.enter();
 	_discard_d2d();
+	m_redraw_lock.leave();
 }
 
 void gui::d2::d2_player::pause() {
@@ -503,16 +506,58 @@ gui::d2::d2_player::get_screenshot(const char *type, char **out_data, size_t *ou
 		beenhere = true;
 	}
 #endif
+	GUID formatGUID = GUID_ContainerFormatPng;
+	if (strcmp(type, "png") == 0) {
+		formatGUID = GUID_ContainerFormatPng;
+	} else if (strcmp(type, "jpeg") == 0 || strcmp(type, "jpg") == 0) {
+		formatGUID = GUID_ContainerFormatJpeg;
+	} else {
+		lib::logger::get_logger()->trace("get_screenshot: unsupported image type '%s'", type);
+		return false;
+	}
 	bool rv = false;
 	*out_data = NULL;
 	*out_size = 0;
-	wininfo *wi = _get_wininfo(get_hwnd());	// Always do screenshots from main window
+	HWND hwnd = get_hwnd();
+	wininfo *wi = _get_wininfo(hwnd);	// Always do screenshots from main window
 	if (wi == NULL) return false;
 	const lib::rect r; // Not: = wi->m_window->get_rect();
+	IWICBitmap *bitmap = NULL;
 	ID2D1RenderTarget *rt = wi->m_rendertarget;
-	IWICBitmap *bitmap = _capture_wic(r, rt);
+	if(rt == NULL || !rt->IsSupported(D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_SOFTWARE))) {
+		// We are rendering to a hardware rendertarget. We create a temporary software target
+		// and mmick a redraw.
+		m_redraw_lock.enter();
+		_discard_d2d();
+//		m_redraw_lock.leave();
+		RECT rc;
+		GetClientRect(wi->m_hwnd, &rc);
+		D2D1_SIZE_U size = D2D1::SizeU(rc.right-rc.left, rc.bottom-rc.top);
+
+		HRESULT hr = m_d2d->CreateHwndRenderTarget(
+			D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_SOFTWARE),
+			D2D1::HwndRenderTargetProperties(wi->m_hwnd, size, D2D1_PRESENT_OPTIONS_RETAIN_CONTENTS),
+			&wi->m_rendertarget);
+		if (!SUCCEEDED(hr)) {
+			lib::logger::get_logger()->trace("d2_window::get_screenshot: CreateHwndRenderTarget failed");
+			return false;
+		}
+		rt = wi->m_rendertarget;
+		// There is a problem here with asynchronous renderers, such as those using d2_dshowsink.
+		// They will have stored a bitmap that was created using the "old" rendertarget, which
+		// is now no longer valid. If this turns out to be a problem we should wait here for, say,
+		// 100ms.
+		redraw(hwnd, NULL, NULL);
+		bitmap = _capture_wic(r, rt);
+//		m_redraw_lock.enter();
+		_discard_d2d();
+		m_redraw_lock.leave();
+	} else {
+		bitmap = _capture_wic(r, rt);
+	}
 	if (bitmap) {
-		D2D1_SIZE_F sizeF = rt->GetSize();
+		UINT width, height;
+		bitmap->GetSize(&width, &height);
 		WICPixelFormatGUID format = GUID_WICPixelFormatDontCare;
 		HRESULT hr;
 		// First allocate a handle to receive the data
@@ -534,7 +579,7 @@ gui::d2::d2_player::get_screenshot(const char *type, char **out_data, size_t *ou
 		hr = wicStream->InitializeFromIStream(stream);
 		OnErrorGoto_cleanup(hr, "get_screenshot() InitializeFromIStream");
 		
-		hr = m_WICFactory->CreateEncoder(GUID_ContainerFormatPng, NULL, &wicBitmapEncoder);
+		hr = m_WICFactory->CreateEncoder(formatGUID, NULL, &wicBitmapEncoder);
 		OnErrorGoto_cleanup(hr, "get_screenshot() m_WICFactory->CreateEncoder");
 
 		hr = wicBitmapEncoder->Initialize(wicStream, WICBitmapEncoderNoCache);
@@ -546,7 +591,7 @@ gui::d2::d2_player::get_screenshot(const char *type, char **out_data, size_t *ou
 		hr = wicBitmapFrameEncode->Initialize(NULL);
 		OnErrorGoto_cleanup(hr, "get_screenshot() wicBitmapFrameEncode->Initialize");
 
-		hr = wicBitmapFrameEncode->SetSize((UINT) sizeF.width, (UINT) sizeF.height);
+		hr = wicBitmapFrameEncode->SetSize(width, height);
 		OnErrorGoto_cleanup(hr, "get_screenshot() wicBitmapFrameEncode->SetSize");
 
 		hr = wicBitmapFrameEncode->SetPixelFormat(&format);
@@ -659,7 +704,7 @@ RECT gui::d2::d2_player::screen_rect(const d2_window *w, const lib::rect &r) {
 }
 
 void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
-
+	m_redraw_lock.enter();
 	AM_DBG lib::logger::get_logger()->debug("d2_player::redraw(0x%x, 0x%x, (%d, %d, %d, %d))", hwnd, hdc,
 		dirty->left, dirty->top, dirty->right, dirty->bottom);
 	RECT dirtyMod;
@@ -667,11 +712,17 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 	// Create the Direct2D resources, in case they were lost
 	wininfo *wi = _get_wininfo(hwnd);
 	assert(wi);
-	if (wi == NULL) return;
+	if (wi == NULL) {
+		m_redraw_lock.leave();
+		return;
+	}
 	_recreate_d2d(wi);
-	m_cur_wininfo = wi;
 	ID2D1HwndRenderTarget *rt = wi->m_rendertarget;
-	if (rt == NULL) return;
+	if (rt == NULL) {
+		m_redraw_lock.leave();
+		return;
+	}
+	m_cur_wininfo = wi;
 	rt->AddRef();
 	// Check whether our window changed size. If so: communicate to d2d and
 	// paint background again.
@@ -771,6 +822,7 @@ void gui::d2::d2_player::redraw(HWND hwnd, HDC hdc, RECT *dirty) {
 		rt->Release();
 		m_captures.clear();
 	}
+	m_redraw_lock.leave();
 }
 
 ID2D1Bitmap *
