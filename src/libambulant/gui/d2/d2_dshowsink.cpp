@@ -52,7 +52,9 @@ CVideoD2DBitmapRenderer::~CVideoD2DBitmapRenderer()
 void
 CVideoD2DBitmapRenderer::SetRenderTarget(ID2D1RenderTarget *rt)
 {
+	if (m_rt) m_rt->Release();
 	m_rt = rt;
+	if (m_rt) m_rt->AddRef();
 }
 
 void
