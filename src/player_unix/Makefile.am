@@ -1,3 +1,5 @@
+
+
 EXTRA_DIST=ambulant.schemas
 ambulantlibdir=$(top_builddir)/src/libambulant/.libs
 if WITH_AMBULANT_SHARED_LIB
@@ -15,6 +17,11 @@ libambulant_live=$(ambulantlibdir)/libambulant_live.a
 libambulant_sdl=$(ambulantlibdir)/libambulant_sdl.a
 libambulant_qt=$(ambulantlibdir)/libambulant_qt.a
 endif
+
+
+# This target is magic for automake
+check-am: check-ambulantplayer_qt
+
 qt_gui-moc.cpp: qt_gui.h qt_gui.cpp
 	$(QT_PREFIX)/bin/moc -o $@ $<
 
@@ -32,7 +39,7 @@ AmbulantPlayer_qt_SOURCES = \
 	qt_settings.h \
 	unix_preferences.cpp \
 	unix_preferences.h
-	
+
 
 #
 # Conditionals for various third party libraries
@@ -129,3 +136,12 @@ install-exec-hook:
 
 uninstall-hook:
 	rm -f AmbulantPlayer
+
+check-ambulantplayer_qt:
+#	env AMBULANT_PLUGIN_DIR=$(top_srcdir)/pyambulant ./AmbulantPlayer_qt $(top_srcdir)/Extras/Welcome/Welcome.smil
+	( set -x;export PYAMBULANTBUILDDIR=`echo ../pyambulant/build/lib*` ; \
+	  a=`cd $(ambulantlibdir); pwd` ; \
+	  cd $(srcdir) ; \
+	  LD_LIBRARY_PATH="$$a" DYLD_LIBRARY_PATH="$$a" $(PYTHONENV) PYTHONPATH=../plugins/.libs AMBULANT_PLUGIN_DIR=../plugins/.libs $(DEBUGGER) ./AmbulantPlayer_qt $(top_srcdir)/Extras/Welcome/Welcome.smil ; \
+	)
+
