@@ -474,13 +474,20 @@ net::url::url(const string& protocol, const string& host, int port,
 
 net::url::string net::url::get_file() const {
 	std::string file = get_path();
-	// Workaround: we might have split a local file at the ?.
+	file = urlpath2filepath(file); // Convert to local filesystem convention
+	// Open to discussion: we add the query at the end of the filename.
+	// Sometimes this is a good idea, sometimes not
 	if(!m_query.empty()) {
 		file += '?';
 		file += m_query;
 	}
-
-	return urlpath2filepath(file);
+	// Open to discussion: we add the fragment at the end of the filename.
+	// Sometimes this is a good idea, sometimes not
+	if(!m_ref.empty()) {
+		file += '#';
+		file += m_ref;
+	}
+	return file;
 }
 
 void net::url::set_from_spec(const string& spec) {
