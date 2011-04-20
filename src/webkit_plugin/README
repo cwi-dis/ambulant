@@ -14,21 +14,5 @@ More information on the Ambulant Player and plugin can be found via
 <http://www.ambulantPlayer.org>
 
 Building from source (if you read these instructions in a source distribution
-setting):
-- Build ambulant player with the normal configure/make combo, see the toplevel
-  INSTALL file for details.
-- In the build directory, in src/libambulant/.libs, create symlinks "libambulant_*.dylib"
-  to the corresponding "libambulant_*.0" files.
-- Open XCode and set (Preferences->Source Trees) PREBUILT_AMBULANT_ROOT the
-  the absolute path where you built ambulant, in the step above.
-- Build AmbulantWebKitPlugin.xcodeproj with XCode. This expects the ambulant
-  engine library in src/libambulant/.libs, so if you have built the player
-  outside of the source tree (as the toplevel INSTALL suggests) you need to
-  add a single symlink in the source tree. This will be fixed in a later release.
-  
-
-Debugging from XCode:
-If your login happens to be "jack" everything is setup for debugging. But
-otherwise you have to rename the jack.* files within the xcodeproject.
-Or follow the guidelines at <http://developer.apple.com/qa/qa2006/qa1500.html>
-and re-create that setup for yourself.
+setting) is done with XCode, using the
+projects/xcode32/AmbulantWebkitPlugin.xcodeproj project file.
