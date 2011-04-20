@@ -256,10 +256,10 @@ npambulant_plugin_dir: .libs/$(NPAMBULANT)
 ##	done
 #	Copy in shared libraries and fix rpath
 	LD_LIBRARY_PATH=$(top_builddir)/src/libambulant/.libs:$(top_builddir)/third_party_packages/installed/lib \
-		$(PYTHON) $(srcdir)/internalize_shlibs.py \
+		$(PYTHON) $(top_srcdir)/scripts/internalize_shlibs.py \
 		npambulant_plugin_dir/plugins
 #	Check that internalization worked
-	$(PYTHON) $(srcdir)/internalize_shlibs.py -c npambulant_plugin_dir/plugins
+	$(PYTHON) $(top_srcdir)/scripts/internalize_shlibs.py -c npambulant_plugin_dir/plugins
 #	Copy manifest file (only used for xpt distributions)
 	@case $(ARCH) in		    \
 		x86_64|X86_64)      \
@@ -298,7 +298,6 @@ EXTRA_DIST = \
 	install-linux.rdf \
 	install-linux64.rdf \
 	install-win32.rdf  \
-	internalize_shlibs.py \
 	npambulant.rc \
 	npambulant.def \
 	resource.h \
