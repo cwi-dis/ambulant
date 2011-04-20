@@ -71,7 +71,7 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	Extras/Makefile])
 	
 
-AC_CONFIG_COMMANDS([libtool_patch],[chmod 755 $srcdir/patch_libtool.sh;$srcdir/patch_libtool.sh])
+AC_CONFIG_COMMANDS([libtool_patch],[chmod 755 $srcdir/scripts/patch_libtool.sh;$srcdir/scripts/patch_libtool.sh])
 
 # Variables needed.
 export PATH=`pwd`/third_party_packages/installed/bin:$PATH
