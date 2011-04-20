@@ -603,7 +603,7 @@ third_party_packages={
     'linux' : [
         TPP("libtool", 
             url="http://ftp.gnu.org/gnu/libtool/libtool-2.2.6a.tar.gz",
-            checkcmd="test -f %s/lib/libltdl.a -a -d /usr/share/libtool/libltdl" % COMMON_INSTALLDIR,
+            checkcmd="test -f %s/lib/libltdl.a" % COMMON_INSTALLDIR,
             buildcmd=
                 "cd libtool-2.2.6 && "
                         "%s --enable-ltdl-install &&"
