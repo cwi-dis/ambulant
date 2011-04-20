@@ -17,7 +17,6 @@ EXTRA_DIST=MyAmbulantView.mm MyDocument.mm LogController.mm mainloop.cpp MyAppDe
 	stop.png \
 	systemTestSettings.xml \
 	genappleindex.sh \
-	internalize_dylibs.py \
 	testdependencies \
 	ui_icons.psd
 
@@ -193,13 +192,13 @@ $(BUILDAPPNAME).app: cocoambulant_executable
 	strip -x `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/AmbulantPlayer
 	
 #	Internalize any non-system shared libraries we use
-	$(PYTHON) $(srcdir)/internalize_dylibs.py -v -s $(prefix)/lib:$(ambulantlibdir) $(BUILDAPPNAME).app
+	$(PYTHON) $(top_srcdir)/scripts/internalize_dylibs.py -v -s $(prefix)/lib:$(ambulantlibdir) $(BUILDAPPNAME).app
 
 #	Test for problematic dependencies
 	$(TESTDEP) `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/AmbulantPlayer
 	$(TESTDEP) `pwd`/$(BUILDAPPNAME).app/Contents/PlugIns/*
 	$(TESTDEP) `pwd`/$(BUILDAPPNAME).app/Contents/Frameworks/*
-	$(PYTHON) $(srcdir)/internalize_dylibs.py -c $(BUILDAPPNAME).app
+	$(PYTHON) $(top_srcdir)/scripts/internalize_dylibs.py -c $(BUILDAPPNAME).app
 	
 LDADD = \
 	$(libambulant_cocoa) \

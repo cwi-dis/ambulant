@@ -522,7 +522,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "python \"${AMBULANT_DIR}/src/player_macosx/internalize_dylibs.py\" -v \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"";
+			shellScript = "python \"${AMBULANT_DIR}/scripts/internalize_dylibs.py\" -v \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"";
 		};
 		0427885A12F6E8CC0033D6EB /* Run Script - install */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -550,7 +550,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "python \"${AMBULANT_DIR}/src/player_macosx/internalize_dylibs.py\" -v \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"";
+			shellScript = "python \"${AMBULANT_DIR}/scripts/internalize_dylibs.py\" -v \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"";
 		};
 		0441E7E4134314030025FCF9 /* Run Script - install */ = {
 			isa = PBXShellScriptBuildPhase;

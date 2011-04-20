@@ -970,7 +970,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
-			shellScript = "python \"${SOURCE_ROOT}/../../src/player_macosx/internalize_dylibs.py\" -v -s /usr/local/lib:\"${PREBUILT_AMBULANT_ROOT}/src/libambulant/.libs\" \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"";
+			shellScript = "python \"${SOURCE_ROOT}/../../scripts/internalize_dylibs.py\" -v -s /usr/local/lib:\"${PREBUILT_AMBULANT_ROOT}/src/libambulant/.libs\" \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"";
 		};
 		042AD9701152CD44009CA791 /* Internalize dylibs */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -984,7 +984,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
-			shellScript = "python \"${SOURCE_ROOT}/../../src/player_macosx/internalize_dylibs.py\" -v -s /usr/local/lib:\"${PREBUILT_AMBULANT_ROOT}/src/libambulant/.libs\" \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"";
+			shellScript = "python \"${SOURCE_ROOT}/../../scripts/internalize_dylibs.py\" -v -s /usr/local/lib:\"${PREBUILT_AMBULANT_ROOT}/src/libambulant/.libs\" \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"";
 		};
 		042AD9871152CEDF009CA791 /* Create plugin .la files */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1026,7 +1026,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
-			shellScript = "python \"${SOURCE_ROOT}/../../src/player_macosx/internalize_dylibs.py\" -v -s /usr/local/lib:\"${PREBUILT_AMBULANT_ROOT}/src/libambulant/.libs\" \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"";
+			shellScript = "python \"${SOURCE_ROOT}/../../scripts/internalize_dylibs.py\" -v -s /usr/local/lib:\"${PREBUILT_AMBULANT_ROOT}/src/libambulant/.libs\" \"${TARGET_BUILD_DIR}/${FULL_PRODUCT_NAME}\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
