@@ -22,10 +22,11 @@ and alsa-devel (for sound).
 For MacOSX and iOS you need the Apple Developer tools (XCode 3.2 or later).
 
 You also need to build and install several third party packages that
-Ambulant depends on. We have a script to download/build/install these,
-build-third-party-packages.py. This script contains many hardcoded URLs,
-you may need to adapt it when new versions of packages have become
-available.
+Ambulant depends on. We have a script to download/build/install these. In
+the directory third_party_packages, run
+../scripts/build-third-party-packages.py. This script contains many
+hardcoded URLs, you may need to adapt it when new versions of packages have
+become available.
 
 Building for Linux
 ------------------
@@ -33,7 +34,7 @@ Building for Linux
 After unpacking Ambulant you should first download and build the required
 3rd party packages. In third_party_packages, run the following command:
 
-	python build-third-party-packages.py linux
+	python ../scripts/build-third-party-packages.py linux
 	
 This will install all needed packages (insofar they are not installed
 on your system yet) in "third_party_packages/installed", and configure
@@ -78,7 +79,7 @@ depends. These will be installed locally, for ambulant only (in
 directory third_party_packages/installed). Go to third_party_packages
 and run
 
-	python build-third-party-packages.py mac10.6
+	python ../scripts/build-third-party-packages.py mac10.6
 	
 That is, if you are on MacOSX 10.6. This will build the packages 32/64
 bit universal. If you are on 10.4 or 10.5 you specify "mac10.4" as the
@@ -162,7 +163,7 @@ First, you build the third party packages, by opening a "cmd" command window
 and navigating to ambulant/third_party_packages. You now run the following
 two commands:
 	xxx> call "c:\Program Files\Microsoft Visual Studio xxx\VC\bin\vcvars.bat"
-	xxx> call "c:\PythonXX\python.exe" build-third-party-packages.py win32
+	xxx> call "c:\PythonXX\python.exe" ..\scripts\build-third-party-packages.py win32
 This should build all third party packages and put them where the Ambulant
 build expects them. If you have to change anything in this python script, for
 example because a new version of some package has replaced an older one,

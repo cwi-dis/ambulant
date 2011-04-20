@@ -199,7 +199,7 @@ Creating the MacOSX 10.6 installer
 - Create a third_party_packages in there.
 - In third_party_packages, build the required third party packages, with
 
-    python ../../third_party_packages/build-third-party-packages.py mac10.6
+    python ../../scripts/build-third-party-packages.py mac10.6
     
 - Configure (in build-dist-106) with
 
@@ -245,7 +245,7 @@ These instructions assume you are building on an Intel 10.5 mac.
 - In third_party_packages, build the required third party packages, with
 
     export MACOSX_DEPLOYMENT_TARGET=10.4
-    python ../../third_party_packages/build-third-party-packages.py mac10.4
+    python ../../scripts/build-third-party-packages.py mac10.4
     
 - Configure (in build-dist-104) with
 

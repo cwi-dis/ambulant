@@ -79,7 +79,7 @@ mkdir build-3264
 cd build-3264
 mkdir third_party_packages
 cd third_party_packages
-python ../../third_party_packages/build-third-party-packages.py $BUILD3PPARGS
+python ../../scripts/build-third-party-packages.py $BUILD3PPARGS
 cd ..
 #
 # configure, make, make install

@@ -86,7 +86,7 @@ x)	;;
 esac
 sh autogen.sh
 cd third_party_packages
-python build-third-party-packages.py $BUILD3PPARGS
+python ../scripts/build-third-party-packages.py $BUILD3PPARGS
 cd ..
 
 

@@ -1,7 +1,7 @@
 Instructions for building the AmbulantPlayer Firefox plugin version 2.2
 (xulrunner version, with Firefox and other compliant browsers) on Linux (32/64 bit):
 
-A. download xulrunner-sdk to ambulant-2.2/third_party_packages (see build-third-party-packages.py)
+A. Build the third_party_packages with scripts/build-third-party-packages.py
 B. ./configure --npambulant --without-xerces
 C1. make install      # installs in $HOME/.mozilla/plugins
 C2.  sudo make install # installs in /usr/lib/mozilla/plugins

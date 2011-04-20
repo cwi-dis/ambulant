@@ -40,7 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		041DCBCB12B655E1003407C8 /* build-third-party-packages.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = "build-third-party-packages.py"; path = "../../third_party_packages/build-third-party-packages.py"; sourceTree = SOURCE_ROOT; };
+		041DCBCB12B655E1003407C8 /* build-third-party-packages.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = "build-third-party-packages.py"; path = "../../scripts/build-third-party-packages.py"; sourceTree = SOURCE_ROOT; };
 		04CE8DA412BB691600801B1A /* ambulant-common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "ambulant-common.xcconfig"; path = "config/ambulant-common.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -67,7 +67,7 @@
 /* Begin PBXLegacyTarget section */
 		041DCBD712B65714003407C8 /* third_party_packages_mac */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = " ../../third_party_packages/build-third-party-packages.py mac10.6";
+			buildArgumentsString = " ../../scripts/build-third-party-packages.py mac10.6";
 			buildConfigurationList = 041DCBDA12B65732003407C8 /* Build configuration list for PBXLegacyTarget "third_party_packages_mac" */;
 			buildPhases = (
 			);
@@ -81,7 +81,7 @@
 		};
 		041DCBF612B6770B003407C8 /* third_party_packages_iOS */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = " ../../third_party_packages/build-third-party-packages.py iOS-Device";
+			buildArgumentsString = " ../../scripts/build-third-party-packages.py iOS-Device";
 			buildConfigurationList = 041DCBF712B6770B003407C8 /* Build configuration list for PBXLegacyTarget "third_party_packages_iOS" */;
 			buildPhases = (
 			);
@@ -95,7 +95,7 @@
 		};
 		041DCC0712B6777A003407C8 /* third_party_packages_iOS_Simulator */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = " ../../third_party_packages/build-third-party-packages.py iOS-Simulator";
+			buildArgumentsString = " ../../scripts/build-third-party-packages.py iOS-Simulator";
 			buildConfigurationList = 041DCC0812B6777A003407C8 /* Build configuration list for PBXLegacyTarget "third_party_packages_iOS_Simulator" */;
 			buildPhases = (
 			);

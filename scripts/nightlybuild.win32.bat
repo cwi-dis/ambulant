@@ -83,7 +83,7 @@ rem  Prepare the tree
 rem 
 
 cd %builddir%\third_party_packages
-%python% build-third-party-packages.py %BUILD3PPARGS%
+%python% ..\scripts\build-third-party-packages.py %BUILD3PPARGS%
 if %errorlevel% neq 0 pause
 cd ..
 
