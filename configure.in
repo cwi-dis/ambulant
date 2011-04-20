@@ -1168,7 +1168,7 @@ AC_OUTPUT
 dnl ============================================================================
 
 echo "Attempting to fix libtool, assuming 2.2.6"
-sh $srcdir/fixlibtool226.sh
+sh $srcdir/scripts/fixlibtool226.sh
 
 echo "
 ambulant-$AMBULANT_VERSION will be built with following parameters:

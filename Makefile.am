@@ -5,7 +5,6 @@ EXTRA_DIST = \
 	scripts \
 	ambulant.spec \
 	libambulant.pc \
-	fixlibtool226.sh \
 	autogen.sh \
 	bin/win32
 
