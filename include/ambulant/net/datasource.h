@@ -162,11 +162,11 @@ struct video_format {
 ;
 #endif
 
-// This class describes the range of audio formats supported by a consumer.
-// It always contains at least one supported format.
-// The design assumes that support for various sample rates, channels and
-// bits are independent variables. In addition, an audio_format_choices
-// can support both various linear formats and named formats.
+/// This class describes the range of audio formats supported by a consumer.
+/// It always contains at least one supported format.
+/// The design assumes that support for various sample rates, channels and
+/// bits are independent variables. In addition, an audio_format_choices
+/// can support both various linear formats and named formats.
 class AMBULANTAPI audio_format_choices {
   public:
 
@@ -219,6 +219,7 @@ class AMBULANTAPI audio_format_choices {
 
 };
 
+/// Helper struct: a packet plus its timestamp.
 struct ts_packet_t {
 	timestamp_t timestamp;
 	void* data;
@@ -267,6 +268,12 @@ class AMBULANTAPI datasource : virtual public ambulant::lib::ref_counted {
 	virtual void readdone(size_t len) = 0;
 };
 
+/// Interface for an object that provides packetized data to a consumer.
+/// The consumer calls start() whenever it wants
+/// data. This call returns immedeately and later the datasource arranges
+/// that the callback is done, when data is available. The consumer then
+/// calls get_ts_packet_t() and end_of_file() to get an available data packet.
+/// The packet is discarded upon return from the available callback.
 class AMBULANTAPI pkt_datasource : virtual public ambulant::lib::ref_counted {
   public:
 	virtual ~pkt_datasource() {};
@@ -286,7 +293,7 @@ class AMBULANTAPI pkt_datasource : virtual public ambulant::lib::ref_counted {
 	virtual ts_packet_t get_ts_packet_t() = 0;
 };
 
-/// Interface to an object that supplies audio data to a consumer.
+/// Mixin interface to an object that supplies audio data to a consumer.
 /// Audio_datasource extends the datasource protocol with methods to obtain
 /// information on the way the audio data is encoded and methods to support
 /// temporal clipping of the audio.
@@ -321,11 +328,15 @@ class audio_datasource_mixin {
 #endif
 };
 
+/// Full interface to an object that supplies audio data to a consumer.
+/// Simply inherits both datasource and audio_datasource_mixin.
 class audio_datasource : public datasource, public audio_datasource_mixin {
   public:
 	virtual ~audio_datasource() {};
 };
 
+/// Full interface to an object that supplies packetized audio data to a consumer.
+/// Simply inherits both pkt_datasource and audio_datasource_mixin.
 class pkt_audio_datasource : public pkt_datasource, public audio_datasource_mixin {
   public:
 	virtual ~pkt_audio_datasource() {};
@@ -472,6 +483,10 @@ class AMBULANTAPI audio_datasource_factory  {
 	virtual audio_datasource* new_audio_datasource(const net::url& url, const audio_format_choices& fmt, timestamp_t clip_begin, timestamp_t clip_end) = 0;
 };
 
+/// Interface to create a pkt_audio_datasource for a given URL.
+/// This class is the client API used to create a pkt_audio_datasource for
+/// a given URL, with an extra parameter specifying which audio encodings
+/// the client is able to handle.
 class AMBULANTAPI pkt_audio_datasource_factory  {
   public:
 	virtual ~pkt_audio_datasource_factory() {};
@@ -508,6 +523,8 @@ class audio_filter_finder {
 	virtual audio_datasource* new_audio_filter(audio_datasource *src, const audio_format_choices& fmts) = 0;
 };
 
+/// Factory for finding an audio decoder.
+/// Uses a packet datasource as input.
 class audio_decoder_finder {
   public:
 	virtual ~audio_decoder_finder() {};

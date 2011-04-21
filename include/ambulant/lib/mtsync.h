@@ -53,19 +53,21 @@ namespace lib {
 /// and then CS 2 and other paths through the code where first
 /// CS 2 is entered and then CS 1).
 #ifdef AMBULANT_PLATFORM_WIN32
-
 class AMBULANTAPI critical_section : public win32::critical_section {
 };
-class AMBULANTAPI critical_section_cv : public win32::critical_section_cv {
-};
-
 #else
-
 class AMBULANTAPI critical_section : public unix::critical_section {
 };
+#endif
+
+/// A mutex plus a condition variable.
+/// Extends the critical_section class with signal and wait primitives.
+#ifdef AMBULANT_PLATFORM_WIN32
+class AMBULANTAPI critical_section_cv : public win32::critical_section_cv {
+};
+#else
 class AMBULANTAPI critical_section_cv : public unix::critical_section_cv {
 };
-
 #endif
 
 } // namespace lib

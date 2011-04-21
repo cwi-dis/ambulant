@@ -195,6 +195,7 @@ class AMBULANTAPI playable : public lib::ref_counted_obj {
 
 class playable_notification {
   public:
+    /// Opaque type used to identify the object to which the notification pertains.
 	typedef playable::cookie_type cookie_type;
 
 	// Allows subclasses to be deleted using base pointers
@@ -272,10 +273,11 @@ class global_playable_factory : public playable_factory {
 /// Factory function to get a (singleton?) global_playable_factory object.
 AMBULANTAPI global_playable_factory *get_global_playable_factory();
 
-/// Template factory for one implementation class
+/// Template factory for one implementation class.
 template<class PlayableClass, const char *Tag, const char *Renderer_uri, const char *Renderer_uri2, const char *Renderer_uri3>
 class single_playable_factory : public playable_factory {
   public:
+    /// Constructor.
 	single_playable_factory(
 		common::factories *factory,
 		common::playable_factory_machdep *mdp)

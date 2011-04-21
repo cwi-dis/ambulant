@@ -164,11 +164,17 @@ class AMBULANTAPI gui_player : public factories {
   protected:
 	/// Convenience method to parse XML.
 	lib::document *create_document(const net::url& url);
+	/// The URL for the current document.
 	net::url m_url;
+	/// The current document.
 	lib::document *m_doc;
+	/// The object embedding this gui_player, which receives notifications.
 	embedder *m_embedder;
+	/// The player for the current document.
 	player *m_player;
+	/// Hack: the node at which playback should start. See the goto_node() code.
 	const lib::node *m_goto_node;
+	/// Critical section.
 	lib::critical_section m_lock;
 };
 

@@ -118,6 +118,7 @@ class state_component {
 	virtual void want_state_change(const char *ref, state_change_callback *cb) = 0;
 };
 
+/// Factory to create SMIL State component for a specific language.
 class state_component_factory {
   public:
 	virtual ~state_component_factory() {};
@@ -127,6 +128,7 @@ class state_component_factory {
 	// systemComponent we also need to be able to get the uri
 };
 
+/// Implementation of state_component_factory plus provider interface.
 class global_state_component_factory : public state_component_factory {
   public:
 	virtual ~global_state_component_factory() {};

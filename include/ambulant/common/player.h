@@ -29,12 +29,7 @@
 #include "ambulant/common/factory.h"
 #include "ambulant/config/config.h"
 #include "ambulant/lib/refcount.h"
-#ifdef WITH_SMIL30
 #include "ambulant/common/state.h"
-#else
-class state_change_callback {
-};
-#endif // WITH_SMIL30
 
 namespace ambulant {
 

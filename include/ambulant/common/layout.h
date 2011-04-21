@@ -81,6 +81,7 @@ class animation_notification {
 /// embedder can send its redraw requests and such.
 class gui_window {
   protected:
+    /// Constructor, only for use by subclasses.
 	gui_window(gui_events *handler)
 	:   m_handler(handler) {};
   public:
@@ -225,6 +226,8 @@ class surface {
 	/// to display it. The renderer must do the scaling.
 	virtual lib::rect get_fit_rect(const lib::rect& src_crop_rect, const lib::size& src_size, lib::rect* out_src_rect, const alignment *align) const = 0;
 
+    /// Determine source rectangle to draw.
+    /// Applies panzoom attributes to the source image and returns resulting rect.
 	virtual lib::rect get_crop_rect(const lib::size& src_size) const = 0;
 #endif
 

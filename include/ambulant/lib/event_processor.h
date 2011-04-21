@@ -35,6 +35,11 @@ namespace ambulant {
 
 namespace lib {
 
+/// Notification interface for event processor activity.
+/// Before and after the event processor starts processing a batch of events
+/// it notifies implementors of this interface. This can be used to delay redraws
+/// (so we don't get a cascade of redraws where a single one at the end would
+/// be sufficient).
 class AMBULANTAPI event_processor_observer {
   public:
 	virtual ~event_processor_observer() {};
