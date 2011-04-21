@@ -35,6 +35,11 @@
 ^aclocal.m4
 ^configure
 ^Documentation/user/user.helpindex
+^Documentation/API/html
+^src/pyambulant/ambulantgen.py
+^src/pyambulant/ambulantincludegen.py
+^src/pyambulant/ambulantobjgen.py
+^src/pyambulant/ambulanttypetest.py
 po/stamp-po
 ^libltdl
 .*\.dll
@@ -52,5 +57,7 @@ po/stamp-po
 Makefile.in
 .*\.xcodeproj/.*\.pbxuser
 .*\.xcodeproj/.*\.mode1v3
+.*\.pyc
+.*\.pyo
 
 
