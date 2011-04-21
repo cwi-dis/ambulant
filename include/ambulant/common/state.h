@@ -53,8 +53,7 @@ class global_state_component_factory {
 namespace ambulant {
 namespace common {
 
-/// API that allows state components to obtain systemTest and customTest
-/// values.
+/// API that allows state components to obtain systemTest and customTest values.
 class state_test_methods {
   public:
 	virtual ~state_test_methods() {}

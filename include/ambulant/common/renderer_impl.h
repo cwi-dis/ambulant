@@ -93,8 +93,7 @@ class AMBULANTAPI playable_imp : public playable {
 	bool m_wantclicks;					///< True if we should send gui events to m_context.
 };
 
-/// A convenience class implementing some of the common code for playables that
-/// are also renderers.
+/// A convenience class for playables that are also renderers.
 /// In addition to the functionality provided by playable_imp this class
 /// also provides default implementations of the renderer interface.
 class AMBULANTAPI renderer_playable : public playable_imp, public renderer {
@@ -130,8 +129,7 @@ class AMBULANTAPI renderer_playable : public playable_imp, public renderer {
 };
 
 
-/// A convenience class implementing some of the common code for playables that
-/// are also renderers and that receive data from a datasource.
+/// A convenience class for playables that receive data from a datasource.
 /// In addition to the functionality provided by renderer_playable this class
 /// creates a raw datasource for the url specified in the node "src"
 /// attribute. On start() the datasource is started too. A subclass must
@@ -165,9 +163,7 @@ class AMBULANTAPI renderer_playable_ds : public renderer_playable {
 	net::datasource *m_src;	///< The datasource.
 };
 
-/// A convenience class implementing some of the common code for playables that
-/// are also renderers, that receive data from a datasource and that cannot
-/// start rendering until all data is available.
+/// A convenience class for playables that cannot  start rendering until all data is available.
 /// In addition to the functionality provided by renderer_playable_ds this class
 /// creates a raw datasource for the url specified in the node "src"
 /// attribute. On start() the datasource is started too, and renderer_playable_dsall
