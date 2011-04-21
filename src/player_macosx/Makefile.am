@@ -6,7 +6,6 @@ EXTRA_DIST=MyAmbulantView.mm MyDocument.mm LogController.mm mainloop.cpp MyAppDe
 	Resources-cocoa \
 	Resources-cg \
 	version.plist \
-	fullcocoambulant.xcodeproj \
 	Ambulant.icns \
 	AmbulantDocSmil.icns \
 	AmbulantDocGrins.icns \
