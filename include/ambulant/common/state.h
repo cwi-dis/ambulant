@@ -58,18 +58,56 @@ class state_test_methods {
   public:
 	virtual ~state_test_methods() {}
 
+	/// Implements SMIL audioDesc test.
+	/// Return true of audioDesc is on.
 	virtual bool smil_audio_desc() const = 0;
+	
+	/// Implements SMIL bitrate test.
+	/// Returns bitrate setting as an integer.
 	virtual int smil_bitrate() const = 0;
+	
+	/// Implements SMIL captions test.
+	/// Returns true if captions are on.
 	virtual bool smil_captions() const = 0;
+	
+	/// Implements SMIL component test.
+	/// Returns true if the given component is suppported.
 	virtual bool smil_component(std::string uri) const = 0;
+	
+	/// Implements SMIL customTest test.
+	/// Returns true if the given custom test is turned on.
 	virtual bool smil_custom_test(std::string name) const = 0;
+	
+	/// Implements SMIL cpu test.
+	/// Returns a string signifying the current CPU.
 	virtual std::string smil_cpu() const = 0;
+	
+	/// Implements SMIL language test.
+	/// Returns a preference weight factor (between 0.0 and 1.0) for the given language.
 	virtual float smil_language(std::string lang) const = 0;
+	
+	/// Implements SMIL operatingSystem test.
+	/// Returns the currrent operating system name.
 	virtual std::string smil_operating_system() const = 0;
+	
+	/// Implements SMIL OverdubOrCaption test.
+	/// Returns the string "overdub" or "caption".
 	virtual std::string smil_overdub_or_subtitle() const = 0;
+	
+	/// Implements SMIL required test.
+	/// Returns true if the given feature is available.
 	virtual bool smil_required(std::string uri) const = 0;
+	
+	/// Implements SMIL screenDepth test.
+	/// Returns the number of bits per pixel.
 	virtual int smil_screen_depth() const = 0;
+	
+	/// Implements SMIL screenHeight test.
+	/// Returns the height of the screen (in pixels).
 	virtual int smil_screen_height() const = 0;
+	
+	/// Implements SMIL screenWidth test.
+	/// Returns the width of the screen (in pixels).
 	virtual int smil_screen_width() const = 0;
 };
 

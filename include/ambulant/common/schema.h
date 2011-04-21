@@ -70,6 +70,7 @@ class schema {
 	/// Returns the time_container_type of the element with tag qname.
 	time_container_type get_time_type(const lib::xml_string& qname) const;
 
+	/// Returns true if this item is discrete (as opposed to continuous). Obsolete.
 	bool is_discrete(const lib::xml_string& qname) const;
 
 	/// Returns a ref to the set of layout elements.
@@ -78,7 +79,7 @@ class schema {
 		return m_layout_elements;
 	}
 
-	// Returns the layout_type of the element with tag qname.
+	/// Returns the layout_type of the element with tag qname.
 	layout_type get_layout_type(const lib::xml_string& qname) const;
 
 	/// Allow schema_factory classes to create instances.

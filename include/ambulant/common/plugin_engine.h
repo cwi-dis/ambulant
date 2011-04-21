@@ -49,8 +49,8 @@ extern "C" {
 	/// Ambulant or Ambulant extensions. If available it must be called
 	/// "plugin_extra_data".
 	struct plugin_extra_data {
-		char *m_plugin_name;
-		void *m_plugin_extra;
+		char *m_plugin_name;	///< Plugin name.
+		void *m_plugin_extra;	///< Pointer to extra, plugin-dependent, data.
 	};    
 };
 #ifdef WITH_STATIC_PLUGINS

@@ -55,7 +55,7 @@ class AMBULANTAPI preferences {
 	/// True if this user has seen the Welcome.smil document.
 	bool m_welcome_seen;
 
-	// Where to log
+	/// Where to log.
 	std::string m_log_file;
 
 	/// Determines how much output the user will see.
