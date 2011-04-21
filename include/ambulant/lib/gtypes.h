@@ -54,58 +54,61 @@ const T& lmin(const T& l, const T& r){
 template <class T>
 class basic_point {
   public:
-	T x, y;
+	T x;	///< Coordinate.
+	T y;	///< Coordinate.
 
 	basic_point()
 	:	x(0), y(0) {}
 
+	/// Construct point from two coordinates.
 	basic_point(T _x, T _y)
 	:	x(_x), y(_y) {}
 
+	/// Construct point as a copy of another point.
 	basic_point(const basic_point<T>& o)
 	:	x(o.x), y(o.y) {}
 
-	bool operator==(basic_point<T> o) {
+	bool operator==(basic_point<T> o) {	///< Operator
 		return x == o.x && y == o.y;
 	}
 
-	bool operator!=(basic_point<T> o) {
+	bool operator!=(basic_point<T> o) {	///< Operator
 		return x != o.x || y != o.y;
 	}
 
-	void operator+=(basic_point<T> o) {
+	void operator+=(basic_point<T> o) {	///< Operator
 		x += o.x; y += o.y;
 	}
 
-	void operator-=(basic_point<T> o) {
+	void operator-=(basic_point<T> o) {	///< Operator
 		x -= o.x; y -= o.y;
 	}
 
-	basic_point<T> operator+(basic_point<T> o) {
+	basic_point<T> operator+(basic_point<T> o) {	///< Operator
 		return basic_point<T>(x + o.x, y + o.y);
 	}
 
-	basic_point<T> operator-(basic_point<T> o) {
+	basic_point<T> operator-(basic_point<T> o) {	///< Operator
 		return basic_point<T>(x - o.x, y - o.y);
 	}
 
-	basic_point<T> operator-() {
+	basic_point<T> operator-() {	///< Operator
 		return basic_point<T>(-x, -y);
 	}
 
-	basic_point<T>& operator*=(int n) {
+	basic_point<T>& operator*=(int n) {	///< Operator
 		x *= n; y *= n; return *this;
 	}
 
-	basic_point<T>& operator/=(int n) {
+	basic_point<T>& operator/=(int n) {	///< Operator
 		x /= n; y /= n; return *this;
 	}
 
-	basic_point<T> operator*(int n) const {
+	basic_point<T> operator*(int n) const {	///< Operator
 		basic_point<T> t(*this); t*=n; return t;
 	}
 
-	basic_point<T> operator/(int n) const {
+	basic_point<T> operator/(int n) const {	///< Operator
 		basic_point<T> t(*this); t/=n; return t;
 	}
 
@@ -116,36 +119,40 @@ class basic_point {
 template <class S>
 class basic_size {
   public:
-	S w, h;
+	S w;	///< Width.
+	S h;	///< Height.
 
 	basic_size()
 	:	w(0), h(0) {}
 
+	/// Construct a size from two dimensions.
 	basic_size(S _w, S _h)
 	:	w(_w), h(_h) {}
 
+	/// Construct a size from another size.
 	basic_size(const basic_size<S>& o)
 	:	w(o.w), h(o.h) {}
 
+	/// True of both dimensions are zero.
 	bool empty() const { return w==0 || h==0;}
 
-	bool operator==(basic_size<S> o) {
+	bool operator==(basic_size<S> o) {	///< Operator
 		return w == o.w && h == o.h;
 	}
 
-	bool operator!=(basic_size<S> o) {
+	bool operator!=(basic_size<S> o) {	///< Operator
 		return w != o.w || h != o.h;
 	}
 
-	void operator+=(basic_size<S> o) {
+	void operator+=(basic_size<S> o) {	///< Operator
 		w += o.w; h += o.h;
 	}
 
-	void operator-=(basic_size<S> o) {
+	void operator-=(basic_size<S> o) {	///< Operator
 		w -= o.w; h -= o.h;
 	}
 
-	basic_size<S> operator+(basic_size<S> o) {
+	basic_size<S> operator+(basic_size<S> o) {	///< Operator
 		return basic_size<S>(w + o.w, h + o.h);
 	}
 };
@@ -157,63 +164,69 @@ class basic_size {
 template <class T, class S = T >
 class basic_rect {
   public:
-	T x, y;
-	S w, h;
+	T x;	///< Left oordinate
+	T y;	///< Top coordinate
+	S w;	///< Width
+	S h;	///< Height
 
 	basic_rect() : x(0), y(0), w(0), h(0) {}
 
+	/// Construct rect from another rect.
 	basic_rect(const basic_rect<T, S>& o)
 	:	x(o.x), y(o.y), w(o.w), h(o.h) {}
 
+	/// Construct rect from a point and a size.
 	basic_rect(const basic_point<T>& p, const basic_size<S>& s)
 	:	x(p.x), y(p.y), w(s.w), h(s.h) {}
 
+	/// Construct a rect at (0,0 with a given size.
 	basic_rect(const basic_size<S>& s)
 	:	x(0), y(0), w(s.w), h(s.h) {}
 
+	/// True if the size of the rect is empty.
 	bool empty() const { return w==0 || h==0;}
 
-	bool operator==(basic_rect<T, S> o) const {
+	bool operator==(basic_rect<T, S> o) const {	///< Operator
 		return x == o.x && y == o.y && w == o.w && h == o.h;
 	}
 
-	bool operator!=(basic_rect<T, S> o) const {
+	bool operator!=(basic_rect<T, S> o) const {	///< Operator
 		return x != o.x || y != o.y || w != o.w || h != o.h;
 	}
 
-	T left() const {
+	T left() const {	///< Return left coordinate.
 		return x;
 	}
 
-	T top() const {
+	T top() const {	///< Return top coordinate.
 		return y;
 	}
 
-	T right() const {
+	T right() const {	///< Return right coordinate (computed).
 		return x+w;
 	}
 
-	T bottom() const {
+	T bottom() const {	///< Return bottom coordinate (computed).
 		return y+h;
 	}
 
-	basic_point<T> left_top() const {
+	basic_point<T> left_top() const {	///< Return top-left point.
 		return basic_point<T>(x, y);
 	}
 
-	basic_point<T> right_bottom() const {
+	basic_point<T> right_bottom() const {	///< Return bottom-right point (computed).
 		return basic_point<T>(x+w, y+h);
 	}
 
-	basic_size<S> size() const {
+	basic_size<S> size() const {	///< Return size.
 		return basic_size<S>(w, h);
 	}
 
-	S width() const {
+	S width() const {	///< Return width.
 		return w;
 	}
 
-	S height() const {
+	S height() const {	///< Return height.
 		return h;
 	}
 
@@ -239,11 +252,11 @@ class basic_rect {
 		return rv;
 	}
 
-	void operator+=(basic_point<T> p) {
+	void operator+=(basic_point<T> p) {	///< operator
 		translate(p);
 	}
 
-	void operator-=(basic_point<T> p) {
+	void operator-=(basic_point<T> p) {	///< operator
 		translate(-p);
 	}
 
@@ -295,14 +308,17 @@ class basic_rect {
 		return l;
 	}
 
+	/// Return true if this recatngle contains the given point.
 	bool contains(const basic_point<T>& p) const {
 		return contains(p.x, p.y);
 	}
 
+	/// Return true if this recatngle contains the point (xp, yp).
 	bool contains(T xp, T yp) const {
 		return (xp >= x ) && (xp < x + (T)w) && (yp >= y ) && (yp < y + (T)h);
 	}
 
+	/// Return true if this rect has the same size as a given rect.
 	bool same_size(const basic_rect<T, S>& o) const {
 		return w == o.w && h == o.h;
 	}

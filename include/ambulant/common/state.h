@@ -114,11 +114,13 @@ class state_test_methods {
 /// API that allows callbacks on changes in state.
 /// Note: there is currently no refcounting on these, and they're passed to state_component's.
 /// The creator of state_component is required to make sure that objects of this type remain
-/// alive longer than the state_component instance that has a reference.
+/// alive longer than the state_component instance that has a reference (i.e. there is no
+/// refcounting on this interface).
 class AMBULANTAPI state_change_callback {
   public:
 	virtual ~state_change_callback() {}
 
+	/// Called in response to state_component::want_state_change() when the state element changes value.
 	virtual void on_state_change(const char *ref) = 0;
 };
 
@@ -152,7 +154,7 @@ class state_component {
 	/// Calculate a string expression
 	virtual std::string string_expression(const char *expr) = 0;
 
-	/// Register the fact that we want stateChange callbacks for a given variable
+	/// Register the fact that we want state_change_callback::on_state_change() callback for a given variable
 	virtual void want_state_change(const char *ref, state_change_callback *cb) = 0;
 };
 
@@ -170,12 +172,14 @@ class state_component_factory {
 class global_state_component_factory : public state_component_factory {
   public:
 	virtual ~global_state_component_factory() {};
+	
+	/// Add a state_component_factory to to global factory.
 	virtual void add_factory(state_component_factory *sf) = 0;
 	// XXXJACK if we're going to use systemRequired to test for a specific
 	// systemComponent we also need to be able to get the list of uri's
 };
 
-/// Factory function to get a singleton global_state_component_factory
+/// Factory function to get a singleton global_state_component_factory.
 AMBULANTAPI global_state_component_factory *get_global_state_component_factory();
 
 } // namespace common

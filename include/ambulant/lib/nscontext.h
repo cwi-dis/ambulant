@@ -48,13 +48,13 @@ class AMBULANTAPI nscontext {
 	/// Return true if short name prefix is known.
 	bool is_known_prefix(const xml_string& prefix) const;
 
-	// Return true if long name uri is known.
+	/// Return true if long name uri is known.
 	bool is_known_namespace(const xml_string& uri) const;
 
 	/// Return true if short name prefix is known and supported.
 	bool is_supported_prefix(const xml_string& prefix) const;
 
-	// Return true if long name uri is supported.
+	/// Return true if long name uri is supported.
 	bool is_supported_namespace(const xml_string& uri) const;
 
 	/// Return the uri for a given short name prefix (or NULL).

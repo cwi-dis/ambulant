@@ -57,6 +57,8 @@ class stdio_datasource_factory : public raw_datasource_factory {
 class stdio_datasource : virtual public datasource, virtual public lib::ref_counted_obj {
   public:
 	stdio_datasource();
+	/// Construct stdio_datasource for given FILE object.
+	/// url is used for error messages only.
 	stdio_datasource(const url& url, FILE* file);
 	~stdio_datasource();
 
@@ -72,8 +74,10 @@ class stdio_datasource : virtual public datasource, virtual public lib::ref_coun
 	char* get_read_ptr();
 	size_t size() const;
 
+	/// Convenience method to read data.
 	void read(char *data, size_t size);
 
+	/// Operator
 	friend inline std::ostream& operator<<(std::ostream& os, const stdio_datasource& n) {
 		os << "stdio_datasource(" << (void *)&n << ", source=" << n.m_url.get_url() << ")";
 		return os;

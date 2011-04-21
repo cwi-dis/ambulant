@@ -55,7 +55,7 @@ class flag_event : public event {
 		m_flag = !m_flag;
 	}
   public:
-	bool& m_flag;
+	bool& m_flag;	///< The flag that is set when the event fires.
 };
 
 } // namespace lib

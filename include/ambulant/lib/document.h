@@ -41,11 +41,11 @@ namespace ambulant {
 namespace lib {
 
 #ifdef WITH_SMIL30
-/// Interface for getting callbacks if underlying values used
-/// in an Attribuet Value Template have changed.
+/// Interface for getting callbacks if underlying values used in an Attribute Value Template have changed.
 class AMBULANTAPI avt_change_notification {
   public:
 	virtual ~avt_change_notification() {}
+	/// Called when any attribute of the given node has seen an AVT change.
 	virtual void avt_value_changed_for(const lib::node *n) = 0;
 };
 #endif // WITH_SMIL30
@@ -53,11 +53,11 @@ class AMBULANTAPI avt_change_notification {
 /// Information on custom test used in the document.
 class custom_test {
   public:
-	std::string idd;   /// XML id of the customTest
-	std::string title; /// title attribute value
-	bool state;        /// Current state of the custom test
-	bool override;     /// True if custom test can be overridden thru player GUI
-	std::string uid;   /// uid attribute value
+	std::string idd;   ///< XML id of the customTest.
+	std::string title; ///< title attribute value.
+	bool state;        ///< Current state of the custom test.
+	bool override;     ///< True if custom test can be overridden thru player GUI.
+	std::string uid;   ///< uid attribute value.
 };
 
 /// A class respresenting an XML document.
@@ -115,6 +115,7 @@ class AMBULANTAPI document :
 	void set_prefix_mapping(const std::string& prefix, const std::string& uri);
 	const xml_string& get_namespace_prefix(const xml_string& uri) const;
 	bool is_supported_prefix(const xml_string& prefix) const;
+	/// Return true if long name uri is supported.
 	bool is_supported_namespace(const xml_string& uri) const;
 	net::url resolve_url(const net::url& rurl) const;
 	// Returns the node with the provided id or null on none
@@ -150,11 +151,9 @@ class AMBULANTAPI document :
 
   protected:
 	document();
-//	document(node *root = 0, bool owned=true);
-//	document(node *root, const net::url& src_url);
 
+	/// Set the root node for this document.
 	void set_root(node* n);
-//	void set_src_base(ambulant::net::url u) { m_src_base = u;}
 
   private:
 	// builds id to node map

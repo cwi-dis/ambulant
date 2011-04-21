@@ -43,13 +43,14 @@ typedef char bytes;
 class AMBULANTAPI databuffer
 {
   public:
-	// constructors
+	/// Construct a dtabuffer with an optional maximum size.
 	databuffer(size_t max_size=0);
 	// destructor
 	~databuffer();
 
 
-	// show information about the buffer, if verbose is true the buffer contents are dumped to cout.
+	/// Debug aid.
+	/// Show information about the buffer, if verbose is true the buffer contents are dumped to cout.
 	void dump(std::ostream& os, bool verbose) const;
 
 	/// Returns the number of bytes in the buffer.

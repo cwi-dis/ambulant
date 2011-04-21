@@ -50,8 +50,8 @@ class AMBULANTAPI thread {
 	/// Cannot be called by the thread itself.
 	virtual void stop() = 0;
 
-	// Forced stop or abnormal termination.
-	// To be used only under exceptional conditions.
+	/// Forced stop or abnormal termination.
+	/// To be used only under exceptional conditions.
 	virtual bool terminate() = 0;
 
 	/// Returns true if this thread is running.

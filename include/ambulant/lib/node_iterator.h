@@ -60,22 +60,19 @@ class const_tree_iterator  {
 	const_tree_iterator()
 	:	m_root(0), m_cur(0), m_move(&const_tree_iterator::down) {}
 
+	/// Constructs a const_tree_iterator for the subtree rooted at the given node.
 	const_tree_iterator(const Node *p)
 	:	m_root(p), m_cur(p), m_move(&const_tree_iterator::down) {}
 
-	// pre-increment
-	const_tree_iterator& operator++() { if(m_cur)(this->*m_move)(); return *this;}
+	const_tree_iterator& operator++() { if(m_cur)(this->*m_move)(); return *this;}	///< Operator
 
-	// post-increment
-	const_tree_iterator operator++(int)
-		{ const_tree_iterator temp(*this); ++*this; return temp;}
+	const_tree_iterator operator++(int) { const_tree_iterator temp(*this); ++*this; return temp;}	///< Operator
 
-	// dereferencing this returns a pair of const_deref_type
-	const_deref_type operator*() { return const_deref_type((m_move == &const_tree_iterator::down), m_cur);}
+	const_deref_type operator*() { return const_deref_type((m_move == &const_tree_iterator::down), m_cur);}	///< Operator
 
 	// an instance of this object acts like a pointer to a const_deref_type
 	// it->m_cur is the node, it->m_move is true if 'down'
-	const_deref_type* operator->() {return (&**this); }
+	const_deref_type* operator->() {return (&**this); }	///< Operator
 
 	/// True if iterator is exhausted.
 	bool is_end() { return m_cur == 0;}
@@ -92,16 +89,14 @@ class const_tree_iterator  {
 
 ///////////////
   protected:
-	void down();
-	void next();
-	void up();
+	void down();	///< Internal helper method: interator should move to first child.
+	void next();	///< Internal helper method: interator should move to next sibling.
+	void up();	///< Internal helper method: interator should move up the tree.
 
-	// container traversed by this iterator
-	const Node *m_root;
+	const Node *m_root;	///< Container traversed by this iterator.
 
-	// iterator state
-	const Node *m_cur;
-	void (const_tree_iterator::*m_move)();
+	const Node *m_cur;	///< Current node.
+	void (const_tree_iterator::*m_move)();	///< Method to get at next node.
 };
 
 ////////////////////////
@@ -128,6 +123,7 @@ class tree_iterator : public const_tree_iterator<Node> {
 	typedef std::pair<bool, Node*> deref_type;
 
 	tree_iterator() : const_tree_iterator<Node>(){}
+	/// Consrtruct tree_iterator for subtree rooted at the given node.
 	tree_iterator(Node *p) : const_tree_iterator<Node>(p){}
 	virtual ~tree_iterator() {}
 

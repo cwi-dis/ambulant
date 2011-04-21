@@ -79,11 +79,15 @@ class node_interface {
 
   public:
 
-	typedef std::list<const node*> const_node_list;
+	typedef std::list<const node*> const_node_list; ///< Helper type.
 
 	///////////////////////////////
 	// tree iterators
+
+	/// Iterates over all nodes in a subtree.
 	typedef tree_iterator<node_interface> iterator;
+
+	/// Iterates over all nodes in a subtree.
 	typedef const_tree_iterator<node_interface> const_iterator;
 
 	/// Destruct this node and its contents.
@@ -158,8 +162,8 @@ class node_interface {
 	/// Return iterator for this node and its subtree.
 	const_iterator begin() const { return const_iterator(this);}
 
-	iterator end() { return iterator(0);}
-	const_iterator end() const { return const_iterator(0);}
+	iterator end() { return iterator(0);}	///< Standard iterator method
+	const_iterator end() const { return const_iterator(0);}	///< Standard iterator method
 
 	///////////////////////
 	// build tree functions
@@ -287,7 +291,7 @@ typedef node_impl node;
 /// Interface of document class accesible to nodes.
 class AMBULANTAPI node_context {
   public:
-	typedef std::map<std::string, custom_test> custom_test_map;
+	typedef std::map<std::string, custom_test> custom_test_map;	///< Helper type.
 
 	virtual ~node_context(){}
 
@@ -327,21 +331,25 @@ class node_factory {
   public:
 	virtual ~node_factory() {}
 
+	/// Create a new, unconnected, node.
+	/// Note: attrs are as per expat parser
+	/// e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
 	virtual node *new_node(const char *local_name, const char **attrs = 0, const node_context *ctx = 0) = 0;
 
-	/// Construct a new, unconnected, node.
+	/// Create a new, unconnected, node.
 	/// Note: attrs are as per expat parser
 	/// e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
 	virtual node *new_node(const xml_string& local_name, const char **attrs = 0, const node_context *ctx = 0) = 0;
 
-	/// Construct a new, unconnected, node.
+	/// Create a new, unconnected, node.
 	/// Note: attrs are as per expat parser
 	/// e.g. const char* attrs[] = {"attr_name", "attr_value", ..., 0};
 	virtual node *new_node(const q_name_pair& qn, const q_attributes_list& qattrs, const node_context *ctx = 0) = 0;
 
-	// shallow copy from other.
+	/// Create shallow copy from another node.
 	virtual node *new_node(const node* other) = 0;
 
+	/// Create a new data node with given data.
 	virtual node *new_data_node(const char *data, size_t size, const node_context *ctx) = 0;
 };
 

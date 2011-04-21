@@ -221,10 +221,11 @@ class AMBULANTAPI audio_format_choices {
 
 /// Helper struct: a packet plus its timestamp.
 struct ts_packet_t {
-	timestamp_t timestamp;
-	void* data;
-	size_t size;
+	timestamp_t timestamp;	///< Timestamp of this packet.
+	void* data;	///< Data pointer.
+	size_t size;	///< Size of the data (in bytes).
 	
+	/// Constructor.
 	ts_packet_t(timestamp_t t, void* d, size_t s)
 	:   timestamp(t),
 		data(d),
@@ -348,6 +349,7 @@ class raw_audio_datasource:
 	virtual public lib::ref_counted_obj
 {
   public:
+  	/// Construct a raw_audio_datasource from a given datasource.
 	raw_audio_datasource(datasource* src) :
 		m_src(src),
 		m_fmt(audio_format(0,0,0)),
@@ -366,7 +368,6 @@ class raw_audio_datasource:
 #endif
 	void readdone(size_t len) { m_src->readdone(len); };
 	bool end_of_file() { return m_src->end_of_file(); };
-	bool buffer_full() { return false; };
 	timestamp_t get_clip_end() { return -1; };
 	timestamp_t get_clip_begin() { return 0; };
 	timestamp_t get_start_time() { return 0; };
@@ -429,6 +430,7 @@ class video_datasource : virtual public lib::ref_counted_obj {
 	/// Returns the height of the image returned by get_frame.
 	virtual int height() = 0;
 
+	/// Returns the duration of a frame (if known).
 	virtual timestamp_t frameduration() = 0;
 
 	/// Called by the client to indicate all frames up to and including timestamp are consumed.
@@ -596,6 +598,7 @@ class AMBULANTAPI datasource_factory :
 	/// Provider interface: add an audio_filter_finder.
 	void add_audio_filter_finder(audio_filter_finder *df);
 
+	/// Provider interface: add an audio_decoder_finder.
 	void add_audio_decoder_finder(audio_decoder_finder *df);
 
 	/// Provider interface: add a video_datasource_factory.
@@ -625,12 +628,13 @@ class AMBULANTAPI datasource_factory :
 
 };
 
-/// Convenience class that implements the framework for a filtering datasource.
+/// Convenience baseclass that implements the framework for a filtering datasource.
 class AMBULANTAPI filter_datasource_impl :
 	public datasource,
 	public lib::ref_counted_obj
 {
   public:
+  	/// Construct a filter_datasource_impl on top of a given datasource.
 	filter_datasource_impl(datasource *src);
 
 	virtual ~filter_datasource_impl();
@@ -645,12 +649,13 @@ class AMBULANTAPI filter_datasource_impl :
 	size_t size() const;
 	void readdone(size_t len);
   protected:
+  	/// Callback function passed to upstream datasource, called when new data is available.
 	void data_avail();
-	datasource *m_src;
-	databuffer m_databuf;
-	lib::event *m_callback;
-	lib::event_processor *m_event_processor;
-	lib::critical_section m_lock;
+	datasource *m_src;	///< Upstream datasource.
+	databuffer m_databuf;	///< Buffer with current data.
+	lib::event *m_callback;	///< Downstream callback.
+	lib::event_processor *m_event_processor;	///< Event processor for downstream callback.
+	lib::critical_section m_lock;	///< Lock on the whole datastructure.
 };
 
 /// Interface for clients of abstract_demux.

@@ -41,6 +41,8 @@ class timer {
 	/// The underline time type used by this timer.
 	/// Assumed to be an integral type.
 	typedef unsigned long time_type;
+
+	/// A type that can also hold nagative time values (for delta-t purposes).
 	typedef long signed_time_type;
 
 	// Allows subclasses to be deleted using base pointers
@@ -78,7 +80,7 @@ class timer_control : public timer {
 	/// Does not take periodicity into account.
 	virtual time_type elapsed() const = 0;
 
-	// Returns the zero-based time elapsed for the provided parent elapsed time.
+	/// Returns the zero-based time elapsed for the provided parent elapsed time.
 	virtual time_type elapsed(time_type pt) const = 0;
 
 	/// Starts ticking at t (t>=0).
@@ -108,14 +110,13 @@ class timer_control : public timer {
 	/// Set the current elapsed time.
 	virtual void set_time(time_type t) = 0;
 
-	// Returns the speed of this timer.
+	/// Returns the speed of this timer, relative to its parent timer.
 	virtual double get_speed() const = 0;
 
 	/// Returns true when this timer is running.
 	virtual bool running() const = 0;
 
-	/// Returns the realtime speed of this timer
-	/// as modulated by its parent.
+	/// Returns the realtime speed of this timer relative to the wallclock timer.
 	virtual double get_realtime_speed() const = 0;
 
 #ifdef WITH_CLOCK_SYNC

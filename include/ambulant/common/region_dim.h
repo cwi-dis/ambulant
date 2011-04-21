@@ -84,7 +84,7 @@ class region_dim {
 	region_dim(double value)
 	:	m_type(rdt_relative) { m_holder.dbl_val = value;}
 
-	// Constructs a region_dim from another region_dim.
+	/// Constructs a region_dim from another region_dim.
 	region_dim(const region_dim& other)
 	:	m_type(other.m_type) {
 		if(other.absolute())
@@ -118,8 +118,7 @@ class region_dim {
 	//////////////////////
 	// region_dim assignments (construct from existing)
 
-	/// Sets this to other.
-	const region_dim& operator=(const region_dim& other) {
+	const region_dim& operator=(const region_dim& other) { ///< operator
 		if(&other != this) {
 			m_type = other.m_type;
 			m_holder = other.m_holder;
@@ -127,15 +126,13 @@ class region_dim {
 		return *this;
 	}
 
-	/// Sets this to the absolute value provided.
-	const region_dim& operator=(int value) {
+	const region_dim& operator=(int value) { ///< operator
 		m_type = rdt_absolute;
 		m_holder.int_val = value;
 		return *this;
 	}
 
-	/// Sets this to the relative value provided.
-	const region_dim& operator=(double value) {
+	const region_dim& operator=(double value) { ///< operator
 		m_type = rdt_relative;
 		m_holder.dbl_val = value;
 		return *this;
@@ -182,17 +179,16 @@ class region_dim {
 		throw std::runtime_error("Illegal call. Region dim is undefined");
 	}
 
-	/// Return true if two region_dim objects are identical.
-	bool operator== (const region_dim& other) const {
+	bool operator== (const region_dim& other) const { ///< operator
 		if (m_type != other.m_type) return false;
 		if (m_type == rdt_absolute) return m_holder.int_val == other.m_holder.int_val;
 		if (m_type == rdt_relative) return m_holder.dbl_val == other.m_holder.dbl_val;
 		return true;
 	}
 
-	bool operator!= (const region_dim& other) const { return !(*this == other); }
+	bool operator!= (const region_dim& other) const { return !(*this == other); } ///< operator
 
-	region_dim& operator+=(const region_dim& rhs) {
+	region_dim& operator+=(const region_dim& rhs) {  ///< operator
 		if(m_type != rhs.m_type)
 			lib::logger::get_logger()->trace("region animation: cannot mix percentages and absolute values");
 		else if(absolute())
@@ -202,7 +198,7 @@ class region_dim {
 		return *this;
 	}
 
-	region_dim& operator-=(const region_dim& rhs) {
+	region_dim& operator-=(const region_dim& rhs) { ///< operator
 		if(m_type != rhs.m_type)
 			lib::logger::get_logger()->trace("region animation: cannot mix percentages and absolute values");
 		else if(absolute())
@@ -212,7 +208,7 @@ class region_dim {
 		return *this;
 	}
 
-	region_dim& operator*=(int n) {
+	region_dim& operator*=(int n) { ///< operator
 		if(absolute())
 			m_holder.int_val *= n;
 		else if(relative())
@@ -220,7 +216,7 @@ class region_dim {
 		return *this;
 	}
 
-	region_dim& operator/=(int n) {
+	region_dim& operator/=(int n) { ///< operator
 		if(absolute())
 			m_holder.int_val /= n;
 		else if(relative())
@@ -228,33 +224,33 @@ class region_dim {
 		return *this;
 	}
 
-	region_dim operator+(const region_dim& rhs) const { region_dim t(*this); t+=rhs; return t;}
+	region_dim operator+(const region_dim& rhs) const { region_dim t(*this); t+=rhs; return t;} ///< operator
 
-	region_dim operator-(const region_dim& rhs) const { region_dim t(*this); t-=rhs; return t;}
+	region_dim operator-(const region_dim& rhs) const { region_dim t(*this); t-=rhs; return t;} ///< operator
 
-	region_dim operator*(int n) const { region_dim t(*this); t*=n; return t;}
+	region_dim operator*(int n) const { region_dim t(*this); t*=n; return t;} ///< operator
 
-	region_dim operator/(int n) const { region_dim t(*this); t/=n; return t;}
+	region_dim operator/(int n) const { region_dim t(*this); t/=n; return t;} ///< operator
 
 	// define comparisons
-	bool operator<(const region_dim& rhs) const {
+	bool operator<(const region_dim& rhs) const { ///< operator
 		if(isauto()) return true;
 		return  absolute()?(m_holder.dbl_val<rhs.m_holder.dbl_val):
 			m_holder.int_val<rhs.m_holder.int_val;}
-	bool operator<=(const region_dim& rhs) const {
+	bool operator<=(const region_dim& rhs) const { ///< operator
 		if(isauto()) return true;
 		return  absolute()?m_holder.dbl_val<= rhs.m_holder.dbl_val:
 			m_holder.int_val<=rhs.m_holder.int_val;}
-	bool operator>(const region_dim& rhs) const {
+	bool operator>(const region_dim& rhs) const { ///< operator
 		if(isauto()) return true;
 		return  absolute()?(m_holder.dbl_val>rhs.m_holder.dbl_val):
 			m_holder.int_val>rhs.m_holder.int_val;}
-	bool operator>=(const region_dim& rhs) const {
+	bool operator>=(const region_dim& rhs) const { ///< operator
 		if(isauto()) return true;
 		return  absolute()?m_holder.dbl_val>=rhs.m_holder.dbl_val:
 			m_holder.int_val>=rhs.m_holder.int_val;}
 
-    std::string repr() {
+    std::string repr() { ///< Represent as string.
         if (isauto()) return "auto";
         std::stringstream ss;
         if (absolute()) {
@@ -277,11 +273,17 @@ class region_dim {
 
 /// A structure holding all layout attributes of a SMIL region.
 struct region_dim_spec {
-	/// The 6 possible layout attributes.
-	region_dim left, width, right, top, height, bottom;
+	region_dim left; 	///< Constraint in pixels or percentage, or auto.
+	region_dim width; 	///< Constraint in pixels or percentage, or auto.
+	region_dim right; 	///< Constraint in pixels or percentage, or auto.
+	region_dim top; 	///< Constraint in pixels or percentage, or auto.
+	region_dim height; 	///< Constraint in pixels or percentage, or auto.
+	region_dim bottom; 	///< Constraint in pixels or percentage, or auto.
+
 
 	/// Default constructor, sets all values to auto.
 	region_dim_spec() {}
+	/// Construct as copy of another region_dim_spec.
 	region_dim_spec(const region_dim_spec &other) {
 		left = other.left; width = other.width; right = other.right;
 		top = other.top; height = other.height; bottom = other.bottom;
@@ -292,56 +294,56 @@ struct region_dim_spec {
 	/// to the bounding box for the shape.
 	region_dim_spec(const std::string& coords, const char *shape = 0);
 
-	bool operator== (region_dim_spec& other) const {
+	bool operator== (region_dim_spec& other) const { ///< operator
 		return left==other.left && width==other.width && right==other.right
 			&& top == other.top && height==other.height && bottom==other.bottom;
 	}
 
-	bool operator!= (region_dim_spec& other) const { return !(*this == other); }
+	bool operator!= (region_dim_spec& other) const { return !(*this == other); } ///< operator
 
 	/// Convert all relative parameters to absolute.
 	void convert(const lib::rect& rc);
 #ifdef WITH_SMIL30
-	region_dim_spec& operator+=(const region_dim_spec& other) {
+	region_dim_spec& operator+=(const region_dim_spec& other) { ///< operator
 		left += other.left; right += other.right; top += other.top;
 		bottom += other.bottom; width += other.width; height += other.height;
 		return *this;
 	}
-	region_dim_spec& operator-=(const region_dim_spec& other) {
+	region_dim_spec& operator-=(const region_dim_spec& other) { ///< operator
 		left -= other.left; right -= other.right; top -= other.top;
 		bottom -= other.bottom; width -= other.width; height -= other.height;
 		return *this;
 	}
-	region_dim_spec& operator*=(int t) {
+	region_dim_spec& operator*=(int t) { ///< operator
 		left *= t; right *= t; top *= t;
 		bottom *= t; width *= t; height *= t;
 		return *this;
 	}
-	region_dim_spec& operator/=(int t) {
+	region_dim_spec& operator/=(int t) { ///< operator
 		left /= t; right /= t; top /= t;
 		bottom /= t; width /= t; height /= t;
 		return *this;
 	}
-	region_dim_spec operator+(const region_dim_spec& other) const {
+	region_dim_spec operator+(const region_dim_spec& other) const { ///< operator
 		region_dim_spec rv(*this); rv += other; return rv;
 	}
-	region_dim_spec operator-(const region_dim_spec& other) const {
+	region_dim_spec operator-(const region_dim_spec& other) const { ///< operator
 		region_dim_spec rv(*this); rv -= other; return rv;
 	}
-	region_dim_spec operator*(int t) const {
+	region_dim_spec operator*(int t) const { ///< operator
 		region_dim_spec rv(*this); rv *= t; return rv;
 	}
-	region_dim_spec operator/(int t) const {
+	region_dim_spec operator/(int t) const { ///< operator
 		region_dim_spec rv(*this); rv /= t; return rv;
 	}
-	bool operator<(const region_dim_spec& other) const {
+	bool operator<(const region_dim_spec& other) const { ///< operator
 		abort();
 	}
 #endif // WITH_SMIL30
 };
 
 
-// Sets the region dimensions from the bounding box specified by the coords attribute
+// Sets the region dimensions from the bounding box specified by the coords attribute.
 inline region_dim_spec::region_dim_spec(const std::string& coords, const char *shape) {
 	if(coords.empty()) return;
 	std::list<std::string> list;
@@ -401,8 +403,8 @@ inline void region_dim_spec::convert(const lib::rect& rc) {
 /// A region node may hold along its other attributes this data structure.
 struct regpoint_spec {
 
-	/// The two coordinates.
-	region_dim left, top;
+	region_dim left;	///< Coordinate, may be absolute or relative.
+	region_dim top;	///< Coordinate, may be absolute or relative.
 
 	/// Default constructor initializes everything to auto.
 	regpoint_spec() {}
@@ -412,11 +414,11 @@ struct regpoint_spec {
 	:	left(hor),
 		top(vert) {}
 
-	bool operator== (regpoint_spec& other) const {
+	bool operator== (regpoint_spec& other) const { ///< operator
 		return left==other.left  && top == other.top;
 	}
 
-	bool operator!= (regpoint_spec& other) const { return !(*this == other); }
+	bool operator!= (regpoint_spec& other) const { return !(*this == other); } ///< operator
 };
 
 } // namespace common

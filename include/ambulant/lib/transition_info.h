@@ -85,8 +85,8 @@ enum transition_scope {
 /// Stores all information regarind a specific transition.
 class AMBULANTAPI transition_info {
   public:
-	typedef timer::time_type time_type;
-	typedef double progress_type;
+	typedef timer::time_type time_type;	///< How a transition represents time
+	typedef double progress_type;	///< How a transition represents progress (value between 0 and 1).
 
 	transition_type m_type;    ///< SMIL 2.1 transition type.
 	std::string m_subtype;     ///< SMIL 2.1 transition subtype.
@@ -99,6 +99,7 @@ class AMBULANTAPI transition_info {
 	// We should also have the <param> contents here
 
 	transition_info() { }
+	/// Construct transition_info as a copy of another transition_info.
 	transition_info(transition_info* info) { *this = *info; }
 
 	/// Factory function: obtain transition_info object from DOM node.

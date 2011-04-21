@@ -65,6 +65,7 @@ class AMBULANTAPI logger {
 		LEVEL_FATAL		///< Fatal error, program will terminate
 	};
 
+	/// Constructor.
 	logger(const std::string& name);
 	~logger();
 
@@ -98,48 +99,68 @@ class AMBULANTAPI logger {
 	/// log a message at level DEBUG.
 	static void assert_expr(bool expr, const char *format, ...);
 
-	// templates for objects defining the operator<<
+	/// templates for objects defining the operator<<
 	template <class T>
 	void debug(const T& obj) {
 		log_obj(LEVEL_DEBUG, obj);
 	}
+
+	/// templates for objects defining the operator<<
 	template <class T>
 	void trace(const T& obj) {
 		log_obj(LEVEL_TRACE, obj);
 	}
+
+	/// templates for objects defining the operator<<
 	template <class T>
 	void warn(const T& obj) {
 		log_obj(LEVEL_WARN, obj);
 	}
+
+	/// templates for objects defining the operator<<
 	template <class T>
 	void error(const T& obj) {
 		log_obj(LEVEL_ERROR, obj);
 	}
+
+	/// templates for objects defining the operator<<
 	template <class T>
 	void fatal(const T& obj) {
 		log_obj(LEVEL_FATAL, obj);
 	}
+
+	/// templates for objects defining the operator<<
 	template <class T>
 	void show(const T& obj) {
 		log_obj(LEVEL_SHOW, obj);
 	}
 
-	// specialization for strings
+	/// specialization for strings.
 	void debug(const std::string& s) {
 		log_cstr(LEVEL_DEBUG, s.c_str());
 	}
+
+	/// specialization for strings.
 	void trace(const std::string& s) {
 		log_cstr(LEVEL_TRACE, s.c_str());
 	}
+
+	/// specialization for strings.
 	void show(const std::string& s) {
 		log_cstr(LEVEL_SHOW, s.c_str());
 	}
+
+	/// specialization for strings.
 	void warn(const std::string& s) {
 		log_cstr(LEVEL_WARN, s.c_str());
 	}
+
+	/// specialization for strings.
 	void error(const std::string& s) {
 		log_cstr(LEVEL_ERROR, s.c_str());
 	}
+
+	/// specialization for strings.
 	void fatal(const std::string& s) {
 		log_cstr(LEVEL_FATAL, s.c_str());
 	}
@@ -151,13 +172,13 @@ class AMBULANTAPI logger {
 	template <class T>
 	void log_obj(int level, const T& obj);
 
-	// helper logging function
+	/// helper logging function, printf-like.
 	void log_va_list(int level, const char *format, va_list argList);
 
 	/// Is output for this level suppressed?
 	bool suppressed(int level);
 
-	// Suppress output below the given level.
+	/// Suppress output below the given level.
 	void set_level(int level);
 
 // exclude the following stuff when no streams

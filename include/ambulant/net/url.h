@@ -169,10 +169,10 @@ class AMBULANTAPI url {
 	/// Return a URL pointing to the directory containing this URL
 	url get_base() const;
 
-	/// Return a URL with the #fragment stripped.
+	/// Return a URL with the fragment stripped.
 	url get_document() const;
 
-	/// Return a URL with a new #fragment.
+	/// Return a URL with a new fragment.
 	url add_fragment(string fragment) const;
 
 	/// Return true if two URLs refer to the same document.
@@ -196,6 +196,7 @@ class AMBULANTAPI url {
 	/// (illegal characters, etc) or not
 	static void set_strict_url_parsing(bool strict);
 
+	/// Initializer for static member information.
 	static void init_statics();
 
   private:

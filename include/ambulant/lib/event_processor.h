@@ -36,20 +36,23 @@ namespace ambulant {
 namespace lib {
 
 /// Notification interface for event processor activity.
-/// Before and after the event processor starts processing a batch of events
+/// Before and after the event_processor starts processing a batch of events
 /// it notifies implementors of this interface. This can be used to delay redraws
 /// (so we don't get a cascade of redraws where a single one at the end would
 /// be sufficient).
 class AMBULANTAPI event_processor_observer {
   public:
 	virtual ~event_processor_observer() {};
+	/// Called before the event_processor starts on a batch of events.
 	virtual void lock_redraw() = 0;
+	/// Called after the event_processor finishes a batch of events.
 	virtual void unlock_redraw() = 0;
 };
 
 /// Interface to be provided by an event scheduler.
 class event_processor {
   public:
+  	/// How this event_processor represents time.
 	typedef timer::time_type time_type;
 
 	virtual ~event_processor() {}
@@ -63,10 +66,10 @@ class event_processor {
 	/// Cancel a previously scheduled event.
 	virtual bool cancel_event(event *pe, event_priority priority = ep_low) = 0;
 
-	// Get the underlying timer.
+	/// Get the underlying timer.
 	virtual timer *get_timer() const = 0;
 
-	// Set the observer.
+	/// Signal interest in getting event_processor_observer callbacks.
 	virtual void set_observer(event_processor_observer *obs) = 0;
 };
 
@@ -102,16 +105,16 @@ namespace ambulant {
 namespace lib {
 
 /// Implementation of event_processor.
-/// This is the machine-independent portion of the event_processor.
-/// There is a machine-dependent companion class that glues
-/// this together with a (machine-dependent) thread to get the
-/// complete behaviour.
+/// This is an implementation of the event_processor interface that uses a thread
+/// and three priority queues to execute events.
 class event_processor_impl : public event_processor, public BASE_THREAD {
   public:
+  	/// Constructor.
 	event_processor_impl(timer *t);
 	~event_processor_impl();
 
 	timer *get_timer() const;
+	/// Internal: code run by the thread.
 	unsigned long run();
 
 	void add_event(event *pe, time_type t, event_priority priority);
@@ -119,18 +122,18 @@ class event_processor_impl : public event_processor, public BASE_THREAD {
 	void cancel_all_events();
 	void set_observer(event_processor_observer *obs) {m_observer = obs; };
 #ifndef NDEBUG
+	/// Debug method to dump queues.
 	void dump();
 #endif
   protected:
-	// Called by platform-specific subclasses.
-	// Should hold m_lock when calling.
+	/// Called by platform-specific subclasses.
+	/// Should hold m_lock when calling.
 	void _serve_events();
 
-	// the timer for this processor
-	timer *m_timer;
-	event_processor_observer *m_observer;
+	timer *m_timer;	///< the timer for this processor
+	event_processor_observer *m_observer;	///< The observer.
 
-	// protects whole data structure
+	/// protects whole data structure.
 	critical_section_cv m_lock;
 
   private:

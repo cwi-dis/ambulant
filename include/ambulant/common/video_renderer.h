@@ -52,6 +52,7 @@ namespace common {
 /// and a redraw function.
 class video_renderer : public common::renderer_playable {
   public:
+  	/// Constructor.
 	video_renderer(
 	common::playable_notification *context,
 	common::playable_notification::cookie_type cookie,
@@ -76,6 +77,9 @@ class video_renderer : public common::renderer_playable {
 	/// Return true if video is playing.
 	bool is_playing() { return m_activated; };
 
+	/// Callback routine passed to the datasource, to be called when new data is available.
+	void data_avail();
+
 	virtual void redraw(const lib::rect &dirty, common::gui_window *window);
 
 	virtual void set_surface(common::surface *dest) {
@@ -94,9 +98,7 @@ class video_renderer : public common::renderer_playable {
 	void seek(double where);
 	void pause(pause_display d=display_show);
 	void resume();
-	void data_avail();
 	duration get_dur();
-//	void playdone() {};
 
   protected:
 	/// Display video data. Subclass providing this method is responsible for
@@ -109,7 +111,6 @@ class video_renderer : public common::renderer_playable {
 	net::video_datasource* m_src;	///< video datasource.
 	net::audio_datasource *m_audio_ds;	///< audio datasource.
 	common::playable *m_audio_renderer;	///< the audio playable.
-	empty_playable_notification m_playable_notification;
   private:
 	typedef lib::no_arg_callback <video_renderer > dataavail_callback;
 	double now();
@@ -129,7 +130,7 @@ class video_renderer : public common::renderer_playable {
 	net::timestamp_t m_previous_clip_position;
 #endif
   protected:
-	lib::critical_section m_lock;
+	lib::critical_section m_lock;	///< Critical section.
 };
 
 } // namespace common

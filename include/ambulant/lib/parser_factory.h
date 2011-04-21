@@ -41,6 +41,7 @@ class AMBULANTAPI parser_factory {
 	virtual xml_parser* new_parser(
 		sax_content_handler* content_handler,
 		sax_error_handler* error_handler) = 0;
+	/// Returns the name of this parser.
 	virtual std::string get_parser_name() { return "none"; };
 };
 
