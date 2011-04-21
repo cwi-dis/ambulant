@@ -36,6 +36,7 @@
 ^configure
 ^Documentation/user/user.helpindex
 ^Documentation/API/html
+doxygen.*\.tmp
 ^src/pyambulant/ambulantgen.py
 ^src/pyambulant/ambulantincludegen.py
 ^src/pyambulant/ambulantobjgen.py
