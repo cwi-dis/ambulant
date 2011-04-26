@@ -73,3 +73,11 @@ mypreferences::save_preferences()
 
 	return true;
 }
+
+const std::string
+mypreferences::repr()
+{
+	std::string rv = "mypreferences: ";
+	rv += ambulant::common::preferences::repr();
+	return rv;
+}

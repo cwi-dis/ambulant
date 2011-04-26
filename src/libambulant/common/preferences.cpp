@@ -100,7 +100,8 @@ preferences::save_preferences() {
 	return false;
 }
 
-const std::string preferences::repr() {
+const std::string
+preferences::repr() {
 	std::string r = "";
 	r += "parser: "+m_parser_id;
 	r += ", validation_scheme: "+m_validation_scheme;

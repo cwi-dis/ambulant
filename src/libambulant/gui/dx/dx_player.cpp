@@ -763,6 +763,7 @@ void gui::dx::dx_player::open(net::url newdoc, bool startnewdoc, common::player 
 
 	// Create a player instance
 	AM_DBG m_logger->debug("Creating player instance for: %s", newdoc.get_url().c_str());
+	m_logger->debug("creating smil2 player with %s", ambulant::common::preferences::get_preferences()->repr());
 	m_player = smil2::create_smil2_player(m_doc, this, m_embedder);
 	m_player->initialize();
 	lib::event_processor *evp = m_player->get_evp();

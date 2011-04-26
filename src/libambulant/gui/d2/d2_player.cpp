@@ -172,6 +172,8 @@ gui::d2::d2_player::d2_player(
 	}
 	// Order the factories according to the preferences
 	common::preferences *prefs = common::preferences::get_preferences();
+	m_logger->debug("constructing d2 player with %s", prefs->repr().c_str());
+
 	if (prefs->m_prefer_ffmpeg)
 		get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererOpen"));
 	else
