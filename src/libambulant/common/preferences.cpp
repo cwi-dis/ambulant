@@ -99,3 +99,22 @@ bool
 preferences::save_preferences() {
 	return false;
 }
+
+const std::string preferences::repr() {
+	std::string r = "";
+	r += "parser: "+m_parser_id;
+	r += ", validation_scheme: "+m_validation_scheme;
+	r += ", do_namespaces: "; r += m_do_namespaces?"yes":"no";
+	r += ", do_schema: "; r += m_do_schema?"yes":"no";
+	r += ", validation_schema_full_checking: "; r += m_validation_schema_full_checking?"yes":"no";
+	r += ", strict_url_parsing: "; r += m_strict_url_parsing?"yes":"no";
+	r += ", m_tabbed_links: "; r += m_tabbed_links?"yes":"no";
+	r += ", prefer_ffmpeg: "; r += m_prefer_ffmpeg?"yes":"no";
+	r += ", use_plugins: "; r += m_use_plugins?"yes":"no";
+	r += ", plugin_dir: "; r += m_plugin_dir;
+	r += ", dynamic_content_control: "; r += m_dynamic_content_control?"yes":"no";
+	r += ", fullscreen: "; r += m_fullscreen?"yes":"no";
+	r += ", prefer_rtsp_tcp: "; r += m_prefer_rtsp_tcp?"yes":"no";
+	
+	return r;
+}
