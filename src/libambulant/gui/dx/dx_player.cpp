@@ -153,6 +153,7 @@ gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, common::player_feedba
 
 	// Order the factories according to the preferences
 	common::preferences *prefs = common::preferences::get_preferences();
+	m_logger->debug("constructing dx player with %s", prefs->repr().c_str());
 	if (prefs->m_prefer_ffmpeg)
 		get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererOpen"));
 	else
