@@ -89,6 +89,7 @@ public:
 	
 	bool load_preferences();
 	bool save_preferences();
+	const std::string repr();
 	
 	bool m_loaded;
 	

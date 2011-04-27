@@ -189,6 +189,20 @@ iOSpreferences::save_preferences()
 	[pool release];
 	return true;
 }
+
+const std::string
+iOSpreferences::repr()
+{
+	std::string rv = "iOSpreferences:";
+	rv += " auto_center="; rv += m_auto_center ? "true" : "false";
+	rv += ", auto_resize="; rv += m_auto_resize ? "true" : "false";
+	rv += ", normal_exit="; rv += m_normal_exit ? "true" : "false";
+	rv += ", hud_auto_hide="; rv += m_hud_auto_hide ? "true" : "false";
+	rv += ", hud_short_tap="; rv += m_hud_short_tap ? "true" : "false";
+	rv += "; ";
+	rv += common::preferences::repr();
+	return rv;
+}
 @implementation PlaylistItem
 @synthesize ns_title, ns_url, ns_description, ns_dur, ns_last_node_repr, position;
 @synthesize ns_image_data;
