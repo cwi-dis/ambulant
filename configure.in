@@ -68,6 +68,7 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 	include/ambulant/gui/gstreamer/Makefile
 	third_party_packages/Makefile
 	Documentation/Makefile
+	Documentation/API/Makefile
 	Extras/Makefile])
 	
 
@@ -806,6 +807,37 @@ AM_CONDITIONAL(WITH_FFMPEG_SWSCALE, test x$test_ffmpeg_swscale = xtrue)
 AC_SUBST(WITH_FFMPEG)
 AC_MSG_RESULT($test_ffmpeg)
 
+dnl Doxygen documentation?
+AC_MSG_CHECKING(for --with-doxygen)
+AC_ARG_WITH(doxygen,
+	AS_HELP_STRING([--with-doxygen], [Build doxygen API documentation]),
+	[
+		case "${withval}" in
+		yes)
+			DOXYGEN=`which doxygen`
+			with_doxygen=true
+			;;
+		no)
+			DOXYGEN=:
+			with_doxygen=false
+			;;
+		*)
+			DOXYGEN=`which ${withval}`
+			with_doxygen=true
+			;;
+		esac],
+	[
+		if doxygen --version >/dev/null; then
+			with_doxygen=true
+			DOXYGEN=`which doxygen`
+		else
+			with_doxygen=false
+			DOXYGEN=:
+		fi
+	])
+AM_CONDITIONAL(WITH_DOXYGEN, test x$with_doxygen = xtrue)
+AC_SUBST(DOXYGEN)
+AC_MSG_RESULT($with_doxygen - $DOXYGEN)
 
 dnl Testing for Python
 dnl ======================================================================
@@ -830,6 +862,7 @@ AC_ARG_WITH(python,
     [with_python=false])
 AM_CONDITIONAL(WITH_PYTHON, test x$with_python = xtrue)
 AC_SUBST(PYTHON)
+AC_MSG_RESULT($with_python - $PYTHON)
 if test x$with_python = xtrue; then
 	pythonprefix=`$PYTHON -c 'import sys; print sys.prefix'`
 	if test ! -w $pythonprefix; then
@@ -840,7 +873,6 @@ This may mean 'make install' will fail, use 'make install -k' and manually
 install the ambulant python module."
 	fi
 fi
-AC_MSG_RESULT($with_python - $PYTHON)
 
 # Do we want python plugins ?
 #
