@@ -153,6 +153,7 @@ gui::dx::dx_player::dx_player(dx_player_callbacks &hoster, common::player_feedba
 
 	// Order the factories according to the preferences
 	common::preferences *prefs = common::preferences::get_preferences();
+	m_logger->debug("constructing dx player with %s", prefs->repr().c_str());
 	if (prefs->m_prefer_ffmpeg)
 		get_playable_factory()->preferred_renderer(AM_SYSTEM_COMPONENT("RendererOpen"));
 	else
@@ -763,6 +764,7 @@ void gui::dx::dx_player::open(net::url newdoc, bool startnewdoc, common::player 
 
 	// Create a player instance
 	AM_DBG m_logger->debug("Creating player instance for: %s", newdoc.get_url().c_str());
+	m_logger->debug("creating smil2 player with %s", ambulant::common::preferences::get_preferences()->repr());
 	m_player = smil2::create_smil2_player(m_doc, this, m_embedder);
 	m_player->initialize();
 	lib::event_processor *evp = m_player->get_evp();

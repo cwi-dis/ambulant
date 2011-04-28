@@ -111,6 +111,8 @@ gtk_mainloop::gtk_mainloop(gtk_gui* gui)
 	if (!m_doc) {
 		return;
 	}
+	common::preferences *prefs = common::preferences::get_preferences();
+	m_logger->debug(" creating smil2 player %s", prefs->repr().c_str());
 	m_player = create_player(filename);
 }
 

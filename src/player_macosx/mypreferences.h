@@ -31,5 +31,6 @@ class mypreferences : public ambulant::common::preferences {
 
 	bool load_preferences();
 	bool save_preferences();
-
+	
+	const std::string repr();
 };

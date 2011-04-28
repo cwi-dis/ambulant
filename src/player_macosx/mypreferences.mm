@@ -89,3 +89,16 @@ mypreferences::save_preferences()
 	ambulant::net::url::set_strict_url_parsing(m_strict_url_parsing);
 	return true;
 }
+
+const std::string
+mypreferences::repr()
+{
+	std::string r = "";
+	
+//  Hook to add any renderer specific preferences
+	r += "mypreferences: ";
+	r += ambulant::common::preferences::repr();
+	
+	return r;
+}
+

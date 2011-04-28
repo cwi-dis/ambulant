@@ -110,6 +110,9 @@ class AMBULANTAPI preferences {
 	/// Save preferences.
 	virtual bool save_preferences();
 
+	/// Return a string repr. of all preference settings.
+	virtual const std::string repr();
+
   private:
 	static preferences* s_preferences; // singleton
 
