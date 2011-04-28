@@ -1,4 +1,6 @@
-This documents describes how we use the Mercurial revision control tool in the Ambulant project.
+This documents describes how we use the Mercurial revision control tool in the
+Ambulant project. They are primarily intended for Ambulant developers with
+write access to the repository.
 
 We maintain the following repositories:
 ---------------------------------------
@@ -14,36 +16,69 @@ hg clone ssh://hg@ambulantplayer.org/hg/ambulant ambulant
 
 Work flow on the 'default' branch:
 ----------------------------------
-hg pull; hg  update; <edit files>; <test changes>; hg commit -m"My changes"; hg push
+	hg pull
+	hg update
+	<edit files>
+	<test changes>
+	hg commit -m"My changes"
+	hg push
 
 Creating a specialized branch:
 -----------------------------
-hg branch <branch name>
+	hg branch <branch name>
 Then work as above.
+
+Working on a pre-existing branch:
+--------------------------------
+	hg up -r <branch name>
+Work as above.
 
 Merging a branch with the 'default' branch:
 -------------------------------------------
-1. Finalize work on branch:
-<final tests>; hg commit -m"Done with <branch name>"; hg push
+IMPORTANT: before merging the branch into default you should first do the reverse,
+i.e. merge default into the branch. This allows you to test the merged code without
+bothering people not on your branch. The final merge (your branch back into default)
+should also proceed without any problems then.
 
-2. Create a temporary copy of your <branch name> and merge it with the 'default' branch:
-cd ..; hg clone ssh://hg@ambulantplayer.org/hg/ambulant ambulant-tmp; cd ambulant-tmp; hg up -r <branch name>
-hg merge -r default; hg resolve -l
-This shows all files with conflicts, then for each <file> that has a conflict:
+1. Finalize work on branch:
+	<final tests>
+	hg commit -m"Done with <branch name>"
+	hg push
+
+2. Create a temporary clone of your repository, and use it to
+   merge your branch  with the 'default' branch:
+	cd ..
+	hg clone ambulant ambulant-tmp
+	cd ambulant-tmp
+	hg up -r <branch name>
+	hg merge -r default
+	hg resolve -l
+  This shows all files with conflicts, then for each <file> that has a conflict:
 	<fix conflicts>
 	hg resolve -m <file>
-hg commit -m "Merged 'default' into <branch name>"
-<repeat tests>; hg push; cd ..; rm -fr ambulant-tmp
+  When all conflicts have been resolved:
+	hg commit -m "Merged 'default' into <branch name>"
+	<repeat tests>
+	hg push
+	cd ..
+	rm -fr ambulant-tmp
+	cd ambulant
+	hg push
+	
+  The advantage of using the temporary clone (ambulant-tmp) is that it is much
+  easier to recover if you find that your merging should be done completely
+  different: simply throw away ambulant-tmp and start over.
 
 3. Test the merged <branch name> on other platforms:
-	hg clone ssh://hg@ambulantplayer.org/hg/ambulant ambulant-tmp; cd ambulant-tmp; hg up -r <branch name>
+	hg pull
+	hg up -r <branch name>
 	<build and test>
-	cd ..; rm -fr ambulant-tmp
 	
 4. Finally merge with the 'default' branch with your <branch name>:
-	hg clone ssh://hg@ambulantplayer.org/hg/ambulant ambulant-tmp; cd ambulant-tmp; hg merge -r  <branch name>
+	hg up -r default
+	hg merge -r <branch name>
 	hg resolve -l
-	<fix conflicts, if any, and do: hg resolve - m for each conflicting file>
+	<you should not be getting any conflicts here>
 	hg commit -m"Merged  <branch name> with 'default'"
 
 The advantage of this apperently redundant approach is that if anything fails
