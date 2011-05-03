@@ -240,10 +240,10 @@ uninstall-hook:
 	rm -rf $(DESTDIR)/Applications/$(APPNAME).app
 
 # This target is magic for automake
-check-am: check-ambulantplayer_qt
+check-am: check-ambulantplayer_macos
 	
 
-check-ambulantplayer_qt:
+check-ambulantplayer_macos:
 	( set -x;export PYAMBULANTBUILDDIR=`echo ../pyambulant/build/lib*` ; \
 	  AMBULANT_BUNDLE_DIR=$$PWD/AmbulantPlayer.app/Contents ; \
 	  export AMBULANT_PLUGIN_DIR=$$AMBULANT_BUNDLE_DIR/Plugins ; \
