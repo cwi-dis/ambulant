@@ -139,3 +139,14 @@ install-exec-hook:
 ##	gconftool-2 -s /desktop/gnome/url-handlers/ambulant/enabled --type Boolean true
 ###	gconftool-2 -s /desktop/gnome/url-handlers/ambulant/command "$(DESTDIR)$(bindir)/AmbulantPlayer  %s" --type String
 
+am_check: check-ambulantplayer_gtk
+
+check-ambulantplayer_gtk:
+	( set -x;export PYAMBULANTBUILDDIR=`echo ../pyambulant/build/lib*` ; \
+	  export AMBULANT_PLUGIN_DIR=$PWD/../plugins/.libs ; \
+	  cp ../pyambulant/test/pyamplugin_test.py $$AMBULANT_PLUGIN_DIR ; \
+	  a=`cd $(ambulantlibdir); pwd` ; \
+	  cd $(srcdir) ; \
+	  LD_LIBRARY_PATH="$$a" DYLD_LIBRARY_PATH="$$a" $(PYTHONENV) PYTHONPATH=$$PWD/../plugins/.libs AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs $(DEBUGGER) ./AmbulantPlayer_gtk $(top_srcdir)/Extras/Welcome/Welcome.smil ; \
+	)
+
