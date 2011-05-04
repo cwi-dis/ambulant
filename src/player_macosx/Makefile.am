@@ -238,4 +238,21 @@ install-exec-hook: $(BUILDAPPNAME).app
 
 uninstall-hook:
 	rm -rf $(DESTDIR)/Applications/$(APPNAME).app
+
+# This target is magic for automake
+check-am: check-ambulantplayer_macos
 	
+
+check-ambulantplayer_macos:
+	( set -x;export PYAMBULANTBUILDDIR=`echo ../pyambulant/build/lib*` ; \
+	  AMBULANT_BUNDLE_DIR=$$PWD/AmbulantPlayer.app/Contents ; \
+	  export AMBULANT_PLUGIN_DIR=$$AMBULANT_BUNDLE_DIR/Plugins ; \
+	  export AMBULANT_PLAYER=$$AMBULANT_BUNDLE_DIR/MacOS/AmbulantPlayer ; \
+	  export AMBULANT_WELCOME=$$AMBULANT_BUNDLE_DIR/Resources/Welcome.smil ; \
+	  cp ../pyambulant/test/pyamplugin_test.py $$AMBULANT_PLUGIN_DIR ; \
+	  a=`cd $(ambulantlibdir); pwd` ; \
+	  cd $(srcdir) ; \
+	  LD_LIBRARY_PATH="$$a" DYLD_LIBRARY_PATH="$$a" $(PYTHONENV) PYTHONPATH=$AMBULANT_PLUGIN_DIR $(DEBUGGER) $$AMBULANT_PLAYER $$AMBULANT_WELCOME ; \
+	)
+#	  export AMBULANT_PLUGIN_DIR=`pwd`/../plugins/.libs ; \
+#

@@ -207,7 +207,7 @@ initialize_logger()
 		ambulant::common::factories *fact = new ambulant::common::factories();
 		fact->set_parser_factory(ambulant::lib::global_parser_factory::get_parser_factory());
 #ifdef WITH_XERCES_BUILTIN
-		fact.get_parser_factory()->add_factory(new ambulant::lib::xerces_factory());
+		fact->get_parser_factory()->add_factory(new ambulant::lib::xerces_factory());
 #endif
 		ambulant::common::plugin_engine *pe = ambulant::common::plugin_engine::get_plugin_engine();
 		pe->add_plugins(fact, NULL);
