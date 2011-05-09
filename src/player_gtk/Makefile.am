@@ -143,6 +143,7 @@ install-exec-hook:
 ##	gconftool-2 -s /desktop/gnome/url-handlers/ambulant/enabled --type Boolean true
 ###	gconftool-2 -s /desktop/gnome/url-handlers/ambulant/command "$(DESTDIR)$(bindir)/AmbulantPlayer  %s" --type String
 
+
 check-ambulantplayer_gtk:
 	( set -x;export PYAMBULANTBUILDDIR=`echo ../pyambulant/build/lib*` ; \
 	  export AMBULANT_PLUGIN_DIR=$PWD/../plugins/.libs ; \
