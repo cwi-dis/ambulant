@@ -140,7 +140,7 @@ uninstall-hook:
 check-ambulantplayer_qt:
 #	env AMBULANT_PLUGIN_DIR=$(top_srcdir)/pyambulant ./AmbulantPlayer_qt $(top_srcdir)/Extras/Welcome/Welcome.smil
 	( set -x;export PYAMBULANTBUILDDIR=`echo ../pyambulant/build/lib*` ; \
-	  export AMBULANT_PLUGIN_DIR=$PWD/../plugins/.libs ; \
+	  export AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs ; \
 	  cp ../pyambulant/test/pyamplugin_test.py $$AMBULANT_PLUGIN_DIR ; \
 	  a=`cd $(ambulantlibdir); pwd` ; \
 	  cd $(srcdir) ; \
