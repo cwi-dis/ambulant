@@ -21,9 +21,8 @@ libambulant_gstreamer=$(ambulantlibdir)/libambulant_gstreamer.a
 libambulant_gtk=$(ambulantlibdir)/libambulant_gtk.a
 endif
 
-
 # This target is magic for automake
-am_check: check-ambulantplayer_gtk
+check-am: check-ambulantplayer_gtk
 
 if WITH_EXPAT
 extra_expat_DEFINES=$(EXPAT_CFLAGS) -DWITH_EXPAT
@@ -142,7 +141,6 @@ install-exec-hook:
 	GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source` gconftool-2 --makefile-install-rule $(srcdir)/../player_unix/ambulant.schemas
 ##	gconftool-2 -s /desktop/gnome/url-handlers/ambulant/enabled --type Boolean true
 ###	gconftool-2 -s /desktop/gnome/url-handlers/ambulant/command "$(DESTDIR)$(bindir)/AmbulantPlayer  %s" --type String
-
 
 check-ambulantplayer_gtk:
 	( set -x;export PYAMBULANTBUILDDIR=`echo ../pyambulant/build/lib*` ; \
