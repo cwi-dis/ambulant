@@ -144,7 +144,7 @@ install-exec-hook:
 
 check-ambulantplayer_gtk:
 	( set -x;export PYAMBULANTBUILDDIR=`echo ../pyambulant/build/lib*` ; \
-	  export AMBULANT_PLUGIN_DIR=$PWD/../plugins/.libs ; \
+	  export AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs ; \
 	  cp ../pyambulant/test/pyamplugin_test.py $$AMBULANT_PLUGIN_DIR ; \
 	  a=`cd $(ambulantlibdir); pwd` ; \
 	  cd $(srcdir) ; \
