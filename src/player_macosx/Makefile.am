@@ -232,12 +232,22 @@ dist-hook:
 	rm -rf `find $(distdir) -name CVS`
 	
 install-exec-hook: $(BUILDAPPNAME).app
-	rm -rf $(DESTDIR)/Applications/$(APPNAME).app
-	mkdir -p $(DESTDIR)/Applications
-	cp -R $(BUILDAPPNAME).app $(DESTDIR)/Applications/$(APPNAME).app
+    if test $(prefix) = "/usr" -o $(prefix) = "/usr/local"; then \
+        rm -rf $(DESTDIR)/Applications/$(APPNAME).app ; \
+        mkdir -p $(DESTDIR)/Applications ; \
+        cp -R $(BUILDAPPNAME).app $(DESTDIR)/Applications/$(APPNAME).app ; \
+    else \
+        rm -rf $(DESTDIR)/$(prefix)/Applications/$(APPNAME).app ; \
+        mkdir -p $(DESTDIR)/$(prefix)/Applications ; \
+        cp -R $(BUILDAPPNAME).app $(DESTDIR)/$(prefix)/Applications/$(APPNAME).app ; \
+    fi    
 
 uninstall-hook:
-	rm -rf $(DESTDIR)/Applications/$(APPNAME).app
+    if test $(prefix) = "/usr" -o $(prefix) = "/usr/local"; then \
+    	rm -rf $(DESTDIR)/Applications/$(APPNAME).app ; \
+    else \
+    	rm -rf $(DESTDIR)/$(prefix)/Applications/$(APPNAME).app ; \
+    fi
 
 # This target is magic for automake
 check-am: check-ambulantplayer_macos
