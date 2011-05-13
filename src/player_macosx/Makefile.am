@@ -243,7 +243,7 @@ uninstall-hook:
 check-am: check-ambulantplayer_macos
 	
 
-check-ambulantplayer_macos:
+orig-check-ambulantplayer_macos:
 	( set -x;export PYAMBULANTBUILDDIR=`echo ../pyambulant/build/lib*` ; \
 	  AMBULANT_BUNDLE_DIR=$$PWD/AmbulantPlayer.app/Contents ; \
 	  export AMBULANT_PLUGIN_DIR=$$AMBULANT_BUNDLE_DIR/Plugins ; \
@@ -254,5 +254,11 @@ check-ambulantplayer_macos:
 	  cd $(srcdir) ; \
 	  LD_LIBRARY_PATH="$$a" DYLD_LIBRARY_PATH="$$a" $(PYTHONENV) PYTHONPATH=$AMBULANT_PLUGIN_DIR $(DEBUGGER) $$AMBULANT_PLAYER $$AMBULANT_WELCOME ; \
 	)
-#	  export AMBULANT_PLUGIN_DIR=`pwd`/../plugins/.libs ; \
-#
+
+check-ambulantplayer_macos:
+    # We run the player with one extra plugin (the test harness), obtained from src/pyambulant/test.
+    # This also causes exit-on-stop to happen. It's output will be written on AM_TEST-output.txt, which
+    # we will parse later.
+	AMBULANT_PLUGIN_DIR=$(top_srcdir)/src/pyambulant/test \
+	    ./$(BUILDAPPNAME).app/Contents/MacOS/AmbulantPlayer \
+	        ./$(BUILDAPPNAME).app/Contents/Resources/Welcome.smil
