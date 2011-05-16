@@ -147,7 +147,10 @@ check-ambulantplayer_gtk:
 	  export AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs ; \
 	  cp ../pyambulant/test/pyamplugin_test.py $$AMBULANT_PLUGIN_DIR ; \
 	  a=`cd $(ambulantlibdir); pwd` ; \
-	  cd $(srcdir) ; \
-	  LD_LIBRARY_PATH="$$a" DYLD_LIBRARY_PATH="$$a" $(PYTHONENV) PYTHONPATH=$$PWD/../plugins/.libs AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs $(DEBUGGER) ./AmbulantPlayer_gtk $(top_srcdir)/Extras/Welcome/Welcome.smil ; \
+	  echo PWD=$$PWD; \
+	  if [ -e /usr/lib64/python2.7/config/libpython2.7.so ]; \
+	  then LD_PRELOAD=/usr/lib64/python2.7/config/libpython2.7.so LD_LIBRARY_PATH="$$a" DYLD_LIBRARY_PATH="$$a" $(PYTHONENV) PYTHONPATH=$$PWD/../plugins/.libs AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs $(DEBUGGER) ./AmbulantPlayer_gtk $(top_distdir)/Extras/Welcome/Welcome.smil;  \
+	  else  LD_LIBRARY_PATH="$$a" DYLD_LIBRARY_PATH="$$a" $(PYTHONENV) PYTHONPATH=$$PWD/../plugins/.libs AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs $(DEBUGGER) ./AmbulantPlayer_gtk $(top_distdir)/Extras/Welcome/Welcome.smil; \
+	  fi; \
 	)
 

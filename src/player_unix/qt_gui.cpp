@@ -551,7 +551,7 @@ main (int argc, char*argv[]) {
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english)"));
 #endif
 
-	bool exec_flag = false;
+	bool exec_flag = true;
 
 	if (argc > 1) {
 		char last[6];
@@ -566,7 +566,7 @@ main (int argc, char*argv[]) {
 			|| strcmp(&last[1], ".smi") == 0
 			|| strcmp(&last[1], ".sml") == 0)
 		{
-			if (mywidget->openSMILfile(str, IO_ReadOnly) && (exec_flag = true))
+			if (mywidget->openSMILfile(str, IO_ReadOnly) && exec_flag)
 				mywidget->slot_play();
 		}
 	} else {
