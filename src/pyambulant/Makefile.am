@@ -70,7 +70,7 @@ uninstall-local:
 # are doing.
 
 regen: regenerate-pyambulant
-   
+
 BGENADDITIONS=$(srcdir)/bgenCxxSupport.py $(srcdir)/bgenBackSupport.py
 BGENOUTPUT=$(srcdir)/ambulantmodule.cpp $(srcdir)/ambulantinterface.cpp
 BGENTEMP=$(srcdir)/ambulantgen.py
@@ -86,10 +86,10 @@ PYTHONENV=
 #PYTHONENV=DYLD_INSERT_LIBRARIES=/usr/lib/libgmalloc.dylib
 
 BUILDLIBDIR=`echo ./build/lib.*`
-	
+
 build-pyambulant: $(srcdir)/setup.py $(BGENOUTPUT) $(srcdir)/ambulantutilities.cpp $(srcdir)/ambulantutilities.h $(srcdir)/ambulantmodule.h
 	( a=`cd $(ambulantlibdir); pwd` ; \
-	  cd $(srcdir) ; \
+	  cd $(srcdir) ; chmod +w . ; \
 	  LDFLAGS="-L$$a $(extra_qt_ldflags) $(extra_gtk_ldflags) $(extra_ffmpeg_ldflags) $(extra_sdl_ldflags) $(LDFLAGS)" $(PYTHON) setup.py build ; \
 	)
 
@@ -101,7 +101,7 @@ check-pyambulant:
 
 install-pyambulant:
 	cd $(srcdir) ; $(PYTHON) setup.py install --root $(DESTDIR) --prefix `$(PYTHON) -c "import sys; print sys.prefix"`
-	
+
 mostlyclean-local:
 	-cd $(srcdir) ; $(PYTHON) setup.py clean
 	-rm -r $(srcdir)/build
@@ -111,9 +111,8 @@ mostlyclean-local:
 regenerate-pyambulant:
 	cd $(srcdir) ; $(PYTHON) genobjects.py
 	cd $(srcdir) ; $(PYTHON) ambulantscan.py
-	
+
 # Debug target
 
 testplay:
 	cd $(srcdir) ; $(PYTHONENV) PYTHONPATH=$(BUILDLIBDIR) $(DEBUGGER) $(PYTHON) $(PYTHONARGS) test/nogui_player.py ../../Extras/DemoPresentation/NYC-SMIL2.smil
-	
