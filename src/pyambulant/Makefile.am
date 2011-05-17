@@ -96,7 +96,7 @@ build-pyambulant: $(srcdir)/setup.py $(BGENOUTPUT) $(srcdir)/ambulantutilities.c
 check-pyambulant:
 	( a=`cd $(ambulantlibdir); pwd`:../../third_party_packages/installed/lib ; \
 	  cd $(srcdir) ; \
-	  LD_LIBRARY_PATH="$$a" DYLD_LIBRARY_PATH="$$a" $(PYTHONENV) PYTHONPATH=$(BUILDLIBDIR) $(DEBUGGER) $(PYTHON) $(PYTHONARGS) test/test_pyambulant.py ; \
+	  LD_LIBRARY_PATH="$$a:$$LD_LIBRARY_PATH" DYLD_LIBRARY_PATH="$$a:$$LD_LIBRARY_PATH" $(PYTHONENV) PYTHONPATH=$(BUILDLIBDIR) $(DEBUGGER) $(PYTHON) $(PYTHONARGS) test/test_pyambulant.py ; \
 	)
 
 install-pyambulant:
