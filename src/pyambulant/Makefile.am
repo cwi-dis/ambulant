@@ -16,13 +16,13 @@ ambulantlibdir=$(top_builddir)/src/libambulant/.libs
 DESTDIR=/
 
 EXTRA_DIST=setup.py \
-    bgenCxxSupport.py bgenBackSupport.py \
-    ambulantscan.py ambulantsupport.py genobjects.py \
-    ambulantutilities.h ambulantutilities.cpp \
-    ambulantmodule.h ambulantmodule.cpp \
-    ambulantinterface.h ambulantinterface.cpp \
-    player_pygtk player_pyqt test
-    
+	bgenCxxSupport.py bgenBackSupport.py \
+	ambulantscan.py ambulantsupport.py genobjects.py \
+	ambulantutilities.h ambulantutilities.cpp \
+	ambulantmodule.h ambulantmodule.cpp \
+	ambulantinterface.h ambulantinterface.cpp \
+	player_pygtk player_pyqt test
+	
 # Various flags for optional features
 
 if WITH_QT
@@ -100,7 +100,11 @@ check-pyambulant:
 	)
 
 install-pyambulant:
-	cd $(srcdir) ; $(PYTHON) setup.py install --root $(DESTDIR) --prefix `$(PYTHON) -c "import sys; print sys.prefix"`
+	if test $(prefix) = "/usr" -o $(prefix) = "/usr/local"; then \
+		cd $(srcdir) ; $(PYTHON) setup.py install --root $(DESTDIR) --prefix `$(PYTHON) -c "import sys; print sys.prefix"` ; \
+	else \
+		cd $(srcdir) ; $(PYTHON) setup.py install --home $(DESTDIR)/$(prefix) ; \
+	fi
 	
 mostlyclean-local:
 	-cd $(srcdir) ; $(PYTHON) setup.py clean
