@@ -141,7 +141,7 @@ check-ambulantplayer_qt:
 #	env AMBULANT_PLUGIN_DIR=$(top_srcdir)/pyambulant ./AmbulantPlayer_qt $(top_srcdir)/Extras/Welcome/Welcome.smil
 	( set -x;export PYAMBULANTBUILDDIR=`echo ../pyambulant/build/lib*` ; \
 	  export AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs ; \
-	  echo top_srcdir=$(top_srcdir) top_builddir=$(top_builddir) \
+	  echo top_srcdir=$(top_srcdir) top_builddir=$(top_builddir) ; \
 	  cp $(top_srcdir)/src/pyambulant/test/pyamplugin_test.py $$AMBULANT_PLUGIN_DIR ; \
 	  a=`cd $(ambulantlibdir); pwd` ; \
 	  echo PWD=$$PWD; \
