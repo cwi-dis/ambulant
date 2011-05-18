@@ -64,6 +64,7 @@ check-am: check-pyambulant
 install-exec-hook: install-pyambulant
 
 uninstall-local:
+	-rm -fr ambulant.so ambulant-2.2-py2.7.egg_info
 	echo Cannot uninstall pyambulant module, please remove manually
 
 # This target re-creates the cpp files. Use only when you know what you
