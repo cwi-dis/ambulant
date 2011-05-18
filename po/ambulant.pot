@@ -8,7 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ambulant-feedback@ambulantPlayer.org\n"
+<<<<<<< local
 "POT-Creation-Date: 2011-05-14 23:14+0200\n"
+=======
+"POT-Creation-Date: 2011-05-17 10:31+0200\n"
+>>>>>>> other
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"

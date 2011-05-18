@@ -16,13 +16,13 @@ ambulantlibdir=$(top_builddir)/src/libambulant/.libs
 DESTDIR=/
 
 EXTRA_DIST=setup.py \
-    bgenCxxSupport.py bgenBackSupport.py \
-    ambulantscan.py ambulantsupport.py genobjects.py \
-    ambulantutilities.h ambulantutilities.cpp \
-    ambulantmodule.h ambulantmodule.cpp \
-    ambulantinterface.h ambulantinterface.cpp \
-    player_pygtk player_pyqt test
-    
+	bgenCxxSupport.py bgenBackSupport.py \
+	ambulantscan.py ambulantsupport.py genobjects.py \
+	ambulantutilities.h ambulantutilities.cpp \
+	ambulantmodule.h ambulantmodule.cpp \
+	ambulantinterface.h ambulantinterface.cpp \
+	player_pygtk player_pyqt test
+
 # Various flags for optional features
 
 if WITH_QT
@@ -64,13 +64,14 @@ check-am: check-pyambulant
 install-exec-hook: install-pyambulant
 
 uninstall-local:
+	-rm -fr ambulant.so ambulant-2.2-py2.7.egg_info
 	echo Cannot uninstall pyambulant module, please remove manually
 
 # This target re-creates the cpp files. Use only when you know what you
 # are doing.
 
 regen: regenerate-pyambulant
-   
+
 BGENADDITIONS=$(srcdir)/bgenCxxSupport.py $(srcdir)/bgenBackSupport.py
 BGENOUTPUT=$(srcdir)/ambulantmodule.cpp $(srcdir)/ambulantinterface.cpp
 BGENTEMP=$(srcdir)/ambulantgen.py
@@ -86,34 +87,39 @@ PYTHONENV=
 #PYTHONENV=DYLD_INSERT_LIBRARIES=/usr/lib/libgmalloc.dylib
 
 BUILDLIBDIR=`echo ./build/lib.*`
-	
+
 build-pyambulant: $(srcdir)/setup.py $(BGENOUTPUT) $(srcdir)/ambulantutilities.cpp $(srcdir)/ambulantutilities.h $(srcdir)/ambulantmodule.h
 	( a=`cd $(ambulantlibdir); pwd` ; \
-	  cd $(srcdir) ; \
+	  cd $(srcdir) ; chmod +w . ; \
 	  LDFLAGS="-L$$a $(extra_qt_ldflags) $(extra_gtk_ldflags) $(extra_ffmpeg_ldflags) $(extra_sdl_ldflags) $(LDFLAGS)" $(PYTHON) setup.py build ; \
 	)
 
 check-pyambulant:
 	( a=`cd $(ambulantlibdir); pwd`:../../third_party_packages/installed/lib ; \
 	  cd $(srcdir) ; \
-	  LD_LIBRARY_PATH="$$a" DYLD_LIBRARY_PATH="$$a" $(PYTHONENV) PYTHONPATH=$(BUILDLIBDIR) $(DEBUGGER) $(PYTHON) $(PYTHONARGS) test/test_pyambulant.py ; \
+	  LD_LIBRARY_PATH="$$a:$$LD_LIBRARY_PATH" DYLD_LIBRARY_PATH="$$a:$$LD_LIBRARY_PATH" $(PYTHONENV) PYTHONPATH=$(BUILDLIBDIR) $(DEBUGGER) $(PYTHON) $(PYTHONARGS) test/test_pyambulant.py ; \
 	)
 
 install-pyambulant:
-	cd $(srcdir) ; $(PYTHON) setup.py install --root $(DESTDIR) --prefix `$(PYTHON) -c "import sys; print sys.prefix"`
-	
+	if test $(prefix) = "/usr" -o $(prefix) = "/usr/local"; then \
+		cd $(srcdir) ; $(PYTHON) setup.py install --root $(DESTDIR) --prefix `$(PYTHON) -c "import sys; print sys.prefix"` ; \
+	else \
+		cd $(srcdir) ; $(PYTHON) setup.py install --home $(DESTDIR)/$(prefix) ; \
+	fi
+
 mostlyclean-local:
 	-cd $(srcdir) ; $(PYTHON) setup.py clean
 	-rm -r $(srcdir)/build
+
+DISTCLEANFILES=ambulant.so ambulant-2.2-py2.7.egg_info
 
 # Targets to regenerate ambulantmodule.cpp and ambulantinterface.cpp
 
 regenerate-pyambulant:
 	cd $(srcdir) ; $(PYTHON) genobjects.py
 	cd $(srcdir) ; $(PYTHON) ambulantscan.py
-	
+
 # Debug target
 
 testplay:
 	cd $(srcdir) ; $(PYTHONENV) PYTHONPATH=$(BUILDLIBDIR) $(DEBUGGER) $(PYTHON) $(PYTHONARGS) test/nogui_player.py ../../Extras/DemoPresentation/NYC-SMIL2.smil
-	

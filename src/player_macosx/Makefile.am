@@ -113,7 +113,7 @@ cocoambulant_executable_SOURCES= \
 	MyDocument.m \
 	LogController.m \
 	MyAppDelegate.m 
-	
+
 APPNAME="Ambulant Player"
 BUILDAPPNAME=AmbulantPlayer
 
@@ -147,12 +147,12 @@ $(BUILDAPPNAME).app: cocoambulant_executable
 #	Remove plugin cruft
 	find $(BUILDAPPNAME).app/Contents/PlugIns -type l -exec rm '{}' ';'
 	-rm $(BUILDAPPNAME).app/Contents/PlugIns/*.a
-	
+
 #	Install gettext localizations
 	localedir=`pwd`/$(BUILDAPPNAME).app/Contents/Resources/locale; \
 	cd ../../po ; \
 	$(MAKE) $(AM_MAKEFLAGS) localedir=$$localedir install
-	
+
 	mkdir -p $(BUILDAPPNAME).app/Contents/Resources
 	$(INSTALL_DATA) $(srcdir)/Resources/Credits.rtf $(BUILDAPPNAME).app/Contents/Resources
 	$(INSTALL_DATA) $(srcdir)/Resources/InfoPlist.strings $(BUILDAPPNAME).app/Contents/Resources
@@ -189,7 +189,7 @@ $(BUILDAPPNAME).app: cocoambulant_executable
 #	Install executable
 	$(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) .libs/cocoambulant_executable `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/AmbulantPlayer
 	strip -x `pwd`/$(BUILDAPPNAME).app/Contents/MacOS/AmbulantPlayer
-	
+
 #	Internalize any non-system shared libraries we use
 	$(PYTHON) $(top_srcdir)/scripts/internalize_dylibs.py -v -s $(prefix)/lib:$(ambulantlibdir) $(BUILDAPPNAME).app
 
@@ -198,7 +198,7 @@ $(BUILDAPPNAME).app: cocoambulant_executable
 	$(TESTDEP) `pwd`/$(BUILDAPPNAME).app/Contents/PlugIns/*
 	$(TESTDEP) `pwd`/$(BUILDAPPNAME).app/Contents/Frameworks/*
 	$(PYTHON) $(top_srcdir)/scripts/internalize_dylibs.py -c $(BUILDAPPNAME).app
-	
+
 LDADD = \
 	$(libambulant_cocoa) \
 	$(extra_cg_LDADD) \
@@ -230,28 +230,28 @@ AM_CPPFLAGS = \
 
 dist-hook:
 	rm -rf `find $(distdir) -name CVS`
-	
+
 install-exec-hook: $(BUILDAPPNAME).app
-    if test $(prefix) = "/usr" -o $(prefix) = "/usr/local"; then \
-        rm -rf $(DESTDIR)/Applications/$(APPNAME).app ; \
-        mkdir -p $(DESTDIR)/Applications ; \
-        cp -R $(BUILDAPPNAME).app $(DESTDIR)/Applications/$(APPNAME).app ; \
-    else \
-        rm -rf $(DESTDIR)/$(prefix)/Applications/$(APPNAME).app ; \
-        mkdir -p $(DESTDIR)/$(prefix)/Applications ; \
-        cp -R $(BUILDAPPNAME).app $(DESTDIR)/$(prefix)/Applications/$(APPNAME).app ; \
-    fi    
+	if test $(prefix) = "/usr" -o $(prefix) = "/usr/local"; then \
+		rm -rf $(DESTDIR)/Applications/$(APPNAME).app ; \
+		mkdir -p $(DESTDIR)/Applications ; \
+		cp -R $(BUILDAPPNAME).app $(DESTDIR)/Applications/$(APPNAME).app ; \
+	else \
+		rm -rf $(DESTDIR)/$(prefix)/Applications/$(APPNAME).app ; \
+		mkdir -p $(DESTDIR)/$(prefix)/Applications ; \
+		cp -R $(BUILDAPPNAME).app $(DESTDIR)/$(prefix)/Applications/$(APPNAME).app ; \
+	fi	  
 
 uninstall-hook:
-    if test $(prefix) = "/usr" -o $(prefix) = "/usr/local"; then \
-    	rm -rf $(DESTDIR)/Applications/$(APPNAME).app ; \
-    else \
-    	rm -rf $(DESTDIR)/$(prefix)/Applications/$(APPNAME).app ; \
-    fi
+	if test $(prefix) = "/usr" -o $(prefix) = "/usr/local"; then \
+		rm -rf $(DESTDIR)/Applications/$(APPNAME).app ; \
+	else \
+		rm -rf $(DESTDIR)/$(prefix)/Applications/$(APPNAME).app ; \
+	fi
 
 # This target is magic for automake
 check-am: check-ambulantplayer_macos
-	
+
 
 orig-check-ambulantplayer_macos:
 	( set -x;export PYAMBULANTBUILDDIR=`echo ../pyambulant/build/lib*` ; \
@@ -266,9 +266,9 @@ orig-check-ambulantplayer_macos:
 	)
 
 check-ambulantplayer_macos:
-    # We run the player with one extra plugin (the test harness), obtained from src/pyambulant/test.
-    # This also causes exit-on-stop to happen. It's output will be written on AM_TEST-output.txt, which
-    # we will parse later.
+# We run the player with one extra plugin (the test harness), obtained from src/pyambulant/test.
+# This also causes exit-on-stop to happen. It's output will be written on AM_TEST-output.txt, which
+# we will parse later.
 	AMBULANT_PLUGIN_DIR=$(top_srcdir)/src/pyambulant/test \
-	    ./$(BUILDAPPNAME).app/Contents/MacOS/AmbulantPlayer \
-	        ./$(BUILDAPPNAME).app/Contents/Resources/Welcome.smil
+		./$(BUILDAPPNAME).app/Contents/MacOS/AmbulantPlayer \
+			./$(BUILDAPPNAME).app/Contents/Resources/Welcome.smil

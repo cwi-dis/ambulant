@@ -956,7 +956,7 @@ main (int argc, char*argv[]) {
 	lib::logger::get_logger()->debug(gettext("Ambulant Player: localization enabled (english)"));
 #endif
 
-	bool exec_flag = false;
+	bool exec_flag = true; // for make check
 
 	if (argc > 1) {
 		char last[6];
