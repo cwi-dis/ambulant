@@ -149,6 +149,7 @@ check-ambulantplayer_qt:
 	  then LD_PRELOAD=/usr/lib64/python2.7/config/libpython2.7.so LD_LIBRARY_PATH="$$a:$$LD_LIBRARY_PATH" $(PYTHONENV) PYTHONPATH=$$PWD/../plugins/.libs AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs ./AmbulantPlayer_qt $(top_srcdir)/Extras/Welcome/Welcome.smil; \
 	  else LD_LIBRARY_PATH="$$a:$$LD_LIBRARY_PATH" $(PYTHONENV) PYTHONPATH=$$PWD/../plugins/.libs AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.lib ./AmbulantPlayer_qt $(top_srcdir)/Extras/Welcome/Welcome.smil; \
 	  fi; \
+	  if [ -e AM_TEST-output.txt ]; then cat AM_TEST-output.txt; fi; \
 	)
 
 uninstall-local:

@@ -152,6 +152,7 @@ check-ambulantplayer_gtk:
 	  if [ -e /usr/lib64/python2.7/config/libpython2.7.so ]; \
 	  then LD_PRELOAD=/usr/lib64/python2.7/config/libpython2.7.so LD_LIBRARY_PATH="$$a:$$LD_LIBRARY_PATH" $(PYTHONENV) PYTHONPATH=$$PWD/../plugins/.libs AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs $(DEBUGGER) ./AmbulantPlayer_gtk $$welcomepath;  \
 	  else  LD_LIBRARY_PATH="$$a:$$LD_LIBRARY_PATH" $(PYTHONENV) PYTHONPATH=$$PWD/../plugins/.libs AMBULANT_PLUGIN_DIR=$$PWD/../plugins/.libs $(DEBUGGER) ./AmbulantPlayer_gtk $$welcomepath; \
+	  if [ -e AM_TEST-output.txt ]; then cat AM_TEST-output.txt; fi; \
 	  fi; \
 	)
 
