@@ -64,8 +64,9 @@ check-am: check-pyambulant
 install-exec-hook: install-pyambulant
 
 uninstall-local:
-	-rm -fr ambulant.so ambulant-2.2-py2.7.egg_info
-	echo Cannot uninstall pyambulant module, please remove manually
+#XXXX quick fix to make distcheck work from nightly build
+	rm -fr  $(DESTDIR)/$(prefix)/lib64/python/ambulant.so $(DESTDIR)/$(prefix)/lib64/python/ambulant-2.2-py2.7.egg_info
+	echo Cannot uninstall pyambulant module, please remove manually $(DESTDIR)/$(prefix)
 
 # This target re-creates the cpp files. Use only when you know what you
 # are doing.
