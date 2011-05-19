@@ -9,10 +9,11 @@ import sys
 sys.stderr = sys.stdout = open('AM_TEST-output.txt', 'w')
 import ambulant
 import time
+import datetime
 
 # First check: the ambulant glue works.
 
-print 'TEST', 0, 'test_framework_imported', ambulant.get_version()
+print 'TEST', 0, 'test_framework_imported', ambulant.get_version(), 'on: am' datetime.date.today()
 
 class Reporting_feedback(ambulant.player_feedback):
     def __init__(self):
