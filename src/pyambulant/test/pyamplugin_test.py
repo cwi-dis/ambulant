@@ -12,8 +12,8 @@ import time
 import datetime
 
 # First check: the ambulant glue works.
-
-print 'TEST', 0, 'test_framework_imported', ambulant.get_version(), 'on: am' datetime.date.today()
+today = datetime.date.today()
+print 'TEST', 0, 'test_framework_imported', ambulant.get_version(), 'on: ', today
 
 class Reporting_feedback(ambulant.player_feedback):
     def __init__(self):
