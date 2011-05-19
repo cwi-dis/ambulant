@@ -155,3 +155,6 @@ check-ambulantplayer_gtk:
 	  fi; \
 	)
 
+uninstall-local:
+#XXXX quick fix to make distcheck work: remove make check results
+	-rm -fr AM_TEST-output.txt 
