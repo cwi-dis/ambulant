@@ -9,6 +9,10 @@ EXTRA_DIST = \
 	bin/win32
 
 AM_CPPFLAGS=-rdynamic
+
+# Run the configure for distcheck with the same arguments as our own configure:
+DISTCHECK_CONFIGURE_FLAGS=$(ac_configure_args)
+
 dist-hook:
 	rm -rf `find $(distdir) -name CVS -o -name '.#*' -o -name '*~' -o -name '*~.*'`
 

@@ -74,9 +74,35 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
 
 AC_CONFIG_COMMANDS([libtool_patch],[chmod 755 $srcdir/scripts/patch_libtool.sh;$srcdir/scripts/patch_libtool.sh])
 
+# Export configure args to the makefiles (for make distcheck)
+AC_SUBST(ac_configure_args)
+
+#
+# First check whether we have third_party_packages in an alternate location (normally during
+# "make distcheck").
+AC_MSG_CHECKING(for --with-third-party-packages)
+third_party_packages=`pwd`/third_party_packages
+AC_ARG_WITH(third-party-packages,
+	AS_HELP_STRING([--with-third-party-packages],[Directory where 3rd party packages are installed]),
+	[
+		case $withval in
+		yes|no)
+			AC_MSG_ERROR("--with-third-party-packages requires a pathname")
+			;;
+		*)
+			third_party_packages=`cd $withval; pwd`
+			;;
+		esac
+	],[
+		third_party_packages=`cd third_party_packages; pwd`
+		ac_configure_args="$ac_configure_args --with-third_party_packages=$third_party_packages"
+	]
+)
+AC_MSG_RESULT($third_party_packages)
+
 # Variables needed.
-export PATH=`pwd`/third_party_packages/installed/bin:$PATH
-export PKG_CONFIG_PATH=`pwd`/third_party_packages/installed/lib/pkgconfig:$PKG_CONFIG_PATH
+export PATH=$third_party_packages/installed/bin:$PATH
+export PKG_CONFIG_PATH=$third_party_packages/installed/lib/pkgconfig:$PKG_CONFIG_PATH
 
 #
 # Do we have pkg-config?
@@ -707,7 +733,7 @@ AC_ARG_WITH(live,
 		case "${withval}" in
 		yes)
 			# Assume it is in third_party_packages/live
-			live_root=`pwd`/third_party_packages/live
+			live_root=$third_party_packages/live
 			test_live=true
 			;;
 		no)
@@ -719,8 +745,8 @@ AC_ARG_WITH(live,
 			;;
 		esac
 	],[
-		if test -f `pwd`/third_party_packages/live/liveMedia/libliveMedia.a; then
-			live_root=`pwd`/third_party_packages/live
+		if test -f $third_party_packages/live/liveMedia/libliveMedia.a; then
+			live_root=$third_party_packages/live
 			test_live=true
 		fi
 	])
@@ -945,14 +971,14 @@ AC_ARG_WITH([npambulant],
 	[with_npambulant=false])
 
 # when working with mozilla source trunk, uncomment next line
-# XULRUNNER_ROOT=`pwd`/third_party_packages/mozilla/ff-opt-static/dist
+# XULRUNNER_ROOT=$third_party_packages/mozilla/ff-opt-static/dist
 if test x$with_npambulant = xtrue;
 then
-   if test -f `pwd`/third_party_packages/xulrunner-sdk/include/npapi.h; then
+   if test -f $third_party_packages/xulrunner-sdk/include/npapi.h; then
 		# Require a xulrunner-sdk installation in third_party_packages
-		withvalabs=`pwd`/third_party_packages/xulrunner-sdk
+		withvalabs=$third_party_packages/xulrunner-sdk
 		# for mozilla source trunk, uncomment next line
-		# withvalabs=`pwd`/third_party_packages/mozilla/ff-opt-static/dist
+		# withvalabs=$third_party_packages/mozilla/ff-opt-static/dist
 		XULRUNNER_ROOT=${withvalabs}
 		XPIDL=${XULRUNNER_ROOT}/bin/xpidl
    else XULRUNNER_VERSION = `xulrunner --gre-version`
@@ -1206,6 +1232,7 @@ echo "
 ambulant-$AMBULANT_VERSION will be built with following parameters:
 
     targeted prefix:                ${prefix}
+    third party packages:           ${third_party_packages}
     compiler:                       ${CC}
 
     Enable external DOM:            ${test_dom}
