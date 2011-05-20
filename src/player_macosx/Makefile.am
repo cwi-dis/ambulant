@@ -240,8 +240,12 @@ install-exec-hook: $(BUILDAPPNAME).app
 		rm -rf $(DESTDIR)/$(prefix)/Applications/$(APPNAME).app ; \
 		mkdir -p $(DESTDIR)/$(prefix)/Applications ; \
 		cp -R $(BUILDAPPNAME).app $(DESTDIR)/$(prefix)/Applications/$(APPNAME).app ; \
-	fi	  
-
+	fi
+	
+clean-local:
+	-rm -fr AM_TEST-output.txt
+	-rm -fr $(BUILDAPPNAME).app
+	
 uninstall-hook:
 	if test $(prefix) = "/usr" -o $(prefix) = "/usr/local"; then \
 		rm -rf $(DESTDIR)/Applications/$(APPNAME).app ; \
