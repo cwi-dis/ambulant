@@ -85,7 +85,24 @@ libambulant_cocoa_la_SOURCES = \
 	gui/cocoa/cocoa_audio.m \
 	gui/cocoa/cocoa_video.m \
 	gui/cocoa/cocoa_dsvideo.m
+libambulant_cocoa_la_DEPENDENCIES=libambulant.la
+else
+toolkit_cocoa_libraries =
+platlibs =
+endif
 extradist_cocoa = \
+	gui/cocoa/cocoa_fill.m \
+	gui/cocoa/cocoa_gui.m \
+	gui/cocoa/cocoa_html.m \
+	gui/cocoa/cocoa_image.m \
+	gui/cocoa/cocoa_ink.m \
+	gui/cocoa/cocoa_text.m \
+	gui/cocoa/cocoa_renderer.m \
+	gui/cocoa/cocoa_smiltext.m \
+	gui/cocoa/cocoa_transition.m \
+	gui/cocoa/cocoa_audio.m \
+	gui/cocoa/cocoa_video.m \
+	gui/cocoa/cocoa_dsvideo.m \
 	gui/cocoa/cocoa_fill.mm \
 	gui/cocoa/cocoa_gui.mm \
 	gui/cocoa/cocoa_html.mm \
@@ -98,11 +115,6 @@ extradist_cocoa = \
 	gui/cocoa/cocoa_audio.mm \
 	gui/cocoa/cocoa_video.mm \
 	gui/cocoa/cocoa_dsvideo.mm
-libambulant_cocoa_la_DEPENDENCIES=libambulant.la
-else
-toolkit_cocoa_libraries =
-platlibs =
-endif
 
 if WITH_CG
 toolkit_cg_libraries = libambulant_cg.la
@@ -115,19 +127,25 @@ libambulant_cg_la_SOURCES = \
 	gui/cg/cg_renderer.m \
 	gui/cg/cg_text.m \
 	gui/cg/cg_dsvideo.m
-extradist_cg = \
-	gui/cg/cg_fill.mm \
-	gui/cg/cg_gui.mm \
-	gui/cg/cg_image.mm \
-	gui/cg/cg_renderer.mm \
-	gui/cg/cg_text.mm \
-	gui/cg/cg_dsvideo.mm
 libambulant_cg_la_LDFLAGS=$(libambulant_core)
 libambulant_cg_la_DEPENDENCIES=libambulant.la
 else
 toolkit_cg_libraries =
 platlibs =
 endif
+extradist_cg = \
+	gui/cg/cg_fill.m \
+	gui/cg/cg_gui.m \
+	gui/cg/cg_image.m \
+	gui/cg/cg_renderer.m \
+	gui/cg/cg_text.m \
+	gui/cg/cg_dsvideo.m \
+	gui/cg/cg_fill.mm \
+	gui/cg/cg_gui.mm \
+	gui/cg/cg_image.mm \
+	gui/cg/cg_renderer.mm \
+	gui/cg/cg_text.mm \
+	gui/cg/cg_dsvideo.mm
 
 if WITH_GTK
 toolkit_gtk_libraries = libambulant_gtk.la
