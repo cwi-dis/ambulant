@@ -85,6 +85,19 @@ libambulant_cocoa_la_SOURCES = \
 	gui/cocoa/cocoa_audio.m \
 	gui/cocoa/cocoa_video.m \
 	gui/cocoa/cocoa_dsvideo.m
+extradist_cocoa = \
+	gui/cocoa/cocoa_fill.mm \
+	gui/cocoa/cocoa_gui.mm \
+	gui/cocoa/cocoa_html.mm \
+	gui/cocoa/cocoa_image.mm \
+	gui/cocoa/cocoa_ink.mm \
+	gui/cocoa/cocoa_text.mm \
+	gui/cocoa/cocoa_renderer.mm \
+	gui/cocoa/cocoa_smiltext.mm \
+	gui/cocoa/cocoa_transition.mm \
+	gui/cocoa/cocoa_audio.mm \
+	gui/cocoa/cocoa_video.mm \
+	gui/cocoa/cocoa_dsvideo.mm
 libambulant_cocoa_la_DEPENDENCIES=libambulant.la
 else
 toolkit_cocoa_libraries =
@@ -102,6 +115,13 @@ libambulant_cg_la_SOURCES = \
 	gui/cg/cg_renderer.m \
 	gui/cg/cg_text.m \
 	gui/cg/cg_dsvideo.m
+extradist_cg = \
+	gui/cg/cg_fill.mm \
+	gui/cg/cg_gui.mm \
+	gui/cg/cg_image.mm \
+	gui/cg/cg_renderer.mm \
+	gui/cg/cg_text.mm \
+	gui/cg/cg_dsvideo.mm
 libambulant_cg_la_LDFLAGS=$(libambulant_core)
 libambulant_cg_la_DEPENDENCIES=libambulant.la
 else
@@ -320,13 +340,16 @@ libambulant_la_SOURCES = \
 EXTRA_DIST= \
     lib/expat_parser.cpp \
     lib/xerces_parser.cpp \
-	gui/SDL \
-	gui/cocoa \
-	gui/cg \
+	$(libambulant_sdl_la_SOURCES) \
+	$(libambulant_cocoa_la_SOURCES) \
+	$(extradist_cocoa) \
+	$(libambulant_cg_la_SOURCES) \
+	$(extradist_cg) \
+	$(libambulant_qt_la_SOURCES) \
+	$(libambulant_gtk_la_SOURCES) \
+	$(libambulant_gstreamer_la_SOURCES) \
 	gui/dx \
-	gui/qt \
-	gui/gstreamer \
-	gui/gtk \
+	gui/d2 \
 	net/win32_datasource.cpp \
 	lib/memfile.cpp \
 	lib/win32
