@@ -45,8 +45,7 @@ else
 extra_ffmpeg_ldflags=
 endif
 if WITH_SDL
-sdl_config=`sdl-config --libs`
-extra_sdl_ldflags=-lambulant_sdl $(sdl_config)
+extra_sdl_ldflags=-lambulant_sdl $(SDL_LIBS)
 else
 extra_sdl_ldflags=
 endif
