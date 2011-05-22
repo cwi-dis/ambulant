@@ -31,8 +31,6 @@
 //#include "ambulant/lib/mtsync.h"
 //#include <CoreGraphics/CoreGraphics.h>
 
-#undef WITH_OLD_CROP_CODE
-
 namespace ambulant {
 
 using namespace lib;
@@ -66,10 +64,6 @@ class cg_image_renderer : public cg_renderer<renderer_playable_dsall> {
 
 	CFDataRef m_nsdata;
 	CGImageRef m_image;
-#ifdef WITH_OLD_CROP_CODE
-    CGImageRef m_image_cropped;
-    CGImage *_cropped_image(const lib::rect& rect);
-#endif
 	lib::size m_size;
 	CGLayerRef m_cglayer;
 	lib::rect m_rect_cropped;
